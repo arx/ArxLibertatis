@@ -1959,7 +1959,7 @@ void ArxGame::renderLevel() {
 	
 	// Clear screen & Z buffers
 	if(g_desiredFogParameters.flags & GMOD_DCOLOR) {
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_currentFogParameters.depthcolor.to<u8>());
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_fogColor);
 	} else {
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_fogColor);
 	}
@@ -2239,7 +2239,7 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	float fogEnd = 0.48f;
 	float fogStart = fogEnd * 0.65f;
 	renderer.SetFogParams(fogStart, fogEnd);
-	renderer.SetFogColor(g_currentFogParameters.depthcolor.to<u8>());
+	renderer.SetFogColor(g_fogColor);
 	
 	ComputePortalVertexBuffer();
 	VertexBuffer<SMY_VERTEX3> * vb3 = renderer.createVertexBuffer3(4000, Renderer::Stream);
