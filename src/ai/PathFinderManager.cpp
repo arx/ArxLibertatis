@@ -251,9 +251,6 @@ void PathFinderThread::run() {
 		*(request.returnnumber) = result.size();
 		
 	}
-
-	// fix leaks memory but freeze characters
-	// pathfinder.Clean();
 	
 }
 
