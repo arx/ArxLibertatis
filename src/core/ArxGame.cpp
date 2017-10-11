@@ -1978,8 +1978,6 @@ void ArxGame::renderLevel() {
 	ARX_PARTICLES_Update(&subj);
 	ParticleSparkUpdate();
 	
-	GRenderer->SetFogColor(g_fogColor);
-	
 	// End Particles
 
 	// Renders Magical Flares
