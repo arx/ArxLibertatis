@@ -229,11 +229,11 @@ void PathFinderThread::run() {
 			
 		} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 			
-			pathfinder.wanderAround(request.from, request.ioid->_npcdata->behavior_param, result, stealth);
+			pathfinder.wanderAround(request.from, distance, result, stealth);
 			
 		} else if(request.ioid->_npcdata->behavior & (BEHAVIOUR_FLEE | BEHAVIOUR_HIDE)) {
 			
-			float safeDistance = request.ioid->_npcdata->behavior_param + fdist(request.ioid->target, request.ioid->pos);
+			float safeDistance = distance + fdist(request.ioid->target, request.ioid->pos);
 			pathfinder.flee(request.from, request.ioid->target, safeDistance, result, stealth);
 			
 		} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
