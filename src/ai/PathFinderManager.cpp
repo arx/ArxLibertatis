@@ -128,7 +128,7 @@ bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & req) {
 	// processed.
 	temp = PATHFINDER_Find_ioid(req.ioid);
 
-	if(temp && temp != pathfinder_queue_start) {
+	if(temp) {
 		temp->req = req;
 		return true;
 	}
