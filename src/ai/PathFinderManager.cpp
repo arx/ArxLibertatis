@@ -109,7 +109,7 @@ public:
 
 void PathFinderThread::queueRequest(const PATHFINDER_REQUEST & request) {
 	
-	arx_assert(request.ioid && (request.ioid->ioflags & IO_NPC));
+	arx_assert(request.entity && (request.entity->ioflags & IO_NPC));
 	
 	Autolock lock(&m_mutex);
 	
@@ -117,14 +117,14 @@ void PathFinderThread::queueRequest(const PATHFINDER_REQUEST & request) {
 	// try to Override it or add it to queue if it is currently being
 	// processed.
 	BOOST_FOREACH(PATHFINDER_REQUEST & oldRequest, m_queue) {
-		if(oldRequest.ioid == request.ioid) {
+		if(oldRequest.entity == request.entity) {
 			oldRequest = request;
 			return;
 		}
 	}
 	
 	if(!m_queue.empty()
-	   && (request.ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_FLEE | BEHAVIOUR_LOOK_FOR))) {
+	   && (request.entity->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_FLEE | BEHAVIOUR_LOOK_FOR))) {
 		// priority: insert as second element of queue
 		m_queue.insert(++m_queue.begin(), request);
 	} else {
@@ -152,21 +152,21 @@ void PathFinderThread::run() {
 		m_queue.pop_front();
 		
 		// TODO potentially unsafe Entity access
-		if(request.ioid->_npcdata->behavior == BEHAVIOUR_NONE) {
+		if(request.entity->_npcdata->behavior == BEHAVIOUR_NONE) {
 			continue;
 		}
 		
 		ARX_PROFILE_FUNC();
 		
-		pathfinder.setCylinder(request.ioid->physics.cyl.radius, request.ioid->physics.cyl.height);
+		pathfinder.setCylinder(request.entity->physics.cyl.radius, request.entity->physics.cyl.height);
 		
 		float distance;
-		if(request.ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_GO_HOME)) {
+		if(request.entity->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_GO_HOME)) {
 			distance = fdist(ACTIVEBKG->anchors[request.from].pos, ACTIVEBKG->anchors[request.to].pos);
-		} else if(request.ioid->_npcdata->behavior & (BEHAVIOUR_WANDER_AROUND | BEHAVIOUR_FLEE | BEHAVIOUR_HIDE)) {
-			distance = request.ioid->_npcdata->behavior_param;
-		} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
-			distance = fdist(request.ioid->pos, request.ioid->target);
+		} else if(request.entity->_npcdata->behavior & (BEHAVIOUR_WANDER_AROUND | BEHAVIOUR_FLEE | BEHAVIOUR_HIDE)) {
+			distance = request.entity->_npcdata->behavior_param;
+		} else if(request.entity->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
+			distance = fdist(request.entity->pos, request.entity->target);
 		} else {
 			continue;
 		}
@@ -176,26 +176,26 @@ void PathFinderThread::run() {
 		}
 		pathfinder.setHeuristic(heuristic);
 		
-		bool stealth = request.ioid->_npcdata->behavior.hasAll(BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE);
+		bool stealth = request.entity->_npcdata->behavior.hasAll(BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE);
 		
 		PathFinder::Result result;
-		if(request.ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_GO_HOME)) {
+		if(request.entity->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_GO_HOME)) {
 			
 			pathfinder.move(request.from, request.to, result, stealth);
 			
-		} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
+		} else if(request.entity->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 			
 			pathfinder.wanderAround(request.from, distance, result, stealth);
 			
-		} else if(request.ioid->_npcdata->behavior & (BEHAVIOUR_FLEE | BEHAVIOUR_HIDE)) {
+		} else if(request.entity->_npcdata->behavior & (BEHAVIOUR_FLEE | BEHAVIOUR_HIDE)) {
 			
-			float safeDistance = distance + fdist(request.ioid->target, request.ioid->pos);
-			pathfinder.flee(request.from, request.ioid->target, safeDistance, result, stealth);
+			float safeDistance = distance + fdist(request.entity->target, request.entity->pos);
+			pathfinder.flee(request.from, request.entity->target, safeDistance, result, stealth);
 			
-		} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
+		} else if(request.entity->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
 			
-			float radius = request.ioid->_npcdata->behavior_param;
-			pathfinder.lookFor(request.from, request.ioid->target, radius, result, stealth);
+			float radius = request.entity->_npcdata->behavior_param;
+			pathfinder.lookFor(request.from, request.entity->target, radius, result, stealth);
 			
 		}
 		

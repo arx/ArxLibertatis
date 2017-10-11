@@ -57,7 +57,7 @@ struct PATHFINDER_REQUEST {
 	long * returnnumber;			// must point to a -1 value at call time
 	// As soon as returnnumber is no more -1
 	// Pathfinding is considered finished
-	Entity * ioid;
+	Entity * entity;
 	long ** returnlist;	//must be NULL
 };
 
