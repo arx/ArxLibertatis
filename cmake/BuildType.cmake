@@ -9,7 +9,7 @@ option(SET_OPTIMIZATION_FLAGS "Adjust compiler optimization flags" ON)
 
 if(MSVC)
 	
-	if(SET_WARNING_FLAGS)
+	if(SET_WARNING_FLAGS AND NOT SET_NOISY_WARNING_FLAGS)
 		
 		# Disable deprecation warnings
 		add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -33,7 +33,7 @@ if(MSVC)
 		# warning C4503: 'xxx' : decorated name length exceeded, name was truncated
 		add_definitions(/wd4503)
 		
-	endif(SET_WARNING_FLAGS)
+	endif()
 	
 	if(NOT DEBUG_EXTRA)
 		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
@@ -53,7 +53,7 @@ if(MSVC)
 		# Enable multiprocess build
 		add_definitions(/MP)
 		
-	endif(SET_OPTIMIZATION_FLAGS)
+	endif()
 	
 	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE)
 		
