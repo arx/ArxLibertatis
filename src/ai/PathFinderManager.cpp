@@ -248,7 +248,7 @@ void PathFinderThread::run() {
 		PATHFINDER_WORKING = 1;
 
 		PATHFINDER_REQUEST curpr;
-		if(EERIE_PATHFINDER_Get_Next_Request(curpr) && curpr.isvalid) {
+		if(EERIE_PATHFINDER_Get_Next_Request(curpr)) {
 			
 			ARX_PROFILE_FUNC();
 			
