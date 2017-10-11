@@ -1887,8 +1887,6 @@ void ArxGame::updateLevel() {
 
 	PrecalcIOLighting(ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
 
-	ACTIVECAM->fadecolor = g_currentFogParameters.depthcolor;
-
 	ARX_SCENE_Update();
 
 	arx_assert(pParticleManager);
