@@ -548,7 +548,6 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	if(!io || !(io->ioflags & IO_NPC))
 		return false;
 
-	long MUST_SELECT_Start_Anchor = -1;
 	io->physics.cyl.origin = io->pos;
 	EntityHandle old_target = io->targetinfo;
 
@@ -654,15 +653,11 @@ wander:
 
 	long from;
 
-	if (MUST_SELECT_Start_Anchor == -1)
-	{
-		if ((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-		        ||	(io->_npcdata->behavior & BEHAVIOUR_FLEE))
-			from = AnchorData_GetNearest(pos1, io->physics.cyl);
-		else
-			from = AnchorData_GetNearest_2(io->angle.getYaw(), pos1, io->physics.cyl);
-	}
-	else from = MUST_SELECT_Start_Anchor;
+	if ((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
+	        ||	(io->_npcdata->behavior & BEHAVIOUR_FLEE))
+		from = AnchorData_GetNearest(pos1, io->physics.cyl);
+	else
+		from = AnchorData_GetNearest_2(io->angle.getYaw(), pos1, io->physics.cyl);
 
 	long to;
 
