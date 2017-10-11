@@ -1958,11 +1958,7 @@ void ArxGame::renderLevel() {
 	ARX_PROFILE_FUNC();
 	
 	// Clear screen & Z buffers
-	if(g_desiredFogParameters.flags & GMOD_DCOLOR) {
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_fogColor);
-	} else {
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_fogColor);
-	}
+	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_fogColor);
 	
 	cinematicBorder.render();
 	
