@@ -252,10 +252,10 @@ void PathFinderThread::run() {
 	BackgroundData * eb = ACTIVEBKG;
 	PathFinder pathfinder(eb->nbanchors, eb->anchors, g_staticLightsMax, (EERIE_LIGHT **)g_staticLights);
 
-	while(!isStopRequested()) {
+	for(; !isStopRequested(); sleep(PATHFINDER_UPDATE_INTERVAL)) {
 		
-		m_mutex.lock();
-
+		Autolock lock(&m_mutex);
+		
 		PATHFINDER_WORKING = 1;
 
 		PATHFINDER_REQUEST curpr;
@@ -325,9 +325,7 @@ void PathFinderThread::run() {
 		}
 
 		PATHFINDER_WORKING = 0;
-
-		m_mutex.unlock();
-		sleep(PATHFINDER_UPDATE_INTERVAL);
+		
 	}
 
 	// fix leaks memory but freeze characters
