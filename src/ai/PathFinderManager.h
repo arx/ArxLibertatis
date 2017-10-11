@@ -61,10 +61,9 @@ struct PATHFINDER_REQUEST {
 	long ** returnlist;	//must be NULL
 };
 
-extern long PATHFINDER_WORKING;
-
 bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & request);
 long EERIE_PATHFINDER_Get_Queued_Number();
+bool EERIE_PATHFINDER_Is_Busy();
 void EERIE_PATHFINDER_Clear();
 void EERIE_PATHFINDER_Create();
 void EERIE_PATHFINDER_Release();

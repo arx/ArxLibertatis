@@ -73,7 +73,7 @@ static const float PATHFINDER_DISTANCE_MAX = 5000.0f;
 // Pathfinder Definitions
 static const unsigned long PATHFINDER_UPDATE_INTERVAL = 10;
 
-long PATHFINDER_WORKING = 0;
+static long PATHFINDER_WORKING = 0;
 
 class PathFinderThread : public StoppableThread {
 	
@@ -140,6 +140,15 @@ long EERIE_PATHFINDER_Get_Queued_Number() {
 	Autolock lock(&g_pathFinderThread->m_mutex);
 	
 	return g_pathFinderThread->queueSize();
+}
+
+bool EERIE_PATHFINDER_Is_Busy() {
+	
+	if(!g_pathFinderThread) {
+		return false;
+	}
+	
+	return PATHFINDER_WORKING != 0;
 }
 
 void EERIE_PATHFINDER_Clear() {
