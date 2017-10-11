@@ -36,7 +36,7 @@ static float PROGRESS_BAR_COUNT = 0;
 static float OLD_PROGRESS_BAR_COUNT = 0;
 
 static long lastloadednum = -1;
-static TextureContainer * tc = NULL;
+static TextureContainer * g_loadingScreenImage = NULL;
 static TextureContainer * pbar = NULL;
 static long lastnum = -1;
 
@@ -56,7 +56,7 @@ void LoadLevelScreen(long num) {
 	
 	// resets status
 	if(num < -1) {
-		delete tc, tc = NULL;
+		delete g_loadingScreenImage, g_loadingScreenImage = NULL;
 		lastloadednum = -1;
 		lastnum = -1;
 		PROGRESS_BAR_TOTAL = 0;
@@ -97,17 +97,17 @@ void LoadLevelScreen(long num) {
 		}
 		
 		if(num != lastloadednum) {
-			delete tc, tc = NULL;
+			delete g_loadingScreenImage, g_loadingScreenImage = NULL;
 			lastloadednum = num;
 			char temp[256];
 			const char * tx = GetLevelNameByNum(num);
 			sprintf(temp, "graph/levels/level%s/loading", tx);
-			tc = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
+			g_loadingScreenImage = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
 		}
 		
 		float scale = minSizeRatio();
 		
-		if(tc) {
+		if(g_loadingScreenImage) {
 			
 			Vec2f size = (num == 10) ? Vec2f(640, 480) : Vec2f(320, 390);
 			size *= scale;
@@ -115,7 +115,7 @@ void LoadLevelScreen(long num) {
 			Vec2f pos = Vec2f(g_size.center());
 			pos += -size * 0.5f;
 			
-			EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.001f, tc, Color::white);
+			EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.001f, g_loadingScreenImage, Color::white);
 			
 		}
 		
