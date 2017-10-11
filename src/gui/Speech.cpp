@@ -86,35 +86,35 @@ extern bool EXTERNALVIEW;
 extern bool REQUEST_SPEECH_SKIP;
 
 ARX_SPEECH aspeech[MAX_ASPEECH];
-Notification speech[MAX_SPEECH];
+Notification g_speech[MAX_SPEECH];
 
 
 void ARX_SPEECH_Init() {
 
 	for(size_t i = 0 ; i < MAX_SPEECH ; i++ )
-		speech[i].clear();
+		g_speech[i].clear();
 }
 
 static void ARX_SPEECH_MoveUp() {
 
-	if(speech[0].timecreation != ArxInstant_ZERO)
-		speech[0].text.clear();
+	if(g_speech[0].timecreation != ArxInstant_ZERO)
+		g_speech[0].text.clear();
 
 	for(size_t j = 0; j < MAX_SPEECH - 1; j++) {
-		speech[j] = speech[j+1];
+		g_speech[j] = g_speech[j+1];
 	}
 
-	speech[MAX_SPEECH-1].clear();
+	g_speech[MAX_SPEECH-1].clear();
 }
 
 void ARX_SPEECH_ClearAll()
 {
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 
-		if(speech[i].timecreation == ArxInstant_ZERO)
+		if(g_speech[i].timecreation == ArxInstant_ZERO)
 			continue;
 
-		speech[i].clear();
+		g_speech[i].clear();
 	}
 }
 
@@ -128,19 +128,19 @@ void ARX_SPEECH_Add(const std::string & text) {
 		now = ArxInstantMs(1);
 	}
 	
-	if(speech[MAX_SPEECH - 1].timecreation != ArxInstant_ZERO) {
+	if(g_speech[MAX_SPEECH - 1].timecreation != ArxInstant_ZERO) {
 		ARX_SPEECH_MoveUp();
 	}
 	
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 
-		if(speech[i].timecreation != ArxInstant_ZERO)
+		if(g_speech[i].timecreation != ArxInstant_ZERO)
 			continue;
 		
 		// Sets creation time
-		speech[i].timecreation = now;
-		speech[i].duration = ArxDurationMs(2000 + text.length() * 60);
-		speech[i].text = text;
+		g_speech[i].timecreation = now;
+		g_speech[i].duration = ArxDurationMs(2000 + text.length() * 60);
+		g_speech[i].text = text;
 		return;
 	}
 	
@@ -151,10 +151,10 @@ static bool isLastSpeech(size_t index) {
 	
 	for(size_t i = index + 1; i < MAX_SPEECH; i++) {
 
-		if(speech[i].timecreation == ArxInstant_ZERO)
+		if(g_speech[i].timecreation == ArxInstant_ZERO)
 			continue;
 
-		if(!speech[i].text.empty())
+		if(!g_speech[i].text.empty())
 			return false;
 	}
 	
@@ -174,7 +174,7 @@ static void ARX_SPEECH_Render() {
 	
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 		
-		if(speech[i].timecreation == ArxInstant_ZERO || speech[i].text.empty()) {
+		if(g_speech[i].timecreation == ArxInstant_ZERO || g_speech[i].text.empty()) {
 			continue;
 		}
 		
@@ -187,7 +187,7 @@ static void ARX_SPEECH_Render() {
 		EERIEDrawBitmap(rect, .00001f, arx_logo_tc, Color::white);
 		
 		igrec += ARX_UNICODE_DrawTextInRect(hFontInBook, Vec2f(120.f * g_sizeRatio.x, igrec), 500 * g_sizeRatio.x,
-		                           ' ' + speech[i].text, Color::white, NULL);
+		                           ' ' + g_speech[i].text, Color::white, NULL);
 		
 		if(igrec > iEnd && !isLastSpeech(i)) {
 			ARX_SPEECH_MoveUp();
@@ -203,11 +203,11 @@ void ARX_SPEECH_Check()
 	long exist = 0;
 
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
-		if(speech[i].timecreation == ArxInstant_ZERO)
+		if(g_speech[i].timecreation == ArxInstant_ZERO)
 			continue;
 		
-		ArxDuration elapsed = arxtime.now() - speech[i].timecreation;
-		if(elapsed > speech[i].duration) {
+		ArxDuration elapsed = arxtime.now() - g_speech[i].timecreation;
+		if(elapsed > g_speech[i].duration) {
 			ARX_SPEECH_MoveUp();
 			i--;
 		} else {
