@@ -518,5 +518,5 @@ void PolyBoomDraw() {
 		++itr;
 	}
 	
-	GRenderer->SetFogColor(ulBKGColor);
+	GRenderer->SetFogColor(g_fogColor);
 }

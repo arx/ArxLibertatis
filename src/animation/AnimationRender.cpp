@@ -226,7 +226,7 @@ void PopAllTriangleListTransparency() {
 		pTex = pTex->m_pNext;
 	}
 
-	GRenderer->SetFogColor(ulBKGColor);
+	GRenderer->SetFogColor(g_fogColor);
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 }
 
