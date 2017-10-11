@@ -231,22 +231,22 @@ void Logger::flush() {
 	}
 }
 
-void Logger::configure(const std::string config) {
+void Logger::configure(const std::string settings) {
 	
 	size_t start = 0;
 	
-	while(start < config.length()) {
+	while(start < settings.length()) {
 		
-		size_t pos = config.find(',', start);
+		size_t pos = settings.find(',', start);
 		if(pos == std::string::npos) {
-			pos = config.length();
+			pos = settings.length();
 		}
 		if(pos == start) {
 			start++;
 			continue;
 		}
 		
-		std::string entry = config.substr(start, pos - start);
+		std::string entry = settings.substr(start, pos - start);
 		start = pos + 1;
 		
 		size_t eq = entry.find('=');
