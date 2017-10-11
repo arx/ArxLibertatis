@@ -78,7 +78,7 @@ class PathFinderThread : public StoppableThread {
 	
 };
 
-static PathFinderThread * pathfinder = NULL;
+static PathFinderThread * g_pathFinderThread = NULL;
 static Lock * mutex = NULL;
 
 struct PATHFINDER_QUEUE_ELEMENT {
@@ -111,7 +111,7 @@ static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(Entity * io) {
 // Adds a Pathfinder Search Element to the pathfinder queue.
 bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & req) {
 	
-	if(!pathfinder) {
+	if(!g_pathFinderThread) {
 		return false;
 	}
 	
@@ -207,7 +207,7 @@ static void EERIE_PATHFINDER_Clear_Private() {
 
 void EERIE_PATHFINDER_Clear() {
 	
-	if(!pathfinder) {
+	if(!g_pathFinderThread) {
 		return;
 	}
 	
@@ -334,7 +334,7 @@ void PathFinderThread::run() {
 
 void EERIE_PATHFINDER_Release() {
 	
-	if(!pathfinder) {
+	if(!g_pathFinderThread) {
 		return;
 	}
 	
@@ -342,16 +342,16 @@ void EERIE_PATHFINDER_Release() {
 	
 	EERIE_PATHFINDER_Clear_Private();
 	
-	pathfinder->stop();
+	g_pathFinderThread->stop();
 	
-	delete pathfinder, pathfinder = NULL;
+	delete g_pathFinderThread, g_pathFinderThread = NULL;
 	
 	mutex->unlock(), delete mutex, mutex = NULL;
 }
 
 void EERIE_PATHFINDER_Create() {
 	
-	if(pathfinder) {
+	if(g_pathFinderThread) {
 		EERIE_PATHFINDER_Release();
 	}
 	
@@ -359,7 +359,7 @@ void EERIE_PATHFINDER_Create() {
 		mutex = new Lock();
 	}
 	
-	pathfinder = new PathFinderThread();
-	pathfinder->setThreadName("Pathfinder");
-	pathfinder->start();
+	g_pathFinderThread = new PathFinderThread();
+	g_pathFinderThread->setThreadName("Pathfinder");
+	g_pathFinderThread->start();
 }
