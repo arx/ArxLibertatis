@@ -195,9 +195,9 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 	
 	for(size_t y = 0; y < INVENTORY_Y; y++) {
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		Entity *io = inventory[bag][x][y].io;
+		Entity *io = g_inventory[bag][x][y].io;
 		
-		if(!io || !inventory[bag][x][y].show) {
+		if(!io || !g_inventory[bag][x][y].show) {
 			continue;
 		}
 		
@@ -426,7 +426,7 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 			ty = checked_range_cast<long>((ty - 5 * m_scale) / (32 * m_scale));
 
 			if((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y)) {
-				Entity *result = inventory[m_currentBag][tx][ty].io;
+				Entity *result = g_inventory[m_currentBag][tx][ty].io;
 
 				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
 					return result;
@@ -449,7 +449,7 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 			ty = checked_range_cast<long>((ty - 5 * m_scale) / (32 * m_scale));
 
 			if(tx >= 0 && (size_t)tx < INVENTORY_X && ty >= 0 && (size_t)ty < INVENTORY_Y) {
-				Entity *result = inventory[bag][tx][ty].io;
+				Entity *result = g_inventory[bag][tx][ty].io;
 
 				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
 					return result;
@@ -538,7 +538,7 @@ void PlayerInventoryHud::dropEntity() {
 	
 	for(long y = 0; y < itemSize.y; y++)
 	for(long x = 0; x < itemSize.x; x++) {
-		Entity * ioo = inventory[bag][t.x + x][t.y + y].io;
+		Entity * ioo = g_inventory[bag][t.x + x][t.y + y].io;
 		
 		if(!ioo)
 			continue;
@@ -574,12 +574,12 @@ void PlayerInventoryHud::dropEntity() {
 	
 	for(long y = 0; y < itemSize.y; y++) {
 	for(long x = 0; x < itemSize.x; x++) {
-		inventory[bag][t.x + x][t.y + y].io = DRAGINTER;
-		inventory[bag][t.x + x][t.y + y].show = false;
+		g_inventory[bag][t.x + x][t.y + y].io = DRAGINTER;
+		g_inventory[bag][t.x + x][t.y + y].show = false;
 	}
 	}
 	
-	inventory[bag][t.x][t.y].show = true;
+	g_inventory[bag][t.x][t.y].show = true;
 	
 	ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
 	ARX_SOUND_PlayInterface(SND_INVSTD);
@@ -632,7 +632,7 @@ void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s &pos) {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		INVENTORY_SLOT & slot = inventory[bag][x][y];
+		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 		
 		if(slot.io == io) {
 			slot.io = NULL;
