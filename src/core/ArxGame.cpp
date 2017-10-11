@@ -1966,7 +1966,7 @@ void ArxGame::renderLevel() {
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_currentFogParameters.depthcolor.to<u8>());
 	} else {
 		subj.bkgcolor = ulBKGColor;
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, subj.bkgcolor);
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, ulBKGColor);
 	}
 	
 	cinematicBorder.render();
