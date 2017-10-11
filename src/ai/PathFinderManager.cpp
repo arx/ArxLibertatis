@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/foreach.hpp>
 
 #include "ai/Anchors.h"
-
 #include "ai/PathFinder.h"
 #include "game/Entity.h"
 #include "game/NPC.h"
@@ -137,7 +136,7 @@ void PathFinderThread::run() {
 	
 	BackgroundData * eb = ACTIVEBKG;
 	PathFinder pathfinder(eb->nbanchors, eb->anchors, g_staticLightsMax, (EERIE_LIGHT **)g_staticLights);
-
+	
 	for(; !isStopRequested(); m_busy = false, sleep(PATHFINDER_UPDATE_INTERVAL)) {
 		
 		Autolock lock(&m_mutex);
@@ -147,7 +146,7 @@ void PathFinderThread::run() {
 		if(m_queue.empty()) {
 			continue;
 		}
-
+		
 		PATHFINDER_REQUEST request = m_queue.front();
 		m_queue.pop_front();
 		
