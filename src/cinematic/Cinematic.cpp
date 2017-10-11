@@ -122,7 +122,6 @@ void Cinematic::OneTimeSceneReInit() {
 	m_camera.clip = Rect(cinRenderSize.x, cinRenderSize.y);
 	m_camera.center = m_camera.clip.center();
 	m_camera.focal = 350.f;
-	m_camera.bkgcolor = Color::none;
 	m_camera.cdepth = 2500.f;
 	
 	numbitmap = -1;
