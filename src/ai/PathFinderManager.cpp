@@ -76,10 +76,13 @@ class PathFinderThread : public StoppableThread {
 	
 	void run();
 	
+public:
+	
+	Lock m_mutex;
+	
 };
 
 static PathFinderThread * g_pathFinderThread = NULL;
-static Lock * mutex = NULL;
 
 struct PATHFINDER_QUEUE_ELEMENT {
 	PATHFINDER_REQUEST req;
@@ -115,7 +118,7 @@ bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & req) {
 		return false;
 	}
 	
-	Autolock lock(mutex);
+	Autolock lock(&g_pathFinderThread->m_mutex);
 
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
 
@@ -175,10 +178,12 @@ bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & req) {
 }
 
 long EERIE_PATHFINDER_Get_Queued_Number() {
-	if(!mutex)
+	
+	if(!g_pathFinderThread) {
 		return 0;
-
-	Autolock lock(mutex);
+	}
+	
+	Autolock lock(&g_pathFinderThread->m_mutex);
 	
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
 
@@ -211,7 +216,7 @@ void EERIE_PATHFINDER_Clear() {
 		return;
 	}
 	
-	Autolock lock(mutex);
+	Autolock lock(&g_pathFinderThread->m_mutex);
 	
 	EERIE_PATHFINDER_Clear_Private();
 	
@@ -249,7 +254,7 @@ void PathFinderThread::run() {
 
 	while(!isStopRequested()) {
 		
-		mutex->lock();
+		m_mutex.lock();
 
 		PATHFINDER_WORKING = 1;
 
@@ -321,7 +326,7 @@ void PathFinderThread::run() {
 
 		PATHFINDER_WORKING = 0;
 
-		mutex->unlock();
+		m_mutex.unlock();
 		sleep(PATHFINDER_UPDATE_INTERVAL);
 	}
 
@@ -338,25 +343,21 @@ void EERIE_PATHFINDER_Release() {
 		return;
 	}
 	
-	mutex->lock();
+	g_pathFinderThread->m_mutex.lock();
 	
 	EERIE_PATHFINDER_Clear_Private();
 	
 	g_pathFinderThread->stop();
 	
-	delete g_pathFinderThread, g_pathFinderThread = NULL;
+	g_pathFinderThread->m_mutex.unlock();
 	
-	mutex->unlock(), delete mutex, mutex = NULL;
+	delete g_pathFinderThread, g_pathFinderThread = NULL;
 }
 
 void EERIE_PATHFINDER_Create() {
 	
 	if(g_pathFinderThread) {
 		EERIE_PATHFINDER_Release();
-	}
-	
-	if(!mutex) {
-		mutex = new Lock();
 	}
 	
 	g_pathFinderThread = new PathFinderThread();
