@@ -88,7 +88,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static const size_t MAX_PARTICLES = 2200;
 static long ParticleCount = 0;
-static PARTICLE_DEF particle[MAX_PARTICLES];
+static PARTICLE_DEF g_particles[MAX_PARTICLES];
 
 static TextureContainer * blood_splat = NULL;
 TextureContainer * bloodsplat[6];
@@ -542,7 +542,7 @@ void ARX_PARTICLES_FirstInit() {
 
 void ARX_PARTICLES_ClearAll() {
 	
-	std::fill(particle, particle + MAX_PARTICLES, PARTICLE_DEF());
+	std::fill(g_particles, g_particles + MAX_PARTICLES, PARTICLE_DEF());
 	ParticleCount = 0;
 }
 
@@ -554,7 +554,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 	
 	for(size_t i = 0; i < MAX_PARTICLES; i++) {
 		
-		PARTICLE_DEF * pd = &particle[i];
+		PARTICLE_DEF * pd = &g_particles[i];
 		
 		if(pd->exist) {
 			continue;
@@ -788,7 +788,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 	
 	for(size_t i = 0; i < MAX_PARTICLES && pcc > 0; i++) {
 
-		PARTICLE_DEF * part = &particle[i];
+		PARTICLE_DEF * part = &g_particles[i];
 		if(!part->exist) {
 			continue;
 		}
