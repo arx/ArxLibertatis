@@ -23,11 +23,11 @@
 
 #include "game/Entity.h"
 #include "graphics/Draw.h"
+#include "graphics/GlobalFog.h"
 #include "graphics/Renderer.h"
 #include "platform/profiler/Profiler.h"
 #include "scene/Interactive.h"
 
-extern Color ulBKGColor;
 extern TextureContainer * Boom;
 
 static std::vector<TexturedVertex> g_shadowBatch;
