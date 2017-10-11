@@ -69,6 +69,7 @@ void ARX_GLOBALMODS_Reset() {
 	g_currentFogParameters = GLOBAL_MODS();
 	g_currentFogParameters.zclip = DEFAULT_ZCLIP;
 	g_desiredFogParameters.zclip = DEFAULT_ZCLIP;
+	g_currentFogParameters.depthcolor = Color3f::black;
 	g_desiredFogParameters.depthcolor = Color3f::black;
 }
 
