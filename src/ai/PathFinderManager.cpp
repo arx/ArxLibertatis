@@ -200,62 +200,65 @@ void PathFinderThread::run() {
 			continue;
 		}
 		
-			ARX_PROFILE_FUNC();
+		ARX_PROFILE_FUNC();
+		
+		float heuristic = PATHFINDER_HEURISTIC_MAX;
+		bool stealth = request.ioid->_npcdata->behavior.hasAll(BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE);
+		
+		pathfinder.setCylinder(request.ioid->physics.cyl.radius, request.ioid->physics.cyl.height);
+		
+		PathFinder::Result result;
+		
+		if(request.ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_GO_HOME)) {
 			
-				float heuristic(PATHFINDER_HEURISTIC_MAX);
-
-				pathfinder.setCylinder(request.ioid->physics.cyl.radius, request.ioid->physics.cyl.height);
-
-				bool stealth = (request.ioid->_npcdata->behavior & (BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE))
-				                == (BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE);
-
-				
-				PathFinder::Result result;
-				
-				if(   (request.ioid->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
-				   || (request.ioid->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-				) {
-					float distance = fdist(ACTIVEBKG->anchors[request.from].pos, ACTIVEBKG->anchors[request.to].pos);
-
-					if(distance < PATHFINDER_DISTANCE_MAX)
-						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
-
-					pathfinder.setHeuristic(heuristic);
-					pathfinder.move(request.from, request.to, result, stealth);
-				} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
-					if(request.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX)
-						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (request.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
-
-					pathfinder.setHeuristic(heuristic);
-					pathfinder.wanderAround(request.from, request.ioid->_npcdata->behavior_param, result, stealth);
-				} else if(request.ioid->_npcdata->behavior & (BEHAVIOUR_FLEE | BEHAVIOUR_HIDE)) {
-					if(request.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX)
-						heuristic = PATHFINDER_HEURISTIC_MIN
-						            + PATHFINDER_HEURISTIC_RANGE
-						              * (request.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
-
-					pathfinder.setHeuristic(heuristic);
-					float safedist = request.ioid->_npcdata->behavior_param
-					                 + fdist(request.ioid->target, request.ioid->pos);
-
-					pathfinder.flee(request.from, request.ioid->target, safedist, result, stealth);
-				} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
-					float distance = fdist(request.ioid->pos, request.ioid->target);
-
-					if(distance < PATHFINDER_DISTANCE_MAX)
-						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
-
-					pathfinder.setHeuristic(heuristic);
-					pathfinder.lookFor(request.from, request.ioid->target,
-					                   request.ioid->_npcdata->behavior_param, result, stealth);
-				}
-				
-				if(!result.empty()) {
-					long * list = (long*)malloc(result.size() * sizeof(long));
-					std::copy(result.begin(), result.end(), list);
-					*(request.returnlist) = list;
-				}
-				*(request.returnnumber) = result.size();
+			float distance = fdist(ACTIVEBKG->anchors[request.from].pos, ACTIVEBKG->anchors[request.to].pos);
+			if(distance < PATHFINDER_DISTANCE_MAX) {
+				heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
+			}
+			pathfinder.setHeuristic(heuristic);
+			
+			pathfinder.move(request.from, request.to, result, stealth);
+			
+		} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
+			
+			if(request.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX) {
+				heuristic = PATHFINDER_HEURISTIC_MIN
+				            + PATHFINDER_HEURISTIC_RANGE * (request.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
+			}
+			pathfinder.setHeuristic(heuristic);
+			
+			pathfinder.wanderAround(request.from, request.ioid->_npcdata->behavior_param, result, stealth);
+			
+		} else if(request.ioid->_npcdata->behavior & (BEHAVIOUR_FLEE | BEHAVIOUR_HIDE)) {
+			
+			if(request.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX) {
+				heuristic = PATHFINDER_HEURISTIC_MIN
+				            + PATHFINDER_HEURISTIC_RANGE * (request.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
+			}
+			pathfinder.setHeuristic(heuristic);
+			
+			float safeDistance = request.ioid->_npcdata->behavior_param + fdist(request.ioid->target, request.ioid->pos);
+			pathfinder.flee(request.from, request.ioid->target, safeDistance, result, stealth);
+			
+		} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
+			
+			float distance = fdist(request.ioid->pos, request.ioid->target);
+			if(distance < PATHFINDER_DISTANCE_MAX) {
+				heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
+			}
+			pathfinder.setHeuristic(heuristic);
+			
+			float radius = request.ioid->_npcdata->behavior_param;
+			pathfinder.lookFor(request.from, request.ioid->target, radius, result, stealth);
+			
+		}
+		
+		if(!result.empty()) {
+			long * list = (long*)malloc(result.size() * sizeof(long));
+			std::copy(result.begin(), result.end(), list);
+			*(request.returnlist) = list;
+		}
+		*(request.returnnumber) = result.size();
 		
 	}
 
