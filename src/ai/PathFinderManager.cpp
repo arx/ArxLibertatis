@@ -68,7 +68,7 @@ static const float PATHFINDER_HEURISTIC_RANGE = PATHFINDER_HEURISTIC_MAX
 static const float PATHFINDER_DISTANCE_MAX = 5000.0f;
 
 // Pathfinder Definitions
-static unsigned long PATHFINDER_UPDATE_INTERVAL = 10;
+static const unsigned long PATHFINDER_UPDATE_INTERVAL = 10;
 
 long PATHFINDER_WORKING = 0;
 
