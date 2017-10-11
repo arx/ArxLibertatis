@@ -81,8 +81,6 @@ class PathFinderThread : public StoppableThread {
 	
 	void run();
 	
-	bool getNextRequest(PATHFINDER_REQUEST & request);
-	
 public:
 	
 	PathFinderThread() : m_busy(false) { }
@@ -174,40 +172,30 @@ void EERIE_PATHFINDER_Clear() {
 	g_pathFinderThread->clearQueue();
 }
 
-// Retrieves & Removes next Pathfind request from queue
-bool PathFinderThread::getNextRequest(PATHFINDER_REQUEST & request) {
-	
-	if(m_queue.empty()) {
-		return false;
-	}
-	
-	request = m_queue.front();
-	
-	m_queue.pop_front();
-	
-	// TODO potentially unsafe Entity access
-	if(request.ioid && (request.ioid->ioflags & IO_NPC) && (request.ioid->_npcdata->behavior == BEHAVIOUR_NONE)) {
-		return false;
-	}
-	
-	return true;
-}
-
 // Pathfinder Thread
 void PathFinderThread::run() {
 	
 	BackgroundData * eb = ACTIVEBKG;
 	PathFinder pathfinder(eb->nbanchors, eb->anchors, g_staticLightsMax, (EERIE_LIGHT **)g_staticLights);
 
-	for(; !isStopRequested(); sleep(PATHFINDER_UPDATE_INTERVAL)) {
+	for(; !isStopRequested(); m_busy = false, sleep(PATHFINDER_UPDATE_INTERVAL)) {
 		
 		Autolock lock(&m_mutex);
 		
 		m_busy = true;
+		
+		if(m_queue.empty()) {
+			continue;
+		}
 
-		PATHFINDER_REQUEST request;
-		if(getNextRequest(request)) {
-			
+		PATHFINDER_REQUEST request = m_queue.front();
+		m_queue.pop_front();
+		
+		// TODO potentially unsafe Entity access
+		if(request.ioid && (request.ioid->ioflags & IO_NPC) && (request.ioid->_npcdata->behavior == BEHAVIOUR_NONE)) {
+			continue;
+		}
+		
 			ARX_PROFILE_FUNC();
 			
 			if(request.ioid && request.ioid->_npcdata) {
@@ -267,9 +255,6 @@ void PathFinderThread::run() {
 				*(request.returnnumber) = result.size();
 				
 			}
-		}
-
-		m_busy = false;
 		
 	}
 
