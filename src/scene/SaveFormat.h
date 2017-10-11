@@ -340,7 +340,7 @@ struct ARX_CHANGELEVEL_PLAYER {
 	f32 Skill_Defense;
 	
 	f32 Critical_Hit; // TODO remove
-	s32 AimTime;
+	s32 AimTime; // TODO remove
 	f32 life;
 	f32 maxlife;
 	f32 mana;
