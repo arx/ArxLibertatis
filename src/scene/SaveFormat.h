@@ -1054,7 +1054,7 @@ struct SavedCamera {
 	
 	s32 clip3D;
 	s32 type; //TODO Remove
-	s32 bkgcolor;
+	s32 bkgcolor; // TODO Remove
 	s32 nbdrawn; //TODO Remove
 	f32 cdepth;
 	
@@ -1080,7 +1080,6 @@ struct SavedCamera {
 		
 		a.smoothing = smoothing;
 		
-		a.bkgcolor = Color::fromBGRA(ColorBGRA(bkgcolor));
 		a.cdepth = cdepth;
 		
 		return a;
@@ -1126,7 +1125,7 @@ struct SavedCamera {
 		
 		clip3D = 0;
 		type = CAM_SUBJVIEW;
-		bkgcolor = b.bkgcolor.toBGRA().t;
+		bkgcolor = Color::none.toBGRA().t;
 		nbdrawn = 0;
 		cdepth = b.cdepth;
 		

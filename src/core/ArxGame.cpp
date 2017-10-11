@@ -851,7 +851,6 @@ bool ArxGame::initGame()
 	subj.clip = Rect(0, 0, 640, 480);
 	subj.center = subj.clip.center();
 	subj.focal = defaultCameraFocal;
-	subj.bkgcolor = Color::none;
 	subj.cdepth = 2100.f;
 	
 	SetActiveCamera(&subj);
@@ -1965,7 +1964,6 @@ void ArxGame::renderLevel() {
 	if(g_desiredFogParameters.flags & GMOD_DCOLOR) {
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_currentFogParameters.depthcolor.to<u8>());
 	} else {
-		subj.bkgcolor = ulBKGColor;
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, ulBKGColor);
 	}
 	

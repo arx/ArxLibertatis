@@ -63,7 +63,6 @@ struct EERIE_CAMERA {
 
 	float smoothing;
 
-	Color bkgcolor; // TODO was BGR!
 	float cdepth;
 	
 	glm::mat4x4 ProjectionMatrix;
