@@ -140,7 +140,7 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 			#if ARX_HAVE_OPEN
 			if(detach && dev_null > 0) {
 				(void)dup2(dev_null, 0);
-				if(stdout > 0) {
+				if(stdout <= 0) {
 					dup2(dev_null, 1);
 				}
 				(void)dup2(dev_null, 2);
