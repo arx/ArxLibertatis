@@ -108,7 +108,7 @@ struct DAMAGE_INFO {
 };
 
 const size_t MAX_DAMAGES = 200;
-DAMAGE_INFO	damages[MAX_DAMAGES];
+static DAMAGE_INFO	damages[MAX_DAMAGES];
 
 DamageHandle DamageCreate(const DamageParameters & params) {
 	for(size_t i = 0; i < MAX_DAMAGES; i++) {
