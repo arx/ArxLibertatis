@@ -57,7 +57,6 @@ struct EERIE_CAMERA {
 	Vec3f lastpos;
 	Vec3f translatetarget;
 	bool lastinfovalid;
-	Color3f fadecolor;
 	Rect clip;
 	Vec2i center;
 
