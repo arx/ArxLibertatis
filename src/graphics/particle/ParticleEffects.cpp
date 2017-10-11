@@ -86,9 +86,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 
-//TODO(lubosz): extern globals :(
-extern Color ulBKGColor;
-
 static const size_t MAX_PARTICLES = 2200;
 static long ParticleCount = 0;
 static PARTICLE_DEF particle[MAX_PARTICLES];

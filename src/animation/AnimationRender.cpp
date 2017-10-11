@@ -63,8 +63,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/spell/Cheat.h"
 
 #include "graphics/BaseGraphicsTypes.h"
-#include "graphics/GraphicsTypes.h"
 #include "graphics/Draw.h"
+#include "graphics/GlobalFog.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
 #include "graphics/Vertex.h"
@@ -89,8 +90,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Scene.h"
 #include "scene/Interactive.h"
-
-extern Color ulBKGColor;
 
 // List of TO-TREAT vertex for MIPMESHING
 

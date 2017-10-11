@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 
 #include "graphics/Draw.h"
+#include "graphics/GlobalFog.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -86,7 +87,6 @@ static std::vector<POLYBOOM> polyboom(MAX_POLYBOOM);
 static const float BOOM_RADIUS = 420.f;
 
 extern TextureContainer * Boom;
-extern Color ulBKGColor;
 
 size_t PolyBoomCount() {
 	return polyboom.size();
