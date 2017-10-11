@@ -192,13 +192,16 @@ void PathFinderThread::run() {
 		m_queue.pop_front();
 		
 		// TODO potentially unsafe Entity access
-		if(request.ioid && (request.ioid->ioflags & IO_NPC) && (request.ioid->_npcdata->behavior == BEHAVIOUR_NONE)) {
+		if(!request.ioid || !(request.ioid->ioflags & IO_NPC)) {
+			continue;
+		}
+		
+		if(request.ioid->_npcdata->behavior == BEHAVIOUR_NONE) {
 			continue;
 		}
 		
 			ARX_PROFILE_FUNC();
 			
-			if(request.ioid && request.ioid->_npcdata) {
 				float heuristic(PATHFINDER_HEURISTIC_MAX);
 
 				pathfinder.setCylinder(request.ioid->physics.cyl.radius, request.ioid->physics.cyl.height);
@@ -253,8 +256,6 @@ void PathFinderThread::run() {
 					*(request.returnlist) = list;
 				}
 				*(request.returnnumber) = result.size();
-				
-			}
 		
 	}
 
