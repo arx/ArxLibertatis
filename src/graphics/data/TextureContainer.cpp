@@ -166,11 +166,11 @@ TextureContainer::~TextureContainer() {
 bool TextureContainer::LoadFile(const res::path & strPathname) {
 	
 	res::path tempPath = strPathname;
-	bool foundPath = resources->getFile(tempPath.append(".png")) != NULL;
-	foundPath = foundPath || resources->getFile(tempPath.set_ext("jpg"));
-	foundPath = foundPath || resources->getFile(tempPath.set_ext("jpeg"));
-	foundPath = foundPath || resources->getFile(tempPath.set_ext("bmp"));
-	foundPath = foundPath || resources->getFile(tempPath.set_ext("tga"));
+	bool foundPath = g_resources->getFile(tempPath.append(".png")) != NULL;
+	foundPath = foundPath || g_resources->getFile(tempPath.set_ext("jpg"));
+	foundPath = foundPath || g_resources->getFile(tempPath.set_ext("jpeg"));
+	foundPath = foundPath || g_resources->getFile(tempPath.set_ext("bmp"));
+	foundPath = foundPath || g_resources->getFile(tempPath.set_ext("tga"));
 
 	if(!foundPath) {
 		LogError << strPathname << " not found";

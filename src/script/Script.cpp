@@ -857,7 +857,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(boost::starts_with(name, "^demo")) {
-				*lcontent = (resources->getReleaseType() & PakReader::Demo) ? 1 : 0;
+				*lcontent = (g_resources->getReleaseType() & PakReader::Demo) ? 1 : 0;
 				return TYPE_LONG;
 			}
 			

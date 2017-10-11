@@ -1880,15 +1880,15 @@ int main_view(SaveBlock & save, const std::vector<std::string> & args) {
 	
 	//config.language = "english";
 	
-	resources = new PakReader();
+	g_resources = new PakReader();
 	
 	do {
 		// TODO share this list with the game code
 		static const char * const filenames[2] = { "loc.pak", "loc_default.pak" };
-		if(resources->addArchive(fs::paths.find(filenames[0]))) {
+		if(g_resources->addArchive(fs::paths.find(filenames[0]))) {
 			continue;
 		}
-		if(filenames[1] && resources->addArchive(fs::paths.find(filenames[1]))) {
+		if(filenames[1] && g_resources->addArchive(fs::paths.find(filenames[1]))) {
 			continue;
 		}
 		std::ostringstream oss;
@@ -1900,7 +1900,7 @@ int main_view(SaveBlock & save, const std::vector<std::string> & args) {
 	} while(false);
 	BOOST_REVERSE_FOREACH(const fs::path & base, fs::paths.data) {
 		const char * dirname = "localisation";
-		resources->addFiles(base / dirname, dirname);
+		g_resources->addFiles(base / dirname, dirname);
 	}
 	
 	initLocalisation();

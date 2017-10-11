@@ -164,13 +164,13 @@ bool Credits::load() {
 	std::string creditsFile = "localisation/ucredits_" +  config.language + ".txt";
 	
 	size_t creditsSize;
-	char * credits = resources->readAlloc(creditsFile, creditsSize);
+	char * credits = g_resources->readAlloc(creditsFile, creditsSize);
 	
 	std::string englishCreditsFile;
 	if(!credits) {
 		// Fallback if there is no localised credits file
 		englishCreditsFile = "localisation/ucredits_english.txt";
-		credits = resources->readAlloc(englishCreditsFile, creditsSize);
+		credits = g_resources->readAlloc(englishCreditsFile, creditsSize);
 	}
 	
 	if(!credits) {

@@ -467,7 +467,7 @@ static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE & ah, const res::path & pat
 	}
 	
 	size_t FileSize;
-	char * adr = resources->readAlloc(path, FileSize);
+	char * adr = g_resources->readAlloc(path, FileSize);
 	if(!adr) {
 		return false;
 	}
@@ -511,7 +511,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 		}
 		
 		size_t FileSize;
-		char * adr = resources->readAlloc(path, FileSize);
+		char * adr = g_resources->readAlloc(path, FileSize);
 		if(!adr) {
 			return NULL;
 		}

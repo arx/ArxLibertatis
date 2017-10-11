@@ -101,7 +101,7 @@ void cinematicLaunchWaiting() {
 
 	res::path cinematic = res::path("graph/interface/illustrations") / WILL_LAUNCH_CINE;
 
-	if(resources->getFile(cinematic)) {
+	if(g_resources->getFile(cinematic)) {
 
 		ControlCinematique->OneTimeSceneReInit();
 

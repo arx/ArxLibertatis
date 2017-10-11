@@ -119,7 +119,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	
 	res::path tmp = io->instancePath(); // Get the directory name to check for
 	std::string id = io->className();
-	if(PakDirectory * dir = resources->getDirectory(tmp)) {
+	if(PakDirectory * dir = g_resources->getDirectory(tmp)) {
 		if(PakFile * file = dir->getFile(id + ".asl")) {
 			loadScript(io->over_script, file);
 			io->over_script.master = (io->script.data != NULL) ? &io->script : NULL;
@@ -160,13 +160,13 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	LogDebug("fileDlf " << file);
 
 	size_t FileSize = 0;
-	char * dat = resources->readAlloc(file, FileSize);
+	char * dat = g_resources->readAlloc(file, FileSize);
 	if(!dat) {
 		LogError << "Unable to find " << file;
 		return false;
 	}
 	
-	PakFile * lightingFile = resources->getFile(lightingFileName);
+	PakFile * lightingFile = g_resources->getFile(lightingFileName);
 	
 	progressBarAdvance();
 	LoadLevelScreen();

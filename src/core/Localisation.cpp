@@ -43,7 +43,7 @@ IniReader localisation;
 
 static PakFile * autodetectLanguage() {
 	
-	PakDirectory * dir = resources->getDirectory("localisation");
+	PakDirectory * dir = g_resources->getDirectory("localisation");
 	if(!dir) {
 		LogCritical << "Missing 'localisation' directory. Is 'loc.pak' present?";
 		return NULL;
@@ -123,7 +123,7 @@ bool initLocalisation() {
 		
 		// Attempt to load localisation for the configured language.
 		std::string filename = "localisation/utext_" + config.language + ".ini";
-		file = resources->getFile(filename);
+		file = g_resources->getFile(filename);
 		
 		if(!file) {
 			LogWarning << "Localisation file " << filename << " not found, autodetecting language.";

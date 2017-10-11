@@ -130,8 +130,8 @@ void SaveGameList::update(bool verbose) {
 				oss << "thumbnail" << i << SAVEGAME_THUMBNAIL.ext();
 				thumbnail_res = res::path("save") / oss.str();
 				i++;
-			} while(resources->getFile(thumbnail_res));
-			resources->addFiles(thumbnail, thumbnail_res);
+			} while(g_resources->getFile(thumbnail_res));
+			g_resources->addFiles(thumbnail, thumbnail_res);
 			save->thumbnail = thumbnail_res.remove_ext();
 		} else {
 			save->thumbnail.clear();
@@ -181,8 +181,8 @@ void SaveGameList::update(bool verbose) {
 			o++;
 		} else {
 			// Clean obsolete mounts
-			resources->removeFile(savelist[i].thumbnail);
-			resources->removeDirectory(savelist[i].thumbnail.parent());
+			g_resources->removeFile(savelist[i].thumbnail);
+			g_resources->removeDirectory(savelist[i].thumbnail.parent());
 		}
 	}
 	savelist.resize(o);

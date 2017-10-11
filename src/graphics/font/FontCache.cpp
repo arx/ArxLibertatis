@@ -120,7 +120,7 @@ Font * FontCache::Impl::create(const res::path & font, FontFile & file, unsigned
 	
 	if(!file.m_data) {
 		LogDebug("loading file " << font);
-		file.m_data = resources->readAlloc(font, file.m_size);
+		file.m_data = g_resources->readAlloc(font, file.m_size);
 		if(!file.m_data) {
 			return NULL;
 		}

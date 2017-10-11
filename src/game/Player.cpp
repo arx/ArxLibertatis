@@ -1208,7 +1208,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 
 	//todo free
 	io->armormaterial = "leather";
-	loadScript(io->script, resources->getFile("graph/obj3d/interactive/player/player.asl"));
+	loadScript(io->script, g_resources->getFile("graph/obj3d/interactive/player/player.asl"));
 
 	if ((EERIE_OBJECT_GetGroup(io->obj, "head") != ObjVertGroup())
 	        &&	(EERIE_OBJECT_GetGroup(io->obj, "neck") != ObjVertGroup())
