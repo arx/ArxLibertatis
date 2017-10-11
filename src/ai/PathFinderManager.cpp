@@ -194,7 +194,13 @@ long EERIE_PATHFINDER_Get_Queued_Number() {
 	return count;
 }
 
-static void EERIE_PATHFINDER_Clear_Private() {
+void EERIE_PATHFINDER_Clear() {
+	
+	if(!g_pathFinderThread) {
+		return;
+	}
+	
+	Autolock lock(&g_pathFinderThread->m_mutex);
 	
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
 	PATHFINDER_QUEUE_ELEMENT * next;
@@ -206,19 +212,6 @@ static void EERIE_PATHFINDER_Clear_Private() {
 	}
 	
 	pathfinder_queue_start = NULL;
-	
-}
-
-
-void EERIE_PATHFINDER_Clear() {
-	
-	if(!g_pathFinderThread) {
-		return;
-	}
-	
-	Autolock lock(&g_pathFinderThread->m_mutex);
-	
-	EERIE_PATHFINDER_Clear_Private();
 	
 }
 
