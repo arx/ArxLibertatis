@@ -64,13 +64,15 @@ static const float DEFAULT_MINZCLIP = 1200.f;
 Color g_fogColor = Color::none;
 
 void ARX_GLOBALMODS_Reset() {
-
+	
 	g_desiredFogParameters = GLOBAL_MODS();
 	g_currentFogParameters = GLOBAL_MODS();
 	g_currentFogParameters.zclip = DEFAULT_ZCLIP;
 	g_desiredFogParameters.zclip = DEFAULT_ZCLIP;
 	g_currentFogParameters.depthcolor = Color3f::black;
 	g_desiredFogParameters.depthcolor = Color3f::black;
+	g_fogColor = Color::none;
+	
 }
 
 static float Approach(float current, float desired, float increment) {
