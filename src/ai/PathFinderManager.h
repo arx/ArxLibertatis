@@ -54,11 +54,7 @@ class Entity;
 struct PATHFINDER_REQUEST {
 	long from;
 	long to;
-	long * returnnumber;			// must point to a -1 value at call time
-	// As soon as returnnumber is no more -1
-	// Pathfinding is considered finished
 	Entity * entity;
-	long ** returnlist;	//must be NULL
 };
 
 bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & request);
