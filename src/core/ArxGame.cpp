@@ -1962,7 +1962,7 @@ void ArxGame::renderLevel() {
 	ARX_PROFILE_FUNC();
 	
 	// Clear screen & Z buffers
-	if(desired.flags & GMOD_DCOLOR) {
+	if(g_desiredFogParameters.flags & GMOD_DCOLOR) {
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_currentFogParameters.depthcolor.to<u8>());
 	} else {
 		subj.bkgcolor = ulBKGColor;

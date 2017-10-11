@@ -292,8 +292,8 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 				ARX_SOUND_PlayZoneAmbiance(current->ambiance, ARX_SOUND_PLAY_LOOPED, current->amb_max_vol * ( 1.0f / 100 ));
 
 			if(current->flags & PATH_FARCLIP) {
-				desired.flags |= GMOD_ZCLIP;
-				desired.zclip = current->farclip;
+				g_desiredFogParameters.flags |= GMOD_ZCLIP;
+				g_desiredFogParameters.zclip = current->farclip;
 			}
 
 			if (current->flags & PATH_REVERB)
@@ -301,8 +301,8 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			}
 
 			if(current->flags & PATH_RGB) {
-				desired.flags |= GMOD_DCOLOR;
-				desired.depthcolor = current->rgb;
+				g_desiredFogParameters.flags |= GMOD_DCOLOR;
+				g_desiredFogParameters.depthcolor = current->rgb;
 			}
 
 			if(!current->controled.empty()) {
