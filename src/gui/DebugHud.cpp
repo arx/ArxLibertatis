@@ -220,7 +220,7 @@ void ShowInfoText() {
 	miscBox.add("Cinema", cinematicBorder.CINEMA_DECAL);
 	miscBox.add("Mouse", Vec2i(DANAEMouse));
 	miscBox.add("Pathfind queue", EERIE_PATHFINDER_Get_Queued_Number());
-	miscBox.add("Pathfind status", (PATHFINDER_WORKING ? "Working" : "Idled"));
+	miscBox.add("Pathfind status", EERIE_PATHFINDER_Is_Busy() ? "Working" : "Idled");
 	miscBox.print();
 	
 	{
