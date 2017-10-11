@@ -49,6 +49,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <cstdlib>
 #include <algorithm>
+#include <list>
+
+#include <boost/foreach.hpp>
 
 #include "ai/Anchors.h"
 
@@ -74,101 +77,56 @@ long PATHFINDER_WORKING = 0;
 
 class PathFinderThread : public StoppableThread {
 	
+	std::list<PATHFINDER_REQUEST> m_queue;
+	
 	void run();
+	
+	bool getNextRequest(PATHFINDER_REQUEST & request);
 	
 public:
 	
 	Lock m_mutex;
 	
+	void queueRequest(const PATHFINDER_REQUEST & request);
+	size_t queueSize() { return m_queue.size(); }
+	void clearQueue() { m_queue.clear(); }
+	
 };
 
 static PathFinderThread * g_pathFinderThread = NULL;
 
-struct PATHFINDER_QUEUE_ELEMENT {
-	PATHFINDER_REQUEST req;
-	PATHFINDER_QUEUE_ELEMENT * next;
-};
-
-static PATHFINDER_QUEUE_ELEMENT * pathfinder_queue_start = NULL;
-
-// An Io can request Pathfinding only once so we insure that it's always the case.
-// A new pathfinder request from the same IO will overwrite the precedent.
-static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(Entity * io) {
+void PathFinderThread::queueRequest(const PATHFINDER_REQUEST & request) {
 	
-	if(!pathfinder_queue_start)
-		return NULL;
+	Autolock lock(&m_mutex);
 
-	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
-
-	while(cur) {
-		if(cur->req.ioid == io)
-			return cur;
-		
-		cur = cur->next;
+	// If this NPC is already requesting a Pathfinding then either
+	// try to Override it or add it to queue if it is currently being
+	// processed.
+	BOOST_FOREACH(PATHFINDER_REQUEST & oldRequest, m_queue) {
+		if(oldRequest.ioid == request.ioid) {
+			oldRequest = request;
+			return;
+		}
 	}
-
-	return NULL;
+	
+	if(!m_queue.empty()
+	   && (request.ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_FLEE | BEHAVIOUR_LOOK_FOR))) {
+		// priority: insert as second element of queue
+		m_queue.insert(++m_queue.begin(), request);
+	} else {
+		m_queue.push_back(request);
+	}
+	
 }
 
 // Adds a Pathfinder Search Element to the pathfinder queue.
-bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & req) {
+bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & request) {
 	
 	if(!g_pathFinderThread) {
 		return false;
 	}
 	
-	Autolock lock(&g_pathFinderThread->m_mutex);
-
-	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
-
-	PATHFINDER_QUEUE_ELEMENT * temp;
-
-	// If this NPC is already requesting a Pathfinding then either
-	// try to Override it or add it to queue if it is currently being
-	// processed.
-	temp = PATHFINDER_Find_ioid(req.ioid);
-
-	if(temp) {
-		temp->req = req;
-		return true;
-	}
-
-	// Create a New element for the queue
-	temp = new PATHFINDER_QUEUE_ELEMENT;
-
-	if(!temp) {
-		return false;
-	}
-
-	// Fill this New element with new request
-	temp->req = req;
-
-	// No queue start ? then this element becomes the queue start
-	if(!cur) {
-		temp->next = NULL;
-		pathfinder_queue_start = temp;
-		
-	} else if((req.ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_FLEE
-	                                            | BEHAVIOUR_LOOK_FOR)) && cur->next) {
-		// priority: insert as second element of queue
-		temp->next = cur->next;
-		cur->next = temp;
-		
-	} else {
-		
-		// add to end of queue
-		temp->next = NULL;
-		
-		if(!pathfinder_queue_start) {
-			pathfinder_queue_start = temp;
-			return true;
-		} else {
-			while(cur->next) {
-				cur = cur->next;
-			}
-			cur->next = temp;
-		}
-	}
+	g_pathFinderThread->queueRequest(request);
 	
 	return true;
 }
@@ -181,13 +139,7 @@ long EERIE_PATHFINDER_Get_Queued_Number() {
 	
 	Autolock lock(&g_pathFinderThread->m_mutex);
 	
-	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
-
-	long count = 0;
-
-	while (cur) cur = cur->next, count++;
-
-	return count;
+	return g_pathFinderThread->queueSize();
 }
 
 void EERIE_PATHFINDER_Clear() {
@@ -198,40 +150,25 @@ void EERIE_PATHFINDER_Clear() {
 	
 	Autolock lock(&g_pathFinderThread->m_mutex);
 	
-	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
-	PATHFINDER_QUEUE_ELEMENT * next;
-	
-	while(cur) {
-		next = cur->next;
-		delete cur;
-		cur = next;
-	}
-	
-	pathfinder_queue_start = NULL;
-	
+	g_pathFinderThread->clearQueue();
 }
 
 // Retrieves & Removes next Pathfind request from queue
-static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST & request) {
+bool PathFinderThread::getNextRequest(PATHFINDER_REQUEST & request) {
 	
-	if(!pathfinder_queue_start) {
+	if(m_queue.empty()) {
 		return false;
 	}
 	
-	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
-
-	if ((cur->req.ioid)
-	        && (cur->req.ioid->ioflags & IO_NPC)
-	        && (cur->req.ioid->_npcdata->behavior == BEHAVIOUR_NONE)) {
-		pathfinder_queue_start = cur->next;
-		delete cur;
+	request = m_queue.front();
+	
+	m_queue.pop_front();
+	
+	// TODO potentially unsafe Entity access
+	if(request.ioid && (request.ioid->ioflags & IO_NPC) && (request.ioid->_npcdata->behavior == BEHAVIOUR_NONE)) {
 		return false;
 	}
-
-	request = cur->req;
-	pathfinder_queue_start = cur->next;
-	delete cur;
-
+	
 	return true;
 }
 
@@ -248,7 +185,7 @@ void PathFinderThread::run() {
 		PATHFINDER_WORKING = 1;
 
 		PATHFINDER_REQUEST curpr;
-		if(EERIE_PATHFINDER_Get_Next_Request(curpr)) {
+		if(getNextRequest(curpr)) {
 			
 			ARX_PROFILE_FUNC();
 			
