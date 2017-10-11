@@ -708,7 +708,6 @@ wander:
 			tpr.returnlist = &io->_npcdata->pathfind.list;
 			tpr.returnnumber = &io->_npcdata->pathfind.listnb;
 			tpr.ioid = io;
-			tpr.isvalid = true;
 
 			if(EERIE_PATHFINDER_Add_To_Queue(tpr))
 				return true;
