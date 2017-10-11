@@ -1889,7 +1889,7 @@ void ArxGame::updateLevel() {
 
 	PrecalcIOLighting(ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
 
-	ACTIVECAM->fadecolor = current.depthcolor;
+	ACTIVECAM->fadecolor = g_currentFogParameters.depthcolor;
 
 	ARX_SCENE_Update();
 
@@ -1963,7 +1963,7 @@ void ArxGame::renderLevel() {
 	
 	// Clear screen & Z buffers
 	if(desired.flags & GMOD_DCOLOR) {
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, current.depthcolor.to<u8>());
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_currentFogParameters.depthcolor.to<u8>());
 	} else {
 		subj.bkgcolor = ulBKGColor;
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, subj.bkgcolor);
@@ -2244,7 +2244,7 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	float fogEnd = 0.48f;
 	float fogStart = fogEnd * 0.65f;
 	renderer.SetFogParams(fogStart, fogEnd);
-	renderer.SetFogColor(current.depthcolor.to<u8>());
+	renderer.SetFogColor(g_currentFogParameters.depthcolor.to<u8>());
 	
 	ComputePortalVertexBuffer();
 	VertexBuffer<SMY_VERTEX3> * vb3 = renderer.createVertexBuffer3(4000, Renderer::Stream);

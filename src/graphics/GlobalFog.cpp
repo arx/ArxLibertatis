@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "platform/profiler/Profiler.h"
 
-GLOBAL_MODS current;
+GLOBAL_MODS g_currentFogParameters;
 GLOBAL_MODS desired;
 
 // change the clipping Z max & min
@@ -66,8 +66,8 @@ Color ulBKGColor = Color::none;
 void ARX_GLOBALMODS_Reset() {
 
 	desired = GLOBAL_MODS();
-	current = GLOBAL_MODS();
-	current.zclip = DEFAULT_ZCLIP;
+	g_currentFogParameters = GLOBAL_MODS();
+	g_currentFogParameters.zclip = DEFAULT_ZCLIP;
 	desired.zclip = DEFAULT_ZCLIP;
 	desired.depthcolor = Color3f::black;
 }
@@ -95,7 +95,9 @@ void ARX_GLOBALMODS_Apply() {
 	
 	float baseinc = g_framedelay;
 	float incdiv1000 = g_framedelay * ( 1.0f / 1000 );
-
+	
+	GLOBAL_MODS & current = g_currentFogParameters;
+	
 	if (desired.flags & GMOD_ZCLIP) {
 		current.zclip = Approach(current.zclip, desired.zclip, baseinc * 2);
 	} else { // return to default...

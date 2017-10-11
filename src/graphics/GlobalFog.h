@@ -69,7 +69,7 @@ struct GLOBAL_MODS {
 	{}
 };
 
-extern GLOBAL_MODS current;
+extern GLOBAL_MODS g_currentFogParameters;
 extern GLOBAL_MODS desired;
 
 void ARX_GLOBALMODS_Reset();
