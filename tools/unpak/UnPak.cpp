@@ -243,7 +243,7 @@ static void addResourceDir(PakReader & resources, const fs::path & base) {
 
 int utf8_main(int argc, char ** argv) {
 	
-	ARX_UNUSED(resources);
+	ARX_UNUSED(g_resources);
 	
 	Logger::initialize();
 	

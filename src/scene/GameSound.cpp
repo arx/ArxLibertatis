@@ -1081,7 +1081,7 @@ void ARX_SOUND_AmbianceRestorePlayList(const char * _play_list, size_t size) {
 
 static void ARX_SOUND_CreateEnvironments() {
 	
-	PakDirectory * dir = resources->getDirectory(ARX_SOUND_PATH_ENVIRONMENT);
+	PakDirectory * dir = g_resources->getDirectory(ARX_SOUND_PATH_ENVIRONMENT);
 	if(!dir) {
 		return;
 	}
@@ -1441,7 +1441,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 		file.set_ext(ARX_SOUND_FILE_EXTENSION_INI);
 		
 		size_t fileSize;
-		char * data = resources->readAlloc(file, fileSize);
+		char * data = g_resources->readAlloc(file, fileSize);
 		if(!data) {
 			LogWarning << "Could not find collision map " << file;
 			return;
@@ -1590,7 +1590,7 @@ static void ARX_SOUND_CreatePresenceMap() {
 	res::path file = (ARX_SOUND_PATH_INI / ARX_SOUND_PRESENCE_NAME).set_ext(ARX_SOUND_FILE_EXTENSION_INI);
 	
 	size_t fileSize;
-	char * data = resources->readAlloc(file, fileSize);
+	char * data = g_resources->readAlloc(file, fileSize);
 	if(!data) {
 		LogWarning << "Could not find presence map " << file;
 		return;

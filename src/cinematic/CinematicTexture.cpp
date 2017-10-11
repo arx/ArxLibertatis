@@ -81,10 +81,10 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	
 	res::path filename = path;
 	filename.set_ext("bmp");
-	char * data = resources->readAlloc(filename, dataSize);
+	char * data = g_resources->readAlloc(filename, dataSize);
 	if(!data) {
 		filename.set_ext("tga");
-		data = resources->readAlloc(filename, dataSize);
+		data = g_resources->readAlloc(filename, dataSize);
 	}
 
 	if(!data) {

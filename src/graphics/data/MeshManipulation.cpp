@@ -697,7 +697,7 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 	
 	res::path ftl_file = ("game" / path).set_ext("ftl");
 
-	if ((!resources->getFile(ftl_file)) && (!resources->getFile(path))) return;
+	if ((!g_resources->getFile(ftl_file)) && (!g_resources->getFile(path))) return;
 
 	if (!tw) return;
 

@@ -52,11 +52,11 @@ PakFileHandle * OpenResource(const res::path & name, const res::path & resource_
 	PakFileHandle * file = NULL;
 	
 	if(!resource_path.empty()) {
-		file = resources->open(resource_path / name); // TODO do this earlier
+		file = g_resources->open(resource_path / name); // TODO do this earlier
 	}
 	
 	if(!file) {
-		file = resources->open(name);
+		file = g_resources->open(name);
 	}
 	
 	return file;

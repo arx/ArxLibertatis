@@ -1338,7 +1338,7 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 }
 
 static void GetIOScript(Entity * io, const res::path & script) {
-	loadScript(io->script, resources->getFile(script));
+	loadScript(io->script, g_resources->getFile(script));
 }
 
 /*!
@@ -1378,7 +1378,7 @@ static EntityInstance getFreeEntityInstance(const res::path & classPath) {
 		}
 		
 		// Check if the candidate instance number is reserved for any scene
-		if(resources->getDirectory(classDir / idString)) {
+		if(g_resources->getDirectory(classDir / idString)) {
 			continue;
 		}
 		
@@ -1391,8 +1391,8 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
 	
-	if(!resources->getFile(("game" / classPath) + ".ftl")
-	   && !resources->getFile(object) && !resources->getFile(script)) {
+	if(!g_resources->getFile(("game" / classPath) + ".ftl")
+	   && !g_resources->getFile(object) && !g_resources->getFile(script)) {
 		return NULL;
 	}
 	
@@ -1457,8 +1457,8 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
 	
-	if(!resources->getFile(("game" / classPath) + ".ftl")
-	   && !resources->getFile(object) && !resources->getFile(script)) {
+	if(!g_resources->getFile(("game" / classPath) + ".ftl")
+	   && !g_resources->getFile(object) && !g_resources->getFile(script)) {
 		return NULL;
 	}
 	
@@ -1509,8 +1509,8 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
 	
-	if(!resources->getFile(("game" / classPath) + ".ftl")
-	   && !resources->getFile(object) && !resources->getFile(script)) {
+	if(!g_resources->getFile(("game" / classPath) + ".ftl")
+	   && !g_resources->getFile(object) && !g_resources->getFile(script)) {
 		return NULL;
 	}
 	
@@ -1627,8 +1627,8 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
 	
-	if(!resources->getFile(("game" / classPath) + ".ftl")
-	   && !resources->getFile(object) && !resources->getFile(script)) {
+	if(!g_resources->getFile(("game" / classPath) + ".ftl")
+	   && !g_resources->getFile(object) && !g_resources->getFile(script)) {
 		return NULL;
 	}
 	
@@ -1714,12 +1714,12 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	res::path script = classPath + ".asl";
 	res::path icon = classPath + "[icon]";
 	
-	if(!resources->getFile(("game" / classPath) + ".ftl")
-	   && !resources->getFile(object) && !resources->getFile(script)) {
+	if(!g_resources->getFile(("game" / classPath) + ".ftl")
+	   && !g_resources->getFile(object) && !g_resources->getFile(script)) {
 		return NULL;
 	}
 	
-	if(!resources->getFile(res::path(icon).set_ext("bmp"))) {
+	if(!g_resources->getFile(res::path(icon).set_ext("bmp"))) {
 		return NULL;
 	}
 	

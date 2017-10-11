@@ -275,18 +275,18 @@ static bool getFontFile(res::path & result) {
 	
 	if(!config.language.empty()) {
 		result = "misc/arx_" + config.language + ".ttf";
-		if(resources->hasFile(result)) {
+		if(g_resources->hasFile(result)) {
 			return true;
 		}
 	}
 	
 	result = "misc/arx_default.ttf";
-	if(resources->hasFile(result)) {
+	if(g_resources->hasFile(result)) {
 		return true;
 	}
 	
 	result = "misc/arx.ttf";
-	if(resources->hasFile(result)) {
+	if(g_resources->hasFile(result)) {
 		return true;
 	}
 	

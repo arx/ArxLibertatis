@@ -134,7 +134,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	res::path filename = (res::path("game") / file).set_ext("ftl");
 	
 	// Checks for FTL file existence
-	PakFile * pf = resources->getFile(filename);
+	PakFile * pf = g_resources->getFile(filename);
 	if(!pf) {
 		return NULL;
 	}

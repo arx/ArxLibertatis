@@ -1576,7 +1576,7 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 	
 	LOAD_N_ERASE = false;
 	
-	if(!resources->getFile(levelFile)) {
+	if(!g_resources->getFile(levelFile)) {
 		LogError << "Unable To Find " << levelFile;
 		return 0;
 	}

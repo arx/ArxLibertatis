@@ -129,7 +129,7 @@ bool loadCinematic(Cinematic * c, const res::path & file) {
 	LogInfo << "Loading cinematic " << file;
 	
 	size_t size;
-	char * data = resources->readAlloc(file, size);
+	char * data = g_resources->readAlloc(file, size);
 	if(!data) {
 		LogError << "Cinematic " << file << " not found";
 		return false;

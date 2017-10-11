@@ -820,7 +820,7 @@ bool ArxGame::initGame()
 	GInput->setInvertMouseY(config.input.invertMouse);
 	GInput->setRawMouseInput(config.input.rawMouseInput);
 	
-	g_miniMap.firstInit(&player, resources, &entities);
+	g_miniMap.firstInit(&player, g_resources, &entities);
 	
 	player.m_torchColor = Color3f(1.f, 0.8f, 0.66666f);
 	LogDebug("InitializeDanae");
@@ -870,7 +870,7 @@ bool ArxGame::initGame()
 		GameFlow::setTransition(GameFlow::FirstLogo);
 	}
 	
-	PakReader::ReleaseFlags release = resources->getReleaseType();
+	PakReader::ReleaseFlags release = g_resources->getReleaseType();
 	if((release & PakReader::Demo) && (release & PakReader::FullGame)) {
 		LogWarning << "Mixed demo and full game data files!";
 		CrashHandler::setVariable("Data files", "mixed");
@@ -958,17 +958,17 @@ static void runDataFilesInstaller() {
 
 bool ArxGame::addPaks() {
 	
-	arx_assert(!resources);
+	arx_assert(!g_resources);
 	
-	resources = new PakReader;
+	g_resources = new PakReader;
 	
 	// Load required pak files
 	bool missing = false;
 	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
-		if(resources->addArchive(fs::paths.find(default_paks[i][0]))) {
+		if(g_resources->addArchive(fs::paths.find(default_paks[i][0]))) {
 			continue;
 		}
-		if(default_paks[i][1] && resources->addArchive(fs::paths.find(default_paks[i][1]))) {
+		if(default_paks[i][1] && g_resources->addArchive(fs::paths.find(default_paks[i][1]))) {
 			continue;
 		}
 		std::ostringstream oss;
@@ -1009,13 +1009,13 @@ bool ArxGame::addPaks() {
 	
 	// Load optional patch files
 	BOOST_REVERSE_FOREACH(const fs::path & base, fs::paths.data) {
-		resources->addFiles(base / "editor", "editor");
-		resources->addFiles(base / "game", "game");
-		resources->addFiles(base / "graph", "graph");
-		resources->addFiles(base / "localisation", "localisation");
-		resources->addFiles(base / "misc", "misc");
-		resources->addFiles(base / "sfx", "sfx");
-		resources->addFiles(base / "speech", "speech");
+		g_resources->addFiles(base / "editor", "editor");
+		g_resources->addFiles(base / "game", "game");
+		g_resources->addFiles(base / "graph", "graph");
+		g_resources->addFiles(base / "localisation", "localisation");
+		g_resources->addFiles(base / "misc", "misc");
+		g_resources->addFiles(base / "sfx", "sfx");
+		g_resources->addFiles(base / "speech", "speech");
 	}
 	
 	return true;
@@ -1126,7 +1126,7 @@ void ArxGame::shutdownGame() {
 	//object loaders from beforerun
 	gui::ReleaseNecklace();
 	
-	delete resources;
+	delete g_resources;
 	
 	// Current game
 	ARX_Changelevel_CurGame_Clear();

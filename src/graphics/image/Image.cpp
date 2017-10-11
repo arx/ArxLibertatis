@@ -160,7 +160,7 @@ bool Image::IsCompressed(Image::Format pFormat) {
 bool Image::LoadFromFile(const res::path & filename) {
 	
 	size_t size = 0;
-	void * pData = resources->readAlloc(filename, size);
+	void * pData = g_resources->readAlloc(filename, size);
 	
 	if(!pData) {
 		return false;

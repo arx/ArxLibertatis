@@ -689,4 +689,4 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 	return ret;
 }
 
-PakReader * resources;
+PakReader * g_resources;

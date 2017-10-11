@@ -966,7 +966,7 @@ bool FastSceneLoad(const res::path & partial_path) {
 		// Load the whole file
 		LogDebug("Loading " << file);
 		size_t size;
-		scoped_malloc<char> dat(resources->readAlloc(file, size));
+		scoped_malloc<char> dat(g_resources->readAlloc(file, size));
 		data = dat.get(), end = dat.get() + size;
 		// TODO use new[] instead of malloc so we can use (boost::)unique_ptr
 		LogDebug("FTS: read " << size << " bytes");

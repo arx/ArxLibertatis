@@ -110,6 +110,6 @@ private:
 
 DECLARE_FLAGS_OPERATORS(PakReader::ReleaseFlags)
 
-extern PakReader * resources;
+extern PakReader * g_resources;
 
 #endif // ARX_IO_RESOURCE_PAKREADER_H

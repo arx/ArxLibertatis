@@ -172,7 +172,7 @@ static long copy_io(SaveBlock & save, const std::string & name, Idents & idents,
 			continue;
 		}
 		
-		if(resources->getDirectory(dir / ident)) {
+		if(g_resources->getDirectory(dir / ident)) {
 			continue;
 		}
 		
@@ -412,12 +412,12 @@ int main_fix(SaveBlock & save, const std::vector<std::string> & args) {
 		return -1;
 	}
 	
-	resources = new PakReader();
+	g_resources = new PakReader();
 	
 	// TODO share this list with the game code
 	static const char * const default_paks[] = { "data.pak", "data2.pak" };
 	BOOST_FOREACH(const char * const filename, default_paks) {
-		if(resources->addArchive(fs::paths.find(filename))) {
+		if(g_resources->addArchive(fs::paths.find(filename))) {
 			continue;
 		}
 		LogError << "Missing required data file: \"" << filename << "\"";
@@ -425,7 +425,7 @@ int main_fix(SaveBlock & save, const std::vector<std::string> & args) {
 	}
 	BOOST_REVERSE_FOREACH(const fs::path & base, fs::paths.data) {
 		const char * dirname = "graph";
-		resources->addFiles(base / dirname, dirname);
+		g_resources->addFiles(base / dirname, dirname);
 	}
 	
 	if(!save.open(true)) {
