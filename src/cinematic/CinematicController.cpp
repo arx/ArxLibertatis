@@ -82,7 +82,7 @@ void cinematicKill() {
 	}
 }
 
-static Vec3f ePos;
+static Vec3f g_originalCameraPosition;
 
 void cinematicLaunchWaiting() {
 
@@ -94,7 +94,7 @@ void cinematicLaunchWaiting() {
 	LogDebug("LaunchWaitingCine " << CINE_PRELOAD);
 
 	if(ACTIVECAM) {
-		ePos = ACTIVECAM->orgTrans.pos;
+		g_originalCameraPosition = ACTIVECAM->orgTrans.pos;
 	}
 
 	cinematicKill();
@@ -171,8 +171,8 @@ void cinematicRender() {
 
 		// !! avant le cine end
 		if(ACTIVECAM) {
-			arx_assert(isallfinite(ePos));
-			ACTIVECAM->orgTrans.pos = ePos;
+			arx_assert(isallfinite(g_originalCameraPosition));
+			ACTIVECAM->orgTrans.pos = g_originalCameraPosition;
 		}
 
 		if(bWasBlocked) {
