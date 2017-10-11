@@ -284,8 +284,7 @@ void EERIE_PATHFINDER_Release() {
 		return;
 	}
 	
-	EERIE_PATHFINDER_Clear();
-	
+	g_pathFinderThread->clearQueue();
 	g_pathFinderThread->stop();
 	
 	delete g_pathFinderThread, g_pathFinderThread = NULL;
