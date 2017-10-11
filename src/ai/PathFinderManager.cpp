@@ -75,6 +75,7 @@ static const unsigned long PATHFINDER_UPDATE_INTERVAL = 10;
 
 class PathFinderThread : public StoppableThread {
 	
+	Lock m_mutex;
 	std::list<PATHFINDER_REQUEST> m_queue;
 	volatile bool m_busy;
 	
@@ -86,11 +87,21 @@ public:
 	
 	PathFinderThread() : m_busy(false) { }
 	
-	Lock m_mutex;
-	
 	void queueRequest(const PATHFINDER_REQUEST & request);
-	size_t queueSize() { return m_queue.size(); }
-	void clearQueue() { m_queue.clear(); }
+	
+	size_t queueSize() {
+		
+		Autolock lock(&m_mutex);
+		
+		return m_queue.size();
+	}
+	
+	void clearQueue() {
+		
+		Autolock lock(&m_mutex);
+		
+		m_queue.clear();
+	}
 	
 	bool isBusy() {
 		return m_busy;
@@ -142,8 +153,6 @@ long EERIE_PATHFINDER_Get_Queued_Number() {
 		return 0;
 	}
 	
-	Autolock lock(&g_pathFinderThread->m_mutex);
-	
 	return g_pathFinderThread->queueSize();
 }
 
@@ -161,8 +170,6 @@ void EERIE_PATHFINDER_Clear() {
 	if(!g_pathFinderThread) {
 		return;
 	}
-	
-	Autolock lock(&g_pathFinderThread->m_mutex);
 	
 	g_pathFinderThread->clearQueue();
 }
