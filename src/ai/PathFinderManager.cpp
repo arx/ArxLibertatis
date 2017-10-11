@@ -107,8 +107,6 @@ public:
 	
 };
 
-static PathFinderThread * g_pathFinderThread = NULL;
-
 void PathFinderThread::queueRequest(const PATHFINDER_REQUEST & request) {
 	
 	Autolock lock(&m_mutex);
@@ -133,46 +131,6 @@ void PathFinderThread::queueRequest(const PATHFINDER_REQUEST & request) {
 	
 }
 
-// Adds a Pathfinder Search Element to the pathfinder queue.
-bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & request) {
-	
-	if(!g_pathFinderThread) {
-		return false;
-	}
-	
-	g_pathFinderThread->queueRequest(request);
-	
-	return true;
-}
-
-long EERIE_PATHFINDER_Get_Queued_Number() {
-	
-	if(!g_pathFinderThread) {
-		return 0;
-	}
-	
-	return g_pathFinderThread->queueSize();
-}
-
-bool EERIE_PATHFINDER_Is_Busy() {
-	
-	if(!g_pathFinderThread) {
-		return false;
-	}
-	
-	return g_pathFinderThread->isBusy();
-}
-
-void EERIE_PATHFINDER_Clear() {
-	
-	if(!g_pathFinderThread) {
-		return;
-	}
-	
-	g_pathFinderThread->clearQueue();
-}
-
-// Pathfinder Thread
 void PathFinderThread::run() {
 	
 	BackgroundData * eb = ACTIVEBKG;
@@ -252,6 +210,47 @@ void PathFinderThread::run() {
 		
 	}
 	
+}
+
+static PathFinderThread * g_pathFinderThread = NULL;
+
+// Adds a Pathfinder Search Element to the pathfinder queue.
+bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & request) {
+	
+	if(!g_pathFinderThread) {
+		return false;
+	}
+	
+	g_pathFinderThread->queueRequest(request);
+	
+	return true;
+}
+
+long EERIE_PATHFINDER_Get_Queued_Number() {
+	
+	if(!g_pathFinderThread) {
+		return 0;
+	}
+	
+	return g_pathFinderThread->queueSize();
+}
+
+bool EERIE_PATHFINDER_Is_Busy() {
+	
+	if(!g_pathFinderThread) {
+		return false;
+	}
+	
+	return g_pathFinderThread->isBusy();
+}
+
+void EERIE_PATHFINDER_Clear() {
+	
+	if(!g_pathFinderThread) {
+		return;
+	}
+	
+	g_pathFinderThread->clearQueue();
 }
 
 void EERIE_PATHFINDER_Release() {
