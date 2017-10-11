@@ -202,13 +202,9 @@ void PathFinderThread::run() {
 		
 		ARX_PROFILE_FUNC();
 		
-		float heuristic = PATHFINDER_HEURISTIC_MAX;
-		bool stealth = request.ioid->_npcdata->behavior.hasAll(BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE);
-		
 		pathfinder.setCylinder(request.ioid->physics.cyl.radius, request.ioid->physics.cyl.height);
 		
-		PathFinder::Result result;
-		
+		float heuristic = PATHFINDER_HEURISTIC_MAX;
 		if(request.ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_GO_HOME)) {
 			
 			float distance = fdist(ACTIVEBKG->anchors[request.from].pos, ACTIVEBKG->anchors[request.to].pos);
@@ -216,8 +212,6 @@ void PathFinderThread::run() {
 				heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
 			}
 			pathfinder.setHeuristic(heuristic);
-			
-			pathfinder.move(request.from, request.to, result, stealth);
 			
 		} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 			
@@ -227,8 +221,6 @@ void PathFinderThread::run() {
 			}
 			pathfinder.setHeuristic(heuristic);
 			
-			pathfinder.wanderAround(request.from, request.ioid->_npcdata->behavior_param, result, stealth);
-			
 		} else if(request.ioid->_npcdata->behavior & (BEHAVIOUR_FLEE | BEHAVIOUR_HIDE)) {
 			
 			if(request.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX) {
@@ -237,9 +229,6 @@ void PathFinderThread::run() {
 			}
 			pathfinder.setHeuristic(heuristic);
 			
-			float safeDistance = request.ioid->_npcdata->behavior_param + fdist(request.ioid->target, request.ioid->pos);
-			pathfinder.flee(request.from, request.ioid->target, safeDistance, result, stealth);
-			
 		} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
 			
 			float distance = fdist(request.ioid->pos, request.ioid->target);
@@ -247,6 +236,26 @@ void PathFinderThread::run() {
 				heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
 			}
 			pathfinder.setHeuristic(heuristic);
+			
+		}
+		
+		bool stealth = request.ioid->_npcdata->behavior.hasAll(BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE);
+		
+		PathFinder::Result result;
+		if(request.ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_GO_HOME)) {
+			
+			pathfinder.move(request.from, request.to, result, stealth);
+			
+		} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
+			
+			pathfinder.wanderAround(request.from, request.ioid->_npcdata->behavior_param, result, stealth);
+			
+		} else if(request.ioid->_npcdata->behavior & (BEHAVIOUR_FLEE | BEHAVIOUR_HIDE)) {
+			
+			float safeDistance = request.ioid->_npcdata->behavior_param + fdist(request.ioid->target, request.ioid->pos);
+			pathfinder.flee(request.from, request.ioid->target, safeDistance, result, stealth);
+			
+		} else if(request.ioid->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
 			
 			float radius = request.ioid->_npcdata->behavior_param;
 			pathfinder.lookFor(request.from, request.ioid->target, radius, result, stealth);
