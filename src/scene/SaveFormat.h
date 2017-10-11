@@ -1054,7 +1054,7 @@ struct SavedCamera {
 	
 	s32 clip3D;
 	s32 type; //TODO Remove
-	s32 bkgcolor; // TODO Remove
+	u32 bkgcolor; // TODO Remove
 	s32 nbdrawn; //TODO Remove
 	f32 cdepth;
 	
