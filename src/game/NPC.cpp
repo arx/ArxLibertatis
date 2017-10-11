@@ -705,8 +705,6 @@ wander:
 			PATHFINDER_REQUEST tpr;
 			tpr.from = from;
 			tpr.to = to;
-			tpr.returnlist = &io->_npcdata->pathfind.list;
-			tpr.returnnumber = &io->_npcdata->pathfind.listnb;
 			tpr.entity = io;
 
 			if(EERIE_PATHFINDER_Add_To_Queue(tpr))
