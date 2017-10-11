@@ -515,7 +515,7 @@ static void ReleaseInfosCombine() {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		Entity * io = inventory[bag][x][y].io;
+		Entity * io = g_inventory[bag][x][y].io;
 
 		if(io)
 			io->ioflags &= ~IO_CAN_COMBINE;
@@ -799,7 +799,7 @@ static void GetInfosCombine() {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		Entity * io = inventory[bag][x][y].io;
+		Entity * io = g_inventory[bag][x][y].io;
 		GetInfosCombineWithIO(COMBINE, io);
 	}
 

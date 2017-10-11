@@ -82,7 +82,7 @@ const size_t INVENTORY_X = 16;
 const size_t INVENTORY_Y = 3;
 
 // TODO this should be completely wrapped in PlayerInventory!
-extern INVENTORY_SLOT inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
+extern INVENTORY_SLOT g_inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 
 extern INVENTORY_DATA * SecondaryInventory;
 extern INVENTORY_DATA * TSecondaryInventory;
@@ -173,7 +173,7 @@ public:
 	static Pos remove(const Entity * item);
 	
 	static Entity * get(const Pos & pos) {
-		return pos ? inventory[pos.bag][pos.x][pos.y].io : NULL;
+		return pos ? g_inventory[pos.bag][pos.x][pos.y].io : NULL;
 	}
 	
 };

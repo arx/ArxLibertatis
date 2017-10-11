@@ -1954,7 +1954,7 @@ void ManageCasseDArme(Entity * io) {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		Entity * bagEntity = inventory[bag][x][y].io;
+		Entity * bagEntity = g_inventory[bag][x][y].io;
 		
 		if(bagEntity && bagEntity != io
 		   && (bagEntity->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW))

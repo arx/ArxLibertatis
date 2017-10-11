@@ -688,8 +688,8 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	for(size_t bag = 0; bag < INVENTORY_BAGS; bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		storeIdString(asp->id_inventory[bag][x][y], inventory[bag][x][y].io);
-		asp->inventory_show[bag][x][y] = inventory[bag][x][y].show;
+		storeIdString(asp->id_inventory[bag][x][y], g_inventory[bag][x][y].io);
+		asp->inventory_show[bag][x][y] = g_inventory[bag][x][y].show;
 	}
 	
     g_miniMap.save(asp->minimap, SAVED_MAX_MINIMAPS);
@@ -1776,8 +1776,8 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	for(size_t bag = 0; bag < SAVED_INVENTORY_BAGS; bag++)
 	for(size_t y = 0; y < SAVED_INVENTORY_Y; y++)
 	for(size_t x = 0; x < SAVED_INVENTORY_X; x++) {
-		inventory[bag][x][y].io = ConvertToValidIO(asp->id_inventory[bag][x][y]);
-		inventory[bag][x][y].show = asp->inventory_show[bag][x][y] != 0;
+		g_inventory[bag][x][y].io = ConvertToValidIO(asp->id_inventory[bag][x][y]);
+		g_inventory[bag][x][y].show = asp->inventory_show[bag][x][y] != 0;
 	}
 	
 	if(size < pos + (asp->nb_PlayerQuest * SAVED_QUEST_SLOT_SIZE)) {

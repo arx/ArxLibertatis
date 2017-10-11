@@ -93,7 +93,7 @@ void ARX_INVENTORY_ReOrder();
 
 //------------------------------------------------------------------------------------
 //CInventory Inventory;
-INVENTORY_SLOT inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
+INVENTORY_SLOT g_inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 INVENTORY_DATA * SecondaryInventory = NULL;
 Entity * DRAGINTER = NULL;
 Entity * ioSteal = NULL;
@@ -139,7 +139,7 @@ void CleanInventory() {
 	for(size_t bag = 0; bag < INVENTORY_BAGS; bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		INVENTORY_SLOT & slot = inventory[bag][x][y];
+		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 		
 		slot.io	 = NULL;
 		slot.show = true;
@@ -604,7 +604,7 @@ public:
 };
 
 Inventory<INVENTORY_BAGS, INVENTORY_X, INVENTORY_Y> getPlayerInventory() {
-	return Inventory<INVENTORY_BAGS, INVENTORY_X, INVENTORY_Y>(0, inventory, player.bag,
+	return Inventory<INVENTORY_BAGS, INVENTORY_X, INVENTORY_Y>(0, g_inventory, player.bag,
 	                                              INVENTORY_X, INVENTORY_Y);
 }
 
@@ -934,7 +934,7 @@ Vec3f GetItemWorldPosition(const Entity * io) {
 		for(size_t bag = 0; bag < size_t(player.bag); bag++)
 		for(size_t y = 0; y < INVENTORY_Y; y++)
 		for(size_t x = 0; x < INVENTORY_X; x++) {
-			const INVENTORY_SLOT & slot = inventory[bag][x][y];
+			const INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 			
 			if(slot.io == io) {
 				return player.pos + Vec3f(0.f, 80.f, 0.f);
@@ -988,7 +988,7 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
 		for(size_t bag = 0; bag < size_t(player.bag); bag++)
 		for(size_t y = 0; y < INVENTORY_Y; y++)
 		for(size_t x = 0; x < INVENTORY_X; x++) {
-			const INVENTORY_SLOT & slot = inventory[bag][x][y];
+			const INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 			
 			if(slot.io == io) {
 				// in player inventory
@@ -1115,7 +1115,7 @@ bool IsInPlayerInventory(Entity * io) {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		const INVENTORY_SLOT & slot = inventory[bag][x][y];
+		const INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 		
 		if(slot.io == io) {
 			return true;
@@ -1149,7 +1149,7 @@ void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lC
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		const INVENTORY_SLOT & slot = inventory[bag][x][y];
+		const INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 		
 		if(!slot.io || !slot.io->obj)
 			continue;
@@ -1178,7 +1178,7 @@ Entity * ARX_INVENTORY_GetTorchLowestDurability() {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		const INVENTORY_SLOT & slot = inventory[bag][x][y];
+		const INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 		
 		if(!slot.io || slot.io->locname != "description_torch")
 			continue;
@@ -1201,7 +1201,7 @@ long Player_Arrow_Count() {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		INVENTORY_SLOT & slot = inventory[bag][x][y];
+		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 		
 		if(slot.io && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
 			count += checked_range_cast<long>(slot.io->durability);
@@ -1218,7 +1218,7 @@ Entity * Player_Arrow_Count_Decrease() {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		INVENTORY_SLOT & slot = inventory[bag][x][y];
+		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 		
 		if(slot.io && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
 			if(!io || io->durability > slot.io->durability)
@@ -1246,7 +1246,7 @@ void ARX_INVENTORY_IdentifyAll() {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		Entity * io = inventory[bag][x][y].io;
+		Entity * io = g_inventory[bag][x][y].io;
 		
 		ARX_INVENTORY_IdentifyIO(io);
 	}
