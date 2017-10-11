@@ -73,11 +73,10 @@ static const float PATHFINDER_DISTANCE_MAX = 5000.0f;
 // Pathfinder Definitions
 static const unsigned long PATHFINDER_UPDATE_INTERVAL = 10;
 
-static long PATHFINDER_WORKING = 0;
-
 class PathFinderThread : public StoppableThread {
 	
 	std::list<PATHFINDER_REQUEST> m_queue;
+	volatile bool m_busy;
 	
 	void run();
 	
@@ -85,11 +84,17 @@ class PathFinderThread : public StoppableThread {
 	
 public:
 	
+	PathFinderThread() : m_busy(false) { }
+	
 	Lock m_mutex;
 	
 	void queueRequest(const PATHFINDER_REQUEST & request);
 	size_t queueSize() { return m_queue.size(); }
 	void clearQueue() { m_queue.clear(); }
+	
+	bool isBusy() {
+		return m_busy;
+	}
 	
 };
 
@@ -148,7 +153,7 @@ bool EERIE_PATHFINDER_Is_Busy() {
 		return false;
 	}
 	
-	return PATHFINDER_WORKING != 0;
+	return g_pathFinderThread->isBusy();
 }
 
 void EERIE_PATHFINDER_Clear() {
@@ -191,15 +196,13 @@ void PathFinderThread::run() {
 		
 		Autolock lock(&m_mutex);
 		
-		PATHFINDER_WORKING = 1;
+		m_busy = true;
 
 		PATHFINDER_REQUEST curpr;
 		if(getNextRequest(curpr)) {
 			
 			ARX_PROFILE_FUNC();
 			
-			PATHFINDER_WORKING = 2;
-
 			if(curpr.ioid && curpr.ioid->_npcdata) {
 				float heuristic(PATHFINDER_HEURISTIC_MAX);
 
@@ -259,14 +262,12 @@ void PathFinderThread::run() {
 			}
 		}
 
-		PATHFINDER_WORKING = 0;
+		m_busy = false;
 		
 	}
 
 	// fix leaks memory but freeze characters
 	// pathfinder.Clean();
-
-	PATHFINDER_WORKING = 0;
 	
 }
 
