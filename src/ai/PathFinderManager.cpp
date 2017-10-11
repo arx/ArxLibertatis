@@ -87,7 +87,6 @@ static PathFinderThread * g_pathFinderThread = NULL;
 struct PATHFINDER_QUEUE_ELEMENT {
 	PATHFINDER_REQUEST req;
 	PATHFINDER_QUEUE_ELEMENT * next;
-	long valid;
 };
 
 static PATHFINDER_QUEUE_ELEMENT * pathfinder_queue_start = NULL;
@@ -103,7 +102,7 @@ static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(Entity * io) {
 
 	while(cur) {
 		if(cur->req.ioid == io)
-			return cur->valid ? cur : NULL;
+			return cur;
 		
 		cur = cur->next;
 	}
@@ -129,10 +128,8 @@ bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & req) {
 	// processed.
 	temp = PATHFINDER_Find_ioid(req.ioid);
 
-	if(temp && temp->valid && temp != pathfinder_queue_start) {
-		temp->valid = 0;
+	if(temp && temp != pathfinder_queue_start) {
 		temp->req = req;
-		temp->valid = 1;
 		return true;
 	}
 
@@ -145,7 +142,6 @@ bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & req) {
 
 	// Fill this New element with new request
 	temp->req = req;
-	temp->valid = 1;
 
 	// No queue start ? then this element becomes the queue start
 	if(!cur) {
@@ -218,7 +214,7 @@ void EERIE_PATHFINDER_Clear() {
 // Retrieves & Removes next Pathfind request from queue
 static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST & request) {
 	
-	if(!pathfinder_queue_start || !pathfinder_queue_start->valid) {
+	if(!pathfinder_queue_start) {
 		return false;
 	}
 	
