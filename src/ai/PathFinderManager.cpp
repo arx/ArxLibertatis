@@ -341,13 +341,9 @@ void EERIE_PATHFINDER_Release() {
 		return;
 	}
 	
-	g_pathFinderThread->m_mutex.lock();
-	
-	EERIE_PATHFINDER_Clear_Private();
+	EERIE_PATHFINDER_Clear();
 	
 	g_pathFinderThread->stop();
-	
-	g_pathFinderThread->m_mutex.unlock();
 	
 	delete g_pathFinderThread, g_pathFinderThread = NULL;
 }
