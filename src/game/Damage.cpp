@@ -108,12 +108,12 @@ struct DAMAGE_INFO {
 };
 
 const size_t MAX_DAMAGES = 200;
-static DAMAGE_INFO	damages[MAX_DAMAGES];
+static DAMAGE_INFO g_damages[MAX_DAMAGES];
 
 DamageHandle DamageCreate(const DamageParameters & params) {
 	for(size_t i = 0; i < MAX_DAMAGES; i++) {
-		if(!damages[i].exist) {
-			DAMAGE_INFO & damage = damages[i];
+		if(!g_damages[i].exist) {
+			DAMAGE_INFO & damage = g_damages[i];
 			damage.params = params;
 			damage.start_time = arxtime.now();
 			damage.lastupd = ArxInstant_ZERO;
@@ -127,7 +127,7 @@ DamageHandle DamageCreate(const DamageParameters & params) {
 
 void DamageRequestEnd(DamageHandle handle) {
 	if(handle.handleData() >= 0) {
-		damages[handle.handleData()].exist = 0;
+		g_damages[handle.handleData()].exist = 0;
 	}
 }
 
@@ -868,7 +868,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 
 void ARX_DAMAGES_Reset()
 {
-	memset(damages, 0, sizeof(DAMAGE_INFO)*MAX_DAMAGES);
+	memset(g_damages, 0, sizeof(DAMAGE_INFO)*MAX_DAMAGES);
 }
 
 extern TextureContainer * TC_fire2;
@@ -925,7 +925,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 	
 	ARX_PROFILE_FUNC();
 	
-	DAMAGE_INFO & damage = damages[j.handleData()];
+	DAMAGE_INFO & damage = g_damages[j.handleData()];
 	
 	if(!damage.exist) {
 		return;
@@ -1503,10 +1503,10 @@ float ARX_DAMAGES_ComputeRepairPrice(const Entity * torepair, const Entity * bla
 void ARX_DAMAGES_DrawDebug() {
 	
 	for(size_t i = 0; i < MAX_DAMAGES; i++) {
-		if(!damages[i].exist)
+		if(!g_damages[i].exist)
 			continue;
 		
-		DAMAGE_INFO & d = damages[i];
+		DAMAGE_INFO & d = g_damages[i];
 		
 		drawLineSphere(Sphere(d.params.pos, d.params.radius), Color::red);
 	}
