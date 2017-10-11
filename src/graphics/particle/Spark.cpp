@@ -24,7 +24,7 @@
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "graphics/Color.h"
-#include "graphics/GraphicsModes.h"
+#include "graphics/GlobalFog.h"
 #include "graphics/Math.h"
 #include "graphics/RenderBatcher.h"
 #include "math/RandomVector.h"

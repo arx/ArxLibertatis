@@ -23,7 +23,7 @@
 #include "core/GameTime.h"
 #include "game/Player.h"
 #include "graphics/Draw.h"
-#include "graphics/GraphicsModes.h"
+#include "graphics/GlobalFog.h"
 #include "graphics/Raycast.h"
 #include "graphics/Renderer.h"
 #include "graphics/effects/Fade.h"
