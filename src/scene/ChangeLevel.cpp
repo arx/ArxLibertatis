@@ -445,7 +445,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	asi.nb_lights     = 0;
 	asi.gmods_stacked = GLOBAL_MODS();
 	asi.gmods_stacked.zclip = 6400.f;
-	asi.gmods_desired = desired;
+	asi.gmods_desired = g_desiredFogParameters;
 	asi.gmods_current = g_currentFogParameters;
 	
 	for(size_t i = 1; i < entities.size(); i++) {
@@ -1609,7 +1609,7 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 	ARX_INTERFACE_Reset();
 	EERIE_ANIMMANAGER_PurgeUnused();
 	
-	desired = asi->gmods_desired;
+	g_desiredFogParameters = asi->gmods_desired;
 	g_currentFogParameters = asi->gmods_current;
 	GMOD_RESET = false;
 	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
