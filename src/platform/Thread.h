@@ -122,20 +122,20 @@ class StoppableThread : public Thread {
 	
 private:
 	
-	bool stopRequested;
+	volatile bool m_stopRequested;
 	
 public:
 	
-	StoppableThread() : stopRequested(false) { }
+	StoppableThread() : m_stopRequested(false) { }
 	
 	void stop(Priority priority = Highest) {
-		stopRequested = true;
+		m_stopRequested = true;
 		setPriority(priority);
 		waitForCompletion();
 	}
 	
 	bool isStopRequested() {
-		return stopRequested;
+		return m_stopRequested;
 	}
 	
 };
