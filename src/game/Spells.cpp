@@ -640,7 +640,7 @@ void ARX_SPELLS_ManageMagic() {
 	}
 }
 
-static bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
+static bool CanPayMana(SpellBase * spell, float cost) {
 	
 	if(spell->m_flags & SPELLCAST_FLAG_NOMANA) {
 		return true;
@@ -648,11 +648,6 @@ static bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
 	if(spell->m_caster == EntityHandle_Player) {
 		if(player.manaPool.current < cost) {
 			ARX_SPELLS_Fizzle(spell);
-			
-			if(_bSound) {
-				ARX_SPEECH_Add(getLocalised("player_cantcast"));
-				ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
-			}
 			return false;
 		}
 		
@@ -1074,6 +1069,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	spell->m_launchDuration = duration;
 	
 	if(!CanPayMana(spell, ARX_SPELLS_GetManaCost(typ, spell->m_level))) {
+		if(spell->m_caster == EntityHandle_Player) {
+			ARX_SPEECH_Add(getLocalised("player_cantcast"));
+			ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
+		}
 		delete spell;
 		return false;
 	}
@@ -1120,7 +1119,7 @@ void ARX_SPELLS_Update() {
 			spells.endSpell(spell);
 		}
 		
-		if(!CanPayMana(spell, spell->m_fManaCostPerSecond * g_framedelay * (1.f/1000), false)) {
+		if(!CanPayMana(spell, spell->m_fManaCostPerSecond * g_framedelay * (1.f/1000))) {
 			ARX_SPELLS_Fizzle(spell);
 		}
 		
