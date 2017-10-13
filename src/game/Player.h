@@ -51,6 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
+#include <boost/array.hpp>
+
 #include "game/Entity.h"
 #include "game/Spells.h"
 #include "game/GameTypes.h"
@@ -321,7 +323,7 @@ struct ARXCHARACTER {
 	}
 	
 	
-	TextureContainer * heads[5];
+	boost::array<TextureContainer *, 5> heads;
 	float poison;
 	float hunger;
 	PlayerFlags playerflags;
@@ -374,9 +376,7 @@ struct ARXCHARACTER {
 		, m_cheatQuickGenButtonClickCount(0)
 		, m_cheatPnuxActive(0)
 	{
-		for(size_t i = 0; i < ARRAY_SIZE(heads); i++) {
-			heads[i] = NULL;
-		}
+		heads.fill(NULL);
 	}
 	
 	static float baseRadius() { return 52.f; }
