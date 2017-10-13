@@ -1120,9 +1120,7 @@ void ARX_SPELLS_Update() {
 			spells.endSpell(spell);
 		}
 		
-		if(   spell->m_hasDuration
-		   && !CanPayMana(spell, spell->m_fManaCostPerSecond * g_framedelay * (1.f/1000), false)
-		) {
+		if(!CanPayMana(spell, spell->m_fManaCostPerSecond * g_framedelay * (1.f/1000), false)) {
 			ARX_SPELLS_Fizzle(spell);
 		}
 		
