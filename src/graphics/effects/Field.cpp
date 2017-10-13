@@ -173,10 +173,6 @@ void CCreateField::Render()
 	if(!VisibleSphere(Sphere(eSrc - Vec3f(0.f, 120.f, 0.f), 400.f)))
 		return;
 	
-	falpha = 1.f - (m_elapsed / m_duration);
-
-	if (falpha > 1.f) falpha = 1.f;
-	
 	//-------------------------------------------------------------------------
 	// rendu
 	if(youp) {
