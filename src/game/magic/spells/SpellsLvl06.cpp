@@ -321,7 +321,6 @@ void CreateFieldSpell::Launch() {
 		SendInitScriptEvent(io);
 		
 		m_field.Create(target);
-		m_field.SetDuration(m_duration);
 		
 		EERIE_LIGHT * light = dynLightCreate(m_field.lLightId);
 		if(light) {
@@ -331,8 +330,6 @@ void CreateFieldSpell::Launch() {
 			light->rgb = Color3f(0.8f, 0.0f, 1.0f);
 			light->pos = m_field.eSrc - Vec3f(0.f, 150.f, 0.f);
 		}
-		
-		m_duration = m_field.m_duration;
 		
 		if(m_flags & SPELLCAST_FLAG_RESTORE) {
 			//fast forward the field's animation so that players don't see it
