@@ -430,7 +430,7 @@ void IceProjectileSpell::Launch() {
 	fColor = 1.f;
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
-	int iMax = (int)(30 + m_level * 5.2f);
+	int iMax = int(30 + m_level * 5.2f);
 	
 	float fspelldist = glm::clamp(float(iMax * 15), 200.0f, 450.0f);
 	
@@ -515,7 +515,7 @@ void IceProjectileSpell::Update() {
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Screen);
 	
-	int iMax = (int)((iNumber * 2) * (m_elapsed / m_duration));
+	int iMax = int((iNumber * 2) * (m_elapsed / m_duration));
 
 	if(iMax > iNumber) {
 		iMax = iNumber;
