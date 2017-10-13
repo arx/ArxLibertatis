@@ -403,7 +403,6 @@ void CreateFoodSpell::Update() {
 IceProjectileSpell::IceProjectileSpell()
 	: SpellBase()
 	, iNumber(0)
-	, fColor(0)
 	, tex_p1(NULL)
 	, tex_p2(NULL)
 { }
@@ -427,7 +426,6 @@ void IceProjectileSpell::Launch() {
 	target += angleToVectorXZ(angleb) * 150.0f;
 	
 	
-	fColor = 1.f;
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 	int iMax = int(30 + m_level * 5.2f);
@@ -502,6 +500,7 @@ void IceProjectileSpell::End() {
 
 void IceProjectileSpell::Update() {
 	
+	float fColor = 1.f;
 	if(m_duration - m_elapsed < ArxDurationMs(1000)) {
 		fColor = (m_duration - m_elapsed) / ArxDurationMs(1000);
 		

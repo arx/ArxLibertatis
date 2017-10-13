@@ -96,7 +96,6 @@ public:
 	
 private:
 	int iNumber;
-	float fColor;
 	TextureContainer * tex_p1;
 	TextureContainer * tex_p2;
 	
