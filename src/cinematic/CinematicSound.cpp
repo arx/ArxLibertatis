@@ -45,6 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <iomanip>
 
+#include <boost/array.hpp>
+
 #include "audio/AudioTypes.h"
 #include "graphics/Math.h"
 #include "io/log/Logger.h"
@@ -67,13 +69,13 @@ struct CinematicSound {
 	
 };
 
-static CinematicSound TabSound[256];
+static boost::array<CinematicSound, 256> TabSound;
 
 } // anonymous namespace
 
 static CinematicSound * GetFreeSound() {
 	
-	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
+	for(size_t i = 0; i < TabSound.size(); i++) {
 		if(!TabSound[i].exists) {
 			return &TabSound[i];
 		}
@@ -97,7 +99,7 @@ static bool DeleteFreeSound(int num) {
 
 void DeleteAllSound(void) {
 	
-	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
+	for(size_t i = 0; i < TabSound.size(); i++) {
 		DeleteFreeSound(i);
 	}
 }
@@ -117,7 +119,7 @@ void AddSoundToList(const res::path & path, bool isSpeech) {
 
 bool PlaySoundKeyFramer(int index) {
 	
-	if(index < 0 || size_t(index) >= ARRAY_SIZE(TabSound) || !TabSound[index].exists) {
+	if(index < 0 || size_t(index) >= TabSound.size() || !TabSound[index].exists) {
 		return false;
 	}
 	
@@ -132,7 +134,7 @@ bool PlaySoundKeyFramer(int index) {
 
 void StopSoundKeyFramer() {
 	
-	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
+	for(size_t i = 0; i < TabSound.size(); i++) {
 		if(TabSound[i].exists && TabSound[i].handle != audio::INVALID_ID) {
 			ARX_SOUND_Stop(TabSound[i].handle);
 			TabSound[i].handle = audio::INVALID_ID;
