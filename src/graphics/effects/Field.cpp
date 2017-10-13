@@ -74,15 +74,10 @@ CCreateField::CCreateField()
 	, fglow(0.f)
 	, falpha(0.f)
 {
-	SetDuration(ArxDurationMs(2000));
-	m_elapsed = m_duration + ArxDurationMs(1);
-	
 	tex_jelly = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu3");
 }
 
 void CCreateField::Create(Vec3f aeSrc) {
-	
-	SetDuration(m_duration);
 	
 	eSrc = aeSrc;
 	ysize = 0.1f;
