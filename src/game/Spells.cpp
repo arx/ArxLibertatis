@@ -1111,8 +1111,6 @@ void ARX_SPELLS_Update() {
 	
 	ARX_PROFILE_FUNC();
 	
-	const ArxInstant now = arxtime.now();
-	
 	for(size_t u = 0; u < MAX_SPELLS; u++) {
 		SpellBase * spell = spells[SpellHandle(u)];
 		if(!spell)
