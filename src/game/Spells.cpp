@@ -646,7 +646,6 @@ static bool CanPayMana(SpellBase * spell, float cost) {
 	}
 	if(spell->m_caster == EntityHandle_Player) {
 		if(player.manaPool.current < cost) {
-			ARX_SPELLS_Fizzle(spell);
 			return false;
 		}
 		
@@ -655,7 +654,6 @@ static bool CanPayMana(SpellBase * spell, float cost) {
 	} else if(ValidIONum(spell->m_caster)) {
 		if(entities[spell->m_caster]->ioflags & IO_NPC) {
 			if(entities[spell->m_caster]->_npcdata->manaPool.current < cost) {
-				ARX_SPELLS_Fizzle(spell);
 				return false;
 			}
 			entities[spell->m_caster]->_npcdata->manaPool.current -= cost;
@@ -1072,6 +1070,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 			ARX_SPEECH_Add(getLocalised("player_cantcast"));
 			ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
 		}
+		ARX_SPELLS_Fizzle(spell);
 		delete spell;
 		return false;
 	}
