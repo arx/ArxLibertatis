@@ -75,6 +75,7 @@ void InvisibilitySpell::Update() {
 			if(!(target->gameFlags & GFLAG_INVISIBILITY)) {
 				m_targets.clear();
 				ARX_SPELLS_Fizzle(this);
+				spells.endSpell(this);
 			}
 		}
 	}
