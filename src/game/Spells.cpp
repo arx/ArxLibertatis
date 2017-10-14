@@ -475,8 +475,6 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 //! Plays the sound of Fizzling spell
 void ARX_SPELLS_Fizzle(SpellBase * spell) {
 	
-	spells.endSpell(spell);
-	
 	if(ValidIONum(spell->m_caster)) {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spell->m_caster_pos);
 	}
@@ -1119,6 +1117,7 @@ void ARX_SPELLS_Update() {
 		
 		if(!CanPayMana(spell, spell->m_fManaCostPerSecond * g_framedelay * (1.f/1000))) {
 			ARX_SPELLS_Fizzle(spell);
+			spells.endSpell(spell);
 		}
 		
 		spell->m_elapsed += g_framedelay2;
