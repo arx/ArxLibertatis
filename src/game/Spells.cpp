@@ -1074,7 +1074,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	}
 	
 	if(!GLOBAL_MAGIC_MODE) {
-		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+		ARX_SPELLS_Fizzle(spell);
 		delete spell;
 		return false;
 	}
