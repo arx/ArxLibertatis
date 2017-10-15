@@ -117,7 +117,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 	UseRenderState state(render3D().depthTest(false).fog(false));
 	
 	Vec3f pos = Vec3f(0.f, 0.f, 2100.f);
-	Anglef angle = Anglef::ZERO;
 	
 	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
 	
@@ -156,6 +155,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 		PrepareCamera(&bookcam, g_size);
 		
 		if(player.hasRune((Rune)i)) {
+			Anglef angle = Anglef::ZERO;
 			
 			if(rune->angle.getYaw() != 0.f) {
 				if(rune->angle.getYaw() > 300.f)
