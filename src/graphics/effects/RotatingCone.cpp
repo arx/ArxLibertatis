@@ -26,8 +26,8 @@
 
 RotatingCone::RotatingCone()
 	: m_def(16)
-	, ulCurrentTime(0)
-	, m_currdurationang(0)
+	, ulCurrentTime(ArxDuration_ZERO)
+	, m_currdurationang(ArxDuration_ZERO)
 	, m_ang(0.f)
 	, m_coneScale(0.f)
 	, m_tsouffle(NULL)
@@ -68,18 +68,18 @@ void RotatingCone::Init(float rbase, float rhaut, float hauteur) {
 	m_tsouffle = TextureContainer::Load("graph/obj3d/textures/(fx)_sebsouffle");
 }
 
-void RotatingCone::Update(float timeDelta, Vec3f pos, float coneScale) {
+void RotatingCone::Update(ArxDuration timeDelta, Vec3f pos, float coneScale) {
 	
-	m_currdurationang += int(timeDelta);
-	ulCurrentTime += static_cast<unsigned long>(timeDelta);
+	m_currdurationang += timeDelta;
+	ulCurrentTime += timeDelta;
 	
 	m_pos = pos;
 	m_coneScale = coneScale;
 	
-	m_ang = (float)m_currdurationang / 1000.f;
+	m_ang = m_currdurationang / ArxDurationMs(1000);
 	
 	if(m_ang > 1.f) {
-		m_currdurationang = 0;
+		m_currdurationang = ArxDuration_ZERO;
 		m_ang = 1.f;
 	}
 }
