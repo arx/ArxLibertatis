@@ -137,7 +137,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	
 	projectile.m_trail = new ArrowTrail();
 	projectile.m_trail->SetNextPosition(projectile.position);
-	projectile.m_trail->Update(g_framedelay);
+	projectile.m_trail->Update(g_framedelay2);
 	
 	projectile.creation_time = arxtime.now();
 	projectile.flags |= ATO_EXIST | ATO_MOVING;
@@ -402,7 +402,7 @@ void ARX_THROWN_OBJECT_Manage(ArxDuration timeDelta)
 
 		if(projectile.m_trail) {
 			projectile.m_trail->SetNextPosition(projectile.position);
-			projectile.m_trail->Update(timeDeltaMs);
+			projectile.m_trail->Update(timeDelta);
 		}
 
 		if(projectile.flags & ATO_MOVING) {

@@ -123,7 +123,7 @@ void SpeedSpell::Update() {
 		Vec3f pos = entities[m_target]->obj->vertexWorldPositions[m_trails[i].vertexIndex].v;
 		
 		m_trails[i].trail->SetNextPosition(pos);
-		m_trails[i].trail->Update(g_framedelay);
+		m_trails[i].trail->Update(g_framedelay2);
 	}
 	
 	for(size_t i = 0; i < m_trails.size(); i++) {
