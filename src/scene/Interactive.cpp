@@ -2280,7 +2280,7 @@ void UpdateInter() {
 			if(io->animlayer[0].flags & EA_PAUSED)
 				diff = AnimationDuration_ZERO;
 			else
-				diff = AnimationDurationUs(s64(g_framedelay * 1000.f));
+				diff = toAnimationDuration(g_framedelay2);
 
 			Vec3f pos = io->pos;
 
