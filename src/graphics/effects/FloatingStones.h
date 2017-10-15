@@ -25,7 +25,7 @@
 class FloatingStones {
 public:
 	void Init(float radius);
-	void Update(float timeDelta, Vec3f pos);
+	void Update(ArxDuration timeDelta, Vec3f pos);
 	void AddStone(const Vec3f & pos);
 	void DrawStone();
 	
@@ -37,13 +37,13 @@ public:
 		Anglef ang;
 		Anglef angvel;
 		Vec3f scale;
-		int time;
-		int currtime;
+		ArxDuration time;
+		ArxDuration currtime;
 	};
 	
 	float m_baseRadius;
-	int m_currframetime;
-	int m_timestone;
+	ArxDuration m_currframetime;
+	ArxDuration m_timestone;
 	int m_nbstone;
 	T_STONE m_tstone[256];
 };

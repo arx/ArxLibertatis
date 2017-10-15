@@ -239,7 +239,7 @@ void LevitateSpell::Update() {
 	cone1.Update(g_framedelay, m_pos, coneScale);
 	cone2.Update(g_framedelay, m_pos, coneScale);
 	
-	m_stones.Update(g_framedelay, m_pos);
+	m_stones.Update(g_framedelay2, m_pos);
 	
 	for(int i = 0; i < dustParticles; i++) {
 		createDustParticle();
