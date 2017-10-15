@@ -30,7 +30,7 @@ void FloatingStones::Init(float radius) {
 	m_baseRadius = radius;
 	
 	// cailloux
-	m_timestone = 0;
+	m_timestone = ArxDuration_ZERO;
 	m_nbstone = 0;
 
 	int nb = 256;
@@ -39,13 +39,13 @@ void FloatingStones::Init(float radius) {
 	}
 }
 
-void FloatingStones::Update(float timeDelta, Vec3f pos) {
+void FloatingStones::Update(ArxDuration timeDelta, Vec3f pos) {
 	
-	m_timestone -= int(timeDelta);
-	m_currframetime = int(timeDelta);
+	m_timestone -= timeDelta;
+	m_currframetime = timeDelta;
 	
-	if(m_timestone <= 0) {
-		m_timestone = Random::get(50, 150);
+	if(m_timestone <= ArxDuration_ZERO) {
+		m_timestone = ArxDurationMs(Random::get(50, 150));
 		
 		AddStone(pos + arx::randomOffsetXZ(m_baseRadius));
 	}
@@ -70,8 +70,8 @@ void FloatingStones::AddStone(const Vec3f & pos) {
 			s.ang = Anglef(Random::getf(), Random::getf(), Random::getf()) * Anglef(360.f, 360.f, 360.f);
 			s.angvel = Anglef(Random::getf(), Random::getf(), Random::getf()) * Anglef(5.f, 6.f, 3.f);
 			s.scale = Vec3f(Random::getf(0.2f, 0.5f));
-			s.time = Random::get(2000, 2500);
-			s.currtime = 0;
+			s.time = ArxDurationMs(Random::get(2000, 2500));
+			s.currtime = ArxDuration_ZERO;
 			break;
 		}
 	}
@@ -88,7 +88,7 @@ void FloatingStones::DrawStone()
 		T_STONE & s = m_tstone[nb];
 		
 		if(s.actif) {
-			float a = (float)s.currtime / (float)s.time;
+			float a = s.currtime / s.time;
 			
 			if(a > 1.f) {
 				a = 1.f;
@@ -112,7 +112,7 @@ void FloatingStones::DrawStone()
 			
 			//update mvt
 			if(!arxtime.is_paused()) {
-				a = (((float)m_currframetime) * 100.f) / (float)s.time;
+				a = (m_currframetime * 100) / s.time;
 				s.pos.y += s.yvel * a;
 				s.ang += s.angvel * a;
 				

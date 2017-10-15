@@ -391,7 +391,7 @@ void CRiseDead::Update(ArxDuration timeDelta)
 {
 	m_elapsed += timeDelta;
 	
-	m_stones.Update(toMsf(timeDelta), m_eSrc);
+	m_stones.Update(timeDelta, m_eSrc);
 }
 
 //-----------------------------------------------------------------------------
