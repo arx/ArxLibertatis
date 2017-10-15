@@ -216,14 +216,10 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 				}
 			}
 			
-			// First draw the lace
-			angle.setYaw(0.f);
-			
-			TransformInfo t1(pos, glm::quat_cast(toRotationMatrix(angle)));
+			TransformInfo t1(pos, glm::quat());
 			DrawEERIEInter(gui::necklace.lacet, t1, NULL, false, 0.f);
 			
 			PopAllTriangleListOpaque();
-			
 		}
 	}
 	
