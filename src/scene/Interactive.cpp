@@ -2219,9 +2219,9 @@ void UpdateIOInvisibility(Entity * io)
 {
 	if(io && io->invisibility <= 1.f) {
 		if((io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility < 1.f) {
-			io->invisibility += g_framedelay * ( 1.0f / 1000 );
+			io->invisibility += g_framedelay2 / ArxDurationMs(1000);
 		} else if(!(io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility != 0.f) {
-			io->invisibility -= g_framedelay * ( 1.0f / 1000 );
+			io->invisibility -= g_framedelay2 / ArxDurationMs(1000);
 		}
 		
 		io->invisibility = glm::clamp(io->invisibility, 0.f, 1.f);
