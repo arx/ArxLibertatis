@@ -23,6 +23,7 @@
 #include "core/TimeTypes.h"
 #include "game/GameTypes.h"
 #include "graphics/GraphicsTypes.h"
+#include "scene/Light.h"
 
 class Trail;
 
@@ -48,6 +49,7 @@ struct Projectile {
 	ArxInstant creation_time;
 	float poisonous;
 	Trail * m_trail;
+	LightHandle m_light;
 };
 
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect, const glm::quat & quat, float velocity, float damages, float poisonous);

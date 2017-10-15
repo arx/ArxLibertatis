@@ -385,8 +385,8 @@ void ARX_THROWN_OBJECT_Manage(ArxDuration timeDelta)
 		if((projectile.flags & ATO_FIERY) && (projectile.flags & ATO_MOVING)
 		   && !(projectile.flags & ATO_UNDERWATER)) {
 
-			EERIE_LIGHT * light = dynLightCreate();
-			if(light && g_framedelay2 > ArxDuration_ZERO) {
+			EERIE_LIGHT * light = dynLightCreate(projectile.m_light);
+			if(light) {
 				light->intensity = 1.f;
 				light->fallstart = 100.f;
 				light->fallend   = 240.f;
@@ -394,7 +394,7 @@ void ARX_THROWN_OBJECT_Manage(ArxDuration timeDelta)
 				light->pos = projectile.position;
 				light->ex_flaresize = 40.f;
 				light->extras |= EXTRAS_FLARE;
-				light->duration = ArxDurationMsf(g_framedelay * 0.5f);
+				light->duration = ArxDurationMs(100);
 			}
 			
 			createObjFireParticles(projectile.obj, 6, 2, 180);
