@@ -26,7 +26,6 @@
 
 RotatingCone::RotatingCone()
 	: m_def(16)
-	, ulCurrentTime(ArxDuration_ZERO)
 	, m_currdurationang(ArxDuration_ZERO)
 	, m_ang(0.f)
 	, m_coneScale(0.f)
@@ -71,7 +70,6 @@ void RotatingCone::Init(float rbase, float rhaut, float hauteur) {
 void RotatingCone::Update(ArxDuration timeDelta, Vec3f pos, float coneScale) {
 	
 	m_currdurationang += timeDelta;
-	ulCurrentTime += timeDelta;
 	
 	m_pos = pos;
 	m_coneScale = coneScale;

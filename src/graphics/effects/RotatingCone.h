@@ -34,7 +34,6 @@ public:
 private:
 	Vec3f m_pos;
 	short m_def;
-	ArxDuration ulCurrentTime;
 	ArxDuration m_currdurationang;
 	float m_ang;
 	float m_coneScale;
