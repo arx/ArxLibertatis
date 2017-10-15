@@ -28,14 +28,14 @@ public:
 	~RotatingCone();
 	
 	void Init(float rbase, float rhaut, float hauteur);
-	void Update(float timeDelta, Vec3f pos, float coneScale);
+	void Update(ArxDuration timeDelta, Vec3f pos, float coneScale);
 	void Render();
 	
 private:
 	Vec3f m_pos;
 	short m_def;
-	unsigned long ulCurrentTime;
-	int m_currdurationang;
+	ArxDuration ulCurrentTime;
+	ArxDuration m_currdurationang;
 	float m_ang;
 	float m_coneScale;
 	TextureContainer * m_tsouffle;
