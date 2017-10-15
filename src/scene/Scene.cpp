@@ -1479,7 +1479,7 @@ void ARX_SCENE_Update() {
 		RoomDrawRelease();
 	}
 
-	ARX_THROWN_OBJECT_Manage(g_framedelay);
+	ARX_THROWN_OBJECT_Manage(g_framedelay2);
 
 	UpdateInter();
 }

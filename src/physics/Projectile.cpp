@@ -356,8 +356,10 @@ void ARX_THROWN_OBJECT_Render() {
 	}
 }
 
-void ARX_THROWN_OBJECT_Manage(float time_offset)
+void ARX_THROWN_OBJECT_Manage(ArxDuration timeDelta)
 {
+	float timeDeltaMs = toMsf(timeDelta);
+	
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
 		Projectile & projectile = g_projectiles[i];
 		if(!(projectile.flags & ATO_EXIST))
@@ -400,19 +402,19 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 
 		if(projectile.m_trail) {
 			projectile.m_trail->SetNextPosition(projectile.position);
-			projectile.m_trail->Update(time_offset);
+			projectile.m_trail->Update(timeDeltaMs);
 		}
 
 		if(projectile.flags & ATO_MOVING) {
 			long need_kill = 0;
-			float mod = time_offset * projectile.velocity;
+			float mod = timeDeltaMs * projectile.velocity;
 			Vec3f original_pos = projectile.position;
 			projectile.position.x += projectile.vector.x * mod;
 			float gmod = 1.f - projectile.velocity;
 
 			gmod = glm::clamp(gmod, 0.f, 1.f);
 
-			projectile.position.y += projectile.vector.y * mod + (time_offset * gmod);
+			projectile.position.y += projectile.vector.y * mod + (timeDeltaMs * gmod);
 			projectile.position.z += projectile.vector.z * mod;
 
 			CheckForIgnition(Sphere(original_pos, 10.f), 0, 2);
