@@ -1174,7 +1174,7 @@ void ComputeVVPos(Entity * io) {
 			if(io == entities.player()) {
 				val = toMs(g_platformTime.lastFrameDuration());
 			} else {
-				val = g_framedelay;
+				val = toMsf(g_framedelay2);
 			}
 			val *= (1.0f / 4) * mul;
 			
