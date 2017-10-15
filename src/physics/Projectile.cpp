@@ -323,7 +323,7 @@ static void CheckExp(const Projectile & projectile) {
 		ARX_NPC_SpawnAudibleSound(pos, entities.player());
 		
 		EERIE_LIGHT * light = dynLightCreate();
-		if(light && g_framedelay > 0) {
+		if(light && g_framedelay2 > ArxDuration_ZERO) {
 			light->intensity = 3.9f;
 			light->fallstart = 400.f;
 			light->fallend   = 440.f;
@@ -386,7 +386,7 @@ void ARX_THROWN_OBJECT_Manage(ArxDuration timeDelta)
 		   && !(projectile.flags & ATO_UNDERWATER)) {
 
 			EERIE_LIGHT * light = dynLightCreate();
-			if(light && g_framedelay > 0) {
+			if(light && g_framedelay2 > ArxDuration_ZERO) {
 				light->intensity = 1.f;
 				light->fallstart = 100.f;
 				light->fallend   = 240.f;
