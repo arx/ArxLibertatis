@@ -635,7 +635,7 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 	float damagesdone;
 
 	if(flags & DAMAGE_TYPE_PER_SECOND) {
-		dmg = dmg * g_framedelay * (1.0f / 1000);
+		dmg = dmg * (g_framedelay2 / ArxDurationMs(1000));
 	}
 
 	if(target == EntityHandle_Player) {
