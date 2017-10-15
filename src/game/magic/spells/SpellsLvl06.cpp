@@ -149,9 +149,10 @@ void RiseDeadSpell::Update() {
 		return;
 	}
 	
+	// TODO why is the duration extended here ?
 	m_duration += ArxDurationMs(200);
 	
-	m_fissure.Update(g_framedelay);
+	m_fissure.Update(g_framedelay2);
 	m_fissure.Render();
 	
 	EERIE_LIGHT * light = lightHandleGet(m_light);
