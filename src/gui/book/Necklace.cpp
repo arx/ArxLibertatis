@@ -140,6 +140,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 	
 	GRenderer->SetAntialiasing(true);
 	
+	float ptNow = arxtime.now_f();
+	float ptDelta = g_framedelay;
+	
 	for(size_t i = 0; i < RUNE_COUNT; i++) {
 		if(!gui::necklace.runes[i])
 			continue;
@@ -158,10 +161,10 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 				if(rune->angle.getYaw() > 300.f)
 					rune->angle.setYaw(300.f);
 				
-				angle.setYaw(std::sin(arxtime.now_f() * (1.0f / 200)) * rune->angle.getYaw() * (1.0f / 40));
+				angle.setYaw(std::sin(ptNow * (1.0f / 200)) * rune->angle.getYaw() * (1.0f / 40));
 			}
 			
-			rune->angle.setYaw(rune->angle.getYaw() - g_framedelay * 0.2f);
+			rune->angle.setYaw(rune->angle.getYaw() - ptDelta * 0.2f);
 			
 			if(rune->angle.getYaw() < 0.f)
 				rune->angle.setYaw(0.f);
@@ -201,7 +204,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 					TransformInfo t(pos, glm::quat_cast(toRotationMatrix(angle)));
 					DrawEERIEInter(rune, t, NULL, false, 0.f);
 					
-					rune->angle.setYaw(rune->angle.getYaw() + g_framedelay*2.f);
+					rune->angle.setYaw(rune->angle.getYaw() + ptDelta * 2.f);
 					
 					PopAllTriangleListOpaque();
 					
