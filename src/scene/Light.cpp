@@ -258,7 +258,7 @@ void TreatBackgroundDynlights() {
 			const ArxDuration duration = el->duration;
 
 			if(elapsed >= duration) {
-				float sub = g_framedelay * 0.001f;
+				float sub = g_framedelay2 / ArxDurationMs(1000);
 
 				el->rgb.r -= sub;
 				el->rgb.g -= sub;
