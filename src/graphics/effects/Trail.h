@@ -23,6 +23,7 @@
 #include <vector>
 #include <boost/circular_buffer.hpp>
 
+#include "core/TimeTypes.h"
 #include "math/Vector.h"
 #include "graphics/Color.h"
 
@@ -33,7 +34,7 @@ public:
 
 	void SetNextPosition(Vec3f & nextPosition);
 
-	void Update(float timeDelta);
+	void Update(ArxDuration timeDelta);
 	void Render();
 
 private:
@@ -48,8 +49,8 @@ private:
 		float m_size;
 	};
 
-	float m_timePerSegment;
-	float m_lastSegmentDuration;
+	ArxDuration m_timePerSegment;
+	ArxDuration m_lastSegmentDuration;
 	std::vector<TrailSegment> m_segments;
 
 	Vec3f m_nextPosition;
