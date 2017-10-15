@@ -94,7 +94,7 @@ public:
 	
 	void Create(Vec3f, float afBeta = 0);
 	void Kill();
-	void Update(float timeDelta);
+	void Update(ArxDuration timeDelta);
 	void Render();
 	
 private:

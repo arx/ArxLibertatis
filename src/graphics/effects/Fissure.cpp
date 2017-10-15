@@ -700,9 +700,9 @@ void CSummonCreature::RenderFissure() {
 	}
 }
 
-void CSummonCreature::Update(float timeDelta)
+void CSummonCreature::Update(ArxDuration timeDelta)
 {
-	m_elapsed += ArxDurationMsf(timeDelta);
+	m_elapsed += timeDelta;
 }
 
 //-----------------------------------------------------------------------------
