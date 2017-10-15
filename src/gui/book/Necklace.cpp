@@ -183,13 +183,13 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 			
 			// Checks for Mouse floating over a rune...
 			if(runeBox.contains(mousePos)) {
-				long r=0;
+				bool r = false;
 				
 				for(size_t j = 0; j < rune->facelist.size(); j++) {
 					float n = PtIn2DPolyProj(rune->vertexClipPositions, &rune->facelist[j], mousePos.x, mousePos.y);
 					
 					if(n!=0.f) {
-						r=1;
+						r = true;
 						break;
 					}
 				}
