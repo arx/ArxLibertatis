@@ -2180,7 +2180,7 @@ void UpdateCameras() {
 
 					vv = (8000 - vv) * ( 1.0f / 4000 );
 
-					float f1 = g_framedelay * ( 1.0f / 1000 ) * vv;
+					float f1 = g_framedelay2 / ArxDurationMs(1000) * vv;
 
 					if(f1 > 1.f)
 						f1 = 1.f;
