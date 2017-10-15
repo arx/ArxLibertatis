@@ -307,7 +307,7 @@ void FireFieldSpell::Update() {
 		pPSStream.Render();
 		pPSStream1.Render();
 		
-		float fDiff = g_framedelay / 8.f;
+		float fDiff = g_framedelay2 / ArxDurationMs(8);
 		int nTime = checked_range_cast<int>(fDiff);
 		
 		for(long nn=0;nn<=nTime+1;nn++) {
