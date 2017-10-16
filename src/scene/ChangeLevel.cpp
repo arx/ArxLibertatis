@@ -139,7 +139,6 @@ struct Playthrough {
 	
 };
 
-static ArxInstant ARX_CHANGELEVEL_DesiredTime = ArxInstant_ZERO;
 long DONT_WANT_PLAYER_INZONE = 0;
 static SaveBlock * g_currentSavedGame = NULL;
 static Playthrough g_currentPlathrough;
@@ -315,8 +314,6 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	progressBarSetTotal(238);
 	progressBarReset();
 	
-	ARX_CHANGELEVEL_DesiredTime = arxtime.now();
-		
 	long num = GetLevelNumByName("level" + level);
 
 	LoadLevelScreen(num);
@@ -2839,13 +2836,11 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		g_currentPlathrough.oldestALVersion = pld.oldestALVersion;
 		g_currentPlathrough.newestALVersion = pld.newestALVersion;
 		
-		const ArxInstant fPldTime = ArxInstantMs(pld.time);
 		arxtime.force_time_restore(ArxInstantMs(pld.time));
 		
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
 		CURRENTLEVEL = pld.level;
-		ARX_CHANGELEVEL_DesiredTime = fPldTime;
 		ARX_CHANGELEVEL_PopLevel(pld.level, false);
 		
 	} else {
