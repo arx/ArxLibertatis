@@ -72,6 +72,7 @@ void GameTime::reset(const ArxInstant time) {
 	paused = true;
 	m_now_us = time;
 	m_frameDelay = ArxDuration_ZERO;
+	m_speed = 1.f;
 }
 
 void GameTime::update(ArxDuration delta) {

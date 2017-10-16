@@ -126,6 +126,9 @@ public:
 		return m_frameDelay;
 	}
 	
+	float speed() const { return m_speed; }
+	void setSpeed(float speed) { m_speed = speed; }
+	
 private:
 	
 	bool paused;
@@ -133,6 +136,8 @@ private:
 	ArxInstant m_now_us;
 	
 	ArxDuration m_frameDelay;
+	
+	float m_speed;
 	
 };
 
