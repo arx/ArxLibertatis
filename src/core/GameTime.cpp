@@ -87,6 +87,6 @@ void GameTime::force_time_restore(const ArxInstant time) {
 	start_time = platform::getElapsedUs(requested_time);
 	m_now_us = requested_time;
 	
-	pause_time = 0;
-	paused     = false;
+	pause_time = start_time;
+	paused     = true;
 }
