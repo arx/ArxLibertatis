@@ -44,6 +44,8 @@ void begin(Status status);
 //! End the current benchmark
 void shutdown();
 
+bool isEnabled();
+
 } // namespace benchmark
 
 #endif // ARX_CORE_BENCHMARK_H
