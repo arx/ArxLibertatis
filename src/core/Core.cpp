@@ -343,7 +343,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f 
 //*************************************************************************************
 // Switches from/to Game Mode/Editor Mode
 //*************************************************************************************
-void SetEditMode(long ed, const bool stop_sound) {
+void SetEditMode() {
 	
 	LAST_JUMP_ENDTIME = ArxInstant_ZERO;
 	
@@ -353,18 +353,7 @@ void SetEditMode(long ed, const bool stop_sound) {
 	
 	RestoreAllLightsInitialStatus();
 
-	if(stop_sound)
-		ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
-
 	RestoreInitialIOStatus();
-
-	if(ed) {
-		ARX_PATH_ComputeAllBoundingBoxes();
-		arxtime.pause();
-	} else {
-		ARX_SCRIPT_ResetAll(true);
-		EERIE_ANIMMANAGER_PurgeUnused();
-	}
 	
 	if(!DONT_ERASE_PLAYER) {
 		ARX_PLAYER_MakeFreshHero();
@@ -488,8 +477,12 @@ void levelInit() {
 	progressBarAdvance();
 	LoadLevelScreen();
 
-	if(LOAD_N_ERASE)
-		SetEditMode(0);
+	if(LOAD_N_ERASE) {
+		SetEditMode();
+		ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
+		ARX_SCRIPT_ResetAll(true);
+		EERIE_ANIMMANAGER_PurgeUnused();
+	}
 
 	progressBarAdvance();
 	LoadLevelScreen();
