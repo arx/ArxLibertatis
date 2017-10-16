@@ -483,25 +483,25 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^arxtime_hours") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 3600000);
-				while(*lcontent > 12) {
-					*lcontent -= 12;
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 3600000) % 12;
+				if(*lcontent == 0) {
+					*lcontent = 12;
 				}
 				return TYPE_LONG;
 			}
 			
 			if(name == "^arxtime_minutes") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 60000);
-				while(*lcontent > 60) {
-					*lcontent -= 60;
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 60000) % 60;
+				if(*lcontent == 0) {
+					*lcontent = 60;
 				}
 				return TYPE_LONG;
 			}
 			
 			if(name == "^arxtime_seconds") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 1000);
-				while(*lcontent > 60) {
-					*lcontent -= 60;
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 1000) % 60;
+				if(*lcontent == 0) {
+					*lcontent = 60;
 				}
 				return TYPE_LONG;
 			}
