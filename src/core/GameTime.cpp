@@ -53,9 +53,7 @@ PlatformTime g_platformTime;
 GameTime arxtime;
 
 GameTime::GameTime() {
-	paused             = true;
-	m_now_us           = ArxInstant_ZERO;
-	m_frameDelay       = ArxDuration_ZERO;
+	reset(ArxInstant_ZERO);
 }
 
 void GameTime::pause() {
