@@ -64,6 +64,9 @@ void PlatformTime::updateFrame() {
 	
 	m_lastFrameDuration = m_frameStartTime - m_lastFrameStartTime;
 	
+	// Limit simulation time per frame
+	m_lastFrameDuration = std::min(m_lastFrameDuration, PlatformDurationMs(100));
+	
 	m_lastFrameStartTime = currentTime;
 }
 
@@ -95,9 +98,6 @@ void GameTime::update(PlatformDuration frameDelay) {
 	ArxDuration delta = ArxDurationUs(toUs(frameDelay));
 	
 	arx_assert(delta >= ArxDuration_ZERO);
-	
-	// Limit simulation time per frame
-	delta = std::min(delta, ArxDurationMs(100));
 	
 	if(arxtime.speed() != 1.f) {
 		delta -= ArxDurationMsf(toMsf(delta) * (1.f - arxtime.speed()));
