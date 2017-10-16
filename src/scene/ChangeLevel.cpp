@@ -259,7 +259,7 @@ bool ARX_CHANGELEVEL_StartNew() {
 	g_currentPlathrough.oldestALVersion = arx_version_number;
 	g_currentPlathrough.newestALVersion = arx_version_number;
 	
-	arxtime.force_time_restore(ArxInstant_ZERO);
+	arxtime.reset(ArxInstant_ZERO);
 	
 	if(!ARX_Changelevel_CurGame_Clear()) {
 		return false;
@@ -2830,7 +2830,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		g_currentPlathrough.oldestALVersion = pld.oldestALVersion;
 		g_currentPlathrough.newestALVersion = pld.newestALVersion;
 		
-		arxtime.force_time_restore(ArxInstantMs(pld.time));
+		arxtime.reset(ArxInstantMs(pld.time));
 		
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);

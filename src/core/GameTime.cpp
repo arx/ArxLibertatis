@@ -70,7 +70,7 @@ void GameTime::resume() {
 	}
 }
 
-void GameTime::force_time_restore(const ArxInstant time) {
+void GameTime::reset(const ArxInstant time) {
 	m_now_us = time;
 	paused = true;
 }
