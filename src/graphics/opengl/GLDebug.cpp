@@ -171,7 +171,7 @@ static bool g_enable = false;
 #endif
 
 bool isEnabled() {
-	return g_enable;
+	return g_enable && !benchmark::isEnabled();
 }
 
 static void enable() {
