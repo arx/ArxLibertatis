@@ -1076,7 +1076,7 @@ void ArxGame::shutdownGame() {
 	mainApp->getWindow()->hide();
 	
 	Menu2_Close();
-	DanaeClearLevel(2);
+	DanaeClearLevel();
 	TextureContainer::DeleteAll();
 	
 	cinematicDestroy();
