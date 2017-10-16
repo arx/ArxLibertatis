@@ -1618,7 +1618,7 @@ void ArxGame::updateTime() {
 
 	// limit fps above 10fps
 	const ArxDuration max_framedelay = ArxDurationMs(100);
-	framedelay = framedelay > max_framedelay ? max_framedelay : framedelay;
+	framedelay = std::min(framedelay, max_framedelay);
 	
 	g_framedelay = toMsf(framedelay);
 	g_framedelay2 = framedelay;
