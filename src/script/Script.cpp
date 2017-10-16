@@ -429,22 +429,22 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^gamedays") {
-				*lcontent = static_cast<long>(arxtime.now_f() / 86400000);
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 86400000);
 				return TYPE_LONG;
 			}
 			
 			if(name == "^gamehours") {
-				*lcontent = static_cast<long>(arxtime.now_f() / 3600000);
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 3600000);
 				return TYPE_LONG;
 			}
 			
 			if(name == "^gameminutes") {
-				*lcontent = static_cast<long>(arxtime.now_f() / 60000);
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 60000);
 				return TYPE_LONG;
 			}
 			
 			if(name == "^gameseconds") {
-				*lcontent = static_cast<long>(arxtime.now_f() / 1000);
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 1000);
 				return TYPE_LONG;
 			}
 			
