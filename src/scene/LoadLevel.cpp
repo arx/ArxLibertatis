@@ -583,7 +583,7 @@ extern Entity * FlyingOverIO;
 
 extern long JUST_RELOADED;
 
-void DanaeClearLevel(long flag)
+void DanaeClearLevel()
 {
 	JUST_RELOADED = 0;
 	g_miniMap.reset();
@@ -592,7 +592,7 @@ void DanaeClearLevel(long flag)
 	LAST_JUMP_ENDTIME = ArxInstant_ZERO;
 	FAST_RELEASE = 1;
 	MCache_ClearAll();
-	ARX_GAME_Reset(flag);
+	ARX_GAME_Reset();
 	FlyingOverIO = NULL;
 
 	EERIE_PATHFINDER_Release();
