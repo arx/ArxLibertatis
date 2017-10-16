@@ -553,7 +553,6 @@ class GameFlow {
 
 public:
 	enum Transition {
-		NoTransition,
 		FirstLogo,
 		SecondLogo,
 		LoadingScreen,
@@ -639,7 +638,7 @@ static bool HandleGameFlowTransitions() {
 	const PlatformDuration TRANSITION_DURATION = PlatformDurationMs(3600);
 	static PlatformInstant TRANSITION_START = PlatformInstant_ZERO;
 
-	if(GameFlow::getTransition() == GameFlow::NoTransition) {
+	if(GameFlow::getTransition() == GameFlow::InGame) {
 		return false;
 	}
 
@@ -714,12 +713,6 @@ static bool HandleGameFlowTransitions() {
 
 		DanaeLoadLevel(loadfrom);
 		GameFlow::setTransition(GameFlow::InGame);
-		return true;
-	}
-
-	if(GameFlow::getTransition() == GameFlow::InGame) {
-		GameFlow::setTransition(GameFlow::NoTransition);
-		g_requestLevelInit = true;
 		return true;
 	}
 
