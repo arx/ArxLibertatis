@@ -1592,21 +1592,17 @@ void ArxGame::updateActiveCamera() {
 
 void ArxGame::updateTime() {
 	
-	arxtime.update();
-
-	// before modulation by "GLOBAL_SLOWDOWN"
-	ArxDuration Original_framedelay = arxtime.get_frame_delay();
-	arx_assert(Original_framedelay >= ArxDuration_ZERO);
-
-	// TODO this code shouldn't exist. ARXStartTime should be constant.
-	if (GLOBAL_SLOWDOWN != 1.0f) {
-		
-		float drift = toMsf(Original_framedelay) * (1.0f - GLOBAL_SLOWDOWN) * 1000.f;
-		arxtime.increment_start_time(static_cast<u64>(drift));
-
-		// recalculate frame delta
-		arxtime.update();
+	ArxDuration delta = ArxDurationUs(toUs(g_platformTime.lastFrameDuration()));
+	
+	arx_assert(delta >= ArxDuration_ZERO);
+	
+	if(GLOBAL_SLOWDOWN != 1.f) {
+		delta -= ArxDurationMsf(toMsf(delta) * (1.f - GLOBAL_SLOWDOWN));
 	}
+	
+	arx_assert(delta >= ArxDuration_ZERO);
+	
+	arxtime.update(delta);
 
 	ArxDuration framedelay = arxtime.get_frame_delay();
 	arx_assert(framedelay >= ArxDuration_ZERO);
@@ -2198,7 +2194,6 @@ void ArxGame::render() {
 		ARX_PATH_UpdateAllZoneInOutInside();
 	}
 
-	arxtime.update_last_frame_time();
 	LastMouseClick = EERIEMouseButton;
 	
 	gldebug::endFrame();
