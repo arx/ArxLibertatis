@@ -393,7 +393,6 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	// Now we can save our things
 	if(!ARX_CHANGELEVEL_Push_Index(num)) {
 		LogError << "Error Saving Index...";
-		arxtime.resume();
 		return false;
 	}
 	
@@ -401,13 +400,11 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	
 	if(ARX_CHANGELEVEL_Push_Player(newnum) != 1) {
 		LogError << "Error Saving Player...";
-		arxtime.resume();
 		return false;
 	}
 	
 	if(ARX_CHANGELEVEL_Push_AllIO(num) != 1) {
 		LogError << "Error Saving IOs...";
-		arxtime.resume();
 		return false;
 	}
 	
@@ -2758,6 +2755,7 @@ bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 	// Save the current level
 	
 	if(!ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, CURRENTLEVEL)) {
+		arxtime.resume();
 		LogWarning << "Could not save the level";
 		return false;
 	}
