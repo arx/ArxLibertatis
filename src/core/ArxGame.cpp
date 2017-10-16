@@ -713,7 +713,7 @@ static bool HandleGameFlowTransitions() {
 
 		DanaeLoadLevel(loadfrom);
 		GameFlow::setTransition(GameFlow::InGame);
-		return true;
+		return false;
 	}
 
 	return false;
