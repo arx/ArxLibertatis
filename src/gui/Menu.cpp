@@ -181,9 +181,7 @@ extern bool TIME_INIT;
 
 void ARX_MENU_Clicked_QUIT() {
 	
-	if(!g_canResumeGame) {
-		return;
-	}
+	arx_assert(g_canResumeGame);
 	
 	ARX_Menu_Resources_Release();
 	ARXmenu.currentmode = AMCM_OFF;
