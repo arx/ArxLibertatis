@@ -221,7 +221,7 @@ bool g_cursorOverBook = false;
 //-----------------------------------------------------------------------------
 // DEBUG FLAGS/Vars
 //-----------------------------------------------------------------------------
-bool g_requestLevelInit = true;
+bool g_requestLevelInit = false;
 
 bool START_NEW_QUEST = false;
 static long LAST_WEAPON_TYPE = -1;
@@ -374,8 +374,6 @@ void levelInit() {
 	
 	LogDebug("Initializing level ...");
 	
-	g_requestLevelInit = true;
-
 	ARX_PARTICLES_FirstInit();
 	RenderBatcher::getInstance().reset();
 	
@@ -493,7 +491,6 @@ void levelInit() {
 	progressBarAdvance();
 	LoadLevelScreen();
 
-	g_requestLevelInit = false;
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene.string());
 	
@@ -1199,7 +1196,6 @@ void DANAE_StartNewQuest()
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
 	DanaeLoadLevel("graph/levels/level1/level1.dlf");
-	g_requestLevelInit = true;
 	START_NEW_QUEST = false;
 	BLOCK_PLAYER_CONTROLS = false;
 	fadeReset();

@@ -166,6 +166,8 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		return false;
 	}
 	
+	g_requestLevelInit = true;
+	
 	PakFile * lightingFile = g_resources->getFile(lightingFileName);
 	
 	progressBarAdvance();
