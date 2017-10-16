@@ -56,13 +56,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class PlatformTime {
 	
 	PlatformInstant m_frameStartTime;
-	PlatformInstant m_lastFrameStartTime;
 	PlatformDuration m_lastFrameDuration;
 	
 public:
 	PlatformTime()
 		: m_frameStartTime(PlatformInstant_ZERO)
-		, m_lastFrameStartTime(PlatformInstant_ZERO)
 		, m_lastFrameDuration(PlatformDuration_ZERO)
 	{ }
 	
