@@ -262,6 +262,9 @@ bool ARX_CHANGELEVEL_StartNew() {
 	g_currentPlathrough.oldestALVersion = arx_version_number;
 	g_currentPlathrough.newestALVersion = arx_version_number;
 	
+	TIME_INIT = false;
+	FORCE_TIME_RESTORE = ArxInstant_ZERO;
+	
 	if(!ARX_Changelevel_CurGame_Clear()) {
 		return false;
 	}
