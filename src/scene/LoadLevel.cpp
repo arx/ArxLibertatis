@@ -611,8 +611,6 @@ void DanaeClearLevel(long flag)
 	TextureContainer::DeleteAll(TextureContainer::Level);
 	g_miniMap.clearMarkerTexCont();
 	
-	arxtime.init();
-	
 	bGCroucheToggle = false;
 	
 	resetDynLights();
