@@ -116,7 +116,7 @@ public:
 		return m_now_us;
 	}
 	
-	void update(ArxDuration delta);
+	void update(PlatformDuration delta);
 	
 	bool is_paused() const { 
 		return paused; 

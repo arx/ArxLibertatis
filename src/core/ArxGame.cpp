@@ -1590,20 +1590,7 @@ void ArxGame::updateActiveCamera() {
 
 void ArxGame::updateTime() {
 	
-	ArxDuration delta = ArxDurationUs(toUs(g_platformTime.lastFrameDuration()));
-	
-	arx_assert(delta >= ArxDuration_ZERO);
-	
-	// Limit simulation time per frame
-	delta = std::min(delta, ArxDurationMs(100));
-	
-	if(arxtime.speed() != 1.f) {
-		delta -= ArxDurationMsf(toMsf(delta) * (1.f - arxtime.speed()));
-	}
-	
-	arx_assert(delta >= ArxDuration_ZERO);
-	
-	arxtime.update(delta);
+	arxtime.update(g_platformTime.lastFrameDuration());
 	
 	g_framedelay = toMsf(arxtime.get_frame_delay());
 	g_framedelay2 = arxtime.get_frame_delay();

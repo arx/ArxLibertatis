@@ -75,7 +75,20 @@ void GameTime::reset(const ArxInstant time) {
 	m_speed = 1.f;
 }
 
-void GameTime::update(ArxDuration delta) {
+void GameTime::update(PlatformDuration frameDelay) {
+	
+	ArxDuration delta = ArxDurationUs(toUs(frameDelay));
+	
+	arx_assert(delta >= ArxDuration_ZERO);
+	
+	// Limit simulation time per frame
+	delta = std::min(delta, ArxDurationMs(100));
+	
+	if(arxtime.speed() != 1.f) {
+		delta -= ArxDurationMsf(toMsf(delta) * (1.f - arxtime.speed()));
+	}
+	
+	arx_assert(delta >= ArxDuration_ZERO);
 	
 	if(is_paused()) {
 		delta = ArxDuration_ZERO;
