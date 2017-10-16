@@ -338,7 +338,6 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	
 	ARX_PLAYER_Reset_Fall();
 	
-	arxtime.pause();
 	progressBarAdvance();
 	LoadLevelScreen(num);
 	
@@ -1576,7 +1575,6 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 	LoadLevelScreen(num);
 	SetEditMode();
 	ARX_PATH_ComputeAllBoundingBoxes();
-	arxtime.pause();
 	
 	ARX_CHANGELEVEL_Pop_Globals();
 	
@@ -2580,8 +2578,6 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	DanaeClearLevel();
 	LogDebug("After  DANAE ClearAll");
 	
-	arxtime.pause();
-	
 	// Now we can load our things...
 	std::ostringstream loadfile;
 	loadfile << "lvl" << std::setfill('0') << std::setw(3) << instance;
@@ -2810,8 +2806,6 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	
 	progressBarSetTotal(238);
 	progressBarReset();
-	
-	arxtime.pause();
 	
 	if(!ARX_Changelevel_CurGame_Clear()) {
 		return -1;
