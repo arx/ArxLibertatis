@@ -1589,8 +1589,6 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 	DanaeLoadLevel(levelFile, firstTime);
 	CleanScriptLoadedIO();
 	
-	g_requestLevelInit = true;
-	
 	if(firstTime) {
 		
 		RestoreInitialIOStatus();

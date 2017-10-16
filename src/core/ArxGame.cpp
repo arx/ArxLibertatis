@@ -1286,6 +1286,7 @@ void ArxGame::doFrame() {
 	}
 	
 	if(g_requestLevelInit) {
+		g_requestLevelInit = false;
 		levelInit();
 	} else {
 		cinematicLaunchWaiting();
