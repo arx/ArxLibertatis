@@ -1221,12 +1221,6 @@ void ArxGame::doFrame() {
 	
 	ARX_PROFILE_FUNC();
 	
-	g_platformTime.updateFrame();
-	
-	if(g_requestLevelInit) {
-		g_platformTime.overrideFrameDuration(PlatformDuration_ZERO);
-	}
-	
 	updateTime();
 
 	updateInput();
@@ -1589,6 +1583,12 @@ void ArxGame::updateActiveCamera() {
 }
 
 void ArxGame::updateTime() {
+	
+	g_platformTime.updateFrame();
+	
+	if(g_requestLevelInit) {
+		g_platformTime.overrideFrameDuration(PlatformDuration_ZERO);
+	}
 	
 	arxtime.update(g_platformTime.lastFrameDuration());
 	
