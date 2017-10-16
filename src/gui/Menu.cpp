@@ -502,7 +502,6 @@ void ARX_Menu_Render() {
 		if(MenuFader_process(bFadeInOut)) {
 			switch(iFadeAction) {
 				case AMCM_OFF:
-					arxtime.resume();
 					ARX_MENU_NEW_QUEST_Clicked_QUIT();
 					MenuFader_reset();
 					
