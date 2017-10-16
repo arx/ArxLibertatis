@@ -2693,10 +2693,8 @@ void ARX_GAME_Reset(long type) {
 		GLOBAL_MAGIC_MODE = true;
 
 		// Linked Objects
-		if(!(type & 2)) {
-			UnlinkAllLinkedObjects();
-			ARX_EQUIPMENT_UnEquipAllPlayer();
-		}
+		UnlinkAllLinkedObjects();
+		ARX_EQUIPMENT_UnEquipAllPlayer();
 
 		ARX_EQUIPMENT_ReleaseAll(entities.player());
 
