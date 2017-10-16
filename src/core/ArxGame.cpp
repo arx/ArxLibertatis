@@ -572,7 +572,7 @@ private:
 	static Transition s_currentTransition;
 };
 
-GameFlow::Transition GameFlow::s_currentTransition = GameFlow::NoTransition;
+GameFlow::Transition GameFlow::s_currentTransition = GameFlow::FirstLogo;
 
 enum LevelNumber {
 	LEVEL0     = 0,
@@ -864,11 +864,6 @@ bool ArxGame::initGame()
 	
 	LoadSysTextures();
 	cursorTexturesInit();
-	
-	LogInfo << "Launching splash screens";
-	if(GameFlow::getTransition() == GameFlow::NoTransition) {
-		GameFlow::setTransition(GameFlow::FirstLogo);
-	}
 	
 	PakReader::ReleaseFlags release = g_resources->getReleaseType();
 	if((release & PakReader::Demo) && (release & PakReader::FullGame)) {
