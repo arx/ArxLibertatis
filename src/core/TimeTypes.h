@@ -128,6 +128,15 @@ inline InstantType<TAG, T> operator -(InstantType<TAG, T> a, DurationType<TAG, T
 }
 
 template <typename TAG, typename T>
+inline DurationType<TAG, T> operator +(DurationType<TAG, T> a, DurationType<TAG, T> b) {
+	return DurationType<TAG, T>::ofRaw(a.t + b.t);
+}
+template <typename TAG, typename T>
+inline DurationType<TAG, T> operator -(DurationType<TAG, T> a, DurationType<TAG, T> b) {
+	return DurationType<TAG, T>::ofRaw(a.t - b.t);
+}
+
+template <typename TAG, typename T>
 inline InstantType<TAG, T> & operator +=(InstantType<TAG, T> & a, DurationType<TAG, T> b) {
 	a.t += b.t;
 	return a;
