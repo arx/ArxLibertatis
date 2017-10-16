@@ -463,17 +463,17 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^arxdays") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 7200000);
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 * 2 / 86400000);
 				return TYPE_LONG;
 			}
 			
 			if(name == "^arxhours") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 600000);
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 3600000);
 				return TYPE_LONG;
 			}
 			
 			if(name == "^arxminutes") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 10000);
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 60000);
 				return TYPE_LONG;
 			}
 			
@@ -483,7 +483,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^arxtime_hours") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 600000);
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 3600000);
 				while(*lcontent > 12) {
 					*lcontent -= 12;
 				}
@@ -491,7 +491,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^arxtime_minutes") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 10000);
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 60000);
 				while(*lcontent > 60) {
 					*lcontent -= 60;
 				}
