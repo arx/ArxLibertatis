@@ -135,12 +135,10 @@ static bool ARX_LoadGame(const SaveGame & save) {
 	progressBarAdvance();
 	LoadLevelScreen(save.level);
 	
-	DanaeClearLevel();
-	
 	long ret = ARX_CHANGELEVEL_Load(save.savefile);
 	
 	g_canResumeGame = true;
-
+	
 	return ret != -1;
 }
 
