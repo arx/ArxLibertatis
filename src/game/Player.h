@@ -248,7 +248,7 @@ struct ARXCHARACTER {
 	AnimationDuration m_weaponBlocked;
 	
 	// Jump Sub-data
-	ArxInstant jumpstarttime;
+	PlatformInstant jumpstarttime;
 	float jumplastposition;
 	JumpPhase jumpphase;
 	
@@ -341,7 +341,7 @@ struct ARXCHARACTER {
 	ARXCHARACTER()
 		: m_strikeDirection(0)
 		, m_weaponBlocked(AnimationDuration::ofRaw(-1)) // FIXME inband signaling
-		, jumpstarttime(ArxInstant_ZERO)
+		, jumpstarttime(PlatformInstant_ZERO)
 		, jumplastposition(0.f)
 		, jumpphase(NotJumping)
 		, climbing(false)
