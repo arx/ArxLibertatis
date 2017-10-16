@@ -180,6 +180,9 @@ inline float toMsf(ArxInstant val) {
 	return float(val.t) / 1000.f;
 }
 
+inline s64 toUs(ArxDuration val) {
+	return val.t;
+}
 inline s64 toMsi(ArxDuration val) {
 	return val.t / 1000;
 }
@@ -214,6 +217,9 @@ inline PlatformDuration PlatformDurationMsf(float val) {
 
 inline s64 toUs(PlatformInstant val) {
 	return val.t;
+}
+inline s64 toMsi(PlatformInstant val) {
+	return val.t / 1000;
 }
 
 inline s64 toUs(PlatformDuration val) {

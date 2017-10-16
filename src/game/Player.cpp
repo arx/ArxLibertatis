@@ -1600,7 +1600,7 @@ retry:
 				FALLING_TIME = 0;
 				player.jumpphase = JumpAscending;
 				request0_anim = alist[ANIM_JUMP_UP];
-				player.jumpstarttime = arxtime.now();
+				player.jumpstarttime = g_platformTime.frameStart();
 				player.jumplastposition = -1.f;
 				break;
 			}
@@ -2284,13 +2284,13 @@ void PlayerMovementIterate(float DeltaTime) {
 				
 				if(player.jumplastposition == -1.f) {
 					player.jumplastposition = 0;
-					player.jumpstarttime = arxtime.now();
+					player.jumpstarttime = g_platformTime.frameStart();
 				}
 				
 				const float jump_up_time = 200.f;
 				const float jump_up_height = 130.f;
-				const ArxInstant now = arxtime.now();
-				const float elapsed = toMsf(now - player.jumpstarttime) * (1.0f / arxtime.speed());
+				const PlatformInstant now = g_platformTime.frameStart();
+				const float elapsed = toMs(now - player.jumpstarttime);
 				float position = glm::clamp(elapsed / jump_up_time, 0.f, 1.f);
 				
 				float p = (position - player.jumplastposition) * jump_up_height;
@@ -2707,7 +2707,7 @@ void ARX_GAME_Reset() {
 	HERO_SHOW_1ST = -1;
 	PUSH_PLAYER_FORCE = Vec3f_ZERO;
 	player.jumplastposition = 0;
-	player.jumpstarttime = ArxInstant_ZERO;
+	player.jumpstarttime = PlatformInstant_ZERO;
 	player.jumpphase = NotJumping;
 	player.inzone = NULL;
 
