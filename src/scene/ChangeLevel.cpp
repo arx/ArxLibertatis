@@ -264,6 +264,7 @@ bool ARX_CHANGELEVEL_StartNew() {
 	
 	TIME_INIT = false;
 	FORCE_TIME_RESTORE = ArxInstant_ZERO;
+	arxtime.force_time_restore(ArxInstant_ZERO);
 	
 	if(!ARX_Changelevel_CurGame_Clear()) {
 		return false;
