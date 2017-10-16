@@ -20,6 +20,7 @@
 #ifndef ARX_GRAPHICS_DRAWDEBUG_H
 #define ARX_GRAPHICS_DRAWDEBUG_H
 
+#include "core/TimeTypes.h"
 #include "graphics/Color.h"
 #include "math/Types.h"
 
@@ -31,7 +32,7 @@ void drawDebugCycleViews();
 void drawDebugRender();
 
 namespace debug {
-	void drawRay(Vec3f start, Vec3f dir, Color color = Color::white, float duration = 0.0f);
+	void drawRay(Vec3f start, Vec3f dir, Color color = Color::white, PlatformDuration duration = PlatformDuration_ZERO);
 }
 
 #endif // ARX_GRAPHICS_DRAWDEBUG_H
