@@ -1846,7 +1846,7 @@ extern float MAX_ALLOWED_PER_SECOND;
 static long LAST_FIRM_GROUND = 1;
 static long TRUE_FIRM_GROUND = 1;
 float lastposy = -9999999.f;
-ArxInstant REQUEST_JUMP = ArxInstant_ZERO;
+PlatformInstant REQUEST_JUMP = PlatformInstant_ZERO;
 
 PlatformInstant LAST_JUMP_ENDTIME = PlatformInstant_ZERO;
 
@@ -1953,7 +1953,7 @@ void PlayerMovementIterate(float DeltaTime) {
 	
 	if(USE_PLAYERCOLLISIONS) {
 		// A jump is requested so let's go !
-		if(REQUEST_JUMP != ArxInstant_ZERO) {
+		if(REQUEST_JUMP != PlatformInstant_ZERO) {
 			if((player.m_currentMovement & PLAYER_CROUCH)
 			   || player.physics.cyl.height > player.baseHeight()) {
 				float old = player.physics.cyl.height;
@@ -1964,7 +1964,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				if(anything < 0.f) {
 					player.m_currentMovement |= PLAYER_CROUCH;
 					player.physics.cyl.height = old;
-					REQUEST_JUMP = ArxInstant_ZERO;
+					REQUEST_JUMP = PlatformInstant_ZERO;
 				} else {
 					bGCroucheToggle = false;
 					player.m_currentMovement &= ~PLAYER_CROUCH;
@@ -1973,13 +1973,13 @@ void PlayerMovementIterate(float DeltaTime) {
 			}
 			
 			if(!Valid_Jump_Pos()) {
-				REQUEST_JUMP = ArxInstant_ZERO;
+				REQUEST_JUMP = PlatformInstant_ZERO;
 			}
 			
-			if(REQUEST_JUMP != ArxInstant_ZERO) {
-				ArxDuration t = arxtime.now() - REQUEST_JUMP;
-				if(t >= ArxDuration_ZERO && t <= ArxDurationMs(350)) {
-					REQUEST_JUMP = ArxInstant_ZERO;
+			if(REQUEST_JUMP != PlatformInstant_ZERO) {
+				PlatformDuration t = g_platformTime.frameStart() - REQUEST_JUMP;
+				if(t >= PlatformDuration_ZERO && t <= PlatformDurationMs(350)) {
+					REQUEST_JUMP = PlatformInstant_ZERO;
 					ARX_NPC_SpawnAudibleSound(player.pos, entities.player());
 					ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities.player());
 					player.onfirmground = false;
