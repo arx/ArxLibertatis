@@ -483,7 +483,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^arxtime_hours") {
-				*lcontent = static_cast<long>(arxtime.now_f() / 600000);
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 600000);
 				while(*lcontent > 12) {
 					*lcontent -= 12;
 				}
@@ -491,7 +491,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^arxtime_minutes") {
-				*lcontent = static_cast<long>(arxtime.now_f() / 10000);
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 10000);
 				while(*lcontent > 60) {
 					*lcontent -= 60;
 				}
@@ -499,7 +499,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^arxtime_seconds") {
-				*lcontent = static_cast<long>(arxtime.now_f() * 6 / 1000);
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 1000);
 				while(*lcontent > 60) {
 					*lcontent -= 60;
 				}
