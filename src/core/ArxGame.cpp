@@ -1286,8 +1286,10 @@ void ArxGame::doFrame() {
 		
 		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE) && ARXmenu.currentmode == AMCM_OFF) {
 			g_hudRoot.quickSaveIconGui.show();
+			arxtime.pause();
 			GRenderer->getSnapshot(savegame_thumbnail, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
 			ARX_QuickSave();
+			arxtime.resume();
 		}
 		
 	}
