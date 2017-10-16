@@ -55,29 +55,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class PlatformTime {
 	
-	u64 m_frameStartTime;
-	u64 m_lastFrameStartTime;
-	u64 m_lastFrameDuration;
+	PlatformInstant m_frameStartTime;
+	PlatformInstant m_lastFrameStartTime;
+	PlatformDuration m_lastFrameDuration;
 	
 public:
 	PlatformTime()
-		: m_frameStartTime(0)
-		, m_lastFrameStartTime(0)
-		, m_lastFrameDuration(0)
+		: m_frameStartTime(PlatformInstant_ZERO)
+		, m_lastFrameStartTime(PlatformInstant_ZERO)
+		, m_lastFrameDuration(PlatformDuration_ZERO)
 	{ }
 	
 	void updateFrame();
 	
 	void overrideFrameDuration(PlatformDuration duration) {
-		m_lastFrameDuration = toUs(duration);
+		m_lastFrameDuration = duration;
 	}
 	
 	inline PlatformInstant frameStart() {
-		return PlatformInstantUs(s64(m_frameStartTime));
+		return m_frameStartTime;
 	}
 
 	inline PlatformDuration lastFrameDuration() {
-		return PlatformDurationUs(s64(m_lastFrameDuration));
+		return m_lastFrameDuration;
 	}
 };
 

@@ -53,10 +53,11 @@ PlatformTime g_platformTime;
 GameTime arxtime;
 
 void PlatformTime::updateFrame() {
-	u64 currentTime = platform::getTimeUs();
+	
+	PlatformInstant currentTime = PlatformInstantUs(s64(platform::getTimeUs()));
 	
 	m_frameStartTime = currentTime;
-	if(m_lastFrameStartTime == 0) {
+	if(m_lastFrameStartTime == PlatformInstant_ZERO) {
 		m_lastFrameStartTime = currentTime;
 	}
 	arx_assert(m_frameStartTime >= m_lastFrameStartTime);
