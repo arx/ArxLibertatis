@@ -410,7 +410,7 @@ extern std::vector<std::string> g_playerKeyring;
 extern bool BLOCK_PLAYER_CONTROLS;
 extern bool USE_PLAYERCOLLISIONS;
 extern bool WILLRETURNTOCOMBATMODE;
-extern ArxInstant LAST_JUMP_ENDTIME;
+extern PlatformInstant LAST_JUMP_ENDTIME;
 
 void ARX_PLAYER_MakeSpHero();
 void ARX_PLAYER_LoadHeroAnimsAndMesh();

@@ -340,7 +340,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f 
 //*************************************************************************************
 void SetEditMode() {
 	
-	LAST_JUMP_ENDTIME = ArxInstant_ZERO;
+	LAST_JUMP_ENDTIME = PlatformInstant_ZERO;
 	
 	if(!DONT_ERASE_PLAYER) {
 		player.lifePool.current = 0.1f;

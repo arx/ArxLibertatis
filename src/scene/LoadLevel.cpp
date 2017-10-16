@@ -591,7 +591,7 @@ void DanaeClearLevel()
 	g_miniMap.reset();
 
 	fadeReset();
-	LAST_JUMP_ENDTIME = ArxInstant_ZERO;
+	LAST_JUMP_ENDTIME = PlatformInstant_ZERO;
 	FAST_RELEASE = 1;
 	MCache_ClearAll();
 	ARX_GAME_Reset();

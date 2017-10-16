@@ -1614,7 +1614,7 @@ retry:
 				break;
 			}
 			case JumpDescending: { // Post-synch
-				LAST_JUMP_ENDTIME = arxtime.now();
+				LAST_JUMP_ENDTIME = g_platformTime.frameStart();
 				if((layer0.cur_anim == alist[ANIM_JUMP_END] && (layer0.flags & EA_ANIMEND))
 				   || player.onfirmground) {
 					player.jumpphase = JumpEnd;
@@ -1625,7 +1625,7 @@ retry:
 				break;
 			}
 			case JumpEnd: { // Post-synch
-				LAST_JUMP_ENDTIME = arxtime.now();
+				LAST_JUMP_ENDTIME = g_platformTime.frameStart();
 				if(layer0.cur_anim == alist[ANIM_JUMP_END_PART2] && (layer0.flags & EA_ANIMEND)) {
 					AcquireLastAnim(io);
 					player.jumpphase = NotJumping;
@@ -1848,7 +1848,7 @@ static long TRUE_FIRM_GROUND = 1;
 float lastposy = -9999999.f;
 ArxInstant REQUEST_JUMP = ArxInstant_ZERO;
 
-ArxInstant LAST_JUMP_ENDTIME = ArxInstant_ZERO;
+PlatformInstant LAST_JUMP_ENDTIME = PlatformInstant_ZERO;
 
 static bool Valid_Jump_Pos() {
 	
@@ -2115,11 +2115,11 @@ void PlayerMovementIterate(float DeltaTime) {
 		// Apply player impulse force
 		
 		float jump_mul = 1.f;
-		ArxDuration diff = ArxDurationMsf(toMsf(arxtime.now() - LAST_JUMP_ENDTIME) * (1.0f / arxtime.speed()));
-		if(diff < ArxDurationMs(600)) {
+		PlatformDuration diff = g_platformTime.frameStart() - LAST_JUMP_ENDTIME;
+		if(diff < PlatformDurationMs(600)) {
 			jump_mul = 0.5f;
-			if(diff >= ArxDurationMs(300)) {
-				jump_mul += (toMsf(LAST_JUMP_ENDTIME - arxtime.now()) * (1.0f / arxtime.speed()) + 300.f) * (1.f / 300);
+			if(diff >= PlatformDurationMs(300)) {
+				jump_mul += (toMs(LAST_JUMP_ENDTIME - g_platformTime.frameStart()) + 300.f) * (1.f / 300);
 				if(jump_mul > 1.f) {
 					jump_mul = 1.f;
 				}
@@ -2573,7 +2573,7 @@ void ARX_GAME_Reset() {
 	
 	entities.player()->speed_modif = 0;
 	
-	LAST_JUMP_ENDTIME = ArxInstant_ZERO;
+	LAST_JUMP_ENDTIME = PlatformInstant_ZERO;
 	FlyingOverIO = NULL;
 	g_miniMap.mapMarkerInit();
 	ClearDynLights();
