@@ -356,8 +356,6 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, num);
 	LogDebug("After  ARX_CHANGELEVEL_PushLevel");
 	
-	arxtime.resume();
-	
 	LogDebug("Before ARX_CHANGELEVEL_PopLevel");
 	ARX_CHANGELEVEL_PopLevel(num, true);
 	LogDebug("After  ARX_CHANGELEVEL_PopLevel");
