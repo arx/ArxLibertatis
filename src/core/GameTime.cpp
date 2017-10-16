@@ -65,17 +65,6 @@ GameTime::GameTime() {
 	m_frameDelay       = ArxDuration_ZERO;
 }
 
-void GameTime::init() {
-	
-	start_time         = platform::getTimeUs();
-	pause_time         = 0;
-	paused             = false;
-	m_now_us           = 0;
-	frame_time_us      = 0;
-	last_frame_time_us = 0;
-	m_frameDelay       = ArxDuration_ZERO;
-}
-
 void GameTime::pause() {
 	if(!is_paused()) {
 		pause_time = platform::getTimeUs();

@@ -103,8 +103,6 @@ public:
 	GameTime();
 	~GameTime() {}
 	
-	void init();
-	
 	void pause();
 	void resume();
 	
