@@ -2426,7 +2426,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	
 	bool movedOOBItems = false;
 	
-	for(size_t i = 0; i < entities.size(); i++) {
+	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * entity = entities[handle];
 		
