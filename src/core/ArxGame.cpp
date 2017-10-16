@@ -1223,6 +1223,10 @@ void ArxGame::doFrame() {
 	
 	g_platformTime.updateFrame();
 	
+	if(g_requestLevelInit) {
+		g_platformTime.overrideFrameDuration(PlatformDuration_ZERO);
+	}
+	
 	updateTime();
 
 	updateInput();
