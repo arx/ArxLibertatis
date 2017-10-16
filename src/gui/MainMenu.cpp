@@ -23,6 +23,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "audio/Audio.h"
 #include "core/Application.h"
@@ -715,6 +716,49 @@ public:
 		
 		{
 			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_video_fps_limit", "FPS Limit ");
+			szMenuText += " ";
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			
+			CycleTextWidget * cb = new CycleTextWidget;
+			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFPSLimit, this, _1, _2);
+			szMenuText = getLocalised("system_menus_options_video_vsync_off", "Disabled");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			if(benchmark::isEnabled()) {
+				cb->setValue(0);
+				cb->setEnabled(false);
+			} else {
+				cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "60"));
+				cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "120"));
+				cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "240"));
+				cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "480"));
+				if(config.video.fpsLimit == 0) {
+					cb->setValue(0);
+				} else if(config.video.fpsLimit == 60) {
+					cb->setValue(1);
+				} else if(config.video.fpsLimit == 120) {
+					cb->setValue(2);
+				} else if(config.video.fpsLimit == 240) {
+					cb->setValue(3);
+				} else if(config.video.fpsLimit == 480) {
+					cb->setValue(4);
+				} else {
+					std::string text = boost::lexical_cast<std::string>(config.video.fpsLimit);
+					cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, text));
+					cb->setValue(5);
+				}
+			}
+			
+			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			panel->AddElement(cb);
+			
+			addCenter(panel);
+		}
+		
+		{
+			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_texture_filter_anisotropic",
 			                                      "Anisotropic filtering");
 			szMenuText += " ";
@@ -868,6 +912,15 @@ private:
 		ARX_UNUSED(str);
 		config.video.vsync = pos > 1 ? -1 : pos;
 		mainApp->getWindow()->setVSync(config.video.vsync);
+	}
+	
+	void onChangedFPSLimit(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		if(pos == 0) {
+			config.video.fpsLimit = 0;
+		} else {
+			config.video.fpsLimit = boost::lexical_cast<int>(str);
+		}
 	}
 	
 	void onChangedMaxAnisotropy(int pos, const std::string & str) {

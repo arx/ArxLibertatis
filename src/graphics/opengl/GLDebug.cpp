@@ -21,6 +21,7 @@
 
 #include <cstring>
 
+#include "core/Benchmark.h"
 #include "graphics/opengl/OpenGLUtil.h"
 #include "io/log/Logger.h"
 #include "platform/ProgramOptions.h"

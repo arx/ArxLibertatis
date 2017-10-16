@@ -124,6 +124,7 @@ public:
 		float fogDistance;
 		bool antialiasing;
 		int vsync;
+		int fpsLimit;
 		int maxAnisotropicFiltering;
 		bool colorkeyAlphaToCoverage;
 		bool colorkeyAntialiasing;
