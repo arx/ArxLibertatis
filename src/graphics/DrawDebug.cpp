@@ -872,9 +872,9 @@ struct DebugRay {
 	Vec3f start;
 	Vec3f dir;
 	Color color;
-	float expiration;
+	PlatformInstant expiration;
 	
-	DebugRay(Vec3f start, Vec3f dir, Color color, float expiration)
+	DebugRay(Vec3f start, Vec3f dir, Color color, PlatformInstant expiration)
 		: start(start)
 		, dir(dir)
 		, color(color)
@@ -884,8 +884,8 @@ struct DebugRay {
 
 static std::vector<DebugRay> debugRays;
 
-void debug::drawRay(Vec3f start, Vec3f dir, Color color, float duration) {
-	DebugRay ray = DebugRay(start, dir, color, arxtime.now_f() + duration * 1000);
+void debug::drawRay(Vec3f start, Vec3f dir, Color color, PlatformDuration duration) {
+	DebugRay ray = DebugRay(start, dir, color, g_platformTime.frameStart() + duration * 1000);
 	debugRays.push_back(ray);
 }
 
@@ -895,7 +895,7 @@ static void updateAndRenderDebugDrawables() {
 		drawLine(ray.start, ray.dir, ray.color);
 	}
 	
-	float now = arxtime.now_f();
+	PlatformInstant now = g_platformTime.frameStart();
 	
 	for(size_t i = 0; i < debugRays.size(); i++) {
 		if(debugRays[i].expiration < now) {
