@@ -194,8 +194,6 @@ void ARX_MENU_Clicked_QUIT() {
 
 void ARX_MENU_Clicked_NEWQUEST() {
 	
-	arxtime.resume();
-	
 	g_canResumeGame = false;
 	
 	ARX_PLAYER_Start_New_Quest();
