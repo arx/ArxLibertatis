@@ -478,7 +478,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^arxseconds") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 1000) * 6;
+				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 1000);
 				return TYPE_LONG;
 			}
 			
