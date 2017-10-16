@@ -1585,7 +1585,9 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 	}
 	
 	LoadLevelScreen(num);
-	SetEditMode(1, false);
+	SetEditMode();
+	ARX_PATH_ComputeAllBoundingBoxes();
+	arxtime.pause();
 	
 	ARX_CHANGELEVEL_Pop_Globals();
 	

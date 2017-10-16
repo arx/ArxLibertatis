@@ -127,7 +127,7 @@ extern Vec3f LastValidPlayerPos;
 extern Vec3f WILL_RESTORE_PLAYER_POSITION;
 extern bool WILL_RESTORE_PLAYER_POSITION_FLAG;
 
-void SetEditMode(long ed, const bool stop_sound = true);
+void SetEditMode();
 
 void SendGameReadyMsg();
 void DANAE_StartNewQuest();
