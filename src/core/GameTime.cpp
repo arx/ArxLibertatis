@@ -89,4 +89,5 @@ void GameTime::force_time_restore(const ArxInstant time) {
 	
 	pause_time = start_time;
 	paused     = true;
+	force_frame_time_restore(time);
 }

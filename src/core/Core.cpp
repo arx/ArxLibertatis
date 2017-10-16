@@ -508,7 +508,6 @@ void levelInit() {
 
 	if(!TIME_INIT) {
 		arxtime.force_time_restore(FORCE_TIME_RESTORE);
-		arxtime.force_frame_time_restore(FORCE_TIME_RESTORE);
 	} else {
 		arxtime.resume();
 	}
