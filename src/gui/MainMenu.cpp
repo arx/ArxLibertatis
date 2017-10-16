@@ -26,6 +26,7 @@
 
 #include "audio/Audio.h"
 #include "core/Application.h"
+#include "core/Benchmark.h"
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/Localisation.h"
@@ -695,11 +696,16 @@ public:
 			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedVSync, this, _1, _2);
 			szMenuText = getLocalised("system_menus_options_video_vsync_off", "Off");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			szMenuText = getLocalised("system_menus_options_video_vsync_on", "On");
-			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			szMenuText = getLocalised("system_menus_options_video_vsync_auto", "Adaptive");
-			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			cb->setValue(config.video.vsync < 0 ? 2 : config.video.vsync);
+			if(benchmark::isEnabled()) {
+				cb->setValue(0);
+				cb->setEnabled(false);
+			} else {
+				szMenuText = getLocalised("system_menus_options_video_vsync_on", "On");
+				cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+				szMenuText = getLocalised("system_menus_options_video_vsync_auto", "Adaptive");
+				cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+				cb->setValue(config.video.vsync < 0 ? 2 : config.video.vsync);
+			}
 			
 			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
 			panel->AddElement(cb);

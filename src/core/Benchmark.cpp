@@ -283,6 +283,10 @@ void shutdown() {
 	
 }
 
+bool isEnabled() {
+	return g_enabled;
+}
+
 static void enable(util::cmdline::optional<std::string> limit) {
 	if(limit && !limit->empty()) {
 		boost::trim(*limit);

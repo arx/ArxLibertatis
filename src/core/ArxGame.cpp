@@ -428,7 +428,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	m_MainWindow->setMinimizeOnFocusLost(config.window.minimizeOnFocusLost);
 	m_MainWindow->setMinTextureUnits(3);
 	m_MainWindow->setMaxMSAALevel(config.video.antialiasing ? 8 : 1);
-	m_MainWindow->setVSync(config.video.vsync);
+	m_MainWindow->setVSync(benchmark::isEnabled() ? 0 : config.video.vsync);
 	
 	setWindowSize(config.video.fullscreen);
 	
