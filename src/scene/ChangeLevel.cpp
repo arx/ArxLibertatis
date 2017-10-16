@@ -1611,7 +1611,6 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 	g_desiredFogParameters = asi->gmods_desired;
 	g_currentFogParameters = asi->gmods_current;
 	GMOD_RESET = false;
-	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	
 	return 1;
@@ -2590,7 +2589,6 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	LogDebug("After  DANAE ClearAll");
 	
 	arxtime.pause();
-	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	
 	// Now we can load our things...
@@ -2694,7 +2692,6 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	progressBarAdvance();
 	LoadLevelScreen();
 	
-	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
 	TIME_INIT = false;
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	LogDebug("After  Player Misc Init");
@@ -2853,12 +2850,13 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		g_currentPlathrough.newestALVersion = pld.newestALVersion;
 		
 		const ArxInstant fPldTime = ArxInstantMs(pld.time);
+		arxtime.force_time_restore(ArxInstantMs(pld.time));
+		
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
 		CURRENTLEVEL = pld.level;
 		ARX_CHANGELEVEL_DesiredTime = fPldTime;
 		ARX_CHANGELEVEL_PopLevel(pld.level, false);
-		arxtime.force_time_restore(fPldTime);
 		TIME_INIT = false;
 		FORCE_TIME_RESTORE = fPldTime;
 		
