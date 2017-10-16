@@ -56,18 +56,17 @@ void PlatformTime::updateFrame() {
 	
 	PlatformInstant currentTime = PlatformInstantUs(s64(platform::getTimeUs()));
 	
-	m_frameStartTime = currentTime;
-	if(m_lastFrameStartTime == PlatformInstant_ZERO) {
-		m_lastFrameStartTime = currentTime;
+	if(m_frameStartTime == PlatformInstant_ZERO) {
+		m_frameStartTime = currentTime;
 	}
-	arx_assert(m_frameStartTime >= m_lastFrameStartTime);
+	arx_assert(currentTime >= m_frameStartTime);
 	
-	m_lastFrameDuration = m_frameStartTime - m_lastFrameStartTime;
+	m_lastFrameDuration = currentTime - m_frameStartTime;
 	
 	// Limit simulation time per frame
 	m_lastFrameDuration = std::min(m_lastFrameDuration, PlatformDurationMs(100));
 	
-	m_lastFrameStartTime = currentTime;
+	m_frameStartTime = currentTime;
 }
 
 GameTime::GameTime() {
