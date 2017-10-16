@@ -2115,11 +2115,11 @@ void PlayerMovementIterate(float DeltaTime) {
 		// Apply player impulse force
 		
 		float jump_mul = 1.f;
-		ArxDuration diff = ArxDurationMsf(toMsf(arxtime.now() - LAST_JUMP_ENDTIME) * (1.0f / GLOBAL_SLOWDOWN));
+		ArxDuration diff = ArxDurationMsf(toMsf(arxtime.now() - LAST_JUMP_ENDTIME) * (1.0f / arxtime.speed()));
 		if(diff < ArxDurationMs(600)) {
 			jump_mul = 0.5f;
 			if(diff >= ArxDurationMs(300)) {
-				jump_mul += (toMsf(LAST_JUMP_ENDTIME - arxtime.now()) * (1.0f / GLOBAL_SLOWDOWN) + 300.f) * (1.f / 300);
+				jump_mul += (toMsf(LAST_JUMP_ENDTIME - arxtime.now()) * (1.0f / arxtime.speed()) + 300.f) * (1.f / 300);
 				if(jump_mul > 1.f) {
 					jump_mul = 1.f;
 				}
@@ -2290,7 +2290,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				const float jump_up_time = 200.f;
 				const float jump_up_height = 130.f;
 				const ArxInstant now = arxtime.now();
-				const float elapsed = toMsf(now - player.jumpstarttime) * (1.0f / GLOBAL_SLOWDOWN);
+				const float elapsed = toMsf(now - player.jumpstarttime) * (1.0f / arxtime.speed());
 				float position = glm::clamp(elapsed / jump_up_time, 0.f, 1.f);
 				
 				float p = (position - player.jumplastposition) * jump_up_height;
@@ -2598,7 +2598,7 @@ void ARX_GAME_Reset() {
 
 	ioSteal = NULL;
 
-	GLOBAL_SLOWDOWN = 1.f;
+	arxtime.setSpeed(1.f);
 
 	CheatReset();
 	

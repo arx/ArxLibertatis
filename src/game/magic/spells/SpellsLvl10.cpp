@@ -353,9 +353,9 @@ bool FreezeTimeSpell::CanLaunch() {
 void FreezeTimeSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
 	
-	float max_slowdown = std::max(0.f, GLOBAL_SLOWDOWN - 0.01f);
+	float max_slowdown = std::max(0.f, arxtime.speed() - 0.01f);
 	m_slowdown = glm::clamp(m_level * 0.08f, 0.f, max_slowdown);
-	GLOBAL_SLOWDOWN -= m_slowdown;
+	arxtime.setSpeed(arxtime.speed() - m_slowdown);
 	
 	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(200000);
 	m_hasDuration = true;
@@ -363,7 +363,7 @@ void FreezeTimeSpell::Launch() {
 }
 
 void FreezeTimeSpell::End() {
-	GLOBAL_SLOWDOWN += m_slowdown;
+	arxtime.setSpeed(arxtime.speed() + m_slowdown);
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster) {

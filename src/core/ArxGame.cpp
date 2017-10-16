@@ -1597,8 +1597,8 @@ void ArxGame::updateTime() {
 	// Limit simulation time per frame
 	delta = std::min(delta, ArxDurationMs(100));
 	
-	if(GLOBAL_SLOWDOWN != 1.f) {
-		delta -= ArxDurationMsf(toMsf(delta) * (1.f - GLOBAL_SLOWDOWN));
+	if(arxtime.speed() != 1.f) {
+		delta -= ArxDurationMsf(toMsf(delta) * (1.f - arxtime.speed()));
 	}
 	
 	arx_assert(delta >= ArxDuration_ZERO);

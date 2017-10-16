@@ -573,8 +573,6 @@ void ManageNONCombatModeAnimations() {
 	}
 }
 
-float GLOBAL_SLOWDOWN=1.f;
-
 static bool StrikeAimtime() {
 	
 	ARX_PLAYER_Remove_Invisibility();
