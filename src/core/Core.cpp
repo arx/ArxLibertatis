@@ -273,9 +273,6 @@ void DanaeRestoreFullScreen() {
 
 void runGame() {
 	
-	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
-	arxtime.init();
-	
 	mainApp = new ArxGame();
 	if(mainApp->initialize()) {
 		// Init all done, start the main loop
@@ -391,9 +388,6 @@ void levelInit() {
 	STARTDRAG = Vec2s_ZERO;
 	DANAEMouse = Vec2s_ZERO;
 	
-	if(LOAD_N_ERASE)
-		arxtime.init();
-
 	PolyBoomClear();
 	ARX_DAMAGES_Reset();
 	ARX_MISSILES_ClearAll();
@@ -429,7 +423,6 @@ void levelInit() {
 	ARX_FOGS_Render();
 
 	if(LOAD_N_ERASE) {
-		arxtime.init();
 
 		if(!DONT_ERASE_PLAYER)
 			ARX_PLAYER_InitPlayer();
@@ -493,9 +486,6 @@ void levelInit() {
 
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene.string());
-	
-	if(TIME_INIT)
-		arxtime.init();
 	
 	arxtime.update_last_frame_time();
 	
