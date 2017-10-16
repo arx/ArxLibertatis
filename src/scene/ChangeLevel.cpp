@@ -108,7 +108,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 extern bool GLOBAL_MAGIC_MODE;
-ArxInstant FORCE_TIME_RESTORE = ArxInstant_ZERO;
 
 extern bool GMOD_RESET;
 
@@ -261,7 +260,6 @@ bool ARX_CHANGELEVEL_StartNew() {
 	g_currentPlathrough.oldestALVersion = arx_version_number;
 	g_currentPlathrough.newestALVersion = arx_version_number;
 	
-	FORCE_TIME_RESTORE = ArxInstant_ZERO;
 	arxtime.force_time_restore(ArxInstant_ZERO);
 	
 	if(!ARX_Changelevel_CurGame_Clear()) {
@@ -1609,7 +1607,6 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 	g_desiredFogParameters = asi->gmods_desired;
 	g_currentFogParameters = asi->gmods_current;
 	GMOD_RESET = false;
-	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	
 	return 1;
 }
@@ -2587,7 +2584,6 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	LogDebug("After  DANAE ClearAll");
 	
 	arxtime.pause();
-	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	
 	// Now we can load our things...
 	std::ostringstream loadfile;
@@ -2689,7 +2685,6 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	progressBarAdvance();
 	LoadLevelScreen();
 	
-	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	LogDebug("After  Player Misc Init");
 	
 	LogDebug("Before Memory Release");
@@ -2852,7 +2847,6 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		CURRENTLEVEL = pld.level;
 		ARX_CHANGELEVEL_DesiredTime = fPldTime;
 		ARX_CHANGELEVEL_PopLevel(pld.level, false);
-		FORCE_TIME_RESTORE = fPldTime;
 		
 	} else {
 		LogError << "Error Loading Level...";
