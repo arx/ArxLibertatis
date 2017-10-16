@@ -177,17 +177,12 @@ void ARX_Menu_Resources_Release(bool _bNoSound) {
 	delete g_thumbnailCursor.m_loadTexture, g_thumbnailCursor.m_loadTexture = NULL;
 }
 
-extern bool TIME_INIT;
-
 void ARX_MENU_Clicked_QUIT() {
 	
 	arx_assert(g_canResumeGame);
 	
 	ARX_Menu_Resources_Release();
 	ARXmenu.currentmode = AMCM_OFF;
-	if(TIME_INIT) {
-		arxtime.resume();
-	}
 }
 
 void ARX_MENU_Clicked_NEWQUEST() {
