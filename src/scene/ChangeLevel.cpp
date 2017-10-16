@@ -116,7 +116,6 @@ extern long HERO_SHOW_1ST;
 extern bool EXTERNALVIEW;
 extern bool LOAD_N_ERASE;
 extern long FORBID_SCRIPT_IO_CREATION;
-extern bool TIME_INIT;
 
 static bool ARX_CHANGELEVEL_Push_Index(long num);
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
@@ -262,7 +261,6 @@ bool ARX_CHANGELEVEL_StartNew() {
 	g_currentPlathrough.oldestALVersion = arx_version_number;
 	g_currentPlathrough.newestALVersion = arx_version_number;
 	
-	TIME_INIT = false;
 	FORCE_TIME_RESTORE = ArxInstant_ZERO;
 	arxtime.force_time_restore(ArxInstant_ZERO);
 	
@@ -2691,14 +2689,12 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	progressBarAdvance();
 	LoadLevelScreen();
 	
-	TIME_INIT = false;
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	LogDebug("After  Player Misc Init");
 	
 	LogDebug("Before Memory Release");
 	delete[] idx_io;
 	FORBID_SCRIPT_IO_CREATION = 0;
-	TIME_INIT = false;
 	LogDebug("After  Memory Release");
 	
 	LogDebug("Before Final Inits");
@@ -2856,7 +2852,6 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		CURRENTLEVEL = pld.level;
 		ARX_CHANGELEVEL_DesiredTime = fPldTime;
 		ARX_CHANGELEVEL_PopLevel(pld.level, false);
-		TIME_INIT = false;
 		FORCE_TIME_RESTORE = fPldTime;
 		
 	} else {
