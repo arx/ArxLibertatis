@@ -2741,8 +2741,6 @@ bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 	
 	LogDebug("ARX_CHANGELEVEL_Save " << savefile << " " << name);
 	
-	arxtime.pause();
-	
 	if(CURRENTLEVEL == -1) {
 		LogWarning << "Internal Non-Fatal Error";
 		return false;
@@ -2785,8 +2783,6 @@ bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 		LogError << "Could not complete the save";
 		return false;
 	}
-	
-	arxtime.resume();
 	
 	// Copy the savegame and screenshot to the final destination, overwriting previous files
 	if(!fs::copy_file(CURRENT_GAME_FILE, savefile, true)) {
