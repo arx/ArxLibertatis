@@ -1594,6 +1594,9 @@ void ArxGame::updateTime() {
 	
 	arx_assert(delta >= ArxDuration_ZERO);
 	
+	// Limit simulation time per frame
+	delta = std::min(delta, ArxDurationMs(100));
+	
 	if(GLOBAL_SLOWDOWN != 1.f) {
 		delta -= ArxDurationMsf(toMsf(delta) * (1.f - GLOBAL_SLOWDOWN));
 	}
@@ -1601,16 +1604,9 @@ void ArxGame::updateTime() {
 	arx_assert(delta >= ArxDuration_ZERO);
 	
 	arxtime.update(delta);
-
-	ArxDuration framedelay = arxtime.get_frame_delay();
-	arx_assert(framedelay >= ArxDuration_ZERO);
-
-	// limit fps above 10fps
-	const ArxDuration max_framedelay = ArxDurationMs(100);
-	framedelay = std::min(framedelay, max_framedelay);
 	
-	g_framedelay = toMsf(framedelay);
-	g_framedelay2 = framedelay;
+	g_framedelay = toMsf(arxtime.get_frame_delay());
+	g_framedelay2 = arxtime.get_frame_delay();
 }
 
 void ArxGame::updateInput() {
