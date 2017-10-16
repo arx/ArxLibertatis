@@ -2160,7 +2160,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				remaining = ArxDurationMs(ats->interval);
 			}
 			
-			const ArxInstant tt = (ARX_CHANGELEVEL_DesiredTime + remaining) - ArxDurationMs(ats->interval);
+			const ArxInstant tt = (arxtime.now() + remaining) - ArxDurationMs(ats->interval);
 			scr_timer[num].start = tt;
 			
 			scr_timer[num].count = ats->count;
