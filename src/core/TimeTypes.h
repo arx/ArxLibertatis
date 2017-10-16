@@ -206,6 +206,10 @@ inline PlatformDuration PlatformDurationMsf(float val) {
 	return PlatformDuration::ofRaw(s64(val * 1000.f));
 }
 
+inline s64 toUs(PlatformInstant val) {
+	return val.t;
+}
+
 inline float toMs(PlatformDuration val) {
 	return float(val.t) / (1000.f);
 }

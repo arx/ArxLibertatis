@@ -159,14 +159,27 @@ static const char * entityVisilibityToString(EntityVisilibity value) {
 	return "Unknown";
 }
 
+static std::string prettyUs(s64 us) {
+	std::ostringstream s;
+	s << std::setw(7)
+	  << us / 1000000ll
+	  << "s"
+	  << std::setfill('0')
+	  << std::setw(3)
+	  << (us % 1000000ll) / 1000ll
+	  << "ms";
+	return s.str();
+}
+
 void ShowInfoText() {
 	
 	DebugBox frameInfo = DebugBox(Vec2i(10, 10), "FrameInfo");
+	frameInfo.add("PlatformTime", prettyUs(toUs(g_platformTime.frameStart())));
+	frameInfo.add("ArxTime", prettyUs(toUs(arxtime.now())));
 	frameInfo.add("Prims", EERIEDrawnPolys);
 	frameInfo.add("Particles", getParticleCount());
 	frameInfo.add("Sparks", ParticleSparkCount());
 	frameInfo.add("Polybooms", long(PolyBoomCount()));
-	frameInfo.add("TIME", toMsf(arxtime.now()) / 1000.f);
 	frameInfo.print();
 	
 	DebugBox camBox = DebugBox(Vec2i(10, frameInfo.size().y + 5), "Camera");
