@@ -112,8 +112,7 @@ void cinematicLaunchWaiting() {
 				PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
 			} else {
 				LogDebug("starting cinematic");
-				PLAY_LOADED_CINEMATIC = Cinematic_StartRequested;
-				arxtime.pause();
+				cinematicRequestStart();
 			}
 
 			LAST_LAUNCHED_CINE = WILL_LAUNCH_CINE;
