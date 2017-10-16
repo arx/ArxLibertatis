@@ -106,7 +106,7 @@ public:
 	void pause();
 	void resume();
 	
-	void force_time_restore(ArxInstant time);
+	void reset(ArxInstant time);
 	
 	float now_f() const {
 		return toMsf(m_now_us);
