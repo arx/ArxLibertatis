@@ -1207,9 +1207,6 @@ void ArxGame::run() {
 		
 		if(m_MainWindow->isVisible() && !m_MainWindow->isMinimized() && m_bReady) {
 			doFrame();
-			
-			// Show the frame on the primary surface.
-			m_MainWindow->showFrame();
 		}
 	}
 	
@@ -1238,8 +1235,10 @@ void ArxGame::doFrame() {
 	}
 
 	// Manages Splash Screens if needed
-	if(HandleGameFlowTransitions())
+	if(HandleGameFlowTransitions()) {
+		m_MainWindow->showFrame();
 		return;
+	}
 
 	// Clicked on New Quest ? (TODO:need certainly to be moved somewhere else...)
 	if(START_NEW_QUEST) {
@@ -1287,6 +1286,7 @@ void ArxGame::doFrame() {
 	} else {
 		cinematicLaunchWaiting();
 		render();
+		m_MainWindow->showFrame();
 	}
 }
 
