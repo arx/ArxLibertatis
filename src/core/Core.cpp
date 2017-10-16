@@ -199,7 +199,6 @@ float g_framedelay = 0.f;
 ArxDuration g_framedelay2 = ArxDuration_ZERO;
 
 bool LOAD_N_ERASE = true;
-bool TIME_INIT = true;
 
 Rect g_size(640, 480);
 Vec2f g_sizeRatio(1.f, 1.f);
