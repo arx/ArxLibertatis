@@ -1281,6 +1281,7 @@ void ArxGame::doFrame() {
 			GRenderer->getSnapshot(savegame_thumbnail, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
 			ARX_QuickSave();
 			arxtime.resume();
+			g_platformTime.updateFrame();
 		}
 		
 	}
