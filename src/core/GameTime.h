@@ -66,19 +66,7 @@ public:
 		, m_lastFrameDuration(0)
 	{ }
 	
-	inline void updateFrame() {
-		u64 currentTime = platform::getTimeUs();
-		
-		m_frameStartTime = currentTime;
-		if(m_lastFrameStartTime == 0) {
-			m_lastFrameStartTime = currentTime;
-		}
-		arx_assert(m_frameStartTime >= m_lastFrameStartTime);
-		
-		m_lastFrameDuration = m_frameStartTime - m_lastFrameStartTime;
-		
-		m_lastFrameStartTime = currentTime;
-	}
+	void updateFrame();
 	
 	void overrideFrameDuration(PlatformDuration duration) {
 		m_lastFrameDuration = toUs(duration);
