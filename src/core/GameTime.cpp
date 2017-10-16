@@ -53,41 +53,34 @@ PlatformTime g_platformTime;
 GameTime arxtime;
 
 GameTime::GameTime() {
-	
-	// TODO can't call init from constructor platform::getTimeUs() requires init
-	// potential out-of-order construction resulting in a divide-by-zero
-	start_time         = 0;
-	pause_time         = 0;
 	paused             = true;
-	m_now_us           = 0;
-	frame_time_us      = 0;
-	last_frame_time_us = 0;
+	m_now_us           = ArxInstant_ZERO;
 	m_frameDelay       = ArxDuration_ZERO;
 }
 
 void GameTime::pause() {
 	if(!is_paused()) {
-		pause_time = platform::getTimeUs();
 		paused     = true;
 	}
 }
 
 void GameTime::resume() {
 	if(is_paused()) {
-		start_time += platform::getElapsedUs(pause_time);
-		pause_time = 0;
 		paused     = false;
 	}
 }
 
 void GameTime::force_time_restore(const ArxInstant time) {
+	m_now_us = time;
+	paused = true;
+}
+
+void GameTime::update(ArxDuration delta) {
 	
-	u64 requested_time = u64(toUs(time));
+	if(is_paused()) {
+		delta = ArxDuration_ZERO;
+	}
 	
-	start_time = platform::getElapsedUs(requested_time);
-	m_now_us = requested_time;
-	
-	pause_time = start_time;
-	paused     = true;
-	force_frame_time_restore(time);
+	m_frameDelay = delta;
+	m_now_us += delta;
 }

@@ -108,61 +108,32 @@ public:
 	
 	void force_time_restore(ArxInstant time);
 	
-	// TODO probably the source of the need to clip frame_delay
-	void force_frame_time_restore(const ArxInstant v) {
-		frame_time_us = u64(toUs(v));
-		last_frame_time_us = u64(toUs(v));
-	}
-	
 	float now_f() const {
-		return float(m_now_us) / 1000.0f;
+		return toMsf(m_now_us);
 	}
 	
 	ArxInstant now() const {
-		return ArxInstantUs(s64(m_now_us));
+		return m_now_us;
 	}
 	
-	void update() {
-		if (is_paused()) {
-			m_now_us = platform::getElapsedUs(start_time, pause_time);
-		} else {
-			m_now_us = platform::getElapsedUs(start_time);
-		}
-		frame_time_us = m_now_us;
-		m_frameDelay = ArxDurationUs(s64(frame_time_us - last_frame_time_us));
-	}
+	void update(ArxDuration delta);
 	
 	bool is_paused() const { 
 		return paused; 
-	}
-	
-	// used only for "slow time" spell
-	void increment_start_time(u64 inc) {
-		start_time += inc;
 	}
 	
 	ArxDuration get_frame_delay() const {
 		return m_frameDelay;
 	}
 	
-	void update_last_frame_time() {
-		last_frame_time_us = frame_time_us;
-	}
-	
 private:
 	
 	bool paused;
 	
-	// these values are expected to wrap
-	u64 pause_time;
-	u64 start_time;
+	ArxInstant m_now_us;
 	
-	// TODO this sometimes respects pause and sometimes not!
-	u64 m_now_us;
-	
-	u64 last_frame_time_us;
-	u64 frame_time_us;
 	ArxDuration m_frameDelay;
+	
 };
 
 extern GameTime arxtime;
