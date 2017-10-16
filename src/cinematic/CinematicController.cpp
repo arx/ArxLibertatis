@@ -69,8 +69,8 @@ void cinematicPrepare(const std::string & name, bool preload) {
 }
 
 void cinematicRequestStart() {
-
 	PLAY_LOADED_CINEMATIC = Cinematic_StartRequested;
+	arxtime.pause();
 }
 
 void cinematicKill() {

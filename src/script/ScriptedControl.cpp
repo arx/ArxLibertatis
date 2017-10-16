@@ -232,7 +232,6 @@ public:
 			arxtime.resume();
 		} else if(name == "play") {
 			cinematicRequestStart();
-			arxtime.pause();
 		} else {
 			
 			if(g_resources->getFile(res::path("graph/interface/illustrations") / (name + ".cin"))) {
