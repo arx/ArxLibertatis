@@ -2743,9 +2743,6 @@ void ARX_GAME_Reset() {
 	// Kill Script Loaded IO
 	CleanScriptLoadedIO();
 	
-	// ARX Timer
-	arxtime.init();
-	
 	ClearTileLights();
 }
 
