@@ -2643,10 +2643,9 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	LoadLevelScreen(instance);
 	
 	if(firstTime) {
-		ArxInstant ulDTime = ARX_CHANGELEVEL_DesiredTime;
 		for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
 			if(scr_timer[i].exist) {
-				scr_timer[i].start = ulDTime;
+				scr_timer[i].start = arxtime.now();
 			}
 		}
 	} else {
