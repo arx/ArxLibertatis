@@ -146,6 +146,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/ProgramOptions.h"
 #include "platform/profiler/Profiler.h"
 #include "platform/Time.h"
+#include "platform/Thread.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/Interactive.h"
@@ -1218,6 +1219,22 @@ void ArxGame::run() {
  * \brief Draws the scene.
  */
 void ArxGame::doFrame() {
+	
+	if(config.video.fpsLimit && !benchmark::isEnabled()) {
+		
+		PlatformInstant now = PlatformInstantUs(s64(platform::getTimeUs()));
+		PlatformDuration renderDuration = now - g_platformTime.frameStart();
+		
+		int targetFps = config.video.fpsLimit;
+		if(config.video.vsync) {
+			targetFps = std::max(targetFps, 480);
+		}
+		PlatformDuration targetDuration = PlatformDurationUs(1000000 / (targetFps + targetFps / 20 + 1) - 100);
+		if(renderDuration < targetDuration) {
+			Thread::sleep(toMsi(targetDuration) - toMsi(renderDuration));
+		}
+		
+	}
 	
 	ARX_PROFILE_FUNC();
 	

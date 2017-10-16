@@ -225,6 +225,9 @@ inline s64 toMsi(PlatformInstant val) {
 inline s64 toUs(PlatformDuration val) {
 	return val.t;
 }
+inline s64 toMsi(PlatformDuration val) {
+	return val.t / 1000;
+}
 inline float toMs(PlatformDuration val) {
 	return float(val.t) / (1000.f);
 }

@@ -65,6 +65,7 @@ const int
 	levelOfDetail = 2,
 	fogDistance = 10,
 	vsync = -1,
+	fpsLimit = 240,
 	maxAnisotropicFiltering = 9001,
 	cinematicWidescreenMode = CinematicFadeEdges,
 	hudScaleFilter = UIFilterBilinear,
@@ -184,6 +185,7 @@ const std::string
 	fogDistance = "fog",
 	antialiasing = "antialiasing",
 	vsync = "vsync",
+	fpsLimit = "fps_limit",
 	maxAnisotropicFiltering = "max_anisotropic_filtering",
 	colorkeyAlphaToCoverage = "colorkey_alpha_to_coverage",
 	colorkeyAntialiasing = "colorkey_antialiasing",
@@ -408,6 +410,7 @@ bool Config::save() {
 	writer.writeKey(Key::fogDistance, video.fogDistance);
 	writer.writeKey(Key::antialiasing, video.antialiasing);
 	writer.writeKey(Key::vsync, video.vsync);
+	writer.writeKey(Key::fpsLimit, video.fpsLimit);
 	writer.writeKey(Key::maxAnisotropicFiltering, video.maxAnisotropicFiltering);
 	writer.writeKey(Key::colorkeyAlphaToCoverage, video.colorkeyAlphaToCoverage);
 	writer.writeKey(Key::colorkeyAntialiasing, video.colorkeyAntialiasing);
@@ -541,6 +544,8 @@ bool Config::init(const fs::path & file) {
 	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
 	int vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
 	video.vsync = glm::clamp(vsync, -1, 1);
+	int fpsLimit = reader.getKey(Section::Video, Key::fpsLimit, Default::fpsLimit);
+	video.fpsLimit = std::max(fpsLimit, 0);
 	int anisoFiltering = reader.getKey(Section::Video, Key::maxAnisotropicFiltering, Default::maxAnisotropicFiltering);
 	video.maxAnisotropicFiltering = std::max(anisoFiltering, 1);
 	video.colorkeyAlphaToCoverage = reader.getKey(Section::Video, Key::colorkeyAlphaToCoverage, Default::colorkeyAlphaToCoverage);
