@@ -58,7 +58,7 @@ GameTime::GameTime() {
 	// potential out-of-order construction resulting in a divide-by-zero
 	start_time         = 0;
 	pause_time         = 0;
-	paused             = false;
+	paused             = true;
 	m_now_us           = 0;
 	frame_time_us      = 0;
 	last_frame_time_us = 0;
