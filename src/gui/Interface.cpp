@@ -864,7 +864,7 @@ long CSEND=0;
 long MOVE_PRECEDENCE=0;
 
 
-extern ArxInstant REQUEST_JUMP;
+extern PlatformInstant REQUEST_JUMP;
 //-----------------------------------------------------------------------------
 void ArxGame::managePlayerControls() {
 	
@@ -1135,7 +1135,7 @@ void ArxGame::managePlayerControls() {
 	
 	// Checks JUMP Key Status.
 	if(player.jumpphase == NotJumping && GInput->actionNowPressed(CONTROLS_CUST_JUMP) && !player.levitate) {
-		REQUEST_JUMP = arxtime.now();
+		REQUEST_JUMP = g_platformTime.frameStart();
 	}
 	
 	// MAGIC
