@@ -1072,7 +1072,6 @@ void ArxGame::shutdown() {
 void ArxGame::shutdownGame() {
 	
 	ARX_Menu_Resources_Release();
-	arxtime.resume();
 	
 	mainApp->getWindow()->hide();
 	
