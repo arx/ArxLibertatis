@@ -409,8 +409,6 @@ void levelInit() {
 	
 	resetDynLights();
 	
-	arxtime.update_last_frame_time();
-	
 	if(LOAD_N_ERASE) {
 		CleanInventory();
 		ARX_SCRIPT_Timer_ClearAll();
@@ -487,8 +485,6 @@ void levelInit() {
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene.string());
 	
-	arxtime.update_last_frame_time();
-	
 	progressBarAdvance();
 	LoadLevelScreen();
 	
@@ -505,12 +501,6 @@ void levelInit() {
 	ARX_PLAYER_RectifyPosition();
 
 	entities.player()->_npcdata->vvpos = -99999;
-
-	if(!TIME_INIT) {
-		arxtime.force_time_restore(FORCE_TIME_RESTORE);
-	} else {
-		arxtime.resume();
-	}
 
 	SendGameReadyMsg();
 	PLAYER_MOUSELOOK_ON = false;
