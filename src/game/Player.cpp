@@ -2564,7 +2564,7 @@ void ARX_PLAYER_Invulnerability(long flag) {
 
 extern Entity * FlyingOverIO;
 
-void ARX_GAME_Reset(long type) {
+void ARX_GAME_Reset() {
 	arx_assert(entities.player());
 	
 	DeadTime = ArxDuration_ZERO;
@@ -2623,11 +2623,9 @@ void ARX_GAME_Reset(long type) {
 	EERIE_PATHFINDER_Clear();
 
 	// Sound
-	if(!(type & 1)) {
-		ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
-		ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
-		ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
-	}
+	ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
+	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
+	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
 
 	// Damages
 	ARX_DAMAGE_Reset_Blood_Info();
@@ -2674,12 +2672,7 @@ void ARX_GAME_Reset(long type) {
 	ARX_PATH_ClearAllUsePath();
 
 	// Player Torch
-	if(type & 1) {
-		if(player.torch)
-			ARX_PLAYER_ClickedOnTorch(player.torch);
-	} else {
-		player.torch = NULL;
-	}
+	player.torch = NULL;
 
 	// Player Quests
 	ARX_PLAYER_Quest_Init();
