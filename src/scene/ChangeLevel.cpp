@@ -2857,7 +2857,6 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		g_currentPlathrough.newestALVersion = pld.newestALVersion;
 		
 		const ArxInstant fPldTime = ArxInstantMs(pld.time);
-		DanaeClearLevel();
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
 		CURRENTLEVEL = pld.level;
