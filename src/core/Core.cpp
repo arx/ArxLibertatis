@@ -166,7 +166,6 @@ class TextManager;
 Image savegame_thumbnail;
 
 extern TextManager	*pTextManage;
-extern ArxInstant FORCE_TIME_RESTORE;
 
 extern long		DONT_WANT_PLAYER_INZONE;
 
