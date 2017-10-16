@@ -983,11 +983,11 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		
 		ais.usepath_aupflags = aup->aupflags;
 		
-		ais.usepath_curtime = checked_range_cast<u32>(aup->_curtime);
+		ais.usepath_curtime = checked_range_cast<u32>(toMsi(aup->_curtime)); // TODO save/load time
 		
 		ais.usepath_initpos = aup->initpos;
 		ais.usepath_lastWP = aup->lastWP;
-		ais.usepath_starttime = checked_range_cast<u32>(aup->_starttime);
+		ais.usepath_starttime = checked_range_cast<u32>(toMsi(aup->_starttime)); // TODO save/load time
 		
 		util::storeString(ais.usepath_name, aup->path->name.c_str());
 	}
@@ -2045,10 +2045,10 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		if(ais->system_flags & SYSTEM_FLAG_USEPATH) {
 			ARX_USE_PATH * aup = io->usepath = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
 			aup->aupflags = UsePathFlags::load(ais->usepath_aupflags); // TODO save/load flags
-			aup->_curtime = static_cast<float>(ais->usepath_curtime);
+			aup->_curtime = ArxInstantMs(ais->usepath_curtime); // TODO save/load time
 			aup->initpos = ais->usepath_initpos.toVec3();
 			aup->lastWP = ais->usepath_lastWP;
-			aup->_starttime = static_cast<float>(ais->usepath_starttime);
+			aup->_starttime = ArxInstantMs(ais->usepath_starttime); // TODO save/load time
 			aup->path = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(ais->usepath_name)));
 		}
 		

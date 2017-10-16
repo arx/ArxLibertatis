@@ -132,6 +132,12 @@ inline InstantType<TAG, T> & operator +=(InstantType<TAG, T> & a, DurationType<T
 	a.t += b.t;
 	return a;
 }
+template <typename TAG, typename T>
+inline InstantType<TAG, T> & operator -=(InstantType<TAG, T> & a, DurationType<TAG, T> b) {
+	a.t -= b.t;
+	return a;
+}
+
 
 template <typename TAG, typename T>
 inline float operator /(DurationType<TAG, T> a, DurationType<TAG, T> b) {

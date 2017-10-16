@@ -1871,15 +1871,15 @@ static void ManageNPCMovement(Entity * io)
 		io->requestRoomUpdate = true;
 		Vec3f tv;
 
-		if(aup->_curtime - aup->_starttime > 500) {
-			aup->_curtime -= 500;
+		if(aup->_curtime - aup->_starttime > ArxDurationMs(500)) {
+			aup->_curtime -= ArxDurationMs(500);
 			ARX_PATHS_Interpolate(aup, &tv);
-			aup->_curtime += 500;
+			aup->_curtime += ArxDurationMs(500);
 			io->angle.setYaw(MAKEANGLE(glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
 		} else {
-			aup->_curtime += 500;
+			aup->_curtime += ArxDurationMs(500);
 			ARX_PATHS_Interpolate(aup, &tv);
-			aup->_curtime -= 500;
+			aup->_curtime -= ArxDurationMs(500);
 			io->angle.setYaw(MAKEANGLE(180.f + glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
 		}
 		return;
@@ -3029,7 +3029,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		}
 		
 		ARX_USE_PATH * aup = io->usepath;
-		aup->_curtime += smoothing + 100;
+		aup->_curtime += ArxDurationMs(smoothing + 100);
 
 		Vec3f tp;
 		long wp = ARX_PATHS_Interpolate(aup, &tp);
