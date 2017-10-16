@@ -414,16 +414,16 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	ARX_PATH * ap = aup->path;
 	
 	// compute Delta Time
-	float tim = aup->_curtime - aup->_starttime;
+	ArxDuration tim = aup->_curtime - aup->_starttime;
 	
-	if(tim < 0) {
+	if(tim < ArxDuration_ZERO) {
 		return -1;
 	}
 	
 	// set pos to startpos
 	*pos = Vec3f_ZERO;
 	
-	if(tim == 0) {
+	if(tim == ArxDuration_ZERO) {
 		return 0;
 	}
 	
@@ -432,14 +432,14 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	aup->aupflags &= ~ARX_USEPATH_FLAG_FINISHED;
 
 	if(ap->pathways) {
-		ap->pathways[0]._time = 0;
+		ap->pathways[0]._time = ArxDuration_ZERO;
 		ap->pathways[0].rpos = Vec3f_ZERO;
 	} else {
 		return -1;
 	}
 	
 	// While we have time left, iterate
-	while(tim > 0) {
+	while(tim > ArxDuration_ZERO) {
 		
 		// Path Ended
 		if(targetwaypoint > ap->nb_pathways - 1) {
@@ -452,9 +452,9 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 		if(ap->pathways[targetwaypoint - 1].flag == PATHWAY_BEZIER) {
 			
 			targetwaypoint += 1;
-			float delta = tim - ap->pathways[targetwaypoint]._time;
+			ArxDuration delta = tim - ap->pathways[targetwaypoint]._time;
 			
-			if(delta >= 0) {
+			if(delta >= ArxDuration_ZERO) {
 				
 				tim = delta;
 				
@@ -468,7 +468,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 				
 				if(targetwaypoint < ap->nb_pathways) {
 					
-					if(ap->pathways[targetwaypoint]._time == 0) {
+					if(ap->pathways[targetwaypoint]._time == ArxDuration_ZERO) {
 						return targetwaypoint - 1;
 					}
 					
@@ -482,9 +482,9 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 		} else {
 			
 			// Manages a non-Bezier block
-			float delta = tim - ap->pathways[targetwaypoint]._time;
+			ArxDuration delta = tim - ap->pathways[targetwaypoint]._time;
 			
-			if(delta >= 0) {
+			if(delta >= ArxDuration_ZERO) {
 				
 				tim = delta;
 				
@@ -498,7 +498,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 				
 				if(targetwaypoint < ap->nb_pathways) {
 					
-					if(ap->pathways[targetwaypoint]._time == 0) {
+					if(ap->pathways[targetwaypoint]._time == ArxDuration_ZERO) {
 						return targetwaypoint - 1;
 					}
 					
