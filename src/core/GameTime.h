@@ -80,6 +80,10 @@ public:
 		m_lastFrameStartTime = currentTime;
 	}
 	
+	void overrideFrameDuration(PlatformDuration duration) {
+		m_lastFrameDuration = toUs(duration);
+	}
+	
 	inline PlatformInstant frameStart() {
 		return PlatformInstantUs(s64(m_frameStartTime));
 	}
