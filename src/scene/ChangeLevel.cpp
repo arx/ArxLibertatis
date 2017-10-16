@@ -2571,8 +2571,6 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 
 static void ARX_CHANGELEVEL_PopLevel_Abort(ARX_CHANGELEVEL_IO_INDEX * idx_io) {
 	
-	arxtime.resume();
-	
 	delete[] idx_io;
 	
 	FORBID_SCRIPT_IO_CREATION = 0;
@@ -2750,7 +2748,6 @@ bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 	// Save the current level
 	
 	if(!ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, CURRENTLEVEL)) {
-		arxtime.resume();
 		LogWarning << "Could not save the level";
 		return false;
 	}
