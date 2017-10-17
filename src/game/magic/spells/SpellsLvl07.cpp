@@ -308,7 +308,7 @@ void FireFieldSpell::Update() {
 		float fDiff = g_framedelay2 / ArxDurationMs(8);
 		int nTime = checked_range_cast<int>(fDiff);
 		
-		for(long nn=0;nn<=nTime+1;nn++) {
+		for(long nn = 0; nn <= nTime + 1; nn++) {
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(!pd) {
