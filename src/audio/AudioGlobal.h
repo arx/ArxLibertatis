@@ -81,9 +81,6 @@ extern ResourceList<Sample> g_samples;
 extern ResourceList<Ambiance> g_ambiances;
 extern ResourceList<Environment> g_environments;
 
-//! Convert a value from time units to bytes
-size_t unitsToBytes(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
-
 //! Convert a value from bytes to time units
 size_t bytesToUnits(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
 
