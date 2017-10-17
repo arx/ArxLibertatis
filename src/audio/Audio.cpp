@@ -802,7 +802,7 @@ bool isAmbianceLooped(AmbianceId a_id) {
 
 // Ambiance control
 
-aalError ambiancePlay(AmbianceId a_id, const Channel & channel, bool loop, size_t fade_interval) {
+aalError ambiancePlay(AmbianceId a_id, const Channel & channel, bool loop, PlatformDuration fade_interval) {
 	
 	AAL_ENTRY
 	
@@ -814,12 +814,13 @@ aalError ambiancePlay(AmbianceId a_id, const Channel & channel, bool loop, size_
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("AmbiancePlay " << _amb[a_id.handleData()]->getName() << " loop=" << loop << " fade=" << fade_interval);
+	LogDebug("AmbiancePlay " << _amb[a_id.handleData()]->getName() << " loop=" << loop
+	         << " fade=" << toMs(fade_interval));
 	
 	return _amb[a_id.handleData()]->play(channel, loop, fade_interval);
 }
 
-aalError ambianceStop(AmbianceId a_id, size_t fade_interval) {
+aalError ambianceStop(AmbianceId a_id, PlatformDuration fade_interval) {
 	
 	AAL_ENTRY
 	
@@ -831,7 +832,7 @@ aalError ambianceStop(AmbianceId a_id, size_t fade_interval) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("AmbianceStop " << _amb[a_id.handleData()]->getName() << " " << fade_interval);
+	LogDebug("AmbianceStop " << _amb[a_id.handleData()]->getName() << " " << toMs(fade_interval));
 	
 	_amb[a_id.handleData()]->stop(fade_interval);
 	

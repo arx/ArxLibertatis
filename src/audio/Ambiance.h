@@ -78,8 +78,8 @@ public:
 	bool isLooped() const { return loop; }
 	
 	aalError play(const Channel & channel, bool loop = true,
-	              size_t fade_interval = 0);
-	aalError stop(size_t fade_interval = 0);
+	              PlatformDuration fade_interval = PlatformDuration_ZERO);
+	aalError stop(PlatformDuration fade_interval = PlatformDuration_ZERO);
 	aalError pause();
 	aalError resume();
 	aalError update();
