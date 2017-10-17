@@ -240,10 +240,10 @@ void FireProtectionSpell::Launch() {
 	spells.endByCaster(m_caster, SPELL_COLD_PROTECTION);
 	
 	if(m_caster == EntityHandle_Player) {
-		m_duration = ArxDuration_ZERO;
+		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(20000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(20000);
 		m_hasDuration = true;
 	}
 	
@@ -310,10 +310,10 @@ void ColdProtectionSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START, &entities[m_target]->pos);
 	
 	if(m_caster == EntityHandle_Player) {
-		m_duration = ArxDuration_ZERO;
+		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(20000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(20000);
 		m_hasDuration = true;
 	}
 	
@@ -368,8 +368,8 @@ bool TelekinesisSpell::CanLaunch() {
 
 void TelekinesisSpell::Launch() {
 	
-	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
-	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
+	m_hasDuration = m_launchDuration >= 0;
+	m_duration = m_hasDuration ? m_launchDuration : 0;
 	m_fManaCostPerSecond = 0.9f;
 	
 	if(m_caster == EntityHandle_Player) {
@@ -404,8 +404,8 @@ void CurseSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &entities[m_target]->pos);
 	
-	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
-	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
+	m_hasDuration = m_launchDuration >= 0;
+	m_duration = m_hasDuration ? m_launchDuration : 0;
 	m_fManaCostPerSecond = 0.5f * m_level;
 	
 	Vec3f target = getTargetPos(m_caster, m_target);
