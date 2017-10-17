@@ -1587,9 +1587,8 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 			io->_npcdata->weaponinhand = 1;
 		}
 		
-		if(isCurrentAnimation(io, 1, ANIM_BARE_WAIT)
-			 && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-			 && tdist < square(STRIKE_DISTANCE) && io->_npcdata->strike_time > 0) {
+		if(isCurrentAnimation(io, 1, ANIM_BARE_WAIT) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
+			 && tdist < square(STRIKE_DISTANCE)) {
 			size_t j = Random::getu(0, 3); // Choose a random attack move
 			changeAnimation(io, 1, AnimationNumber(ANIM_BARE_STRIKE_LEFT_START + j * 3));
 		}
@@ -1691,7 +1690,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 			// Weapon in hand... ready to strike
 			
 			if(isCurrentAnimation(io, 1, ready) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-				 && tdist < square(STRIKE_DISTANCE) && io->_npcdata->strike_time > 0) {
+				 && tdist < square(STRIKE_DISTANCE)) {
 				size_t j = Random::getu(0, 3); // Choose a random attack move
 				changeAnimation(io, 1, AnimationNumber(ANIM_1H_STRIKE_LEFT_START + j * 3 + wtype));
 			}
