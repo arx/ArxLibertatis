@@ -445,7 +445,7 @@ void RuneRecognitionAlt::analyze() {
 	}
 	
 	bPrecastSpell = false;
-	 
+	
 	// wanna precast?
 	if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
 		bPrecastSpell = true;
