@@ -437,7 +437,7 @@ void ClearDynLights() {
 
 
 
-static int MAX_LLIGHTS = llightsSize;
+static size_t MAX_LLIGHTS = llightsSize;
 
 // Inserts Light in the List of Nearest Lights
 static void Insertllight(boost::array<EERIE_LIGHT *, llightsSize> & llights,
@@ -468,13 +468,13 @@ static void Insertllight(boost::array<EERIE_LIGHT *, llightsSize> & llights,
 	if(val < 0)
 		val=0;
 
-	for(int i = 0; i < MAX_LLIGHTS; i++) {
+	for(size_t i = 0; i < MAX_LLIGHTS; i++) {
 		if(!llights[i]) {
 			llights[i]=el;
 			values[i]=val;
 			return;
 		} else if (val <= values[i]) { // Inserts light at the right place
-			for(int j = MAX_LLIGHTS - 2; j >= i; j--) {
+			for(size_t j = MAX_LLIGHTS - 2; j >= i; j--) {
 				if(llights[j]) {
 					llights[j+1]=llights[j];
 					values[j+1]=values[j];
@@ -510,7 +510,7 @@ void UpdateLlights(ShaderLight lights[], int & lightsCount, const Vec3f pos, boo
 	}
 	
 	lightsCount = 0;
-	for(int i = 0; i < MAX_LLIGHTS; i++) {
+	for(size_t i = 0; i < MAX_LLIGHTS; i++) {
 		if(llights[i]) {
 			EERIE_LIGHT * el = llights[i];
 			ShaderLight & sl = lights[i];
