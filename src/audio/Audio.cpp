@@ -582,7 +582,7 @@ aalError getSampleName(SampleId sample_id, res::path & name) {
 	return AAL_OK;
 }
 
-aalError getSampleLength(SampleId sample_id, size_t & length, TimeUnit unit) {
+aalError getSampleLength(SampleId sample_id, size_t & length) {
 	
 	length = 0;
 	
@@ -594,7 +594,7 @@ aalError getSampleLength(SampleId sample_id, size_t & length, TimeUnit unit) {
 	}
 	
 	Sample * sample = g_samples[s_id];
-	length = bytesToUnits(sample->getLength(), sample->getFormat(), unit);
+	length = bytesToUnits(sample->getLength(), sample->getFormat());
 	
 	return AAL_OK;
 }
