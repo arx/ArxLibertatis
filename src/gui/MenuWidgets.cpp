@@ -443,7 +443,7 @@ MenuPage::MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE _eMenuState)
 	, bEdit(false)
 	, bMouseAttack(false)
 	, m_disableShortcuts(false)
-	, m_blinkTime(PlatformDuration_ZERO)
+	, m_blinkTime(0)
 	, m_blink(true)
 {
 	m_size = size;
@@ -804,8 +804,9 @@ void MenuPage::Render() {
 			static const PlatformDuration m_blinkDuration = PlatformDurationMs(300);
 			
 			m_blinkTime += g_platformTime.lastFrameDuration();
-			if(m_blinkTime > (m_blinkDuration + m_blinkDuration))
-				m_blinkTime = PlatformDuration_ZERO;
+			if(m_blinkTime > (m_blinkDuration + m_blinkDuration)) {
+				m_blinkTime = 0;
+			}
 			
 			m_blink = m_blinkTime > m_blinkDuration;
 		}
