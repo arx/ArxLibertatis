@@ -116,7 +116,7 @@ DamageHandle DamageCreate(const DamageParameters & params) {
 			DAMAGE_INFO & damage = g_damages[i];
 			damage.params = params;
 			damage.start_time = arxtime.now();
-			damage.lastupd = ArxInstant_ZERO;
+			damage.lastupd = 0;
 			damage.exist = true;
 			return DamageHandle(i);
 		}
@@ -136,7 +136,7 @@ void DamageRequestEnd(DamageHandle handle) {
 extern Vec3f PUSH_PLAYER_FORCE;
 
 static float Blood_Pos = 0.f;
-static ArxDuration Blood_Duration = ArxDuration_ZERO;
+static ArxDuration Blood_Duration = 0;
 
 static void ARX_DAMAGES_IgnitIO(Entity * io, float dmg)
 {
@@ -157,7 +157,7 @@ static void ARX_DAMAGES_IgnitIO(Entity * io, float dmg)
 void ARX_DAMAGE_Reset_Blood_Info()
 {
 	Blood_Pos = 0.f;
-	Blood_Duration = ArxDuration_ZERO;
+	Blood_Duration = 0;
 }
 
 void ARX_DAMAGE_Show_Hit_Blood()
@@ -168,7 +168,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 
 	if(Blood_Pos > 2.f) { // end of blood flash
 		Blood_Pos = 0.f;
-		duration = ArxDuration_ZERO;
+		duration = 0;
 	} else if (Blood_Pos > 1.f) {
 		
 		if(player.poison > 1.f)
@@ -193,7 +193,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		if(Blood_Pos > 1.f) {
 			if(Last_Blood_Pos <= 1.f) {
 				Blood_Pos = 1.0001f;
-				duration = ArxDuration_ZERO;
+				duration = 0;
 			}
 
 			if(duration > Blood_Duration)
@@ -544,7 +544,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 
 	if(fartherThan(io_dead->pos, ACTIVECAM->orgTrans.pos, 3200.f)) {
 		io_dead->animlayer[0].ctime = AnimationDurationMs(9999999);
-		io_dead->animBlend.lastanimtime = ArxInstant_ZERO;
+		io_dead->animBlend.lastanimtime = 0;
 	}
 
 	std::string killer;
