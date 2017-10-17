@@ -1581,7 +1581,6 @@ void ARX_PLAYER_Manage_Visual() {
 	}
 	
 retry:
-	;
 	
 	if(spells.ExistAnyInstanceForThisCaster(SPELL_FLYING_EYE, EntityHandle_Player)) {
 		request0_anim = alist[ANIM_MEDITATION];
@@ -1649,7 +1648,6 @@ retry:
 		goto makechanges;
 	} else {
 	makechanges:
-		;
 		
 		if(request0_anim && request0_anim != layer0.cur_anim) {
 			AcquireLastAnim(io);
@@ -1684,7 +1682,6 @@ retry:
 	}
 	
 nochanges:
-	;
 	player.m_lastMovement = player.m_currentMovement;
 }
 
