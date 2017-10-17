@@ -271,7 +271,7 @@ void ParticleSystem::Update(ArxDuration delta) {
 				pP->Regen();
 				SetParticleParams(pP);
 				pP->Validate();
-				pP->Update(ArxDuration_ZERO);
+				pP->Update(0);
 				iParticleNbAlive++;
 				++i;
 			}
@@ -290,7 +290,7 @@ void ParticleSystem::Update(ArxDuration delta) {
 			Particle * pP  = new Particle();
 			SetParticleParams(pP);
 			pP->Validate();
-			pP->Update(ArxDuration_ZERO);
+			pP->Update(0);
 			listParticle.insert(listParticle.end(), pP);
 			iParticleNbAlive++;
 		}
