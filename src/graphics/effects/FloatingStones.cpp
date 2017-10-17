@@ -30,7 +30,7 @@ void FloatingStones::Init(float radius) {
 	m_baseRadius = radius;
 	
 	// cailloux
-	m_timestone = ArxDuration_ZERO;
+	m_timestone = 0;
 	m_nbstone = 0;
 
 	int nb = 256;
@@ -44,7 +44,7 @@ void FloatingStones::Update(ArxDuration timeDelta, Vec3f pos) {
 	m_timestone -= timeDelta;
 	m_currframetime = timeDelta;
 	
-	if(m_timestone <= ArxDuration_ZERO) {
+	if(m_timestone <= 0) {
 		m_timestone = ArxDurationMs(Random::get(50, 150));
 		
 		AddStone(pos + arx::randomOffsetXZ(m_baseRadius));
@@ -71,7 +71,7 @@ void FloatingStones::AddStone(const Vec3f & pos) {
 			s.angvel = Anglef(Random::getf(), Random::getf(), Random::getf()) * Anglef(5.f, 6.f, 3.f);
 			s.scale = Vec3f(Random::getf(0.2f, 0.5f));
 			s.time = ArxDurationMs(Random::get(2000, 2500));
-			s.currtime = ArxDuration_ZERO;
+			s.currtime = 0;
 			break;
 		}
 	}
