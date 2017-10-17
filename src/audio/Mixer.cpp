@@ -73,11 +73,11 @@ Mixer::~Mixer() {
 
 void Mixer::clear(bool force) {
 	
-	for(size_t i = 0; i < _amb.size(); i++) {
-		Ambiance * ambiance = _amb[i];
+	for(size_t i = 0; i < g_ambiances.size(); i++) {
+		Ambiance * ambiance = g_ambiances[i];
 		if(ambiance && g_mixers[ambiance->getChannel().mixer.handleData()] == this) {
 			if(force || ambiance->getChannel().flags & FLAG_AUTOFREE) {
-				_amb.remove(i);
+				g_ambiances.remove(i);
 			} else {
 				ambiance->stop();
 			}
@@ -181,9 +181,9 @@ aalError Mixer::pause() {
 		}
 	}
 	
-	for(size_t i = 0; i < _amb.size(); i++) {
-		if(_amb[i] && g_mixers[_amb[i]->getChannel().mixer.handleData()] == this) {
-			_amb[i]->pause();
+	for(size_t i = 0; i < g_ambiances.size(); i++) {
+		if(g_ambiances[i] && g_mixers[g_ambiances[i]->getChannel().mixer.handleData()] == this) {
+			g_ambiances[i]->pause();
 		}
 	}
 	
@@ -211,9 +211,9 @@ aalError Mixer::resume() {
 		}
 	}
 	
-	for(size_t i = 0; i < _amb.size(); i++) {
-		if(_amb[i] && g_mixers[_amb[i]->getChannel().mixer.handleData()] == this) {
-			_amb[i]->resume();
+	for(size_t i = 0; i < g_ambiances.size(); i++) {
+		if(g_ambiances[i] && g_mixers[g_ambiances[i]->getChannel().mixer.handleData()] == this) {
+			g_ambiances[i]->resume();
 		}
 	}
 	

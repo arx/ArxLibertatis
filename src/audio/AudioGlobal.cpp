@@ -65,7 +65,7 @@ PlatformInstant session_time = 0;
 // Resources
 ResourceList<Mixer> g_mixers;
 ResourceList<Sample> g_samples;
-ResourceList<Ambiance> _amb;
+ResourceList<Ambiance> g_ambiances;
 ResourceList<Environment> _env;
 
 size_t unitsToBytes(size_t v, const PCMFormat & _format, TimeUnit unit) {

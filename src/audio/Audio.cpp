@@ -138,7 +138,7 @@ aalError clean() {
 	
 	LogDebug("Clean");
 	
-	_amb.clear();
+	g_ambiances.clear();
 	g_samples.clear();
 	g_mixers.clear();
 	_env.clear();
@@ -256,12 +256,12 @@ aalError update() {
 	}
 	
 	// Update ambiances
-	for(size_t i = 0; i < _amb.size(); i++) {
-		Ambiance * ambiance = _amb[i];
+	for(size_t i = 0; i < g_ambiances.size(); i++) {
+		Ambiance * ambiance = g_ambiances[i];
 		if(ambiance) {
 			ambiance->update();
 			if(ambiance->getChannel().flags & FLAG_AUTOFREE && ambiance->isIdle()) {
-				_amb.remove(i);
+				g_ambiances.remove(i);
 			}
 		}
 	}
@@ -315,7 +315,7 @@ AmbianceId createAmbiance(const res::path & name) {
 	
 	Ambiance * ambiance = new Ambiance(name);
 	AmbianceId a_id = AmbianceId();
-	if(ambiance->load() || (a_id = AmbianceId(_amb.add(ambiance))) == AmbianceId()) {
+	if(ambiance->load() || (a_id = AmbianceId(g_ambiances.add(ambiance))) == AmbianceId()) {
 		delete ambiance;
 		LogError << "Ambiance " << name << " not found";
 	}
@@ -361,7 +361,7 @@ aalError deleteAmbiance(AmbianceId a_id) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	_amb.remove(a_id.handleData());
+	g_ambiances.remove(a_id.handleData());
 	
 	return AAL_OK;
 }
@@ -370,8 +370,8 @@ AmbianceId getAmbiance(const res::path & name) {
 	
 	AAL_ENTRY_V(AmbianceId())
 	
-	for(size_t i = 0; i < _amb.size(); i++) {
-		if(_amb[i] && name == _amb[i]->getName()) {
+	for(size_t i = 0; i < g_ambiances.size(); i++) {
+		if(g_ambiances[i] && name == g_ambiances[i]->getName()) {
 			return AmbianceId(i);
 		}
 	}
@@ -398,11 +398,11 @@ AmbianceId getNextAmbiance(AmbianceId ambiance_id) {
 	
 	AAL_ENTRY_V(AmbianceId())
 	
-	size_t i = (ambiance_id != AmbianceId() && _amb.isValid(ambiance_id.handleData()))
+	size_t i = (ambiance_id != AmbianceId() && g_ambiances.isValid(ambiance_id.handleData()))
 	           ? ambiance_id.handleData() + 1 : 0;
 	
-	for(; i < _amb.size(); i++) {
-		if(_amb[i]) {
+	for(; i < g_ambiances.size(); i++) {
+		if(g_ambiances[i]) {
 			return AmbianceId(i);
 		}
 	}
@@ -696,13 +696,13 @@ aalError setAmbianceUserData(AmbianceId a_id, void * data) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!_amb.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id.handleData())) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("SetAmbianceUserData " << _amb[a_id.handleData()]->getName() << " " << data);
+	LogDebug("SetAmbianceUserData " << g_ambiances[a_id.handleData()]->getName() << " " << data);
 	
-	_amb[a_id.handleData()]->setUserData(data);
+	g_ambiances[a_id.handleData()]->setUserData(data);
 	
 	return AAL_OK;
 }
@@ -715,13 +715,13 @@ aalError setAmbianceVolume(AmbianceId a_id, float volume) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!_amb.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id.handleData())) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("SetAmbianceVolume " << _amb[a_id.handleData()]->getName() << " " << volume);
+	LogDebug("SetAmbianceVolume " << g_ambiances[a_id.handleData()]->getName() << " " << volume);
 	
-	return _amb[a_id.handleData()]->setVolume(volume);
+	return g_ambiances[a_id.handleData()]->setVolume(volume);
 }
 
 // Ambiance status
@@ -736,11 +736,11 @@ aalError getAmbianceName(AmbianceId a_id, res::path & name) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!_amb.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id.handleData())) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	name = _amb[a_id.handleData()]->getName();
+	name = g_ambiances[a_id.handleData()]->getName();
 	
 	return AAL_OK;
 }
@@ -753,11 +753,11 @@ aalError getAmbianceUserData(AmbianceId a_id, void ** data) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!_amb.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id.handleData())) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	*data = _amb[a_id.handleData()]->getUserData();
+	*data = g_ambiances[a_id.handleData()]->getUserData();
 	
 	return AAL_OK;
 }
@@ -772,15 +772,15 @@ aalError getAmbianceVolume(AmbianceId a_id, float & _volume) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!_amb.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id.handleData())) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!(_amb[a_id.handleData()]->getChannel().flags & FLAG_VOLUME)) {
+	if(!(g_ambiances[a_id.handleData()]->getChannel().flags & FLAG_VOLUME)) {
 		return AAL_ERROR_INIT;
 	}
 	
-	_volume = _amb[a_id.handleData()]->getChannel().volume;
+	_volume = g_ambiances[a_id.handleData()]->getChannel().volume;
 	
 	return AAL_OK;
 }
@@ -793,11 +793,11 @@ bool isAmbianceLooped(AmbianceId a_id) {
 		return false;
 	}
 	
-	if(!_amb.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id.handleData())) {
 		return false;
 	}
 	
-	return _amb[a_id.handleData()]->isLooped();
+	return g_ambiances[a_id.handleData()]->isLooped();
 }
 
 // Ambiance control
@@ -810,14 +810,14 @@ aalError ambiancePlay(AmbianceId a_id, const Channel & channel, bool loop, Platf
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!_amb.isValid(a_id.handleData()) || !g_mixers.isValid(channel.mixer.handleData())) {
+	if(!g_ambiances.isValid(a_id.handleData()) || !g_mixers.isValid(channel.mixer.handleData())) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("AmbiancePlay " << _amb[a_id.handleData()]->getName() << " loop=" << loop
+	LogDebug("AmbiancePlay " << g_ambiances[a_id.handleData()]->getName() << " loop=" << loop
 	         << " fade=" << toMs(fade_interval));
 	
-	return _amb[a_id.handleData()]->play(channel, loop, fade_interval);
+	return g_ambiances[a_id.handleData()]->play(channel, loop, fade_interval);
 }
 
 aalError ambianceStop(AmbianceId a_id, PlatformDuration fade_interval) {
@@ -828,13 +828,13 @@ aalError ambianceStop(AmbianceId a_id, PlatformDuration fade_interval) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!_amb.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id.handleData())) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("AmbianceStop " << _amb[a_id.handleData()]->getName() << " " << toMs(fade_interval));
+	LogDebug("AmbianceStop " << g_ambiances[a_id.handleData()]->getName() << " " << toMs(fade_interval));
 	
-	_amb[a_id.handleData()]->stop(fade_interval);
+	g_ambiances[a_id.handleData()]->stop(fade_interval);
 	
 	return AAL_OK;
 }
