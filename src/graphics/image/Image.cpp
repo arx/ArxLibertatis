@@ -100,17 +100,7 @@ unsigned int Image::GetSize(Image::Format pFormat, unsigned int pWidth, unsigned
 }
 
 unsigned int Image::GetNumChannels(Image::Format pFormat) {
-	
-	switch(pFormat) {
-		case Format_L8:       return 1;
-		case Format_A8:       return 1;
-		case Format_L8A8:     return 2;
-		case Format_R8G8B8:   return 3;
-		case Format_B8G8R8:   return 3;
-		case Format_R8G8B8A8: return 4;
-		case Format_B8G8R8A8: return 4;
-		default:              arx_assert_msg(false, "Invalid image format"); return 0;
-	}
+	return SIZE_TABLE[pFormat];
 }
 
 bool Image::LoadFromFile(const res::path & filename) {
