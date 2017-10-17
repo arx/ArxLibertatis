@@ -81,9 +81,6 @@ extern ResourceList<Sample> g_samples;
 extern ResourceList<Ambiance> g_ambiances;
 extern ResourceList<Environment> g_environments;
 
-//! Convert a value from bytes to time units
-size_t bytesToUnits(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
-
 inline float LinearToLogVolume(float volume) {
 	return 0.2F * std::log10(volume) + 1.0F;
 }

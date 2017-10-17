@@ -68,16 +68,4 @@ ResourceList<Sample> g_samples;
 ResourceList<Ambiance> g_ambiances;
 ResourceList<Environment> g_environments;
 
-size_t bytesToUnits(size_t v, const PCMFormat & _format, TimeUnit unit) {
-	switch(unit) {
-		case UNIT_MS      :
-			return (size_t)(float(v) * 1000.f / (_format.frequency * _format.channels * (_format.quality >> 3)));
-		case UNIT_SAMPLES :
-			return v / (_format.frequency * _format.channels * (_format.quality >> 3));
-		
-		default:
-			return v;
-	}
-}
-
 } // namespace audio

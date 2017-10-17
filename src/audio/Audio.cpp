@@ -594,7 +594,9 @@ aalError getSampleLength(SampleId sample_id, size_t & length) {
 	}
 	
 	Sample * sample = g_samples[s_id];
-	length = bytesToUnits(sample->getLength(), sample->getFormat());
+	const PCMFormat & format = sample->getFormat();
+	
+	length = size_t(u64(sample->getLength()) * 1000 / (format.frequency * format.channels * (format.quality >> 3)));
 	
 	return AAL_OK;
 }
