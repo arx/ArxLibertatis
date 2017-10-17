@@ -96,10 +96,11 @@ void ARX_SPEECH_Init() {
 }
 
 static void ARX_SPEECH_MoveUp() {
-
-	if(g_speech[0].timecreation != ArxInstant_ZERO)
+	
+	if(g_speech[0].timecreation != 0) {
 		g_speech[0].text.clear();
-
+	}
+	
 	for(size_t j = 0; j < MAX_SPEECH - 1; j++) {
 		g_speech[j] = g_speech[j+1];
 	}
@@ -110,10 +111,11 @@ static void ARX_SPEECH_MoveUp() {
 void ARX_SPEECH_ClearAll()
 {
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
-
-		if(g_speech[i].timecreation == ArxInstant_ZERO)
+		
+		if(g_speech[i].timecreation == 0) {
 			continue;
-
+		}
+		
 		g_speech[i].clear();
 	}
 }
@@ -123,19 +125,17 @@ void ARX_SPEECH_Add(const std::string & text) {
 	if(text.empty())
 		return;
 	
-	ArxInstant now = arxtime.now();
-	if(now == ArxInstant_ZERO) {
-		now = ArxInstantMs(1);
-	}
+	ArxInstant now = std::max(arxtime.now(), ArxInstantMs(1));
 	
-	if(g_speech[MAX_SPEECH - 1].timecreation != ArxInstant_ZERO) {
+	if(g_speech[MAX_SPEECH - 1].timecreation != 0) {
 		ARX_SPEECH_MoveUp();
 	}
 	
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
-
-		if(g_speech[i].timecreation != ArxInstant_ZERO)
+		
+		if(g_speech[i].timecreation != 0) {
 			continue;
+		}
 		
 		// Sets creation time
 		g_speech[i].timecreation = now;
@@ -150,10 +150,11 @@ void ARX_SPEECH_Add(const std::string & text) {
 static bool isLastSpeech(size_t index) {
 	
 	for(size_t i = index + 1; i < MAX_SPEECH; i++) {
-
-		if(g_speech[i].timecreation == ArxInstant_ZERO)
+		
+		if(g_speech[i].timecreation == 0) {
 			continue;
-
+		}
+		
 		if(!g_speech[i].text.empty())
 			return false;
 	}
@@ -174,7 +175,7 @@ static void ARX_SPEECH_Render() {
 	
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 		
-		if(g_speech[i].timecreation == ArxInstant_ZERO || g_speech[i].text.empty()) {
+		if(g_speech[i].timecreation == 0 || g_speech[i].text.empty()) {
 			continue;
 		}
 		
@@ -203,8 +204,10 @@ void ARX_SPEECH_Check()
 	long exist = 0;
 
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
-		if(g_speech[i].timecreation == ArxInstant_ZERO)
+		
+		if(g_speech[i].timecreation == 0) {
 			continue;
+		}
 		
 		ArxDuration elapsed = arxtime.now() - g_speech[i].timecreation;
 		if(elapsed > g_speech[i].duration) {
@@ -247,7 +250,7 @@ static void ARX_CONVERSATION_CheckAcceleratedSpeech() {
 	if(REQUEST_SPEECH_SKIP) {
 		for(size_t i = 0; i < MAX_ASPEECH; i++) {
 			if((aspeech[i].exist) && !(aspeech[i].flags & ARX_SPEECH_FLAG_UNBREAKABLE)) {
-				aspeech[i].duration = ArxDuration_ZERO;
+				aspeech[i].duration = 0;
 			}
 		}
 		REQUEST_SPEECH_SKIP = false;
@@ -519,12 +522,13 @@ void ARX_SPEECH_Update() {
 			float fDTime;
 
 			if(speech->sample) {
+				
 				ArxDuration duration = ARX_SOUND_GetDuration(speech->sample);
-				if(duration == ArxDuration_ZERO) {
+				if(duration == 0) {
 					duration = ArxDurationMs(4000);
 				}
-
-				fDTime = height * (g_framedelay2 / duration); //speech->duration;
+				
+				fDTime = height * (g_framedelay2 / duration);
 				float fTimeOneLine = sSize.y * fDTime;
 
 				if(speech->iTimeScroll >= fTimeOneLine) {
