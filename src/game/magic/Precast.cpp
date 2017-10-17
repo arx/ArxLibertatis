@@ -32,12 +32,12 @@
 
 const size_t MAX_PRECAST = 3;
 
-ArxInstant LAST_PRECAST_TIME = ArxInstant_ZERO;
+ArxInstant LAST_PRECAST_TIME = 0;
 
 std::vector<PRECAST_STRUCT> Precast;
 
 void ARX_SPELLS_Precast_Reset() {
-	LAST_PRECAST_TIME = ArxInstant_ZERO;
+	LAST_PRECAST_TIME = 0;
 	Precast.clear();
 }
 
@@ -53,7 +53,7 @@ void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, Ar
 	PRECAST_STRUCT precast;
 	precast.typ = typ;
 	precast.level = _level;
-	precast.launch_time = ArxInstant_ZERO;
+	precast.launch_time = 0;
 	precast.flags = flags;
 	precast.duration = duration;
 	
@@ -93,7 +93,7 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	) {
 		LAST_PRECAST_TIME = arxtime.now();
 		
-		if(precast.launch_time == ArxInstant_ZERO) {
+		if(precast.launch_time == 0) {
 			precast.launch_time = arxtime.now();
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD);
 		}
@@ -107,7 +107,7 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 
 void ARX_SPELLS_Precast_Check() {
 	for(size_t i = 0; i < Precast.size(); i++) {
-		if(Precast[i].launch_time > ArxInstant_ZERO && arxtime.now() >= Precast[i].launch_time) {
+		if(Precast[i].launch_time > 0 && arxtime.now() >= Precast[i].launch_time) {
 			AnimLayer & layer1 = entities.player()->animlayer[1];
 			
 			if(player.Interface & INTER_COMBATMODE) {
