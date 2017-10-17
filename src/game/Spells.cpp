@@ -136,7 +136,7 @@ short ARX_FLARES_broken(1);
 
 long snip=0;
 static Vec2f g_LastFlarePosition;
-static PlatformInstant g_LastFlareTime = PlatformInstant_ZERO;
+static PlatformInstant g_LastFlareTime = 0;
 
 SpellManager spells;
 
@@ -173,7 +173,7 @@ static void SPELLEND_Notify(const SpellBase & spell);
 
 void SpellManager::endSpell(SpellBase * spell)
 {
-	spell->m_duration = ArxDuration_ZERO;
+	spell->m_duration = 0;
 	spell->m_hasDuration = true;
 }
 
@@ -693,7 +693,7 @@ struct TARGETING_SPELL {
 static TARGETING_SPELL t_spell;
 
 long LOOKING_FOR_SPELL_TARGET=0;
-ArxInstant LOOKING_FOR_SPELL_TARGET_TIME = ArxInstant_ZERO;
+ArxInstant LOOKING_FOR_SPELL_TARGET_TIME = 0;
 
 void ARX_SPELLS_CancelSpellTarget() {
 	t_spell.typ = SPELL_NONE;
