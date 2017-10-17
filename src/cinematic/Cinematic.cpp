@@ -106,7 +106,7 @@ Cinematic::Cinematic(Vec2i size)
 	, m_nextPosgrille()
 	, m_nextAngzgrille()
 	, speedtrack()
-	, flTime(PlatformDuration_ZERO)
+	, flTime(0)
 	, cinRenderSize(size)
 { }
 
