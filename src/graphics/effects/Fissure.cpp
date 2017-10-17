@@ -266,9 +266,9 @@ void CRiseDead::RenderFissure() {
 	mat.setWrapMode(TextureStage::WrapMirror);
 	mat.setTexture(tex_light);
 
-	target.x = m_eSrc.x ;
+	target.x = m_eSrc.x;
 	target.y = m_eSrc.y + 1.5f * sizeF; 
-	target.z = m_eSrc.z ;
+	target.z = m_eSrc.z;
 
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
 	vr[2].color = vr[3].color = m_colorRays2.toRGB();
@@ -342,12 +342,12 @@ void CRiseDead::RenderFissure() {
 		if(i < fSizeIntro) {
 			vt[0] = va[i];
 			vt[1] = va[i + 1];
-			vt[2].x = va[i].x ;
+			vt[2].x = va[i].x;
 			vt[2].y = va[i].y + (va[i].y - target.y) * 2;
-			vt[2].z = va[i].z ;
-			vt[3].x = va[i+1].x ;
+			vt[2].z = va[i].z;
+			vt[3].x = va[i+1].x;
 			vt[3].y = va[i+1].y + (va[i+1].y - target.y) * 2;
-			vt[3].z = va[i+1].z ;
+			vt[3].z = va[i+1].z;
 
 			vr[0].color = (m_colorRays1 * tfRaysa[i]).toRGB();
 			vr[1].color = (m_colorRays1* tfRaysa[i + 1]).toRGB();
@@ -365,12 +365,12 @@ void CRiseDead::RenderFissure() {
 		if(i < fSizeIntro) {
 			vt[0] = vb[i + 1];
 			vt[1] = vb[i];
-			vt[2].x = vb[i+1].x ;
+			vt[2].x = vb[i+1].x;
 			vt[2].y = vb[i+1].y + (vb[i+1].y - target.y) * 2;
-			vt[2].z = vb[i+1].z ;
-			vt[3].x = vb[i].x ;
+			vt[2].z = vb[i+1].z;
+			vt[3].x = vb[i].x;
 			vt[3].y = vb[i].y + (vb[i].y - target.y) * 2;
-			vt[3].z = vb[i].z ;
+			vt[3].z = vb[i].z;
 
 			vr[0].color = (m_colorRays1 * tfRaysb[i]).toRGB();
 			vr[1].color = (m_colorRays1 * tfRaysb[i + 1]).toRGB();
