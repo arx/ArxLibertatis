@@ -424,7 +424,7 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 		key_i->delay = key_i->delay_max;
 		key_i->updateSynch();
 		key_i->n_start = key_i->start + key_i->delay;
-		key_i->pitch.tupdate -= ambiance->time;
+		key_i->pitch.tupdate -= ambiance->m_time;
 		
 		if(++key_i == keys.end()) {
 			//Track end
@@ -435,7 +435,7 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 			
 			if(flags & Track::MASTER) {
 				//Ambiance end
-				ambiance->time = 0;
+				ambiance->m_time = 0;
 				
 				LogDebug("ambiance " << ambiance->getName() << ": master track ended");
 				
@@ -592,7 +592,7 @@ Ambiance::Ambiance(const res::path & _name)
 	, fade_interval(0)
 	, fade_max(0.f)
 	, start(0)
-	, time(0)
+	, m_time(0)
 	, name(_name)
 	, m_type(PLAYING_AMBIANCE_MENU)
 {
@@ -738,7 +738,7 @@ aalError Ambiance::stop(PlatformDuration _fade_interval) {
 	}
 	
 	status = Idle;
-	time = 0;
+	m_time = 0;
 	
 	TrackList::iterator track = tracks.begin();
 	for(; track != tracks.end(); ++track) {
@@ -758,7 +758,7 @@ aalError Ambiance::pause() {
 	}
 	
 	status = Paused;
-	time = session_time - start;
+	m_time = session_time - start;
 	
 	TrackList::iterator track = tracks.begin();
 	for(; track != tracks.end(); ++track) {
@@ -788,7 +788,7 @@ aalError Ambiance::resume() {
 	}
 	
 	status = Playing;
-	start = session_time - time;
+	start = session_time - m_time;
 	
 	return AAL_OK;
 }
@@ -799,10 +799,10 @@ aalError Ambiance::update() {
 		return AAL_OK;
 	}
 	
-	PlatformDuration interval = session_time - (start + time);
-	time += interval;
+	PlatformDuration interval = session_time - (start + m_time);
+	m_time += interval;
 	
-	LogDebug("ambiance \"" << name << "\": update to time=" << toMs(time));
+	LogDebug("ambiance \"" << name << "\": update to time=" << toMs(m_time));
 	
 	// Fading
 	if(fade_interval != 0 && fade != None) {
@@ -826,7 +826,7 @@ aalError Ambiance::update() {
 	// Update tracks
 	TrackList::iterator track = tracks.begin();
 	for(; track != tracks.end(); ++track) {
-		track->update(time, interval);
+		track->update(m_time, interval);
 	}
 	
 	return AAL_OK;
