@@ -51,9 +51,9 @@ static const char * const g_names[] = {
 };
 
 static bool g_enabled = false;
-static PlatformDuration g_timeLimit = PlatformDuration_ZERO;
+static PlatformDuration g_timeLimit = 0;
 static Status g_currentStatus = None;
-static PlatformInstant g_startTime = PlatformInstant_ZERO;
+static PlatformInstant g_startTime = 0;
 static int g_startCount = 0;
 static const PlatformDuration PlatformDuration_MAX = PlatformDurationUs(std::numeric_limits<s64>::max());
 
@@ -65,10 +65,10 @@ struct Result {
 	PlatformDuration m_maxTime;
 	
 	Result()
-		: m_totalTime(PlatformDuration_ZERO)
+		: m_totalTime(0)
 		, m_frameCount(0)
 		, m_minTime(PlatformDuration_MAX)
-		, m_maxTime(PlatformDuration_ZERO)
+		, m_maxTime(0)
 	{ }
 	
 	explicit Result(PlatformDuration time)
@@ -86,7 +86,7 @@ struct Result {
 	}
 	
 	bool empty() const {
-		return m_totalTime == PlatformDuration_ZERO;
+		return m_totalTime == 0;
 	}
 	
 };
