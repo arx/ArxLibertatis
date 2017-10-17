@@ -200,7 +200,7 @@ struct IO_NPCDATA {
 	unsigned char resist_fire;
 	
 	short strike_time;
-	short walk_start_time;
+	ArxDuration walk_start_time;
 	ArxInstant aiming_start;
 	NPCFlags npcflags;
 	IO_PATHFIND pathfind;

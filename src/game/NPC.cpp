@@ -2378,11 +2378,8 @@ afterthat:
 				   && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
 				   && layer0.cur_anim != alist[ANIM_RUN]
 				) {
-					float fCalc = io->_npcdata->walk_start_time + g_framedelay;
-
-					io->_npcdata->walk_start_time = checked_range_cast<short>(fCalc);
-
-					if(io->_npcdata->walk_start_time > 600) {
+					io->_npcdata->walk_start_time += g_framedelay2;
+					if(io->_npcdata->walk_start_time > ArxDurationMs(600)) {
 						desiredanim = alist[ANIM_FIGHT_WALK_FORWARD];
 						io->_npcdata->walk_start_time = 0;
 					}
