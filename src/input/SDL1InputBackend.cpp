@@ -237,12 +237,6 @@ void SDL1InputBackend::getRelativeMouseCoords(int & relX, int & relY, int & whee
 	relX = 0, relY = 0, wheelDir = currentWheel;
 }
 
-bool SDL1InputBackend::isMouseButtonPressed(int buttonId, int & deltaTime) const  {
-	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
-	deltaTime = 0; // TODO
-	return buttonStates[buttonId - Mouse::ButtonBase];
-}
-
 void SDL1InputBackend::getMouseButtonClickCount(int buttonId, int & numClick, int & numUnClick) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 	size_t i = buttonId - Mouse::ButtonBase;
