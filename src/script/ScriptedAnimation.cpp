@@ -89,7 +89,7 @@ public:
 		io->angle.setYaw(io->angle.getYaw() + yaw);
 		io->angle.setRoll(io->angle.getRoll() + roll);
 		
-		io->animBlend.lastanimtime = ArxInstant_ZERO;
+		io->animBlend.lastanimtime = 0;
 		
 		return Success;
 	}
