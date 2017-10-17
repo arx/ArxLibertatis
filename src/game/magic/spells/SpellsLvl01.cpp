@@ -204,7 +204,8 @@ void MagicMissileSpell::Launch() {
 	
 	m_missiles.reserve(number);
 	
-	for(size_t i = 0; i < size_t(number); i++) {
+	for(size_t i = 0; i < number; i++) {
+		
 		CMagicMissile * missile = NULL;
 		if(!m_mrCheat) {
 			missile = new CMagicMissile();
