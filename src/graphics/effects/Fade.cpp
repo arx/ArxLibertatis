@@ -25,17 +25,17 @@
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 
-static PlatformDuration FADEDURATION = PlatformDuration_ZERO;
+static PlatformDuration FADEDURATION = 0;
 long FADEDIR = 0;
-static PlatformInstant FADESTART = PlatformInstant_ZERO;
+static PlatformInstant FADESTART = 0;
 float LAST_FADEVALUE = 1.f;
 static Color3f FADECOLOR;
 
 
 void fadeReset() {
 	FADEDIR = 0;
-	FADEDURATION = PlatformDuration_ZERO;
-	FADESTART = PlatformInstant_ZERO;
+	FADEDURATION = 0;
+	FADESTART = 0;
 	FADECOLOR = Color3f::black;
 }
 
@@ -60,7 +60,7 @@ void fadeRequestStart(FadeType type, const PlatformDuration duration) {
 void ManageFade() {
 	
 	PlatformDuration elapsed = g_platformTime.frameStart() - FADESTART;
-	if(elapsed < PlatformDuration_ZERO)
+	if(elapsed < 0)
 		return;
 
 	float Visibility = elapsed / FADEDURATION;
