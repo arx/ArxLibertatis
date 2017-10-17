@@ -54,7 +54,7 @@ GameTime arxtime;
 
 void PlatformTime::updateFrame() {
 	
-	PlatformInstant currentTime = PlatformInstantUs(s64(platform::getTimeUs()));
+	PlatformInstant currentTime = platform::getTime();
 	
 	if(m_frameStartTime == PlatformInstant_ZERO) {
 		m_frameStartTime = currentTime;

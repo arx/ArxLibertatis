@@ -72,11 +72,11 @@ void LoadLevelScreen(long num) {
 		return;
 	}
 	
-	static PlatformInstant last_progress_bar_update = PlatformInstantUs(platform::getTimeUs());
+	static PlatformInstant last_progress_bar_update = platform::getTime();
 	
 	// only update if time since last update to progress bar > 16ms
 	// and progress bar's value has actually changed
-	PlatformInstant now = PlatformInstantUs(platform::getTimeUs());
+	PlatformInstant now = platform::getTime();
 	if(now - last_progress_bar_update > PlatformDurationMs(16) && OLD_PROGRESS_BAR_COUNT != PROGRESS_BAR_COUNT) {
 		
 		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
