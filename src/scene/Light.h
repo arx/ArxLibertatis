@@ -182,13 +182,8 @@ void ClearTileLights();
 
 float GetColorz(const Vec3f &pos);
 
-ColorRGBA ApplyLight(const ShaderLight lights[],
-                     const int lightsCount,
-                     const glm::quat & quat,
-                     const Vec3f & position,
-                     const Vec3f & normal,
-                     const ColorMod & colorMod,
-                     float materialDiffuse = 1.f);
+ColorRGBA ApplyLight(ShaderLight lights[], size_t lightsCount, const glm::quat & quat, const Vec3f & position,
+                     const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f);
 
 void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos);
 
