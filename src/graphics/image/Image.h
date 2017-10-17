@@ -41,7 +41,6 @@ public:
 		Format_B8G8R8A8,
 		Format_Unknown,
 		Format_Num,
-		Format_MAX = 0xFF
 	};
 	
 	Image();
