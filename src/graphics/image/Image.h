@@ -53,7 +53,7 @@ public:
 	bool LoadFromMemory(void * pData, unsigned int size,
 	                    const char * file = NULL);
 	
-	void Create(unsigned int width, unsigned int height, Format format, unsigned int numMipmaps = 1);
+	void Create(unsigned int width, unsigned int height, Format format);
 	
 	// Convert 
 	bool ConvertTo(Format format);
@@ -130,12 +130,9 @@ public:
 	
 	// statics
 	static unsigned int	GetSize(Format pFormat, unsigned int pWidth = 1, unsigned int pHeight = 1);
-	static unsigned int	GetSizeWithMipmaps(Format pFormat, unsigned int pWidth, unsigned int pHeight, int pMipmapCount = -1);
 	static unsigned int	GetNumChannels(Format pFormat);
 	
 private:
-	
-	void FlipY(unsigned char* pData, unsigned int pWidth, unsigned int pHeight);
 	
 	unsigned int mWidth;
 	unsigned int mHeight;
