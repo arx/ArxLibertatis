@@ -162,7 +162,7 @@ public:
 	{
 		if (index.row() < 0 || index.row() >= rowCount() || !index.isValid())
 			return false;
-	 
+		
 		if(role == Qt::CheckStateRole)
 			m_errorReport.GetAttachedFiles()[index.row()].attachToReport = static_cast<Qt::CheckState>(value.toUInt()) == Qt::Checked;
 

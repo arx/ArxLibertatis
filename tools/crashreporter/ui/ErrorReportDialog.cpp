@@ -67,7 +67,7 @@ ErrorReportDialog::ErrorReportDialog(ErrorReport& errorReport, QWidget *parent) 
 	ui->listFiles->setSelectionModel(selectionModel);
 	ui->listFiles->setSelectionMode(QAbstractItemView::SingleSelection);
 	connect(ui->listFiles->selectionModel(), SIGNAL(selectionChanged (const QItemSelection &, const QItemSelection &)),
-            this, SLOT(onShowFileContent(const QItemSelection &, const QItemSelection &)));
+	        this, SLOT(onShowFileContent(const QItemSelection &, const QItemSelection &)));
 
 	m_fileViewHex.setAsciiArea(false);
 	m_fileViewHex.setReadOnly(true);
