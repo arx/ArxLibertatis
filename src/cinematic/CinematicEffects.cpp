@@ -175,8 +175,8 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	float a2 = DreamAng2;
 	
 	Vec2f s;
-	s.x = bi->m_count.x * std::cos(glm::radians(0.f));
-	s.y = bi->m_count.y * std::cos(glm::radians(0.f));
+	s.x = float(bi->m_count.x) * std::cos(glm::radians(0.f));
+	s.y = float(bi->m_count.y) * std::cos(glm::radians(0.f));
 	
 	Vec2i n;
 	n.x = (bi->m_count.x + 1) << 1;
@@ -198,8 +198,8 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	while(n.y) {
 		n.x = ((bi->m_count.x * bi->grid.m_scale) + 1);
 		while(n.x) {
-			s.x = bi->m_count.x * std::cos(glm::radians(a));
-			s.y = bi->m_count.y * std::cos(glm::radians(a2));
+			s.x = float(bi->m_count.x) * std::cos(glm::radians(a));
+			s.y = float(bi->m_count.y) * std::cos(glm::radians(a2));
 			a -= 15.f;
 			a2 += 8.f;
 			
