@@ -474,10 +474,10 @@ static void Insertllight(boost::array<EERIE_LIGHT *, llightsSize> & llights,
 			values[i]=val;
 			return;
 		} else if (val <= values[i]) { // Inserts light at the right place
-			for(size_t j = MAX_LLIGHTS - 2; j >= i; j--) {
-				if(llights[j]) {
-					llights[j+1]=llights[j];
-					values[j+1]=values[j];
+			for(size_t j = MAX_LLIGHTS - 1; j > i; j--) {
+				if(llights[j - 1]) {
+					llights[j] = llights[j - 1];
+					values[j] = values[j - 1];
 				}
 			}
 
