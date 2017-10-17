@@ -28,15 +28,15 @@
 struct ProfileSample {
 	QString tag;
 	quint64 threadId;
-	quint64 startTime;
-	quint64 endTime;
+	qint64 startTime;
+	qint64 endTime;
 };
 
 struct ProfileThread {
 	QString threadName;
 	quint64 threadId;
-	quint64 startTime;
-	quint64 endTime;
+	qint64 startTime;
+	qint64 endTime;
 };
 
 struct ThreadData {

@@ -239,8 +239,8 @@ ProfilerView::ProfilerView(QWidget* parent)
 
 void ProfilerView::setData(ThreadsData * data) {
 	
-	quint64 firstTimestamp = std::numeric_limits<quint64>::max();
-	quint64 lastTimestamp = std::numeric_limits<quint64>::min();
+	qint64 firstTimestamp = std::numeric_limits<qint64>::max();
+	qint64 lastTimestamp = std::numeric_limits<qint64>::min();
 	
 	for(ThreadsData::const_iterator it = data->begin(); it != data->end(); ++it) {
 		
@@ -271,7 +271,7 @@ void ProfilerView::setData(ThreadsData * data) {
 		QGraphicsItemGroup * group = new QGraphicsItemGroup();
 		m_scene->addItem(group);
 		
-		std::vector<quint64> threadStack;
+		std::vector<qint64> threadStack;
 		
 		for(std::vector<ProfileSample>::const_reverse_iterator it = threadData.profilePoints.rbegin(); it != threadData.profilePoints.rend(); ++it) {
 			
