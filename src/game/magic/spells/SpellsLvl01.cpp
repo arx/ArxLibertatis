@@ -195,11 +195,11 @@ void MagicMissileSpell::Launch() {
 	
 	ArxDuration lMax = 0;
 	
-	long number;
+	size_t number;
 	if(sp_max || cur_rf == 3) {
-		number = long(m_level);
+		number = size_t(m_level);
 	} else {
-		number = glm::clamp(long(m_level + 1) / 2, 1l, 5l);
+		number = glm::clamp<size_t>(size_t(m_level + 1) / 2, 1, 5);
 	}
 	
 	m_missiles.reserve(number);
