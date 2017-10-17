@@ -75,7 +75,7 @@ void MassLightningStrikeSpell::Launch() {
 	m_pos += angleToVectorXZ(beta) * 500.f;
 	
 	ArxDuration minDuration = ArxDurationMsf(500 * m_level);
-	ArxDuration maxDuration = ArxDuration_ZERO;
+	ArxDuration maxDuration = 0;
 	
 	int number = glm::clamp(int(m_level), 1, 10);
 	float ft = 360.0f / number;
@@ -157,7 +157,7 @@ void MassLightningStrikeSpell::Update() {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, Random::getf(0.8f, 1.2f));
 	}
 	
-	if(ArxDuration_ZERO > m_duration - ArxDurationMs(1800) && !m_soundEffectPlayed) {
+	if(0 > m_duration - ArxDurationMs(1800) && !m_soundEffectPlayed) {
 		m_soundEffectPlayed = true;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, Random::getf(0.8f, 1.2f));
 	}
@@ -357,7 +357,7 @@ void FreezeTimeSpell::Launch() {
 	m_slowdown = glm::clamp(m_level * 0.08f, 0.f, max_slowdown);
 	arxtime.setSpeed(arxtime.speed() - m_slowdown);
 	
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(200000);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(200000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 30.f * m_slowdown;
 }
