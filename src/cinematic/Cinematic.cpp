@@ -260,7 +260,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
                 const Vec3f & pos, float angle, const CinematicFadeOut & fade) {
 	
 	CinematicGrid * grille = &bitmap->grid;
-	int nb = grille->m_nbvertexs;
+	size_t nb = grille->m_nbvertexs;
 	Vec2f * v = grille->m_vertexs.data();
 	TexturedVertex * d3dv = AllTLVertex;
 
