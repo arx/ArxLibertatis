@@ -193,7 +193,8 @@ private:
 	void drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending);
 	void drawDetectedEntities(int showLevel, Vec2f start, float zoom);
 	
-    std::vector<TexturedVertex> m_mapVertices;
+	std::vector<TexturedVertex> m_mapVertices;
+	
 };
 
 extern MiniMap g_miniMap;
