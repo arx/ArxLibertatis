@@ -177,7 +177,7 @@ void PlayerInventoryHud::CalculateInventoryCoordinates() {
 	
 	Vec2f anchorPos = anchorPosition();
 	
-	m_arrowsAnchor.x = anchorPos.x + (m_bagBackgroundSize.x * m_scale) - ((32 + 3)  * m_scale) ;
+	m_arrowsAnchor.x = anchorPos.x + (m_bagBackgroundSize.x * m_scale) - ((32 + 3)  * m_scale);
 	m_arrowsAnchor.y = anchorPos.y + ((-3 + 25) * m_scale);
 }
 
