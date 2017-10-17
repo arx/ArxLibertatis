@@ -72,7 +72,7 @@ struct ARX_INTERFACE_MEMORIZE_SPELL {
 	
 	ARX_INTERFACE_MEMORIZE_SPELL()
 		: bSpell(false)
-		, lTimeCreation(ArxInstant_ZERO)
+		, lTimeCreation(0)
 	{
 		for(size_t i = 0; i < ARRAY_SIZE(iSpellSymbols); i++) {
 			iSpellSymbols[i] = RUNE_NONE;
@@ -341,7 +341,7 @@ struct ARXCHARACTER {
 	ARXCHARACTER()
 		: m_strikeDirection(0)
 		, m_weaponBlocked(AnimationDuration::ofRaw(-1)) // FIXME inband signaling
-		, jumpstarttime(PlatformInstant_ZERO)
+		, jumpstarttime(0)
 		, jumplastposition(0.f)
 		, jumpphase(NotJumping)
 		, climbing(false)
@@ -356,11 +356,11 @@ struct ARXCHARACTER {
 		, torch(NULL)
 		, m_bowAimRatio(0.f)
 		, m_strikeAimRatio(0.f)
-		, Full_AimTime(PlatformDuration_ZERO)
+		, Full_AimTime(0)
 		, Full_life(0)
 		, Full_maxlife(0)
 		, Full_maxmana(0)
-		, m_aimTime(PlatformDuration_ZERO)
+		, m_aimTime(0)
 		, Attribute_Redistribute(0)
 		, Skill_Redistribute(0)
 		, level(0)
@@ -394,7 +394,7 @@ struct ARXCHARACTER {
 		return Cylinder(basePosition(), baseRadius(), baseHeight());
 	}
 	
-	bool isAiming() { return m_aimTime > PlatformDuration_ZERO; }
+	bool isAiming() { return m_aimTime > 0; }
 	
 };
 
