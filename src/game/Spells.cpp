@@ -136,7 +136,7 @@ short ARX_FLARES_broken(1);
 
 long snip=0;
 static Vec2f g_LastFlarePosition;
-static ArxInstant g_LastFlareTime;
+static PlatformInstant g_LastFlareTime = PlatformInstant_ZERO;
 
 SpellManager spells;
 
@@ -545,9 +545,9 @@ void ARX_SPELLS_ManageMagic() {
 					pos = Vec2f(MemoMouse);
 				}
 				
-				ArxInstant now = ArxInstantMs(platform::getTimeMs());
+				PlatformInstant now = g_platformTime.frameStart();
 				
-				const ArxDuration interval = ArxDurationMs(1000 / 60);
+				const PlatformDuration interval = PlatformDurationMs(1000 / 60);
 				
 				if(ARX_FLARES_broken) {
 					g_LastFlarePosition = pos;
