@@ -201,7 +201,7 @@ void CPoisonProjectile::Render() {
 	for(i = 0; i < 9; i++) {
 		
 		int kpprec = std::max(i - 1, 0);
-		int kpsuiv = i + 1 ;
+		int kpsuiv = i + 1;
 		int kpsuivsuiv = (i < (9 - 2)) ? kpsuiv + 1 : kpsuiv;
 		
 		for(int toto = 1; toto < n; toto++) {
