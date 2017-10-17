@@ -58,7 +58,7 @@ struct DurationType
 		return *this;
 	}
 	
-	static inline DurationType ofRaw(T value) {
+	static DurationType ofRaw(T value) {
 		return DurationType(value);
 	}
 	
@@ -85,7 +85,7 @@ struct InstantType
 		return t < rhs.t;
 	}
 	
-	static inline InstantType ofRaw(T value) {
+	static InstantType ofRaw(T value) {
 		return InstantType(value);
 	}
 	
