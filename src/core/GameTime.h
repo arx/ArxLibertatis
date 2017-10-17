@@ -59,9 +59,10 @@ class PlatformTime {
 	PlatformDuration m_lastFrameDuration;
 	
 public:
+	
 	PlatformTime()
-		: m_frameStartTime(PlatformInstant_ZERO)
-		, m_lastFrameDuration(PlatformDuration_ZERO)
+		: m_frameStartTime(0)
+		, m_lastFrameDuration(0)
 	{ }
 	
 	void updateFrame();
