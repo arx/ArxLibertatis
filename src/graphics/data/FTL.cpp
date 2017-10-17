@@ -79,7 +79,7 @@ struct MCACHE_DATA {
 static std::vector<MCACHE_DATA> meshCache;
 
 // Checks for Mesh file existence in cache
-static long MCache_Get(const res::path & file) {
+static size_t MCache_Get(const res::path & file) {
 	
 	for(size_t i = 0; i < meshCache.size(); i++) {
 		if(meshCache[i].name == file) {
@@ -87,13 +87,13 @@ static long MCache_Get(const res::path & file) {
 		}
 	}
 	
-	return -1;
+	return size_t(-1);
 }
 
 // Pushes a Mesh In Mesh Cache
 static bool MCache_Push(const res::path & file, char * data, size_t size) {
 	
-	if(MCache_Get(file) != -1) {
+	if(MCache_Get(file) != size_t(-1)) {
 		return false; // already cached
 	}
 	
@@ -119,8 +119,8 @@ void MCache_ClearAll(){
 // Retreives a Mesh File pointer from cache...
 static char * MCache_Pop(const res::path & file, size_t & size) {
 	
-	long num = MCache_Get(file);
-	if(num == -1) {
+	size_t num = MCache_Get(file);
+	if(num == size_t(-1)) {
 		return NULL;
 	}
 	
