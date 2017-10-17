@@ -34,9 +34,9 @@ Source::~Source() {
 	sample->dereference();
 }
 
-void Source::addCallback(Callback * callback, size_t time, TimeUnit unit) {
+void Source::addCallback(Callback * callback, size_t position) {
 	
-	size_t pos = std::min(unitsToBytes(time, sample->getFormat(), unit), sample->getLength());
+	size_t pos = std::min(position, sample->getLength());
 	
 	size_t i = 0;
 	while(i != callbacks.size() && callbacks[i].second <= pos) {

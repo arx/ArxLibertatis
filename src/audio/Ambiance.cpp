@@ -327,8 +327,8 @@ void Ambiance::Track::keyPlay() {
 			return;
 		}
 		
-		source->addCallback(this, 0, UNIT_BYTES);
-		source->addCallback(this, source->getSample()->getLength(), UNIT_BYTES);
+		source->addCallback(this, 0);
+		source->addCallback(this, source->getSample()->getLength());
 		
 		s_id = source->getId();
 	}
