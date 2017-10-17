@@ -75,12 +75,12 @@ void Application::quit() {
 
 void CalcFPS(bool reset) {
 	
-	static PlatformInstant fLastTime = PlatformInstant_ZERO;
+	static PlatformInstant fLastTime = 0;
 	static u32 dwFrames  = 0L;
 
 	if(reset) {
 		dwFrames = 0;
-		fLastTime = PlatformInstant_ZERO;
+		fLastTime = 0;
 		FPS = 7.f * FPS;
 	} else {
 		// Keep track of the time lapse and frame count
