@@ -56,7 +56,7 @@ void PlatformTime::updateFrame() {
 	
 	PlatformInstant currentTime = platform::getTime();
 	
-	if(m_frameStartTime == PlatformInstant_ZERO) {
+	if(m_frameStartTime == 0) {
 		m_frameStartTime = currentTime;
 	}
 	arx_assert(currentTime >= m_frameStartTime);
@@ -70,7 +70,7 @@ void PlatformTime::updateFrame() {
 }
 
 GameTime::GameTime() {
-	reset(ArxInstant_ZERO);
+	reset(0);
 }
 
 void GameTime::pause() {
@@ -88,7 +88,7 @@ void GameTime::resume() {
 void GameTime::reset(const ArxInstant time) {
 	paused = true;
 	m_now_us = time;
-	m_frameDelay = ArxDuration_ZERO;
+	m_frameDelay = 0;
 	m_speed = 1.f;
 }
 
@@ -96,16 +96,16 @@ void GameTime::update(PlatformDuration frameDelay) {
 	
 	ArxDuration delta = ArxDurationUs(toUs(frameDelay));
 	
-	arx_assert(delta >= ArxDuration_ZERO);
+	arx_assert(delta >= 0);
 	
 	if(arxtime.speed() != 1.f) {
 		delta -= ArxDurationMsf(toMsf(delta) * (1.f - arxtime.speed()));
 	}
 	
-	arx_assert(delta >= ArxDuration_ZERO);
+	arx_assert(delta >= 0);
 	
 	if(is_paused()) {
-		delta = ArxDuration_ZERO;
+		delta = 0;
 	}
 	
 	m_frameDelay = delta;
