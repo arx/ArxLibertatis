@@ -189,7 +189,7 @@ void PutInFrontOfPlayer(Entity * io)
 
 	if(io->obj && io->obj->pbox) {
 		Vec3f vector = Vec3f(0.f, 100.f, 0.f);
-		io->soundtime = ArxInstant_ZERO;
+		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, vector);
 	}
