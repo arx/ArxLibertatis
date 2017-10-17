@@ -99,10 +99,9 @@ void LoadLevelScreen(long num) {
 		if(num != lastloadednum) {
 			delete g_loadingScreenImage, g_loadingScreenImage = NULL;
 			lastloadednum = num;
-			char temp[256];
-			const char * tx = GetLevelNameByNum(num);
-			sprintf(temp, "graph/levels/level%s/loading", tx);
-			g_loadingScreenImage = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
+			std::string tx = GetLevelNameByNum(num);
+			res::path image = "graph/levels/level" + tx + "/loading";
+			g_loadingScreenImage = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
 		}
 		
 		float scale = minSizeRatio();
