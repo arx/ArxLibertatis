@@ -138,9 +138,6 @@ inline float operator/(DurationType<TAG, T> a, DurationType<TAG, T> b) {
 typedef InstantType <struct ArxTime_TAG, s64> ArxInstant;
 typedef DurationType<struct ArxTime_TAG, s64> ArxDuration;
 
-const ArxInstant  ArxInstant_ZERO  = ArxInstant::ofRaw(0);
-const ArxDuration ArxDuration_ZERO = ArxDuration::ofRaw(0);
-
 inline ArxInstant ArxInstantUs(s64 val) {
 	return ArxInstant::ofRaw(val);
 }
@@ -183,9 +180,6 @@ inline float toMsf(ArxDuration val) {
 typedef InstantType <struct PlatformTime_TAG, s64> PlatformInstant;
 typedef DurationType<struct PlatformTime_TAG, s64> PlatformDuration;
 
-const PlatformInstant  PlatformInstant_ZERO  = PlatformInstant::ofRaw(0);
-const PlatformDuration PlatformDuration_ZERO = PlatformDuration::ofRaw(0);
-
 inline PlatformInstant PlatformInstantUs(s64 val) {
 	return PlatformInstant::ofRaw(val);
 }
@@ -226,7 +220,6 @@ inline float toS(PlatformDuration val) {
 // AnimationTime
 // in microseconds
 typedef DurationType<struct AnimationTime_TAG, s64> AnimationDuration;
-const AnimationDuration AnimationDuration_ZERO = AnimationDuration::ofRaw(0);
 
 inline AnimationDuration operator*(AnimationDuration v, float scalar) {
 	return AnimationDuration::ofRaw(s64(float(v.t) * scalar));
