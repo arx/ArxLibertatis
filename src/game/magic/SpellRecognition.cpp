@@ -1110,7 +1110,6 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 			goto failed;
 		default: {
 		failed:
-			;
 			std::string tex;
 
 			if(SpellMoves.length()>=127)
