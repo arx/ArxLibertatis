@@ -38,8 +38,6 @@ struct DurationType
 	
 	T t;
 	
-	DurationType() : t() { }
-	
 	bool operator==(const DurationType & rhs) const {
 		return t == rhs.t;
 	}
@@ -59,13 +57,20 @@ struct DurationType
 	}
 	
 	static DurationType ofRaw(T value) {
-		return DurationType(value);
+		return DurationType(value, 0);
 	}
 	
 private:
-	explicit DurationType(const T t_)
-		: t(t_)
-	{ }
+	
+	explicit DurationType(const T t_, int /* disambiguate */) : t(t_) { }
+	
+	class ZeroType;
+	typedef ZeroType ** Zero;
+	
+public:
+	
+	/* implicit */ DurationType(Zero = 0) : t(0) { }
+	
 };
 
 template <typename TAG, typename T>
@@ -76,8 +81,6 @@ struct InstantType
 {
 	
 	T t;
-	
-	InstantType() : t() { }
 	
 	bool operator==(const InstantType & rhs) const {
 		return t == rhs.t;
@@ -97,13 +100,20 @@ struct InstantType
 	}
 	
 	static InstantType ofRaw(T value) {
-		return InstantType(value);
+		return InstantType(value, 0);
 	}
 	
 private:
-	explicit InstantType(const T t_)
-		: t(t_)
-	{ }
+	
+	explicit InstantType(const T t_, int /* disambiguate */) : t(t_) { }
+	
+	class ZeroType;
+	typedef ZeroType ** Zero;
+	
+public:
+	
+	/* implicit */ InstantType(Zero = 0) : t(0) { }
+	
 };
 
 template <typename TAG, typename T>
