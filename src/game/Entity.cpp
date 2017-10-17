@@ -104,7 +104,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	}
 	
 	animBlend.m_active = false;
-	animBlend.lastanimtime = ArxInstant_ZERO;
+	animBlend.lastanimtime = 0;
 	
 	std::memset(&bbox3D, 0, sizeof(EERIE_3D_BBOX)); // TODO use constructor
 	
@@ -156,12 +156,12 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	
 	m_inventorySize = Vec2s(1, 1);
 	
-	soundtime = ArxInstant_ZERO;
+	soundtime = 0;
 	soundcount = 0;
 	
-	sfx_time = ArxInstant_ZERO;
-	collide_door_time = ArxInstant_ZERO;
-	ouch_time = ArxInstant_ZERO;
+	sfx_time = 0;
+	collide_door_time = 0;
+	ouch_time = 0;
 	dmg_sum = 0.f;
 	
 	spellcast_data = IO_SPELLCAST_DATA();
