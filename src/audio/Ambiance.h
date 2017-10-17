@@ -64,8 +64,8 @@ public:
 	
 	aalError load();
 	
-	void setUserData(void * _data) { data = _data; }
-	void * getUserData() const { return data; }
+	void setType(PlayingAmbianceType type) { m_type = type; }
+	PlayingAmbianceType getType() const { return m_type; }
 	
 	const Channel & getChannel() const { return channel; }
 	const res::path & getName() const { return name; }
@@ -115,7 +115,7 @@ private:
 	
 	res::path name;
 	
-	void * data;
+	PlayingAmbianceType m_type;
 	
 };
 

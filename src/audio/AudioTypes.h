@@ -109,6 +109,12 @@ enum HRTFStatus {
 	HRTFUnavailable
 };
 
+enum PlayingAmbianceType {
+	PLAYING_AMBIANCE_MENU,
+	PLAYING_AMBIANCE_SCRIPT,
+	PLAYING_AMBIANCE_ZONE
+};
+
 // Output format
 struct PCMFormat {
 	size_t frequency; // Samples per second
