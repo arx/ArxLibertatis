@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 
+#include <stddef.h>
+
 #include "math/Types.h"
 #include "math/Vector.h"
 
@@ -75,7 +77,7 @@ struct C_UV {
 };
 
 struct CinematicGrid {
-	int m_nbvertexs;
+	size_t m_nbvertexs;
 	std::vector<Vec2f> m_vertexs;
 	std::vector<C_UV> m_uvs;
 	std::vector<C_IND> m_inds;
