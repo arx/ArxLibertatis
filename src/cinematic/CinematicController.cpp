@@ -145,7 +145,7 @@ void cinematicRender() {
 
 	if(PLAY_LOADED_CINEMATIC == Cinematic_StartRequested) {
 		LogDebug("really starting cinematic now");
-		diff = PlatformDuration_ZERO;
+		diff = 0;
 		PLAY_LOADED_CINEMATIC = Cinematic_Started;
 	}
 
