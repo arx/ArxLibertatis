@@ -66,7 +66,7 @@ private:
 	float ysize;
 	float size;
 	float ft;
-	float fglow ;
+	float fglow;
 	Vec3f b[4];
 	Vec3f t[4];
 	
