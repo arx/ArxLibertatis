@@ -72,13 +72,13 @@ void LoadLevelScreen(long num) {
 		return;
 	}
 	
-	static u32 last_progress_bar_update = platform::getTimeMs();
+	static PlatformInstant last_progress_bar_update = PlatformInstantUs(platform::getTimeUs());
 	
 	// only update if time since last update to progress bar > 16ms
 	// and progress bar's value has actually changed
-	if (platform::getTimeMs() - last_progress_bar_update > 16 &&
-		 OLD_PROGRESS_BAR_COUNT != PROGRESS_BAR_COUNT)
-	{
+	PlatformInstant now = PlatformInstantUs(platform::getTimeUs());
+	if(now - last_progress_bar_update > PlatformDurationMs(16) && OLD_PROGRESS_BAR_COUNT != PROGRESS_BAR_COUNT) {
+		
 		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 
@@ -130,7 +130,7 @@ void LoadLevelScreen(long num) {
 		mainApp->getWindow()->showFrame();
 		
 		OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
-		last_progress_bar_update = platform::getTimeMs();
+		last_progress_bar_update = now;
 	}
 }
 
