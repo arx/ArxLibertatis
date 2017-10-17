@@ -1275,10 +1275,6 @@ static void ARX_NPC_Manage_NON_Fight(Entity * io) {
 	}
 }
 
-static void Strike_StartTickCount(Entity * io) {
-	io->_npcdata->strike_time = 0;
-}
-
 /*!
  * \brief NPC IS in fight mode and close to target...
  * \param io
@@ -1324,7 +1320,6 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 				|| (layer1.cur_anim == NULL))
 		{
 			changeAnimation(io, 1, ANIM_BARE_WAIT, EA_LOOP);
-			Strike_StartTickCount(io);
 		}
 	}
 	// DAGGER fight !!! ***********************************
@@ -1352,7 +1347,6 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 				|| (layer1.cur_anim == NULL))
 		{
 			changeAnimation(io, 1, ANIM_DAGGER_WAIT, EA_LOOP);
-			Strike_StartTickCount(io);
 		}
 	}
 	// 1H fight !!! ***************************************
@@ -1380,7 +1374,6 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 				|| (layer1.cur_anim == NULL))
 		{
 			changeAnimation(io, 1, ANIM_1H_WAIT, EA_LOOP);
-			Strike_StartTickCount(io);
 		}
 	}
 	// 2H fight !!! ***************************************
@@ -1483,8 +1476,6 @@ static const int STRIKE_DISTANCE = 220;
  * \param TOLERANCE
  */
 static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
-	
-	io->_npcdata->strike_time += (short)g_framedelay;
 	
 	AnimLayer & layer0 = io->animlayer[0];
 	AnimLayer & layer1 = io->animlayer[1];
@@ -1620,7 +1611,6 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				if(layer1.flags & EA_ANIMEND) {
 					io->ioflags &= ~IO_HIT;
 					changeAnimation(io, 1, ANIM_BARE_WAIT);
-					Strike_StartTickCount(io);
 					if((io->ioflags & IO_NPC) && !io->_npcdata->reachedtarget) {
 						layer1.cur_anim = NULL;
 					}
@@ -1677,7 +1667,6 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 			} else if(isCurrentAnimation(io, 1, part2) &&	(layer1.flags & EA_ANIMEND)) {
 				if(io->_npcdata->behavior & BEHAVIOUR_FIGHT) {
 					changeAnimation(io, 1, ready, EA_LOOP);
-					Strike_StartTickCount(io);
 				} else {
 					stopAnimation(io, 1);
 				}
@@ -1729,7 +1718,6 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					if(layer1.flags & EA_ANIMEND) {
 						io->ioflags &= ~IO_HIT;
 						changeAnimation(io, 1, ready);
-						Strike_StartTickCount(io);
 					} else {
 						AnimationDuration ctime = layer1.ctime;
 						AnimationDuration animtime = layer1.cur_anim->anims[0]->anim_time;

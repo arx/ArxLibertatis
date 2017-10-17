@@ -970,7 +970,6 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->_npcdata->fightdecision = 0;
 			io->_npcdata->collid_state = 0;
 			io->_npcdata->collid_time = 0;
-			io->_npcdata->strike_time = 0;
 			io->_npcdata->walk_start_time = 0;
 
 			io->_npcdata->reachedtarget = 0;
@@ -1596,7 +1595,6 @@ IO_NPCDATA::IO_NPCDATA() {
 	resist_magic = 0;
 	resist_fire = 0;
 	
-	strike_time = 0;
 	walk_start_time = 0;
 	aiming_start = 0;
 	npcflags = 0l;
