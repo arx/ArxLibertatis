@@ -147,7 +147,7 @@ struct IO_SPELLCAST_DATA {
 		, spell_flags()
 		, spell_level(0)
 		, target()
-		, duration(ArxDuration_ZERO)
+		, duration(0)
 	{
 		for(unsigned long j(0); j < 4; j++)
 			symb[j] = RUNE_NONE;
