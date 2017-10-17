@@ -150,14 +150,14 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 	mHeight = height;
 
 	switch(bpp) {
-		case stbi::STBI_grey:       mFormat = Image::Format_L8; break;
-		case stbi::STBI_grey_alpha: mFormat = Image::Format_L8A8; break;
-		case stbi::STBI_rgb:        mFormat = Image::Format_R8G8B8; break;
-		case stbi::STBI_rgb_alpha:  mFormat = Image::Format_R8G8B8A8; break;
+		case stbi::STBI_grey:       mFormat = Format_L8; break;
+		case stbi::STBI_grey_alpha: mFormat = Format_L8A8; break;
+		case stbi::STBI_rgb:        mFormat = Format_R8G8B8; break;
+		case stbi::STBI_rgb_alpha:  mFormat = Format_R8G8B8A8; break;
 		default: arx_assert_msg(false, "Invalid bpp");
 	}
 	
-	unsigned int dataSize = Image::GetSize(mFormat, mWidth, mHeight);
+	unsigned int dataSize = GetSize(mFormat, mWidth, mHeight);
 	
 	// Delete previous buffer if size don't match
 	if(mData && mDataSize != dataSize) {
@@ -181,7 +181,7 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 	return (mData != NULL);
 }
 
-void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFormat) {
+void Image::Create(unsigned int pWidth, unsigned int pHeight, Format pFormat) {
 	
 	arx_assert_msg(pWidth > 0, "[Image::Create] Width is 0!");
 	arx_assert_msg(pHeight > 0, "[Image::Create] Width is 0!");
@@ -202,7 +202,7 @@ void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 }
 
 
-bool Image::ConvertTo(Image::Format format) {
+bool Image::ConvertTo(Format format) {
 	
 	arx_assert_msg( GetSize(mFormat) == GetSize(format), "[Image::ConvertTo] Conversion of images with different BPP not supported yet!" );
 	if(GetSize(mFormat) != GetSize(format))
@@ -498,7 +498,7 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 	}
 }
 
-bool Image::ToGrayscale(Image::Format newFormat) {
+bool Image::ToGrayscale(Format newFormat) {
 	
 	int srcNumChannels = GetNumChannels();
 	int dstNumChannels = GetNumChannels(newFormat);
