@@ -669,7 +669,7 @@ void StatsPage::manageStats()
 			PlatformDurationMs(1000),
 			0.01f,
 			3,
-			PlatformDuration_ZERO);
+			0);
 	} else {
 		OLD_FLYING_OVER=-1;
 	}
@@ -1371,8 +1371,9 @@ void SpellsPage::drawSpells() {
 			DrawBookTextCenter(hFontInBook, Vec2f(208, 90), spellInfo.name, Color::none);
 			
 			for(size_t si = 0; si < MAX_SPEECH; si++) {
-				if(g_speech[si].timecreation > ArxInstant_ZERO)
-					FLYING_OVER=0;
+				if(g_speech[si].timecreation > 0) {
+					FLYING_OVER = 0;
+				}
 			}
 			
 			OLD_FLYING_OVER = FLYING_OVER;
@@ -1386,7 +1387,7 @@ void SpellsPage::drawSpells() {
 				PlatformDurationMs(1000),
 				0.01f,
 				2,
-				PlatformDuration_ZERO);
+				0);
 			
 			long count = 0;
 			
