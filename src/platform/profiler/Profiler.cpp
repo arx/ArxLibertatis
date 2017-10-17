@@ -265,7 +265,6 @@ void Profiler::writeProfileLog() {
 		writeChunk(out, ArxProfilerChunkType_Samples, dataSize, pos);
 		
 		out.write((const char*) samplesData.data(), dataSize);
-		pos += dataSize;
 	}
 	
 	out.close();
