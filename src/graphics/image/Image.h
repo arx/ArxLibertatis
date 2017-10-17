@@ -54,7 +54,7 @@ public:
 	bool LoadFromMemory(void * pData, unsigned int size,
 	                    const char * file = NULL);
 	
-	void Create(unsigned int width, unsigned int height, Format format, unsigned int numMipmaps = 1, unsigned int depth = 1);
+	void Create(unsigned int width, unsigned int height, Format format, unsigned int numMipmaps = 1);
 	
 	// Convert 
 	bool ConvertTo(Format format);
@@ -68,7 +68,6 @@ public:
 	// info accessors
 	unsigned int GetWidth() const { return mWidth;      }
 	unsigned int GetHeight() const { return mHeight;     }
-	unsigned int GetDepth() const { return mDepth;      }
 	unsigned int GetNumMipmaps() const { return mNumMipmaps; }
 	Format GetFormat() const { return mFormat;     }
 	unsigned int GetDataSize() const { return mDataSize;   }
@@ -76,7 +75,6 @@ public:
 	
 	// bool accessors
 	bool IsValid() const { return mData != NULL; }
-	bool IsVolume() const { return mDepth > 1;  }
 	bool HasAlpha() const {
 		return mFormat == Format_A8
 		    || mFormat == Format_L8A8
@@ -132,17 +130,16 @@ public:
 	void ApplyThreshold(unsigned char threshold, int component_mask);
 	
 	// statics
-	static unsigned int	GetSize(Format pFormat, unsigned int pWidth = 1, unsigned int pHeight = 1, unsigned int pDepth = 1);
-	static unsigned int	GetSizeWithMipmaps(Format pFormat, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth = 1, int pMipmapCount = -1);
+	static unsigned int	GetSize(Format pFormat, unsigned int pWidth = 1, unsigned int pHeight = 1);
+	static unsigned int	GetSizeWithMipmaps(Format pFormat, unsigned int pWidth, unsigned int pHeight, int pMipmapCount = -1);
 	static unsigned int	GetNumChannels(Format pFormat);
 	
 private:
 	
-	void FlipY(unsigned char* pData, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth);
+	void FlipY(unsigned char* pData, unsigned int pWidth, unsigned int pHeight);
 	
-	unsigned int mWidth; //!< Image width.
-	unsigned int mHeight; //!< Image height.
-	unsigned int mDepth; //!< Image depth. Depth == 1 for normal images, > 1 for depth images.
+	unsigned int mWidth;
+	unsigned int mHeight;
 	
 	unsigned int mNumMipmaps; //!< Number of mipmaps.
 	Format mFormat; //!< Image format.

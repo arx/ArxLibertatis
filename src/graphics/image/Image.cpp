@@ -62,7 +62,6 @@ void Image::Reset() {
 	delete[] mData, mData = NULL;
 	mWidth = 0;
 	mHeight = 0;
-	mDepth = 0;
 	mNumMipmaps = 0;
 	mFormat = Format_Unknown;
 	mDataSize = 0;
@@ -79,7 +78,6 @@ const Image& Image::operator=(const Image & pOther) {
 	
 	mWidth      = pOther.mWidth;
 	mHeight     = pOther.mHeight;
-	mDepth      = pOther.mDepth;
 	mNumMipmaps = pOther.mNumMipmaps;
 	mFormat     = pOther.mFormat;
 	mDataSize   = pOther.mDataSize;
@@ -90,7 +88,7 @@ const Image& Image::operator=(const Image & pOther) {
 	return *this;
 }
 
-unsigned int Image::GetSize(Image::Format pFormat, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth) {
+unsigned int Image::GetSize(Image::Format pFormat, unsigned int pWidth, unsigned int pHeight) {
 	
 	if(pWidth == 0) {
 		pWidth = 1;
@@ -100,28 +98,23 @@ unsigned int Image::GetSize(Image::Format pFormat, unsigned int pWidth, unsigned
 		pHeight = 1;
 	}
 	
-	return pWidth * pHeight * SIZE_TABLE[pFormat] * pDepth;
+	return pWidth * pHeight * SIZE_TABLE[pFormat];
 }
 
-unsigned int Image::GetSizeWithMipmaps(Image::Format pFormat, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth, int pMipmapCount) {
+unsigned int Image::GetSizeWithMipmaps(Image::Format pFormat, unsigned int pWidth, unsigned int pHeight, int pMipmapCount) {
 	
 	unsigned int dataSize = 0;
 	
 	unsigned int width  = pWidth;
 	unsigned int height = pHeight;
-	unsigned int depth  = pDepth;
 	unsigned int mip    = pMipmapCount == -1 ? 0x7FFFFFFF : pMipmapCount;
 	
 	while((width || height) && mip != 0) {
 		
-		dataSize += Image::GetSize( pFormat, width, height, depth );
+		dataSize += Image::GetSize(pFormat, width, height);
 		
 		width  >>= 1;
 		height >>= 1;
-		
-		if(depth != 1) {
-			depth  >>= 1;
-		}
 		
 		mip--;
 	}
@@ -188,7 +181,6 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 
 	mWidth  = width;
 	mHeight = height;
-	mDepth  = 1;
 	mNumMipmaps = 1;
 
 	switch(bpp) {
@@ -199,7 +191,7 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 		default: arx_assert_msg(false, "Invalid bpp");
 	}
 	
-	unsigned int dataSize = Image::GetSizeWithMipmaps(mFormat, mWidth, mHeight, mDepth, mNumMipmaps);
+	unsigned int dataSize = Image::GetSizeWithMipmaps(mFormat, mWidth, mHeight, mNumMipmaps);
 	
 	// Delete previous buffer if size don't match
 	if(mData && mDataSize != dataSize) {
@@ -223,21 +215,19 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 	return (mData != NULL);
 }
 
-void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFormat, unsigned int pNumMipmaps, unsigned int pDepth) {
+void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFormat, unsigned int pNumMipmaps) {
 	
 	arx_assert_msg(pWidth > 0, "[Image::Create] Width is 0!");
 	arx_assert_msg(pHeight > 0, "[Image::Create] Width is 0!");
 	arx_assert_msg(pFormat < Format_Unknown, "[Image::Create] Unknown texture format!");
 	arx_assert_msg(pNumMipmaps > 0, "[Image::Create] Mipmap count must at least be 1!");
-	arx_assert_msg(pDepth > 0, "[Image::Create] Image depth must at least be 1!");
 	
 	mWidth  = pWidth;
 	mHeight = pHeight;
-	mDepth  = pDepth;
 	mFormat = pFormat;
 	mNumMipmaps = pNumMipmaps;
 	
-	unsigned int dataSize = Image::GetSizeWithMipmaps(mFormat, mWidth, mHeight, mDepth, mNumMipmaps);
+	unsigned int dataSize = Image::GetSizeWithMipmaps(mFormat, mWidth, mHeight, mNumMipmaps);
 	if(mData && dataSize != mDataSize) {
 		delete[] mData, mData = NULL;
 	}
@@ -249,9 +239,9 @@ void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 
 
 bool Image::ConvertTo(Image::Format format) {
-	arx_assert_msg( !IsVolume(), "[Image::ConvertTo] Conversion of volume images not supported yet!" );
+	
 	arx_assert_msg( GetSize(mFormat) == GetSize(format), "[Image::ConvertTo] Conversion of images with different BPP not supported yet!" );
-	if(IsVolume() || GetSize(mFormat) != GetSize(format))
+	if(GetSize(mFormat) != GetSize(format))
 		return false;
 
 	if(mFormat == format)
@@ -342,8 +332,6 @@ void Image::Clear() {
 
 bool Image::Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY, unsigned int srcX, unsigned int srcY, unsigned int width, unsigned int height) {
 	
-	arx_assert_msg( !IsVolume(), "[Image::Copy] Copy of volume images not supported yet!" );
-	
 	unsigned int bpp = SIZE_TABLE[mFormat];
 	
 	// Format must match.
@@ -383,8 +371,6 @@ bool Image::Copy(const Image & srcImage, unsigned int destX, unsigned int destY)
 }
 
 void Image::QuakeGamma(float pGamma) {
-	
-	arx_assert_msg(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
 	
 	// This function was taken from a couple engines that I saw,
 	// which most likely originated from the Aftershock engine.
@@ -450,7 +436,6 @@ void Image::QuakeGamma(float pGamma) {
 
 void Image::AdjustGamma(const float &v) {
 	
-	arx_assert_msg(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
 	arx_assert_msg(v <= 1.0f, "BUG WARNING: If gamma values greater than 1.0 needed, should fix the way the calculations are optimized!");
 
 	unsigned int numComponents = SIZE_TABLE[mFormat];
@@ -498,8 +483,6 @@ void Image::AdjustGamma(const float &v) {
 
 void Image::ApplyThreshold(unsigned char threshold, int component_mask) {
 	
-	arx_assert_msg(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
-
 	unsigned int numComponents = SIZE_TABLE[mFormat];
 	unsigned int size = mWidth * mHeight;
 	unsigned char * data = mData;
@@ -558,7 +541,6 @@ void extendImageBottomRight<1>(u8 * in, u8 * out, unsigned win, unsigned wout,
 void Image::extendClampToEdgeBorder(const Image & src) {
 	
 	arx_assert_msg(mFormat == src.mFormat, "extendClampToEdgeBorder Cannot change format!");
-	arx_assert_msg(!IsVolume(), "extendClampToEdgeBorder Not supported for 3d textures!");
 	arx_assert_msg(mWidth >= src.mWidth && mHeight >= src.mHeight, "extendClampToEdgeBorder Cannot decrease size!");
 	
 	Copy(src, 0, 0);
@@ -608,7 +590,7 @@ bool Image::ToGrayscale(Image::Format newFormat) {
 		return false;
 	}
 		
-	unsigned int newSize = GetSizeWithMipmaps(newFormat, mWidth, mHeight, mDepth, mNumMipmaps);
+	unsigned int newSize = GetSizeWithMipmaps(newFormat, mWidth, mHeight, mNumMipmaps);
 	unsigned char* newData = new unsigned char[newSize];
 	
 	unsigned char* src = mData;
@@ -633,7 +615,6 @@ bool Image::ToGrayscale(Image::Format newFormat) {
 
 void Image::Blur(int radius) {
 	
-	arx_assert_msg(!IsVolume(), "Blur not yet supported for 3d textures!");
 	arx_assert_msg(mNumMipmaps == 1, "Blur not yet supported for textures with mipmaps!");
 
 	// Create kernel and precompute multiplication table
@@ -732,7 +713,6 @@ void Image::Blur(int radius) {
 
 void Image::SetAlpha(const Image& img, bool bInvertAlpha) {
 	
-	arx_assert_msg(!IsVolume(), "SetAlpha() not yet supported for 3d textures!");
 	arx_assert(mWidth == img.mWidth);
 	arx_assert(mHeight == img.mHeight);
 	arx_assert(mNumMipmaps == img.mNumMipmaps);
@@ -765,7 +745,6 @@ void Image::FlipY() {
 	
 	unsigned int width  = mWidth;
 	unsigned int height = mHeight;
-	unsigned int depth  = mDepth;
 	
 	unsigned int offset = 0;
 	
@@ -779,20 +758,15 @@ void Image::FlipY() {
 			height = 1;
 		}
 		
-		if(depth == 0) {
-			depth = 1;
-		}
-		
-		FlipY(mData + offset, width, height, depth);
-		offset += Image::GetSize(mFormat, width, height, depth);
+		FlipY(mData + offset, width, height);
+		offset += Image::GetSize(mFormat, width, height);
 		
 		width >>= 1;
 		height >>= 1;
-		depth >>= 1;
 	}
 }
 
-void Image::FlipY(unsigned char * pData, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth) {
+void Image::FlipY(unsigned char * pData, unsigned int pWidth, unsigned int pHeight) {
 	
 	if(pWidth == 0 || pHeight == 0) {
 		return;
@@ -804,22 +778,17 @@ void Image::FlipY(unsigned char * pData, unsigned int pWidth, unsigned int pHeig
 	unsigned char * swapTmp = (unsigned char *)malloc(lineSize);
 	arx_assert(swapTmp);
 	
-	for(unsigned int n = 0; n < pDepth; n++) {
+	unsigned char * top = pData;
+	unsigned char * bottom = top + (imageSize - lineSize);
+	
+	for(unsigned int i = 0; i < (pHeight >> 1); i++) {
 		
-		unsigned offset = imageSize * n;
+		memcpy(swapTmp, bottom, lineSize);
+		memcpy(bottom, top, lineSize);
+		memcpy(top, swapTmp, lineSize);
 		
-		unsigned char * top = pData + offset;
-		unsigned char * bottom = top + (imageSize-lineSize);
-		
-		for(unsigned int i = 0; i < (pHeight >> 1); i++) {
-			
-			memcpy( swapTmp, bottom, lineSize );
-			memcpy( bottom, top, lineSize );
-			memcpy( top, swapTmp, lineSize );
-			
-			top += lineSize;
-			bottom -= lineSize;
-		}
+		top += lineSize;
+		bottom -= lineSize;
 	}
 	
 	free(swapTmp);
