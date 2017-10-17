@@ -631,7 +631,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 				{
 					
 					if(CylinderInCylinder(cyl, io_cyl)) {
- 						NPC_IN_CYLINDER = 1;
+						NPC_IN_CYLINDER = 1;
 						anything = std::min(anything, io_cyl.origin.y + io_cyl.height);
 
 						if(!(flags & CFLAG_JUST_TEST) && ioo) {
