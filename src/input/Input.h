@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 
 #include "core/Config.h"
+#include "core/TimeTypes.h"
 #include "input/InputKey.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
@@ -191,7 +192,7 @@ private:
 	bool  bMouseButton[Mouse::ButtonCount];
 	bool  bOldMouseButton[Mouse::ButtonCount];
 	
-	s64   iMouseTime[Mouse::ButtonCount];
+	PlatformInstant iMouseTime[Mouse::ButtonCount][2];
 	int   iMouseTimeSet[Mouse::ButtonCount];
 	int   iOldNumClick[Mouse::ButtonCount];
 	
