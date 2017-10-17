@@ -48,7 +48,7 @@ void initializeTime() {
 PlatformInstant getTime() {
 	struct timespec ts;
 	clock_gettime(g_clockId, &ts);
-	return PlatformInstantUs(s64(ts.tv_sec * 1000000ull) + s64(ts.tv_nsec / 1000l));
+	return PlatformInstantUs(s64(ts.tv_sec) * 1000000 + s64(ts.tv_nsec) / 1000);
 }
 
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
@@ -68,7 +68,7 @@ PlatformInstant getTime() {
 	LARGE_INTEGER counter;
 	QueryPerformanceCounter(&counter);
 	// Ugly trick to avoid losing precision...
-	return PlatformInstantUs(counter.QuadPart * 1000ll / (g_clockFrequency / 1000ll));
+	return PlatformInstantUs(counter.QuadPart * 1000 / (g_clockFrequency / 1000));
 }
 
 #elif ARX_HAVE_MACH_CLOCK
@@ -88,7 +88,7 @@ void initializeTime() {
 PlatformInstant getTime() {
 	mach_timespec_t ts;
 	clock_get_time(g_clockRef, &ts);
-	return PlatformInstantUs(s64(ts.tv_sec * 1000000ull) + s64(ts.tv_nsec / 1000l));
+	return PlatformInstantUs(s64(ts.tv_sec) * 1000000 + s64(ts.tv_nsec) / 1000);
 }
 
 #else
