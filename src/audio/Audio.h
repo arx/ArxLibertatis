@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
+#include "core/TimeTypes.h"
 #include "audio/AudioTypes.h"
 #include "math/Types.h"
 
@@ -144,8 +145,9 @@ aalError getAmbianceVolume(AmbianceId ambiance_id, float & volume);
 bool isAmbianceLooped(AmbianceId ambiance_id);
 
 //! play_count == 0 -> infinite loop, play_count == 1 -> play once
-aalError ambiancePlay(AmbianceId ambiance_id, const Channel & channel, bool loop = false, size_t fade_interval = 0);
-aalError ambianceStop(AmbianceId ambiance_id, size_t fade_interval = 0);
+aalError ambiancePlay(AmbianceId ambiance_id, const Channel & channel, bool loop = false,
+                      PlatformDuration fade_interval = PlatformDuration_ZERO);
+aalError ambianceStop(AmbianceId ambiance_id, PlatformDuration fade_interval = PlatformDuration_ZERO);
 
 } // namespace audio
 

@@ -111,7 +111,7 @@ struct PlayingAmbiance {
 static const PlatformDuration ARX_SOUND_UPDATE_INTERVAL = PlatformDurationMs(100);
 static const unsigned long ARX_SOUND_STREAMING_LIMIT(176400); 
 static const unsigned long MAX_VARIANTS(5);
-static const unsigned long AMBIANCE_FADE_TIME(2000);
+static const PlatformDuration AMBIANCE_FADE_TIME = PlatformDurationMs(2000);
 static const float ARX_SOUND_UNIT_FACTOR(0.01F);
 static const float ARX_SOUND_ROLLOFF_FACTOR(1.3F);
 static const float ARX_SOUND_DEFAULT_FALLSTART(200.0F);
