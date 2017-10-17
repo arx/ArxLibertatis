@@ -415,15 +415,14 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	
 	// compute Delta Time
 	ArxDuration tim = aup->_curtime - aup->_starttime;
-	
-	if(tim < ArxDuration_ZERO) {
+	if(tim < 0) {
 		return -1;
 	}
 	
 	// set pos to startpos
 	*pos = Vec3f_ZERO;
 	
-	if(tim == ArxDuration_ZERO) {
+	if(tim == 0) {
 		return 0;
 	}
 	
@@ -432,14 +431,14 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	aup->aupflags &= ~ARX_USEPATH_FLAG_FINISHED;
 
 	if(ap->pathways) {
-		ap->pathways[0]._time = ArxDuration_ZERO;
+		ap->pathways[0]._time = 0;
 		ap->pathways[0].rpos = Vec3f_ZERO;
 	} else {
 		return -1;
 	}
 	
 	// While we have time left, iterate
-	while(tim > ArxDuration_ZERO) {
+	while(tim > 0) {
 		
 		// Path Ended
 		if(targetwaypoint > ap->nb_pathways - 1) {
@@ -454,7 +453,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 			targetwaypoint += 1;
 			ArxDuration delta = tim - ap->pathways[targetwaypoint]._time;
 			
-			if(delta >= ArxDuration_ZERO) {
+			if(delta >= 0) {
 				
 				tim = delta;
 				
@@ -468,7 +467,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 				
 				if(targetwaypoint < ap->nb_pathways) {
 					
-					if(ap->pathways[targetwaypoint]._time == ArxDuration_ZERO) {
+					if(ap->pathways[targetwaypoint]._time == 0) {
 						return targetwaypoint - 1;
 					}
 					
@@ -484,7 +483,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 			// Manages a non-Bezier block
 			ArxDuration delta = tim - ap->pathways[targetwaypoint]._time;
 			
-			if(delta >= ArxDuration_ZERO) {
+			if(delta >= 0) {
 				
 				tim = delta;
 				
@@ -498,7 +497,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 				
 				if(targetwaypoint < ap->nb_pathways) {
 					
-					if(ap->pathways[targetwaypoint]._time == ArxDuration_ZERO) {
+					if(ap->pathways[targetwaypoint]._time == 0) {
 						return targetwaypoint - 1;
 					}
 					
