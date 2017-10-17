@@ -657,7 +657,7 @@ consequences on light :
 	if(CKTrack->currframe > (float)CKTrack->endframe) {
 		CKTrack->currframe = (float)CKTrack->startframe;
 		c->key = NULL;
-		c->flTime = PlatformDuration_ZERO;
+		c->flTime = 0;
 	}
 	}
 }
@@ -668,7 +668,7 @@ void PlayTrack(Cinematic * c)
 		return;
 
 	CKTrack->pause = false;
-	c->flTime = PlatformDuration_ZERO;
+	c->flTime = 0;
 }
 
 float GetTimeKeyFramer()
