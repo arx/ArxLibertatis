@@ -280,7 +280,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 				movev.z *= 0.0001f;
 				Vec3f viewvector = movev;
 
-				io->soundtime = ArxInstant_ZERO;
+				io->soundtime = 0;
 				io->soundcount = 0;
 				EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, angle, viewvector);
 				ARX_SOUND_PlaySFX(SND_WHOOSH, &pos);
@@ -373,7 +373,7 @@ private:
 	
 public:
 	CursorAnimatedHand()
-		: m_time(PlatformDuration_ZERO)
+		: m_time(0)
 		, m_frame(0)
 		, m_delay(PlatformDurationMs(70))
 	{}
