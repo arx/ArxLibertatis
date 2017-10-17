@@ -633,10 +633,6 @@ aalError samplePlay(SampleId & sample_id, const Channel & channel, unsigned play
 	if(source) {
 		if(channel.flags == source->getChannel().flags) {
 			source = NULL;
-		} else if(channel.flags & FLAG_RESTART) {
-			source->stop();
-		} else if(channel.flags & FLAG_ENQUEUE) {
-			source->play(play_count);
 		} else if(source->isIdle()) {
 			source->setMixer(channel.mixer);
 			source->setVolume(channel.volume);
