@@ -375,18 +375,17 @@ void PolyBoomDraw() {
 		
 		// FIXME what exactly does pb.type do ?
 		if(pb.type & 128) {
-			if(pb.timecreation - g_framedelay2 > ArxInstant_ZERO) {
+			if(pb.timecreation - g_framedelay2 > 0) {
 				pb.timecreation = pb.timecreation - g_framedelay2;
 			}
 			
-			if(pb.timecreation - g_framedelay2 > ArxInstant_ZERO) {
+			if(pb.timecreation - g_framedelay2 > 0) {
 				pb.timecreation = pb.timecreation - g_framedelay2;
 			}
 		}
 		
 		ArxDuration t = pb.timecreation + pb.tolive - now;
-		
-		if(t <= ArxDuration_ZERO) {
+		if(t <= 0) {
 			std::swap(polyboom[i], polyboom.back());
 			polyboom.pop_back();
 			i--;
