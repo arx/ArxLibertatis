@@ -116,15 +116,6 @@ inline DurationType<TAG, T> operator *(DurationType<TAG, T> a, IntType b) {
 	return DurationType<TAG, T>::ofRaw(a.t * T(b));
 }
 
-template <typename TAG, typename T>
-inline DurationType<TAG, T> operator +(DurationType<TAG, T> a, DurationType<TAG, T> b) {
-	return DurationType<TAG, T>::ofRaw(a.t + b.t);
-}
-template <typename TAG, typename T>
-inline DurationType<TAG, T> operator -(DurationType<TAG, T> a, DurationType<TAG, T> b) {
-	return DurationType<TAG, T>::ofRaw(a.t - b.t);
-}
-
 
 template <typename TAG, typename T>
 inline float operator /(DurationType<TAG, T> a, DurationType<TAG, T> b) {
