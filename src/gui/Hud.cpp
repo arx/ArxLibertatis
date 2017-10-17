@@ -1528,11 +1528,9 @@ void HudRoot::draw() {
 	g_secondaryInventoryHud.draw();
 	g_playerInventoryHud.draw();
 	
-	if(    FlyingOverIO 
-		&& !(player.Interface & INTER_COMBATMODE)
-		&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
-		&& (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
-	  ) {
+	if(FlyingOverIO  && !(player.Interface & INTER_COMBATMODE)
+	   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+	   && (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)) {
 		if((FlyingOverIO->ioflags & IO_ITEM) && !DRAGINTER && SecondaryInventory) {
 			DrawItemPrice();
 		}
