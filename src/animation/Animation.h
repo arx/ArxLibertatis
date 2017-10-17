@@ -87,7 +87,7 @@ struct EERIE_ANIM
 	unsigned char *	voidgroups;
 	
 	EERIE_ANIM()
-		: anim_time(AnimationDuration_ZERO)
+		: anim_time(0)
 		, nb_groups(0)
 		, nb_key_frames(0)
 		, frames(NULL)
@@ -125,7 +125,7 @@ struct AnimLayer {
 	AnimLayer()
 		: cur_anim(NULL)
 		, altidx_cur(0)
-		, ctime(AnimationDuration_ZERO)
+		, ctime(0)
 		, flags(0)
 		, lastframe(-1)
 		, currentInterpolation(0.f)

@@ -121,7 +121,7 @@ void ANIM_Set(AnimLayer & layer, ANIM_HANDLE *anim)
 	if(layer.altidx_cur > layer.cur_anim->alt_nb)
 		layer.altidx_cur = 0;
 
-	layer.ctime = AnimationDuration_ZERO;
+	layer.ctime = 0;
 	layer.lastframe = -1;
 	layer.flags &= ~EA_PAUSED;
 	layer.flags &= ~EA_ANIMEND;
@@ -227,7 +227,7 @@ static float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2) {
 	if(!ea || f1 < 0 || f1 > ea->nb_key_frames - 1 || f2 < 0 || f2 > ea->nb_key_frames - 1)
 		return 0;
 
-	AnimationDuration time = AnimationDuration_ZERO;
+	AnimationDuration time = 0;
 
 	for(long kk = f1 + 1; kk <= f2; kk++) {
 		time += ea->frames[kk].time;
@@ -265,7 +265,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	eerie->groups = allocStructZero<EERIE_GROUP>(th->nb_key_frames * th->nb_groups);
 	eerie->voidgroups = allocStructZero<unsigned char>(th->nb_groups);
 
-	eerie->anim_time = AnimationDuration_ZERO;
+	eerie->anim_time = 0;
 
 	// Go For Keyframes read
 	for(long i = 0; i < th->nb_key_frames; i++) {
@@ -569,10 +569,10 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 	arx_assert(layer.cur_anim);
 	
 	if(layer.flags & EA_PAUSED)
-		time = AnimationDuration_ZERO;
+		time = 0;
 
 	if(io && (io->ioflags & IO_FREEZESCRIPT))
-		time = AnimationDuration_ZERO;
+		time = 0;
 
 	if(layer.altidx_cur >= layer.cur_anim->alt_nb)
 		layer.altidx_cur = 0;
@@ -634,7 +634,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 			
 			// Frame Sound Management
 			if(!(layer.flags & EA_ANIMEND)
-			   && time != AnimationDuration_ZERO
+			   && time != 0
 			   && (anim->frames[fr].sample != -1)
 			   && (layer.lastframe != fr)) {
 
@@ -650,7 +650,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 
 			// Frame Flags Management
 			if(!(layer.flags & EA_ANIMEND)
-			   && time != AnimationDuration_ZERO
+			   && time != 0
 			   && (anim->frames[fr].stepSound)
 			   && (layer.lastframe != fr)) {
 				
@@ -678,7 +678,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 
 void ResetAnim(AnimLayer & layer) {
 	
-	layer.ctime = AnimationDuration_ZERO;
+	layer.ctime = 0;
 	layer.lastframe=-1;
 	layer.flags&=~EA_PAUSED;
 	layer.flags&=~EA_ANIMEND;
