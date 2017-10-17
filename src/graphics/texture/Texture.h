@@ -44,8 +44,6 @@ public:
 	const Vec2i & getSize() const { return size; }
 	const Vec2i & getStoredSize() const { return storedSize; }
 	
-	unsigned int GetDepth() const { return mDepth; }
-	
 	Image::Format GetFormat() const { return mFormat; }
 	
 	bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
@@ -58,7 +56,6 @@ protected:
 		, flags(0)
 		, size(Vec2i_ZERO)
 		, storedSize(Vec2i_ZERO)
-		, mDepth(0)
 	{ }
 	
 	virtual bool Create() = 0;
@@ -68,8 +65,6 @@ protected:
 	
 	Vec2i size;
 	Vec2i storedSize;
-	
-	unsigned int mDepth;
 	
 };
 
