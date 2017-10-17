@@ -832,7 +832,7 @@ ArxDuration ARX_SOUND_GetDuration(SampleId & sample_id) {
 		return ArxDurationMs(length);
 	}
 
-	return ArxDuration_ZERO;
+	return 0;
 }
 
 void ARX_SOUND_RefreshVolume(SourceId & sample_id, float volume) {
