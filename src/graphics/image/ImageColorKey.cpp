@@ -297,8 +297,6 @@ static bool sampleColorKey(const u8 * src, int w, int h, int x, int y, u8 * dst,
 
 void Image::ApplyColorKeyToAlpha(Color key, bool antialias) {
 	
-	arx_assert_msg(!IsVolume(), "ApplyColorKeyToAlpha Not supported for 3d textures!");
-	
 	if(mFormat != Format_R8G8B8 && mFormat != Format_B8G8R8) {
 		arx_assert_msg(false, "ApplyColorKeyToAlpha not supported for format %d", mFormat);
 		return;
@@ -327,7 +325,7 @@ void Image::ApplyColorKeyToAlpha(Color key, bool antialias) {
 	// If we need to add an alpha channel
 	
 	// Create a temp buffer
-	size_t dataSize = GetSizeWithMipmaps(Format_R8G8B8A8, mWidth, mHeight, mDepth, mNumMipmaps);
+	size_t dataSize = GetSizeWithMipmaps(Format_R8G8B8A8, mWidth, mHeight, mNumMipmaps);
 	u8 * dataTemp = new unsigned char[dataSize];
 	
 	// Fill temp image and apply color key to alpha channel
