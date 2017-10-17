@@ -86,8 +86,8 @@ void RiseDeadSpell::Launch() {
 	m_targetPos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &m_targetPos);
 	
-	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
-	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
+	m_hasDuration = m_launchDuration >= 0;
+	m_duration = m_hasDuration ? m_launchDuration : 0;
 	m_fManaCostPerSecond = 1.2f;
 	
 	m_creationFailed = false;
@@ -212,7 +212,7 @@ void RiseDeadSpell::Update() {
 		} else {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 			m_creationFailed = true;
-			m_duration = ArxDuration_ZERO;
+			m_duration = 0;
 		}
 	} else if(!arxtime.is_paused() && tim < ArxDurationMs(4000)) {
 	  if(Random::getf() > 0.95f) {
@@ -225,7 +225,7 @@ void ParalyseSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[m_target]->pos);
 	
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(5000);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(5000);
 	m_hasDuration = true;
 	
 	float resist_magic = 0.f;
@@ -279,8 +279,8 @@ void CreateFieldSpell::Launch() {
 	}
 	m_timcreation = start;
 	
-	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
-	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
+	m_hasDuration = m_launchDuration >= 0;
+	m_duration = m_hasDuration ? m_launchDuration : 0;
 	m_fManaCostPerSecond = 1.2f;
 	
 	Vec3f target;
@@ -340,7 +340,7 @@ void CreateFieldSpell::Launch() {
 		
 	} else {
 		//make the spell end in ARX_SPELLS_Update()
-		m_duration = ArxDuration_ZERO;
+		m_duration = 0;
 		m_hasDuration = true;
 	}
 }
@@ -363,7 +363,7 @@ void CreateFieldSpell::Update() {
 		
 		if (IsAnyNPCInPlatform(io))
 		{
-			m_duration=ArxDuration_ZERO;
+			m_duration = 0;
 		}
 		
 		m_field.Update(g_framedelay2);
@@ -423,10 +423,10 @@ void SlowDownSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
 	if(m_caster == EntityHandle_Player) {
-		m_duration = ArxDuration_ZERO;
+		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(10000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(10000);
 		m_hasDuration = true;
 	}
 	
