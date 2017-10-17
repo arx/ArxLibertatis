@@ -210,11 +210,11 @@ public:
 	bool is_dot() const { return pathstr.length() == 1 && pathstr[0] == '.'; }
 	
 	bool is_root() const {
-		return (pathstr.length() == 1 && pathstr[0] == dir_sep)
+		return ((pathstr.length() == 1 && pathstr[0] == dir_sep)
 		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 			|| (pathstr.length() <= 3 && pathstr.length() >= 2 && pathstr[1] == ':')
 		#endif
-		;
+		);
 	}
 	
 	//! Is this a relative path. An empty path is neither relative nor absolute.
