@@ -356,8 +356,8 @@ void Input::reset() {
 	m_mouseMovement = Vec2f_ZERO;
 
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
-		iMouseTime[i][0] = PlatformInstant_ZERO;
-		iMouseTime[i][1] = PlatformInstant_ZERO;
+		iMouseTime[i][0] = 0;
+		iMouseTime[i][1] = 0;
 		iMouseTimeSet[i] = 0;
 		bMouseButton[i] = bOldMouseButton[i] = false;
 		iOldNumClick[i] = 0;
@@ -535,8 +535,8 @@ void Input::update(float time) {
 			iOldNumClick[i]--;
 		
 		if(iMouseTimeSet[i] > 1 || (iMouseTimeSet[i] == 1 && now - iMouseTime[i][0] > PlatformDurationMs(300))) {
-			iMouseTime[i][0] = PlatformInstant_ZERO;
-			iMouseTime[i][1] = PlatformInstant_ZERO;
+			iMouseTime[i][0] = 0;
+			iMouseTime[i][1] = 0;
 			iMouseTimeSet[i] = 0;
 		}
 		
