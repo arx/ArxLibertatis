@@ -637,7 +637,7 @@ ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo)
 static bool HandleGameFlowTransitions() {
 	
 	const PlatformDuration TRANSITION_DURATION = PlatformDurationMs(3600);
-	static PlatformInstant TRANSITION_START = PlatformInstant_ZERO;
+	static PlatformInstant TRANSITION_START = 0;
 
 	if(GameFlow::getTransition() == GameFlow::InGame) {
 		return false;
@@ -652,7 +652,7 @@ static bool HandleGameFlowTransitions() {
 	if(GameFlow::getTransition() == GameFlow::FirstLogo) {
 		benchmark::begin(benchmark::Splash);
 		//firsttime
-		if(TRANSITION_START == PlatformInstant_ZERO) {
+		if(TRANSITION_START == 0) {
 			if(!ARX_INTERFACE_InitFISHTANK()) {
 				GameFlow::setTransition(GameFlow::SecondLogo);
 				return true;
@@ -666,7 +666,7 @@ static bool HandleGameFlowTransitions() {
 		PlatformDuration elapsed = g_platformTime.frameStart() - TRANSITION_START;
 
 		if(elapsed > TRANSITION_DURATION) {
-			TRANSITION_START = PlatformInstant_ZERO;
+			TRANSITION_START = 0;
 			GameFlow::setTransition(GameFlow::SecondLogo);
 		}
 
@@ -676,7 +676,7 @@ static bool HandleGameFlowTransitions() {
 	if(GameFlow::getTransition() == GameFlow::SecondLogo) {
 		benchmark::begin(benchmark::Splash);
 		//firsttime
-		if(TRANSITION_START == PlatformInstant_ZERO) {
+		if(TRANSITION_START == 0) {
 			if(!ARX_INTERFACE_InitARKANE()) {
 				GameFlow::setTransition(GameFlow::LoadingScreen);
 				return true;
@@ -691,7 +691,7 @@ static bool HandleGameFlowTransitions() {
 		PlatformDuration elapsed = g_platformTime.frameStart() - TRANSITION_START;
 
 		if(elapsed > TRANSITION_DURATION) {
-			TRANSITION_START = PlatformInstant_ZERO;
+			TRANSITION_START = 0;
 			GameFlow::setTransition(GameFlow::LoadingScreen);
 		}
 
@@ -1603,7 +1603,7 @@ void ArxGame::updateTime() {
 	g_platformTime.updateFrame();
 	
 	if(g_requestLevelInit) {
-		g_platformTime.overrideFrameDuration(PlatformDuration_ZERO);
+		g_platformTime.overrideFrameDuration(0);
 	}
 	
 	arxtime.update(g_platformTime.lastFrameDuration());
@@ -1888,7 +1888,7 @@ void ArxGame::updateLevel() {
 	if(!player.m_paralysed) {
 		if(eeMousePressed1()) {
 			if(!ARX_FLARES_Block) {
-				static PlatformDuration runeDrawPointElapsed = PlatformDuration_ZERO;
+				static PlatformDuration runeDrawPointElapsed = 0;
 				if(!config.input.useAltRuneRecognition) {
 					runeDrawPointElapsed += g_platformTime.lastFrameDuration();
 					
