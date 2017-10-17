@@ -22,6 +22,7 @@
 
 #include <string>
 
+#include "core/TimeTypes.h"
 #include "platform/Platform.h"
 
 namespace profiler {
@@ -37,8 +38,8 @@ namespace profiler {
 	
 #if BUILD_PROFILER_INSTRUMENT
 	class Scope {
-		const char* m_tag;
-		u64         m_startTime;
+		const char * m_tag;
+		PlatformInstant m_startTime;
 		
 	public:
 		explicit Scope(const char* tag);
