@@ -77,7 +77,7 @@ struct optional {
 	void swap(optional & rh) { // never throws
 		T * tmp(m_ptr);
 		m_ptr = rh.m_ptr;
-		rh.m_ptr = tmp ;
+		rh.m_ptr = tmp;
 	}
 	
 	const T & operator *() const { // never throws
