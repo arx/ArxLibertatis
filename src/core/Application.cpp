@@ -91,7 +91,7 @@ void CalcFPS(bool reset) {
 
 		// Update the frame rate once per second
 		if(tmp > 1.f) {
-			FPS = dwFrames / tmp;
+			FPS = float(dwFrames) / tmp;
 			fLastTime = fTime;
 			dwFrames  = 0L;
 		}
