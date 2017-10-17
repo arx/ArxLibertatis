@@ -70,7 +70,6 @@ private:
 	Vec2i cursorRelAccum;
 	bool cursorInWindow;
 	bool keyStates[Keyboard::KeyCount];
-	bool buttonStates[Mouse::ButtonCount];
 	size_t clickCount[Mouse::ButtonCount];
 	size_t unclickCount[Mouse::ButtonCount];
 	
