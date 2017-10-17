@@ -514,7 +514,7 @@ void IceProjectileSpell::Update() {
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Screen);
 	
-	int iMax = int((iNumber * 2) * (m_elapsed / m_duration));
+	int iMax = int(float(iNumber) * 2.f * (m_elapsed / m_duration));
 
 	if(iMax > iNumber) {
 		iMax = iNumber;
