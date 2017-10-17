@@ -379,7 +379,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	
 	//sound
 	if(changekey && idsound >= 0)
-		PlaySoundKeyFramer(idsound);
+		PlaySoundKeyFramer(size_t(idsound));
 	
 	if(config.interface.cinematicWidescreenMode == CinematicLetterbox) {
 		s32 w = s32(640 * g_sizeRatio.y);
