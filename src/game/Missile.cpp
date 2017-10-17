@@ -184,16 +184,13 @@ void ARX_MISSILES_Update() {
 	for(unsigned long i(0); i < MAX_MISSILES; i++) {
 		if(missiles[i].type == MISSILE_NONE)
 			continue;
-
-		ArxDuration framediff = missiles[i].timecreation + missiles[i].tolive - now;
-
-		if(framediff < ArxDuration_ZERO) {
+		
+		ArxDuration framediff3 = now - missiles[i].timecreation;
+		if(framediff3 > missiles[i].tolive) {
 			ARX_MISSILES_Kill(i);
 			continue;
 		}
-
-		ArxDuration framediff3 = now - missiles[i].timecreation;
-
+		
 		switch(missiles[i].type) {
 			case MISSILE_NONE:
 			break;
