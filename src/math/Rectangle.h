@@ -127,7 +127,7 @@ public:
 		right  += dx;
 		bottom += dy;
 	}
-    
+	
 	bool contains(const Vec2 & point) const {
 		return point.x >= left
 		    && point.x <  right
