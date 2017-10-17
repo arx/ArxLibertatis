@@ -146,11 +146,11 @@ void RuneRecognitionAlt::resampleInput(const std::vector<Vec2f> &in) {
 
 	m_points.push_back(in[0]);
 	
-	int segmentCount = m_indices.size() - 1;
+	size_t segmentCount = m_indices.size() - 1;
 	int pointsAdded = 0;
 	float segRemains = 0.0;
 	
-	for(int segment = 0; segment < segmentCount; segment++) {
+	for(size_t segment = 0; segment < segmentCount; segment++) {
 		
 		//distance along curve from key point 1 to key point 2
 		float segLen = 0.0;
