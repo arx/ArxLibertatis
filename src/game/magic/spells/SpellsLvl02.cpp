@@ -55,7 +55,7 @@ void HealSpell::Launch() {
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.4f * m_level;
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(3500);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(3500);
 	
 	if(m_caster == EntityHandle_Player) {
 		m_pos = player.pos;
@@ -214,10 +214,10 @@ void ArmorSpell::Launch()
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	
 	if(m_caster == EntityHandle_Player) {
-		m_duration = ArxDuration_ZERO;
+		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(20000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(20000);
 		m_hasDuration = true;
 	}
 	
@@ -280,10 +280,10 @@ void LowerArmorSpell::Launch() {
 	}
 	
 	if(m_caster == EntityHandle_Player) {
-		m_duration = ArxDuration_ZERO;
+		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(20000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(20000);
 		m_hasDuration = true;
 	}
 	
@@ -357,8 +357,8 @@ void HarmSpell::Launch() {
 	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
 	
-	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
-	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
+	m_hasDuration = m_launchDuration >= 0;
+	m_duration = m_hasDuration ? m_launchDuration : 0;
 	m_fManaCostPerSecond = 0.4f;
 
 	DamageParameters damage;
