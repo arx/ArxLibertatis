@@ -50,8 +50,8 @@ void MagicSightSpell::Launch() {
 	
 	m_fManaCostPerSecond = 0.36f;
 	
-	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
-	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
+	m_hasDuration = m_launchDuration >= 0;
+	m_duration = m_hasDuration ? m_launchDuration : 0;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &m_caster_pos);
 	
@@ -95,7 +95,7 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 	ParticleSystem * pPS = new ParticleSystem();
 	pPS->SetParams(cp);
 	pPS->SetPos(_ePos);
-	pPS->Update(ArxDuration_ZERO);
+	pPS->Update(0);
 	
 	EERIE_LIGHT * light = dynLightCreate();
 	if(light) {
@@ -193,7 +193,7 @@ void MagicMissileSpell::Launch() {
 	
 	m_mrCheat = (m_caster == EntityHandle_Player && cur_mr == 3);
 	
-	ArxDuration lMax = ArxDuration_ZERO;
+	ArxDuration lMax = 0;
 	
 	long number;
 	if(sp_max || cur_rf == 3) {
@@ -312,7 +312,7 @@ void MagicMissileSpell::Update() {
 		}
 		
 		if(nbmissiles == 0) {
-			m_duration = ArxDuration_ZERO;
+			m_duration = 0;
 		}
 	}
 	
