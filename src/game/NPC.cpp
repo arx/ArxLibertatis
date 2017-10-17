@@ -1959,21 +1959,18 @@ afterthat:
 	) {
 		ARX_NPC_LaunchPathfind(io, io->targetinfo);
 	}
-
+	
 	if((io->_npcdata->behavior & (BEHAVIOUR_FRIENDLY | BEHAVIOUR_NONE))
-			&& (layer0.cur_anim == alist[ANIM_WALK]
-				|| layer0.cur_anim == alist[ANIM_WALK_SNEAK]
-				|| layer0.cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]
-				|| layer0.cur_anim == alist[ANIM_RUN]
-				|| layer0.cur_anim == alist[ANIM_FIGHT_STRAFE_LEFT]
-				|| layer0.cur_anim == alist[ANIM_FIGHT_STRAFE_RIGHT]
-				|| layer0.cur_anim == alist[ANIM_FIGHT_WALK_BACKWARD]
-			   )
-	) {
+	   && (layer0.cur_anim == alist[ANIM_WALK]
+	       || layer0.cur_anim == alist[ANIM_WALK_SNEAK]
+	       || layer0.cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]
+	       || layer0.cur_anim == alist[ANIM_RUN]
+	       || layer0.cur_anim == alist[ANIM_FIGHT_STRAFE_LEFT]
+	       || layer0.cur_anim == alist[ANIM_FIGHT_STRAFE_RIGHT]
+	       || layer0.cur_anim == alist[ANIM_FIGHT_WALK_BACKWARD])) {
 		changeAnimation(io, ANIM_WAIT, 0, true);
 	}
-
-
+	
 	// look around if finished fleeing or being looking around !
 	if((io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND) && fartherThan(io->pos, io->target, 150.f)) {
 		if(!io->_npcdata->ex_rotate) {
