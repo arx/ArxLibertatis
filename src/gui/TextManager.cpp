@@ -136,7 +136,7 @@ void TextManager::Update(PlatformDuration _iDiffFrame) {
 		pArxText->lTimeOut -= _iDiffFrame;
 		
 		if(pArxText->lTimeScroll < 0
-		   && pArxText->fDeltaY < (pArxText->rRect.bottom - pArxText->rRectClipp.bottom)) {
+		   && pArxText->fDeltaY < float(pArxText->rRect.bottom - pArxText->rRectClipp.bottom)) {
 			pArxText->fDeltaY += pArxText->fSpeedScrollY * toMs(_iDiffFrame);
 			
 			if(pArxText->fDeltaY >= (pArxText->rRect.bottom - pArxText->rRectClipp.bottom)) {
