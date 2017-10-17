@@ -173,7 +173,7 @@ bool				DRAGGING = false;
 bool				MAGICMODE = false;
 long				SpecialCursor=0;
 
-ArxInstant COMBAT_MODE_ON_START_TIME = ArxInstant_ZERO;
+ArxInstant COMBAT_MODE_ON_START_TIME = 0;
 static long SPECIAL_DRAW_WEAPON = 0;
 bool bGCroucheToggle=false;
 
@@ -1632,7 +1632,7 @@ void ArxGame::manageKeyMouse() {
 	}
 	
 	LAST_PLAYER_MOUSELOOK_ON = mouselook;
-	PLAYER_ROTATION = AnimationDuration_ZERO;
+	PLAYER_ROTATION = 0;
 
 	Vec2f rotation = GInput->getRelativeMouseMovement();
 	
@@ -1655,66 +1655,61 @@ void ArxGame::manageKeyMouse() {
 			PlatformInstant lookDown;
 		};
 		
-		static PushTime pushTime = {
-			PlatformInstant_ZERO,
-			PlatformInstant_ZERO,
-			PlatformInstant_ZERO,
-			PlatformInstant_ZERO
-		};
+		static PushTime pushTime = { 0, 0, 0, 0 };
 		
 		if(!GInput->actionPressed(CONTROLS_CUST_STRAFE)) {
 			const PlatformInstant now = g_platformTime.frameStart();
 
 			if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
-				if(pushTime.turnLeft == PlatformInstant_ZERO)
+				if(pushTime.turnLeft == 0)
 					pushTime.turnLeft = now;
 
 				bKeySpecialMove = true;
 			}
 			else
-				pushTime.turnLeft = PlatformInstant_ZERO;
+				pushTime.turnLeft = 0;
 
 			if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)) {
-				if(pushTime.turnRight == PlatformInstant_ZERO)
+				if(pushTime.turnRight == 0)
 					pushTime.turnRight = now;
 
 				bKeySpecialMove = true;
 			}
 			else
-				pushTime.turnRight = PlatformInstant_ZERO;
+				pushTime.turnRight = 0;
 		}
 
 		if(USE_PLAYERCOLLISIONS) {
 			const PlatformInstant now = g_platformTime.frameStart();
 
 			if(GInput->actionPressed(CONTROLS_CUST_LOOKUP)) {
-				if(pushTime.lookUp == PlatformInstant_ZERO)
+				if(pushTime.lookUp == 0)
 					pushTime.lookUp = now;
 
 				bKeySpecialMove = true;
 			}
 			else
-				pushTime.lookUp = PlatformInstant_ZERO;
+				pushTime.lookUp = 0;
 
 			if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN)) {
-				if(pushTime.lookDown == PlatformInstant_ZERO)
+				if(pushTime.lookDown == 0)
 					pushTime.lookDown = now;
 
 				bKeySpecialMove = true;
 			}
 			else
-				pushTime.lookDown = PlatformInstant_ZERO;
+				pushTime.lookDown = 0;
 		}
 		
 		if(bKeySpecialMove) {
 			
 			rotation = Vec2f_ZERO;
 			
-			if(pushTime.turnLeft != PlatformInstant_ZERO || pushTime.turnRight != PlatformInstant_ZERO) {
+			if(pushTime.turnLeft != 0 || pushTime.turnRight != 0) {
 				rotation.x = (pushTime.turnLeft < pushTime.turnRight) ? 1.f : -1.f;
 			}
 			
-			if(pushTime.lookUp != PlatformInstant_ZERO || pushTime.lookDown != PlatformInstant_ZERO) {
+			if(pushTime.lookUp != 0 || pushTime.lookDown != 0) {
 				rotation.y = (pushTime.lookUp < pushTime.lookDown) ? 1.f : -1.f;
 			}
 			
@@ -1729,7 +1724,7 @@ void ArxGame::manageKeyMouse() {
 			bool dragging = GInput->getMouseButtonRepeat(Mouse::Button_0);
 			
 			static bool mouseInBorder = false;
-			static PlatformInstant mouseInBorderTime = PlatformInstant_ZERO;
+			static PlatformInstant mouseInBorderTime = 0;
 			
 			if(!bRenderInCursorMode || (!dragging && !GInput->isMouseInWindow())) {
 				mouseInBorder = false;
@@ -1785,8 +1780,7 @@ void ArxGame::manageKeyMouse() {
 					mouseInBorder = true;
 				}
 				
-				if(borderDelay > PlatformDuration_ZERO
-				   && g_platformTime.frameStart() - mouseInBorderTime < borderDelay) {
+				if(borderDelay > 0 && g_platformTime.frameStart() - mouseInBorderTime < borderDelay) {
 					rotation = Vec2f_ZERO;
 				} else {
 					bKeySpecialMove = true;
@@ -1833,7 +1827,7 @@ void ArxGame::manageKeyMouse() {
 				}
 
 				if(glm::abs(rotation.y) > 2.f)
-					entities.player()->animBlend.lastanimtime = ArxInstant_ZERO;
+					entities.player()->animBlend.lastanimtime = 0;
 
 				if(rotation.x != 0.f)
 					player.m_currentMovement |= PLAYER_ROTATE;
@@ -2096,8 +2090,8 @@ void ArxGame::manageEditorControls() {
 						Vec3f viewvector = angleToVector(player.angle + Anglef(0.f, ratio.x * 30.f, 0.f));
 						viewvector.y += ratio.y;
 						
-						io->soundtime = ArxInstant_ZERO;
-						io->soundcount=0;
+						io->soundtime = 0;
+						io->soundcount = 0;
 						
 						EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);
 						ARX_SOUND_PlaySFX(SND_WHOOSH, &io->pos);
