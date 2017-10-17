@@ -85,7 +85,7 @@ static void LaunchPoisonExplosion(const Vec3f & aePos) {
 	
 	pPS->SetParams(g_particleParameters[ParticleParam_Poison1]);
 	pPS->SetPos(aePos);
-	pPS->Update(ArxDuration_ZERO);
+	pPS->Update(0);
 
 	std::list<Particle *>::iterator i;
 
@@ -147,7 +147,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	
 	pPS.SetParams(pp);
 	pPS.SetPos(eSrc);
-	pPS.Update(ArxDuration_ZERO);
+	pPS.Update(0);
 }
 
 void CPoisonProjectile::Update(ArxDuration timeDelta)
