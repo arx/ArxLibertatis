@@ -125,7 +125,7 @@ aalError setSamplePitch(SourceId sample_id, float pitch);
 aalError setSamplePosition(SourceId sample_id, const Vec3f & position);
 
 aalError getSampleName(SampleId sample_id, res::path & name);
-aalError getSampleLength(SampleId sample_id, size_t & length, TimeUnit unit = UNIT_MS);
+aalError getSampleLength(SampleId sample_id, size_t & length);
 aalError getSamplePan(SourceId sample_id, float * pan);
 aalError getSampleCone(SourceId sample_id, SourceCone * cone);
 bool isSamplePlaying(SourceId sample_id);
