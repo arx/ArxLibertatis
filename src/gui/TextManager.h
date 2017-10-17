@@ -61,10 +61,8 @@ public:
 	~TextManager();
 	
 	bool AddText(Font * font, const std::string & str, const Rect & bbox,
-	             Color color = Color::white,
-	             PlatformDuration displayTime = PlatformDuration_ZERO,
-	             PlatformDuration scrollTime = PlatformDuration_ZERO,
-	             float scrollSpeed = 0.f, int nLineClipp = 0);
+	             Color color = Color::white, PlatformDuration displayTime = 0,
+	             PlatformDuration scrollTime = 0, float scrollSpeed = 0.f, int nLineClipp = 0);
 	
 	bool AddText(Font * font, const std::string & str, Vec2i pos, Color color);
 	void Update(PlatformDuration _iDiffFrame);
