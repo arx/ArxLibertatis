@@ -373,7 +373,7 @@ aalError OpenALSource::updateVolume() {
 		return AAL_ERROR_INIT;
 	}
 	
-	const Mixer * mixer = _mixer[channel.mixer.handleData()];
+	const Mixer * mixer = g_mixers[channel.mixer.handleData()];
 	float volume = mixer ? mixer->getFinalVolume() : 1.f;
 	
 	if(volume > 0.f && (channel.flags & FLAG_VOLUME)) {

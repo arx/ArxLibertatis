@@ -63,7 +63,7 @@ size_t stream_limit_bytes = DEFAULT_STREAMLIMIT;
 PlatformInstant session_time = 0;
 
 // Resources
-ResourceList<Mixer> _mixer;
+ResourceList<Mixer> g_mixers;
 ResourceList<Sample> g_samples;
 ResourceList<Ambiance> _amb;
 ResourceList<Environment> _env;
