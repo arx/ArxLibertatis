@@ -51,8 +51,8 @@ void RuneOfGuardingSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING);
 	
-	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
-	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
+	m_hasDuration = m_launchDuration >= 0;
+	m_duration = m_hasDuration ? m_launchDuration : 0;
 	
 	m_pos = entities[m_caster]->pos;
 	
@@ -144,7 +144,7 @@ void RuneOfGuardingSpell::Update() {
 		LaunchFireballBoom(m_pos, m_level);
 		DoSphericDamage(Sphere(m_pos, 30.f * m_level), 4.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 		ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING_END, &m_pos);
-		m_duration = ArxDuration_ZERO;
+		m_duration = 0;
 	}
 }
 
@@ -174,13 +174,13 @@ void LevitateSpell::Launch() {
 	Vec3f target;
 	if(m_target == EntityHandle_Player) {
 		target = player.pos + Vec3f(0.f, 150.f, 0.f);
-		m_duration = ArxDuration_ZERO;
+		m_duration = 0;
 		m_hasDuration = false;
 		player.levitate = true;
 	} else {
 		target = entities[m_target]->pos;
-		m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
-		m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
+		m_hasDuration = m_launchDuration >= 0;
+		m_duration = m_hasDuration ? m_launchDuration : 0;
 	}
 	
 	m_pos = target;
@@ -383,8 +383,8 @@ void RepelUndeadSpell::Launch() {
 		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
-	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
+	m_hasDuration = m_launchDuration >= 0;
+	m_duration = m_hasDuration ? m_launchDuration : 0;
 	m_fManaCostPerSecond = 1.f;
 	
 	m_pos = player.pos;
@@ -525,7 +525,7 @@ void PoisonProjectileSpell::Launch() {
 	m_duration = ArxDurationMs(8000);
 	m_hasDuration = true;
 	
-	ArxDuration lMax = ArxDuration_ZERO;
+	ArxDuration lMax = 0;
 	
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
 		CPoisonProjectile * projectile = m_projectiles[i];
