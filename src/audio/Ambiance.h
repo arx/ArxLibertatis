@@ -109,7 +109,7 @@ private:
 	PlatformDuration fade_interval;
 	float fade_max;
 	PlatformInstant start;
-	PlatformDuration time;
+	PlatformDuration m_time;
 	
 	TrackList tracks;
 	
