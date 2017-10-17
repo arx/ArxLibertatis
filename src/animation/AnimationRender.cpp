@@ -323,7 +323,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 		} else {
 			const ArxDuration elapsed = arxtime.now() - io->sfx_time;
 
-			if(elapsed > ArxDuration_ZERO) {
+			if(elapsed > 0) {
 				if(elapsed < ArxDurationMs(3000)) { // 5 seconds to red
 					float ratio = elapsed / ArxDurationMs(3000);
 					io->special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
@@ -335,7 +335,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 					io->highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
 					AddRandomSmoke(io, 2);
 				} else { // SFX finish
-					io->sfx_time = ArxInstant_ZERO;
+					io->sfx_time = 0;
 
 					if(io->ioflags & IO_NPC) {
 						MakePlayerAppearsFX(io);
@@ -1456,13 +1456,13 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 
 		AnimationDuration tim = time * speedfactor;
 
-		if(tim <= AnimationDuration_ZERO)
-			time = AnimationDuration_ZERO;
+		if(tim <= 0)
+			time = 0;
 		else
 			time = tim;
 	}
 
-	if(time > AnimationDuration_ZERO) {
+	if(time > 0) {
 		for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
 			AnimLayer & layer = animlayer[count];
 			if(layer.cur_anim)
