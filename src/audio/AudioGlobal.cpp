@@ -60,7 +60,7 @@ res::path sample_path;
 res::path ambiance_path;
 res::path environment_path;
 size_t stream_limit_bytes = DEFAULT_STREAMLIMIT;
-PlatformInstant session_time = PlatformInstant_ZERO;
+PlatformInstant session_time = 0;
 
 // Resources
 ResourceList<Mixer> _mixer;
