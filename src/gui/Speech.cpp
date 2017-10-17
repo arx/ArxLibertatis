@@ -487,7 +487,7 @@ void ARX_SPEECH_Update() {
 		float fDepY				=	((float)g_size.height()) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
 		float fZoneClippY		=	fDepY + speech->fDeltaY;
 
-		float fAdd = fZoneClippY + fZoneClippHeight ;
+		float fAdd = fZoneClippY + fZoneClippHeight;
 
 		Rect::Num y = checked_range_cast<Rect::Num>(fZoneClippY);
 		Rect::Num h = checked_range_cast<Rect::Num>(fAdd);
