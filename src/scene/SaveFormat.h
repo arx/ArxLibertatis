@@ -798,7 +798,7 @@ struct ARX_CHANGELEVEL_NPC_IO_SAVE {
 	u8 resist_fire;
 	u8 padd;
 	
-	s16 strike_time;
+	s16 strike_time; // TODO Remove
 	s16 walk_start_time;
 	s32 aiming_start;
 	s32 npcflags;

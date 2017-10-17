@@ -199,7 +199,6 @@ struct IO_NPCDATA {
 	unsigned char resist_magic;
 	unsigned char resist_fire;
 	
-	short strike_time;
 	ArxDuration walk_start_time;
 	ArxInstant aiming_start;
 	NPCFlags npcflags;
