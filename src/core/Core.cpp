@@ -195,7 +195,7 @@ long TELEPORT_TO_ANGLE;
 res::path LastLoadedScene;
 
 float g_framedelay = 0.f;
-ArxDuration g_framedelay2 = ArxDuration_ZERO;
+ArxDuration g_framedelay2 = 0;
 
 bool LOAD_N_ERASE = true;
 
@@ -231,7 +231,7 @@ extern EERIE_CAMERA * ACTIVECAM;
 
 bool g_debugToggles[10];
 bool g_debugTriggers[10];
-PlatformInstant g_debugTriggersTime[10] = { PlatformInstant_ZERO };
+PlatformInstant g_debugTriggersTime[10] = { 0 };
 float g_debugValues[10];
 
 // Sends ON GAME_READY msg to all IOs
@@ -340,7 +340,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f 
 //*************************************************************************************
 void SetEditMode() {
 	
-	LAST_JUMP_ENDTIME = PlatformInstant_ZERO;
+	LAST_JUMP_ENDTIME = 0;
 	
 	if(!DONT_ERASE_PLAYER) {
 		player.lifePool.current = 0.1f;
@@ -609,7 +609,7 @@ void ManageCombatModeAnimations() {
 	arx_assert(entities.player());
 		
 
-	if(player.m_aimTime > PlatformDuration_ZERO) {
+	if(player.m_aimTime > 0) {
 		player.m_aimTime += g_platformTime.lastFrameDuration();
 	}
 
@@ -623,14 +623,14 @@ void ManageCombatModeAnimations() {
 	if(weapontype == WEAPON_BARE && LAST_WEAPON_TYPE != weapontype) {
 		if(layer1.cur_anim != alist[ANIM_BARE_WAIT]) {
 			changeAnimation(io, 1, alist[ANIM_BARE_WAIT]);
-			player.m_aimTime = PlatformDuration_ZERO;
+			player.m_aimTime = 0;
 		}
 	}
 	
 	switch(weapontype) {
 		case WEAPON_BARE: { // BARE HANDS PLAYER MANAGEMENT
 			if(layer1.cur_anim == alist[ANIM_BARE_WAIT]) {
-				player.m_aimTime = PlatformDuration_ZERO;
+				player.m_aimTime = 0;
 				if(eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_BARE_STRIKE_LEFT_START + player.m_strikeDirection * 3]);
 					io->isHit = false;
@@ -648,7 +648,7 @@ void ManageCombatModeAnimations() {
 					SendIOScriptEvent(io, SM_STRIKE, "bare");
 					player.m_weaponBlocked = AnimationDuration::ofRaw(-1); // TODO inband signaling AnimationDuration
 					player.m_strikeDirection = 0;
-					player.m_aimTime = PlatformDuration_ZERO;
+					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT+j*3]) {
 					if(layer1.flags & EA_ANIMEND) {
 						changeAnimation(io, 1, alist[ANIM_BARE_WAIT], EA_LOOP);
@@ -684,7 +684,7 @@ void ManageCombatModeAnimations() {
 								ParticleSparkSpawnContinous(sphere.origin, unsigned(dmgs), SpawnSparkType_Success);
 								
 								if(ValidIONum(num)) {
-									static PlatformInstant lastHit = PlatformInstant_ZERO;
+									static PlatformInstant lastHit = 0;
 									PlatformInstant now = g_platformTime.frameStart();
 									if(now - lastHit > toPlatformDuration(layer1.ctime)) {
 										ARX_SOUND_PlayCollision(entities[num]->material, MATERIAL_FLESH, 1.f, 1.f, sphere.origin, NULL);
@@ -701,7 +701,7 @@ void ManageCombatModeAnimations() {
 		case WEAPON_DAGGER: { // DAGGER PLAYER MANAGEMENT
 			// Waiting and receiving Strike Impulse
 			if(layer1.cur_anim == alist[ANIM_DAGGER_WAIT]) {
-				player.m_aimTime = PlatformDuration_ZERO;
+				player.m_aimTime = 0;
 				if(eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_DAGGER_STRIKE_LEFT_START + player.m_strikeDirection * 3]);
 					io->isHit = false;
@@ -718,7 +718,7 @@ void ManageCombatModeAnimations() {
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "dagger");
 					player.m_strikeDirection = 0;
-					player.m_aimTime = PlatformDuration_ZERO;
+					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT+j*3]) {
 					if(   layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.3f
 					   && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.7f
@@ -753,7 +753,7 @@ void ManageCombatModeAnimations() {
 		case WEAPON_1H: { // 1HANDED PLAYER MANAGEMENT
 			// Waiting and Received Strike Impulse
 			if(layer1.cur_anim == alist[ANIM_1H_WAIT]) {
-				player.m_aimTime = PlatformDuration_ZERO;
+				player.m_aimTime = 0;
 				if(eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_1H_STRIKE_LEFT_START + player.m_strikeDirection * 3]);
 					io->isHit = false;
@@ -770,7 +770,7 @@ void ManageCombatModeAnimations() {
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "1h");
 					player.m_strikeDirection = 0;
-					player.m_aimTime = PlatformDuration_ZERO;
+					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_1H_STRIKE_LEFT+j*3]) {
 					if(   layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.3f
 					   && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.7f
@@ -788,7 +788,7 @@ void ManageCombatModeAnimations() {
 						changeAnimation(io, 1, alist[ANIM_1H_WAIT], EA_LOOP);
 						layer1.flags &= ~(EA_PAUSED | EA_REVERSE);
 						player.m_strikeDirection = 0;
-						player.m_aimTime = PlatformDuration_ZERO;
+						player.m_aimTime = 0;
 						player.m_weaponBlocked = AnimationDuration::ofRaw(-1);
 					}
 					
@@ -805,7 +805,7 @@ void ManageCombatModeAnimations() {
 		case WEAPON_2H: { // 2HANDED PLAYER MANAGEMENT
 			// Waiting and Receiving Strike Impulse
 			if(layer1.cur_anim == alist[ANIM_2H_WAIT]) {
-				player.m_aimTime = PlatformDuration_ZERO;
+				player.m_aimTime = 0;
 				if(eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_2H_STRIKE_LEFT_START + player.m_strikeDirection * 3]);
 					io->isHit = false;
@@ -822,7 +822,7 @@ void ManageCombatModeAnimations() {
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "2h");
 					player.m_strikeDirection = 0;
-					player.m_aimTime = PlatformDuration_ZERO;
+					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_2H_STRIKE_LEFT+j*3]) {
 					if(   layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.3f
 					   && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.7f
@@ -840,7 +840,7 @@ void ManageCombatModeAnimations() {
 						changeAnimation(io, 1, alist[ANIM_2H_WAIT], EA_LOOP);
 						layer1.flags &= ~(EA_PAUSED | EA_REVERSE);
 						player.m_strikeDirection = 0;
-						player.m_aimTime = PlatformDuration_ZERO;
+						player.m_aimTime = 0;
 						player.m_weaponBlocked = AnimationDuration::ofRaw(-1);
 					}
 					
@@ -873,7 +873,7 @@ void ManageCombatModeAnimations() {
 			}
 			
 			if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_PART_1] && (layer1.flags & EA_ANIMEND)) {
-				player.m_aimTime = PlatformDuration_ZERO;
+				player.m_aimTime = 0;
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_2]);
 				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, arrowobj, "left_attach", "attach", NULL);
 			}
@@ -942,7 +942,7 @@ void ManageCombatModeAnimations() {
 					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
 				}
 				
-				player.m_aimTime = PlatformDuration_ZERO;
+				player.m_aimTime = 0;
 			} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE]) {
 				player.m_bowAimRatio -= bowZoomFromDuration(toMs(g_platformTime.lastFrameDuration()));
 				
@@ -952,7 +952,7 @@ void ManageCombatModeAnimations() {
 				if(layer1.flags & EA_ANIMEND) {
 					player.m_bowAimRatio = 0;
 					changeAnimation(io, 1, alist[ANIM_MISSILE_WAIT], EA_LOOP);
-					player.m_aimTime = PlatformDuration_ZERO;
+					player.m_aimTime = 0;
 					player.m_weaponBlocked = AnimationDuration::ofRaw(-1);
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
 				}
