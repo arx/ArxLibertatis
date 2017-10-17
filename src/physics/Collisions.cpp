@@ -811,7 +811,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 				} 
 			}
 		suivant:
-			;
+			{ }
 		}
 	}
 	
@@ -962,11 +962,11 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 				}
 			}
 		}
-
-	suivant:
-	  ;
 		
-	}	
+	suivant:
+		{ }
+		
+	}
 
 	return vreturn;	
 }
@@ -1513,11 +1513,12 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 			if(glm::abs(ip->startpos.y - ip->cyl.origin.y) > 30.f)
 				return false;
 		}
-
+		
 	oki:
-		;
+		{ }
+		
 	}
-
+	
 	MOVING_CYLINDER = 0;
 	return true;
 }
