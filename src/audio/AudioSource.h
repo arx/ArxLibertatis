@@ -83,12 +83,6 @@ public:
 	aalError setMixer(MixerId mixer);
 	
 	/*!
-	 * Get the current play position in the sample.
-	 * Updates to the return value may be deferred to calles to the update() methos.
-	 */
-	size_t getTime(TimeUnit unit = UNIT_MS) const;
-	
-	/*!
 	 * Play the source. A source that is already playing is not stopped / rewinded, but the playCount increased by the provided amount.
 	 * \param playCount How often to play the sample. 0 means loop forever.
 	 */

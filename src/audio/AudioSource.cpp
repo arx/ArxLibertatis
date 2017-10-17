@@ -109,8 +109,4 @@ aalError Source::setMixer(MixerId mixer) {
 	return updateVolume();
 }
 
-size_t Source::getTime(TimeUnit unit) const {
-	return bytesToUnits(time, sample->getFormat(), unit);
-}
-
 } // namespace audio
