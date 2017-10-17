@@ -569,7 +569,7 @@ static unsigned char *convert_format(unsigned char *data, int img_n, int req_com
    }
 
    for (j=0; j < (int) y; ++j) {
-      unsigned char *src  = data + j * x * img_n   ;
+      unsigned char *src  = data + j * x * img_n;
       unsigned char *dest = good + j * x * req_comp;
 
       #define STBI_COMBO(a,b)  ((a)*8+(b))
@@ -3967,7 +3967,7 @@ static char *hdr_gettoken(stbi *z, char *buffer)
       if (len == STBI_HDR_BUFLEN-1) {
          // flush to end of line
          while (!at_eof(z) && get8(z) != '\n')
-            ;
+            { }
          break;
       }
       c = (char) get8(z);
