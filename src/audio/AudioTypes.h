@@ -85,13 +85,6 @@ enum ChannelFlag {
 DECLARE_FLAGS(ChannelFlag, ChannelFlags)
 DECLARE_FLAGS_OPERATORS(ChannelFlags)
 
-// Length units
-enum TimeUnit {
-	UNIT_MS,
-	UNIT_SAMPLES,
-	UNIT_BYTES
-};
-
 // Errors
 enum aalError {
 	AAL_OK = 0,
