@@ -801,14 +801,14 @@ void MenuPage::Render() {
 		m_selected->RenderMouseOver();
 		
 		{
-			static const PlatformDuration m_blinkDuration = PlatformDurationMs(300);
+			static const PlatformDuration BlinkDuration = PlatformDurationMs(300);
 			
 			m_blinkTime += g_platformTime.lastFrameDuration();
-			if(m_blinkTime > (m_blinkDuration + m_blinkDuration)) {
+			if(m_blinkTime > (BlinkDuration + BlinkDuration)) {
 				m_blinkTime = 0;
 			}
 			
-			m_blink = m_blinkTime > m_blinkDuration;
+			m_blink = m_blinkTime > BlinkDuration;
 		}
 		
 		switch(m_selected->eState) {
