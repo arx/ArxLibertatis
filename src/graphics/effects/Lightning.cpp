@@ -104,7 +104,7 @@ CLightning::CLightning()
 	, m_fLengthMax(40.0f)
 	, m_fAngleMin(5.0f, 5.0f, 5.0f)
 	, m_fAngleMax(32.0f, 32.0f, 32.0f)
-	, m_iTTL(ArxDuration_ZERO)
+	, m_iTTL(0)
 {
 	SetDuration(ArxDurationMs(2000));
 	m_elapsed = m_duration + ArxDurationMs(1);
@@ -275,7 +275,7 @@ void CLightning::Render()
 	if(m_elapsed >= m_duration)
 		return;
 	
-	if(m_iTTL <= ArxDuration_ZERO) {
+	if(m_iTTL <= 0) {
 		fTotoro = 0;
 		fMySize = 2;
 		ReCreate(8);
