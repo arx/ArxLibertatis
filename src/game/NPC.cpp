@@ -956,7 +956,7 @@ void ARX_PHYSICS_Apply() {
 				ARX_PHYSICS_BOX_ApplyModel(pbox, g_framedelay, io->rubber, io);
 				
 				if(io->soundcount > 12) {
-					io->soundtime = ArxInstant_ZERO;
+					io->soundtime = 0;
 					io->soundcount = 0;
 					for(size_t k = 0; k < pbox->vert.size(); k++) {
 						pbox->vert[k].velocity = Vec3f_ZERO;
