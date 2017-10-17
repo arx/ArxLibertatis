@@ -32,7 +32,7 @@ float AngleDifference(float d, float e) {
 	return da;
 }
 
-float InterpolateAngle(float a1, float a2, const float pour) {
+float InterpolateAngle(float a1, float a2, float pour) {
 	
 	float a = MAKEANGLE(a1);
 	
