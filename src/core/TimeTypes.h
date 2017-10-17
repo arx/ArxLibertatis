@@ -77,7 +77,7 @@ template <typename TAG, typename T>
 struct InstantType
 	: boost::totally_ordered1<InstantType<TAG, T>
 	, boost::additive2<InstantType<TAG, T>, DurationType<TAG, T>
-	>>
+	> >
 {
 	
 	T t;
