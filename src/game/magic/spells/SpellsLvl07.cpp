@@ -46,10 +46,8 @@ extern PlatformInstant SLID_START;
 bool bOldLookToggle;
 
 FlyingEyeSpell::FlyingEyeSpell()
-	: m_lastupdate(ArxInstant_ZERO)
-{
-	
-}
+	: m_lastupdate(0)
+{ }
 
 bool FlyingEyeSpell::CanLaunch() {
 	
@@ -79,7 +77,7 @@ void FlyingEyeSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
 	
 	m_lastupdate = m_timcreation;
-	m_duration = ArxDuration_ZERO;
+	m_duration = 0;
 	m_hasDuration = false;
 	m_fManaCostPerSecond = 3.2f;
 	eyeball.exist = 1;
@@ -229,7 +227,7 @@ void FireFieldSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_START);
 	
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(100000);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(100000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.8f;
 	m_light = LightHandle();
@@ -275,7 +273,7 @@ void FireFieldSpell::Launch() {
 	
 	pPSStream1.SetParams(g_particleParameters[ParticleParam_FireFieldFlame]);
 	pPSStream1.SetPos(m_pos + Vec3f(0, 10, 0));
-	pPSStream1.Update(ArxDuration_ZERO);
+	pPSStream1.Update(0);
 }
 
 void FireFieldSpell::End() {
@@ -360,7 +358,7 @@ void IceFieldSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
 	
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(100000);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(100000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.8f;
 	m_light = LightHandle();
@@ -653,7 +651,7 @@ void ConfuseSpell::Launch() {
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.5f;
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(5000);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(5000);
 	
 	
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
@@ -664,7 +662,7 @@ void ConfuseSpell::Launch() {
 	
 	AnimLayer & au = animlayer[0];
 	au.cur_anim = anim_papii;
-	au.ctime = AnimationDuration_ZERO;
+	au.ctime = 0;
 	au.flags = EA_LOOP;
 	au.lastframe = 0;
 	au.currentInterpolation = 0;
