@@ -643,11 +643,9 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 			}
 		}
 	}
-
+	
 suite:
-	;
 wander:
-	;
 	io->targetinfo = target; 
 	io->_npcdata->pathfind.truetarget = target;
 
@@ -708,7 +706,6 @@ wander:
 	}
 
 failure:
-	;
 	io->_npcdata->pathfind.pathwait = 0;
 
 	if(io->_npcdata->pathfind.list)
@@ -1952,10 +1949,9 @@ static void ManageNPCMovement(Entity * io)
 			}
 		}
 
-	afterthat:
-		;
 	}
 	
+afterthat:
 	if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
 		ARX_NPC_Manage_Anims(io, 0);
 		if(!layer0.cur_anim || (layer0.flags & EA_ANIMEND)) {
