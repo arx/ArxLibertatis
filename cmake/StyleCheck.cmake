@@ -48,27 +48,29 @@ set(STYLE_FILTER ${STYLE_FILTER},-runtime/int)
 # Complains about non-const references as parameters
 set(STYLE_FILTER ${STYLE_FILTER},-runtime/references)
 
-# TODO enable these!
-
-# Very noisy but should be fixed.
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/operators)
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/comma)
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/comments)
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/end_of_line)
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/align_tab)
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/line_length)
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/semicolon)
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/ident_space)
-
-# Unsafe functions.
-set(STYLE_FILTER ${STYLE_FILTER},-runtime/printf)
-set(STYLE_FILTER ${STYLE_FILTER},-runtime/threadsafe_fn)
-
-# Very much known...
-set(STYLE_FILTER ${STYLE_FILTER},-readability/fn_size)
-
 # Has false positives and is already covered by -pedantic or -Wvla
 set(STYLE_FILTER ${STYLE_FILTER},-runtime/arrays)
+
+set(STYLE_FILTER ${STYLE_FILTER},-whitespace/line_length)
+
+# TODO enable these!
+if(NOT SET_NOISY_WARNING_FLAGS)
+	
+	# Very noisy but should be fixed.
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/operators)
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/comma)
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/comments)
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/end_of_line)
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/align_tab)
+	
+	# Unsafe functions.
+	set(STYLE_FILTER ${STYLE_FILTER},-runtime/printf)
+	set(STYLE_FILTER ${STYLE_FILTER},-runtime/threadsafe_fn)
+	
+	# Very much known...
+	set(STYLE_FILTER ${STYLE_FILTER},-readability/fn_size)
+	
+endif()
 
 set(STYLE_CHECK_SCRIPT "${PROJECT_SOURCE_DIR}/scripts/cpplint.py")
 
