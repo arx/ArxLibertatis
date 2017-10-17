@@ -562,7 +562,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	if(g_debugInfo == InfoPanelGuiDebug) {
 		GRenderer->SetFillMode(Renderer::FillWireframe);
 		float x = 640.f / 2 * g_sizeRatio.y;
-		float c = g_size.center().x;
+		float c = float(g_size.center().x);
 		drawLine(Vec2f(c - x, 0.f), Vec2f(c - x, g_size.height()), 1.f, Color::red);
 		drawLine(Vec2f(c + x, 0.f), Vec2f(c + x, g_size.height()), 1.f, Color::red);
 		GRenderer->SetFillMode(Renderer::FillSolid);
