@@ -683,8 +683,8 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		asp->inventory_show[bag][x][y] = g_inventory[bag][x][y].show;
 	}
 	
-    g_miniMap.save(asp->minimap, SAVED_MAX_MINIMAPS);
-
+	g_miniMap.save(asp->minimap, SAVED_MAX_MINIMAPS);
+	
 	asp->falling = player.falling;
 	asp->gold = player.gold;
 	asp->invisibility = entities.player()->invisibility;
@@ -820,17 +820,11 @@ static long ARX_CHANGELEVEL_Push_AllIO(long level) {
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
-		
-		if ((e != NULL)
-				&&	(!(e->ioflags & IO_NOSAVE))
-				&&	(!IsInPlayerInventory(e))
-				&&	(!IsPlayerEquipedWith(e))
-		   )
-		{
+		if(e && !(e->ioflags & IO_NOSAVE) && !IsInPlayerInventory(e) && !IsPlayerEquipedWith(e)) {
 			ARX_CHANGELEVEL_Push_IO(e, level);
 		}
 	}
-
+	
 	return 1;
 }
 
