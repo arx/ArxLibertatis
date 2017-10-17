@@ -78,7 +78,7 @@ extern PlatformInstant session_time;
 // Resources
 extern ResourceList<Mixer> g_mixers;
 extern ResourceList<Sample> g_samples;
-extern ResourceList<Ambiance> _amb;
+extern ResourceList<Ambiance> g_ambiances;
 extern ResourceList<Environment> _env;
 
 //! Convert a value from time units to bytes
