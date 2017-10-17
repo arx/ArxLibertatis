@@ -68,8 +68,6 @@ const float DEFAULT_VOLUME = 1.f; // Original gain
 
 // Flags
 enum ChannelFlag {
-	FLAG_RESTART       = 0x00000001, // Force restart sample if already playing
-	FLAG_ENQUEUE       = 0x00000002, // Enqueue sample if already playing
 	FLAG_VOLUME        = 0x00000004, // Enable volume control
 	FLAG_PITCH         = 0x00000008, // Enable pitch control
 	FLAG_PAN           = 0x00000010, // Enable pan control
