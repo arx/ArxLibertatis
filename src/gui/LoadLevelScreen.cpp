@@ -76,7 +76,7 @@ void LoadLevelScreen(long num) {
 	
 	// only update if time since last update to progress bar > 16ms
 	// and progress bar's value has actually changed
-	if (platform::getElapsedMs(last_progress_bar_update) > 16 &&
+	if (platform::getTimeMs() - last_progress_bar_update > 16 &&
 		 OLD_PROGRESS_BAR_COUNT != PROGRESS_BAR_COUNT)
 	{
 		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);

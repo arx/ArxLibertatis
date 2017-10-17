@@ -45,39 +45,6 @@ u32 getTimeMs();
  */
 u64 getTimeUs();
 
-/*!
- * \brief Get the number of milliseconds elapsed between now and the specified time
- *
- * Handles wrap around correctly.
- *
- * \param startMs Start time in milliseconds.
- *
- * \return The number of milliseconds elapsed between now and startMs.
- */
-inline u32 getElapsedMs(u32 startMs);
-
-/*!
- * \brief Get the number of milliseconds elapsed between two points in time
- *
- * Handles wrap around correctly.
- *
- * \param startMs Start time in milliseconds.
- * \param endMs End time in milliseconds.
- *
- * \return The number of milliseconds elapsed between the specified time range.
- */
-inline u32 getElapsedMs(u32 startMs, u32 endMs);
-
-// Implementation:
-
-inline u32 getElapsedMs(u32 startMs) {
-	return getElapsedMs(startMs, getTimeMs());
-}
-
-inline u32 getElapsedMs(u32 startMs, u32 endMs) {
-	return endMs - startMs;
-}
-
 } // namespace platform
 
 #endif // ARX_PLATFORM_TIME_H
