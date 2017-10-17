@@ -62,9 +62,9 @@ Mixer::Mixer() :
 
 Mixer::~Mixer() {
 	
-	for(size_t i = 0; i < _mixer.size(); i++) {
-		if(_mixer[i] && _mixer[i]->parent == this) {
-			_mixer.remove(i);
+	for(size_t i = 0; i < g_mixers.size(); i++) {
+		if(g_mixers[i] && g_mixers[i]->parent == this) {
+			g_mixers.remove(i);
 		}
 	}
 	
@@ -75,7 +75,7 @@ void Mixer::clear(bool force) {
 	
 	for(size_t i = 0; i < _amb.size(); i++) {
 		Ambiance * ambiance = _amb[i];
-		if(ambiance && _mixer[ambiance->getChannel().mixer.handleData()] == this) {
+		if(ambiance && g_mixers[ambiance->getChannel().mixer.handleData()] == this) {
 			if(force || ambiance->getChannel().flags & FLAG_AUTOFREE) {
 				_amb.remove(i);
 			} else {
@@ -86,7 +86,8 @@ void Mixer::clear(bool force) {
 	
 	// Delete sources referencing this mixer.
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd();) {
-		if(*p && _mixer.isValid((*p)->getChannel().mixer.handleData()) && _mixer[(*p)->getChannel().mixer.handleData()] == this) {
+		if(*p && g_mixers.isValid((*p)->getChannel().mixer.handleData())
+		   && g_mixers[(*p)->getChannel().mixer.handleData()] == this) {
 			p = backend->deleteSource(p);
 		} else {
 			++p;
@@ -116,14 +117,14 @@ void Mixer::updateVolume() {
 	}
 	finalVolume = vol;
 	
-	for(size_t i = 0; i < _mixer.size(); i++) {
-		if(_mixer[i] && _mixer[i]->parent == this) {
-			_mixer[i]->updateVolume();
+	for(size_t i = 0; i < g_mixers.size(); i++) {
+		if(g_mixers[i] && g_mixers[i]->parent == this) {
+			g_mixers[i]->updateVolume();
 		}
 	}
 	
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd(); ++p) {
-		if(*p && _mixer.isValid((*p)->getChannel().mixer.handleData()) && _mixer[(*p)->getChannel().mixer.handleData()] == this) {
+		if(*p && g_mixers.isValid((*p)->getChannel().mixer.handleData()) && g_mixers[(*p)->getChannel().mixer.handleData()] == this) {
 			(*p)->updateVolume();
 		}
 	}
@@ -158,8 +159,8 @@ aalError Mixer::setParent(const Mixer * _mixer) {
 
 aalError Mixer::stop() {
 	
-	for(size_t i = 0; i < _mixer.size(); i++) {
-		Mixer * mixer = _mixer[i];
+	for(size_t i = 0; i < g_mixers.size(); i++) {
+		Mixer * mixer = g_mixers[i];
 		if(mixer && mixer->parent == this) {
 			mixer->stop();
 		}
@@ -174,20 +175,21 @@ aalError Mixer::stop() {
 
 aalError Mixer::pause() {
 	
-	for(size_t i = 0; i < _mixer.size(); i++) {
-		if(_mixer[i] && _mixer[i]->parent == this) {
-			_mixer[i]->pause();
+	for(size_t i = 0; i < g_mixers.size(); i++) {
+		if(g_mixers[i] && g_mixers[i]->parent == this) {
+			g_mixers[i]->pause();
 		}
 	}
 	
 	for(size_t i = 0; i < _amb.size(); i++) {
-		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer.handleData()] == this) {
+		if(_amb[i] && g_mixers[_amb[i]->getChannel().mixer.handleData()] == this) {
 			_amb[i]->pause();
 		}
 	}
 	
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd(); ++p) {
-		if(*p && _mixer.isValid((*p)->getChannel().mixer.handleData()) && _mixer[(*p)->getChannel().mixer.handleData()] == this) {
+		if(*p && g_mixers.isValid((*p)->getChannel().mixer.handleData())
+		   && g_mixers[(*p)->getChannel().mixer.handleData()] == this) {
 			(*p)->pause();
 		}
 	}
@@ -203,20 +205,21 @@ aalError Mixer::resume() {
 		return AAL_OK;
 	}
 	
-	for(size_t i = 0; i < _mixer.size(); i++) {
-		if(_mixer[i] && _mixer[i]->parent == this) {
-			_mixer[i]->resume();
+	for(size_t i = 0; i < g_mixers.size(); i++) {
+		if(g_mixers[i] && g_mixers[i]->parent == this) {
+			g_mixers[i]->resume();
 		}
 	}
 	
 	for(size_t i = 0; i < _amb.size(); i++) {
-		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer.handleData()] == this) {
+		if(_amb[i] && g_mixers[_amb[i]->getChannel().mixer.handleData()] == this) {
 			_amb[i]->resume();
 		}
 	}
 	
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd(); ++p) {
-		if(*p && _mixer.isValid((*p)->getChannel().mixer.handleData()) && _mixer[(*p)->getChannel().mixer.handleData()] == this) {
+		if(*p && g_mixers.isValid((*p)->getChannel().mixer.handleData())
+		   && g_mixers[(*p)->getChannel().mixer.handleData()] == this) {
 			(*p)->resume();
 		}
 	}

@@ -76,7 +76,7 @@ extern size_t stream_limit_bytes;
 extern PlatformInstant session_time;
 
 // Resources
-extern ResourceList<Mixer> _mixer;
+extern ResourceList<Mixer> g_mixers;
 extern ResourceList<Sample> g_samples;
 extern ResourceList<Ambiance> _amb;
 extern ResourceList<Environment> _env;

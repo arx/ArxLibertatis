@@ -716,7 +716,7 @@ aalError Ambiance::play(const Channel & _channel, bool _loop, PlatformDuration _
 	status = Playing;
 	start = session_time;
 	
-	const Mixer * mixer = _mixer[channel.mixer.handleData()];
+	const Mixer * mixer = g_mixers[channel.mixer.handleData()];
 	if(mixer && mixer->isPaused()) {
 		status = Paused;
 	}
