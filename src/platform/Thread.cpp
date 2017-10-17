@@ -376,19 +376,19 @@ void Thread::disableFloatDenormals() {
 
 #include <time.h>
 
-void Thread::sleep(unsigned milliseconds) {
+void Thread::sleep(PlatformDuration time) {
 	
 	timespec t;
-	t.tv_sec = milliseconds / 1000;
-	t.tv_nsec = (milliseconds % 1000) * 1000000;
+	t.tv_sec = time_t(toUs(time) / 1000000);
+	t.tv_nsec = long(toUs(time) % 1000000) * 1000l;
 	
 	nanosleep(&t, NULL);
 }
 
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
-void Thread::sleep(unsigned milliseconds) {
-	Sleep(milliseconds);
+void Thread::sleep(PlatformDuration time) {
+	Sleep(DWORD(toMsi(time));
 }
 
 #else

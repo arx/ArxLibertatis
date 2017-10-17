@@ -1231,7 +1231,7 @@ void ArxGame::doFrame() {
 		}
 		PlatformDuration targetDuration = PlatformDurationUs(1000000 / (targetFps + targetFps / 20 + 1) - 100);
 		if(renderDuration < targetDuration) {
-			Thread::sleep(toMsi(targetDuration) - toMsi(renderDuration));
+			Thread::sleep(targetDuration - renderDuration);
 		}
 		
 	}

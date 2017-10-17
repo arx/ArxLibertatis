@@ -445,7 +445,7 @@ void CrashHandlerPOSIX::processCrashDump() {
 	   && m_pCrashInfo->processId != platform::getProcessId()) {
 		kill(m_pCrashInfo->processId, SIGABRT);
 		for(size_t i = 1; platform::isProcessRunning(m_pCrashInfo->processId) && i < 10; i++) {
-			Thread::sleep(100);
+			Thread::sleep(PlatformDurationMs(100));
 		}
 		fs::path core = util::loadString(m_pCrashInfo->coreDumpFile);
 		fs::path crashReportDir = m_crashReportDir.parent();
@@ -457,7 +457,7 @@ void CrashHandlerPOSIX::processCrashDump() {
 				u64 oldsize, newsize = fs::file_size(core);
 				do {
 					oldsize = newsize;
-					Thread::sleep(500);
+					Thread::sleep(PlatformDurationMs(500));
 					newsize = fs::file_size(core);
 				} while(newsize != oldsize);
 			}
