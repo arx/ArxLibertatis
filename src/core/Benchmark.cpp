@@ -26,6 +26,7 @@
 #include <boost/algorithm/string/trim.hpp>
 
 #include "core/Application.h"
+#include "core/TimeTypes.h"
 
 #include "io/log/Logger.h"
 
@@ -50,29 +51,28 @@ static const char * const g_names[] = {
 };
 
 static bool g_enabled = false;
-static u64 g_timeLimit = 0;
+static PlatformDuration g_timeLimit = PlatformDuration_ZERO;
 static Status g_currentStatus = None;
-static u64 g_startTime = 0;
+static PlatformInstant g_startTime = PlatformInstant_ZERO;
+static int g_startCount = 0;
+static const PlatformDuration PlatformDuration_MAX = PlatformDurationUs(std::numeric_limits<s64>::max());
 
 struct Result {
 	
-	u64 m_totalTime;
-	u32 m_fractTime;
+	PlatformDuration m_totalTime;
 	u32 m_frameCount;
-	u64 m_minTime;
-	u64 m_maxTime;
+	PlatformDuration m_minTime;
+	PlatformDuration m_maxTime;
 	
 	Result()
-		: m_totalTime(0)
-		, m_fractTime(0)
+		: m_totalTime(PlatformDuration_ZERO)
 		, m_frameCount(0)
-		, m_minTime(u64(-1))
-		, m_maxTime(0)
+		, m_minTime(PlatformDuration_MAX)
+		, m_maxTime(PlatformDuration_ZERO)
 	{ }
 	
-	explicit Result(u64 time)
-		: m_totalTime(time / 1000)
-		, m_fractTime(time % 1000)
+	explicit Result(PlatformDuration time)
+		: m_totalTime(time)
 		, m_frameCount(1)
 		, m_minTime(time)
 		, m_maxTime(time)
@@ -80,16 +80,13 @@ struct Result {
 	
 	void operator+=(const Result & other) {
 		m_totalTime += other.m_totalTime;
-		m_fractTime += other.m_fractTime;
-		m_totalTime += m_fractTime / 1000;
-		m_fractTime %= 1000;
 		m_frameCount += other.m_frameCount;
 		m_minTime = std::min(m_minTime, other.m_minTime);
 		m_maxTime = std::max(m_maxTime, other.m_maxTime);
 	}
 	
 	bool empty() const {
-		return m_totalTime == 0 && m_fractTime == 0;
+		return m_totalTime == PlatformDuration_ZERO;
 	}
 	
 };
@@ -114,9 +111,9 @@ static void display(Status type, const Result & result, bool summary = false, bo
 		pprefix = " │  ";
 	}
 	
-	float time = float(result.m_totalTime) + float(result.m_fractTime) / 1000;
-	float tmin = float(result.m_minTime) / 1000;
-	float tmax = float(result.m_maxTime) / 1000;
+	float time = toMs(result.m_totalTime);
+	float tmin = toMs(result.m_minTime);
+	float tmax = toMs(result.m_maxTime);
 	float average = time / result.m_frameCount;
 	float framerate = 1000.f / average;
 	float minrate = 1000.f / tmin;
@@ -184,13 +181,13 @@ static bool isFrame(Status type) {
 
 static void endFrame() {
 	
-	u64 now = platform::getTimeUs();
+	PlatformInstant now = PlatformInstantUs(platform::getTimeUs());
 	g_current += Result(now - g_startTime);
 	g_startTime = now;
 	
 }
 
-static const u64 SkipFrames = 3;
+static const int SkipFrames = 3;
 
 //! End the current benchmark
 static void end() {
@@ -199,7 +196,7 @@ static void end() {
 		return;
 	}
 	
-	if(g_currentStatus != None && g_startTime > SkipFrames) {
+	if(g_currentStatus != None && g_startCount > SkipFrames) {
 		
 		if(isFrame(g_currentStatus)) {
 			// Skip the last frame - it may not be reperasentative
@@ -218,7 +215,7 @@ static void end() {
 	}
 	
 	g_currentStatus = None;
-	g_startTime = 0;
+	g_startCount = 0;
 	g_current = Result();
 	
 }
@@ -234,16 +231,17 @@ void begin(Status status) {
 		g_currentStatus = status;
 	}
 	
-	if(g_startTime < SkipFrames && isFrame(status)) {
+	if(g_startCount < SkipFrames && isFrame(status)) {
 			// Skip the first frames - they may not be reperasentative
-		g_startTime++;
-	} else if(g_startTime <= SkipFrames) {
-		g_startTime = platform::getTimeUs();
+		g_startCount++;
+	} else if(g_startCount <= SkipFrames) {
+		g_startCount = SkipFrames + 1;
+		g_startTime = PlatformInstantUs(platform::getTimeUs());
 	} else {
 		endFrame();
 	}
 	
-	if(g_timeLimit != std::numeric_limits<u64>::max() && isNormalFrame(g_currentStatus)
+	if(g_timeLimit != PlatformDuration_MAX && isNormalFrame(g_currentStatus)
 	   && g_results[0].m_totalTime + g_current.m_totalTime >= g_timeLimit) {
 		mainApp->quit();
 	}
@@ -310,13 +308,13 @@ static void enable(util::cmdline::optional<std::string> limit) {
 			}
 		}
 		try {
-			g_timeLimit = u64(multiplier * boost::lexical_cast<float>(*limit));
+			g_timeLimit = PlatformDurationMsf(multiplier * boost::lexical_cast<float>(*limit));
 		} catch(...) {
 			throw util::cmdline::error(util::cmdline::error::invalid_cmd_syntax,
 			                           "inavlid number \"" + *limit + "\"");
 		}
 	} else {
-		g_timeLimit = std::numeric_limits<u64>::max();
+		g_timeLimit = PlatformDuration_MAX;
 	}
 	g_enabled = true;
 }
