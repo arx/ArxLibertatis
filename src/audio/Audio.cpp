@@ -686,7 +686,7 @@ aalError sampleStop(SourceId & sample_id) {
 
 // Ambiance setup
 
-aalError setAmbianceUserData(AmbianceId a_id, void * data) {
+aalError setAmbianceType(AmbianceId a_id, PlayingAmbianceType type) {
 	
 	AAL_ENTRY
 	
@@ -698,9 +698,9 @@ aalError setAmbianceUserData(AmbianceId a_id, void * data) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("SetAmbianceUserData " << g_ambiances[a_id.handleData()]->getName() << " " << data);
+	LogDebug("SetAmbianceUserData " << g_ambiances[a_id.handleData()]->getName() << " " << type);
 	
-	g_ambiances[a_id.handleData()]->setUserData(data);
+	g_ambiances[a_id.handleData()]->setType(type);
 	
 	return AAL_OK;
 }
@@ -743,7 +743,7 @@ aalError getAmbianceName(AmbianceId a_id, res::path & name) {
 	return AAL_OK;
 }
 
-aalError getAmbianceUserData(AmbianceId a_id, void ** data) {
+aalError getAmbianceType(AmbianceId a_id, PlayingAmbianceType * type) {
 	
 	AAL_ENTRY
 	
@@ -755,7 +755,7 @@ aalError getAmbianceUserData(AmbianceId a_id, void ** data) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	*data = g_ambiances[a_id.handleData()]->getUserData();
+	*type = g_ambiances[a_id.handleData()]->getType();
 	
 	return AAL_OK;
 }

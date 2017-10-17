@@ -136,11 +136,11 @@ aalError sampleStop(SourceId & sample_id);
 
 // Ambiance
 
-aalError setAmbianceUserData(AmbianceId ambiance_id, void * data);
+aalError setAmbianceType(AmbianceId ambiance_id, PlayingAmbianceType type);
 aalError setAmbianceVolume(AmbianceId ambiance_id, float volume);
 
 aalError getAmbianceName(AmbianceId ambiance_id, res::path & name);
-aalError getAmbianceUserData(AmbianceId ambiance_id, void ** data);
+aalError getAmbianceType(AmbianceId ambiance_id, PlayingAmbianceType * type);
 aalError getAmbianceVolume(AmbianceId ambiance_id, float & volume);
 bool isAmbianceLooped(AmbianceId ambiance_id);
 

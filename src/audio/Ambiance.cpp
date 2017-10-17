@@ -594,7 +594,7 @@ Ambiance::Ambiance(const res::path & _name)
 	, start(0)
 	, time(0)
 	, name(_name)
-	, data(NULL)
+	, m_type(PLAYING_AMBIANCE_MENU)
 {
 	channel.flags = 0;
 }
