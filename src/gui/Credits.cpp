@@ -104,7 +104,7 @@ public:
 	Credits()
 		: m_background(NULL)
 		, m_scrollPosition(0.f)
-		, m_lastUpdateTime(PlatformInstant_ZERO)
+		, m_lastUpdateTime(0)
 		, m_firstVisibleLine(0)
 		, m_lineHeight(-1)
 		, m_windowSize(Vec2i_ZERO)
@@ -471,8 +471,8 @@ void Credits::render() {
 	PlatformInstant now = g_platformTime.frameStart();
 	float elapsed = toMs(now - m_lastUpdateTime);
 	
-	static PlatformInstant lastKeyPressTime   = PlatformInstant_ZERO;
-	static PlatformInstant lastUserScrollTime = PlatformInstant_ZERO;
+	static PlatformInstant lastKeyPressTime   = 0;
+	static PlatformInstant lastUserScrollTime = 0;
 	static float scrollDirection = 1.f;
 	
 	PlatformDuration keyRepeatDelay  = PlatformDurationMs(256); // delay after key press before continuous scrolling
