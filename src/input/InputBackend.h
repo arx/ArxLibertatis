@@ -39,7 +39,6 @@ public:
 	virtual bool getAbsoluteMouseCoords(int & absX, int & absY) const = 0;
 	virtual void setAbsoluteMouseCoords(int absX, int absY) = 0;
 	virtual void getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const = 0;
-	virtual bool isMouseButtonPressed(int buttonId, int & _iDeltaTime) const = 0;
 	virtual void getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _iNumUnClick) const = 0;
 	
 	// Keyboard

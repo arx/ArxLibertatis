@@ -533,29 +533,21 @@ void Input::update(float time) {
 		if(iOldNumClick[i]) 
 			iOldNumClick[i]--;
 		
-		int iDTime;
-		backend->isMouseButtonPressed(buttonId, iDTime);
+		if(iMouseTimeSet[i] > 0 && (now - iMouseTime[i]) > 300) {
+			iMouseTime[i] = 0;
+			iMouseTimeSet[i] = 0;
+		}
 		
-		if(iDTime) {
-			iMouseTime[i] = iDTime;
-			iMouseTimeSet[i] = 2;
-		} else {
-			if(iMouseTimeSet[i] > 0 && (now - iMouseTime[i]) > 300) {
-				iMouseTime[i] = 0;
-				iMouseTimeSet[i] = 0;
-			}
-			
-			if(getMouseButtonNowPressed(buttonId)) {
-				switch(iMouseTimeSet[i]) {
-				case 0:
-					iMouseTime[i] = now;
-					iMouseTimeSet[i]++;
-					break;
-				case 1:
-					iMouseTime[i] = now - iMouseTime[i];
-					iMouseTimeSet[i]++;
-					break;
-				}
+		if(getMouseButtonNowPressed(buttonId)) {
+			switch(iMouseTimeSet[i]) {
+			case 0:
+				iMouseTime[i] = now;
+				iMouseTimeSet[i]++;
+				break;
+			case 1:
+				iMouseTime[i] = now - iMouseTime[i];
+				iMouseTimeSet[i]++;
+				break;
 			}
 		}
 	}
