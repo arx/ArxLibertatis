@@ -184,7 +184,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	pP->m_timeToLive = ArxDurationMsf(fTTL);
 	
 	float fAngleX = Random::getf() * m_parameters.m_angle; //*0.5f;
- 
+	
 	Vec3f vv1, vvz;
 	
 	// ici modifs ----------------------------------
@@ -351,7 +351,7 @@ void ParticleSystem::Render() {
 			Vec3f p3pos;
 			p3pos = p->p3Pos;
 			p3pos += m_nextPosition;
-            
+			
 			mat.setTexture(tex_tab[inumtex]);
 			
 			if(m_parameters.m_rotation != 0) {
