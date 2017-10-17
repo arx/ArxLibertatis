@@ -64,10 +64,10 @@ void SpeedSpell::Launch() {
 	}
 	
 	if(m_caster == EntityHandle_Player) {
-		m_duration = ArxDuration_ZERO;
+		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(20000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(20000);
 		m_hasDuration = true;
 	}
 	
@@ -326,7 +326,7 @@ void FireballSpell::Update() {
 		//m_duration = std::min(ulCurrentTime + 1500, m_duration);
 		
 		DoSphericDamage(Sphere(eCurPos, 30.f * m_level), 3.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
-		m_duration = ArxDuration_ZERO;
+		m_duration = 0;
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
 		ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
 	}
@@ -349,9 +349,9 @@ void CreateFoodSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
 	
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(3500);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(3500);
 	m_hasDuration = true;
-	m_elapsed = ArxDuration_ZERO;
+	m_elapsed = 0;
 	
 	if(m_caster == EntityHandle_Player || m_target == EntityHandle_Player) {
 		player.hunger = 100;
