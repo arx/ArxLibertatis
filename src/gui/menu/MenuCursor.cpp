@@ -32,7 +32,7 @@
 extern TextureContainer * scursor[];
 
 CursorTrail::CursorTrail() {
-	m_storedTime = PlatformDuration_ZERO;
+	m_storedTime = 0;
 	iNbOldCoord = 0;
 	iMaxOldCoord = 40;
 }
@@ -146,7 +146,7 @@ MenuCursor::MenuCursor()
 	bMouseOver=false;
 	
 	m_currentFrame=0;
-	lFrameDiff = PlatformDuration_ZERO;
+	lFrameDiff = 0;
 }
 
 MenuCursor::~MenuCursor()
@@ -221,7 +221,7 @@ void MenuCursor::DrawCursor() {
 			}
 		}
 
-		lFrameDiff = PlatformDuration_ZERO;
+		lFrameDiff = 0;
 	}
 	
 }
