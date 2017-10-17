@@ -263,12 +263,12 @@ void RuneRecognitionAlt::inputToDirs() {
  */
 void RuneRecognitionAlt::findKeyPoints(std::vector<Vec2f> &in) {
 	const float TOLERANCE = 0.30f;
-	int inputSize = in.size();
+	size_t inputSize = in.size();
 	
 	//calculate tolerance based on the overall size of the drawing
 	Vec2f max = in[0];
 	Vec2f min = in[0];
-	for(int i = 1; i < inputSize; i++) {
+	for(size_t i = 1; i < inputSize; i++) {
 		max = glm::max(max, in[i]);
 		min = glm::min(min, in[i]);
 	}
@@ -279,7 +279,7 @@ void RuneRecognitionAlt::findKeyPoints(std::vector<Vec2f> &in) {
 	
 	float minAngle = (2.0f / 3.0f) * glm::pi<float>();
 	
-	for(int i = 2; i < inputSize; i++) {
+	for(size_t i = 2; i < inputSize; i++) {
 		Vec2f thisPoint = in[i - 1];
 		Vec2f nextPoint = in[i];
 		
