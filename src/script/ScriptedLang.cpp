@@ -220,11 +220,11 @@ public:
 		EERIE_SCRIPT * script = context.getMaster();
 		if(start) {
 			script->timers[t] = arxtime.now();
-			if(script->timers[t] == ArxInstant_ZERO) {
+			if(script->timers[t] == 0) {
 				script->timers[t] = ArxInstantMs(1);
 			}
 		} else {
-			script->timers[t] = ArxInstant_ZERO;
+			script->timers[t] = 0;
 		}
 		
 		return Success;
