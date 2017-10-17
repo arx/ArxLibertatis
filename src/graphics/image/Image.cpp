@@ -41,9 +41,6 @@ const unsigned int SIZE_TABLE[Image::Format_Num] = {
 	3,  // Format_B8G8R8,
 	4,  // Format_R8G8B8A8,
 	4,  // Format_B8G8R8A8,
-	8,  // Format_DXT1,
-	16, // Format_DXT3,
-	16, // Format_DXT5,
 	0,  // Format_Unknown
 };
 
@@ -103,11 +100,7 @@ unsigned int Image::GetSize(Image::Format pFormat, unsigned int pWidth, unsigned
 		pHeight = 1;
 	}
 	
-	if(pFormat >= Format_DXT1 && pFormat <= Format_DXT5) {
-		return ((pWidth+3) >> 2) * ((pHeight+3) >> 2) * SIZE_TABLE[pFormat];
-	} else {
-		return pWidth * pHeight * SIZE_TABLE[pFormat] * pDepth;
-	}
+	return pWidth * pHeight * SIZE_TABLE[pFormat] * pDepth;
 }
 
 unsigned int Image::GetSizeWithMipmaps(Image::Format pFormat, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth, int pMipmapCount) {
@@ -146,15 +139,8 @@ unsigned int Image::GetNumChannels(Image::Format pFormat) {
 		case Format_B8G8R8:   return 3;
 		case Format_R8G8B8A8: return 4;
 		case Format_B8G8R8A8: return 4;
-		case Format_DXT1:     return 3;
-		case Format_DXT3:     return 4;
-		case Format_DXT5:     return 4;
 		default:              arx_assert_msg(false, "Invalid image format"); return 0;
 	}
-}
-
-bool Image::IsCompressed(Image::Format pFormat) {
-	return pFormat >= Format_DXT1 && pFormat <= Format_DXT5;
 }
 
 bool Image::LoadFromFile(const res::path & filename) {
@@ -263,10 +249,9 @@ void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 
 
 bool Image::ConvertTo(Image::Format format) {
-	arx_assert_msg( !IsCompressed(), "[Image::ConvertTo] Conversion of compressed images not supported yet!" );
 	arx_assert_msg( !IsVolume(), "[Image::ConvertTo] Conversion of volume images not supported yet!" );
 	arx_assert_msg( GetSize(mFormat) == GetSize(format), "[Image::ConvertTo] Conversion of images with different BPP not supported yet!" );
-	if(IsCompressed() || IsVolume() || GetSize(mFormat) != GetSize(format))
+	if(IsVolume() || GetSize(mFormat) != GetSize(format))
 		return false;
 
 	if(mFormat == format)
@@ -357,7 +342,6 @@ void Image::Clear() {
 
 bool Image::Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY, unsigned int srcX, unsigned int srcY, unsigned int width, unsigned int height) {
 	
-	arx_assert_msg( !IsCompressed(), "[Image::Copy] Copy of compressed images not supported yet!" );
 	arx_assert_msg( !IsVolume(), "[Image::Copy] Copy of volume images not supported yet!" );
 	
 	unsigned int bpp = SIZE_TABLE[mFormat];
@@ -400,7 +384,6 @@ bool Image::Copy(const Image & srcImage, unsigned int destX, unsigned int destY)
 
 void Image::QuakeGamma(float pGamma) {
 	
-	arx_assert_msg(!IsCompressed(), "[Image::ChangeGamma] Gamma change of compressed images not supported yet!");
 	arx_assert_msg(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
 	
 	// This function was taken from a couple engines that I saw,
@@ -467,7 +450,6 @@ void Image::QuakeGamma(float pGamma) {
 
 void Image::AdjustGamma(const float &v) {
 	
-	arx_assert_msg(!IsCompressed(), "[Image::ChangeGamma] Gamma change of compressed images not supported yet!");
 	arx_assert_msg(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
 	arx_assert_msg(v <= 1.0f, "BUG WARNING: If gamma values greater than 1.0 needed, should fix the way the calculations are optimized!");
 
@@ -516,7 +498,6 @@ void Image::AdjustGamma(const float &v) {
 
 void Image::ApplyThreshold(unsigned char threshold, int component_mask) {
 	
-	arx_assert_msg(!IsCompressed(), "[Image::ChangeGamma] Gamma change of compressed images not supported yet!");
 	arx_assert_msg(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
 
 	unsigned int numComponents = SIZE_TABLE[mFormat];
@@ -577,8 +558,6 @@ void extendImageBottomRight<1>(u8 * in, u8 * out, unsigned win, unsigned wout,
 void Image::extendClampToEdgeBorder(const Image & src) {
 	
 	arx_assert_msg(mFormat == src.mFormat, "extendClampToEdgeBorder Cannot change format!");
-	arx_assert_msg(!IsCompressed(), "extendClampToEdgeBorder Not supported for compressed textures!");
-	arx_assert_msg(!IsCompressed(), "extendClampToEdgeBorder Not supported for compressed textures!");
 	arx_assert_msg(!IsVolume(), "extendClampToEdgeBorder Not supported for 3d textures!");
 	arx_assert_msg(mWidth >= src.mWidth && mHeight >= src.mHeight, "extendClampToEdgeBorder Cannot decrease size!");
 	
@@ -624,8 +603,8 @@ bool Image::ToGrayscale(Image::Format newFormat) {
 	
 	int srcNumChannels = GetNumChannels();
 	int dstNumChannels = GetNumChannels(newFormat);
-
-	if(IsCompressed() || srcNumChannels < 3) {
+	
+	if(srcNumChannels < 3) {
 		return false;
 	}
 		
@@ -652,9 +631,8 @@ bool Image::ToGrayscale(Image::Format newFormat) {
 	return true;
 }
 
-void Image::Blur(int radius)
-{
-	arx_assert_msg(!IsCompressed(), "Blur not yet supported for compressed textures!");
+void Image::Blur(int radius) {
+	
 	arx_assert_msg(!IsVolume(), "Blur not yet supported for 3d textures!");
 	arx_assert_msg(mNumMipmaps == 1, "Blur not yet supported for textures with mipmaps!");
 
@@ -752,9 +730,8 @@ void Image::Blur(int radius)
 	delete[] mult;
 }
 
-void Image::SetAlpha(const Image& img, bool bInvertAlpha)
-{
-	arx_assert_msg(!IsCompressed(), "SetAlpha() not yet supported for compressed textures!");
+void Image::SetAlpha(const Image& img, bool bInvertAlpha) {
+	
 	arx_assert_msg(!IsVolume(), "SetAlpha() not yet supported for 3d textures!");
 	arx_assert(mWidth == img.mWidth);
 	arx_assert(mHeight == img.mHeight);
@@ -815,179 +792,38 @@ void Image::FlipY() {
 	}
 }
 
-struct DXTColBlock {
-	u16 mCol0;
-	u16 mCol1;
-	unsigned char	mRow[4];
-};
-
-struct DXT3AlphaBlock {
-	u16 mRow[4];
-};
-
-struct DXT5AlphaBlock {
-	unsigned char mAlpha0;
-	unsigned char mAlpha1;
-	unsigned char mRow[6];
-};
-
-static void FlipColorBlock(unsigned char * data) {
-	
-	unsigned char tmp;
-	
-	tmp = data[4];
-	data[4] = data[7];
-	data[7] = tmp;
-	
-	tmp = data[5];
-	data[5] = data[6];
-	data[6] = tmp;
-}
-
-static void FlipSimpleAlphaBlock(u16 * data) {
-	
-	u16 tmp;
-	
-	tmp = data[0];
-	data[0] = data[3];
-	data[3] = tmp;
-	
-	tmp = data[1];
-	data[1] = data[2];
-	data[2] = tmp;
-}
-
-static void ComplexAlphaHelper(unsigned char * Data) {
-	
-	u16 tmp[2];
-
-	// One 4 pixel line is 12 bit, copy each line into
-	// a ushort, swap them and copy back
-	tmp[0] = (Data[0] | (Data[1] << 8)) & 0xfff;
-	tmp[1] = ((Data[1] >> 4) | (Data[2] << 4)) & 0xfff;
-	
-	Data[0] = tmp[1] & 0xff;
-	Data[1] = (tmp[1] >> 8) | (tmp[0] << 4);
-	Data[2] = tmp[0] >> 4;
-}
-
-static void FlipComplexAlphaBlock(unsigned char * Data) {
-	
-	unsigned char tmp[3];
-	Data += 2; // Skip 'palette'
-	
-	// Swap upper two rows with lower two rows
-	memcpy(tmp, Data, 3);
-	memcpy(Data, Data + 3, 3);
-	memcpy(Data + 3, tmp, 3);
-	
-	// Swap 1st with 2nd row, 3rd with 4th
-	ComplexAlphaHelper(Data);
-	ComplexAlphaHelper(Data + 3);
-}
-
-static void FlipDXT1(unsigned char * data, unsigned int count) {
-	for(unsigned int i = 0; i < count; ++i) {
-		FlipColorBlock(data);
-		data += 8; // Advance to next block
-	}
-}
-
-static void FlipDXT3(unsigned char * data, unsigned int count) {
-	for(unsigned int i = 0; i < count; ++i) {
-		FlipSimpleAlphaBlock((u16*)data);
-		FlipColorBlock(data + 8);
-		data += 16; // Advance to next block
-	}
-}
-
-static void FlipDXT5(unsigned char * data, unsigned int count) {
-	for(unsigned int i = 0; i < count; ++i) {
-		FlipComplexAlphaBlock(data);
-		FlipColorBlock(data + 8);
-		data += 16; // Advance to next block
-	}
-}
-
 void Image::FlipY(unsigned char * pData, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth) {
 	
 	if(pWidth == 0 || pHeight == 0) {
 		return;
 	}
 	
-	if(!IsCompressed()) {
+	unsigned int imageSize = GetSize(mFormat, pWidth, pHeight);
+	unsigned int lineSize = imageSize / pHeight;
+	
+	unsigned char * swapTmp = (unsigned char *)malloc(lineSize);
+	arx_assert(swapTmp);
+	
+	for(unsigned int n = 0; n < pDepth; n++) {
 		
-		unsigned int imageSize = GetSize(mFormat, pWidth, pHeight);
-		unsigned int lineSize = imageSize / pHeight;
+		unsigned offset = imageSize * n;
 		
-		unsigned char * swapTmp = (unsigned char *)malloc(lineSize);
-		arx_assert(swapTmp);
+		unsigned char * top = pData + offset;
+		unsigned char * bottom = top + (imageSize-lineSize);
 		
-		for(unsigned int n = 0; n < pDepth; n++) {
+		for(unsigned int i = 0; i < (pHeight >> 1); i++) {
 			
-			unsigned offset = imageSize * n;
+			memcpy( swapTmp, bottom, lineSize );
+			memcpy( bottom, top, lineSize );
+			memcpy( top, swapTmp, lineSize );
 			
-			unsigned char * top = pData + offset;
-			unsigned char * bottom = top + (imageSize-lineSize);
-			
-			for(unsigned int i = 0; i < (pHeight >> 1); i++) {
-				
-				memcpy( swapTmp, bottom, lineSize );
-				memcpy( bottom, top, lineSize );
-				memcpy( top, swapTmp, lineSize );
-				
-				top += lineSize;
-				bottom -= lineSize;
-			}
+			top += lineSize;
+			bottom -= lineSize;
 		}
-		
-		free(swapTmp);
-		
-	} else {
-		
-		void (*flipDXTn)(unsigned char *, unsigned int) = NULL;
-		
-		unsigned int xBlocks = (pWidth+3) / 4;
-		unsigned int yBlocks = (pHeight+3) / 4;
-		unsigned int blockSize = SIZE_TABLE[mFormat];
-		unsigned int lineSize = xBlocks * blockSize;
-		
-		unsigned char * swapTmp = (unsigned char *)malloc(lineSize);
-		arx_assert(swapTmp);
-		
-		switch(mFormat) {
-			
-			case Format_DXT1:
-				flipDXTn = &FlipDXT1;
-				break;
-			
-			case Format_DXT3:
-				flipDXTn = &FlipDXT3;
-				break;
-			
-			case Format_DXT5:
-				flipDXTn = &FlipDXT5;
-				break;
-			
-			default:
-				arx_assert(flipDXTn);
-		}
-		
-		for(unsigned int j = 0; j < (yBlocks >> 1); j++) {
-			
-			DXTColBlock * top = (DXTColBlock*)(pData + j * lineSize);
-			DXTColBlock * bottom = (DXTColBlock*)(pData + (((yBlocks-j)-1) * lineSize));
-			
-			(*flipDXTn)((unsigned char *)top, xBlocks);
-			(*flipDXTn)((unsigned char *)bottom, xBlocks);
-			
-			memcpy(swapTmp, bottom, lineSize);
-			memcpy(bottom, top, lineSize);
-			memcpy(top, swapTmp, lineSize);
-		}
-		
-		free(swapTmp);
 	}
+	
+	free(swapTmp);
+	
 }
 
 bool Image::save(const fs::path & filename) const {
@@ -1017,9 +853,6 @@ std::ostream & operator<<(std::ostream & os, Image::Format format) {
 		case Image::Format_B8G8R8: return os << "BGR";
 		case Image::Format_R8G8B8A8: return os << "RGBA";
 		case Image::Format_B8G8R8A8: return os << "BGRA";
-		case Image::Format_DXT1: return os << "DXT1";
-		case Image::Format_DXT3: return os << "DXT3";
-		case Image::Format_DXT5: return os << "DXT5";
 		default: return os << "(invalid)";
 	}
 }
