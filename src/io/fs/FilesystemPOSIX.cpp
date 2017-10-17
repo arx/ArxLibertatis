@@ -175,7 +175,7 @@ path current_path() {
 	} else if(path_max > 10240) {
 		intitial_length = 10240;
 	} else {
-    intitial_length = path_max;
+		intitial_length = path_max;
 	}
 #endif
 	
