@@ -60,10 +60,10 @@ CSpellFx::CSpellFx()
 void CSpellFx::SetDuration(ArxDuration ulaDuration) {
 	m_duration = ulaDuration;
 
-	if(m_duration <= ArxDuration_ZERO)
+	if(m_duration <= 0)
 		m_duration = ArxDurationMs(100);
 	
-	m_elapsed = ArxDuration_ZERO;
+	m_elapsed = 0;
 }
 
 void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize) {
