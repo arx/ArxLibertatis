@@ -32,7 +32,7 @@ void drawDebugCycleViews();
 void drawDebugRender();
 
 namespace debug {
-	void drawRay(Vec3f start, Vec3f dir, Color color = Color::white, PlatformDuration duration = PlatformDuration_ZERO);
+	void drawRay(Vec3f start, Vec3f dir, Color color = Color::white, PlatformDuration duration = 0);
 }
 
 #endif // ARX_GRAPHICS_DRAWDEBUG_H
