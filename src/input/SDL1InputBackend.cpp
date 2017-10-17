@@ -197,7 +197,6 @@ SDL1InputBackend::SDL1InputBackend() : m_textHandler(NULL) {
 	cursorAbs = Vec2i_ZERO;
 	cursorInWindow = false;
 	std::fill_n(keyStates, ARRAY_SIZE(keyStates), false);
-	std::fill_n(buttonStates, ARRAY_SIZE(buttonStates), false);
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
 	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);
 	
@@ -324,10 +323,10 @@ void SDL1InputBackend::onEvent(const SDL_Event & event) {
 				wheel--;
 			} else if(button < ARRAY_SIZE(sdlToArxButton) && sdlToArxButton[button] != Mouse::Button_Invalid) {
 				size_t i = sdlToArxButton[button] - Mouse::ButtonBase;
-				if((event.button.state == SDL_PRESSED)) {
-					buttonStates[i] = true, clickCount[i]++;
+				if(event.button.state == SDL_PRESSED) {
+					clickCount[i]++;
 				} else {
-					buttonStates[i] = false, unclickCount[i]++;
+					unclickCount[i]++;
 				}
 			} else {
 				LogWarning << "Unmapped SDL mouse button: " << (int)button;
