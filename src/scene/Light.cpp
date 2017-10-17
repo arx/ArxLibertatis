@@ -492,7 +492,7 @@ void setMaxLLights(size_t count) {
 	MAX_LLIGHTS = glm::clamp(count, size_t(6), llightsSize);
 }
 
-void UpdateLlights(ShaderLight lights[], int & lightsCount, const Vec3f pos, bool forPlayerColor) {
+void UpdateLlights(ShaderLight lights[], size_t & lightsCount, const Vec3f pos, bool forPlayerColor) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -582,12 +582,12 @@ void ClearTileLights() {
 float GetColorz(const Vec3f &pos) {
 
 	ShaderLight lights[llightsSize];
-	int lightsCount;
+	size_t lightsCount;
 	UpdateLlights(lights, lightsCount, pos, true);
 	
 	Color3f ff = Color3f(0.f, 0.f, 0.f);
 	
-	for(long k = 0; k < lightsCount; k++) {
+	for(size_t k = 0; k < lightsCount; k++) {
 		const ShaderLight & light = lights[k];
 		
 		float dd = fdist(light.pos, pos);

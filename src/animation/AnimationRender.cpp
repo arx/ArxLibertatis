@@ -724,7 +724,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 	bool useFaceNormal = io && (io->ioflags & IO_ANGULAR);
 	
 	ShaderLight lights[llightsSize];
-	int lightsCount;
+	size_t lightsCount;
 	UpdateLlights(lights, lightsCount, tv, false);
 	
 	arx_assert(eobj->vertexColors.size() == eobj->vertexWorldPositions.size());
@@ -1161,7 +1161,7 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 	}
 	
 	ShaderLight lights[llightsSize];
-	int lightsCount;
+	size_t lightsCount;
 	UpdateLlights(lights, lightsCount, tv, false);
 	
 	Cedric_ApplyLighting(lights, lightsCount, eobj, obj, colorMod);
