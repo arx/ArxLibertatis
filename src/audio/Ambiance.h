@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
+#include "core/TimeTypes.h"
 #include "audio/AudioTypes.h"
 #include "io/resource/ResourcePath.h"
 #include "platform/Platform.h"
@@ -105,8 +106,11 @@ private:
 	Fade fade;
 	
 	Channel channel;
-	float fade_time, fade_interval, fade_max;
-	s32 start, time;
+	PlatformDuration fade_time;
+	PlatformDuration fade_interval;
+	float fade_max;
+	PlatformInstant start;
+	PlatformDuration time;
 	
 	TrackList tracks;
 	

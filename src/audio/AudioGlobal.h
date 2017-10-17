@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <algorithm>
 
+#include "core/TimeTypes.h"
 #include "audio/AudioTypes.h"
 #include "audio/AudioResource.h"
 
@@ -72,7 +73,7 @@ extern res::path sample_path;
 extern res::path ambiance_path;
 extern res::path environment_path;
 extern size_t stream_limit_bytes;
-extern size_t session_time;
+extern PlatformInstant session_time;
 
 // Resources
 extern ResourceList<Mixer> _mixer;
