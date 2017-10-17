@@ -114,7 +114,7 @@ public:
 	 */
 	virtual aalError updateVolume() = 0;
 	
-	void addCallback(Callback * callback, size_t time, TimeUnit unit = UNIT_MS);
+	void addCallback(Callback * callback, size_t position);
 	
 protected:
 	
