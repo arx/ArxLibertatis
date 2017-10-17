@@ -462,18 +462,12 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		cursorScale = g_hudRoot.getScale();
 	}
 	
-	if(   SpecialCursor
-	   || !PLAYER_MOUSELOOK_ON
-	   || DRAGINTER
-	   ||  (FlyingOverIO
-		 && PLAYER_MOUSELOOK_ON
-		 && !g_cursorOverBook
-		 && (eMouseState != MOUSE_IN_NOTE)
-		 && (FlyingOverIO->ioflags & IO_ITEM)
-		 && (FlyingOverIO->gameFlags & GFLAG_INTERACTIVITY)
-		 && (config.input.autoReadyWeapon == false))
-	   || (MAGICMODE && PLAYER_MOUSELOOK_ON)
-	) {
+	if(SpecialCursor || !PLAYER_MOUSELOOK_ON || DRAGINTER
+	   || (FlyingOverIO && PLAYER_MOUSELOOK_ON && !g_cursorOverBook && eMouseState != MOUSE_IN_NOTE
+	       && (FlyingOverIO->ioflags & IO_ITEM) && (FlyingOverIO->gameFlags & GFLAG_INTERACTIVITY)
+	       && !config.input.autoReadyWeapon)
+	   || (MAGICMODE && PLAYER_MOUSELOOK_ON)) {
+		
 		CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
 		float ag=player.angle.getPitch();
 		
