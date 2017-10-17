@@ -365,7 +365,7 @@ void ShowDebugToggles() {
 		textStream << i << "   ";
 		textStream << (g_debugToggles[i] ? "on " : "off") << "    ";
 		
-		if(platform::getElapsedMs(g_debugTriggersTime[i]) <= g_debugTriggersDecayDuration)
+		if(g_platformTime.frameStart() - g_debugTriggersTime[i] <= g_debugTriggersDecayDuration)
 			textStream << "fired";
 		
 		hFontDebug->draw(0.f, line * lineHeight, textStream.str(), Color::white);

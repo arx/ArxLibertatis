@@ -1693,9 +1693,9 @@ void ArxGame::updateInput() {
 			
 			if(GInput->isKeyPressed(Keyboard::Key_NumPadEnter)) {
 				if(   GInput->isKeyPressed(Keyboard::Key_NumPad0 + i)
-				   && platform::getElapsedMs(g_debugTriggersTime[i]) > g_debugTriggersDecayDuration
+				   && g_platformTime.frameStart() - g_debugTriggersTime[i] > g_debugTriggersDecayDuration
 				) {
-					g_debugTriggersTime[i] = platform::getTimeMs();
+					g_debugTriggersTime[i] = g_platformTime.frameStart();
 					g_debugTriggers[i] = true;
 				}
 			} else {
