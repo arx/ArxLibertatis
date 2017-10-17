@@ -79,7 +79,7 @@ extern PlatformInstant session_time;
 extern ResourceList<Mixer> g_mixers;
 extern ResourceList<Sample> g_samples;
 extern ResourceList<Ambiance> g_ambiances;
-extern ResourceList<Environment> _env;
+extern ResourceList<Environment> g_environments;
 
 //! Convert a value from time units to bytes
 size_t unitsToBytes(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);

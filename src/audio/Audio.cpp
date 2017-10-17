@@ -141,7 +141,7 @@ aalError clean() {
 	g_ambiances.clear();
 	g_samples.clear();
 	g_mixers.clear();
-	_env.clear();
+	g_environments.clear();
 	
 	delete backend, backend = NULL;
 	
@@ -329,7 +329,7 @@ EnvId createEnvironment(const res::path & name) {
 	
 	Environment * env = new Environment(name);
 	EnvId e_id = EnvId();
-	if(env->load() || (e_id = EnvId(_env.add(env))) == EnvId()) {
+	if(env->load() || (e_id = EnvId(g_environments.add(env))) == EnvId()) {
 		delete env;
 		LogError << "Environment " << name << " not found";
 	}
@@ -383,8 +383,8 @@ EnvId getEnvironment(const res::path & name) {
 	
 	AAL_ENTRY_V(EnvId())
 	
-	for(size_t i = 0; i < _env.size(); i++) {
-		if(_env[i] && name == _env[i]->name) {
+	for(size_t i = 0; i < g_environments.size(); i++) {
+		if(g_environments[i] && name == g_environments[i]->name) {
 			return EnvId(i);
 		}
 	}
@@ -448,13 +448,13 @@ aalError setListenerEnvironment(EnvId e_id) {
 	
 	AAL_ENTRY
 	
-	if(!_env.isValid(e_id.handleData())) {
+	if(!g_environments.isValid(e_id.handleData())) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("SetListenerEnvironment " << _env[e_id.handleData()]->name);
+	LogDebug("SetListenerEnvironment " << g_environments[e_id.handleData()]->name);
 	
-	return backend->setListenerEnvironment(*_env[e_id.handleData()]);
+	return backend->setListenerEnvironment(*g_environments[e_id.handleData()]);
 }
 
 // Mixer setup
