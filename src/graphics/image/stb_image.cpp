@@ -3392,7 +3392,7 @@ static int pic_test(stbi *s)
    if (!pic_is4(s,"\x53\x80\xF6\x34"))
       return 0;
 
-   for(i=0;i<84;++i)
+   for(i = 0; i < 84; ++i)
       get8(s);
 
    if (!pic_is4(s,"PICT"))
@@ -3424,8 +3424,8 @@ static void pic_copyval(int channel,stbi_uc *dest,const stbi_uc *src)
 {
    int mask=0x80,i;
 
-   for (i=0;i<4; ++i, mask>>=1)
-      if (channel&mask)
+   for (i = 0; i < 4; ++i, mask >>= 1)
+      if (channel & mask)
          dest[i]=src[i];
 }
 
@@ -3471,7 +3471,7 @@ static stbi_uc *pic_load2(stbi *s,int width,int height,int *comp, stbi_uc *resul
             case 0: {//uncompressed
                int x;
 
-               for(x=0;x<width;++x, dest+=4)
+               for(x = 0; x < width; ++x, dest += 4)
                   if (!pic_readval(s,packet->channel,dest))
                      return 0;
                break;
@@ -3519,13 +3519,13 @@ static stbi_uc *pic_load2(stbi *s,int width,int height,int *comp, stbi_uc *resul
                      if (!pic_readval(s,packet->channel,value))
                         return 0;
 
-                     for(i=0;i<count;++i, dest += 4)
+                     for(i = 0; i < count; ++i, dest += 4)
                         pic_copyval(packet->channel,dest,value);
                   } else { // Raw
                      ++count;
                      if (count>left) return stbi_error_puc("bad file","scanline overrun");
 
-                     for(i=0;i<count;++i, dest+=4)
+                     for(i = 0; i < count; ++i, dest += 4)
                         if (!pic_readval(s,packet->channel,dest))
                            return 0;
                   }
