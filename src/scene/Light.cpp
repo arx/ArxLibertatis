@@ -253,7 +253,7 @@ void TreatBackgroundDynlights() {
 	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
 		EERIE_LIGHT * el = &g_dynamicLights[i];
 
-		if(el->exist && el->duration != ArxDuration_ZERO) {
+		if(el->exist && el->duration != 0) {
 			const ArxDuration elapsed = arxtime.now() - el->creationTime;
 			const ArxDuration duration = el->duration;
 
@@ -275,7 +275,7 @@ void TreatBackgroundDynlights() {
 
 				if(el->rgb.r + el->rgb.g + el->rgb.b == 0) {
 					el->exist = 0;
-					el->duration = ArxDuration_ZERO;
+					el->duration = 0;
 				}
 			}
 		}
@@ -393,7 +393,7 @@ LightHandle GetFreeDynLight() {
 			light.intensity = 1.3f;
 			light.treat = 1;
 			light.creationTime = arxtime.now();
-			light.duration = ArxDuration_ZERO;
+			light.duration = 0;
 			light.extras = 0;
 			light.m_storedFlameTime.reset();
 			return LightHandle(i);
