@@ -3029,7 +3029,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		}
 		
 		ARX_USE_PATH * aup = io->usepath;
-		aup->_curtime += ArxDurationMs(smoothing + 100);
+		aup->_curtime += ArxDurationMs(s64(smoothing) + 100);
 
 		Vec3f tp;
 		long wp = ARX_PATHS_Interpolate(aup, &tp);
