@@ -1342,7 +1342,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as->resist_magic = io->_npcdata->resist_magic;
 			as->resist_fire = io->_npcdata->resist_fire;
 			as->strike_time = io->_npcdata->strike_time;
-			as->walk_start_time = io->_npcdata->walk_start_time;
+			as->walk_start_time = checked_range_cast<s16>(toMsi(io->_npcdata->walk_start_time)); // TODO save/load time
 			as->aiming_start = static_cast<s32>(toMsi(io->_npcdata->aiming_start)); // TODO save/load time
 			as->npcflags = io->_npcdata->npcflags;
 			as->pathfind = IO_PATHFIND();
@@ -2224,7 +2224,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				io->_npcdata->resist_magic = as->resist_magic;
 				io->_npcdata->resist_fire = as->resist_fire;
 				io->_npcdata->strike_time = as->strike_time;
-				io->_npcdata->walk_start_time = as->walk_start_time;
+				io->_npcdata->walk_start_time = ArxDurationMs(as->walk_start_time); // TODO save/load time
 				io->_npcdata->aiming_start = ArxInstantMs(as->aiming_start); // TODO save/load time
 				io->_npcdata->npcflags = NPCFlags::load(as->npcflags); // TODO save/load flags
 				io->_npcdata->fDetect = as->fDetect;
