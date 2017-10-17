@@ -71,7 +71,8 @@ private:
 template <typename TAG, typename T>
 struct InstantType
 	: boost::totally_ordered1<InstantType<TAG, T>
-	>
+	, boost::additive2<InstantType<TAG, T>, DurationType<TAG, T>
+	>>
 {
 	
 	T t;
@@ -83,6 +84,16 @@ struct InstantType
 	}
 	bool operator<(const InstantType & rhs) const {
 		return t < rhs.t;
+	}
+	
+	InstantType & operator+=(DurationType<TAG, T> rhs) {
+		t += rhs.t;
+		return *this;
+	}
+	
+	InstantType & operator-=(DurationType<TAG, T> rhs) {
+		t -= rhs.t;
+		return *this;
 	}
 	
 	static InstantType ofRaw(T value) {
@@ -106,32 +117,12 @@ inline DurationType<TAG, T> operator *(DurationType<TAG, T> a, IntType b) {
 }
 
 template <typename TAG, typename T>
-inline InstantType<TAG, T> operator +(InstantType<TAG, T> a, DurationType<TAG, T> b) {
-	return InstantType<TAG, T>::ofRaw(a.t + b.t);
-}
-template <typename TAG, typename T>
-inline InstantType<TAG, T> operator -(InstantType<TAG, T> a, DurationType<TAG, T> b) {
-	return InstantType<TAG, T>::ofRaw(a.t - b.t);
-}
-
-template <typename TAG, typename T>
 inline DurationType<TAG, T> operator +(DurationType<TAG, T> a, DurationType<TAG, T> b) {
 	return DurationType<TAG, T>::ofRaw(a.t + b.t);
 }
 template <typename TAG, typename T>
 inline DurationType<TAG, T> operator -(DurationType<TAG, T> a, DurationType<TAG, T> b) {
 	return DurationType<TAG, T>::ofRaw(a.t - b.t);
-}
-
-template <typename TAG, typename T>
-inline InstantType<TAG, T> & operator +=(InstantType<TAG, T> & a, DurationType<TAG, T> b) {
-	a.t += b.t;
-	return a;
-}
-template <typename TAG, typename T>
-inline InstantType<TAG, T> & operator -=(InstantType<TAG, T> & a, DurationType<TAG, T> b) {
-	a.t -= b.t;
-	return a;
 }
 
 
