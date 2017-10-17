@@ -126,7 +126,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 		
 	AnimationDuration timePerComponent = sd->duration * (1.0f / float(nbcomponents));
 
-	if(timePerComponent <= AnimationDuration_ZERO)
+	if(timePerComponent <= 0)
 		timePerComponent = AnimationDurationMs(1);
 
 	AnimationDuration timeRemaining = elapsed;
@@ -340,7 +340,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 	sd->sequence = info.sequence;
 
 	sd->starttime = arxtime.now();
-	sd->elapsed = AnimationDuration_ZERO;
+	sd->elapsed = 0;
 	
 	sd->cPosStart = info.startOffset;
 
