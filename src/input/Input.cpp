@@ -356,7 +356,8 @@ void Input::reset() {
 	m_mouseMovement = Vec2f_ZERO;
 
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
-		iMouseTime[i] = 0;
+		iMouseTime[i][0] = PlatformInstant_ZERO;
+		iMouseTime[i][1] = PlatformInstant_ZERO;
 		iMouseTimeSet[i] = 0;
 		bMouseButton[i] = bOldMouseButton[i] = false;
 		iOldNumClick[i] = 0;
@@ -503,7 +504,7 @@ void Input::update(float time) {
 		}
 	}
 	
-	const s64 now = platform::getTimeMs();
+	const PlatformInstant now = g_platformTime.frameStart();
 	
 	for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++) {
 		int i = buttonId - Mouse::ButtonBase;
@@ -533,19 +534,20 @@ void Input::update(float time) {
 		if(iOldNumClick[i]) 
 			iOldNumClick[i]--;
 		
-		if(iMouseTimeSet[i] > 0 && (now - iMouseTime[i]) > 300) {
-			iMouseTime[i] = 0;
+		if(iMouseTimeSet[i] > 1 || (iMouseTimeSet[i] == 1 && now - iMouseTime[i][0] > PlatformDurationMs(300))) {
+			iMouseTime[i][0] = PlatformInstant_ZERO;
+			iMouseTime[i][1] = PlatformInstant_ZERO;
 			iMouseTimeSet[i] = 0;
 		}
 		
 		if(getMouseButtonNowPressed(buttonId)) {
 			switch(iMouseTimeSet[i]) {
 			case 0:
-				iMouseTime[i] = now;
+				iMouseTime[i][0] = now;
 				iMouseTimeSet[i]++;
 				break;
 			case 1:
-				iMouseTime[i] = now - iMouseTime[i];
+				iMouseTime[i][1] = now;
 				iMouseTimeSet[i]++;
 				break;
 			}
@@ -934,10 +936,10 @@ bool Input::getMouseButtonNowUnPressed(int buttonId) const {
 bool Input::getMouseButtonDoubleClick(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 	
-	int timeMs = 300;
+	const PlatformDuration interval = PlatformDurationMs(300);
 	
 	int buttonIdx = buttonId - Mouse::ButtonBase;
-	return (iMouseTimeSet[buttonIdx] == 2) && (iMouseTime[buttonIdx] < timeMs);
+	return (iMouseTimeSet[buttonIdx] == 2 && iMouseTime[buttonIdx][1] - iMouseTime[buttonIdx][0] < interval);
 }
 
 int Input::getMouseButtonClicked() const {
