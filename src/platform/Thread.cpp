@@ -388,7 +388,7 @@ void Thread::sleep(PlatformDuration time) {
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 void Thread::sleep(PlatformDuration time) {
-	Sleep(DWORD(toMsi(time));
+	Sleep(DWORD(toMsi(time)));
 }
 
 #else
