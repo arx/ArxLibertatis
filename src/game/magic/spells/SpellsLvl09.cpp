@@ -86,8 +86,8 @@ void SummonCreatureSpell::Launch() {
 	m_fManaCostPerSecond = 1.9f;
 	m_requestSummon = false;
 	m_summonedEntity = EntityHandle();
-	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
-	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
+	m_hasDuration = m_launchDuration >= 0;
+	m_duration = m_hasDuration ? m_launchDuration : 0;
 	
 	Vec3f target;
 	float beta;
@@ -258,7 +258,7 @@ void SummonCreatureSpell::Update() {
 			}
 		}
 	} else if(m_summonedEntity == EntityHandle()) {
-		m_duration = ArxDuration_ZERO;
+		m_duration = 0;
 	}
 }
 
@@ -333,8 +333,8 @@ void NegateMagicSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC, &entities[m_target]->pos);
 	
 	m_fManaCostPerSecond = 2.f;
-	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
-	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
+	m_hasDuration = m_launchDuration >= 0;
+	m_duration = m_hasDuration ? m_launchDuration : 0;
 	
 	m_pos = getTargetPos(m_caster, m_target);
 	
@@ -482,7 +482,7 @@ void MassParalyseSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
 	
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(10000);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(10000);
 	m_hasDuration = true;
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
