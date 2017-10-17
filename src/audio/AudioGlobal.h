@@ -77,7 +77,7 @@ extern PlatformInstant session_time;
 
 // Resources
 extern ResourceList<Mixer> _mixer;
-extern ResourceList<Sample> _sample;
+extern ResourceList<Sample> g_samples;
 extern ResourceList<Ambiance> _amb;
 extern ResourceList<Environment> _env;
 
