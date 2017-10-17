@@ -2378,7 +2378,7 @@ afterthat:
 				   && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
 				   && layer0.cur_anim != alist[ANIM_RUN]
 				) {
-					float fCalc = io->_npcdata->walk_start_time + g_framedelay ;
+					float fCalc = io->_npcdata->walk_start_time + g_framedelay;
 
 					io->_npcdata->walk_start_time = checked_range_cast<short>(fCalc);
 
