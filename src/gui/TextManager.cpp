@@ -127,7 +127,7 @@ void TextManager::Update(PlatformDuration _iDiffFrame) {
 		
 		ManagedText * pArxText = *itManage;
 		
-		if(pArxText->lTimeOut < PlatformDuration_ZERO) {
+		if(pArxText->lTimeOut < 0) {
 			delete pArxText;
 			itManage = entries.erase(itManage);
 			continue;
@@ -135,8 +135,8 @@ void TextManager::Update(PlatformDuration _iDiffFrame) {
 		
 		pArxText->lTimeOut -= _iDiffFrame;
 		
-		if(pArxText->lTimeScroll < PlatformDuration_ZERO &&
-		   pArxText->fDeltaY < (pArxText->rRect.bottom - pArxText->rRectClipp.bottom)) {
+		if(pArxText->lTimeScroll < 0
+		   && pArxText->fDeltaY < (pArxText->rRect.bottom - pArxText->rRectClipp.bottom)) {
 			pArxText->fDeltaY += pArxText->fSpeedScrollY * toMs(_iDiffFrame);
 			
 			if(pArxText->fDeltaY >= (pArxText->rRect.bottom - pArxText->rRectClipp.bottom)) {
