@@ -84,7 +84,7 @@ static CinematicSound * GetFreeSound() {
 	return NULL;
 }
 
-static bool DeleteFreeSound(int num) {
+static bool DeleteFreeSound(size_t num) {
 	
 	if(!TabSound[num].exists) {
 		return false;
