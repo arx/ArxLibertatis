@@ -120,7 +120,7 @@ static void removeFlare(MagicFlare & flare) {
 
 	lightHandleDestroy(flare.dynlight);
 	
-	flare.tolive = PlatformDuration_ZERO;
+	flare.tolive = 0;
 	flare.exist = 0;
 	g_magicFlaresCount--;
 	
@@ -397,7 +397,7 @@ void ARX_MAGICAL_FLARES_Update() {
 				size = flare.size;
 			}
 
-			if(flare.tolive <= PlatformDuration_ZERO || flare.pos.y < -64.f || size < 3.f) {
+			if(flare.tolive <= 0 || flare.pos.y < -64.f || size < 3.f) {
 				removeFlare(flare);
 				continue;
 			}
