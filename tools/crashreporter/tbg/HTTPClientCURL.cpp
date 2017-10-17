@@ -71,7 +71,7 @@ public:
 
 void CURLSession::setup(const Request & request) {
 	
-  if(!m_curl) {
+	if(!m_curl) {
 		return;
 	}
 	
@@ -97,7 +97,7 @@ Response * CURLSession::perform(const Request & request) {
 	curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, writeToString);
 	curl_easy_setopt(m_curl, CURLOPT_WRITEDATA, &data);
 	
-  CURLcode res = curl_easy_perform(m_curl);
+	CURLcode res = curl_easy_perform(m_curl);
 	if(res != CURLE_OK) {
 		return new Response(curl_easy_strerror(res));
 	}
