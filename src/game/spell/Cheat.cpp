@@ -58,7 +58,7 @@ static long cur_sos = 0;
 static long cur_console = 0;
 
 long cur_mega=0;
-static PlatformInstant sp_max_start = PlatformInstant_ZERO;
+static PlatformInstant sp_max_start = 0;
 long sp_wep=0;
 short uw_mode=0;
 
@@ -72,7 +72,7 @@ static std::string sp_max_ch;
 
 void CheatDrawText() {
 	
-	if(sp_max_start == PlatformInstant_ZERO) {
+	if(sp_max_start == 0) {
 		return;
 	}
 	
@@ -135,7 +135,7 @@ static void MakeSpCol() {
 
 void CheatReset() {
 	
-	sp_max_start = PlatformInstant_ZERO;
+	sp_max_start = 0;
 	
 	sp_arm = 0;
 	cur_arm = 0;
