@@ -31,7 +31,7 @@ CinematicBorder::CinematicBorder()
 	: CINEMA_DECAL(0)
 	, m_active(false)
 	, m_direction(0)
-	, m_startTime(ArxInstant_ZERO)
+	, m_startTime(0)
 {}
 
 bool CinematicBorder::isActive()
@@ -51,11 +51,11 @@ void CinematicBorder::reset() {
 void CinematicBorder::set(bool status, bool smooth)
 {
 	if(status) {
-		m_active = true;//++;
+		m_active = true;
 		m_startTime = arxtime.now();
 	} else {
-		m_active = false;//--;
-		m_startTime = ArxInstant_ZERO;
+		m_active = false;
+		m_startTime = 0;
 	}
 	
 	if(m_active) {
