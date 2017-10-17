@@ -94,7 +94,7 @@ class RuneRecognitionAlt {
 
 	int m_dirs[s_directionCount];
 	std::vector<Vec2f> m_points;
-	std::vector<int> m_indices;
+	std::vector<size_t> m_indices;
 
 	int findMatchingPattern();
 	void resampleInput(const std::vector<Vec2f> &in);
@@ -154,7 +154,7 @@ void RuneRecognitionAlt::resampleInput(const std::vector<Vec2f> &in) {
 		
 		//distance along curve from key point 1 to key point 2
 		float segLen = 0.0;
-		for(int index = m_indices[segment]; index < m_indices[segment + 1]; index++) {
+		for(size_t index = m_indices[segment]; index < m_indices[segment + 1]; index++) {
 			segLen += glm::distance(in[index], in[index + 1]);
 		}
 		
@@ -180,9 +180,9 @@ void RuneRecognitionAlt::resampleInput(const std::vector<Vec2f> &in) {
 		bool newPointAdded = false; //was a new point added?
 		bool endOfSegment = false; //at the end of segment
 		
-		int index = m_indices[segment] + 1;
+		size_t index = m_indices[segment] + 1;
 		int reallyAdded = 0;
-		int endIndex = m_indices[segment + 1];
+		size_t endIndex = m_indices[segment + 1];
 		
 		Vec2f prevPoint = in[m_indices[segment]];
 		Vec2f thisPoint;
