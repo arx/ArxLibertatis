@@ -488,8 +488,8 @@ static void Insertllight(boost::array<EERIE_LIGHT *, llightsSize> & llights,
 	}
 }
 
-void setMaxLLights(int count) {
-	MAX_LLIGHTS = glm::clamp(count, 6, llightsSize);
+void setMaxLLights(size_t count) {
+	MAX_LLIGHTS = glm::clamp(count, size_t(6), llightsSize);
 }
 
 void UpdateLlights(ShaderLight lights[], int & lightsCount, const Vec3f pos, bool forPlayerColor) {

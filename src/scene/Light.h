@@ -170,9 +170,9 @@ struct ShaderLight {
 	Color3f rgb255;
 };
 
-static const int llightsSize = 16;
+static const size_t llightsSize = 16;
 
-void setMaxLLights(int count);
+void setMaxLLights(size_t count);
 void UpdateLlights(ShaderLight lights[], int & lightsCount, const Vec3f pos, bool forPlayerColor);
 
 void InitTileLights();
