@@ -32,8 +32,8 @@
 
 
 FissureFx::FissureFx()
-	: m_elapsed(ArxDuration_ZERO)
-	, m_duration(ArxDuration_ZERO)
+	: m_elapsed(0)
+	, m_duration(0)
 	, m_durationIntro(ArxDurationMs(1000))
 	, m_durationRender(ArxDurationMs(1000))
 	, m_durationOuttro(ArxDurationMs(1000))
@@ -50,7 +50,7 @@ void FissureFx::SetDuration(ArxDuration alDurationIntro, ArxDuration alDurationR
 	m_durationRender = arx::clamp(alDurationRender, ArxDurationMs(100), ArxDurationMs(100000));
 	m_durationOuttro = arx::clamp(alDurationOuttro, ArxDurationMs(100), ArxDurationMs(100000));
 	
-	m_elapsed = ArxDuration_ZERO;
+	m_elapsed = 0;
 	m_duration = m_durationIntro + m_durationRender + m_durationOuttro;
 }
 
