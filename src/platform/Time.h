@@ -68,29 +68,6 @@ inline u32 getElapsedMs(u32 startMs);
  */
 inline u32 getElapsedMs(u32 startMs, u32 endMs);
 
-/*!
- * \brief Get the number of microseconds elapsed between now and the specified time
- *
- * Handles wrap around correctly.
- *
- * \param startUs Start time in microseconds.
- *
- * \return The number of microseconds elapsed between now and startUs.
- */
-inline u64 getElapsedUs(u64 startUs);
-
-/*!
- * \brief Get the number of microseconds elapsed between two point in time
- *
- * Handles wrap around correctly.
- *
- * \param startUs Start time in microseconds.
- * \param endUs End time in microseconds.
- *
- * \return The number of microseconds elapsed between the specified time range.
- */
-inline u64 getElapsedUs(u64 startUs, u64 endUs);
-
 // Implementation:
 
 inline u32 getElapsedMs(u32 startMs) {
@@ -99,14 +76,6 @@ inline u32 getElapsedMs(u32 startMs) {
 
 inline u32 getElapsedMs(u32 startMs, u32 endMs) {
 	return endMs - startMs;
-}
-
-inline u64 getElapsedUs(u64 startUs) {
-	return getElapsedUs(startUs, getTimeUs());
-}
-
-inline u64 getElapsedUs(u64 startUs, u64 endUs) {
-	return endUs - startUs;
 }
 
 } // namespace platform

@@ -185,7 +185,7 @@ static bool isFrame(Status type) {
 static void endFrame() {
 	
 	u64 now = platform::getTimeUs();
-	g_current += Result(platform::getElapsedUs(g_startTime, now));
+	g_current += Result(now - g_startTime);
 	g_startTime = now;
 	
 }
