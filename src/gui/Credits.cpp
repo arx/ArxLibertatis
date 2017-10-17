@@ -520,7 +520,7 @@ void Credits::render() {
 	// Don't scroll past the credits start
 	m_scrollPosition = std::min(0.f, m_scrollPosition);
 	
-	std::vector<CreditsLine>::const_iterator it = m_lines.begin() + m_firstVisibleLine ;
+	std::vector<CreditsLine>::const_iterator it = m_lines.begin() + m_firstVisibleLine;
 	
 	for(; it != m_lines.begin(); --it, --m_firstVisibleLine) {
 		float yy = (it - 1)->sPos.y + m_scrollPosition;
@@ -546,7 +546,7 @@ void Credits::render() {
 		}
 		
 		if ( yy >= g_size.height() )
-			break ; //it's useless to continue because next phrase will not be inside the viewport
+			break; //it's useless to continue because next phrase will not be inside the viewport
 	}
 	
 	if(m_firstVisibleLine >= m_lines.size() && iFadeAction != AMCM_MAIN) {
