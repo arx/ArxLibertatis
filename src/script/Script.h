@@ -158,10 +158,10 @@ struct SCR_TIMER {
 		, exist(0)
 		, flags(0)
 		, count(0)
-		, interval(ArxDuration_ZERO)
+		, interval(0)
 		, pos(0)
 		, longinfo(0)
-		, start(ArxInstant_ZERO)
+		, start(0)
 		, io(NULL)
 		, es(NULL)
 	{ }
@@ -171,10 +171,10 @@ struct SCR_TIMER {
 		exist = 0;
 		flags = 0;
 		count = 0;
-		interval = ArxDuration_ZERO;
+		interval = 0;
 		pos = 0;
 		longinfo = 0;
-		start = ArxInstant_ZERO;
+		start = 0;
 		io = NULL;
 		es = NULL;
 	}
