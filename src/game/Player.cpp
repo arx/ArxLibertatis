@@ -151,14 +151,14 @@ ARXCHARACTER player;
 EERIE_3DOBJ * hero = NULL;
 float currentdistance = 0.f;
 float CURRENT_PLAYER_COLOR = 0;
-AnimationDuration PLAYER_ROTATION = AnimationDuration_ZERO;
+AnimationDuration PLAYER_ROTATION = 0;
 
 bool USE_PLAYERCOLLISIONS = true;
 bool BLOCK_PLAYER_CONTROLS = false;
 bool WILLRETURNTOCOMBATMODE = false;
-ArxDuration DeadTime = ArxDuration_ZERO;
-static ArxInstant LastHungerSample = ArxInstant_ZERO;
-static ArxInstant ROTATE_START = ArxInstant_ZERO;
+ArxDuration DeadTime = 0;
+static ArxInstant LastHungerSample = 0;
+static ArxInstant ROTATE_START = 0;
 
 // Player Anims FLAGS/Vars
 ANIM_HANDLE * herowaitbook = NULL;
@@ -474,7 +474,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	//CAST
 	player.Full_AimTime = PlatformDurationMsf(fFullAimTime);
 	
-	if(player.Full_AimTime <= PlatformDuration_ZERO)
+	if(player.Full_AimTime <= 0)
 		player.Full_AimTime = PlatformDurationMs(1500);
 	
 	player.Full_AimTime -= PlatformDurationMsf(fCalcHandicap);
@@ -1013,7 +1013,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta)
 	ARX_PROFILE_FUNC();
 	
 	//	ARX_PLAYER_QuickGeneration();
-	if(delta > PlatformDuration_ZERO) {
+	if(delta > 0) {
 		float Framedelay = toMs(delta);
 		
 		UpdateIOInvisibility(entities.player());
@@ -1254,7 +1254,7 @@ void ARX_PLAYER_BecomesDead() {
 
 	player.Interface &= ~INTER_COMBATMODE;
 	player.Interface = 0;
-	DeadTime = ArxDuration_ZERO;
+	DeadTime = 0;
 	
 	spells.endByCaster(EntityHandle_Player);
 }
@@ -1276,13 +1276,13 @@ void ARX_PLAYER_Manage_Visual() {
 	ArxInstant now = arxtime.now();
 	
 	if(player.m_currentMovement & PLAYER_ROTATE) {
-		if(ROTATE_START == ArxInstant_ZERO) {
+		if(ROTATE_START == 0) {
 			ROTATE_START = now;
 		}
-	} else if(ROTATE_START != ArxInstant_ZERO) {
+	} else if(ROTATE_START != 0) {
 		ArxDuration elapsed = now - ROTATE_START;
 		if(elapsed > ArxDurationMs(100)) {
-			ROTATE_START = ArxInstant_ZERO;
+			ROTATE_START = 0;
 		}
 	}
 	
@@ -1388,13 +1388,13 @@ void ARX_PLAYER_Manage_Visual() {
 		request0_loop = true;
 	}
 	
-	if(ROTATE_START != ArxInstant_ZERO
+	if(ROTATE_START != 0
 	   && player.angle.getPitch() > 60.f
 	   && player.angle.getPitch() < 180.f
 	   && LASTPLAYERA > 60.f
 	   && LASTPLAYERA < 180.f
 	) {
-		if(PLAYER_ROTATION < AnimationDuration_ZERO) {
+		if(PLAYER_ROTATION < 0) {
 			if(player.Interface & INTER_COMBATMODE)
 				request0_anim = alist[ANIM_U_TURN_LEFT_FIGHT];
 			else
@@ -1413,16 +1413,16 @@ void ARX_PLAYER_Manage_Visual() {
 		{
 			layer0.ctime -= PLAYER_ROTATION;
 			
-			if(layer0.ctime < AnimationDuration_ZERO)
-				layer0.ctime = AnimationDuration_ZERO;
+			if(layer0.ctime < 0)
+				layer0.ctime = 0;
 		}
 		else if(layer0.cur_anim == alist[ANIM_U_TURN_RIGHT]
 				 ||	layer0.cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT])
 		{
 			layer0.ctime += PLAYER_ROTATION;
 			
-			if(layer0.ctime < AnimationDuration_ZERO)
-				layer0.ctime = AnimationDuration_ZERO;
+			if(layer0.ctime < 0)
+				layer0.ctime = 0;
 		}
 	}
 	
@@ -1846,9 +1846,9 @@ extern float MAX_ALLOWED_PER_SECOND;
 static long LAST_FIRM_GROUND = 1;
 static long TRUE_FIRM_GROUND = 1;
 float lastposy = -9999999.f;
-PlatformInstant REQUEST_JUMP = PlatformInstant_ZERO;
+PlatformInstant REQUEST_JUMP = 0;
 
-PlatformInstant LAST_JUMP_ENDTIME = PlatformInstant_ZERO;
+PlatformInstant LAST_JUMP_ENDTIME = 0;
 
 static bool Valid_Jump_Pos() {
 	
@@ -1953,7 +1953,7 @@ void PlayerMovementIterate(float DeltaTime) {
 	
 	if(USE_PLAYERCOLLISIONS) {
 		// A jump is requested so let's go !
-		if(REQUEST_JUMP != PlatformInstant_ZERO) {
+		if(REQUEST_JUMP != 0) {
 			if((player.m_currentMovement & PLAYER_CROUCH)
 			   || player.physics.cyl.height > player.baseHeight()) {
 				float old = player.physics.cyl.height;
@@ -1964,7 +1964,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				if(anything < 0.f) {
 					player.m_currentMovement |= PLAYER_CROUCH;
 					player.physics.cyl.height = old;
-					REQUEST_JUMP = PlatformInstant_ZERO;
+					REQUEST_JUMP = 0;
 				} else {
 					bGCroucheToggle = false;
 					player.m_currentMovement &= ~PLAYER_CROUCH;
@@ -1973,13 +1973,13 @@ void PlayerMovementIterate(float DeltaTime) {
 			}
 			
 			if(!Valid_Jump_Pos()) {
-				REQUEST_JUMP = PlatformInstant_ZERO;
+				REQUEST_JUMP = 0;
 			}
 			
-			if(REQUEST_JUMP != PlatformInstant_ZERO) {
+			if(REQUEST_JUMP != 0) {
 				PlatformDuration t = g_platformTime.frameStart() - REQUEST_JUMP;
-				if(t >= PlatformDuration_ZERO && t <= PlatformDurationMs(350)) {
-					REQUEST_JUMP = PlatformInstant_ZERO;
+				if(t >= 0 && t <= PlatformDurationMs(350)) {
+					REQUEST_JUMP = 0;
 					ARX_NPC_SpawnAudibleSound(player.pos, entities.player());
 					ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities.player());
 					player.onfirmground = false;
@@ -2424,7 +2424,7 @@ void ARX_PLAYER_Manage_Death() {
 
 	if(ratio >= 1.f) {
 		ARX_MENU_Launch(false);
-		DeadTime = ArxDuration_ZERO;
+		DeadTime = 0;
 	}
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
@@ -2567,13 +2567,13 @@ extern Entity * FlyingOverIO;
 void ARX_GAME_Reset() {
 	arx_assert(entities.player());
 	
-	DeadTime = ArxDuration_ZERO;
+	DeadTime = 0;
 	
 	LastValidPlayerPos = Vec3f_ZERO;
 	
 	entities.player()->speed_modif = 0;
 	
-	LAST_JUMP_ENDTIME = PlatformInstant_ZERO;
+	LAST_JUMP_ENDTIME = 0;
 	FlyingOverIO = NULL;
 	g_miniMap.mapMarkerInit();
 	ClearDynLights();
@@ -2702,12 +2702,12 @@ void ARX_GAME_Reset() {
 	}
 
 	// Misc Player Vars.
-	ROTATE_START = ArxInstant_ZERO;
+	ROTATE_START = 0;
 	BLOCK_PLAYER_CONTROLS = false;
 	HERO_SHOW_1ST = -1;
 	PUSH_PLAYER_FORCE = Vec3f_ZERO;
 	player.jumplastposition = 0;
-	player.jumpstarttime = PlatformInstant_ZERO;
+	player.jumpstarttime = 0;
 	player.jumpphase = NotJumping;
 	player.inzone = NULL;
 
@@ -2718,7 +2718,7 @@ void ARX_GAME_Reset() {
 		eyeball.exist = -100;
 	}
 	
-	entities.player()->ouch_time = ArxInstant_ZERO;
+	entities.player()->ouch_time = 0;
 	entities.player()->invisibility = 0.f;
 	
 	fadeReset();
