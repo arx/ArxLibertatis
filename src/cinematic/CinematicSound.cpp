@@ -117,9 +117,9 @@ void AddSoundToList(const res::path & path, bool isSpeech) {
 	cs->exists = true;
 }
 
-bool PlaySoundKeyFramer(int index) {
+bool PlaySoundKeyFramer(size_t index) {
 	
-	if(index < 0 || size_t(index) >= TabSound.size() || !TabSound[index].exists) {
+	if(index >= TabSound.size() || !TabSound[index].exists) {
 		return false;
 	}
 	
