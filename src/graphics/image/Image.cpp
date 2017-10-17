@@ -62,7 +62,6 @@ void Image::Reset() {
 	delete[] mData, mData = NULL;
 	mWidth = 0;
 	mHeight = 0;
-	mNumMipmaps = 0;
 	mFormat = Format_Unknown;
 	mDataSize = 0;
 }
@@ -78,7 +77,6 @@ const Image& Image::operator=(const Image & pOther) {
 	
 	mWidth      = pOther.mWidth;
 	mHeight     = pOther.mHeight;
-	mNumMipmaps = pOther.mNumMipmaps;
 	mFormat     = pOther.mFormat;
 	mDataSize   = pOther.mDataSize;
 	mData       = new unsigned char[mDataSize];
@@ -99,27 +97,6 @@ unsigned int Image::GetSize(Image::Format pFormat, unsigned int pWidth, unsigned
 	}
 	
 	return pWidth * pHeight * SIZE_TABLE[pFormat];
-}
-
-unsigned int Image::GetSizeWithMipmaps(Image::Format pFormat, unsigned int pWidth, unsigned int pHeight, int pMipmapCount) {
-	
-	unsigned int dataSize = 0;
-	
-	unsigned int width  = pWidth;
-	unsigned int height = pHeight;
-	unsigned int mip    = pMipmapCount == -1 ? 0x7FFFFFFF : pMipmapCount;
-	
-	while((width || height) && mip != 0) {
-		
-		dataSize += Image::GetSize(pFormat, width, height);
-		
-		width  >>= 1;
-		height >>= 1;
-		
-		mip--;
-	}
-	
-	return dataSize;
 }
 
 unsigned int Image::GetNumChannels(Image::Format pFormat) {
@@ -181,7 +158,6 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 
 	mWidth  = width;
 	mHeight = height;
-	mNumMipmaps = 1;
 
 	switch(bpp) {
 		case stbi::STBI_grey:       mFormat = Image::Format_L8; break;
@@ -191,7 +167,7 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 		default: arx_assert_msg(false, "Invalid bpp");
 	}
 	
-	unsigned int dataSize = Image::GetSizeWithMipmaps(mFormat, mWidth, mHeight, mNumMipmaps);
+	unsigned int dataSize = Image::GetSize(mFormat, mWidth, mHeight);
 	
 	// Delete previous buffer if size don't match
 	if(mData && mDataSize != dataSize) {
@@ -215,19 +191,17 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 	return (mData != NULL);
 }
 
-void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFormat, unsigned int pNumMipmaps) {
+void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFormat) {
 	
 	arx_assert_msg(pWidth > 0, "[Image::Create] Width is 0!");
 	arx_assert_msg(pHeight > 0, "[Image::Create] Width is 0!");
 	arx_assert_msg(pFormat < Format_Unknown, "[Image::Create] Unknown texture format!");
-	arx_assert_msg(pNumMipmaps > 0, "[Image::Create] Mipmap count must at least be 1!");
 	
 	mWidth  = pWidth;
 	mHeight = pHeight;
 	mFormat = pFormat;
-	mNumMipmaps = pNumMipmaps;
 	
-	unsigned int dataSize = Image::GetSizeWithMipmaps(mFormat, mWidth, mHeight, mNumMipmaps);
+	unsigned int dataSize = GetSize(mFormat, mWidth, mHeight);
 	if(mData && dataSize != mDataSize) {
 		delete[] mData, mData = NULL;
 	}
@@ -590,7 +564,7 @@ bool Image::ToGrayscale(Image::Format newFormat) {
 		return false;
 	}
 		
-	unsigned int newSize = GetSizeWithMipmaps(newFormat, mWidth, mHeight, mNumMipmaps);
+	unsigned int newSize = GetSize(newFormat, mWidth, mHeight);
 	unsigned char* newData = new unsigned char[newSize];
 	
 	unsigned char* src = mData;
@@ -615,8 +589,6 @@ bool Image::ToGrayscale(Image::Format newFormat) {
 
 void Image::Blur(int radius) {
 	
-	arx_assert_msg(mNumMipmaps == 1, "Blur not yet supported for textures with mipmaps!");
-
 	// Create kernel and precompute multiplication table
 	int kernelSize = 1 + radius * 2;
 	int* kernel = new int[kernelSize];
@@ -711,11 +683,10 @@ void Image::Blur(int radius) {
 	delete[] mult;
 }
 
-void Image::SetAlpha(const Image& img, bool bInvertAlpha) {
+void Image::SetAlpha(const Image & img, bool bInvertAlpha) {
 	
 	arx_assert(mWidth == img.mWidth);
 	arx_assert(mHeight == img.mHeight);
-	arx_assert(mNumMipmaps == img.mNumMipmaps);
 	arx_assert(img.HasAlpha());
 	arx_assert(HasAlpha());
 	
@@ -730,7 +701,7 @@ void Image::SetAlpha(const Image& img, bool bInvertAlpha) {
 	src += srcChannelCount - 1;
 	dst += dstChannelCount - 1;
 
-	unsigned int pixelCount = mWidth * mHeight * mNumMipmaps;
+	unsigned int pixelCount = mWidth * mHeight;
 
 	if(!bInvertAlpha) {
 		for(unsigned int i = 0; i < pixelCount; i++, src += srcChannelCount, dst += dstChannelCount)
@@ -743,45 +714,16 @@ void Image::SetAlpha(const Image& img, bool bInvertAlpha) {
 
 void Image::FlipY() {
 	
-	unsigned int width  = mWidth;
-	unsigned int height = mHeight;
-	
-	unsigned int offset = 0;
-	
-	for(unsigned int i = 0; i < mNumMipmaps && (width || height); i++) {
-		
-		if(width == 0) {
-			width = 1;
-		}
-		
-		if(height == 0) {
-			height = 1;
-		}
-		
-		FlipY(mData + offset, width, height);
-		offset += Image::GetSize(mFormat, width, height);
-		
-		width >>= 1;
-		height >>= 1;
-	}
-}
-
-void Image::FlipY(unsigned char * pData, unsigned int pWidth, unsigned int pHeight) {
-	
-	if(pWidth == 0 || pHeight == 0) {
-		return;
-	}
-	
-	unsigned int imageSize = GetSize(mFormat, pWidth, pHeight);
-	unsigned int lineSize = imageSize / pHeight;
+	unsigned int imageSize = GetSize(mFormat, mWidth, mHeight);
+	unsigned int lineSize = imageSize / mHeight;
 	
 	unsigned char * swapTmp = (unsigned char *)malloc(lineSize);
 	arx_assert(swapTmp);
 	
-	unsigned char * top = pData;
+	unsigned char * top = mData;
 	unsigned char * bottom = top + (imageSize - lineSize);
 	
-	for(unsigned int i = 0; i < (pHeight >> 1); i++) {
+	for(unsigned int i = 0; i < mHeight / 2; i++) {
 		
 		memcpy(swapTmp, bottom, lineSize);
 		memcpy(bottom, top, lineSize);
