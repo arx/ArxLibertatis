@@ -88,7 +88,7 @@ static void ARX_PATH_ComputeBB(ARX_PATH * ap) {
 	}
 	
 	if(ap->height > 0) {
-		ap->bbmin.y = ap->pos.y - ap->height;
+		ap->bbmin.y = ap->pos.y - float(ap->height);
 		ap->bbmax.y = ap->pos.y;
 	} else {
 		ap->bbmin.y = -99999999.f;
