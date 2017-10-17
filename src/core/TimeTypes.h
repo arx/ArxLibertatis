@@ -35,25 +35,18 @@ struct DurationType
 	, boost::additive1<DurationType<TAG, T>
 	> >
 {
+	
 	T t;
 	
-	DurationType()
-		: t()
-	{ }
-
-	DurationType(const DurationType<TAG, T> & t_)
-		: t(t_.t)
-	{ }
+	DurationType() : t() { }
+	
 	bool operator==(const DurationType<TAG, T> & rhs) const {
 		return t == rhs.t;
 	}
 	bool operator<(const DurationType<TAG, T> & rhs) const {
 		return t < rhs.t;
 	}
-	DurationType<TAG, T> & operator=(const DurationType<TAG, T> & rhs) {
-		t = rhs.t;
-		return *this;
-	}
+	
 	DurationType<TAG, T> & operator+=(const DurationType<TAG, T> & rhs) {
 		this->t += rhs.t;
 		return *this;
@@ -78,24 +71,16 @@ struct InstantType
 	: boost::totally_ordered1<InstantType<TAG, T>
 	>
 {
+	
 	T t;
 	
-	InstantType()
-		: t()
-	{ }
-
-	InstantType(const InstantType<TAG, T> & t_)
-		: t(t_.t)
-	{ }
+	InstantType() : t() { }
+	
 	bool operator==(const InstantType<TAG, T> & rhs) const {
 		return t == rhs.t;
 	}
 	bool operator<(const InstantType<TAG, T> & rhs) const {
 		return t < rhs.t;
-	}
-	InstantType<TAG, T> & operator=(const InstantType<TAG, T> & rhs) {
-		t = rhs.t;
-		return *this;
 	}
 	
 	static inline InstantType ofRaw(T value) {
