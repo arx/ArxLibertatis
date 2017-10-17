@@ -145,7 +145,7 @@ public:
 		, m_originalCursorPos(true)
 		, m_selection(0)
 		, m_lastSelectedEntity(EntityHandle_Player)
-		, m_blinkTime(PlatformDuration_ZERO)
+		, m_blinkTime(0)
 		, m_blink(true)
 		, m_contextBegin(0)
 		, m_contextEnd(0)
