@@ -40,19 +40,21 @@ struct DurationType
 	
 	DurationType() : t() { }
 	
-	bool operator==(const DurationType<TAG, T> & rhs) const {
+	bool operator==(const DurationType & rhs) const {
 		return t == rhs.t;
 	}
-	bool operator<(const DurationType<TAG, T> & rhs) const {
+	
+	bool operator<(const DurationType & rhs) const {
 		return t < rhs.t;
 	}
 	
-	DurationType<TAG, T> & operator+=(const DurationType<TAG, T> & rhs) {
-		this->t += rhs.t;
+	DurationType & operator+=(const DurationType & rhs) {
+		t += rhs.t;
 		return *this;
 	}
-	DurationType<TAG, T> & operator-=(const DurationType<TAG, T> & rhs) {
-		this->t -= rhs.t;
+	
+	DurationType & operator-=(const DurationType & rhs) {
+		t -= rhs.t;
 		return *this;
 	}
 	
@@ -76,10 +78,10 @@ struct InstantType
 	
 	InstantType() : t() { }
 	
-	bool operator==(const InstantType<TAG, T> & rhs) const {
+	bool operator==(const InstantType & rhs) const {
 		return t == rhs.t;
 	}
-	bool operator<(const InstantType<TAG, T> & rhs) const {
+	bool operator<(const InstantType & rhs) const {
 		return t < rhs.t;
 	}
 	
