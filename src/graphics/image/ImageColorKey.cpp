@@ -297,7 +297,6 @@ static bool sampleColorKey(const u8 * src, int w, int h, int x, int y, u8 * dst,
 
 void Image::ApplyColorKeyToAlpha(Color key, bool antialias) {
 	
-	arx_assert_msg(!IsCompressed(), "ApplyColorKeyToAlpha Not supported for compressed textures!");
 	arx_assert_msg(!IsVolume(), "ApplyColorKeyToAlpha Not supported for 3d textures!");
 	
 	if(mFormat != Format_R8G8B8 && mFormat != Format_B8G8R8) {

@@ -39,9 +39,6 @@ public:
 		Format_B8G8R8,
 		Format_R8G8B8A8,
 		Format_B8G8R8A8,
-		Format_DXT1,
-		Format_DXT3,
-		Format_DXT5,
 		Format_Unknown,
 		Format_Num,
 		Format_MAX = 0xFF
@@ -79,15 +76,12 @@ public:
 	
 	// bool accessors
 	bool IsValid() const { return mData != NULL; }
-	bool IsCompressed() const { return Image::IsCompressed( mFormat ); }
 	bool IsVolume() const { return mDepth > 1;  }
 	bool HasAlpha() const {
 		return mFormat == Format_A8
 		    || mFormat == Format_L8A8
 		    || mFormat == Format_R8G8B8A8
-		    || mFormat == Format_B8G8R8A8
-		    || mFormat == Format_DXT3
-		    || mFormat == Format_DXT5;
+		    || mFormat == Format_B8G8R8A8;
 	}
 	
 	//! Access to internal data.
@@ -141,7 +135,6 @@ public:
 	static unsigned int	GetSize(Format pFormat, unsigned int pWidth = 1, unsigned int pHeight = 1, unsigned int pDepth = 1);
 	static unsigned int	GetSizeWithMipmaps(Format pFormat, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth = 1, int pMipmapCount = -1);
 	static unsigned int	GetNumChannels(Format pFormat);
-	static bool IsCompressed(Format pFormat);
 	
 private:
 	
