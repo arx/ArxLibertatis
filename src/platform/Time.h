@@ -21,6 +21,7 @@
 #define ARX_PLATFORM_TIME_H
 
 #include "platform/Platform.h"
+#include "core/TimeTypes.h"
 
 namespace platform {
 
@@ -32,18 +33,11 @@ namespace platform {
 void initializeTime();
 
 /*!
- * \brief Get the number of milliseconds elapsed since some unspecified starting point
+ * \brief Get the current time
  *
- * \return The number of milliseconds elapsed.
+ * \return The current time relative to some unspecified starting point.
  */
-u32 getTimeMs();
-
-/*!
- * \brief Get the number of microseconds elapsed since some unspecified starting point
- *
- * \return The number of microseconds elapsed.
- */
-u64 getTimeUs();
+PlatformInstant getTime();
 
 } // namespace platform
 

@@ -45,16 +45,10 @@ void initializeTime() {
 	LogWarning << "Falling back to CLOCK_REALTIME, time will jump if adjusted by other processes";
 }
 
-u32 getTimeMs() {
+PlatformInstant getTime() {
 	struct timespec ts;
 	clock_gettime(g_clockId, &ts);
-	return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
-}
-
-u64 getTimeUs() {
-	struct timespec ts;
-	clock_gettime(g_clockId, &ts);
-	return (ts.tv_sec * 1000000ull) + (ts.tv_nsec / 1000);
+	return PlatformInstantUs(s64(ts.tv_sec * 1000000ull) + s64(ts.tv_nsec / 1000l));
 }
 
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
@@ -62,7 +56,7 @@ u64 getTimeUs() {
 #include <windows.h>
 
 // Avoid costly calls to QueryPerformanceFrequency... cache its result
-static u64 g_clockFrequency;
+static s64 g_clockFrequency;
 
 void initializeTime() {
 	LARGE_INTEGER frequency;
@@ -70,20 +64,11 @@ void initializeTime() {
 	g_clockFrequency = frequency.QuadPart;
 }
 
-u32 getTimeMs() {
+PlatformInstant getTime() {
 	LARGE_INTEGER counter;
 	QueryPerformanceCounter(&counter);
 	// Ugly trick to avoid losing precision...
-	u32 valMs = (counter.QuadPart * 10) / (g_clockFrequency / 100);
-	return valMs;
-}
-
-u64 getTimeUs() {
-	LARGE_INTEGER counter;
-	QueryPerformanceCounter(&counter);
-	// Ugly trick to avoid losing precision...
-	u64 valUs = (counter.QuadPart * 1000) / (g_clockFrequency / 1000);
-	return valUs;
+	return PlatformInstantUs(counter.QuadPart * 1000ll / (g_clockFrequency / 1000ll));
 }
 
 #elif ARX_HAVE_MACH_CLOCK
@@ -100,16 +85,10 @@ void initializeTime() {
 	}
 }
 
-u32 getTimeMs() {
+PlatformInstant getTime() {
 	mach_timespec_t ts;
 	clock_get_time(g_clockRef, &ts);
-	return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
-}
-
-u64 getTimeUs() {
-	mach_timespec_t ts;
-	clock_get_time(g_clockRef, &ts);
-	return (ts.tv_sec * 1000000ull) + (ts.tv_nsec / 1000);
+	return PlatformInstantUs(s64(ts.tv_sec * 1000000ull) + s64(ts.tv_nsec / 1000l));
 }
 
 #else

@@ -181,7 +181,7 @@ static bool isFrame(Status type) {
 
 static void endFrame() {
 	
-	PlatformInstant now = PlatformInstantUs(platform::getTimeUs());
+	PlatformInstant now = platform::getTime();
 	g_current += Result(now - g_startTime);
 	g_startTime = now;
 	
@@ -236,7 +236,7 @@ void begin(Status status) {
 		g_startCount++;
 	} else if(g_startCount <= SkipFrames) {
 		g_startCount = SkipFrames + 1;
-		g_startTime = PlatformInstantUs(platform::getTimeUs());
+		g_startTime = platform::getTime();
 	} else {
 		endFrame();
 	}

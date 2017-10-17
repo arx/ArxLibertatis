@@ -1222,8 +1222,7 @@ void ArxGame::doFrame() {
 	
 	if(config.video.fpsLimit && !benchmark::isEnabled()) {
 		
-		PlatformInstant now = PlatformInstantUs(s64(platform::getTimeUs()));
-		PlatformDuration renderDuration = now - g_platformTime.frameStart();
+		PlatformDuration renderDuration = platform::getTime() - g_platformTime.frameStart();
 		
 		int targetFps = config.video.fpsLimit;
 		if(config.video.vsync) {

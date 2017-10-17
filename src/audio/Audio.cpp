@@ -125,7 +125,7 @@ aalError init(const std::string & backendName, const std::string & deviceName, H
 	
 	mutex = new Lock();
 	
-	session_time = PlatformInstantUs(platform::getTimeUs());
+	session_time = platform::getTime();
 	
 	return AAL_OK;
 }
@@ -243,7 +243,7 @@ aalError update() {
 	
 	AAL_ENTRY
 	
-	session_time = PlatformInstantUs(platform::getTimeUs());
+	session_time = platform::getTime();
 	
 	// Update sources
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd();) {
