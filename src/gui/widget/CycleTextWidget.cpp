@@ -54,9 +54,9 @@ CycleTextWidget::~CycleTextWidget() {
 	delete pLeftButton;
 	delete pRightButton;
 	
-	{Widget * w; BOOST_FOREACH(w, vText) {
+	BOOST_FOREACH(Widget * w, vText) {
 		delete w;
-	}}
+	}
 }
 
 void CycleTextWidget::selectLast() {
