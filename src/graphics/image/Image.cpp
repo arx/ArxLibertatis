@@ -408,53 +408,6 @@ void Image::QuakeGamma(float pGamma) {
 	}
 }
 
-void Image::AdjustGamma(const float &v) {
-	
-	arx_assert_msg(v <= 1.0f, "BUG WARNING: If gamma values greater than 1.0 needed, should fix the way the calculations are optimized!");
-
-	unsigned int numComponents = SIZE_TABLE[mFormat];
-	unsigned int size = mWidth * mHeight;
-	unsigned char * data = mData;
-	
-	const float COMPONENT_RANGE = 255.0f;
-	
-	// Nothing to do in this case!
-	if (v == 1.0f) {
-		return;
-	}
-
-	// TODO: this table is stored statically meaning this isn't thread-safe :(
-	// only safe option would be thread local storage?
-	static const float fraction = 1.0f / COMPONENT_RANGE;
-	static float gamma_value = -1.0f;
-	static unsigned char gamma_table[256];
-	if (gamma_value != v) {
-		memset(gamma_table, 0, sizeof(gamma_table));
-		gamma_value = v;
-	}
-	
-	// Go through every pixel in the image
-	for(unsigned int i = 0; i < size; i++, data += numComponents) {
-		
-		for(unsigned int j = 0; j < numComponents; j++) {
-			
-			if (data[j])
-			{
-				const unsigned char i = data[j];
-
-				// check if we've put a non-zero value here
-				// will start to fail with low index and gamma values > 1.0
-				// gamma_table[0] should always == 0, so ignore it
-				if (!gamma_table[i]) {
-					gamma_table[i] = (unsigned char)(COMPONENT_RANGE * powf(i * fraction, v));
-				}
-
-				data[j] = gamma_table[i];
-			}
-		}
-	}
-}
-
 void Image::ApplyThreshold(unsigned char threshold, int component_mask) {
 	
 	unsigned int numComponents = SIZE_TABLE[mFormat];

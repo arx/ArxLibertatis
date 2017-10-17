@@ -122,10 +122,6 @@ public:
 	//! Copy the alpha of img to this image.
 	void SetAlpha(const Image& img, bool bInvertAlpha);
 	
-	void AdjustGamma(const float &v);
-	void AdjustBrightness(const float &v);
-	void AdjustContrast(const float &v);
-	
 	void ApplyThreshold(unsigned char threshold, int component_mask);
 	
 	// statics
