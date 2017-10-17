@@ -54,7 +54,8 @@ public:
 	void registerThread(const std::string& threadName);
 	void unregisterThread();
 	
-	void addProfilePoint(const char* tag, thread_id_type threadId, u64 startTime, u64 endTime);
+	void addProfilePoint(const char * tag, thread_id_type threadId,
+	                     PlatformInstant startTime, PlatformInstant endTime);
 	
 private:
 	static const u32 NB_SAMPLES = 100 * 1000;
@@ -62,15 +63,15 @@ private:
 	struct ProfilerSample {
 		const char*    tag;
 		thread_id_type threadId;
-		u64            startTime;
-		u64            endTime;
+		PlatformInstant startTime;
+		PlatformInstant endTime;
 	};
 
 	struct ProfilerThread {
 		std::string    threadName;
 		thread_id_type threadId;
-		u64            startTime;
-		u64            endTime;
+		PlatformInstant startTime;
+		PlatformInstant endTime;
 	};
 
 	typedef std::map<thread_id_type, ProfilerThread> ThreadInfos;
@@ -100,17 +101,18 @@ void Profiler::registerThread(const std::string& threadName) {
 	ProfilerThread & thread = m_threads[threadId];
 	thread.threadName = threadName;
 	thread.threadId = threadId;
-	thread.startTime = platform::getTimeUs();
+	thread.startTime = PlatformInstantUs(platform::getTimeUs());
 	thread.endTime = thread.startTime;
 }
 	
 void Profiler::unregisterThread() {
 	thread_id_type threadId = Thread::getCurrentThreadId();
 	ProfilerThread & thread = m_threads[threadId];
-	thread.endTime = platform::getTimeUs();
+	thread.endTime = PlatformInstantUs(platform::getTimeUs());
 }
 
-void Profiler::addProfilePoint(const char* tag, thread_id_type threadId, u64 startTime, u64 endTime) {
+void Profiler::addProfilePoint(const char* tag, thread_id_type threadId,
+                               PlatformInstant startTime, PlatformInstant endTime) {
 	
 	while(!m_canWrite);
 	
@@ -119,8 +121,8 @@ void Profiler::addProfilePoint(const char* tag, thread_id_type threadId, u64 sta
 	ProfilerSample & sample = m_samples[pos % NB_SAMPLES];
 	sample.tag = tag;
 	sample.threadId = threadId;
-	sample.startTime = startTime;
-	sample.endTime = endTime;
+	sample.startTime = toUs(startTime);
+	sample.endTime = toUs(endTime);
 }
 
 void Profiler::flush() {
@@ -293,13 +295,13 @@ void profiler::unregisterThread() {
 
 profiler::Scope::Scope(const char * tag)
 	: m_tag(tag)
-	, m_startTime(platform::getTimeUs())
+	, m_startTime(PlatformInstantUs(platform::getTimeUs()))
 {
 	arx_assert(tag != 0 && tag[0] != '\0');
 }
 
 profiler::Scope::~Scope() {
-	g_profiler.addProfilePoint(m_tag, Thread::getCurrentThreadId(), m_startTime, platform::getTimeUs());
+	g_profiler.addProfilePoint(m_tag, Thread::getCurrentThreadId(), m_startTime, PlatformInstantUs(platform::getTimeUs()));
 }
 
 #else
