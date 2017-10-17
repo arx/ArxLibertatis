@@ -1468,7 +1468,7 @@ static void TryAndCheckAnim(Entity * io, long animnum, long layerIndex) {
 //Define Time of Strike Damage
 static const float STRIKE_MUL = 0.25f;
 static const float STRIKE_MUL2 = 0.8f;
-static const int STRIKE_DISTANCE = 220;
+static const float STRIKE_DISTANCE = 220.f;
 
 /*!
  * \brief Main animations management
