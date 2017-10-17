@@ -537,8 +537,8 @@ glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)
 	{
 		float fTheta = glm::acos(fCosTheta);
 		float t = 1 / std::sin(fTheta);
-		fBeta = std::sin(fTheta * fBeta) * t ;
-		ratio = std::sin(fTheta * ratio) * t ;
+		fBeta = std::sin(fTheta * fBeta) * t;
+		ratio = std::sin(fTheta * ratio) * t;
 	}
 
 	return glm::quat(
