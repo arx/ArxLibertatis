@@ -545,161 +545,53 @@ static char * findParam(char * pcToken, const char * param) {
 	return pStartString;
 }
 
-static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
-	
-	if(!combine)
-		return;
+static void GetInfosCombineWithIO_Script(Entity * combine, Entity * _pWithIO, const EERIE_SCRIPT & script) {
 	
 	std::string tcIndent = combine->idString();
 	
-	if(_pWithIO && _pWithIO != combine && _pWithIO->script.data) {
-		char* pCopyScript = new char[_pWithIO->script.size + 1];
-		pCopyScript[_pWithIO->script.size] = '\0';
-		memcpy(pCopyScript, _pWithIO->script.data, _pWithIO->script.size);
+	char * pCopyScript = new char[script.size + 1];
+	pCopyScript[script.size] = '\0';
+	memcpy(pCopyScript, script.data, script.size);
+	
+	char * pcFound = strstr(pCopyScript, "on combine");
+	
+	if(pcFound) {
+		unsigned int uiNbOpen = 0;
 		
-		char* pCopyOverScript = NULL;
+		char *pcToken = strtok(pcFound, "\r\n");
 		
-		if(_pWithIO->over_script.data) {
-			pCopyOverScript = new char[_pWithIO->over_script.size + 1];
-			pCopyOverScript[_pWithIO->over_script.size] = '\0';
-			memcpy(pCopyOverScript, _pWithIO->over_script.data, _pWithIO->over_script.size);
+		if(strstr(pcToken, "{")) {
+			uiNbOpen++;
 		}
 		
-		char *pcFound = NULL;
-		
-		if(pCopyOverScript) {
-			pcFound = strstr(pCopyOverScript, "on combine");
+		while(pcToken) {
+			pcToken = strtok(NULL, "\r\n");
 			
-			if(pcFound) {
-				unsigned int uiNbOpen = 0;
+			bool bCanCombine = false;
+			char* pStartString;
+			char* pEndString;
+			
+			pStartString = findParam(pcToken, "isclass");
+			if(pStartString) {
+				pStartString = strstr(pStartString, "\"");
 				
-				char *pcToken = strtok(pcFound, "\r\n");
-				
-				if(strstr(pcToken, "{")) {
-					uiNbOpen++;
-				}
-				
-				while(pcToken) {
-					pcToken = strtok(NULL, "\r\n");
+				if(pStartString) {
+					pStartString++;
+					pEndString = strstr(pStartString, "\"");
 					
-					bool bCanCombine = false;
-					char* pStartString;
-					char* pEndString;
-					
-					pStartString = findParam(pcToken, "isclass");
-					if(pStartString) {
-						pStartString = strstr(pStartString, "\"");
+					if(pEndString) {
+						char tTxtCombineDest[256];
+						memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
+						tTxtCombineDest[pEndString - pStartString] = 0;
 						
-						if(pStartString) {
-							pStartString++;
-							pEndString = strstr(pStartString, "\"");
-							
-							if(pEndString) {
-								char tTxtCombineDest[256];
-								memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
-								tTxtCombineDest[pEndString - pStartString] = 0;
-								
-								if(tTxtCombineDest == combine->className()) {
-									//same class
-									bCanCombine = true;
-								}
-							}
+						if(tTxtCombineDest == combine->className()) {
+							//same class
+							bCanCombine = true;
 						}
-					} else {
-						pStartString = findParam(pcToken, "==");
-						if(pStartString) {
-							pStartString = strstr(pStartString, "\"");
-							
-							if(pStartString) {
-								pStartString++;
-								pEndString = strstr(pStartString, "\"");
-								
-								if(pEndString) {
-									char tTxtCombineDest[256];
-									memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
-									tTxtCombineDest[pEndString - pStartString] = 0;
-									
-									if(tTxtCombineDest == tcIndent) {
-										//same class
-										bCanCombine=true;
-									}
-								}
-							}
-						} else {
-							pStartString = findParam(pcToken, "isgroup");
-							if(pStartString) {
-								pStartString = strstr(pStartString, " ");
-								
-								if(pStartString) {
-									pStartString++;
-									pEndString = strstr(pStartString, " ");
-									char* pEndString2 = strstr(pStartString, ")");
-									
-									if(pEndString2 < pEndString) {
-										pEndString = pEndString2;
-									}
-									
-									if(pEndString) {
-										char tTxtCombineDest[256];
-										memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
-										tTxtCombineDest[pEndString - pStartString] = 0;
-										if(combine->groups.find(tTxtCombineDest) != combine->groups.end()) {
-											//same class
-											bCanCombine = true;
-										}
-									}
-								}
-							}
-						}
-					}
-					
-					if(strstr(pcToken, "{")) {
-						uiNbOpen++;
-					}
-					
-					if(strstr(pcToken, "}")) {
-						uiNbOpen--;
-					}
-					
-					if(bCanCombine) {
-						uiNbOpen = 0;
-						_pWithIO->ioflags |= IO_CAN_COMBINE;
-					} else {
-						_pWithIO->ioflags &= ~IO_CAN_COMBINE;
-					}
-					
-					if(!uiNbOpen) {
-						break;
 					}
 				}
-			}
-		}
-		
-		if(_pWithIO->ioflags & IO_CAN_COMBINE) {
-			delete[] pCopyScript;
-			delete[] pCopyOverScript;
-			return;
-		}
-		
-		pcFound = strstr(pCopyScript, "on combine");
-		
-		if(pcFound) {
-			unsigned int uiNbOpen=0;
-			
-			char *pcToken = strtok(pcFound, "\r\n");
-			
-			if(strstr(pcToken,"{")) {
-				uiNbOpen++;
-			}
-			
-			while(pcToken) {
-				pcToken = strtok(NULL, "\r\n");
-				
-				bool bCanCombine = false;
-				char* pStartString;
-				char* pEndString;
-				
-				pStartString = findParam(pcToken, "isclass");
+			} else {
+				pStartString = findParam(pcToken, "==");
 				if(pStartString) {
 					pStartString = strstr(pStartString, "\"");
 					
@@ -712,85 +604,79 @@ static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
 							memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 							tTxtCombineDest[pEndString - pStartString] = 0;
 							
-							if(tTxtCombineDest == combine->className()) {
+							if(tTxtCombineDest == tcIndent) {
 								//same class
-								bCanCombine = true;
+								bCanCombine=true;
 							}
 						}
 					}
 				} else {
-					pStartString = findParam(pcToken, "==");
+					pStartString = findParam(pcToken, "isgroup");
 					if(pStartString) {
-						pStartString = strstr(pStartString, "\"");
+						pStartString = strstr(pStartString, " ");
 						
 						if(pStartString) {
 							pStartString++;
-							pEndString = strstr(pStartString, "\"");
+							pEndString = strstr(pStartString, " ");
+							char* pEndString2 = strstr(pStartString, ")");
+							
+							if(pEndString2 < pEndString) {
+								pEndString = pEndString2;
+							}
 							
 							if(pEndString) {
 								char tTxtCombineDest[256];
 								memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 								tTxtCombineDest[pEndString - pStartString] = 0;
-								
-								if(tTxtCombineDest == tcIndent) {
+								if(combine->groups.find(tTxtCombineDest) != combine->groups.end()) {
 									//same class
 									bCanCombine = true;
 								}
 							}
 						}
-					} else {
-						pStartString = findParam(pcToken, "isgroup");
-						if(pStartString) {
-							pStartString = strstr(pStartString, " ");
-							
-							if(pStartString) {
-								pStartString++;
-								pEndString = strstr(pStartString, " ");
-								char* pEndString2 = strstr(pStartString, ")");
-								
-								if(pEndString2 < pEndString) {
-									pEndString = pEndString2;
-								}
-								
-								if(pEndString) {
-									char tTxtCombineDest[256];
-									memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
-									tTxtCombineDest[pEndString - pStartString] = 0;
-									
-									if(combine->groups.find(tTxtCombineDest) != combine->groups.end()) {
-										// same class
-										bCanCombine = true;
-									}
-								}
-							}
-						}
 					}
 				}
-				
-				if(strstr(pcToken, "{")) {
-					uiNbOpen++;
-				}
-				
-				if(strstr(pcToken, "}")) {
-					uiNbOpen--;
-				}
-				
-				if(bCanCombine) {
-					uiNbOpen = 0;
-					_pWithIO->ioflags |= IO_CAN_COMBINE;
-				} else {
-					_pWithIO->ioflags &= ~IO_CAN_COMBINE;
-				}
-				
-				if(!uiNbOpen) {
-					break;
-				}
+			}
+			
+			if(strstr(pcToken, "{")) {
+				uiNbOpen++;
+			}
+			
+			if(strstr(pcToken, "}")) {
+				uiNbOpen--;
+			}
+			
+			if(bCanCombine) {
+				uiNbOpen = 0;
+				_pWithIO->ioflags |= IO_CAN_COMBINE;
+			} else {
+				_pWithIO->ioflags &= ~IO_CAN_COMBINE;
+			}
+			
+			if(!uiNbOpen) {
+				break;
 			}
 		}
-		
-		delete[] pCopyScript;
-		delete[] pCopyOverScript;
 	}
+	
+	delete[] pCopyScript;
+	
+}
+
+static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
+	
+	if(!combine || !_pWithIO || _pWithIO == combine || !_pWithIO->script.data) {
+		return;
+	}
+	
+	if(_pWithIO->over_script.data) {
+		GetInfosCombineWithIO_Script(combine, _pWithIO, _pWithIO->over_script);
+	}
+	
+	if(!(_pWithIO->ioflags & IO_CAN_COMBINE)) {
+		GetInfosCombineWithIO_Script(combine, _pWithIO, _pWithIO->script);
+	}
+	
 }
 
 static void GetInfosCombine() {
