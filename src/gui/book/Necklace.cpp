@@ -139,8 +139,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 	
 	GRenderer->SetAntialiasing(true);
 	
-	float wave = timeWaveSin(arxtime.now(), ArxDurationMsf(1256.6370614f));
-	float ptDelta = g_framedelay;
+	float wave = timeWaveSin(g_platformTime.frameStart(), PlatformDurationMsf(1256.6370614f));
+	float ptDelta = toMs(g_platformTime.lastFrameDuration());
 	
 	for(size_t i = 0; i < RUNE_COUNT; i++) {
 		if(!gui::necklace.runes[i])
