@@ -2086,7 +2086,7 @@ void ArxGame::render() {
 	
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
 
-	PULSATE = std::sin(toMsf(arxtime.now()) / 800);
+	PULSATE = timeWaveSin(arxtime.now(), ArxDurationMsf(5026.548245f));
 	EERIEDrawnPolys = 0;
 
 	// Checks for Keyboard & Moulinex
