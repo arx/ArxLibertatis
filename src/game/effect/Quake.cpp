@@ -82,7 +82,11 @@ void ManageQuakeFX(EERIE_CAMERA * cam) {
 		}
 
 		float itmod = 1.f - (tim / QuakeFx.duration);
-		float periodicity = std::sin(toMsf(arxtime.now()) * QuakeFx.frequency * 0.01f);
+		
+		float periodicity = 0;
+		if(QuakeFx.frequency > 0.f) {
+			periodicity = timeWaveSin(arxtime.now(), ArxDurationMsf(628.319f / QuakeFx.frequency));
+		}
 
 		if(periodicity > 0.5f && QuakeFx.sound)
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
