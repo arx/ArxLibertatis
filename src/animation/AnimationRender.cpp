@@ -667,8 +667,8 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 		}
 
 		if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
-			
-			float siz = ddist * (halo.radius * 1.5f * (std::sin(toMsf(arxtime.now()) * .01f) * .1f + .7f)) * .6f;
+			float wave = timeWaveSin(arxtime.now(), ArxDurationMsf(628.319f));
+			float siz = ddist * (halo.radius * 1.5f * (wave * .1f + .7f)) * .6f;
 			
 			TexturedVertex vert[4];
 			vert[0] = tvList[first];
@@ -1003,8 +1003,8 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 		}
 
 		if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
-			
-			float siz = haloInfo.ddist * (curhalo->radius * (std::sin(toMsf(arxtime.now()) * .01f) * .1f + 1.f)) * .6f;
+			float wave = timeWaveSin(arxtime.now(), ArxDurationMsf(628.319f));
+			float siz = haloInfo.ddist * (curhalo->radius * (wave * .1f + 1.f)) * .6f;
 			if(io == entities.player() && haloInfo.ddist > 0.8f && !EXTERNALVIEW) {
 				siz *= 1.5f;
 			}
