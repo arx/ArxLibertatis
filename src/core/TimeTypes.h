@@ -26,6 +26,8 @@
 #include <boost/operators.hpp>
 #include <boost/type_traits.hpp>
 
+#include <glm/gtc/constants.hpp>
+
 #include "platform/Platform.h"
 
 
@@ -132,6 +134,16 @@ inline float operator/(DurationType<TAG, T> a, DurationType<TAG, T> b) {
 	return float(a.t) / float(b.t);
 }
 
+
+template <typename TAG, typename T>
+inline float timeWaveSaw(InstantType<TAG, T> t, DurationType<TAG, T> period) {
+	return float(t.t % period.t) / float(period.t);
+}
+
+template <typename TAG, typename T>
+inline float timeWaveSin(InstantType<TAG, T> t, DurationType<TAG, T> period) {
+	return std::sin(timeWaveSaw(t, period) * glm::two_pi<float>());
+}
 
 // ArxTime
 // in microseconds
