@@ -703,7 +703,9 @@ void ConfuseSpell::Update() {
 	mat.setBlendType(RenderMaterial::Additive);
 	mat.setTexture(tex_trail);
 	
-	Anglef stiteangle = Anglef(0.f, -glm::degrees(arxtime.now_f() * ( 1.0f / 500 )), 0.f);
+	float rot = timeWaveSaw(arxtime.now(), ArxDurationMsf(3142)) * 360.f;
+	
+	Anglef stiteangle = Anglef(0.f, -rot, 0.f);
 	
 	{
 		AnimationDuration delta = toAnimationDuration(g_framedelay2);
