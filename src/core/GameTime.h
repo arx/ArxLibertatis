@@ -95,10 +95,6 @@ public:
 	
 	void reset(ArxInstant time);
 	
-	float now_f() const {
-		return toMsf(m_now_us);
-	}
-	
 	ArxInstant now() const {
 		return m_now_us;
 	}
