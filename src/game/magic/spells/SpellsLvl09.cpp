@@ -388,9 +388,9 @@ void NegateMagicSpell::Update() {
 		}
 	}
 	
-	float now = arxtime.now_f();
+	float rot = timeWaveSaw(arxtime.now(), ArxDurationMs(18000)) * 360.f;
 	
-	Anglef stiteangle(0.f, -now * 0.02f, 0.f);
+	Anglef stiteangle(0.f, -rot, 0.f);
 	float scalediff = timeWaveSin(arxtime.now(), ArxDurationMsf(1570.79632f));
 	
 	{
