@@ -139,7 +139,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 	
 	GRenderer->SetAntialiasing(true);
 	
-	float ptNow = arxtime.now_f();
+	float wave = timeWaveSin(arxtime.now(), ArxDurationMsf(1256.6370614f));
 	float ptDelta = g_framedelay;
 	
 	for(size_t i = 0; i < RUNE_COUNT; i++) {
@@ -161,7 +161,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 				if(rune->angle.getYaw() > 300.f)
 					rune->angle.setYaw(300.f);
 				
-				angle.setYaw(std::sin(ptNow * (1.0f / 200)) * rune->angle.getYaw() * (1.0f / 40));
+				angle.setYaw(wave * rune->angle.getYaw() * (1.0f / 40));
 			}
 			
 			rune->angle.setYaw(rune->angle.getYaw() - ptDelta * 0.2f);
