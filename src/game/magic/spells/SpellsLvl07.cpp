@@ -703,7 +703,7 @@ void ConfuseSpell::Update() {
 	mat.setBlendType(RenderMaterial::Additive);
 	mat.setTexture(tex_trail);
 	
-	float rot = timeWaveSaw(arxtime.now(), ArxDurationMsf(3142)) * 360.f;
+	float rot = timeWaveSaw(arxtime.now(), ArxDurationMs(3142)) * 360.f;
 	
 	Anglef stiteangle = Anglef(0.f, -rot, 0.f);
 	
