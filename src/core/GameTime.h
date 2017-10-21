@@ -96,7 +96,7 @@ public:
 	void reset(ArxInstant time);
 	
 	ArxInstant now() const {
-		return m_now_us;
+		return m_now;
 	}
 	
 	void update(PlatformDuration delta);
@@ -116,7 +116,7 @@ private:
 	
 	bool paused;
 	
-	ArxInstant m_now_us;
+	ArxInstant m_now;
 	
 	ArxDuration m_frameDelay;
 	
