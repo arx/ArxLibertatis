@@ -141,11 +141,11 @@ inline float timeWaveSaw(InstantType<TAG, T> t, DurationType<TAG, T> period) {
 }
 template <typename TAG, typename T>
 inline float timeWaveSin(InstantType<TAG, T> t, DurationType<TAG, T> period) {
-	return std::sin(timeWaveSaw(t, period) * glm::two_pi<float>());
+	return std::sin(timeWaveSaw(t, period) * 2.f * glm::pi<float>());
 }
 template <typename TAG, typename T>
 inline float timeWaveCos(InstantType<TAG, T> t, DurationType<TAG, T> period) {
-	return std::cos(timeWaveSaw(t, period) * glm::two_pi<float>());
+	return std::cos(timeWaveSaw(t, period) * 2.f * glm::pi<float>());
 }
 
 // ArxTime
