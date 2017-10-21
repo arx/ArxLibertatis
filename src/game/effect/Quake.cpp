@@ -73,15 +73,15 @@ void RemoveQuakeFX() {
 }
 
 void ManageQuakeFX(EERIE_CAMERA * cam) {
-	if(QuakeFx.intensity>0.f) {
+	if(QuakeFx.intensity > 0.f) {
 		ArxDuration tim = arxtime.now() - QuakeFx.start;
 
 		if(tim >= QuakeFx.duration) {
-			QuakeFx.intensity=0.f;
+			QuakeFx.intensity = 0.f;
 			return;
 		}
 
-		float itmod=1.f-(tim/QuakeFx.duration);
+		float itmod = 1.f - (tim / QuakeFx.duration);
 		float periodicity = std::sin(toMsf(arxtime.now()) * QuakeFx.frequency * 0.01f);
 
 		if(periodicity > 0.5f && QuakeFx.sound)
@@ -89,6 +89,7 @@ void ManageQuakeFX(EERIE_CAMERA * cam) {
 
 		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;
 		float halfpower = truepower * .5f;
+		
 		cam->orgTrans.pos += arx::randomVec(-halfpower, halfpower);
 		cam->angle.setPitch(cam->angle.getPitch() + Random::getf() * truepower - halfpower);
 		cam->angle.setYaw(cam->angle.getYaw() + Random::getf() * truepower - halfpower);
