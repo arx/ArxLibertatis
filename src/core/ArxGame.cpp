@@ -2084,8 +2084,6 @@ void ArxGame::render() {
 	subj.center = Vec2i(g_size.center().x, g_size.center().y);
 	subj.orgTrans.mod = Vec2f(subj.center);
 	
-	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
-
 	PULSATE = timeWaveSin(arxtime.now(), ArxDurationMsf(5026.548245f));
 	EERIEDrawnPolys = 0;
 
