@@ -391,7 +391,7 @@ void NegateMagicSpell::Update() {
 	float now = arxtime.now_f();
 	
 	Anglef stiteangle(0.f, -now * 0.02f, 0.f);
-	float scalediff = std::sin(now * 0.004f);
+	float scalediff = timeWaveSin(arxtime.now(), ArxDurationMsf(1570.79632f));
 	
 	{
 	Color3f stitecolor = Color3f::gray(.4f);
