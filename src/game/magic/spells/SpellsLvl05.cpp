@@ -422,7 +422,9 @@ void RepelUndeadSpell::Update() {
 	eObjAngle.setPitch(0);
 	eObjAngle.setRoll(0);
 	
-	float vv = 1.f + (std::sin(arxtime.now_f() * ( 1.0f / 1000 )));
+	float wave = timeWaveSin(arxtime.now(), ArxDurationMsf(6283.185307f));
+	
+	float vv = 1.f + wave;
 	vv *= ( 1.0f / 2 );
 	vv += 1.1f;
 	
