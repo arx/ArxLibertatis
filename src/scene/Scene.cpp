@@ -812,53 +812,53 @@ static float FluidTextureDisplacement(bool calcSin, const Vec3f & p, float time,
 	return (p.z + addVar1)*(1.f/divVar1) + sign * (glm::cos((p.z + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
 }
 
-static void CalculateWaterDisplacement(float & fTu, float & fTv, EERIEPOLY * ep,
-                                       float time, int vertIndex, int step) {
+static Vec2f CalculateWaterDisplacement(EERIEPOLY * ep, float time, int vertIndex, int step) {
 	
 	const Vec3f & p = ep->v[vertIndex].p;
 	
 	switch(step) {
 	case(0): {
-		fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 32, 0.f, 0.f, 1.f);
-		fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 32, 0.f, 0.f, 1.f);
-		break;
+		float fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 32, 0.f, 0.f, 1.f);
+		float fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 32, 0.f, 0.f, 1.f);
+		return Vec2f(fTu, fTv);
 	}
 	case(1): {
-		fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 28, 30.f, 30, 1.f);
-		fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 28, 30.f, 30, -1.0);
-		break;
+		float fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 28, 30.f, 30, 1.f);
+		float fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 28, 30.f, 30, -1.0);
+		return Vec2f(fTu, fTv);
 	}
 	case(2): {
-		fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
-		fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
-		break;
+		float fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
+		float fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
+		return Vec2f(fTu, fTv);
 	}
-	default:break;
+	default:
+		return Vec2f_ZERO;
 	}
 }
 
-static void CalculateLavaDisplacement(float & fTu, float & fTv, EERIEPOLY * ep,
-                                      float time, int vertIndex, int step) {
+static Vec2f CalculateLavaDisplacement(EERIEPOLY * ep, float time, int vertIndex, int step) {
 	
 	const Vec3f & p = ep->v[vertIndex].p;
 	
 	switch(step) {
 	case(0): {
-		fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 2000, 20, 0.f, 0.f, 1.f);
-		fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 2000, 20, 0.f, 0.f, 1.f);
-		break;
+		float fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 2000, 20, 0.f, 0.f, 1.f);
+		float fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 2000, 20, 0.f, 0.f, 1.f);
+		return Vec2f(fTu, fTv);
 	}
 	case(1): {
-		fTu = FluidTextureDisplacement(true, p, time, 1000, 100, 2000, 10, 0.f, 0.f, 1.f);
-		fTv = FluidTextureDisplacement(false, p, time, 1000, 100, 2000, 10, 0.f, 0.f, 1.f);
-		break;
+		float fTu = FluidTextureDisplacement(true, p, time, 1000, 100, 2000, 10, 0.f, 0.f, 1.f);
+		float fTv = FluidTextureDisplacement(false, p, time, 1000, 100, 2000, 10, 0.f, 0.f, 1.f);
+		return Vec2f(fTu, fTv);
 	}
 	case(2): {
-		fTu = FluidTextureDisplacement(true, p, time, 600, 160, 2000, 11, 0.f, 0.f, 1.f);
-		fTv = FluidTextureDisplacement(false, p, time, 600, 160, 2000, 11, 0.f, 0.f, 1.f);
-		break;
+		float fTu = FluidTextureDisplacement(true, p, time, 600, 160, 2000, 11, 0.f, 0.f, 1.f);
+		float fTv = FluidTextureDisplacement(false, p, time, 600, 160, 2000, 11, 0.f, 0.f, 1.f);
+		return Vec2f(fTu, fTv);
 	}
-	default:break;
+	default:
+		return Vec2f_ZERO;
 	}
 }
 
@@ -903,9 +903,6 @@ static void RenderWater() {
 			pVertex = dynamicVertices.append(iNbVertex);
 		}
 		
-		float fTu;
-		float fTv;
-
 		for(int j = 0; j < iNbVertex; ++j) {
 			pVertex->p.x = ep->v[j].p.x;
 			pVertex->p.y = -ep->v[j].p.y;
@@ -913,13 +910,12 @@ static void RenderWater() {
 			pVertex->color = Color(80, 80, 80, 255).toRGBA();
 
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
-				CalculateWaterDisplacement(fTu, fTv, ep, time, j, i);
+				Vec2f uv = CalculateWaterDisplacement(ep, time, j, i);
 
 				if(ep->type & POLY_FALL) {
-					fTv += time * (1.f/4000);
+					uv.y += time * (1.f/4000);
 				}
-				pVertex->uv[i].x = fTu;
-				pVertex->uv[i].y = fTv;
+				pVertex->uv[i] = uv;
 			}	
 			pVertex++;
 
@@ -1016,18 +1012,14 @@ static void RenderLava() {
 			pVertex = dynamicVertices.append(iNbVertex);
 		}
 		
-		float fTu;
-		float fTv;
-
 		for(int j = 0; j < iNbVertex; ++j) {
 			pVertex->p.x = ep->v[j].p.x;
 			pVertex->p.y = -ep->v[j].p.y;
 			pVertex->p.z = ep->v[j].p.z;
 			pVertex->color = Color(102, 102, 102, 255).toRGBA();
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
-				CalculateLavaDisplacement(fTu, fTv, ep, time, j, i);
-				pVertex->uv[i].x = fTu;
-				pVertex->uv[i].y = fTv;
+				Vec2f uv = CalculateLavaDisplacement(ep, time, j, i);
+				pVertex->uv[i] = uv;
 			}
 			pVertex++;
 			if(j == 2){	
