@@ -802,14 +802,14 @@ static void RenderWaterBatch() {
 	
 }
 
-static float FluidTextureDisplacement(bool calcSin, const Vec3f & p, float time,
+static Vec2f FluidTextureDisplacement(const Vec3f & p, float time,
                                       float divVar1, float divVar2, float divVar3,
                                       float divVar4, float addVar1,
-                                      float addVar2, float sign) {
-	if(calcSin) {
-		return (p.x + addVar1)*(1.f/divVar1) + sign * (glm::sin((p.x + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
-	}
-	return (p.z + addVar1)*(1.f/divVar1) + sign * (glm::cos((p.z + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
+                                      float addVar2, Vec2f sign) {
+	
+	float u = (p.x + addVar1)*(1.f/divVar1) + sign.x * (glm::sin((p.x + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
+	float v = (p.z + addVar1)*(1.f/divVar1) + sign.y * (glm::cos((p.z + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
+	return Vec2f(u, v);
 }
 
 static Vec2f CalculateWaterDisplacement(EERIEPOLY * ep, float time, int vertIndex, int step) {
@@ -818,19 +818,13 @@ static Vec2f CalculateWaterDisplacement(EERIEPOLY * ep, float time, int vertInde
 	
 	switch(step) {
 	case(0): {
-		float fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 32, 0.f, 0.f, 1.f);
-		float fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 32, 0.f, 0.f, 1.f);
-		return Vec2f(fTu, fTv);
+		return FluidTextureDisplacement(p, time, 1000, 200, 1000, 32, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
 	case(1): {
-		float fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 28, 30.f, 30, 1.f);
-		float fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 28, 30.f, 30, -1.0);
-		return Vec2f(fTu, fTv);
+		return FluidTextureDisplacement(p, time, 1000, 200, 1000, 28, 30.f, 30, Vec2f(1.f, -1.f));
 	}
 	case(2): {
-		float fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
-		float fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
-		return Vec2f(fTu, fTv);
+		return FluidTextureDisplacement(p, time, 1000, 200, 1000, 40, 60.f, 60, Vec2f(-1.f, -1.f));
 	}
 	default:
 		return Vec2f_ZERO;
@@ -843,19 +837,13 @@ static Vec2f CalculateLavaDisplacement(EERIEPOLY * ep, float time, int vertIndex
 	
 	switch(step) {
 	case(0): {
-		float fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 2000, 20, 0.f, 0.f, 1.f);
-		float fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 2000, 20, 0.f, 0.f, 1.f);
-		return Vec2f(fTu, fTv);
+		return FluidTextureDisplacement(p, time, 1000, 200, 2000, 20, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
 	case(1): {
-		float fTu = FluidTextureDisplacement(true, p, time, 1000, 100, 2000, 10, 0.f, 0.f, 1.f);
-		float fTv = FluidTextureDisplacement(false, p, time, 1000, 100, 2000, 10, 0.f, 0.f, 1.f);
-		return Vec2f(fTu, fTv);
+		return FluidTextureDisplacement(p, time, 1000, 100, 2000, 10, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
 	case(2): {
-		float fTu = FluidTextureDisplacement(true, p, time, 600, 160, 2000, 11, 0.f, 0.f, 1.f);
-		float fTv = FluidTextureDisplacement(false, p, time, 600, 160, 2000, 11, 0.f, 0.f, 1.f);
-		return Vec2f(fTu, fTv);
+		return FluidTextureDisplacement(p, time, 600, 160, 2000, 11, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
 	default:
 		return Vec2f_ZERO;
