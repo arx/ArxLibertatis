@@ -818,15 +818,21 @@ static void CalculateWaterDisplacement(float & fTu, float & fTv, EERIEPOLY * ep,
 	const Vec3f & p = ep->v[vertIndex].p;
 	
 	switch(step) {
-	case(0):fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 32, 0.f, 0.f, 1.f);
-			fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 32, 0.f, 0.f, 1.f);
-			break;
-	case(1):fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 28, 30.f, 30, 1.f);
-			fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 28, 30.f, 30, -1.0);
-			break;
-	case(2):fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
-			fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
-			break;
+	case(0): {
+		fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 32, 0.f, 0.f, 1.f);
+		fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 32, 0.f, 0.f, 1.f);
+		break;
+	}
+	case(1): {
+		fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 28, 30.f, 30, 1.f);
+		fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 28, 30.f, 30, -1.0);
+		break;
+	}
+	case(2): {
+		fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
+		fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
+		break;
+	}
 	default:break;
 	}
 }
@@ -837,15 +843,21 @@ static void CalculateLavaDisplacement(float & fTu, float & fTv, EERIEPOLY * ep,
 	const Vec3f & p = ep->v[vertIndex].p;
 	
 	switch(step) {
-	case(0):fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 2000, 20, 0.f, 0.f, 1.f);
-			fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 2000, 20, 0.f, 0.f, 1.f);
-			break;
-	case(1):fTu = FluidTextureDisplacement(true, p, time, 1000, 100, 2000, 10, 0.f, 0.f, 1.f);
-			fTv = FluidTextureDisplacement(false, p, time, 1000, 100, 2000, 10, 0.f, 0.f, 1.f);
-			break;
-	case(2):fTu = FluidTextureDisplacement(true, p, time, 600, 160, 2000, 11, 0.f, 0.f, 1.f);
-			fTv = FluidTextureDisplacement(false, p, time, 600, 160, 2000, 11, 0.f, 0.f, 1.f);
-			break;
+	case(0): {
+		fTu = FluidTextureDisplacement(true, p, time, 1000, 200, 2000, 20, 0.f, 0.f, 1.f);
+		fTv = FluidTextureDisplacement(false, p, time, 1000, 200, 2000, 20, 0.f, 0.f, 1.f);
+		break;
+	}
+	case(1): {
+		fTu = FluidTextureDisplacement(true, p, time, 1000, 100, 2000, 10, 0.f, 0.f, 1.f);
+		fTv = FluidTextureDisplacement(false, p, time, 1000, 100, 2000, 10, 0.f, 0.f, 1.f);
+		break;
+	}
+	case(2): {
+		fTu = FluidTextureDisplacement(true, p, time, 600, 160, 2000, 11, 0.f, 0.f, 1.f);
+		fTv = FluidTextureDisplacement(false, p, time, 600, 160, 2000, 11, 0.f, 0.f, 1.f);
+		break;
+	}
 	default:break;
 	}
 }
