@@ -154,7 +154,7 @@ struct AlignedAllocator<Alignment, false> {
  * \tparam T         The type to allocate.
  * \tparam Alignment The required alignment. Will use the alignment of T if not specified.
  */
-template <typename T, size_t Alignment = ARX_ALIGNOF(T)> 
+template <typename T, size_t Alignment = ARX_ALIGNOF(T)>
 struct aligned_allocator {
 	
 	typedef T value_type;
