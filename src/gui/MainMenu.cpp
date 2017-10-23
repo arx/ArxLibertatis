@@ -686,6 +686,16 @@ public:
 		}
 		
 		{
+			std::string szMenuText = getLocalised("system_menus_options_video_colorkey_antialiasing", "Color Key AA");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedColorkeyAntialiasing, this, _1);
+			cb->iState = config.video.colorkeyAntialiasing ? 1 : 0;
+			addCenter(cb);
+		}
+		
+		{
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
 			szMenuText += " ";
@@ -906,6 +916,11 @@ private:
 	
 	void onChangedAntialiasing(int state) {
 		config.video.antialiasing = state ? true : false;
+	}
+	
+	void onChangedColorkeyAntialiasing(int state) {
+		config.video.colorkeyAntialiasing = state ? true : false;
+		GRenderer->reloadColorKeyTextures();
 	}
 	
 	void onChangedVSync(int pos, const std::string & str) {
