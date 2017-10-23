@@ -301,7 +301,7 @@ bool CrashHandlerImpl::deleteOldReports(size_t nbReportsToKeep) {
 		return true;
 	}
 	
-	int nbReportsToDelete = oldCrashes.size() - nbReportsToKeep; 
+	int nbReportsToDelete = oldCrashes.size() - nbReportsToKeep;
 	
 	CrashReportMap::const_iterator it = oldCrashes.begin();
 	for(int i = 0; i < nbReportsToDelete; ++i, ++it) {
