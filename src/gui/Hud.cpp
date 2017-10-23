@@ -661,8 +661,8 @@ void QuickSaveIconGui::hide() {
 
 void QuickSaveIconGui::update() {
 	if(m_remainingTime != 0) {
-		if(m_remainingTime > g_framedelay2) {
-			m_remainingTime -= g_framedelay2;
+		if(m_remainingTime > g_gameTime.lastFrameDuration()) {
+			m_remainingTime -= g_gameTime.lastFrameDuration();
 		} else {
 			m_remainingTime = 0;
 		}
@@ -886,7 +886,7 @@ void MecanismIcon::update() {
 			m_nbToDraw++;
 		}
 	}
-	m_timeToDraw += g_framedelay2;
+	m_timeToDraw += g_gameTime.lastFrameDuration();
 	
 	m_rect = createChild(Rectf(g_size), Anchor_TopLeft, m_iconSize * m_scale, Anchor_TopLeft);
 }
