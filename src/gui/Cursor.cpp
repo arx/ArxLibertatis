@@ -322,7 +322,7 @@ static bool SelectSpellTargetCursorRender() {
 	if(   !SPECIAL_DRAGINTER_RENDER
 	   && LOOKING_FOR_SPELL_TARGET
 	) {
-		ArxDuration elapsed = arxtime.now() - LOOKING_FOR_SPELL_TARGET_TIME;
+		ArxDuration elapsed = g_gameTime.now() - LOOKING_FOR_SPELL_TARGET_TIME;
 		if(elapsed > ArxDurationMs(7000)) {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
 			ARX_SPELLS_CancelSpellTarget();

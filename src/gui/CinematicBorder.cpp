@@ -40,7 +40,7 @@ bool CinematicBorder::isActive()
 }
 
 ArxDuration CinematicBorder::elapsedTime() {
-	return arxtime.now() - m_startTime;
+	return g_gameTime.now() - m_startTime;
 }
 
 void CinematicBorder::reset() {
@@ -52,7 +52,7 @@ void CinematicBorder::set(bool status, bool smooth)
 {
 	if(status) {
 		m_active = true;
-		m_startTime = arxtime.now();
+		m_startTime = g_gameTime.now();
 	} else {
 		m_active = false;
 		m_startTime = 0;

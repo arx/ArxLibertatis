@@ -254,7 +254,7 @@ void TreatBackgroundDynlights() {
 		EERIE_LIGHT * el = &g_dynamicLights[i];
 
 		if(el->exist && el->duration != 0) {
-			const ArxDuration elapsed = arxtime.now() - el->creationTime;
+			const ArxDuration elapsed = g_gameTime.now() - el->creationTime;
 			const ArxDuration duration = el->duration;
 
 			if(elapsed >= duration) {
@@ -372,7 +372,7 @@ void endLightDelayed(LightHandle & handle, ArxDuration delay) {
 	EERIE_LIGHT * light = lightHandleGet(handle);
 	if(light) {
 		light->duration = delay;
-		light->creationTime = arxtime.now();
+		light->creationTime = g_gameTime.now();
 	}
 }
 
@@ -392,7 +392,7 @@ LightHandle GetFreeDynLight() {
 			light.m_isIgnitionLight = false;
 			light.intensity = 1.3f;
 			light.treat = 1;
-			light.creationTime = arxtime.now();
+			light.creationTime = g_gameTime.now();
 			light.duration = 0;
 			light.extras = 0;
 			light.m_storedFlameTime.reset();

@@ -71,7 +71,7 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 		return;
 	}
 	
-	ArxDuration elapsed = arxtime.now() - LAST_PRECAST_TIME;
+	ArxDuration elapsed = g_gameTime.now() - LAST_PRECAST_TIME;
 	if(elapsed < ArxDurationMs(1000)) {
 		return;
 	}
@@ -91,10 +91,10 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	if(   (precast.flags & SPELLCAST_FLAG_NOMANA)
 	   || player.manaPool.current >= cost
 	) {
-		LAST_PRECAST_TIME = arxtime.now();
+		LAST_PRECAST_TIME = g_gameTime.now();
 		
 		if(precast.launch_time == 0) {
-			precast.launch_time = arxtime.now();
+			precast.launch_time = g_gameTime.now();
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD);
 		}
 	} else {
@@ -107,7 +107,7 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 
 void ARX_SPELLS_Precast_Check() {
 	for(size_t i = 0; i < Precast.size(); i++) {
-		if(Precast[i].launch_time > 0 && arxtime.now() >= Precast[i].launch_time) {
+		if(Precast[i].launch_time > 0 && g_gameTime.now() >= Precast[i].launch_time) {
 			AnimLayer & layer1 = entities.player()->animlayer[1];
 			
 			if(player.Interface & INTER_COMBATMODE) {

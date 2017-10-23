@@ -65,7 +65,7 @@ void RuneOfGuardingSpell::Launch() {
 		light->fallstart = 400.f;
 		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
 		light->pos = m_pos - Vec3f(0.f, 50.f, 0.f);
-		light->creationTime = arxtime.now();
+		light->creationTime = g_gameTime.now();
 		light->duration = ArxDurationMs(200);
 	}
 }
@@ -84,7 +84,7 @@ void RuneOfGuardingSpell::Update() {
 		light->fallend = 350.f;
 		light->fallstart = 150.f;
 		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
-		light->creationTime = arxtime.now();
+		light->creationTime = g_gameTime.now();
 		light->duration = ArxDurationMs(200);
 	}
 	
@@ -267,7 +267,7 @@ void LevitateSpell::createDustParticle() {
 	pd->move = moveFactor * Vec3f((pd->ov.x - m_pos.x) / t, 1.f, (pd->ov.z - m_pos.z) / t);
 	pd->siz = Random::getf(30.f, 60.f);
 	pd->tolive = 3000;
-	pd->timcreation = -(toMsi(arxtime.now()) + 3000l); // TODO WTF
+	pd->timcreation = -(toMsi(g_gameTime.now()) + 3000l); // TODO WTF
 	pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 	pd->m_rotation = 0.0000001f;
 }
@@ -307,7 +307,7 @@ void CurePoisonSpell::Launch() {
 		light->fallend   = 350.f;
 		light->rgb = Color3f(0.f, 1.f, 0.0f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
-		light->creationTime = arxtime.now();
+		light->creationTime = g_gameTime.now();
 		light->duration = ArxDurationMs(200);
 		light->extras = 0;
 	}
@@ -356,7 +356,7 @@ void CurePoisonSpell::Update() {
 		light->rgb = Color3f(0.4f, 1.f, 0.4f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
 		light->duration = ArxDurationMs(200);
-		light->creationTime = arxtime.now();
+		light->creationTime = g_gameTime.now();
 		light->extras = 0;
 	}
 	
@@ -422,7 +422,7 @@ void RepelUndeadSpell::Update() {
 	eObjAngle.setPitch(0);
 	eObjAngle.setRoll(0);
 	
-	float wave = timeWaveSin(arxtime.now(), ArxDurationMsf(6283.185307f));
+	float wave = timeWaveSin(g_gameTime.now(), ArxDurationMsf(6283.185307f));
 	
 	float vv = 1.f + wave;
 	vv *= ( 1.0f / 2 );
@@ -459,7 +459,7 @@ void RepelUndeadSpell::Update() {
 		light->rgb = Color3f(0.8f, 0.8f, 1.f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
 		light->duration = ArxDurationMs(200);
-		light->creationTime = arxtime.now();
+		light->creationTime = g_gameTime.now();
 	}
 	
 	if (m_target == EntityHandle_Player)
@@ -544,7 +544,7 @@ void PoisonProjectileSpell::Launch() {
 			light->fallstart		= 150.f;
 			light->rgb = Color3f::green;
 			light->pos = projectile->eSrc;
-			light->creationTime	= arxtime.now();
+			light->creationTime	= g_gameTime.now();
 			light->duration		= ArxDurationMs(200);
 		}
 	}
@@ -584,7 +584,7 @@ void PoisonProjectileSpell::Update() {
 			light->fallstart	= 150.f;
 			light->rgb = Color3f::green;
 			light->pos = projectile->eCurPos;
-			light->creationTime = arxtime.now();
+			light->creationTime = g_gameTime.now();
 			light->duration	= ArxDurationMs(200);
 		}
 

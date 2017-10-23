@@ -1417,7 +1417,7 @@ void SpellsPage::drawSpells() {
 						player.SpellToMemorize.iSpellSymbols[j] = spellInfo.symbols[j];
 					}
 					
-					player.SpellToMemorize.lTimeCreation = arxtime.now();
+					player.SpellToMemorize.lTimeCreation = g_gameTime.now();
 				}
 			} else {
 				color = Color(168, 208, 223, 255);

@@ -148,7 +148,7 @@ void SummonCreatureSpell::End() {
 
 void SummonCreatureSpell::Update() {
 	
-	if(arxtime.isPaused()) {
+	if(g_gameTime.isPaused()) {
 		return;
 	}
 	
@@ -307,7 +307,7 @@ void FakeSummonSpell::End() {
 
 void FakeSummonSpell::Update() {
 	
-	if(!arxtime.isPaused()) {
+	if(!g_gameTime.isPaused()) {
 		if(Random::getf() > 0.7f) {
 			Vec3f pos = m_fissure.m_eSrc;
 			MakeCoolFx(pos);
@@ -388,10 +388,10 @@ void NegateMagicSpell::Update() {
 		}
 	}
 	
-	float rot = timeWaveSaw(arxtime.now(), ArxDurationMs(18000)) * 360.f;
+	float rot = timeWaveSaw(g_gameTime.now(), ArxDurationMs(18000)) * 360.f;
 	
 	Anglef stiteangle(0.f, -rot, 0.f);
-	float scalediff = timeWaveSin(arxtime.now(), ArxDurationMsf(1570.79632f));
+	float scalediff = timeWaveSin(g_gameTime.now(), ArxDurationMsf(1570.79632f));
 	
 	{
 	Color3f stitecolor = Color3f::gray(.4f);
@@ -452,7 +452,7 @@ void IncinerateSpell::Launch() {
 	m_hasDuration = true;
 	
 	tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
-	tio->sfx_time = arxtime.now();
+	tio->sfx_time = g_gameTime.now();
 	
 	m_targets.push_back(m_target);
 }

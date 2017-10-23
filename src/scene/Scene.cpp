@@ -874,7 +874,7 @@ static void RenderWater() {
 	
 	unsigned short * indices = dynamicVertices.indices;
 	
-	float time = toMsf(arxtime.now());
+	float time = toMsf(g_gameTime.now());
 
 	while(iNb--) {
 		EERIEPOLY * ep = vPolyWater[iNb];
@@ -983,7 +983,7 @@ static void RenderLava() {
 	
 	unsigned short * indices = dynamicVertices.indices;
 	
-	float time = toMsf(arxtime.now());
+	float time = toMsf(g_gameTime.now());
 
 	while(iNb--) {
 		EERIEPOLY * ep = vPolyLava[iNb];
@@ -1427,7 +1427,7 @@ void ARX_SCENE_Update() {
 	
 	ARX_PROFILE_FUNC();
 	
-	ArxInstant now = arxtime.now();
+	ArxInstant now = g_gameTime.now();
 	
 	WATEREFFECT = (toMsi(now) % long(2 * glm::pi<float>() / 0.0005f)) * 0.0005f;
 	

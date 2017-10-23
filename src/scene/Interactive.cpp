@@ -1126,7 +1126,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			timer.interval = ArxDurationMs(Random::get(3000, 6000));
 			timer.name = "_r_a_t_";
 			timer.pos = -1;
-			timer.start = arxtime.now();
+			timer.start = g_gameTime.now();
 			timer.count = 1;
 			
 			io->show = SHOW_FLAG_TELEPORTING;
@@ -2054,7 +2054,7 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 
 void SetYlsideDeath(Entity * io) {
 	io->sfx_flag = SFX_TYPE_YLSIDE_DEATH;
-	io->sfx_time = arxtime.now();
+	io->sfx_time = g_gameTime.now();
 }
 
 void UpdateCameras() {
@@ -2071,7 +2071,7 @@ void UpdateCameras() {
 		// interpolate & send events
 		if(io->usepath) {
 			ARX_USE_PATH * aup = io->usepath;
-			ArxDuration elapsed = arxtime.now() - aup->_curtime;
+			ArxDuration elapsed = g_gameTime.now() - aup->_curtime;
 
 			if(aup->aupflags & ARX_USEPATH_FORWARD) {
 				if(aup->aupflags & ARX_USEPATH_FLAG_FINISHED) {

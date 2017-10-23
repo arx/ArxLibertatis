@@ -353,9 +353,9 @@ bool FreezeTimeSpell::CanLaunch() {
 void FreezeTimeSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
 	
-	float max_slowdown = std::max(0.f, arxtime.speed() - 0.01f);
+	float max_slowdown = std::max(0.f, g_gameTime.speed() - 0.01f);
 	m_slowdown = glm::clamp(m_level * 0.08f, 0.f, max_slowdown);
-	arxtime.setSpeed(arxtime.speed() - m_slowdown);
+	g_gameTime.setSpeed(g_gameTime.speed() - m_slowdown);
 	
 	m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(200000);
 	m_hasDuration = true;
@@ -363,7 +363,7 @@ void FreezeTimeSpell::Launch() {
 }
 
 void FreezeTimeSpell::End() {
-	arxtime.setSpeed(arxtime.speed() + m_slowdown);
+	g_gameTime.setSpeed(g_gameTime.speed() + m_slowdown);
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster) {
@@ -394,7 +394,7 @@ void MassIncinerateSpell::Launch() {
 		}
 		
 		tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
-		tio->sfx_time = arxtime.now();
+		tio->sfx_time = g_gameTime.now();
 		
 		m_targets.push_back(tio->index());
 	}

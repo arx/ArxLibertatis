@@ -625,7 +625,7 @@ bool ChangeLevelIconGui::isVisible() {
 void ChangeLevelIconGui::update(const Rectf & parent) {
 	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_TopRight);
 	
-	float wave = timeWaveSin(arxtime.now(), ArxDurationMsf(314.159f));
+	float wave = timeWaveSin(g_gameTime.now(), ArxDurationMsf(314.159f));
 	m_intensity = 0.9f - wave * 0.5f + Random::getf(0.f, 0.1f);
 	m_intensity = glm::clamp(m_intensity, 0.f, 1.f);
 }
@@ -756,7 +756,7 @@ void MemorizedRunesHud::draw() {
 			pos.x += 32 * m_scale;
 		}
 	}
-	if(arxtime.now() - player.SpellToMemorize.lTimeCreation > ArxDurationMs(30000)) {
+	if(g_gameTime.now() - player.SpellToMemorize.lTimeCreation > ArxDurationMs(30000)) {
 		player.SpellToMemorize.bSpell = false;
 	}
 }
@@ -1017,8 +1017,8 @@ void PrecastSpellsGui::update() {
 		
 		float val = intensity;
 		
-		if(precastSlot.launch_time > 0 && arxtime.now() >= precastSlot.launch_time) {
-			float tt = (arxtime.now() - precastSlot.launch_time) / ArxDurationMs(1000);
+		if(precastSlot.launch_time > 0 && g_gameTime.now() >= precastSlot.launch_time) {
+			float tt = (g_gameTime.now() - precastSlot.launch_time) / ArxDurationMs(1000);
 			
 			if(tt > 1.f)
 				tt = 1.f;

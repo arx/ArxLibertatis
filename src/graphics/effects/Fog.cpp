@@ -80,7 +80,7 @@ long ARX_FOGS_GetFree()
 
 void ARX_FOGS_Render() {
 	
-	if(arxtime.isPaused()) {
+	if(g_gameTime.isPaused()) {
 		return;
 	}
 	

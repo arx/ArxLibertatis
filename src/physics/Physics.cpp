@@ -745,13 +745,13 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 					for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
 						if(sp.contains(pbox.vert[kk].pos)) {
 							if(source && (io->gameFlags & GFLAG_DOOR)) {
-								ArxDuration elapsed = arxtime.now() - io->collide_door_time;
+								ArxDuration elapsed = g_gameTime.now() - io->collide_door_time;
 								if(elapsed > ArxDurationMs(500)) {
 									EVENT_SENDER = source;
-									io->collide_door_time = arxtime.now();
+									io->collide_door_time = g_gameTime.now();
 									SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 									EVENT_SENDER = io;
-									io->collide_door_time = arxtime.now();
+									io->collide_door_time = g_gameTime.now();
 									SendIOScriptEvent(source, SM_COLLIDE_DOOR);
 								}
 							}
@@ -772,7 +772,7 @@ static void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, 
 	if(source->ioflags & IO_BODY_CHUNK)
 		return;
 	
-	ArxInstant now = arxtime.now();
+	ArxInstant now = g_gameTime.now();
 	
 	if(now > source->soundtime) {
 		
@@ -924,6 +924,6 @@ void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 	pbox->stopcount = 0;
 
 	source->soundcount = 0;
-	source->soundtime = arxtime.now() + ArxDurationMs(2000);
+	source->soundtime = g_gameTime.now() + ArxDurationMs(2000);
 }
 

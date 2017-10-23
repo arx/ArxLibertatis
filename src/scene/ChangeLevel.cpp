@@ -259,7 +259,7 @@ bool ARX_CHANGELEVEL_StartNew() {
 	g_currentPlathrough.oldestALVersion = arx_version_number;
 	g_currentPlathrough.newestALVersion = arx_version_number;
 	
-	arxtime.reset(0);
+	g_gameTime.reset(0);
 	
 	if(!ARX_Changelevel_CurGame_Clear()) {
 		return false;
@@ -432,7 +432,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	asi.version       = ARX_GAMESAVE_VERSION;
 	asi.nb_inter      = 0;
 	asi.nb_paths      = nbARXpaths;
-	asi.time          = toMsi(arxtime.now()); // TODO save/load time
+	asi.time          = toMsi(g_gameTime.now()); // TODO save/load time
 	asi.nb_lights     = 0;
 	asi.gmods_stacked = GLOBAL_MODS();
 	asi.gmods_stacked.zclip = 6400.f;
@@ -691,7 +691,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 	asp->jumpphase = player.jumpphase;
 	
-	ArxInstant jumpstart = arxtime.now() + ArxDurationUs(toUs(player.jumpstarttime - g_platformTime.frameStart()));
+	ArxInstant jumpstart = g_gameTime.now() + ArxDurationUs(toUs(player.jumpstarttime - g_platformTime.frameStart()));
 	asp->jumpstarttime = static_cast<u32>(toMsi(jumpstart)); // TODO save/load time
 	asp->Last_Movement = player.m_lastMovement;
 	asp->level = player.level;
@@ -1104,7 +1104,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 
-	const ArxInstant timm = arxtime.now();
+	const ArxInstant timm = g_gameTime.now();
 
 	for(int i = 0; i < MAX_TIMER_SCRIPT; i++) {
 		SCR_TIMER & timer = scr_timer[i];
@@ -1665,7 +1665,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.inzone = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(asp->inzone)));
 	player.jumpphase = JumpPhase(asp->jumpphase); // TODO save/load enum
 	PlatformInstant jumpstart = g_platformTime.frameStart()
-	                            + PlatformDurationUs(toUs(ArxInstantMs(asp->jumpstarttime) - arxtime.now()));
+	                            + PlatformDurationUs(toUs(ArxInstantMs(asp->jumpstarttime) - g_gameTime.now()));
 	player.jumpstarttime = jumpstart; // TODO save/load time
 	player.m_lastMovement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
 	
@@ -2147,7 +2147,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				remaining = ArxDurationMs(ats->interval);
 			}
 			
-			const ArxInstant tt = (arxtime.now() + remaining) - ArxDurationMs(ats->interval);
+			const ArxInstant tt = (g_gameTime.now() + remaining) - ArxDurationMs(ats->interval);
 			scr_timer[num].start = tt;
 			
 			scr_timer[num].count = ats->count;
@@ -2628,7 +2628,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	if(firstTime) {
 		for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
 			if(scr_timer[i].exist) {
-				scr_timer[i].start = arxtime.now();
+				scr_timer[i].start = g_gameTime.now();
 			}
 		}
 	} else {
@@ -2735,7 +2735,7 @@ bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 	pld.level = CURRENTLEVEL;
 	util::storeString(pld.name, name.c_str());
 	pld.version = ARX_GAMESAVE_VERSION;
-	pld.time = toMsi(arxtime.now()); // TODO save/load time
+	pld.time = toMsi(g_gameTime.now()); // TODO save/load time
 	pld.playthroughStart = s64(g_currentPlathrough.startTime);
 	pld.playthroughId = g_currentPlathrough.uniqueId;
 	pld.oldestALVersion = std::min(g_currentPlathrough.oldestALVersion, arx_version_number);
@@ -2826,7 +2826,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		g_currentPlathrough.oldestALVersion = pld.oldestALVersion;
 		g_currentPlathrough.newestALVersion = pld.newestALVersion;
 		
-		arxtime.reset(ArxInstantMs(pld.time));
+		g_gameTime.reset(ArxInstantMs(pld.time));
 		
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);

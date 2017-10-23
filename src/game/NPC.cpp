@@ -907,7 +907,7 @@ void ARX_PHYSICS_Apply() {
 
 		if(   (io->ioflags & IO_ITEM)
 		   && (io->gameFlags & GFLAG_GOREEXPLODE)
-		   && arxtime.now() - io->animBlend.lastanimtime > ArxDurationMs(300)
+		   && g_gameTime.now() - io->animBlend.lastanimtime > ArxDurationMs(300)
 		   && io->obj
 		   && !io->obj->vertexlist.empty()
 		) {
@@ -984,7 +984,7 @@ void ARX_PHYSICS_Apply() {
 
 				GetTargetPos(io);
 				
-				if(!arxtime.isPaused() && !(layer0.flags & EA_FORCEPLAY)) {
+				if(!g_gameTime.isPaused() && !(layer0.flags & EA_FORCEPLAY)) {
 					if(io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
 						StareAtTarget(io);
 					else
@@ -1594,11 +1594,11 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				
 				io->ioflags &= ~IO_HIT;
 				changeAnimation(io, 1, cycle, EA_LOOP);
-				io->_npcdata->aiming_start = arxtime.now();
+				io->_npcdata->aiming_start = g_gameTime.now();
 				
 			} else if(isCurrentAnimation(io, 1, cycle)) {
 				
-				ArxDuration elapsed = arxtime.now() - io->_npcdata->aiming_start;
+				ArxDuration elapsed = g_gameTime.now() - io->_npcdata->aiming_start;
 				ArxDuration aimtime = io->_npcdata->aimtime;
 				if((elapsed > aimtime || (elapsed * 2 > aimtime && Random::getf() > 0.9f))
 				    && tdist < square(STRIKE_DISTANCE)) {
@@ -1693,11 +1693,11 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				if(isCurrentAnimation(io, 1, start) && (layer1.flags & EA_ANIMEND)) {
 					
 					changeAnimation(io, 1, cycle, EA_LOOP);
-					io->_npcdata->aiming_start = arxtime.now();
+					io->_npcdata->aiming_start = g_gameTime.now();
 					
 				} else if(isCurrentAnimation(io, 1, cycle)) {
 					
-					ArxDuration elapsed = arxtime.now() - io->_npcdata->aiming_start;
+					ArxDuration elapsed = g_gameTime.now() - io->_npcdata->aiming_start;
 					ArxDuration aimtime = io->_npcdata->aimtime;
 					if((elapsed > aimtime || (elapsed * 2 > aimtime && Random::getf() > 0.9f))
 					   && tdist < square(STRIKE_DISTANCE)) {
@@ -1906,7 +1906,7 @@ static void ManageNPCMovement(Entity * io)
 			if(!io->_npcdata->pathfind.pathwait) {
 				if(io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE) {
 					io->_npcdata->reachedtarget = 1;
-					io->_npcdata->reachedtime = arxtime.now();
+					io->_npcdata->reachedtime = g_gameTime.now();
 
 					if(io->targetinfo != io->index())
 						SendIOScriptEvent(io, SM_REACHEDTARGET);
@@ -2152,7 +2152,7 @@ afterthat:
 			} else if(layer0.cur_anim == alist[ANIM_WALK] || layer0.cur_anim == alist[ANIM_RUN]
 			          || layer0.cur_anim == alist[ANIM_WALK_SNEAK]) {
 				layer0.flags &= ~EA_LOOP;
-				if(io->_npcdata->reachedtime + ArxDurationMs(500) < arxtime.now()) {
+				if(io->_npcdata->reachedtime + ArxDurationMs(500) < g_gameTime.now()) {
 					changeAnimation(io, ANIM_DEFAULT, EA_LOOP, startAtBeginning);
 				}
 			}
@@ -2195,7 +2195,7 @@ afterthat:
 	}
 	
 	// Tries to face/stare at target
-	if(!arxtime.isPaused() && CHANGE && !(layer0.flags & EA_FORCEPLAY)) {
+	if(!g_gameTime.isPaused() && CHANGE && !(layer0.flags & EA_FORCEPLAY)) {
 		if(io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
 			StareAtTarget(io);
 		else
@@ -2428,7 +2428,7 @@ afterthat:
 					EVENT_SENDER = NULL;
 
 				io->_npcdata->reachedtarget = 1;
-				io->_npcdata->reachedtime = arxtime.now();
+				io->_npcdata->reachedtime = g_gameTime.now();
 
 				if(io->animlayer[1].flags & EA_ANIMEND)
 					io->animlayer[1].cur_anim = NULL;
@@ -2477,7 +2477,7 @@ static void ManageNPCMovement_check_target_reached(Entity * io) {
 			if(!io->_npcdata->reachedtarget) {
 				EntityHandle num = io->index();
 				io->_npcdata->reachedtarget = 1;
-				io->_npcdata->reachedtime = arxtime.now();
+				io->_npcdata->reachedtime = g_gameTime.now();
 
 				if(io->targetinfo != num) {
 					SendIOScriptEvent(io, SM_REACHEDTARGET, "fake");

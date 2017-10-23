@@ -247,7 +247,7 @@ bool ParticleSystem::IsAlive() {
 
 void ParticleSystem::Update(ArxDuration delta) {
 	
-	if(arxtime.isPaused()) {
+	if(g_gameTime.isPaused()) {
 		return;
 	}
 	

@@ -107,7 +107,7 @@ void RiseDeadSpell::Launch() {
 		light->rgb = Color3f::black;
 		light->pos = target - Vec3f(0.f, 100.f, 0.f);
 		light->duration = ArxDurationMs(200);
-		light->creationTime = arxtime.now();
+		light->creationTime = g_gameTime.now();
 	}
 	
 	m_duration = m_fissure.GetDuration();
@@ -162,7 +162,7 @@ void RiseDeadSpell::Update() {
 		light->fallstart = 400.f;
 		light->rgb = Color3f(0.8f, 0.2f, 0.2f);
 		light->duration = ArxDurationMs(800);
-		light->creationTime = arxtime.now();
+		light->creationTime = g_gameTime.now();
 	}
 	
 	ArxDuration tim = m_fissure.m_elapsed;
@@ -214,7 +214,7 @@ void RiseDeadSpell::Update() {
 			m_creationFailed = true;
 			m_duration = 0;
 		}
-	} else if(!arxtime.isPaused() && tim < ArxDurationMs(4000)) {
+	} else if(!g_gameTime.isPaused() && tim < ArxDurationMs(4000)) {
 	  if(Random::getf() > 0.95f) {
 			MakeCoolFx(m_fissure.m_eSrc);
 		}
@@ -270,7 +270,7 @@ CreateFieldSpell::CreateFieldSpell()
 
 void CreateFieldSpell::Launch() {
 	
-	ArxInstant start = arxtime.now();
+	ArxInstant start = g_gameTime.now();
 	if(m_flags & SPELLCAST_FLAG_RESTORE) {
 		//move time of creation back by 4 seconds or whatever elapsed after game time 0 (if it is smaller)
 		//prevents difference between creation time and elapsed time of m_field (or as small as possible)

@@ -115,7 +115,7 @@ DamageHandle DamageCreate(const DamageParameters & params) {
 		if(!g_damages[i].exist) {
 			DAMAGE_INFO & damage = g_damages[i];
 			damage.params = params;
-			damage.start_time = arxtime.now();
+			damage.start_time = g_gameTime.now();
 			damage.lastupd = 0;
 			damage.exist = true;
 			return DamageHandle(i);
@@ -224,7 +224,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 
 	entities.player()->dmg_sum += dmg;
 	
-	ArxDuration elapsed = arxtime.now() - entities.player()->ouch_time;
+	ArxDuration elapsed = g_gameTime.now() - entities.player()->ouch_time;
 	if(elapsed > ArxDurationMs(500)) {
 		Entity * oes = EVENT_SENDER;
 
@@ -233,7 +233,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 		else
 			EVENT_SENDER = NULL;
 
-		entities.player()->ouch_time = arxtime.now();
+		entities.player()->ouch_time = g_gameTime.now();
 		char tex[32];
 		sprintf(tex, "%5.2f", double(entities.player()->dmg_sum));
 		SendIOScriptEvent( entities.player(), SM_OUCH, tex );
@@ -443,9 +443,9 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	else
 		EVENT_SENDER = NULL;
 
-	ArxDuration elapsed = arxtime.now() - io->ouch_time;
+	ArxDuration elapsed = g_gameTime.now() - io->ouch_time;
 	if(elapsed > ArxDurationMs(500)) {
-		io->ouch_time = arxtime.now();
+		io->ouch_time = g_gameTime.now();
 		char tex[32];
 		sprintf(tex, "%5.2f", double(io->dmg_sum));
 		SendIOScriptEvent(io, SM_OUCH, tex);
@@ -727,14 +727,14 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 
 	io->dmg_sum += dmg;
 	
-	ArxDuration elapsed = arxtime.now() - io->ouch_time;
+	ArxDuration elapsed = g_gameTime.now() - io->ouch_time;
 	if(elapsed > ArxDurationMs(500)) {
 		if(ValidIONum(source))
 			EVENT_SENDER = entities[source];
 		else
 			EVENT_SENDER = NULL;
 
-		io->ouch_time = arxtime.now();
+		io->ouch_time = g_gameTime.now();
 		char tex[32];
 
 		if(EVENT_SENDER && EVENT_SENDER->summoner == EntityHandle_Player) {
@@ -881,7 +881,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 		return;
 	}
 	
-	ArxInstant now = arxtime.now();
+	ArxInstant now = g_gameTime.now();
 	if(di.lastupd + ArxDurationMs(200) < now) {
 		di.lastupd = now;
 		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
@@ -986,10 +986,10 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 					float dist = fdist(damage.params.pos, sub);
 					
 					if(damage.params.type & DAMAGE_TYPE_FIELD) {
-						ArxDuration elapsed = arxtime.now() - io->collide_door_time;
+						ArxDuration elapsed = g_gameTime.now() - io->collide_door_time;
 						if(elapsed > ArxDurationMs(500)) {
 							EVENT_SENDER = NULL;
-							io->collide_door_time = arxtime.now();
+							io->collide_door_time = g_gameTime.now();
 							
 							const char * param = "";
 							
@@ -1143,7 +1143,7 @@ void ARX_DAMAGES_UpdateAll() {
 	ARX_PROFILE_FUNC();
 	
 	for (size_t j = 0; j < MAX_DAMAGES; j++)
-		ARX_DAMAGES_UpdateDamage(DamageHandle(j), arxtime.now());
+		ARX_DAMAGES_UpdateDamage(DamageHandle(j), g_gameTime.now());
 }
 
 static bool SphereInIO(Entity * io, const Sphere & sphere) {

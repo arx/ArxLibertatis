@@ -357,8 +357,8 @@ void ScriptConsole::open() {
 	if(!m_enabled) {
 		config.input.allowConsole = true;
 		m_enabled = true;
-		m_wasPaused = (arxtime.isPaused() & GameTime::PauseUser) != 0;
-		arxtime.pause(GameTime::PauseUser);
+		m_wasPaused = (g_gameTime.isPaused() & GameTime::PauseUser) != 0;
+		g_gameTime.pause(GameTime::PauseUser);
 		textUpdated();
 	}
 }
@@ -368,7 +368,7 @@ void ScriptConsole::close() {
 		GInput->stopTextInput();
 		m_enabled = false;
 		if(!m_wasPaused) {
-			arxtime.resume(GameTime::PauseUser);
+			g_gameTime.resume(GameTime::PauseUser);
 		}
 	}
 }
