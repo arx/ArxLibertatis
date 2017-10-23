@@ -134,31 +134,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 		EDGE_EDGE_TEST(V0,U2,U0);                    \
 	}
 
-#define POINT_IN_TRI(V0,U0,U1,U2)                 \
-	{                                             \
-		float a,b,c,d0,d1,d2;                     \
-		/* is T1 completly inside T2? */          \
-		/* check if V0 is inside tri(U0,U1,U2) */ \
-		a=U1[i1]-U0[i1];                          \
-		b=-(U1[i0]-U0[i0]);                       \
-		c=-a*U0[i0]-b*U0[i1];                     \
-		d0=a*V0[i0]+b*V0[i1]+c;                   \
-		\
-		a=U2[i1]-U1[i1];                          \
-		b=-(U2[i0]-U1[i0]);                       \
-		c=-a*U1[i0]-b*U1[i1];                     \
-		d1=a*V0[i0]+b*V0[i1]+c;                   \
-		\
-		a=U0[i1]-U2[i1];                          \
-		b=-(U0[i0]-U2[i0]);                       \
-		c=-a*U2[i0]-b*U2[i1];                     \
-		d2=a*V0[i0]+b*V0[i1]+c;                   \
-		if(d0*d1>0.0)                             \
-		{                                         \
-			if(d0*d2>0.0) return 1;               \
-		}                                         \
-	}
-
 static int coplanar_tri_tri(const float N[3], const float V0[3], const float V1[3],
                             const float V2[3], const float U0[3], const float U1[3],
                             const float U2[3]) {
