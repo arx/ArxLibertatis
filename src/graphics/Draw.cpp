@@ -216,7 +216,7 @@ void EERIEDrawBitmap2DecalY(Rectf rect, float z, TextureContainer * tex, Color c
 	rect.top = rect.top + _fDeltaY * rect.height();
 	
 	Vec2f uv = (tex) ? tex->uv : Vec2f_ZERO;
-	float sv = uv.y * _fDeltaY;	
+	float sv = uv.y * _fDeltaY;
 	ColorRGBA col = color.toRGBA();
 	
 	Vec2f uv1(0.f, sv);
