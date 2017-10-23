@@ -120,7 +120,7 @@ void MiniMap::getData(int showLevel) {
 
 void MiniMap::validatePos() {
 	
-	int showLevel = ARX_LEVELS_GetRealNum(m_currentLevel); 
+	int showLevel = ARX_LEVELS_GetRealNum(m_currentLevel);
 	
 	if((showLevel >= 0) && (showLevel < int(MAX_MINIMAP_LEVELS))) {
 		
