@@ -354,7 +354,6 @@ void ARX_INTERFACE_HALO_Render(Color3f color,
 
 	RenderState desiredState = render2D().blendAdditive();
 	if(_lHaloType & HALO_NEGATIVE) {
-		desiredState.setColorKey(true); // TODO this is only needed when drawing the halo in front of items
 		desiredState.setBlend(BlendZero, BlendInvSrcColor);
 	}
 	
