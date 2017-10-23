@@ -202,7 +202,6 @@ public:
 namespace detail {
 // visitor for command_line::interpreter.
 
-template <typename Interpreter>
 struct opname_size {
 	
 	size_t value;
@@ -254,7 +253,7 @@ struct print_op_t {
 	
 	template <typename Key>
 	void align(Key & key) const {
-		opname_size<Interpreter> tmp;
+		opname_size tmp;
 		tmp(key);
 		
 		for(size_t i(tmp.value); i < m_offset; ++i)
@@ -303,7 +302,7 @@ struct print_op_t {
 
 template <typename OStream, typename Interpreter>
 void print_op(OStream & os, const Interpreter & interpreter) {
-	opname_size<Interpreter> calc_size;
+	opname_size calc_size;
 	interpreter.visit(calc_size);
 	
 	print_op_t<OStream, Interpreter> op(os, interpreter, calc_size.value);
