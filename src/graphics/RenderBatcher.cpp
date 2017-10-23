@@ -91,7 +91,7 @@ RenderBatcher& RenderBatcher::getInstance() {
 	return renderBatcher;
 }
 
-RenderMaterial::RenderMaterial() 
+RenderMaterial::RenderMaterial()
 	: m_texture(0)
 	, m_depthTest(false)
 	, m_blendType(Opaque)
@@ -131,12 +131,12 @@ bool RenderMaterial::operator<(const RenderMaterial & other) const {
 	if(m_cullingMode != other.m_cullingMode) {
 		return m_cullingMode < other.m_cullingMode;
 	}
-
+	
 	// Then wrap mode
 	if(m_wrapMode != other.m_wrapMode) {
 		return m_wrapMode < other.m_wrapMode;
-	}	
-
+	}
+	
 	// Materials are equals...
 	return false;
 }
