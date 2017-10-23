@@ -697,6 +697,30 @@ public:
 		
 		{
 			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising", "Alpha Cutout AA");
+			szMenuText += " ";
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			
+			CycleTextWidget * cb = new CycleTextWidget;
+			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedAlphaCutoutAntialiasing, this, _1, _2);
+			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_off", "Disabled");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_smooth", "Smooth");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_crisp", "Crisp");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			cb->setValue(config.video.alphaCutoutAntialiasing);
+			
+			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			panel->AddElement(cb);
+			
+			addCenter(panel);
+		}
+		
+		{
+			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
@@ -921,6 +945,11 @@ private:
 	void onChangedColorkeyAntialiasing(int state) {
 		config.video.colorkeyAntialiasing = state ? true : false;
 		GRenderer->reloadColorKeyTextures();
+	}
+	
+	void onChangedAlphaCutoutAntialiasing(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		config.video.alphaCutoutAntialiasing = pos;
 	}
 	
 	void onChangedVSync(int pos, const std::string & str) {
