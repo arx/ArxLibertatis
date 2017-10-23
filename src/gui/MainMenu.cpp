@@ -454,8 +454,14 @@ public:
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_options_interface",
-			                                      "Interface settings");
+			std::string szMenuText = getLocalised("system_menus_options_render", "Render settings");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
+			txt->m_targetMenu = OPTIONS_RENDER;
+			addCenter(txt, true);
+		}
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_options_interface", "Interface settings");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = OPTIONS_INTERFACE;
 			addCenter(txt, true);
@@ -515,37 +521,6 @@ public:
 	CheckboxWidget * m_minimizeOnFocusLostCheckbox;
 	
 	void init() {
-		
-		// Renderer selection
-		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
-			szMenuText += "  ";
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
-			panel->AddElement(txt);
-			CycleTextWidget * slider = new CycleTextWidget;
-			slider->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedRenderer, this, _1, _2);
-			
-			{
-				TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, "Auto-Select", Vec2f_ZERO);
-				slider->AddText(txt);
-				slider->selectLast();
-			}
-			
-			{
-				TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, "OpenGL", Vec2f_ZERO);
-				slider->AddText(txt);
-				if(config.video.renderer == "OpenGL") {
-					slider->selectLast();
-				}
-			}
-			
-			float fRatio    = (RATIO_X(m_size.x-9) - slider->m_rect.width());
-			slider->Move(Vec2f(fRatio, 0));
-			panel->AddElement(slider);
-			addCenter(panel);
-		}
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_videos_full_screen");
@@ -640,87 +615,6 @@ public:
 		
 		{
 			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_detail");
-			szMenuText += " ";
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
-			panel->AddElement(txt);
-			
-			CycleTextWidget * cb = new CycleTextWidget;
-			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedQuality, this, _1, _2);
-			szMenuText = getLocalised("system_menus_options_video_texture_low");
-			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			szMenuText = getLocalised("system_menus_options_video_texture_med");
-			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			szMenuText = getLocalised("system_menus_options_video_texture_high");
-			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			cb->setValue(config.video.levelOfDetail);
-			
-			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
-			panel->AddElement(cb);
-			
-			addCenter(panel);
-		}
-		
-		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_video_brouillard");
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
-			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFogDistance, this, _1);
-			sld->setValue(int(config.video.fogDistance));
-			panel->AddElement(sld);
-			addCenter(panel);
-		}
-		
-		{
-			std::string szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
-			CheckboxWidget * cb = new CheckboxWidget(txt);
-			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedAntialiasing, this, _1);
-			cb->iState = config.video.antialiasing ? 1 : 0;
-			addCenter(cb);
-		}
-		
-		{
-			std::string szMenuText = getLocalised("system_menus_options_video_colorkey_antialiasing", "Color Key AA");
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
-			CheckboxWidget * cb = new CheckboxWidget(txt);
-			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedColorkeyAntialiasing, this, _1);
-			cb->iState = config.video.colorkeyAntialiasing ? 1 : 0;
-			addCenter(cb);
-		}
-		
-		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising", "Alpha Cutout AA");
-			szMenuText += " ";
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
-			panel->AddElement(txt);
-			
-			CycleTextWidget * cb = new CycleTextWidget;
-			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedAlphaCutoutAntialiasing, this, _1, _2);
-			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_off", "Disabled");
-			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_smooth", "Smooth");
-			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_crisp", "Crisp");
-			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			cb->setValue(config.video.alphaCutoutAntialiasing);
-			
-			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
-			panel->AddElement(cb);
-			
-			addCenter(panel);
-		}
-		
-		{
-			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
@@ -792,6 +686,249 @@ public:
 		}
 		
 		{
+			std::string szMenuText = getLocalised("system_menus_video_apply");
+			szMenuText += "   ";
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(240, 0));
+			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
+			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
+			txt->SetCheckOff();
+			add(txt);
+			pMenuElementApply = txt;
+		}
+		
+		{
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 420), Vec2f(16, 16), "graph/interface/menus/back");
+			cb->clicked = boost::bind(&VideoOptionsMenuPage::onClickedBack, this);
+			cb->m_targetMenu = OPTIONS;
+			cb->SetShortCut(Keyboard::Key_Escape);
+			add(cb);
+		}
+	}
+	
+private:
+	
+	void setMinimizeOnFocusLostState(CheckboxWidget * cb, bool fullscreen) {
+		
+		if(!fullscreen) {
+			cb->iState = 0;
+			cb->SetCheckOff();
+			return;
+		}
+		
+		Window::MinimizeSetting minimize = mainApp->getWindow()->willMinimizeOnFocusLost();
+		cb->iState = (minimize == Window::Enabled || minimize == Window::AlwaysEnabled) ? 1 : 0;
+		if(minimize != Window::AlwaysDisabled && minimize != Window::AlwaysEnabled) {
+			cb->SetCheckOn();
+		} else {
+			cb->SetCheckOff();
+		}
+		
+	}
+	
+	void onChangedFullscreen(int state) {
+		newFullscreen = ((state)?true:false);
+		
+		if(pMenuSliderResol) {
+			pMenuSliderResol->setEnabled(newFullscreen);
+			setMinimizeOnFocusLostState(m_minimizeOnFocusLostCheckbox, newFullscreen);
+		}
+	}
+	
+	void onChangedResolution(int pos, const std::string & str) {
+		ARX_UNUSED(pos);
+		
+		if(str == AUTO_RESOLUTION_STRING) {
+			newWidth = newHeight = 0;
+		} else {
+			std::stringstream ss(str);
+			int iX = config.video.resolution.x;
+			int iY = config.video.resolution.y;
+			char tmp;
+			ss >> iX >> tmp >> iY;
+			newWidth = iX;
+			newHeight = iY;
+		}
+	}
+	
+	void onChangedMinimizeOnFocusLost(int state) {
+		config.window.minimizeOnFocusLost = state ? true : false;
+		mainApp->getWindow()->setMinimizeOnFocusLost(config.window.minimizeOnFocusLost);
+	}
+	
+	void onChangedVSync(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		config.video.vsync = pos > 1 ? -1 : pos;
+		mainApp->getWindow()->setVSync(config.video.vsync);
+	}
+	
+	void onChangedFPSLimit(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		if(pos == 0) {
+			config.video.fpsLimit = 0;
+		} else {
+			config.video.fpsLimit = boost::lexical_cast<int>(str);
+		}
+	}
+	
+	void onClickedBack() {
+		if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
+			pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());
+			pMenuSliderResol->setOldValue(-1);
+			newWidth=config.video.resolution.x;
+			newHeight=config.video.resolution.y;
+		}
+		
+		if(fullscreenCheckbox && fullscreenCheckbox->iOldState >= 0) {
+			fullscreenCheckbox->iState = fullscreenCheckbox->iOldState;
+			fullscreenCheckbox->iOldState = -1;
+			newFullscreen = config.video.fullscreen;
+		}
+	}
+	
+	void onClickedApply() {
+		if(newWidth != config.video.resolution.x
+		   || newHeight!=config.video.resolution.y
+		   || newFullscreen != config.video.fullscreen
+		) {
+			ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight);
+			pMenuSliderResol->setOldValue(-1);
+			fullscreenCheckbox->iOldState = -1;
+		}
+		mainMenu->bReInitAll=true;
+	}
+	
+};
+
+class RenderOptionsMenuPage : public MenuPage {
+	
+public:
+	
+	RenderOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
+		: MenuPage(pos, size, OPTIONS_RENDER)
+	{ }
+	
+	~RenderOptionsMenuPage() { }
+	
+	void init() {
+		
+		// Renderer selection
+		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
+			szMenuText += "  ";
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			CycleTextWidget * slider = new CycleTextWidget;
+			slider->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedRenderer, this, _1, _2);
+			
+			{
+				TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, "Auto-Select", Vec2f_ZERO);
+				slider->AddText(txt);
+				slider->selectLast();
+			}
+			
+			{
+				TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, "OpenGL", Vec2f_ZERO);
+				slider->AddText(txt);
+				if(config.video.renderer == "OpenGL") {
+					slider->selectLast();
+				}
+			}
+			
+			float fRatio    = (RATIO_X(m_size.x-9) - slider->m_rect.width());
+			slider->Move(Vec2f(fRatio, 0));
+			panel->AddElement(slider);
+			addCenter(panel);
+		}
+		
+		{
+			// Add spacing
+			addCenter(new TextWidget(BUTTON_INVALID, hFontMenu, std::string(), Vec2f(20, 0)));
+		}
+		
+		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_detail");
+			szMenuText += " ";
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			
+			CycleTextWidget * cb = new CycleTextWidget;
+			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedQuality, this, _1, _2);
+			szMenuText = getLocalised("system_menus_options_video_texture_low");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_video_texture_med");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_video_texture_high");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			cb->setValue(config.video.levelOfDetail);
+			
+			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			panel->AddElement(cb);
+			
+			addCenter(panel);
+		}
+		
+		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_video_brouillard");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
+			sld->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedFogDistance, this, _1);
+			sld->setValue(int(config.video.fogDistance));
+			panel->AddElement(sld);
+			addCenter(panel);
+		}
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedAntialiasing, this, _1);
+			cb->iState = config.video.antialiasing ? 1 : 0;
+			addCenter(cb);
+		}
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_options_video_colorkey_antialiasing", "Color Key AA");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedColorkeyAntialiasing, this, _1);
+			cb->iState = config.video.colorkeyAntialiasing ? 1 : 0;
+			addCenter(cb);
+		}
+		
+		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising", "Alpha Cutout AA");
+			szMenuText += " ";
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			
+			CycleTextWidget * cb = new CycleTextWidget;
+			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedAlphaCutoutAntialiasing, this, _1, _2);
+			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_off", "Disabled");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_smooth", "Smooth");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_crisp", "Crisp");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			cb->setValue(config.video.alphaCutoutAntialiasing);
+			
+			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			panel->AddElement(cb);
+			
+			addCenter(panel);
+		}
+		
+		{
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_texture_filter_anisotropic",
 			                                      "Anisotropic filtering");
@@ -801,7 +938,7 @@ public:
 			panel->AddElement(txt);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
-			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedMaxAnisotropy, this, _1, _2);
+			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedMaxAnisotropy, this, _1, _2);
 			szMenuText = getLocalised("system_menus_options_video_filter_anisotropic_off", "Disabled");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 			int maxAnisotropy = int(GRenderer->getMaxSupportedAnisotropy());
@@ -849,19 +986,7 @@ public:
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_video_apply");
-			szMenuText += "   ";
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(240, 0));
-			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
-			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
-			txt->SetCheckOff();
-			add(txt);
-			pMenuElementApply = txt;
-		}
-		
-		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 420), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->clicked = boost::bind(&VideoOptionsMenuPage::onClickedBack, this);
 			cb->m_targetMenu = OPTIONS;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
@@ -869,24 +994,6 @@ public:
 	}
 	
 private:
-	
-	void setMinimizeOnFocusLostState(CheckboxWidget * cb, bool fullscreen) {
-		
-		if(!fullscreen) {
-			cb->iState = 0;
-			cb->SetCheckOff();
-			return;
-		}
-		
-		Window::MinimizeSetting minimize = mainApp->getWindow()->willMinimizeOnFocusLost();
-		cb->iState = (minimize == Window::Enabled || minimize == Window::AlwaysEnabled) ? 1 : 0;
-		if(minimize != Window::AlwaysDisabled && minimize != Window::AlwaysEnabled) {
-			cb->SetCheckOn();
-		} else {
-			cb->SetCheckOff();
-		}
-		
-	}
 	
 	void onChangedRenderer(int pos, const std::string & str) {
 		ARX_UNUSED(str);
@@ -896,36 +1003,6 @@ private:
 			case 1:  config.video.renderer = "OpenGL";  break;
 			default: config.video.renderer = "auto"; break;
 		}
-	}
-	
-	void onChangedFullscreen(int state) {
-		newFullscreen = ((state)?true:false);
-		
-		if(pMenuSliderResol) {
-			pMenuSliderResol->setEnabled(newFullscreen);
-			setMinimizeOnFocusLostState(m_minimizeOnFocusLostCheckbox, newFullscreen);
-		}
-	}
-	
-	void onChangedResolution(int pos, const std::string & str) {
-		ARX_UNUSED(pos);
-		
-		if(str == AUTO_RESOLUTION_STRING) {
-			newWidth = newHeight = 0;
-		} else {
-			std::stringstream ss(str);
-			int iX = config.video.resolution.x;
-			int iY = config.video.resolution.y;
-			char tmp;
-			ss >> iX >> tmp >> iY;
-			newWidth = iX;
-			newHeight = iY;
-		}
-	}
-	
-	void onChangedMinimizeOnFocusLost(int state) {
-		config.window.minimizeOnFocusLost = state ? true : false;
-		mainApp->getWindow()->setMinimizeOnFocusLost(config.window.minimizeOnFocusLost);
 	}
 	
 	void onChangedQuality(int pos, const std::string & str) {
@@ -952,21 +1029,6 @@ private:
 		config.video.alphaCutoutAntialiasing = pos;
 	}
 	
-	void onChangedVSync(int pos, const std::string & str) {
-		ARX_UNUSED(str);
-		config.video.vsync = pos > 1 ? -1 : pos;
-		mainApp->getWindow()->setVSync(config.video.vsync);
-	}
-	
-	void onChangedFPSLimit(int pos, const std::string & str) {
-		ARX_UNUSED(str);
-		if(pos == 0) {
-			config.video.fpsLimit = 0;
-		} else {
-			config.video.fpsLimit = boost::lexical_cast<int>(str);
-		}
-	}
-	
 	void onChangedMaxAnisotropy(int pos, const std::string & str) {
 		ARX_UNUSED(str);
 		
@@ -984,32 +1046,6 @@ private:
 		GRenderer->setMaxAnisotropy(anisotropy);
 	}
 	
-	void onClickedBack() {
-		if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
-			pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());
-			pMenuSliderResol->setOldValue(-1);
-			newWidth=config.video.resolution.x;
-			newHeight=config.video.resolution.y;
-		}
-		
-		if(fullscreenCheckbox && fullscreenCheckbox->iOldState >= 0) {
-			fullscreenCheckbox->iState = fullscreenCheckbox->iOldState;
-			fullscreenCheckbox->iOldState = -1;
-			newFullscreen = config.video.fullscreen;
-		}
-	}
-	
-	void onClickedApply() {
-		if(newWidth != config.video.resolution.x
-		   || newHeight!=config.video.resolution.y
-		   || newFullscreen != config.video.fullscreen
-		) {
-			ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight);
-			pMenuSliderResol->setOldValue(-1);
-			fullscreenCheckbox->iOldState = -1;
-		}
-		mainMenu->bReInitAll=true;
-	}
 };
 
 class InterfaceOptionsMenuPage : public MenuPage {
@@ -1877,6 +1913,12 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	{
 	VideoOptionsMenuPage * page = new VideoOptionsMenuPage(offset + Vec2f(0, -35), size);
+	page->init();
+	pWindowMenu->add(page);
+	}
+	
+	{
+	RenderOptionsMenuPage * page = new RenderOptionsMenuPage(offset + Vec2f(0, -35), size);
 	page->init();
 	pWindowMenu->add(page);
 	}
