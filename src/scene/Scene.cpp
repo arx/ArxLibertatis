@@ -402,8 +402,8 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 
 static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag) {
 	
-	EERIEPOLY * ep; 
-
+	EERIEPOLY * ep;
+	
 	if(flag & 1) {
 		ep=CheckInPoly(pos + Vec3f(0.f, -150.f, 0.f));
 
@@ -781,7 +781,7 @@ static void RoomFrustrumAdd(size_t num, const EERIE_FRUSTRUM & fr) {
 	if(RoomDraw[num].frustrum.nb_frustrums < MAX_FRUSTRUMS - 1) {
 		RoomDraw[num].frustrum.frustrums[RoomDraw[num].frustrum.nb_frustrums] = fr;
 		RoomDraw[num].frustrum.nb_frustrums++;
-	}	
+	}
 }
 
 static void RenderWaterBatch() {
@@ -897,31 +897,30 @@ static void RenderWater() {
 			pVertex->p.y = -ep->v[j].p.y;
 			pVertex->p.z = ep->v[j].p.z;
 			pVertex->color = Color(80, 80, 80, 255).toRGBA();
-
+			
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				Vec2f uv = CalculateWaterDisplacement(ep, time, j, i);
-
 				if(ep->type & POLY_FALL) {
 					uv.y += time * (1.f/4000);
 				}
 				pVertex->uv[i] = uv;
-			}	
+			}
 			pVertex++;
-
-			if(j == 2){						
-				*indices++ = iNbIndice++; 
-				*indices++ = iNbIndice++; 
-				*indices++ = iNbIndice++; 
+			
+			if(j == 2){
+				*indices++ = iNbIndice++;
+				*indices++ = iNbIndice++;
+				*indices++ = iNbIndice++;
 				dynamicVertices.nbindices += 3;
 			}
 		}
 		if(iNbVertex == 4) {
-			*indices++ = iNbIndice++; 
-			*indices++ = iNbIndice - 2; 
-			*indices++ = iNbIndice - 3; 
-			dynamicVertices.nbindices += 3;	
+			*indices++ = iNbIndice++;
+			*indices++ = iNbIndice - 2;
+			*indices++ = iNbIndice - 3;
+			dynamicVertices.nbindices += 3;
 		}
-	}	
+	}
 	
 	dynamicVertices.unlock();
 	RenderWaterBatch();
@@ -1011,17 +1010,17 @@ static void RenderLava() {
 				pVertex->uv[i] = uv;
 			}
 			pVertex++;
-			if(j == 2){	
-				*indices++ = iNbIndice++; 
-				*indices++ = iNbIndice++; 
-				*indices++ = iNbIndice++; 
+			if(j == 2) {
+				*indices++ = iNbIndice++;
+				*indices++ = iNbIndice++;
+				*indices++ = iNbIndice++;
 				dynamicVertices.nbindices += 3;
 			}
-		}								
-		if(iNbVertex == 4) {			
-			*indices++ = iNbIndice++; 
-			*indices++ = iNbIndice - 2; 
-			*indices++ = iNbIndice - 3; 
+		}
+		if(iNbVertex == 4) {
+			*indices++ = iNbIndice++;
+			*indices++ = iNbIndice - 2;
+			*indices++ = iNbIndice - 3;
 			dynamicVertices.nbindices += 3;
 		}
 	}
