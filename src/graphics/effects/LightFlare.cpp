@@ -120,7 +120,7 @@ void goFor2DFX() {
 	}
 	
 	GRenderer->SetFogColor(Color::none);
-	UseRenderState state(render3D().blend(BlendOne, BlendOne).depthWrite(false).depthTest(false));
+	UseRenderState state(render3D().colorKey().blend(BlendOne, BlendOne).depthWrite(false).depthTest(false));
 	
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		const EERIE_LIGHT & el = *g_culledDynamicLights[i];

@@ -2056,7 +2056,7 @@ void ArxGame::renderLevel() {
 	if(DRAGINTER) {
 		ARX_INTERFACE_RenderCursor();
 		{
-			UseRenderState state(render3D());
+			UseRenderState state(render3D().colorKey());
 			PopAllTriangleListOpaque();
 		}
 		PopAllTriangleListTransparency();

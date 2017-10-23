@@ -153,7 +153,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		return;
 	}
 	
-	RenderState baseState = render3D().depthWrite(false);
+	RenderState baseState = render3D().colorKey().depthWrite(false);
 
 	GRenderer->SetTexture(0, _pTex);
 
@@ -216,7 +216,7 @@ void PopAllTriangleListTransparency() {
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	
 	{
-		UseRenderState state(render3D().depthWrite(false).blend(BlendDstColor, BlendOne));
+		UseRenderState state(render3D().colorKey().depthWrite(false).blend(BlendDstColor, BlendOne));
 		PopOneTriangleList(&TexSpecialColor, true);
 	}
 

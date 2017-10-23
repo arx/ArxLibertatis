@@ -148,8 +148,8 @@ RenderState RenderMaterial::apply() const {
 		GRenderer->ResetTexture(0);
 	}
 	
-	RenderState state = render3D();
-
+	RenderState state = render3D().colorKey();
+	
 	GRenderer->GetTextureStage(0)->setWrapMode(m_wrapMode);
 	state.setDepthOffset(m_depthBias);
 

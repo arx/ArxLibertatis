@@ -337,7 +337,7 @@ static void CheckExp(const Projectile & projectile) {
 
 void ARX_THROWN_OBJECT_Render() {
 	
-	UseRenderState state(render3D());
+	UseRenderState state(render3D().colorKey());
 	
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
 		Projectile & projectile = g_projectiles[i];
