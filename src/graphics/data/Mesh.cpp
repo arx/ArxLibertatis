@@ -1191,7 +1191,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	EERIE_PORTAL_Release();
 	
 	portals = new EERIE_PORTAL_DATA;
-	portals->rooms.resize(fsh->nb_rooms + 1);	
+	portals->rooms.resize(fsh->nb_rooms + 1);
 	portals->portals.resize(fsh->nb_portals);
 	
 	LogDebug("FTS: loading " << portals->portals.size() << " portals ...");
