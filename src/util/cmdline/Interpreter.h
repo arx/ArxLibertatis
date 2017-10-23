@@ -247,19 +247,19 @@ template <typename Stream, typename Interpreter>
 struct print_op_t {
 	
 	Stream * m_stream;
-	Interpreter const* interpreter;
+	Interpreter const * m_interpreter;
 	
 	size_t offset;
 	
 	print_op_t(Stream & stream, const Interpreter & interpreter, size_t offset)
 		: m_stream(&stream)
-		, interpreter(&interpreter)
+		, m_interpreter(&interpreter)
 		, offset(offset)
 	{ }
 	
 	template <typename Key>
 	void align(Key & key) const {
-		opname_size<Interpreter> tmp(*interpreter);
+		opname_size<Interpreter> tmp(*m_interpreter);
 		tmp(key);
 		
 		for(size_t i(tmp.value); i < offset; ++i)
