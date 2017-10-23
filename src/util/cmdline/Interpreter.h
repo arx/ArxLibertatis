@@ -205,14 +205,9 @@ namespace detail {
 template <typename Interpreter>
 struct opname_size {
 	
-	Interpreter const * interpreter;
-	
 	size_t value;
 	
-	explicit opname_size(const Interpreter & interpreter)
-		: interpreter(&interpreter)
-		, value(0)
-	{ }
+	opname_size() : value(0) { }
 	
 	template <typename Key>
 	void operator()(Key & key) {
@@ -259,7 +254,7 @@ struct print_op_t {
 	
 	template <typename Key>
 	void align(Key & key) const {
-		opname_size<Interpreter> tmp(*m_interpreter);
+		opname_size<Interpreter> tmp;
 		tmp(key);
 		
 		for(size_t i(tmp.value); i < m_offset; ++i)
@@ -308,7 +303,7 @@ struct print_op_t {
 
 template <typename OStream, typename Interpreter>
 void print_op(OStream & os, const Interpreter & interpreter) {
-	opname_size<Interpreter> calc_size(interpreter);
+	opname_size<Interpreter> calc_size;
 	interpreter.visit(calc_size);
 	
 	print_op_t<OStream, Interpreter> op(os, interpreter, calc_size.value);
