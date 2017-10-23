@@ -53,7 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 /*!
  * \brief Releases Data for linked objects
- * \param obj
  */
 void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
 	
