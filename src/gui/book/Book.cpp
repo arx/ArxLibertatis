@@ -1404,7 +1404,7 @@ void SpellsPage::drawSpells() {
 		
 		if(spellInfo.tc) {
 			
-			UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor).colorKey());
+			UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor).alphaCutout());
 			
 			Color color;
 			if(flyingover) {

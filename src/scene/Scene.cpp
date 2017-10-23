@@ -1251,7 +1251,7 @@ static void BackgroundRenderOpaque(size_t room_num) {
 		RenderState baseState = render3D();
 		
 		GRenderer->SetTexture(0, pTexCurr);
-		baseState.setColorKey(pTexCurr->m_pTexture && pTexCurr->m_pTexture->hasAlpha());
+		baseState.setAlphaCutout(pTexCurr->m_pTexture && pTexCurr->m_pTexture->hasAlpha());
 		
 		UseRenderState state(baseState);
 		
@@ -1300,7 +1300,7 @@ static void BackgroundRenderTransparent(size_t room_num) {
 		
 		TextureContainer * pTexCurr = *itr;
 		GRenderer->SetTexture(0, pTexCurr);
-		baseState.setColorKey(pTexCurr->m_pTexture && pTexCurr->m_pTexture->hasAlpha());
+		baseState.setAlphaCutout(pTexCurr->m_pTexture && pTexCurr->m_pTexture->hasAlpha());
 		
 		SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches.tMatRoom[room_num];
 

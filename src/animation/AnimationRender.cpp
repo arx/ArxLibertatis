@@ -123,7 +123,7 @@ static void PopOneTriangleList(RenderState baseState, TextureContainer * _pTex, 
 	}
 	
 	GRenderer->SetTexture(0, _pTex);
-	baseState.setColorKey(_pTex->m_pTexture && _pTex->m_pTexture->hasAlpha());
+	baseState.setAlphaCutout(_pTex->m_pTexture && _pTex->m_pTexture->hasAlpha());
 	
 	UseRenderState state(baseState);
 	
@@ -160,7 +160,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	RenderState baseState = render3D().depthWrite(false);
 	
 	GRenderer->SetTexture(0, _pTex);
-	baseState.setColorKey(_pTex->m_pTexture && _pTex->m_pTexture->hasAlpha());
+	baseState.setAlphaCutout(_pTex->m_pTexture && _pTex->m_pTexture->hasAlpha());
 	
 	if(batch.count[BatchBucket_Blended]) {
 		UseRenderState state(baseState.blend(BlendDstColor, BlendSrcColor));

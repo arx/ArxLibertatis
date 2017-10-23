@@ -69,7 +69,7 @@ class RenderState {
 	enum Offsets {
 		Cull,
 		Fog = Cull + CullSize,
-		ColorKey,
+		AlphaCutout,
 		DepthTest,
 		DepthWrite,
 		DepthOffset,
@@ -132,18 +132,18 @@ public:
 		return get<Fog, 1>() != 0;
 	}
 	
-	void setColorKey(bool enable) {
-		set<ColorKey, 1>(enable);
+	void setAlphaCutout(bool enable) {
+		set<AlphaCutout, 1>(enable);
 	}
 	
-	RenderState colorKey(bool enable = true) const {
+	RenderState alphaCutout(bool enable = true) const {
 		RenderState copy = *this;
-		copy.setColorKey(enable);
+		copy.setAlphaCutout(enable);
 		return copy;
 	}
 	
-	bool getColorKey() const {
-		return get<ColorKey, 1>() != 0;
+	bool getAlphaCutout() const {
+		return get<AlphaCutout, 1>() != 0;
 	}
 	
 	void setDepthTest(bool enable) {

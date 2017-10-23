@@ -675,7 +675,7 @@ void QuickSaveIconGui::draw() {
 		return;
 	}
 	
-	UseRenderState state(render2D().blend(BlendSrcColor, BlendOne).colorKey());
+	UseRenderState state(render2D().blend(BlendSrcColor, BlendOne).alphaCutout());
 	
 	// Flash the icon twice, starting at about 0.7 opacity
 	float step = 1.f - (m_remainingTime / m_duration);
@@ -749,7 +749,7 @@ void MemorizedRunesHud::draw() {
 			EERIEDrawBitmap(rect, 0, tc, Color::white);
 			
 			if(!player.hasRune(player.SpellToMemorize.iSpellSymbols[i])) {
-				UseRenderState state(render2D().blend(BlendInvDstColor, BlendOne).colorKey());
+				UseRenderState state(render2D().blend(BlendInvDstColor, BlendOne).alphaCutout());
 				EERIEDrawBitmap(rect, 0, cursorMovable, Color3f::gray(.8f).to<u8>());
 			}
 			
