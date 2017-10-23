@@ -571,7 +571,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		if(ioo && (ioo->ioflags & IO_NPC)) {
 			if(ValidIONum(ioo->targetinfo))
 				if(entities[ioo->targetinfo] == io_dead) {
-					EVENT_SENDER = io_dead; 
+					EVENT_SENDER = io_dead;
 					Stack_SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
 					ioo->targetinfo = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
@@ -579,7 +579,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 
 			if(ValidIONum(ioo->_npcdata->pathfind.truetarget))
 				if(entities[ioo->_npcdata->pathfind.truetarget] == io_dead) {
-					EVENT_SENDER = io_dead; 
+					EVENT_SENDER = io_dead;
 					Stack_SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
 					ioo->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
@@ -787,7 +787,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		if(io->script.data != NULL) {
 			if(source.handleData() >= EntityHandle_Player.handleData()) {
 				if(ValidIONum(source))
-					EVENT_SENDER = entities[source]; 
+					EVENT_SENDER = entities[source];
 				else
 					EVENT_SENDER = NULL;
 
@@ -1060,7 +1060,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 							if(damage.params.type & DAMAGE_TYPE_POISON) {
 								if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison) {
 									// Failed Saving Throw
-									damagesdone = dmg; 
+									damagesdone = dmg;
 									player.poison += damagesdone;
 								} else {
 									damagesdone = 0;
@@ -1088,7 +1088,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 							) {
 								if(Random::getf(0.f, 100.f) > io->_npcdata->resist_poison) {
 									// Failed Saving Throw
-									damagesdone = dmg; 
+									damagesdone = dmg;
 									io->_npcdata->poisonned += damagesdone;
 								} else {
 									damagesdone = 0;
