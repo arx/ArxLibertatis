@@ -107,12 +107,12 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	}
 
 	float diff = cubmax.y - cubmin.y;
-
-	if (diff < 12.f) 
-	{
-		cubmax.y += 8.f; 
-		cubmin.y -= 8.f; 
-
+	
+	if(diff < 12.f) {
+		
+		cubmax.y += 8.f;
+		cubmin.y -= 8.f;
+		
 		for(size_t k = 1; k < pbox->vert.size() - 2; k++)
 		{
 			pbox->vert[k].pos.x = pbox->vert[0].pos.x;
