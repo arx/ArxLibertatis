@@ -851,9 +851,9 @@ void ArxGame::managePlayerControls() {
 				&& !NOMOREMOVES)
 			{
 				eyeball.pos += angleToVectorXZ(eyeball.angle.getYaw() + 90.f) * 10.f * FD * 0.033f;
-				NOMOREMOVES=1;			
+				NOMOREMOVES = 1;
 			}
-
+			
 			// Checks STRAFE_RIGHT Key Status.
 			if( (GInput->actionPressed(CONTROLS_CUST_STRAFERIGHT)||
 				(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)))
@@ -1147,8 +1147,9 @@ void ArxGame::managePlayerControls() {
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_WEAPON) || lChangeWeapon) {
-		bool bGo = true; 
-
+		
+		bool bGo = true;
+		
 		if(lChangeWeapon > 0) {
 			if(lChangeWeapon == 2) {
 				lChangeWeapon--;
@@ -1212,7 +1213,7 @@ void ArxGame::managePlayerControls() {
 						TRUE_PLAYER_MOUSELOOK_ON = false;
 
 						if(player.Interface & INTER_COMBATMODE)
-							ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);			
+							ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
 					}
 				}
 			}
