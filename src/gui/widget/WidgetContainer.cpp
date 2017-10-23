@@ -24,15 +24,7 @@
 #include "core/ArxGame.h"
 #include "graphics/DrawLine.h"
 
-WidgetContainer::WidgetContainer() {
-	
-	m_widgets.clear();
-	
-	BOOST_FOREACH(Widget * w, m_widgets) {
-		delete w;
-	}
-	
-}
+WidgetContainer::WidgetContainer() { }
 
 WidgetContainer::~WidgetContainer() {
 	BOOST_FOREACH(Widget * w, m_widgets) {
