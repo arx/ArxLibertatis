@@ -77,7 +77,7 @@ void GameTime::reset(const ArxInstant time) {
 	m_now = time;
 	m_lastFrameDuration = 0;
 	m_speed = 1.f;
-	m_paused = true;
+	m_paused = PauseInitial;
 }
 
 void GameTime::update(PlatformDuration frameDuration) {

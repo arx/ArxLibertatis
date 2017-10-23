@@ -228,7 +228,7 @@ void ARXMenu_Options_Audio_SetDevice(const std::string & device) {
 
 void ARXMenu_ResumeGame() {
 	ARX_Menu_Resources_Release();
-	arxtime.resume();
+	arxtime.resume(GameTime::PauseMenu);
 	EERIEMouseButton = 0;
 }
 

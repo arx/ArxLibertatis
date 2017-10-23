@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CORE_GAMETIME_H
 
 #include "core/TimeTypes.h"
+#include "util/Flags.h"
 
 
 class PlatformTime {
@@ -83,22 +84,34 @@ extern PlatformTime g_platformTime;
 
 class GameTime {
 	
+public:
+	
+	enum PauseFlag {
+		PauseInitial   = (1 << 0),
+		PauseMenu      = (1 << 1),
+		PauseCinematic = (1 << 2),
+		PauseUser      = (1 << 3),
+	};
+	DECLARE_FLAGS(PauseFlag, PauseFlags)
+	
+private:
+	
 	ArxInstant m_now;
 	ArxDuration m_lastFrameDuration;
 	float m_speed;
-	bool m_paused;
+	PauseFlags m_paused;
 	
 public:
 	
 	GameTime();
 	~GameTime() {}
 	
-	void pause() {
-		m_paused = true;
+	void pause(PauseFlags flags) {
+		m_paused |= flags;
 	}
 	
-	void resume() {
-		m_paused = false;
+	void resume(PauseFlags flags) {
+		m_paused &= ~flags;
 	}
 	
 	void reset(ArxInstant time);
@@ -109,7 +122,7 @@ public:
 	
 	void update(PlatformDuration frameDuration);
 	
-	bool isPaused() const {
+	PauseFlags isPaused() const {
 		return m_paused;
 	}
 	
@@ -121,6 +134,8 @@ public:
 	void setSpeed(float speed) { m_speed = speed; }
 	
 };
+
+DECLARE_FLAGS_OPERATORS(GameTime::PauseFlags)
 
 extern GameTime arxtime;
 

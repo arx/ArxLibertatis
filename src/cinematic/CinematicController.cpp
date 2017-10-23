@@ -70,7 +70,7 @@ void cinematicPrepare(const std::string & name, bool preload) {
 
 void cinematicRequestStart() {
 	PLAY_LOADED_CINEMATIC = Cinematic_StartRequested;
-	arxtime.pause();
+	arxtime.pause(GameTime::PauseCinematic);
 }
 
 void cinematicKill() {
@@ -160,7 +160,7 @@ void cinematicRender() {
 		ControlCinematique->projectload=false;
 		StopSoundKeyFramer();
 		ControlCinematique->OneTimeSceneReInit();
-		arxtime.resume();
+		arxtime.resume(GameTime::PauseCinematic);
 		PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
 
 		bool bWasBlocked = false;

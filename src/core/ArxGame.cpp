@@ -1723,10 +1723,10 @@ void ArxGame::updateInput() {
 	
 #ifdef ARX_DEBUG
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_Pause)) {
-		if(!arxtime.isPaused()) {
-			arxtime.pause();
+		if(arxtime.isPaused() & GameTime::PauseUser) {
+			arxtime.resume(GameTime::PauseUser);
 		} else {
-			arxtime.resume();
+			arxtime.pause(GameTime::PauseUser);
 		}
 	}
 #endif
