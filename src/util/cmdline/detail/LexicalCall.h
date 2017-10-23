@@ -100,15 +100,15 @@ private:
 	template <typename Fn>
 	struct proxy_function {
 		
-		Fn fn;
+		Fn m_fn;
 		
-		explicit proxy_function(const Fn & fn) : fn(fn) {
+		explicit proxy_function(const Fn & fn) : m_fn(fn) {
 		}
 		
 		result_type operator()(argument_type args) {
 			//TODO: add  : if(!is_reference<argument_type>)   argument_type = reference<argument_type>
 			detail::args_adapter<typename Fn::signature> decoded_args(args);
-			return fn(decoded_args);
+			return m_fn(decoded_args);
 		}
 		
 	};
