@@ -53,7 +53,7 @@ static int write_pixels(FILE *f, int rgb_dir, int vdir, int x, int y, int comp, 
    if (y <= 0)
       return 1;
 
-   if (vdir < 0) 
+   if (vdir < 0)
       j_end = -1, j = y-1;
    else
       j_end =  y, j = 0;
