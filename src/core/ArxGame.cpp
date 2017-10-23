@@ -1609,7 +1609,6 @@ void ArxGame::updateTime() {
 	g_gameTime.update(g_platformTime.lastFrameDuration());
 	
 	g_framedelay = toMsf(g_gameTime.lastFrameDuration());
-	g_framedelay2 = g_gameTime.lastFrameDuration();
 	
 }
 
