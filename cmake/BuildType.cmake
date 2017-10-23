@@ -113,7 +113,9 @@ else(MSVC)
 		add_cxxflag("-Wall")
 		add_cxxflag("-Wextra")
 		
+		add_cxxflag("-Warray-bounds=2")
 		add_cxxflag("-Wcast-qual")
+		add_cxxflag("-Wcatch-value=3")
 		add_cxxflag("-Wdouble-promotion")
 		add_cxxflag("-Wduplicated-cond")
 		add_cxxflag("-Wextra-semi")
@@ -127,7 +129,10 @@ else(MSVC)
 		add_cxxflag("-Wpointer-arith")
 		add_cxxflag("-Wredundant-decls")
 		add_cxxflag("-Wshift-overflow")
+		add_cxxflag("-Wstringop-overflow=4")
 		add_cxxflag("-Wundef")
+		add_cxxflag("-Wunused-const-variable=1")
+		add_cxxflag("-Wunused-macros")
 		add_cxxflag("-Wvla")
 		
 		add_cxxflag("-Wliteral-conversion") # part of -Wconversion
@@ -150,6 +155,7 @@ else(MSVC)
 			add_cxxflag("-Wshadow") # very noisy
 			add_cxxflag("-Wstrict-aliasing=1") # has false positives
 			add_cxxflag("-Wuseless-cast") # has false positives
+			# add_cxxflag("-Wnull-dereference") not that useful without deduction path
 			
 		else()
 			
