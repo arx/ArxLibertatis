@@ -179,15 +179,15 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	return true;
 }
 
-bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
-{
+bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier) {
+	
 	int nbFilesToSend = 0;
-	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) 
-	{
-		if(it->attachToReport)
+	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) {
+		if(it->attachToReport) {
 			nbFilesToSend++;
+		}
 	}
-
+	
 	pProgressNotifier->taskStarted("Sending crash report", 3 + nbFilesToSend);
 	
 	std::string userAgent = arx_name + " Crash Reporter " + arx_version;
@@ -270,11 +270,11 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 			}
 		}
 	}
-
+	
 	// Send files
 	QString commonPath;
-	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) 
-	{
+	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) {
+		
 		// Ignore files that were removed by the user.
 		if(!it->attachToReport)
 			continue;
