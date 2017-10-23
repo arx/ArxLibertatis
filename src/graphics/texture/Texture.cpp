@@ -77,10 +77,10 @@ bool Texture2D::Restore() {
 		}
 
 		Upload();
-
+		
 		bRestored = true;
-	} 
-
+	}
+	
 	if(!mFileName.empty()) {
 		mImage.Reset();
 	}

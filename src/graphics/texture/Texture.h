@@ -89,7 +89,7 @@ public:
 	
 protected:
 	
-	Texture2D() { } 
+	Texture2D() { }
 	
 	Image mImage;
 	res::path mFileName;
