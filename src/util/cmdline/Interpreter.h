@@ -246,13 +246,13 @@ struct opname_size {
 template <typename Stream, typename Interpreter>
 struct print_op_t {
 	
-	Stream * stream_;
+	Stream * m_stream;
 	Interpreter const* interpreter;
 	
 	size_t offset;
 	
 	print_op_t(Stream & stream, const Interpreter & interpreter, size_t offset)
-		: stream_(&stream)
+		: m_stream(&stream)
 		, interpreter(&interpreter)
 		, offset(offset)
 	{ }
@@ -263,7 +263,7 @@ struct print_op_t {
 		tmp(key);
 		
 		for(size_t i(tmp.value); i < offset; ++i)
-			(*stream_) << " ";
+			(*m_stream) << " ";
 	}
 	
 	template <typename Key>
@@ -274,35 +274,35 @@ struct print_op_t {
 			return;
 		}
 		
-		(*stream_) << " ";
+		(*m_stream) << " ";
 		
 		for(; it != end; ++it) {
-			(*stream_) << " " << *it;
+			(*m_stream) << " " << *it;
 		}
 		
 		if(key.has_args()) {
 			if(key.get_arg_count() == 1 && key.is_arg_optional()) {
-				(*stream_) << "[=";
+				(*m_stream) << "[=";
 			} else {
-				(*stream_) << ' ';
+				(*m_stream) << ' ';
 			}
 			if(key.has_arg_names()) {
-				(*stream_) << key.get_arg_names();
+				(*m_stream) << key.get_arg_names();
 			} else {
 				for(size_t i = 0; i < key.get_arg_count(); i++) {
 					if(i != 0) {
-						(*stream_) << ' ';
+						(*m_stream) << ' ';
 					}
-					(*stream_) << "ARG";
+					(*m_stream) << "ARG";
 				}
 			}
 			if(key.get_arg_count() == 1 && key.is_arg_optional()) {
-				(*stream_) << "]";
+				(*m_stream) << "]";
 			}
 		}
 		
 		align(key);
-		(*stream_) << "  " << key.get_description() << std::endl;
+		(*m_stream) << "  " << key.get_description() << std::endl;
 	}
 };
 
