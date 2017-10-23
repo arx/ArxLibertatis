@@ -67,6 +67,7 @@ const int
 	vsync = -1,
 	fpsLimit = 240,
 	maxAnisotropicFiltering = 9001,
+	alphaCutoutAntialiasing = 2,
 	cinematicWidescreenMode = CinematicFadeEdges,
 	hudScaleFilter = UIFilterBilinear,
 	volume = 10,
@@ -84,7 +85,6 @@ const bool
 	fullscreen = true,
 	showCrosshair = true,
 	antialiasing = true,
-	colorkeyAlphaToCoverage = true,
 	colorkeyAntialiasing = true,
 	limitSpeechWidth = true,
 	hudScaleInteger = true,
@@ -187,8 +187,8 @@ const std::string
 	vsync = "vsync",
 	fpsLimit = "fps_limit",
 	maxAnisotropicFiltering = "max_anisotropic_filtering",
-	colorkeyAlphaToCoverage = "colorkey_alpha_to_coverage",
 	colorkeyAntialiasing = "colorkey_antialiasing",
+	alphaCutoutAntialiasing = "alpha_cutout_antialiasing",
 	bufferSize = "buffer_size",
 	bufferUpload = "buffer_upload";
 
@@ -412,8 +412,8 @@ bool Config::save() {
 	writer.writeKey(Key::vsync, video.vsync);
 	writer.writeKey(Key::fpsLimit, video.fpsLimit);
 	writer.writeKey(Key::maxAnisotropicFiltering, video.maxAnisotropicFiltering);
-	writer.writeKey(Key::colorkeyAlphaToCoverage, video.colorkeyAlphaToCoverage);
 	writer.writeKey(Key::colorkeyAntialiasing, video.colorkeyAntialiasing);
+	writer.writeKey(Key::alphaCutoutAntialiasing, video.alphaCutoutAntialiasing);
 	writer.writeKey(Key::bufferSize, video.bufferSize);
 	writer.writeKey(Key::bufferUpload, video.bufferUpload);
 	
@@ -548,8 +548,9 @@ bool Config::init(const fs::path & file) {
 	video.fpsLimit = std::max(fpsLimit, 0);
 	int anisoFiltering = reader.getKey(Section::Video, Key::maxAnisotropicFiltering, Default::maxAnisotropicFiltering);
 	video.maxAnisotropicFiltering = std::max(anisoFiltering, 1);
-	video.colorkeyAlphaToCoverage = reader.getKey(Section::Video, Key::colorkeyAlphaToCoverage, Default::colorkeyAlphaToCoverage);
 	video.colorkeyAntialiasing = reader.getKey(Section::Video, Key::colorkeyAntialiasing, Default::colorkeyAntialiasing);
+	int alphaCutoutAA = reader.getKey(Section::Video, Key::alphaCutoutAntialiasing, Default::alphaCutoutAntialiasing);
+	video.alphaCutoutAntialiasing = glm::clamp(alphaCutoutAA, 0, 2);
 	video.bufferSize = std::max(reader.getKey(Section::Video, Key::bufferSize, Default::bufferSize), 0);
 	video.bufferUpload = reader.getKey(Section::Video, Key::bufferUpload, Default::bufferUpload);
 	

@@ -126,8 +126,8 @@ public:
 		int vsync;
 		int fpsLimit;
 		int maxAnisotropicFiltering;
-		bool colorkeyAlphaToCoverage;
 		bool colorkeyAntialiasing;
+		int alphaCutoutAntialiasing;
 		
 		int bufferSize;
 		std::string bufferUpload;
