@@ -186,7 +186,7 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 
 			if(t != EntityHandle()) {
 				std::string str = io->idString() + ' ' + temp;
-				SendIOScriptEvent( entities[t], SM_CONTROLLEDZONE_LEAVE, str ); 
+				SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 			}
 		}
 	}
@@ -514,8 +514,9 @@ void PrepareIOTreatZone(long flag) {
 	float TREATZONE_LIMIT = 3200;
 
 	if(RoomDistance) {
-		TREATZONE_LIMIT += 600; 
-
+		
+		TREATZONE_LIMIT += 600;
+		
 		if(CURRENTLEVEL == 4)
 			TREATZONE_LIMIT += 1200;
 
@@ -532,15 +533,11 @@ void PrepareIOTreatZone(long flag) {
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
-
-		if ((io)
-		        &&	((io->show == SHOW_FLAG_IN_SCENE)
-		             ||	(io->show == SHOW_FLAG_TELEPORTING)
-		             ||	(io->show == SHOW_FLAG_ON_PLAYER)
-		             ||	(io->show == SHOW_FLAG_HIDDEN)))   
-		{
+		
+		if(io && (io->show == SHOW_FLAG_IN_SCENE || io->show == SHOW_FLAG_TELEPORTING
+		          || io->show == SHOW_FLAG_ON_PLAYER || io->show == SHOW_FLAG_HIDDEN)) {
+			
 			bool treat;
-
 			if (io->ioflags & IO_CAMERA) {
 				treat = false;
 			} else if (io->ioflags & IO_MARKER) {
@@ -1182,7 +1179,7 @@ void ComputeVVPos(Entity * io) {
 					val *= ( 1.0f / 10 );
 				} else {
 					float ratio = (eediff - 10.f) * ( 1.0f / 5 );
-					val = val * ratio + val * (1.f - ratio); 
+					val = val * ratio + val * (1.f - ratio);
 				}
 			}
 			fdiff -= val;
@@ -1664,7 +1661,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	float tempo;
 	EERIEPOLY * ep = CheckInPoly(io->pos + Vec3f(0.f, player.baseHeight(), 0.f));
 	if(ep && GetTruePolyY(ep, io->pos, &tempo)) {
-		io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
+		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
 	
 	ep = CheckInPoly(io->pos);
@@ -1758,14 +1755,14 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 
 	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos + Vec3f(0.f, -60.f, 0.f));
-
+	
 	if(ep) {
 		float tempo;
-
-		if(GetTruePolyY(ep, io->pos, &tempo))
-			io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
+		if(GetTruePolyY(ep, io->pos, &tempo)) {
+			io->lastpos.y = io->initpos.y = io->pos.y = tempo;
+		}
 	}
-
+	
 	ep = CheckInPoly(io->pos);
 
 	if(ep) {
