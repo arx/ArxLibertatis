@@ -55,9 +55,9 @@ struct type_cast;
  * This provides convenient interface for adding new option (the add) method,
  * and executing option handlers by name.
  *
- * \param StringType type of string
+ * \tparam StringType type of string
  *
- * \param TypeCast type of class that is used to convertation StringType to
+ * \tparam TypeCast type of class that is used to convertation StringType to
  *   expected type by option handler.
  */
 template <typename StringType, typename TypeCast = type_cast>
@@ -80,8 +80,6 @@ public:
 	 *                object whose class contains only one operator().
 	 *
 	 * \param option_name "Name" of this option.
-	 *
-	 * \returns none.
 	 *
 	 * \throws If an option with one of the names that are contained in op_name_t
 	 *            already exists an exception will be thrown.
@@ -111,8 +109,6 @@ public:
 	 *                object whose class contains only one operator().
 	 *
 	 * \param option_name "Name" of this option.
-	 *
-	 * \returns none.
 	 *
 	 * \throws If an option with one of the names that are contained in op_name_t
 	 *            already exists an exception will be thrown.
@@ -153,9 +149,9 @@ public:
 	 *
 	 * \param option_name Name of an option
 	 *
-	 * \param args_begin  Iterator referring to the first argument for the option.
-	 * \param args_optend Iterator referring to the end of arguments to be consumed by \ref optional.
-	 * \param args_end    Iterator referring to the past-the-end argument for the option.
+	 * \param args_begin Iterator referring to the first argument for the option.
+	 * \param args_opend Iterator referring to the end of arguments to be consumed by \ref optional.
+	 * \param args_end   Iterator referring to the past-the-end argument for the option.
 	 *
 	 * \throws If option isn't found or the handler of this options takes more
 	 *            than required arguments or they can't be converted, an exception
