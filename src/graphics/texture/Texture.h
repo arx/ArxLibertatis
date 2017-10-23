@@ -31,7 +31,7 @@ public:
 	
 	enum TextureFlag {
 		HasMipmaps  = (1<<0),
-		HasColorKey = (1<<1),
+		ApplyColorKey = (1<<1),
 		Intensity   = (1<<2),
 	};
 	DECLARE_FLAGS(TextureFlag, TextureFlags)
@@ -76,7 +76,7 @@ public:
 	
 	virtual ~Texture2D() { }
 	
-	bool Init(const res::path & strFileName, TextureFlags flags = HasColorKey);
+	bool Init(const res::path & strFileName, TextureFlags flags);
 	bool Init(const Image & image, TextureFlags flags = HasMipmaps);
 	bool Init(unsigned int width, unsigned int height, Image::Format format);
 	

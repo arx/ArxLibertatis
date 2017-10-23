@@ -56,10 +56,10 @@ bool Texture2D::Restore() {
 		
 		mImage.LoadFromFile(mFileName);
 		
-		if((flags & HasColorKey) && !mImage.HasAlpha()) {
+		if((flags & ApplyColorKey) && !mImage.HasAlpha()) {
 			mImage.ApplyColorKeyToAlpha(Color::black, config.video.colorkeyAntialiasing);
 			if(!mImage.HasAlpha()) {
-				flags &= ~HasColorKey;
+				flags &= ~ApplyColorKey;
 			}
 		}
 		
