@@ -111,7 +111,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 		return;
 	}
 	
-	ArxInstant now = arxtime.now();
+	ArxInstant now = g_gameTime.now();
 
 	SYMBOL_DRAW * sd = &g_bookSymbolDraw;
 	AnimationDuration elapsed = toAnimationDuration(now - sd->starttime);
@@ -170,7 +170,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 void ARX_SPELLS_UpdateSymbolDraw() {
 	
-	ArxInstant now = arxtime.now();
+	ArxInstant now = g_gameTime.now();
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
@@ -339,7 +339,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 	sd->duration = AnimationDurationMs(std::max(1l, long(duration)));
 	sd->sequence = info.sequence;
 
-	sd->starttime = arxtime.now();
+	sd->starttime = g_gameTime.now();
 	sd->elapsed = 0;
 	
 	sd->cPosStart = info.startOffset;

@@ -58,7 +58,7 @@ void Trail::SetNextPosition(Vec3f & nextPosition)
 
 void Trail::Update(ArxDuration timeDelta) {
 	
-	if(arxtime.isPaused()) {
+	if(g_gameTime.isPaused()) {
 		return;
 	}
 	

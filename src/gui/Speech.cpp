@@ -125,7 +125,7 @@ void ARX_SPEECH_Add(const std::string & text) {
 	if(text.empty())
 		return;
 	
-	ArxInstant now = std::max(arxtime.now(), ArxInstantMs(1));
+	ArxInstant now = std::max(g_gameTime.now(), ArxInstantMs(1));
 	
 	if(g_speech[MAX_SPEECH - 1].timecreation != 0) {
 		ARX_SPEECH_MoveUp();
@@ -209,7 +209,7 @@ void ARX_SPEECH_Check()
 			continue;
 		}
 		
-		ArxDuration elapsed = arxtime.now() - g_speech[i].timecreation;
+		ArxDuration elapsed = g_gameTime.now() - g_speech[i].timecreation;
 		if(elapsed > g_speech[i].duration) {
 			ARX_SPEECH_MoveUp();
 			i--;
@@ -344,7 +344,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	}
 	
 	aspeech[num].exist = 1;
-	aspeech[num].time_creation = arxtime.now();
+	aspeech[num].time_creation = g_gameTime.now();
 	aspeech[num].io = io; // can be NULL
 	aspeech[num].duration = ArxDurationMs(2000); // Minimum value
 	aspeech[num].flags = flags;
@@ -419,7 +419,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 
 void ARX_SPEECH_Update() {
 	
-	ArxInstant now = arxtime.now();
+	ArxInstant now = g_gameTime.now();
 
 	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
 		ARX_CONVERSATION_CheckAcceleratedSpeech();

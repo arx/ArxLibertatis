@@ -136,6 +136,6 @@ public:
 
 DECLARE_FLAGS_OPERATORS(GameTime::PauseFlags)
 
-extern GameTime arxtime;
+extern GameTime g_gameTime;
 
 #endif // ARX_CORE_GAMETIME_H

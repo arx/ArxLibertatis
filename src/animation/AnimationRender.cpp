@@ -318,10 +318,10 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 		if(io->show == SHOW_FLAG_TELEPORTING) {
 			io->sfx_time = io->sfx_time + g_framedelay2;
 
-			if (io->sfx_time >= arxtime.now())
-				io->sfx_time = arxtime.now();
+			if (io->sfx_time >= g_gameTime.now())
+				io->sfx_time = g_gameTime.now();
 		} else {
-			const ArxDuration elapsed = arxtime.now() - io->sfx_time;
+			const ArxDuration elapsed = g_gameTime.now() - io->sfx_time;
 
 			if(elapsed > 0) {
 				if(elapsed < ArxDurationMs(3000)) { // 5 seconds to red
@@ -667,7 +667,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 		}
 
 		if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
-			float wave = timeWaveSin(arxtime.now(), ArxDurationMsf(628.319f));
+			float wave = timeWaveSin(g_gameTime.now(), ArxDurationMsf(628.319f));
 			float siz = ddist * (halo.radius * 1.5f * (wave * .1f + .7f)) * .6f;
 			
 			TexturedVertex vert[4];
@@ -1003,7 +1003,7 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 		}
 
 		if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
-			float wave = timeWaveSin(arxtime.now(), ArxDurationMsf(628.319f));
+			float wave = timeWaveSin(g_gameTime.now(), ArxDurationMsf(628.319f));
 			float siz = haloInfo.ddist * (curhalo->radius * (wave * .1f + 1.f)) * .6f;
 			if(io == entities.player() && haloInfo.ddist > 0.8f && !EXTERNALVIEW) {
 				siz *= 1.5f;
@@ -1089,7 +1089,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 	bool glow = false;
 	ColorRGBA glowColor;
 	if(io && (io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) && io->show != SHOW_FLAG_TELEPORTING) {
-		const ArxDuration elapsed = arxtime.now() - io->sfx_time;
+		const ArxDuration elapsed = g_gameTime.now() - io->sfx_time;
 		if(elapsed >= ArxDurationMs(3000) && elapsed < ArxDurationMs(6000)) {
 			float ratio = (elapsed - ArxDurationMs(3000)) / ArxDurationMs(3000);
 			glowColor = Color::gray(ratio).toRGB();
@@ -1334,7 +1334,7 @@ static void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBle
 		return;
 	}
 
-	float timm = toMsf(arxtime.now() - animBlend->lastanimtime) + 0.0001f;
+	float timm = toMsf(g_gameTime.now() - animBlend->lastanimtime) + 0.0001f;
 
 	if(timm >= 300.f) {
 		animBlend->m_active = false;

@@ -232,7 +232,7 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 	// FIXME static local variable
 	static long ppos = 0;
 	
-	if(arxtime.isPaused()) {
+	if(g_gameTime.isPaused()) {
 		return;
 	}
 	
@@ -386,7 +386,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[0] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMsi(arxtime.now() - es->timers[0]);
+					*lcontent = toMsi(g_gameTime.now() - es->timers[0]);
 				}
 				return TYPE_LONG;
 			}
@@ -395,7 +395,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[1] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMsi(arxtime.now() - es->timers[1]);
+					*lcontent = toMsi(g_gameTime.now() - es->timers[1]);
 				}
 				return TYPE_LONG;
 			}
@@ -404,7 +404,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[2] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMsi(arxtime.now() - es->timers[2]);
+					*lcontent = toMsi(g_gameTime.now() - es->timers[2]);
 				}
 				return TYPE_LONG;
 			}
@@ -413,7 +413,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[3] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMsi(arxtime.now() - es->timers[3]);
+					*lcontent = toMsi(g_gameTime.now() - es->timers[3]);
 				}
 				return TYPE_LONG;
 			}
@@ -429,22 +429,22 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^gamedays") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 86400000);
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) / 86400000);
 				return TYPE_LONG;
 			}
 			
 			if(name == "^gamehours") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 3600000);
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) / 3600000);
 				return TYPE_LONG;
 			}
 			
 			if(name == "^gameminutes") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 60000);
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) / 60000);
 				return TYPE_LONG;
 			}
 			
 			if(name == "^gameseconds") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) / 1000);
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) / 1000);
 				return TYPE_LONG;
 			}
 			
@@ -463,27 +463,27 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^arxdays") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 * 2 / 86400000);
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) * 6 * 2 / 86400000);
 				return TYPE_LONG;
 			}
 			
 			if(name == "^arxhours") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 3600000);
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) * 6 / 3600000);
 				return TYPE_LONG;
 			}
 			
 			if(name == "^arxminutes") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 60000);
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) * 6 / 60000);
 				return TYPE_LONG;
 			}
 			
 			if(name == "^arxseconds") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 1000);
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) * 6 / 1000);
 				return TYPE_LONG;
 			}
 			
 			if(name == "^arxtime_hours") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 3600000) % 12;
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) * 6 / 3600000) % 12;
 				if(*lcontent == 0) {
 					*lcontent = 12;
 				}
@@ -491,7 +491,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^arxtime_minutes") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 60000) % 60;
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) * 6 / 60000) % 60;
 				if(*lcontent == 0) {
 					*lcontent = 60;
 				}
@@ -499,7 +499,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^arxtime_seconds") {
-				*lcontent = static_cast<long>(toMsi(arxtime.now()) * 6 / 1000) % 60;
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) * 6 / 1000) % 60;
 				if(*lcontent == 0) {
 					*lcontent = 60;
 				}
@@ -1836,7 +1836,7 @@ void ARX_SCRIPT_Timer_Check() {
 			continue;
 		}
 		
-		ArxInstant now = arxtime.now();
+		ArxInstant now = g_gameTime.now();
 		ArxInstant fire_time = st->start + st->interval;
 		arx_assert(st->start <= now);
 		if(fire_time > now) {

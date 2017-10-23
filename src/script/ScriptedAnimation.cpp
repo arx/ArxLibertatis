@@ -288,7 +288,7 @@ public:
 			}
 			timer.name = timername;
 			timer.pos = pos;
-			timer.start = arxtime.now();
+			timer.start = g_gameTime.now();
 			timer.count = 1;
 			timer.longinfo = 0;
 			
@@ -485,7 +485,7 @@ public:
 			io->usepath = NULL;
 			
 			ARX_USE_PATH * aup = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
-			aup->_starttime = aup->_curtime = arxtime.now();
+			aup->_starttime = aup->_curtime = g_gameTime.now();
 			aup->aupflags = ARX_USEPATH_FORWARD;
 			if(wormspecific) {
 				aup->aupflags |= ARX_USEPATH_WORM_SPECIFIC | ARX_USEPATH_FLAG_ADDSTARTPOS;

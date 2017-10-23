@@ -75,7 +75,7 @@ void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate, SpawnSparkTyp
 
 void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType type) {
 	
-	if(arxtime.isPaused()) {
+	if(g_gameTime.isPaused()) {
 		return;
 	}
 	
@@ -99,7 +99,7 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 		
 		g_sparkParticlesCount++;
 		
-		spark.timcreation = toMsi(arxtime.now());
+		spark.timcreation = toMsi(g_gameTime.now());
 		spark.m_pos = pos + arx::randomVec(-5.f, 5.f);
 		spark.move = arx::randomVec(-6.f, 6.f);
 		spark.m_duration = len * 90 + count;
@@ -130,7 +130,7 @@ void ParticleSparkUpdate() {
 	
 	EERIE_CAMERA * cam = &subj;
 	
-	const ArxInstant now = arxtime.now();
+	const ArxInstant now = g_gameTime.now();
 	
 	RenderMaterial sparkMaterial;
 	sparkMaterial.setBlendType(RenderMaterial::Additive);

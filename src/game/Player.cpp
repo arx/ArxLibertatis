@@ -1025,9 +1025,9 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta)
 
 			// Check for player hungry sample playing
 			if((player.hunger > 10.f && player.hunger - inc_hunger <= 10.f)
-					|| (player.hunger < 10.f && arxtime.now() > LastHungerSample + ArxDurationMs(180000)))
+					|| (player.hunger < 10.f && g_gameTime.now() > LastHungerSample + ArxDurationMs(180000)))
 			{
-				LastHungerSample = arxtime.now();
+				LastHungerSample = g_gameTime.now();
 
 				if(!BLOCK_PLAYER_CONTROLS) {
 					bool bOk = true;
@@ -1273,7 +1273,7 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	ARX_PROFILE_FUNC();
 	
-	ArxInstant now = arxtime.now();
+	ArxInstant now = g_gameTime.now();
 	
 	if(player.m_currentMovement & PLAYER_ROTATE) {
 		if(ROTATE_START == 0) {
@@ -2594,7 +2594,7 @@ void ARX_GAME_Reset() {
 
 	ioSteal = NULL;
 
-	arxtime.setSpeed(1.f);
+	g_gameTime.setSpeed(1.f);
 
 	CheatReset();
 	

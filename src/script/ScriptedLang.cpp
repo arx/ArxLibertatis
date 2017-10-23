@@ -219,7 +219,7 @@ public:
 		
 		EERIE_SCRIPT * script = context.getMaster();
 		if(start) {
-			script->timers[t] = arxtime.now();
+			script->timers[t] = g_gameTime.now();
 			if(script->timers[t] == 0) {
 				script->timers[t] = ArxInstantMs(1);
 			}
@@ -900,7 +900,7 @@ void timerCommand(const std::string & timer, Context & context) {
 	scr_timer[num].interval = ArxDurationMs(interval);
 	scr_timer[num].name = timername;
 	scr_timer[num].pos = pos;
-	scr_timer[num].start = arxtime.now();
+	scr_timer[num].start = g_gameTime.now();
 	scr_timer[num].count = count;
 	
 	scr_timer[num].flags = (idle && io) ? 1 : 0;

@@ -326,7 +326,7 @@ void MagicMissileSpell::Update() {
 		if(el) {
 			el->intensity		= 0.7f + 2.3f * pMM->lightIntensityFactor;
 			el->pos = pMM->eCurPos;
-			el->creationTime	= arxtime.now();
+			el->creationTime	= g_gameTime.now();
 		}
 	}
 }

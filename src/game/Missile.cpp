@@ -144,7 +144,7 @@ void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f &
 
 	dist = 1.0F / fdist(startpos, targetpos);
 	missiles[i].velocity = (targetpos - startpos) * dist;
-	missiles[i].lastupdate = missiles[i].timecreation = arxtime.now();
+	missiles[i].lastupdate = missiles[i].timecreation = g_gameTime.now();
 
 	switch (type)
 	{
@@ -179,7 +179,7 @@ void ARX_MISSILES_Update() {
 	
 	TextureContainer * tc = TC_fire; 
 
-	ArxInstant now = arxtime.now();
+	ArxInstant now = g_gameTime.now();
 
 	for(unsigned long i(0); i < MAX_MISSILES; i++) {
 		if(missiles[i].type == MISSILE_NONE)

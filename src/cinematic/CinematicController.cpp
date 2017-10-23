@@ -70,7 +70,7 @@ void cinematicPrepare(const std::string & name, bool preload) {
 
 void cinematicRequestStart() {
 	PLAY_LOADED_CINEMATIC = Cinematic_StartRequested;
-	arxtime.pause(GameTime::PauseCinematic);
+	g_gameTime.pause(GameTime::PauseCinematic);
 }
 
 void cinematicKill() {
@@ -78,7 +78,7 @@ void cinematicKill() {
 		ControlCinematique->projectload = false;
 		ControlCinematique->OneTimeSceneReInit();
 		PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
-		arxtime.resume(GameTime::PauseCinematic);
+		g_gameTime.resume(GameTime::PauseCinematic);
 		CINE_PRELOAD = false;
 	}
 }

@@ -148,7 +148,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			pb.ep = ep;
 			pb.tc = tc2;
 			pb.tolive = ArxDurationMs(10000);
-			pb.timecreation = arxtime.now();
+			pb.timecreation = g_gameTime.now();
 			pb.rgb = Color3f::black;
 			for(int k = 0; k < nbvert; k++) {
 				pb.v[k] = pb.u[k] = temp_uv1[k];
@@ -253,7 +253,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	float hdiv,vdiv;
 	hdiv=vdiv=1.f/(size*2);
 	
-	ArxInstant now = arxtime.now();
+	ArxInstant now = g_gameTime.now();
 	
 	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
 	while(pb != polyboom.end()) {
@@ -367,7 +367,7 @@ void PolyBoomDraw() {
 	ARX_PROFILE_FUNC();
 	
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
-	ArxInstant now = arxtime.now();
+	ArxInstant now = g_gameTime.now();
 	
 	for(size_t i = 0; i < polyboom.size(); i++) {
 		

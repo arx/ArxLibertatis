@@ -181,7 +181,7 @@ static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light) {
 
 void FlyingEyeSpell::Update() {
 	
-	const ArxInstant now = arxtime.now();
+	const ArxInstant now = g_gameTime.now();
 	
 	const ArxDuration framediff3 = now - m_lastupdate;
 	
@@ -703,7 +703,7 @@ void ConfuseSpell::Update() {
 	mat.setBlendType(RenderMaterial::Additive);
 	mat.setTexture(tex_trail);
 	
-	float rot = timeWaveSaw(arxtime.now(), ArxDurationMs(3142)) * 360.f;
+	float rot = timeWaveSaw(g_gameTime.now(), ArxDurationMs(3142)) * 360.f;
 	
 	Anglef stiteangle = Anglef(0.f, -rot, 0.f);
 	

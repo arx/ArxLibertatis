@@ -220,8 +220,8 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 	
 	PARTICLE_DEF * pd = createParticle();
 	if(pd) {
-		float sinW = timeWaveSin(arxtime.now(), ArxDurationMsf(6283.19f));
-		float cosW = timeWaveCos(arxtime.now(), ArxDurationMsf(6283.19f));
+		float sinW = timeWaveSin(g_gameTime.now(), ArxDurationMsf(6283.19f));
+		float cosW = timeWaveCos(g_gameTime.now(), ArxDurationMsf(6283.19f));
 		
 		float power = (dmgs * (1.f/60)) + .9f;
 		
@@ -550,7 +550,7 @@ void ARX_PARTICLES_ClearAll() {
 
 PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 	
-	if(!allocateWhilePaused && arxtime.isPaused()) {
+	if(!allocateWhilePaused && g_gameTime.isPaused()) {
 		return NULL;
 	}
 	
@@ -564,7 +564,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		
 		ParticleCount++;
 		pd->exist = true;
-		pd->timcreation = toMsi(arxtime.now());
+		pd->timcreation = toMsi(g_gameTime.now());
 		
 		pd->is2D = false;
 		pd->rgb = Color3f::white;
@@ -784,7 +784,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		return;
 	}
 	
-	const ArxInstant now = arxtime.now();
+	const ArxInstant now = g_gameTime.now();
 	
 	long pcc = ParticleCount;
 	

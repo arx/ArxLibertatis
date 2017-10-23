@@ -1391,7 +1391,7 @@ void ArxGame::speechControlledCinematic() {
 		const CinematicSpeech & acs = aspeech[valid].cine;
 		const Entity * io = aspeech[valid].io;
 		
-		const ArxDuration elapsed = arxtime.now() - aspeech[valid].time_creation;
+		const ArxDuration elapsed = g_gameTime.now() - aspeech[valid].time_creation;
 		float rtime = elapsed / aspeech[valid].duration;
 
 		rtime = glm::clamp(rtime, 0.f, 1.f);
@@ -1606,10 +1606,10 @@ void ArxGame::updateTime() {
 		g_platformTime.overrideFrameDuration(0);
 	}
 	
-	arxtime.update(g_platformTime.lastFrameDuration());
+	g_gameTime.update(g_platformTime.lastFrameDuration());
 	
-	g_framedelay = toMsf(arxtime.lastFrameDuration());
-	g_framedelay2 = arxtime.lastFrameDuration();
+	g_framedelay = toMsf(g_gameTime.lastFrameDuration());
+	g_framedelay2 = g_gameTime.lastFrameDuration();
 	
 }
 
@@ -1723,10 +1723,10 @@ void ArxGame::updateInput() {
 	
 #ifdef ARX_DEBUG
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_Pause)) {
-		if(arxtime.isPaused() & GameTime::PauseUser) {
-			arxtime.resume(GameTime::PauseUser);
+		if(g_gameTime.isPaused() & GameTime::PauseUser) {
+			g_gameTime.resume(GameTime::PauseUser);
 		} else {
-			arxtime.pause(GameTime::PauseUser);
+			g_gameTime.pause(GameTime::PauseUser);
 		}
 	}
 #endif
@@ -1922,7 +1922,7 @@ void ArxGame::updateLevel() {
 		
 		SpellBase * spell = spells.getSpellByCaster(EntityHandle_Player, SPELL_MAGIC_SIGHT);
 		if(spell) {
-			ArxDuration duration = arxtime.now() - spell->m_timcreation;
+			ArxDuration duration = g_gameTime.now() - spell->m_timcreation;
 			magicSightZoom = glm::clamp(duration / ArxDurationMs(500), 0.f, 1.f);
 		}
 		
@@ -2082,7 +2082,7 @@ void ArxGame::render() {
 	subj.center = Vec2i(g_size.center().x, g_size.center().y);
 	subj.orgTrans.mod = Vec2f(subj.center);
 	
-	PULSATE = timeWaveSin(arxtime.now(), ArxDurationMsf(5026.548245f));
+	PULSATE = timeWaveSin(g_gameTime.now(), ArxDurationMsf(5026.548245f));
 	EERIEDrawnPolys = 0;
 
 	// Checks for Keyboard & Moulinex

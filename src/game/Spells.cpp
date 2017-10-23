@@ -951,7 +951,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 			case SPELL_INCINERATE:
 			case SPELL_SLOW_DOWN:
 			case SPELL_CONFUSE: {
-				LOOKING_FOR_SPELL_TARGET_TIME = arxtime.now();
+				LOOKING_FOR_SPELL_TARGET_TIME = g_gameTime.now();
 				LOOKING_FOR_SPELL_TARGET = 1;
 				t_spell.typ = typ;
 				t_spell.flags = flags;
@@ -961,7 +961,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 				return false;
 			}
 			case SPELL_ENCHANT_WEAPON: {
-				LOOKING_FOR_SPELL_TARGET_TIME = arxtime.now();
+				LOOKING_FOR_SPELL_TARGET_TIME = g_gameTime.now();
 				LOOKING_FOR_SPELL_TARGET = 2;
 				t_spell.typ = typ;
 				t_spell.flags = flags;
@@ -999,7 +999,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 				
 				ARX_SOUND_PlaySpeech("player_follower_attack");
 				
-				LOOKING_FOR_SPELL_TARGET_TIME = arxtime.now();
+				LOOKING_FOR_SPELL_TARGET_TIME = g_gameTime.now();
 				LOOKING_FOR_SPELL_TARGET = 1;
 				t_spell.typ = typ;
 				t_spell.flags = flags;
@@ -1059,7 +1059,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	spell->m_level = spellLevel;
 	spell->m_flags = flags;
 	spell->m_type = typ;
-	spell->m_timcreation = arxtime.now();
+	spell->m_timcreation = g_gameTime.now();
 	spell->m_fManaCostPerSecond = 0.f;
 	spell->m_launchDuration = duration;
 	

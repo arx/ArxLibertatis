@@ -212,7 +212,7 @@ void ARX_MENU_Launch(bool allowResume) {
 	
 	g_canResumeGame = allowResume;
 
-	arxtime.pause(GameTime::PauseMenu);
+	g_gameTime.pause(GameTime::PauseMenu);
 
 	//Synchronize menu mixers with game mixers and switch between them
 	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerGame, ARX_SOUND_MixerMenu);
@@ -242,7 +242,7 @@ void ARX_Menu_Manage() {
 				} else {
 					GRenderer->getSnapshot(savegame_thumbnail, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
 					
-					arxtime.pause(GameTime::PauseMenu);
+					g_gameTime.pause(GameTime::PauseMenu);
 					
 					ARX_MENU_Launch(true);
 					bFadeInOut=false;	//fade out
@@ -268,7 +268,7 @@ void ARX_Menu_Manage() {
 			   && MENU_NoActiveWindow()
 			   && g_canResumeGame
 			) {
-				arxtime.resume(GameTime::PauseMenu);
+				g_gameTime.resume(GameTime::PauseMenu);
 				ARX_MENU_Clicked_QUIT();
 			}
 			break;

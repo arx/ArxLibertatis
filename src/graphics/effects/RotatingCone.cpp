@@ -101,7 +101,7 @@ void RotatingCone::Render() {
 		int col = Random::get(0, 80);
 		
 		// TODO per-frame randomness
-		if(!arxtime.isPaused()) {
+		if(!g_gameTime.isPaused()) {
 			d3dv->color = Color::grayb(col).toRGB(col);
 		}
 		
@@ -118,7 +118,7 @@ void RotatingCone::Render() {
 		col = Random::get(0, 80);
 		
 		// TODO per-frame randomness
-		if(!arxtime.isPaused()) {
+		if(!g_gameTime.isPaused()) {
 			d3dv->color = Color::black.toRGB(col);
 		}
 		
