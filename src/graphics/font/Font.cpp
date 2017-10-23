@@ -43,7 +43,7 @@
 //! Pre-load all visible characters below this one when creating a font object
 static const Font::Char FONT_PRELOAD_LIMIT = 127;
 
-Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face) 
+Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face)
 	: info(fontFile, fontSize)
 	, referenceCount(0)
 	, face(face)
