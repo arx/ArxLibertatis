@@ -887,7 +887,7 @@ void OpenGLRenderer::flushState() {
 			}
 		}
 		
-		bool useA2C = m_hasMSAA && config.video.colorkeyAlphaToCoverage;
+		bool useA2C = m_hasMSAA && config.video.alphaCutoutAntialiasing != 0;
 		if(m_glstate.getAlphaCutout() != m_state.getAlphaCutout()
 		   || (useA2C && m_state.getAlphaCutout()
 		       && m_glstate.isBlendEnabled() != m_state.isBlendEnabled())) {
