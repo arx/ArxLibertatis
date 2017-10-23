@@ -116,7 +116,12 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 			file(APPEND ${unit_build_file} "#undef ARX_TRANSLATION_UNIT\n")
 			file(APPEND ${unit_build_file} "#define ARX_TRANSLATION_UNIT ${file_symbol}\n")
 			
-			file(APPEND ${unit_build_file} "#include \"${source_file}\"\n\n")
+			file(APPEND ${unit_build_file} "#include \"${source_file}\"\n")
+			
+			file(APPEND ${unit_build_file} "#if !defined(ARX_FILE) || !defined(ARX_TRANSLATION_UNIT)\n")
+			file(APPEND ${unit_build_file} "#error \"Keep this check to avoid unused macro warnings.\"\n")
+			file(APPEND ${unit_build_file} "#endif\n")
+			file(APPEND ${unit_build_file} "\n")
 			
 		endif()
 		
