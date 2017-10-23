@@ -104,7 +104,6 @@ private:
 public:
 	
 	GameTime();
-	~GameTime() {}
 	
 	void pause(PauseFlags flags) {
 		m_paused |= flags;
