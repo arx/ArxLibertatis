@@ -106,34 +106,16 @@ public:
 	void reset();
 	void purgeTexContainer();
 	
-	/*! 
-	* Calls revealPlayerPos if the player moved, also sets m_currentLevel and m_playerPos
-	*
-	* \param int currentLevel
-	* \param long blockPlayerControls
-	* \param ARX_INTERFACE_BOOK_MODE bookMode
-	*/
+	//! Calls revealPlayerPos if the player moved, also sets m_currentLevel and m_playerPos
 	void validatePlayerPos(int currentLevel, long blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode);
 	
-	/*! 
-	* Shows the top right minimap
-	*
-	* \param int showLevel
-	*/
+	//! Shows the top right minimap
 	void showPlayerMiniMap(int showLevel);
 	
-	/*! 
-	* Shows the zoomed-in minimap in the book
-	*
-	* \param int showLevel
-	*/
+	//! Shows the zoomed-in minimap in the book
 	void showBookMiniMap(int showLevel);
 	
-	/*!
-	* Shows the entire map in the book
-	*
-	* \param int showLevel
-	*/
+	//! Shows the entire map in the book
 	void showBookEntireMap(int showLevel);
 	
 	//! Reveals entirely all levels
@@ -175,15 +157,12 @@ private:
 	
 	/*!
 	* Reveals the direct surroundings of the player
-	*
-	* \param int showLevel
 	*/
 	void revealPlayerPos(int showLevel);
 	
 	/*!
 	* Gets the id from the MapMarker's name. Returns -1 when not found.
 	*
-	* \param std::string name
 	* \return MapMarker's id (int).
 	*/
 	int mapMarkerGetID(const std::string &name);
