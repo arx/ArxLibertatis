@@ -162,7 +162,7 @@ RenderState RenderMaterial::apply() const {
 	
 	if(m_blendType == Opaque) {
 		state.disableBlend();
-		state.setColorKey(m_texture && m_texture->hasAlpha());
+		state.setAlphaCutout(m_texture && m_texture->hasAlpha());
 	} else {
 		switch(m_blendType) {
 		

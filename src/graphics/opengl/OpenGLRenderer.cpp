@@ -378,7 +378,7 @@ void OpenGLRenderer::reinit() {
 	m_glstate.setFog(false);
 	
 	glAlphaFunc(GL_GREATER, 0.5f);
-	m_glstate.setColorKey(false);
+	m_glstate.setAlphaCutout(false);
 	
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_ALWAYS);
@@ -655,13 +655,13 @@ void OpenGLRenderer::SetAntialiasing(bool enable) {
 		return;
 	}
 	
-	// The state used for color keying can differ between msaa and non-msaa.
+	// The state used for alpha cutouts can differ between msaa and non-msaa.
 	// Clear the old flushed state.
-	if(m_glstate.getColorKey()) {
-		bool colorkey = m_state.getColorKey();
-		m_state.setColorKey(false);
+	if(m_glstate.getAlphaCutout()) {
+		bool alphaCutout = m_state.getAlphaCutout();
+		m_state.setAlphaCutout(false);
 		flushState();
-		m_state.setColorKey(colorkey);
+		m_state.setAlphaCutout(alphaCutout);
 	}
 	
 	// This is mostly useless as multisampling must be enabled/disabled at GL context creation.
@@ -888,30 +888,30 @@ void OpenGLRenderer::flushState() {
 		}
 		
 		bool useA2C = m_hasMSAA && config.video.colorkeyAlphaToCoverage;
-		if(m_glstate.getColorKey() != m_state.getColorKey()
-		   || (useA2C && m_state.getColorKey()
+		if(m_glstate.getAlphaCutout() != m_state.getAlphaCutout()
+		   || (useA2C && m_state.getAlphaCutout()
 		       && m_glstate.isBlendEnabled() != m_state.isBlendEnabled())) {
-			/* When rendering color-keyed textures with alpha blending enabled we still
+			/* When rendering alpha cutouts with alpha blending enabled we still
 			 * need to 'discard' transparent texels, as blending might not use the src alpha!
 			 * On the other hand, we can't use GL_SAMPLE_ALPHA_TO_COVERAGE when blending
 			 * as that could result in the src alpha being applied twice (e.g. for text).
 			 * So we must toggle between alpha to coverage and alpha test when toggling blending.
 			 */
 			bool disableA2C = useA2C && !m_glstate.isBlendEnabled()
-				                && (!m_state.getColorKey() || m_state.isBlendEnabled());
+				                && (!m_state.getAlphaCutout() || m_state.isBlendEnabled());
 			bool enableA2C = useA2C && !m_state.isBlendEnabled()
-				               && (!m_glstate.getColorKey() || m_glstate.isBlendEnabled());
-			if(m_glstate.getColorKey()) {
+				               && (!m_glstate.getAlphaCutout() || m_glstate.isBlendEnabled());
+			if(m_glstate.getAlphaCutout()) {
 				if(disableA2C) {
 					glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-				} else if(!m_state.getColorKey() || enableA2C) {
+				} else if(!m_state.getAlphaCutout() || enableA2C) {
 					glDisable(GL_ALPHA_TEST);
 				}
 			}
-			if(m_state.getColorKey()) {
+			if(m_state.getAlphaCutout()) {
 				if(enableA2C) {
 					glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-				} else if(!m_glstate.getColorKey() || disableA2C) {
+				} else if(!m_glstate.getAlphaCutout() || disableA2C) {
 					glEnable(GL_ALPHA_TEST);
 				}
 			}
