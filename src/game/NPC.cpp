@@ -983,8 +983,8 @@ void ARX_PHYSICS_Apply() {
 				}
 
 				GetTargetPos(io);
-
-				if(!arxtime.is_paused() && !(layer0.flags & EA_FORCEPLAY)) {
+				
+				if(!arxtime.isPaused() && !(layer0.flags & EA_FORCEPLAY)) {
 					if(io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
 						StareAtTarget(io);
 					else
@@ -2195,7 +2195,7 @@ afterthat:
 	}
 	
 	// Tries to face/stare at target
-	if(!arxtime.is_paused() && CHANGE && !(layer0.flags & EA_FORCEPLAY)) {
+	if(!arxtime.isPaused() && CHANGE && !(layer0.flags & EA_FORCEPLAY)) {
 		if(io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
 			StareAtTarget(io);
 		else

@@ -57,8 +57,10 @@ void Trail::SetNextPosition(Vec3f & nextPosition)
 }
 
 void Trail::Update(ArxDuration timeDelta) {
-	if(arxtime.is_paused())
+	
+	if(arxtime.isPaused()) {
 		return;
+	}
 	
 	m_lastSegmentDuration += timeDelta;
 	

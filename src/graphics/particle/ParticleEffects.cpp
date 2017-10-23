@@ -550,7 +550,7 @@ void ARX_PARTICLES_ClearAll() {
 
 PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 	
-	if(!allocateWhilePaused && arxtime.is_paused()) {
+	if(!allocateWhilePaused && arxtime.isPaused()) {
 		return NULL;
 	}
 	

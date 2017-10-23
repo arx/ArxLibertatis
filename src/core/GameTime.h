@@ -112,7 +112,7 @@ public:
 	
 	void update(PlatformDuration delta);
 	
-	bool is_paused() const { 
+	bool isPaused() const {
 		return m_paused;
 	}
 	

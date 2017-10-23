@@ -75,7 +75,7 @@ void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate, SpawnSparkTyp
 
 void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType type) {
 	
-	if(arxtime.is_paused()) {
+	if(arxtime.isPaused()) {
 		return;
 	}
 	

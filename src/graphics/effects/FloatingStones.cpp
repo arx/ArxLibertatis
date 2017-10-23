@@ -53,7 +53,7 @@ void FloatingStones::Update(ArxDuration timeDelta, Vec3f pos) {
 
 void FloatingStones::AddStone(const Vec3f & pos) {
 	
-	if(arxtime.is_paused() || m_nbstone > 255) {
+	if(arxtime.isPaused() || m_nbstone > 255) {
 		return;
 	}
 	
@@ -111,7 +111,7 @@ void FloatingStones::DrawStone()
 			}
 			
 			//update mvt
-			if(!arxtime.is_paused()) {
+			if(!arxtime.isPaused()) {
 				a = (m_currframetime * 100) / s.time;
 				s.pos.y += s.yvel * a;
 				s.ang += s.angvel * a;

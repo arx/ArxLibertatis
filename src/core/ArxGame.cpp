@@ -1722,7 +1722,7 @@ void ArxGame::updateInput() {
 	
 #ifdef ARX_DEBUG
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_Pause)) {
-		if(!arxtime.is_paused()) {
+		if(!arxtime.isPaused()) {
 			arxtime.pause();
 		} else {
 			arxtime.resume();

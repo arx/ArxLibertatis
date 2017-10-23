@@ -232,7 +232,7 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 	// FIXME static local variable
 	static long ppos = 0;
 	
-	if(arxtime.is_paused()) {
+	if(arxtime.isPaused()) {
 		return;
 	}
 	

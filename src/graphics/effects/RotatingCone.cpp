@@ -100,8 +100,10 @@ void RotatingCone::Render() {
 		d3dv->p = d3dvs;
 		int col = Random::get(0, 80);
 		
-		if(!arxtime.is_paused())
+		// TODO per-frame randomness
+		if(!arxtime.isPaused()) {
 			d3dv->color = Color::grayb(col).toRGB(col);
+		}
 		
 		d3dv->uv.x = u;
 		d3dv->uv.y = 0.f;
@@ -115,8 +117,10 @@ void RotatingCone::Render() {
 		d3dv->p = d3dvs;
 		col = Random::get(0, 80);
 		
-		if(!arxtime.is_paused())
+		// TODO per-frame randomness
+		if(!arxtime.isPaused()) {
 			d3dv->color = Color::black.toRGB(col);
+		}
 		
 		d3dv->uv.x = u;
 		d3dv->uv.y = 1.f;
