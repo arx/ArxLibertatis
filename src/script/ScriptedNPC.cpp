@@ -242,7 +242,7 @@ public:
 		
 		DebugScript(' ' << spellname << ' ' << level << ' ' << target << ' ' << spflags << ' ' << duration);
 		
-		TryToCastSpell(context.getEntity(), spellid, level, t->index(), spflags, ArxDurationMs(duration));
+		TryToCastSpell(context.getEntity(), spellid, level, t->index(), spflags, GameDurationMs(duration));
 		
 		return Success;
 	}

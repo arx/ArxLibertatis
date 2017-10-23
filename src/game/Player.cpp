@@ -156,7 +156,7 @@ AnimationDuration PLAYER_ROTATION = 0;
 bool USE_PLAYERCOLLISIONS = true;
 bool BLOCK_PLAYER_CONTROLS = false;
 bool WILLRETURNTOCOMBATMODE = false;
-ArxDuration DeadTime = 0;
+GameDuration DeadTime = 0;
 static GameInstant LastHungerSample = 0;
 static GameInstant ROTATE_START = 0;
 
@@ -1025,7 +1025,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta)
 
 			// Check for player hungry sample playing
 			if((player.hunger > 10.f && player.hunger - inc_hunger <= 10.f)
-					|| (player.hunger < 10.f && g_gameTime.now() > LastHungerSample + ArxDurationMs(180000)))
+					|| (player.hunger < 10.f && g_gameTime.now() > LastHungerSample + GameDurationMs(180000)))
 			{
 				LastHungerSample = g_gameTime.now();
 
@@ -1280,8 +1280,8 @@ void ARX_PLAYER_Manage_Visual() {
 			ROTATE_START = now;
 		}
 	} else if(ROTATE_START != 0) {
-		ArxDuration elapsed = now - ROTATE_START;
-		if(elapsed > ArxDurationMs(100)) {
+		GameDuration elapsed = now - ROTATE_START;
+		if(elapsed > GameDurationMs(100)) {
 			ROTATE_START = 0;
 		}
 	}
@@ -2412,11 +2412,11 @@ void PlayerMovementIterate(float DeltaTime) {
  * \brief Manage Player Death Visual
  */
 void ARX_PLAYER_Manage_Death() {
-	if(DeadTime <= ArxDurationMs(2000))
+	if(DeadTime <= GameDurationMs(2000))
 		return;
 
 	player.m_paralysed = false;
-	float ratio = (DeadTime - ArxDurationMs(2000)) / ArxDurationMs(5000);
+	float ratio = (DeadTime - GameDurationMs(2000)) / GameDurationMs(5000);
 
 	if(ratio >= 1.f) {
 		ARX_MENU_Launch(false);

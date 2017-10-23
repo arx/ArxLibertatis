@@ -330,7 +330,7 @@ static void CheckExp(const Projectile & projectile) {
 			light->rgb = Color3f(1.f, .8f, .6f) - randomColor3f() * Color3f(.2f, .2f, .2f);
 			light->pos = pos;
 			light->ex_flaresize = 40.f;
-			light->duration = ArxDurationMs(1500);
+			light->duration = GameDurationMs(1500);
 		}
 	}
 }
@@ -354,7 +354,7 @@ void ARX_THROWN_OBJECT_Render() {
 	}
 }
 
-void ARX_THROWN_OBJECT_Manage(ArxDuration timeDelta)
+void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta)
 {
 	float timeDeltaMs = toMsf(timeDelta);
 	
@@ -392,7 +392,7 @@ void ARX_THROWN_OBJECT_Manage(ArxDuration timeDelta)
 				light->pos = projectile.position;
 				light->ex_flaresize = 40.f;
 				light->extras |= EXTRAS_FLARE;
-				light->duration = ArxDurationMsf(g_framedelay * 0.5f);
+				light->duration = GameDurationMsf(g_framedelay * 0.5f);
 			}
 			
 			createObjFireParticles(projectile.obj, 6, 2, 180);

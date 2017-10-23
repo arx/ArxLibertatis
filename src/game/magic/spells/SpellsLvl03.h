@@ -69,7 +69,7 @@ private:
 	Vec3f eMove;
 	bool bExplo;
 	
-	ArxDuration m_createBallDuration;
+	GameDuration m_createBallDuration;
 };
 
 class CreateFoodSpell : public SpellBase {

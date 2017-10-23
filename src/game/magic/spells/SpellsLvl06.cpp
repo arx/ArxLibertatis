@@ -94,7 +94,7 @@ void RiseDeadSpell::Launch() {
 	m_entity = EntityHandle();
 	
 	m_fissure.Create(target, beta);
-	m_fissure.SetDuration(ArxDurationMs(2000), ArxDurationMs(500), ArxDurationMs(1800));
+	m_fissure.SetDuration(GameDurationMs(2000), GameDurationMs(500), GameDurationMs(1800));
 	m_fissure.SetColorBorder(Color3f(0.5, 0.5, 0.5));
 	m_fissure.SetColorRays1(Color3f(0.5, 0.5, 0.5));
 	m_fissure.SetColorRays2(Color3f(1.f, 0.f, 0.f));
@@ -106,7 +106,7 @@ void RiseDeadSpell::Launch() {
 		light->fallstart = 380.f;
 		light->rgb = Color3f::black;
 		light->pos = target - Vec3f(0.f, 100.f, 0.f);
-		light->duration = ArxDurationMs(200);
+		light->duration = GameDurationMs(200);
 		light->creationTime = g_gameTime.now();
 	}
 	
@@ -132,14 +132,14 @@ void RiseDeadSpell::End() {
 				light->fallstart = 400.f;
 				light->rgb = Color3f(1.0f, 0.8f, 0.f);
 				light->pos = posi;
-				light->duration = ArxDurationMs(600);
+				light->duration = GameDurationMs(600);
 			}
 
 			entity->destroyOne();
 		}
 	}
 	
-	endLightDelayed(m_light, ArxDurationMs(500));
+	endLightDelayed(m_light, GameDurationMs(500));
 }
 
 void RiseDeadSpell::Update() {
@@ -150,7 +150,7 @@ void RiseDeadSpell::Update() {
 	}
 	
 	// TODO why is the duration extended here ?
-	m_duration += ArxDurationMs(200);
+	m_duration += GameDurationMs(200);
 	
 	m_fissure.Update(g_framedelay2);
 	m_fissure.Render();
@@ -161,13 +161,13 @@ void RiseDeadSpell::Update() {
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
 		light->rgb = Color3f(0.8f, 0.2f, 0.2f);
-		light->duration = ArxDurationMs(800);
+		light->duration = GameDurationMs(800);
 		light->creationTime = g_gameTime.now();
 	}
 	
-	ArxDuration tim = m_fissure.m_elapsed;
+	GameDuration tim = m_fissure.m_elapsed;
 	
-	if(tim > ArxDurationMs(3000) && m_entity == EntityHandle() && !m_creationFailed) {
+	if(tim > GameDurationMs(3000) && m_entity == EntityHandle() && !m_creationFailed) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 		
 		Cylinder phys = Cylinder(m_targetPos, 50, -200);
@@ -214,7 +214,7 @@ void RiseDeadSpell::Update() {
 			m_creationFailed = true;
 			m_duration = 0;
 		}
-	} else if(!g_gameTime.isPaused() && tim < ArxDurationMs(4000)) {
+	} else if(!g_gameTime.isPaused() && tim < GameDurationMs(4000)) {
 	  if(Random::getf() > 0.95f) {
 			MakeCoolFx(m_fissure.m_eSrc);
 		}
@@ -225,7 +225,7 @@ void ParalyseSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[m_target]->pos);
 	
-	m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(5000);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(5000);
 	m_hasDuration = true;
 	
 	float resist_magic = 0.f;
@@ -236,7 +236,7 @@ void ParalyseSpell::Launch() {
 	}
 	if(Random::getf(0.f, 100.f) < resist_magic) {
 		float mul = std::max(0.5f, 1.f - (resist_magic * 0.005f));
-		m_duration = ArxDurationMsf(toMsf(m_duration) * mul);
+		m_duration = GameDurationMsf(toMsf(m_duration) * mul);
 	}
 	
 	entities[m_target]->ioflags |= IO_FREEZESCRIPT;
@@ -335,7 +335,7 @@ void CreateFieldSpell::Launch() {
 		if(m_flags & SPELLCAST_FLAG_RESTORE) {
 			//fast forward the field's animation so that players don't see it
 			//being casted in front of them on game load
-			m_field.Update(ArxDurationMs(4000));
+			m_field.Update(GameDurationMs(4000));
 		}
 		
 	} else {
@@ -347,7 +347,7 @@ void CreateFieldSpell::Launch() {
 
 void CreateFieldSpell::End() {
 	
-	endLightDelayed(m_field.lLightId, ArxDurationMs(800));
+	endLightDelayed(m_field.lLightId, GameDurationMs(800));
 	
 	Entity * io = entities.get(m_entity);
 	if(io) {
@@ -380,7 +380,7 @@ void DisarmTrapSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 	
-	m_duration = ArxDurationMs(1);
+	m_duration = GameDurationMs(1);
 	m_hasDuration = true;
 	
 	Sphere sphere;
@@ -426,7 +426,7 @@ void SlowDownSpell::Launch() {
 		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(10000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(10000);
 		m_hasDuration = true;
 	}
 	

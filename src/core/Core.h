@@ -85,7 +85,7 @@ extern std::string TELEPORT_TO_POSITION;
 extern float PULSATE;
 
 extern float g_framedelay;
-extern ArxDuration g_framedelay2;
+extern GameDuration g_framedelay2;
 
 extern bool g_requestLevelInit;
 

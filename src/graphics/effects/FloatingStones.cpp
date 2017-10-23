@@ -39,13 +39,13 @@ void FloatingStones::Init(float radius) {
 	}
 }
 
-void FloatingStones::Update(ArxDuration timeDelta, Vec3f pos) {
+void FloatingStones::Update(GameDuration timeDelta, Vec3f pos) {
 	
 	m_timestone -= timeDelta;
 	m_currframetime = timeDelta;
 	
 	if(m_timestone <= 0) {
-		m_timestone = ArxDurationMs(Random::get(50, 150));
+		m_timestone = GameDurationMs(Random::get(50, 150));
 		
 		AddStone(pos + arx::randomOffsetXZ(m_baseRadius));
 	}
@@ -70,7 +70,7 @@ void FloatingStones::AddStone(const Vec3f & pos) {
 			s.ang = Anglef(Random::getf(), Random::getf(), Random::getf()) * Anglef(360.f, 360.f, 360.f);
 			s.angvel = Anglef(Random::getf(), Random::getf(), Random::getf()) * Anglef(5.f, 6.f, 3.f);
 			s.scale = Vec3f(Random::getf(0.2f, 0.5f));
-			s.time = ArxDurationMs(Random::get(2000, 2500));
+			s.time = GameDurationMs(Random::get(2000, 2500));
 			s.currtime = 0;
 			break;
 		}

@@ -146,7 +146,7 @@ struct SCR_TIMER {
 	short exist;
 	short flags;
 	long count;
-	ArxDuration interval;
+	GameDuration interval;
 	long pos;
 	long longinfo;
 	GameInstant start;

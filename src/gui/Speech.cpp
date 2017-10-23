@@ -139,7 +139,7 @@ void ARX_SPEECH_Add(const std::string & text) {
 		
 		// Sets creation time
 		g_speech[i].timecreation = now;
-		g_speech[i].duration = ArxDurationMs(2000 + text.length() * 60);
+		g_speech[i].duration = GameDurationMs(2000 + text.length() * 60);
 		g_speech[i].text = text;
 		return;
 	}
@@ -209,7 +209,7 @@ void ARX_SPEECH_Check()
 			continue;
 		}
 		
-		ArxDuration elapsed = g_gameTime.now() - g_speech[i].timecreation;
+		GameDuration elapsed = g_gameTime.now() - g_speech[i].timecreation;
 		if(elapsed > g_speech[i].duration) {
 			ARX_SPEECH_MoveUp();
 			i--;
@@ -346,7 +346,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	aspeech[num].exist = 1;
 	aspeech[num].time_creation = g_gameTime.now();
 	aspeech[num].io = io; // can be NULL
-	aspeech[num].duration = ArxDurationMs(2000); // Minimum value
+	aspeech[num].duration = GameDurationMs(2000); // Minimum value
 	aspeech[num].flags = flags;
 	aspeech[num].sample = audio::INVALID_ID;
 	aspeech[num].fDeltaY = 0.f;
@@ -391,7 +391,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 		io->lastspeechflag = 0;
 		aspeech[num].text.clear();
 		aspeech[num].text = _output;
-		aspeech[num].duration = std::max(aspeech[num].duration, ArxDurationMs((strlen(_output.c_str()) + 1) * 100));
+		aspeech[num].duration = std::max(aspeech[num].duration, GameDurationMs((strlen(_output.c_str()) + 1) * 100));
 		
 		sample = data;
 	}
@@ -408,11 +408,11 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 
 	if ((io->ioflags & IO_NPC) && !(aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)) {
 		float fDiv = toMsf(aspeech[num].duration) / io->_npcdata->speakpitch;
-		aspeech[num].duration = ArxDurationMsf(fDiv);
+		aspeech[num].duration = GameDurationMsf(fDiv);
 	}
 
-	if (aspeech[num].duration < ArxDurationMs(500))
-		aspeech[num].duration = ArxDurationMs(2000);
+	if (aspeech[num].duration < GameDurationMs(500))
+		aspeech[num].duration = GameDurationMs(2000);
 	
 	return num;
 }
@@ -523,9 +523,9 @@ void ARX_SPEECH_Update() {
 
 			if(speech->sample) {
 				
-				ArxDuration duration = ARX_SOUND_GetDuration(speech->sample);
+				GameDuration duration = ARX_SOUND_GetDuration(speech->sample);
 				if(duration == 0) {
-					duration = ArxDurationMs(4000);
+					duration = GameDurationMs(4000);
 				}
 				
 				fDTime = height * (g_framedelay2 / duration);
@@ -540,7 +540,7 @@ void ARX_SPEECH_Update() {
 				}
 				speech->iTimeScroll	+= checked_range_cast<int>(g_framedelay);
 			} else {
-				fDTime = height * (g_framedelay2 / ArxDurationMs(4000));
+				fDTime = height * (g_framedelay2 / GameDurationMs(4000));
 			}
 
 			speech->fDeltaY			+= fDTime;

@@ -106,8 +106,8 @@ CLightning::CLightning()
 	, m_fAngleMax(32.0f, 32.0f, 32.0f)
 	, m_iTTL(0)
 {
-	SetDuration(ArxDurationMs(2000));
-	m_elapsed = m_duration + ArxDurationMs(1);
+	SetDuration(GameDurationMs(2000));
+	m_elapsed = m_duration + GameDurationMs(1);
 	
 	m_tex_light = NULL;
 	fTotoro = 0;
@@ -257,10 +257,10 @@ void CLightning::ReCreate(float rootSize)
 		BuildS(&LInfo);
 	}
 	
-	m_iTTL = ArxDurationMs(Random::get(500, 1500));
+	m_iTTL = GameDurationMs(Random::get(500, 1500));
 }
 
-void CLightning::Update(ArxDuration timeDelta)
+void CLightning::Update(GameDuration timeDelta)
 {
 	m_elapsed += timeDelta;
 	m_iTTL -= timeDelta;
@@ -341,7 +341,7 @@ void CLightning::Render()
 				damage.radius = sphere.radius;
 				damage.damages = m_fDamage * m_level * ( 1.0f / 3 );
 				damage.area = DAMAGE_FULL;
-				damage.duration = ArxDurationMs(1);
+				damage.duration = GameDurationMs(1);
 				damage.source = m_caster;
 				damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 				damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_LIGHTNING;

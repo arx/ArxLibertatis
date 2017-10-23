@@ -742,7 +742,7 @@ bool ARX_NPC_SetStat(Entity& io, const std::string & statname, float value) {
 	} else if(statname == "tohit") {
 		io._npcdata->tohit = value < 0 ? 0 : value;
 	} else if(statname == "aimtime") {
-		io._npcdata->aimtime = ArxDurationMsf(value < 0.f ? 0.f : value);
+		io._npcdata->aimtime = GameDurationMsf(value < 0.f ? 0.f : value);
 	} else if(statname == "life") {
 		io._npcdata->lifePool.max = io._npcdata->lifePool.current = value < 0 ? 0.0000001f : value;
 	} else if(statname == "mana") {
@@ -907,7 +907,7 @@ void ARX_PHYSICS_Apply() {
 
 		if(   (io->ioflags & IO_ITEM)
 		   && (io->gameFlags & GFLAG_GOREEXPLODE)
-		   && g_gameTime.now() - io->animBlend.lastanimtime > ArxDurationMs(300)
+		   && g_gameTime.now() - io->animBlend.lastanimtime > GameDurationMs(300)
 		   && io->obj
 		   && !io->obj->vertexlist.empty()
 		) {
@@ -1598,8 +1598,8 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				
 			} else if(isCurrentAnimation(io, 1, cycle)) {
 				
-				ArxDuration elapsed = g_gameTime.now() - io->_npcdata->aiming_start;
-				ArxDuration aimtime = io->_npcdata->aimtime;
+				GameDuration elapsed = g_gameTime.now() - io->_npcdata->aiming_start;
+				GameDuration aimtime = io->_npcdata->aimtime;
 				if((elapsed > aimtime || (elapsed * 2 > aimtime && Random::getf() > 0.9f))
 				    && tdist < square(STRIKE_DISTANCE)) {
 					changeAnimation(io, 1, strike);
@@ -1697,8 +1697,8 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					
 				} else if(isCurrentAnimation(io, 1, cycle)) {
 					
-					ArxDuration elapsed = g_gameTime.now() - io->_npcdata->aiming_start;
-					ArxDuration aimtime = io->_npcdata->aimtime;
+					GameDuration elapsed = g_gameTime.now() - io->_npcdata->aiming_start;
+					GameDuration aimtime = io->_npcdata->aimtime;
 					if((elapsed > aimtime || (elapsed * 2 > aimtime && Random::getf() > 0.9f))
 					   && tdist < square(STRIKE_DISTANCE)) {
 						changeAnimation(io, 1, strike);
@@ -1855,15 +1855,15 @@ static void ManageNPCMovement(Entity * io)
 		io->requestRoomUpdate = true;
 		Vec3f tv;
 
-		if(aup->_curtime - aup->_starttime > ArxDurationMs(500)) {
-			aup->_curtime -= ArxDurationMs(500);
+		if(aup->_curtime - aup->_starttime > GameDurationMs(500)) {
+			aup->_curtime -= GameDurationMs(500);
 			ARX_PATHS_Interpolate(aup, &tv);
-			aup->_curtime += ArxDurationMs(500);
+			aup->_curtime += GameDurationMs(500);
 			io->angle.setYaw(MAKEANGLE(glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
 		} else {
-			aup->_curtime += ArxDurationMs(500);
+			aup->_curtime += GameDurationMs(500);
 			ARX_PATHS_Interpolate(aup, &tv);
-			aup->_curtime -= ArxDurationMs(500);
+			aup->_curtime -= GameDurationMs(500);
 			io->angle.setYaw(MAKEANGLE(180.f + glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
 		}
 		return;
@@ -2152,7 +2152,7 @@ afterthat:
 			} else if(layer0.cur_anim == alist[ANIM_WALK] || layer0.cur_anim == alist[ANIM_RUN]
 			          || layer0.cur_anim == alist[ANIM_WALK_SNEAK]) {
 				layer0.flags &= ~EA_LOOP;
-				if(io->_npcdata->reachedtime + ArxDurationMs(500) < g_gameTime.now()) {
+				if(io->_npcdata->reachedtime + GameDurationMs(500) < g_gameTime.now()) {
 					changeAnimation(io, ANIM_DEFAULT, EA_LOOP, startAtBeginning);
 				}
 			}
@@ -2363,7 +2363,7 @@ afterthat:
 				   && layer0.cur_anim != alist[ANIM_RUN]
 				) {
 					io->_npcdata->walk_start_time += g_framedelay2;
-					if(io->_npcdata->walk_start_time > ArxDurationMs(600)) {
+					if(io->_npcdata->walk_start_time > GameDurationMs(600)) {
 						desiredanim = alist[ANIM_FIGHT_WALK_FORWARD];
 						io->_npcdata->walk_start_time = 0;
 					}
@@ -3006,7 +3006,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		}
 		
 		ARX_USE_PATH * aup = io->usepath;
-		aup->_curtime += ArxDurationMs(s64(smoothing) + 100);
+		aup->_curtime += GameDurationMs(s64(smoothing) + 100);
 
 		Vec3f tp;
 		long wp = ARX_PATHS_Interpolate(aup, &tp);

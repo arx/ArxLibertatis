@@ -104,9 +104,9 @@ private:
 extern SpellManager spells;
 
 SpellType GetSpellId(const std::string & spell);
-void TryToCastSpell(Entity * io, SpellType spellid, long level, EntityHandle target, SpellcastFlags flags, ArxDuration duration);
+void TryToCastSpell(Entity * io, SpellType spellid, long level, EntityHandle target, SpellcastFlags flags, GameDuration duration);
 
-bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, ArxDuration duration);
+bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, GameDuration duration);
 void ARX_SPELLS_Update();
 
 void ARX_SPELLS_Fizzle(SpellBase * spell);

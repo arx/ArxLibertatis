@@ -65,7 +65,7 @@ public:
 	
 	void AddSystem(ParticleSystem * ps);
 	
-	void Update(ArxDuration delta);
+	void Update(GameDuration delta);
 	void Render();
 	
 };

@@ -220,8 +220,8 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 	
 	PARTICLE_DEF * pd = createParticle();
 	if(pd) {
-		float sinW = timeWaveSin(g_gameTime.now(), ArxDurationMsf(6283.19f));
-		float cosW = timeWaveCos(g_gameTime.now(), ArxDurationMsf(6283.19f));
+		float sinW = timeWaveSin(g_gameTime.now(), GameDurationMsf(6283.19f));
+		float cosW = timeWaveCos(g_gameTime.now(), GameDurationMsf(6283.19f));
 		
 		float power = (dmgs * (1.f/60)) + .9f;
 		
@@ -1020,7 +1020,7 @@ void TreatBackgroundActions() {
 			damage.radius = gl->ex_radius;
 			damage.damages = gl->ex_radius * (1.0f / 7);
 			damage.area = DAMAGE_FULL;
-			damage.duration = ArxDurationMs(1);
+			damage.duration = GameDurationMs(1);
 			damage.source = EntityHandle();
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;

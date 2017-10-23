@@ -110,7 +110,7 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 		}
 
 		light->pos = _ePos;
-		light->duration = ArxDurationMs(1500);
+		light->duration = GameDurationMs(1500);
 	}
 
 	arx_assert(pParticleManager);
@@ -136,7 +136,7 @@ MagicMissileSpell::~MagicMissileSpell() {
 
 void MagicMissileSpell::Launch() {
 	
-	m_duration = ArxDurationMs(6000);
+	m_duration = GameDurationMs(6000);
 	m_hasDuration = true;
 	
 	m_hand_group = GetActionPointIdx(entities[m_caster]->obj, "primary_attach");
@@ -193,7 +193,7 @@ void MagicMissileSpell::Launch() {
 	
 	m_mrCheat = (m_caster == EntityHandle_Player && cur_mr == 3);
 	
-	ArxDuration lMax = 0;
+	GameDuration lMax = 0;
 	
 	size_t number;
 	if(sp_max || cur_rf == 3) {
@@ -224,9 +224,9 @@ void MagicMissileSpell::Launch() {
 		
 		missile->Create(startPos, angles);
 		
-		ArxDuration lTime = m_duration + ArxDurationMs(Random::get(-1000, 1000));
+		GameDuration lTime = m_duration + GameDurationMs(Random::get(-1000, 1000));
 		
-		lTime		= std::max(ArxDurationMs(1000), lTime);
+		lTime		= std::max(GameDurationMs(1000), lTime);
 		lMax		= std::max(lMax, lTime);
 		
 		missile->SetDuration(lTime);
@@ -244,11 +244,11 @@ void MagicMissileSpell::Launch() {
 			}
 			
 			el->pos = startPos;
-			el->duration = ArxDurationMs(300);
+			el->duration = GameDurationMs(300);
 		}
 	}
 	
-	m_duration = lMax + ArxDurationMs(1000);
+	m_duration = lMax + GameDurationMs(1000);
 }
 
 void MagicMissileSpell::End() {
@@ -276,7 +276,7 @@ void MagicMissileSpell::Update() {
 			LaunchMagicMissileExplosion(missile->eCurPos, m_mrCheat);
 			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[m_caster]);
 			
-			missile->SetTTL(ArxDurationMs(1000));
+			missile->SetTTL(GameDurationMs(1000));
 			missile->bExplo = true;
 			missile->bMove  = false;
 			
@@ -287,7 +287,7 @@ void MagicMissileSpell::Update() {
 			damage.radius = 80.f;
 			damage.damages = (4 + m_level * ( 1.0f / 5 )) * .8f;
 			damage.area	= DAMAGE_FULL;
-			damage.duration = ArxDuration::ofRaw(-1);
+			damage.duration = GameDuration::ofRaw(-1);
 			damage.source = m_caster;
 			damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
 			damage.type = DAMAGE_TYPE_MAGICAL;
@@ -340,7 +340,7 @@ IgnitSpell::IgnitSpell()
 
 void IgnitSpell::Launch() {
 	
-	m_duration = ArxDurationMs(500);
+	m_duration = GameDurationMs(500);
 	m_hasDuration = true;
 	
 	if(m_hand_group != ActionPoint()) {
@@ -356,7 +356,7 @@ void IgnitSpell::Launch() {
 		light->fallstart = 380.f;
 		light->rgb       = Color3f(1.f, 0.75f, 0.5f);
 		light->pos       = m_srcPos;
-		light->duration  = ArxDurationMs(300);
+		light->duration  = GameDurationMs(300);
 	}
 	
 	float fPerimeter = 400.f + m_level * 30.f;
@@ -462,7 +462,7 @@ void IgnitSpell::Update() {
 
 void DouseSpell::Launch() {
 	
-	m_duration = ArxDurationMs(500);
+	m_duration = GameDurationMs(500);
 	m_hasDuration = true;
 	
 	Vec3f target;
@@ -557,6 +557,6 @@ void ActivatePortalSpell::Launch() {
 	
 	ARX_SOUND_PlayInterface(SND_SPELL_ACTIVATE_PORTAL);
 	
-	m_duration = ArxDurationMs(20);
+	m_duration = GameDurationMs(20);
 	m_hasDuration = true;
 }

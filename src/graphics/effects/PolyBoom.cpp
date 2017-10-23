@@ -78,7 +78,7 @@ struct POLYBOOM {
 	short nbvert;
 	TextureContainer * tc;
 	GameInstant timecreation;
-	ArxDuration tolive;
+	GameDuration tolive;
 };
 
 static const size_t MAX_POLYBOOM = 4000;
@@ -147,7 +147,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			pb.type = 0;
 			pb.ep = ep;
 			pb.tc = tc2;
-			pb.tolive = ArxDurationMs(10000);
+			pb.tolive = GameDurationMs(10000);
 			pb.timecreation = g_gameTime.now();
 			pb.rgb = Color3f::black;
 			for(int k = 0; k < nbvert; k++) {
@@ -320,14 +320,14 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 						long num = Random::get(0, 2);
 						pb.tc = water_splat[num];
 						
-						pb.tolive = ArxDurationMs(1500);
+						pb.tolive = GameDurationMs(1500);
 					} else {
 						pb.type = 1;
 						
 						long num = Random::get(0, 5);
 						pb.tc = bloodsplat[num];
 						
-						pb.tolive = ArxDurationMsf((16000.f / 40) * size);
+						pb.tolive = GameDurationMsf((16000.f / 40) * size);
 					}
 					
 					pb.ep=ep;
@@ -384,7 +384,7 @@ void PolyBoomDraw() {
 			}
 		}
 		
-		ArxDuration t = pb.timecreation + pb.tolive - now;
+		GameDuration t = pb.timecreation + pb.tolive - now;
 		if(t <= 0) {
 			std::swap(polyboom[i], polyboom.back());
 			polyboom.pop_back();
@@ -403,7 +403,7 @@ void PolyBoomDraw() {
 		
 		POLYBOOM & pb = *itr;
 		
-		ArxDuration t = pb.timecreation + pb.tolive - now;
+		GameDuration t = pb.timecreation + pb.tolive - now;
 		
 		long typp = pb.type;
 		typp &= ~128;

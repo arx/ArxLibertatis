@@ -110,8 +110,8 @@ CPoisonProjectile::CPoisonProjectile()
 	, bOk(false)
 	, fTrail(-1.f)
 {
-	SetDuration(ArxDurationMs(2000));
-	m_elapsed = m_duration + ArxDurationMs(1);
+	SetDuration(GameDurationMs(2000));
+	m_elapsed = m_duration + GameDurationMs(1);
 }
 
 void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
@@ -150,14 +150,14 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	pPS.Update(0);
 }
 
-void CPoisonProjectile::Update(ArxDuration timeDelta)
+void CPoisonProjectile::Update(GameDuration timeDelta)
 {
-	if(m_elapsed <= ArxDurationMs(2000)) {
+	if(m_elapsed <= GameDurationMs(2000)) {
 		m_elapsed += timeDelta;
 	}
 
 	// on passe de 5 à 100 partoches en 1.5secs
-	if(m_elapsed < ArxDurationMs(750)) {
+	if(m_elapsed < GameDurationMs(750)) {
 		pPS.m_parameters.m_nbMax = 2;
 		pPS.Update(timeDelta);
 	} else {
@@ -178,7 +178,7 @@ void CPoisonProjectile::Update(ArxDuration timeDelta)
 		pPS.Update(timeDelta);
 		pPS.SetPos(eCurPos);
 
-		fTrail = ((m_elapsed - ArxDurationMs(750)) / (m_duration - ArxDurationMs(750))) * 9 * (BEZIERPrecision + 2);
+		fTrail = ((m_elapsed - GameDurationMs(750)) / (m_duration - GameDurationMs(750))) * 9 * (BEZIERPrecision + 2);
 	}
 
 	if(m_elapsed >= m_duration)

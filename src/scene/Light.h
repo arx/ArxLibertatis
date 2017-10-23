@@ -121,7 +121,7 @@ struct EERIE_LIGHT {
 	GameInstant creationTime;
 	
 	// will start to fade before the end of duration...
-	ArxDuration duration;
+	GameDuration duration;
 	
 	audio::SourceId sample;
 	math::Quantizer m_storedFlameTime;
@@ -152,7 +152,7 @@ EERIE_LIGHT * dynLightCreate(LightHandle & handle);
 EERIE_LIGHT * dynLightCreate();
 
 void lightHandleDestroy(LightHandle & handle);
-void endLightDelayed(LightHandle & handle, ArxDuration delay);
+void endLightDelayed(LightHandle & handle, GameDuration delay);
 
 void resetDynLights();
 

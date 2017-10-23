@@ -41,7 +41,7 @@ void ARX_SPELLS_Precast_Reset() {
 	Precast.clear();
 }
 
-void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, ArxDuration duration) {
+void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, GameDuration duration) {
 	
 	if(Precast.size() >= MAX_PRECAST) {
 		Precast.erase(Precast.begin());
@@ -71,8 +71,8 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 		return;
 	}
 	
-	ArxDuration elapsed = g_gameTime.now() - LAST_PRECAST_TIME;
-	if(elapsed < ArxDurationMs(1000)) {
+	GameDuration elapsed = g_gameTime.now() - LAST_PRECAST_TIME;
+	if(elapsed < GameDurationMs(1000)) {
 		return;
 	}
 	

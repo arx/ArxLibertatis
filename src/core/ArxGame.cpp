@@ -1391,7 +1391,7 @@ void ArxGame::speechControlledCinematic() {
 		const CinematicSpeech & acs = aspeech[valid].cine;
 		const Entity * io = aspeech[valid].io;
 		
-		const ArxDuration elapsed = g_gameTime.now() - aspeech[valid].time_creation;
+		const GameDuration elapsed = g_gameTime.now() - aspeech[valid].time_creation;
 		float rtime = elapsed / aspeech[valid].duration;
 
 		rtime = glm::clamp(rtime, 0.f, 1.f);
@@ -1524,7 +1524,7 @@ void ArxGame::speechControlledCinematic() {
 	}
 }
 
-extern ArxDuration DeadTime;
+extern GameDuration DeadTime;
 
 void ArxGame::handlePlayerDeath() {
 	if(player.lifePool.current <= 0) {
@@ -1533,8 +1533,8 @@ void ArxGame::handlePlayerDeath() {
 
 		float startDistance = 40.f;
 
-		ArxDuration startTime = ArxDurationMs(2000);
-		ArxDuration endTime = ArxDurationMs(7000);
+		GameDuration startTime = GameDurationMs(2000);
+		GameDuration endTime = GameDurationMs(7000);
 
 		float DeadCameraDistance = startDistance + (mdist - startDistance) * ((DeadTime - startTime) / (endTime - startTime));
 
@@ -1922,8 +1922,8 @@ void ArxGame::updateLevel() {
 		
 		SpellBase * spell = spells.getSpellByCaster(EntityHandle_Player, SPELL_MAGIC_SIGHT);
 		if(spell) {
-			ArxDuration duration = g_gameTime.now() - spell->m_timcreation;
-			magicSightZoom = glm::clamp(duration / ArxDurationMs(500), 0.f, 1.f);
+			GameDuration duration = g_gameTime.now() - spell->m_timcreation;
+			magicSightZoom = glm::clamp(duration / GameDurationMs(500), 0.f, 1.f);
 		}
 		
 		float BASE_FOCAL = CURRENT_BASE_FOCAL
@@ -2082,7 +2082,7 @@ void ArxGame::render() {
 	subj.center = Vec2i(g_size.center().x, g_size.center().y);
 	subj.orgTrans.mod = Vec2f(subj.center);
 	
-	PULSATE = timeWaveSin(g_gameTime.now(), ArxDurationMsf(5026.548245f));
+	PULSATE = timeWaveSin(g_gameTime.now(), GameDurationMsf(5026.548245f));
 	EERIEDrawnPolys = 0;
 
 	// Checks for Keyboard & Moulinex

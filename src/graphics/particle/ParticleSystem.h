@@ -82,7 +82,7 @@ public:
 	void StopEmission();
 	bool IsAlive();
 	
-	void Update(ArxDuration delta);
+	void Update(GameDuration delta);
 	
 private:
 	

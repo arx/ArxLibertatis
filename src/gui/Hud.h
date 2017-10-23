@@ -164,9 +164,9 @@ public:
 class QuickSaveIconGui {
 private:
 	//! Time in ms to show the icon
-	ArxDuration m_duration;
+	GameDuration m_duration;
 	//! Remaining time for the quick save icon
-	ArxDuration m_remainingTime;
+	GameDuration m_remainingTime;
 	
 public:
 	QuickSaveIconGui();
@@ -232,7 +232,7 @@ private:
 	Vec2f m_iconSize;
 	TextureContainer * m_tex;
 	Color m_color;
-	ArxDuration m_timeToDraw;
+	GameDuration m_timeToDraw;
 	long m_nbToDraw;
 	
 public:

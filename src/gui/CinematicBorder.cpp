@@ -39,7 +39,7 @@ bool CinematicBorder::isActive()
 	return m_active;
 }
 
-ArxDuration CinematicBorder::elapsedTime() {
+GameDuration CinematicBorder::elapsedTime() {
 	return g_gameTime.now() - m_startTime;
 }
 

@@ -625,7 +625,7 @@ bool ChangeLevelIconGui::isVisible() {
 void ChangeLevelIconGui::update(const Rectf & parent) {
 	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_TopRight);
 	
-	float wave = timeWaveSin(g_gameTime.now(), ArxDurationMsf(314.159f));
+	float wave = timeWaveSin(g_gameTime.now(), GameDurationMsf(314.159f));
 	m_intensity = 0.9f - wave * 0.5f + Random::getf(0.f, 0.1f);
 	m_intensity = glm::clamp(m_intensity, 0.f, 1.f);
 }
@@ -647,7 +647,7 @@ void ChangeLevelIconGui::draw() {
 
 
 QuickSaveIconGui::QuickSaveIconGui()
-	: m_duration(ArxDurationMs(1000))
+	: m_duration(GameDurationMs(1000))
 	, m_remainingTime(0)
 {}
 
@@ -756,7 +756,7 @@ void MemorizedRunesHud::draw() {
 			pos.x += 32 * m_scale;
 		}
 	}
-	if(g_gameTime.now() - player.SpellToMemorize.lTimeCreation > ArxDurationMs(30000)) {
+	if(g_gameTime.now() - player.SpellToMemorize.lTimeCreation > GameDurationMs(30000)) {
 		player.SpellToMemorize.bSpell = false;
 	}
 }
@@ -879,9 +879,9 @@ void MecanismIcon::reset() {
 
 void MecanismIcon::update() {
 	m_color = Color::white;
-	if(m_timeToDraw > ArxDurationMs(300)) {
+	if(m_timeToDraw > GameDurationMs(300)) {
 		m_color = Color::black;
-		if(m_timeToDraw > ArxDurationMs(400)) {
+		if(m_timeToDraw > GameDurationMs(400)) {
 			m_timeToDraw = 0;
 			m_nbToDraw++;
 		}
@@ -1018,7 +1018,7 @@ void PrecastSpellsGui::update() {
 		float val = intensity;
 		
 		if(precastSlot.launch_time > 0 && g_gameTime.now() >= precastSlot.launch_time) {
-			float tt = (g_gameTime.now() - precastSlot.launch_time) / ArxDurationMs(1000);
+			float tt = (g_gameTime.now() - precastSlot.launch_time) / GameDurationMs(1000);
 			
 			if(tt > 1.f)
 				tt = 1.f;
@@ -1188,7 +1188,7 @@ void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool f
 	bool flicker = true;
 	
 	if(spell.m_hasDuration) {
-		if(player.manaPool.current < 20 || spell.m_duration - spell.m_elapsed < ArxDurationMs(2000)) {
+		if(player.manaPool.current < 20 || spell.m_duration - spell.m_elapsed < GameDurationMs(2000)) {
 			flicker = m_flickNow;
 		}
 	} else {

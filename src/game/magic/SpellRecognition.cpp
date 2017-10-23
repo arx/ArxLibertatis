@@ -1166,6 +1166,6 @@ bool ARX_SPELLS_AnalyseSPELL() {
 	                         flags,
 	                         -1,
 	                         EntityHandle(),
-	                         ArxDuration::ofRaw(-1));
+	                         GameDuration::ofRaw(-1));
 	
 }
