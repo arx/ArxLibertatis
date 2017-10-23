@@ -58,9 +58,6 @@ bool Texture2D::Restore() {
 		
 		if((flags & ApplyColorKey) && !mImage.HasAlpha()) {
 			mImage.ApplyColorKeyToAlpha(Color::black, config.video.colorkeyAntialiasing);
-			if(!mImage.HasAlpha()) {
-				flags &= ~ApplyColorKey;
-			}
 		}
 		
 		if(flags & Intensity) {
