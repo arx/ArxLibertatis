@@ -217,19 +217,19 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
 	EERIEPOLY TheoricalSplat; // clockwise
 	TheoricalSplat.v[0].p.x=-splatsize;
-	TheoricalSplat.v[0].p.y = py; 
+	TheoricalSplat.v[0].p.y = py;
 	TheoricalSplat.v[0].p.z=-splatsize;
 	
 	TheoricalSplat.v[1].p.x=-splatsize;
-	TheoricalSplat.v[1].p.y = py; 
+	TheoricalSplat.v[1].p.y = py;
 	TheoricalSplat.v[1].p.z=+splatsize;
 	
 	TheoricalSplat.v[2].p.x=+splatsize;
-	TheoricalSplat.v[2].p.y = py; 
+	TheoricalSplat.v[2].p.y = py;
 	TheoricalSplat.v[2].p.z=+splatsize;
 	
 	TheoricalSplat.v[3].p.x=+splatsize;
-	TheoricalSplat.v[3].p.y = py; 
+	TheoricalSplat.v[3].p.y = py;
 	TheoricalSplat.v[3].p.z=-splatsize;
 	TheoricalSplat.type=POLY_QUAD;
 	
