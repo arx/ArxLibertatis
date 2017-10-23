@@ -75,18 +75,18 @@ GameTime::GameTime() {
 
 void GameTime::pause() {
 	if(!is_paused()) {
-		paused     = true;
+		m_paused = true;
 	}
 }
 
 void GameTime::resume() {
 	if(is_paused()) {
-		paused     = false;
+		m_paused = false;
 	}
 }
 
 void GameTime::reset(const ArxInstant time) {
-	paused = true;
+	m_paused = true;
 	m_now = time;
 	m_frameDelay = 0;
 	m_speed = 1.f;

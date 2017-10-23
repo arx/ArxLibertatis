@@ -102,7 +102,7 @@ public:
 	void update(PlatformDuration delta);
 	
 	bool is_paused() const { 
-		return paused; 
+		return m_paused;
 	}
 	
 	ArxDuration get_frame_delay() const {
@@ -114,7 +114,7 @@ public:
 	
 private:
 	
-	bool paused;
+	bool m_paused;
 	
 	ArxInstant m_now;
 	
