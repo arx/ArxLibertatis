@@ -890,8 +890,8 @@ void OpenGLRenderer::flushState() {
 		
 		bool useA2C = m_hasMSAA && config.video.alphaCutoutAntialiasing == 1;
 		if(m_glstate.getAlphaCutout() != m_state.getAlphaCutout()
-		   || (useA2C && m_state.getAlphaCutout()
-		       && m_glstate.isBlendEnabled() != m_state.isBlendEnabled())) {
+		   || (useA2C && m_state.getAlphaCutout() && m_glstate.isBlendEnabled() != m_state.isBlendEnabled())) {
+			
 			/* When rendering alpha cutouts with alpha blending enabled we still
 			 * need to 'discard' transparent texels, as blending might not use the src alpha!
 			 * On the other hand, we can't use GL_SAMPLE_ALPHA_TO_COVERAGE when blending
@@ -899,9 +899,9 @@ void OpenGLRenderer::flushState() {
 			 * So we must toggle between alpha to coverage and alpha test when toggling blending.
 			 */
 			bool disableA2C = useA2C && !m_glstate.isBlendEnabled()
-				                && (!m_state.getAlphaCutout() || m_state.isBlendEnabled());
+			                  && (!m_state.getAlphaCutout() || m_state.isBlendEnabled());
 			bool enableA2C = useA2C && !m_state.isBlendEnabled()
-				               && (!m_glstate.getAlphaCutout() || m_glstate.isBlendEnabled());
+			                 && (!m_glstate.getAlphaCutout() || m_glstate.isBlendEnabled());
 			if(m_glstate.getAlphaCutout()) {
 				if(disableA2C) {
 					glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
