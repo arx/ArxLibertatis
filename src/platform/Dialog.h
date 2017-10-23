@@ -64,7 +64,7 @@ void showInfoDialog(const std::string & message, const std::string & title = "In
  * \param title   title for the dialog window.
  *
  * A simple markup syntax is supported on some systems. On other systems, the message is
- * displayed as-is. \see \ref showInfoDialog for the markup syntax.
+ * displayed as-is. See \ref showInfoDialog for the markup syntax.
  *
  * This function does not retun until the user closes the dialog.
  *
@@ -81,7 +81,7 @@ void showWarningDialog(const std::string & message, const std::string & title = 
  * \param title   title for the dialog window.
  *
  * A simple markup syntax is supported on some systems. On other systems, the message is
- * displayed as-is. \see \ref showInfoDialog for the markup syntax.
+ * displayed as-is. See \ref showInfoDialog for the markup syntax.
  *
  * This function does not retun until the user closes the dialog.
  *
@@ -97,7 +97,7 @@ void showErrorDialog(const std::string & message, const std::string & title = "E
  * \param title    title for the dialog window.
  *
  * A simple markup syntax is supported on some systems. On other systems, the message is
- * displayed as-is. \see \ref showInfoDialog for the markup syntax.
+ * displayed as-is. See \ref showInfoDialog for the markup syntax.
  *
  * \note this may not be supported on all platforms. If dialogs are not supported, the
  *       message is printed to stdout and the function immediately returns \c true.
@@ -114,7 +114,7 @@ bool askYesNo(const std::string & question, const std::string & title = "Yes/No?
  * \param title    title for the dialog window.
  *
  * A simple markup syntax is supported on some systems. On other systems, the message is
- * displayed as-is. \see \ref showInfoDialog for the markup syntax.
+ * displayed as-is. See \ref showInfoDialog for the markup syntax.
  *
  * \note this may not be supported on all platforms. If dialogs are not supported, the
  *       message is printed to stdout and the function immediately returns \c true.
@@ -131,7 +131,7 @@ bool askYesNoWarning(const std::string & question, const std::string & title = "
  * \param title    title for the dialog window.
  *
  * A simple markup syntax is supported on some systems. On other systems, the message is
- * displayed as-is. \see \ref showInfoDialog for the markup syntax.
+ * displayed as-is. See \ref showInfoDialog for the markup syntax.
  *
  * \note this may not be supported on all platforms. If dialogs are not supported, the
  *       message is printed to stdout and the function immediately returns \c true.
