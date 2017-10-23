@@ -106,10 +106,10 @@ private:
 	void run();
 };
 
-class ScreenshotWidget : public QWidget 
-{
+class ScreenshotWidget : public QWidget {
+	
 	Q_OBJECT
-
+	
 public:
 	
 	explicit ScreenshotWidget(QWidget * parent = 0);
@@ -129,7 +129,8 @@ class ErrorReportFileListModel : public QAbstractListModel
 	Q_OBJECT
 
 public:
-	ErrorReportFileListModel(ErrorReport& errorReport, QObject* parent = 0) 
+	
+	ErrorReportFileListModel(ErrorReport& errorReport, QObject* parent = 0)
 		: QAbstractListModel(parent)
 		, m_errorReport(errorReport)
 	{
