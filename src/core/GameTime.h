@@ -69,11 +69,11 @@ public:
 		m_lastFrameDuration = duration;
 	}
 	
-	inline PlatformInstant frameStart() {
+	PlatformInstant frameStart() {
 		return m_frameStartTime;
 	}
-
-	inline PlatformDuration lastFrameDuration() {
+	
+	PlatformDuration lastFrameDuration() {
 		return m_lastFrameDuration;
 	}
 	
