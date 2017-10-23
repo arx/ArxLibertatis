@@ -98,8 +98,8 @@ void GameTime::update(PlatformDuration frameDelay) {
 	
 	arx_assert(delta >= 0);
 	
-	if(arxtime.speed() != 1.f) {
-		delta -= ArxDurationMsf(toMsf(delta) * (1.f - arxtime.speed()));
+	if(m_speed != 1.f) {
+		delta -= ArxDurationMsf(toMsf(delta) * (1.f - m_speed));
 	}
 	
 	arx_assert(delta >= 0);
