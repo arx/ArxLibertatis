@@ -211,10 +211,6 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 	return true;
 }
 
-bool TextureContainer::hasColorKey() {
-	return m_pTexture != NULL && m_pTexture->hasColorKey();
-}
-
 TextureContainer * TextureContainer::Load(const res::path & name, TCFlags flags) {
 	
 	// Check first to see if the texture is already loaded

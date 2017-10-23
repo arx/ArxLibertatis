@@ -203,8 +203,6 @@ public:
 	RoomBatches m_roomBatches;
 	ModelBatch m_modelBatch;
 	
-	bool hasColorKey();
-	
 };
 
 DECLARE_FLAGS_OPERATORS(TextureContainer::TCFlags)
