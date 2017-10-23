@@ -556,15 +556,16 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 					
 					count = svar[i].text.size();
 					
-					avs.fval = (float)count; 
+					avs.fval = (float)count;
 					avs.type = TYPE_G_TEXT;
 					memcpy(dat + pos, &avs, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-
-					if (count > 0)
-						memcpy(dat + pos, svar[i].text.c_str(), count + 1); 
-
-					pos += (long)avs.fval; 
+					
+					if(count > 0) {
+						memcpy(dat + pos, svar[i].text.c_str(), count + 1);
+					}
+					
+					pos += (long)avs.fval;
 				}
 				else
 					acsg.nb_globals--;
