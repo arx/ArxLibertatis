@@ -73,18 +73,6 @@ GameTime::GameTime() {
 	reset(0);
 }
 
-void GameTime::pause() {
-	if(!is_paused()) {
-		m_paused = true;
-	}
-}
-
-void GameTime::resume() {
-	if(is_paused()) {
-		m_paused = false;
-	}
-}
-
 void GameTime::reset(const ArxInstant time) {
 	m_now = time;
 	m_frameDelay = 0;

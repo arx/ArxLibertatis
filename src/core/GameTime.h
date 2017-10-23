@@ -96,8 +96,13 @@ public:
 	GameTime();
 	~GameTime() {}
 	
-	void pause();
-	void resume();
+	void pause() {
+		m_paused = true;
+	}
+	
+	void resume() {
+		m_paused = false;
+	}
 	
 	void reset(ArxInstant time);
 	
