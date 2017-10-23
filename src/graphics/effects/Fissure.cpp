@@ -265,11 +265,11 @@ void CRiseDead::RenderFissure() {
 	// texture sympa avec glow au milieu ou uv wrap
 	mat.setWrapMode(TextureStage::WrapMirror);
 	mat.setTexture(tex_light);
-
+	
 	target.x = m_eSrc.x;
-	target.y = m_eSrc.y + 1.5f * sizeF; 
+	target.y = m_eSrc.y + 1.5f * sizeF;
 	target.z = m_eSrc.z;
-
+	
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
 	vr[2].color = vr[3].color = m_colorRays2.toRGB();
 
@@ -641,11 +641,11 @@ void CSummonCreature::RenderFissure() {
 	// texture sympa avec glow au milieu ou uv wrap
 	mat.setWrapMode(TextureStage::WrapMirror);
 	mat.setTexture(tex_light);
-
-	target.x = m_eSrc.x + -fBetaRadSin * (1.5f * sizeF); 
+	
+	target.x = m_eSrc.x + -fBetaRadSin * (1.5f * sizeF);
 	target.y = m_eSrc.y;
-	target.z = m_eSrc.z + fBetaRadCos * (1.5f * sizeF); 
-
+	target.z = m_eSrc.z + fBetaRadCos * (1.5f * sizeF);
+	
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
 	vr[2].color = vr[3].color = m_colorRays2.toRGB();
 
