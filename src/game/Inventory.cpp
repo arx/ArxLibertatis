@@ -1069,7 +1069,7 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 				if(CanBePutInSecondaryInventory(id, io)) {
 					return;
 				}
-				PutInFrontOfPlayer(io); 
+				PutInFrontOfPlayer(io);
 				return;
 			}
 		}
