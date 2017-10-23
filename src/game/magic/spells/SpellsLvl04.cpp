@@ -87,7 +87,7 @@ void BlessSpell::End() {
 
 void BlessSpell::Update() {
 	
-	fRot += g_framedelay2 / GameDurationMs(4);
+	fRot += g_gameTime.lastFrameDuration() / GameDurationMs(4);
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
@@ -429,7 +429,7 @@ void CurseSpell::End() {
 
 void CurseSpell::Update() {
 	
-	fRot += g_framedelay2 / GameDurationMs(4);
+	fRot += g_gameTime.lastFrameDuration() / GameDurationMs(4);
 	
 	Vec3f target = Vec3f_ZERO;
 	
