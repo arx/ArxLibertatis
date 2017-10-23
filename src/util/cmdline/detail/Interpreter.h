@@ -81,7 +81,7 @@ private:
 	template <typename Iter, typename Visitor>
 	void do_visit(Iter begin, Iter end, Visitor & visitor) const {
 		for(; begin != end; ++begin) {
-			visitor(begin->second.key);
+			visitor(begin->second.m_key);
 		}
 	}
 	
@@ -90,18 +90,18 @@ private:
 	struct ikey_t {
 		
 		function_type function;
-		op_name_t     key;
+		op_name_t m_key;
 		
 		void key_erase(const string_type & v) {
-			typename op_name_t::iterator it(std::find(key.begin(), key.end(), v));
-			if(key.end() != it) {
-				key.erase(it);
+			typename op_name_t::iterator it(std::find(m_key.begin(), m_key.end(), v));
+			if(m_key.end() != it) {
+				m_key.erase(it);
 			}
 		}
 		
 		ikey_t(const function_type & function, const op_name_t & key)
 			: function(function)
-			, key(key)
+			, m_key(key)
 		{ }
 		
 	};
