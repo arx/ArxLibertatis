@@ -342,7 +342,7 @@ void ARX_INTERFACE_HALO_Render(Color3f color,
 							   TextureContainer * haloTexture,
 							   Vec2f pos, Vec2f ratio)
 {
-	float wave = timeWaveSin(g_gameTime.now(), ArxDurationMsf(628.319f));
+	float wave = timeWaveSin(g_gameTime.now(), GameDurationMsf(628.319f));
 	
 	float power = 0.9f;
 	power -= wave * 0.3f;
@@ -1255,7 +1255,7 @@ void ArxGame::managePlayerControls() {
 			// TODO use os time
 			COMBAT_MODE_ON_START_TIME = g_gameTime.now();
 		} else {
-			if(g_gameTime.now() - COMBAT_MODE_ON_START_TIME > ArxDurationMs(10)) {
+			if(g_gameTime.now() - COMBAT_MODE_ON_START_TIME > GameDurationMs(10)) {
 				ARX_INTERFACE_setCombatMode(COMBAT_MODE_ON);
 			}
 		}

@@ -151,7 +151,7 @@ inline float timeWaveCos(InstantType<TAG, T> t, DurationType<TAG, T> period) {
 // ArxTime
 // in microseconds
 typedef InstantType <struct ArxTime_TAG, s64> GameInstant;
-typedef DurationType<struct ArxTime_TAG, s64> ArxDuration;
+typedef DurationType<struct ArxTime_TAG, s64> GameDuration;
 
 inline GameInstant GameInstantUs(s64 val) {
 	return GameInstant::ofRaw(val);
@@ -160,14 +160,14 @@ inline GameInstant GameInstantMs(s64 val) {
 	return GameInstant::ofRaw(val * 1000);
 }
 
-inline ArxDuration ArxDurationUs(s64 val) {
-	return ArxDuration::ofRaw(val);
+inline GameDuration GameDurationUs(s64 val) {
+	return GameDuration::ofRaw(val);
 }
-inline ArxDuration ArxDurationMs(s64 val) {
-	return ArxDuration::ofRaw(val * 1000);
+inline GameDuration GameDurationMs(s64 val) {
+	return GameDuration::ofRaw(val * 1000);
 }
-inline ArxDuration ArxDurationMsf(float val) {
-	return ArxDuration::ofRaw(s64(val * 1000.f));
+inline GameDuration GameDurationMsf(float val) {
+	return GameDuration::ofRaw(s64(val * 1000.f));
 }
 
 inline s64 toUs(GameInstant val) {
@@ -180,13 +180,13 @@ inline float toMsf(GameInstant val) {
 	return float(val.t) / 1000.f;
 }
 
-inline s64 toUs(ArxDuration val) {
+inline s64 toUs(GameDuration val) {
 	return val.t;
 }
-inline s64 toMsi(ArxDuration val) {
+inline s64 toMsi(GameDuration val) {
 	return val.t / 1000;
 }
-inline float toMsf(ArxDuration val) {
+inline float toMsf(GameDuration val) {
 	return float(val.t) / 1000.f;
 }
 
@@ -263,11 +263,11 @@ inline float toS(AnimationDuration val) {
 inline AnimationDuration toAnimationDuration(PlatformDuration val) {
 	return AnimationDuration::ofRaw(val.t);
 }
-inline AnimationDuration toAnimationDuration(ArxDuration val) {
+inline AnimationDuration toAnimationDuration(GameDuration val) {
 	return AnimationDuration::ofRaw(val.t);
 }
-inline ArxDuration toArxDuration(AnimationDuration val) {
-	return ArxDuration::ofRaw(val.t);
+inline GameDuration toGameDuration(AnimationDuration val) {
+	return GameDuration::ofRaw(val.t);
 }
 inline PlatformDuration toPlatformDuration(AnimationDuration val) {
 	return PlatformDuration::ofRaw(val.t);

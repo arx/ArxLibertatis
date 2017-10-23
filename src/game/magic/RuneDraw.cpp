@@ -238,7 +238,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			AnimationDuration elapsed = toAnimationDuration(now - sd->starttime);
 
 			if(elapsed > sd->duration) {
-				endLightDelayed(io->dynlight, ArxDurationMs(600));
+				endLightDelayed(io->dynlight, GameDurationMs(600));
 				io->dynlight = LightHandle();
 				
 				delete io->symboldraw;

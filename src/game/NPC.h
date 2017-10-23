@@ -170,7 +170,7 @@ struct IO_NPCDATA {
 	float absorb;
 	float damages;
 	float tohit;
-	ArxDuration aimtime;
+	GameDuration aimtime;
 	float critical;
 	float reach;
 	float backstab_skill;
@@ -199,7 +199,7 @@ struct IO_NPCDATA {
 	unsigned char resist_magic;
 	unsigned char resist_fire;
 	
-	ArxDuration walk_start_time;
+	GameDuration walk_start_time;
 	GameInstant aiming_start;
 	NPCFlags npcflags;
 	IO_PATHFIND pathfind;

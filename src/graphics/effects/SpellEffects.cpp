@@ -54,14 +54,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 CSpellFx::CSpellFx()
 {
-	SetDuration(ArxDurationMs(1000));
+	SetDuration(GameDurationMs(1000));
 }
 
-void CSpellFx::SetDuration(ArxDuration ulaDuration) {
+void CSpellFx::SetDuration(GameDuration ulaDuration) {
 	m_duration = ulaDuration;
 
 	if(m_duration <= 0)
-		m_duration = ArxDurationMs(100);
+		m_duration = GameDurationMs(100);
 	
 	m_elapsed = 0;
 }

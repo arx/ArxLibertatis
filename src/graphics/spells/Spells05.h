@@ -57,7 +57,7 @@ public:
 	CPoisonProjectile();
 	
 	void Create(Vec3f, float afBeta = 0);
-	void Update(ArxDuration timeDelta);
+	void Update(GameDuration timeDelta);
 	void Render();
 	
 	Vec3f eSrc;

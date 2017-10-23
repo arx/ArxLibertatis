@@ -82,12 +82,12 @@ void GameTime::reset(const GameInstant time) {
 
 void GameTime::update(PlatformDuration frameDuration) {
 	
-	ArxDuration delta = ArxDurationUs(toUs(frameDuration));
+	GameDuration delta = GameDurationUs(toUs(frameDuration));
 	
 	arx_assert(delta >= 0);
 	
 	if(m_speed != 1.f) {
-		delta -= ArxDurationMsf(toMsf(delta) * (1.f - m_speed));
+		delta -= GameDurationMsf(toMsf(delta) * (1.f - m_speed));
 	}
 	
 	arx_assert(delta >= 0);

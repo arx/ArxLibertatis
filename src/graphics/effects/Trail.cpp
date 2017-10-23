@@ -32,7 +32,7 @@ Trail::Trail(long duration, Color4f startColor, Color4f endColor, float startSiz
 	
 	segments = std::max(segments, size_t(4));
 	
-	m_timePerSegment = ArxDurationMsf(float(duration) / float(segments));
+	m_timePerSegment = GameDurationMsf(float(duration) / float(segments));
 	m_lastSegmentDuration = 0;
 	
 	m_positions.set_capacity(segments);
@@ -56,7 +56,7 @@ void Trail::SetNextPosition(Vec3f & nextPosition)
 	m_nextPosition = nextPosition;
 }
 
-void Trail::Update(ArxDuration timeDelta) {
+void Trail::Update(GameDuration timeDelta) {
 	
 	if(g_gameTime.isPaused()) {
 		return;

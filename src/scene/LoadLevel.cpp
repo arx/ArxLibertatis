@@ -440,7 +440,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			
 			app[j].flag = (PathwayType)dlpw->flag; // save/load enum
 			app[j].rpos = dlpw->rpos.toVec3();
-			app[j]._time = ArxDurationMs(dlpw->time); // TODO save/load time
+			app[j]._time = GameDurationMs(dlpw->time); // TODO save/load time
 		}
 	}
 	

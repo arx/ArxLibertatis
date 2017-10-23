@@ -70,7 +70,7 @@ void ParticleManager::AddSystem(ParticleSystem * _pPS) {
 	listParticleSystem.insert(listParticleSystem.end(), _pPS);
 }
 
-void ParticleManager::Update(ArxDuration delta) {
+void ParticleManager::Update(GameDuration delta) {
 	
 	ARX_PROFILE_FUNC();
 	

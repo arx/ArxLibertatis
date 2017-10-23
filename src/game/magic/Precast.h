@@ -30,14 +30,14 @@ struct PRECAST_STRUCT {
 	long level;
 	GameInstant launch_time;
 	SpellcastFlags flags;
-	ArxDuration duration;
+	GameDuration duration;
 };
 
 extern std::vector<PRECAST_STRUCT> Precast;
 
 void ARX_SPELLS_Precast_Reset();
 
-void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, ArxDuration duration);
+void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, GameDuration duration);
 void ARX_SPELLS_Precast_Launch(PrecastHandle num);
 void ARX_SPELLS_Precast_Check();
 

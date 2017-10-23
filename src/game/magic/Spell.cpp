@@ -34,7 +34,7 @@ SpellBase::SpellBase()
 	, m_elapsed(0)
 	, m_fManaCostPerSecond(0.f)
 	, m_snd_loop(audio::INVALID_ID)
-	, m_launchDuration(ArxDuration::ofRaw(-1))
+	, m_launchDuration(GameDuration::ofRaw(-1))
 {
 	
 	m_targets.clear();

@@ -278,12 +278,12 @@ public:
 			timer.es = context.getScript();
 			timer.exist = 1;
 			timer.io = context.getEntity();
-			timer.interval = ArxDurationMs(1000);
+			timer.interval = GameDurationMs(1000);
 			// Don't assume that we successfully set the animation - use the current animation
 			if(layer.cur_anim) {
 				arx_assert(layer.altidx_cur >= 0 && layer.altidx_cur < layer.cur_anim->alt_nb);
 				if(layer.cur_anim->anims[layer.altidx_cur]->anim_time > toAnimationDuration(timer.interval)) {
-					timer.interval = toArxDuration(layer.cur_anim->anims[layer.altidx_cur]->anim_time);
+					timer.interval = toGameDuration(layer.cur_anim->anims[layer.altidx_cur]->anim_time);
 				}
 			}
 			timer.name = timername;

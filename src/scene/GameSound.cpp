@@ -818,12 +818,12 @@ long ARX_SOUND_IsPlaying(SourceId & sample_id) {
 }
 
 
-ArxDuration ARX_SOUND_GetDuration(SampleId & sample_id) {
+GameDuration ARX_SOUND_GetDuration(SampleId & sample_id) {
 	
 	if(bIsActive && sample_id != INVALID_ID) {
 		size_t length;
 		audio::getSampleLength(sample_id, length);
-		return ArxDurationMs(length);
+		return GameDurationMs(length);
 	}
 
 	return 0;

@@ -59,7 +59,7 @@ public:
 	CLightning();
 	
 	void Create(Vec3f, Vec3f);
-	void Update(ArxDuration timeDelta);
+	void Update(GameDuration timeDelta);
 	void Render();
 	
 	Vec3f m_pos;
@@ -84,7 +84,7 @@ private:
 	Vec3f m_eSrc;
 	Vec3f m_eDest;
 	TextureContainer * m_tex_light;
-	ArxDuration m_iTTL;
+	GameDuration m_iTTL;
 	
 	struct CLightningNode {
 		Vec3f pos;

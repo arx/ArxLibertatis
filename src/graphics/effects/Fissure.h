@@ -27,18 +27,18 @@ class FissureFx {
 public:
 	FissureFx();
 	
-	void SetDuration(ArxDuration alDurationIntro, ArxDuration alDurationRender, ArxDuration alDurationOuttro);
+	void SetDuration(GameDuration alDurationIntro, GameDuration alDurationRender, GameDuration alDurationOuttro);
 	
 	void SetColorBorder(Color3f color);
 	void SetColorRays1(Color3f color);
 	void SetColorRays2(Color3f color);
 	
-	ArxDuration m_elapsed;
-	ArxDuration m_duration;
+	GameDuration m_elapsed;
+	GameDuration m_duration;
 	
-	ArxDuration m_durationIntro;
-	ArxDuration m_durationRender;
-	ArxDuration m_durationOuttro;
+	GameDuration m_durationIntro;
+	GameDuration m_durationRender;
+	GameDuration m_durationOuttro;
 	
 	Color3f m_colorBorder;
 	Color3f m_colorRays1;
@@ -53,10 +53,10 @@ public:
 	CRiseDead();
 	~CRiseDead();
 	
-	ArxDuration GetDuration();
+	GameDuration GetDuration();
 	
 	void Create(Vec3f, float afBeta = 0);
-	void Update(ArxDuration timeDelta);
+	void Update(GameDuration timeDelta);
 	void Render();
 	
 	Vec3f m_eSrc;
@@ -94,7 +94,7 @@ public:
 	
 	void Create(Vec3f, float afBeta = 0);
 	void Kill();
-	void Update(ArxDuration timeDelta);
+	void Update(GameDuration timeDelta);
 	void Render();
 	
 private:

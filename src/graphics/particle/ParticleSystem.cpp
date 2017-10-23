@@ -181,7 +181,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	pP->p3Pos *= m_parameters.m_pos;
 	
 	float fTTL = m_parameters.m_life + Random::getf() * m_parameters.m_lifeRandom;
-	pP->m_timeToLive = ArxDurationMsf(fTTL);
+	pP->m_timeToLive = GameDurationMsf(fTTL);
 	
 	float fAngleX = Random::getf() * m_parameters.m_angle; //*0.5f;
 	
@@ -245,13 +245,13 @@ bool ParticleSystem::IsAlive() {
 	return true;
 }
 
-void ParticleSystem::Update(ArxDuration delta) {
+void ParticleSystem::Update(GameDuration delta) {
 	
 	if(g_gameTime.isPaused()) {
 		return;
 	}
 	
-	float fTimeSec = delta / ArxDurationMs(1000);
+	float fTimeSec = delta / GameDurationMs(1000);
 	
 	iParticleNbAlive = 0;
 	

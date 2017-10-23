@@ -97,7 +97,7 @@ public:
 private:
 	
 	GameInstant m_now;
-	ArxDuration m_lastFrameDuration;
+	GameDuration m_lastFrameDuration;
 	float m_speed;
 	PauseFlags m_paused;
 	
@@ -125,7 +125,7 @@ public:
 		return m_paused;
 	}
 	
-	ArxDuration lastFrameDuration() const {
+	GameDuration lastFrameDuration() const {
 		return m_lastFrameDuration;
 	}
 	

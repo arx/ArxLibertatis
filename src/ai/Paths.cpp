@@ -414,7 +414,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	ARX_PATH * ap = aup->path;
 	
 	// compute Delta Time
-	ArxDuration tim = aup->_curtime - aup->_starttime;
+	GameDuration tim = aup->_curtime - aup->_starttime;
 	if(tim < 0) {
 		return -1;
 	}
@@ -451,7 +451,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 		if(ap->pathways[targetwaypoint - 1].flag == PATHWAY_BEZIER) {
 			
 			targetwaypoint += 1;
-			ArxDuration delta = tim - ap->pathways[targetwaypoint]._time;
+			GameDuration delta = tim - ap->pathways[targetwaypoint]._time;
 			
 			if(delta >= 0) {
 				
@@ -481,7 +481,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 		} else {
 			
 			// Manages a non-Bezier block
-			ArxDuration delta = tim - ap->pathways[targetwaypoint]._time;
+			GameDuration delta = tim - ap->pathways[targetwaypoint]._time;
 			
 			if(delta >= 0) {
 				

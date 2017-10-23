@@ -53,10 +53,10 @@ public:
 	CMagicMissile();
 	~CMagicMissile();
 	
-	void SetTTL(ArxDuration);
+	void SetTTL(GameDuration);
 	
 	void Create(const Vec3f & startPos, const Anglef &);
-	void Update(ArxDuration timeDelta);
+	void Update(GameDuration timeDelta);
 	void Render();
 	
 	bool bExplo;

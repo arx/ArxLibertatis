@@ -239,7 +239,7 @@ void TreatBackgroundDynlights() {
 					dynamicLight->intensity    = light->intensity;
 					dynamicLight->ex_flaresize = light->ex_flaresize;
 					dynamicLight->extras       = light->extras;
-					dynamicLight->duration     = ArxDurationMs(std::numeric_limits<long>::max());
+					dynamicLight->duration     = GameDurationMs(std::numeric_limits<long>::max());
 					
 					dynamicLight->rgb = light->rgb - light->rgb * light->ex_flicker * randomColor3f() * 0.5f;
 					
@@ -254,11 +254,11 @@ void TreatBackgroundDynlights() {
 		EERIE_LIGHT * el = &g_dynamicLights[i];
 
 		if(el->exist && el->duration != 0) {
-			const ArxDuration elapsed = g_gameTime.now() - el->creationTime;
-			const ArxDuration duration = el->duration;
+			const GameDuration elapsed = g_gameTime.now() - el->creationTime;
+			const GameDuration duration = el->duration;
 
 			if(elapsed >= duration) {
-				float sub = g_framedelay2 / ArxDurationMs(1000);
+				float sub = g_framedelay2 / GameDurationMs(1000);
 
 				el->rgb.r -= sub;
 				el->rgb.g -= sub;
@@ -367,7 +367,7 @@ void lightHandleDestroy(LightHandle & handle) {
 	handle = LightHandle();
 }
 
-void endLightDelayed(LightHandle & handle, ArxDuration delay) {
+void endLightDelayed(LightHandle & handle, GameDuration delay) {
 	
 	EERIE_LIGHT * light = lightHandleGet(handle);
 	if(light) {

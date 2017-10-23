@@ -691,7 +691,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 	asp->jumpphase = player.jumpphase;
 	
-	GameInstant jumpstart = g_gameTime.now() + ArxDurationUs(toUs(player.jumpstarttime - g_platformTime.frameStart()));
+	GameInstant jumpstart = g_gameTime.now() + GameDurationUs(toUs(player.jumpstarttime - g_platformTime.frameStart()));
 	asp->jumpstarttime = static_cast<u32>(toMsi(jumpstart)); // TODO save/load time
 	asp->Last_Movement = player.m_lastMovement;
 	asp->level = player.level;
@@ -2134,20 +2134,20 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			scr_timer[num].flags = sFlags;
 			scr_timer[num].exist = 1;
 			scr_timer[num].io = io;
-			scr_timer[num].interval = ArxDurationMs(ats->interval); // TODO save/load time
+			scr_timer[num].interval = GameDurationMs(ats->interval); // TODO save/load time
 			scr_timer[num].name = boost::to_lower_copy(util::loadString(ats->name));
 			scr_timer[num].pos = ats->pos;
 			// TODO if the script has changed since the last save, this position may be invalid
 			
-			ArxDuration remaining = ArxDurationMs(ats->remaining);
-			if(remaining > ArxDurationMs(ats->interval)) {
+			GameDuration remaining = GameDurationMs(ats->remaining);
+			if(remaining > GameDurationMs(ats->interval)) {
 				LogWarning << "Found bad script timer " << scr_timer[num].name
 				           << " for entity " << io->idString() << " in save file: remaining time ("
 				           << toMsi(remaining) << "ms) > interval (" << ats->interval << "ms) " << ats->flags;
-				remaining = ArxDurationMs(ats->interval);
+				remaining = GameDurationMs(ats->interval);
 			}
 			
-			const GameInstant tt = (g_gameTime.now() + remaining) - ArxDurationMs(ats->interval);
+			const GameInstant tt = (g_gameTime.now() + remaining) - GameDurationMs(ats->interval);
 			scr_timer[num].start = tt;
 			
 			scr_timer[num].count = ats->count;
@@ -2170,7 +2170,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				pos += sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
 				
 				io->_npcdata->absorb = as->absorb;
-				io->_npcdata->aimtime = ArxDurationMsf(as->aimtime);
+				io->_npcdata->aimtime = GameDurationMsf(as->aimtime);
 				io->_npcdata->armor_class = as->armor_class;
 				io->_npcdata->behavior = Behaviour::load(as->behavior); // TODO save/load flags
 				io->_npcdata->behavior_param = as->behavior_param;
@@ -2216,7 +2216,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				io->_npcdata->resist_poison = as->resist_poison;
 				io->_npcdata->resist_magic = as->resist_magic;
 				io->_npcdata->resist_fire = as->resist_fire;
-				io->_npcdata->walk_start_time = ArxDurationMs(as->walk_start_time); // TODO save/load time
+				io->_npcdata->walk_start_time = GameDurationMs(as->walk_start_time); // TODO save/load time
 				io->_npcdata->aiming_start = GameInstantMs(as->aiming_start); // TODO save/load time
 				io->_npcdata->npcflags = NPCFlags::load(as->npcflags); // TODO save/load flags
 				io->_npcdata->fDetect = as->fDetect;

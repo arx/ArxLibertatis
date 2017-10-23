@@ -64,7 +64,7 @@ void BlessSpell::Launch() {
 	
 	// TODO m_launchDuration is not used
 	// m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
-	m_duration = ArxDurationMs(20000);
+	m_duration = GameDurationMs(20000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.3333f * m_level;
 	
@@ -87,7 +87,7 @@ void BlessSpell::End() {
 
 void BlessSpell::Update() {
 	
-	fRot += g_framedelay2 / ArxDurationMs(4);
+	fRot += g_framedelay2 / GameDurationMs(4);
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
@@ -168,7 +168,7 @@ Vec3f BlessSpell::getPosition() {
 
 void DispellFieldSpell::Launch() {
 	
-	m_duration = ArxDurationMs(10);
+	m_duration = GameDurationMs(10);
 	m_hasDuration = true;
 	
 	long valid = 0, dispelled = 0;
@@ -243,7 +243,7 @@ void FireProtectionSpell::Launch() {
 		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(20000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(20000);
 		m_hasDuration = true;
 	}
 	
@@ -313,7 +313,7 @@ void ColdProtectionSpell::Launch() {
 		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(20000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(20000);
 		m_hasDuration = true;
 	}
 	
@@ -429,7 +429,7 @@ void CurseSpell::End() {
 
 void CurseSpell::Update() {
 	
-	fRot += g_framedelay2 / ArxDurationMs(4);
+	fRot += g_framedelay2 / GameDurationMs(4);
 	
 	Vec3f target = Vec3f_ZERO;
 	

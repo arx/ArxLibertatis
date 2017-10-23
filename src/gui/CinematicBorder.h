@@ -27,7 +27,7 @@ public:
 	CinematicBorder();
 	
 	bool isActive();
-	ArxDuration elapsedTime();
+	GameDuration elapsedTime();
 	
 	void reset();
 	

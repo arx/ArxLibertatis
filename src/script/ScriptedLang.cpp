@@ -897,7 +897,7 @@ void timerCommand(const std::string & timer, Context & context) {
 	scr_timer[num].es = context.getScript();
 	scr_timer[num].exist = 1;
 	scr_timer[num].io = io;
-	scr_timer[num].interval = ArxDurationMs(interval);
+	scr_timer[num].interval = GameDurationMs(interval);
 	scr_timer[num].name = timername;
 	scr_timer[num].pos = pos;
 	scr_timer[num].start = g_gameTime.now();

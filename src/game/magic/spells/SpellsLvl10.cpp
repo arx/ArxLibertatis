@@ -60,7 +60,7 @@ void MassLightningStrikeSpell::Launch() {
 	spells.endByType(SPELL_MASS_LIGHTNING_STRIKE);
 	
 	m_hasDuration = true;
-	m_duration = ArxDurationMs(5000);
+	m_duration = GameDurationMs(5000);
 	m_soundEffectPlayed = false;
 	
 	float beta;
@@ -74,15 +74,15 @@ void MassLightningStrikeSpell::Launch() {
 	}
 	m_pos += angleToVectorXZ(beta) * 500.f;
 	
-	ArxDuration minDuration = ArxDurationMsf(500 * m_level);
-	ArxDuration maxDuration = 0;
+	GameDuration minDuration = GameDurationMsf(500 * m_level);
+	GameDuration maxDuration = 0;
 	
 	int number = glm::clamp(int(m_level), 1, 10);
 	float ft = 360.0f / number;
 	
 	for(int i = 0; i < number; i++) {
 		Vec3f target = m_pos + angleToVectorXZ(i * ft) * 500.0f;
-		ArxDuration duration = minDuration + ArxDurationMs(Random::getu(0, 5000));
+		GameDuration duration = minDuration + GameDurationMs(Random::getu(0, 5000));
 		maxDuration = std::max(maxDuration, duration);
 		
 		CLightning * lightning = new CLightning();
@@ -93,7 +93,7 @@ void MassLightningStrikeSpell::Launch() {
 		pTab.push_back(lightning);
 	}
 	
-	m_duration = maxDuration + ArxDurationMs(1000);
+	m_duration = maxDuration + GameDurationMs(1000);
 	
 	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
@@ -114,7 +114,7 @@ void MassLightningStrikeSpell::Launch() {
 
 void MassLightningStrikeSpell::End() {
 	
-	endLightDelayed(m_light, ArxDurationMs(200));
+	endLightDelayed(m_light, GameDurationMs(200));
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
@@ -157,7 +157,7 @@ void MassLightningStrikeSpell::Update() {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, Random::getf(0.8f, 1.2f));
 	}
 	
-	if(0 > m_duration - ArxDurationMs(1800) && !m_soundEffectPlayed) {
+	if(0 > m_duration - GameDurationMs(1800) && !m_soundEffectPlayed) {
 		m_soundEffectPlayed = true;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, Random::getf(0.8f, 1.2f));
 	}
@@ -237,7 +237,7 @@ void ControlTargetSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
 	
-	m_duration = ArxDurationMs(1000);
+	m_duration = GameDurationMs(1000);
 	m_hasDuration = true;
 	
 	eSrc = Vec3f_ZERO;
@@ -357,7 +357,7 @@ void FreezeTimeSpell::Launch() {
 	m_slowdown = glm::clamp(m_level * 0.08f, 0.f, max_slowdown);
 	g_gameTime.setSpeed(g_gameTime.speed() - m_slowdown);
 	
-	m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(200000);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(200000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 30.f * m_slowdown;
 }
@@ -374,7 +374,7 @@ void FreezeTimeSpell::End() {
 void MassIncinerateSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 	
-	m_duration = ArxDurationMs(20000);
+	m_duration = GameDurationMs(20000);
 	m_hasDuration = true;
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
@@ -427,7 +427,7 @@ bool TeleportSpell::CanLaunch() {
 }
 
 void TeleportSpell::Launch() {
-	m_duration = ArxDurationMs(7000);
+	m_duration = GameDurationMs(7000);
 	m_hasDuration = true;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEPORT, &m_caster_pos);

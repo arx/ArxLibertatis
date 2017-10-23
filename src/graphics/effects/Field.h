@@ -53,7 +53,7 @@ public:
 	CCreateField();
 	
 	void Create(Vec3f);
-	void Update(ArxDuration timeDelta);
+	void Update(GameDuration timeDelta);
 	void Render();
 	
 	Vec3f eSrc;

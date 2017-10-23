@@ -158,7 +158,7 @@ void CCreateField::RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1
 	RenderQuad(b[b1], b[b2], t[t1], t[t2], 1, norm, mat);
 }
 
-void CCreateField::Update(ArxDuration timeDelta)
+void CCreateField::Update(GameDuration timeDelta)
 {
 	m_elapsed += timeDelta;
 }
@@ -184,10 +184,10 @@ void CCreateField::Render()
 		}
 	}
 
-	ysize = std::min(1.0f, m_elapsed / ArxDurationMs(1000));
+	ysize = std::min(1.0f, m_elapsed / GameDurationMs(1000));
 
 	if(ysize >= 1.0f) {
-		size = std::min(1.0f, (m_elapsed - ArxDurationMs(1000)) / ArxDurationMs(1000));
+		size = std::min(1.0f, (m_elapsed - GameDurationMs(1000)) / GameDurationMs(1000));
 		size = std::max(size, 0.1f);
 	}
 
@@ -239,7 +239,7 @@ void CCreateField::Render()
 		light->fallstart = 400.f;
 		light->rgb = Color3f(0.8f, 0.0f, 1.0f);
 		light->pos = eSrc + Vec3f(0.f, -150.f, 0.f);
-		light->duration = ArxDurationMs(800);
+		light->duration = GameDurationMs(800);
 	}
 
 	//return falpha;

@@ -136,7 +136,7 @@ void DamageRequestEnd(DamageHandle handle) {
 extern Vec3f PUSH_PLAYER_FORCE;
 
 static float Blood_Pos = 0.f;
-static ArxDuration Blood_Duration = 0;
+static GameDuration Blood_Duration = 0;
 
 static void ARX_DAMAGES_IgnitIO(Entity * io, float dmg)
 {
@@ -164,7 +164,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 {
 	Color color;
 	static float Last_Blood_Pos = 0.f;
-	static ArxDuration duration;
+	static GameDuration duration;
 
 	if(Blood_Pos > 2.f) { // end of blood flash
 		Blood_Pos = 0.f;
@@ -197,12 +197,12 @@ void ARX_DAMAGE_Show_Hit_Blood()
 			}
 
 			if(duration > Blood_Duration)
-				Blood_Pos += g_framedelay2 / ArxDurationMs(300);
+				Blood_Pos += g_framedelay2 / GameDurationMs(300);
 
 			duration += g_framedelay2;
 		}
 		else
-			Blood_Pos += g_framedelay2 / ArxDurationMs(40);
+			Blood_Pos += g_framedelay2 / GameDurationMs(40);
 	}
 
 	Last_Blood_Pos = Blood_Pos;
@@ -224,8 +224,8 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 
 	entities.player()->dmg_sum += dmg;
 	
-	ArxDuration elapsed = g_gameTime.now() - entities.player()->ouch_time;
-	if(elapsed > ArxDurationMs(500)) {
+	GameDuration elapsed = g_gameTime.now() - entities.player()->ouch_time;
+	if(elapsed > GameDurationMs(500)) {
 		Entity * oes = EVENT_SENDER;
 
 		if(ValidIONum(source))
@@ -319,9 +319,9 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 
 		if(Blood_Pos == 0.f) {
 			Blood_Pos = 0.000001f;
-			Blood_Duration = ArxDurationMsf(100.f + t * 200.f);
+			Blood_Duration = GameDurationMsf(100.f + t * 200.f);
 		} else {
-			Blood_Duration += ArxDurationMsf(t * 800.f);
+			Blood_Duration += GameDurationMsf(t * 800.f);
 		}
 	}
 
@@ -443,8 +443,8 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	else
 		EVENT_SENDER = NULL;
 
-	ArxDuration elapsed = g_gameTime.now() - io->ouch_time;
-	if(elapsed > ArxDurationMs(500)) {
+	GameDuration elapsed = g_gameTime.now() - io->ouch_time;
+	if(elapsed > GameDurationMs(500)) {
 		io->ouch_time = g_gameTime.now();
 		char tex[32];
 		sprintf(tex, "%5.2f", double(io->dmg_sum));
@@ -635,7 +635,7 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 	float damagesdone;
 
 	if(flags & DAMAGE_TYPE_PER_SECOND) {
-		dmg = dmg * (g_framedelay2 / ArxDurationMs(1000));
+		dmg = dmg * (g_framedelay2 / GameDurationMs(1000));
 	}
 
 	if(target == EntityHandle_Player) {
@@ -727,8 +727,8 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 
 	io->dmg_sum += dmg;
 	
-	ArxDuration elapsed = g_gameTime.now() - io->ouch_time;
-	if(elapsed > ArxDurationMs(500)) {
+	GameDuration elapsed = g_gameTime.now() - io->ouch_time;
+	if(elapsed > GameDurationMs(500)) {
 		if(ValidIONum(source))
 			EVENT_SENDER = entities[source];
 		else
@@ -882,7 +882,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 	}
 	
 	GameInstant now = g_gameTime.now();
-	if(di.lastupd + ArxDurationMs(200) < now) {
+	if(di.lastupd + GameDurationMs(200) < now) {
 		di.lastupd = now;
 		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
 			ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_HIT, &pos, Random::getf(0.8f, 1.2f));
@@ -942,16 +942,16 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 	float dmg;
 	if(damage.params.flags & DAMAGE_NOT_FRAME_DEPENDANT) {
 		dmg = damage.params.damages;
-	} else if(damage.params.duration == ArxDuration::ofRaw(-1)) {
+	} else if(damage.params.duration == GameDuration::ofRaw(-1)) {
 		dmg = damage.params.damages;
 	} else {
-		ArxDuration FD = g_framedelay2;
+		GameDuration FD = g_framedelay2;
 		
 		if(now > damage.start_time + damage.params.duration) {
 			FD -= damage.start_time + damage.params.duration - now;
 		}
 		
-		dmg = damage.params.damages * (FD / ArxDurationMs(1000));
+		dmg = damage.params.damages * (FD / GameDurationMs(1000));
 	}
 	
 	bool validsource = ValidIONum(damage.params.source);
@@ -986,8 +986,8 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 					float dist = fdist(damage.params.pos, sub);
 					
 					if(damage.params.type & DAMAGE_TYPE_FIELD) {
-						ArxDuration elapsed = g_gameTime.now() - io->collide_door_time;
-						if(elapsed > ArxDurationMs(500)) {
+						GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
+						if(elapsed > GameDurationMs(500)) {
 							EVENT_SENDER = NULL;
 							io->collide_door_time = g_gameTime.now();
 							
@@ -1132,7 +1132,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 		}
 	}
 	
-	if(damage.params.duration == ArxDuration::ofRaw(-1))
+	if(damage.params.duration == GameDuration::ofRaw(-1))
 		damage.exist = false;
 	else if(now > damage.start_time + damage.params.duration)
 		damage.exist = false;

@@ -321,16 +321,16 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 			if (io->sfx_time >= g_gameTime.now())
 				io->sfx_time = g_gameTime.now();
 		} else {
-			const ArxDuration elapsed = g_gameTime.now() - io->sfx_time;
+			const GameDuration elapsed = g_gameTime.now() - io->sfx_time;
 
 			if(elapsed > 0) {
-				if(elapsed < ArxDurationMs(3000)) { // 5 seconds to red
-					float ratio = elapsed / ArxDurationMs(3000);
+				if(elapsed < GameDurationMs(3000)) { // 5 seconds to red
+					float ratio = elapsed / GameDurationMs(3000);
 					io->special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
 					io->highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
 					AddRandomSmoke(io, 1);
-				} else if(elapsed < ArxDurationMs(6000)) { // 5 seconds to White
-					float ratio = elapsed / ArxDurationMs(3000);
+				} else if(elapsed < GameDurationMs(6000)) { // 5 seconds to White
+					float ratio = elapsed / GameDurationMs(3000);
 					io->special_color = Color3f::red;
 					io->highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
 					AddRandomSmoke(io, 2);
@@ -362,7 +362,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 							light->fallstart = 400.f;
 							light->rgb = Color3f(1.0f, 0.8f, 0.f);
 							light->pos = io->pos + Vec3f(0.f, -80.f, 0.f);
-							light->duration = ArxDurationMs(600);
+							light->duration = GameDurationMs(600);
 						}
 
 						if(io->sfx_flag & SFX_TYPE_INCINERATE) {
@@ -667,7 +667,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 		}
 
 		if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
-			float wave = timeWaveSin(g_gameTime.now(), ArxDurationMsf(628.319f));
+			float wave = timeWaveSin(g_gameTime.now(), GameDurationMsf(628.319f));
 			float siz = ddist * (halo.radius * 1.5f * (wave * .1f + .7f)) * .6f;
 			
 			TexturedVertex vert[4];
@@ -1003,7 +1003,7 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 		}
 
 		if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
-			float wave = timeWaveSin(g_gameTime.now(), ArxDurationMsf(628.319f));
+			float wave = timeWaveSin(g_gameTime.now(), GameDurationMsf(628.319f));
 			float siz = haloInfo.ddist * (curhalo->radius * (wave * .1f + 1.f)) * .6f;
 			if(io == entities.player() && haloInfo.ddist > 0.8f && !EXTERNALVIEW) {
 				siz *= 1.5f;
@@ -1089,9 +1089,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 	bool glow = false;
 	ColorRGBA glowColor;
 	if(io && (io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) && io->show != SHOW_FLAG_TELEPORTING) {
-		const ArxDuration elapsed = g_gameTime.now() - io->sfx_time;
-		if(elapsed >= ArxDurationMs(3000) && elapsed < ArxDurationMs(6000)) {
-			float ratio = (elapsed - ArxDurationMs(3000)) / ArxDurationMs(3000);
+		const GameDuration elapsed = g_gameTime.now() - io->sfx_time;
+		if(elapsed >= GameDurationMs(3000) && elapsed < GameDurationMs(6000)) {
+			float ratio = (elapsed - GameDurationMs(3000)) / GameDurationMs(3000);
 			glowColor = Color::gray(ratio).toRGB();
 			glow = true;
 		}

@@ -34,7 +34,7 @@ public:
 
 	void SetNextPosition(Vec3f & nextPosition);
 
-	void Update(ArxDuration timeDelta);
+	void Update(GameDuration timeDelta);
 	void Render();
 
 private:
@@ -49,8 +49,8 @@ private:
 		float m_size;
 	};
 
-	ArxDuration m_timePerSegment;
-	ArxDuration m_lastSegmentDuration;
+	GameDuration m_timePerSegment;
+	GameDuration m_lastSegmentDuration;
 	std::vector<TrailSegment> m_segments;
 
 	Vec3f m_nextPosition;

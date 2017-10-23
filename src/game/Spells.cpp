@@ -687,7 +687,7 @@ struct TARGETING_SPELL {
 	SpellcastFlags flags;
 	long level;
 	EntityHandle target;
-	ArxDuration duration;
+	GameDuration duration;
 };
 
 static TARGETING_SPELL t_spell;
@@ -882,7 +882,7 @@ static SpellBase * createSpellInstance(SpellType type) {
 
 
 
-bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, ArxDuration duration) {
+bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, GameDuration duration) {
 	
 	if(cur_rf == 3) {
 		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;	
@@ -1115,7 +1115,7 @@ void ARX_SPELLS_Update() {
 			spells.endSpell(spell);
 		}
 		
-		if(!CanPayMana(spell, spell->m_fManaCostPerSecond * (g_framedelay2 / ArxDurationMs(1000)))) {
+		if(!CanPayMana(spell, spell->m_fManaCostPerSecond * (g_framedelay2 / GameDurationMs(1000)))) {
 			ARX_SPELLS_Fizzle(spell);
 			spells.endSpell(spell);
 		}
@@ -1135,7 +1135,7 @@ void ARX_SPELLS_Update() {
 	}
 }
 
-void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle target, SpellcastFlags flags, ArxDuration duration)
+void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle target, SpellcastFlags flags, GameDuration duration)
 {
 	if(!io || io->spellcast_data.castingspell != SPELL_NONE)
 		return;

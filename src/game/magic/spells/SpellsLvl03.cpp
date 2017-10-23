@@ -67,7 +67,7 @@ void SpeedSpell::Launch() {
 		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(20000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(20000);
 		m_hasDuration = true;
 	}
 	
@@ -140,7 +140,7 @@ void DispellIllusionSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
 	
-	m_duration = ArxDurationMs(1000);
+	m_duration = GameDurationMs(1000);
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		SpellBase * spell = spells[SpellHandle(n)];
@@ -174,7 +174,7 @@ void DispellIllusionSpell::Update() {
 FireballSpell::FireballSpell()
 	: SpellBase()
 	, bExplo(false)
-	, m_createBallDuration(ArxDurationMs(2000))
+	, m_createBallDuration(GameDurationMs(2000))
 {
 }
 
@@ -184,7 +184,7 @@ FireballSpell::~FireballSpell() {
 
 void FireballSpell::Launch() {
 	
-	m_duration = ArxDurationMs(6000);
+	m_duration = GameDurationMs(6000);
 	m_hasDuration = true;
 	
 	if(m_caster != EntityHandle_Player) {
@@ -240,7 +240,7 @@ void FireballSpell::Launch() {
 void FireballSpell::End() {
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	endLightDelayed(m_light, ArxDurationMs(500));
+	endLightDelayed(m_light, GameDurationMs(500));
 }
 
 void FireballSpell::Update() {
@@ -349,7 +349,7 @@ void CreateFoodSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
 	
-	m_duration = (m_launchDuration >= 0) ? m_launchDuration : ArxDurationMs(3500);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(3500);
 	m_hasDuration = true;
 	m_elapsed = 0;
 	
@@ -372,9 +372,9 @@ void CreateFoodSpell::Update() {
 	
 	m_pos = entities.player()->pos;
 	
-	ArxDuration timeRemaining = m_duration - m_elapsed;
+	GameDuration timeRemaining = m_duration - m_elapsed;
 	
-	if(timeRemaining < ArxDurationMs(1500)) {
+	if(timeRemaining < GameDurationMs(1500)) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 		m_particles.m_parameters.m_gravity = Vec3f_ZERO;
 		
@@ -411,7 +411,7 @@ void IceProjectileSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
 	
-	m_duration = ArxDurationMs(4200);
+	m_duration = GameDurationMs(4200);
 	m_hasDuration = true;
 	
 	Vec3f target;
@@ -443,7 +443,7 @@ void IceProjectileSpell::Launch() {
 	float fd = fdist(s, e);
 
 	float fCalc = toMsf(m_duration) * (fd / fspelldist);
-	m_duration = ArxDurationMsf(fCalc);
+	m_duration = GameDurationMsf(fCalc);
 
 	float fDist = (fd / fspelldist) * iMax;
 
@@ -501,8 +501,8 @@ void IceProjectileSpell::End() {
 void IceProjectileSpell::Update() {
 	
 	float fColor = 1.f;
-	if(m_duration - m_elapsed < ArxDurationMs(1000)) {
-		fColor = (m_duration - m_elapsed) / ArxDurationMs(1000);
+	if(m_duration - m_elapsed < GameDurationMs(1000)) {
+		fColor = (m_duration - m_elapsed) / GameDurationMs(1000);
 		
 		for(int i = 0; i < iNumber; i++) {
 			m_icicles[i].size.y *= fColor;

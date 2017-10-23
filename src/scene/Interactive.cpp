@@ -1123,7 +1123,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			timer.es = NULL;
 			timer.exist = 1;
 			timer.io = io;
-			timer.interval = ArxDurationMs(Random::get(3000, 6000));
+			timer.interval = GameDurationMs(Random::get(3000, 6000));
 			timer.name = "_r_a_t_";
 			timer.pos = -1;
 			timer.start = g_gameTime.now();
@@ -2071,7 +2071,7 @@ void UpdateCameras() {
 		// interpolate & send events
 		if(io->usepath) {
 			ARX_USE_PATH * aup = io->usepath;
-			ArxDuration elapsed = g_gameTime.now() - aup->_curtime;
+			GameDuration elapsed = g_gameTime.now() - aup->_curtime;
 
 			if(aup->aupflags & ARX_USEPATH_FORWARD) {
 				if(aup->aupflags & ARX_USEPATH_FLAG_FINISHED) {
@@ -2085,7 +2085,7 @@ void UpdateCameras() {
 				aup->_curtime += elapsed;
 
 				if(aup->_starttime >= aup->_curtime)
-					aup->_curtime = aup->_starttime + ArxDurationMs(1);
+					aup->_curtime = aup->_starttime + GameDurationMs(1);
 			}
 
 			if(aup->aupflags & ARX_USEPATH_PAUSE) {
@@ -2178,7 +2178,7 @@ void UpdateCameras() {
 
 					vv = (8000 - vv) * ( 1.0f / 4000 );
 
-					float f1 = g_framedelay2 / ArxDurationMs(1000) * vv;
+					float f1 = g_framedelay2 / GameDurationMs(1000) * vv;
 
 					if(f1 > 1.f)
 						f1 = 1.f;
@@ -2217,9 +2217,9 @@ void UpdateIOInvisibility(Entity * io)
 {
 	if(io && io->invisibility <= 1.f) {
 		if((io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility < 1.f) {
-			io->invisibility += g_framedelay2 / ArxDurationMs(1000);
+			io->invisibility += g_framedelay2 / GameDurationMs(1000);
 		} else if(!(io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility != 0.f) {
-			io->invisibility -= g_framedelay2 / ArxDurationMs(1000);
+			io->invisibility -= g_framedelay2 / GameDurationMs(1000);
 		}
 		
 		io->invisibility = glm::clamp(io->invisibility, 0.f, 1.f);

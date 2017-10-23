@@ -27,7 +27,7 @@ struct QUAKE_FX_STRUCT {
 	float intensity;
 	float frequency;
 	GameInstant start;
-	ArxDuration duration;
+	GameDuration duration;
 	bool sound;
 };
 
@@ -38,7 +38,7 @@ void AddQuakeFX(float intensity, float duration, float period, bool sound) {
 	if(QuakeFx.intensity > 0.f) {
 		QuakeFx.intensity += intensity;
 
-		QuakeFx.duration += ArxDurationMsf(duration);
+		QuakeFx.duration += GameDurationMsf(duration);
 		QuakeFx.frequency += period;
 		QuakeFx.frequency *= .5f;
 		QuakeFx.sound = QuakeFx.sound || sound;
@@ -50,7 +50,7 @@ void AddQuakeFX(float intensity, float duration, float period, bool sound) {
 
 		QuakeFx.start = g_gameTime.now();
 
-		QuakeFx.duration = ArxDurationMsf(duration);
+		QuakeFx.duration = GameDurationMsf(duration);
 		QuakeFx.frequency = period;
 		QuakeFx.sound = sound;
 
@@ -59,8 +59,8 @@ void AddQuakeFX(float intensity, float duration, float period, bool sound) {
 	}
 
 	if(!sound) {
-		if(QuakeFx.duration > ArxDurationMs(1500))
-			QuakeFx.duration = ArxDurationMs(1500);
+		if(QuakeFx.duration > GameDurationMs(1500))
+			QuakeFx.duration = GameDurationMs(1500);
 
 		if(QuakeFx.intensity > 220)
 			QuakeFx.intensity = 220;
@@ -74,7 +74,7 @@ void RemoveQuakeFX() {
 
 void ManageQuakeFX(EERIE_CAMERA * cam) {
 	if(QuakeFx.intensity > 0.f) {
-		ArxDuration tim = g_gameTime.now() - QuakeFx.start;
+		GameDuration tim = g_gameTime.now() - QuakeFx.start;
 
 		if(tim >= QuakeFx.duration) {
 			QuakeFx.intensity = 0.f;
@@ -85,7 +85,7 @@ void ManageQuakeFX(EERIE_CAMERA * cam) {
 		
 		float periodicity = 0;
 		if(QuakeFx.frequency > 0.f) {
-			periodicity = timeWaveSin(g_gameTime.now(), ArxDurationMsf(628.319f / QuakeFx.frequency));
+			periodicity = timeWaveSin(g_gameTime.now(), GameDurationMsf(628.319f / QuakeFx.frequency));
 		}
 
 		if(periodicity > 0.5f && QuakeFx.sound)

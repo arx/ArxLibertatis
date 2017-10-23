@@ -103,7 +103,7 @@ struct DamageParameters {
 	Vec3f pos;
 	float damages;
 	float radius;
-	ArxDuration duration;	// in milliseconds -1 for apply once else damage *=framediff
+	GameDuration duration;	// in milliseconds -1 for apply once else damage *=framediff
 	DamageArea area; // damage area type
 	DamageFlags flags; // damages flags
 	DamageType type; // damages type
@@ -112,7 +112,7 @@ struct DamageParameters {
 	DamageParameters() {
 		damages = 0.f;
 		radius = 100.f;
-		duration = ArxDurationMs(1000);
+		duration = GameDurationMs(1000);
 		area = DAMAGE_AREA;
 		flags = 0;
 		type = 0;

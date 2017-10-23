@@ -318,7 +318,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					if (esss->allowevents & DISABLE_EXPLORATIONMODE) return REFUSE;
 					break;
 				case SM_KEY_PRESSED: {
-					if(cinematicBorder.elapsedTime() < ArxDurationMs(3000)) {
+					if(cinematicBorder.elapsedTime() < GameDurationMs(3000)) {
 						LogDebug("refusing SM_KEY_PRESSED");
 						return REFUSE;
 					}

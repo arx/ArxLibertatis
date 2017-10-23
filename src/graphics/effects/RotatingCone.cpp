@@ -67,14 +67,14 @@ void RotatingCone::Init(float rbase, float rhaut, float hauteur) {
 	m_tsouffle = TextureContainer::Load("graph/obj3d/textures/(fx)_sebsouffle");
 }
 
-void RotatingCone::Update(ArxDuration timeDelta, Vec3f pos, float coneScale) {
+void RotatingCone::Update(GameDuration timeDelta, Vec3f pos, float coneScale) {
 	
 	m_currdurationang += timeDelta;
 	
 	m_pos = pos;
 	m_coneScale = coneScale;
 	
-	m_ang = m_currdurationang / ArxDurationMs(1000);
+	m_ang = m_currdurationang / GameDurationMs(1000);
 	
 	if(m_ang > 1.f) {
 		m_currdurationang = 0;
