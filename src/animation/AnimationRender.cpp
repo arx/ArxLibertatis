@@ -316,7 +316,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 
 	if(io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
 		if(io->show == SHOW_FLAG_TELEPORTING) {
-			io->sfx_time = io->sfx_time + g_framedelay2;
+			io->sfx_time = io->sfx_time + g_gameTime.lastFrameDuration();
 
 			if (io->sfx_time >= g_gameTime.now())
 				io->sfx_time = g_gameTime.now();
