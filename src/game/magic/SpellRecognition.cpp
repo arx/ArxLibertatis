@@ -126,7 +126,7 @@ int RuneRecognitionAlt::angleDiff(int angle1, int angle2) {
 void RuneRecognitionAlt::callRuneHandlers(int index) {
 	if(patternData[index].runeId != RUNE_NONE) {
 		handleRuneDetection(patternData[index].runeId);
-	} 
+	}
 	if(patternData[index].cheatId != CheatRune_None) {
 		handleCheatRuneDetection(patternData[index].cheatId);
 	}
@@ -893,7 +893,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		// TEMPUS
 		case 962686  :
 		case 862686  :
-		case 8626862 : 
+		case 8626862 :
 			handleRuneDetection(RUNE_TEMPUS);
 			break;
 		// MOVIS
@@ -907,7 +907,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 61264:
 		case 6126:
 		case 6136:
-		case 616: 
+		case 616:
 			handleRuneDetection(RUNE_MOVIS);
 			break;
 		// NHI
@@ -970,7 +970,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 236987:
 		case 23698:
 			handleCheatRuneDetection(CheatRune_U);
-			goto failed; 
+			goto failed;
 		case 2382398:
 		case 2829:
 		case 23982398:
@@ -1029,7 +1029,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 238298:
 		case 3939:
 			handleCheatRuneDetection(CheatRune_W);
-			goto failed; 
+			goto failed;
 		case 161:
 		case 1621:
 		case 1261:
