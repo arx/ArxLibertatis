@@ -166,10 +166,9 @@ void ARX_INTERFACE_ManageOpenedBook() {
 	g_playerBook.manage();
 }
 
-PlayerBook::PlayerBook() 
+PlayerBook::PlayerBook()
 	: m_currentPage(BOOKMODE_STATS)
-{
-}
+{ }
 
 bool PlayerBook::canOpenPage(ARX_INTERFACE_BOOK_MODE page) {
 	switch (page) {
@@ -952,7 +951,8 @@ void StatsPage::manageStats()
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
 	
-	RenderBookPlayerCharacter();	
+	RenderBookPlayerCharacter();
+	
 }
 
 void StatsPage::RenderBookPlayerCharacter() {
