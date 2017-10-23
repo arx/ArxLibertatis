@@ -105,7 +105,7 @@ inline T reinterpret(O v) {
 	ARX_STATIC_ASSERT(sizeof(T) == sizeof(O), "can only reinterpret to type of same size");
 	T t;
 	memcpy(&t, &v, sizeof(T));
-	return t; 
+	return t;
 }
 
 inline float ffsqrt(float f) {
