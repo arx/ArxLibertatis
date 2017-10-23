@@ -74,11 +74,12 @@ public:
 	
 	// bool accessors
 	bool IsValid() const { return mData != NULL; }
-	bool HasAlpha() const {
-		return mFormat == Format_A8
-		    || mFormat == Format_L8A8
-		    || mFormat == Format_R8G8B8A8
-		    || mFormat == Format_B8G8R8A8;
+	bool HasAlpha() const { return hasAlpha(mFormat); }
+	static bool hasAlpha(Format format) {
+		return format == Format_A8
+		    || format == Format_L8A8
+		    || format == Format_R8G8B8A8
+		    || format == Format_B8G8R8A8;
 	}
 	
 	//! Access to internal data.
