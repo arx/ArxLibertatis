@@ -177,8 +177,8 @@ void ARX_MISSILES_Update() {
 	
 	ARX_PROFILE_FUNC();
 	
-	TextureContainer * tc = TC_fire; 
-
+	TextureContainer * tc = TC_fire;
+	
 	GameInstant now = g_gameTime.now();
 
 	for(unsigned long i(0); i < MAX_MISSILES; i++) {
