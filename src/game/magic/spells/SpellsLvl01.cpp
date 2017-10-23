@@ -226,16 +226,17 @@ void MagicMissileSpell::Launch() {
 		
 		GameDuration lTime = m_duration + GameDurationMs(Random::get(-1000, 1000));
 		
-		lTime		= std::max(GameDurationMs(1000), lTime);
-		lMax		= std::max(lMax, lTime);
+		lTime = std::max(GameDurationMs(1000), lTime);
+		lMax = std::max(lMax, lTime);
 		
 		missile->SetDuration(lTime);
 		
 		EERIE_LIGHT * el = dynLightCreate(missile->lLightId);
 		if(el) {
-			el->intensity	= 0.7f + 2.3f;
-			el->fallend		= 190.f;
-			el->fallstart	= 80.f;
+			
+			el->intensity = 0.7f + 2.3f;
+			el->fallend = 190.f;
+			el->fallstart = 80.f;
 			
 			if(m_mrCheat) {
 				el->rgb = Color3f(1.f, 0.3f, 0.8f);
@@ -245,6 +246,7 @@ void MagicMissileSpell::Launch() {
 			
 			el->pos = startPos;
 			el->duration = GameDurationMs(300);
+			
 		}
 	}
 	
@@ -286,7 +288,7 @@ void MagicMissileSpell::Update() {
 			damage.pos = missile->eCurPos;
 			damage.radius = 80.f;
 			damage.damages = (4 + m_level * ( 1.0f / 5 )) * .8f;
-			damage.area	= DAMAGE_FULL;
+			damage.area = DAMAGE_FULL;
 			damage.duration = GameDuration::ofRaw(-1);
 			damage.source = m_caster;
 			damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
@@ -324,9 +326,9 @@ void MagicMissileSpell::Update() {
 		
 		EERIE_LIGHT * el = lightHandleGet(pMM->lLightId);
 		if(el) {
-			el->intensity		= 0.7f + 2.3f * pMM->lightIntensityFactor;
+			el->intensity = 0.7f + 2.3f * pMM->lightIntensityFactor;
 			el->pos = pMM->eCurPos;
-			el->creationTime	= g_gameTime.now();
+			el->creationTime = g_gameTime.now();
 		}
 	}
 }
@@ -438,26 +440,21 @@ void IgnitSpell::End() {
 void IgnitSpell::Update() {
 	
 	float a = m_elapsed / m_duration;
-		
+	
 	if(a >= 1.f) {
 		a = 1.f;
 	}
-		
+	
 	std::vector<T_LINKLIGHTTOFX>::iterator itr;
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-			
 		EERIE_LIGHT * targetLight = g_staticLights[itr->m_targetLight];
-			
-		Vec3f pos = glm::mix(m_srcPos, targetLight->pos, a);
-			
-		LightHandle id = itr->m_effectLight;
-			
-		EERIE_LIGHT * light = lightHandleGet(id);
+		EERIE_LIGHT * light = lightHandleGet(itr->m_effectLight);
 		if(light) {
 			light->intensity = Random::getf(0.7f, 2.7f);
-			light->pos = pos;
+			light->pos = glm::mix(m_srcPos, targetLight->pos, a);
 		}
 	}
+	
 }
 
 void DouseSpell::Launch() {
