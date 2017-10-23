@@ -348,26 +348,26 @@ static const char * MakeSpellName(SpellType num) {
 		case SPELL_FIREBALL              : return "fireball";
 		case SPELL_CREATE_FOOD           : return "create_food";
 		case SPELL_ICE_PROJECTILE        : return "ice_projectile";
-		// Level 4 
+		// Level 4
 		case SPELL_BLESS                 : return "bless";
 		case SPELL_DISPELL_FIELD         : return "dispell_field";
 		case SPELL_FIRE_PROTECTION       : return "fire_protection";
 		case SPELL_TELEKINESIS           : return "telekinesis";
 		case SPELL_CURSE                 : return "curse";
 		case SPELL_COLD_PROTECTION       : return "cold_protection";
-		// Level 5 
+		// Level 5
 		case SPELL_RUNE_OF_GUARDING      : return "rune_of_guarding";
 		case SPELL_LEVITATE              : return "levitate";
 		case SPELL_CURE_POISON           : return "cure_poison";
 		case SPELL_REPEL_UNDEAD          : return "repel_undead";
 		case SPELL_POISON_PROJECTILE     : return "poison_projectile";
-		// Level 6 
+		// Level 6
 		case SPELL_RISE_DEAD             : return "raise_dead";
 		case SPELL_PARALYSE              : return "paralyse";
 		case SPELL_CREATE_FIELD          : return "create_field";
 		case SPELL_DISARM_TRAP           : return "disarm_trap";
 		case SPELL_SLOW_DOWN             : return "slowdown";
-		// Level 7  
+		// Level 7
 		case SPELL_FLYING_EYE            : return "flying_eye";
 		case SPELL_FIRE_FIELD            : return "fire_field";
 		case SPELL_ICE_FIELD             : return "ice_field";
@@ -574,7 +574,7 @@ void ARX_SPELLS_ManageMagic() {
 				if(!ARX_SOUND_IsPlaying(SND_MAGIC_DRAW))
 					ARX_SOUND_PlaySFX(SND_MAGIC_DRAW, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 			} else {
-				ARX_SOUND_Stop(SND_MAGIC_DRAW);				
+				ARX_SOUND_Stop(SND_MAGIC_DRAW);
 			}
 			
 			snip = 0;
@@ -885,7 +885,7 @@ static SpellBase * createSpellInstance(SpellType type) {
 bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, GameDuration duration) {
 	
 	if(cur_rf == 3) {
-		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;	
+		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;
 	}
 
 	if(sp_max) {
@@ -1173,10 +1173,9 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle t
 	
 	io->gameFlags &=~GFLAG_INVISIBILITY;
 	
-	if (	((io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM)
-		&&	(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NODRAW) )
-		||	(io->spellcast_data.spell_flags & SPELLCAST_FLAG_PRECAST))	
-	{
+	if (((io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM)
+	     && (io->spellcast_data.spell_flags & SPELLCAST_FLAG_NODRAW))
+	    || (io->spellcast_data.spell_flags & SPELLCAST_FLAG_PRECAST)) {
 		
 		ARX_SPELLS_Launch(io->spellcast_data.castingspell,
 		                  io->index(),
