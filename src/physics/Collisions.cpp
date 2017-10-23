@@ -90,12 +90,11 @@ inline float IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, long f
 
 	for(long num = 0; num < to; num++) {
 		float dd = fdist(Vec2f(ep.v[num].p.x, ep.v[num].p.z), Vec2f(cyl.origin.x, cyl.origin.z));
-
 		if(dd < nearest) {
 			nearest = dd;
-		}		
+		}
 	}
-
+	
 	if(nearest > std::max(82.f, cyl.radius))
 		return 999999.f;
 
@@ -336,12 +335,12 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 
 						cx *= (1.f/3);
 						cz *= (1.f/3);
-							
+						
 						float tval=1.1f;
-
+						
 						for(int kk = 0; kk < 3; kk++) {
-								ep.v[kk].p.x = (ep.v[kk].p.x - cx) * tval + cx; 
-								ep.v[kk].p.z = (ep.v[kk].p.z - cz) * tval + cz; 
+								ep.v[kk].p.x = (ep.v[kk].p.x - cx) * tval + cx;
+								ep.v[kk].p.z = (ep.v[kk].p.z - cz) * tval + cz;
 						}
 						
 						if(PointIn2DPolyXZ(&ep, io->pos.x, io->pos.z)) {
@@ -526,10 +525,9 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 				}
 			}
 		}
-	}	
-
-	float tempo;
+	}
 	
+	float tempo;
 	EERIEPOLY * ep = CheckInPoly(cyl.origin + Vec3f(0.f, cyl.height, 0.f), &tempo);
 	
 	if(ep) {
@@ -557,18 +555,16 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 			} else {
 				io = treatio[i].io;
 			}
-
+			
 			if(!io
-				|| io == ioo
-				|| !io->obj
-				||	(	(io->show!=SHOW_FLAG_IN_SCENE)
-					||	((io->ioflags & IO_NO_COLLISIONS)  && !(flags & CFLAG_COLLIDE_NOCOL))
-					) 
-				|| fartherThan(io->pos, cyl.origin, 1000.f)
-			) {
+			   || io == ioo
+			   || !io->obj
+			   || io->show != SHOW_FLAG_IN_SCENE
+			   || ((io->ioflags & IO_NO_COLLISIONS)  && !(flags & CFLAG_COLLIDE_NOCOL))
+			   || fartherThan(io->pos, cyl.origin, 1000.f)) {
 				continue;
 			}
-	
+			
 			{
 				Cylinder & io_cyl = io->physics.cyl;
 				io_cyl = GetIOCyl(io);
@@ -590,11 +586,10 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 							if(res > 0) {
 								if(res == 2)
 									ON_PLATFORM = 1;
-
 								anything = std::min(anything, io->obj->vertexWorldPositions[ii].v.y - 10.f);
-							}			
+							}
 						}
-
+						
 						for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
 							Vec3f c = Vec3f_ZERO;
 							float height = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[0]].v.y;
@@ -622,13 +617,11 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 						}
 						}
 					}
-				}
-				else if (	(io->ioflags & IO_NPC)
-						&&	(!(flags & CFLAG_NO_NPC_COLLIDE)) // MUST be checked here only (not before...)
-						&&	(!(ioo && (ioo->ioflags & IO_NO_COLLISIONS)))	
-						&&	(io->_npcdata->lifePool.current>0.f)
-						)
-				{
+					
+				} else if((io->ioflags & IO_NPC)
+				          && !(flags & CFLAG_NO_NPC_COLLIDE) // MUST be checked here only (not before...)
+				          && !(ioo && (ioo->ioflags & IO_NO_COLLISIONS))
+				          && io->_npcdata->lifePool.current > 0.f) {
 					
 					if(CylinderInCylinder(cyl, io_cyl)) {
 						NPC_IN_CYLINDER = 1;
@@ -701,15 +694,15 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 							for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
 								long idx = io->obj->grouplist[ii].origin;
 								sp.origin = vlist[idx].v;
-
+								
 								if(ioo == entities.player()) {
-									sp.radius = 22.f; 
+									sp.radius = 22.f;
 								} else if(ioo->ioflags & IO_NPC) {
 									sp.radius = 26.f;
 								} else {
 									sp.radius = 22.f;
 								}
-
+								
 								if(SphereInCylinder(cyl, sp)) {
 									if(!(flags & CFLAG_JUST_TEST) && ioo) {
 										if(io->gameFlags & GFLAG_DOOR) {
@@ -749,7 +742,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 							long step;
 							
 							if(ioo == entities.player())
-								sp.radius = 23.f; 
+								sp.radius = 23.f;
 							else if(ioo && !(ioo->ioflags & IO_NPC))
 								sp.radius = 32.f;
 							else
@@ -808,7 +801,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 							}
 						}
 					}
-				} 
+				}
 			}
 		suivant:
 			{ }
@@ -819,8 +812,8 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 		return 0.f;
 
 	anything = anything - cyl.origin.y;
-
-	return anything;	
+	
+	return anything;
 }
 
 static bool InExceptionList(EntityHandle val) {
@@ -967,8 +960,8 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 		{ }
 		
 	}
-
-	return vreturn;	
+	
+	return vreturn;
 }
 
 //except source...
@@ -997,11 +990,11 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 
 			if(IsPolyInSphere(ep, sphere)) {
 				return &ep;
-			}			
+			}
 		}
-	}	
+	}
 	
-	return NULL;	
+	return NULL;
 }
 
 bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags, EntityHandle * num) //except source...
@@ -1134,8 +1127,8 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 			}
 		}
 	}
-
-	return false;	
+	
+	return false;
 }
 
 
@@ -1222,7 +1215,7 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 		}
 	}
 	
-	return false;	
+	return false;
 }
 
 
@@ -1234,8 +1227,8 @@ float MAX_ALLOWED_PER_SECOND=12.f;
 // TODO copy-paste AttemptValidCylinderPos
 bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) {
 	
-	float anything = CheckAnythingInCylinder(cyl, io, flags); 
-
+	float anything = CheckAnythingInCylinder(cyl, io, flags);
+	
 	if((flags & CFLAG_LEVITATE) && anything == 0.f) {
 		return true;
 	}
@@ -1269,7 +1262,7 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 				tolerate = -65 - io->_npcdata->moveproblem;
 			} else {
 				if(io && io->_npcdata) {
-					tolerate = -55 - io->_npcdata->moveproblem; 
+					tolerate = -55 - io->_npcdata->moveproblem;
 				} else {
 					tolerate = 0.f;
 				}
@@ -1320,20 +1313,20 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
 				}
-
+				
 				Cylinder tmpp = cyl;
-				tmpp.radius *= 0.65f; 
+				tmpp.radius *= 0.65f;
 				float tmp = CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST);
-
+				
 				if(tmp > 50.f) {
 					tmpp.radius = cyl.radius * 1.45f;
 					tmpp.origin.y -= 30.f;
 					float tmp = CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST);
-
-					if(tmp < 0)
+					if(tmp < 0) {
 						return false;
-				}	
-			}			
+					}
+				}
+			}
 		}
 	} else if(anything < -45) {
 		return false;
@@ -1361,14 +1354,8 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 }
 
 // TODO copy-paste Move_Cylinder
-bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLINDER_STEP, CollisionFlags flags)
-{
-//	HERMESPerf script(HPERF_PHYSICS);
-//	+5 on 15
-//	
-//	memcpy(&ip->cyl.origin,&ip->targetpos,sizeof(EERIE_3D));
-//	return true;
-
+bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLINDER_STEP, CollisionFlags flags) {
+	
 	ON_PLATFORM = 0;
 	MOVING_CYLINDER = 1;
 	COLLIDED_CLIMB_POLY = 0;
@@ -1395,7 +1382,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 	long count=100;
 
 	while(distance > 0.f && count--) {
-		// First We compute current increment 
+		// First We compute current increment
 		float curmovedist = std::min(distance, MOVE_CYLINDER_STEP);
 		distance -= curmovedist;
 
@@ -1406,10 +1393,10 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 		vector2D.x = mvector.x * curmovedist;
 		vector2D.y = 0.f;
 		vector2D.z = mvector.z * curmovedist;
-
-		test.cyl.origin.x += vector2D.x; 
+		
+		test.cyl.origin.x += vector2D.x;
 		test.cyl.origin.y += mvector.y * curmovedist;
-		test.cyl.origin.z += vector2D.z; 
+		test.cyl.origin.z += vector2D.z;
 		
 		if(AttemptValidCylinderPos(test.cyl,io,flags)) {
 			// Found without complication
@@ -1497,10 +1484,10 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 				}
 			} else if(LFOUND) {
 				ip->cyl.origin = lpos;
-				distance -= curmovedist; 
+				distance -= curmovedist;
 			} else if(RFOUND) {
 				ip->cyl.origin = rpos;
-				distance -= curmovedist; 
+				distance -= curmovedist;
 			} else {
 				//stopped
 				ip->velocity = Vec3f_ZERO;
