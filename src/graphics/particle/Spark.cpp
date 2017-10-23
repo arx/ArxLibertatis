@@ -130,7 +130,7 @@ void ParticleSparkUpdate() {
 	
 	EERIE_CAMERA * cam = &subj;
 	
-	const ArxInstant now = g_gameTime.now();
+	const GameInstant now = g_gameTime.now();
 	
 	RenderMaterial sparkMaterial;
 	sparkMaterial.setBlendType(RenderMaterial::Additive);

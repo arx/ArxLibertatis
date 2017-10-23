@@ -67,7 +67,7 @@ static const size_t MAX_EQUIPED = 12;
 
 struct ARX_INTERFACE_MEMORIZE_SPELL {
 	bool bSpell;
-	ArxInstant lTimeCreation;
+	GameInstant lTimeCreation;
 	Rune iSpellSymbols[6];
 	
 	ARX_INTERFACE_MEMORIZE_SPELL()

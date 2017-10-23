@@ -117,7 +117,7 @@ struct CinematicSpeech {
 
 struct Notification {
 	
-	ArxInstant timecreation;
+	GameInstant timecreation;
 	ArxDuration duration;
 	std::string text;
 	
@@ -144,7 +144,7 @@ struct ARX_SPEECH {
 	audio::SampleId sample;
 	long mood;
 	SpeechFlags flags;
-	ArxInstant time_creation;
+	GameInstant time_creation;
 	ArxDuration duration;
 	float fDeltaY;
 	int iTimeScroll;

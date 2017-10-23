@@ -119,7 +119,7 @@ struct EERIE_SCRIPT {
 	char * data;
 	SCRIPT_VARIABLES lvar;
 	unsigned long lastcall;
-	ArxInstant timers[MAX_SCRIPTTIMERS];
+	GameInstant timers[MAX_SCRIPTTIMERS];
 	DisabledEvents allowevents;
 	EERIE_SCRIPT * master;
 	long shortcut[MAX_SHORTCUT];
@@ -149,7 +149,7 @@ struct SCR_TIMER {
 	ArxDuration interval;
 	long pos;
 	long longinfo;
-	ArxInstant start;
+	GameInstant start;
 	Entity * io;
 	EERIE_SCRIPT * es;
 	

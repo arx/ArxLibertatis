@@ -77,7 +77,7 @@ struct POLYBOOM {
 	short type;
 	short nbvert;
 	TextureContainer * tc;
-	ArxInstant timecreation;
+	GameInstant timecreation;
 	ArxDuration tolive;
 };
 
@@ -253,7 +253,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	float hdiv,vdiv;
 	hdiv=vdiv=1.f/(size*2);
 	
-	ArxInstant now = g_gameTime.now();
+	GameInstant now = g_gameTime.now();
 	
 	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
 	while(pb != polyboom.end()) {
@@ -367,7 +367,7 @@ void PolyBoomDraw() {
 	ARX_PROFILE_FUNC();
 	
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
-	ArxInstant now = g_gameTime.now();
+	GameInstant now = g_gameTime.now();
 	
 	for(size_t i = 0; i < polyboom.size(); i++) {
 		

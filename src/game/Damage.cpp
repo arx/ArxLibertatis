@@ -101,8 +101,8 @@ class TextureContainer;
 
 struct DAMAGE_INFO {
 	short exist;
-	ArxInstant start_time;
-	ArxInstant lastupd;
+	GameInstant start_time;
+	GameInstant lastupd;
 	
 	DamageParameters params;
 };
@@ -881,7 +881,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 		return;
 	}
 	
-	ArxInstant now = g_gameTime.now();
+	GameInstant now = g_gameTime.now();
 	if(di.lastupd + ArxDurationMs(200) < now) {
 		di.lastupd = now;
 		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
@@ -921,7 +921,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 // source = -1 no source but valid pos
 // source = 0  player
 // source > 0  IO
-static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
+static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 	
 	ARX_PROFILE_FUNC();
 	

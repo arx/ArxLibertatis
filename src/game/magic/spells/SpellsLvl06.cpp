@@ -270,12 +270,12 @@ CreateFieldSpell::CreateFieldSpell()
 
 void CreateFieldSpell::Launch() {
 	
-	ArxInstant start = g_gameTime.now();
+	GameInstant start = g_gameTime.now();
 	if(m_flags & SPELLCAST_FLAG_RESTORE) {
 		//move time of creation back by 4 seconds or whatever elapsed after game time 0 (if it is smaller)
 		//prevents difference between creation time and elapsed time of m_field (or as small as possible)
 		//related to m_field.Update() with comment below
-		start = ArxInstantMs(toMsi(start) - std::min(toMsi(start), toMsi(ArxInstantMs(4000))));
+		start = GameInstantMs(toMsi(start) - std::min(toMsi(start), toMsi(GameInstantMs(4000))));
 	}
 	m_timcreation = start;
 	

@@ -693,7 +693,7 @@ struct TARGETING_SPELL {
 static TARGETING_SPELL t_spell;
 
 long LOOKING_FOR_SPELL_TARGET=0;
-ArxInstant LOOKING_FOR_SPELL_TARGET_TIME = 0;
+GameInstant LOOKING_FOR_SPELL_TARGET_TIME = 0;
 
 void ARX_SPELLS_CancelSpellTarget() {
 	t_spell.typ = SPELL_NONE;

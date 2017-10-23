@@ -1035,7 +1035,7 @@ static void RenderLava() {
 
 static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
                                                      const EERIE_FRUSTRUM_DATA & frustrums,
-                                                     ArxInstant now,
+                                                     GameInstant now,
                                                      const Vec3f & camPos
 ) {
 	ARX_PROFILE_FUNC();
@@ -1427,7 +1427,7 @@ void ARX_SCENE_Update() {
 	
 	ARX_PROFILE_FUNC();
 	
-	ArxInstant now = g_gameTime.now();
+	GameInstant now = g_gameTime.now();
 	
 	WATEREFFECT = (toMsi(now) % long(2 * glm::pi<float>() / 0.0005f)) * 0.0005f;
 	

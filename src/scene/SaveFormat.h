@@ -291,7 +291,7 @@ struct SavedPrecast {
 		PRECAST_STRUCT a;
 		a.typ = (typ < 0) ? SPELL_NONE : (SpellType)typ; // TODO save/load enum
 		a.level = level;
-		a.launch_time = ArxInstantMs(launch_time); // TODO save/load time
+		a.launch_time = GameInstantMs(launch_time); // TODO save/load time
 		a.flags = SpellcastFlags::load(flags); // TODO save/load flags
 		a.duration = ArxDurationMs(duration); // TODO save/load time
 		return a;

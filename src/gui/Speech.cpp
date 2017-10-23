@@ -125,7 +125,7 @@ void ARX_SPEECH_Add(const std::string & text) {
 	if(text.empty())
 		return;
 	
-	ArxInstant now = std::max(g_gameTime.now(), ArxInstantMs(1));
+	GameInstant now = std::max(g_gameTime.now(), GameInstantMs(1));
 	
 	if(g_speech[MAX_SPEECH - 1].timecreation != 0) {
 		ARX_SPEECH_MoveUp();
@@ -419,7 +419,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 
 void ARX_SPEECH_Update() {
 	
-	ArxInstant now = g_gameTime.now();
+	GameInstant now = g_gameTime.now();
 
 	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
 		ARX_CONVERSATION_CheckAcceleratedSpeech();

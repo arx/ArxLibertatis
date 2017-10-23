@@ -157,8 +157,8 @@ bool USE_PLAYERCOLLISIONS = true;
 bool BLOCK_PLAYER_CONTROLS = false;
 bool WILLRETURNTOCOMBATMODE = false;
 ArxDuration DeadTime = 0;
-static ArxInstant LastHungerSample = 0;
-static ArxInstant ROTATE_START = 0;
+static GameInstant LastHungerSample = 0;
+static GameInstant ROTATE_START = 0;
 
 // Player Anims FLAGS/Vars
 ANIM_HANDLE * herowaitbook = NULL;
@@ -1273,7 +1273,7 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	ARX_PROFILE_FUNC();
 	
-	ArxInstant now = g_gameTime.now();
+	GameInstant now = g_gameTime.now();
 	
 	if(player.m_currentMovement & PLAYER_ROTATE) {
 		if(ROTATE_START == 0) {

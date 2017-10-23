@@ -127,8 +127,8 @@ DECLARE_FLAGS_OPERATORS(UsePathFlags)
 
 struct ARX_USE_PATH {
 	ARX_PATH * path;
-	ArxInstant _starttime;
-	ArxInstant _curtime;
+	GameInstant _starttime;
+	GameInstant _curtime;
 	UsePathFlags aupflags;
 	Vec3f initpos;
 	long lastWP;

@@ -26,7 +26,7 @@
 struct QUAKE_FX_STRUCT {
 	float intensity;
 	float frequency;
-	ArxInstant start;
+	GameInstant start;
 	ArxDuration duration;
 	bool sound;
 };

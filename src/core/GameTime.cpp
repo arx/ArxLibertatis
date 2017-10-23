@@ -73,7 +73,7 @@ GameTime::GameTime() {
 	reset(0);
 }
 
-void GameTime::reset(const ArxInstant time) {
+void GameTime::reset(const GameInstant time) {
 	m_now = time;
 	m_lastFrameDuration = 0;
 	m_speed = 1.f;

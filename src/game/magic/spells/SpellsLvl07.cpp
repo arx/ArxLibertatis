@@ -181,7 +181,7 @@ static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light) {
 
 void FlyingEyeSpell::Update() {
 	
-	const ArxInstant now = g_gameTime.now();
+	const GameInstant now = g_gameTime.now();
 	
 	const ArxDuration framediff3 = now - m_lastupdate;
 	

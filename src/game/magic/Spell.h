@@ -166,7 +166,7 @@ public:
 	
 	SpellType m_type;
 	
-	ArxInstant m_timcreation;
+	GameInstant m_timcreation;
 	
 	bool m_hasDuration;
 	ArxDuration m_duration;

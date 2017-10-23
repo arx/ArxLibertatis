@@ -150,14 +150,14 @@ inline float timeWaveCos(InstantType<TAG, T> t, DurationType<TAG, T> period) {
 
 // ArxTime
 // in microseconds
-typedef InstantType <struct ArxTime_TAG, s64> ArxInstant;
+typedef InstantType <struct ArxTime_TAG, s64> GameInstant;
 typedef DurationType<struct ArxTime_TAG, s64> ArxDuration;
 
-inline ArxInstant ArxInstantUs(s64 val) {
-	return ArxInstant::ofRaw(val);
+inline GameInstant GameInstantUs(s64 val) {
+	return GameInstant::ofRaw(val);
 }
-inline ArxInstant ArxInstantMs(s64 val) {
-	return ArxInstant::ofRaw(val * 1000);
+inline GameInstant GameInstantMs(s64 val) {
+	return GameInstant::ofRaw(val * 1000);
 }
 
 inline ArxDuration ArxDurationUs(s64 val) {
@@ -170,13 +170,13 @@ inline ArxDuration ArxDurationMsf(float val) {
 	return ArxDuration::ofRaw(s64(val * 1000.f));
 }
 
-inline s64 toUs(ArxInstant val) {
+inline s64 toUs(GameInstant val) {
 	return val.t;
 }
-inline s64 toMsi(ArxInstant val) {
+inline s64 toMsi(GameInstant val) {
 	return val.t / 1000;
 }
-inline float toMsf(ArxInstant val) {
+inline float toMsf(GameInstant val) {
 	return float(val.t) / 1000.f;
 }
 
