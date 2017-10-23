@@ -236,10 +236,10 @@ void LevitateSpell::Update() {
 		dustParticles = 10;
 	}
 	
-	cone1.Update(g_framedelay2, m_pos, coneScale);
-	cone2.Update(g_framedelay2, m_pos, coneScale);
+	cone1.Update(g_gameTime.lastFrameDuration(), m_pos, coneScale);
+	cone2.Update(g_gameTime.lastFrameDuration(), m_pos, coneScale);
 	
-	m_stones.Update(g_framedelay2, m_pos);
+	m_stones.Update(g_gameTime.lastFrameDuration(), m_pos);
 	
 	for(int i = 0; i < dustParticles; i++) {
 		createDustParticle();
@@ -346,7 +346,7 @@ void CurePoisonSpell::Update() {
 	}
 
 	m_particles.SetPos(m_pos);
-	m_particles.Update(g_framedelay2);
+	m_particles.Update(g_gameTime.lastFrameDuration());
 	
 	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
@@ -569,7 +569,7 @@ void PoisonProjectileSpell::Update() {
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
 		CPoisonProjectile * projectile = m_projectiles[i];
 		
-		projectile->Update(g_framedelay2);
+		projectile->Update(g_gameTime.lastFrameDuration());
 	}
 	
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
@@ -598,7 +598,7 @@ void PoisonProjectileSpell::Update() {
 			float v = 4.f + m_level * ( 1.0f / 10 ) * 6.f;
 			damage.damages = v * ( 1.0f / 1000 ) * g_framedelay;
 			damage.area = DAMAGE_FULL;
-			damage.duration = g_framedelay2;
+			damage.duration = g_gameTime.lastFrameDuration();
 			damage.source = m_caster;
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
