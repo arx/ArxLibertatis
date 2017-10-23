@@ -865,7 +865,7 @@ static void RenderWater() {
 	
 	dynamicVertices.lock(iNb * 4);
 	
-	UseRenderState state(render3D().colorKey().depthWrite(false).cull(CullCW).depthOffset(8).blend(BlendDstColor, BlendOne));
+	UseRenderState state(render3D().depthWrite(false).cull(CullCW).depthOffset(8).blend(BlendDstColor, BlendOne));
 	
 	GRenderer->SetTexture(0, enviro);
 	GRenderer->SetTexture(1, enviro);
