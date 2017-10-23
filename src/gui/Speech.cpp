@@ -362,7 +362,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 		
 		// For non-conversation speech choose a random variant
 		
-		long count = getLocalisedKeyCount(data);  
+		long count = getLocalisedKeyCount(data);
 		long variant = 1;
 		
 		// TODO For some samples there are no corresponding entries
