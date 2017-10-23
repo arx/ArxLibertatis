@@ -165,7 +165,8 @@ void MassLightningStrikeSpell::Update() {
 	EERIE_LIGHT * light = lightHandleGet(m_light);
 	if(light) {
 		light->intensity = Random::getf(1.3f, 2.3f);
-	}	
+	}
+	
 }
 
 
@@ -455,5 +456,6 @@ void TeleportSpell::Update() {
 		ARX_SOUND_PlaySFX(SND_SPELL_TELEPORTED, &player.pos);
 	} else {
 		LASTTELEPORT = TELEPORT;
-	}	
+	}
+	
 }

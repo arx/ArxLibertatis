@@ -469,7 +469,8 @@ void IncinerateSpell::Update() {
 	Entity * target = entities.get(m_target);
 	if(target) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, target->pos);
-	}	
+	}
+	
 }
 
 Vec3f IncinerateSpell::getPosition() {
@@ -489,7 +490,7 @@ void MassParalyseSpell::Launch() {
 		const EntityHandle handle = EntityHandle(ii);
 		Entity * tio = entities[handle];
 		
-		if(   handle == m_caster 
+		if(   handle == m_caster
 		   || !tio || !(tio->ioflags & IO_NPC)
 		   || tio->show != SHOW_FLAG_IN_SCENE
 		   || (tio->ioflags & IO_FREEZESCRIPT)
