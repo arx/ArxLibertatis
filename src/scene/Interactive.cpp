@@ -1173,7 +1173,7 @@ void ComputeVVPos(Entity * io) {
 			if(io == entities.player()) {
 				val = toMs(g_platformTime.lastFrameDuration());
 			} else {
-				val = toMsf(g_framedelay2);
+				val = toMsf(g_gameTime.lastFrameDuration());
 			}
 			val *= (1.0f / 4) * mul;
 			
@@ -2178,7 +2178,7 @@ void UpdateCameras() {
 
 					vv = (8000 - vv) * ( 1.0f / 4000 );
 
-					float f1 = g_framedelay2 / GameDurationMs(1000) * vv;
+					float f1 = g_gameTime.lastFrameDuration() / GameDurationMs(1000) * vv;
 
 					if(f1 > 1.f)
 						f1 = 1.f;
@@ -2217,9 +2217,9 @@ void UpdateIOInvisibility(Entity * io)
 {
 	if(io && io->invisibility <= 1.f) {
 		if((io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility < 1.f) {
-			io->invisibility += g_framedelay2 / GameDurationMs(1000);
+			io->invisibility += g_gameTime.lastFrameDuration() / GameDurationMs(1000);
 		} else if(!(io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility != 0.f) {
-			io->invisibility -= g_framedelay2 / GameDurationMs(1000);
+			io->invisibility -= g_gameTime.lastFrameDuration() / GameDurationMs(1000);
 		}
 		
 		io->invisibility = glm::clamp(io->invisibility, 0.f, 1.f);
@@ -2278,7 +2278,7 @@ void UpdateInter() {
 			if(io->animlayer[0].flags & EA_PAUSED)
 				diff = 0;
 			else
-				diff = toAnimationDuration(g_framedelay2);
+				diff = toAnimationDuration(g_gameTime.lastFrameDuration());
 
 			Vec3f pos = io->pos;
 
