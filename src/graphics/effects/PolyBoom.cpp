@@ -375,12 +375,12 @@ void PolyBoomDraw() {
 		
 		// FIXME what exactly does pb.type do ?
 		if(pb.type & 128) {
-			if(pb.timecreation - g_framedelay2 > 0) {
-				pb.timecreation = pb.timecreation - g_framedelay2;
+			if(pb.timecreation - g_gameTime.lastFrameDuration() > 0) {
+				pb.timecreation = pb.timecreation - g_gameTime.lastFrameDuration();
 			}
 			
-			if(pb.timecreation - g_framedelay2 > 0) {
-				pb.timecreation = pb.timecreation - g_framedelay2;
+			if(pb.timecreation - g_gameTime.lastFrameDuration() > 0) {
+				pb.timecreation = pb.timecreation - g_gameTime.lastFrameDuration();
 			}
 		}
 		
