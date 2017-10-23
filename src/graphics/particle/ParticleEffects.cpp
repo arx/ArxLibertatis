@@ -440,7 +440,7 @@ void ManageTorch() {
 		el->pos = player.pos;
 		el->intensity = 1.8f;
 		el->fallstart = 480.f;
-		el->fallend = el->fallstart + 480.f; 
+		el->fallend = el->fallstart + 480.f;
 		el->exist = 1;
 		el->rgb = Color3f(1.f, .5f, .8f);
 		el->duration = 0;
