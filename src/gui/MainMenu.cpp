@@ -729,13 +729,13 @@ public:
 			
 			CycleTextWidget * cb = new CycleTextWidget;
 			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedVSync, this, _1, _2);
-			szMenuText = getLocalised("system_menus_options_video_vsync_off", "Off");
+			szMenuText = getLocalised("system_menus_options_video_vsync_off", "Disabled");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 			if(benchmark::isEnabled()) {
 				cb->setValue(0);
 				cb->setEnabled(false);
 			} else {
-				szMenuText = getLocalised("system_menus_options_video_vsync_on", "On");
+				szMenuText = getLocalised("system_menus_options_video_vsync_on", "Enabled");
 				cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 				szMenuText = getLocalised("system_menus_options_video_vsync_auto", "Adaptive");
 				cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
@@ -802,7 +802,7 @@ public:
 			
 			CycleTextWidget * cb = new CycleTextWidget;
 			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedMaxAnisotropy, this, _1, _2);
-			szMenuText = getLocalised("system_menus_options_video_filter_anisotropic_off", "Off");
+			szMenuText = getLocalised("system_menus_options_video_filter_anisotropic_off", "Disabled");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 			int maxAnisotropy = int(GRenderer->getMaxSupportedAnisotropy());
 			int selected = 0;
