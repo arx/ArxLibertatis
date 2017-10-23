@@ -299,7 +299,7 @@ void MagicMissileSpell::Update() {
 	}
 	
 	for(size_t i = 0 ; i < m_missiles.size() ; i++) {
-		m_missiles[i]->Update(g_framedelay2);
+		m_missiles[i]->Update(g_gameTime.lastFrameDuration());
 	}
 	
 	{ // CheckAllDestroyed
