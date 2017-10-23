@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "graphics/Draw.h"
+#include "graphics/texture/Texture.h"
 
 #include "platform/profiler/Profiler.h"
 
@@ -148,7 +149,7 @@ RenderState RenderMaterial::apply() const {
 		GRenderer->ResetTexture(0);
 	}
 	
-	RenderState state = render3D().colorKey();
+	RenderState state = render3D();
 	
 	GRenderer->GetTextureStage(0)->setWrapMode(m_wrapMode);
 	state.setDepthOffset(m_depthBias);
@@ -161,6 +162,7 @@ RenderState RenderMaterial::apply() const {
 	
 	if(m_blendType == Opaque) {
 		state.disableBlend();
+		state.setColorKey(m_texture && m_texture->hasAlpha());
 	} else {
 		switch(m_blendType) {
 		
