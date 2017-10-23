@@ -378,6 +378,7 @@ void OpenGLRenderer::reinit() {
 	m_glstate.setFog(false);
 	
 	glAlphaFunc(GL_GREATER, 0.5f);
+	glMinSampleShading(1.f);
 	m_glstate.setAlphaCutout(false);
 	
 	glEnable(GL_DEPTH_TEST);
@@ -887,7 +888,7 @@ void OpenGLRenderer::flushState() {
 			}
 		}
 		
-		bool useA2C = m_hasMSAA && config.video.alphaCutoutAntialiasing != 0;
+		bool useA2C = m_hasMSAA && config.video.alphaCutoutAntialiasing == 1;
 		if(m_glstate.getAlphaCutout() != m_state.getAlphaCutout()
 		   || (useA2C && m_state.getAlphaCutout()
 		       && m_glstate.isBlendEnabled() != m_state.isBlendEnabled())) {
@@ -905,6 +906,9 @@ void OpenGLRenderer::flushState() {
 				if(disableA2C) {
 					glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 				} else if(!m_state.getAlphaCutout() || enableA2C) {
+					if(m_hasMSAA && config.video.alphaCutoutAntialiasing == 2) {
+						glDisable(GL_SAMPLE_SHADING);
+					}
 					glDisable(GL_ALPHA_TEST);
 				}
 			}
@@ -913,6 +917,9 @@ void OpenGLRenderer::flushState() {
 					glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 				} else if(!m_glstate.getAlphaCutout() || disableA2C) {
 					glEnable(GL_ALPHA_TEST);
+					if(m_hasMSAA && config.video.alphaCutoutAntialiasing == 2) {
+						glEnable(GL_SAMPLE_SHADING);
+					}
 				}
 			}
 		}
