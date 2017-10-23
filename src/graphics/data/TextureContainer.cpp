@@ -186,7 +186,7 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 	Texture::TextureFlags flags = 0;
 	
 	if(!(m_dwFlags & NoColorKey) && tempPath.ext() == ".bmp") {
-		flags |= Texture::HasColorKey;
+		flags |= Texture::ApplyColorKey;
 	}
 	
 	if(!(m_dwFlags & NoMipmap)) {
