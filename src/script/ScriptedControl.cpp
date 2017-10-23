@@ -229,7 +229,7 @@ public:
 		
 		if(name == "kill") {
 			cinematicKill();
-			arxtime.resume();
+			arxtime.resume(GameTime::PauseCinematic);
 		} else if(name == "play") {
 			cinematicRequestStart();
 		} else {

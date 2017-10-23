@@ -538,7 +538,7 @@ void levelInit() {
 
 	g_platformTime.updateFrame();
 	
-	arxtime.resume();
+	arxtime.resume(GameTime::PauseInitial | GameTime::PauseMenu);
 }
 
 //*************************************************************************************
