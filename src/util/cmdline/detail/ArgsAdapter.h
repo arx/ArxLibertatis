@@ -67,7 +67,7 @@ public:
 	template <int N>
 	typename type_impl<impl_t,N>::result& get() {
 		typedef typename type_impl<impl_t,N>::result result;
-		return get_t<N>::template get<result&>(m_impl); 
+		return get_t<N>::template get<result&>(m_impl);
 	}
 	
 private:

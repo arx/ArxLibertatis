@@ -61,7 +61,7 @@ struct args_adapter_impl<void(BOOST_PP_ENUM_PARAMS(N, A))>
 #undef SUPER_T
 
 template <
-	typename R 
+	typename R
 	BOOST_PP_COMMA_IF(N) BOOST_PP_ENUM_PARAMS(N, typename A)
 >
 struct args_adapter_impl<R(BOOST_PP_ENUM_PARAMS(N, A))>
