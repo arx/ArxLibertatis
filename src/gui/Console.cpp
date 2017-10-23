@@ -109,9 +109,12 @@ bool ScriptConsole::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 		}
 		
 		case Keyboard::Key_Enter: {
-			execute();
-			clear();
-			return true;
+			if(!mod.alt) {
+				execute();
+				clear();
+				return true;
+			}
+			break;
 		}
 		
 		case Keyboard::Key_Tab: {
