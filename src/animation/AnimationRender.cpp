@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/data/TextureContainer.h"
+#include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/effects/PolyBoom.h"
@@ -122,8 +123,9 @@ static void PopOneTriangleList(RenderState baseState, TextureContainer * _pTex, 
 	}
 	
 	GRenderer->SetTexture(0, _pTex);
+	baseState.setColorKey(_pTex->m_pTexture && _pTex->m_pTexture->hasAlpha());
 	
-	UseRenderState state(baseState.colorKey());
+	UseRenderState state(baseState);
 	
 	if(_pTex->userflags & POLY_LATE_MIP) {
 		const float GLOBAL_NPC_MIPMAP_BIAS = -2.2f;
@@ -155,10 +157,11 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		return;
 	}
 	
-	RenderState baseState = render3D().colorKey().depthWrite(false);
-
+	RenderState baseState = render3D().depthWrite(false);
+	
 	GRenderer->SetTexture(0, _pTex);
-
+	baseState.setColorKey(_pTex->m_pTexture && _pTex->m_pTexture->hasAlpha());
+	
 	if(batch.count[BatchBucket_Blended]) {
 		UseRenderState state(baseState.blend(BlendDstColor, BlendSrcColor));
 		if(batch.count[BatchBucket_Blended]) {
@@ -201,13 +204,16 @@ void PopAllTriangleListOpaque(RenderState baseState, bool clear) {
 	ARX_PROFILE_FUNC();
 	
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-
+	
+	// TODO sort texture list according to material properties to reduce state changes
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
 		PopOneTriangleList(baseState, pTex, clear);
 		pTex = pTex->m_pNext;
 	}
+	
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
+	
 }
 
 void PopAllTriangleListTransparency() {
@@ -224,9 +230,10 @@ void PopAllTriangleListTransparency() {
 		PopOneTriangleListTransparency(pTex);
 		pTex = pTex->m_pNext;
 	}
-
+	
 	GRenderer->SetFogColor(g_fogColor);
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
+	
 }
 
 
