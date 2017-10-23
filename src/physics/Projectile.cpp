@@ -137,7 +137,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	
 	projectile.m_trail = new ArrowTrail();
 	projectile.m_trail->SetNextPosition(projectile.position);
-	projectile.m_trail->Update(g_framedelay2);
+	projectile.m_trail->Update(g_gameTime.lastFrameDuration());
 	
 	projectile.creation_time = g_gameTime.now();
 	projectile.flags |= ATO_EXIST | ATO_MOVING;
@@ -323,7 +323,7 @@ static void CheckExp(const Projectile & projectile) {
 		ARX_NPC_SpawnAudibleSound(pos, entities.player());
 		
 		EERIE_LIGHT * light = dynLightCreate();
-		if(light && g_framedelay2 > 0) {
+		if(light && g_gameTime.lastFrameDuration() > 0) {
 			light->intensity = 3.9f;
 			light->fallstart = 400.f;
 			light->fallend   = 440.f;
@@ -384,7 +384,7 @@ void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta)
 		   && !(projectile.flags & ATO_UNDERWATER)) {
 
 			EERIE_LIGHT * light = dynLightCreate();
-			if(light && g_framedelay2 > 0) {
+			if(light && g_gameTime.lastFrameDuration() > 0) {
 				light->intensity = 1.f;
 				light->fallstart = 100.f;
 				light->fallend   = 240.f;
