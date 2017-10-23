@@ -164,11 +164,9 @@ public:
  */
 class IncompatibleFlag {
 	
-	u32 value;
-	
 public:
 	
-	explicit IncompatibleFlag(u32 flag) : value(flag) { }
+	explicit IncompatibleFlag(u32 flag) { ARX_UNUSED(flag); }
 	
 };
 
