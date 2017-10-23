@@ -21,7 +21,6 @@
 
 #include <algorithm>
 
-#define BOOST_DATE_TIME_NO_LIB
 #include <boost/date_time.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
