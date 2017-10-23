@@ -117,7 +117,7 @@ static void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp); 
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	
 	GRenderer->Clear(Renderer::ColorBuffer);
 	
