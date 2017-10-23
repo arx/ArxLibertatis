@@ -158,7 +158,7 @@ void ARXDRAW_DrawInterShadows() {
 	
 	if(g_shadowBatch.size() > 0) {
 		GRenderer->SetFogColor(Color::none);
-		UseRenderState state(render3D().colorKey().depthWrite(false).blend(BlendZero, BlendInvSrcColor).depthOffset(1));
+		UseRenderState state(render3D().depthWrite(false).blend(BlendZero, BlendInvSrcColor).depthOffset(1));
 		GRenderer->SetTexture(0, Boom);
 		EERIEDRAWPRIM(Renderer::TriangleList, &g_shadowBatch[0], g_shadowBatch.size());
 		GRenderer->SetFogColor(g_fogColor);
