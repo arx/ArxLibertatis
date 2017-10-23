@@ -53,7 +53,7 @@ void Halo_Render() {
 	
 	GRenderer->ResetTexture(0);
 	
-	RenderState baseState = render3D().depthWrite(false);
+	RenderState baseState = render3D().colorKey().depthWrite(false);
 	
 	if(HALOCUR[0] > 0) {
 		UseRenderState state(baseState.blend(BlendZero, BlendInvSrcColor));

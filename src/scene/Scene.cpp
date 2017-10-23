@@ -865,7 +865,7 @@ static void RenderWater() {
 	
 	dynamicVertices.lock(iNb * 4);
 	
-	UseRenderState state(render3D().depthWrite(false).cull(CullCW).depthOffset(8).blend(BlendDstColor, BlendOne));
+	UseRenderState state(render3D().colorKey().depthWrite(false).cull(CullCW).depthOffset(8).blend(BlendDstColor, BlendOne));
 	
 	GRenderer->SetTexture(0, enviro);
 	GRenderer->SetTexture(1, enviro);
@@ -936,7 +936,7 @@ static void RenderLavaBatch() {
 		return;
 	}
 	
-	RenderState baseState = render3D().depthWrite(false).cull(CullCW).depthOffset(8);
+	RenderState baseState = render3D().colorKey().depthWrite(false).cull(CullCW).depthOffset(8);
 	
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X);
 	
@@ -1239,7 +1239,7 @@ static void BackgroundRenderOpaque(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
-	UseRenderState state(render3D());
+	UseRenderState state(render3D().colorKey());
 	
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
@@ -1290,7 +1290,7 @@ static void BackgroundRenderTransparent(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
-	RenderState baseState = render3D().depthWrite(false).depthOffset(2);
+	RenderState baseState = render3D().colorKey().depthWrite(false).depthOffset(2);
 	
 	//render transparency
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
@@ -1524,7 +1524,7 @@ void ARX_SCENE_Render() {
 	}
 	
 	{
-		UseRenderState state(render3D());
+		UseRenderState state(render3D().colorKey());
 		PopAllTriangleListOpaque();
 	}
 	
@@ -1535,10 +1535,10 @@ void ARX_SCENE_Render() {
 		if(!EXTERNALVIEW) {
 			// In first person mode, always render the player over other objects
 			// in order to avoid clipping the player and weapon with walls.
-			UseRenderState state(render3D().depthTest(false));
+			UseRenderState state(render3D().colorKey().depthTest(false));
 			PopAllTriangleListOpaque(/*clear=*/false);
 		}
-		UseRenderState state(render3D());
+		UseRenderState state(render3D().colorKey());
 		PopAllTriangleListOpaque();
 	}
 	

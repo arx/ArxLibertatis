@@ -114,7 +114,7 @@ static void PlayerBookDrawRune(Rune rune) {
 void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 {
 	
-	UseRenderState state(render3D().depthTest(false).fog(false));
+	UseRenderState state(render3D().colorKey().depthTest(false).fog(false));
 	
 	Vec3f pos = Vec3f(0.f, 0.f, 2100.f);
 	
@@ -199,7 +199,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 				
 				if(r) {
 					
-					UseRenderState state(render3D().depthTest(false).fog(false).blendAdditive());
+					UseRenderState state(render3D().colorKey().depthTest(false).fog(false).blendAdditive());
 					
 					TransformInfo t(pos, glm::quat_cast(toRotationMatrix(angle)));
 					DrawEERIEInter(rune, t, NULL, false, 0.f);

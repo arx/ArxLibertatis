@@ -1082,7 +1082,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	Halo_Render();
 	
 	{
-		UseRenderState state(render3D().fog(false));
+		UseRenderState state(render3D().colorKey().fog(false));
 		PopAllTriangleListOpaque();
 	}
 	PopAllTriangleListTransparency();
