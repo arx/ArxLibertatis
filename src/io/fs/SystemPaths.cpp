@@ -295,7 +295,7 @@ ExitStatus SystemPaths::init(const InitParams & initParams) {
 	data = getSearchPaths(true);
 	
 	if(initParams.displaySearchDirs) {
-		fs::paths.list(std::cout, 
+		fs::paths.list(std::cout,
 		               " - --user-dir (-u) command-line parameter\n",
 		               " - --config-dir (-c) command-line parameter\n",
 		               " - --data-dir (-d) command-line parameters\n"
