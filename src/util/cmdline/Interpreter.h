@@ -241,13 +241,11 @@ template <typename Stream, typename Interpreter>
 struct print_op_t {
 	
 	Stream * m_stream;
-	Interpreter const * m_interpreter;
 	
 	size_t m_offset;
 	
-	print_op_t(Stream & stream, const Interpreter & interpreter, size_t offset)
+	print_op_t(Stream & stream, size_t offset)
 		: m_stream(&stream)
-		, m_interpreter(&interpreter)
 		, m_offset(offset)
 	{ }
 	
@@ -305,7 +303,7 @@ void print_op(OStream & os, const Interpreter & interpreter) {
 	opname_size calc_size;
 	interpreter.visit(calc_size);
 	
-	print_op_t<OStream, Interpreter> op(os, interpreter, calc_size.value);
+	print_op_t<OStream, Interpreter> op(os, calc_size.value);
 	interpreter.visit(op);
 }
 
