@@ -116,7 +116,7 @@ public:
 		return m_paused;
 	}
 	
-	ArxDuration get_frame_delay() const {
+	ArxDuration lastFrameDuration() const {
 		return m_frameDelay;
 	}
 	
