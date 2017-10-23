@@ -150,8 +150,8 @@ void CMagicMissile::Update(GameDuration timeDelta)
 		lightIntensityFactor = Random::getf(0.5f, 1.0f);
 }
 
-void CMagicMissile::Render()
-{ 
+void CMagicMissile::Render() {
+	
 	Vec3f lastpos, newpos;
 	
 	if(m_elapsed >= m_duration)
