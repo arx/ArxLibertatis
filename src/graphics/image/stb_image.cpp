@@ -1314,7 +1314,6 @@ static int process_frame_header(jpeg *z, int scan)
 }
 
 // use comparisons since in some cases we handle more than one case (e.g. SOF)
-#define STBI_DNL(x)         ((x) == 0xdc)
 #define STBI_SOI(x)         ((x) == 0xd8)
 #define STBI_EOI(x)         ((x) == 0xd9)
 #define STBI_SOF(x)         ((x) == 0xc0 || (x) == 0xc1)
