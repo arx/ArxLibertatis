@@ -669,10 +669,10 @@ static bool HandleGameFlowTransitions() {
 			TRANSITION_START = 0;
 			GameFlow::setTransition(GameFlow::SecondLogo);
 		}
-
-		return true;			
+		
+		return true;
 	}
-
+	
 	if(GameFlow::getTransition() == GameFlow::SecondLogo) {
 		benchmark::begin(benchmark::Splash);
 		//firsttime
