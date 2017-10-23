@@ -485,7 +485,7 @@ aalError setMixerParent(MixerId m_id, MixerId pm_id) {
 	return g_mixers[m_id.handleData()]->setParent(g_mixers[pm_id.handleData()]);
 }
 
-// Mixer control 
+// Mixer control
 
 aalError mixerStop(MixerId m_id) {
 	
