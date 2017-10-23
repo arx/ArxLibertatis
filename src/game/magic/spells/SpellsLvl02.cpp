@@ -124,7 +124,7 @@ void HealSpell::Update() {
 	}
 
 	m_particles.SetPos(m_pos);
-	m_particles.Update(g_framedelay2);
+	m_particles.Update(g_gameTime.lastFrameDuration());
 	m_particles.Render();
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
