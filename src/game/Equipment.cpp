@@ -290,8 +290,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	ARX_INTERACTIVE_HideGore(entities.player(), 1);
 	EERIE_Object_Precompute_Fast_Access(hero);
 	EERIE_Object_Precompute_Fast_Access(entities.player()->obj);
-
-	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player()); 
+	
+	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
 }
 
 void ARX_EQUIPMENT_UnEquipAllPlayer() {
@@ -514,13 +514,13 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		}
 		else
 			critical = false;
-
-		damages = attack * ratioaim; 
-
+		
+		damages = attack * ratioaim;
+		
 		if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
 			if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth * ( 1.0f / 2 )) {
 				if(SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
-					backstab = 1.5f; 
+					backstab = 1.5f;
 			}
 		}
 	} else {
@@ -556,7 +556,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 		if(Random::getf(0.f, 100.f) <= io_source->_npcdata->backstab_skill) {
 			if(SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
-				backstab = 1.5f; 
+				backstab = 1.5f;
 		}
 	}
 
@@ -598,7 +598,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	
 	ARX_SOUND_PlayCollision(*amat, *wmat, power, 1.f, pos, io_source);
 	
-	float chance = 100.f - (ac - attack); 
+	float chance = 100.f - (ac - attack);
 	if(Random::getf(0.f, 100.f) > chance) {
 		return 0.f;
 	}
@@ -608,7 +608,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	if(dmgs > 0.f) {
 		
 		if(critical) {
-			dmgs *= 1.5f; 
+			dmgs *= 1.5f;
 		}
 		
 		if(io_target == entities.player()) {
@@ -682,8 +682,8 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		
 		Sphere sphere;
 		sphere.origin = actionPointPosition(io_weapon->obj, action.idx);
-		sphere.radius = rad; 
-
+		sphere.radius = rad;
+		
 		if(source != EntityHandle_Player)
 			sphere.radius += 15.f;
 
@@ -727,7 +727,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						color = (target->ioflags & IO_NPC) ? target->_npcdata->blood_color : Color::white;
 						pos = target->obj->vertexWorldPositions[hitpoint].v;
 					}
-					else ARX_DEAD_CODE(); 
+					else ARX_DEAD_CODE();
 					
 					float dmgs = 0.f;
 					if(!(flags & 1)) {
