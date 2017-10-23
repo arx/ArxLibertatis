@@ -98,11 +98,9 @@ bool TextManager::AddText(Font* _pFont, const std::string & _lpszUText,
 	pArxText->lTimeOut = _lTimeOut;
 	pArxText->rRectClipp = pArxText->rRect;
 	
-	if(iNbLigneClipp) 
-	{
+	if(iNbLigneClipp) {
 		Vec2i sSize = _pFont->getTextSize(pArxText->lpszUText);
 		sSize.y *= iNbLigneClipp;
-	
 		pArxText->rRectClipp.bottom = pArxText->rRect.top + sSize.y;
 	}
 	
@@ -188,7 +186,6 @@ void TextManager::Clear() {
 	entries.clear();
 }
 
-bool TextManager::Empty() const 
-{
+bool TextManager::Empty() const {
 	return entries.empty();
 }
