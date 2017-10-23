@@ -1505,7 +1505,7 @@ void HudRoot::draw() {
 	
 	damagedEquipmentGui.updateRect(stealthGauge.rect());
 	if(player.torch && damagedEquipmentGui.rect().overlaps(currentTorchIconGui.rect())) {
-		Vec2f offset = Vec2f(currentTorchIconGui.rect().right - stealthGauge.rect().right + indicatorHorizSpacing, 
+		Vec2f offset = Vec2f(currentTorchIconGui.rect().right - stealthGauge.rect().right + indicatorHorizSpacing,
 		                     0.0f);
 		damagedEquipmentGui.updateRect(stealthGauge.rect() + offset);
 	}
