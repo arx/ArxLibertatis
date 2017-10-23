@@ -1423,9 +1423,7 @@ void SpellsPage::drawSpells() {
 				color = Color(168, 208, 223, 255);
 			}
 			
-			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 			DrawBookInterfaceItem(spellInfo.tc, fPos, color, 0.000001f);
-			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 			
 		}
 		
