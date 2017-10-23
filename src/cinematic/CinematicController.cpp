@@ -158,11 +158,8 @@ void cinematicRender() {
 	if(   !ControlCinematique->key
 	   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
 	) {
-		ControlCinematique->projectload=false;
 		StopSoundKeyFramer();
-		ControlCinematique->OneTimeSceneReInit();
-		arxtime.resume(GameTime::PauseCinematic);
-		PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
+		cinematicKill();
 
 		bool bWasBlocked = false;
 		if(BLOCK_PLAYER_CONTROLS) {
