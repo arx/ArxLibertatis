@@ -60,7 +60,6 @@ if(NOT SET_NOISY_WARNING_FLAGS)
 	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/operators)
 	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/comma)
 	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/comments)
-	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/end_of_line)
 	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/align_tab)
 	
 	# Unsafe functions.
