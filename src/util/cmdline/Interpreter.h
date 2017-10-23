@@ -237,7 +237,7 @@ struct opname_size {
 	
 };
 
-template <typename Stream, typename Interpreter>
+template <typename Stream>
 struct print_op_t {
 	
 	Stream * m_stream;
@@ -303,7 +303,7 @@ void print_op(OStream & os, const Interpreter & interpreter) {
 	opname_size calc_size;
 	interpreter.visit(calc_size);
 	
-	print_op_t<OStream, Interpreter> op(os, calc_size.value);
+	print_op_t<OStream> op(os, calc_size.value);
 	interpreter.visit(op);
 }
 
