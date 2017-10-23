@@ -371,10 +371,10 @@ bool Triangles_Intersect(const EERIE_TRI & v, const EERIE_TRI & u)
 	if (bb1.max.z < bb2.min.z) return false;
 
 	if (bb1.min.z > bb2.max.z) return false;
-
-	if (tri_tri_intersect(v, u)) 
+	
+	if (tri_tri_intersect(v, u))
 		return true;
-
+	
 	return false;
 }
 
