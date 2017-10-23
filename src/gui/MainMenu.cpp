@@ -805,9 +805,12 @@ public:
 	
 	RenderOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS_RENDER)
+		, m_alphaCutoutAntialiasingCycleText(NULL)
 	{ }
 	
 	~RenderOptionsMenuPage() { }
+	
+	CycleTextWidget * m_alphaCutoutAntialiasingCycleText;
 	
 	void init() {
 		
@@ -920,7 +923,8 @@ public:
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_crisp", "Crisp");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			cb->setValue(config.video.alphaCutoutAntialiasing);
+			m_alphaCutoutAntialiasingCycleText = cb;
+			setAlphaCutoutAntialisingState();
 			
 			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
 			panel->AddElement(cb);
@@ -995,6 +999,20 @@ public:
 	
 private:
 	
+	void setAlphaCutoutAntialisingState() {
+		
+		CycleTextWidget * cb = m_alphaCutoutAntialiasingCycleText;
+		
+		if(config.video.antialiasing) {
+			cb->setValue(config.video.alphaCutoutAntialiasing);
+			cb->SetCheckOn();
+		} else {
+			cb->setValue(0);
+			cb->SetCheckOff();
+		}
+		
+	}
+	
 	void onChangedRenderer(int pos, const std::string & str) {
 		ARX_UNUSED(str);
 		
@@ -1017,6 +1035,7 @@ private:
 	
 	void onChangedAntialiasing(int state) {
 		config.video.antialiasing = state ? true : false;
+		setAlphaCutoutAntialisingState();
 	}
 	
 	void onChangedColorkeyAntialiasing(int state) {
