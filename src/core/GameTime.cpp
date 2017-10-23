@@ -75,14 +75,14 @@ GameTime::GameTime() {
 
 void GameTime::reset(const ArxInstant time) {
 	m_now = time;
-	m_frameDelay = 0;
+	m_lastFrameDuration = 0;
 	m_speed = 1.f;
 	m_paused = true;
 }
 
-void GameTime::update(PlatformDuration frameDelay) {
+void GameTime::update(PlatformDuration frameDuration) {
 	
-	ArxDuration delta = ArxDurationUs(toUs(frameDelay));
+	ArxDuration delta = ArxDurationUs(toUs(frameDuration));
 	
 	arx_assert(delta >= 0);
 	
@@ -96,6 +96,6 @@ void GameTime::update(PlatformDuration frameDelay) {
 		delta = 0;
 	}
 	
-	m_frameDelay = delta;
+	m_lastFrameDuration = delta;
 	m_now += delta;
 }
