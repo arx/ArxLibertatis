@@ -203,16 +203,12 @@ void PopAllTriangleListOpaque(RenderState baseState, bool clear) {
 	
 	ARX_PROFILE_FUNC();
 	
-	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-	
 	// TODO sort texture list according to material properties to reduce state changes
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
 		PopOneTriangleList(baseState, pTex, clear);
 		pTex = pTex->m_pNext;
 	}
-	
-	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 	
 }
 
@@ -221,7 +217,6 @@ void PopAllTriangleListTransparency() {
 	ARX_PROFILE_FUNC();
 	
 	GRenderer->SetFogColor(Color::none);
-	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	
 	PopOneTriangleList(render3D().depthWrite(false).blend(BlendDstColor, BlendOne), &TexSpecialColor, true);
 	
@@ -232,7 +227,6 @@ void PopAllTriangleListTransparency() {
 	}
 	
 	GRenderer->SetFogColor(g_fogColor);
-	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 	
 }
 

@@ -343,8 +343,6 @@ public:
 	// Factory
 	virtual Texture2D * CreateTexture2D() = 0;
 	
-	virtual void SetAlphaFunc(PixelCompareFunc func, float fef) = 0; // Ref = [0.0f, 1.0f]
-	
 	// Viewport
 	virtual void SetViewport(const Rect & viewport) = 0;
 	virtual Rect GetViewport() = 0;

@@ -1242,9 +1242,6 @@ static void BackgroundRenderOpaque(size_t room_num) {
 	
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
-	//render opaque
-	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-	
 	std::vector<TextureContainer *>::const_iterator itr;
 	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
 		
@@ -1276,7 +1273,6 @@ static void BackgroundRenderOpaque(size_t room_num) {
 	}
 	
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
-	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 	
 }
 
@@ -1549,13 +1545,10 @@ void ARX_SCENE_Render() {
 	PopAllTriangleListTransparency();
 	
 	GRenderer->SetFogColor(Color::none);
-	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
 		BackgroundRenderTransparent(RoomDrawList[i]);
 	}
-	
-	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 	
 	RenderWater();
 	RenderLava();

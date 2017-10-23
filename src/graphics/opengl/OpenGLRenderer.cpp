@@ -377,7 +377,7 @@ void OpenGLRenderer::reinit() {
 	}
 	m_glstate.setFog(false);
 	
-	SetAlphaFunc(CmpNotEqual, 0.0f);
+	glAlphaFunc(GL_GREATER, 0.5f);
 	m_glstate.setColorKey(false);
 	
 	glEnable(GL_DEPTH_TEST);
@@ -537,21 +537,6 @@ Texture2D * OpenGLRenderer::CreateTexture2D() {
 	GLTexture2D * texture = new GLTexture2D(this);
 	textures.push_back(*texture);
 	return texture;
-}
-
-static const GLenum arxToGlPixelCompareFunc[] = {
-	GL_NEVER, // CmpNever,
-	GL_LESS, // CmpLess,
-	GL_EQUAL, // CmpEqual,
-	GL_LEQUAL, // CmpLessEqual,
-	GL_GREATER, // CmpGreater,
-	GL_NOTEQUAL, // CmpNotEqual,
-	GL_GEQUAL, // CmpGreaterEqual,
-	GL_ALWAYS // CmpAlways
-};
-
-void OpenGLRenderer::SetAlphaFunc(PixelCompareFunc func, float ref) {
-	glAlphaFunc(arxToGlPixelCompareFunc[func], ref);
 }
 
 void OpenGLRenderer::SetViewport(const Rect & _viewport) {

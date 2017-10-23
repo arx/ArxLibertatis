@@ -54,9 +54,6 @@ public:
 	// Factory
 	Texture2D * CreateTexture2D();
 	
-	// Alphablending & Transparency
-	void SetAlphaFunc(PixelCompareFunc func, float fef); // Ref = [0.0f, 1.0f]
-	
 	// Viewport
 	void SetViewport(const Rect & viewport);
 	Rect GetViewport();
