@@ -50,7 +50,8 @@ public:
 	// Texture management
 	void ReleaseAllTextures();
 	void RestoreAllTextures();
-
+	void reloadColorKeyTextures();
+	
 	// Factory
 	Texture2D * CreateTexture2D();
 	
