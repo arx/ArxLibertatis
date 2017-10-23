@@ -77,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/FastSceneFormat.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/texture/Texture.h"
 
 #include "io/resource/ResourcePath.h"
 #include "io/fs/FileStream.h"
@@ -1356,6 +1357,14 @@ struct SINFO_TEXTURE_VERTEX {
 
 } // anonymous namespace
 
+struct HasAlphaChannel {
+	
+	bool operator()(TextureContainer * texture) {
+		return !texture || !texture->m_pTexture || !texture->m_pTexture->hasAlpha();
+	}
+	
+};
+
 void ComputePortalVertexBuffer() {
 	
 	if(!portals) {
@@ -1577,5 +1586,8 @@ void ComputePortalVertexBuffer() {
 		}
 		
 		room->pVertexBuffer->unlock();
+		
+		std::partition(room->ppTextureContainer.begin(), room->ppTextureContainer.end(), HasAlphaChannel());
+		
 	}
 }
