@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_CORE_VERSION_H 
+#ifndef ARX_CORE_VERSION_H
 #define ARX_CORE_VERSION_H
 
 #include <string>
