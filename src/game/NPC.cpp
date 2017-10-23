@@ -221,10 +221,7 @@ void ARX_NPC_Kill_Spell_Launch(Entity * io)
 	io->spellcast_data.castingspell = SPELL_NONE;
 }
 
-/*!
- * \brief Releases Pathfinder info from an NPC
- * \param io
- */
+//! Releases Pathfinder info from an NPC
 static void ARX_NPC_ReleasePathFindInfo(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC))
@@ -238,10 +235,7 @@ static void ARX_NPC_ReleasePathFindInfo(Entity * io) {
 	io->_npcdata->pathfind.pathwait = 0;
 }
 
-/*!
- * \brief Creates an extra rotations structure for a NPC
- * \param io
- */
+//! Creates an extra rotations structure for a NPC
 static void ARX_NPC_CreateExRotateData(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC) || io->_npcdata->ex_rotate)
@@ -262,11 +256,7 @@ static void ARX_NPC_CreateExRotateData(Entity * io) {
 	io->_npcdata->look_around_inc = 0.f;
 }
 
-/*!
- * \brief Resurects an NPC
- * \param io
- * \param flags
- */
+//! Resurects an NPC
 void ARX_NPC_Revive(Entity * io, bool init)
 {
 	if(TSecondaryInventory && TSecondaryInventory->io == io) {
@@ -310,12 +300,7 @@ void ARX_NPC_Revive(Entity * io, bool init)
 		io->_npcdata->cuts = 0;
 }
 
-/*!
- * \brief Sets a new behaviour for NPC
- * \param io
- * \param behavior
- * \param behavior_param
- */
+//! Sets a new behaviour for NPC
 void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_param) {
 	
 	if(!io || !(io->ioflags & IO_NPC)) {
@@ -343,10 +328,7 @@ void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_par
 	io->_npcdata->behavior_param = (float)behavior_param;
 }
 
-/*!
- * \brief Resets all behaviour data from a NPC
- * \param io
- */
+//! Resets all behaviour data from a NPC
 void ARX_NPC_Behaviour_Reset(Entity * io)
 {
 	if(!io || !(io->ioflags & IO_NPC))
@@ -358,9 +340,7 @@ void ARX_NPC_Behaviour_Reset(Entity * io)
 		io->_npcdata->stacked[i].exist = 0;
 }
 
-/*!
- * \brief Reset all Behaviours from all NPCs
- */
+//! Reset all Behaviours from all NPCs
 void ARX_NPC_Behaviour_ResetAll() {
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
@@ -372,10 +352,7 @@ void ARX_NPC_Behaviour_ResetAll() {
 	}
 }
 
-/*!
- * \brief Stacks an NPC behaviour
- * \param io
- */
+//! Stacks an NPC behaviour
 void ARX_NPC_Behaviour_Stack(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC))
@@ -401,10 +378,7 @@ void ARX_NPC_Behaviour_Stack(Entity * io) {
 	}
 }
 
-/*!
- * \brief Unstacks One stacked behaviour from an NPC
- * \param io
- */
+//! Unstacks One stacked behaviour from an NPC
 void ARX_NPC_Behaviour_UnStack(Entity * io)
 {
 	if(!io || !(io->ioflags & IO_NPC))
@@ -435,11 +409,7 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 	}
 }
 
-/*!
- * \brief Checks for any direct shortcut between NPC and future anchors...
- * \param io
- * \return
- */
+//! Checks for any direct shortcut between NPC and future anchors...
 static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 	
 	arx_assert(io);
@@ -501,9 +471,7 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 	return 0;
 }
 
-/*!
- * \brief Checks for nearest VALID anchor for a cylinder from a position
- */
+//! Checks for nearest VALID anchor for a cylinder from a position
 static long AnchorData_GetNearest(const Vec3f & pos, const Cylinder & cyl, long except = -1) {
 	long returnvalue = -1;
 	float distmax = std::numeric_limits<float>::max();
@@ -802,7 +770,6 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE) {
 
 /*!
  * \brief Diminishes life of a Poisoned NPC
- * \param io
  */
 static void ARX_NPC_ManagePoison(Entity * io) {
 	
@@ -835,8 +802,6 @@ static void ARX_NPC_ManagePoison(Entity * io) {
 
 /*!
  * \brief Checks if the bottom of an IO is underwater.
- * \param io
- * \warning io must be valid (no check !)
  *
  * Plays Water sounds
  * Decrease/stops Ignition of this IO if necessary
@@ -1194,11 +1159,7 @@ static float GetTRUETargetDist(Entity * io) {
 
 extern Entity * EVENT_SENDER;
 
-/*!
- * \brief Checks If a NPC is dead
- * \param io
- * \return
- */
+//! Checks If a NPC is dead
 bool IsDeadNPC(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC))
@@ -1207,10 +1168,7 @@ bool IsDeadNPC(Entity * io) {
 	return (io->_npcdata->lifePool.current <= 0 || io->mainevent == "dead");
 }
 
-/*!
- * \brief Checks if Player is currently striking.
- * \return
- */
+//! Checks if Player is currently striking.
 static bool IsPlayerStriking() {
 	
 	arx_assert(entities.player());
@@ -1275,10 +1233,7 @@ static void ARX_NPC_Manage_NON_Fight(Entity * io) {
 	}
 }
 
-/*!
- * \brief NPC IS in fight mode and close to target...
- * \param io
- */
+//! NPC IS in fight mode and close to target...
 static void ARX_NPC_Manage_Fight(Entity * io) {
 	
 	if(!(io->ioflags & IO_NPC))
@@ -1470,11 +1425,7 @@ static const float STRIKE_MUL = 0.25f;
 static const float STRIKE_MUL2 = 0.8f;
 static const float STRIKE_DISTANCE = 220.f;
 
-/*!
- * \brief Main animations management
- * \param io
- * \param TOLERANCE
- */
+//! Main animations management
 static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	
 	AnimLayer & layer0 = io->animlayer[0];
@@ -1774,12 +1725,7 @@ Cylinder GetIOCyl(Entity * io) {
 static void ManageNPCMovement_check_target_reached(Entity * io);
 static void ManageNPCMovement_REFACTOR_end(Entity * io, float TOLERANCE2);
 
-/*!
- * \brief Computes distance tolerance between NPC and its target
- * \param io
- * \param targ
- * \param dst
- */
+//! Computes distance tolerance between NPC and its target
 static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 	
 	float TOLERANCE = 30.f;
@@ -2549,7 +2495,6 @@ static float AngularDifference(float a1, float a2) {
 
 /*!
  * \brief ARX_NPC_GetFirstNPCInSight
- * \param ioo
  * \return the "first" NPC in sight for another NPC (ioo)
  */
 Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
@@ -2659,10 +2604,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 	return found_io;
 }
 
-/*!
- * \brief Checks if a NPC is dead to prevent further Layers Animation
- * \param io
- */
+//! Checks if a NPC is dead to prevent further Layers Animation
 void CheckNPC(Entity * io)
 {
 	if(!io || (io->show != SHOW_FLAG_IN_SCENE))
@@ -2678,10 +2620,8 @@ void CheckNPC(Entity * io)
 /*!
  * \brief Checks an NPC Visibility Field (Player Detect)
  * Sends appropriate Detectplayer/Undetectplayer events to the IO
- * \param io
  *
  * \remarks Uses Invisibility/Confuse/Torch infos.
- * \warning io and io->obj must be valid (no check !)
  */
 void CheckNPCEx(Entity * io) {
 	
