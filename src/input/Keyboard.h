@@ -54,7 +54,7 @@ public:
 		Key_J,
 		Key_K,
 		Key_L,
-		Key_M,    
+		Key_M,
 		Key_N,
 		Key_O,
 		Key_P,
@@ -187,7 +187,7 @@ public:
 		
 		Key_Spacebar,
 		Key_Backspace,
-		Key_Enter,              // ENTER on main keyboard 
+		Key_Enter,              // ENTER on main keyboard
 		Key_Tab,
 		
 		Key_Apps,               // Application key
