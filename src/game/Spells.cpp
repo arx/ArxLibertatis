@@ -1115,12 +1115,12 @@ void ARX_SPELLS_Update() {
 			spells.endSpell(spell);
 		}
 		
-		if(!CanPayMana(spell, spell->m_fManaCostPerSecond * (g_framedelay2 / GameDurationMs(1000)))) {
+		if(!CanPayMana(spell, spell->m_fManaCostPerSecond * (g_gameTime.lastFrameDuration() / GameDurationMs(1000)))) {
 			ARX_SPELLS_Fizzle(spell);
 			spells.endSpell(spell);
 		}
 		
-		spell->m_elapsed += g_framedelay2;
+		spell->m_elapsed += g_gameTime.lastFrameDuration();
 		
 		if(spell->m_hasDuration && spell->m_elapsed > spell->m_duration) {
 			SPELLEND_Notify(*spell);
