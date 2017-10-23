@@ -559,8 +559,6 @@ Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx) {
 /*!
  * \brief Main Procedure to draw an animated object
  *
- * \param eobj main object data
- * \param eanim Animation data
  * \param time Time increment to current animation in Ms
  * \param io Referrence to Interactive Object (NULL if no IO)
  */
