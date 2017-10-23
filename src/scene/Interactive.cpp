@@ -1267,7 +1267,6 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance, Ad
 
 /*!
  * \brief Links an object designed by path "temp" to the primary attach of interactive object "io"
- * \param io
  */
 void SetWeapon_On(Entity * io) {
 	
@@ -1352,7 +1351,6 @@ void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach) {
 
 /*!
  * \brief Creates a Temporary IO Ident
- * \param io
  */
 static EntityInstance getFreeEntityInstance(const res::path & classPath) {
 	
@@ -1804,12 +1802,6 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 
 /*!
  * \brief Returns nearest interactive object found at position x, y
- * \param pos
- * \param flag
- * \param _pRef
- * \param _pTable
- * \param _pnNbInTable
- * \return
  */
 Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity ** _pTable, size_t * _pnNbInTable)
 {
