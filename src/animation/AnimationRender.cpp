@@ -113,16 +113,18 @@ static TexturedVertex * PushVertexInTable(ModelBatch * pTex, BatchBucket type) {
 	return &pTex->list[type][pTex->count[type] - 3];
 }
 
-static void PopOneTriangleList(TextureContainer * _pTex, bool clear) {
+static void PopOneTriangleList(RenderState baseState, TextureContainer * _pTex, bool clear) {
 	
 	ModelBatch & batch = _pTex->m_modelBatch;
 	
 	if(!batch.count[BatchBucket_Opaque]) {
 		return;
 	}
-
+	
 	GRenderer->SetTexture(0, _pTex);
-
+	
+	UseRenderState state(baseState.colorKey());
+	
 	if(_pTex->userflags & POLY_LATE_MIP) {
 		const float GLOBAL_NPC_MIPMAP_BIAS = -2.2f;
 		GRenderer->GetTextureStage(0)->setMipMapLODBias(GLOBAL_NPC_MIPMAP_BIAS);
@@ -198,13 +200,11 @@ void PopAllTriangleListOpaque(RenderState baseState, bool clear) {
 	
 	ARX_PROFILE_FUNC();
 	
-	UseRenderState state(baseState.colorKey());
-	
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
-		PopOneTriangleList(pTex, clear);
+		PopOneTriangleList(baseState, pTex, clear);
 		pTex = pTex->m_pNext;
 	}
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
@@ -217,11 +217,8 @@ void PopAllTriangleListTransparency() {
 	GRenderer->SetFogColor(Color::none);
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	
-	{
-		UseRenderState state(render3D().colorKey().depthWrite(false).blend(BlendDstColor, BlendOne));
-		PopOneTriangleList(&TexSpecialColor, true);
-	}
-
+	PopOneTriangleList(render3D().depthWrite(false).blend(BlendDstColor, BlendOne), &TexSpecialColor, true);
+	
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
 		PopOneTriangleListTransparency(pTex);
