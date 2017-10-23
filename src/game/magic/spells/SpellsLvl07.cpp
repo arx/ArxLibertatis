@@ -439,7 +439,7 @@ void IceFieldSpell::End() {
 	
 	DamageRequestEnd(m_damage);
 	
-	ARX_SOUND_Stop(m_snd_loop); 
+	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);
 }
 

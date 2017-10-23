@@ -244,7 +244,8 @@ void ExplosionSpell::Update() {
 
 			ARX_PARTICLES_Add_Smoke(pos, 2, 20); // flag 1 = randomize pos
 		}
-	}	
+	}
+	
 }
 
 

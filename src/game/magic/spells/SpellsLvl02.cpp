@@ -132,7 +132,7 @@ void HealSpell::Update() {
 		Entity * e = entities[handle];
 		
 		if (    e
-			&& (e->show==SHOW_FLAG_IN_SCENE) 
+			&& (e->show==SHOW_FLAG_IN_SCENE)
 			&& (e->gameFlags & GFLAG_ISINTREATZONE)
 			&& (e->ioflags & IO_NPC)
 			&& (e->_npcdata->lifePool.current>0.f)
@@ -157,7 +157,8 @@ void HealSpell::Update() {
 				}
 			}
 		}
-	}	
+	}
+	
 }
 
 void DetectTrapSpell::Launch() {

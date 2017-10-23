@@ -95,7 +95,7 @@ void BlessSpell::Update() {
 		
 		if(m_target == EntityHandle_Player)
 			m_yaw = player.angle.getYaw();
-		else 
+		else
 			m_yaw = target->angle.getYaw();
 	}
 	
