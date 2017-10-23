@@ -116,8 +116,8 @@ inline float ffsqrt(float f) {
  * Obtain the approximated inverse of the square root of a float.
  * \brief  This code compute a fast 1 / sqrtf(v) approximation.
  * \note   Originaly from Matthew Jones (Infogrames).
- * \param  pValue  a float, the number we want the square root.
- * \return The square root of \a fValue, as a float.
+ * \param  value a float, the number we want the square root.
+ * \return The square root of \a value, as a float.
  */
 inline float FastRSqrt(float value) {
 	
