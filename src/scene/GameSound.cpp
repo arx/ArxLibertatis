@@ -103,7 +103,7 @@ struct PlayingAmbiance {
 };
 
 static const PlatformDuration ARX_SOUND_UPDATE_INTERVAL = PlatformDurationMs(100);
-static const unsigned long ARX_SOUND_STREAMING_LIMIT(176400); 
+static const unsigned long ARX_SOUND_STREAMING_LIMIT(176400);
 static const unsigned long MAX_VARIANTS(5);
 static const PlatformDuration AMBIANCE_FADE_TIME = PlatformDurationMs(2000);
 static const float ARX_SOUND_UNIT_FACTOR(0.01F);
@@ -806,7 +806,7 @@ long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 		ARX_SOUND_SetListener(ACTIVECAM->orgTrans.pos, frontUp.first, frontUp.second);
 	}
 	
-	ARX_SOUND_IOFrontPos(NULL, channel.position); 
+	ARX_SOUND_IOFrontPos(NULL, channel.position);
 	
 	audio::samplePlay(sample_id, channel);
 	
