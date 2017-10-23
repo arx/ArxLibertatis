@@ -152,7 +152,7 @@ void RiseDeadSpell::Update() {
 	// TODO why is the duration extended here ?
 	m_duration += GameDurationMs(200);
 	
-	m_fissure.Update(g_framedelay2);
+	m_fissure.Update(g_gameTime.lastFrameDuration());
 	m_fissure.Render();
 	
 	EERIE_LIGHT * light = lightHandleGet(m_light);
@@ -366,7 +366,7 @@ void CreateFieldSpell::Update() {
 			m_duration = 0;
 		}
 		
-		m_field.Update(g_framedelay2);
+		m_field.Update(g_gameTime.lastFrameDuration());
 		m_field.Render();
 	}
 }
