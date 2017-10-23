@@ -48,7 +48,6 @@ public:
 	bool hasAlpha() const { return Image::hasAlpha(mFormat); }
 	
 	bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
-	bool hasColorKey() const { return (flags & HasColorKey) == HasColorKey; }
 	
 protected:
 	
