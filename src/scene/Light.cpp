@@ -258,7 +258,7 @@ void TreatBackgroundDynlights() {
 			const GameDuration duration = el->duration;
 
 			if(elapsed >= duration) {
-				float sub = g_framedelay2 / GameDurationMs(1000);
+				float sub = g_gameTime.lastFrameDuration() / GameDurationMs(1000);
 
 				el->rgb.r -= sub;
 				el->rgb.g -= sub;
