@@ -171,10 +171,7 @@ Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos) {
 	return InterClick(pos);
 }
 
-/*!
- * \brief Puts an IO in front of the player
- * \param io
- */
+//! Puts an IO in front of the player
 void PutInFrontOfPlayer(Entity * io)
 {
 	if(!io)
@@ -857,10 +854,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 	return false;
 }
 
-/*!
- * \brief Try to put DRAGINTER object in an inventory
- * \return
- */
+//! Try to put DRAGINTER object in an inventory
 void PutInInventory() {
 	// Check Validity
 	if(!DRAGINTER || (DRAGINTER->ioflags & IO_MOVABLE))
