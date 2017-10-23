@@ -508,7 +508,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			el->pos = dlight->pos.toVec3();
 			if(FASTmse) {
 				el->pos += trans;
-			} 
+			}
 			
 			el->rgb = dlight->rgb;
 			
