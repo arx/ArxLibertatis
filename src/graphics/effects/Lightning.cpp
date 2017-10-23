@@ -318,11 +318,11 @@ void CLightning::Render()
 		if(!m_isMassLightning) {
 			Vec3f vv2;
 			Vec3f vv1 = astart;
-			vv1 = VRotateX(vv1, (falpha));  
+			vv1 = VRotateX(vv1, (falpha));
 			vv2 = VRotateY(vv1, 180 - MAKEANGLE(fBeta));
 			astart = vv2;
 			vv1 = a;
-			vv1 = VRotateX(vv1, (falpha)); 
+			vv1 = VRotateX(vv1, (falpha));
 			vv2 = VRotateY(vv1, 180 - MAKEANGLE(fBeta));
 			a = vv2;
 			astart += ePos;
