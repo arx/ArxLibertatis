@@ -2362,7 +2362,7 @@ afterthat:
 				   && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
 				   && layer0.cur_anim != alist[ANIM_RUN]
 				) {
-					io->_npcdata->walk_start_time += g_framedelay2;
+					io->_npcdata->walk_start_time += g_gameTime.lastFrameDuration();
 					if(io->_npcdata->walk_start_time > GameDurationMs(600)) {
 						desiredanim = alist[ANIM_FIGHT_WALK_FORWARD];
 						io->_npcdata->walk_start_time = 0;
