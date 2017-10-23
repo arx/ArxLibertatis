@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
 #include "math/Types.h"
 
 struct EERIE_3DOBJ;
@@ -60,7 +61,7 @@ float Cedric_GetInvisibility(Entity *io);
 
 void Cedric_ApplyLightingFirstPartRefactor(Entity *io);
 
-void PopAllTriangleListOpaque(bool clear = true);
+void PopAllTriangleListOpaque(RenderState baseState = render3D(), bool clear = true);
 void PopAllTriangleListTransparency();
 
 void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat);

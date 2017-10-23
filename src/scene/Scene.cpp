@@ -1523,10 +1523,7 @@ void ARX_SCENE_Render() {
 		SPECIAL_DRAGINTER_RENDER=0;
 	}
 	
-	{
-		UseRenderState state(render3D().colorKey());
-		PopAllTriangleListOpaque();
-	}
+	PopAllTriangleListOpaque();
 	
 	// *Now* draw the player
 	if(entities.player()->animlayer[0].cur_anim) {
@@ -1535,10 +1532,8 @@ void ARX_SCENE_Render() {
 		if(!EXTERNALVIEW) {
 			// In first person mode, always render the player over other objects
 			// in order to avoid clipping the player and weapon with walls.
-			UseRenderState state(render3D().colorKey().depthTest(false));
-			PopAllTriangleListOpaque(/*clear=*/false);
+			PopAllTriangleListOpaque(render3D().depthTest(false), /*clear=*/false);
 		}
-		UseRenderState state(render3D().colorKey());
 		PopAllTriangleListOpaque();
 	}
 	

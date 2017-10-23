@@ -194,9 +194,11 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	}
 }
 
-void PopAllTriangleListOpaque(bool clear) {
+void PopAllTriangleListOpaque(RenderState baseState, bool clear) {
 	
 	ARX_PROFILE_FUNC();
+	
+	UseRenderState state(baseState.colorKey());
 	
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 
