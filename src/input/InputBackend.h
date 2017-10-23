@@ -31,7 +31,7 @@ class InputBackend {
 	
 public:
 	
-	virtual bool update() = 0;	
+	virtual bool update() = 0;
 	
 	// Mouse
 	virtual bool setMouseMode(Mouse::Mode mode) = 0;
