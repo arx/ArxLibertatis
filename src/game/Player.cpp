@@ -934,8 +934,8 @@ void ARX_PLAYER_QuickGeneration() {
  */
 long GetXPforLevel(short level)
 {
-	const long XP_FOR_LEVEL[] = { 
-		0, 
+	const long XP_FOR_LEVEL[] = {
+		0,
 		2000,
 		4000,
 		6000,
@@ -949,7 +949,7 @@ long GetXPforLevel(short level)
 		300000,
 		450000,
 		600000,
-		750000 
+		750000
 	};
 
 	long xpNeeded;
@@ -957,7 +957,7 @@ long GetXPforLevel(short level)
 		xpNeeded = XP_FOR_LEVEL[level];
 	else
 		xpNeeded = level * 60000;
-	return xpNeeded;	
+	return xpNeeded;
 }
 
 /*!
@@ -1173,10 +1173,10 @@ void ARX_PLAYER_Restore_Skin() {
  */
 void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	
-	const char OBJECT_HUMAN_BASE[] = "graph/obj3d/interactive/npc/human_base/human_base.teo"; 
+	const char OBJECT_HUMAN_BASE[] = "graph/obj3d/interactive/npc/human_base/human_base.teo";
 	hero = loadObject(OBJECT_HUMAN_BASE, false);
 	PLAYER_SKIN_TC = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
-
+	
 	const char ANIM_WAIT_BOOK[] = "graph/obj3d/anims/npc/human_wait_book.tea";
 	herowaitbook = EERIE_ANIMMANAGER_Load(ANIM_WAIT_BOOK);
 	const char ANIM_WAIT_NORMAL[] = "graph/obj3d/anims/npc/human_normal_wait.tea";
@@ -1782,14 +1782,14 @@ void ARX_PLAYER_Frame_Update()
 				extraRotation->group_rotate[2].setPitch(0); //chest
 				extraRotation->group_rotate[3].setPitch(v); //belt
 			} else {
-				v *= ( 1.0f / 10 ); 
+				v *= ( 1.0f / 10 );
 				extraRotation->group_rotate[0].setPitch(v); //head
 				extraRotation->group_rotate[1].setPitch(v); //neck
 				extraRotation->group_rotate[2].setPitch(v * 4); //chest
 				extraRotation->group_rotate[3].setPitch(v * 4); //belt
 			}
 		} else {
-			v *= ( 1.0f / 4 ); 
+			v *= ( 1.0f / 4 );
 			extraRotation->group_rotate[0].setPitch(v); //head
 			extraRotation->group_rotate[1].setPitch(v); //neck
 			extraRotation->group_rotate[2].setPitch(v); //chest
@@ -1817,7 +1817,7 @@ static void ARX_PLAYER_MakeStepNoise() {
 		return;
 	}
 	
-	if(USE_PLAYERCOLLISIONS) {	
+	if(USE_PLAYERCOLLISIONS) {
 		float volume = ARX_NPC_AUDIBLE_VOLUME_DEFAULT;
 		float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT;
 		

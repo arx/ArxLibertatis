@@ -276,7 +276,7 @@ struct ARXCHARACTER {
 	Color3f m_torchColor;
 	Entity * torch;
 	
-	EntityHandle equiped[MAX_EQUIPED]; 
+	EntityHandle equiped[MAX_EQUIPED];
 	
 	// Modifier Values (Items, curses, etc...)
 	PlayerAttribute m_attributeMod;
