@@ -1256,7 +1256,7 @@ float GetVarValueInterpretedAsFloat(const std::string & temp1, const EERIE_SCRIP
 	if(temp1[0] == '^') {
 		long lv;
 		float fv;
-		std::string tv; 
+		std::string tv;
 		switch (getSystemVar(esss,io,temp1,tv,&fv,&lv)) {
 			case TYPE_TEXT:
 				return (float)atof(tv.c_str());
