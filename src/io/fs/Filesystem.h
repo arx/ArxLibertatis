@@ -198,7 +198,7 @@ public:
 	 * Otherwise, \ref end() will return \c true and information about the first directory entry
 	 * can be queried using \ref name(), \ref is_directory() and \ref is_regular_file().
 	 *
-	 * \pre \ref end() == \c false
+	 * \ref end() == \c false
 	 *
 	 * \remarks
 	 * It is not safe to advace a single \ref directory_iterator may not be advanced from multiple
@@ -219,7 +219,7 @@ public:
 	 * \return The plain filename of the directory entry - if you want a full path you will need
 	 * to compose it using the path of the directory you are iterating over.
 	 *
-	 * \pre \ref end() == \c false
+	 * \ref end() == \c false
 	 */
 	std::string name();
 	
@@ -229,7 +229,7 @@ public:
 	 * The result of this function is equivalent to calling \ref fs::is_directory with the
 	 * current file, but is potentially faster since it normally does not require additional syscalls.
 	 *
-	 * \pre \ref end() == \c false
+	 * \ref end() == \c false
 	 */
 	bool is_directory();
 	
@@ -239,7 +239,7 @@ public:
 	 * The result of this function is equivalent to calling \ref fs::is_regular_file with the
 	 * current file, but is potentially faster since it normally does not require additional syscalls.
 	 *
-	 * \pre \ref end() == \c false
+	 * \ref end() == \c false
 	 */
 	bool is_regular_file();
 	
