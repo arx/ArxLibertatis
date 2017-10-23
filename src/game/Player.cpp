@@ -206,25 +206,17 @@ bool ARX_PLAYER_IsInFightMode() {
 	return false;
 }
 
-/*!
- * \brief Init/Reset player Keyring structures
- */
+//! Init/Reset player Keyring structures
 void ARX_KEYRING_Init() {
 	g_playerKeyring.clear();
 }
 
-/*!
- * \brief Add a key to Keyring
- * \param key
- */
+//! Add a key to Keyring
 void ARX_KEYRING_Add(const std::string & key) {
 	g_playerKeyring.push_back(key);
 }
 
-/*!
- * \brief Sends COMBINE event to "io" for each keyring entry
- * \param io
- */
+//! Sends COMBINE event to "io" for each keyring entry
 void ARX_KEYRING_Combine(Entity * io) {
 	for(size_t i = 0; i < g_playerKeyring.size(); i++) {
 		if(SendIOScriptEvent(io, SM_COMBINE, g_playerKeyring[i]) == REFUSE) {
@@ -243,9 +235,7 @@ Vec3f ARX_PLAYER_FrontPos() {
 	return pos;
 }
 
-/*!
- * \brief Reset all extra-rotation groups of player
- */
+//! Reset all extra-rotation groups of player
 void ARX_PLAYER_RectifyPosition() {
 	arx_assert(entities.player());
 	
@@ -322,18 +312,13 @@ static void ARX_PLAYER_ManageTorch() {
 	}
 }
 
-/*!
- * \brief Init/Reset player Quest structures
- */
+//! Init/Reset player Quest structures
 void ARX_PLAYER_Quest_Init() {
 	g_playerQuestLogEntries.clear();
 	g_playerBook.clearJournal();
 }
 
-/*!
- * \brief Add _ulRune to player runes
- * \param _ulRune
- */
+//! Add _ulRune to player runes
 void ARX_Player_Rune_Add(RuneFlag _ulRune)
 {
 	int iNbSpells = 0;
@@ -383,29 +368,19 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 	}
 }
 
-/*!
- * \brief Remove _ulRune from player runes
- * \param _ulRune
- */
+//! Remove _ulRune from player runes
 void ARX_Player_Rune_Remove(RuneFlag _ulRune)
 {
 	player.rune_flags &= ~_ulRune;
 }
 
-/*!
- * \brief Add quest "quest" to player Questbook
- * \param quest
- * \param _bLoad
- */
+//! Add quest "quest" to player Questbook
 void ARX_PLAYER_Quest_Add(const std::string & quest) {
-	
 	g_playerQuestLogEntries.push_back(quest);
 	g_playerBook.clearJournal();
 }
 
-/*!
- * \brief Removes player invisibility by killing Invisibility spells on him
- */
+//! Removes player invisibility by killing Invisibility spells on him
 void ARX_PLAYER_Remove_Invisibility() {
 	spells.endByCaster(EntityHandle_Player, SPELL_INVISIBILITY);
 }
@@ -929,8 +904,6 @@ void ARX_PLAYER_QuickGeneration() {
 
 /*!
  * \brief Returns necessary Experience for a given level
- * \param level
- * \return
  */
 long GetXPforLevel(short level)
 {
@@ -977,7 +950,6 @@ static void ARX_PLAYER_LEVEL_UP() {
 
 /*!
  * \brief Modify player XP by adding "val" to it
- * \param val
  */
 void ARX_PLAYER_Modify_XP(long val) {
 	
@@ -992,7 +964,6 @@ void ARX_PLAYER_Modify_XP(long val) {
 
 /*!
  * \brief Function to poison player by "val" poison level
- * \param val
  */
 void ARX_PLAYER_Poison(float val) {
 	// Make a poison saving throw to see if player is affected
@@ -1004,7 +975,6 @@ void ARX_PLAYER_Poison(float val) {
 
 /*!
  * \brief updates some player stats depending on time
- * \param Framedelay
  *
  * Updates: life/mana recovery, poison evolution, hunger, invisibility
  */
@@ -1704,7 +1674,6 @@ void ARX_PLAYER_InitPlayer() {
 
 /*!
  * \brief Forces player orientation to look at an IO
- * \param io
  */
 void ForcePlayerLookAtIO(Entity * io) {
 	
@@ -2429,7 +2398,6 @@ void ARX_PLAYER_Manage_Death() {
 
 /*!
  * \brief Specific for color checks
- * \return
  */
 float GetPlayerStealth() {
 	return 15 + player.m_skillFull.stealth * ( 1.0f / 10 );
@@ -2437,7 +2405,6 @@ float GetPlayerStealth() {
 
 /*!
  * \brief Force Player to standard stance
- * \param val
  */
 void ARX_PLAYER_PutPlayerInNormalStance() {
 	
@@ -2467,7 +2434,6 @@ void ARX_PLAYER_PutPlayerInNormalStance() {
 
 /*!
  * \brief Add gold to player purse
- * \param _lValue
  */
 void ARX_PLAYER_AddGold(long _lValue) {
 	player.gold += _lValue;
