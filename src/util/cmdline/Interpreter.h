@@ -249,12 +249,12 @@ struct print_op_t {
 	Stream * m_stream;
 	Interpreter const * m_interpreter;
 	
-	size_t offset;
+	size_t m_offset;
 	
 	print_op_t(Stream & stream, const Interpreter & interpreter, size_t offset)
 		: m_stream(&stream)
 		, m_interpreter(&interpreter)
-		, offset(offset)
+		, m_offset(offset)
 	{ }
 	
 	template <typename Key>
@@ -262,7 +262,7 @@ struct print_op_t {
 		opname_size<Interpreter> tmp(*m_interpreter);
 		tmp(key);
 		
-		for(size_t i(tmp.value); i < offset; ++i)
+		for(size_t i(tmp.value); i < m_offset; ++i)
 			(*m_stream) << " ";
 	}
 	
