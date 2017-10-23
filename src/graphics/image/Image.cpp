@@ -652,7 +652,7 @@ void Image::SetAlpha(const Image & img, bool bInvertAlpha) {
 	} else {
 		for(unsigned int i = 0; i < pixelCount; i++, src += srcChannelCount, dst += dstChannelCount)
 			*dst = 255 - *src;		// Copy inverted alpha
-	}		
+	}
 }
 
 void Image::FlipY() {
