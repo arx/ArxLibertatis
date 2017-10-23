@@ -286,8 +286,8 @@ void FireFieldSpell::End() {
 
 void FireFieldSpell::Update() {
 	
-	pPSStream.Update(g_framedelay2);
-	pPSStream1.Update(g_framedelay2);
+	pPSStream.Update(g_gameTime.lastFrameDuration());
+	pPSStream1.Update(g_gameTime.lastFrameDuration());
 	
 	EERIE_LIGHT * el = dynLightCreate(m_light);
 	if(el) {
@@ -305,7 +305,7 @@ void FireFieldSpell::Update() {
 		pPSStream.Render();
 		pPSStream1.Render();
 		
-		float fDiff = g_framedelay2 / GameDurationMs(8);
+		float fDiff = g_gameTime.lastFrameDuration() / GameDurationMs(8);
 		int nTime = checked_range_cast<int>(fDiff);
 		
 		for(long nn = 0; nn <= nTime + 1; nn++) {
@@ -626,7 +626,7 @@ void LightningStrikeSpell::Update() {
 	m_lightning.m_caster = m_caster;
 	m_lightning.m_level = m_level;
 	
-	m_lightning.Update(g_framedelay2);
+	m_lightning.Update(g_gameTime.lastFrameDuration());
 	m_lightning.Render();
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
@@ -708,7 +708,7 @@ void ConfuseSpell::Update() {
 	Anglef stiteangle = Anglef(0.f, -rot, 0.f);
 	
 	{
-		AnimationDuration delta = toAnimationDuration(g_framedelay2);
+		AnimationDuration delta = toAnimationDuration(g_gameTime.lastFrameDuration());
 		EERIEDrawAnimQuatUpdate(spapi, animlayer, stiteangle, eCurPos, delta, NULL, false);
 		EERIEDrawAnimQuatRender(spapi, eCurPos, NULL, 0.f);
 	}
