@@ -158,7 +158,7 @@ void SummonCreatureSpell::Update() {
 			MakeCoolFx(pos);
 		}
 		
-		m_fissure.Update(g_framedelay2);
+		m_fissure.Update(g_gameTime.lastFrameDuration());
 		m_fissure.Render();
 		
 		m_requestSummon = true;
@@ -314,7 +314,7 @@ void FakeSummonSpell::Update() {
 		}
 	}
 	
-	m_fissure.Update(g_framedelay2);
+	m_fissure.Update(g_gameTime.lastFrameDuration());
 	m_fissure.Render();
 }
 
