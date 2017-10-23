@@ -41,7 +41,7 @@ public:
 	/*!
 	 * Parses an input stream for configuration section and respective keys.
 	 * Stores them all in a section map as IniSection objects.
-	 * \param is The input stream with the ini data.
+	 * \param input The input stream with the ini data.
 	 * \return false if there were problems (some data may have been read)
 	 */
 	bool read(std::istream & input);
@@ -71,7 +71,7 @@ public:
 	 * return the default value if an empty string is found.
 	 * \param section The section to read from
 	 * \param key The key in the section to return
-	 * \param default_value The default value to return in the case of an empty string
+	 * \param defaultValue The default value to return in the case of an empty string
 	 */
 	float getKey(const std::string & section, const std::string & key, float defaultValue) const;
 	
@@ -80,7 +80,7 @@ public:
 	 * return the default value if an empty string is found.
 	 * \param section The section to read from
 	 * \param key The key in the section to return
-	 * \param default_value The default value to return in the case of an empty string
+	 * \param defaultValue The default value to return in the case of an empty string
 	 */
 	bool getKey(const std::string & section, const std::string & key, bool defaultValue) const;
 	
