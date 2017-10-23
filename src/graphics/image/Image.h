@@ -34,7 +34,7 @@ public:
 	enum Format {
 		Format_L8,
 		Format_A8,
-		Format_L8A8, 
+		Format_L8A8,
 		Format_R8G8B8,
 		Format_B8G8R8,
 		Format_R8G8B8A8,
@@ -55,7 +55,6 @@ public:
 	
 	void Create(unsigned int width, unsigned int height, Format format);
 	
-	// Convert 
 	bool ConvertTo(Format format);
 	
 	// reset to fresh constructor state
@@ -70,7 +69,7 @@ public:
 	unsigned int GetNumMipmaps() const { return mNumMipmaps; }
 	Format GetFormat() const { return mFormat;     }
 	unsigned int GetDataSize() const { return mDataSize;   }
-	unsigned int  GetNumChannels() const { return Image::GetNumChannels( mFormat ); }  
+	unsigned int  GetNumChannels() const { return Image::GetNumChannels( mFormat ); }
 	
 	// bool accessors
 	bool IsValid() const { return mData != NULL; }
