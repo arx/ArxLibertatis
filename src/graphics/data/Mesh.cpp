@@ -1552,7 +1552,7 @@ void ComputePortalVertexBuffer() {
 			// Record that the texture is used for this room
 			room->ppTextureContainer.push_back(texture);
 			
-			// Save the 
+			// Save the
 			
 			SMY_ARXMAT & m = texture->m_roomBatches.tMatRoom[i];
 			
