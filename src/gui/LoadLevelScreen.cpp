@@ -81,9 +81,9 @@ void LoadLevelScreen(long num) {
 		
 		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-
-		float ratio = (PROGRESS_BAR_TOTAL > 0.f ? PROGRESS_BAR_COUNT / PROGRESS_BAR_TOTAL : 0); 
-
+		
+		float ratio = (PROGRESS_BAR_TOTAL > 0.f ? PROGRESS_BAR_COUNT / PROGRESS_BAR_TOTAL : 0);
+		
 		ratio = glm::clamp(ratio, 0.f, 1.f);
 
 		GRenderer->Clear(Renderer::ColorBuffer);
