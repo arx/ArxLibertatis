@@ -71,7 +71,7 @@ public:
 	
 	/*!
 	 * Set the panning of this source.
-	 * \param pitch The new source panning. The pan will be clamped to the range [-1,1].
+	 * \param pan The new source panning. The pan will be clamped to the range [-1,1].
 	 */
 	virtual aalError setPan(float pan) = 0;
 	
