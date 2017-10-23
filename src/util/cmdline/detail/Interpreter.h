@@ -89,7 +89,7 @@ private:
 	
 	struct ikey_t {
 		
-		function_type function;
+		function_type m_function;
 		op_name_t m_key;
 		
 		void key_erase(const string_type & v) {
@@ -100,7 +100,7 @@ private:
 		}
 		
 		ikey_t(const function_type & function, const op_name_t & key)
-			: function(function)
+			: m_function(function)
 			, m_key(key)
 		{ }
 		
@@ -197,7 +197,7 @@ void interpreter<StringType, TypeCast>::invoke(const string_type & key,
 	}
 	
 	typename storage_t::const_iterator it(storage.find(primary_key->second));
-	it->second.function(args_begin, args_optend, args_end, type_cast);
+	it->second.m_function(args_begin, args_optend, args_end, type_cast);
 }
 
 } } } // namespace util::cmdline::detail
