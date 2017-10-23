@@ -535,7 +535,7 @@ void Credits::render() {
 		float yy = it->sPos.y + m_scrollPosition;
 		
 		//Display the text only if he is on the viewport
-		if ((yy >= -m_lineHeight) && (yy <= g_size.height())) 
+		if ((yy >= -m_lineHeight) && (yy <= g_size.height()))
 		{
 			hFontCredits->draw(it->sPos.x, static_cast<int>(yy), it->sText, it->fColors);
 		}
