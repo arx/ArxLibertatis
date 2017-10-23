@@ -835,11 +835,8 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 	
 	// TODO handle scaling on the GPU so we don't need to download the whole image
 	
-	// duplication to ensure use of Image::Format_R8G8B8
 	Image fullsize;
-	Vec2i size = mainApp->getWindow()->getSize();
-	fullsize.Create(size.x, size.y, Image::Format_R8G8B8);
-	glReadPixels(0, 0, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, fullsize.GetData());
+	getSnapshot(fullsize);
 	
 	image.ResizeFrom(fullsize, width, height, true);
 	
