@@ -78,6 +78,7 @@ void cinematicKill() {
 		ControlCinematique->projectload = false;
 		ControlCinematique->OneTimeSceneReInit();
 		PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
+		arxtime.resume(GameTime::PauseCinematic);
 		CINE_PRELOAD = false;
 	}
 }
