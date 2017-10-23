@@ -320,13 +320,12 @@ void Thread::disableFloatDenormals() {
 	#endif
 	
 	#define ARX_CPUID_ECX_SSE3 (1 << 0)
-	#define ARX_CPUID_EDX_FXSR (1 << 24)
-	
 	if(cpuinfo[2] & ARX_CPUID_ECX_SSE3) {
 		have_daz = true;
 	}
 	
 	#if ARX_COMPILER_MSVC || ARX_HAVE_BUILTIN_IA32_FXSAVE
+	#define ARX_CPUID_EDX_FXSR (1 << 24)
 	else if(cpuinfo[3] & ARX_CPUID_EDX_FXSR) {
 		ARX_ALIGNAS(16) char buffer[512];
 		#if ARX_COMPILER_MSVC
