@@ -85,6 +85,8 @@ public:
 	Image & GetImage() { return mImage; }
 	const res::path & getFileName() const { return mFileName; }
 	
+	bool hasColorKey() { return (flags & ApplyColorKey) && hasAlpha() && !mFileName.empty(); }
+	
 protected:
 	
 	Texture2D() { } 

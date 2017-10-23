@@ -337,8 +337,9 @@ public:
 	virtual void GetProjectionMatrix(glm::mat4x4 & matProj) const = 0;
 	
 	// Texture management
-	virtual void ReleaseAllTextures() {}
-	virtual void RestoreAllTextures() {}
+	virtual void ReleaseAllTextures() = 0;
+	virtual void RestoreAllTextures() = 0;
+	virtual void reloadColorKeyTextures() = 0;
 
 	// Factory
 	virtual Texture2D * CreateTexture2D() = 0;

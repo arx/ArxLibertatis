@@ -534,6 +534,14 @@ void OpenGLRenderer::RestoreAllTextures() {
 	}
 }
 
+void OpenGLRenderer::reloadColorKeyTextures() {
+	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
+		if(it->hasColorKey()) {
+			it->Restore();
+		}
+	}
+}
+
 Texture2D * OpenGLRenderer::CreateTexture2D() {
 	GLTexture2D * texture = new GLTexture2D(this);
 	textures.push_back(*texture);
