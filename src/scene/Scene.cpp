@@ -77,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/PolyBoom.h"
 #include "graphics/effects/Halo.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 
 #include "input/Input.h"
@@ -1239,8 +1240,6 @@ static void BackgroundRenderOpaque(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
-	UseRenderState state(render3D().colorKey());
-	
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
 	//render opaque
@@ -1252,7 +1251,12 @@ static void BackgroundRenderOpaque(size_t room_num) {
 		TextureContainer *pTexCurr = *itr;
 		const SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches.tMatRoom[room_num];
 		
+		RenderState baseState = render3D();
+		
 		GRenderer->SetTexture(0, pTexCurr);
+		baseState.setColorKey(pTexCurr->m_pTexture && pTexCurr->m_pTexture->hasAlpha());
+		
+		UseRenderState state(baseState);
 		
 		if(roomMat.count[BatchBucket_Opaque]) {
 			if (pTexCurr->userflags & POLY_METAL)
@@ -1290,17 +1294,18 @@ static void BackgroundRenderTransparent(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
-	RenderState baseState = render3D().colorKey().depthWrite(false).depthOffset(2);
-	
 	//render transparency
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
 	std::vector<TextureContainer *>::const_iterator itr;
 	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
-
+		
+		RenderState baseState = render3D().depthWrite(false).depthOffset(2);
+		
 		TextureContainer * pTexCurr = *itr;
 		GRenderer->SetTexture(0, pTexCurr);
-
+		baseState.setColorKey(pTexCurr->m_pTexture && pTexCurr->m_pTexture->hasAlpha());
+		
 		SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches.tMatRoom[room_num];
 
 		for(size_t i = 0; i < ARRAY_SIZE(transRenderOrder); i++) {
