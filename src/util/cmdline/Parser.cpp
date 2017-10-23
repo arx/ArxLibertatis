@@ -69,7 +69,7 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 			
 			const iterator original_p = p;
 			
-			iterator optend = p + 1; //< end for optional arguments
+			iterator optend = p + 1; //!< end for optional arguments
 			
 			OptionType type;
 			
