@@ -33,7 +33,7 @@ public:
 	* For single color light only the respective color range
 	* needs to be set.
 	*
-	* \param random number range as Vec2f(lower, upper)
+	* \param range random number range as Vec2f(lower, upper)
 	*/
 	void setLowerColorRndRange(Color3f range);
 	void setUpperColorRndRange(Color3f range);
@@ -56,8 +56,6 @@ public:
 
 	/*!
 	* Update and draw the cabal effect.
-	*
-	* \param caster position
 	*
 	* \return the position of the ringset
 	*/
