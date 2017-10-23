@@ -131,7 +131,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 		
 		if(dist > (ioo.physics.cyl.radius + io.physics.cyl.radius + 10.f) || power < 0.f) {
 			
-			float max_radius = attractors[i].radius; 
+			float max_radius = attractors[i].radius;
 			
 			if(dist < max_radius) {
 				float ratio_dist = 1.f - (dist / max_radius);
