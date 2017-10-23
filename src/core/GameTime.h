@@ -87,7 +87,7 @@ extern PlatformTime g_platformTime;
 class GameTime {
 	
 	ArxInstant m_now;
-	ArxDuration m_frameDelay;
+	ArxDuration m_lastFrameDuration;
 	float m_speed;
 	bool m_paused;
 	
@@ -110,14 +110,14 @@ public:
 		return m_now;
 	}
 	
-	void update(PlatformDuration delta);
+	void update(PlatformDuration frameDuration);
 	
 	bool isPaused() const {
 		return m_paused;
 	}
 	
 	ArxDuration lastFrameDuration() const {
-		return m_frameDelay;
+		return m_lastFrameDuration;
 	}
 	
 	float speed() const { return m_speed; }
