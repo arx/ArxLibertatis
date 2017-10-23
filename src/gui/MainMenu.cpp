@@ -588,8 +588,7 @@ public:
 				pMenuSliderResol->selectLast();
 			}
 		
-			float fRatio    = (RATIO_X(m_size.x-9) - pMenuSliderResol->m_rect.width()); 
-		
+			float fRatio = RATIO_X(m_size.x - 9) - pMenuSliderResol->m_rect.width();
 			pMenuSliderResol->Move(Vec2f(fRatio, 0));
 			
 			panel->AddElement(pMenuSliderResol);
