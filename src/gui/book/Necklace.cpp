@@ -114,7 +114,7 @@ static void PlayerBookDrawRune(Rune rune) {
 void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 {
 	
-	UseRenderState state(render3D().colorKey().depthTest(false).fog(false));
+	RenderState baseState = render3D().depthTest(false).fog(false);
 	
 	Vec3f pos = Vec3f(0.f, 0.f, 2100.f);
 	
@@ -175,7 +175,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 			
 			Rectf runeBox = UpdateBbox2d(*rune).toRect();
 			
-			PopAllTriangleListOpaque();
+			PopAllTriangleListOpaque(baseState);
 			
 			tmpPos.x++;
 			
@@ -199,14 +199,12 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 				
 				if(r) {
 					
-					UseRenderState state(render3D().colorKey().depthTest(false).fog(false).blendAdditive());
-					
 					TransformInfo t(pos, glm::quat_cast(toRotationMatrix(angle)));
 					DrawEERIEInter(rune, t, NULL, false, 0.f);
 					
 					rune->angle.setYaw(rune->angle.getYaw() + ptDelta * 2.f);
 					
-					PopAllTriangleListOpaque();
+					PopAllTriangleListOpaque(baseState.blendAdditive());
 					
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					
@@ -219,7 +217,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 			TransformInfo t1(pos, glm::quat());
 			DrawEERIEInter(gui::necklace.lacet, t1, NULL, false, 0.f);
 			
-			PopAllTriangleListOpaque();
+			PopAllTriangleListOpaque(baseState);
 		}
 	}
 	
