@@ -936,7 +936,7 @@ static void RenderLavaBatch() {
 		return;
 	}
 	
-	RenderState baseState = render3D().colorKey().depthWrite(false).cull(CullCW).depthOffset(8);
+	RenderState baseState = render3D().depthWrite(false).cull(CullCW).depthOffset(8);
 	
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X);
 	
