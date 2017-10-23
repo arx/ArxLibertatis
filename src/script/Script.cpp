@@ -1836,8 +1836,8 @@ void ARX_SCRIPT_Timer_Check() {
 			continue;
 		}
 		
-		ArxInstant now = g_gameTime.now();
-		ArxInstant fire_time = st->start + st->interval;
+		GameInstant now = g_gameTime.now();
+		GameInstant fire_time = st->start + st->interval;
 		arx_assert(st->start <= now);
 		if(fire_time > now) {
 			// Timer not ready to fire yet

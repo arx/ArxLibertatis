@@ -691,7 +691,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 	asp->jumpphase = player.jumpphase;
 	
-	ArxInstant jumpstart = g_gameTime.now() + ArxDurationUs(toUs(player.jumpstarttime - g_platformTime.frameStart()));
+	GameInstant jumpstart = g_gameTime.now() + ArxDurationUs(toUs(player.jumpstarttime - g_platformTime.frameStart()));
 	asp->jumpstarttime = static_cast<u32>(toMsi(jumpstart)); // TODO save/load time
 	asp->Last_Movement = player.m_lastMovement;
 	asp->level = player.level;
@@ -1104,7 +1104,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 
-	const ArxInstant timm = g_gameTime.now();
+	const GameInstant timm = g_gameTime.now();
 
 	for(int i = 0; i < MAX_TIMER_SCRIPT; i++) {
 		SCR_TIMER & timer = scr_timer[i];
@@ -1665,7 +1665,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.inzone = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(asp->inzone)));
 	player.jumpphase = JumpPhase(asp->jumpphase); // TODO save/load enum
 	PlatformInstant jumpstart = g_platformTime.frameStart()
-	                            + PlatformDurationUs(toUs(ArxInstantMs(asp->jumpstarttime) - g_gameTime.now()));
+	                            + PlatformDurationUs(toUs(GameInstantMs(asp->jumpstarttime) - g_gameTime.now()));
 	player.jumpstarttime = jumpstart; // TODO save/load time
 	player.m_lastMovement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
 	
@@ -2030,10 +2030,10 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		if(ais->system_flags & SYSTEM_FLAG_USEPATH) {
 			ARX_USE_PATH * aup = io->usepath = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
 			aup->aupflags = UsePathFlags::load(ais->usepath_aupflags); // TODO save/load flags
-			aup->_curtime = ArxInstantMs(ais->usepath_curtime); // TODO save/load time
+			aup->_curtime = GameInstantMs(ais->usepath_curtime); // TODO save/load time
 			aup->initpos = ais->usepath_initpos.toVec3();
 			aup->lastWP = ais->usepath_lastWP;
-			aup->_starttime = ArxInstantMs(ais->usepath_starttime); // TODO save/load time
+			aup->_starttime = GameInstantMs(ais->usepath_starttime); // TODO save/load time
 			aup->path = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(ais->usepath_name)));
 		}
 		
@@ -2147,7 +2147,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				remaining = ArxDurationMs(ats->interval);
 			}
 			
-			const ArxInstant tt = (g_gameTime.now() + remaining) - ArxDurationMs(ats->interval);
+			const GameInstant tt = (g_gameTime.now() + remaining) - ArxDurationMs(ats->interval);
 			scr_timer[num].start = tt;
 			
 			scr_timer[num].count = ats->count;
@@ -2217,7 +2217,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				io->_npcdata->resist_magic = as->resist_magic;
 				io->_npcdata->resist_fire = as->resist_fire;
 				io->_npcdata->walk_start_time = ArxDurationMs(as->walk_start_time); // TODO save/load time
-				io->_npcdata->aiming_start = ArxInstantMs(as->aiming_start); // TODO save/load time
+				io->_npcdata->aiming_start = GameInstantMs(as->aiming_start); // TODO save/load time
 				io->_npcdata->npcflags = NPCFlags::load(as->npcflags); // TODO save/load flags
 				io->_npcdata->fDetect = as->fDetect;
 				io->_npcdata->cuts = DismembermentFlags::load(as->cuts); // TODO save/load flags
@@ -2826,7 +2826,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		g_currentPlathrough.oldestALVersion = pld.oldestALVersion;
 		g_currentPlathrough.newestALVersion = pld.newestALVersion;
 		
-		g_gameTime.reset(ArxInstantMs(pld.time));
+		g_gameTime.reset(GameInstantMs(pld.time));
 		
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);

@@ -96,7 +96,7 @@ public:
 	
 private:
 	
-	ArxInstant m_now;
+	GameInstant m_now;
 	ArxDuration m_lastFrameDuration;
 	float m_speed;
 	PauseFlags m_paused;
@@ -113,9 +113,9 @@ public:
 		m_paused &= ~flags;
 	}
 	
-	void reset(ArxInstant time);
+	void reset(GameInstant time);
 	
-	ArxInstant now() const {
+	GameInstant now() const {
 		return m_now;
 	}
 	

@@ -221,7 +221,7 @@ public:
 		if(start) {
 			script->timers[t] = g_gameTime.now();
 			if(script->timers[t] == 0) {
-				script->timers[t] = ArxInstantMs(1);
+				script->timers[t] = GameInstantMs(1);
 			}
 		} else {
 			script->timers[t] = 0;

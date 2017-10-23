@@ -28,7 +28,7 @@
 struct PRECAST_STRUCT {
 	SpellType typ;
 	long level;
-	ArxInstant launch_time;
+	GameInstant launch_time;
 	SpellcastFlags flags;
 	ArxDuration duration;
 };

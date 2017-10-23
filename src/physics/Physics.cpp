@@ -772,7 +772,7 @@ static void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, 
 	if(source->ioflags & IO_BODY_CHUNK)
 		return;
 	
-	ArxInstant now = g_gameTime.now();
+	GameInstant now = g_gameTime.now();
 	
 	if(now > source->soundtime) {
 		

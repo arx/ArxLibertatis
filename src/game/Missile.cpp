@@ -78,8 +78,8 @@ struct ARX_MISSILE
 	Vec3f startpos;
 	Vec3f velocity;
 	Vec3f lastpos;
-	ArxInstant timecreation;
-	ArxInstant lastupdate;
+	GameInstant timecreation;
+	GameInstant lastupdate;
 	ArxDuration tolive;
 	LightHandle	m_light;
 	EntityHandle owner;
@@ -179,7 +179,7 @@ void ARX_MISSILES_Update() {
 	
 	TextureContainer * tc = TC_fire; 
 
-	ArxInstant now = g_gameTime.now();
+	GameInstant now = g_gameTime.now();
 
 	for(unsigned long i(0); i < MAX_MISSILES; i++) {
 		if(missiles[i].type == MISSILE_NONE)

@@ -161,7 +161,7 @@ struct IO_NPCDATA {
 	ResourcePool lifePool;
 	ResourcePool manaPool;
 	
-	ArxInstant reachedtime;
+	GameInstant reachedtime;
 	long reachedtarget;	//Is target in REACHZONE ?
 	Entity * weapon; // Linked Weapon (r-hand)
 	long detect;
@@ -200,7 +200,7 @@ struct IO_NPCDATA {
 	unsigned char resist_fire;
 	
 	ArxDuration walk_start_time;
-	ArxInstant aiming_start;
+	GameInstant aiming_start;
 	NPCFlags npcflags;
 	IO_PATHFIND pathfind;
 	EERIE_EXTRA_ROTATE * ex_rotate;

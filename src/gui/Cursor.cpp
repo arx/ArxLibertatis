@@ -310,7 +310,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
-extern ArxInstant LOOKING_FOR_SPELL_TARGET_TIME;
+extern GameInstant LOOKING_FOR_SPELL_TARGET_TIME;
 extern bool PLAYER_INTERFACE_SHOW;
 extern long lCursorRedistValue;
 

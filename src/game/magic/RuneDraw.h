@@ -28,7 +28,7 @@
 class Entity;
 
 struct SYMBOL_DRAW {
-	ArxInstant starttime;
+	GameInstant starttime;
 	AnimationDuration elapsed;
 	AnimationDuration duration;
 	std::string sequence;

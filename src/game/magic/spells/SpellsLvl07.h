@@ -37,7 +37,7 @@ public:
 	Vec3f getPosition();
 	
 private:
-	ArxInstant m_lastupdate;
+	GameInstant m_lastupdate;
 	
 	LightHandle m_light1;
 	LightHandle m_light2;

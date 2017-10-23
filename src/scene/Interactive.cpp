@@ -927,7 +927,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->requestRoomUpdate = 1;
 		RestoreIOInitPos(io);
 		ARX_INTERACTIVE_Teleport(io, io->initpos);
-		io->animBlend.lastanimtime = ArxInstantMs(1);
+		io->animBlend.lastanimtime = GameInstantMs(1);
 		io->secretvalue = -1;
 		
 		io->poisonous = 0;

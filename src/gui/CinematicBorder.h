@@ -41,7 +41,7 @@ public:
 private:
 	bool m_active;
 	long m_direction;
-	ArxInstant m_startTime;
+	GameInstant m_startTime;
 };
 
 extern CinematicBorder cinematicBorder;

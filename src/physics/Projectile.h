@@ -45,7 +45,7 @@ struct Projectile {
 	float damages;
 	EERIE_3DOBJ * obj;
 	EntityHandle source;
-	ArxInstant creation_time;
+	GameInstant creation_time;
 	float poisonous;
 	Trail * m_trail;
 };
