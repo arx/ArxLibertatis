@@ -323,7 +323,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 		for(size_t m = 0; m < SAVED_INVENTORY_Y; m++) {
 			for(size_t n = 0; n < SAVED_INVENTORY_X; n++) {
 				std::stringstream where;
-				where << "player.inventory[" << iNbBag << "][" << n << "][" << m << "]"; 
+				where << "player.inventory[" << iNbBag << "][" << n << "][" << m << "]";
 				changed |= fix_ident(save, asp.id_inventory[iNbBag][n][m], idents, where.str(), remap);
 			}
 		}
@@ -338,7 +338,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 	
 	for(size_t k = 0; k < SAVED_MAX_EQUIPED; k++) {
 		std::stringstream where;
-		where << "player.equiped[" << k << "]"; 
+		where << "player.equiped[" << k << "]";
 		changed |= fix_ident(save, asp.equiped[k], idents, where.str(), remap);
 	}
 	
