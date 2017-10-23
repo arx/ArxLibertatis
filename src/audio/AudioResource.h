@@ -97,7 +97,7 @@ public:
 	ResourceList();
 	~ResourceList();
 	
-	bool isValid(s32 index) { return ((size_t)index < _size && list[index]); } 
+	bool isValid(s32 index) { return ((size_t)index < _size && list[index]); }
 	T * operator[](s32 index) { return list[index]; }
 	size_t size() { return _size; }
 	s32 add(T * element);
