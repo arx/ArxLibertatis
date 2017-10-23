@@ -531,8 +531,9 @@ void Input::update(float time) {
 			}
 		}
 		
-		if(iOldNumClick[i]) 
+		if(iOldNumClick[i]) {
 			iOldNumClick[i]--;
+		}
 		
 		if(iMouseTimeSet[i] > 1 || (iMouseTimeSet[i] == 1 && now - iMouseTime[i][0] > PlatformDurationMs(300))) {
 			iMouseTime[i][0] = 0;
