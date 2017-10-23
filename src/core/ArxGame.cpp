@@ -1608,8 +1608,9 @@ void ArxGame::updateTime() {
 	
 	arxtime.update(g_platformTime.lastFrameDuration());
 	
-	g_framedelay = toMsf(arxtime.get_frame_delay());
-	g_framedelay2 = arxtime.get_frame_delay();
+	g_framedelay = toMsf(arxtime.lastFrameDuration());
+	g_framedelay2 = arxtime.lastFrameDuration();
+	
 }
 
 void ArxGame::updateInput() {
