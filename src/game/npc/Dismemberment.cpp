@@ -54,8 +54,6 @@ static bool IsNearSelection(EERIE_3DOBJ * obj, long vert, ObjSelection tw) {
 
 /*!
  * \brief Spawns a body part from NPC
- * \param ioo
- * \param num
  */
 static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
