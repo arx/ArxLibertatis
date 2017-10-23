@@ -646,7 +646,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	
 suite:
 wander:
-	io->targetinfo = target; 
+	io->targetinfo = target;
 	io->_npcdata->pathfind.truetarget = target;
 
 	long from;
@@ -1064,9 +1064,9 @@ void FaceTarget2(Entity * io)
 
 	if(tt == 0)
 		return;
-
-	float rot = 0.33f * g_framedelay; 
-
+	
+	float rot = 0.33f * g_framedelay;
+	
 	if(glm::abs(tt) < rot)
 		rot = glm::abs(tt);
 
@@ -1119,7 +1119,7 @@ void StareAtTarget(Entity * io)
 
 	float rot = 0.27f * g_framedelay;
 	float alpha = MAKEANGLE(io->angle.getYaw());
-	float beta = -io->head_rot; 
+	float beta = -io->head_rot;
 	float pouet = MAKEANGLE(180.f + glm::degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
 	float A = MAKEANGLE((MAKEANGLE(alpha + beta) - pouet));
 	float B = MAKEANGLE(alpha - pouet);
@@ -1746,7 +1746,7 @@ float GetIOHeight(Entity * io) {
 	
 	if (io == entities.player())
 	{
-		return io->physics.cyl.height; 
+		return io->physics.cyl.height;
 	}
 
 	float v = (io->original_height * io->scale);
@@ -2075,7 +2075,7 @@ afterthat:
 	// Force to flee/wander again
 	if(!io->_npcdata->pathfind.pathwait && io->_npcdata->pathfind.listnb <= 0) {
 		if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
-			ARX_NPC_LaunchPathfind(io, io->targetinfo); 
+			ARX_NPC_LaunchPathfind(io, io->targetinfo);
 		} else if(dis > STRIKE_DISTANCE
 		         &&	(io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 				 &&	!(io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_SNEAK))
@@ -2634,9 +2634,8 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 				}
 				continue;
 			}
-
-			float grnd_color = CURRENT_PLAYER_COLOR - GetPlayerStealth(); 
-
+			
+			float grnd_color = CURRENT_PLAYER_COLOR - GetPlayerStealth();
 			if(grnd_color > 0)  {
 				Vec3f ppos;
 				
