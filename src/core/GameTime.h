@@ -78,12 +78,18 @@ public:
 	inline PlatformDuration lastFrameDuration() {
 		return m_lastFrameDuration;
 	}
+	
 };
 
 extern PlatformTime g_platformTime;
 
 
 class GameTime {
+	
+	ArxInstant m_now;
+	ArxDuration m_frameDelay;
+	float m_speed;
+	bool m_paused;
 	
 public:
 	
@@ -111,16 +117,6 @@ public:
 	
 	float speed() const { return m_speed; }
 	void setSpeed(float speed) { m_speed = speed; }
-	
-private:
-	
-	bool m_paused;
-	
-	ArxInstant m_now;
-	
-	ArxDuration m_frameDelay;
-	
-	float m_speed;
 	
 };
 
