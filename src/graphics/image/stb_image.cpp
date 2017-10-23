@@ -462,7 +462,7 @@ stbi_inline static int at_eof(stbi *s)
    }
 #endif // !STBI_NO_CALLBACK
 
-   return s->img_buffer >= s->img_buffer_end;   
+   return s->img_buffer >= s->img_buffer_end;
 }
 
 stbi_inline static uint8 get8u(stbi *s)
@@ -1519,7 +1519,7 @@ typedef struct
    resample_row_func resample;
    uint8 *line0,*line1;
    int hs,vs;   // expansion factor in each axis
-   int w_lores; // horizontal pixels pre-expansion 
+   int w_lores; // horizontal pixels pre-expansion
    int ystep;   // how far through vertical expansion we are
    int ypos;    // which pre-expansion row we're on
 } stbi_resample;
@@ -1681,7 +1681,7 @@ typedef struct
    int maxcode[17];
    uint16 firstsymbol[16];
    uint8  size[288];
-   uint16 value[288]; 
+   uint16 value[288];
 } zhuffman;
 
 stbi_inline static int bitreverse16(int n)
@@ -1709,7 +1709,7 @@ static int zbuild_huffman(zhuffman *z, uint8 *sizelist, int num)
    // DEFLATE spec for generating codes
    memset(sizes, 0, sizeof(sizes));
    memset(z->fast, 255, sizeof(z->fast));
-   for (i=0; i < num; ++i) 
+   for (i=0; i < num; ++i)
       ++sizes[sizelist[i]];
    sizes[0] = 0;
    for (i=1; i < 16; ++i)
@@ -1788,7 +1788,7 @@ stbi_inline static unsigned int zreceive(zbuf *z, int n)
    k = z->code_buffer & ((1 << n) - 1);
    z->code_buffer >>= n;
    z->num_bits -= n;
-   return k;   
+   return k;
 }
 
 stbi_inline static int zhuffman_decode(zbuf *a, zhuffman *z)
@@ -2384,7 +2384,7 @@ static void stbi_de_iphone(png *z)
             } else {
                p[0] = p[2];
                p[2] = t;
-            } 
+            }
             p += 4;
          }
       } else {
@@ -2841,7 +2841,7 @@ static stbi_uc *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
                out[z++] = (uint8) shiftsigned(v & mg, gshift, gcount);
                out[z++] = (uint8) shiftsigned(v & mb, bshift, bcount);
                a = (ma ? shiftsigned(v & ma, ashift, acount) : 255);
-               if (target == 4) out[z++] = (uint8) a; 
+               if (target == 4) out[z++] = (uint8) a;
             }
          }
          skip(s, pad);
@@ -3634,7 +3634,7 @@ static void stbi_gif_parse_colortable(stbi *s, uint8 pal[256][4], int num_entrie
       pal[i][1] = get8u(s);
       pal[i][0] = get8u(s);
       pal[i][3] = transp ? 0 : 255;
-   }   
+   }
 }
 
 static int stbi_gif_header(stbi *s, stbi_gif *g, int *comp, int is_info)
@@ -3667,7 +3667,7 @@ static int stbi_gif_header(stbi *s, stbi_gif *g, int *comp, int is_info)
 
 static int stbi_gif_info_raw(stbi *s, int *x, int *y, int *comp)
 {
-   stbi_gif g;   
+   stbi_gif g;
    if (!stbi_gif_header(s, &g, comp, 1)) {
       stbi_rewind( s );
       return 0;
@@ -3741,7 +3741,7 @@ static uint8 *stbi_process_gif_raster(stbi *s, stbi_gif *g)
       if (valid_bits < codesize) {
          if (len == 0) {
             len = get8(s); // start new block
-            if (len == 0) 
+            if (len == 0)
                return g->out;
          }
          --len;
@@ -3787,7 +3787,7 @@ static uint8 *stbi_process_gif_raster(stbi *s, stbi_gif *g)
          } else {
             return stbi_error_puc("illegal code in raster", "Corrupt GIF");
          }
-      } 
+      }
    }
 }
 
@@ -3860,10 +3860,10 @@ static uint8 *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
 
             if (g->lflags & 0x80) {
                stbi_gif_parse_colortable(s,g->lpal, 2 << (g->lflags & 7), g->eflags & 0x01 ? g->transparent : -1);
-               g->color_table = (uint8 *) g->lpal;       
+               g->color_table = (uint8 *) g->lpal;
             } else if (g->flags & 0x80) {
                for (i=0; i < 256; ++i)  // @OPTIMIZE: reset only the previous transparent
-                  g->pal[i][3] = 255; 
+                  g->pal[i][3] = 255;
                if (g->transparent >= 0 && (g->eflags & 0x01))
                   g->pal[g->transparent][3] = 0;
                g->color_table = (uint8 *) g->pal;
