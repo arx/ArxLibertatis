@@ -125,8 +125,8 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	eSrc = _eSrc;
 
 	bOk = false;
-
-	eMove = Vec3f(-fBetaRadSin * 2, 0.f, fBetaRadCos * 2); 
+	
+	eMove = Vec3f(-fBetaRadSin * 2, 0.f, fBetaRadCos * 2);
 	
 	Vec3f rayEnd = eSrc;
 	rayEnd.x -= fBetaRadSin * (50 * 20);
