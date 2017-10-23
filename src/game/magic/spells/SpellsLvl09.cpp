@@ -148,7 +148,7 @@ void SummonCreatureSpell::End() {
 
 void SummonCreatureSpell::Update() {
 	
-	if(arxtime.is_paused()) {
+	if(arxtime.isPaused()) {
 		return;
 	}
 	
@@ -307,7 +307,7 @@ void FakeSummonSpell::End() {
 
 void FakeSummonSpell::Update() {
 	
-	if(!arxtime.is_paused()) {
+	if(!arxtime.isPaused()) {
 		if(Random::getf() > 0.7f) {
 			Vec3f pos = m_fissure.m_eSrc;
 			MakeCoolFx(pos);

@@ -890,10 +890,11 @@ void ArxGame::managePlayerControls() {
 				eyeball.pos = old;
 			}
 		}
-
-		if(arxtime.is_paused())
+		
+		if(arxtime.isPaused()) {
 			FD = 40.f;
-
+		}
+		
 		bool left=GInput->actionPressed(CONTROLS_CUST_STRAFELEFT);
 
 		if(!left) {

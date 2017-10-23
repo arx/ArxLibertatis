@@ -214,7 +214,7 @@ void RiseDeadSpell::Update() {
 			m_creationFailed = true;
 			m_duration = 0;
 		}
-	} else if(!arxtime.is_paused() && tim < ArxDurationMs(4000)) {
+	} else if(!arxtime.isPaused() && tim < ArxDurationMs(4000)) {
 	  if(Random::getf() > 0.95f) {
 			MakeCoolFx(m_fissure.m_eSrc);
 		}

@@ -92,7 +92,7 @@ void GameTime::update(PlatformDuration frameDelay) {
 	
 	arx_assert(delta >= 0);
 	
-	if(is_paused()) {
+	if(isPaused()) {
 		delta = 0;
 	}
 	
