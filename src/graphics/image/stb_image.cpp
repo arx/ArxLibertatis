@@ -207,7 +207,9 @@ static int stbi_error(const char *str)
    #define stbi_error(x,y)  stbi_error(x)
 #endif
 
+#if !defined(STBI_NO_HDR) || !defined(STBI_NO_STDIO)
 #define stbi_error_pf(x,y)   ((float *) (stbi_error(x,y), NULL))
+#endif
 #define stbi_error_puc(x,y)  ((unsigned char *) (stbi_error(x,y), NULL))
 
 void stbi_image_free(void *retval_from_stbi_load)
