@@ -103,9 +103,9 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
 	while(1) {
 		for(short i = 0; i < ah->alt_nb; i++) {
 			long r = Random::get(0l, tot);
-
-			if(r < anim_power[std::min((int)i,14)] && i != old)
+			if(r < anim_power[std::min((int)i, 14)] && i != old) {
 				return i;
+			}
 		}
 	}
 }
