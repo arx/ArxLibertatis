@@ -67,6 +67,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasDrawElementsBaseVertex(false)
 	, m_hasClearDepthf(false)
 	, m_hasVertexFogCoordinate(false)
+	, m_hasSampleShading(false)
 { }
 
 OpenGLRenderer::~OpenGLRenderer() {
@@ -344,6 +345,12 @@ void OpenGLRenderer::reinit() {
 	// Introduced in OpenGL 1.4, no extension available for OpenGL ES
 	m_hasVertexFogCoordinate = !isES;
 	
+	if(isES) {
+		m_hasSampleShading = ARX_HAVE_GLES_VER(3, 2) || ARX_HAVE_GLES_EXT(OES_sample_shading);
+	} else {
+		m_hasSampleShading = ARX_HAVE_GL_VER(4, 0) || ARX_HAVE_GL_EXT(ARB_sample_shading);
+	}
+	
 	// Synchronize GL state cache
 	
 	m_MSAALevel = 0;
@@ -378,7 +385,11 @@ void OpenGLRenderer::reinit() {
 	m_glstate.setFog(false);
 	
 	glAlphaFunc(GL_GREATER, 0.5f);
-	glMinSampleShading(1.f);
+	#ifdef GL_VERSION_4_0
+	if(hasSampleShading()) {
+		glMinSampleShading(1.f);
+	}
+	#endif
 	m_glstate.setAlphaCutout(false);
 	
 	glEnable(GL_DEPTH_TEST);
@@ -911,9 +922,11 @@ void OpenGLRenderer::flushState() {
 				if(disableA2C) {
 					glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 				} else if(!m_state.getAlphaCutout() || enableA2C) {
-					if(m_hasMSAA && config.video.alphaCutoutAntialiasing == 2) {
+					#ifdef GL_VERSION_4_0
+					if(hasSampleShading() && m_hasMSAA && config.video.alphaCutoutAntialiasing == 2) {
 						glDisable(GL_SAMPLE_SHADING);
 					}
+					#endif
 					glDisable(GL_ALPHA_TEST);
 				}
 			}
@@ -922,9 +935,11 @@ void OpenGLRenderer::flushState() {
 					glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 				} else if(!m_glstate.getAlphaCutout() || disableA2C) {
 					glEnable(GL_ALPHA_TEST);
-					if(m_hasMSAA && config.video.alphaCutoutAntialiasing == 2) {
+					#ifdef GL_VERSION_4_0
+					if(hasSampleShading() && m_hasMSAA && config.video.alphaCutoutAntialiasing == 2) {
 						glEnable(GL_SAMPLE_SHADING);
 					}
+					#endif
 				}
 			}
 		}
