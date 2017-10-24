@@ -539,13 +539,13 @@ void PoisonProjectileSpell::Launch() {
 		
 		EERIE_LIGHT * light = dynLightCreate(projectile->lLightId);
 		if(light) {
-			light->intensity		= 2.3f;
-			light->fallend		= 250.f;
-			light->fallstart		= 150.f;
+			light->intensity = 2.3f;
+			light->fallend = 250.f;
+			light->fallstart = 150.f;
 			light->rgb = Color3f::green;
 			light->pos = projectile->eSrc;
-			light->creationTime	= g_gameTime.now();
-			light->duration		= GameDurationMs(200);
+			light->creationTime = g_gameTime.now();
+			light->duration = GameDurationMs(200);
 		}
 	}
 	
@@ -579,13 +579,13 @@ void PoisonProjectileSpell::Update() {
 		
 		EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
 		if(light) {
-			light->intensity	= 2.3f * projectile->lightIntensityFactor;
-			light->fallend	= 250.f;
-			light->fallstart	= 150.f;
+			light->intensity = 2.3f * projectile->lightIntensityFactor;
+			light->fallend = 250.f;
+			light->fallstart = 150.f;
 			light->rgb = Color3f::green;
 			light->pos = projectile->eCurPos;
 			light->creationTime = g_gameTime.now();
-			light->duration	= GameDurationMs(200);
+			light->duration = GameDurationMs(200);
 		}
 
 		AddPoisonFog(projectile->eCurPos, m_level + 7);
