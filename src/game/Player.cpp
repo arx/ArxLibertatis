@@ -995,8 +995,8 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta)
 
 			// Check for player hungry sample playing
 			if((player.hunger > 10.f && player.hunger - inc_hunger <= 10.f)
-					|| (player.hunger < 10.f && g_gameTime.now() > LastHungerSample + GameDurationMs(180000)))
-			{
+			   || (player.hunger < 10.f && g_gameTime.now() > LastHungerSample + GameDurationMs(180000))) {
+				
 				LastHungerSample = g_gameTime.now();
 
 				if(!BLOCK_PLAYER_CONTROLS) {
