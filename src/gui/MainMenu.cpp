@@ -918,10 +918,15 @@ public:
 			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedAlphaCutoutAntialiasing, this, _1, _2);
 			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_off", "Disabled");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_smooth", "Smooth");
-			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_crisp", "Crisp");
-			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			Renderer::AlphaCutoutAntialising maxAA = GRenderer->getMaxSupportedAlphaCutoutAntialiasing();
+			if(maxAA >= Renderer::FuzzyAlphaCutoutAA) {
+				szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_fuzzy", "Fuzzy");
+				cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			}
+			if(maxAA >= Renderer::CrispAlphaCutoutAA) {
+				szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising_crisp", "Crisp");
+				cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			}
 			m_alphaCutoutAntialiasingCycleText = cb;
 			setAlphaCutoutAntialisingState();
 			
@@ -1002,8 +1007,13 @@ private:
 		
 		CycleTextWidget * cb = m_alphaCutoutAntialiasingCycleText;
 		
-		if(config.video.antialiasing) {
-			cb->setValue(config.video.alphaCutoutAntialiasing);
+		int maxAA = int(GRenderer->getMaxSupportedAlphaCutoutAntialiasing());
+		if(config.video.antialiasing || maxAA == int(Renderer::NoAlphaCutoutAA)) {
+			int value = config.video.alphaCutoutAntialiasing;
+			if(value > maxAA) {
+				value = int(Renderer::NoAlphaCutoutAA);
+			}
+			cb->setValue(value);
 			cb->SetCheckOn();
 		} else {
 			cb->setValue(0);
