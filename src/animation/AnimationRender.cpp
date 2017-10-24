@@ -348,10 +348,8 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 							Sphere splatSphere = Sphere(sp.origin, Random::getf(30.f, 60.f));
 							PolyBoomAddSplat(splatSphere, rgb, 1);
 							sp.origin.y -= Random::getf(0.f, 150.f);
-
 							ARX_PARTICLES_Spawn_Splat(sp.origin, 200.f, io->_npcdata->blood_color);
-
-							sp.origin = io->pos + arx::randomVec3f() * Vec3f(200.f, 20.f,200.f) - Vec3f(100.f, 10.f, 100.f);
+							sp.origin = io->pos + arx::randomVec3f() * Vec3f(200.f, 20.f, 200.f) - Vec3f(100.f, 10.f, 100.f);
 							sp.radius = Random::getf(100.f, 200.f);
 						}
 						
@@ -795,10 +793,9 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 					fr = 0.f;
 				else
 					fr = std::max(ffr, fr * 255.f);
-
-				fr=std::min(fr,255.f);
-				fb*=255.f;
-				fb=std::min(fb,255.f);
+				
+				fr = std::min(fr, 255.f);
+				fb = std::min(fb * 255.f, 255.f);
 				u8 lfr = u8(fr);
 				u8 lfb = u8(fb);
 				u8 lfg = 0x1E;
