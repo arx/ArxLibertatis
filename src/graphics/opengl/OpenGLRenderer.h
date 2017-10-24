@@ -105,6 +105,7 @@ public:
 	bool hasDrawElementsBaseVertex() const { return m_hasDrawElementsBaseVertex; }
 	bool hasClearDepthf() const { return m_hasClearDepthf; }
 	bool hasVertexFogCoordinate() const { return m_hasVertexFogCoordinate; }
+	bool hasSampleShading() const { return m_hasSampleShading; }
 	
 private:
 	
@@ -153,6 +154,7 @@ private:
 	bool m_hasDrawElementsBaseVertex;
 	bool m_hasClearDepthf;
 	bool m_hasVertexFogCoordinate;
+	bool m_hasSampleShading;
 	
 };
 
