@@ -35,7 +35,6 @@ class TextureContainer;
 class TextureStage;
 class Image;
 class Texture;
-class Texture2D;
 template <class Vertex> class VertexBuffer;
 
 enum BlendingFactor {
@@ -348,7 +347,7 @@ public:
 	virtual void reloadColorKeyTextures() = 0;
 
 	// Factory
-	virtual Texture2D * CreateTexture2D() = 0;
+	virtual Texture * CreateTexture2D() = 0;
 	
 	// Viewport
 	virtual void SetViewport(const Rect & viewport) = 0;

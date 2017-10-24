@@ -582,7 +582,7 @@ static float pointInTriangle(Vec2f p, Vec3f a, Vec3f b, Vec3f c) {
 }
 
 static void drawDebugMaterialTexture(Vec2f & textpos, const std::string & type,
-                                     const Texture2D & t, Color color) {
+                                     const Texture & t, Color color) {
 	
 	const std::string & name = t.getFileName().string();
 	
