@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GRAPHICS_OPENGL_GLTEXTURE2D_H
-#define ARX_GRAPHICS_OPENGL_GLTEXTURE2D_H
+#ifndef ARX_GRAPHICS_OPENGL_GLTEXTURE_H
+#define ARX_GRAPHICS_OPENGL_GLTEXTURE_H
 
 #include <boost/intrusive/list_hook.hpp>
 
@@ -31,12 +31,12 @@ class GLTextureStage;
 
 typedef boost::intrusive::list_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink> > GLTextureListHook;
 
-class GLTexture2D : public Texture, public GLTextureListHook {
+class GLTexture : public Texture, public GLTextureListHook {
 	
 public:
 	
-	explicit GLTexture2D(OpenGLRenderer * renderer);
-	~GLTexture2D();
+	explicit GLTexture(OpenGLRenderer * renderer);
+	~GLTexture();
 	
 	bool Create();
 	void Upload();
@@ -61,4 +61,4 @@ private:
 	friend class GLTextureStage;
 };
 
-#endif // ARX_GRAPHICS_OPENGL_GLTEXTURE2D_H
+#endif // ARX_GRAPHICS_OPENGL_GLTEXTURE_H
