@@ -23,7 +23,7 @@
 #include <boost/intrusive/list.hpp>
 
 #include "graphics/Renderer.h"
-#include "graphics/opengl/GLTexture2D.h"
+#include "graphics/opengl/GLTexture.h"
 #include "graphics/opengl/OpenGLUtil.h"
 #include "math/Rectangle.h"
 
@@ -131,7 +131,7 @@ private:
 	float m_maximumAnisotropy;
 	float m_maximumSupportedAnisotropy;
 	
-	typedef boost::intrusive::list<GLTexture2D, boost::intrusive::constant_time_size<false> > TextureList;
+	typedef boost::intrusive::list<GLTexture, boost::intrusive::constant_time_size<false> > TextureList;
 	TextureList textures;
 	
 	RenderState m_glstate;

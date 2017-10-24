@@ -38,7 +38,7 @@
 #include "core/Config.h"
 #include "gui/Credits.h"
 #include "graphics/opengl/GLDebug.h"
-#include "graphics/opengl/GLTexture2D.h"
+#include "graphics/opengl/GLTexture.h"
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/GLVertexBuffer.h"
 #include "io/log/Logger.h"
@@ -554,7 +554,7 @@ void OpenGLRenderer::reloadColorKeyTextures() {
 }
 
 Texture * OpenGLRenderer::createTexture() {
-	GLTexture2D * texture = new GLTexture2D(this);
+	GLTexture * texture = new GLTexture(this);
 	textures.push_back(*texture);
 	return texture;
 }

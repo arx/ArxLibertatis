@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "graphics/opengl/GLTexture2D.h"
+#include "graphics/opengl/GLTexture.h"
 
 #include "graphics/Math.h"
 #include "graphics/opengl/GLTextureStage.h"
@@ -26,7 +26,7 @@
 #include "io/fs/FilePath.h" // TODO remove
 
 
-GLTexture2D::GLTexture2D(OpenGLRenderer * _renderer)
+GLTexture::GLTexture(OpenGLRenderer * _renderer)
 	: renderer(_renderer)
 	, tex(GL_NONE)
 	, wrapMode(TextureStage::WrapRepeat)
@@ -35,11 +35,11 @@ GLTexture2D::GLTexture2D(OpenGLRenderer * _renderer)
 	, isNPOT(false)
 {}
 
-GLTexture2D::~GLTexture2D() {
+GLTexture::~GLTexture() {
 	Destroy();
 }
 
-bool GLTexture2D::Create() {
+bool GLTexture::Create() {
 	
 	arx_assert_msg(tex == GL_NONE, "leaking OpenGL texture");
 	
@@ -57,7 +57,7 @@ bool GLTexture2D::Create() {
 	return (tex != GL_NONE);
 }
 
-void GLTexture2D::Upload() {
+void GLTexture::Upload() {
 	
 	arx_assert(tex != GL_NONE);
 	
@@ -140,7 +140,7 @@ void GLTexture2D::Upload() {
 	
 }
 
-void GLTexture2D::Destroy() {
+void GLTexture::Destroy() {
 	
 	if(tex) {
 		glDeleteTextures(1, &tex), tex = GL_NONE;
@@ -176,7 +176,7 @@ static const GLint arxToGlFilter[][2] = {
 	}
 };
 
-void GLTexture2D::apply(GLTextureStage * stage) {
+void GLTexture::apply(GLTextureStage * stage) {
 	
 	arx_assert(stage != NULL);
 	arx_assert(stage->tex == this);
@@ -204,7 +204,7 @@ void GLTexture2D::apply(GLTextureStage * stage) {
 	
 }
 
-void GLTexture2D::updateMaxAnisotropy() {
+void GLTexture::updateMaxAnisotropy() {
 	
 	if(hasMipmaps()) {
 		glBindTexture(GL_TEXTURE_2D, tex);

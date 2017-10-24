@@ -26,7 +26,7 @@
 #include "graphics/texture/TextureStage.h"
 
 class OpenGLRenderer;
-class GLTexture2D;
+class GLTexture;
 
 class GLTextureStage : public TextureStage {
 	
@@ -72,8 +72,8 @@ private:
 
 	void setTexEnv(GLenum target, GLenum pname, GLint param);
 
-	GLTexture2D * tex;
-	GLTexture2D * current;
+	GLTexture * tex;
+	GLTexture * current;
 	
 	WrapMode wrapMode;
 	FilterMode minFilter;
@@ -82,7 +82,7 @@ private:
 	typedef std::map<GLenum, GLint> IntegerStateCache;
 	IntegerStateCache m_stateCacheIntegers;
 	
-	friend class GLTexture2D;
+	friend class GLTexture;
 };
 
 #endif // ARX_GRAPHICS_OPENGL_GLTEXTURESTAGE_H

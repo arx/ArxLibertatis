@@ -19,7 +19,7 @@
 
 #include "graphics/opengl/GLTextureStage.h"
 
-#include "graphics/opengl/GLTexture2D.h"
+#include "graphics/opengl/GLTexture.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "io/log/Logger.h"
 
@@ -55,7 +55,7 @@ void GLTextureStage::setTexture(Texture * texture) {
 	
 	arx_assert(texture != NULL);
 	
-	tex = reinterpret_cast<GLTexture2D *>(texture);
+	tex = reinterpret_cast<GLTexture *>(texture);
 }
 
 void GLTextureStage::resetTexture() {
