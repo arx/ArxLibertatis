@@ -122,7 +122,7 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
 	return node != NULL;
 }
 
-Texture2D& PackedTexture::getTexture(unsigned int index) {
+Texture & PackedTexture::getTexture(unsigned int index) {
 	arx_assert(index < textures.size());
 	arx_assert(textures[index]->texture);
 	return *textures[index]->texture;

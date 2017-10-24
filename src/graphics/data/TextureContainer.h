@@ -67,7 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "util/Flags.h"
 
-class Texture2D;
+class Texture;
 
 extern long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 
@@ -186,7 +186,7 @@ public:
 	TCFlags m_dwFlags;
 	u32 userflags;
 	
-	Texture2D * m_pTexture; // Diffuse
+	Texture * m_pTexture; // Diffuse
 	
 	/*!
 	 * End of the image in texture coordinates (image size divided by stored size).

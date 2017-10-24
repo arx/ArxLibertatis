@@ -27,7 +27,7 @@
 #include "math/Rectangle.h"
 #include "math/Vector.h"
 
-class Texture2D;
+class Texture;
 
 class PackedTexture {
 	
@@ -44,7 +44,7 @@ public:
 	
 	bool insertImage(const Image & image, unsigned int & textureIndex, Vec2i & offset);
 	
-	Texture2D & getTexture(unsigned int index);
+	Texture & getTexture(unsigned int index);
 	
 	unsigned int getTextureSize() const { return textureSize; }
 	size_t getTextureCount() const { return textures.size(); }
@@ -78,7 +78,7 @@ protected:
 		
 	public:
 		
-		Texture2D * texture;
+		Texture * texture;
 		bool dirty;
 	};
 	

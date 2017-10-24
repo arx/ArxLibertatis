@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "math/Vector.h"
 
-class Texture2D;
+class Texture;
 namespace res { class path; }
 
 // TODO better name
@@ -59,7 +59,7 @@ struct C_INDEXED {
 	Vec2i bitmapdep;
 	Vec2i bitmap;
 	int nbvertexs;
-	Texture2D * tex;
+	Texture * tex;
 	int startind;
 	int nbind;
 };
@@ -88,11 +88,11 @@ struct CinematicGrid {
 	bool AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale);
 	void FreeGrille();
 	
-	void AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitmapw, Texture2D * tex);
+	void AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitmapw, Texture * tex);
 	void ReajustUV();
 private:
 	void GetIndNumCube(int cx, int cy, int * i1, int * i2, int * i3, int * i4);
-	size_t AddMaterial(Texture2D* tex);
+	size_t AddMaterial(Texture * tex);
 	void AddPoly(size_t matIdx, int i0, int i1, int i2);
 };
 

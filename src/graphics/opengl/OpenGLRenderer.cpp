@@ -553,7 +553,7 @@ void OpenGLRenderer::reloadColorKeyTextures() {
 	}
 }
 
-Texture2D * OpenGLRenderer::CreateTexture2D() {
+Texture * OpenGLRenderer::CreateTexture2D() {
 	GLTexture2D * texture = new GLTexture2D(this);
 	textures.push_back(*texture);
 	return texture;

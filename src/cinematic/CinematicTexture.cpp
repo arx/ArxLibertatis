@@ -129,7 +129,7 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 		while(nbxx) {
 			int w2 = (w - cinMaxSize.x) < 0 ? w : cinMaxSize.x;
 
-			Texture2D* tex = GRenderer->CreateTexture2D();
+			Texture * tex = GRenderer->CreateTexture2D();
 			tex->Init(w2, h2, cinematicImage.GetFormat());
 			tex->GetImage().Copy(cinematicImage, 0, 0, bi->m_size.x - w, bi->m_size.y - h, w2, h2);
 			tex->Upload();
@@ -235,7 +235,7 @@ void CinematicGrid::FreeGrille() {
 	m_mats.clear();
 }
 
-void CinematicGrid::AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitmapw, Texture2D * tex) {
+void CinematicGrid::AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitmapw, Texture * tex) {
 	size_t matIdx = AddMaterial(tex);
 	m_mats[matIdx].bitmapdep = bitmappos;
 	m_mats[matIdx].bitmap = bitmapw;
@@ -295,13 +295,13 @@ void CinematicGrid::AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitm
 void CinematicGrid::ReajustUV() {
 	
 	C_UV* uvs = m_uvs.data();
-
-	for(std::vector<C_INDEXED>::iterator mat = m_mats.begin(); mat != m_mats.end(); ++mat)
-	{
-		Texture2D* tex = mat->tex;
-
-		if(!tex)
+	
+	for(std::vector<C_INDEXED>::iterator mat = m_mats.begin(); mat != m_mats.end(); ++mat) {
+		
+		Texture * tex = mat->tex;
+		if(!tex) {
 			return;
+		}
 		
 		Vec2i size = tex->getStoredSize();
 		
@@ -329,7 +329,8 @@ void CinematicGrid::GetIndNumCube(int cx, int cy, int * i1, int * i2, int * i3, 
 	*i4 = *i3 + 1;
 }
 
-size_t CinematicGrid::AddMaterial(Texture2D * tex) {
+size_t CinematicGrid::AddMaterial(Texture * tex) {
+	
 	size_t matIdx = m_mats.size();
 	m_mats.resize(matIdx + 1);
 

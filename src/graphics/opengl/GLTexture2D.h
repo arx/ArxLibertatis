@@ -31,7 +31,7 @@ class GLTextureStage;
 
 typedef boost::intrusive::list_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink> > GLTextureListHook;
 
-class GLTexture2D : public Texture2D, public GLTextureListHook {
+class GLTexture2D : public Texture, public GLTextureListHook {
 	
 public:
 	

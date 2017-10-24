@@ -21,14 +21,14 @@
 
 #include "core/Config.h"
 
-bool Texture2D::Init(const res::path & strFileName, TextureFlags newFlags) {
+bool Texture::Init(const res::path & strFileName, TextureFlags newFlags) {
 	
 	mFileName = strFileName;
 	flags = newFlags;
 	return Restore();
 }
 
-bool Texture2D::Init(const Image & pImage, TextureFlags newFlags) {
+bool Texture::Init(const Image & pImage, TextureFlags newFlags) {
 	
 	mFileName.clear();
 	mImage = pImage;
@@ -36,7 +36,7 @@ bool Texture2D::Init(const Image & pImage, TextureFlags newFlags) {
 	return Restore();
 }
 
-bool Texture2D::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pFormat) {
+bool Texture::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pFormat) {
 	
 	mFileName.clear();
 	
@@ -48,7 +48,7 @@ bool Texture2D::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pF
 	return Create();
 }
 
-bool Texture2D::Restore() {
+bool Texture::Restore() {
 	
 	bool bRestored = false;
 

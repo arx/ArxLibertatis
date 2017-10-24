@@ -38,8 +38,14 @@ public:
 	
 	virtual ~Texture() { }
 	
+	bool Init(const res::path & strFileName, TextureFlags flags);
+	bool Init(const Image & image, TextureFlags flags = HasMipmaps);
+	bool Init(unsigned int width, unsigned int height, Image::Format format);
+	
 	virtual void Upload() = 0;
 	virtual void Destroy() = 0;
+	
+	bool Restore();
 	
 	const Vec2i & getSize() const { return size; }
 	const Vec2i & getStoredSize() const { return storedSize; }
@@ -48,6 +54,11 @@ public:
 	bool hasAlpha() const { return Image::hasAlpha(mFormat); }
 	
 	bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
+	
+	Image & GetImage() { return mImage; }
+	const res::path & getFileName() const { return mFileName; }
+	
+	bool hasColorKey() { return (flags & ApplyColorKey) && hasAlpha() && !mFileName.empty(); }
 	
 protected:
 	
@@ -66,34 +77,11 @@ protected:
 	Vec2i size;
 	Vec2i storedSize;
 	
-};
-
-DECLARE_FLAGS_OPERATORS(Texture::TextureFlags)
-
-class Texture2D : public Texture {
-	
-public:
-	
-	virtual ~Texture2D() { }
-	
-	bool Init(const res::path & strFileName, TextureFlags flags);
-	bool Init(const Image & image, TextureFlags flags = HasMipmaps);
-	bool Init(unsigned int width, unsigned int height, Image::Format format);
-	
-	bool Restore();
-	
-	Image & GetImage() { return mImage; }
-	const res::path & getFileName() const { return mFileName; }
-	
-	bool hasColorKey() { return (flags & ApplyColorKey) && hasAlpha() && !mFileName.empty(); }
-	
-protected:
-	
-	Texture2D() { }
-	
 	Image mImage;
 	res::path mFileName;
 	
 };
+
+DECLARE_FLAGS_OPERATORS(Texture::TextureFlags)
 
 #endif // ARX_GRAPHICS_TEXTURE_TEXTURE_H
