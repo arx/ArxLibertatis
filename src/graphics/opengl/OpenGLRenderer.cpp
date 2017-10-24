@@ -716,6 +716,17 @@ void OpenGLRenderer::setMaxAnisotropy(float value) {
 	}
 }
 
+Renderer::AlphaCutoutAntialising OpenGLRenderer::getMaxSupportedAlphaCutoutAntialiasing() const {
+	
+	#ifdef GL_VERSION_4_0
+	if(hasSampleShading()) {
+		return CrispAlphaCutoutAA;
+	}
+	#endif
+	
+	return FuzzyAlphaCutoutAA;
+}
+
 template <typename Vertex>
 static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
                                                      size_t capacity,
@@ -904,7 +915,7 @@ void OpenGLRenderer::flushState() {
 			}
 		}
 		
-		bool useA2C = m_hasMSAA && config.video.alphaCutoutAntialiasing == 1;
+		bool useA2C = m_hasMSAA && config.video.alphaCutoutAntialiasing == int(FuzzyAlphaCutoutAA);
 		if(m_glstate.getAlphaCutout() != m_state.getAlphaCutout()
 		   || (useA2C && m_state.getAlphaCutout() && m_glstate.isBlendEnabled() != m_state.isBlendEnabled())) {
 			
@@ -923,7 +934,8 @@ void OpenGLRenderer::flushState() {
 					glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 				} else if(!m_state.getAlphaCutout() || enableA2C) {
 					#ifdef GL_VERSION_4_0
-					if(hasSampleShading() && m_hasMSAA && config.video.alphaCutoutAntialiasing == 2) {
+					if(hasSampleShading() && m_hasMSAA
+					   && config.video.alphaCutoutAntialiasing == int(CrispAlphaCutoutAA)) {
 						glDisable(GL_SAMPLE_SHADING);
 					}
 					#endif
@@ -936,7 +948,8 @@ void OpenGLRenderer::flushState() {
 				} else if(!m_glstate.getAlphaCutout() || disableA2C) {
 					glEnable(GL_ALPHA_TEST);
 					#ifdef GL_VERSION_4_0
-					if(hasSampleShading() && m_hasMSAA && config.video.alphaCutoutAntialiasing == 2) {
+					if(hasSampleShading() && m_hasMSAA
+					   && config.video.alphaCutoutAntialiasing == int(CrispAlphaCutoutAA)) {
 						glEnable(GL_SAMPLE_SHADING);
 					}
 					#endif

@@ -76,6 +76,8 @@ public:
 	float getMaxSupportedAnisotropy() const { return m_maximumSupportedAnisotropy; }
 	void setMaxAnisotropy(float value);
 	
+	AlphaCutoutAntialising getMaxSupportedAlphaCutoutAntialiasing() const;
+	
 	VertexBuffer<TexturedVertex> * createVertexBufferTL(size_t capacity, BufferUsage usage);
 	VertexBuffer<SMY_VERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage);
 	VertexBuffer<SMY_VERTEX3> * createVertexBuffer3(size_t capacity, BufferUsage usage);
