@@ -347,7 +347,7 @@ public:
 	virtual void reloadColorKeyTextures() = 0;
 
 	// Factory
-	virtual Texture * CreateTexture2D() = 0;
+	virtual Texture * createTexture() = 0;
 	
 	// Viewport
 	virtual void SetViewport(const Rect & viewport) = 0;

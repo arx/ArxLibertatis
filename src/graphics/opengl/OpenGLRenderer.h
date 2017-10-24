@@ -53,7 +53,7 @@ public:
 	void reloadColorKeyTextures();
 	
 	// Factory
-	Texture * CreateTexture2D();
+	Texture * createTexture();
 	
 	// Viewport
 	void SetViewport(const Rect & viewport);

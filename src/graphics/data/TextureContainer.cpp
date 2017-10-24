@@ -178,7 +178,7 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 	}
 	
 	delete m_pTexture, m_pTexture = NULL;
-	m_pTexture = GRenderer->CreateTexture2D();
+	m_pTexture = GRenderer->createTexture();
 	if(!m_pTexture) {
 		return false;
 	}
@@ -262,7 +262,7 @@ bool TextureContainer::CreateHalo() {
 		return false;
 	}
 	
-	TextureHalo->m_pTexture = GRenderer->CreateTexture2D();
+	TextureHalo->m_pTexture = GRenderer->createTexture();
 	if(!TextureHalo->m_pTexture) {
 		return true;
 	}
