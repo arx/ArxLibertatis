@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Platform.h"
 
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 
 static const s32 CINEMATIC_VERSION_1_75 = (1<<16) | 75;
 static const s32 CINEMATIC_VERSION_1_76 = (1<<16) | 76;
