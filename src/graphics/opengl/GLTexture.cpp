@@ -146,7 +146,7 @@ void GLTexture::Destroy() {
 		glDeleteTextures(1, &tex), tex = GL_NONE;
 	}
 	
-	for(size_t i = 0; i < renderer->GetTextureStageCount(); i++) {
+	for(size_t i = 0; i < renderer->getTextureStageCount(); i++) {
 		GLTextureStage * stage = renderer->GetTextureStage(i);
 		if(stage->tex == this) {
 			stage->tex = NULL;
