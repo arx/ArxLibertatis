@@ -300,6 +300,12 @@ public:
 		Stream
 	};
 	
+	enum AlphaCutoutAntialising {
+		NoAlphaCutoutAA = 0,
+		FuzzyAlphaCutoutAA = 1,
+		CrispAlphaCutoutAA = 2
+	};
+	
 	Renderer();
 	virtual ~Renderer();
 	
@@ -373,6 +379,8 @@ public:
 	
 	virtual float getMaxSupportedAnisotropy() const = 0;
 	virtual void setMaxAnisotropy(float value) = 0;
+	
+	virtual AlphaCutoutAntialising getMaxSupportedAlphaCutoutAntialiasing() const = 0;
 	
 	virtual VertexBuffer<TexturedVertex> * createVertexBufferTL(size_t capacity, BufferUsage usage) = 0;
 	virtual VertexBuffer<SMY_VERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage) = 0;
