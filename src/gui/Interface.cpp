@@ -605,7 +605,7 @@ static void GetInfosCombineWithIO_Script(Entity * combine, Entity * _pWithIO, co
 							
 							if(tTxtCombineDest == tcIndent) {
 								// same class
-								bCanCombine=true;
+								bCanCombine = true;
 							}
 						}
 					}
