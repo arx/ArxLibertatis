@@ -584,7 +584,7 @@ static void GetInfosCombineWithIO_Script(Entity * combine, Entity * _pWithIO, co
 						tTxtCombineDest[pEndString - pStartString] = 0;
 						
 						if(tTxtCombineDest == combine->className()) {
-							//same class
+							// same class
 							bCanCombine = true;
 						}
 					}
@@ -604,7 +604,7 @@ static void GetInfosCombineWithIO_Script(Entity * combine, Entity * _pWithIO, co
 							tTxtCombineDest[pEndString - pStartString] = 0;
 							
 							if(tTxtCombineDest == tcIndent) {
-								//same class
+								// same class
 								bCanCombine=true;
 							}
 						}
@@ -628,7 +628,7 @@ static void GetInfosCombineWithIO_Script(Entity * combine, Entity * _pWithIO, co
 								memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 								tTxtCombineDest[pEndString - pStartString] = 0;
 								if(combine->groups.find(tTxtCombineDest) != combine->groups.end()) {
-									//same class
+									// same class
 									bCanCombine = true;
 								}
 							}
