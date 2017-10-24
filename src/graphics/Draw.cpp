@@ -138,7 +138,7 @@ void EERIEAddSprite(const RenderMaterial & mat, const Vec3f & in, float siz, Col
 	TexturedQuad s;
 
 	if(EERIECreateSprite(s, in, siz, color, Zpos, rot)) {
-		RenderBatcher::getInstance().add(mat, s);
+		g_renderBatcher.add(mat, s);
 	}
 }
 
@@ -168,7 +168,7 @@ static void CreateBitmap(TexturedQuad & s, Rectf rect, float z, TextureContainer
 void EERIEAddBitmap(const RenderMaterial & mat, const Vec3f & p, float sx, float sy, TextureContainer * tex, Color color) {
 	TexturedQuad s;
 	CreateBitmap(s, Rectf(Vec2f(p.x, p.y), sx, sy), p.z, tex, color);
-	RenderBatcher::getInstance().add(mat, s);
+	g_renderBatcher.add(mat, s);
 }
 
 void EERIEDrawBitmap(const Rectf & rect, float z, TextureContainer * tex, Color color) {

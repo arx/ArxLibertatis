@@ -1097,7 +1097,7 @@ void ArxGame::shutdownGame() {
 	EERIE_ANIMMANAGER_ClearAll();
 
 	//sprites
-	RenderBatcher::getInstance().reset();
+	g_renderBatcher.reset();
 	
 	//Scripts
 	svar.clear();
@@ -1750,8 +1750,8 @@ void ArxGame::updateLevel() {
 	
 	ARX_PROFILE_FUNC();
 	
-	RenderBatcher::getInstance().clear();
-
+	g_renderBatcher.clear();
+	
 	if(!player.m_paralysed) {
 		manageEditorControls();
 
@@ -1995,7 +1995,7 @@ void ArxGame::renderLevel() {
 	ARX_SPELLS_Update();
 
 	GRenderer->SetFogColor(Color::none);
-	RenderBatcher::getInstance().render();
+	g_renderBatcher.render();
 	GRenderer->SetFogColor(g_fogColor);
 	
 	GRenderer->SetAntialiasing(false);
@@ -2004,7 +2004,7 @@ void ArxGame::renderLevel() {
 	ARX_PLAYER_Manage_Death();
 
 	// INTERFACE
-	RenderBatcher::getInstance().clear();
+	g_renderBatcher.clear();
 	
 	// Draw game interface if needed
 	if(ARXmenu.currentmode == AMCM_OFF && !cinematicBorder.isActive()) {
@@ -2016,7 +2016,7 @@ void ArxGame::renderLevel() {
 		
 		if((player.Interface & INTER_PLAYERBOOK) && !(player.Interface & INTER_COMBATMODE)) {
 			ARX_MAGICAL_FLARES_Update();
-			RenderBatcher::getInstance().render();
+			g_renderBatcher.render();
 		}
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);

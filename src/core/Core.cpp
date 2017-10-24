@@ -369,7 +369,7 @@ void levelInit() {
 	LogDebug("Initializing level ...");
 	
 	ARX_PARTICLES_FirstInit();
-	RenderBatcher::getInstance().reset();
+	g_renderBatcher.reset();
 	
 	progressBarAdvance(2.f);
 	LoadLevelScreen();

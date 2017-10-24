@@ -178,6 +178,6 @@ void ParticleSparkUpdate() {
 		worldToClipSpace(temp1, tv[1]);
 		worldToClipSpace(temp2, tv[2]);
 		
-		RenderBatcher::getInstance().add(sparkMaterial, tv);
+		g_renderBatcher.add(sparkMaterial, tv);
 	}
 }

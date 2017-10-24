@@ -457,7 +457,7 @@ void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat) {
 	worldToClipSpace(quat.v[2].p, quat.v[2]);
 	worldToClipSpace(quat.v[3].p, quat.v[3]);
 	
-	RenderBatcher::getInstance().add(mat, quat);
+	g_renderBatcher.add(mat, quat);
 }
 
 void drawTriangle(const RenderMaterial & mat, const TexturedVertexUntransformed * vertices) {
@@ -473,7 +473,7 @@ void drawTriangle(const RenderMaterial & mat, const TexturedVertexUntransformed 
 	projected[2].color = vertices[2].color;
 	projected[2].uv = vertices[2].uv;
 	
-	RenderBatcher::getInstance().add(mat, projected);
+	g_renderBatcher.add(mat, projected);
 }
 
 static bool Cedric_IO_Visible(const Vec3f & pos) {
