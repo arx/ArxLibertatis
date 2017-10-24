@@ -22,7 +22,7 @@
 
 #include "platform/Platform.h"
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 
 enum WavFormatTag {
 	WAV_FORMAT_PCM = 1,
