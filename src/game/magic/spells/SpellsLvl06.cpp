@@ -275,7 +275,7 @@ void CreateFieldSpell::Launch() {
 		//move time of creation back by 4 seconds or whatever elapsed after game time 0 (if it is smaller)
 		//prevents difference between creation time and elapsed time of m_field (or as small as possible)
 		//related to m_field.Update() with comment below
-		start = GameInstantMs(toMsi(start) - std::min(toMsi(start), toMsi(GameInstantMs(4000))));
+		start -= std::min(start - GameInstant(0), GameDurationMs(4000));
 	}
 	m_timcreation = start;
 	
