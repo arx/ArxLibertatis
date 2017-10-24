@@ -151,6 +151,8 @@ RenderState RenderMaterial::apply() const {
 	
 	RenderState state = render3D();
 	
+	state.setAlphaCutout(m_texture && m_texture->hasAlpha());
+	
 	GRenderer->GetTextureStage(0)->setWrapMode(m_wrapMode);
 	state.setDepthOffset(m_depthBias);
 
@@ -162,7 +164,6 @@ RenderState RenderMaterial::apply() const {
 	
 	if(m_blendType == Opaque) {
 		state.disableBlend();
-		state.setAlphaCutout(m_texture && m_texture->hasAlpha());
 	} else {
 		switch(m_blendType) {
 		
