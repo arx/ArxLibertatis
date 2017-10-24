@@ -911,8 +911,8 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 			mat.setCulling(CullNone);
 		else
 			mat.setCulling(CullCW);
-
-		RenderBatcher::getInstance().add(mat, vert_list);
+		
+		g_renderBatcher.add(mat, vert_list);
 	}
 }
 

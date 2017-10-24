@@ -28,6 +28,9 @@
 
 #include "platform/profiler/Profiler.h"
 
+
+RenderBatcher g_renderBatcher;
+
 RenderBatcher::~RenderBatcher() {
 	reset();
 }
@@ -84,11 +87,6 @@ void RenderBatcher::reset() {
 	
 	clear();
 	m_BatchedSprites.clear();
-}
-
-RenderBatcher& RenderBatcher::getInstance() {
-	static RenderBatcher renderBatcher;
-	return renderBatcher;
 }
 
 RenderMaterial::RenderMaterial()

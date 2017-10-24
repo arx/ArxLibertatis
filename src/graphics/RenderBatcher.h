@@ -108,8 +108,6 @@ public:
 
 	//! Free all memory pools
 	void reset();
-
-	static RenderBatcher& getInstance();
 	
 private:
 	
@@ -119,5 +117,7 @@ private:
 	Batches m_BatchedSprites;
 	
 };
+
+extern RenderBatcher g_renderBatcher;
 
 #endif // ARX_GRAPHICS_RENDERBATCHER_H
