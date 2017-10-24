@@ -339,8 +339,8 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 						float tval=1.1f;
 						
 						for(int kk = 0; kk < 3; kk++) {
-								ep.v[kk].p.x = (ep.v[kk].p.x - cx) * tval + cx;
-								ep.v[kk].p.z = (ep.v[kk].p.z - cz) * tval + cz;
+							ep.v[kk].p.x = (ep.v[kk].p.x - cx) * tval + cx;
+							ep.v[kk].p.z = (ep.v[kk].p.z - cz) * tval + cz;
 						}
 						
 						if(PointIn2DPolyXZ(&ep, io->pos.x, io->pos.z)) {
