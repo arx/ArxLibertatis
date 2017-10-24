@@ -368,7 +368,7 @@ public:
 	virtual void SetFillMode(FillMode mode) = 0;
 	
 	// Texturing
-	unsigned int GetTextureStageCount() const { return m_TextureStages.size(); }
+	size_t getTextureStageCount() const { return m_TextureStages.size(); }
 	TextureStage * GetTextureStage(unsigned int textureStage);
 	const TextureStage * GetTextureStage(unsigned int textureStage) const;
 	void ResetTexture(unsigned int textureStage);
