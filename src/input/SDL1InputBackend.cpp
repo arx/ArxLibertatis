@@ -284,8 +284,8 @@ void SDL1InputBackend::onEvent(const SDL_Event & event) {
 				ARX_UNUSED(end);
 				m_textHandler->newText(text);
 			}
-			// fall-through
 		}
+		// fall-through
 		case SDL_KEYUP: {
 			SDLKey key = event.key.keysym.sym;
 			if(size_t(key) < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[size_t(key)] != Keyboard::Key_Invalid) {
