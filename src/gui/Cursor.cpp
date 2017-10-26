@@ -536,8 +536,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), .00001f, tc, Color::white);
 					
 					if(FlyingOverIO && (FlyingOverIO->ioflags & IO_BLACKSMITH)) {
-						float v=ARX_DAMAGES_ComputeRepairPrice(COMBINE,FlyingOverIO);
-						
+						float v = ARX_DAMAGES_ComputeRepairPrice(COMBINE, FlyingOverIO);
 						if(v > 0.f) {
 							long t = long(v);
 							Vec2f nuberOffset = Vec2f(-16, -10) * iconScale;
