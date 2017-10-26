@@ -185,10 +185,10 @@ static void Check_Apply() {
 			pMenuElementApply->SetCheckOn();
 			pMenuElementApply->lColor = pMenuElementApply->lOldColor;
 		} else {
-			if(pMenuElementApply->lColor != Color(127,127,127)) {
+			if(pMenuElementApply->lColor != Color(127, 127, 127)) {
 				pMenuElementApply->SetCheckOff();
 				pMenuElementApply->lOldColor = pMenuElementApply->lColor;
-				pMenuElementApply->lColor = Color(127,127,127);
+				pMenuElementApply->lColor = Color(127, 127, 127);
 			}
 		}
 	}
