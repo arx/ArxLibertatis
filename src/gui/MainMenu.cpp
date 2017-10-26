@@ -1578,7 +1578,7 @@ public:
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_alt_rune_recognition", "Alternate rune recognition");
+			std::string szMenuText = getLocalised("system_menus_alt_rune_recognition", "Improved rune recognition");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAltRuneRecognition, this, _1);
