@@ -22,7 +22,7 @@
 
 #include "platform/Platform.h"
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 
 static const char * profilerMagic = "arxprof";
 struct SavedProfilerHeader {
