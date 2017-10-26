@@ -65,7 +65,7 @@ struct lfunction {
 };
 
 template <typename FnSign, typename Function>
-lfunction<FnSign,Function> make_lfunction(Function const& fn) {
+lfunction<FnSign, Function> make_lfunction(const Function & fn) {
 	return lfunction<FnSign, Function>(fn);
 }
 
