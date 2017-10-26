@@ -177,7 +177,7 @@ void UpdateLlights(ShaderLight lights[], size_t & lightsCount, const Vec3f pos, 
 
 void InitTileLights();
 void ResetTileLights();
-void ComputeTileLights(short x,short z);
+void ComputeTileLights(short x, short z);
 void ClearTileLights();
 
 float GetColorz(const Vec3f &pos);

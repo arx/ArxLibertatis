@@ -555,8 +555,8 @@ void ResetTileLights() {
 	}
 }
 
-void ComputeTileLights(short x,short z)
-{
+void ComputeTileLights(short x, short z) {
+	
 	tilelights[x][z].el.clear();
 	
 	Vec2f tileCenter = (Vec2f(x, z) + 0.5f) * Vec2f(ACTIVEBKG->m_tileSize);
