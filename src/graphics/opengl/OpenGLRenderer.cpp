@@ -860,7 +860,7 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 	Image fullsize;
 	getSnapshot(fullsize);
 	
-	image.ResizeFrom(fullsize, width, height, true);
+	image.ResizeFrom(fullsize, width, height);
 	
 	return true;
 }
