@@ -74,7 +74,8 @@ static void DrawItemPrice() {
 		pos += Vec2f(0, -10);
 		
 		if(g_secondaryInventoryHud.containsPos(DANAEMouse)) {
-			long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
+			
+			long amount = ARX_INTERACTIVE_GetPrice(FlyingOverIO, temp);
 			// achat
 			float famount = amount - amount * player.m_skillFull.intuition * 0.005f;
 			// check should always be OK because amount is supposed positive
