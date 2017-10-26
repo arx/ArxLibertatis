@@ -38,6 +38,8 @@ SDL1Window::SDL1Window()
 	: m_initialized(false)
 	, m_desktopMode(Vec2i(640, 480))
 	, m_input(NULL)
+	, m_gamma(1.f)
+	, m_gammaOverridden(false)
 	{
 	m_renderer = new OpenGLRenderer;
 }
@@ -53,6 +55,7 @@ SDL1Window::~SDL1Window() {
 	}
 	
 	if(s_mainWindow) {
+		restoreGamma();
 		SDL_Quit(), s_mainWindow = NULL;
 	}
 	
@@ -242,6 +245,8 @@ bool SDL1Window::initialize() {
 	
 	SDL_ShowCursor(SDL_DISABLE);
 	
+	setGamma(m_gamma);
+	
 	m_renderer->initialize();
 	
 	onCreate();
@@ -267,6 +272,27 @@ bool SDL1Window::setVSync(int vsync) {
 		return false;
 	}
 	m_vsync = (vsync != 0) ? 1 : 0;
+	return true;
+}
+
+void SDL1Window::restoreGamma() {
+	if(m_gammaOverridden) {
+		SDL_SetGamma(1.f, 1.f, 1.f);
+		SDL_SetGammaRamp(m_gammaRed, m_gammaGreen, m_gammaBlue);
+		m_gammaOverridden = false;
+	}
+}
+
+bool SDL1Window::setGamma(float gamma) {
+	if(m_initialized && m_fullscreen) {
+		if(!m_gammaOverridden) {
+			m_gammaOverridden = (SDL_GetGammaRamp(m_gammaRed, m_gammaGreen, m_gammaBlue) == 0);
+		}
+		if(SDL_SetGamma(gamma, gamma, gamma) != 0) {
+			return false;
+		}
+	}
+	m_gamma = gamma;
 	return true;
 }
 
@@ -305,8 +331,16 @@ void SDL1Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 		return;
 	}
 	
+	if(!makeFullscreen && wasFullscreen) {
+		restoreGamma();
+	}
+	
 	if(wasFullscreen != makeFullscreen) {
 		onToggleFullscreen(makeFullscreen);
+	}
+	
+	if(makeFullscreen) {
+		setGamma(m_gamma);
 	}
 	
 	updateSize();

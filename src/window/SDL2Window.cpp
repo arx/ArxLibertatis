@@ -81,7 +81,9 @@ SDL2Window::SDL2Window()
 	, m_glcontext(NULL)
 	, m_input(NULL)
 	, m_minimizeOnFocusLost(AlwaysEnabled)
-	{
+	, m_gamma(1.f)
+	, m_gammaOverridden(false)
+{
 	m_renderer = new OpenGLRenderer;
 }
 
@@ -100,6 +102,7 @@ SDL2Window::~SDL2Window() {
 	}
 	
 	if(m_window) {
+		restoreGamma();
 		SDL_DestroyWindow(m_window);
 	}
 	
@@ -434,6 +437,8 @@ bool SDL2Window::initialize() {
 	SDL_ShowWindow(m_window);
 	SDL_ShowCursor(SDL_DISABLE);
 	
+	setGamma(m_gamma);
+	
 	m_renderer->initialize();
 	
 	onCreate();
@@ -461,6 +466,26 @@ bool SDL2Window::setVSync(int vsync) {
 		return false;
 	}
 	m_vsync = vsync;
+	return true;
+}
+
+void SDL2Window::restoreGamma() {
+	if(m_gammaOverridden) {
+		SDL_SetWindowGammaRamp(m_window, m_gammaRed, m_gammaGreen, m_gammaBlue);
+		m_gammaOverridden = false;
+	}
+}
+
+bool SDL2Window::setGamma(float gamma) {
+	if(m_window && m_fullscreen) {
+		if(!m_gammaOverridden) {
+			m_gammaOverridden = (SDL_GetWindowGammaRamp(m_window, m_gammaRed, m_gammaGreen, m_gammaBlue) == 0);
+		}
+		if(SDL_SetWindowBrightness(m_window, gamma) != 0) {
+			return false;
+		}
+	}
+	m_gamma = gamma;
 	return true;
 }
 
@@ -512,6 +537,7 @@ void SDL2Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 	
 	if(!makeFullscreen) {
 		if(wasFullscreen) {
+			restoreGamma();
 			SDL_RestoreWindow(m_window);
 		}
 		SDL_SetWindowSize(m_window, mode.resolution.x, mode.resolution.y);
@@ -522,6 +548,7 @@ void SDL2Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 	}
 	
 	if(makeFullscreen) {
+		setGamma(m_gamma);
 		// SDL regrettably sends resize events when a fullscreen window is minimized.
 		// Because of that we ignore all size change events when fullscreen.
 		// Instead, handle the size change here.
