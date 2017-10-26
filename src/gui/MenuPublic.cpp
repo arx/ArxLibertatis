@@ -139,6 +139,11 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality) {
 	}
 }
 
+void ARXMenu_Options_Video_SetGamma(float gamma) {
+	config.video.gamma = glm::clamp(gamma, 0.f, 10.f);
+	mainApp->getWindow()->setGamma(1.f + (gamma / 5.f - 1.f) * 0.5f);
+}
+
 void ARXMenu_Options_Audio_SetMasterVolume(float volume) {
 	
 	config.audio.volume = glm::clamp(volume, 0.f, 10.f);
