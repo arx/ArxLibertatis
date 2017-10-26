@@ -208,7 +208,7 @@ void ShowInfoText() {
 	if(ep)
 		slope = ep->norm.y;
 	
-	long zap = IsAnyPolyThere(player.pos.x,player.pos.z);
+	long zap = IsAnyPolyThere(player.pos.x, player.pos.z);
 	
 	playerBox.add("Ground Slope", slope);
 	playerBox.add("Ground truePolyY", truePolyY);
