@@ -1493,12 +1493,27 @@ public:
 		}
 		
 		{
+			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
+			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			CheckboxWidget * cb = new CheckboxWidget(txt);
-			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoReadyWeapon, this, _1);
-			cb->iState = config.input.autoReadyWeapon ? 1 : 0;
-			addCenter(cb);
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			
+			CycleTextWidget * cb = new CycleTextWidget;
+			cb->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoReadyWeapon, this, _1, _2);
+			szMenuText = getLocalised("system_menus_options_auto_ready_weapon_off", "Disabled");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_auto_ready_weapon_enemies", "Enemies");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_auto_ready_weapon_always", "Always");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			cb->setValue(int(config.input.autoReadyWeapon));
+			
+			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			panel->AddElement(cb);
+			
+			addCenter(panel);
 		}
 		
 		{
@@ -1625,8 +1640,9 @@ private:
 		GInput->setInvertMouseY(config.input.invertMouse);
 	}
 	
-	void onChangedAutoReadyWeapon(int state) {
-		config.input.autoReadyWeapon = (state) ? true : false;
+	void onChangedAutoReadyWeapon(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		config.input.autoReadyWeapon = AutoReadyWeapon(pos);
 	}
 	
 	void onChangedToggleMouselook(int state) {

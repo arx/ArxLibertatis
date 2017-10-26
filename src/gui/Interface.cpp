@@ -413,7 +413,7 @@ void InventoryOpenClose(unsigned long t) {
 	if(((player.Interface & INTER_INVENTORYALL) || TRUE_PLAYER_MOUSELOOK_ON) && (player.Interface & INTER_NOTE))
 		ARX_INTERFACE_NoteClose();
 
-	if(!g_playerInventoryHud.isClosing() && config.input.autoReadyWeapon == false)
+	if(!g_playerInventoryHud.isClosing() && config.input.autoReadyWeapon != AlwaysAutoReadyWeapon)
 		TRUE_PLAYER_MOUSELOOK_ON = false;
 }
 
@@ -697,6 +697,62 @@ static void GetInfosCombine() {
 			GetInfosCombineWithIO(COMBINE, io);
 		}
 	}
+}
+
+static bool isPlayerLookingAtEnemy() {
+	
+	if(FlyingOverIO) {
+		// Looking directly at an enemy or ally
+		return isEnemy(FlyingOverIO);
+	}
+	
+	const float maxLookAtDistance = 500.f;
+	const float maxFriendlyDistance = 300.f;
+	const float maxLookAtAngle = glm::radians(45.f);
+	const float maxNearByDistance = 300.f;
+	
+	float closestNPCInFrontDistance = std::numeric_limits<float>::infinity();
+	Entity * closestNPCInFront = NULL;
+	bool isEnemyNearBy = false;
+	
+	for(size_t i = 1; i < entities.size(); i++) {
+		const EntityHandle handle = EntityHandle(i);
+		Entity * entity = entities[handle];
+		
+		if(!entity || !(entity->ioflags & IO_NPC)) {
+			continue;
+		}
+		
+		float distance = glm::distance(entity->pos, entities.player()->pos);
+		if(distance > maxLookAtDistance) {
+			continue;
+		}
+		
+		// Determine the direction of the entity from the player
+		Vec3f dir = glm::normalize(Vec3f(entity->pos.x, 0.f, entity->pos.z)
+		                           - Vec3f(player.pos.x, 0.f, player.pos.z));
+		float cangle = glm::dot(dir, angleToVectorXZ(player.angle.getYaw()));
+		
+		if(cangle > glm::cos(maxLookAtAngle)) {
+			if(distance < closestNPCInFrontDistance) {
+				closestNPCInFrontDistance = distance;
+				closestNPCInFront = entity;
+			}
+		} else if(distance <= maxNearByDistance && isEnemy(entity)) {
+			isEnemyNearBy = true;
+		}
+		
+	}
+	
+	if(closestNPCInFront) {
+		if(isEnemy(closestNPCInFront) || closestNPCInFrontDistance < maxFriendlyDistance) {
+			// Enemy or ally in front
+			return isEnemy(closestNPCInFront);
+		}
+	}
+	
+	// No ally in front - enemy near by?
+	return isEnemyNearBy;
 }
 
 //-----------------------------------------------------------------------------
@@ -1250,8 +1306,8 @@ void ArxGame::managePlayerControls() {
 	   && PLAYER_MOUSELOOK_ON
 	   && !DRAGINTER
 	   && !InInventoryPos(DANAEMouse)
-	   && config.input.autoReadyWeapon
-	) {
+	   && (config.input.autoReadyWeapon == AlwaysAutoReadyWeapon
+	       || (config.input.autoReadyWeapon == AutoReadyWeaponNearEnemies && isPlayerLookingAtEnemy()))) {
 		if(eeMouseDown1()) {
 			// TODO use os time
 			COMBAT_MODE_ON_START_TIME = g_gameTime.now();
@@ -1378,7 +1434,7 @@ void ArxGame::manageKeyMouse() {
 				Vec2s poss = MemoMouse;
 
 				// mode systemshock
-				if(config.input.mouseLookToggle && config.input.autoReadyWeapon == false) {
+				if(config.input.mouseLookToggle && config.input.autoReadyWeapon != AlwaysAutoReadyWeapon) {
 					
 					DANAEMouse = g_size.center();
 					
@@ -1458,15 +1514,14 @@ void ArxGame::manageKeyMouse() {
 						if(bOk) {
 							if(!(FlyingOverIO->_itemdata->playerstacksize <= 1 && FlyingOverIO->_itemdata->count > 1)) {
 								SendIOScriptEvent(FlyingOverIO, SM_INVENTORYUSE);
-
-								if (!(config.input.autoReadyWeapon == false && config.input.mouseLookToggle)) {
+								if(config.input.autoReadyWeapon == AlwaysAutoReadyWeapon || !config.input.mouseLookToggle) {
 									TRUE_PLAYER_MOUSELOOK_ON = false;
 								}
 							}
 						}
 					}
 
-					if(config.input.autoReadyWeapon == false && config.input.mouseLookToggle) {
+					if(config.input.autoReadyWeapon != AlwaysAutoReadyWeapon && config.input.mouseLookToggle) {
 						EERIEMouseButton &= ~2;
 					}
 				}
@@ -1798,7 +1853,7 @@ void ArxGame::manageEditorControls() {
 	eMouseState = MOUSE_IN_WORLD;
 
 	if(   TRUE_PLAYER_MOUSELOOK_ON
-	   && config.input.autoReadyWeapon == false
+	   && config.input.autoReadyWeapon != AlwaysAutoReadyWeapon
 	   && config.input.mouseLookToggle
 	) {
 		DANAEMouse = g_size.center();
@@ -2103,7 +2158,7 @@ void ArxGame::manageEditorControls() {
 		
 		// Checks for Object Dragging
 		if(   DRAGGING
-		   && (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
+		   && (!PLAYER_MOUSELOOK_ON || config.input.autoReadyWeapon != AlwaysAutoReadyWeapon)
 		   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 		   && !DRAGINTER
 		) {

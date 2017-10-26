@@ -1277,7 +1277,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 			ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
 		}
 
-		if(!config.input.autoReadyWeapon) {
+		if(config.input.autoReadyWeapon != AlwaysAutoReadyWeapon) {
 			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
 
