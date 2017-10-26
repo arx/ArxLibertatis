@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
  *
  */
 
-#define OPTIM_COMPUTE_INTERVALS(VV0,VV1,VV2,D0,D1,D2,D0D1,D0D2,A,B,C,X0,X1) \
+#define OPTIM_COMPUTE_INTERVALS(VV0, VV1, VV2, D0, D1, D2, D0D1, D0D2, A, B, C, X0, X1) \
 	{ \
 		if(D0D1>0.0f) \
 		{ \
@@ -101,7 +101,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /* this edge to edge test is based on Franlin Antonio's gem:
    "Faster Line Segment Intersection", in Graphics Gems III,
    pp. 199-202 */
-#define EDGE_EDGE_TEST(V0,U0,U1)                        \
+#define EDGE_EDGE_TEST(V0, U0, U1) \
 	Bx=U0[i0]-U1[i0];                                   \
 	By=U0[i1]-U1[i1];                                   \
 	Cx=V0[i0]-U0[i0];                                   \
@@ -121,17 +121,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 		}                                               \
 	}
 
-#define EDGE_AGAINST_TRI_EDGES(V0,V1,U0,U1,U2)       \
-	{                                                \
-		float Ax,Ay,Bx,By,Cx,Cy,e,d,f;               \
-		Ax=V1[i0]-V0[i0];                            \
-		Ay=V1[i1]-V0[i1];                            \
-		/* test edge U0,U1 against V0,V1 */          \
-		EDGE_EDGE_TEST(V0,U0,U1);                    \
-		/* test edge U1,U2 against V0,V1 */          \
-		EDGE_EDGE_TEST(V0,U1,U2);                    \
-		/* test edge U2,U1 against V0,V1 */          \
-		EDGE_EDGE_TEST(V0,U2,U0);                    \
+#define EDGE_AGAINST_TRI_EDGES(V0, V1, U0, U1, U2) \
+	{ \
+		float Ax, Ay, Bx, By, Cx, Cy, e, d, f; \
+		Ax = V1[i0] - V0[i0]; \
+		Ay = V1[i1] - V0[i1]; \
+		/* test edge U0,U1 against V0,V1 */ \
+		EDGE_EDGE_TEST(V0, U0, U1); \
+		/* test edge U1,U2 against V0,V1 */ \
+		EDGE_EDGE_TEST(V0, U1, U2); \
+		/* test edge U2,U1 against V0,V1 */ \
+		EDGE_EDGE_TEST(V0, U2, U0); \
 	}
 
 static int coplanar_tri_tri(const float N[3], const float V0[3], const float V1[3],
@@ -181,26 +181,25 @@ static int coplanar_tri_tri(const float N[3], const float V0[3], const float V1[
 	return 0;
 }
 
-#define CROSS(dest,v1,v2) \
-	dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
-	dest[1]=v1[2]*v2[0]-v1[0]*v2[2]; \
-	dest[2]=v1[0]*v2[1]-v1[1]*v2[0];
+#define CROSS(dest, v1, v2) \
+	dest[0] = v1[1] * v2[2] - v1[2] * v2[1]; \
+	dest[1] = v1[2] * v2[0] - v1[0] * v2[2]; \
+	dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
 
-#define DOT(v1,v2) (v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2])
+#define DOT(v1, v2) (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2])
 
-#define SUB(dest,v1,v2) \
-	dest[0]=v1[0]-v2[0]; \
-	dest[1]=v1[1]-v2[1]; \
-	dest[2]=v1[2]-v2[2];
+#define SUB(dest, v1, v2) \
+	dest[0] = v1[0] - v2[0]; \
+	dest[1] = v1[1] - v2[1]; \
+	dest[2] = v1[2] - v2[2];
 
 /* sort so that a<=b */
-#define SORT(a,b)       \
-	if(a>b)    \
-	{          \
+#define SORT(a, b) \
+	if(a > b) { \
 		float c; \
-		c=a;     \
-		a=b;     \
-		b=c;     \
+		c = a; \
+		a = b; \
+		b = c; \
 	}
 
 //***********************************************************************************************
@@ -495,10 +494,10 @@ glm::mat4 toRotationMatrix(const Anglef & angle) {
 
 glm::quat angleToQuatForArrow(const Anglef & angle) {
 	float aa = angle.getPitch();
-	float ab = 90 - angle.getYaw();
+	float ab = 90.f - angle.getYaw();
 	
-	Vec3f front(0,0,1);
-	Vec3f up(0,-1,0);
+	Vec3f front(0.f, 0.f, 1.f);
+	Vec3f up(0.f, -1.f, 0.f);
 	
 	front = VRotateZ(front, aa);
 	front = VRotateY(front, ab);
