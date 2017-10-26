@@ -38,6 +38,7 @@ public:
 	bool setVSync(int vsync);
 	void setFullscreenMode(const DisplayMode & mode);
 	void setWindowSize(const Vec2i & size);
+	bool setGamma(float gamma = 1.f);
 	bool initialize();
 	void tick();
 	
@@ -59,6 +60,8 @@ private:
 	void changeMode(DisplayMode mode, bool fullscreen);
 	void updateSize(bool force = false);
 	
+	void restoreGamma();
+	
 	static int SDLCALL eventFilter(void * userdata, SDL_Event * event);
 	
 	SDL_Window * m_window;
@@ -67,6 +70,12 @@ private:
 	SDL2InputBackend * m_input;
 	
 	MinimizeSetting m_minimizeOnFocusLost;
+	
+	float m_gamma;
+	bool m_gammaOverridden;
+	u16 m_gammaRed[256];
+	u16 m_gammaGreen[256];
+	u16 m_gammaBlue[256];
 	
 	static SDL2Window * s_mainWindow;
 	

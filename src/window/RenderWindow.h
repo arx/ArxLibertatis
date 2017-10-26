@@ -71,6 +71,11 @@ public:
 	 */
 	virtual bool setVSync(int vsync) = 0;
 	
+	/*!
+	 * Set the monitor gamma when in fullscreen mode.
+	 */
+	virtual bool setGamma(float gamma = 1.f) = 0;
+	
 	Renderer * getRenderer() { return m_renderer; }
 	
 	//! Get a sorted list of supported fullscreen display modes.
