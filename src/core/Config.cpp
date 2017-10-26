@@ -109,6 +109,7 @@ const bool allowConsole = false;
 #endif
 
 const float
+	gamma = 5.f,
 	hudScale = 0.5f;
 
 const ActionKey actions[NUM_ACTION_KEY] = {
@@ -184,6 +185,7 @@ const std::string
 	fullscreen = "full_screen",
 	levelOfDetail = "others_details",
 	fogDistance = "fog",
+	gamma = "gamma",
 	antialiasing = "antialiasing",
 	vsync = "vsync",
 	fpsLimit = "fps_limit",
@@ -410,6 +412,7 @@ bool Config::save() {
 	writer.writeKey(Key::fullscreen, video.fullscreen);
 	writer.writeKey(Key::levelOfDetail, video.levelOfDetail);
 	writer.writeKey(Key::fogDistance, video.fogDistance);
+	writer.writeKey(Key::gamma, video.gamma);
 	writer.writeKey(Key::antialiasing, video.antialiasing);
 	writer.writeKey(Key::vsync, video.vsync);
 	writer.writeKey(Key::fpsLimit, video.fpsLimit);
@@ -543,7 +546,8 @@ bool Config::init(const fs::path & file) {
 	}
 	video.fullscreen = reader.getKey(Section::Video, Key::fullscreen, Default::fullscreen);
 	video.levelOfDetail = reader.getKey(Section::Video, Key::levelOfDetail, Default::levelOfDetail);
-	video.fogDistance = reader.getKey(Section::Video, Key::fogDistance, Default::fogDistance);;
+	video.fogDistance = reader.getKey(Section::Video, Key::fogDistance, Default::fogDistance);
+	video.gamma = reader.getKey(Section::Video, Key::gamma, Default::gamma);
 	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
 	int vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
 	video.vsync = glm::clamp(vsync, -1, 1);
