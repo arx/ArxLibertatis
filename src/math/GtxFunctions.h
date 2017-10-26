@@ -74,7 +74,7 @@ inline glm::mat4 eulerAngleX
 	return glm::mat4(
 		float(1), float(0), float(0), float(0),
 		float(0), cosX, sinX, float(0),
-		float(0),-sinX, cosX, float(0),
+		float(0), -sinX, cosX, float(0),
 		float(0), float(0), float(0), float(1));
 }
 
