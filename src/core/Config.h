@@ -96,6 +96,12 @@ enum QuickLevelTransition {
 	ChangeLevelImmediately = 2,
 };
 
+enum AutoReadyWeapon {
+	NeverAutoReadyWeapon = 0,
+	AutoReadyWeaponNearEnemies = 1,
+	AlwaysAutoReadyWeapon = 2,
+};
+
 struct ActionKey {
 	
 	explicit ActionKey(InputKeyId key_0 = UNUSED,
@@ -187,7 +193,7 @@ public:
 	struct {
 		
 		bool invertMouse;
-		bool autoReadyWeapon;
+		AutoReadyWeapon autoReadyWeapon;
 		bool mouseLookToggle;
 		bool autoDescription;
 		int mouseSensitivity;

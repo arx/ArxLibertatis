@@ -75,6 +75,7 @@ const int
 	speechVolume = 10,
 	ambianceVolume = 10,
 	hrtf = audio::HRTFDefault,
+	autoReadyWeapon = AutoReadyWeaponNearEnemies,
 	mouseSensitivity = 6,
 	mouseAcceleration = 0,
 	migration = Config::OriginalAssets,
@@ -94,7 +95,6 @@ const bool
 	eax = true,
 	muteOnFocusLost = false,
 	invertMouse = false,
-	autoReadyWeapon = false,
 	mouseLookToggle = true,
 	autoDescription = true,
 	forceToggle = false,
@@ -454,7 +454,7 @@ bool Config::save() {
 	// input
 	writer.beginSection(Section::Input);
 	writer.writeKey(Key::invertMouse, input.invertMouse);
-	writer.writeKey(Key::autoReadyWeapon, input.autoReadyWeapon);
+	writer.writeKey(Key::autoReadyWeapon, int(input.autoReadyWeapon));
 	writer.writeKey(Key::mouseLookToggle, input.mouseLookToggle);
 	writer.writeKey(Key::mouseSensitivity, input.mouseSensitivity);
 	writer.writeKey(Key::mouseAcceleration, input.mouseAcceleration);
@@ -592,7 +592,8 @@ bool Config::init(const fs::path & file) {
 	
 	// Get input settings
 	input.invertMouse = reader.getKey(Section::Input, Key::invertMouse, Default::invertMouse);
-	input.autoReadyWeapon = reader.getKey(Section::Input, Key::autoReadyWeapon, Default::autoReadyWeapon);
+	int autoReadyWeapon = reader.getKey(Section::Input, Key::autoReadyWeapon, Default::autoReadyWeapon);
+	input.autoReadyWeapon = AutoReadyWeapon(glm::clamp(autoReadyWeapon, 0, 2));
 	input.mouseLookToggle = reader.getKey(Section::Input, Key::mouseLookToggle, Default::mouseLookToggle);
 	input.mouseSensitivity = reader.getKey(Section::Input, Key::mouseSensitivity, Default::mouseSensitivity);
 	input.mouseAcceleration = reader.getKey(Section::Input, Key::mouseAcceleration, Default::mouseAcceleration);

@@ -465,7 +465,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 	if(SpecialCursor || !PLAYER_MOUSELOOK_ON || DRAGINTER
 	   || (FlyingOverIO && PLAYER_MOUSELOOK_ON && !g_cursorOverBook && eMouseState != MOUSE_IN_NOTE
 	       && (FlyingOverIO->ioflags & IO_ITEM) && (FlyingOverIO->gameFlags & GFLAG_INTERACTIVITY)
-	       && !config.input.autoReadyWeapon)
+	       && config.input.autoReadyWeapon != AlwaysAutoReadyWeapon)
 	   || (MAGICMODE && PLAYER_MOUSELOOK_ON)) {
 		
 		CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
@@ -499,7 +499,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		
 		if(SpecialCursor && !DRAGINTER) {
 			if((COMBINE && COMBINE->m_icon) || COMBINEGOLD) {
-				if(TRUE_PLAYER_MOUSELOOK_ON && (config.input.autoReadyWeapon)) {
+				if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon == AlwaysAutoReadyWeapon) {
 					mousePos = MemoMouse;
 				}
 				
@@ -641,7 +641,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					
 					Vec2f pos = mousePos;
 					
-					if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon) {
+					if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon == AlwaysAutoReadyWeapon) {
 						pos = MemoMouse;
 					}
 					
