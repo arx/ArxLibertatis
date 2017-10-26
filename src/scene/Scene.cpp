@@ -510,7 +510,7 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForCamera(const Vec3f & pos, const Vec3
 }
 
 // flag==1 for player
-long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag) {
+long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -1206,10 +1206,10 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 						fr = 0.f;
 					else
 						fr = std::max(ffr, fr * 255.f);
-
-					fr=std::min(fr,255.f);
-					fb*=255.f;
-					fb=std::min(fb,255.f);
+					
+					fr = std::min(fr, 255.f);
+					fb *= 255.f;
+					fb = std::min(fb, 255.f);
 					u8 lfr = u8(fr);
 					u8 lfb = u8(fb);
 					u8 lfg = 0x1E;
