@@ -537,10 +537,11 @@ static void ReleaseInfosCombine() {
 static char * findParam(char * pcToken, const char * param) {
 	
 	char* pStartString = 0;
-
-	if(strstr(pcToken,"^$param1"))
+	
+	if(strstr(pcToken, "^$param1")) {
 		pStartString = strstr(pcToken, param);
-
+	}
+	
 	return pStartString;
 }
 
@@ -772,8 +773,8 @@ void ARX_INTERFACE_setCombatMode(ARX_INTERFACE_COMBAT_MODE i) {
 		return;
 
 	if((player.Interface & INTER_COMBATMODE)) {
-		player.Interface&=~INTER_COMBATMODE;
-		player.Interface&=~INTER_NO_STRIKE;
+		player.Interface &= ~INTER_COMBATMODE;
+		player.Interface &= ~INTER_NO_STRIKE;
 
 		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 		WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
