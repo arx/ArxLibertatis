@@ -397,7 +397,7 @@ void ProfilerView::contextMenuEvent(QContextMenuEvent * event) {
 			
 			QAction * copyAction = new QAction("Copy text", this);
 			copyAction->setData(sample->text());
-			connect(copyAction, SIGNAL(triggered()),this, SLOT(copyToClipboard()));
+			connect(copyAction, SIGNAL(triggered()), this, SLOT(copyToClipboard()));
 			
 			menu.addAction(copyAction);
 			menu.exec(event->globalPos());
