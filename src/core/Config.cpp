@@ -100,7 +100,7 @@ const bool
 	forceToggle = false,
 	rawMouseInput = true,
 	borderTurning = true,
-	useAltRuneRecognition = false;
+	useAltRuneRecognition = true;
 
 #ifdef ARX_DEBUG
 const bool allowConsole = true;
