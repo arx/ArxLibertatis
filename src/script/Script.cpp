@@ -296,7 +296,7 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 }
 
 ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::string & name,
-                       std::string& txtcontent, float * fcontent,long * lcontent) {
+                       std::string& txtcontent, float * fcontent, long * lcontent) {
 	
 	arx_assert_msg(!name.empty() && name[0] == '^', "bad system variable: \"%s\"", name.c_str());
 	
@@ -1192,9 +1192,8 @@ std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_
 			long lv;
 			float fv;
 			std::string tv;
-
-			switch (getSystemVar(esss,io,temp1,tv,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
-			{
+			
+			switch(getSystemVar(esss, io, temp1, tv, &fv, &lv)) {
 				case TYPE_TEXT:
 					return tv;
 					break;
@@ -1257,7 +1256,7 @@ float GetVarValueInterpretedAsFloat(const std::string & temp1, const EERIE_SCRIP
 		long lv;
 		float fv;
 		std::string tv;
-		switch (getSystemVar(esss,io,temp1,tv,&fv,&lv)) {
+		switch(getSystemVar(esss, io, temp1, tv, &fv, &lv)) {
 			case TYPE_TEXT:
 				return (float)atof(tv.c_str());
 			case TYPE_LONG:
