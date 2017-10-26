@@ -118,7 +118,12 @@ extern PlatformInstant g_debugTriggersTime[10];
 static const PlatformDuration g_debugTriggersDecayDuration = PlatformDurationMs(200);
 extern float g_debugValues[10];
 
-extern long		CHANGE_LEVEL_ICON;
+enum ChangeLevelIcon {
+	NoChangeLevel,
+	ConfirmChangeLevel,
+	ChangeLevelNow
+};
+extern ChangeLevelIcon CHANGE_LEVEL_ICON;
 
 extern Vec3f LastValidPlayerPos;
 extern Vec3f WILL_RESTORE_PLAYER_POSITION;

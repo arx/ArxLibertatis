@@ -619,7 +619,7 @@ void ChangeLevelIconGui::init() {
 }
 
 bool ChangeLevelIconGui::isVisible() {
-	return CHANGE_LEVEL_ICON > -1;
+	return CHANGE_LEVEL_ICON != NoChangeLevel;
 }
 
 void ChangeLevelIconGui::update(const Rectf & parent) {
@@ -640,7 +640,7 @@ void ChangeLevelIconGui::draw() {
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
 		SpecialCursor=CURSOR_INTERACTION_ON;
 		if(eeMouseUp1()) {
-			CHANGE_LEVEL_ICON = 200;
+			CHANGE_LEVEL_ICON = ChangeLevelNow;
 		}
 	}
 }

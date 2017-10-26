@@ -660,7 +660,11 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	util::storeString(asp->TELEPORT_TO_POSITION, TELEPORT_TO_POSITION.c_str());
 
 	asp->TELEPORT_TO_ANGLE = TELEPORT_TO_ANGLE;
-	asp->CHANGE_LEVEL_ICON = CHANGE_LEVEL_ICON;
+	switch(CHANGE_LEVEL_ICON) {
+		case NoChangeLevel:      asp->CHANGE_LEVEL_ICON = -1; break;
+		case ConfirmChangeLevel: asp->CHANGE_LEVEL_ICON = 1;  break;
+		case ChangeLevelNow:     asp->CHANGE_LEVEL_ICON = 200; break;
+	}
 	asp->bag = player.bag;
 	storeIdString(asp->equipsecondaryIO, NULL);
 	storeIdString(asp->equipshieldIO, NULL);
@@ -1646,7 +1650,15 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	}
 	
 	TELEPORT_TO_ANGLE = asp->TELEPORT_TO_ANGLE;
-	CHANGE_LEVEL_ICON = asp->CHANGE_LEVEL_ICON;
+	
+	if(asp->CHANGE_LEVEL_ICON < 0) {
+		CHANGE_LEVEL_ICON = NoChangeLevel;
+	} else if(asp->CHANGE_LEVEL_ICON == 200) {
+		CHANGE_LEVEL_ICON = ChangeLevelNow;
+	} else {
+		CHANGE_LEVEL_ICON = ConfirmChangeLevel;
+	}
+	
 	player.bag = asp->bag;
 	
 	for(size_t i = 0; i < SAVED_MAX_PRECAST; i++) {

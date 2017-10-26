@@ -212,7 +212,7 @@ bool FASTmse = false;
 // Flag used to Launch Moulinex
 bool LOADEDD = false; // Is a Level Loaded ?
 
-long CHANGE_LEVEL_ICON=-1;
+ChangeLevelIcon CHANGE_LEVEL_ICON = NoChangeLevel;
 
 bool g_cursorOverBook = false;
 //-----------------------------------------------------------------------------
