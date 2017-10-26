@@ -264,4 +264,6 @@ float GetIORadius(const Entity *io);
 
 Cylinder GetIOCyl(Entity * io);
 
+bool isEnemy(const Entity * entity);
+
 #endif // ARX_GAME_NPC_H
