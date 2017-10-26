@@ -508,6 +508,7 @@ public:
 	
 	VideoOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS_VIDEO)
+		, m_gammaSlider(NULL)
 		, m_minimizeOnFocusLostCheckbox(NULL)
 	{
 		fullscreenCheckbox = NULL;
@@ -518,6 +519,7 @@ public:
 	
 	CheckboxWidget * fullscreenCheckbox;
 	CycleTextWidget * pMenuSliderResol;
+	SliderWidget * m_gammaSlider;
 	CheckboxWidget * m_minimizeOnFocusLostCheckbox;
 	
 	void init() {
@@ -593,6 +595,20 @@ public:
 			
 			panel->AddElement(pMenuSliderResol);
 			addCenter(panel);
+		}
+		
+		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_video_gamma");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
+			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedGamma, this, _1);
+			setGammaState(sld, config.video.fullscreen);
+			panel->AddElement(sld);
+			addCenter(panel);
+			m_gammaSlider = sld;
 		}
 		
 		{
@@ -706,6 +722,19 @@ public:
 	
 private:
 	
+	void setGammaState(SliderWidget * sld, bool fullscreen) {
+		
+		if(!fullscreen) {
+			sld->setValue(5);
+			sld->SetCheckOff();
+			return;
+		}
+		
+		sld->setValue(int(config.video.gamma));
+		sld->SetCheckOn();
+		
+	}
+	
 	void setMinimizeOnFocusLostState(CheckboxWidget * cb, bool fullscreen) {
 		
 		if(!fullscreen) {
@@ -729,6 +758,7 @@ private:
 		
 		if(pMenuSliderResol) {
 			pMenuSliderResol->setEnabled(newFullscreen);
+			setGammaState(m_gammaSlider, newFullscreen);
 			setMinimizeOnFocusLostState(m_minimizeOnFocusLostCheckbox, newFullscreen);
 		}
 	}
@@ -747,6 +777,10 @@ private:
 			newWidth = iX;
 			newHeight = iY;
 		}
+	}
+	
+	void onChangedGamma(int state) {
+		ARXMenu_Options_Video_SetGamma(float(state));
 	}
 	
 	void onChangedMinimizeOnFocusLost(int state) {
