@@ -581,7 +581,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			case CURSOR_READY_WEAPON: {
 				surf = cursorReadyWeapon;
 				arx_assert(surf);
-				mousePos -= surf->size() / 2;
+				mousePos -= surf->size() / s32(2);
 				break;
 			}
 			default:
