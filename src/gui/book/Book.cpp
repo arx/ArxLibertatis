@@ -505,20 +505,21 @@ void StatsPage::manageStats()
 	
 	if (MouseInBookRect(Vec2f(463, 74), Vec2f(87, 20)))
 		FLYING_OVER = WND_XP;
-
-	if (MouseInBookRect(Vec2f(97+41,64+62), Vec2f(32, 32)))
+	
+	if(MouseInBookRect(Vec2f(97 + 41, 64 + 62), Vec2f(32, 32))) {
 		FLYING_OVER = WND_AC;
-	else if (MouseInBookRect(Vec2f(97+41,64+120), Vec2f(32, 32)))
+	} else if(MouseInBookRect(Vec2f(97 + 41, 64 + 120), Vec2f(32, 32))) {
 		FLYING_OVER = WND_RESIST_MAGIC;
-	else if (MouseInBookRect(Vec2f(97+41,64+178), Vec2f(32, 32)))
+	} else if(MouseInBookRect(Vec2f(97 + 41, 64 + 178), Vec2f(32, 32))) {
 		FLYING_OVER = WND_RESIST_POISON;
-	else if (MouseInBookRect(Vec2f(97+211,64+62), Vec2f(32, 32)))
+	} else if(MouseInBookRect(Vec2f(97 + 211, 64 + 62), Vec2f(32, 32))) {
 		FLYING_OVER = WND_HP;
-	else if (MouseInBookRect(Vec2f(97+211,64+120), Vec2f(32, 32)))
+	} else if(MouseInBookRect(Vec2f(97 + 211, 64 + 120), Vec2f(32, 32))) {
 		FLYING_OVER = WND_MANA;
-	else if (MouseInBookRect(Vec2f(97+211,64+178), Vec2f(32, 32)))
+	} else if(MouseInBookRect(Vec2f(97 + 211, 64 + 178), Vec2f(32, 32))) {
 		FLYING_OVER = WND_DAMAGE;
-
+	}
+	
 	if(!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
 		// Main Player Attributes
 		if(CheckAttributeClick(Vec2f(379, 95), &player.m_attribute.strength, g_bookResouces.ic_strength)) {
@@ -609,36 +610,37 @@ void StatsPage::manageStats()
 		}
 	} else {
 		//------------------------------------PRIMARY
-		if (MouseInBookRect(Vec2f(379,95), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_STRENGTH;
-		else if (MouseInBookRect(Vec2f(428,95), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_MIND;
-		else if (MouseInBookRect(Vec2f(477,95), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_DEXTERITY;
-		else if (MouseInBookRect(Vec2f(526,95), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_CONSTITUTION;
-
+		if(MouseInBookRect(Vec2f(379, 95), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_STRENGTH;
+		} else if(MouseInBookRect(Vec2f(428, 95), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_MIND;
+		} else if(MouseInBookRect(Vec2f(477, 95), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_DEXTERITY;
+		} else if(MouseInBookRect(Vec2f(526, 95), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_CONSTITUTION;
+		}
 		//------------------------------------SECONDARY
-		if (MouseInBookRect(Vec2f(389,177), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_STEALTH;
-		else if (MouseInBookRect(Vec2f(453,177), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_MECANISM;
-		else if (MouseInBookRect(Vec2f(516,177), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_INTUITION;
-		else if (MouseInBookRect(Vec2f(389,230), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_ETHERAL_LINK;
-		else if (MouseInBookRect(Vec2f(453,230), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_OBJECT_KNOWLEDGE;
-		else if (MouseInBookRect(Vec2f(516,230), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_CASTING;
-		else if (MouseInBookRect(Vec2f(389,284), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_CLOSE_COMBAT;
-		else if (MouseInBookRect(Vec2f(453,284), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_PROJECTILE;
-		else if (MouseInBookRect(Vec2f(516,284), Vec2f(32, 32)))
-			FLYING_OVER=BOOK_DEFENSE;
+		if(MouseInBookRect(Vec2f(389, 177), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_STEALTH;
+		} else if(MouseInBookRect(Vec2f(453, 177), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_MECANISM;
+		} else if(MouseInBookRect(Vec2f(516, 177), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_INTUITION;
+		} else if(MouseInBookRect(Vec2f(389, 230), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_ETHERAL_LINK;
+		} else if(MouseInBookRect(Vec2f(453, 230), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_OBJECT_KNOWLEDGE;
+		} else if(MouseInBookRect(Vec2f(516, 230), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_CASTING;
+		} else if(MouseInBookRect(Vec2f(389, 284), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_CLOSE_COMBAT;
+		} else if(MouseInBookRect(Vec2f(453, 284), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_PROJECTILE;
+		} else if(MouseInBookRect(Vec2f(516, 284), Vec2f(32, 32))) {
+			FLYING_OVER = BOOK_DEFENSE;
+		}
 	}
-
+	
 	//------------------------------ SEB 04/12/2001
 	if(ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) {
 		
@@ -658,13 +660,13 @@ void StatsPage::manageStats()
 		} else {
 			toDisplay = ARXmenu.mda->flyover[FLYING_OVER];
 		}
-
+		
 		UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-			(g_size.width()*0.5f),
+			(g_size.width() * 0.5f),
 			4,
-			(g_size.center().x)*0.82f,
+			(g_size.center().x) * 0.82f,
 			toDisplay,
-			Color(232+t,204+t,143+t),
+			Color(232 + t, 204 + t, 143 + t),
 			PlatformDurationMs(1000),
 			0.01f,
 			3,
@@ -1378,9 +1380,9 @@ void SpellsPage::drawSpells() {
 			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
 				static_cast<float>(g_size.center().x),
 				12,
-				(g_size.center().x)*0.82f,
+				(g_size.center().x) * 0.82f,
 				spellInfo.description,
-				Color(232,204,143),
+				Color(232, 204, 143),
 				PlatformDurationMs(1000),
 				0.01f,
 				2,
