@@ -2973,3 +2973,9 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 	
 	io->target = io->pos;
 }
+
+bool isEnemy(const Entity * entity) {
+	return (entity->ioflags & IO_NPC)
+	       && !(entity->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
+	       && (entity->_npcdata->behavior & BEHAVIOUR_FIGHT);
+}
