@@ -89,7 +89,7 @@ enum SavePlayerFlag {
 };
 
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 
 
 const size_t SAVED_QUEST_SLOT_SIZE = 80;
@@ -1112,7 +1112,7 @@ struct SavedCamera {
 		lasttarget = b.lasttarget, lastpos = b.lastpos;
 		translatetarget = b.translatetarget;
 		lastinfovalid = b.lastinfovalid;
-		norm = Vec3f(0,0,0); //TODO Remove
+		norm = Vec3f(0.f, 0.f, 0.f); //TODO Remove
 		fadecolor = Color3f::black, clip = b.clip;
 		clipz0 = 0.0f, clipz1 = 0.0f;
 		centerx = b.center.x, centery = b.center.y;
