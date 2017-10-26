@@ -547,7 +547,7 @@ public:
 					TELEPORT_TO_ANGLE = angle;
 				}
 				
-				CHANGE_LEVEL_ICON =  confirm ? 1 : 200;
+				CHANGE_LEVEL_ICON = confirm ? ConfirmChangeLevel : ChangeLevelNow;
 				
 				DebugScript(' ' << options << ' ' << angle << ' ' << level << ' ' << target);
 				

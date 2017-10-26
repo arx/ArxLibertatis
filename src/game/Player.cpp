@@ -2700,7 +2700,7 @@ void ARX_GAME_Reset() {
 	SecondaryInventory = NULL;
 	TSecondaryInventory = NULL;
 	MasterCamera.exist = 0;
-	CHANGE_LEVEL_ICON = -1;
+	CHANGE_LEVEL_ICON = NoChangeLevel;
 	
 	// Kill Script Loaded IO
 	CleanScriptLoadedIO();

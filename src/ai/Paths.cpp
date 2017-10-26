@@ -276,7 +276,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 		} else if(last == current) { // Stayed inside last zone
 		} else if(last && !current) { // Leaving last zone
 			SendIOScriptEvent(entities.player(), SM_LEAVEZONE, last->name);
-			CHANGE_LEVEL_ICON = -1;
+			CHANGE_LEVEL_ICON = NoChangeLevel;
 
 			if(!last->controled.empty()) {
 				EntityHandle t = entities.getById(last->controled);
