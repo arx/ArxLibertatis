@@ -40,7 +40,7 @@ ARX_NECKLACE necklace;
 
 void NecklaceInit() {
 	
-	memset(&necklace,0,sizeof(ARX_NECKLACE));
+	memset(&necklace, 0, sizeof(ARX_NECKLACE));
 	necklace.lacet = loadObject("graph/interface/book/runes/lacet.teo");
 	
 	necklace.runes[RUNE_AAM] =         loadObject("graph/interface/book/runes/runes_aam.teo");
