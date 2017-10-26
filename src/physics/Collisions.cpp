@@ -270,8 +270,8 @@ inline bool IsPolyInSphere(const EERIEPOLY & ep, const Sphere & sph) {
 	return false;
 }
 
-bool IsCollidingIO(Entity * io,Entity * ioo) {
-
+bool IsCollidingIO(Entity * io, Entity * ioo) {
+	
 	if(ioo != NULL
 	   && io != ioo
 	   && !(ioo->ioflags & IO_NO_COLLISIONS)
@@ -368,7 +368,7 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 								} else {
 									Cylinder cyl = GetIOCyl(io);
 									cyl.origin.y += ydec;
-									if(CheckAnythingInCylinder(cyl, io ,0) >= 0) {
+									if(CheckAnythingInCylinder(cyl, io, 0) >= 0) {
 										io->pos.y += ydec;
 									}
 								}
@@ -423,7 +423,7 @@ bool CylinderPlatformCollide(const Cylinder & cyl, Entity * io) {
 
 static long NPC_IN_CYLINDER = 0;
 
-static bool CollidedFromBack(Entity * io,Entity * ioo) {
+static bool CollidedFromBack(Entity * io, Entity * ioo) {
 	
 	// io was collided from back ?
 	EERIEPOLY ep;
@@ -1398,7 +1398,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 		test.cyl.origin.y += mvector.y * curmovedist;
 		test.cyl.origin.z += vector2D.z;
 		
-		if(AttemptValidCylinderPos(test.cyl,io,flags)) {
+		if(AttemptValidCylinderPos(test.cyl, io, flags)) {
 			// Found without complication
 			*ip = test;
 		} else {
