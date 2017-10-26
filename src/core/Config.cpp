@@ -79,7 +79,8 @@ const int
 	mouseAcceleration = 0,
 	migration = Config::OriginalAssets,
 	quicksaveSlots = 3,
-	bufferSize = 0;
+	bufferSize = 0,
+	quickLevelTransition = JumpToChangeLevel;
 
 const bool
 	fullscreen = true,
@@ -231,6 +232,7 @@ const std::string
 	autoDescription = "auto_description",
 	borderTurning = "border_turning",
 	useAltRuneRecognition = "use_alt_rune_recognition",
+	quickLevelTransition = "quick_level_transition",
 	allowConsole = "allow_console";
 
 // Input key options
@@ -460,6 +462,7 @@ bool Config::save() {
 	writer.writeKey(Key::autoDescription, input.autoDescription);
 	writer.writeKey(Key::borderTurning, input.borderTurning);
 	writer.writeKey(Key::useAltRuneRecognition, input.useAltRuneRecognition);
+	writer.writeKey(Key::quickLevelTransition, int(input.quickLevelTransition));
 	if(input.allowConsole) {
 		// Only write this if true so that switching from release to debug builds enables the console
 		writer.writeKey(Key::allowConsole, input.allowConsole);
@@ -597,6 +600,8 @@ bool Config::init(const fs::path & file) {
 	input.autoDescription = reader.getKey(Section::Input, Key::autoDescription, Default::autoDescription);
 	input.borderTurning = reader.getKey(Section::Input, Key::borderTurning, Default::borderTurning);
 	input.useAltRuneRecognition = reader.getKey(Section::Input, Key::useAltRuneRecognition, Default::useAltRuneRecognition);
+	int quickLevelTransition = reader.getKey(Section::Input, Key::quickLevelTransition, Default::quickLevelTransition);
+	input.quickLevelTransition = QuickLevelTransition(glm::clamp(quickLevelTransition, 0, 2));
 	input.allowConsole = reader.getKey(Section::Input, Key::allowConsole, Default::allowConsole);
 	
 	// Get action key settings

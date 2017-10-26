@@ -90,6 +90,12 @@ enum UIScaleFilter {
 	UIFilterBilinear = 1
 };
 
+enum QuickLevelTransition {
+	NoQuickLevelTransition = 0,
+	JumpToChangeLevel = 1,
+	ChangeLevelImmediately = 2,
+};
+
 struct ActionKey {
 	
 	explicit ActionKey(InputKeyId key_0 = UNUSED,
@@ -189,6 +195,7 @@ public:
 		bool rawMouseInput;
 		bool borderTurning;
 		bool useAltRuneRecognition;
+		QuickLevelTransition quickLevelTransition;
 		bool allowConsole;
 		
 	} input;
