@@ -231,7 +231,7 @@ const std::string
 	rawMouseInput = "raw_mouse_input",
 	autoDescription = "auto_description",
 	borderTurning = "border_turning",
-	useAltRuneRecognition = "use_alt_rune_recognition",
+	useAltRuneRecognition = "improved_rune_recognition",
 	quickLevelTransition = "quick_level_transition",
 	allowConsole = "allow_console";
 
