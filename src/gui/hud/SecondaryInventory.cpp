@@ -105,7 +105,7 @@ void SecondaryInventoryCloseHudIcon::updateInput() {
 			if(io) {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 				g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
-				SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
+				SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
 				TSecondaryInventory=SecondaryInventory;
 				SecondaryInventory=NULL;
 			}
@@ -151,11 +151,10 @@ void SecondaryInventoryHud::update() {
 		if(dist > maxDist) {
 			if(m_fadeDirection != Fade_left) {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
-				
 				m_fadeDirection = Fade_left;
-				SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-				TSecondaryInventory=SecondaryInventory;
-				SecondaryInventory=NULL;
+				SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
+				TSecondaryInventory = SecondaryInventory;
+				SecondaryInventory = NULL;
 			} else {
 				if(player.Interface & INTER_STEAL) {
 					player.Interface &= ~INTER_STEAL;
