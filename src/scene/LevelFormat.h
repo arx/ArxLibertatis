@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 const f32 DLH_CURRENT_VERSION = 1.44f;
 
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 
 
 struct DANAE_LS_HEADER {
