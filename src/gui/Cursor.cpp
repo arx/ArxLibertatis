@@ -73,6 +73,7 @@ static TextureContainer * cursorMagic = NULL;
 static TextureContainer * cursorThrowObject = NULL;
 static TextureContainer * cursorRedist = NULL;
 static TextureContainer * cursorCrossHair = NULL; // Animated Hand Cursor TC
+static TextureContainer * cursorReadyWeapon = NULL;
 TextureContainer * cursorMovable = NULL;   // TextureContainer for Movable Items (Red Cross)
 
 TextureContainer *	scursor[8];			// Animated Hand Cursor TC
@@ -88,6 +89,7 @@ void cursorTexturesInit() {
 	cursorRedist         = TextureContainer::LoadUI("graph/interface/cursors/add_points");
 	cursorCrossHair      = TextureContainer::LoadUI("graph/interface/cursors/cruz");
 	cursorMovable        = TextureContainer::LoadUI("graph/interface/cursors/wrong");
+	cursorReadyWeapon    = TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
 	
 	arx_assert(cursorTargetOn);
 	arx_assert(cursorTargetOff);
@@ -439,6 +441,10 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			SpecialCursor = CURSOR_COMBINEOFF;
 	}
 	
+	if(FlyingOverIO && config.input.autoReadyWeapon == AutoReadyWeaponNearEnemies && isEnemy(FlyingOverIO)) {
+		SpecialCursor = CURSOR_READY_WEAPON;
+	}
+	
 	if(!SPECIAL_DRAGINTER_RENDER) {
 		if(FlyingOverIO || DRAGINTER) {
 			fHighLightAng += toMs(g_platformTime.lastFrameDuration()) * 0.5f;
@@ -568,10 +574,17 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				mousePos = Vec2f(320.f, 280.f) - Vec2f(surf->m_size) * 0.5f;
 				break;
 			}
-			case CURSOR_INTERACTION_ON:
+			case CURSOR_INTERACTION_ON: {
 				cursorAnimatedHand.update1();
 				surf = cursorAnimatedHand.getCurrentTexture();
 				break;
+			}
+			case CURSOR_READY_WEAPON: {
+				surf = cursorReadyWeapon;
+				arx_assert(surf);
+				mousePos -= surf->size() / 2;
+				break;
+			}
 			default:
 				cursorAnimatedHand.update2();
 				surf = cursorAnimatedHand.getCurrentTexture();
