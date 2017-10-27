@@ -105,8 +105,9 @@ public:
 	 *
 	 * Works only with uncompressed formats
 	 */
-	bool Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY);
-	bool Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY, unsigned int srcX, unsigned int srcY, unsigned int width, unsigned int height);
+	bool Copy(const Image & srcImage, size_t dstX, size_t dstY);
+	bool Copy(const Image & srcImage, size_t dstX, size_t dstY,
+	          size_t srcX, size_t srcY, size_t width, size_t height);
 	
 	bool save(const fs::path & filename) const;
 	

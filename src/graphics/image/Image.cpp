@@ -297,7 +297,8 @@ void Image::Clear() {
 	memset(mData, 0, mDataSize);
 }
 
-bool Image::Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY, unsigned int srcX, unsigned int srcY, unsigned int width, unsigned int height) {
+bool Image::Copy(const Image & srcImage, size_t dstX, size_t dstY,
+                 size_t srcX, size_t srcY, size_t width, size_t height) {
 	
 	unsigned int bpp = SIZE_TABLE[mFormat];
 	
@@ -333,7 +334,7 @@ bool Image::Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY, u
 	return true;
 }
 
-bool Image::Copy(const Image & srcImage, unsigned int destX, unsigned int destY) {
+bool Image::Copy(const Image & srcImage, size_t destX, size_t destY) {
 	return Copy(srcImage, destX, destY, 0, 0, srcImage.GetWidth(), srcImage.GetHeight());
 }
 
