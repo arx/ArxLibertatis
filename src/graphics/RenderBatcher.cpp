@@ -140,7 +140,7 @@ bool RenderMaterial::operator<(const RenderMaterial & other) const {
 }
 
 RenderState RenderMaterial::apply() const {
-		
+	
 	if(m_texture) {
 		GRenderer->SetTexture(0, m_texture);
 	} else {
