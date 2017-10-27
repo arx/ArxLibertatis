@@ -186,7 +186,7 @@ void Image::Create(size_t width, size_t height, Format format) {
 	mHeight = height;
 	mFormat = format;
 	
-	unsigned int dataSize = GetSize(mFormat, mWidth, mHeight);
+	size_t dataSize = GetSize(mFormat, mWidth, mHeight);
 	if(mData && dataSize != mDataSize) {
 		delete[] mData, mData = NULL;
 	}
