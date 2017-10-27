@@ -125,7 +125,7 @@ public:
 	void ApplyThreshold(unsigned char threshold, int component_mask);
 	
 	// statics
-	static size_t GetSize(Format format, size_t width = 1, size_t height = 1);
+	static size_t GetSize(Format format, size_t width, size_t height);
 	static size_t GetNumChannels(Format pFormat);
 	
 private:
