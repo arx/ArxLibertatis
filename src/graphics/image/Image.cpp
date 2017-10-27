@@ -497,27 +497,28 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 
 bool Image::ToGrayscale(Format newFormat) {
 	
-	int srcNumChannels = GetNumChannels();
-	int dstNumChannels = GetNumChannels(newFormat);
+	size_t srcNumChannels = GetNumChannels();
+	size_t dstNumChannels = GetNumChannels(newFormat);
 	
 	if(srcNumChannels < 3) {
 		return false;
 	}
 		
-	unsigned int newSize = GetSize(newFormat, mWidth, mHeight);
-	unsigned char* newData = new unsigned char[newSize];
+	size_t newSize = GetSize(newFormat, mWidth, mHeight);
+	unsigned char * newData = new unsigned char[newSize];
 	
-	unsigned char* src = mData;
-	unsigned char* dst = newData;
+	unsigned char * src = mData;
+	unsigned char * dst = newData;
 	
-	for(unsigned int i = 0; i < newSize; i += dstNumChannels) {
+	for(size_t i = 0; i < newSize; i += dstNumChannels) {
 		unsigned char grayVal = (77 * src[0] + 151 * src[1] + 28 * src[2] + 128) >> 8;
-		for(int i = 0; i < dstNumChannels; i++)
+		for(size_t i = 0; i < dstNumChannels; i++) {
 			dst[i] = grayVal;
+		}
 		src += srcNumChannels;
 		dst += dstNumChannels;
 	}
-		
+	
 	delete[] mData;
 	mData = newData;
 	mDataSize = newSize;
