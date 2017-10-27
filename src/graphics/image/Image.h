@@ -54,7 +54,7 @@ public:
 	bool LoadFromMemory(void * pData, unsigned int size,
 	                    const char * file = NULL);
 	
-	void Create(unsigned int width, unsigned int height, Format format);
+	void Create(size_t width, size_t height, Format format);
 	
 	bool ConvertTo(Format format);
 	

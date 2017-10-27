@@ -181,15 +181,15 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 	return (mData != NULL);
 }
 
-void Image::Create(unsigned int pWidth, unsigned int pHeight, Format pFormat) {
+void Image::Create(size_t width, size_t height, Format format) {
 	
-	arx_assert_msg(pWidth > 0, "[Image::Create] Width is 0!");
-	arx_assert_msg(pHeight > 0, "[Image::Create] Width is 0!");
-	arx_assert_msg(pFormat < Format_Unknown, "[Image::Create] Unknown texture format!");
+	arx_assert_msg(width > 0, "[Image::Create] Width is 0!");
+	arx_assert_msg(height > 0, "[Image::Create] Width is 0!");
+	arx_assert_msg(format < Format_Unknown, "[Image::Create] Unknown texture format!");
 	
-	mWidth  = pWidth;
-	mHeight = pHeight;
-	mFormat = pFormat;
+	mWidth  = width;
+	mHeight = height;
+	mFormat = format;
 	
 	unsigned int dataSize = GetSize(mFormat, mWidth, mHeight);
 	if(mData && dataSize != mDataSize) {
