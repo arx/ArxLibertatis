@@ -126,7 +126,7 @@ public:
 	
 	// statics
 	static size_t GetSize(Format format, size_t width = 1, size_t height = 1);
-	static unsigned int	GetNumChannels(Format pFormat);
+	static size_t GetNumChannels(Format pFormat);
 	
 private:
 	

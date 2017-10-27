@@ -92,8 +92,8 @@ size_t Image::GetSize(Image::Format format, size_t width, size_t height) {
 	return std::max(width, size_t(1)) * std::max(height, size_t(1)) * SIZE_TABLE[format];
 }
 
-unsigned int Image::GetNumChannels(Image::Format pFormat) {
-	return SIZE_TABLE[pFormat];
+size_t Image::GetNumChannels(Image::Format format) {
+	return SIZE_TABLE[format];
 }
 
 bool Image::LoadFromFile(const res::path & filename) {
