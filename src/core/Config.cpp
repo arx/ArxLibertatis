@@ -63,7 +63,6 @@ const std::string
 
 const int
 	levelOfDetail = 2,
-	fogDistance = 10,
 	vsync = -1,
 	fpsLimit = 240,
 	maxAnisotropicFiltering = 9001,
@@ -109,6 +108,7 @@ const bool allowConsole = false;
 #endif
 
 const float
+	fogDistance = 10.f,
 	gamma = 5.f,
 	hudScale = 0.5f;
 
