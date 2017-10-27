@@ -68,7 +68,7 @@ public:
 	size_t GetHeight() const { return mHeight; }
 	Format GetFormat() const { return mFormat; }
 	size_t GetDataSize() const { return mDataSize;   }
-	size_t GetNumChannels() const { return GetNumChannels(mFormat); }
+	size_t getNumChannels() const { return getNumChannels(mFormat); }
 	
 	// bool accessors
 	bool IsValid() const { return mData != NULL; }
@@ -126,7 +126,7 @@ public:
 	
 	// statics
 	static size_t GetSize(Format format, size_t width, size_t height);
-	static size_t GetNumChannels(Format pFormat);
+	static size_t getNumChannels(Format pFormat);
 	
 private:
 	
