@@ -173,7 +173,7 @@ bool				DRAGGING = false;
 bool				MAGICMODE = false;
 long				SpecialCursor=0;
 
-GameInstant COMBAT_MODE_ON_START_TIME = 0;
+static PlatformInstant COMBAT_MODE_ON_START_TIME = 0;
 static long SPECIAL_DRAW_WEAPON = 0;
 bool bGCroucheToggle=false;
 
@@ -1310,10 +1310,9 @@ void ArxGame::managePlayerControls() {
 	   && (config.input.autoReadyWeapon == AlwaysAutoReadyWeapon
 	       || (config.input.autoReadyWeapon == AutoReadyWeaponNearEnemies && isPlayerLookingAtEnemy()))) {
 		if(eeMouseDown1()) {
-			// TODO use os time
-			COMBAT_MODE_ON_START_TIME = g_gameTime.now();
+			COMBAT_MODE_ON_START_TIME = g_platformTime.frameStart();
 		} else {
-			if(g_gameTime.now() - COMBAT_MODE_ON_START_TIME > GameDurationMs(10)) {
+			if(g_platformTime.frameStart() - COMBAT_MODE_ON_START_TIME > PlatformDurationMs(10)) {
 				ARX_INTERFACE_setCombatMode(COMBAT_MODE_ON);
 			}
 		}
