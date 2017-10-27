@@ -89,7 +89,7 @@ const Image& Image::operator=(const Image & pOther) {
 }
 
 size_t Image::GetSize(Image::Format format, size_t width, size_t height) {
-	return std::max(width, size_t(1)) * std::max(height, size_t(1)) * SIZE_TABLE[format];
+	return std::max(width, size_t(1)) * std::max(height, size_t(1)) * getNumChannels(format);
 }
 
 size_t Image::getNumChannels(Image::Format format) {
@@ -295,7 +295,7 @@ void Image::Clear() {
 bool Image::Copy(const Image & srcImage, size_t dstX, size_t dstY,
                  size_t srcX, size_t srcY, size_t width, size_t height) {
 	
-	size_t bpp = SIZE_TABLE[mFormat];
+	size_t bpp = getNumChannels();
 	
 	// Format must match.
 	if(srcImage.GetFormat() != mFormat) {
@@ -350,7 +350,7 @@ void Image::QuakeGamma(float pGamma) {
 	// if the image has alpha == 1.0, those pixels will get no effect
 	// using a pGamma < 1.0 will have no effect
 	
-	size_t numComponents = SIZE_TABLE[mFormat];
+	size_t numComponents = getNumChannels();
 	size_t size = mWidth * mHeight;
 	unsigned char * data = mData;
 	
@@ -403,7 +403,7 @@ void Image::QuakeGamma(float pGamma) {
 
 void Image::ApplyThreshold(unsigned char threshold, int component_mask) {
 	
-	size_t numComponents = SIZE_TABLE[mFormat];
+	size_t numComponents = getNumChannels();
 	size_t size = mWidth * mHeight;
 	unsigned char * data = mData;
 	
