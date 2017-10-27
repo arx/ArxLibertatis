@@ -320,7 +320,7 @@ bool Image::Copy(const Image & srcImage, size_t dstX, size_t dstY,
 	}
 	
 	// Copy line by line
-	for(unsigned int i = 0; i < height; i++, src += srcImage.mWidth * bpp, dst += mWidth * bpp) {
+	for(size_t i = 0; i < height; i++, src += srcImage.mWidth * bpp, dst += mWidth * bpp) {
 		memcpy(dst, src, bpp * width);
 	}
 	
