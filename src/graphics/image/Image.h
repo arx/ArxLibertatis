@@ -130,13 +130,13 @@ public:
 	
 private:
 	
-	unsigned int mWidth;
-	unsigned int mHeight;
+	size_t mWidth;
+	size_t mHeight;
 	
 	Format mFormat; //!< Image format.
 	
-	unsigned char* mData; //!< Pointer to image data buffer.
-	unsigned int mDataSize; //!< Size of image buffer.
+	unsigned char * mData; //!< Pointer to image data buffer.
+	size_t mDataSize; //!< Size of image buffer.
 	
 };
 
