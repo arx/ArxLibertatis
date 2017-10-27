@@ -199,16 +199,16 @@ void Image::Create(size_t width, size_t height, Format format) {
 
 bool Image::ConvertTo(Format format) {
 	
-	arx_assert_msg(GetNumChannels(mFormat) == GetNumChannels(format),
+	arx_assert_msg(GetNumChannels() == GetNumChannels(format),
 	               "[Image::ConvertTo] Conversion of images with different BPP not supported yet!");
-	if(GetNumChannels(mFormat) != GetNumChannels(format)) {
+	if(GetNumChannels() != GetNumChannels(format)) {
 		return false;
 	}
 	
 	if(mFormat == format)
 		return true;
 	
-	size_t numComponents = GetNumChannels(mFormat);
+	size_t numComponents = GetNumChannels();
 	size_t size = mWidth * mHeight;
 	unsigned char * data = mData;
 
@@ -461,7 +461,7 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 	
 	Copy(src, 0, 0);
 	
-	size_t pixsize = GetNumChannels(mFormat);
+	size_t pixsize = GetNumChannels();
 	size_t insize = pixsize * src.mWidth, outsize = pixsize * mWidth;
 	
 	if(mWidth > src.mWidth) {
@@ -695,10 +695,10 @@ bool Image::save(const fs::path & filename) const {
 	int ret = 0;
 	if(filename.ext() == ".bmp") {
 		ret = stbi::stbi_write_bmp(filename.string().c_str(), int(mWidth), int(mHeight),
-		                           int(GetNumChannels(mFormat)), mData);
+		                           int(GetNumChannels()), mData);
 	} else if(filename.ext() == ".tga") {
 		ret = stbi::stbi_write_tga(filename.string().c_str(), int(mWidth), int(mHeight),
-		                           int(GetNumChannels(mFormat)), mData);
+		                           int(GetNumChannels()), mData);
 	} else {
 		LogError << "Unsupported file extension: " << filename.ext();
 	}
