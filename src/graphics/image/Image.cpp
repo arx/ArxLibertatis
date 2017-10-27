@@ -661,8 +661,8 @@ void Image::SetAlpha(const Image & img, bool bInvertAlpha) {
 
 void Image::FlipY() {
 	
-	unsigned int imageSize = GetSize(mFormat, mWidth, mHeight);
-	unsigned int lineSize = imageSize / mHeight;
+	size_t imageSize = GetSize(mFormat, mWidth, mHeight);
+	size_t lineSize = imageSize / mHeight;
 	
 	unsigned char * swapTmp = (unsigned char *)malloc(lineSize);
 	arx_assert(swapTmp);
@@ -670,7 +670,7 @@ void Image::FlipY() {
 	unsigned char * top = mData;
 	unsigned char * bottom = top + (imageSize - lineSize);
 	
-	for(unsigned int i = 0; i < mHeight / 2; i++) {
+	for(size_t i = 0; i < mHeight / 2; i++) {
 		
 		memcpy(swapTmp, bottom, lineSize);
 		memcpy(bottom, top, lineSize);
