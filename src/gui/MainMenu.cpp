@@ -1407,33 +1407,26 @@ public:
 			txt->SetCheckOff();
 			panel->AddElement(txt);
 			
-			Widget * value;
-			if(hrtf == audio::HRTFRequired) {
-				value = new TextWidget(BUTTON_INVALID, hFontMenu, "Enabled");
-				value->SetCheckOff();
-			} else if(hrtf == audio::HRTFForbidden) {
-				value = new TextWidget(BUTTON_INVALID, hFontMenu, "Disabled");
-				value->SetCheckOff();
-			} else {
-				CycleTextWidget * slider = new CycleTextWidget;
-				slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedHRTF, this, _1, _2);
-				slider->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "Disabled"));
-				if(config.audio.hrtf == audio::HRTFDisable) {
-					slider->selectLast();
-				}
-				slider->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "Automatic"));
-				if(config.audio.hrtf == audio::HRTFDefault) {
-					slider->selectLast();
-				}
-				slider->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "Enabled"));
-				if(config.audio.hrtf == audio::HRTFEnable) {
-					slider->selectLast();
-				}
-				value = slider;
+			CycleTextWidget * slider = new CycleTextWidget;
+			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedHRTF, this, _1, _2);
+			slider->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "Disabled"));
+			if(config.audio.hrtf == audio::HRTFDisable || hrtf == audio::HRTFForbidden) {
+				slider->selectLast();
 			}
-			float fRatio    = (RATIO_X(m_size.x-9) - value->m_rect.width());
-			value->Move(Vec2f(fRatio, 0));
-			panel->AddElement(value);
+			slider->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "Automatic"));
+			if(config.audio.hrtf == audio::HRTFDefault) {
+				slider->selectLast();
+			}
+			slider->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "Enabled"));
+			if(config.audio.hrtf == audio::HRTFEnable || hrtf == audio::HRTFRequired) {
+				slider->selectLast();
+			}
+			if(hrtf == audio::HRTFRequired || hrtf == audio::HRTFForbidden) {
+				slider->setEnabled(false);
+			}
+			float fRatio    = (RATIO_X(m_size.x-9) - slider->m_rect.width());
+			slider->Move(Vec2f(fRatio, 0));
+			panel->AddElement(slider);
 			
 			addCenter(panel);
 			
