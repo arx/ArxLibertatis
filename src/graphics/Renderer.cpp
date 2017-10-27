@@ -30,11 +30,11 @@
 
 Renderer * GRenderer;
 
-TextureStage * Renderer::GetTextureStage(unsigned int textureStage) {
+TextureStage * Renderer::GetTextureStage(size_t textureStage) {
 	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage] : NULL;
 }
 
-const TextureStage * Renderer::GetTextureStage(unsigned int textureStage) const {
+const TextureStage * Renderer::GetTextureStage(size_t textureStage) const {
 	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage] : NULL;
 }
 

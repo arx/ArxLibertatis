@@ -369,8 +369,8 @@ public:
 	
 	// Texturing
 	size_t getTextureStageCount() const { return m_TextureStages.size(); }
-	TextureStage * GetTextureStage(unsigned int textureStage);
-	const TextureStage * GetTextureStage(unsigned int textureStage) const;
+	TextureStage * GetTextureStage(size_t textureStage);
+	const TextureStage * GetTextureStage(size_t textureStage) const;
 	void ResetTexture(unsigned int textureStage);
 	Texture * GetTexture(unsigned int textureStage) const;
 	void SetTexture(unsigned int textureStage, Texture * pTexture);
