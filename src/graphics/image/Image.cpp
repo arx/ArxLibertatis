@@ -33,20 +33,6 @@
 #include "io/log/Logger.h"
 #include "platform/CrashHandler.h"
 
-namespace {
-
-const size_t SIZE_TABLE[Image::Format_Num] = {
-	1, // Format_L8,
-	1, // Format_A8,
-	2, // Format_L8A8,
-	3, // Format_R8G8B8,
-	3, // Format_B8G8R8,
-	4, // Format_R8G8B8A8,
-	4, // Format_B8G8R8A8,
-	0, // Format_Unknown
-};
-
-} // anonymous namespace
 
 Image::Image() : mData(0) {
 	Reset();
@@ -93,7 +79,20 @@ size_t Image::GetSize(Image::Format format, size_t width, size_t height) {
 }
 
 size_t Image::getNumChannels(Image::Format format) {
-	return SIZE_TABLE[format];
+	
+	switch(format) {
+		case Format_L8:       return 1;
+		case Format_A8:       return 1;
+		case Format_L8A8:     return 2;
+		case Format_R8G8B8:   return 3;
+		case Format_B8G8R8:   return 3;
+		case Format_R8G8B8A8: return 4;
+		case Format_B8G8R8A8: return 4;
+		case Format_Unknown:  return 0;
+		case Format_Num: ARX_DEAD_CODE();
+	}
+	
+	return 0;
 }
 
 bool Image::LoadFromFile(const res::path & filename) {
