@@ -236,53 +236,54 @@ void Image::ResizeFrom(const Image & source, size_t desired_width, size_t desire
 	Create(desired_width, desired_height, Format_R8G8B8);
 	
 	// span, size of one line in pixels (doesn't allow for byte padding)
-	const unsigned int src_span = source.GetWidth();
-	const unsigned int dest_span = GetWidth();
-
+	size_t src_span = source.GetWidth();
+	size_t dest_span = GetWidth();
+	
 	// number of bytes per pixel
 	// since we assume RGB format, this is 3 for both source and destination
-	const unsigned int src_pixel = 3;
-	const unsigned int dest_pixel = 3;
-
+	size_t src_pixel = 3;
+	size_t dest_pixel = 3;
+	
 	// find fractional source y_delta
 	float y_source = 0.0f;
 	const float y_delta = source.GetHeight() / (float)GetHeight();
-
-	for (unsigned int y = 0; y < GetHeight(); y++)
-	{
+	
+	for(size_t y = 0; y < GetHeight(); y++) {
+		
 		// find pointer to the beginning of this destination line
-		unsigned char *dest_p = GetData() + (flip_vertical ? GetHeight() - 1 - y : y) * dest_span * dest_pixel;
-
+		unsigned char * dest_p = GetData() + (flip_vertical ? GetHeight() - 1 - y : y) * dest_span * dest_pixel;
+		
 		// truncate y_source coordinate and premultiply by line width / span
-		const unsigned int src_y = (unsigned int)(y_source) * src_span;
-
+		size_t src_y = size_t(y_source) * src_span;
+		
 		// find fractional source x_delta
 		float x_source = 0.0f;
 		const float x_delta = source.GetWidth() / (float)GetWidth();
-
-		for (unsigned int x = 0; x < GetWidth(); x++)
-		{
+		
+		for(size_t x = 0; x < GetWidth(); x++) {
+			
 			// truncate x_source coordinate
-			const unsigned int src_x = (unsigned int)(x_source);
-
+			size_t src_x = size_t(x_source);
+			
 			// find offset in bytes for the current source coordinate
-			const unsigned int src_offset = (src_x + src_y) * src_pixel;
-
+			size_t src_offset = (src_x + src_y) * src_pixel;
+			
 			// copy pixel from source to dest, assuming 24-bit format (RGB or BGR, etc)
 			dest_p[0] = source.GetData()[src_offset + 0];
 			dest_p[1] = source.GetData()[src_offset + 1];
 			dest_p[2] = source.GetData()[src_offset + 2];
-
+			
 			// move destination pointer ahead by one pixel
 			dest_p += dest_pixel;
-
+			
 			// increment fractional source coordinate by one destination pixel, horizontal
 			x_source += x_delta;
 		}
-
+		
 		// increment fractional source coordinate by one destination pixel, vertical
 		y_source += y_delta;
 	}
+	
 }
 
 void Image::Clear() {
