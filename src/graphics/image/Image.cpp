@@ -35,15 +35,15 @@
 
 namespace {
 
-const unsigned int SIZE_TABLE[Image::Format_Num] = {
-	1,  // Format_L8,
-	1,  // Format_A8,
-	2,  // Format_L8A8,
-	3,  // Format_R8G8B8,
-	3,  // Format_B8G8R8,
-	4,  // Format_R8G8B8A8,
-	4,  // Format_B8G8R8A8,
-	0,  // Format_Unknown
+const size_t SIZE_TABLE[Image::Format_Num] = {
+	1, // Format_L8,
+	1, // Format_A8,
+	2, // Format_L8A8,
+	3, // Format_R8G8B8,
+	3, // Format_B8G8R8,
+	4, // Format_R8G8B8A8,
+	4, // Format_B8G8R8A8,
+	0, // Format_Unknown
 };
 
 } // anonymous namespace
@@ -292,7 +292,7 @@ void Image::Clear() {
 bool Image::Copy(const Image & srcImage, size_t dstX, size_t dstY,
                  size_t srcX, size_t srcY, size_t width, size_t height) {
 	
-	unsigned int bpp = SIZE_TABLE[mFormat];
+	size_t bpp = SIZE_TABLE[mFormat];
 	
 	// Format must match.
 	if(srcImage.GetFormat() != mFormat) {
@@ -346,8 +346,8 @@ void Image::QuakeGamma(float pGamma) {
 	//
 	// if the image has alpha == 1.0, those pixels will get no effect
 	// using a pGamma < 1.0 will have no effect
-
-	unsigned int numComponents = SIZE_TABLE[mFormat];
+	
+	size_t numComponents = SIZE_TABLE[mFormat];
 	unsigned int size = mWidth * mHeight;
 	unsigned char * data = mData;
 	
@@ -396,7 +396,7 @@ void Image::QuakeGamma(float pGamma) {
 
 void Image::ApplyThreshold(unsigned char threshold, int component_mask) {
 	
-	unsigned int numComponents = SIZE_TABLE[mFormat];
+	size_t numComponents = SIZE_TABLE[mFormat];
 	unsigned int size = mWidth * mHeight;
 	unsigned char * data = mData;
 	
