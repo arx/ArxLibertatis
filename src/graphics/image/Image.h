@@ -51,8 +51,7 @@ public:
 	const Image& operator=(const Image & pOther);
 	
 	bool LoadFromFile(const res::path & filename);
-	bool LoadFromMemory(void * pData, unsigned int size,
-	                    const char * file = NULL);
+	bool LoadFromMemory(void * pData, size_t size, const char * file = NULL);
 	
 	void Create(size_t width, size_t height, Format format);
 	

@@ -21,6 +21,7 @@
 
 #include <sstream>
 #include <cstring>
+#include <limits>
 
 #include "graphics/image/stb_image.h"
 #include "graphics/image/stb_image_write.h"
@@ -119,20 +120,22 @@ bool Image::LoadFromFile(const res::path & filename) {
 	return ret;
 }
 
-bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
+bool Image::LoadFromMemory(void * pData, size_t size, const char * file) {
 	
 	if(!pData) {
 		return false;
 	}
-
+	
+	arx_assert(size <= std::numeric_limits<int>::max());
+	
 	int width, height, bpp, fmt, req_bpp = 0;
-
+	
 	// 2bpp TGAs needs to be converted!
-	int ret = stbi::stbi_info_from_memory((const stbi::stbi_uc*)pData, size, &width, &height, &bpp, &fmt);
+	int ret = stbi::stbi_info_from_memory((const stbi::stbi_uc*)pData, int(size), &width, &height, &bpp, &fmt);
 	if(ret && fmt == stbi::STBI_tga && bpp == 2)
 		req_bpp = 3;
 	
-	unsigned char* data = stbi::stbi_load_from_memory((const stbi::stbi_uc*)pData, size, &width, &height, &bpp, req_bpp);
+	unsigned char* data = stbi::stbi_load_from_memory((const stbi::stbi_uc*)pData, int(size), &width, &height, &bpp, req_bpp);
 	if(!data) {
 		std::ostringstream message;
 		message << "error loading image";
