@@ -69,10 +69,6 @@ const int
 	alphaCutoutAntialiasing = 2,
 	cinematicWidescreenMode = CinematicFadeEdges,
 	hudScaleFilter = UIFilterBilinear,
-	volume = 10,
-	sfxVolume = 10,
-	speechVolume = 10,
-	ambianceVolume = 10,
 	hrtf = audio::HRTFDefault,
 	autoReadyWeapon = AutoReadyWeaponNearEnemies,
 	mouseSensitivity = 6,
@@ -110,7 +106,11 @@ const bool allowConsole = false;
 const float
 	fogDistance = 10.f,
 	gamma = 5.f,
-	hudScale = 0.5f;
+	hudScale = 0.5f,
+	volume = 10.f,
+	sfxVolume = 10.f,
+	speechVolume = 10.f,
+	ambianceVolume = 10.f;
 
 const ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP
