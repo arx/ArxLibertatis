@@ -1048,10 +1048,10 @@ private:
 				value = int(Renderer::NoAlphaCutoutAA);
 			}
 			cb->setValue(value);
-			cb->SetCheckOn();
+			cb->setEnabled(true);
 		} else {
 			cb->setValue(0);
-			cb->SetCheckOff();
+			cb->setEnabled(false);
 		}
 		
 	}
