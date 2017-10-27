@@ -95,7 +95,7 @@ size_t Image::getNumChannels(Image::Format format) {
 	return 0;
 }
 
-bool Image::LoadFromFile(const res::path & filename) {
+bool Image::load(const res::path & filename) {
 	
 	size_t size = 0;
 	void * pData = g_resources->readAlloc(filename, size);

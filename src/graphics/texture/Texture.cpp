@@ -54,7 +54,7 @@ bool Texture::Restore() {
 
 	if(!mFileName.empty()) {
 		
-		mImage.LoadFromFile(mFileName);
+		mImage.load(mFileName);
 		
 		if((flags & ApplyColorKey) && !mImage.HasAlpha()) {
 			mImage.ApplyColorKeyToAlpha(Color::black, config.video.colorkeyAntialiasing);
