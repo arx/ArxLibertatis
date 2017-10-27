@@ -115,7 +115,7 @@ public:
 	// destructively adjust image content
 	
 	//! blur using gaussian kernel
-	void Blur(int radius);
+	void Blur(size_t radius);
 	
 	//! scales value and normalizes by max component value
 	void QuakeGamma(float pGamma);

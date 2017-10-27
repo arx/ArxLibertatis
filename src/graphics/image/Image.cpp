@@ -528,100 +528,103 @@ bool Image::ToGrayscale(Format newFormat) {
 	return true;
 }
 
-void Image::Blur(int radius) {
+void Image::Blur(size_t radius) {
 	
 	// Create kernel and precompute multiplication table
-	int kernelSize = 1 + radius * 2;
-	int* kernel = new int[kernelSize];
-	int* mult = new int[kernelSize << 8];
-
+	size_t kernelSize = 1 + radius * 2;
+	size_t * kernel = new size_t[kernelSize];
+	size_t * mult = new size_t[kernelSize << 8];
+	
 	memset(kernel, 0, kernelSize*sizeof(*kernel));
 	memset(mult, 0, (kernelSize << 8)*sizeof(*mult));
-
+	
 	kernel[kernelSize - 1] = 0;
-	for(int i = 1; i< radius; i++) {
-		int szi = radius - i;
+	for(size_t i = 1; i< radius; i++) {
+		size_t szi = radius - i;
 		kernel[radius + i] = kernel[szi] = szi * szi;
-		for (int j = 0; j < 256; j++) {
-			mult[((radius+i) << 8) + j] = mult[(szi << 8) + j] = kernel[szi] * j;
+		for(size_t j = 0; j < 256; j++) {
+			mult[((radius + i) << 8) + j] = mult[(szi << 8) + j] = kernel[szi] * j;
 		}
 	}
-
-	kernel[radius]=radius*radius;
-	for (int j = 0; j < 256; j++) {
+	
+	kernel[radius] = radius * radius;
+	for(int j = 0; j < 256; j++) {
 		mult[(radius << 8) + j] = kernel[radius] * j;
 	}
-
+	
 	// Split color channels into separated array to simplify handling of multiple image format...
 	// Could easilly be refactored
-	int numChannels = GetNumChannels();
-	unsigned char* channel[4] = {};
-	unsigned char* blurredChannel[4] = {};
-	for(int c = 0; c < numChannels; c++) {
-		channel[c] = new unsigned char[mWidth*mHeight];
-		blurredChannel[c] = new unsigned char[mWidth*mHeight];
-		for (unsigned int i=0; i < mWidth*mHeight; i++) {
-			channel[c][i] = mData[i*numChannels + c];
+	size_t numChannels = GetNumChannels();
+	unsigned char * channel[4] = {};
+	unsigned char * blurredChannel[4] = {};
+	for(size_t c = 0; c < numChannels; c++) {
+		channel[c] = new unsigned char[mWidth * mHeight];
+		blurredChannel[c] = new unsigned char[mWidth * mHeight];
+		for(size_t i = 0; i < mWidth * mHeight; i++) {
+			channel[c][i] = mData[i * numChannels + c];
 		}
 	}
 	
 	// Blur horizontally using our separable kernel
-	int yi = 0;
-	for (int yl = 0; yl < (int)mHeight; yl++) {
-		for (int xl = 0; xl < (int)mWidth; xl++) {
-			int channelVals[4] = {0,0,0,0};
-			int sum=0;
-			int ri=xl-radius;
-			for (int i = 0; i < kernelSize; i++) {
-				int read = ri + i;
-				if (read >= 0 && read < (int)mWidth) {
+	size_t yi = 0;
+	for(size_t yl = 0; yl < mHeight; yl++) {
+		for(size_t xl = 0; xl < mWidth; xl++) {
+			size_t channelVals[4] = {0, 0, 0, 0};
+			size_t sum = 0;
+			ptrdiff_t ri = ptrdiff_t(xl) - ptrdiff_t(radius);
+			for(size_t i = 0; i < kernelSize; i++) {
+				ptrdiff_t read = ri + ptrdiff_t(i);
+				if(read >= 0 && size_t(read) < mWidth) {
 					read += yi;
-					for(int c = 0; c < numChannels; c++)
+					for(size_t c = 0; c < numChannels; c++) {
 						channelVals[c] += mult[(i << 8) + channel[c][read]];
+					}
 					sum += kernel[i];
 				}
 			}
-			ri = yi + xl;
-
-			for(int c = 0; c < numChannels; c++)
+			ri = ptrdiff_t(yi) + ptrdiff_t(xl);
+			for(size_t c = 0; c < numChannels; c++) {
 				blurredChannel[c][ri] = channelVals[c] / sum;
+			}
 		}
 		yi += mWidth;
 	}
-
+	
 	// Blur vertically using our separable kernel
 	yi = 0;
-	for (int yl = 0; yl < (int)mHeight; yl++) {
-		int ym = yl - radius;
-		int riw = ym * mWidth;
-		for (int xl = 0; xl < (int)mWidth; xl++) {
-			int channelVals[4] = {0,0,0,0};
-			int sum=0;
-			int ri = ym;
-			int read= xl + riw;
-			for (int i = 0; i < kernelSize; i++) {
-				if (ri >= 0 && ri < (int)mHeight){
-					for(int c = 0; c < numChannels; c++)
+	for (size_t yl = 0; yl < mHeight; yl++) {
+		ptrdiff_t ym = ptrdiff_t(yl) - ptrdiff_t(radius);
+		ptrdiff_t riw = ym * ptrdiff_t(mWidth);
+		for(size_t xl = 0; xl < mWidth; xl++) {
+			size_t channelVals[4] = {0, 0, 0, 0};
+			size_t sum = 0;
+			ptrdiff_t ri = ym;
+			ptrdiff_t read = ptrdiff_t(xl) + riw;
+			for(size_t i = 0; i < kernelSize; i++) {
+				if(ri >= 0 && size_t(ri) < mHeight) {
+					for(size_t c = 0; c < numChannels; c++) {
 						channelVals[c] += mult[(i << 8) + blurredChannel[c][read]];
+					}
 					sum += kernel[i];
 				}
 				ri++;
 				read += mWidth;
 			}
-
-			for(int c = 0; c < numChannels; c++)
-				mData[(xl + yi)*numChannels + c] = channelVals[c] / sum;
+			for(size_t c = 0; c < numChannels; c++) {
+				mData[(xl + yi) * numChannels + c] = channelVals[c] / sum;
+			}
 		}
 		yi += mWidth;
 	}
-
+	
 	// Clean up mess
-	for(int c = 0; c < numChannels; c++) {
+	for(size_t c = 0; c < numChannels; c++) {
 		delete[] channel[c];
 		delete[] blurredChannel[c];
 	}
 	delete[] kernel;
 	delete[] mult;
+	
 }
 
 void Image::SetAlpha(const Image & img, bool bInvertAlpha) {
