@@ -77,27 +77,18 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 	LogDebug("loading cinematic texture " << path);
 
-	size_t dataSize = 0;
-	
 	res::path filename = path;
-	filename.set_ext("bmp");
-	char * data = g_resources->readAlloc(filename, dataSize);
-	if(!data) {
-		filename.set_ext("tga");
-		data = g_resources->readAlloc(filename, dataSize);
-	}
-
-	if(!data) {
+	bool foundPath = g_resources->getFile(filename.set_ext(".bmp")) != NULL;
+	foundPath = foundPath || g_resources->getFile(filename.set_ext("tga"));
+	if(!foundPath) {
 		LogError << path << " not found";
 		delete bi;
 		return 0;
 	}
-
+	
 	Image cinematicImage;
-	cinematicImage.LoadFromMemory(data, dataSize);
-
-	free(data);
-
+	cinematicImage.load(filename);
+	
 	Vec2i size = Vec2i(cinematicImage.GetWidth(), cinematicImage.GetHeight());
 	Vec2i nb = size / cinMaxSize;
 	
