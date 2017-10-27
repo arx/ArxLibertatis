@@ -19,6 +19,7 @@
 
 #include "graphics/image/Image.h"
 
+#include <algorithm>
 #include <sstream>
 #include <cstring>
 #include <limits>
@@ -87,17 +88,8 @@ const Image& Image::operator=(const Image & pOther) {
 	return *this;
 }
 
-unsigned int Image::GetSize(Image::Format pFormat, unsigned int pWidth, unsigned int pHeight) {
-	
-	if(pWidth == 0) {
-		pWidth = 1;
-	}
-	
-	if(pHeight == 0) {
-		pHeight = 1;
-	}
-	
-	return pWidth * pHeight * SIZE_TABLE[pFormat];
+size_t Image::GetSize(Image::Format format, size_t width, size_t height) {
+	return std::max(width, size_t(1)) * std::max(height, size_t(1)) * SIZE_TABLE[format];
 }
 
 unsigned int Image::GetNumChannels(Image::Format pFormat) {
