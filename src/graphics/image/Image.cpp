@@ -634,26 +634,29 @@ void Image::SetAlpha(const Image & img, bool bInvertAlpha) {
 	arx_assert(img.HasAlpha());
 	arx_assert(HasAlpha());
 	
-	unsigned int srcChannelCount = img.GetNumChannels();
-	unsigned int dstChannelCount = GetNumChannels();
-
-	unsigned char* src = img.mData;
-	unsigned char* dst = mData;
-
+	size_t srcChannelCount = img.GetNumChannels();
+	size_t dstChannelCount = GetNumChannels();
+	
+	unsigned char * src = img.mData;
+	unsigned char * dst = mData;
+	
 	// Offset the data pointers before the start of the loop
 	// All our current image formats have their alpha in the last channel
 	src += srcChannelCount - 1;
 	dst += dstChannelCount - 1;
-
-	unsigned int pixelCount = mWidth * mHeight;
-
+	
+	size_t pixelCount = mWidth * mHeight;
+	
 	if(!bInvertAlpha) {
-		for(unsigned int i = 0; i < pixelCount; i++, src += srcChannelCount, dst += dstChannelCount)
-			*dst = *src;			// Copy alpha
+		for(size_t i = 0; i < pixelCount; i++, src += srcChannelCount, dst += dstChannelCount) {
+			*dst = *src; // Copy alpha
+		}
 	} else {
-		for(unsigned int i = 0; i < pixelCount; i++, src += srcChannelCount, dst += dstChannelCount)
-			*dst = 255 - *src;		// Copy inverted alpha
+		for(size_t i = 0; i < pixelCount; i++, src += srcChannelCount, dst += dstChannelCount) {
+			*dst = 255 - *src; // Copy inverted alpha
+		}
 	}
+	
 }
 
 void Image::FlipY() {
