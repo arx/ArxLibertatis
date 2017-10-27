@@ -417,7 +417,7 @@ void Image::ApplyThreshold(unsigned char threshold, int component_mask) {
 }
 
 template <size_t N>
-static void extendImageRight(u8 * in, unsigned win, unsigned wout, unsigned h) {
+static void extendImageRight(u8 * in, size_t win, size_t wout, size_t h) {
 	u8 * out = in + N;
 	for(size_t y = 0; y < h; y++, in += wout * N) {
 		for(size_t x = win; x < wout; x++, out += N) {
@@ -428,7 +428,7 @@ static void extendImageRight(u8 * in, unsigned win, unsigned wout, unsigned h) {
 }
 
 template <>
-void extendImageRight<1>(u8 * in, unsigned win, unsigned wout, unsigned h) {
+void extendImageRight<1>(u8 * in, size_t win, size_t wout, size_t h) {
 	u8 * out = in + 1;
 	for(size_t y = 0; y < h; y++, in += win, out += wout) {
 		std::memset(out, *in, wout - win);
@@ -436,8 +436,7 @@ void extendImageRight<1>(u8 * in, unsigned win, unsigned wout, unsigned h) {
 }
 
 template <size_t N>
-static void extendImageBottomRight(u8 * in, u8 * out, unsigned win, unsigned wout,
-                                   unsigned h) {
+static void extendImageBottomRight(u8 * in, u8 * out, size_t win, size_t wout, size_t h) {
 	for(size_t y = 0; y < h; y++) {
 		for(size_t x = win; x < wout; x++, out += N) {
 			std::memcpy(out, in, N);
@@ -447,8 +446,7 @@ static void extendImageBottomRight(u8 * in, u8 * out, unsigned win, unsigned wou
 }
 
 template <>
-void extendImageBottomRight<1>(u8 * in, u8 * out, unsigned win, unsigned wout,
-                                      unsigned h) {
+void extendImageBottomRight<1>(u8 * in, u8 * out, size_t win, size_t wout, size_t h) {
 	for(size_t y = 0; y < h; y++, out += wout) {
 		std::memset(out, *in, wout - win);
 	}
@@ -461,8 +459,8 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 	
 	Copy(src, 0, 0);
 	
-	unsigned pixsize = GetSize(mFormat);
-	unsigned insize = pixsize * src.mWidth, outsize = pixsize * mWidth;
+	size_t pixsize = GetSize(mFormat);
+	size_t insize = pixsize * src.mWidth, outsize = pixsize * mWidth;
 	
 	if(mWidth > src.mWidth) {
 		u8 * in =  mData + (src.mWidth - 1) * pixsize;
@@ -486,7 +484,7 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 	if(mWidth > src.mWidth && mHeight > src.mHeight) {
 		u8 * in = mData + outsize * (src.mHeight - 1) + pixsize * (src.mWidth - 1);
 		u8 * out = mData + outsize * src.mHeight + insize;
-		unsigned h = mHeight - src.mHeight;
+		size_t h = mHeight - src.mHeight;
 		switch(pixsize) {
 			case 1: extendImageBottomRight<1>(in, out, src.mWidth, mWidth, h); break;
 			case 2: extendImageBottomRight<2>(in, out, src.mWidth, mWidth, h); break;
