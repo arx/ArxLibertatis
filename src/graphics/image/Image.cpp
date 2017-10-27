@@ -205,9 +205,9 @@ bool Image::ConvertTo(Format format) {
 
 	if(mFormat == format)
 		return true;
-
-	unsigned int numComponents = GetSize(mFormat);
-	unsigned int size = mWidth * mHeight;
+	
+	size_t numComponents = GetSize(mFormat);
+	size_t size = mWidth * mHeight;
 	unsigned char * data = mData;
 
 	switch(format) {
@@ -215,7 +215,7 @@ bool Image::ConvertTo(Format format) {
 	case Format_B8G8R8:
 	case Format_R8G8B8A8:
 	case Format_B8G8R8A8:
-		for(unsigned int i = 0; i < size; i++, data += numComponents) {
+		for(size_t i = 0; i < size; i++, data += numComponents) {
 			std::swap(data[0], data[2]);
 		}
 		break;
