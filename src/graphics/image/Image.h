@@ -68,7 +68,7 @@ public:
 	size_t GetHeight() const { return mHeight; }
 	Format GetFormat() const { return mFormat; }
 	size_t GetDataSize() const { return mDataSize;   }
-	size_t GetNumChannels() const { return Image::GetNumChannels(mFormat); }
+	size_t GetNumChannels() const { return GetNumChannels(mFormat); }
 	
 	// bool accessors
 	bool IsValid() const { return mData != NULL; }
