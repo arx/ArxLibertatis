@@ -104,16 +104,16 @@ bool Image::load(const res::path & filename) {
 		return false;
 	}
 	
-	bool ret = LoadFromMemory(data, size, filename.string().c_str());
+	bool ret = load(data, size, filename.string().c_str());
 	
 	free(data);
 	
 	return ret;
 }
 
-bool Image::LoadFromMemory(void * pData, size_t size, const char * file) {
+bool Image::load(void * data, size_t size, const char * file) {
 	
-	if(!pData) {
+	if(!data) {
 		return false;
 	}
 	
@@ -122,12 +122,13 @@ bool Image::LoadFromMemory(void * pData, size_t size, const char * file) {
 	int width, height, bpp, fmt, req_bpp = 0;
 	
 	// 2bpp TGAs needs to be converted!
-	int ret = stbi::stbi_info_from_memory((const stbi::stbi_uc*)pData, int(size), &width, &height, &bpp, &fmt);
+	int ret = stbi::stbi_info_from_memory((const stbi::stbi_uc *)data, int(size), &width, &height, &bpp, &fmt);
 	if(ret && fmt == stbi::STBI_tga && bpp == 2)
 		req_bpp = 3;
 	
-	unsigned char* data = stbi::stbi_load_from_memory((const stbi::stbi_uc*)pData, int(size), &width, &height, &bpp, req_bpp);
-	if(!data) {
+	unsigned char * pixels = stbi::stbi_load_from_memory((const stbi::stbi_uc *)data, int(size),
+	                                                     &width, &height, &bpp, req_bpp);
+	if(!pixels) {
 		std::ostringstream message;
 		message << "error loading image";
 		if(file) {
@@ -166,11 +167,11 @@ bool Image::LoadFromMemory(void * pData, size_t size, const char * file) {
 	// Copy image data to our buffer
 	if(mData) {
 		mDataSize = dataSize;
-		memcpy(mData, data, mDataSize);
+		memcpy(mData, pixels, mDataSize);
 	}
 	
 	// Release resources
-	stbi::stbi_image_free(data);
+	stbi::stbi_image_free(pixels);
 	
 	return (mData != NULL);
 }
