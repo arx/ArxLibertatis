@@ -67,7 +67,6 @@ public:
 	// info accessors
 	unsigned int GetWidth() const { return mWidth;      }
 	unsigned int GetHeight() const { return mHeight;     }
-	unsigned int GetNumMipmaps() const { return mNumMipmaps; }
 	Format GetFormat() const { return mFormat;     }
 	unsigned int GetDataSize() const { return mDataSize;   }
 	unsigned int  GetNumChannels() const { return Image::GetNumChannels( mFormat ); }
@@ -134,7 +133,6 @@ private:
 	unsigned int mWidth;
 	unsigned int mHeight;
 	
-	unsigned int mNumMipmaps; //!< Number of mipmaps.
 	Format mFormat; //!< Image format.
 	
 	unsigned char* mData; //!< Pointer to image data buffer.
