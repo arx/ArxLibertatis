@@ -98,15 +98,15 @@ size_t Image::getNumChannels(Image::Format format) {
 bool Image::load(const res::path & filename) {
 	
 	size_t size = 0;
-	void * pData = g_resources->readAlloc(filename, size);
+	void * data = g_resources->readAlloc(filename, size);
 	
-	if(!pData) {
+	if(!data) {
 		return false;
 	}
 	
-	bool ret = LoadFromMemory(pData, size, filename.string().c_str());
+	bool ret = LoadFromMemory(data, size, filename.string().c_str());
 	
-	free(pData);
+	free(data);
 	
 	return ret;
 }
