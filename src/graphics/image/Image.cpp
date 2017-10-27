@@ -152,7 +152,7 @@ bool Image::LoadFromMemory(void * pData, size_t size, const char * file) {
 		default: arx_assert_msg(false, "Invalid bpp");
 	}
 	
-	unsigned int dataSize = GetSize(mFormat, mWidth, mHeight);
+	size_t dataSize = GetSize(mFormat, mWidth, mHeight);
 	
 	// Delete previous buffer if size don't match
 	if(mData && mDataSize != dataSize) {
