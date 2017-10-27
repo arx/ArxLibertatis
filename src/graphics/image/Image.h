@@ -64,11 +64,11 @@ public:
 	void Clear();
 	
 	// info accessors
-	unsigned int GetWidth() const { return mWidth;      }
-	unsigned int GetHeight() const { return mHeight;     }
-	Format GetFormat() const { return mFormat;     }
-	unsigned int GetDataSize() const { return mDataSize;   }
-	unsigned int  GetNumChannels() const { return Image::GetNumChannels( mFormat ); }
+	size_t GetWidth() const { return mWidth; }
+	size_t GetHeight() const { return mHeight; }
+	Format GetFormat() const { return mFormat; }
+	size_t GetDataSize() const { return mDataSize;   }
+	size_t GetNumChannels() const { return Image::GetNumChannels(mFormat); }
 	
 	// bool accessors
 	bool IsValid() const { return mData != NULL; }
