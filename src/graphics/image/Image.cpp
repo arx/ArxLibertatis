@@ -92,7 +92,7 @@ size_t Image::GetSize(Image::Format format, size_t width, size_t height) {
 	return std::max(width, size_t(1)) * std::max(height, size_t(1)) * SIZE_TABLE[format];
 }
 
-size_t Image::GetNumChannels(Image::Format format) {
+size_t Image::getNumChannels(Image::Format format) {
 	return SIZE_TABLE[format];
 }
 
@@ -199,16 +199,16 @@ void Image::Create(size_t width, size_t height, Format format) {
 
 bool Image::ConvertTo(Format format) {
 	
-	arx_assert_msg(GetNumChannels() == GetNumChannels(format),
+	arx_assert_msg(getNumChannels() == getNumChannels(format),
 	               "[Image::ConvertTo] Conversion of images with different BPP not supported yet!");
-	if(GetNumChannels() != GetNumChannels(format)) {
+	if(getNumChannels() != getNumChannels(format)) {
 		return false;
 	}
 	
 	if(mFormat == format)
 		return true;
 	
-	size_t numComponents = GetNumChannels();
+	size_t numComponents = getNumChannels();
 	size_t size = mWidth * mHeight;
 	unsigned char * data = mData;
 
@@ -461,7 +461,7 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 	
 	Copy(src, 0, 0);
 	
-	size_t pixsize = GetNumChannels();
+	size_t pixsize = getNumChannels();
 	size_t insize = pixsize * src.mWidth, outsize = pixsize * mWidth;
 	
 	if(mWidth > src.mWidth) {
@@ -499,8 +499,8 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 
 bool Image::ToGrayscale(Format newFormat) {
 	
-	size_t srcNumChannels = GetNumChannels();
-	size_t dstNumChannels = GetNumChannels(newFormat);
+	size_t srcNumChannels = getNumChannels();
+	size_t dstNumChannels = getNumChannels(newFormat);
 	
 	if(srcNumChannels < 3) {
 		return false;
@@ -556,7 +556,7 @@ void Image::Blur(size_t radius) {
 	
 	// Split color channels into separated array to simplify handling of multiple image format...
 	// Could easilly be refactored
-	size_t numChannels = GetNumChannels();
+	size_t numChannels = getNumChannels();
 	unsigned char * channel[4] = {};
 	unsigned char * blurredChannel[4] = {};
 	for(size_t c = 0; c < numChannels; c++) {
@@ -636,8 +636,8 @@ void Image::SetAlpha(const Image & img, bool bInvertAlpha) {
 	arx_assert(img.HasAlpha());
 	arx_assert(HasAlpha());
 	
-	size_t srcChannelCount = img.GetNumChannels();
-	size_t dstChannelCount = GetNumChannels();
+	size_t srcChannelCount = img.getNumChannels();
+	size_t dstChannelCount = getNumChannels();
 	
 	unsigned char * src = img.mData;
 	unsigned char * dst = mData;
@@ -695,10 +695,10 @@ bool Image::save(const fs::path & filename) const {
 	int ret = 0;
 	if(filename.ext() == ".bmp") {
 		ret = stbi::stbi_write_bmp(filename.string().c_str(), int(mWidth), int(mHeight),
-		                           int(GetNumChannels()), mData);
+		                           int(getNumChannels()), mData);
 	} else if(filename.ext() == ".tga") {
 		ret = stbi::stbi_write_tga(filename.string().c_str(), int(mWidth), int(mHeight),
-		                           int(GetNumChannels()), mData);
+		                           int(getNumChannels()), mData);
 	} else {
 		LogError << "Unsupported file extension: " << filename.ext();
 	}
