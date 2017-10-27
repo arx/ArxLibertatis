@@ -250,7 +250,7 @@ TextureContainer * TextureContainer::LoadUI(const res::path & strName, TCFlags f
 bool TextureContainer::CreateHalo() {
 	
 	Image srcImage;
-	if(!srcImage.LoadFromFile(m_pTexture->getFileName())) {
+	if(!srcImage.load(m_pTexture->getFileName())) {
 		return false;
 	}
 	
