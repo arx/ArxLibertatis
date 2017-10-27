@@ -349,10 +349,10 @@ void Image::QuakeGamma(float pGamma) {
 	// using a pGamma < 1.0 will have no effect
 	
 	size_t numComponents = SIZE_TABLE[mFormat];
-	unsigned int size = mWidth * mHeight;
+	size_t size = mWidth * mHeight;
 	unsigned char * data = mData;
 	
-	const unsigned int MAX_COMPONENTS = 4;
+	const size_t MAX_COMPONENTS = 4;
 	const float COMPONENT_RANGE = 255.0f;
 	
 	float components[MAX_COMPONENTS];
@@ -363,36 +363,40 @@ void Image::QuakeGamma(float pGamma) {
 	}
 	
 	// Go through every pixel in the image
-	for(unsigned int i = 0; i < size; i++, data += numComponents) {
+	for(size_t i = 0; i < size; i++, data += numComponents) {
 		
 		float max_component = 0.0f;
 		
-		for(unsigned int j = 0; j < numComponents; j++) {
+		for(size_t j = 0; j < numComponents; j++) {
 			
 			// scale the component's value
 			components[j] = float(data[j]) * pGamma;
-
+			
 			// find the max component
 			max_component = std::max(max_component, components[j]);
+			
 		}
-
-		if (max_component > COMPONENT_RANGE) {
-
+		
+		if(max_component > COMPONENT_RANGE) {
+			
 			float reciprocal = COMPONENT_RANGE / max_component;
-
-			for (unsigned int j = 0; j < numComponents; j++) {
-				
+			
+			for(size_t j = 0; j < numComponents; j++) {
 				// normalize the components by max component value
 				components[j] *= reciprocal;
 				data[j] = (unsigned char)components[j];
 			}
+			
 		} else {
-		
-			for (unsigned int j = 0; j < numComponents; j++) {
+			
+			for(size_t j = 0; j < numComponents; j++) {
 				data[j] = (unsigned char)components[j];
 			}
+			
 		}
+		
 	}
+	
 }
 
 void Image::ApplyThreshold(unsigned char threshold, int component_mask) {
