@@ -20,6 +20,7 @@
 #ifndef ARX_GRAPHICS_IMAGE_IMAGE_H
 #define ARX_GRAPHICS_IMAGE_IMAGE_H
 
+#include <stddef.h>
 #include <ostream>
 
 #include "graphics/Color.h"
@@ -90,7 +91,7 @@ public:
 	void FlipY();
 	bool ToGrayscale(Format newFormat = Format_L8);
 	
-	void ResizeFrom(const Image &source, unsigned int width, unsigned int height, bool flip_vertical = false);
+	void ResizeFrom(const Image & source, size_t width, size_t height, bool flip_vertical = false);
 	
 	//! Set the alpha of pixels matching the color key to 0. Will add an alpha channel if needed.
 	void ApplyColorKeyToAlpha(Color colorKey = Color::black, bool antialias = false);

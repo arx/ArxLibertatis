@@ -236,10 +236,10 @@ bool Image::ConvertTo(Format format) {
 // creates an image of the desired size and rescales the source into it
 // performs only nearest-neighbour interpolation of the image
 // supports only RGB format
-void Image::ResizeFrom(const Image &source, unsigned int desired_width, unsigned int desired_height, bool flip_vertical)
-{
+void Image::ResizeFrom(const Image & source, size_t desired_width, size_t desired_height, bool flip_vertical) {
+	
 	Create(desired_width, desired_height, Format_R8G8B8);
-
+	
 	// span, size of one line in pixels (doesn't allow for byte padding)
 	const unsigned int src_span = source.GetWidth();
 	const unsigned int dest_span = GetWidth();
