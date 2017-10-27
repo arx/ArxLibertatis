@@ -402,20 +402,18 @@ void Image::QuakeGamma(float pGamma) {
 void Image::ApplyThreshold(unsigned char threshold, int component_mask) {
 	
 	size_t numComponents = SIZE_TABLE[mFormat];
-	unsigned int size = mWidth * mHeight;
+	size_t size = mWidth * mHeight;
 	unsigned char * data = mData;
 	
 	// Go through every pixel in the image
-	for(unsigned int i = 0; i < size; i++, data += numComponents) {
-		
-		for(unsigned int j = 0; j < numComponents; j++) {
-			
-			if ((component_mask >> j) & 1)
-			{
+	for(size_t i = 0; i < size; i++, data += numComponents) {
+		for(size_t j = 0; j < numComponents; j++) {
+			if((component_mask >> j) & 1) {
 				data[j] = (data[j] > threshold ? 255 : 0);
 			}
 		}
 	}
+	
 }
 
 template <size_t N>
