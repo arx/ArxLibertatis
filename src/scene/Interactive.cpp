@@ -149,10 +149,7 @@ bool ValidIOAddress(const Entity * io) {
 	if(!io)
 		return false;
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
+	BOOST_FOREACH(Entity * e, entities.all()) {
 		if(e == io) {
 			return true;
 		}
