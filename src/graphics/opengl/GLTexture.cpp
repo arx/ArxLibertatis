@@ -68,7 +68,7 @@ void GLTexture::upload() {
 	if(!renderer->hasIntensityTextures() && isIntensity()) {
 		arx_assert(getFormat() == Image::Format_L8);
 		Image converted;
-		converted.create(getStoredSize().x, getStoredSize().y, Image::Format_L8A8);
+		converted.create(size_t(getStoredSize().x), size_t(getStoredSize().y), Image::Format_L8A8);
 		unsigned char * input = m_image.getData();
 		unsigned char * end = input + getStoredSize().x * getStoredSize().y;
 		unsigned char * output = converted.getData();
@@ -129,7 +129,7 @@ void GLTexture::upload() {
 	
 	if(getStoredSize() != getSize()) {
 		Image extended;
-		extended.create(getStoredSize().x, getStoredSize().y, m_image.getFormat());
+		extended.create(size_t(getStoredSize().x), size_t(getStoredSize().y), m_image.getFormat());
 		extended.extendClampToEdgeBorder(m_image);
 		glTexImage2D(GL_TEXTURE_2D, 0, internal, getStoredSize().x, getStoredSize().y, 0, format,
 		             GL_UNSIGNED_BYTE, extended.getData());
