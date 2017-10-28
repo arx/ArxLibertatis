@@ -66,7 +66,7 @@ public:
 	// info accessors
 	size_t GetWidth() const { return mWidth; }
 	size_t GetHeight() const { return mHeight; }
-	Format getFormat() const { return mFormat; }
+	Format getFormat() const { return m_format; }
 	size_t getSize() const { return getSize(getFormat(), mWidth, mHeight); }
 	size_t getNumChannels() const { return getNumChannels(getFormat()); }
 	
@@ -129,7 +129,7 @@ private:
 	size_t mWidth;
 	size_t mHeight;
 	
-	Format mFormat; //!< Image format.
+	Format m_format; //!< Image format.
 	
 	unsigned char * m_data; //!< Pointer to image data buffer.
 	
