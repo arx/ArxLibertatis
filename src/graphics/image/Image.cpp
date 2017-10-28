@@ -63,7 +63,7 @@ const Image & Image::operator=(const Image & other) {
 	
 	Create(other.mWidth, other.mHeight, other.mFormat);
 	
-	memcpy(mData, other.mData, getSize(mFormat, mWidth, mHeight));
+	memcpy(mData, other.mData, getSize());
 	
 	return *this;
 }
@@ -149,7 +149,7 @@ bool Image::load(void * data, size_t size, const char * file) {
 	
 	// Copy image data to our buffer
 	if(mData) {
-		memcpy(mData, pixels, getSize(mFormat, mWidth, mHeight));
+		memcpy(mData, pixels, getSize());
 	}
 	
 	// Release resources
@@ -164,7 +164,7 @@ void Image::Create(size_t width, size_t height, Format format) {
 	arx_assert_msg(height > 0, "[Image::Create] Width is 0!");
 	arx_assert_msg(format < Format_Unknown, "[Image::Create] Unknown texture format!");
 	
-	size_t oldSize = getSize(mFormat, mWidth, mHeight);
+	size_t oldSize = getSize();
 	size_t newSize = getSize(format, width, height);
 	if(mData && newSize != oldSize) {
 		delete[] mData, mData = NULL;
@@ -273,7 +273,7 @@ void Image::ResizeFrom(const Image & source, size_t desired_width, size_t desire
 }
 
 void Image::Clear() {
-	memset(mData, 0, getSize(mFormat, mWidth, mHeight));
+	memset(mData, 0, getSize());
 }
 
 bool Image::Copy(const Image & srcImage, size_t dstX, size_t dstY,
@@ -647,7 +647,7 @@ void Image::SetAlpha(const Image & img, bool bInvertAlpha) {
 
 void Image::FlipY() {
 	
-	size_t imageSize = getSize(mFormat, mWidth, mHeight);
+	size_t imageSize = getSize();
 	size_t lineSize = imageSize / mHeight;
 	
 	unsigned char * swapTmp = (unsigned char *)malloc(lineSize);
