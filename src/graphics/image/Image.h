@@ -67,12 +67,12 @@ public:
 	size_t GetWidth() const { return mWidth; }
 	size_t GetHeight() const { return mHeight; }
 	Format getFormat() const { return mFormat; }
-	size_t getSize() const { return getSize(mFormat, mWidth, mHeight); }
-	size_t getNumChannels() const { return getNumChannels(mFormat); }
+	size_t getSize() const { return getSize(getFormat(), mWidth, mHeight); }
+	size_t getNumChannels() const { return getNumChannels(getFormat()); }
 	
 	bool isValid() const { return m_data != NULL; }
 	
-	bool hasAlpha() const { return hasAlpha(mFormat); }
+	bool hasAlpha() const { return hasAlpha(getFormat()); }
 	
 	static bool hasAlpha(Format format) {
 		return format == Format_A8

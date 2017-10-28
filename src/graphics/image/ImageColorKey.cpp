@@ -297,12 +297,12 @@ static bool sampleColorKey(const u8 * src, int w, int h, int x, int y, u8 * dst,
 
 void Image::applyColorKeyToAlpha(Color key, bool antialias) {
 	
-	if(mFormat != Format_R8G8B8 && mFormat != Format_B8G8R8) {
-		arx_assert_msg(false, "applyColorKeyToAlpha() not supported for format %d", mFormat);
+	if(getFormat() != Format_R8G8B8 && getFormat() != Format_B8G8R8) {
+		arx_assert_msg(false, "applyColorKeyToAlpha() not supported for format %d", int(getFormat()));
 		return;
 	}
 	
-	if(mFormat == Format_B8G8R8) {
+	if(getFormat() == Format_B8G8R8) {
 		std::swap(key.r, key.b);
 	}
 	
@@ -370,6 +370,6 @@ void Image::applyColorKeyToAlpha(Color key, bool antialias) {
 	// Swap data with temp data and ajust internal state
 	delete[] m_data;
 	m_data = dataTemp;
-	mFormat = (mFormat == Format_R8G8B8) ? Format_R8G8B8A8 : Format_B8G8R8A8;
+	mFormat = (getFormat() == Format_R8G8B8) ? Format_R8G8B8A8 : Format_B8G8R8A8;
 	
 }
