@@ -558,7 +558,7 @@ aalError OpenALBackend::setReverbEnabled(bool enable) {
 		alGenEffects(1, &effect);
 		alEffecti(effect, AL_EFFECT_TYPE, AL_EFFECT_REVERB);
 		alGenAuxiliaryEffectSlots(1, &effectSlot);
-		AL_CHECK_ERROR_N("creating effect",
+		AL_CHECK_ERROR_C("creating effect",
 			enable = false;
 		);
 	}
@@ -629,7 +629,7 @@ aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
 			           << raw ## Property << " to " << al ## Property; \
 		} \
 		alEffectf(effect, AL_REVERB_ ## Property, al ## Property); \
-		AL_CHECK_ERROR_N("setting REVERB_" << ARX_STR(Property) << " to " << al ## Property,)
+		AL_CHECK_ERROR_N("setting REVERB_" << ARX_STR(Property) << " to " << al ## Property)
 	
 	ARX_AL_REVERB_SET(ROOM_ROLLOFF_FACTOR, rolloffFactor);
 	ARX_AL_REVERB_SET(DENSITY, 1.f);

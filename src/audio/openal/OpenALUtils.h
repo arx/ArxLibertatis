@@ -30,16 +30,13 @@ const char * getAlcErrorString(ALenum error);
 
 const char * getAlErrorString(ALenum error);
 
-#define AL_CHECK_ERROR(desc) { ALenum error = alGetError(); \
-	if(error != AL_NO_ERROR) { \
-		ALError << "Error " desc << ": " << error << " = " << getAlErrorString(error); \
-		return AAL_ERROR_SYSTEM; \
-	}}
-
-#define AL_CHECK_ERROR_N(desc, todo) { ALenum error = alGetError(); \
+#define AL_CHECK_ERROR_C(desc, todo) { ALenum error = alGetError(); \
 	if(error != AL_NO_ERROR) { \
 		ALError << "Error " desc << ": " << error << " = " << getAlErrorString(error); \
 		todo \
 	}}
+
+#define AL_CHECK_ERROR_N(desc) AL_CHECK_ERROR_C(desc, (void)0;)
+#define AL_CHECK_ERROR(desc) AL_CHECK_ERROR_C(desc, return AAL_ERROR_SYSTEM;)
 
 #endif // ARX_AUDIO_OPENAL_OPENALUTILS_H
