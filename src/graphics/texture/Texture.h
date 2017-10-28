@@ -20,6 +20,8 @@
 #ifndef ARX_GRAPHICS_TEXTURE_TEXTURE_H
 #define ARX_GRAPHICS_TEXTURE_TEXTURE_H
 
+#include <stddef.h>
+
 #include "graphics/image/Image.h"
 #include "io/resource/ResourcePath.h"
 #include "math/Vector.h"
@@ -40,7 +42,7 @@ public:
 	
 	bool Init(const res::path & strFileName, TextureFlags flags);
 	bool Init(const Image & image, TextureFlags flags = HasMipmaps);
-	bool Init(unsigned int width, unsigned int height, Image::Format format);
+	bool Init(size_t width, size_t height, Image::Format format);
 	
 	virtual void Upload() = 0;
 	virtual void Destroy() = 0;
