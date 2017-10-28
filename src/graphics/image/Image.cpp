@@ -62,7 +62,7 @@ const Image & Image::operator=(const Image & other) {
 	
 	Create(other.mWidth, other.mHeight, other.mFormat);
 	
-	memcpy(mData, other.mData, getSize());
+	memcpy(getData(), other.getData(), getSize());
 	
 	return *this;
 }
@@ -147,14 +147,12 @@ bool Image::load(void * data, size_t size, const char * file) {
 	Create(size_t(width), size_t(height), format);
 	
 	// Copy image data to our buffer
-	if(mData) {
-		memcpy(mData, pixels, getSize());
-	}
+	memcpy(getData(), pixels, getSize());
 	
 	// Release resources
 	stbi::stbi_image_free(pixels);
 	
-	return (mData != NULL);
+	return true;
 }
 
 void Image::Create(size_t width, size_t height, Format format) {
@@ -192,7 +190,7 @@ bool Image::ConvertTo(Format format) {
 	
 	size_t numComponents = getNumChannels();
 	size_t size = mWidth * mHeight;
-	unsigned char * data = mData;
+	unsigned char * data = getData();
 
 	switch(format) {
 	case Format_R8G8B8:
@@ -271,7 +269,7 @@ void Image::resizeFrom(const Image & source, size_t width, size_t height, bool f
 }
 
 void Image::Clear() {
-	memset(mData, 0, getSize());
+	memset(getData(), 0, getSize());
 }
 
 bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
@@ -294,8 +292,8 @@ bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
 		return false;
 	}
 	
-	unsigned char * dst = mData + dstY * mWidth * bpp + dstX * bpp;
-	const unsigned char * src = srcImage.mData + srcY * srcImage.mWidth * bpp + srcX * bpp;
+	unsigned char * dst = getData() + dstY * mWidth * bpp + dstX * bpp;
+	const unsigned char * src = srcImage.getData() + srcY * srcImage.mWidth * bpp + srcX * bpp;
 	
 	// Copy in one step
 	if(dstX == 0 && srcX == 0 && width == srcImage.mWidth && width == mWidth) {
@@ -334,7 +332,7 @@ void Image::applyGamma(float gamma) {
 	
 	size_t numComponents = getNumChannels();
 	size_t size = mWidth * mHeight;
-	unsigned char * data = mData;
+	unsigned char * data = getData();
 	
 	const size_t MAX_COMPONENTS = 4;
 	const float COMPONENT_RANGE = 255.0f;
@@ -387,7 +385,7 @@ void Image::applyThreshold(unsigned char threshold, int component_mask) {
 	
 	size_t numComponents = getNumChannels();
 	size_t size = mWidth * mHeight;
-	unsigned char * data = mData;
+	unsigned char * data = getData();
 	
 	// Go through every pixel in the image
 	for(size_t i = 0; i < size; i++, data += numComponents) {
@@ -447,7 +445,7 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 	size_t insize = pixsize * src.mWidth, outsize = pixsize * mWidth;
 	
 	if(mWidth > src.mWidth) {
-		u8 * in =  mData + (src.mWidth - 1) * pixsize;
+		u8 * in =  getData() + (src.mWidth - 1) * pixsize;
 		switch(pixsize) {
 			case 1: extendImageRight<1>(in, src.mWidth, mWidth, src.mHeight); break;
 			case 2: extendImageRight<2>(in, src.mWidth, mWidth, src.mHeight); break;
@@ -458,16 +456,16 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 	}
 	
 	if(mHeight > src.mHeight) {
-		u8 * in = mData + outsize * (src.mHeight - 1);
-		u8 * out = mData + outsize * src.mHeight;
+		u8 * in = getData() + outsize * (src.mHeight - 1);
+		u8 * out = getData() + outsize * src.mHeight;
 		for(size_t y = src.mHeight; y < mHeight; y++, out += outsize) {
 			std::memcpy(out, in, insize);
 		}
 	}
 	
 	if(mWidth > src.mWidth && mHeight > src.mHeight) {
-		u8 * in = mData + outsize * (src.mHeight - 1) + pixsize * (src.mWidth - 1);
-		u8 * out = mData + outsize * src.mHeight + insize;
+		u8 * in = getData() + outsize * (src.mHeight - 1) + pixsize * (src.mWidth - 1);
+		u8 * out = getData() + outsize * src.mHeight + insize;
 		size_t h = mHeight - src.mHeight;
 		switch(pixsize) {
 			case 1: extendImageBottomRight<1>(in, out, src.mWidth, mWidth, h); break;
@@ -491,7 +489,7 @@ bool Image::toGrayscale(Format newFormat) {
 	size_t newSize = getSize(newFormat, mWidth, mHeight);
 	unsigned char * newData = new unsigned char[newSize];
 	
-	unsigned char * src = mData;
+	unsigned char * src = getData();
 	unsigned char * dst = newData;
 	
 	for(size_t i = 0; i < newSize; i += dstNumChannels) {
@@ -544,7 +542,7 @@ void Image::blur(size_t radius) {
 		channel[c] = new unsigned char[mWidth * mHeight];
 		blurredChannel[c] = new unsigned char[mWidth * mHeight];
 		for(size_t i = 0; i < mWidth * mHeight; i++) {
-			channel[c][i] = mData[i * numChannels + c];
+			channel[c][i] = getData()[i * numChannels + c];
 		}
 	}
 	
@@ -594,7 +592,7 @@ void Image::blur(size_t radius) {
 				read += mWidth;
 			}
 			for(size_t c = 0; c < numChannels; c++) {
-				mData[(xl + yi) * numChannels + c] = channelVals[c] / sum;
+				getData()[(xl + yi) * numChannels + c] = channelVals[c] / sum;
 			}
 		}
 		yi += mWidth;
@@ -618,7 +616,7 @@ void Image::flipY() {
 	unsigned char * swapTmp = (unsigned char *)malloc(lineSize);
 	arx_assert(swapTmp);
 	
-	unsigned char * top = mData;
+	unsigned char * top = getData();
 	unsigned char * bottom = top + (imageSize - lineSize);
 	
 	for(size_t i = 0; i < mHeight / 2; i++) {
@@ -644,10 +642,10 @@ bool Image::save(const fs::path & filename) const {
 	int ret = 0;
 	if(filename.ext() == ".bmp") {
 		ret = stbi::stbi_write_bmp(filename.string().c_str(), int(mWidth), int(mHeight),
-		                           int(getNumChannels()), mData);
+		                           int(getNumChannels()), getData());
 	} else if(filename.ext() == ".tga") {
 		ret = stbi::stbi_write_tga(filename.string().c_str(), int(mWidth), int(mHeight),
-		                           int(getNumChannels()), mData);
+		                           int(getNumChannels()), getData());
 	} else {
 		LogError << "Unsupported file extension: " << filename.ext();
 	}

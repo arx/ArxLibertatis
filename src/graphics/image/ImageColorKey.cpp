@@ -310,7 +310,7 @@ void Image::applyColorKeyToAlpha(Color key, bool antialias) {
 	// then create it if it's the case
 	
 	// Check if we've got pixels matching the color key
-	const u8 * img = mData;
+	const u8 * img = getData();
 	bool needsAlphaChannel = false;
 	for(size_t i = 0; i < (mHeight * mHeight); i++, img += 3) {
 		if(img[0] == key.r && img[1] == key.g && img[2] == key.b) {
@@ -330,7 +330,7 @@ void Image::applyColorKeyToAlpha(Color key, bool antialias) {
 	
 	// Fill temp image and apply color key to alpha channel
 	u8 * dst = dataTemp;
-	img = mData;
+	img = getData();
 	for(size_t y = 0; y < mHeight; y++) {
 		for(size_t x = 0; x < mWidth; x++) {
 			
@@ -346,14 +346,14 @@ void Image::applyColorKeyToAlpha(Color key, bool antialias) {
 				// For transparent pixels, use the color of an opaque bordering pixel,
 				// so that linear filtering won't produce black borders.
 				// TODO with premultiplied alpha this wouldn't be needed
-				if(   !sampleColorKey(mData, mWidth, mHeight, int(x)    , int(y) - 1, dst, key)
-				   && !sampleColorKey(mData, mWidth, mHeight, int(x) + 1, int(y)    , dst, key)
-				   && !sampleColorKey(mData, mWidth, mHeight, int(x)    , int(y) + 1, dst, key)
-				   && !sampleColorKey(mData, mWidth, mHeight, int(x) - 1, int(y)    , dst, key)
-				   && !sampleColorKey(mData, mWidth, mHeight, int(x) - 1, int(y) - 1, dst, key)
-				   && !sampleColorKey(mData, mWidth, mHeight, int(x) + 1, int(y) - 1, dst, key)
-				   && !sampleColorKey(mData, mWidth, mHeight, int(x) + 1, int(y) + 1, dst, key)
-				   && !sampleColorKey(mData, mWidth, mHeight, int(x) - 1, int(y) + 1, dst, key)) {
+				if(   !sampleColorKey(getData(), mWidth, mHeight, int(x)    , int(y) - 1, dst, key)
+				   && !sampleColorKey(getData(), mWidth, mHeight, int(x) + 1, int(y)    , dst, key)
+				   && !sampleColorKey(getData(), mWidth, mHeight, int(x)    , int(y) + 1, dst, key)
+				   && !sampleColorKey(getData(), mWidth, mHeight, int(x) - 1, int(y)    , dst, key)
+				   && !sampleColorKey(getData(), mWidth, mHeight, int(x) - 1, int(y) - 1, dst, key)
+				   && !sampleColorKey(getData(), mWidth, mHeight, int(x) + 1, int(y) - 1, dst, key)
+				   && !sampleColorKey(getData(), mWidth, mHeight, int(x) + 1, int(y) + 1, dst, key)
+				   && !sampleColorKey(getData(), mWidth, mHeight, int(x) - 1, int(y) + 1, dst, key)) {
 					dst[0] = dst[1] = dst[2] = 0;
 				}
 			}
