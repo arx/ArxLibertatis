@@ -274,7 +274,7 @@ void Image::Clear() {
 	memset(mData, 0, getSize());
 }
 
-bool Image::Copy(const Image & srcImage, size_t dstX, size_t dstY,
+bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
                  size_t srcX, size_t srcY, size_t width, size_t height) {
 	
 	size_t bpp = getNumChannels();
@@ -311,8 +311,8 @@ bool Image::Copy(const Image & srcImage, size_t dstX, size_t dstY,
 	return true;
 }
 
-bool Image::Copy(const Image & srcImage, size_t destX, size_t destY) {
-	return Copy(srcImage, destX, destY, 0, 0, srcImage.GetWidth(), srcImage.GetHeight());
+bool Image::copy(const Image & srcImage, size_t destX, size_t destY) {
+	return copy(srcImage, destX, destY, 0, 0, srcImage.GetWidth(), srcImage.GetHeight());
 }
 
 void Image::applyGamma(float gamma) {
@@ -441,7 +441,7 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 	arx_assert_msg(mFormat == src.mFormat, "extendClampToEdgeBorder Cannot change format!");
 	arx_assert_msg(mWidth >= src.mWidth && mHeight >= src.mHeight, "extendClampToEdgeBorder Cannot decrease size!");
 	
-	Copy(src, 0, 0);
+	copy(src, 0, 0);
 	
 	size_t pixsize = getNumChannels();
 	size_t insize = pixsize * src.mWidth, outsize = pixsize * mWidth;

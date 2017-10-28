@@ -100,13 +100,9 @@ public:
 	 */
 	void extendClampToEdgeBorder(const Image & srcImage);
 	
-	/*!
-	 * \brief Copy an image into this image's buffer
-	 *
-	 * Works only with uncompressed formats
-	 */
-	bool Copy(const Image & srcImage, size_t dstX, size_t dstY);
-	bool Copy(const Image & srcImage, size_t dstX, size_t dstY,
+	//! Copy an image into this image's buffer
+	bool copy(const Image & srcImage, size_t dstX, size_t dstY);
+	bool copy(const Image & srcImage, size_t dstX, size_t dstY,
 	          size_t srcX, size_t srcY, size_t width, size_t height);
 	
 	bool save(const fs::path & filename) const;
