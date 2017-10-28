@@ -78,7 +78,7 @@ void GLTexture::Upload() {
 		}
 		m_image = converted;
 		m_format = Image::Format_L8A8;
-		flags &= ~Intensity;
+		m_flags &= ~Intensity;
 	}
 	
 	if(!renderer->hasBGRTextureTransfer()
@@ -113,7 +113,7 @@ void GLTexture::Upload() {
 	GLint internal = renderer->hasSizedTextureFormats() ? internalSized : internalUnsized;
 	
 	if(getStoredSize() != getSize()) {
-		flags &= ~HasMipmaps;
+		m_flags &= ~HasMipmaps;
 	}
 	
 	if(hasMipmaps()) {
