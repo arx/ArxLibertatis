@@ -38,8 +38,8 @@ Image::Image() : m_data(0) {
 	reset();
 }
 
-Image::Image(const Image & pOther) : m_data(NULL) {
-	*this = pOther;
+Image::Image(const Image & other) : m_data(NULL) {
+	*this = other;
 }
 
 Image::~Image() {
