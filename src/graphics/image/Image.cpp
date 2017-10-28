@@ -212,9 +212,6 @@ bool Image::convertTo(Format format) {
 	return true;
 }
 
-// creates an image of the desired size and rescales the source into it
-// performs only nearest-neighbour interpolation of the image
-// supports only RGB format
 void Image::resizeFrom(const Image & source, size_t width, size_t height, bool flipY) {
 	
 	create(width, height, Format_R8G8B8);
