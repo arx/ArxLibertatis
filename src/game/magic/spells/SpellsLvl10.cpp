@@ -184,9 +184,7 @@ bool ControlTargetSpell::CanLaunch()
 	}
 	
 	long tcount = 0;
-	for(size_t ii = 1; ii < entities.size(); ii++) {
-		const EntityHandle handle = EntityHandle(ii);
-		Entity * ioo = entities[handle];
+	BOOST_FOREACH(Entity * ioo, entities.notPlayer()) {
 		
 		if(!ioo || !(ioo->ioflags & IO_NPC)) {
 			continue;
@@ -214,9 +212,7 @@ bool ControlTargetSpell::CanLaunch()
 void ControlTargetSpell::Launch()
 {
 	// TODO copy-paste
-	for(size_t ii = 1; ii < entities.size(); ii++) {
-		const EntityHandle handle = EntityHandle(ii);
-		Entity * ioo = entities[handle];
+	BOOST_FOREACH(Entity * ioo, entities.notPlayer()) {
 		
 		if(!ioo || !(ioo->ioflags & IO_NPC)) {
 			continue;
