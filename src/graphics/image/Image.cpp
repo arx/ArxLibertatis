@@ -74,7 +74,7 @@ const Image& Image::operator=(const Image & pOther) {
 	return *this;
 }
 
-size_t Image::GetSize(Image::Format format, size_t width, size_t height) {
+size_t Image::getSize(Image::Format format, size_t width, size_t height) {
 	return std::max(width, size_t(1)) * std::max(height, size_t(1)) * getNumChannels(format);
 }
 
@@ -152,7 +152,7 @@ bool Image::load(void * data, size_t size, const char * file) {
 		default: arx_assert_msg(false, "Invalid bpp");
 	}
 	
-	size_t dataSize = GetSize(mFormat, mWidth, mHeight);
+	size_t dataSize = getSize(mFormat, mWidth, mHeight);
 	
 	// Delete previous buffer if size don't match
 	if(mData && mDataSize != dataSize) {
@@ -186,7 +186,7 @@ void Image::Create(size_t width, size_t height, Format format) {
 	mHeight = height;
 	mFormat = format;
 	
-	size_t dataSize = GetSize(mFormat, mWidth, mHeight);
+	size_t dataSize = getSize(mFormat, mWidth, mHeight);
 	if(mData && dataSize != mDataSize) {
 		delete[] mData, mData = NULL;
 	}
@@ -506,7 +506,7 @@ bool Image::ToGrayscale(Format newFormat) {
 		return false;
 	}
 		
-	size_t newSize = GetSize(newFormat, mWidth, mHeight);
+	size_t newSize = getSize(newFormat, mWidth, mHeight);
 	unsigned char * newData = new unsigned char[newSize];
 	
 	unsigned char * src = mData;
@@ -663,7 +663,7 @@ void Image::SetAlpha(const Image & img, bool bInvertAlpha) {
 
 void Image::FlipY() {
 	
-	size_t imageSize = GetSize(mFormat, mWidth, mHeight);
+	size_t imageSize = getSize(mFormat, mWidth, mHeight);
 	size_t lineSize = imageSize / mHeight;
 	
 	unsigned char * swapTmp = (unsigned char *)malloc(lineSize);
