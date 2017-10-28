@@ -575,7 +575,7 @@ void Image::blur(size_t radius) {
 	
 	// Blur vertically using our separable kernel
 	yi = 0;
-	for (size_t yl = 0; yl < getHeight(); yl++) {
+	for(size_t yl = 0; yl < getHeight(); yl++) {
 		ptrdiff_t ym = ptrdiff_t(yl) - ptrdiff_t(radius);
 		ptrdiff_t riw = ym * ptrdiff_t(getWidth());
 		for(size_t xl = 0; xl < getWidth(); xl++) {
