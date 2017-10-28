@@ -32,7 +32,7 @@ bool Texture::Init(const res::path & strFileName, TextureFlags newFlags) {
 bool Texture::Init(const Image & pImage, TextureFlags newFlags) {
 	
 	m_filename.clear();
-	mImage = pImage;
+	m_image = pImage;
 	flags = newFlags;
 	
 	return Restore();
@@ -43,7 +43,7 @@ bool Texture::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 	m_filename.clear();
 	
 	size = Vec2i(pWidth, pHeight);
-	mImage.create(pWidth, pHeight, pFormat);
+	m_image.create(pWidth, pHeight, pFormat);
 	m_format = pFormat;
 	flags = 0;
 	
@@ -56,21 +56,21 @@ bool Texture::Restore() {
 	
 	if(!getFileName().empty()) {
 		
-		mImage.load(getFileName());
+		m_image.load(getFileName());
 		
-		if((flags & ApplyColorKey) && !mImage.hasAlpha()) {
-			mImage.applyColorKeyToAlpha(Color::black, config.video.colorkeyAntialiasing);
+		if((flags & ApplyColorKey) && !m_image.hasAlpha()) {
+			m_image.applyColorKeyToAlpha(Color::black, config.video.colorkeyAntialiasing);
 		}
 		
 		if(flags & Intensity) {
-			mImage.toGrayscale();
+			m_image.toGrayscale();
 		}
 		
 	}
 	
-	if(mImage.isValid()) {
-		m_format = mImage.getFormat();
-		size = Vec2i(mImage.getWidth(), mImage.getHeight());
+	if(m_image.isValid()) {
+		m_format = m_image.getFormat();
+		size = Vec2i(m_image.getWidth(), m_image.getHeight());
 		
 		Destroy();
 		bool bCreated = Create();
@@ -84,7 +84,7 @@ bool Texture::Restore() {
 	}
 	
 	if(!getFileName().empty()) {
-		mImage.reset();
+		m_image.reset();
 	}
 	
 	return bRestored;
