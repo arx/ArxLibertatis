@@ -149,7 +149,7 @@ static int outfile(char const * filename, int rgb_dir, int vdir, int x, int y, i
 	return f != NULL;
 }
 
-extern "C" int stbi_write_bmp(char const * filename, int x, int y, int comp, const void * data) {
+int stbi_write_bmp(char const * filename, int x, int y, int comp, const void * data) {
    int pad = (-x * 3) & 3;
    return outfile(filename, -1, -1, x, y, comp, data, 0, pad,
            "11 4 22 4" "4 44 22 444444",
