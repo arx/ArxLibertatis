@@ -58,7 +58,7 @@ public:
 	Image & GetImage() { return mImage; }
 	const res::path & getFileName() const { return mFileName; }
 	
-	bool hasColorKey() { return (flags & ApplyColorKey) && hasAlpha() && !mFileName.empty(); }
+	bool hasColorKey() { return (flags & ApplyColorKey) && hasAlpha() && !getFileName().empty(); }
 	
 protected:
 	

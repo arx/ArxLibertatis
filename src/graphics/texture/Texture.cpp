@@ -54,9 +54,9 @@ bool Texture::Restore() {
 	
 	bool bRestored = false;
 	
-	if(!mFileName.empty()) {
+	if(!getFileName().empty()) {
 		
-		mImage.load(mFileName);
+		mImage.load(getFileName());
 		
 		if((flags & ApplyColorKey) && !mImage.hasAlpha()) {
 			mImage.applyColorKeyToAlpha(Color::black, config.video.colorkeyAntialiasing);
@@ -83,7 +83,7 @@ bool Texture::Restore() {
 		bRestored = true;
 	}
 	
-	if(!mFileName.empty()) {
+	if(!getFileName().empty()) {
 		mImage.reset();
 	}
 	
