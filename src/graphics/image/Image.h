@@ -87,7 +87,8 @@ public:
 	// conversions
 	
 	void FlipY();
-	bool ToGrayscale(Format newFormat = Format_L8);
+	
+	bool toGrayscale(Format newFormat = Format_L8);
 	
 	void resizeFrom(const Image & source, size_t width, size_t height, bool flip_vertical = false);
 	

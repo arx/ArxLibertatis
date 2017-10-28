@@ -278,7 +278,7 @@ bool TextureContainer::CreateHalo() {
 	im.copy(srcImage, HALO_RADIUS, HALO_RADIUS);
 	
 	// Convert image to grayscale, and turn it to black & white
-	im.ToGrayscale(Image::Format_L8);
+	im.toGrayscale(Image::Format_L8);
 	im.applyThreshold(0, ~0);
 
 	// Blur the image

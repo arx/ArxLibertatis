@@ -61,7 +61,7 @@ bool Texture::Restore() {
 		}
 		
 		if(flags & Intensity) {
-			mImage.ToGrayscale();
+			mImage.toGrayscale();
 		}
 		
 	}
