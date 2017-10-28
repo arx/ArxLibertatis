@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedLang.h"
 
+#include <boost/foreach.hpp>
+
 #include "ai/Paths.h"
 #include "core/GameTime.h"
 #include "game/Entity.h"
@@ -310,11 +312,9 @@ public:
 		
 		if(radius) { // SEND EVENT TO ALL OBJECTS IN A RADIUS
 			
-			for(size_t l = 0 ; l < entities.size() ; l++) {
-				const EntityHandle handle = EntityHandle(l);
-				Entity * e = entities[handle];
+			BOOST_FOREACH(Entity * e, entities.all()) {
 				
-				if(!e || e == io
+				if(e == io
 				   || (e->ioflags & (IO_CAMERA|IO_MARKER))) {
 					continue;
 				}
@@ -346,11 +346,9 @@ public:
 				return Failed;
 			}
 			
-			for(size_t l = 0; l < entities.size(); l++) {
-				const EntityHandle handle = EntityHandle(l);
-				Entity * e = entities[handle];
+			BOOST_FOREACH(Entity * e, entities.all()) {
 				
-				if(!e || (e->ioflags & (IO_CAMERA|IO_MARKER))) {
+				if(e->ioflags & (IO_CAMERA|IO_MARKER)) {
 					continue;
 				}
 				
@@ -373,11 +371,9 @@ public:
 			
 		} else if(group) { // sends an event to all members of a group
 			
-			for(size_t l = 0; l < entities.size(); l++) {
-				const EntityHandle handle = EntityHandle(l);
-				Entity * e = entities[handle];
+			BOOST_FOREACH(Entity * e, entities.all()) {
 				
-				if(!e || e == io) {
+				if(e == io) {
 					continue;
 				}
 				
