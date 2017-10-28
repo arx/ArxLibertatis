@@ -55,7 +55,7 @@ public:
 	
 	bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
 	
-	Image & GetImage() { return mImage; }
+	Image & getImage() { return mImage; }
 	const res::path & getFileName() const { return m_filename; }
 	
 	bool hasColorKey() { return (flags & ApplyColorKey) && hasAlpha() && !getFileName().empty(); }
