@@ -493,7 +493,7 @@ bool Image::ToGrayscale(Format newFormat) {
 	if(srcNumChannels < 3) {
 		return false;
 	}
-		
+	
 	size_t newSize = getSize(newFormat, mWidth, mHeight);
 	unsigned char * newData = new unsigned char[newSize];
 	
