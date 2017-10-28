@@ -119,8 +119,6 @@ public:
 	
 	//! scales value and normalizes by max component value
 	void QuakeGamma(float pGamma);
-	//! Copy the alpha of img to this image.
-	void SetAlpha(const Image& img, bool bInvertAlpha);
 	
 	void applyThreshold(unsigned char threshold, int component_mask);
 	
