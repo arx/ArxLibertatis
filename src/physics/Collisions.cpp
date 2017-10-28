@@ -386,12 +386,8 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 
 bool IsAnyNPCInPlatform(Entity * pfrm) {
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(io
-		   && io != pfrm
+	BOOST_FOREACH(Entity * io, entities.all()) {
+		if(   io != pfrm
 		   && (io->ioflags & IO_NPC)
 		   && !(io->ioflags & IO_NO_COLLISIONS)
 		   && io->show == SHOW_FLAG_IN_SCENE
