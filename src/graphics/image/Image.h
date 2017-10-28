@@ -136,7 +136,6 @@ private:
 	Format mFormat; //!< Image format.
 	
 	unsigned char * mData; //!< Pointer to image data buffer.
-	size_t mDataSize; //!< Size of image buffer.
 	
 };
 

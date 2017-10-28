@@ -51,7 +51,6 @@ void Image::Reset() {
 	mWidth = 0;
 	mHeight = 0;
 	mFormat = Format_Unknown;
-	mDataSize = 0;
 }
 
 const Image & Image::operator=(const Image & other) {
@@ -177,7 +176,6 @@ void Image::Create(size_t width, size_t height, Format format) {
 	mHeight = height;
 	mFormat = format;
 	
-	mDataSize = newSize;
 }
 
 
@@ -507,7 +505,6 @@ bool Image::ToGrayscale(Format newFormat) {
 	
 	delete[] mData;
 	mData = newData;
-	mDataSize = newSize;
 	
 	mFormat = newFormat;
 	
