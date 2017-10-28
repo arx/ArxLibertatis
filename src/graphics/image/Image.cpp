@@ -60,7 +60,7 @@ const Image & Image::operator=(const Image & other) {
 		return *this;
 	}
 	
-	Create(other.mWidth, other.mHeight, other.getFormat());
+	Create(other.getWidth(), other.mHeight, other.getFormat());
 	
 	memcpy(getData(), other.getData(), getSize());
 	
@@ -190,7 +190,7 @@ bool Image::ConvertTo(Format format) {
 	}
 	
 	size_t numComponents = getNumChannels();
-	size_t size = mWidth * mHeight;
+	size_t size = getWidth() * mHeight;
 	unsigned char * data = getData();
 
 	switch(format) {
@@ -285,7 +285,7 @@ bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
 	}
 	
 	// Must fit inside boundaries
-	if(dstX + width > mWidth || dstY + height > mHeight) {
+	if(dstX + width > getWidth() || dstY + height > mHeight) {
 		return false;
 	}
 	
@@ -294,17 +294,17 @@ bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
 		return false;
 	}
 	
-	unsigned char * dst = getData() + dstY * mWidth * bpp + dstX * bpp;
-	const unsigned char * src = srcImage.getData() + srcY * srcImage.mWidth * bpp + srcX * bpp;
+	unsigned char * dst = getData() + dstY * getWidth() * bpp + dstX * bpp;
+	const unsigned char * src = srcImage.getData() + srcY * srcImage.getWidth() * bpp + srcX * bpp;
 	
 	// Copy in one step
-	if(dstX == 0 && srcX == 0 && width == srcImage.mWidth && width == mWidth) {
+	if(dstX == 0 && srcX == 0 && width == srcImage.getWidth() && width == getWidth()) {
 		memcpy(dst, src, bpp * width * height);
 		return true;
 	}
 	
 	// Copy line by line
-	for(size_t i = 0; i < height; i++, src += srcImage.mWidth * bpp, dst += mWidth * bpp) {
+	for(size_t i = 0; i < height; i++, src += srcImage.getWidth() * bpp, dst += getWidth() * bpp) {
 		memcpy(dst, src, bpp * width);
 	}
 	
@@ -333,7 +333,7 @@ void Image::applyGamma(float gamma) {
 	// using a gamma < 1.0 will have no effect
 	
 	size_t numComponents = getNumChannels();
-	size_t size = mWidth * mHeight;
+	size_t size = getWidth() * mHeight;
 	unsigned char * data = getData();
 	
 	const size_t MAX_COMPONENTS = 4;
@@ -386,7 +386,7 @@ void Image::applyGamma(float gamma) {
 void Image::applyThreshold(unsigned char threshold, int component_mask) {
 	
 	size_t numComponents = getNumChannels();
-	size_t size = mWidth * mHeight;
+	size_t size = getWidth() * mHeight;
 	unsigned char * data = getData();
 	
 	// Go through every pixel in the image
@@ -439,20 +439,20 @@ void extendImageBottomRight<1>(u8 * in, u8 * out, size_t win, size_t wout, size_
 void Image::extendClampToEdgeBorder(const Image & src) {
 	
 	arx_assert_msg(getFormat() == src.getFormat(), "extendClampToEdgeBorder Cannot change format!");
-	arx_assert_msg(mWidth >= src.mWidth && mHeight >= src.mHeight, "extendClampToEdgeBorder Cannot decrease size!");
+	arx_assert_msg(getWidth() >= src.getWidth() && mHeight >= src.mHeight, "extendClampToEdgeBorder Cannot decrease size!");
 	
 	copy(src, 0, 0);
 	
 	size_t pixsize = getNumChannels();
-	size_t insize = pixsize * src.mWidth, outsize = pixsize * mWidth;
+	size_t insize = pixsize * src.getWidth(), outsize = pixsize * getWidth();
 	
-	if(mWidth > src.mWidth) {
-		u8 * in =  getData() + (src.mWidth - 1) * pixsize;
+	if(getWidth() > src.getWidth()) {
+		u8 * in =  getData() + (src.getWidth() - 1) * pixsize;
 		switch(pixsize) {
-			case 1: extendImageRight<1>(in, src.mWidth, mWidth, src.mHeight); break;
-			case 2: extendImageRight<2>(in, src.mWidth, mWidth, src.mHeight); break;
-			case 3: extendImageRight<3>(in, src.mWidth, mWidth, src.mHeight); break;
-			case 4: extendImageRight<4>(in, src.mWidth, mWidth, src.mHeight); break;
+			case 1: extendImageRight<1>(in, src.getWidth(), getWidth(), src.mHeight); break;
+			case 2: extendImageRight<2>(in, src.getWidth(), getWidth(), src.mHeight); break;
+			case 3: extendImageRight<3>(in, src.getWidth(), getWidth(), src.mHeight); break;
+			case 4: extendImageRight<4>(in, src.getWidth(), getWidth(), src.mHeight); break;
 			default: ARX_DEAD_CODE();
 		}
 	}
@@ -465,15 +465,15 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 		}
 	}
 	
-	if(mWidth > src.mWidth && mHeight > src.mHeight) {
-		u8 * in = getData() + outsize * (src.mHeight - 1) + pixsize * (src.mWidth - 1);
+	if(getWidth() > src.getWidth() && mHeight > src.mHeight) {
+		u8 * in = getData() + outsize * (src.mHeight - 1) + pixsize * (src.getWidth() - 1);
 		u8 * out = getData() + outsize * src.mHeight + insize;
 		size_t h = mHeight - src.mHeight;
 		switch(pixsize) {
-			case 1: extendImageBottomRight<1>(in, out, src.mWidth, mWidth, h); break;
-			case 2: extendImageBottomRight<2>(in, out, src.mWidth, mWidth, h); break;
-			case 3: extendImageBottomRight<3>(in, out, src.mWidth, mWidth, h); break;
-			case 4: extendImageBottomRight<4>(in, out, src.mWidth, mWidth, h); break;
+			case 1: extendImageBottomRight<1>(in, out, src.getWidth(), getWidth(), h); break;
+			case 2: extendImageBottomRight<2>(in, out, src.getWidth(), getWidth(), h); break;
+			case 3: extendImageBottomRight<3>(in, out, src.getWidth(), getWidth(), h); break;
+			case 4: extendImageBottomRight<4>(in, out, src.getWidth(), getWidth(), h); break;
 			default: ARX_DEAD_CODE();
 		}
 	}
@@ -488,7 +488,7 @@ bool Image::toGrayscale(Format newFormat) {
 		return false;
 	}
 	
-	size_t newSize = getSize(newFormat, mWidth, mHeight);
+	size_t newSize = getSize(newFormat, getWidth(), mHeight);
 	unsigned char * newData = new unsigned char[newSize];
 	
 	unsigned char * src = getData();
@@ -541,9 +541,9 @@ void Image::blur(size_t radius) {
 	unsigned char * channel[4] = {};
 	unsigned char * blurredChannel[4] = {};
 	for(size_t c = 0; c < numChannels; c++) {
-		channel[c] = new unsigned char[mWidth * mHeight];
-		blurredChannel[c] = new unsigned char[mWidth * mHeight];
-		for(size_t i = 0; i < mWidth * mHeight; i++) {
+		channel[c] = new unsigned char[getWidth() * mHeight];
+		blurredChannel[c] = new unsigned char[getWidth() * mHeight];
+		for(size_t i = 0; i < getWidth() * mHeight; i++) {
 			channel[c][i] = getData()[i * numChannels + c];
 		}
 	}
@@ -551,13 +551,13 @@ void Image::blur(size_t radius) {
 	// Blur horizontally using our separable kernel
 	size_t yi = 0;
 	for(size_t yl = 0; yl < mHeight; yl++) {
-		for(size_t xl = 0; xl < mWidth; xl++) {
+		for(size_t xl = 0; xl < getWidth(); xl++) {
 			size_t channelVals[4] = {0, 0, 0, 0};
 			size_t sum = 0;
 			ptrdiff_t ri = ptrdiff_t(xl) - ptrdiff_t(radius);
 			for(size_t i = 0; i < kernelSize; i++) {
 				ptrdiff_t read = ri + ptrdiff_t(i);
-				if(read >= 0 && size_t(read) < mWidth) {
+				if(read >= 0 && size_t(read) < getWidth()) {
 					read += yi;
 					for(size_t c = 0; c < numChannels; c++) {
 						channelVals[c] += mult[(i << 8) + channel[c][read]];
@@ -570,15 +570,15 @@ void Image::blur(size_t radius) {
 				blurredChannel[c][ri] = channelVals[c] / sum;
 			}
 		}
-		yi += mWidth;
+		yi += getWidth();
 	}
 	
 	// Blur vertically using our separable kernel
 	yi = 0;
 	for (size_t yl = 0; yl < mHeight; yl++) {
 		ptrdiff_t ym = ptrdiff_t(yl) - ptrdiff_t(radius);
-		ptrdiff_t riw = ym * ptrdiff_t(mWidth);
-		for(size_t xl = 0; xl < mWidth; xl++) {
+		ptrdiff_t riw = ym * ptrdiff_t(getWidth());
+		for(size_t xl = 0; xl < getWidth(); xl++) {
 			size_t channelVals[4] = {0, 0, 0, 0};
 			size_t sum = 0;
 			ptrdiff_t ri = ym;
@@ -591,13 +591,13 @@ void Image::blur(size_t radius) {
 					sum += kernel[i];
 				}
 				ri++;
-				read += mWidth;
+				read += getWidth();
 			}
 			for(size_t c = 0; c < numChannels; c++) {
 				getData()[(xl + yi) * numChannels + c] = channelVals[c] / sum;
 			}
 		}
-		yi += mWidth;
+		yi += getWidth();
 	}
 	
 	// Clean up mess
@@ -643,10 +643,10 @@ bool Image::save(const fs::path & filename) const {
 	
 	int ret = 0;
 	if(filename.ext() == ".bmp") {
-		ret = stbi::stbi_write_bmp(filename.string().c_str(), int(mWidth), int(mHeight),
+		ret = stbi::stbi_write_bmp(filename.string().c_str(), int(getWidth()), int(mHeight),
 		                           int(getNumChannels()), getData());
 	} else if(filename.ext() == ".tga") {
-		ret = stbi::stbi_write_tga(filename.string().c_str(), int(mWidth), int(mHeight),
+		ret = stbi::stbi_write_tga(filename.string().c_str(), int(getWidth()), int(mHeight),
 		                           int(getNumChannels()), getData());
 	} else {
 		LogError << "Unsupported file extension: " << filename.ext();
