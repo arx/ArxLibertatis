@@ -610,38 +610,6 @@ void Image::Blur(size_t radius) {
 	
 }
 
-void Image::SetAlpha(const Image & img, bool bInvertAlpha) {
-	
-	arx_assert(mWidth == img.mWidth);
-	arx_assert(mHeight == img.mHeight);
-	arx_assert(img.HasAlpha());
-	arx_assert(HasAlpha());
-	
-	size_t srcChannelCount = img.getNumChannels();
-	size_t dstChannelCount = getNumChannels();
-	
-	unsigned char * src = img.mData;
-	unsigned char * dst = mData;
-	
-	// Offset the data pointers before the start of the loop
-	// All our current image formats have their alpha in the last channel
-	src += srcChannelCount - 1;
-	dst += dstChannelCount - 1;
-	
-	size_t pixelCount = mWidth * mHeight;
-	
-	if(!bInvertAlpha) {
-		for(size_t i = 0; i < pixelCount; i++, src += srcChannelCount, dst += dstChannelCount) {
-			*dst = *src; // Copy alpha
-		}
-	} else {
-		for(size_t i = 0; i < pixelCount; i++, src += srcChannelCount, dst += dstChannelCount) {
-			*dst = 255 - *src; // Copy inverted alpha
-		}
-	}
-	
-}
-
 void Image::FlipY() {
 	
 	size_t imageSize = getSize();
