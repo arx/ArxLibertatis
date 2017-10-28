@@ -54,22 +54,16 @@ void Image::Reset() {
 	mDataSize = 0;
 }
 
-const Image& Image::operator=(const Image & pOther) {
+const Image & Image::operator=(const Image & other) {
 	
 	// Ignore self copy!
-	if(&pOther == this) {
+	if(&other == this) {
 		return *this;
 	}
 	
-	delete[] mData, mData = NULL;
+	Create(other.mWidth, other.mHeight, other.mFormat);
 	
-	mWidth      = pOther.mWidth;
-	mHeight     = pOther.mHeight;
-	mFormat     = pOther.mFormat;
-	mDataSize   = pOther.mDataSize;
-	mData       = new unsigned char[mDataSize];
-	
-	memcpy(mData, pOther.mData, mDataSize);
+	memcpy(mData, other.mData, getSize(mFormat, mWidth, mHeight));
 	
 	return *this;
 }
