@@ -70,7 +70,7 @@ public:
 	size_t getSize() const { return getSize(mFormat, mWidth, mHeight); }
 	size_t getNumChannels() const { return getNumChannels(mFormat); }
 	
-	bool IsValid() const { return m_data != NULL; }
+	bool isValid() const { return m_data != NULL; }
 	
 	bool hasAlpha() const { return hasAlpha(mFormat); }
 	
