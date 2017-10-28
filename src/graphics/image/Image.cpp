@@ -170,18 +170,20 @@ void Image::Create(size_t width, size_t height, Format format) {
 	arx_assert_msg(height > 0, "[Image::Create] Width is 0!");
 	arx_assert_msg(format < Format_Unknown, "[Image::Create] Unknown texture format!");
 	
+	size_t oldSize = getSize(mFormat, mWidth, mHeight);
+	size_t newSize = getSize(format, width, height);
+	if(mData && newSize != oldSize) {
+		delete[] mData, mData = NULL;
+	}
+	if(!mData) {
+		mData = new unsigned char[newSize];
+	}
+	
 	mWidth  = width;
 	mHeight = height;
 	mFormat = format;
 	
-	size_t dataSize = getSize(mFormat, mWidth, mHeight);
-	if(mData && dataSize != mDataSize) {
-		delete[] mData, mData = NULL;
-	}
-	mDataSize = dataSize;
-	if(!mData) {
-		mData = new unsigned char[mDataSize];
-	}
+	mDataSize = newSize;
 }
 
 
