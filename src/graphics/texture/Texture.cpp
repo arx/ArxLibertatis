@@ -42,7 +42,7 @@ bool Texture::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 	
 	m_filename.clear();
 	
-	size = Vec2i(pWidth, pHeight);
+	m_size = Vec2i(pWidth, pHeight);
 	m_image.create(pWidth, pHeight, pFormat);
 	m_format = pFormat;
 	flags = 0;
@@ -69,8 +69,9 @@ bool Texture::Restore() {
 	}
 	
 	if(m_image.isValid()) {
+		
 		m_format = m_image.getFormat();
-		size = Vec2i(m_image.getWidth(), m_image.getHeight());
+		m_size = Vec2i(m_image.getWidth(), m_image.getHeight());
 		
 		Destroy();
 		bool bCreated = Create();
