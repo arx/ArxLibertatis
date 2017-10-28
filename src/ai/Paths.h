@@ -67,7 +67,7 @@ enum PathwayType {
 };
 
 struct ARX_PATHWAY {
-	Vec3f rpos; //relative pos
+	Vec3f rpos; // Relative position
 	PathwayType flag;
 	GameDuration _time;
 };
