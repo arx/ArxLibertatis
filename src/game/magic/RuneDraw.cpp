@@ -313,8 +313,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 }
 
 void ARX_SPELLS_ClearAllSymbolDraw() {
-	BOOST_FOREACH(Entity * e, entities) {
-		if(e && e->symboldraw) {
+	BOOST_FOREACH(Entity * e, entities.all()) {
+		if(e->symboldraw) {
 			delete e->symboldraw;
 			e->symboldraw = NULL;
 		}

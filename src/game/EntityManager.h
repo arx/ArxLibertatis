@@ -84,9 +84,6 @@ public:
 	typedef Entries::const_iterator iterator;
 	typedef Entries::const_iterator const_iterator;
 	
-	iterator begin() const { return entries.begin(); }
-	iterator end() const { return entries.end(); }
-	
 	
 	struct ValidEntryFilter {
 		bool operator()(const Entity * c){
