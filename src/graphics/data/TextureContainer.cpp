@@ -282,7 +282,7 @@ bool TextureContainer::CreateHalo() {
 	
 	// Convert image to grayscale, and turn it to black & white
 	im.ToGrayscale(Image::Format_L8A8);
-	im.ApplyThreshold(0, ~0);
+	im.applyThreshold(0, ~0);
 
 	// Blur the image
 	im.Blur(HALO_RADIUS);
