@@ -65,7 +65,7 @@ void GLTexture::Upload() {
 	renderer->GetTextureStage(0)->current = this;
 	
 	// I8 to L8A8
-	if(!renderer->hasIntensityTextures() && (flags & Intensity)) {
+	if(!renderer->hasIntensityTextures() && isIntensity()) {
 		arx_assert(getFormat() == Image::Format_L8);
 		Image converted;
 		converted.create(getStoredSize().x, getStoredSize().y, Image::Format_L8A8);
@@ -90,7 +90,7 @@ void GLTexture::Upload() {
 	
 	GLint internalUnsized, internalSized;
 	GLenum format;
-	if(flags & Intensity) {
+	if(isIntensity()) {
 		internalUnsized = GL_INTENSITY, internalSized = GL_INTENSITY8, format = GL_RED;
 	} else if(getFormat() == Image::Format_L8) {
 		internalUnsized = GL_LUMINANCE, internalSized = GL_LUMINANCE8, format = GL_LUMINANCE;

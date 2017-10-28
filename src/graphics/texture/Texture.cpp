@@ -62,7 +62,7 @@ bool Texture::Restore() {
 			m_image.applyColorKeyToAlpha(Color::black, config.video.colorkeyAntialiasing);
 		}
 		
-		if(flags & Intensity) {
+		if(isIntensity()) {
 			m_image.toGrayscale();
 		}
 		
