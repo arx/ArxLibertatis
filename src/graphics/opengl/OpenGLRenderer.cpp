@@ -541,14 +541,14 @@ void OpenGLRenderer::ReleaseAllTextures() {
 
 void OpenGLRenderer::RestoreAllTextures() {
 	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
-		it->Restore();
+		it->restore();
 	}
 }
 
 void OpenGLRenderer::reloadColorKeyTextures() {
 	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
 		if(it->hasColorKey()) {
-			it->Restore();
+			it->restore();
 		}
 	}
 }

@@ -47,7 +47,7 @@ public:
 	virtual void Upload() = 0;
 	virtual void Destroy() = 0;
 	
-	bool Restore();
+	bool restore();
 	
 	const Vec2i & getSize() const { return m_size; }
 	const Vec2i & getStoredSize() const { return m_storedSize; }

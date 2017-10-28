@@ -26,7 +26,7 @@ bool Texture::Init(const res::path & filename, TextureFlags flags) {
 	m_filename = filename;
 	m_flags = flags;
 	
-	return Restore();
+	return restore();
 }
 
 bool Texture::Init(const Image & image, TextureFlags flags) {
@@ -35,7 +35,7 @@ bool Texture::Init(const Image & image, TextureFlags flags) {
 	m_image = image;
 	m_flags = flags;
 	
-	return Restore();
+	return restore();
 }
 
 bool Texture::Init(size_t width, size_t height, Image::Format format) {
@@ -50,7 +50,7 @@ bool Texture::Init(size_t width, size_t height, Image::Format format) {
 	return create();
 }
 
-bool Texture::Restore() {
+bool Texture::restore() {
 	
 	bool restored = false;
 	
