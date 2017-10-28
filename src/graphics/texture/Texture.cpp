@@ -38,11 +38,11 @@ bool Texture::Init(const Image & image, TextureFlags flags) {
 	return Restore();
 }
 
-bool Texture::Init(unsigned int width, unsigned int height, Image::Format format) {
+bool Texture::Init(size_t width, size_t height, Image::Format format) {
 	
 	m_filename.clear();
 	
-	m_size = Vec2i(width, height);
+	m_size = Vec2i(s32(width), s32(height));
 	m_image.create(width, height, format);
 	m_format = format;
 	m_flags = 0;
