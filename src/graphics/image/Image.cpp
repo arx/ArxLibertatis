@@ -230,7 +230,7 @@ void Image::resizeFrom(const Image & source, size_t width, size_t height, bool f
 	
 	// find fractional source y_delta
 	float y_source = 0.0f;
-	const float y_delta = source.getHeight() / float(getHeight());
+	const float y_delta = float(source.getHeight()) / float(getHeight());
 	
 	for(size_t y = 0; y < getHeight(); y++) {
 		
@@ -242,7 +242,7 @@ void Image::resizeFrom(const Image & source, size_t width, size_t height, bool f
 		
 		// find fractional source x_delta
 		float x_source = 0.0f;
-		const float x_delta = source.getWidth() / float(getWidth());
+		const float x_delta = float(source.getWidth()) / float(getWidth());
 		
 		for(size_t x = 0; x < getWidth(); x++) {
 			
