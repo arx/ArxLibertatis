@@ -488,7 +488,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 			aii.ident = e->instance();
 			aii.level = num;
 			aii.truelevel = num;
-			aii.num = i; // !!!
+			aii.num = i; // FIXME save/load EntityHandle
 			memcpy(dat + pos, &aii, sizeof(aii));
 			pos += sizeof(aii);
 		}
