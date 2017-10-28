@@ -50,9 +50,9 @@ bool GLTexture::Create() {
 	minFilter = TextureStage::FilterNearest;
 	magFilter = TextureStage::FilterLinear;
 	
-	Vec2i nextPowerOfTwo(GetNextPowerOf2(size.x), GetNextPowerOf2(size.y));
-	m_storedSize = renderer->hasTextureNPOT() ? size : nextPowerOfTwo;
-	isNPOT = (size != nextPowerOfTwo);
+	Vec2i nextPowerOfTwo(GetNextPowerOf2(getSize().x), GetNextPowerOf2(getSize().y));
+	m_storedSize = renderer->hasTextureNPOT() ? getSize() : nextPowerOfTwo;
+	isNPOT = (getSize() != nextPowerOfTwo);
 	
 	return (tex != GL_NONE);
 }
@@ -112,7 +112,7 @@ void GLTexture::Upload() {
 	}
 	GLint internal = renderer->hasSizedTextureFormats() ? internalSized : internalUnsized;
 	
-	if(getStoredSize() != size) {
+	if(getStoredSize() != getSize()) {
 		flags &= ~HasMipmaps;
 	}
 	
@@ -127,14 +127,14 @@ void GLTexture::Upload() {
 	
 	// TODO handle GL_MAX_TEXTURE_SIZE
 	
-	if(getStoredSize() != size) {
+	if(getStoredSize() != getSize()) {
 		Image extended;
 		extended.create(getStoredSize().x, getStoredSize().y, m_image.getFormat());
 		extended.extendClampToEdgeBorder(m_image);
 		glTexImage2D(GL_TEXTURE_2D, 0, internal, getStoredSize().x, getStoredSize().y, 0, format,
 		             GL_UNSIGNED_BYTE, extended.getData());
 	} else {
-		glTexImage2D(GL_TEXTURE_2D, 0, internal, size.x, size.y, 0, format,
+		glTexImage2D(GL_TEXTURE_2D, 0, internal, getSize().x, getSize().y, 0, format,
 		             GL_UNSIGNED_BYTE, m_image.getData());
 	}
 	
