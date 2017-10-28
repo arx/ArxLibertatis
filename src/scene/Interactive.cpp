@@ -660,17 +660,12 @@ void PrepareIOTreatZone(long flag) {
  * \brief Removes an IO loaded by a script command
  */
 void CleanScriptLoadedIO() {
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-		
-		if(io) {
-			if(io->scriptload) {
-				delete io;
-			} else {
-				// TODO why not jus leave it as is?
-				io->show = SHOW_FLAG_IN_SCENE;
-			}
+	BOOST_FOREACH(Entity * io, entities.notPlayer()) {
+		if(io->scriptload) {
+			delete io;
+		} else {
+			// TODO why not jus leave it as is?
+			io->show = SHOW_FLAG_IN_SCENE;
 		}
 	}
 }
