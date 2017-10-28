@@ -86,7 +86,7 @@ public:
 	
 	// conversions
 	
-	void FlipY();
+	void flipY();
 	
 	bool toGrayscale(Format newFormat = Format_L8);
 	

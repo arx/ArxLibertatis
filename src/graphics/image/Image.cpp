@@ -610,7 +610,7 @@ void Image::blur(size_t radius) {
 	
 }
 
-void Image::FlipY() {
+void Image::flipY() {
 	
 	size_t imageSize = getSize();
 	size_t lineSize = imageSize / mHeight;
