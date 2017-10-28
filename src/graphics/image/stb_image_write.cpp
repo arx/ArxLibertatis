@@ -3,18 +3,17 @@
                             no warranty implied; use at your own risk
 */
 
+#include "graphics/image/stb_image_write.h"
+
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
 
-#include "graphics/image/stb_image_write.h"
+#include "platform/Platform.h"
 
 namespace stbi {
-
-typedef unsigned int stbiw_uint32;
-typedef int stb_image_write_test[sizeof(stbiw_uint32)==4 ? 1 : -1];
 
 static int writefv(FILE * f, const char * fmt, va_list v) {
 	while(*fmt) {
@@ -34,7 +33,7 @@ static int writefv(FILE * f, const char * fmt, va_list v) {
 				break;
 			}
 			case '4': {
-				stbiw_uint32 x = va_arg(v, int);
+				u32 x = va_arg(v, int);
 				unsigned char b[4] = { (unsigned char)x, (unsigned char)(x >> 8),
 				                       (unsigned char)(x >> 16), (unsigned char)(x >> 24) };
 				if(!fwrite(b, 4, 1, f)) {
@@ -61,7 +60,7 @@ static int write_pixels(FILE * f, int rgb_dir, int vdir, int x, int y, int comp,
                         const void * data, int write_alpha, int scanline_pad) {
 	
 	unsigned char bg[3] = { 255, 0, 255 }, px[3];
-	stbiw_uint32 zero = 0;
+	u32 zero = 0;
 	int i, j, k, j_end;
 	
 	if(y <= 0) {
