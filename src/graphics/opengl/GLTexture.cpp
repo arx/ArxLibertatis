@@ -77,7 +77,7 @@ void GLTexture::Upload() {
 			*output++ = *input;
 		}
 		mImage = converted;
-		mFormat = Image::Format_L8A8;
+		m_format = Image::Format_L8A8;
 		flags &= ~Intensity;
 	}
 	
@@ -85,7 +85,7 @@ void GLTexture::Upload() {
 	   && (getFormat() == Image::Format_B8G8R8 || getFormat() == Image::Format_B8G8R8A8)) {
 		Image::Format rgbFormat = getFormat() == Image::Format_B8G8R8 ? Image::Format_R8G8B8 : Image::Format_R8G8B8A8;
 		mImage.convertTo(rgbFormat);
-		mFormat = rgbFormat;
+		m_format = rgbFormat;
 	}
 	
 	GLint internalUnsized, internalSized;
