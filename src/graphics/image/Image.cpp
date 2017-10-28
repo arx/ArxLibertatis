@@ -137,36 +137,24 @@ bool Image::load(void * data, size_t size, const char * file) {
 		LogError << message.str();
 		return false;
 	}
-
-	if(req_bpp != 0)
+	
+	if(req_bpp != 0) {
 		bpp = req_bpp;
-
-	mWidth  = width;
-	mHeight = height;
-
+	}
+	
+	Format format = Format_Unknown;
 	switch(bpp) {
-		case stbi::STBI_grey:       mFormat = Format_L8; break;
-		case stbi::STBI_grey_alpha: mFormat = Format_L8A8; break;
-		case stbi::STBI_rgb:        mFormat = Format_R8G8B8; break;
-		case stbi::STBI_rgb_alpha:  mFormat = Format_R8G8B8A8; break;
+		case stbi::STBI_grey:       format = Format_L8; break;
+		case stbi::STBI_grey_alpha: format = Format_L8A8; break;
+		case stbi::STBI_rgb:        format = Format_R8G8B8; break;
+		case stbi::STBI_rgb_alpha:  format = Format_R8G8B8A8; break;
 		default: arx_assert_msg(false, "Invalid bpp");
 	}
 	
-	size_t dataSize = getSize(mFormat, mWidth, mHeight);
-	
-	// Delete previous buffer if size don't match
-	if(mData && mDataSize != dataSize) {
-		delete[] mData, mData = NULL;
-	}
-	
-	// Create a new buffer if needed
-	if(!mData) {
-		mData = new unsigned char[dataSize];
-	}
+	Create(size_t(width), size_t(height), format);
 	
 	// Copy image data to our buffer
 	if(mData) {
-		mDataSize = dataSize;
 		memcpy(mData, pixels, mDataSize);
 	}
 	
