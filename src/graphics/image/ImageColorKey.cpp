@@ -325,7 +325,7 @@ void Image::ApplyColorKeyToAlpha(Color key, bool antialias) {
 	// If we need to add an alpha channel
 	
 	// Create a temp buffer
-	size_t dataSize = GetSize(Format_R8G8B8A8, mWidth, mHeight);
+	size_t dataSize = getSize(Format_R8G8B8A8, mWidth, mHeight);
 	u8 * dataTemp = new unsigned char[dataSize];
 	
 	// Fill temp image and apply color key to alpha channel
