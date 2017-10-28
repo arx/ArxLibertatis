@@ -47,7 +47,7 @@ public:
 	
 	bool Restore();
 	
-	const Vec2i & getSize() const { return size; }
+	const Vec2i & getSize() const { return m_size; }
 	const Vec2i & getStoredSize() const { return m_storedSize; }
 	
 	Image::Format getFormat() const { return m_format; }
@@ -65,7 +65,7 @@ protected:
 	Texture()
 		: m_format(Image::Format_Unknown)
 		, flags(0)
-		, size(Vec2i_ZERO)
+		, m_size(Vec2i_ZERO)
 		, m_storedSize(Vec2i_ZERO)
 	{ }
 	
@@ -74,7 +74,7 @@ protected:
 	Image::Format m_format;
 	TextureFlags flags;
 	
-	Vec2i size;
+	Vec2i m_size;
 	Vec2i m_storedSize;
 	
 	Image m_image;
