@@ -64,8 +64,8 @@ public:
 	void Clear();
 	
 	// info accessors
-	size_t getWidth() const { return mWidth; }
-	size_t getHeight() const { return mHeight; }
+	size_t getWidth() const { return m_width; }
+	size_t getHeight() const { return m_height; }
 	Format getFormat() const { return m_format; }
 	size_t getSize() const { return getSize(getFormat(), getWidth(), getHeight()); }
 	size_t getNumChannels() const { return getNumChannels(getFormat()); }
@@ -126,8 +126,8 @@ public:
 	
 private:
 	
-	size_t mWidth;
-	size_t mHeight;
+	size_t m_width;
+	size_t m_height;
 	
 	Format m_format; //!< Image format.
 	
