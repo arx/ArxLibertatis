@@ -136,14 +136,9 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const std::string & params) {
 	
 	ScriptResult ret = ACCEPT;
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e) {
-			if(SendIOScriptEvent(e, msg, params) == REFUSE) {
-				ret = REFUSE;
-			}
+	BOOST_FOREACH(Entity * e, entities.all()) {
+		if(SendIOScriptEvent(e, msg, params) == REFUSE) {
+			ret = REFUSE;
 		}
 	}
 	
@@ -215,11 +210,8 @@ void ARX_SCRIPT_Reset(Entity * io, bool init) {
 }
 
 void ARX_SCRIPT_ResetAll(bool init) {
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e && !e->scriptload) {
+	BOOST_FOREACH(Entity * e, entities.all()) {
+		if(!e->scriptload) {
 			ARX_SCRIPT_Reset(e, init);
 		}
 	}
@@ -1891,14 +1883,9 @@ void ARX_SCRIPT_Init_Event_Stats() {
 	
 	ScriptEvent::totalCount = 0;
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e) {
-			e->stat_count = 0;
-			e->stat_sent = 0;
-		}
+	BOOST_FOREACH(Entity * e, entities.all()) {
+		e->stat_count = 0;
+		e->stat_sent = 0;
 	}
 }
 
@@ -1907,11 +1894,8 @@ Entity * ARX_SCRIPT_Get_IO_Max_Events() {
 	long max = -1;
 	Entity * result = NULL;
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e && e->stat_count > max) {
+	BOOST_FOREACH(Entity * e, entities.all()) {
+		if(e->stat_count > max) {
 			result = e;
 			max = e->stat_count;
 		}
@@ -1925,11 +1909,8 @@ Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent() {
 	long max = -1;
 	Entity * result = NULL;
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e && e->stat_sent > max) {
+	BOOST_FOREACH(Entity * e, entities.all()) {
+		if(e->stat_sent > max) {
 			result = e;
 			max = e->stat_sent;
 		}
