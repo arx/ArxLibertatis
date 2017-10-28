@@ -716,11 +716,8 @@ static bool isPlayerLookingAtEnemy() {
 	Entity * closestNPCInFront = NULL;
 	bool isEnemyNearBy = false;
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * entity = entities[handle];
-		
-		if(!entity || !(entity->ioflags & IO_NPC)) {
+	BOOST_FOREACH(Entity * entity, entities.notPlayer()) {
+		if(!(entity->ioflags & IO_NPC)) {
 			continue;
 		}
 		
