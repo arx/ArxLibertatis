@@ -282,7 +282,7 @@ bool TextureContainer::CreateHalo() {
 	im.applyThreshold(0, ~0);
 
 	// Blur the image
-	im.Blur(HALO_RADIUS);
+	im.blur(HALO_RADIUS);
 
 	// Increase the gamma of the blur outline
 	im.applyGamma(10.0f);
