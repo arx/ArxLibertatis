@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 
 #include <boost/array.hpp>
+#include <boost/foreach.hpp>
 
 #include "core/Application.h"
 #include "core/GameTime.h"
@@ -200,11 +201,8 @@ void TreatBackgroundDynlights() {
 					dynLight->exist = 0;
 					light->m_ignitionLightHandle = LightHandle();
 					
-					for(size_t l = 0; l < entities.size(); l++) {
-						const EntityHandle handle = EntityHandle(l);
-						Entity * e = entities[handle];
-						
-						if(e && (e->ioflags & IO_MARKER)) {
+					BOOST_FOREACH(Entity * e, entities.all()) {
+						if(e->ioflags & IO_MARKER) {
 							Vec3f _pos2 = GetItemWorldPosition(e);
 							if(!fartherThan(light->pos, _pos2, 300.f)) {
 								SendIOScriptEvent(e, SM_CUSTOM, "douse");
@@ -215,11 +213,8 @@ void TreatBackgroundDynlights() {
 			} else {
 				// just light up
 				if(!lightHandleGet(light->m_ignitionLightHandle)) {
-					for(size_t l = 0; l < entities.size(); l++) {
-						const EntityHandle handle = EntityHandle(l);
-						Entity * e = entities[handle];
-						
-						if(e && (e->ioflags & IO_MARKER)) {
+					BOOST_FOREACH(Entity * e, entities.all()) {
+						if(e->ioflags & IO_MARKER) {
 							Vec3f _pos2 = GetItemWorldPosition(e);
 							if(!fartherThan(light->pos, _pos2, 300.f)) {
 								SendIOScriptEvent(e, SM_CUSTOM, "fire");
