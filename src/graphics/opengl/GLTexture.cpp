@@ -33,10 +33,10 @@ GLTexture::GLTexture(OpenGLRenderer * _renderer)
 	, minFilter(TextureStage::FilterLinear)
 	, magFilter(TextureStage::FilterNearest)
 	, isNPOT(false)
-{}
+{ }
 
 GLTexture::~GLTexture() {
-	Destroy();
+	destroy();
 }
 
 bool GLTexture::create() {
@@ -140,7 +140,7 @@ void GLTexture::Upload() {
 	
 }
 
-void GLTexture::Destroy() {
+void GLTexture::destroy() {
 	
 	if(tex) {
 		glDeleteTextures(1, &tex), tex = GL_NONE;
@@ -155,6 +155,7 @@ void GLTexture::Destroy() {
 			stage->current = NULL;
 		}
 	}
+	
 }
 
 static const GLint arxToGlWrapMode[] = {

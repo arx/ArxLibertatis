@@ -40,7 +40,7 @@ public:
 	
 	bool create();
 	void Upload();
-	void Destroy();
+	void destroy();
 	
 	void apply(GLTextureStage * stage);
 	

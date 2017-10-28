@@ -535,7 +535,7 @@ void OpenGLRenderer::GetProjectionMatrix(glm::mat4x4 & matProj) const {
 
 void OpenGLRenderer::ReleaseAllTextures() {
 	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
-		it->Destroy();
+		it->destroy();
 	}
 }
 
