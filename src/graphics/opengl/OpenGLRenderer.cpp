@@ -848,7 +848,7 @@ bool OpenGLRenderer::getSnapshot(Image & image) {
 	
 	glReadPixels(0, 0, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, image.GetData());
 	
-	image.FlipY();
+	image.flipY();
 	
 	return true;
 }
