@@ -844,7 +844,7 @@ bool OpenGLRenderer::getSnapshot(Image & image) {
 	
 	Vec2i size = mainApp->getWindow()->getSize();
 	
-	image.Create(size.x, size.y, Image::Format_R8G8B8);
+	image.create(size.x, size.y, Image::Format_R8G8B8);
 	
 	glReadPixels(0, 0, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, image.getData());
 	
