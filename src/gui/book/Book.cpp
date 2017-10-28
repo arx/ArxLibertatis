@@ -662,9 +662,9 @@ void StatsPage::manageStats()
 		}
 		
 		UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-			(g_size.width() * 0.5f),
+			float(g_size.width()) * 0.5f,
 			4,
-			(g_size.center().x) * 0.82f,
+			float(g_size.center().x) * 0.82f,
 			toDisplay,
 			Color(232 + t, 204 + t, 143 + t),
 			PlatformDurationMs(1000),
@@ -1378,9 +1378,9 @@ void SpellsPage::drawSpells() {
 			OLD_FLYING_OVER = FLYING_OVER;
 			pTextManage->Clear();
 			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-				static_cast<float>(g_size.center().x),
+				float(g_size.center().x),
 				12,
-				(g_size.center().x) * 0.82f,
+				float(g_size.center().x) * 0.82f,
 				spellInfo.description,
 				Color(232, 204, 143),
 				PlatformDurationMs(1000),
