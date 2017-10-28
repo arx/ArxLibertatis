@@ -73,7 +73,7 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::insertImage(const
 	Node * node = root.insertImage(img);
 	
 	if(node != NULL) {
-		texture->GetImage().Copy(img, node->rect.left, node->rect.top);
+		texture->GetImage().copy(img, node->rect.left, node->rect.top);
 		dirty = true;
 	}
 	

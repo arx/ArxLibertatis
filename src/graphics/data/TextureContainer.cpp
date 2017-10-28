@@ -275,7 +275,7 @@ bool TextureContainer::CreateHalo() {
 	
 	// Center the image, offset by radius to contain the edges of the blur
 	im.Clear();
-	im.Copy(srcImage, HALO_RADIUS, HALO_RADIUS);
+	im.copy(srcImage, HALO_RADIUS, HALO_RADIUS);
 	
 	// Convert image to grayscale, and turn it to black & white
 	im.ToGrayscale(Image::Format_L8);
