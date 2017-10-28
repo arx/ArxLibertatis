@@ -370,6 +370,6 @@ void Image::ApplyColorKeyToAlpha(Color key, bool antialias) {
 	// Swap data with temp data and ajust internal state
 	delete[] mData;
 	mData = dataTemp;
-	mDataSize = dataSize;
 	mFormat = (mFormat == Format_R8G8B8) ? Format_R8G8B8A8 : Format_B8G8R8A8;
+	
 }
