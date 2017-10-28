@@ -81,8 +81,8 @@ public:
 	}
 	
 	//! Access to internal data.
-	const unsigned char * GetData() const { return mData; }
-	unsigned char * GetData() { return mData; }
+	const unsigned char * getData() const { return mData; }
+	unsigned char * getData() { return mData; }
 	
 	// conversions
 	

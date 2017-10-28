@@ -235,7 +235,7 @@ void Image::resizeFrom(const Image & source, size_t width, size_t height, bool f
 	for(size_t y = 0; y < GetHeight(); y++) {
 		
 		// find pointer to the beginning of this destination line
-		unsigned char * dest_p = GetData() + (flipY ? GetHeight() - 1 - y : y) * dest_span * dest_pixel;
+		unsigned char * dest_p = getData() + (flipY ? GetHeight() - 1 - y : y) * dest_span * dest_pixel;
 		
 		// truncate y_source coordinate and premultiply by line width / span
 		size_t src_y = size_t(y_source) * src_span;
@@ -253,9 +253,9 @@ void Image::resizeFrom(const Image & source, size_t width, size_t height, bool f
 			size_t src_offset = (src_x + src_y) * src_pixel;
 			
 			// copy pixel from source to dest, assuming 24-bit format (RGB or BGR, etc)
-			dest_p[0] = source.GetData()[src_offset + 0];
-			dest_p[1] = source.GetData()[src_offset + 1];
-			dest_p[2] = source.GetData()[src_offset + 2];
+			dest_p[0] = source.getData()[src_offset + 0];
+			dest_p[1] = source.getData()[src_offset + 1];
+			dest_p[2] = source.getData()[src_offset + 2];
 			
 			// move destination pointer ahead by one pixel
 			dest_p += dest_pixel;
