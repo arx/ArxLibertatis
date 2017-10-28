@@ -256,8 +256,8 @@ extern stbi_uc *stbi_load_from_file  (FILE *f,                  int *x, int *y, 
 
 typedef struct
 {
-   int      (*read)  (void *user,char *data,int size);   // fill 'data' with 'size' bytes.  return number of bytes actually read
-   void     (*skip)  (void *user,unsigned n);            // skip the next 'n' bytes
+   int (*read)(void * user, char * data, int size);   // fill 'data' with 'size' bytes.  return number of bytes actually read
+   void (*skip)(void * user, unsigned n);            // skip the next 'n' bytes
    int      (*eof)   (void *user);                       // returns nonzero if we are at end of file/data
 } stbi_io_callbacks;
 
