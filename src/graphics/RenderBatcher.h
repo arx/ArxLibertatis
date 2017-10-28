@@ -60,7 +60,7 @@ struct RenderMaterial {
 	void resetTexture() { m_texture = NULL; }
 	void setTexture(Texture * tex) { m_texture = tex; }
 	void setTexture(TextureContainer * texContainer) {
-		m_texture = texContainer ? (Texture *)texContainer->m_pTexture : NULL;
+		m_texture = texContainer ? texContainer->m_pTexture : NULL;
 	}
 
 	bool getDepthTest() const { return m_depthTest; }
