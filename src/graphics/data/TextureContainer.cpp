@@ -197,7 +197,7 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 		flags |= Texture::Intensity;
 	}
 	
-	if(!m_pTexture->Init(tempPath, flags)) {
+	if(!m_pTexture->create(tempPath, flags)) {
 		LogError << "Error creating texture " << tempPath;
 		return false;
 	}
@@ -287,7 +287,7 @@ bool TextureContainer::CreateHalo() {
 	// Increase the gamma of the blur outline
 	im.applyGamma(10.0f);
 	
-	TextureHalo->m_pTexture->Init(im, 0);
+	TextureHalo->m_pTexture->create(im, 0);
 	
 	TextureHalo->m_size.x = TextureHalo->m_pTexture->getSize().x;
 	TextureHalo->m_size.y = TextureHalo->m_pTexture->getSize().y;

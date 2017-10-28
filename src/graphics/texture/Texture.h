@@ -40,9 +40,9 @@ public:
 	
 	virtual ~Texture() { }
 	
-	bool Init(const res::path & strFileName, TextureFlags flags);
-	bool Init(const Image & image, TextureFlags flags = HasMipmaps);
-	bool Init(size_t width, size_t height, Image::Format format);
+	bool create(const res::path & strFileName, TextureFlags flags);
+	bool create(const Image & image, TextureFlags flags = HasMipmaps);
+	bool create(size_t width, size_t height, Image::Format format);
 	
 	virtual void upload() = 0;
 	virtual void destroy() = 0;
