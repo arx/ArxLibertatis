@@ -15,7 +15,11 @@
 
 namespace stbi {
 
-static int writefv(FILE * f, const char * fmt, va_list v) {
+static int writefv(FILE * f, const char * fmt, ...) {
+	
+	va_list v;
+	va_start(v, fmt);
+	
 	while(*fmt) {
 		switch(*fmt++) {
 			case ' ': break;
@@ -47,6 +51,9 @@ static int writefv(FILE * f, const char * fmt, va_list v) {
 			}
 		}
 	}
+	
+	va_end(v);
+	
 	return 1;
 }
 
@@ -125,35 +132,29 @@ static int write_pixels(FILE * f, int rgb_dir, int vdir, int x, int y, int comp,
 	return 1;
 }
 
-static int outfile(char const * filename, int rgb_dir, int vdir, int x, int y, int comp,
-                   const void * data, int alpha, int pad, const char * fmt, ...) {
+
+int stbi_write_bmp(char const * filename, int x, int y, int comp, const void * data) {
 	
-	FILE * f;
 	if(y < 0 || x < 0) {
 		return 0;
 	}
-	f = fopen(filename, "wb");
-	if(f) {
-		va_list v;
-		va_start(v, fmt);
-		int ret = writefv(f, fmt, v);
-		va_end(v);
-		if(ret) ret = write_pixels(f, rgb_dir, vdir, x, y, comp, data, alpha, pad);
-		fclose(f);
-		if(!ret) {
-			return 0;
-		}
+	
+	FILE * f = fopen(filename, "wb");
+	if(!f) {
+		return 0;
 	}
 	
-	return f != NULL;
-}
-
-int stbi_write_bmp(char const * filename, int x, int y, int comp, const void * data) {
-   int pad = (-x * 3) & 3;
-   return outfile(filename, -1, -1, x, y, comp, data, 0, pad,
-           "11 4 22 4" "4 44 22 444444",
-           'B', 'M', 14 + 40 + (x * 3 + pad) * y, 0, 0, 14 + 40,  // file header
-            40, x, y, 1, 24, 0, 0, 0, 0, 0, 0);                   // bitmap header
+	int pad = (-x * 3) & 3;
+	int ret = writefv(f, "11 4 22 4" "4 44 22 444444",
+	                  'B', 'M', 14 + 40 + (x * 3 + pad) * y, 0, 0, 14 + 40,  // file header
+	                  40, x, y, 1, 24, 0, 0, 0, 0, 0, 0);                    // bitmap header);
+	if(ret) {
+		ret = write_pixels(f, -1, -1, x, y, comp, data, 0, pad);
+	}
+	
+	fclose(f);
+	
+	return ret;
 }
 
 } // namespace stbi
