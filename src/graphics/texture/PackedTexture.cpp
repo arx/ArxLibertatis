@@ -84,7 +84,7 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
                                 Vec2i & offset) {
 	
 	// Validate image size
-	if(image.getWidth() > textureSize || image.GetHeight() > textureSize) {
+	if(image.getWidth() > textureSize || image.getHeight() > textureSize) {
 		return false;
 	}
 	
@@ -160,7 +160,7 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::insertImage
 	}
 	
 	int diffW = (rect.width() + 1) - image.getWidth();
-	int diffH = (rect.height() + 1) - image.GetHeight();
+	int diffH = (rect.height() + 1) - image.getHeight();
 	
 	// If we're too small, return.
 	if(diffW < 0 || diffH < 0) {
@@ -181,8 +181,8 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::insertImage
 		children[0]->rect = Rect(rect.left, rect.top, rect.left + image.getWidth() - 1, rect.bottom);
 		children[1]->rect = Rect(rect.left + image.getWidth(), rect.top, rect.right, rect.bottom);
 	} else {
-		children[0]->rect = Rect(rect.left, rect.top, rect.right, rect.top + image.GetHeight() - 1);
-		children[1]->rect = Rect(rect.left, rect.top + image.GetHeight(), rect.right, rect.bottom);
+		children[0]->rect = Rect(rect.left, rect.top, rect.right, rect.top + image.getHeight() - 1);
+		children[1]->rect = Rect(rect.left, rect.top + image.getHeight(), rect.right, rect.bottom);
 	}
 	
 	// Insert into first child we created

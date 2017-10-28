@@ -89,7 +89,7 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	Image cinematicImage;
 	cinematicImage.load(filename);
 	
-	Vec2i size = Vec2i(cinematicImage.getWidth(), cinematicImage.GetHeight());
+	Vec2i size = Vec2i(cinematicImage.getWidth(), cinematicImage.getHeight());
 	Vec2i nb = size / cinMaxSize;
 	
 	if(size.x % cinMaxSize.x)
