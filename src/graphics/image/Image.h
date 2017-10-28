@@ -53,7 +53,7 @@ public:
 	bool load(const res::path & filename);
 	bool load(void * pData, size_t size, const char * file = NULL);
 	
-	void Create(size_t width, size_t height, Format format);
+	void create(size_t width, size_t height, Format format);
 	
 	bool convertTo(Format format);
 	

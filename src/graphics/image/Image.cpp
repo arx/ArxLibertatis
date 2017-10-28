@@ -60,7 +60,7 @@ const Image & Image::operator=(const Image & other) {
 		return *this;
 	}
 	
-	Create(other.getWidth(), other.getHeight(), other.getFormat());
+	create(other.getWidth(), other.getHeight(), other.getFormat());
 	
 	memcpy(getData(), other.getData(), getSize());
 	
@@ -144,7 +144,7 @@ bool Image::load(void * data, size_t size, const char * file) {
 		default: arx_assert_msg(false, "Invalid bpp");
 	}
 	
-	Create(size_t(width), size_t(height), format);
+	create(size_t(width), size_t(height), format);
 	
 	// Copy image data to our buffer
 	memcpy(getData(), pixels, getSize());
@@ -155,11 +155,11 @@ bool Image::load(void * data, size_t size, const char * file) {
 	return true;
 }
 
-void Image::Create(size_t width, size_t height, Format format) {
+void Image::create(size_t width, size_t height, Format format) {
 	
-	arx_assert_msg(width > 0, "[Image::Create] Width is 0!");
-	arx_assert_msg(height > 0, "[Image::Create] Width is 0!");
-	arx_assert_msg(format < Format_Unknown, "[Image::Create] Unknown texture format!");
+	arx_assert(width > 0);
+	arx_assert(height > 0);
+	arx_assert_msg(format < Format_Unknown, "Unknown texture format!");
 	
 	size_t oldSize = getSize();
 	size_t newSize = getSize(format, width, height);
@@ -217,7 +217,7 @@ bool Image::convertTo(Format format) {
 // supports only RGB format
 void Image::resizeFrom(const Image & source, size_t width, size_t height, bool flipY) {
 	
-	Create(width, height, Format_R8G8B8);
+	create(width, height, Format_R8G8B8);
 	
 	// span, size of one line in pixels (doesn't allow for byte padding)
 	size_t src_span = source.getWidth();

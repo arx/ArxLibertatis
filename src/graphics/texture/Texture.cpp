@@ -41,7 +41,7 @@ bool Texture::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 	mFileName.clear();
 	
 	size = Vec2i(pWidth, pHeight);
-	mImage.Create(pWidth, pHeight, pFormat);
+	mImage.create(pWidth, pHeight, pFormat);
 	mFormat = pFormat;
 	flags = 0;
 	
