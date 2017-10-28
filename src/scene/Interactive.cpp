@@ -623,11 +623,9 @@ void PrepareIOTreatZone(long flag) {
 
 	long M_TREAT = TREATZONE_CUR;
 
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(io && !(io->gameFlags & GFLAG_ISINTREATZONE)
+	BOOST_FOREACH(Entity * io, entities.notPlayer()) {
+		
+		if(!(io->gameFlags & GFLAG_ISINTREATZONE)
 		        && ((io->show == SHOW_FLAG_IN_SCENE)
 		            ||	(io->show == SHOW_FLAG_TELEPORTING)
 		            ||	(io->show == SHOW_FLAG_ON_PLAYER)
