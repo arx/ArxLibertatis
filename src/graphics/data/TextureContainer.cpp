@@ -289,8 +289,7 @@ bool TextureContainer::CreateHalo() {
 	
 	TextureHalo->m_pTexture->create(im, 0);
 	
-	TextureHalo->m_size.x = TextureHalo->m_pTexture->getSize().x;
-	TextureHalo->m_size.y = TextureHalo->m_pTexture->getSize().y;
+	TextureHalo->m_size = TextureHalo->m_pTexture->getSize();
 	
 	Vec2i storedSize = TextureHalo->m_pTexture->getStoredSize();
 	TextureHalo->uv = Vec2f(
