@@ -5,62 +5,27 @@
 
 #include "graphics/image/stb_image_write.h"
 
-#include <stdarg.h>
-#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-#include <assert.h>
 
 #include "platform/Platform.h"
 
 namespace stbi {
 
-static int writefv(FILE * f, const char * fmt, ...) {
-	
-	va_list v;
-	va_start(v, fmt);
-	
-	while(*fmt) {
-		switch(*fmt++) {
-			case ' ': break;
-			case '1': {
-				unsigned char x = (unsigned char)va_arg(v, int);
-				fputc(x, f);
-				break;
-			}
-			case '2': {
-				int x = va_arg(v, int);
-				unsigned char b[2] = { (unsigned char)x, (unsigned char)(x >> 8) };
-				if(!fwrite(b, 2, 1, f)) {
-					return 0;
-				}
-				break;
-			}
-			case '4': {
-				u32 x = va_arg(v, int);
-				unsigned char b[4] = { (unsigned char)x, (unsigned char)(x >> 8),
-				                       (unsigned char)(x >> 16), (unsigned char)(x >> 24) };
-				if(!fwrite(b, 4, 1, f)) {
-					return 0;
-				}
-				break;
-			}
-			default: {
-				assert(0);
-				return 1;
-			}
-		}
-	}
-	
-	va_end(v);
-	
-	return 1;
+static int write2(FILE * f, int x) {
+	unsigned char b[2] = { (unsigned char)x, (unsigned char)(x >> 8) };
+	return fwrite(b, 2, 1, f);
 }
 
 static int write3(FILE * f, unsigned char a, unsigned char b, unsigned char c) {
 	unsigned char arr[3];
 	arr[0] = a, arr[1] = b, arr[2] = c;
 	return fwrite(arr, 3, 1, f);
+}
+
+static int write4(FILE * f, u32 x) {
+	unsigned char b[4] = { (unsigned char)x, (unsigned char)(x >> 8),
+	                       (unsigned char)(x >> 16), (unsigned char)(x >> 24) };
+	return fwrite(b, 4, 1, f);
 }
 
 static int write_pixels(FILE * f, int x, int y, int comp, const void * data, int scanline_pad) {
@@ -129,13 +94,29 @@ int stbi_write_bmp(char const * filename, int x, int y, int comp, const void * d
 		return 0;
 	}
 	
+	// File header
+	fputc('B', f);
+	fputc('M', f);
 	int pad = (-x * 3) & 3;
-	int ret = writefv(f, "11 4 22 4" "4 44 22 444444",
-	                  'B', 'M', 14 + 40 + (x * 3 + pad) * y, 0, 0, 14 + 40,  // file header
-	                  40, x, y, 1, 24, 0, 0, 0, 0, 0, 0);                    // bitmap header);
-	if(ret) {
-		ret = write_pixels(f, x, y, comp, data, pad);
-	}
+	write4(f, u32(14 + 40 + (x * 3 + pad) * y));
+	write2(f, 0);
+	write2(f, 0);
+	write4(f, 14 + 40);
+	
+	// Bitmap header
+	write4(f, 40);
+	write4(f, x);
+	write4(f, y);
+	write2(f, 1);
+	write2(f, 24);
+	write4(f, 0);
+	write4(f, 0);
+	write4(f, 0);
+	write4(f, 0);
+	write4(f, 0);
+	write4(f, 0);
+	
+	int ret = write_pixels(f, x, y, comp, data, pad);
 	
 	fclose(f);
 	
