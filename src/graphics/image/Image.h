@@ -92,7 +92,7 @@ public:
 	void ResizeFrom(const Image & source, size_t width, size_t height, bool flip_vertical = false);
 	
 	//! Set the alpha of pixels matching the color key to 0. Will add an alpha channel if needed.
-	void ApplyColorKeyToAlpha(Color colorKey = Color::black, bool antialias = false);
+	void applyColorKeyToAlpha(Color colorKey = Color::black, bool antialias = false);
 	
 	/*!
 	 * Extend the image and fill ne new space by sampling at the nearest border

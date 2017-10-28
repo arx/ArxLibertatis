@@ -57,7 +57,7 @@ bool Texture::Restore() {
 		mImage.load(mFileName);
 		
 		if((flags & ApplyColorKey) && !mImage.HasAlpha()) {
-			mImage.ApplyColorKeyToAlpha(Color::black, config.video.colorkeyAntialiasing);
+			mImage.applyColorKeyToAlpha(Color::black, config.video.colorkeyAntialiasing);
 		}
 		
 		if(flags & Intensity) {
