@@ -65,17 +65,13 @@ static int write3(FILE * f, unsigned char a, unsigned char b, unsigned char c) {
 
 static int write_pixels(FILE * f, int x, int y, int comp, const void * data, int scanline_pad) {
 	
-	unsigned char bg[3] = { 255, 0, 255 }, px[3];
-	u32 zero = 0;
-	int i, k;
-	
 	if(y <= 0) {
 		return 1;
 	}
 	
-	for(int j = y - 1; j != -1; j -= 1) {
+	for(int j = y - 1; j != -1; j--) {
 		
-		for(i = 0; i < x; ++i) {
+		for(int i = 0; i < x; i++) {
 			const unsigned char * d = (const unsigned char *)data + (j * x + i) * comp;
 			
 			switch(comp) {
@@ -96,8 +92,10 @@ static int write_pixels(FILE * f, int x, int y, int comp, const void * data, int
 				}
 				
 				case 4: {
-					// composite against pink background
-					for(k = 0; k < 3; ++k) {
+					// Composite against pink background
+					const unsigned char bg[3] = { 255, 0, 255 };
+					unsigned char px[3];
+					for(int k = 0; k < 3; ++k) {
 						px[k] = bg[k] + ((d[k] - bg[k]) * d[3]) / 255;
 					}
 					if(!write3(f, px[2], px[1], px[0])) {
@@ -110,6 +108,7 @@ static int write_pixels(FILE * f, int x, int y, int comp, const void * data, int
 			
 		}
 		
+		u32 zero = 0;
 		if(scanline_pad > 0 && !fwrite(&zero, scanline_pad, 1, f)) {
 			return 0;
 		}
@@ -118,7 +117,6 @@ static int write_pixels(FILE * f, int x, int y, int comp, const void * data, int
 	
 	return 1;
 }
-
 
 int stbi_write_bmp(char const * filename, int x, int y, int comp, const void * data) {
 	
