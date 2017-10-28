@@ -277,7 +277,7 @@ void Image::ResizeFrom(const Image & source, size_t desired_width, size_t desire
 }
 
 void Image::Clear() {
-	memset(mData, 0, mDataSize);
+	memset(mData, 0, getSize(mFormat, mWidth, mHeight));
 }
 
 bool Image::Copy(const Image & srcImage, size_t dstX, size_t dstY,
