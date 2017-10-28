@@ -21,7 +21,7 @@
 
 #include "core/Config.h"
 
-bool Texture::Init(const res::path & filename, TextureFlags flags) {
+bool Texture::create(const res::path & filename, TextureFlags flags) {
 	
 	m_filename = filename;
 	m_flags = flags;
@@ -29,7 +29,7 @@ bool Texture::Init(const res::path & filename, TextureFlags flags) {
 	return restore();
 }
 
-bool Texture::Init(const Image & image, TextureFlags flags) {
+bool Texture::create(const Image & image, TextureFlags flags) {
 	
 	m_filename.clear();
 	m_image = image;
@@ -38,7 +38,7 @@ bool Texture::Init(const Image & image, TextureFlags flags) {
 	return restore();
 }
 
-bool Texture::Init(size_t width, size_t height, Image::Format format) {
+bool Texture::create(size_t width, size_t height, Image::Format format) {
 	
 	m_filename.clear();
 	

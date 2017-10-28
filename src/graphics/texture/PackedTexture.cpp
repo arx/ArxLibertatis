@@ -53,7 +53,7 @@ PackedTexture::TextureTree::TextureTree(unsigned int textureSize,
 	root.rect = Rect(0, 0, textureSize - 1, textureSize - 1);
 	
 	texture = GRenderer->createTexture();
-	if(!texture->Init(textureSize, textureSize, textureFormat)) {
+	if(!texture->create(textureSize, textureSize, textureFormat)) {
 		LogError << "Could not create texture for size " << textureSize
 		         << " and format " << textureFormat;
 		delete texture, texture = NULL;
