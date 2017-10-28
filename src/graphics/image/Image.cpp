@@ -230,12 +230,12 @@ void Image::resizeFrom(const Image & source, size_t width, size_t height, bool f
 	
 	// find fractional source y_delta
 	float y_source = 0.0f;
-	const float y_delta = source.GetHeight() / (float)GetHeight();
+	const float y_delta = source.getHeight() / float(getHeight());
 	
-	for(size_t y = 0; y < GetHeight(); y++) {
+	for(size_t y = 0; y < getHeight(); y++) {
 		
 		// find pointer to the beginning of this destination line
-		unsigned char * dest_p = getData() + (flipY ? GetHeight() - 1 - y : y) * dest_span * dest_pixel;
+		unsigned char * dest_p = getData() + (flipY ? getHeight() - 1 - y : y) * dest_span * dest_pixel;
 		
 		// truncate y_source coordinate and premultiply by line width / span
 		size_t src_y = size_t(y_source) * src_span;
@@ -290,7 +290,7 @@ bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
 	}
 	
 	// Must fit inside boundaries
-	if(srcX + width > srcImage.getWidth() || srcY + height > srcImage.GetHeight()) {
+	if(srcX + width > srcImage.getWidth() || srcY + height > srcImage.getHeight()) {
 		return false;
 	}
 	
@@ -312,7 +312,7 @@ bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
 }
 
 bool Image::copy(const Image & srcImage, size_t destX, size_t destY) {
-	return copy(srcImage, destX, destY, 0, 0, srcImage.getWidth(), srcImage.GetHeight());
+	return copy(srcImage, destX, destY, 0, 0, srcImage.getWidth(), srcImage.getHeight());
 }
 
 void Image::applyGamma(float gamma) {
