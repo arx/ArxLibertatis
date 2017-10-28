@@ -823,10 +823,8 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 static long ARX_CHANGELEVEL_Push_AllIO(long level) {
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		if(e && !(e->ioflags & IO_NOSAVE) && !IsInPlayerInventory(e) && !IsPlayerEquipedWith(e)) {
+	BOOST_FOREACH(Entity * e, entities.notPlayer()) {
+		if(!(e->ioflags & IO_NOSAVE) && !IsInPlayerInventory(e) && !IsPlayerEquipedWith(e)) {
 			ARX_CHANGELEVEL_Push_IO(e, level);
 		}
 	}
