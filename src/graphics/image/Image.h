@@ -90,7 +90,7 @@ public:
 	
 	bool toGrayscale(Format newFormat = Format_L8);
 	
-	void resizeFrom(const Image & source, size_t width, size_t height, bool flip_vertical = false);
+	void resizeFrom(const Image & source, size_t width, size_t height, bool flipY = false);
 	
 	//! Set the alpha of pixels matching the color key to 0. Will add an alpha channel if needed.
 	void applyColorKeyToAlpha(Color colorKey = Color::black, bool antialias = false);
