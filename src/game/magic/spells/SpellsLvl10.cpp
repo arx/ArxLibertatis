@@ -19,6 +19,8 @@
 
 #include "game/magic/spells/SpellsLvl10.h"
 
+#include <boost/foreach.hpp>
+
 #include "core/Application.h"
 #include "core/Core.h"
 #include "core/Config.h"
@@ -255,13 +257,8 @@ void ControlTargetSpell::Launch()
 	
 	eTarget = eSrc + Vec3f(-fBetaRadSin * 1000.f, 100.f, fBetaRadCos * 1000.f);
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e) {
-			eTarget = e->pos;
-		}
+	BOOST_FOREACH(Entity * e, entities.notPlayer()) {
+		eTarget = e->pos;
 	}
 	
 	pathways[0] = eSrc + Vec3f(0.f, 100.f, 0.f);
