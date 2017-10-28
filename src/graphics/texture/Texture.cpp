@@ -66,7 +66,7 @@ bool Texture::Restore() {
 		
 	}
 
-	if(mImage.IsValid()) {
+	if(mImage.isValid()) {
 		mFormat = mImage.GetFormat();
 		size = Vec2i(mImage.GetWidth(), mImage.GetHeight());
 

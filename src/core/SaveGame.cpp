@@ -236,7 +236,7 @@ bool SaveGameList::save(const std::string & name, iterator overwrite, const Imag
 		return false;
 	}
 	
-	if(thumbnail.IsValid() && !thumbnail.save(savefile.parent() / SAVEGAME_THUMBNAIL)) {
+	if(thumbnail.isValid() && !thumbnail.save(savefile.parent() / SAVEGAME_THUMBNAIL)) {
 		LogWarning << "Failed to save screenshot to " << (savefile.parent() / SAVEGAME_THUMBNAIL);
 	}
 	
