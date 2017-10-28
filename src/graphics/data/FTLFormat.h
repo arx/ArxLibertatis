@@ -66,7 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // -> Then depending on offsets just read data directly.
 
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 
 
 struct ARX_FTL_PRIMARY_HEADER {
