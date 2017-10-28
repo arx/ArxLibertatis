@@ -51,7 +51,7 @@ public:
 	const Vec2i & getStoredSize() const { return storedSize; }
 	
 	Image::Format getFormat() const { return mFormat; }
-	bool hasAlpha() const { return Image::hasAlpha(mFormat); }
+	bool hasAlpha() const { return Image::hasAlpha(getFormat()); }
 	
 	bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
 	

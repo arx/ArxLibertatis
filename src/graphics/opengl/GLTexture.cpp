@@ -66,7 +66,7 @@ void GLTexture::Upload() {
 	
 	// I8 to L8A8
 	if(!renderer->hasIntensityTextures() && (flags & Intensity)) {
-		arx_assert(mFormat == Image::Format_L8);
+		arx_assert(getFormat() == Image::Format_L8);
 		Image converted;
 		converted.create(storedSize.x, storedSize.y, Image::Format_L8A8);
 		unsigned char * input = mImage.getData();
@@ -82,8 +82,8 @@ void GLTexture::Upload() {
 	}
 	
 	if(!renderer->hasBGRTextureTransfer()
-	   && (mFormat == Image::Format_B8G8R8 || mFormat == Image::Format_B8G8R8A8)) {
-		Image::Format rgbFormat = mFormat == Image::Format_B8G8R8 ? Image::Format_R8G8B8 : Image::Format_R8G8B8A8;
+	   && (getFormat() == Image::Format_B8G8R8 || getFormat() == Image::Format_B8G8R8A8)) {
+		Image::Format rgbFormat = getFormat() == Image::Format_B8G8R8 ? Image::Format_R8G8B8 : Image::Format_R8G8B8A8;
 		mImage.convertTo(rgbFormat);
 		mFormat = rgbFormat;
 	}
@@ -92,22 +92,22 @@ void GLTexture::Upload() {
 	GLenum format;
 	if(flags & Intensity) {
 		internalUnsized = GL_INTENSITY, internalSized = GL_INTENSITY8, format = GL_RED;
-	} else if(mFormat == Image::Format_L8) {
+	} else if(getFormat() == Image::Format_L8) {
 		internalUnsized = GL_LUMINANCE, internalSized = GL_LUMINANCE8, format = GL_LUMINANCE;
-	} else if(mFormat == Image::Format_A8) {
+	} else if(getFormat() == Image::Format_A8) {
 		internalUnsized = GL_ALPHA, internalSized = GL_ALPHA8, format = GL_ALPHA;
-	} else if(mFormat == Image::Format_L8A8) {
+	} else if(getFormat() == Image::Format_L8A8) {
 		internalUnsized = GL_LUMINANCE_ALPHA, internalSized = GL_LUMINANCE8_ALPHA8, format = GL_LUMINANCE_ALPHA;
-	} else if(mFormat == Image::Format_R8G8B8) {
+	} else if(getFormat() == Image::Format_R8G8B8) {
 		internalUnsized = GL_RGB, internalSized = GL_RGB8, format = GL_RGB;
-	} else if(mFormat == Image::Format_B8G8R8) {
+	} else if(getFormat() == Image::Format_B8G8R8) {
 		internalUnsized = GL_RGB, internalSized = GL_RGB8, format = GL_BGR;
-	} else if(mFormat == Image::Format_R8G8B8A8) {
+	} else if(getFormat() == Image::Format_R8G8B8A8) {
 		internalUnsized = GL_RGBA, internalSized = GL_RGBA8, format = GL_RGBA;
-	} else if(mFormat == Image::Format_B8G8R8A8) {
+	} else if(getFormat() == Image::Format_B8G8R8A8) {
 		internalUnsized = GL_RGBA, internalSized = GL_RGBA8, format = GL_BGRA;
 	} else {
-		arx_assert_msg(false, "Unsupported image format: %ld", long(mFormat));
+		arx_assert_msg(false, "Unsupported image format: %ld", long(getFormat()));
 		return;
 	}
 	GLint internal = renderer->hasSizedTextureFormats() ? internalSized : internalUnsized;
