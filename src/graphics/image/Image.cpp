@@ -479,7 +479,7 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 	}
 }
 
-bool Image::ToGrayscale(Format newFormat) {
+bool Image::toGrayscale(Format newFormat) {
 	
 	size_t srcNumChannels = getNumChannels();
 	size_t dstNumChannels = getNumChannels(newFormat);
