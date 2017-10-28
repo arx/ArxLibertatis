@@ -77,7 +77,7 @@ void MagicFlareLoadTextures() {
 	
 	char temp[256];
 	for(long i = 1; i < 10; i++) {
-		sprintf(temp,"graph/particles/shine%ld", i);
+		sprintf(temp, "graph/particles/shine%ld", i);
 		g_magicFlareTextures.shine[i] = TextureContainer::LoadUI(temp, flags);
 	}
 	
