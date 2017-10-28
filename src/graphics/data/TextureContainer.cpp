@@ -271,7 +271,7 @@ bool TextureContainer::CreateHalo() {
 	
 	int width = m_size.x + HALO_RADIUS * 2;
 	int height = m_size.y + HALO_RADIUS * 2;
-	im.Create(width, height, srcImage.GetFormat());
+	im.Create(width, height, srcImage.getFormat());
 	
 	// Center the image, offset by radius to contain the edges of the blur
 	im.Clear();
