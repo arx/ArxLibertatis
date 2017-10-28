@@ -177,10 +177,10 @@ void Image::Create(size_t width, size_t height, Format format) {
 }
 
 
-bool Image::ConvertTo(Format format) {
+bool Image::convertTo(Format format) {
 	
 	arx_assert_msg(getNumChannels() == getNumChannels(format),
-	               "[Image::ConvertTo] Conversion of images with different BPP not supported yet!");
+	               "Conversion of images with different BPP not supported!");
 	if(getNumChannels() != getNumChannels(format)) {
 		return false;
 	}
@@ -203,7 +203,7 @@ bool Image::ConvertTo(Format format) {
 		}
 		break;
 	default:
-		arx_assert_msg(false, "[Image::ConvertTo] Unsupported conversion!");
+		arx_assert_msg(false, "Unsupported conversion!");
 		return false;
 	};
 	
