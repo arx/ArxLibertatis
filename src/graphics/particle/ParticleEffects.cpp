@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <algorithm>
 
+#include <boost/foreach.hpp>
 #include <boost/format.hpp>
 
 #include "core/Application.h"
@@ -482,11 +483,9 @@ void Add3DBoom(const Vec3f & position) {
 		player.physics.forces += vect * ((300.f - dist) * 0.0125f);
 	}
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * entity = entities[handle];
+	BOOST_FOREACH(Entity * entity, entities.all()) {
 		
-		if(!entity || entity->show != 1 || !(entity->ioflags & IO_ITEM)) {
+		if(entity->show != 1 || !(entity->ioflags & IO_ITEM)) {
 			continue;
 		}
 		
