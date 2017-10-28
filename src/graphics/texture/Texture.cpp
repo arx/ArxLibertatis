@@ -52,7 +52,7 @@ bool Texture::Init(size_t width, size_t height, Image::Format format) {
 
 bool Texture::Restore() {
 	
-	bool bRestored = false;
+	bool restored = false;
 	
 	if(!getFileName().empty()) {
 		
@@ -77,7 +77,7 @@ bool Texture::Restore() {
 		
 		if(create()) {
 			Upload();
-			bRestored = true;
+			restored = true;
 		}
 		
 	}
@@ -86,5 +86,5 @@ bool Texture::Restore() {
 		m_image.reset();
 	}
 	
-	return bRestored;
+	return restored;
 }
