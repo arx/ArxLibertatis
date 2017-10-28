@@ -277,11 +277,8 @@ bool TextureContainer::CreateHalo() {
 	im.Clear();
 	im.Copy(srcImage, HALO_RADIUS, HALO_RADIUS);
 	
-	// Keep a copy of the image at this stage, in order to apply proper alpha masking later
-	Image copy = im;
-	
 	// Convert image to grayscale, and turn it to black & white
-	im.ToGrayscale(Image::Format_L8A8);
+	im.ToGrayscale(Image::Format_L8);
 	im.applyThreshold(0, ~0);
 
 	// Blur the image
@@ -289,10 +286,6 @@ bool TextureContainer::CreateHalo() {
 
 	// Increase the gamma of the blur outline
 	im.QuakeGamma(10.0f);
-
-	// Set alpha to inverse of original image alpha
-	copy.ApplyColorKeyToAlpha();
-	im.SetAlpha(copy, true);
 	
 	TextureHalo->m_pTexture->Init(im, 0);
 	
