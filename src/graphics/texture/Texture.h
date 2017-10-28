@@ -50,7 +50,7 @@ public:
 	const Vec2i & getSize() const { return size; }
 	const Vec2i & getStoredSize() const { return storedSize; }
 	
-	Image::Format getFormat() const { return mFormat; }
+	Image::Format getFormat() const { return m_format; }
 	bool hasAlpha() const { return Image::hasAlpha(getFormat()); }
 	
 	bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
@@ -63,7 +63,7 @@ public:
 protected:
 	
 	Texture()
-		: mFormat(Image::Format_Unknown)
+		: m_format(Image::Format_Unknown)
 		, flags(0)
 		, size(Vec2i_ZERO)
 		, storedSize(Vec2i_ZERO)
@@ -71,7 +71,7 @@ protected:
 	
 	virtual bool Create() = 0;
 	
-	Image::Format mFormat;
+	Image::Format m_format;
 	TextureFlags flags;
 	
 	Vec2i size;
