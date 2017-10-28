@@ -250,8 +250,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	RealSplatStart.x += poss.x;
 	RealSplatStart.z += poss.z;
 	
-	float hdiv,vdiv;
-	hdiv=vdiv=1.f/(size*2);
+	float div = 1.f / (size * 2);
 	
 	GameInstant now = g_gameTime.now();
 	
@@ -330,26 +329,29 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 						pb.tolive = GameDurationMsf((16000.f / 40) * size);
 					}
 					
-					pb.ep=ep;
+					pb.ep = ep;
 					
-					pb.timecreation=now;
+					pb.timecreation = now;
 					pb.rgb = col;
 					
 					for(int k = 0; k < nbvert; k++) {
-						float vdiff=glm::abs(ep->v[k].p.y-RealSplatStart.y);
-						pb.u[k]=(ep->v[k].p.x-RealSplatStart.x)*hdiv;
 						
-						if(pb.u[k]<0.5f)
-							pb.u[k]-=vdiff*hdiv;
-						else
-							pb.u[k]+=vdiff*hdiv;
+						float vdiff = glm::abs(ep->v[k].p.y - RealSplatStart.y);
 						
-						pb.v[k]=(ep->v[k].p.z-RealSplatStart.z)*vdiv;
+						pb.u[k] = (ep->v[k].p.x - RealSplatStart.x) * div;
+						if(pb.u[k] < 0.5f) {
+							pb.u[k] -= vdiff * div;
+						} else {
+							pb.u[k] += vdiff * div;
+						}
 						
-						if(pb.v[k]<0.5f)
-							pb.v[k]-=vdiff*vdiv;
-						else
-							pb.v[k]+=vdiff*vdiv;
+						pb.v[k] = (ep->v[k].p.z-RealSplatStart.z) * div;
+						if(pb.v[k] < 0.5f) {
+							pb.v[k] -= vdiff * div;
+						} else {
+							pb.v[k] += vdiff * div;
+						}
+						
 					}
 					
 					pb.nbvert = short(nbvert);
