@@ -122,7 +122,7 @@ public:
 	//! Copy the alpha of img to this image.
 	void SetAlpha(const Image& img, bool bInvertAlpha);
 	
-	void ApplyThreshold(unsigned char threshold, int component_mask);
+	void applyThreshold(unsigned char threshold, int component_mask);
 	
 	// statics
 	static size_t getSize(Format format, size_t width, size_t height);

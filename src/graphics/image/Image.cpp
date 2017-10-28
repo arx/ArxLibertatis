@@ -383,7 +383,7 @@ void Image::QuakeGamma(float pGamma) {
 	
 }
 
-void Image::ApplyThreshold(unsigned char threshold, int component_mask) {
+void Image::applyThreshold(unsigned char threshold, int component_mask) {
 	
 	size_t numComponents = getNumChannels();
 	size_t size = mWidth * mHeight;
