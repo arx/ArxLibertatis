@@ -587,7 +587,7 @@ static void drawDebugMaterialTexture(Vec2f & textpos, const std::string & type,
 	const std::string & name = t.getFileName().string();
 	
 	std::ostringstream oss;
-	oss << "(" << t.GetFormat() << ", " << t.getSize().x << "×" << t.getSize().y;
+	oss << "(" << t.getFormat() << ", " << t.getSize().x << "×" << t.getSize().y;
 	if(t.getStoredSize() != t.getSize()) {
 		oss << " [" << t.getStoredSize().x << "×" << t.getStoredSize().y << "]";
 	}
