@@ -155,7 +155,7 @@ bool Image::load(void * data, size_t size, const char * file) {
 	
 	// Copy image data to our buffer
 	if(mData) {
-		memcpy(mData, pixels, mDataSize);
+		memcpy(mData, pixels, getSize(mFormat, mWidth, mHeight));
 	}
 	
 	// Release resources
