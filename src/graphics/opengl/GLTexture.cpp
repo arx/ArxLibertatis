@@ -84,7 +84,7 @@ void GLTexture::Upload() {
 	if(!renderer->hasBGRTextureTransfer()
 	   && (mFormat == Image::Format_B8G8R8 || mFormat == Image::Format_B8G8R8A8)) {
 		Image::Format rgbFormat = mFormat == Image::Format_B8G8R8 ? Image::Format_R8G8B8 : Image::Format_R8G8B8A8;
-		mImage.ConvertTo(rgbFormat);
+		mImage.convertTo(rgbFormat);
 		mFormat = rgbFormat;
 	}
 	

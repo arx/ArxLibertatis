@@ -55,7 +55,7 @@ public:
 	
 	void Create(size_t width, size_t height, Format format);
 	
-	bool ConvertTo(Format format);
+	bool convertTo(Format format);
 	
 	// Reset to fresh constructor state
 	void reset();
