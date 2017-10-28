@@ -51,7 +51,7 @@ bool GLTexture::Create() {
 	magFilter = TextureStage::FilterLinear;
 	
 	Vec2i nextPowerOfTwo(GetNextPowerOf2(size.x), GetNextPowerOf2(size.y));
-	storedSize = renderer->hasTextureNPOT() ? size : nextPowerOfTwo;
+	m_storedSize = renderer->hasTextureNPOT() ? size : nextPowerOfTwo;
 	isNPOT = (size != nextPowerOfTwo);
 	
 	return (tex != GL_NONE);

@@ -48,7 +48,7 @@ public:
 	bool Restore();
 	
 	const Vec2i & getSize() const { return size; }
-	const Vec2i & getStoredSize() const { return storedSize; }
+	const Vec2i & getStoredSize() const { return m_storedSize; }
 	
 	Image::Format getFormat() const { return m_format; }
 	bool hasAlpha() const { return Image::hasAlpha(getFormat()); }
@@ -66,7 +66,7 @@ protected:
 		: m_format(Image::Format_Unknown)
 		, flags(0)
 		, size(Vec2i_ZERO)
-		, storedSize(Vec2i_ZERO)
+		, m_storedSize(Vec2i_ZERO)
 	{ }
 	
 	virtual bool Create() = 0;
@@ -75,7 +75,7 @@ protected:
 	TextureFlags flags;
 	
 	Vec2i size;
-	Vec2i storedSize;
+	Vec2i m_storedSize;
 	
 	Image m_image;
 	res::path m_filename;
