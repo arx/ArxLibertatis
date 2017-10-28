@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedPlayer.h"
 
+#include <boost/foreach.hpp>
+
 #include "core/Core.h"
 #include "game/EntityManager.h"
 #include "game/Inventory.h"
@@ -299,11 +301,8 @@ public:
 class SetPlayerControlsCommand : public Command {
 	
 	static void Stack_SendMsgToAllNPC_IO(ScriptMessage msg, const char * dat) {
-		for(size_t i = 0; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * e = entities[handle];
-			
-			if(e && (e->ioflags & IO_NPC)) {
+		BOOST_FOREACH(Entity * e, entities.all()) {
+			if(e->ioflags & IO_NPC) {
 				Stack_SendIOScriptEvent(e, msg, dat);
 			}
 		}
