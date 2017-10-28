@@ -285,7 +285,7 @@ bool TextureContainer::CreateHalo() {
 	im.Blur(HALO_RADIUS);
 
 	// Increase the gamma of the blur outline
-	im.QuakeGamma(10.0f);
+	im.applyGamma(10.0f);
 	
 	TextureHalo->m_pTexture->Init(im, 0);
 	

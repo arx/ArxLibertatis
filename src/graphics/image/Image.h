@@ -118,7 +118,7 @@ public:
 	void Blur(size_t radius);
 	
 	//! scales value and normalizes by max component value
-	void QuakeGamma(float pGamma);
+	void applyGamma(float gamma);
 	
 	void applyThreshold(unsigned char threshold, int component_mask);
 	
