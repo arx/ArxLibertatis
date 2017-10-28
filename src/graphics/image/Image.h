@@ -71,7 +71,7 @@ public:
 	size_t getNumChannels() const { return getNumChannels(mFormat); }
 	
 	// bool accessors
-	bool IsValid() const { return mData != NULL; }
+	bool IsValid() const { return m_data != NULL; }
 	bool HasAlpha() const { return hasAlpha(mFormat); }
 	static bool hasAlpha(Format format) {
 		return format == Format_A8
@@ -81,8 +81,8 @@ public:
 	}
 	
 	//! Access to internal data.
-	const unsigned char * getData() const { return mData; }
-	unsigned char * getData() { return mData; }
+	const unsigned char * getData() const { return m_data; }
+	unsigned char * getData() { return m_data; }
 	
 	// conversions
 	
@@ -130,7 +130,7 @@ private:
 	
 	Format mFormat; //!< Image format.
 	
-	unsigned char * mData; //!< Pointer to image data buffer.
+	unsigned char * m_data; //!< Pointer to image data buffer.
 	
 };
 

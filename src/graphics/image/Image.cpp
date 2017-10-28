@@ -34,20 +34,20 @@
 #include "platform/CrashHandler.h"
 
 
-Image::Image() : mData(0) {
+Image::Image() : m_data(0) {
 	Reset();
 }
 
-Image::Image(const Image & pOther) : mData(NULL) {
+Image::Image(const Image & pOther) : m_data(NULL) {
 	*this = pOther;
 }
 
 Image::~Image() {
-	delete[] mData;
+	delete[] m_data;
 }
 
 void Image::Reset() {
-	delete[] mData, mData = NULL;
+	delete[] m_data, m_data = NULL;
 	mWidth = 0;
 	mHeight = 0;
 	mFormat = Format_Unknown;
@@ -163,11 +163,11 @@ void Image::Create(size_t width, size_t height, Format format) {
 	
 	size_t oldSize = getSize();
 	size_t newSize = getSize(format, width, height);
-	if(mData && newSize != oldSize) {
-		delete[] mData, mData = NULL;
+	if(m_data && newSize != oldSize) {
+		delete[] m_data, m_data = NULL;
 	}
-	if(!mData) {
-		mData = new unsigned char[newSize];
+	if(!m_data) {
+		m_data = new unsigned char[newSize];
 	}
 	
 	mWidth  = width;
@@ -501,8 +501,8 @@ bool Image::toGrayscale(Format newFormat) {
 		dst += dstNumChannels;
 	}
 	
-	delete[] mData;
-	mData = newData;
+	delete[] m_data;
+	m_data = newData;
 	
 	mFormat = newFormat;
 	
