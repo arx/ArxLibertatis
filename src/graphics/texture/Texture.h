@@ -53,19 +53,19 @@ public:
 	Image::Format getFormat() const { return m_format; }
 	bool hasAlpha() const { return Image::hasAlpha(getFormat()); }
 	
-	bool hasMipmaps() const { return (flags & HasMipmaps); }
-	bool isIntensity() const { return (flags & Intensity); }
+	bool hasMipmaps() const { return (m_flags & HasMipmaps); }
+	bool isIntensity() const { return (m_flags & Intensity); }
 	
 	Image & getImage() { return m_image; }
 	const res::path & getFileName() const { return m_filename; }
 	
-	bool hasColorKey() { return (flags & ApplyColorKey) && hasAlpha() && !getFileName().empty(); }
+	bool hasColorKey() { return (m_flags & ApplyColorKey) && hasAlpha() && !getFileName().empty(); }
 	
 protected:
 	
 	Texture()
 		: m_format(Image::Format_Unknown)
-		, flags(0)
+		, m_flags(0)
 		, m_size(Vec2i_ZERO)
 		, m_storedSize(Vec2i_ZERO)
 	{ }
@@ -73,7 +73,7 @@ protected:
 	virtual bool Create() = 0;
 	
 	Image::Format m_format;
-	TextureFlags flags;
+	TextureFlags m_flags;
 	
 	Vec2i m_size;
 	Vec2i m_storedSize;

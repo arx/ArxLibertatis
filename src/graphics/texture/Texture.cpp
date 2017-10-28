@@ -21,31 +21,31 @@
 
 #include "core/Config.h"
 
-bool Texture::Init(const res::path & strFileName, TextureFlags newFlags) {
+bool Texture::Init(const res::path & filename, TextureFlags flags) {
 	
-	m_filename = strFileName;
-	flags = newFlags;
-	
-	return Restore();
-}
-
-bool Texture::Init(const Image & pImage, TextureFlags newFlags) {
-	
-	m_filename.clear();
-	m_image = pImage;
-	flags = newFlags;
+	m_filename = filename;
+	m_flags = flags;
 	
 	return Restore();
 }
 
-bool Texture::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pFormat) {
+bool Texture::Init(const Image & image, TextureFlags flags) {
+	
+	m_filename.clear();
+	m_image = image;
+	m_flags = flags;
+	
+	return Restore();
+}
+
+bool Texture::Init(unsigned int width, unsigned int height, Image::Format format) {
 	
 	m_filename.clear();
 	
-	m_size = Vec2i(pWidth, pHeight);
-	m_image.create(pWidth, pHeight, pFormat);
-	m_format = pFormat;
-	flags = 0;
+	m_size = Vec2i(width, height);
+	m_image.create(width, height, format);
+	m_format = format;
+	m_flags = 0;
 	
 	return Create();
 }
@@ -58,7 +58,7 @@ bool Texture::Restore() {
 		
 		m_image.load(getFileName());
 		
-		if((flags & ApplyColorKey) && !m_image.hasAlpha()) {
+		if((m_flags & ApplyColorKey) && !m_image.hasAlpha()) {
 			m_image.applyColorKeyToAlpha(Color::black, config.video.colorkeyAntialiasing);
 		}
 		
