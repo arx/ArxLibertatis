@@ -53,7 +53,8 @@ public:
 	Image::Format getFormat() const { return m_format; }
 	bool hasAlpha() const { return Image::hasAlpha(getFormat()); }
 	
-	bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
+	bool hasMipmaps() const { return (flags & HasMipmaps); }
+	bool isIntensity() const { return (flags & Intensity); }
 	
 	Image & getImage() { return m_image; }
 	const res::path & getFileName() const { return m_filename; }
