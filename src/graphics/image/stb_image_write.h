@@ -53,7 +53,6 @@ extern "C" {
 #endif
 
 extern int stbi_write_bmp(char const *filename, int w, int h, int comp, const void *data);
-extern int stbi_write_tga(char const *filename, int w, int h, int comp, const void *data);
 
 #ifdef __cplusplus
 }

@@ -114,11 +114,4 @@ extern "C" int stbi_write_bmp(char const *filename, int x, int y, int comp, cons
             40, x,y, 1,24, 0,0,0,0,0,0);             // bitmap header
 }
 
-extern "C" int stbi_write_tga(char const *filename, int x, int y, int comp, const void *data)
-{
-   int has_alpha = !(comp & 1);
-   return outfile(filename, -1,-1, x, y, comp, data, has_alpha, 0,
-                  "111 221 2222 11", 0,0,2, 0,0,0, 0,0,x,y, 24+8*has_alpha, 8*has_alpha);
-}
-
 } // namespace stbi
