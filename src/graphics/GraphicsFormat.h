@@ -23,7 +23,7 @@
 #include "graphics/GraphicsTypes.h"
 
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 
 
 struct SavedColor {
