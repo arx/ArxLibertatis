@@ -342,13 +342,8 @@ void ARX_NPC_Behaviour_Reset(Entity * io)
 
 //! Reset all Behaviours from all NPCs
 void ARX_NPC_Behaviour_ResetAll() {
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e) {
-			ARX_NPC_Behaviour_Reset(e);
-		}
+	BOOST_FOREACH(Entity * e, entities.all()) {
+		ARX_NPC_Behaviour_Reset(e);
 	}
 }
 
@@ -2510,12 +2505,8 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 	Entity * found_io = NULL;
 	float found_dist = std::numeric_limits<float>::max();
 
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(   !io
-		   || IsDeadNPC(io)
+	BOOST_FOREACH(Entity * io, entities.all()) {
+		if(   IsDeadNPC(io)
 		   || io == ioo
 		   || !(io->ioflags & IO_NPC)
 		   || io->show != SHOW_FLAG_IN_SCENE
@@ -2747,12 +2738,8 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 	
 	long Source_Room = ARX_PORTALS_GetRoomNumForPosition(pos, 1);
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * entity = entities[handle];
-		
-		if(   entity
-		   && (entity->ioflags & IO_NPC)
+	BOOST_FOREACH(Entity * entity, entities.all()) {
+		if(   (entity->ioflags & IO_NPC)
 		   && (entity->gameFlags & GFLAG_ISINTREATZONE)
 		   && (entity != source)
 		   && (entity->show == SHOW_FLAG_IN_SCENE || entity->show == SHOW_FLAG_HIDDEN)
