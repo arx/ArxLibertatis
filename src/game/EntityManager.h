@@ -102,6 +102,14 @@ public:
 			boost::make_filter_iterator<ValidEntryFilter>(entries.end(), entries.end())
 		);
 	}
+	boost::iterator_range<valids_iterator> notPlayer() {
+		return boost::make_iterator_range(
+			// Player is always at slot 0
+			// XXX use std::next ?
+			boost::make_filter_iterator<ValidEntryFilter>(entries.begin() + 1, entries.end()),
+			boost::make_filter_iterator<ValidEntryFilter>(entries.end(), entries.end())
+		);
+	}
 	
 	
 	typedef bool (*AutocompleteHandler)(void * context, const std::string & suggestion);
