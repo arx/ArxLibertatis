@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_DATA_TEXTURECONTAINER_H
 #define ARX_GRAPHICS_DATA_TEXTURECONTAINER_H
 
+#include <stddef.h>
 #include <vector>
 #include <map>
 
@@ -165,8 +166,8 @@ public:
 	 */
 	bool CreateHalo();
 
-	static const int HALO_RADIUS = 5;
-	TextureContainer *getHalo() {
+	static const size_t HALO_RADIUS = 5;
+	TextureContainer * getHalo() {
 		return (TextureHalo ? TextureHalo : (CreateHalo() ? TextureHalo : NULL));
 	}
 
