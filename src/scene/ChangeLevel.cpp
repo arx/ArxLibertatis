@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits>
 #include <ctime>
 
+#include <boost/foreach.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include "ai/Paths.h"
@@ -2510,16 +2511,8 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 		}
 		
 	} else {
-		
-		for(size_t i = 0; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * e = entities[handle];
-			
-			if(!e) {
-				continue;
-			}
-			
-			if(e && (e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
+		BOOST_FOREACH(Entity * e, entities.all()) {
+			if((e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
 				if(e->_npcdata->behavior != BEHAVIOUR_NONE) {
 					e->physics.cyl = GetIOCyl(e);
 					GetTargetPos(e);
