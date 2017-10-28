@@ -315,7 +315,7 @@ bool Image::Copy(const Image & srcImage, size_t destX, size_t destY) {
 	return Copy(srcImage, destX, destY, 0, 0, srcImage.GetWidth(), srcImage.GetHeight());
 }
 
-void Image::QuakeGamma(float pGamma) {
+void Image::applyGamma(float gamma) {
 	
 	// This function was taken from a couple engines that I saw,
 	// which most likely originated from the Aftershock engine.
@@ -330,7 +330,7 @@ void Image::QuakeGamma(float pGamma) {
 	// pixels with any saturated component will not be modified.
 	//
 	// if the image has alpha == 1.0, those pixels will get no effect
-	// using a pGamma < 1.0 will have no effect
+	// using a gamma < 1.0 will have no effect
 	
 	size_t numComponents = getNumChannels();
 	size_t size = mWidth * mHeight;
@@ -342,7 +342,7 @@ void Image::QuakeGamma(float pGamma) {
 	float components[MAX_COMPONENTS];
 	
 	// Nothing to do in this case!
-	if(pGamma == 1.0f) {
+	if(gamma == 1.0f) {
 		return;
 	}
 	
@@ -354,7 +354,7 @@ void Image::QuakeGamma(float pGamma) {
 		for(size_t j = 0; j < numComponents; j++) {
 			
 			// scale the component's value
-			components[j] = float(data[j]) * pGamma;
+			components[j] = float(data[j]) * gamma;
 			
 			// find the max component
 			max_component = std::max(max_component, components[j]);
