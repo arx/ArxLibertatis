@@ -85,7 +85,7 @@ static int write_pixels(FILE * f, int vdir, int x, int y, int comp,
 		for(i = 0; i < x; ++i) {
 			const unsigned char * d = (const unsigned char *)data + (j * x + i) * comp;
 			
-			if(write_alpha < 0 && !fwrite(&d[comp-1], 1, 1, f)) {
+			if(write_alpha < 0 && !fwrite(&d[comp - 1], 1, 1, f)) {
 				return 0;
 			}
 			
@@ -117,13 +117,13 @@ static int write_pixels(FILE * f, int vdir, int x, int y, int comp,
 				}
 			}
 			
-			if(write_alpha > 0 && !fwrite(&d[comp-1], 1, 1, f)) {
+			if(write_alpha > 0 && !fwrite(&d[comp - 1], 1, 1, f)) {
 				return 0;
 			}
 			
 		}
 		
-		if(scanline_pad > 0 && !fwrite(&zero,scanline_pad,1,f)) {
+		if(scanline_pad > 0 && !fwrite(&zero, scanline_pad, 1, f)) {
 			return 0;
 		}
 		
