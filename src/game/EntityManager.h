@@ -24,6 +24,9 @@
 #include <string>
 #include <vector>
 
+#include <boost/iterator/filter_iterator.hpp>
+#include <boost/range/iterator_range.hpp>
+
 #include "game/EntityId.h"
 #include "game/GameTypes.h"
 
@@ -83,6 +86,23 @@ public:
 	
 	iterator begin() const { return entries.begin(); }
 	iterator end() const { return entries.end(); }
+	
+	
+	struct ValidEntryFilter {
+		bool operator()(const Entity * c){
+			return c != NULL;
+		}
+	};
+	
+	typedef boost::filter_iterator<ValidEntryFilter, Entries::iterator> valids_iterator;
+	
+	boost::iterator_range<valids_iterator> all() {
+		return boost::make_iterator_range(
+			boost::make_filter_iterator<ValidEntryFilter>(entries.begin(), entries.end()),
+			boost::make_filter_iterator<ValidEntryFilter>(entries.end(), entries.end())
+		);
+	}
+	
 	
 	typedef bool (*AutocompleteHandler)(void * context, const std::string & suggestion);
 	void autocomplete(const std::string & prefix, AutocompleteHandler handler, void * context);
