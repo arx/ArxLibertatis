@@ -90,6 +90,12 @@ public:
 	
 	bool toGrayscale(Format newFormat = Format_L8);
 	
+	/*!
+	 * Create an image of the desired size and rescale the source into it
+	 *
+	 * Performs only nearest-neighbour interpolation of the image.
+	 * Supports only RGB format.
+	 */
 	void resizeFrom(const Image & source, size_t width, size_t height, bool flipY = false);
 	
 	//! Set the alpha of pixels matching the color key to 0. Will add an alpha channel if needed.
