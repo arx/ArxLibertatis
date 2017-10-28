@@ -270,7 +270,7 @@ void Image::resizeFrom(const Image & source, size_t width, size_t height, bool f
 	
 }
 
-void Image::Clear() {
+void Image::clear() {
 	memset(getData(), 0, getSize());
 }
 

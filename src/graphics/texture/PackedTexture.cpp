@@ -60,7 +60,7 @@ PackedTexture::TextureTree::TextureTree(unsigned int textureSize,
 		dirty = false;
 		return;
 	}
-	texture->GetImage().Clear();
+	texture->GetImage().clear();
 	dirty = true;
 }
 
