@@ -76,7 +76,7 @@ bool Texture::restore() {
 		destroy();
 		
 		if(create()) {
-			Upload();
+			upload();
 			restored = true;
 		}
 		

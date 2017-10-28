@@ -39,7 +39,7 @@ public:
 	~GLTexture();
 	
 	bool create();
-	void Upload();
+	void upload();
 	void destroy();
 	
 	void apply(GLTextureStage * stage);
