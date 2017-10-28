@@ -60,10 +60,9 @@ public:
 	// reset to fresh constructor state
 	void Reset();
 	
-	// zero image data with memset
-	void Clear();
+	//! Zero image data
+	void clear();
 	
-	// info accessors
 	size_t getWidth() const { return m_width; }
 	size_t getHeight() const { return m_height; }
 	Format getFormat() const { return m_format; }
