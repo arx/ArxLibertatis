@@ -63,24 +63,18 @@ static int write3(FILE * f, unsigned char a, unsigned char b, unsigned char c) {
 	return fwrite(arr, 3, 1, f);
 }
 
-static int write_pixels(FILE * f, int vdir, int x, int y, int comp,
+static int write_pixels(FILE * f, int x, int y, int comp,
                         const void * data, int write_alpha, int scanline_pad) {
 	
 	unsigned char bg[3] = { 255, 0, 255 }, px[3];
 	u32 zero = 0;
-	int i, j, k, j_end;
+	int i, k;
 	
 	if(y <= 0) {
 		return 1;
 	}
 	
-	if(vdir < 0) {
-		j_end = -1, j = y-1;
-	} else {
-		j_end =  y, j = 0;
-	}
-	
-	for(; j != j_end; j += vdir) {
+	for(int j = y - 1; j != -1; j -= 1) {
 		
 		for(i = 0; i < x; ++i) {
 			const unsigned char * d = (const unsigned char *)data + (j * x + i) * comp;
@@ -149,7 +143,7 @@ int stbi_write_bmp(char const * filename, int x, int y, int comp, const void * d
 	                  'B', 'M', 14 + 40 + (x * 3 + pad) * y, 0, 0, 14 + 40,  // file header
 	                  40, x, y, 1, 24, 0, 0, 0, 0, 0, 0);                    // bitmap header);
 	if(ret) {
-		ret = write_pixels(f, -1, x, y, comp, data, 0, pad);
+		ret = write_pixels(f, x, y, comp, data, 0, pad);
 	}
 	
 	fclose(f);
