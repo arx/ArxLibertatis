@@ -60,7 +60,7 @@ const Image & Image::operator=(const Image & other) {
 		return *this;
 	}
 	
-	Create(other.mWidth, other.mHeight, other.mFormat);
+	Create(other.mWidth, other.mHeight, other.getFormat());
 	
 	memcpy(getData(), other.getData(), getSize());
 	
@@ -185,8 +185,9 @@ bool Image::ConvertTo(Format format) {
 		return false;
 	}
 	
-	if(mFormat == format)
+	if(getFormat() == format) {
 		return true;
+	}
 	
 	size_t numComponents = getNumChannels();
 	size_t size = mWidth * mHeight;
@@ -278,7 +279,7 @@ bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
 	size_t bpp = getNumChannels();
 	
 	// Format must match.
-	if(srcImage.getFormat() != mFormat) {
+	if(srcImage.getFormat() != getFormat()) {
 		return false;
 	}
 	
@@ -436,7 +437,7 @@ void extendImageBottomRight<1>(u8 * in, u8 * out, size_t win, size_t wout, size_
 
 void Image::extendClampToEdgeBorder(const Image & src) {
 	
-	arx_assert_msg(mFormat == src.mFormat, "extendClampToEdgeBorder Cannot change format!");
+	arx_assert_msg(getFormat() == src.getFormat(), "extendClampToEdgeBorder Cannot change format!");
 	arx_assert_msg(mWidth >= src.mWidth && mHeight >= src.mHeight, "extendClampToEdgeBorder Cannot decrease size!");
 	
 	copy(src, 0, 0);
@@ -635,7 +636,7 @@ void Image::flipY() {
 
 bool Image::save(const fs::path & filename) const {
 	
-	if(mFormat >= Format_Unknown) {
+	if(getFormat() >= Format_Unknown) {
 		return false;
 	}
 	
