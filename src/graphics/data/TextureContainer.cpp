@@ -263,8 +263,8 @@ bool TextureContainer::CreateHalo() {
 	
 	Image im;
 	
-	int width = m_size.x + HALO_RADIUS * 2;
-	int height = m_size.y + HALO_RADIUS * 2;
+	size_t width = size_t(m_size.x) + HALO_RADIUS * 2;
+	size_t height = size_t(m_size.y) + HALO_RADIUS * 2;
 	im.create(width, height, srcImage.getFormat());
 	
 	// Center the image, offset by radius to contain the edges of the blur
