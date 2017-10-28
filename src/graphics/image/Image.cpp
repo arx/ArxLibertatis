@@ -642,9 +642,6 @@ bool Image::save(const fs::path & filename) const {
 	if(filename.ext() == ".bmp") {
 		ret = stbi::stbi_write_bmp(filename.string().c_str(), int(getWidth()), int(getHeight()),
 		                           int(getNumChannels()), getData());
-	} else if(filename.ext() == ".tga") {
-		ret = stbi::stbi_write_tga(filename.string().c_str(), int(getWidth()), int(getHeight()),
-		                           int(getNumChannels()), getData());
 	} else {
 		LogError << "Unsupported file extension: " << filename.ext();
 	}
