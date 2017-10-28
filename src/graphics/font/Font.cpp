@@ -158,7 +158,7 @@ bool Font::insertGlyph(Char character) {
 		
 		// Copy pixels
 		unsigned char * src = srcBitmap->buffer;
-		unsigned char * dst = imgGlyph.GetData();
+		unsigned char * dst = imgGlyph.getData();
 		memcpy(dst, src, glyph.size.x * glyph.size.y);
 		
 		Vec2i offset;

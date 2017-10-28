@@ -69,9 +69,9 @@ void GLTexture::Upload() {
 		arx_assert(mFormat == Image::Format_L8);
 		Image converted;
 		converted.Create(storedSize.x, storedSize.y, Image::Format_L8A8);
-		unsigned char * input = mImage.GetData();
+		unsigned char * input = mImage.getData();
 		unsigned char * end = input + storedSize.x * storedSize.y;
-		unsigned char * output = converted.GetData();
+		unsigned char * output = converted.getData();
 		for(; input != end; input++) {
 			*output++ = *input;
 			*output++ = *input;
@@ -132,10 +132,10 @@ void GLTexture::Upload() {
 		extended.Create(storedSize.x, storedSize.y, mImage.GetFormat());
 		extended.extendClampToEdgeBorder(mImage);
 		glTexImage2D(GL_TEXTURE_2D, 0, internal, storedSize.x, storedSize.y, 0, format,
-		             GL_UNSIGNED_BYTE, extended.GetData());
+		             GL_UNSIGNED_BYTE, extended.getData());
 	} else {
 		glTexImage2D(GL_TEXTURE_2D, 0, internal, size.x, size.y, 0, format,
-		             GL_UNSIGNED_BYTE, mImage.GetData());
+		             GL_UNSIGNED_BYTE, mImage.getData());
 	}
 	
 }
