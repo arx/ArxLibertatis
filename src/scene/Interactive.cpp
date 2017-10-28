@@ -531,11 +531,9 @@ void PrepareIOTreatZone(long flag) {
 			TREATZONE_LIMIT += 500;
 	}
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
+	BOOST_FOREACH(Entity * io, entities.notPlayer()) {
 		
-		if(io && (io->show == SHOW_FLAG_IN_SCENE || io->show == SHOW_FLAG_TELEPORTING
+		if((io->show == SHOW_FLAG_IN_SCENE || io->show == SHOW_FLAG_TELEPORTING
 		          || io->show == SHOW_FLAG_ON_PLAYER || io->show == SHOW_FLAG_HIDDEN)) {
 			
 			bool treat;
