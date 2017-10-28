@@ -68,7 +68,7 @@ bool Texture::Restore() {
 
 	if(mImage.isValid()) {
 		mFormat = mImage.getFormat();
-		size = Vec2i(mImage.GetWidth(), mImage.GetHeight());
+		size = Vec2i(mImage.getWidth(), mImage.GetHeight());
 
 		Destroy();
 		bool bCreated = Create();

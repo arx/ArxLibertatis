@@ -220,8 +220,8 @@ void Image::resizeFrom(const Image & source, size_t width, size_t height, bool f
 	Create(width, height, Format_R8G8B8);
 	
 	// span, size of one line in pixels (doesn't allow for byte padding)
-	size_t src_span = source.GetWidth();
-	size_t dest_span = GetWidth();
+	size_t src_span = source.getWidth();
+	size_t dest_span = getWidth();
 	
 	// number of bytes per pixel
 	// since we assume RGB format, this is 3 for both source and destination
@@ -242,9 +242,9 @@ void Image::resizeFrom(const Image & source, size_t width, size_t height, bool f
 		
 		// find fractional source x_delta
 		float x_source = 0.0f;
-		const float x_delta = source.GetWidth() / (float)GetWidth();
+		const float x_delta = source.getWidth() / float(getWidth());
 		
-		for(size_t x = 0; x < GetWidth(); x++) {
+		for(size_t x = 0; x < getWidth(); x++) {
 			
 			// truncate x_source coordinate
 			size_t src_x = size_t(x_source);
@@ -290,7 +290,7 @@ bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
 	}
 	
 	// Must fit inside boundaries
-	if(srcX + width > srcImage.GetWidth() || srcY + height > srcImage.GetHeight()) {
+	if(srcX + width > srcImage.getWidth() || srcY + height > srcImage.GetHeight()) {
 		return false;
 	}
 	
@@ -312,7 +312,7 @@ bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
 }
 
 bool Image::copy(const Image & srcImage, size_t destX, size_t destY) {
-	return copy(srcImage, destX, destY, 0, 0, srcImage.GetWidth(), srcImage.GetHeight());
+	return copy(srcImage, destX, destY, 0, 0, srcImage.getWidth(), srcImage.GetHeight());
 }
 
 void Image::applyGamma(float gamma) {

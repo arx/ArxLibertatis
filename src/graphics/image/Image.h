@@ -64,7 +64,7 @@ public:
 	void Clear();
 	
 	// info accessors
-	size_t GetWidth() const { return mWidth; }
+	size_t getWidth() const { return mWidth; }
 	size_t GetHeight() const { return mHeight; }
 	Format getFormat() const { return m_format; }
 	size_t getSize() const { return getSize(getFormat(), mWidth, mHeight); }
