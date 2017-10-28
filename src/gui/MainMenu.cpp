@@ -2142,7 +2142,7 @@ void MainMenu::init()
 	TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, version, Vec2f(verPosX / g_sizeRatio.x, 80));
 	
 	txt->SetCheckOff();
-	txt->lColor=Color(127,127,127);
+	txt->lColor = Color(127, 127, 127);
 	m_widgets->add(txt);
 }
 
