@@ -258,14 +258,8 @@ bool TextureContainer::CreateHalo() {
 	res::path haloName = m_texName.string();
 	haloName.append("_halo");
 	TextureHalo = new TextureContainer(haloName, NoMipmap | NoColorKey);
-	if(!TextureHalo) {
-		return false;
-	}
 	
 	TextureHalo->m_pTexture = GRenderer->createTexture();
-	if(!TextureHalo->m_pTexture) {
-		return true;
-	}
 	
 	Image im;
 	
