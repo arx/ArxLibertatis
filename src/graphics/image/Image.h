@@ -70,9 +70,10 @@ public:
 	size_t getSize() const { return getSize(mFormat, mWidth, mHeight); }
 	size_t getNumChannels() const { return getNumChannels(mFormat); }
 	
-	// bool accessors
 	bool IsValid() const { return m_data != NULL; }
-	bool HasAlpha() const { return hasAlpha(mFormat); }
+	
+	bool hasAlpha() const { return hasAlpha(mFormat); }
+	
 	static bool hasAlpha(Format format) {
 		return format == Format_A8
 		    || format == Format_L8A8
