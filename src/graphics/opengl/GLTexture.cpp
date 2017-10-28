@@ -68,9 +68,9 @@ void GLTexture::Upload() {
 	if(!renderer->hasIntensityTextures() && (flags & Intensity)) {
 		arx_assert(getFormat() == Image::Format_L8);
 		Image converted;
-		converted.create(storedSize.x, storedSize.y, Image::Format_L8A8);
+		converted.create(getStoredSize().x, getStoredSize().y, Image::Format_L8A8);
 		unsigned char * input = m_image.getData();
-		unsigned char * end = input + storedSize.x * storedSize.y;
+		unsigned char * end = input + getStoredSize().x * getStoredSize().y;
 		unsigned char * output = converted.getData();
 		for(; input != end; input++) {
 			*output++ = *input;
@@ -112,7 +112,7 @@ void GLTexture::Upload() {
 	}
 	GLint internal = renderer->hasSizedTextureFormats() ? internalSized : internalUnsized;
 	
-	if(storedSize != size) {
+	if(getStoredSize() != size) {
 		flags &= ~HasMipmaps;
 	}
 	
@@ -127,11 +127,11 @@ void GLTexture::Upload() {
 	
 	// TODO handle GL_MAX_TEXTURE_SIZE
 	
-	if(storedSize != size) {
+	if(getStoredSize() != size) {
 		Image extended;
-		extended.create(storedSize.x, storedSize.y, m_image.getFormat());
+		extended.create(getStoredSize().x, getStoredSize().y, m_image.getFormat());
 		extended.extendClampToEdgeBorder(m_image);
-		glTexImage2D(GL_TEXTURE_2D, 0, internal, storedSize.x, storedSize.y, 0, format,
+		glTexImage2D(GL_TEXTURE_2D, 0, internal, getStoredSize().x, getStoredSize().y, 0, format,
 		             GL_UNSIGNED_BYTE, extended.getData());
 	} else {
 		glTexImage2D(GL_TEXTURE_2D, 0, internal, size.x, size.y, 0, format,
