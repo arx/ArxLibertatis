@@ -57,7 +57,7 @@ public:
 	
 	bool convertTo(Format format);
 	
-	// Reset to fresh constructor state
+	//! Reset to fresh constructor state
 	void reset();
 	
 	//! Zero image data
@@ -117,10 +117,10 @@ public:
 	// processing functions
 	// destructively adjust image content
 	
-	//! blur using gaussian kernel
+	//! Blur using gaussian kernel
 	void blur(size_t radius);
 	
-	//! scales value and normalizes by max component value
+	//! Scale value and normalizes by max component value
 	void applyGamma(float gamma);
 	
 	void applyThreshold(unsigned char threshold, int component_mask);
