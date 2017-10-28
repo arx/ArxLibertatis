@@ -297,13 +297,9 @@ bool IsCollidingIO(Entity * io, Entity * ioo) {
 
 void PushIO_ON_Top(Entity * ioo, float ydec) {
 	
-	if(ydec != 0.f)
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(io
-		   && io != ioo
+	if(ydec != 0.f) {
+	BOOST_FOREACH(Entity * io, entities.all()) {
+		if(   io != ioo
 		   && !(io->ioflags & IO_NO_COLLISIONS)
 		   && io->show == SHOW_FLAG_IN_SCENE
 		   && io->obj
@@ -381,6 +377,7 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 				}
 			}
 		}
+	}
 	}
 }
 
