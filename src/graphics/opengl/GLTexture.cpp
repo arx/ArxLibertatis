@@ -69,14 +69,14 @@ void GLTexture::Upload() {
 		arx_assert(getFormat() == Image::Format_L8);
 		Image converted;
 		converted.create(storedSize.x, storedSize.y, Image::Format_L8A8);
-		unsigned char * input = mImage.getData();
+		unsigned char * input = m_image.getData();
 		unsigned char * end = input + storedSize.x * storedSize.y;
 		unsigned char * output = converted.getData();
 		for(; input != end; input++) {
 			*output++ = *input;
 			*output++ = *input;
 		}
-		mImage = converted;
+		m_image = converted;
 		m_format = Image::Format_L8A8;
 		flags &= ~Intensity;
 	}
@@ -84,7 +84,7 @@ void GLTexture::Upload() {
 	if(!renderer->hasBGRTextureTransfer()
 	   && (getFormat() == Image::Format_B8G8R8 || getFormat() == Image::Format_B8G8R8A8)) {
 		Image::Format rgbFormat = getFormat() == Image::Format_B8G8R8 ? Image::Format_R8G8B8 : Image::Format_R8G8B8A8;
-		mImage.convertTo(rgbFormat);
+		m_image.convertTo(rgbFormat);
 		m_format = rgbFormat;
 	}
 	
@@ -129,13 +129,13 @@ void GLTexture::Upload() {
 	
 	if(storedSize != size) {
 		Image extended;
-		extended.create(storedSize.x, storedSize.y, mImage.getFormat());
-		extended.extendClampToEdgeBorder(mImage);
+		extended.create(storedSize.x, storedSize.y, m_image.getFormat());
+		extended.extendClampToEdgeBorder(m_image);
 		glTexImage2D(GL_TEXTURE_2D, 0, internal, storedSize.x, storedSize.y, 0, format,
 		             GL_UNSIGNED_BYTE, extended.getData());
 	} else {
 		glTexImage2D(GL_TEXTURE_2D, 0, internal, size.x, size.y, 0, format,
-		             GL_UNSIGNED_BYTE, mImage.getData());
+		             GL_UNSIGNED_BYTE, m_image.getData());
 	}
 	
 }
