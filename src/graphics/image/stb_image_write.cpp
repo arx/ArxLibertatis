@@ -63,7 +63,7 @@ static int write3(FILE * f, unsigned char a, unsigned char b, unsigned char c) {
 	return fwrite(arr, 3, 1, f);
 }
 
-static int write_pixels(FILE * f, int rgb_dir, int vdir, int x, int y, int comp,
+static int write_pixels(FILE * f, int vdir, int x, int y, int comp,
                         const void * data, int write_alpha, int scanline_pad) {
 	
 	unsigned char bg[3] = { 255, 0, 255 }, px[3];
@@ -103,14 +103,14 @@ static int write_pixels(FILE * f, int rgb_dir, int vdir, int x, int y, int comp,
 						for(k = 0; k < 3; ++k) {
 							px[k] = bg[k] + ((d[k] - bg[k]) * d[3]) / 255;
 						}
-						if(!write3(f, px[1 - rgb_dir], px[1], px[1 + rgb_dir])) {
+						if(!write3(f, px[2], px[1], px[0])) {
 							return 0;
 						}
 						break;
 					}
 				} /* fall-through */
 				case 3: {
-					if(!write3(f, d[1 - rgb_dir], d[1], d[1 + rgb_dir])) {
+					if(!write3(f, d[2], d[1], d[0])) {
 						return 0;
 					}
 					break;
@@ -149,7 +149,7 @@ int stbi_write_bmp(char const * filename, int x, int y, int comp, const void * d
 	                  'B', 'M', 14 + 40 + (x * 3 + pad) * y, 0, 0, 14 + 40,  // file header
 	                  40, x, y, 1, 24, 0, 0, 0, 0, 0, 0);                    // bitmap header);
 	if(ret) {
-		ret = write_pixels(f, -1, -1, x, y, comp, data, 0, pad);
+		ret = write_pixels(f, -1, x, y, comp, data, 0, pad);
 	}
 	
 	fclose(f);
