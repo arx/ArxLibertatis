@@ -41,11 +41,11 @@ bool Texture::create(const Image & image, TextureFlags flags) {
 bool Texture::create(size_t width, size_t height, Image::Format format) {
 	
 	m_filename.clear();
+	m_image.create(width, height, format);
+	m_flags = 0;
 	
 	m_size = Vec2i(s32(width), s32(height));
-	m_image.create(width, height, format);
 	m_format = format;
-	m_flags = 0;
 	
 	return create();
 }
@@ -71,7 +71,7 @@ bool Texture::restore() {
 	if(m_image.isValid()) {
 		
 		m_format = m_image.getFormat();
-		m_size = Vec2i(m_image.getWidth(), m_image.getHeight());
+		m_size = Vec2i(s32(m_image.getWidth()), s32(m_image.getHeight()));
 		
 		destroy();
 		
