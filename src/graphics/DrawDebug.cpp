@@ -480,11 +480,8 @@ static void drawDebugEntityPhysicsCylinder(Entity * io) {
 
 static void drawDebugEntityPhysicsCylinders() {
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * entity = entities[handle];
-		
-		if(!entity || !closerThan(entity->pos, player.pos, DebugPhysicsMaxDistance))
+	BOOST_FOREACH(Entity * entity, entities.notPlayer()) {
+		if(!closerThan(entity->pos, player.pos, DebugPhysicsMaxDistance))
 			continue;
 		
 		drawDebugCollisionShape(entity->obj);
@@ -494,13 +491,7 @@ static void drawDebugEntityPhysicsCylinders() {
 
 static void drawDebugEntities() {
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * entity = entities[handle];
-		
-		if(!entity) {
-			continue;
-		}
+	BOOST_FOREACH(Entity * entity, entities.notPlayer()) {
 		
 		Color color = Color::white;
 		bool visible = true;
@@ -644,13 +635,10 @@ static void drawDebugMaterials() {
 	
 	float minz = std::numeric_limits<float>::max();
 	
-	for(size_t k = 1; k < entities.size(); k++) {
-		
-		EntityHandle h = EntityHandle(k);
-		if(!entities[h] || !entities[h]->obj) {
+	BOOST_FOREACH(Entity * entity, entities.notPlayer()) {
+		if(!entity->obj) {
 			continue;
 		}
-		Entity * entity = entities[h];
 		
 		if((entity->ioflags & IO_CAMERA) || (entity->ioflags & IO_MARKER))
 			continue;
