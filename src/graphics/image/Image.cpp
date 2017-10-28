@@ -511,7 +511,7 @@ bool Image::ToGrayscale(Format newFormat) {
 	return true;
 }
 
-void Image::Blur(size_t radius) {
+void Image::blur(size_t radius) {
 	
 	// Create kernel and precompute multiplication table
 	size_t kernelSize = 1 + radius * 2;
