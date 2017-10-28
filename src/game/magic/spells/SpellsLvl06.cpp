@@ -120,7 +120,7 @@ void RiseDeadSpell::End() {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entity->pos);
 		
 		if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
-			AddRandomSmoke(entity,100);
+			AddRandomSmoke(entity, 100);
 			Vec3f posi = entity->pos;
 			posi.y-=100.f;
 			MakeCoolFx(posi);
@@ -199,8 +199,8 @@ void RiseDeadSpell::Update() {
 					EVENT_SENDER = NULL;
 				}
 				
-				SendIOScriptEvent(io,SM_SUMMONED);
-					
+				SendIOScriptEvent(io, SM_SUMMONED);
+				
 				Vec3f pos = m_fissure.m_eSrc;
 				pos += arx::randomVec3f() * 100.f;
 				pos += Vec3f(-50.f, 50.f, -50.f);
