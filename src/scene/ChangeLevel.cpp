@@ -809,10 +809,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
 	delete[] dat;
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
+	BOOST_FOREACH(Entity * e, entities.notPlayer()) {
 		if(IsInPlayerInventory(e) || IsPlayerEquipedWith(e)) {
 			ARX_CHANGELEVEL_Push_IO(e, level);
 		}
