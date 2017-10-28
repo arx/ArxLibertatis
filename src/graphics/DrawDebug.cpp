@@ -21,6 +21,8 @@
 
 #include <sstream>
 
+#include <boost/foreach.hpp>
+
 #include "ai/Anchors.h"
 #include "ai/Paths.h"
 
@@ -294,11 +296,8 @@ static void drawDebugPathFinding() {
 	}
 	
 	// Highlight active paths
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		const Entity * entity = entities[handle];
-		
-		if(!entity || !(entity->ioflags & IO_NPC)) {
+	BOOST_FOREACH(const Entity * entity, entities.notPlayer()) {
+		if(!(entity->ioflags & IO_NPC)) {
 			continue;
 		}
 		const IO_PATHFIND & pathfind = entity->_npcdata->pathfind;
