@@ -48,7 +48,7 @@ public:
 	Image(const Image & pOther);
 	virtual ~Image();
 	
-	const Image& operator=(const Image & pOther);
+	const Image & operator=(const Image & pOther);
 	
 	bool load(const res::path & filename);
 	bool load(void * pData, size_t size, const char * file = NULL);
