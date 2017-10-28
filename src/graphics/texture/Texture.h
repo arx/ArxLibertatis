@@ -50,7 +50,7 @@ public:
 	const Vec2i & getSize() const { return size; }
 	const Vec2i & getStoredSize() const { return storedSize; }
 	
-	Image::Format GetFormat() const { return mFormat; }
+	Image::Format getFormat() const { return mFormat; }
 	bool hasAlpha() const { return Image::hasAlpha(mFormat); }
 	
 	bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
