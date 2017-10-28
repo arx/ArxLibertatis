@@ -240,7 +240,7 @@ void SummonCreatureSpell::Update() {
 					EVENT_SENDER = NULL;
 				}
 				
-				SendIOScriptEvent(io,SM_SUMMONED);
+				SendIOScriptEvent(io, SM_SUMMONED);
 				
 				for(long j = 0; j < 3; j++) {
 					Vec3f pos = m_fissure.m_eSrc;
