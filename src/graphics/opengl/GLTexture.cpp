@@ -57,7 +57,7 @@ bool GLTexture::create() {
 	return (tex != GL_NONE);
 }
 
-void GLTexture::Upload() {
+void GLTexture::upload() {
 	
 	arx_assert(tex != GL_NONE);
 	

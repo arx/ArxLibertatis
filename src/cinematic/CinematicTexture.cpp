@@ -123,7 +123,7 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 			Texture * tex = GRenderer->createTexture();
 			tex->Init(w2, h2, cinematicImage.getFormat());
 			tex->getImage().copy(cinematicImage, 0, 0, bi->m_size.x - w, bi->m_size.y - h, w2, h2);
-			tex->Upload();
+			tex->upload();
 			
 			{
 			Vec2i depc = Vec2i((bi->m_count.x - nbxx) * scale, (bi->m_count.y - nb.y) * scale);

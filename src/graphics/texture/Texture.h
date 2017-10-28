@@ -44,7 +44,7 @@ public:
 	bool Init(const Image & image, TextureFlags flags = HasMipmaps);
 	bool Init(size_t width, size_t height, Image::Format format);
 	
-	virtual void Upload() = 0;
+	virtual void upload() = 0;
 	virtual void destroy() = 0;
 	
 	bool restore();

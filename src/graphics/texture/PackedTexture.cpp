@@ -41,7 +41,7 @@ void PackedTexture::upload() {
 	for(texture_iterator i = textures.begin(); i != textures.end(); ++i) {
 		TextureTree * tree = *i;
 		if(tree->dirty) {
-			tree->texture->Upload();
+			tree->texture->upload();
 			tree->dirty = false;
 		}
 	}
