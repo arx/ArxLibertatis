@@ -428,9 +428,8 @@ static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 			EVENT_SENDER = entities[source];
 		else
 			EVENT_SENDER = NULL;
-
 		char param[256];
-		sprintf(param,"%s %ld",spellName,(long)spell.m_level);
+		sprintf(param, "%s %ld", spellName, long(spell.m_level));
 		SendIOScriptEvent(entities[spell.m_target], SM_SPELLCAST, param);
 	}
 }
@@ -447,7 +446,7 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 			if(spellName) {
 				Entity * targ = entities[spell.m_target];
 				char param[128];
-				sprintf(param,"%s %ld", spellName, (long)spell.m_level);
+				sprintf(param, "%s %ld", spellName, long(spell.m_level));
 				SendIOScriptEvent(targ, SM_SPELLEND, param);
 			}
 		}
@@ -711,7 +710,8 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 	}
 }
 
-float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages) {
+float ARX_SPELLS_ApplyFireProtection(Entity * io, float damages) {
+	
 	if(io) {
 		SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_FIRE_PROTECTION);
 		if(spell) {
@@ -733,7 +733,8 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages) {
 	return damages;
 }
 
-float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages) {
+float ARX_SPELLS_ApplyColdProtection(Entity * io, float damages) {
+	
 	SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_COLD_PROTECTION);
 	if(spell) {
 		float modif = 1.f - (spell->m_level * ( 1.0f / 10 ));
@@ -742,7 +743,7 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages) {
 		
 		damages *= modif;
 	}
-
+	
 	return damages;
 }
 
