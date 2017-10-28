@@ -48,8 +48,8 @@ Image::~Image() {
 
 void Image::Reset() {
 	delete[] m_data, m_data = NULL;
-	mWidth = 0;
-	mHeight = 0;
+	m_width = 0;
+	m_height = 0;
 	m_format = Format_Unknown;
 }
 
@@ -170,8 +170,8 @@ void Image::Create(size_t width, size_t height, Format format) {
 		m_data = new unsigned char[newSize];
 	}
 	
-	mWidth  = width;
-	mHeight = height;
+	m_width  = width;
+	m_height = height;
 	m_format = format;
 	
 }
