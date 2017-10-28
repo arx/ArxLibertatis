@@ -65,34 +65,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define OPTIM_COMPUTE_INTERVALS(VV0, VV1, VV2, D0, D1, D2, D0D1, D0D2, A, B, C, X0, X1) \
 	{ \
-		if(D0D1>0.0f) \
-		{ \
-			/* here we know that D0D2<=0.0 */ \
+		if(D0D1 > 0.0f) { \
+			/* here we know that D0D2 <= 0.0 */ \
 			/* that is D0, D1 are on the same side, D2 on the other or on the plane */ \
-			A=VV2; B=(VV0-VV2)*D2; C=(VV1-VV2)*D2; X0=D2-D0; X1=D2-D1; \
-		} \
-		else if(D0D2>0.0f)\
-		{ \
-			/* here we know that d0d1<=0.0 */ \
-			A=VV1; B=(VV0-VV1)*D1; C=(VV2-VV1)*D1; X0=D1-D0; X1=D1-D2; \
-		} \
-		else if(D1*D2>0.0f || D0!=0.0f) \
-		{ \
-			/* here we know that d0d1<=0.0 or that D0!=0.0 */ \
-			A=VV0; B=(VV1-VV0)*D0; C=(VV2-VV0)*D0; X0=D0-D1; X1=D0-D2; \
-		} \
-		else if(D1!=0.0f) \
-		{ \
-			A=VV1; B=(VV0-VV1)*D1; C=(VV2-VV1)*D1; X0=D1-D0; X1=D1-D2; \
-		} \
-		else if(D2!=0.0f) \
-		{ \
-			A=VV2; B=(VV0-VV2)*D2; C=(VV1-VV2)*D2; X0=D2-D0; X1=D2-D1; \
-		} \
-		else \
-		{ \
+			A = VV2; B = (VV0 - VV2) * D2; C = (VV1 - VV2) * D2; X0 = D2 - D0; X1 = D2 - D1; \
+		} else if(D0D2 > 0.0f) { \
+			/* here we know that d0d1 <= 0.0 */ \
+			A = VV1; B = (VV0 - VV1) * D1; C = (VV2 - VV1) * D1; X0 = D1 - D0; X1 = D1 - D2; \
+		} else if(D1 * D2 > 0.0f || D0 != 0.0f) { \
+			/* here we know that d0d1 <=0 .0 or that D0 != 0.0 */ \
+			A = VV0; B = (VV1 - VV0) * D0; C = (VV2 - VV0) * D0; X0 = D0 - D1; X1 = D0 - D2; \
+		} else if(D1 != 0.0f) { \
+			A = VV1; B = (VV0 - VV1) * D1; C = (VV2 - VV1) * D1; X0 = D1 - D0; X1 = D1 - D2; \
+		} else if(D2 != 0.0f) { \
+			A = VV2; B = (VV0 - VV2) * D2; C = (VV1 - VV2) * D2; X0 = D2 - D0; X1 = D2 - D1; \
+		} else { \
 			/* triangles are coplanar */ \
-			return coplanar_tri_tri(N1,V0,V1,V2,U0,U1,U2); \
+			return coplanar_tri_tri(N1, V0, V1, V2, U0, U1, U2); \
 		} \
 	}
 
