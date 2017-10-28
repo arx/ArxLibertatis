@@ -825,14 +825,14 @@ void ArxGame::managePlayerControls() {
 		if(t) {
 			if(t->ioflags & IO_NPC) {
 				if(t->script.data) {
-					if(t->_npcdata->lifePool.current>0.f) {
-						SendIOScriptEvent(t,SM_CHAT);
+					if(t->_npcdata->lifePool.current > 0.f) {
+						SendIOScriptEvent(t, SM_CHAT);
 						DRAGGING = false;
 					} else {
 						if(t->inventory) {
 							if(player.Interface & INTER_STEAL)
 								if(ioSteal && t != ioSteal) {
-									SendIOScriptEvent(ioSteal, SM_STEAL,"off");
+									SendIOScriptEvent(ioSteal, SM_STEAL, "off");
 									player.Interface &= ~INTER_STEAL;
 								}
 							
@@ -853,7 +853,7 @@ void ArxGame::managePlayerControls() {
 				if(t->inventory) {
 					if(player.Interface & INTER_STEAL) {
 						if(ioSteal && t != ioSteal) {
-							SendIOScriptEvent(ioSteal, SM_STEAL,"off");
+							SendIOScriptEvent(ioSteal, SM_STEAL, "off");
 							player.Interface &= ~INTER_STEAL;
 						}
 					}
@@ -865,7 +865,7 @@ void ArxGame::managePlayerControls() {
 						lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
 					}
 				} else if (t->script.data) {
-					SendIOScriptEvent(t,SM_ACTION);
+					SendIOScriptEvent(t, SM_ACTION);
 				}
 				DRAGGING = false;
 			}
@@ -929,8 +929,8 @@ void ArxGame::managePlayerControls() {
 			Cylinder test = phys.cyl;
 			
 			bool npc = AttemptValidCylinderPos(test, NULL, CFLAG_JUST_TEST | CFLAG_NPC);
-			float val=CheckAnythingInCylinder(phys.cyl,entities.player(),CFLAG_NO_NPC_COLLIDE | CFLAG_JUST_TEST);
-
+			float val = CheckAnythingInCylinder(phys.cyl,entities.player(), CFLAG_NO_NPC_COLLIDE | CFLAG_JUST_TEST);
+			
 			if(val > -40.f) {
 				if(val <= 70.f) {
 					eyeball.pos.y += val-70.f;
@@ -1215,17 +1215,16 @@ void ArxGame::managePlayerControls() {
 					entities.player()->animlayer[1].cur_anim == entities.player()->anims[ANIM_WAIT])
 				{
 					lChangeWeapon--;
-
 					if(pIOChangeWeapon) {
-						SendIOScriptEvent(pIOChangeWeapon,SM_INVENTORYUSE,"");
-						pIOChangeWeapon=NULL;
+						SendIOScriptEvent(pIOChangeWeapon, SM_INVENTORYUSE, "");
+						pIOChangeWeapon = NULL;
 					}
 				} else {
-					bGo=false;
+					bGo = false;
 				}
 			}
 		}
-
+		
 		if(bGo) {
 			if(player.Interface & INTER_COMBATMODE) {
 				ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
@@ -1317,25 +1316,24 @@ void ArxGame::managePlayerControls() {
 			}
 		}
 	}
-
+	
 	if(lOldTruePlayerMouseLook != TRUE_PLAYER_MOUSELOOK_ON) {
-		bInverseInventory=false;
-
+		bInverseInventory = false;
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
 			if(!CSEND) {
-				CSEND=1;
-				SendIOScriptEvent(entities.player(),SM_EXPLORATIONMODE);
+				CSEND = 1;
+				SendIOScriptEvent(entities.player(), SM_EXPLORATIONMODE);
 			}
 		}
 	} else {
 		if(CSEND) {
-			CSEND=0;
-			SendIOScriptEvent(entities.player(),SM_CURSORMODE);
+			CSEND = 0;
+			SendIOScriptEvent(entities.player(), SM_CURSORMODE);
 		}
 	}
-
-	static PlayerInterfaceFlags lOldInterfaceTemp=0;
-
+	
+	static PlayerInterfaceFlags lOldInterfaceTemp = 0;
+	
 	if(TRUE_PLAYER_MOUSELOOK_ON) {
 		if(bInverseInventory) {
 			bRenderInCursorMode=true;
@@ -2001,7 +1999,7 @@ void ArxGame::manageEditorControls() {
 				PutInInventory();
 			} else if(ARX_INTERFACE_MouseInBook()) {
 				if(g_playerBook.currentPage() == BOOKMODE_STATS) {
-					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE);
+					SendIOScriptEvent(DRAGINTER, SM_INVENTORYUSE);
 					COMBINE=NULL;
 				}
 			} else if(DRAGINTER->ioflags & IO_GOLD) {
@@ -2177,13 +2175,15 @@ void ArxGame::manageEditorControls() {
 				}
 				
 				if(bOk) {
+					
 					Set_DragInter(io);
 					
 					if(io) {
+						
 						ARX_PLAYER_Remove_Invisibility();
 						
 						if(DRAGINTER->show == SHOW_FLAG_ON_PLAYER) {
-							ARX_EQUIPMENT_UnEquip(entities.player(),DRAGINTER);
+							ARX_EQUIPMENT_UnEquip(entities.player(), DRAGINTER);
 							RemoveFromAllInventories(DRAGINTER);
 							DRAGINTER->bbox2D.max.x = -1;
 						}
@@ -2191,16 +2191,16 @@ void ArxGame::manageEditorControls() {
 						if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
 							Set_DragInter(NULL);
 						} else {
-							
 							if(io->ioflags & IO_UNDERWATER) {
 								io->ioflags &= ~IO_UNDERWATER;
 								ARX_SOUND_PlayInterface(SND_PLOUF, Random::getf(0.8f, 1.2f));
 							}
-							
 							DRAGINTER->show = SHOW_FLAG_NOT_DRAWN;
 							ARX_SOUND_PlayInterface(SND_INVSTD);
 						}
+						
 					}
+					
 				} else {
 					Set_DragInter(NULL);
 				}
