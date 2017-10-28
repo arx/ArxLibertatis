@@ -85,8 +85,8 @@ void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, 
 	q1.v[3].uv = Vec2f_Y_AXIS;
 	
 	q1.v[0].p = startPos + Vec3f(0.f, zzs, 0.f);
-	q1.v[1].p = startPos + Vec3f(0.f,-zzs, 0.f);
-	q1.v[2].p = endPos + Vec3f(0.f,-zze, 0.f);
+	q1.v[1].p = startPos + Vec3f(0.f, -zzs, 0.f);
+	q1.v[2].p = endPos + Vec3f(0.f, -zze, 0.f);
 	q1.v[3].p = endPos + Vec3f(0.f, zze, 0.f);
 	
 	drawQuadRTP(mat, q1);
