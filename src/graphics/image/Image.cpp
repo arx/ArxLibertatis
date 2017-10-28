@@ -60,7 +60,7 @@ const Image & Image::operator=(const Image & other) {
 		return *this;
 	}
 	
-	Create(other.getWidth(), other.mHeight, other.getFormat());
+	Create(other.getWidth(), other.getHeight(), other.getFormat());
 	
 	memcpy(getData(), other.getData(), getSize());
 	
@@ -190,7 +190,7 @@ bool Image::ConvertTo(Format format) {
 	}
 	
 	size_t numComponents = getNumChannels();
-	size_t size = getWidth() * mHeight;
+	size_t size = getWidth() * getHeight();
 	unsigned char * data = getData();
 
 	switch(format) {
@@ -285,7 +285,7 @@ bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
 	}
 	
 	// Must fit inside boundaries
-	if(dstX + width > getWidth() || dstY + height > mHeight) {
+	if(dstX + width > getWidth() || dstY + height > getHeight()) {
 		return false;
 	}
 	
@@ -333,7 +333,7 @@ void Image::applyGamma(float gamma) {
 	// using a gamma < 1.0 will have no effect
 	
 	size_t numComponents = getNumChannels();
-	size_t size = getWidth() * mHeight;
+	size_t size = getWidth() * getHeight();
 	unsigned char * data = getData();
 	
 	const size_t MAX_COMPONENTS = 4;
@@ -386,7 +386,7 @@ void Image::applyGamma(float gamma) {
 void Image::applyThreshold(unsigned char threshold, int component_mask) {
 	
 	size_t numComponents = getNumChannels();
-	size_t size = getWidth() * mHeight;
+	size_t size = getWidth() * getHeight();
 	unsigned char * data = getData();
 	
 	// Go through every pixel in the image
@@ -439,7 +439,7 @@ void extendImageBottomRight<1>(u8 * in, u8 * out, size_t win, size_t wout, size_
 void Image::extendClampToEdgeBorder(const Image & src) {
 	
 	arx_assert_msg(getFormat() == src.getFormat(), "extendClampToEdgeBorder Cannot change format!");
-	arx_assert_msg(getWidth() >= src.getWidth() && mHeight >= src.mHeight, "extendClampToEdgeBorder Cannot decrease size!");
+	arx_assert_msg(getWidth() >= src.getWidth() && getHeight() >= src.getHeight(), "extendClampToEdgeBorder Cannot decrease size!");
 	
 	copy(src, 0, 0);
 	
@@ -449,26 +449,26 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 	if(getWidth() > src.getWidth()) {
 		u8 * in =  getData() + (src.getWidth() - 1) * pixsize;
 		switch(pixsize) {
-			case 1: extendImageRight<1>(in, src.getWidth(), getWidth(), src.mHeight); break;
-			case 2: extendImageRight<2>(in, src.getWidth(), getWidth(), src.mHeight); break;
-			case 3: extendImageRight<3>(in, src.getWidth(), getWidth(), src.mHeight); break;
-			case 4: extendImageRight<4>(in, src.getWidth(), getWidth(), src.mHeight); break;
+			case 1: extendImageRight<1>(in, src.getWidth(), getWidth(), src.getHeight()); break;
+			case 2: extendImageRight<2>(in, src.getWidth(), getWidth(), src.getHeight()); break;
+			case 3: extendImageRight<3>(in, src.getWidth(), getWidth(), src.getHeight()); break;
+			case 4: extendImageRight<4>(in, src.getWidth(), getWidth(), src.getHeight()); break;
 			default: ARX_DEAD_CODE();
 		}
 	}
 	
-	if(mHeight > src.mHeight) {
-		u8 * in = getData() + outsize * (src.mHeight - 1);
-		u8 * out = getData() + outsize * src.mHeight;
-		for(size_t y = src.mHeight; y < mHeight; y++, out += outsize) {
+	if(getHeight() > src.getHeight()) {
+		u8 * in = getData() + outsize * (src.getHeight() - 1);
+		u8 * out = getData() + outsize * src.getHeight();
+		for(size_t y = src.getHeight(); y < getHeight(); y++, out += outsize) {
 			std::memcpy(out, in, insize);
 		}
 	}
 	
-	if(getWidth() > src.getWidth() && mHeight > src.mHeight) {
-		u8 * in = getData() + outsize * (src.mHeight - 1) + pixsize * (src.getWidth() - 1);
-		u8 * out = getData() + outsize * src.mHeight + insize;
-		size_t h = mHeight - src.mHeight;
+	if(getWidth() > src.getWidth() && getHeight() > src.getHeight()) {
+		u8 * in = getData() + outsize * (src.getHeight() - 1) + pixsize * (src.getWidth() - 1);
+		u8 * out = getData() + outsize * src.getHeight() + insize;
+		size_t h = getHeight() - src.getHeight();
 		switch(pixsize) {
 			case 1: extendImageBottomRight<1>(in, out, src.getWidth(), getWidth(), h); break;
 			case 2: extendImageBottomRight<2>(in, out, src.getWidth(), getWidth(), h); break;
@@ -488,7 +488,7 @@ bool Image::toGrayscale(Format newFormat) {
 		return false;
 	}
 	
-	size_t newSize = getSize(newFormat, getWidth(), mHeight);
+	size_t newSize = getSize(newFormat, getWidth(), getHeight());
 	unsigned char * newData = new unsigned char[newSize];
 	
 	unsigned char * src = getData();
@@ -541,16 +541,16 @@ void Image::blur(size_t radius) {
 	unsigned char * channel[4] = {};
 	unsigned char * blurredChannel[4] = {};
 	for(size_t c = 0; c < numChannels; c++) {
-		channel[c] = new unsigned char[getWidth() * mHeight];
-		blurredChannel[c] = new unsigned char[getWidth() * mHeight];
-		for(size_t i = 0; i < getWidth() * mHeight; i++) {
+		channel[c] = new unsigned char[getWidth() * getHeight()];
+		blurredChannel[c] = new unsigned char[getWidth() * getHeight()];
+		for(size_t i = 0; i < getWidth() * getHeight(); i++) {
 			channel[c][i] = getData()[i * numChannels + c];
 		}
 	}
 	
 	// Blur horizontally using our separable kernel
 	size_t yi = 0;
-	for(size_t yl = 0; yl < mHeight; yl++) {
+	for(size_t yl = 0; yl < getHeight(); yl++) {
 		for(size_t xl = 0; xl < getWidth(); xl++) {
 			size_t channelVals[4] = {0, 0, 0, 0};
 			size_t sum = 0;
@@ -575,7 +575,7 @@ void Image::blur(size_t radius) {
 	
 	// Blur vertically using our separable kernel
 	yi = 0;
-	for (size_t yl = 0; yl < mHeight; yl++) {
+	for (size_t yl = 0; yl < getHeight(); yl++) {
 		ptrdiff_t ym = ptrdiff_t(yl) - ptrdiff_t(radius);
 		ptrdiff_t riw = ym * ptrdiff_t(getWidth());
 		for(size_t xl = 0; xl < getWidth(); xl++) {
@@ -584,7 +584,7 @@ void Image::blur(size_t radius) {
 			ptrdiff_t ri = ym;
 			ptrdiff_t read = ptrdiff_t(xl) + riw;
 			for(size_t i = 0; i < kernelSize; i++) {
-				if(ri >= 0 && size_t(ri) < mHeight) {
+				if(ri >= 0 && size_t(ri) < getHeight()) {
 					for(size_t c = 0; c < numChannels; c++) {
 						channelVals[c] += mult[(i << 8) + blurredChannel[c][read]];
 					}
@@ -613,7 +613,7 @@ void Image::blur(size_t radius) {
 void Image::flipY() {
 	
 	size_t imageSize = getSize();
-	size_t lineSize = imageSize / mHeight;
+	size_t lineSize = imageSize / getHeight();
 	
 	unsigned char * swapTmp = (unsigned char *)malloc(lineSize);
 	arx_assert(swapTmp);
@@ -621,7 +621,7 @@ void Image::flipY() {
 	unsigned char * top = getData();
 	unsigned char * bottom = top + (imageSize - lineSize);
 	
-	for(size_t i = 0; i < mHeight / 2; i++) {
+	for(size_t i = 0; i < getHeight() / 2; i++) {
 		
 		memcpy(swapTmp, bottom, lineSize);
 		memcpy(bottom, top, lineSize);
@@ -643,10 +643,10 @@ bool Image::save(const fs::path & filename) const {
 	
 	int ret = 0;
 	if(filename.ext() == ".bmp") {
-		ret = stbi::stbi_write_bmp(filename.string().c_str(), int(getWidth()), int(mHeight),
+		ret = stbi::stbi_write_bmp(filename.string().c_str(), int(getWidth()), int(getHeight()),
 		                           int(getNumChannels()), getData());
 	} else if(filename.ext() == ".tga") {
-		ret = stbi::stbi_write_tga(filename.string().c_str(), int(getWidth()), int(mHeight),
+		ret = stbi::stbi_write_tga(filename.string().c_str(), int(getWidth()), int(getHeight()),
 		                           int(getNumChannels()), getData());
 	} else {
 		LogError << "Unsupported file extension: " << filename.ext();
