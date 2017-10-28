@@ -67,7 +67,7 @@ public:
 	size_t getWidth() const { return mWidth; }
 	size_t getHeight() const { return mHeight; }
 	Format getFormat() const { return m_format; }
-	size_t getSize() const { return getSize(getFormat(), mWidth, mHeight); }
+	size_t getSize() const { return getSize(getFormat(), getWidth(), mHeight); }
 	size_t getNumChannels() const { return getNumChannels(getFormat()); }
 	
 	bool isValid() const { return m_data != NULL; }
