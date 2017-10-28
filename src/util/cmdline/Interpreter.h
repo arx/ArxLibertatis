@@ -307,7 +307,7 @@ void print_op(OStream & os, const Interpreter & interpreter) {
 
 template <typename CharType, typename StringType, typename TypeCast>
 std::basic_ostream<CharType> & operator<<(std::basic_ostream<CharType> & os,
-                                          const interpreter<StringType,TypeCast> & l) {
+                                          const interpreter<StringType, TypeCast> & l) {
 	return detail::print_op(os, l), os;
 }
 
