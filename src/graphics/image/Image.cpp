@@ -192,19 +192,19 @@ bool Image::convertTo(Format format) {
 	size_t numComponents = getNumChannels();
 	size_t size = getWidth() * getHeight();
 	unsigned char * data = getData();
-
+	
 	switch(format) {
-	case Format_R8G8B8:
-	case Format_B8G8R8:
-	case Format_R8G8B8A8:
-	case Format_B8G8R8A8:
-		for(size_t i = 0; i < size; i++, data += numComponents) {
-			std::swap(data[0], data[2]);
-		}
-		break;
-	default:
-		arx_assert_msg(false, "Unsupported conversion!");
-		return false;
+		case Format_R8G8B8:
+		case Format_B8G8R8:
+		case Format_R8G8B8A8:
+		case Format_B8G8R8A8:
+			for(size_t i = 0; i < size; i++, data += numComponents) {
+				std::swap(data[0], data[2]);
+			}
+			break;
+		default:
+			arx_assert_msg(false, "Unsupported conversion!");
+			return false;
 	};
 	
 	m_format = format;
