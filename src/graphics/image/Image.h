@@ -57,8 +57,8 @@ public:
 	
 	bool ConvertTo(Format format);
 	
-	// reset to fresh constructor state
-	void Reset();
+	// Reset to fresh constructor state
+	void reset();
 	
 	//! Zero image data
 	void clear();

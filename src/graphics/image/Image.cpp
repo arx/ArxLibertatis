@@ -35,7 +35,7 @@
 
 
 Image::Image() : m_data(0) {
-	Reset();
+	reset();
 }
 
 Image::Image(const Image & pOther) : m_data(NULL) {
@@ -46,7 +46,7 @@ Image::~Image() {
 	delete[] m_data;
 }
 
-void Image::Reset() {
+void Image::reset() {
 	delete[] m_data, m_data = NULL;
 	m_width = 0;
 	m_height = 0;

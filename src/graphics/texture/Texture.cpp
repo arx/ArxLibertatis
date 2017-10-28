@@ -82,7 +82,7 @@ bool Texture::Restore() {
 	}
 	
 	if(!mFileName.empty()) {
-		mImage.Reset();
+		mImage.reset();
 	}
 	
 	return bRestored;
