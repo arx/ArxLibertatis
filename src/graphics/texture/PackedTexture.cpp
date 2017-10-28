@@ -60,7 +60,7 @@ PackedTexture::TextureTree::TextureTree(unsigned int textureSize,
 		dirty = false;
 		return;
 	}
-	texture->GetImage().clear();
+	texture->getImage().clear();
 	dirty = true;
 }
 
@@ -73,7 +73,7 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::insertImage(const
 	Node * node = root.insertImage(img);
 	
 	if(node != NULL) {
-		texture->GetImage().copy(img, node->rect.left, node->rect.top);
+		texture->getImage().copy(img, node->rect.left, node->rect.top);
 		dirty = true;
 	}
 	
