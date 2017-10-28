@@ -685,10 +685,7 @@ void RestoreInitialIOStatus() {
 	
 	entities.player()->spellcast_data.castingspell = SPELL_NONE;
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
+	BOOST_FOREACH(Entity * e, entities.notPlayer()) {
 		RestoreInitialIOStatusOfIO(e);
 	}
 }
