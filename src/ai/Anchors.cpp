@@ -56,7 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 void AnchorData_ClearAll(BackgroundData * eb) {
 	
-	//	EERIE_PATHFINDER_Release();
 	EERIE_PATHFINDER_Clear();
 	
 	if(eb->anchors && eb->nbanchors) {
