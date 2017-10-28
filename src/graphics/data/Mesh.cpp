@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <map>
 #include <limits>
 
+#include <boost/foreach.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/unordered_map.hpp>
 
@@ -172,11 +173,8 @@ long MakeTopObjString(Entity * io, std::string & dest) {
 			dest += " player";
 	}
 
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e && e != io) {
+	BOOST_FOREACH(Entity * e, entities.all()) {
+		if(e != io) {
 			if(e->show == SHOW_FLAG_IN_SCENE) {
 				if((e->ioflags & IO_NPC) || (e->ioflags & IO_ITEM)) {
 					if(e->pos.x > box.min.x
