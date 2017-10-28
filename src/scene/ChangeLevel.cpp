@@ -1586,11 +1586,8 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 		
 		RestoreInitialIOStatus();
 		
-		for(size_t i = 1; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * e = entities[handle];
-			
-			if(e && !e->scriptload) {
+		BOOST_FOREACH(Entity * e, entities.notPlayer()) {
+			if(!e->scriptload) {
 				ARX_SCRIPT_Reset(e, true);
 			}
 		}
