@@ -25,6 +25,7 @@ bool Texture::Init(const res::path & strFileName, TextureFlags newFlags) {
 	
 	mFileName = strFileName;
 	flags = newFlags;
+	
 	return Restore();
 }
 
@@ -33,6 +34,7 @@ bool Texture::Init(const Image & pImage, TextureFlags newFlags) {
 	mFileName.clear();
 	mImage = pImage;
 	flags = newFlags;
+	
 	return Restore();
 }
 
@@ -51,7 +53,7 @@ bool Texture::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 bool Texture::Restore() {
 	
 	bool bRestored = false;
-
+	
 	if(!mFileName.empty()) {
 		
 		mImage.load(mFileName);
@@ -65,17 +67,17 @@ bool Texture::Restore() {
 		}
 		
 	}
-
+	
 	if(mImage.isValid()) {
 		mFormat = mImage.getFormat();
 		size = Vec2i(mImage.getWidth(), mImage.getHeight());
-
+		
 		Destroy();
 		bool bCreated = Create();
 		if(!bCreated) {
 			return false;
 		}
-
+		
 		Upload();
 		
 		bRestored = true;
