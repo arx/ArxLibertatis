@@ -38,7 +38,7 @@ public:
 	explicit GLTexture(OpenGLRenderer * renderer);
 	~GLTexture();
 	
-	bool Create();
+	bool create();
 	void Upload();
 	void Destroy();
 	

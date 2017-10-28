@@ -70,7 +70,7 @@ protected:
 		, m_storedSize(Vec2i_ZERO)
 	{ }
 	
-	virtual bool Create() = 0;
+	virtual bool create() = 0;
 	
 	Image::Format m_format;
 	TextureFlags m_flags;

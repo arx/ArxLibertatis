@@ -47,7 +47,7 @@ bool Texture::Init(unsigned int width, unsigned int height, Image::Format format
 	m_format = format;
 	m_flags = 0;
 	
-	return Create();
+	return create();
 }
 
 bool Texture::Restore() {
@@ -74,14 +74,12 @@ bool Texture::Restore() {
 		m_size = Vec2i(m_image.getWidth(), m_image.getHeight());
 		
 		Destroy();
-		bool bCreated = Create();
-		if(!bCreated) {
-			return false;
+		
+		if(create()) {
+			Upload();
+			bRestored = true;
 		}
 		
-		Upload();
-		
-		bRestored = true;
 	}
 	
 	if(!getFileName().empty()) {

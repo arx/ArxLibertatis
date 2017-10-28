@@ -39,7 +39,7 @@ GLTexture::~GLTexture() {
 	Destroy();
 }
 
-bool GLTexture::Create() {
+bool GLTexture::create() {
 	
 	arx_assert_msg(tex == GL_NONE, "leaking OpenGL texture");
 	
