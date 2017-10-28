@@ -56,7 +56,7 @@ public:
 	bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
 	
 	Image & GetImage() { return mImage; }
-	const res::path & getFileName() const { return mFileName; }
+	const res::path & getFileName() const { return m_filename; }
 	
 	bool hasColorKey() { return (flags & ApplyColorKey) && hasAlpha() && !getFileName().empty(); }
 	
@@ -78,7 +78,7 @@ protected:
 	Vec2i storedSize;
 	
 	Image mImage;
-	res::path mFileName;
+	res::path m_filename;
 	
 };
 

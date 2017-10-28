@@ -23,7 +23,7 @@
 
 bool Texture::Init(const res::path & strFileName, TextureFlags newFlags) {
 	
-	mFileName = strFileName;
+	m_filename = strFileName;
 	flags = newFlags;
 	
 	return Restore();
@@ -31,7 +31,7 @@ bool Texture::Init(const res::path & strFileName, TextureFlags newFlags) {
 
 bool Texture::Init(const Image & pImage, TextureFlags newFlags) {
 	
-	mFileName.clear();
+	m_filename.clear();
 	mImage = pImage;
 	flags = newFlags;
 	
@@ -40,7 +40,7 @@ bool Texture::Init(const Image & pImage, TextureFlags newFlags) {
 
 bool Texture::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pFormat) {
 	
-	mFileName.clear();
+	m_filename.clear();
 	
 	size = Vec2i(pWidth, pHeight);
 	mImage.create(pWidth, pHeight, pFormat);
