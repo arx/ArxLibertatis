@@ -73,7 +73,7 @@ bool Texture::restore() {
 		m_format = m_image.getFormat();
 		m_size = Vec2i(m_image.getWidth(), m_image.getHeight());
 		
-		Destroy();
+		destroy();
 		
 		if(create()) {
 			Upload();
