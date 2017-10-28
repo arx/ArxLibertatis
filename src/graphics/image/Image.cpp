@@ -50,7 +50,7 @@ void Image::Reset() {
 	delete[] m_data, m_data = NULL;
 	mWidth = 0;
 	mHeight = 0;
-	mFormat = Format_Unknown;
+	m_format = Format_Unknown;
 }
 
 const Image & Image::operator=(const Image & other) {
@@ -172,7 +172,7 @@ void Image::Create(size_t width, size_t height, Format format) {
 	
 	mWidth  = width;
 	mHeight = height;
-	mFormat = format;
+	m_format = format;
 	
 }
 
@@ -206,8 +206,9 @@ bool Image::ConvertTo(Format format) {
 		arx_assert_msg(false, "[Image::ConvertTo] Unsupported conversion!");
 		return false;
 	};
-
-	mFormat = format;
+	
+	m_format = format;
+	
 	return true;
 }
 
@@ -505,7 +506,7 @@ bool Image::toGrayscale(Format newFormat) {
 	delete[] m_data;
 	m_data = newData;
 	
-	mFormat = newFormat;
+	m_format = newFormat;
 	
 	return true;
 }
