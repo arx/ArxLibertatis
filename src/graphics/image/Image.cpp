@@ -661,6 +661,8 @@ std::ostream & operator<<(std::ostream & os, Image::Format format) {
 		case Image::Format_B8G8R8: return os << "BGR";
 		case Image::Format_R8G8B8A8: return os << "RGBA";
 		case Image::Format_B8G8R8A8: return os << "BGRA";
-		default: return os << "(invalid)";
+		case Image::Format_Unknown: return os << "(invalid)";
+		case Image::Format_Num: ARX_DEAD_CODE();
 	}
+	return os;
 }
