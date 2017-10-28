@@ -66,7 +66,7 @@ public:
 	// info accessors
 	size_t GetWidth() const { return mWidth; }
 	size_t GetHeight() const { return mHeight; }
-	Format GetFormat() const { return mFormat; }
+	Format getFormat() const { return mFormat; }
 	size_t getSize() const { return getSize(mFormat, mWidth, mHeight); }
 	size_t getNumChannels() const { return getNumChannels(mFormat); }
 	

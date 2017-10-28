@@ -278,7 +278,7 @@ bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
 	size_t bpp = getNumChannels();
 	
 	// Format must match.
-	if(srcImage.GetFormat() != mFormat) {
+	if(srcImage.getFormat() != mFormat) {
 		return false;
 	}
 	
