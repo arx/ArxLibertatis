@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Collisions.h"
 
+#include <boost/foreach.hpp>
+
 #include "ai/Anchors.h"
 
 #include "core/GameTime.h"
@@ -1580,11 +1582,8 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit)
 
 		Sphere sphere = Sphere(tmpPos, 65.f);
 		
-		for(size_t num = 0; num < entities.size(); num++) {
-			const EntityHandle handle = EntityHandle(num);
-			Entity * io = entities[handle];
-
-			if(io && (io->gameFlags & GFLAG_VIEW_BLOCKER)) {
+		BOOST_FOREACH(Entity * io, entities.all()) {
+			if(io->gameFlags & GFLAG_VIEW_BLOCKER) {
 				if(CheckIOInSphere(sphere, *io)) {
 					float dd = fdist(orgn, sphere.origin);
 
