@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedIOControl.h"
 
+#include <boost/foreach.hpp>
+
 #include "core/Core.h"
 #include "game/EntityManager.h"
 #include "game/Equipment.h"
@@ -195,11 +197,9 @@ public:
 		if(io->ioflags & IO_NO_COLLISIONS) {
 			
 			bool colliding = false;
-			for(size_t k = 0; k < entities.size(); k++) {
-				const EntityHandle handle = EntityHandle(k);
-				Entity * ioo = entities[handle];
+			BOOST_FOREACH(Entity * ioo, entities.all()) {
 				
-				if(ioo && IsCollidingIO(io, ioo)) {
+				if(IsCollidingIO(io, ioo)) {
 					Entity * oes = EVENT_SENDER;
 					EVENT_SENDER = ioo;
 					Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR_DETAIL);
