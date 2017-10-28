@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 
+#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -2234,12 +2235,9 @@ static glm::mat4x4 convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA & box
 
 void UpdateInter() {
 
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(   !io
-		   || io == DRAGINTER
+	BOOST_FOREACH(Entity * io, entities.notPlayer()) {
+		
+		if(   io == DRAGINTER
 		   || !(io->gameFlags & GFLAG_ISINTREATZONE)
 		   || io->show != SHOW_FLAG_IN_SCENE
 		   || (io->ioflags & IO_CAMERA)
@@ -2289,12 +2287,9 @@ void RenderInter() {
 	
 	ARX_PROFILE_FUNC();
 	
-	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(   !io
-		   || io == DRAGINTER
+	BOOST_FOREACH(Entity * io, entities.notPlayer()) { // Player isn't rendered here...
+		
+		if(   io == DRAGINTER
 		   || !(io->gameFlags & GFLAG_ISINTREATZONE)
 		   || io->show != SHOW_FLAG_IN_SCENE
 		   || (io->ioflags & IO_CAMERA)
