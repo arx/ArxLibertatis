@@ -403,15 +403,11 @@ static void SPELLCAST_Notify(const SpellBase & spell) {
 	if(!spellName)
 		return;
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		
-		if(entities[handle] != NULL) {
-			EVENT_SENDER = (source != EntityHandle()) ? entities[source] : NULL;
-			char param[256];
-			sprintf(param, "%s %ld", spellName, (long)spell.m_level);
-			SendIOScriptEvent(entities[handle], SM_SPELLCAST, param);
-		}
+	BOOST_FOREACH(Entity * e, entities.all()) {
+		EVENT_SENDER = (source != EntityHandle()) ? entities[source] : NULL;
+		char param[256];
+		sprintf(param, "%s %ld", spellName, (long)spell.m_level);
+		SendIOScriptEvent(e, SM_SPELLCAST, param);
 	}
 }
 
