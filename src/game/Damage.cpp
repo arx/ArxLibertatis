@@ -958,17 +958,14 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 	float divradius = 1.f / damage.params.radius;
 	
 	// checking for IO damages
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
+	BOOST_FOREACH(Entity * io, entities.all()) {
 		
-		if(io
-		   && (io->gameFlags & GFLAG_ISINTREATZONE)
+		if(   (io->gameFlags & GFLAG_ISINTREATZONE)
 		   && (io->show == SHOW_FLAG_IN_SCENE)
-		   && (damage.params.source != handle || !(damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE))
+		   && (damage.params.source != io->index() || !(damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE))
 		){
 			if(io->ioflags & IO_NPC) {
-				if(   handle != EntityHandle_Player
+				if(   io->index() != EntityHandle_Player
 				   && damage.params.source != EntityHandle_Player
 				   && validsource
 				   && HaveCommonGroup(io, entities[damage.params.source])
@@ -1033,7 +1030,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 					if(damage.params.type & DAMAGE_TYPE_DRAIN_MANA) {
 						float manadrained;
 						
-						if(handle == EntityHandle_Player) {
+						if(io->index() == EntityHandle_Player) {
 							manadrained = std::min(dmg, player.manaPool.current);
 							player.manaPool.current -= manadrained;
 						} else {
@@ -1056,7 +1053,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 						float damagesdone;
 						
 						// TODO copy-paste
-						if(handle == EntityHandle_Player) {
+						if(io->index() == EntityHandle_Player) {
 							if(damage.params.type & DAMAGE_TYPE_POISON) {
 								if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison) {
 									// Failed Saving Throw
