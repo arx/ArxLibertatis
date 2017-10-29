@@ -670,11 +670,8 @@ InventoryPos removeFromInventories(Entity * item) {
 		return oldPos;
 	}
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e && e->inventory) {
+	BOOST_FOREACH(Entity * e, entities.notPlayer()) {
+		if(e->inventory) {
 			oldPos = getIoInventory(e).remove(item);
 			if(oldPos) {
 				return oldPos;
