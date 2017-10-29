@@ -189,6 +189,20 @@ static void EntityEnteringCurrentZone(Entity * io, ARX_PATH * current) {
 	}
 }
 
+static void EntityLeavingLastZone(Entity * io, ARX_PATH * last) {
+	
+	SendIOScriptEvent(io, SM_LEAVEZONE, last->name);
+	
+	if(!last->controled.empty()) {
+		EntityHandle t = entities.getById(last->controled);
+		
+		if(t != EntityHandle()) {
+			std::string str = io->idString() + ' ' + last->name;
+			SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
+		}
+	}
+}
+
 void ARX_PATH_UpdateAllZoneInOutInside() {
 	
 	ARX_PROFILE_FUNC();
@@ -224,30 +238,12 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						EntityEnteringCurrentZone(io, current);
 					}
 				} else if(last && !current) { // Leaving last zone
-					SendIOScriptEvent(io, SM_LEAVEZONE, last->name);
-
-					if(!last->controled.empty()) {
-						EntityHandle t = entities.getById(last->controled);
-
-						if(t != EntityHandle()) {
-							std::string str = io->idString() + ' ' + last->name;
-							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
-						}
-					}
+					EntityLeavingLastZone(io, last);
 				} else if(!last) { // Entering current zone
 					EntityEnteringCurrentZone(io, current);
 				} else { // Changed from last to current zone
-					SendIOScriptEvent(io, SM_LEAVEZONE, last->name);
-
-					if(!last->controled.empty()) {
-						EntityHandle t = entities.getById(last->controled);
-
-						if(t != EntityHandle()) {
-							std::string str = io->idString() + ' ' + last->name;
-							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
-						}
-					}
-
+					EntityLeavingLastZone(io, last);
+					
 					io->inzone_show = io->show;
 					SendIOScriptEvent(io, SM_ENTERZONE, current->name);
 
