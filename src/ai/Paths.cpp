@@ -221,7 +221,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 				if(!last && !current) { // Not in a zone
 				} else if(last == current) { // Stayed inside last zone
 					if(io->show != io->inzone_show) {
-						goto entering;
+						EntityEnteringCurrentZone(io, current);
 					}
 				} else if(last && !current) { // Leaving last zone
 					SendIOScriptEvent(io, SM_LEAVEZONE, last->name);
@@ -235,7 +235,6 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						}
 					}
 				} else if(!last) { // Entering current zone
-				entering:
 					EntityEnteringCurrentZone(io, current);
 				} else { // Changed from last to current zone
 					SendIOScriptEvent(io, SM_LEAVEZONE, last->name);
