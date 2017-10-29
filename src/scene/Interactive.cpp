@@ -2028,13 +2028,8 @@ void UpdateCameras() {
 	
 	ARX_PROFILE_FUNC();
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
+	BOOST_FOREACH(Entity * io, entities.notPlayer()) {
 		
-		if(!io)
-			continue;
-
 		// interpolate & send events
 		if(io->usepath) {
 			ARX_USE_PATH * aup = io->usepath;
@@ -2099,7 +2094,7 @@ void UpdateCameras() {
 			if(io->damager_damages > 0 && io->show == SHOW_FLAG_IN_SCENE) {
 				BOOST_FOREACH(Entity * io2, entities.all()) {
 					
-					if(   io2->index() != handle
+					if(   io2->index() != io->index()
 					   && io2->show == SHOW_FLAG_IN_SCENE
 					   && (io2->ioflags & IO_NPC)
 					   && closerThan(io->pos, io2->pos, 600.f)
@@ -2117,7 +2112,7 @@ void UpdateCameras() {
 						}
 
 						if(Touched)
-							ARX_DAMAGES_DealDamages(io2->index(), io->damager_damages, handle, io->damager_type, &io2->pos);
+							ARX_DAMAGES_DealDamages(io2->index(), io->damager_damages, io->index(), io->damager_type, &io2->pos);
 					}
 				}
 			}
