@@ -990,11 +990,9 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
 			}
 		}
 		
-		for(size_t i = 0; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * ioo = entities[handle];
+		BOOST_FOREACH(Entity * ioo, entities.all()) {
 			
-			if(!ioo || !ioo->inventory)
+			if(!ioo->inventory)
 				continue;
 			
 			INVENTORY_DATA * id = ioo->inventory;
