@@ -307,7 +307,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 							} else if(ValidIONum(source)) {
 								killer = entities[source]->idString();
 							}
-							SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
+							SendIOScriptEvent(ioo, SM_NULL, killer, "target_death");
 						}
 					}
 				}
