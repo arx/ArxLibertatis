@@ -1177,15 +1177,12 @@ static bool SphereInIO(Entity * io, const Sphere & sphere) {
 bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, EntityHandle source)
 {
 	bool ret = false;
+	
+	BOOST_FOREACH(Entity * io, entities.all()) {
 
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(io != NULL
-		   && (entities[handle]->gameFlags & GFLAG_ISINTREATZONE)
+		if(   (io->gameFlags & GFLAG_ISINTREATZONE)
 		   && io->show == SHOW_FLAG_IN_SCENE
-		   && source != handle
+		   && source != io->index()
 		) {
 			float threshold;
 			float rad = radius + 5.f;
