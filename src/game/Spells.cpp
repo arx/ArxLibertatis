@@ -657,14 +657,11 @@ static EntityHandle TemporaryGetSpellTarget(const Vec3f & from) {
 	
 	float mindist = std::numeric_limits<float>::max();
 	EntityHandle found = EntityHandle_Player;
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e && e->ioflags & IO_NPC) {
+	BOOST_FOREACH(Entity * e, entities.notPlayer()) {
+		if(e->ioflags & IO_NPC) {
 			float dist = arx::distance2(from, e->pos);
 			if(dist < mindist) {
-				found = handle;
+				found = e->index();
 				mindist = dist;
 			}
 		}
