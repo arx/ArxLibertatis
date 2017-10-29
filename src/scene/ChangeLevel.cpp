@@ -2446,24 +2446,16 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	}
 	
 	if(reloadflag) {
-		
-		for(size_t i = 0; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * e = entities[handle];
-			
-			if(!e) {
-				continue;
-			}
-			
+		BOOST_FOREACH(Entity * e, entities.all()) {
 			if(e->script.data != NULL) {
 				ScriptEvent::send(&e->script, SM_RELOAD, "change", e, "");
 			}
 			
-			if(e && e->over_script.data) {
+			if(e->over_script.data) {
 				ScriptEvent::send(&e->over_script, SM_RELOAD, "change", e, "");
 			}
 			
-			if(e && (e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
+			if((e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
 				if(e->_npcdata->behavior != BEHAVIOUR_NONE) {
 					e->physics.cyl = GetIOCyl(e);
 					GetTargetPos(e);
