@@ -1271,14 +1271,12 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 	float rad = 1.f / sphere.radius;
 	bool validsource = ValidIONum(numsource);
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * ioo = entities[handle];
+	BOOST_FOREACH(Entity * ioo, entities.all()) {
 		
-		if(!ioo || handle == numsource || !ioo->obj)
+		if(ioo->index() == numsource || !ioo->obj)
 			continue;
 			
-		if(   handle != EntityHandle_Player
+		if(   ioo->index() != EntityHandle_Player
 		   && numsource != EntityHandle_Player
 		   && validsource
 		   && HaveCommonGroup(ioo, entities[numsource])
@@ -1297,8 +1295,8 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 			if(ioo->obj->vertexlist.size() < 120) {
 				for(size_t kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1) {
 					if(kk != k) {
-						Vec3f posi = (entities[handle]->obj->vertexWorldPositions[k].v
-									  + entities[handle]->obj->vertexWorldPositions[kk].v) * 0.5f;
+						Vec3f posi = (ioo->obj->vertexWorldPositions[k].v
+									  + ioo->obj->vertexWorldPositions[kk].v) * 0.5f;
 						float dist = fdist(sphere.origin, posi);
 						if(dist <= sphere.radius) {
 							count2++;
@@ -1310,7 +1308,7 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 			}
 			
 			{
-			float dist = fdist(sphere.origin, entities[handle]->obj->vertexWorldPositions[k].v);
+			float dist = fdist(sphere.origin, ioo->obj->vertexWorldPositions[k].v);
 			
 			if(dist <= sphere.radius) {
 				count++;
@@ -1338,7 +1336,7 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 					case DAMAGE_FULL: break;
 				}
 				
-				if(handle == EntityHandle_Player) {
+				if(ioo->index() == EntityHandle_Player) {
 					if(typ & DAMAGE_TYPE_FIRE) {
 						dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg);
 						ARX_DAMAGES_IgnitIO(entities.player(), dmg);
@@ -1367,15 +1365,15 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 			if(mindist <= sphere.radius + 30.f) {
 				if(typ & DAMAGE_TYPE_FIRE) {
 					dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg * ratio);
-					ARX_DAMAGES_IgnitIO(entities[handle], dmg);
+					ARX_DAMAGES_IgnitIO(ioo, dmg);
 				}
 				
 				if(typ & DAMAGE_TYPE_COLD) {
 					dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
 				}
 				
-				if(entities[handle]->ioflags & IO_FIX)
-					ARX_DAMAGES_DamageFIX(entities[handle], dmg * ratio, numsource, true);
+				if(ioo->ioflags & IO_FIX)
+					ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, numsource, true);
 			}
 		}
 	}
