@@ -2474,27 +2474,20 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 		
 	} else if (firstTime) {
 		
-		for(size_t i = 0; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * e = entities[handle];
-			
-			if(!e) {
-				continue;
-			}
-			
+		BOOST_FOREACH(Entity * e, entities.all()) {
 			if(e->script.data) {
 				ScriptEvent::send(&e->script, SM_INIT, "", e, "");
 			}
 			
-			if(e && e->over_script.data) {
+			if(e->over_script.data) {
 				ScriptEvent::send(&e->over_script, SM_INIT, "", e, "");
 			}
 			
-			if(e && e->script.data) {
+			if(e->script.data) {
 				ScriptEvent::send(&e->script, SM_INITEND, "", e, "");
 			}
 			
-			if(e && e->over_script.data) {
+			if(e->over_script.data) {
 				ScriptEvent::send(&e->over_script, SM_INITEND, "", e, "");
 			}
 		}
