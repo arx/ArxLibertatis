@@ -454,16 +454,12 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 		return;
 	}
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		
-		if(entities[handle]) {
+	BOOST_FOREACH(Entity * e, entities.all()) {
 			EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
 			
 			char param[128];
 			sprintf(param, "%s %ld", spellName, (long)spell.m_level);
-			SendIOScriptEvent(entities[handle], SM_SPELLEND, param);
-		}
+			SendIOScriptEvent(e, SM_SPELLEND, param);
 	}
 }
 
