@@ -561,18 +561,16 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 			killer = io_killer->idString();
 	}
 
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * ioo = entities[handle];
-
+	BOOST_FOREACH(Entity * ioo, entities.notPlayer()) {
+		
 		if(ioo == io_dead)
 			continue;
 
-		if(ioo && (ioo->ioflags & IO_NPC)) {
+		if((ioo->ioflags & IO_NPC)) {
 			if(ValidIONum(ioo->targetinfo))
 				if(entities[ioo->targetinfo] == io_dead) {
 					EVENT_SENDER = io_dead;
-					Stack_SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
+					Stack_SendIOScriptEvent(ioo, SM_NULL, killer, "target_death");
 					ioo->targetinfo = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
 				}
@@ -580,7 +578,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 			if(ValidIONum(ioo->_npcdata->pathfind.truetarget))
 				if(entities[ioo->_npcdata->pathfind.truetarget] == io_dead) {
 					EVENT_SENDER = io_dead;
-					Stack_SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
+					Stack_SendIOScriptEvent(ioo, SM_NULL, killer, "target_death");
 					ioo->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
 				}
