@@ -1958,12 +1958,9 @@ Entity * InterClick(const Vec2s & pos) {
 // Need To upgrade to a more precise collision.
 EntityHandle IsCollidingAnyInter(const Vec3f & pos, const Vec3f & size) {
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(   io
-		   && !(io->ioflags & IO_NO_COLLISIONS)
+	BOOST_FOREACH(Entity * io, entities.all()) {
+		
+		if(   !(io->ioflags & IO_NO_COLLISIONS)
 		   && (io->collision)
 		   && (io->gameFlags & GFLAG_ISINTREATZONE)
 		   && ((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX))
@@ -1973,12 +1970,12 @@ EntityHandle IsCollidingAnyInter(const Vec3f & pos, const Vec3f & size) {
 			Vec3f tempPos = pos;
 			
 			if(IsCollidingInter(io, tempPos))
-				return handle;
+				return io->index();
 
 			tempPos.y += size.y;
 
 			if(IsCollidingInter(io, tempPos))
-				return handle;
+				return io->index();
 		}
 	}
 
