@@ -198,8 +198,8 @@ static void EntityEnteringCurrentZone2(Entity * io, ARX_PATH * current) {
 		EntityHandle t = entities.getById(current->controled);
 		
 		if(t != EntityHandle()) {
-			std::string str = io->idString() + ' ' + current->name;
-			SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, str);
+			std::string params = io->idString() + ' ' + current->name;
+			SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, params);
 		}
 	}
 }
