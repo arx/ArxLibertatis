@@ -1024,11 +1024,9 @@ void RemoveFromAllInventories(const Entity * io) {
 	playerInventory.remove(io);
 	
 	// Seek IO in Other IO's Inventories
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
+	BOOST_FOREACH(Entity * e, entities.all()) {
 		
-		if(!e || !e->inventory)
+		if(!e->inventory)
 			continue;
 		
 		INVENTORY_DATA * id = e->inventory;
