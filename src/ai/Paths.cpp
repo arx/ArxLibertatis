@@ -201,7 +201,6 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 				if(!last && !current) { // Not in a zone
 				} else if(last == current) { // Stayed inside last zone
 					if(io->show != io->inzone_show) {
-						io->inzone_show = io->show;
 						goto entering;
 					}
 				} else if(last && !current) { // Leaving last zone
@@ -216,9 +215,9 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						}
 					}
 				} else if(!last) { // Entering current zone
-					io->inzone_show = io->show;
 				entering:
-
+					io->inzone_show = io->show;
+					
 					if(JUST_RELOADED && (current->name == "ingot_maker" || current->name == "mauld_user")) {
 						ARX_DEAD_CODE(); // TODO remove JUST_RELOADED global
 					} else {
