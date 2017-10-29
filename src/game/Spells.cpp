@@ -970,11 +970,8 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 				
 				Vec3f cpos = entities[source]->pos;
 				
-				for(size_t ii = 1; ii < entities.size(); ii++) {
-					const EntityHandle handle = EntityHandle(ii);
-					Entity * ioo = entities[handle];
-					
-					if(ioo && (ioo->ioflags & IO_NPC) && ioo->_npcdata->lifePool.current > 0.f
+				BOOST_FOREACH(Entity * ioo, entities.notPlayer()) {
+					if((ioo->ioflags & IO_NPC) && ioo->_npcdata->lifePool.current > 0.f
 						&& ioo->show == SHOW_FLAG_IN_SCENE
 						&& ioo->groups.find("demon") != ioo->groups.end()
 						&& closerThan(ioo->pos, cpos, 900.f)) {
