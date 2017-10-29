@@ -1768,13 +1768,8 @@ void ArxGame::updateLevel() {
 
 	{ ARX_PROFILE("Entity preprocessing");
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity *entity = entities[handle];
-
-		if(!entity)
-			continue;
-
+	BOOST_FOREACH(Entity * entity, entities.all()) {
+		
 		if(entity->ignition > 0.f || (entity->ioflags & IO_FIERY))
 			ManageIgnition(entity);
 
