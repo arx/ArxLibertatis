@@ -936,11 +936,9 @@ Vec3f GetItemWorldPosition(const Entity * io) {
 		}
 
 		// Is it in any other IO inventory ?
-		for(size_t i = 0; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * ioo = entities[handle];
+		BOOST_FOREACH(Entity * ioo, entities.all()) {
 			
-			if(!ioo || !ioo->inventory)
+			if(!ioo->inventory)
 				continue;
 			
 			INVENTORY_DATA * id = ioo->inventory;
