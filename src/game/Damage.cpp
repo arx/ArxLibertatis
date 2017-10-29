@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Damage.h"
 
+#include <boost/foreach.hpp>
+
 #include <cstring>
 #include <cstdio>
 #include <algorithm>
@@ -1244,12 +1246,9 @@ void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
 			}
 		}
 
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(   io
-		   && io->show == SHOW_FLAG_IN_SCENE
+	BOOST_FOREACH(Entity * io, entities.all()) {
+		
+		if(   io->show == SHOW_FLAG_IN_SCENE
 		   && io->obj
 		   && !(io->ioflags & IO_UNDERWATER)
 		   && io->obj->fastaccess.fire != ActionPoint()
