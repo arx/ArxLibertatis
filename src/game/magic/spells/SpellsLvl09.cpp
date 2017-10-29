@@ -486,12 +486,10 @@ void MassParalyseSpell::Launch() {
 	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(10000);
 	m_hasDuration = true;
 	
-	for(size_t ii = 0; ii < entities.size(); ii++) {
-		const EntityHandle handle = EntityHandle(ii);
-		Entity * tio = entities[handle];
+	BOOST_FOREACH(Entity * tio, entities.all()) {
 		
-		if(   handle == m_caster
-		   || !tio || !(tio->ioflags & IO_NPC)
+		if(   tio->index() == m_caster
+		   || !(tio->ioflags & IO_NPC)
 		   || tio->show != SHOW_FLAG_IN_SCENE
 		   || (tio->ioflags & IO_FREEZESCRIPT)
 		   || fartherThan(tio->pos, entities[m_caster]->pos, 500.f)
