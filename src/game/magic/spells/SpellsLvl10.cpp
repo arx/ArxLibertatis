@@ -371,11 +371,9 @@ void MassIncinerateSpell::Launch() {
 	m_duration = GameDurationMs(20000);
 	m_hasDuration = true;
 	
-	for(size_t ii = 0; ii < entities.size(); ii++) {
-		const EntityHandle handle = EntityHandle(ii);
-		Entity * tio = entities[handle];
+	BOOST_FOREACH(Entity * tio, entities.all()) {
 		
-		if(handle == m_caster || !tio || !(tio->ioflags & IO_NPC)) {
+		if(tio->index() == m_caster || !(tio->ioflags & IO_NPC)) {
 			continue;
 		}
 		
