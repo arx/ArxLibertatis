@@ -292,11 +292,9 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 
 				SendIOScriptEvent(entities.player(), SM_DIE);
 
-				for(size_t i = 1; i < entities.size(); i++) {
-					const EntityHandle handle = EntityHandle(i);
-					Entity * ioo = entities[handle];
+				BOOST_FOREACH(Entity * ioo, entities.notPlayer()) {
 					
-					if(ioo && (ioo->ioflags & IO_NPC)) {
+					if((ioo->ioflags & IO_NPC)) {
 						if(ioo->targetinfo == EntityHandle(TARGET_PLAYER)) {
 							EVENT_SENDER = entities.player();
 							std::string killer;
