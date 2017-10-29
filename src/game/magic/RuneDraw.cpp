@@ -172,10 +172,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 	
 	GameInstant now = g_gameTime.now();
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-		if(!io || io == entities.player())
+	BOOST_FOREACH(Entity * io, entities.all()) {
+		if(io == entities.player())
 			continue;
 
 		if(io->spellcast_data.castingspell != SPELL_NONE) {
@@ -216,7 +214,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 						io->gameFlags &= ~GFLAG_INVISIBILITY;
 
 						ARX_SPELLS_Launch(io->spellcast_data.castingspell,
-										  handle,
+										  io->index(),
 										  io->spellcast_data.spell_flags,
 										  io->spellcast_data.spell_level,
 										  io->spellcast_data.target,
