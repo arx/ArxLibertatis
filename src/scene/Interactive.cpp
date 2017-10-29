@@ -2097,12 +2097,9 @@ void UpdateCameras() {
 			}
 
 			if(io->damager_damages > 0 && io->show == SHOW_FLAG_IN_SCENE) {
-				for(size_t i2 = 0; i2 < entities.size(); i2++) {
-					const EntityHandle handle2 = EntityHandle(i2);
-					Entity * io2 = entities[handle2];
-
-					if(io2
-					   && handle2 != handle
+				BOOST_FOREACH(Entity * io2, entities.all()) {
+					
+					if(   io2->index() != handle
 					   && io2->show == SHOW_FLAG_IN_SCENE
 					   && (io2->ioflags & IO_NPC)
 					   && closerThan(io->pos, io2->pos, 600.f)
@@ -2120,7 +2117,7 @@ void UpdateCameras() {
 						}
 
 						if(Touched)
-							ARX_DAMAGES_DealDamages(handle2, io->damager_damages, handle, io->damager_type, &io2->pos);
+							ARX_DAMAGES_DealDamages(io2->index(), io->damager_damages, handle, io->damager_type, &io2->pos);
 					}
 				}
 			}
