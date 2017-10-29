@@ -954,13 +954,11 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 		return;
 
 	EntityHandle validid = EntityHandle();
-
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
+	
+	// TODO why is this conversion from entity to handle needed ?
+	BOOST_FOREACH(Entity * e, entities.all()) {
 		if(e == toequip) {
-			validid = handle;
+			validid = e->index();
 			break;
 		}
 	}
