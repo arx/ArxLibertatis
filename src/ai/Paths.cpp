@@ -234,13 +234,12 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 		count = 1;
 	}
 
-	if(entities.size() > 1)
+	if(entities.size() > 1) {
 		for(long tt = 0; tt < f; tt++) {
 			const EntityHandle i = EntityHandle(count);
 			Entity * io = entities[i];
 			
-
-			if(count < entities.size()
+			if(   count < entities.size()
 			   && io
 			   && io->ioflags & (IO_NPC | IO_ITEM)
 			   && io->show != SHOW_FLAG_MEGAHIDE
@@ -248,7 +247,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 				arx_assert(io->show != SHOW_FLAG_DESTROYED);
 				ARX_PATH * current = ARX_PATH_CheckInZone(io);
 				ARX_PATH * last = io->inzone;
-
+				
 				if(!last && !current) { // Not in a zone
 				} else if(last == current) { // Stayed inside last zone
 					if(io->show != io->inzone_show) {
@@ -262,15 +261,16 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 					EntityLeavingLastZone(io, last);
 					EntityEnteringCurrentZone2(io, current);
 				}
-
+				
 				io->inzone = current;
 			}
 			
 			count++;
-
+			
 			if(count >= entities.size())
 				count = 1;
 		}
+	}
 
 	// player check*************************************************
 	{
