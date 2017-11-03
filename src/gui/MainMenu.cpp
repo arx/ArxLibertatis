@@ -55,7 +55,7 @@
 #include "scene/GameSound.h"
 #include "window/RenderWindow.h"
 
-CWindowMenu * pWindowMenu = NULL;
+MenuWindow * pWindowMenu = NULL;
 TextWidget * pDeleteConfirm = NULL;
 TextWidget * pLoadConfirm = NULL;
 TextWidget * pDeleteButton = NULL;
@@ -1964,7 +1964,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	Vec2f windowMenuPos = Vec2f(20, 25);
 	Vec2f windowMenuSize = Vec2f(321, 430);
 	
-	pWindowMenu = new CWindowMenu(windowMenuPos, windowMenuSize);
+	pWindowMenu = new MenuWindow(windowMenuPos, windowMenuSize);
 	
 	Vec2f offset = Vec2f_ZERO;
 	Vec2f size = windowMenuSize - offset;
