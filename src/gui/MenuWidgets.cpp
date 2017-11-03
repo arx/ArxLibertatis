@@ -108,7 +108,7 @@ bool bNoMenu=false;
 MenuCursor * pMenuCursor = NULL;
 
 extern CWindowMenu * pWindowMenu;
-MainMenu *mainMenu;
+MainMenu *g_mainMenu;
 
 extern TextWidget * pMenuElementApply;
 
@@ -209,7 +209,7 @@ bool Menu2_Render() {
 	if(AMCM_NEWQUEST == ARXmenu.currentmode || AMCM_CREDITS == ARXmenu.currentmode) {
 		
 		delete pWindowMenu, pWindowMenu = NULL;
-		delete mainMenu, mainMenu = NULL;
+		delete g_mainMenu, g_mainMenu = NULL;
 		
 		if(ARXmenu.currentmode == AMCM_CREDITS){
 			credits::render();
@@ -230,29 +230,29 @@ bool Menu2_Render() {
 	MENUSTATE eOldMenuState=NOP;
 	MENUSTATE eM;
 
-	if(!mainMenu) {
+	if(!g_mainMenu) {
 		eM = NOP;
 	} else {
-		eM = mainMenu->eOldMenuWindowState;
+		eM = g_mainMenu->eOldMenuWindowState;
 	}
 	
-	if(!mainMenu || mainMenu->bReInitAll) {
+	if(!g_mainMenu || g_mainMenu->bReInitAll) {
 		
-		if(mainMenu && mainMenu->bReInitAll) {
-			eOldMenuState = mainMenu->eOldMenuState;
+		if(g_mainMenu && g_mainMenu->bReInitAll) {
+			eOldMenuState = g_mainMenu->eOldMenuState;
 			delete pWindowMenu, pWindowMenu = NULL;
-			delete mainMenu, mainMenu = NULL;
+			delete g_mainMenu, g_mainMenu = NULL;
 		}
 		
-		mainMenu = new MainMenu();
-		mainMenu->eOldMenuWindowState=eM;
+		g_mainMenu = new MainMenu();
+		g_mainMenu->eOldMenuWindowState=eM;
 		
-		mainMenu->init();
+		g_mainMenu->init();
 	}
 
 	bool bScroll=true;
 	
-	MENUSTATE requestedMenuState = mainMenu->Update();
+	MENUSTATE requestedMenuState = g_mainMenu->Update();
 	
 	if(eOldMenuState != NOP) {
 		requestedMenuState=eOldMenuState;
@@ -262,10 +262,10 @@ bool Menu2_Render() {
 	if(requestedMenuState == RESUME_GAME) {
 		pTextManage->Clear();
 		ARXmenu.currentmode = AMCM_OFF;
-		mainMenu->m_selected = NULL;
+		g_mainMenu->m_selected = NULL;
 		
 		delete pWindowMenu, pWindowMenu = NULL;
-		delete mainMenu, mainMenu = NULL;
+		delete g_mainMenu, g_mainMenu = NULL;
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
@@ -275,7 +275,7 @@ bool Menu2_Render() {
 	
 	}
 	
-	mainMenu->Render();
+	g_mainMenu->Render();
 	
 	if(pWindowMenu)
 	if(   (pWindowMenu->m_currentPageId != MAIN && pWindowMenu->m_currentPageId != NEW_QUEST && pWindowMenu->m_currentPageId != CREDITS)
@@ -283,13 +283,13 @@ bool Menu2_Render() {
 	) {
 		if(!bScroll) {
 			pWindowMenu->fAngle=90.f;
-			pWindowMenu->m_currentPageId=mainMenu->eOldMenuWindowState;
+			pWindowMenu->m_currentPageId=g_mainMenu->eOldMenuWindowState;
 		}
 
 		pWindowMenu->Update(g_platformTime.lastFrameDuration());
 		MENUSTATE eMS = pWindowMenu->Render();
 		if(eMS != NOP) {
-			mainMenu->eOldMenuWindowState=eMS;
+			g_mainMenu->eOldMenuWindowState=eMS;
 		}
 		Check_Apply();
 	}
@@ -298,7 +298,7 @@ bool Menu2_Render() {
 
 	// If the menu needs to be reinitialized, then the text in the TextManager is probably using bad fonts that were deleted already
 	// Skip one update in this case
-	if(pTextManage && !mainMenu->bReInitAll) {
+	if(pTextManage && !g_mainMenu->bReInitAll) {
 		pTextManage->Update(g_platformTime.lastFrameDuration());
 		pTextManage->Render();
 	}
@@ -942,14 +942,14 @@ void Menu2_Close() {
 	ARXmenu.currentmode = AMCM_OFF;
 	
 	delete pWindowMenu, pWindowMenu = NULL;
-	delete mainMenu, mainMenu = NULL;
+	delete g_mainMenu, g_mainMenu = NULL;
 	delete pMenuCursor, pMenuCursor = NULL;
 }
 
 void MenuReInitAll() {
 	
-	if(!mainMenu)
+	if(!g_mainMenu)
 		return;
 	
-	mainMenu->bReInitAll=true;
+	g_mainMenu->bReInitAll=true;
 }

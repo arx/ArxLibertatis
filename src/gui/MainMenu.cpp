@@ -61,7 +61,7 @@ TextWidget * pLoadConfirm = NULL;
 TextWidget * pDeleteButton = NULL;
 TextWidget * pMenuElementApply = NULL;
 
-extern MainMenu *mainMenu;
+extern MainMenu *g_mainMenu;
 
 class NewQuestMenuPage : public MenuPage {
 	
@@ -827,7 +827,7 @@ private:
 			pMenuSliderResol->setOldValue(-1);
 			fullscreenCheckbox->iOldState = -1;
 		}
-		mainMenu->bReInitAll=true;
+		g_mainMenu->bReInitAll=true;
 	}
 	
 };
@@ -1957,7 +1957,7 @@ private:
 
 void MainMenuLeftCreate(MENUSTATE eMenuState)
 {
-	mainMenu->eOldMenuState=eMenuState;
+	g_mainMenu->eOldMenuState=eMenuState;
 	
 	delete pWindowMenu, pWindowMenu = NULL;
 	

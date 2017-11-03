@@ -118,7 +118,7 @@ extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
 extern TextWidget * pDeleteButton;
 extern bool bNoMenu;
-extern MainMenu *mainMenu;
+extern MainMenu *g_mainMenu;
 
 // true: block les zones de checks
 bool TextWidget::OnMouseClick() {
@@ -226,7 +226,7 @@ bool TextWidget::OnMouseClick() {
 						m_savegame = page->m_savegame;
 						if(m_savegame != SavegameHandle()) {
 							m_targetMenu = EDIT_QUEST_LOAD;
-							mainMenu->bReInitAll = true;
+							g_mainMenu->bReInitAll = true;
 							savegames.remove(m_savegame);
 							break;
 						}
@@ -250,7 +250,7 @@ bool TextWidget::OnMouseClick() {
 						TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
 						if(me) {
 							m_targetMenu = EDIT_QUEST_SAVE;
-							mainMenu->bReInitAll = true;
+							g_mainMenu->bReInitAll = true;
 							savegames.remove(me->m_savegame);
 							break;
 						}
