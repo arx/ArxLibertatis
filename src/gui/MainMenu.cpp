@@ -1954,7 +1954,7 @@ private:
 
 
 
-void MainMenuLeftCreate(MENUSTATE eMenuState)
+void MainMenu::initWindowPages(MENUSTATE eMenuState)
 {
 	g_mainMenu->eOldMenuState=eMenuState;
 	
