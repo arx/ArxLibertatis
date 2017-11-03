@@ -107,7 +107,7 @@ bool bNoMenu=false;
 
 MenuCursor * pMenuCursor = NULL;
 
-extern CWindowMenu * pWindowMenu;
+extern MenuWindow * pWindowMenu;
 MainMenu *g_mainMenu;
 
 extern TextWidget * pMenuElementApply;
@@ -341,7 +341,7 @@ bool Menu2_Render() {
 
 
 
-CWindowMenu::CWindowMenu(const Vec2f & pos, const Vec2f & size)
+MenuWindow::MenuWindow(const Vec2f & pos, const Vec2f & size)
 {
 	m_pos = RATIO_2(pos);
 	m_size = RATIO_2(size);
@@ -363,13 +363,13 @@ CWindowMenu::CWindowMenu(const Vec2f & pos, const Vec2f & size)
 	m_border = TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
 }
 
-CWindowMenu::~CWindowMenu() {
+MenuWindow::~MenuWindow() {
 
 	for(std::vector<MenuPage*>::iterator it = m_pages.begin(), it_end = m_pages.end(); it < it_end; ++it)
 		delete *it;
 }
 
-void CWindowMenu::add(MenuPage *page) {
+void MenuWindow::add(MenuPage *page) {
 
 	m_pages.push_back(page);
 	page->m_oldPos.x = 0;
@@ -377,7 +377,7 @@ void CWindowMenu::add(MenuPage *page) {
 	page->m_pos = m_pos;
 }
 
-void CWindowMenu::Update(PlatformDuration _fDTime) {
+void MenuWindow::Update(PlatformDuration _fDTime) {
 
 	float fCalc	= fPosXCalc + (fDist * glm::sin(glm::radians(fAngle)));
 
@@ -388,7 +388,7 @@ void CWindowMenu::Update(PlatformDuration _fDTime) {
 		fAngle = 90.f;
 }
 
-MENUSTATE CWindowMenu::Render() {
+MENUSTATE MenuWindow::Render() {
 	
 	if(bNoMenu)
 		return NOP;

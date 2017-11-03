@@ -103,7 +103,7 @@ private:
 	bool m_blink;
 };
 
-class CWindowMenu : private boost::noncopyable {
+class MenuWindow : private boost::noncopyable {
 	
 private:
 	Vec2f m_pos;
@@ -112,8 +112,8 @@ private:
 	float				fDist;
 	
 public:
-	CWindowMenu(const Vec2f & pos, const Vec2f & size);
-	virtual ~CWindowMenu();
+	MenuWindow(const Vec2f & pos, const Vec2f & size);
+	virtual ~MenuWindow();
 	
 	void add(MenuPage * page);
 	void Update(PlatformDuration time);

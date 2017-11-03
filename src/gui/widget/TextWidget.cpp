@@ -81,7 +81,7 @@ void TextWidget::Update() {
 }
 
 // TODO remove this
-extern CWindowMenu * pWindowMenu;
+extern MenuWindow * pWindowMenu;
 
 bool TextWidget::OnMouseDoubleClick() {
 
