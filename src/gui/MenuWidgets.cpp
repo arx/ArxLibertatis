@@ -252,14 +252,14 @@ bool Menu2_Render() {
 
 	bool bScroll=true;
 	
-	MENUSTATE eMenuState = mainMenu->Update();
+	MENUSTATE requestedMenuState = mainMenu->Update();
 	
 	if(eOldMenuState != NOP) {
-		eMenuState=eOldMenuState;
+		requestedMenuState=eOldMenuState;
 		bScroll=false;
 	}
 	
-	if(eMenuState == RESUME_GAME) {
+	if(requestedMenuState == RESUME_GAME) {
 		pTextManage->Clear();
 		ARXmenu.currentmode = AMCM_OFF;
 		mainMenu->m_selected = NULL;
@@ -270,8 +270,8 @@ bool Menu2_Render() {
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		return true;
-	} else if(eMenuState != NOP) {
-		MainMenuLeftCreate(eMenuState);
+	} else if(requestedMenuState != NOP) {
+		MainMenuLeftCreate(requestedMenuState);
 	
 	}
 	
