@@ -42,7 +42,7 @@ public:
 	virtual ~MainMenu();
 	
 	void init();
-	void initWindowPages(MENUSTATE eMenuState);
+	void initWindowPages();
 	
 	void onClickedResumeGame();
 	void onClickedNewQuest();
