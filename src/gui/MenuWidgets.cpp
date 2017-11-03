@@ -345,14 +345,14 @@ MenuWindow::MenuWindow(const Vec2f & pos, const Vec2f & size)
 
 	m_pages.clear();
 
-	fPosXCalc = -m_size.x;
+	m_initalOffsetX = -m_size.x;
 	fDist = m_size.x + m_pos.x;
 	fAngle=0.f;
 
 	m_currentPageId=NOP;
 
 
-	float fCalc	= fPosXCalc + (fDist * glm::sin(glm::radians(fAngle)));
+	float fCalc	= m_initalOffsetX + (fDist * glm::sin(glm::radians(fAngle)));
 
 	m_pos.x = checked_range_cast<int>(fCalc);
 	
@@ -376,7 +376,7 @@ void MenuWindow::add(MenuPage *page) {
 
 void MenuWindow::Update(PlatformDuration _fDTime) {
 
-	float fCalc	= fPosXCalc + (fDist * glm::sin(glm::radians(fAngle)));
+	float fCalc	= m_initalOffsetX + (fDist * glm::sin(glm::radians(fAngle)));
 
 	m_pos.x = checked_range_cast<int>(fCalc);
 	fAngle += _fDTime / PlatformDurationMsf(12.5f);

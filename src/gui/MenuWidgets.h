@@ -108,7 +108,7 @@ class MenuWindow : private boost::noncopyable {
 private:
 	Vec2f m_pos;
 	Vec2f m_size;
-	float				fPosXCalc;
+	float m_initalOffsetX;
 	float				fDist;
 	
 public:
