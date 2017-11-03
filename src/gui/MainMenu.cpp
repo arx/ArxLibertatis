@@ -1954,9 +1954,8 @@ private:
 
 
 
-void MainMenu::initWindowPages(MENUSTATE eMenuState)
+void MainMenu::initWindowPages()
 {
-	g_mainMenu->eOldMenuState=eMenuState;
 	
 	delete g_mainMenu->m_window, g_mainMenu->m_window = NULL;
 	
@@ -1967,8 +1966,6 @@ void MainMenu::initWindowPages(MENUSTATE eMenuState)
 	
 	Vec2f offset = Vec2f_ZERO;
 	Vec2f size = windowMenuSize - offset;
-	
-	g_mainMenu->m_window->m_currentPageId = eMenuState;
 	
 	{
 		NewQuestMenuPage * page = new NewQuestMenuPage(offset, size);

@@ -267,7 +267,9 @@ bool Menu2_Render() {
 		
 		return true;
 	} else if(requestedMenuState != NOP) {
-		g_mainMenu->initWindowPages(requestedMenuState);
+		g_mainMenu->eOldMenuState = requestedMenuState;
+		g_mainMenu->initWindowPages();
+		g_mainMenu->m_window->m_currentPageId = requestedMenuState;
 	}
 	
 	g_mainMenu->Render();
