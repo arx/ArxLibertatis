@@ -107,7 +107,6 @@ bool bNoMenu=false;
 
 MenuCursor * pMenuCursor = NULL;
 
-extern MenuWindow * pWindowMenu;
 MainMenu *g_mainMenu;
 
 extern TextWidget * pMenuElementApply;
@@ -169,7 +168,7 @@ bool ARX_SlotLoad(SavegameHandle slotIndex) {
 
 bool MENU_NoActiveWindow() {
 	
-	if(!pWindowMenu || pWindowMenu->m_currentPageId == MAIN) {
+	if(!g_mainMenu->m_window || g_mainMenu->m_window->m_currentPageId == MAIN) {
 		return true;
 	}
 	
@@ -208,7 +207,6 @@ bool Menu2_Render() {
 	
 	if(AMCM_NEWQUEST == ARXmenu.currentmode || AMCM_CREDITS == ARXmenu.currentmode) {
 		
-		delete pWindowMenu, pWindowMenu = NULL;
 		delete g_mainMenu, g_mainMenu = NULL;
 		
 		if(ARXmenu.currentmode == AMCM_CREDITS){
@@ -240,7 +238,6 @@ bool Menu2_Render() {
 		
 		if(g_mainMenu && g_mainMenu->bReInitAll) {
 			eOldMenuState = g_mainMenu->eOldMenuState;
-			delete pWindowMenu, pWindowMenu = NULL;
 			delete g_mainMenu, g_mainMenu = NULL;
 		}
 		
@@ -264,7 +261,6 @@ bool Menu2_Render() {
 		ARXmenu.currentmode = AMCM_OFF;
 		g_mainMenu->m_selected = NULL;
 		
-		delete pWindowMenu, pWindowMenu = NULL;
 		delete g_mainMenu, g_mainMenu = NULL;
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
@@ -277,17 +273,17 @@ bool Menu2_Render() {
 	
 	g_mainMenu->Render();
 	
-	if(pWindowMenu)
-	if(   (pWindowMenu->m_currentPageId != MAIN && pWindowMenu->m_currentPageId != NEW_QUEST && pWindowMenu->m_currentPageId != CREDITS)
-	   || (pWindowMenu->m_currentPageId == NEW_QUEST && g_canResumeGame)
+	if(g_mainMenu->m_window)
+	if(   (g_mainMenu->m_window->m_currentPageId != MAIN && g_mainMenu->m_window->m_currentPageId != NEW_QUEST && g_mainMenu->m_window->m_currentPageId != CREDITS)
+	   || (g_mainMenu->m_window->m_currentPageId == NEW_QUEST && g_canResumeGame)
 	) {
 		if(!bScroll) {
-			pWindowMenu->fAngle=90.f;
-			pWindowMenu->m_currentPageId=g_mainMenu->eOldMenuWindowState;
+			g_mainMenu->m_window->fAngle=90.f;
+			g_mainMenu->m_window->m_currentPageId=g_mainMenu->eOldMenuWindowState;
 		}
 
-		pWindowMenu->Update(g_platformTime.lastFrameDuration());
-		MENUSTATE eMS = pWindowMenu->Render();
+		g_mainMenu->m_window->Update(g_platformTime.lastFrameDuration());
+		MENUSTATE eMS = g_mainMenu->m_window->Render();
 		if(eMS != NOP) {
 			g_mainMenu->eOldMenuWindowState=eMS;
 		}
@@ -941,7 +937,6 @@ void Menu2_Close() {
 	
 	ARXmenu.currentmode = AMCM_OFF;
 	
-	delete pWindowMenu, pWindowMenu = NULL;
 	delete g_mainMenu, g_mainMenu = NULL;
 	delete pMenuCursor, pMenuCursor = NULL;
 }

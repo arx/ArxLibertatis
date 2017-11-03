@@ -36,6 +36,7 @@ public:
 	MENUSTATE				eOldMenuWindowState;
 	
 	Widget		*	m_selected;
+	MenuWindow * m_window;
 	
 	explicit MainMenu();
 	virtual ~MainMenu();

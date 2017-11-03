@@ -55,7 +55,6 @@
 #include "scene/GameSound.h"
 #include "window/RenderWindow.h"
 
-MenuWindow * pWindowMenu = NULL;
 TextWidget * pDeleteConfirm = NULL;
 TextWidget * pLoadConfirm = NULL;
 TextWidget * pDeleteButton = NULL;
@@ -151,9 +150,9 @@ public:
 private:
 	
 	void onClickLoad() {
-		if(pWindowMenu)
-		for(size_t i = 0; i < pWindowMenu->m_pages.size(); i++) {
-			MenuPage * page = pWindowMenu->m_pages[i];
+		if(g_mainMenu->m_window)
+		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
+			MenuPage * page = g_mainMenu->m_window->m_pages[i];
 			
 			if(page->eMenuState == EDIT_QUEST_LOAD) {
 				page->m_savegame = m_savegame;
@@ -1959,28 +1958,28 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 {
 	g_mainMenu->eOldMenuState=eMenuState;
 	
-	delete pWindowMenu, pWindowMenu = NULL;
+	delete g_mainMenu->m_window, g_mainMenu->m_window = NULL;
 	
 	Vec2f windowMenuPos = Vec2f(20, 25);
 	Vec2f windowMenuSize = Vec2f(321, 430);
 	
-	pWindowMenu = new MenuWindow(windowMenuPos, windowMenuSize);
+	g_mainMenu->m_window = new MenuWindow(windowMenuPos, windowMenuSize);
 	
 	Vec2f offset = Vec2f_ZERO;
 	Vec2f size = windowMenuSize - offset;
 	
-	pWindowMenu->m_currentPageId = eMenuState;
+	g_mainMenu->m_window->m_currentPageId = eMenuState;
 	
 	{
 		NewQuestMenuPage * page = new NewQuestMenuPage(offset, size);
 		page->init();
-		pWindowMenu->add(page);
+		g_mainMenu->m_window->add(page);
 	}
 
 	{
 	ChooseLoadOrSaveMenuPage * page = new ChooseLoadOrSaveMenuPage(offset, size);
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 	
 	{
@@ -1988,75 +1987,75 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	page->m_savegame = SavegameHandle();
 	page->m_rowSpacing = 5;
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 	
 	{
 	SaveMenuPage * page = new SaveMenuPage(offset + Vec2f(0, -40), size);
 	page->m_rowSpacing = 5;
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 	
 	{
 	SaveConfirmMenuPage * page = new SaveConfirmMenuPage(offset, size);
 	page->m_savegame = SavegameHandle();
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 	
 	{
 	OptionsMenuPage * page = new OptionsMenuPage(offset, size);
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 	
 	{
 	VideoOptionsMenuPage * page = new VideoOptionsMenuPage(offset + Vec2f(0, -35), size);
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 	
 	{
 	RenderOptionsMenuPage * page = new RenderOptionsMenuPage(offset + Vec2f(0, -35), size);
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 	
 	{
 	InterfaceOptionsMenuPage * page = new InterfaceOptionsMenuPage(offset + Vec2f(0, -35), size);
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 	
 	{
 	AudioOptionsMenuPage * page = new AudioOptionsMenuPage(offset, size);
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 	
 	{
 	InputOptionsMenuPage * page = new InputOptionsMenuPage(offset, size);
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 	
 	{
 	ControlOptionsMenuPage1 * page = new ControlOptionsMenuPage1(offset, size);
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 	
 	{
 	ControlOptionsMenuPage2 * page = new ControlOptionsMenuPage2(offset, size);
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 	
 	{
 	QuitConfirmMenuPage * page = new QuitConfirmMenuPage(offset, size);
 	page->init();
-	pWindowMenu->add(page);
+	g_mainMenu->m_window->add(page);
 	}
 }
 
@@ -2067,12 +2066,14 @@ MainMenu::MainMenu()
 	, eOldMenuState(NOP)
 	, eOldMenuWindowState(NOP)
 	, m_selected(NULL)
+	, m_window(NULL)
 	, m_background(NULL)
 	, m_widgets(new WidgetContainer())
 	, m_resumeGame(NULL)
 {}
 
 MainMenu::~MainMenu() {
+	delete m_window;
 	delete m_widgets;
 	delete m_background;
 }
