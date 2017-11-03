@@ -259,7 +259,6 @@ bool Menu2_Render() {
 	if(requestedMenuState == RESUME_GAME) {
 		pTextManage->Clear();
 		ARXmenu.currentmode = AMCM_OFF;
-		g_mainMenu->m_selected = NULL;
 		
 		delete g_mainMenu, g_mainMenu = NULL;
 		
