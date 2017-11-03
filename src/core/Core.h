@@ -133,7 +133,6 @@ void SetEditMode();
 
 void SendGameReadyMsg();
 void DANAE_StartNewQuest();
-void DanaeRestoreFullScreen();
 bool AdjustUI();
 
 void levelInit();

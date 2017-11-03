@@ -259,15 +259,6 @@ bool AdjustUI() {
 	return true;
 }
 
-void DanaeRestoreFullScreen() {
-	
-	MenuReInitAll();
-	
-	AdjustUI();
-
-	LoadScreen();
-}
-
 void runGame() {
 	
 	mainApp = new ArxGame();
