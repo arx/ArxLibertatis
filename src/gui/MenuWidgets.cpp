@@ -283,7 +283,7 @@ bool Menu2_Render() {
 			g_mainMenu->m_window->m_currentPageId=g_mainMenu->eOldMenuWindowState;
 		}
 
-		g_mainMenu->m_window->Update(g_platformTime.lastFrameDuration());
+		g_mainMenu->m_window->Update();
 		MENUSTATE eMS = g_mainMenu->m_window->Render();
 		if(eMS != NOP) {
 			g_mainMenu->eOldMenuWindowState=eMS;
@@ -371,11 +371,11 @@ void MenuWindow::add(MenuPage *page) {
 	page->m_pos = m_pos;
 }
 
-void MenuWindow::Update(PlatformDuration _fDTime) {
+void MenuWindow::Update() {
 
 	m_pos.x	= m_initalOffsetX + (m_fadeDistance * glm::sin(glm::radians(fAngle)));
 
-	fAngle += _fDTime / PlatformDurationMsf(12.5f);
+	fAngle += g_platformTime.lastFrameDuration() / PlatformDurationMsf(12.5f);
 
 	if(fAngle > 90.f)
 		fAngle = 90.f;
