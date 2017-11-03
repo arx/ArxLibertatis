@@ -109,7 +109,7 @@ private:
 	Vec2f m_pos;
 	Vec2f m_size;
 	float m_initalOffsetX;
-	float				fDist;
+	float m_fadeDistance;
 	
 public:
 	MenuWindow(const Vec2f & pos, const Vec2f & size);

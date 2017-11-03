@@ -346,12 +346,12 @@ MenuWindow::MenuWindow(const Vec2f & pos, const Vec2f & size)
 	m_pages.clear();
 
 	m_initalOffsetX = -m_size.x;
-	fDist = m_size.x + m_pos.x;
+	m_fadeDistance = m_size.x + m_pos.x;
 	fAngle=0.f;
 
 	m_currentPageId=NOP;
 
-	m_pos.x	= m_initalOffsetX + (fDist * glm::sin(glm::radians(fAngle)));
+	m_pos.x	= m_initalOffsetX + (m_fadeDistance * glm::sin(glm::radians(fAngle)));
 	
 	m_background = TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
 	m_border = TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
@@ -373,7 +373,7 @@ void MenuWindow::add(MenuPage *page) {
 
 void MenuWindow::Update(PlatformDuration _fDTime) {
 
-	m_pos.x	= m_initalOffsetX + (fDist * glm::sin(glm::radians(fAngle)));
+	m_pos.x	= m_initalOffsetX + (m_fadeDistance * glm::sin(glm::radians(fAngle)));
 
 	fAngle += _fDTime / PlatformDurationMsf(12.5f);
 
