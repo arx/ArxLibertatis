@@ -22,6 +22,8 @@
 
 #include <string>
 
+#include <boost/noncopyable.hpp>
+
 #include "gui/MenuWidgets.h"
 #include "gui/widget/Widget.h"
 #include "gui/widget/WidgetContainer.h"
@@ -29,7 +31,7 @@
 
 void MainMenuLeftCreate(MENUSTATE eMenuState);
 
-class MainMenu {
+class MainMenu : private boost::noncopyable {
 public:
 	bool					bReInitAll;
 	MENUSTATE				eOldMenuState;
