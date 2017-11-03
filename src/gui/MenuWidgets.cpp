@@ -267,8 +267,7 @@ bool Menu2_Render() {
 		
 		return true;
 	} else if(requestedMenuState != NOP) {
-		MainMenuLeftCreate(requestedMenuState);
-	
+		g_mainMenu->initWindowPages(requestedMenuState);
 	}
 	
 	g_mainMenu->Render();
