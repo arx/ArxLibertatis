@@ -80,8 +80,7 @@ void TextWidget::SetText(const std::string & _pText)
 void TextWidget::Update() {
 }
 
-// TODO remove this
-extern MenuWindow * pWindowMenu;
+extern MainMenu *g_mainMenu;
 
 bool TextWidget::OnMouseDoubleClick() {
 
@@ -89,9 +88,9 @@ bool TextWidget::OnMouseDoubleClick() {
 	case BUTTON_MENUEDITQUEST_LOAD:
 		OnMouseClick();
 
-		if(pWindowMenu) {
-			for(size_t i = 0; i < pWindowMenu->m_pages.size(); i++) {
-				MenuPage * page = pWindowMenu->m_pages[i];
+		if(g_mainMenu->m_window) {
+			for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
+				MenuPage * page = g_mainMenu->m_window->m_pages[i];
 
 				if(page->eMenuState == EDIT_QUEST_LOAD) {
 					for(size_t j = 0; j < page->m_children.m_widgets.size(); j++) {
@@ -118,7 +117,6 @@ extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
 extern TextWidget * pDeleteButton;
 extern bool bNoMenu;
-extern MainMenu *g_mainMenu;
 
 // true: block les zones de checks
 bool TextWidget::OnMouseClick() {
@@ -145,14 +143,14 @@ bool TextWidget::OnMouseClick() {
 	switch(m_id) {
 		// MENULOADQUEST
 		case BUTTON_MENUEDITQUEST_LOAD: {
-			if(pWindowMenu) {
+			if(g_mainMenu->m_window) {
 				pLoadConfirm->SetCheckOn();
 				pLoadConfirm->lColor = pLoadConfirm->lOldColor;
 				pDeleteConfirm->SetCheckOn();
 				pDeleteConfirm->lColor = pDeleteConfirm->lOldColor;
 				
-				for(size_t i = 0; i < pWindowMenu->m_pages.size(); i++) {
-					MenuPage * page = pWindowMenu->m_pages[i];
+				for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
+					MenuPage * page = g_mainMenu->m_window->m_pages[i];
 					
 					if(page->eMenuState == EDIT_QUEST_LOAD) {
 						page->m_savegame = m_savegame;
@@ -171,9 +169,9 @@ bool TextWidget::OnMouseClick() {
 		}
 		break;
 		case BUTTON_MENUEDITQUEST_LOAD_CONFIRM: {
-			if(pWindowMenu) {
-				for(size_t i = 0; i < pWindowMenu->m_pages.size(); i++) {
-					MenuPage * page = pWindowMenu->m_pages[i];
+			if(g_mainMenu->m_window) {
+				for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
+					MenuPage * page = g_mainMenu->m_window->m_pages[i];
 		
 					if(page->eMenuState == EDIT_QUEST_LOAD) {
 						
@@ -199,9 +197,9 @@ bool TextWidget::OnMouseClick() {
 		break;
 		// MENUSAVEQUEST
 		case BUTTON_MENUEDITQUEST_SAVE: {
-			if(pWindowMenu)
-			for(size_t i = 0; i < pWindowMenu->m_pages.size(); i++) {
-				MenuPage * page = pWindowMenu->m_pages[i];
+			if(g_mainMenu->m_window)
+			for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
+				MenuPage * page = g_mainMenu->m_window->m_pages[i];
 				
 				if(page->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
 					page->m_savegame = m_savegame;
@@ -219,9 +217,9 @@ bool TextWidget::OnMouseClick() {
 		
 		// Delete save from the load menu
 		case BUTTON_MENUEDITQUEST_DELETE_CONFIRM: {
-			if(pWindowMenu) {
-				for(size_t i = 0 ; i < pWindowMenu->m_pages.size(); i++) {
-					MenuPage * page = pWindowMenu->m_pages[i];
+			if(g_mainMenu->m_window) {
+				for(size_t i = 0 ; i < g_mainMenu->m_window->m_pages.size(); i++) {
+					MenuPage * page = g_mainMenu->m_window->m_pages[i];
 					if(page->eMenuState == EDIT_QUEST_LOAD) {
 						m_savegame = page->m_savegame;
 						if(m_savegame != SavegameHandle()) {
@@ -242,9 +240,9 @@ bool TextWidget::OnMouseClick() {
 			
 		// Delete save from the save menu
 		case BUTTON_MENUEDITQUEST_DELETE: {
-			if(pWindowMenu) {
-				for(size_t i = 0 ; i < pWindowMenu->m_pages.size(); i++) {
-					MenuPage * page = pWindowMenu->m_pages[i];
+			if(g_mainMenu->m_window) {
+				for(size_t i = 0 ; i < g_mainMenu->m_window->m_pages.size(); i++) {
+					MenuPage * page = g_mainMenu->m_window->m_pages[i];
 					if(page->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
 						page->m_savegame = m_savegame;
 						TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
@@ -264,8 +262,8 @@ bool TextWidget::OnMouseClick() {
 	}
 
 	if(m_targetMenu == EDIT_QUEST_SAVE_CONFIRM) {
-		for(size_t i = 0; i < pWindowMenu->m_pages.size(); i++) {
-			MenuPage * page = pWindowMenu->m_pages[i];
+		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
+			MenuPage * page = g_mainMenu->m_window->m_pages[i];
 
 			if(page->eMenuState == m_targetMenu) {
 				page->m_savegame = m_savegame;
