@@ -1245,7 +1245,9 @@ void ArxGame::doFrame() {
 	if(m_wasResized) {
 		LogDebug("was resized");
 		m_wasResized = false;
-		DanaeRestoreFullScreen();
+		MenuReInitAll();
+		AdjustUI();
+		LoadScreen();
 		g_hudRoot.recalcScale();
 	}
 
