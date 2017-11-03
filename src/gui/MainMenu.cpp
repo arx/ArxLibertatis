@@ -2062,11 +2062,11 @@ MainMenu::MainMenu()
 	: bReInitAll(false)
 	, eOldMenuState(NOP)
 	, eOldMenuWindowState(NOP)
-	, m_selected(NULL)
 	, m_window(NULL)
 	, m_background(NULL)
 	, m_widgets(new WidgetContainer())
 	, m_resumeGame(NULL)
+	, m_selected(NULL)
 {}
 
 MainMenu::~MainMenu() {

@@ -37,7 +37,6 @@ public:
 	MENUSTATE				eOldMenuState;
 	MENUSTATE				eOldMenuWindowState;
 	
-	Widget		*	m_selected;
 	MenuWindow * m_window;
 	
 	explicit MainMenu();
@@ -58,6 +57,8 @@ private:
 	WidgetContainer * m_widgets;
 	
 	TextWidget * m_resumeGame;
+	
+	Widget * m_selected;
 };
 
 #endif // ARX_GUI_MAINMENU_H
