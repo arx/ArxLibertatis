@@ -399,13 +399,11 @@ MENUSTATE MenuWindow::Render() {
 	// Draw backgound and border
 	{
 		UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
-		EERIEDrawBitmap(Rectf(Vec2f(m_pos.x, m_pos.y),
-		                RATIO_X(m_background->m_size.x), RATIO_Y(m_background->m_size.y)),
+		EERIEDrawBitmap(Rectf(m_pos, RATIO_X(m_background->m_size.x), RATIO_Y(m_background->m_size.y)),
 		                0, m_background, Color::white);
 	}
 	
-	EERIEDrawBitmap(Rectf(Vec2f(m_pos.x, m_pos.y),
-	                RATIO_X(m_border->m_size.x), RATIO_Y(m_border->m_size.y)),
+	EERIEDrawBitmap(Rectf(m_pos, RATIO_X(m_border->m_size.x), RATIO_Y(m_border->m_size.y)),
 	                0, m_border, Color::white);
 	
 	BOOST_FOREACH(MenuPage * page, m_pages) {
