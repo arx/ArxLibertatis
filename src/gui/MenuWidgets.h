@@ -116,7 +116,7 @@ public:
 	virtual ~MenuWindow();
 	
 	void add(MenuPage * page);
-	void Update(PlatformDuration time);
+	void Update();
 	MENUSTATE Render();
 	
 	std::vector<MenuPage *>	m_pages;
