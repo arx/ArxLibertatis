@@ -121,8 +121,8 @@ void Profiler::addProfilePoint(const char* tag, thread_id_type threadId,
 	ProfilerSample & sample = m_samples[pos % NB_SAMPLES];
 	sample.tag = tag;
 	sample.threadId = threadId;
-	sample.startTime = toUs(startTime);
-	sample.endTime = toUs(endTime);
+	sample.startTime = startTime;
+	sample.endTime = endTime;
 }
 
 void Profiler::flush() {
@@ -211,8 +211,8 @@ void Profiler::writeProfileLog() {
 		SavedProfilerThread saved;
 		saved.stringIndex = stringIndex;
 		saved.threadId = thread.threadId;
-		saved.startTime = thread.startTime;
-		saved.endTime = thread.endTime;
+		saved.startTime = toUs(thread.startTime);
+		saved.endTime = toUs(thread.endTime);
 		threadsData.push_back(saved);
 	}
 	
@@ -233,8 +233,8 @@ void Profiler::writeProfileLog() {
 		SavedProfilerSample saved;
 		saved.stringIndex = stringIndex;
 		saved.threadId = sample.threadId;
-		saved.startTime = sample.startTime;
-		saved.endTime = sample.endTime;
+		saved.startTime = toUs(sample.startTime);
+		saved.endTime = toUs(sample.endTime);
 		samplesData.push_back(saved);
 	}
 	
