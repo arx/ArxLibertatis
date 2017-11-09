@@ -318,19 +318,13 @@ private:
 	void onDoubleClickQuestLoad(TextWidget * txt) {
 		txt->OnMouseClick();
 
-		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
-			MenuPage * page = g_mainMenu->m_window->m_pages[i];
-
-			if(page->eMenuState == EDIT_QUEST_LOAD) {
-				for(size_t j = 0; j < page->m_children.m_widgets.size(); j++) {
-					Widget * widget = page->m_children.m_widgets[j]->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
+				for(size_t j = 0; j < m_children.m_widgets.size(); j++) {
+					Widget * widget = m_children.m_widgets[j]->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
 
 					if(widget) {
 						widget->OnMouseClick();
 					}
 				}
-			}
-		}
 	}
 	
 	void onClickQuestLoadConfirm(TextWidget * txt) {
