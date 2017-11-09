@@ -317,14 +317,7 @@ private:
 	
 	void onDoubleClickQuestLoad(TextWidget * txt) {
 		txt->OnMouseClick();
-
-				for(size_t j = 0; j < m_children.m_widgets.size(); j++) {
-					Widget * widget = m_children.m_widgets[j]->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
-
-					if(widget) {
-						widget->OnMouseClick();
-					}
-				}
+		pLoadConfirm->OnMouseClick();
 	}
 	
 	void onClickQuestLoadConfirm(TextWidget * txt) {
