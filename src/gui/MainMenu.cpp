@@ -288,6 +288,13 @@ private:
 		pDeleteConfirm->lColor = pDeleteConfirm->lOldColor;
 	}
 	
+	void disableLoadDeleteButtons() {
+		pLoadConfirm->SetCheckOff();
+		pLoadConfirm->lColor = Color::grayb(127);
+		pDeleteConfirm->SetCheckOff();
+		pDeleteConfirm->lColor = Color::grayb(127);
+	}
+	
 	void onClickQuestLoad(TextWidget * txt) {
 		enableLoadDeleteButtons();
 		
@@ -330,10 +337,7 @@ private:
 			}
 		}
 		
-		pLoadConfirm->SetCheckOff();
-		pLoadConfirm->lColor = Color::grayb(127);
-		pDeleteConfirm->SetCheckOff();
-		pDeleteConfirm->lColor = Color::grayb(127);
+		disableLoadDeleteButtons();
 	}
 	
 	void onClickQuestDelete(TextWidget * txt) {
@@ -350,17 +354,11 @@ private:
 			}
 		}
 		
-		pLoadConfirm->SetCheckOff();
-		pLoadConfirm->lColor = Color::grayb(127);
-		pDeleteConfirm->SetCheckOff();
-		pDeleteConfirm->lColor = Color::grayb(127);
+		disableLoadDeleteButtons();
 	}
 	
 	void onClickBack() {
-		pLoadConfirm->SetCheckOff();
-		pLoadConfirm->lColor = Color::grayb(127);
-		pDeleteConfirm->SetCheckOff();
-		pDeleteConfirm->lColor = Color::grayb(127);
+		disableLoadDeleteButtons();
 	}
 	
 };
