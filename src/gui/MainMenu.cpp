@@ -1967,9 +1967,9 @@ void MainMenu::initWindowPages()
 	Vec2f size = windowMenuSize;
 	
 	{
-		NewQuestMenuPage * page = new NewQuestMenuPage(size);
-		page->init();
-		g_mainMenu->m_window->add(page);
+	NewQuestMenuPage * page = new NewQuestMenuPage(size);
+	page->init();
+	g_mainMenu->m_window->add(page);
 	}
 
 	{
