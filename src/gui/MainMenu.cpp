@@ -211,6 +211,7 @@ public:
 			
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2f(20, 0));
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
+			txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
 			txt->m_savegame = SavegameHandle(i);
 			addCenter(txt);
 		}
@@ -227,6 +228,7 @@ public:
 			
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2f(20, 0));
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
+			txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
 			txt->m_savegame = SavegameHandle(i);
 			addCenter(txt);
 		}
@@ -311,6 +313,24 @@ private:
 			}
 		}
 		txt->bSelected = true;
+	}
+	
+	void onDoubleClickQuestLoad(TextWidget * txt) {
+		txt->OnMouseClick();
+
+		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
+			MenuPage * page = g_mainMenu->m_window->m_pages[i];
+
+			if(page->eMenuState == EDIT_QUEST_LOAD) {
+				for(size_t j = 0; j < page->m_children.m_widgets.size(); j++) {
+					Widget * widget = page->m_children.m_widgets[j]->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
+
+					if(widget) {
+						widget->OnMouseClick();
+					}
+				}
+			}
+		}
 	}
 	
 	void onClickQuestLoadConfirm(TextWidget * txt) {
