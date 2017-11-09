@@ -301,31 +301,21 @@ private:
 	void onClickQuestLoad(TextWidget * txt) {
 		enableLoadDeleteButtons();
 		
-		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
-			MenuPage * page = g_mainMenu->m_window->m_pages[i];
-			
-			if(page->eMenuState == EDIT_QUEST_LOAD) {
-				page->m_savegame = txt->m_savegame;
+				m_savegame = txt->m_savegame;
 				
-				for(size_t j = 0; j < page->m_children.m_widgets.size(); j++) {
-					Widget * widget = page->m_children.m_widgets[j];
+				for(size_t j = 0; j < m_children.m_widgets.size(); j++) {
+					Widget * widget = m_children.m_widgets[j];
 					
 					if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
 						((TextWidget *)widget)->bSelected = false;
 					}
 				}
 				txt->bSelected = true;
-			}
-		}
 	}
 	
 	void onClickQuestLoadConfirm(TextWidget * txt) {
-		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
-			MenuPage * page = g_mainMenu->m_window->m_pages[i];
-
-			if(page->eMenuState == EDIT_QUEST_LOAD) {
 				
-				txt->m_savegame = page->m_savegame;
+				txt->m_savegame = m_savegame;
 				if(txt->m_savegame != SavegameHandle()) {
 					txt->m_targetMenu = MAIN;
 					ARXMenu_LoadQuest(txt->m_savegame);
@@ -335,27 +325,19 @@ private:
 					if(pTextManage) {
 						pTextManage->Clear();
 					}
-					break;
 				}
-			}
-		}
 		
 		disableLoadDeleteButtons();
 	}
 	
 	void onClickQuestDelete(TextWidget * txt) {
-		for(size_t i = 0 ; i < g_mainMenu->m_window->m_pages.size(); i++) {
-			MenuPage * page = g_mainMenu->m_window->m_pages[i];
-			if(page->eMenuState == EDIT_QUEST_LOAD) {
-				txt->m_savegame = page->m_savegame;
+				txt->m_savegame = m_savegame;
 				if(txt->m_savegame != SavegameHandle()) {
 					txt->m_targetMenu = EDIT_QUEST_LOAD;
 					g_mainMenu->bReInitAll = true;
 					savegames.remove(txt->m_savegame);
 					return;
 				}
-			}
-		}
 		
 		disableLoadDeleteButtons();
 	}
