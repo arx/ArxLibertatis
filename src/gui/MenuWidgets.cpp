@@ -788,8 +788,6 @@ void MenuPage::Render() {
 	
 	//HIGHLIGHT
 	if(m_selected) {
-		bool bReInit=false;
-
 		m_selected->RenderMouseOver();
 		
 		{
@@ -870,7 +868,8 @@ void MenuPage::Render() {
 							config.setActionKey(widget->m_keybindAction, widget->m_keybindIndex, inputKeyId);
 						}
 					}
-					bReInit = true;
+					ReInitActionKey();
+					bMouseAttack=false;
 				}
 			}
 			break;
@@ -881,16 +880,12 @@ void MenuPage::Render() {
 					
 					if(widget == m_selected) {
 						config.setDefaultActionKeys();
-						bReInit=true;
+						ReInitActionKey();
+						bMouseAttack=false;
 					}
 				}
 			}
 			break;
-		}
-		
-		if(bReInit) {
-			ReInitActionKey();
-			bMouseAttack=false;
 		}
 	}
 }
