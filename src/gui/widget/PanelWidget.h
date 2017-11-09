@@ -37,7 +37,7 @@ public:
 	void Render();
 	bool OnMouseClick() { return false; }
 	void RenderMouseOver() { }
-	Widget * IsMouseOver(const Vec2f & mousePos) const;
+	Widget * IsMouseOver(const Vec2f & mousePos);
 	Widget * GetZoneWithID(MenuButton zoneId);
 	
 	virtual WidgetType type() const {

@@ -54,8 +54,6 @@ TextWidget::TextWidget(MenuButton id, Font* font, const std::string& text, Vec2f
 	lColor = Color(232, 204, 142);
 	lColorHighlight=lOldColor=Color(255, 255, 255);
 
-	pRef=this;
-
 	bSelected = false;
 	
 	m_isKeybind = false;

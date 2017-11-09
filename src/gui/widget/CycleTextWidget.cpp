@@ -46,8 +46,6 @@ CycleTextWidget::CycleTextWidget()
 	m_rect.top    = 0;
 	m_rect.right  = pLeftButton->m_rect.width() + pRightButton->m_rect.width();
 	m_rect.bottom = std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
-
-	pRef = this;
 }
 
 CycleTextWidget::~CycleTextWidget() {
