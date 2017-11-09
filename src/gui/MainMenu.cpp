@@ -208,6 +208,7 @@ public:
 			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 			
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2f(20, 0));
+			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 			txt->m_savegame = SavegameHandle(i);
 			addCenter(txt);
 		}
@@ -223,6 +224,7 @@ public:
 			std::string text = save.name +  "   " + save.time;
 			
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2f(20, 0));
+			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 			txt->m_savegame = SavegameHandle(i);
 			addCenter(txt);
 		}
@@ -275,6 +277,30 @@ public:
 	}
 	
 private:
+	
+	void onClickQuestLoad(TextWidget * txt) {
+		pLoadConfirm->SetCheckOn();
+		pLoadConfirm->lColor = pLoadConfirm->lOldColor;
+		pDeleteConfirm->SetCheckOn();
+		pDeleteConfirm->lColor = pDeleteConfirm->lOldColor;
+		
+		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
+			MenuPage * page = g_mainMenu->m_window->m_pages[i];
+			
+			if(page->eMenuState == EDIT_QUEST_LOAD) {
+				page->m_savegame = txt->m_savegame;
+				
+				for(size_t j = 0; j < page->m_children.m_widgets.size(); j++) {
+					Widget * widget = page->m_children.m_widgets[j];
+					
+					if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
+						((TextWidget *)widget)->bSelected = false;
+					}
+				}
+				txt->bSelected = true;
+			}
+		}
+	}
 	
 	void onClickBack() {
 		pLoadConfirm->SetCheckOff();
