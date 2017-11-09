@@ -301,43 +301,43 @@ private:
 	void onClickQuestLoad(TextWidget * txt) {
 		enableLoadDeleteButtons();
 		
-				m_savegame = txt->m_savegame;
-				
-				for(size_t j = 0; j < m_children.m_widgets.size(); j++) {
-					Widget * widget = m_children.m_widgets[j];
-					
-					if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
-						((TextWidget *)widget)->bSelected = false;
-					}
-				}
-				txt->bSelected = true;
+		m_savegame = txt->m_savegame;
+		
+		for(size_t j = 0; j < m_children.m_widgets.size(); j++) {
+			Widget * widget = m_children.m_widgets[j];
+			
+			if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
+				((TextWidget *)widget)->bSelected = false;
+			}
+		}
+		txt->bSelected = true;
 	}
 	
 	void onClickQuestLoadConfirm(TextWidget * txt) {
 				
-				txt->m_savegame = m_savegame;
-				if(txt->m_savegame != SavegameHandle()) {
-					txt->m_targetMenu = MAIN;
-					ARXMenu_LoadQuest(txt->m_savegame);
-					
-					bNoMenu = true;
-					
-					if(pTextManage) {
-						pTextManage->Clear();
-					}
-				}
+		txt->m_savegame = m_savegame;
+		if(txt->m_savegame != SavegameHandle()) {
+			txt->m_targetMenu = MAIN;
+			ARXMenu_LoadQuest(txt->m_savegame);
+			
+			bNoMenu = true;
+			
+			if(pTextManage) {
+				pTextManage->Clear();
+			}
+		}
 		
 		disableLoadDeleteButtons();
 	}
 	
 	void onClickQuestDelete(TextWidget * txt) {
-				txt->m_savegame = m_savegame;
-				if(txt->m_savegame != SavegameHandle()) {
-					txt->m_targetMenu = EDIT_QUEST_LOAD;
-					g_mainMenu->bReInitAll = true;
-					savegames.remove(txt->m_savegame);
-					return;
-				}
+		txt->m_savegame = m_savegame;
+		if(txt->m_savegame != SavegameHandle()) {
+			txt->m_targetMenu = EDIT_QUEST_LOAD;
+			g_mainMenu->bReInitAll = true;
+			savegames.remove(txt->m_savegame);
+			return;
+		}
 		
 		disableLoadDeleteButtons();
 	}
