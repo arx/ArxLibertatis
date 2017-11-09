@@ -66,8 +66,8 @@ class NewQuestMenuPage : public MenuPage {
 	
 public:
 	
-	NewQuestMenuPage(const Vec2f & pos, const Vec2f & size)
-		: MenuPage(pos, size, NEW_QUEST)
+	NewQuestMenuPage(const Vec2f & size)
+		: MenuPage(size, NEW_QUEST)
 	{}
 	
 	~NewQuestMenuPage() { }
@@ -110,8 +110,8 @@ class ChooseLoadOrSaveMenuPage : public MenuPage {
 	
 public:
 	
-	ChooseLoadOrSaveMenuPage(const Vec2f & pos, const Vec2f & size)
-		: MenuPage(pos, size, EDIT_QUEST)
+	ChooseLoadOrSaveMenuPage(const Vec2f & size)
+		: MenuPage(size, EDIT_QUEST)
 	{}
 	
 	~ChooseLoadOrSaveMenuPage() { }
@@ -174,8 +174,8 @@ class LoadMenuPage : public MenuPage {
 	
 public:
 	
-	LoadMenuPage(const Vec2f & pos, const Vec2f & size)
-		: MenuPage(pos, size, EDIT_QUEST_LOAD)
+	LoadMenuPage(const Vec2f & size)
+		: MenuPage(size, EDIT_QUEST_LOAD)
 	{}
 	
 	~LoadMenuPage() { }
@@ -289,8 +289,8 @@ class SaveMenuPage : public MenuPage {
 	
 public:
 	
-	SaveMenuPage(const Vec2f & pos, const Vec2f & size)
-		: MenuPage(pos, size, EDIT_QUEST_SAVE)
+	SaveMenuPage(const Vec2f & size)
+		: MenuPage(size, EDIT_QUEST_SAVE)
 	{}
 	
 	~SaveMenuPage() { }
@@ -374,8 +374,8 @@ class SaveConfirmMenuPage : public MenuPage {
 	
 public:
 	
-	SaveConfirmMenuPage(const Vec2f & pos, const Vec2f & size)
-		: MenuPage(pos, size, EDIT_QUEST_SAVE_CONFIRM)
+	SaveConfirmMenuPage(const Vec2f & size)
+		: MenuPage(size, EDIT_QUEST_SAVE_CONFIRM)
 	{}
 	
 	~SaveConfirmMenuPage() { }
@@ -436,8 +436,8 @@ class OptionsMenuPage : public MenuPage {
 	
 public:
 	
-	OptionsMenuPage(const Vec2f & pos, const Vec2f & size)
-		: MenuPage(pos, size, OPTIONS)
+	OptionsMenuPage(const Vec2f & size)
+		: MenuPage(size, OPTIONS)
 	{}
 	
 	~OptionsMenuPage() { }
@@ -505,8 +505,8 @@ class VideoOptionsMenuPage : public MenuPage {
 	
 public:
 	
-	VideoOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
-		: MenuPage(pos, size, OPTIONS_VIDEO)
+	VideoOptionsMenuPage(const Vec2f & size)
+		: MenuPage(size, OPTIONS_VIDEO)
 		, m_gammaSlider(NULL)
 		, m_minimizeOnFocusLostCheckbox(NULL)
 	{
@@ -835,8 +835,8 @@ class RenderOptionsMenuPage : public MenuPage {
 	
 public:
 	
-	RenderOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
-		: MenuPage(pos, size, OPTIONS_RENDER)
+	RenderOptionsMenuPage(const Vec2f & size)
+		: MenuPage(size, OPTIONS_RENDER)
 		, m_alphaCutoutAntialiasingCycleText(NULL)
 	{ }
 	
@@ -1113,8 +1113,8 @@ class InterfaceOptionsMenuPage : public MenuPage {
 	
 public:
 	
-	InterfaceOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
-		: MenuPage(pos, size, OPTIONS_INTERFACE)
+	InterfaceOptionsMenuPage(const Vec2f & size)
+		: MenuPage(size, OPTIONS_INTERFACE)
 	{ }
 	
 	~InterfaceOptionsMenuPage() { }
@@ -1279,8 +1279,8 @@ class AudioOptionsMenuPage : public MenuPage {
 	
 public:
 	
-	AudioOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
-		: MenuPage(pos, size, OPTIONS_AUDIO)
+	AudioOptionsMenuPage(const Vec2f & size)
+		: MenuPage(size, OPTIONS_AUDIO)
 	{}
 	
 	~AudioOptionsMenuPage() { }
@@ -1494,8 +1494,8 @@ class InputOptionsMenuPage : public MenuPage {
 	
 public:
 	
-	InputOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
-		: MenuPage(pos, size, OPTIONS_INPUT)
+	InputOptionsMenuPage(const Vec2f & size)
+		: MenuPage(size, OPTIONS_INPUT)
 	{}
 	
 	~InputOptionsMenuPage() { }
@@ -1718,8 +1718,8 @@ class ControlOptionsPage : public MenuPage {
 	
 public:
 	
-	ControlOptionsPage(const Vec2f & pos, const Vec2f & size, MENUSTATE state)
-		: MenuPage(pos, size, state)
+	ControlOptionsPage(const Vec2f & size, MENUSTATE state)
+		: MenuPage(size, state)
 	{}
 	
 protected:
@@ -1773,8 +1773,8 @@ class ControlOptionsMenuPage1 : public ControlOptionsPage {
 	
 public:
 	
-	ControlOptionsMenuPage1(const Vec2f & pos, const Vec2f & size)
-		: ControlOptionsPage(pos, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1)
+	ControlOptionsMenuPage1(const Vec2f & size)
+		: ControlOptionsPage(size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1)
 	{}
 	
 	~ControlOptionsMenuPage1() { }
@@ -1845,8 +1845,8 @@ class ControlOptionsMenuPage2 : public ControlOptionsPage {
 	
 public:
 	
-	ControlOptionsMenuPage2(const Vec2f & pos, const Vec2f & size)
-		: ControlOptionsPage(pos, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2)
+	ControlOptionsMenuPage2(const Vec2f & size)
+		: ControlOptionsPage(size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2)
 	{}
 	
 	~ControlOptionsMenuPage2() { }
@@ -1909,8 +1909,8 @@ class QuitConfirmMenuPage : public MenuPage {
 	
 public:
 	
-	QuitConfirmMenuPage(const Vec2f & pos, const Vec2f & size)
-		: MenuPage(pos, size, QUIT)
+	QuitConfirmMenuPage(const Vec2f & size)
+		: MenuPage(size, QUIT)
 	{}
 	
 	~QuitConfirmMenuPage() { }
@@ -1964,23 +1964,22 @@ void MainMenu::initWindowPages()
 	
 	g_mainMenu->m_window = new MenuWindow(windowMenuPos, windowMenuSize);
 	
-	Vec2f offset = Vec2f_ZERO;
-	Vec2f size = windowMenuSize - offset;
+	Vec2f size = windowMenuSize;
 	
 	{
-		NewQuestMenuPage * page = new NewQuestMenuPage(offset, size);
+		NewQuestMenuPage * page = new NewQuestMenuPage(size);
 		page->init();
 		g_mainMenu->m_window->add(page);
 	}
 
 	{
-	ChooseLoadOrSaveMenuPage * page = new ChooseLoadOrSaveMenuPage(offset, size);
+	ChooseLoadOrSaveMenuPage * page = new ChooseLoadOrSaveMenuPage(size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	LoadMenuPage * page = new LoadMenuPage(offset, size);
+	LoadMenuPage * page = new LoadMenuPage(size);
 	page->m_savegame = SavegameHandle();
 	page->m_rowSpacing = 5;
 	page->init();
@@ -1988,69 +1987,69 @@ void MainMenu::initWindowPages()
 	}
 	
 	{
-	SaveMenuPage * page = new SaveMenuPage(offset, size);
+	SaveMenuPage * page = new SaveMenuPage(size);
 	page->m_rowSpacing = 5;
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	SaveConfirmMenuPage * page = new SaveConfirmMenuPage(offset, size);
+	SaveConfirmMenuPage * page = new SaveConfirmMenuPage(size);
 	page->m_savegame = SavegameHandle();
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	OptionsMenuPage * page = new OptionsMenuPage(offset, size);
+	OptionsMenuPage * page = new OptionsMenuPage(size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	VideoOptionsMenuPage * page = new VideoOptionsMenuPage(offset, size);
+	VideoOptionsMenuPage * page = new VideoOptionsMenuPage(size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	RenderOptionsMenuPage * page = new RenderOptionsMenuPage(offset, size);
+	RenderOptionsMenuPage * page = new RenderOptionsMenuPage(size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	InterfaceOptionsMenuPage * page = new InterfaceOptionsMenuPage(offset, size);
+	InterfaceOptionsMenuPage * page = new InterfaceOptionsMenuPage(size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	AudioOptionsMenuPage * page = new AudioOptionsMenuPage(offset, size);
+	AudioOptionsMenuPage * page = new AudioOptionsMenuPage(size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	InputOptionsMenuPage * page = new InputOptionsMenuPage(offset, size);
+	InputOptionsMenuPage * page = new InputOptionsMenuPage(size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	ControlOptionsMenuPage1 * page = new ControlOptionsMenuPage1(offset, size);
+	ControlOptionsMenuPage1 * page = new ControlOptionsMenuPage1(size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	ControlOptionsMenuPage2 * page = new ControlOptionsMenuPage2(offset, size);
+	ControlOptionsMenuPage2 * page = new ControlOptionsMenuPage2(size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	QuitConfirmMenuPage * page = new QuitConfirmMenuPage(offset, size);
+	QuitConfirmMenuPage * page = new QuitConfirmMenuPage(size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}

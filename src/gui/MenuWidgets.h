@@ -66,7 +66,7 @@ class Font;
 class MenuPage : private boost::noncopyable {
 	
 public:
-	MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE state);
+	MenuPage(const Vec2f & size, MENUSTATE state);
 	virtual ~MenuPage();
 	
 	void add(Widget * widget);
