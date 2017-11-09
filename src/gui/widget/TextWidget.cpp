@@ -135,11 +135,6 @@ bool TextWidget::OnMouseClick() {
 		default: break;
 	}
 	
-	switch(m_id) {
-		default:
-			break;
-	}
-
 	if(m_targetMenu == EDIT_QUEST_SAVE_CONFIRM) {
 		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
 			MenuPage * page = g_mainMenu->m_window->m_pages[i];
