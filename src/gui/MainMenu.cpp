@@ -1957,20 +1957,20 @@ private:
 void MainMenu::initWindowPages()
 {
 	
-	delete g_mainMenu->m_window, g_mainMenu->m_window = NULL;
+	delete m_window, m_window = NULL;
 	
-	g_mainMenu->m_window = new MenuWindow();
+	m_window = new MenuWindow();
 	
 	{
 	NewQuestMenuPage * page = new NewQuestMenuPage();
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 
 	{
 	ChooseLoadOrSaveMenuPage * page = new ChooseLoadOrSaveMenuPage();
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 	
 	{
@@ -1978,75 +1978,75 @@ void MainMenu::initWindowPages()
 	page->m_savegame = SavegameHandle();
 	page->m_rowSpacing = 5;
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 	
 	{
 	SaveMenuPage * page = new SaveMenuPage();
 	page->m_rowSpacing = 5;
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 	
 	{
 	SaveConfirmMenuPage * page = new SaveConfirmMenuPage();
 	page->m_savegame = SavegameHandle();
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 	
 	{
 	OptionsMenuPage * page = new OptionsMenuPage();
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 	
 	{
 	VideoOptionsMenuPage * page = new VideoOptionsMenuPage();
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 	
 	{
 	RenderOptionsMenuPage * page = new RenderOptionsMenuPage();
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 	
 	{
 	InterfaceOptionsMenuPage * page = new InterfaceOptionsMenuPage();
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 	
 	{
 	AudioOptionsMenuPage * page = new AudioOptionsMenuPage();
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 	
 	{
 	InputOptionsMenuPage * page = new InputOptionsMenuPage();
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 	
 	{
 	ControlOptionsMenuPage1 * page = new ControlOptionsMenuPage1();
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 	
 	{
 	ControlOptionsMenuPage2 * page = new ControlOptionsMenuPage2();
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 	
 	{
 	QuitConfirmMenuPage * page = new QuitConfirmMenuPage();
 	page->init();
-	g_mainMenu->m_window->add(page);
+	m_window->add(page);
 	}
 }
 
