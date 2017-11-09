@@ -170,6 +170,8 @@ private:
 	
 };
 
+extern bool bNoMenu;
+
 class LoadMenuPage : public MenuPage {
 	
 public:
@@ -256,6 +258,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2f_ZERO);
+			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoadConfirm, this, _1);
 			txt->m_targetMenu = MAIN;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
 			txt->SetCheckOff();
@@ -301,6 +304,34 @@ private:
 			}
 		}
 	}
+	
+	void onClickQuestLoadConfirm(TextWidget * txt) {
+		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
+			MenuPage * page = g_mainMenu->m_window->m_pages[i];
+
+			if(page->eMenuState == EDIT_QUEST_LOAD) {
+				
+				txt->m_savegame = page->m_savegame;
+				if(txt->m_savegame != SavegameHandle()) {
+					txt->m_targetMenu = MAIN;
+					ARXMenu_LoadQuest(txt->m_savegame);
+					
+					bNoMenu = true;
+					
+					if(pTextManage) {
+						pTextManage->Clear();
+					}
+					break;
+				}
+			}
+		}
+		
+		pLoadConfirm->SetCheckOff();
+		pLoadConfirm->lColor = Color::grayb(127);
+		pDeleteConfirm->SetCheckOff();
+		pDeleteConfirm->lColor = Color::grayb(127);
+	}
+	
 	
 	void onClickBack() {
 		pLoadConfirm->SetCheckOff();

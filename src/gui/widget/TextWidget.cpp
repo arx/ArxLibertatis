@@ -116,7 +116,6 @@ bool TextWidget::OnMouseDoubleClick() {
 extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
 extern TextWidget * pDeleteButton;
-extern bool bNoMenu;
 
 // true: block les zones de checks
 bool TextWidget::OnMouseClick() {
@@ -141,33 +140,6 @@ bool TextWidget::OnMouseClick() {
 	}
 	
 	switch(m_id) {
-		case BUTTON_MENUEDITQUEST_LOAD_CONFIRM: {
-			if(g_mainMenu->m_window) {
-				for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
-					MenuPage * page = g_mainMenu->m_window->m_pages[i];
-		
-					if(page->eMenuState == EDIT_QUEST_LOAD) {
-						
-						m_savegame = page->m_savegame;
-						if(m_savegame != SavegameHandle()) {
-							m_targetMenu = MAIN;
-							ARXMenu_LoadQuest(m_savegame);
-							bNoMenu=true;
-							if(pTextManage) {
-								pTextManage->Clear();
-							}
-							break;
-						}
-					}
-				}
-				
-				pLoadConfirm->SetCheckOff();
-				pLoadConfirm->lColor = Color::grayb(127);
-				pDeleteConfirm->SetCheckOff();
-				pDeleteConfirm->lColor = Color::grayb(127);
-			}
-		}
-		break;
 		// MENUSAVEQUEST
 		case BUTTON_MENUEDITQUEST_SAVE: {
 			if(g_mainMenu->m_window)
