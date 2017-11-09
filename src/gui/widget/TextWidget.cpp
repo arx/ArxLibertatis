@@ -136,25 +136,6 @@ bool TextWidget::OnMouseClick() {
 	}
 	
 	switch(m_id) {
-		// MENUSAVEQUEST
-		case BUTTON_MENUEDITQUEST_SAVE: {
-			if(g_mainMenu->m_window)
-			for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
-				MenuPage * page = g_mainMenu->m_window->m_pages[i];
-				
-				if(page->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
-					page->m_savegame = m_savegame;
-					TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
-					
-					if(me) {
-						m_targetMenu = MAIN;
-						ARXMenu_SaveQuest(me->m_text, me->m_savegame);
-						break;
-					}
-				}
-			}
-		}
-		break;
 		// Delete save from the save menu
 		case BUTTON_MENUEDITQUEST_DELETE: {
 			if(g_mainMenu->m_window) {
