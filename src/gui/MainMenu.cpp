@@ -241,7 +241,7 @@ public:
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = EDIT_QUEST_LOAD;
-			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(54)));
+			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(14)));
 			txt->SetCheckOff();
 			txt->lOldColor = txt->lColor;
 			txt->lColor = Color::grayb(127);
@@ -255,7 +255,7 @@ public:
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = MAIN;
-			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
+			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
 			txt->SetCheckOff();
 			txt->lOldColor = txt->lColor;
 			txt->lColor = Color::grayb(127);
@@ -265,7 +265,7 @@ public:
 		
 		// Back button
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 420), Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->clicked = boost::bind(&LoadMenuPage::onClickBack, this);
 			cb->m_targetMenu = EDIT_QUEST;
 			cb->SetShortCut(Keyboard::Key_Escape);
@@ -361,7 +361,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 420), Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = EDIT_QUEST;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
@@ -711,7 +711,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 420), Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->clicked = boost::bind(&VideoOptionsMenuPage::onClickedBack, this);
 			cb->m_targetMenu = OPTIONS;
 			cb->SetShortCut(Keyboard::Key_Escape);
@@ -1027,7 +1027,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 420), Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
@@ -1229,7 +1229,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 420), Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
@@ -1980,7 +1980,7 @@ void MainMenu::initWindowPages()
 	}
 	
 	{
-	LoadMenuPage * page = new LoadMenuPage(offset + Vec2f(0, -40), size);
+	LoadMenuPage * page = new LoadMenuPage(offset, size);
 	page->m_savegame = SavegameHandle();
 	page->m_rowSpacing = 5;
 	page->init();
@@ -1988,7 +1988,7 @@ void MainMenu::initWindowPages()
 	}
 	
 	{
-	SaveMenuPage * page = new SaveMenuPage(offset + Vec2f(0, -40), size);
+	SaveMenuPage * page = new SaveMenuPage(offset, size);
 	page->m_rowSpacing = 5;
 	page->init();
 	g_mainMenu->m_window->add(page);
@@ -2008,19 +2008,19 @@ void MainMenu::initWindowPages()
 	}
 	
 	{
-	VideoOptionsMenuPage * page = new VideoOptionsMenuPage(offset + Vec2f(0, -35), size);
+	VideoOptionsMenuPage * page = new VideoOptionsMenuPage(offset, size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	RenderOptionsMenuPage * page = new RenderOptionsMenuPage(offset + Vec2f(0, -35), size);
+	RenderOptionsMenuPage * page = new RenderOptionsMenuPage(offset, size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
 	
 	{
-	InterfaceOptionsMenuPage * page = new InterfaceOptionsMenuPage(offset + Vec2f(0, -35), size);
+	InterfaceOptionsMenuPage * page = new InterfaceOptionsMenuPage(offset, size);
 	page->init();
 	g_mainMenu->m_window->add(page);
 	}
