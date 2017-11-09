@@ -55,17 +55,6 @@ Widget * WidgetContainer::getAtPos(const Vec2f & mousePos) const {
 	return NULL;
 }
 
-Widget * WidgetContainer::GetZoneWithID(MenuButton _iID) {
-	
-	BOOST_FOREACH(Widget * w, m_widgets) {
-		if(Widget * widget = w->GetZoneWithID(_iID)) {
-			return widget;
-		}
-	}
-	
-	return NULL;
-}
-
 void WidgetContainer::Move(const Vec2f & offset) {
 	BOOST_FOREACH(Widget * w, m_widgets) {
 		w->Move(offset);
