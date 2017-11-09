@@ -260,7 +260,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
 			szMenuText += "   ";
-			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2f_ZERO);
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoadConfirm, this, _1);
 			txt->m_targetMenu = MAIN;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
