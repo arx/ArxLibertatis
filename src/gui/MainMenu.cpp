@@ -1890,6 +1890,12 @@ protected:
 		y = long(y + panel->m_rect.height() + RATIO_Y(3.f));
 	}
 	
+protected:
+	void resetActionKeys() {
+		config.setDefaultActionKeys();
+		ReInitActionKey();
+		bMouseAttack=false;
+	}
 };
 
 
@@ -1944,6 +1950,7 @@ public:
 		{
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 			TextWidget * txt = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText);
+			txt->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedDefault, this);
 			txt->SetPos(Vec2f((RATIO_X(m_size.x) - txt->m_rect.width())*0.5f, RATIO_Y(380)));
 			add(txt);
 		}
@@ -1961,6 +1968,10 @@ private:
 	
 	void onClickedBack(){
 		config.save();
+	}
+	
+	void onClickedDefault() {
+		resetActionKeys();
 	}
 	
 };
@@ -2020,6 +2031,7 @@ public:
 		{
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 			TextWidget * txt = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText);
+			txt->clicked = boost::bind(&ControlOptionsMenuPage2::onClickedDefault, this);
 			txt->SetPos(Vec2f((RATIO_X(m_size.x) - txt->m_rect.width())*0.5f, RATIO_Y(380)));
 			add(txt);
 		}
@@ -2027,6 +2039,10 @@ public:
 		ReInitActionKey();
 	}
 	
+private:
+	void onClickedDefault() {
+		resetActionKeys();
+	}
 };
 
 class QuitConfirmMenuPage : public MenuPage {

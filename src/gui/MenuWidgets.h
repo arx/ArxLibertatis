@@ -90,14 +90,14 @@ public:
 protected:
 	Rectf m_rect;
 	Vec2f m_size;
+	Widget * m_selected;
+	bool bMouseAttack;
 	
 private:
 	void updateTextRect(TextWidget * widget);
 	void UpdateText();
-
-	Widget * m_selected;
+	
 	bool bEdit;
-	bool bMouseAttack;
 	bool m_disableShortcuts;
 	PlatformDuration m_blinkTime;
 	bool m_blink;
