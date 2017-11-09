@@ -492,7 +492,7 @@ public:
 		// Save button
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_save");
-			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2f_ZERO);
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveConfirm, this, _1);
 			txt->m_targetMenu = MAIN;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
