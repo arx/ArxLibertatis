@@ -55,7 +55,6 @@
 #include "scene/GameSound.h"
 #include "window/RenderWindow.h"
 
-TextWidget * pDeleteConfirm = NULL;
 TextWidget * pLoadConfirm = NULL;
 TextWidget * pDeleteButton = NULL;
 TextWidget * pMenuElementApply = NULL;
@@ -178,6 +177,7 @@ public:
 	
 	LoadMenuPage()
 		: MenuPage(EDIT_QUEST_LOAD)
+		, pDeleteConfirm(NULL)
 	{}
 	
 	~LoadMenuPage() { }
@@ -281,6 +281,8 @@ public:
 	}
 	
 private:
+	TextWidget * pDeleteConfirm;
+	
 	void enableLoadDeleteButtons() {
 		pLoadConfirm->SetCheckOn();
 		pLoadConfirm->lColor = pLoadConfirm->lOldColor;
