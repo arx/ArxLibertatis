@@ -381,6 +381,7 @@ public:
 			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 			
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
+			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 			txt->setColor(Color::grayb(127));
 			txt->SetCheckOff();
@@ -399,6 +400,7 @@ public:
 			std::string text = save.name +  "   " + save.time;
 			
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text, Vec2f(20, 0));
+			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 			txt->m_savegame = SavegameHandle(i);
 			addCenter(txt);
@@ -410,6 +412,7 @@ public:
 			text << '-' << std::setfill('0') << std::setw(4) << i << '-';
 			
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
+			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 			txt->m_savegame = SavegameHandle();
 			addCenter(txt);
@@ -417,6 +420,7 @@ public:
 	
 		{
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, std::string(), Vec2f(20, 0));
+			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 			txt->m_savegame = SavegameHandle();
 			txt->SetCheckOff();
@@ -431,6 +435,33 @@ public:
 		}
 	}
 	
+private:
+	void onClickQuestSaveConfirm(TextWidget * txt) {
+		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
+			MenuPage * page = g_mainMenu->m_window->m_pages[i];
+
+			if(page->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
+				page->m_savegame = txt->m_savegame;
+				TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
+
+				if(me) {
+					me->m_savegame = txt->m_savegame;
+					
+					if(txt->m_savegame != SavegameHandle()) {
+						me->SetText(savegames[m_savegame.handleData()].name);
+						pDeleteButton->lColor = pDeleteButton->lOldColor;
+						pDeleteButton->SetCheckOn();
+					} else {
+						pDeleteButton->lColor = Color::grayb(127);
+						pDeleteButton->SetCheckOff();
+						me->SetText(getLocalised("system_menu_editquest_newsavegame"));
+					}
+					
+					page->AlignElementCenter(me);
+				}
+			}
+		}
+	}
 };
 
 class SaveConfirmMenuPage : public MenuPage {

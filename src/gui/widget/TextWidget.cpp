@@ -135,33 +135,6 @@ bool TextWidget::OnMouseClick() {
 		default: break;
 	}
 	
-	if(m_targetMenu == EDIT_QUEST_SAVE_CONFIRM) {
-		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
-			MenuPage * page = g_mainMenu->m_window->m_pages[i];
-
-			if(page->eMenuState == m_targetMenu) {
-				page->m_savegame = m_savegame;
-				TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
-
-				if(me) {
-					me->m_savegame = m_savegame;
-					
-					if(m_savegame != SavegameHandle()) {
-						me->SetText(savegames[m_savegame.handleData()].name);
-						pDeleteButton->lColor = pDeleteButton->lOldColor;
-						pDeleteButton->SetCheckOn();
-					} else {
-						pDeleteButton->lColor = Color::grayb(127);
-						pDeleteButton->SetCheckOff();
-						me->SetText(getLocalised("system_menu_editquest_newsavegame"));
-					}
-					
-					page->AlignElementCenter(me);
-				}
-			}
-		}
-	}
-	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 	
 	return false;
