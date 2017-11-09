@@ -626,9 +626,6 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 {
 	int iMouseButton = keyTouched ? 0 : GInput->getMouseButtonClicked();
 	
-	if(pInputKeyId)
-		*pInputKeyId = keyId;
-
 	if(keyTouched || (iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))) {
 		if(!keyTouched && !bMouseAttack) {
 			bMouseAttack=!bMouseAttack;
@@ -855,7 +852,7 @@ void MenuPage::Render() {
 					}
 				}
 				
-				InputKeyId inputKeyId;
+				InputKeyId inputKeyId = keyId;
 				TextWidget * widget = GetTouch(keyTouched, keyId, &inputKeyId, true);
 				
 				if(widget) {
