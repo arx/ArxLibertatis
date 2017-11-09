@@ -337,9 +337,10 @@ bool Menu2_Render() {
 
 
 
-MenuWindow::MenuWindow(const Vec2f & size)
+MenuWindow::MenuWindow()
 {
 	Vec2f windowMenuPos = Vec2f(20, 25);
+	Vec2f size = Vec2f(321, 430);
 	
 	m_pos = RATIO_2(windowMenuPos);
 	m_size = RATIO_2(size);
@@ -428,7 +429,7 @@ MENUSTATE MenuWindow::Render() {
 	return eMS;
 }
 
-MenuPage::MenuPage(const Vec2f & size, MENUSTATE _eMenuState)
+MenuPage::MenuPage(MENUSTATE _eMenuState)
 	: m_rowSpacing(10)
 	, m_savegame(0)
 	, m_selected(NULL)
@@ -438,9 +439,9 @@ MenuPage::MenuPage(const Vec2f & size, MENUSTATE _eMenuState)
 	, m_blinkTime(0)
 	, m_blink(true)
 {
-	m_size = size;
+	m_size = Vec2f(321, 430);
 	
-	Vec2f scaledSize = RATIO_2(size);
+	Vec2f scaledSize = RATIO_2(m_size);
 	m_rect = Rectf(Vec2f_ZERO, scaledSize.x, scaledSize.y);
 	
 	eMenuState=_eMenuState;
