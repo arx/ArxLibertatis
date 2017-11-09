@@ -66,7 +66,7 @@ class Font;
 class MenuPage : private boost::noncopyable {
 	
 public:
-	MenuPage(const Vec2f & size, MENUSTATE state);
+	MenuPage(MENUSTATE state);
 	virtual ~MenuPage();
 	
 	void add(Widget * widget);
@@ -112,7 +112,7 @@ private:
 	float m_fadeDistance;
 	
 public:
-	MenuWindow(const Vec2f & size);
+	MenuWindow();
 	virtual ~MenuWindow();
 	
 	void add(MenuPage * page);
