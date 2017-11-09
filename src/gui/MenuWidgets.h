@@ -112,7 +112,7 @@ private:
 	float m_fadeDistance;
 	
 public:
-	MenuWindow(const Vec2f & pos, const Vec2f & size);
+	MenuWindow(const Vec2f & size);
 	virtual ~MenuWindow();
 	
 	void add(MenuPage * page);

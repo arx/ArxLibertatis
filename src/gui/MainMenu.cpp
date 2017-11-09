@@ -1959,10 +1959,9 @@ void MainMenu::initWindowPages()
 	
 	delete g_mainMenu->m_window, g_mainMenu->m_window = NULL;
 	
-	Vec2f windowMenuPos = Vec2f(20, 25);
 	Vec2f windowMenuSize = Vec2f(321, 430);
 	
-	g_mainMenu->m_window = new MenuWindow(windowMenuPos, windowMenuSize);
+	g_mainMenu->m_window = new MenuWindow(windowMenuSize);
 	
 	Vec2f size = windowMenuSize;
 	

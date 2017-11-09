@@ -337,9 +337,11 @@ bool Menu2_Render() {
 
 
 
-MenuWindow::MenuWindow(const Vec2f & pos, const Vec2f & size)
+MenuWindow::MenuWindow(const Vec2f & size)
 {
-	m_pos = RATIO_2(pos);
+	Vec2f windowMenuPos = Vec2f(20, 25);
+	
+	m_pos = RATIO_2(windowMenuPos);
 	m_size = RATIO_2(size);
 
 	m_pages.clear();
