@@ -426,7 +426,7 @@ MENUSTATE MenuWindow::Render() {
 	return eMS;
 }
 
-MenuPage::MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE _eMenuState)
+MenuPage::MenuPage(const Vec2f & size, MENUSTATE _eMenuState)
 	: m_rowSpacing(10)
 	, m_savegame(0)
 	, m_selected(NULL)
@@ -439,7 +439,7 @@ MenuPage::MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE _eMenuState)
 	m_size = size;
 	
 	Vec2f scaledSize = RATIO_2(size);
-	m_rect = Rectf(RATIO_2(pos), scaledSize.x, scaledSize.y);
+	m_rect = Rectf(Vec2f_ZERO, scaledSize.x, scaledSize.y);
 	
 	eMenuState=_eMenuState;
 }
