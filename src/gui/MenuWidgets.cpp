@@ -433,8 +433,8 @@ MenuPage::MenuPage(MENUSTATE _eMenuState)
 	: m_rowSpacing(10)
 	, m_savegame(0)
 	, m_selected(NULL)
-	, bEdit(false)
 	, bMouseAttack(false)
+	, bEdit(false)
 	, m_disableShortcuts(false)
 	, m_blinkTime(0)
 	, m_blink(true)
@@ -871,17 +871,6 @@ void MenuPage::Render() {
 			}
 			break;
 			default:
-			{
-				if(GInput->getMouseButtonNowPressed(Mouse::Button_0)) {
-					Widget * widget = m_children.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
-					
-					if(widget == m_selected) {
-						config.setDefaultActionKeys();
-						ReInitActionKey();
-						bMouseAttack=false;
-					}
-				}
-			}
 			break;
 		}
 	}
