@@ -281,12 +281,15 @@ public:
 	}
 	
 private:
-	
-	void onClickQuestLoad(TextWidget * txt) {
+	void enableLoadDeleteButtons() {
 		pLoadConfirm->SetCheckOn();
 		pLoadConfirm->lColor = pLoadConfirm->lOldColor;
 		pDeleteConfirm->SetCheckOn();
 		pDeleteConfirm->lColor = pDeleteConfirm->lOldColor;
+	}
+	
+	void onClickQuestLoad(TextWidget * txt) {
+		enableLoadDeleteButtons();
 		
 		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
 			MenuPage * page = g_mainMenu->m_window->m_pages[i];
