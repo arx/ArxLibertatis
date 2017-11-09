@@ -511,35 +511,23 @@ public:
 	
 private:
 	void onClickedSaveConfirm(TextWidget * txt) {
-		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
-			MenuPage * page = g_mainMenu->m_window->m_pages[i];
-			
-			if(page->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
-				page->m_savegame = txt->m_savegame;
-				TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
-				
-				if(me) {
-					txt->m_targetMenu = MAIN;
-					ARXMenu_SaveQuest(me->m_text, me->m_savegame);
-					break;
-				}
-			}
+		m_savegame = txt->m_savegame;
+		TextWidget * me = (TextWidget *) m_children.m_widgets[1];
+		
+		if(me) {
+			txt->m_targetMenu = MAIN;
+			ARXMenu_SaveQuest(me->m_text, me->m_savegame);
 		}
 	}
 	
 	void onClickedSaveDelete(TextWidget * txt) {
-		for(size_t i = 0 ; i < g_mainMenu->m_window->m_pages.size(); i++) {
-			MenuPage * page = g_mainMenu->m_window->m_pages[i];
-			if(page->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
-				page->m_savegame = txt->m_savegame;
-				TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
-				if(me) {
-					txt->m_targetMenu = EDIT_QUEST_SAVE;
-					g_mainMenu->bReInitAll = true;
-					savegames.remove(me->m_savegame);
-					return;
-				}
-			}
+		m_savegame = txt->m_savegame;
+		TextWidget * me = (TextWidget *) m_children.m_widgets[1];
+		if(me) {
+			txt->m_targetMenu = EDIT_QUEST_SAVE;
+			g_mainMenu->bReInitAll = true;
+			savegames.remove(me->m_savegame);
+			return;
 		}
 	}
 };
