@@ -141,33 +141,6 @@ bool TextWidget::OnMouseClick() {
 	}
 	
 	switch(m_id) {
-		// MENULOADQUEST
-		case BUTTON_MENUEDITQUEST_LOAD: {
-			if(g_mainMenu->m_window) {
-				pLoadConfirm->SetCheckOn();
-				pLoadConfirm->lColor = pLoadConfirm->lOldColor;
-				pDeleteConfirm->SetCheckOn();
-				pDeleteConfirm->lColor = pDeleteConfirm->lOldColor;
-				
-				for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
-					MenuPage * page = g_mainMenu->m_window->m_pages[i];
-					
-					if(page->eMenuState == EDIT_QUEST_LOAD) {
-						page->m_savegame = m_savegame;
-						
-						for(size_t j = 0; j < page->m_children.m_widgets.size(); j++) {
-							Widget * widget = page->m_children.m_widgets[j];
-							
-							if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
-								((TextWidget *)widget)->bSelected = false;
-							}
-						}
-						bSelected = true;
-					}
-				}
-			}
-		}
-		break;
 		case BUTTON_MENUEDITQUEST_LOAD_CONFIRM: {
 			if(g_mainMenu->m_window) {
 				for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
