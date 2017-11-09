@@ -113,7 +113,6 @@ bool TextWidget::OnMouseDoubleClick() {
 }
 
 // TODO remove this
-extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteButton;
 
 // true: block les zones de checks
