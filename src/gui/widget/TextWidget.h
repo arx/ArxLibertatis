@@ -39,6 +39,7 @@ public:
 	bool	bSelected;
 	
 	boost::function<void(TextWidget *)> clicked;	// NOLINT
+	boost::function<void(TextWidget *)> doubleClicked;	// NOLINT
 	
 	// TODO followind fields only used for keybinds
 	bool m_isKeybind;
