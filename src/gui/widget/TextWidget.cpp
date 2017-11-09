@@ -136,25 +136,6 @@ bool TextWidget::OnMouseClick() {
 	}
 	
 	switch(m_id) {
-		// Delete save from the save menu
-		case BUTTON_MENUEDITQUEST_DELETE: {
-			if(g_mainMenu->m_window) {
-				for(size_t i = 0 ; i < g_mainMenu->m_window->m_pages.size(); i++) {
-					MenuPage * page = g_mainMenu->m_window->m_pages[i];
-					if(page->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
-						page->m_savegame = m_savegame;
-						TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
-						if(me) {
-							m_targetMenu = EDIT_QUEST_SAVE;
-							g_mainMenu->bReInitAll = true;
-							savegames.remove(me->m_savegame);
-							break;
-						}
-					}
-				}
-			}
-			break;
-		}
 		default:
 			break;
 	}
