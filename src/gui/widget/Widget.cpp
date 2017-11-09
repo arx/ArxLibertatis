@@ -78,10 +78,6 @@ Widget * Widget::IsMouseOver(const Vec2f & mousePos) {
 	return NULL;
 }
 
-Widget *Widget::GetZoneWithID(MenuButton zoneId) {
-	return (m_id == zoneId) ? this : NULL;
-}
-
 void Widget::SetShortCut(int _iShortCut) {
 	m_shortcut = _iShortCut;
 }

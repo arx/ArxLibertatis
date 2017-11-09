@@ -35,7 +35,6 @@ public:
 	void add(Widget * widget);
 	Widget * getAtPos(const Vec2f & mousePos) const;
 	
-	Widget * GetZoneWithID(MenuButton zoneId);
 	void Move(const Vec2f & offset);
 	void drawDebug();
 };
