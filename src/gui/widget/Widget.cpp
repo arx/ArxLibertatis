@@ -39,17 +39,12 @@ Widget::Widget()
 }
 
 extern TextWidget * pMenuElementApply;
-extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteButton;
 
 Widget::~Widget() {
 
 	if(this == pMenuElementApply) {
 		pMenuElementApply = NULL;
-	}
-
-	if(this == pLoadConfirm) {
-		pLoadConfirm = NULL;
 	}
 
 	if(this == pDeleteButton) {

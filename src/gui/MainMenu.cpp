@@ -55,7 +55,6 @@
 #include "scene/GameSound.h"
 #include "window/RenderWindow.h"
 
-TextWidget * pLoadConfirm = NULL;
 TextWidget * pDeleteButton = NULL;
 TextWidget * pMenuElementApply = NULL;
 
@@ -177,6 +176,7 @@ public:
 	
 	LoadMenuPage()
 		: MenuPage(EDIT_QUEST_LOAD)
+		, pLoadConfirm(NULL)
 		, pDeleteConfirm(NULL)
 	{}
 	
@@ -281,6 +281,7 @@ public:
 	}
 	
 private:
+	TextWidget * pLoadConfirm;
 	TextWidget * pDeleteConfirm;
 	
 	void enableLoadDeleteButtons() {
