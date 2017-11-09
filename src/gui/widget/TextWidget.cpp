@@ -159,30 +159,6 @@ bool TextWidget::OnMouseClick() {
 			}
 		}
 		break;
-		
-		// Delete save from the load menu
-		case BUTTON_MENUEDITQUEST_DELETE_CONFIRM: {
-			if(g_mainMenu->m_window) {
-				for(size_t i = 0 ; i < g_mainMenu->m_window->m_pages.size(); i++) {
-					MenuPage * page = g_mainMenu->m_window->m_pages[i];
-					if(page->eMenuState == EDIT_QUEST_LOAD) {
-						m_savegame = page->m_savegame;
-						if(m_savegame != SavegameHandle()) {
-							m_targetMenu = EDIT_QUEST_LOAD;
-							g_mainMenu->bReInitAll = true;
-							savegames.remove(m_savegame);
-							break;
-						}
-					}
-				}
-			}
-			pLoadConfirm->SetCheckOff();
-			pLoadConfirm->lColor = Color::grayb(127);
-			pDeleteConfirm->SetCheckOff();
-			pDeleteConfirm->lColor = Color::grayb(127);
-			break;
-		}
-			
 		// Delete save from the save menu
 		case BUTTON_MENUEDITQUEST_DELETE: {
 			if(g_mainMenu->m_window) {

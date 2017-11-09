@@ -244,6 +244,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2f_ZERO);
+			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestDelete, this, _1);
 			txt->m_targetMenu = EDIT_QUEST_LOAD;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(14)));
 			txt->SetCheckOff();
@@ -332,6 +333,25 @@ private:
 		pDeleteConfirm->lColor = Color::grayb(127);
 	}
 	
+	void onClickQuestDelete(TextWidget * txt) {
+		for(size_t i = 0 ; i < g_mainMenu->m_window->m_pages.size(); i++) {
+			MenuPage * page = g_mainMenu->m_window->m_pages[i];
+			if(page->eMenuState == EDIT_QUEST_LOAD) {
+				txt->m_savegame = page->m_savegame;
+				if(txt->m_savegame != SavegameHandle()) {
+					txt->m_targetMenu = EDIT_QUEST_LOAD;
+					g_mainMenu->bReInitAll = true;
+					savegames.remove(txt->m_savegame);
+					return;
+				}
+			}
+		}
+		
+		pLoadConfirm->SetCheckOff();
+		pLoadConfirm->lColor = Color::grayb(127);
+		pDeleteConfirm->SetCheckOff();
+		pDeleteConfirm->lColor = Color::grayb(127);
+	}
 	
 	void onClickBack() {
 		pLoadConfirm->SetCheckOff();
