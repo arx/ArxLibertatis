@@ -482,6 +482,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, Vec2f_ZERO);
+			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveDelete, this, _1);
 			txt->m_targetMenu = EDIT_QUEST_SAVE;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(5)));
 			txt->lOldColor = txt->lColor;
@@ -521,6 +522,22 @@ private:
 					txt->m_targetMenu = MAIN;
 					ARXMenu_SaveQuest(me->m_text, me->m_savegame);
 					break;
+				}
+			}
+		}
+	}
+	
+	void onClickedSaveDelete(TextWidget * txt) {
+		for(size_t i = 0 ; i < g_mainMenu->m_window->m_pages.size(); i++) {
+			MenuPage * page = g_mainMenu->m_window->m_pages[i];
+			if(page->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
+				page->m_savegame = txt->m_savegame;
+				TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
+				if(me) {
+					txt->m_targetMenu = EDIT_QUEST_SAVE;
+					g_mainMenu->bReInitAll = true;
+					savegames.remove(me->m_savegame);
+					return;
 				}
 			}
 		}
