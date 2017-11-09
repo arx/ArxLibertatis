@@ -1949,7 +1949,7 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
-			TextWidget * txt = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText);
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
 			txt->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedDefault, this);
 			txt->SetPos(Vec2f((RATIO_X(m_size.x) - txt->m_rect.width())*0.5f, RATIO_Y(380)));
 			add(txt);
@@ -2030,7 +2030,7 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
-			TextWidget * txt = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText);
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
 			txt->clicked = boost::bind(&ControlOptionsMenuPage2::onClickedDefault, this);
 			txt->SetPos(Vec2f((RATIO_X(m_size.x) - txt->m_rect.width())*0.5f, RATIO_Y(380)));
 			add(txt);
