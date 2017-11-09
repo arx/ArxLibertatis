@@ -53,8 +53,6 @@ SliderWidget::SliderWidget(const Vec2f & unscaled)
 	m_rect.bottom = pos.y + std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
 	
 	pRightButton->Move(Vec2f(pLeftButton->m_rect.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x), 0));
-
-	pRef = this;
 }
 
 SliderWidget::~SliderWidget() {

@@ -32,7 +32,6 @@ ButtonWidget::ButtonWidget(const Vec2f & pos, const Vec2f & size, const char * t
 	m_pos = pos;
 	m_size = size;
 	
-	pRef = this; //TODO remove this
 	m_id = BUTTON_INVALID; //TODO remove this
 	
 	m_texture = TextureContainer::Load(texturePath);

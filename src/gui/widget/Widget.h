@@ -93,7 +93,6 @@ class Widget : private boost::noncopyable {
 	
 public:
 	Rectf m_rect;
-	Widget *	pRef;
 	
 	MenuButton m_id;
 	
@@ -128,7 +127,7 @@ public:
 	
 	bool getCheck();
 	
-	virtual Widget * IsMouseOver(const Vec2f & mousePos) const;
+	virtual Widget * IsMouseOver(const Vec2f & mousePos);
 	
 	virtual WidgetType type() const = 0;
 	
