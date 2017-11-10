@@ -49,8 +49,12 @@ public:
 	void onClickedNewQuest();
 	void onClickedCredits();
 	
-	MENUSTATE Update();
+	void Update();
 	void Render();
+	
+	Widget * selected() {
+		return m_selected;
+	}
 	
 private:
 	TextureContainer * m_background;
