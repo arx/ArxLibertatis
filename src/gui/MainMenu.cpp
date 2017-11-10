@@ -562,7 +562,7 @@ class OptionsMenuPage : public MenuPage {
 public:
 	
 	OptionsMenuPage()
-		: MenuPage(OPTIONS)
+		: MenuPage(Page_Options)
 	{}
 	
 	~OptionsMenuPage() { }
@@ -838,7 +838,7 @@ public:
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->clicked = boost::bind(&VideoOptionsMenuPage::onClickedBack, this);
-			cb->m_targetMenu = OPTIONS;
+			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
@@ -1153,7 +1153,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->m_targetMenu = OPTIONS;
+			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
@@ -1355,7 +1355,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->m_targetMenu = OPTIONS;
+			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
@@ -1558,7 +1558,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->m_targetMenu = OPTIONS;
+			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
@@ -1778,7 +1778,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->m_targetMenu = OPTIONS;
+			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
@@ -2244,7 +2244,7 @@ void MainMenu::init()
 	{
 	std::string szMenuText = getLocalised("system_menus_main_options");
 	TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, pos);
-	txt->m_targetMenu = OPTIONS;
+	txt->m_targetMenu = Page_Options;
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;

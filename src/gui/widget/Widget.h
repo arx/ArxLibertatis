@@ -62,7 +62,7 @@ enum MENUSTATE
 	Page_Load,
 	Page_Save,
 	Page_SaveConfirm,
-	OPTIONS,
+	Page_Options,
 	OPTIONS_VIDEO,
 	OPTIONS_RENDER,
 	OPTIONS_INTERFACE,
