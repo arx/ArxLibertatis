@@ -580,7 +580,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_render", "Render settings");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->m_targetMenu = OPTIONS_RENDER;
+			txt->m_targetMenu = Page_OptionsRender;
 			addCenter(txt, true);
 		}
 		
@@ -961,7 +961,7 @@ class RenderOptionsMenuPage : public MenuPage {
 public:
 	
 	RenderOptionsMenuPage()
-		: MenuPage(OPTIONS_RENDER)
+		: MenuPage(Page_OptionsRender)
 		, m_alphaCutoutAntialiasingCycleText(NULL)
 	{ }
 	
