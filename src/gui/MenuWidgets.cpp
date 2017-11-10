@@ -710,12 +710,9 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 	
 	// Check if mouse over
 	if(!bEdit) {
-		m_selected=NULL;
-		Widget * widget = m_children.getAtPos(Vec2f(GInput->getMousePosition()));
+		m_selected = m_children.getAtPos(Vec2f(GInput->getMousePosition()));
 		
-		if(widget) {
-			m_selected = widget;
-			
+		if(m_selected) {
 			if(GInput->getMouseButtonDoubleClick(Mouse::Button_0)) {
 				MENUSTATE e = m_selected->m_targetMenu;
 				bEdit = m_selected->OnMouseDoubleClick();
