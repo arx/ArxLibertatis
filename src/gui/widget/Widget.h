@@ -71,7 +71,7 @@ enum MENUSTATE
 	Page_OptionsInputCustomizeKeys1,
 	Page_OptionsInputCustomizeKeys2,
 	CREDITS,
-	QUIT,
+	Page_QuitConfirm,
 	NOP
 };
 

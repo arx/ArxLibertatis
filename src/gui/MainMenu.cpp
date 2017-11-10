@@ -2051,7 +2051,7 @@ class QuitConfirmMenuPage : public MenuPage {
 public:
 	
 	QuitConfirmMenuPage()
-		: MenuPage(QUIT)
+		: MenuPage(Page_QuitConfirm)
 	{}
 	
 	~QuitConfirmMenuPage() { }
@@ -2259,7 +2259,7 @@ void MainMenu::init()
 	{
 	std::string szMenuText = getLocalised("system_menus_main_quit");
 	TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, pos);
-	txt->m_targetMenu = QUIT;
+	txt->m_targetMenu = Page_QuitConfirm;
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
