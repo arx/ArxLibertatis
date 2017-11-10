@@ -587,7 +587,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_interface", "Interface settings");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->m_targetMenu = OPTIONS_INTERFACE;
+			txt->m_targetMenu = Page_OptionsInterface;
 			addCenter(txt, true);
 		}
 		
@@ -1239,7 +1239,7 @@ class InterfaceOptionsMenuPage : public MenuPage {
 public:
 	
 	InterfaceOptionsMenuPage()
-		: MenuPage(OPTIONS_INTERFACE)
+		: MenuPage(Page_OptionsInterface)
 	{ }
 	
 	~InterfaceOptionsMenuPage() { }
