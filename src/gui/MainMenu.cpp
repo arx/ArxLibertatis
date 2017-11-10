@@ -211,7 +211,7 @@ public:
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->clicked = boost::bind(&LoadMenuPage::onClickBack, this);
-			cb->m_targetMenu = EDIT_QUEST;
+			cb->m_targetMenu = Page_LoadOrSave;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
@@ -372,7 +372,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->m_targetMenu = EDIT_QUEST;
+			cb->m_targetMenu = Page_LoadOrSave;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
@@ -492,7 +492,7 @@ class ChooseLoadOrSaveMenuPage : public MenuPage {
 public:
 	
 	ChooseLoadOrSaveMenuPage()
-		: MenuPage(EDIT_QUEST)
+		: MenuPage(Page_LoadOrSave)
 	{}
 	
 	~ChooseLoadOrSaveMenuPage() { }
@@ -2237,7 +2237,7 @@ void MainMenu::init()
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest");
 	TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, pos);
-	txt->m_targetMenu = EDIT_QUEST;
+	txt->m_targetMenu = Page_LoadOrSave;
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
