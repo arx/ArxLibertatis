@@ -477,6 +477,7 @@ public:
 	
 	SaveConfirmMenuPage()
 		: MenuPage(EDIT_QUEST_SAVE_CONFIRM)
+		, m_textbox(NULL)
 	{}
 	
 	~SaveConfirmMenuPage() { }
@@ -496,6 +497,7 @@ public:
 			txt->eState=EDIT;
 			txt->ePlace=CENTER;
 			addCenter(txt, true);
+			m_textbox = txt;
 		}
 		
 		// Delete button
@@ -530,25 +532,22 @@ public:
 	}
 	
 private:
+	TextWidget * m_textbox;
+	
 	void onClickedSaveConfirm(TextWidget * txt) {
 		m_savegame = txt->m_savegame;
-		TextWidget * me = (TextWidget *) m_children.m_widgets[1];
 		
-		if(me) {
-			txt->m_targetMenu = MAIN;
-			ARXMenu_SaveQuest(me->m_text, me->m_savegame);
-		}
+		txt->m_targetMenu = MAIN;
+		ARXMenu_SaveQuest(m_textbox->m_text, m_textbox->m_savegame);
 	}
 	
 	void onClickedSaveDelete(TextWidget * txt) {
 		m_savegame = txt->m_savegame;
-		TextWidget * me = (TextWidget *) m_children.m_widgets[1];
-		if(me) {
-			txt->m_targetMenu = EDIT_QUEST_SAVE;
-			g_mainMenu->bReInitAll = true;
-			savegames.remove(me->m_savegame);
-			return;
-		}
+		
+		txt->m_targetMenu = EDIT_QUEST_SAVE;
+		g_mainMenu->bReInitAll = true;
+		savegames.remove(m_textbox->m_savegame);
+		return;
 	}
 };
 
