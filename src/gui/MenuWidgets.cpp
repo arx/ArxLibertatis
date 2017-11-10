@@ -168,7 +168,7 @@ bool ARX_SlotLoad(SavegameHandle slotIndex) {
 
 bool MENU_NoActiveWindow() {
 	
-	if(!g_mainMenu->m_window || g_mainMenu->m_window->currentPageId() == MAIN) {
+	if(!g_mainMenu->m_window || g_mainMenu->m_window->currentPageId() == Page_None) {
 		return true;
 	}
 	
@@ -281,7 +281,7 @@ bool Menu2_Render() {
 	g_mainMenu->Render();
 	
 	if(g_mainMenu->m_window)
-	if(   (g_mainMenu->m_window->currentPageId() != MAIN && g_mainMenu->m_window->currentPageId() != Page_NewQuestConfirm && g_mainMenu->m_window->currentPageId() != CREDITS)
+	if(   (g_mainMenu->m_window->currentPageId() != Page_None && g_mainMenu->m_window->currentPageId() != Page_NewQuestConfirm && g_mainMenu->m_window->currentPageId() != CREDITS)
 	   || (g_mainMenu->m_window->currentPageId() == Page_NewQuestConfirm && g_canResumeGame)
 	) {
 		if(!bScroll) {
@@ -721,7 +721,7 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 				bEdit = m_selected->OnMouseDoubleClick();
 				
 				if(m_selected->m_id == BUTTON_MENUEDITQUEST_LOAD)
-					return MAIN;
+					return Page_None;
 				
 				if(bEdit)
 					return m_selected->m_targetMenu;
