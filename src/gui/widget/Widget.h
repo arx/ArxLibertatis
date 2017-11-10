@@ -59,7 +59,7 @@ enum MENUSTATE
 	RESUME_GAME,
 	NEW_QUEST,
 	Page_LoadOrSave,
-	EDIT_QUEST_LOAD,
+	Page_Load,
 	Page_Save,
 	Page_SaveConfirm,
 	OPTIONS,
