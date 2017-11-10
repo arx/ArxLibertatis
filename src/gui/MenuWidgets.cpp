@@ -281,8 +281,8 @@ bool Menu2_Render() {
 	g_mainMenu->Render();
 	
 	if(g_mainMenu->m_window)
-	if(   (g_mainMenu->m_window->currentPageId() != MAIN && g_mainMenu->m_window->currentPageId() != NEW_QUEST && g_mainMenu->m_window->currentPageId() != CREDITS)
-	   || (g_mainMenu->m_window->currentPageId() == NEW_QUEST && g_canResumeGame)
+	if(   (g_mainMenu->m_window->currentPageId() != MAIN && g_mainMenu->m_window->currentPageId() != Page_NewQuestConfirm && g_mainMenu->m_window->currentPageId() != CREDITS)
+	   || (g_mainMenu->m_window->currentPageId() == Page_NewQuestConfirm && g_canResumeGame)
 	) {
 		if(!bScroll) {
 			g_mainMenu->m_window->fAngle=90.f;

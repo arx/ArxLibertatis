@@ -57,7 +57,7 @@ enum MENUSTATE
 {
 	MAIN,
 	RESUME_GAME,
-	NEW_QUEST,
+	Page_NewQuestConfirm,
 	Page_LoadOrSave,
 	Page_Load,
 	Page_Save,
