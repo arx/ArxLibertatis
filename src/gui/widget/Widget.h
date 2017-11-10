@@ -68,7 +68,7 @@ enum MENUSTATE
 	Page_OptionsInterface,
 	Page_OptionsAudio,
 	Page_OptionsInput,
-	OPTIONS_INPUT_CUSTOMIZE_KEYS_1,
+	Page_OptionsInputCustomizeKeys1,
 	OPTIONS_INPUT_CUSTOMIZE_KEYS_2,
 	CREDITS,
 	QUIT,

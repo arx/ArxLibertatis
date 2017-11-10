@@ -1630,7 +1630,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_input_customize_controls");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
+			txt->m_targetMenu = Page_OptionsInputCustomizeKeys1;
 			addCenter(txt);
 		}
 		
@@ -1905,7 +1905,7 @@ class ControlOptionsMenuPage1 : public ControlOptionsPage {
 public:
 	
 	ControlOptionsMenuPage1()
-		: ControlOptionsPage(OPTIONS_INPUT_CUSTOMIZE_KEYS_1)
+		: ControlOptionsPage(Page_OptionsInputCustomizeKeys1)
 	{}
 	
 	~ControlOptionsMenuPage1() { }
@@ -2024,7 +2024,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
+			cb->m_targetMenu = Page_OptionsInputCustomizeKeys1;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
