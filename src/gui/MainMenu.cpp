@@ -573,7 +573,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_video");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&OptionsMenuPage::onClickedVideo, this);
-			txt->m_targetMenu = OPTIONS_VIDEO;
+			txt->m_targetMenu = Page_OptionsVideo;
 			addCenter(txt, true);
 		}
 		
@@ -631,7 +631,7 @@ class VideoOptionsMenuPage : public MenuPage {
 public:
 	
 	VideoOptionsMenuPage()
-		: MenuPage(OPTIONS_VIDEO)
+		: MenuPage(Page_OptionsVideo)
 		, m_gammaSlider(NULL)
 		, m_minimizeOnFocusLostCheckbox(NULL)
 	{
