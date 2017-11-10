@@ -121,9 +121,16 @@ public:
 	
 	std::vector<MenuPage *>	m_pages;
 	float				fAngle;
-	MENUSTATE			m_currentPageId;
+	
+	MENUSTATE currentPageId() {
+		return m_currentPageId;
+	}
+	void setCurrentPageId(MENUSTATE id) {
+		m_currentPageId = id;
+	}
 	
 private:
+	MENUSTATE m_currentPageId;
 	TextureContainer * m_background;
 	TextureContainer * m_border;
 };
