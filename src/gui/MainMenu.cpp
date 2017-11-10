@@ -2298,7 +2298,7 @@ void MainMenu::onClickedCredits() {
 }
 
 
-MENUSTATE MainMenu::Update() {
+void MainMenu::Update() {
 	
 	if(m_resumeGame) {
 		if(g_canResumeGame) {
@@ -2311,13 +2311,6 @@ MENUSTATE MainMenu::Update() {
 	}
 	
 	m_selected = m_widgets->getAtPos(Vec2f(GInput->getMousePosition()));
-	
-	if(m_selected && GInput->getMouseButton(Mouse::Button_0)) {
-		m_selected->OnMouseClick();
-		return m_selected->m_targetMenu;
-	}
-	
-	return NOP;
 }
 
 // TODO remove this

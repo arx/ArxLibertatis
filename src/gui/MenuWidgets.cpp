@@ -249,7 +249,14 @@ bool Menu2_Render() {
 
 	bool bScroll=true;
 	
-	MENUSTATE requestedMenuState = g_mainMenu->Update();
+	g_mainMenu->Update();
+	
+	MENUSTATE requestedMenuState = NOP;
+	
+	if(g_mainMenu->selected() && GInput->getMouseButton(Mouse::Button_0)) {
+		g_mainMenu->selected()->OnMouseClick();
+		requestedMenuState = g_mainMenu->selected()->m_targetMenu;
+	}
 	
 	if(eOldMenuState != NOP) {
 		requestedMenuState=eOldMenuState;
