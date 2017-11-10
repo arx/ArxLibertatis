@@ -60,7 +60,7 @@ enum MENUSTATE
 	NEW_QUEST,
 	Page_LoadOrSave,
 	EDIT_QUEST_LOAD,
-	EDIT_QUEST_SAVE,
+	Page_Save,
 	Page_SaveConfirm,
 	OPTIONS,
 	OPTIONS_VIDEO,
