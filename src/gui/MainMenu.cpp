@@ -171,7 +171,7 @@ public:
 		
 		{
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, std::string(), Vec2f(20, 0));
-			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
+			txt->m_targetMenu = Page_SaveConfirm;
 			txt->SetCheckOff();
 			txt->m_savegame = SavegameHandle();
 			addCenter(txt);
@@ -325,7 +325,7 @@ public:
 			
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
-			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
+			txt->m_targetMenu = Page_SaveConfirm;
 			txt->setColor(Color::grayb(127));
 			txt->SetCheckOff();
 			txt->m_savegame = SavegameHandle(i);
@@ -344,7 +344,7 @@ public:
 			
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text, Vec2f(20, 0));
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
-			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
+			txt->m_targetMenu = Page_SaveConfirm;
 			txt->m_savegame = SavegameHandle(i);
 			addCenter(txt);
 		}
@@ -356,7 +356,7 @@ public:
 			
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
-			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
+			txt->m_targetMenu = Page_SaveConfirm;
 			txt->m_savegame = SavegameHandle();
 			addCenter(txt);
 		}
@@ -364,7 +364,7 @@ public:
 		{
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, std::string(), Vec2f(20, 0));
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
-			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
+			txt->m_targetMenu = Page_SaveConfirm;
 			txt->m_savegame = SavegameHandle();
 			txt->SetCheckOff();
 			addCenter(txt);
@@ -383,7 +383,7 @@ private:
 		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
 			MenuPage * page = g_mainMenu->m_window->m_pages[i];
 
-			if(page->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
+			if(page->eMenuState == Page_SaveConfirm) {
 				page->m_savegame = txt->m_savegame;
 				TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
 
@@ -412,7 +412,7 @@ class SaveConfirmMenuPage : public MenuPage {
 public:
 	
 	SaveConfirmMenuPage()
-		: MenuPage(EDIT_QUEST_SAVE_CONFIRM)
+		: MenuPage(Page_SaveConfirm)
 		, m_textbox(NULL)
 	{}
 	
