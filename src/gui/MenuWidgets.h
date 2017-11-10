@@ -125,12 +125,12 @@ public:
 	MENUSTATE currentPageId() {
 		return m_currentPageId;
 	}
-	void setCurrentPageId(MENUSTATE id) {
-		m_currentPageId = id;
-	}
+	void setCurrentPageId(MENUSTATE id);
 	
 private:
 	MENUSTATE m_currentPageId;
+	MenuPage * m_currentPage;
+	
 	TextureContainer * m_background;
 	TextureContainer * m_border;
 };

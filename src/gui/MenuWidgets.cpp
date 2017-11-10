@@ -397,13 +397,8 @@ MENUSTATE MenuWindow::Render() {
 	
 	MENUSTATE eMS=NOP;
 	
-	BOOST_FOREACH(MenuPage * page, m_pages) {
-		if(m_currentPageId == page->eMenuState) {
-			eMS = page->Update(m_pos);
-			
-			if(eMS != NOP)
-				break;
-		}
+	if(m_currentPage) {
+		eMS = m_currentPage->Update(m_pos);
 	}
 	
 	// Draw backgound and border
@@ -416,17 +411,14 @@ MENUSTATE MenuWindow::Render() {
 	EERIEDrawBitmap(Rectf(m_pos, RATIO_X(m_border->m_size.x), RATIO_Y(m_border->m_size.y)),
 	                0, m_border, Color::white);
 	
-	BOOST_FOREACH(MenuPage * page, m_pages) {
-		if(m_currentPageId == page->eMenuState) {
-			page->Render();
-			
-			if(g_debugInfo == InfoPanelGuiDebug)
-				page->drawDebug();
+	if(m_currentPage) {
+		m_currentPage->Render();
+		
+		if(g_debugInfo == InfoPanelGuiDebug)
+			m_currentPage->drawDebug();
 
-			if(eMS == NOP)
-				eMS = page->checkShortcuts();
-			break;
-		}
+		if(eMS == NOP)
+			eMS = m_currentPage->checkShortcuts();
 	}
 	
 	if(eMS != NOP) {
@@ -434,6 +426,17 @@ MENUSTATE MenuWindow::Render() {
 	}
 	
 	return eMS;
+}
+
+void MenuWindow::setCurrentPageId(MENUSTATE id) {
+	m_currentPageId = id;
+	
+	m_currentPage = NULL;
+	BOOST_FOREACH(MenuPage * page, m_pages) {
+		if(id == page->eMenuState) {
+			m_currentPage = page;
+		}
+	}
 }
 
 MenuPage::MenuPage(MENUSTATE _eMenuState)
