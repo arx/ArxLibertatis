@@ -58,7 +58,7 @@ public:
 	void SetText(const std::string & _pText);
 	void RenderMouseOver();
 	
-	bool OnMouseDoubleClick();
+	void OnMouseDoubleClick();
 	
 	virtual WidgetType type() const {
 		return WidgetType_Text;

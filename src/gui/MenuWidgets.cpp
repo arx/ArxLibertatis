@@ -718,7 +718,15 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 		if(m_selected) {
 			if(GInput->getMouseButtonDoubleClick(Mouse::Button_0)) {
 				MENUSTATE e = m_selected->m_targetMenu;
-				bEdit = m_selected->OnMouseDoubleClick();
+				m_selected->OnMouseDoubleClick();
+				
+				switch(m_selected->m_id) {
+				case BUTTON_MENUEDITQUEST_LOAD:
+					bEdit = true;
+					break;
+				default:
+					bEdit = false;
+				}
 				
 				if(m_selected->m_id == BUTTON_MENUEDITQUEST_LOAD)
 					return Page_None;
@@ -745,7 +753,15 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 				m_selected = widget;
 				
 				if(GInput->getMouseButtonDoubleClick(Mouse::Button_0)) {
-					bEdit = m_selected->OnMouseDoubleClick();
+					m_selected->OnMouseDoubleClick();
+					
+					switch(m_selected->m_id) {
+					case BUTTON_MENUEDITQUEST_LOAD:
+						bEdit = true;
+						break;
+					default:
+						bEdit = false;
+					}
 					
 					if(bEdit)
 						return m_selected->m_targetMenu;

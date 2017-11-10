@@ -107,7 +107,7 @@ public:
 	virtual void Render() = 0;
 	virtual void RenderMouseOver() { }
 	virtual void EmptyFunction() { }
-	virtual bool OnMouseDoubleClick() { return false; }
+	virtual void OnMouseDoubleClick() { }
 	
 	void SetShortCut(int _iShortCut);
 	

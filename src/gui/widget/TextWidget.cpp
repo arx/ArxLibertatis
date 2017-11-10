@@ -80,20 +80,11 @@ void TextWidget::Update() {
 
 extern MainMenu *g_mainMenu;
 
-bool TextWidget::OnMouseDoubleClick() {
+void TextWidget::OnMouseDoubleClick() {
 	
 	if(doubleClicked) {
 		doubleClicked(this);
 	}
-	
-	switch(m_id) {
-	case BUTTON_MENUEDITQUEST_LOAD:
-		return true;
-	default:
-		return false;
-	}
-
-	return false;
 }
 
 // TODO remove this
