@@ -55,7 +55,7 @@ enum ELEMPOS
 
 enum MENUSTATE
 {
-	MAIN,
+	Page_None,
 	RESUME_GAME,
 	Page_NewQuestConfirm,
 	Page_LoadOrSave,

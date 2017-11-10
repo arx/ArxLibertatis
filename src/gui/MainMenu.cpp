@@ -96,7 +96,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_no");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(10, 380));
-			txt->m_targetMenu = MAIN;
+			txt->m_targetMenu = Page_None;
 			txt->SetShortCut(Keyboard::Key_Escape);
 			add(txt);
 		}
@@ -198,7 +198,7 @@ public:
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoadConfirm, this, _1);
-			txt->m_targetMenu = MAIN;
+			txt->m_targetMenu = Page_None;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
 			txt->SetCheckOff();
 			txt->lOldColor = txt->lColor;
@@ -260,7 +260,7 @@ private:
 				
 		txt->m_savegame = m_savegame;
 		if(txt->m_savegame != SavegameHandle()) {
-			txt->m_targetMenu = MAIN;
+			txt->m_targetMenu = Page_None;
 			ARXMenu_LoadQuest(txt->m_savegame);
 			
 			bNoMenu = true;
@@ -453,7 +453,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_main_editquest_save");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveConfirm, this, _1);
-			txt->m_targetMenu = MAIN;
+			txt->m_targetMenu = Page_None;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
 			add(txt);
 		}
@@ -473,7 +473,7 @@ private:
 	void onClickedSaveConfirm(TextWidget * txt) {
 		m_savegame = txt->m_savegame;
 		
-		txt->m_targetMenu = MAIN;
+		txt->m_targetMenu = Page_None;
 		ARXMenu_SaveQuest(m_textbox->m_text, m_textbox->m_savegame);
 	}
 	
@@ -522,7 +522,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->m_targetMenu = MAIN;
+			cb->m_targetMenu = Page_None;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
@@ -607,7 +607,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->m_targetMenu = MAIN;
+			cb->m_targetMenu = Page_None;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
@@ -2078,7 +2078,7 @@ public:
 		
 		{
 			TextWidget * no = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_no"), Vec2f(10, 380));
-			no->m_targetMenu = MAIN;
+			no->m_targetMenu = Page_None;
 			no->SetShortCut(Keyboard::Key_Escape);
 			add(no);
 		}
