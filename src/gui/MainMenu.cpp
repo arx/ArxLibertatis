@@ -104,70 +104,6 @@ public:
 	
 };
 
-class ChooseLoadOrSaveMenuPage : public MenuPage {
-	
-public:
-	
-	ChooseLoadOrSaveMenuPage()
-		: MenuPage(EDIT_QUEST)
-	{}
-	
-	~ChooseLoadOrSaveMenuPage() { }
-	
-	void init() {
-		
-		{
-			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->clicked = boost::bind(&ChooseLoadOrSaveMenuPage::onClickLoad, this);
-			txt->m_targetMenu = EDIT_QUEST_LOAD;
-			txt->m_savegame = SavegameHandle();
-			addCenter(txt, true);
-		}
-		
-		{
-			std::string szMenuText = getLocalised( "system_menus_main_editquest_save");
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->m_targetMenu = EDIT_QUEST_SAVE;
-			
-			if(!g_canResumeGame) {
-				txt->SetCheckOff();
-				txt->lColor = Color(127, 127, 127);
-			}
-			addCenter(txt, true);
-		}
-		
-		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->m_targetMenu = MAIN;
-			cb->SetShortCut(Keyboard::Key_Escape);
-			add(cb);
-		}
-	}
-	
-private:
-	
-	void onClickLoad() {
-		if(g_mainMenu->m_window)
-		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
-			MenuPage * page = g_mainMenu->m_window->m_pages[i];
-			
-			if(page->eMenuState == EDIT_QUEST_LOAD) {
-				page->m_savegame = m_savegame;
-				
-				for(size_t j = 0; j < page->m_children.m_widgets.size(); j++) {
-					Widget * widget = page->m_children.m_widgets[j];
-					
-					if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
-						((TextWidget *)widget)->bSelected = false;
-					}
-				}
-			}
-		}
-	}
-	
-};
-
 extern bool bNoMenu;
 
 class LoadMenuPage : public MenuPage {
@@ -550,6 +486,72 @@ private:
 		return;
 	}
 };
+
+class ChooseLoadOrSaveMenuPage : public MenuPage {
+	
+public:
+	
+	ChooseLoadOrSaveMenuPage()
+		: MenuPage(EDIT_QUEST)
+	{}
+	
+	~ChooseLoadOrSaveMenuPage() { }
+	
+	void init() {
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
+			txt->clicked = boost::bind(&ChooseLoadOrSaveMenuPage::onClickLoad, this);
+			txt->m_targetMenu = EDIT_QUEST_LOAD;
+			txt->m_savegame = SavegameHandle();
+			addCenter(txt, true);
+		}
+		
+		{
+			std::string szMenuText = getLocalised( "system_menus_main_editquest_save");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
+			txt->m_targetMenu = EDIT_QUEST_SAVE;
+			
+			if(!g_canResumeGame) {
+				txt->SetCheckOff();
+				txt->lColor = Color(127, 127, 127);
+			}
+			addCenter(txt, true);
+		}
+		
+		{
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
+			cb->m_targetMenu = MAIN;
+			cb->SetShortCut(Keyboard::Key_Escape);
+			add(cb);
+		}
+	}
+	
+private:
+	
+	void onClickLoad() {
+		if(g_mainMenu->m_window)
+		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
+			MenuPage * page = g_mainMenu->m_window->m_pages[i];
+			
+			if(page->eMenuState == EDIT_QUEST_LOAD) {
+				page->m_savegame = m_savegame;
+				
+				for(size_t j = 0; j < page->m_children.m_widgets.size(); j++) {
+					Widget * widget = page->m_children.m_widgets[j];
+					
+					if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
+						((TextWidget *)widget)->bSelected = false;
+					}
+				}
+			}
+		}
+	}
+	
+};
+
+
 
 int newWidth;
 int newHeight;
