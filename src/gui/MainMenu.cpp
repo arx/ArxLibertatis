@@ -65,7 +65,7 @@ class NewQuestMenuPage : public MenuPage {
 public:
 	
 	NewQuestMenuPage()
-		: MenuPage(NEW_QUEST)
+		: MenuPage(Page_NewQuestConfirm)
 	{}
 	
 	~NewQuestMenuPage() { }
@@ -2230,7 +2230,7 @@ void MainMenu::init()
 	std::string szMenuText = getLocalised("system_menus_main_newquest");
 	TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, pos);
 	txt->clicked = boost::bind(&MainMenu::onClickedNewQuest, this);
-	txt->m_targetMenu = NEW_QUEST;
+	txt->m_targetMenu = Page_NewQuestConfirm;
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
