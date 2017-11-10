@@ -601,7 +601,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_input");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->m_targetMenu = OPTIONS_INPUT;
+			txt->m_targetMenu = Page_OptionsInput;
 			addCenter(txt, true);
 		}
 		
@@ -1620,7 +1620,7 @@ class InputOptionsMenuPage : public MenuPage {
 public:
 	
 	InputOptionsMenuPage()
-		: MenuPage(OPTIONS_INPUT)
+		: MenuPage(Page_OptionsInput)
 	{}
 	
 	~InputOptionsMenuPage() { }
@@ -1942,7 +1942,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->m_targetMenu = OPTIONS_INPUT;
+			cb->m_targetMenu = Page_OptionsInput;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedBack, this);
 			add(cb);
