@@ -296,7 +296,7 @@ class SaveMenuPage : public MenuPage {
 public:
 	
 	SaveMenuPage()
-		: MenuPage(EDIT_QUEST_SAVE)
+		: MenuPage(Page_Save)
 	{}
 	
 	~SaveMenuPage() { }
@@ -441,7 +441,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveDelete, this, _1);
-			txt->m_targetMenu = EDIT_QUEST_SAVE;
+			txt->m_targetMenu = Page_Save;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(5)));
 			txt->lOldColor = txt->lColor;
 			add(txt);
@@ -461,7 +461,7 @@ public:
 		// Back button
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->m_targetMenu = EDIT_QUEST_SAVE;
+			cb->m_targetMenu = Page_Save;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
@@ -480,7 +480,7 @@ private:
 	void onClickedSaveDelete(TextWidget * txt) {
 		m_savegame = txt->m_savegame;
 		
-		txt->m_targetMenu = EDIT_QUEST_SAVE;
+		txt->m_targetMenu = Page_Save;
 		g_mainMenu->bReInitAll = true;
 		savegames.remove(m_textbox->m_savegame);
 		return;
@@ -511,7 +511,7 @@ public:
 		{
 			std::string szMenuText = getLocalised( "system_menus_main_editquest_save");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->m_targetMenu = EDIT_QUEST_SAVE;
+			txt->m_targetMenu = Page_Save;
 			
 			if(!g_canResumeGame) {
 				txt->SetCheckOff();
