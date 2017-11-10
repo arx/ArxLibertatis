@@ -66,7 +66,7 @@ enum MENUSTATE
 	Page_OptionsVideo,
 	Page_OptionsRender,
 	Page_OptionsInterface,
-	OPTIONS_AUDIO,
+	Page_OptionsAudio,
 	OPTIONS_INPUT,
 	OPTIONS_INPUT_CUSTOMIZE_KEYS_1,
 	OPTIONS_INPUT_CUSTOMIZE_KEYS_2,

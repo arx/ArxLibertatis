@@ -594,7 +594,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_audio");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->m_targetMenu = OPTIONS_AUDIO;
+			txt->m_targetMenu = Page_OptionsAudio;
 			addCenter(txt, true);
 		}
 		
@@ -1405,7 +1405,7 @@ class AudioOptionsMenuPage : public MenuPage {
 public:
 	
 	AudioOptionsMenuPage()
-		: MenuPage(OPTIONS_AUDIO)
+		: MenuPage(Page_OptionsAudio)
 	{}
 	
 	~AudioOptionsMenuPage() { }
