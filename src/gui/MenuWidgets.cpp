@@ -168,7 +168,7 @@ bool ARX_SlotLoad(SavegameHandle slotIndex) {
 
 bool MENU_NoActiveWindow() {
 	
-	if(!g_mainMenu->m_window || g_mainMenu->m_window->m_currentPageId == MAIN) {
+	if(!g_mainMenu->m_window || g_mainMenu->m_window->currentPageId() == MAIN) {
 		return true;
 	}
 	
@@ -275,18 +275,18 @@ bool Menu2_Render() {
 	} else if(requestedMenuState != NOP) {
 		g_mainMenu->eOldMenuState = requestedMenuState;
 		g_mainMenu->initWindowPages();
-		g_mainMenu->m_window->m_currentPageId = requestedMenuState;
+		g_mainMenu->m_window->setCurrentPageId(requestedMenuState);
 	}
 	
 	g_mainMenu->Render();
 	
 	if(g_mainMenu->m_window)
-	if(   (g_mainMenu->m_window->m_currentPageId != MAIN && g_mainMenu->m_window->m_currentPageId != NEW_QUEST && g_mainMenu->m_window->m_currentPageId != CREDITS)
-	   || (g_mainMenu->m_window->m_currentPageId == NEW_QUEST && g_canResumeGame)
+	if(   (g_mainMenu->m_window->currentPageId() != MAIN && g_mainMenu->m_window->currentPageId() != NEW_QUEST && g_mainMenu->m_window->currentPageId() != CREDITS)
+	   || (g_mainMenu->m_window->currentPageId() == NEW_QUEST && g_canResumeGame)
 	) {
 		if(!bScroll) {
 			g_mainMenu->m_window->fAngle=90.f;
-			g_mainMenu->m_window->m_currentPageId=g_mainMenu->eOldMenuWindowState;
+			g_mainMenu->m_window->setCurrentPageId(g_mainMenu->eOldMenuWindowState);
 		}
 
 		g_mainMenu->m_window->Update();
@@ -430,7 +430,7 @@ MENUSTATE MenuWindow::Render() {
 	}
 	
 	if(eMS != NOP) {
-		m_currentPageId=eMS;
+		setCurrentPageId(eMS);
 	}
 	
 	return eMS;
