@@ -1958,7 +1958,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(280, 380), Vec2f(16, 16), "graph/interface/menus/next");
-			cb->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
+			cb->m_targetMenu = Page_OptionsInputCustomizeKeys2;
 			add(cb);
 		}
 	
@@ -1982,7 +1982,7 @@ class ControlOptionsMenuPage2 : public ControlOptionsPage {
 public:
 	
 	ControlOptionsMenuPage2()
-		: ControlOptionsPage(OPTIONS_INPUT_CUSTOMIZE_KEYS_2)
+		: ControlOptionsPage(Page_OptionsInputCustomizeKeys2)
 	{}
 	
 	~ControlOptionsMenuPage2() { }
