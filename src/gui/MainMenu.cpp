@@ -164,8 +164,9 @@ public:
 		}
 	}
 	
-private:
 	TextWidget * m_textbox;
+	
+private:
 	
 	void onClickedSaveConfirm(TextWidget * txt) {
 		m_savegame = txt->m_savegame;
@@ -465,10 +466,9 @@ private:
 	void onClickQuestSaveConfirm(TextWidget * txt) {
 		SaveConfirmMenuPage * page = g_mainMenu->m_window->m_pageSaveConfirm;
 		
+		TextWidget * me = page->m_textbox;
+		
 				page->m_savegame = txt->m_savegame;
-				TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
-
-				if(me) {
 					me->m_savegame = txt->m_savegame;
 					
 					if(txt->m_savegame != SavegameHandle()) {
@@ -482,7 +482,6 @@ private:
 					}
 					
 					page->AlignElementCenter(me);
-				}
 	}
 };
 
