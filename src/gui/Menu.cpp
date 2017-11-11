@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Credits.h"
 #include "gui/Interface.h"
+#include "gui/MainMenu.h"
 #include "gui/MenuPublic.h"
 #include "gui/MenuWidgets.h"
 #include "gui/Text.h"
@@ -297,10 +298,18 @@ void ARX_Menu_Render() {
 	if(ARXmenu.currentmode == AMCM_OFF)
 		return;
 	
-	bool br = Menu2_Render();
-	
-	if(br)
+	if(AMCM_NEWQUEST == ARXmenu.currentmode || AMCM_CREDITS == ARXmenu.currentmode) {
+		
+		delete g_mainMenu, g_mainMenu = NULL;
+		
+		if(ARXmenu.currentmode == AMCM_CREDITS){
+			credits::render();
+			return;
+		}
+	} else {
+		Menu2_Render();
 		return;
+	}
 	
 	if(ARXmenu.currentmode == AMCM_OFF)
 		return;

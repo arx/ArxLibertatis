@@ -193,7 +193,7 @@ static void Check_Apply() {
 
 
 
-bool Menu2_Render() {
+void Menu2_Render() {
 	
 	if(pMenuCursor == NULL) {
 		pMenuCursor = new MenuCursor();
@@ -202,18 +202,6 @@ bool Menu2_Render() {
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-	
-	if(AMCM_NEWQUEST == ARXmenu.currentmode || AMCM_CREDITS == ARXmenu.currentmode) {
-		
-		delete g_mainMenu, g_mainMenu = NULL;
-		
-		if(ARXmenu.currentmode == AMCM_CREDITS){
-			credits::render();
-			return true;
-		}
-		
-		return false;
-	}
 	
 	if(pTextManage) {
 		pTextManage->Clear();
@@ -269,7 +257,7 @@ bool Menu2_Render() {
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
-		return true;
+		return;
 	} else if(requestedMenuState != NOP) {
 		g_mainMenu->eOldMenuState = requestedMenuState;
 		g_mainMenu->initWindowPages();
@@ -328,8 +316,6 @@ bool Menu2_Render() {
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-	
-	return true;
 }
 
 
