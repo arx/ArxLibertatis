@@ -72,7 +72,7 @@ public:
 	void add(Widget * widget);
 	void addCenter(Widget * widget, bool centerX = false);
 	void AlignElementCenter(Widget * widget);
-	MENUSTATE Update(Vec2f pos);
+	void Update(Vec2f pos);
 	void Render();
 	void drawDebug();
 	
@@ -126,6 +126,10 @@ public:
 		return m_currentPageId;
 	}
 	void setCurrentPageId(MENUSTATE id);
+	
+	void requestPage(MENUSTATE page) {
+		m_requestedPage = page;
+	}
 	
 private:
 	MENUSTATE m_requestedPage;
