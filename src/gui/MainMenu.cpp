@@ -470,7 +470,7 @@ private:
 		page->m_textbox->m_savegame = txt->m_savegame;
 		
 		if(txt->m_savegame != SavegameHandle()) {
-			page->m_textbox->SetText(savegames[m_savegame.handleData()].name);
+			page->m_textbox->SetText(savegames[txt->m_savegame.handleData()].name);
 			pDeleteButton->lColor = pDeleteButton->lOldColor;
 			pDeleteButton->SetCheckOn();
 		} else {
