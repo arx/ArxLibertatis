@@ -104,6 +104,86 @@ public:
 
 extern bool bNoMenu;
 
+class SaveConfirmMenuPage : public MenuPage {
+	
+public:
+	
+	SaveConfirmMenuPage()
+		: MenuPage(Page_SaveConfirm)
+		, m_textbox(NULL)
+	{}
+	
+	~SaveConfirmMenuPage() { }
+	
+	void init() {
+		
+		{
+			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(48, 48), "graph/interface/icons/menu_main_save");
+			cb->SetCheckOff();
+			addCenter(cb, true);
+		}
+		
+		{
+			std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->m_savegame = SavegameHandle();
+			txt->eState=EDIT;
+			txt->ePlace=CENTER;
+			addCenter(txt, true);
+			m_textbox = txt;
+		}
+		
+		// Delete button
+		{
+			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
+			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveDelete, this, _1);
+			txt->m_targetMenu = Page_Save;
+			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(5)));
+			txt->lOldColor = txt->lColor;
+			add(txt);
+			pDeleteButton = txt;
+		}
+		
+		// Save button
+		{
+			std::string szMenuText = getLocalised("system_menus_main_editquest_save");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
+			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveConfirm, this, _1);
+			txt->m_targetMenu = Page_None;
+			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
+			add(txt);
+		}
+		
+		// Back button
+		{
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
+			cb->m_targetMenu = Page_Save;
+			cb->SetShortCut(Keyboard::Key_Escape);
+			add(cb);
+		}
+	}
+	
+private:
+	TextWidget * m_textbox;
+	
+	void onClickedSaveConfirm(TextWidget * txt) {
+		m_savegame = txt->m_savegame;
+		
+		txt->m_targetMenu = Page_None;
+		ARXMenu_SaveQuest(m_textbox->m_text, m_textbox->m_savegame);
+	}
+	
+	void onClickedSaveDelete(TextWidget * txt) {
+		m_savegame = txt->m_savegame;
+		
+		txt->m_targetMenu = Page_Save;
+		g_mainMenu->bReInitAll = true;
+		savegames.remove(m_textbox->m_savegame);
+		return;
+	}
+};
+
 class LoadMenuPage : public MenuPage {
 	
 public:
@@ -407,86 +487,6 @@ private:
 				}
 			}
 		}
-	}
-};
-
-class SaveConfirmMenuPage : public MenuPage {
-	
-public:
-	
-	SaveConfirmMenuPage()
-		: MenuPage(Page_SaveConfirm)
-		, m_textbox(NULL)
-	{}
-	
-	~SaveConfirmMenuPage() { }
-	
-	void init() {
-		
-		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(48, 48), "graph/interface/icons/menu_main_save");
-			cb->SetCheckOff();
-			addCenter(cb, true);
-		}
-		
-		{
-			std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->m_savegame = SavegameHandle();
-			txt->eState=EDIT;
-			txt->ePlace=CENTER;
-			addCenter(txt, true);
-			m_textbox = txt;
-		}
-		
-		// Delete button
-		{
-			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveDelete, this, _1);
-			txt->m_targetMenu = Page_Save;
-			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(5)));
-			txt->lOldColor = txt->lColor;
-			add(txt);
-			pDeleteButton = txt;
-		}
-		
-		// Save button
-		{
-			std::string szMenuText = getLocalised("system_menus_main_editquest_save");
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveConfirm, this, _1);
-			txt->m_targetMenu = Page_None;
-			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
-			add(txt);
-		}
-		
-		// Back button
-		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->m_targetMenu = Page_Save;
-			cb->SetShortCut(Keyboard::Key_Escape);
-			add(cb);
-		}
-	}
-	
-private:
-	TextWidget * m_textbox;
-	
-	void onClickedSaveConfirm(TextWidget * txt) {
-		m_savegame = txt->m_savegame;
-		
-		txt->m_targetMenu = Page_None;
-		ARXMenu_SaveQuest(m_textbox->m_text, m_textbox->m_savegame);
-	}
-	
-	void onClickedSaveDelete(TextWidget * txt) {
-		m_savegame = txt->m_savegame;
-		
-		txt->m_targetMenu = Page_Save;
-		g_mainMenu->bReInitAll = true;
-		savegames.remove(m_textbox->m_savegame);
-		return;
 	}
 };
 
