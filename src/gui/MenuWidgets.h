@@ -102,6 +102,8 @@ private:
 	bool m_blink;
 };
 
+class LoadMenuPage;
+
 class MenuWindow : private boost::noncopyable {
 	
 private:
@@ -119,6 +121,8 @@ public:
 	void Render();
 	
 	std::vector<MenuPage *>	m_pages;
+	LoadMenuPage * m_pageLoad;
+	
 	float				fAngle;
 	
 	MENUSTATE currentPageId() {
