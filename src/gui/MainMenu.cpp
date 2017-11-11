@@ -55,7 +55,6 @@
 #include "scene/GameSound.h"
 #include "window/RenderWindow.h"
 
-TextWidget * pDeleteButton = NULL;
 TextWidget * pMenuElementApply = NULL;
 
 class NewQuestMenuPage : public MenuPage {
@@ -111,6 +110,7 @@ public:
 	SaveConfirmMenuPage()
 		: MenuPage(Page_SaveConfirm)
 		, m_textbox(NULL)
+		, pDeleteButton(NULL)
 	{}
 	
 	~SaveConfirmMenuPage() { }
@@ -183,6 +183,7 @@ public:
 	
 private:
 	TextWidget * m_textbox;
+	TextWidget * pDeleteButton;
 	
 	void onClickedSaveConfirm(TextWidget * txt) {
 		m_savegame = txt->m_savegame;
