@@ -376,12 +376,12 @@ void MenuWindow::Render() {
 	if(bNoMenu)
 		return;
 	
-	MENUSTATE eMS=NOP;
+	MENUSTATE m_requestedPage = NOP;
 	
 	if(m_currentPage) {
-		eMS = m_currentPage->Update(m_pos);
-		if(eMS == NOP)
-			eMS = m_currentPage->checkShortcuts();
+		m_requestedPage = m_currentPage->Update(m_pos);
+		if(m_requestedPage == NOP)
+			m_requestedPage = m_currentPage->checkShortcuts();
 	}
 	
 	// Draw backgound and border
@@ -401,9 +401,9 @@ void MenuWindow::Render() {
 			m_currentPage->drawDebug();
 	}
 	
-	if(eMS != NOP) {
-		setCurrentPageId(eMS);
-		g_mainMenu->eOldMenuWindowState=eMS;
+	if(m_requestedPage != NOP) {
+		setCurrentPageId(m_requestedPage);
+		g_mainMenu->eOldMenuWindowState = m_requestedPage;
 	}
 }
 
