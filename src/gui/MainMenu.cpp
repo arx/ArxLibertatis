@@ -210,7 +210,7 @@ public:
 	
 	LoadMenuPage()
 		: MenuPage(Page_Load)
-		, m_savegame(SavegameHandle())
+		, m_selectedSave(SavegameHandle())
 		, pLoadConfirm(NULL)
 		, pDeleteConfirm(NULL)
 	{}
@@ -319,7 +319,7 @@ public:
 	
 	void resetSelection() {
 		
-		m_savegame = SavegameHandle();
+		m_selectedSave = SavegameHandle();
 		
 		for(size_t j = 0; j < m_children.m_widgets.size(); j++) {
 			Widget * widget = m_children.m_widgets[j];
@@ -331,7 +331,7 @@ public:
 	}
 	
 private:
-	SavegameHandle m_savegame;
+	SavegameHandle m_selectedSave;
 	TextWidget * pLoadConfirm;
 	TextWidget * pDeleteConfirm;
 	
@@ -352,7 +352,7 @@ private:
 	void onClickQuestLoad(TextWidget * txt) {
 		enableLoadDeleteButtons();
 		
-		m_savegame = txt->m_savegame;
+		m_selectedSave = txt->m_savegame;
 		
 		resetSelection();
 		
@@ -366,7 +366,7 @@ private:
 	
 	void onClickQuestLoadConfirm(TextWidget * txt) {
 				
-		txt->m_savegame = m_savegame;
+		txt->m_savegame = m_selectedSave;
 		if(txt->m_savegame != SavegameHandle()) {
 			txt->m_targetMenu = Page_None;
 			ARXMenu_LoadQuest(txt->m_savegame);
@@ -382,7 +382,7 @@ private:
 	}
 	
 	void onClickQuestDelete(TextWidget * txt) {
-		txt->m_savegame = m_savegame;
+		txt->m_savegame = m_selectedSave;
 		if(txt->m_savegame != SavegameHandle()) {
 			txt->m_targetMenu = Page_Load;
 			g_mainMenu->bReInitAll = true;
