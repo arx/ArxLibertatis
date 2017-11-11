@@ -47,7 +47,7 @@ public:
 	int m_keybindIndex;
 	
 public:
-	TextWidget(MenuButton id, Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO);
+	TextWidget(Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO);
 	virtual ~TextWidget();
 	
 	void setColor(Color color) { lColor = color; }
