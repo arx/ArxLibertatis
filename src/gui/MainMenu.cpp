@@ -190,14 +190,12 @@ private:
 	void onClickedSaveConfirm(TextWidget * txt) {
 		m_savegame = txt->m_savegame;
 		
-		txt->m_targetMenu = Page_None;
 		ARXMenu_SaveQuest(m_textbox->m_text, m_textbox->m_savegame);
 	}
 	
 	void onClickedSaveDelete(TextWidget * txt) {
 		m_savegame = txt->m_savegame;
 		
-		txt->m_targetMenu = Page_Save;
 		g_mainMenu->bReInitAll = true;
 		savegames.remove(m_textbox->m_savegame);
 		return;
@@ -368,7 +366,6 @@ private:
 				
 		txt->m_savegame = m_selectedSave;
 		if(txt->m_savegame != SavegameHandle()) {
-			txt->m_targetMenu = Page_None;
 			ARXMenu_LoadQuest(txt->m_savegame);
 			
 			bNoMenu = true;
@@ -384,7 +381,6 @@ private:
 	void onClickQuestDelete(TextWidget * txt) {
 		txt->m_savegame = m_selectedSave;
 		if(txt->m_savegame != SavegameHandle()) {
-			txt->m_targetMenu = Page_Load;
 			g_mainMenu->bReInitAll = true;
 			savegames.remove(txt->m_savegame);
 			return;
