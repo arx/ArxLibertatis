@@ -107,8 +107,6 @@ bool bNoMenu=false;
 
 MenuCursor * pMenuCursor = NULL;
 
-MainMenu *g_mainMenu;
-
 extern TextWidget * pMenuElementApply;
 
 void ARX_QuickSave() {

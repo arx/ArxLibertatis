@@ -78,8 +78,6 @@ void TextWidget::SetText(const std::string & _pText)
 void TextWidget::Update() {
 }
 
-extern MainMenu *g_mainMenu;
-
 void TextWidget::OnMouseDoubleClick() {
 	
 	if(doubleClicked) {

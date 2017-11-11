@@ -58,8 +58,6 @@
 TextWidget * pDeleteButton = NULL;
 TextWidget * pMenuElementApply = NULL;
 
-extern MainMenu *g_mainMenu;
-
 class NewQuestMenuPage : public MenuPage {
 	
 public:
@@ -2341,3 +2339,5 @@ void MainMenu::Render() {
 	GRenderer->ResetTexture(0);
 	m_widgets->drawDebug();
 }
+
+MainMenu * g_mainMenu;

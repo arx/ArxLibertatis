@@ -65,4 +65,6 @@ private:
 	Widget * m_selected;
 };
 
+extern MainMenu * g_mainMenu;
+
 #endif // ARX_GUI_MAINMENU_H
