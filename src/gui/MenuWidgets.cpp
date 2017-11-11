@@ -419,7 +419,6 @@ void MenuWindow::setCurrentPageId(MENUSTATE id) {
 
 MenuPage::MenuPage(MENUSTATE _eMenuState)
 	: m_rowSpacing(10)
-	, m_savegame(SavegameHandle())
 	, m_selected(NULL)
 	, bMouseAttack(false)
 	, bEdit(false)
