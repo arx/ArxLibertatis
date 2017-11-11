@@ -315,6 +315,9 @@ public:
 	}
 	
 	void resetSelection() {
+		
+		m_savegame = SavegameHandle();
+		
 		for(size_t j = 0; j < m_children.m_widgets.size(); j++) {
 			Widget * widget = m_children.m_widgets[j];
 			
@@ -529,7 +532,6 @@ public:
 private:
 	
 	void onClickLoad() {
-		g_mainMenu->m_window->m_pageLoad->m_savegame = m_savegame;
 		g_mainMenu->m_window->m_pageLoad->resetSelection();
 	}
 	
