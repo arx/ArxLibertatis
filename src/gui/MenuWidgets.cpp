@@ -380,10 +380,7 @@ void MenuWindow::Render() {
 		return;
 	
 	if(m_currentPage) {
-		m_currentPage->checkShortcuts();
-		
-		if(m_requestedPage == NOP)
-			m_currentPage->Update(m_pos);
+		m_currentPage->Update(m_pos);
 	}
 	
 	// Draw backgound and border
@@ -692,6 +689,28 @@ void MenuPage::Update(Vec2f pos) {
 	m_oldPos.y=m_pos.y;
 	m_pos = pos;
 	
+	
+	if(!bEdit) {
+		
+		BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+			arx_assert(w);
+			
+			if(w->m_shortcut != ActionKey::UNUSED) {
+				if(GInput->isKeyPressedNowUnPressed(w->m_shortcut)) {
+					if(m_disableShortcuts) {
+						m_disableShortcuts = false;
+						break;
+					}
+					bEdit = w->OnMouseClick();
+					m_selected = w;
+					
+					g_mainMenu->m_window->requestPage(w->m_targetMenu);
+					return;
+				}
+			}
+		}
+	}
+	
 	// Check if mouse over
 	if(!bEdit) {
 		m_selected = m_children.getAtPos(Vec2f(GInput->getMousePosition()));
@@ -754,30 +773,6 @@ void MenuPage::Update(Vec2f pos) {
 						g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
 						return;
 					}
-				}
-			}
-		}
-	}
-}
-
-void MenuPage::checkShortcuts() {
-
-	if(!bEdit) {
-		
-		BOOST_FOREACH(Widget * w, m_children.m_widgets) {
-			arx_assert(w);
-			
-			if(w->m_shortcut != ActionKey::UNUSED) {
-				if(GInput->isKeyPressedNowUnPressed(w->m_shortcut)) {
-					if(m_disableShortcuts) {
-						m_disableShortcuts = false;
-						break;
-					}
-					bEdit = w->OnMouseClick();
-					m_selected = w;
-					
-					g_mainMenu->m_window->requestPage(w->m_targetMenu);
-					return;
 				}
 			}
 		}
