@@ -380,7 +380,8 @@ void MenuWindow::Render() {
 		return;
 	
 	if(m_currentPage) {
-		m_requestedPage = m_currentPage->Update(m_pos);
+		m_currentPage->Update(m_pos);
+		
 		if(m_requestedPage == NOP)
 			m_requestedPage = m_currentPage->checkShortcuts();
 	}
@@ -683,7 +684,7 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 	return NULL;
 }
 
-MENUSTATE MenuPage::Update(Vec2f pos) {
+void MenuPage::Update(Vec2f pos) {
 
 	m_children.Move(m_pos - m_oldPos);
 	
@@ -708,19 +709,25 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 					bEdit = false;
 				}
 				
-				if(m_selected->m_id == BUTTON_MENUEDITQUEST_LOAD)
-					return Page_None;
+				if(m_selected->m_id == BUTTON_MENUEDITQUEST_LOAD) {
+					g_mainMenu->m_window->requestPage(Page_None);
+					return;
+				}
 				
-				if(bEdit)
-					return m_selected->m_targetMenu;
+				if(bEdit) {
+					g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
+					return;
+				}
 				
-				return e;
+				g_mainMenu->m_window->requestPage(e);
+				return;
 			}
 			
 			if(GInput->getMouseButton(Mouse::Button_0)) {
 				MENUSTATE e = m_selected->m_targetMenu;
 				bEdit = m_selected->OnMouseClick();
-				return e;
+				g_mainMenu->m_window->requestPage(e);
+				return;
 			} else {
 				m_selected->EmptyFunction();
 			}
@@ -743,14 +750,14 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 						bEdit = false;
 					}
 					
-					if(bEdit)
-						return m_selected->m_targetMenu;
+					if(bEdit) {
+						g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
+						return;
+					}
 				}
 			}
 		}
 	}
-	
-	return NOP;
 }
 
 MENUSTATE MenuPage::checkShortcuts() {
