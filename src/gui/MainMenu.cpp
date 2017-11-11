@@ -109,6 +109,7 @@ public:
 	
 	SaveConfirmMenuPage()
 		: MenuPage(Page_SaveConfirm)
+		, m_savegame(SavegameHandle())
 		, m_textbox(NULL)
 		, pDeleteButton(NULL)
 	{}
@@ -182,6 +183,7 @@ public:
 	}
 	
 private:
+	SavegameHandle m_savegame;
 	TextWidget * m_textbox;
 	TextWidget * pDeleteButton;
 	
@@ -208,6 +210,7 @@ public:
 	
 	LoadMenuPage()
 		: MenuPage(Page_Load)
+		, m_savegame(SavegameHandle())
 		, pLoadConfirm(NULL)
 		, pDeleteConfirm(NULL)
 	{}
@@ -328,6 +331,7 @@ public:
 	}
 	
 private:
+	SavegameHandle m_savegame;
 	TextWidget * pLoadConfirm;
 	TextWidget * pDeleteConfirm;
 	
@@ -2102,7 +2106,6 @@ void MainMenu::initWindowPages()
 	
 	{
 	LoadMenuPage * page = new LoadMenuPage();
-	page->m_savegame = SavegameHandle();
 	page->m_rowSpacing = 5;
 	page->init();
 	m_window->add(page);
@@ -2118,7 +2121,6 @@ void MainMenu::initWindowPages()
 	
 	{
 	SaveConfirmMenuPage * page = new SaveConfirmMenuPage();
-	page->m_savegame = SavegameHandle();
 	page->init();
 	m_window->add(page);
 	m_window->m_pageSaveConfirm = page;
