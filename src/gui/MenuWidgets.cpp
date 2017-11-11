@@ -380,10 +380,10 @@ void MenuWindow::Render() {
 		return;
 	
 	if(m_currentPage) {
-		m_currentPage->Update(m_pos);
+		m_currentPage->checkShortcuts();
 		
 		if(m_requestedPage == NOP)
-			m_currentPage->checkShortcuts();
+			m_currentPage->Update(m_pos);
 	}
 	
 	// Draw backgound and border
