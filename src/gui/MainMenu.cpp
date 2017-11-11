@@ -280,6 +280,7 @@ public:
 			txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
 			txt->m_savegame = SavegameHandle(i);
 			addCenter(txt);
+			m_saveSlotWidgets.push_back(txt);
 		}
 		
 		// Show regular saves.
@@ -297,6 +298,7 @@ public:
 			txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
 			txt->m_savegame = SavegameHandle(i);
 			addCenter(txt);
+			m_saveSlotWidgets.push_back(txt);
 		}
 		
 		{
@@ -352,16 +354,15 @@ public:
 		
 		m_selectedSave = SavegameHandle();
 		
-		for(size_t j = 0; j < m_children.m_widgets.size(); j++) {
-			Widget * widget = m_children.m_widgets[j];
-			
-			if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
-				((TextWidget *)widget)->bSelected = false;
-			}
+		for(size_t j = 0; j < m_saveSlotWidgets.size(); j++) {
+			SaveSlotWidget * widget = m_saveSlotWidgets[j];
+			widget->bSelected = false;
 		}
 	}
 	
 private:
+	std::vector<SaveSlotWidget *> m_saveSlotWidgets;
+	
 	SavegameHandle m_selectedSave;
 	TextWidget * pLoadConfirm;
 	TextWidget * pDeleteConfirm;
