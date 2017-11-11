@@ -249,13 +249,8 @@ private:
 		
 		m_savegame = txt->m_savegame;
 		
-		for(size_t j = 0; j < m_children.m_widgets.size(); j++) {
-			Widget * widget = m_children.m_widgets[j];
-			
-			if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
-				((TextWidget *)widget)->bSelected = false;
-			}
-		}
+		resetSelection();
+		
 		txt->bSelected = true;
 	}
 	
