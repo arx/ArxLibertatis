@@ -181,10 +181,8 @@ public:
 		AlignElementCenter(m_textbox);
 	}
 	
-	
-	TextWidget * m_textbox;
-	
 private:
+	TextWidget * m_textbox;
 	
 	void onClickedSaveConfirm(TextWidget * txt) {
 		m_savegame = txt->m_savegame;
