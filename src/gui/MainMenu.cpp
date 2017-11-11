@@ -294,7 +294,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoadConfirm, this, _1);
+			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoadConfirm, this);
 			txt->m_targetMenu = Page_None;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
 			txt->SetCheckOff();
@@ -362,11 +362,10 @@ private:
 		pLoadConfirm->OnMouseClick();
 	}
 	
-	void onClickQuestLoadConfirm(TextWidget * txt) {
-				
-		txt->m_savegame = m_selectedSave;
-		if(txt->m_savegame != SavegameHandle()) {
-			ARXMenu_LoadQuest(txt->m_savegame);
+	void onClickQuestLoadConfirm() {
+		
+		if(m_selectedSave != SavegameHandle()) {
+			ARXMenu_LoadQuest(m_selectedSave);
 			
 			bNoMenu = true;
 			
