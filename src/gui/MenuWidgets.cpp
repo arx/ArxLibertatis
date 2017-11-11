@@ -339,6 +339,7 @@ MenuWindow::MenuWindow()
 	m_fadeDistance = m_size.x + m_pos.x;
 	fAngle=0.f;
 
+	m_requestedPage = NOP;
 	m_currentPageId=NOP;
 
 	m_pos.x	= m_initalOffsetX + (m_fadeDistance * glm::sin(glm::radians(fAngle)));
@@ -362,6 +363,8 @@ void MenuWindow::add(MenuPage *page) {
 }
 
 void MenuWindow::Update() {
+	
+	m_requestedPage = NOP;
 
 	m_pos.x	= m_initalOffsetX + (m_fadeDistance * glm::sin(glm::radians(fAngle)));
 
@@ -375,8 +378,6 @@ void MenuWindow::Render() {
 	
 	if(bNoMenu)
 		return;
-	
-	MENUSTATE m_requestedPage = NOP;
 	
 	if(m_currentPage) {
 		m_requestedPage = m_currentPage->Update(m_pos);
