@@ -383,7 +383,7 @@ void MenuWindow::Render() {
 		m_currentPage->Update(m_pos);
 		
 		if(m_requestedPage == NOP)
-			m_requestedPage = m_currentPage->checkShortcuts();
+			m_currentPage->checkShortcuts();
 	}
 	
 	// Draw backgound and border
@@ -760,7 +760,7 @@ void MenuPage::Update(Vec2f pos) {
 	}
 }
 
-MENUSTATE MenuPage::checkShortcuts() {
+void MenuPage::checkShortcuts() {
 
 	if(!bEdit) {
 		
@@ -775,12 +775,13 @@ MENUSTATE MenuPage::checkShortcuts() {
 					}
 					bEdit = w->OnMouseClick();
 					m_selected = w;
-					return w->m_targetMenu;
+					
+					g_mainMenu->m_window->requestPage(w->m_targetMenu);
+					return;
 				}
 			}
 		}
 	}
-	return NOP;
 }
 
 void MenuPage::Render() {

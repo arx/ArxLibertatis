@@ -78,7 +78,7 @@ public:
 	
 	TextWidget *GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId, bool _bValidateTest);
 	void ReInitActionKey();
-	MENUSTATE checkShortcuts();
+	void checkShortcuts();
 	
 	Vec2f m_pos;
 	Vec2f m_oldPos;
