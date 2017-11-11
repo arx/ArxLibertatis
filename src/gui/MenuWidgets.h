@@ -117,7 +117,7 @@ public:
 	
 	void add(MenuPage * page);
 	void Update();
-	MENUSTATE Render();
+	void Render();
 	
 	std::vector<MenuPage *>	m_pages;
 	float				fAngle;

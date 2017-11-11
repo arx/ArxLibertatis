@@ -290,10 +290,7 @@ bool Menu2_Render() {
 		}
 
 		g_mainMenu->m_window->Update();
-		MENUSTATE eMS = g_mainMenu->m_window->Render();
-		if(eMS != NOP) {
-			g_mainMenu->eOldMenuWindowState=eMS;
-		}
+		g_mainMenu->m_window->Render();
 		Check_Apply();
 	}
 
@@ -390,10 +387,10 @@ void MenuWindow::Update() {
 		fAngle = 90.f;
 }
 
-MENUSTATE MenuWindow::Render() {
+void MenuWindow::Render() {
 	
 	if(bNoMenu)
-		return NOP;
+		return;
 	
 	MENUSTATE eMS=NOP;
 	
@@ -423,9 +420,8 @@ MENUSTATE MenuWindow::Render() {
 	
 	if(eMS != NOP) {
 		setCurrentPageId(eMS);
+		g_mainMenu->eOldMenuWindowState=eMS;
 	}
-	
-	return eMS;
 }
 
 void MenuWindow::setCurrentPageId(MENUSTATE id) {
