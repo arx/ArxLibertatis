@@ -164,6 +164,24 @@ public:
 		}
 	}
 	
+	void setSaveHandle(SavegameHandle savegame) {
+		m_savegame = savegame;
+		m_textbox->m_savegame = savegame;
+		
+		if(savegame != SavegameHandle()) {
+			m_textbox->SetText(savegames[savegame.handleData()].name);
+			pDeleteButton->lColor = pDeleteButton->lOldColor;
+			pDeleteButton->SetCheckOn();
+		} else {
+			pDeleteButton->lColor = Color::grayb(127);
+			pDeleteButton->SetCheckOff();
+			m_textbox->SetText(getLocalised("system_menu_editquest_newsavegame"));
+		}
+		
+		AlignElementCenter(m_textbox);
+	}
+	
+	
 	TextWidget * m_textbox;
 	
 private:
@@ -464,22 +482,7 @@ public:
 	
 private:
 	void onClickQuestSaveConfirm(TextWidget * txt) {
-		SaveConfirmMenuPage * page = g_mainMenu->m_window->m_pageSaveConfirm;
-		
-		page->m_savegame = txt->m_savegame;
-		page->m_textbox->m_savegame = txt->m_savegame;
-		
-		if(txt->m_savegame != SavegameHandle()) {
-			page->m_textbox->SetText(savegames[txt->m_savegame.handleData()].name);
-			pDeleteButton->lColor = pDeleteButton->lOldColor;
-			pDeleteButton->SetCheckOn();
-		} else {
-			pDeleteButton->lColor = Color::grayb(127);
-			pDeleteButton->SetCheckOff();
-			page->m_textbox->SetText(getLocalised("system_menu_editquest_newsavegame"));
-		}
-		
-		page->AlignElementCenter(page->m_textbox);
+		g_mainMenu->m_window->m_pageSaveConfirm->setSaveHandle(txt->m_savegame);
 	}
 };
 
