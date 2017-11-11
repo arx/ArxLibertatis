@@ -276,6 +276,7 @@ public:
 			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 			
 			SaveSlotWidget * txt = new SaveSlotWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2f(20, 0));
+			txt->m_id = BUTTON_MENUEDITQUEST_LOAD;
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 			txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
 			txt->m_savegame = SavegameHandle(i);
@@ -294,6 +295,7 @@ public:
 			std::string text = save.name +  "   " + save.time;
 			
 			SaveSlotWidget * txt = new SaveSlotWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2f(20, 0));
+			txt->m_id = BUTTON_MENUEDITQUEST_LOAD;
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 			txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
 			txt->m_savegame = SavegameHandle(i);
@@ -458,6 +460,7 @@ public:
 			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 			
 			SaveSlotWidget * txt = new SaveSlotWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
+			txt->m_id = BUTTON_MENUEDITQUEST_SAVEINFO;
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_SaveConfirm;
 			txt->setColor(Color::grayb(127));
@@ -477,6 +480,7 @@ public:
 			std::string text = save.name +  "   " + save.time;
 			
 			SaveSlotWidget * txt = new SaveSlotWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text, Vec2f(20, 0));
+			txt->m_id = BUTTON_MENUEDITQUEST_SAVEINFO;
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_SaveConfirm;
 			txt->m_savegame = SavegameHandle(i);
@@ -489,6 +493,7 @@ public:
 			text << '-' << std::setfill('0') << std::setw(4) << i << '-';
 			
 			SaveSlotWidget * txt = new SaveSlotWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
+			txt->m_id = BUTTON_MENUEDITQUEST_SAVEINFO;
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_SaveConfirm;
 			txt->m_savegame = SavegameHandle();
