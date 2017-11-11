@@ -40,6 +40,7 @@
 #include "gui/Hud.h"
 #include "gui/Text.h"
 #include "gui/TextManager.h"
+#include "gui/menu/MenuCursor.h"
 #include "gui/menu/MenuFader.h"
 #include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
@@ -202,6 +203,38 @@ private:
 	}
 };
 
+class SaveSlotWidget : public TextWidget {
+	
+public:
+	SaveSlotWidget(MenuButton id, Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO)
+		: TextWidget(id, font, text, pos)
+	{ }
+	
+	virtual ~SaveSlotWidget() { }
+	
+	void RenderMouseOver() {
+		TextWidget::RenderMouseOver();
+		
+		arx_assert(m_id == BUTTON_MENUEDITQUEST_LOAD || m_id == BUTTON_MENUEDITQUEST_SAVEINFO);
+		
+		if(m_savegame == SavegameHandle()) {
+			g_thumbnailCursor.clear();
+			return;
+		}
+		
+		const res::path & image = savegames[m_savegame.handleData()].thumbnail;
+		if(!image.empty()) {
+			TextureContainer * t = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
+			if(t != g_thumbnailCursor.m_loadTexture) {
+				delete g_thumbnailCursor.m_loadTexture;
+				g_thumbnailCursor.m_loadTexture = t;
+			}
+			g_thumbnailCursor.m_renderTexture = g_thumbnailCursor.m_loadTexture;
+		}
+	}
+	
+};
+
 class LoadMenuPage : public MenuPage {
 	
 public:
@@ -242,7 +275,7 @@ public:
 			std::ostringstream text;
 			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 			
-			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2f(20, 0));
+			SaveSlotWidget * txt = new SaveSlotWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2f(20, 0));
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 			txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
 			txt->m_savegame = SavegameHandle(i);
@@ -259,7 +292,7 @@ public:
 			
 			std::string text = save.name +  "   " + save.time;
 			
-			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2f(20, 0));
+			SaveSlotWidget * txt = new SaveSlotWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2f(20, 0));
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 			txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
 			txt->m_savegame = SavegameHandle(i);
@@ -423,7 +456,7 @@ public:
 			std::ostringstream text;
 			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 			
-			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
+			SaveSlotWidget * txt = new SaveSlotWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_SaveConfirm;
 			txt->setColor(Color::grayb(127));
@@ -442,7 +475,7 @@ public:
 			
 			std::string text = save.name +  "   " + save.time;
 			
-			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text, Vec2f(20, 0));
+			SaveSlotWidget * txt = new SaveSlotWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text, Vec2f(20, 0));
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_SaveConfirm;
 			txt->m_savegame = SavegameHandle(i);
@@ -454,7 +487,7 @@ public:
 			std::ostringstream text;
 			text << '-' << std::setfill('0') << std::setw(4) << i << '-';
 			
-			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
+			SaveSlotWidget * txt = new SaveSlotWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_SaveConfirm;
 			txt->m_savegame = SavegameHandle();
