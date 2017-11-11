@@ -708,10 +708,7 @@ void MenuPage::Update(Vec2f pos) {
 				}
 			}
 		}
-	}
-	
-	// Check if mouse over
-	if(!bEdit) {
+		
 		m_selected = m_children.getAtPos(Vec2f(GInput->getMousePosition()));
 		
 		if(m_selected) {
