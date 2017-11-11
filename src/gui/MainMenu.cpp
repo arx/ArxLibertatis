@@ -468,20 +468,20 @@ private:
 		
 		TextWidget * me = page->m_textbox;
 		
-				page->m_savegame = txt->m_savegame;
-					me->m_savegame = txt->m_savegame;
-					
-					if(txt->m_savegame != SavegameHandle()) {
-						me->SetText(savegames[m_savegame.handleData()].name);
-						pDeleteButton->lColor = pDeleteButton->lOldColor;
-						pDeleteButton->SetCheckOn();
-					} else {
-						pDeleteButton->lColor = Color::grayb(127);
-						pDeleteButton->SetCheckOff();
-						me->SetText(getLocalised("system_menu_editquest_newsavegame"));
-					}
-					
-					page->AlignElementCenter(me);
+		page->m_savegame = txt->m_savegame;
+		me->m_savegame = txt->m_savegame;
+		
+		if(txt->m_savegame != SavegameHandle()) {
+			me->SetText(savegames[m_savegame.handleData()].name);
+			pDeleteButton->lColor = pDeleteButton->lOldColor;
+			pDeleteButton->SetCheckOn();
+		} else {
+			pDeleteButton->lColor = Color::grayb(127);
+			pDeleteButton->SetCheckOff();
+			me->SetText(getLocalised("system_menu_editquest_newsavegame"));
+		}
+		
+		page->AlignElementCenter(me);
 	}
 };
 
