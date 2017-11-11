@@ -139,31 +139,5 @@ void TextWidget::RenderMouseOver() {
 	
 	FontRenderText(m_font, m_rect, m_text, lColorHighlight);
 	
-	switch(m_id) {
-		case BUTTON_MENUEDITQUEST_LOAD:
-		case BUTTON_MENUEDITQUEST_SAVEINFO: {
-			
-			if(m_savegame == SavegameHandle()) {
-				g_thumbnailCursor.clear();
-				break;
-			}
-			
-			const res::path & image = savegames[m_savegame.handleData()].thumbnail;
-			if(!image.empty()) {
-				TextureContainer * t = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
-				if(t != g_thumbnailCursor.m_loadTexture) {
-					delete g_thumbnailCursor.m_loadTexture;
-					g_thumbnailCursor.m_loadTexture = t;
-				}
-				g_thumbnailCursor.m_renderTexture = g_thumbnailCursor.m_loadTexture;
-			}
-			
-			break;
-		}
-		
-		default: {
-			g_thumbnailCursor.clear();
-			break;
-		}
-	}
+	g_thumbnailCursor.clear();
 }
