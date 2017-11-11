@@ -348,12 +348,10 @@ private:
 	}
 	
 	void onClickQuestLoad(TextWidget * txt) {
+		resetSelection();
 		enableLoadDeleteButtons();
 		
 		m_selectedSave = txt->m_savegame;
-		
-		resetSelection();
-		
 		txt->bSelected = true;
 	}
 	
