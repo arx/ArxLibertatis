@@ -396,6 +396,8 @@ void MenuWindow::Render() {
 	
 	if(m_currentPage) {
 		eMS = m_currentPage->Update(m_pos);
+		if(eMS == NOP)
+			eMS = m_currentPage->checkShortcuts();
 	}
 	
 	// Draw backgound and border
@@ -413,9 +415,6 @@ void MenuWindow::Render() {
 		
 		if(g_debugInfo == InfoPanelGuiDebug)
 			m_currentPage->drawDebug();
-
-		if(eMS == NOP)
-			eMS = m_currentPage->checkShortcuts();
 	}
 	
 	if(eMS != NOP) {
