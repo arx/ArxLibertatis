@@ -279,7 +279,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestDelete, this, _1);
+			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestDelete, this);
 			txt->m_targetMenu = Page_Load;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(14)));
 			txt->SetCheckOff();
@@ -378,11 +378,10 @@ private:
 		disableLoadDeleteButtons();
 	}
 	
-	void onClickQuestDelete(TextWidget * txt) {
-		txt->m_savegame = m_selectedSave;
-		if(txt->m_savegame != SavegameHandle()) {
+	void onClickQuestDelete() {
+		if(m_selectedSave != SavegameHandle()) {
 			g_mainMenu->bReInitAll = true;
-			savegames.remove(txt->m_savegame);
+			savegames.remove(m_selectedSave);
 			return;
 		}
 		
