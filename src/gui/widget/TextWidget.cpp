@@ -37,11 +37,9 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-TextWidget::TextWidget(MenuButton id, Font* font, const std::string& text, Vec2f pos)
+TextWidget::TextWidget(Font* font, const std::string& text, Vec2f pos)
 	: Widget()
 {
-	m_id = id;
-
 	m_font = font;
 	
 	Vec2f scaledPos = RATIO_2(pos);
