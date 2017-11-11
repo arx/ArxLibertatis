@@ -128,6 +128,7 @@ public:
 	void setCurrentPageId(MENUSTATE id);
 	
 private:
+	MENUSTATE m_requestedPage;
 	MENUSTATE m_currentPageId;
 	MenuPage * m_currentPage;
 	
