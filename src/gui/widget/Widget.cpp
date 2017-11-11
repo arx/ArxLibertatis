@@ -38,16 +38,11 @@ Widget::Widget()
 }
 
 extern TextWidget * pMenuElementApply;
-extern TextWidget * pDeleteButton;
 
 Widget::~Widget() {
 
 	if(this == pMenuElementApply) {
 		pMenuElementApply = NULL;
-	}
-
-	if(this == pDeleteButton) {
-		pDeleteButton = NULL;
 	}
 }
 
