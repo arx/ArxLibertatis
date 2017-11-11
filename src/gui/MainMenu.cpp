@@ -466,22 +466,20 @@ private:
 	void onClickQuestSaveConfirm(TextWidget * txt) {
 		SaveConfirmMenuPage * page = g_mainMenu->m_window->m_pageSaveConfirm;
 		
-		TextWidget * me = page->m_textbox;
-		
 		page->m_savegame = txt->m_savegame;
-		me->m_savegame = txt->m_savegame;
+		page->m_textbox->m_savegame = txt->m_savegame;
 		
 		if(txt->m_savegame != SavegameHandle()) {
-			me->SetText(savegames[m_savegame.handleData()].name);
+			page->m_textbox->SetText(savegames[m_savegame.handleData()].name);
 			pDeleteButton->lColor = pDeleteButton->lOldColor;
 			pDeleteButton->SetCheckOn();
 		} else {
 			pDeleteButton->lColor = Color::grayb(127);
 			pDeleteButton->SetCheckOff();
-			me->SetText(getLocalised("system_menu_editquest_newsavegame"));
+			page->m_textbox->SetText(getLocalised("system_menu_editquest_newsavegame"));
 		}
 		
-		page->AlignElementCenter(me);
+		page->AlignElementCenter(page->m_textbox);
 	}
 };
 
