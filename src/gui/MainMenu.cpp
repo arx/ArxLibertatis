@@ -463,10 +463,8 @@ public:
 	
 private:
 	void onClickQuestSaveConfirm(TextWidget * txt) {
-		for(size_t i = 0; i < g_mainMenu->m_window->m_pages.size(); i++) {
-			MenuPage * page = g_mainMenu->m_window->m_pages[i];
-
-			if(page->eMenuState == Page_SaveConfirm) {
+		SaveConfirmMenuPage * page = g_mainMenu->m_window->m_pageSaveConfirm;
+		
 				page->m_savegame = txt->m_savegame;
 				TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
 
@@ -485,8 +483,6 @@ private:
 					
 					page->AlignElementCenter(me);
 				}
-			}
-		}
 	}
 };
 
@@ -2124,6 +2120,7 @@ void MainMenu::initWindowPages()
 	page->m_savegame = SavegameHandle();
 	page->init();
 	m_window->add(page);
+	m_window->m_pageSaveConfirm = page;
 	}
 	
 	{

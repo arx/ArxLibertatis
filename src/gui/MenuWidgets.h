@@ -103,6 +103,7 @@ private:
 };
 
 class LoadMenuPage;
+class SaveConfirmMenuPage;
 
 class MenuWindow : private boost::noncopyable {
 	
@@ -122,6 +123,7 @@ public:
 	
 	std::vector<MenuPage *>	m_pages;
 	LoadMenuPage * m_pageLoad;
+	SaveConfirmMenuPage * m_pageSaveConfirm;
 	
 	float				fAngle;
 	
