@@ -129,8 +129,6 @@ void TextWidget::Render() {
 
 }
 
-extern MenuCursor * pMenuCursor;
-
 void TextWidget::RenderMouseOver() {
 
 	pMenuCursor->SetMouseOver();

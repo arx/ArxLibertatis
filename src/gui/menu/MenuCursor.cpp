@@ -226,6 +226,9 @@ void MenuCursor::DrawCursor() {
 	
 }
 
+MenuCursor * pMenuCursor = NULL;
+
+
 ThumbnailCursor g_thumbnailCursor;
 
 void ThumbnailCursor::render() {

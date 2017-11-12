@@ -66,6 +66,8 @@ private:
 	CursorTrail trail;
 };
 
+extern MenuCursor * pMenuCursor;
+
 class TextureContainer;
 
 class ThumbnailCursor {

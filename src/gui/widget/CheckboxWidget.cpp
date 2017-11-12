@@ -111,8 +111,6 @@ void CheckboxWidget::Render() {
 	m_label->Render();
 }
 
-extern MenuCursor * pMenuCursor;
-
 void CheckboxWidget::RenderMouseOver() {
 
 	pMenuCursor->SetMouseOver();

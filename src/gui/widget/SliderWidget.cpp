@@ -154,8 +154,6 @@ void SliderWidget::Render() {
 	
 }
 
-extern MenuCursor * pMenuCursor;
-
 void SliderWidget::RenderMouseOver() {
 
 	pMenuCursor->SetMouseOver();
