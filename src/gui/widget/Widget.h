@@ -93,9 +93,9 @@ public:
 	
 	SavegameHandle m_savegame;
 	
-	ELEMPOS     ePlace;			//placement de la zone
-	ELEMSTATE   eState;			//etat de l'element en cours
-	MENUSTATE   m_targetMenu;		//etat de retour de l'element
+	ELEMPOS     ePlace;
+	ELEMSTATE   eState;
+	MENUSTATE   m_targetMenu;
 	InputKeyId  m_shortcut;
 	
 public:
