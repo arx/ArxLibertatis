@@ -507,18 +507,18 @@ void CharacterCreationRender() {
 		pTextManage->Render();
 	}
 	
-		ARX_INTERFACE_RenderCursor(true);
-		
-		if(MenuFader_process(bFadeInOut)) {
-			switch(iFadeAction) {
-				case Mode_InGame:
-					ARX_MENU_NEW_QUEST_Clicked_QUIT();
-					MenuFader_reset();
-					
-					if(pTextManage)
-						pTextManage->Clear();
-					
-					break;
-			}
+	ARX_INTERFACE_RenderCursor(true);
+	
+	if(MenuFader_process(bFadeInOut)) {
+		switch(iFadeAction) {
+			case Mode_InGame:
+				ARX_MENU_NEW_QUEST_Clicked_QUIT();
+				MenuFader_reset();
+				
+				if(pTextManage)
+					pTextManage->Clear();
+				
+				break;
 		}
+	}
 }
