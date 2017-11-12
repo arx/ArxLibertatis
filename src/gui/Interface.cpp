@@ -1753,7 +1753,7 @@ void ArxGame::manageKeyMouse() {
 
 				eyeball.angle.setPitch(MAKEANGLE(eyeball.angle.getPitch()));
 				eyeball.angle.setYaw(MAKEANGLE(eyeball.angle.getYaw() - rotation.x));
-			} else if(ARXmenu.currentmode != AMCM_NEWQUEST) {
+			} else if(ARXmenu.currentmode != Mode_CharacterCreation) {
 
 				float iangle = player.angle.getPitch();
 

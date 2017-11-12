@@ -243,7 +243,7 @@ void PlayerBook::manage() {
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 
-	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode != Mode_CharacterCreation) {
 		switch (currentPage()) {
 			case BOOKMODE_STATS: {
 				stats.manage();
@@ -520,7 +520,7 @@ void StatsPage::manageStats()
 		FLYING_OVER = WND_DAMAGE;
 	}
 	
-	if(!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
+	if(!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != Mode_CharacterCreation))) {
 		// Main Player Attributes
 		if(CheckAttributeClick(Vec2f(379, 95), &player.m_attribute.strength, g_bookResouces.ic_strength)) {
 			FLYING_OVER = BOOK_STRENGTH;
@@ -547,7 +547,7 @@ void StatsPage::manageStats()
 		}
 	}
 
-	if(!((player.Skill_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
+	if(!((player.Skill_Redistribute == 0) && (ARXmenu.currentmode != Mode_CharacterCreation))) {
 		if (CheckSkillClick(Vec2f(389, 177), &player.m_skill.stealth, g_bookResouces.ic_stealth, &player.m_skillOld.stealth)) {
 			FLYING_OVER = BOOK_STEALTH;
 			SpecialCursor = CURSOR_REDIST;
@@ -685,7 +685,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_attributeMod.strength);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_attributeFull.strength == 6)
 			color = Color::red;
 	}
@@ -701,7 +701,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_attributeMod.mind);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_attributeFull.mind == 6)
 			color = Color::red;
 	}
@@ -717,7 +717,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_attributeMod.dexterity);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_attributeFull.dexterity == 6)
 			color = Color::red;
 	}
@@ -733,7 +733,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_attributeMod.constitution);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_attributeFull.constitution == 6)
 			color = Color::red;
 	}
@@ -750,7 +750,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_skillMod.stealth);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_skill.stealth == 0)
 			color = Color::red;
 	}
@@ -766,7 +766,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_skillMod.mecanism);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_skill.mecanism == 0)
 			color = Color::red;
 	}
@@ -782,7 +782,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_skillMod.intuition);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_skill.intuition == 0)
 			color = Color::red;
 	}
@@ -798,7 +798,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_skillMod.etheralLink);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_skill.etheralLink == 0)
 			color = Color::red;
 	}
@@ -814,7 +814,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_skillMod.objectKnowledge);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_skill.objectKnowledge == 0)
 			color = Color::red;
 	}
@@ -830,7 +830,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_skillMod.casting);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_skill.casting == 0)
 			color = Color::red;
 	}
@@ -846,7 +846,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_skillMod.closeCombat);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_skill.closeCombat == 0)
 			color = Color::red;
 	}
@@ -862,7 +862,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_skillMod.projectile);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_skill.projectile == 0)
 			color = Color::red;
 	}
@@ -878,7 +878,7 @@ void StatsPage::manageStats()
 	
 	Color color = attributeModToColor(player.m_skillMod.defense);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(player.m_skill.defense == 0)
 			color = Color::red;
 	}
@@ -1224,7 +1224,7 @@ bool StatsPage::CheckAttributeClick(Vec2f pos, float * val, TextureContainer * t
 		}
 
 		if(eeMouseUp2()) {
-			if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(ARXmenu.currentmode == Mode_CharacterCreation) {
 				if(t > 6 && player.level == 0) {
 					player.Attribute_Redistribute++;
 					t --;
@@ -1268,7 +1268,7 @@ bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc,
 		}
 		
 		if(eeMouseUp2()) {
-			if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(ARXmenu.currentmode == Mode_CharacterCreation) {
 				if(t > ot && player.level == 0) {
 					player.Skill_Redistribute++;
 					t --;
