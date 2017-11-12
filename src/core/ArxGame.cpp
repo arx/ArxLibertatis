@@ -1739,10 +1739,6 @@ void ArxGame::updateInput() {
 #endif
 }
 
-bool ArxGame::isInMenu() const {
-	return ARXmenu.mode() != Mode_InGame;
-}
-
 void ArxGame::renderMenu() {
 	
 	ARX_Menu_Render();
@@ -2141,7 +2137,7 @@ void ArxGame::render() {
 	if(g_debugTriggers[1])
 		g_hudRoot.bookIconGui.requestFX();
 	
-	if(isInMenu()) {
+	if(ARXmenu.mode() != Mode_InGame) {
 		benchmark::begin(benchmark::Menu);
 		renderMenu();
 	} else if(isInCinematic()) {
