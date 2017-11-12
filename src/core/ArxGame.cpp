@@ -644,7 +644,7 @@ static bool HandleGameFlowTransitions() {
 	}
 
 	if(GInput->isAnyKeyPressed()) {
-		ARXmenu.currentmode = AMCM_MAIN;
+		ARXmenu.currentmode = Mode_MainMenu;
 		ARX_MENU_Launch(false);
 		GameFlow::setTransition(GameFlow::InGame);
 	}

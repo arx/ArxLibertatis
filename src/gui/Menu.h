@@ -68,7 +68,7 @@ struct MENU_DYNAMIC_DATA {
 // Possible values for ARXmenu.currentmode
 enum MenuMode {
 	Mode_InGame,
-	AMCM_MAIN,
+	Mode_MainMenu,
 	AMCM_CREDITS,
 	AMCM_NEWQUEST
 };
