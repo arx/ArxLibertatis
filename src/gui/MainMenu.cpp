@@ -2316,7 +2316,7 @@ void MainMenu::onClickedNewQuest() {
 }
 
 void MainMenu::onClickedCredits() {
-	MenuFader_start(true, true, AMCM_CREDITS);
+	MenuFader_start(true, true, Mode_Credits);
 }
 
 
