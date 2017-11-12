@@ -156,7 +156,7 @@ void ARX_MENU_Clicked_QUIT();
 
 void ARX_QuickLoad();
 void ARX_QuickSave();
-bool ARX_SlotLoad(SavegameHandle slotIndex);
+void ARX_SlotLoad(SavegameHandle slotIndex);
 
 bool MENU_NoActiveWindow();
 
