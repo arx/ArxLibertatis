@@ -289,10 +289,7 @@ void ARX_Menu_Manage() {
 	}
 }
 
-//-----------------------------------------------------------------------------
-// ARX Menu Rendering Func
-// returns false if no menu needs to be displayed
-//-----------------------------------------------------------------------------
+
 void ARX_Menu_Render() {
 	
 	switch(ARXmenu.mode()) {
