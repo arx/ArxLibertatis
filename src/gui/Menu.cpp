@@ -183,7 +183,7 @@ void ARX_MENU_Clicked_QUIT() {
 	arx_assert(g_canResumeGame);
 	
 	ARX_Menu_Resources_Release();
-	ARXmenu.currentmode = AMCM_OFF;
+	ARXmenu.currentmode = Mode_InGame;
 }
 
 void ARX_MENU_Clicked_NEWQUEST() {
@@ -230,7 +230,7 @@ void ARX_Menu_Manage() {
 	
 	// looks for keys for each mode.
 	switch(ARXmenu.currentmode) {
-		case AMCM_OFF: {
+		case Mode_InGame: {
 			// Checks for ESC key
 			if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)) {
 				if(cinematicBorder.isActive()) {
@@ -295,7 +295,7 @@ void ARX_Menu_Manage() {
 //-----------------------------------------------------------------------------
 void ARX_Menu_Render() {
 	
-	if(ARXmenu.currentmode == AMCM_OFF)
+	if(ARXmenu.currentmode == Mode_InGame)
 		return;
 	
 	if(AMCM_NEWQUEST == ARXmenu.currentmode || AMCM_CREDITS == ARXmenu.currentmode) {
@@ -311,7 +311,7 @@ void ARX_Menu_Render() {
 		return;
 	}
 	
-	if(ARXmenu.currentmode == AMCM_OFF)
+	if(ARXmenu.currentmode == Mode_InGame)
 		return;
 	
 	
@@ -473,7 +473,7 @@ void ARX_Menu_Render() {
 						
 						ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 						
-						MenuFader_start(true, true, AMCM_OFF);
+						MenuFader_start(true, true, Mode_InGame);
 					}
 				} else {
 					if(DONE)
@@ -510,7 +510,7 @@ void ARX_Menu_Render() {
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(MenuFader_process(bFadeInOut)) {
 			switch(iFadeAction) {
-				case AMCM_OFF:
+				case Mode_InGame:
 					ARX_MENU_NEW_QUEST_Clicked_QUIT();
 					MenuFader_reset();
 					

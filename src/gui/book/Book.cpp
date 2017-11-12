@@ -970,7 +970,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 				   s32((330.f + BOOKDEC.x) * g_sizeRatio.x), s32((300.f + BOOKDEC.y) * g_sizeRatio.y));
 		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 		
-		if(ARXmenu.currentmode != AMCM_OFF) {
+		if(ARXmenu.currentmode != Mode_InGame) {
 			Rect vp = Rect(Vec2i(s32(139.f * g_sizeRatio.x), 0), s32(139.f * g_sizeRatio.x), s32(310.f * g_sizeRatio.y));
 			GRenderer->SetScissor(vp);
 		}
@@ -983,7 +983,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 		rec.right -= 50;
 	}
 	
-	if(ARXmenu.currentmode == AMCM_OFF)
+	if(ARXmenu.currentmode == Mode_InGame)
 		BOOKZOOM = 0;
 	
 	Vec3f pos;

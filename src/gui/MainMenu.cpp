@@ -2108,7 +2108,7 @@ public:
 private:
 	
 	void onClickedYes() {
-		MenuFader_start(true, true, AMCM_OFF);
+		MenuFader_start(true, true, Mode_InGame);
 	}
 };
 
