@@ -139,17 +139,17 @@ static bool ARX_LoadGame(const SaveGame & save) {
 	return ret != -1;
 }
 
-bool ARX_QuickLoad() {
+void ARX_QuickLoad() {
 	
 	SaveGameList::iterator save = savegames.quickload();
 	if(save == savegames.end()) {
 		// No saves found!
-		return false;
+		return;
 	}
 	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
-	return ARX_LoadGame(*save);
+	ARX_LoadGame(*save);
 }
 
 bool ARX_SlotLoad(SavegameHandle slotIndex) {
