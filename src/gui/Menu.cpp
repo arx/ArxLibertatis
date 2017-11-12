@@ -204,7 +204,7 @@ static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 }
 
 void ARX_MENU_Clicked_CREDITS() {
-	ARXmenu.currentmode = AMCM_CREDITS;
+	ARXmenu.currentmode = Mode_Credits;
 	credits::reset();
 	ARX_MENU_LaunchAmb(AMB_CREDITS);
 }
@@ -274,7 +274,7 @@ void ARX_Menu_Manage() {
 			}
 			break;
 		}
-		case AMCM_CREDITS: {
+		case Mode_Credits: {
 			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
 			   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Spacebar)
 			) {
@@ -298,11 +298,11 @@ void ARX_Menu_Render() {
 	if(ARXmenu.currentmode == Mode_InGame)
 		return;
 	
-	if(AMCM_NEWQUEST == ARXmenu.currentmode || AMCM_CREDITS == ARXmenu.currentmode) {
+	if(AMCM_NEWQUEST == ARXmenu.currentmode || Mode_Credits == ARXmenu.currentmode) {
 		
 		delete g_mainMenu, g_mainMenu = NULL;
 		
-		if(ARXmenu.currentmode == AMCM_CREDITS){
+		if(ARXmenu.currentmode == Mode_Credits){
 			credits::render();
 			return;
 		}
@@ -504,7 +504,7 @@ void ARX_Menu_Render() {
 		pTextManage->Render();
 	}
 	
-	if(ARXmenu.currentmode != AMCM_CREDITS)
+	if(ARXmenu.currentmode != Mode_Credits)
 		ARX_INTERFACE_RenderCursor(true);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {

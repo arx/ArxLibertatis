@@ -69,7 +69,7 @@ struct MENU_DYNAMIC_DATA {
 enum MenuMode {
 	Mode_InGame,
 	Mode_MainMenu,
-	AMCM_CREDITS,
+	Mode_Credits,
 	AMCM_NEWQUEST
 };
 

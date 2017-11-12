@@ -297,7 +297,7 @@ void Menu2_Render() {
 	
 	if(MenuFader_process(bFadeInOut)) {
 		switch(iFadeAction) {
-			case AMCM_CREDITS:
+			case Mode_Credits:
 				ARX_MENU_Clicked_CREDITS();
 				MenuFader_start(true, false, -1);
 				break;
