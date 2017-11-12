@@ -295,19 +295,24 @@ void ARX_Menu_Manage() {
 //-----------------------------------------------------------------------------
 void ARX_Menu_Render() {
 	
-	arx_assert(ARXmenu.mode() != Mode_InGame);
-	
-	if(Mode_CharacterCreation == ARXmenu.mode() || Mode_Credits == ARXmenu.mode()) {
-		
-		delete g_mainMenu, g_mainMenu = NULL;
-		
-		if(ARXmenu.mode() == Mode_Credits){
+	switch(ARXmenu.mode()) {
+		case Mode_InGame: {
+			ARX_DEAD_CODE();
+			return;
+		}
+		case Mode_CharacterCreation: {
+			delete g_mainMenu, g_mainMenu = NULL;
+			break;
+		}
+		case Mode_Credits: {
+			delete g_mainMenu, g_mainMenu = NULL;
 			credits::render();
 			return;
 		}
-	} else {
-		Menu2_Render();
-		return;
+		case Mode_MainMenu: {
+			Menu2_Render();
+			return;
+		}
 	}
 	
 	if(ARXmenu.mode() == Mode_InGame)
