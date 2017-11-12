@@ -190,8 +190,6 @@ void CycleTextWidget::setEnabled(bool enable) {
 	}
 }
 
-extern MenuCursor * pMenuCursor;
-
 void CycleTextWidget::RenderMouseOver() {
 
 	pMenuCursor->SetMouseOver();
