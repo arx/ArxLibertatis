@@ -65,7 +65,6 @@ struct MENU_DYNAMIC_DATA {
 	MENU_DYNAMIC_DATA();
 };
 
-// Possible values for ARXmenu.currentmode
 enum MenuMode {
 	Mode_InGame,
 	Mode_MainMenu,
@@ -73,7 +72,6 @@ enum MenuMode {
 	Mode_CharacterCreation
 };
 
-// ARX_MENU_DATA contains all Menu-datas
 struct ARX_MENU_DATA {
 	MenuMode currentmode;
 	MENU_DYNAMIC_DATA * mda;
