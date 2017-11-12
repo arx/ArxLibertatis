@@ -2806,7 +2806,7 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 	return true;
 }
 
-long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
+void ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	arx_assert(entities.player());
 	
 	LogInfo << "Loading save " << savefile;
@@ -2817,7 +2817,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	progressBarReset();
 	
 	if(!ARX_Changelevel_CurGame_Clear()) {
-		return -1;
+		return;
 	}
 	
 	assert(!CURRENT_GAME_FILE.empty());
@@ -2825,7 +2825,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	// Copy SavePath to Current Game
 	if(!fs::copy_file(savefile, CURRENT_GAME_FILE)) {
 		LogWarning << "Failed to create copy savegame " << savefile << " to " << CURRENT_GAME_FILE;
-		return -1;
+		return;
 	}
 	
 	// Retrieves Player LevelData
@@ -2848,7 +2848,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		
 	} else {
 		LogError << "Error Loading Level...";
-		return -1;
+		return;
 	}
 	
 	BLOCK_PLAYER_CONTROLS = false;
@@ -2860,7 +2860,6 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	JUST_RELOADED = 1;
 	
 	LogDebug("success ARX_CHANGELEVEL_Load");
-	return 1;
 }
 
 long ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version,
