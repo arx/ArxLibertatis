@@ -289,6 +289,7 @@ void ARX_Menu_Manage() {
 	}
 }
 
+void CharacterCreationRender();
 
 void ARX_Menu_Render() {
 	
@@ -299,7 +300,8 @@ void ARX_Menu_Render() {
 		}
 		case Mode_CharacterCreation: {
 			delete g_mainMenu, g_mainMenu = NULL;
-			break;
+			CharacterCreationRender();
+			return;
 		}
 		case Mode_Credits: {
 			delete g_mainMenu, g_mainMenu = NULL;
@@ -311,7 +313,9 @@ void ARX_Menu_Render() {
 			return;
 		}
 	}
-	
+}
+
+void CharacterCreationRender() {
 	arx_assert(ARXmenu.mode() == Mode_CharacterCreation);
 	
 	GRenderer->Clear(Renderer::ColorBuffer);
