@@ -183,7 +183,7 @@ void ARX_MENU_Clicked_QUIT() {
 	arx_assert(g_canResumeGame);
 	
 	ARX_Menu_Resources_Release();
-	ARXmenu.currentmode = Mode_InGame;
+	ARXmenu.requestMode(Mode_InGame);
 }
 
 void ARX_MENU_Clicked_NEWQUEST() {
@@ -194,7 +194,7 @@ void ARX_MENU_Clicked_NEWQUEST() {
 	g_playerBook.forcePage(BOOKMODE_STATS);
 	player.skin = 0;
 	ARX_PLAYER_Restore_Skin();
-	ARXmenu.currentmode = Mode_CharacterCreation;
+	ARXmenu.requestMode(Mode_CharacterCreation);
 }
 
 static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
@@ -204,7 +204,7 @@ static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 }
 
 void ARX_MENU_Clicked_CREDITS() {
-	ARXmenu.currentmode = Mode_Credits;
+	ARXmenu.requestMode(Mode_Credits);
 	credits::reset();
 	ARX_MENU_LaunchAmb(AMB_CREDITS);
 }
@@ -221,7 +221,7 @@ void ARX_MENU_Launch(bool allowResume) {
 	ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
-	ARXmenu.currentmode = Mode_MainMenu;
+	ARXmenu.requestMode(Mode_MainMenu);
 	ARX_Menu_Resources_Create();
 	Menu2_Open();
 }
@@ -229,7 +229,7 @@ void ARX_MENU_Launch(bool allowResume) {
 void ARX_Menu_Manage() {
 	
 	// looks for keys for each mode.
-	switch(ARXmenu.currentmode) {
+	switch(ARXmenu.mode()) {
 		case Mode_InGame: {
 			// Checks for ESC key
 			if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)) {
@@ -260,7 +260,7 @@ void ARX_Menu_Manage() {
 			   && !bFadeInOut // XS: Disabling ESC capture while fading in or out.
 			) {
 				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-				ARXmenu.currentmode = Mode_MainMenu;
+				ARXmenu.requestMode(Mode_MainMenu);
 			}
 			break;
 		}
@@ -295,14 +295,14 @@ void ARX_Menu_Manage() {
 //-----------------------------------------------------------------------------
 void ARX_Menu_Render() {
 	
-	if(ARXmenu.currentmode == Mode_InGame)
+	if(ARXmenu.mode() == Mode_InGame)
 		return;
 	
-	if(Mode_CharacterCreation == ARXmenu.currentmode || Mode_Credits == ARXmenu.currentmode) {
+	if(Mode_CharacterCreation == ARXmenu.mode() || Mode_Credits == ARXmenu.mode()) {
 		
 		delete g_mainMenu, g_mainMenu = NULL;
 		
-		if(ARXmenu.currentmode == Mode_Credits){
+		if(ARXmenu.mode() == Mode_Credits){
 			credits::render();
 			return;
 		}
@@ -311,7 +311,7 @@ void ARX_Menu_Render() {
 		return;
 	}
 	
-	if(ARXmenu.currentmode == Mode_InGame)
+	if(ARXmenu.mode() == Mode_InGame)
 		return;
 	
 	
@@ -321,7 +321,7 @@ void ARX_Menu_Render() {
 	
 	//-------------------------------------------------------------------------
 	
-	if(ARXmenu.currentmode == Mode_CharacterCreation && ARXmenu.mda) {
+	if(ARXmenu.mode() == Mode_CharacterCreation && ARXmenu.mda) {
 		
 		UseRenderState state(render2D().noBlend());
 		
@@ -504,10 +504,10 @@ void ARX_Menu_Render() {
 		pTextManage->Render();
 	}
 	
-	if(ARXmenu.currentmode != Mode_Credits)
+	if(ARXmenu.mode() != Mode_Credits)
 		ARX_INTERFACE_RenderCursor(true);
 	
-	if(ARXmenu.currentmode == Mode_CharacterCreation) {
+	if(ARXmenu.mode() == Mode_CharacterCreation) {
 		if(MenuFader_process(bFadeInOut)) {
 			switch(iFadeAction) {
 				case Mode_InGame:

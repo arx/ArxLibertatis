@@ -251,7 +251,7 @@ void Menu2_Render() {
 	
 	if(requestedMenuState == RESUME_GAME) {
 		pTextManage->Clear();
-		ARXmenu.currentmode = Mode_InGame;
+		ARXmenu.requestMode(Mode_InGame);
 		
 		delete g_mainMenu, g_mainMenu = NULL;
 		
@@ -916,7 +916,7 @@ void Menu2_Open() {
 
 void Menu2_Close() {
 	
-	ARXmenu.currentmode = Mode_InGame;
+	ARXmenu.requestMode(Mode_InGame);
 	
 	delete g_mainMenu, g_mainMenu = NULL;
 	delete pMenuCursor, pMenuCursor = NULL;
