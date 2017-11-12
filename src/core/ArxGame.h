@@ -92,8 +92,6 @@ private:
 	void handlePlayerDeath();
 	void updateActiveCamera();
 	
-	bool isInMenu() const;
-	
 	void renderMenu();
 	
 	void updateLevel();
