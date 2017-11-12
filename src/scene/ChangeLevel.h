@@ -60,7 +60,7 @@ bool ARX_CHANGELEVEL_StartNew();
 /*!
  * Load a GameSave
  */
-long ARX_CHANGELEVEL_Load(const fs::path & savefile);
+void ARX_CHANGELEVEL_Load(const fs::path & savefile);
 
 bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile);
 
