@@ -238,7 +238,7 @@ void ARXMenu_ResumeGame() {
 }
 
 void ARXMenu_NewQuest() {
-	MenuFader_start(true, true, AMCM_NEWQUEST);
+	MenuFader_start(true, true, Mode_CharacterCreation);
 	bQuickGenFirstClick = true;
 	player.gold = 0;
 	ARX_PLAYER_MakeFreshHero();

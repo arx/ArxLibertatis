@@ -194,7 +194,7 @@ void ARX_MENU_Clicked_NEWQUEST() {
 	g_playerBook.forcePage(BOOKMODE_STATS);
 	player.skin = 0;
 	ARX_PLAYER_Restore_Skin();
-	ARXmenu.currentmode = AMCM_NEWQUEST;
+	ARXmenu.currentmode = Mode_CharacterCreation;
 }
 
 static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
@@ -255,7 +255,7 @@ void ARX_Menu_Manage() {
 			}
 			break;
 		}
-		case AMCM_NEWQUEST: {
+		case Mode_CharacterCreation: {
 			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
 			   && !bFadeInOut // XS: Disabling ESC capture while fading in or out.
 			) {
@@ -298,7 +298,7 @@ void ARX_Menu_Render() {
 	if(ARXmenu.currentmode == Mode_InGame)
 		return;
 	
-	if(AMCM_NEWQUEST == ARXmenu.currentmode || Mode_Credits == ARXmenu.currentmode) {
+	if(Mode_CharacterCreation == ARXmenu.currentmode || Mode_Credits == ARXmenu.currentmode) {
 		
 		delete g_mainMenu, g_mainMenu = NULL;
 		
@@ -321,7 +321,7 @@ void ARX_Menu_Render() {
 	
 	//-------------------------------------------------------------------------
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST && ARXmenu.mda) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation && ARXmenu.mda) {
 		
 		UseRenderState state(render2D().noBlend());
 		
@@ -507,7 +507,7 @@ void ARX_Menu_Render() {
 	if(ARXmenu.currentmode != Mode_Credits)
 		ARX_INTERFACE_RenderCursor(true);
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+	if(ARXmenu.currentmode == Mode_CharacterCreation) {
 		if(MenuFader_process(bFadeInOut)) {
 			switch(iFadeAction) {
 				case Mode_InGame:

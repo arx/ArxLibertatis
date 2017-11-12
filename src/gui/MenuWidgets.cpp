@@ -301,7 +301,7 @@ void Menu2_Render() {
 				ARX_MENU_Clicked_CREDITS();
 				MenuFader_start(true, false, -1);
 				break;
-			case AMCM_NEWQUEST:
+			case Mode_CharacterCreation:
 				ARX_MENU_Clicked_NEWQUEST();
 				MenuFader_start(true, false, -1);
 				cinematicBorder.reset();

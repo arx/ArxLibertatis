@@ -70,7 +70,7 @@ enum MenuMode {
 	Mode_InGame,
 	Mode_MainMenu,
 	Mode_Credits,
-	AMCM_NEWQUEST
+	Mode_CharacterCreation
 };
 
 // ARX_MENU_DATA contains all Menu-datas
