@@ -613,7 +613,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			if(   !(player.m_currentMovement & PLAYER_CROUCH)
 			   && !BLOCK_PLAYER_CONTROLS
 			   && GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
-			   && ARXmenu.currentmode == AMCM_OFF
+			   && ARXmenu.currentmode == Mode_InGame
 			) {
 				if(!MAGICMODE) {
 					if(player.Interface & INTER_PLAYERBOOK) {

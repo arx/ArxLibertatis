@@ -483,7 +483,7 @@ void ARX_SPELLS_Fizzle(SpellBase * spell) {
 void ARX_SPELLS_ManageMagic() {
 	arx_assert(entities.player());
 	
-	if(ARXmenu.currentmode!=AMCM_OFF)
+	if(ARXmenu.currentmode!=Mode_InGame)
 		return;
 
 	Entity *io = entities.player();

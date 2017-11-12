@@ -251,7 +251,7 @@ void Menu2_Render() {
 	
 	if(requestedMenuState == RESUME_GAME) {
 		pTextManage->Clear();
-		ARXmenu.currentmode = AMCM_OFF;
+		ARXmenu.currentmode = Mode_InGame;
 		
 		delete g_mainMenu, g_mainMenu = NULL;
 		
@@ -306,7 +306,7 @@ void Menu2_Render() {
 				MenuFader_start(true, false, -1);
 				cinematicBorder.reset();
 				break;
-			case AMCM_OFF:
+			case Mode_InGame:
 				mainApp->quit();
 				MenuFader_start(true, false, -1);
 				break;
@@ -916,7 +916,7 @@ void Menu2_Open() {
 
 void Menu2_Close() {
 	
-	ARXmenu.currentmode = AMCM_OFF;
+	ARXmenu.currentmode = Mode_InGame;
 	
 	delete g_mainMenu, g_mainMenu = NULL;
 	delete pMenuCursor, pMenuCursor = NULL;
