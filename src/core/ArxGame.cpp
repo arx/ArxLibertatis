@@ -644,7 +644,7 @@ static bool HandleGameFlowTransitions() {
 	}
 
 	if(GInput->isAnyKeyPressed()) {
-		ARXmenu.currentmode = Mode_MainMenu;
+		ARXmenu.requestMode(Mode_MainMenu);
 		ARX_MENU_Launch(false);
 		GameFlow::setTransition(GameFlow::InGame);
 	}
@@ -1289,11 +1289,11 @@ void ArxGame::doFrame() {
 	) {
 		
 		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD) && savegames.size() > 0) {
-			ARXmenu.currentmode = Mode_InGame;
+			ARXmenu.requestMode(Mode_InGame);
 			ARX_QuickLoad();
 		}
 		
-		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE) && ARXmenu.currentmode == Mode_InGame) {
+		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE) && ARXmenu.mode() == Mode_InGame) {
 			g_hudRoot.quickSaveIconGui.show();
 			GRenderer->getSnapshot(savegame_thumbnail, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
 			ARX_QuickSave();
@@ -1657,7 +1657,7 @@ void ArxGame::updateInput() {
 	
 	
 	// Overwrite the mouse button status when menu is active
-	if(ARXmenu.currentmode != Mode_InGame) {
+	if(ARXmenu.mode() != Mode_InGame) {
 		
 		EERIEMouseButton = 0;
 		
@@ -1740,7 +1740,7 @@ void ArxGame::updateInput() {
 }
 
 bool ArxGame::isInMenu() const {
-	return ARXmenu.currentmode != Mode_InGame;
+	return ARXmenu.mode() != Mode_InGame;
 }
 
 void ArxGame::renderMenu() {
@@ -2015,7 +2015,7 @@ void ArxGame::renderLevel() {
 	g_renderBatcher.clear();
 	
 	// Draw game interface if needed
-	if(ARXmenu.currentmode == Mode_InGame && !cinematicBorder.isActive()) {
+	if(ARXmenu.mode() == Mode_InGame && !cinematicBorder.isActive()) {
 	
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 		
@@ -2096,7 +2096,7 @@ void ArxGame::render() {
 	{
 	g_cursorOverBook = false;
 	
-	if(ARXmenu.currentmode == Mode_InGame) { // Playing Game
+	if(ARXmenu.mode() == Mode_InGame) { // Playing Game
 		// Checks Clicks in Book Interface
 		if(ARX_INTERFACE_MouseInBook()) {
 			g_cursorOverBook = true;
@@ -2119,7 +2119,7 @@ void ArxGame::render() {
 		}
 	}
 	
-	if(!player.m_paralysed || ARXmenu.currentmode != Mode_InGame) {
+	if(!player.m_paralysed || ARXmenu.mode() != Mode_InGame) {
 		if(!STOP_KEYBOARD_INPUT) {
 			manageKeyMouse();
 		} else {
@@ -2184,7 +2184,7 @@ void ArxGame::render() {
 	
 	g_console.draw();
 	
-	if(ARXmenu.currentmode == Mode_InGame) {
+	if(ARXmenu.mode() == Mode_InGame) {
 		ARX_SCRIPT_AllowInterScriptExec();
 		ARX_SCRIPT_EventStackExecute();
 		// Updates Damages Spheres

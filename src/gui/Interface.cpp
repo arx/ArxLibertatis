@@ -1085,7 +1085,7 @@ void ArxGame::managePlayerControls() {
 	
 	// MAGIC
 	if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) {
-		if(!(player.m_currentMovement & PLAYER_CROUCH) && !BLOCK_PLAYER_CONTROLS && ARXmenu.currentmode == Mode_InGame) {
+		if(!(player.m_currentMovement & PLAYER_CROUCH) && !BLOCK_PLAYER_CONTROLS && ARXmenu.mode() == Mode_InGame) {
 			if(!ARX_SOUND_IsPlaying(SND_MAGIC_AMBIENT))
 				ARX_SOUND_PlaySFX(SND_MAGIC_AMBIENT, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 		}
@@ -1421,7 +1421,7 @@ void ARX_INTERFACE_Reset()
 void ArxGame::manageKeyMouse() {
 	arx_assert(entities.player());
 	
-	if(ARXmenu.currentmode == Mode_InGame) {
+	if(ARXmenu.mode() == Mode_InGame) {
 		Entity * pIO = NULL;
 
 		if(!BLOCK_PLAYER_CONTROLS) {
@@ -1547,7 +1547,7 @@ void ArxGame::manageKeyMouse() {
 			PLAYER_MOUSELOOK_ON = false;
 	}
 
-	if(ARXmenu.currentmode != Mode_InGame) {
+	if(ARXmenu.mode() != Mode_InGame) {
 		PLAYER_MOUSELOOK_ON = false;
 	}
 
@@ -1753,7 +1753,7 @@ void ArxGame::manageKeyMouse() {
 
 				eyeball.angle.setPitch(MAKEANGLE(eyeball.angle.getPitch()));
 				eyeball.angle.setYaw(MAKEANGLE(eyeball.angle.getYaw() - rotation.x));
-			} else if(ARXmenu.currentmode != Mode_CharacterCreation) {
+			} else if(ARXmenu.mode() != Mode_CharacterCreation) {
 
 				float iangle = player.angle.getPitch();
 

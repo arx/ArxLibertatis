@@ -73,8 +73,18 @@ enum MenuMode {
 };
 
 struct ARX_MENU_DATA {
-	MenuMode currentmode;
+	
 	MENU_DYNAMIC_DATA * mda;
+	
+	MenuMode mode() {
+		return m_currentMode;
+	}
+	void requestMode(MenuMode mode) {
+		m_currentMode = mode;
+	}
+	
+private:
+	MenuMode m_currentMode;
 };
 
 extern ARX_MENU_DATA ARXmenu;

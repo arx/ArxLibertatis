@@ -456,7 +456,7 @@ void Credits::render() {
 	if(!init()) {
 		LogError << "Could not initialize credits";
 		reset();
-		ARXmenu.currentmode = Mode_MainMenu;
+		ARXmenu.requestMode(Mode_MainMenu);
 		MenuFader_start(true, false, -1);
 	}
 	
@@ -557,7 +557,7 @@ void Credits::render() {
 
 	if(MenuFader_process(bFadeInOut) && iFadeAction == Mode_MainMenu) {
 		reset();
-		ARXmenu.currentmode = Mode_MainMenu;
+		ARXmenu.requestMode(Mode_MainMenu);
 		MenuFader_start(true, false, -1);
 	}
 	
