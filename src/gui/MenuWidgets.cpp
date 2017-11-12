@@ -383,6 +383,8 @@ void MenuWindow::Render() {
 		m_currentPage->Update(m_pos);
 	}
 	
+	if(m_currentPage) {
+	
 	// Draw backgound and border
 	{
 		UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
@@ -393,7 +395,6 @@ void MenuWindow::Render() {
 	EERIEDrawBitmap(Rectf(m_pos, RATIO_X(m_border->m_size.x), RATIO_Y(m_border->m_size.y)),
 	                0, m_border, Color::white);
 	
-	if(m_currentPage) {
 		m_currentPage->Render();
 		
 		if(g_debugInfo == InfoPanelGuiDebug)
