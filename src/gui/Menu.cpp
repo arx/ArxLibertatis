@@ -324,7 +324,7 @@ void CharacterCreationRender() {
 	
 	//-------------------------------------------------------------------------
 	
-	if(ARXmenu.mode() == Mode_CharacterCreation && ARXmenu.mda) {
+	if(ARXmenu.mda) {
 		
 		UseRenderState state(render2D().noBlend());
 		
@@ -507,10 +507,8 @@ void CharacterCreationRender() {
 		pTextManage->Render();
 	}
 	
-	if(ARXmenu.mode() != Mode_Credits)
 		ARX_INTERFACE_RenderCursor(true);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
+		
 		if(MenuFader_process(bFadeInOut)) {
 			switch(iFadeAction) {
 				case Mode_InGame:
@@ -523,5 +521,4 @@ void CharacterCreationRender() {
 					break;
 			}
 		}
-	}
 }
