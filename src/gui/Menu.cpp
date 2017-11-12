@@ -312,9 +312,7 @@ void ARX_Menu_Render() {
 		}
 	}
 	
-	if(ARXmenu.mode() == Mode_InGame)
-		return;
-	
+	arx_assert(ARXmenu.mode() == Mode_CharacterCreation);
 	
 	GRenderer->Clear(Renderer::ColorBuffer);
 	
