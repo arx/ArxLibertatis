@@ -456,7 +456,7 @@ void Credits::render() {
 	if(!init()) {
 		LogError << "Could not initialize credits";
 		reset();
-		ARXmenu.currentmode = AMCM_MAIN;
+		ARXmenu.currentmode = Mode_MainMenu;
 		MenuFader_start(true, false, -1);
 	}
 	
@@ -549,15 +549,15 @@ void Credits::render() {
 			break; //it's useless to continue because next phrase will not be inside the viewport
 	}
 	
-	if(m_firstVisibleLine >= m_lines.size() && iFadeAction != AMCM_MAIN) {
+	if(m_firstVisibleLine >= m_lines.size() && iFadeAction != Mode_MainMenu) {
 		
-		MenuFader_start(true, true, AMCM_MAIN);
+		MenuFader_start(true, true, Mode_MainMenu);
 		ARX_MENU_LaunchAmb(AMB_MENU);
 	}
 
-	if(MenuFader_process(bFadeInOut) && iFadeAction == AMCM_MAIN) {
+	if(MenuFader_process(bFadeInOut) && iFadeAction == Mode_MainMenu) {
 		reset();
-		ARXmenu.currentmode = AMCM_MAIN;
+		ARXmenu.currentmode = Mode_MainMenu;
 		MenuFader_start(true, false, -1);
 	}
 	

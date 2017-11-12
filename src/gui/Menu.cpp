@@ -221,7 +221,7 @@ void ARX_MENU_Launch(bool allowResume) {
 	ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
-	ARXmenu.currentmode = AMCM_MAIN;
+	ARXmenu.currentmode = Mode_MainMenu;
 	ARX_Menu_Resources_Create();
 	Menu2_Open();
 }
@@ -260,11 +260,11 @@ void ARX_Menu_Manage() {
 			   && !bFadeInOut // XS: Disabling ESC capture while fading in or out.
 			) {
 				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-				ARXmenu.currentmode = AMCM_MAIN;
+				ARXmenu.currentmode = Mode_MainMenu;
 			}
 			break;
 		}
-		case AMCM_MAIN: {
+		case Mode_MainMenu: {
 			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
 			   && MENU_NoActiveWindow()
 			   && g_canResumeGame
@@ -279,7 +279,7 @@ void ARX_Menu_Manage() {
 			   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Spacebar)
 			) {
 				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-				MenuFader_start(true, true, AMCM_MAIN);
+				MenuFader_start(true, true, Mode_MainMenu);
 				ARX_MENU_LaunchAmb(AMB_MENU);
 			}
 			break;
