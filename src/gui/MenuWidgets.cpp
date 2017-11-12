@@ -122,7 +122,7 @@ void ARX_QuickSave() {
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
 }
 
-static bool ARX_LoadGame(const SaveGame & save) {
+static void ARX_LoadGame(const SaveGame & save) {
 	
 	benchmark::begin(benchmark::LoadLevel);
 	
@@ -132,11 +132,9 @@ static bool ARX_LoadGame(const SaveGame & save) {
 	progressBarAdvance();
 	LoadLevelScreen(save.level);
 	
-	long ret = ARX_CHANGELEVEL_Load(save.savefile);
+	ARX_CHANGELEVEL_Load(save.savefile);
 	
 	g_canResumeGame = true;
-	
-	return ret != -1;
 }
 
 void ARX_QuickLoad() {
