@@ -1739,13 +1739,6 @@ void ArxGame::updateInput() {
 #endif
 }
 
-void ArxGame::renderMenu() {
-	
-	ARX_Menu_Render();
-
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat); // << NEEDED?
-}
-
 extern int iHighLight;
 
 void ArxGame::updateLevel() {
@@ -2139,7 +2132,8 @@ void ArxGame::render() {
 	
 	if(ARXmenu.mode() != Mode_InGame) {
 		benchmark::begin(benchmark::Menu);
-		renderMenu();
+		ARX_Menu_Render();
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat); // << NEEDED?
 	} else if(isInCinematic()) {
 		benchmark::begin(benchmark::Cinematic);
 		cinematicRender();
