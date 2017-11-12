@@ -295,8 +295,7 @@ void ARX_Menu_Manage() {
 //-----------------------------------------------------------------------------
 void ARX_Menu_Render() {
 	
-	if(ARXmenu.mode() == Mode_InGame)
-		return;
+	arx_assert(ARXmenu.mode() != Mode_InGame);
 	
 	if(Mode_CharacterCreation == ARXmenu.mode() || Mode_Credits == ARXmenu.mode()) {
 		
