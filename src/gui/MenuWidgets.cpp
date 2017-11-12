@@ -152,16 +152,16 @@ void ARX_QuickLoad() {
 	ARX_LoadGame(*save);
 }
 
-bool ARX_SlotLoad(SavegameHandle slotIndex) {
+void ARX_SlotLoad(SavegameHandle slotIndex) {
 	
 	if(slotIndex.handleData() >= (int)savegames.size()) {
 		// Invalid slot!
-		return false;
+		return;
 	}
 	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
-	return ARX_LoadGame(savegames[slotIndex.handleData()]);
+	ARX_LoadGame(savegames[slotIndex.handleData()]);
 }
 
 bool MENU_NoActiveWindow() {
