@@ -92,8 +92,6 @@ private:
 	void handlePlayerDeath();
 	void updateActiveCamera();
 	
-	void renderMenu();
-	
 	void updateLevel();
 	void renderLevel();
 	
