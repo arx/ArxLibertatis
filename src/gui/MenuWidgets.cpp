@@ -189,7 +189,7 @@ static void Check_Apply() {
 
 
 
-void Menu2_Render() {
+void MainMenuDoFrame() {
 	
 	if(pMenuCursor == NULL) {
 		pMenuCursor = new MenuCursor();

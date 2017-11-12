@@ -309,7 +309,7 @@ void ARX_Menu_Render() {
 			return;
 		}
 		case Mode_MainMenu: {
-			Menu2_Render();
+			MainMenuDoFrame();
 			return;
 		}
 	}
