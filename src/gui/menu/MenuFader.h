@@ -20,14 +20,19 @@
 #ifndef ARX_GUI_MENU_MENUFADER_H
 #define ARX_GUI_MENU_MENUFADER_H
 
+enum Fade {
+	Fade_Out,
+	Fade_In
+};
+
 extern bool g_menuFadeActive;
-extern bool bFadeInOut;
+extern Fade bFadeInOut;
 extern int iFadeAction;
 
 void MenuFader_reset();
 
 bool MenuFader_process();
 
-void MenuFader_start(bool fadeInOut, int fadeAction);
+void MenuFader_start(Fade fadeInOut, int fadeAction);
 
 #endif // ARX_GUI_MENU_MENUFADER_H
