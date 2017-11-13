@@ -47,7 +47,6 @@
 #include "scene/Interactive.h"
 #include "script/Script.h"
 
-long BOOKZOOM = 0;
 long IN_BOOK_DRAW = 0;
 
 long FLYING_OVER = 0;
@@ -229,7 +228,6 @@ void PlayerBook::toggle() {
 		g_playerInventoryHud.close();
 	}
 
-	BOOKZOOM = 0;
 	pTextManage->Clear();
 
 	TRUE_PLAYER_MOUSELOOK_ON = false;
@@ -964,7 +962,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 		return;
 	
 	Rect rec;
-	if (BOOKZOOM) {
+	if (ARXmenu.mode() == Mode_CharacterCreation) {
 		
 		rec = Rect(s32((120.f + BOOKDEC.x) * g_sizeRatio.x), s32((69.f + BOOKDEC.y) * g_sizeRatio.y),
 				   s32((330.f + BOOKDEC.x) * g_sizeRatio.x), s32((300.f + BOOKDEC.y) * g_sizeRatio.y));
@@ -982,9 +980,6 @@ void StatsPage::RenderBookPlayerCharacter() {
 		
 		rec.right -= 50;
 	}
-	
-	if(ARXmenu.mode() == Mode_InGame)
-		BOOKZOOM = 0;
 	
 	Vec3f pos;
 	EERIE_LIGHT eLight1;
@@ -1024,7 +1019,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	
 	GRenderer->SetAntialiasing(true);
 	
-	if(BOOKZOOM) {
+	if(ARXmenu.mode() == Mode_CharacterCreation) {
 		Rect vp;
 		vp.left = static_cast<int>(rec.left + 52.f * g_sizeRatio.x);
 		vp.top = rec.top;
@@ -1095,7 +1090,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	
 	player.m_improve = ti;
 	
-	if(BOOKZOOM) {
+	if(ARXmenu.mode() == Mode_CharacterCreation) {
 		GRenderer->SetScissor(Rect::ZERO);
 	}
 	
@@ -1196,7 +1191,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 		}
 	}
 	
-	if(!BOOKZOOM)
+	if(!(ARXmenu.mode() == Mode_CharacterCreation))
 		ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 	
 }

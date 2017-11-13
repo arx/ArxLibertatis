@@ -332,8 +332,6 @@ void CharacterCreationRender() {
 			EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, ARXmenu.mda->BookBackground, Color::white);
 		}
 		
-		BOOKZOOM = 1;
-		
 		ARX_INTERFACE_ManageOpenedBook();
 		
 		
@@ -425,7 +423,6 @@ void CharacterCreationRender() {
 				
 				if(eeMouseUp1()) {
 					player.m_cheatSkinButtonClickCount++;
-					BOOKZOOM = 1;
 					ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 					player.skin++;
 					
