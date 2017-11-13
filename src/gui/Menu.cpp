@@ -246,7 +246,7 @@ void ARX_Menu_Manage() {
 					g_gameTime.pause(GameTime::PauseMenu);
 					
 					ARX_MENU_Launch(true);
-					bFadeInOut=false;	//fade out
+					bFadeInOut = Fade_Out;	//fade out
 					g_menuFadeActive = true; //active le fade
 					TRUE_PLAYER_MOUSELOOK_ON = false;
 
@@ -257,7 +257,7 @@ void ARX_Menu_Manage() {
 		}
 		case Mode_CharacterCreation: {
 			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
-			   && !bFadeInOut // XS: Disabling ESC capture while fading in or out.
+			   && bFadeInOut == Fade_Out //TODO: comment seems incorrect -> // XS: Disabling ESC capture while fading in or out.
 			) {
 				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 				ARXmenu.requestMode(Mode_MainMenu);
@@ -279,7 +279,7 @@ void ARX_Menu_Manage() {
 			   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Spacebar)
 			) {
 				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-				MenuFader_start(true, Mode_MainMenu);
+				MenuFader_start(Fade_In, Mode_MainMenu);
 				ARX_MENU_LaunchAmb(AMB_MENU);
 			}
 			break;
@@ -473,7 +473,7 @@ void CharacterCreationRender() {
 						
 						ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 						
-						MenuFader_start(true, Mode_InGame);
+						MenuFader_start(Fade_In, Mode_InGame);
 					}
 				} else {
 					if(DONE)

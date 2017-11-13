@@ -26,7 +26,7 @@
 #include "gui/MenuWidgets.h"
 
 bool g_menuFadeActive=false;
-bool bFadeInOut=false;
+Fade bFadeInOut = Fade_Out;
 int iFadeAction=-1;
 
 static PlatformDuration menuFadeElapsed = 0;
@@ -82,7 +82,7 @@ bool MenuFader_process() {
 	if(!g_menuFadeActive)
 		return true;
 
-	if(bFadeInOut) {
+	if(bFadeInOut == Fade_In) {
 		menuFadeElapsed = menuFadeElapsed + g_platformTime.lastFrameDuration();
 		
 		if(menuFadeElapsed > fadeDuration) {
@@ -101,7 +101,7 @@ bool MenuFader_process() {
 	return false;
 }
 
-void MenuFader_start(bool fadeInOut, int fadeAction) {
+void MenuFader_start(Fade fadeInOut, int fadeAction) {
 	g_menuFadeActive = true;
 	bFadeInOut = fadeInOut;
 	iFadeAction = fadeAction;
