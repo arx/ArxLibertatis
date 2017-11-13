@@ -1908,7 +1908,11 @@ void ArxGame::updateLevel() {
 	}
 
 	ARX_SPELLS_Precast_Check();
-	ARX_SPELLS_ManageMagic();
+	
+	if(ARXmenu.mode() == Mode_InGame) {
+		ARX_SPELLS_ManageMagic();
+	}
+	
 	ARX_SPELLS_UpdateSymbolDraw();
 
 	ManageTorch();
