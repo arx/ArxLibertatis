@@ -279,7 +279,7 @@ void ARX_Menu_Manage() {
 			   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Spacebar)
 			) {
 				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-				MenuFader_start(true, true, Mode_MainMenu);
+				MenuFader_start(true, Mode_MainMenu);
 				ARX_MENU_LaunchAmb(AMB_MENU);
 			}
 			break;
@@ -473,7 +473,7 @@ void CharacterCreationRender() {
 						
 						ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 						
-						MenuFader_start(true, true, Mode_InGame);
+						MenuFader_start(true, Mode_InGame);
 					}
 				} else {
 					if(DONE)

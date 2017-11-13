@@ -28,6 +28,6 @@ void MenuFader_reset();
 
 bool MenuFader_process();
 
-void MenuFader_start(bool fade, bool fadeInOut, int fadeAction);
+void MenuFader_start(bool fadeInOut, int fadeAction);
 
 #endif // ARX_GUI_MENU_MENUFADER_H

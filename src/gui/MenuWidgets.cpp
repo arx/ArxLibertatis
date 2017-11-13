@@ -295,16 +295,16 @@ void MainMenuDoFrame() {
 		switch(iFadeAction) {
 			case Mode_Credits:
 				ARX_MENU_Clicked_CREDITS();
-				MenuFader_start(true, false, -1);
+				MenuFader_start(false, -1);
 				break;
 			case Mode_CharacterCreation:
 				ARX_MENU_Clicked_NEWQUEST();
-				MenuFader_start(true, false, -1);
+				MenuFader_start(false, -1);
 				cinematicBorder.reset();
 				break;
 			case Mode_InGame:
 				mainApp->quit();
-				MenuFader_start(true, false, -1);
+				MenuFader_start(false, -1);
 				break;
 		}
 	}
