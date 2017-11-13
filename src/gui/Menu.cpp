@@ -246,8 +246,7 @@ void ARX_Menu_Manage() {
 					g_gameTime.pause(GameTime::PauseMenu);
 					
 					ARX_MENU_Launch(true);
-					bFadeInOut = Fade_Out;	//fade out
-					g_menuFadeActive = true; //active le fade
+					MenuFader_start(Fade_Out, -1); // TODO: does this fader even work ?
 					TRUE_PLAYER_MOUSELOOK_ON = false;
 
 					ARX_PLAYER_PutPlayerInNormalStance();
