@@ -187,8 +187,6 @@ extern ParticleManager * pParticleManager;
 extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
 extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
-long STOP_KEYBOARD_INPUT= 0;
-
 bool EXTERNALVIEW = false;
 bool SHOW_INGAME_MINIMAP = true;
 
@@ -2113,14 +2111,7 @@ void ArxGame::render() {
 	}
 	
 	if(!player.m_paralysed || ARXmenu.mode() != Mode_InGame) {
-		if(!STOP_KEYBOARD_INPUT) {
 			manageKeyMouse();
-		} else {
-			STOP_KEYBOARD_INPUT++;
-			
-			if(STOP_KEYBOARD_INPUT > 2)
-				STOP_KEYBOARD_INPUT = 0;
-		}
 	}
 	}
 
