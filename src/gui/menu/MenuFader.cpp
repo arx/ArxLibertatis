@@ -72,7 +72,7 @@ static void FadeInOut(float _fVal) {
 	
 }
 
-bool MenuFader_process(bool _bFadeIn) {
+bool MenuFader_process() {
 	
 	const PlatformDuration fadeDuration = PlatformDurationMs(1000);
 	
@@ -82,7 +82,7 @@ bool MenuFader_process(bool _bFadeIn) {
 	if(!g_menuFadeActive)
 		return true;
 
-	if(_bFadeIn) {
+	if(bFadeInOut) {
 		menuFadeElapsed = menuFadeElapsed + g_platformTime.lastFrameDuration();
 		
 		if(menuFadeElapsed > fadeDuration) {
