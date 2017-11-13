@@ -483,9 +483,6 @@ void ARX_SPELLS_Fizzle(SpellBase * spell) {
 void ARX_SPELLS_ManageMagic() {
 	arx_assert(entities.player());
 	
-	if(ARXmenu.mode() != Mode_InGame)
-		return;
-
 	Entity *io = entities.player();
 	
 	const ANIM_HANDLE * anim = io->animlayer[1].cur_anim;
