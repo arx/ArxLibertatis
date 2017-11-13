@@ -101,8 +101,8 @@ bool MenuFader_process() {
 	return false;
 }
 
-void MenuFader_start(bool fade, bool fadeInOut, int fadeAction) {
-	g_menuFadeActive = fade;
+void MenuFader_start(bool fadeInOut, int fadeAction) {
+	g_menuFadeActive = true;
 	bFadeInOut = fadeInOut;
 	iFadeAction = fadeAction;
 }

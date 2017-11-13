@@ -457,7 +457,7 @@ void Credits::render() {
 		LogError << "Could not initialize credits";
 		reset();
 		ARXmenu.requestMode(Mode_MainMenu);
-		MenuFader_start(true, false, -1);
+		MenuFader_start(false, -1);
 	}
 	
 	// Draw the background
@@ -551,14 +551,14 @@ void Credits::render() {
 	
 	if(m_firstVisibleLine >= m_lines.size() && iFadeAction != Mode_MainMenu) {
 		
-		MenuFader_start(true, true, Mode_MainMenu);
+		MenuFader_start(true, Mode_MainMenu);
 		ARX_MENU_LaunchAmb(AMB_MENU);
 	}
 
 	if(MenuFader_process() && iFadeAction == Mode_MainMenu) {
 		reset();
 		ARXmenu.requestMode(Mode_MainMenu);
-		MenuFader_start(true, false, -1);
+		MenuFader_start(false, -1);
 	}
 	
 }

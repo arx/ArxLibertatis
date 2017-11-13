@@ -2108,7 +2108,7 @@ public:
 private:
 	
 	void onClickedYes() {
-		MenuFader_start(true, true, Mode_InGame);
+		MenuFader_start(true, Mode_InGame);
 	}
 };
 
@@ -2316,7 +2316,7 @@ void MainMenu::onClickedNewQuest() {
 }
 
 void MainMenu::onClickedCredits() {
-	MenuFader_start(true, true, Mode_Credits);
+	MenuFader_start(true, Mode_Credits);
 }
 
 
