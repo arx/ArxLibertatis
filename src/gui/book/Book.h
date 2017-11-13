@@ -124,6 +124,4 @@ private:
 
 extern PlayerBook g_playerBook;
 
-extern long BOOKZOOM;
-
 #endif // ARX_GUI_BOOK_BOOK_H
