@@ -291,7 +291,7 @@ void MainMenuDoFrame() {
 	
 	g_thumbnailCursor.render();
 	
-	if(MenuFader_process(bFadeInOut)) {
+	if(MenuFader_process()) {
 		switch(iFadeAction) {
 			case Mode_Credits:
 				ARX_MENU_Clicked_CREDITS();
