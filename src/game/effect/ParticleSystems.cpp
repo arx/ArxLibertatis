@@ -70,8 +70,8 @@ public:
 		m_speed = 13;
 		m_speedRandom = 10;
 		m_startSegment.m_size = 20;
-		m_startSegment.m_color = Color(0, 0, 0, 0).to<float>();
-		m_startSegment.m_colorRandom = Color(0, 0, 0, 0).to<float>();
+		m_startSegment.m_color = Color::none.to<float>();
+		m_startSegment.m_colorRandom = Color::none.to<float>();
 		m_endSegment.m_color = Color(255, 40, 120, 10).to<float>();
 		m_texture.set("graph/particles/(fx)_mr", 0, 500);
 	}
@@ -265,7 +265,7 @@ void particleParametersInit() {
 
 	cp.m_endSegment.m_size = 30;
 	cp.m_endSegment.m_sizeRandom = 5;
-	cp.m_endSegment.m_color = Color(0, 0, 0, 0).to<float>();
+	cp.m_endSegment.m_color = Color::none.to<float>();
 	cp.m_endSegment.m_colorRandom = Color(0, 25, 0, 20).to<float>();
 
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
