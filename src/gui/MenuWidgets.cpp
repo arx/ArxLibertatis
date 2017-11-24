@@ -198,11 +198,6 @@ void MainMenuDoFrame() {
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-	
-	if(pTextManage) {
-		pTextManage->Clear();
-	}
-
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
 	UseRenderState state(render2D());
@@ -277,13 +272,6 @@ void MainMenuDoFrame() {
 	}
 
 	bNoMenu=false;
-
-	// If the menu needs to be reinitialized, then the text in the TextManager is probably using bad fonts that were deleted already
-	// Skip one update in this case
-	if(pTextManage && !g_mainMenu->bReInitAll) {
-		pTextManage->Update(g_platformTime.lastFrameDuration());
-		pTextManage->Render();
-	}
 
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 

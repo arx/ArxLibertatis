@@ -111,10 +111,8 @@ bool TextWidget::OnMouseClick() {
 }
 
 static void FontRenderText(Font * _pFont, const Rectf & rzone, const std::string & _pText, Color _c) {
-	Rect rect(rzone);
-	if(pTextManage && !rect.empty()) {
-		pTextManage->AddText(_pFont, _pText, rect, _c);
-	}
+	
+	ARX_UNICODE_DrawTextInRect(_pFont, rzone.topLeft(), rzone.right, _pText, _c, NULL);
 }
 
 void TextWidget::Render() {
