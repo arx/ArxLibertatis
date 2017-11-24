@@ -67,7 +67,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/Unicode.h"
 
 TextManager * pTextManage = NULL;
-TextManager * pTextManageFlyingOver = NULL;
 
 Font * hFontInBook = NULL;
 Font * hFontMainMenu = NULL;
@@ -320,8 +319,6 @@ bool ARX_Text_Init() {
 	
 	delete pTextManage;
 	pTextManage = new TextManager();
-	delete pTextManageFlyingOver;
-	pTextManageFlyingOver = new TextManager();
 	
 	FontCache::initialize();
 	
@@ -389,9 +386,6 @@ void ARX_Text_Close() {
 	
 	delete pTextManage;
 	pTextManage = NULL;
-	
-	delete pTextManageFlyingOver;
-	pTextManageFlyingOver = NULL;
 	
 	FontCache::releaseFont(hFontInBook);
 	hFontInBook = NULL;
