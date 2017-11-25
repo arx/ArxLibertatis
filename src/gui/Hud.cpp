@@ -1560,7 +1560,7 @@ void HudRoot::draw() {
 	stealthGauge.draw();
 
 	if((player.Interface & INTER_PLAYERBOOK) && !(player.Interface & INTER_COMBATMODE)) {
-		ARX_INTERFACE_ManageOpenedBook();
+		g_playerBook.manage();
 		
 		setHudTextureState();
 	}
