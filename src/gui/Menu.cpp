@@ -323,8 +323,9 @@ void CharacterCreationRender() {
 	
 	//-------------------------------------------------------------------------
 	
-	if(ARXmenu.mda) {
-		
+	arx_assert(ARXmenu.mda);
+	
+	{
 		UseRenderState state(render2D().noBlend());
 		
 		if(ARXmenu.mda->BookBackground != NULL) {
@@ -343,7 +344,6 @@ void CharacterCreationRender() {
 			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 		}
 		
-		if(ARXmenu.mda) {
 			bool DONE = (player.Skill_Redistribute == 0 && player.Attribute_Redistribute == 0);
 			
 			if(!ARXmenu.mda->flyover[FLYING_OVER].empty() ) //=ARXmenu.mda->flyover[FLYING_OVER];
@@ -500,7 +500,6 @@ void CharacterCreationRender() {
 				color = Color(255, 0, 255);
 			
 			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, Vec2i(pos), color);
-		}
 	}
 	
 	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
