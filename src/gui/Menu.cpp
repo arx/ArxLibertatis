@@ -331,7 +331,7 @@ void CharacterCreationRender() {
 			EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, ARXmenu.mda->BookBackground, Color::white);
 		}
 		
-		ARX_INTERFACE_ManageOpenedBook();
+		g_playerBook.manage();
 		
 		
 		if(ARXmenu.mda) {

@@ -161,10 +161,6 @@ static void DrawBookTextCenter(Font* font, const Vec2f & pos, const std::string&
 	UNICODE_ARXDrawTextCenter(font, (BOOKDEC + pos) * g_sizeRatio, text, col);
 }
 
-void ARX_INTERFACE_ManageOpenedBook() {
-	g_playerBook.manage();
-}
-
 PlayerBook::PlayerBook()
 	: m_currentPage(BOOKMODE_STATS)
 { }
