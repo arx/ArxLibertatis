@@ -850,7 +850,7 @@ public:
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(240, 0));
 			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
-			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
+			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
 			txt->SetCheckOff();
 			add(txt);
 			pMenuElementApply = txt;
