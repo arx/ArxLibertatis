@@ -237,7 +237,6 @@ void PlayerBook::manage() {
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 
-	if(ARXmenu.mode() != Mode_CharacterCreation) {
 		switch (currentPage()) {
 			case BOOKMODE_STATS: {
 				stats.manage();
@@ -258,9 +257,6 @@ void PlayerBook::manage() {
 		}
 		
 		drawTopTabs();
-	} else {
-		stats.manageNewQuest();
-	}
 
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
