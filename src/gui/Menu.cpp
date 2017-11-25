@@ -324,13 +324,12 @@ void CharacterCreationRender() {
 	//-------------------------------------------------------------------------
 	
 	arx_assert(ARXmenu.mda);
+	arx_assert(ARXmenu.mda->BookBackground);
 	
 	{
 		UseRenderState state(render2D().noBlend());
 		
-		if(ARXmenu.mda->BookBackground != NULL) {
-			EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, ARXmenu.mda->BookBackground, Color::white);
-		}
+		EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, ARXmenu.mda->BookBackground, Color::white);
 		
 		{
 			UseRenderState state(render2D());
