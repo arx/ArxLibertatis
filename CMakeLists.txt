@@ -969,6 +969,7 @@ set(GRAPHICS_OPENGL_SOURCES
 )
 
 set(GUI_SOURCES
+	src/gui/CharacterCreation.cpp
 	src/gui/CinematicBorder.cpp
 	src/gui/Console.cpp
 	src/gui/Credits.cpp

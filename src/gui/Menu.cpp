@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Player.h"
 
+#include "gui/CharacterCreation.h"
 #include "gui/Credits.h"
 #include "gui/Interface.h"
 #include "gui/MainMenu.h"
@@ -92,20 +93,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 
 extern TextManager * pTextManage;
-extern bool START_NEW_QUEST;
-extern long OLD_FLYING_OVER;
-extern long FLYING_OVER;
 
 extern bool REQUEST_SPEECH_SKIP;
 
 //-----------------------------------------------------------------------------
 // Exported global variables
 
-bool bQuickGenFirstClick = true;
 ARX_MENU_DATA ARXmenu;
 bool g_canResumeGame = true;
-
-static long SP_HEAD = 0;
 
 //-----------------------------------------------------------------------------
 // Menu Sounds
@@ -197,12 +192,6 @@ void ARX_MENU_Clicked_NEWQUEST() {
 	ARXmenu.requestMode(Mode_CharacterCreation);
 }
 
-static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
-	START_NEW_QUEST = true;
-	g_canResumeGame = true;
-	ARX_MENU_Clicked_QUIT();
-}
-
 void ARX_MENU_Clicked_CREDITS() {
 	ARXmenu.requestMode(Mode_Credits);
 	credits::reset();
@@ -288,8 +277,6 @@ void ARX_Menu_Manage() {
 	}
 }
 
-void CharacterCreationRender();
-
 void ARX_Menu_Render() {
 	
 	switch(ARXmenu.mode()) {
@@ -310,186 +297,6 @@ void ARX_Menu_Render() {
 		case Mode_MainMenu: {
 			MainMenuDoFrame();
 			return;
-		}
-	}
-}
-
-void CharacterCreationRender() {
-	arx_assert(ARXmenu.mode() == Mode_CharacterCreation);
-	
-	GRenderer->Clear(Renderer::ColorBuffer);
-	
-	FLYING_OVER = 0;
-	
-	//-------------------------------------------------------------------------
-	
-	arx_assert(ARXmenu.mda);
-	arx_assert(ARXmenu.mda->BookBackground);
-	
-	{
-		UseRenderState state(render2D().noBlend());
-		
-		EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, ARXmenu.mda->BookBackground, Color::white);
-		
-		g_playerBook.stats.manageNewQuest();
-		
-			bool DONE = (player.Skill_Redistribute == 0 && player.Attribute_Redistribute == 0);
-			
-			Vec2f pos;
-			pos.x = 0;
-			pos.y = 313 * g_sizeRatio.y + (g_size.height() - 313 * g_sizeRatio.y) * 0.70f;
-			
-			Vec2f size = g_sizeRatio;
-			size *= 100;
-			
-			Color color = Color::none;
-			
-			//---------------------------------------------------------------------
-			// Button QUICK GENERATION
-			pos.x = (g_size.width() - (513 * g_sizeRatio.x)) * 0.5f;
-			
-			const Rectf quickGenerateButtonMouseTestRect(
-				pos,
-				size.x,
-				size.y
-			);
-			
-			if(quickGenerateButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
-				SpecialCursor = CURSOR_INTERACTION_ON;
-				FLYING_OVER = BUTTON_QUICK_GENERATION;
-				
-				if(eeMousePressed1());
-				else if (eeMouseUp1())
-				{
-					player.m_cheatQuickGenButtonClickCount++;
-					int iSkin = player.skin;
-					ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-					
-					if(bQuickGenFirstClick) {
-						ARX_PLAYER_MakeAverageHero();
-						bQuickGenFirstClick = false;
-					} else {
-						ARX_PLAYER_QuickGeneration();
-					}
-					
-					player.skin = checked_range_cast<char>(iSkin);
-				}
-				
-				color = Color(255, 255, 255);
-			}
-			else
-				color = Color(232, 204, 143);
-			
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, Vec2i(pos), color);
-			
-			//---------------------------------------------------------------------
-			// Button SKIN
-			pos.x = g_size.width() * 0.5f;
-			
-			const Rectf skinButtonMouseTestRect(
-				pos,
-				size.x,
-				size.y
-			);
-			
-			if(skinButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
-				SpecialCursor = CURSOR_INTERACTION_ON;
-				FLYING_OVER = BUTTON_SKIN;
-				
-				if(eeMouseUp1()) {
-					player.m_cheatSkinButtonClickCount++;
-					ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-					player.skin++;
-					
-					if(player.skin > 3)
-						player.skin = 0;
-					
-					ARX_PLAYER_Restore_Skin();
-				}
-				
-				color = Color(255, 255, 255);
-			}
-			else
-				color = Color(232, 204, 143);
-			
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, Vec2i(pos), color);
-			
-			//---------------------------------------------------------------------
-			// Button DONE
-			pos.x = g_size.width() - (g_size.width() - 513 * g_sizeRatio.x) * 0.5f - 40 * g_sizeRatio.x;
-			
-			const Rectf doneButtonMouseTestRect(
-				pos,
-				size.x,
-				size.y
-			);
-			
-			if(doneButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
-				if(DONE)
-					SpecialCursor = CURSOR_INTERACTION_ON;
-				
-				FLYING_OVER = BUTTON_DONE;
-				
-				if(DONE && eeMouseUp1()) {
-					if(player.m_cheatSkinButtonClickCount == 8 && player.m_cheatQuickGenButtonClickCount == 10) {
-						player.m_cheatSkinButtonClickCount = -2;
-					} else if(player.m_cheatSkinButtonClickCount == -1) {
-						ARX_PLAYER_MakeSpHero();
-						player.skin = 4;
-						ARX_PLAYER_Restore_Skin();
-						player.m_cheatSkinButtonClickCount = 0;
-						SP_HEAD = 1;
-					} else {
-						if(SP_HEAD) {
-							player.skin = 4;
-							ARX_PLAYER_Restore_Skin();
-							SP_HEAD = 0;
-						}
-						
-						ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-						
-						MenuFader_start(Fade_In, Mode_InGame);
-					}
-				} else {
-					if(DONE)
-						color = Color(255, 255, 255);
-					else
-						color = Color(192, 192, 192);
-				}
-			} else {
-				if(DONE)
-					color = Color(232, 204, 143);
-				else
-					color = Color(192, 192, 192);
-			}
-			
-			if(player.m_cheatSkinButtonClickCount < 0)
-				color = Color(255, 0, 255);
-			
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, Vec2i(pos), color);
-	}
-	
-	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
-	light->pos.x = 0.f + GInput->getMousePosition().x - (g_size.width() >> 1);
-	light->pos.y = 0.f + GInput->getMousePosition().y - (g_size.height() >> 1);
-	
-	if(pTextManage) {
-		pTextManage->Update(g_platformTime.lastFrameDuration());
-		pTextManage->Render();
-	}
-	
-	ARX_INTERFACE_RenderCursor(true);
-	
-	if(MenuFader_process()) {
-		switch(iFadeAction) {
-			case Mode_InGame:
-				ARX_MENU_NEW_QUEST_Clicked_QUIT();
-				MenuFader_reset();
-				
-				if(pTextManage)
-					pTextManage->Clear();
-				
-				break;
 		}
 	}
 }
