@@ -334,13 +334,7 @@ void CharacterCreationRender() {
 		{
 			UseRenderState state(render2D());
 			
-			GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-			
 			g_playerBook.stats.manageNewQuest();
-			
-			GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
-			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 		}
 		
 			bool DONE = (player.Skill_Redistribute == 0 && player.Attribute_Redistribute == 0);
