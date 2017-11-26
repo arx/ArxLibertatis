@@ -331,11 +331,7 @@ void CharacterCreationRender() {
 		
 		EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, ARXmenu.mda->BookBackground, Color::white);
 		
-		{
-			UseRenderState state(render2D());
-			
-			g_playerBook.stats.manageNewQuest();
-		}
+		g_playerBook.stats.manageNewQuest();
 		
 			bool DONE = (player.Skill_Redistribute == 0 && player.Attribute_Redistribute == 0);
 			
