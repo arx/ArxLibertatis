@@ -335,28 +335,6 @@ void CharacterCreationRender() {
 		
 			bool DONE = (player.Skill_Redistribute == 0 && player.Attribute_Redistribute == 0);
 			
-			if(!ARXmenu.mda->flyover[FLYING_OVER].empty() ) //=ARXmenu.mda->flyover[FLYING_OVER];
-			{
-				if(FLYING_OVER != OLD_FLYING_OVER) {
-					
-					int t = Random::get(0, 2);
-					
-					pTextManage->Clear();
-					OLD_FLYING_OVER = FLYING_OVER;
-					UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-						(g_size.width() * 0.5f),
-						12,
-						(g_size.center().x) * 0.82f,
-						ARXmenu.mda->flyover[FLYING_OVER],
-						Color(232 + t, 204 + t, 143 + t),
-						PlatformDurationMs(1000),
-						0.01f,
-						2);
-				}
-			} else {
-				OLD_FLYING_OVER = -1;
-			}
-			
 			Vec2f pos;
 			pos.x = 0;
 			pos.y = 313 * g_sizeRatio.y + (g_size.height() - 313 * g_sizeRatio.y) * 0.70f;
