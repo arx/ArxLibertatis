@@ -1518,7 +1518,7 @@ void ARX_SCENE_Render() {
 	// To render Dragged objs
 	if(DRAGINTER) {
 		SPECIAL_DRAGINTER_RENDER=1;
-		ARX_INTERFACE_RenderCursor();
+		ARX_INTERFACE_RenderCursor(false);
 		
 		SPECIAL_DRAGINTER_RENDER=0;
 	}

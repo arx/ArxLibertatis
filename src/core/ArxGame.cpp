@@ -2052,11 +2052,11 @@ void ArxGame::renderLevel() {
 	// CURSOR Rendering
 
 	if(DRAGINTER) {
-		ARX_INTERFACE_RenderCursor();
+		ARX_INTERFACE_RenderCursor(false);
 		PopAllTriangleListOpaque();
 		PopAllTriangleListTransparency();
 	} else {
-		ARX_INTERFACE_RenderCursor();
+		ARX_INTERFACE_RenderCursor(false);
 	}
 
 	CheatDrawText();
