@@ -20,16 +20,28 @@
 #ifndef ARX_GUI_CHARACTERCREATION_H
 #define ARX_GUI_CHARACTERCREATION_H
 
+#include <string>
+
 #include "platform/Platform.h"
+
+class TextureContainer;
 
 struct CharacterCreation {
 	
 	CharacterCreation();
 	
+	void loadData();
+	void freeData();
+	
 	void resetCheat();
 	void render();
 
 private:
+	TextureContainer * BookBackground;
+	std::string str_button_quickgen;
+	std::string str_button_skin;
+	std::string str_button_done;
+	
 	s8 m_cheatSkinButtonClickCount;
 	char m_cheatQuickGenButtonClickCount;
 };
