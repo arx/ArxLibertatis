@@ -50,7 +50,6 @@
 long IN_BOOK_DRAW = 0;
 
 long FLYING_OVER = 0;
-long OLD_FLYING_OVER = 0;
 
 //used to redist points - attributes and skill
 long lCursorRedistValue = 0;
@@ -657,7 +656,6 @@ void StatsPage::manageStats()
 		int t = Random::get(0, 2);
 
 		pTextManage->Clear();
-		OLD_FLYING_OVER=FLYING_OVER;
 
 		std::string toDisplay;
 
@@ -681,10 +679,8 @@ void StatsPage::manageStats()
 			0.01f,
 			3,
 			0);
-	} else {
-		OLD_FLYING_OVER=-1;
 	}
-
+	
 	//------------------------------
 	
 	{
@@ -1380,7 +1376,6 @@ void SpellsPage::drawSpells() {
 				}
 			}
 			
-			OLD_FLYING_OVER = FLYING_OVER;
 			pTextManage->Clear();
 			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
 				float(g_size.center().x),
@@ -1443,7 +1438,6 @@ void SpellsPage::drawSpells() {
 	}
 	
 	if(!bFlyingOver) {
-		OLD_FLYING_OVER = -1;
 		FLYING_OVER = -1;
 	}
 }
