@@ -79,6 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/spell/Cheat.h"
 #include "game/effect/Quake.h"
 
+#include "gui/CharacterCreation.h"
 #include "gui/Hud.h"
 #include "gui/Menu.h"
 #include "gui/Text.h"
@@ -798,9 +799,8 @@ void ARX_PLAYER_MakeSpHero()
 
 	player.rune_flags = RuneFlags::all();
 	player.SpellToMemorize.bSpell = false;
-
-	player.m_cheatSkinButtonClickCount = 0;
-	player.m_cheatQuickGenButtonClickCount = 0;
+	
+	g_characterCreation.resetCheat();
 }
 
 /*!
@@ -2457,8 +2457,7 @@ void ARX_PLAYER_Start_New_Quest() {
 	
 	LogInfo << "Starting a new playthrough";
 	
-	player.m_cheatSkinButtonClickCount = 0;
-	player.m_cheatQuickGenButtonClickCount = 0;
+	g_characterCreation.resetCheat();
 	EERIE_PATHFINDER_Clear();
 	EERIE_PATHFINDER_Release();
 	ARX_PLAYER_MakeFreshHero();

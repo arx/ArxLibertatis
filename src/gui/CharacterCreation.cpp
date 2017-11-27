@@ -51,6 +51,11 @@ static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 	ARX_MENU_Clicked_QUIT();
 }
 
+void CharacterCreation::resetCheat() {
+	player.m_cheatSkinButtonClickCount = 0;
+	player.m_cheatQuickGenButtonClickCount = 0;
+}
+
 void CharacterCreation::render() {
 	arx_assert(ARXmenu.mode() == Mode_CharacterCreation);
 	

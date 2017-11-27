@@ -21,6 +21,7 @@
 #define ARX_GUI_CHARACTERCREATION_H
 
 struct CharacterCreation {
+	void resetCheat();
 	void render();
 };
 
