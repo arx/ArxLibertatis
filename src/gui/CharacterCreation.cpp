@@ -35,6 +35,9 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
+
+CharacterCreation g_characterCreation;
+
 bool bQuickGenFirstClick = true;
 static long SP_HEAD = 0;
 
@@ -48,7 +51,7 @@ static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 	ARX_MENU_Clicked_QUIT();
 }
 
-void CharacterCreationRender() {
+void CharacterCreation::render() {
 	arx_assert(ARXmenu.mode() == Mode_CharacterCreation);
 	
 	GRenderer->Clear(Renderer::ColorBuffer);

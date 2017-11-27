@@ -286,7 +286,7 @@ void ARX_Menu_Render() {
 		}
 		case Mode_CharacterCreation: {
 			delete g_mainMenu, g_mainMenu = NULL;
-			CharacterCreationRender();
+			g_characterCreation.render();
 			return;
 		}
 		case Mode_Credits: {
