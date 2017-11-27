@@ -20,6 +20,10 @@
 #ifndef ARX_GUI_CHARACTERCREATION_H
 #define ARX_GUI_CHARACTERCREATION_H
 
-void CharacterCreationRender();
+struct CharacterCreation {
+	void render();
+};
+
+extern CharacterCreation g_characterCreation;
 
 #endif // ARX_GUI_CHARACTERCREATION_H
