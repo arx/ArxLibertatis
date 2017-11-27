@@ -106,45 +106,13 @@ bool g_canResumeGame = true;
 // Menu Sounds
 //-----------------------------------------------------------------------------
 
-MENU_DYNAMIC_DATA::MENU_DYNAMIC_DATA()
-{
-	flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
-	flyover[BOOK_MIND] = getLocalised("system_charsheet_intel");
-	flyover[BOOK_DEXTERITY] = getLocalised("system_charsheet_dex");
-	flyover[BOOK_CONSTITUTION] = getLocalised("system_charsheet_consti");
-	flyover[BOOK_STEALTH] = getLocalised("system_charsheet_stealth");
-	flyover[BOOK_MECANISM] = getLocalised("system_charsheet_mecanism");
-	flyover[BOOK_INTUITION] = getLocalised("system_charsheet_intuition");
-	flyover[BOOK_ETHERAL_LINK] = getLocalised("system_charsheet_etheral_link");
-	flyover[BOOK_OBJECT_KNOWLEDGE] = getLocalised("system_charsheet_objknoledge");
-	flyover[BOOK_CASTING] = getLocalised("system_charsheet_casting");
-	flyover[BOOK_PROJECTILE] = getLocalised("system_charsheet_projectile");
-	flyover[BOOK_CLOSE_COMBAT] = getLocalised("system_charsheet_closecombat");
-	flyover[BOOK_DEFENSE] = getLocalised("system_charsheet_defense");
-	flyover[BUTTON_QUICK_GENERATION] = getLocalised("system_charsheet_quickgenerate");
-	flyover[BUTTON_DONE] = getLocalised("system_charsheet_done");
-	flyover[BUTTON_SKIN] = getLocalised("system_charsheet_skin");
-	flyover[WND_ATTRIBUTES] = getLocalised("system_charsheet_atributes");
-	flyover[WND_SKILLS] = getLocalised("system_charsheet_skills");
-	flyover[WND_STATUS] = getLocalised("system_charsheet_status");
-	flyover[WND_LEVEL] = getLocalised("system_charsheet_level");
-	flyover[WND_XP] = getLocalised("system_charsheet_xpoints");
-	flyover[WND_HP] = getLocalised("system_charsheet_hp");
-	flyover[WND_MANA] = getLocalised("system_charsheet_mana");
-	flyover[WND_AC] = getLocalised("system_charsheet_ac");
-	flyover[WND_RESIST_MAGIC] = getLocalised("system_charsheet_res_magic");
-	flyover[WND_RESIST_POISON] = getLocalised("system_charsheet_res_poison");
-	flyover[WND_DAMAGE] = getLocalised("system_charsheet_damage");
-}
-
 void ARX_MENU_LaunchAmb(const std::string & _lpszAmb) {
 	ARX_SOUND_PlayMenuAmbiance(_lpszAmb);
 }
 
 void ARX_Menu_Resources_Create() {
 	
-	delete ARXmenu.mda;
-	ARXmenu.mda = new MENU_DYNAMIC_DATA();
+	g_playerBook.stats.loadStrings();
 	g_characterCreation.loadData();
 }
 
@@ -152,13 +120,7 @@ void ARX_Menu_Resources_Release(bool _bNoSound) {
 	
 	config.save();
 	
-	if(ARXmenu.mda == NULL) {
-		return;
-	}
-	
 	g_characterCreation.freeData();
-	
-	delete ARXmenu.mda, ARXmenu.mda = NULL;
 	
 	//Synchronize game mixers with menu mixers and switch between them
 	if(_bNoSound) {

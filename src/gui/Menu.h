@@ -51,15 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 
-static const size_t MAX_FLYOVER = 32;
-
-struct MENU_DYNAMIC_DATA {
-	
-	std::string flyover[MAX_FLYOVER];
-	
-	MENU_DYNAMIC_DATA();
-};
-
 enum MenuMode {
 	Mode_InGame,
 	Mode_MainMenu,
@@ -68,8 +59,6 @@ enum MenuMode {
 };
 
 struct ARX_MENU_DATA {
-	
-	MENU_DYNAMIC_DATA * mda;
 	
 	MenuMode mode() {
 		return m_currentMode;
