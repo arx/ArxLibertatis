@@ -20,9 +20,18 @@
 #ifndef ARX_GUI_CHARACTERCREATION_H
 #define ARX_GUI_CHARACTERCREATION_H
 
+#include "platform/Platform.h"
+
 struct CharacterCreation {
+	
+	CharacterCreation();
+	
 	void resetCheat();
 	void render();
+
+private:
+	s8 m_cheatSkinButtonClickCount;
+	char m_cheatQuickGenButtonClickCount;
 };
 
 extern CharacterCreation g_characterCreation;

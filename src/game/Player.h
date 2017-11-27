@@ -334,8 +334,6 @@ struct ARXCHARACTER {
 	float TRAP_DETECT;
 	float TRAP_SECRET;
 	
-	s8 m_cheatSkinButtonClickCount;
-	char m_cheatQuickGenButtonClickCount;
 	long m_cheatPnuxActive;
 	
 	ARXCHARACTER()
@@ -372,8 +370,6 @@ struct ARXCHARACTER {
 		, bag(0)
 		, TRAP_DETECT(0)
 		, TRAP_SECRET(0)
-		, m_cheatSkinButtonClickCount(0)
-		, m_cheatQuickGenButtonClickCount(0)
 		, m_cheatPnuxActive(0)
 	{
 		heads.fill(NULL);

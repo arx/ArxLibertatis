@@ -51,9 +51,14 @@ static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 	ARX_MENU_Clicked_QUIT();
 }
 
+CharacterCreation::CharacterCreation()
+	: m_cheatSkinButtonClickCount(0)
+	, m_cheatQuickGenButtonClickCount(0)
+{ }
+
 void CharacterCreation::resetCheat() {
-	player.m_cheatSkinButtonClickCount = 0;
-	player.m_cheatQuickGenButtonClickCount = 0;
+	m_cheatSkinButtonClickCount = 0;
+	m_cheatQuickGenButtonClickCount = 0;
 }
 
 void CharacterCreation::render() {
@@ -103,7 +108,7 @@ void CharacterCreation::render() {
 				if(eeMousePressed1());
 				else if (eeMouseUp1())
 				{
-					player.m_cheatQuickGenButtonClickCount++;
+					m_cheatQuickGenButtonClickCount++;
 					int iSkin = player.skin;
 					ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 					
@@ -139,7 +144,7 @@ void CharacterCreation::render() {
 				FLYING_OVER = BUTTON_SKIN;
 				
 				if(eeMouseUp1()) {
-					player.m_cheatSkinButtonClickCount++;
+					m_cheatSkinButtonClickCount++;
 					ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 					player.skin++;
 					
@@ -173,13 +178,13 @@ void CharacterCreation::render() {
 				FLYING_OVER = BUTTON_DONE;
 				
 				if(DONE && eeMouseUp1()) {
-					if(player.m_cheatSkinButtonClickCount == 8 && player.m_cheatQuickGenButtonClickCount == 10) {
-						player.m_cheatSkinButtonClickCount = -2;
-					} else if(player.m_cheatSkinButtonClickCount == -1) {
+					if(m_cheatSkinButtonClickCount == 8 && m_cheatQuickGenButtonClickCount == 10) {
+						m_cheatSkinButtonClickCount = -2;
+					} else if(m_cheatSkinButtonClickCount == -1) {
 						ARX_PLAYER_MakeSpHero();
 						player.skin = 4;
 						ARX_PLAYER_Restore_Skin();
-						player.m_cheatSkinButtonClickCount = 0;
+						m_cheatSkinButtonClickCount = 0;
 						SP_HEAD = 1;
 					} else {
 						if(SP_HEAD) {
@@ -205,7 +210,7 @@ void CharacterCreation::render() {
 					color = Color(192, 192, 192);
 			}
 			
-			if(player.m_cheatSkinButtonClickCount < 0)
+			if(m_cheatSkinButtonClickCount < 0)
 				color = Color(255, 0, 255);
 			
 			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, Vec2i(pos), color);
