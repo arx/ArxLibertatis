@@ -141,7 +141,7 @@ void CharacterCreation::render() {
 	else
 		color = Color(232, 204, 143);
 	
-	pTextManage->AddText(hFontMenu, str_button_quickgen, Vec2i(pos), color);
+	ARX_UNICODE_DrawTextInRect(hFontMenu, pos, 999999, str_button_quickgen, color);
 	
 	//---------------------------------------------------------------------
 	// Button SKIN
@@ -172,7 +172,7 @@ void CharacterCreation::render() {
 	else
 		color = Color(232, 204, 143);
 	
-	pTextManage->AddText(hFontMenu, str_button_skin, Vec2i(pos), color);
+	ARX_UNICODE_DrawTextInRect(hFontMenu, pos, 999999, str_button_skin, color);
 	
 	//---------------------------------------------------------------------
 	// Button DONE
@@ -224,7 +224,7 @@ void CharacterCreation::render() {
 	if(m_cheatSkinButtonClickCount < 0)
 		color = Color(255, 0, 255);
 	
-	pTextManage->AddText(hFontMenu, str_button_done, Vec2i(pos), color);
+	ARX_UNICODE_DrawTextInRect(hFontMenu, pos, 999999, str_button_done, color);
 	}
 	
 	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
