@@ -106,10 +106,6 @@ bool g_canResumeGame = true;
 // Menu Sounds
 //-----------------------------------------------------------------------------
 
-void ARX_MENU_LaunchAmb(const std::string & _lpszAmb) {
-	ARX_SOUND_PlayMenuAmbiance(_lpszAmb);
-}
-
 void ARX_Menu_Resources_Create() {
 	
 	g_playerBook.stats.loadStrings();
@@ -152,7 +148,7 @@ void ARX_MENU_Clicked_NEWQUEST() {
 void ARX_MENU_Clicked_CREDITS() {
 	ARXmenu.requestMode(Mode_Credits);
 	credits::reset();
-	ARX_MENU_LaunchAmb(AMB_CREDITS);
+	ARX_SOUND_PlayMenuAmbiance(AMB_CREDITS);
 }
 
 void ARX_MENU_Launch(bool allowResume) {
@@ -225,7 +221,7 @@ void ARX_Menu_Manage() {
 			) {
 				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 				MenuFader_start(Fade_In, Mode_MainMenu);
-				ARX_MENU_LaunchAmb(AMB_MENU);
+				ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
 			}
 			break;
 		}
