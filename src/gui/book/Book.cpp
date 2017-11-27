@@ -191,14 +191,6 @@ void PlayerBook::toggle() {
 		player.Interface &=~ INTER_PLAYERBOOK;
 		g_miniMap.purgeTexContainer();
 
-		if(ARXmenu.mda) {
-			for (size_t i = 0; i < MAX_FLYOVER; i++) {
-				ARXmenu.mda->flyover[i].clear();
-			}
-			delete ARXmenu.mda;
-			ARXmenu.mda=NULL;
-		}
-
 		onClosePage();
 	} else {
 		SendIOScriptEvent(entities.player(), SM_NULL, "", "book_open");
@@ -208,10 +200,6 @@ void PlayerBook::toggle() {
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_PLAYERBOOK;
 		map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0l, 7l));
-
-		if(!ARXmenu.mda) {
-			ARXmenu.mda = new MENU_DYNAMIC_DATA();
-		}
 	}
 
 	if(player.Interface & INTER_COMBATMODE) {
@@ -449,6 +437,38 @@ void PlayerBook::drawTopTabs() {
 	}
 }
 
+
+void StatsPage::loadStrings() {
+	
+	flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
+	flyover[BOOK_MIND] = getLocalised("system_charsheet_intel");
+	flyover[BOOK_DEXTERITY] = getLocalised("system_charsheet_dex");
+	flyover[BOOK_CONSTITUTION] = getLocalised("system_charsheet_consti");
+	flyover[BOOK_STEALTH] = getLocalised("system_charsheet_stealth");
+	flyover[BOOK_MECANISM] = getLocalised("system_charsheet_mecanism");
+	flyover[BOOK_INTUITION] = getLocalised("system_charsheet_intuition");
+	flyover[BOOK_ETHERAL_LINK] = getLocalised("system_charsheet_etheral_link");
+	flyover[BOOK_OBJECT_KNOWLEDGE] = getLocalised("system_charsheet_objknoledge");
+	flyover[BOOK_CASTING] = getLocalised("system_charsheet_casting");
+	flyover[BOOK_PROJECTILE] = getLocalised("system_charsheet_projectile");
+	flyover[BOOK_CLOSE_COMBAT] = getLocalised("system_charsheet_closecombat");
+	flyover[BOOK_DEFENSE] = getLocalised("system_charsheet_defense");
+	flyover[BUTTON_QUICK_GENERATION] = getLocalised("system_charsheet_quickgenerate");
+	flyover[BUTTON_DONE] = getLocalised("system_charsheet_done");
+	flyover[BUTTON_SKIN] = getLocalised("system_charsheet_skin");
+	flyover[WND_ATTRIBUTES] = getLocalised("system_charsheet_atributes");
+	flyover[WND_SKILLS] = getLocalised("system_charsheet_skills");
+	flyover[WND_STATUS] = getLocalised("system_charsheet_status");
+	flyover[WND_LEVEL] = getLocalised("system_charsheet_level");
+	flyover[WND_XP] = getLocalised("system_charsheet_xpoints");
+	flyover[WND_HP] = getLocalised("system_charsheet_hp");
+	flyover[WND_MANA] = getLocalised("system_charsheet_mana");
+	flyover[WND_AC] = getLocalised("system_charsheet_ac");
+	flyover[WND_RESIST_MAGIC] = getLocalised("system_charsheet_res_magic");
+	flyover[WND_RESIST_POISON] = getLocalised("system_charsheet_res_poison");
+	flyover[WND_DAMAGE] = getLocalised("system_charsheet_damage");
+}
+
 void StatsPage::manage() {
 	BOOKDEC.x = 0;
 	BOOKDEC.y = 0;
@@ -632,7 +652,7 @@ void StatsPage::manageStats()
 	}
 	
 	//------------------------------ SEB 04/12/2001
-	if(ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) {
+	if(!flyover[FLYING_OVER].empty()) {
 		
 		int t = Random::get(0, 2);
 
@@ -644,11 +664,11 @@ void StatsPage::manageStats()
 		// Nuky Note: the text used never scrolls, centered function with wordwrap would be enough
 		if(FLYING_OVER == WND_XP) {
 			std::stringstream ss;
-			ss << ARXmenu.mda->flyover[WND_XP] << " " << std::setw(8) << GetXPforLevel(player.level+1)-player.xp;
+			ss << flyover[WND_XP] << " " << std::setw(8) << GetXPforLevel(player.level+1)-player.xp;
 
 			toDisplay = ss.str();
 		} else {
-			toDisplay = ARXmenu.mda->flyover[FLYING_OVER];
+			toDisplay = flyover[FLYING_OVER];
 		}
 		
 		UNICODE_ARXDrawTextCenteredScroll(hFontInGame,

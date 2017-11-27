@@ -50,8 +50,12 @@ private:
 	
 };
 
+static const size_t MAX_FLYOVER = 32;
+
 class StatsPage : public PlayerBookPage {
 public:
+	void loadStrings();
+	
 	void manage();
 	void manageNewQuest();
 private:
@@ -60,6 +64,8 @@ private:
 	bool CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc);
 	bool CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, float * oldval);
 	Color attributeModToColor(float modValue, float baseValue = 0.f);
+	
+	std::string flyover[MAX_FLYOVER];
 };
 
 class SpellsPage : public PlayerBookPage {
