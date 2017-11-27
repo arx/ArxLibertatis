@@ -96,15 +96,8 @@ extern TextManager * pTextManage;
 
 extern bool REQUEST_SPEECH_SKIP;
 
-//-----------------------------------------------------------------------------
-// Exported global variables
-
 ARX_MENU_DATA ARXmenu;
 bool g_canResumeGame = true;
-
-//-----------------------------------------------------------------------------
-// Menu Sounds
-//-----------------------------------------------------------------------------
 
 void ARX_Menu_Resources_Create() {
 	
