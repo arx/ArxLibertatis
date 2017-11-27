@@ -552,7 +552,7 @@ void Credits::render() {
 	if(m_firstVisibleLine >= m_lines.size() && iFadeAction != Mode_MainMenu) {
 		
 		MenuFader_start(Fade_In, Mode_MainMenu);
-		ARX_MENU_LaunchAmb(AMB_MENU);
+		ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
 	}
 
 	if(MenuFader_process() && iFadeAction == Mode_MainMenu) {
