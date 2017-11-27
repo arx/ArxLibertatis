@@ -64,6 +64,11 @@ void CharacterCreation::loadData() {
 	str_button_quickgen = getLocalised("system_charsheet_button_quickgen");
 	str_button_skin = getLocalised("system_charsheet_button_skin");
 	str_button_done = getLocalised("system_charsheet_button_done");
+	
+	// TODO unused button descriptions, readd ?
+	// getLocalised("system_charsheet_quickgenerate");
+	// getLocalised("system_charsheet_done");
+	// getLocalised("system_charsheet_skin");
 }
 
 void CharacterCreation::freeData() {
@@ -117,7 +122,6 @@ void CharacterCreation::render() {
 	
 	if(quickGenerateButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
 		SpecialCursor = CURSOR_INTERACTION_ON;
-		FLYING_OVER = BUTTON_QUICK_GENERATION;
 		
 		if(eeMousePressed1());
 		else if (eeMouseUp1())
@@ -155,7 +159,6 @@ void CharacterCreation::render() {
 	
 	if(skinButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
 		SpecialCursor = CURSOR_INTERACTION_ON;
-		FLYING_OVER = BUTTON_SKIN;
 		
 		if(eeMouseUp1()) {
 			m_cheatSkinButtonClickCount++;
@@ -188,8 +191,6 @@ void CharacterCreation::render() {
 	if(doneButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
 		if(DONE)
 			SpecialCursor = CURSOR_INTERACTION_ON;
-		
-		FLYING_OVER = BUTTON_DONE;
 		
 		if(DONE && eeMouseUp1()) {
 			if(m_cheatSkinButtonClickCount == 8 && m_cheatQuickGenButtonClickCount == 10) {

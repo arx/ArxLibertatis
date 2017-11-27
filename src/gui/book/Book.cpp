@@ -452,9 +452,6 @@ void StatsPage::loadStrings() {
 	flyover[BOOK_PROJECTILE] = getLocalised("system_charsheet_projectile");
 	flyover[BOOK_CLOSE_COMBAT] = getLocalised("system_charsheet_closecombat");
 	flyover[BOOK_DEFENSE] = getLocalised("system_charsheet_defense");
-	flyover[BUTTON_QUICK_GENERATION] = getLocalised("system_charsheet_quickgenerate");
-	flyover[BUTTON_DONE] = getLocalised("system_charsheet_done");
-	flyover[BUTTON_SKIN] = getLocalised("system_charsheet_skin");
 	flyover[WND_ATTRIBUTES] = getLocalised("system_charsheet_atributes");
 	flyover[WND_SKILLS] = getLocalised("system_charsheet_skills");
 	flyover[WND_STATUS] = getLocalised("system_charsheet_status");
