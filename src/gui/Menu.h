@@ -55,12 +55,7 @@ static const size_t MAX_FLYOVER = 32;
 
 struct MENU_DYNAMIC_DATA {
 	
-	TextureContainer * BookBackground;
 	std::string flyover[MAX_FLYOVER];
-	// New Quest Buttons Strings
-	std::string str_button_quickgen;
-	std::string str_button_skin;
-	std::string str_button_done;
 	
 	MENU_DYNAMIC_DATA();
 };

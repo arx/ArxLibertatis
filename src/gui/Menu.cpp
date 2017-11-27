@@ -107,7 +107,6 @@ bool g_canResumeGame = true;
 //-----------------------------------------------------------------------------
 
 MENU_DYNAMIC_DATA::MENU_DYNAMIC_DATA()
-	: BookBackground(NULL)
 {
 	flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
 	flyover[BOOK_MIND] = getLocalised("system_charsheet_intel");
@@ -146,12 +145,7 @@ void ARX_Menu_Resources_Create() {
 	
 	delete ARXmenu.mda;
 	ARXmenu.mda = new MENU_DYNAMIC_DATA();
-	ARXmenu.mda->BookBackground = TextureContainer::LoadUI("graph/interface/book/character_sheet/char_creation_bg", TextureContainer::NoColorKey);
-	
-	ARXmenu.mda->str_button_quickgen = getLocalised("system_charsheet_button_quickgen");
-	ARXmenu.mda->str_button_skin = getLocalised("system_charsheet_button_skin");
-	ARXmenu.mda->str_button_done = getLocalised("system_charsheet_button_done");
-
+	g_characterCreation.loadData();
 }
 
 void ARX_Menu_Resources_Release(bool _bNoSound) {
@@ -162,7 +156,8 @@ void ARX_Menu_Resources_Release(bool _bNoSound) {
 		return;
 	}
 	
-	delete ARXmenu.mda->BookBackground;
+	g_characterCreation.freeData();
+	
 	delete ARXmenu.mda, ARXmenu.mda = NULL;
 	
 	//Synchronize game mixers with menu mixers and switch between them

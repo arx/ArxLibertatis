@@ -21,6 +21,7 @@
 
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "core/Localisation.h"
 #include "game/Player.h"
 #include "gui/Cursor.h"
 #include "gui/Interface.h"
@@ -52,9 +53,23 @@ static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 }
 
 CharacterCreation::CharacterCreation()
-	: m_cheatSkinButtonClickCount(0)
+	: BookBackground(NULL)
+	, m_cheatSkinButtonClickCount(0)
 	, m_cheatQuickGenButtonClickCount(0)
 { }
+
+void CharacterCreation::loadData() {
+	BookBackground = TextureContainer::LoadUI("graph/interface/book/character_sheet/char_creation_bg", TextureContainer::NoColorKey);
+	
+	str_button_quickgen = getLocalised("system_charsheet_button_quickgen");
+	str_button_skin = getLocalised("system_charsheet_button_skin");
+	str_button_done = getLocalised("system_charsheet_button_done");
+}
+
+void CharacterCreation::freeData() {
+	delete BookBackground;
+	BookBackground = NULL;
+}
 
 void CharacterCreation::resetCheat() {
 	m_cheatSkinButtonClickCount = 0;
@@ -70,13 +85,12 @@ void CharacterCreation::render() {
 	
 	//-------------------------------------------------------------------------
 	
-	arx_assert(ARXmenu.mda);
-	arx_assert(ARXmenu.mda->BookBackground);
+	arx_assert(BookBackground);
 	
 	{
 		UseRenderState state(render2D().noBlend());
 		
-		EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, ARXmenu.mda->BookBackground, Color::white);
+		EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, BookBackground, Color::white);
 		
 		g_playerBook.stats.manageNewQuest();
 		
@@ -127,7 +141,7 @@ void CharacterCreation::render() {
 			else
 				color = Color(232, 204, 143);
 			
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, Vec2i(pos), color);
+			pTextManage->AddText(hFontMenu, str_button_quickgen, Vec2i(pos), color);
 			
 			//---------------------------------------------------------------------
 			// Button SKIN
@@ -159,7 +173,7 @@ void CharacterCreation::render() {
 			else
 				color = Color(232, 204, 143);
 			
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, Vec2i(pos), color);
+			pTextManage->AddText(hFontMenu, str_button_skin, Vec2i(pos), color);
 			
 			//---------------------------------------------------------------------
 			// Button DONE
@@ -213,7 +227,7 @@ void CharacterCreation::render() {
 			if(m_cheatSkinButtonClickCount < 0)
 				color = Color(255, 0, 255);
 			
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, Vec2i(pos), color);
+			pTextManage->AddText(hFontMenu, str_button_done, Vec2i(pos), color);
 	}
 	
 	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
