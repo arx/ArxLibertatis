@@ -42,8 +42,6 @@ CharacterCreation g_characterCreation;
 bool bQuickGenFirstClick = true;
 static long SP_HEAD = 0;
 
-extern long FLYING_OVER;
-
 extern bool START_NEW_QUEST;
 
 static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
@@ -85,8 +83,6 @@ void CharacterCreation::render() {
 	arx_assert(ARXmenu.mode() == Mode_CharacterCreation);
 	
 	GRenderer->Clear(Renderer::ColorBuffer);
-	
-	FLYING_OVER = 0;
 	
 	//-------------------------------------------------------------------------
 	

@@ -49,8 +49,6 @@
 
 long IN_BOOK_DRAW = 0;
 
-long FLYING_OVER = 0;
-
 //used to redist points - attributes and skill
 long lCursorRedistValue = 0;
 
@@ -493,7 +491,7 @@ void StatsPage::manageNewQuest() {
 
 void StatsPage::manageStats()
 {
-	FLYING_OVER = 0;
+	long FLYING_OVER = 0;
 	
 	ARX_PLAYER_ComputePlayerFullStats();
 	
@@ -1334,7 +1332,6 @@ void SpellsPage::drawSpells() {
 	ARX_PLAYER_ComputePlayerFullStats();
 	
 	Vec2f tmpPos = Vec2f_ZERO;
-	bool	bFlyingOver = false;
 	
 	for(size_t i=0; i < SPELL_TYPES_COUNT; i++) {
 		const SPELL_ICON & spellInfo = spellicons[i];
@@ -1361,17 +1358,10 @@ void SpellsPage::drawSpells() {
 		long flyingover = 0;
 		
 		if(MouseInBookRect(fPos, Vec2f(48, 48))) {
-			bFlyingOver = true;
 			flyingover = 1;
 			
 			SpecialCursor=CURSOR_INTERACTION_ON;
 			DrawBookTextCenter(hFontInBook, Vec2f(208, 90), spellInfo.name, Color::none);
-			
-			for(size_t si = 0; si < MAX_SPEECH; si++) {
-				if(g_speech[si].timecreation > 0) {
-					FLYING_OVER = 0;
-				}
-			}
 			
 			pTextManage->Clear();
 			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
@@ -1432,10 +1422,6 @@ void SpellsPage::drawSpells() {
 			tmpPos.x = 0;
 			tmpPos.y ++;
 		}
-	}
-	
-	if(!bFlyingOver) {
-		FLYING_OVER = -1;
 	}
 }
 
