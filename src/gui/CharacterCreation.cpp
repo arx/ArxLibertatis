@@ -88,7 +88,7 @@ void CharacterCreation::render() {
 	arx_assert(BookBackground);
 	
 	{
-		UseRenderState state(render2D().noBlend());
+		UseRenderState state(render2D());
 		
 		EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, BookBackground, Color::white);
 		
