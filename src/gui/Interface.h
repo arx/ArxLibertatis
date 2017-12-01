@@ -172,7 +172,7 @@ enum ARX_INTERFACE_COMBAT_MODE {
 extern INTERFACE_TC g_bookResouces;
 extern Vec2s MemoMouse;
 
-extern long SpecialCursor;
+extern ARX_INTERFACE_CURSOR_MODE SpecialCursor;
 
 extern float lSLID_VALUE;
 extern E_ARX_STATE_MOUSE eMouseState;
