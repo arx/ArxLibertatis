@@ -99,12 +99,6 @@ extern bool REQUEST_SPEECH_SKIP;
 ARX_MENU_DATA ARXmenu;
 bool g_canResumeGame = true;
 
-void ARX_Menu_Resources_Create() {
-	
-	g_playerBook.stats.loadStrings();
-	g_characterCreation.loadData();
-}
-
 void ARX_Menu_Resources_Release(bool _bNoSound) {
 	
 	config.save();
@@ -157,7 +151,9 @@ void ARX_MENU_Launch(bool allowResume) {
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 	ARXmenu.requestMode(Mode_MainMenu);
-	ARX_Menu_Resources_Create();
+	
+	g_playerBook.stats.loadStrings();
+	g_characterCreation.loadData();
 	
 	if(pMenuCursor) {
 		pMenuCursor->reset();
