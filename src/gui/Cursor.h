@@ -38,6 +38,7 @@ extern ARX_INTERFACE_CURSOR_MODE SpecialCursor;
 
 bool cursorIsSpecial();
 void cursorSetInteraction();
+void cursorSetRedistribute();
 
 extern TextureContainer * cursorMovable;
 

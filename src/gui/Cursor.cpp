@@ -69,6 +69,10 @@ void cursorSetInteraction() {
 	SpecialCursor = CURSOR_INTERACTION_ON;
 }
 
+void cursorSetRedistribute() {
+	SpecialCursor = CURSOR_REDIST;
+}
+
 
 extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;
