@@ -1301,7 +1301,7 @@ void ArxGame::managePlayerControls() {
 	if(   eeMousePressed1()
 	   && !(player.Interface & INTER_COMBATMODE)
 	   && !g_cursorOverBook
-	   && !SpecialCursor
+	   && !cursorIsSpecial()
 	   && PLAYER_MOUSELOOK_ON
 	   && !DRAGINTER
 	   && !InInventoryPos(DANAEMouse)
