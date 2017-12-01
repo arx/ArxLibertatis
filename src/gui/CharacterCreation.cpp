@@ -117,7 +117,7 @@ void CharacterCreation::render() {
 	);
 	
 	if(quickGenerateButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
-		SpecialCursor = CURSOR_INTERACTION_ON;
+		cursorSetInteraction();
 		
 		if(eeMousePressed1());
 		else if (eeMouseUp1())
@@ -154,7 +154,7 @@ void CharacterCreation::render() {
 	);
 	
 	if(skinButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
-		SpecialCursor = CURSOR_INTERACTION_ON;
+		cursorSetInteraction();
 		
 		if(eeMouseUp1()) {
 			m_cheatSkinButtonClickCount++;
@@ -186,7 +186,7 @@ void CharacterCreation::render() {
 	
 	if(doneButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
 		if(DONE)
-			SpecialCursor = CURSOR_INTERACTION_ON;
+			cursorSetInteraction();
 		
 		if(DONE && eeMouseUp1()) {
 			if(m_cheatSkinButtonClickCount == 8 && m_cheatQuickGenButtonClickCount == 10) {

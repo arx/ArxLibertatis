@@ -207,7 +207,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 					
 					PopAllTriangleListOpaque(baseState.blendAdditive());
 					
-					SpecialCursor=CURSOR_INTERACTION_ON;
+					cursorSetInteraction();
 					
 					if(eeMouseDown1()) {
 						PlayerBookDrawRune((Rune)i);

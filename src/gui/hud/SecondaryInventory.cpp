@@ -61,7 +61,7 @@ void SecondaryInventoryPickAllHudIcon::updateInput() {
 	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 	
 	if(m_isSelected) {
-		SpecialCursor=CURSOR_INTERACTION_ON;
+		cursorSetInteraction();
 		
 		if(eeMouseDown1()) {
 			// play un son que si un item est pris
@@ -93,7 +93,7 @@ void SecondaryInventoryCloseHudIcon::updateInput() {
 	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 	
 	if(m_isSelected) {
-		SpecialCursor=CURSOR_INTERACTION_ON;
+		cursorSetInteraction();
 		
 		if(eeMouseDown1()) {
 			Entity * io = NULL;

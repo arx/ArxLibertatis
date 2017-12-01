@@ -258,7 +258,7 @@ void BookIconGui::updateInput() {
 	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 	
 	if(m_isSelected) {
-		SpecialCursor = CURSOR_INTERACTION_ON;
+		cursorSetInteraction();
 
 		if(eeMouseDown1()) {
 			g_playerBook.toggle();
@@ -292,7 +292,7 @@ void BackpackIconGui::updateInput() {
 	
 	if(m_rect.contains(Vec2f(DANAEMouse)) || flDelay != 0) {
 		eMouseState = MOUSE_IN_INVENTORY_ICON;
-		SpecialCursor = CURSOR_INTERACTION_ON;
+		cursorSetInteraction();
 		
 		
 		if(eeMouseDoubleClick1()) {
@@ -377,7 +377,7 @@ void StealIconGui::updateInput() {
 	if(player.Interface & INTER_STEAL) {
 		if(m_rect.contains(Vec2f(DANAEMouse))) {
 			eMouseState=MOUSE_IN_STEAL_ICON;
-			SpecialCursor=CURSOR_INTERACTION_ON;
+			cursorSetInteraction();
 			
 			if(eeMouseDown1()) {
 				ARX_INVENTORY_OpenClose(ioSteal);
@@ -431,7 +431,7 @@ void LevelUpIconGui::updateInput() {
 	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 	
 	if(m_isSelected) {
-		SpecialCursor = CURSOR_INTERACTION_ON;
+		cursorSetInteraction();
 		
 		if(eeMouseDown1()) {
 			g_playerBook.open();
@@ -488,7 +488,7 @@ void PurseIconGui::updateInput() {
 		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 		
 		if(m_isSelected) {
-			SpecialCursor = CURSOR_INTERACTION_ON;
+			cursorSetInteraction();
 			
 			if(   player.gold > 0
 			   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
@@ -546,7 +546,7 @@ void CurrentTorchIconGui::updateInput() {
 		
 		if(m_rect.contains(Vec2f(DANAEMouse))) {
 			eMouseState = MOUSE_IN_TORCH_ICON;
-			SpecialCursor = CURSOR_INTERACTION_ON;
+			cursorSetInteraction();
 			
 			if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
 				Entity * io = player.torch;
@@ -639,7 +639,7 @@ void ChangeLevelIconGui::draw() {
 	EERIEDrawBitmap(m_rect, 0.0001f, m_tex, Color3f::gray(m_intensity).to<u8>());
 	
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
-		SpecialCursor=CURSOR_INTERACTION_ON;
+		cursorSetInteraction();
 		if(eeMouseUp1()) {
 			CHANGE_LEVEL_ICON = ChangeLevelNow;
 		}
@@ -963,7 +963,7 @@ void PrecastSpellsGui::PrecastSpellIconSlot::update(const Rectf & rect, TextureC
 
 void PrecastSpellsGui::PrecastSpellIconSlot::updateInput() {
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
-		SpecialCursor = CURSOR_INTERACTION_ON;
+		cursorSetInteraction();
 		
 		if(eeMouseUp1()) {
 			if(Precast[m_precastIndex.handleData()].typ >= 0) {
@@ -1064,7 +1064,7 @@ void ActiveSpellsGui::ActiveSpellIconSlot::updateInput(const Vec2f & mousePos) {
 		return;
 	
 	if(m_rect.contains(mousePos)) {
-		SpecialCursor = CURSOR_INTERACTION_ON;
+		cursorSetInteraction();
 		
 		if(eeMouseUp1()) {
 			if(spells[spellIndex]->m_type >= 0) {
@@ -1532,7 +1532,7 @@ void HudRoot::draw() {
 		if((FlyingOverIO->ioflags & IO_ITEM) && !DRAGINTER && SecondaryInventory) {
 			DrawItemPrice();
 		}
-		SpecialCursor=CURSOR_INTERACTION_ON;
+		cursorSetInteraction();
 	}
 	
 	healthGauge.updateRect(hudSlider);
