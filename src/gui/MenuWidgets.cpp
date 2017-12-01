@@ -891,13 +891,6 @@ void MenuPage::ReInitActionKey() {
 	
 }
 
-
-void Menu2_Open() {
-	if(pMenuCursor) {
-		pMenuCursor->reset();
-	}
-}
-
 void Menu2_Close() {
 	
 	ARXmenu.requestMode(Mode_InGame);

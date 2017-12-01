@@ -147,7 +147,6 @@ private:
 
 void MenuReInitAll();
 
-void Menu2_Open();
 void MainMenuDoFrame();
 void Menu2_Close();
 
