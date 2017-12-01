@@ -136,7 +136,7 @@ void PlayerBookPage::checkTabClick(long tabNum, long &activeTab) {
 	if(MouseInBookRect(m_tabPositions[tabNum], Vec2f(32, 32))) {
 		UseRenderState state(render2D().blendAdditive());
 		DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], m_tabPositions[tabNum], Color::grayb(0x55), 0.000001f);
-		SpecialCursor=CURSOR_INTERACTION_ON;
+		cursorSetInteraction();
 		if(eeMouseDown1() || eeMouseDown2()) {
 			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 			activeTab =  tabNum;
@@ -346,7 +346,7 @@ void PlayerBook::drawTopTabs() {
 			DrawBookInterfaceItem(tcBookmarkChar, pos, Color::grayb(0x55), 0.000001f);
 			
 			// Set cursor to interacting
-			SpecialCursor=CURSOR_INTERACTION_ON;
+			cursorSetInteraction();
 			
 			// Check for click
 			if(eeMouseDown1() || eeMouseDown2()) {
@@ -378,7 +378,7 @@ void PlayerBook::drawTopTabs() {
 				DrawBookInterfaceItem(g_bookResouces.bookmark_magic, pos, Color::grayb(0x55), 0.000001f);
 				
 				// Set cursor to interacting
-				SpecialCursor=CURSOR_INTERACTION_ON;
+				cursorSetInteraction();
 				
 				// Check for click
 				if(eeMouseDown1() || eeMouseDown2()) {
@@ -401,7 +401,7 @@ void PlayerBook::drawTopTabs() {
 			DrawBookInterfaceItem(g_bookResouces.bookmark_map, pos, Color::grayb(0x55), 0.000001f);
 			
 			// Set cursor to interacting
-			SpecialCursor=CURSOR_INTERACTION_ON;
+			cursorSetInteraction();
 			
 			// Check for click
 			if(eeMouseDown1() || eeMouseDown2()) {
@@ -423,7 +423,7 @@ void PlayerBook::drawTopTabs() {
 			DrawBookInterfaceItem(g_bookResouces.bookmark_quest, pos, Color::grayb(0x55), 0.000001f);
 			
 			// Set cursor to interacting
-			SpecialCursor=CURSOR_INTERACTION_ON;
+			cursorSetInteraction();
 			
 			// Check for click
 			if(eeMouseDown1() || eeMouseDown2()) {
@@ -1391,7 +1391,7 @@ void SpellsPage::drawSpells() {
 		if(MouseInBookRect(fPos, Vec2f(48, 48))) {
 			flyingover = 1;
 			
-			SpecialCursor=CURSOR_INTERACTION_ON;
+			cursorSetInteraction();
 			DrawBookTextCenter(hFontInBook, Vec2f(208, 90), spellInfo.name, Color::none);
 			
 			pTextManage->Clear();

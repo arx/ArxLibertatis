@@ -61,6 +61,11 @@
 
 ARX_INTERFACE_CURSOR_MODE SpecialCursor = CURSOR_UNDEFINED;
 
+void cursorSetInteraction() {
+	SpecialCursor = CURSOR_INTERACTION_ON;
+}
+
+
 extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;
 
@@ -757,4 +762,3 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	}
 }
-

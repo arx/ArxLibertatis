@@ -2129,7 +2129,7 @@ void ArxGame::manageEditorControls() {
 				   && !(light->extras & EXTRAS_NO_IGNIT)
 				   && light->m_screenRect.contains(Vec2f(DANAEMouse))
 				) {
-					SpecialCursor = CURSOR_INTERACTION_ON;
+					cursorSetInteraction();
 				}
 			}
 		}

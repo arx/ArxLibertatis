@@ -36,6 +36,8 @@ enum ARX_INTERFACE_CURSOR_MODE
 
 extern ARX_INTERFACE_CURSOR_MODE SpecialCursor;
 
+void cursorSetInteraction();
+
 extern TextureContainer * cursorMovable;
 
 enum EntityMoveCursor {
