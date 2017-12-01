@@ -25,7 +25,7 @@ class TextureContainer;
 
 bool cursorIsSpecial();
 void cursorSetInteraction();
-void cursorSetRedistribute();
+void cursorSetRedistribute(long value);
 
 extern TextureContainer * cursorMovable;
 

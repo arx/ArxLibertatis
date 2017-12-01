@@ -50,9 +50,6 @@
 
 long IN_BOOK_DRAW = 0;
 
-//used to redist points - attributes and skill
-long lCursorRedistValue = 0;
-
 PlayerBook g_playerBook;
 
 
@@ -559,58 +556,49 @@ void StatsPage::manageStats()
 		// Main Player Attributes
 		if(CheckAttributeClick(Vec2f(379, 95), &player.m_attribute.strength, g_bookResouces.ic_strength)) {
 			FLYING_OVER = BOOK_STRENGTH;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Attribute_Redistribute;
+			cursorSetRedistribute(player.Attribute_Redistribute);
 		}
 
 		if(CheckAttributeClick(Vec2f(428, 95), &player.m_attribute.mind, g_bookResouces.ic_mind)) {
 			FLYING_OVER = BOOK_MIND;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Attribute_Redistribute;
+			cursorSetRedistribute(player.Attribute_Redistribute);
 		}
 
 		if(CheckAttributeClick(Vec2f(477, 95), &player.m_attribute.dexterity, g_bookResouces.ic_dexterity)) {
 			FLYING_OVER = BOOK_DEXTERITY;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Attribute_Redistribute;
+			cursorSetRedistribute(player.Attribute_Redistribute);
 		}
 
 		if(CheckAttributeClick(Vec2f(526, 95), &player.m_attribute.constitution, g_bookResouces.ic_constitution)) {
 			FLYING_OVER = BOOK_CONSTITUTION;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Attribute_Redistribute;
+			cursorSetRedistribute(player.Attribute_Redistribute);
 		}
 	}
 
 	if(!((player.Skill_Redistribute == 0) && (ARXmenu.mode() != Mode_CharacterCreation))) {
 		if (CheckSkillClick(Vec2f(389, 177), &player.m_skill.stealth, g_bookResouces.ic_stealth, &player.m_skillOld.stealth)) {
 			FLYING_OVER = BOOK_STEALTH;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Skill_Redistribute;
+			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
 		if(CheckSkillClick(Vec2f(453, 177), &player.m_skill.mecanism, g_bookResouces.ic_mecanism, &player.m_skillOld.mecanism)) {
 			FLYING_OVER = BOOK_MECANISM;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Skill_Redistribute;
+			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
 		if(CheckSkillClick(Vec2f(516, 177), &player.m_skill.intuition, g_bookResouces.ic_intuition, &player.m_skillOld.intuition)) {
 			FLYING_OVER = BOOK_INTUITION;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Skill_Redistribute;
+			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
 		if(CheckSkillClick(Vec2f(389, 230), &player.m_skill.etheralLink, g_bookResouces.ic_etheral_link, &player.m_skillOld.etheralLink)) {
 			FLYING_OVER = BOOK_ETHERAL_LINK;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Skill_Redistribute;
+			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
 		if(CheckSkillClick(Vec2f(453, 230), &player.m_skill.objectKnowledge, g_bookResouces.ic_object_knowledge, &player.m_skillOld.objectKnowledge)) {
 			FLYING_OVER = BOOK_OBJECT_KNOWLEDGE;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Skill_Redistribute;
+			cursorSetRedistribute(player.Skill_Redistribute);
 
 			if(eeMouseDown1()) {
 				ARX_INVENTORY_IdentifyAll();
@@ -622,26 +610,22 @@ void StatsPage::manageStats()
 
 		if(CheckSkillClick(Vec2f(516, 230), &player.m_skill.casting, g_bookResouces.ic_casting, &player.m_skillOld.casting)) {
 			FLYING_OVER = BOOK_CASTING;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Skill_Redistribute;
+			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
 		if(CheckSkillClick(Vec2f(389, 284), &player.m_skill.closeCombat, g_bookResouces.ic_close_combat, &player.m_skillOld.closeCombat)) {
 			FLYING_OVER = BOOK_CLOSE_COMBAT;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Skill_Redistribute;
+			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
 		if(CheckSkillClick(Vec2f(453, 284), &player.m_skill.projectile, g_bookResouces.ic_projectile, &player.m_skillOld.projectile)) {
 			FLYING_OVER = BOOK_PROJECTILE;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Skill_Redistribute;
+			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
 		if(CheckSkillClick(Vec2f(516, 284), &player.m_skill.defense, g_bookResouces.ic_defense, &player.m_skillOld.defense)) {
 			FLYING_OVER = BOOK_DEFENSE;
-			cursorSetRedistribute();
-			lCursorRedistValue = player.Skill_Redistribute;
+			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 	} else {
 		//------------------------------------PRIMARY

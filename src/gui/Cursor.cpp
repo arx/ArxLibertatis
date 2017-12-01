@@ -71,6 +71,9 @@ enum ARX_INTERFACE_CURSOR_MODE
 };
 
 ARX_INTERFACE_CURSOR_MODE SpecialCursor = CURSOR_UNDEFINED;
+//used to redist points - attributes and skill
+static long lCursorRedistValue = 0;
+
 
 bool cursorIsSpecial() {
 	return SpecialCursor != CURSOR_UNDEFINED;
@@ -80,8 +83,9 @@ void cursorSetInteraction() {
 	SpecialCursor = CURSOR_INTERACTION_ON;
 }
 
-void cursorSetRedistribute() {
+void cursorSetRedistribute(long value) {
 	SpecialCursor = CURSOR_REDIST;
+	lCursorRedistValue = value;
 }
 
 
@@ -339,7 +343,6 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 extern long LOOKING_FOR_SPELL_TARGET;
 extern GameInstant LOOKING_FOR_SPELL_TARGET_TIME;
 extern bool PLAYER_INTERFACE_SHOW;
-extern long lCursorRedistValue;
 
 int iHighLight=0;
 float fHighLightAng=0.f;
