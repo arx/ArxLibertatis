@@ -61,6 +61,10 @@
 
 ARX_INTERFACE_CURSOR_MODE SpecialCursor = CURSOR_UNDEFINED;
 
+bool cursorIsSpecial() {
+	return SpecialCursor != CURSOR_UNDEFINED;
+}
+
 void cursorSetInteraction() {
 	SpecialCursor = CURSOR_INTERACTION_ON;
 }
