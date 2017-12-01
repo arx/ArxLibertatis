@@ -171,7 +171,7 @@ bool				COMBINEGOLD = false;
 
 bool				DRAGGING = false;
 bool				MAGICMODE = false;
-long				SpecialCursor=0;
+ARX_INTERFACE_CURSOR_MODE SpecialCursor = CURSOR_UNDEFINED;
 
 static PlatformInstant COMBAT_MODE_ON_START_TIME = 0;
 static long SPECIAL_DRAW_WEAPON = 0;

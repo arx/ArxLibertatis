@@ -608,7 +608,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), 0.f, surf, Color::white);
 			}
 			
-			SpecialCursor = 0;
+			SpecialCursor = CURSOR_UNDEFINED;
 		} else {
 			if(   !(player.m_currentMovement & PLAYER_CROUCH)
 			   && !BLOCK_PLAYER_CONTROLS
