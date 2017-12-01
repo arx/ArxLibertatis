@@ -28,6 +28,7 @@
 #include "game/Player.h"
 #include "graphics/Draw.h"
 #include "graphics/data/TextureContainer.h"
+#include "gui/Cursor.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
 #include "input/Input.h"

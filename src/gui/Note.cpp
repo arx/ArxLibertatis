@@ -27,6 +27,7 @@
 #include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/texture/TextureStage.h"
+#include "gui/Cursor.h"
 #include "gui/Interface.h"
 #include "gui/Text.h"
 #include "input/Input.h"
