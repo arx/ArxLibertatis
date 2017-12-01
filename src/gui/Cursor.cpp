@@ -59,6 +59,7 @@
 #include "gui/Menu.h"
 #include "gui/hud/SecondaryInventory.h"
 
+ARX_INTERFACE_CURSOR_MODE SpecialCursor = CURSOR_UNDEFINED;
 
 extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;

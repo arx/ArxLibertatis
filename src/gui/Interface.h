@@ -151,17 +151,6 @@ enum ARX_INTERFACE_MOVE_MODE
 	MOVE_RUN
 };
 
-enum ARX_INTERFACE_CURSOR_MODE
-{
-	CURSOR_UNDEFINED,
-	CURSOR_FIREBALLAIM,
-	CURSOR_INTERACTION_ON,
-	CURSOR_REDIST,
-	CURSOR_COMBINEON,
-	CURSOR_COMBINEOFF,
-	CURSOR_READY_WEAPON
-};
-
 enum ARX_INTERFACE_COMBAT_MODE {
 	COMBAT_MODE_OFF,
 	COMBAT_MODE_ON,
@@ -171,8 +160,6 @@ enum ARX_INTERFACE_COMBAT_MODE {
 //-----------------------------------------------------------------------------
 extern INTERFACE_TC g_bookResouces;
 extern Vec2s MemoMouse;
-
-extern ARX_INTERFACE_CURSOR_MODE SpecialCursor;
 
 extern float lSLID_VALUE;
 extern E_ARX_STATE_MOUSE eMouseState;

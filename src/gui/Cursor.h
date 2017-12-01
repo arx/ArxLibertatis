@@ -23,6 +23,19 @@
 class Entity;
 class TextureContainer;
 
+enum ARX_INTERFACE_CURSOR_MODE
+{
+	CURSOR_UNDEFINED,
+	CURSOR_FIREBALLAIM,
+	CURSOR_INTERACTION_ON,
+	CURSOR_REDIST,
+	CURSOR_COMBINEON,
+	CURSOR_COMBINEOFF,
+	CURSOR_READY_WEAPON
+};
+
+extern ARX_INTERFACE_CURSOR_MODE SpecialCursor;
+
 extern TextureContainer * cursorMovable;
 
 enum EntityMoveCursor {

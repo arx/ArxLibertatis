@@ -37,6 +37,7 @@
 #include "graphics/effects/Halo.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
+#include "gui/Cursor.h"
 #include "gui/hud/PlayerInventory.h"
 #include "gui/Menu.h"
 #include "gui/MiniMap.h"

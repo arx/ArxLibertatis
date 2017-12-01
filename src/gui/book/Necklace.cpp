@@ -26,6 +26,7 @@
 #include "game/Camera.h"
 #include "game/EntityManager.h"
 #include "game/Player.h"
+#include "gui/Cursor.h"
 #include "gui/Interface.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/Renderer.h"

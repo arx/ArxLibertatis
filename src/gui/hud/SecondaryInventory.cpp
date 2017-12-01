@@ -29,6 +29,7 @@
 #include "graphics/Color.h"
 #include "graphics/Draw.h"
 #include "graphics/data/TextureContainer.h"
+#include "gui/Cursor.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
 #include "gui/hud/HudCommon.h"
