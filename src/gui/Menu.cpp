@@ -99,16 +99,14 @@ extern bool REQUEST_SPEECH_SKIP;
 ARX_MENU_DATA ARXmenu;
 bool g_canResumeGame = true;
 
-void ARX_Menu_Resources_Release(bool _bNoSound) {
+void ARX_Menu_Resources_Release() {
 	
 	config.save();
 	
 	g_characterCreation.freeData();
 	
 	//Synchronize game mixers with menu mixers and switch between them
-	if(_bNoSound) {
-		ARXMenu_Options_Audio_ApplyGameVolumes();
-	}
+	ARXMenu_Options_Audio_ApplyGameVolumes();
 	
 	delete g_thumbnailCursor.m_loadTexture, g_thumbnailCursor.m_loadTexture = NULL;
 }
