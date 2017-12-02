@@ -94,6 +94,7 @@ struct CinematicFadeOut {
 class Cinematic {
 	
 public:
+	
 	Vec3f pos;
 	float angz;
 	Vec3f m_nextPos; // in the case of a non-fade interpolation
@@ -125,7 +126,7 @@ public:
 	CinematicFadeOut m_nextFadegrille;
 	float speedtrack;
 	PlatformDuration flTime;
-	std::vector<CinematicBitmap*>	m_bitmaps;
+	std::vector<CinematicBitmap *> m_bitmaps;
 	
 	CinematicFadeOut fadeprev;
 	CinematicFadeOut fadenext;
@@ -142,10 +143,13 @@ public:
 	void DeleteAllBitmap();
 	
 private:
-	EERIE_CAMERA	m_camera;
+	
+	EERIE_CAMERA m_camera;
+	
 public:
 	
 	ARX_USE_ALIGNED_NEW(Cinematic) // for m_camera
+	
 };
 
 void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * light,

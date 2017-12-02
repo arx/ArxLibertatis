@@ -77,7 +77,7 @@ static bool FlashBlancEnCours;
 static float OldSpeedFlashBlanc;
 static Color OldColorFlashBlanc;
 
-extern float	FlashAlpha;
+extern float FlashAlpha;
 
 Cinematic::Cinematic(Vec2i size)
 	: pos()
@@ -226,8 +226,9 @@ static float LightRND;
 
 static Color CalculLight(CinematicLight * light, Vec2f pos, Color col) {
 	
-	float	ra = std::sqrt((light->pos.x - pos.x) * (light->pos.x - pos.x) + (light->pos.y - pos.y) * (light->pos.y - pos.y));
-
+	float ra = std::sqrt((light->pos.x - pos.x) * (light->pos.x - pos.x)
+	                     + (light->pos.y - pos.y) * (light->pos.y - pos.y));
+	
 	if(ra > light->fallout) {
 		return (col * LightRND);
 	} else {
@@ -319,7 +320,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 		arx_assert(mat->tex);
 		GRenderer->SetTexture(0, mat->tex);
 		
-		int	nb2 = mat->nbvertexs;
+		int nb2 = mat->nbvertexs;
 		while(nb2--) {
 			AllTLVertex[uvs->indvertex].uv = uvs->uv;
 			
