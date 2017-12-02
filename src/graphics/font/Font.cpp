@@ -150,7 +150,7 @@ bool Font::insertGlyph(Char character) {
 	if(glyph.size.x != 0 && glyph.size.y != 0) {
 		
 		Image imgGlyph;
-		imgGlyph.create(glyph.size.x, glyph.size.y, Image::Format_A8);
+		imgGlyph.create(size_t(glyph.size.x), size_t(glyph.size.y), Image::Format_A8);
 		
 		FT_Bitmap * srcBitmap = &face->glyph->bitmap;
 		arx_assert(srcBitmap->pitch >= 0);
