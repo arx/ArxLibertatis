@@ -232,7 +232,7 @@ void begin(Status status) {
 	}
 	
 	if(g_startCount < SkipFrames && isFrame(status)) {
-			// Skip the first frames - they may not be reperasentative
+		// Skip the first frames - they may not be reperasentative
 		g_startCount++;
 	} else if(g_startCount <= SkipFrames) {
 		g_startCount = SkipFrames + 1;
