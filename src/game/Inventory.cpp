@@ -331,11 +331,11 @@ private:
 			return false;
 		}
 		
+		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		
 		if(pos.x + item->m_inventorySize.x > width || pos.y + item->m_inventorySize.y > height) {
 			return false;
 		}
-		
-		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		
 		// Check if the whole area required by this item is empty
 		for(index_type j = pos.y; j < pos.y + item->m_inventorySize.y; j++) {
@@ -393,11 +393,11 @@ private:
 			return false;
 		}
 		
+		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		
 		if(pos.x + item->m_inventorySize.x > width || pos.y + item->m_inventorySize.y > height) {
 			return false;
 		}
-		
-		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		
 		Entity * io = index(pos).io;
 		
