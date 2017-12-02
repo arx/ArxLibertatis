@@ -683,7 +683,7 @@ InputKeyId Input::getKeyId(const std::string & name) {
 	if(sep != std::string::npos) {
 		InputKeyId modifier = getKeyId(name.substr(0, sep));
 		InputKeyId key = getKeyId(name.substr(sep + 1));
-		return (modifier << 16 | key);
+		return (modifier < 0) ? key : (modifier << 16 | key);
 	}
 	
 	if(!name.compare(0, PREFIX_KEY.length(), PREFIX_KEY)) {
