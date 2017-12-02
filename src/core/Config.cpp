@@ -59,7 +59,7 @@ const std::string
 	bufferUpload = "",
 	
 	thumbnailSize = BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_WIDTH) "x"
-					BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_HEIGHT);
+	                BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_HEIGHT);
 
 const int
 	levelOfDetail = 2,
