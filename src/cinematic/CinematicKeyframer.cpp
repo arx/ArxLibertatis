@@ -60,7 +60,7 @@ inline bool C_NEQUAL_F32(float f1, float f2) {
 	return glm::abs(f1 - f2) >= C_MIN_F32;
 }
 
-CinematicTrack	* CKTrack;
+CinematicTrack * CKTrack;
 
 bool AllocTrack(int sf, int ef, float fps)
 {
@@ -238,11 +238,12 @@ void UpDateAllKeyLight(void)
 }
 
 bool AddKey(const CinematicKeyframe & key) {
-	int			num;
-
-	if(!CKTrack || (key.frame < CKTrack->startframe) || (key.frame > CKTrack->endframe))
+	
+	if(!CKTrack || key.frame < CKTrack->startframe || key.frame > CKTrack->endframe) {
 		return false;
-
+	}
+	
+	int num;
 	CinematicKeyframe * k = SearchKey(key.frame, &num);
 	if(!k) {
 		if(!CKTrack->nbkey) {
@@ -485,14 +486,14 @@ static void interpolateLight(float alight, CinematicKeyframe* lightprec, Cinemat
 	} else {
 		lend = c->m_lightd;
 	}
-
+	
 	c->m_light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
 	c->m_light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
 	c->m_light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
 	c->m_light.color = lend.color * alight + ldep.color * unmoinsalight;
 	c->m_light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-	c->m_light.intensiternd = alight * lend.intensiternd
-							+ unmoinsalight * ldep.intensiternd;
+	c->m_light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
+	
 }
 
 void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool play) {
@@ -525,18 +526,17 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 	float unmoinsa;
 	
 	c->a = unmoinsa = 1.0f - a;
-
-	c->numbitmap		= current->numbitmap;
-	c->m_nextNumbitmap	= next->numbitmap;
-	c->ti				= current->typeinterp;
-	c->fx				= current->fx;
-	c->m_nextFx			= next->fx;
-	c->color			= current->color;
-	c->colord			= current->colord;
-	c->colorflash		= current->colorf;
-	c->speed			= current->speed;
-	c->idsound			= current->idsound;
-	c->force			= current->force;
+	c->numbitmap = current->numbitmap;
+	c->m_nextNumbitmap = next->numbitmap;
+	c->ti = current->typeinterp;
+	c->fx = current->fx;
+	c->m_nextFx = next->fx;
+	c->color = current->color;
+	c->colord = current->colord;
+	c->colorflash = current->colorf;
+	c->speed = current->speed;
+	c->idsound = current->idsound;
+	c->force = current->force;
 	
 	CinematicKeyframe * lightprec;
 	
@@ -553,12 +553,12 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 	
 	if(lightprec != lightnext) {
 		alight = (CKTrack->currframe - (float)lightprec->frame) / ((float)(lightnext->frame - lightprec->frame));
-
-		if(alight > 1.f)
+		if(alight > 1.f) {
 			alight = 1.f;
+		}
 	} else {
 		if(current == (CKTrack->key + CKTrack->nbkey - 1)) {
-			alight			= 1.f;
+			alight = 1.f;
 		} else {
 			//alight can't be used because it is not initialized
 //ARX_BEGIN: jycorbel (2010-07-19) - Set light coeff to 0 to keep null all possibly light created from uninitialyzed var.
@@ -566,9 +566,9 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 alight = unmoinsalight = 0.f; //default values needed when : k->typeinterp == INTERP_BEZIER (0) || k->typeinterp == INTERP_LINEAR (1)
 consequences on light :
 				c->light : position = (0,0,0);
-				c->light : color	= (0,0,0); == BLACK
-				c->light : fallin	= fallout		= 0;
-				c->light : intensite = intensiternd	= 0;
+				c->light : color = (0,0,0); == BLACK
+				c->light : fallin = fallout = 0;
+				c->light : intensite = intensiternd = 0;
 			arx_assert( k->typeinterp != INTERP_BEZIER && k->typeinterp != INTERP_LINEAR );
 */
 //ARX_END: jycorbel (2010-07-19)
