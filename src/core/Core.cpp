@@ -165,27 +165,27 @@ class TextManager;
 
 Image savegame_thumbnail;
 
-extern TextManager	*pTextManage;
+extern TextManager * pTextManage;
 
-extern long		DONT_WANT_PLAYER_INZONE;
+extern long DONT_WANT_PLAYER_INZONE;
 
 //-----------------------------------------------------------------------------
 
-ParticleManager	*pParticleManager = NULL;
+ParticleManager * pParticleManager = NULL;
 
-TextureContainer *	GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
+TextureContainer * GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 
 Vec2s DANAEMouse;
 Vec3f g_moveto;
 Vec3f Mscenepos;
 Vec3f lastteleport;
 EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];// 3D Objects For Gold Coins
-EERIE_3DOBJ	* arrowobj=NULL;			// 3D Object for arrows
-EERIE_3DOBJ * cameraobj=NULL;			// Camera 3D Object		// NEEDTO: Remove for Final
-EERIE_3DOBJ * markerobj=NULL;			// Marker 3D Object		// NEEDTO: Remove for Final
+EERIE_3DOBJ	* arrowobj = NULL; // 3D Object for arrows
+EERIE_3DOBJ * cameraobj = NULL; // Camera 3D Object // NEEDTO: Remove for Final
+EERIE_3DOBJ * markerobj = NULL; // Marker 3D Object // NEEDTO: Remove for Final
 
 Vec2s STARTDRAG;
-Entity * COMBINE=NULL;
+Entity * COMBINE = NULL;
 
 // START - Information for Player Teleport between/in Levels-------------------------------------
 std::string TELEPORT_TO_LEVEL;
@@ -202,7 +202,7 @@ Rect g_size(640, 480);
 Vec2f g_sizeRatio(1.f, 1.f);
 
 bool REQUEST_SPEECH_SKIP = false;
-long CURRENTLEVEL		= -1;
+long CURRENTLEVEL = -1;
 bool DONT_ERASE_PLAYER = false;
 bool FASTmse = false;
 
@@ -517,15 +517,13 @@ void levelInit() {
 	LoadLevelScreen();
 	LoadLevelScreen(-2);
 	
-	if (	(!CheckInPoly(player.pos))
-		&&	(LastValidPlayerPos.x!=0.f)
-		&&	(LastValidPlayerPos.y!=0.f)
-		&&	(LastValidPlayerPos.z!=0.f)) {
+	if(!CheckInPoly(player.pos) && LastValidPlayerPos.x != 0.f
+	   && LastValidPlayerPos.y != 0.f && LastValidPlayerPos.z != 0.f) {
 		player.pos = LastValidPlayerPos;
 	}
-
+	
 	LastValidPlayerPos = player.pos;
-
+	
 	g_platformTime.updateFrame();
 	
 	g_gameTime.resume(GameTime::PauseInitial | GameTime::PauseMenu);
@@ -536,7 +534,7 @@ void levelInit() {
 void ManageNONCombatModeAnimations() {
 	arx_assert(entities.player());
 	
-	Entity *io = entities.player();
+	Entity * io = entities.player();
 
 	AnimLayer & layer3 = io->animlayer[3];
 	ANIM_HANDLE ** alist=io->anims;
@@ -647,10 +645,9 @@ void ManageCombatModeAnimations() {
 						player.m_weaponBlocked = AnimationDuration::ofRaw(-1);
 					} else if( layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.2f
 					        && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.8f
-							&& player.m_weaponBlocked == AnimationDuration::ofRaw(-1)
-					) {
-						ActionPoint id = ActionPoint();
+					        && player.m_weaponBlocked == AnimationDuration::ofRaw(-1)) {
 						
+						ActionPoint id = ActionPoint();
 						if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT]) {
 							id = io->obj->fastaccess.left_attach;
 						} else { // Strike Right
@@ -962,35 +959,34 @@ void ManageCombatModeAnimationsEND() {
 	AnimLayer & layer3 = io->animlayer[3];
 	
 	ANIM_HANDLE ** alist = io->anims;
-
+	
 	if(layer1.cur_anim
-		&&(		(layer1.cur_anim == alist[ANIM_BARE_READY])
-			||	(layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_2])
-			||	(layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_1])
-			||	(layer1.cur_anim == alist[ANIM_1H_READY_PART_2])
-			||	(layer1.cur_anim == alist[ANIM_1H_READY_PART_1])
-			||	(layer1.cur_anim == alist[ANIM_2H_READY_PART_2])
-			||	(layer1.cur_anim == alist[ANIM_2H_READY_PART_1])
-			||	(layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_1])
-			||	(layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_2])	)
-	) {
+	   && (layer1.cur_anim == alist[ANIM_BARE_READY]
+	       || layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_2]
+	       || layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_1]
+	       || layer1.cur_anim == alist[ANIM_1H_READY_PART_2]
+	       || layer1.cur_anim == alist[ANIM_1H_READY_PART_1]
+	       || layer1.cur_anim == alist[ANIM_2H_READY_PART_2]
+	       || layer1.cur_anim == alist[ANIM_2H_READY_PART_1]
+	       || layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_1]
+	       || layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_2])) {
 		player.m_aimTime = PlatformDuration::ofRaw(1);
 	}
-
+	
 	if(layer1.flags & EA_ANIMEND) {
+		
 		WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
-
-		if(layer1.cur_anim &&
-			(	(layer1.cur_anim == io->anims[ANIM_BARE_UNREADY])
-			||	(layer1.cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_2])
-			||	(layer1.cur_anim == io->anims[ANIM_1H_UNREADY_PART_2])
-			||	(layer1.cur_anim == io->anims[ANIM_2H_UNREADY_PART_2])
-			||	(layer1.cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_2])	)
-		) {
+		
+		if(layer1.cur_anim
+		   && (layer1.cur_anim == io->anims[ANIM_BARE_UNREADY]
+		       || layer1.cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_2]
+		       || layer1.cur_anim == io->anims[ANIM_1H_UNREADY_PART_2]
+		       || layer1.cur_anim == io->anims[ANIM_2H_UNREADY_PART_2]
+		       || layer1.cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_2])) {
 			AcquireLastAnim(io);
 			layer1.cur_anim = NULL;
 		}
-
+		
 		switch(weapontype) {
 			case WEAPON_BARE: {
 				// Is Weapon Ready ? In this case go to Fight Wait anim
