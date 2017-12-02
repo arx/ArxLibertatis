@@ -56,8 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 #include "graphics/texture/TextureStage.h"
 
-float		FlashAlpha;
-int			TotOldPos;
+float FlashAlpha;
+int TotOldPos;
 
 static const int NBOLDPOS = 10;
 static Vec3f OldPos[NBOLDPOS];
@@ -165,10 +165,9 @@ bool FX_FlashBlanc(Vec2f size, float speed, Color color, float fps, float currfp
 	return true;
 }
 
-/*---------------------------------------------------------------------------------*/
-float	DreamAng, DreamAng2;
-float	DreamTable[64*64*2];
-/*---------------------------------------------------------------------------------*/
+float DreamAng, DreamAng2;
+float DreamTable[64 * 64 * 2];
+
 void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	
 	float a = DreamAng;
