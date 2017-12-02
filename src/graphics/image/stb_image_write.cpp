@@ -61,7 +61,7 @@ static int write_pixels(FILE * f, int x, int y, int comp, const void * data, int
 					const unsigned char bg[3] = { 255, 0, 255 };
 					unsigned char px[3];
 					for(int k = 0; k < 3; ++k) {
-						px[k] = bg[k] + ((d[k] - bg[k]) * d[3]) / 255;
+						px[k] = u8(bg[k] + ((d[k] - bg[k]) * d[3]) / 255);
 					}
 					if(!write3(f, px[2], px[1], px[0])) {
 						return 0;
