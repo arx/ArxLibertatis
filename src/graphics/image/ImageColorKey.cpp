@@ -284,9 +284,9 @@ public:
 	
 };
 
-static bool sampleColorKey(const u8 * src, int w, int h, int x, int y, u8 * dst, Color key) {
-	if(x >= 0 && x < w && y >= 0 && y < h) {
-		const u8 * s = src + (y * w + x) * 3;
+static bool sampleColorKey(const u8 * src, size_t w, size_t h, int x, int y, u8 * dst, Color key) {
+	if(x >= 0 && size_t(x) < w && y >= 0 && size_t(y) < h) {
+		const u8 * s = src + (size_t(y) * w + size_t(x)) * 3;
 		if(s[0] != key.r || s[1] != key.g || s[2] != key.b) {
 			dst[0] = s[0], dst[1] = s[1], dst[2] = s[2];
 			return true;
