@@ -71,7 +71,7 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 		return 0;
 	}
 	
-	CinematicBitmap	* bi = new CinematicBitmap();
+	CinematicBitmap * bi = new CinematicBitmap();
 	if(!bi)
 		return 0;
 
