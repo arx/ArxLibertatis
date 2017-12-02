@@ -166,7 +166,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		UseRenderState state(baseState.blend(BlendDstColor, BlendSrcColor));
 		if(batch.count[BatchBucket_Blended]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Blended],
-						  batch.count[BatchBucket_Blended]);
+			                                      batch.count[BatchBucket_Blended]);
 			batch.count[BatchBucket_Blended]=0;
 		}
 	}
@@ -175,7 +175,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		UseRenderState state(baseState.blend(BlendOne, BlendOne));
 		if(batch.count[BatchBucket_Additive]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Additive],
-						  batch.count[BatchBucket_Additive]);
+			                                      batch.count[BatchBucket_Additive]);
 			batch.count[BatchBucket_Additive]=0;
 		}
 	}
@@ -184,7 +184,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		UseRenderState state(baseState.blend(BlendZero, BlendInvSrcColor));
 		if(batch.count[BatchBucket_Subtractive]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Subtractive],
-						  batch.count[BatchBucket_Subtractive]);
+			                                      batch.count[BatchBucket_Subtractive]);
 			batch.count[BatchBucket_Subtractive]=0;
 		}
 	}
@@ -193,7 +193,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		UseRenderState state(baseState.blend(BlendOne, BlendOne));
 		if(batch.count[BatchBucket_Multiplicative]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Multiplicative],
-						  batch.count[BatchBucket_Multiplicative]);
+			                                      batch.count[BatchBucket_Multiplicative]);
 			batch.count[BatchBucket_Multiplicative] = 0;
 		}
 	}
@@ -242,12 +242,9 @@ float Cedric_GetInvisibility(Entity *io) {
 
 		if(io != entities.player() && invisibility > 0.f && !EXTERNALVIEW) {
 			SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_INVISIBILITY);
-
 			if(spell) {
 				if(player.m_skillFull.intuition > spell->m_level * 10) {
-					invisibility -= player.m_skillFull.intuition * (1.0f / 100)
-									+ spell->m_level * (1.0f / 10);
-
+					invisibility -= player.m_skillFull.intuition * (1.0f / 100) + spell->m_level * (1.0f / 10);
 					invisibility = glm::clamp(invisibility, 0.1f, 1.f);
 				}
 			}
@@ -481,7 +478,7 @@ static bool Cedric_IO_Visible(const Vec3f & pos) {
 	if(ACTIVEBKG) {
 		//TODO maybe readd this
 		//if(fartherThan(io->pos, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f))
-		//	return false;
+		// return false;
 
 		long xx = long(pos.x * ACTIVEBKG->m_mul.x);
 		long yy = long(pos.z * ACTIVEBKG->m_mul.y);
@@ -951,23 +948,20 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 	float tot = 0;
 	float _ffr[3];
 	ColorRGBA colors[3];
-
+	
 	for(size_t o = 0; o < 3; o++) {
-		float tttz	= glm::abs(eobj->vertexWorldPositions[paf[o]].norm.z) * ( 1.0f / 2 );
+		float tttz = glm::abs(eobj->vertexWorldPositions[paf[o]].norm.z) * ( 1.0f / 2 );
 		float power = 255.f - (255.f * tttz);
 		power *= (1.f - invisibility);
-
 		power = glm::clamp(power, 0.f, 255.f);
-
 		tot += power;
 		_ffr[o] = power;
-
 		u8 lfr = u8(curhalo->color.r * power);
 		u8 lfg = u8(curhalo->color.g * power);
 		u8 lfb = u8(curhalo->color.b * power);
 		colors[o] = Color(lfr, lfg, lfb, 255).toRGBA();
 	}
-
+	
 	if(tot > 260) {
 		long first;
 		long second;
@@ -1196,8 +1190,7 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 		return Vec3f_ZERO;
 	}
 	
-	EERIE_ANIM	*eanim = layer.cur_anim->anims[layer.altidx_cur];
-	
+	EERIE_ANIM * eanim = layer.cur_anim->anims[layer.altidx_cur];
 	if(!eanim) {
 		return Vec3f_ZERO;
 	}
@@ -1563,20 +1556,18 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 }
 
 void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility) {
-
+	
 	ARX_PROFILE_FUNC();
 	
 	if(io && io != entities.player() && !Cedric_IO_Visible(io->pos))
 		return;
-
-	bool isFightingNpc = io &&
-						 (io->ioflags & IO_NPC) &&
-						 (io->_npcdata->behavior & BEHAVIOUR_FIGHT) &&
-						 closerThan(io->pos, player.pos, 240.f);
-
-	if(!isFightingNpc && ARX_SCENE_PORTAL_ClipIO(io, pos))
+	
+	bool isFightingNpc = io && (io->ioflags & IO_NPC) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
+	                     && closerThan(io->pos, player.pos, 240.f);
+	if(!isFightingNpc && ARX_SCENE_PORTAL_ClipIO(io, pos)) {
 		return;
-
+	}
+	
 	Cedric_AnimateDrawEntityRender(eobj, pos, io, invisibility);
 }
 
