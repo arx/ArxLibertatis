@@ -256,11 +256,11 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	LogDebug("TEA header size: " << sizeof(THEA_HEADER));
 	LogDebug("Identity " << th->identity);
 	LogDebug("Version - " << th->version << "  Frames " << th->nb_frames
-			 << "  Groups " << th->nb_groups << "  KeyFrames " << th->nb_key_frames);
-
+	         << "  Groups " << th->nb_groups << "  KeyFrames " << th->nb_key_frames);
+	
 	eerie->nb_groups = th->nb_groups;
 	eerie->nb_key_frames = th->nb_key_frames;
-
+	
 	eerie->frames = allocStructZero<EERIE_FRAME>(th->nb_key_frames);
 	eerie->groups = allocStructZero<EERIE_GROUP>(th->nb_key_frames * th->nb_groups);
 	eerie->voidgroups = allocStructZero<unsigned char>(th->nb_groups);
@@ -302,21 +302,21 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		
 		arx_assert(tkf2015->flag_frame == -1 || tkf2015->flag_frame == 9);
 		eerie->frames[i].stepSound = (tkf2015->flag_frame == 9);
-
+		
 		LogDebug(" pos " << pos << " - NumFr " << eerie->frames[i].num_frame
-				 << " MKF " << tkf2015->master_key_frame << " THEA_KEYFRAME " << sizeof(THEA_KEYFRAME_2014)
-				 << " TIME " << toS(eerie->frames[i].time) << "s -Move " << tkf2015->key_move
-				 << " Orient " << tkf2015->key_orient << " Morph " << tkf2015->key_morph);
-
+		         << " MKF " << tkf2015->master_key_frame << " THEA_KEYFRAME " << sizeof(THEA_KEYFRAME_2014)
+		         << " TIME " << toS(eerie->frames[i].time) << "s -Move " << tkf2015->key_move
+		         << " Orient " << tkf2015->key_orient << " Morph " << tkf2015->key_morph);
+		
 		// Is There a Global translation ?
 		if(tkf2015->key_move != 0) {
 
 			const THEA_KEYMOVE * tkm = reinterpret_cast<const THEA_KEYMOVE *>(adr + pos);
 			pos += sizeof(THEA_KEYMOVE);
-
+			
 			LogDebug(" -> move x " << tkm->x << " y " << tkm->y << " z " << tkm->z
-					 << " THEA_KEYMOVE:" << sizeof(THEA_KEYMOVE));
-
+			         << " THEA_KEYMOVE:" << sizeof(THEA_KEYMOVE));
+			
 			eerie->frames[i].translate = tkm->toVec3();
 		}
 
@@ -326,10 +326,10 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 
 			const ArxQuat * quat = reinterpret_cast<const ArxQuat *>(adr + pos);
 			pos += sizeof(ArxQuat);
-
+			
 			LogDebug(" -> rotate x " << quat->x << " y " << quat->y << " z " << quat->z
-					 << " w " << quat->w << " ArxQuat:" << sizeof(ArxQuat));
-
+			         << " w " << quat->w << " ArxQuat:" << sizeof(ArxQuat));
+			
 			eerie->frames[i].quat = *quat;
 		}
 
@@ -362,10 +362,10 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 			const THEA_SAMPLE * ts = reinterpret_cast<const THEA_SAMPLE *>(adr + pos);
 			pos += sizeof(THEA_SAMPLE);
 			pos += ts->sample_size;
-
+			
 			LogDebug(" -> sample " << ts->sample_name << " size " << ts->sample_size
-					 << " THEA_SAMPLE:" << sizeof(THEA_SAMPLE));
-
+			         << " THEA_SAMPLE:" << sizeof(THEA_SAMPLE));
+			
 			eerie->frames[i].sample = ARX_SOUND_Load(res::path::load(util::loadString(ts->sample_name)));
 		}
 
@@ -590,14 +590,12 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 		
 		if((layer.flags & EA_LOOP)
 		   || (io && ((layer.cur_anim == io->anims[ANIM_WALK])
-					  || (layer.cur_anim == io->anims[ANIM_WALK2])
-					  || (layer.cur_anim == io->anims[ANIM_WALK3])
-					  || (layer.cur_anim == io->anims[ANIM_RUN])
-					  || (layer.cur_anim == io->anims[ANIM_RUN2])
-					  || (layer.cur_anim == io->anims[ANIM_RUN3])))
-		) {
+		              || (layer.cur_anim == io->anims[ANIM_WALK2])
+		              || (layer.cur_anim == io->anims[ANIM_WALK3])
+		              || (layer.cur_anim == io->anims[ANIM_RUN])
+		              || (layer.cur_anim == io->anims[ANIM_RUN2])
+		              || (layer.cur_anim == io->anims[ANIM_RUN3])))) {
 			layer.ctime = AnimationDuration::ofRaw(layer.ctime.t % animTime.t);
-			
 			if(io)
 				FinishAnim(io, layer.cur_anim);
 		} else {
