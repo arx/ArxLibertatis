@@ -527,15 +527,15 @@ static void LoadSysTextures() {
 
 	spellDataInit();
 
-	enviro=				TextureContainer::LoadUI("graph/particles/enviro");
-	inventory_font=		TextureContainer::LoadUI("graph/interface/font/font10x10_inventory");
-	tflare=				TextureContainer::LoadUI("graph/particles/flare");
-	ombrignon=			TextureContainer::LoadUI("graph/particles/ombrignon");
-	TC_fire=			TextureContainer::LoadUI("graph/particles/fire");
-	TC_fire2=			TextureContainer::LoadUI("graph/particles/fire2");
-	TC_smoke=			TextureContainer::LoadUI("graph/particles/smoke");
-	Boom=				TextureContainer::LoadUI("graph/particles/boom");
-	arx_logo_tc=		TextureContainer::LoadUI("graph/interface/icons/arx_logo_32");
+	enviro = TextureContainer::LoadUI("graph/particles/enviro");
+	inventory_font = TextureContainer::LoadUI("graph/interface/font/font10x10_inventory");
+	tflare = TextureContainer::LoadUI("graph/particles/flare");
+	ombrignon = TextureContainer::LoadUI("graph/particles/ombrignon");
+	TC_fire = TextureContainer::LoadUI("graph/particles/fire");
+	TC_fire2 = TextureContainer::LoadUI("graph/particles/fire2");
+	TC_smoke = TextureContainer::LoadUI("graph/particles/smoke");
+	Boom = TextureContainer::LoadUI("graph/particles/boom");
+	arx_logo_tc = TextureContainer::LoadUI("graph/interface/icons/arx_logo_32");
 	
 	TextureContainer::LoadUI("graph/particles/fire_hit");
 	TextureContainer::LoadUI("graph/particles/light");
