@@ -493,8 +493,8 @@ bool Image::toGrayscale(Format newFormat) {
 	
 	for(size_t i = 0; i < newSize; i += dstNumChannels) {
 		unsigned char grayVal = (77 * src[0] + 151 * src[1] + 28 * src[2] + 128) >> 8;
-		for(size_t i = 0; i < dstNumChannels; i++) {
-			dst[i] = grayVal;
+		for(size_t j = 0; j < dstNumChannels; j++) {
+			dst[j] = grayVal;
 		}
 		src += srcNumChannels;
 		dst += dstNumChannels;
