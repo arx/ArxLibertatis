@@ -11,18 +11,18 @@
 
 namespace stbi {
 
-static int write2(FILE * f, int x) {
+static size_t write2(FILE * f, int x) {
 	unsigned char b[2] = { (unsigned char)x, (unsigned char)(x >> 8) };
 	return fwrite(b, 2, 1, f);
 }
 
-static int write3(FILE * f, unsigned char a, unsigned char b, unsigned char c) {
+static size_t write3(FILE * f, unsigned char a, unsigned char b, unsigned char c) {
 	unsigned char arr[3];
 	arr[0] = a, arr[1] = b, arr[2] = c;
 	return fwrite(arr, 3, 1, f);
 }
 
-static int write4(FILE * f, u32 x) {
+static size_t write4(FILE * f, u32 x) {
 	unsigned char b[4] = { (unsigned char)x, (unsigned char)(x >> 8),
 	                       (unsigned char)(x >> 16), (unsigned char)(x >> 24) };
 	return fwrite(b, 4, 1, f);
