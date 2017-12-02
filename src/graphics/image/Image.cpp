@@ -564,7 +564,7 @@ void Image::blur(size_t radius) {
 			}
 			ri = ptrdiff_t(yi) + ptrdiff_t(xl);
 			for(size_t c = 0; c < numChannels; c++) {
-				blurredChannel[c][ri] = channelVals[c] / sum;
+				blurredChannel[c][ri] = u8(channelVals[c] / sum);
 			}
 		}
 		yi += getWidth();
@@ -591,7 +591,7 @@ void Image::blur(size_t radius) {
 				read += getWidth();
 			}
 			for(size_t c = 0; c < numChannels; c++) {
-				getData()[(xl + yi) * numChannels + c] = channelVals[c] / sum;
+				getData()[(xl + yi) * numChannels + c] = u8(channelVals[c] / sum);
 			}
 		}
 		yi += getWidth();
