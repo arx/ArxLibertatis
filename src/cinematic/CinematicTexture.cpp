@@ -121,8 +121,9 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 			int w2 = (w - cinMaxSize.x) < 0 ? w : cinMaxSize.x;
 
 			Texture * tex = GRenderer->createTexture();
-			tex->create(w2, h2, cinematicImage.getFormat());
-			tex->getImage().copy(cinematicImage, 0, 0, bi->m_size.x - w, bi->m_size.y - h, w2, h2);
+			tex->create(size_t(w2), size_t(h2), cinematicImage.getFormat());
+			tex->getImage().copy(cinematicImage, 0, 0,
+			                     size_t(bi->m_size.x - w), size_t(bi->m_size.y - h), size_t(w2), size_t(h2));
 			tex->upload();
 			
 			{
