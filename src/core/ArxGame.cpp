@@ -1406,124 +1406,128 @@ void ArxGame::speechControlledCinematic() {
 
 		if(rtime >= 0.f && rtime <= 1.f && io) {
 			switch(acs.type) {
-			case ARX_CINE_SPEECH_KEEP: {
-				arx_assert(isallfinite(acs.pos1));
 				
-				subj.orgTrans.pos = acs.pos1;
-				subj.angle.setPitch(acs.pos2.x);
-				subj.angle.setYaw(acs.pos2.y);
-				subj.angle.setRoll(acs.pos2.z);
-				EXTERNALVIEW = true;
-				break;
-									   }
-			case ARX_CINE_SPEECH_ZOOM: {
-				arx_assert(isallfinite(acs.pos1));
-				
-				//need to compute current values
-				float alpha = acs.startangle.getPitch() * itime + acs.endangle.getPitch() * rtime;
-				float beta = acs.startangle.getYaw() * itime + acs.endangle.getYaw() * rtime;
-				float distance = acs.startpos * itime + acs.endpos * rtime;
-				Vec3f targetpos = acs.pos1;
-				
-				conversationcamera.orgTrans.pos = angleToVectorXZ(io->angle.getYaw() + beta) * distance;
-				conversationcamera.orgTrans.pos.y = std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + alpha))) * distance;
-				conversationcamera.orgTrans.pos += targetpos;
-
-				conversationcamera.setTargetCamera(targetpos);
-				subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-				subj.angle.setPitch(MAKEANGLE(-conversationcamera.angle.getPitch()));
-				subj.angle.setYaw(MAKEANGLE(conversationcamera.angle.getYaw()-180.f));
-				subj.angle.setRoll(0.f);
-				EXTERNALVIEW = true;
-				break;
-									   }
-			case ARX_CINE_SPEECH_SIDE_LEFT:
-			case ARX_CINE_SPEECH_SIDE: {
-				if(ValidIONum(acs.ionum)) {
+				case ARX_CINE_SPEECH_KEEP: {
 					arx_assert(isallfinite(acs.pos1));
-					arx_assert(isallfinite(acs.pos2));
+					subj.orgTrans.pos = acs.pos1;
+					subj.angle.setPitch(acs.pos2.x);
+					subj.angle.setYaw(acs.pos2.y);
+					subj.angle.setRoll(acs.pos2.z);
+					EXTERNALVIEW = true;
+					break;
+				}
+				
+				case ARX_CINE_SPEECH_ZOOM: {
 					
-					const Vec3f & from = acs.pos1;
-					const Vec3f & to = acs.pos2;
-
-					Vec3f vect = glm::normalize(to - from);
-
-					Vec3f vect2;
-					if(acs.type==ARX_CINE_SPEECH_SIDE_LEFT) {
-						vect2 = VRotateY(vect, -90.f);
-					} else {
-						vect2 = VRotateY(vect, 90.f);
-					}
-
-					float distance=acs.m_startdist*itime+acs.m_enddist*rtime;
-					vect2 *= distance;
-					float _dist = glm::distance(from, to);
-					Vec3f tfrom = from + vect * acs.startpos * (1.0f / 100) * _dist;
-					Vec3f tto = from + vect * acs.endpos * (1.0f / 100) * _dist;
+					arx_assert(isallfinite(acs.pos1));
 					
-					Vec3f targetpos = tfrom * itime + tto * rtime + Vec3f(0.f, acs.m_heightModifier, 0.f);
-
-					conversationcamera.orgTrans.pos = targetpos + vect2 + Vec3f(0.f, acs.m_heightModifier, 0.f);
+					//need to compute current values
+					float alpha = acs.startangle.getPitch() * itime + acs.endangle.getPitch() * rtime;
+					float beta = acs.startangle.getYaw() * itime + acs.endangle.getYaw() * rtime;
+					float distance = acs.startpos * itime + acs.endpos * rtime;
+					Vec3f targetpos = acs.pos1;
+					
+					conversationcamera.orgTrans.pos = angleToVectorXZ(io->angle.getYaw() + beta) * distance;
+					conversationcamera.orgTrans.pos.y = std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + alpha))) * distance;
+					conversationcamera.orgTrans.pos += targetpos;
 					conversationcamera.setTargetCamera(targetpos);
 					subj.orgTrans.pos = conversationcamera.orgTrans.pos;
 					subj.angle.setPitch(MAKEANGLE(-conversationcamera.angle.getPitch()));
 					subj.angle.setYaw(MAKEANGLE(conversationcamera.angle.getYaw()-180.f));
 					subj.angle.setRoll(0.f);
 					EXTERNALVIEW = true;
-				}
-
-				break;
-									   }
-			case ARX_CINE_SPEECH_CCCLISTENER_R:
-			case ARX_CINE_SPEECH_CCCLISTENER_L:
-			case ARX_CINE_SPEECH_CCCTALKER_R:
-			case ARX_CINE_SPEECH_CCCTALKER_L: {
-				//need to compute current values
-				if(ValidIONum(acs.ionum)) {
-					arx_assert(isallfinite(acs.pos1));
-					arx_assert(isallfinite(acs.pos2));
 					
-					Vec3f targetpos;
-					if(acs.type == ARX_CINE_SPEECH_CCCLISTENER_L
-						 || acs.type == ARX_CINE_SPEECH_CCCLISTENER_R) {
-						conversationcamera.orgTrans.pos = acs.pos2;
-						targetpos = acs.pos1;
-					} else {
-						conversationcamera.orgTrans.pos = acs.pos1;
-						targetpos = acs.pos2;
-					}
-
-					float distance = (acs.startpos * itime + acs.endpos * rtime) * (1.0f/100);
-
-					Vec3f vect = conversationcamera.orgTrans.pos - targetpos;
-					Vec3f vect2 = VRotateY(vect, 90.f);;
-					
-					vect2 = glm::normalize(vect2);
-					Vec3f vect3 = glm::normalize(vect);
-
-					vect = vect * distance + vect3 * 80.f;
-					vect2 *= 45.f;
-
-					if ((acs.type==ARX_CINE_SPEECH_CCCLISTENER_R)
-						|| (acs.type==ARX_CINE_SPEECH_CCCTALKER_R))
-					{
-						vect2 = -vect2;
-					}
-
-					conversationcamera.orgTrans.pos = vect + targetpos + vect2;
-					conversationcamera.setTargetCamera(targetpos);
-					subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-					subj.angle.setPitch(MAKEANGLE(-conversationcamera.angle.getPitch()));
-					subj.angle.setYaw(MAKEANGLE(conversationcamera.angle.getYaw()-180.f));
-					subj.angle.setRoll(0.f);
-					EXTERNALVIEW = true;
+					break;
 				}
-
-				break;
-											  }
-			case ARX_CINE_SPEECH_NONE: break;
+				
+				case ARX_CINE_SPEECH_SIDE_LEFT:
+				case ARX_CINE_SPEECH_SIDE: {
+					
+					if(ValidIONum(acs.ionum)) {
+						
+						arx_assert(isallfinite(acs.pos1));
+						arx_assert(isallfinite(acs.pos2));
+						
+						const Vec3f & from = acs.pos1;
+						const Vec3f & to = acs.pos2;
+						
+						Vec3f vect = glm::normalize(to - from);
+						Vec3f vect2;
+						if(acs.type==ARX_CINE_SPEECH_SIDE_LEFT) {
+							vect2 = VRotateY(vect, -90.f);
+						} else {
+							vect2 = VRotateY(vect, 90.f);
+						}
+						
+						float distance=acs.m_startdist*itime+acs.m_enddist*rtime;
+						vect2 *= distance;
+						float _dist = glm::distance(from, to);
+						Vec3f tfrom = from + vect * acs.startpos * (1.0f / 100) * _dist;
+						Vec3f tto = from + vect * acs.endpos * (1.0f / 100) * _dist;
+						Vec3f targetpos = tfrom * itime + tto * rtime + Vec3f(0.f, acs.m_heightModifier, 0.f);
+						
+						conversationcamera.orgTrans.pos = targetpos + vect2 + Vec3f(0.f, acs.m_heightModifier, 0.f);
+						conversationcamera.setTargetCamera(targetpos);
+						subj.orgTrans.pos = conversationcamera.orgTrans.pos;
+						subj.angle.setPitch(MAKEANGLE(-conversationcamera.angle.getPitch()));
+						subj.angle.setYaw(MAKEANGLE(conversationcamera.angle.getYaw()-180.f));
+						subj.angle.setRoll(0.f);
+						EXTERNALVIEW = true;
+						
+					}
+					
+					break;
+				}
+				
+				case ARX_CINE_SPEECH_CCCLISTENER_R:
+				case ARX_CINE_SPEECH_CCCLISTENER_L:
+				case ARX_CINE_SPEECH_CCCTALKER_R:
+				case ARX_CINE_SPEECH_CCCTALKER_L: {
+					
+					//need to compute current values
+					if(ValidIONum(acs.ionum)) {
+						
+						arx_assert(isallfinite(acs.pos1));
+						arx_assert(isallfinite(acs.pos2));
+						
+						Vec3f targetpos;
+						if(acs.type == ARX_CINE_SPEECH_CCCLISTENER_L
+							|| acs.type == ARX_CINE_SPEECH_CCCLISTENER_R) {
+							conversationcamera.orgTrans.pos = acs.pos2;
+							targetpos = acs.pos1;
+						} else {
+							conversationcamera.orgTrans.pos = acs.pos1;
+							targetpos = acs.pos2;
+						}
+						
+						float distance = (acs.startpos * itime + acs.endpos * rtime) * (1.0f/100);
+						Vec3f vect = conversationcamera.orgTrans.pos - targetpos;
+						Vec3f vect2 = VRotateY(vect, 90.f);;
+						vect2 = glm::normalize(vect2);
+						Vec3f vect3 = glm::normalize(vect);
+						vect = vect * distance + vect3 * 80.f;
+						vect2 *= 45.f;
+						if(acs.type == ARX_CINE_SPEECH_CCCLISTENER_R || acs.type==ARX_CINE_SPEECH_CCCTALKER_R) {
+							vect2 = -vect2;
+						}
+						
+						conversationcamera.orgTrans.pos = vect + targetpos + vect2;
+						conversationcamera.setTargetCamera(targetpos);
+						subj.orgTrans.pos = conversationcamera.orgTrans.pos;
+						subj.angle.setPitch(MAKEANGLE(-conversationcamera.angle.getPitch()));
+						subj.angle.setYaw(MAKEANGLE(conversationcamera.angle.getYaw()-180.f));
+						subj.angle.setRoll(0.f);
+						EXTERNALVIEW = true;
+						
+					}
+					
+					break;
+				}
+				
+				case ARX_CINE_SPEECH_NONE: break;
+				
 			}
-
+			
 			LASTCAMPOS = subj.orgTrans.pos;
 			LASTCAMANGLE = subj.angle;
 		}
@@ -2135,13 +2139,12 @@ void ArxGame::render() {
 	} else {
 		benchmark::begin(cinematicBorder.CINEMA_DECAL != 0.f ? benchmark::Cutscene : benchmark::Scene);
 		updateLevel();
-		
 		renderLevel();
-
-#ifdef ARX_DEBUG
-		if(g_debugToggles[9])
+		#ifdef ARX_DEBUG
+		if(g_debugToggles[9]) {
 			renderLevel();
-#endif
+		}
+		#endif
 	}
 	
 	if(g_debugInfo != InfoPanelNone) {
