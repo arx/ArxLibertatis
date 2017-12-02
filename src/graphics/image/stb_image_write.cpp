@@ -74,7 +74,7 @@ static int write_pixels(FILE * f, int x, int y, int comp, const void * data, int
 		}
 		
 		u32 zero = 0;
-		if(scanline_pad > 0 && !fwrite(&zero, scanline_pad, 1, f)) {
+		if(scanline_pad > 0 && !fwrite(&zero, size_t(scanline_pad), 1, f)) {
 			return 0;
 		}
 		
@@ -105,8 +105,8 @@ int stbi_write_bmp(char const * filename, int x, int y, int comp, const void * d
 	
 	// Bitmap header
 	write4(f, 40);
-	write4(f, x);
-	write4(f, y);
+	write4(f, u32(x));
+	write4(f, u32(y));
 	write2(f, 1);
 	write2(f, 24);
 	write4(f, 0);
