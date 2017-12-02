@@ -610,7 +610,7 @@ void Image::blur(size_t radius) {
 void Image::flipY() {
 	
 	size_t imageSize = getSize();
-	size_t lineSize = imageSize / getHeight();
+	size_t lineSize = getSize(getFormat(), getWidth(), 1);
 	
 	unsigned char * swapTmp = (unsigned char *)malloc(lineSize);
 	arx_assert(swapTmp);
