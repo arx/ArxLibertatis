@@ -465,12 +465,6 @@ public:
 				io->halo_native.flags &= ~HALO_NEGATIVE;
 			}
 			
-			if(flg & flag('l')) {
-				io->halo_native.flags |= HALO_DYNLIGHT;
-			} else {
-				io->halo_native.flags &= ~HALO_DYNLIGHT;
-			}
-			
 			if(flg & flag('c')) {
 				io->halo_native.color.r = context.getFloat();
 				io->halo_native.color.g = context.getFloat();
