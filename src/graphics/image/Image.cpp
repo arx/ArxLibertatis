@@ -528,7 +528,7 @@ void Image::blur(size_t radius) {
 	}
 	
 	kernel[radius] = radius * radius;
-	for(int j = 0; j < 256; j++) {
+	for(size_t j = 0; j < 256; j++) {
 		mult[(radius << 8) + j] = kernel[radius] * j;
 	}
 	
