@@ -1261,7 +1261,7 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	if(!BLOCK_PLAYER_CONTROLS && sp_max) {
 		io->halo.color = Color3f::red;
-		io->halo.flags |= HALO_ACTIVE | HALO_DYNLIGHT;
+		io->halo.flags |= HALO_ACTIVE;
 		io->halo.radius = 20.f;
 		player.lifePool.current += g_framedelay * 0.1f;
 		player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
