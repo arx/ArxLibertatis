@@ -110,7 +110,7 @@ bool Image::load(void * data, size_t size, const char * file) {
 		return false;
 	}
 	
-	arx_assert(size <= std::numeric_limits<int>::max());
+	arx_assert(size <= size_t(std::numeric_limits<int>::max()));
 	
 	int width, height, bpp, fmt, req_bpp = 0;
 	
