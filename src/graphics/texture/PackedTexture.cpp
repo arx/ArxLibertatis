@@ -73,7 +73,7 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::insertImage(const
 	Node * node = root.insertImage(img);
 	
 	if(node != NULL) {
-		texture->getImage().copy(img, node->rect.left, node->rect.top);
+		texture->getImage().copy(img, size_t(node->rect.left), size_t(node->rect.top));
 		dirty = true;
 	}
 	
@@ -159,8 +159,8 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::insertImage
 		return result;
 	}
 	
-	int diffW = (rect.width() + 1) - image.getWidth();
-	int diffH = (rect.height() + 1) - image.getHeight();
+	s32 diffW = (rect.width() + 1) - s32(image.getWidth());
+	s32 diffH = (rect.height() + 1) - s32(image.getHeight());
 	
 	// If we're too small, return.
 	if(diffW < 0 || diffH < 0) {
@@ -178,11 +178,11 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::insertImage
 	children[1] = new Node();
 	
 	if(diffW > diffH) {
-		children[0]->rect = Rect(rect.left, rect.top, rect.left + image.getWidth() - 1, rect.bottom);
-		children[1]->rect = Rect(rect.left + image.getWidth(), rect.top, rect.right, rect.bottom);
+		children[0]->rect = Rect(rect.left, rect.top, rect.left + s32(image.getWidth()) - 1, rect.bottom);
+		children[1]->rect = Rect(rect.left + s32(image.getWidth()), rect.top, rect.right, rect.bottom);
 	} else {
-		children[0]->rect = Rect(rect.left, rect.top, rect.right, rect.top + image.getHeight() - 1);
-		children[1]->rect = Rect(rect.left, rect.top + image.getHeight(), rect.right, rect.bottom);
+		children[0]->rect = Rect(rect.left, rect.top, rect.right, rect.top + s32(image.getHeight()) - 1);
+		children[1]->rect = Rect(rect.left, rect.top + s32(image.getHeight()), rect.right, rect.bottom);
 	}
 	
 	// Insert into first child we created
