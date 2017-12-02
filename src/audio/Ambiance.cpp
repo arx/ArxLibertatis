@@ -556,7 +556,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	u32 iflags;
 	u32 key_c;
 	if(!file->read(&iflags, 4) || !file->read(&key_c, 4)) {
-			return AAL_ERROR_FILEIO;
+		return AAL_ERROR_FILEIO;
 	}
 	
 	flags = Ambiance::Track::TrackFlags::load(iflags); // TODO save/load flags
