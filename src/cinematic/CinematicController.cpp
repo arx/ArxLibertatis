@@ -51,7 +51,7 @@ static bool CINE_PRELOAD = false;
 static std::string WILL_LAUNCH_CINE;
 static std::string LAST_LAUNCHED_CINE;
 
-Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
+Cinematic * ControlCinematique = NULL; // 2D Cinematic Controller
 
 void cinematicInit() {
 	const Vec2i & size = mainApp->getWindow()->getSize();
@@ -132,11 +132,8 @@ bool cinematicIsStopped() {
 	return PLAY_LOADED_CINEMATIC == Cinematic_Stopped;
 }
 
-
 bool isInCinematic() {
-	return PLAY_LOADED_CINEMATIC != Cinematic_Stopped
-			&& ControlCinematique
-			&& ControlCinematique->projectload;
+	return PLAY_LOADED_CINEMATIC != Cinematic_Stopped && ControlCinematique && ControlCinematique->projectload;
 }
 
 // Manages Currently playing 2D cinematic
