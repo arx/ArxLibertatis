@@ -145,7 +145,7 @@ DECLARE_FLAGS(PathMod, PathMods)
 DECLARE_FLAGS_OPERATORS(PathMods)
 
 extern ARX_PATH ** ARXpaths;
-extern long	nbARXpaths;
+extern long nbARXpaths;
 
 void ARX_PATH_UpdateAllZoneInOutInside();
 long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos);
