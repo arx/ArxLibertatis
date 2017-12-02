@@ -159,7 +159,7 @@ void SaveGameList::update(bool verbose) {
 				oss << "(quicksave)" << std::setw(max_name_length - 8) << ' ';
 			} else {
 				oss << "\"" << savelist[i].name << "\""
-						<< std::setw(max_name_length - savelist[i].name.length() + 1) << ' ';
+				    << std::setw(max_name_length - savelist[i].name.length() + 1) << ' ';
 			}
 			
 			const char * lead = """Found save ";
