@@ -456,9 +456,6 @@ public:
 	
 	Inventory(long io, array_type & data, size_type bags, size_type width, size_type height)
 		: io(io), data(data), bags(bags), width(width), height(height) { }
-		
-	Inventory(const Inventory & o)
-		: io(o.io), data(o.data), bags(o.bags), width(o.width), height(o.height) { }
 	
 	/*!
 	 * Insert an item into the inventory
