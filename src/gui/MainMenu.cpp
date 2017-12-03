@@ -1868,7 +1868,7 @@ class ControlOptionsPage : public MenuPage {
 	
 public:
 	
-	ControlOptionsPage(MENUSTATE state)
+	explicit ControlOptionsPage(MENUSTATE state)
 		: MenuPage(state)
 	{}
 	
