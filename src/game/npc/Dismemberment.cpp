@@ -365,30 +365,30 @@ static bool IsAlreadyCut(Entity * io, DismembermentFlag fl) {
 
 static bool ARX_NPC_ApplyCuts(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC))
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return false;
-
-	if(io->_npcdata->cuts == 0)
-		return false;	// No cuts
-
+	}
+	
+	if(io->_npcdata->cuts == 0) {
+		return false; // No cuts
+	}
+	
 	ReComputeCutFlags(io);
+	
 	long goretex = -1;
-
 	for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
-		if (io->obj->texturecontainer[i]
-		        &&	(boost::contains(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
-		{
+		if(io->obj->texturecontainer[i]
+		   && boost::contains(io->obj->texturecontainer[i]->m_texName.string(), "gore")) {
 			goretex = i;
 			break;
 		}
 	}
-
-	bool hid = false;
-
+	
 	for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
 		io->obj->facelist[nn].facetype &= ~POLY_HIDE;
 	}
-
+	
+	bool hid = false;
 	for(long jj = 0; jj < 6; jj++) {
 		DismembermentFlag flg = DismembermentFlag(1 << jj);
 		ObjSelection numsel = GetCutSelection(io, flg);
