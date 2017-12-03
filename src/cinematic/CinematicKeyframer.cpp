@@ -561,18 +561,6 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 			alight = 1.f;
 		} else {
 			//alight can't be used because it is not initialized
-//ARX_BEGIN: jycorbel (2010-07-19) - Set light coeff to 0 to keep null all possibly light created from uninitialyzed var.
-/*
-alight = unmoinsalight = 0.f; //default values needed when : k->typeinterp == INTERP_BEZIER (0) || k->typeinterp == INTERP_LINEAR (1)
-consequences on light :
-				c->light : position = (0,0,0);
-				c->light : color = (0,0,0); == BLACK
-				c->light : fallin = fallout = 0;
-				c->light : intensite = intensiternd = 0;
-			arx_assert( k->typeinterp != INTERP_BEZIER && k->typeinterp != INTERP_LINEAR );
-*/
-//ARX_END: jycorbel (2010-07-19)
-			//ARX_END: jycorbel (2010-06-28)
 			c->m_lightd = current->light;
 			lightprec = current;
 		}
