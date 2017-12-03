@@ -542,7 +542,7 @@ public:
 				TELEPORT_TO_POSITION = target;
 				
 				if(angle == -1) {
-					TELEPORT_TO_ANGLE	=	static_cast<long>(player.angle.getYaw());
+					TELEPORT_TO_ANGLE = static_cast<long>(player.angle.getYaw());
 				} else {
 					TELEPORT_TO_ANGLE = angle;
 				}
