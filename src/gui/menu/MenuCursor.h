@@ -51,7 +51,7 @@ public:
 	virtual ~MenuCursor();
 	
 	void reset();
-	void update(PlatformDuration time);
+	void update();
 	void SetMouseOver();
 	void DrawCursor();
 	

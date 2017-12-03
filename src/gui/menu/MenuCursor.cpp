@@ -179,7 +179,7 @@ void MenuCursor::reset() {
 	trail.reset();
 }
 
-void MenuCursor::update(PlatformDuration time) {
+void MenuCursor::update() {
 	
 	bool inWindow = GInput->isMouseInWindow();
 	if(inWindow && exited) {
@@ -190,7 +190,7 @@ void MenuCursor::update(PlatformDuration time) {
 	
 	Vec2s iDiff = m_size / Vec2s(2);
 	
-	trail.add(time, GInput->getMousePosition() + iDiff);
+	trail.add(g_platformTime.lastFrameDuration(), GInput->getMousePosition() + iDiff);
 }
 
 
