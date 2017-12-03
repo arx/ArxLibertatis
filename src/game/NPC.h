@@ -162,7 +162,7 @@ struct IO_NPCDATA {
 	ResourcePool manaPool;
 	
 	GameInstant reachedtime;
-	long reachedtarget;	//Is target in REACHZONE ?
+	long reachedtarget; // Is target in REACHZONE?
 	Entity * weapon; // Linked Weapon (r-hand)
 	long detect;
 	MoveMode movemode;
