@@ -1441,15 +1441,21 @@ public:
 		{
 			
 			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_audio_device", "Device");
-			szMenuText += "  ";
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
-			panel->AddElement(txt);
+			
+			float labelwidth = 0.f;
+			{
+				std::string szMenuText = getLocalised("system_menus_options_audio_device", "Device");
+				szMenuText += "  ";
+				TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
+				txt->SetCheckOff();
+				panel->AddElement(txt);
+				labelwidth = txt->m_rect.width();
+			}
+			
 			CycleTextWidget * slider = new CycleTextWidget;
 			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedDevice, this, _1, _2);
 			
-			float maxwidth = RATIO_X(m_size.x - 28) - txt->m_rect.width() - slider->m_rect.width();
+			float maxwidth = RATIO_X(m_size.x - 28) - labelwidth - slider->m_rect.width();
 			
 			slider->AddText(new TextWidget(hFontControls, "Default"));
 			slider->selectLast();
