@@ -304,16 +304,14 @@ void MagicMissileSpell::Update() {
 		m_missiles[i]->Update(g_gameTime.lastFrameDuration());
 	}
 	
-	{ // CheckAllDestroyed
-		long nbmissiles	= 0;
-		
+	{
+		long nbmissiles = 0;
 		for(size_t i = 0; i < m_missiles.size(); i++) {
 			CMagicMissile *pMM = m_missiles[i];
 			if(pMM->bMove) {
 				nbmissiles++;
 			}
 		}
-		
 		if(nbmissiles == 0) {
 			m_duration = 0;
 		}
