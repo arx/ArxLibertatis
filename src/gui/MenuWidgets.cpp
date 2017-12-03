@@ -772,6 +772,7 @@ void MenuPage::Render() {
 	
 	//HIGHLIGHT
 	if(m_selected) {
+		pMenuCursor->SetMouseOver();
 		m_selected->RenderMouseOver();
 		
 		{
