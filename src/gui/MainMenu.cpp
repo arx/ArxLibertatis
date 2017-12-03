@@ -995,11 +995,15 @@ public:
 		// Renderer selection
 		{
 			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
-			szMenuText += "  ";
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
-			panel->AddElement(txt);
+			
+			{
+				std::string szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
+				szMenuText += "  ";
+				TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
+				txt->SetCheckOff();
+				panel->AddElement(txt);
+			}
+			
 			CycleTextWidget * slider = new CycleTextWidget;
 			slider->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedRenderer, this, _1, _2);
 			
