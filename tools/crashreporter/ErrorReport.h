@@ -37,11 +37,11 @@
 #include "platform/crashhandler/CrashInfo.h"
 #include "io/fs/FilePath.h"
 
-class ErrorReport
-{
+class ErrorReport {
+	
 public:
-	class IProgressNotifier
-	{
+	
+	class IProgressNotifier {
 	public:
 		virtual void taskStarted(const QString& taskDescription, int numSteps) = 0;
 		virtual void taskStepStarted(const QString& taskStepDescription) = 0;
@@ -50,20 +50,20 @@ public:
 		virtual void setDetailedError(const QString& strDetailedError) = 0;
 	};
 
-	struct File
-	{
-		fs::path	path;
-		bool		attachToReport;
-
-		File(const fs::path _path, bool _attach)
-		{
+	struct File {
+		
+		fs::path path;
+		bool attachToReport;
+		
+		File(const fs::path _path, bool _attach) {
 			path = _path;
 			attachToReport = _attach;
 		}
+		
 	};
-
+	
 	typedef std::vector<File> FileList;
-
+	
 public:
 	
 	explicit ErrorReport(const QString & sharedMemoryName);

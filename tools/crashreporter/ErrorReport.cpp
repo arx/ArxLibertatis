@@ -224,25 +224,25 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier) 
 			pProgressNotifier->setDetailedError(server.getErrorString());
 			return false;
 		}
-
+		
 		// Set OS
-#if   ARX_PLATFORM == ARX_PLATFORM_WIN32
+		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 		int os_id = TBG::Server::OS_Windows;
-#elif ARX_PLATFORM == ARX_PLATFORM_LINUX
+		#elif ARX_PLATFORM == ARX_PLATFORM_LINUX
 		int os_id = TBG::Server::OS_Linux;
-#elif ARX_PLATFORM == ARX_PLATFORM_MACOS
+		#elif ARX_PLATFORM == ARX_PLATFORM_MACOS
 		int os_id = TBG::Server::OS_macOS;
-#elif ARX_PLATFORM == ARX_PLATFORM_BSD
+		#elif ARX_PLATFORM == ARX_PLATFORM_BSD
 		#if defined(__FreeBSD__)
 		int os_id = TBG::Server::OS_FreeBSD;
 		#else
 		int os_id = TBG::Server::OS_BSD;
 		#endif
-#else
+		#else
 		int os_id = TBG::Server::OS_Other;
-#endif
+		#endif
 		server.setOperatingSystem(issue_id, os_id);
-
+		
 		// Set Architecture
 		int arch_id;
 		if(m_ProcessArchitecture == ARX_ARCH_X86_64)
