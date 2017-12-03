@@ -1411,12 +1411,6 @@ void MakeLocalText(EERIE_SCRIPT * es, std::string& tx)
 	}
 }
 
-//*************************************************************************************
-// ScriptEvent::send																	//
-// Sends a event to a script.														//
-// returns ACCEPT to accept default EVENT processing								//
-// returns REFUSE to refuse default EVENT processing								//
-//*************************************************************************************
 void MakeSSEPARAMS(const char * params)
 {
 	
