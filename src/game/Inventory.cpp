@@ -140,8 +140,7 @@ void CleanInventory() {
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-		
-		slot.io	 = NULL;
+		slot.io = NULL;
 		slot.show = true;
 	}
 	
@@ -525,12 +524,12 @@ public:
 		std::sort(items.begin(), items.end(), ItemSizeComaparator());
 		
 		LogDebug("sorting");
-	#ifdef ARX_DEBUG
+		#ifdef ARX_DEBUG
 		BOOST_FOREACH(const Entity * item, items) {
 			LogDebug(" - " << item->idString() << ": "
-							<< int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
+			         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
 		}
-	#endif
+		#endif
 		
 		LogDebug("putting back items");
 		
