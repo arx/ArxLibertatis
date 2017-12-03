@@ -180,7 +180,7 @@ Vec3f g_moveto;
 Vec3f Mscenepos;
 Vec3f lastteleport;
 EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];// 3D Objects For Gold Coins
-EERIE_3DOBJ	* arrowobj = NULL; // 3D Object for arrows
+EERIE_3DOBJ * arrowobj = NULL; // 3D Object for arrows
 EERIE_3DOBJ * cameraobj = NULL; // Camera 3D Object // NEEDTO: Remove for Final
 EERIE_3DOBJ * markerobj = NULL; // Marker 3D Object // NEEDTO: Remove for Final
 
@@ -350,7 +350,7 @@ void SetEditMode() {
 bool GMOD_RESET = true;
 
 Vec3f LastValidPlayerPos;
-Vec3f	WILL_RESTORE_PLAYER_POSITION;
+Vec3f WILL_RESTORE_PLAYER_POSITION;
 bool WILL_RESTORE_PLAYER_POSITION_FLAG = false;
 
 void levelInit() {
