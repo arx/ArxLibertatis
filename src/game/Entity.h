@@ -253,7 +253,7 @@ public:
 	Vec3f forcedmove;
 	
 	Anglef angle; // IO angle
-	IO_PHYSICS physics;	// Movement Collision Data
+	IO_PHYSICS physics; // Movement Collision Data
 	short room;
 	bool requestRoomUpdate;
 	float original_height;
