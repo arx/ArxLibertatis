@@ -2086,46 +2086,46 @@ void ArxGame::render() {
 	
 	PULSATE = timeWaveSin(g_gameTime.now(), GameDurationMsf(5026.548245f));
 	EERIEDrawnPolys = 0;
-
+	
 	// Checks for Keyboard & Moulinex
 	{
-	g_cursorOverBook = false;
-	
-	if(ARXmenu.mode() == Mode_InGame) { // Playing Game
-		// Checks Clicks in Book Interface
-		if(ARX_INTERFACE_MouseInBook()) {
-			g_cursorOverBook = true;
-		}
-	}
-	
-	if((player.Interface & INTER_COMBATMODE) || PLAYER_MOUSELOOK_ON) {
-		FlyingOverIO = NULL; // Avoid to check with those modes
-	} else {
-		if(!DRAGINTER) {
-			if(!BLOCK_PLAYER_CONTROLS
-			   && !TRUE_PLAYER_MOUSELOOK_ON
-			   && !g_cursorOverBook
-			   && eMouseState != MOUSE_IN_NOTE
-			) {
-				FlyingOverIO = FlyingOverObject(DANAEMouse);
-			} else {
-				FlyingOverIO = NULL;
+		g_cursorOverBook = false;
+		
+		if(ARXmenu.mode() == Mode_InGame) { // Playing Game
+			// Checks Clicks in Book Interface
+			if(ARX_INTERFACE_MouseInBook()) {
+				g_cursorOverBook = true;
 			}
 		}
+		
+		if((player.Interface & INTER_COMBATMODE) || PLAYER_MOUSELOOK_ON) {
+			FlyingOverIO = NULL; // Avoid to check with those modes
+		} else {
+			if(!DRAGINTER) {
+				if(!BLOCK_PLAYER_CONTROLS
+					&& !TRUE_PLAYER_MOUSELOOK_ON
+					&& !g_cursorOverBook
+					&& eMouseState != MOUSE_IN_NOTE
+				) {
+					FlyingOverIO = FlyingOverObject(DANAEMouse);
+				} else {
+					FlyingOverIO = NULL;
+				}
+			}
+		}
+		
+		if(!player.m_paralysed || ARXmenu.mode() != Mode_InGame) {
+			manageKeyMouse();
+		}
 	}
 	
-	if(!player.m_paralysed || ARXmenu.mode() != Mode_InGame) {
-			manageKeyMouse();
-	}
-	}
-
 	if(CheckInPoly(player.pos)) {
 		LastValidPlayerPos = player.pos;
 	}
-
+	
 	// Updates Externalview
 	EXTERNALVIEW = false;
-
+	
 	if(g_debugTriggers[1])
 		g_hudRoot.bookIconGui.requestFX();
 	
