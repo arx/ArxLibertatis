@@ -1307,7 +1307,7 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 				for(size_t kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1) {
 					if(kk != k) {
 						Vec3f posi = (entities[handle]->obj->vertexWorldPositions[k].v
-									  + entities[handle]->obj->vertexWorldPositions[kk].v) * 0.5f;
+						             + entities[handle]->obj->vertexWorldPositions[kk].v) * 0.5f;
 						float dist = fdist(sphere.origin, posi);
 						if(dist <= sphere.radius) {
 							count2++;
@@ -1405,10 +1405,11 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 	if (percent >= 100.f) {
 		io->durability = io->max_durability;
 	} else {
-		float ratio			= percent * ( 1.0f / 100 );
-		float to_restore	= (io->max_durability - io->durability) * ratio;
-		float v				= Random::getf(0.f, 100.f) - percent;
-
+		
+		float ratio = percent * ( 1.0f / 100 );
+		float to_restore = (io->max_durability - io->durability) * ratio;
+		float v = Random::getf(0.f, 100.f) - percent;
+		
 		if (v <= 0.f) {
 			float mloss = 1.f;
 
