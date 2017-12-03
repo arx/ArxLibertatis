@@ -388,18 +388,15 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack() {
 			Entity *toequip = entities[player.equiped[i]];
 
 			if(toequip) {
-				if ((toequip->type_flags & OBJECT_TYPE_DAGGER)
-				        ||	(toequip->type_flags & OBJECT_TYPE_1H)
-				        ||	(toequip->type_flags & OBJECT_TYPE_2H)
-				        ||	(toequip->type_flags & OBJECT_TYPE_BOW)
-				   )
-				{
+				if((toequip->type_flags & OBJECT_TYPE_DAGGER) || (toequip->type_flags & OBJECT_TYPE_1H)
+				   || (toequip->type_flags & OBJECT_TYPE_2H) || (toequip->type_flags & OBJECT_TYPE_BOW)) {
+					
 					if(toequip->type_flags & OBJECT_TYPE_BOW) {
 						EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
 						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "test", toequip); //
 						return;
 					}
-
+					
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
 					EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "primary_attach", toequip); //
 					return;
@@ -526,7 +523,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	} else {
 		if(!(io_source->ioflags & IO_NPC)) // no NPC source...
 			return 0.f;
-
+		
 		if(!io_source->weaponmaterial.empty()) {
 			wmat = &io_source->weaponmaterial;
 		}
@@ -691,18 +688,17 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 		if(CheckEverythingInSphere(sphere, source, targ, sphereContent)) {
 			BOOST_FOREACH(const EntityHandle & content, sphereContent) {
-				if(ValidIONum(content)
-						&& !(entities[content]->ioflags & IO_BODY_CHUNK))
-				{
+				if(ValidIONum(content) && !(entities[content]->ioflags & IO_BODY_CHUNK)) {
+					
 					bool HIT_SPARK = false;
 					EXCEPTIONS_LIST[EXCEPTIONS_LIST_Pos] = content;
 					EXCEPTIONS_LIST_Pos++;
 
 					if(EXCEPTIONS_LIST_Pos >= MAX_IN_SPHERE)
 						EXCEPTIONS_LIST_Pos--;
-
+					
 					Entity * target = entities[content];
-			
+					
 					Vec3f pos;
 					Color color = Color::white;
 					long hitpoint = -1;
@@ -1000,11 +996,13 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 		}
 	} else if(toequip->type_flags & OBJECT_TYPE_RING) {
 		// check first, if not already equiped
-		if (!((ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT]) && (toequip == entities[player.equiped[EQUIP_SLOT_RING_LEFT]]))
-		        ||	(ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT]) && (toequip == entities[player.equiped[EQUIP_SLOT_RING_RIGHT]]))))
-		{
+		if (!((ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT])
+		       && (toequip == entities[player.equiped[EQUIP_SLOT_RING_LEFT]]))
+		      || (ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT])
+		          && (toequip == entities[player.equiped[EQUIP_SLOT_RING_RIGHT]])))) {
+			
 			long willequip = -1;
-
+			
 			if(player.equiped[EQUIP_SLOT_RING_LEFT] == EntityHandle())
 				willequip = EQUIP_SLOT_RING_LEFT;
 
