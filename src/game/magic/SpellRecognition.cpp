@@ -961,8 +961,8 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 68:
 			handleRuneDetection(RUNE_VITAE);
 			break;
-//-----------------------------------------------
-// Cheat spells
+		//-----------------------------------------------
+		// Cheat spells
 		// Special UW mode
 		case 238:
 		case 2398:
