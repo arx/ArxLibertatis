@@ -191,11 +191,6 @@ static void Check_Apply() {
 
 void MainMenuDoFrame() {
 	
-	if(pMenuCursor == NULL) {
-		pMenuCursor = new MenuCursor();
-	}
-	pMenuCursor->update(g_platformTime.lastFrameDuration());
-	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
@@ -226,6 +221,10 @@ void MainMenuDoFrame() {
 
 	bool bScroll=true;
 	
+	if(pMenuCursor == NULL) {
+		pMenuCursor = new MenuCursor();
+	}
+	pMenuCursor->update(g_platformTime.lastFrameDuration());
 	g_mainMenu->Update();
 	
 	MENUSTATE requestedMenuState = NOP;
