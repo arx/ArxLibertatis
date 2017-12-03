@@ -224,7 +224,7 @@ void MainMenuDoFrame() {
 	if(pMenuCursor == NULL) {
 		pMenuCursor = new MenuCursor();
 	}
-	pMenuCursor->update(g_platformTime.lastFrameDuration());
+	pMenuCursor->update();
 	g_mainMenu->Update();
 	
 	MENUSTATE requestedMenuState = NOP;
