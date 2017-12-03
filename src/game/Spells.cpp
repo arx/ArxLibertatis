@@ -968,7 +968,6 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 				t_spell.duration = duration;
 				return false;
 			}
-			break;
 			case SPELL_CONTROL_TARGET: {
 				long tcount = 0;
 				
@@ -1006,7 +1005,6 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 				t_spell.duration = duration;
 				return false;
 			}
-									   break;
 			default: break;
 		}
 	}
