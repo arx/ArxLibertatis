@@ -893,8 +893,6 @@ void MenuPage::ReInitActionKey() {
 
 void Menu2_Close() {
 	
-	ARXmenu.requestMode(Mode_InGame);
-	
 	delete g_mainMenu, g_mainMenu = NULL;
 	delete pMenuCursor, pMenuCursor = NULL;
 }
