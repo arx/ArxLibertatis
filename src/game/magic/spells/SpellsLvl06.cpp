@@ -215,7 +215,7 @@ void RiseDeadSpell::Update() {
 			m_duration = 0;
 		}
 	} else if(!g_gameTime.isPaused() && tim < GameDurationMs(4000)) {
-	  if(Random::getf() > 0.95f) {
+		if(Random::getf() > 0.95f) {
 			MakeCoolFx(m_fissure.m_eSrc);
 		}
 	}
