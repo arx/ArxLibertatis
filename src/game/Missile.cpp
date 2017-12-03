@@ -81,7 +81,7 @@ struct ARX_MISSILE
 	GameInstant timecreation;
 	GameInstant lastupdate;
 	GameDuration tolive;
-	LightHandle	m_light;
+	LightHandle m_light;
 	EntityHandle owner;
 };
 
