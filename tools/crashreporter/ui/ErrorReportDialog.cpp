@@ -231,13 +231,10 @@ void ErrorReportDialog::onTaskStarted(const QString& taskDescription, int numSte
 	ui->progressBar->setValue(0);
 }
 
-void ErrorReportDialog::onTaskStepStarted(const QString& taskStepDescription)
-{
-	QString textDescription = QString("(%1/%2) %3...")
-								.arg(ui->progressBar->value()+1)
-								.arg(ui->progressBar->maximum())
-								.arg(taskStepDescription);
-
+void ErrorReportDialog::onTaskStepStarted(const QString & taskStepDescription) {
+	QString textDescription = QString("(%1/%2) %3...").arg(ui->progressBar->value() + 1)
+	                                                  .arg(ui->progressBar->maximum())
+	                                                  .arg(taskStepDescription);
 	ui->lblProgressDescription->setText(textDescription);
 }
 
