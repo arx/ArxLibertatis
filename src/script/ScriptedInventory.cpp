@@ -359,7 +359,7 @@ class InventoryCommand : public Command {
 			}
 			
 			if(!CanBePutInSecondaryInventory(context.getEntity()->inventory, ioo)) {
-					PutInFrontOfPlayer(ioo);
+				PutInFrontOfPlayer(ioo);
 			}
 			
 			return Success;
