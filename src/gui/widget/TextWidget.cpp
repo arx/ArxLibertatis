@@ -128,8 +128,6 @@ void TextWidget::Render() {
 }
 
 void TextWidget::RenderMouseOver() {
-
-	pMenuCursor->SetMouseOver();
 	
 	FontRenderText(m_font, m_rect, m_text, lColorHighlight);
 	

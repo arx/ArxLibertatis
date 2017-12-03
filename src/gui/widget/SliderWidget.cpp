@@ -155,9 +155,7 @@ void SliderWidget::Render() {
 }
 
 void SliderWidget::RenderMouseOver() {
-
-	pMenuCursor->SetMouseOver();
-
+	
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
 	
 	UseRenderState state(render2D().blendAdditive());

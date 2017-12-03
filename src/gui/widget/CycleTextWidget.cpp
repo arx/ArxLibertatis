@@ -191,9 +191,7 @@ void CycleTextWidget::setEnabled(bool enable) {
 }
 
 void CycleTextWidget::RenderMouseOver() {
-
-	pMenuCursor->SetMouseOver();
-
+	
 	Vec2f cursor = Vec2f(GInput->getMousePosition());
 	
 	if(!enabled) {

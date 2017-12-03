@@ -75,8 +75,6 @@ void ButtonWidget::Render() {
 }
 
 void ButtonWidget::RenderMouseOver() {
-
-	pMenuCursor->SetMouseOver();
 	
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
 	if(m_rect.contains(cursor)) {
