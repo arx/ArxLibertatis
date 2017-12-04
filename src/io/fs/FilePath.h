@@ -64,7 +64,8 @@ public:
 		: pathstr(load(std::string(begin, end))) { }
 	
 	path & operator=(const path & other) {
-		return (pathstr = other.pathstr, *this);
+		pathstr = other.pathstr;
+		return *this;
 	}
 	
 	path operator/(const path & other) const;
