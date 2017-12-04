@@ -61,16 +61,6 @@ public:
 		, m_roll(roll)
 	{ }
 	
-	/*!
-	 * Copy constructor.
-	 * \param other An angle to be copied.
-	 */
-	Angle(const Angle & other)
-		: m_pitch(other.m_pitch)
-		, m_yaw(other.m_yaw)
-		, m_roll(other.m_roll)
-	{ }
-
 	explicit Angle(const glm::quat & quat) {
 		typename vec3_traits<T>::type v = glm::eulerAngles(quat);
 		m_pitch = glm::degrees(v.x);
@@ -100,17 +90,6 @@ public:
 
 	void setRoll(T roll) {
 		m_roll = roll;
-	}
-
-	/*!
-	 * Set this angle to the content of another angle.
-	 * \brief Assignment operator.
-	 * \param other An euler angle to be copied.
-	 * \return Reference to this object.
-	 */
-	Angle & operator=(const Angle & other) {
-		m_pitch = other.m_pitch, m_yaw = other.m_yaw, m_roll = other.m_roll;
-		return *this;
 	}
 	
 	/*!
