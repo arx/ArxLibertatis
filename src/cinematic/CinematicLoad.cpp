@@ -153,7 +153,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		return false;
 	}
 	
-	if(std::strcmp(cinematicId, "KFA")) {
+	if(std::strcmp(cinematicId, "KFA") != 0) {
 		LogError << "Wrong magic number";
 		return false;
 	}
