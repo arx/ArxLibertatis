@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 #include <cstdio>
+#include <exception>
 #include <map>
 #include <limits>
 
@@ -916,7 +917,7 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 	}
 }
 
-struct file_truncated_exception { };
+struct file_truncated_exception : public std::exception { };
 
 template <typename T>
 const T * fts_read(const char * & data, const char * end, size_t n = 1) {
