@@ -51,15 +51,20 @@ public:
 	/* implicit */ path(const char * str) : pathstr(str) { check(); }
 	
 	path & operator=(const path & other) {
-		return (pathstr = other.pathstr, *this);
+		pathstr = other.pathstr;
+		return *this;
 	}
 	
 	path & operator=(const std::string & str) {
-		return (pathstr = str, check(), *this);
+		pathstr = str;
+		check();
+		return *this;
 	}
 	
 	path & operator=(const char * str) {
-		return (pathstr = str, check(), *this);
+		pathstr = str;
+		check();
+		return *this;
 	}
 	
 	path operator/(const path & other) const;
