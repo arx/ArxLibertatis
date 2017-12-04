@@ -95,12 +95,6 @@ public:
 	
 	Color3() : b(T(0)), g(T(0)), r(T(0)) { }
 	Color3(T _r, T _g, T _b) : b(_b), g(_g), r(_r) { }
-	Color3(const Color3 & o) : b(o.b), g(o.g), r(o.r) { }
-	
-	Color3 & operator=(const Color3 & o) {
-		r = o.r, g = o.g, b = o.b;
-		return *this;
-	}
 	
 	static Color3 fromRGB(ColorRGB rgb) {
 		return Color3(value(rgb.t), value(rgb.t >> 8), value(rgb.t >> 16));
