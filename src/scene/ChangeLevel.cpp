@@ -1231,19 +1231,19 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 					util::storeStringTerminated(avs->name, io->over_script.lvar[i].name);
 					
 					long count = io->over_script.lvar[i].text.size();
-
-					avs->fval	= (float)(count + 1);
-					avs->type	= TYPE_L_TEXT;
-					pos			+= sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-
+					
+					avs->fval = (float)(count + 1);
+					avs->type = TYPE_L_TEXT;
+					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
+					
 					if(avs->fval > 0) {
 						memset(dat + pos, 0, checked_range_cast<size_t>(avs->fval));
 						if(count > 0) {
 							memcpy(dat + pos, io->over_script.lvar[i].text.c_str(), count);
 						}
 					}
-
-					pos		+= (long)avs->fval;
+					
+					pos += (long)avs->fval;
 				}
 				else
 					ass->nblvar--;
@@ -1254,9 +1254,9 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == '\xA7'))
 				{
 					util::storeStringTerminated(avs->name, io->over_script.lvar[i].name);
-					avs->fval	= (float)io->over_script.lvar[i].ival;
-					avs->type	= TYPE_L_LONG;
-					pos			+= sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
+					avs->fval = (float)io->over_script.lvar[i].ival;
+					avs->type = TYPE_L_LONG;
+					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 				}
 				else
 					ass->nblvar--;
@@ -1267,9 +1267,9 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				if ((io->script.lvar[i].name[0] == '&') || (io->script.lvar[i].name[0] == '@'))
 				{
 					util::storeStringTerminated(avs->name, io->over_script.lvar[i].name);
-					avs->fval	= io->over_script.lvar[i].fval;
-					avs->type	= TYPE_L_FLOAT;
-					pos			+= sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
+					avs->fval = io->over_script.lvar[i].fval;
+					avs->type = TYPE_L_FLOAT;
+					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 				}
 				else
 					ass->nblvar--;
@@ -1381,7 +1381,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			ARX_CHANGELEVEL_FIX_IO_SAVE * af;
 			af = (ARX_CHANGELEVEL_FIX_IO_SAVE *)(dat + pos);
 			memset(af, 0, sizeof(ARX_CHANGELEVEL_FIX_IO_SAVE));
-			af->trapvalue			= io->_fixdata->trapvalue;
+			af->trapvalue = io->_fixdata->trapvalue;
 			pos += struct_size;
 			break;
 		case TYPE_CAMERA:
