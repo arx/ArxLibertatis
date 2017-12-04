@@ -196,10 +196,8 @@ private:
 	
 	void onClickedSaveDelete(TextWidget * txt) {
 		m_savegame = txt->m_savegame;
-		
 		g_mainMenu->bReInitAll = true;
 		savegames.remove(m_textbox->m_savegame);
-		return;
 	}
 };
 
