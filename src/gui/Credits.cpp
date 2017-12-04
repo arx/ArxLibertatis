@@ -361,7 +361,7 @@ void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumbe
 					}
 				}
 				if(infomations.sText[p] >= '0' && infomations.sText[p] < '9') {
-					if(infomations.sText.find_first_not_of(".", p) == std::string::npos) {
+					if(infomations.sText.find_first_not_of('.', p) == std::string::npos) {
 						continue;
 					}
 					if(infomations.sText.find_first_not_of("0123456789.", p) != std::string::npos) {
