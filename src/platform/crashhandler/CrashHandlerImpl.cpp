@@ -100,7 +100,7 @@ bool CrashHandlerImpl::createSharedMemory() {
 		m_pCrashInfo = new (m_MemoryMappedRegion.get_address()) CrashInfo;
 		m_textLength = 0;
 		
-	} catch(bip::interprocess_exception) {
+	} catch(const bip::interprocess_exception &) {
 		return false;
 	}
 	
