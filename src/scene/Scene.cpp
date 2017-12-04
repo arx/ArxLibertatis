@@ -321,7 +321,7 @@ static bool IsBBoxInFrustrum(const EERIE_3D_BBOX & bbox, const EERIE_FRUSTRUM & 
 		return true;
 	}
 	
-	return	false;
+	return false;
 }
 
 static bool FrustrumsClipBBox3D(const EERIE_FRUSTRUM_DATA & frustrums,
@@ -628,20 +628,18 @@ static void ARX_PORTALS_InitDrawnRooms() {
 	}
 }
 
-bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius)
-{
+bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius) {
+	
 	float dists[4];
 	dists[0] = distanceToPoint(frustrum.plane[0], point);
 	dists[1] = distanceToPoint(frustrum.plane[1], point);
 	dists[2] = distanceToPoint(frustrum.plane[2], point);
 	dists[3] = distanceToPoint(frustrum.plane[3], point);
-
-	if (	(dists[0]+radius>0)
-		&&	(dists[1]+radius>0)
-		&&	(dists[2]+radius>0)
-		&&	(dists[3]+radius>0) )
+	
+	if(dists[0] + radius > 0 && dists[1] + radius > 0 && dists[2] + radius > 0 && dists[3] + radius > 0) {
 		return true;
-
+	}
+	
 	return false;
 }
 
