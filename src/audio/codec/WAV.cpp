@@ -134,7 +134,7 @@ bool ChunkFile::check(const char * id) {
 		return false;
 	}
 	
-	if(memcmp(cc, id, 4)) {
+	if(memcmp(cc, id, 4) != 0) {
 		return false;
 	}
 	
