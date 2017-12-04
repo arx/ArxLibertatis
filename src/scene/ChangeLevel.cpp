@@ -2364,7 +2364,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			
 			io->obj->linked.resize(ais->nb_linked);
 			
-			if(io->obj->linked.size()) {
+			if(!io->obj->linked.empty()) {
 				for(long n = 0; n < ais->nb_linked; n++) {
 					io->obj->linked[n].lgroup = ObjVertGroup(ais->linked_data[n].lgroup);
 					io->obj->linked[n].lidx = ActionPoint(ais->linked_data[n].lidx);
