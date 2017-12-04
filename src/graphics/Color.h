@@ -26,26 +26,22 @@
 #include "platform/Platform.h"
 
 template <typename TAG, typename T>
-struct IntegerColorType
-{
+struct IntegerColorType {
+	
 	T t;
 	
 	explicit IntegerColorType(const T t_)
 		: t(t_)
 	{ }
+	
 	IntegerColorType()
 		: t()
 	{ }
-	IntegerColorType(const IntegerColorType<TAG, T> & t_)
-		: t(t_.t)
-	{ }
+	
 	bool operator==(const IntegerColorType<TAG, T> & rhs) const {
 		return t == rhs.t;
 	}
-	IntegerColorType<TAG, T> & operator=(const IntegerColorType<TAG, T> & rhs) {
-		t = rhs.t;
-		return *this;
-	}
+	
 };
 
 typedef IntegerColorType<struct ColorBGR_TAG,  u32> ColorBGR;
