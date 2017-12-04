@@ -167,7 +167,7 @@ path current_path();
 class directory_iterator {
 	
 	//! Prevent postfix ++
-	directory_iterator operator++(int dummy);
+	const directory_iterator operator++(int dummy);
 	
 	//! Prevent assignment
 	directory_iterator & operator=(const directory_iterator &);
