@@ -1129,9 +1129,7 @@ void StareAtTarget(Entity * io)
 
 	io->_npcdata->ex_rotate->group_rotate[0].setYaw(groupRotation[0]);
 	io->_npcdata->ex_rotate->group_rotate[1].setYaw(groupRotation[1]);
-
-	//MAKEANGLE(io->angle.b-rot); // -tt
-	return;
+	
 }
 
 static float GetTRUETargetDist(Entity * io) {
