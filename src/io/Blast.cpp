@@ -41,6 +41,7 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <exception>
 
 #include "io/log/Logger.h"
 
@@ -49,7 +50,7 @@
 
 namespace {
 
-struct blast_truncated_error { };
+struct blast_truncated_error : public std::exception { };
 
 } // anonymous namespace
 
