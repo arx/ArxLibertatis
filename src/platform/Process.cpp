@@ -83,7 +83,7 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 	char ** argv = const_cast<char **>(args);
 	
 	#if ARX_HAVE_OPEN
-	static int dev_null = open("/dev/null", O_RDWR);
+	static int dev_null = open("/dev/null", O_RDWR | O_CLOEXEC);
 	#endif
 	
 	pid_t pid = 0;
