@@ -225,8 +225,8 @@ static void UpDateKeyLight(int frame) {
 	}
 }
 
-void UpDateAllKeyLight(void)
-{
+void UpDateAllKeyLight() {
+	
 	//update les lights
 	CinematicKeyframe * kk = CKTrack->key;
 	int nb = CKTrack->nbkey;
@@ -677,24 +677,24 @@ float GetTimeKeyFramer()
 	return t;
 }
 
-int GetStartFrame(void)
-{
+int GetStartFrame() {
+	
 	if(!CKTrack)
 		return -1;
 
 	return CKTrack->startframe;
 }
 
-int GetEndFrame(void)
-{
+int GetEndFrame() {
+	
 	if(!CKTrack)
 		return -1;
 
 	return CKTrack->endframe;
 }
 
-float GetTrackFPS(void)
-{
+float GetTrackFPS() {
+	
 	if(!CKTrack)
 		return -1;
 
