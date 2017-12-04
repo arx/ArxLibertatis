@@ -226,13 +226,10 @@ void SetCurrentThreadName(const std::string & threadName) {
 	
 	const DWORD MS_VC_EXCEPTION = 0x406D1388;
 	
-	__try
-	{
-			RaiseException(MS_VC_EXCEPTION, 0, sizeof(info)/sizeof(DWORD), (ULONG_PTR *)&info);
+	__try {
+		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info)/sizeof(DWORD), (ULONG_PTR *)&info);
 	}
-	__except(EXCEPTION_CONTINUE_EXECUTION)
-	{
-	}
+	__except(EXCEPTION_CONTINUE_EXECUTION) { }
 	
 #else
 	ARX_UNUSED(threadName);
