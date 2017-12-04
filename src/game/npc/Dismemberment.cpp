@@ -323,7 +323,7 @@ static ObjSelection GetCutSelection(Entity * io, DismembermentFlag flag) {
 	{
 		typedef std::vector<EERIE_SELECTIONS>::iterator iterator; // Convenience
 		for(iterator iter = io->obj->selections.begin(); iter != io->obj->selections.end(); ++iter) {
-			if(iter->selected.size() > 0 && iter->name == tx) {
+			if(!iter->selected.empty() && iter->name == tx) {
 				return ObjSelection(iter - io->obj->selections.begin());
 			}
 		}
@@ -442,9 +442,9 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 	for(size_t i = 0; i < target->obj->selections.size(); i++) {
 		ObjSelection sel = ObjSelection(i);
 		
-		if(target->obj->selections[i].selected.size() > 0
-		   && boost::contains(target->obj->selections[i].name, "cut_")
-		) {
+		if(!target->obj->selections[i].selected.empty()
+		   && boost::contains(target->obj->selections[i].name, "cut_")) {
+			
 			DismembermentFlag fll = GetCutFlag(target->obj->selections[i].name);
 
 			if(IsAlreadyCut(target, fll))
