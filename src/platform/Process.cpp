@@ -88,7 +88,7 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 	
 	pid_t pid = 0;
 	
-#if ARX_HAVE_POSIX_SPAWNP
+	#if ARX_HAVE_POSIX_SPAWNP
 	
 	// Fast POSIX implementation: posix_spawnp avoids unnecessary vm copies
 	
@@ -124,10 +124,10 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 	
 	else
 	
-#endif
+	#endif // ARX_HAVE_POSIX_SPAWNP
 	
 	{
-#if ARX_HAVE_FORK && ARX_HAVE_EXECVP
+		#if ARX_HAVE_FORK && ARX_HAVE_EXECVP
 		
 		// Compatibility POSIX implementation
 		
@@ -172,13 +172,13 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 			exit(-1);
 		}
 		
-#endif
+		#endif // ARX_HAVE_FORK && ARX_HAVE_EXECVP
 	}
 	
-#if !ARX_HAVE_POSIX_SPAWNP && !(ARX_HAVE_FORK && ARX_HAVE_EXECVP)
+	#if !ARX_HAVE_POSIX_SPAWNP && !(ARX_HAVE_FORK && ARX_HAVE_EXECVP)
 	ARX_UNUSED(argv), ARX_UNUSED(stdout), ARX_UNUSED(unlocalized), ARX_UNUSED(detach);
 	#warning "Executing helper processes not supported on this system."
-#endif
+	#endif
 	
 	return (pid <= 0) ? 0 : pid;
 }
