@@ -298,7 +298,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	}
 	
 	// Alloc'n'Copy groups
-	if(obj->grouplist.size() > 0) {
+	if(!obj->grouplist.empty()) {
 		
 		// Alloc the grouplists
 		obj->grouplist.resize(obj->grouplist.size());
