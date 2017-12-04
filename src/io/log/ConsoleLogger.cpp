@@ -58,7 +58,7 @@ Backend * Console::get() {
 	#if ARX_HAVE_ISATTY
 	if((!hasStdout || isatty(1)) && (!hasStdErr || isatty(2))) {
 		char * term = std::getenv("TERM");
-		if(term && std::strcmp(term, "dumb")) {
+		if(term && std::strcmp(term, "dumb") != 0) {
 			return new ColorConsole;
 		}
 	}
