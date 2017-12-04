@@ -371,14 +371,14 @@ struct ARX_CHANGELEVEL_PLAYER {
 	s32 gold;
 	s32 falling;
 	
-	s16	doingmagic;
-	s16	Interface;
+	s16 doingmagic;
+	s16 Interface;
 	f32 invisibility;
 	s8 useanim[36]; // padding
 	SavedIOPhysics physics;
 	// Jump Sub-data
 	u32 jumpstarttime;
-	s32 jumpphase;	// 0 no jump, 1 doing anticipation anim
+	s32 jumpphase; // 0 no jump, 1 doing anticipation anim
 	
 	char id_inventory[SAVED_INVENTORY_BAGS][SAVED_INVENTORY_X][SAVED_INVENTORY_Y][SIZE_ID];
 	s32 inventory_show[SAVED_INVENTORY_BAGS][SAVED_INVENTORY_X][SAVED_INVENTORY_Y];
