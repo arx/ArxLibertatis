@@ -53,7 +53,7 @@ void Image::reset() {
 	m_format = Format_Unknown;
 }
 
-const Image & Image::operator=(const Image & other) {
+Image & Image::operator=(const Image & other) {
 	
 	// Ignore self copy!
 	if(&other == this) {
