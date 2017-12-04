@@ -156,7 +156,7 @@ void ARXDRAW_DrawInterShadows() {
 		}
 	}
 	
-	if(g_shadowBatch.size() > 0) {
+	if(!g_shadowBatch.empty()) {
 		GRenderer->SetFogColor(Color::none);
 		UseRenderState state(render3D().depthWrite(false).blend(BlendZero, BlendInvSrcColor).depthOffset(1));
 		GRenderer->SetTexture(0, Boom);
