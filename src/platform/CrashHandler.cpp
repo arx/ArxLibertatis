@@ -85,24 +85,24 @@ static void crashAssertHandler(const char * expr, const char * file, unsigned in
 
 bool CrashHandler::initialize(int argc, char ** argv) {
 	
-#if ARX_HAVE_CRASHHANDLER
+	#if ARX_HAVE_CRASHHANDLER
 	
 	if(!gCrashHandlerImpl) {
 		
-#if ARX_HAVE_CRASHHANDLER_POSIX
+		#if ARX_HAVE_CRASHHANDLER_POSIX
 		
 		gCrashHandlerImpl = new CrashHandlerPOSIX();
 		
-#elif ARX_HAVE_CRASHHANDLER_WINDOWS
-
+		#elif ARX_HAVE_CRASHHANDLER_WINDOWS
+		
 		if(IsDebuggerPresent()) {
 			LogInfo << "Debugger attached, disabling crash handler.";
 			return false;
 		}
-
+		
 		gCrashHandlerImpl = new CrashHandlerWindows();
 		
-#endif
+		#endif
 		
 		const char * arg = "--crashinfo=";
 		if(argc >= 2 && boost::starts_with(argv[1], arg)) {
@@ -131,10 +131,10 @@ bool CrashHandler::initialize(int argc, char ** argv) {
 	gCrashHandlerInitCount++;
 	return true;
 	
-#else
+	#else
 	ARX_UNUSED(argc), ARX_UNUSED(argv);
 	return false;
-#endif
+	#endif
 }
 
 void CrashHandler::shutdown() {
