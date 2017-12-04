@@ -219,7 +219,7 @@ static void drawDebugPaths() {
 			}
 		}
 		
-		if(path->height != 0 || ((path->flags & PATH_LOOP) && points.size() > 0)) {
+		if(path->height != 0 || ((path->flags & PATH_LOOP) && !points.empty())) {
 			points.push_back(points[0]);
 		}
 		
