@@ -349,10 +349,7 @@ void CreateFieldSpell::End() {
 	
 	endLightDelayed(m_field.lLightId, GameDurationMs(800));
 	
-	Entity * io = entities.get(m_entity);
-	if(io) {
-		delete io;
-	}
+	delete entities.get(m_entity);
 }
 
 void CreateFieldSpell::Update() {
