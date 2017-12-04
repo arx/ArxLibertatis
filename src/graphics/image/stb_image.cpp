@@ -1972,7 +1972,7 @@ static int parse_zlib_header(zbuf *a)
 
 // @TODO: should statically initialize these for optimal thread safety
 static uint8 default_length[288], default_distance[32];
-static void init_defaults(void)
+static void init_defaults()
 {
    int i;   // use <= to match clearly with spec
    for (i=0; i <= 143; ++i)     default_length[i]   = 8;
