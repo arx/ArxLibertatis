@@ -565,7 +565,7 @@ void PrepareIOTreatZone(long flag) {
 					else
 						dists = arx::distance2(io->pos, cameraPos);
 				}
-		
+				
 				if(dists < square(TREATZONE_LIMIT))
 					treat = true;
 				else
@@ -601,12 +601,10 @@ void PrepareIOTreatZone(long flag) {
 			        && (!(io->gameFlags & GFLAG_WASINTREATZONE)))
 			{
 				//coming back; doesn't really matter right now
-				//	SendIOScriptEvent(entities[i],SM_TREATIN);
+				// SendIOScriptEvent(entities[i],SM_TREATIN);
 
-			}
-			else if ((!(io->gameFlags & GFLAG_ISINTREATZONE))
-			         &&	(io->gameFlags & GFLAG_WASINTREATZONE))
-			{
+			} else if(!(io->gameFlags & GFLAG_ISINTREATZONE) && (io->gameFlags & GFLAG_WASINTREATZONE)) {
+				
 				//going away;
 				io->gameFlags |= GFLAG_ISINTREATZONE;
 
@@ -625,13 +623,11 @@ void PrepareIOTreatZone(long flag) {
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
-
+		
 		if(io && !(io->gameFlags & GFLAG_ISINTREATZONE)
-		        && ((io->show == SHOW_FLAG_IN_SCENE)
-		            ||	(io->show == SHOW_FLAG_TELEPORTING)
-		            ||	(io->show == SHOW_FLAG_ON_PLAYER)
-		            ||	(io->show == SHOW_FLAG_HIDDEN)))   // show 5 = ininventory; 15 = destroyed
-		{
+		   && (io->show == SHOW_FLAG_IN_SCENE || io->show == SHOW_FLAG_TELEPORTING
+		       || io->show == SHOW_FLAG_ON_PLAYER || io->show == SHOW_FLAG_HIDDEN)) {
+			
 			if(io->ioflags & (IO_CAMERA | IO_ITEM | IO_MARKER))
 				continue;
 
@@ -2392,24 +2388,20 @@ void ARX_INTERACTIVE_DestroyIOdelayedExecute() {
 	toDestroy.clear();
 }
 
-bool IsSameObject(Entity * io, Entity * ioo)
-{
-	if(!io || !ioo
-			|| io->classPath() != ioo->classPath()
-			|| (io->ioflags & IO_UNIQUE)
-			|| io->durability != ioo->durability
-			|| io->max_durability != ioo->max_durability)
+bool IsSameObject(Entity * io, Entity * ioo) {
+	
+	if(!io || !ioo || io->classPath() != ioo->classPath() || (io->ioflags & IO_UNIQUE)
+	   || io->durability != ioo->durability || io->max_durability != ioo->max_durability) {
 		return false;
-
-	if	((io->ioflags & IO_ITEM)
-	        &&	(ioo->ioflags & IO_ITEM)
-	        &&	(io->over_script.data == NULL)
-	        &&	(ioo->over_script.data == NULL)) {
+	}
+	
+	if((io->ioflags & IO_ITEM) && (ioo->ioflags & IO_ITEM)
+	   && io->over_script.data == NULL && ioo->over_script.data == NULL) {
 		if(io->locname == ioo->locname) {
 			return true;
 		}
 	}
-
+	
 	return false;
 }
 
