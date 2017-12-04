@@ -724,17 +724,16 @@ void AcquireLastAnim(Entity * io)
 // Declares an Animation as finished.
 // Usefull to update object true position with object virtual pos.
 void FinishAnim(Entity * io, ANIM_HANDLE * eanim) {
-
+	
 	if(!io || !eanim) {
 		return;
 	}
-
+	
 	// Only layer 0 controls movement...
 	if(eanim == io->animlayer[0].cur_anim && (io->ioflags & IO_NPC)) {
 		io->move = io->lastmove = Vec3f_ZERO;
 	}
-
-	return;
+	
 }
 
 
