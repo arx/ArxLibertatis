@@ -347,7 +347,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	
 	eobj->m_skeleton = new Skeleton();
 
-	if(eobj->grouplist.size() <= 0) {
+	if(eobj->grouplist.empty()) {
 		// If no groups were specified
 
 		// Make one bone
