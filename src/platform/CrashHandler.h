@@ -50,7 +50,7 @@ class CrashHandler {
 public:
 	
 	//! Crash callback type that can be used with registerCrashCallback().
-	typedef void (*CrashCallback)(void);
+	typedef void (*CrashCallback)();
 
 public:
 	
