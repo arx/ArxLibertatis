@@ -200,7 +200,7 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 		return 0;
 	}
 	
-	std::string savefile = name;
+	const std::string & savefile = name;
 	
 	size_t size = 0;
 	char * dat = save.load(savefile, size);
