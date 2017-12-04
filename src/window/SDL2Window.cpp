@@ -89,9 +89,7 @@ SDL2Window::SDL2Window()
 
 SDL2Window::~SDL2Window() {
 	
-	if(m_input) {
-		delete m_input;
-	}
+	delete m_input;
 	
 	if(m_renderer) {
 		delete m_renderer, m_renderer = NULL;
