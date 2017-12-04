@@ -153,14 +153,8 @@ void SpellManager::init() {
 }
 
 void SpellManager::clearAll() {
-	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = m_spells[i];
-		
-		if(spell) {
-			delete spell;
-		}
-		
+		delete m_spells[i];
 		m_spells[i] = NULL;
 	}
 }
