@@ -206,7 +206,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	subj.orgTrans.pos = g_loddpos;
 	subj.angle = player.angle;
 	
-	if(strcmp(dlh.ident, "DANAE_FILE")) {
+	if(strcmp(dlh.ident, "DANAE_FILE") != 0) {
 		LogError << "Not a valid file " << file << ": \"" << util::loadString(dlh.ident) << '"';
 		return false;
 	}
