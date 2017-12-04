@@ -44,8 +44,6 @@ public:
 	
 	/* implicit */ Flags(Zero = 0) : flags(0) { }
 	
-	Flags(const Flags & o) : flags(o.flags) { }
-	
 	static Flags load(u32 flags) {
 		return Flags(flags, true);
 	}
@@ -145,11 +143,6 @@ public:
 	
 	Flags & operator^=(Enum flag) {
 		flags ^= (u32)flag;
-		return *this;
-	}
-	
-	Flags & operator=(Flags o) {
-		flags = o.flags;
 		return *this;
 	}
 	
