@@ -97,8 +97,7 @@ static bool DeleteFreeSound(size_t num) {
 	return true;
 }
 
-void DeleteAllSound(void) {
-	
+void DeleteAllSound() {
 	for(size_t i = 0; i < TabSound.size(); i++) {
 		DeleteFreeSound(i);
 	}
