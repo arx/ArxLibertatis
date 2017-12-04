@@ -196,13 +196,7 @@ public:
 	
 	Color4() : C3(), a(T(0)) { }
 	Color4(T _r, T _g, T _b, T _a = Limits::max()) : C3(_r, _g, _b), a(_a) { }
-	Color4(const Color4 & o) : C3(o), a(o.a) { }
 	/* implicit */ Color4(const C3 & o, T _a = Limits::max()) : C3(o), a(_a) { }
-	
-	Color4 & operator=(const Color4 & o) {
-		C3::operator=(o), a = o.a;
-		return *this;
-	}
 	
 	Color4 & operator=(const C3 & o) {
 		C3::operator=(o), a = Limits::max();
