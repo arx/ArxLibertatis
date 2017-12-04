@@ -273,7 +273,8 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 	 */
 	void assertionFailed(const char * expression, const char * file, unsigned line,
 	                     const char * message, ...) ARX_FORMAT_PRINTF(4, 5);
-	#define arx_assert_impl(Expression, ExpressionString, ...)  do { \
+	#define arx_assert_impl(Expression, ExpressionString, ...) \
+		do { \
 			if(!(Expression)) { \
 				assertionFailed(ExpressionString, (ARX_FILE), __LINE__, __VA_ARGS__); \
 				ARX_DEBUG_BREAK(); \
