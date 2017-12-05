@@ -581,7 +581,6 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 }
 
 long FAST_RELEASE = 0;
-extern Entity * FlyingOverIO;
 
 extern long JUST_RELOADED;
 

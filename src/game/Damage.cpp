@@ -496,7 +496,6 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	}
 }
 
-extern Entity * FlyingOverIO;
 extern MASTER_CAMERA_STRUCT MasterCamera;
 
 void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
