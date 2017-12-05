@@ -124,7 +124,7 @@ inline float FastRSqrt(float value) {
 	s32 intval = reinterpret<s32, f32>(value);
 	
 	const int MAGIC_NUMBER = 0x5f3759df;
-			
+	
 	float half = value * 0.5f;
 	intval = MAGIC_NUMBER - (intval >> 1);
 	
