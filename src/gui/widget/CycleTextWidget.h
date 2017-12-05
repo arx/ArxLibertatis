@@ -29,6 +29,7 @@
 class CycleTextWidget: public Widget {
 	
 public:
+	
 	explicit CycleTextWidget();
 	virtual ~CycleTextWidget();
 	
@@ -56,11 +57,13 @@ public:
 	}
 	
 private:
-	ButtonWidget		*	pLeftButton;
-	ButtonWidget		*	pRightButton;
-	std::vector<TextWidget*>	vText;
-	int					iPos;
-	int					iOldPos;
+	
+	ButtonWidget * pLeftButton;
+	ButtonWidget * pRightButton;
+	std::vector<TextWidget*> vText;
+	int iPos;
+	int iOldPos;
+	
 };
 
 #endif // ARX_GUI_WIDGET_CYCLETEXTWIDGET_H
