@@ -92,7 +92,7 @@ static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 	} else {
 		maxLineWidth = rect.width();
 	}
-	arx_assert(maxLineWidth > 0);
+	arx_assert(maxLineWidth >= 0);
 	int penY = rect.top;
 	
 	if(textHeight) {
