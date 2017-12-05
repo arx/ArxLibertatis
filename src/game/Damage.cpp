@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "core/Core.h"
 
+#include "game/Camera.h"
 #include "game/EntityManager.h"
 #include "game/Equipment.h"
 #include "game/Inventory.h"
@@ -495,8 +496,6 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 			return;
 	}
 }
-
-extern MASTER_CAMERA_STRUCT MasterCamera;
 
 void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	
