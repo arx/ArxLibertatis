@@ -469,37 +469,41 @@ void Input::update(float time) {
 
 	if(iKeyId >= 0) {   //keys priority
 		switch(iKeyId) {
-		case Keyboard::Key_LeftShift:
-		case Keyboard::Key_RightShift:
-		case Keyboard::Key_LeftCtrl:
-		case Keyboard::Key_RightCtrl:
-		case Keyboard::Key_LeftAlt:
-		case Keyboard::Key_RightAlt: {
-				bool bFound=false;
-
+			case Keyboard::Key_LeftShift:
+			case Keyboard::Key_RightShift:
+			case Keyboard::Key_LeftCtrl:
+			case Keyboard::Key_RightCtrl:
+			case Keyboard::Key_LeftAlt:
+			case Keyboard::Key_RightAlt: {
+				
+				bool bFound = false;
+				
 				for(int i = 0; i < Keyboard::KeyCount; i++) {
+					
 					if(bFound) {
 						break;
 					}
-
+					
 					switch(i & 0xFFFF) {
-					case Keyboard::Key_LeftShift:
-					case Keyboard::Key_RightShift:
-					case Keyboard::Key_LeftCtrl:
-					case Keyboard::Key_RightCtrl:
-					case Keyboard::Key_LeftAlt:
-					case Keyboard::Key_RightAlt:
-						continue;
-					default: {
-						if(keysStates[i]) {
-							bFound=true;
-							iKeyId&=~0xFFFF;
-							iKeyId|=i;
+						case Keyboard::Key_LeftShift:
+						case Keyboard::Key_RightShift:
+						case Keyboard::Key_LeftCtrl:
+						case Keyboard::Key_RightCtrl:
+						case Keyboard::Key_LeftAlt:
+						case Keyboard::Key_RightAlt:
+							continue;
+						default: {
+							if(keysStates[i]) {
+								bFound = true;
+								iKeyId &= ~0xFFFF;
+								iKeyId |= i;
+							}
+							break;
 						}
-						}
-						break;
 					}
+					
 				}
+				
 			}
 		}
 	}
