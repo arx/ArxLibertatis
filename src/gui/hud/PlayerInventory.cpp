@@ -403,8 +403,8 @@ bool PlayerInventoryHud::containsPos(const Vec2s & pos) {
 			if(InPlayerInventoryBag(t))
 				return true;
 			
-			float fRatio	= (121 * m_scale);
-
+			float fRatio = (121 * m_scale);
+			
 			iY = checked_range_cast<short>(iY + fRatio);
 		}
 	}
@@ -437,9 +437,9 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 			return NULL;
 		}
 	} else if(player.Interface & INTER_INVENTORYALL) {
-
-		float fBag	= (player.bag - 1) * (-121 * m_scale);
-
+		
+		float fBag = (player.bag - 1) * (-121 * m_scale);
+		
 		int iY = checked_range_cast<int>(fBag);
 
 		for(size_t bag = 0; bag < size_t(player.bag); bag++) {
@@ -500,7 +500,7 @@ void PlayerInventoryHud::dropEntity() {
 	} else {
 		bool bOk = false;
 		
-		float fBag	= (player.bag - 1) * (-121 * m_scale);
+		float fBag = (player.bag - 1) * (-121 * m_scale);
 		
 		short iY = checked_range_cast<short>(fBag);
 		
