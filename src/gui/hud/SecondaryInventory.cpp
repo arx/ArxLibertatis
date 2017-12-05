@@ -488,7 +488,7 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 			if(ioo->ioflags & IO_SHOP) {
 				long cos = ARX_INTERACTIVE_GetPrice(io, ioo);
 				
-				float fcos	= cos - cos * player.m_skillFull.intuition * 0.005f;
+				float fcos = cos - cos * player.m_skillFull.intuition * 0.005f;
 				cos = checked_range_cast<long>(fcos);
 				
 				if(player.gold < cos) {
