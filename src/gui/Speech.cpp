@@ -80,7 +80,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 
-extern TextureContainer *	arx_logo_tc;
+extern TextureContainer * arx_logo_tc;
 
 extern bool EXTERNALVIEW;
 extern bool REQUEST_SPEECH_SKIP;
@@ -480,15 +480,15 @@ void ARX_SPEECH_Update() {
 			continue;
 
 		Vec2i sSize = hFontInBook->getTextSize(speech->text);
-
-		float fZoneClippHeight	=	static_cast<float>(sSize.y * 3);
-		float fStartYY			=	100 * g_sizeRatio.y;
-		float fStartY			=	static_cast<float>(((int)fStartYY - (int)fZoneClippHeight) >> 1);
-		float fDepY				=	((float)g_size.height()) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
-		float fZoneClippY		=	fDepY + speech->fDeltaY;
-
+		
+		float fZoneClippHeight = static_cast<float>(sSize.y * 3);
+		float fStartYY = 100 * g_sizeRatio.y;
+		float fStartY = static_cast<float>(((int)fStartYY - (int)fZoneClippHeight) >> 1);
+		float fDepY = ((float)g_size.height()) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
+		float fZoneClippY = fDepY + speech->fDeltaY;
+		
 		float fAdd = fZoneClippY + fZoneClippHeight;
-
+		
 		Rect::Num y = checked_range_cast<Rect::Num>(fZoneClippY);
 		Rect::Num h = checked_range_cast<Rect::Num>(fAdd);
 		
@@ -499,13 +499,10 @@ void ARX_SPEECH_Update() {
 			clippingRect.right = (g_size.width() + w) / 2;
 		}
 		
-		float height = (float)ARX_UNICODE_DrawTextInRect(
-							hFontInBook,
-							Vec2f(clippingRect.left + 10.f, fDepY + fZoneClippHeight),
-							clippingRect.right - 10.f,
-							speech->text,
-							Color::white,
-							&clippingRect);
+		float height = (float)ARX_UNICODE_DrawTextInRect(hFontInBook,
+		                                                 Vec2f(clippingRect.left + 10.f, fDepY + fZoneClippHeight),
+		                                                 clippingRect.right - 10.f, speech->text,
+		                                                 Color::white, &clippingRect);
 		
 		UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
 		EERIEDrawFill2DRectDegrad(Vec2f(0.f, fZoneClippY - 1.f),
@@ -538,13 +535,13 @@ void ARX_SPEECH_Update() {
 					speech->fPixelScroll = 0.f;
 					speech->iTimeScroll = 0;
 				}
-				speech->iTimeScroll	+= checked_range_cast<int>(g_framedelay);
+				speech->iTimeScroll += checked_range_cast<int>(g_framedelay);
 			} else {
 				fDTime = height * (g_gameTime.lastFrameDuration() / GameDurationMs(4000));
 			}
-
-			speech->fDeltaY			+= fDTime;
-			speech->fPixelScroll	+= fDTime;
+			
+			speech->fDeltaY += fDTime;
+			speech->fPixelScroll += fDTime;
 		}
 	}
 }
