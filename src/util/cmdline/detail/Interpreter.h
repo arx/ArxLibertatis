@@ -50,16 +50,16 @@ public:
 	typedef TypeCast                        type_cast_t;
 	
 	template <typename Handler>
-	void add(const Handler &, const op_name_t &);
+	void add(const Handler & handler, const op_name_t & key);
 	
 	template <typename HndlSign, typename Handler>
-	void add(const Handler &, const op_name_t &);
+	void add(const Handler & handler, const op_name_t & key);
 	
 	void erase(const string_type & option_name);
 	
 	template <typename It>
 	void invoke(const string_type & option_name, It & args_begin, It args_optend, It args_end,
-	            type_cast_t &) const;
+	            type_cast_t & type_cast) const;
 	
 	template <typename It>
 	void invoke(const string_type & option_name, It & args_begin, It args_end,
