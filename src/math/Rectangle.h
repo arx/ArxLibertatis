@@ -162,10 +162,10 @@ public:
 	 */
 	Rectangle_ operator&(const Rectangle_ & other) const {
 		Rectangle_ result(
-				std::max(left,   other.left),
-				std::max(top,    other.top),
-				std::min(right,  other.right),
-				std::min(bottom, other.bottom)
+			std::max(left,   other.left),
+			std::max(top,    other.top),
+			std::min(right,  other.right),
+			std::min(bottom, other.bottom)
 		);
 		if(result.left > result.right) {
 			result.left = result.right = T(0);
