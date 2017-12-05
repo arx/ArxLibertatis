@@ -150,7 +150,7 @@ private:
 	
 };
 
-static Credits g_credits;
+Credits g_credits;
 
 void Credits::setLibraryCredits(const std::string & subsystem,
                                 const std::string & credits) {
