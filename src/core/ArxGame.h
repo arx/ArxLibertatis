@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CORE_ARXGAME_H
 
 #include "core/Application.h"
+#include "core/SaveGame.h"
 
 #include "graphics/Renderer.h"
 
@@ -127,6 +128,8 @@ enum InfoPanels {
 extern InfoPanels g_debugInfo;
 
 extern TextureContainer * enviro;
+
+extern SavegameHandle LOADQUEST_SLOT;
 
 #endif // ARX_CORE_ARXGAME_H
 
