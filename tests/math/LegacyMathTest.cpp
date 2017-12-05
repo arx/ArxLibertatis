@@ -285,7 +285,8 @@ void LegacyMathTest::inventorySizeTest() {
 
 void LegacyMathTest::angleToVectorXZ_Test() {
 	
-	for(float angle = -1000; angle < 1000; angle += 0.01f) {
+	for(size_t i = -100000; i < 100000; i++) {
+		float angle = float(i) * 0.01f;
 		Vec3f expected = angleToVectorXZ(angle);
 		Vec3f result = angleToVectorXZ_180offset(angle + 180);
 		
@@ -298,7 +299,8 @@ void LegacyMathTest::angleToVectorXZ_Test() {
 
 void LegacyMathTest::vectorRotateTest() {
 	
-	for(float angle = 0; angle < 720; angle += 10) {
+	for(size_t i = 0; i < 720; i += 10) {
+		float angle = float(i);
 		
 		Vec3f foo = Vec3f(0.f, 0.f, 1.f);
 		
@@ -310,7 +312,8 @@ void LegacyMathTest::vectorRotateTest() {
 		CPPUNIT_ASSERT_EQUAL(result, result2);
 	}
 	
-	for(float angle = 0; angle < 720; angle += 10) {
+	for(size_t i = 0; i < 720; i += 10) {
+		float angle = float(i);
 		
 		Vec3f foo = Vec3f(1.f, 0.f, 0.f);
 		
@@ -327,7 +330,9 @@ void LegacyMathTest::vectorRotateTest() {
 
 void LegacyMathTest::focalToFovTest() {
 	
-	for(float focal = 100; focal < 800; focal += 0.1f) {
+	for(size_t i = 1000; i < 8000; i++) {
+		float focal = float(i) * 0.1f;
+		
 		float expected = glm::radians(focalToFovLegacy(focal));
 		float result = focalToFov(focal);
 		
