@@ -42,7 +42,7 @@ public:
 	
 	/* implicit */ Flags(Enum flag) : flags(flag) { }
 	
-	/* implicit */ Flags(Zero = 0) : flags(0) { }
+	/* implicit */ Flags(Zero /* zero */ = 0) : flags(0) { }
 	
 	static Flags load(u32 flags) {
 		return Flags(flags, true);
