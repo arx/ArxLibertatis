@@ -33,42 +33,42 @@ DebugBox::DebugBox(const Vec2i &pos, const std::string &title)
 	, m_maxKeyLen(0)
 {}
 
-void DebugBox::add(std::string key, const std::string value) {
+void DebugBox::add(const std::string & key, const std::string & value) {
 	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
 	m_elements.push_back(std::pair<std::string, std::string>(key, value));
 }
 
-void DebugBox::add(std::string key, const long value) {
+void DebugBox::add(const std::string & key, const long value) {
 	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
 	std::string valueStr = boost::str(boost::format("%ld") % value);
 	m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
 }
 
-void DebugBox::add(std::string key, const float value) {
+void DebugBox::add(const std::string & key, const float value) {
 	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
 	std::string valueStr = boost::str(boost::format("%4.2f") % value);
 	m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
 }
 
-void DebugBox::add(std::string key, const Vec2i value) {
+void DebugBox::add(const std::string & key, const Vec2i value) {
 	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
 	std::string valueStr = boost::str(boost::format("(%d, %d)") % value.x % value.y);
 	m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
 }
 
-void DebugBox::add(std::string key, const Vec3f value) {
+void DebugBox::add(const std::string & key, const Vec3f value) {
 	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
 	std::string valueStr = boost::str(boost::format("%4.2f %4.2f %4.2f") % value.x % value.y % value.z);
 	m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
 }
 
-void DebugBox::add(std::string key, const Anglef value) {
+void DebugBox::add(const std::string & key, const Anglef value) {
 	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
 	std::string valueStr = boost::str(boost::format("%4.2f %4.2f %4.2f") % value.getPitch() % value.getYaw() % value.getRoll());
 	m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
 }
 
-void DebugBox::add(std::string key, const ResourcePool value) {
+void DebugBox::add(const std::string & key, const ResourcePool value) {
 	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
 	std::string valueStr = boost::str(boost::format("%4.2f/%4.2f") % value.current % value.max);
 	m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
