@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class CLightning : public CSpellFx {
 	
 public:
+	
 	CLightning();
 	
 	void Create(Vec3f aeFrom, Vec3f aeTo);
@@ -68,10 +69,11 @@ public:
 	EntityHandle m_caster;
 	float m_level;
 	
-	float	m_fDamage;
+	float m_fDamage;
 	bool m_isMassLightning;
 	
 private:
+	
 	float fTotoro;
 	float fMySize;
 	size_t m_nbtotal;
@@ -95,11 +97,12 @@ private:
 	
 	static const size_t MAX_NODES = 2000;
 	
-	CLightningNode	m_cnodetab[MAX_NODES];
+	CLightningNode m_cnodetab[MAX_NODES];
 	
 	struct LIGHTNING;
 	void BuildS(LIGHTNING * lightingInfo);
 	void ReCreate(float rootSize);
+	
 };
 
 #endif // ARX_GRAPHICS_EFFECTS_LIGHTNING_H
