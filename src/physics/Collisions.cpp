@@ -192,36 +192,10 @@ inline float IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, long f
 		if(r >= to)
 			r=0;
 	}
-
-
-//	To Add "more" precision
-
-/*if (flags & CFLAG_EXTRA_PRECISION)
-{
-
-	for (long j=0;j<360;j+=90)
-	{
-		float xx=-std::sin(radians((float)j))*cyl.radius;
-		float yy=std::cos(radians((float)j))*cyl.radius;
-		EERIE_3D pos;
-		pos.x=cyl.origin.x+xx;
-
-		pos.z=cyl.origin.z+yy;
-		//EERIEPOLY * epp;
-
-		if (PointIn2DPolyXZ(ep, pos.x, pos.z)) 
-		{
-			if (GetTruePolyY(ep,&pos,&xx))
-			{				
-				anything=min(anything,xx);
-				return anything;
-			}
-		}
-	} 
-//}*/
+	
 	if(anything != 999999.f && ep.norm.y < 0.1f && ep.norm.y > -0.1f)
 		anything = std::min(anything, ep.min.y);
-
+	
 	return anything;
 }
 
