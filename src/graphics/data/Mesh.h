@@ -104,7 +104,6 @@ struct BackgroundData {
 extern long EERIEDrawnPolys;
 
 extern BackgroundData * ACTIVEBKG;
-extern EERIE_CAMERA * ACTIVECAM;
 
 //	Entity Struct End
 
