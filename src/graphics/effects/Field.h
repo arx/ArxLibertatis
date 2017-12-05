@@ -52,7 +52,7 @@ class CCreateField : public CSpellFx {
 public:
 	CCreateField();
 	
-	void Create(Vec3f);
+	void Create(Vec3f aeSrc);
 	void Update(GameDuration timeDelta);
 	void Render();
 	
