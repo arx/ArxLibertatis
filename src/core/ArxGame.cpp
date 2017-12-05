@@ -619,7 +619,6 @@ static void loadLevel(u32 lvl) {
 }
 ARX_PROGRAM_OPTION_ARG("loadlevel", "", "Load a specific level", &loadLevel, "LEVELID")
 
-extern SavegameHandle LOADQUEST_SLOT;
 static void loadSlot(u32 saveSlot) {
 	LOADQUEST_SLOT = SavegameHandle(saveSlot);
 	GameFlow::setTransition(GameFlow::InGame);
