@@ -311,7 +311,7 @@ public:
 	ActiveSpellsGui();
 	
 	void init();
-	void update(Rectf parent);
+	void update(const Rectf & parent);
 	void updateInput(const Vec2f & mousePos);
 	void draw();
 	

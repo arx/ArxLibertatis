@@ -1104,7 +1104,7 @@ void ActiveSpellsGui::init() {
 	m_flickInterval = PlatformDurationMsf(1000.0f / 60.0f);
 }
 
-void ActiveSpellsGui::update(Rectf parent) {
+void ActiveSpellsGui::update(const Rectf & parent) {
 	
 	float intensity = 1.f - PULSATE * 0.5f;
 	intensity = glm::clamp(intensity, 0.f, 1.f);
