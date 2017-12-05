@@ -231,7 +231,7 @@ void Logger::flush() {
 	}
 }
 
-void Logger::configure(const std::string settings) {
+void Logger::configure(const std::string & settings) {
 	
 	size_t start = 0;
 	

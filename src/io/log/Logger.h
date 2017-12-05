@@ -156,7 +156,7 @@ public:
 	 *  - "none" / "n" / "N"
 	 *  - "reset" / "r" / "R" / "-"
 	 */
-	static void configure(const std::string config);
+	static void configure(const std::string & config);
 	
 	/*!
 	 * \return true if the given log level is currently enabled for the current level.
