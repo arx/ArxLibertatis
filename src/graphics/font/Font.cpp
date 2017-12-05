@@ -353,7 +353,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 				EERIEDRAWPRIM(Renderer::TriangleList, &it->second[0], it->second.size());
 			}
 		}
-					
+		
 		GRenderer->ResetTexture(0);
 		TextureStage * stage = GRenderer->GetTextureStage(0);
 		stage->setColorOp(TextureStage::OpModulate);
