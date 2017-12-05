@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits>
 #include <ctime>
 
+#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include "ai/Paths.h"
@@ -172,7 +173,14 @@ static Entity * convertToValidIO(const std::string & idString) {
 		return NULL;
 	}
 	
-	return ARX_CHANGELEVEL_Pop_IO(idString, atoi(idString.substr(pos).c_str()));
+	EntityInstance instance = -1;
+	try {
+		instance = boost::lexical_cast<EntityInstance>(idString.substr(pos));
+	} catch(...) {
+		LogError << "Could not parse entity ID: " << idString;
+	}
+	
+	return ARX_CHANGELEVEL_Pop_IO(idString, instance);
 }
 
 template <size_t N>
