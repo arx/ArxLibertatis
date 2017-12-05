@@ -104,7 +104,6 @@ struct EQUIP_INFO {
 #define SP_BLOODY 2
 
 extern Vec3f PUSH_PLAYER_FORCE;
-extern long HERO_SHOW_1ST;
 extern bool EXTERNALVIEW;
 
 extern EERIE_3DOBJ * arrowobj;

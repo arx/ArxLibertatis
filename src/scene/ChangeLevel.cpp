@@ -112,7 +112,6 @@ extern bool GLOBAL_MAGIC_MODE;
 
 extern bool GMOD_RESET;
 
-extern long HERO_SHOW_1ST;
 extern bool EXTERNALVIEW;
 extern bool LOAD_N_ERASE;
 extern long FORBID_SCRIPT_IO_CREATION;
