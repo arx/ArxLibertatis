@@ -51,12 +51,12 @@ public:
 	DebugBox(const Vec2i & pos, const std::string & title);
 	
 	void add(const std::string & key, const std::string & value);
-	void add(const std::string & key, const long value);
-	void add(const std::string & key, const float value);
-	void add(const std::string & key, const Vec2i value);
-	void add(const std::string & key, const Vec3f value);
-	void add(const std::string & key, const Anglef value);
-	void add(const std::string & key, const ResourcePool value);
+	void add(const std::string & key, long value);
+	void add(const std::string & key, float value);
+	void add(const std::string & key, Vec2i value);
+	void add(const std::string & key, Vec3f value);
+	void add(const std::string & key, Anglef value);
+	void add(const std::string & key, ResourcePool value);
 	
 	void print();
 	
