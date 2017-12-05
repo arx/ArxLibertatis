@@ -58,7 +58,7 @@ class CLightning : public CSpellFx {
 public:
 	CLightning();
 	
-	void Create(Vec3f, Vec3f);
+	void Create(Vec3f aeFrom, Vec3f aeTo);
 	void Update(GameDuration timeDelta);
 	void Render();
 	
