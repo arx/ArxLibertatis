@@ -69,7 +69,7 @@ struct CinematicSound {
 	
 };
 
-static boost::array<CinematicSound, 256> TabSound;
+boost::array<CinematicSound, 256> TabSound;
 
 } // anonymous namespace
 
