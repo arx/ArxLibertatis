@@ -72,10 +72,10 @@ inline glm::mat4 eulerAngleX
 	float sinX = glm::sin(angleX);
 
 	return glm::mat4(
-		float(1), float(0), float(0), float(0),
-		float(0), cosX, sinX, float(0),
-		float(0), -sinX, cosX, float(0),
-		float(0), float(0), float(0), float(1));
+		1.f, 0.f, 0.f, 0.f,
+		0.f, cosX, sinX, 0.f,
+		0.f, -sinX, cosX, 0.f,
+		0.f, 0.f, 0.f, 1.f);
 }
 
 inline glm::mat4 eulerAngleY(float const & angleY) {
@@ -83,10 +83,10 @@ inline glm::mat4 eulerAngleY(float const & angleY) {
 	float cosY = glm::cos(angleY);
 	float sinY = glm::sin(angleY);
 	
-	return glm::mat4(cosY, float(0), -sinY, float(0),
-	                 float(0), float(1), float(0), float(0),
-	                 sinY, float(0), cosY, float(0),
-	                 float(0), float(0), float(0), float(1));
+	return glm::mat4(cosY, 0.f, -sinY, 0.f,
+	                 0.f, 1.f, 0.f, 0.f,
+	                 sinY, 0.f, cosY, 0.f,
+	                 0.f, 0.f, 0.f, 1.f);
 }
 
 inline glm::mat4 eulerAngleZ(float const & angleZ) {
@@ -94,10 +94,10 @@ inline glm::mat4 eulerAngleZ(float const & angleZ) {
 	float cosZ = glm::cos(angleZ);
 	float sinZ = glm::sin(angleZ);
 	
-	return glm::mat4(cosZ, sinZ, float(0), float(0),
-	                 -sinZ, cosZ, float(0), float(0),
-	                 float(0), float(0), float(1), float(0),
-	                 float(0), float(0), float(0), float(1));
+	return glm::mat4(cosZ, sinZ, 0.f, 0.f,
+	                 -sinZ, cosZ, 0.f, 0.f,
+	                 0.f, 0.f, 1.f, 0.f,
+	                 0.f, 0.f, 0.f, 1.f);
 }
 
 template <typename genType>
@@ -196,7 +196,7 @@ GLM_FUNC_QUALIFIER float angle
 	Vec2f const & y
 )
 {
-	return glm::acos(glm::clamp(glm::dot(x, y), float(-1), float(1)));
+	return glm::acos(glm::clamp(glm::dot(x, y), -1.f, 1.f));
 }
 
 GLM_FUNC_QUALIFIER float orientedAngle
@@ -205,9 +205,9 @@ GLM_FUNC_QUALIFIER float orientedAngle
 	Vec2f const & y
 )
 {
-	float const Angle(glm::acos(glm::clamp(glm::dot(x, y), float(-1), float(1))));
+	float const Angle(glm::acos(glm::clamp(glm::dot(x, y), -1.f, 1.f)));
 
-	if(glm::all(glm::epsilonEqual(y, arx::rotate(x, Angle), float(0.0001))))
+	if(glm::all(glm::epsilonEqual(y, arx::rotate(x, Angle), 0.0001f)))
 		return Angle;
 	else
 		return -Angle;
