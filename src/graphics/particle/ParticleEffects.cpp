@@ -102,7 +102,7 @@ TextureContainer * fire2=NULL;
 static const size_t MAX_EXPLO = 24;
 static TextureContainer * explo[MAX_EXPLO]; // TextureContainer for animated explosion bitmaps (24 frames)
 
-long			NewSpell=0;
+long NewSpell = 0;
 
 long getParticleCount() {
 	return ParticleCount;
@@ -584,7 +584,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 
 void MagFX(const Vec3f & pos, float size) {
 	
-	PARTICLE_DEF * pd	=	createParticle();
+	PARTICLE_DEF * pd = createParticle();
 	if(!pd) {
 		return;
 	}
@@ -1007,7 +1007,7 @@ void TreatBackgroundActions() {
 			continue;
 		}
 		
-		float dist = arx::distance2(gl->pos,	ACTIVECAM->orgTrans.pos);
+		float dist = arx::distance2(gl->pos, ACTIVECAM->orgTrans.pos);
 		if(dist > fZFar) {
 			// Out of treat range
 			ARX_SOUND_Stop(gl->sample);
