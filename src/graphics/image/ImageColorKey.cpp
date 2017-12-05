@@ -47,7 +47,7 @@ class BlackWhiteAntialiaser {
 private:
 	
 	//! Test if pixel (x, y) is "covered".
-	static bool sample(u8 * d, size_t w, size_t h, int x, int y) {
+	static bool sample(const u8 * d, size_t w, size_t h, int x, int y) {
 		
 		if(x < 0 || y < 0 || size_t(x) >= w || size_t(y) >= h) {
 			return false; // (x + ix, y + iy) is out of bounds → assume "transparent".
