@@ -1342,7 +1342,7 @@ public:
 
 		{
 			std::string szMenuText = getLocalised("system_menus_options_interface_scale_cursor_with_hud",
-												  "Scale cursor with HUD");
+			                                      "Scale cursor with HUD");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
