@@ -39,7 +39,7 @@
 static std::vector<Vec2f> plist;
 bool bPrecastSpell = false;
 
-static void handleRuneDetection(Rune);
+static void handleRuneDetection(Rune rune);
 
 typedef struct RunePattern{
 	Rune runeId;
