@@ -93,16 +93,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/spell/FlyingEye.h"
 #include "game/spell/Cheat.h"
 #include "game/effect/Quake.h"
-
-#include "gui/Hud.h"
-#include "gui/LoadLevelScreen.h"
-#include "gui/Menu.h"
-#include "gui/MenuWidgets.h"
-#include "gui/Speech.h"
-#include "gui/MiniMap.h"
-#include "gui/Text.h"
-#include "gui/TextManager.h"
-
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Draw.h"
 #include "graphics/DrawLine.h"
@@ -125,8 +115,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/TextureStage.h"
 
 #include "gui/Cursor.h"
+#include "gui/Hud.h"
 #include "gui/Interface.h"
+#include "gui/LoadLevelScreen.h"
+#include "gui/Menu.h"
+#include "gui/MenuWidgets.h"
+#include "gui/Speech.h"
+#include "gui/MiniMap.h"
 #include "gui/Text.h"
+#include "gui/TextManager.h"
 
 #include "input/Input.h"
 #include "input/Keyboard.h"
