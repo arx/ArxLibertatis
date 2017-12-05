@@ -55,7 +55,7 @@ public:
 	
 	GameDuration GetDuration();
 	
-	void Create(Vec3f, float afBeta = 0);
+	void Create(Vec3f aeSrc, float afBeta = 0);
 	void Update(GameDuration timeDelta);
 	void Render();
 	
@@ -92,7 +92,7 @@ public:
 	
 	CSummonCreature();
 	
-	void Create(Vec3f, float afBeta = 0);
+	void Create(Vec3f aeSrc, float afBeta = 0);
 	void Kill();
 	void Update(GameDuration timeDelta);
 	void Render();
