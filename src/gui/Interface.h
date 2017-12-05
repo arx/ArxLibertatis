@@ -194,7 +194,7 @@ bool NeedHalo(Entity * io);
 void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer * haloTexture, Vec2f pos, Vec2f ratio);
 void ResetPlayerInterface();
 void Set_DragInter(Entity * io);
-void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb, const Color color, float scale);
+void ARX_INTERFACE_DrawNumber(const Vec2f & pos, long num, int _iNb, Color color, float scale);
 
 // 0 switch 1 forceopen 2 forceclose
 void InventoryOpenClose(unsigned long t);
