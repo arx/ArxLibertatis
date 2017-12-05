@@ -53,8 +53,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct ARX_SPECIAL_ATTRACTOR {
 	EntityHandle ionum;
-	float	power;
-	float	radius;
+	float power;
+	float radius;
 };
 
 static const size_t MAX_ATTRACTORS = 16;
