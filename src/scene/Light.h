@@ -173,7 +173,7 @@ struct ShaderLight {
 static const size_t llightsSize = 16;
 
 void setMaxLLights(size_t count);
-void UpdateLlights(ShaderLight lights[], size_t & lightsCount, const Vec3f pos, bool forPlayerColor);
+void UpdateLlights(ShaderLight lights[], size_t & lightsCount, Vec3f pos, bool forPlayerColor);
 
 void InitTileLights();
 void ResetTileLights();
