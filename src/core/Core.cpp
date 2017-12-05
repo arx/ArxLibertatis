@@ -78,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "core/Version.h"
 
+#include "game/Camera.h"
 #include "game/Damage.h"
 #include "game/EntityManager.h"
 #include "game/Equipment.h"
@@ -223,8 +224,6 @@ bool START_NEW_QUEST = false;
 static long LAST_WEAPON_TYPE = -1;
 
 float PULSATE;
-
-extern EERIE_CAMERA * ACTIVECAM;
 
 
 bool g_debugToggles[10];
