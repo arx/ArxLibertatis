@@ -43,7 +43,7 @@ ARX_LIB_PUBLIC void ArxIO_init();
 ARX_LIB_PUBLIC void ArxIO_getError(char * outMessage, int size);
 ARX_LIB_PUBLIC int  ArxIO_getLogLine(char * outMessage, int size);
 
-ARX_LIB_PUBLIC void ArxIO_unpack_alloc(const char * in, const size_t inSize, char ** out, size_t * outSize);
+ARX_LIB_PUBLIC void ArxIO_unpack_alloc(const char * in, size_t inSize, char ** out, size_t * outSize);
 ARX_LIB_PUBLIC void ArxIO_unpack_free(char * buffer);
 
 #ifdef __cplusplus
