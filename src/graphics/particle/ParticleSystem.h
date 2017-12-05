@@ -100,7 +100,7 @@ private:
 	
 	void SetParticleParams(Particle * particle);
 	
-	void SetTexture(const char *, int, int);
+	void SetTexture(const char * _pszTex, int _iNbTex, int _iTime);
 	
 public:
 	
