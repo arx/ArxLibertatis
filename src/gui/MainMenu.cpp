@@ -102,8 +102,6 @@ public:
 	
 };
 
-extern bool bNoMenu;
-
 class SaveConfirmMenuPage : public MenuPage {
 	
 public:
@@ -2342,9 +2340,6 @@ void MainMenu::Update() {
 	
 	m_selected = m_widgets->getAtPos(Vec2f(GInput->getMousePosition()));
 }
-
-// TODO remove this
-extern bool bNoMenu;
 
 void MainMenu::Render() {
 
