@@ -1151,8 +1151,6 @@ static float GetTRUETargetDist(Entity * io) {
 	return 99999999.f;
 }
 
-extern Entity * EVENT_SENDER;
-
 //! Checks If a NPC is dead
 bool IsDeadNPC(Entity * io) {
 	
