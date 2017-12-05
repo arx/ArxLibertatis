@@ -61,11 +61,11 @@ public:
 	
 	explicit ChunkFile(PakFileHandle * file);
 	
-	bool read(void *, size_t);
-	bool skip(size_t);
-	bool find(const char *);
+	bool read(void * buffer, size_t size);
+	bool skip(size_t size);
+	bool find(const char * id);
 	//! \return true if next four bytes = chunk id;
-	bool check(const char *);
+	bool check(const char * id);
 	size_t size() { return offset; }
 	bool restart();
 	
