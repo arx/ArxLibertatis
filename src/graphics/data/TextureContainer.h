@@ -41,7 +41,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 // Code: Cyril Meynier
-//       Sébastien Scieux	(JPEG & PNG)
+//       Sébastien Scieux (JPEG & PNG)
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 
