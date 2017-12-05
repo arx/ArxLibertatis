@@ -181,7 +181,6 @@ static const PlatformDuration runeDrawPointInterval = PlatformDurationMs(16); //
 
 extern EERIE_3DOBJ * arrowobj;
 
-extern Entity * FlyingOverIO;
 extern EERIE_CAMERA conversationcamera;
 extern ParticleManager * pParticleManager;
 extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.

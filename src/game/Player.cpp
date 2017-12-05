@@ -2504,8 +2504,6 @@ void ARX_PLAYER_Invulnerability(long flag) {
 		player.playerflags &= ~PLAYERFLAGS_INVULNERABILITY;
 }
 
-extern Entity * FlyingOverIO;
-
 void ARX_GAME_Reset() {
 	arx_assert(entities.player());
 	
