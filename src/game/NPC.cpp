@@ -88,6 +88,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/Vertex.h"
 #include "graphics/data/TextureContainer.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/MagicFlare.h"
@@ -2879,8 +2880,6 @@ void ManageIgnition_2(Entity * io) {
 		}
 	}
 }
-
-extern BackgroundData * ACTIVEBKG;
 
 void GetTargetPos(Entity * io, unsigned long smoothing) {
 	
