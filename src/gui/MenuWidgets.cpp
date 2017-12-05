@@ -100,9 +100,6 @@ extern int newWidth;
 extern int newHeight;
 extern bool newFullscreen;
 
-// Imported global variables and functions
-extern ARX_MENU_DATA ARXmenu;
-
 bool bNoMenu=false;
 
 extern TextWidget * pMenuElementApply;
