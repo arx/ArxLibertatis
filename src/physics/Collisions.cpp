@@ -1191,7 +1191,8 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 				if(entity.obj->vertexlist.size() < 120) {
 					for(size_t kk = 0; kk < vlist.size(); kk+=1) {
 						if(kk != ii) {
-							for(float nn = 0.2f; nn < 1.f; nn += 0.2f) {
+							for(size_t n = 1; n < 5; n++) {
+								float nn = float(n) * 0.2f;
 								Vec3f posi = vlist[ii].v * nn + vlist[kk].v * (1.f - nn);
 								if(!fartherThan(sphere.origin, posi, sr30 + 20)) {
 									count++;
