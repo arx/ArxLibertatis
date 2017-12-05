@@ -113,21 +113,22 @@ DECLARE_FLAGS(PolyTypeFlag, PolyType)
 DECLARE_FLAGS_OPERATORS(PolyType)
 
 struct EERIEPOLY {
+	
 	PolyType type;
-	Vec3f		min;
-	Vec3f		max;
-	Vec3f		norm;
-	Vec3f		norm2;
-	TexturedVertex		v[4];
+	Vec3f min;
+	Vec3f max;
+	Vec3f norm;
+	Vec3f norm2;
+	TexturedVertex v[4];
 	ColorRGBA color[4];
-	Vec3f		nrml[4];
+	Vec3f nrml[4];
 	TextureContainer * tex;
-	Vec3f		center;
-	float			transval;
-	float			area;
-	short			room;
-	short			misc;
-	unsigned short	uslInd[4];
+	Vec3f center;
+	float transval;
+	float area;
+	short room;
+	short misc;
+	unsigned short uslInd[4];
 	
 	EERIEPOLY()
 		: type(0)
@@ -137,6 +138,7 @@ struct EERIEPOLY {
 		, room(0)
 		, misc(0)
 	{ }
+	
 };
 
 #define IOPOLYVERT 3
@@ -171,14 +173,13 @@ struct EERIE_ACTIONLIST {
 	{}
 };
 
-struct CUB3D
-{
-	float	xmin;
-	float	xmax;
-	float	ymin;
-	float	ymax;
-	float	zmin;
-	float	zmax;
+struct CUB3D {
+	float xmin;
+	float xmax;
+	float ymin;
+	float ymax;
+	float zmin;
+	float zmax;
 };
 
 struct EERIE_LINKED {
@@ -296,24 +297,20 @@ struct EERIE_3DOBJ
 //Portal Data;
 
 struct PortalPoly {
-	Vec3f		min;
-	Vec3f		max;
-	Vec3f		norm;
+	Vec3f min;
+	Vec3f max;
+	Vec3f norm;
 	Vec3f p[4];
 	float rhw;
-	Vec3f		center;
-	
-	PortalPoly()
-	{ }
+	Vec3f center;
 };
 
-struct EERIE_PORTALS
-{
-	PortalPoly	poly;
-	size_t		room_1; // facing normal
-	size_t		room_2;
-	short		useportal;
-	short		paddy;
+struct EERIE_PORTALS {
+	PortalPoly poly;
+	size_t room_1; // facing normal
+	size_t room_2;
+	short useportal;
+	short paddy;
 };
 
 struct EP_DATA {
