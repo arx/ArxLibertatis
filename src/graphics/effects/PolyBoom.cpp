@@ -480,29 +480,21 @@ void PolyBoomDraw() {
 					ltv[k].color=col;
 				}
 				
-				if (	(ltv[0].uv.x<0.f)
-					&&	(ltv[1].uv.x<0.f)
-					&&	(ltv[2].uv.x<0.f)
-					&&	(ltv[3].uv.x<0.f) )
+				if(ltv[0].uv.x < 0.f && ltv[1].uv.x < 0.f && ltv[2].uv.x < 0.f && ltv[3].uv.x < 0.f) {
 					break;
+				}
 				
-				if (	(ltv[0].uv.y<0.f)
-					&&	(ltv[1].uv.y<0.f)
-					&&	(ltv[2].uv.y<0.f)
-					&&	(ltv[3].uv.y<0.f) )
+				if(ltv[0].uv.y < 0.f && ltv[1].uv.y < 0.f && ltv[2].uv.y < 0.f && ltv[3].uv.y < 0.f) {
 					break;
+				}
 				
-				if (	(ltv[0].uv.x>1.f)
-					&&	(ltv[1].uv.x>1.f)
-					&&	(ltv[2].uv.x>1.f)
-					&&	(ltv[3].uv.x>1.f) )
+				if(ltv[0].uv.x > 1.f && ltv[1].uv.x > 1.f && ltv[2].uv.x > 1.f && ltv[3].uv.x > 1.f) {
 					break;
+				}
 				
-				if (	(ltv[0].uv.y>1.f)
-					&&	(ltv[1].uv.y>1.f)
-					&&	(ltv[2].uv.y>1.f)
-					&&	(ltv[3].uv.y>1.f) )
+				if(ltv[0].uv.y > 1.f && ltv[1].uv.y > 1.f && ltv[2].uv.y > 1.f && ltv[3].uv.y > 1.f) {
 					break;
+				}
 				
 				mat.setBlendType(RenderMaterial::Screen);
 				mat.setTexture(pb.tc);
