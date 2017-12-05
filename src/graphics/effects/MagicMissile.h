@@ -53,9 +53,9 @@ public:
 	CMagicMissile();
 	~CMagicMissile();
 	
-	void SetTTL(GameDuration);
+	void SetTTL(GameDuration aulTTL);
 	
-	void Create(const Vec3f & startPos, const Anglef &);
+	void Create(const Vec3f & startPos, const Anglef & angles);
 	void Update(GameDuration timeDelta);
 	void Render();
 	
