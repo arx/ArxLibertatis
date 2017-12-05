@@ -74,6 +74,10 @@ extern char ** environ;
 
 #include "util/String.h"
 
+#if !ARX_HAVE_O_CLOEXEC
+#define O_CLOEXEC 0
+#endif
+
 namespace platform {
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
@@ -84,6 +88,9 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 	
 	#if ARX_HAVE_OPEN
 	static int dev_null = open("/dev/null", O_RDWR | O_CLOEXEC);
+	#if !ARX_HAVE_O_CLOEXEC && ARX_HAVE_FCNTL
+	fcntl(dev_null, F_SETFD, FD_CLOEXEC);
+	#endif
 	#endif
 	
 	pid_t pid = 0;

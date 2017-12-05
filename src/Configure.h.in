@@ -37,6 +37,7 @@
 // Filesystem & I/O
 #cmakedefine01 ARX_HAVE_READLINK
 #cmakedefine01 ARX_HAVE_OPEN
+#cmakedefine01 ARX_HAVE_O_CLOEXEC
 #cmakedefine01 ARX_HAVE_FCNTL
 #cmakedefine01 ARX_HAVE_DUP2
 #cmakedefine01 ARX_HAVE_PIPE

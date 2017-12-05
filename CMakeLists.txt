@@ -689,6 +689,7 @@ else(MSVC)
 	check_symbol_exists(wordexp "wordexp.h" ARX_HAVE_WORDEXP)
 	
 	check_symbol_exists(open "fcntl.h" ARX_HAVE_OPEN)
+	check_symbol_exists(O_CLOEXEC "fcntl.h" ARX_HAVE_O_CLOEXEC)
 	check_symbol_exists(fcntl "fcntl.h" ARX_HAVE_FCNTL)
 	
 	check_symbol_exists(chdir "unistd.h" ARX_HAVE_CHDIR)
