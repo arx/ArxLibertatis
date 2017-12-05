@@ -73,7 +73,7 @@ public:
 	void init();
 	void clearAll();
 	
-	SpellBase * operator[] (const SpellHandle handle);
+	SpellBase * operator[](SpellHandle handle);
 	
 	void endSpell(SpellBase * spell);
 	
