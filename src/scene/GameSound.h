@@ -220,7 +220,7 @@ void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Ve
 audio::SampleId ARX_SOUND_Load(const res::path & name);
 void ARX_SOUND_Free(const audio::SampleId & sample);
 
-long ARX_SOUND_PlaySFX(audio::SourceId & sample_id, const Vec3f * position = NULL, float pitch = 1.0F, const SoundLoopMode = ARX_SOUND_PLAY_ONCE);
+long ARX_SOUND_PlaySFX(audio::SourceId & sample_id, const Vec3f * position = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_PlayInterface(audio::SourceId & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 
 long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io = NULL);
