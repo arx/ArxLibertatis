@@ -160,4 +160,6 @@ void ARX_SlotLoad(SavegameHandle slotIndex);
 
 bool MENU_NoActiveWindow();
 
+extern bool bNoMenu;
+
 #endif // ARX_GUI_MENUWIDGETS_H
