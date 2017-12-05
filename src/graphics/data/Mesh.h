@@ -55,13 +55,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class Entity;
 
-struct BackgroundTileData
-{
-	bool				treat;
-	short				nbpoly;
-	short				nbpolyin;
-	EERIEPOLY *			polydata;
-	EERIEPOLY **		polyin;
+struct BackgroundTileData {
+	
+	bool treat;
+	short nbpoly;
+	short nbpolyin;
+	EERIEPOLY * polydata;
+	EERIEPOLY ** polyin;
 	float maxy;
 	
 	BackgroundTileData()
@@ -71,7 +71,8 @@ struct BackgroundTileData
 		, polydata(NULL)
 		, polyin(NULL)
 		, maxy(0.f)
-	{}
+	{ }
+	
 };
 
 static const short MAX_BKGX = 160;
@@ -83,12 +84,12 @@ struct ANCHOR_DATA;
 
 struct BackgroundData {
 	
-	long		exist;
+	long exist;
 	Vec2s m_size;
 	Vec2s m_tileSize;
 	Vec2f m_mul;
 	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
-	long		  nbanchors;
+	long nbanchors;
 	ANCHOR_DATA * anchors;
 	
 	BackgroundData()
@@ -104,8 +105,6 @@ struct BackgroundData {
 extern long EERIEDrawnPolys;
 
 extern BackgroundData * ACTIVEBKG;
-
-//	Entity Struct End
 
 BackgroundTileData * getFastBackgroundData(float x, float z);
 
@@ -173,12 +172,11 @@ void EERIEPOLY_Compute_PolyIn();
 
 #define MAX_FRUSTRUMS 32
 
-struct Plane
-{
-	float	a;
-	float	b;
-	float	c;
-	float	d; // dist to origin
+struct Plane {
+	float a;
+	float b;
+	float c;
+	float d; // dist to origin
 };
 
 inline float distanceToPoint(const Plane & plane, const Vec3f & point) {
@@ -195,26 +193,22 @@ inline void normalizePlane(Plane & plane) {
 	plane.d = plane.d * n;
 }
 
-struct EERIE_FRUSTRUM
-{
+struct EERIE_FRUSTRUM {
 	Plane plane[4];
 };
 
-struct EERIE_FRUSTRUM_DATA
-{
+struct EERIE_FRUSTRUM_DATA {
 	long nb_frustrums;
 	EERIE_FRUSTRUM frustrums[MAX_FRUSTRUMS];
 };
 
-struct PORTAL_ROOM_DRAW
-{
-	short			count;
-	EERIE_FRUSTRUM_DATA	frustrum;
+struct PORTAL_ROOM_DRAW {
+	short count;
+	EERIE_FRUSTRUM_DATA frustrum;
 };
 
-struct ROOM_DIST_DATA
-{
-	float	distance; // -1 means use truedist
+struct ROOM_DIST_DATA {
+	float distance; // -1 means use truedist
 	Vec3f startpos;
 	Vec3f endpos;
 };
