@@ -105,8 +105,8 @@ private:
 	
 	bool m_wasResized;
 	
-	void onRendererInit(Renderer &);
-	void onRendererShutdown(Renderer &);
+	void onRendererInit(Renderer & renderer);
+	void onRendererShutdown(Renderer & renderer);
 	
 	bool initWindow(RenderWindow * window);
 	

@@ -1129,7 +1129,7 @@ void ArxGame::shutdownGame() {
 	
 }
 
-void ArxGame::onWindowGotFocus(const Window &) {
+void ArxGame::onWindowGotFocus(const Window & /* window */) {
 	
 	if(GInput) {
 		GInput->reset();
@@ -1141,7 +1141,7 @@ void ArxGame::onWindowGotFocus(const Window &) {
 	
 }
 
-void ArxGame::onWindowLostFocus(const Window &) {
+void ArxGame::onWindowLostFocus(const Window & /* window */) {
 	
 	// TODO(option-control) add a config option for this
 	ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
@@ -1177,7 +1177,7 @@ void ArxGame::onResizeWindow(const Window & window) {
 	}
 }
 
-void ArxGame::onDestroyWindow(const Window &) {
+void ArxGame::onDestroyWindow(const Window & /* window */) {
 	LogInfo << "Application window is being destroyed";
 	quit();
 }
