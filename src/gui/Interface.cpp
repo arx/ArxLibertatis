@@ -146,12 +146,12 @@ extern bool SHOW_INGAME_MINIMAP;
 
 //-----------------------------------------------------------------------------
 
-E_ARX_STATE_MOUSE	eMouseState;
+E_ARX_STATE_MOUSE eMouseState;
 Vec2s MemoMouse;
 
-INVENTORY_DATA *	TSecondaryInventory;
+INVENTORY_DATA * TSecondaryInventory;
 Entity * FlyingOverIO=NULL;
-Entity *	STARTED_ACTION_ON_IO=NULL;
+Entity * STARTED_ACTION_ON_IO=NULL;
 
 INTERFACE_TC g_bookResouces = INTERFACE_TC();
 
@@ -159,16 +159,16 @@ Note openNote;
 
 extern PlatformInstant SLID_START;
 
-Vec2f				BOOKDEC = Vec2f(0.f, 0.f);
+Vec2f BOOKDEC = Vec2f(0.f, 0.f);
 
-bool				PLAYER_MOUSELOOK_ON = false;
-bool				TRUE_PLAYER_MOUSELOOK_ON = false;
+bool PLAYER_MOUSELOOK_ON = false;
+bool TRUE_PLAYER_MOUSELOOK_ON = false;
 static bool MEMO_PLAYER_MOUSELOOK_ON = false;
 
-bool				COMBINEGOLD = false;
+bool COMBINEGOLD = false;
 
-bool				DRAGGING = false;
-bool				MAGICMODE = false;
+bool DRAGGING = false;
+bool MAGICMODE = false;
 
 static PlatformInstant COMBAT_MODE_ON_START_TIME = 0;
 static long SPECIAL_DRAW_WEAPON = 0;
@@ -334,11 +334,9 @@ void INTERFACE_TC::init() {
 
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_HALO_Render(Color3f color,
-							   long _lHaloType,
-							   TextureContainer * haloTexture,
-							   Vec2f pos, Vec2f ratio)
-{
+void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer * haloTexture,
+                               Vec2f pos, Vec2f ratio) {
+	
 	float wave = timeWaveSin(g_gameTime.now(), GameDurationMsf(628.319f));
 	
 	float power = 0.9f;
@@ -2060,8 +2058,7 @@ void ArxGame::manageEditorControls() {
 				} else {
 					if(io != COMBINE) {
 						std::string temp = COMBINE->idString();
-						EVENT_SENDER=COMBINE;
-	
+						EVENT_SENDER = COMBINE;
 						if(boost::starts_with(COMBINE->className(), "keyring")) {
 							ARX_KEYRING_Combine(io);
 						} else {
@@ -2099,18 +2096,18 @@ void ArxGame::manageEditorControls() {
 					}
 				}
 			}
-	
+			
 			COMBINEGOLD = false;
 			bool bQuitCombine = true;
-	
+			
 			if((player.Interface & INTER_INVENTORY)) {
 				if(player.bag) {
 					bQuitCombine = g_playerInventoryHud.updateInput();
 				}
 			}
-	
+			
 			if(bQuitCombine) {
-				COMBINE=NULL;
+				COMBINE = NULL;
 			}
 		}
 		
