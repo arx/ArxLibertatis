@@ -377,7 +377,6 @@ static void ApplyConsole() {
 	g_console.open();
 }
 
-extern float PULSATE;
 static TextureContainer * Mr_tc = NULL;
 
 void CheckMr() {
