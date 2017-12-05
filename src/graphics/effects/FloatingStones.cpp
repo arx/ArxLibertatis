@@ -83,7 +83,7 @@ void FloatingStones::DrawStone()
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Screen);
 	
-	int	nb = 256;
+	int nb = 256;
 	while(nb--) {
 		T_STONE & s = m_tstone[nb];
 		
