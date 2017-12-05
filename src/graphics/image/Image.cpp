@@ -417,7 +417,7 @@ void extendImageRight<1>(u8 * in, size_t win, size_t wout, size_t h) {
 }
 
 template <size_t N>
-static void extendImageBottomRight(u8 * in, u8 * out, size_t win, size_t wout, size_t h) {
+static void extendImageBottomRight(const u8 * in, u8 * out, size_t win, size_t wout, size_t h) {
 	for(size_t y = 0; y < h; y++) {
 		for(size_t x = win; x < wout; x++, out += N) {
 			std::memcpy(out, in, N);
@@ -427,7 +427,7 @@ static void extendImageBottomRight(u8 * in, u8 * out, size_t win, size_t wout, s
 }
 
 template <>
-void extendImageBottomRight<1>(u8 * in, u8 * out, size_t win, size_t wout, size_t h) {
+void extendImageBottomRight<1>(const u8 * in, u8 * out, size_t win, size_t wout, size_t h) {
 	for(size_t y = 0; y < h; y++, out += wout) {
 		std::memset(out, *in, wout - win);
 	}
