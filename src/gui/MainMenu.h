@@ -32,10 +32,12 @@
 void MainMenuLeftCreate(MENUSTATE eMenuState);
 
 class MainMenu : private boost::noncopyable {
+	
 public:
-	bool					bReInitAll;
-	MENUSTATE				eOldMenuState;
-	MENUSTATE				eOldMenuWindowState;
+	
+	bool bReInitAll;
+	MENUSTATE eOldMenuState;
+	MENUSTATE eOldMenuWindowState;
 	
 	MenuWindow * m_window;
 	
@@ -57,12 +59,14 @@ public:
 	}
 	
 private:
+	
 	TextureContainer * m_background;
 	WidgetContainer * m_widgets;
 	
 	TextWidget * m_resumeGame;
 	
 	Widget * m_selected;
+	
 };
 
 extern MainMenu * g_mainMenu;
