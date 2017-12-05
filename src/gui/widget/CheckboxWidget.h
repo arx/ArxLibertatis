@@ -30,6 +30,7 @@ class TextureContainer;
 class CheckboxWidget : public Widget {
 	
 public:
+	
 	explicit CheckboxWidget(TextWidget * label);
 	virtual ~CheckboxWidget();
 	
@@ -41,19 +42,21 @@ public:
 	void Render();
 	void RenderMouseOver();
 	
-	int					iState;
-	int					iOldState;
+	int iState;
+	int iOldState;
 	
-	boost::function<void(int)> stateChanged;	// NOLINT
+	boost::function<void(int)> stateChanged; // NOLINT
 	
 	virtual WidgetType type() const {
 		return WidgetType_Checkbox;
 	}
 	
 private:
+	
 	TextureContainer * m_textureOff;
 	TextureContainer * m_textureOn;
-	TextWidget	* m_label;
+	TextWidget * m_label;
+	
 };
 
 #endif // ARX_GUI_WIDGET_CHECKBOXWIDGET_H
