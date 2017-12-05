@@ -92,8 +92,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Light.h"
 
-extern TextManager * pTextManage;
-
 extern bool REQUEST_SPEECH_SKIP;
 
 ARX_MENU_DATA ARXmenu;
