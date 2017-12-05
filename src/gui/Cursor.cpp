@@ -105,7 +105,7 @@ static TextureContainer * cursorCrossHair = NULL; // Animated Hand Cursor TC
 static TextureContainer * cursorReadyWeapon = NULL;
 TextureContainer * cursorMovable = NULL;   // TextureContainer for Movable Items (Red Cross)
 
-TextureContainer *	scursor[8];			// Animated Hand Cursor TC
+TextureContainer * scursor[8]; // Animated Hand Cursor
 
 void cursorTexturesInit() {
 	
@@ -621,8 +621,8 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			arx_assert(surf);
 			
 			if(SpecialCursor == CURSOR_REDIST) {
-				EERIEDrawBitmap(Rectf(mousePos, float(surf->m_size.x) * g_sizeRatio.x, float(surf->m_size.y) * g_sizeRatio.y),
-								0.f, surf, Color::white);
+				EERIEDrawBitmap(Rectf(mousePos, float(surf->m_size.x) * g_sizeRatio.x,
+				                float(surf->m_size.y) * g_sizeRatio.y), 0.f, surf, Color::white);
 				
 				Vec2f textPos = Vec2f(DANAEMouse);
 				textPos += Vec2f(17.5f, 12.5f) * g_sizeRatio;
