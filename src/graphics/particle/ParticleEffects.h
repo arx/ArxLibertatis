@@ -169,6 +169,6 @@ void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction = NUL
 void spawnFireHitParticle(const Vec3f & poss, long type);
 void spawn2DFireParticle(const Vec2f & pos, float scale);
 
-void SpawnFireballTail(const Vec3f &, const Vec3f &, float, long);
+void SpawnFireballTail(const Vec3f & poss, const Vec3f & vecto, float level, long flags);
 
 #endif // ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H
