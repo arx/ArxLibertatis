@@ -56,7 +56,7 @@ class CPoisonProjectile : public CSpellFx {
 public:
 	CPoisonProjectile();
 	
-	void Create(Vec3f, float afBeta = 0);
+	void Create(Vec3f _eSrc, float _fBeta = 0);
 	void Update(GameDuration timeDelta);
 	void Render();
 	
