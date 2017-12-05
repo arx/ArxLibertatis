@@ -542,11 +542,10 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 			{
 				Cylinder & io_cyl = io->physics.cyl;
 				io_cyl = GetIOCyl(io);
-
-				if (	(io->gameFlags & GFLAG_PLATFORM)
-					||	((flags & CFLAG_COLLIDE_NOCOL) && (io->ioflags & IO_NPC) &&  (io->ioflags & IO_NO_COLLISIONS))
-					)
-				{
+				
+				if((io->gameFlags & GFLAG_PLATFORM)
+				   || ((flags & CFLAG_COLLIDE_NOCOL) && (io->ioflags & IO_NPC) &&  (io->ioflags & IO_NO_COLLISIONS))) {
+					
 					if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(cyl.origin.x, cyl.origin.z), 440.f + cyl.radius))
 					if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius+80))
 					{
@@ -758,13 +757,13 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 											io->collide_door_time = g_gameTime.now();
 											SendIOScriptEvent(ioo, SM_COLLIDE_FIELD);
 										}
-					
+										
 										if(!dealt && ioo && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
 											dealt = true;
 											
 											if(ioo->damager_damages > 0)
 												ARX_DAMAGES_DealDamages(EntityHandle(i), ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
-									
+											
 											if(io->damager_damages > 0)
 												ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
 										}
@@ -907,27 +906,27 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 
 				amount=2;
 			}
-
+			
 			for(size_t ii = 0; ii < io->obj->facelist.size(); ii += amount) {
 				EERIE_FACE * ef = &io->obj->facelist[ii];
-
-				if(ef->facetype & POLY_HIDE)
+				
+				if(ef->facetype & POLY_HIDE) {
 					continue;
-
-				Vec3f fcenter = (vlist[ef->vid[0]].v + vlist[ef->vid[1]].v
-								 + vlist[ef->vid[2]].v) * (1.0f / 3);
-
+				}
+				
+				Vec3f fcenter = (vlist[ef->vid[0]].v + vlist[ef->vid[1]].v + vlist[ef->vid[2]].v) * (1.0f / 3);
+				
 				if(closerThan(fcenter, sphere.origin, sr30)
 				   || closerThan(vlist[ef->vid[0]].v, sphere.origin, sr30)
 				   || closerThan(vlist[ef->vid[1]].v, sphere.origin, sr30)
 				   || closerThan(vlist[ef->vid[2]].v, sphere.origin, sr30)) {
-
 					sphereContent.push_back(ret_idx);
-
 					vreturn = true;
 					goto suivant;
 				}
+				
 			}
+			
 		}
 		
 	suivant:
@@ -1229,11 +1228,8 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 			
 			if((flags & CFLAG_PLAYER) && player.jumpphase != NotJumping) {
 				tolerate = 0;
-			} else if(io
-					&& (io->ioflags & IO_NPC)
-					&& io->_npcdata->pathfind.listnb > 0
-					&& io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb
-			) {
+			} else if(io && (io->ioflags & IO_NPC) && io->_npcdata->pathfind.listnb > 0
+			          && io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb) {
 				tolerate = -65 - io->_npcdata->moveproblem;
 			} else {
 				if(io && io->_npcdata) {
