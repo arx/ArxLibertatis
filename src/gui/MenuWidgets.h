@@ -108,12 +108,14 @@ class SaveConfirmMenuPage;
 class MenuWindow : private boost::noncopyable {
 	
 private:
+	
 	Vec2f m_pos;
 	Vec2f m_size;
 	float m_initalOffsetX;
 	float m_fadeDistance;
 	
 public:
+	
 	MenuWindow();
 	virtual ~MenuWindow();
 	
@@ -121,15 +123,16 @@ public:
 	void Update();
 	void Render();
 	
-	std::vector<MenuPage *>	m_pages;
+	std::vector<MenuPage *> m_pages;
 	LoadMenuPage * m_pageLoad;
 	SaveConfirmMenuPage * m_pageSaveConfirm;
 	
-	float				fAngle;
+	float fAngle;
 	
 	MENUSTATE currentPageId() {
 		return m_currentPageId;
 	}
+	
 	void setCurrentPageId(MENUSTATE id);
 	
 	void requestPage(MENUSTATE page) {
@@ -137,12 +140,14 @@ public:
 	}
 	
 private:
+	
 	MENUSTATE m_requestedPage;
 	MENUSTATE m_currentPageId;
 	MenuPage * m_currentPage;
 	
 	TextureContainer * m_background;
 	TextureContainer * m_border;
+	
 };
 
 void MenuReInitAll();
