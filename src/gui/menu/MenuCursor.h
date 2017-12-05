@@ -27,7 +27,9 @@
 struct TexturedVertex;
 
 class CursorTrail {
+	
 public:
+	
 	CursorTrail();
 	
 	void reset();
@@ -35,18 +37,21 @@ public:
 	void draw();
 	
 private:
+	
 	PlatformDuration m_storedTime;
-	int   iNbOldCoord;
-	int   iMaxOldCoord;
+	int iNbOldCoord;
+	int iMaxOldCoord;
 	Vec2s iOldCoord[256];
 	
 	bool ComputePer(const Vec2s & p1, const Vec2s & p2, TexturedVertex * v1, TexturedVertex * v2, float size);
 	void DrawLine2D(float _fSize, Color3f color);
+	
 };
 
 class MenuCursor {
-
+	
 public:
+	
 	MenuCursor();
 	virtual ~MenuCursor();
 	
@@ -56,14 +61,16 @@ public:
 	void DrawCursor();
 	
 private:
+	
 	void DrawOneCursor(const Vec2s & mousePos);
 	
 	Vec2s m_size;
 	bool exited; //! Has the mouse exited the window
 	PlatformDuration lFrameDiff;
-	int					m_currentFrame;
-	bool				bMouseOver;
+	int m_currentFrame;
+	bool bMouseOver;
 	CursorTrail trail;
+	
 };
 
 extern MenuCursor * pMenuCursor;
@@ -71,7 +78,9 @@ extern MenuCursor * pMenuCursor;
 class TextureContainer;
 
 class ThumbnailCursor {
+	
 public:
+	
 	ThumbnailCursor()
 		: m_renderTexture(NULL)
 		, m_loadTexture(NULL)
@@ -83,6 +92,7 @@ public:
 	
 	TextureContainer * m_renderTexture;
 	TextureContainer * m_loadTexture;
+	
 };
 
 extern ThumbnailCursor g_thumbnailCursor;
