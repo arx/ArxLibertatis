@@ -368,24 +368,24 @@ bool Triangles_Intersect(const EERIE_TRI & v, const EERIE_TRI & u)
 
 // Cylinder y origin must be min Y of cylinder
 // Cylinder height MUST be negative FROM origin (inverted Theo XYZ system Legacy)
-bool CylinderInCylinder(const Cylinder & cyl1, const Cylinder & cyl2)
-{
-	float m1 = cyl1.origin.y;					//tokeep: max(cyl1.origin.y,cyl1.origin.y+cyl1.height);
-	float m2 = cyl2.origin.y + cyl2.height;	//tokeep: min(cyl2.origin.y,cyl2.origin.y+cyl2.height);
-
+bool CylinderInCylinder(const Cylinder & cyl1, const Cylinder & cyl2) {
+	
+	float m1 = cyl1.origin.y;
+	float m2 = cyl2.origin.y + cyl2.height;
+	
 	if (m2 > m1) return false;
-
-	m1 = cyl1.origin.y + cyl1.height;			//tokeep: min(cyl1.origin.y,cyl1.origin.y+cyl1.height);
-	m2 = cyl2.origin.y;						//tokeep: max(cyl2.origin.y,cyl2.origin.y+cyl2.height);
-
+	
+	m1 = cyl1.origin.y + cyl1.height;
+	m2 = cyl2.origin.y;
+	
 	if (m1 > m2) return false;
-
+	
 	m1 = cyl1.radius + cyl2.radius;
-
+	
 	if(!fartherThan(Vec2f(cyl1.origin.x, cyl1.origin.z), Vec2f(cyl2.origin.x, cyl2.origin.z), m1)) {
 		return true;
 	}
-
+	
 	return false;
 }
 
