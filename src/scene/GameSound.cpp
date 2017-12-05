@@ -164,14 +164,14 @@ private:
 
 typedef std::map<std::string, SoundMaterial> CollisionMap;
 typedef std::map<std::string, CollisionMap> CollisionMaps;
-static CollisionMaps collisionMaps;
+CollisionMaps collisionMaps;
 
 namespace Section {
-static const std::string presence = "presence";
+const std::string presence = "presence";
 }
 
 typedef std::map<res::path, float> PresenceFactors;
-static PresenceFactors presence;
+PresenceFactors presence;
 
 }
 
