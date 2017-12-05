@@ -53,30 +53,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIEPOLY;
 struct EERIE_3DOBJ;
 
-struct PhysicsParticle
-{
-	Vec3f	initpos;
-	Vec3f	pos;
-	Vec3f	velocity;
-	Vec3f	force;
-	float		mass;
-
+struct PhysicsParticle {
+	
+	Vec3f initpos;
+	Vec3f pos;
+	Vec3f velocity;
+	Vec3f force;
+	float mass;
+	
 	PhysicsParticle()
 		: initpos(Vec3f_ZERO)
 		, pos(Vec3f_ZERO)
 		, velocity(Vec3f_ZERO)
 		, force(Vec3f_ZERO)
 		, mass(0.f)
-	{}
+	{ }
+	
 };
 
-struct PHYSICS_BOX_DATA
-{
+struct PHYSICS_BOX_DATA {
+	
 	boost::array<PhysicsParticle, 15> vert;
-	short	active;
-	short	stopcount;
-	float	radius; //radius around vert[0].pos for spherical collision
-	float	storedtiming;
+	short active;
+	short stopcount;
+	float radius; //radius around vert[0].pos for spherical collision
+	float storedtiming;
 	float surface;
 	
 	PHYSICS_BOX_DATA()
@@ -85,7 +86,8 @@ struct PHYSICS_BOX_DATA
 		, radius(0.f)
 		, storedtiming(0.f)
 		, surface(0.f)
-	{}
+	{ }
+	
 };
 
 bool EERIE_PHYSICS_BOX_IsValidPosition(const Vec3f & pos);
