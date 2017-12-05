@@ -230,16 +230,9 @@ void UNICODE_ARXDrawTextCenteredScroll(Font* font, float x, float y, float x2, c
 	Rect rRect(_x, _y, w, Rect::Limits::max());
 	
 	if(pTextManage) {
-		pTextManage->AddText(font,
-							 str,
-							 rRect,
-							 col,
-							 iTimeOut,
-							 iTimeScroll,
-							 fSpeed,
-							 iNbLigne
-							);
+		pTextManage->AddText(font, str, rRect, col, iTimeOut, iTimeScroll, fSpeed, iNbLigne);
 	}
+	
 }
 
 static Font * createFont(const res::path & fontFace,
@@ -369,13 +362,10 @@ bool ARX_Text_Init() {
 	}
 	
 	LogInfo << "Loaded font " << file << " with sizes " << hFontMainMenu->getSize()
-			<< ", " << hFontMenu->getSize()
-			<< ", " << hFontControls->getSize()
-			<< ", " << hFontCredits->getSize()
-			<< ", " << hFontInGame->getSize()
-			<< ", " << hFontInGameNote->getSize()
-			<< ", " << hFontInBook->getSize()
-			<< ", " << hFontDebug->getSize();
+	        << ", " << hFontMenu->getSize() << ", " << hFontControls->getSize()
+	        << ", " << hFontCredits->getSize() << ", " << hFontInGame->getSize()
+	        << ", " << hFontInGameNote->getSize() << ", " << hFontInBook->getSize()
+	        << ", " << hFontDebug->getSize();
 	
 	return true;
 }
