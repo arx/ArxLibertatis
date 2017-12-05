@@ -71,7 +71,7 @@ enum ARX_INTERFACE_CURSOR_MODE
 };
 
 ARX_INTERFACE_CURSOR_MODE SpecialCursor = CURSOR_UNDEFINED;
-//used to redist points - attributes and skill
+// Used to redist points - attributes and skill
 static long lCursorRedistValue = 0;
 
 
