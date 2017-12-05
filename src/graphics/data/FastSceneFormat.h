@@ -71,11 +71,11 @@ struct UNIQUE_HEADER3 {
 };
 
 struct FAST_VERTEX {
-	f32	sy;
-	f32	ssx;
-	f32	ssz;
-	f32	stu;
-	f32	stv;
+	f32 sy;
+	f32 ssx;
+	f32 ssz;
+	f32 stu;
+	f32 stv;
 };
 
 struct FAST_EERIEPOLY {
