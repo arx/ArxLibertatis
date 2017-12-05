@@ -317,12 +317,12 @@ std::string path::load(const std::string & str) {
 				// Aboslute path.
 				copy[ostart++] = dir_sep;
 			}
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+			#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 			if(pos == 1) {
 				// Network path
 				copy[ostart++] = dir_sep;
 			}
-#endif
+			#endif
 			// double slash
 			continue;
 		}
