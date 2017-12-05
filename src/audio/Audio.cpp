@@ -65,9 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-namespace {
 static Lock * mutex = NULL;
-}
 
 aalError init(const std::string & backendName, const std::string & deviceName, HRTFAttribute hrtf) {
 	
