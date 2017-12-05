@@ -29,6 +29,7 @@
 class SliderWidget: public Widget {
 	
 public:
+	
 	explicit SliderWidget(const Vec2f & unscaled);
 	virtual ~SliderWidget();
 	
@@ -51,13 +52,15 @@ public:
 	}
 	
 private:
-	ButtonWidget		*	pLeftButton;
-	ButtonWidget		*	pRightButton;
-	TextureContainer	* pTex1;
-	TextureContainer	* pTex2;
 	
-	int	m_minimum;
-	int	m_value;
+	ButtonWidget * pLeftButton;
+	ButtonWidget * pRightButton;
+	TextureContainer * pTex1;
+	TextureContainer * pTex2;
+	
+	int m_minimum;
+	int m_value;
+	
 };
 
 #endif // ARX_GUI_WIDGET_SLIDERWIDGET_H
