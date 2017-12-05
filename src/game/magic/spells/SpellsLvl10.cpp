@@ -442,8 +442,6 @@ void TeleportSpell::End() {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &m_caster_pos);
 }
 
-extern Vec3f lastteleport;
-
 void TeleportSpell::Update() {
 	
 	float TELEPORT = m_elapsed / m_duration;
