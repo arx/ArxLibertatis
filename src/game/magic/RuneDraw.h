@@ -38,7 +38,7 @@ struct SYMBOL_DRAW {
 void ARX_SPELLS_Init_Rects();
 
 void ARX_SPELLS_UpdateSymbolDraw();
-void ARX_SPELLS_UpdateBookSymbolDraw(Rect bookRect);
+void ARX_SPELLS_UpdateBookSymbolDraw(const Rect & bookRect);
 void ARX_SPELLS_ClearAllSymbolDraw();
 
 void ARX_SPELLS_RequestSymbolDraw(Entity *io, const std::string & name, float duration);
