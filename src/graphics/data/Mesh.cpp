@@ -164,15 +164,13 @@ long MakeTopObjString(Entity * io, std::string & dest) {
 	
 	dest = "";
 	
-	if(player.pos.x > box.min.x
-			&& player.pos.x < box.max.x
-			&& player.pos.z > box.min.z
-			&& player.pos.z < box.max.z)
-	{
-		if(glm::abs(player.pos.y + 160.f - box.min.y) < 50.f)
+	if(player.pos.x > box.min.x && player.pos.x < box.max.x
+	   && player.pos.z > box.min.z && player.pos.z < box.max.z) {
+		if(glm::abs(player.pos.y + 160.f - box.min.y) < 50.f) {
 			dest += " player";
+		}
 	}
-
+	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
@@ -180,11 +178,7 @@ long MakeTopObjString(Entity * io, std::string & dest) {
 		if(e && e != io) {
 			if(e->show == SHOW_FLAG_IN_SCENE) {
 				if((e->ioflags & IO_NPC) || (e->ioflags & IO_ITEM)) {
-					if(e->pos.x > box.min.x
-							&& e->pos.x < box.max.x
-							&& e->pos.z > box.min.z
-							&& e->pos.z < box.max.z)
-					{
+					if(e->pos.x > box.min.x && e->pos.x < box.max.x && e->pos.z > box.min.z && e->pos.z < box.max.z) {
 						if(glm::abs(e->pos.y - box.min.y) < 40.f) {
 							dest += ' ' + e->idString();
 						}
@@ -529,24 +523,23 @@ float PtIn2DPolyProj(const std::vector<Vec4f> & verts, EERIE_FACE * ef, float x,
 static int PointIn2DPolyXZ(const Vec3f (&verts)[4], bool isQuad, float x, float z) {
 	
 	int i, j, c = 0, d = 0;
-
-	for (i = 0, j = 2; i < 3; j = i++)
-	{
-		if ((((verts[i].z <= z) && (z < verts[j].z)) ||
-				((verts[j].z <= z) && (z < verts[i].z))) &&
-				(x < (verts[j].x - verts[i].x) *(z - verts[i].z) / (verts[j].z - verts[i].z) + verts[i].x))
+	
+	for(i = 0, j = 2; i < 3; j = i++) {
+		if(((verts[i].z <= z && z < verts[j].z) || (verts[j].z <= z && z < verts[i].z))
+		   && x < (verts[j].x - verts[i].x) * (z - verts[i].z) / (verts[j].z - verts[i].z) + verts[i].x) {
 			c = !c;
-	}
-
-	if(isQuad)
-		for (i = 1, j = 3; i < 4; j = i++)
-		{
-			if ((((verts[i].z <= z) && (z < verts[j].z)) ||
-					((verts[j].z <= z) && (z < verts[i].z))) &&
-					(x < (verts[j].x - verts[i].x) *(z - verts[i].z) / (verts[j].z - verts[i].z) + verts[i].x))
-				d = !d;
 		}
-
+	}
+	
+	if(isQuad) {
+		for(i = 1, j = 3; i < 4; j = i++) {
+			if(((verts[i].z <= z && z < verts[j].z) || (verts[j].z <= z && z < verts[i].z))
+			   && x < (verts[j].x - verts[i].x) * (z - verts[i].z) / (verts[j].z - verts[i].z) + verts[i].x) {
+				d = !d;
+			}
+		}
+	}
+	
 	return c + d;
 }
 
@@ -837,7 +830,6 @@ static void EERIE_PORTAL_Release() {
 		portals->rooms[nn].pVertexBuffer = NULL;
 		free(portals->rooms[nn].indexBuffer);
 		portals->rooms[nn].indexBuffer = NULL;
-				
 		portals->rooms[nn].ppTextureContainer.clear();
 	}
 		
@@ -1242,7 +1234,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		room.nb_polys = erd->nb_polys;
 		
 		LogDebug(" - room " << i << ": " << room.nb_portals << " portals, "
-				 << room.nb_polys << " polygons");
+		         << room.nb_polys << " polygons");
 		
 		if(room.nb_portals) {
 			room.portals = (long *)malloc(sizeof(long) * room.nb_portals);
@@ -1565,7 +1557,7 @@ void ComputePortalVertexBuffer() {
 			m.offset[BatchBucket_Multiplicative] = (startIndexCull += info.blended);
 			m.offset[BatchBucket_Additive]       = (startIndexCull += info.multiplicative);
 			m.offset[BatchBucket_Subtractive]    = (startIndexCull += info.additive);
-												   (startIndexCull += info.subtractive);
+			                                       (startIndexCull += info.subtractive);
 			
 			m.count[BatchBucket_Opaque] = 0;
 			m.count[BatchBucket_Blended] = 0;
