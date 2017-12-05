@@ -81,29 +81,18 @@ void Trail::Render()
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	for(size_t i = 0; i + 1 < m_positions.size() && i + 1 < m_segments.size(); i++) {
-		Draw3DLineTexNew(mat,
-						 m_positions[i],
-						 m_positions[i + 1],
-						 m_segments[i].m_color,
-						 m_segments[i + 1].m_color,
-						 m_segments[i].m_size,
-						 m_segments[i + 1].m_size);
+		Draw3DLineTexNew(mat, m_positions[i], m_positions[i + 1],
+		                 m_segments[i].m_color, m_segments[i + 1].m_color,
+		                 m_segments[i].m_size, m_segments[i + 1].m_size);
 	}
 }
 
 
 ArrowTrail::ArrowTrail()
-	: Trail(Random::get(130, 260),
-			Color4f::gray(Random::getf(0.1f, 0.2f)),
-			Color4f::black,
-			Random::getf(2.f, 4.f),
-			0.f)
+	: Trail(Random::get(130, 260), Color4f::gray(Random::getf(0.1f, 0.2f)), Color4f::black,
+	        Random::getf(2.f, 4.f), 0.f)
 {}
 
 DebugTrail::DebugTrail()
-	: Trail(500,
-			Color4f::red,
-			Color4f::green,
-			1.f,
-			4.f)
+	: Trail(500, Color4f::red, Color4f::green, 1.f, 4.f)
 {}
