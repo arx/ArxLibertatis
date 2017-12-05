@@ -115,7 +115,7 @@ static long ARX_THROWN_OBJECT_GetFree() {
 extern EERIE_3DOBJ * arrowobj;
 
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect,
-							 const glm::quat & quat, float velocity, float damages, float poison) {
+                             const glm::quat & quat, float velocity, float damages, float poison) {
 	
 	arx_assert(arrowobj);
 	
@@ -501,11 +501,9 @@ void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta)
 
 						if(CheckEverythingInSphere(sphere, projectile.source, EntityHandle(), sphereContent)) {
 							for(size_t jj = 0; jj < sphereContent.size(); jj++) {
-
-								if(ValidIONum(sphereContent[jj])
-										&& sphereContent[jj] != projectile.source)
-								{
-
+								
+								if(ValidIONum(sphereContent[jj]) && sphereContent[jj] != projectile.source) {
+									
 									Entity * target = entities[sphereContent[jj]];
 
 									if(target->ioflags & IO_NPC) {
