@@ -130,7 +130,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-extern long HERO_SHOW_1ST;
 extern bool REQUEST_SPEECH_SKIP;
 extern bool DONT_ERASE_PLAYER;
 extern bool GLOBAL_MAGIC_MODE;
@@ -144,7 +143,6 @@ static const float TARGET_DT = 1000.f / 30.f;
 
 extern Vec3f PUSH_PLAYER_FORCE;
 extern long COLLIDED_CLIMB_POLY;
-extern long HERO_SHOW_1ST;
 
 static const float ARX_PLAYER_SKILL_STEALTH_MAX = 100.f;
 

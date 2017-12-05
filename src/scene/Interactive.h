@@ -188,4 +188,6 @@ void ResetVVPos(Entity * io);
 
 void UpdateGoldObject(Entity * io);
 
+extern long HERO_SHOW_1ST;
+
 #endif // ARX_SCENE_INTERACTIVE_H
