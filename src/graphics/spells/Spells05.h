@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class CPoisonProjectile : public CSpellFx {
 	
 public:
+	
 	CPoisonProjectile();
 	
 	void Create(Vec3f _eSrc, float _fBeta = 0);
@@ -65,9 +66,11 @@ public:
 	float lightIntensityFactor;
 	
 	LightHandle lLightId;
+	
 private:
-	float	fBetaRadCos;
-	float	fBetaRadSin;
+	
+	float fBetaRadCos;
+	float fBetaRadSin;
 	
 	bool  bOk;
 	float fTrail;
@@ -76,6 +79,7 @@ private:
 	Vec3f pathways[40];
 	ParticleSystem pPS;
 	ParticleSystem pPSStream;
+	
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS05_H
