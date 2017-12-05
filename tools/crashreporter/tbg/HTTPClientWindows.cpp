@@ -85,7 +85,7 @@ HINTERNET WinHTTPSession::setup(const Request & request, LPCWSTR method) {
 	
 	URL_COMPONENTS url;
 	ZeroMemory(&url, sizeof(url));
-  url.dwStructSize = sizeof(url);
+	url.dwStructSize = sizeof(url);
 	url.dwSchemeLength = url.dwHostNameLength = url.dwUrlPathLength = DWORD(-1);
 	if(WinHttpCrackUrl(wurl, 0, 0, &url) != TRUE) {
 		throw new Response("Invalid URL: \"" + request.url() + "\"");
