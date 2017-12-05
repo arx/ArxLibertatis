@@ -140,8 +140,6 @@ extern float SLID_VALUE;
 
 float lSLID_VALUE = 0;
 
-extern bool BLOCK_PLAYER_CONTROLS;
-
 extern bool WILLRETURNTOFREELOOK;
 
 extern bool SHOW_INGAME_MINIMAP;
