@@ -421,8 +421,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		   || action.name == "head2chest"
 		   || action.name == "chest2leggings"
 		) {
-			ObjectAddAction(work, action.name, action.act,
-							action.sfx, &obj1vertexlist2[action.idx.handleData()]);
+			ObjectAddAction(work, action.name, action.act, action.sfx, &obj1vertexlist2[action.idx.handleData()]);
 		}
 	}
 
@@ -434,8 +433,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		   || action.name == "head2chest"
 		   || action.name == "chest2leggings"
 		) {
-			ObjectAddAction(work, action.name, action.act,
-							action.sfx, &obj2vertexlist2[action.idx.handleData()]);
+			ObjectAddAction(work, action.name, action.act, action.sfx, &obj2vertexlist2[action.idx.handleData()]);
 		}
 	}
 
