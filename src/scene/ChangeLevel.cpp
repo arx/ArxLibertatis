@@ -103,6 +103,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/SaveFormat.h"
 #include "scene/Light.h"
 
+#include "script/Script.h"
 #include "script/ScriptEvent.h"
 
 #include "util/String.h"
@@ -114,7 +115,6 @@ extern bool GMOD_RESET;
 
 extern bool EXTERNALVIEW;
 extern bool LOAD_N_ERASE;
-extern long FORBID_SCRIPT_IO_CREATION;
 
 static bool ARX_CHANGELEVEL_Push_Index(long num);
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
