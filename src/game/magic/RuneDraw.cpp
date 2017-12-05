@@ -28,8 +28,6 @@
 #include "graphics/particle/MagicFlare.h"
 #include "math/Types.h"
 
-extern EERIE_CAMERA subj;
-
 static const Vec2s symbolVecScale(8*2, 6*2);
 
 SYMBOL_DRAW g_bookSymbolDraw;
