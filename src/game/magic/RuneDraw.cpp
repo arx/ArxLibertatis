@@ -105,7 +105,7 @@ static void updateIOLight(Entity * io) {
 	}
 }
 
-void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
+void ARX_SPELLS_UpdateBookSymbolDraw(const Rect & rect) {
 
 	if(g_bookSymbolDraw.sequence.empty()) {
 		return;
