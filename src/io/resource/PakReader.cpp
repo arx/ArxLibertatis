@@ -40,7 +40,7 @@ namespace {
 
 const size_t PAK_READ_BUF_SIZE = 1024;
 
-static PakReader::ReleaseType guessReleaseType(u32 first_bytes) {
+PakReader::ReleaseType guessReleaseType(u32 first_bytes) {
 	switch(first_bytes) {
 		case 0x46515641:
 			return PakReader::FullGame;
@@ -51,7 +51,7 @@ static PakReader::ReleaseType guessReleaseType(u32 first_bytes) {
 	}
 }
 
-static void pakDecrypt(char * fat, size_t fat_size, PakReader::ReleaseType keyId) {
+void pakDecrypt(char * fat, size_t fat_size, PakReader::ReleaseType keyId) {
 	
 	static const char PAK_KEY_DEMO[] = "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5Q"
 		"GA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI";
