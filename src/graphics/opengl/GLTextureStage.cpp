@@ -231,7 +231,7 @@ void GLTextureStage::apply() {
 			GLTextureStage * stage = renderer->GetTextureStage(i);
 			if(stage->tex == tex && stage->isEnabled()) {
 				apply = false;
-#ifdef ARX_DEBUG
+				#ifdef ARX_DEBUG
 				if(stage->wrapMode != wrapMode || stage->minFilter != minFilter || stage->magFilter != magFilter) {
 					static bool warned = false;
 					if(!warned) {
@@ -239,9 +239,9 @@ void GLTextureStage::apply() {
 						warned = true;
 					}
 				}
-#else
+				#else
 				break;
-#endif
+				#endif
 			}
 		}
 		
