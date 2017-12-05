@@ -50,6 +50,7 @@ public:
 class CRiseDead : public FissureFx {
 	
 public:
+	
 	CRiseDead();
 	~CRiseDead();
 	
@@ -62,32 +63,36 @@ public:
 	Vec3f m_eSrc;
 	
 private:
-	float	fBetaRadCos;
-	float	fBetaRadSin;
+	
+	float fBetaRadCos;
+	float fBetaRadSin;
 	
 	void Split(Vec3f * v, int a, int b, float yo);
 	void RenderFissure();
 	
 	TextureContainer * tex_light;
-	int		end;
-	int		iSize;
-	bool	bIntro;
-	float	sizeF;
-	float	fSizeIntro;
-	float	tfRaysa[40];
-	float	tfRaysb[40];
+	int end;
+	int iSize;
+	bool bIntro;
+	float sizeF;
+	float fSizeIntro;
+	float tfRaysa[40];
+	float tfRaysb[40];
 	Vec3f va[40];
 	Vec3f vb[40];
 	Vec3f v1a[40];
 	Vec3f v1b[40];
 	
 	FloatingStones m_stones;
+	
 };
 
 
 // Done By : Didier Pedreno
 class CSummonCreature : public FissureFx {
+	
 public:
+	
 	Vec3f m_eSrc;
 	
 	CSummonCreature();
@@ -98,26 +103,28 @@ public:
 	void Render();
 	
 private:
-	float	fBetaRadCos;
-	float	fBetaRadSin;
+	
+	float fBetaRadCos;
+	float fBetaRadSin;
 	
 	void Split(Vec3f * v, int a, int b, float yo);
 	void RenderFissure();
 	
 	TextureContainer * tex_light;
-	int		end;
-	int		iSize;
-	bool	bIntro;
-	float	fOneOniSize;
-
-	float	sizeF;
-	float	fSizeIntro;
+	int end;
+	int iSize;
+	bool bIntro;
+	float fOneOniSize;
+	
+	float sizeF;
+	float fSizeIntro;
 	float tfRaysa[40];
 	float tfRaysb[40];
 	Vec3f va[40];
 	Vec3f vb[40];
 	Vec3f v1a[40];
 	Vec3f v1b[40];
+	
 };
 
 #endif // ARX_GRAPHICS_EFFECTS_FISSURE_H
