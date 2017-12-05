@@ -71,7 +71,7 @@ private:
 	
 public:
 	
-	/* implicit */ DurationType(Zero = 0) : t(0) { }
+	/* implicit */ DurationType(Zero /* zero */ = 0) : t(0) { }
 	
 };
 
@@ -114,7 +114,7 @@ private:
 	
 public:
 	
-	/* implicit */ InstantType(Zero = 0) : t(0) { }
+	/* implicit */ InstantType(Zero /* zero */ = 0) : t(0) { }
 	
 };
 
