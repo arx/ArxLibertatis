@@ -606,9 +606,9 @@ PakFileHandle * PakReader::open(const res::path & name) {
 bool PakReader::addFiles(const fs::path & path, const res::path & mount) {
 	
 	if(fs::is_directory(path)) {
-			
+		
 		bool ret = addFiles(addDirectory(mount), path);
-	
+		
 		if(ret) {
 			release |= External;
 			LogInfo << "Added dir " << path;
