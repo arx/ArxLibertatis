@@ -82,7 +82,7 @@ std::time_t last_write_time(const path & p) {
 	
 	std::time_t writeTime = 0;
 	BOOL res = GetFileTime(hFile, &creationTime, &accessTime, &modificationTime);
-	if(res)	{
+	if(res) {
 		// Convert FILETIME to time_t: http://support.microsoft.com/default.aspx?scid=KB;en-us;q167296
 		LONGLONG value = modificationTime.dwHighDateTime;
 		value <<= 32;
