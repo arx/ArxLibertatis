@@ -1018,14 +1018,14 @@ bool FastSceneLoad(const res::path & partial_path) {
 		LoadLevelScreen();
 		
 		
-	} catch(file_truncated_exception) {
+	} catch(const file_truncated_exception &) {
 		LogError << "FTS: truncated file " << file;
 		return false;
 	}
 	
 	try {
 		return loadFastScene(file, data, end);
-	} catch(file_truncated_exception) {
+	} catch(const file_truncated_exception &) {
 		LogError << "FTS: truncated compressed data in " << file;
 		return false;
 	}
