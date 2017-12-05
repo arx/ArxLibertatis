@@ -576,27 +576,27 @@ void StatsPage::manageStats()
 	}
 
 	if(!((player.Skill_Redistribute == 0) && (ARXmenu.mode() != Mode_CharacterCreation))) {
-		if (CheckSkillClick(Vec2f(389, 177), &player.m_skill.stealth, g_bookResouces.ic_stealth, &player.m_skillOld.stealth)) {
+		if (CheckSkillClick(Vec2f(389, 177), &player.m_skill.stealth, g_bookResouces.ic_stealth, player.m_skillOld.stealth)) {
 			FLYING_OVER = BOOK_STEALTH;
 			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
-		if(CheckSkillClick(Vec2f(453, 177), &player.m_skill.mecanism, g_bookResouces.ic_mecanism, &player.m_skillOld.mecanism)) {
+		if(CheckSkillClick(Vec2f(453, 177), &player.m_skill.mecanism, g_bookResouces.ic_mecanism, player.m_skillOld.mecanism)) {
 			FLYING_OVER = BOOK_MECANISM;
 			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
-		if(CheckSkillClick(Vec2f(516, 177), &player.m_skill.intuition, g_bookResouces.ic_intuition, &player.m_skillOld.intuition)) {
+		if(CheckSkillClick(Vec2f(516, 177), &player.m_skill.intuition, g_bookResouces.ic_intuition, player.m_skillOld.intuition)) {
 			FLYING_OVER = BOOK_INTUITION;
 			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
-		if(CheckSkillClick(Vec2f(389, 230), &player.m_skill.etheralLink, g_bookResouces.ic_etheral_link, &player.m_skillOld.etheralLink)) {
+		if(CheckSkillClick(Vec2f(389, 230), &player.m_skill.etheralLink, g_bookResouces.ic_etheral_link, player.m_skillOld.etheralLink)) {
 			FLYING_OVER = BOOK_ETHERAL_LINK;
 			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
-		if(CheckSkillClick(Vec2f(453, 230), &player.m_skill.objectKnowledge, g_bookResouces.ic_object_knowledge, &player.m_skillOld.objectKnowledge)) {
+		if(CheckSkillClick(Vec2f(453, 230), &player.m_skill.objectKnowledge, g_bookResouces.ic_object_knowledge, player.m_skillOld.objectKnowledge)) {
 			FLYING_OVER = BOOK_OBJECT_KNOWLEDGE;
 			cursorSetRedistribute(player.Skill_Redistribute);
 
@@ -608,22 +608,22 @@ void StatsPage::manageStats()
 			ARX_PLAYER_ComputePlayerFullStats();
 		}
 
-		if(CheckSkillClick(Vec2f(516, 230), &player.m_skill.casting, g_bookResouces.ic_casting, &player.m_skillOld.casting)) {
+		if(CheckSkillClick(Vec2f(516, 230), &player.m_skill.casting, g_bookResouces.ic_casting, player.m_skillOld.casting)) {
 			FLYING_OVER = BOOK_CASTING;
 			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
-		if(CheckSkillClick(Vec2f(389, 284), &player.m_skill.closeCombat, g_bookResouces.ic_close_combat, &player.m_skillOld.closeCombat)) {
+		if(CheckSkillClick(Vec2f(389, 284), &player.m_skill.closeCombat, g_bookResouces.ic_close_combat, player.m_skillOld.closeCombat)) {
 			FLYING_OVER = BOOK_CLOSE_COMBAT;
 			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
-		if(CheckSkillClick(Vec2f(453, 284), &player.m_skill.projectile, g_bookResouces.ic_projectile, &player.m_skillOld.projectile)) {
+		if(CheckSkillClick(Vec2f(453, 284), &player.m_skill.projectile, g_bookResouces.ic_projectile, player.m_skillOld.projectile)) {
 			FLYING_OVER = BOOK_PROJECTILE;
 			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
-		if(CheckSkillClick(Vec2f(516, 284), &player.m_skill.defense, g_bookResouces.ic_defense, &player.m_skillOld.defense)) {
+		if(CheckSkillClick(Vec2f(516, 284), &player.m_skill.defense, g_bookResouces.ic_defense, player.m_skillOld.defense)) {
 			FLYING_OVER = BOOK_DEFENSE;
 			cursorSetRedistribute(player.Skill_Redistribute);
 		}
@@ -1253,13 +1253,12 @@ bool StatsPage::CheckAttributeClick(Vec2f pos, float * val, TextureContainer * t
 	return rval;
 }
 
-bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc,
-                            float * oldval) {
+bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, float oldval) {
 	
 	bool rval=false;
 
 	float t = *val;
-	float ot = *oldval;
+	float ot = oldval;
 
 	if(MouseInBookRect(pos, Vec2f(32, 32))) {
 		rval=true;
