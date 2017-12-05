@@ -41,7 +41,7 @@ template <bool overflow>
 struct safe_shifter {
 	
 	template <class T>
-	static T right_shift(T, unsigned int) {
+	static T right_shift(T /* value */, unsigned int /* bits */) {
 		return 0;
 	}
 	
