@@ -256,8 +256,8 @@ public:
 		
 		virtual ~Listener() { }
 		
-		virtual void onRendererInit(Renderer &) { }
-		virtual void onRendererShutdown(Renderer &) { }
+		virtual void onRendererInit(Renderer & renderer) { ARX_UNUSED(renderer); }
+		virtual void onRendererShutdown(Renderer & renderer) { ARX_UNUSED(renderer); }
 		
 	};
 	
