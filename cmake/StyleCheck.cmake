@@ -59,7 +59,6 @@ if(NOT SET_NOISY_WARNING_FLAGS)
 	# Very noisy but should be fixed.
 	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/operators)
 	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/comments)
-	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/align_tab)
 	
 	# Unsafe functions.
 	set(STYLE_FILTER ${STYLE_FILTER},-runtime/printf)
