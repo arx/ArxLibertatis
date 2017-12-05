@@ -983,7 +983,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	if (ARXmenu.mode() == Mode_CharacterCreation) {
 		
 		rec = Rect(s32((120.f + BOOKDEC.x) * g_sizeRatio.x), s32((69.f + BOOKDEC.y) * g_sizeRatio.y),
-				   s32((330.f + BOOKDEC.x) * g_sizeRatio.x), s32((300.f + BOOKDEC.y) * g_sizeRatio.y));
+		           s32((330.f + BOOKDEC.x) * g_sizeRatio.x), s32((300.f + BOOKDEC.y) * g_sizeRatio.y));
 		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 		
 		Rect vp = Rect(Vec2i(s32(139.f * g_sizeRatio.x), 0), s32(139.f * g_sizeRatio.x), s32(310.f * g_sizeRatio.y));
@@ -992,10 +992,10 @@ void StatsPage::RenderBookPlayerCharacter() {
 	} else {
 		
 		rec = Rect(s32((118.f + BOOKDEC.x) * g_sizeRatio.x), s32((69.f + BOOKDEC.y) * g_sizeRatio.y),
-				  s32((350.f + BOOKDEC.x) * g_sizeRatio.x), s32((338.f + BOOKDEC.y) * g_sizeRatio.y));
+		           s32((350.f + BOOKDEC.x) * g_sizeRatio.x), s32((338.f + BOOKDEC.y) * g_sizeRatio.y));
 		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
-		
 		rec.right -= 50;
+		
 	}
 	
 	Vec3f pos;
@@ -1306,16 +1306,17 @@ SpellsPage::SpellsPage()
 }
 
 void SpellsPage::manage() {
+	
 	DrawBookInterfaceItem(g_bookResouces.ptexspellbook, Vec2f(97, 64), Color::white, 0.9999f);
 	drawLeftTabs();
-
+	
 	Rect runeDrawRect = Rect(Vec2i((Vec2f(97, 64) + Vec2f(29, 210)) * g_sizeRatio),
-							 s32(513 * 0.43f * g_sizeRatio.x),
-							 s32(313 * 0.25f * g_sizeRatio.y));
-
+	                         s32(513 * 0.43f * g_sizeRatio.x), s32(313 * 0.25f * g_sizeRatio.y));
+	
 	ARX_SPELLS_UpdateBookSymbolDraw(runeDrawRect);
 	gui::ARX_INTERFACE_ManageOpenedBook_Finish(Vec2f(DANAEMouse));
 	drawSpells();
+	
 }
 
 void SpellsPage::drawLeftTabs() {
