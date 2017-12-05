@@ -78,34 +78,26 @@ inline glm::mat4 eulerAngleX
 		float(0), float(0), float(0), float(1));
 }
 
-inline glm::mat4 eulerAngleY
-(
-	float const & angleY
-)
-{
+inline glm::mat4 eulerAngleY(float const & angleY) {
+	
 	float cosY = glm::cos(angleY);
 	float sinY = glm::sin(angleY);
-
-	return glm::mat4(
-		cosY,	float(0),	-sinY,	float(0),
-		float(0),	float(1),	float(0),	float(0),
-		sinY,	float(0),	cosY,	float(0),
-		float(0),	float(0),	float(0),	float(1));
+	
+	return glm::mat4(cosY, float(0), -sinY, float(0),
+	                 float(0), float(1), float(0), float(0),
+	                 sinY, float(0), cosY, float(0),
+	                 float(0), float(0), float(0), float(1));
 }
 
-inline glm::mat4 eulerAngleZ
-(
-	float const & angleZ
-)
-{
+inline glm::mat4 eulerAngleZ(float const & angleZ) {
+	
 	float cosZ = glm::cos(angleZ);
 	float sinZ = glm::sin(angleZ);
-
-	return glm::mat4(
-		cosZ,	sinZ,	float(0), float(0),
-		-sinZ,	cosZ,	float(0), float(0),
-		float(0),	float(0),	float(1), float(0),
-		float(0),	float(0),	float(0), float(1));
+	
+	return glm::mat4(cosZ, sinZ, float(0), float(0),
+	                 -sinZ, cosZ, float(0), float(0),
+	                 float(0), float(0), float(1), float(0),
+	                 float(0), float(0), float(0), float(1));
 }
 
 template <typename genType>
