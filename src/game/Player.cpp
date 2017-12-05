@@ -1815,9 +1815,9 @@ static bool Valid_Jump_Pos() {
 	}
 	
 	long hum = 0;
-	for(float vv = 0; vv < 360.f; vv += 20.f) {
+	for(size_t vv = 0; vv < 360; vv += 20) {
 		tmpp.origin = player.basePosition();
-		tmpp.origin += angleToVectorXZ(vv) * 20.f;
+		tmpp.origin += angleToVectorXZ(float(vv)) * 20.f;
 		
 		tmpp.radius = player.physics.cyl.radius;
 		float anything = CheckAnythingInCylinder(tmpp, entities.player(), CFLAG_JUST_TEST);
