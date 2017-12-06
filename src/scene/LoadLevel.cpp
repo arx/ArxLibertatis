@@ -371,7 +371,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		if(n > -1) {
 			
 			FOG_DEF * fd = &fogs[n];
-			fd->exist = 1;
+			fd->exist = true;
 			fd->rgb = dlf->rgb;
 			fd->angle = dlf->angle;
 			fd->pos = dlf->pos.toVec3() + trans;
