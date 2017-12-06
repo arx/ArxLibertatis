@@ -895,13 +895,15 @@ private:
 	}
 	
 	void onChangedFullscreen(int state) {
-		newFullscreen = ((state)?true:false);
+		
+		newFullscreen = state != 0;
 		
 		if(pMenuSliderResol) {
 			pMenuSliderResol->setEnabled(newFullscreen);
 			setGammaState(m_gammaSlider, newFullscreen);
 			setMinimizeOnFocusLostState(m_minimizeOnFocusLostCheckbox, newFullscreen);
 		}
+		
 	}
 	
 	void onChangedResolution(int pos, const std::string & str) {
@@ -925,7 +927,7 @@ private:
 	}
 	
 	void onChangedMinimizeOnFocusLost(int state) {
-		config.window.minimizeOnFocusLost = state ? true : false;
+		config.window.minimizeOnFocusLost = state != 0;
 		mainApp->getWindow()->setMinimizeOnFocusLost(config.window.minimizeOnFocusLost);
 	}
 	
@@ -1222,12 +1224,12 @@ private:
 	}
 	
 	void onChangedAntialiasing(int state) {
-		config.video.antialiasing = state ? true : false;
+		config.video.antialiasing = state != 0;
 		setAlphaCutoutAntialisingState();
 	}
 	
 	void onChangedColorkeyAntialiasing(int state) {
-		config.video.colorkeyAntialiasing = state ? true : false;
+		config.video.colorkeyAntialiasing = state != 0;
 		GRenderer->reloadColorKeyTextures();
 	}
 	
@@ -1385,11 +1387,11 @@ public:
 private:
 	
 	void onChangedCrosshair(int state) {
-		config.interface.showCrosshair = state ? true : false;
+		config.interface.showCrosshair = state != 0;
 	}
 	
 	void onChangedSpeechWidth(int state) {
-		config.interface.limitSpeechWidth = state ? true : false;
+		config.interface.limitSpeechWidth = state != 0;
 	}
 	
 	void onChangedCinematicMode(int pos, const std::string & str) {
@@ -1404,12 +1406,12 @@ private:
 	}
 	
 	void onChangedHudScaleInteger(int state) {
-		config.interface.hudScaleInteger = state ? true : false;
+		config.interface.hudScaleInteger = state != 0;
 		g_hudRoot.recalcScale();
 	}
 
 	void onChangedScaleCursorWithHud(int state) {
-		config.interface.scaleCursorWithHud = state ? true : false;
+		config.interface.scaleCursorWithHud = state != 0;
 	}
 	
 	void onChangedHudScaleFilter(int pos, const std::string & str) {
@@ -1814,7 +1816,7 @@ public:
 private:
 	
 	void onChangedInvertMouse(int state) {
-		config.input.invertMouse = (state) ? true : false;
+		config.input.invertMouse = state != 0;
 		GInput->setInvertMouseY(config.input.invertMouse);
 	}
 	
@@ -1824,7 +1826,7 @@ private:
 	}
 	
 	void onChangedToggleMouselook(int state) {
-		config.input.mouseLookToggle = (state) ? true : false;
+		config.input.mouseLookToggle = state != 0;
 	}
 	
 	void onChangedMouseSensitivity(int value) {
@@ -1838,12 +1840,12 @@ private:
 	}
 	
 	void onChangedRawMouseInput(int state) {
-		config.input.rawMouseInput = (state) ? true : false;
+		config.input.rawMouseInput = state != 0;
 		GInput->setRawMouseInput(config.input.rawMouseInput);
 	}
 	
 	void onChangedAutoDescription(int state) {
-		config.input.autoDescription = (state) ? true : false;
+		config.input.autoDescription = state != 0;
 	}
 	
 	void onChangedQuicksaveSlots(int value) {
@@ -1851,11 +1853,11 @@ private:
 	}
 	
 	void onChangedBorderTurning(int value) {
-		config.input.borderTurning = (value) ? true : false;
+		config.input.borderTurning = value != 0;
 	}
 	
 	void onChangedAltRuneRecognition(int value) {
-		config.input.useAltRuneRecognition = (value) ? true : false;
+		config.input.useAltRuneRecognition = value != 0;
 	}
 	
 	void onChangedQuickLevelTransition(int pos, const std::string & str) {
