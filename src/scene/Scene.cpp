@@ -317,11 +317,7 @@ static bool IsBBoxInFrustrum(const EERIE_3D_BBOX & bbox, const EERIE_FRUSTRUM & 
 	}
 	
 	point = Vec3f(bbox.min.x, bbox.max.y, bbox.max.z);
-	if(IsSphereInFrustrum(point, frustrum)) {
-		return true;
-	}
-	
-	return false;
+	return IsSphereInFrustrum(point, frustrum);
 }
 
 static bool FrustrumsClipBBox3D(const EERIE_FRUSTRUM_DATA & frustrums,
@@ -636,11 +632,7 @@ bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, fl
 	dists[2] = distanceToPoint(frustrum.plane[2], point);
 	dists[3] = distanceToPoint(frustrum.plane[3], point);
 	
-	if(dists[0] + radius > 0 && dists[1] + radius > 0 && dists[2] + radius > 0 && dists[3] + radius > 0) {
-		return true;
-	}
-	
-	return false;
+	return (dists[0] + radius > 0 && dists[1] + radius > 0 && dists[2] + radius > 0 && dists[3] + radius > 0);
 }
 
 static bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums,
