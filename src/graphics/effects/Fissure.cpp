@@ -410,9 +410,7 @@ void CRiseDead::Render()
 			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMsf(m_elapsed);
 			sizeF = 1;
 		} else {
-			if(bIntro != false)
-				bIntro = false;
-
+			bIntro = false;
 			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (toMsf(m_elapsed) - toMsf(m_durationIntro) * 0.666f);
 		}
 	}
@@ -721,9 +719,7 @@ void CSummonCreature::Render()
 			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMsf(m_elapsed);
 			sizeF = 1;
 		} else {
-			if(bIntro != false)
-				bIntro = false;
-
+			bIntro = false;
 			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (toMsf(m_elapsed) - toMsf(m_durationIntro) * 0.666f);
 		}
 	}
