@@ -404,7 +404,6 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		return;
 	}
 	
-	long need_kill = 0;
 	float mod = timeDeltaMs * projectile.velocity;
 	Vec3f original_pos = projectile.position;
 	projectile.position.x += projectile.vector.x * mod;
@@ -510,6 +509,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 				continue;
 			}
 			
+			bool need_kill = false;
 			for(size_t jj = 0; jj < sphereContent.size(); jj++) {
 				
 				if(!ValidIONum(sphereContent[jj]) && sphereContent[jj] != projectile.source) {
@@ -592,18 +592,18 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 				// Need to deal damages !
 				projectile.flags &= ~ATO_MOVING;
 				projectile.velocity = 0.f;
-				need_kill = 1;
-				k = 1000;
-				j = 200;
 				
+				need_kill = true;
+				
+			}
+			
+			if(need_kill) {
+				ARX_THROWN_OBJECT_Kill(i);
+				return;
 			}
 			
 		}
 		
-	}
-	
-	if(need_kill) {
-		ARX_THROWN_OBJECT_Kill(i);
 	}
 	
 }
