@@ -1322,7 +1322,7 @@ void SpellsPage::manage() {
 void SpellsPage::drawLeftTabs() {
 	
 	for(size_t i = 0; i < SPELL_TYPES_COUNT; ++i) {
-		if(spellicons[i].bSecret == false) {
+		if(!spellicons[i].bSecret) {
 			bool bOk = true;
 
 			for(long j = 0; j < 4 && spellicons[i].symbols[j] != RUNE_NONE; ++j) {
