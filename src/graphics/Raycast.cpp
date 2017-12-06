@@ -238,14 +238,11 @@ struct ClosestHitRaycast {
 		const Vec2f cellSide = Vec2f(ACTIVEBKG->m_tileSize.x, ACTIVEBKG->m_tileSize.y);
 		Vec3f hitPos = start + closestHit * dir;
 		Vec2i hitTile = Vec2i(glm::floor(Vec2f(hitPos.x, hitPos.z) / cellSide));
-		if(hitTile == tile) {
-			// Hit in this tile, abort the search
-			return true;
-		} else {
-			// Hit in next tile, need to check other polygons in that tile
-			// first, which may not all be in this tile.
-			return false;
-		}
+		
+		// Abort the search if hit in this tile
+		// Otherwise hit is in the next tile, need to check other polygons in that tile
+		// first, which may not all be in this tile.
+		return (hitTile == tile);
 	}
 	
 };
