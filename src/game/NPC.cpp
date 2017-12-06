@@ -1388,11 +1388,8 @@ static bool TryIOAnimMove(Entity * io, long animnum) {
 	phys.startpos = io->pos;
 	phys.targetpos = io->pos + trans2;
 	bool res = ARX_COLLISION_Move_Cylinder(&phys, io, 30, CFLAG_JUST_TEST | CFLAG_NPC);
-
-	if(res && glm::abs(phys.cyl.origin.y - io->pos.y) < 20.f)
-		return true;
-
-	return false;
+	
+	return (res && glm::abs(phys.cyl.origin.y - io->pos.y) < 20.f);
 }
 
 static void TryAndCheckAnim(Entity * io, long animnum, long layerIndex) {
