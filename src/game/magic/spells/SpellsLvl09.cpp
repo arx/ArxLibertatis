@@ -263,11 +263,7 @@ void SummonCreatureSpell::Update() {
 }
 
 bool FakeSummonSpell::CanLaunch() {
-	if(m_caster.handleData() <= EntityHandle_Player.handleData() || !ValidIONum(m_target)) {
-		return false;
-	}
-	
-	return true;
+	return (m_caster.handleData() > EntityHandle_Player.handleData() && ValidIONum(m_target));
 }
 
 void FakeSummonSpell::Launch() {
@@ -431,13 +427,8 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 }
 
 bool IncinerateSpell::CanLaunch() {
-	
 	Entity * tio = entities[m_target];
-	if((tio->ioflags & IO_NPC) && tio->_npcdata->lifePool.current <= 0.f) {
-		return false;
-	}
-	
-	return true;
+	return (!(tio->ioflags & IO_NPC) || tio->_npcdata->lifePool.current > 0.f);
 }
 
 void IncinerateSpell::Launch() {
