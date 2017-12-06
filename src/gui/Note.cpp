@@ -68,7 +68,7 @@ void Note::deallocate() {
 bool Note::allocate() {
 	
 	if(allocatedForRatio == g_sizeRatio) {
-		return background ? true : false;
+		return background != NULL;
 	}
 	
 	deallocate();
