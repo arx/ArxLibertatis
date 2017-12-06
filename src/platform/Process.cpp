@@ -74,7 +74,7 @@ extern char ** environ;
 
 #include "util/String.h"
 
-#if !ARX_HAVE_O_CLOEXEC
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_HAVE_OPEN && !ARX_HAVE_O_CLOEXEC
 #define O_CLOEXEC 0
 #endif
 
