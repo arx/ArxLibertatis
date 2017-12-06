@@ -228,8 +228,8 @@ void ShowInfoText() {
 	
 	DebugBox miscBox = DebugBox(Vec2i(10, playerBox.size().y + 5), "Misc");
 	miscBox.add(arx_name + " version", arx_version);
-	miscBox.add("Level", LastLoadedScene.string().c_str());
-	miscBox.add("Spell failed seq", LAST_FAILED_SEQUENCE.c_str());
+	miscBox.add("Level", LastLoadedScene.string());
+	miscBox.add("Spell failed seq", LAST_FAILED_SEQUENCE);
 	miscBox.add("Cinema", cinematicBorder.CINEMA_DECAL);
 	miscBox.add("Mouse", Vec2i(DANAEMouse));
 	miscBox.add("Pathfind queue", EERIE_PATHFINDER_Get_Queued_Number());
