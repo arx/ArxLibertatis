@@ -2868,9 +2868,11 @@ void ManageIgnition_2(Entity * io) {
 		} else {
 			ARX_SOUND_RefreshPosition(io->ignit_sound, position);
 		}
-
-		if(Random::getf() > 0.9f)
-			CheckForIgnition(Sphere(position, io->ignition), 1, 0);
+		
+		if(Random::getf() > 0.9f) {
+			CheckForIgnition(Sphere(position, io->ignition), true, 0);
+		}
+		
 	} else {
 		lightHandleDestroy(io->ignit_light);
 		
