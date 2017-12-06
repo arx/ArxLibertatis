@@ -566,10 +566,7 @@ void PrepareIOTreatZone(long flag) {
 						dists = arx::distance2(io->pos, cameraPos);
 				}
 				
-				if(dists < square(TREATZONE_LIMIT))
-					treat = true;
-				else
-					treat = false;
+				treat = (dists < square(TREATZONE_LIMIT));
 			}
 
 			if(!treat) {
