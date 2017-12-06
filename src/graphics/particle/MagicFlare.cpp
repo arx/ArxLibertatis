@@ -169,12 +169,9 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 	MagicFlare & flare = g_magicFlares[i];
 	flare.exist = 1;
 	g_magicFlaresCount++;
-
-	if(!bookDraw)
-		flare.bDrawBitmap = 0;
-	else
-		flare.bDrawBitmap = 1;
-
+	
+	flare.bDrawBitmap = bookDraw;
+	
 	flare.io = io;
 	if(io) {
 		flare.flags = 1;
