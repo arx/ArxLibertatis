@@ -131,7 +131,7 @@ Texture & PackedTexture::getTexture(unsigned int index) {
 PackedTexture::TextureTree::Node::Node() {
 	children[0] = NULL;
 	children[1] = NULL;
-	used = 0;
+	used = false;
 }
 
 PackedTexture::TextureTree::Node::~Node() {
