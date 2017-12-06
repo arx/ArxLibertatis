@@ -460,12 +460,11 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			
 			
 			if(ValidIONum(projectile.source)) {
-				char weapon_material[64] = "dagger";
 				std::string bkg_material = "earth";
 				if(ep && ep->tex && !ep->tex->m_texName.empty()) {
 					bkg_material = GetMaterialString(ep->tex->m_texName);
 				}
-				ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, entities[projectile.source]);
+				ARX_SOUND_PlayCollision("dagger", bkg_material, 1.f, 1.f, v0, entities[projectile.source]);
 			}
 			
 			projectile.position = original_pos;
@@ -486,9 +485,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			projectile.velocity = 0.f;
 			
 			if(ValidIONum(projectile.source)) {
-				char weapon_material[64] = "dagger";
-				char bkg_material[64] = "earth";
-				ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, entities[projectile.source]);
+				ARX_SOUND_PlayCollision("dagger", "earth", 1.f, 1.f, v0, entities[projectile.source]);
 			}
 			
 			projectile.position = original_pos;
