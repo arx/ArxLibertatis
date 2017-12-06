@@ -414,7 +414,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 	projectile.position.y += projectile.vector.y * mod + (timeDeltaMs * gmod);
 	projectile.position.z += projectile.vector.z * mod;
 	
-	CheckForIgnition(Sphere(original_pos, 10.f), 0, 2);
+	CheckForIgnition(Sphere(original_pos, 10.f), false, 2);
 	
 	Vec3f wpos = projectile.position;
 	wpos.y += 20.f;
