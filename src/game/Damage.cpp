@@ -1387,8 +1387,10 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 		}
 	}
 	
-	if (typ & DAMAGE_TYPE_FIRE)
-		CheckForIgnition(sphere, 1, 0);
+	if(typ & DAMAGE_TYPE_FIRE) {
+		CheckForIgnition(sphere, true, 0);
+	}
+	
 }
 
 void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
