@@ -536,33 +536,25 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 }
 
 static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, const EERIEPOLY & ep) {
-
+	
 	Vec3f pol[3];
 	pol[0] = ep.v[0].p;
 	pol[1] = ep.v[1].p;
 	pol[2] = ep.v[2].p;
-
+	
 	if(ep.type & POLY_QUAD) {
-
+			
 		if(IsObjectVertexCollidingTriangle(pbox, pol)) {
 			return true;
 		}
-
+		
 		pol[1] = ep.v[2].p;
 		pol[2] = ep.v[3].p;
-
-		if(IsObjectVertexCollidingTriangle(pbox, pol)) {
-			return true;
-		}
-
-		return false;
+		
+		return IsObjectVertexCollidingTriangle(pbox, pol);
 	}
-
-	if(IsObjectVertexCollidingTriangle(pbox, pol)) {
-		return true;
-	}
-
-	return false;
+	
+	return IsObjectVertexCollidingTriangle(pbox, pol);
 }
 
 static Material polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
