@@ -99,8 +99,8 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
 	for(long i = 1; i < ah->alt_nb; i++) {
 		tot += anim_power[std::min(i, 14L)];
 	}
-
-	while(1) {
+	
+	while(true) {
 		for(short i = 0; i < ah->alt_nb; i++) {
 			long r = Random::get(0l, tot);
 			if(r < anim_power[std::min((int)i, 14)] && i != old) {
@@ -108,6 +108,7 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
 			}
 		}
 	}
+	
 }
 
 void ANIM_Set(AnimLayer & layer, ANIM_HANDLE *anim)
