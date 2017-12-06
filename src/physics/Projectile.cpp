@@ -515,85 +515,85 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 					continue;
 				}
 				
-					Entity * target = entities[sphereContent[jj]];
+				Entity * target = entities[sphereContent[jj]];
+				
+				if(target->ioflags & IO_NPC) {
 					
-					if(target->ioflags & IO_NPC) {
+					Vec3f pos;
+					Color color = Color::none;
+					long hitpoint = -1;
+					float curdist = 999999.f;
+					
+					for(size_t ii = 0 ; ii < target->obj->facelist.size() ; ii++) {
 						
-						Vec3f pos;
-						Color color = Color::none;
-						long hitpoint = -1;
-						float curdist = 999999.f;
-						
-						for(size_t ii = 0 ; ii < target->obj->facelist.size() ; ii++) {
-							
-							if(target->obj->facelist[ii].facetype & POLY_HIDE) {
-								continue;
-							}
-							
-							unsigned short vid = target->obj->facelist[ii].vid[0];
-							float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[vid].v);
-							if(d < curdist) {
-								hitpoint = target->obj->facelist[ii].vid[0];
-								curdist = d;
-							}
-							
+						if(target->obj->facelist[ii].facetype & POLY_HIDE) {
+							continue;
 						}
 						
-						if(hitpoint >= 0) {
-							color = target->_npcdata->blood_color;
-							pos = target->obj->vertexWorldPositions[hitpoint].v;
+						unsigned short vid = target->obj->facelist[ii].vid[0];
+						float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[vid].v);
+						if(d < curdist) {
+							hitpoint = target->obj->facelist[ii].vid[0];
+							curdist = d;
 						}
-						
-						if(projectile.source == EntityHandle_Player) {
-							
-							float damages = ARX_THROWN_ComputeDamages(projectile, projectile.source, sphereContent[jj]);
-							if(damages > 0.f) {
-								
-								arx_assert(hitpoint >= 0);
-								
-								if(target->ioflags & IO_NPC) {
-									target->_npcdata->SPLAT_TOT_NB = 0;
-									ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, target);
-								}
-								
-								ARX_PARTICLES_Spawn_Blood2(pos, damages, color, target);
-								ARX_DAMAGES_DamageNPC(target, damages, projectile.source, false, &pos);
-								
-								if(Random::getf(0.f, 100.f) > target->_npcdata->resist_poison) {
-									target->_npcdata->poisonned += projectile.poisonous;
-								}
-								
-								CheckExp(projectile);
-								
-							} else {
-								ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
-								ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
-							}
-							
-						}
-						
-					} else { // not NPC
-						
-						if((target->ioflags & IO_FIX) && ValidIONum(projectile.source)) {
-							ARX_DAMAGES_DamageFIX(target, 0.1f, projectile.source, false);
-						}
-						
-						ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
-						
-						if(ValidIONum(projectile.source)) {
-							ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
-						}
-						
-						CheckExp(projectile);
 						
 					}
 					
-					// Need to deal damages !
-					projectile.flags &= ~ATO_MOVING;
-					projectile.velocity = 0.f;
-					need_kill = 1;
-					k = 1000;
-					j = 200;
+					if(hitpoint >= 0) {
+						color = target->_npcdata->blood_color;
+						pos = target->obj->vertexWorldPositions[hitpoint].v;
+					}
+					
+					if(projectile.source == EntityHandle_Player) {
+						
+						float damages = ARX_THROWN_ComputeDamages(projectile, projectile.source, sphereContent[jj]);
+						if(damages > 0.f) {
+							
+							arx_assert(hitpoint >= 0);
+							
+							if(target->ioflags & IO_NPC) {
+								target->_npcdata->SPLAT_TOT_NB = 0;
+								ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, target);
+							}
+							
+							ARX_PARTICLES_Spawn_Blood2(pos, damages, color, target);
+							ARX_DAMAGES_DamageNPC(target, damages, projectile.source, false, &pos);
+							
+							if(Random::getf(0.f, 100.f) > target->_npcdata->resist_poison) {
+								target->_npcdata->poisonned += projectile.poisonous;
+							}
+							
+							CheckExp(projectile);
+							
+						} else {
+							ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
+							ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
+						}
+						
+					}
+					
+				} else { // not NPC
+					
+					if((target->ioflags & IO_FIX) && ValidIONum(projectile.source)) {
+						ARX_DAMAGES_DamageFIX(target, 0.1f, projectile.source, false);
+					}
+					
+					ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
+					
+					if(ValidIONum(projectile.source)) {
+						ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
+					}
+					
+					CheckExp(projectile);
+					
+				}
+				
+				// Need to deal damages !
+				projectile.flags &= ~ATO_MOVING;
+				projectile.velocity = 0.f;
+				need_kill = 1;
+				k = 1000;
+				j = 200;
 				
 			}
 			
