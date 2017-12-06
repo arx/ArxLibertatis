@@ -434,11 +434,11 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 
 		bool voidd = true;
 		for(long j = 0; j < eerie->nb_key_frames; j++) {
-			long pos = i + (j * eerie->nb_groups);
+			long group = i + (j * eerie->nb_groups);
 
-			if(   eerie->groups[pos].quat != glm::quat()
-			   || eerie->groups[pos].translate != Vec3f_ZERO
-			   || eerie->groups[pos].zoom != Vec3f_ZERO) {
+			if(   eerie->groups[group].quat != glm::quat()
+			   || eerie->groups[group].translate != Vec3f_ZERO
+			   || eerie->groups[group].zoom != Vec3f_ZERO) {
 				voidd = false;
 				break;
 			}
