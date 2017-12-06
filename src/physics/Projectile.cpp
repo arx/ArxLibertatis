@@ -437,8 +437,9 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 	for(size_t j = 0; j < nbact; j++) {
 		
 		float rad = GetHitValue(projectile.obj->actionlist[j].name);
-		if(rad == -1.f)
+		if(rad == -1.f) {
 			continue;
+		}
 		rad *= .5f;
 		
 		const Vec3f v0 = actionPointPosition(projectile.obj, projectile.obj->actionlist[j].idx);
