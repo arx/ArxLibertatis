@@ -1377,11 +1377,7 @@ void PlayerInterfaceFader::requestFade(FadeDirection showhide, long smooth) {
 		ARX_INTERFACE_NoteClose();
 	}
 	
-	if(showhide == FadeDirection_In) {
-		PLAYER_INTERFACE_SHOW = true;
-	} else {
-		PLAYER_INTERFACE_SHOW = false;
-	}
+	PLAYER_INTERFACE_SHOW = (showhide == FadeDirection_In);
 	
 	if(smooth) {
 		if(showhide == FadeDirection_In) {
