@@ -302,12 +302,7 @@ static void ApplyCurPNux() {
 static void ApplyPasswall() {
 	MakeSpCol();
 	DisplayCheatText("!!! PassWall !!!");
-	
-	if(USE_PLAYERCOLLISIONS) {
-		USE_PLAYERCOLLISIONS = false;
-	} else {
-		USE_PLAYERCOLLISIONS = true;
-	}
+	USE_PLAYERCOLLISIONS = !USE_PLAYERCOLLISIONS;
 }
 
 static void ApplySPRf() {
