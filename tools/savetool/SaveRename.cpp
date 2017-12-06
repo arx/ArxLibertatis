@@ -75,7 +75,7 @@ public:
 	}
 	
 	void setName(const std::string & name) {
-		util::storeString(m_pld->name, name.c_str());
+		util::storeString(m_pld->name, name);
 	}
 	
 private:
