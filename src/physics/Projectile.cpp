@@ -354,28 +354,26 @@ void ARX_THROWN_OBJECT_Render() {
 	}
 }
 
-void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta)
-{
+static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta) {
+	
 	float timeDeltaMs = toMsf(timeDelta);
 	
-	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
 		Projectile & projectile = g_projectiles[i];
 		if(!(projectile.flags & ATO_EXIST))
-			continue;
+			return;
 
-		{
 		// Is Object Visible & Near ?
 
 		BackgroundTileData * bkgData = getFastBackgroundData(projectile.position.x, projectile.position.z);
 
 		if(!bkgData || !bkgData->treat) {
 			ARX_THROWN_OBJECT_Kill(i); //projectile got outside of the world
-			continue;
+			return;
 		}
 
 		// Now render object !
 		if(!projectile.obj)
-			continue;
+			return;
 
 		TransformInfo t(projectile.position, projectile.quat);
 		DrawEERIEInter_ModelTransform(projectile.obj, t);
@@ -585,6 +583,11 @@ void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta)
 			if(need_kill)
 				ARX_THROWN_OBJECT_Kill(i);
 		}
-		}
+	
+}
+
+void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta) {
+	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
+		ARX_THROWN_OBJECT_ManageProjectile(i, timeDelta);
 	}
 }
