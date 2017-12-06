@@ -2459,15 +2459,8 @@ void ARX_PLAYER_AddBag() {
 }
 
 bool ARX_PLAYER_CanStealItem(Entity * _io) {
-
-	if(_io->_itemdata->stealvalue > 0
-	   && player.m_skillFull.stealth >= _io->_itemdata->stealvalue
-	   && _io->_itemdata->stealvalue < 100.f
-	) {
-		return true;
-	}
-
-	return false;
+	return (_io->_itemdata->stealvalue > 0 && player.m_skillFull.stealth >= _io->_itemdata->stealvalue
+	        && _io->_itemdata->stealvalue < 100.f);
 }
 
 void ARX_PLAYER_Rune_Add_All() {
