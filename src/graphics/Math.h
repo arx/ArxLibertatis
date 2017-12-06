@@ -234,11 +234,7 @@ inline bool PointInCylinder(const Cylinder & cyl, const Vec3f & pt) {
 		return false;
 	}
 	
-	if(!fartherThan(Vec2f(cyl.origin.x, cyl.origin.z), Vec2f(pt.x, pt.z), cyl.radius)) {
-		return true;
-	}
-	
-	return false;
+	return !fartherThan(Vec2f(cyl.origin.x, cyl.origin.z), Vec2f(pt.x, pt.z), cyl.radius);
 }
 
 inline long PointInUnderCylinder(const Cylinder & cyl, const Vec3f & pt) {
