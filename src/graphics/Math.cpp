@@ -360,10 +360,7 @@ bool Triangles_Intersect(const EERIE_TRI & v, const EERIE_TRI & u)
 
 	if (bb1.min.z > bb2.max.z) return false;
 	
-	if (tri_tri_intersect(v, u))
-		return true;
-	
-	return false;
+	return tri_tri_intersect(v, u) != 0;
 }
 
 // Cylinder y origin must be min Y of cylinder
@@ -382,11 +379,7 @@ bool CylinderInCylinder(const Cylinder & cyl1, const Cylinder & cyl2) {
 	
 	m1 = cyl1.radius + cyl2.radius;
 	
-	if(!fartherThan(Vec2f(cyl1.origin.x, cyl1.origin.z), Vec2f(cyl2.origin.x, cyl2.origin.z), m1)) {
-		return true;
-	}
-	
-	return false;
+	return !fartherThan(Vec2f(cyl1.origin.x, cyl1.origin.z), Vec2f(cyl2.origin.x, cyl2.origin.z), m1);
 }
 
 // Sort of...
@@ -401,12 +394,8 @@ bool SphereInCylinder(const Cylinder & cyl1, const Sphere & s)
 	m2 = s.origin.y + s.radius;
 
 	if (m1 > m2) return false;
-
-	if(!fartherThan(Vec2f(cyl1.origin.x, cyl1.origin.z), Vec2f(s.origin.x, s.origin.z), cyl1.radius + s.radius)) {
-		return true;
-	}
 	
-	return false;
+	return !fartherThan(Vec2f(cyl1.origin.x, cyl1.origin.z), Vec2f(s.origin.x, s.origin.z), cyl1.radius + s.radius);
 }
 
 //--------------------------------------------------------------------------------------
