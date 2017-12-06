@@ -143,7 +143,7 @@ private:
 	NodeId getNearestNode(const Vec3f & pos) const;
 	
 	float m_radius;
-	float height;
+	float m_height;
 	float heuristic;
 	
 	size_t map_s; // Map size
