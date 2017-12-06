@@ -562,11 +562,7 @@ static bool StrikeAimtime() {
 	
 	player.m_strikeAimRatio = glm::clamp(player.m_aimTime / player.Full_AimTime, 0.1f, 1.0f);
 	
-	if(player.m_strikeAimRatio > 0.8f) {
-		return true;
-	}
-	
-	return false;
+	return (player.m_strikeAimRatio > 0.8f);
 }
 
 static void strikeSpeak(Entity * io) {
