@@ -511,8 +511,10 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			
 			for(size_t jj = 0; jj < sphereContent.size(); jj++) {
 				
-				if(ValidIONum(sphereContent[jj]) && sphereContent[jj] != projectile.source) {
-					
+				if(!ValidIONum(sphereContent[jj]) && sphereContent[jj] != projectile.source) {
+					continue;
+				}
+				
 					Entity * target = entities[sphereContent[jj]];
 					
 					if(target->ioflags & IO_NPC) {
@@ -592,8 +594,6 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 					need_kill = 1;
 					k = 1000;
 					j = 200;
-					
-				}
 				
 			}
 			
