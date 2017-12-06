@@ -278,7 +278,7 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const std::string 
 	
 	size_t pos = namestr.find_last_of('_');
 	
-	util::storeString(name, makeIdent(namestr.substr(0, pos), newIdent).c_str());
+	util::storeString(name, makeIdent(namestr.substr(0, pos), newIdent));
 	
 	return true;
 }
