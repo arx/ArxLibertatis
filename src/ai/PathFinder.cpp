@@ -179,7 +179,7 @@ public:
 
 PathFinder::PathFinder(size_t map_size, const ANCHOR_DATA * map_data,
                        size_t slight_count, const EERIE_LIGHT * const * slight_list)
-	: radius(RADIUS_DEFAULT), height(HEIGHT_DEFAULT), heuristic(HEURISTIC_DEFAULT),
+	: m_radius(RADIUS_DEFAULT), height(HEIGHT_DEFAULT), heuristic(HEURISTIC_DEFAULT),
 	  map_s(map_size), map_d(map_data), slight_c(slight_count), slight_l(slight_list) { }
 
 void PathFinder::setHeuristic(float _heuristic) {
@@ -193,7 +193,7 @@ void PathFinder::setHeuristic(float _heuristic) {
 }
 
 void PathFinder::setCylinder(float _radius, float _height) {
-	radius = _radius;
+	m_radius = _radius;
 	height = _height;
 }
 
@@ -229,7 +229,7 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 			NodeId cid = map_d[nid].linked[i];
 			
 			if((map_d[cid].flags & ANCHOR_FLAG_BLOCKED) || map_d[cid].height > height
-			   || map_d[cid].radius < radius) {
+			   || map_d[cid].radius < m_radius) {
 				continue;
 			}
 			
@@ -296,7 +296,7 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 			long cid = map_d[nid].linked[i];
 			
 			if((map_d[cid].flags & ANCHOR_FLAG_BLOCKED) || map_d[cid].height > height
-			   || map_d[cid].radius < radius) {
+			   || map_d[cid].radius < m_radius) {
 				continue;
 			}
 			
@@ -356,7 +356,7 @@ bool PathFinder::wanderAround(NodeId from, float rad, Result & rlist, bool steal
 				
 				NodeId nid = map_d[next].linked[r];
 				if((!(map_d[nid].flags & ANCHOR_FLAG_BLOCKED)) && (map_d[nid].nblinked)
-				   && (map_d[nid].height <= height) && (map_d[nid].radius >= radius)) {
+				   && (map_d[nid].height <= height) && (map_d[nid].radius >= m_radius)) {
 					next = nid;
 					break;
 				}

@@ -142,7 +142,7 @@ private:
 	float getIlluminationCost(const Vec3f & pos) const;
 	NodeId getNearestNode(const Vec3f & pos) const;
 	
-	float radius;
+	float m_radius;
 	float height;
 	float heuristic;
 	
