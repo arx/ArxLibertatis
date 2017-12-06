@@ -373,11 +373,7 @@ bool PathFinder::wanderAround(NodeId from, float rad, Result & rlist, bool steal
 	}
 	
 	// Close wander around path (return to start position).
-	if(rlist.size() == s || !move(last, from, rlist, stealth)) {
-		return false;
-	}
-	
-	return true;
+	return (rlist.size() != s && move(last, from, rlist, stealth));
 }
 
 PathFinder::NodeId PathFinder::getNearestNode(const Vec3f & pos) const {
@@ -427,11 +423,7 @@ bool PathFinder::lookFor(NodeId from, const Vec3f & pos, float radius, Result & 
 		last = next;
 	}
 	
-	if(rlist.size() == s) {
-		return false;
-	}
-	
-	return true;
+	return (rlist.size() != s);
 }
 
 void PathFinder::buildPath(const Node & node, Result & rlist) {
