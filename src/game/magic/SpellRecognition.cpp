@@ -370,7 +370,7 @@ int RuneRecognitionAlt::findMatchingPattern(){
 	int index = -1;
 	int min = std::numeric_limits<int>::max();
 	for(size_t rune = 0; rune < s_patternCount; rune++) {
-		bool refuse = 0;
+		bool refuse = false;
 		int errors = 0;
 		size_t patternIndex = 0, inputIndex = 0;
 		size_t patternSize = patternData[rune].dirs.size();
@@ -385,7 +385,7 @@ int RuneRecognitionAlt::findMatchingPattern(){
 			errors += diff;
 			
 			if(diff > 1 || errors > s_maxTolerance) {
-				refuse = 1;
+				refuse = true;
 				break;
 			}
 			
