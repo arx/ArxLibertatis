@@ -429,12 +429,7 @@ class IfVisibleCommand : public Command {
 		float aa = getAngle(io->pos.x, io->pos.z, ioo->pos.x, ioo->pos.z);
 		aa = MAKEANGLE(glm::degrees(aa));
 		
-		if((aa < ab + 90.f) && (aa > ab - 90.f)) {
-			//font
-			return true;
-		}
-		
-		return false;
+		return (aa < ab + 90.f && aa > ab - 90.f);
 	}
 	
 public:
