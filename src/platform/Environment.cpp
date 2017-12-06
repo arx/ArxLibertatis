@@ -466,7 +466,7 @@ bool isFileDescriptorDisabled(int fd) {
 	
 	#if ARX_HAVE_FCNTL && defined(F_GETFD)
 	if(fcntl(fd, F_GETFD) == -1 && errno == EBADF) {
-		return 0; // Not a valid file descriptor
+		return false; // Not a valid file descriptor
 	}
 	#endif
 	
