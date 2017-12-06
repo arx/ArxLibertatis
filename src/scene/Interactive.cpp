@@ -504,7 +504,7 @@ void PrepareIOTreatZone(long flag) {
 		Entity * toequip = entities.get(player.equiped[i]);
 		if(toequip) {
 			toequip->room = sGlobalPlayerRoom;
-			toequip->requestRoomUpdate = 0;
+			toequip->requestRoomUpdate = false;
 		}
 	}
 
@@ -917,7 +917,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->obj->pbox->active = 0;
 
 		io->room = -1;
-		io->requestRoomUpdate = 1;
+		io->requestRoomUpdate = true;
 		RestoreIOInitPos(io);
 		ARX_INTERACTIVE_Teleport(io, io->initpos);
 		io->animBlend.lastanimtime = GameInstantMs(1);
