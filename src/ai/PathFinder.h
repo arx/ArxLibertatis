@@ -144,7 +144,7 @@ private:
 	
 	float m_radius;
 	float m_height;
-	float heuristic;
+	float m_heuristic;
 	
 	size_t map_s; // Map size
 	const ANCHOR_DATA * map_d; // Map data

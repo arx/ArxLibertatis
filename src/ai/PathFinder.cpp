@@ -179,16 +179,16 @@ public:
 
 PathFinder::PathFinder(size_t map_size, const ANCHOR_DATA * map_data,
                        size_t slight_count, const EERIE_LIGHT * const * slight_list)
-	: m_radius(RADIUS_DEFAULT), m_height(HEIGHT_DEFAULT), heuristic(HEURISTIC_DEFAULT),
+	: m_radius(RADIUS_DEFAULT), m_height(HEIGHT_DEFAULT), m_heuristic(HEURISTIC_DEFAULT),
 	  map_s(map_size), map_d(map_data), slight_c(slight_count), slight_l(slight_list) { }
 
-void PathFinder::setHeuristic(float _heuristic) {
-	if(_heuristic >= HEURISTIC_MAX) {
-		heuristic = HEURISTIC_MAX;
-	} else if(_heuristic <= HEURISTIC_MIN) {
-		heuristic = HEURISTIC_MIN;
+void PathFinder::setHeuristic(float heuristic) {
+	if(heuristic >= HEURISTIC_MAX) {
+		m_heuristic = HEURISTIC_MAX;
+	} else if(heuristic <= HEURISTIC_MIN) {
+		m_heuristic = HEURISTIC_MIN;
 	} else {
-		heuristic = _heuristic;
+		m_heuristic = heuristic;
 	}
 }
 
@@ -242,11 +242,11 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 			if(stealth) {
 				distance += getIlluminationCost(map_d[cid].pos);
 			}
-			distance *= heuristic;
+			distance *= m_heuristic;
 			distance += node->getDistance();
 			
 			// Estimated cost to get from this node to the destination.
-			float remaining = (1.0f - heuristic) * fdist(map_d[cid].pos, map_d[to].pos);
+			float remaining = (1.0f - m_heuristic) * fdist(map_d[cid].pos, map_d[to].pos);
 			
 			open.add(cid, node, distance, remaining);
 		}
