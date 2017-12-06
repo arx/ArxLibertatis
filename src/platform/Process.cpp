@@ -99,7 +99,7 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 	
 	// Fast POSIX implementation: posix_spawnp avoids unnecessary vm copies
 	
-	if(stdout <= 0 && unlocalized == false) {
+	if(stdout <= 0 && !unlocalized) {
 		
 		// Redirect standard input, output and error to /dev/null
 		static posix_spawn_file_actions_t * file_actionsp = NULL;
