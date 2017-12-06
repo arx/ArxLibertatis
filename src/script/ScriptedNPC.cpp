@@ -155,7 +155,7 @@ public:
 		
 		DebugScript(' ' << options);
 		
-		ARX_NPC_Revive(context.getEntity(), init ? 1 : 0);
+		ARX_NPC_Revive(context.getEntity(), init);
 		
 		return Success;
 	}
