@@ -158,7 +158,7 @@ static int decode(state * s, huffman * h) {
 	code = first = index = 0;
 	len = 1;
 	next = h->count + 1;
-	while(1) {
+	while(true) {
 		while(left--) {
 			code |= (bitbuf & 1) ^ 1;   /* invert code */
 			bitbuf >>= 1;
@@ -394,7 +394,7 @@ static BlastResult blastDecompress(state * s) {
 				s->first = 0;
 			}
 		}
-	} while(1);
+	} while(true);
 	
 	return BLAST_SUCCESS;
 }
