@@ -400,8 +400,10 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		projectile.m_trail->Update(timeDelta);
 	}
 	
-	if(projectile.flags & ATO_MOVING) {
-		
+	if(!(projectile.flags & ATO_MOVING)) {
+		return;
+	}
+	
 		long need_kill = 0;
 		float mod = timeDeltaMs * projectile.velocity;
 		Vec3f original_pos = projectile.position;
@@ -602,8 +604,6 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		if(need_kill) {
 			ARX_THROWN_OBJECT_Kill(i);
 		}
-		
-	}
 	
 }
 
