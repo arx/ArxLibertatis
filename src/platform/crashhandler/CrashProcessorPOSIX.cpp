@@ -111,7 +111,7 @@ void CrashHandlerPOSIX::processCrashInfo() {
 	
 	pid_t child = fork();
 	if(!child) {
-		while(1) {
+		while(true) {
 			// wait
 		}
 	}
