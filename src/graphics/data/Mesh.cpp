@@ -704,15 +704,7 @@ static void EERIEPOLY_Add_PolyIn(BackgroundTileData * eg, EERIEPOLY * ep) {
 }
 
 static bool PointInBBox(const Vec3f & point, const Rectf & bb) {
-	
-	if(   point.x > bb.right
-	   || point.x < bb.left
-	   || point.z > bb.bottom
-	   || point.z < bb.top
-	)
-		return false;
-
-	return true;
+	return (point.x <= bb.right && point.x >= bb.left && point.z <= bb.bottom && point.z >= bb.top);
 }
 
 void EERIEPOLY_Compute_PolyIn() {
