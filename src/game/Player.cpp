@@ -324,7 +324,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 	int iNbSpellsAfter = 0;
 
 	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
-		if(spellicons[i].bSecret == false) {
+		if(!spellicons[i].bSecret) {
 			long j = 0;
 			bool bOk = true;
 
@@ -344,7 +344,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 	player.rune_flags |= _ulRune;
 
 	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
-		if(spellicons[i].bSecret == false) {
+		if(!spellicons[i].bSecret) {
 			long j = 0;
 			bool bOk = true;
 
