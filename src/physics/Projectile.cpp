@@ -505,7 +505,10 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			sphere.radius = rad + 3.f;
 			
 			std::vector<EntityHandle> sphereContent;
-			if(CheckEverythingInSphere(sphere, projectile.source, EntityHandle(), sphereContent)) {
+			if(!CheckEverythingInSphere(sphere, projectile.source, EntityHandle(), sphereContent)) {
+				continue;
+			}
+			
 				for(size_t jj = 0; jj < sphereContent.size(); jj++) {
 					
 					if(ValidIONum(sphereContent[jj]) && sphereContent[jj] != projectile.source) {
@@ -593,7 +596,6 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 					}
 					
 				}
-			}
 			
 		}
 		
