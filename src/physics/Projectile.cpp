@@ -491,8 +491,8 @@ void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta)
 					j = 200;
 					need_kill = 1;
 				} else {
-					for(size_t i = 1; i <= 12; i++) {
-						float precision = float(i) * 0.5f;
+					for(size_t k = 1; k <= 12; k++) {
+						float precision = float(k) * 0.5f;
 						Sphere sphere;
 						sphere.origin = v0 + projectile.vector * precision * 4.5f;
 						sphere.radius = rad + 3.f;
@@ -573,7 +573,7 @@ void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta)
 									projectile.flags &= ~ATO_MOVING;
 									projectile.velocity = 0.f;
 									need_kill = 1;
-									precision = 500.f;
+									k = 1000;
 									j = 200;
 								}
 							}
