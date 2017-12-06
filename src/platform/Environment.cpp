@@ -457,10 +457,9 @@ bool isFileDescriptorDisabled(int fd) {
 		return true; // Not a valid handle
 	}
 	
+	// Redirected to NUL
 	BY_HANDLE_FILE_INFORMATION fi;
-	if(!GetFileInformationByHandle(h, &fi) && GetLastError() == ERROR_INVALID_FUNCTION) {
-		return true; // Redirected to NUL
-	}
+	return (!GetFileInformationByHandle(h, &fi) && GetLastError() == ERROR_INVALID_FUNCTION);
 	
 	#else
 	
@@ -488,13 +487,11 @@ bool isFileDescriptorDisabled(int fd) {
 	}
 	#endif
 	
-	if(valid && !memcmp(path, "/dev/null", 9)) {
-		return true; // Redirected to /dev/null
-	}
+	// Redirected to /dev/null
+	return (valid && !memcmp(path, "/dev/null", 9));
 	
 	#endif
 	
-	return false;
 }
 
 static Lock g_environmentLock;
