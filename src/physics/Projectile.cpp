@@ -492,10 +492,12 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			}
 			
 			projectile.position = original_pos;
-			j = 200;
-			need_kill = 1;
 			
-		} else {
+			ARX_THROWN_OBJECT_Kill(i);
+			return;
+		}
+		
+		{
 			
 			for(size_t k = 1; k <= 12; k++) {
 				float precision = float(k) * 0.5f;
