@@ -1032,7 +1032,7 @@ char * ARX_SOUND_AmbianceSavePlayList(size_t & size) {
 			res::path name;
 			audio::getAmbianceName(ambiance_id, name);
 			arx_assert(name.string().length() + 1 < ARRAY_SIZE(playing->name));
-			util::storeString(playing->name, name.string().c_str());
+			util::storeString(playing->name, name.string());
 			audio::getAmbianceVolume(ambiance_id, playing->volume);
 			playing->loop = audio::isAmbianceLooped(ambiance_id) ? ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
 			playing->type = (type == audio::PLAYING_AMBIANCE_SCRIPT ? 1 : 2);
