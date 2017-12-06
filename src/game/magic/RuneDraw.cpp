@@ -74,7 +74,7 @@ void ARX_SPELLS_Init_Rects() {
 		
 		Vec2s iMin;
 		Vec2s iMax;
-		ReCenterSequence(info.sequence.c_str(), iMin, iMax);
+		ReCenterSequence(info.sequence, iMin, iMax);
 		
 		Vec2s iSize = iMax - iMin;
 		lMaxSymbolDrawSize = glm::max(iSize, lMaxSymbolDrawSize);
