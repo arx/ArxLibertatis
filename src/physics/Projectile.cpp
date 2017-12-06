@@ -404,206 +404,204 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		return;
 	}
 	
-		long need_kill = 0;
-		float mod = timeDeltaMs * projectile.velocity;
-		Vec3f original_pos = projectile.position;
-		projectile.position.x += projectile.vector.x * mod;
-		float gmod = 1.f - projectile.velocity;
-		
-		gmod = glm::clamp(gmod, 0.f, 1.f);
-		
-		projectile.position.y += projectile.vector.y * mod + (timeDeltaMs * gmod);
-		projectile.position.z += projectile.vector.z * mod;
-		
-		CheckForIgnition(Sphere(original_pos, 10.f), 0, 2);
-		
-		Vec3f wpos = projectile.position;
-		wpos.y += 20.f;
-		EERIEPOLY * ep = EEIsUnderWater(wpos);
-		
-		if(projectile.flags & ATO_UNDERWATER) {
-			if(!ep) {
-				projectile.flags &= ~ATO_UNDERWATER;
-				ARX_SOUND_PlaySFX(SND_PLOUF, &projectile.position);
-			}
-		} else if(ep) {
-			projectile.flags |= ATO_UNDERWATER;
+	long need_kill = 0;
+	float mod = timeDeltaMs * projectile.velocity;
+	Vec3f original_pos = projectile.position;
+	projectile.position.x += projectile.vector.x * mod;
+	float gmod = 1.f - projectile.velocity;
+	
+	gmod = glm::clamp(gmod, 0.f, 1.f);
+	
+	projectile.position.y += projectile.vector.y * mod + (timeDeltaMs * gmod);
+	projectile.position.z += projectile.vector.z * mod;
+	
+	CheckForIgnition(Sphere(original_pos, 10.f), 0, 2);
+	
+	Vec3f wpos = projectile.position;
+	wpos.y += 20.f;
+	EERIEPOLY * ep = EEIsUnderWater(wpos);
+	
+	if(projectile.flags & ATO_UNDERWATER) {
+		if(!ep) {
+			projectile.flags &= ~ATO_UNDERWATER;
 			ARX_SOUND_PlaySFX(SND_PLOUF, &projectile.position);
 		}
+	} else if(ep) {
+		projectile.flags |= ATO_UNDERWATER;
+		ARX_SOUND_PlaySFX(SND_PLOUF, &projectile.position);
+	}
+	
+	// Check for collision MUST be done after DRAWING !!!!
+	size_t nbact = projectile.obj->actionlist.size();
+	
+	for(size_t j = 0; j < nbact; j++) {
 		
-		// Check for collision MUST be done after DRAWING !!!!
-		size_t nbact = projectile.obj->actionlist.size();
+		float rad = GetHitValue(projectile.obj->actionlist[j].name);
+		if(rad == -1.f)
+			continue;
+		rad *= .5f;
 		
-		for(size_t j = 0; j < nbact; j++) {
+		const Vec3f v0 = actionPointPosition(projectile.obj, projectile.obj->actionlist[j].idx);
+		Vec3f dest = original_pos + projectile.vector * 95.f;
+		Vec3f orgn = original_pos - projectile.vector * 25.f;
+		EERIEPOLY * ep = CheckArrowPolyCollision(orgn, dest);
+		
+		if(ep) {
 			
-			float rad = GetHitValue(projectile.obj->actionlist[j].name);
-			if(rad == -1.f)
-				continue;
-			rad *= .5f;
+			ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
+			CheckExp(projectile);
 			
-			const Vec3f v0 = actionPointPosition(projectile.obj, projectile.obj->actionlist[j].idx);
-			Vec3f dest = original_pos + projectile.vector * 95.f;
-			Vec3f orgn = original_pos - projectile.vector * 25.f;
-			EERIEPOLY * ep = CheckArrowPolyCollision(orgn, dest);
+			if(ValidIONum(projectile.source)) {
+				ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
+			}
 			
-			if(ep) {
-				
-				ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
-				CheckExp(projectile);
-				
-				if(ValidIONum(projectile.source)) {
-					ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
-				}
-				
-				projectile.flags &= ~ATO_MOVING;
-				projectile.velocity = 0.f;
-				
+			projectile.flags &= ~ATO_MOVING;
+			projectile.velocity = 0.f;
+			
+			
+			if(ValidIONum(projectile.source)) {
+				char weapon_material[64] = "dagger";
 				std::string bkg_material = "earth";
-				
 				if(ep && ep->tex && !ep->tex->m_texName.empty()) {
 					bkg_material = GetMaterialString(ep->tex->m_texName);
 				}
+				ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, entities[projectile.source]);
+			}
+			
+			projectile.position = original_pos;
+			j = 200;
+			
+		} else if(IsPointInField(v0)) {
+			
+			ParticleSparkSpawn(v0, 24, SpawnSparkType_Default);
+			CheckExp(projectile);
+			
+			if(ValidIONum(projectile.source)) {
+				ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
+			}
+			
+			projectile.flags &= ~ATO_MOVING;
+			projectile.velocity = 0.f;
+			
+			if(ValidIONum(projectile.source)) {
+				char weapon_material[64] = "dagger";
+				char bkg_material[64] = "earth";
+				ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, entities[projectile.source]);
+			}
+			
+			projectile.position = original_pos;
+			j = 200;
+			need_kill = 1;
+			
+		} else {
+			
+			for(size_t k = 1; k <= 12; k++) {
+				float precision = float(k) * 0.5f;
 				
-				if(ValidIONum(projectile.source)) {
-					char weapon_material[64] = "dagger";
-					ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, entities[projectile.source]);
-				}
+				Sphere sphere;
+				sphere.origin = v0 + projectile.vector * precision * 4.5f;
+				sphere.radius = rad + 3.f;
 				
-				projectile.position = original_pos;
-				j = 200;
-				
-			} else if(IsPointInField(v0)) {
-				
-				ParticleSparkSpawn(v0, 24, SpawnSparkType_Default);
-				CheckExp(projectile);
-				
-				if(ValidIONum(projectile.source)) {
-					ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
-				}
-				
-				projectile.flags &= ~ATO_MOVING;
-				projectile.velocity = 0.f;
-				
-				if(ValidIONum(projectile.source)) {
-					char weapon_material[64] = "dagger";
-					char bkg_material[64] = "earth";
-					ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, entities[projectile.source]);
-				}
-				
-				projectile.position = original_pos;
-				j = 200;
-				need_kill = 1;
-				
-			} else {
-				
-				for(size_t k = 1; k <= 12; k++) {
-					float precision = float(k) * 0.5f;
-					
-					Sphere sphere;
-					sphere.origin = v0 + projectile.vector * precision * 4.5f;
-					sphere.radius = rad + 3.f;
-					
-					std::vector<EntityHandle> sphereContent;
-					if(CheckEverythingInSphere(sphere, projectile.source, EntityHandle(), sphereContent)) {
-						for(size_t jj = 0; jj < sphereContent.size(); jj++) {
+				std::vector<EntityHandle> sphereContent;
+				if(CheckEverythingInSphere(sphere, projectile.source, EntityHandle(), sphereContent)) {
+					for(size_t jj = 0; jj < sphereContent.size(); jj++) {
+						
+						if(ValidIONum(sphereContent[jj]) && sphereContent[jj] != projectile.source) {
 							
-							if(ValidIONum(sphereContent[jj]) && sphereContent[jj] != projectile.source) {
+							Entity * target = entities[sphereContent[jj]];
+							
+							if(target->ioflags & IO_NPC) {
 								
-								Entity * target = entities[sphereContent[jj]];
+								Vec3f pos;
+								Color color = Color::none;
+								long hitpoint = -1;
+								float curdist = 999999.f;
 								
-								if(target->ioflags & IO_NPC) {
+								for(size_t ii = 0 ; ii < target->obj->facelist.size() ; ii++) {
 									
-									Vec3f pos;
-									Color color = Color::none;
-									long hitpoint = -1;
-									float curdist = 999999.f;
-									
-									for(size_t ii = 0 ; ii < target->obj->facelist.size() ; ii++) {
-										
-										if(target->obj->facelist[ii].facetype & POLY_HIDE) {
-											continue;
-										}
-										
-										unsigned short vid = target->obj->facelist[ii].vid[0];
-										float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[vid].v);
-										if(d < curdist) {
-											hitpoint = target->obj->facelist[ii].vid[0];
-											curdist = d;
-										}
-										
+									if(target->obj->facelist[ii].facetype & POLY_HIDE) {
+										continue;
 									}
 									
-									if(hitpoint >= 0) {
-										color = target->_npcdata->blood_color;
-										pos = target->obj->vertexWorldPositions[hitpoint].v;
+									unsigned short vid = target->obj->facelist[ii].vid[0];
+									float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[vid].v);
+									if(d < curdist) {
+										hitpoint = target->obj->facelist[ii].vid[0];
+										curdist = d;
 									}
-									
-									if(projectile.source == EntityHandle_Player) {
-										
-										float damages = ARX_THROWN_ComputeDamages(projectile, projectile.source, sphereContent[jj]);
-										if(damages > 0.f) {
-											
-											arx_assert(hitpoint >= 0);
-											
-											if(target->ioflags & IO_NPC) {
-												target->_npcdata->SPLAT_TOT_NB = 0;
-												ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, target);
-											}
-											
-											ARX_PARTICLES_Spawn_Blood2(pos, damages, color, target);
-											ARX_DAMAGES_DamageNPC(target, damages, projectile.source, false, &pos);
-											
-											if(Random::getf(0.f, 100.f) > target->_npcdata->resist_poison) {
-												target->_npcdata->poisonned += projectile.poisonous;
-											}
-											
-											CheckExp(projectile);
-											
-										} else {
-											ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
-											ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
-										}
-									
-									}
-									
-								} else { // not NPC
-									
-									if(target->ioflags & IO_FIX) {
-										if(ValidIONum(projectile.source))
-											ARX_DAMAGES_DamageFIX(target, 0.1f, projectile.source, false);
-									}
-									
-									ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
-									
-									if(ValidIONum(projectile.source)) {
-										ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
-									}
-									
-									CheckExp(projectile);
 									
 								}
 								
-								// Need to deal damages !
-								projectile.flags &= ~ATO_MOVING;
-								projectile.velocity = 0.f;
-								need_kill = 1;
-								k = 1000;
-								j = 200;
+								if(hitpoint >= 0) {
+									color = target->_npcdata->blood_color;
+									pos = target->obj->vertexWorldPositions[hitpoint].v;
+								}
+								
+								if(projectile.source == EntityHandle_Player) {
+									
+									float damages = ARX_THROWN_ComputeDamages(projectile, projectile.source, sphereContent[jj]);
+									if(damages > 0.f) {
+										
+										arx_assert(hitpoint >= 0);
+										
+										if(target->ioflags & IO_NPC) {
+											target->_npcdata->SPLAT_TOT_NB = 0;
+											ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, target);
+										}
+										
+										ARX_PARTICLES_Spawn_Blood2(pos, damages, color, target);
+										ARX_DAMAGES_DamageNPC(target, damages, projectile.source, false, &pos);
+										
+										if(Random::getf(0.f, 100.f) > target->_npcdata->resist_poison) {
+											target->_npcdata->poisonned += projectile.poisonous;
+										}
+										
+										CheckExp(projectile);
+										
+									} else {
+										ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
+										ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
+									}
+									
+								}
+								
+							} else { // not NPC
+								
+								if((target->ioflags & IO_FIX) && ValidIONum(projectile.source)) {
+									ARX_DAMAGES_DamageFIX(target, 0.1f, projectile.source, false);
+								}
+								
+								ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
+								
+								if(ValidIONum(projectile.source)) {
+									ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
+								}
+								
+								CheckExp(projectile);
 								
 							}
-						
+							
+							// Need to deal damages !
+							projectile.flags &= ~ATO_MOVING;
+							projectile.velocity = 0.f;
+							need_kill = 1;
+							k = 1000;
+							j = 200;
+							
 						}
+						
 					}
-					
 				}
 				
 			}
-		
+			
 		}
 		
-		if(need_kill) {
-			ARX_THROWN_OBJECT_Kill(i);
-		}
+	}
+	
+	if(need_kill) {
+		ARX_THROWN_OBJECT_Kill(i);
+	}
 	
 }
 
