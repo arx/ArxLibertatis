@@ -409,9 +409,9 @@ bool PathFinder::lookFor(NodeId from, const Vec3f & pos, float radius, Result & 
 	unsigned long step_c = Random::getu(4, 9);
 	for(unsigned long i = 0; i < step_c; i++) {
 		
-		Vec3f pos = map_d[to].pos + arx::randomVec(-1.f, 1.f) * radius;
+		Vec3f nextPos = map_d[to].pos + arx::randomVec(-1.f, 1.f) * radius;
 		
-		NodeId next = getNearestNode(pos);
+		NodeId next = getNearestNode(nextPos);
 		
 		if(!move(last, next, rlist, stealth)) {
 			// TODO can cause infinite loop?
