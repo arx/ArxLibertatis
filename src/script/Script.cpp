@@ -1313,28 +1313,21 @@ SCRIPT_VAR* SETVarValueFloat(SCRIPT_VARIABLES& svf, const std::string& name, flo
 	return tsv;
 }
 
-SCRIPT_VAR* SETVarValueText(SCRIPT_VARIABLES& svf, const std::string& name, const std::string& val)
-{
-	SCRIPT_VAR* tsv = GetVarAddress(svf, name);
-
-	if (!tsv)
-	{
+SCRIPT_VAR * SETVarValueText(SCRIPT_VARIABLES & svf, const std::string & name, const std::string & val) {
+	
+	SCRIPT_VAR * tsv = GetVarAddress(svf, name);
+	if(!tsv) {
 		tsv = GetFreeVarSlot(svf);
-
-		if (!tsv)
+		if(!tsv) {
 			return NULL;
-
-		tsv->name = name.c_str();
+		}
+		tsv->name = name;
 	}
 	
 	tsv->text = val;
 	
 	return tsv;
 }
-
-
-
-
 
 void MakeGlobalText(std::string & tx)
 {
