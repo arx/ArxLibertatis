@@ -388,11 +388,7 @@ bool CylinderPlatformCollide(const Cylinder & cyl, Entity * io) {
 		return false;
 	}
 	
-	if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius)) {
-		return true;
-	}
-	
-	return false;
+	return In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius);
 }
 
 static long NPC_IN_CYLINDER = 0;
@@ -1337,18 +1333,13 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 		MOVING_CYLINDER = 0;
 		return false;
 	}
-
+	
 	float distance = glm::distance(ip->startpos, ip->targetpos);
-
 	if(distance < 0.1f) {
 		MOVING_CYLINDER = 0;
-
-		if(distance == 0.f)
-			return true;
-
-		return false;
+		return (distance == 0.f);
 	}
-
+	
 	Vec3f mvector = (ip->targetpos - ip->startpos) / distance;
 	long count=100;
 
