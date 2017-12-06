@@ -1687,8 +1687,8 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.lifePool.max = asp->maxlife;
 	player.manaPool.max = asp->maxmana;
 	
-	player.onfirmground = (asp->misc_flags & 1) ? 1 : 0;
-	WILLRETURNTOCOMBATMODE = (asp->misc_flags & 2) ? 1 : 0;
+	player.onfirmground = (asp->misc_flags & 1) != 0;
+	WILLRETURNTOCOMBATMODE = (asp->misc_flags & 2) != 0;
 	
 	player.physics = asp->physics;
 	player.poison = asp->poison;
