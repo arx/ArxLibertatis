@@ -176,7 +176,7 @@ struct SavedMapMarkerData {
 		y = b.m_pos.y;
 		lvl = b.m_lvl;
 		arx_assert(STRING_SIZE > b.m_name.length());
-		util::storeString(name, b.m_name.c_str());
+		util::storeString(name, b.m_name);
 	}
 	
 };
@@ -917,11 +917,11 @@ struct SavedTweakerInfo {
 	
 	/* implicit */ SavedTweakerInfo(const IO_TWEAKER_INFO & b) {
 		arx_assert(b.filename.string().length() <= sizeof(filename));
-		util::storeString(filename, b.filename.string().c_str());
+		util::storeString(filename, b.filename.string());
 		arx_assert(b.skintochange.length() <= sizeof(skintochange));
-		util::storeString(skintochange, b.skintochange.c_str());
+		util::storeString(skintochange, b.skintochange);
 		arx_assert(b.skinchangeto.filename().length() <= sizeof(skinchangeto));
-		util::storeString(skinchangeto, b.skinchangeto.string().c_str());
+		util::storeString(skinchangeto, b.skinchangeto.string());
 	}
 	
 };
@@ -945,9 +945,9 @@ struct SavedTweakInfo {
 	/* implicit */ SavedTweakInfo(const TWEAK_INFO & b) {
 		type = b.type;
 		arx_assert(b.param1.string().length() <= PARAM_SIZE);
-		util::storeString(param1, b.param1.string().c_str());
-		arx_assert(b.param2.string().length() <=PARAM_SIZE);
-		util::storeString(param2, b.param2.string().c_str());
+		util::storeString(param1, b.param1.string());
+		arx_assert(b.param2.string().length() <= PARAM_SIZE);
+		util::storeString(param2, b.param2.string());
 	}
 	
 };
