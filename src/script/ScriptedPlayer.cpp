@@ -553,7 +553,7 @@ public:
 			if(flg & flag('d')) {
 				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 				duration = (long)context.getFloat();
-				dur = 1;
+				dur = true;
 			}
 			if(flg & flag('f')) {
 				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;
