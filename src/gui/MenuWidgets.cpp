@@ -158,12 +158,7 @@ void ARX_SlotLoad(SavegameHandle slotIndex) {
 }
 
 bool MENU_NoActiveWindow() {
-	
-	if(!g_mainMenu->m_window || g_mainMenu->m_window->currentPageId() == Page_None) {
-		return true;
-	}
-	
-	return false;
+	return (!g_mainMenu->m_window || g_mainMenu->m_window->currentPageId() == Page_None);
 }
 
 static void Check_Apply() {
