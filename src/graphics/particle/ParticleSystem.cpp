@@ -238,11 +238,7 @@ void ParticleSystem::StopEmission() {
 }
 
 bool ParticleSystem::IsAlive() {
-
-	if((iParticleNbAlive == 0) && (m_parameters.m_nbMax == 0))
-		return false;
-
-	return true;
+	return (iParticleNbAlive != 0 || m_parameters.m_nbMax != 0);
 }
 
 void ParticleSystem::Update(GameDuration delta) {
