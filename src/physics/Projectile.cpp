@@ -442,10 +442,10 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		rad *= .5f;
 		
 		const Vec3f v0 = actionPointPosition(projectile.obj, projectile.obj->actionlist[j].idx);
+		
 		Vec3f dest = original_pos + projectile.vector * 95.f;
 		Vec3f orgn = original_pos - projectile.vector * 25.f;
 		EERIEPOLY * ep = CheckArrowPolyCollision(orgn, dest);
-		
 		if(ep) {
 			
 			ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
@@ -469,9 +469,11 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			}
 			
 			projectile.position = original_pos;
-			j = 200;
 			
-		} else if(IsPointInField(v0)) {
+			return;
+		}
+		
+		if(IsPointInField(v0)) {
 			
 			ParticleSparkSpawn(v0, 24, SpawnSparkType_Default);
 			CheckExp(projectile);
