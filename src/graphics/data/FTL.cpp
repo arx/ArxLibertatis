@@ -147,7 +147,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	if(!compressedData) {
 		compressedData = pf->readAlloc();
 		compressedSize = pf->size();
-		NOrelease = MCache_Push(filename, compressedData, compressedSize) ? 1 : 0;
+		NOrelease = MCache_Push(filename, compressedData, compressedSize);
 	}
 	
 	if(!compressedData) {
