@@ -68,12 +68,12 @@ void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat);
 void drawTriangle(const RenderMaterial & mat, const TexturedVertexUntransformed *vertices);
 
 struct TransformInfo {
-
+	
 	Vec3f pos;
 	glm::quat rotation;
 	float scale;
 	Vec3f offset;
-
+	
 	TransformInfo()
 		: pos(Vec3f_ZERO)
 		, scale(1.f)
@@ -81,13 +81,14 @@ struct TransformInfo {
 	{
 		rotation = glm::quat();
 	}
-
-	TransformInfo(Vec3f pos, glm::quat rotation, float scale = 1.f, Vec3f offset = Vec3f_ZERO)
-		: pos(pos)
-		, rotation(rotation)
-		, scale(scale)
-		, offset(offset)
+	
+	TransformInfo(Vec3f pos_, glm::quat rotation_, float scale_ = 1.f, Vec3f offset_ = Vec3f_ZERO)
+		: pos(pos_)
+		, rotation(rotation_)
+		, scale(scale_)
+		, offset(offset_)
 	{}
+	
 };
 
 EERIE_2D_BBOX UpdateBbox2d(const EERIE_3DOBJ & eobj);
