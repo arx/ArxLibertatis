@@ -627,10 +627,10 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 		}
 	}
 	
-	updateFadeOut(c, CKTrack, num, a, current != c->key || (resized && play));
+	updateFadeOut(c, CKTrack, num, a, current != c->m_key || (resized && play));
 
-	if(current != c->key) {
-		c->key = current;
+	if(current != c->m_key) {
+		c->m_key = current;
 		c->changekey = true;
 	}
 	
@@ -644,7 +644,7 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 	
 	if(CKTrack->currframe > (float)CKTrack->endframe) {
 		CKTrack->currframe = (float)CKTrack->startframe;
-		c->key = NULL;
+		c->m_key = NULL;
 		c->flTime = 0;
 	}
 	}
