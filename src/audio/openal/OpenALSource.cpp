@@ -93,7 +93,7 @@ aalError OpenALSource::sourcePause() {
 
 OpenALSource::OpenALSource(Sample * _sample) :
 	Source(_sample),
-	tooFar(false),
+	m_tooFar(false),
 	streaming(false), loadCount(0), written(0), stream(NULL),
 	m_read(0),
 	source(0),
@@ -630,21 +630,21 @@ bool OpenALSource::updateCulling() {
 		listener_pos = Vec3f_ZERO;
 	} else {
 		alGetListener3f(AL_POSITION, &listener_pos.x, &listener_pos.y, &listener_pos.z);
-		AL_CHECK_ERROR_C("getting listener position", return tooFar;)
+		AL_CHECK_ERROR_C("getting listener position", return m_tooFar;)
 	}
 	
 	float d = glm::distance(channel.position, listener_pos);
 	
-	if(tooFar) {
+	if(m_tooFar) {
 		if(d <= channel.falloff.end) {
 			LogAL("in range");
-			tooFar = false;
+			m_tooFar = false;
 			sourcePlay();
 		}
 	} else {
 		if(d > channel.falloff.end) {
 			LogAL("out of range");
-			tooFar = true;
+			m_tooFar = true;
 			sourcePause();
 			if(loadCount <= 1) {
 				stop();
@@ -652,7 +652,7 @@ bool OpenALSource::updateCulling() {
 		}
 	}
 	
-	if(!tooFar) {
+	if(!m_tooFar) {
 		d = (d - channel.falloff.start) / (channel.falloff.end - channel.falloff.start);
 		float v = 1.f - glm::clamp((d - 0.75f) / (1.f - 0.75f), 0.f, 1.f);
 		if(m_volume != v) {
@@ -661,7 +661,7 @@ bool OpenALSource::updateCulling() {
 		}
 	}
 	
-	return tooFar;
+	return m_tooFar;
 }
 
 aalError OpenALSource::updateBuffers() {
