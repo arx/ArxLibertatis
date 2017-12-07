@@ -586,7 +586,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 
 Ambiance::Ambiance(const res::path & _name)
 	: m_status(Idle)
-	, loop(false)
+	, m_loop(false)
 	, fade(None)
 	, fade_time(0)
 	, fade_interval(0)
@@ -666,7 +666,7 @@ aalError Ambiance::setVolume(float volume) {
 	return AAL_OK;
 }
 
-aalError Ambiance::play(const Channel & channel, bool _loop, PlatformDuration _fade_interval) {
+aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration _fade_interval) {
 	
 	m_channel = channel;
 	
@@ -674,7 +674,7 @@ aalError Ambiance::play(const Channel & channel, bool _loop, PlatformDuration _f
 		stop();
 	}
 	
-	loop = _loop;
+	m_loop = loop;
 	
 	fade_interval = _fade_interval;
 	if(fade_interval != 0) {
