@@ -210,7 +210,7 @@ void EERIE_3DOBJ::clear() {
 		grouplist.clear();
 		texturecontainer.clear();
 
-		originaltextures = NULL;
+		originaltextures.clear();
 		
 		quat = glm::quat();
 		linked.clear();
@@ -228,15 +228,8 @@ void EERIE_3DOBJ::clear() {
 
 // TODO move to destructor?
 EERIE_3DOBJ::~EERIE_3DOBJ() {
-	
-	free(originaltextures);
-	originaltextures = NULL;
-	
 	EERIE_RemoveCedricData(this);
 	EERIE_PHYSICS_BOX_Release(this);
-	
-	grouplist.clear();
-	linked.clear();
 }
 
 EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
@@ -289,7 +282,8 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	}
 	
 	nouvo->linked.clear();
-	nouvo->originaltextures = NULL;
+	nouvo->originaltextures.clear();
+	
 	return nouvo;
 }
 
