@@ -68,7 +68,7 @@ public:
 	PlayingAmbianceType getType() const { return m_type; }
 	
 	const Channel & getChannel() const { return m_channel; }
-	const res::path & getName() const { return name; }
+	const res::path & getName() const { return m_name; }
 	
 	aalError setVolume(float volume);
 	
@@ -113,7 +113,7 @@ private:
 	
 	TrackList m_tracks;
 	
-	res::path name;
+	res::path m_name;
 	
 	PlayingAmbianceType m_type;
 	
