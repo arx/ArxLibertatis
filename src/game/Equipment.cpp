@@ -627,8 +627,8 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			// Push the NPC
 			io_target->forcedmove += ppos * -dmgs;
 			
-			Vec3f * pos = position ? position : &io_target->pos;
-			ARX_DAMAGES_DamageNPC(io_target, dmgs, io_source->index(), false, pos);
+			Vec3f * targetPosition = position ? position : &io_target->pos;
+			ARX_DAMAGES_DamageNPC(io_target, dmgs, io_source->index(), false, targetPosition);
 		}
 	}
 	
