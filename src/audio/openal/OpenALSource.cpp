@@ -94,7 +94,7 @@ aalError OpenALSource::sourcePause() {
 OpenALSource::OpenALSource(Sample * _sample) :
 	Source(_sample),
 	m_tooFar(false),
-	m_streaming(false), m_loadCount(0), m_written(0), stream(NULL),
+	m_streaming(false), m_loadCount(0), m_written(0), m_stream(NULL),
 	m_read(0),
 	source(0),
 	refcount(NULL),
@@ -151,8 +151,8 @@ OpenALSource::~OpenALSource() {
 		}
 	}
 	
-	if(stream) {
-		deleteStream(stream), stream = NULL;
+	if(m_stream) {
+		deleteStream(m_stream), m_stream = NULL;
 	}
 	
 }
@@ -199,8 +199,8 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 	      << (buffers[0] ? " (copy)" : ""));
 	
 	if(!m_streaming && !buffers[0]) {
-		stream = createStream(sample->getName());
-		if(!stream) {
+		m_stream = createStream(sample->getName());
+		if(!m_stream) {
 			ALError << "error creating stream";
 			return AAL_ERROR_FILEIO;
 		}
@@ -212,7 +212,7 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 		if(aalError error = fillBuffer(0, sample->getLength())) {
 			return error;
 		}
-		arx_assert(!stream && !m_loadCount);
+		arx_assert(!m_stream && !m_loadCount);
 	}
 	
 	setVolume(channel.volume);
@@ -245,9 +245,9 @@ aalError OpenALSource::fillAllBuffers() {
 		return AAL_OK;
 	}
 	
-	if(!stream) {
-		stream = createStream(sample->getName());
-		if(!stream) {
+	if(!m_stream) {
+		m_stream = createStream(sample->getName());
+		if(!m_stream) {
 			ALError << "error creating stream";
 			return AAL_ERROR_FILEIO;
 		}
@@ -314,7 +314,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	}
 	
 	size_t read;
-	stream->read(data, left, read);
+	m_stream->read(data, left, read);
 	if(read != left) {
 		delete[] data;
 		return AAL_ERROR_SYSTEM;
@@ -324,12 +324,12 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	if(m_written == sample->getLength()) {
 		m_written = 0;
 		if(!markAsLoaded()) {
-			deleteStream(stream);
-			stream = NULL;
+			deleteStream(m_stream);
+			m_stream = NULL;
 		} else {
-			stream->setPosition(0);
+			m_stream->setPosition(0);
 			if(size > left) {
-				stream->read(data + left, size - left, read);
+				m_stream->read(data + left, size - left, read);
 				if(read != size - left) {
 					delete[] data;
 					return AAL_ERROR_SYSTEM;

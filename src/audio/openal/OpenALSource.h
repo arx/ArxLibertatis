@@ -106,7 +106,7 @@ private:
 	bool m_streaming;
 	unsigned m_loadCount;
 	size_t m_written; // Streaming status
-	Stream * stream;
+	Stream * m_stream;
 	
 	size_t m_read;
 	
