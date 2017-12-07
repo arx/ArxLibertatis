@@ -80,7 +80,7 @@ static Color OldColorFlashBlanc;
 extern float FlashAlpha;
 
 Cinematic::Cinematic(Vec2i size)
-	: pos()
+	: m_pos()
 	, angz()
 	, m_nextPos()
 	, m_nextAngz()
@@ -167,7 +167,7 @@ void Cinematic::New() {
 	key.fx = -1;
 	key.typeinterp = INTERP_BEZIER;
 	key.force = 1;
-	key.pos = pos;
+	key.pos = m_pos;
 	key.angz = angz;
 	key.color = Color(255, 255, 255, 0);
 	key.colord = Color(255, 255, 255, 0);
@@ -188,7 +188,7 @@ void Cinematic::New() {
 	key.fx = -1;
 	key.typeinterp = INTERP_BEZIER;
 	key.force = 1;
-	key.pos = pos;
+	key.pos = m_pos;
 	key.angz = angz;
 	key.color = Color(255, 255, 255, 0);
 	key.colord = Color(255, 255, 255, 0);
@@ -425,8 +425,8 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 			break;
 	}
 	
-	arx_assert(isallfinite(pos));
-	m_camera.orgTrans.pos = pos;
+	arx_assert(isallfinite(m_pos));
+	m_camera.orgTrans.pos = m_pos;
 	m_camera.angle.setPitch(0);
 	m_camera.angle.setYaw(0);
 	m_camera.angle.setRoll(angz);

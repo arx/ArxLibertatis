@@ -100,7 +100,7 @@ bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 
 	if((GetTimeKeyFramer() - LastTime) < 0.40f) {
 		LastTime = GetTimeKeyFramer();
-		OldPos[TotOldPos] = c->pos;
+		OldPos[TotOldPos] = c->m_pos;
 		OldAz[TotOldPos] = c->angz;
 		TotOldPos++;
 	}

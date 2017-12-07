@@ -348,7 +348,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		}
 		
 		if(i == 0) {
-			c->pos = k.pos;
+			c->m_pos = k.pos;
 			c->angz = k.angz;
 			c->numbitmap = k.numbitmap;
 			c->fx = k.fx;
