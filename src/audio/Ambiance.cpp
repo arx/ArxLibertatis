@@ -588,7 +588,7 @@ Ambiance::Ambiance(const res::path & _name)
 	: m_status(Idle)
 	, m_loop(false)
 	, fade(None)
-	, fade_time(0)
+	, m_fadeTime(0)
 	, fade_interval(0)
 	, fade_max(0.f)
 	, start(0)
@@ -681,7 +681,7 @@ aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration _fa
 		fade = FadeUp;
 		fade_max = m_channel.volume;
 		m_channel.volume = 0.f;
-		fade_time = 0;
+		m_fadeTime = 0;
 	} else {
 		fade = None;
 	}
@@ -733,7 +733,7 @@ aalError Ambiance::stop(PlatformDuration _fade_interval) {
 	fade_interval = _fade_interval;
 	if(fade_interval != 0) {
 		fade = FadeDown;
-		fade_time = 0;
+		m_fadeTime = 0;
 		return AAL_OK;
 	}
 	
@@ -806,15 +806,15 @@ aalError Ambiance::update() {
 	
 	// Fading
 	if(fade_interval != 0 && fade != None) {
-		fade_time += interval;
+		m_fadeTime += interval;
 		if(fade == FadeUp) {
-			m_channel.volume = fade_max * (fade_time / fade_interval);
+			m_channel.volume = fade_max * (m_fadeTime / fade_interval);
 			if(m_channel.volume >= fade_max) {
 				m_channel.volume = fade_max;
 				fade_interval = 0;
 			}
 		} else {
-			m_channel.volume = fade_max - fade_max * (fade_time / fade_interval);
+			m_channel.volume = fade_max - fade_max * (m_fadeTime / fade_interval);
 			if(m_channel.volume <= 0.f) {
 				stop();
 				return AAL_OK;
