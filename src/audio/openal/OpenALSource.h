@@ -104,7 +104,7 @@ private:
 	 * In that case, written will hold the amount ob bytes already loaded.
 	 */
 	bool m_streaming;
-	unsigned loadCount;
+	unsigned m_loadCount;
 	size_t written; // Streaming status
 	Stream * stream;
 	
