@@ -40,7 +40,7 @@
 
 namespace audio {
 
-#define ALPREFIX "[" << (s16)(((id)&0xffff0000)>>16) << "," << (s16)((id)&0xffff) << "," << (sample ? sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << loadCount << "] "
+#define ALPREFIX "[" << (s16)(((id)&0xffff0000)>>16) << "," << (s16)((id)&0xffff) << "," << (sample ? sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
 
 #undef ALError
 #define ALError LogError << ALPREFIX
@@ -94,7 +94,7 @@ aalError OpenALSource::sourcePause() {
 OpenALSource::OpenALSource(Sample * _sample) :
 	Source(_sample),
 	m_tooFar(false),
-	m_streaming(false), loadCount(0), written(0), stream(NULL),
+	m_streaming(false), m_loadCount(0), written(0), stream(NULL),
 	m_read(0),
 	source(0),
 	refcount(NULL),
@@ -208,11 +208,11 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 		nbbuffers++;
 		AL_CHECK_ERROR("generating buffer")
 		arx_assert(buffers[0] != 0);
-		loadCount = 1;
+		m_loadCount = 1;
 		if(aalError error = fillBuffer(0, sample->getLength())) {
 			return error;
 		}
-		arx_assert(!stream && !loadCount);
+		arx_assert(!stream && !m_loadCount);
 	}
 	
 	setVolume(channel.volume);
@@ -241,7 +241,7 @@ aalError OpenALSource::fillAllBuffers() {
 	
 	arx_assert(m_streaming);
 	
-	if(!loadCount) {
+	if(!m_loadCount) {
 		return AAL_OK;
 	}
 	
@@ -253,7 +253,7 @@ aalError OpenALSource::fillAllBuffers() {
 		}
 	}
 	
-	for(size_t i = 0; i < NBUFFERS && loadCount; i++) {
+	for(size_t i = 0; i < NBUFFERS && m_loadCount; i++) {
 		
 		if(buffers[i] && alIsBuffer(buffers[i])) {
 			continue;
@@ -299,10 +299,10 @@ static size_t stereoToMono(char * data, size_t size) {
 
 aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	
-	arx_assert(loadCount > 0);
+	arx_assert(m_loadCount > 0);
 	
 	size_t left = std::min(size, sample->getLength() - written);
-	if(loadCount == 1) {
+	if(m_loadCount == 1) {
 		size = left;
 	}
 	
@@ -529,10 +529,10 @@ aalError OpenALSource::play(unsigned play_count) {
 		TraceAL("play(+" << play_count << ") vol=" << channel.volume);
 	}
 	
-	if(play_count && loadCount != (unsigned)-1) {
-		loadCount += play_count;
+	if(play_count && m_loadCount != (unsigned)-1) {
+		m_loadCount += play_count;
 	} else {
-		loadCount = (unsigned)-1;
+		m_loadCount = (unsigned)-1;
 	}
 	
 	if(m_streaming) {
@@ -544,7 +544,7 @@ aalError OpenALSource::play(unsigned play_count) {
 		alGetSourcei(source, AL_BUFFERS_QUEUED, &queuedBuffers);
 		AL_CHECK_ERROR("getting queued buffer count")
 		size_t nbuffers = MAXLOOPBUFFERS;
-		for(size_t i = queuedBuffers; i < nbuffers && loadCount; i++) {
+		for(size_t i = queuedBuffers; i < nbuffers && m_loadCount; i++) {
 			TraceAL("queueing buffer " << buffers[0]);
 			alSourceQueueBuffers(source, 1, &buffers[0]);
 			AL_CHECK_ERROR("queueing buffer")
@@ -647,7 +647,7 @@ bool OpenALSource::updateCulling() {
 			LogAL("out of range");
 			m_tooFar = true;
 			sourcePause();
-			if(loadCount <= 1) {
+			if(m_loadCount <= 1) {
 				stop();
 			}
 		}
@@ -682,11 +682,11 @@ aalError OpenALSource::updateBuffers() {
 	
 	ALint maxbuffers = (m_streaming ? (ALint)NBUFFERS : MAXLOOPBUFFERS);
 	arx_assert(nbuffersProcessed <= maxbuffers);
-	if(loadCount && nbuffersProcessed == maxbuffers) {
+	if(m_loadCount && nbuffersProcessed == maxbuffers) {
 		ALWarning << "buffer underrun detected";
 	}
 	
-	unsigned oldLoadCount = loadCount;
+	unsigned oldLoadCount = m_loadCount;
 	
 	size_t oldTime = time;
 	
@@ -712,7 +712,7 @@ aalError OpenALSource::updateBuffers() {
 		time += bufferSizes[i];
 		
 		if(m_streaming) {
-			if(loadCount) {
+			if(m_loadCount) {
 				fillBuffer(i, stream_limit_bytes);
 				TraceAL("queueing buffer " << buffer);
 				alSourceQueueBuffers(source, 1, &buffer);
@@ -724,7 +724,7 @@ aalError OpenALSource::updateBuffers() {
 				nbbuffers--;
 				AL_CHECK_ERROR("deleting buffer")
 			}
-		} else if(loadCount) {
+		} else if(m_loadCount) {
 			TraceAL("re-queueing buffer " << buffer);
 			alSourceQueueBuffers(source, 1, &buffer);
 			AL_CHECK_ERROR("queueing buffer")
@@ -804,7 +804,7 @@ aalError OpenALSource::updateBuffers() {
 }
 
 bool OpenALSource::markAsLoaded() {
-	return (loadCount == (unsigned)-1 || --loadCount);
+	return (m_loadCount == (unsigned)-1 || --m_loadCount);
 }
 
 aalError OpenALSource::setRolloffFactor(float factor) {
