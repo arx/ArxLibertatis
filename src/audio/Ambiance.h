@@ -105,7 +105,7 @@ private:
 	Fade fade;
 	
 	Channel m_channel;
-	PlatformDuration fade_time;
+	PlatformDuration m_fadeTime;
 	PlatformDuration fade_interval;
 	float fade_max;
 	PlatformInstant start;
