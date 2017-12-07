@@ -238,8 +238,6 @@ struct EERIE_3DOBJ
 
 		vertexlocal = NULL;
 
-		originaltextures = NULL;
-
 		// TODO Make default constructor possible
 		cub.xmin = 0;
 		cub.xmax = 0;
@@ -281,7 +279,7 @@ struct EERIE_3DOBJ
 	std::vector<EERIE_SELECTIONS> selections;
 	std::vector<TextureContainer*> texturecontainer;
 
-	char * originaltextures;
+	std::vector<res::path> originaltextures;
 	CUB3D cub;
 	glm::quat quat;
 	std::vector<EERIE_LINKED> linked;

@@ -77,38 +77,39 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::path & s2) {
 	
 	LogDebug("Tweak Skin " << s1 << " " << s2);
-
+	
 	if(obj == NULL || s1.empty() || s2.empty()) {
 		LogError << "Tweak Skin got NULL Pointer";
 		return;
 	}
 	
 	LogDebug("Tweak Skin " << s1 << " " << s2);
-
+	
 	res::path skintochange = "graph/obj3d/textures" / s1;
 	
 	res::path skinname = "graph/obj3d/textures" / s2;
 	TextureContainer * tex = TextureContainer::Load(skinname);
-
-	if(obj->originaltextures == NULL) {
-		obj->originaltextures = (char *)malloc(256 * obj->texturecontainer.size());
-		memset(obj->originaltextures, 0, 256 * obj->texturecontainer.size());
-
+	
+	if(obj->originaltextures.empty()) {
+		obj->originaltextures.resize(obj->texturecontainer.size());
 		for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
 			if(obj->texturecontainer[i]) {
-				strcpy(obj->originaltextures + 256 * i, obj->texturecontainer[i]->m_texName.string().c_str());
+				obj->originaltextures[i] = obj->texturecontainer[i]->m_texName;
 			}
 		}
 	}
-
-	if(tex != NULL && obj->originaltextures != NULL) {
+	
+	if(tex != NULL && !obj->originaltextures.empty()) {
+		
+		arx_assert(obj->originaltextures.size() == obj->texturecontainer.size());
+		
 		for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
-			if(strstr(obj->originaltextures + 256 * i, skintochange.string().c_str())) {
+			if(obj->originaltextures[i] == skintochange) {
 				skintochange = obj->texturecontainer[i]->m_texName;
 				break;
 			}
 		}
-
+		
 		TextureContainer * tex2 = TextureContainer::Find(skintochange);
 		if(tex2) {
 			for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
@@ -117,7 +118,9 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 				}
 			}
 		}
+		
 	}
+	
 }
 
 bool IsInSelection(const EERIE_3DOBJ * obj, size_t vert, ObjSelection tw) {
