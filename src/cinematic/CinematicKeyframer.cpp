@@ -444,10 +444,10 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 			c->fadenext = getFadeOut(*c, *next, *next);
 		}
 		if(current->force) {
-			int next = (num == track->nbkey) ? num - 1 : num;
-			const CinematicKeyframe & key = track->key[next];
-			if(next > 0 && track->key[next - 1].typeinterp != INTERP_NO) {
-				c->m_nextFadegrille  = getFadeOut(*c, key, track->key[next - 1]);
+			int nextIndex = (num == track->nbkey) ? num - 1 : num;
+			const CinematicKeyframe & key = track->key[nextIndex];
+			if(nextIndex > 0 && track->key[nextIndex - 1].typeinterp != INTERP_NO) {
+				c->m_nextFadegrille  = getFadeOut(*c, key, track->key[nextIndex - 1]);
 			} else {
 				c->m_nextFadegrille  = getFadeOut(*c, key, key);
 			}
