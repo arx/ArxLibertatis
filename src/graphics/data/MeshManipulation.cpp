@@ -89,6 +89,9 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 	
 	res::path skinname = "graph/obj3d/textures" / s2;
 	TextureContainer * tex = TextureContainer::Load(skinname);
+	if(!tex) {
+		return;
+	}
 	
 	if(obj->originaltextures.empty()) {
 		obj->originaltextures.resize(obj->texturecontainer.size());
@@ -99,8 +102,6 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 		}
 	}
 	
-	if(tex != NULL && !obj->originaltextures.empty()) {
-		
 		arx_assert(obj->originaltextures.size() == obj->texturecontainer.size());
 		
 		for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
@@ -108,8 +109,6 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 				obj->texturecontainer[i] = tex;
 			}
 		}
-		
-	}
 	
 }
 
