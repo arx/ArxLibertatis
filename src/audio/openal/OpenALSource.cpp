@@ -94,7 +94,7 @@ aalError OpenALSource::sourcePause() {
 OpenALSource::OpenALSource(Sample * _sample) :
 	Source(_sample),
 	m_tooFar(false),
-	m_streaming(false), m_loadCount(0), written(0), stream(NULL),
+	m_streaming(false), m_loadCount(0), m_written(0), stream(NULL),
 	m_read(0),
 	source(0),
 	refcount(NULL),
@@ -301,7 +301,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	
 	arx_assert(m_loadCount > 0);
 	
-	size_t left = std::min(size, sample->getLength() - written);
+	size_t left = std::min(size, sample->getLength() - m_written);
 	if(m_loadCount == 1) {
 		size = left;
 	}
@@ -319,10 +319,10 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 		delete[] data;
 		return AAL_ERROR_SYSTEM;
 	}
-	written += read;
-	arx_assert(written <= sample->getLength());
-	if(written == sample->getLength()) {
-		written = 0;
+	m_written += read;
+	arx_assert(m_written <= sample->getLength());
+	if(m_written == sample->getLength()) {
+		m_written = 0;
 		if(!markAsLoaded()) {
 			deleteStream(stream);
 			stream = NULL;
@@ -334,8 +334,8 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 					delete[] data;
 					return AAL_ERROR_SYSTEM;
 				}
-				written += read;
-				arx_assert(written < sample->getLength());
+				m_written += read;
+				arx_assert(m_written < sample->getLength());
 			}
 		}
 	}
@@ -519,7 +519,7 @@ aalError OpenALSource::play(unsigned play_count) {
 		
 		status = Playing;
 		
-		m_read = written = 0;
+		m_read = m_written = 0;
 		reset();
 		
 		alSourcei(source, AL_SEC_OFFSET, 0);
