@@ -67,7 +67,7 @@ public:
 	void setType(PlayingAmbianceType type) { m_type = type; }
 	PlayingAmbianceType getType() const { return m_type; }
 	
-	const Channel & getChannel() const { return channel; }
+	const Channel & getChannel() const { return m_channel; }
 	const res::path & getName() const { return name; }
 	
 	aalError setVolume(float volume);
@@ -104,7 +104,7 @@ private:
 	bool loop;
 	Fade fade;
 	
-	Channel channel;
+	Channel m_channel;
 	PlatformDuration fade_time;
 	PlatformDuration fade_interval;
 	float fade_max;
