@@ -852,16 +852,11 @@ struct HaloRenderInfo {
 		, selection()
 	{ }
 	
-	HaloRenderInfo(IO_HALO * halo, ObjSelection selection)
-		: halo(halo)
-		, selection(selection)
+	explicit  HaloRenderInfo(IO_HALO * halo_, ObjSelection selection_ = ObjSelection())
+		: halo(halo_)
+		, selection(selection_)
 	{}
-
-	explicit HaloRenderInfo(IO_HALO * halo)
-		: halo(halo)
-		, selection()
-	{}
-
+	
 	IO_HALO * halo;
 	ObjSelection selection;
 };
