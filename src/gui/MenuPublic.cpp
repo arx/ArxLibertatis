@@ -207,7 +207,7 @@ void ARXMenu_Options_Audio_SetDevice(const std::string & device) {
 	 * should be able to switch backends internally.
 	 */
 	
-	ARX_SOUND_PushAnimSamples();
+	std::vector< std::pair<res::path, size_t> > animationSamples = ARX_SOUND_PushAnimSamples();
 	size_t ulSizeAmbiancePlayList;
 	char * pAmbiancePlayList = ARX_SOUND_AmbianceSavePlayList(ulSizeAmbiancePlayList);
 	
@@ -227,7 +227,7 @@ void ARXMenu_Options_Audio_SetDevice(const std::string & device) {
 		free(pAmbiancePlayList);
 	}
 
-	ARX_SOUND_PopAnimSamples();
+	ARX_SOUND_PopAnimSamples(animationSamples);
 }
 
 void ARXMenu_ResumeGame() {
