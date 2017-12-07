@@ -39,20 +39,13 @@ public:
 	T right;
 	T bottom;
 	
-	Rectangle_(const Rectangle_ & other)
-		: left(other.left)
-		, top(other.top)
-		, right(other.right)
-		, bottom(other.bottom)
-	{ }
-	
 	template <class U>
 	explicit Rectangle_(Rectangle_<U> const & other)
 		: left(T(other.left))
 		, top(T(other.top))
 		, right(T(other.right))
 		, bottom(T(other.bottom))
-	{}
+	{ }
 	
 	Rectangle_() { }
 	
@@ -89,15 +82,6 @@ public:
 		    && top    == o.top
 		    && right  == o.right
 		    && bottom == o.bottom;
-	}
-	
-	Rectangle_ & operator=(const Rectangle_ & other) {
-		left   = other.left;
-		top    = other.top;
-		right  = other.right;
-		bottom = other.bottom;
-		
-		return *this;
 	}
 	
 	T width() const {
