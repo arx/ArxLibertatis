@@ -94,7 +94,7 @@ aalError OpenALSource::sourcePause() {
 OpenALSource::OpenALSource(Sample * _sample) :
 	Source(_sample),
 	m_tooFar(false),
-	streaming(false), loadCount(0), written(0), stream(NULL),
+	m_streaming(false), loadCount(0), written(0), stream(NULL),
 	m_read(0),
 	source(0),
 	refcount(NULL),
@@ -122,7 +122,7 @@ OpenALSource::~OpenALSource() {
 		arx_assert(!source);
 	}
 	
-	if(streaming) {
+	if(m_streaming) {
 		for(size_t i = 0; i < NBUFFERS; i++) {
 			if(buffers[i] && alIsBuffer(buffers[i])) {
 				TraceAL("deleting buffer " << buffers[i]);
@@ -172,7 +172,7 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 		channel.flags &= ~FLAG_PAN;
 	}
 	
-	if(inst && !inst->streaming && convertStereoToMono() == inst->convertStereoToMono()) {
+	if(inst && !inst->m_streaming && convertStereoToMono() == inst->convertStereoToMono()) {
 		
 		arx_assert(inst->sample == sample);
 		
@@ -193,11 +193,12 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 	alSourcei(source, AL_LOOPING, AL_FALSE);
 	AL_CHECK_ERROR("generating source")
 	
-	streaming = (sample->getLength() > (stream_limit_bytes * NBUFFERS));
+	m_streaming = (sample->getLength() > (stream_limit_bytes * NBUFFERS));
 	
-	LogAL("init: length=" << sample->getLength() << " " << (streaming ? "streaming" : "static") << (buffers[0] ? " (copy)" : ""));
+	LogAL("init: length=" << sample->getLength() << " " << (m_streaming ? "m_streaming" : "static")
+	      << (buffers[0] ? " (copy)" : ""));
 	
-	if(!streaming && !buffers[0]) {
+	if(!m_streaming && !buffers[0]) {
 		stream = createStream(sample->getName());
 		if(!stream) {
 			ALError << "error creating stream";
@@ -238,7 +239,7 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 
 aalError OpenALSource::fillAllBuffers() {
 	
-	arx_assert(streaming);
+	arx_assert(m_streaming);
 	
 	if(!loadCount) {
 		return AAL_OK;
@@ -534,7 +535,7 @@ aalError OpenALSource::play(unsigned play_count) {
 		loadCount = (unsigned)-1;
 	}
 	
-	if(streaming) {
+	if(m_streaming) {
 		if(aalError error = fillAllBuffers()) {
 			return error;
 		}
@@ -567,7 +568,7 @@ aalError OpenALSource::stop() {
 	alSourcei(source, AL_BUFFER, 0);
 	AL_CHECK_ERROR("stopping source")
 	
-	if(streaming) {
+	if(m_streaming) {
 		for(size_t i = 0; i < NBUFFERS; i++) {
 			if(buffers[i] && alIsBuffer(buffers[i])) {
 				TraceAL("deleting buffer " << buffers[i]);
@@ -679,7 +680,7 @@ aalError OpenALSource::updateBuffers() {
 	AL_CHECK_ERROR("getting processed buffer count")
 	arx_assert(nbuffersProcessed >= 0);
 	
-	ALint maxbuffers = (streaming ? (ALint)NBUFFERS : MAXLOOPBUFFERS);
+	ALint maxbuffers = (m_streaming ? (ALint)NBUFFERS : MAXLOOPBUFFERS);
 	arx_assert(nbuffersProcessed <= maxbuffers);
 	if(loadCount && nbuffersProcessed == maxbuffers) {
 		ALWarning << "buffer underrun detected";
@@ -696,7 +697,7 @@ aalError OpenALSource::updateBuffers() {
 		AL_CHECK_ERROR("unqueueing buffer")
 		
 		size_t i = 0;
-		if(streaming) {
+		if(m_streaming) {
 			for(; buffers[i] != buffer; i++) {
 				arx_assert(i + 1 < NBUFFERS);
 			}
@@ -710,7 +711,7 @@ aalError OpenALSource::updateBuffers() {
 		 */
 		time += bufferSizes[i];
 		
-		if(streaming) {
+		if(m_streaming) {
 			if(loadCount) {
 				fillBuffer(i, stream_limit_bytes);
 				TraceAL("queueing buffer " << buffer);

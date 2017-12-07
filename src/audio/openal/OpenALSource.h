@@ -103,7 +103,7 @@ private:
 	 * For stream mode, the loadCount is decremented after the whole sample has been loaded.
 	 * In that case, written will hold the amount ob bytes already loaded.
 	 */
-	bool streaming;
+	bool m_streaming;
 	unsigned loadCount;
 	size_t written; // Streaming status
 	Stream * stream;
