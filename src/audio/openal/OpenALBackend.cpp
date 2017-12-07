@@ -227,8 +227,10 @@ aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrt
 	platform::EnvironmentLock lock(overrides.m_overrides);
 	
 	// Clear error
-	ALenum error = alGetError();
-	ARX_UNUSED(error);
+	{
+		ALenum error = alGetError();
+		ARX_UNUSED(error);
+	}
 	
 	// Create OpenAL interface
 	device = alcOpenDevice(requestedDeviceName);
