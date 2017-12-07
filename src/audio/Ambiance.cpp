@@ -585,7 +585,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 }
 
 Ambiance::Ambiance(const res::path & _name)
-	: status(Idle)
+	: m_status(Idle)
 	, loop(false)
 	, fade(None)
 	, fade_time(0)
@@ -713,12 +713,12 @@ aalError Ambiance::play(const Channel & channel, bool _loop, PlatformDuration _f
 		track->queued = 0;
 	}
 	
-	status = Playing;
+	m_status = Playing;
 	start = session_time;
 	
 	const Mixer * mixer = g_mixers[m_channel.mixer.handleData()];
 	if(mixer && mixer->isPaused()) {
-		status = Paused;
+		m_status = Paused;
 	}
 	
 	return AAL_OK;
@@ -737,7 +737,7 @@ aalError Ambiance::stop(PlatformDuration _fade_interval) {
 		return AAL_OK;
 	}
 	
-	status = Idle;
+	m_status = Idle;
 	m_time = 0;
 	
 	TrackList::iterator track = tracks.begin();
@@ -757,7 +757,7 @@ aalError Ambiance::pause() {
 		return AAL_ERROR;
 	}
 	
-	status = Paused;
+	m_status = Paused;
 	m_time = session_time - start;
 	
 	TrackList::iterator track = tracks.begin();
@@ -787,7 +787,7 @@ aalError Ambiance::resume() {
 		}
 	}
 	
-	status = Playing;
+	m_status = Playing;
 	start = session_time - m_time;
 	
 	return AAL_OK;

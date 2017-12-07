@@ -72,9 +72,9 @@ public:
 	
 	aalError setVolume(float volume);
 	
-	bool isPaused() const { return status == Paused; }
-	bool isPlaying() const { return status == Playing; }
-	bool isIdle() const { return status == Idle; }
+	bool isPaused() const { return m_status == Paused; }
+	bool isPlaying() const { return m_status == Playing; }
+	bool isIdle() const { return m_status == Idle; }
 	bool isLooped() const { return loop; }
 	
 	aalError play(const Channel & channel, bool loop = true, PlatformDuration fade_interval = 0);
@@ -100,7 +100,7 @@ private:
 		Paused
 	};
 	
-	Status status;
+	Status m_status;
 	bool loop;
 	Fade fade;
 	
