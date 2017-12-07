@@ -440,8 +440,8 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 				LogDebug("ambiance " << ambiance->getName() << ": master track ended");
 				
 				if(ambiance->isLooped()) {
-					TrackList::iterator i = ambiance->tracks.begin();
-					for(; i != ambiance->tracks.end(); ++i) {
+					TrackList::iterator i = ambiance->m_tracks.begin();
+					for(; i != ambiance->m_tracks.end(); ++i) {
 						if(!(i->flags & Track::PREFETCHED)) {
 							i->key_i = i->keys.begin();
 						}
@@ -605,7 +605,7 @@ Ambiance::~Ambiance() {
 
 aalError Ambiance::load() {
 	
-	if(!tracks.empty()) {
+	if(!m_tracks.empty()) {
 		return AAL_ERROR_INIT;
 	}
 	
@@ -630,10 +630,10 @@ aalError Ambiance::load() {
 	if(!file->read(&nbtracks, 4)) {
 		return AAL_ERROR_FILEIO;
 	}
-	tracks.resize(nbtracks, Track(this));
+	m_tracks.resize(nbtracks, Track(this));
 	
-	Ambiance::TrackList::iterator track = tracks.begin();
-	for(; track != tracks.end(); ++track) {
+	Ambiance::TrackList::iterator track = m_tracks.begin();
+	for(; track != m_tracks.end(); ++track) {
 		if(aalError error = track->load(file.get(), version)) {
 			return error;
 		}
@@ -654,8 +654,8 @@ aalError Ambiance::setVolume(float volume) {
 		return AAL_OK;
 	}
 	
-	TrackList::const_iterator track = tracks.begin();
-	for(; track != tracks.end(); ++track) {
+	TrackList::const_iterator track = m_tracks.begin();
+	for(; track != m_tracks.end(); ++track) {
 		if(Source * source = backend->getSource(track->s_id)) {
 			if(track->key_i != track->keys.end()) {
 				source->setVolume(track->key_i->volume.cur * m_channel.volume);
@@ -686,8 +686,8 @@ aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration fad
 		fade = None;
 	}
 	
-	TrackList::iterator track = tracks.begin();
-	for(; track != tracks.end(); ++track) {
+	TrackList::iterator track = m_tracks.begin();
+	for(; track != m_tracks.end(); ++track) {
 		
 		//Init track keys
 		Track::KeyList::iterator key = track->keys.begin();
@@ -740,8 +740,8 @@ aalError Ambiance::stop(PlatformDuration fadeInterval) {
 	m_status = Idle;
 	m_time = 0;
 	
-	TrackList::iterator track = tracks.begin();
-	for(; track != tracks.end(); ++track) {
+	TrackList::iterator track = m_tracks.begin();
+	for(; track != m_tracks.end(); ++track) {
 		if(Source * source = backend->getSource(track->s_id)) {
 			source->stop();
 		}
@@ -760,8 +760,8 @@ aalError Ambiance::pause() {
 	m_status = Paused;
 	m_time = session_time - m_start;
 	
-	TrackList::iterator track = tracks.begin();
-	for(; track != tracks.end(); ++track) {
+	TrackList::iterator track = m_tracks.begin();
+	for(; track != m_tracks.end(); ++track) {
 		if(Source * source = backend->getSource(track->s_id)) {
 			source->pause();
 			track->flags |= Track::PAUSED;
@@ -777,8 +777,8 @@ aalError Ambiance::resume() {
 		return AAL_ERROR;
 	}
 	
-	TrackList::iterator track = tracks.begin();
-	for(; track != tracks.end(); ++track) {
+	TrackList::iterator track = m_tracks.begin();
+	for(; track != m_tracks.end(); ++track) {
 		if(track->flags & Track::PAUSED) {
 			if(Source * source = backend->getSource(track->s_id)) {
 				source->resume();
@@ -824,8 +824,8 @@ aalError Ambiance::update() {
 	}
 	
 	// Update tracks
-	TrackList::iterator track = tracks.begin();
-	for(; track != tracks.end(); ++track) {
+	TrackList::iterator track = m_tracks.begin();
+	for(; track != m_tracks.end(); ++track) {
 		track->update(m_time, interval);
 	}
 	
