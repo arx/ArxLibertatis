@@ -116,7 +116,7 @@ private:
 
 	ALuint m_buffers[NBUFFERS];
 	size_t m_bufferSizes[NBUFFERS];
-	unsigned int * refcount; // reference count for shared buffers
+	unsigned int * m_refcount; // Reference count for shared buffers
 	
 	float m_volume;
 	

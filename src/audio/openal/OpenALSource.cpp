@@ -97,7 +97,7 @@ OpenALSource::OpenALSource(Sample * _sample) :
 	m_streaming(false), m_loadCount(0), m_written(0), m_stream(NULL),
 	m_read(0),
 	m_source(0),
-	refcount(NULL),
+	m_refcount(NULL),
 	m_volume(1.f) {
 	for(size_t i = 0; i < NBUFFERS; i++) {
 		m_buffers[i] = 0;
@@ -132,19 +132,19 @@ OpenALSource::~OpenALSource() {
 				m_buffers[i] = 0;
 			}
 		}
-		arx_assert(!refcount);
+		arx_assert(!m_refcount);
 	} else {
 		if(m_buffers[0]) {
-			arx_assert(!refcount || *refcount > 0);
-			if(!refcount || !--*refcount) {
-				delete refcount, refcount = NULL;
+			arx_assert(!m_refcount || *m_refcount > 0);
+			if(!m_refcount || !--*m_refcount) {
+				delete m_refcount, m_refcount = NULL;
 				TraceAL("deleting buffer " << m_buffers[0]);
 				alDeleteBuffers(1, &m_buffers[0]);
 				nbbuffers--;
 				AL_CHECK_ERROR_N("deleting buffer")
 			}
 		} else {
-			arx_assert(!refcount);
+			arx_assert(!m_refcount);
 		}
 		for(size_t i = 1; i < NBUFFERS; i++) {
 			arx_assert(!m_buffers[i]);
@@ -179,12 +179,12 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 		arx_assert(inst->m_buffers[0] != 0);
 		m_buffers[0] = inst->m_buffers[0];
 		m_bufferSizes[0] = inst->m_bufferSizes[0];
-		if(!inst->refcount) {
-			inst->refcount = new unsigned int;
-			*inst->refcount = 1;
+		if(!inst->m_refcount) {
+			inst->m_refcount = new unsigned int;
+			*inst->m_refcount = 1;
 		}
-		refcount = inst->refcount;
-		(*refcount)++;
+		m_refcount = inst->m_refcount;
+		(*m_refcount)++;
 		
 	}
 	
