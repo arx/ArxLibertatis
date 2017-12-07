@@ -102,7 +102,7 @@ private:
 	
 	Status m_status;
 	bool m_loop;
-	Fade fade;
+	Fade m_fade;
 	
 	Channel m_channel;
 	PlatformDuration m_fadeTime;

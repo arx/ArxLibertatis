@@ -587,7 +587,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 Ambiance::Ambiance(const res::path & _name)
 	: m_status(Idle)
 	, m_loop(false)
-	, fade(None)
+	, m_fade(None)
 	, m_fadeTime(0)
 	, m_fadeInterval(0)
 	, m_fadeMax(0.f)
@@ -678,12 +678,12 @@ aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration fad
 	
 	m_fadeInterval = fadeInterval;
 	if(m_fadeInterval != 0) {
-		fade = FadeUp;
+		m_fade = FadeUp;
 		m_fadeMax = m_channel.volume;
 		m_channel.volume = 0.f;
 		m_fadeTime = 0;
 	} else {
-		fade = None;
+		m_fade = None;
 	}
 	
 	TrackList::iterator track = m_tracks.begin();
@@ -732,7 +732,7 @@ aalError Ambiance::stop(PlatformDuration fadeInterval) {
 	
 	m_fadeInterval = fadeInterval;
 	if(m_fadeInterval != 0) {
-		fade = FadeDown;
+		m_fade = FadeDown;
 		m_fadeTime = 0;
 		return AAL_OK;
 	}
@@ -805,9 +805,9 @@ aalError Ambiance::update() {
 	LogDebug("ambiance \"" << name << "\": update to time=" << toMs(m_time));
 	
 	// Fading
-	if(m_fadeInterval != 0 && fade != None) {
+	if(m_fadeInterval != 0 && m_fade != None) {
 		m_fadeTime += interval;
-		if(fade == FadeUp) {
+		if(m_fade == FadeUp) {
 			m_channel.volume = m_fadeMax * (m_fadeTime / m_fadeInterval);
 			if(m_channel.volume >= m_fadeMax) {
 				m_channel.volume = m_fadeMax;
