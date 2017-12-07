@@ -577,7 +577,7 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 	
 	switch(current->typeinterp) {
 		case INTERP_NO:
-			c->pos = current->pos;
+			c->m_pos = current->pos;
 			c->angz = current->angz;
 			c->m_nextPos = next->pos;
 			c->m_nextAngz = next->angz;
@@ -585,7 +585,7 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 			c->speedtrack = current->speedtrack;
 			break;
 		case INTERP_LINEAR:
-			c->pos = next->pos * a + current->pos * unmoinsa;
+			c->m_pos = next->pos * a + current->pos * unmoinsa;
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 			c->speedtrack = a * next->speedtrack + unmoinsa * current->speedtrack;
 
@@ -603,7 +603,7 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 			const Vec3f nextPos = next->pos;
 			const Vec3f next2Pos = ksuivsuiv->pos;
 			
-			c->pos = arx::catmullRom(prevPos, currentPos, nextPos, next2Pos, a);
+			c->m_pos = arx::catmullRom(prevPos, currentPos, nextPos, next2Pos, a);
 			
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 			
