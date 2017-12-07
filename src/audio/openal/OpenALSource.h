@@ -96,7 +96,7 @@ private:
 	 */
 	bool convertStereoToMono();
 	
-	bool tooFar; // True if the listener is too far from this source.
+	bool m_tooFar; // True if the listener is too far from this source.
 	
 	/*
 	 * Remaining play count, excluding queued buffers.
