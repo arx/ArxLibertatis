@@ -49,8 +49,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include "core/TimeTypes.h"
+#include "io/resource/ResourcePath.h"
 #include "math/Types.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/GraphicsTypes.h"
@@ -201,8 +204,8 @@ void ResetAnim(AnimLayer & layer);
 void AcquireLastAnim(Entity * io);
 void FinishAnim(Entity * io, ANIM_HANDLE * eanim);
 
-void ARX_SOUND_PushAnimSamples();
-void ARX_SOUND_PopAnimSamples();
+std::vector< std::pair<res::path, size_t> > ARX_SOUND_PushAnimSamples();
+void ARX_SOUND_PopAnimSamples(const std::vector< std::pair<res::path, size_t> > & samples);
 
 void ReleaseAnimFromIO(Entity * io, long num);
 

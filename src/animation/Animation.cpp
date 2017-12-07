@@ -52,8 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cstring>
 #include <sstream>
-#include <vector>
-#include <utility>
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -738,13 +736,9 @@ void FinishAnim(Entity * io, ANIM_HANDLE * eanim) {
 	
 }
 
-
-
-std::vector< std::pair<res::path, size_t> > g_animationSamples;
-
-void ARX_SOUND_PushAnimSamples() {
+std::vector< std::pair<res::path, size_t> > ARX_SOUND_PushAnimSamples() {
 	
-	g_animationSamples.clear();
+	std::vector< std::pair<res::path, size_t> > samples;
 	
 	size_t number = 0;
 	
@@ -758,7 +752,7 @@ void ARX_SOUND_PushAnimSamples() {
 						res::path dest;
 						audio::getSampleName(anim->frames[k].sample, dest);
 						if(!dest.empty()) {
-							g_animationSamples.push_back(std::make_pair(dest, number));
+							samples.push_back(std::make_pair(dest, number));
 						}
 					}
 				}
@@ -766,15 +760,16 @@ void ARX_SOUND_PushAnimSamples() {
 		}
 	}
 	
+	return samples;
 }
 
-void ARX_SOUND_PopAnimSamples() {
+void ARX_SOUND_PopAnimSamples(const std::vector< std::pair<res::path, size_t> > & samples) {
 	
-	if(g_animationSamples.empty() || !ARX_SOUND_IsEnabled()) {
+	if(samples.empty() || !ARX_SOUND_IsEnabled()) {
 		return;
 	}
 	
-	std::vector< std::pair<res::path, size_t> >::const_iterator p = g_animationSamples.begin();
+	std::vector< std::pair<res::path, size_t> >::const_iterator p = samples.begin();
 	
 	size_t number = 0;
 	
@@ -784,7 +779,7 @@ void ARX_SOUND_PopAnimSamples() {
 				EERIE_ANIM * anim = animations[i].anims[j];
 				for(long k = 0; k < anim->nb_key_frames; k++) {
 					number++;
-					if(p != g_animationSamples.end() && p->second == number) {
+					if(p != samples.end() && p->second == number) {
 						anim->frames[k].sample = audio::createSample(p->first);
 						++p;
 					}
@@ -792,8 +787,6 @@ void ARX_SOUND_PopAnimSamples() {
 			}
 		}
 	}
-	
-	g_animationSamples.clear();
 	
 }
 
