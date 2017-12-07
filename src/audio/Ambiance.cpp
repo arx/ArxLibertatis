@@ -298,13 +298,13 @@ void Ambiance::Track::keyPlay() {
 		
 		Channel channel;
 		
-		channel.mixer = ambiance->channel.mixer;
+		channel.mixer = ambiance->getChannel().mixer;
 		channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_RELATIVE;
-		channel.flags |= ambiance->channel.flags;
+		channel.flags |= ambiance->getChannel().flags;
 		channel.volume = key_i->volume.cur;
 		
-		if(ambiance->channel.flags & FLAG_VOLUME) {
-			channel.volume *= ambiance->channel.volume;
+		if(ambiance->getChannel().flags & FLAG_VOLUME) {
+			channel.volume *= ambiance->getChannel().volume;
 		}
 		
 		channel.pitch = key_i->pitch.cur;
@@ -312,10 +312,10 @@ void Ambiance::Track::keyPlay() {
 		if(flags & POSITION) {
 			channel.flags |= FLAG_POSITION;
 			channel.position = Vec3f(key_i->x.cur, key_i->y.cur, key_i->z.cur);
-			if(ambiance->channel.flags & FLAG_POSITION) {
-				channel.position += ambiance->channel.position;
+			if(ambiance->getChannel().flags & FLAG_POSITION) {
+				channel.position += ambiance->getChannel().position;
 			}
-			channel.flags |= ambiance->channel.flags & FLAG_REVERBERATION;
+			channel.flags |= ambiance->getChannel().flags & FLAG_REVERBERATION;
 		} else {
 			channel.flags |= FLAG_PAN;
 			channel.pan = key_i->pan.cur;
@@ -488,12 +488,12 @@ void Ambiance::Track::update(PlatformDuration time, PlatformDuration diff) {
 	
 	if(key_i->volume.interval != 0) {
 		float value = key_i->volume.update(time);
-		if(ambiance->channel.flags & FLAG_VOLUME) {
-			value *= ambiance->channel.volume;
+		if(ambiance->getChannel().flags & FLAG_VOLUME) {
+			value *= ambiance->getChannel().volume;
 		}
 		source->setVolume(value);
 	} else {
-		source->setVolume(key_i->volume.cur * ambiance->channel.volume);
+		source->setVolume(key_i->volume.cur * ambiance->getChannel().volume);
 	}
 	if(key_i->pitch.interval != 0) {
 		source->setPitch(key_i->pitch.update(time));
@@ -503,8 +503,8 @@ void Ambiance::Track::update(PlatformDuration time, PlatformDuration diff) {
 		position.x = key_i->x.interval != 0 ? key_i->x.update(time) : key_i->x.cur;
 		position.y = key_i->y.interval != 0 ? key_i->y.update(time) : key_i->y.cur;
 		position.z = key_i->z.interval != 0 ? key_i->z.update(time) : key_i->z.cur;
-		if(ambiance->channel.flags & FLAG_POSITION) {
-			position += ambiance->channel.position;
+		if(ambiance->getChannel().flags & FLAG_POSITION) {
+			position += ambiance->getChannel().position;
 		}
 		source->setPosition(position);
 	} else {
@@ -596,7 +596,7 @@ Ambiance::Ambiance(const res::path & _name)
 	, name(_name)
 	, m_type(PLAYING_AMBIANCE_MENU)
 {
-	channel.flags = 0;
+	m_channel.flags = 0;
 }
 
 Ambiance::~Ambiance() {
@@ -644,11 +644,11 @@ aalError Ambiance::load() {
 
 aalError Ambiance::setVolume(float volume) {
 	
-	if(!(channel.flags & FLAG_VOLUME)) {
+	if(!(m_channel.flags & FLAG_VOLUME)) {
 		return AAL_ERROR_INIT;
 	}
 	
-	channel.volume = glm::clamp(volume, 0.f, 1.f);
+	m_channel.volume = glm::clamp(volume, 0.f, 1.f);
 	
 	if(!isPlaying()) {
 		return AAL_OK;
@@ -658,7 +658,7 @@ aalError Ambiance::setVolume(float volume) {
 	for(; track != tracks.end(); ++track) {
 		if(Source * source = backend->getSource(track->s_id)) {
 			if(track->key_i != track->keys.end()) {
-				source->setVolume(track->key_i->volume.cur * channel.volume);
+				source->setVolume(track->key_i->volume.cur * m_channel.volume);
 			}
 		}
 	}
@@ -666,9 +666,9 @@ aalError Ambiance::setVolume(float volume) {
 	return AAL_OK;
 }
 
-aalError Ambiance::play(const Channel & _channel, bool _loop, PlatformDuration _fade_interval) {
+aalError Ambiance::play(const Channel & channel, bool _loop, PlatformDuration _fade_interval) {
 	
-	channel = _channel;
+	m_channel = channel;
 	
 	if(isPlaying() || isPaused()) {
 		stop();
@@ -679,8 +679,8 @@ aalError Ambiance::play(const Channel & _channel, bool _loop, PlatformDuration _
 	fade_interval = _fade_interval;
 	if(fade_interval != 0) {
 		fade = FadeUp;
-		fade_max = channel.volume;
-		channel.volume = 0.f;
+		fade_max = m_channel.volume;
+		m_channel.volume = 0.f;
 		fade_time = 0;
 	} else {
 		fade = None;
@@ -716,7 +716,7 @@ aalError Ambiance::play(const Channel & _channel, bool _loop, PlatformDuration _
 	status = Playing;
 	start = session_time;
 	
-	const Mixer * mixer = g_mixers[channel.mixer.handleData()];
+	const Mixer * mixer = g_mixers[m_channel.mixer.handleData()];
 	if(mixer && mixer->isPaused()) {
 		status = Paused;
 	}
@@ -808,19 +808,19 @@ aalError Ambiance::update() {
 	if(fade_interval != 0 && fade != None) {
 		fade_time += interval;
 		if(fade == FadeUp) {
-			channel.volume = fade_max * (fade_time / fade_interval);
-			if(channel.volume >= fade_max) {
-				channel.volume = fade_max;
+			m_channel.volume = fade_max * (fade_time / fade_interval);
+			if(m_channel.volume >= fade_max) {
+				m_channel.volume = fade_max;
 				fade_interval = 0;
 			}
 		} else {
-			channel.volume = fade_max - fade_max * (fade_time / fade_interval);
-			if(channel.volume <= 0.f) {
+			m_channel.volume = fade_max - fade_max * (fade_time / fade_interval);
+			if(m_channel.volume <= 0.f) {
 				stop();
 				return AAL_OK;
 			}
 		}
-		channel.volume = LinearToLogVolume(channel.volume);
+		m_channel.volume = LinearToLogVolume(m_channel.volume);
 	}
 	
 	// Update tracks
