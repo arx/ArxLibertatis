@@ -75,7 +75,7 @@ public:
 	bool isPaused() const { return m_status == Paused; }
 	bool isPlaying() const { return m_status == Playing; }
 	bool isIdle() const { return m_status == Idle; }
-	bool isLooped() const { return loop; }
+	bool isLooped() const { return m_loop; }
 	
 	aalError play(const Channel & channel, bool loop = true, PlatformDuration fade_interval = 0);
 	aalError stop(PlatformDuration fade_interval = 0);
@@ -101,7 +101,7 @@ private:
 	};
 	
 	Status m_status;
-	bool loop;
+	bool m_loop;
 	Fade fade;
 	
 	Channel m_channel;
