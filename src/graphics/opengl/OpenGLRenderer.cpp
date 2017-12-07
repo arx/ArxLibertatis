@@ -345,7 +345,12 @@ void OpenGLRenderer::reinit() {
 	if(isES) {
 		m_hasSampleShading = ARX_HAVE_GLES_VER(3, 2) || ARX_HAVE_GLES_EXT(OES_sample_shading);
 	} else {
+		#if ARX_HAVE_GLEW
+		// The extension and core version have different entry points
+		m_hasSampleShading = ARX_HAVE_GL_EXT(ARB_sample_shading);
+		#else
 		m_hasSampleShading = ARX_HAVE_GL_VER(4, 0) || ARX_HAVE_GL_EXT(ARB_sample_shading);
+		#endif
 	}
 	
 	// Synchronize GL state cache
@@ -384,7 +389,11 @@ void OpenGLRenderer::reinit() {
 	glAlphaFunc(GL_GREATER, 0.5f);
 	#ifdef GL_VERSION_4_0
 	if(hasSampleShading()) {
+		#if ARX_HAVE_GLEW
+		glMinSampleShadingARB(1.f);
+		#else
 		glMinSampleShading(1.f);
+		#endif
 	}
 	#endif
 	m_glstate.setAlphaCutout(false);
