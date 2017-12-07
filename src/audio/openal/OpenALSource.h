@@ -110,7 +110,7 @@ private:
 	
 	size_t m_read;
 	
-	ALuint source;
+	ALuint m_source;
 	
 	enum { NBUFFERS = 2 };
 

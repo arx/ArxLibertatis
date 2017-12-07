@@ -57,13 +57,13 @@ static size_t nbbuffers = 0;
 aalError OpenALSource::sourcePlay() {
 	
 	ALint val;
-	alGetSourcei(source, AL_SOURCE_STATE, &val);
+	alGetSourcei(m_source, AL_SOURCE_STATE, &val);
 	AL_CHECK_ERROR("getting source state")
 	
 	if(val == AL_STOPPED) {
 		return updateBuffers();
 	} else if(val == AL_INITIAL || val == AL_PAUSED) {
-		alSourcePlay(source);
+		alSourcePlay(m_source);
 		AL_CHECK_ERROR("playing source")
 		return AAL_OK;
 	} else if(val == AL_PLAYING) {
@@ -77,11 +77,11 @@ aalError OpenALSource::sourcePlay() {
 
 aalError OpenALSource::sourcePause() {
 	
-	alSourcePause(source);
+	alSourcePause(m_source);
 	AL_CHECK_ERROR("pausing source")
 	
 	ALint val;
-	alGetSourcei(source, AL_SOURCE_STATE, &val);
+	alGetSourcei(m_source, AL_SOURCE_STATE, &val);
 	AL_CHECK_ERROR("getting source state")
 	
 	if(val == AL_STOPPED) {
@@ -96,7 +96,7 @@ OpenALSource::OpenALSource(Sample * _sample) :
 	m_tooFar(false),
 	m_streaming(false), m_loadCount(0), m_written(0), m_stream(NULL),
 	m_read(0),
-	source(0),
+	m_source(0),
 	refcount(NULL),
 	m_volume(1.f) {
 	for(size_t i = 0; i < NBUFFERS; i++) {
@@ -108,18 +108,18 @@ OpenALSource::~OpenALSource() {
 	
 	LogAL("clean");
 	
-	if(alIsSource(source)) {
+	if(alIsSource(m_source)) {
 		
-		alSourceStop(source);
+		alSourceStop(m_source);
 		AL_CHECK_ERROR_N("stopping source")
 		
-		alDeleteSources(1, &source);
+		alDeleteSources(1, &m_source);
 		nbsources--;
 		AL_CHECK_ERROR_N("deleting source")
 		
-		source = 0;
+		m_source = 0;
 	} else {
-		arx_assert(!source);
+		arx_assert(!m_source);
 	}
 	
 	if(m_streaming) {
@@ -163,7 +163,7 @@ bool OpenALSource::convertStereoToMono() {
 
 aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _channel) {
 	
-	arx_assert(!source);
+	arx_assert(!m_source);
 	
 	id = _id;
 	
@@ -188,9 +188,9 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 		
 	}
 	
-	alGenSources(1, &source);
+	alGenSources(1, &m_source);
 	nbsources++;
-	alSourcei(source, AL_LOOPING, AL_FALSE);
+	alSourcei(m_source, AL_LOOPING, AL_FALSE);
 	AL_CHECK_ERROR("generating source")
 	
 	m_streaming = (sample->getLength() > (stream_limit_bytes * NBUFFERS));
@@ -219,7 +219,7 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 	setPitch(channel.pitch);
 	
 	if(!(channel.flags & FLAG_POSITION) || (channel.flags & FLAG_RELATIVE)) {
-		alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
+		alSourcei(m_source, AL_SOURCE_RELATIVE, AL_TRUE);
 		AL_CHECK_ERROR("setting relative flag")
 	}
 	
@@ -269,7 +269,7 @@ aalError OpenALSource::fillAllBuffers() {
 		}
 		
 		TraceAL("queueing buffer " << buffers[i]);
-		alSourceQueueBuffers(source, 1, &buffers[i]);
+		alSourceQueueBuffers(m_source, 1, &buffers[i]);
 		AL_CHECK_ERROR("queueing buffer")
 		
 	}
@@ -370,7 +370,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 
 aalError OpenALSource::updateVolume() {
 	
-	if(!alIsSource(source)) {
+	if(!alIsSource(m_source)) {
 		return AAL_ERROR_INIT;
 	}
 	
@@ -382,7 +382,7 @@ aalError OpenALSource::updateVolume() {
 		volume = std::pow(100000.f * volume, channel.volume) / 100000.f;
 	}
 	
-	alSourcef(source, AL_GAIN, volume * m_volume);
+	alSourcef(m_source, AL_GAIN, volume * m_volume);
 	AL_CHECK_ERROR("setting source gain")
 	
 	return AAL_OK;
@@ -390,13 +390,13 @@ aalError OpenALSource::updateVolume() {
 
 aalError OpenALSource::setPitch(float p) {
 	
-	if(!alIsSource(source) || !(channel.flags & FLAG_PITCH)) {
+	if(!alIsSource(m_source) || !(channel.flags & FLAG_PITCH)) {
 		return AAL_ERROR_INIT;
 	}
 	
 	channel.pitch = glm::clamp(p, 0.1f, 2.f);
 	
-	alSourcef(source, AL_PITCH, channel.pitch);
+	alSourcef(m_source, AL_PITCH, channel.pitch);
 	AL_CHECK_ERROR("setting source pitch")
 	
 	return AAL_OK;
@@ -404,7 +404,7 @@ aalError OpenALSource::setPitch(float p) {
 
 aalError OpenALSource::setPan(float pan) {
 	
-	if(!alIsSource(source) || !(channel.flags & FLAG_PAN)) {
+	if(!alIsSource(m_source) || !(channel.flags & FLAG_PAN)) {
 		return AAL_ERROR_INIT;
 	}
 	
@@ -418,7 +418,7 @@ aalError OpenALSource::setPan(float pan) {
 	// Emulate pan using a listener-relative position
 	float distance = 0.1f; // something within the min attenuation distance;
 	Vec3f position = distance * angleToVectorXZ(-channel.pan * 90.f);
-	alSource3f(source, AL_POSITION, position.x, position.z, position.y); // xzy swizzle
+	alSource3f(m_source, AL_POSITION, position.x, position.z, position.y); // xzy swizzle
 	AL_CHECK_ERROR("setting source pan")
 	
 	return AAL_OK;
@@ -426,7 +426,7 @@ aalError OpenALSource::setPan(float pan) {
 
 aalError OpenALSource::setPosition(const Vec3f & position) {
 	
-	if(!alIsSource(source) || !(channel.flags & FLAG_POSITION)) {
+	if(!alIsSource(m_source) || !(channel.flags & FLAG_POSITION)) {
 		return AAL_ERROR_INIT;
 	}
 	
@@ -438,7 +438,7 @@ aalError OpenALSource::setPosition(const Vec3f & position) {
 		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
 	}
 	
-	alSource3f(source, AL_POSITION, position.x, position.y, position.z);
+	alSource3f(m_source, AL_POSITION, position.x, position.y, position.z);
 	AL_CHECK_ERROR("setting source position")
 	
 	return AAL_OK;
@@ -446,7 +446,7 @@ aalError OpenALSource::setPosition(const Vec3f & position) {
 
 aalError OpenALSource::setVelocity(const Vec3f & velocity) {
 	
-	if(!alIsSource(source) || !(channel.flags & FLAG_VELOCITY)) {
+	if(!alIsSource(m_source) || !(channel.flags & FLAG_VELOCITY)) {
 		return AAL_ERROR_INIT;
 	}
 	
@@ -458,7 +458,7 @@ aalError OpenALSource::setVelocity(const Vec3f & velocity) {
 		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
 	}
 	
-	alSource3f(source, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+	alSource3f(m_source, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
 	AL_CHECK_ERROR("setting source velocity")
 	
 	return AAL_OK;
@@ -466,13 +466,13 @@ aalError OpenALSource::setVelocity(const Vec3f & velocity) {
 
 aalError OpenALSource::setDirection(const Vec3f & direction) {
 	
-	if(!alIsSource(source) || !(channel.flags & FLAG_DIRECTION)) {
+	if(!alIsSource(m_source) || !(channel.flags & FLAG_DIRECTION)) {
 		return AAL_ERROR_INIT;
 	}
 	
 	channel.direction = direction;
 	
-	alSource3f(source, AL_DIRECTION, direction.x, direction.y, direction.z);
+	alSource3f(m_source, AL_DIRECTION, direction.x, direction.y, direction.z);
 	AL_CHECK_ERROR("setting source direction")
 	
 	return AAL_OK;
@@ -480,7 +480,7 @@ aalError OpenALSource::setDirection(const Vec3f & direction) {
 
 aalError OpenALSource::setCone(const SourceCone & cone) {
 	
-	if(!alIsSource(source) || !(channel.flags & FLAG_CONE)) {
+	if(!alIsSource(m_source) || !(channel.flags & FLAG_CONE)) {
 		return AAL_ERROR_INIT;
 	}
 	
@@ -488,9 +488,9 @@ aalError OpenALSource::setCone(const SourceCone & cone) {
 	channel.cone.outer_angle = cone.outer_angle;
 	channel.cone.outer_volume = glm::clamp(cone.outer_volume, 0.f, 1.f);
 	
-	alSourcef(source, AL_CONE_INNER_ANGLE, channel.cone.inner_angle);
-	alSourcef(source, AL_CONE_OUTER_ANGLE, channel.cone.outer_angle);
-	alSourcef(source, AL_CONE_OUTER_GAIN, channel.cone.outer_volume);
+	alSourcef(m_source, AL_CONE_INNER_ANGLE, channel.cone.inner_angle);
+	alSourcef(m_source, AL_CONE_OUTER_ANGLE, channel.cone.outer_angle);
+	alSourcef(m_source, AL_CONE_OUTER_GAIN, channel.cone.outer_volume);
 	AL_CHECK_ERROR("setting source cone")
 	
 	return AAL_OK;
@@ -498,14 +498,14 @@ aalError OpenALSource::setCone(const SourceCone & cone) {
 
 aalError OpenALSource::setFalloff(const SourceFalloff & falloff) {
 	
-	if(!alIsSource(source) || !(channel.flags & FLAG_FALLOFF)) {
+	if(!alIsSource(m_source) || !(channel.flags & FLAG_FALLOFF)) {
 		return AAL_ERROR_INIT;
 	}
 	
 	channel.falloff = falloff;
 	
-	alSourcef(source, AL_MAX_DISTANCE, falloff.end);
-	alSourcef(source, AL_REFERENCE_DISTANCE, falloff.start);
+	alSourcef(m_source, AL_MAX_DISTANCE, falloff.end);
+	alSourcef(m_source, AL_REFERENCE_DISTANCE, falloff.start);
 	AL_CHECK_ERROR("setting source falloff")
 	
 	return AAL_OK;
@@ -522,7 +522,7 @@ aalError OpenALSource::play(unsigned play_count) {
 		m_read = m_written = 0;
 		reset();
 		
-		alSourcei(source, AL_SEC_OFFSET, 0);
+		alSourcei(m_source, AL_SEC_OFFSET, 0);
 		AL_CHECK_ERROR("set source offset")
 		
 	} else {
@@ -541,12 +541,12 @@ aalError OpenALSource::play(unsigned play_count) {
 		}
 	} else {
 		ALint queuedBuffers;
-		alGetSourcei(source, AL_BUFFERS_QUEUED, &queuedBuffers);
+		alGetSourcei(m_source, AL_BUFFERS_QUEUED, &queuedBuffers);
 		AL_CHECK_ERROR("getting queued buffer count")
 		size_t nbuffers = MAXLOOPBUFFERS;
 		for(size_t i = queuedBuffers; i < nbuffers && m_loadCount; i++) {
 			TraceAL("queueing buffer " << buffers[0]);
-			alSourceQueueBuffers(source, 1, &buffers[0]);
+			alSourceQueueBuffers(m_source, 1, &buffers[0]);
 			AL_CHECK_ERROR("queueing buffer")
 			markAsLoaded();
 		}
@@ -563,9 +563,9 @@ aalError OpenALSource::stop() {
 	
 	LogAL("stop");
 	
-	alSourceStop(source);
-	alSourceRewind(source);
-	alSourcei(source, AL_BUFFER, 0);
+	alSourceStop(m_source);
+	alSourceRewind(m_source);
+	alSourcei(m_source, AL_BUFFER, 0);
 	AL_CHECK_ERROR("stopping source")
 	
 	if(m_streaming) {
@@ -622,7 +622,7 @@ bool OpenALSource::updateCulling() {
 	arx_assert(status == Playing);
 	
 	if(!(channel.flags & FLAG_POSITION) || !(channel.flags & FLAG_FALLOFF)
-	   || !alIsSource(source)) {
+	   || !alIsSource(m_source)) {
 		return false;
 	}
 	
@@ -671,12 +671,12 @@ aalError OpenALSource::updateBuffers() {
 	
 	// We need to get the source state before the number of processed buffers to prevent a race condition with the source reaching the end of the last buffer.
 	ALint sourceState;
-	alGetSourcei(source, AL_SOURCE_STATE, &sourceState);
+	alGetSourcei(m_source, AL_SOURCE_STATE, &sourceState);
 	AL_CHECK_ERROR("getting source state")
 	arx_assert(sourceState != AL_INITIAL && sourceState != AL_PAUSED);
 	
 	ALint nbuffersProcessed;
-	alGetSourcei(source, AL_BUFFERS_PROCESSED, &nbuffersProcessed);
+	alGetSourcei(m_source, AL_BUFFERS_PROCESSED, &nbuffersProcessed);
 	AL_CHECK_ERROR("getting processed buffer count")
 	arx_assert(nbuffersProcessed >= 0);
 	
@@ -693,7 +693,7 @@ aalError OpenALSource::updateBuffers() {
 	for(ALint c = 0; c < nbuffersProcessed; c++) {
 		
 		ALuint buffer;
-		alSourceUnqueueBuffers(source, 1, &buffer);
+		alSourceUnqueueBuffers(m_source, 1, &buffer);
 		AL_CHECK_ERROR("unqueueing buffer")
 		
 		size_t i = 0;
@@ -715,7 +715,7 @@ aalError OpenALSource::updateBuffers() {
 			if(m_loadCount) {
 				fillBuffer(i, stream_limit_bytes);
 				TraceAL("queueing buffer " << buffer);
-				alSourceQueueBuffers(source, 1, &buffer);
+				alSourceQueueBuffers(m_source, 1, &buffer);
 				AL_CHECK_ERROR("queueing buffer")
 			} else {
 				TraceAL("deleting buffer " << buffer);
@@ -726,7 +726,7 @@ aalError OpenALSource::updateBuffers() {
 			}
 		} else if(m_loadCount) {
 			TraceAL("re-queueing buffer " << buffer);
-			alSourceQueueBuffers(source, 1, &buffer);
+			alSourceQueueBuffers(m_source, 1, &buffer);
 			AL_CHECK_ERROR("queueing buffer")
 			markAsLoaded();
 		}
@@ -739,7 +739,7 @@ aalError OpenALSource::updateBuffers() {
 	aalError ret = AAL_OK;
 	if(oldLoadCount == 0) {
 		ALint buffersQueued;
-		alGetSourcei(source, AL_BUFFERS_QUEUED, &buffersQueued);
+		alGetSourcei(m_source, AL_BUFFERS_QUEUED, &buffersQueued);
 		AL_CHECK_ERROR("getting queued buffer count")
 		if(!buffersQueued) {
 			LogAL("done playing");
@@ -752,7 +752,7 @@ aalError OpenALSource::updateBuffers() {
 			if(nbuffersProcessed != maxbuffers) {
 				ALWarning << "buffer underrun detected";
 			}
-			alSourcePlay(source);
+			alSourcePlay(m_source);
 			AL_CHECK_ERROR("playing source")
 		} else if(sourceState != AL_PLAYING) {
 			ALError << "unexpected source state: " << sourceState;
@@ -764,7 +764,7 @@ aalError OpenALSource::updateBuffers() {
 	// Inform callbacks about the time played.
 	
 	ALint newRead;
-	alGetSourcei(source, AL_BYTE_OFFSET, &newRead);
+	alGetSourcei(m_source, AL_BYTE_OFFSET, &newRead);
 	AL_CHECK_ERROR("getting source byte offset")
 	arx_assert(newRead >= 0);
 	
@@ -783,7 +783,7 @@ aalError OpenALSource::updateBuffers() {
 		 * This will be done in the next updateBuffers() call.
 		 */
 		ALint newSourceState;
-		alGetSourcei(source, AL_SOURCE_STATE, &newSourceState);
+		alGetSourcei(m_source, AL_SOURCE_STATE, &newSourceState);
 		AL_CHECK_ERROR("getting source state")
 		arx_assert(newSourceState == AL_STOPPED);
 		arx_assert(status == Playing);
@@ -809,7 +809,7 @@ bool OpenALSource::markAsLoaded() {
 
 aalError OpenALSource::setRolloffFactor(float factor) {
 	
-	alSourcef(source, AL_ROLLOFF_FACTOR, factor);
+	alSourcef(m_source, AL_ROLLOFF_FACTOR, factor);
 	AL_CHECK_ERROR("setting rolloff factor");
 	
 	return AAL_OK;
@@ -818,7 +818,7 @@ aalError OpenALSource::setRolloffFactor(float factor) {
 #if ARX_HAVE_OPENAL_EFX
 void OpenALSource::setEffectSlot(ALuint slot) {
 	if(channel.flags & FLAG_REVERBERATION) {
-		alSource3i(source, AL_AUXILIARY_SEND_FILTER, slot, 0, AL_FILTER_NULL);
+		alSource3i(m_source, AL_AUXILIARY_SEND_FILTER, slot, 0, AL_FILTER_NULL);
 	}
 }
 #endif
