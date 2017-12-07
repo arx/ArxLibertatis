@@ -111,7 +111,7 @@ private:
 	PlatformInstant m_start;
 	PlatformDuration m_time;
 	
-	TrackList tracks;
+	TrackList m_tracks;
 	
 	res::path name;
 	
