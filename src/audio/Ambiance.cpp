@@ -446,7 +446,7 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 							i->key_i = i->keys.begin();
 						}
 					}
-					ambiance->start = session_time;
+					ambiance->m_start = session_time;
 				} else {
 					ambiance->stop();
 				}
@@ -591,7 +591,7 @@ Ambiance::Ambiance(const res::path & _name)
 	, m_fadeTime(0)
 	, m_fadeInterval(0)
 	, m_fadeMax(0.f)
-	, start(0)
+	, m_start(0)
 	, m_time(0)
 	, name(_name)
 	, m_type(PLAYING_AMBIANCE_MENU)
@@ -714,7 +714,7 @@ aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration fad
 	}
 	
 	m_status = Playing;
-	start = session_time;
+	m_start = session_time;
 	
 	const Mixer * mixer = g_mixers[m_channel.mixer.handleData()];
 	if(mixer && mixer->isPaused()) {
@@ -758,7 +758,7 @@ aalError Ambiance::pause() {
 	}
 	
 	m_status = Paused;
-	m_time = session_time - start;
+	m_time = session_time - m_start;
 	
 	TrackList::iterator track = tracks.begin();
 	for(; track != tracks.end(); ++track) {
@@ -788,7 +788,7 @@ aalError Ambiance::resume() {
 	}
 	
 	m_status = Playing;
-	start = session_time - m_time;
+	m_start = session_time - m_time;
 	
 	return AAL_OK;
 }
@@ -799,7 +799,7 @@ aalError Ambiance::update() {
 		return AAL_OK;
 	}
 	
-	PlatformDuration interval = session_time - (start + m_time);
+	PlatformDuration interval = session_time - (m_start + m_time);
 	m_time += interval;
 	
 	LogDebug("ambiance \"" << name << "\": update to time=" << toMs(m_time));
