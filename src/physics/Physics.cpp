@@ -543,7 +543,7 @@ static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, const EER
 	pol[2] = ep.v[2].p;
 	
 	if(ep.type & POLY_QUAD) {
-			
+		
 		if(IsObjectVertexCollidingTriangle(pbox, pol)) {
 			return true;
 		}
