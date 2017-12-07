@@ -152,7 +152,7 @@ void cinematicRender() {
 	ControlCinematique->Render(diff);
 
 	// end the animation
-	if(   !ControlCinematique->key
+	if(   !ControlCinematique->m_key
 	   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
 	) {
 		StopSoundKeyFramer();

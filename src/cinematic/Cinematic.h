@@ -105,7 +105,7 @@ public:
 	int fx;
 	int m_nextFx;
 	bool changekey;
-	CinematicKeyframe * key;
+	CinematicKeyframe * m_key;
 	bool projectload;
 	short ti;
 	short force;

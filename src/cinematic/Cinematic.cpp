@@ -90,7 +90,7 @@ Cinematic::Cinematic(Vec2i size)
 	, fx(-1)
 	, m_nextFx()
 	, changekey(true)
-	, key(NULL)
+	, m_key(NULL)
 	, projectload(false)
 	, ti(INTERP_BEZIER)
 	, force()
@@ -129,7 +129,7 @@ void Cinematic::OneTimeSceneReInit() {
 	fx = -1;
 	changekey = true;
 	idsound = -1;
-	key = NULL;
+	m_key = NULL;
 	
 	projectload = false;
 	
@@ -152,7 +152,7 @@ void Cinematic::New() {
 	numbitmap = -1;
 	m_nextNumbitmap = -1;
 	fx = -1;
-	key = NULL;
+	m_key = NULL;
 	
 	DeleteTrack();
 	DeleteAllBitmap();
