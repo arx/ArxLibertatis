@@ -178,7 +178,7 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 		
 		arx_assert(inst->m_buffers[0] != 0);
 		m_buffers[0] = inst->m_buffers[0];
-		bufferSizes[0] = inst->bufferSizes[0];
+		m_bufferSizes[0] = inst->m_bufferSizes[0];
 		if(!inst->refcount) {
 			inst->refcount = new unsigned int;
 			*inst->refcount = 1;
@@ -363,7 +363,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	delete[] data;
 	AL_CHECK_ERROR("setting buffer data")
 	
-	bufferSizes[i] = size;
+	m_bufferSizes[i] = size;
 	
 	return AAL_OK;
 }
@@ -703,13 +703,13 @@ aalError OpenALSource::updateBuffers() {
 			}
 		}
 		
-		TraceAL("done playing buffer " << buffer << " (" << i << ") with " << bufferSizes[i] << " bytes");
+		TraceAL("done playing buffer " << buffer << " (" << i << ") with " << m_bufferSizes[i] << " bytes");
 		
 		/*
 		 * We can't use the AL_SIZE buffer attribute here as it describes the internal buffer size,
 		 * which might differ from the original size as the OpenAL implementation may convert the data.
 		 */
-		time += bufferSizes[i];
+		time += m_bufferSizes[i];
 		
 		if(m_streaming) {
 			if(m_loadCount) {
