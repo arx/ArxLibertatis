@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <sstream>
 #include <vector>
+#include <utility>
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -739,85 +740,61 @@ void FinishAnim(Entity * io, ANIM_HANDLE * eanim) {
 
 
 
-static long nbelems = 0;
-static char ** elems = NULL;
-static long * numbers = NULL;
-
-static void ARX_SOUND_FreeAnimSamples() {
-
-	if(elems) {
-		for(long i = 0; i < nbelems; i++) {
-			free(elems[i]);
-			elems[i] = NULL;
-		}
-		free(elems);
-		elems = NULL;
-	}
-	nbelems = 0;
-
-	free(numbers);
-	numbers = NULL;
-}
+std::vector< std::pair<res::path, size_t> > g_animationSamples;
 
 void ARX_SOUND_PushAnimSamples() {
-
-	ARX_SOUND_FreeAnimSamples();
-
-	long number = 0;
-
+	
+	g_animationSamples.clear();
+	
+	size_t number = 0;
+	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-
 		if(!animations[i].path.empty()) {
 			for(long j = 0; j < animations[i].alt_nb; j++) {
 				EERIE_ANIM * anim = animations[i].anims[j];
-
 				for(long k = 0; k < anim->nb_key_frames; k++) {
 					number++;
-
 					if(anim->frames[k].sample != -1) {
 						res::path dest;
 						audio::getSampleName(anim->frames[k].sample, dest);
 						if(!dest.empty()) {
-							elems = (char **)realloc(elems, sizeof(char *) * (nbelems + 1));
-							elems[nbelems] = strdup(dest.string().c_str());
-							numbers = (long *)realloc(numbers, sizeof(long) * (nbelems + 1));
-							numbers[nbelems] = number;
-							nbelems++;
+							g_animationSamples.push_back(std::make_pair(dest, number));
 						}
 					}
 				}
 			}
 		}
 	}
+	
 }
 
 void ARX_SOUND_PopAnimSamples() {
-
-	if(!elems || !ARX_SOUND_IsEnabled()) {
+	
+	if(g_animationSamples.empty() || !ARX_SOUND_IsEnabled()) {
 		return;
 	}
-
-	long curelem = 0;
-	long number = 0;
-
+	
+	std::vector< std::pair<res::path, size_t> >::const_iterator p = g_animationSamples.begin();
+	
+	size_t number = 0;
+	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		if(!animations[i].path.empty()) {
 			for(long j = 0; j < animations[i].alt_nb; j++) {
 				EERIE_ANIM * anim = animations[i].anims[j];
-
 				for(long k = 0; k < anim->nb_key_frames; k++) {
 					number++;
-
-					if(number == numbers[curelem]) {
-						arx_assert(elems[curelem] != NULL);
-						anim->frames[k].sample = audio::createSample(elems[curelem++]);
+					if(p != g_animationSamples.end() && p->second == number) {
+						anim->frames[k].sample = audio::createSample(p->first);
+						++p;
 					}
 				}
 			}
 		}
 	}
-
-	ARX_SOUND_FreeAnimSamples();
+	
+	g_animationSamples.clear();
+	
 }
 
 void ReleaseAnimFromIO(Entity * io, long num) {
