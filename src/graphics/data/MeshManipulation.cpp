@@ -105,17 +105,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 		
 		for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
 			if(obj->originaltextures[i] == skintochange) {
-				skintochange = obj->texturecontainer[i]->m_texName;
-				break;
-			}
-		}
-		
-		TextureContainer * tex2 = TextureContainer::Find(skintochange);
-		if(tex2) {
-			for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
-				if(obj->texturecontainer[i] == tex2) {
-					obj->texturecontainer[i] = tex;
-				}
+				obj->texturecontainer[i] = tex;
 			}
 		}
 		
