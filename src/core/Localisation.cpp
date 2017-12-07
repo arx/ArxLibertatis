@@ -38,7 +38,7 @@
 #include "util/Unicode.h"
 
 namespace {
-IniReader localisation;
+IniReader g_localisation;
 }
 
 static PakFile * autodetectLanguage() {
@@ -111,7 +111,7 @@ bool initLocalisation() {
 	
 	LogDebug("Starting localization");
 	
-	localisation.clear();
+	g_localisation.clear();
 	
 	PakFile * file;
 	
@@ -153,7 +153,7 @@ bool initLocalisation() {
 	if(!out.empty()) {
 		LogDebug("Preparing to parse localisation file");
 		std::istringstream iss(out);
-		if(!::localisation.read(iss)) {
+		if(!::g_localisation.read(iss)) {
 			LogWarning << "Error parsing localisation file localisation/utext_"
 			           << config.language << ".ini";
 		}
@@ -165,12 +165,12 @@ bool initLocalisation() {
 }
 
 long getLocalisedKeyCount(const std::string & sectionname) {
-	return localisation.getKeyCount(sectionname);
+	return g_localisation.getKeyCount(sectionname);
 }
 
 std::string getLocalised(const std::string & name, const std::string & default_value) {
 	
 	arx_assert(name.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ[]") == std::string::npos);
 	
-	return localisation.getKey(name, std::string(), default_value);
+	return g_localisation.getKey(name, std::string(), default_value);
 }
