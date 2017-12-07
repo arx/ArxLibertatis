@@ -108,7 +108,7 @@ private:
 	size_t written; // Streaming status
 	Stream * stream;
 	
-	size_t read;
+	size_t m_read;
 	
 	ALuint source;
 	
