@@ -95,7 +95,7 @@ OpenALSource::OpenALSource(Sample * _sample) :
 	Source(_sample),
 	tooFar(false),
 	streaming(false), loadCount(0), written(0), stream(NULL),
-	read(0),
+	m_read(0),
 	source(0),
 	refcount(NULL),
 	m_volume(1.f) {
@@ -518,7 +518,7 @@ aalError OpenALSource::play(unsigned play_count) {
 		
 		status = Playing;
 		
-		read = written = 0;
+		m_read = written = 0;
 		reset();
 		
 		alSourcei(source, AL_SEC_OFFSET, 0);
@@ -773,12 +773,12 @@ aalError OpenALSource::updateBuffers() {
 		newRead *= 2;
 	}
 	
-	if(newRead == 0 && read != 0 && nbuffersProcessed == 0) {
+	if(newRead == 0 && m_read != 0 && nbuffersProcessed == 0) {
 		/*
 		 * OAL reached the end of the last buffer between the alGetSourcei(AL_BUFFERS_PROCESSED) and
 		 * alGetSourcei(AL_BYTE_OFFSET) calls and was so nice to reset the AL_BYTE_OFFSET to 0
 		 * even though we haven't yet unqueued the buffer.
-		 * We need to process played buffers before we can replace old 'read' with 'newRead.
+		 * We need to process played buffers before we can replace old 'm_read' with 'newRead.
 		 * This will be done in the next updateBuffers() call.
 		 */
 		ALint newSourceState;
@@ -789,15 +789,15 @@ aalError OpenALSource::updateBuffers() {
 		return ret;
 	}
 	
-	time = time - read + newRead;
-	TraceAL("update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
+	time = time - m_read + newRead;
+	TraceAL("update: read " << m_read << " -> " << newRead << "  time " << oldTime << " -> " << time);
 	
 	arx_assert_msg(time >= oldTime, "oldTime=%lu time=%lu read=%lu newRead=%d"
 	               " nbuffersProcessed=%d status=%d sourceState=%d", (unsigned long)oldTime,
-	               (unsigned long)time, (unsigned long)read, newRead, nbuffersProcessed,
+	               (unsigned long)time, (unsigned long)m_read, newRead, nbuffersProcessed,
 	               (int)status, sourceState);
 	ARX_UNUSED(oldTime);
-	read = newRead;
+	m_read = newRead;
 	
 	return ret;
 }
