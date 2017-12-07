@@ -114,7 +114,7 @@ private:
 	
 	enum { NBUFFERS = 2 };
 
-	ALuint buffers[NBUFFERS];
+	ALuint m_buffers[NBUFFERS];
 	size_t bufferSizes[NBUFFERS];
 	unsigned int * refcount; // reference count for shared buffers
 	
