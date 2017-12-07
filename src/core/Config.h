@@ -245,7 +245,8 @@ public:
 	
 private:
 	
-	fs::path file;
+	fs::path m_file;
+	
 };
 
 extern Config config;

@@ -380,15 +380,15 @@ void Config::setActionKey(ControlAction actionId, size_t index, InputKeyId key) 
 	action.key[index] = key;
 }
 
-void Config::setOutputFile(const fs::path & _file) {
-	file = _file;
-	CrashHandler::addAttachedFile(file);
+void Config::setOutputFile(const fs::path & file) {
+	m_file = file;
+	CrashHandler::addAttachedFile(m_file);
 }
 
 bool Config::save() {
 	
 	// Finally save it all to file/stream
-	fs::ofstream out(file);
+	fs::ofstream out(m_file);
 	if(!out.is_open()) {
 		return false;
 	}
