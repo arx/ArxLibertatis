@@ -537,7 +537,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	}
 	Sample * sample = new Sample(res::path::load(sampleName));
 	if(sample->load() || (s_id = g_samples.add(sample)) == INVALID_ID) {
-		LogError << "Ambiance \"" << ambiance->name
+		LogError << "Ambiance \"" << ambiance->getName()
 		         << "\": missing sample \"" << sampleName << '"';
 		delete sample;
 		return AAL_ERROR_FILEIO;
@@ -584,7 +584,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	return AAL_OK;
 }
 
-Ambiance::Ambiance(const res::path & _name)
+Ambiance::Ambiance(const res::path & name)
 	: m_status(Idle)
 	, m_loop(false)
 	, m_fade(None)
@@ -593,14 +593,14 @@ Ambiance::Ambiance(const res::path & _name)
 	, m_fadeMax(0.f)
 	, m_start(0)
 	, m_time(0)
-	, name(_name)
+	, m_name(name)
 	, m_type(PLAYING_AMBIANCE_MENU)
 {
 	m_channel.flags = 0;
 }
 
 Ambiance::~Ambiance() {
-	LogDebug("deleting ambiance " << name);
+	LogDebug("deleting ambiance " << m_name);
 }
 
 aalError Ambiance::load() {
@@ -609,7 +609,7 @@ aalError Ambiance::load() {
 		return AAL_ERROR_INIT;
 	}
 	
-	boost::scoped_ptr<PakFileHandle> file(OpenResource(name, ambiance_path));
+	boost::scoped_ptr<PakFileHandle> file(OpenResource(m_name, ambiance_path));
 	if(!file) {
 		return AAL_ERROR_FILEIO;
 	}
@@ -802,7 +802,7 @@ aalError Ambiance::update() {
 	PlatformDuration interval = session_time - (m_start + m_time);
 	m_time += interval;
 	
-	LogDebug("ambiance \"" << name << "\": update to time=" << toMs(m_time));
+	LogDebug("ambiance \"" << m_name << "\": update to time=" << toMs(m_time));
 	
 	// Fading
 	if(m_fadeInterval != 0 && m_fade != None) {
