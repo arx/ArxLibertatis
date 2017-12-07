@@ -589,7 +589,7 @@ Ambiance::Ambiance(const res::path & _name)
 	, m_loop(false)
 	, fade(None)
 	, m_fadeTime(0)
-	, fade_interval(0)
+	, m_fadeInterval(0)
 	, fade_max(0.f)
 	, start(0)
 	, m_time(0)
@@ -666,7 +666,7 @@ aalError Ambiance::setVolume(float volume) {
 	return AAL_OK;
 }
 
-aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration _fade_interval) {
+aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration fadeInterval) {
 	
 	m_channel = channel;
 	
@@ -676,8 +676,8 @@ aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration _fa
 	
 	m_loop = loop;
 	
-	fade_interval = _fade_interval;
-	if(fade_interval != 0) {
+	m_fadeInterval = fadeInterval;
+	if(m_fadeInterval != 0) {
 		fade = FadeUp;
 		fade_max = m_channel.volume;
 		m_channel.volume = 0.f;
@@ -724,14 +724,14 @@ aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration _fa
 	return AAL_OK;
 }
 
-aalError Ambiance::stop(PlatformDuration _fade_interval) {
+aalError Ambiance::stop(PlatformDuration fadeInterval) {
 	
 	if(isIdle()) {
 		return AAL_OK;
 	}
 	
-	fade_interval = _fade_interval;
-	if(fade_interval != 0) {
+	m_fadeInterval = fadeInterval;
+	if(m_fadeInterval != 0) {
 		fade = FadeDown;
 		m_fadeTime = 0;
 		return AAL_OK;
@@ -805,16 +805,16 @@ aalError Ambiance::update() {
 	LogDebug("ambiance \"" << name << "\": update to time=" << toMs(m_time));
 	
 	// Fading
-	if(fade_interval != 0 && fade != None) {
+	if(m_fadeInterval != 0 && fade != None) {
 		m_fadeTime += interval;
 		if(fade == FadeUp) {
-			m_channel.volume = fade_max * (m_fadeTime / fade_interval);
+			m_channel.volume = fade_max * (m_fadeTime / m_fadeInterval);
 			if(m_channel.volume >= fade_max) {
 				m_channel.volume = fade_max;
-				fade_interval = 0;
+				m_fadeInterval = 0;
 			}
 		} else {
-			m_channel.volume = fade_max - fade_max * (m_fadeTime / fade_interval);
+			m_channel.volume = fade_max - fade_max * (m_fadeTime / m_fadeInterval);
 			if(m_channel.volume <= 0.f) {
 				stop();
 				return AAL_OK;

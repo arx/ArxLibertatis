@@ -77,8 +77,8 @@ public:
 	bool isIdle() const { return m_status == Idle; }
 	bool isLooped() const { return m_loop; }
 	
-	aalError play(const Channel & channel, bool loop = true, PlatformDuration fade_interval = 0);
-	aalError stop(PlatformDuration fade_interval = 0);
+	aalError play(const Channel & channel, bool loop = true, PlatformDuration fadeInterval = 0);
+	aalError stop(PlatformDuration fadeInterval = 0);
 	aalError pause();
 	aalError resume();
 	aalError update();
@@ -106,7 +106,7 @@ private:
 	
 	Channel m_channel;
 	PlatformDuration m_fadeTime;
-	PlatformDuration fade_interval;
+	PlatformDuration m_fadeInterval;
 	float fade_max;
 	PlatformInstant start;
 	PlatformDuration m_time;
