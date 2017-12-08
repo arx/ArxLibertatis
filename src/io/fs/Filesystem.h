@@ -245,6 +245,6 @@ public:
 	
 };
 
-}
+} // namespace fs
 
 #endif // ARX_IO_FS_FILESYSTEM_H
