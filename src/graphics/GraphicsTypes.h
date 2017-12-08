@@ -160,17 +160,18 @@ struct EERIE_FACE {
 };
 
 struct EERIE_ACTIONLIST {
+	
 	std::string name;
 	ActionPoint idx; //index vertex;
 	long act; //action
 	long sfx; //sfx
 	
 	EERIE_ACTIONLIST()
-		: name()
-		, idx(0)
+		: idx(0)
 		, act(0)
 		, sfx(0)
-	{}
+	{ }
+	
 };
 
 struct CUB3D {
@@ -195,21 +196,7 @@ struct EERIE_SELECTIONS {
 	std::vector<size_t> selected;
 };
 
-struct EERIE_FASTACCESS
-{
-	EERIE_FASTACCESS()
-		: view_attach()
-		, primary_attach()
-		, left_attach()
-		, weapon_attach()
-		, secondary_attach()
-		, head_group_origin()
-		, head_group()
-		, fire()
-		, sel_head()
-		, sel_chest()
-		, sel_leggings()
-	{}
+struct EERIE_FASTACCESS {
 	
 	ActionPoint view_attach;
 	ActionPoint primary_attach;
@@ -222,6 +209,7 @@ struct EERIE_FASTACCESS
 	ObjSelection sel_head;
 	ObjSelection sel_chest;
 	ObjSelection sel_leggings;
+	
 };
 
 /////////////////////////////////////////////////////////////////////////////////
