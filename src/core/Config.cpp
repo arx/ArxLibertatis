@@ -171,7 +171,8 @@ const std::string
 	Input = "input",
 	Key = "key",
 	Misc = "misc";
-}
+
+} // namespace Section
 
 namespace Key {
 
