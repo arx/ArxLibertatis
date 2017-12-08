@@ -168,12 +168,12 @@ CollisionMaps collisionMaps;
 
 namespace Section {
 const std::string presence = "presence";
-}
+} // namespace Section
 
 typedef std::map<res::path, float> PresenceFactors;
 PresenceFactors presence;
 
-}
+} // anonymous namespace
 
 audio::MixerId ARX_SOUND_MixerGame;
 audio::MixerId ARX_SOUND_MixerGameSample;
