@@ -30,9 +30,8 @@
 #include "gui/widget/TextWidget.h"
 #include "scene/GameSound.h"
 
-CheckboxWidget::CheckboxWidget(TextWidget * label)
-	: Widget()
-{
+CheckboxWidget::CheckboxWidget(TextWidget * label) {
+	
 	m_id = BUTTON_INVALID; // TODO remove this
 	
 	arx_assert(label);
