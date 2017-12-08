@@ -41,7 +41,7 @@ std::string loadUnlocalized(const std::string & str) {
 }
 
 Context::Context(EERIE_SCRIPT * script, size_t pos, Entity * entity, ScriptMessage msg)
-	: m_script(script), m_pos(pos), m_entity(entity), message(msg) { }
+	: m_script(script), m_pos(pos), m_entity(entity), m_message(msg) { }
 
 std::string Context::getStringVar(const std::string & var) const {
 	return GetVarValueInterpretedAsText(var, getMaster(), m_entity);
