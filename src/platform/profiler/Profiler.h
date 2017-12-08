@@ -26,26 +26,32 @@
 #include "platform/Platform.h"
 
 namespace profiler {
-	
-	//! Initialize the Profiler
-	void initialize();
-	
-	//! Write the collected profile data to disk
-	void flush();
-	
-	void registerThread(const std::string& threadName);
-	void unregisterThread();
-	
+
+//! Initialize the Profiler
+void initialize();
+
+//! Write the collected profile data to disk
+void flush();
+
+void registerThread(const std::string& threadName);
+void unregisterThread();
+
 #if BUILD_PROFILER_INSTRUMENT
-	class Scope {
-		const char * m_tag;
-		PlatformInstant m_startTime;
-		
-	public:
-		explicit Scope(const char* tag);
-		~Scope();
-	};
+	
+class Scope {
+	
+	const char * m_tag;
+	PlatformInstant m_startTime;
+	
+public:
+	
+	explicit Scope(const char* tag);
+	~Scope();
+	
+};
+
 #endif // BUILD_PROFILER_INSTRUMENT
+
 }
 
 #if BUILD_PROFILER_INSTRUMENT
