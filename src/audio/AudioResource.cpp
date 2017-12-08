@@ -62,4 +62,4 @@ PakFileHandle * OpenResource(const res::path & name, const res::path & resource_
 	return file;
 }
 
-} // audio
+} // namespace audio
