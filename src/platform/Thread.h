@@ -43,7 +43,7 @@ class Thread {
 #if ARX_HAVE_PTHREADS
 	
 	pthread_t m_thread;
-	int priority;
+	int m_priority;
 	bool started;
 	
 	static void * entryPoint(void * param);
