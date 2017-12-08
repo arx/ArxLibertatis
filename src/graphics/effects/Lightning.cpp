@@ -68,6 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 
 struct CLightning::LIGHTNING {
+	
 	Vec3f eStart;
 	Vec3f eVect;
 	int anb;
@@ -87,13 +88,13 @@ struct CLightning::LIGHTNING {
 		, fAngleMin(Vec3f_ZERO)
 		, fAngleMax(Vec3f_ZERO)
 	{ }
+	
 };
 
 CLightning::CLightning()
 	: m_pos(Vec3f_ZERO)
 	, m_beta(0.f)
 	, m_alpha(0.f)
-	, m_caster()
 	, m_level(1.f)
 	, m_fDamage(1)
 	, m_isMassLightning(false)
