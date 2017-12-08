@@ -28,17 +28,17 @@
 #include "math/Types.h"
 
 struct VertexGroup {
+	
 	std::string       name;
 	size_t            origin;
 	std::vector<u32> indexes; // TODO use u16 here ?
 	float             siz;
 	
 	VertexGroup()
-		: name()
-		, origin(0)
-		, indexes()
+		: origin(0)
 		, siz(0.0f)
-	{}
+	{ }
+	
 };
 
 struct BoneTransform {
