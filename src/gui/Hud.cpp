@@ -216,8 +216,7 @@ void BookIconGui::MakeBookFX() {
 }
 
 BookIconGui::BookIconGui()
-	: HudIconBase()
-	, m_size(Vec2f(32, 32))
+	: m_size(Vec2f(32, 32))
 	, ulBookHaloTime(0)
 { }
 
@@ -407,10 +406,9 @@ void StealIconGui::draw() {
 
 
 LevelUpIconGui::LevelUpIconGui()
-	: HudIconBase()
-	, m_size(32.f, 32.f)
+	: m_size(32.f, 32.f)
 	, m_visible(false)
-{}
+{ }
 
 void LevelUpIconGui::init() {
 	m_tex = TextureContainer::LoadUI("graph/interface/icons/lvl_up");
@@ -449,10 +447,8 @@ void LevelUpIconGui::draw() {
 
 
 PurseIconGui::PurseIconGui()
-	: HudIconBase()
-	, m_size()
-	, m_haloTime(0)
-{}
+	: m_haloTime(0)
+{ }
 
 void PurseIconGui::init() {
 	m_tex = TextureContainer::LoadUI("graph/interface/inventory/gold");
@@ -518,11 +514,9 @@ void PurseIconGui::draw() {
 
 
 CurrentTorchIconGui::CurrentTorchIconGui()
-	: HudItem()
-	, m_isActive(false)
+	: m_isActive(false)
 	, m_tex(NULL)
-	, m_size()
-{}
+{ }
 
 void CurrentTorchIconGui::init() {
 	m_size = Vec2f(32.f, 64.f);
@@ -692,10 +686,8 @@ void QuickSaveIconGui::draw() {
 
 
 MemorizedRunesHud::MemorizedRunesHud()
-	: HudIconBase()
-	, m_size()
-	, m_count(0)
-{}
+	: m_count(0)
+{ }
 
 void MemorizedRunesHud::update(const Rectf & parent) {
 	int count = 0;
@@ -818,12 +810,11 @@ void HealthGauge::draw() {
 
 
 ManaGauge::ManaGauge()
-	: HudItem()
-	, m_size(33.f, 80.f)
+	: m_size(33.f, 80.f)
 	, m_emptyTex(NULL)
 	, m_filledTex(NULL)
 	, m_amount(0.f)
-{}
+{ }
 
 void ManaGauge::init() {
 	m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/empty_gauge_blue");
@@ -859,8 +850,7 @@ void ManaGauge::draw() {
 
 
 MecanismIcon::MecanismIcon()
-	: HudItem()
-	, m_iconSize(32.f, 32.f)
+	: m_iconSize(32.f, 32.f)
 	, m_tex(NULL)
 	, m_timeToDraw(0)
 	, m_nbToDraw(0)
@@ -905,12 +895,11 @@ void MecanismIcon::draw() {
 
 
 ScreenArrows::ScreenArrows()
-	: HudItem()
-	, m_horizontalArrowSize(8, 16)
+	: m_horizontalArrowSize(8, 16)
 	, m_verticalArrowSize(16, 8)
 	, m_arrowLeftTex(NULL)
 	, fArrowMove(0.f)
-{}
+{ }
 
 void ScreenArrows::init() {
 	m_arrowLeftTex = TextureContainer::LoadUI("graph/interface/icons/arrow_left");
@@ -981,9 +970,7 @@ void PrecastSpellsGui::PrecastSpellIconSlot::draw() {
 	EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
 }
 
-PrecastSpellsGui::PrecastSpellsGui()
-	: HudItem()
-{
+PrecastSpellsGui::PrecastSpellsGui() {
 	m_iconSize = Vec2f(48, 48) / Vec2f(2);
 }
 
@@ -1088,9 +1075,8 @@ void ActiveSpellsGui::ActiveSpellIconSlot::draw() {
 }
 
 ActiveSpellsGui::ActiveSpellsGui()
-	: HudItem()
-	, m_texUnknown(NULL)
-{}
+	: m_texUnknown(NULL)
+{ }
 
 void ActiveSpellsGui::init() {
 	m_texUnknown = TextureContainer::Load("graph/interface/icons/spell_unknown");
@@ -1213,8 +1199,7 @@ void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool f
 
 
 DamagedEquipmentGui::DamagedEquipmentGui()
-	: HudItem()
-	, m_size(64.f, 64.f)
+	: m_size(64.f, 64.f)
 {
 	iconequip[0] = NULL;
 	iconequip[1] = NULL;
@@ -1297,10 +1282,9 @@ void DamagedEquipmentGui::draw() {
 
 
 StealthGauge::StealthGauge()
-	: HudItem()
-	, m_texture(NULL)
+	: m_texture(NULL)
 	, m_visible(false)
-{}
+{ }
 
 void StealthGauge::init() {
 	m_texture = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
