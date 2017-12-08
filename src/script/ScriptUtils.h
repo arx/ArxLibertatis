@@ -85,7 +85,7 @@ class Context {
 	EERIE_SCRIPT * m_script;
 	size_t m_pos;
 	Entity * m_entity;
-	ScriptMessage message;
+	ScriptMessage m_message;
 	std::vector<size_t> stack;
 	
 public:
@@ -126,7 +126,7 @@ public:
 	
 	size_t getPosition() const { return m_pos; }
 	
-	ScriptMessage getMessage() const { return message; }
+	ScriptMessage getMessage() const { return m_message; }
 	
 	friend class ::ScriptEvent;
 };
