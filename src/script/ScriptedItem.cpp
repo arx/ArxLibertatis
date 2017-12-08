@@ -384,7 +384,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 void setupScriptedItem() {
 	
