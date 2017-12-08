@@ -1293,9 +1293,11 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	std::string mainevent = boost::to_lower_copy(util::loadString(ais.mainevent));
 	if(!mainevent.empty()) std::cout << "Main script event: " << mainevent << '\n';
 	
-	std::string target = boost::to_lower_copy(util::loadString(ais.id_targetinfo));
-	if(target != "self") {
-		std::cout << "Target: "; print_ident(save, target); std::cout << '\n';
+	{
+		std::string target = boost::to_lower_copy(util::loadString(ais.id_targetinfo));
+		if(target != "self") {
+			std::cout << "Target: "; print_ident(save, target); std::cout << '\n';
+		}
 	}
 	if(ais.basespeed != 1.f) std::cout << "Base speed: " << ais.basespeed << '\n';
 	if(ais.speed_modif != 0.f) std::cout << "Speed modifier: " << ais.speed_modif << '\n';
