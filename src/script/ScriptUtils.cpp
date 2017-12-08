@@ -41,10 +41,10 @@ std::string loadUnlocalized(const std::string & str) {
 }
 
 Context::Context(EERIE_SCRIPT * script, size_t pos, Entity * entity, ScriptMessage msg)
-	: m_script(script), m_pos(pos), entity(entity), message(msg) { }
+	: m_script(script), m_pos(pos), m_entity(entity), message(msg) { }
 
 std::string Context::getStringVar(const std::string & var) const {
-	return GetVarValueInterpretedAsText(var, getMaster(), entity);
+	return GetVarValueInterpretedAsText(var, getMaster(), m_entity);
 }
 
 #define ScriptParserWarning ARX_LOG(isSuppressed(*this, "?") ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(*this) << ": "
@@ -227,7 +227,7 @@ bool Context::getBool() {
 }
 
 float Context::getFloatVar(const std::string & name) const {
-	return GetVarValueInterpretedAsFloat(name, getMaster(), entity);
+	return GetVarValueInterpretedAsFloat(name, getMaster(), m_entity);
 }
 
 size_t Context::skipCommand() {
