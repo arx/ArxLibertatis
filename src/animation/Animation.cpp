@@ -160,7 +160,7 @@ void setAnimation(Entity * entity, ANIM_HANDLE * animation,
 	}
 }
 
-ANIM_HANDLE::ANIM_HANDLE() : path() {
+ANIM_HANDLE::ANIM_HANDLE() {
 	
 	anims = NULL;
 	alt_nb = 0;
