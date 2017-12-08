@@ -31,6 +31,6 @@ bool isEnabled();
 //! Must be called at the end of each frame
 void endFrame();
 
-}
+} // namespace gldebug
 
 #endif // ARX_GRAPHICS_OPENGL_GLDEBUG_H
