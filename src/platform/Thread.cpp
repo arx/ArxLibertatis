@@ -68,7 +68,7 @@ void Thread::setThreadName(const std::string & _threadName) {
 #endif
 
 Thread::Thread()
-	: thread()
+	: m_thread()
 	, started(false)
 {
 	setPriority(Normal);
@@ -87,7 +87,7 @@ void Thread::start() {
 	param.sched_priority = priority;
 	pthread_attr_setschedparam(&attr, &param);
 	
-	pthread_create(&thread, NULL, entryPoint, this);
+	pthread_create(&m_thread, NULL, entryPoint, this);
 	
 	pthread_attr_destroy(&attr);
 	
@@ -110,7 +110,7 @@ void Thread::setPriority(Priority _priority) {
 	if(started && min != max) {
 		sched_param param;
 		param.sched_priority = priority;
-		pthread_setschedparam(thread, policy, &param);
+		pthread_setschedparam(m_thread, policy, &param);
 	}
 }
 
@@ -118,7 +118,7 @@ Thread::~Thread() { }
 
 void Thread::waitForCompletion() {
 	if(started) {
-		pthread_join(thread, NULL);
+		pthread_join(m_thread, NULL);
 	}
 }
 
@@ -170,13 +170,13 @@ thread_id_type Thread::getCurrentThreadId() {
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 Thread::Thread() {
-	thread = CreateThread(NULL, 0, entryPoint, this, CREATE_SUSPENDED, NULL);
-	arx_assert(thread);
+	m_thread = CreateThread(NULL, 0, entryPoint, this, CREATE_SUSPENDED, NULL);
+	arx_assert(m_thread);
 	setPriority(Normal);
 }
 
 void Thread::start() {
-	DWORD ret = ResumeThread(thread);
+	DWORD ret = ResumeThread(m_thread);
 	arx_assert(ret != (DWORD)-1);
 	ARX_UNUSED(ret);
 }
@@ -193,13 +193,13 @@ void Thread::setPriority(Priority priority) {
 	
 	arx_assert(priority >= Lowest && priority <= Highest);
 	
-	BOOL ret = SetThreadPriority(thread, windowsThreadPriorities[priority - Lowest]);
+	BOOL ret = SetThreadPriority(m_thread, windowsThreadPriorities[priority - Lowest]);
 	arx_assert(ret);
 	ARX_UNUSED(ret);
 }
 
 Thread::~Thread() {
-	CloseHandle(thread);
+	CloseHandle(m_thread);
 }
 
 namespace {
@@ -261,7 +261,7 @@ void Thread::exit() {
 }
 
 void Thread::waitForCompletion() {
-	DWORD ret = WaitForSingleObject(thread, INFINITE);
+	DWORD ret = WaitForSingleObject(m_thread, INFINITE);
 	arx_assert(ret == WAIT_OBJECT_0);
 	ARX_UNUSED(ret);
 }
