@@ -27,9 +27,8 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-CycleTextWidget::CycleTextWidget()
-	: Widget()
-{
+CycleTextWidget::CycleTextWidget() {
+	
 	m_id = BUTTON_INVALID;
 	
 	Vec2f buttonSize = Vec2f(16, 16);
