@@ -44,9 +44,6 @@ class LegacyMathTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE_END();
 	
 public:
-	LegacyMathTest()
-		: CppUnit::TestFixture()
-	{}
 	
 	void setUp();
 	void tearDown();
@@ -70,6 +67,7 @@ public:
 	void focalToFovTest();
 	
 	void pointInerpolationTest();
+	
 };
 
 #endif // ARX_TESTS_GRAPHICS_LEGACYMATHTEST_H
