@@ -61,13 +61,6 @@ public:
 		, m_roll(roll)
 	{ }
 	
-	explicit Angle(const glm::quat & quat) {
-		typename vec3_traits<T>::type v = glm::eulerAngles(quat);
-		m_pitch = glm::degrees(v.x);
-		m_yaw = glm::degrees(v.y);
-		m_roll = glm::degrees(v.z);
-	}
-
 	T getPitch() const {
 		return m_pitch;
 	}
