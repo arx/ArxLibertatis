@@ -45,7 +45,7 @@ public:
 	void RenderMouseOver();
 	void EmptyFunction();
 	
-	boost::function<void(int)> valueChanged;	// NOLINT
+	boost::function<void(int /* state */)> valueChanged;
 	
 	virtual WidgetType type() const {
 		return WidgetType_Slider;
