@@ -264,18 +264,18 @@ bool VisibleSphere(const Sphere & sphere) {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(fartherThan(sphere.origin, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth*0.5f + sphere.radius))
+	if(fartherThan(sphere.origin, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth*0.5f + sphere.radius)) {
 		return false;
-
-	long room_num = ARX_PORTALS_GetRoomNumForPosition(sphere.origin);
-
-	if(room_num>=0) {
-		EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[room_num].frustrum;
-
-		if (FrustrumsClipSphere(frustrums, sphere))
-			return false;
 	}
-
+	
+	long room_num = ARX_PORTALS_GetRoomNumForPosition(sphere.origin);
+	if(room_num >= 0) {
+		EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[room_num].frustrum;
+		if(FrustrumsClipSphere(frustrums, sphere)) {
+			return false;
+		}
+	}
+	
 	return true;
 }
 
@@ -342,12 +342,14 @@ static bool FrustrumsClipBBox3D(const EERIE_FRUSTRUM_DATA & frustrums,
 //   Return a reduced clipbox which can be used for polys clipping in the case of partial visibility
 bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 	
-	if(io==entities.player())
+	if(io == entities.player()) {
 		return false;
-
-	if(io && (io->ioflags & IO_FORCEDRAW))
+	}
+	
+	if(io && (io->ioflags & IO_FORCEDRAW)) {
 		return false;
-
+	}
+	
 	if(portals) {
 		Vec3f posi = position + Vec3f(0, -60, 0); // -20 ?
 		long room_num;
@@ -399,72 +401,65 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag) {
 	
 	EERIEPOLY * ep;
-	
 	if(flag & 1) {
-		ep=CheckInPoly(pos + Vec3f(0.f, -150.f, 0.f));
-
-		if (!ep)
-			ep=CheckInPoly(pos + Vec3f(0.f, -1.f, 0.f));
+		ep = CheckInPoly(pos + Vec3f(0.f, -150.f, 0.f));
+		if(!ep) {
+			ep = CheckInPoly(pos + Vec3f(0.f, -1.f, 0.f));
+		}
 	} else {
-		ep=CheckInPoly(pos);
+		ep = CheckInPoly(pos);
 	}
-
-	if(ep && ep->room>-1) {
+	if(ep && ep->room > -1) {
 		return ep;
 	}
-
+	
 	// Security... ?
 	ep = GetMinPoly(pos);
-
 	if(ep && ep->room > -1) {
 		return ep;
 	} else if( !(flag & 1) ) {
-		ep=CheckInPoly(pos);
-
+		ep = CheckInPoly(pos);
 		if(ep && ep->room > -1) {
 			return ep;
 		}
 	}
-
+	
 	if(flag & 2) {
-		float off=20.f;
-		ep=CheckInPoly(pos + Vec3f(-off, -off, 0.f));
-
+		
+		float off = 20.f;
+		
+		ep = CheckInPoly(pos + Vec3f(-off, -off, 0.f));
 		if(ep && ep->room > -1) {
 			return ep;
 		}
-
-		ep=CheckInPoly(pos + Vec3f(-off, -20, -off));
-
+		
+		ep = CheckInPoly(pos + Vec3f(-off, -20, -off));
 		if(ep && ep->room > -1) {
 			return ep;
 		}
-
-		ep=CheckInPoly(pos + Vec3f(-off, -20, off));
-
+		
+		ep = CheckInPoly(pos + Vec3f(-off, -20, off));
 		if(ep && ep->room > -1) {
 			return ep;
 		}
-
-		ep=CheckInPoly(pos + Vec3f(off, -20, 0.f));
-
+		
+		ep = CheckInPoly(pos + Vec3f(off, -20, 0.f));
 		if(ep && ep->room>-1) {
 			return ep;
 		}
-
-		ep=CheckInPoly(pos + Vec3f(off, -20, off));
-
+		
+		ep = CheckInPoly(pos + Vec3f(off, -20, off));
 		if(ep && ep->room > -1) {
 			return ep;
 		}
-
-		ep=CheckInPoly(pos + Vec3f(off, -20, -off));
-
+		
+		ep = CheckInPoly(pos + Vec3f(off, -20, -off));
 		if(ep && ep->room > -1) {
 			return ep;
 		}
+		
 	}
-
+	
 	return NULL;
 }
 
@@ -472,7 +467,6 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForCamera(const Vec3f & pos, const Vec3
 	
 	{
 		EERIEPOLY * ep = CheckInPoly(pos);
-		
 		if(ep && ep->room > -1) {
 			return ep;
 		}
@@ -480,15 +474,13 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForCamera(const Vec3f & pos, const Vec3
 	
 	{
 		EERIEPOLY * ep = GetMinPoly(pos);
-		
 		if(ep && ep->room > -1) {
 			return ep;
 		}
 	}
 	
-	float dist=0.f;
-	
-	while(dist<=20.f) {
+	float dist = 0.f;
+	while(dist <= 20.f) {
 		
 		Vec3f tmpPos = pos;
 		tmpPos += direction * dist;
@@ -609,8 +601,8 @@ static void ARX_PORTALS_InitDrawnRooms() {
 	RoomDraw.resize(portals->rooms.size());
 
 	for(size_t i = 0; i < RoomDraw.size(); i++) {
-		RoomDraw[i].count=0;
-		RoomDraw[i].frustrum.nb_frustrums=0;
+		RoomDraw[i].count = 0;
+		RoomDraw[i].frustrum.nb_frustrums = 0;
 	}
 
 	RoomDrawList.clear();
@@ -638,11 +630,11 @@ bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, fl
 static bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums,
                               const EERIEPOLY & ep) {
 	
-	for(long i=0; i<frustrums.nb_frustrums; i++) {
+	for(long i = 0; i < frustrums.nb_frustrums; i++) {
 		if(IsSphereInFrustrum(ep.center, frustrums.frustrums[i], ep.v[0].w))
 			return false;
 	}
-
+	
 	return true;
 }
 
@@ -962,7 +954,7 @@ static void RenderLava() {
 	}
 	
 	size_t iNbIndice = 0;
-	int iNb=vPolyLava.size();
+	int iNb = vPolyLava.size();
 	
 	dynamicVertices.lock(iNb * 4);
 	
@@ -1040,16 +1032,16 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 		LogDebug("no vertex data for room " << room_num);
 		return;
 	}
-
-	SMY_VERTEX * pMyVertex = room.pVertexBuffer->lock(NoOverwrite);
-
-	unsigned short *pIndices=room.indexBuffer;
 	
-	for(long lll=0; lll<room.nb_polys; lll++) {
+	SMY_VERTEX * pMyVertex = room.pVertexBuffer->lock(NoOverwrite);
+	
+	unsigned short * pIndices = room.indexBuffer;
+	
+	for(long lll = 0; lll < room.nb_polys; lll++) {
 		const EP_DATA & pEPDATA = room.epdata[lll];
 		
-		BackgroundTileData *feg = &ACTIVEBKG->m_tileData[pEPDATA.tile.x][pEPDATA.tile.y];
-
+		BackgroundTileData * feg = &ACTIVEBKG->m_tileData[pEPDATA.tile.x][pEPDATA.tile.y];
+		
 		if(!feg->treat) {
 			// TODO copy-paste background tiles
 			int tilex = pEPDATA.tile.x;
@@ -1363,33 +1355,33 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 			continue;
 		
 		PortalPoly & epp = po->poly;
-	
-		//clipp NEAR & FAR
-		unsigned char ucVisibilityNear=0;
-		unsigned char ucVisibilityFar=0;
-
-		for(size_t i=0; i<ARRAY_SIZE(epp.p); i++) {
+		
+		unsigned char ucVisibilityNear = 0;
+		unsigned char ucVisibilityFar = 0;
+		
+		for(size_t i = 0; i < ARRAY_SIZE(epp.p); i++) {
 			float fDist0 = distanceToPoint(efpPlaneNear, epp.p[i]);
-
-			if(fDist0 < 0.f)
+			if(fDist0 < 0.f) {
 				ucVisibilityNear++;
-			if(fDist0 > fClippZFar)
+			}
+			if(fDist0 > fClippZFar) {
 				ucVisibilityFar++;
+			}
 		}
-
+		
 		if((ucVisibilityFar & 4) || (ucVisibilityNear & 4)) {
-			po->useportal=2;
+			po->useportal = 2;
 			continue;
 		}
-
+		
 		Vec3f pos = epp.center - camPos;
 		float fRes = glm::dot(pos, epp.norm);
 		
 		if(!IsSphereInFrustrum(epp.center, frustrum, epp.rhw)) {
 			continue;
 		}
-
-		bool Cull = !(fRes<0.f);
+		
+		bool Cull = !(fRes < 0.f);
 		
 		EERIE_FRUSTRUM fd = CreateFrustrum(camPos, epp, Cull);
 
@@ -1403,12 +1395,14 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 			roomToCompute = po->room_1;
 			computeRoom = true;
 		}
-
+		
 		if(computeRoom) {
-			po->useportal=1;
+			po->useportal = 1;
 			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute, fd, camPos, camDepth);
 		}
+		
 	}
+	
 }
 
 void ARX_SCENE_Update() {
@@ -1507,10 +1501,9 @@ void ARX_SCENE_Render() {
 	
 	// To render Dragged objs
 	if(DRAGINTER) {
-		SPECIAL_DRAGINTER_RENDER=1;
+		SPECIAL_DRAGINTER_RENDER = 1;
 		ARX_INTERFACE_RenderCursor(false);
-		
-		SPECIAL_DRAGINTER_RENDER=0;
+		SPECIAL_DRAGINTER_RENDER = 0;
 	}
 	
 	PopAllTriangleListOpaque();
