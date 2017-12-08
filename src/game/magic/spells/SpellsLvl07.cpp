@@ -215,11 +215,7 @@ Vec3f FlyingEyeSpell::getPosition() {
 	return eyeball.pos;
 }
 
-FireFieldSpell::FireFieldSpell()
-	: m_light()
-	, m_damage()
-{
-}
+FireFieldSpell::FireFieldSpell() { }
 
 void FireFieldSpell::Launch() {
 	
@@ -340,17 +336,14 @@ void FireFieldSpell::Update() {
 }
 
 Vec3f FireFieldSpell::getPosition() {
-	
 	return m_pos;
 }
 
 
-
 IceFieldSpell::IceFieldSpell()
-	: SpellBase()
-	, tex_p1(NULL)
+	: tex_p1(NULL)
 	, tex_p2(NULL)
-{}
+{ }
 
 void IceFieldSpell::Launch() {
 	
@@ -635,10 +628,9 @@ void LightningStrikeSpell::Update() {
 
 
 ConfuseSpell::ConfuseSpell()
-	: SpellBase()
-	, tex_p1(NULL)
+	: tex_p1(NULL)
 	, tex_trail(NULL)
-{}
+{ }
 
 void ConfuseSpell::Launch() {
 	
