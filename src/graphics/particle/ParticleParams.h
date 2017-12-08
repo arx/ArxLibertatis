@@ -122,10 +122,8 @@ public:
 		, m_rotation(0)
 		, m_texture()
 		, m_blendMode(RenderMaterial::Additive)
-		, m_startSegment()
-		, m_endSegment()
-		, m_spawnFlags()
-	{}
+	{ }
+	
 };
 
 #endif // ARX_GRAPHICS_PARTICLE_PARTICLEPARAMS_H
