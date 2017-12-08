@@ -690,7 +690,7 @@ void initAnimationNumbers() {
 	
 }
 
-}
+} // anonymous namespace
 
 void setupScriptedAnimation() {
 	
