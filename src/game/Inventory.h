@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class Entity;
 
 struct INVENTORY_SLOT {
+	
 	Entity * io;
 	bool show;
 	
@@ -63,9 +64,11 @@ struct INVENTORY_SLOT {
 		: io(NULL)
 		, show(false)
 	{}
+	
 };
 
 struct INVENTORY_DATA {
+	
 	Entity * io;
 	Vec2s m_size;
 	INVENTORY_SLOT slot[20][20];
@@ -73,8 +76,8 @@ struct INVENTORY_DATA {
 	INVENTORY_DATA()
 		: io(NULL)
 		, m_size(Vec2s(0, 0))
-		, slot()
 	{}
+	
 };
 
 const size_t INVENTORY_BAGS = 3;
@@ -103,8 +106,7 @@ struct InventoryPos {
 	index_type y;
 	
 	InventoryPos()
-		: io()
-		, bag(0)
+		: bag(0)
 		, x(0)
 		, y(0)
 	{}
