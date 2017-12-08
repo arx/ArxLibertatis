@@ -115,6 +115,7 @@ DECLARE_FLAGS_OPERATORS(DisabledEvents)
 typedef std::vector<SCRIPT_VAR> SCRIPT_VARIABLES;
 
 struct EERIE_SCRIPT {
+	
 	size_t size;
 	char * data;
 	SCRIPT_VARIABLES lvar;
@@ -130,7 +131,6 @@ struct EERIE_SCRIPT {
 		: size()
 		, data()
 		, lastcall()
-		, allowevents()
 		, master()
 		, nb_labels()
 		, labels()
@@ -138,6 +138,7 @@ struct EERIE_SCRIPT {
 		memset(&timers, 0, sizeof(timers));
 		memset(&shortcut, 0, sizeof(shortcut));
 	}
+	
 };
 
 struct SCR_TIMER {
@@ -154,8 +155,7 @@ struct SCR_TIMER {
 	EERIE_SCRIPT * es;
 	
 	SCR_TIMER()
-		: name()
-		, exist(0)
+		: exist(0)
 		, flags(0)
 		, count(0)
 		, interval(0)
