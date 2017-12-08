@@ -752,7 +752,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 void setupScriptedIOControl() {
 	
