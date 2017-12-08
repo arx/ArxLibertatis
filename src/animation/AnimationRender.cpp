@@ -603,16 +603,16 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
                                const IO_HALO & halo, TexturedVertex * tvList,
                                const EERIE_3DOBJ * eobj) {
 	
-	float mdist=ACTIVECAM->cdepth;
+	float mdist = ACTIVECAM->cdepth;
 	float ddist = mdist-fdist(t.pos, ACTIVECAM->orgTrans.pos);
 	ddist = ddist/mdist;
 	ddist = glm::pow(ddist, 6.f);
 
 	ddist = glm::clamp(ddist, 0.25f, 0.9f);
-
-	float tot=0;
+	
+	float tot = 0;
 	float _ffr[3];
-
+	
 	for(long o = 0; o < 3; o++) {
 		Vec3f temporary3D;
 		temporary3D = t.rotation * eobj->vertexlist[face.vid[o]].norm;
