@@ -53,7 +53,7 @@ public:
 	enum Cmd {insert, remove, replace};
 	
 	CharCommand(XByteArray * xData, Cmd cmd, int charPos, char newChar,
-	            QUndoCommand * parent=0);
+	            QUndoCommand * parent = 0);
 	
 	void undo();
 	void redo();
