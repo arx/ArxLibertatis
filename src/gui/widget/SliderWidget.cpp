@@ -28,9 +28,8 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-SliderWidget::SliderWidget(const Vec2f & unscaled)
-	: Widget()
-{
+SliderWidget::SliderWidget(const Vec2f & unscaled) {
+	
 	m_id = BUTTON_INVALID;
 	
 	Vec2f pos = RATIO_2(unscaled);
