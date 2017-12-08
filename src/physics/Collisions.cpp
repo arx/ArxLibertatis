@@ -59,18 +59,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 
-//-----------------------------------------------------------------------------
-long ON_PLATFORM=0;
-//-----------------------------------------------------------------------------
+long ON_PLATFORM = 0;
 size_t EXCEPTIONS_LIST_Pos = 0;
 EntityHandle EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
 
 static long POLYIN = 0;
-long COLLIDED_CLIMB_POLY=0;
-long MOVING_CYLINDER=0;
+long COLLIDED_CLIMB_POLY = 0;
+long MOVING_CYLINDER = 0;
  
 Vec3f vector2D;
-bool DIRECT_PATH=true;
+bool DIRECT_PATH = true;
 
 //-----------------------------------------------------------------------------
 // Added immediate return (return anything;)
@@ -186,11 +184,12 @@ inline float IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, long f
 			if(!(flags & CFLAG_EXTRA_PRECISION))
 				return anything;
 		}
-
+		
 		r++;
-
-		if(r >= to)
-			r=0;
+		if(r >= to) {
+			r = 0;
+		}
+		
 	}
 	
 	if(anything != 999999.f && ep.norm.y < 0.1f && ep.norm.y > -0.1f)
@@ -310,7 +309,7 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 						cx *= (1.f/3);
 						cz *= (1.f/3);
 						
-						float tval=1.1f;
+						float tval = 1.1f;
 						
 						for(int kk = 0; kk < 3; kk++) {
 							ep.v[kk].p.x = (ep.v[kk].p.x - cx) * tval + cx;
@@ -397,40 +396,37 @@ static bool CollidedFromBack(Entity * io, Entity * ioo) {
 	
 	// io was collided from back ?
 	EERIEPOLY ep;
-	ep.type=0;
-
-	if(io
-	   && ioo
-	   && (io->ioflags & IO_NPC)
-	   && (ioo->ioflags & IO_NPC)
-	) {
-
-	ep.v[0].p.x=io->pos.x;
-	ep.v[0].p.z=io->pos.z;
-
-	float ft = glm::radians(135.f + 90.f);
-	ep.v[1].p.x =  std::sin(ft) * 180.f;
-	ep.v[1].p.z = -std::cos(ft) * 180.f;
-
-	ft = glm::radians(225.f + 90.f);
-	ep.v[2].p.x =  std::sin(ft) * 180.f;
-	ep.v[2].p.z = -std::cos(ft) * 180.f;
-
-	float angle = 270.f - io->angle.getYaw();
-	Vec3f p1 = VRotateY(ep.v[1].p, angle);
-	Vec3f p2 = VRotateY(ep.v[2].p, angle);
+	ep.type = 0;
 	
-	ep.v[1].p.x=p1.x+ep.v[0].p.x;
-	ep.v[1].p.z=p1.z+ep.v[0].p.z;
-	ep.v[2].p.x=p2.x+ep.v[0].p.x;
-	ep.v[2].p.z=p2.z+ep.v[0].p.z;
-
-	// To keep if we need some visual debug
-	if(PointIn2DPolyXZ(&ep, ioo->pos.x, ioo->pos.z))
-		return true;
-
+	if(io && ioo && (io->ioflags & IO_NPC) && (ioo->ioflags & IO_NPC)) {
+		
+		ep.v[0].p.x = io->pos.x;
+		ep.v[0].p.z = io->pos.z;
+		
+		float ft = glm::radians(135.f + 90.f);
+		ep.v[1].p.x =  std::sin(ft) * 180.f;
+		ep.v[1].p.z = -std::cos(ft) * 180.f;
+		
+		ft = glm::radians(225.f + 90.f);
+		ep.v[2].p.x =  std::sin(ft) * 180.f;
+		ep.v[2].p.z = -std::cos(ft) * 180.f;
+		
+		float angle = 270.f - io->angle.getYaw();
+		Vec3f p1 = VRotateY(ep.v[1].p, angle);
+		Vec3f p2 = VRotateY(ep.v[2].p, angle);
+		
+		ep.v[1].p.x = p1.x + ep.v[0].p.x;
+		ep.v[1].p.z = p1.z + ep.v[0].p.z;
+		ep.v[2].p.x = p2.x + ep.v[0].p.x;
+		ep.v[2].p.z = p2.z + ep.v[0].p.z;
+		
+		// To keep if we need some visual debug
+		if(PointIn2DPolyXZ(&ep, ioo->pos.x, ioo->pos.z)) {
+			return true;
+		}
+		
 	}
-
+	
 	return false;
 }
 
@@ -888,19 +884,16 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 
 			long amount = 1;
 			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
-
+			
 			if(io->obj->grouplist.size() > 4) {
 				for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
 					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
-
 						sphereContent.push_back(ret_idx);
-
 						vreturn = true;
 						goto suivant;
 					}
 				}
-
-				amount=2;
+				amount = 2;
 			}
 			
 			for(size_t ii = 0; ii < io->obj->facelist.size(); ii += amount) {
@@ -1052,13 +1045,14 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 							ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
 							ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 						}
-
+						
 						if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
-							if(num)
-								*num=treatio[i].io->index();
-
+							if(num) {
+								*num = treatio[i].io->index();
+							}
 							return true;
 						}
+						
 					}
 				}
 			}
@@ -1115,20 +1109,19 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 	   && (entity.obj)
 	) {
 		if(closerThan(entity.pos, sphere.origin, sr180)) {
+			
 			std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
-
-			if(entity.obj->grouplist.size()>10) {
-				long count=0;
-				long ii=entity.obj->grouplist.size()-1;
-
+			
+			if(entity.obj->grouplist.size() > 10) {
+				long count = 0;
+				long ii = entity.obj->grouplist.size() - 1;
 				while(ii) {
 					if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
 						count++;
-
-						if(count>3)
+						if(count > 3) {
 							return true;
+						}
 					}
-
 					ii--;
 				}
 			}
@@ -1147,7 +1140,7 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 			else
 				step = 7;
 			
-			long count=0;
+			long count = 0;
 			
 			for(size_t ii = 0; ii < vlist.size(); ii += step) {
 				if(closerThan(vlist[ii].v, sphere.origin, sr30)) {
@@ -1188,8 +1181,8 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 	return false;
 }
 
+float MAX_ALLOWED_PER_SECOND = 12.f;
 
-float MAX_ALLOWED_PER_SECOND=12.f;
 //-----------------------------------------------------------------------------
 // Checks if a position is valid, Modify it for height if necessary
 // Returns true or false
@@ -1341,8 +1334,8 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 	}
 	
 	Vec3f mvector = (ip->targetpos - ip->startpos) / distance;
-	long count=100;
-
+	
+	long count = 100;
 	while(distance > 0.f && count--) {
 		// First We compute current increment
 		float curmovedist = std::min(distance, MOVE_CYLINDER_STEP);
