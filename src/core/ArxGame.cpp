@@ -1069,7 +1069,7 @@ void ArxGame::shutdownGame() {
 	config.save();
 	
 	RoomDrawRelease();
-	EXITING=1;
+	EXITING = 1;
 	TREATZONE_Release();
 	ClearTileLights();
 	
@@ -1316,14 +1316,13 @@ void ArxGame::updateFirstPersonCamera() {
 	ANIM_HANDLE ** alist = io->anims;
 
 	if(player.m_bowAimRatio != 0.f
-		&& (layer1.cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_1])
-		&& (layer1.cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_2])
-		&& (layer1.cur_anim!=alist[ANIM_MISSILE_STRIKE_CYCLE]))
-	{
+	   && layer1.cur_anim != alist[ANIM_MISSILE_STRIKE_PART_1]
+	   && layer1.cur_anim != alist[ANIM_MISSILE_STRIKE_PART_2]
+	   && layer1.cur_anim != alist[ANIM_MISSILE_STRIKE_CYCLE]) {
 		player.m_bowAimRatio -= bowZoomFromDuration(toMs(g_platformTime.lastFrameDuration()));
-
-		if(player.m_bowAimRatio < 0)
+		if(player.m_bowAimRatio < 0) {
 			player.m_bowAimRatio = 0;
+		}
 	}
 
 	if(eyeball.exist == 2) {
@@ -1331,7 +1330,7 @@ void ArxGame::updateFirstPersonCamera() {
 		subj.d_angle = eyeball.angle;
 		EXTERNALVIEW = true;
 	} else if(EXTERNALVIEW) {
-		for(long l=0; l < 250; l += 10) {
+		for(long l = 0; l < 250; l += 10) {
 			Vec3f tt = player.pos;
 			tt += angleToVectorXZ_180offset(player.angle.getYaw()) * float(l);
 			tt += Vec3f(0.f, -50.f, 0.f);
@@ -1398,9 +1397,9 @@ void ArxGame::speechControlledCinematic() {
 		float rtime = elapsed / aspeech[valid].duration;
 
 		rtime = glm::clamp(rtime, 0.f, 1.f);
-
-		float itime=1.f-rtime;
-
+		
+		float itime = 1.f - rtime;
+		
 		if(rtime >= 0.f && rtime <= 1.f && io) {
 			switch(acs.type) {
 				
@@ -1450,13 +1449,13 @@ void ArxGame::speechControlledCinematic() {
 						
 						Vec3f vect = glm::normalize(to - from);
 						Vec3f vect2;
-						if(acs.type==ARX_CINE_SPEECH_SIDE_LEFT) {
+						if(acs.type == ARX_CINE_SPEECH_SIDE_LEFT) {
 							vect2 = VRotateY(vect, -90.f);
 						} else {
 							vect2 = VRotateY(vect, 90.f);
 						}
 						
-						float distance=acs.m_startdist*itime+acs.m_enddist*rtime;
+						float distance = acs.m_startdist * itime + acs.m_enddist * rtime;
 						vect2 *= distance;
 						float _dist = glm::distance(from, to);
 						Vec3f tfrom = from + vect * acs.startpos * (1.0f / 100) * _dist;
@@ -1504,7 +1503,7 @@ void ArxGame::speechControlledCinematic() {
 						Vec3f vect3 = glm::normalize(vect);
 						vect = vect * distance + vect3 * 80.f;
 						vect2 *= 45.f;
-						if(acs.type == ARX_CINE_SPEECH_CCCLISTENER_R || acs.type==ARX_CINE_SPEECH_CCCTALKER_R) {
+						if(acs.type == ARX_CINE_SPEECH_CCCLISTENER_R || acs.type == ARX_CINE_SPEECH_CCCTALKER_R) {
 							vect2 = -vect2;
 						}
 						
@@ -1563,9 +1562,9 @@ void ArxGame::handlePlayerDeath() {
 		conversationcamera.orgTrans.pos.y -= DeadCameraDistance;
 
 		conversationcamera.setTargetCamera(targetpos);
-		subj.orgTrans.pos=conversationcamera.orgTrans.pos;
+		subj.orgTrans.pos = conversationcamera.orgTrans.pos;
 		subj.angle.setPitch(MAKEANGLE(-conversationcamera.angle.getPitch()));
-		subj.angle.setYaw(MAKEANGLE(conversationcamera.angle.getYaw()-180.f));
+		subj.angle.setYaw(MAKEANGLE(conversationcamera.angle.getYaw() - 180.f));
 		subj.angle.setRoll(0);
 		EXTERNALVIEW = true;
 		BLOCK_PLAYER_CONTROLS = true;
@@ -1579,12 +1578,13 @@ void ArxGame::updateActiveCamera() {
 	EERIE_CAMERA * cam = NULL;
 
 	if(MasterCamera.exist) {
+		
 		if(MasterCamera.exist & 2) {
 			MasterCamera.exist &= ~2;
 			MasterCamera.exist |= 1;
-			MasterCamera.io=MasterCamera.want_io;
+			MasterCamera.io = MasterCamera.want_io;
 		}
-
+		
 		cam = &MasterCamera.io->_camdata->cam;
 
 		if(cam->focal < 100.f)
