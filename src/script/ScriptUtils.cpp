@@ -255,7 +255,7 @@ size_t Context::skipCommand() {
 bool Context::jumpToLabel(const std::string & target, bool substack) {
 	
 	if(substack) {
-		stack.push_back(m_pos);
+		m_stack.push_back(m_pos);
 	}
 	
 	long targetpos = FindScriptPos(m_script, ">>" + target);
@@ -269,12 +269,12 @@ bool Context::jumpToLabel(const std::string & target, bool substack) {
 
 bool Context::returnToCaller() {
 	
-	if(stack.empty()) {
+	if(m_stack.empty()) {
 		return false;
 	}
 	
-	m_pos = stack.back();
-	stack.pop_back();
+	m_pos = m_stack.back();
+	m_stack.pop_back();
 	return true;
 }
 
