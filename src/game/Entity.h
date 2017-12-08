@@ -135,6 +135,7 @@ struct IO_TWEAKER_INFO {
 };
 
 struct IO_SPELLCAST_DATA {
+	
 	SpellType castingspell; // spell being casted...
 	Rune symb[4]; // symbols to draw before casting...
 	SpellcastFlags spell_flags;
@@ -144,14 +145,14 @@ struct IO_SPELLCAST_DATA {
 	
 	IO_SPELLCAST_DATA()
 		: castingspell(SPELL_NONE)
-		, spell_flags()
 		, spell_level(0)
-		, target()
 		, duration(0)
 	{
-		for(unsigned long j(0); j < 4; j++)
+		for(unsigned long j(0); j < 4; j++) {
 			symb[j] = RUNE_NONE;
+		}
 	}
+	
 };
 
 enum EntityFlag {
