@@ -849,7 +849,6 @@ struct HaloRenderInfo {
 	
 	HaloRenderInfo()
 		: halo(NULL)
-		, selection()
 	{ }
 	
 	explicit  HaloRenderInfo(IO_HALO * halo_, ObjSelection selection_ = ObjSelection())
@@ -859,6 +858,7 @@ struct HaloRenderInfo {
 	
 	IO_HALO * halo;
 	ObjSelection selection;
+	
 };
 
 struct HaloInfo {
