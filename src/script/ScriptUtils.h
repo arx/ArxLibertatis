@@ -84,7 +84,7 @@ class Context {
 	
 	EERIE_SCRIPT * m_script;
 	size_t m_pos;
-	Entity * entity;
+	Entity * m_entity;
 	ScriptMessage message;
 	std::vector<size_t> stack;
 	
@@ -102,7 +102,7 @@ public:
 	
 	void skipWhitespace(bool skipNewlines = false);
 	
-	Entity * getEntity() const { return entity; }
+	Entity * getEntity() const { return m_entity; }
 	
 	bool getBool();
 	
