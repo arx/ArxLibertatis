@@ -26,7 +26,6 @@
 
 SpellBase::SpellBase()
 	: m_level(1.f)
-	, m_hand_group()
 	, m_type(SPELL_NONE)
 	, m_timcreation(0)
 	, m_hasDuration(false)
