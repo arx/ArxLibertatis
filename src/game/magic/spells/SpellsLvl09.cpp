@@ -61,11 +61,7 @@ SummonCreatureSpell::SummonCreatureSpell()
 	: m_targetPos(Vec3f_ZERO)
 	, m_megaCheat(false)
 	, m_requestSummon(false)
-	, m_summonedEntity()
-{
-	
-}
-
+{ }
 
 bool SummonCreatureSpell::CanLaunch() {
 	
