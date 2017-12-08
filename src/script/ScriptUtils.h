@@ -135,7 +135,7 @@ public:
 
 class Command : private boost::noncopyable {
 	
-	const std::string name;
+	const std::string m_name;
 	const long entityFlags;
 	
 public:
@@ -152,13 +152,13 @@ public:
 	static const long AnyEntity = -1;
 	
 	explicit Command(const std::string & name, long entityFlags = 0)
-		: name(name), entityFlags(entityFlags) { }
+		: m_name(name), entityFlags(entityFlags) { }
 	
 	virtual Result execute(Context & context) = 0;
 	
 	virtual ~Command() { }
 	
-	const std::string & getName() const { return name; }
+	const std::string & getName() const { return m_name; }
 	long getEntityFlags() const { return entityFlags; }
 };
 
