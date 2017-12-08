@@ -32,9 +32,6 @@ class ResourcePathTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE_END();
 	
 public:
-	ResourcePathTest()
-		: CppUnit::TestFixture()
-	{}
 	
 	void testLoad(const char * input, const char * expected);
 	void testResolve(const char * left, const char * right, const char * expected);
@@ -43,6 +40,7 @@ public:
 	void loadTest();
 	void resolveTest();
 	void parentTest();
+	
 };
 
 #endif // ARX_TESTS_IO_RESOURCE_RESOURCEPATHTEST_H
