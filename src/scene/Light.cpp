@@ -65,7 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-static const float GLOBAL_LIGHT_FACTOR=0.85f;
+static const float GLOBAL_LIGHT_FACTOR = 0.85f;
 
 static const Color3f defaultAmbient = Color3f(0.09f, 0.09f, 0.09f);
 static const int NPC_ITEMS_AMBIENT_VALUE_255 = 35;
@@ -458,16 +458,17 @@ static void Insertllight(boost::array<EERIE_LIGHT *, llightsSize> & llights,
 		
 		dist -= el->fallstart;
 	}
-
+	
 	float threshold = el->fallend + 560.f;
-	if(dist > threshold)
+	if(dist > threshold) {
 		return;
-
+	}
+	
 	float val = dist - el->fallend;
-
-	if(val < 0)
-		val=0;
-
+	if(val < 0) {
+		val = 0;
+	}
+	
 	for(size_t i = 0; i < MAX_LLIGHTS; i++) {
 		if(!llights[i]) {
 			llights[i]=el;
