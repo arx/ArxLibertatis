@@ -90,7 +90,6 @@ void cursorSetRedistribute(long value) {
 
 
 extern float STARTED_ANGLE;
-long SPECIAL_DRAGINTER_RENDER=0;
 
 EntityMoveCursor CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
 
@@ -143,7 +142,7 @@ void cursorTexturesInit() {
 }
 
 
-bool Manage3DCursor(Entity * io, bool simulate) {
+bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 	
 	arx_assert(io);
 	
@@ -283,7 +282,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 			
 			glm::quat rotation = glm::quat_cast(toRotationMatrix(angle));
 			
-			if(SPECIAL_DRAGINTER_RENDER) {
+			if(draginter) {
 			if(glm::abs(lastanything) > glm::abs(height)) {
 				TransformInfo t(collidpos, rotation, io->scale);
 
@@ -349,9 +348,8 @@ float fHighLightAng=0.f;
 
 static bool SelectSpellTargetCursorRender() {
 	
-	if(   !SPECIAL_DRAGINTER_RENDER
-	   && LOOKING_FOR_SPELL_TARGET
-	) {
+	if(LOOKING_FOR_SPELL_TARGET) {
+		
 		GameDuration elapsed = g_gameTime.now() - LOOKING_FOR_SPELL_TARGET_TIME;
 		if(elapsed > GameDurationMs(7000)) {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
@@ -391,6 +389,7 @@ static bool SelectSpellTargetCursorRender() {
 		
 		return true;
 	}
+	
 	return false;
 }
 
@@ -450,11 +449,11 @@ CursorAnimatedHand cursorAnimatedHand = CursorAnimatedHand();
 
 
 
-static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
+static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 	
 	UseRenderState state(render2D());
 	
-	if(SelectSpellTargetCursorRender()) {
+	if(!draginter && SelectSpellTargetCursorRender()) {
 		return;
 	}
 	
@@ -473,7 +472,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		SpecialCursor = CURSOR_READY_WEAPON;
 	}
 	
-	if(!SPECIAL_DRAGINTER_RENDER) {
+	if(!draginter) {
 		if(FlyingOverIO || DRAGINTER) {
 			fHighLightAng += toMs(g_platformTime.lastFrameDuration()) * 0.5f;
 			
@@ -515,10 +514,10 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		   && !InInventoryPos(DANAEMouse)
 		   && !g_cursorOverBook
 		) {
-			if(!Manage3DCursor(DRAGINTER, true))
+			if(!Manage3DCursor(DRAGINTER, true, draginter))
 				CANNOT_PUT_IT_HERE = EntityMoveCursor_Throw;
 			
-			if(SPECIAL_DRAGINTER_RENDER) {
+			if(draginter) {
 				CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
 				return;
 			}
@@ -526,8 +525,9 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			CANNOT_PUT_IT_HERE = EntityMoveCursor_Throw;
 		}
 		
-		if(SPECIAL_DRAGINTER_RENDER)
+		if(draginter) {
 			return;
+		}
 		
 		Vec2f mousePos = Vec2f(DANAEMouse);
 		
@@ -734,8 +734,10 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			}
 		}
 	} else { //mode system shock
-		if(SPECIAL_DRAGINTER_RENDER)
+		
+		if(draginter) {
 			return;
+		}
 		
 		if(   TRUE_PLAYER_MOUSELOOK_ON
 		   && config.interface.showCrosshair
@@ -758,13 +760,11 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 	}
 }
 
-void ARX_INTERFACE_RenderCursor(bool flag) {
+void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 	
 	ARX_PROFILE_FUNC();
 	
-	if (!SPECIAL_DRAGINTER_RENDER)
-	{
-		
+	if(!draginter) {
 		TextureStage::FilterMode filter = TextureStage::FilterLinear;
 		if(config.interface.hudScaleFilter == UIFilterNearest) {
 			filter = TextureStage::FilterNearest;
@@ -773,14 +773,14 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 		GRenderer->GetTextureStage(0)->setMagFilter(filter);
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	}
-
-	ARX_INTERFACE_RenderCursorInternal(flag);
-
+	
+	ARX_INTERFACE_RenderCursorInternal(flag, draginter);
+	
 	// Ensure filtering settings are restored in all cases
-	if (!SPECIAL_DRAGINTER_RENDER)
-	{
+	if(!draginter) {
 		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	}
+	
 }
