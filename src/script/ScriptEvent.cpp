@@ -237,7 +237,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 } // namespace script
 
