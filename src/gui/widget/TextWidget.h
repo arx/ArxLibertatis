@@ -39,8 +39,8 @@ public:
 	Color lColorHighlight;
 	bool bSelected;
 	
-	boost::function<void(TextWidget *)> clicked; // NOLINT
-	boost::function<void(TextWidget *)> doubleClicked; // NOLINT
+	boost::function<void(TextWidget * /* widget */)> clicked;
+	boost::function<void(TextWidget * /* widget */)> doubleClicked;
 	
 	// TODO followind fields only used for keybinds
 	bool m_isKeybind;

@@ -45,7 +45,7 @@ public:
 	int iState;
 	int iOldState;
 	
-	boost::function<void(int)> stateChanged; // NOLINT
+	boost::function<void(int /* state */)> stateChanged;
 	
 	virtual WidgetType type() const {
 		return WidgetType_Checkbox;
