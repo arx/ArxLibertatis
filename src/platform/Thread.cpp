@@ -84,7 +84,7 @@ void Thread::start() {
 	pthread_attr_init(&attr);
 	
 	sched_param param;
-	param.sched_priority = priority;
+	param.sched_priority = m_priority;
 	pthread_attr_setschedparam(&attr, &param);
 	
 	pthread_create(&m_thread, NULL, entryPoint, this);
@@ -94,7 +94,7 @@ void Thread::start() {
 	started = true;
 }
 
-void Thread::setPriority(Priority _priority) {
+void Thread::setPriority(Priority priority) {
 	
 #if ARX_HAVE_SCHED_GETSCHEDULER
 	int policy = sched_getscheduler(0);
@@ -105,11 +105,11 @@ void Thread::setPriority(Priority _priority) {
 	int min = sched_get_priority_min(policy);
 	int max = sched_get_priority_max(policy);
 	
-	priority = min + ((_priority - Lowest) * (max - min) / (Highest - Lowest));
+	m_priority = min + ((priority - Lowest) * (max - min) / (Highest - Lowest));
 	
 	if(started && min != max) {
 		sched_param param;
-		param.sched_priority = priority;
+		param.sched_priority = m_priority;
 		pthread_setschedparam(m_thread, policy, &param);
 	}
 }
