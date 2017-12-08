@@ -44,7 +44,7 @@ class Thread {
 	
 	pthread_t m_thread;
 	int m_priority;
-	bool started;
+	bool m_started;
 	
 	static void * entryPoint(void * param);
 	
