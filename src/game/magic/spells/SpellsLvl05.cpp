@@ -41,9 +41,8 @@
 
 
 RuneOfGuardingSpell::RuneOfGuardingSpell()
-	: SpellBase()
-	, tex_p2(NULL)
-{}
+	: tex_p2(NULL)
+{ }
 
 void RuneOfGuardingSpell::Launch() {
 	
@@ -149,15 +148,13 @@ void RuneOfGuardingSpell::Update() {
 }
 
 Vec3f RuneOfGuardingSpell::getPosition() {
-	
 	return m_pos;
 }
 
 
 LevitateSpell::LevitateSpell()
-	: SpellBase()
-	, m_baseRadius(50.f)
-{}
+	: m_baseRadius(50.f)
+{ }
 
 void LevitateSpell::Launch() {
 	
@@ -274,9 +271,7 @@ void LevitateSpell::createDustParticle() {
 
 
 
-CurePoisonSpell::CurePoisonSpell()
-	: SpellBase()
-{}
+CurePoisonSpell::CurePoisonSpell() { }
 
 void CurePoisonSpell::Launch() {
 	
@@ -365,10 +360,9 @@ void CurePoisonSpell::Update() {
 
 
 RepelUndeadSpell::RepelUndeadSpell()
-	: SpellBase()
-	, m_yaw(0.f)
+	: m_yaw(0.f)
 	, tex_p2(NULL)
-{}
+{ }
 
 void RepelUndeadSpell::Launch() {
 	
