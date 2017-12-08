@@ -55,7 +55,6 @@ void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta) {
 
 RiseDeadSpell::RiseDeadSpell()
 	: m_creationFailed(false)
-	, m_entity()
 { }
 
 bool RiseDeadSpell::CanLaunch() {
@@ -258,15 +257,11 @@ void ParalyseSpell::End() {
 }
 
 Vec3f ParalyseSpell::getPosition() {
-	
 	return getTargetPosition();
 }
 
-CreateFieldSpell::CreateFieldSpell()
-	: m_entity()
-{
-}
 
+CreateFieldSpell::CreateFieldSpell() { }
 
 void CreateFieldSpell::Launch() {
 	
