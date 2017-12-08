@@ -1203,9 +1203,9 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	if(ais.lastpos.toVec3() != ais.pos.toVec3()) std::cout << "Last position: " << ais.lastpos << '\n';
 	if(ais.move.toVec3() != Vec3f_ZERO) std::cout << "Movement: " << ais.move << '\n';
 	if(ais.lastmove.toVec3() != ais.move.toVec3()) std::cout << "Last movement: " << ais.lastmove << '\n';
-	if((Anglef)ais.angle != Anglef::ZERO || (Anglef)ais.initangle != Anglef::ZERO) {
+	if(Anglef(ais.angle) != Anglef::ZERO || Anglef(ais.initangle) != Anglef::ZERO) {
 		std::cout << "Angle: " << ais.angle;
-		if((Anglef)ais.angle != (Anglef)ais.initangle) {
+		if(Anglef(ais.angle) != Anglef(ais.initangle)) {
 			std::cout << " initial: " << ais.initangle;
 		}
 		std::cout << '\n';
