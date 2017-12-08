@@ -368,7 +368,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 void setupScriptedControl() {
 	
