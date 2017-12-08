@@ -379,13 +379,13 @@ void levelInit() {
 	
 	ARX_PARTICLES_ClearAll();
 	ParticleSparkClear();
-
+	
 	if(LOAD_N_ERASE) {
 		CleanScriptLoadedIO();
 		RestoreInitialIOStatus();
-		DRAGINTER=NULL;
+		DRAGINTER = NULL;
 	}
-
+	
 	ARX_SPELLS_ResetRecognition();
 	
 	eyeball.exist=0;
@@ -398,13 +398,13 @@ void levelInit() {
 		UnlinkAllLinkedObjects();
 		ARX_SCRIPT_ResetAll(false);
 	}
-
-	SecondaryInventory=NULL;
-	TSecondaryInventory=NULL;
+	
+	SecondaryInventory = NULL;
+	TSecondaryInventory = NULL;
 	ARX_FOGS_Render();
-
+	
 	if(LOAD_N_ERASE) {
-
+		
 		if(!DONT_ERASE_PLAYER)
 			ARX_PLAYER_InitPlayer();
 
@@ -464,9 +464,9 @@ void levelInit() {
 
 	progressBarAdvance();
 	LoadLevelScreen();
-
+	
 	PrepareIOTreatZone(1);
-	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene.string());
+	CURRENTLEVEL = GetLevelNumByName(LastLoadedScene.string());
 	
 	progressBarAdvance();
 	LoadLevelScreen();
@@ -530,28 +530,26 @@ void ManageNONCombatModeAnimations() {
 	arx_assert(entities.player());
 	
 	Entity * io = entities.player();
-
+	
 	AnimLayer & layer3 = io->animlayer[3];
-	ANIM_HANDLE ** alist=io->anims;
-
+	ANIM_HANDLE ** alist = io->anims;
+	
 	if(player.m_currentMovement & (PLAYER_LEAN_LEFT | PLAYER_LEAN_RIGHT))
 		return;
-
+	
 	if(ValidIONum(player.equiped[EQUIP_SLOT_SHIELD]) && !BLOCK_PLAYER_CONTROLS) {
-		if ( (layer3.cur_anim==NULL)  ||
-			( (layer3.cur_anim!=alist[ANIM_SHIELD_CYCLE])
-			&& (layer3.cur_anim!=alist[ANIM_SHIELD_HIT])
-			&& (layer3.cur_anim!=alist[ANIM_SHIELD_START]) ) )
-		{
+		if(layer3.cur_anim == NULL || (layer3.cur_anim != alist[ANIM_SHIELD_CYCLE]
+		                               && layer3.cur_anim != alist[ANIM_SHIELD_HIT]
+		                               && layer3.cur_anim != alist[ANIM_SHIELD_START])) {
 			changeAnimation(io, 3, alist[ANIM_SHIELD_START]);
-		} else if(layer3.cur_anim==alist[ANIM_SHIELD_START] && (layer3.flags & EA_ANIMEND)) {
+		} else if(layer3.cur_anim == alist[ANIM_SHIELD_START] && (layer3.flags & EA_ANIMEND)) {
 			changeAnimation(io, 3, alist[ANIM_SHIELD_CYCLE], EA_LOOP);
 		}
 	} else {
-		if(layer3.cur_anim==alist[ANIM_SHIELD_CYCLE]) {
+		if(layer3.cur_anim == alist[ANIM_SHIELD_CYCLE]) {
 			changeAnimation(io, 3, alist[ANIM_SHIELD_END]);
 		} else if(layer3.cur_anim == alist[ANIM_SHIELD_END] && (layer3.flags & EA_ANIMEND)) {
-			layer3.cur_anim=NULL;
+			layer3.cur_anim = NULL;
 		}
 	}
 }
@@ -585,18 +583,18 @@ static void strikeSpeak(Entity * io) {
 }
 
 void ManageCombatModeAnimations() {
+	
 	arx_assert(entities.player());
-		
-
+	
 	if(player.m_aimTime > 0) {
 		player.m_aimTime += g_platformTime.lastFrameDuration();
 	}
-
+	
 	Entity * const io = entities.player();
 	
 	AnimLayer & layer1 = io->animlayer[1];
 	
-	ANIM_HANDLE ** alist=io->anims;
+	ANIM_HANDLE ** alist = io->anims;
 	WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 	
 	if(weapontype == WEAPON_BARE && LAST_WEAPON_TYPE != weapontype) {
