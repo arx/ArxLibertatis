@@ -533,29 +533,29 @@ class IfCommand : public Command {
 	
 	class Operator {
 		
-		std::string name;
+		std::string m_name;
 		ValueType type;
 		
 	public:
 		
-		Operator(const std::string & _name, ValueType _type) : name(_name), type(_type) { }
+		Operator(const std::string & name, ValueType _type) : m_name(name), type(_type) { }
 		
 		virtual ~Operator() { }
 		
 		virtual bool number(const Context & context, float left, float right) {
 			ARX_UNUSED(left), ARX_UNUSED(right);
-			ScriptWarning << "operator " << name << " is not aplicable to numbers";
+			ScriptWarning << "operator " << m_name << " is not aplicable to numbers";
 			return true;
 		}
 		
 		virtual bool text(const Context & context, const std::string & left, const std::string & right) {
 			ARX_UNUSED(left), ARX_UNUSED(right);
-			ScriptWarning << "operator " << name << " is not aplicable to text";
+			ScriptWarning << "operator " << m_name << " is not aplicable to text";
 			return false;
 		}
 		
 		std::string getName() { return "if"; }
-		const std::string & getOperator() { return name; }
+		const std::string & getOperator() { return m_name; }
 		ValueType getType() { return type; }
 		
 	};
