@@ -89,6 +89,7 @@ DECLARE_FLAGS(ParticlesTypeFlag, ParticlesTypeFlags)
 DECLARE_FLAGS_OPERATORS(ParticlesTypeFlags)
 
 struct PARTICLE_DEF {
+	
 	bool exist;
 	bool is2D;
 	bool zdec;
@@ -123,11 +124,11 @@ struct PARTICLE_DEF {
 		, rgb(Color3f::black)
 		, m_flags(0)
 		, source(NULL)
-		, sourceionum()
 		, m_rotation(0.f)
 		, cval1(0)
 		, cval2(0)
 	{ }
+	
 };
 
 //-----------------------------------------------------------------------------
