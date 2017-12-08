@@ -167,6 +167,7 @@ namespace CppUnit {
 			return ost.str();
 		}
 	};
-}
+	
+} // namespace CppUnit
 
 #endif // ARX_TESTS_MATH_ASSERTIONTRAITS_H
