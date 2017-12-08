@@ -38,10 +38,10 @@
 #include "util/Unicode.h"
 
 namespace {
-IniReader g_localisation;
-}
 
-static PakFile * autodetectLanguage() {
+IniReader g_localisation;
+
+PakFile * autodetectLanguage() {
 	
 	PakDirectory * dir = g_resources->getDirectory("localisation");
 	if(!dir) {
@@ -106,6 +106,8 @@ static PakFile * autodetectLanguage() {
 	
 	return localisation;
 }
+
+} // anonymous namespace
 
 bool initLocalisation() {
 	
