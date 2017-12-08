@@ -412,7 +412,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 void setupScriptedConversation() {
 	
