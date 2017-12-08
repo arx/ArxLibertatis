@@ -136,7 +136,7 @@ public:
 class Command : private boost::noncopyable {
 	
 	const std::string m_name;
-	const long entityFlags;
+	const long m_entityFlags;
 	
 public:
 	
@@ -152,14 +152,15 @@ public:
 	static const long AnyEntity = -1;
 	
 	explicit Command(const std::string & name, long entityFlags = 0)
-		: m_name(name), entityFlags(entityFlags) { }
+		: m_name(name), m_entityFlags(entityFlags) { }
 	
 	virtual Result execute(Context & context) = 0;
 	
 	virtual ~Command() { }
 	
 	const std::string & getName() const { return m_name; }
-	long getEntityFlags() const { return entityFlags; }
+	long getEntityFlags() const { return m_entityFlags; }
+	
 };
 
 bool isSuppressed(const Context & context, const std::string & command);
