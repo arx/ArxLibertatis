@@ -69,14 +69,14 @@ void Thread::setThreadName(const std::string & _threadName) {
 
 Thread::Thread()
 	: m_thread()
-	, started(false)
+	, m_started(false)
 {
 	setPriority(Normal);
 }
 
 void Thread::start() {
 	
-	if(started) {
+	if(m_started) {
 		return;
 	}
 	
@@ -91,7 +91,7 @@ void Thread::start() {
 	
 	pthread_attr_destroy(&attr);
 	
-	started = true;
+	m_started = true;
 }
 
 void Thread::setPriority(Priority priority) {
@@ -107,7 +107,7 @@ void Thread::setPriority(Priority priority) {
 	
 	m_priority = min + ((priority - Lowest) * (max - min) / (Highest - Lowest));
 	
-	if(started && min != max) {
+	if(m_started && min != max) {
 		sched_param param;
 		param.sched_priority = m_priority;
 		pthread_setschedparam(m_thread, policy, &param);
@@ -117,7 +117,7 @@ void Thread::setPriority(Priority priority) {
 Thread::~Thread() { }
 
 void Thread::waitForCompletion() {
-	if(started) {
+	if(m_started) {
 		pthread_join(m_thread, NULL);
 	}
 }
