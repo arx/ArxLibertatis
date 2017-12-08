@@ -38,7 +38,7 @@ namespace CppUnit {
 			return ost.str();
 		}
 	};
-}
+} // namespace CppUnit
 
 
 void ColorTest::ColorTypeConversionTests()
