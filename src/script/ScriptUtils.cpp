@@ -352,7 +352,7 @@ bool contains(const SuppressionsForPos & list, const Context & context, const st
 	return (i1->second.find(command) != i1->second.end());
 }
 
-}
+} // anonymous namespace
 
 size_t initSuppressions() {
 	
@@ -725,4 +725,4 @@ bool isBlockEndSuprressed(const Context & context, const std::string & command) 
 	return contains(blockSuppressions, context, command);
 }
 
-}
+} // namespace script
