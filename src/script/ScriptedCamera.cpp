@@ -236,7 +236,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 void setupScriptedCamera() {
 	
