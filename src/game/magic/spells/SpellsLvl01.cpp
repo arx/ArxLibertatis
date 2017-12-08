@@ -122,9 +122,8 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 
 
 MagicMissileSpell::MagicMissileSpell()
-	: SpellBase()
-	, m_mrCheat(false)
-{}
+	: m_mrCheat(false)
+{ }
 
 MagicMissileSpell::~MagicMissileSpell() {
 	
@@ -334,9 +333,7 @@ void MagicMissileSpell::Update() {
 
 IgnitSpell::IgnitSpell()
 	: m_srcPos(Vec3f_ZERO)
-{
-	
-}
+{ }
 
 void IgnitSpell::Launch() {
 	
