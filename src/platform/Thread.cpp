@@ -50,8 +50,8 @@
 #include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
 
-void Thread::setThreadName(const std::string & _threadName) {
-	threadName = _threadName;
+void Thread::setThreadName(const std::string & threadName) {
+	m_threadName = threadName;
 }
 
 #if ARX_HAVE_PTHREADS
@@ -132,16 +132,16 @@ void * Thread::entryPoint(void * param) {
 	// Set the thread name.
 #if ARX_HAVE_PTHREAD_SETNAME_NP && ARX_PLATFORM != ARX_PLATFORM_MACOS
 	// Linux
-	pthread_setname_np(thread.thread, thread.threadName.c_str());
+	pthread_setname_np(thread.thread, thread.m_threadName.c_str());
 #elif ARX_HAVE_PTHREAD_SETNAME_NP && ARX_PLATFORM == ARX_PLATFORM_MACOS
 	// macOS
-	pthread_setname_np(thread.threadName.c_str());
+	pthread_setname_np(thread.m_threadName.c_str());
 #elif ARX_HAVE_PTHREAD_SET_NAME_NP
 	// FreeBSD & OpenBSD
-	pthread_set_name_np(thread.thread, thread.threadName.c_str());
+	pthread_set_name_np(thread.thread, thread.m_threadName.c_str());
 #elif ARX_HAVE_PRCTL && defined(PR_SET_NAME)
 	// Linux
-	prctl(PR_SET_NAME, reinterpret_cast<unsigned long>(thread.threadName.c_str()), 0, 0, 0);
+	prctl(PR_SET_NAME, reinterpret_cast<unsigned long>(thread.m_threadName.c_str()), 0, 0, 0);
 #else
 	// This is non-fatal, but let's print a warning so future ports will be
 	// reminded to implement it.
@@ -150,7 +150,7 @@ void * Thread::entryPoint(void * param) {
 	
 	Random::seed();
 	CrashHandler::registerThreadCrashHandlers();
-	profiler::registerThread(thread.threadName);
+	profiler::registerThread(thread.m_threadName);
 	thread.run();
 	profiler::unregisterThread();
 	CrashHandler::unregisterThreadCrashHandlers();
@@ -243,11 +243,11 @@ DWORD WINAPI Thread::entryPoint(LPVOID param) {
 	// Denormals must be disabled for each thread separately
 	disableFloatDenormals();
 	
-	SetCurrentThreadName(((Thread*)param)->threadName);
+	SetCurrentThreadName(((Thread*)param)->m_threadName);
 	
 	Random::seed();
 	CrashHandler::registerThreadCrashHandlers();
-	profiler::registerThread(((Thread*)param)->threadName);
+	profiler::registerThread(((Thread*)param)->m_threadName);
 	((Thread*)param)->run();
 	profiler::unregisterThread();
 	CrashHandler::unregisterThreadCrashHandlers();
