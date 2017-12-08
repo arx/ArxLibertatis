@@ -263,9 +263,9 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			
 			std::string pathstr = boost::to_lower_copy(util::loadString(dli->name));
 			
-			size_t pos = pathstr.find("graph");
-			if(pos != std::string::npos) {
-				pathstr = pathstr.substr(pos);
+			size_t graphPos = pathstr.find("graph");
+			if(graphPos != std::string::npos) {
+				pathstr = pathstr.substr(graphPos);
 			}
 			
 			res::path classPath = res::path::load(pathstr).remove_ext();
