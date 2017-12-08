@@ -548,7 +548,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 void setupScriptedNPC() {
 	
