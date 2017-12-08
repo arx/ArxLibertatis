@@ -96,11 +96,11 @@ void Thread::start() {
 
 void Thread::setPriority(Priority priority) {
 	
-#if ARX_HAVE_SCHED_GETSCHEDULER
+	#if ARX_HAVE_SCHED_GETSCHEDULER
 	int policy = sched_getscheduler(0);
-#else
+	#else
 	int policy = SCHED_RR;
-#endif
+	#endif
 	
 	int min = sched_get_priority_min(policy);
 	int max = sched_get_priority_max(policy);
@@ -130,23 +130,23 @@ void * Thread::entryPoint(void * param) {
 	Thread & thread = *((Thread *)param);
 	
 	// Set the thread name.
-#if ARX_HAVE_PTHREAD_SETNAME_NP && ARX_PLATFORM != ARX_PLATFORM_MACOS
+	#if ARX_HAVE_PTHREAD_SETNAME_NP && ARX_PLATFORM != ARX_PLATFORM_MACOS
 	// Linux
 	pthread_setname_np(thread.thread, thread.m_threadName.c_str());
-#elif ARX_HAVE_PTHREAD_SETNAME_NP && ARX_PLATFORM == ARX_PLATFORM_MACOS
+	#elif ARX_HAVE_PTHREAD_SETNAME_NP && ARX_PLATFORM == ARX_PLATFORM_MACOS
 	// macOS
 	pthread_setname_np(thread.m_threadName.c_str());
-#elif ARX_HAVE_PTHREAD_SET_NAME_NP
+	#elif ARX_HAVE_PTHREAD_SET_NAME_NP
 	// FreeBSD & OpenBSD
 	pthread_set_name_np(thread.thread, thread.m_threadName.c_str());
-#elif ARX_HAVE_PRCTL && defined(PR_SET_NAME)
+	#elif ARX_HAVE_PRCTL && defined(PR_SET_NAME)
 	// Linux
 	prctl(PR_SET_NAME, reinterpret_cast<unsigned long>(thread.m_threadName.c_str()), 0, 0, 0);
-#else
+	#else
 	// This is non-fatal, but let's print a warning so future ports will be
 	// reminded to implement it.
 	#pragma message ( "No function available to set thread names!" )
-#endif
+	#endif
 	
 	Random::seed();
 	CrashHandler::registerThreadCrashHandlers();
@@ -205,7 +205,8 @@ Thread::~Thread() {
 namespace {
 
 void SetCurrentThreadName(const std::string & threadName) {
-#if ARX_COMPILER_MSVC
+	
+	#if ARX_COMPILER_MSVC
 	
 	if(threadName.empty() || !IsDebuggerPresent()) {
 		return;
@@ -231,9 +232,10 @@ void SetCurrentThreadName(const std::string & threadName) {
 	}
 	__except(EXCEPTION_CONTINUE_EXECUTION) { }
 	
-#else
+	#else
 	ARX_UNUSED(threadName);
-#endif
+	#endif
+	
 }
 
 } // anonymous namespace
