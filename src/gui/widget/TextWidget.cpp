@@ -37,9 +37,8 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-TextWidget::TextWidget(Font* font, const std::string& text, Vec2f pos)
-	: Widget()
-{
+TextWidget::TextWidget(Font* font, const std::string& text, Vec2f pos) {
+	
 	m_font = font;
 	
 	Vec2f scaledPos = RATIO_2(pos);
