@@ -128,7 +128,6 @@ public:
 	
 	ScriptMessage getMessage() const { return m_message; }
 	
-	friend class ::ScriptEvent;
 };
 
 class Command : private boost::noncopyable {
