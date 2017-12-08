@@ -26,9 +26,8 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-ButtonWidget::ButtonWidget(const Vec2f & pos, const Vec2f & size, const char * texturePath)
-	: Widget()
-{
+ButtonWidget::ButtonWidget(const Vec2f & pos, const Vec2f & size, const char * texturePath) {
+	
 	m_pos = pos;
 	m_size = size;
 	
