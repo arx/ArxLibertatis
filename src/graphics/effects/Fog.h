@@ -78,7 +78,6 @@ struct FOG_DEF {
 		, special(0)
 		, scale(0.f)
 		, move(Vec3f_ZERO)
-		, angle()
 		, speed(0.f)
 		, rotatespeed(0.f)
 		, tolive(0)
