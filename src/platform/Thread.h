@@ -56,7 +56,7 @@ class Thread {
 	
 #endif
 	
-	std::string threadName;
+	std::string m_threadName;
 	
 public:
 	
