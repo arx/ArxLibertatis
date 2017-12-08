@@ -216,7 +216,7 @@ struct TrackKey {
 	
 };
 
-} ARX_END_ANONYMOUS_NAMESPACE
+} ARX_END_ANONYMOUS_NAMESPACE // anonymouse namespace
 
 namespace audio {
 
