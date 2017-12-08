@@ -40,11 +40,9 @@ typedef DWORD thread_id_type;
 
 class Thread {
 	
-private:
-	
 #if ARX_HAVE_PTHREADS
 	
-	pthread_t thread;
+	pthread_t m_thread;
 	int priority;
 	bool started;
 	
@@ -52,7 +50,7 @@ private:
 	
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
-	HANDLE thread;
+	HANDLE m_thread;
 
 	static DWORD WINAPI entryPoint(LPVOID param);
 	
@@ -121,8 +119,6 @@ protected:
 };
 
 class StoppableThread : public Thread {
-	
-private:
 	
 	volatile bool m_stopRequested;
 	
