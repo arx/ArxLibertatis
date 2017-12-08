@@ -383,8 +383,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		
 		std::string word = context.getCommand(msg != SM_EXECUTELINE);
 		if(word.empty()) {
-			if(msg == SM_EXECUTELINE && context.pos != es->size) {
-				arx_assert(es->data[context.pos] == '\n');
+			if(msg == SM_EXECUTELINE && context.getPosition() != es->size) {
+				arx_assert(es->data[context.getPosition()] == '\n');
 				LogDebug("<-- line end");
 				return ACCEPT;
 			}
