@@ -108,10 +108,9 @@ public:
 	
 	SaveConfirmMenuPage()
 		: MenuPage(Page_SaveConfirm)
-		, m_savegame(SavegameHandle())
 		, m_textbox(NULL)
 		, pDeleteButton(NULL)
-	{}
+	{ }
 	
 	~SaveConfirmMenuPage() { }
 	
@@ -237,10 +236,9 @@ public:
 	
 	LoadMenuPage()
 		: MenuPage(Page_Load)
-		, m_selectedSave(SavegameHandle())
 		, pLoadConfirm(NULL)
 		, pDeleteConfirm(NULL)
-	{}
+	{ }
 	
 	~LoadMenuPage() { }
 	
