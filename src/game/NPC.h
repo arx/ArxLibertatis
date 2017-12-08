@@ -126,13 +126,14 @@ struct EERIE_EXTRA_ROTATE {
 };
 
 struct EERIE_EXTRA_SCALE {
+	
 	ObjVertGroup groupIndex;
 	Vec3f scale;
 
 	EERIE_EXTRA_SCALE()
-		: groupIndex()
-		, scale(Vec3f_ZERO)
-	{}
+		: scale(Vec3f_ZERO)
+	{ }
+	
 };
 
 enum NPCFlag {
