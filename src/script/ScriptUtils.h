@@ -86,7 +86,7 @@ class Context {
 	size_t m_pos;
 	Entity * m_entity;
 	ScriptMessage m_message;
-	std::vector<size_t> stack;
+	std::vector<size_t> m_stack;
 	
 public:
 	
