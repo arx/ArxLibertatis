@@ -842,7 +842,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 static const std::string getName() {
 	return "timer";
