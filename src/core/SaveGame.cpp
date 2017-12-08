@@ -47,7 +47,7 @@ int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
 	return (a.stime > b.stime);
 }
 
-} // anonnymous namespace
+} // anonymous namespace
 
 SaveGameList savegames;
 
