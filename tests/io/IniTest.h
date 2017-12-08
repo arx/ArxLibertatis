@@ -32,13 +32,11 @@ class IniTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE_END();
 	
 public:
-	IniTest()
-		: CppUnit::TestFixture()
-	{}
 	
 	void intTest();
 	void floatTest();
 	void boolTest();
+	
 };
 
 #endif // ARX_TESTS_IO_INITEST_H
