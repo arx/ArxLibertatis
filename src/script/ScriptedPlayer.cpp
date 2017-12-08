@@ -672,7 +672,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 void setupScriptedPlayer() {
 	
