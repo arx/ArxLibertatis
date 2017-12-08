@@ -2351,11 +2351,9 @@ void MainMenu::Render() {
 		EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, m_background, Color::white);
 	}
 	
-	BOOST_FOREACH(Widget * w, m_widgets->m_widgets) {
-		w->Update();
-		w->Render();
-	}
-
+	m_widgets->Update();
+	m_widgets->Render();
+	
 	//HIGHLIGHT
 	if(m_selected) {
 		pMenuCursor->SetMouseOver();

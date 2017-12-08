@@ -32,6 +32,9 @@ public:
 	WidgetContainer();
 	virtual ~WidgetContainer();
 	
+	void Update();
+	void Render();
+	
 	void add(Widget * widget);
 	Widget * getAtPos(const Vec2f & mousePos) const;
 	
