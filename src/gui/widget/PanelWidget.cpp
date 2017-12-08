@@ -21,11 +21,7 @@
 
 #include <boost/foreach.hpp>
 
-PanelWidget::PanelWidget()
-	: Widget()
-{
-	m_children.clear();
-}
+PanelWidget::PanelWidget() { }
 
 PanelWidget::~PanelWidget() {
 	BOOST_FOREACH(Widget * w, m_children) {
