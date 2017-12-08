@@ -181,7 +181,7 @@ public:
 	
 } dynamicVertices;
 
-}
+} // anonymous namespace
 
 Plane efpPlaneNear;
 
