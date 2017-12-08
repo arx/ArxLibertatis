@@ -372,7 +372,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 void setupScriptedVariable() {
 	
