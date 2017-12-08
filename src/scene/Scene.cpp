@@ -183,7 +183,7 @@ public:
 
 } // anonymous namespace
 
-Plane efpPlaneNear;
+static Plane efpPlaneNear;
 
 static std::vector<EERIEPOLY*> vPolyWater;
 static std::vector<EERIEPOLY*> vPolyLava;
