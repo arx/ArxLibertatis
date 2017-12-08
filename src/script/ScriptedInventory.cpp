@@ -553,7 +553,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 void setupScriptedInventory() {
 	
