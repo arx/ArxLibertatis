@@ -30,8 +30,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "math/Types.h"
 
-namespace arx
-{
+namespace arx {
 
 inline float length2(float x)
 {
@@ -213,6 +212,6 @@ GLM_FUNC_QUALIFIER float orientedAngle
 		return -Angle;
 }
 
-}
+} // namespace arx
 
 #endif // ARX_MATH_GTXFUNCTIONS_H
