@@ -21,15 +21,16 @@
 #define ARX_GRAPHICS_OPENGL_GLDEBUG_H
 
 namespace gldebug {
-	
-	//! Initialize OpenGL debug output.
-	void initialize();
-	
-	//! Check if debug output should be enabled.
-	bool isEnabled();
-	
-	//! Must be called at the end of each frame
-	void endFrame();
+
+//! Initialize OpenGL debug output.
+void initialize();
+
+//! Check if debug output should be enabled.
+bool isEnabled();
+
+//! Must be called at the end of each frame
+void endFrame();
+
 }
 
 #endif // ARX_GRAPHICS_OPENGL_GLDEBUG_H
