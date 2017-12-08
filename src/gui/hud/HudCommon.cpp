@@ -26,12 +26,11 @@
 
 
 HudIconBase::HudIconBase()
-	: HudItem()
-	, m_tex(NULL)
+	: m_tex(NULL)
 	, m_isSelected(false)
 	, m_haloActive(false)
 	, m_haloColor(Color3f::white)
-{}
+{ }
 
 void HudIconBase::draw() {
 	arx_assert(m_tex);
