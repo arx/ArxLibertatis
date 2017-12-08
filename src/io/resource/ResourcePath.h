@@ -256,6 +256,6 @@ inline std::ostream & operator<<(std::ostream & strm, const path & path) {
 	return strm << '"' << path.string() << '"';
 }
 
-} // namespace fs
+} // namespace res
 
 #endif // ARX_IO_RESOURCE_RESOURCEPATH_H

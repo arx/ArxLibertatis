@@ -358,4 +358,4 @@ path path::load(const std::string & str) {
 	return copy;
 }
 
-} // namespace fs
+} // namespace res
