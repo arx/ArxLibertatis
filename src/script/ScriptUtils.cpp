@@ -41,7 +41,7 @@ std::string loadUnlocalized(const std::string & str) {
 }
 
 Context::Context(EERIE_SCRIPT * script, size_t pos, Entity * entity, ScriptMessage msg)
-	: m_script(script), pos(pos), entity(entity), message(msg) { }
+	: m_script(script), m_pos(pos), entity(entity), message(msg) { }
 
 std::string Context::getStringVar(const std::string & var) const {
 	return GetVarValueInterpretedAsText(var, getMaster(), entity);
@@ -58,21 +58,21 @@ std::string Context::getCommand(bool skipNewlines) {
 	std::string word;
 	
 	// now take chars until it finds a space or unused char
-	for(; pos != m_script->size && !isWhitespace(esdat[pos]); pos++) {
+	for(; m_pos != m_script->size && !isWhitespace(esdat[m_pos]); m_pos++) {
 		
-		char c = esdat[pos];
+		char c = esdat[m_pos];
 		if(c == '"') {
 			ScriptParserWarning << "unexpected '\"' in command name";
 		} else if(c == '~') {
 			ScriptParserWarning << "unexpected '~' in command name";
 		} else if(c == '\n') {
 			break;
-		} else if(c == '/' && pos + 1 != m_script->size && esdat[pos + 1] == '/') {
-			pos = std::find(esdat + pos + 2, esdat + m_script->size, '\n') - esdat;
+		} else if(c == '/' && m_pos + 1 != m_script->size && esdat[m_pos + 1] == '/') {
+			m_pos = std::find(esdat + m_pos + 2, esdat + m_script->size, '\n') - esdat;
 			if(!word.empty()) {
 				break;
 			}
-			skipWhitespace(skipNewlines), pos--;
+			skipWhitespace(skipNewlines), m_pos--;
 		} else {
 			word.push_back(c);
 		}
@@ -85,7 +85,7 @@ std::string Context::getWord() {
 	
 	skipWhitespace();
 	
-	if(pos >= m_script->size) {
+	if(m_pos >= m_script->size) {
 		return std::string();
 	}
 	
@@ -96,29 +96,29 @@ std::string Context::getWord() {
 	std::string word;
 	std::string var;
 	
-	if(pos != m_script->size && esdat[pos] == '"') {
+	if(m_pos != m_script->size && esdat[m_pos] == '"') {
 		
-		for(pos++; pos != m_script->size && esdat[pos] != '"'; pos++) {
-			if(esdat[pos] == '\n') {
+		for(m_pos++; m_pos != m_script->size && esdat[m_pos] != '"'; m_pos++) {
+			if(esdat[m_pos] == '\n') {
 				if(tilde) {
 					ScriptParserWarning << "unmatched '\"' before end of line";
 				}
 				return word;
-			} else if(esdat[pos] == '~') {
+			} else if(esdat[m_pos] == '~') {
 				if(tilde) {
 					word += GetVarValueInterpretedAsText(var, getMaster(), getEntity());
 					var.clear();
 				}
 				tilde = !tilde;
 			} else if(tilde) {
-				var.push_back(esdat[pos]);
+				var.push_back(esdat[m_pos]);
 			} else {
-				word.push_back(esdat[pos]);
+				word.push_back(esdat[m_pos]);
 			}
 		}
 		
-		if(pos != m_script->size) {
-			pos++;
+		if(m_pos != m_script->size) {
+			m_pos++;
 		} else {
 			ScriptParserWarning << "unmatched '\"'";
 		}
@@ -126,23 +126,23 @@ std::string Context::getWord() {
 	} else {
 		
 		// now take chars until it finds a space or unused char
-		for(; pos != m_script->size && !isWhitespace(esdat[pos]); pos++) {
+		for(; m_pos != m_script->size && !isWhitespace(esdat[m_pos]); m_pos++) {
 			
-			if(esdat[pos] == '"') {
+			if(esdat[m_pos] == '"') {
 				ScriptParserWarning << "unexpected '\"' inside token";
-			} else if(esdat[pos] == '~') {
+			} else if(esdat[m_pos] == '~') {
 				if(tilde) {
 					word += GetVarValueInterpretedAsText(var, getMaster(), getEntity());
 					var.clear();
 				}
 				tilde = !tilde;
 			} else if(tilde) {
-				var.push_back(esdat[pos]);
-			} else if(esdat[pos] == '/' && pos + 1 != m_script->size && esdat[pos + 1] == '/') {
-				pos = std::find(esdat + pos + 2, esdat + m_script->size, '\n') - esdat;
+				var.push_back(esdat[m_pos]);
+			} else if(esdat[m_pos] == '/' && m_pos + 1 != m_script->size && esdat[m_pos + 1] == '/') {
+				m_pos = std::find(esdat + m_pos + 2, esdat + m_script->size, '\n') - esdat;
 				break;
 			} else {
-				word.push_back(esdat[pos]);
+				word.push_back(esdat[m_pos]);
 			}
 			
 		}
@@ -162,17 +162,17 @@ void Context::skipWord() {
 	
 	const char * esdat = m_script->data;
 	
-	if(pos != m_script->size && esdat[pos] == '"') {
+	if(m_pos != m_script->size && esdat[m_pos] == '"') {
 		
-		for(pos++; pos != m_script->size && esdat[pos] != '"'; pos++) {
-			if(esdat[pos] == '\n') {
+		for(m_pos++; m_pos != m_script->size && esdat[m_pos] != '"'; m_pos++) {
+			if(esdat[m_pos] == '\n') {
 				ScriptParserWarning << "missing '\"' before end of line";
 				return;
 			}
 		}
 		
-		if(pos != m_script->size) {
-			pos++;
+		if(m_pos != m_script->size) {
+			m_pos++;
 		} else {
 			ScriptParserWarning << "unmatched '\"'";
 		}
@@ -180,11 +180,11 @@ void Context::skipWord() {
 	} else {
 		
 		// now take chars until it finds a space or unused char
-		for(; pos != m_script->size && !isWhitespace(esdat[pos]); pos++) {
-			if(esdat[pos] == '"') {
+		for(; m_pos != m_script->size && !isWhitespace(esdat[m_pos]); m_pos++) {
+			if(esdat[m_pos] == '"') {
 				ScriptParserWarning << "unexpected '\"' inside token";
-			} else if(esdat[pos] == '/' && pos + 1 != m_script->size && esdat[pos + 1] == '/') {
-				pos = std::find(esdat + pos + 2, esdat + m_script->size, '\n') - esdat;
+			} else if(esdat[m_pos] == '/' && m_pos + 1 != m_script->size && esdat[m_pos + 1] == '/') {
+				m_pos = std::find(esdat + m_pos + 2, esdat + m_script->size, '\n') - esdat;
 				break;
 			}
 		}
@@ -197,8 +197,8 @@ void Context::skipWhitespace(bool skipNewlines) {
 	const char * esdat = m_script->data;
 	
 	// First ignores spaces & unused chars
-	for(; pos != m_script->size && isWhitespace(esdat[pos]); pos++) {
-		if(!skipNewlines && esdat[pos] == '\n') {
+	for(; m_pos != m_script->size && isWhitespace(esdat[m_pos]); m_pos++) {
+		if(!skipNewlines && esdat[m_pos] == '\n') {
 			return;
 		}
 	}
@@ -208,7 +208,7 @@ std::string Context::getFlags() {
 	
 	skipWhitespace();
 	
-	if(pos < m_script->size && m_script->data[pos] == '-') {
+	if(m_pos < m_script->size && m_script->data[m_pos] == '-') {
 		return getWord();
 	}
 	
@@ -236,18 +236,18 @@ size_t Context::skipCommand() {
 	
 	const char * esdat = m_script->data;
 	
-	if(pos == m_script->size || esdat[pos] == '\n') {
+	if(m_pos == m_script->size || esdat[m_pos] == '\n') {
 		return (size_t)-1;
 	}
 	
-	size_t oldpos = pos;
+	size_t oldpos = m_pos;
 	
-	if(esdat[pos] == '/' && pos + 1 != m_script->size && esdat[pos + 1] == '/') {
+	if(esdat[m_pos] == '/' && m_pos + 1 != m_script->size && esdat[m_pos + 1] == '/') {
 		oldpos = (size_t)-1;
-		pos += 2;
+		m_pos += 2;
 	}
 	
-	pos = std::find(esdat + pos, esdat + m_script->size, '\n') - esdat;
+	m_pos = std::find(esdat + m_pos, esdat + m_script->size, '\n') - esdat;
 	
 	return oldpos;
 }
@@ -255,7 +255,7 @@ size_t Context::skipCommand() {
 bool Context::jumpToLabel(const std::string & target, bool substack) {
 	
 	if(substack) {
-		stack.push_back(pos);
+		stack.push_back(m_pos);
 	}
 	
 	long targetpos = FindScriptPos(m_script, ">>" + target);
@@ -263,7 +263,7 @@ bool Context::jumpToLabel(const std::string & target, bool substack) {
 		return false;
 	}
 	
-	pos = targetpos + target.length() + 2;
+	m_pos = targetpos + target.length() + 2;
 	return true;
 }
 
@@ -273,7 +273,7 @@ bool Context::returnToCaller() {
 		return false;
 	}
 	
-	pos = stack.back();
+	m_pos = stack.back();
 	stack.pop_back();
 	return true;
 }
@@ -281,7 +281,7 @@ bool Context::returnToCaller() {
 void Context::skipStatement() {
 	
 	std::string word = getCommand();
-	if(pos == m_script->size) {
+	if(m_pos == m_script->size) {
 		ScriptParserWarning << "missing statement before end of script";
 		return;
 	}
@@ -290,11 +290,11 @@ void Context::skipStatement() {
 		long brackets = 1;
 		while(brackets > 0) {
 			
-			if(m_script->data[pos] == '\n') {
-				pos++;
+			if(m_script->data[m_pos] == '\n') {
+				m_pos++;
 			}
 			word = getWord(); // TODO should not evaluate ~var~
-			if(pos == m_script->size) {
+			if(m_pos == m_script->size) {
 				ScriptParserWarning << "missing '}' before end of script";
 				return;
 			}
@@ -310,10 +310,10 @@ void Context::skipStatement() {
 	}
 	
 	skipWhitespace(true);
-	size_t oldpos = pos;
+	size_t oldpos = m_pos;
 	word = getCommand();
 	if(word != "else") {
-		pos = oldpos;
+		m_pos = oldpos;
 	}
 }
 

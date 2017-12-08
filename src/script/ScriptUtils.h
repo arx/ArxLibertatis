@@ -83,7 +83,7 @@ u64 flags(const char (&flags)[N]) {
 class Context {
 	
 	EERIE_SCRIPT * m_script;
-	size_t pos;
+	size_t m_pos;
 	Entity * entity;
 	ScriptMessage message;
 	std::vector<size_t> stack;
@@ -124,7 +124,7 @@ public:
 	EERIE_SCRIPT * getScript() const { return m_script; }
 	EERIE_SCRIPT * getMaster() const { return m_script->master ? m_script->master : m_script; }
 	
-	size_t getPosition() const { return pos; }
+	size_t getPosition() const { return m_pos; }
 	
 	ScriptMessage getMessage() const { return message; }
 	
