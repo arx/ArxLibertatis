@@ -38,6 +38,6 @@ void ReleaseNecklace();
 
 void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos);
 
-}
+} // namespace gui
 
 #endif // ARX_GUI_BOOK_NECKLACE_H
