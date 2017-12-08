@@ -1467,7 +1467,6 @@ void ARX_SCENE_Update() {
 }
 
 extern short uw_mode;
-extern long SPECIAL_DRAGINTER_RENDER;
 
 //*************************************************************************************
 // Main Background Rendering Proc.
@@ -1501,9 +1500,7 @@ void ARX_SCENE_Render() {
 	
 	// To render Dragged objs
 	if(DRAGINTER) {
-		SPECIAL_DRAGINTER_RENDER = 1;
-		ARX_INTERFACE_RenderCursor(false);
-		SPECIAL_DRAGINTER_RENDER = 0;
+		ARX_INTERFACE_RenderCursor(false, true);
 	}
 	
 	PopAllTriangleListOpaque();

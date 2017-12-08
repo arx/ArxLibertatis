@@ -39,8 +39,8 @@ extern EntityMoveCursor CANNOT_PUT_IT_HERE;
 
 void cursorTexturesInit();
 
-bool Manage3DCursor(Entity * io, bool simulate);
+bool Manage3DCursor(Entity * io, bool simulate, bool draginter = false);
 
-void ARX_INTERFACE_RenderCursor(bool flag);
+void ARX_INTERFACE_RenderCursor(bool flag, bool draginter = false);
 
 #endif // ARX_GUI_CURSOR_H
