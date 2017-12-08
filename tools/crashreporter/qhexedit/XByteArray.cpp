@@ -47,12 +47,10 @@ int XByteArray::addressWidth()
     return _addressNumbers;
 }
 
-void XByteArray::setAddressWidth(int width)
-{
-    if ((width >= 0) && (width<=6))
-    {
-        _addressNumbers = width;
-    }
+void XByteArray::setAddressWidth(int width) {
+	if(width >= 0 && width <= 6) {
+		_addressNumbers = width;
+	}
 }
 
 QByteArray & XByteArray::data()
@@ -172,13 +170,11 @@ QString XByteArray::toRedableString(int start, int end)
         end = _data.size();
 
     QString result;
-    for (int i=start; i < end; i += 16)
-    {
+    for(int i = start; i < end; i += 16) {
         QString adrStr = QString("%1").arg(_addressOffset + i, adrWidth, 16, QChar('0'));
         QString hexStr;
         QString ascStr;
-        for (int j=0; j<16; j++)
-        {
+        for(int j = 0; j < 16; j++) {
             if ((i + j) < _data.size())
             {
                 hexStr.append(" ").append(_data.mid(i+j, 1).toHex());
