@@ -149,7 +149,7 @@ public:
 	 * \param len Amount of bytes to remove
 	 * In overwrite mode, the existing bytes will be overwriten with 0x00.
 	 */
-	void remove(int pos, int len=1);
+	void remove(int pos, int len = 1);
 	
 	//! Gives back a formatted image of the content of QHexEdit
 	QString toReadableString();
