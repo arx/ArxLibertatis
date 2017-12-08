@@ -534,11 +534,11 @@ class IfCommand : public Command {
 	class Operator {
 		
 		std::string m_name;
-		ValueType type;
+		ValueType m_type;
 		
 	public:
 		
-		Operator(const std::string & name, ValueType _type) : m_name(name), type(_type) { }
+		Operator(const std::string & name, ValueType type) : m_name(name), m_type(type) { }
 		
 		virtual ~Operator() { }
 		
@@ -556,7 +556,7 @@ class IfCommand : public Command {
 		
 		std::string getName() { return "if"; }
 		const std::string & getOperator() { return m_name; }
-		ValueType getType() { return type; }
+		ValueType getType() { return m_type; }
 		
 	};
 	
