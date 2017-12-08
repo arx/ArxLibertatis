@@ -1530,16 +1530,13 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit)
 		i.y = d.y * t;
 	}
 	
-	tmpPos.x -= i.x;
-	tmpPos.y -= i.y;
-	tmpPos.z -= i.z;
-
+	tmpPos -= i;
+	
 	while(iter > 0.f) {
+		
 		iter -= 1.f;
-		tmpPos.x += i.x;
-		tmpPos.y += i.y;
-		tmpPos.z += i.z;
-
+		tmpPos += i;
+		
 		Sphere sphere = Sphere(tmpPos, 65.f);
 		
 		for(size_t num = 0; num < entities.size(); num++) {
@@ -1549,11 +1546,8 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit)
 			if(io && (io->gameFlags & GFLAG_VIEW_BLOCKER)) {
 				if(CheckIOInSphere(sphere, *io)) {
 					float dd = fdist(orgn, sphere.origin);
-
 					if(dd < nearest) {
-						hit->x=tmpPos.x;
-						hit->y=tmpPos.y;
-						hit->z=tmpPos.z;
+						*hit = tmpPos;
 						return false;
 					}
 				}
