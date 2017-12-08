@@ -82,9 +82,7 @@ u64 flags(const char (&flags)[N]) {
 
 class Context {
 	
-private:
-	
-	EERIE_SCRIPT * script;
+	EERIE_SCRIPT * m_script;
 	size_t pos;
 	Entity * entity;
 	ScriptMessage message;
@@ -123,8 +121,8 @@ public:
 	bool jumpToLabel(const std::string & target, bool substack = false);
 	bool returnToCaller();
 	
-	EERIE_SCRIPT * getScript() const { return script; }
-	EERIE_SCRIPT * getMaster() const { return script->master ? script->master : script; }
+	EERIE_SCRIPT * getScript() const { return m_script; }
+	EERIE_SCRIPT * getMaster() const { return m_script->master ? m_script->master : m_script; }
 	
 	size_t getPosition() const { return pos; }
 	
