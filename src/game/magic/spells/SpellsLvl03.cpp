@@ -166,21 +166,15 @@ void DispellIllusionSpell::Launch() {
 }
 
 
-void DispellIllusionSpell::Update() {
-	
-}
+void DispellIllusionSpell::Update() { }
 
 
 FireballSpell::FireballSpell()
-	: SpellBase()
-	, bExplo(false)
+	: bExplo(false)
 	, m_createBallDuration(GameDurationMs(2000))
-{
-}
+{ }
 
-FireballSpell::~FireballSpell() {
-	
-}
+FireballSpell::~FireballSpell() { }
 
 void FireballSpell::Launch() {
 	
@@ -335,15 +329,12 @@ void FireballSpell::Update() {
 }
 
 Vec3f FireballSpell::getPosition() {
-	
 	return eCurPos;
 }
 
 
 
-CreateFoodSpell::CreateFoodSpell()
-	: SpellBase()
-{}
+CreateFoodSpell::CreateFoodSpell() { }
 
 void CreateFoodSpell::Launch() {
 	
@@ -364,9 +355,7 @@ void CreateFoodSpell::Launch() {
 	m_particles.SetParams(g_particleParameters[ParticleParam_CreateFood]);
 }
 
-void CreateFoodSpell::End() {
-	
-}
+void CreateFoodSpell::End() { }
 
 void CreateFoodSpell::Update() {
 	
@@ -401,8 +390,7 @@ void CreateFoodSpell::Update() {
 
 
 IceProjectileSpell::IceProjectileSpell()
-	: SpellBase()
-	, iNumber(0)
+	: iNumber(0)
 	, tex_p1(NULL)
 	, tex_p2(NULL)
 { }
