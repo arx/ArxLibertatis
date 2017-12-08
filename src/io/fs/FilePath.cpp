@@ -38,7 +38,7 @@ inline bool is_path_up(const std::string & str, size_t pos) {
 	           && str[pos + 2] == path::dir_sep);
 }
 
-}
+} // anonymous namespace
 
 path path::create(const std::string & src) {
 	path result;
