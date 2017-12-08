@@ -38,8 +38,7 @@
 
 
 BlessSpell::BlessSpell()
-	: SpellBase()
-	, m_pos(Vec3f_ZERO)
+	: m_pos(Vec3f_ZERO)
 	, m_yaw(0)
 	, m_scale(0)
 	, tex_p1(NULL)
@@ -393,10 +392,9 @@ void TelekinesisSpell::End() {
 
 
 CurseSpell::CurseSpell()
-	: SpellBase()
-	, tex_p1(NULL)
+	: tex_p1(NULL)
 	, fRot(0.f)
-{}
+{ }
 
 void CurseSpell::Launch() {
 	
@@ -423,7 +421,6 @@ void CurseSpell::Launch() {
 }
 
 void CurseSpell::End() {
-	
 	m_targets.clear();
 }
 
