@@ -70,10 +70,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 CMagicMissile::CMagicMissile()
-	: CSpellFx()
-	, bExplo(false)
+	: bExplo(false)
 	, bMove(true)
-	, eCurPos()
 	, lightIntensityFactor()
 	, iLength()
 	, iBezierPrecision()
