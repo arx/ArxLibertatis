@@ -86,11 +86,7 @@ Vec3f InvisibilitySpell::getPosition() {
 }
 
 
-ManaDrainSpell::ManaDrainSpell()
-	: m_damage()
-{
-	
-}
+ManaDrainSpell::ManaDrainSpell() { }
 
 bool ManaDrainSpell::CanLaunch() {
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
@@ -163,11 +159,7 @@ Vec3f ManaDrainSpell::getPosition() {
 }
 
 
-ExplosionSpell::ExplosionSpell()
-	: m_light()
-	, m_damage()
-{
-}
+ExplosionSpell::ExplosionSpell() { }
 
 void ExplosionSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
@@ -248,24 +240,16 @@ void ExplosionSpell::Update() {
 	
 }
 
-
-void EnchantWeaponSpell::Launch()
-{
+void EnchantWeaponSpell::Launch() {
 	m_duration = GameDurationMs(20);
 }
 
-void EnchantWeaponSpell::End() {
+void EnchantWeaponSpell::End() { }
 
-}
-
-void EnchantWeaponSpell::Update() {
-}
+void EnchantWeaponSpell::Update() { }
 
 
-LifeDrainSpell::LifeDrainSpell()
-	: m_damage()
-{
-}
+LifeDrainSpell::LifeDrainSpell() { }
 
 bool LifeDrainSpell::CanLaunch() {
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
