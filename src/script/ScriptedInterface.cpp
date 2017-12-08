@@ -362,7 +362,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 void setupScriptedInterface() {
 	
