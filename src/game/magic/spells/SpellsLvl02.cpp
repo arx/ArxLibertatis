@@ -38,9 +38,7 @@
 
 
 
-HealSpell::HealSpell()
-	: SpellBase()
-{}
+HealSpell::HealSpell() { }
 
 bool HealSpell::CanLaunch() {
 	
@@ -341,11 +339,7 @@ Vec3f LowerArmorSpell::getPosition() {
 	return getTargetPosition();
 }
 
-HarmSpell::HarmSpell()
-	: m_damage()
-{
-	
-}
+HarmSpell::HarmSpell() { }
 
 void HarmSpell::Launch() {
 	
