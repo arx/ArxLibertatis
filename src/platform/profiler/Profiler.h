@@ -52,7 +52,7 @@ public:
 
 #endif // BUILD_PROFILER_INSTRUMENT
 
-}
+} // namespace profiler
 
 #if BUILD_PROFILER_INSTRUMENT
 	#define ARX_PROFILE(tag)           profiler::Scope profileScope##__LINE__(#tag)
