@@ -2515,21 +2515,25 @@ std::string GetMaterialString(const res::path & texture) {
 }
 
 void UpdateGoldObject(Entity * io) {
+	
 	if(io->ioflags & IO_GOLD) {
-		long num=0;
-
-		if (io->_itemdata->price<=3)
-			num=io->_itemdata->price-1;
-		else if (io->_itemdata->price<=8)
-			num=3;
-		else if (io->_itemdata->price<=20)
-			num=4;
-		else if (io->_itemdata->price<=50)
-			num=5;
-		else
-			num=6;
-
-		io->obj=GoldCoinsObj[num];
-		io->m_icon=GoldCoinsTC[num];
+		
+		long num = 0;
+		if(io->_itemdata->price <= 3) {
+			num = io->_itemdata->price - 1;
+		} else if(io->_itemdata->price <= 8) {
+			num = 3;
+		} else if(io->_itemdata->price <= 20) {
+			num = 4;
+		} else if(io->_itemdata->price <= 50) {
+			num = 5;
+		} else {
+			num = 6;
+		}
+		
+		io->obj = GoldCoinsObj[num];
+		io->m_icon = GoldCoinsTC[num];
+		
 	}
+	
 }
