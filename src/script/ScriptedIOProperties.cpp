@@ -585,7 +585,7 @@ public:
 	
 };
 
-}
+} // anonymous namespace
 
 void setupScriptedIOProperties() {
 	
