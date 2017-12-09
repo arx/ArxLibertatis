@@ -132,13 +132,13 @@ void * Thread::entryPoint(void * param) {
 	// Set the thread name.
 	#if ARX_HAVE_PTHREAD_SETNAME_NP && ARX_PLATFORM != ARX_PLATFORM_MACOS
 	// Linux
-	pthread_setname_np(thread.thread, thread.m_threadName.c_str());
+	pthread_setname_np(thread.m_thread, thread.m_threadName.c_str());
 	#elif ARX_HAVE_PTHREAD_SETNAME_NP && ARX_PLATFORM == ARX_PLATFORM_MACOS
 	// macOS
 	pthread_setname_np(thread.m_threadName.c_str());
 	#elif ARX_HAVE_PTHREAD_SET_NAME_NP
 	// FreeBSD & OpenBSD
-	pthread_set_name_np(thread.thread, thread.m_threadName.c_str());
+	pthread_set_name_np(thread.m_thread, thread.m_threadName.c_str());
 	#elif ARX_HAVE_PRCTL && defined(PR_SET_NAME)
 	// Linux
 	prctl(PR_SET_NAME, reinterpret_cast<unsigned long>(thread.m_threadName.c_str()), 0, 0, 0);
