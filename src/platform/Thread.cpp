@@ -69,6 +69,7 @@ void Thread::setThreadName(const std::string & threadName) {
 
 Thread::Thread()
 	: m_thread()
+	, m_priority()
 	, m_started(false)
 {
 	setPriority(Normal);
