@@ -36,8 +36,8 @@
 
 #include <GL/glew.h>
 
-#define ARX_HAVE_GL_VER(x, y) glewIsSupported("GL_VERSION_" #x "_" #y)
-#define ARX_HAVE_GL_EXT(name) glewIsSupported("GL_" #name)
+#define ARX_HAVE_GL_VER(x, y) (glewIsSupported("GL_VERSION_" #x "_" #y) != 0)
+#define ARX_HAVE_GL_EXT(name) (glewIsSupported("GL_" #name) != 0)
 #define ARX_HAVE_GLES_VER(x, y) (false)
 #define ARX_HAVE_GLES_EXT(name) (false)
 
