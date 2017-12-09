@@ -241,7 +241,7 @@ public:
 	
 	bool init(const fs::path & file);
 	
-	void setOutputFile(const fs::path & _file);
+	void setOutputFile(const fs::path & file);
 	
 private:
 	
