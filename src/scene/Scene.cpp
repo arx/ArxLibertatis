@@ -698,7 +698,6 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	plane.b = matres[1][3] - matres[1][0];
 	plane.c = matres[2][3] - matres[2][0];
 	plane.d = matres[3][3] - matres[3][0];
-	plane.b = -plane.b;
 	
 	normalizePlane(plane);
 	}
@@ -710,7 +709,6 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	plane.b = matres[1][3] + matres[1][0];
 	plane.c = matres[2][3] + matres[2][0];
 	plane.d = matres[3][3] + matres[3][0];
-	plane.b = -plane.b;
 	
 	normalizePlane(plane);
 	}
@@ -722,7 +720,6 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	plane.b = matres[1][3] - matres[1][1];
 	plane.c = matres[2][3] - matres[2][1];
 	plane.d = matres[3][3] - matres[3][1];
-	plane.b = -plane.b;
 	
 	normalizePlane(plane);
 	}
@@ -734,7 +731,6 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	plane.b = matres[1][3] + matres[1][1];
 	plane.c = matres[2][3] + matres[2][1];
 	plane.d = matres[3][3] + matres[3][1];
-	plane.b = -plane.b;
 	
 	normalizePlane(plane);
 	}
@@ -746,7 +742,6 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	plane.b = matres[1][3] + matres[1][2];
 	plane.c = matres[2][3] + matres[2][2];
 	plane.d = matres[3][3] + matres[3][2];
-	plane.b = -plane.b;
 	
 	normalizePlane(plane);
 	}

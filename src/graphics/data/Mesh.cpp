@@ -1500,7 +1500,7 @@ void ComputePortalVertexBuffer() {
 				}
 				
 				vertex->p.x = poly.v[0].p.x;
-				vertex->p.y = -(poly.v[0].p.y);
+				vertex->p.y = poly.v[0].p.y;
 				vertex->p.z = poly.v[0].p.z;
 				vertex->color = poly.v[0].color;
 				vertex->uv = poly.v[0].uv + texture->hd;
@@ -1508,7 +1508,7 @@ void ComputePortalVertexBuffer() {
 				poly.uslInd[0] = index++;
 				
 				vertex->p.x = poly.v[1].p.x;
-				vertex->p.y = -(poly.v[1].p.y);
+				vertex->p.y = poly.v[1].p.y;
 				vertex->p.z = poly.v[1].p.z;
 				vertex->color = poly.v[1].color;
 				vertex->uv = poly.v[1].uv + texture->hd;
@@ -1516,7 +1516,7 @@ void ComputePortalVertexBuffer() {
 				poly.uslInd[1] = index++;
 				
 				vertex->p.x = poly.v[2].p.x;
-				vertex->p.y = -(poly.v[2].p.y);
+				vertex->p.y = poly.v[2].p.y;
 				vertex->p.z = poly.v[2].p.z;
 				vertex->color = poly.v[2].color;
 				vertex->uv = poly.v[2].uv + texture->hd;
@@ -1525,7 +1525,7 @@ void ComputePortalVertexBuffer() {
 				
 				if(poly.type & POLY_QUAD) {
 					vertex->p.x = poly.v[3].p.x;
-					vertex->p.y = -(poly.v[3].p.y);
+					vertex->p.y = poly.v[3].p.y;
 					vertex->p.z = poly.v[3].p.z;
 					vertex->color = poly.v[3].color;
 					vertex->uv = poly.v[3].uv + texture->hd;
