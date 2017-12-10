@@ -196,11 +196,14 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 			screenPos.y = 0.75f * (pos.y - float(g_size.height() / 2)) * 156.f / (480.f * g_sizeRatio.y);
 			screenPos.z = 75.f;
 			
+			Vec3f worldPos;
 			float temp = (screenPos.y * -ACTIVECAM->orgTrans.xsin) + (screenPos.z * ACTIVECAM->orgTrans.xcos);
-			flare.p.y = (screenPos.y * ACTIVECAM->orgTrans.xcos) - (-screenPos.z * ACTIVECAM->orgTrans.xsin);
-			flare.p.z = (temp * ACTIVECAM->orgTrans.ycos) - (-screenPos.x * ACTIVECAM->orgTrans.ysin);
-			flare.p.x = (temp * -ACTIVECAM->orgTrans.ysin) + (screenPos.x * ACTIVECAM->orgTrans.ycos);
-			flare.p += ACTIVECAM->orgTrans.pos;
+			worldPos.y = (screenPos.y * ACTIVECAM->orgTrans.xcos) - (-screenPos.z * ACTIVECAM->orgTrans.xsin);
+			worldPos.z = (temp * ACTIVECAM->orgTrans.ycos) - (-screenPos.x * ACTIVECAM->orgTrans.ysin);
+			worldPos.x = (temp * -ACTIVECAM->orgTrans.ysin) + (screenPos.x * ACTIVECAM->orgTrans.ycos);
+			worldPos += ACTIVECAM->orgTrans.pos;
+			
+			flare.p = worldPos;
 		}
 	} else {
 		flare.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
