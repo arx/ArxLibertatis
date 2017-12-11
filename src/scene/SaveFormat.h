@@ -1013,7 +1013,7 @@ struct SavedTransform {
 struct SavedCamera {
 	
 	SavedTransform transform;
-	SavedVec3 pos;
+	SavedVec3 pos2;
 	f32 Ycos;
 	f32 Ysin;
 	f32 Xcos;
@@ -1088,7 +1088,7 @@ struct SavedCamera {
 		transform = b.orgTrans;
 
 		//TODO Remove
-		pos = b.orgTrans.pos;
+		pos2 = b.orgTrans.pos;
 		Ycos = 0.f;
 		Ysin = 0.f;
 		Xcos = 0.f;
