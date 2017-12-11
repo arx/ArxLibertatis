@@ -1738,7 +1738,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 			std::cout << "  focal=" << ac->cam.focal << " use_focal=" << ac->cam.use_focal << '\n';
 			std::cout << "  Zmul=" << ac->cam.Zmul << '\n';
 			std::cout << "  posleft=" << ac->cam.posleft << " postop=" << ac->cam.postop << '\n';
-			std::cout << "  xmod=" << ac->cam.xmod << " ymod=" << ac->cam.ymod << '\n';
+			std::cout << "  xmod=" << ac->cam.xmod2 << " ymod=" << ac->cam.ymod << '\n';
 			
 			const SavedMatrix & m = ac->cam.matrix;
 			std::cout << "  Matrix:\n";

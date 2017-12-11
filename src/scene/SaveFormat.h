@@ -1026,7 +1026,7 @@ struct SavedCamera {
 	f32 posleft; //TODO Remove
 	f32 postop; //TODO Remove
 	
-	f32 xmod;
+	f32 xmod2;
 	f32 ymod;
 	SavedMatrix matrix; //TODO Remove
 	SavedAnglef angle;
@@ -1105,7 +1105,7 @@ struct SavedCamera {
 		Zmul = 0.f;
 
 
-		xmod = 0.f, ymod = 0.f;
+		xmod2 = 0.f, ymod = 0.f;
 		matrix = glm::mat4x4();
 		angle = b.angle;
 		
