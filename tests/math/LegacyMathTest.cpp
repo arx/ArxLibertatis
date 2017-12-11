@@ -245,24 +245,6 @@ void LegacyMathTest::angleConversionTest()
 	}
 }
 
-void LegacyMathTest::cameraRotationTest() {
-	
-	const Vec3f testVert(100.f, 200.f, 300.f);
-	
-	typedef std::vector<TestRotation>::iterator Itr;
-	for(Itr it = rotations.begin(); it != rotations.end(); ++it) {
-		
-		EERIE_TRANSFORM trans;
-		trans.pos = Vec3f(3.f, 6.f, 9.f);
-		trans.updateFromAngle(it->angle);
-		
-		Vec3f vecA = camEE_RT(testVert, trans);
-		Vec3f vecB = Vec3f(trans.worldToView * Vec4f(testVert, 1.f));
-		
-		CPPUNIT_ASSERT_EQUAL(vecA, vecB);
-	}
-}
-
 // TODO copy-paste
 static Vec2s inventorySizeFromTextureSize(Vec2i size) {
 	return Vec2s(glm::clamp((size + Vec2i(31, 31)) / Vec2i(32, 32), Vec2i(1, 1), Vec2i(3, 3)));
