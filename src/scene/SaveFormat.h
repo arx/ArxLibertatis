@@ -993,16 +993,16 @@ struct SavedTransform {
 	operator EERIE_TRANSFORM() const {
 		EERIE_TRANSFORM a;
 		a.pos = pos.toVec3();
-		a.ycos = ycos, a.ysin = ysin, a.xsin = xsin, a.xcos = xcos;
-		a.zcos = .1f;
-		a.zsin = 0.f;
 		a.mod.x = xmod, a.mod.y = ymod;
 		return a;
 	}
 	
 	SavedTransform & operator=(const EERIE_TRANSFORM & b) {
 		pos = b.pos;
-		ycos = b.ycos, ysin = b.ysin, xsin = b.xsin, xcos = b.xcos;
+		ycos = 0.f;
+		ysin = 0.f;
+		xsin = 0.f;
+		xcos = 0.f;
 		use_focal = 0.f;
 		xmod = b.mod.x, ymod = b.mod.y, zmod = 0.f;
 		return *this;
@@ -1065,8 +1065,6 @@ struct SavedCamera {
 		EERIE_CAMERA a;
 		
 		a.orgTrans = transform;
-		a.orgTrans.zcos = Zcos;
-		a.orgTrans.zsin = Zsin;
 		a.focal = focal;
 		
 		a.angle = angle;
@@ -1091,9 +1089,12 @@ struct SavedCamera {
 
 		//TODO Remove
 		pos = b.orgTrans.pos;
-		Ycos = b.orgTrans.ycos, Ysin = b.orgTrans.ysin;
-		Xcos = b.orgTrans.xcos, Xsin = b.orgTrans.xsin;
-		Zcos = b.orgTrans.zcos, Zsin = b.orgTrans.zsin;
+		Ycos = 0.f;
+		Ysin = 0.f;
+		Xcos = 0.f;
+		Xsin = 0.f;
+		Zcos = 0.f;
+		Zsin = 0.f;
 
 		use_focal = 0.f;
 

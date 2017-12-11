@@ -30,12 +30,6 @@
 
 struct EERIE_TRANSFORM {
 	Vec3f pos;
-	float ycos;
-	float ysin;
-	float xsin;
-	float xcos;
-	float zcos;
-	float zsin;
 	Vec2f mod;
 
 	glm::mat4x4 worldToView;

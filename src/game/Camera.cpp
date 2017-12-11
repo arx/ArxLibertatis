@@ -25,15 +25,6 @@
 #include "graphics/Renderer.h"
 
 void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
-	float pitch = glm::radians(angle.getPitch());
-	xcos = std::cos(pitch);
-	xsin = std::sin(pitch);
-	float yaw = glm::radians(angle.getYaw());
-	ycos = std::cos(yaw);
-	ysin = std::sin(yaw);
-	float roll = glm::radians(angle.getRoll());
-	zcos = std::cos(roll);
-	zsin = std::sin(roll);
 	
 	worldToView = glm::translate(toRotationMatrix(angle), -pos);
 }
