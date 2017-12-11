@@ -169,18 +169,6 @@ std::pair<Vec3f, Vec3f> angleToFrontUpVec(const Anglef & angle);
 
 // VECTORS Functions
 
-inline void ZRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
-	*out = Vec3f(in->x * c + in->y * s, in->y * c - in->x * s, in->z);
-}
-
-inline void YRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
-	*out = Vec3f(in->x * c + in->z * s, in->y, in->z * c - in->x * s);
-}
-
-inline void XRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
-	*out = Vec3f(in->x, in->y * c - in->z * s, in->y * s + in->z * c);
-}
-
 Vec3f VRotateX(Vec3f in, float angle);
 Vec3f VRotateY(Vec3f in, float angle);
 Vec3f VRotateZ(Vec3f in, float angle);

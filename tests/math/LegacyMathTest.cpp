@@ -210,28 +210,6 @@ void LegacyMathTest::vecMatrixConversionTest() {
 	}
 }
 
-void LegacyMathTest::angleTest()
-{
-	typedef std::vector<TestRotation>::iterator Itr;
-	
-	for(Itr it = rotations.begin(); it != rotations.end(); ++it) {
-		Vec3f testVert(1.f, 0.5f, 0.1f);
-		
-		EERIE_TRANSFORM trans;
-		trans.updateFromAngle(it->angle);
-		
-		Vec3f out, temp, temp2;
-		YRotatePoint(&testVert, &temp, trans.ycos, trans.ysin);
-		XRotatePoint(&temp, &temp2, trans.xcos, trans.xsin);
-		ZRotatePoint(&temp2, &out, trans.zcos, trans.zsin);
-		
-		Vec3f vecA = out;
-		Vec3f vecB = Vec3f(trans.worldToView * Vec4f(testVert, 1.f));
-		
-		CPPUNIT_ASSERT_EQUAL(vecA, vecB);
-	}
-}
-
 void LegacyMathTest::angleConversionTest()
 {
 	typedef std::vector<TestRotation>::iterator Itr;

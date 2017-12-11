@@ -33,7 +33,6 @@ class LegacyMathTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST(quatTransformVectorTest);
 	CPPUNIT_TEST(quatMatrixConversionTest);
 	CPPUNIT_TEST(vecMatrixConversionTest);
-	CPPUNIT_TEST(angleTest);
 	CPPUNIT_TEST(angleConversionTest);
 	CPPUNIT_TEST(inventorySizeTest);
 	CPPUNIT_TEST(angleToVectorXZ_Test);
@@ -54,7 +53,6 @@ public:
 	void quatTransformVectorTest();
 	void quatMatrixConversionTest();
 	void vecMatrixConversionTest();
-	void angleTest();
 	void angleConversionTest();
 	
 	void inventorySizeTest();
