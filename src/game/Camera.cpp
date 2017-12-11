@@ -35,8 +35,7 @@ void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 	zcos = std::cos(roll);
 	zsin = std::sin(roll);
 	
-	glm::mat4 translation = glm::translate(glm::mat4(1), -pos);
-	worldToView = toRotationMatrix(angle) * translation;
+	worldToView = glm::translate(toRotationMatrix(angle), -pos);
 }
 
 MASTER_CAMERA_STRUCT MasterCamera;
