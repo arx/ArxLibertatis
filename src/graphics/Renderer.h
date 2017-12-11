@@ -337,7 +337,6 @@ public:
 	
 	// Matrices
 	virtual void SetViewMatrix(const glm::mat4x4 & matView) = 0;
-	virtual void GetViewMatrix(glm::mat4x4 & matView) const = 0;
 	virtual void SetProjectionMatrix(const glm::mat4x4 & matProj) = 0;
 	virtual void GetProjectionMatrix(glm::mat4x4 & matProj) const = 0;
 	
