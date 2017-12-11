@@ -1729,7 +1729,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 			std::cout << "  Transform:\n";
 			std::cout << "    pos=(" << t.pos.x << ", " << t.pos.y << ", " << t.pos.z << ")\n";
 			std::cout << "    ycos=" << t.ycos << " ysin=" << t.ysin << " xsin=" << t.xsin << " xcos=" << t.xcos << '\n';
-			std::cout << "    use_focal=" << t.use_focal << '\n';
+			std::cout << "    use_focal=" << t.use_focal1 << '\n';
 			std::cout << "    mod=(" << t.xmod << ", " << t.ymod << ", " << t.zmod << ")\n";
 			
 			std::cout << "  Position: " << ac->cam.pos2;
