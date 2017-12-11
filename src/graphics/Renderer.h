@@ -350,7 +350,6 @@ public:
 	
 	// Viewport
 	virtual void SetViewport(const Rect & viewport) = 0;
-	virtual Rect GetViewport() = 0;
 	
 	// Scissor
 	virtual void SetScissor(const Rect & rect) = 0;
