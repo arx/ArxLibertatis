@@ -518,10 +518,6 @@ void OpenGLRenderer::SetViewMatrix(const glm::mat4x4 & matView) {
 	view = matView;
 }
 
-void OpenGLRenderer::GetViewMatrix(glm::mat4x4 & matView) const {
-	matView = view;
-}
-
 void OpenGLRenderer::SetProjectionMatrix(const glm::mat4x4 & matProj) {
 	
 	if(!memcmp(&projection, &matProj, sizeof(glm::mat4x4))) {
