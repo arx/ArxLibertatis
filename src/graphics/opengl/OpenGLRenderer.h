@@ -56,7 +56,6 @@ public:
 	
 	// Viewport
 	void SetViewport(const Rect & viewport);
-	Rect GetViewport();
 	
 	void SetScissor(const Rect & rect);
 	

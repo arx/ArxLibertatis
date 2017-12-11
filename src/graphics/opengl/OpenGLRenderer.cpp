@@ -580,10 +580,6 @@ void OpenGLRenderer::SetViewport(const Rect & _viewport) {
 	}
 }
 
-Rect OpenGLRenderer::GetViewport() {
-	return viewport;
-}
-
 void OpenGLRenderer::SetScissor(const Rect & rect) {
 	
 	if(rect.isValid()) {
