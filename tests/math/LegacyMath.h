@@ -232,21 +232,6 @@ inline glm::quat toNonNpcRotation(const Anglef & src) {
 	return glm::quat_cast(mat);
 }
 
-inline Vec3f camEE_RT(const Vec3f & in, const EERIE_TRANSFORM & trans) {
-	const Vec3f temp1 = in - trans.pos;
-	Vec3f temp2;
-	Vec3f temp3;
-	
-	temp2.x = (temp1.x * trans.ycos) + (temp1.z * trans.ysin);
-	temp2.z = (temp1.z * trans.ycos) - (temp1.x * trans.ysin);
-	temp3.z = (temp1.y * trans.xsin) + (temp2.z * trans.xcos);
-	temp3.y = (temp1.y * trans.xcos) - (temp2.z * trans.xsin);
-	temp2.y = (temp3.y * trans.zcos) - (temp2.x * trans.zsin);
-	temp2.x = (temp2.x * trans.zcos) + (temp3.y * trans.zsin);
-	
-	return Vec3f(temp2.x, temp2.y, temp3.z);
-}
-
 inline void VectorRotateY(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
 	float c = std::cos(_fAngle);
 	float s = std::sin(_fAngle);
