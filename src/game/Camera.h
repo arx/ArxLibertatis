@@ -33,8 +33,6 @@ struct EERIE_TRANSFORM {
 	Vec2f mod;
 
 	glm::mat4x4 worldToView;
-
-	void updateFromAngle(const Anglef &angle);
 };
 
 struct EERIE_CAMERA {

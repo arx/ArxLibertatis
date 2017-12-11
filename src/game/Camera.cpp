@@ -24,10 +24,6 @@
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
 
-void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
-	
-	worldToView = glm::translate(toRotationMatrix(angle), -pos);
-}
 
 MASTER_CAMERA_STRUCT MasterCamera;
 
@@ -61,7 +57,9 @@ static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * ca
 }
 
 void SP_PrepareCamera(EERIE_CAMERA * cam) {
-	cam->orgTrans.updateFromAngle(cam->angle);
+	
+	cam->orgTrans.worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->orgTrans.pos);
+	
 	cam->orgTrans.mod = Vec2f(cam->center + cam->clip.topLeft());
 }
 
