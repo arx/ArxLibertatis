@@ -985,7 +985,7 @@ struct SavedTransform {
 	f32 ysin;
 	f32 xsin;
 	f32 xcos;
-	f32 use_focal; //TODO Remove
+	f32 use_focal1; //TODO Remove
 	f32 xmod;
 	f32 ymod;
 	f32 zmod;
@@ -1003,7 +1003,7 @@ struct SavedTransform {
 		ysin = 0.f;
 		xsin = 0.f;
 		xcos = 0.f;
-		use_focal = 0.f;
+		use_focal1 = 0.f;
 		xmod = b.mod.x, ymod = b.mod.y, zmod = 0.f;
 		return *this;
 	}
