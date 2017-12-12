@@ -462,7 +462,7 @@ void CheckSetAnimOutOfTreatZone(Entity * io, AnimLayer & layer) {
 	
 	if( layer.cur_anim &&
 		!(io->gameFlags & GFLAG_ISINTREATZONE) &&
-		fartherThan(io->pos, ACTIVECAM->orgTrans.m_pos, 2500.f))
+		fartherThan(io->pos, ACTIVECAM->m_pos, 2500.f))
 	{
 
 		layer.ctime = layer.cur_anim->anims[layer.altidx_cur]->anim_time - AnimationDurationMs(1);
@@ -476,7 +476,7 @@ void PrepareIOTreatZone(long flag) {
 	static long status = -1;
 	static Vec3f lastpos;
 
-	const Vec3f cameraPos = ACTIVECAM->orgTrans.m_pos;
+	const Vec3f cameraPos = ACTIVECAM->m_pos;
 	
 	if(flag || status == -1) {
 		status = 0;
@@ -1871,8 +1871,8 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 
 
 		if(flag && _pRef) {
-			float flDistanceToRef = arx::distance2(ACTIVECAM->orgTrans.m_pos, *_pRef);
-			float flDistanceToIO = arx::distance2(ACTIVECAM->orgTrans.m_pos, io->pos);
+			float flDistanceToRef = arx::distance2(ACTIVECAM->m_pos, *_pRef);
+			float flDistanceToIO = arx::distance2(ACTIVECAM->m_pos, io->pos);
 			bPass = bPlayerEquiped || (flDistanceToIO < flDistanceToRef);
 		}
 
@@ -2144,7 +2144,7 @@ void UpdateCameras() {
 		if(io->ioflags & IO_CAMERA) {
 			arx_assert(isallfinite(io->pos));
 			
-			io->_camdata->cam.orgTrans.m_pos = io->pos;
+			io->_camdata->cam.m_pos = io->pos;
 
 			if(io->targetinfo != EntityHandle(TARGET_NONE)) {
 				// Follows target
@@ -2190,7 +2190,7 @@ void UpdateCameras() {
 			}
 
 			io->_camdata->cam.lastinfovalid = true;
-			io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.m_pos;
+			io->_camdata->cam.lastpos = io->_camdata->cam.m_pos;
 		}
 	}
 }

@@ -28,16 +28,12 @@
 #define CAM_SUBJVIEW 0
 #define CAM_TOPVIEW 1
 
-struct EERIE_TRANSFORM {
+struct EERIE_CAMERA {
+
 	Vec3f m_pos;
 	Vec2f m_mod;
 
 	glm::mat4x4 m_worldToView;
-};
-
-struct EERIE_CAMERA {
-
-	EERIE_TRANSFORM orgTrans;
 
 	float focal;
 
@@ -59,11 +55,11 @@ struct EERIE_CAMERA {
 	glm::mat4x4 ProjectionMatrix;
 	
 	void setTargetCamera(const Vec3f & target) {
-		if(orgTrans.m_pos.x == target.x && orgTrans.m_pos.y == target.y && orgTrans.m_pos.z == target.z)
+		if(m_pos.x == target.x && m_pos.y == target.y && m_pos.z == target.z)
 			return;
 
-		angle.setPitch((glm::degrees(getAngle(orgTrans.m_pos.y, orgTrans.m_pos.z, target.y, orgTrans.m_pos.z + glm::distance(Vec2f(target.x, target.z), Vec2f(orgTrans.m_pos.x, orgTrans.m_pos.z)))))); //alpha entre orgn et dest;
-		angle.setYaw((180.f + glm::degrees(getAngle(orgTrans.m_pos.x, orgTrans.m_pos.z, target.x, target.z)))); //beta entre orgn et dest;
+		angle.setPitch((glm::degrees(getAngle(m_pos.y, m_pos.z, target.y, m_pos.z + glm::distance(Vec2f(target.x, target.z), Vec2f(m_pos.x, m_pos.z)))))); //alpha entre orgn et dest;
+		angle.setYaw((180.f + glm::degrees(getAngle(m_pos.x, m_pos.z, target.x, target.z)))); //beta entre orgn et dest;
 		angle.setRoll(0.f);
 	}
 	

@@ -108,7 +108,7 @@ Cinematic::~Cinematic() {
 /* Reinit */
 void Cinematic::OneTimeSceneReInit() {
 	
-	m_camera.orgTrans.m_pos = Vec3f(900.f, -160.f, 4340.f);
+	m_camera.m_pos = Vec3f(900.f, -160.f, 4340.f);
 	m_camera.angle = Anglef(3.f, 268.f, 0.f);
 	m_camera.clip = Rect(cinRenderSize.x, cinRenderSize.y);
 	m_camera.center = m_camera.clip.center();
@@ -417,7 +417,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	}
 	
 	arx_assert(isallfinite(m_pos));
-	m_camera.orgTrans.m_pos = m_pos;
+	m_camera.m_pos = m_pos;
 	m_camera.angle.setPitch(0);
 	m_camera.angle.setYaw(0);
 	m_camera.angle.setRoll(angz);
@@ -466,7 +466,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 			case INTERP_NO:
 				arx_assert(isallfinite(m_nextPos));
 				
-				m_camera.orgTrans.m_pos = m_nextPos;
+				m_camera.m_pos = m_nextPos;
 				m_camera.angle.setPitch(0);
 				m_camera.angle.setYaw(0);
 				m_camera.angle.setRoll(m_nextAngz);

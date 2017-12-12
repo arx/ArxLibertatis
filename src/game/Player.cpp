@@ -1668,9 +1668,9 @@ void ForcePlayerLookAtIO(Entity * io) {
 	ActionPoint id = entities.player()->obj->fastaccess.view_attach;
 
 	if(id != ActionPoint()) {
-		tcam.orgTrans.m_pos = actionPointPosition(entities.player()->obj, id);
+		tcam.m_pos = actionPointPosition(entities.player()->obj, id);
 	} else {
-		tcam.orgTrans.m_pos = player.pos;
+		tcam.m_pos = player.pos;
 	}
 
 	id = io->obj->fastaccess.view_attach;

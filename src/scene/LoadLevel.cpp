@@ -203,7 +203,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	g_loddpos = dlh.pos_edit.toVec3();
 	player.desiredangle = player.angle = dlh.angle_edit;
 	
-	subj.orgTrans.m_pos = g_loddpos;
+	subj.m_pos = g_loddpos;
 	subj.angle = player.angle;
 	
 	if(strcmp(dlh.ident, "DANAE_FILE") != 0) {

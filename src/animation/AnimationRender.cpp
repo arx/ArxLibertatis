@@ -477,7 +477,7 @@ static bool Cedric_IO_Visible(const Vec3f & pos) {
 	
 	if(ACTIVEBKG) {
 		//TODO maybe readd this
-		//if(fartherThan(io->pos, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f))
+		//if(fartherThan(io->pos, ACTIVECAM->pos, ACTIVECAM->cdepth * 0.6f))
 		// return false;
 
 		long xx = long(pos.x * ACTIVEBKG->m_mul.x);
@@ -589,7 +589,7 @@ static bool CullFace(const EERIE_3DOBJ * eobj, const EERIE_FACE & face) {
 		normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 		normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
 
-		Vec3f nrm = eobj->vertexWorldPositions[face.vid[0]].v - ACTIVECAM->orgTrans.m_pos;
+		Vec3f nrm = eobj->vertexWorldPositions[face.vid[0]].v - ACTIVECAM->m_pos;
 
 		if(glm::dot(normFace, nrm) > 0.f)
 			return true;
@@ -604,7 +604,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
                                const EERIE_3DOBJ * eobj) {
 	
 	float mdist = ACTIVECAM->cdepth;
-	float ddist = mdist-fdist(t.pos, ACTIVECAM->orgTrans.m_pos);
+	float ddist = mdist-fdist(t.pos, ACTIVECAM->m_pos);
 	ddist = ddist/mdist;
 	ddist = glm::pow(ddist, 6.f);
 
@@ -904,7 +904,7 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
 		float mdist = ACTIVECAM->cdepth;
 		mdist *= ( 1.0f / 2 );
 
-		float ddist = mdist-fdist(ftrPos, ACTIVECAM->orgTrans.m_pos);
+		float ddist = mdist-fdist(ftrPos, ACTIVECAM->m_pos);
 		ddist = ddist/mdist;
 		ddist = glm::pow(ddist, 6.f);
 		ddist = glm::clamp(ddist, 0.25f, 0.9f);
