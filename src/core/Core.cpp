@@ -440,7 +440,7 @@ void levelInit() {
 	}
 	
 	lastteleport = player.basePosition();
-	subj.orgTrans.m_pos = g_moveto = player.pos;
+	subj.m_pos = g_moveto = player.pos;
 
 	subj.angle = player.angle;
 	

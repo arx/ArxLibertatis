@@ -342,7 +342,7 @@ void RaycastDebugDraw() {
 	}
 	
 	for(auto & tile: dbg_tiles) {
-		Vec3f foo = Vec3f(tile.x *100, ACTIVECAM->orgTrans.pos.y + 80, tile.y*100);
+		Vec3f foo = Vec3f(tile.x *100, ACTIVECAM->pos.y + 80, tile.y*100);
 		drawLine(foo, foo + Vec3f(100, 0, 0), Color::white);
 		drawLine(foo + Vec3f(100, 0, 0)  , foo + Vec3f(100, 0, 100), Color::white);
 		drawLine(foo + Vec3f(100, 0, 100), foo + Vec3f(  0, 0, 100), Color::white);
