@@ -989,14 +989,6 @@ struct SavedTransform {
 	f32 xmod;
 	f32 ymod;
 	f32 zmod;
-	
-	operator EERIE_TRANSFORM() const {
-		EERIE_TRANSFORM a;
-		a.pos = pos.toVec3();
-		a.mod.x = xmod;
-		a.mod.y = ymod;
-		return a;
-	}
 };
 
 struct SavedCamera {
@@ -1053,7 +1045,9 @@ struct SavedCamera {
 		
 		EERIE_CAMERA a;
 		
-		a.orgTrans = transform;
+		a.orgTrans.pos = transform.pos.toVec3();
+		a.orgTrans.mod.x = transform.xmod;
+		a.orgTrans.mod.y = transform.ymod;
 		
 		a.focal = focal;
 		
