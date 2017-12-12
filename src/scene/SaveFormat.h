@@ -1042,8 +1042,8 @@ struct SavedCamera {
 		EERIE_CAMERA a;
 		
 		a.orgTrans.m_pos = pos.toVec3();
-		a.orgTrans.mod.x = xmod;
-		a.orgTrans.mod.y = ymod;
+		a.orgTrans.m_mod.x = xmod;
+		a.orgTrans.m_mod.y = ymod;
 		
 		a.focal = focal;
 		
@@ -1073,8 +1073,8 @@ struct SavedCamera {
 		xsin = 0.f;
 		xcos = 0.f;
 		use_focal1 = 0.f;
-		xmod = b.orgTrans.mod.x;
-		ymod = b.orgTrans.mod.y;
+		xmod = b.orgTrans.m_mod.x;
+		ymod = b.orgTrans.m_mod.y;
 		zmod = 0.f;
 		
 		//TODO Remove
@@ -1088,8 +1088,8 @@ struct SavedCamera {
 
 		use_focal = 0.f;
 
-		posleft = b.orgTrans.mod.x;
-		postop  = b.orgTrans.mod.y;
+		posleft = b.orgTrans.m_mod.x;
+		postop  = b.orgTrans.m_mod.y;
 
 		focal = b.focal;
 		Zmul = 0.f;

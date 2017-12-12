@@ -30,7 +30,7 @@
 
 struct EERIE_TRANSFORM {
 	Vec3f m_pos;
-	Vec2f mod;
+	Vec2f m_mod;
 
 	glm::mat4x4 worldToView;
 };
