@@ -196,7 +196,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 			screenPos.y = 0.75f * (pos.y - float(g_size.height() / 2)) * 156.f / (480.f * g_sizeRatio.y);
 			screenPos.z = 75.f;
 			
-			flare.p = Vec3f(glm::inverse(ACTIVECAM->orgTrans.worldToView) * Vec4f(screenPos, 1.0f));
+			flare.p = Vec3f(glm::inverse(ACTIVECAM->orgTrans.m_worldToView) * Vec4f(screenPos, 1.0f));
 		}
 	} else {
 		flare.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
