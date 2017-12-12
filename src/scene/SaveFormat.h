@@ -993,7 +993,8 @@ struct SavedTransform {
 	operator EERIE_TRANSFORM() const {
 		EERIE_TRANSFORM a;
 		a.pos = pos.toVec3();
-		a.mod.x = xmod, a.mod.y = ymod;
+		a.mod.x = xmod;
+		a.mod.y = ymod;
 		return a;
 	}
 	
@@ -1004,7 +1005,9 @@ struct SavedTransform {
 		xsin = 0.f;
 		xcos = 0.f;
 		use_focal1 = 0.f;
-		xmod = b.mod.x, ymod = b.mod.y, zmod = 0.f;
+		xmod = b.mod.x;
+		ymod = b.mod.y;
+		zmod = 0.f;
 		return *this;
 	}
 	
@@ -1065,12 +1068,15 @@ struct SavedCamera {
 		EERIE_CAMERA a;
 		
 		a.orgTrans = transform;
+		
 		a.focal = focal;
 		
 		a.angle = angle;
 		
-		a.d_pos = d_pos.toVec3(), a.d_angle = d_angle;
-		a.lasttarget = lasttarget.toVec3(), a.lastpos = lastpos.toVec3();
+		a.d_pos = d_pos.toVec3();
+		a.d_angle = d_angle;
+		a.lasttarget = lasttarget.toVec3();
+		a.lastpos = lastpos.toVec3();
 		a.translatetarget = translatetarget.toVec3();
 		a.lastinfovalid = lastinfovalid != 0;
 		a.clip = clip;
@@ -1105,21 +1111,28 @@ struct SavedCamera {
 		Zmul = 0.f;
 
 
-		xmod2 = 0.f, ymod2 = 0.f;
+		xmod2 = 0.f;
+		ymod2 = 0.f;
 		matrix = glm::mat4x4();
 		angle = b.angle;
 		
-		d_pos = b.d_pos, d_angle = b.d_angle;
-		lasttarget = b.lasttarget, lastpos = b.lastpos;
+		d_pos = b.d_pos;
+		d_angle = b.d_angle;
+		lasttarget = b.lasttarget;
+		lastpos = b.lastpos;
 		translatetarget = b.translatetarget;
 		lastinfovalid = b.lastinfovalid;
 		norm = Vec3f(0.f, 0.f, 0.f); //TODO Remove
-		fadecolor = Color3f::black, clip = b.clip;
-		clipz0 = 0.0f, clipz1 = 0.0f;
-		centerx = b.center.x, centery = b.center.y;
+		fadecolor = Color3f::black;
+		clip = b.clip;
+		clipz0 = 0.0f;
+		clipz1 = 0.0f;
+		centerx = b.center.x;
+		centery = b.center.y;
 		
 		smoothing = b.smoothing;
-		AddX = 0.f, AddY = 0.f;
+		AddX = 0.f;
+		AddY = 0.f;
 		Xsnap = 0;
 		Zsnap = 0;
 		Zdiv = 0.f;
