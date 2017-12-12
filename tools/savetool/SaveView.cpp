@@ -1725,12 +1725,11 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 			ac = reinterpret_cast<const ARX_CHANGELEVEL_CAMERA_IO_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_CAMERA_IO_SAVE);
 			
-			const SavedTransform & t = ac->cam.transform;
 			std::cout << "  Transform:\n";
-			std::cout << "    pos=(" << t.pos.x << ", " << t.pos.y << ", " << t.pos.z << ")\n";
-			std::cout << "    ycos=" << t.ycos << " ysin=" << t.ysin << " xsin=" << t.xsin << " xcos=" << t.xcos << '\n';
-			std::cout << "    use_focal=" << t.use_focal1 << '\n';
-			std::cout << "    mod=(" << t.xmod << ", " << t.ymod << ", " << t.zmod << ")\n";
+			std::cout << "    pos=(" << ac->cam.pos.x << ", " << ac->cam.pos.y << ", " << ac->cam.pos.z << ")\n";
+			std::cout << "    ycos=" << ac->cam.ycos << " ysin=" << ac->cam.ysin << " xsin=" << ac->cam.xsin << " xcos=" << ac->cam.xcos << '\n';
+			std::cout << "    use_focal=" << ac->cam.use_focal1 << '\n';
+			std::cout << "    mod=(" << ac->cam.xmod << ", " << ac->cam.ymod << ", " << ac->cam.zmod << ")\n";
 			
 			std::cout << "  Position: " << ac->cam.pos2;
 			std::cout << "  cos=(" << ac->cam.Xcos << ", " << ac->cam.Ycos << ", " << ac->cam.Zcos << ")\n";
