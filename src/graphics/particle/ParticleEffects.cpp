@@ -1007,7 +1007,7 @@ void TreatBackgroundActions() {
 			continue;
 		}
 		
-		float dist = arx::distance2(gl->pos, ACTIVECAM->orgTrans.pos);
+		float dist = arx::distance2(gl->pos, ACTIVECAM->orgTrans.m_pos);
 		if(dist > fZFar) {
 			// Out of treat range
 			ARX_SOUND_Stop(gl->sample);

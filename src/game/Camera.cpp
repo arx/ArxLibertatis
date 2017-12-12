@@ -58,7 +58,7 @@ static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * ca
 
 void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	
-	cam->orgTrans.worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->orgTrans.pos);
+	cam->orgTrans.worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->orgTrans.m_pos);
 	
 	cam->orgTrans.mod = Vec2f(cam->center + cam->clip.topLeft());
 }

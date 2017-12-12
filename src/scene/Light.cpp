@@ -187,7 +187,7 @@ void TreatBackgroundDynlights() {
 			
 			float fMaxdist = player.m_telekinesis ? 850 : 300;
 			
-			if(!fartherThan(light->pos, ACTIVECAM->orgTrans.pos, fMaxdist)) {
+			if(!fartherThan(light->pos, ACTIVECAM->orgTrans.m_pos, fMaxdist)) {
 				ComputeLight2DPos(light);
 			} else {
 				light->m_screenRect = Rectf(1, 0, -1, 0); // Intentionally invalid

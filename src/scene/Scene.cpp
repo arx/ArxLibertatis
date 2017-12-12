@@ -264,7 +264,7 @@ bool VisibleSphere(const Sphere & sphere) {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(fartherThan(sphere.origin, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth*0.5f + sphere.radius)) {
+	if(fartherThan(sphere.origin, ACTIVECAM->orgTrans.m_pos, ACTIVECAM->cdepth*0.5f + sphere.radius)) {
 		return false;
 	}
 	
@@ -506,7 +506,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 	float height = 0.f;
 	
 	if(flag & 1) {
-		Vec3f cameraPos = ACTIVECAM->orgTrans.pos;
+		Vec3f cameraPos = ACTIVECAM->orgTrans.m_pos;
 		Vec3f direction = angleToVectorXZ_180offset(ACTIVECAM->angle.getYaw());
 		
 		EERIEPOLY * ep = ARX_PORTALS_GetRoomNumForCamera(cameraPos, direction);
@@ -1407,7 +1407,7 @@ void ARX_SCENE_Update() {
 	
 	WATEREFFECT = (toMsi(now) % long(2 * glm::pi<float>() / 0.0005f)) * 0.0005f;
 	
-	const Vec3f camPos = ACTIVECAM->orgTrans.pos;
+	const Vec3f camPos = ACTIVECAM->orgTrans.m_pos;
 	const float camDepth = ACTIVECAM->cdepth;
 	
 	long l = long(camDepth * 0.42f);

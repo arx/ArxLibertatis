@@ -95,7 +95,7 @@ void cinematicLaunchWaiting() {
 	LogDebug("LaunchWaitingCine " << CINE_PRELOAD);
 
 	if(ACTIVECAM) {
-		g_originalCameraPosition = ACTIVECAM->orgTrans.pos;
+		g_originalCameraPosition = ACTIVECAM->orgTrans.m_pos;
 	}
 
 	cinematicKill();
@@ -166,7 +166,7 @@ void cinematicRender() {
 		// !! avant le cine end
 		if(ACTIVECAM) {
 			arx_assert(isallfinite(g_originalCameraPosition));
-			ACTIVECAM->orgTrans.pos = g_originalCameraPosition;
+			ACTIVECAM->orgTrans.m_pos = g_originalCameraPosition;
 		}
 
 		if(bWasBlocked) {
