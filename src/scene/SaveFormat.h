@@ -997,20 +997,6 @@ struct SavedTransform {
 		a.mod.y = ymod;
 		return a;
 	}
-	
-	SavedTransform & operator=(const EERIE_TRANSFORM & b) {
-		pos = b.pos;
-		ycos = 0.f;
-		ysin = 0.f;
-		xsin = 0.f;
-		xcos = 0.f;
-		use_focal1 = 0.f;
-		xmod = b.mod.x;
-		ymod = b.mod.y;
-		zmod = 0.f;
-		return *this;
-	}
-	
 };
 
 struct SavedCamera {
@@ -1091,8 +1077,16 @@ struct SavedCamera {
 	
 	SavedCamera & operator=(const EERIE_CAMERA & b) {
 		
-		transform = b.orgTrans;
-
+		transform.pos = b.orgTrans.pos;
+		transform.ycos = 0.f;
+		transform.ysin = 0.f;
+		transform.xsin = 0.f;
+		transform.xcos = 0.f;
+		transform.use_focal1 = 0.f;
+		transform.xmod = b.orgTrans.mod.x;
+		transform.ymod = b.orgTrans.mod.y;
+		transform.zmod = 0.f;
+		
 		//TODO Remove
 		pos2 = b.orgTrans.pos;
 		Ycos = 0.f;
