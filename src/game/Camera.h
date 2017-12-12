@@ -32,7 +32,7 @@ struct EERIE_TRANSFORM {
 	Vec3f m_pos;
 	Vec2f m_mod;
 
-	glm::mat4x4 worldToView;
+	glm::mat4x4 m_worldToView;
 };
 
 struct EERIE_CAMERA {

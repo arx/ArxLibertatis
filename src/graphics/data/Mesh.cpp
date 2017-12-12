@@ -465,7 +465,7 @@ bool GetTruePolyY(const PortalPoly * ep, const Vec3f & pos, float * ret) {
 BackgroundData * ACTIVEBKG = NULL;
 
 Vec3f EE_RT(const Vec3f & in) {
-	return Vec3f(ACTIVECAM->orgTrans.worldToView * Vec4f(in, 1.0f));
+	return Vec3f(ACTIVECAM->orgTrans.m_worldToView * Vec4f(in, 1.0f));
 }
 
 static Vec4f viewToClipSpace(const Vec3f & in) {
