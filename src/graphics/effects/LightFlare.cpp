@@ -43,7 +43,7 @@ void update2DFX() {
 
 	float temp_increase = toMs(g_platformTime.lastFrameDuration()) * (1.0f/1000) * 4.f;
 	
-	const Vec3f camPos = ACTIVECAM->orgTrans.pos;
+	const Vec3f camPos = ACTIVECAM->orgTrans.m_pos;
 	
 	bool bComputeIO = false;
 

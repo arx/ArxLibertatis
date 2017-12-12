@@ -1041,7 +1041,7 @@ struct SavedCamera {
 		
 		EERIE_CAMERA a;
 		
-		a.orgTrans.pos = pos.toVec3();
+		a.orgTrans.m_pos = pos.toVec3();
 		a.orgTrans.mod.x = xmod;
 		a.orgTrans.mod.y = ymod;
 		
@@ -1067,7 +1067,7 @@ struct SavedCamera {
 	
 	SavedCamera & operator=(const EERIE_CAMERA & b) {
 		
-		pos = b.orgTrans.pos;
+		pos = b.orgTrans.m_pos;
 		ycos = 0.f;
 		ysin = 0.f;
 		xsin = 0.f;
@@ -1078,7 +1078,7 @@ struct SavedCamera {
 		zmod = 0.f;
 		
 		//TODO Remove
-		pos2 = b.orgTrans.pos;
+		pos2 = b.orgTrans.m_pos;
 		Ycos = 0.f;
 		Ysin = 0.f;
 		Xcos = 0.f;

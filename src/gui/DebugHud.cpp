@@ -183,7 +183,7 @@ void ShowInfoText() {
 	frameInfo.print();
 	
 	DebugBox camBox = DebugBox(Vec2i(10, frameInfo.size().y + 5), "Camera");
-	camBox.add("Position", ACTIVECAM->orgTrans.pos);
+	camBox.add("Position", ACTIVECAM->orgTrans.m_pos);
 	camBox.add("Rotation", ACTIVECAM->angle);
 	camBox.add("Focal", ACTIVECAM->focal);
 	camBox.print();
