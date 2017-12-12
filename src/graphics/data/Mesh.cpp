@@ -473,8 +473,8 @@ static Vec4f viewToClipSpace(const Vec3f & in) {
 	float z = in.z;
 	
 	Vec4f out;
-	out.x = in.x * ACTIVECAM->ProjectionMatrix[0][0] + z * ACTIVECAM->orgTrans.mod.x;
-	out.y = in.y * ACTIVECAM->ProjectionMatrix[1][1] + z * ACTIVECAM->orgTrans.mod.y;
+	out.x = in.x * ACTIVECAM->ProjectionMatrix[0][0] + z * ACTIVECAM->orgTrans.m_mod.x;
+	out.y = in.y * ACTIVECAM->ProjectionMatrix[1][1] + z * ACTIVECAM->orgTrans.m_mod.y;
 	out.z = in.z * ACTIVECAM->ProjectionMatrix[2][2] + ACTIVECAM->ProjectionMatrix[3][2];
 	out.w = z;
 	return out;
