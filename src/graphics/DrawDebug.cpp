@@ -841,8 +841,6 @@ static void drawDebugMaterials() {
 			drawDebugMaterialTexture(textpos, oss.str(), *enviro->m_pTexture, Color::yellow);
 		}
 		
-		(void)textpos;
-		
 		for(size_t i = 0; i < count; i++) {
 			
 			oss.str(std::string());
