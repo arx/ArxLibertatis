@@ -1276,15 +1276,14 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 				
 				Cylinder tmpp = cyl;
 				tmpp.radius *= 0.65f;
-				float tmp = CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST);
-				
-				if(tmp > 50.f) {
+				if(CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST) > 50.f) {
 					tmpp.radius = cyl.radius * 1.45f;
 					tmpp.origin.y -= 30.f;
 					if(CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST) < 0) {
 						return false;
 					}
 				}
+				
 			}
 		}
 	} else if(anything < -45) {
