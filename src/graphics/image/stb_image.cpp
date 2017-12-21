@@ -1184,14 +1184,14 @@ static int process_marker(jpeg *z, int m)
          L = get16(z->s)-2;
          while (L > 0) {
             uint8 * v;
-            int sizes[16], i, m = 0;
+            int sizes[16], i, n = 0;
             int q = get8(z->s);
             int tc = q >> 4;
             int th = q & 15;
             if(tc > 1 || th > 3) return stbi_error("bad DHT header", "Corrupt JPEG");
             for (i=0; i < 16; ++i) {
                sizes[i] = get8(z->s);
-               m += sizes[i];
+               n += sizes[i];
             }
             L -= 17;
             if (tc == 0) {
@@ -1201,9 +1201,9 @@ static int process_marker(jpeg *z, int m)
                if (!build_huffman(z->huff_ac+th, sizes)) return 0;
                v = z->huff_ac[th].values;
             }
-            for (i=0; i < m; ++i)
+            for (i=0; i < n; ++i)
                v[i] = get8u(z->s);
-            L -= m;
+            L -= n;
          }
          return L==0;
    }
