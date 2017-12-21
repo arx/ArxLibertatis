@@ -1899,7 +1899,7 @@ int main_view(SaveBlock & save, const std::vector<std::string> & args) {
 		}
 		LogWarning << oss.str();
 	} while(false);
-	BOOST_REVERSE_FOREACH(const fs::path & base, fs::paths.data) {
+	BOOST_REVERSE_FOREACH(const fs::path & base, fs::getDataDirs()) {
 		const char * dirname = "localisation";
 		g_resources->addFiles(base / dirname, dirname);
 	}
