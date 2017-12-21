@@ -46,7 +46,7 @@ static const Font::Char FONT_PRELOAD_LIMIT = 127;
 Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face)
 	: info(fontFile, fontSize)
 	, referenceCount(0)
-	, face(face)
+	, m_face(face)
 	, textures(0) {
 	
 	// TODO-font: Compute optimal size using m_FTFace->bbox
@@ -74,7 +74,7 @@ Font::~Font() {
 	delete textures;
 	
 	// Release FreeType face object.
-	FT_Done_Face(face);
+	FT_Done_Face(m_face);
 }
 
 void Font::insertPlaceholderGlyph(Char character) {
@@ -113,19 +113,19 @@ void Font::insertPlaceholderGlyph(Char character) {
 bool Font::insertGlyph(Char character) {
 	
 	FT_Error error;
-	FT_UInt glyphIndex = FT_Get_Char_Index(face, character);
+	FT_UInt glyphIndex = FT_Get_Char_Index(m_face, character);
 	if(!glyphIndex) {
 		insertPlaceholderGlyph(character);
 		return false;
 	}
 	
-	error = FT_Load_Glyph(face, glyphIndex, FT_LOAD_FORCE_AUTOHINT);
+	error = FT_Load_Glyph(m_face, glyphIndex, FT_LOAD_FORCE_AUTOHINT);
 	if(error) {
 		insertPlaceholderGlyph(character);
 		return false;
 	}
 	
-	error = FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
+	error = FT_Render_Glyph(m_face->glyph, FT_RENDER_MODE_NORMAL);
 	if(error) {
 		insertPlaceholderGlyph(character);
 		return false;
@@ -134,14 +134,14 @@ bool Font::insertGlyph(Char character) {
 	// Fill in info for this glyph.
 	Glyph & glyph = glyphs[character];
 	glyph.index = glyphIndex;
-	glyph.size.x = face->glyph->bitmap.width;
-	glyph.size.y = face->glyph->bitmap.rows;
-	glyph.advance.x = face->glyph->linearHoriAdvance / 65536.0f;
-	glyph.advance.y = face->glyph->linearVertAdvance / 65536.0f;
-	glyph.lsb_delta = face->glyph->lsb_delta;
-	glyph.rsb_delta = face->glyph->rsb_delta;
-	glyph.draw_offset.x = face->glyph->bitmap_left;
-	glyph.draw_offset.y = face->glyph->bitmap_top - face->glyph->bitmap.rows;
+	glyph.size.x = m_face->glyph->bitmap.width;
+	glyph.size.y = m_face->glyph->bitmap.rows;
+	glyph.advance.x = m_face->glyph->linearHoriAdvance / 65536.0f;
+	glyph.advance.y = m_face->glyph->linearVertAdvance / 65536.0f;
+	glyph.lsb_delta = m_face->glyph->lsb_delta;
+	glyph.rsb_delta = m_face->glyph->rsb_delta;
+	glyph.draw_offset.x = m_face->glyph->bitmap_left;
+	glyph.draw_offset.y = m_face->glyph->bitmap_top - m_face->glyph->bitmap.rows;
 	glyph.uv_start = Vec2f_ZERO;
 	glyph.uv_end = Vec2f_ZERO;
 	glyph.texture = 0;
@@ -152,7 +152,7 @@ bool Font::insertGlyph(Char character) {
 		Image imgGlyph;
 		imgGlyph.create(size_t(glyph.size.x), size_t(glyph.size.y), Image::Format_A8);
 		
-		FT_Bitmap * srcBitmap = &face->glyph->bitmap;
+		FT_Bitmap * srcBitmap = &m_face->glyph->bitmap;
 		arx_assert(srcBitmap->pitch >= 0);
 		arx_assert(unsigned(srcBitmap->pitch) == unsigned(srcBitmap->width));
 		
@@ -282,7 +282,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 	
 	if(DoDraw) {
 		// Subtract one line height (since we flipped the Y origin to be like GDI)
-		pen.y += face->size->metrics.ascender >> 6;
+		pen.y += m_face->size->metrics.ascender >> 6;
 	}
 	
 	FT_UInt prevGlyphIndex = 0;
@@ -301,10 +301,10 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 		const Glyph & glyph = itGlyph->second;
 		
 		// Kerning
-		if(FT_HAS_KERNING(face)) {
+		if(FT_HAS_KERNING(m_face)) {
 			if(prevGlyphIndex != 0) {
 				FT_Vector delta;
-				FT_Get_Kerning(face, prevGlyphIndex, glyph.index, FT_KERNING_DEFAULT, &delta);
+				FT_Get_Kerning(m_face, prevGlyphIndex, glyph.index, FT_KERNING_DEFAULT, &delta);
 				pen.x += delta.x >> 6;
 			}
 			prevGlyphIndex = glyph.index;
@@ -375,5 +375,5 @@ Font::TextSize Font::getTextSize(text_iterator start, text_iterator end) {
 }
 
 int Font::getLineHeight() const {
-	return face->size->metrics.height >> 6;
+	return m_face->size->metrics.height >> 6;
 }
