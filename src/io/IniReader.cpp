@@ -253,8 +253,8 @@ bool IniReader::read(std::istream & is) {
 					
 					size_t nameEnd = str.find_first_not_of(ALPHANUM, start);
 					if(nameEnd != std::string::npos && nameEnd != start) {
-						size_t separator = str.find_first_not_of(WHITESPACE, nameEnd);
-						if(separator != std::string::npos && str[separator] == '=') {
+						size_t newSeparator = str.find_first_not_of(WHITESPACE, nameEnd);
+						if(newSeparator != std::string::npos && str[newSeparator] == '=') {
 							// New key
 							line--, readline = false;
 							break;
