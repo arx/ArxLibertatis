@@ -717,7 +717,6 @@ static bool HandleGameFlowTransitions() {
 
 
 Vec3f PUSH_PLAYER_FORCE;
-static BackgroundData DefaultBkg;
 
 EERIE_CAMERA subj;
 EERIE_CAMERA bookcam;
@@ -827,8 +826,7 @@ bool ArxGame::initGame()
 	
 	LastLoadedScene.clear();
 	
-	DefaultBkg = BackgroundData();
-	ACTIVEBKG = &DefaultBkg;
+	ACTIVEBKG = new BackgroundData();
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, Vec2s(BKG_SIZX, BKG_SIZZ));
 	
 	player.size.y = -player.baseHeight();
