@@ -206,16 +206,11 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 	{
 		QFile binaryFile(fileName.string().c_str());
 		binaryFile.open(QIODevice::ReadOnly);
-		
 		if(binaryFile.size() > 20 * 1024 * 1024) {
 			ui->stackedFileViews->setCurrentIndex(3);
 			return;
 		}
-
-		QByteArray data;
-		data = binaryFile.readAll();
-
-		m_fileViewHex.setData(data);
+		m_fileViewHex.setData(binaryFile.readAll());
 		ui->stackedFileViews->setCurrentIndex(2);
 	}
 }
