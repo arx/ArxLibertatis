@@ -192,10 +192,10 @@ void iterated_hash<T>::finalize(char * digest) {
 	
 	size_t order = transform::offset * sizeof(hash_word);
 	
-	size_t size = block_size - 2 * sizeof(hash_word);
-	pad(size);
-	byte_order::store(bit_count_lo(), data + size + order);
-	byte_order::store(bit_count_hi(), data + size + sizeof(hash_word) - order);
+	size_t padSize = block_size - 2 * sizeof(hash_word);
+	pad(padSize);
+	byte_order::store(bit_count_lo(), data + padSize + order);
+	byte_order::store(bit_count_hi(), data + padSize + sizeof(hash_word) - order);
 	
 	hash(data, block_size);
 	
