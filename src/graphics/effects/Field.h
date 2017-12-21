@@ -63,12 +63,9 @@ private:
 	TextureContainer * tex_jelly;
 	bool youp;
 	float fwrap;
-	float ysize;
 	float size;
 	float ft;
 	float fglow;
-	Vec3f b[4];
-	Vec3f t[4];
 	
 	float falpha;
 	
