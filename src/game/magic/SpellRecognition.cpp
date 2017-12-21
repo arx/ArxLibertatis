@@ -1111,12 +1111,10 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		default: {
 		failed:
 			std::string tex;
-
-			if(SpellMoves.length()>=127)
+			if(SpellMoves.length() >= 127) {
 				SpellMoves.resize(127);
-
+			}
 			LAST_FAILED_SEQUENCE = SpellMoves;
-
 			LogDebug("Unknown Symbol - " + SpellMoves);
 		}
 	}
