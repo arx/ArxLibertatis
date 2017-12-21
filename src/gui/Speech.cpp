@@ -454,13 +454,13 @@ void ARX_SPEECH_Update() {
 
 		// checks finished speech
 		if(now >= aspeech[i].time_creation + aspeech[i].duration) {
-			EERIE_SCRIPT *es = aspeech[i].es;
-			Entity *io = aspeech[i].ioscript;
+			EERIE_SCRIPT * es = aspeech[i].es;
+			Entity * scriptEntity = aspeech[i].ioscript;
 			long scrpos = aspeech[i].scrpos;
 			ARX_SPEECH_Release(i);
-
-			if(es && ValidIOAddress(io))
-				ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
+			if(es && ValidIOAddress(scriptEntity)) {
+				ScriptEvent::send(es, SM_EXECUTELINE, "", scriptEntity, "", scrpos);
+			}
 		}
 	}
 
