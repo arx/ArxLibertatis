@@ -1068,23 +1068,20 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	}
 
 	FillTargetInfo(ais.id_targetinfo, numtarget);
-
+	
 	// Save Local Timers ?
-	long count = 0;
-
+	ais.nbtimers = 0;
 	for (int i = 0; i < MAX_TIMER_SCRIPT; i++)
 	{
 		if (scr_timer[i].exist)
 		{
 			if (scr_timer[i].io == io)
 			{
-				count++;
+				ais.nbtimers++;
 			}
 		}
 	}
-
-	ais.nbtimers = count;
-
+	
 	long allocsize =
 		sizeof(ARX_CHANGELEVEL_IO_SAVE)
 		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
