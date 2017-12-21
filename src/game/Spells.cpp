@@ -134,7 +134,7 @@ bool GLOBAL_MAGIC_MODE = true;
 
 short ARX_FLARES_broken(1);
 
-long snip=0;
+long snip = 0;
 static Vec2f g_LastFlarePosition;
 static PlatformInstant g_LastFlareTime = 0;
 
@@ -559,7 +559,7 @@ void ARX_SPELLS_ManageMagic() {
 					g_LastFlareTime = now - std::min(now - g_LastFlareTime - interval, interval);
 				}
 				
-				ARX_FLARES_broken=0;
+				ARX_FLARES_broken = 0;
 				
 				if(!ARX_SOUND_IsPlaying(SND_MAGIC_DRAW))
 					ARX_SOUND_PlaySFX(SND_MAGIC_DRAW, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
@@ -682,21 +682,17 @@ struct TARGETING_SPELL {
 
 static TARGETING_SPELL t_spell;
 
-long LOOKING_FOR_SPELL_TARGET=0;
+long LOOKING_FOR_SPELL_TARGET = 0;
 GameInstant LOOKING_FOR_SPELL_TARGET_TIME = 0;
 
 void ARX_SPELLS_CancelSpellTarget() {
 	t_spell.typ = SPELL_NONE;
-	LOOKING_FOR_SPELL_TARGET=0;
+	LOOKING_FOR_SPELL_TARGET = 0;
 }
 
 void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 	if(io) {
-		ARX_SPELLS_Launch(t_spell.typ,
-		                  EntityHandle_Player,
-		                  t_spell.flags,
-		                  t_spell.level,
-		                  io->index(),
+		ARX_SPELLS_Launch(t_spell.typ, EntityHandle_Player, t_spell.flags, t_spell.level, io->index(),
 		                  t_spell.duration);
 	}
 }
@@ -704,21 +700,21 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 float ARX_SPELLS_ApplyFireProtection(Entity * io, float damages) {
 	
 	if(io) {
+		
 		SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_FIRE_PROTECTION);
 		if(spell) {
 			float modif = 1.f - (spell->m_level * ( 1.0f / 10 ));
-			
 			modif = glm::clamp(modif, 0.f, 1.f);
-			
 			damages *= modif;
 		}
 		
 		if(io->ioflags & IO_NPC) {
 			damages -= io->_npcdata->resist_fire*( 1.0f / 100 )*damages;
-			
-			if(damages < 0.f)
-				damages=0.f;
+			if(damages < 0.f) {
+				damages = 0.f;
+			}
 		}
+		
 	}
 	
 	return damages;
@@ -1129,10 +1125,11 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle t
 {
 	if(!io || io->spellcast_data.castingspell != SPELL_NONE)
 		return;
-
-	if(!(flags & SPELLCAST_FLAG_NOMANA) && (io->ioflags & IO_NPC) && (io->_npcdata->manaPool.current<=0.f))
+	
+	if(!(flags & SPELLCAST_FLAG_NOMANA) && (io->ioflags & IO_NPC) && io->_npcdata->manaPool.current <= 0.f) {
 		return;
-
+	}
+	
 	unsigned long i(0);
 
 	for(; i < SPELL_TYPES_COUNT; i++)
