@@ -640,8 +640,8 @@ void ScriptConsole::draw() {
 		}
 		drawLine(Vec2f(cursor, pos.y), Vec2f(cursor, pos.y + hFontDebug->getLineHeight()), 0.f, line);
 		if(editCursorLength() > 0) {
-			int end = pos.x + hFontDebug->getTextSize(begin, begin + displayCursorPos + editCursorLength()).next();
-			drawLine(Vec2f(end, pos.y), Vec2f(end, pos.y + hFontDebug->getLineHeight()), 0.f, line);
+			int endX = pos.x + hFontDebug->getTextSize(begin, begin + displayCursorPos + editCursorLength()).next();
+			drawLine(Vec2f(endX, pos.y), Vec2f(endX, pos.y + hFontDebug->getLineHeight()), 0.f, line);
 		}
 	}
 	
