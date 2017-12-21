@@ -171,6 +171,15 @@ long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
 	return long(io->_itemdata->price * shop_multiply * durability_ratio);
 }
 
+long ARX_INTERACTIVE_GetSellValue(Entity * item, Entity * shop, long count) {
+	
+	float fprice = ARX_INTERACTIVE_GetPrice(item, shop) / 3.0f; //>>1;
+	long price = checked_range_cast<long>(fprice);
+	price *= count;
+	fprice = price + price * player.m_skillFull.intuition * 0.005f;
+	return checked_range_cast<long>(fprice);
+}
+
 static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 	
 	ARX_PATH * op = io->inzone;

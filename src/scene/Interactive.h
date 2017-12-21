@@ -161,7 +161,8 @@ std::string GetMaterialString(const res::path & origin );
 Entity * CloneIOItem(Entity * src);
 
 float ARX_INTERACTIVE_GetArmorClass(Entity * io);
-long  ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop);
+long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop);
+long ARX_INTERACTIVE_GetSellValue(Entity * item, Entity * shop, long count = 1);
 void IO_UnlinkAllLinkedObjects(Entity * io);
 
 struct TREATZONE_IO {
