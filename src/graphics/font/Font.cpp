@@ -83,13 +83,13 @@ void Font::insertPlaceholderGlyph(Char character) {
 	if(character == util::REPLACEMENT_CHAR) {
 		
 		// Use '?' as a fallback replacement character
-		arx_assert(glyphs.find('?') != glyphs.end());
-		glyphs[character] = glyphs['?'];
+		arx_assert(m_glyphs.find('?') != m_glyphs.end());
+		m_glyphs[character] = m_glyphs['?'];
 		
 	} else if(character < 32 || character == '?') {
 		
 		// Ignore non-displayable ANSI characters
-		Glyph & glyph = glyphs[character];
+		Glyph & glyph = m_glyphs[character];
 		glyph.size = Vec2i_ZERO;
 		glyph.advance = Vec2f_ZERO;
 		glyph.lsb_delta = glyph.rsb_delta = 0;
@@ -104,8 +104,8 @@ void Font::insertPlaceholderGlyph(Char character) {
 		           << " (" << util::encode<util::UTF8>(character) << ") in font "
 		           << info.name;
 		
-		arx_assert(glyphs.find(util::REPLACEMENT_CHAR) != glyphs.end());
-		glyphs[character] = glyphs[util::REPLACEMENT_CHAR];
+		arx_assert(m_glyphs.find(util::REPLACEMENT_CHAR) != m_glyphs.end());
+		m_glyphs[character] = m_glyphs[util::REPLACEMENT_CHAR];
 		
 	}
 }
@@ -132,7 +132,7 @@ bool Font::insertGlyph(Char character) {
 	}
 	
 	// Fill in info for this glyph.
-	Glyph & glyph = glyphs[character];
+	Glyph & glyph = m_glyphs[character];
 	glyph.index = glyphIndex;
 	glyph.size.x = m_face->glyph->bitmap.width;
 	glyph.size.y = m_face->glyph->bitmap.rows;
@@ -185,7 +185,7 @@ bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
 	bool changed = false;
 	
 	for(text_iterator it = begin; (chr = util::UTF8::read(it, end)) != util::INVALID_CHAR; ) {
-		if(glyphs.find(chr) == glyphs.end()) {
+		if(m_glyphs.find(chr) == m_glyphs.end()) {
 			if(chr >= FONT_PRELOAD_LIMIT && insertGlyph(chr)) {
 				changed = true;
 			}
@@ -199,25 +199,25 @@ Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
 	
 	Char chr = util::UTF8::read(it, end);
 	if(chr == util::INVALID_CHAR) {
-		return glyphs.end();
+		return m_glyphs.end();
 	}
 	
-	glyph_iterator glyph = glyphs.find(chr);
-	if(glyph != glyphs.end()) {
+	glyph_iterator glyph = m_glyphs.find(chr);
+	if(glyph != m_glyphs.end()) {
 		return glyph; // an existing glyph
 	}
 	
 	if(chr < FONT_PRELOAD_LIMIT) {
 		// We pre-load all glyphs for ASCII characters, so there is no point in checking again
-		return glyphs.end();
+		return m_glyphs.end();
 	}
 	
 	if(!insertGlyph(chr)) {
 		// No new glyph was inserted but the character was mapped to an existing one
-		return glyphs.find(chr);
+		return m_glyphs.find(chr);
 	}
 	
-	arx_assert(glyphs.find(chr) != glyphs.end());
+	arx_assert(m_glyphs.find(chr) != m_glyphs.end());
 	
 	// As we need to re-upload the textures now, first check for more missing glyphs
 	insertMissingGlyphs(it, end);
@@ -225,7 +225,7 @@ Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
 	// Re-upload the changed textures
 	textures->upload();
 	
-	return glyphs.find(chr); // the newly inserted glyph
+	return m_glyphs.find(chr); // the newly inserted glyph
 }
 
 static void addGlyphVertices(std::vector<TexturedVertex> & vertices,
@@ -295,7 +295,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 		
 		// Get glyph in glyph map
 		glyph_iterator itGlyph = getNextGlyph(it, end);
-		if(itGlyph == glyphs.end()) {
+		if(itGlyph == m_glyphs.end()) {
 			continue;
 		}
 		const Glyph & glyph = itGlyph->second;
