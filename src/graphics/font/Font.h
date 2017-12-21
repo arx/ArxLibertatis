@@ -211,7 +211,7 @@ private:
 	Info info;
 	unsigned int referenceCount;
 	
-	struct FT_FaceRec_ * face;
+	struct FT_FaceRec_ * m_face;
 	std::map<Char, Glyph> glyphs;
 	typedef std::map<Char, Glyph>::const_iterator glyph_iterator;
 	
