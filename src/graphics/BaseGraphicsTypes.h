@@ -58,10 +58,10 @@ struct Cylinder {
 		, height(0.f)
 	{}
 	
-	Cylinder(const Vec3f & origin, float radius, float height)
-		: origin(origin)
-		, radius(radius)
-		, height(height)
+	Cylinder(const Vec3f & origin_, float radius_, float height_)
+		: origin(origin_)
+		, radius(radius_)
+		, height(height_)
 	{}
 };
 
@@ -75,9 +75,9 @@ struct Sphere {
 		, radius(0.f)
 	{}
 	
-	Sphere(const Vec3f & origin, float radius)
-		: origin(origin)
-		, radius(radius)
+	Sphere(const Vec3f & origin_, float radius_)
+		: origin(origin_)
+		, radius(radius_)
 	{}
 	
 	bool contains(const Vec3f & pos) const {
@@ -118,7 +118,7 @@ struct EERIE_3D_BBOX {
 	
 	EERIE_3D_BBOX() { }
 	
-	EERIE_3D_BBOX(const Vec3f & min, const Vec3f & max) : min(min), max(max) { }
+	EERIE_3D_BBOX(const Vec3f & min_, const Vec3f & max_) : min(min_), max(max_) { }
 	
 	void reset() {
 		min = Vec3f(99999999.f);
