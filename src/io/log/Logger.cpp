@@ -213,8 +213,8 @@ void Logger::reset(const std::string & prefix) {
 	if(i->second < LogManager::defaultLevel) {
 		// minimum log level may have changed
 		LogManager::minimumLevel = LogManager::defaultLevel;
-		BOOST_FOREACH(const LogManager::Rules::value_type & i, LogManager::rules) {
-			LogManager::minimumLevel = std::min(LogManager::minimumLevel, i.second);
+		BOOST_FOREACH(const LogManager::Rules::value_type & entry, LogManager::rules) {
+			LogManager::minimumLevel = std::min(LogManager::minimumLevel, entry.second);
 		}
 	}
 	
