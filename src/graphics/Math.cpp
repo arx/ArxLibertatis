@@ -185,10 +185,7 @@ static int coplanar_tri_tri(const float N[3], const float V0[3], const float V1[
 /* sort so that a<=b */
 #define SORT(a, b) \
 	if(a > b) { \
-		float c; \
-		c = a; \
-		a = b; \
-		b = c; \
+		std::swap(a, b); \
 	}
 
 //***********************************************************************************************
