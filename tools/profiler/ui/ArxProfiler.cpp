@@ -244,18 +244,18 @@ void ProfilerView::setData(ThreadsData * data) {
 	qint64 firstTimestamp = std::numeric_limits<qint64>::max();
 	qint64 lastTimestamp = std::numeric_limits<qint64>::min();
 	
-	for(ThreadsData::const_iterator it = data->begin(); it != data->end(); ++it) {
+	BOOST_FOREACH(const ThreadsData::value_type & entry, *data) {
 		
-		if(it->second.profilePoints.empty()) {
+		if(entry.second.profilePoints.empty()) {
 			continue;
 		}
 		
-		if(firstTimestamp > it->second.profilePoints[0].startTime) {
-			firstTimestamp = it->second.profilePoints[0].startTime;
+		if(firstTimestamp > entry.second.profilePoints[0].startTime) {
+			firstTimestamp = entry.second.profilePoints[0].startTime;
 		}
 		
-		if(lastTimestamp < it->second.profilePoints.back().endTime) {
-			lastTimestamp = it->second.profilePoints.back().endTime;
+		if(lastTimestamp < entry.second.profilePoints.back().endTime) {
+			lastTimestamp = entry.second.profilePoints.back().endTime;
 		}
 	}
 	
