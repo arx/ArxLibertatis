@@ -68,9 +68,11 @@ Lock LogManager::lock;
 
 logger::Source * LogManager::getSource(const char * file) {
 	
-	LogManager::Sources::iterator i = LogManager::sources.find(file);
-	if(i != sources.end()) {
-		return &i->second;
+	{
+		LogManager::Sources::iterator i = LogManager::sources.find(file);
+		if(i != sources.end()) {
+			return &i->second;
+		}
 	}
 	
 	logger::Source * source = &LogManager::sources[file];
