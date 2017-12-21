@@ -1197,9 +1197,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.poly.max = epo->poly.max.toVec3();
 		portal.poly.min = epo->poly.min.toVec3();
 		portal.poly.norm = epo->poly.norm.toVec3();
-		
-		for(size_t i = 0; i < 4; i++) {
-			portal.poly.p[i] = epo->poly.v[i].pos.toVec3();
+		for(size_t j = 0; j < 4; j++) {
+			portal.poly.p[j] = epo->poly.v[j].pos.toVec3();
 		}
 		portal.poly.rhw = epo->poly.v[0].rhw;
 		
