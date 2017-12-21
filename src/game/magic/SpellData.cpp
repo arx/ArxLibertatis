@@ -42,59 +42,59 @@ void spellDataInit() {
 		SPELL_ICON & s = spellicons[SPELL_MAGIC_SIGHT];
 		s.name = getLocalised("system_spell_name_magic_sight");
 		s.description = getLocalised("system_spell_description_magic_sight");
-		s.level=1;
-		s.spellid=SPELL_MAGIC_SIGHT;
-		s.tc=TextureContainer::LoadUI("graph/interface/icons/spell_magic_sight");
-		s.symbols[0]=RUNE_MEGA;
-		s.symbols[1]=RUNE_VISTA;
+		s.level = 1;
+		s.spellid = SPELL_MAGIC_SIGHT;
+		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_magic_sight");
+		s.symbols[0] = RUNE_MEGA;
+		s.symbols[1] = RUNE_VISTA;
 	}
 	
 	{ // Magic_Missile Level 1
 		SPELL_ICON & s = spellicons[SPELL_MAGIC_MISSILE];
 		s.name = getLocalised("system_spell_name_magic_projectile");
 		s.description = getLocalised("system_spell_description_magic_projectile");
-		s.level=1;
-		s.spellid=SPELL_MAGIC_MISSILE;
+		s.level = 1;
+		s.spellid = SPELL_MAGIC_MISSILE;
 		s.m_hasDuration = false;
 		s.bAudibleAtStart = true;
-		s.tc=TextureContainer::LoadUI("graph/interface/icons/spell_magic_missile");
-		s.symbols[0]=RUNE_AAM;
-		s.symbols[1]=RUNE_TAAR;
+		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_magic_missile");
+		s.symbols[0] = RUNE_AAM;
+		s.symbols[1] = RUNE_TAAR;
 	}
 	
 	{ // Ignit Level 1
 		SPELL_ICON & s = spellicons[SPELL_IGNIT];
 		s.name = getLocalised("system_spell_name_ignit");
 		s.description = getLocalised("system_spell_description_ignit");
-		s.level=1;
-		s.spellid=SPELL_IGNIT;
+		s.level = 1;
+		s.spellid = SPELL_IGNIT;
 		s.m_hasDuration = false;
-		s.tc=TextureContainer::LoadUI("graph/interface/icons/spell_ignite");
-		s.symbols[0]=RUNE_AAM;
-		s.symbols[1]=RUNE_YOK;
+		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_ignite");
+		s.symbols[0] = RUNE_AAM;
+		s.symbols[1] = RUNE_YOK;
 	}
 	
 	{ // Douse Level 1
 		SPELL_ICON & s = spellicons[SPELL_DOUSE];
 		s.name = getLocalised("system_spell_name_douse");
 		s.description = getLocalised("system_spell_description_douse");
-		s.level=1;
-		s.spellid=SPELL_DOUSE;
+		s.level = 1;
+		s.spellid = SPELL_DOUSE;
 		s.m_hasDuration = false;
-		s.tc=TextureContainer::LoadUI("graph/interface/icons/spell_douse");
-		s.symbols[0]=RUNE_NHI;
-		s.symbols[1]=RUNE_YOK;
+		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_douse");
+		s.symbols[0] = RUNE_NHI;
+		s.symbols[1] = RUNE_YOK;
 	}
 	
 	{ // Activate_Portal Level 1
 		SPELL_ICON & s = spellicons[SPELL_ACTIVATE_PORTAL];
 		s.name = getLocalised("system_spell_name_activate_portal");
 		s.description = getLocalised("system_spell_description_activate_portal");
-		s.level=1;
-		s.spellid=SPELL_ACTIVATE_PORTAL;
-		s.tc=TextureContainer::LoadUI("graph/interface/icons/spell_activate_portal");
-		s.symbols[0]=RUNE_MEGA;
-		s.symbols[1]=RUNE_SPACIUM;
+		s.level = 1;
+		s.spellid = SPELL_ACTIVATE_PORTAL;
+		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_activate_portal");
+		s.symbols[0] = RUNE_MEGA;
+		s.symbols[1] = RUNE_SPACIUM;
 		s.bSecret = true;
 	}
 	
