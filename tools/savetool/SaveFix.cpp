@@ -417,7 +417,7 @@ int main_fix(SaveBlock & save, const std::vector<std::string> & args) {
 	// TODO share this list with the game code
 	static const char * const default_paks[] = { "data.pak", "data2.pak" };
 	BOOST_FOREACH(const char * const filename, default_paks) {
-		if(g_resources->addArchive(fs::paths.find(filename))) {
+		if(g_resources->addArchive(fs::findDataFile(filename))) {
 			continue;
 		}
 		LogError << "Missing required data file: \"" << filename << "\"";

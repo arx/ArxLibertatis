@@ -80,21 +80,6 @@ struct SystemPaths {
 	 */
 	std::vector<path> getSearchPaths(bool filterMissing = false) const;
 	
-	/*!
-	 * \brief Find a resource in the data search path
-	 *
-	 * If resource is an absolute path, return it directoly if it exists.
-	 *
-	 * If resource is a relative path, look for it in each data directory
-	 * (ordered by decreasing priority) and return the first full path that
-	 * exists.
-	 *
-	 * \param resource the relative resource name to look for.
-	 *
-	 * \return an empty path or an existing file.
-	 */
-	path find(const path & resource) const;
-	
 	SystemPaths();
 	
 private:
@@ -125,6 +110,21 @@ const fs::path & getConfigDir();
 
 //! \return Directories for data files
 const std::vector<path> & getDataDirs();
+
+/*!
+	* \brief Find a resource in the data search path
+	*
+	* If resource is an absolute path, return it directoly if it exists.
+	*
+	* If resource is a relative path, look for it in each data directory
+	* (ordered by decreasing priority) and return the first full path that
+	* exists.
+	*
+	* \param resource the relative resource name to look for.
+	*
+	* \return an empty path or an existing file.
+	*/
+path findDataFile(const path & resource);
 
 } // namespace fs
 

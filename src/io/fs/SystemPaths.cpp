@@ -305,22 +305,6 @@ ExitStatus SystemPaths::init(const InitParams & initParams) {
 	return RunProgram;
 }
 
-path SystemPaths::find(const path & resource) const {
-	
-	if(resource.is_absolute()) {
-		return exists(resource) ? resource : path();
-	}
-	
-	BOOST_FOREACH(const path & prefix, data) {
-		path full_path = prefix / resource;
-		if(fs::exists(full_path)) {
-			return full_path;
-		}
-	}
-	
-	return path();
-}
-
 SystemPaths::SystemPaths()
 	: findData_(true)
 {}
@@ -449,6 +433,22 @@ const fs::path & getConfigDir() {
 
 const std::vector<path> & getDataDirs() {
 	return paths.data;
+}
+
+path findDataFile(const path & resource) {
+	
+	if(resource.is_absolute()) {
+		return exists(resource) ? resource : path();
+	}
+	
+	BOOST_FOREACH(const path & prefix, getDataDirs()) {
+		path fullPath = prefix / resource;
+		if(fs::exists(fullPath)) {
+			return fullPath;
+		}
+	}
+	
+	return path();
 }
 
 } // namespace fs

@@ -156,7 +156,7 @@ public:
 		i++;
 		#endif
 		
-		m_alpath = fs::paths.find("openal/hrtf");
+		m_alpath = fs::findDataFile("openal/hrtf");
 		if(!m_alpath.empty()) {
 			m_overrides[i].name = "ALSOFT_LOCAL_PATH";
 			m_overrides[i].value = m_alpath.string().c_str();
