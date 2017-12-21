@@ -60,13 +60,6 @@ void AnchorData_ClearAll(BackgroundData * eb) {
 	
 	EERIE_PATHFINDER_Clear();
 	
-	BOOST_FOREACH(ANCHOR_DATA & ad, eb->m_anchors) {
-		if(ad.nblinked && ad.linked) {
-			free(ad.linked);
-			ad.linked = NULL;
-		}
-	}
-	
 	eb->m_anchors.clear();
 }
 

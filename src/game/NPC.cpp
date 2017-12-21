@@ -434,10 +434,10 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 
 		for(long aa = l_try; aa > 1; aa--) {
 			long v = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos + aa];
-			tot += ACTIVEBKG->m_anchors[v].nblinked;
+			tot += ACTIVEBKG->m_anchors[v].linked.size();
 
 			if(aa == l_try)
-				tot += ACTIVEBKG->m_anchors[v].nblinked;
+				tot += ACTIVEBKG->m_anchors[v].linked.size();
 		}
 
 		tot /= (float)(l_try + 1);
@@ -481,7 +481,7 @@ static long AnchorData_GetNearest(const Vec3f & pos, const Cylinder & cyl, long 
 			continue;
 		}
 		
-		if(eb->m_anchors[i].nblinked) {
+		if(eb->m_anchors[i].linked.size()) {
 			float d = arx::distance2(eb->m_anchors[i].pos, pos);
 
 			if ((d < distmax) && (eb->m_anchors[i].height <= cyl.height)
