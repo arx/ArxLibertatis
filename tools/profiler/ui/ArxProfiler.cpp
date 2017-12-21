@@ -23,6 +23,8 @@
 
 #include <limits>
 
+#include <boost/foreach.hpp>
+
 #include <QDebug>
 #include <QHash>
 
@@ -265,8 +267,8 @@ void ProfilerView::setData(ThreadsData * data) {
 	QPen profilePointPen(Qt::black);
 	profilePointPen.setCosmetic(true);
 	
-	for(ThreadsData::iterator it = data->begin(); it != data->end(); ++it) {
-		ThreadData& threadData = it->second;
+	BOOST_FOREACH(ThreadsData::value_type & entry, *data) {
+		ThreadData & threadData = entry.second;
 		
 		QGraphicsItemGroup * group = new QGraphicsItemGroup();
 		m_scene->addItem(group);
