@@ -356,118 +356,116 @@ void SecondaryInventoryHud::dropEntity() {
 	}
 	
 	// First Look for Identical Item...
-		Entity * io = SecondaryInventory->io;
+	Entity * io = SecondaryInventory->io;
+	
+	// SHOP
+	if(io->ioflags & IO_SHOP) {
 		
-		// SHOP
-		if(io->ioflags & IO_SHOP) {
-			
-			if(!io->shop_category.empty() && DRAGINTER->groups.find(io->shop_category) == DRAGINTER->groups.end())
-				return;
-			
-			long price = ARX_INTERACTIVE_GetSellValue(DRAGINTER, io, DRAGINTER->_itemdata->count);
-			if(price <= 0) {
-				return;
-			}
-			
-			// Check shop group
-			for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
-			for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
-				Entity * ioo = SecondaryInventory->slot[i][j].io;
-				
-				if(!ioo || !IsSameObject(DRAGINTER, ioo))
-					continue;
-				
-				ioo->_itemdata->count += DRAGINTER->_itemdata->count;
-				ioo->scale = 1.f;
-				
-				DRAGINTER->destroy();
-				
-				ARX_PLAYER_AddGold(price);
-				ARX_SOUND_PlayInterface(SND_GOLD);
-				ARX_SOUND_PlayInterface(SND_INVSTD);
-				return;
-			}
-			}
+		if(!io->shop_category.empty() && DRAGINTER->groups.find(io->shop_category) == DRAGINTER->groups.end())
+			return;
+		
+		long price = ARX_INTERACTIVE_GetSellValue(DRAGINTER, io, DRAGINTER->_itemdata->count);
+		if(price <= 0) {
+			return;
 		}
 		
-		Vec2s t = Vec2s_ZERO;
-		t.x = s16(DANAEMouse.x + static_cast<short>(m_fadePosition) - (2 * m_scale));
-		t.y = s16(DANAEMouse.y - (13 * m_scale));
-		t.x = s16(t.x / (32 * m_scale));
-		t.y = s16(t.y / (32 * m_scale));
+		// Check shop group
+		for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
+		for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
+			Entity * ioo = SecondaryInventory->slot[i][j].io;
+			
+			if(!ioo || !IsSameObject(DRAGINTER, ioo))
+				continue;
+			
+			ioo->_itemdata->count += DRAGINTER->_itemdata->count;
+			ioo->scale = 1.f;
+			
+			DRAGINTER->destroy();
+			
+			ARX_PLAYER_AddGold(price);
+			ARX_SOUND_PlayInterface(SND_GOLD);
+			ARX_SOUND_PlayInterface(SND_INVSTD);
+			return;
+		}
+		}
+	}
+	
+	Vec2s t = Vec2s_ZERO;
+	t.x = s16(DANAEMouse.x + static_cast<short>(m_fadePosition) - (2 * m_scale));
+	t.y = s16(DANAEMouse.y - (13 * m_scale));
+	t.x = s16(t.x / (32 * m_scale));
+	t.y = s16(t.y / (32 * m_scale));
+	
+	Vec2s s = DRAGINTER->m_inventorySize;
+	
+	if(t.x <= SecondaryInventory->m_size.x - s.x && t.y <= SecondaryInventory->m_size.y - s.y) {
 		
-		Vec2s s = DRAGINTER->m_inventorySize;
+		long price = ARX_INTERACTIVE_GetSellValue(DRAGINTER, io, DRAGINTER->_itemdata->count);
 		
-		if(t.x <= SecondaryInventory->m_size.x - s.x && t.y <= SecondaryInventory->m_size.y - s.y) {
+		for(long j = 0; j < s.y; j++) {
+		for(long i = 0; i < s.x; i++) {
+			Entity * ioo = SecondaryInventory->slot[t.x+i][t.y+j].io;
 			
-			long price = ARX_INTERACTIVE_GetSellValue(DRAGINTER, io, DRAGINTER->_itemdata->count);
+			if(!ioo)
+				continue;
 			
-			for(long j = 0; j < s.y; j++) {
-			for(long i = 0; i < s.x; i++) {
-				Entity * ioo = SecondaryInventory->slot[t.x+i][t.y+j].io;
-				
-				if(!ioo)
-					continue;
-				
-				DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
-				
-				if(   ioo->_itemdata->playerstacksize > 1
-				   && IsSameObject(DRAGINTER, ioo)
-				   && ioo->_itemdata->count < ioo->_itemdata->playerstacksize
-				) {
-					ioo->_itemdata->count += DRAGINTER->_itemdata->count;
-					
-					if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
-						DRAGINTER->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
-						ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-					} else {
-						DRAGINTER->_itemdata->count = 0;
-					}
-				}
-				
-				if(DRAGINTER->_itemdata->count) {
-					if(CanBePutInSecondaryInventory(SecondaryInventory, DRAGINTER)) {
-						// SHOP
-						if(io->ioflags & IO_SHOP) {
-							ARX_PLAYER_AddGold(price);
-							ARX_SOUND_PlayInterface(SND_GOLD);
-						}
-					} else {
-						return;
-					}
-				}
-				
-				ARX_SOUND_PlayInterface(SND_INVSTD);
-				Set_DragInter(NULL);
-				return;
-			}
-			}
-			
-			if(DRAGINTER->ioflags & IO_GOLD) {
-				ARX_PLAYER_AddGold(DRAGINTER);
-				Set_DragInter(NULL);
-				return;
-			}
-
-			for(long j = 0; j < s.y; j++) {
-			for(long i = 0; i < s.x; i++) {
-				SecondaryInventory->slot[t.x+i][t.y+j].io = DRAGINTER;
-				SecondaryInventory->slot[t.x+i][t.y+j].show = false;
-			}
-			}
-			
-			// SHOP
-			if(io->ioflags & IO_SHOP) {
-				ARX_PLAYER_AddGold(price);
-				ARX_SOUND_PlayInterface(SND_GOLD);
-			}
-
-			SecondaryInventory->slot[t.x][t.y].show = true;
 			DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
+			
+			if(   ioo->_itemdata->playerstacksize > 1
+			   && IsSameObject(DRAGINTER, ioo)
+			   && ioo->_itemdata->count < ioo->_itemdata->playerstacksize
+			) {
+				ioo->_itemdata->count += DRAGINTER->_itemdata->count;
+				
+				if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
+					DRAGINTER->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
+					ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
+				} else {
+					DRAGINTER->_itemdata->count = 0;
+				}
+			}
+			
+			if(DRAGINTER->_itemdata->count) {
+				if(CanBePutInSecondaryInventory(SecondaryInventory, DRAGINTER)) {
+					// SHOP
+					if(io->ioflags & IO_SHOP) {
+						ARX_PLAYER_AddGold(price);
+						ARX_SOUND_PlayInterface(SND_GOLD);
+					}
+				} else {
+					return;
+				}
+			}
+			
 			ARX_SOUND_PlayInterface(SND_INVSTD);
 			Set_DragInter(NULL);
 			return;
 		}
+		}
+		
+		if(DRAGINTER->ioflags & IO_GOLD) {
+			ARX_PLAYER_AddGold(DRAGINTER);
+			Set_DragInter(NULL);
+			return;
+		}
+		for(long j = 0; j < s.y; j++) {
+		for(long i = 0; i < s.x; i++) {
+			SecondaryInventory->slot[t.x+i][t.y+j].io = DRAGINTER;
+			SecondaryInventory->slot[t.x+i][t.y+j].show = false;
+		}
+		}
+		
+		// SHOP
+		if(io->ioflags & IO_SHOP) {
+			ARX_PLAYER_AddGold(price);
+			ARX_SOUND_PlayInterface(SND_GOLD);
+		}
+		SecondaryInventory->slot[t.x][t.y].show = true;
+		DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
+		ARX_SOUND_PlayInterface(SND_INVSTD);
+		Set_DragInter(NULL);
+		return;
+	}
 	
 }
 
