@@ -57,11 +57,11 @@ enum Rune {
 
 struct RuneInfo {
 
-	RuneInfo(Rune rune, const std::string & name, Vec2s startOffset, const std::string & sequence)
-		: rune(rune)
-		, name(name)
-		, startOffset(startOffset)
-		, sequence(sequence)
+	RuneInfo(Rune rune_, const std::string & name_, Vec2s startOffset_, const std::string & sequence_)
+		: rune(rune_)
+		, name(name_)
+		, startOffset(startOffset_)
+		, sequence(sequence_)
 	{}
 
 	Rune        rune;
