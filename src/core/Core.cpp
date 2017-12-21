@@ -417,7 +417,7 @@ void levelInit() {
 		}
 	}
 	
-	InitSnapShot(fs::paths.user / "snapshot");
+	InitSnapShot(fs::getUserDir() / "snapshot");
 	
 	
 	if(FASTmse) {
