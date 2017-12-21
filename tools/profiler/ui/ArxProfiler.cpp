@@ -240,11 +240,11 @@ ProfilerView::ProfilerView(QWidget* parent)
 	setFont(font);
 }
 
-void ProfilerView::setData(ThreadsData * data) {
+void ProfilerView::setData(ThreadsData * threadsData) {
 	
 	qint64 firstTimestamp = std::numeric_limits<qint64>::max();
 	qint64 lastTimestamp = std::numeric_limits<qint64>::min();
-	BOOST_FOREACH(const ThreadsData::value_type & entry, *data) {
+	BOOST_FOREACH(const ThreadsData::value_type & entry, *threadsData) {
 		if(!entry.second.profilePoints.empty()) {
 			firstTimestamp = std::min(firstTimestamp, entry.second.profilePoints[0].startTime);
 			lastTimestamp = std::max(lastTimestamp, entry.second.profilePoints.back().endTime);
@@ -259,7 +259,7 @@ void ProfilerView::setData(ThreadsData * data) {
 	QPen profilePointPen(Qt::black);
 	profilePointPen.setCosmetic(true);
 	
-	BOOST_FOREACH(ThreadsData::value_type & entry, *data) {
+	BOOST_FOREACH(ThreadsData::value_type & entry, *threadsData) {
 		ThreadData & threadData = entry.second;
 		
 		QGraphicsItemGroup * group = new QGraphicsItemGroup();
@@ -318,7 +318,7 @@ void ProfilerView::setData(ThreadsData * data) {
 	setDragMode(ScrollHandDrag);
 	setInteractive(false);
 
-	m_data = data;
+	m_data = threadsData;
 }
 
 void ProfilerView::paintEvent(QPaintEvent * event) {
