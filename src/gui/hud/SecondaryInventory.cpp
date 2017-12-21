@@ -361,11 +361,7 @@ void SecondaryInventoryHud::dropEntity() {
 			if(!io->shop_category.empty() && DRAGINTER->groups.find(io->shop_category) == DRAGINTER->groups.end())
 				return;
 			
-			float fprice = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f; //>>1;
-			long price = checked_range_cast<long>(fprice);
-			price *= DRAGINTER->_itemdata->count;
-			fprice = price + price * player.m_skillFull.intuition * 0.005f;
-			price = checked_range_cast<long>(fprice);
+			long price = ARX_INTERACTIVE_GetSellValue(DRAGINTER, io, DRAGINTER->_itemdata->count);
 			if(price <= 0) {
 				return;
 			}
