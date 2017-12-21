@@ -102,7 +102,7 @@ private:
 	          const std::string & forceData = std::string());
 	
 	std::vector<path> m_additionalDataDirs;
-	bool findData_;
+	bool m_findDataDirs;
 	
 };
 
@@ -266,7 +266,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	}
 	
 	// Skip search for system paths if requested
-	if(!findData_) {
+	if(!m_findDataDirs) {
 		return result;
 	}
 	
@@ -351,7 +351,7 @@ ExitStatus SystemPaths::init(const InitParams & initParams) {
 	
 	m_additionalDataDirs = initParams.dataDirs;
 	
-	findData_ = initParams.findData;
+	m_findDataDirs = initParams.findData;
 	
 	m_dataDirs = getSearchPaths(true);
 	
@@ -371,8 +371,8 @@ ExitStatus SystemPaths::init(const InitParams & initParams) {
 }
 
 SystemPaths::SystemPaths()
-	: findData_(true)
-{}
+	: m_findDataDirs(true)
+{ }
 
 void listDirectoriesFor(std::ostream & os, const std::string & regKey,
                                platform::SystemPathId systemPathId,
