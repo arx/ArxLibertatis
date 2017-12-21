@@ -68,7 +68,6 @@ CCreateField::CCreateField()
 	: eSrc(Vec3f_ZERO)
 	, youp(true)
 	, fwrap(0.f)
-	, ysize(0.1f)
 	, size(0.1f)
 	, ft(0.0f)
 	, fglow(0.f)
@@ -80,7 +79,6 @@ CCreateField::CCreateField()
 void CCreateField::Create(Vec3f aeSrc) {
 	
 	eSrc = aeSrc;
-	ysize = 0.1f;
 	size = 0.1f;
 	ft = 0.0f;
 	fglow = 0;
@@ -183,9 +181,9 @@ void CCreateField::Render()
 			youp = true;
 		}
 	}
-
-	ysize = std::min(1.0f, m_elapsed / GameDurationMs(1000));
-
+	
+	float ysize = std::min(1.0f, m_elapsed / GameDurationMs(1000));
+	
 	if(ysize >= 1.0f) {
 		size = std::min(1.0f, (m_elapsed - GameDurationMs(1000)) / GameDurationMs(1000));
 		size = std::max(size, 0.1f);
@@ -204,12 +202,14 @@ void CCreateField::Render()
 	float smul = 100 * size;
 
 	// bottom points
+	Vec3f b[4];
 	b[0] = eSrc + Vec3f(-smul, 0.f, -smul);
 	b[1] = eSrc + Vec3f(smul, 0.f, -smul);
 	b[2] = eSrc + Vec3f(smul, 0.f, smul);
 	b[3] = eSrc + Vec3f(-smul, 0.f, smul);
 	
 	// top points
+	Vec3f t[4];
 	t[0] = b[0] + Vec3f(0.f, -250 * ysize, 0.f);
 	t[1] = b[1] + Vec3f(0.f, -250 * ysize, 0.f);
 	t[2] = b[2] + Vec3f(0.f, -250 * ysize, 0.f);
