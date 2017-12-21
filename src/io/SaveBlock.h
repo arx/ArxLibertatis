@@ -100,7 +100,7 @@ private:
 	typedef boost::unordered_map<std::string, File> Files;
 	
 	fs::path m_savefile;
-	fs::fstream handle;
+	fs::fstream m_handle;
 	size_t totalSize;
 	size_t usedSize;
 	size_t chunkCount;
