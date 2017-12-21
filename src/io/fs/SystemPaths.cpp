@@ -127,7 +127,7 @@ std::vector<path> parsePathList(const char * input) {
 
 path findUserPath(const char * name, const path & force,
                   const char * registry, platform::SystemPathId systemPathId,
-                  const char * prefix, const char * suffix,
+                  const char * prefixVar, const char * suffixVar,
                   const path & fallback, bool create) {
 	
 	// Prefer command-line options
@@ -160,8 +160,8 @@ path findUserPath(const char * name, const path & force,
 	
 	// Search standard locations
 	path to_create;
-	std::vector<path> prefixes = parsePathList(prefix);
-	std::vector<path> suffixes = parsePathList(suffix);
+	std::vector<path> prefixes = parsePathList(prefixVar);
+	std::vector<path> suffixes = parsePathList(suffixVar);
 	if(!suffixes.empty()) {
 		std::vector<path> paths = platform::getSystemPaths(systemPathId);
 		prefixes.insert(prefixes.end(), paths.begin(), paths.end());
