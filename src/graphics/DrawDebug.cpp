@@ -183,9 +183,9 @@ static void drawDebugPortals() {
 
 static void drawDebugPaths() {
 	
-	for(long i = 0; i < nbARXpaths; i++) {
+	for(long p = 0; p < nbARXpaths; p++) {
 		
-		ARX_PATH * path = ARXpaths[i];
+		ARX_PATH * path = ARXpaths[p];
 		if(!path) {
 			continue;
 		}
