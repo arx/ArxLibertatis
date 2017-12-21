@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
+#include <boost/foreach.hpp>
+
 #include "ai/PathFinderManager.h"
 
 #include "game/Entity.h"
@@ -58,41 +60,35 @@ void AnchorData_ClearAll(BackgroundData * eb) {
 	
 	EERIE_PATHFINDER_Clear();
 	
-	if(eb->anchors && eb->nbanchors) {
-		for(int j = 0; j < eb->nbanchors; j++) {
-			if(eb->anchors[j].nblinked && eb->anchors[j].linked) {
-				free(eb->anchors[j].linked);
-				eb->anchors[j].linked = NULL;
-			}
+	BOOST_FOREACH(ANCHOR_DATA & ad, eb->m_anchors) {
+		if(ad.nblinked && ad.linked) {
+			free(ad.linked);
+			ad.linked = NULL;
 		}
-
-		free(eb->anchors);
 	}
-
-	eb->anchors = NULL;
-	eb->nbanchors = 0;
+	
+	eb->m_anchors.clear();
 }
 
 void ANCHOR_BLOCK_Clear() {
-
+	
 	BackgroundData * eb = ACTIVEBKG;
-
-	if(!eb)
+	if(!eb) {
 		return;
-
-	for(long k = 0; k < eb->nbanchors; k++) {
-		ANCHOR_DATA & ad = eb->anchors[k];
+	}
+	
+	BOOST_FOREACH(ANCHOR_DATA & ad, eb->m_anchors) {
 		ad.flags &= ~ANCHOR_FLAG_BLOCKED;
 	}
+	
 }
 
 void ANCHOR_BLOCK_By_IO(Entity * io, long status) {
-
+	
 	BackgroundData * eb = ACTIVEBKG;
-
-	for(long k = 0; k < eb->nbanchors; k++) {
-		ANCHOR_DATA & ad = eb->anchors[k];
-
+	
+	BOOST_FOREACH(ANCHOR_DATA & ad, eb->m_anchors) {
+		
 		if(fartherThan(ad.pos, io->pos, 600.f))
 			continue;
 

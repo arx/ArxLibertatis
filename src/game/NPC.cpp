@@ -433,11 +433,11 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 		float tot = 0.f;
 
 		for(long aa = l_try; aa > 1; aa--) {
-			long v = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos+aa];
-			tot += ACTIVEBKG->anchors[v].nblinked;
+			long v = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos + aa];
+			tot += ACTIVEBKG->m_anchors[v].nblinked;
 
 			if(aa == l_try)
-				tot += ACTIVEBKG->anchors[v].nblinked;
+				tot += ACTIVEBKG->m_anchors[v].nblinked;
 		}
 
 		tot /= (float)(l_try + 1);
@@ -446,8 +446,8 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 			continue;
 
 		io->physics.startpos = io->pos;
-		long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos+l_try];
-		io->physics.targetpos = ACTIVEBKG->anchors[pos].pos;
+		long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos + l_try];
+		io->physics.targetpos = ACTIVEBKG->m_anchors[pos].pos;
 
 		if(glm::abs(io->physics.startpos.y - io->physics.targetpos.y) > 60.f)
 			continue;
@@ -460,7 +460,7 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 		if(   io->physics.startpos == io->physics.targetpos
 		   || ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC)
 		) {
-			if(closerThan(phys.cyl.origin, ACTIVEBKG->anchors[pos].pos, 30.f)) {
+			if(closerThan(phys.cyl.origin, ACTIVEBKG->m_anchors[pos].pos, 30.f)) {
 				return l_try;
 			}
 		}
@@ -475,23 +475,25 @@ static long AnchorData_GetNearest(const Vec3f & pos, const Cylinder & cyl, long 
 	float distmax = std::numeric_limits<float>::max();
 	BackgroundData * eb = ACTIVEBKG;
 
-	for(long i = 0; i < eb->nbanchors; i++) {
-		if(except != -1 && i == except)
+	for(size_t i = 0; i < eb->m_anchors.size(); i++) {
+		
+		if(except != -1 && i == size_t(except)) {
 			continue;
+		}
+		
+		if(eb->m_anchors[i].nblinked) {
+			float d = arx::distance2(eb->m_anchors[i].pos, pos);
 
-		if(eb->anchors[i].nblinked) {
-			float d = arx::distance2(eb->anchors[i].pos, pos);
-
-			if ((d < distmax) && (eb->anchors[i].height <= cyl.height)
-			        && (eb->anchors[i].radius >= cyl.radius)
-			        && (!(eb->anchors[i].flags & ANCHOR_FLAG_BLOCKED)))
+			if ((d < distmax) && (eb->m_anchors[i].height <= cyl.height)
+			        && (eb->m_anchors[i].radius >= cyl.radius)
+			        && (!(eb->m_anchors[i].flags & ANCHOR_FLAG_BLOCKED)))
 			{
-				returnvalue = i;
+				returnvalue = long(i);
 				distmax = d;
 			}
 		}
 	}
-
+	
 	return returnvalue;
 }
 
@@ -636,16 +638,16 @@ wander:
 			return true;
 
 		if ((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) ||
-		        closerThan(pos1, ACTIVEBKG->anchors[from].pos, 200.f))
+		        closerThan(pos1, ACTIVEBKG->m_anchors[from].pos, 200.f))
 		{
 			if (!(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 			        && !(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 			{
-				if(closerThan(ACTIVEBKG->anchors[from].pos, ACTIVEBKG->anchors[to].pos, 200.f)) {
+				if(closerThan(ACTIVEBKG->m_anchors[from].pos, ACTIVEBKG->m_anchors[to].pos, 200.f)) {
 					return false;
 				}
 
-				if(fartherThan(pos2, ACTIVEBKG->anchors[to].pos, 200.f))
+				if(fartherThan(pos2, ACTIVEBKG->m_anchors[to].pos, 200.f))
 					goto failure;
 			}
 
@@ -2251,7 +2253,7 @@ afterthat:
 			long t = AnchorData_GetNearest(p, io->physics.cyl);
 
 			if(t != -1 && t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb - 1]) {
-				float d = glm::distance(ACTIVEBKG->anchors[t].pos, ACTIVEBKG->anchors[io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]].pos);
+				float d = glm::distance(ACTIVEBKG->m_anchors[t].pos, ACTIVEBKG->m_anchors[io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]].pos);
 
 				if(d > 200.f)
 					ARX_NPC_LaunchPathfind(io, io->_npcdata->pathfind.truetarget);
@@ -2897,7 +2899,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		if(npcData->behavior & BEHAVIOUR_GO_HOME) {
 			if(npcData->pathfind.listpos < npcData->pathfind.listnb) {
 				long pos = npcData->pathfind.list[npcData->pathfind.listpos];
-				io->target = ACTIVEBKG->anchors[pos].pos;
+				io->target = ACTIVEBKG->m_anchors[pos].pos;
 			} else {
 				io->target = io->initpos;
 			}
@@ -2908,7 +2910,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		   && !(npcData->behavior & BEHAVIOUR_FRIENDLY)) { // Targeting Anchors !
 			if(npcData->pathfind.listpos < npcData->pathfind.listnb) {
 				long pos = npcData->pathfind.list[npcData->pathfind.listpos];
-				io->target = ACTIVEBKG->anchors[pos].pos;
+				io->target = ACTIVEBKG->m_anchors[pos].pos;
 			} else if(ValidIONum(npcData->pathfind.truetarget)) {
 				io->target = entities[npcData->pathfind.truetarget]->pos;
 			}

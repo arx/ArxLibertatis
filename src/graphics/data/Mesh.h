@@ -48,7 +48,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_DATA_MESH_H
 
 #include <set>
+#include <vector>
 
+#include "ai/Anchors.h"
 #include "graphics/GraphicsTypes.h"
 #include "math/Rectangle.h"
 #include "game/Camera.h"
@@ -80,8 +82,6 @@ static const short MAX_BKGZ = 160;
 static const short BKG_SIZX = 100;
 static const short BKG_SIZZ = 100;
 
-struct ANCHOR_DATA;
-
 struct BackgroundData {
 	
 	long exist;
@@ -89,17 +89,15 @@ struct BackgroundData {
 	Vec2s m_tileSize;
 	Vec2f m_mul;
 	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
-	long nbanchors;
-	ANCHOR_DATA * anchors;
+	std::vector<ANCHOR_DATA> m_anchors;
 	
 	BackgroundData()
 		: exist(false)
 		, m_size(0, 0)
 		, m_tileSize(0, 0)
 		, m_mul(0, 0)
-		, nbanchors(0)
-		, anchors(NULL)
 	{ }
+	
 };
 
 extern long EERIEDrawnPolys;
