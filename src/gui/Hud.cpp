@@ -85,12 +85,7 @@ static void DrawItemPrice() {
 			
 			ARX_INTERFACE_DrawNumber(pos, amount, 6, color, 1.f);
 		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
-			long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
-			// achat
-			float famount = amount + amount * player.m_skillFull.intuition * 0.005f;
-			// check should always be OK because amount is supposed positive
-			amount = checked_range_cast<long>( famount );
-
+			long amount = ARX_INTERACTIVE_GetSellValue(FlyingOverIO, temp);
 			if(amount) {
 				Color color = Color::red;
 				
