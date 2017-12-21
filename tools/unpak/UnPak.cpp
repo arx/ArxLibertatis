@@ -263,7 +263,7 @@ int utf8_main(int argc, char ** argv) {
 	if(status == RunProgram && g_archives.empty() && !g_addDefaultArchives) {
 		g_addDefaultArchives = true;
 		if(g_outputDir.empty() && g_action == UnpakExtract) {
-			g_outputDir = fs::paths.user / "unpacked";
+			g_outputDir = fs::getUserDir() / "unpacked";
 		}
 	}
 	
@@ -292,7 +292,7 @@ int utf8_main(int argc, char ** argv) {
 			}
 			LogError << oss.str();
 		}
-		BOOST_REVERSE_FOREACH(const fs::path & base, fs::paths.data) {
+		BOOST_REVERSE_FOREACH(const fs::path & base, fs::getDataDirs()) {
 			addResourceDir(resources, base);
 		}
 	}
