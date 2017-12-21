@@ -223,10 +223,10 @@ void SummonCreatureSpell::Update() {
 				SendInitScriptEvent(io);
 				
 				if(tokeep < 0) {
-					io->scale=1.65f;
-					io->physics.cyl.radius=25;
-					io->physics.cyl.height=-43;
-					io->speed_modif=1.f;
+					io->scale = 1.65f;
+					io->physics.cyl.radius = 25;
+					io->physics.cyl.height = -43;
+					io->speed_modif = 1.f;
 				}
 				
 				Entity * caster = entities.get(m_caster);
