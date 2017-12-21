@@ -256,7 +256,6 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 	Vec2f * v = grille->m_vertexs.data();
 	TexturedVertex * d3dv = AllTLVertex;
 
-	Vec3f LocalPos = pos;
 	float LocalSin = glm::sin(glm::radians(angle));
 	float LocalCos = glm::cos(glm::radians(angle));
 
@@ -267,7 +266,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 			Vec2f t;
 			t.x = v->x + *dream++;
 			t.y = v->y + *dream++;
-			Vec3f vtemp = TransformLocalVertex(t, LocalPos, LocalSin, LocalCos);
+			Vec3f vtemp = TransformLocalVertex(t, pos, LocalSin, LocalCos);
 			worldToClipSpace(vtemp, *d3dv);
 			if(light) {
 				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y) / d3dv->w, col).toRGBA();
@@ -279,7 +278,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 		}
 	} else {
 		while(nb--) {
-			Vec3f vtemp = TransformLocalVertex(*v, LocalPos, LocalSin, LocalCos);
+			Vec3f vtemp = TransformLocalVertex(*v, pos, LocalSin, LocalCos);
 			worldToClipSpace(vtemp, *d3dv);
 			if(light) {
 				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y) / d3dv->w, col).toRGBA();
