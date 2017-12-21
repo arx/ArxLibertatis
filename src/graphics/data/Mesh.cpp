@@ -927,16 +927,16 @@ static bool loadFastScene(const res::path & file, const char * data,
 template <typename T>
 class scoped_malloc {
 	
-	T * data;
+	T * m_data;
 	
 public:
 	
-	explicit scoped_malloc(T * data) : data(data) { }
+	explicit scoped_malloc(T * data) : m_data(data) { }
 	
-	~scoped_malloc() { free(data); }
+	~scoped_malloc() { std::free(m_data); }
 	
-	T * get() { return data; }
-	const T * get() const { return data; }
+	T * get() { return m_data; }
+	const T * get() const { return m_data; }
 	
 };
 
