@@ -186,7 +186,7 @@ void RiseDeadSpell::Update() {
 				
 				io->ioflags|=IO_NOSAVE;
 				m_entity = io->index();
-				io->scriptload=1;
+				io->scriptload = 1;
 				
 				ARX_INTERACTIVE_Teleport(io, phys.origin);
 				SendInitScriptEvent(io);
