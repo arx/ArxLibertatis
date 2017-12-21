@@ -264,16 +264,16 @@ bool IniReader::read(std::istream & is) {
 					// Replace newlines with spaces!
 					value += ' ';
 					
-					size_t valueEnd = str.find_last_of('"');
-					if(valueEnd != std::string::npos) {
+					size_t end = str.find_last_of('"');
+					if(end != std::string::npos) {
 						// End of multi-line value
-						value += str.substr(start, valueEnd - start);
+						value += str.substr(start, end - start);
 						break;
 					}
 					
-					valueEnd = str.find_last_not_of(WHITESPACE) + 1;
-					arx_assert(valueEnd > start);
-					value += str.substr(start, valueEnd - start);
+					end = str.find_last_not_of(WHITESPACE) + 1;
+					arx_assert(end > start);
+					value += str.substr(start, end - start);
 				}
 				
 			} else {
