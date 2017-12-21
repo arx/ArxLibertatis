@@ -110,7 +110,7 @@ void LegacyMathTest::quaternionTests() {
 	std::vector<TestRotation>::iterator it;
 	for(it = rotations.begin(); it != rotations.end(); ++it) {
 		
-		glm::quat A = it->quat;	
+		glm::quat A = it->quat;
 		glm::quat B = it->quat;
 	
 		CPPUNIT_ASSERT_EQUAL(A, B);
