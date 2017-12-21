@@ -106,8 +106,6 @@ private:
 	
 };
 
-SystemPaths paths;
-
 path canonical(const fs::path & path) {
 	return path.is_absolute() ? path : current_path() / path;
 }
@@ -486,26 +484,28 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 	}
 }
 
+SystemPaths g_systemPaths;
+
 } // anonymous namespace
 
 ExitStatus initSystemPaths() {
-	return paths.init(cmdLineInitParams);
+	return g_systemPaths.init(cmdLineInitParams);
 }
 
 const fs::path & getUserDir() {
-	return paths.user;
+	return g_systemPaths.user;
 }
 
 const fs::path & getConfigDir() {
-	return paths.config;
+	return g_systemPaths.config;
 }
 
 const std::vector<path> & getDataDirs() {
-	return paths.data;
+	return g_systemPaths.data;
 }
 
 std::vector<path> getDataSearchPaths() {
-	return paths.getSearchPaths(false);
+	return g_systemPaths.getSearchPaths(false);
 }
 
 path findDataFile(const path & resource) {
