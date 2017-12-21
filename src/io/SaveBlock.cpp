@@ -251,7 +251,12 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 	}
 }
 
-SaveBlock::SaveBlock(const fs::path & _savefile) : savefile(_savefile), totalSize(0), usedSize(0), chunkCount(0) { }
+SaveBlock::SaveBlock(const fs::path & savefile)
+	: m_savefile(savefile)
+	, totalSize(0)
+	, usedSize(0)
+	, chunkCount(0)
+{ }
 
 SaveBlock::~SaveBlock() { }
 
@@ -274,7 +279,7 @@ bool SaveBlock::loadFileTable() {
 		return false;
 	}
 	if(version != SAV_VERSION_DEFLATE && version != SAV_VERSION_RELEASE && version != SAV_VERSION_NOEXT) {
-		LogWarning << "Unexpected savegame version: " << (version >> 16) << '.' << (version & 0xffff) << " for " << savefile;
+		LogWarning << "Unexpected savegame version: " << (version >> 16) << '.' << (version & 0xffff) << " for " << m_savefile;
 	}
 	
 	u32 nFiles;
@@ -333,7 +338,7 @@ bool SaveBlock::loadFileTable() {
 
 void SaveBlock::writeFileTable(const std::string & important) {
 	
-	LogDebug("writeFileTable " << savefile);
+	LogDebug("writeFileTable " << m_savefile);
 	
 	u32 fatOffset = totalSize;
 	handle.seekp(fatOffset + 4);
@@ -361,7 +366,7 @@ void SaveBlock::writeFileTable(const std::string & important) {
 
 bool SaveBlock::open(bool writable) {
 	
-	LogDebug("opening savefile " << savefile << " witable=" << writable);
+	LogDebug("opening savefile " << m_savefile << " witable=" << writable);
 	
 	fs::fstream::openmode mode = fs::fstream::in | fs::fstream::binary | fs::fstream::ate;
 	if(writable) {
@@ -369,14 +374,14 @@ bool SaveBlock::open(bool writable) {
 	}
 	
 	handle.clear();
-	handle.open(savefile, mode);
+	handle.open(m_savefile, mode);
 	if(!handle.is_open()) {
 		handle.clear();
 		if(writable) {
-			handle.open(savefile, mode | fs::fstream::trunc);
+			handle.open(m_savefile, mode | fs::fstream::trunc);
 		}
 		if(!handle.is_open()) {
-			LogError << "Could not open " << savefile << " for "
+			LogError << "Could not open " << m_savefile << " for "
 			         << (writable ? "reading/writing" : "reading");
 			return false;
 		}
@@ -408,10 +413,10 @@ bool SaveBlock::flush(const std::string & important) {
 
 bool SaveBlock::defragment() {
 	
-	LogDebug("defragmenting " << savefile << " save: using " << usedSize << " / " << totalSize
+	LogDebug("defragmenting " << m_savefile << " save: using " << usedSize << " / " << totalSize
 	         << " b for " << files.size() << " files in " << chunkCount << " chunks");
 	
-	fs::path tempFileName = savefile;
+	fs::path tempFileName = m_savefile;
 	{
 		int i = 0;
 		do {
@@ -468,10 +473,10 @@ bool SaveBlock::defragment() {
 	
 	tempFile.flush(), tempFile.close(), handle.close();
 	
-	bool renamed = fs::rename(tempFileName, savefile, true);
+	bool renamed = fs::rename(tempFileName, m_savefile, true);
 	if(!renamed) {
 		fs::remove(tempFileName);
-		LogWarning << "Failed to move defragmented save file " << tempFileName << " to " << savefile;
+		LogWarning << "Failed to move defragmented save file " << tempFileName << " to " << m_savefile;
 	} else {
 		
 		size_t newTotalSize = 0;
@@ -491,17 +496,17 @@ bool SaveBlock::defragment() {
 		
 	}
 	
-	handle.open(savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary | fs::fstream::ate);
+	handle.open(m_savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary | fs::fstream::ate);
 	if(!handle.is_open()) {
 		files.clear();
-		LogError << "Failed to open defragmented save file: " << savefile;
+		LogError << "Failed to open defragmented save file: " << m_savefile;
 		return false;
 	}
 	
 	if(handle.tellg() < fs::fstream::pos_type(totalSize + 4)) {
 		files.clear();
 		handle.close();
-		LogError << "Save file corrupted after defragmenting: " << savefile;
+		LogError << "Save file corrupted after defragmenting: " << m_savefile;
 		return false;
 	}
 	
@@ -606,18 +611,18 @@ std::vector<std::string> SaveBlock::getFiles() const {
 	return result;
 }
 
-char * SaveBlock::load(const fs::path & savefile, const std::string & filename, size_t & size) {
+char * SaveBlock::load(const fs::path & m_savefile, const std::string & filename, size_t & size) {
 	
 	arx_assert_msg(filename.find_first_of(BADSAVCHAR) == std::string::npos,
 	               "bad save filename: \"%s\"", filename.c_str());
 	
-	LogDebug("reading savefile " << savefile);
+	LogDebug("reading savefile " << m_savefile);
 	
 	size = 0;
 	
-	fs::ifstream handle(savefile, fs::fstream::in | fs::fstream::binary);
+	fs::ifstream handle(m_savefile, fs::fstream::in | fs::fstream::binary);
 	if(!handle.is_open()) {
-		LogWarning << "Cannot open save file " << savefile;
+		LogWarning << "Cannot open save file " << m_savefile;
 		return NULL;
 	}
 	
@@ -635,7 +640,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 		return NULL;
 	}
 	if(version != SAV_VERSION_DEFLATE && version != SAV_VERSION_RELEASE && version != SAV_VERSION_NOEXT) {
-		LogWarning << "Unexpected savegame version: " << version << " for " << savefile;
+		LogWarning << "Unexpected savegame version: " << version << " for " << m_savefile;
 	}
 	
 	u32 nFiles;
