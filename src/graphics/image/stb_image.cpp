@@ -1734,10 +1734,10 @@ static int zbuild_huffman(zhuffman *z, uint8 *sizelist, int num)
          z->size[c] = (uint8)s;
          z->value[c] = (uint16)i;
          if (s <= STBI_ZFAST_BITS) {
-            int k = bit_reverse(next_code[s], s);
-            while (k < (1 << STBI_ZFAST_BITS)) {
-               z->fast[k] = (uint16) c;
-               k += (1 << s);
+            int l = bit_reverse(next_code[s], s);
+            while (l < (1 << STBI_ZFAST_BITS)) {
+               z->fast[l] = (uint16) c;
+               l += (1 << s);
             }
          }
          ++next_code[s];
