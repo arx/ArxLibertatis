@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/PolyBoom.h"
 
+#include <boost/foreach.hpp>
+
 #include "animation/AnimationRender.h"
 
 #include "core/Application.h"
@@ -254,12 +256,9 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
 	GameInstant now = g_gameTime.now();
 	
-	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
-	while(pb != polyboom.end()) {
-	
+	BOOST_FOREACH(POLYBOOM & pb, polyboom) {
 		//TODO what does this do ?
-		pb->type |= 128;
-		++ pb;
+		pb.type |= 128;
 	}
 	
 	// TODO copy-paste background tiles
