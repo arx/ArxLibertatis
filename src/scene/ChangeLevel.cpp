@@ -1943,9 +1943,9 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		// Old save files stored absolute paths,
 		// strip everything before 'graph' when loading.
 		boost::to_lower(path);
-		size_t pos = path.find("graph");
-		if(pos != std::string::npos) {
-			path = path.substr(pos);
+		size_t graphPos = path.find("graph");
+		if(graphPos != std::string::npos) {
+			path = path.substr(graphPos);
 		}
 	}
 	
