@@ -3504,7 +3504,6 @@ static stbi_uc * pic_load2(stbi * s, int width, int height, int * comp, stbi_uc 
 
                   if (count >= 128) { // Repeated
                      stbi_uc value[4];
-                     int i;
 
                      if (count==128)
                         count = get16(s);
