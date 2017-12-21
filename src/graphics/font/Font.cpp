@@ -47,13 +47,13 @@ Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face)
 	: m_info(fontFile, fontSize)
 	, referenceCount(0)
 	, m_face(face)
-	, textures(0) {
+	, m_textures(NULL) {
 	
 	// TODO-font: Compute optimal size using m_FTFace->bbox
 	const unsigned int TEXTURE_SIZE = 512;
 	
 	// Insert all the glyphs into texture pages
-	textures = new PackedTexture(TEXTURE_SIZE, Image::Format_A8);
+	m_textures = new PackedTexture(TEXTURE_SIZE, Image::Format_A8);
 	
 	// Insert the replacement characters first as they may be needed if others are missing
 	insertGlyph('?');
@@ -66,12 +66,12 @@ Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face)
 		}
 	}
 	
-	textures->upload();
+	m_textures->upload();
 }
 
 Font::~Font() {
 	
-	delete textures;
+	delete m_textures;
 	
 	// Release FreeType face object.
 	FT_Done_Face(m_face);
@@ -162,7 +162,7 @@ bool Font::insertGlyph(Char character) {
 		memcpy(dst, src, glyph.size.x * glyph.size.y);
 		
 		Vec2i offset;
-		if(!textures->insertImage(imgGlyph, glyph.texture, offset)) {
+		if(!m_textures->insertImage(imgGlyph, glyph.texture, offset)) {
 			LogWarning << "Could not upload glyph for character U+" << std::hex << character
 			           << " (" << util::encode<util::UTF8>(character) << ") in font "
 			           << m_info.name;
@@ -171,7 +171,7 @@ bool Font::insertGlyph(Char character) {
 		}
 		
 		// Compute UV mapping for each glyph.
-		const float textureSize = textures->getTextureSize();
+		const float textureSize = m_textures->getTextureSize();
 		glyph.uv_start = Vec2f(offset) / Vec2f(textureSize);
 		glyph.uv_end = Vec2f(offset + glyph.size) / Vec2f(textureSize);
 	}
@@ -223,7 +223,7 @@ Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
 	insertMissingGlyphs(it, end);
 	
 	// Re-upload the changed textures
-	textures->upload();
+	m_textures->upload();
 	
 	return m_glyphs.find(chr); // the newly inserted glyph
 }
@@ -349,7 +349,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 		for(MapTextureVertices::const_iterator it = mapTextureVertices.begin(); it != mapTextureVertices.end(); ++it) {
 			
 			if(!it->second.empty()) {
-				GRenderer->SetTexture(0, &textures->getTexture(it->first));
+				GRenderer->SetTexture(0, &m_textures->getTexture(it->first));
 				EERIEDRAWPRIM(Renderer::TriangleList, &it->second[0], it->second.size());
 			}
 		}
