@@ -355,19 +355,20 @@ void SecondaryInventoryHud::dropEntity() {
 	if(SecondaryInventory && g_secondaryInventoryHud.containsPos(DANAEMouse)) {
 		Entity * io = SecondaryInventory->io;
 		
-		float fprice = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f; //>>1;
-		long price = checked_range_cast<long>(fprice);
-		price *= DRAGINTER->_itemdata->count;
-		fprice = price + price * player.m_skillFull.intuition * 0.005f;
-		price = checked_range_cast<long>(fprice);
-		
 		// SHOP
 		if(io->ioflags & IO_SHOP) {
+			
 			if(!io->shop_category.empty() && DRAGINTER->groups.find(io->shop_category) == DRAGINTER->groups.end())
 				return;
 			
-			if(price <= 0)
+			float fprice = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f; //>>1;
+			long price = checked_range_cast<long>(fprice);
+			price *= DRAGINTER->_itemdata->count;
+			fprice = price + price * player.m_skillFull.intuition * 0.005f;
+			price = checked_range_cast<long>(fprice);
+			if(price <= 0) {
 				return;
+			}
 			
 			// Check shop group
 			for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
