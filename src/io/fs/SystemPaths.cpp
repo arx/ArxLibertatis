@@ -76,7 +76,7 @@ struct SystemPaths {
 	
 	path m_userDir; //!< Directory for saves and user-specific data files
 	path m_configDir; //!< Directory for config files
-	std::vector<path> data; //!< Directories for data files
+	std::vector<path> m_dataDirs; //!< Directories for data files
 	
 	/*!
 	 * \brief Initialize the system resource paths using the specified parameters
@@ -353,7 +353,7 @@ ExitStatus SystemPaths::init(const InitParams & initParams) {
 	
 	findData_ = initParams.findData;
 	
-	data = getSearchPaths(true);
+	m_dataDirs = getSearchPaths(true);
 	
 	if(initParams.displaySearchDirs) {
 		list(std::cout, " - --user-dir (-u) command-line parameter\n",
@@ -474,11 +474,11 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 	os << "For all of these (except those specified via --data-dir),\n";
 	os << "the \"data\" subdirectory or file will also be searched.\n";
 	os << "selected:";
-	if(data.empty()) {
+	if(m_dataDirs.empty()) {
 		os << " (none)\n";
 	} else {
 		os << '\n';
-		BOOST_FOREACH(const path & dir, data) {
+		BOOST_FOREACH(const path & dir, m_dataDirs) {
 			os << " - " << dir << '\n';
 		}
 	}
@@ -501,7 +501,7 @@ const fs::path & getConfigDir() {
 }
 
 const std::vector<path> & getDataDirs() {
-	return g_systemPaths.data;
+	return g_systemPaths.m_dataDirs;
 }
 
 std::vector<path> getDataSearchPaths() {
