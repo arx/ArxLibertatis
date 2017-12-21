@@ -62,7 +62,7 @@ void SaveGameList::update(bool verbose) {
 	
 	size_t max_name_length = 0;
 	
-	fs::path savedir = fs::paths.user / SAVEGAME_DIR;
+	fs::path savedir = fs::getUserDir() / SAVEGAME_DIR;
 	
 	if(verbose) {
 		LogInfo << "Using save game dir " << savedir;
@@ -222,7 +222,7 @@ bool SaveGameList::save(const std::string & name, iterator overwrite, const Imag
 		do {
 			std::ostringstream oss;
 			oss << "save" << std::setfill('0') << std::setw(4) << index++;
-			savefile = fs::paths.user / SAVEGAME_DIR / oss.str();
+			savefile = fs::getUserDir() / SAVEGAME_DIR / oss.str();
 		} while(fs::exists(savefile));
 		
 		if(!fs::create_directories(savefile)) {
