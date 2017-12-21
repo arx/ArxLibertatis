@@ -109,10 +109,10 @@ struct InventoryPos {
 		: bag(0)
 		, x(0)
 		, y(0)
-	{}
+	{ }
 	
-	InventoryPos(long io, index_type bag, index_type x, index_type y)
-		: io(io), bag(bag), x(x), y(y) { }
+	InventoryPos(long io_, index_type bag_, index_type x_, index_type y_)
+		: io(io_), bag(bag_), x(x_), y(y_) { }
 	
 	//! \return true if this is a valid position
 	operator bool() const {
