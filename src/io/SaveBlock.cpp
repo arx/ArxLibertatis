@@ -412,13 +412,14 @@ bool SaveBlock::defragment() {
 	         << " b for " << files.size() << " files in " << chunkCount << " chunks");
 	
 	fs::path tempFileName = savefile;
-	int i = 0;
-	
-	do {
-		std::ostringstream oss;
-		oss << "defrag" << i++;
-		tempFileName.set_ext(oss.str());
-	} while(fs::exists(tempFileName));
+	{
+		int i = 0;
+		do {
+			std::ostringstream oss;
+			oss << "defrag" << i++;
+			tempFileName.set_ext(oss.str());
+		} while(fs::exists(tempFileName));
+	}
 	
 	fs::ofstream tempFile(tempFileName, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 	if(!tempFile.is_open()) {
