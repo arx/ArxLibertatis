@@ -453,8 +453,8 @@ private:
 	
 public:
 	
-	Inventory(long io, array_type & data, size_type bags, size_type width, size_type height)
-		: io(io), data(data), bags(bags), width(width), height(height) { }
+	Inventory(long io_, array_type & data_, size_type bags_, size_type width_, size_type height_)
+		: io(io_), data(data_), bags(bags_), width(width_), height(height_) { }
 	
 	/*!
 	 * Insert an item into the inventory
