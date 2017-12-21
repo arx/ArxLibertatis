@@ -464,7 +464,7 @@ void SecondaryInventoryHud::dropEntity() {
 		DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
 		ARX_SOUND_PlayInterface(SND_INVSTD);
 		Set_DragInter(NULL);
-		return;
+		
 	}
 	
 }
