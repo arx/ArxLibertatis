@@ -1470,13 +1470,14 @@ void HudRoot::draw() {
 	
 	quickSaveIconGui.update();
 	
-	Rectf spacer;
-	spacer.left = healthGauge.rect().right;
-	spacer.bottom = g_size.bottom;
-	spacer.top = spacer.bottom - indicatorVertSpacing;
-	spacer.right = spacer.left + indicatorHorizSpacing;
-	
-	stealthGauge.updateRect(spacer);
+	{
+		Rectf spacer;
+		spacer.left = healthGauge.rect().right;
+		spacer.bottom = g_size.bottom;
+		spacer.top = spacer.bottom - indicatorVertSpacing;
+		spacer.right = spacer.left + indicatorHorizSpacing;
+		stealthGauge.updateRect(spacer);
+	}
 	stealthGauge.update();
 	
 	damagedEquipmentGui.updateRect(stealthGauge.rect());
