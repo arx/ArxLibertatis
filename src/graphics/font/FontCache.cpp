@@ -108,7 +108,7 @@ Font * FontCache::Impl::getFont(const res::path & fontFile, unsigned int fontSiz
 	}
 	
 	if(pFont) {
-		pFont->referenceCount++;
+		pFont->m_referenceCount++;
 	} else {
 		clean(fontFile);
 	}
@@ -158,9 +158,9 @@ void FontCache::Impl::releaseFont(Font * font) {
 		return;
 	}
 	
-	font->referenceCount--;
+	font->m_referenceCount--;
 	
-	if(font->referenceCount == 0) {
+	if(font->m_referenceCount == 0) {
 		
 		FontFile & file = m_files[font->getName()];
 		

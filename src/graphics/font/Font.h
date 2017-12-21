@@ -209,7 +209,7 @@ private:
 	TextSize process(int pX, int pY, text_iterator start, text_iterator end, Color color);
 	
 	Info m_info;
-	unsigned int referenceCount;
+	unsigned int m_referenceCount;
 	
 	struct FT_FaceRec_ * m_face;
 	std::map<Char, Glyph> m_glyphs;
