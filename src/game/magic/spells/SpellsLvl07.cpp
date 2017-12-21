@@ -119,7 +119,7 @@ void FlyingEyeSpell::End() {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &caster->pos);
 	}
 	
-	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke");
+	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_OUT);
 	eyeball.exist = -100;
@@ -293,7 +293,7 @@ void FireFieldSpell::Update() {
 		el->fallend   = Random::getf(290.f, 320.f);
 		el->rgb = Color3f(1.f, 0.8f, 0.6f) + Color3f(Random::getf(-0.1f, 0.f), 0.f, 0.f);
 		el->duration = GameDurationMs(600);
-		el->extras=0;
+		el->extras = 0;
 	}
 	
 	if(VisibleSphere(Sphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f))) {
@@ -446,7 +446,7 @@ void IceFieldSpell::Update() {
 		el->fallend   = Random::getf(290.f, 320.f);
 		el->rgb = Color3f(0.76f, 0.76f, 1.0f) + Color3f(0.f, 0.f, Random::getf(-0.1f, 0.f));
 		el->duration = GameDurationMs(600);
-		el->extras=0;
+		el->extras = 0;
 	}
 
 	if(!VisibleSphere(Sphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f))) {
