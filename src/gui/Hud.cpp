@@ -1560,23 +1560,23 @@ void HudRoot::draw() {
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
 		
 		{
-		Rectf spacer = createChild(manaGauge.rect(), Anchor_TopRight, Vec2f(0, 3), Anchor_BottomRight);
-		backpackIconGui.update(spacer);
+			Rectf spacer = createChild(manaGauge.rect(), Anchor_TopRight, Vec2f(0, 3), Anchor_BottomRight);
+			backpackIconGui.update(spacer);
 		}
 		
 		{
-		Rectf spacer = createChild(backpackIconGui.rect(), Anchor_TopRight, Vec2f(0, 3), Anchor_BottomRight);
-		bookIconGui.update(spacer);
+			Rectf spacer = createChild(backpackIconGui.rect(), Anchor_TopRight, Vec2f(0, 3), Anchor_BottomRight);
+			bookIconGui.update(spacer);
 		}
 		
 		{
-		Rectf spacer = createChild(bookIconGui.rect(), Anchor_TopRight, Vec2f(0, 3), Anchor_BottomRight);
-		purseIconGui.update(spacer);
+			Rectf spacer = createChild(bookIconGui.rect(), Anchor_TopRight, Vec2f(0, 3), Anchor_BottomRight);
+			purseIconGui.update(spacer);
 		}
 		
 		{
-		Rectf spacer = createChild(purseIconGui.rect(), Anchor_TopRight, Vec2f(0, 3), Anchor_BottomRight);
-		levelUpIconGui.update(spacer);
+			Rectf spacer = createChild(purseIconGui.rect(), Anchor_TopRight, Vec2f(0, 3), Anchor_BottomRight);
+			levelUpIconGui.update(spacer);
 		}
 		
 		backpackIconGui.draw();
