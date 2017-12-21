@@ -417,7 +417,6 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		
 		ap->flags = PathFlags::load(dlp->flags); // TODO save/load flags
 		ap->pos = dlp->pos.toVec3() + trans;
-		ap->nb_pathways = dlp->nb_pathways;
 		ap->height = dlp->height;
 		ap->ambiance = res::path::load(util::loadString(dlp->ambiance));
 		
@@ -430,17 +429,15 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		ap->reverb = dlp->reverb;
 		ap->rgb = dlp->rgb;
 		
-		ARX_PATHWAY * app = ap->pathways = (ARX_PATHWAY *)malloc(sizeof(ARX_PATHWAY) * dlp->nb_pathways);
-		memset(app, 0, sizeof(ARX_PATHWAY)*dlp->nb_pathways);
-		
+		ap->pathways.resize(dlp->nb_pathways);
 		for(long j = 0; j < dlp->nb_pathways; j++) {
 			
 			const DANAE_LS_PATHWAYS * dlpw = reinterpret_cast<const DANAE_LS_PATHWAYS *>(dat + pos);
 			pos += sizeof(DANAE_LS_PATHWAYS);
 			
-			app[j].flag = (PathwayType)dlpw->flag; // save/load enum
-			app[j].rpos = dlpw->rpos.toVec3();
-			app[j]._time = GameDurationMs(dlpw->time); // TODO save/load time
+			ap->pathways[j].flag = (PathwayType)dlpw->flag; // TODO save/load enum
+			ap->pathways[j].rpos = dlpw->rpos.toVec3();
+			ap->pathways[j]._time = GameDurationMs(dlpw->time); // TODO save/load time
 		}
 	}
 	

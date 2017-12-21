@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <vector>
 
 #include "core/TimeTypes.h"
 #include "graphics/BaseGraphicsTypes.h"
@@ -92,8 +93,7 @@ struct ARX_PATH {
 	PathFlags flags;
 	Vec3f initpos;
 	Vec3f pos;
-	long nb_pathways;
-	ARX_PATHWAY * pathways;
+	std::vector<ARX_PATHWAY> pathways;
 	
 	long height; // 0 NOT A ZONE
 	
