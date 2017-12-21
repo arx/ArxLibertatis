@@ -68,8 +68,7 @@ void AddQuakeFX(float intensity, float duration, float period, bool sound) {
 }
 
 void RemoveQuakeFX() {
-
-	QuakeFx.intensity=0.f;
+	QuakeFx.intensity = 0.f;
 }
 
 void ManageQuakeFX(EERIE_CAMERA * cam) {
