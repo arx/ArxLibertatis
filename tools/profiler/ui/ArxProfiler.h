@@ -62,7 +62,7 @@ public:
 	
 	explicit ProfilerView(QWidget * parent = NULL);
 	
-	void setData(ThreadsData * data);
+	void setData(ThreadsData * threadsData);
 	
 protected:
 	void paintEvent(QPaintEvent *event);
