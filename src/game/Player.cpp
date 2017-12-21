@@ -327,16 +327,14 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 		if(!spellicons[i].bSecret) {
 			long j = 0;
 			bool bOk = true;
-
 			while(j < 4 && spellicons[i].symbols[j] != 255) {
 				if(!player.hasRune(spellicons[i].symbols[j])) {
 					bOk = false;
 				}
 				j++;
 			}
-
 			if(bOk) {
-				iNbSpells ++;
+				iNbSpells++;
 			}
 		}
 	}
@@ -347,16 +345,14 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 		if(!spellicons[i].bSecret) {
 			long j = 0;
 			bool bOk = true;
-
 			while(j < 4 && (spellicons[i].symbols[j] != 255)) {
 				if(!player.hasRune(spellicons[i].symbols[j])) {
 					bOk = false;
 				}
 				j++;
 			}
-
 			if(bOk) {
-				iNbSpellsAfter ++;
+				iNbSpellsAfter++;
 			}
 		}
 	}
