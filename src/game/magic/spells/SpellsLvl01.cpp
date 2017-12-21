@@ -389,13 +389,13 @@ void IgnitSpell::Launch() {
 			
 			entry.m_targetLight = ii;
 			
-			EERIE_LIGHT * light = dynLightCreate(entry.m_effectLight);
-			if(light) {
-				light->intensity = Random::getf(0.7f, 2.7f);
-				light->fallend = 400.f;
-				light->fallstart = 300.f;
-				light->rgb = Color3f(1.f, 1.f, 1.f);
-				light->pos = light->pos;
+			EERIE_LIGHT * effectLight = dynLightCreate(entry.m_effectLight);
+			if(effectLight) {
+				effectLight->intensity = Random::getf(0.7f, 2.7f);
+				effectLight->fallend = 400.f;
+				effectLight->fallstart = 300.f;
+				effectLight->rgb = Color3f(1.f, 1.f, 1.f);
+				effectLight->pos = light->pos;
 			}
 		
 			m_lights.push_back(entry);
