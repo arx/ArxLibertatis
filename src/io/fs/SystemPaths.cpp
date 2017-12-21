@@ -75,7 +75,7 @@ struct SystemPaths {
 	};
 	
 	path m_userDir; //!< Directory for saves and user-specific data files
-	path config; //!< Directory for config files
+	path m_configDir; //!< Directory for config files
 	std::vector<path> data; //!< Directories for data files
 	
 	/*!
@@ -346,8 +346,8 @@ ExitStatus SystemPaths::init(const InitParams & initParams) {
 	m_userDir = findUserPath("user", initParams.forceUser, "UserDir", platform::UserDirPrefixes,
 	                         user_dir_prefixes, user_dir, current_path(), !initParams.displaySearchDirs);
 	
-	config = findUserPath("config", initParams.forceConfig, "ConfigDir", platform::NoPath,
-	                      config_dir_prefixes, config_dir, m_userDir, !initParams.displaySearchDirs);
+	m_configDir = findUserPath("config", initParams.forceConfig, "ConfigDir", platform::NoPath,
+	                           config_dir_prefixes, config_dir, m_userDir, !initParams.displaySearchDirs);
 	
 	addData_ = initParams.dataDirs;
 	
@@ -362,7 +362,7 @@ ExitStatus SystemPaths::init(const InitParams & initParams) {
 		                " only without --no-data-dir (-n): \n");
 		std::cout << std::endl;
 		return ExitSuccess;
-	} else if(m_userDir.empty() || config.empty()) {
+	} else if(m_userDir.empty() || m_configDir.empty()) {
 		LogCritical << "Could not select user or config directory.";
 		return ExitFailure;
 	}
@@ -456,10 +456,10 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 	listDirectoriesFor(os, "ConfigDir", platform::NoPath, config_dir_prefixes, config_dir);
 	os << " - The selected user directory\n";
 	os << "selected: ";
-	if(config.empty()) {
+	if(m_configDir.empty()) {
 		os << "(none)\n";
 	} else {
-		os << config << '\n';
+		os << m_configDir << '\n';
 	}
 	
 	os << "\nData directories (decreasing priority):\n";
@@ -497,7 +497,7 @@ const fs::path & getUserDir() {
 }
 
 const fs::path & getConfigDir() {
-	return g_systemPaths.config;
+	return g_systemPaths.m_configDir;
 }
 
 const std::vector<path> & getDataDirs() {
