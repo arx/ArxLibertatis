@@ -66,13 +66,6 @@ struct SystemPaths {
 	std::vector<path> data; //!< Directories for data files
 	
 	/*!
-	 * \brief Initialize the system resource paths
-	 *
-	 * Uses arguments provided on the command line, if any.
-	 */
-	ExitStatus init();
-	
-	/*!
 	 * \brief Initialize the system resource paths using the specified parameters
 	 *
 	 * \note This version of \ref init() will ignore arguments provided on the
@@ -116,6 +109,13 @@ private:
 };
 
 extern SystemPaths paths;
+
+/*!
+ * \brief Initialize the system resource paths
+ *
+ * Uses arguments provided on the command line, if any.
+ */
+ExitStatus initSystemPaths();
 
 //! \return A directory for saves and user-specific data files
 const fs::path & getUserDir();

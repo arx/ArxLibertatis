@@ -276,10 +276,6 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 
 static SystemPaths::InitParams cmdLineInitParams;
 
-ExitStatus SystemPaths::init() {
-	return init(cmdLineInitParams);
-}
-
 ExitStatus SystemPaths::init(const InitParams & initParams) {
 	
 	user = findUserPath("user", initParams.forceUser, "UserDir", platform::UserDirPrefixes,
@@ -437,6 +433,10 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 			os << " - " << dir << '\n';
 		}
 	}
+}
+
+ExitStatus initSystemPaths() {
+	return paths.init(cmdLineInitParams);
 }
 
 const fs::path & getUserDir() {

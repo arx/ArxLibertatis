@@ -130,7 +130,7 @@ int utf8_main(int argc, char ** argv) {
 	ExitStatus status = parseCommandLine(argc, argv);
 	
 	if(status == RunProgram) {
-		status = fs::paths.init();
+		status = fs::initSystemPaths();
 	}
 	
 	if(status == RunProgram && g_args.size() < 2) {

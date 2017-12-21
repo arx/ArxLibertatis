@@ -255,7 +255,7 @@ int utf8_main(int argc, char ** argv) {
 	}
 	
 	if(status == RunProgram && (g_addDefaultArchives || g_archives.empty())) {
-		status = fs::paths.init();
+		status = fs::initSystemPaths();
 	}
 	
 	// When no archives have been specified, extract all archives to a default location
