@@ -1083,10 +1083,10 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				ep2->area = ep->area;
 				ep2->norm = ep->norm.toVec3();
 				ep2->norm2 = ep->norm2.toVec3();
-
-				for(int i = 0; i < 4; i++)
-					ep2->nrml[i] = ep->nrml[i].toVec3();
-
+				for(int l = 0; l < 4; l++) {
+					ep2->nrml[l] = ep->nrml[l].toVec3();
+				}
+				
 				if(ep->tex != 0) {
 					TextureContainerMap::const_iterator cit = textures.find(ep->tex);
 					ep2->tex = (cit != textures.end()) ? cit->second : NULL;
