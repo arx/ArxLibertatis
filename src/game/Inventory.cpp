@@ -398,28 +398,28 @@ private:
 			return false;
 		}
 		
-		Entity * io = index(pos).io;
+		Entity * oldItem = index(pos).io;
 		
 		// Ignore empty slots and different or non-stackeable items
-		if(!io || io->_itemdata->playerstacksize <= 1 || !IsSameObject(item, io)) {
+		if(!oldItem || oldItem->_itemdata->playerstacksize <= 1 || !IsSameObject(item, oldItem)) {
 			return false;
 		}
 		
 		// Ignore full stacks
-		if(io->_itemdata->count >= io->_itemdata->playerstacksize) {
+		if(oldItem->_itemdata->count >= oldItem->_itemdata->playerstacksize) {
 			return false;
 		}
 		
 		// Get the number of items to add to the stack
-		short int remainingSpace = io->_itemdata->playerstacksize - io->_itemdata->count;
+		short int remainingSpace = oldItem->_itemdata->playerstacksize - oldItem->_itemdata->count;
 		short int count = std::min(item->_itemdata->count, remainingSpace);
 		
-		LogDebug(" - " << pos << " " << io->idString()
-		         << " [" << io->_itemdata->count << '/'
-		         << io->_itemdata->playerstacksize << "] += "
+		LogDebug(" - " << pos << " " << oldItem->idString()
+		         << " [" << oldItem->_itemdata->count << '/'
+		         << oldItem->_itemdata->playerstacksize << "] += "
 		         << item->idString() << " x" << count << '/' << item->_itemdata->count);
 		
-		io->_itemdata->count += count, item->_itemdata->count -= count;
+		oldItem->_itemdata->count += count, item->_itemdata->count -= count;
 		
 		if(item->_itemdata->count != 0) {
 			// We inserted some of the items into the stack, but there was not enough
