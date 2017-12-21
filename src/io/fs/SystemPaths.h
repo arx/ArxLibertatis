@@ -36,10 +36,10 @@ namespace fs {
 ExitStatus initSystemPaths();
 
 //! \return A directory for saves and user-specific data files
-const fs::path & getUserDir();
+const path & getUserDir();
 
 //! \return A directory for config files
-const fs::path & getConfigDir();
+const path & getConfigDir();
 
 //! \return Directories for data files
 const std::vector<path> & getDataDirs();
