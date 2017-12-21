@@ -31,7 +31,7 @@
 
 EYEBALL_DEF eyeball;
 
-float MagicSightFader=0.f;
+float MagicSightFader = 0.f;
 
 static TextureContainer * Flying_Eye = NULL;
 static EERIE_3DOBJ * eyeballobj = NULL; // EyeBall 3D Object
