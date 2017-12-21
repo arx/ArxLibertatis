@@ -44,23 +44,23 @@
 
 
 long passwall = 0;
-long cur_mx=0;
+long cur_mx = 0;
 static long cur_pnux = 0;
-long cur_pom=0;
-long cur_rf=0;
-long cur_mr=0;
+long cur_pom = 0;
+long cur_rf = 0;
+long cur_mr = 0;
 static long cur_sm = 0;
 static long cur_bh = 0;
 
-long sp_arm=0;
+long sp_arm = 0;
 static long cur_arm = 0;
 static long cur_sos = 0;
 static long cur_console = 0;
 
-long cur_mega=0;
+long cur_mega = 0;
 static PlatformInstant sp_max_start = 0;
-long sp_wep=0;
-short uw_mode=0;
+long sp_wep = 0;
+short uw_mode = 0;
 
 static short uw_mode_pos = 0;
 
@@ -150,9 +150,10 @@ void CheatReset() {
 }
 
 void CheatDetectionReset() {
-	cur_arm=0;
-	cur_mega=0;
-	passwall=0;
+	
+	cur_arm = 0;
+	cur_mega = 0;
+	passwall = 0;
 	
 	if(cur_mr != 3) {
 		cur_mr = 0;
@@ -178,19 +179,19 @@ void CheatDetectionReset() {
 		cur_sm = 0;
 	}
 	
-	cur_bh=0;
-	cur_sos=0;
+	cur_bh = 0;
+	cur_sos = 0;
 	cur_console = 0;
+	
 }
 
 
 long BH_MODE = 0;
-static void EERIE_OBJECT_SetBHMode()
-{
+static void EERIE_OBJECT_SetBHMode() {
 	if(BH_MODE) {
-		BH_MODE=0;
+		BH_MODE = 0;
 	} else {
-		BH_MODE=1;
+		BH_MODE = 1;
 		MakeCoolFx(player.pos);
 		MakeSpCol();
 		DisplayCheatText("!!!_Super-Deformed_!!!");
@@ -296,7 +297,7 @@ static void ApplyCurPNux() {
 	
 	// TODO-RENDERING: Create a post-processing effect for that cheat... see original source...
 	
-	cur_pnux=0;
+	cur_pnux = 0;
 }
 
 static void ApplyPasswall() {
@@ -320,8 +321,8 @@ static void ApplyCurMr() {
 }
 
 static void ApplySPuw() {
-	uw_mode_pos=0;
-	uw_mode=~uw_mode;
+	uw_mode_pos = 0;
+	uw_mode = ~uw_mode;
 	ARX_SOUND_PlayCinematic("menestrel_uw2", true);
 	MakeCoolFx(player.pos);
 	if(uw_mode) {
@@ -339,28 +340,25 @@ static void ApplySPMax() {
 		MakeSpCol();
 		DisplayCheatText("!!!_FaNt0mAc1e_!!!");
 		
-		player.skin=4;
+		player.skin = 4;
 		
 		ARX_EQUIPMENT_RecreatePlayerMesh();
 		
 		ARX_PLAYER_Rune_Add_All();
 		std::string text = "!!!!!!! FanTomAciE !!!!!!!";
 		ARX_SPEECH_Add(text);
-		player.Attribute_Redistribute+=10;
-		player.Skill_Redistribute+=50;
+		player.Attribute_Redistribute += 10;
+		player.Skill_Redistribute += 50;
 		player.level = std::max(player.level, short(10));
-		player.xp=GetXPforLevel(10);
+		player.xp = GetXPforLevel(10);
 	} else {
 		TextureContainer * tcm;
 		tcm = TextureContainer::Load("graph/obj3d/textures/npc_human_cm_hero_head");
 		if(tcm) {
 			delete tcm;
-			player.heads[0]
-				= TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
-			player.heads[1]
-				= TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero2_head");
-			player.heads[2]
-				= TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero3_head");
+			player.heads[0] = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
+			player.heads[1] = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero2_head");
+			player.heads[2] = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero3_head");
 			ARX_EQUIPMENT_RecreatePlayerMesh();
 		}
 	}
@@ -605,9 +603,8 @@ void handleCheatRuneDetection(CheatRune rune) {
 		}
 		case CheatRune_Passwall: {
 			passwall++;
-			
 			if(passwall == 3) {
-				passwall=0;
+				passwall = 0;
 				ApplyPasswall();
 			}
 			break;
