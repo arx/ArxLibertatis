@@ -440,6 +440,18 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 	}
 }
 
+const fs::path & getUserDir() {
+	return paths.user;
+}
+
+const fs::path & getConfigDir() {
+	return paths.config;
+}
+
+const std::vector<path> & getDataDirs() {
+	return paths.data;
+}
+
 } // namespace fs
 
 static void disableDataDir() {

@@ -117,6 +117,15 @@ private:
 
 extern SystemPaths paths;
 
+//! \return A directory for saves and user-specific data files
+const fs::path & getUserDir();
+
+//! \return A directory for config files
+const fs::path & getConfigDir();
+
+//! \return Directories for data files
+const std::vector<path> & getDataDirs();
+
 } // namespace fs
 
 #endif // ARX_IO_FS_SYSTEMPATHS_H
