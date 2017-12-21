@@ -101,7 +101,7 @@ private:
 	          const std::string & forceConfig = std::string(),
 	          const std::string & forceData = std::string());
 	
-	std::vector<path> addData_;
+	std::vector<path> m_additionalDataDirs;
 	bool findData_;
 	
 };
@@ -258,7 +258,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	}
 	
 	// Use paths specifed on the command-line
-	BOOST_FOREACH(const path & dir, addData_) {
+	BOOST_FOREACH(const path & dir, m_additionalDataDirs) {
 		path tmp = canonical(dir);
 		if(addSearchPath(result, tmp, filter)) {
 			LogDebug("got data dir from command-line: " << dir << " = " << tmp);
@@ -349,7 +349,7 @@ ExitStatus SystemPaths::init(const InitParams & initParams) {
 	m_configDir = findUserPath("config", initParams.forceConfig, "ConfigDir", platform::NoPath,
 	                           config_dir_prefixes, config_dir, m_userDir, !initParams.displaySearchDirs);
 	
-	addData_ = initParams.dataDirs;
+	m_additionalDataDirs = initParams.dataDirs;
 	
 	findData_ = initParams.findData;
 	
