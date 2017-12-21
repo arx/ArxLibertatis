@@ -849,16 +849,16 @@ static void drawDebugMaterials() {
 			oss << '(' << puv[i].x << ',' << puv[i].y << ')';
 			std::string text = oss.str();
 			
-			Vec2i textpos = Vec2i(pp[i]);
+			Vec2i coordpos = Vec2i(pp[i]);
 			if(pp[i].y < c.y) {
-				textpos.y -= hFontDebug->getLineHeight();
+				coordpos.y -= hFontDebug->getLineHeight();
 			}
 			
 			if(pp[i].x < c.x) {
-				textpos.x -= hFontDebug->getTextSize(text).width();
+				coordpos.x -= hFontDebug->getTextSize(text).width();
 			}
 			
-			hFontDebug->draw(textpos.x, textpos.y, text, Color::gray(0.7f));
+			hFontDebug->draw(coordpos.x, coordpos.y, text, Color::gray(0.7f));
 		}
 		
 	}
