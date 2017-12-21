@@ -262,20 +262,20 @@ SaveBlock::~SaveBlock() { }
 
 bool SaveBlock::loadFileTable() {
 	
-	handle.seekg(0);
+	m_handle.seekg(0);
 	
 	u32 fatOffset;
-	if(fs::read(handle, fatOffset).fail()) {
+	if(fs::read(m_handle, fatOffset).fail()) {
 		return false;
 	}
-	if(handle.seekg(fatOffset + 4).fail()) {
+	if(m_handle.seekg(fatOffset + 4).fail()) {
 		LogError << "Cannot seek to FAT";
 		return false;
 	}
 	totalSize = fatOffset;
 	
 	u32 version;
-	if(fs::read(handle, version).fail()) {
+	if(fs::read(m_handle, version).fail()) {
 		return false;
 	}
 	if(version != SAV_VERSION_DEFLATE && version != SAV_VERSION_RELEASE && version != SAV_VERSION_NOEXT) {
@@ -283,7 +283,7 @@ bool SaveBlock::loadFileTable() {
 	}
 	
 	u32 nFiles;
-	if(fs::read(handle, nFiles).fail()) {
+	if(fs::read(m_handle, nFiles).fail()) {
 		return false;
 	}
 	nFiles = (version == SAV_VERSION_OLD) ? nFiles - 1 : nFiles;
@@ -299,10 +299,10 @@ bool SaveBlock::loadFileTable() {
 	if(version == SAV_VERSION_OLD) {
 		char c;
 		do {
-			c = static_cast<char>(handle.get());
-		} while(c != '\0' && handle.good());
+			c = static_cast<char>(m_handle.get());
+		} while(c != '\0' && m_handle.good());
 		File dummy;
-		if(!dummy.loadOffsets(handle, version)) {
+		if(!dummy.loadOffsets(m_handle, version)) {
 			return false;
 		}
 	}
@@ -314,7 +314,7 @@ bool SaveBlock::loadFileTable() {
 		
 		// Read the file name.
 		std::string name;
-		if(fs::read(handle, name).fail()) {
+		if(fs::read(m_handle, name).fail()) {
 			return false;
 		}
 		if(version < SAV_VERSION_NOEXT) {
@@ -326,7 +326,7 @@ bool SaveBlock::loadFileTable() {
 		
 		File & file = files[name];
 		
-		if(!file.loadOffsets(handle, version)) {
+		if(!file.loadOffsets(m_handle, version)) {
 			return false;
 		}
 		
@@ -341,26 +341,26 @@ void SaveBlock::writeFileTable(const std::string & important) {
 	LogDebug("writeFileTable " << m_savefile);
 	
 	u32 fatOffset = totalSize;
-	handle.seekp(fatOffset + 4);
+	m_handle.seekp(fatOffset + 4);
 	
-	fs::write(handle, SAV_VERSION_NOEXT);
+	fs::write(m_handle, SAV_VERSION_NOEXT);
 	
 	u32 nFiles = files.size();
-	fs::write(handle, nFiles);
+	fs::write(m_handle, nFiles);
 	
 	Files::const_iterator ifile = files.find(important);
 	if(ifile != files.end()) {
-		ifile->second.writeEntry(handle, ifile->first);
+		ifile->second.writeEntry(m_handle, ifile->first);
 	}
 	
 	for(Files::const_iterator file = files.begin(); file != files.end(); ++file) {
 		if(file != ifile) {
-			file->second.writeEntry(handle, file->first);
+			file->second.writeEntry(m_handle, file->first);
 		}
 	}
 	
-	handle.seekp(0);
-	fs::write(handle, fatOffset);
+	m_handle.seekp(0);
+	fs::write(m_handle, fatOffset);
 	
 }
 
@@ -373,21 +373,21 @@ bool SaveBlock::open(bool writable) {
 		mode |= fs::fstream::out;
 	}
 	
-	handle.clear();
-	handle.open(m_savefile, mode);
-	if(!handle.is_open()) {
-		handle.clear();
+	m_handle.clear();
+	m_handle.open(m_savefile, mode);
+	if(!m_handle.is_open()) {
+		m_handle.clear();
 		if(writable) {
-			handle.open(m_savefile, mode | fs::fstream::trunc);
+			m_handle.open(m_savefile, mode | fs::fstream::trunc);
 		}
-		if(!handle.is_open()) {
+		if(!m_handle.is_open()) {
 			LogError << "Could not open " << m_savefile << " for "
 			         << (writable ? "reading/writing" : "reading");
 			return false;
 		}
 	}
 	
-	if(handle.tellg() > 0 && !loadFileTable()) {
+	if(m_handle.tellg() > 0 && !loadFileTable()) {
 		LogError << "Broken save file";
 		return false;
 	}
@@ -406,9 +406,9 @@ bool SaveBlock::flush(const std::string & important) {
 	
 	writeFileTable(important);
 	
-	handle.flush();
+	m_handle.flush();
 	
-	return handle.good();
+	return m_handle.good();
 }
 
 bool SaveBlock::defragment() {
@@ -448,8 +448,8 @@ bool SaveBlock::defragment() {
 		char * p = &buffer.front();
 		
 		BOOST_FOREACH(const File::Chunk & chunk, file.chunks) {
-			handle.seekg(chunk.offset + 4);
-			handle.read(p, chunk.size);
+			m_handle.seekg(chunk.offset + 4);
+			m_handle.read(p, chunk.size);
 			p += chunk.size;
 		}
 		
@@ -471,7 +471,7 @@ bool SaveBlock::defragment() {
 		return false;
 	}
 	
-	tempFile.flush(), tempFile.close(), handle.close();
+	tempFile.flush(), tempFile.close(), m_handle.close();
 	
 	bool renamed = fs::rename(tempFileName, m_savefile, true);
 	if(!renamed) {
@@ -496,16 +496,16 @@ bool SaveBlock::defragment() {
 		
 	}
 	
-	handle.open(m_savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary | fs::fstream::ate);
-	if(!handle.is_open()) {
+	m_handle.open(m_savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary | fs::fstream::ate);
+	if(!m_handle.is_open()) {
 		files.clear();
 		LogError << "Failed to open defragmented save file: " << m_savefile;
 		return false;
 	}
 	
-	if(handle.tellg() < fs::fstream::pos_type(totalSize + 4)) {
+	if(m_handle.tellg() < fs::fstream::pos_type(totalSize + 4)) {
 		files.clear();
-		handle.close();
+		m_handle.close();
 		LogError << "Save file corrupted after defragmenting: " << m_savefile;
 		return false;
 	}
@@ -515,7 +515,7 @@ bool SaveBlock::defragment() {
 
 bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 	
-	if(!handle) {
+	if(!m_handle) {
 		return false;
 	}
 	
@@ -552,14 +552,14 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 	for(File::ChunkList::iterator chunk = file->chunks.begin();
 	    chunk != file->chunks.end(); ++chunk) {
 		
-		handle.seekp(chunk->offset + 4);
+		m_handle.seekp(chunk->offset + 4);
 		
 		if(chunk->size > remaining) {
 			usedSize -= chunk->size - remaining;
 			chunk->size = remaining;
 		}
 		
-		handle.write(p, chunk->size);
+		m_handle.write(p, chunk->size);
 		p += chunk->size;
 		remaining -= chunk->size;
 		
@@ -571,13 +571,13 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 	}
 	
 	file->chunks.push_back(File::Chunk(remaining, totalSize));
-	handle.seekp(totalSize + 4);
-	handle.write(p, remaining);
+	m_handle.seekp(totalSize + 4);
+	m_handle.write(p, remaining);
 	totalSize += remaining, usedSize += remaining, chunkCount++;
 	
 	delete[] compressed;
 	
-	return !handle.fail();
+	return !m_handle.fail();
 }
 
 void SaveBlock::remove(const std::string & name) {
@@ -591,7 +591,7 @@ char * SaveBlock::load(const std::string & name, size_t & size) {
 	
 	Files::const_iterator file = files.find(name);
 	
-	return (file == files.end()) ? NULL : file->second.loadData(handle, size, name);
+	return (file == files.end()) ? NULL : file->second.loadData(m_handle, size, name);
 }
 
 bool SaveBlock::hasFile(const std::string & name) const {
