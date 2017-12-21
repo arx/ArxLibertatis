@@ -191,8 +191,10 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 	
 	const Vec2f pos = anchorPos + Vec2f(i.x, i.y);
 	
-	Rectf rect = Rectf(pos + Vec2f(0.f, -(5 * m_scale)), m_bagBackgroundSize.x * m_scale, m_bagBackgroundSize.y * m_scale);
-	EERIEDrawBitmap(rect, 0.001f, m_heroInventory, Color::white);
+	{
+		Rectf rect = Rectf(pos + Vec2f(0.f, -(5 * m_scale)), m_bagBackgroundSize.x * m_scale, m_bagBackgroundSize.y * m_scale);
+		EERIEDrawBitmap(rect, 0.001f, m_heroInventory, Color::white);
+	}
 	
 	for(size_t y = 0; y < INVENTORY_Y; y++) {
 	for(size_t x = 0; x < INVENTORY_X; x++) {
