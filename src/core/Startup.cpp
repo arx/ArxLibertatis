@@ -141,12 +141,12 @@ int utf8_main(int argc, char ** argv) {
 	if(status == RunProgram) {
 		
 		// Configure the crash report location
-		CrashHandler::setReportLocation(fs::paths.user / "crashes");
+		CrashHandler::setReportLocation(fs::getUserDir() / "crashes");
 		CrashHandler::deleteOldReports(/* nb to keep = */1);
 		
 		// Now that data directories are initialized, create a log file
 		{
-			fs::path logFile = fs::paths.user / "arx.log";
+			fs::path logFile = fs::getUserDir() / "arx.log";
 			Logger::add(new logger::File(logFile));
 			CrashHandler::addAttachedFile(logFile);
 		}
