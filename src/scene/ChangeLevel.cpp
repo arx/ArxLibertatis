@@ -226,7 +226,7 @@ bool ARX_Changelevel_CurGame_Clear() {
 	}
 	
 	if(CURRENT_GAME_FILE.empty()) {
-		CURRENT_GAME_FILE = fs::paths.user / "current.sav";
+		CURRENT_GAME_FILE = fs::getUserDir() / "current.sav";
 	}
 	
 	// If there's a left over current game file, clear it
