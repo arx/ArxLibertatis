@@ -141,6 +141,12 @@ else(MSVC)
 		add_cxxflag("-Wfloat-conversion") # part of -Wconversion
 		add_cxxflag("-Wstring-conversion") # part of -Wconversion
 		
+		if(SET_NOISY_WARNING_FLAGS OR NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+		   OR NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5)
+			# In older GCC versions this warning is too strict
+			add_cxxflag("-Wshadow")
+		endif()
+		
 		if(SET_NOISY_WARNING_FLAGS OR NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR NOT CMAKE_SIZEOF_VOID_P EQUAL 4)
 			# TODO for some reason this warns in /usr/include/boost/type_traits/alignment_of.hpp for -m32 builds
 			add_cxxflag("-Wduplicated-branches")
@@ -153,7 +159,6 @@ else(MSVC)
 			add_cxxflag("-Wconversion") # very noisy
 			# add_cxxflag("-Wsign-conversion") # part of -Wconversion
 			# add_cxxflag("-Wshorten-64-to-32") # part of -Wconversion
-			add_cxxflag("-Wshadow") # very noisy
 			add_cxxflag("-Wstrict-aliasing=1") # has false positives
 			add_cxxflag("-Wuseless-cast") # has false positives
 			# add_cxxflag("-Wnull-dereference") not that useful without deduction path
