@@ -196,14 +196,14 @@ static void drawDebugPaths() {
 		int n = 0;
 		
 		std::vector<Vec3f> points;
-		for(long i = 0; i < path->nb_pathways; i++) {
+		for(size_t i = 0; i < path->pathways.size(); i++) {
 			const ARX_PATHWAY & node = path->pathways[i];
 			Vec3f pos = path->pos + node.rpos;
 			points.push_back(pos);
 			center += pos, n++;
 			if(node.flag == PATHWAY_BEZIER) {
 				// Interpolate bezier curve by creating linear segments
-				if(i + 2 >= path->nb_pathways) {
+				if(i + 2 >= path->pathways.size()) {
 					break;
 				}
 				const size_t nsegments = 20;

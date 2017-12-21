@@ -80,11 +80,11 @@ static void ARX_PATH_ComputeBB(ARX_PATH * ap) {
 	ap->bbmin = Vec3f(9999999999.f);
 	ap->bbmax = Vec3f(-9999999999.f);
 	
-	for(long i = 0; i < ap->nb_pathways; i++) {
-		ap->bbmin.x = std::min(ap->bbmin.x, ap->pos.x + ap->pathways[i].rpos.x);
-		ap->bbmax.x = std::max(ap->bbmax.x, ap->pos.x + ap->pathways[i].rpos.x);
-		ap->bbmin.z = std::min(ap->bbmin.z, ap->pos.z + ap->pathways[i].rpos.z);
-		ap->bbmax.z = std::max(ap->bbmax.z, ap->pos.z + ap->pathways[i].rpos.z);
+	BOOST_FOREACH(const ARX_PATHWAY & pathway, ap->pathways) {
+		ap->bbmin.x = std::min(ap->bbmin.x, ap->pos.x + pathway.rpos.x);
+		ap->bbmax.x = std::max(ap->bbmax.x, ap->pos.x + pathway.rpos.x);
+		ap->bbmin.z = std::min(ap->bbmin.z, ap->pos.z + pathway.rpos.z);
+		ap->bbmax.z = std::max(ap->bbmax.z, ap->pos.z + pathway.rpos.z);
 	}
 	
 	if(ap->height > 0) {
@@ -117,17 +117,14 @@ long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos)
 		return 0;
 	}
 
-	int i, j, c = 0;
+	int c = 0;
 
 	pos.x -= ap->pos.x;
 	pos.z -= ap->pos.z;
 
-	ARX_PATHWAY * app = ap->pathways;
-
-	for(i = 0, j = ap->nb_pathways - 1; i < ap->nb_pathways; j = i++) {
-		const Vec3f & pi = app[i].rpos;
-		const Vec3f & pj = app[j].rpos;
-
+	for(size_t i = 0, j = ap->pathways.size() - 1; i < ap->pathways.size(); j = i++) {
+		const Vec3f & pi = ap->pathways[i].rpos;
+		const Vec3f & pj = ap->pathways[j].rpos;
 		if(((pi.z <= pos.z && pos.z < pj.z) || (pj.z <= pos.z && pos.z < pi.z))
 		   && (pos.x < (pj.x - pi.x) *(pos.z - pi.z) / (pj.z - pi.z) + pi.x)
 		) {
@@ -347,8 +344,7 @@ ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos)
 	, pos(_pos)
 {
 	flags = 0;
-	nb_pathways = 0;
-	pathways = NULL;
+	pathways.clear();
 	height = 0; // 0 NOT A ZONE
 	
 	rgb = Color3f::black;
@@ -397,8 +393,6 @@ void ARX_PATH_ReleaseAllPath() {
 	
 	for(long i = 0; i < nbARXpaths; i++) {
 		if(ARXpaths[i]) {
-			free(ARXpaths[i]->pathways);
-			ARXpaths[i]->pathways = NULL;
 			delete ARXpaths[i];
 			ARXpaths[i] = NULL;
 		}
@@ -432,10 +426,10 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	}
 	
 	// we start at reference waypoint 0  (time & rpos = 0 for this waypoint).
-	long targetwaypoint = 1;
+	size_t targetwaypoint = 1;
 	aup->aupflags &= ~ARX_USEPATH_FLAG_FINISHED;
 
-	if(ap->pathways) {
+	if(!ap->pathways.empty()) {
 		ap->pathways[0]._time = 0;
 		ap->pathways[0].rpos = Vec3f_ZERO;
 	} else {
@@ -446,7 +440,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	while(tim > 0) {
 		
 		// Path Ended
-		if(targetwaypoint > ap->nb_pathways - 1) {
+		if(targetwaypoint >= ap->pathways.size()) {
 			*pos += ap->pos;
 			aup->aupflags |= ARX_USEPATH_FLAG_FINISHED;
 			return -2;
@@ -462,7 +456,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 				
 				tim = delta;
 				
-				if(targetwaypoint < ap->nb_pathways) {
+				if(targetwaypoint < ap->pathways.size()) {
 					*pos = ap->pathways[targetwaypoint].rpos;
 				}
 				
@@ -470,7 +464,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 				
 			} else {
 				
-				if(targetwaypoint < ap->nb_pathways) {
+				if(targetwaypoint < ap->pathways.size()) {
 					
 					if(ap->pathways[targetwaypoint]._time == 0) {
 						return targetwaypoint - 1;
@@ -492,7 +486,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 				
 				tim = delta;
 				
-				if(targetwaypoint < ap->nb_pathways) {
+				if(targetwaypoint < ap->pathways.size()) {
 					*pos = ap->pathways[targetwaypoint].rpos;
 				}
 				
@@ -500,7 +494,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 				
 			} else {
 				
-				if(targetwaypoint < ap->nb_pathways) {
+				if(targetwaypoint < ap->pathways.size()) {
 					
 					if(ap->pathways[targetwaypoint]._time == 0) {
 						return targetwaypoint - 1;
