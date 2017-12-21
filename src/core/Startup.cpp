@@ -135,7 +135,7 @@ int utf8_main(int argc, char ** argv) {
 	
 	// Setup user, config and data directories
 	if(status == RunProgram) {
-		status = fs::paths.init();
+		status = fs::initSystemPaths();
 	}
 	
 	if(status == RunProgram) {
