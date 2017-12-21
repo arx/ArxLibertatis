@@ -397,11 +397,7 @@ void SecondaryInventoryHud::dropEntity() {
 		
 		if(t.x <= SecondaryInventory->m_size.x - s.x && t.y <= SecondaryInventory->m_size.y - s.y) {
 			
-			float fprice = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f;
-			long price = checked_range_cast<long>(fprice);
-			price *= DRAGINTER->_itemdata->count;
-			fprice = price + price * player.m_skillFull.intuition * 0.005f;
-			price = checked_range_cast<long>(fprice);
+			long price = ARX_INTERACTIVE_GetSellValue(DRAGINTER, io, DRAGINTER->_itemdata->count);
 			
 			for(long j = 0; j < s.y; j++) {
 			for(long i = 0; i < s.x; i++) {
