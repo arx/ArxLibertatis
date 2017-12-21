@@ -334,7 +334,7 @@ bool ArxGame::initConfig() {
 	LogInfo << "Using config file " << configFile;
 	if(!config.init(configFile)) {
 		
-		fs::path file = fs::paths.find("cfg_default.ini");
+		fs::path file = fs::findDataFile("cfg_default.ini");
 		if(!config.init(file)) {
 			LogWarning << "Could not read config files cfg.ini and cfg_default.ini,"
 			           << " using defaults";
@@ -950,10 +950,10 @@ bool ArxGame::addPaks() {
 	// Load required pak files
 	bool missing = false;
 	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
-		if(g_resources->addArchive(fs::paths.find(default_paks[i][0]))) {
+		if(g_resources->addArchive(fs::findDataFile(default_paks[i][0]))) {
 			continue;
 		}
-		if(default_paks[i][1] && g_resources->addArchive(fs::paths.find(default_paks[i][1]))) {
+		if(default_paks[i][1] && g_resources->addArchive(fs::findDataFile(default_paks[i][1]))) {
 			continue;
 		}
 		std::ostringstream oss;

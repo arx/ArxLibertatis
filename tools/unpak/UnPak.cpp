@@ -279,10 +279,10 @@ int utf8_main(int argc, char ** argv) {
 			{ "speech.pak", "speech_default.pak" },
 		};
 		BOOST_FOREACH(const char * const * const filenames, default_paks) {
-			if(resources.addArchive(fs::paths.find(filenames[0]))) {
+			if(resources.addArchive(fs::findDataFile(filenames[0]))) {
 				continue;
 			}
-			if(filenames[1] && resources.addArchive(fs::paths.find(filenames[1]))) {
+			if(filenames[1] && resources.addArchive(fs::findDataFile(filenames[1]))) {
 				continue;
 			}
 			std::ostringstream oss;

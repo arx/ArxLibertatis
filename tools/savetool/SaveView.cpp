@@ -1886,10 +1886,10 @@ int main_view(SaveBlock & save, const std::vector<std::string> & args) {
 	do {
 		// TODO share this list with the game code
 		static const char * const filenames[2] = { "loc.pak", "loc_default.pak" };
-		if(g_resources->addArchive(fs::paths.find(filenames[0]))) {
+		if(g_resources->addArchive(fs::findDataFile(filenames[0]))) {
 			continue;
 		}
-		if(filenames[1] && g_resources->addArchive(fs::paths.find(filenames[1]))) {
+		if(filenames[1] && g_resources->addArchive(fs::findDataFile(filenames[1]))) {
 			continue;
 		}
 		std::ostringstream oss;
