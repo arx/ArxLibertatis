@@ -511,13 +511,13 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 			} else if(io->_itemdata->count > 1) {
 				
 				if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
-					Entity * ioo = CloneIOItem(io);
-					ioo->show = SHOW_FLAG_NOT_DRAWN;
-					ioo->scriptload = 1;
-					ioo->_itemdata->count = 1;
+					Entity * unstackedEntity = CloneIOItem(io);
+					unstackedEntity->show = SHOW_FLAG_NOT_DRAWN;
+					unstackedEntity->scriptload = 1;
+					unstackedEntity->_itemdata->count = 1;
 					io->_itemdata->count--;
 					ARX_SOUND_PlayInterface(SND_INVSTD);
-					Set_DragInter(ioo);
+					Set_DragInter(unstackedEntity);
 					sInventory = 2;
 					
 					Vec2f calc;
@@ -527,9 +527,7 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 					sInventoryPos.x = checked_range_cast<short>(calc.x);
 					sInventoryPos.y = checked_range_cast<short>(calc.y);
 					
-					//ARX_INVENTORY_Object_Out(SecondaryInventory->io, ioo);
-					
-					ARX_INVENTORY_IdentifyIO(ioo);
+					ARX_INVENTORY_IdentifyIO(unstackedEntity);
 					return true;
 				}
 			}
