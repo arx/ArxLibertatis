@@ -294,7 +294,7 @@ bool SaveBlock::loadFileTable() {
 	if(nFiles > (hashMapSize * 3) / 4) {
 		hashMapSize <<= 1;
 	}
-	files.rehash(hashMapSize);
+	m_files.rehash(hashMapSize);
 	
 	if(version == SAV_VERSION_OLD) {
 		char c;
@@ -324,7 +324,7 @@ bool SaveBlock::loadFileTable() {
 			}
 		}
 		
-		File & file = files[name];
+		File & file = m_files[name];
 		
 		if(!file.loadOffsets(m_handle, version)) {
 			return false;
@@ -345,15 +345,15 @@ void SaveBlock::writeFileTable(const std::string & important) {
 	
 	fs::write(m_handle, SAV_VERSION_NOEXT);
 	
-	u32 nFiles = files.size();
+	u32 nFiles = m_files.size();
 	fs::write(m_handle, nFiles);
 	
-	Files::const_iterator ifile = files.find(important);
-	if(ifile != files.end()) {
+	Files::const_iterator ifile = m_files.find(important);
+	if(ifile != m_files.end()) {
 		ifile->second.writeEntry(m_handle, ifile->first);
 	}
 	
-	for(Files::const_iterator file = files.begin(); file != files.end(); ++file) {
+	for(Files::const_iterator file = m_files.begin(); file != m_files.end(); ++file) {
 		if(file != ifile) {
 			file->second.writeEntry(m_handle, file->first);
 		}
@@ -400,7 +400,7 @@ bool SaveBlock::flush(const std::string & important) {
 	arx_assert_msg(important.find_first_of(BADSAVCHAR) == std::string::npos,
 	               "bad save filename: \"%s\"", important.c_str());
 	
-	if((m_usedSize * 2 < m_totalSize || m_chunkCount > (files.size() * 4 / 3))) {
+	if((m_usedSize * 2 < m_totalSize || m_chunkCount > (m_files.size() * 4 / 3))) {
 		defragment();
 	}
 	
@@ -414,7 +414,7 @@ bool SaveBlock::flush(const std::string & important) {
 bool SaveBlock::defragment() {
 	
 	LogDebug("defragmenting " << m_savefile << " save: using " << m_usedSize << " / " << m_totalSize
-	         << " b for " << files.size() << " files in " << m_chunkCount << " chunks");
+	         << " b for " << m_files.size() << " files in " << m_chunkCount << " chunks");
 	
 	fs::path tempFileName = m_savefile;
 	{
@@ -438,7 +438,7 @@ bool SaveBlock::defragment() {
 	size_t checkTotalSize = 0;
 	#endif
 	std::vector<char> buffer;
-	BOOST_FOREACH(const File & file, files | boost::adaptors::map_values) {
+	BOOST_FOREACH(const File & file, m_files | boost::adaptors::map_values) {
 		
 		if(file.storedSize == 0) {
 			continue;
@@ -480,7 +480,7 @@ bool SaveBlock::defragment() {
 	} else {
 		
 		size_t newTotalSize = 0;
-		for(Files::iterator i = files.begin(); i != files.end(); ++i) {
+		for(Files::iterator i = m_files.begin(); i != m_files.end(); ++i) {
 			File & file = i->second;
 			if(file.storedSize != 0) {
 				file.chunks.resize(1);
@@ -492,19 +492,19 @@ bool SaveBlock::defragment() {
 		arx_assert(checkTotalSize == newTotalSize);
 		
 		m_usedSize = m_totalSize = newTotalSize;
-		m_chunkCount = files.size();
+		m_chunkCount = m_files.size();
 		
 	}
 	
 	m_handle.open(m_savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary | fs::fstream::ate);
 	if(!m_handle.is_open()) {
-		files.clear();
+		m_files.clear();
 		LogError << "Failed to open defragmented save file: " << m_savefile;
 		return false;
 	}
 	
 	if(m_handle.tellg() < fs::fstream::pos_type(m_totalSize + 4)) {
-		files.clear();
+		m_files.clear();
 		m_handle.close();
 		LogError << "Save file corrupted after defragmenting: " << m_savefile;
 		return false;
@@ -522,7 +522,7 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 	arx_assert_msg(name.find_first_of(BADSAVCHAR) == std::string::npos,
 	               "bad save filename: \"%s\"", name.c_str());
 	
-	File * file = &files[name];
+	File * file = &m_files[name];
 	
 	file->uncompressedSize = size;
 	
@@ -581,7 +581,7 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 }
 
 void SaveBlock::remove(const std::string & name) {
-	files.erase(name);
+	m_files.erase(name);
 }
 
 char * SaveBlock::load(const std::string & name, size_t & size) {
@@ -589,22 +589,22 @@ char * SaveBlock::load(const std::string & name, size_t & size) {
 	arx_assert_msg(name.find_first_of(BADSAVCHAR) == std::string::npos,
 	               "bad save filename: \"%s\"", name.c_str());
 	
-	Files::const_iterator file = files.find(name);
+	Files::const_iterator file = m_files.find(name);
 	
-	return (file == files.end()) ? NULL : file->second.loadData(m_handle, size, name);
+	return (file == m_files.end()) ? NULL : file->second.loadData(m_handle, size, name);
 }
 
 bool SaveBlock::hasFile(const std::string & name) const {
 	arx_assert_msg(name.find_first_of(BADSAVCHAR) == std::string::npos,
 	               "bad save filename: \"%s\"", name.c_str());
-	return (files.find(name) != files.end());
+	return (m_files.find(name) != m_files.end());
 }
 
 std::vector<std::string> SaveBlock::getFiles() const {
 	
 	std::vector<std::string> result;
 	
-	for(Files::const_iterator file = files.begin(); file != files.end(); ++file) {
+	for(Files::const_iterator file = m_files.begin(); file != m_files.end(); ++file) {
 		result.push_back(file->first);
 	}
 	

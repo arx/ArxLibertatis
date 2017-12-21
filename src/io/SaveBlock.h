@@ -104,7 +104,7 @@ private:
 	size_t m_totalSize;
 	size_t m_usedSize;
 	size_t m_chunkCount;
-	Files files;
+	Files m_files;
 	
 	bool defragment();
 	bool loadFileTable();
