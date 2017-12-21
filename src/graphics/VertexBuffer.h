@@ -41,7 +41,7 @@ class IndexBuffer : private boost::noncopyable {
 	
 public:
 	
-	size_t capacity() const { return _capacity; }
+	size_t capacity() const { return m_capacity; }
 	
 	virtual void setData(const Index * vertices, size_t count, size_t offset = 0, BufferFlags flags = 0) = 0;
 	
@@ -52,9 +52,10 @@ public:
 	
 protected:
 
-	explicit IndexBuffer(size_t capacity) : _capacity(capacity) { }
+	explicit IndexBuffer(size_t capacity) : m_capacity(capacity) { }
 	
-	const size_t _capacity;
+	const size_t m_capacity;
+	
 };
 
 template <class Vertex>
@@ -62,7 +63,7 @@ class VertexBuffer : private boost::noncopyable {
 	
 public:
 	
-	size_t capacity() const { return _capacity; }
+	size_t capacity() const { return m_capacity; }
 	
 	virtual void setData(const Vertex * vertices, size_t count, size_t offset = 0, BufferFlags flags = 0) = 0;
 	
@@ -76,9 +77,10 @@ public:
 	
 protected:
 	
-	explicit VertexBuffer(size_t capacity) : _capacity(capacity) { }
+	explicit VertexBuffer(size_t capacity) : m_capacity(capacity) { }
 	
-	const size_t _capacity;
+	const size_t m_capacity;
+	
 };
 
 template <class Vertex>
