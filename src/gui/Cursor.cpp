@@ -299,7 +299,6 @@ bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 			}
 		} else {
 			if(glm::abs(lastanything) > std::min(glm::abs(height), 12.0f)) {
-				Entity * io = DRAGINTER;
 				ARX_PLAYER_Remove_Invisibility();
 				io->obj->pbox->active = 1;
 				io->obj->pbox->stopcount = 0;
