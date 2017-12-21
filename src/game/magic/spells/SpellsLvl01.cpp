@@ -346,8 +346,7 @@ void IgnitSpell::Launch() {
 		m_srcPos = m_caster_pos - Vec3f(0.f, 50.f, 0.f);
 	}
 	
-	EERIE_LIGHT * light = dynLightCreate();
-	if(light) {
+	if(EERIE_LIGHT * light = dynLightCreate()) {
 		light->intensity = 1.8f;
 		light->fallend   = 450.f;
 		light->fallstart = 380.f;
