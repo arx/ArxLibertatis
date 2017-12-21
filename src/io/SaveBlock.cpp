@@ -253,7 +253,7 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 
 SaveBlock::SaveBlock(const fs::path & savefile)
 	: m_savefile(savefile)
-	, totalSize(0)
+	, m_totalSize(0)
 	, usedSize(0)
 	, chunkCount(0)
 { }
@@ -272,7 +272,7 @@ bool SaveBlock::loadFileTable() {
 		LogError << "Cannot seek to FAT";
 		return false;
 	}
-	totalSize = fatOffset;
+	m_totalSize = fatOffset;
 	
 	u32 version;
 	if(fs::read(m_handle, version).fail()) {
@@ -340,7 +340,7 @@ void SaveBlock::writeFileTable(const std::string & important) {
 	
 	LogDebug("writeFileTable " << m_savefile);
 	
-	u32 fatOffset = totalSize;
+	u32 fatOffset = m_totalSize;
 	m_handle.seekp(fatOffset + 4);
 	
 	fs::write(m_handle, SAV_VERSION_NOEXT);
@@ -400,7 +400,7 @@ bool SaveBlock::flush(const std::string & important) {
 	arx_assert_msg(important.find_first_of(BADSAVCHAR) == std::string::npos,
 	               "bad save filename: \"%s\"", important.c_str());
 	
-	if((usedSize * 2 < totalSize || chunkCount > (files.size() * 4 / 3))) {
+	if((usedSize * 2 < m_totalSize || chunkCount > (files.size() * 4 / 3))) {
 		defragment();
 	}
 	
@@ -413,7 +413,7 @@ bool SaveBlock::flush(const std::string & important) {
 
 bool SaveBlock::defragment() {
 	
-	LogDebug("defragmenting " << m_savefile << " save: using " << usedSize << " / " << totalSize
+	LogDebug("defragmenting " << m_savefile << " save: using " << usedSize << " / " << m_totalSize
 	         << " b for " << files.size() << " files in " << chunkCount << " chunks");
 	
 	fs::path tempFileName = m_savefile;
@@ -491,7 +491,7 @@ bool SaveBlock::defragment() {
 		}
 		arx_assert(checkTotalSize == newTotalSize);
 		
-		usedSize = totalSize = newTotalSize;
+		usedSize = m_totalSize = newTotalSize;
 		chunkCount = files.size();
 		
 	}
@@ -503,7 +503,7 @@ bool SaveBlock::defragment() {
 		return false;
 	}
 	
-	if(m_handle.tellg() < fs::fstream::pos_type(totalSize + 4)) {
+	if(m_handle.tellg() < fs::fstream::pos_type(m_totalSize + 4)) {
 		files.clear();
 		m_handle.close();
 		LogError << "Save file corrupted after defragmenting: " << m_savefile;
@@ -570,10 +570,10 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 		}
 	}
 	
-	file->chunks.push_back(File::Chunk(remaining, totalSize));
-	m_handle.seekp(totalSize + 4);
+	file->chunks.push_back(File::Chunk(remaining, m_totalSize));
+	m_handle.seekp(m_totalSize + 4);
 	m_handle.write(p, remaining);
-	totalSize += remaining, usedSize += remaining, chunkCount++;
+	m_totalSize += remaining, usedSize += remaining, chunkCount++;
 	
 	delete[] compressed;
 	
