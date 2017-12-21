@@ -708,16 +708,15 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 								for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
 									float cx = 0;
 									float cz = 0;
-
+									
 									for(long idx = 0 ; idx < 3 ; idx++) {
 										ep.v[idx].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[idx]].v;
-
 										cx += ep.v[idx].p.x;
 										cz += ep.v[idx].p.z;
 									}
-
-									cx *= ( 1.0f / 3 );
-									cz *= ( 1.0f / 3 );
+									
+									cx *= 1.0f / 3;
+									cz *= 1.0f / 3;
 									
 									for(int k = 0; k < 3; k++) {
 										ep.v[k].p.x = (ep.v[k].p.x - cx) * 3.5f + cx;
