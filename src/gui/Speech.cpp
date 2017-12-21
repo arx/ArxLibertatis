@@ -305,25 +305,25 @@ void ARX_SPEECH_Reset() {
 	}
 }
 
-void ARX_SPEECH_ClearIOSpeech(Entity * io) {
+void ARX_SPEECH_ClearIOSpeech(Entity * entity) {
 	
-	if(!io) {
+	if(!entity) {
 		return;
 	}
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		
-		if(!aspeech[i].exist || aspeech[i].io != io) {
+		if(!aspeech[i].exist || aspeech[i].io != entity) {
 			continue;
 		}
 		
 		EERIE_SCRIPT * es = aspeech[i].es;
-		Entity * io = aspeech[i].ioscript;
+		Entity * scriptEntity = aspeech[i].ioscript;
 		long scrpos = aspeech[i].scrpos;
 		ARX_SPEECH_Release(i);
 		
-		if(es && ValidIOAddress(io)) {
-			ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
+		if(es && ValidIOAddress(scriptEntity)) {
+			ScriptEvent::send(es, SM_EXECUTELINE, "", scriptEntity, "", scrpos);
 		}
 	}
 }
