@@ -587,9 +587,11 @@ void ScriptConsole::draw() {
 	Color selection = Color::yellow;
 	selection.a = 40;
 	
-	Rectf box = Rectf(g_size);
-	box.bottom = box.top + (m_buffer.lines() + 1) * hFontDebug->getLineHeight() + 4;
-	EERIEDrawBitmap(box, 0.f, NULL, background);
+	{
+		Rectf box = Rectf(g_size);
+		box.bottom = box.top + (m_buffer.lines() + 1) * hFontDebug->getLineHeight() + 4;
+		EERIEDrawBitmap(box, 0.f, NULL, background);
+	}
 	
 	Vec2i pos = Vec2i_ZERO;
 	for(size_t i = 0; i < m_buffer.lines(); i++) {
