@@ -74,7 +74,7 @@ struct SystemPaths {
 		
 	};
 	
-	path user; //!< Directory for saves and user-specific data files
+	path m_userDir; //!< Directory for saves and user-specific data files
 	path config; //!< Directory for config files
 	std::vector<path> data; //!< Directories for data files
 	
@@ -253,8 +253,8 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	std::vector<path> result;
 	
 	// Use the user diretcory as the highest-priority data directory
-	if(!user.empty() && addSearchRoot(result, user, filter)) {
-		LogDebug("got data dir from user dir: " << user);
+	if(!m_userDir.empty() && addSearchRoot(result, m_userDir, filter)) {
+		LogDebug("got data dir from user dir: " << m_userDir);
 	}
 	
 	// Use paths specifed on the command-line
@@ -343,11 +343,11 @@ SystemPaths::InitParams cmdLineInitParams;
 
 ExitStatus SystemPaths::init(const InitParams & initParams) {
 	
-	user = findUserPath("user", initParams.forceUser, "UserDir", platform::UserDirPrefixes,
-	                    user_dir_prefixes, user_dir, current_path(), !initParams.displaySearchDirs);
+	m_userDir = findUserPath("user", initParams.forceUser, "UserDir", platform::UserDirPrefixes,
+	                         user_dir_prefixes, user_dir, current_path(), !initParams.displaySearchDirs);
 	
 	config = findUserPath("config", initParams.forceConfig, "ConfigDir", platform::NoPath,
-	                      config_dir_prefixes, config_dir, user, !initParams.displaySearchDirs);
+	                      config_dir_prefixes, config_dir, m_userDir, !initParams.displaySearchDirs);
 	
 	addData_ = initParams.dataDirs;
 	
@@ -362,7 +362,7 @@ ExitStatus SystemPaths::init(const InitParams & initParams) {
 		                " only without --no-data-dir (-n): \n");
 		std::cout << std::endl;
 		return ExitSuccess;
-	} else if(user.empty() || config.empty()) {
+	} else if(m_userDir.empty() || config.empty()) {
 		LogCritical << "Could not select user or config directory.";
 		return ExitFailure;
 	}
@@ -443,10 +443,10 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 	listDirectoriesFor(os, "UserDir", platform::UserDirPrefixes, user_dir_prefixes, user_dir);
 	os << " - Current working directory\n";
 	os << "selected: ";
-	if(user.empty()) {
+	if(m_userDir.empty()) {
 		os << "(none)\n";
 	} else {
-		os << user << '\n';
+		os << m_userDir << '\n';
 	}
 	
 	os << "\nConfig directories (select first existing):\n";
@@ -493,7 +493,7 @@ ExitStatus initSystemPaths() {
 }
 
 const fs::path & getUserDir() {
-	return g_systemPaths.user;
+	return g_systemPaths.m_userDir;
 }
 
 const fs::path & getConfigDir() {
