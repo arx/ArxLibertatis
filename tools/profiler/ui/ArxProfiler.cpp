@@ -21,6 +21,7 @@
 
 #include "ui_ArxProfiler.h"
 
+#include <algorithm>
 #include <limits>
 
 #include <boost/foreach.hpp>
@@ -243,19 +244,10 @@ void ProfilerView::setData(ThreadsData * data) {
 	
 	qint64 firstTimestamp = std::numeric_limits<qint64>::max();
 	qint64 lastTimestamp = std::numeric_limits<qint64>::min();
-	
 	BOOST_FOREACH(const ThreadsData::value_type & entry, *data) {
-		
-		if(entry.second.profilePoints.empty()) {
-			continue;
-		}
-		
-		if(firstTimestamp > entry.second.profilePoints[0].startTime) {
-			firstTimestamp = entry.second.profilePoints[0].startTime;
-		}
-		
-		if(lastTimestamp < entry.second.profilePoints.back().endTime) {
-			lastTimestamp = entry.second.profilePoints.back().endTime;
+		if(!entry.second.profilePoints.empty()) {
+			firstTimestamp = std::min(firstTimestamp, entry.second.profilePoints[0].startTime);
+			lastTimestamp = std::max(lastTimestamp, entry.second.profilePoints.back().endTime);
 		}
 	}
 	
