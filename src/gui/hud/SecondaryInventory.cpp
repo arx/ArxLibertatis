@@ -499,13 +499,13 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 				player.gold -= cos;
 				
 				if(io->_itemdata->count > 1) {
-					Entity * ioo = CloneIOItem(io);
-					ioo->show = SHOW_FLAG_NOT_DRAWN;
-					ioo->scriptload = 1;
-					ioo->_itemdata->count = 1;
+					Entity * unstackedEntity = CloneIOItem(io);
+					unstackedEntity->show = SHOW_FLAG_NOT_DRAWN;
+					unstackedEntity->scriptload = 1;
+					unstackedEntity->_itemdata->count = 1;
 					io->_itemdata->count--;
 					ARX_SOUND_PlayInterface(SND_INVSTD);
-					Set_DragInter(ioo);
+					Set_DragInter(unstackedEntity);
 					return true;
 				}
 			} else if(io->_itemdata->count > 1) {
