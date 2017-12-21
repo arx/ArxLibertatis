@@ -222,7 +222,7 @@ private:
 	 */
 	glyph_iterator getNextGlyph(text_iterator & it, text_iterator end);
 	
-	class PackedTexture * textures;
+	class PackedTexture * m_textures;
 	
 };
 
