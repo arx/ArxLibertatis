@@ -2061,23 +2061,24 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				continue;
 			}
 			
-			res::path path = res::path::load(util::loadString(ais->anims[i]));
+			res::path animPath = res::path::load(util::loadString(ais->anims[i]));
 			
-			io->anims[i] = EERIE_ANIMMANAGER_Load(path);
+			io->anims[i] = EERIE_ANIMMANAGER_Load(animPath);
 			if(io->anims[i]) {
 				continue;
 			}
 			
 			if(io->ioflags & IO_NPC) {
-				path = res::path("graph/obj3d/anims/npc") / path.filename();
+				animPath = res::path("graph/obj3d/anims/npc") / animPath.filename();
 			} else {
-				path = res::path("graph/obj3d/anims/fix_inter") / path.filename();
+				animPath = res::path("graph/obj3d/anims/fix_inter") / animPath.filename();
 			}
 			
-			io->anims[i] = EERIE_ANIMMANAGER_Load(path);
+			io->anims[i] = EERIE_ANIMMANAGER_Load(animPath);
 			if(!io->anims[i]) {
-				LogWarning << "Error loading animation " << path;
+				LogWarning << "Error loading animation " << animPath;
 			}
+			
 		}
 		
 		io->spellcast_data = ais->spellcast_data;
