@@ -39,13 +39,80 @@
 
 namespace fs {
 
+namespace {
+
+//! Locations where files are stored on the system
+struct SystemPaths {
+	
+	struct InitParams {
+		
+		/*!
+		 * \brief An overwrite value to use for the user dir
+		 * If this is non-empty, standard search is skipped.
+		 * If this does not exists, the user dir is left empty.
+		 */
+		path forceUser;
+		
+		/*!
+		 * \brief An overwrite value to use for the config dir
+		 * If this is non-empty, standard search is skipped.
+		 * If this does not exists, the config dir is left empty.
+		 */
+		path forceConfig;
+		
+		/*!
+		 * \brief Additional values for the data search path
+		 * Will have higher priority than other system paths, but
+		 * higher lower priority than the user dir. 
+		 */
+		std::vector<path> dataDirs;
+		
+		bool findData;
+		bool displaySearchDirs;
+		
+		InitParams() : findData(true), displaySearchDirs(false) {}
+		
+	};
+	
+	path user; //!< Directory for saves and user-specific data files
+	path config; //!< Directory for config files
+	std::vector<path> data; //!< Directories for data files
+	
+	/*!
+	 * \brief Initialize the system resource paths using the specified parameters
+	 *
+	 * \note This version of \ref init() will ignore arguments provided on the
+	 *       command line.
+	 */
+	ExitStatus init(const InitParams & initParams);
+	
+	/*!
+	 * \brief Get a list of all data search paths
+	 *
+	 * \param filterMissing exclude non-existant search directories.
+	 */
+	std::vector<path> getSearchPaths(bool filterMissing) const;
+	
+	SystemPaths();
+	
+private:
+	
+	void list(std::ostream & os, const std::string & forceUser = std::string(),
+	          const std::string & forceConfig = std::string(),
+	          const std::string & forceData = std::string());
+	
+	std::vector<path> addData_;
+	bool findData_;
+	
+};
+
 SystemPaths paths;
 
-static path canonical(const fs::path & path) {
+path canonical(const fs::path & path) {
 	return path.is_absolute() ? path : current_path() / path;
 }
 
-static std::vector<path> getSearchPaths(const char * input) {
+std::vector<path> getSearchPaths(const char * input) {
 	
 	std::vector<path> result;
 	
@@ -60,10 +127,10 @@ static std::vector<path> getSearchPaths(const char * input) {
 	return result;
 }
 
-static path findUserPath(const char * name, const path & force,
-                         const char * registry, platform::SystemPathId systemPathId,
-                         const char * prefix, const char * suffix,
-                         const path & fallback, bool create) {
+path findUserPath(const char * name, const path & force,
+                  const char * registry, platform::SystemPathId systemPathId,
+                  const char * prefix, const char * suffix,
+                  const path & fallback, bool create) {
 	
 	// Prefer command-line options
 	if(!force.empty()) {
@@ -139,7 +206,7 @@ static path findUserPath(const char * name, const path & force,
 	return fallback;
 }
 
-static bool addSearchPath(std::vector<path> & result, const path & dir, bool filter) {
+bool addSearchPath(std::vector<path> & result, const path & dir, bool filter) {
 	
 	if(filter && !is_directory(dir)) {
 		return false;
@@ -153,7 +220,7 @@ static bool addSearchPath(std::vector<path> & result, const path & dir, bool fil
 	return true;
 }
 
-static bool addSearchRoot(std::vector<path> & result, const path & dir, bool filter) {
+bool addSearchRoot(std::vector<path> & result, const path & dir, bool filter) {
 	
 	// Add "data" subdirectory or dirs referenced in "data" file
 	fs::path subdir = dir / "data";
@@ -175,7 +242,7 @@ static bool addSearchRoot(std::vector<path> & result, const path & dir, bool fil
 	return addSearchPath(result, dir, filter);
 }
 
-static std::string getSearchPathVar(const path & exepath) {
+std::string getSearchPathVar(const path & exepath) {
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	return "%" + boost::to_upper_copy(exepath.basename()) + "_PATH%";
 	#else
@@ -274,7 +341,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	return result;
 }
 
-static SystemPaths::InitParams cmdLineInitParams;
+SystemPaths::InitParams cmdLineInitParams;
 
 ExitStatus SystemPaths::init(const InitParams & initParams) {
 	
@@ -309,7 +376,7 @@ SystemPaths::SystemPaths()
 	: findData_(true)
 {}
 
-static void listDirectoriesFor(std::ostream & os, const std::string & regKey,
+void listDirectoriesFor(std::ostream & os, const std::string & regKey,
                                platform::SystemPathId systemPathId,
                                const char * prefixVar = NULL,
                                const char * suffixVar = NULL) {
@@ -418,6 +485,8 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 		}
 	}
 }
+
+} // anonymous namespace
 
 ExitStatus initSystemPaths() {
 	return paths.init(cmdLineInitParams);
