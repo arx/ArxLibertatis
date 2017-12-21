@@ -416,18 +416,19 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 	
 	CheckForIgnition(Sphere(original_pos, 10.f), false, 2);
 	
-	Vec3f wpos = projectile.position;
-	wpos.y += 20.f;
-	EERIEPOLY * ep = EEIsUnderWater(wpos);
-	
-	if(projectile.flags & ATO_UNDERWATER) {
-		if(!ep) {
-			projectile.flags &= ~ATO_UNDERWATER;
+	{
+		Vec3f wpos = projectile.position;
+		wpos.y += 20.f;
+		EERIEPOLY * ep = EEIsUnderWater(wpos);
+		if(projectile.flags & ATO_UNDERWATER) {
+			if(!ep) {
+				projectile.flags &= ~ATO_UNDERWATER;
+				ARX_SOUND_PlaySFX(SND_PLOUF, &projectile.position);
+			}
+		} else if(ep) {
+			projectile.flags |= ATO_UNDERWATER;
 			ARX_SOUND_PlaySFX(SND_PLOUF, &projectile.position);
 		}
-	} else if(ep) {
-		projectile.flags |= ATO_UNDERWATER;
-		ARX_SOUND_PlaySFX(SND_PLOUF, &projectile.position);
 	}
 	
 	// Check for collision MUST be done after DRAWING !!!!
