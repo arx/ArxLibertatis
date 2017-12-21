@@ -35,10 +35,10 @@ struct TestRotation {
 	Anglef angle;
 	glm::mat3 mat;
 	
-	TestRotation(glm::quat quat, Anglef angle, glm::mat3 mat)
-		: quat(quat)
-		, angle(angle)
-		, mat(mat)
+	TestRotation(glm::quat quat_, Anglef angle_, glm::mat3 mat_)
+		: quat(quat_)
+		, angle(angle_)
+		, mat(mat_)
 	{}
 };
 
