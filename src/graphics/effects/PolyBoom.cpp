@@ -207,12 +207,10 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 		break;
 	}
 	
-	
 	float py;
-	EERIEPOLY *ep = CheckInPoly(poss + Vec3f(0.f, -40, 0.f), &py);
-	
-	if(!ep)
+	if(!CheckInPoly(poss + Vec3f(0.f, -40, 0.f), &py)) {
 		return;
+	}
 	
 	if(flags & 1)
 		py = poss.y;
