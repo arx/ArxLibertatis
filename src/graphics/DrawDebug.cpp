@@ -869,17 +869,19 @@ static void drawDebugMaterials() {
 
 
 struct DebugRay {
+	
 	Vec3f start;
 	Vec3f dir;
 	Color color;
 	PlatformInstant expiration;
 	
-	DebugRay(Vec3f start, Vec3f dir, Color color, PlatformInstant expiration)
-		: start(start)
-		, dir(dir)
-		, color(color)
-		, expiration(expiration)
-	{}
+	DebugRay(Vec3f start_, Vec3f dir_, Color color_, PlatformInstant expiration_)
+		: start(start_)
+		, dir(dir_)
+		, color(color_)
+		, expiration(expiration_)
+	{ }
+	
 };
 
 static std::vector<DebugRay> debugRays;
