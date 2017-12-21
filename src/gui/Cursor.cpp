@@ -685,24 +685,27 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 						pos = MemoMouse;
 					}
 					
-					Vec2f size = Vec2f(tc->m_size) * iconScale;
-					Rectf rect(pos, size.x, size.y);
-					
-					if(haloTc) {
-						ARX_INTERFACE_HALO_Render(DRAGINTER->halo.color, DRAGINTER->halo.flags, haloTc, pos, Vec2f(iconScale));
-					}
-					
-					if(!(DRAGINTER->ioflags & IO_MOVABLE)) {
-						EERIEDrawBitmap(rect, .00001f, tc, color);
+					{
+						Vec2f size = Vec2f(tc->m_size) * iconScale;
+						Rectf rect(pos, size.x, size.y);
 						
-						if((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count != 1) {
-							Vec2f nuberOffset = Vec2f(2.f, 13.f) * iconScale;
-							ARX_INTERFACE_DrawNumber(pos + nuberOffset, DRAGINTER->_itemdata->count, 3, Color::white, 1.f);
+						if(haloTc) {
+							ARX_INTERFACE_HALO_Render(DRAGINTER->halo.color, DRAGINTER->halo.flags, haloTc, pos, Vec2f(iconScale));
 						}
-					} else {
-						if((InInventoryPos(DANAEMouse) || g_secondaryInventoryHud.containsPos(DANAEMouse)) || CANNOT_PUT_IT_HERE != EntityMoveCursor_Throw) {
+						
+						if(!(DRAGINTER->ioflags & IO_MOVABLE)) {
 							EERIEDrawBitmap(rect, .00001f, tc, color);
+							
+							if((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count != 1) {
+								Vec2f nuberOffset = Vec2f(2.f, 13.f) * iconScale;
+								ARX_INTERFACE_DrawNumber(pos + nuberOffset, DRAGINTER->_itemdata->count, 3, Color::white, 1.f);
+							}
+						} else {
+							if((InInventoryPos(DANAEMouse) || g_secondaryInventoryHud.containsPos(DANAEMouse)) || CANNOT_PUT_IT_HERE != EntityMoveCursor_Throw) {
+								EERIEDrawBitmap(rect, .00001f, tc, color);
+							}
 						}
+						
 					}
 					
 					//cross not over inventory icon
