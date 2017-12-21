@@ -423,7 +423,7 @@ int main_fix(SaveBlock & save, const std::vector<std::string> & args) {
 		LogError << "Missing required data file: \"" << filename << "\"";
 		return 3;
 	}
-	BOOST_REVERSE_FOREACH(const fs::path & base, fs::paths.data) {
+	BOOST_REVERSE_FOREACH(const fs::path & base, fs::getDataDirs()) {
 		const char * dirname = "graph";
 		g_resources->addFiles(base / dirname, dirname);
 	}
