@@ -670,8 +670,7 @@ void InitBkg(BackgroundData * eb, short sx, short sz, Vec2s tileSize) {
 	}
 
 	eb->exist = 1;
-	eb->anchors = NULL;
-	eb->nbanchors = 0;
+	eb->m_anchors.clear();
 	eb->m_size.x = sx;
 	eb->m_size.y = sz;
 
@@ -1139,19 +1138,12 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	
 	// Load anchor links
 	LogDebug("FTS: loading " << fsh->nb_anchors << " anchors ...");
-	ACTIVEBKG->nbanchors = fsh->nb_anchors;
-	if(fsh->nb_anchors > 0) {
-		size_t anchorsize = sizeof(ANCHOR_DATA) * fsh->nb_anchors;
-		ACTIVEBKG->anchors = (ANCHOR_DATA *)malloc(anchorsize);
-		memset(ACTIVEBKG->anchors, 0, anchorsize);
-	} else {
-		ACTIVEBKG->anchors = NULL;
-	}
+	ACTIVEBKG->m_anchors.resize(fsh->nb_anchors);
 	for(long i = 0; i < fsh->nb_anchors; i++) {
 		
 		const FAST_ANCHOR_DATA * fad = fts_read<FAST_ANCHOR_DATA>(data, end);
 		
-		ANCHOR_DATA & anchor = ACTIVEBKG->anchors[i];
+		ANCHOR_DATA & anchor = ACTIVEBKG->m_anchors[i];
 		anchor.flags = AnchorFlags::load(fad->flags); // TODO save/load flags
 		anchor.pos = fad->pos.toVec3();
 		anchor.nblinked = fad->nb_linked;

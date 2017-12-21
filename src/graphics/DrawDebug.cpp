@@ -266,21 +266,21 @@ static void drawDebugPathFinding() {
 	
 	UseRenderState state(RenderState().depthTest(true));
 	
-	if(!ACTIVEBKG || !ACTIVEBKG->anchors) {
+	if(!ACTIVEBKG) {
 		return;
 	}
 	
 	const float zbias = 0.00001f;
 	
-	for(long i = 0; i < ACTIVEBKG->nbanchors; i++) {
+	for(size_t i = 0; i < ACTIVEBKG->m_anchors.size(); i++) {
 		
-		const ANCHOR_DATA & node = ACTIVEBKG->anchors[i];
+		const ANCHOR_DATA & node = ACTIVEBKG->m_anchors[i];
 		
 		Color color1 = (node.flags & ANCHOR_FLAG_BLOCKED) ? Color::blue : Color::green;
 		for(long j = 0; j < node.nblinked; j++) {
 			long k = node.linked[j];
-			if(k >= 0 && k < ACTIVEBKG->nbanchors && i < k) {
-				const ANCHOR_DATA & other = ACTIVEBKG->anchors[k];
+			if(k >= 0 && size_t(k) < ACTIVEBKG->m_anchors.size() && i < size_t(k)) {
+				const ANCHOR_DATA & other = ACTIVEBKG->m_anchors[k];
 				Color color2 = (other.flags & ANCHOR_FLAG_BLOCKED) ? Color::blue : Color::green;
 				drawLine(node.pos, other.pos, color1, color2, zbias);
 			}
@@ -309,8 +309,9 @@ static void drawDebugPathFinding() {
 		// Draw visited nodes yellow and target nodes as red
 		for(long j = 1; j < pathfind.listnb; j++) {
 			short k0 = pathfind.list[j - 1], k1 = pathfind.list[j];
-			if(k0 >= 0 && k0 < ACTIVEBKG->nbanchors && k1 >= 0 && k1 < ACTIVEBKG->nbanchors) {
-				const ANCHOR_DATA & n0 = ACTIVEBKG->anchors[k0], & n1 = ACTIVEBKG->anchors[k1];
+			if(k0 >= 0 && size_t(k0) < ACTIVEBKG->m_anchors.size()
+			   && k1 >= 0 && size_t(k1) < ACTIVEBKG->m_anchors.size()) {
+				const ANCHOR_DATA & n0 = ACTIVEBKG->m_anchors[k0], & n1 = ACTIVEBKG->m_anchors[k1];
 				Color color0 = (j     <= pathfind.listpos) ? Color::yellow : Color::red;
 				Color color1 = (j + 1 <= pathfind.listpos) ? Color::yellow : Color::red;
 				drawLine(n0.pos, n1.pos, color0, color1, 2.f * zbias);
@@ -319,22 +320,22 @@ static void drawDebugPathFinding() {
 		
 		// Highlight end nodes
 		short k0 = pathfind.list[pathfind.listnb - 1];
-		if(k0 >= 0 && k0 < ACTIVEBKG->nbanchors) {
+		if(k0 >= 0 && size_t(k0) < ACTIVEBKG->m_anchors.size()) {
 			Anglef angle(0.f, 0.f, 0.f);
 			Vec3f scale(0.5f);
 			RenderMaterial mat;
 			mat.setBlendType(RenderMaterial::Opaque);
 			mat.setDepthTest(true);
 			
-			Draw3DObject(g_nodeObject, angle, ACTIVEBKG->anchors[k0].pos, scale, Color3f::white, mat);
+			Draw3DObject(g_nodeObject, angle, ACTIVEBKG->m_anchors[k0].pos, scale, Color3f::white, mat);
 		}
 		
 		// Show entity ID at the active node
 		if(pathfind.listpos < pathfind.listnb) {
 			short k1 = pathfind.list[pathfind.listpos];
-			if(k1 >= 0 && k1 < ACTIVEBKG->nbanchors) {
-				if(closerThan(ACTIVEBKG->anchors[k1].pos, player.pos, DebugTextMaxDistance)) {
-					drawTextAt(hFontDebug, ACTIVEBKG->anchors[k1].pos, entity->idString());
+			if(k1 >= 0 && size_t(k1) < ACTIVEBKG->m_anchors.size()) {
+				if(closerThan(ACTIVEBKG->m_anchors[k1].pos, player.pos, DebugTextMaxDistance)) {
+					drawTextAt(hFontDebug, ACTIVEBKG->m_anchors[k1].pos, entity->idString());
 				}
 			}
 		}

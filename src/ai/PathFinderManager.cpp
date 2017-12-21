@@ -135,7 +135,7 @@ void PathFinderThread::queueRequest(const PATHFINDER_REQUEST & request) {
 void PathFinderThread::run() {
 	
 	BackgroundData * eb = ACTIVEBKG;
-	PathFinder pathfinder(eb->nbanchors, eb->anchors, g_staticLightsMax, (EERIE_LIGHT **)g_staticLights);
+	PathFinder pathfinder(eb->m_anchors.size(), &eb->m_anchors[0], g_staticLightsMax, (EERIE_LIGHT **)g_staticLights);
 	
 	for(; !isStopRequested(); m_busy = false, sleep(PATHFINDER_UPDATE_INTERVAL)) {
 		
@@ -161,7 +161,7 @@ void PathFinderThread::run() {
 		
 		float distance;
 		if(request.entity->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_GO_HOME)) {
-			distance = fdist(ACTIVEBKG->anchors[request.from].pos, ACTIVEBKG->anchors[request.to].pos);
+			distance = fdist(ACTIVEBKG->m_anchors[request.from].pos, ACTIVEBKG->m_anchors[request.to].pos);
 		} else if(request.entity->_npcdata->behavior & (BEHAVIOUR_WANDER_AROUND | BEHAVIOUR_FLEE | BEHAVIOUR_HIDE)) {
 			distance = request.entity->_npcdata->behavior_param;
 		} else if(request.entity->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
