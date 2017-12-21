@@ -749,7 +749,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 			arx_assert(surf);
 			
 			
-			UseRenderState state(render2D().blendAdditive());
+			UseRenderState additeState(render2D().blendAdditive());
 			
 			Vec2f pos = Vec2f(g_size.center()) - Vec2f(surf->m_size) * .5f;
 			
