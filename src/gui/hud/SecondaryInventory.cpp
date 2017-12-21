@@ -351,8 +351,11 @@ Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 
 void SecondaryInventoryHud::dropEntity() {
 	
+	if(!SecondaryInventory || !g_secondaryInventoryHud.containsPos(DANAEMouse)) {
+		return;
+	}
+	
 	// First Look for Identical Item...
-	if(SecondaryInventory && g_secondaryInventoryHud.containsPos(DANAEMouse)) {
 		Entity * io = SecondaryInventory->io;
 		
 		// SHOP
@@ -465,7 +468,7 @@ void SecondaryInventoryHud::dropEntity() {
 			Set_DragInter(NULL);
 			return;
 		}
-	}
+	
 }
 
 // TODO global sInventory
