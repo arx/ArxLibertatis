@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AI_ANCHORS_H
 #define ARX_AI_ANCHORS_H
 
+#include <vector>
+
 #include "math/Vector.h"
 #include "util/Flags.h"
 
@@ -61,21 +63,20 @@ DECLARE_FLAGS(AnchorFlag, AnchorFlags)
 DECLARE_FLAGS_OPERATORS(AnchorFlags)
 
 struct ANCHOR_DATA {
+	
 	Vec3f pos;
-	short nblinked;
 	AnchorFlags flags;
-	long * linked;
+	std::vector<long> linked;
 	float radius;
 	float height;
 	
 	ANCHOR_DATA()
 		: pos(Vec3f_ZERO)
-		, nblinked(0)
 		, flags(0)
-		, linked(NULL)
 		, radius(0)
 		, height(0)
 	{ }
+	
 };
 
 /*!

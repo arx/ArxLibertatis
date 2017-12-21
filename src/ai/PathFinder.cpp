@@ -224,9 +224,7 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 		}
 		
 		// Otherwise, generate child from current node.
-		for(short i = 0; i < map_d[nid].nblinked; i++) {
-			
-			NodeId cid = map_d[nid].linked[i];
+		BOOST_FOREACH(NodeId cid, map_d[nid].linked) {
 			
 			if((map_d[cid].flags & ANCHOR_FLAG_BLOCKED) || map_d[cid].height > m_height
 			   || map_d[cid].radius < m_radius) {
@@ -291,9 +289,7 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 		}
 		
 		// Otherwise, generate child from current node.
-		for(short i(0); i < map_d[nid].nblinked; i++) {
-			
-			long cid = map_d[nid].linked[i];
+		BOOST_FOREACH(NodeId cid, map_d[nid].linked) {
 			
 			if((map_d[cid].flags & ANCHOR_FLAG_BLOCKED) || map_d[cid].height > m_height
 			   || map_d[cid].radius < m_radius) {
@@ -326,7 +322,7 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 
 bool PathFinder::wanderAround(NodeId from, float rad, Result & rlist, bool stealth) const {
 	
-	if(!map_d[from].nblinked) {
+	if(map_d[from].linked.empty()) {
 		return false;
 	}
 	
@@ -346,16 +342,16 @@ bool PathFinder::wanderAround(NodeId from, float rad, Result & rlist, bool steal
 		
 		// Select the next node.
 		unsigned int nb = Random::getu(0, unsigned(rad / 50));
-		for(unsigned int j = 0; j < nb && map_d[next].nblinked; j++) {
+		for(unsigned int j = 0; j < nb && !map_d[next].linked.empty(); j++) {
 			for(int notfinished = 0; notfinished < 4; notfinished++) {
 				
-				size_t r = Random::get(0, map_d[next].nblinked - 1);
-				arx_assert(r < (size_t)map_d[next].nblinked);
+				size_t r = Random::get(0, map_d[next].linked.size() - 1);
+				arx_assert(r < map_d[next].linked.size());
 				
 				arx_assert(map_d[next].linked[r] >= 0);
 				
 				NodeId nid = map_d[next].linked[r];
-				if((!(map_d[nid].flags & ANCHOR_FLAG_BLOCKED)) && (map_d[nid].nblinked)
+				if((!(map_d[nid].flags & ANCHOR_FLAG_BLOCKED)) && !map_d[nid].linked.empty()
 				   && (map_d[nid].height <= m_height) && (map_d[nid].radius >= m_radius)) {
 					next = nid;
 					break;
@@ -383,7 +379,7 @@ PathFinder::NodeId PathFinder::getNearestNode(const Vec3f & pos) const {
 	
 	for(size_t i = 0; i < map_s; i++) {
 		float dist = arx::distance2(map_d[i].pos, pos);
-		if(dist < distance && map_d[i].nblinked && !(map_d[i].flags & ANCHOR_FLAG_BLOCKED)) {
+		if(dist < distance && !map_d[i].linked.empty() && !(map_d[i].flags & ANCHOR_FLAG_BLOCKED)) {
 			best = i;
 			distance = dist;
 		}

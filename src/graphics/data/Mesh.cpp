@@ -1146,17 +1146,15 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		ANCHOR_DATA & anchor = ACTIVEBKG->m_anchors[i];
 		anchor.flags = AnchorFlags::load(fad->flags); // TODO save/load flags
 		anchor.pos = fad->pos.toVec3();
-		anchor.nblinked = fad->nb_linked;
 		anchor.height = fad->height;
 		anchor.radius = fad->radius;
 		
-		if(fad->nb_linked <= 0) {
-			anchor.linked = NULL;
-		} else {
-			anchor.linked = (long *)malloc(sizeof(long) * fad->nb_linked);
+		anchor.linked.resize(fad->nb_linked);
+		if(fad->nb_linked > 0) {
 			const s32 * links = fts_read<s32>(data, end, fad->nb_linked);
-			std::copy(links, links + fad->nb_linked, anchor.linked);
+			std::copy(links, links + fad->nb_linked, anchor.linked.begin());
 		}
+		
 	}
 	progressBarAdvance();
 	LoadLevelScreen();

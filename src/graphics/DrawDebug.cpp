@@ -21,6 +21,8 @@
 
 #include <sstream>
 
+#include <boost/foreach.hpp>
+
 #include "ai/Anchors.h"
 #include "ai/Paths.h"
 
@@ -277,8 +279,7 @@ static void drawDebugPathFinding() {
 		const ANCHOR_DATA & node = ACTIVEBKG->m_anchors[i];
 		
 		Color color1 = (node.flags & ANCHOR_FLAG_BLOCKED) ? Color::blue : Color::green;
-		for(long j = 0; j < node.nblinked; j++) {
-			long k = node.linked[j];
+		BOOST_FOREACH(long k, node.linked) {
 			if(k >= 0 && size_t(k) < ACTIVEBKG->m_anchors.size() && i < size_t(k)) {
 				const ANCHOR_DATA & other = ACTIVEBKG->m_anchors[k];
 				Color color2 = (other.flags & ANCHOR_FLAG_BLOCKED) ? Color::blue : Color::green;
