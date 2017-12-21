@@ -1351,14 +1351,10 @@ void SpellsPage::drawSpells() {
 		
 		// check if player can cast it
 		bool bOk = true;
-		long j = 0;
-		
-		while(j < 4 && (spellInfo.symbols[j] != RUNE_NONE)) {
+		for(long j = 0; j < 4 && spellInfo.symbols[j] != RUNE_NONE; j++) {
 			if(!player.hasRune(spellInfo.symbols[j])) {
 				bOk = false;
 			}
-			
-			j++;
 		}
 		
 		if(!bOk)
