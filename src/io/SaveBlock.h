@@ -101,7 +101,7 @@ private:
 	
 	fs::path m_savefile;
 	fs::fstream m_handle;
-	size_t totalSize;
+	size_t m_totalSize;
 	size_t usedSize;
 	size_t chunkCount;
 	Files files;
