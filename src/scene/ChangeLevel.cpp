@@ -1071,14 +1071,9 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	
 	// Save Local Timers ?
 	ais.nbtimers = 0;
-	for (int i = 0; i < MAX_TIMER_SCRIPT; i++)
-	{
-		if (scr_timer[i].exist)
-		{
-			if (scr_timer[i].io == io)
-			{
-				ais.nbtimers++;
-			}
+	for(int i = 0; i < MAX_TIMER_SCRIPT; i++) {
+		if(scr_timer[i].exist && scr_timer[i].io == io) {
+			ais.nbtimers++;
 		}
 	}
 	
