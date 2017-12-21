@@ -233,26 +233,26 @@ bool IniReader::read(std::istream & is) {
 					str.clear();
 					getline(is, str);
 					
-					size_t start = str.find_first_not_of(WHITESPACE);
-					if(start == std::string::npos) {
+					size_t newValueStart = str.find_first_not_of(WHITESPACE);
+					if(newValueStart == std::string::npos) {
 						// Empty line (only whitespace)
 						break;
 					}
 					
-					if(str[start] == '#'
-					   || (start + 1 < str.length() && str[start] == '/' && str[start+1] == '/')) {
+					if(str[newValueStart] == '#'
+					   || (newValueStart + 1 < str.length() && str[newValueStart] == '/' && str[newValueStart + 1] == '/')) {
 						// Whole line was commented
 						break;
 					}
 					
-					if(str[start] == '[') {
+					if(str[newValueStart] == '[') {
 						// New section
 						line--, readline = false;
 						break;
 					}
 					
-					size_t newNameEnd = str.find_first_not_of(ALPHANUM, start);
-					if(newNameEnd != std::string::npos && newNameEnd != start) {
+					size_t newNameEnd = str.find_first_not_of(ALPHANUM, newValueStart);
+					if(newNameEnd != std::string::npos && newNameEnd != newValueStart) {
 						size_t newSeparator = str.find_first_not_of(WHITESPACE, newNameEnd);
 						if(newSeparator != std::string::npos && str[newSeparator] == '=') {
 							// New key
@@ -264,16 +264,16 @@ bool IniReader::read(std::istream & is) {
 					// Replace newlines with spaces!
 					value += ' ';
 					
-					size_t end = str.find_last_of('"');
-					if(end != std::string::npos) {
+					size_t newValueEnd = str.find_last_of('"');
+					if(newValueEnd != std::string::npos) {
 						// End of multi-line value
-						value += str.substr(start, end - start);
+						value += str.substr(newValueStart, newValueEnd - newValueStart);
 						break;
 					}
 					
-					end = str.find_last_not_of(WHITESPACE) + 1;
-					arx_assert(end > start);
-					value += str.substr(start, end - start);
+					newValueEnd = str.find_last_not_of(WHITESPACE) + 1;
+					arx_assert(newValueEnd > newValueStart);
+					value += str.substr(newValueStart, newValueEnd - newValueStart);
 				}
 				
 			} else {
