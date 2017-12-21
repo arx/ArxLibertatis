@@ -171,7 +171,7 @@ const std::string presence = "presence";
 } // namespace Section
 
 typedef std::map<res::path, float> PresenceFactors;
-PresenceFactors presence;
+PresenceFactors g_presenceFactors;
 
 } // anonymous namespace
 
@@ -412,7 +412,7 @@ void ARX_SOUND_Release() {
 	
 	ARX_SOUND_ReleaseStaticSamples();
 	collisionMaps.clear();
-	presence.clear();
+	g_presenceFactors.clear();
 	ARX_SOUND_KillUpdateThread();
 	audio::clean();
 	bIsActive = false;
@@ -1581,7 +1581,7 @@ static void ARX_SOUND_CreateMaterials()
 
 static void ARX_SOUND_CreatePresenceMap() {
 	
-	presence.clear();
+	g_presenceFactors.clear();
 	
 	res::path file = (ARX_SOUND_PATH_INI / ARX_SOUND_PRESENCE_NAME).set_ext(ARX_SOUND_FILE_EXTENSION_INI);
 	
@@ -1608,7 +1608,7 @@ static void ARX_SOUND_CreatePresenceMap() {
 	
 	for(IniSection::iterator i = section->begin(); i != section->end(); ++i) {
 		float factor = i->getValue(100.f) / 100.f;
-		presence[res::path::load(i->getName()).set_ext(ARX_SOUND_FILE_EXTENSION_WAV)] = factor;
+		g_presenceFactors[res::path::load(i->getName()).set_ext(ARX_SOUND_FILE_EXTENSION_WAV)] = factor;
 	}
 	
 }
@@ -1618,8 +1618,8 @@ static float GetSamplePresenceFactor(const res::path & name) {
 	arx_assert_msg(name.string().find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") == std::string::npos,
 	               "bad sample name: \"%s\"", name.string().c_str());
 	
-	PresenceFactors::const_iterator it = presence.find(name);
-	if(it != presence.end()) {
+	PresenceFactors::const_iterator it = g_presenceFactors.find(name);
+	if(it != g_presenceFactors.end()) {
 		return it->second;
 	}
 	
