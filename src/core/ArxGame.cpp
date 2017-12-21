@@ -291,10 +291,10 @@ static bool migrateFilenames(const fs::path & configFile) {
 	
 	bool migrated = true;
 	
-	for(fs::directory_iterator it(fs::paths.user); !it.end(); ++it) {
+	for(fs::directory_iterator it(fs::getUserDir()); !it.end(); ++it) {
 		std::string file = it.name();
 		if(fileset.find(boost::to_lower_copy(file)) != fileset.end()) {
-			migrated &= migrateFilenames(fs::paths.user / file, it.is_directory());
+			migrated &= migrateFilenames(fs::getUserDir() / file, it.is_directory());
 		}
 	}
 	
@@ -308,7 +308,7 @@ static bool migrateFilenames(const fs::path & configFile) {
 bool ArxGame::initConfig() {
 	
 	// Initialize config first, before anything else.
-	fs::path configFile = fs::paths.config / "cfg.ini";
+	fs::path configFile = fs::getConfigDir() / "cfg.ini";
 	
 	config.setOutputFile(configFile);
 	
@@ -320,7 +320,7 @@ bool ArxGame::initConfig() {
 			return false;
 		}
 		
-		fs::path oldConfigFile = fs::paths.user / "cfg.ini";
+		fs::path oldConfigFile = fs::getUserDir() / "cfg.ini";
 		if(fs::exists(oldConfigFile)) {
 			if(!fs::rename(oldConfigFile, configFile)) {
 				LogWarning << "Could not move " << oldConfigFile << " to "
@@ -356,7 +356,7 @@ bool ArxGame::initConfig() {
 		config.misc.migration = Config::CaseSensitiveFilenames;
 	}
 	
-	if(!fs::create_directories(fs::paths.user / "save")) {
+	if(!fs::create_directories(fs::getUserDir() / "save")) {
 		LogWarning << "Failed to create save directory";
 	}
 	
@@ -993,7 +993,7 @@ bool ArxGame::addPaks() {
 	}
 	
 	// Load optional patch files
-	BOOST_REVERSE_FOREACH(const fs::path & base, fs::paths.data) {
+	BOOST_REVERSE_FOREACH(const fs::path & base, fs::getDataDirs()) {
 		g_resources->addFiles(base / "editor", "editor");
 		g_resources->addFiles(base / "game", "game");
 		g_resources->addFiles(base / "graph", "graph");
