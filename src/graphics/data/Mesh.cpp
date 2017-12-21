@@ -1039,9 +1039,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	const FAST_TEXTURE_CONTAINER * ftc;
 	ftc = fts_read<FAST_TEXTURE_CONTAINER>(data, end, fsh->nb_textures);
 	for(long k = 0; k < fsh->nb_textures; k++) {
-		res::path file = res::path::load(util::loadString(ftc[k].fic)).remove_ext();
-		TextureContainer * tmpTC;
-		tmpTC = TextureContainer::Load(file, TextureContainer::Level);
+		res::path texture = res::path::load(util::loadString(ftc[k].fic)).remove_ext();
+		TextureContainer * tmpTC = TextureContainer::Load(texture, TextureContainer::Level);
 		if(tmpTC) {
 			textures[ftc[k].tc] = tmpTC;
 		}
