@@ -110,7 +110,7 @@ path canonical(const path & path) {
 	return path.is_absolute() ? path : current_path() / path;
 }
 
-std::vector<path> getSearchPaths(const char * input) {
+std::vector<path> parsePathList(const char * input) {
 	
 	std::vector<path> result;
 	
@@ -160,8 +160,8 @@ path findUserPath(const char * name, const path & force,
 	
 	// Search standard locations
 	path to_create;
-	std::vector<path> prefixes = getSearchPaths(prefix);
-	std::vector<path> suffixes = getSearchPaths(suffix);
+	std::vector<path> prefixes = parsePathList(prefix);
+	std::vector<path> suffixes = parsePathList(suffix);
 	if(!suffixes.empty()) {
 		std::vector<path> paths = platform::getSystemPaths(systemPathId);
 		prefixes.insert(prefixes.end(), paths.begin(), paths.end());
@@ -285,7 +285,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	path exepath = platform::getExecutablePath();
 	if(!exepath.empty()) {
 		std::string var = getSearchPathVar(exepath);
-		std::vector<path> paths = fs::getSearchPaths(var.c_str());
+		std::vector<path> paths = parsePathList(var.c_str());
 		BOOST_FOREACH(const path & p, paths) {
 			#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 			if(p.string() == var) {
@@ -305,11 +305,11 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 		path exedir = canonical(exepath.parent());
 		bool ignored = false;
 		if(ignore_exe_dir) {
-			std::vector<path> ignored_dirs = fs::getSearchPaths(ignore_exe_dir);
+			std::vector<path> ignored_dirs = parsePathList(ignore_exe_dir);
 			ignored = (std::find(ignored_dirs.begin(), ignored_dirs.end(), exedir)
 			           != ignored_dirs.end());
 		}
-		std::vector<path> relative_data_dirs = fs::getSearchPaths(relative_data_dir);
+		std::vector<path> relative_data_dirs = parsePathList(relative_data_dir);
 		BOOST_FOREACH(const path & p, relative_data_dirs) {
 			path dir = exedir / p;
 			if(!ignored && addSearchRoot(result, dir, filter)) {
@@ -321,8 +321,8 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	}
 	
 	// Search standard locations
-	std::vector<path> prefixes = fs::getSearchPaths(data_dir_prefixes);
-	std::vector<path> suffixes = fs::getSearchPaths(data_dir);
+	std::vector<path> prefixes = parsePathList(data_dir_prefixes);
+	std::vector<path> suffixes = parsePathList(data_dir);
 	BOOST_FOREACH(const path & prefix, prefixes) {
 		BOOST_FOREACH(const path & suffix, suffixes) {
 			path dir = canonical(prefix / suffix);
@@ -392,8 +392,8 @@ void listDirectoriesFor(std::ostream & os, const std::string & regKey,
 	ARX_UNUSED(regKey);
 #endif
 	
-	std::vector<path> prefixes = getSearchPaths(prefixVar);
-	std::vector<path> suffixes = getSearchPaths(suffixVar);
+	std::vector<path> prefixes = parsePathList(prefixVar);
+	std::vector<path> suffixes = parsePathList(suffixVar);
 	std::vector<path> paths;
 	if(suffixVar) {
 		paths = platform::getSystemPaths(systemPathId);
