@@ -106,7 +106,7 @@ private:
 	
 };
 
-path canonical(const fs::path & path) {
+path canonical(const path & path) {
 	return path.is_absolute() ? path : current_path() / path;
 }
 
@@ -221,12 +221,12 @@ bool addSearchPath(std::vector<path> & result, const path & dir, bool filter) {
 bool addSearchRoot(std::vector<path> & result, const path & dir, bool filter) {
 	
 	// Add "data" subdirectory or dirs referenced in "data" file
-	fs::path subdir = dir / "data";
-	if(fs::is_regular_file(subdir)) {
-		fs::ifstream ifs(subdir);
+	path subdir = dir / "data";
+	if(is_regular_file(subdir)) {
+		ifstream ifs(subdir);
 		std::string line;
 		while(std::getline(ifs, line)) {
-			fs::path datadir = dir / line;
+			path datadir = dir / line;
 			if(addSearchPath(result, datadir, filter)) {
 				LogDebug("got data dir from data file in dir: " << datadir);
 			} else {
@@ -492,11 +492,11 @@ ExitStatus initSystemPaths() {
 	return g_systemPaths.init(cmdLineInitParams);
 }
 
-const fs::path & getUserDir() {
+const path & getUserDir() {
 	return g_systemPaths.m_userDir;
 }
 
-const fs::path & getConfigDir() {
+const path & getConfigDir() {
 	return g_systemPaths.m_configDir;
 }
 
@@ -516,7 +516,7 @@ path findDataFile(const path & resource) {
 	
 	BOOST_FOREACH(const path & prefix, getDataDirs()) {
 		path fullPath = prefix / resource;
-		if(fs::exists(fullPath)) {
+		if(exists(fullPath)) {
 			return fullPath;
 		}
 	}
