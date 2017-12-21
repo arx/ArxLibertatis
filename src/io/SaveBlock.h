@@ -103,7 +103,7 @@ private:
 	fs::fstream m_handle;
 	size_t m_totalSize;
 	size_t m_usedSize;
-	size_t chunkCount;
+	size_t m_chunkCount;
 	Files files;
 	
 	bool defragment();

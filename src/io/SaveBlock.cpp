@@ -255,7 +255,7 @@ SaveBlock::SaveBlock(const fs::path & savefile)
 	: m_savefile(savefile)
 	, m_totalSize(0)
 	, m_usedSize(0)
-	, chunkCount(0)
+	, m_chunkCount(0)
 { }
 
 SaveBlock::~SaveBlock() { }
@@ -308,7 +308,7 @@ bool SaveBlock::loadFileTable() {
 	}
 	
 	m_usedSize = 0;
-	chunkCount = 0;
+	m_chunkCount = 0;
 	
 	for(u32 i = 0; i < nFiles; i++) {
 		
@@ -330,7 +330,7 @@ bool SaveBlock::loadFileTable() {
 			return false;
 		}
 		
-		m_usedSize += file.storedSize, chunkCount += file.chunks.size();
+		m_usedSize += file.storedSize, m_chunkCount += file.chunks.size();
 	}
 	
 	return true;
@@ -400,7 +400,7 @@ bool SaveBlock::flush(const std::string & important) {
 	arx_assert_msg(important.find_first_of(BADSAVCHAR) == std::string::npos,
 	               "bad save filename: \"%s\"", important.c_str());
 	
-	if((m_usedSize * 2 < m_totalSize || chunkCount > (files.size() * 4 / 3))) {
+	if((m_usedSize * 2 < m_totalSize || m_chunkCount > (files.size() * 4 / 3))) {
 		defragment();
 	}
 	
@@ -414,7 +414,7 @@ bool SaveBlock::flush(const std::string & important) {
 bool SaveBlock::defragment() {
 	
 	LogDebug("defragmenting " << m_savefile << " save: using " << m_usedSize << " / " << m_totalSize
-	         << " b for " << files.size() << " files in " << chunkCount << " chunks");
+	         << " b for " << files.size() << " files in " << m_chunkCount << " chunks");
 	
 	fs::path tempFileName = m_savefile;
 	{
@@ -492,7 +492,7 @@ bool SaveBlock::defragment() {
 		arx_assert(checkTotalSize == newTotalSize);
 		
 		m_usedSize = m_totalSize = newTotalSize;
-		chunkCount = files.size();
+		m_chunkCount = files.size();
 		
 	}
 	
@@ -573,7 +573,7 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 	file->chunks.push_back(File::Chunk(remaining, m_totalSize));
 	m_handle.seekp(m_totalSize + 4);
 	m_handle.write(p, remaining);
-	m_totalSize += remaining, m_usedSize += remaining, chunkCount++;
+	m_totalSize += remaining, m_usedSize += remaining, m_chunkCount++;
 	
 	delete[] compressed;
 	
