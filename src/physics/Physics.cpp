@@ -718,12 +718,12 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 
 									cx *= ( 1.0f / 3 );
 									cz *= ( 1.0f / 3 );
-
-									for(int kk = 0; kk < 3; kk++) {
-										ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
-										ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
+									
+									for(int k = 0; k < 3; k++) {
+										ep.v[k].p.x = (ep.v[k].p.x - cx) * 3.5f + cx;
+										ep.v[k].p.z = (ep.v[k].p.z - cz) * 3.5f + cz;
 									}
-
+									
 									if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z))
 										return true;
 								}
