@@ -1263,9 +1263,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			for(size_t m = 0; m < NbRoomDistance; m++) {
 				const ROOM_DIST_DATA_SAVE * rdds;
 				rdds = fts_read<ROOM_DIST_DATA_SAVE>(data, end);
-				Vec3f start = rdds->startpos.toVec3();
-				Vec3f end = rdds->endpos.toVec3();
-				SetRoomDistance(m, n, rdds->distance, start, end);
+				SetRoomDistance(m, n, rdds->distance, rdds->startpos.toVec3(), rdds->endpos.toVec3());
 			}
 		}
 	}
