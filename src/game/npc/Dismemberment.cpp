@@ -199,13 +199,13 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 			}
 		}
 
-		long gore = -1;
+		long goreTexture = -1;
 
 		for(size_t k = 0; k < from->texturecontainer.size(); k++) {
 			if(from->texturecontainer[k]
 			   && boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")
 			) {
-				gore = k;
+				goreTexture = k;
 				break;
 			}
 		}
@@ -213,7 +213,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		for(size_t k = 0; k < nouvo->facelist.size(); k++) {
 			nouvo->facelist[k].facetype &= ~POLY_HIDE;
 
-			if(nouvo->facelist[k].texid == gore) {
+			if(nouvo->facelist[k].texid == goreTexture) {
 				nouvo->facelist[k].facetype |= POLY_DOUBLESIDED;
 			}
 		}
