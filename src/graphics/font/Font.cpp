@@ -44,7 +44,7 @@
 static const Font::Char FONT_PRELOAD_LIMIT = 127;
 
 Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face)
-	: info(fontFile, fontSize)
+	: m_info(fontFile, fontSize)
 	, referenceCount(0)
 	, m_face(face)
 	, textures(0) {
@@ -102,7 +102,7 @@ void Font::insertPlaceholderGlyph(Char character) {
 		
 		LogWarning << "No glyph for character U+" << std::hex << character
 		           << " (" << util::encode<util::UTF8>(character) << ") in font "
-		           << info.name;
+		           << m_info.name;
 		
 		arx_assert(m_glyphs.find(util::REPLACEMENT_CHAR) != m_glyphs.end());
 		m_glyphs[character] = m_glyphs[util::REPLACEMENT_CHAR];
@@ -165,7 +165,7 @@ bool Font::insertGlyph(Char character) {
 		if(!textures->insertImage(imgGlyph, glyph.texture, offset)) {
 			LogWarning << "Could not upload glyph for character U+" << std::hex << character
 			           << " (" << util::encode<util::UTF8>(character) << ") in font "
-			           << info.name;
+			           << m_info.name;
 			insertPlaceholderGlyph(character);
 			return false;
 		}

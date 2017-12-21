@@ -158,9 +158,9 @@ public:
 	
 	typedef std::string::const_iterator text_iterator;
 	
-	const Info & getInfo() const { return info; }
-	const res::path & getName() const { return info.name; }
-	unsigned int getSize() const { return info.size; }
+	const Info & getInfo() const { return m_info; }
+	const res::path & getName() const { return m_info.name; }
+	unsigned int getSize() const { return m_info.size; }
 	
 	TextSize draw(const Vec2i & p, const std::string & str, const Color & color) {
 		return draw(p.x, p.y, str, color);
@@ -208,7 +208,7 @@ private:
 	template <bool Draw>
 	TextSize process(int pX, int pY, text_iterator start, text_iterator end, Color color);
 	
-	Info info;
+	Info m_info;
 	unsigned int referenceCount;
 	
 	struct FT_FaceRec_ * m_face;
