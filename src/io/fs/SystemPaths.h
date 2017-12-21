@@ -78,7 +78,7 @@ struct SystemPaths {
 	 *
 	 * \param filterMissing exclude non-existant search directories.
 	 */
-	std::vector<path> getSearchPaths(bool filterMissing = false) const;
+	std::vector<path> getSearchPaths(bool filterMissing) const;
 	
 	SystemPaths();
 	
@@ -110,6 +110,13 @@ const fs::path & getConfigDir();
 
 //! \return Directories for data files
 const std::vector<path> & getDataDirs();
+
+/*!
+ * \brief Get a list of all data search paths
+ *
+ * These are all the paths that are considered for the list returned by \ref getDataDirs
+ */
+std::vector<path> getDataSearchPaths();
 
 /*!
 	* \brief Find a resource in the data search path

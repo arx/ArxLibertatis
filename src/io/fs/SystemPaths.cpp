@@ -435,6 +435,10 @@ const std::vector<path> & getDataDirs() {
 	return paths.data;
 }
 
+std::vector<path> getDataSearchPaths() {
+	return paths.getSearchPaths(false);
+}
+
 path findDataFile(const path & resource) {
 	
 	if(resource.is_absolute()) {

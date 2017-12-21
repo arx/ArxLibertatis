@@ -970,7 +970,7 @@ bool ArxGame::addPaks() {
 		// Print the search path to the log
 		std::ostringstream oss;
 		oss << "Searched in these locations:\n";
-		std::vector<fs::path> search = fs::paths.getSearchPaths();
+		std::vector<fs::path> search = fs::getDataSearchPaths();
 		BOOST_FOREACH(const fs::path & dir, search) {
 			oss << " * " << dir.string() << fs::path::dir_sep << "\n";
 		}
