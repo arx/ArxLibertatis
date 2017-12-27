@@ -77,11 +77,8 @@ void AllocTrack(int sf, int ef, float fps) {
 	
 	if(CKTrack)
 		return;
-
+	
 	CKTrack = new CinematicTrack(sf, ef, fps);
-
-	if(!CKTrack)
-		return;
 }
 
 void DeleteTrack() {
