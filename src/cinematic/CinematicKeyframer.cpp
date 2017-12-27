@@ -233,10 +233,10 @@ void UpDateAllKeyLight() {
 	}
 }
 
-bool AddKey(const CinematicKeyframe & key) {
+void AddKey(const CinematicKeyframe & key) {
 	
 	if(!CKTrack || key.frame < CKTrack->startframe || key.frame > CKTrack->endframe) {
-		return false;
+		return;
 	}
 	
 	int num;
@@ -306,8 +306,6 @@ bool AddKey(const CinematicKeyframe & key) {
 	k->speedtrack = key.speedtrack;
 
 	UpDateAllKeyLight();
-
-	return true;
 }
 
 void AddKeyLoad(const CinematicKeyframe & key) {
