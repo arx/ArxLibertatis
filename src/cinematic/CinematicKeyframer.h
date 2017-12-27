@@ -79,6 +79,8 @@ struct CinematicTrack {
 	int nbkey;
 	int pause;
 	CinematicKeyframe * key;
+	
+	CinematicTrack(int startframe_, int endframe_, float fps_);
 };
 
 void DeleteTrack();

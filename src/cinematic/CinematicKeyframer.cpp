@@ -62,23 +62,26 @@ inline bool C_NEQUAL_F32(float f1, float f2) {
 
 CinematicTrack * CKTrack;
 
+CinematicTrack::CinematicTrack(int startframe_, int endframe_, float fps_)
+	: startframe(startframe_)
+	, endframe(endframe_)
+	, fps(fps_)
+{
+	currframe = 0.f;
+	nbkey = 0;
+	key = NULL;
+	pause = true;
+}
+
 void AllocTrack(int sf, int ef, float fps) {
 	
 	if(CKTrack)
 		return;
 
-	CKTrack = new CinematicTrack;
+	CKTrack = new CinematicTrack(sf, ef, fps);
 
 	if(!CKTrack)
 		return;
-
-	CKTrack->startframe = sf;
-	CKTrack->endframe = ef;
-	CKTrack->currframe = 0.f;
-	CKTrack->fps = fps;
-	CKTrack->nbkey = 0;
-	CKTrack->key = NULL;
-	CKTrack->pause = true;
 }
 
 void DeleteTrack() {
