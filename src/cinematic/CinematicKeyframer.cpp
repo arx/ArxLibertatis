@@ -310,11 +310,11 @@ bool AddKey(const CinematicKeyframe & key) {
 	return true;
 }
 
-bool AddKeyLoad(const CinematicKeyframe & key) {
+void AddKeyLoad(const CinematicKeyframe & key) {
 	int num;
 
 	if(!CKTrack || (key.frame < CKTrack->startframe) || (key.frame > CKTrack->endframe))
-		return false;
+		return;
 	
 	CinematicKeyframe * k = SearchKey(key.frame, &num);
 	if(!k) {
@@ -329,8 +329,6 @@ bool AddKeyLoad(const CinematicKeyframe & key) {
 	}
 	
 	*k = key;
-	
-	return true;
 }
 
 CinematicKeyframe * GetKey(int f, int * num)
