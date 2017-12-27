@@ -81,16 +81,14 @@ void AllocTrack(int sf, int ef, float fps) {
 	CKTrack->pause = true;
 }
 
-bool DeleteTrack() {
+void DeleteTrack() {
 	
 	if(!CKTrack)
-		return false;
+		return;
 	
 	free(CKTrack->key);
 	delete CKTrack;
 	CKTrack = NULL;
-	
-	return true;
 }
 
 static CinematicKeyframe * SearchAndMoveKey(int f)
