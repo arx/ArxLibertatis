@@ -67,7 +67,7 @@ bool AllocTrack(int sf, int ef, float fps)
 	if(CKTrack)
 		return false;
 
-	CKTrack = (CinematicTrack *)std::malloc(sizeof(CinematicTrack));
+	CKTrack = new CinematicTrack;
 
 	if(!CKTrack)
 		return false;
@@ -89,7 +89,7 @@ bool DeleteTrack() {
 		return false;
 	
 	free(CKTrack->key);
-	free(CKTrack);
+	delete CKTrack;
 	CKTrack = NULL;
 	
 	return true;
