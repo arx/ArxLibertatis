@@ -138,7 +138,7 @@ class CinSerializer(object):
         f = open(fileName, "rb")
         data = f.read()
         f.close()
-        self.log.info("Read %i bytes from file %s" % (len(data), fileName))
+        self.log.debug("Read %i bytes from file %s" % (len(data), fileName))
 
         pos = 0
 
@@ -148,8 +148,7 @@ class CinSerializer(object):
         assert(header.magic == b'KFA'), "Magic mismatch"
         assert(header.version == 65611 or header.version == 65612), "Version invalid"
 
-        self.log.info(
-            "Header - Identity: {0}; Version: {1}".format(header.magic, header.version))
+        self.log.info('Cinematic {} - Version: {}'.format(fileName, header.version))
 
         weirdStr, pos = readCstr(data, pos)
         nbitmaps, pos = read_s32(data, pos)
@@ -157,14 +156,14 @@ class CinSerializer(object):
         for i in range(nbitmaps):
             scale, pos = read_s32(data, pos)
             texture, pos = readCstr(data, pos)
-            self.log.info("Texture {} - Scale: {}; Path: {}".format(i, scale, texture))
+            #self.log.info("Texture {} - Scale: {}; Path: {}".format(i, scale, texture))
 
         nsounds, pos = read_s32(data, pos)
         for i in range(nsounds):
             if(header.version == 65612):
                 pos += 2 # ignore sound id
             sound, pos = readCstr(data, pos)
-            self.log.info("Sound {} - Path: {}".format(i, sound))
+            #self.log.info("Sound {} - Path: {}".format(i, sound))
 
         track = CIN_TRACK.from_buffer_copy(data, pos)
         pos += sizeof(CIN_TRACK)
@@ -174,7 +173,10 @@ class CinSerializer(object):
 
         if track.startframe != 0:
             raise UnexpectedValueException("startframe = " + str(track.startframe))
-
+        #if track.fps != 30:
+        #   raise UnexpectedValueException("track.fps = " + str(track.fps))
+        if track.pause != 1:
+            raise UnexpectedValueException("track.pause = " + str(track.pause))
 
         for i in range(track.nbkey):
             if (header.version == 65611):
@@ -184,4 +186,6 @@ class CinSerializer(object):
                 keyframe = CIN_KEY_1_76.from_buffer_copy(data, pos)
                 pos += sizeof(CIN_KEY_1_76)
 
-        self.log.info("Cin File loaded")
+            if keyframe.typeinterp not in (-1, 0, 1):
+                self.log.error("keyframe.typeinterp = " + str(keyframe.typeinterp))
+                #raise UnexpectedValueException("keyframe.typeinterp = " + str(keyframe.typeinterp))
