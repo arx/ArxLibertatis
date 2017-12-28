@@ -458,6 +458,17 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 	
 }
 
+#if defined(_MSC_VER) && _MSC_VER >= 1800 && _MSC_VER < 1900
+/*
+ * MSVC 2013 generates a MOVAPS instruction here with an argument that is not 16-byte alligned,
+ * resulting in a crash.
+ *  https://bugs.arx-libertatis.org/arx/issues/1097
+ *
+ * This has been fixed in MSVC 2015:
+ *  https://connect.microsoft.com/VisualStudio/feedback/details/956733/
+ */
+#pragma optimize("", off)
+#endif
 static void interpolateLight(float alight, CinematicKeyframe* lightprec, Cinematic* c) {
 	
 	float unmoinsalight = 1.0f - alight;
@@ -486,6 +497,9 @@ static void interpolateLight(float alight, CinematicKeyframe* lightprec, Cinemat
 	c->m_light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
 	
 }
+#if defined(_MSC_VER) && _MSC_VER >= 1800 && _MSC_VER < 1900
+#pragma optimize("", on)
+#endif
 
 void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool play) {
 	
