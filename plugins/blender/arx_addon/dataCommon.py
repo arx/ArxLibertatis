@@ -107,3 +107,11 @@ class PolyTypeFlag(Union):
         ("asUInt", c_uint32),
     ]
     _anonymous_ = ("b")
+
+
+class SerializationException(Exception):
+    pass
+
+
+class UnexpectedValueException(SerializationException):
+    pass

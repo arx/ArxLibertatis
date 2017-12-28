@@ -25,7 +25,8 @@ from ctypes import (
 
 from .dataCommon import (
     SavedVec3,
-    ArxQuat
+    ArxQuat,
+    UnexpectedValueException
 )
 
 class THEA_HEADER(LittleEndianStructure):
@@ -96,14 +97,6 @@ class THEA_SAMPLE(LittleEndianStructure):
 
 import logging
 from ctypes import sizeof
-
-
-class SerializationException(Exception):
-    pass
-
-
-class UnexpectedValueException(SerializationException):
-    pass
 
 
 from typing import List
