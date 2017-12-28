@@ -248,7 +248,12 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		LogError << "Error reading track";
 		return false;
 	}
-	AllocTrack(t.startframe, t.endframe, t.fps);
+	
+	if(t.startframe != 0) {
+		LogWarning << "Cinematic startframe is not 0";
+	}
+	
+	AllocTrack(t.endframe, t.fps);
 	
 	LogDebug(t.nbkey << " keyframes:");
 	for(int i = 0; i < t.nbkey; i++) {

@@ -149,7 +149,7 @@ void Cinematic::New() {
 	DeleteAllBitmap();
 	DeleteAllSound();
 	
-	AllocTrack(0, 100, 30.f);
+	AllocTrack(100, 30.f);
 	
 	{
 	CinematicKeyframe key;
