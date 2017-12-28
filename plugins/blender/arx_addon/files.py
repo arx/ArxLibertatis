@@ -253,19 +253,20 @@ class Levels:
 
 class Cinematics:
     def __init__(self):
-        self.paths = ["graph/interface/illustrations"]
+        self.paths = ["graph/interface"] # TODO why not "graph/interface/illustrations"
         self.danglingPaths = []
         self.cins = []
         self.textures = []
 
     def update(self, root):
+        root = os.path.join(root, 'illustrations') # TODO hack
         sub = os.listdir(root)
         for s in sub:
             foo = os.path.join(root, s)
             if not os.path.isdir(foo):
                 name, ext = os.path.splitext(s)
                 if ext == ".cin":
-                    self.cins.append(s)
+                    self.cins.append(foo)
                 else:
                     self.danglingPaths.append(foo)
             else:
