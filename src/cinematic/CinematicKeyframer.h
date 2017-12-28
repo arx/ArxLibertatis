@@ -89,7 +89,6 @@ void AddKeyLoad(const CinematicKeyframe & key);
 void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool play);
 
 void PlayTrack(Cinematic * c);
-int GetStartFrame();
 int GetEndFrame();
 void SetCurrFrame(int frame);
 float GetTrackFPS();
