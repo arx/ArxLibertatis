@@ -62,9 +62,8 @@ inline bool C_NEQUAL_F32(float f1, float f2) {
 
 CinematicTrack * CKTrack;
 
-CinematicTrack::CinematicTrack(int startframe_, int endframe_, float fps_)
-	: startframe(startframe_)
-	, endframe(endframe_)
+CinematicTrack::CinematicTrack(int endframe_, float fps_)
+	: endframe(endframe_)
 	, fps(fps_)
 {
 	currframe = 0.f;
@@ -73,12 +72,12 @@ CinematicTrack::CinematicTrack(int startframe_, int endframe_, float fps_)
 	pause = true;
 }
 
-void AllocTrack(int sf, int ef, float fps) {
+void AllocTrack(int ef, float fps) {
 	
 	if(CKTrack)
 		return;
 	
-	CKTrack = new CinematicTrack(sf, ef, fps);
+	CKTrack = new CinematicTrack(ef, fps);
 }
 
 void DeleteTrack() {
@@ -235,7 +234,7 @@ void UpDateAllKeyLight() {
 
 void AddKey(const CinematicKeyframe & key) {
 	
-	if(!CKTrack || key.frame < CKTrack->startframe || key.frame > CKTrack->endframe) {
+	if(!CKTrack || key.frame < 0 || key.frame > CKTrack->endframe) {
 		return;
 	}
 	
@@ -311,7 +310,7 @@ void AddKey(const CinematicKeyframe & key) {
 void AddKeyLoad(const CinematicKeyframe & key) {
 	int num;
 
-	if(!CKTrack || (key.frame < CKTrack->startframe) || (key.frame > CKTrack->endframe))
+	if(!CKTrack || (key.frame < 0) || (key.frame > CKTrack->endframe))
 		return;
 	
 	CinematicKeyframe * k = SearchKey(key.frame, &num);
@@ -635,7 +634,7 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 	arx_assert(CKTrack->currframe >= 0);
 	
 	if(CKTrack->currframe > (float)CKTrack->endframe) {
-		CKTrack->currframe = (float)CKTrack->startframe;
+		CKTrack->currframe = 0;
 		c->m_key = NULL;
 		c->flTime = 0;
 	}
@@ -674,7 +673,7 @@ int GetStartFrame() {
 	if(!CKTrack)
 		return -1;
 
-	return CKTrack->startframe;
+	return 0;
 }
 
 int GetEndFrame() {
@@ -698,5 +697,5 @@ void SetCurrFrame(int frame)
 	if(!CKTrack)
 		return;
 
-	CKTrack->currframe = (float)CKTrack->startframe + (float)frame;
+	CKTrack->currframe = (float)frame;
 }
