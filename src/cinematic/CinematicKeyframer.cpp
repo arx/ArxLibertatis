@@ -112,7 +112,7 @@ static CinematicKeyframe * SearchAndMoveKey(int f)
 	return k + 1;
 }
 
-CinematicKeyframe * SearchKey(int f, int * num)
+static CinematicKeyframe * SearchKey(int f, int * num)
 {
 	if(!CKTrack || !CKTrack->nbkey)
 		return NULL;
@@ -328,7 +328,7 @@ void AddKeyLoad(const CinematicKeyframe & key) {
 	*k = key;
 }
 
-CinematicKeyframe * GetKey(int f, int * num)
+static CinematicKeyframe * GetKey(int f, int * num)
 {
 	if(!CKTrack || !CKTrack->key)
 		return NULL;

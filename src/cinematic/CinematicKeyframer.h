@@ -92,9 +92,6 @@ void PlayTrack(Cinematic * c);
 void SetCurrFrame(int frame);
 float GetTrackFPS();
 
-CinematicKeyframe * GetKey(int f, int * num);
-CinematicKeyframe * SearchKey(int f, int * num);
-
 float GetTimeKeyFramer();
 void UpDateAllKeyLight();
 
