@@ -195,7 +195,7 @@ void Cinematic::New() {
 	}
 	m_lightd = m_light;
 	
-	SetCurrFrame(GetStartFrame());
+	SetCurrFrame(0);
 	
 	projectload = true;
 	
