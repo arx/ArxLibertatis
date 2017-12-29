@@ -127,7 +127,7 @@ void PlayerInventoryHud::update() {
 					m_inventoryY = 110;
 					m_isClosing = false;
 					
-					player.Interface &=~ INTER_INVENTORY;
+					player.Interface &= ~INTER_INVENTORY;
 					
 					if(bInventorySwitch) {
 						bInventorySwitch = false;
@@ -135,7 +135,7 @@ void PlayerInventoryHud::update() {
 						player.Interface |= INTER_INVENTORYALL;
 						ARX_INTERFACE_NoteClose();
 						m_inventoryY = 121 * player.bag;
-						lOldInterface=INTER_INVENTORYALL;
+						lOldInterface = INTER_INVENTORYALL;
 					}
 				}
 			} else if(m_inventoryY > 0) {
@@ -161,7 +161,7 @@ void PlayerInventoryHud::update() {
 					if(player.Interface & INTER_INVENTORYALL) {
 						player.Interface &= ~INTER_INVENTORYALL;
 					}
-					lOldInterface=0;
+					lOldInterface = 0;
 				}
 			} else if(m_inventoryY > 0) {
 				m_inventoryY -= t;
