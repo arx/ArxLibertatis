@@ -49,7 +49,7 @@ public:
 	}
 	
 	bool has(Enum flag) const {
-		return !!(m_flags & (u32)flag);
+		return !!(m_flags & u32(flag));
 	}
 	
 	bool hasAll(Flags o) const {
@@ -58,12 +58,12 @@ public:
 	
 	Flags except(Enum flag) const {
 		Flags r;
-		r.m_flags = m_flags & ~(u32)flag;
+		r.m_flags = m_flags & ~u32(flag);
 		return r;
 	}
 	
 	void remove(Enum flag) {
-		m_flags &= ~(u32)flag;
+		m_flags &= ~u32(flag);
 	}
 	
 	operator u32() const {
@@ -115,34 +115,34 @@ public:
 	
 	Flags operator&(Enum flag) const {
 		Flags r;
-		r.m_flags = m_flags & (u32)flag;
+		r.m_flags = m_flags & u32(flag);
 		return r;
 	}
 	
 	Flags operator|(Enum flag) const {
 		Flags r;
-		r.m_flags = m_flags | (u32)flag;
+		r.m_flags = m_flags | u32(flag);
 		return r;
 	}
 	
 	Flags operator^(Enum flag) const {
 		Flags r;
-		r.m_flags = m_flags ^ (u32)flag;
+		r.m_flags = m_flags ^ u32(flag);
 		return r;
 	}
 	
 	Flags & operator&=(Enum flag) {
-		m_flags &= (u32)flag;
+		m_flags &= u32(flag);
 		return *this;
 	}
 	
 	Flags & operator|=(Enum flag) {
-		m_flags |= (u32)flag;
+		m_flags |= u32(flag);
 		return *this;
 	}
 	
 	Flags & operator^=(Enum flag) {
-		m_flags ^= (u32)flag;
+		m_flags ^= u32(flag);
 		return *this;
 	}
 	
