@@ -31,14 +31,14 @@ PackedTexture::~PackedTexture() {
 }
 
 void PackedTexture::clear() {
-	for(texture_iterator i = textures.begin(); i != textures.end(); ++i) {
+	for(texture_iterator i = m_textures.begin(); i != m_textures.end(); ++i) {
 		delete *i;
 	}
-	textures.clear();
+	m_textures.clear();
 }
 
 void PackedTexture::upload() {
-	for(texture_iterator i = textures.begin(); i != textures.end(); ++i) {
+	for(texture_iterator i = m_textures.begin(); i != m_textures.end(); ++i) {
 		TextureTree * tree = *i;
 		if(tree->dirty) {
 			tree->texture->upload();
@@ -91,8 +91,8 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
 	TextureTree::Node * node = NULL;
 	unsigned int nodeTree = 0;
 	
-	for(size_t i = 0; i < textures.size(); i++) {
-		node = textures[i]->insertImage(image);
+	for(size_t i = 0; i < m_textures.size(); i++) {
+		node = m_textures[i]->insertImage(image);
 		nodeTree = i;
 	}
 	
@@ -103,9 +103,9 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
 			delete newTree;
 			return false;
 		}
-		textures.push_back(newTree);
-		node = textures[textures.size() - 1]->insertImage(image);
-		nodeTree = textures.size() - 1;
+		m_textures.push_back(newTree);
+		node = m_textures[m_textures.size() - 1]->insertImage(image);
+		nodeTree = m_textures.size() - 1;
 	}
 	
 	// A node must have been found
@@ -122,9 +122,9 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
 }
 
 Texture & PackedTexture::getTexture(unsigned int index) {
-	arx_assert(index < textures.size());
-	arx_assert(textures[index]->texture);
-	return *textures[index]->texture;
+	arx_assert(index < m_textures.size());
+	arx_assert(m_textures[index]->texture);
+	return *m_textures[index]->texture;
 }
 
 PackedTexture::TextureTree::Node::Node() {
