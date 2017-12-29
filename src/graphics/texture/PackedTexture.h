@@ -46,7 +46,7 @@ public:
 	
 	Texture & getTexture(unsigned int index);
 	
-	unsigned int getTextureSize() const { return textureSize; }
+	unsigned int getTextureSize() const { return m_textureSize; }
 	size_t getTextureCount() const { return textures.size(); }
 	
 protected:
@@ -87,7 +87,7 @@ private:
 	std::vector<TextureTree *> textures;
 	typedef std::vector<TextureTree *>::iterator texture_iterator;
 	
-	const unsigned int textureSize;
+	const unsigned int m_textureSize;
 	Image::Format textureFormat;
 	
 };

@@ -23,8 +23,8 @@
 #include "graphics/texture/Texture.h"
 #include "io/log/Logger.h"
 
-PackedTexture::PackedTexture(unsigned int pSize, Image::Format pFormat)
-	: textureSize(pSize), textureFormat(pFormat) { }
+PackedTexture::PackedTexture(unsigned int textureSize, Image::Format pFormat)
+	: m_textureSize(textureSize), textureFormat(pFormat) { }
 
 PackedTexture::~PackedTexture() {
 	clear();
@@ -84,7 +84,7 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
                                 Vec2i & offset) {
 	
 	// Validate image size
-	if(image.getWidth() > textureSize || image.getHeight() > textureSize) {
+	if(image.getWidth() > m_textureSize || image.getHeight() > m_textureSize) {
 		return false;
 	}
 	
@@ -99,7 +99,7 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
 	
 	// No space found, create a new texture
 	if(!node) {
-		TextureTree * newTree = new TextureTree(textureSize, textureFormat);
+		TextureTree * newTree = new TextureTree(m_textureSize, textureFormat);
 		if(!newTree->texture) {
 			delete newTree;
 			return false;
