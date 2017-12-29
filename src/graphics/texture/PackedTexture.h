@@ -85,7 +85,6 @@ protected:
 private:
 	
 	std::vector<TextureTree *> m_textures;
-	typedef std::vector<TextureTree *>::iterator texture_iterator;
 	
 	const size_t m_textureSize;
 	const Image::Format m_textureFormat;

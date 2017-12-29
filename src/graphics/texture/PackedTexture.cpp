@@ -19,6 +19,8 @@
 
 #include "graphics/texture/PackedTexture.h"
 
+#include "boost/foreach.hpp"
+
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 #include "io/log/Logger.h"
@@ -31,15 +33,14 @@ PackedTexture::~PackedTexture() {
 }
 
 void PackedTexture::clear() {
-	for(texture_iterator i = m_textures.begin(); i != m_textures.end(); ++i) {
-		delete *i;
+	BOOST_FOREACH(TextureTree * tree, m_textures) {
+		delete tree;
 	}
 	m_textures.clear();
 }
 
 void PackedTexture::upload() {
-	for(texture_iterator i = m_textures.begin(); i != m_textures.end(); ++i) {
-		TextureTree * tree = *i;
+	BOOST_FOREACH(TextureTree * tree, m_textures) {
 		if(tree->dirty) {
 			tree->texture->upload();
 			tree->dirty = false;
