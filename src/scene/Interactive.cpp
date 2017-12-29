@@ -173,7 +173,7 @@ long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
 
 long ARX_INTERACTIVE_GetSellValue(Entity * item, Entity * shop, long count) {
 	
-	long price = ARX_INTERACTIVE_GetPrice(item, shop) / 3 * count;
+	float price = float(ARX_INTERACTIVE_GetPrice(item, shop) / 3 * count);
 	
 	return long(price + price * player.m_skillFull.intuition * 0.005f);
 }
