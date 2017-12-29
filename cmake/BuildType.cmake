@@ -141,9 +141,13 @@ else(MSVC)
 		add_cxxflag("-Wfloat-conversion") # part of -Wconversion
 		add_cxxflag("-Wstring-conversion") # part of -Wconversion
 		
-		if(SET_NOISY_WARNING_FLAGS OR NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
-		   OR NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5)
+		if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5
+		   AND NOT SET_NOISY_WARNING_FLAGS)
 			# In older GCC versions this warning is too strict
+		elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5
+		       AND NOT SET_NOISY_WARNING_FLAGS)
+			# In older Clang verstions this warns on BOOST_SCOPE_EXIT
+		else()
 			add_cxxflag("-Wshadow")
 		endif()
 		
