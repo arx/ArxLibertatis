@@ -481,7 +481,7 @@ static long AnchorData_GetNearest(const Vec3f & pos, const Cylinder & cyl, long 
 			continue;
 		}
 		
-		if(eb->m_anchors[i].linked.size()) {
+		if(!eb->m_anchors[i].linked.empty()) {
 			float d = arx::distance2(eb->m_anchors[i].pos, pos);
 
 			if ((d < distmax) && (eb->m_anchors[i].height <= cyl.height)
