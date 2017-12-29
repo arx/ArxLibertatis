@@ -342,8 +342,8 @@ extern long LOOKING_FOR_SPELL_TARGET;
 extern GameInstant LOOKING_FOR_SPELL_TARGET_TIME;
 extern bool PLAYER_INTERFACE_SHOW;
 
-int iHighLight=0;
-float fHighLightAng=0.f;
+int iHighLight = 0;
+float fHighLightAng = 0.f;
 
 static bool SelectSpellTargetCursorRender() {
 	
@@ -411,31 +411,36 @@ public:
 	}
 	
 	void update1() {
+		
 		m_time += g_platformTime.lastFrameDuration();
 		
-		if(m_frame!=3) {
+		if(m_frame != 3) {
 			while(m_time > m_delay) {
 				m_time -= m_delay;
 				m_frame++;
 			}
 		}
-
-		if(m_frame > 7)
+		
+		if(m_frame > 7) {
 			m_frame = 0;
+		}
+		
 	}
 	
 	void update2() {
+		
 		if(m_frame) {
 			m_time += g_platformTime.lastFrameDuration();
-
 			while(m_time > m_delay) {
 				m_time -= m_delay;
 				m_frame++;
 			}
 		}
-
-		if(m_frame > 7)
+		
+		if(m_frame > 7) {
 			m_frame = 0;
+		}
+		
 	}
 	
 	TextureContainer * getCurrentTexture() {
@@ -501,8 +506,8 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 	   || (MAGICMODE && PLAYER_MOUSELOOK_ON)) {
 		
 		CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
-		float ag=player.angle.getPitch();
 		
+		float ag = player.angle.getPitch();
 		if(ag > 180)
 			ag = ag - 360;
 		
