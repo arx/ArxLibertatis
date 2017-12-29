@@ -180,36 +180,36 @@ void PlayerBook::onClosePage() {
 }
 
 void PlayerBook::toggle() {
+	
 	if(player.Interface & INTER_PLAYERBOOK) {
 		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, Random::getf(0.9f, 1.1f));
 		SendIOScriptEvent(entities.player(), SM_BOOK_CLOSE);
-		player.Interface &=~ INTER_PLAYERBOOK;
+		player.Interface &= ~INTER_PLAYERBOOK;
 		g_miniMap.purgeTexContainer();
-
 		onClosePage();
 	} else {
 		SendIOScriptEvent(entities.player(), SM_NULL, "", "book_open");
-
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, Random::getf(0.9f, 1.1f));
 		SendIOScriptEvent(entities.player(), SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_PLAYERBOOK;
 		map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0l, 7l));
 	}
-
+	
 	if(player.Interface & INTER_COMBATMODE) {
 		player.Interface&=~INTER_COMBATMODE;
 		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 	}
-
+	
 	if(player.Interface & INTER_INVENTORYALL) {
 		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 		g_playerInventoryHud.close();
 	}
-
+	
 	pTextManage->Clear();
-
+	
 	TRUE_PLAYER_MOUSELOOK_ON = false;
+	
 }
 
 void PlayerBook::manage() {
@@ -1209,55 +1209,59 @@ void StatsPage::RenderBookPlayerCharacter() {
 
 bool StatsPage::CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc) {
 	
-	bool rval=false;
+	bool rval = false;
 	float t = *val;
-
+	
 	if(MouseInBookRect(pos, Vec2f(32, 32))) {
+		
 		rval = true;
-
-		if((eeMousePressed1() || eeMousePressed2()) && tc)
+		
+		if((eeMousePressed1() || eeMousePressed2()) && tc) {
 			DrawBookInterfaceItem(tc, pos, Color::white, 0.000001f);
-
+		}
+		
 		if(eeMouseUp1()) {
 			if(player.Attribute_Redistribute > 0) {
 				player.Attribute_Redistribute--;
 				t++;
-				*val=t;
+				*val = t;
 				playReleaseSound();
-			}
-			else
+			} else {
 				playErrorSound();
+			}
 		}
-
+		
 		if(eeMouseUp2()) {
 			if(ARXmenu.mode() == Mode_CharacterCreation) {
 				if(t > 6 && player.level == 0) {
 					player.Attribute_Redistribute++;
-					t --;
-					*val=t;
+					t--;
+					*val = t;
 					playReleaseSound();
-				}
-				else
+				} else {
 					playErrorSound();
-			}
-			else
+				}
+			} else {
 				playErrorSound();
+			}
 		}
+		
 	}
-
+	
 	return rval;
 }
 
 bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, float oldval) {
 	
-	bool rval=false;
-
+	bool rval = false;
+	
 	float t = *val;
 	float ot = oldval;
-
+	
 	if(MouseInBookRect(pos, Vec2f(32, 32))) {
-		rval=true;
-
+		
+		rval = true;
+		
 		if((eeMousePressed1() || eeMousePressed2()) && tc)
 			DrawBookInterfaceItem(tc, pos, Color::white, 0.000001f);
 		
@@ -1265,7 +1269,7 @@ bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, f
 			if(player.Skill_Redistribute > 0) {
 				player.Skill_Redistribute--;
 				t++;
-				*val=t;
+				*val = t;
 				playReleaseSound();
 			}
 			else
@@ -1276,16 +1280,17 @@ bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, f
 			if(ARXmenu.mode() == Mode_CharacterCreation) {
 				if(t > ot && player.level == 0) {
 					player.Skill_Redistribute++;
-					t --;
-					*val=t;
+					t--;
+					*val = t;
 					playReleaseSound();
-				}
-				else
+				} else {
 					playErrorSound();
-			}
-			else
+				}
+			} else {
 				playErrorSound();
+			}
 		}
+		
 	}
 	
 	return rval;
@@ -1343,7 +1348,7 @@ void SpellsPage::drawSpells() {
 	
 	Vec2f tmpPos = Vec2f_ZERO;
 	
-	for(size_t i=0; i < SPELL_TYPES_COUNT; i++) {
+	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
 		const SPELL_ICON & spellInfo = spellicons[i];
 		
 		if(spellInfo.level != (m_currentTab + 1) || spellInfo.bSecret)
@@ -1422,12 +1427,13 @@ void SpellsPage::drawSpells() {
 			
 		}
 		
-		tmpPos.x ++;
+		tmpPos.x++;
 		
 		if(tmpPos.x >= 2) {
 			tmpPos.x = 0;
-			tmpPos.y ++;
+			tmpPos.y++;
 		}
+		
 	}
 }
 
