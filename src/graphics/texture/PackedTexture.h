@@ -33,7 +33,7 @@ class PackedTexture {
 	
 public:
 	
-	PackedTexture(size_t textureSize, Image::Format pFormat);
+	PackedTexture(size_t textureSize, Image::Format textureFormat);
 	~PackedTexture();
 	
 	//! Reset the packed texture - remove all images
@@ -88,7 +88,7 @@ private:
 	typedef std::vector<TextureTree *>::iterator texture_iterator;
 	
 	const size_t m_textureSize;
-	Image::Format textureFormat;
+	const Image::Format m_textureFormat;
 	
 };
 

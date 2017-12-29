@@ -23,8 +23,8 @@
 #include "graphics/texture/Texture.h"
 #include "io/log/Logger.h"
 
-PackedTexture::PackedTexture(size_t textureSize, Image::Format pFormat)
-	: m_textureSize(textureSize), textureFormat(pFormat) { }
+PackedTexture::PackedTexture(size_t textureSize, Image::Format textureFormat)
+	: m_textureSize(textureSize), m_textureFormat(textureFormat) { }
 
 PackedTexture::~PackedTexture() {
 	clear();
@@ -98,7 +98,7 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
 	
 	// No space found, create a new texture
 	if(!node) {
-		TextureTree * newTree = new TextureTree(m_textureSize, textureFormat);
+		TextureTree * newTree = new TextureTree(m_textureSize, m_textureFormat);
 		if(!newTree->texture) {
 			delete newTree;
 			return false;
