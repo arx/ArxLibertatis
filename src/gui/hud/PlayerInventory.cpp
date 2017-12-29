@@ -331,26 +331,20 @@ void PlayerInventoryHud::draw() {
 
 void PlayerInventoryHud::nextBag() {
 	
-	if((player.Interface & INTER_INVENTORY)) {
-		if(player.bag) {
-			if(m_currentBag < player.bag - 1) {
-				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
-				m_currentBag ++;
-			}
-		}
+	if((player.Interface & INTER_INVENTORY) && player.bag != 0 && m_currentBag < player.bag - 1) {
+		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+		m_currentBag++;
 	}
+	
 }
 
 void PlayerInventoryHud::previousBag() {
 	
-	if((player.Interface & INTER_INVENTORY)) {
-		if(player.bag) {
-			if(m_currentBag > 0) {
-				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
-				m_currentBag --;
-			}
-		}
+	if((player.Interface & INTER_INVENTORY) && player.bag != 0 && m_currentBag > 0) {
+		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+		m_currentBag--;
 	}
+	
 }
 
 PlayerInventoryHud g_playerInventoryHud;
