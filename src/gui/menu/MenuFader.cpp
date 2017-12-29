@@ -25,9 +25,9 @@
 #include "graphics/Renderer.h"
 #include "gui/MenuWidgets.h"
 
-bool g_menuFadeActive=false;
+bool g_menuFadeActive = false;
 Fade bFadeInOut = Fade_Out;
-int iFadeAction=-1;
+int iFadeAction = -1;
 
 static PlatformDuration menuFadeElapsed = 0;
 
@@ -38,25 +38,26 @@ void MenuFader_reset() {
 }
 
 static void FadeInOut(float _fVal) {
-
+	
 	TexturedVertex vertices[4];
-
+	
 	ColorRGBA iColor = Color::gray(_fVal).toRGB();
+	
 	vertices[0].p = Vec3f_ZERO;
-	vertices[0].w=1.f;
-	vertices[0].color=iColor;
-
+	vertices[0].w = 1.f;
+	vertices[0].color = iColor;
+	
 	vertices[1].p = Vec3f(float(g_size.width()), 0.f, 0.f);
-	vertices[1].w=1.f;
-	vertices[1].color=iColor;
-
+	vertices[1].w = 1.f;
+	vertices[1].color = iColor;
+	
 	vertices[2].p = Vec3f(0.f, float(g_size.height()), 0.f);
-	vertices[2].w=1.f;
-	vertices[2].color=iColor;
-
-	vertices[3].p = Vec3f(float(g_size.size()), float(g_size.height()), 0.f);
-	vertices[3].w=1.f;
-	vertices[3].color=iColor;
+	vertices[2].w = 1.f;
+	vertices[2].color = iColor;
+	
+	vertices[3].p = Vec3f(float(g_size.width()), float(g_size.height()), 0.f);
+	vertices[3].w = 1.f;
+	vertices[3].color = iColor;
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
 	GRenderer->ResetTexture(0);
