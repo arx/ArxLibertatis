@@ -91,8 +91,9 @@ void SecondaryInventoryCloseHudIcon::update(const Rectf & parent) {
 void SecondaryInventoryCloseHudIcon::updateInput() {
 	
 	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
-	
-	if(m_isSelected) {
+	if(!m_isSelected) {
+		return;
+	}
 		
 		cursorSetInteraction();
 		
@@ -114,8 +115,6 @@ void SecondaryInventoryCloseHudIcon::updateInput() {
 			}
 			
 		}
-		
-	}
 	
 }
 
