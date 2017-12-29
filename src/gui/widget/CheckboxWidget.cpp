@@ -63,18 +63,19 @@ void CheckboxWidget::Move(const Vec2f & offset) {
 
 bool CheckboxWidget::OnMouseClick() {
 	
-	if(iOldState<0)
-		iOldState=iState;
-
-	iState ++;
-
+	if(iOldState < 0) {
+		iOldState = iState;
+	}
+	
+	iState++;
+	
 	//NB : It seems that iState cannot be negative (used as tabular index / used as bool) but need further approval
 	arx_assert(iState >= 0);
-
+	
 	if((size_t)iState >= 2) {
 		iState = 0;
 	}
-
+	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 	
 	if(stateChanged) {
