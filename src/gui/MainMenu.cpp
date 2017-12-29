@@ -126,8 +126,8 @@ public:
 			std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->m_savegame = SavegameHandle();
-			txt->eState=EDIT;
-			txt->ePlace=CENTER;
+			txt->eState = EDIT;
+			txt->ePlace = CENTER;
 			addCenter(txt, true);
 			m_textbox = txt;
 		}
@@ -948,8 +948,8 @@ private:
 		if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
 			pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());
 			pMenuSliderResol->setOldValue(-1);
-			newWidth=config.video.resolution.x;
-			newHeight=config.video.resolution.y;
+			newWidth = config.video.resolution.x;
+			newHeight = config.video.resolution.y;
 		}
 		
 		if(fullscreenCheckbox && fullscreenCheckbox->iOldState >= 0) {
@@ -960,15 +960,13 @@ private:
 	}
 	
 	void onClickedApply() {
-		if(newWidth != config.video.resolution.x
-		   || newHeight!=config.video.resolution.y
-		   || newFullscreen != config.video.fullscreen
-		) {
+		if(newWidth != config.video.resolution.x || newHeight != config.video.resolution.y
+		   || newFullscreen != config.video.fullscreen) {
 			ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight);
 			pMenuSliderResol->setOldValue(-1);
 			fullscreenCheckbox->iOldState = -1;
 		}
-		g_mainMenu->bReInitAll=true;
+		g_mainMenu->bReInitAll = true;
 	}
 	
 };
@@ -1898,7 +1896,7 @@ protected:
 		txt->m_keybindAction = controlAction;
 		txt->m_keybindIndex = 0;
 		
-		txt->eState=GETTOUCH;
+		txt->eState = GETTOUCH;
 		panel->AddElement(txt);
 		}
 		
@@ -1909,7 +1907,7 @@ protected:
 		txt->m_keybindAction = controlAction;
 		txt->m_keybindIndex = 1;
 		
-		txt->eState=GETTOUCH;
+		txt->eState = GETTOUCH;
 		panel->AddElement(txt);
 		}
 		
@@ -1919,11 +1917,13 @@ protected:
 	}
 	
 protected:
+	
 	void resetActionKeys() {
 		config.setDefaultActionKeys();
 		ReInitActionKey();
-		bMouseAttack=false;
+		bMouseAttack = false;
 	}
+	
 };
 
 
