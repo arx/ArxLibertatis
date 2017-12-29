@@ -147,6 +147,8 @@ else(MSVC)
 		elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5
 		       AND NOT SET_NOISY_WARNING_FLAGS)
 			# In older Clang verstions this warns on BOOST_SCOPE_EXIT
+		elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel" AND NOT SET_NOISY_WARNING_FLAGS)
+			# For icc this warning is too strict
 		else()
 			add_cxxflag("-Wshadow")
 		endif()
