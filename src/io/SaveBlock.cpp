@@ -611,18 +611,18 @@ std::vector<std::string> SaveBlock::getFiles() const {
 	return result;
 }
 
-char * SaveBlock::load(const fs::path & m_savefile, const std::string & filename, size_t & size) {
+char * SaveBlock::load(const fs::path & savefile, const std::string & filename, size_t & size) {
 	
 	arx_assert_msg(filename.find_first_of(BADSAVCHAR) == std::string::npos,
 	               "bad save filename: \"%s\"", filename.c_str());
 	
-	LogDebug("reading savefile " << m_savefile);
+	LogDebug("reading savefile " << savefile);
 	
 	size = 0;
 	
-	fs::ifstream handle(m_savefile, fs::fstream::in | fs::fstream::binary);
+	fs::ifstream handle(savefile, fs::fstream::in | fs::fstream::binary);
 	if(!handle.is_open()) {
-		LogWarning << "Cannot open save file " << m_savefile;
+		LogWarning << "Cannot open save file " << savefile;
 		return NULL;
 	}
 	
@@ -640,7 +640,7 @@ char * SaveBlock::load(const fs::path & m_savefile, const std::string & filename
 		return NULL;
 	}
 	if(version != SAV_VERSION_DEFLATE && version != SAV_VERSION_RELEASE && version != SAV_VERSION_NOEXT) {
-		LogWarning << "Unexpected savegame version: " << version << " for " << m_savefile;
+		LogWarning << "Unexpected savegame version: " << version << " for " << savefile;
 	}
 	
 	u32 nFiles;
