@@ -48,8 +48,8 @@ void CinematicBorder::reset() {
 	m_direction = 0;
 }
 
-void CinematicBorder::set(bool status, bool smooth)
-{
+void CinematicBorder::set(bool status, bool smooth) {
+	
 	if(status) {
 		m_active = true;
 		m_startTime = g_gameTime.now();
@@ -59,22 +59,27 @@ void CinematicBorder::set(bool status, bool smooth)
 	}
 	
 	if(m_active) {
-		if(smooth)
-			m_direction=1;
-		else
-			CINEMA_DECAL=100;
+		if(smooth) {
+			m_direction = 1;
+		} else {
+			CINEMA_DECAL = 100;
+		}
 	} else {
-		if(smooth)
-			m_direction=-1;
-		else
-			CINEMA_DECAL=0;
+		if(smooth) {
+			m_direction = -1;
+		} else {
+			CINEMA_DECAL = 0;
+		}
 	}
-
-	if(player.Interface & INTER_INVENTORY)
-		player.Interface &=~ INTER_INVENTORY;
-
-	if(player.Interface & INTER_INVENTORYALL)
-		player.Interface &=~ INTER_INVENTORYALL;
+	
+	if(player.Interface & INTER_INVENTORY) {
+		player.Interface &= ~INTER_INVENTORY;
+	}
+	
+	if(player.Interface & INTER_INVENTORYALL) {
+		player.Interface &= ~INTER_INVENTORYALL;
+	}
+	
 }
 
 void CinematicBorder::update() {
