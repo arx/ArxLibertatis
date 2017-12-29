@@ -115,11 +115,8 @@ void SecondaryInventoryCloseHudIcon::updateInput() {
 			
 		}
 		
-		if(DRAGINTER == NULL) {
-			return;
-		}
-		
 	}
+	
 }
 
 
