@@ -42,27 +42,19 @@ static void FadeInOut(float _fVal) {
 	TexturedVertex vertices[4];
 
 	ColorRGBA iColor = Color::gray(_fVal).toRGB();
-	vertices[0].p.x=0;
-	vertices[0].p.y=0;
-	vertices[0].p.z=0.f;
+	vertices[0].p = Vec3f_ZERO;
 	vertices[0].w=1.f;
 	vertices[0].color=iColor;
 
-	vertices[1].p.x=static_cast<float>(g_size.width());
-	vertices[1].p.y=0;
-	vertices[1].p.z=0.f;
+	vertices[1].p = Vec3f(float(g_size.width()), 0.f, 0.f);
 	vertices[1].w=1.f;
 	vertices[1].color=iColor;
 
-	vertices[2].p.x=0;
-	vertices[2].p.y=static_cast<float>(g_size.height());
-	vertices[2].p.z=0.f;
+	vertices[2].p = Vec3f(0.f, float(g_size.height()), 0.f);
 	vertices[2].w=1.f;
 	vertices[2].color=iColor;
 
-	vertices[3].p.x=static_cast<float>(g_size.width());
-	vertices[3].p.y=static_cast<float>(g_size.height());
-	vertices[3].p.z=0.f;
+	vertices[3].p = Vec3f(float(g_size.size()), float(g_size.height()), 0.f);
 	vertices[3].w=1.f;
 	vertices[3].color=iColor;
 	
