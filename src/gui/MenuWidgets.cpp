@@ -100,7 +100,7 @@ extern int newWidth;
 extern int newHeight;
 extern bool newFullscreen;
 
-bool bNoMenu=false;
+bool bNoMenu = false;
 
 extern TextWidget * pMenuElementApply;
 
@@ -186,12 +186,12 @@ void MainMenuDoFrame() {
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-
+	
 	UseRenderState state(render2D());
-
-	MENUSTATE eOldMenuState=NOP;
+	
+	MENUSTATE eOldMenuState = NOP;
 	MENUSTATE eM;
-
+	
 	if(!g_mainMenu) {
 		eM = NOP;
 	} else {
@@ -206,12 +206,12 @@ void MainMenuDoFrame() {
 		}
 		
 		g_mainMenu = new MainMenu();
-		g_mainMenu->eOldMenuWindowState=eM;
+		g_mainMenu->eOldMenuWindowState = eM;
 		
 		g_mainMenu->init();
 	}
-
-	bool bScroll=true;
+	
+	bool bScroll = true;
 	
 	if(pMenuCursor == NULL) {
 		pMenuCursor = new MenuCursor();
@@ -227,8 +227,8 @@ void MainMenuDoFrame() {
 	}
 	
 	if(eOldMenuState != NOP) {
-		requestedMenuState=eOldMenuState;
-		bScroll=false;
+		requestedMenuState = eOldMenuState;
+		bScroll = false;
 	}
 	
 	if(requestedMenuState == RESUME_GAME) {
@@ -253,17 +253,16 @@ void MainMenuDoFrame() {
 	   || (g_mainMenu->m_window->currentPageId() == Page_NewQuestConfirm && g_canResumeGame)
 	) {
 		if(!bScroll) {
-			g_mainMenu->m_window->fAngle=90.f;
+			g_mainMenu->m_window->fAngle = 90.f;
 			g_mainMenu->m_window->setCurrentPageId(g_mainMenu->eOldMenuWindowState);
 		}
-
 		g_mainMenu->m_window->Update();
 		g_mainMenu->m_window->Render();
 		Check_Apply();
 	}
-
-	bNoMenu=false;
-
+	
+	bNoMenu = false;
+	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
 	pMenuCursor->DrawCursor();
@@ -294,14 +293,8 @@ void MainMenuDoFrame() {
 }
 
 
-
-
-
-
-
-
-MenuWindow::MenuWindow()
-{
+MenuWindow::MenuWindow() {
+	
 	Vec2f windowMenuPos = Vec2f(20, 25);
 	Vec2f size = Vec2f(321, 430);
 	
@@ -312,10 +305,10 @@ MenuWindow::MenuWindow()
 
 	m_initalOffsetX = -m_size.x;
 	m_fadeDistance = m_size.x + m_pos.x;
-	fAngle=0.f;
+	fAngle = 0.f;
 	
 	m_requestedPage = NOP;
-	m_currentPageId=NOP;
+	m_currentPageId = NOP;
 	
 	m_pos.x = m_initalOffsetX + (m_fadeDistance * glm::sin(glm::radians(fAngle)));
 	
@@ -407,7 +400,7 @@ MenuPage::MenuPage(MENUSTATE _eMenuState)
 	Vec2f scaledSize = RATIO_2(m_size);
 	m_rect = Rectf(Vec2f_ZERO, scaledSize.x, scaledSize.y);
 	
-	eMenuState=_eMenuState;
+	eMenuState = _eMenuState;
 }
 
 MenuPage::~MenuPage() { }
@@ -587,29 +580,28 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 			bMouseAttack=!bMouseAttack;
 			return NULL;
 		}
-
+		
 		TextWidget * textWidget = static_cast<TextWidget *>(m_selected);
-
+		
 		if(_bValidateTest) {
 			if(textWidget->m_isKeybind && textWidget->m_keybindAction == CONTROLS_CUST_ACTION) {
-				bool bOk=true;
-
+				bool bOk = true;
 				if((iMouseButton & Mouse::ButtonBase) && !(iMouseButton & Mouse::WheelBase)) {
-					bOk=false;
+					bOk = false;
 				} else {
 					for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++) {
 						if(keyId == buttonId) {
-							bOk=false;
+							bOk = false;
 							break;
 						}
 					}
 				}
-
-				if(bOk)
+				if(bOk) {
 					return NULL;
+				}
 			}
 		}
-
+		
 		std::string pText;
 		if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase)) {
 			if(pInputKeyId)
@@ -631,21 +623,20 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 
 		if(m_selected->ePlace) {
 			m_selected->m_rect.left = (m_rect.width() - iDx) / 2.f;
-
 			if(m_selected->m_rect.left < 0) {
-				m_selected->m_rect.left=0;
+				m_selected->m_rect.left = 0;
 			}
 		}
-
-		m_selected->m_rect.right=m_selected->m_rect.left+iDx;
-
-		m_selected=NULL;
-		bEdit=false;
-		bMouseAttack=false;
-
+		
+		m_selected->m_rect.right = m_selected->m_rect.left + iDx;
+		
+		m_selected = NULL;
+		bEdit = false;
+		bMouseAttack = false;
+		
 		return textWidget;
 	}
-
+	
 	return NULL;
 }
 
@@ -836,7 +827,7 @@ void MenuPage::Render() {
 						}
 					}
 					ReInitActionKey();
-					bMouseAttack=false;
+					bMouseAttack = false;
 				}
 			}
 			break;
@@ -882,8 +873,9 @@ void Menu2_Close() {
 
 void MenuReInitAll() {
 	
-	if(!g_mainMenu)
+	if(!g_mainMenu) {
 		return;
+	}
 	
-	g_mainMenu->bReInitAll=true;
+	g_mainMenu->bReInitAll = true;
 }
