@@ -93,27 +93,32 @@ void SecondaryInventoryCloseHudIcon::updateInput() {
 	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 	
 	if(m_isSelected) {
+		
 		cursorSetInteraction();
 		
 		if(eeMouseDown1()) {
-			Entity * io = NULL;
 			
-			if(SecondaryInventory)
+			Entity * io = NULL;
+			if(SecondaryInventory) {
 				io = SecondaryInventory->io;
-			else if(player.Interface & INTER_STEAL)
+			} else if(player.Interface & INTER_STEAL) {
 				io = ioSteal;
+			}
 			
 			if(io) {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 				g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
 				SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
-				TSecondaryInventory=SecondaryInventory;
-				SecondaryInventory=NULL;
+				TSecondaryInventory = SecondaryInventory;
+				SecondaryInventory = NULL;
 			}
+			
 		}
 		
-		if(DRAGINTER == NULL)
+		if(DRAGINTER == NULL) {
 			return;
+		}
+		
 	}
 }
 
@@ -237,7 +242,7 @@ void SecondaryInventoryHud::draw() {
 				
 				Vec2f size = Vec2f(tc->size());
 				
-				Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
+				Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
 				
 				if(tc2) {
 					ARX_INTERFACE_HALO_Render(io->halo.color, io->halo.flags, tc2, p, Vec2f(m_scale));
@@ -248,9 +253,9 @@ void SecondaryInventoryHud::draw() {
 				
 				Color overlayColor = Color::black;
 				
-				if(!bItemSteal && (io==FlyingOverIO))
+				if(!bItemSteal && io == FlyingOverIO) {
 					overlayColor = Color::white;
-				else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
+				} else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
 					overlayColor = Color3f::gray(glm::abs(glm::cos(glm::radians(fDecPulse)))).to<u8>();
 				}
 				
