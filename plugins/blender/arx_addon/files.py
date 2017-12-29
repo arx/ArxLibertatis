@@ -256,7 +256,7 @@ class Cinematics:
         self.paths = ["graph/interface"] # TODO why not "graph/interface/illustrations"
         self.danglingPaths = []
         self.cins = []
-        self.textures = []
+        self.textures = {}
 
     def update(self, root):
         root = os.path.join(root, 'illustrations') # TODO hack
@@ -275,7 +275,7 @@ class Cinematics:
                     for b in bar:
                         name, ext = os.path.splitext(b)
                         if ext == ".tga":
-                            self.textures.append(b)
+                            self.textures[name] = b
                         else:
                             self.danglingPaths.append(b)
                 else:
@@ -329,6 +329,23 @@ class AudioEffects:
                 else:
                     self.danglingPaths.append(foo)
 
+class AudioSpeech:
+    def __init__(self):
+        self.paths = ["speech"]
+        self.danglingPaths = []
+        self.speeches = {}
+
+    def update(self, root):
+        langDirNames = os.listdir(root)
+        for langDirName in langDirNames:
+            langDir = os.path.join(root, langDirName)
+            fileNames = os.listdir(langDir)
+            files = []
+            for fileName in fileNames:
+                files.append(fileName)
+
+            self.speeches[langDirName] = files
+
 
 class ArxFiles(object):
     def __init__(self, rootPath):
@@ -342,9 +359,10 @@ class ArxFiles(object):
         self.animations = Animations()
         self.textures = Textures()
         self.audioEffects = AudioEffects()
+        self.audioSpeech = AudioSpeech()
 
         self.handlers = [self.entities, self.models, self.speeches, self.levels, self.cinematics, self.animations,
-                         self.textures, self.audioEffects]
+                         self.textures, self.audioEffects, self.audioSpeech]
 
         self.danglingPaths = []
 
