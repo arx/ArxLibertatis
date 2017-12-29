@@ -23,7 +23,7 @@
 #include "graphics/texture/Texture.h"
 #include "io/log/Logger.h"
 
-PackedTexture::PackedTexture(unsigned int textureSize, Image::Format pFormat)
+PackedTexture::PackedTexture(size_t textureSize, Image::Format pFormat)
 	: m_textureSize(textureSize), textureFormat(pFormat) { }
 
 PackedTexture::~PackedTexture() {
