@@ -425,26 +425,27 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 		MAX_TEST = 6; //4;
 	else
 		MAX_TEST = 4; //3;
-
+	
 	for(long l_try = MAX_TEST; l_try > 1; l_try--) {
-		if(io->_npcdata->pathfind.listpos + l_try > io->_npcdata->pathfind.listnb - 1)
+		
+		if(io->_npcdata->pathfind.listpos + l_try > io->_npcdata->pathfind.listnb - 1) {
 			continue;
-
-		float tot = 0.f;
-
+		}
+		
+		size_t total = 0.f;
 		for(long aa = l_try; aa > 1; aa--) {
 			long v = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos + aa];
-			tot += ACTIVEBKG->m_anchors[v].linked.size();
-
-			if(aa == l_try)
-				tot += ACTIVEBKG->m_anchors[v].linked.size();
+			total += ACTIVEBKG->m_anchors[v].linked.size();
+			if(aa == l_try) {
+				total += ACTIVEBKG->m_anchors[v].linked.size();
+			}
 		}
-
-		tot /= (float)(l_try + 1);
-
-		if(tot <= 3.5f)
+		
+		float average = float(total) / float(l_try + 1);
+		if(average <= 3.5f) {
 			continue;
-
+		}
+		
 		io->physics.startpos = io->pos;
 		long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos + l_try];
 		io->physics.targetpos = ACTIVEBKG->m_anchors[pos].pos;
