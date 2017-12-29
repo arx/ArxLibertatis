@@ -1473,7 +1473,7 @@ void HudRoot::draw() {
 	{
 		Rectf spacer;
 		spacer.left = healthGauge.rect().right;
-		spacer.bottom = g_size.bottom;
+		spacer.bottom = float(g_size.bottom);
 		spacer.top = spacer.bottom - indicatorVertSpacing;
 		spacer.right = spacer.left + indicatorHorizSpacing;
 		stealthGauge.updateRect(spacer);
