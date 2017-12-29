@@ -569,18 +569,11 @@ void MenuPage::UpdateText() {
 		TexturedVertex v[4];
 		GRenderer->ResetTexture(0);
 		v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toRGB();
-		v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;
-		v[0].w=v[1].w=v[2].w=v[3].w=1.f;
-		
-		v[0].p.x = m_selected->m_rect.right;
-		v[0].p.y = m_selected->m_rect.top;
-		v[1].p.x = v[0].p.x+2.f;
-		v[1].p.y = v[0].p.y;
-		v[2].p.x = v[0].p.x;
-		v[2].p.y = m_selected->m_rect.bottom;
-		v[3].p.x = v[1].p.x;
-		v[3].p.y = v[2].p.y;
-		
+		v[0].p = Vec3f(m_selected->m_rect.right, m_selected->m_rect.top, 0.f);
+		v[1].p = v[0].p + Vec3f(2.f, 0.f, 0.f);
+		v[2].p = Vec3f(m_selected->m_rect.right, m_selected->m_rect.bottom, 0.f);
+		v[3].p = v[2].p + Vec3f(2.f, 0.f, 0.f);
+		v[0].w = v[1].w = v[2].w = v[3].w = 1.f;
 		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
 }
