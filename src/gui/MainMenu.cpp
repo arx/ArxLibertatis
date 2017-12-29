@@ -1882,33 +1882,29 @@ protected:
 		PanelWidget * panel = new PanelWidget;
 		
 		{
-		std::string szMenuText = getLocalised(a, defaultText);
-		szMenuText += specialSuffix;
-		TextWidget * txt = new TextWidget(hFontControls, szMenuText, Vec2f(20, 0));
-		txt->SetCheckOff();
-		panel->AddElement(txt);
+			std::string szMenuText = getLocalised(a, defaultText);
+			szMenuText += specialSuffix;
+			TextWidget * txt = new TextWidget(hFontControls, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
 		}
 		
 		{
-		TextWidget * txt = new TextWidget(hFontControls, "---", Vec2f(150, 0));
-		
-		txt->m_isKeybind = true;
-		txt->m_keybindAction = controlAction;
-		txt->m_keybindIndex = 0;
-		
-		txt->eState = GETTOUCH;
-		panel->AddElement(txt);
+			TextWidget * txt = new TextWidget(hFontControls, "---", Vec2f(150, 0));
+			txt->m_isKeybind = true;
+			txt->m_keybindAction = controlAction;
+			txt->m_keybindIndex = 0;
+			txt->eState = GETTOUCH;
+			panel->AddElement(txt);
 		}
 		
 		{
-		TextWidget * txt = new TextWidget(hFontControls, "---", Vec2f(245, 0));
-		
-		txt->m_isKeybind = true;
-		txt->m_keybindAction = controlAction;
-		txt->m_keybindIndex = 1;
-		
-		txt->eState = GETTOUCH;
-		panel->AddElement(txt);
+			TextWidget * txt = new TextWidget(hFontControls, "---", Vec2f(245, 0));
+			txt->m_isKeybind = true;
+			txt->m_keybindAction = controlAction;
+			txt->m_keybindIndex = 1;
+			txt->eState = GETTOUCH;
+			panel->AddElement(txt);
 		}
 		
 		panel->Move(Vec2f(0, y));
