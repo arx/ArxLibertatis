@@ -311,8 +311,8 @@ void BackpackIconGui::updateInput() {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 				g_playerInventoryHud.close();
 			} else {
-				bInverseInventory=!bInverseInventory;
-				lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
+				bInverseInventory = !bInverseInventory;
+				lOldTruePlayerMouseLook = TRUE_PLAYER_MOUSELOOK_ON;
 			}
 		} else if(eeMouseDown2()) {
 			g_playerBook.close();
@@ -370,7 +370,8 @@ void StealIconGui::updateInput() {
 	// steal
 	if(player.Interface & INTER_STEAL) {
 		if(m_rect.contains(Vec2f(DANAEMouse))) {
-			eMouseState=MOUSE_IN_STEAL_ICON;
+			
+			eMouseState = MOUSE_IN_STEAL_ICON;
 			cursorSetInteraction();
 			
 			if(eeMouseDown1()) {
@@ -382,16 +383,18 @@ void StealIconGui::updateInput() {
 				
 				if(SecondaryInventory) {
 					SendIOScriptEvent(ioSteal, SM_STEAL);
-					
-					bForceEscapeFreeLook=true;
-					lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
+					bForceEscapeFreeLook = true;
+					lOldTruePlayerMouseLook = !TRUE_PLAYER_MOUSELOOK_ON;
 				}
 			}
 			
-			if(DRAGINTER == NULL)
+			if(DRAGINTER == NULL) {
 				return;
+			}
+			
 		}
 	}
+	
 }
 
 void StealIconGui::draw() {
@@ -909,7 +912,7 @@ void ScreenArrows::update() {
 	
 	fArrowMove += .5f * toMs(g_platformTime.lastFrameDuration());
 	if(fArrowMove > 180.f) {
-		fArrowMove=0.f;
+		fArrowMove = 0.f;
 	}
 	
 	float fMove = glm::abs(glm::sin(glm::radians(fArrowMove))) * m_horizontalArrowSize.x * m_scale * .5f;
@@ -919,6 +922,7 @@ void ScreenArrows::update() {
 	m_right  = createChild(parent, Anchor_RightCenter,  m_horizontalArrowSize * m_scale, Anchor_RightCenter);
 	m_top    = createChild(parent, Anchor_TopCenter,    m_verticalArrowSize * m_scale,   Anchor_TopCenter);
 	m_bottom = createChild(parent, Anchor_BottomCenter, m_verticalArrowSize * m_scale,   Anchor_BottomCenter);
+	
 }
 
 void ScreenArrows::draw() {
@@ -1304,7 +1308,7 @@ void StealthGauge::update() {
 	m_visible = false;
 	
 	if(!cinematicBorder.isActive()) {
-		float v=GetPlayerStealth();
+		float v = GetPlayerStealth();
 		
 		if(CURRENT_PLAYER_COLOR < v) {
 			float t = v - CURRENT_PLAYER_COLOR;
