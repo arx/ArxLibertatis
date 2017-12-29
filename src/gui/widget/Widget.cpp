@@ -31,8 +31,8 @@ Widget::Widget()
 	, enabled(true)
 	, bCheck(true)
 {
-	ePlace=NOCENTER;
-	eState=TNOP;
+	ePlace = NOCENTER;
+	eState = TNOP;
 	m_targetMenu = NOP;
 	m_shortcut = ActionKey::UNUSED;
 }
