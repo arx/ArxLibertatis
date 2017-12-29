@@ -81,7 +81,7 @@ extern char ** environ;
 namespace platform {
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-static process_handle run(const char * exe, const char * const args[], int stdout,
+static process_handle run(const char * exe, const char * const args[], int outfd,
                           bool unlocalized, bool detach) {
 	
 	char ** argv = const_cast<char **>(args);
@@ -99,7 +99,7 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 	
 	// Fast POSIX implementation: posix_spawnp avoids unnecessary vm copies
 	
-	if(stdout <= 0 && !unlocalized) {
+	if(outfd <= 0 && !unlocalized) {
 		
 		// Redirect standard input, output and error to /dev/null
 		static posix_spawn_file_actions_t * file_actionsp = NULL;
@@ -147,14 +147,14 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 			#if ARX_HAVE_OPEN
 			if(detach && dev_null > 0) {
 				(void)dup2(dev_null, 0);
-				if(stdout <= 0) {
+				if(outfd <= 0) {
 					dup2(dev_null, 1);
 				}
 				(void)dup2(dev_null, 2);
 			}
 			#endif
-			if(stdout > 0) {
-				(void)dup2(stdout, 1);
+			if(outfd > 0) {
+				(void)dup2(outfd, 1);
 			}
 			#endif
 			
@@ -183,7 +183,7 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 	}
 	
 	#if !ARX_HAVE_POSIX_SPAWNP && !(ARX_HAVE_FORK && ARX_HAVE_EXECVP)
-	ARX_UNUSED(argv), ARX_UNUSED(stdout), ARX_UNUSED(unlocalized), ARX_UNUSED(detach);
+	ARX_UNUSED(argv), ARX_UNUSED(outfd), ARX_UNUSED(unlocalized), ARX_UNUSED(detach);
 	#warning "Executing helper processes not supported on this system."
 	#endif
 	
@@ -229,7 +229,7 @@ process_handle runAsync(const char * exe, const char * const args[], bool detach
 	
 #else
 	
-	return run(exe, args, /*stdout=*/ 0, /*unlocalized=*/ false, detach);
+	return run(exe, args, /*outfd=*/ 0, /*unlocalized=*/ false, detach);
 	
 #endif
 	
