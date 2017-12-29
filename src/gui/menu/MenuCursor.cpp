@@ -143,18 +143,16 @@ MenuCursor::MenuCursor()
 {
 	exited = true;
 	
-	bMouseOver=false;
+	bMouseOver = false;
 	
-	m_currentFrame=0;
+	m_currentFrame = 0;
 	lFrameDiff = 0;
 }
 
-MenuCursor::~MenuCursor()
-{
-}
+MenuCursor::~MenuCursor() { }
 
 void MenuCursor::SetMouseOver() {
-	bMouseOver=true;
+	bMouseOver = true;
 }
 
 void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
@@ -199,9 +197,9 @@ void MenuCursor::DrawCursor() {
 	trail.draw();
 	
 	DrawOneCursor(GInput->getMousePosition());
-
+	
 	lFrameDiff += g_platformTime.lastFrameDuration();
-
+	
 	if(lFrameDiff > PlatformDurationMs(70)) {
 		if(bMouseOver) {
 			if(m_currentFrame < 4) {
@@ -211,16 +209,15 @@ void MenuCursor::DrawCursor() {
 					m_currentFrame--;
 				}
 			}
-			bMouseOver=false;
+			bMouseOver = false;
 		} else {
 			if(m_currentFrame > 0) {
 				m_currentFrame++;
-
-				if(m_currentFrame > 7)
-					m_currentFrame=0;
+				if(m_currentFrame > 7) {
+					m_currentFrame = 0;
+				}
 			}
 		}
-
 		lFrameDiff = 0;
 	}
 	
