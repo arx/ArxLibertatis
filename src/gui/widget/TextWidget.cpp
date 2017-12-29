@@ -37,7 +37,7 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-TextWidget::TextWidget(Font* font, const std::string& text, Vec2f pos) {
+TextWidget::TextWidget(Font * font, const std::string & text, Vec2f pos) {
 	
 	m_font = font;
 	
@@ -49,7 +49,7 @@ TextWidget::TextWidget(Font* font, const std::string& text, Vec2f pos) {
 	SetText(text);
 	
 	lColor = Color(232, 204, 142);
-	lColorHighlight=lOldColor=Color(255, 255, 255);
+	lColorHighlight = lOldColor = Color(255, 255, 255);
 
 	bSelected = false;
 	
@@ -94,13 +94,15 @@ bool TextWidget::OnMouseClick() {
 	}
 	
 	switch(eState) {
-		case EDIT:
-			eState=EDIT_TIME;
+		case EDIT: {
+			eState = EDIT_TIME;
 			return true;
-		case GETTOUCH:
-			eState=GETTOUCH_TIME;
-			lOldColor=lColorHighlight;
+		}
+		case GETTOUCH: {
+			eState = GETTOUCH_TIME;
+			lOldColor = lColorHighlight;
 			return true;
+		}
 		default: break;
 	}
 	
