@@ -95,6 +95,9 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
 	for(size_t i = 0; i < m_textures.size(); i++) {
 		node = m_textures[i]->insertImage(image);
 		nodeTree = i;
+		if(node) {
+			break;
+		}
 	}
 	
 	// No space found, create a new texture
