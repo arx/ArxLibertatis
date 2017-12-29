@@ -589,7 +589,7 @@ void ScriptConsole::draw() {
 	
 	{
 		Rectf box = Rectf(g_size);
-		box.bottom = box.top + (m_buffer.lines() + 1) * hFontDebug->getLineHeight() + 4;
+		box.bottom = box.top + float((m_buffer.lines() + 1) * hFontDebug->getLineHeight()) + 4.f;
 		EERIEDrawBitmap(box, 0.f, NULL, background);
 	}
 	
