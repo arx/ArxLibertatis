@@ -67,7 +67,7 @@ protected:
 			bool used;
 		};
 		
-		explicit TextureTree(unsigned int textureSize, Image::Format textureFormat);
+		explicit TextureTree(size_t textureSize, Image::Format textureFormat);
 		~TextureTree();
 		
 		Node * insertImage(const Image & pImg);

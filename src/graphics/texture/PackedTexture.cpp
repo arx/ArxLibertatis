@@ -47,8 +47,7 @@ void PackedTexture::upload() {
 	}
 }
 
-PackedTexture::TextureTree::TextureTree(unsigned int textureSize,
-                                        Image::Format textureFormat) {
+PackedTexture::TextureTree::TextureTree(size_t textureSize, Image::Format textureFormat) {
 	
 	root.rect = Rect(0, 0, textureSize - 1, textureSize - 1);
 	
