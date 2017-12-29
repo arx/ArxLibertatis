@@ -16,7 +16,20 @@ def checkCinematics():
 
     log.info('Found {} cinematics'.format((len(arxFiles.cinematics.cins))))
     for cinematicFile in arxFiles.cinematics.cins:
-        cinSerializer.read(cinematicFile)
+        cinematic = cinSerializer.read(cinematicFile)
+        for keyframe in cinematic.keyframes:
+            img = keyframe.image[1]
+            if img not in arxFiles.cinematics.textures.keys():
+                log.warning('Texture {} not found !', img)
+
+            if keyframe.sound:
+                for lang, files in arxFiles.audioSpeech.speeches.items():
+                    if keyframe.sound not in files:
+                        log.warning('Sound {} for Lang {} not found !'.format(keyframe.sound, lang))
+                    #else:
+                    #    log.info('Sound {} found'.format(keyframe.sound))
+
+
     log.info('Done')
 
 if __name__ == "__main__":
