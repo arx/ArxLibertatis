@@ -611,10 +611,10 @@ std::vector<std::string> SaveBlock::getFiles() const {
 	return result;
 }
 
-char * SaveBlock::load(const fs::path & savefile, const std::string & filename, size_t & size) {
+char * SaveBlock::load(const fs::path & savefile, const std::string & name, size_t & size) {
 	
-	arx_assert_msg(filename.find_first_of(BADSAVCHAR) == std::string::npos,
-	               "bad save filename: \"%s\"", filename.c_str());
+	arx_assert_msg(name.find_first_of(BADSAVCHAR) == std::string::npos,
+	               "bad save filename: \"%s\"", name.c_str());
 	
 	LogDebug("reading savefile " << savefile);
 	
@@ -653,14 +653,14 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 	for(u32 i = 0; i < nFiles; i++) {
 		
 		// Read the file name.
-		std::string name;
-		if(fs::read(handle, name).fail()) {
+		std::string filename;
+		if(fs::read(handle, filename).fail()) {
 			return NULL;
 		}
 		if(version < SAV_VERSION_NOEXT) {
-			boost::to_lower(name);
-			if(name.size() > 4 && !name.compare(name.size() - 4, 4, ".sav", 4)) {
-				name.resize(name.size() - 4);
+			boost::to_lower(filename);
+			if(filename.size() > 4 && !filename.compare(filename.size() - 4, 4, ".sav", 4)) {
+				filename.resize(filename.size() - 4);
 			}
 		}
 		
@@ -672,7 +672,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 			continue;
 		}
 		
-		if(name != filename) {
+		if(filename != name) {
 			file.chunks.clear();
 			continue;
 		}
