@@ -660,10 +660,8 @@ void MenuPage::Update(Vec2f pos) {
 
 	m_children.Move(m_pos - m_oldPos);
 	
-	m_oldPos.x=m_pos.x;
-	m_oldPos.y=m_pos.y;
+	m_oldPos = m_pos;
 	m_pos = pos;
-	
 	
 	if(!bEdit) {
 		
