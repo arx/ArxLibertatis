@@ -129,12 +129,13 @@ bool CycleTextWidget::OnMouseClick() {
 	}
 	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-
-	if(iOldPos<0)
-		iOldPos=iPos;
+	
+	if(iOldPos < 0) {
+		iOldPos = iPos;
+	}
 	
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
-
+	
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
 			iPos--;
