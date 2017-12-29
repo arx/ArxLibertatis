@@ -136,8 +136,8 @@ bool Font::insertGlyph(Char character) {
 	glyph.index = glyphIndex;
 	glyph.size.x = m_face->glyph->bitmap.width;
 	glyph.size.y = m_face->glyph->bitmap.rows;
-	glyph.advance.x = m_face->glyph->linearHoriAdvance / 65536.0f;
-	glyph.advance.y = m_face->glyph->linearVertAdvance / 65536.0f;
+	glyph.advance.x = float(m_face->glyph->linearHoriAdvance) / 65536.f;
+	glyph.advance.y = float(m_face->glyph->linearVertAdvance) / 65536.f;
 	glyph.lsb_delta = m_face->glyph->lsb_delta;
 	glyph.rsb_delta = m_face->glyph->rsb_delta;
 	glyph.draw_offset.x = m_face->glyph->bitmap_left;
@@ -171,7 +171,7 @@ bool Font::insertGlyph(Char character) {
 		}
 		
 		// Compute UV mapping for each glyph.
-		const float textureSize = m_textures->getTextureSize();
+		const float textureSize = float(m_textures->getTextureSize());
 		glyph.uv_start = Vec2f(offset) / Vec2f(textureSize);
 		glyph.uv_end = Vec2f(offset + glyph.size) / Vec2f(textureSize);
 	}
