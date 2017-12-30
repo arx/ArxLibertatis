@@ -77,7 +77,7 @@ extern MASTER_CAMERA_STRUCT MasterCamera;
 
 void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport, const Vec2i & projectionCenter);
 inline void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport) {
-	PrepareCamera(cam, viewport, cam->center);
+	PrepareCamera(cam, viewport, viewport.center());
 }
 
 extern EERIE_CAMERA * ACTIVECAM;
