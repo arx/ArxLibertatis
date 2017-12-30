@@ -23,6 +23,7 @@
 
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "game/Camera.h"
 #include "graphics/Color.h"
 #include "graphics/GlobalFog.h"
 #include "graphics/Math.h"
@@ -128,8 +129,6 @@ void ParticleSparkUpdate() {
 		return;
 	}
 	
-	Camera * cam = &subj;
-	
 	const GameInstant now = g_gameTime.now();
 	
 	RenderMaterial sparkMaterial;
@@ -168,7 +167,7 @@ void ParticleSparkUpdate() {
 		
 		worldToClipSpace(in, tv[0]);
 		
-		if(tv[0].w < 0 || tv[0].p.z > cam->cdepth * fZFogEnd * tv[0].w) {
+		if(tv[0].w < 0 || tv[0].p.z > ACTIVECAM->cdepth * fZFogEnd * tv[0].w) {
 			continue;
 		}
 		
