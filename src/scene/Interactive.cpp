@@ -2154,7 +2154,7 @@ void UpdateCameras() {
 				io->target += io->_camdata->translatetarget;
 
 				Vec3f target = io->target;
-				if(io->_camdata->cam.lastinfovalid && io->_camdata->cam.smoothing != 0.f) {
+				if(io->_camdata->lastinfovalid && io->_camdata->cam.smoothing != 0.f) {
 
 					float vv = io->_camdata->cam.smoothing;
 
@@ -2189,7 +2189,7 @@ void UpdateCameras() {
 				io->_camdata->lasttarget = io->target;
 			}
 
-			io->_camdata->cam.lastinfovalid = true;
+			io->_camdata->lastinfovalid = true;
 		}
 	}
 }

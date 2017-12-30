@@ -2934,7 +2934,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		if(wp >= 0) {
 			io->target = tp;
 		} else if(io->ioflags & IO_CAMERA) {
-			io->_camdata->cam.lastinfovalid = false;
+			io->_camdata->lastinfovalid = false;
 		}
 		
 		return;
