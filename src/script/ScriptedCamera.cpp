@@ -105,7 +105,7 @@ public:
 		
 		DebugScript(' ' << smoothing);
 		
-		context.getEntity()->_camdata->cam.smoothing = smoothing;
+		context.getEntity()->_camdata->smoothing = smoothing;
 		
 		return Success;
 	}
