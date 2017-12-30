@@ -61,7 +61,7 @@ void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport, const Vec2i & proj
 	cam->m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
 	GRenderer->SetViewMatrix(cam->m_worldToView);
 	
-	const Vec2f center = Vec2f(projectionCenter);
+	const Vec2f center = Vec2f(projectionCenter - viewport.topLeft());
 	glm::mat4x4 projectionMatrix = createProjectionMatrix(Vec2f(viewport.size()), center, cam);
 	GRenderer->SetProjectionMatrix(projectionMatrix);
 	
