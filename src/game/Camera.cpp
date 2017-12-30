@@ -56,12 +56,13 @@ static glm::mat4x4 createProjectionMatrix(const Vec2f & size, const Vec2f & cent
 	return centerShift * projectionMatrix;
 }
 
-void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport) {
+void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport, const Vec2i & projectionCenter) {
 	
 	cam->m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
 	GRenderer->SetViewMatrix(cam->m_worldToView);
 	
-	glm::mat4x4 projectionMatrix = createProjectionMatrix(Vec2f(viewport.size()), Vec2f(cam->center), cam);
+	const Vec2f center = Vec2f(projectionCenter);
+	glm::mat4x4 projectionMatrix = createProjectionMatrix(Vec2f(viewport.size()), center, cam);
 	GRenderer->SetProjectionMatrix(projectionMatrix);
 	
 	// Change coordinate system from [-1, 1] x [-1, 1] to [0, width] x [0, height] and flip the y axis
