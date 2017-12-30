@@ -1683,10 +1683,7 @@ void ForcePlayerLookAtIO(Entity * io) {
 	}
 
 	tcam.setTargetCamera(target);
-	player.angle.setPitch(tcam.angle.getPitch());
-	player.angle.setYaw(tcam.angle.getYaw());
-	player.angle.setRoll(0);
-	player.desiredangle = player.angle;
+	player.desiredangle = player.angle = tcam.angle;
 }
 
 /*!
