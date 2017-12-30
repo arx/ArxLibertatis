@@ -131,7 +131,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 	light->fallend = light->fallstart + 600.f;
 	RecalcLight(light);
 	
-	EERIE_CAMERA * oldcam = ACTIVECAM;
+	Camera * oldcam = ACTIVECAM;
 	
 	g_culledDynamicLights[0] = light;
 	g_culledDynamicLightsCount = 1;

@@ -22,7 +22,6 @@
 
 #include "math/Types.h"
 
-struct EERIE_CAMERA;
 class Entity;
 
 void MagicFlareLoadTextures();

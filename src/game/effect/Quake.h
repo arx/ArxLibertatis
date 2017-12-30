@@ -25,6 +25,6 @@
 void AddQuakeFX(float intensity, float duration, float period, bool flags);
 void RemoveQuakeFX();
 
-void ManageQuakeFX(EERIE_CAMERA *cam);
+void ManageQuakeFX(Camera * cam);
 
 #endif // ARX_GAME_EFFECT_QUAKE_H

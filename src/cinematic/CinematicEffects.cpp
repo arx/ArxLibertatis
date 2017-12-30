@@ -87,7 +87,7 @@ Color FX_FadeOUT(float a, Color color, Color colord)
 
 static float LastTime;
 
-bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
+bool FX_Blur(Cinematic *c, CinematicBitmap *tb, Camera & camera)
 {
 	if(c->numbitmap < 0 || !tb)
 		return false;

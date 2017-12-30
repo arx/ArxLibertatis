@@ -71,7 +71,7 @@ void RemoveQuakeFX() {
 	QuakeFx.intensity = 0.f;
 }
 
-void ManageQuakeFX(EERIE_CAMERA * cam) {
+void ManageQuakeFX(Camera * cam) {
 	if(QuakeFx.intensity > 0.f) {
 		GameDuration tim = g_gameTime.now() - QuakeFx.start;
 

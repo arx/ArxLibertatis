@@ -775,7 +775,7 @@ void spawn2DFireParticle(const Vec2f & pos, float scale) {
 
 
 
-void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
+void ARX_PARTICLES_Update(Camera * cam)  {
 	
 	ARX_PROFILE_FUNC();
 	
