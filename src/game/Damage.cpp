@@ -511,13 +511,11 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 
 	if(io_dead == FlyingOverIO)
 		FlyingOverIO = NULL;
-
-	if((MasterCamera.exist & 1) && (MasterCamera.io == io_dead))
-		MasterCamera.exist = 0;
-
-	if((MasterCamera.exist & 2) && (MasterCamera.want_io == io_dead))
-		MasterCamera.exist = 0;
-
+	
+	if(g_cameraEntity == io_dead) {
+		g_cameraEntity = NULL;
+	}
+	
 	lightHandleDestroy(io_dead->dynlight);
 	
 	//Kill all speeches

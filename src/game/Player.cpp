@@ -2647,7 +2647,7 @@ void ARX_GAME_Reset() {
 	Set_DragInter(NULL);
 	SecondaryInventory = NULL;
 	TSecondaryInventory = NULL;
-	MasterCamera.exist = 0;
+	g_cameraEntity = NULL;
 	CHANGE_LEVEL_ICON = NoChangeLevel;
 	
 	// Kill Script Loaded IO

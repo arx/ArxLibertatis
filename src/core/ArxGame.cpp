@@ -1552,24 +1552,15 @@ void ArxGame::handlePlayerDeath() {
 }
 
 void ArxGame::updateActiveCamera() {
-
+	
 	ARX_PROFILE_FUNC();
 	
 	Camera * cam = NULL;
-
-	if(MasterCamera.exist) {
-		
-		if(MasterCamera.exist & 2) {
-			MasterCamera.exist &= ~2;
-			MasterCamera.exist |= 1;
-			MasterCamera.io = MasterCamera.want_io;
-		}
-		
-		cam = &MasterCamera.io->_camdata->cam;
-
-		if(cam->focal < 100.f)
+	if(g_cameraEntity) {
+		cam = &g_cameraEntity->_camdata->cam;
+		if(cam->focal < 100.f) {
 			cam->focal = 350.f;
-
+		}
 		EXTERNALVIEW = true;
 	} else {
 		cam = &subj;
