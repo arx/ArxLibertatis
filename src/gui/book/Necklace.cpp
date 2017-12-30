@@ -149,11 +149,10 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 		
 		EERIE_3DOBJ * rune = gui::necklace.runes[i];
 		
-		bookcam.center.x = s32((382 + tmpPos.x * 45 + BOOKDEC.x) * g_sizeRatio.x);
-		bookcam.center.y = s32((100 + tmpPos.y * 64 + BOOKDEC.y) * g_sizeRatio.y);
+		bookcam.center = (Vec2f(382, 100) + Vec2f(tmpPos) * Vec2f(45, 64) + BOOKDEC) * g_sizeRatio;
 		
 		SetActiveCamera(&bookcam);
-		PrepareCamera(&bookcam, g_size);
+		PrepareCamera(&bookcam, g_size, bookcam.center);
 		
 		if(player.hasRune((Rune)i)) {
 			Anglef angle = Anglef::ZERO;
