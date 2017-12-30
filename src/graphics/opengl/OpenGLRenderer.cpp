@@ -495,8 +495,8 @@ void OpenGLRenderer::disableTransform() {
 	glTranslatef(-1.f, 1.f, 0.f);
 	glScalef(2.f/viewport.width(), -2.f/viewport.height(), 1.f);
 	
-	// Change the viewport and pixel origins
-	glTranslatef(.5f - viewport.left, .5f - viewport.top, 0.f);
+	// Change pixel origins
+	glTranslatef(0.5f, 0.5f, 0.f);
 	
 	if(hasVertexFogCoordinate()) {
 		glFogi(GL_FOG_COORDINATE_SOURCE, GL_FOG_COORDINATE);
