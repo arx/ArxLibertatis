@@ -1599,7 +1599,6 @@ void ArxGame::updateActiveCamera() {
 
 	// Recenter Viewport depending on Resolution
 	ACTIVECAM->center = Vec2i(g_size.center().x, g_size.center().y);
-	ACTIVECAM->m_mod = Vec2f(ACTIVECAM->center);
 }
 
 void ArxGame::updateTime() {
@@ -2076,7 +2075,6 @@ void ArxGame::render() {
 	ARX_PLAYER_Frame_Update();
 		
 	subj.center = Vec2i(g_size.center().x, g_size.center().y);
-	subj.m_mod = Vec2f(subj.center);
 	
 	PULSATE = timeWaveSin(g_gameTime.now(), GameDurationMsf(5026.548245f));
 	EERIEDrawnPolys = 0;

@@ -989,8 +989,8 @@ struct SavedCamera {
 	f32 xsin; // TODO Remove
 	f32 xcos; // TODO Remove
 	f32 use_focal1; //TODO Remove
-	f32 xmod;
-	f32 ymod;
+	f32 xmod; // TODO Remove
+	f32 ymod; // TODO Remove
 	f32 zmod; // TODO Remove
 	
 	SavedVec3 pos2; // TODO Remove
@@ -1045,8 +1045,6 @@ struct SavedCamera {
 		EERIE_CAMERA a;
 		
 		a.m_pos = pos.toVec3();
-		a.m_mod.x = xmod;
-		a.m_mod.y = ymod;
 		
 		a.focal = focal;
 		
@@ -1075,8 +1073,8 @@ struct SavedCamera {
 		xsin = 0.f;
 		xcos = 0.f;
 		use_focal1 = 0.f;
-		xmod = b.m_mod.x;
-		ymod = b.m_mod.y;
+		xmod = b.center.x;
+		ymod = b.center.y;
 		zmod = 0.f;
 		
 		//TODO Remove
@@ -1090,8 +1088,8 @@ struct SavedCamera {
 
 		use_focal = 0.f;
 
-		posleft = b.m_mod.x;
-		postop  = b.m_mod.y;
+		posleft = b.center.x;
+		postop  = b.center.y;
 
 		focal = b.focal;
 		Zmul = 0.f;
