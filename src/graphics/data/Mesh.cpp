@@ -468,12 +468,8 @@ Vec3f EE_RT(const Vec3f & in) {
 	return Vec3f(g_preparedCamera.m_worldToView * Vec4f(in, 1.0f));
 }
 
-static Vec4f viewToClipSpace(const Vec3f & in) {
-	return g_preparedCamera.m_viewToScreen * Vec4f(in, 1.0f);
-}
-
 Vec4f worldToClipSpace(const Vec3f & in) {
-	return viewToClipSpace(EE_RT(in));
+	return g_preparedCamera.m_worldToScreen * Vec4f(in, 1.0f);
 }
 
 void worldToClipSpace(const Vec3f & in, TexturedVertex & out) {
