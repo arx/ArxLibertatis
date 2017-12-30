@@ -27,7 +27,7 @@
 
 MASTER_CAMERA_STRUCT MasterCamera;
 
-static glm::mat4x4 createProjectionMatrix(float width, float height, EERIE_CAMERA * cam) {
+static glm::mat4x4 createProjectionMatrix(const Vec2f & size, EERIE_CAMERA * cam) {
 
 	float fov = focalToFov(cam->focal);
 	
@@ -35,7 +35,7 @@ static glm::mat4x4 createProjectionMatrix(float width, float height, EERIE_CAMER
 	const float farDist = cam->cdepth;
 	const float frustumDepth = farDist - nearDist;
 	
-	float aspect = height / width;
+	float aspect = size.y / size.x;
 	float w = aspect * (glm::cos(fov / 2) / glm::sin(fov / 2));
 	float h =   1.0f  * (glm::cos(fov / 2) / glm::sin(fov / 2));
 	float Q = farDist / frustumDepth;
@@ -56,7 +56,7 @@ void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport) {
 	cam->m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
 	GRenderer->SetViewMatrix(cam->m_worldToView);
 	
-	glm::mat4x4 projectionMatrix = createProjectionMatrix(float(viewport.width()), float(viewport.height()), cam);
+	glm::mat4x4 projectionMatrix = createProjectionMatrix(Vec2f(viewport.size()), cam);
 	GRenderer->SetProjectionMatrix(projectionMatrix);
 	
 	glm::mat4x4 ndcToScreen(1);
