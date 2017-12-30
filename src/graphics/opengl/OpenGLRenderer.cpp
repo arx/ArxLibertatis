@@ -493,7 +493,7 @@ void OpenGLRenderer::disableTransform() {
 	
 	// Change coordinate system from [0, width] x [0, height] to [-1, 1] x [-1, 1] and flip the y axis
 	glTranslatef(-1.f, 1.f, 0.f);
-	glScalef(2.f/viewport.width(), -2.f/viewport.height(), 1.f);
+	glScalef(2.f / viewport.width(), -2.f / viewport.height(), 1.f);
 	
 	// Change pixel origins
 	glTranslatef(0.5f, 0.5f, 0.f);
