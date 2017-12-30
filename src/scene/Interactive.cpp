@@ -2158,6 +2158,7 @@ void UpdateCameras() {
 				GetTargetPos(io, (unsigned long)io->_camdata->cam.smoothing);
 				io->target += io->_camdata->cam.translatetarget;
 
+				Vec3f target = io->target;
 				if(io->_camdata->cam.lastinfovalid && io->_camdata->cam.smoothing != 0.f) {
 
 					float vv = io->_camdata->cam.smoothing;
@@ -2173,18 +2174,15 @@ void UpdateCameras() {
 						f1 = 1.f;
 
 					float f2 = 1.f - f1;
-					Vec3f smoothtarget = io->target * f2 + io->_camdata->cam.lasttarget * f1;
-
-					io->_camdata->cam.setTargetCamera(smoothtarget);
-					io->_camdata->cam.lasttarget = smoothtarget;
-				} else {
-					io->_camdata->cam.setTargetCamera(io->target);
-					io->_camdata->cam.lasttarget = io->target;
+					target = io->target * f2 + io->_camdata->cam.lasttarget * f1;
 				}
-
+				
+				io->_camdata->cam.setTargetCamera(target);
+				io->_camdata->cam.lasttarget = target;
 				io->angle.setPitch(0.f);
 				io->angle.setYaw(io->_camdata->cam.angle.getYaw() + 90.f);
 				io->angle.setRoll(0.f);
+				
 			} else {
 				// no target...
 				io->target = io->pos;
