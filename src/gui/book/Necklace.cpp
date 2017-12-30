@@ -155,7 +155,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 		
 		EERIE_3DOBJ * rune = gui::necklace.runes[i];
 		
-		Vec2i projectionCenter = (Vec2f(382, 100) + Vec2f(tmpPos) * Vec2f(45, 64) + BOOKDEC) * g_sizeRatio;
+		Vec2i projectionCenter = Vec2i((Vec2f(382, 100) + Vec2f(tmpPos) * Vec2f(45, 64) + BOOKDEC) * g_sizeRatio);
 		
 		PrepareCamera(&bookcam, g_size, projectionCenter);
 		
