@@ -26,6 +26,7 @@
 
 
 MASTER_CAMERA_STRUCT MasterCamera;
+PreparedCamera g_preparedCamera;
 
 Anglef Camera::getLookAtAngle(const Vec3f & origin, const Vec3f & target) {
 	
@@ -74,8 +75,8 @@ void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projection
 	
 	SetActiveCamera(cam);
 	
-	cam->m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
-	GRenderer->SetViewMatrix(cam->m_worldToView);
+	g_preparedCamera.m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
+	GRenderer->SetViewMatrix(g_preparedCamera.m_worldToView);
 	
 	const Vec2f center = Vec2f(projectionCenter - viewport.topLeft());
 	glm::mat4x4 projectionMatrix = createProjectionMatrix(Vec2f(viewport.size()), center, cam);
@@ -86,7 +87,7 @@ void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projection
 	ndcToScreen = glm::scale(ndcToScreen, Vec3f(Vec2f(viewport.size()) / 2.f, 1.f));
 	ndcToScreen = glm::translate(ndcToScreen, Vec3f(1.f, 1.f, 0.f));
 	ndcToScreen = glm::scale(ndcToScreen, Vec3f(1.f, -1.f, 1.f));
-	cam->m_viewToScreen = ndcToScreen * projectionMatrix;
+	g_preparedCamera.m_viewToScreen = ndcToScreen * projectionMatrix;
 	
 	GRenderer->SetViewport(viewport);
 	

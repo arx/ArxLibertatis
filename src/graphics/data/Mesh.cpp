@@ -465,7 +465,7 @@ bool GetTruePolyY(const PortalPoly * ep, const Vec3f & pos, float * ret) {
 BackgroundData * ACTIVEBKG = NULL;
 
 Vec3f EE_RT(const Vec3f & in) {
-	return Vec3f(g_camera->m_worldToView * Vec4f(in, 1.0f));
+	return Vec3f(g_preparedCamera.m_worldToView * Vec4f(in, 1.0f));
 }
 
 static Vec4f viewToClipSpace(const Vec3f & in) {
@@ -473,9 +473,9 @@ static Vec4f viewToClipSpace(const Vec3f & in) {
 	float z = in.z;
 	
 	Vec4f out;
-	out.x = in.x * g_camera->m_viewToScreen[0][0] + z * g_camera->m_viewToScreen[2][0];
-	out.y = in.y * g_camera->m_viewToScreen[1][1] + z * g_camera->m_viewToScreen[2][1];
-	out.z = in.z * g_camera->m_viewToScreen[2][2] + g_camera->m_viewToScreen[3][2];
+	out.x = in.x * g_preparedCamera.m_viewToScreen[0][0] + z * g_preparedCamera.m_viewToScreen[2][0];
+	out.y = in.y * g_preparedCamera.m_viewToScreen[1][1] + z * g_preparedCamera.m_viewToScreen[2][1];
+	out.z = in.z * g_preparedCamera.m_viewToScreen[2][2] + g_preparedCamera.m_viewToScreen[3][2];
 	out.w = z;
 	return out;
 }
