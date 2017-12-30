@@ -65,6 +65,7 @@ struct PreparedCamera {
 extern Entity * g_cameraEntity;
 extern PreparedCamera g_preparedCamera;
 extern Camera * g_camera;
+extern Camera g_playerCamera;
 
 void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projectionCenter);
 inline void PrepareCamera(Camera * cam, const Rect & viewport) {
