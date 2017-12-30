@@ -35,8 +35,6 @@ struct Camera {
 
 	Anglef angle;
 
-	bool lastinfovalid;
-
 	float smoothing;
 
 	float cdepth;
@@ -59,6 +57,7 @@ struct IO_CAMDATA {
 	
 	Vec3f lasttarget;
 	Vec3f translatetarget;
+	bool lastinfovalid;
 	
 	ARX_USE_ALIGNED_NEW(IO_CAMDATA) // for cam
 };

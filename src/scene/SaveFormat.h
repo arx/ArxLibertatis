@@ -1050,8 +1050,6 @@ struct SavedCamera {
 		
 		a.angle = angle;
 		
-		a.lastinfovalid = lastinfovalid != 0;
-		
 		a.smoothing = smoothing;
 		
 		a.cdepth = cdepth;
@@ -1097,7 +1095,6 @@ struct SavedCamera {
 		d_pos = Vec3f_ZERO;
 		d_angle = Anglef::ZERO;
 		lastpos = b.m_pos;
-		lastinfovalid = b.lastinfovalid;
 		norm = Vec3f(0.f, 0.f, 0.f); //TODO Remove
 		fadecolor = Color3f::black;
 		clip = Rect::ZERO;
@@ -1138,6 +1135,7 @@ struct ARX_CHANGELEVEL_CAMERA_IO_SAVE {
 		
 		a.lasttarget = cam.lasttarget.toVec3();
 		a.translatetarget = cam.translatetarget.toVec3();
+		a.lastinfovalid = cam.lastinfovalid != 0;
 		
 		return a;
 	}
@@ -1148,6 +1146,7 @@ struct ARX_CHANGELEVEL_CAMERA_IO_SAVE {
 		
 		cam.lasttarget = b.lasttarget;
 		cam.translatetarget = b.translatetarget;
+		cam.lastinfovalid = b.lastinfovalid;
 		
 		return *this;
 	}
