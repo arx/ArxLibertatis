@@ -835,7 +835,6 @@ bool ArxGame::initGame()
 	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
 
 	subj.m_pos = Vec3f(900.f, player.baseHeight(), 4340.f);
-	subj.clip = Rect(0, 0, 640, 480);
 	subj.center = Vec2i(320, 240);
 	subj.focal = defaultCameraFocal;
 	subj.cdepth = 2100.f;

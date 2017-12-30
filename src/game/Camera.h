@@ -45,7 +45,6 @@ struct EERIE_CAMERA {
 	Vec3f lastpos;
 	Vec3f translatetarget;
 	bool lastinfovalid;
-	Rect clip;
 	Vec2i center;
 
 	float smoothing;
