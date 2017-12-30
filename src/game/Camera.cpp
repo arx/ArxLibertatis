@@ -60,7 +60,7 @@ void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	
 	cam->m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
 	
-	cam->m_mod = Vec2f(cam->center + cam->clip.topLeft());
+	cam->m_mod = Vec2f(cam->center);
 }
 
 void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
