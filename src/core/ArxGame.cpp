@@ -1956,7 +1956,7 @@ void ArxGame::renderLevel() {
 	arx_assert(pParticleManager);
 	pParticleManager->Render();
 	
-	ARX_PARTICLES_Update(&subj);
+	ARX_PARTICLES_Update();
 	ParticleSparkUpdate();
 	
 	// End Particles

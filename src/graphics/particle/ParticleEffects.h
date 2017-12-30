@@ -59,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/Flags.h"
 
 struct EERIEPOLY;
-struct Camera;
 struct Sphere;
 class TextureContainer;
 class Entity;
@@ -153,7 +152,7 @@ long getParticleCount();
 
 void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();
-void ARX_PARTICLES_Update(Camera * cam);
+void ARX_PARTICLES_Update();
 void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle source);
 void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io);
 void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f pos, Entity * io = NULL);
