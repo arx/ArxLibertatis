@@ -265,7 +265,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			
 			float div_ti = 1.f / ti;
 
-			Vec2s pos1 = Vec2s(subj.center) - symbolVecScale * short(2) + sd->cPosStart * symbolVecScale;
+			Vec2s pos1 = Vec2s(g_size.center()) - symbolVecScale * short(2) + sd->cPosStart * symbolVecScale;
 
 			Vec2s old_pos = pos1;
 
