@@ -171,7 +171,7 @@ public:
 		
 		DebugScript(' ' << x << ' ' << y << ' ' << z);
 		
-		context.getEntity()->_camdata->cam.translatetarget = Vec3f(x, y, z);
+		context.getEntity()->_camdata->translatetarget = Vec3f(x, y, z);
 		
 		return Success;
 	}

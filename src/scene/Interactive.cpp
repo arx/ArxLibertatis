@@ -2151,7 +2151,7 @@ void UpdateCameras() {
 			if(io->targetinfo != EntityHandle(TARGET_NONE)) {
 				// Follows target
 				GetTargetPos(io, (unsigned long)io->_camdata->cam.smoothing);
-				io->target += io->_camdata->cam.translatetarget;
+				io->target += io->_camdata->translatetarget;
 
 				Vec3f target = io->target;
 				if(io->_camdata->cam.lastinfovalid && io->_camdata->cam.smoothing != 0.f) {
