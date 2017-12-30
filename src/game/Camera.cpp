@@ -27,7 +27,7 @@
 
 MASTER_CAMERA_STRUCT MasterCamera;
 
-static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * cam) {
+static glm::mat4x4 EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * cam) {
 
 	float fov = focalToFov(cam->focal);
 	
@@ -47,12 +47,8 @@ static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * ca
 	projectionMatrix[3][2] = -Q * nearDist;
 	projectionMatrix[2][3] = 1.f;
 	projectionMatrix[3][3] = 0.f;
-	GRenderer->SetProjectionMatrix(projectionMatrix);
 	
-	glm::mat4x4 ndcToScreen = glm::scale(glm::mat4x4(1), Vec3f(width * 0.5f, -height * 0.5f, 1.f));
-	
-	cam->ProjectionMatrix = ndcToScreen * projectionMatrix;
-	
+	return projectionMatrix;
 }
 
 void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
@@ -60,11 +56,13 @@ void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
 	cam->m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
 	GRenderer->SetViewMatrix(cam->m_worldToView);
 	
-	cam->m_mod = Vec2f(cam->center);
+	glm::mat4x4 projectionMatrix = EERIE_CreateMatriceProj(float(size.width()), float(size.height()), cam);
+	GRenderer->SetProjectionMatrix(projectionMatrix);
 	
-	EERIE_CreateMatriceProj(static_cast<float>(size.width()),
-	                        static_cast<float>(size.height()),
-	                        cam);
+	cam->m_mod = Vec2f(cam->center);
+	glm::mat4x4 ndcToScreen(1);
+	ndcToScreen = glm::scale(ndcToScreen, Vec3f(float(size.width()) * 0.5f, -float(size.height()) * 0.5f, 1.f));
+	cam->ProjectionMatrix = ndcToScreen * projectionMatrix;
 	
 	GRenderer->SetViewport(size);
 	
