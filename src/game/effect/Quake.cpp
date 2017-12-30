@@ -20,6 +20,7 @@
 #include "game/effect/Quake.h"
 
 #include "core/GameTime.h"
+#include "game/Camera.h"
 #include "math/RandomVector.h"
 #include "scene/GameSound.h"
 
