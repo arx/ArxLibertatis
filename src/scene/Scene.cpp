@@ -264,7 +264,7 @@ bool VisibleSphere(const Sphere & sphere) {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(fartherThan(sphere.origin, ACTIVECAM->m_pos, ACTIVECAM->cdepth*0.5f + sphere.radius)) {
+	if(fartherThan(sphere.origin, g_camera->m_pos, g_camera->cdepth * 0.5f + sphere.radius)) {
 		return false;
 	}
 	
@@ -506,10 +506,8 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 	float height = 0.f;
 	
 	if(flag & 1) {
-		Vec3f cameraPos = ACTIVECAM->m_pos;
-		Vec3f direction = angleToVectorXZ_180offset(ACTIVECAM->angle.getYaw());
-		
-		EERIEPOLY * ep = ARX_PORTALS_GetRoomNumForCamera(cameraPos, direction);
+		Vec3f direction = angleToVectorXZ_180offset(g_camera->angle.getYaw());
+		EERIEPOLY * ep = ARX_PORTALS_GetRoomNumForCamera(g_camera->m_pos, direction);
 		if(ep) {
 			num = ep->room;
 			height = ep->center.y;
@@ -683,11 +681,11 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	
 	EERIE_FRUSTRUM frustrum;
 	
-	// TODO get this from ACTIVECAM instead
+	// TODO get this from g_camera instead
 	glm::mat4x4 matProj;
 	GRenderer->GetProjectionMatrix(matProj);
 	
-	glm::mat4x4 matres = matProj * ACTIVECAM->m_worldToView;
+	glm::mat4x4 matres = matProj * g_camera->m_worldToView;
 	
 	{
 	Plane & plane = frustrum.plane[0];
@@ -1407,8 +1405,8 @@ void ARX_SCENE_Update() {
 	
 	WATEREFFECT = (toMsi(now) % long(2 * glm::pi<float>() / 0.0005f)) * 0.0005f;
 	
-	const Vec3f camPos = ACTIVECAM->m_pos;
-	const float camDepth = ACTIVECAM->cdepth;
+	const Vec3f camPos = g_camera->m_pos;
+	const float camDepth = g_camera->cdepth;
 	
 	long l = long(camDepth * 0.42f);
 	long clip3D = (l / (long)BKG_SIZX) + 1;

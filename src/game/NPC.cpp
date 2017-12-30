@@ -413,18 +413,18 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 	arx_assert(io);
 	if(!(io->ioflags & IO_NPC) || (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 		return 0;
-
-	float dists = arx::distance2(io->pos, ACTIVECAM->m_pos);
-
-	if (dists > square(ACTIVECAM->cdepth) * square(1.0f / 2))
+	
+	float dists = arx::distance2(io->pos, g_camera->m_pos);
+	if(dists > square(g_camera->cdepth) * square(1.0f / 2)) {
 		return 0;
-
+	}
+	
 	long MAX_TEST;
-
-	if (dists < square(ACTIVECAM->cdepth) * square(1.0f / 4))
+	if(dists < square(g_camera->cdepth) * square(1.0f / 4)) {
 		MAX_TEST = 6; //4;
-	else
+	} else {
 		MAX_TEST = 4; //3;
+	}
 	
 	for(long l_try = MAX_TEST; l_try > 1; l_try--) {
 		
@@ -589,13 +589,13 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	
 	io->_npcdata->pathfind.truetarget = target;
 	
-	if(   closerThan(pos1, ACTIVECAM->m_pos, ACTIVECAM->cdepth * 0.5f)
+	if(closerThan(pos1, g_camera->m_pos, g_camera->cdepth * 0.5f)
 	   && glm::abs(pos1.y - pos2.y) < 50.f
 	   && closerThan(pos1, pos2, 520)
 	   && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 	   && !(io->_npcdata->behavior & BEHAVIOUR_SNEAK)
-	   && !(io->_npcdata->behavior & BEHAVIOUR_FLEE)
-	) {
+	   && !(io->_npcdata->behavior & BEHAVIOUR_FLEE)) {
+		
 		// COLLISION Management START *********************************************************************
 		io->physics.startpos = pos1;
 		io->physics.targetpos = pos2;
@@ -2483,12 +2483,12 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 {
 	if(!ioo)
 		return NULL;
-
+	
 	// Basic Clipping to avoid performance loss
-	if(fartherThan(ACTIVECAM->m_pos, ioo->pos, 2500)) {
+	if(fartherThan(g_camera->m_pos, ioo->pos, 2500)) {
 		return NULL;
 	}
-
+	
 	Entity * found_io = NULL;
 	float found_dist = std::numeric_limits<float>::max();
 

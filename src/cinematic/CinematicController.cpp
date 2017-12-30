@@ -93,11 +93,11 @@ void cinematicLaunchWaiting() {
 	}
 
 	LogDebug("LaunchWaitingCine " << CINE_PRELOAD);
-
-	if(ACTIVECAM) {
-		g_originalCameraPosition = ACTIVECAM->m_pos;
+	
+	if(g_camera) {
+		g_originalCameraPosition = g_camera->m_pos;
 	}
-
+	
 	cinematicKill();
 
 	res::path cinematic = res::path("graph/interface/illustrations") / WILL_LAUNCH_CINE;
@@ -157,13 +157,12 @@ void cinematicRender() {
 	) {
 		StopSoundKeyFramer();
 		cinematicKill();
-
-		// !! avant le cine end
-		if(ACTIVECAM) {
+		
+		if(g_camera) {
 			arx_assert(isallfinite(g_originalCameraPosition));
-			ACTIVECAM->m_pos = g_originalCameraPosition;
+			g_camera->m_pos = g_originalCameraPosition;
 		}
-
+		
 		ARX_SPEECH_Reset();
 		SendMsgToAllIO(SM_CINE_END, LAST_LAUNCHED_CINE);
 	}

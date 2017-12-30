@@ -244,16 +244,14 @@ Entity::~Entity() {
 	
 	if(ioflags & IO_NPC) {
 		delete _npcdata;
-		
 	} else if(ioflags & IO_ITEM) {
 		free(_itemdata->equipitem);
 		delete _itemdata;
 	} else if(ioflags & IO_FIX) {
 		delete _fixdata;
-		
 	} else if(ioflags & IO_CAMERA && _camdata) {
-		if(ACTIVECAM == &_camdata->cam) {
-			ACTIVECAM = &subj;
+		if(g_camera == &_camdata->cam) {
+			SetActiveCamera(&subj);
 		}
 		delete _camdata;
 	}

@@ -43,11 +43,11 @@ void update2DFX() {
 
 	float temp_increase = toMs(g_platformTime.lastFrameDuration()) * (1.0f/1000) * 4.f;
 	
-	const Vec3f camPos = ACTIVECAM->m_pos;
+	const Vec3f camPos = g_camera->m_pos;
 	
 	bool bComputeIO = false;
 
-	Vec4f zFar = ACTIVECAM->m_viewToScreen * Vec4f(0.f, 0.f, ACTIVECAM->cdepth * fZFogEnd, 1.f);
+	Vec4f zFar = g_camera->m_viewToScreen * Vec4f(0.f, 0.f, g_camera->cdepth * fZFogEnd, 1.f);
 	float fZFar = zFar.z / zFar.w;
 
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
