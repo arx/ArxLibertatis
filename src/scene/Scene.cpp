@@ -681,11 +681,7 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	
 	EERIE_FRUSTRUM frustrum;
 	
-	// TODO get this from g_camera instead
-	glm::mat4x4 matProj;
-	GRenderer->GetProjectionMatrix(matProj);
-	
-	glm::mat4x4 matres = matProj * g_preparedCamera.m_worldToView;
+	glm::mat4x4 matres = g_preparedCamera.m_viewToClip * g_preparedCamera.m_worldToView;
 	
 	{
 	Plane & plane = frustrum.plane[0];
