@@ -1317,26 +1317,30 @@ void ArxGame::updateFirstPersonCamera() {
 			player.m_bowAimRatio = 0;
 		}
 	}
-
+	
+	Vec3f targetPos;
 	if(eyeball.exist == 2) {
-		subj.d_pos = eyeball.pos;
+		
+		targetPos = eyeball.pos;
 		subj.d_angle = eyeball.angle;
 		EXTERNALVIEW = true;
+		
 	} else if(EXTERNALVIEW) {
+		
 		for(long l = 0; l < 250; l += 10) {
 			Vec3f tt = player.pos;
 			tt += angleToVectorXZ_180offset(player.angle.getYaw()) * float(l);
 			tt += Vec3f(0.f, -50.f, 0.f);
-			
-			EERIEPOLY * ep = CheckInPoly(tt);
-			if(ep) {
-				subj.d_pos = tt;
+			if(l == 0 || CheckInPoly(tt)) {
+				targetPos = tt;
+			} else {
+				break;
 			}
-			else break;
 		}
-
+		
 		subj.d_angle = player.angle;
 		subj.d_angle.setPitch(subj.d_angle.getPitch() + 30.f);
+		
 	} else {
 		subj.angle = player.angle;
 		
@@ -1363,9 +1367,10 @@ void ArxGame::updateFirstPersonCamera() {
 	}
 
 	if(EXTERNALVIEW) {
-		subj.m_pos = (subj.m_pos + subj.d_pos) * 0.5f;
+		subj.m_pos = (subj.m_pos + targetPos) * 0.5f;
 		subj.angle = interpolate(subj.angle, subj.d_angle, 0.1f);
 	}
+	
 }
 
 void ArxGame::speechControlledCinematic() {

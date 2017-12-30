@@ -35,7 +35,6 @@ struct Camera {
 
 	Anglef angle;
 
-	Vec3f d_pos;
 	Anglef d_angle;
 	Vec3f lasttarget;
 	Vec3f lastpos;

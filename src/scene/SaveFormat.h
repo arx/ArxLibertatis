@@ -1011,7 +1011,7 @@ struct SavedCamera {
 	SavedMatrix matrix; // TODO Remove
 	SavedAnglef angle;
 	
-	SavedVec3 d_pos;
+	SavedVec3 d_pos; // TODO Remove
 	SavedAnglef d_angle;
 	SavedVec3 lasttarget;
 	SavedVec3 lastpos;
@@ -1050,7 +1050,6 @@ struct SavedCamera {
 		
 		a.angle = angle;
 		
-		a.d_pos = d_pos.toVec3();
 		a.d_angle = d_angle;
 		a.lasttarget = lasttarget.toVec3();
 		a.lastpos = lastpos.toVec3();
@@ -1099,7 +1098,7 @@ struct SavedCamera {
 		matrix = glm::mat4x4();
 		angle = b.angle;
 		
-		d_pos = b.d_pos;
+		d_pos = Vec3f_ZERO;
 		d_angle = b.d_angle;
 		lasttarget = b.lasttarget;
 		lastpos = b.lastpos;
