@@ -1377,7 +1377,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		case TYPE_CAMERA:
 			ARX_CHANGELEVEL_CAMERA_IO_SAVE * ac;
 			ac = (ARX_CHANGELEVEL_CAMERA_IO_SAVE *)(dat + pos);
-			ac->cam = io->_camdata->cam;
+			*ac = *io->_camdata;
 			pos += struct_size;
 			break;
 		case TYPE_MARKER:

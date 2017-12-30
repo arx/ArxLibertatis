@@ -1050,7 +1050,6 @@ struct SavedCamera {
 		
 		a.angle = angle;
 		
-		a.lasttarget = lasttarget.toVec3();
 		a.lastpos = lastpos.toVec3();
 		a.translatetarget = translatetarget.toVec3();
 		a.lastinfovalid = lastinfovalid != 0;
@@ -1099,7 +1098,6 @@ struct SavedCamera {
 		
 		d_pos = Vec3f_ZERO;
 		d_angle = Anglef::ZERO;
-		lasttarget = b.lasttarget;
 		lastpos = b.lastpos;
 		translatetarget = b.translatetarget;
 		lastinfovalid = b.lastinfovalid;
@@ -1132,7 +1130,29 @@ struct SavedCamera {
 };
 
 struct ARX_CHANGELEVEL_CAMERA_IO_SAVE {
+	
 	SavedCamera cam;
+	
+	operator IO_CAMDATA() const {
+		
+		IO_CAMDATA a;
+		
+		a.cam = cam;
+		
+		a.lasttarget = cam.lasttarget.toVec3();
+		
+		return a;
+	}
+	
+	ARX_CHANGELEVEL_CAMERA_IO_SAVE & operator=(const IO_CAMDATA & b) {
+		
+		cam = b.cam;
+		
+		cam.lasttarget = b.lasttarget;
+		
+		return *this;
+	}
+	
 };
 
 struct ARX_CHANGELEVEL_PLAYER_LEVEL_DATA {
