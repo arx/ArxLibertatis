@@ -827,9 +827,7 @@ bool ArxGame::initGame()
 	ACTIVEBKG = new BackgroundData();
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, Vec2s(BKG_SIZX, BKG_SIZZ));
 	
-	player.size.y = -player.baseHeight();
-	player.size.x = player.baseRadius();
-	player.size.z = player.baseRadius();
+	player.size = Vec3f(player.baseRadius(), -player.baseHeight(), player.baseRadius());
 	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
 	
 	subj.m_pos = Vec3f(900.f, player.baseHeight(), 4340.f);
