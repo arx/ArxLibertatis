@@ -158,19 +158,10 @@ void cinematicRender() {
 		StopSoundKeyFramer();
 		cinematicKill();
 
-		bool bWasBlocked = false;
-		if(BLOCK_PLAYER_CONTROLS) {
-			bWasBlocked = true;
-		}
-
 		// !! avant le cine end
 		if(ACTIVECAM) {
 			arx_assert(isallfinite(g_originalCameraPosition));
 			ACTIVECAM->m_pos = g_originalCameraPosition;
-		}
-
-		if(bWasBlocked) {
-			BLOCK_PLAYER_CONTROLS = true;
 		}
 
 		ARX_SPEECH_Reset();
