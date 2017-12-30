@@ -58,6 +58,7 @@ struct PreparedCamera {
 	glm::mat4x4 m_worldToView;
 	glm::mat4x4 m_viewToClip;
 	glm::mat4x4 m_viewToScreen;
+	glm::mat4x4 m_worldToScreen;
 	
 	ARX_USE_ALIGNED_NEW(PreparedCamera) // for matrices
 };

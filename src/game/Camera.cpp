@@ -91,6 +91,8 @@ void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projection
 	ndcToScreen = glm::scale(ndcToScreen, Vec3f(1.f, -1.f, 1.f));
 	g_preparedCamera.m_viewToScreen = ndcToScreen * g_preparedCamera.m_viewToClip;
 	
+	g_preparedCamera.m_worldToScreen = g_preparedCamera.m_viewToScreen * g_preparedCamera.m_worldToView;
+	
 	GRenderer->SetViewport(viewport);
 	
 }
