@@ -681,15 +681,15 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	
 	EERIE_FRUSTRUM frustrum;
 	
-	glm::mat4x4 matres = g_preparedCamera.m_viewToClip * g_preparedCamera.m_worldToView;
+	glm::mat4x4 worldToClip = g_preparedCamera.m_viewToClip * g_preparedCamera.m_worldToView;
 	
 	{
 	Plane & plane = frustrum.plane[0];
 	
-	plane.a = matres[0][3] - matres[0][0];
-	plane.b = matres[1][3] - matres[1][0];
-	plane.c = matres[2][3] - matres[2][0];
-	plane.d = matres[3][3] - matres[3][0];
+	plane.a = worldToClip[0][3] - worldToClip[0][0];
+	plane.b = worldToClip[1][3] - worldToClip[1][0];
+	plane.c = worldToClip[2][3] - worldToClip[2][0];
+	plane.d = worldToClip[3][3] - worldToClip[3][0];
 	
 	normalizePlane(plane);
 	}
@@ -697,10 +697,10 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	{
 	Plane & plane = frustrum.plane[1];
 	
-	plane.a = matres[0][3] + matres[0][0];
-	plane.b = matres[1][3] + matres[1][0];
-	plane.c = matres[2][3] + matres[2][0];
-	plane.d = matres[3][3] + matres[3][0];
+	plane.a = worldToClip[0][3] + worldToClip[0][0];
+	plane.b = worldToClip[1][3] + worldToClip[1][0];
+	plane.c = worldToClip[2][3] + worldToClip[2][0];
+	plane.d = worldToClip[3][3] + worldToClip[3][0];
 	
 	normalizePlane(plane);
 	}
@@ -708,10 +708,10 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	{
 	Plane & plane = frustrum.plane[2];
 	
-	plane.a = matres[0][3] - matres[0][1];
-	plane.b = matres[1][3] - matres[1][1];
-	plane.c = matres[2][3] - matres[2][1];
-	plane.d = matres[3][3] - matres[3][1];
+	plane.a = worldToClip[0][3] - worldToClip[0][1];
+	plane.b = worldToClip[1][3] - worldToClip[1][1];
+	plane.c = worldToClip[2][3] - worldToClip[2][1];
+	plane.d = worldToClip[3][3] - worldToClip[3][1];
 	
 	normalizePlane(plane);
 	}
@@ -719,10 +719,10 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	{
 	Plane & plane = frustrum.plane[3];
 	
-	plane.a = matres[0][3] + matres[0][1];
-	plane.b = matres[1][3] + matres[1][1];
-	plane.c = matres[2][3] + matres[2][1];
-	plane.d = matres[3][3] + matres[3][1];
+	plane.a = worldToClip[0][3] + worldToClip[0][1];
+	plane.b = worldToClip[1][3] + worldToClip[1][1];
+	plane.c = worldToClip[2][3] + worldToClip[2][1];
+	plane.d = worldToClip[3][3] + worldToClip[3][1];
 	
 	normalizePlane(plane);
 	}
@@ -730,10 +730,10 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	{
 	Plane & plane = efpPlaneNear;
 	
-	plane.a = matres[0][3] + matres[0][2];
-	plane.b = matres[1][3] + matres[1][2];
-	plane.c = matres[2][3] + matres[2][2];
-	plane.d = matres[3][3] + matres[3][2];
+	plane.a = worldToClip[0][3] + worldToClip[0][2];
+	plane.b = worldToClip[1][3] + worldToClip[1][2];
+	plane.c = worldToClip[2][3] + worldToClip[2][2];
+	plane.d = worldToClip[3][3] + worldToClip[3][2];
 	
 	normalizePlane(plane);
 	}
