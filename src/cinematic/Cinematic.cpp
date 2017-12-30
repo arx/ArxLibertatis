@@ -110,7 +110,6 @@ void Cinematic::OneTimeSceneReInit() {
 	
 	m_camera.m_pos = Vec3f(900.f, -160.f, 4340.f);
 	m_camera.angle = Anglef(3.f, 268.f, 0.f);
-	m_camera.center = Rect(cinRenderSize.x, cinRenderSize.y).center();
 	m_camera.focal = 350.f;
 	m_camera.cdepth = 2500.f;
 	
@@ -419,7 +418,6 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	m_camera.angle.setPitch(0);
 	m_camera.angle.setYaw(0);
 	m_camera.angle.setRoll(angz);
-	m_camera.center = g_size.center();
 	PrepareCamera(&m_camera, g_size);
 	SetActiveCamera(&m_camera);
 	
