@@ -79,5 +79,5 @@ void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projection
 Camera * ACTIVECAM = NULL;
 
 void SetActiveCamera(Camera * cam) {
-	if (ACTIVECAM != cam) ACTIVECAM = cam;
+	ACTIVECAM = cam;
 }
