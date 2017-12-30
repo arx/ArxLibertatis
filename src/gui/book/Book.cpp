@@ -1030,7 +1030,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	EERIE_CAMERA * oldcam = ACTIVECAM;
 	bookcam.center = rec.center();
 	SetActiveCamera(&bookcam);
-	PrepareCamera(&bookcam, g_size);
+	PrepareCamera(&bookcam, g_size, rec.center());
 	
 	Anglef ePlayerAngle = Anglef::ZERO;
 	
