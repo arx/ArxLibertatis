@@ -25,16 +25,13 @@
 #include "platform/Alignment.h"
 
 struct Camera {
-
+	
 	glm::mat4x4 m_worldToView;
 	glm::mat4x4 m_viewToScreen;
-
+	
 	Vec3f m_pos;
-
 	float focal;
-
 	Anglef angle;
-
 	float cdepth;
 	
 	void lookAt(const Vec3f & target) {
