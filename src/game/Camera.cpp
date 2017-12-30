@@ -64,6 +64,7 @@ void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport) {
 	glm::mat4x4 projectionMatrix = createProjectionMatrix(Vec2f(viewport.size()), Vec2f(cam->center), cam);
 	GRenderer->SetProjectionMatrix(projectionMatrix);
 	
+	// Change coordinate system from [-1, 1] x [-1, 1] to [0, width] x [0, height] and flip the y axis
 	glm::mat4x4 ndcToScreen(1);
 	ndcToScreen = glm::scale(ndcToScreen, Vec3f(Vec2f(viewport.size()) / 2.f, 1.f));
 	ndcToScreen = glm::translate(ndcToScreen, Vec3f(1.f, 1.f, 0.f));
