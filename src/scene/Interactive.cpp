@@ -2169,11 +2169,11 @@ void UpdateCameras() {
 						f1 = 1.f;
 
 					float f2 = 1.f - f1;
-					target = io->target * f2 + io->_camdata->cam.lasttarget * f1;
+					target = io->target * f2 + io->_camdata->lasttarget * f1;
 				}
 				
 				io->_camdata->cam.lookAt(target);
-				io->_camdata->cam.lasttarget = target;
+				io->_camdata->lasttarget = target;
 				io->angle.setPitch(0.f);
 				io->angle.setYaw(io->_camdata->cam.angle.getYaw() + 90.f);
 				io->angle.setRoll(0.f);
@@ -2186,7 +2186,7 @@ void UpdateCameras() {
 				io->_camdata->cam.lookAt(io->target);
 				io->_camdata->cam.angle.setPitch(MAKEANGLE(-io->_camdata->cam.angle.getPitch()));
 				io->_camdata->cam.angle.setYaw(MAKEANGLE(io->_camdata->cam.angle.getYaw() + 180.f));
-				io->_camdata->cam.lasttarget = io->target;
+				io->_camdata->lasttarget = io->target;
 			}
 
 			io->_camdata->cam.lastinfovalid = true;
