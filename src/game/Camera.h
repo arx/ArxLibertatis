@@ -24,10 +24,6 @@
 #include "math/Rectangle.h"
 #include "platform/Alignment.h"
 
-//TODO Remove
-#define CAM_SUBJVIEW 0
-#define CAM_TOPVIEW 1
-
 struct EERIE_CAMERA {
 
 	Vec3f m_pos;
