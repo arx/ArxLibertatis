@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/GameTime.h"
 
+#include "game/Camera.h"
 #include "game/Damage.h"
 #include "game/EntityManager.h"
 #include "game/NPC.h"
@@ -775,7 +776,7 @@ void spawn2DFireParticle(const Vec2f & pos, float scale) {
 
 
 
-void ARX_PARTICLES_Update(Camera * cam)  {
+void ARX_PARTICLES_Update()  {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -881,7 +882,7 @@ void ARX_PARTICLES_Update(Camera * cam)  {
 			
 			Vec4f p = worldToClipSpace(inn);
 			float z = p.z / p.w;
-			if(p.w <= 0.f || z > cam->cdepth * fZFogEnd) {
+			if(p.w <= 0.f || z > ACTIVECAM->cdepth * fZFogEnd) {
 				continue;
 			}
 			
