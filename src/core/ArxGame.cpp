@@ -1533,27 +1533,16 @@ void ArxGame::handlePlayerDeath() {
 		GameDuration endTime = GameDurationMs(7000);
 
 		float DeadCameraDistance = startDistance + (mdist - startDistance) * ((DeadTime - startTime) / (endTime - startTime));
-
-		Vec3f targetpos = player.pos;
-
+		
 		ActionPoint id  = entities.player()->obj->fastaccess.view_attach;
+		Vec3f targetpos = (id != ActionPoint()) ? actionPointPosition(entities.player()->obj, id) : player.pos;
+		
 		ActionPoint id2 = GetActionPointIdx(entities.player()->obj, "chest2leggings");
-
-		if(id != ActionPoint()) {
-			targetpos = actionPointPosition(entities.player()->obj, id);
-		}
-
-		conversationcamera.m_pos = targetpos;
-
-		if(id2 != ActionPoint()) {
-			conversationcamera.m_pos = actionPointPosition(entities.player()->obj, id2);
-		}
-
-		conversationcamera.m_pos.y -= DeadCameraDistance;
-
-		conversationcamera.setTargetCamera(targetpos);
-		subj.m_pos = conversationcamera.m_pos;
-		subj.angle = conversationcamera.angle;
+		subj.m_pos = (id2 != ActionPoint()) ? actionPointPosition(entities.player()->obj, id2) : targetpos;
+		subj.m_pos.y -= DeadCameraDistance;
+		
+		subj.setTargetCamera(targetpos);
+		
 		EXTERNALVIEW = true;
 		BLOCK_PLAYER_CONTROLS = true;
 	}
