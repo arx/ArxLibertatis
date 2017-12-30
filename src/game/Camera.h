@@ -26,9 +26,6 @@
 
 struct Camera {
 	
-	glm::mat4x4 m_worldToView;
-	glm::mat4x4 m_viewToScreen;
-	
 	Vec3f m_pos;
 	float focal;
 	Anglef angle;
@@ -42,7 +39,6 @@ struct Camera {
 	
 	static Anglef getLookAtAngle(const Vec3f & origin, const Vec3f & target);
 	
-	ARX_USE_ALIGNED_NEW(Camera) // for matrices
 };
 
 
@@ -55,28 +51,37 @@ struct IO_CAMDATA {
 	bool lastinfovalid;
 	float smoothing;
 	
-	ARX_USE_ALIGNED_NEW(IO_CAMDATA) // for cam
 };
 
-
 struct MASTER_CAMERA_STRUCT {
+	
 	long exist; // 2== want to change to want_vars...
 	Entity * io;
 	Entity * want_io;
+	
 };
 
 extern MASTER_CAMERA_STRUCT MasterCamera;
+
+struct PreparedCamera {
+	
+	glm::mat4x4 m_worldToView;
+	glm::mat4x4 m_viewToScreen;
+	
+	ARX_USE_ALIGNED_NEW(PreparedCamera) // for matrices
+};
+
+extern PreparedCamera g_preparedCamera;
+
+extern Camera * g_camera;
 
 void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projectionCenter);
 inline void PrepareCamera(Camera * cam, const Rect & viewport) {
 	PrepareCamera(cam, viewport, viewport.center());
 }
 
-extern Camera * g_camera;
-
 void SetActiveCamera(Camera * cam);
 
-ARX_USE_ALIGNED_ALLOCATOR(Camera) // for matrices
-ARX_USE_ALIGNED_ALLOCATOR(IO_CAMDATA) // for cam
+ARX_USE_ALIGNED_ALLOCATOR(PreparedCamera) // for matrices
 
 #endif // ARX_GAME_CAMERA_H
