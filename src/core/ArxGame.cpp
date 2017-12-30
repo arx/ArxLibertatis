@@ -836,7 +836,7 @@ bool ArxGame::initGame()
 
 	subj.m_pos = Vec3f(900.f, player.baseHeight(), 4340.f);
 	subj.clip = Rect(0, 0, 640, 480);
-	subj.center = subj.clip.center();
+	subj.center = Vec2i(320, 240);
 	subj.focal = defaultCameraFocal;
 	subj.cdepth = 2100.f;
 	
