@@ -35,7 +35,6 @@ struct Camera {
 
 	Anglef angle;
 
-	Vec3f lastpos;
 	Vec3f translatetarget;
 	bool lastinfovalid;
 

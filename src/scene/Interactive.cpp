@@ -2190,7 +2190,6 @@ void UpdateCameras() {
 			}
 
 			io->_camdata->cam.lastinfovalid = true;
-			io->_camdata->cam.lastpos = io->_camdata->cam.m_pos;
 		}
 	}
 }
