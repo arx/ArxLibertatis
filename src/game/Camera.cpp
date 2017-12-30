@@ -70,7 +70,7 @@ void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport, const Vec2i & proj
 	ndcToScreen = glm::scale(ndcToScreen, Vec3f(Vec2f(viewport.size()) / 2.f, 1.f));
 	ndcToScreen = glm::translate(ndcToScreen, Vec3f(1.f, 1.f, 0.f));
 	ndcToScreen = glm::scale(ndcToScreen, Vec3f(1.f, -1.f, 1.f));
-	cam->ProjectionMatrix = ndcToScreen * projectionMatrix;
+	cam->m_viewToScreen = ndcToScreen * projectionMatrix;
 	
 	GRenderer->SetViewport(viewport);
 	

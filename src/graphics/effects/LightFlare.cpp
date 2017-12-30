@@ -47,7 +47,7 @@ void update2DFX() {
 	
 	bool bComputeIO = false;
 
-	Vec4f zFar = ACTIVECAM->ProjectionMatrix * Vec4f(0.f, 0.f, ACTIVECAM->cdepth * fZFogEnd, 1.f);
+	Vec4f zFar = ACTIVECAM->m_viewToScreen * Vec4f(0.f, 0.f, ACTIVECAM->cdepth * fZFogEnd, 1.f);
 	float fZFar = zFar.z / zFar.w;
 
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {

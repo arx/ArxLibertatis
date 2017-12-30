@@ -26,9 +26,10 @@
 
 struct EERIE_CAMERA {
 
-	Vec3f m_pos;
-
 	glm::mat4x4 m_worldToView;
+	glm::mat4x4 m_viewToScreen;
+
+	Vec3f m_pos;
 
 	float focal;
 
@@ -45,8 +46,6 @@ struct EERIE_CAMERA {
 
 	float cdepth;
 	
-	glm::mat4x4 ProjectionMatrix;
-	
 	void setTargetCamera(const Vec3f & target) {
 		if(m_pos.x == target.x && m_pos.y == target.y && m_pos.z == target.z)
 			return;
@@ -56,7 +55,7 @@ struct EERIE_CAMERA {
 		angle.setRoll(0.f);
 	}
 	
-	ARX_USE_ALIGNED_NEW(EERIE_CAMERA) // for ProjectionMatrix
+	ARX_USE_ALIGNED_NEW(EERIE_CAMERA) // for matrices
 };
 
 
@@ -82,7 +81,7 @@ inline void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport) {
 extern EERIE_CAMERA * ACTIVECAM;
 void SetActiveCamera(EERIE_CAMERA* cam);
 
-ARX_USE_ALIGNED_ALLOCATOR(EERIE_CAMERA) // for ProjectionMatrix
+ARX_USE_ALIGNED_ALLOCATOR(EERIE_CAMERA) // for matrices
 ARX_USE_ALIGNED_ALLOCATOR(IO_CAMDATA) // for cam
 
 #endif // ARX_GAME_CAMERA_H
