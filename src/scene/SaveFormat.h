@@ -984,31 +984,31 @@ struct SavedMatrix {
 struct SavedCamera {
 	
 	SavedVec3 pos;
-	f32 ycos;
-	f32 ysin;
-	f32 xsin;
-	f32 xcos;
+	f32 ycos; // TODO Remove
+	f32 ysin; // TODO Remove
+	f32 xsin; // TODO Remove
+	f32 xcos; // TODO Remove
 	f32 use_focal1; //TODO Remove
 	f32 xmod;
 	f32 ymod;
-	f32 zmod;
+	f32 zmod; // TODO Remove
 	
-	SavedVec3 pos2;
-	f32 Ycos;
-	f32 Ysin;
-	f32 Xcos;
-	f32 Xsin;
-	f32 Zcos;
-	f32 Zsin;
+	SavedVec3 pos2; // TODO Remove
+	f32 Ycos; // TODO Remove
+	f32 Ysin; // TODO Remove
+	f32 Xcos; // TODO Remove
+	f32 Xsin; // TODO Remove
+	f32 Zcos; // TODO Remove
+	f32 Zsin; // TODO Remove
 	f32 focal;
-	f32 use_focal; //TODO Remove
-	f32 Zmul; //TODO Remove
-	f32 posleft; //TODO Remove
-	f32 postop; //TODO Remove
+	f32 use_focal; // TODO Remove
+	f32 Zmul; // TODO Remove
+	f32 posleft; // TODO Remove
+	f32 postop; // TODO Remove
 	
-	f32 xmod2;
-	f32 ymod2;
-	SavedMatrix matrix; //TODO Remove
+	f32 xmod2; // TODO Remove
+	f32 ymod2; // TODO Remove
+	SavedMatrix matrix; // TODO Remove
 	SavedAnglef angle;
 	
 	SavedVec3 d_pos;
@@ -1017,28 +1017,28 @@ struct SavedCamera {
 	SavedVec3 lastpos;
 	SavedVec3 translatetarget;
 	s32 lastinfovalid;
-	SavedVec3 norm; //TODO Remove
+	SavedVec3 norm; // TODO Remove
 	SavedColor fadecolor; // TODO Remove
-	SavedRect clip;
-	f32 clipz0; //TODO Remove
-	f32 clipz1; //TODO Remove
+	SavedRect clip; // TODO Remove
+	f32 clipz0; // TODO Remove
+	f32 clipz1; // TODO Remove
 	s32 centerx;
 	s32 centery;
 	
 	f32 smoothing;
-	f32 AddX;
-	f32 AddY;
-	s32 Xsnap; //TODO Remove
-	s32 Zsnap; //TODO Remove
-	f32 Zdiv; //TODO Remove
+	f32 AddX; // TODO Remove
+	f32 AddY; // TODO Remove
+	s32 Xsnap; // TODO Remove
+	s32 Zsnap; // TODO Remove
+	f32 Zdiv; // TODO Remove
 	
-	s32 clip3D;
-	s32 type; //TODO Remove
+	s32 clip3D; // TODO Remove
+	s32 type; // TODO Remove
 	u32 bkgcolor; // TODO Remove
-	s32 nbdrawn; //TODO Remove
+	s32 nbdrawn; // TODO Remove
 	f32 cdepth;
 	
-	SavedAnglef size; //TODO Remove
+	SavedAnglef size; // TODO Remove
 	
 	operator EERIE_CAMERA() const {
 		
