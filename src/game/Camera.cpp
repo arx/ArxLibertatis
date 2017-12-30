@@ -72,6 +72,8 @@ static glm::mat4x4 createProjectionMatrix(const Vec2f & size, const Vec2f & cent
 
 void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projectionCenter) {
 	
+	SetActiveCamera(cam);
+	
 	cam->m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
 	GRenderer->SetViewMatrix(cam->m_worldToView);
 	

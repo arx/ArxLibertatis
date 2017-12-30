@@ -419,7 +419,6 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	m_camera.angle.setYaw(0);
 	m_camera.angle.setRoll(angz);
 	PrepareCamera(&m_camera, g_size);
-	SetActiveCamera(&m_camera);
 	
 	int alpha = (int)(a * 255.f);
 	
