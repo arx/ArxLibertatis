@@ -1420,7 +1420,7 @@ void ArxGame::speechControlledCinematic() {
 					subj.m_pos.y = std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + alpha))) * distance;
 					subj.m_pos += targetpos;
 					
-					subj.setTargetCamera(targetpos);
+					subj.lookAt(targetpos);
 					
 					EXTERNALVIEW = true;
 					
@@ -1455,7 +1455,7 @@ void ArxGame::speechControlledCinematic() {
 						
 						subj.m_pos = targetpos + vect2 + Vec3f(0.f, acs.m_heightModifier, 0.f);
 						
-						subj.setTargetCamera(targetpos);
+						subj.lookAt(targetpos);
 						
 						EXTERNALVIEW = true;
 						
@@ -1498,7 +1498,7 @@ void ArxGame::speechControlledCinematic() {
 						
 						subj.m_pos = vect + targetpos + vect2;
 						
-						subj.setTargetCamera(targetpos);
+						subj.lookAt(targetpos);
 						
 						EXTERNALVIEW = true;
 						
@@ -1538,7 +1538,7 @@ void ArxGame::handlePlayerDeath() {
 		subj.m_pos = (id2 != ActionPoint()) ? actionPointPosition(entities.player()->obj, id2) : targetpos;
 		subj.m_pos.y -= DeadCameraDistance;
 		
-		subj.setTargetCamera(targetpos);
+		subj.lookAt(targetpos);
 		
 		EXTERNALVIEW = true;
 		BLOCK_PLAYER_CONTROLS = true;
