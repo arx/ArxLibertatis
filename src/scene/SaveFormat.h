@@ -1045,13 +1045,8 @@ struct SavedCamera {
 		Camera a;
 		
 		a.m_pos = pos.toVec3();
-		
 		a.focal = focal;
-		
 		a.angle = angle;
-		
-		a.smoothing = smoothing;
-		
 		a.cdepth = cdepth;
 		
 		return a;
@@ -1103,7 +1098,6 @@ struct SavedCamera {
 		centerx = 0.f;
 		centery = 0.f;
 		
-		smoothing = b.smoothing;
 		AddX = 0.f;
 		AddY = 0.f;
 		Xsnap = 0;
@@ -1136,6 +1130,7 @@ struct ARX_CHANGELEVEL_CAMERA_IO_SAVE {
 		a.lasttarget = cam.lasttarget.toVec3();
 		a.translatetarget = cam.translatetarget.toVec3();
 		a.lastinfovalid = cam.lastinfovalid != 0;
+		a.smoothing = cam.smoothing;
 		
 		return a;
 	}
@@ -1147,6 +1142,7 @@ struct ARX_CHANGELEVEL_CAMERA_IO_SAVE {
 		cam.lasttarget = b.lasttarget;
 		cam.translatetarget = b.translatetarget;
 		cam.lastinfovalid = b.lastinfovalid;
+		cam.smoothing = b.smoothing;
 		
 		return *this;
 	}
