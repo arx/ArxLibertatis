@@ -467,13 +467,11 @@ void CheckSetAnimOutOfTreatZone(Entity * io, AnimLayer & layer) {
 	
 	arx_assert(io);
 	
-	if( layer.cur_anim &&
-		!(io->gameFlags & GFLAG_ISINTREATZONE) &&
-		fartherThan(io->pos, ACTIVECAM->m_pos, 2500.f))
-	{
-
+	if(layer.cur_anim && !(io->gameFlags & GFLAG_ISINTREATZONE)
+	   && fartherThan(io->pos, g_camera->m_pos, 2500.f)) {
 		layer.ctime = layer.cur_anim->anims[layer.altidx_cur]->anim_time - AnimationDurationMs(1);
 	}
+	
 }
 
 void PrepareIOTreatZone(long flag) {
@@ -482,8 +480,8 @@ void PrepareIOTreatZone(long flag) {
 	
 	static long status = -1;
 	static Vec3f lastpos;
-
-	const Vec3f cameraPos = ACTIVECAM->m_pos;
+	
+	const Vec3f cameraPos = g_camera->m_pos;
 	
 	if(flag || status == -1) {
 		status = 0;
@@ -517,24 +515,22 @@ void PrepareIOTreatZone(long flag) {
 
 	if(DRAGINTER)
 		TREATZONE_AddIO(DRAGINTER);
-
+	
 	float TREATZONE_LIMIT = 3200;
-
 	if(RoomDistance) {
-		
 		TREATZONE_LIMIT += 600;
-		
-		if(CURRENTLEVEL == 4)
+		if(CURRENTLEVEL == 4) {
 			TREATZONE_LIMIT += 1200;
-
-		if(ACTIVECAM->cdepth > 3000)
+		}
+		if(g_camera->cdepth > 3000) {
 			TREATZONE_LIMIT += 500;
-
-		if(ACTIVECAM->cdepth > 4000)
+		}
+		if(g_camera->cdepth > 4000) {
 			TREATZONE_LIMIT += 500;
-
-		if(ACTIVECAM->cdepth > 6000)
+		}
+		if(g_camera->cdepth > 6000) {
 			TREATZONE_LIMIT += 500;
+		}
 	}
 	
 	for(size_t i = 1; i < entities.size(); i++) {
@@ -1875,14 +1871,13 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 		{
 			continue;
 		}
-
-
+		
 		if(flag && _pRef) {
-			float flDistanceToRef = arx::distance2(ACTIVECAM->m_pos, *_pRef);
-			float flDistanceToIO = arx::distance2(ACTIVECAM->m_pos, io->pos);
+			float flDistanceToRef = arx::distance2(g_camera->m_pos, *_pRef);
+			float flDistanceToIO = arx::distance2(g_camera->m_pos, io->pos);
 			bPass = bPlayerEquiped || (flDistanceToIO < flDistanceToRef);
 		}
-
+		
 		float fp = fdist(io->pos, player.pos);
 
 		if((!flag && fp <= fMaxDist) && (!foundBB || fp < fdistBB)) {

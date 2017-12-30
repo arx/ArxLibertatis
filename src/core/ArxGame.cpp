@@ -1820,14 +1820,13 @@ void ArxGame::updateLevel() {
 	updateActiveCamera();
 
 	ARX_GLOBALMODS_Apply();
-
+	
 	// Set Listener Position
 	{
-		std::pair<Vec3f, Vec3f> frontUp = angleToFrontUpVec(ACTIVECAM->angle);
-		
-		ARX_SOUND_SetListener(ACTIVECAM->m_pos, frontUp.first, frontUp.second);
+		std::pair<Vec3f, Vec3f> frontUp = angleToFrontUpVec(g_camera->angle);
+		ARX_SOUND_SetListener(g_camera->m_pos, frontUp.first, frontUp.second);
 	}
-
+	
 	// Check For Hiding/unHiding Player Gore
 	if(EXTERNALVIEW || player.lifePool.current <= 0) {
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
@@ -1839,9 +1838,9 @@ void ArxGame::updateLevel() {
 
 	PrepareIOTreatZone();
 	ARX_PHYSICS_Apply();
-
-	PrecalcIOLighting(ACTIVECAM->m_pos, ACTIVECAM->cdepth * 0.6f);
-
+	
+	PrecalcIOLighting(g_camera->m_pos, g_camera->cdepth * 0.6f);
+	
 	ARX_SCENE_Update();
 
 	arx_assert(pParticleManager);
@@ -1923,9 +1922,9 @@ void ArxGame::renderLevel() {
 	
 	GRenderer->SetAntialiasing(true);
 	
-	GRenderer->SetFogParams(fZFogStart * ACTIVECAM->cdepth, fZFogEnd * ACTIVECAM->cdepth);
+	GRenderer->SetFogParams(fZFogStart * g_camera->cdepth, fZFogEnd * g_camera->cdepth);
 	GRenderer->SetFogColor(g_fogColor);
-
+	
 	ARX_SCENE_Render();
 	
 	drawDebugRender();
@@ -2044,8 +2043,8 @@ void ArxGame::renderLevel() {
 
 void ArxGame::render() {
 	
-	ACTIVECAM = &subj;
-
+	SetActiveCamera(&subj);
+	
 	// Update Various Player Infos for this frame.
 	ARX_PLAYER_Frame_Update();
 		

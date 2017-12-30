@@ -77,7 +77,8 @@ inline void PrepareCamera(Camera * cam, const Rect & viewport) {
 	PrepareCamera(cam, viewport, viewport.center());
 }
 
-extern Camera * ACTIVECAM;
+extern Camera * g_camera;
+
 void SetActiveCamera(Camera * cam);
 
 ARX_USE_ALIGNED_ALLOCATOR(Camera) // for matrices

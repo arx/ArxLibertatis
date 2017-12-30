@@ -882,7 +882,7 @@ void ARX_PARTICLES_Update()  {
 			
 			Vec4f p = worldToClipSpace(inn);
 			float z = p.z / p.w;
-			if(p.w <= 0.f || z > ACTIVECAM->cdepth * fZFogEnd) {
+			if(p.w <= 0.f || z > g_camera->cdepth * fZFogEnd) {
 				continue;
 			}
 			
@@ -1002,7 +1002,7 @@ void TreatBackgroundActions() {
 	
 	ARX_PROFILE_FUNC();
 	
-	float fZFar = square(ACTIVECAM->cdepth * fZFogEnd * 1.3f);
+	float fZFar = square(g_camera->cdepth * fZFogEnd * 1.3f);
 	
 	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		
@@ -1011,7 +1011,7 @@ void TreatBackgroundActions() {
 			continue;
 		}
 		
-		float dist = arx::distance2(gl->pos, ACTIVECAM->m_pos);
+		float dist = arx::distance2(gl->pos, g_camera->m_pos);
 		if(dist > fZFar) {
 			// Out of treat range
 			ARX_SOUND_Stop(gl->sample);
@@ -1048,9 +1048,9 @@ void TreatBackgroundActions() {
 		}
 		
 		float amount = 2.f;
-		if(dist < square(ACTIVECAM->cdepth * (1.f / 6))) {
+		if(dist < square(g_camera->cdepth * (1.f / 6))) {
 			amount = 3.f;
-		} else if(dist < square(ACTIVECAM->cdepth * (1.f / 3))) {
+		} else if(dist < square(g_camera->cdepth * (1.f / 3))) {
 			amount = 2.5f;
 		}
 		const float targetFPS = 61.f;

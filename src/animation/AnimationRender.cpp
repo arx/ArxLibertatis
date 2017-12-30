@@ -392,7 +392,8 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 }
 
 static void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
-	Vec3f cam_vector = angleToVector(ACTIVECAM->angle);
+	
+	Vec3f cam_vector = angleToVector(g_camera->angle);
 	
 	// Apply light on all vertices
 	for(size_t i = 0; i != obj->bones.size(); i++) {
@@ -477,7 +478,7 @@ static bool Cedric_IO_Visible(const Vec3f & pos) {
 	
 	if(ACTIVEBKG) {
 		//TODO maybe readd this
-		//if(fartherThan(io->pos, ACTIVECAM->pos, ACTIVECAM->cdepth * 0.6f))
+		//if(fartherThan(io->pos, g_camera->pos, g_camera->cdepth * 0.6f))
 		// return false;
 
 		long xx = long(pos.x * ACTIVEBKG->m_mul.x);
@@ -588,11 +589,10 @@ static bool CullFace(const EERIE_3DOBJ * eobj, const EERIE_FACE & face) {
 		normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
 		normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 		normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
-
-		Vec3f nrm = eobj->vertexWorldPositions[face.vid[0]].v - ACTIVECAM->m_pos;
-
-		if(glm::dot(normFace, nrm) > 0.f)
+		Vec3f nrm = eobj->vertexWorldPositions[face.vid[0]].v - g_camera->m_pos;
+		if(glm::dot(normFace, nrm) > 0.f) {
 			return true;
+		}
 	}
 
 	return false;
@@ -603,11 +603,10 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
                                const IO_HALO & halo, TexturedVertex * tvList,
                                const EERIE_3DOBJ * eobj) {
 	
-	float mdist = ACTIVECAM->cdepth;
-	float ddist = mdist-fdist(t.pos, ACTIVECAM->m_pos);
+	float mdist = g_camera->cdepth;
+	float ddist = mdist - fdist(t.pos, g_camera->m_pos);
 	ddist = ddist/mdist;
 	ddist = glm::pow(ddist, 6.f);
-
 	ddist = glm::clamp(ddist, 0.25f, 0.9f);
 	
 	float tot = 0;
@@ -901,10 +900,10 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
 	
 	Vec3f ftrPos = pos;
 	//TODO copy-pase
-	float mdist = ACTIVECAM->cdepth;
+	float mdist = g_camera->cdepth;
 	mdist *= ( 1.0f / 2 );
 	
-	float ddist = mdist-fdist(ftrPos, ACTIVECAM->m_pos);
+	float ddist = mdist-fdist(ftrPos, g_camera->m_pos);
 	ddist = ddist/mdist;
 	ddist = glm::pow(ddist, 6.f);
 	ddist = glm::clamp(ddist, 0.25f, 0.9f);
