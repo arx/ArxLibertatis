@@ -180,7 +180,6 @@ static const PlatformDuration runeDrawPointInterval = PlatformDurationMs(16); //
 
 extern EERIE_3DOBJ * arrowobj;
 
-extern Camera conversationcamera;
 extern ParticleManager * pParticleManager;
 extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
 extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
@@ -720,7 +719,6 @@ Vec3f PUSH_PLAYER_FORCE;
 
 Camera subj;
 Camera bookcam;
-Camera conversationcamera;
 
 bool ArxGame::initGame()
 {
@@ -833,16 +831,15 @@ bool ArxGame::initGame()
 	player.size.x = player.baseRadius();
 	player.size.z = player.baseRadius();
 	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
-
+	
 	subj.m_pos = Vec3f(900.f, player.baseHeight(), 4340.f);
 	subj.focal = defaultCameraFocal;
 	subj.cdepth = 2100.f;
 	
 	SetActiveCamera(&subj);
-
-	bookcam = subj;
-	conversationcamera = subj;
 	
+	bookcam = subj;
+		
 	bookcam.angle = Anglef::ZERO;
 	bookcam.m_pos = Vec3f_ZERO;
 	bookcam.focal = defaultCameraFocal;
