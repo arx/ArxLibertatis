@@ -59,7 +59,6 @@ void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
 	glm::mat4x4 projectionMatrix = createProjectionMatrix(float(size.width()), float(size.height()), cam);
 	GRenderer->SetProjectionMatrix(projectionMatrix);
 	
-	cam->m_mod = Vec2f(cam->center);
 	glm::mat4x4 ndcToScreen(1);
 	ndcToScreen = glm::translate(ndcToScreen, Vec3f(Vec2f(cam->center), 0.f));
 	ndcToScreen = glm::scale(ndcToScreen, Vec3f(float(size.width()) * 0.5f, -float(size.height()) * 0.5f, 1.f));

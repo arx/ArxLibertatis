@@ -27,7 +27,6 @@
 struct EERIE_CAMERA {
 
 	Vec3f m_pos;
-	Vec2f m_mod;
 
 	glm::mat4x4 m_worldToView;
 
