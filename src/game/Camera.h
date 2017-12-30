@@ -47,14 +47,12 @@ struct Camera {
 	float cdepth;
 	
 	void setTargetCamera(const Vec3f & target) {
-		if(m_pos.x == target.x && m_pos.y == target.y && m_pos.z == target.z)
-			return;
-
-		float targetz = m_pos.z + glm::distance(Vec2f(target.x, target.z), Vec2f(m_pos.x, m_pos.z));
-		angle.setPitch(MAKEANGLE(-glm::degrees(getAngle(m_pos.y, m_pos.z, target.y, targetz))));
-		angle.setYaw(MAKEANGLE(glm::degrees(getAngle(m_pos.x, m_pos.z, target.x, target.z))));
-		angle.setRoll(0.f);
+		if(m_pos != target) {
+			angle = getLookAtAngle(m_pos, target);
+		}
 	}
+	
+	static Anglef getLookAtAngle(const Vec3f & origin, const Vec3f & target);
 	
 	ARX_USE_ALIGNED_NEW(Camera) // for matrices
 };
