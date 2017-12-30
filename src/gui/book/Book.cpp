@@ -1028,7 +1028,6 @@ void StatsPage::RenderBookPlayerCharacter() {
 	g_culledDynamicLightsCount = 2;
 	
 	Camera * oldcam = g_camera;
-	SetActiveCamera(&bookcam);
 	PrepareCamera(&bookcam, g_size, rec.center());
 	
 	Anglef ePlayerAngle = Anglef::ZERO;
@@ -1112,7 +1111,6 @@ void StatsPage::RenderBookPlayerCharacter() {
 	
 	GRenderer->SetAntialiasing(false);
 	
-	SetActiveCamera(oldcam);
 	PrepareCamera(oldcam, g_size);
 	
 	player.bookAnimation[0].cur_anim = herowaitbook;

@@ -1577,7 +1577,6 @@ void ArxGame::updateActiveCamera() {
 	
 	ManageQuakeFX(cam);
 	
-	SetActiveCamera(cam);
 	PrepareCamera(cam, g_size);
 	
 }
