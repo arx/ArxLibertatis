@@ -143,6 +143,12 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 	float wave = timeWaveSin(g_platformTime.frameStart(), PlatformDurationMsf(1256.6370614f));
 	float ptDelta = toMs(g_platformTime.lastFrameDuration());
 	
+	Camera bookcam;
+	bookcam.angle = Anglef::ZERO;
+	bookcam.m_pos = Vec3f_ZERO;
+	bookcam.focal = 350.f;
+	bookcam.cdepth = 2200.f;
+	
 	for(size_t i = 0; i < RUNE_COUNT; i++) {
 		if(!gui::necklace.runes[i])
 			continue;
