@@ -1424,7 +1424,7 @@ void ArxGame::speechControlledCinematic() {
 					conversationcamera.m_pos += targetpos;
 					conversationcamera.setTargetCamera(targetpos);
 					subj.m_pos = conversationcamera.m_pos;
-					subj.angle.setPitch(MAKEANGLE(-conversationcamera.angle.getPitch()));
+					subj.angle.setPitch(conversationcamera.angle.getPitch());
 					subj.angle.setYaw(conversationcamera.angle.getYaw());
 					subj.angle.setRoll(0.f);
 					EXTERNALVIEW = true;
@@ -1461,7 +1461,7 @@ void ArxGame::speechControlledCinematic() {
 						conversationcamera.m_pos = targetpos + vect2 + Vec3f(0.f, acs.m_heightModifier, 0.f);
 						conversationcamera.setTargetCamera(targetpos);
 						subj.m_pos = conversationcamera.m_pos;
-						subj.angle.setPitch(MAKEANGLE(-conversationcamera.angle.getPitch()));
+						subj.angle.setPitch(conversationcamera.angle.getPitch());
 						subj.angle.setYaw(conversationcamera.angle.getYaw());
 						subj.angle.setRoll(0.f);
 						EXTERNALVIEW = true;
@@ -1506,7 +1506,7 @@ void ArxGame::speechControlledCinematic() {
 						conversationcamera.m_pos = vect + targetpos + vect2;
 						conversationcamera.setTargetCamera(targetpos);
 						subj.m_pos = conversationcamera.m_pos;
-						subj.angle.setPitch(MAKEANGLE(-conversationcamera.angle.getPitch()));
+						subj.angle.setPitch(conversationcamera.angle.getPitch());
 						subj.angle.setYaw(conversationcamera.angle.getYaw());
 						subj.angle.setRoll(0.f);
 						EXTERNALVIEW = true;
@@ -1559,7 +1559,7 @@ void ArxGame::handlePlayerDeath() {
 
 		conversationcamera.setTargetCamera(targetpos);
 		subj.m_pos = conversationcamera.m_pos;
-		subj.angle.setPitch(MAKEANGLE(-conversationcamera.angle.getPitch()));
+		subj.angle.setPitch(conversationcamera.angle.getPitch());
 		subj.angle.setYaw(conversationcamera.angle.getYaw());
 		subj.angle.setRoll(0);
 		EXTERNALVIEW = true;
