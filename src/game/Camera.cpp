@@ -27,6 +27,20 @@
 
 MASTER_CAMERA_STRUCT MasterCamera;
 
+Anglef Camera::getLookAtAngle(const Vec3f & origin, const Vec3f & target) {
+	
+	Anglef angle = Anglef::ZERO;
+	
+	if(origin != target) {
+		float targetz = origin.z + glm::distance(Vec2f(origin.x, origin.z), Vec2f(target.x, target.z));
+		angle.setPitch(MAKEANGLE(-glm::degrees(getAngle(origin.y, origin.z, target.y, targetz))));
+		angle.setYaw(MAKEANGLE(glm::degrees(getAngle(origin.x, origin.z, target.x, target.z))));
+		angle.setRoll(0.f);
+	}
+	
+	return angle;
+}
+
 static glm::mat4x4 createProjectionMatrix(const Vec2f & size, const Vec2f & center, Camera * cam) {
 
 	float fov = focalToFov(cam->focal);
