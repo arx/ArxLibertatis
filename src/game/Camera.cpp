@@ -66,7 +66,7 @@ void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
 	                        static_cast<float>(size.height()),
 	                        cam);
 	
-	GRenderer->SetViewport(Rect(size.width(), size.height()));
+	GRenderer->SetViewport(size);
 	
 }
 
