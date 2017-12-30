@@ -51,7 +51,7 @@ struct Camera {
 			return;
 
 		angle.setPitch((glm::degrees(getAngle(m_pos.y, m_pos.z, target.y, m_pos.z + glm::distance(Vec2f(target.x, target.z), Vec2f(m_pos.x, m_pos.z)))))); //alpha entre orgn et dest;
-		angle.setYaw((180.f + glm::degrees(getAngle(m_pos.x, m_pos.z, target.x, target.z)))); //beta entre orgn et dest;
+		angle.setYaw(MAKEANGLE(glm::degrees(getAngle(m_pos.x, m_pos.z, target.x, target.z))));
 		angle.setRoll(0.f);
 	}
 	

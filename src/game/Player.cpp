@@ -1684,7 +1684,7 @@ void ForcePlayerLookAtIO(Entity * io) {
 
 	tcam.setTargetCamera(target);
 	player.angle.setPitch(MAKEANGLE(-tcam.angle.getPitch()));
-	player.angle.setYaw(MAKEANGLE(tcam.angle.getYaw() - 180.f));
+	player.angle.setYaw(tcam.angle.getYaw());
 	player.angle.setRoll(0);
 	player.desiredangle = player.angle;
 }
