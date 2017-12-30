@@ -440,9 +440,8 @@ void levelInit() {
 	}
 	
 	lastteleport = player.basePosition();
-	subj.m_pos = g_moveto = player.pos;
-
-	subj.angle = player.angle;
+	g_playerCamera.m_pos = g_moveto = player.pos;
+	g_playerCamera.angle = player.angle;
 	
 	RestoreLastLoadedLightning(*ACTIVEBKG);
 

@@ -247,7 +247,7 @@ Entity::~Entity() {
 		delete _fixdata;
 	} else if(ioflags & IO_CAMERA && _camdata) {
 		if(g_camera == &_camdata->cam) {
-			SetActiveCamera(&subj);
+			SetActiveCamera(&g_playerCamera);
 		}
 		delete _camdata;
 	}

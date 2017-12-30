@@ -27,6 +27,8 @@
 
 Entity * g_cameraEntity;
 PreparedCamera g_preparedCamera;
+Camera * g_camera = NULL;
+Camera g_playerCamera;
 
 Anglef Camera::getLookAtAngle(const Vec3f & origin, const Vec3f & target) {
 	
@@ -92,8 +94,6 @@ void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projection
 	GRenderer->SetViewport(viewport);
 	
 }
-
-Camera * g_camera = NULL;
 
 void SetActiveCamera(Camera * cam) {
 	g_camera = cam;

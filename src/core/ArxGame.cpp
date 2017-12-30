@@ -717,7 +717,6 @@ static bool HandleGameFlowTransitions() {
 
 Vec3f PUSH_PLAYER_FORCE;
 
-Camera subj;
 Camera bookcam;
 
 bool ArxGame::initGame()
@@ -828,15 +827,15 @@ bool ArxGame::initGame()
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, Vec2s(BKG_SIZX, BKG_SIZZ));
 	
 	player.size = Vec3f(player.baseRadius(), -player.baseHeight(), player.baseRadius());
-	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
+	player.desiredangle = player.angle = Anglef(3.f, 268.f, 0.f);
 	
-	subj.m_pos = Vec3f(900.f, player.baseHeight(), 4340.f);
-	subj.focal = defaultCameraFocal;
-	subj.cdepth = 2100.f;
+	g_playerCamera.angle = player.angle;
+	g_playerCamera.m_pos = Vec3f(900.f, player.baseHeight(), 4340.f);
+	g_playerCamera.focal = defaultCameraFocal;
+	g_playerCamera.cdepth = 2100.f;
+	SetActiveCamera(&g_playerCamera);
 	
-	SetActiveCamera(&subj);
-	
-	bookcam = subj;
+	bookcam = g_playerCamera;
 		
 	bookcam.angle = Anglef::ZERO;
 	bookcam.m_pos = Vec3f_ZERO;
@@ -1341,33 +1340,31 @@ void ArxGame::updateFirstPersonCamera() {
 		targetAngle.setPitch(targetAngle.getPitch() + 30.f);
 		
 	} else {
-		subj.angle = player.angle;
+		
+		g_playerCamera.angle = player.angle;
 		
 		ActionPoint id = entities.player()->obj->fastaccess.view_attach;
-		
 		if(id != ActionPoint()) {
-			subj.m_pos = actionPointPosition(entities.player()->obj, id);
-			Vec3f vect;
-			vect.x = subj.m_pos.x - player.pos.x;
-			vect.y = 0;
-			vect.z = subj.m_pos.z - player.pos.z;
-			float len = ffsqrt(arx::length2(vect));
 			
+			g_playerCamera.m_pos = actionPointPosition(entities.player()->obj, id);
+			
+			Vec3f vect(g_playerCamera.m_pos.x - player.pos.x, 0.f, g_playerCamera.m_pos.z - player.pos.z);
+			float len = ffsqrt(arx::length2(vect));
 			if(len > 46.f) {
-				float div = 46.f / len;
-				vect.x *= div;
-				vect.z *= div;
-				subj.m_pos.x = player.pos.x + vect.x;
-				subj.m_pos.z = player.pos.z + vect.z;
+				vect *= 46.f / len;
+				g_playerCamera.m_pos.x = player.pos.x + vect.x;
+				g_playerCamera.m_pos.z = player.pos.z + vect.z;
 			}
+			
 		} else {
-			subj.m_pos = player.basePosition();
+			g_playerCamera.m_pos = player.basePosition();
 		}
+		
 	}
-
+	
 	if(EXTERNALVIEW) {
-		subj.m_pos = (subj.m_pos + targetPos) * 0.5f;
-		subj.angle = interpolate(subj.angle, targetAngle, 0.1f);
+		g_playerCamera.m_pos = (g_playerCamera.m_pos + targetPos) * 0.5f;
+		g_playerCamera.angle = interpolate(g_playerCamera.angle, targetAngle, 0.1f);
 	}
 	
 }
@@ -1402,10 +1399,10 @@ void ArxGame::speechControlledCinematic() {
 				
 				case ARX_CINE_SPEECH_KEEP: {
 					arx_assert(isallfinite(acs.pos1));
-					subj.m_pos = acs.pos1;
-					subj.angle.setPitch(acs.pos2.x);
-					subj.angle.setYaw(acs.pos2.y);
-					subj.angle.setRoll(acs.pos2.z);
+					g_playerCamera.m_pos = acs.pos1;
+					g_playerCamera.angle.setPitch(acs.pos2.x);
+					g_playerCamera.angle.setYaw(acs.pos2.y);
+					g_playerCamera.angle.setRoll(acs.pos2.z);
 					EXTERNALVIEW = true;
 					break;
 				}
@@ -1420,11 +1417,11 @@ void ArxGame::speechControlledCinematic() {
 					float distance = acs.startpos * itime + acs.endpos * rtime;
 					Vec3f targetpos = acs.pos1;
 					
-					subj.m_pos = angleToVectorXZ(io->angle.getYaw() + beta) * distance;
-					subj.m_pos.y = std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + alpha))) * distance;
-					subj.m_pos += targetpos;
+					g_playerCamera.m_pos = angleToVectorXZ(io->angle.getYaw() + beta) * distance;
+					g_playerCamera.m_pos.y = std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + alpha))) * distance;
+					g_playerCamera.m_pos += targetpos;
 					
-					subj.lookAt(targetpos);
+					g_playerCamera.lookAt(targetpos);
 					
 					EXTERNALVIEW = true;
 					
@@ -1457,9 +1454,9 @@ void ArxGame::speechControlledCinematic() {
 						Vec3f tto = from + vect * acs.endpos * (1.0f / 100) * _dist;
 						Vec3f targetpos = tfrom * itime + tto * rtime + Vec3f(0.f, acs.m_heightModifier, 0.f);
 						
-						subj.m_pos = targetpos + vect2 + Vec3f(0.f, acs.m_heightModifier, 0.f);
+						g_playerCamera.m_pos = targetpos + vect2 + Vec3f(0.f, acs.m_heightModifier, 0.f);
 						
-						subj.lookAt(targetpos);
+						g_playerCamera.lookAt(targetpos);
 						
 						EXTERNALVIEW = true;
 						
@@ -1500,9 +1497,9 @@ void ArxGame::speechControlledCinematic() {
 							vect2 = -vect2;
 						}
 						
-						subj.m_pos = vect + targetpos + vect2;
+						g_playerCamera.m_pos = vect + targetpos + vect2;
 						
-						subj.lookAt(targetpos);
+						g_playerCamera.lookAt(targetpos);
 						
 						EXTERNALVIEW = true;
 						
@@ -1515,8 +1512,8 @@ void ArxGame::speechControlledCinematic() {
 				
 			}
 			
-			LASTCAMPOS = subj.m_pos;
-			LASTCAMANGLE = subj.angle;
+			LASTCAMPOS = g_playerCamera.m_pos;
+			LASTCAMANGLE = g_playerCamera.angle;
 		}
 	}
 }
@@ -1539,10 +1536,11 @@ void ArxGame::handlePlayerDeath() {
 		Vec3f targetpos = (id != ActionPoint()) ? actionPointPosition(entities.player()->obj, id) : player.pos;
 		
 		ActionPoint id2 = GetActionPointIdx(entities.player()->obj, "chest2leggings");
-		subj.m_pos = (id2 != ActionPoint()) ? actionPointPosition(entities.player()->obj, id2) : targetpos;
-		subj.m_pos.y -= DeadCameraDistance;
+		Vec3f chest = (id2 != ActionPoint()) ? actionPointPosition(entities.player()->obj, id2) : targetpos;
 		
-		subj.lookAt(targetpos);
+		g_playerCamera.m_pos = chest - Vec3f(0.f, DeadCameraDistance, 0.f);
+		
+		g_playerCamera.lookAt(targetpos);
 		
 		EXTERNALVIEW = true;
 		BLOCK_PLAYER_CONTROLS = true;
@@ -1561,7 +1559,7 @@ void ArxGame::updateActiveCamera() {
 		}
 		EXTERNALVIEW = true;
 	} else {
-		cam = &subj;
+		cam = &g_playerCamera;
 	}
 	
 	ManageQuakeFX(cam);
@@ -1879,7 +1877,7 @@ void ArxGame::updateLevel() {
 	ARX_SPELLS_UpdateSymbolDraw();
 
 	ManageTorch();
-
+	
 	{
 		float magicSightZoom = 0.f;
 		
@@ -1889,19 +1887,17 @@ void ArxGame::updateLevel() {
 			magicSightZoom = glm::clamp(duration / GameDurationMs(500), 0.f, 1.f);
 		}
 		
-		float BASE_FOCAL = CURRENT_BASE_FOCAL
-		                 + (magicSightZoom * -30.f)
-		                 + (player.m_bowAimRatio * 177.5f);
-		
-		if(subj.focal < BASE_FOCAL) {
+		float BASE_FOCAL = CURRENT_BASE_FOCAL + (magicSightZoom * -30.f) + (player.m_bowAimRatio * 177.5f);
+		if(g_playerCamera.focal < BASE_FOCAL) {
 			static const float INC_FOCAL = 75.0f;
-			subj.focal += INC_FOCAL;
+			g_playerCamera.focal += INC_FOCAL;
 		}
-
-		if(subj.focal > BASE_FOCAL)
-			subj.focal = BASE_FOCAL;
+		if(g_playerCamera.focal > BASE_FOCAL) {
+			g_playerCamera.focal = BASE_FOCAL;
+		}
+		
 	}
-
+	
 	ARX_INTERACTIVE_DestroyIOdelayedExecute();
 }
 
@@ -2037,7 +2033,7 @@ void ArxGame::renderLevel() {
 
 void ArxGame::render() {
 	
-	SetActiveCamera(&subj);
+	SetActiveCamera(&g_playerCamera);
 	
 	// Update Various Player Infos for this frame.
 	ARX_PLAYER_Frame_Update();

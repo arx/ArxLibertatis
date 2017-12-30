@@ -71,7 +71,6 @@ extern EERIE_3DOBJ * markerobj;
 extern Vec3f lastteleport;
 extern Camera bookcam;
 extern Vec2s DANAEMouse;
-extern Camera subj;
 extern Vec3f g_moveto;
 extern Vec2s STARTDRAG;
 extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
