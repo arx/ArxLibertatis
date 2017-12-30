@@ -47,6 +47,9 @@ void update2DFX() {
 	
 	bool bComputeIO = false;
 
+	Vec4f zFar = ACTIVECAM->ProjectionMatrix * Vec4f(0.f, 0.f, ACTIVECAM->cdepth * fZFogEnd, 1.f);
+	float fZFar = zFar.z / zFar.w;
+
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		EERIE_LIGHT *el = g_culledDynamicLights[i];
 
@@ -77,8 +80,6 @@ void update2DFX() {
 			{
 				Vec3f vector = lv - camPos;
 				lv -= vector * (50.f / glm::length(vector));
-
-				float fZFar=ACTIVECAM->ProjectionMatrix[3][2]*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ACTIVECAM->ProjectionMatrix[2][2];
 
 				Vec2s ees2dlv;
 				Vec3f ee3dlv = lv;
