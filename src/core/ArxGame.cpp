@@ -1319,10 +1319,11 @@ void ArxGame::updateFirstPersonCamera() {
 	}
 	
 	Vec3f targetPos;
+	Anglef targetAngle;
 	if(eyeball.exist == 2) {
 		
 		targetPos = eyeball.pos;
-		subj.d_angle = eyeball.angle;
+		targetAngle = eyeball.angle;
 		EXTERNALVIEW = true;
 		
 	} else if(EXTERNALVIEW) {
@@ -1338,8 +1339,8 @@ void ArxGame::updateFirstPersonCamera() {
 			}
 		}
 		
-		subj.d_angle = player.angle;
-		subj.d_angle.setPitch(subj.d_angle.getPitch() + 30.f);
+		targetAngle = player.angle;
+		targetAngle.setPitch(targetAngle.getPitch() + 30.f);
 		
 	} else {
 		subj.angle = player.angle;
@@ -1368,7 +1369,7 @@ void ArxGame::updateFirstPersonCamera() {
 
 	if(EXTERNALVIEW) {
 		subj.m_pos = (subj.m_pos + targetPos) * 0.5f;
-		subj.angle = interpolate(subj.angle, subj.d_angle, 0.1f);
+		subj.angle = interpolate(subj.angle, targetAngle, 0.1f);
 	}
 	
 }
