@@ -717,8 +717,6 @@ static bool HandleGameFlowTransitions() {
 
 Vec3f PUSH_PLAYER_FORCE;
 
-Camera bookcam;
-
 bool ArxGame::initGame()
 {
 	// Check if the game will be able to use the current game directory.
@@ -834,13 +832,6 @@ bool ArxGame::initGame()
 	g_playerCamera.focal = defaultCameraFocal;
 	g_playerCamera.cdepth = 2100.f;
 	SetActiveCamera(&g_playerCamera);
-	
-	bookcam = g_playerCamera;
-		
-	bookcam.angle = Anglef::ZERO;
-	bookcam.m_pos = Vec3f_ZERO;
-	bookcam.focal = defaultCameraFocal;
-	bookcam.cdepth = 2200.f;
 	
 	LoadSysTextures();
 	cursorTexturesInit();

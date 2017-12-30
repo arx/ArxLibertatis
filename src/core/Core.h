@@ -69,7 +69,6 @@ extern TextureContainer * TC_smoke;
 extern EERIE_3DOBJ * cameraobj;
 extern EERIE_3DOBJ * markerobj;
 extern Vec3f lastteleport;
-extern Camera bookcam;
 extern Vec2s DANAEMouse;
 extern Vec3f g_moveto;
 extern Vec2s STARTDRAG;
