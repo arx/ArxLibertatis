@@ -1022,8 +1022,8 @@ struct SavedCamera {
 	SavedRect clip; // TODO Remove
 	f32 clipz0; // TODO Remove
 	f32 clipz1; // TODO Remove
-	s32 centerx;
-	s32 centery;
+	s32 centerx; // TODO Remove
+	s32 centery; // TODO Remove
 	
 	f32 smoothing;
 	f32 AddX; // TODO Remove
