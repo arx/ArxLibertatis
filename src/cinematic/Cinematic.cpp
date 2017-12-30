@@ -111,7 +111,7 @@ void Cinematic::OneTimeSceneReInit() {
 	m_camera.m_pos = Vec3f(900.f, -160.f, 4340.f);
 	m_camera.angle = Anglef(3.f, 268.f, 0.f);
 	m_camera.clip = Rect(cinRenderSize.x, cinRenderSize.y);
-	m_camera.center = m_camera.clip.center();
+	m_camera.center = Rect(cinRenderSize.x, cinRenderSize.y).center();
 	m_camera.focal = 350.f;
 	m_camera.cdepth = 2500.f;
 	
