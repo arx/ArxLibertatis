@@ -44,8 +44,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CINEMATIC_CINEMATICEFFECTS_H
 #define ARX_CINEMATIC_CINEMATICEFFECTS_H
 
-#include "game/Camera.h"
+#include "graphics/Color.h"
+#include "math/Vector.h"
 
+struct Camera;
 class TextureContainer;
 class CinematicBitmap;
 class Cinematic;
