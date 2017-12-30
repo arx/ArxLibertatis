@@ -51,20 +51,20 @@ static glm::mat4x4 createProjectionMatrix(float width, float height, EERIE_CAMER
 	return projectionMatrix;
 }
 
-void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
+void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport) {
 	
 	cam->m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
 	GRenderer->SetViewMatrix(cam->m_worldToView);
 	
-	glm::mat4x4 projectionMatrix = createProjectionMatrix(float(size.width()), float(size.height()), cam);
+	glm::mat4x4 projectionMatrix = createProjectionMatrix(float(viewport.width()), float(viewport.height()), cam);
 	GRenderer->SetProjectionMatrix(projectionMatrix);
 	
 	glm::mat4x4 ndcToScreen(1);
 	ndcToScreen = glm::translate(ndcToScreen, Vec3f(Vec2f(cam->center), 0.f));
-	ndcToScreen = glm::scale(ndcToScreen, Vec3f(float(size.width()) * 0.5f, -float(size.height()) * 0.5f, 1.f));
+	ndcToScreen = glm::scale(ndcToScreen, Vec3f(float(viewport.width()) * 0.5f, -float(viewport.height()) * 0.5f, 1.f));
 	cam->ProjectionMatrix = ndcToScreen * projectionMatrix;
 	
-	GRenderer->SetViewport(size);
+	GRenderer->SetViewport(viewport);
 	
 }
 
