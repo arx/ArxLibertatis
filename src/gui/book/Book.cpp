@@ -1027,6 +1027,12 @@ void StatsPage::RenderBookPlayerCharacter() {
 	g_culledDynamicLights[1] = &eLight2;
 	g_culledDynamicLightsCount = 2;
 	
+	Camera bookcam;
+	bookcam.angle = Anglef::ZERO;
+	bookcam.m_pos = Vec3f_ZERO;
+	bookcam.focal = 350.f;
+	bookcam.cdepth = 2200.f;
+	
 	Camera * oldcam = g_camera;
 	PrepareCamera(&bookcam, g_size, rec.center());
 	
