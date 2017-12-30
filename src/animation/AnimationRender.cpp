@@ -899,27 +899,28 @@ extern long IN_BOOK_DRAW;
 static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
                                       Skeleton * obj, EERIE_3DOBJ * eobj) {
 	
-		Vec3f ftrPos = pos;
-		//TODO copy-pase
-		float mdist = ACTIVECAM->cdepth;
-		mdist *= ( 1.0f / 2 );
-
-		float ddist = mdist-fdist(ftrPos, ACTIVECAM->m_pos);
-		ddist = ddist/mdist;
-		ddist = glm::pow(ddist, 6.f);
-		ddist = glm::clamp(ddist, 0.25f, 0.9f);
-
-		haloInfo.ddist = ddist;
-
-		Cedric_PrepareHalo(eobj, obj);
-
-		haloInfo.MAX_ZEDE = 0.f;
-		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			if(eobj->vertexClipPositions[i].w > 0.f) {
-				haloInfo.MAX_ZEDE = std::max(eobj->vertexClipPositions[i].z / eobj->vertexClipPositions[i].w,
-				                             haloInfo.MAX_ZEDE);
-			}
+	Vec3f ftrPos = pos;
+	//TODO copy-pase
+	float mdist = ACTIVECAM->cdepth;
+	mdist *= ( 1.0f / 2 );
+	
+	float ddist = mdist-fdist(ftrPos, ACTIVECAM->m_pos);
+	ddist = ddist/mdist;
+	ddist = glm::pow(ddist, 6.f);
+	ddist = glm::clamp(ddist, 0.25f, 0.9f);
+	
+	haloInfo.ddist = ddist;
+	
+	Cedric_PrepareHalo(eobj, obj);
+	
+	haloInfo.MAX_ZEDE = 0.f;
+	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
+		if(eobj->vertexClipPositions[i].w > 0.f) {
+			haloInfo.MAX_ZEDE = std::max(eobj->vertexClipPositions[i].z / eobj->vertexClipPositions[i].w,
+			                             haloInfo.MAX_ZEDE);
 		}
+	}
+	
 }
 
 // TODO copy-paste halo
