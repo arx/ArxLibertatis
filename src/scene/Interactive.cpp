@@ -2172,7 +2172,7 @@ void UpdateCameras() {
 					target = io->target * f2 + io->_camdata->cam.lasttarget * f1;
 				}
 				
-				io->_camdata->cam.setTargetCamera(target);
+				io->_camdata->cam.lookAt(target);
 				io->_camdata->cam.lasttarget = target;
 				io->angle.setPitch(0.f);
 				io->angle.setYaw(io->_camdata->cam.angle.getYaw() + 90.f);
@@ -2183,7 +2183,7 @@ void UpdateCameras() {
 				io->target = io->pos;
 				io->target += angleToVectorXZ(io->angle.getYaw() + 90) * 20.f;
 				
-				io->_camdata->cam.setTargetCamera(io->target);
+				io->_camdata->cam.lookAt(io->target);
 				io->_camdata->cam.angle.setPitch(MAKEANGLE(-io->_camdata->cam.angle.getPitch()));
 				io->_camdata->cam.angle.setYaw(MAKEANGLE(io->_camdata->cam.angle.getYaw() + 180.f));
 				io->_camdata->cam.lasttarget = io->target;
