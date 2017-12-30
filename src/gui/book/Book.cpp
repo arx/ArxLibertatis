@@ -1028,7 +1028,6 @@ void StatsPage::RenderBookPlayerCharacter() {
 	g_culledDynamicLightsCount = 2;
 	
 	EERIE_CAMERA * oldcam = ACTIVECAM;
-	bookcam.center = rec.center();
 	SetActiveCamera(&bookcam);
 	PrepareCamera(&bookcam, g_size, rec.center());
 	

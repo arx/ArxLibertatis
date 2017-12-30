@@ -835,7 +835,6 @@ bool ArxGame::initGame()
 	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
 
 	subj.m_pos = Vec3f(900.f, player.baseHeight(), 4340.f);
-	subj.center = Vec2i(320, 240);
 	subj.focal = defaultCameraFocal;
 	subj.cdepth = 2100.f;
 	
@@ -1591,14 +1590,12 @@ void ArxGame::updateActiveCamera() {
 	} else {
 		cam = &subj;
 	}
-
+	
 	ManageQuakeFX(cam);
-
+	
 	SetActiveCamera(cam);
 	PrepareCamera(cam, g_size);
-
-	// Recenter Viewport depending on Resolution
-	ACTIVECAM->center = Vec2i(g_size.center().x, g_size.center().y);
+	
 }
 
 void ArxGame::updateTime() {
@@ -2074,8 +2071,6 @@ void ArxGame::render() {
 	// Update Various Player Infos for this frame.
 	ARX_PLAYER_Frame_Update();
 		
-	subj.center = Vec2i(g_size.center().x, g_size.center().y);
-	
 	PULSATE = timeWaveSin(g_gameTime.now(), GameDurationMsf(5026.548245f));
 	EERIEDrawnPolys = 0;
 	

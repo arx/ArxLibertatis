@@ -1056,7 +1056,6 @@ struct SavedCamera {
 		a.lastpos = lastpos.toVec3();
 		a.translatetarget = translatetarget.toVec3();
 		a.lastinfovalid = lastinfovalid != 0;
-		a.center = Vec2i(centerx, centery);
 		
 		a.smoothing = smoothing;
 		
@@ -1073,8 +1072,8 @@ struct SavedCamera {
 		xsin = 0.f;
 		xcos = 0.f;
 		use_focal1 = 0.f;
-		xmod = b.center.x;
-		ymod = b.center.y;
+		xmod = 0.f;
+		ymod = 0.f;
 		zmod = 0.f;
 		
 		//TODO Remove
@@ -1088,8 +1087,8 @@ struct SavedCamera {
 
 		use_focal = 0.f;
 
-		posleft = b.center.x;
-		postop  = b.center.y;
+		posleft = 0.f;
+		postop = 0.f;
 
 		focal = b.focal;
 		Zmul = 0.f;
@@ -1108,11 +1107,11 @@ struct SavedCamera {
 		lastinfovalid = b.lastinfovalid;
 		norm = Vec3f(0.f, 0.f, 0.f); //TODO Remove
 		fadecolor = Color3f::black;
-		clip = Rect(b.center.x * 2, b.center.y * 2);
+		clip = Rect::ZERO;
 		clipz0 = 0.0f;
 		clipz1 = 0.0f;
-		centerx = b.center.x;
-		centery = b.center.y;
+		centerx = 0.f;
+		centery = 0.f;
 		
 		smoothing = b.smoothing;
 		AddX = 0.f;
