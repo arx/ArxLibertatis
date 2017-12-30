@@ -1012,7 +1012,7 @@ struct SavedCamera {
 	SavedAnglef angle;
 	
 	SavedVec3 d_pos; // TODO Remove
-	SavedAnglef d_angle;
+	SavedAnglef d_angle; // TODO Remove
 	SavedVec3 lasttarget;
 	SavedVec3 lastpos;
 	SavedVec3 translatetarget;
@@ -1050,7 +1050,6 @@ struct SavedCamera {
 		
 		a.angle = angle;
 		
-		a.d_angle = d_angle;
 		a.lasttarget = lasttarget.toVec3();
 		a.lastpos = lastpos.toVec3();
 		a.translatetarget = translatetarget.toVec3();
@@ -1099,7 +1098,7 @@ struct SavedCamera {
 		angle = b.angle;
 		
 		d_pos = Vec3f_ZERO;
-		d_angle = b.d_angle;
+		d_angle = Anglef::ZERO;
 		lasttarget = b.lasttarget;
 		lastpos = b.lastpos;
 		translatetarget = b.translatetarget;
