@@ -57,16 +57,12 @@ static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * ca
 	
 }
 
-void SP_PrepareCamera(EERIE_CAMERA * cam) {
+void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
 	
 	cam->m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
 	
 	cam->m_mod = Vec2f(cam->center);
-}
-
-void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
 	
-	SP_PrepareCamera(cam);
 	EERIE_CreateMatriceProj(static_cast<float>(size.width()),
 	                        static_cast<float>(size.height()),
 	                        cam);
