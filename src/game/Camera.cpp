@@ -48,7 +48,6 @@ static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * ca
 	projectionMatrix[2][3] = 1.f;
 	projectionMatrix[3][3] = 0.f;
 	GRenderer->SetProjectionMatrix(projectionMatrix);
-	GRenderer->SetViewport(Rect(s32(width), s32(height)));
 	
 	glm::mat4x4 ndcToScreen = glm::scale(glm::mat4x4(1), Vec3f(width * 0.5f, -height * 0.5f, 1.f));
 	
@@ -66,6 +65,9 @@ void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
 	EERIE_CreateMatriceProj(static_cast<float>(size.width()),
 	                        static_cast<float>(size.height()),
 	                        cam);
+	
+	GRenderer->SetViewport(Rect(size.width(), size.height()));
+	
 }
 
 EERIE_CAMERA * ACTIVECAM = NULL;
