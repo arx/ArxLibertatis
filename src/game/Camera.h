@@ -66,6 +66,7 @@ extern MASTER_CAMERA_STRUCT MasterCamera;
 struct PreparedCamera {
 	
 	glm::mat4x4 m_worldToView;
+	glm::mat4x4 m_viewToClip;
 	glm::mat4x4 m_viewToScreen;
 	
 	ARX_USE_ALIGNED_NEW(PreparedCamera) // for matrices
