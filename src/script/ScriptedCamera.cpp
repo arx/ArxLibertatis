@@ -75,18 +75,16 @@ public:
 		DebugScript(' ' << target);
 		
 		if(target == "none") {
-			MasterCamera.exist = 0;
+			g_cameraEntity = NULL;
 			return Success;
 		}
 		
 		Entity * t = entities.getById(target, context.getEntity());
-		
 		if(!t || !(t->ioflags & IO_CAMERA)) {
 			return Failed;
 		}
 		
-		MasterCamera.exist |= 2;
-		MasterCamera.want_io = t;
+		g_cameraEntity = t;
 		
 		return Success;
 	}

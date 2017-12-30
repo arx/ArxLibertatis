@@ -53,16 +53,6 @@ struct IO_CAMDATA {
 	
 };
 
-struct MASTER_CAMERA_STRUCT {
-	
-	long exist; // 2== want to change to want_vars...
-	Entity * io;
-	Entity * want_io;
-	
-};
-
-extern MASTER_CAMERA_STRUCT MasterCamera;
-
 struct PreparedCamera {
 	
 	glm::mat4x4 m_worldToView;
@@ -72,8 +62,8 @@ struct PreparedCamera {
 	ARX_USE_ALIGNED_NEW(PreparedCamera) // for matrices
 };
 
+extern Entity * g_cameraEntity;
 extern PreparedCamera g_preparedCamera;
-
 extern Camera * g_camera;
 
 void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projectionCenter);

@@ -25,7 +25,7 @@
 #include "graphics/Renderer.h"
 
 
-MASTER_CAMERA_STRUCT MasterCamera;
+Entity * g_cameraEntity;
 PreparedCamera g_preparedCamera;
 
 Anglef Camera::getLookAtAngle(const Vec3f & origin, const Vec3f & target) {

@@ -205,12 +205,8 @@ Entity::~Entity() {
 	
 	cleanReferences();
 	
-	if((MasterCamera.exist & 1) && MasterCamera.io == this) {
-		MasterCamera.exist = 0;
-	}
-	
-	if((MasterCamera.exist & 2) && MasterCamera.want_io == this) {
-		MasterCamera.exist = 0;
+	if(g_cameraEntity == this) {
+		g_cameraEntity = NULL;
 	}
 	
 	// Releases ToBeDrawn Transparent Polys linked to this object !
