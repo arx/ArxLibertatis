@@ -128,7 +128,7 @@ void ParticleSparkUpdate() {
 		return;
 	}
 	
-	EERIE_CAMERA * cam = &subj;
+	Camera * cam = &subj;
 	
 	const GameInstant now = g_gameTime.now();
 	

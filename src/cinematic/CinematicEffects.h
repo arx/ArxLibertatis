@@ -54,7 +54,7 @@ class Cinematic;
 Color FX_FadeIN(float a, Color color, Color colord);
 Color FX_FadeOUT(float a, Color color, Color colord);
 bool FX_FlashBlanc(Vec2f size, float speed, Color color, float fps, float currfps);
-bool FX_Blur(Cinematic * c, CinematicBitmap * tb, EERIE_CAMERA &camera);
+bool FX_Blur(Cinematic * c, CinematicBitmap * tb, Camera & camera);
 void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps);
 
 #endif // ARX_CINEMATIC_CINEMATICEFFECTS_H

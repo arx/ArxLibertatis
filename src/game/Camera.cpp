@@ -27,7 +27,7 @@
 
 MASTER_CAMERA_STRUCT MasterCamera;
 
-static glm::mat4x4 createProjectionMatrix(const Vec2f & size, const Vec2f & center, EERIE_CAMERA * cam) {
+static glm::mat4x4 createProjectionMatrix(const Vec2f & size, const Vec2f & center, Camera * cam) {
 
 	float fov = focalToFov(cam->focal);
 	
@@ -56,7 +56,7 @@ static glm::mat4x4 createProjectionMatrix(const Vec2f & size, const Vec2f & cent
 	return centerShift * projectionMatrix;
 }
 
-void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport, const Vec2i & projectionCenter) {
+void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projectionCenter) {
 	
 	cam->m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
 	GRenderer->SetViewMatrix(cam->m_worldToView);
@@ -76,9 +76,8 @@ void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport, const Vec2i & proj
 	
 }
 
-EERIE_CAMERA * ACTIVECAM = NULL;
+Camera * ACTIVECAM = NULL;
 
-void SetActiveCamera(EERIE_CAMERA * cam)
-{
+void SetActiveCamera(Camera * cam) {
 	if (ACTIVECAM != cam) ACTIVECAM = cam;
 }

@@ -24,7 +24,7 @@
 #include "math/Rectangle.h"
 #include "platform/Alignment.h"
 
-struct EERIE_CAMERA {
+struct Camera {
 
 	glm::mat4x4 m_worldToView;
 	glm::mat4x4 m_viewToScreen;
@@ -55,12 +55,12 @@ struct EERIE_CAMERA {
 		angle.setRoll(0.f);
 	}
 	
-	ARX_USE_ALIGNED_NEW(EERIE_CAMERA) // for matrices
+	ARX_USE_ALIGNED_NEW(Camera) // for matrices
 };
 
 
 struct IO_CAMDATA {
-	EERIE_CAMERA cam;
+	Camera cam;
 	ARX_USE_ALIGNED_NEW(IO_CAMDATA) // for cam
 };
 
@@ -73,15 +73,15 @@ struct MASTER_CAMERA_STRUCT {
 
 extern MASTER_CAMERA_STRUCT MasterCamera;
 
-void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport, const Vec2i & projectionCenter);
-inline void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport) {
+void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projectionCenter);
+inline void PrepareCamera(Camera * cam, const Rect & viewport) {
 	PrepareCamera(cam, viewport, viewport.center());
 }
 
-extern EERIE_CAMERA * ACTIVECAM;
-void SetActiveCamera(EERIE_CAMERA* cam);
+extern Camera * ACTIVECAM;
+void SetActiveCamera(Camera * cam);
 
-ARX_USE_ALIGNED_ALLOCATOR(EERIE_CAMERA) // for matrices
+ARX_USE_ALIGNED_ALLOCATOR(Camera) // for matrices
 ARX_USE_ALIGNED_ALLOCATOR(IO_CAMDATA) // for cam
 
 #endif // ARX_GAME_CAMERA_H

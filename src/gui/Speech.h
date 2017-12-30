@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioTypes.h"
 #include "math/Angle.h"
 
-struct EERIE_CAMERA;
 struct EERIE_SCRIPT;
 class Entity;
 

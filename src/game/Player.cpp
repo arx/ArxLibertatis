@@ -1658,7 +1658,7 @@ void ForcePlayerLookAtIO(Entity * io) {
 	
 	arx_assert(io);
 
-	EERIE_CAMERA tcam;
+	Camera tcam;
 	Vec3f target;
 
 	ActionPoint id = entities.player()->obj->fastaccess.view_attach;

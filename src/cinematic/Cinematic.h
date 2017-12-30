@@ -144,7 +144,7 @@ public:
 	
 private:
 	
-	EERIE_CAMERA m_camera;
+	Camera m_camera;
 	
 public:
 	

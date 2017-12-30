@@ -180,7 +180,7 @@ static const PlatformDuration runeDrawPointInterval = PlatformDurationMs(16); //
 
 extern EERIE_3DOBJ * arrowobj;
 
-extern EERIE_CAMERA conversationcamera;
+extern Camera conversationcamera;
 extern ParticleManager * pParticleManager;
 extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
 extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
@@ -718,9 +718,9 @@ static bool HandleGameFlowTransitions() {
 
 Vec3f PUSH_PLAYER_FORCE;
 
-EERIE_CAMERA subj;
-EERIE_CAMERA bookcam;
-EERIE_CAMERA conversationcamera;
+Camera subj;
+Camera bookcam;
+Camera conversationcamera;
 
 bool ArxGame::initGame()
 {
@@ -1571,7 +1571,7 @@ void ArxGame::updateActiveCamera() {
 
 	ARX_PROFILE_FUNC();
 	
-	EERIE_CAMERA * cam = NULL;
+	Camera * cam = NULL;
 
 	if(MasterCamera.exist) {
 		

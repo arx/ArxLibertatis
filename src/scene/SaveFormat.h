@@ -1040,9 +1040,9 @@ struct SavedCamera {
 	
 	SavedAnglef size; // TODO Remove
 	
-	operator EERIE_CAMERA() const {
+	operator Camera() const {
 		
-		EERIE_CAMERA a;
+		Camera a;
 		
 		a.m_pos = pos.toVec3();
 		
@@ -1064,7 +1064,7 @@ struct SavedCamera {
 		return a;
 	}
 	
-	SavedCamera & operator=(const EERIE_CAMERA & b) {
+	SavedCamera & operator=(const Camera & b) {
 		
 		pos = b.m_pos;
 		ycos = 0.f;
