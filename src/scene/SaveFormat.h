@@ -1055,6 +1055,12 @@ struct SavedCamera {
 	SavedCamera & operator=(const Camera & b) {
 		
 		pos = b.m_pos;
+		pos2 = b.m_pos;
+		lastpos = b.m_pos;
+		focal = b.focal;
+		angle = b.angle;
+		cdepth = b.cdepth;
+		
 		ycos = 0.f;
 		ysin = 0.f;
 		xsin = 0.f;
@@ -1064,33 +1070,27 @@ struct SavedCamera {
 		ymod = 0.f;
 		zmod = 0.f;
 		
-		//TODO Remove
-		pos2 = b.m_pos;
 		Ycos = 0.f;
 		Ysin = 0.f;
 		Xcos = 0.f;
 		Xsin = 0.f;
 		Zcos = 0.f;
 		Zsin = 0.f;
-
+		
 		use_focal = 0.f;
-
+		
 		posleft = 0.f;
 		postop = 0.f;
-
-		focal = b.focal;
+		
 		Zmul = 0.f;
-
-
+		
 		xmod2 = 0.f;
 		ymod2 = 0.f;
 		matrix = glm::mat4x4();
-		angle = b.angle;
 		
 		d_pos = Vec3f_ZERO;
 		d_angle = Anglef::ZERO;
-		lastpos = b.m_pos;
-		norm = Vec3f(0.f, 0.f, 0.f); //TODO Remove
+		norm = Vec3f_ZERO;
 		fadecolor = Color3f::black;
 		clip = Rect::ZERO;
 		clipz0 = 0.0f;
@@ -1108,9 +1108,8 @@ struct SavedCamera {
 		type = CAM_SUBJVIEW;
 		bkgcolor = Color::none.toBGRA().t;
 		nbdrawn = 0;
-		cdepth = b.cdepth;
 		
-		size = Anglef(0, 0, 0);
+		size = Anglef::ZERO;
 		
 		return *this;
 	}
