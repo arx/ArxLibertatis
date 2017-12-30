@@ -1657,33 +1657,19 @@ void ARX_PLAYER_InitPlayer() {
 void ForcePlayerLookAtIO(Entity * io) {
 	
 	arx_assert(io);
-
-	Camera tcam;
-	Vec3f target;
-
+	
 	ActionPoint id = entities.player()->obj->fastaccess.view_attach;
-
-	if(id != ActionPoint()) {
-		tcam.m_pos = actionPointPosition(entities.player()->obj, id);
-	} else {
-		tcam.m_pos = player.pos;
-	}
-
-	id = io->obj->fastaccess.view_attach;
-
-	if(id != ActionPoint()) {
-		target = actionPointPosition(io->obj, id);
-	} else {
-		target = io->pos;
-	}
-
+	Vec3f pos = (id != ActionPoint()) ? actionPointPosition(entities.player()->obj, id) : player.pos;
+	
+	ActionPoint targetId = io->obj->fastaccess.view_attach;
+	Vec3f target = (targetId != ActionPoint()) ? actionPointPosition(io->obj, targetId) : io->pos;
+	
 	// For the case of not already computed Vlist3... !
 	if(fartherThan(target, io->pos, 400.f)) {
 		target = io->pos;
 	}
-
-	tcam.setTargetCamera(target);
-	player.desiredangle = player.angle = tcam.angle;
+	
+	player.desiredangle = player.angle = Camera::getLookAtAngle(pos, target);
 }
 
 /*!
