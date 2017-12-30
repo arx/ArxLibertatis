@@ -978,6 +978,9 @@ struct SavedMatrix {
 	
 };
 
+#define CAM_SUBJVIEW 0
+#define CAM_TOPVIEW  1
+
 struct SavedCamera {
 	
 	SavedVec3 pos;
