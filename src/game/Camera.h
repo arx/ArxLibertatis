@@ -75,7 +75,7 @@ struct MASTER_CAMERA_STRUCT {
 
 extern MASTER_CAMERA_STRUCT MasterCamera;
 
-void PrepareCamera(EERIE_CAMERA *cam, const Rect & size);
+void PrepareCamera(EERIE_CAMERA * cam, const Rect & viewport);
 
 extern EERIE_CAMERA * ACTIVECAM;
 void SetActiveCamera(EERIE_CAMERA* cam);
