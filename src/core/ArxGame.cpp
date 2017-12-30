@@ -1419,12 +1419,12 @@ void ArxGame::speechControlledCinematic() {
 					float distance = acs.startpos * itime + acs.endpos * rtime;
 					Vec3f targetpos = acs.pos1;
 					
-					conversationcamera.m_pos = angleToVectorXZ(io->angle.getYaw() + beta) * distance;
-					conversationcamera.m_pos.y = std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + alpha))) * distance;
-					conversationcamera.m_pos += targetpos;
-					conversationcamera.setTargetCamera(targetpos);
-					subj.m_pos = conversationcamera.m_pos;
-					subj.angle = conversationcamera.angle;
+					subj.m_pos = angleToVectorXZ(io->angle.getYaw() + beta) * distance;
+					subj.m_pos.y = std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + alpha))) * distance;
+					subj.m_pos += targetpos;
+					
+					subj.setTargetCamera(targetpos);
+					
 					EXTERNALVIEW = true;
 					
 					break;
@@ -1456,10 +1456,10 @@ void ArxGame::speechControlledCinematic() {
 						Vec3f tto = from + vect * acs.endpos * (1.0f / 100) * _dist;
 						Vec3f targetpos = tfrom * itime + tto * rtime + Vec3f(0.f, acs.m_heightModifier, 0.f);
 						
-						conversationcamera.m_pos = targetpos + vect2 + Vec3f(0.f, acs.m_heightModifier, 0.f);
-						conversationcamera.setTargetCamera(targetpos);
-						subj.m_pos = conversationcamera.m_pos;
-						subj.angle = conversationcamera.angle;
+						subj.m_pos = targetpos + vect2 + Vec3f(0.f, acs.m_heightModifier, 0.f);
+						
+						subj.setTargetCamera(targetpos);
+						
 						EXTERNALVIEW = true;
 						
 					}
@@ -1478,18 +1478,18 @@ void ArxGame::speechControlledCinematic() {
 						arx_assert(isallfinite(acs.pos1));
 						arx_assert(isallfinite(acs.pos2));
 						
+						Vec3f sourcepos;
 						Vec3f targetpos;
-						if(acs.type == ARX_CINE_SPEECH_CCCLISTENER_L
-							|| acs.type == ARX_CINE_SPEECH_CCCLISTENER_R) {
-							conversationcamera.m_pos = acs.pos2;
+						if(acs.type == ARX_CINE_SPEECH_CCCLISTENER_L || acs.type == ARX_CINE_SPEECH_CCCLISTENER_R) {
+							sourcepos = acs.pos2;
 							targetpos = acs.pos1;
 						} else {
-							conversationcamera.m_pos = acs.pos1;
+							sourcepos = acs.pos1;
 							targetpos = acs.pos2;
 						}
 						
 						float distance = (acs.startpos * itime + acs.endpos * rtime) * (1.0f/100);
-						Vec3f vect = conversationcamera.m_pos - targetpos;
+						Vec3f vect = sourcepos - targetpos;
 						Vec3f vect2 = VRotateY(vect, 90.f);;
 						vect2 = glm::normalize(vect2);
 						Vec3f vect3 = glm::normalize(vect);
@@ -1499,10 +1499,10 @@ void ArxGame::speechControlledCinematic() {
 							vect2 = -vect2;
 						}
 						
-						conversationcamera.m_pos = vect + targetpos + vect2;
-						conversationcamera.setTargetCamera(targetpos);
-						subj.m_pos = conversationcamera.m_pos;
-						subj.angle = conversationcamera.angle;
+						subj.m_pos = vect + targetpos + vect2;
+						
+						subj.setTargetCamera(targetpos);
+						
 						EXTERNALVIEW = true;
 						
 					}
