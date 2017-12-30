@@ -39,21 +39,22 @@ static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * ca
 	float w = aspect * (glm::cos(fov / 2) / glm::sin(fov / 2));
 	float h =   1.0f  * (glm::cos(fov / 2) / glm::sin(fov / 2));
 	float Q = farDist / frustumDepth;
-
-	cam->ProjectionMatrix = glm::mat4x4();
-	cam->ProjectionMatrix[0][0] = w;
-	cam->ProjectionMatrix[1][1] = -h;
-	cam->ProjectionMatrix[2][2] = Q;
-	cam->ProjectionMatrix[3][2] = -Q * nearDist;
-	cam->ProjectionMatrix[2][3] = 1.f;
-	cam->ProjectionMatrix[3][3] = 0.f;
-	GRenderer->SetProjectionMatrix(cam->ProjectionMatrix);
-	GRenderer->SetViewMatrix(cam->m_worldToView);
-
-	cam->ProjectionMatrix[0][0] *= width * .5f;
-	cam->ProjectionMatrix[1][1] *= -height * .5f;
 	
-	GRenderer->SetViewport(Rect(static_cast<s32>(width), static_cast<s32>(height)));
+	glm::mat4x4 projectionMatrix;
+	projectionMatrix[0][0] = w;
+	projectionMatrix[1][1] = -h;
+	projectionMatrix[2][2] = Q;
+	projectionMatrix[3][2] = -Q * nearDist;
+	projectionMatrix[2][3] = 1.f;
+	projectionMatrix[3][3] = 0.f;
+	GRenderer->SetProjectionMatrix(projectionMatrix);
+	GRenderer->SetViewMatrix(cam->m_worldToView);
+	GRenderer->SetViewport(Rect(s32(width), s32(height)));
+	
+	glm::mat4x4 ndcToScreen = glm::scale(glm::mat4x4(1), Vec3f(width * 0.5f, -height * 0.5f, 1.f));
+	
+	cam->ProjectionMatrix = ndcToScreen * projectionMatrix;
+	
 }
 
 void SP_PrepareCamera(EERIE_CAMERA * cam) {
