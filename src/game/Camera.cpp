@@ -27,7 +27,7 @@
 
 MASTER_CAMERA_STRUCT MasterCamera;
 
-static glm::mat4x4 EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * cam) {
+static glm::mat4x4 createProjectionMatrix(float width, float height, EERIE_CAMERA * cam) {
 
 	float fov = focalToFov(cam->focal);
 	
@@ -56,7 +56,7 @@ void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
 	cam->m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
 	GRenderer->SetViewMatrix(cam->m_worldToView);
 	
-	glm::mat4x4 projectionMatrix = EERIE_CreateMatriceProj(float(size.width()), float(size.height()), cam);
+	glm::mat4x4 projectionMatrix = createProjectionMatrix(float(size.width()), float(size.height()), cam);
 	GRenderer->SetProjectionMatrix(projectionMatrix);
 	
 	cam->m_mod = Vec2f(cam->center);
