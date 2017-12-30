@@ -44,7 +44,6 @@ public:
 	// Matrices
 	void SetViewMatrix(const glm::mat4x4 & matView);
 	void SetProjectionMatrix(const glm::mat4x4 & matProj);
-	void GetProjectionMatrix(glm::mat4x4 & matProj) const;
 	
 	// Texture management
 	void ReleaseAllTextures();
