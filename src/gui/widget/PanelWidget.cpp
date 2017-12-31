@@ -39,10 +39,10 @@ void PanelWidget::Move(const Vec2f & offset)
 }
 
 // patch on ajoute à droite en ligne
-void PanelWidget::AddElement(Widget* widget)
-{
+void PanelWidget::AddElement(Widget * widget) {
+	
 	m_children.push_back(widget);
-
+	
 	if(m_children.size() == 1) {
 		m_rect = widget->m_rect;
 	} else {
