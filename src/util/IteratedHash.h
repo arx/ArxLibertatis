@@ -115,7 +115,7 @@ void iterated_hash<T>::update(const char * input, size_t len) {
 	
 	if(num != 0) { // process left over data
 		if(num + len >= block_size) {
-			std::memcpy(data + num, input, block_size-num);
+			std::memcpy(data + num, input, block_size - num);
 			hash(data, block_size);
 			input += (block_size - num);
 			len -= (block_size - num);
