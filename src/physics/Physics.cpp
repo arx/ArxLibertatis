@@ -130,51 +130,44 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		pbox->vert[14].pos.y = cubmax.y;
 		pbox->vert[13].pos.y = cubmin.y;
 		float RATI = diff * ( 1.0f / 8 );
-
-		for (size_t k = 0; k < obj->vertexlist.size(); k++)
-		{
-			if (k == obj->origin) continue;
-
+		
+		for(size_t k = 0; k < obj->vertexlist.size(); k++) {
+			
+			if(k == obj->origin) {
+				continue;
+			}
 			Vec3f curr = obj->vertexlist[k].v;
+			
 			size_t SEC = 1;
 			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, curr.x);
 			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, curr.z);
-
-			pbox->vert[SEC+1].pos.x = std::min(pbox->vert[SEC+1].pos.x, curr.x);
-			pbox->vert[SEC+1].pos.z = std::max(pbox->vert[SEC+1].pos.z, curr.z);
-
-			pbox->vert[SEC+2].pos.x = std::max(pbox->vert[SEC+2].pos.x, curr.x);
-			pbox->vert[SEC+2].pos.z = std::max(pbox->vert[SEC+2].pos.z, curr.z);
-
-			pbox->vert[SEC+3].pos.x = std::max(pbox->vert[SEC+3].pos.x, curr.x);
-			pbox->vert[SEC+3].pos.z = std::min(pbox->vert[SEC+3].pos.z, curr.z);
-
+			pbox->vert[SEC + 1].pos.x = std::min(pbox->vert[SEC + 1].pos.x, curr.x);
+			pbox->vert[SEC + 1].pos.z = std::max(pbox->vert[SEC + 1].pos.z, curr.z);
+			pbox->vert[SEC + 2].pos.x = std::max(pbox->vert[SEC + 2].pos.x, curr.x);
+			pbox->vert[SEC + 2].pos.z = std::max(pbox->vert[SEC + 2].pos.z, curr.z);
+			pbox->vert[SEC + 3].pos.x = std::max(pbox->vert[SEC + 3].pos.x, curr.x);
+			pbox->vert[SEC + 3].pos.z = std::min(pbox->vert[SEC + 3].pos.z, curr.z);
+			
 			SEC = 5;
 			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, curr.x - RATI);
 			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, curr.z - RATI);
-
-			pbox->vert[SEC+1].pos.x = std::min(pbox->vert[SEC+1].pos.x, curr.x - RATI);
-			pbox->vert[SEC+1].pos.z = std::max(pbox->vert[SEC+1].pos.z, curr.z + RATI);
-
-			pbox->vert[SEC+2].pos.x = std::max(pbox->vert[SEC+2].pos.x, curr.x + RATI);
-			pbox->vert[SEC+2].pos.z = std::max(pbox->vert[SEC+2].pos.z, curr.z + RATI);
-
-			pbox->vert[SEC+3].pos.x = std::max(pbox->vert[SEC+3].pos.x, curr.x + RATI);
-			pbox->vert[SEC+3].pos.z = std::min(pbox->vert[SEC+3].pos.z, curr.z - RATI);
-
-
+			pbox->vert[SEC + 1].pos.x = std::min(pbox->vert[SEC + 1].pos.x, curr.x - RATI);
+			pbox->vert[SEC + 1].pos.z = std::max(pbox->vert[SEC + 1].pos.z, curr.z + RATI);
+			pbox->vert[SEC + 2].pos.x = std::max(pbox->vert[SEC + 2].pos.x, curr.x + RATI);
+			pbox->vert[SEC + 2].pos.z = std::max(pbox->vert[SEC + 2].pos.z, curr.z + RATI);
+			pbox->vert[SEC + 3].pos.x = std::max(pbox->vert[SEC + 3].pos.x, curr.x + RATI);
+			pbox->vert[SEC + 3].pos.z = std::min(pbox->vert[SEC + 3].pos.z, curr.z - RATI);
+			
 			SEC = 9;
 			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, curr.x);
 			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, curr.z);
-
-			pbox->vert[SEC+1].pos.x = std::min(pbox->vert[SEC+1].pos.x, curr.x);
-			pbox->vert[SEC+1].pos.z = std::max(pbox->vert[SEC+1].pos.z, curr.z);
-
-			pbox->vert[SEC+2].pos.x = std::max(pbox->vert[SEC+2].pos.x, curr.x);
-			pbox->vert[SEC+2].pos.z = std::max(pbox->vert[SEC+2].pos.z, curr.z);
-
-			pbox->vert[SEC+3].pos.x = std::max(pbox->vert[SEC+3].pos.x, curr.x);
-			pbox->vert[SEC+3].pos.z = std::min(pbox->vert[SEC+3].pos.z, curr.z);
+			pbox->vert[SEC + 1].pos.x = std::min(pbox->vert[SEC + 1].pos.x, curr.x);
+			pbox->vert[SEC + 1].pos.z = std::max(pbox->vert[SEC + 1].pos.z, curr.z);
+			pbox->vert[SEC + 2].pos.x = std::max(pbox->vert[SEC + 2].pos.x, curr.x);
+			pbox->vert[SEC + 2].pos.z = std::max(pbox->vert[SEC + 2].pos.z, curr.z);
+			pbox->vert[SEC + 3].pos.x = std::max(pbox->vert[SEC + 3].pos.x, curr.x);
+			pbox->vert[SEC  + 3].pos.z = std::min(pbox->vert[SEC + 3].pos.z, curr.z);
+			
 		}
 	}
 	else
@@ -202,30 +195,28 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 			{
 				SEC = 9;
 			}
-
+			
 			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, curr.x);
 			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, curr.z);
-
-			pbox->vert[SEC+1].pos.x = std::min(pbox->vert[SEC+1].pos.x, curr.x);
-			pbox->vert[SEC+1].pos.z = std::max(pbox->vert[SEC+1].pos.z, curr.z);
-
-			pbox->vert[SEC+2].pos.x = std::max(pbox->vert[SEC+2].pos.x, curr.x);
-			pbox->vert[SEC+2].pos.z = std::max(pbox->vert[SEC+2].pos.z, curr.z);
-
-			pbox->vert[SEC+3].pos.x = std::max(pbox->vert[SEC+3].pos.x, curr.x);
-			pbox->vert[SEC+3].pos.z = std::min(pbox->vert[SEC+3].pos.z, curr.z);
+			pbox->vert[SEC + 1].pos.x = std::min(pbox->vert[SEC + 1].pos.x, curr.x);
+			pbox->vert[SEC + 1].pos.z = std::max(pbox->vert[SEC + 1].pos.z, curr.z);
+			pbox->vert[SEC + 2].pos.x = std::max(pbox->vert[SEC + 2].pos.x, curr.x);
+			pbox->vert[SEC + 2].pos.z = std::max(pbox->vert[SEC + 2].pos.z, curr.z);
+			pbox->vert[SEC + 3].pos.x = std::max(pbox->vert[SEC + 3].pos.x, curr.x);
+			pbox->vert[SEC + 3].pos.z = std::min(pbox->vert[SEC + 3].pos.z, curr.z);
+			
 		}
 	}
-
-	for (size_t k = 0; k < 4; k++)
-	{
-		if (glm::abs(pbox->vert[5+k].pos.x - pbox->vert[0].pos.x) < 2.f)
-			pbox->vert[5+k].pos.x = (pbox->vert[1+k].pos.x + pbox->vert[9+k].pos.x) * .5f;
-
-		if (glm::abs(pbox->vert[5+k].pos.z - pbox->vert[0].pos.z) < 2.f)
-			pbox->vert[5+k].pos.z = (pbox->vert[1+k].pos.z + pbox->vert[9+k].pos.z) * .5f;
+	
+	for(size_t k = 0; k < 4; k++) {
+		if(glm::abs(pbox->vert[5 + k].pos.x - pbox->vert[0].pos.x) < 2.f) {
+			pbox->vert[5 + k].pos.x = (pbox->vert[1 + k].pos.x + pbox->vert[9 + k].pos.x) * 0.5f;
+		}
+		if(glm::abs(pbox->vert[5 + k].pos.z - pbox->vert[0].pos.z) < 2.f) {
+			pbox->vert[5 + k].pos.z = (pbox->vert[1 + k].pos.z + pbox->vert[9 + k].pos.z) * 0.5f;
+		}
 	}
-
+	
 	pbox->radius = 0.f;
 
 	for(size_t k = 0; k < pbox->vert.size(); k++) {
@@ -567,14 +558,14 @@ static Material polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
 	else return MATERIAL_STONE;
 }
 
-static bool IsFULLObjectVertexInValidPosition(const PHYSICS_BOX_DATA & pbox, EERIEPOLY *& collisionPoly) {
+static bool IsFULLObjectVertexInValidPosition(const PHYSICS_BOX_DATA & pbox, EERIEPOLY * & collisionPoly) {
 
 	float rad = pbox.radius;
 	
 	// TODO copy-paste background tiles
 	int tilex = int(pbox.vert[0].pos.x * ACTIVEBKG->m_mul.x);
 	int tilez = int(pbox.vert[0].pos.z * ACTIVEBKG->m_mul.y);
-	int radius = std::min(1, short(rad * (1.0f/100)) + 1);
+	int radius = std::min(1, short(rad * 0.01f) + 1);
 	
 	int minx = std::max(tilex - radius, 0);
 	int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
@@ -818,9 +809,8 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	Vec3f oldpos[32];
 	
 	for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
-		PhysicsParticle *pv = &pbox->vert[kk];
+		PhysicsParticle * pv = &pbox->vert[kk];
 		oldpos[kk] = pv->pos;
-
 		pv->velocity.x = glm::clamp(pv->velocity.x, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 		pv->velocity.y = glm::clamp(pv->velocity.y, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 		pv->velocity.z = glm::clamp(pv->velocity.z, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
