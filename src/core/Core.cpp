@@ -280,25 +280,25 @@ void runGame() {
 //   Returns IO under cursor, be it in inventories or in scene
 //   Returns NULL if no IO under cursor
 //*************************************************************************************
-Entity * FlyingOverObject(const Vec2s & pos)
-{
-	
-	Entity * io = NULL;
+Entity * FlyingOverObject(const Vec2s & pos) {
 	
 	// TODO do this properly!
 	if(player.torch && eMouseState == MOUSE_IN_TORCH_ICON) {
 		return player.torch;
 	}
 	
-	if((io = GetFromInventory(pos).first) != NULL)
-		return io;
-
-	if(InInventoryPos(pos))
+	if(Entity * entity = GetFromInventory(pos).first) {
+		return entity;
+	}
+	
+	if(InInventoryPos(pos)) {
 		return NULL;
-
-	if((io = InterClick(pos)) != NULL)
-		return io;
-
+	}
+	
+	if(Entity * entity = InterClick(pos)) {
+		return entity;
+	}
+	
 	return NULL;
 }
 
