@@ -38,10 +38,10 @@ void update2DFX() {
 	
 	ARX_PROFILE_FUNC();
 	
-	Entity* pTableIO[256];
+	Entity * pTableIO[256];
 	size_t nNbInTableIO = 0;
-
-	float temp_increase = toMs(g_platformTime.lastFrameDuration()) * (1.0f/1000) * 4.f;
+	
+	float temp_increase = toMs(g_platformTime.lastFrameDuration()) * 0.004f;
 	
 	const Vec3f camPos = g_camera->m_pos;
 	
@@ -51,15 +51,14 @@ void update2DFX() {
 	float fZFar = zFar.z / zFar.w;
 
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
-		EERIE_LIGHT *el = g_culledDynamicLights[i];
-
+		EERIE_LIGHT * el = g_culledDynamicLights[i];
+		
 		BackgroundTileData * bkgData = getFastBackgroundData(el->pos.x, el->pos.z);
-
 		if(!bkgData || !bkgData->treat) {
-			el->treat=0;
+			el->treat = 0;
 			continue;
 		}
-
+		
 		if(el->extras & EXTRAS_FLARE) {
 			Vec3f lv = el->pos;
 			
@@ -71,13 +70,10 @@ void update2DFX() {
 			if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_PLAYERBOOK))
 				continue;
 
-			if(p.w > 0.f &&
-				pos2d.x > 0.f &&
-				pos2d.y > (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y) &&
-				pos2d.x < g_size.width() &&
-				pos2d.y < (g_size.height()-(cinematicBorder.CINEMA_DECAL * g_sizeRatio.y))
-				)
-			{
+			if(p.w > 0.f && pos2d.x > 0.f && pos2d.x < g_size.width()
+			   && pos2d.y > (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y)
+				 && pos2d.y < (g_size.height() - (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y))) {
+				
 				Vec3f vector = lv - camPos;
 				lv -= vector * (50.f / glm::length(vector));
 
