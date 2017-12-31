@@ -57,7 +57,7 @@ struct Cylinder;
 class Entity;
 
 enum AnchorFlag {
-	ANCHOR_FLAG_BLOCKED    = (1<<3)
+	ANCHOR_FLAG_BLOCKED = 1 << 3
 };
 DECLARE_FLAGS(AnchorFlag, AnchorFlags)
 DECLARE_FLAGS_OPERATORS(AnchorFlags)

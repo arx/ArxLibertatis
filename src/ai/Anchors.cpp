@@ -101,8 +101,8 @@ void ANCHOR_BLOCK_By_IO(Entity * io, long status) {
 					cz += ep.v[kk].p.z;
 				}
 
-				cx *= (1.f/3);
-				cz *= (1.f/3);
+				cx *= 1.f / 3;
+				cz *= 1.f / 3;
 
 				for(int kk = 0; kk < 3; kk++) {
 					ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
