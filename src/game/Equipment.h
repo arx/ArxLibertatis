@@ -84,7 +84,7 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 //! Sets/unsets an object type flag
 bool ARX_EQUIPMENT_SetObjectType(Entity & io, const std::string & temp, bool set);
 
-ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string& temp);
+ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string & temp);
 void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip);
 void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * toequip, long flags = 0);
 void ARX_EQUIPMENT_ReleaseAll(Entity * io);
