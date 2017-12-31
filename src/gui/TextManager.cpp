@@ -49,7 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 struct TextManager::ManagedText {
-	Font* pFont;
+	
+	Font * pFont;
 	Rect rRect;
 	Rect rRectClipp;
 	std::string lpszUText;
@@ -58,20 +59,20 @@ struct TextManager::ManagedText {
 	Color lCol;
 	PlatformDuration lTimeScroll;
 	PlatformDuration lTimeOut;
+	
 };
 
-TextManager::TextManager() {
-}
+TextManager::TextManager() { }
 
 TextManager::~TextManager() {
 	Clear();
 }
 
-bool TextManager::AddText(Font* _pFont, const std::string & _lpszUText,
+bool TextManager::AddText(Font * _pFont, const std::string & _lpszUText,
                           const Rect & _rRect, Color _lCol,
                           PlatformDuration _lTimeOut, PlatformDuration _lTimeScroll,
-                          float _fSpeedScroll, int iNbLigneClipp
-) {
+                          float _fSpeedScroll, int iNbLigneClipp) {
+	
 	if(_lpszUText.empty()) {
 		return false;
 	}
