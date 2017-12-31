@@ -60,7 +60,7 @@ private:
 	
 	ButtonWidget * pLeftButton;
 	ButtonWidget * pRightButton;
-	std::vector<TextWidget*> vText;
+	std::vector<TextWidget *> vText;
 	int iPos;
 	int iOldPos;
 	
