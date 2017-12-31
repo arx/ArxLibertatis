@@ -70,22 +70,22 @@ enum SavedIOType {
 };
 
 enum SystemFlag {
-	SYSTEM_FLAG_TWEAKER_INFO  = (1<<0),
-	SYSTEM_FLAG_INVENTORY     = (1<<1),
-	SYSTEM_FLAG_EQUIPITEMDATA = (1<<2),
-	SYSTEM_FLAG_USEPATH       = (1<<3)
+	SYSTEM_FLAG_TWEAKER_INFO  = 1 << 0,
+	SYSTEM_FLAG_INVENTORY     = 1 << 1,
+	SYSTEM_FLAG_EQUIPITEMDATA = 1 << 2,
+	SYSTEM_FLAG_USEPATH       = 1 << 3
 };
 
 enum SavePlayerFlag {
-	SP_MAX  = (1<<0),
-	SP_RF   = (1<<2),
-	SP_WEP  = (1<<3),
-	SP_MR   = (1<<4),
-	SP_ARM1 = (1<<5),
-	SP_ARM2 = (1<<6),
-	SP_ARM3 = (1<<7),
-	SP_SP   = (1<<8),
-	SP_SP2  = (1<<9)
+	SP_MAX  = 1 << 0,
+	SP_RF   = 1 << 2,
+	SP_WEP  = 1 << 3,
+	SP_MR   = 1 << 4,
+	SP_ARM1 = 1 << 5,
+	SP_ARM2 = 1 << 6,
+	SP_ARM3 = 1 << 7,
+	SP_SP   = 1 << 8,
+	SP_SP2  = 1 << 9
 };
 
 
@@ -171,7 +171,7 @@ struct SavedMapMarkerData {
 	s32 lvl;
 	char name[STRING_SIZE];
 	
-	/* implicit */ SavedMapMarkerData(const MiniMap::MapMarkerData &b) {
+	/* implicit */ SavedMapMarkerData(const MiniMap::MapMarkerData & b) {
 		x = b.m_pos.x;
 		y = b.m_pos.y;
 		lvl = b.m_lvl;
