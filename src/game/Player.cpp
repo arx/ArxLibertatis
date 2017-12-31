@@ -1579,7 +1579,8 @@ retry:
 					player.jumpphase = NotJumping;
 					goto retry;
 				} else if(layer0.cur_anim == alist[ANIM_JUMP_END_PART2]
-				          && glm::abs(player.physics.velocity.x) + glm::abs(player.physics.velocity.z) > (4.f/TARGET_DT)
+				          && glm::abs(player.physics.velocity.x) + glm::abs(player.physics.velocity.z)
+				             > (4.f / TARGET_DT)
 				          && layer0.ctime > AnimationDurationMs(1)) {
 					AcquireLastAnim(io);
 					player.jumpphase = NotJumping;
@@ -1696,7 +1697,7 @@ void ARX_PLAYER_Frame_Update()
 	player.angle = player.desiredangle;
 
 	// Updates player Extra-Rotate Informations
-	Entity *io = entities.player();
+	Entity * io = entities.player();
 
 	if(io && io->_npcdata->ex_rotate) {
 		EERIE_EXTRA_ROTATE * extraRotation = io->_npcdata->ex_rotate;
@@ -1987,14 +1988,8 @@ void PlayerMovementIterate(float DeltaTime) {
 		
 		float anything2 = CheckAnythingInCylinder(cyl, entities.player(), CFLAG_JUST_TEST | CFLAG_PLAYER); //-cyl->origin.y;
 		
-		if(   anything2 > -5
-		   && player.physics.velocity.y > (15.f/TARGET_DT)
-		   && !LAST_ON_PLATFORM
-		   && !TRUE_FIRM_GROUND
-		   && player.jumpphase == NotJumping
-		   && !player.levitate
-		   && anything > 80.f
-		) {
+		if(anything2 > -5 && player.physics.velocity.y > (15.f / TARGET_DT) && !LAST_ON_PLATFORM
+		   && !TRUE_FIRM_GROUND && player.jumpphase == NotJumping && !player.levitate && anything > 80.f) {
 			player.jumpphase = JumpDescending;
 			if(!player.falling) {
 				player.falling = true;
@@ -2112,12 +2107,10 @@ void PlayerMovementIterate(float DeltaTime) {
 		
 		// Apply Gravity force if not LEVITATING or JUMPING
 		if(!levitate && player.jumpphase != JumpAscending && !LAST_ON_PLATFORM) {
-			
-			player.physics.forces.y += ((player.falling) ? JUMP_GRAVITY : WORLD_GRAVITY) / TARGET_DT;
-			
+			player.physics.forces.y += (player.falling ? JUMP_GRAVITY : WORLD_GRAVITY) / TARGET_DT;
 			// Check for LAVA Damage !!!
 			float epcentery;
-			EERIEPOLY *ep = CheckInPoly(player.pos + Vec3f(0.f, 150.f, 0.f), &epcentery);
+			EERIEPOLY * ep = CheckInPoly(player.pos + Vec3f(0.f, 150.f, 0.f), &epcentery);
 			if(ep) {
 				if((ep->type & POLY_LAVA) && glm::abs(epcentery - (player.pos.y - player.baseHeight())) < 30) {
 					float mul = 1.f - (glm::abs(epcentery - (player.pos.y - player.baseHeight())) * (1.0f / 30));
@@ -2126,7 +2119,6 @@ void PlayerMovementIterate(float DeltaTime) {
 					damages = ARX_SPELLS_ApplyFireProtection(entities.player(), damages);
 					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, EntityHandle_Player);
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
-
 					Vec3f pos = player.basePosition();
 					ARX_PARTICLES_Spawn_Lava_Burn(pos, entities.player());
 				}
