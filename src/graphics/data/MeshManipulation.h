@@ -53,13 +53,13 @@ class TextureContainer;
 class Entity;
 
 enum TweakFlag {
-	TWEAK_REMOVE    = (1<<0),
-	TWEAK_HEAD      = (1<<1),
-	TWEAK_TORSO     = (1<<2),
-	TWEAK_LEGS      = (1<<3),
-	TWEAK_TYPE_SKIN = (1<<4),
-	TWEAK_TYPE_ICON = (1<<5),
-	TWEAK_TYPE_MESH = (1<<6)
+	TWEAK_REMOVE    = 1 << 0,
+	TWEAK_HEAD      = 1 << 1,
+	TWEAK_TORSO     = 1 << 2,
+	TWEAK_LEGS      = 1 << 3,
+	TWEAK_TYPE_SKIN = 1 << 4,
+	TWEAK_TYPE_ICON = 1 << 5,
+	TWEAK_TYPE_MESH = 1 << 6
 };
 DECLARE_FLAGS(TweakFlag, TweakType)
 DECLARE_FLAGS_OPERATORS(TweakType)
