@@ -110,7 +110,7 @@ public:
 	ellipsis(const ellipsis & rh) : super_t(rh) { }
 	
 	ellipsis & operator=(const ellipsis & rh) {
-		static_cast<super_t&>(*this) = rh;
+		static_cast<super_t &>(*this) = rh;
 		return *this;
 	}
 	
