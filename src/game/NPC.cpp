@@ -432,7 +432,7 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 			continue;
 		}
 		
-		size_t total = 0.f;
+		size_t total = 0;
 		for(long aa = l_try; aa > 1; aa--) {
 			long v = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos + aa];
 			total += ACTIVEBKG->m_anchors[v].linked.size();
