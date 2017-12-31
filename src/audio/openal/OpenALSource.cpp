@@ -40,7 +40,7 @@
 
 namespace audio {
 
-#define ALPREFIX "[" << (s16)(((id)&0xffff0000)>>16) << "," << (s16)((id)&0xffff) << "," << (sample ? sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
+#define ALPREFIX "[" << (s16)(((id) & 0xffff0000) >> 16) << "," << (s16)((id)&0xffff) << "," << (sample ? sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
 
 #undef ALError
 #define ALError LogError << ALPREFIX
@@ -529,10 +529,10 @@ aalError OpenALSource::play(unsigned play_count) {
 		TraceAL("play(+" << play_count << ") vol=" << channel.volume);
 	}
 	
-	if(play_count && m_loadCount != (unsigned)-1) {
+	if(play_count && m_loadCount != unsigned(-1)) {
 		m_loadCount += play_count;
 	} else {
-		m_loadCount = (unsigned)-1;
+		m_loadCount = unsigned(-1);
 	}
 	
 	if(m_streaming) {
@@ -804,7 +804,7 @@ aalError OpenALSource::updateBuffers() {
 }
 
 bool OpenALSource::markAsLoaded() {
-	return (m_loadCount == (unsigned)-1 || --m_loadCount);
+	return (m_loadCount == unsigned(-1) || --m_loadCount);
 }
 
 aalError OpenALSource::setRolloffFactor(float factor) {
