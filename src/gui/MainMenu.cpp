@@ -138,7 +138,7 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveDelete, this, _1);
 			txt->m_targetMenu = Page_Save;
-			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(5)));
+			txt->SetPos(Vec2f(RATIO_X(m_size.x - 10) - txt->m_rect.width(), RATIO_Y(5)));
 			txt->lOldColor = txt->lColor;
 			add(txt);
 			pDeleteButton = txt;
@@ -150,7 +150,7 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_None;
-			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
+			txt->SetPos(Vec2f(RATIO_X(m_size.x - 10) - txt->m_rect.width(), RATIO_Y(380)));
 			add(txt);
 		}
 		
@@ -312,7 +312,7 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestDelete, this);
 			txt->m_targetMenu = Page_Load;
-			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(14)));
+			txt->SetPos(Vec2f(RATIO_X(m_size.x - 10) - txt->m_rect.width(), RATIO_Y(14)));
 			txt->SetCheckOff();
 			txt->lOldColor = txt->lColor;
 			txt->lColor = Color::grayb(127);
@@ -327,7 +327,7 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoadConfirm, this);
 			txt->m_targetMenu = Page_None;
-			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
+			txt->SetPos(Vec2f(RATIO_X(m_size.x - 10) - txt->m_rect.width(), RATIO_Y(380)));
 			txt->SetCheckOff();
 			txt->lOldColor = txt->lColor;
 			txt->lColor = Color::grayb(127);
@@ -790,7 +790,7 @@ public:
 				cb->setValue(config.video.vsync < 0 ? 2 : config.video.vsync);
 			}
 			
-			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			cb->Move(Vec2f(RATIO_X(m_size.x - 9) - cb->m_rect.width(), 0));
 			panel->AddElement(cb);
 			
 			addCenter(panel);
@@ -833,7 +833,7 @@ public:
 				}
 			}
 			
-			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			cb->Move(Vec2f(RATIO_X(m_size.x - 9) - cb->m_rect.width(), 0));
 			panel->AddElement(cb);
 			
 			addCenter(panel);
@@ -844,7 +844,7 @@ public:
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(240, 0));
 			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
-			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
+			txt->SetPos(Vec2f(RATIO_X(m_size.x - 10) - txt->m_rect.width(), RATIO_Y(380)));
 			txt->SetCheckOff();
 			add(txt);
 			pMenuElementApply = txt;
@@ -1015,7 +1015,7 @@ public:
 				}
 			}
 			
-			float fRatio    = (RATIO_X(m_size.x-9) - slider->m_rect.width());
+			float fRatio = (RATIO_X(m_size.x - 9) - slider->m_rect.width());
 			slider->Move(Vec2f(fRatio, 0));
 			panel->AddElement(slider);
 			addCenter(panel);
@@ -1044,7 +1044,7 @@ public:
 			cb->AddText(new TextWidget(hFontMenu, szMenuText));
 			cb->setValue(config.video.levelOfDetail);
 			
-			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			cb->Move(Vec2f(RATIO_X(m_size.x - 9) - cb->m_rect.width(), 0));
 			panel->AddElement(cb);
 			
 			addCenter(panel);
@@ -1107,7 +1107,7 @@ public:
 			m_alphaCutoutAntialiasingCycleText = cb;
 			setAlphaCutoutAntialisingState();
 			
-			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			cb->Move(Vec2f(RATIO_X(m_size.x - 9) - cb->m_rect.width(), 0));
 			panel->AddElement(cb);
 			
 			addCenter(panel);
@@ -1161,7 +1161,7 @@ public:
 				}
 			}
 			cb->setValue(selected);
-			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			cb->Move(Vec2f(RATIO_X(m_size.x - 9) - cb->m_rect.width(), 0));
 			if(maxAnisotropy <= 1) {
 				cb->setEnabled(false);
 			}
@@ -1307,7 +1307,7 @@ public:
 			cb->AddText(new TextWidget(hFontMenu, szMenuText));
 			cb->setValue(config.interface.cinematicWidescreenMode);
 			
-			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			cb->Move(Vec2f(RATIO_X(m_size.x - 9) - cb->m_rect.width(), 0));
 			panel->AddElement(cb);
 			
 			addCenter(panel);
@@ -1366,7 +1366,7 @@ public:
 			cb->AddText(new TextWidget(hFontMenu, szMenuText));
 			cb->setValue(config.interface.hudScaleFilter);
 			
-			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			cb->Move(Vec2f(RATIO_X(m_size.x - 9) - cb->m_rect.width(), 0));
 			panel->AddElement(cb);
 			
 			addCenter(panel);
@@ -1465,7 +1465,7 @@ public:
 				}
 			}
 			
-			float fRatio    = (RATIO_X(m_size.x-9) - slider->m_rect.width());
+			float fRatio = (RATIO_X(m_size.x - 9) - slider->m_rect.width());
 			slider->Move(Vec2f(fRatio, 0));
 			panel->AddElement(slider);
 			addCenter(panel);
@@ -1573,7 +1573,7 @@ public:
 			if(hrtf == audio::HRTFRequired || hrtf == audio::HRTFForbidden) {
 				slider->setEnabled(false);
 			}
-			float fRatio    = (RATIO_X(m_size.x-9) - slider->m_rect.width());
+			float fRatio = (RATIO_X(m_size.x - 9) - slider->m_rect.width());
 			slider->Move(Vec2f(fRatio, 0));
 			panel->AddElement(slider);
 			
@@ -1686,7 +1686,7 @@ public:
 			cb->AddText(new TextWidget(hFontMenu, szMenuText));
 			cb->setValue(int(config.input.autoReadyWeapon));
 			
-			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			cb->Move(Vec2f(RATIO_X(m_size.x - 9) - cb->m_rect.width(), 0));
 			panel->AddElement(cb);
 			
 			addCenter(panel);
@@ -1795,7 +1795,7 @@ public:
 			cb->AddText(new TextWidget(hFontMenu, szMenuText));
 			cb->setValue(int(config.input.quickLevelTransition));
 			
-			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			cb->Move(Vec2f(RATIO_X(m_size.x - 9) - cb->m_rect.width(), 0));
 			panel->AddElement(cb);
 			
 			addCenter(panel);
@@ -1975,7 +1975,7 @@ public:
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
 			txt->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedDefault, this);
-			txt->SetPos(Vec2f((RATIO_X(m_size.x) - txt->m_rect.width())*0.5f, RATIO_Y(380)));
+			txt->SetPos(Vec2f((RATIO_X(m_size.x) - txt->m_rect.width()) * 0.5f, RATIO_Y(380)));
 			add(txt);
 		}
 		
@@ -2056,7 +2056,7 @@ public:
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
 			txt->clicked = boost::bind(&ControlOptionsMenuPage2::onClickedDefault, this);
-			txt->SetPos(Vec2f((RATIO_X(m_size.x) - txt->m_rect.width())*0.5f, RATIO_Y(380)));
+			txt->SetPos(Vec2f((RATIO_X(m_size.x) - txt->m_rect.width()) * 0.5f, RATIO_Y(380)));
 			add(txt);
 		}
 		
