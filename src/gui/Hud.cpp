@@ -68,7 +68,7 @@ static const int indicatorHorizSpacing = 20;
 
 static void DrawItemPrice() {
 	
-	Entity *temp = SecondaryInventory->io;
+	Entity * temp = SecondaryInventory->io;
 	if(temp->ioflags & IO_SHOP) {
 		Vec2f pos = Vec2f(DANAEMouse);
 		pos += Vec2f(0, -10);
@@ -171,10 +171,11 @@ void HitStrengthGauge::draw() {
 	if(m_flashActive && player.m_skillFull.etheralLink >= 40) {
 		
 		float j = 1.0f - m_flashIntensity;
-		Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, m_flashIntensity, 0).to<u8>();
+		Color col = (j < 0.5f) ? Color3f(j * 2.f, 1.f, 0.f).to<u8>() : Color3f(1.f, m_flashIntensity, 0.f).to<u8>();
 		
 		UseRenderState state(render2D().blendAdditive());
 		EERIEDrawBitmap(m_hitRect, 0.0001f, m_hitTex, col);
+		
 	}
 }
 
@@ -377,7 +378,7 @@ void StealIconGui::updateInput() {
 			if(eeMouseDown1()) {
 				ARX_INVENTORY_OpenClose(ioSteal);
 				
-				if(player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL)) {
+				if(player.Interface & (INTER_INVENTORY | INTER_INVENTORYALL)) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 				}
 				
@@ -720,8 +721,7 @@ void MemorizedRunesHud::draw() {
 				bHalo = true;
 			} else {
 				player.SpellToMemorize.iSpellSymbols[i] = SpellSymbol[i];
-				
-				for(int j = i+1; j < 6; j++) {
+				for(int j = i + 1; j < 6; j++) {
 					player.SpellToMemorize.iSpellSymbols[j] = RUNE_NONE;
 				}
 			}
@@ -731,7 +731,7 @@ void MemorizedRunesHud::draw() {
 			Vec2f size = Vec2f(32.f, 32.f) * m_scale;
 			Rectf rect = Rectf(pos, size.x, size.y);
 			
-			TextureContainer *tc = gui::necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
+			TextureContainer * tc = gui::necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
 			
 			if(bHalo) {
 				ARX_INTERFACE_HALO_Render(Color3f(0.2f, 0.4f, 0.8f), HALO_ACTIVE, tc->getHalo(), pos, Vec2f(m_scale));
@@ -1012,8 +1012,8 @@ void PrecastSpellsGui::update() {
 			
 			val *= (1.f - tt);
 		}
-
-		Color color = Color3f(0, val * (1.0f/2), val).to<u8>();
+		
+		Color color = Color3f(0, val * 0.5f, val).to<u8>();
 		
 		Rectf childRect = createChild(m_rect, Anchor_BottomLeft, m_iconSize * m_scale, Anchor_BottomLeft);
 		childRect.move(i * m_iconSize.x * m_scale, 0);
@@ -1242,10 +1242,10 @@ void DamagedEquipmentGui::update() {
 	}
 	
 	for(long i = 0; i < 5; i++) {
+		
 		m_colors[i] = Color::black;
 		
-		long eq=-1;
-		
+		long eq = -1;
 		switch (i) {
 			case 0: eq = EQUIP_SLOT_WEAPON; break;
 			case 1: eq = EQUIP_SLOT_SHIELD; break;
@@ -1257,11 +1257,11 @@ void DamagedEquipmentGui::update() {
 		Entity * io = entities.get(player.equiped[eq]);
 		if(io) {
 			float ratio = io->durability / io->max_durability;
-			
 			if(ratio <= 0.5f) {
 				m_colors[i] = Color3f(1.f - ratio, ratio, 0).to<u8>();
 			}
 		}
+		
 	}
 }
 
