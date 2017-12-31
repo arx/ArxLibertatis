@@ -253,7 +253,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		for(long ii = 0; ii < af3Ddh->nb_faces; ii++) {
 			EERIE_FACE & face = obj->facelist[ii];
 			
-			const EERIE_FACE_FTL * eff = reinterpret_cast<const EERIE_FACE_FTL*>(dat + pos);
+			const EERIE_FACE_FTL * eff = reinterpret_cast<const EERIE_FACE_FTL *>(dat + pos);
 			pos += sizeof(EERIE_FACE_FTL);
 			
 			face.facetype = PolyType::load(eff->facetype);
@@ -303,7 +303,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		// Copy in the grouplist data
 		for(size_t i = 0 ; i < obj->grouplist.size() ; i++) {
 			
-			const EERIE_GROUPLIST_FTL* group = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
+			const EERIE_GROUPLIST_FTL * group = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
 			pos += sizeof(EERIE_GROUPLIST_FTL);
 			
 			obj->grouplist[i].name = boost::to_lower_copy(util::loadString(group->name));
@@ -318,7 +318,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			if(!obj->grouplist[i].indexes.empty()) {
 				size_t oldpos = pos;
 				pos += sizeof(s32) * obj->grouplist[i].indexes.size(); // Advance to the next index block
-				std::copy((const s32 *)(dat+oldpos), (const s32 *)(dat + pos), obj->grouplist[i].indexes.begin());
+				std::copy((const s32 *)(dat + oldpos), (const s32 *)(dat + pos), obj->grouplist[i].indexes.begin());
 			}
 		}
 	}
