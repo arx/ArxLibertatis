@@ -176,7 +176,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	if(polyboom.size() > 250 && size < 10)
 		return;
 	
-	float splatsize=90;
+	float splatsize = 90;
 	
 	if(size > 40.f)
 		size = 40.f;
@@ -215,23 +215,20 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	if(flags & 1)
 		py = poss.y;
 	
-	EERIEPOLY TheoricalSplat; // clockwise
-	TheoricalSplat.v[0].p.x=-splatsize;
+	EERIEPOLY TheoricalSplat;
+	TheoricalSplat.v[0].p.x = -splatsize;
 	TheoricalSplat.v[0].p.y = py;
-	TheoricalSplat.v[0].p.z=-splatsize;
-	
-	TheoricalSplat.v[1].p.x=-splatsize;
+	TheoricalSplat.v[0].p.z = -splatsize;
+	TheoricalSplat.v[1].p.x = -splatsize;
 	TheoricalSplat.v[1].p.y = py;
-	TheoricalSplat.v[1].p.z=+splatsize;
-	
-	TheoricalSplat.v[2].p.x=+splatsize;
+	TheoricalSplat.v[1].p.z = splatsize;
+	TheoricalSplat.v[2].p.x = splatsize;
 	TheoricalSplat.v[2].p.y = py;
-	TheoricalSplat.v[2].p.z=+splatsize;
-	
-	TheoricalSplat.v[3].p.x=+splatsize;
+	TheoricalSplat.v[2].p.z = splatsize;
+	TheoricalSplat.v[3].p.x = splatsize;
 	TheoricalSplat.v[3].p.y = py;
-	TheoricalSplat.v[3].p.z=-splatsize;
-	TheoricalSplat.type=POLY_QUAD;
+	TheoricalSplat.v[3].p.z = -splatsize;
+	TheoricalSplat.type = POLY_QUAD;
 	
 	Vec3f RealSplatStart(-size, py, -size);
 	
@@ -271,10 +268,10 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
-		BackgroundTileData *eg = &ACTIVEBKG->m_tileData[x][z];
+		BackgroundTileData * eg = &ACTIVEBKG->m_tileData[x][z];
 		
 		for(long l = 0; l < eg->nbpolyin; l++) {
-			EERIEPOLY *ep = eg->polyin[l];
+			EERIEPOLY * ep = eg->polyin[l];
 			
 			if((flags & 2) && !(ep->type & POLY_WATER))
 				continue;
@@ -287,22 +284,22 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 			bool oki = false;
 			
 			for(long k = 0; k < nbvert; k++) {
+				
 				if(PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].p.x, ep->v[k].p.z)
-					&& glm::abs(ep->v[k].p.y-py) < 100.f)
-				{
+				   && glm::abs(ep->v[k].p.y - py) < 100.f) {
 					oki = true;
 					break;
 				}
 				
-				if(PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].p.x+ep->center.x) * 0.5f, (ep->v[k].p.z+ep->center.z) * 0.5f)
-					&& glm::abs(ep->v[k].p.y-py) < 100.f)
-				{
+				if(PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].p.x + ep->center.x) * 0.5f, (ep->v[k].p.z + ep->center.z) * 0.5f)
+				   && glm::abs(ep->v[k].p.y - py) < 100.f) {
 					oki = true;
 					break;
 				}
+				
 			}
 			
-			if(!oki && PointIn2DPolyXZ(&TheoricalSplat, ep->center.x, ep->center.z) && glm::abs(ep->center.y-py) < 100.f)
+			if(!oki && PointIn2DPolyXZ(&TheoricalSplat, ep->center.x, ep->center.z) && glm::abs(ep->center.y - py) < 100.f)
 				oki = true;
 			
 			if(oki) {
@@ -342,7 +339,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 							pb.u[k] += vdiff * div;
 						}
 						
-						pb.v[k] = (ep->v[k].p.z-RealSplatStart.z) * div;
+						pb.v[k] = (ep->v[k].p.z - RealSplatStart.z) * div;
 						if(pb.v[k] < 0.5f) {
 							pb.v[k] -= vdiff * div;
 						} else {
@@ -410,15 +407,16 @@ void PolyBoomDraw() {
 		switch(typp) {
 			
 			case 0: { // Scorch mark
+				
 				float tt = t / pb.tolive * 0.8f;
-				ColorRGBA col = (player.m_improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toRGB();
+				ColorRGBA col = (player.m_improve ? (Color3f::red * (tt * 0.5f)) : Color3f::gray(tt)).toRGB();
 				
 				TexturedVertexUntransformed ltv[4];
 				
 				for(long k = 0; k < pb.nbvert; k++) {
 					ltv[k].p = pb.ep->v[k].p;
-					ltv[k].uv.x=pb.u[k];
-					ltv[k].uv.y=pb.v[k];
+					ltv[k].uv.x = pb.u[k];
+					ltv[k].uv.y = pb.v[k];
 					ltv[k].color = col;
 				}
 				
@@ -438,6 +436,7 @@ void PolyBoomDraw() {
 			}
 			
 			case 1: { // Blood
+				
 				float tt = t / pb.tolive;
 				float tr = std::max(1.f, tt * 2 - 0.5f);
 				ColorRGBA col = Color4f(pb.rgb * tt, glm::clamp(tt * 1.5f, 0.f, 1.f)).toRGBA();
@@ -446,8 +445,8 @@ void PolyBoomDraw() {
 				
 				for(long k = 0; k < pb.nbvert; k++) {
 					ltv[k].p = pb.ep->v[k].p;
-					ltv[k].uv.x=(pb.u[k]-0.5f)*(tr)+0.5f;
-					ltv[k].uv.y=(pb.v[k]-0.5f)*(tr)+0.5f;
+					ltv[k].uv.x = (pb.u[k] - 0.5f) * tr + 0.5f;
+					ltv[k].uv.y = (pb.v[k] - 0.5f) * tr + 0.5f;
 					ltv[k].color = col;
 				}
 				
@@ -472,9 +471,9 @@ void PolyBoomDraw() {
 				
 				for(long k = 0; k < pb.nbvert; k++) {
 					ltv[k].p = pb.ep->v[k].p;
-					ltv[k].uv.x=(pb.u[k]-0.5f)*(tr)+0.5f;
-					ltv[k].uv.y=(pb.v[k]-0.5f)*(tr)+0.5f;
-					ltv[k].color=col;
+					ltv[k].uv.x = (pb.u[k] - 0.5f) * tr + 0.5f;
+					ltv[k].uv.y = (pb.v[k] - 0.5f) * tr + 0.5f;
+					ltv[k].color = col;
 				}
 				
 				if(ltv[0].uv.x < 0.f && ltv[1].uv.x < 0.f && ltv[2].uv.x < 0.f && ltv[3].uv.x < 0.f) {
