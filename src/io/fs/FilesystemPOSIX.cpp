@@ -66,7 +66,7 @@ std::time_t last_write_time(const path & p) {
 
 u64 file_size(const path & p) {
 	struct stat buf;
-	return stat(p.string().c_str(), &buf) ? (u64)-1 : (u64)buf.st_size;
+	return stat(p.string().c_str(), &buf) ? u64(-1) : u64(buf.st_size);
 }
 
 bool remove(const path & p) {
