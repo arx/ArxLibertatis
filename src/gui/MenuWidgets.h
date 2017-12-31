@@ -77,7 +77,7 @@ public:
 	void Render();
 	void drawDebug();
 	
-	TextWidget *GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId, bool _bValidateTest);
+	TextWidget * GetTouch(bool keyTouched, int keyId, InputKeyId * pInputKeyId, bool _bValidateTest);
 	void ReInitActionKey();
 	
 	Vec2f m_pos;
