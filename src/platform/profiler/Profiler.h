@@ -33,11 +33,11 @@ void initialize();
 //! Write the collected profile data to disk
 void flush();
 
-void registerThread(const std::string& threadName);
+void registerThread(const std::string & threadName);
 void unregisterThread();
 
 #if BUILD_PROFILER_INSTRUMENT
-	
+
 class Scope {
 	
 	const char * m_tag;
@@ -45,7 +45,7 @@ class Scope {
 	
 public:
 	
-	explicit Scope(const char* tag);
+	explicit Scope(const char * tag);
 	~Scope();
 	
 };
