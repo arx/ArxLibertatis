@@ -122,9 +122,9 @@ private:
 	QColor _addressAreaColor;
 	QColor _highlightingColor;
 	QColor _selectionColor;
-	QScrollArea *_scrollArea;
+	QScrollArea * _scrollArea;
 	QTimer _cursorTimer;
-	QUndoStack *_undoStack;
+	QUndoStack * _undoStack;
 	
 	XByteArray _xData;                  //!< holds the content of the hex editor
 	
@@ -145,6 +145,7 @@ private:
 	int _selectionInit;                 //!< That's, where we pressed the mouse button
 	
 	int _size;
+	
 };
 
 //! \endcond docNever
