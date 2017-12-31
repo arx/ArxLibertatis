@@ -43,7 +43,8 @@ uint64_t SDL2X11_getNativeWindowHandle(SDL_Window * window) {
 	ARX_STATIC_ASSERT(sizeof(info.data) <= sizeof(info.padding), padding_size);
 	
 	SDL_VERSION(&info.data.version);
-	if(!SDL_GetWindowWMInfo(window, (SDL_SysWMinfo *)&info) || info.data.subsystem != SDL_SYSWM_X11) {
+	struct SysWMinfo * infoptr = &info;
+	if(!SDL_GetWindowWMInfo(window, (SDL_SysWMinfo *)infoptr) || info.data.subsystem != SDL_SYSWM_X11) {
 		return 0;
 	}
 	
