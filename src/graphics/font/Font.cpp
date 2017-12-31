@@ -287,9 +287,8 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 	
 	FT_UInt prevGlyphIndex = 0;
 	FT_Pos prevRsbDelta = 0;
-
-	typedef std::map< size_t, std::vector<TexturedVertex> > MapTextureVertices;
-	MapTextureVertices mapTextureVertices;
+	
+	std::vector< std::vector<TexturedVertex> > mapTextureVertices;
 	
 	for(text_iterator it = start; it != end; ) {
 		
@@ -320,6 +319,9 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 		
 		// Draw
 		if(DoDraw && glyph.size.x != 0 && glyph.size.y != 0) {
+			if(glyph.texture >= mapTextureVertices.size()) {
+				mapTextureVertices.resize(glyph.texture + 1);
+			}
 			addGlyphVertices(mapTextureVertices[glyph.texture], glyph, pen, color);
 		} else {
 			ARX_UNUSED(pen), ARX_UNUSED(color);
@@ -345,12 +347,12 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
 		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
-
-		for(MapTextureVertices::const_iterator it = mapTextureVertices.begin(); it != mapTextureVertices.end(); ++it) {
-			
-			if(!it->second.empty()) {
-				GRenderer->SetTexture(0, &m_textures->getTexture(it->first));
-				EERIEDRAWPRIM(Renderer::TriangleList, &it->second[0], it->second.size());
+		
+		for(size_t texture = 0; texture < mapTextureVertices.size(); texture++) {
+			const std::vector<TexturedVertex> & vertices = mapTextureVertices[texture];
+			if(!vertices.empty()) {
+				GRenderer->SetTexture(0, &m_textures->getTexture(texture));
+				EERIEDRAWPRIM(Renderer::TriangleList, &vertices[0], vertices.size());
 			}
 		}
 		
