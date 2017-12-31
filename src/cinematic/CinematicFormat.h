@@ -51,8 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #pragma pack(push, 1)
 
-static const s32 CINEMATIC_VERSION_1_75 = (1<<16) | 75;
-static const s32 CINEMATIC_VERSION_1_76 = (1<<16) | 76;
+static const s32 CINEMATIC_VERSION_1_75 = (1 << 16) | 75;
+static const s32 CINEMATIC_VERSION_1_76 = (1 << 16) | 76;
 static const s16 INTERP_NO_FADE = 2;
 
 // Version 1.75 structures
@@ -89,15 +89,15 @@ const u32 CinematicFxMask = 0x000000ff;
 #define FX_BLUR    3
 //prefx
 const u32 CinematicFxPreMask = 0x0000ff00;
-#define FX_DREAM   (1<<8)
+#define FX_DREAM   (1 << 8)
 //post fx
 const u32 CinematicFxPostMask = 0x00ff0000;
-#define FX_FLASH   (1<<16)
-#define FX_APPEAR  (2<<16)
-#define FX_APPEAR2 (3<<16)
+#define FX_FLASH   (1 << 16)
+#define FX_APPEAR  (2 << 16)
+#define FX_APPEAR2 (3 << 16)
 //all time
 const u32 CinematicFxAllMask = 0xff000000;
-#define FX_LIGHT   (1<<24)
+#define FX_LIGHT   (1 << 24)
 
 struct C_KEY_1_75 {
 	s32 frame;
