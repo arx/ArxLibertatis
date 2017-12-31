@@ -87,7 +87,7 @@ public:
 	 *
 	 * \return True if the file could be attached, false otherwise.
 	 */
-	static bool addAttachedFile(const fs::path& file);
+	static bool addAttachedFile(const fs::path & file);
 	
 	/*!
 	 * \brief Set a variable value, which will be included in the crash report
@@ -133,7 +133,7 @@ public:
 	 *
 	 * \return True if the variable could be set, false otherwise.
 	 */
-	static bool setVariable(const std::string& name, const std::string & value);
+	static bool setVariable(const std::string & name, const std::string & value);
 	
 	/*!
 	 * \brief Set window ID which should be hidden when the process crashes
@@ -147,7 +147,7 @@ public:
 	 *
 	 * \return True if the report location could be set, false otherwise.
 	 */
-	static bool setReportLocation(const fs::path& location);
+	static bool setReportLocation(const fs::path & location);
 
 	/*!
 	 * \brief Remove old reports from the report location specified with setReportLocation().
