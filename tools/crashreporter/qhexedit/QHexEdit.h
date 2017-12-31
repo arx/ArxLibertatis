@@ -174,7 +174,7 @@ public:
 	bool isReadOnly();
 	const QFont & font() const;
 	void setFont(const QFont & font);
-	//! @endcond docNever
+	//! \endcond docNever
 	
 public slots:
 	
@@ -233,6 +233,7 @@ private:
 	//! \cond docNever
 	QHexEditPrivate * qHexEdit_p;
 	//! \endcond docNever
+	
 };
 
 #endif // ARX_TOOLS_CRASHREPORTER_QHEXEDIT_QHEXEDIT_H
