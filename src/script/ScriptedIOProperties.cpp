@@ -503,7 +503,7 @@ public:
 			res::path oldskin = res::path::load(context.getWord());
 			res::path newskin = res::path::load(context.getWord());
 			
-			DebugScript(" skin " << oldskin << ' '<< newskin);
+			DebugScript(" skin " << oldskin << ' ' << newskin);
 			
 			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_SKIN, oldskin, newskin);
 			EERIE_MESH_TWEAK_Skin(io->obj, oldskin, newskin);
