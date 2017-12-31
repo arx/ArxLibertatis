@@ -317,13 +317,12 @@ MenuWindow::MenuWindow() {
 }
 
 MenuWindow::~MenuWindow() {
-
-	for(std::vector<MenuPage*>::iterator it = m_pages.begin(), it_end = m_pages.end(); it < it_end; ++it)
+	for(std::vector<MenuPage *>::iterator it = m_pages.begin(), it_end = m_pages.end(); it < it_end; ++it) {
 		delete *it;
+	}
 }
 
-void MenuWindow::add(MenuPage *page) {
-
+void MenuWindow::add(MenuPage * page) {
 	m_pages.push_back(page);
 	page->m_oldPos.x = 0;
 	page->m_oldPos.y = 0;
@@ -469,22 +468,22 @@ void MenuPage::AlignElementCenter(Widget * widget) {
 }
 
 void MenuPage::updateTextRect(TextWidget * widget) {
+	
 	float iDx = widget->m_rect.width();
 	
 	if(widget->ePlace) {
 		widget->m_rect.left = m_pos.x + ((m_rect.width() - iDx) / 2.f);
-		
 		if(widget->m_rect.left < 0) {
 			widget->m_rect.left = 0;
 		}
 	}
 	
-	widget->m_rect.right = widget->m_rect.left+iDx;
+	widget->m_rect.right = widget->m_rect.left + iDx;
 }
 
 void MenuPage::UpdateText() {
 	
-	TextWidget * textWidget = (TextWidget*)m_selected;
+	TextWidget * textWidget = static_cast<TextWidget *>(m_selected);
 	
 	if(GInput->isAnyKeyPressed()) {
 		
@@ -553,7 +552,7 @@ void MenuPage::UpdateText() {
 	}
 	
 	if(m_selected->m_rect.top == m_selected->m_rect.bottom) {
-		Vec2i textSize = ((TextWidget*)m_selected)->m_font->getTextSize("|");
+		Vec2i textSize = static_cast<TextWidget *>(m_selected)->m_font->getTextSize("|");
 		m_selected->m_rect.bottom += textSize.y;
 	}
 	
@@ -569,15 +568,16 @@ void MenuPage::UpdateText() {
 		v[0].w = v[1].w = v[2].w = v[3].w = 1.f;
 		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
+	
 }
 
-TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId, bool _bValidateTest)
-{
+TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId * pInputKeyId, bool _bValidateTest) {
+	
 	int iMouseButton = keyTouched ? 0 : GInput->getMouseButtonClicked();
 	
 	if(keyTouched || (iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))) {
 		if(!keyTouched && !bMouseAttack) {
-			bMouseAttack=!bMouseAttack;
+			bMouseAttack = !bMouseAttack;
 			return NULL;
 		}
 		
@@ -764,24 +764,24 @@ void MenuPage::Render() {
 				UpdateText();
 				break;
 			case GETTOUCH_TIME: {
-				if(m_blink)
-					((TextWidget*)m_selected)->lColorHighlight = Color(255, 0, 0);
-				else
-					((TextWidget*)m_selected)->lColorHighlight = Color(50, 0, 0);
+				
+				if(m_blink) {
+					static_cast<TextWidget *>(m_selected)->lColorHighlight = Color(255, 0, 0);
+				} else {
+					static_cast<TextWidget *>(m_selected)->lColorHighlight = Color(50, 0, 0);
+				}
 				
 				bool keyTouched = GInput->isAnyKeyPressed();
 				int keyId = GInput->getKeyPressed();
 				
-				if( GInput->isKeyPressed(Keyboard::Key_LeftShift)||
-					GInput->isKeyPressed(Keyboard::Key_RightShift)||
-					GInput->isKeyPressed(Keyboard::Key_LeftCtrl)||
-					GInput->isKeyPressed(Keyboard::Key_RightCtrl)||
-					GInput->isKeyPressed(Keyboard::Key_LeftAlt)||
-					GInput->isKeyPressed(Keyboard::Key_RightAlt)
-				) {
-					if(!((keyId & INPUT_COMBINATION_MASK )>>16))
+				if(GInput->isKeyPressed(Keyboard::Key_LeftShift) || GInput->isKeyPressed(Keyboard::Key_RightShift)
+				   || GInput->isKeyPressed(Keyboard::Key_LeftCtrl) || GInput->isKeyPressed(Keyboard::Key_RightCtrl)
+				   || GInput->isKeyPressed(Keyboard::Key_LeftAlt) || GInput->isKeyPressed(Keyboard::Key_RightAlt)) {
+					if(!((keyId & INPUT_COMBINATION_MASK) >> 16)) {
 						keyTouched = false;
+					}
 				} else {
+					
 					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftShift)) {
 						keyTouched = true;
 						keyId = Keyboard::Key_LeftShift;
