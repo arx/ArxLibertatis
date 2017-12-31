@@ -334,7 +334,7 @@ static void ApplySPuw() {
 static void ApplySPMax() {
 	
 	MakeCoolFx(player.pos);
-	sp_max=~sp_max;
+	sp_max = ~sp_max;
 	
 	if (sp_max) {
 		MakeSpCol();
@@ -376,21 +376,17 @@ void CheckMr() {
 	
 	if(cur_mr == 3) {
 		if(GRenderer && Mr_tc) {
-			Vec2f pos = Vec2f(g_size.topRight());
-			pos += Vec2f(-128.f * g_sizeRatio.x, 0.f);
-			
-			Vec2f size = Vec2f(128.f, 128.f);
-			size *= g_sizeRatio;
-			
+			Vec2f pos = Vec2f(g_size.topRight()) + Vec2f(-128.f * g_sizeRatio.x, 0.f);
+			Vec2f size = Vec2f(128.f, 128.f) * g_sizeRatio;
 			Rectf rect = Rectf(pos, size.x, size.y);
-			Color3f color = Color3f::gray(0.5f + PULSATE * (1.0f/10));
-			
+			Color3f color = Color3f::gray(0.5f + PULSATE * 0.1f);
 			UseRenderState state(render2D().blendAdditive());
 			EERIEDrawBitmap(rect, 0.0001f, Mr_tc, color.to<u8>());
 		} else {
 			Mr_tc = TextureContainer::LoadUI("graph/particles/(fx)_mr");
 		}
 	}
+	
 }
 
 
@@ -413,16 +409,14 @@ void handleCheatRuneDetection(CheatRune rune) {
 			break;
 		}
 		case CheatRune_KAOM: {
-			if(cur_arm >= 0 && (cur_arm & 1)){
+			if(cur_arm >= 0 && (cur_arm & 1)) {
 				cur_arm++;
-
 				if(cur_arm > 20) {
 					ApplySPArm();
 				}
+			} else {
+				cur_arm = -1;
 			}
-			else
-				cur_arm=-1;
-			
 			break;
 		}
 		case CheatRune_MEGA: {
