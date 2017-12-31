@@ -30,7 +30,7 @@ extern bool bInventorySwitch;
 extern float fDecPulse;
 
 class PlayerInventoryHud : public HudItem {
-private:
+	
 	TextureContainer * m_heroInventory;
 	TextureContainer * m_heroInventoryLink;
 	TextureContainer * m_heroInventoryUp;
@@ -42,12 +42,13 @@ private:
 	Vec2f m_slotSpacing;
 	
 	Vec2f m_bagBackgroundSize;
-
+	
 	bool m_isClosing;
 	long m_inventoryY;
 	short m_currentBag;
 	
 public:
+	
 	void init();
 	Vec2f anchorPosition();
 	void update();
@@ -63,16 +64,18 @@ public:
 	Entity * getObj(const Vec2s & pos);
 	
 	void dropEntity();
-	void dragEntity(Entity * io, const Vec2s &pos);
-
+	void dragEntity(Entity * io, const Vec2s & pos);
+	
 	void close();
 	bool isClosing();
 	void resetPos();
 	
 private:
+	
 	void CalculateInventoryCoordinates();
 	void drawBag(size_t bag, Vec2i i);
 	bool InPlayerInventoryBag(const Vec2s & pos);
+	
 };
 
 extern PlayerInventoryHud g_playerInventoryHud;
