@@ -68,6 +68,7 @@ private:
 	char _newChar;
 	char _oldChar;
 	Cmd _cmd;
+	
 };
 
 /*!
@@ -93,6 +94,7 @@ private:
 	QByteArray _wasChanged;
 	QByteArray _newBa;
 	QByteArray _oldBa;
+	
 };
 
 //! \endcond docNever
