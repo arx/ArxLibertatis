@@ -32,9 +32,9 @@ class Texture {
 public:
 	
 	enum TextureFlag {
-		HasMipmaps  = (1<<0),
-		ApplyColorKey = (1<<1),
-		Intensity   = (1<<2),
+		HasMipmaps    = 1 << 0,
+		ApplyColorKey = 1 << 1,
+		Intensity     = 1 << 2,
 	};
 	DECLARE_FLAGS(TextureFlag, TextureFlags)
 	
