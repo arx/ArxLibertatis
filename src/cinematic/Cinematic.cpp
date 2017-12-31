@@ -201,13 +201,12 @@ void Cinematic::New() {
 	
 }
 
-void Cinematic::DeleteAllBitmap()
-{
-	for(std::vector<CinematicBitmap*>::iterator it = m_bitmaps.begin(); it != m_bitmaps.end(); ++it)
-	{
+void Cinematic::DeleteAllBitmap() {
+	
+	for(std::vector<CinematicBitmap *>::iterator it = m_bitmaps.begin(); it != m_bitmaps.end(); ++it) {
 		delete *it;
 	}
-
+	
 	m_bitmaps.clear();
 }
 
@@ -303,7 +302,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 	C_UV * uvs = grille->m_uvs.data();
 	for(std::vector<C_INDEXED>::iterator it = grille->m_mats.begin(); it != grille->m_mats.end(); ++it)
 	{
-		C_INDEXED* mat = &(*it);
+		C_INDEXED * mat = &*it;
 
 		arx_assert(mat->tex);
 		GRenderer->SetTexture(0, mat->tex);
@@ -433,25 +432,26 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	float FDIFF = toMs(frameDuration);
 	
 	{
-	CinematicLight *l = NULL;
-	CinematicLight lightt;
-	
-	if(m_light.intensity >= 0.f && m_lightd.intensity >= 0.f) {
-		lightt = m_light;
 		
-		lightt.pos = lightt.pos * g_sizeRatio.y + Vec3f(g_size.center(), 0.f);
-		lightt.fallin *= g_sizeRatio.y;
-		lightt.fallout *= g_sizeRatio.y;
+		CinematicLight * l = NULL;
+		CinematicLight lightt;
+		if(m_light.intensity >= 0.f && m_lightd.intensity >= 0.f) {
+			lightt = m_light;
+			
+			lightt.pos = lightt.pos * g_sizeRatio.y + Vec3f(g_size.center(), 0.f);
+			lightt.fallin *= g_sizeRatio.y;
+			lightt.fallout *= g_sizeRatio.y;
+			
+			flicker.update(FDIFF * SPEEDINTENSITYRND);
+			LightRND =  std::min(lightt.intensity + lightt.intensiternd * flicker.get(), 1.f);
+			
+			l = &lightt;
+		}
 		
-		flicker.update(FDIFF * SPEEDINTENSITYRND);
-		LightRND =  std::min(lightt.intensity + lightt.intensiternd * flicker.get(), 1.f);
+		if(tb->grid.m_nbvertexs) {
+			DrawGrille(tb, col, fx, l, posgrille, angzgrille, fadegrille);
+		}
 		
-		l = &lightt;
-	}
-	
-	if(tb->grid.m_nbvertexs)
-		DrawGrille(tb, col, fx, l, posgrille, angzgrille, fadegrille);
-	
 	}
 	
 	//PASS #2
@@ -477,8 +477,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		alpha = 255 - alpha;
 		col.a = alpha;
 		
-		{
-		CinematicLight *l = NULL;
+		CinematicLight * l = NULL;
 		CinematicLight lightt;
 		
 		if(m_light.intensity >= 0.f && m_lightd.intensity >= 0.f) {
@@ -497,7 +496,6 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		if(tb->grid.m_nbvertexs)
 			DrawGrille(tb, col, fx, l, m_nextPosgrille, m_nextAngzgrille, m_nextFadegrille);
 		
-		}
 	}
 	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
