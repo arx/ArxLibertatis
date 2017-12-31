@@ -215,27 +215,24 @@ void ExplosionSpell::Update() {
 	
 	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
-		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f/3, 1.f/3, 1.f/5);
+		
+		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f / 3, 1.f / 3, 0.2f);
 		light->duration = GameDurationMs(200);
 		
 		float choice = Random::getf();
 		if(choice > .8f) {
 			long lvl = Random::get(9, 13);
-			
 			Vec3f pos = light->pos + arx::sphericalRand(260.f);
-			
-			Color3f color = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f/3, 1.f/3, 1.f/5);
-			
+			Color3f color = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f / 3, 1.f / 3, 0.2f);
 			LaunchFireballBoom(pos, static_cast<float>(lvl), NULL, &color);
 		} else if(choice > .6f) {
 			Vec3f pos = light->pos + arx::sphericalRand(260.f);
-			
 			MakeCoolFx(pos);
 		} else if(choice > 0.4f) {
 			Vec3f pos = light->pos + arx::sphericalRand(160.f);
-
 			ARX_PARTICLES_Add_Smoke(pos, 2, 20); // flag 1 = randomize pos
 		}
+		
 	}
 	
 }
