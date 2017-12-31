@@ -237,13 +237,13 @@ size_t Context::skipCommand() {
 	const char * esdat = m_script->data;
 	
 	if(m_pos == m_script->size || esdat[m_pos] == '\n') {
-		return (size_t)-1;
+		return size_t(-1);
 	}
 	
 	size_t oldpos = m_pos;
 	
 	if(esdat[m_pos] == '/' && m_pos + 1 != m_script->size && esdat[m_pos + 1] == '/') {
-		oldpos = (size_t)-1;
+		oldpos = size_t(-1);
 		m_pos += 2;
 	}
 	
