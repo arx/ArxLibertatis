@@ -363,15 +363,14 @@ void Input::reset() {
 		iOldNumClick[i] = 0;
 	}
 
-	iKeyId=-1;
-
+	iKeyId = -1;
 	for(int i = 0; i < Keyboard::KeyCount; i++) {
-		keysStates[i]=0;
+		keysStates[i] = 0;
 	}
-
+	
 	EERIEMouseButton = 0;
-
 	iWheelDir = 0;
+	
 }
 
 void Input::setMouseMode(Mouse::Mode mode) {
