@@ -60,24 +60,24 @@ class Entity;
 
 enum DamageTypeFlag {
 	DAMAGE_TYPE_GENERIC    = 0,
-	DAMAGE_TYPE_FIRE       = (1<<0),
-	DAMAGE_TYPE_MAGICAL    = (1<<1),
-	DAMAGE_TYPE_LIGHTNING  = (1<<2),
-	DAMAGE_TYPE_COLD       = (1<<3),
-	DAMAGE_TYPE_POISON     = (1<<4),
-	DAMAGE_TYPE_GAS        = (1<<5),
-	DAMAGE_TYPE_METAL      = (1<<6),
-	DAMAGE_TYPE_WOOD       = (1<<7),
-	DAMAGE_TYPE_STONE      = (1<<8),
-	DAMAGE_TYPE_ACID       = (1<<9),
-	DAMAGE_TYPE_ORGANIC    = (1<<10),
-	DAMAGE_TYPE_PER_SECOND = (1<<11),
-	DAMAGE_TYPE_DRAIN_LIFE = (1<<12),
-	DAMAGE_TYPE_DRAIN_MANA = (1<<13),
-	DAMAGE_TYPE_PUSH       = (1<<14),
-	DAMAGE_TYPE_FAKEFIRE   = (1<<15),
-	DAMAGE_TYPE_FIELD      = (1<<16),
-	DAMAGE_TYPE_NO_FIX     = (1<<17)
+	DAMAGE_TYPE_FIRE       = 1 << 0,
+	DAMAGE_TYPE_MAGICAL    = 1 << 1,
+	DAMAGE_TYPE_LIGHTNING  = 1 << 2,
+	DAMAGE_TYPE_COLD       = 1 << 3,
+	DAMAGE_TYPE_POISON     = 1 << 4,
+	DAMAGE_TYPE_GAS        = 1 << 5,
+	DAMAGE_TYPE_METAL      = 1 << 6,
+	DAMAGE_TYPE_WOOD       = 1 << 7,
+	DAMAGE_TYPE_STONE      = 1 << 8,
+	DAMAGE_TYPE_ACID       = 1 << 9,
+	DAMAGE_TYPE_ORGANIC    = 1 << 10,
+	DAMAGE_TYPE_PER_SECOND = 1 << 11,
+	DAMAGE_TYPE_DRAIN_LIFE = 1 << 12,
+	DAMAGE_TYPE_DRAIN_MANA = 1 << 13,
+	DAMAGE_TYPE_PUSH       = 1 << 14,
+	DAMAGE_TYPE_FAKEFIRE   = 1 << 15,
+	DAMAGE_TYPE_FIELD      = 1 << 16,
+	DAMAGE_TYPE_NO_FIX     = 1 << 17
 };
 DECLARE_FLAGS(DamageTypeFlag, DamageType)
 DECLARE_FLAGS_OPERATORS(DamageType)
@@ -89,11 +89,11 @@ enum DamageArea {
 };
 
 enum DamageFlag {
-	DAMAGE_FLAG_DONT_HURT_SOURCE = (1<<0),
-	DAMAGE_FLAG_ADD_VISUAL_FX    = (1<<1), // depending on type
-	DAMAGE_FLAG_FOLLOW_SOURCE    = (1<<2),
-	DAMAGE_NOT_FRAME_DEPENDANT   = (1<<5),
-	DAMAGE_SPAWN_BLOOD           = (1<<6)
+	DAMAGE_FLAG_DONT_HURT_SOURCE = 1 << 0,
+	DAMAGE_FLAG_ADD_VISUAL_FX    = 1 << 1, // depending on type
+	DAMAGE_FLAG_FOLLOW_SOURCE    = 1 << 2,
+	DAMAGE_NOT_FRAME_DEPENDANT   = 1 << 5,
+	DAMAGE_SPAWN_BLOOD           = 1 << 6
 };
 DECLARE_FLAGS(DamageFlag, DamageFlags)
 DECLARE_FLAGS_OPERATORS(DamageFlags)
