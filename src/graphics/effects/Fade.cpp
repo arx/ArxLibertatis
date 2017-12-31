@@ -75,8 +75,8 @@ void ManageFade() {
 		FADEDIR = 0;
 		return;
 	}
-
-	LAST_FADEVALUE=Visibility;
+	
+	LAST_FADEVALUE = Visibility;
 	
 	UseRenderState state(render2D());
 	
