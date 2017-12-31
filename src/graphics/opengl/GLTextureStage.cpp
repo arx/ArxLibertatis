@@ -47,7 +47,7 @@ GLTextureStage::~GLTextureStage() {
 	resetTexture();
 }
 
-Texture* GLTextureStage::getTexture() const {
+Texture * GLTextureStage::getTexture() const {
 	return tex;
 }
 
