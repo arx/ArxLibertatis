@@ -157,7 +157,7 @@ public:
 		return *this;
 	}
 	
-	const Angle & operator *=(T scale) {
+	const Angle & operator*=(T scale) {
 		m_pitch *= scale, m_yaw *= scale, m_roll *= scale;
 		return *this;
 	}
