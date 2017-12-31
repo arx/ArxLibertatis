@@ -105,33 +105,27 @@ void ARX_PATH_ComputeAllBoundingBoxes()
 	}
 }
 
-long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos)
-{
-	if(pos.x < ap->bbmin.x
-	   || pos.x > ap->bbmax.x
-	   || pos.z < ap->bbmin.z
-	   || pos.z > ap->bbmax.z
-	   || pos.y < ap->bbmin.y
-	   || pos.y > ap->bbmax.y
-	) {
+long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos) {
+	
+	if(pos.x < ap->bbmin.x || pos.x > ap->bbmax.x || pos.z < ap->bbmin.z || pos.z > ap->bbmax.z
+	   || pos.y < ap->bbmin.y || pos.y > ap->bbmax.y) {
 		return 0;
 	}
-
+	
 	int c = 0;
-
+	
 	pos.x -= ap->pos.x;
 	pos.z -= ap->pos.z;
-
+	
 	for(size_t i = 0, j = ap->pathways.size() - 1; i < ap->pathways.size(); j = i++) {
 		const Vec3f & pi = ap->pathways[i].rpos;
 		const Vec3f & pj = ap->pathways[j].rpos;
 		if(((pi.z <= pos.z && pos.z < pj.z) || (pj.z <= pos.z && pos.z < pi.z))
-		   && (pos.x < (pj.x - pi.x) *(pos.z - pi.z) / (pj.z - pi.z) + pi.x)
-		) {
+		   && (pos.x < (pj.x - pi.x) * (pos.z - pi.z) / (pj.z - pi.z) + pi.x)) {
 			c = !c;
 		}
 	}
-
+	
 	return c;
 }
 
