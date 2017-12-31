@@ -60,7 +60,7 @@ struct args_adapter {
 	
 public:
 	template <typename SourceType>
-	explicit args_adapter(SourceType& source)
+	explicit args_adapter(SourceType & source)
 		: m_impl(source) {
 	}
 	
