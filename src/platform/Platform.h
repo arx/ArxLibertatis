@@ -186,7 +186,7 @@ typedef double f64; // 64 bits double float
  *
  * (unused params, variables only used for asserts...)
  */
-#define ARX_UNUSED(x) ((void)&x)
+#define ARX_UNUSED(x) ((void)(x))
 
 /*!
  * \def ARX_ANONYMOUS_SYMBOL(Name)
