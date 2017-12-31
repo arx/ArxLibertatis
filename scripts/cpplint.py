@@ -1853,8 +1853,19 @@ def CheckSpacing(filename, clean_lines, linenum, error):
 
   line = clean_lines.elided[linenum]  # get rid of comments and strings
 
+  match = Search(r'[^\w]operator[\s]+([^\(\s\w]+)', line)
+  if match:
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space in operator %s' % match.group(1))
+
   # Don't try to do spacing checks for operator methods
-  line = re.sub(r'operator(==|!=|<|<<|<=|>=|>>|>)\(', 'operator\(', line)
+  line = re.sub(r'operator[\s]*(==|!=|<|<<|<=|>=|>>|>|\+=|\*=|\-=|/=|\%=|\|=|\&=|\^=|\~|\~|\+|\*|\-|\/|\%|\||\&|\^|\+\+|\-\-|\-\>|=|\!|new|new\[\]|delete|delete\[\]|[\:\w\s\<\>\*\&]*)[\s]*\(', 'operator\(', line)
+
+  line = re.sub(r'^[\s]*\#[\s]*(include|pragma).*', '', line)
+
+  line = re.sub(r'(^|[^\w])(delete\[\]|delete|return|case)([^\w\;]|$)', '\\1\\2 =\\3', line)
+
+  line = re.sub(r'(^|[^\w])(\d(\.\d*)?e\-\d+f?)([^\w]|$)', '\\1_\\4', line)
 
   if Search(r'template\<', line):
     error(filename, linenum, 'whitespace/templates', 4,
@@ -1864,9 +1875,126 @@ def CheckSpacing(filename, clean_lines, linenum, error):
   # Otherwise not.  Note we only check for non-spaces on *both* sides;
   # sometimes people put non-spaces on one side when aligning ='s among
   # many lines (not that this is behavior that I approve of...)
-  if Search(r'[\w.]=[\w.]', line) and not Search(r'\b(if|while) ', line):
+  if Search(r'\=[^\=\>\s]', line):
     error(filename, linenum, 'whitespace/operators', 4,
-          'Missing spaces around =')
+          'Missing space after =')
+  if Search(r'[^\+\-\*\/\%\&\|\^\<\>\!\=\s]\=', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before =')
+  match = Search(r'[^\s](([\+\-\*\/\%\&\|\^\!]|\<\<|\>\>)\=)', line)
+  if match:
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before %s' % match.group(1))
+  match = Search(r'(([\+\-\*\/\%\&\|\^\!]|\<\<|\>\>)\=)[^\s]', line)
+  if match:
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space after %s' % match.group(1))
+
+  if Search(r'[^\s]\^', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before ^')
+  if Search(r'\^[^\s\=]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space after ^')
+  if Search(r'[^\(\[\s\:\.\+\-\!\*\&\>]\~', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before ~')
+  if Search(r'\~\s', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space space after ~')
+  if Search(r'[^\s\(\[\!\+\-\*\~\&]\!', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before !')
+  if Search(r'\!\s', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space after !')
+  if Search(r'[^\s\.\>\*\(\[\+\-\!\~\&\:]\*', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before *')
+  if Search(r'[\w\)\]\"\']\s*\*[^\s\*\=\>\,\)\[]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space after *')
+  if Search(r'[^\s\w\)\]\>\*\"\'\,]\s*\*\s', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space after *')
+  if Search(r'\*\s+\*', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space between * and *')
+  if Search(r'[^\s\&\(\[\+\-\!\~\*]\&', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before &')
+  if Search(r'[\w\)\]\"\'\*]\s*\&[^\s\&\=\>\,\)]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space after &')
+  if Search(r'[^\s\w\)\]\>\&\"\'\,\*]\s*\&\s', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space after &')
+  if Search(r'[^\s\/]\/', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before /')
+  if Search(r'[^\/]\/[^\s\/\=]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space after /')
+  if Search(r'[^\s\+\(\[\*\-\!\~\&]\+[^\+]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before +')
+  if Search(r'[\w\)\]\"\']\s*\+[^\s\)\]\+\=]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space after +')
+  if Search(r'[^\s\w\)\]\>\"\'\+]\s*\+\s', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space after +')
+  if Search(r'[^\s\-\(\[\+\*\!\~\&]\-[^\>\-]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before -')
+  if Search(r'[^\s\w\)\]\>\"\'\-]\s*\-\s', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space after -')
+  if Search(r'[\w\)\]\"\']\s*\-[^\s\>\)\]\-\=]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space after -')
+  if Search(r'[^\s]\s+\-\>', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space before ->')
+  if Search(r'\-\>\s', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space after ->')
+  if Search(r'[^\s]\s+\.[^\d\.]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space before .')
+  if Search(r'([^\d\.]|[a-zA-Z_]\d*)\.\s', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space after .')
+  if Search(r'[^\s\|]\|', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before |')
+  if Search(r'(\|)[^\s\|\=]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space after |')
+  if Search(r'[^\s]\?', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before ?')
+  if Search(r'\?[^\s]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space after ?')
+  if Search(r'[^\:]\:[^\s\:]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space after :')
+  if Search(r'[^\s\w\:\>]\:[^:]', line) and not Search(r'(^|[^\w])(case)([^\w]|$)', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before :')
+  if Search(r'[^\s\<]\<[^\>\(]*\)', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before <')
+  if Search(r'\<[^\s\>\(\<\=][^\>\(]*\)', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space after <')
+  if Search(r'\([^\)\<]*[^\s\)\>\-]\>', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space before >')
+  if Search(r'\([^\)\<]*[^\)\<\-]\>[^\s\=\>]', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Missing space after >')
 
   # It's ok not to have spaces around binary operators like + - * /, but if
   # there's too little whitespace, we get concerned.  It's hard to tell,
@@ -1889,7 +2017,7 @@ def CheckSpacing(filename, clean_lines, linenum, error):
           'Missing spaces around %s' % match.group(1))
   # We allow no-spaces around << and >> when used like this: 10<<20, but
   # not otherwise (particularly, not when used as streams)
-  match = Search(r'[^0-9\s](<<|>>)[^0-9\s]', line)
+  match = Search(r'[^\s](<<|>>)[^\s]', line)
   if match:
     error(filename, linenum, 'whitespace/operators', 3,
           'Missing spaces around %s' % match.group(1))
