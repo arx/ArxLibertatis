@@ -65,23 +65,19 @@ class Entity;
 struct EERIE_3DOBJ;
 
 enum ParticlesTypeFlag {
-	FIRE_TO_SMOKE       = (1<<0),
-	ROTATING            = (1<<1),
-	FADE_IN_AND_OUT     = (1<<2),
-	
-	DISSIPATING         = (1<<4),
-	GRAVITY             = (1<<5),
-	SUBSTRACT           = (1<<6),
-	
-	DELAY_FOLLOW_SOURCE = (1<<11),
-	
-	PARTICLE_ANIMATED   = (1<<13),
-	
-	SPLAT_GROUND        = (1<<15),
-	SPLAT_WATER         = (1<<16),
-	PARTICLE_SUB2       = (1<<17),
-	PARTICLE_GOLDRAIN   = (1<<18),
-	PARTICLE_NOZBUFFER  = (1<<19)
+	FIRE_TO_SMOKE       = 1 << 0,
+	ROTATING            = 1 << 1,
+	FADE_IN_AND_OUT     = 1 << 2,
+	DISSIPATING         = 1 << 4,
+	GRAVITY             = 1 << 5,
+	SUBSTRACT           = 1 << 6,
+	DELAY_FOLLOW_SOURCE = 1 << 11,
+	PARTICLE_ANIMATED   = 1 << 13,
+	SPLAT_GROUND        = 1 << 15,
+	SPLAT_WATER         = 1 << 16,
+	PARTICLE_SUB2       = 1 << 17,
+	PARTICLE_GOLDRAIN   = 1 << 18,
+	PARTICLE_NOZBUFFER  = 1 << 19
 };
 
 DECLARE_FLAGS(ParticlesTypeFlag, ParticlesTypeFlags)
