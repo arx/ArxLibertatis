@@ -33,21 +33,18 @@ WidgetContainer::~WidgetContainer() {
 }
 
 void WidgetContainer::Update() {
-	
 	BOOST_FOREACH(Widget * w, m_widgets) {
 		w->Update();
 	}
 }
 
 void WidgetContainer::Render() {
-	
 	BOOST_FOREACH(Widget * w, m_widgets) {
 		w->Render();
 	}
 }
 
-void WidgetContainer::add(Widget *widget) {
-
+void WidgetContainer::add(Widget * widget) {
 	m_widgets.push_back(widget);
 }
 
