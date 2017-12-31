@@ -87,15 +87,16 @@ const RunePattern patternData[] = {
 };
 
 class RuneRecognitionAlt {
+	
 	static const size_t s_requiredPointCount = 20;
 	static const size_t s_directionCount = s_requiredPointCount - 1;
 	static const size_t s_patternCount = ARRAY_SIZE(patternData);
 	static const int s_maxTolerance = 2;
-
+	
 	int m_dirs[s_directionCount];
 	std::vector<Vec2f> m_points;
 	std::vector<size_t> m_indices;
-
+	
 	int findMatchingPattern();
 	void resampleInput(const std::vector<Vec2f> &in);
 	void inputToDirs();
@@ -107,10 +108,11 @@ class RuneRecognitionAlt {
 	static int quantizeAngleToDir(float angle);
 	static int angleDiff(int angle1, int angle2);
 	static float angleVectorX(Vec2f v);
-
+	
 public:
+	
 	void analyze();
-
+	
 };
 
 /*!
@@ -138,12 +140,13 @@ void RuneRecognitionAlt::callRuneHandlers(int index) {
  * https://depts.washington.edu/aimgroup/proj/dollar/
  */
 void RuneRecognitionAlt::resampleInput(const std::vector<Vec2f> &in) {
-	//find the total length
+	
+	// Find the total length
 	float totalLen = 0.0;
 	for(size_t i = 1; i < in.size(); i++) {
-		totalLen += glm::distance(in[i-1], in[i]);
+		totalLen += glm::distance(in[i - 1], in[i]);
 	}
-
+	
 	m_points.push_back(in[0]);
 	
 	size_t segmentCount = m_indices.size() - 1;
@@ -250,9 +253,9 @@ float RuneRecognitionAlt::angleVectorX(Vec2f v) {
  */
 void RuneRecognitionAlt::inputToDirs() {
 	for(size_t i = 1; i < m_points.size(); i++) {
-		int dir = quantizeAngleToDir(angleVectorX(m_points[i] - m_points[i-1]));
+		int dir = quantizeAngleToDir(angleVectorX(m_points[i] - m_points[i - 1]));
 		arx_assert(dir >= 0 && dir < 8);
-		m_dirs[i-1] = dir;
+		m_dirs[i - 1] = dir;
 	}
 }
 
