@@ -91,22 +91,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
    "Faster Line Segment Intersection", in Graphics Gems III,
    pp. 199-202 */
 #define EDGE_EDGE_TEST(V0, U0, U1) \
-	Bx=U0[i0]-U1[i0];                                   \
-	By=U0[i1]-U1[i1];                                   \
-	Cx=V0[i0]-U0[i0];                                   \
-	Cy=V0[i1]-U0[i1];                                   \
-	f=Ay*Bx-Ax*By;                                      \
-	d=By*Cx-Bx*Cy;                                      \
-	if((f>0 && d>=0 && d<=f) || (f<0 && d<=0 && d>=f))  \
-	{                                                   \
-		e=Ax*Cy-Ay*Cx;                                  \
-		if(f>0)                                         \
-		{                                               \
-			if(e>=0 && e<=f) return 1;                  \
-		}                                               \
-		else                                            \
-		{                                               \
-			if(e<=0 && e>=f) return 1;                  \
+	Bx = U0[i0] - U1[i0];                                   \
+	By = U0[i1] - U1[i1];                                   \
+	Cx = V0[i0] - U0[i0];                                   \
+	Cy = V0[i1] - U0[i1];                                   \
+	f = Ay * Bx - Ax * By;                                      \
+	d = By * Cx - Bx * Cy;                                      \
+	if((f > 0 && d >= 0 && d <= f) || (f < 0 && d <= 0 && d >= f)) { \
+		e = Ax * Cy - Ay * Cx;                             \
+		if(f > 0) {                                               \
+			if(e >= 0 && e <= f) return 1;                  \
+		} else {                                               \
+			if(e <= 0 && e >= f) return 1;                  \
 		}                                               \
 	}
 
