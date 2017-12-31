@@ -380,7 +380,7 @@ public:
 		
 		size_t onspeechend = context.skipCommand();
 		
-		if(onspeechend != (size_t)-1) {
+		if(onspeechend != size_t(-1)) {
 			aspeech[speechnum].scrpos = onspeechend;
 			aspeech[speechnum].es = context.getScript();
 			aspeech[speechnum].ioscript = io;
