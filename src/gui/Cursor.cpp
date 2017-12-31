@@ -146,18 +146,19 @@ bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 	
 	arx_assert(io);
 	
-	if(BLOCK_PLAYER_CONTROLS)
+	if(BLOCK_PLAYER_CONTROLS) {
 		return false;
-
+	}
+	
 	float ag = player.angle.getPitch();
-
-	if(ag > 180)
-		ag = ag - 360;
-
-	float drop_miny = float(g_size.center().y) - float(g_size.center().y) * ag * (1.f/70);
-
-	if(DANAEMouse.y < drop_miny)
+	if(ag > 180.f) {
+		ag = ag - 360.f;
+	}
+	
+	float drop_miny = float(g_size.center().y) - float(g_size.center().y) * ag * (1.f / 70);
+	if(DANAEMouse.y < drop_miny) {
 		return false;
+	}
 	
 	Anglef angle = Anglef::ZERO;
 
@@ -511,20 +512,18 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 		if(ag > 180)
 			ag = ag - 360;
 		
-		float drop_miny = float(g_size.center().y) - float(g_size.center().y) * ag * (1.0f/70);
-		
-		if(   DANAEMouse.y > drop_miny
-		   && DRAGINTER
-		   && !InInventoryPos(DANAEMouse)
-		   && !g_cursorOverBook
-		) {
-			if(!Manage3DCursor(DRAGINTER, true, draginter))
+		float drop_miny = float(g_size.center().y) - float(g_size.center().y) * ag * (1.f / 70);
+		if(DANAEMouse.y > drop_miny && DRAGINTER && !InInventoryPos(DANAEMouse) && !g_cursorOverBook) {
+			
+			if(!Manage3DCursor(DRAGINTER, true, draginter)) {
 				CANNOT_PUT_IT_HERE = EntityMoveCursor_Throw;
+			}
 			
 			if(draginter) {
 				CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
 				return;
 			}
+			
 		} else {
 			CANNOT_PUT_IT_HERE = EntityMoveCursor_Throw;
 		}
