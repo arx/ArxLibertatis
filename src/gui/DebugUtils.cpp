@@ -27,11 +27,11 @@
 #include "gui/Text.h"
 #include "math/Angle.h"
 
-DebugBox::DebugBox(const Vec2i &pos, const std::string &title)
+DebugBox::DebugBox(const Vec2i & pos, const std::string & title)
 	: m_pos(pos)
 	, m_title(title)
 	, m_maxKeyLen(0)
-{}
+{ }
 
 void DebugBox::add(const std::string & key, const std::string & value) {
 	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
