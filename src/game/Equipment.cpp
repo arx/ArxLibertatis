@@ -243,12 +243,11 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 		return;
 	
 	arx_assert(entities.player());
-	
 	Entity * io = entities.player();
 	
 	if(io->obj != hero)
 		delete io->obj;
-
+	
 	io->obj = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false);
 	
 	applyTweak(EQUIP_SLOT_HELMET, TWEAK_HEAD, "head");
@@ -259,8 +258,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
-			Entity *toequip = entities[player.equiped[i]];
-
+			Entity * toequip = entities[player.equiped[i]];
 			if(toequip) {
 				if(toequip->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
 					if(player.Interface & INTER_COMBATMODE) {
@@ -275,6 +273,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 				}
 			}
 		}
+		
 	}
 
 	ARX_PLAYER_Restore_Skin();
@@ -360,13 +359,13 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 }
 
 void ARX_EQUIPMENT_AttachPlayerWeaponToHand() {
+	
 	arx_assert(entities.player());
 	Entity * target = entities.player();
 	
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
-			Entity *toequip = entities[player.equiped[i]];
-
+			Entity * toequip = entities[player.equiped[i]];
 			if(toequip) {
 				if(toequip->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
@@ -376,16 +375,17 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand() {
 			}
 		}
 	}
+	
 }
 
 void ARX_EQUIPMENT_AttachPlayerWeaponToBack() {
+	
 	arx_assert(entities.player());
 	Entity * target = entities.player();
 	
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
-			Entity *toequip = entities[player.equiped[i]];
-
+			Entity * toequip = entities[player.equiped[i]];
 			if(toequip) {
 				if((toequip->type_flags & OBJECT_TYPE_DAGGER) || (toequip->type_flags & OBJECT_TYPE_1H)
 				   || (toequip->type_flags & OBJECT_TYPE_2H) || (toequip->type_flags & OBJECT_TYPE_BOW)) {
@@ -403,6 +403,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack() {
 			}
 		}
 	}
+	
 }
 
 WeaponType ARX_EQUIPMENT_GetPlayerWeaponType() {
@@ -894,8 +895,9 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 }
 
 void ARX_EQUIPMENT_LaunchPlayerReadyWeapon() {
+	
 	arx_assert(entities.player());
-	Entity *io = entities.player();
+	Entity * io = entities.player();
 	
 	WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
 	ANIM_HANDLE * anim = NULL;
@@ -968,8 +970,9 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 
 	if(toequip == DRAGINTER)
 		Set_DragInter(NULL);
-
-	if(toequip->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H |OBJECT_TYPE_BOW)) {
+	
+	if(toequip->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
+		
 		if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
 			ARX_EQUIPMENT_UnEquip(target, entities[player.equiped[EQUIP_SLOT_WEAPON]]);
 
