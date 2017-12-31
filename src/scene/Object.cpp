@@ -430,8 +430,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 
 	/* Build proper mesh */
 	{
-		Skeleton* obj = eobj->m_skeleton;
-
+		Skeleton * obj = eobj->m_skeleton;
+		
 		for(size_t i = 0; i != obj->bones.size(); i++) {
 			Bone & bone = obj->bones[i];
 
@@ -451,11 +451,11 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			}
 			bone.anim.scale = Vec3f_ONE;
 		}
-
+		
 		eobj->vertexlocal = new Vec3f[eobj->vertexlist.size()];
 		// TODO constructor is better than memset
-		memset(eobj->vertexlocal, 0, sizeof(Vec3f)*eobj->vertexlist.size());
-
+		memset(eobj->vertexlocal, 0, sizeof(Vec3f) * eobj->vertexlist.size());
+		
 		for(size_t i = 0; i != obj->bones.size(); i++) {
 			const Bone & bone = obj->bones[i];
 			Vec3f vector = bone.anim.trans;

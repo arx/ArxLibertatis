@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 template <class T>
 static T * allocStructZero(size_t n = 1) {
-	T * result = (T*)malloc(n * sizeof(T));
+	T * result = static_cast<T *>(malloc(n * sizeof(T)));
 	memset(result, 0, n * sizeof(T));
 	return result;
 }
