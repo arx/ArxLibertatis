@@ -41,7 +41,6 @@ struct Camera {
 	
 };
 
-
 struct IO_CAMDATA {
 	
 	Camera cam;
