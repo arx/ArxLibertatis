@@ -85,10 +85,11 @@ void CCreateField::Create(Vec3f aeSrc) {
 	youp = true;
 }
 
-void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & p3, const Vec3f & p4, int rec, Vec3f norm, RenderMaterial & mat)
-{
+void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & p3, const Vec3f & p4, int rec, Vec3f norm, RenderMaterial & mat) {
+	
 	if(rec < 3) {
-		rec ++;
+		
+		rec++;
 		
 		Vec3f v[5];
 		// milieu
