@@ -688,7 +688,7 @@ failure:
 	return false;
 }
 
-bool ARX_NPC_SetStat(Entity& io, const std::string & statname, float value) {
+bool ARX_NPC_SetStat(Entity & io, const std::string & statname, float value) {
 	
 	arx_assert(io.ioflags & IO_NPC);
 	
@@ -861,12 +861,12 @@ void ARX_PHYSICS_Apply() {
 
 		if(treatio[i].ioflags & (IO_FIX | IO_JUST_COLLIDE))
 			continue;
-
-		Entity *io = treatio[i].io;
-
-		if(!io)
+		
+		Entity * io = treatio[i].io;
+		if(!io) {
 			continue;
-
+		}
+		
 		if((io->ioflags & IO_NPC) && io->_npcdata->poisonned > 0.f)
 			ARX_NPC_ManagePoison(io);
 
@@ -891,22 +891,17 @@ void ARX_PHYSICS_Apply() {
 			io->destroyOne();
 			continue;
 		}
-
+		
 		EERIEPOLY * ep = CheckInPoly(io->pos);
-
-		if(   ep
-		   && (ep->type & POLY_LAVA)
-		   && glm::abs(ep->center.y - io->pos.y) < 40
-		) {
+		if(ep && (ep->type & POLY_LAVA) && glm::abs(ep->center.y - io->pos.y) < 40) {
 			ARX_PARTICLES_Spawn_Lava_Burn(io->pos, io);
-
 			if(io->ioflags & IO_NPC) {
 				const float LAVA_DAMAGE = 10.f;
-				float dmg = LAVA_DAMAGE * g_framedelay * (1.f/100);
+				float dmg = LAVA_DAMAGE * g_framedelay * 0.01f;
 				ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle(), false, NULL);
 			}
 		}
-
+		
 		CheckUnderWaterIO(io);
 		
 		if(io->obj && io->obj->pbox) {
@@ -1172,47 +1167,55 @@ static bool IsPlayerStriking() {
 	
 	AnimLayer & layer1 = io->animlayer[1];
 	WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
-
+	
 	switch(weapontype) {
-	case WEAPON_BARE:
-		for(long j = 0; j < 4; j++) {
-			if(player.m_strikeAimRatio > 300 && layer1.cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3])
-				return true;
-
-			if(layer1.cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT+j*3])
-				return true;
+		case WEAPON_BARE: {
+			for(long j = 0; j < 4; j++) {
+				if(player.m_strikeAimRatio > 300 && layer1.cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE + j * 3]) {
+					return true;
+				}
+				if(layer1.cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT + j * 3]) {
+					return true;
+				}
+			}
+			break;
 		}
-		break;
-	case WEAPON_DAGGER:
-		for(long j = 0; j < 4; j++) {
-			if(player.m_strikeAimRatio > 300 && layer1.cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3])
-				return true;
-
-			if(layer1.cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT+j*3])
-				return true;
+		case WEAPON_DAGGER: {
+			for(long j = 0; j < 4; j++) {
+				if(player.m_strikeAimRatio > 300 && layer1.cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT_CYCLE + j * 3]) {
+					return true;
+				}
+				if(layer1.cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT + j * 3]) {
+					return true;
+				}
+			}
+			break;
 		}
-		break;
-	case WEAPON_1H:
-		for(long j = 0; j < 4; j++) {
-			if(player.m_strikeAimRatio > 300 && layer1.cur_anim == io->anims[ANIM_1H_STRIKE_LEFT_CYCLE+j*3])
-				return true;
-
-			if(layer1.cur_anim == io->anims[ANIM_1H_STRIKE_LEFT+j*3])
-				return true;
+		case WEAPON_1H: {
+			for(long j = 0; j < 4; j++) {
+				if(player.m_strikeAimRatio > 300 && layer1.cur_anim == io->anims[ANIM_1H_STRIKE_LEFT_CYCLE + j * 3]) {
+					return true;
+				}
+				if(layer1.cur_anim == io->anims[ANIM_1H_STRIKE_LEFT + j * 3]) {
+					return true;
+				}
+			}
+			break;
 		}
-		break;
-	case WEAPON_2H:
-		for(long j = 0; j < 4; j++) {
-			if(player.m_strikeAimRatio > 300 && layer1.cur_anim == io->anims[ANIM_2H_STRIKE_LEFT_CYCLE+j*3])
-				return true;
-
-			if(layer1.cur_anim == io->anims[ANIM_2H_STRIKE_LEFT+j*3])
-				return true;
+		case WEAPON_2H: {
+			for(long j = 0; j < 4; j++) {
+				if(player.m_strikeAimRatio > 300 && layer1.cur_anim == io->anims[ANIM_2H_STRIKE_LEFT_CYCLE + j * 3]) {
+					return true;
+				}
+				if(layer1.cur_anim == io->anims[ANIM_2H_STRIKE_LEFT + j * 3]) {
+					return true;
+				}
+			}
+			break;
 		}
-		break;
-	case WEAPON_BOW: break; // Bows cannot be used as melee weapons
+		case WEAPON_BOW: break; // Bows cannot be used as melee weapons
 	}
-
+	
 	return false;
 }
 
@@ -1774,13 +1777,14 @@ static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 //***********************************************************************************************
 //***********************************************************************************************
 
-static void ManageNPCMovement(Entity * io)
-{
+static void ManageNPCMovement(Entity * io) {
+	
 	ARX_PROFILE_FUNC();
 	
 	// Ignores invalid or dead IO
-	if(!io ||!io->show || !(io->ioflags & IO_NPC))
+	if(!io || !io->show || !(io->ioflags & IO_NPC)) {
 		return;
+	}
 	
 	// Specific USEPATH management
 	ARX_USE_PATH * aup = io->usepath;
@@ -1974,13 +1978,12 @@ afterthat:
 		}
 	}
 	
-	
 	// GetTargetPos MUST be called before FaceTarget2
 	if(io->_npcdata->pathfind.listnb > 0
 	   && (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 	   && (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb - 2)
-	   && (io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos] == io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos+1])
-	) {
+	   && (io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos]
+	       == io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos + 1])) {
 		if(layer0.cur_anim != io->anims[ANIM_DEFAULT]) {
 			bool startAtBeginning = (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) != 0;
 			changeAnimation(io, ANIM_DEFAULT, 0, startAtBeginning);
@@ -1991,7 +1994,6 @@ afterthat:
 		}
 		return;
 	}
-	
 	
 	// XS : Moved to top of func
 	float _dist = glm::distance(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
@@ -2252,17 +2254,15 @@ afterthat:
 		if(ValidIONum(io->_npcdata->pathfind.truetarget)) {
 			Vec3f p = entities[io->_npcdata->pathfind.truetarget]->pos;
 			long t = AnchorData_GetNearest(p, io->physics.cyl);
-
 			if(t != -1 && t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb - 1]) {
-				float d = glm::distance(ACTIVEBKG->m_anchors[t].pos, ACTIVEBKG->m_anchors[io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]].pos);
-
-				if(d > 200.f)
+				long anchor = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb - 1];
+				float d = glm::distance(ACTIVEBKG->m_anchors[t].pos, ACTIVEBKG->m_anchors[anchor].pos);
+				if(d > 200.f) {
 					ARX_NPC_LaunchPathfind(io, io->_npcdata->pathfind.truetarget);
+				}
 			}
 		}
 	}
-	
-	
 	
 	// We are still too far from our target...
 	if(io->_npcdata->pathfind.pathwait == 0) {
@@ -2684,10 +2684,10 @@ void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, c
 	if(EEIsUnderWater(pos)) {
 		floor_material = "water";
 	} else {
-		EERIEPOLY *ep = CheckInPoly(pos + Vec3f(0.f, -100.0F, 0.f));
-
-		if(ep && ep->tex && !ep->tex->m_texName.empty())
+		EERIEPOLY * ep = CheckInPoly(pos + Vec3f(0.f, -100.f, 0.f));
+		if(ep && ep->tex && !ep->tex->m_texName.empty()) {
 			floor_material = GetMaterialString(ep->tex->m_texName);
+		}
 	}
 	
 	if(io && !io->stepmaterial.empty()) {
