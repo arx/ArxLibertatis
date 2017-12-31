@@ -288,7 +288,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			ColorBGRA * ll = LastLoadedLightning = (ColorBGRA *)malloc(sizeof(ColorBGRA) * bcount);
 			
 			if(dlh.version > 1.001f) {
-				std::transform((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning, savedColorConversion);
+				std::transform((u32 *)(dat + pos), (u32 *)(dat + pos) + bcount, LastLoadedLightning, savedColorConversion);
 				pos += sizeof(u32) * bcount;
 			} else {
 				while(bcount) {
@@ -547,7 +547,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	free(LastLoadedLightning);
 	ColorBGRA * ll = LastLoadedLightning = (ColorBGRA *)malloc(sizeof(ColorBGRA) * bcount);
 	if(dlh.version > 1.001f) {
-		std::transform((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning, savedColorConversion);
+		std::transform((u32 *)(dat + pos), (u32 *)(dat + pos) + bcount, LastLoadedLightning, savedColorConversion);
 		pos += sizeof(u32) * bcount;
 	} else {
 		while(bcount) {
