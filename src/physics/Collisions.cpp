@@ -131,7 +131,7 @@ inline float IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, long f
 	for(n = 0; n < to; n++) {
 		if(flags & CFLAG_EXTRA_PRECISION) {
 			for(long o = 0; o < 5; o++) {
-				float p = (float)o * (1.f/5);
+				float p = float(o) * 0.2f;
 				center = ep.v[n].p * p + ep.center * (1.f - p);
 				if(PointInCylinder(cyl, center)) {
 					anything = std::min(anything, center.y);
@@ -296,18 +296,16 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 
 				if(posy <= maxy && posy >= miny + modd) {
 					for(size_t ii = 0; ii < ioo->obj->facelist.size(); ii++) {
+						
 						float cx = 0;
 						float cz = 0;
-
 						for(long kk = 0; kk < 3; kk++) {
 							ep.v[kk].p = ioo->obj->vertexWorldPositions[ioo->obj->facelist[ii].vid[kk]].v;
-
 							cx += ep.v[kk].p.x;
 							cz += ep.v[kk].p.z;
 						}
-
-						cx *= (1.f/3);
-						cz *= (1.f/3);
+						cx *= 1.f / 3;
+						cz *= 1.f / 3;
 						
 						float tval = 1.1f;
 						
@@ -539,7 +537,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 				   || ((flags & CFLAG_COLLIDE_NOCOL) && (io->ioflags & IO_NPC) &&  (io->ioflags & IO_NO_COLLISIONS))) {
 					
 					if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(cyl.origin.x, cyl.origin.z), 440.f + cyl.radius))
-					if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius+80))
+					if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius + 80))
 					{
 						if(io->ioflags & IO_FIELD) {
 							if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius + 10))
@@ -846,35 +844,33 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 			if(In3DBBoxTolerance(sphere.origin, io->bbox3D, sphere.radius))
 			{
 				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
-
+					
 					EERIEPOLY ep;
 					ep.type = 0;
-
+					
 					for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
+						
 						float cx = 0;
 						float cz = 0;
-
 						for(long kk = 0; kk < 3; kk++) {
 							ep.v[kk].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v;
-
 							cx += ep.v[kk].p.x;
 							cz += ep.v[kk].p.z;
 						}
-
-						cx *= (1.f/3);
-						cz *= (1.f/3);
-
+						cx *= 1.f / 3;
+						cz *= 1.f / 3;
+						
 						for(int kk = 0; kk < 3; kk++) {
 							ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
 							ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 						}
-
+						
 						if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
 							sphereContent.push_back(ret_idx);
-
 							vreturn = true;
 							goto suivant;
 						}
+						
 					}
 				}
 			}
@@ -1028,19 +1024,17 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 					ep.type = 0;
 
 					for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
+						
 						float cx = 0;
 						float cz = 0;
-
 						for(long kk = 0; kk < 3; kk++) {
 							ep.v[kk].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v;
-
 							cx += ep.v[kk].p.x;
 							cz += ep.v[kk].p.z;
 						}
-
-						cx *= (1.f/3);
-						cz *= (1.f/3);
-
+						cx *= 1.f / 3;
+						cz *= 1.f / 3;
+						
 						for(int kk = 0; kk < 3; kk++) {
 							ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
 							ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
@@ -1151,7 +1145,7 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 				}
 
 				if(entity.obj->vertexlist.size() < 120) {
-					for(size_t kk = 0; kk < vlist.size(); kk+=1) {
+					for(size_t kk = 0; kk < vlist.size(); kk += 1) {
 						if(kk != ii) {
 							for(size_t n = 1; n < 5; n++) {
 								float nn = float(n) * 0.2f;
@@ -1465,9 +1459,9 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit)
 	
 	Vec3f i;
 	float pas = 35.f;
-
+	
 	Vec3f found_hit = Vec3f_ZERO;
-	EERIEPOLY *found_ep = NULL;
+	EERIEPOLY * found_ep = NULL;
 	float iter;
 	
 	//current ray pos
