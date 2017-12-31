@@ -243,8 +243,9 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 }
 
 
-bool ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target, const std::string& ap_source, const std::string& ap_target)
-{
+bool ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target,
+                            const std::string & ap_source, const std::string & ap_target) {
+	
 	Entity * source = entities.get(n_source);
 	Entity * target = entities.get(n_target);
 	
