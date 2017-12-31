@@ -515,11 +515,11 @@ void Image::blur(size_t radius) {
 	size_t * kernel = new size_t[kernelSize];
 	size_t * mult = new size_t[kernelSize << 8];
 	
-	memset(kernel, 0, kernelSize*sizeof(*kernel));
-	memset(mult, 0, (kernelSize << 8)*sizeof(*mult));
+	memset(kernel, 0, kernelSize * sizeof(*kernel));
+	memset(mult, 0, (kernelSize << 8) * sizeof(*mult));
 	
 	kernel[kernelSize - 1] = 0;
-	for(size_t i = 1; i< radius; i++) {
+	for(size_t i = 1; i < radius; i++) {
 		size_t szi = radius - i;
 		kernel[radius + i] = kernel[szi] = szi * szi;
 		for(size_t j = 0; j < 256; j++) {
