@@ -214,8 +214,8 @@ void CRiseDead::RenderFissure() {
 		for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			vr[0].p = v1a[i];
 			vr[1].p = v1b[i];
-			vr[2].p = v1a[i+1];
-			vr[3].p = v1b[i+1];
+			vr[2].p = v1a[i + 1];
+			vr[3].p = v1b[i + 1];
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
@@ -223,8 +223,8 @@ void CRiseDead::RenderFissure() {
 		for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			vr[0].p = va[i];
 			vr[1].p = vb[i];
-			vr[2].p = va[i+1];
-			vr[3].p = vb[i+1];
+			vr[2].p = va[i + 1];
+			vr[3].p = vb[i + 1];
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
@@ -237,25 +237,25 @@ void CRiseDead::RenderFissure() {
 	vr[2].color = vr[3].color = m_colorBorder.toRGB();
 
 	for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
+		
 		vt[2] = va[i] - (va[i] - m_eSrc) * 0.2f;
 		vt[3] = va[i + 1] - (va[i + 1] - m_eSrc) * 0.2f;
-		
 		vr[0].p = vt[3];
 		vr[1].p = vt[2];
-		vr[2].p = va[i+1];
+		vr[2].p = va[i + 1];
 		vr[3].p = va[i];
 		drawTriangle(mat, &vr[0]);
 		drawTriangle(mat, &vr[1]);
 		
 		vt[2] = vb[i] - (vb[i] - m_eSrc) * 0.2f;
 		vt[3] = vb[i + 1] - (vb[i + 1] - m_eSrc) * 0.2f;
-		
 		vr[3].p = vb[i];
-		vr[2].p = vb[i+1];
+		vr[2].p = vb[i + 1];
 		vr[1].p = vt[2];
 		vr[0].p = vt[3];
 		drawTriangle(mat, &vr[0]);
 		drawTriangle(mat, &vr[1]);
+		
 	}
 
 	//-------------------------------------------------------------------------
@@ -272,71 +272,71 @@ void CRiseDead::RenderFissure() {
 	
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
 	vr[2].color = vr[3].color = m_colorRays2.toRGB();
-
 	vr[0].uv = Vec2f(0, 1);
 	vr[1].uv = Vec2f(1, 1);
 	vr[2].uv = Vec2f(0, 0);
 	vr[3].uv = Vec2f(1, 0);
-
+	
 	for(int i = 0; i < end - 1; i++) {
+		
 		float t = Random::getf();
-
 		if(t <= 0.15f) {
-			if(tfRaysa[i] < 1.0f)
+			if(tfRaysa[i] < 1.f) {
 				tfRaysa[i] += 0.02f;
-
-			if(tfRaysa[i+1] < 1.0f)
-				tfRaysa[i+1] += 0.01f;
-
-			if(tfRaysa[i] > 1.0f)
-				tfRaysa[i] = 1.0f;
-
-			if(tfRaysa[i+1] > 1.0f)
-				tfRaysa[i+1] = 1.0f;
+			}
+			if(tfRaysa[i + 1] < 1.f) {
+				tfRaysa[i + 1] += 0.01f;
+			}
+			if(tfRaysa[i] > 1.f) {
+				tfRaysa[i] = 1.f;
+			}
+			if(tfRaysa[i + 1] > 1.f) {
+				tfRaysa[i + 1] = 1.f;
+			}
 		}
-
 		if(t >= 0.9f) {
-			if(tfRaysa[i] > 0.0f)
+			if(tfRaysa[i] > 0.f) {
 				tfRaysa[i] -= 0.02f;
-
-			if(tfRaysa[i+1] > 0.0f)
-				tfRaysa[i+1] -= 0.01f;
-
-			if(tfRaysa[i] < 0.0f)
+			}
+			if(tfRaysa[i + 1] > 0.f) {
+				tfRaysa[i + 1] -= 0.01f;
+			}
+			if(tfRaysa[i] < 0.f) {
 				tfRaysa[i] = 0.0f;
-
-			if(tfRaysa[i+1] < 0.0f)
-				tfRaysa[i+1] = 0.0f;
+			}
+			if(tfRaysa[i + 1] < 0.f) {
+				tfRaysa[i + 1] = 0.0f;
+			}
 		}
-
+		
 		float t2 = Random::getf();
-
 		if(t2 <= 0.15f) {
-			if(tfRaysb[i] < 1.0f)
+			if(tfRaysb[i] < 1.f) {
 				tfRaysb[i] += 0.02f;
-
-			if(tfRaysb[i+1] < 1.0f)
-				tfRaysb[i+1] += 0.01f;
-
-			if(tfRaysb[i] > 1.0f)
-				tfRaysb[i] = 1.0f;
-
-			if(tfRaysb[i+1] > 1.0f)
-				tfRaysb[i+1] = 1.0f;
+			}
+			if(tfRaysb[i + 1] < 1.f) {
+				tfRaysb[i + 1] += 0.01f;
+			}
+			if(tfRaysb[i] > 1.f) {
+				tfRaysb[i] = 1.f;
+			}
+			if(tfRaysb[i + 1] > 1.f) {
+				tfRaysb[i + 1] = 1.f;
+			}
 		}
-
 		if(t2 >= 0.9f) {
-			if(tfRaysb[i] > 0.0f)
+			if(tfRaysb[i] > 0.f) {
 				tfRaysb[i] -= 0.02f;
-
-			if(tfRaysb[i+1] > 0.0f)
-				tfRaysb[i+1] -= 0.01f;
-
-			if(tfRaysb[i] < 0.0f)
-				tfRaysb[i] = 0.0f;
-
-			if(tfRaysb[i+1] < 0.0f)
-				tfRaysb[i+1] = 0.0f;
+			}
+			if(tfRaysb[i + 1] > 0.f) {
+				tfRaysb[i + 1] -= 0.01f;
+			}
+			if(tfRaysb[i] < 0.f) {
+				tfRaysb[i] = 0.f;
+			}
+			if(tfRaysb[i + 1] < 0.f) {
+				tfRaysb[i + 1] = 0.f;
+			}
 		}
 		
 		if(i < fSizeIntro) {
@@ -345,15 +345,13 @@ void CRiseDead::RenderFissure() {
 			vt[2].x = va[i].x;
 			vt[2].y = va[i].y + (va[i].y - target.y) * 2;
 			vt[2].z = va[i].z;
-			vt[3].x = va[i+1].x;
-			vt[3].y = va[i+1].y + (va[i+1].y - target.y) * 2;
-			vt[3].z = va[i+1].z;
-
+			vt[3].x = va[i + 1].x;
+			vt[3].y = va[i + 1].y + (va[i + 1].y - target.y) * 2;
+			vt[3].z = va[i + 1].z;
 			vr[0].color = (m_colorRays1 * tfRaysa[i]).toRGB();
-			vr[1].color = (m_colorRays1* tfRaysa[i + 1]).toRGB();
+			vr[1].color = (m_colorRays1 * tfRaysa[i + 1]).toRGB();
 			vr[2].color = (m_colorRays2 * tfRaysa[i]).toRGB();
 			vr[3].color = (m_colorRays2 * tfRaysa[i + 1]).toRGB();
-			
 			vr[0].p = vt[0];
 			vr[1].p = vt[1];
 			vr[2].p = vt[2];
@@ -365,18 +363,16 @@ void CRiseDead::RenderFissure() {
 		if(i < fSizeIntro) {
 			vt[0] = vb[i + 1];
 			vt[1] = vb[i];
-			vt[2].x = vb[i+1].x;
-			vt[2].y = vb[i+1].y + (vb[i+1].y - target.y) * 2;
-			vt[2].z = vb[i+1].z;
+			vt[2].x = vb[i + 1].x;
+			vt[2].y = vb[i + 1].y + (vb[i + 1].y - target.y) * 2;
+			vt[2].z = vb[i + 1].z;
 			vt[3].x = vb[i].x;
 			vt[3].y = vb[i].y + (vb[i].y - target.y) * 2;
 			vt[3].z = vb[i].z;
-
 			vr[0].color = (m_colorRays1 * tfRaysb[i]).toRGB();
 			vr[1].color = (m_colorRays1 * tfRaysb[i + 1]).toRGB();
 			vr[2].color = (m_colorRays2 * tfRaysb[i]).toRGB();
 			vr[3].color = (m_colorRays2 * tfRaysb[i + 1]).toRGB();
-
 			vr[0].p = vt[0];
 			vr[1].p = vt[1];
 			vr[2].p = vt[2];
@@ -384,6 +380,7 @@ void CRiseDead::RenderFissure() {
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
+		
 	}
 }
 
@@ -588,8 +585,8 @@ void CSummonCreature::RenderFissure() {
 		for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			vr[0].p = v1a[i];
 			vr[1].p = v1b[i];
-			vr[2].p = v1a[i+1];
-			vr[3].p = v1b[i+1];
+			vr[2].p = v1a[i + 1];
+			vr[3].p = v1b[i + 1];
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
@@ -597,8 +594,8 @@ void CSummonCreature::RenderFissure() {
 		for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			vr[0].p = va[i];
 			vr[1].p = vb[i];
-			vr[2].p = va[i+1];
-			vr[3].p = vb[i+1];
+			vr[2].p = va[i + 1];
+			vr[3].p = vb[i + 1];
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
@@ -609,29 +606,29 @@ void CSummonCreature::RenderFissure() {
 	mat.setBlendType(RenderMaterial::Additive);
 	vr[0].color = vr[1].color = Color::black.toRGB();
 	vr[2].color = vr[3].color = m_colorBorder.toRGB();
-
+	
 	for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
+		
 		vt[2] = va[i] - (va[i] - m_eSrc) * 0.2f;
 		vt[3] = va[i + 1] - (va[i + 1] - m_eSrc) * 0.2f;
-		
 		vr[0].p = vt[3];
 		vr[1].p = vt[2];
-		vr[2].p = va[i+1];
+		vr[2].p = va[i + 1];
 		vr[3].p = va[i];
 		drawTriangle(mat, &vr[0]);
 		drawTriangle(mat, &vr[1]);
 		
 		vt[2] = vb[i] - (vb[i] - m_eSrc) * 0.2f;
 		vt[3] = vb[i + 1] - (vb[i + 1] - m_eSrc) * 0.2f;
-		
 		vr[3].p = vb[i];
-		vr[2].p = vb[i+1];
+		vr[2].p = vb[i + 1];
 		vr[1].p = vt[2];
 		vr[0].p = vt[3];
 		drawTriangle(mat, &vr[0]);
 		drawTriangle(mat, &vr[1]);
+		
 	}
-
+	
 	//-------------------------------------------------------------------------
 	// rendu des faisceaux
 	// blend additif ou mul
