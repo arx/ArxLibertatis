@@ -24,7 +24,7 @@
 #include "io/log/Logger.h"
 #include "platform/Platform.h"
 
-const IniSection * IniReader::getSection( const std::string& section ) const {
+const IniSection * IniReader::getSection(const std::string & section) const {
 	
 	iterator iter = sections.find(section);
 	
@@ -141,7 +141,7 @@ bool IniReader::read(std::istream & is) {
 		}
 		
 		if(str[start] == '#'
-		   || (start + 1 < str.length() && str[start] == '/' && str[start+1] == '/')) {
+		   || (start + 1 < str.length() && str[start] == '/' && str[start + 1] == '/')) {
 			// Whole line was commented, no need to do anything with it. Continue getting the next line
 			continue;
 		}
