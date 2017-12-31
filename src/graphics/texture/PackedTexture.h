@@ -42,9 +42,9 @@ public:
 	//! Upload changed textures
 	void upload();
 	
-	bool insertImage(const Image & image, unsigned int & textureIndex, Vec2i & offset);
+	bool insertImage(const Image & image, size_t & textureIndex, Vec2i & offset);
 	
-	Texture & getTexture(unsigned int index);
+	Texture & getTexture(size_t index);
 	
 	size_t getTextureSize() const { return m_textureSize; }
 	size_t getTextureCount() const { return m_textures.size(); }

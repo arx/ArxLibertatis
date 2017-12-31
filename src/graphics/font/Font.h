@@ -88,7 +88,7 @@ public:
 		Vec2f uv_end;
 		
 		//!< Texture page on which the glyph can be found
-		unsigned int texture;
+		size_t texture;
 		
 	};
 	
