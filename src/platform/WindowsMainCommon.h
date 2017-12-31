@@ -58,7 +58,7 @@ public:
 		bool hasAVX = false;
 		HMODULE kernel32 = GetModuleHandleW(L"kernel32.dll");
 		if(kernel32) {
-			typedef DWORD64 (WINAPI *PGETENABLEDXSTATEFEATURES)();
+			typedef DWORD64 (WINAPI * PGETENABLEDXSTATEFEATURES)();
 			PGETENABLEDXSTATEFEATURES GetEnabledXStateFeatures
 				= (PGETENABLEDXSTATEFEATURES)GetProcAddress(kernel32, "GetEnabledXStateFeatures");
 			if(GetEnabledXStateFeatures) {
