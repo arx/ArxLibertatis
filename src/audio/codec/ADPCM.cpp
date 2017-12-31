@@ -72,7 +72,7 @@ CodecADPCM::~CodecADPCM() {
 	delete[] samp2;
 	delete[] coef1;
 	delete[] coef2;
-	delete[] (s8*)cache_l;
+	delete[] (s8 *)cache_l;
 	delete[] nybble_l;
 }
 
