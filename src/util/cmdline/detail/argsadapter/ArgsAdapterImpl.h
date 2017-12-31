@@ -47,11 +47,11 @@ struct args_adapter_impl<void(BOOST_PP_ENUM_PARAMS(N, A))>
 	#endif //(N > 0)
 {
 	template <typename SourceType>
-	explicit args_adapter_impl(SourceType& s)
+	explicit args_adapter_impl(SourceType & s)
 		#if (N > 0)
 		: SUPER_T(s)
 		, IMPL_T(construct
-		(s, static_cast<typename IMPL_T::BOOST_PP_CAT(BOOST_PP_CAT(arg, DEC_N), _t) const*>(0)))
+		(s, static_cast<const typename IMPL_T::BOOST_PP_CAT(BOOST_PP_CAT(arg, DEC_N), _t) *>(0)))
 		#endif //(N > 0)
 	{
 	}
