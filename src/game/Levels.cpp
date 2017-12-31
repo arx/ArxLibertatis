@@ -92,8 +92,8 @@ long ARX_LEVELS_GetRealNum(long num)
 	return num;
 }
 
-long GetLevelNumByName(const std::string& name)
-{
+long GetLevelNumByName(const std::string & name) {
+	
 	if ( !name.empty() )
 	{
 		if (boost::contains(name, "level10")) return 10;
