@@ -51,8 +51,8 @@ const float fZFogStart = 0.3f;
 const float fZFogEnd = 0.5f;
 
 enum GMODFlag {
-	GMOD_DCOLOR = (1<<0),
-	GMOD_ZCLIP  = (1<<1)
+	GMOD_DCOLOR = 1 << 0,
+	GMOD_ZCLIP  = 1 << 1
 };
 DECLARE_FLAGS(GMODFlag, GMODFlags)
 DECLARE_FLAGS_OPERATORS(GMODFlags)
