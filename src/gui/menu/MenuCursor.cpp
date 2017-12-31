@@ -155,7 +155,7 @@ void MenuCursor::SetMouseOver() {
 	bMouseOver = true;
 }
 
-void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
+void MenuCursor::DrawOneCursor(const Vec2s & mousePos) {
 	
 	if(!GInput->isMouseInWindow()) {
 		return;
@@ -164,13 +164,14 @@ void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-
+	
 	EERIEDrawBitmap(Rectf(Vec2f(mousePos), m_size.x, m_size.y),
 	                0.00000001f, scursor[m_currentFrame], Color::white);
-
+	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+	
 }
 
 void MenuCursor::reset() {
