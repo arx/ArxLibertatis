@@ -233,7 +233,7 @@ Entity::~Entity() {
 	
 	lightHandleDestroy(dynlight);
 	
-	free(usepath);
+	delete usepath;
 	
 	delete symboldraw;
 	symboldraw = NULL;
