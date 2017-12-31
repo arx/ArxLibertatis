@@ -634,7 +634,7 @@ ConfuseSpell::ConfuseSpell()
 
 void ConfuseSpell::Launch() {
 	
-	Entity *target = entities.get(m_target);
+	Entity * target = entities.get(m_target);
 	if(!target) {
 		return;
 	}
@@ -672,7 +672,7 @@ void ConfuseSpell::End() {
 
 void ConfuseSpell::Update() {
 	
-	Entity *target = entities.get(m_target);
+	Entity * target = entities.get(m_target);
 	if(!target) {
 		return;
 	}
