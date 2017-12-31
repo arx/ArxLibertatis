@@ -282,8 +282,9 @@ void runGame() {
 //*************************************************************************************
 Entity * FlyingOverObject(const Vec2s & pos)
 {
-	Entity* io = NULL;
-
+	
+	Entity * io = NULL;
+	
 	// TODO do this properly!
 	if(player.torch && eMouseState == MOUSE_IN_TORCH_ICON) {
 		return player.torch;
@@ -315,7 +316,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f 
 	float wd = getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_Damages);
 	// TODO Why ignore relative modifiers? Why not just use player.Full_damages?
 	
-	float damages = wd * (1.f + (player.m_skillFull.projectile + player.m_attributeFull.dexterity) * (1.f/50));
+	float damages = wd * (1.f + (player.m_skillFull.projectile + player.m_attributeFull.dexterity) * 0.02f);
 
 	ARX_THROWN_OBJECT_Throw(EntityHandle_Player, position, vect, quat, velocity, damages, poisonous);
 }
@@ -615,17 +616,17 @@ void ManageCombatModeAnimations() {
 			
 			// Now go for strike cycle...
 			for(long j = 0; j < 4; j++) {
-				if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT_START+j*3] && (layer1.flags & EA_ANIMEND)) {
+				if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT_START + j * 3] && (layer1.flags & EA_ANIMEND)) {
 					changeAnimation(io, 1, alist[ANIM_BARE_STRIKE_LEFT_CYCLE + j * 3], EA_LOOP);
 					player.m_aimTime = PlatformDuration::ofRaw(1);
-				} else if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3] && !eeMousePressed1()) {
+				} else if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT_CYCLE + j * 3] && !eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_BARE_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "bare");
 					player.m_weaponBlocked = AnimationDuration::ofRaw(-1); // TODO inband signaling AnimationDuration
 					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
-				} else if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT+j*3]) {
+				} else if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT + j * 3]) {
 					if(layer1.flags & EA_ANIMEND) {
 						changeAnimation(io, 1, alist[ANIM_BARE_WAIT], EA_LOOP);
 						player.m_strikeDirection = 0;
@@ -685,16 +686,16 @@ void ManageCombatModeAnimations() {
 			
 			// Now go for strike cycle...
 			for(long j = 0; j < 4; j++) {
-				if(layer1.cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT_START+j*3] && (layer1.flags & EA_ANIMEND)) {
+				if(layer1.cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT_START + j * 3] && (layer1.flags & EA_ANIMEND)) {
 					changeAnimation(io, 1, alist[ANIM_DAGGER_STRIKE_LEFT_CYCLE + j * 3], EA_LOOP);
 					player.m_aimTime = PlatformDuration::ofRaw(1);
-				} else if(layer1.cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3] && !eeMousePressed1()) {
+				} else if(layer1.cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT_CYCLE + j * 3] && !eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_DAGGER_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "dagger");
 					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
-				} else if(layer1.cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT+j*3]) {
+				} else if(layer1.cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT + j * 3]) {
 					if(   layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.3f
 					   && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.7f
 					) {
@@ -737,16 +738,16 @@ void ManageCombatModeAnimations() {
 			
 			// Now go for strike cycle...
 			for(long j = 0; j < 4; j++) {
-				if(layer1.cur_anim == alist[ANIM_1H_STRIKE_LEFT_START+j*3] && (layer1.flags & EA_ANIMEND)) {
+				if(layer1.cur_anim == alist[ANIM_1H_STRIKE_LEFT_START + j * 3] && (layer1.flags & EA_ANIMEND)) {
 					changeAnimation(io, 1, alist[ANIM_1H_STRIKE_LEFT_CYCLE + j * 3], EA_LOOP);
 					player.m_aimTime = PlatformDuration::ofRaw(1);
-				} else if(layer1.cur_anim == alist[ANIM_1H_STRIKE_LEFT_CYCLE+j*3] && !eeMousePressed1()) {
+				} else if(layer1.cur_anim == alist[ANIM_1H_STRIKE_LEFT_CYCLE + j * 3] && !eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_1H_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "1h");
 					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
-				} else if(layer1.cur_anim == alist[ANIM_1H_STRIKE_LEFT+j*3]) {
+				} else if(layer1.cur_anim == alist[ANIM_1H_STRIKE_LEFT + j * 3]) {
 					if(   layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.3f
 					   && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.7f
 					) {
@@ -789,16 +790,16 @@ void ManageCombatModeAnimations() {
 			
 			// Now go for strike cycle...
 			for(long j = 0; j < 4; j++) {
-				if(layer1.cur_anim == alist[ANIM_2H_STRIKE_LEFT_START+j*3] && (layer1.flags & EA_ANIMEND)) {
+				if(layer1.cur_anim == alist[ANIM_2H_STRIKE_LEFT_START + j * 3] && (layer1.flags & EA_ANIMEND)) {
 					changeAnimation(io, 1, alist[ANIM_2H_STRIKE_LEFT_CYCLE + j * 3], EA_LOOP);
 					player.m_aimTime = PlatformDuration::ofRaw(1);
-				} else if(layer1.cur_anim == alist[ANIM_2H_STRIKE_LEFT_CYCLE+j*3] && !eeMousePressed1()) {
+				} else if(layer1.cur_anim == alist[ANIM_2H_STRIKE_LEFT_CYCLE + j * 3] && !eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_2H_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "2h");
 					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
-				} else if(layer1.cur_anim == alist[ANIM_2H_STRIKE_LEFT+j*3]) {
+				} else if(layer1.cur_anim == alist[ANIM_2H_STRIKE_LEFT + j * 3]) {
 					if(   layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.3f
 					   && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.7f
 					) {
@@ -1129,7 +1130,7 @@ void DrawImproveVisionInterface() {
 
 	if(ombrignon) {
 		float mod = 0.6f + PULSATE * 0.35f;
-		Color3f color = Color3f((0.5f + PULSATE * (1.0f/10)) * mod, 0.f, 0.f);
+		Color3f color = Color3f((0.5f + PULSATE * 0.1f) * mod, 0.f, 0.f);
 		UseRenderState state(render2D().blendAdditive());
 		EERIEDrawBitmap(Rectf(g_size), 0.0001f, ombrignon, color.to<u8>());
 	}
