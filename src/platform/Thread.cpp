@@ -128,7 +128,7 @@ void * Thread::entryPoint(void * param) {
 	// Denormals must be disabled for each thread separately
 	disableFloatDenormals();
 	
-	Thread & thread = *((Thread *)param);
+	Thread & thread = *static_cast<Thread *>(param);
 	
 	// Set the thread name.
 	#if ARX_HAVE_PTHREAD_SETNAME_NP && ARX_PLATFORM != ARX_PLATFORM_MACOS
@@ -178,7 +178,7 @@ Thread::Thread() {
 
 void Thread::start() {
 	DWORD ret = ResumeThread(m_thread);
-	arx_assert(ret != (DWORD)-1);
+	arx_assert(ret != DWORD(-1));
 	ARX_UNUSED(ret);
 }
 
@@ -229,7 +229,7 @@ void SetCurrentThreadName(const std::string & threadName) {
 	const DWORD MS_VC_EXCEPTION = 0x406D1388;
 	
 	__try {
-		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info)/sizeof(DWORD), (ULONG_PTR *)&info);
+		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), reinterpret_cast<ULONG_PTR *>(&info));
 	}
 	__except(EXCEPTION_CONTINUE_EXECUTION) { }
 	
@@ -246,12 +246,12 @@ DWORD WINAPI Thread::entryPoint(LPVOID param) {
 	// Denormals must be disabled for each thread separately
 	disableFloatDenormals();
 	
-	SetCurrentThreadName(((Thread*)param)->m_threadName);
+	SetCurrentThreadName(static_cast<Thread *>(param)->m_threadName);
 	
 	Random::seed();
 	CrashHandler::registerThreadCrashHandlers();
-	profiler::registerThread(((Thread*)param)->m_threadName);
-	((Thread*)param)->run();
+	profiler::registerThread(static_cast<Thread *>(param)->m_threadName);
+	static_cast<Thread *>(param)->run();
 	profiler::unregisterThread();
 	CrashHandler::unregisterThreadCrashHandlers();
 	Random::shutdown();
