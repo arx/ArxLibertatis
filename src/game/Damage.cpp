@@ -862,9 +862,8 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 	return damagesdone;
 }
 
-void ARX_DAMAGES_Reset()
-{
-	memset(g_damages, 0, sizeof(DAMAGE_INFO)*MAX_DAMAGES);
+void ARX_DAMAGES_Reset() {
+	memset(g_damages, 0, sizeof(DAMAGE_INFO) * MAX_DAMAGES);
 }
 
 extern TextureContainer * TC_fire2;
