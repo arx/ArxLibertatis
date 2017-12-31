@@ -159,7 +159,7 @@ void SaveBlock::File::writeEntry(std::ostream & handle, const std::string & name
 		case File::None: _comp = SAV_COMP_NONE; break;
 		case File::ImplodeCrypt: _comp = SAV_COMP_IMPLODE; break;
 		case File::Deflate: _comp = SAV_COMP_DEFLATE; break;
-		case File::Unknown: _comp = (u32)-1; break;
+		case File::Unknown: _comp = u32(-1); break;
 	}
 	fs::write(handle, _comp);
 	
@@ -185,7 +185,7 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 		return NULL;
 	}
 	
-	char * buf = (char*)malloc(storedSize);
+	char * buf = static_cast<char *>(malloc(storedSize));
 	char * p = buf;
 	
 	for(File::ChunkList::const_iterator chunk = chunks.begin();
@@ -208,7 +208,7 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 		case File::ImplodeCrypt: {
 			unsigned char * crypt = (unsigned char *)buf;
 			for(size_t i = 0; i < storedSize; i += 2) {
-				crypt[i] = (unsigned char)~(unsigned int)crypt[i];
+				crypt[i] = static_cast<unsigned char>(~static_cast<unsigned int>(crypt[i]));
 			}
 			char * uncompressed = blastMemAlloc(buf, storedSize, size);
 			free(buf);
@@ -216,15 +216,16 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 				LogError << "Error decompressing imploded " << name;
 				return NULL;
 			}
-			arx_assert(uncompressedSize == (size_t)-1 || size == uncompressedSize);
+			arx_assert(uncompressedSize == size_t(-1) || size == uncompressedSize);
 			return uncompressed;
 		}
 		
 		case File::Deflate: {
-			arx_assert(uncompressedSize != (size_t)-1);
+			arx_assert(uncompressedSize != size_t(-1));
 			uLongf decompressedSize = uncompressedSize;
-			char * uncompressed = (char*)malloc(uncompressedSize);
-			int ret = uncompress((Bytef*)uncompressed, &decompressedSize, (const Bytef*)buf, storedSize);
+			char * uncompressed = static_cast<char *>(malloc(uncompressedSize));
+			int ret = uncompress(reinterpret_cast<Bytef *>(uncompressed), &decompressedSize,
+			                     reinterpret_cast<const Bytef *>(buf), storedSize);
 			if(ret != Z_OK) {
 				LogError << "Error decompressing deflated " << name << ": " << zError(ret) << " (" << ret << ')';
 				free(buf);
@@ -535,7 +536,8 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 	uLongf compressedSize = size - 1;
 	char * compressed = new char[compressedSize];
 	const char * p;
-	if(compress2((Bytef*)compressed, &compressedSize, (const Bytef*)data, size, 1) == Z_OK) {
+	if(compress2(reinterpret_cast<Bytef *>(compressed), &compressedSize,
+	             reinterpret_cast<const Bytef *>(data), size, 1) == Z_OK) {
 		file->comp = File::Deflate;
 		file->storedSize = compressedSize;
 		p = compressed;
