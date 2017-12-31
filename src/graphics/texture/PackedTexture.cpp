@@ -50,7 +50,7 @@ void PackedTexture::upload() {
 
 PackedTexture::TextureTree::TextureTree(size_t textureSize, Image::Format textureFormat) {
 	
-	root.rect = Rect(0, 0, textureSize - 1, textureSize - 1);
+	root.rect = Rect(0, 0, s32(textureSize - 1), s32(textureSize - 1));
 	
 	texture = GRenderer->createTexture();
 	if(!texture->create(textureSize, textureSize, textureFormat)) {
