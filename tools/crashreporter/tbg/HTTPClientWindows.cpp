@@ -215,7 +215,7 @@ Response * WinHTTPSession::get(const Request & request) {
 	
 	std::basic_string<WCHAR> redirect;
 	BOOL result = WinHttpSendRequest(wrequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0,
-	                                 WINHTTP_NO_REQUEST_DATA, 0, 0, (DWORD_PTR)&redirect);
+	                                 WINHTTP_NO_REQUEST_DATA, 0, 0, reinterpret_cast<DWORD_PTR>(&redirect));
 	if(!result) {
 		return new Response(errorString());
 	}
@@ -246,7 +246,7 @@ Response * WinHTTPSession::post(const POSTRequest & request) {
 	DWORD size = request.data().size();
 	std::basic_string<WCHAR> redirect;
 	BOOL result = WinHttpSendRequest(wrequest, headers, -1, data, size, size,
-	                                (DWORD_PTR)&redirect);
+	                                reinterpret_cast<DWORD_PTR>(&redirect));
 	if(!result) {
 		return new Response("Could not send request: " + errorString());
 	}
