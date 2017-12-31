@@ -85,8 +85,7 @@ bool CheckboxWidget::OnMouseClick() {
 	return false;
 }
 
-void CheckboxWidget::Update() {
-}
+void CheckboxWidget::Update() { }
 
 void CheckboxWidget::renderCommon() {
 	
@@ -98,8 +97,8 @@ void CheckboxWidget::renderCommon() {
 	checkboxRect.bottom = m_rect.bottom;
 	checkboxRect.right = m_rect.right;
 	
-	TextureContainer *pTex = (iState == 0) ? m_textureOff : m_textureOn;
-	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
+	TextureContainer * pTex = (iState == 0) ? m_textureOff : m_textureOn;
+	Color color = bCheck ? Color::white : Color(63, 63, 63, 255);
 	
 	EERIEDrawBitmap(checkboxRect, 0.f, pTex, color);
 }
