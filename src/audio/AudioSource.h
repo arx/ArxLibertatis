@@ -136,7 +136,7 @@ protected:
 	
 private:
 	
-	typedef std::vector<std::pair<Callback*, size_t> > CallbackList;
+	typedef std::vector<std::pair<Callback *, size_t> > CallbackList;
 	CallbackList callbacks;
 	size_t callback_i;
 	
