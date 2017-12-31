@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/GameTime.h"
 
-static const float C_MIN_F32 = 1.175494351e-38F;
+static const float C_MIN_F32 = 1.175494351e-38f;
 inline bool C_NEQUAL_F32(float f1, float f2) {
 	return glm::abs(f1 - f2) >= C_MIN_F32;
 }
@@ -102,13 +102,12 @@ static CinematicKeyframe * SearchAndMoveKey(int f)
 		k--;
 		nb--;
 	}
-
+	
 	nb = CKTrack->nbkey - nb;
-
 	if(nb) {
-		std::memmove((void *)(k + 2), (void *)(k + 1), sizeof(CinematicKeyframe)*nb);
+		std::memmove((void *)(k + 2), (void *)(k + 1), sizeof(CinematicKeyframe) * nb);
 	}
-
+	
 	return k + 1;
 }
 
@@ -135,7 +134,7 @@ static CinematicKeyframe * SearchKey(int f, int * num)
  
 static void UpDateKeyLight(int frame) {
 	
-	CinematicKeyframe *klightprev2, *klightnext2;
+	CinematicKeyframe * klightprev2, * klightnext2;
 	int num;
 
 	CinematicKeyframe * k = SearchKey(frame, &num);
@@ -469,7 +468,7 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
  */
 #pragma optimize("", off)
 #endif
-static void interpolateLight(float alight, CinematicKeyframe* lightprec, Cinematic* c) {
+static void interpolateLight(float alight, CinematicKeyframe * lightprec, Cinematic * c) {
 	
 	float unmoinsalight = 1.0f - alight;
 	
