@@ -32,7 +32,7 @@ PakFile::~PakFile() {
 
 char * PakFile::readAlloc() const {
 	
-	char * buffer = (char*)malloc(size());
+	char * buffer = static_cast<char *>(malloc(size()));
 	
 	read(buffer);
 	
