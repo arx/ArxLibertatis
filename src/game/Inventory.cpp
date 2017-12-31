@@ -152,15 +152,12 @@ Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos) {
 	std::pair<Entity *, int> result = GetFromInventory(pos);
 	
 	if(result.first) {
-		if(result.second == 2) {
-			if(SecondaryInventory) {
-				Entity *temp = SecondaryInventory->io;
-
-				if(temp->ioflags & IO_SHOP)
-					return NULL;
+		if(result.second == 2 && SecondaryInventory) {
+			Entity * temp = SecondaryInventory->io;
+			if(temp->ioflags & IO_SHOP) {
+				return NULL;
 			}
 		}
-		
 		return result.first;
 	}
 
