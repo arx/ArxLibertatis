@@ -74,7 +74,7 @@ public:
 
 // Utilities
 Stream * createStream(const res::path & name);
-void deleteStream(Stream *& stream);
+void deleteStream(Stream * & stream);
 
 } // namespace audio
 
