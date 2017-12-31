@@ -76,31 +76,35 @@ void PlayerInventoryHud::updateRect(){
 	} else {
 		m_rect = Rectf(anchorPos, m_bagBackgroundSize.x * m_scale, m_bagBackgroundSize.y * m_scale);
 	}
+	
 }
 
 bool PlayerInventoryHud::updateInput() {
-	Vec2f anchorPos = anchorPosition();
 	
+	Vec2f anchorPos = anchorPosition();
 	Vec2f pos = anchorPos + Vec2f((m_bagBackgroundSize.x * m_scale) - ((32 + 3) * m_scale), ((-3 + 25) * m_scale));
 	
 	bool bQuitCombine = true;
 	
 	if(m_currentBag > 0) {
-		const Rect mouseTestRect(Vec2i(pos), int(32 * m_scale), int(32 * m_scale));
 		
-		if(mouseTestRect.contains(Vec2i(DANAEMouse)))
+		const Rect mouseTestRect(Vec2i(pos), int(32 * m_scale), int(32 * m_scale));
+		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			bQuitCombine = false;
+		}
+		
 	}
 
-	if(m_currentBag < player.bag-1) {
+	if(m_currentBag < player.bag - 1) {
+		
 		float fRatio = (32 + 5) * m_scale;
-
 		pos.y += checked_range_cast<int>(fRatio);
 		
 		const Rect mouseTestRect(Vec2i(pos), int(32 * m_scale), int(32 * m_scale));
-		
-		if(mouseTestRect.contains(Vec2i(DANAEMouse)))
+		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			bQuitCombine = false;
+		}
+		
 	}
 	
 	return bQuitCombine;
@@ -111,7 +115,8 @@ void PlayerInventoryHud::update() {
 	const float framedelay = toMs(g_platformTime.lastFrameDuration());
 	
 	if(player.Interface & INTER_INVENTORY) {
-		long t = long(framedelay * (1.f/5) + 2.0f);
+		
+		long t = long(framedelay * 0.2f + 2.0f);
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
 			
 			m_inventoryY += t;
@@ -146,8 +151,10 @@ void PlayerInventoryHud::update() {
 				}
 			}
 		}
+		
 	} else if((player.Interface & INTER_INVENTORYALL) || isClosing()) {
-		float fSpeed = (1.f/3);
+		
+		float fSpeed = 1.f / 3;
 		long t = long((framedelay * fSpeed) + 2.f);
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
 			if(m_inventoryY < 121 * player.bag) {
@@ -170,6 +177,7 @@ void PlayerInventoryHud::update() {
 				}
 			}
 		}
+		
 	}
 }
 
@@ -198,14 +206,14 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 	
 	for(size_t y = 0; y < INVENTORY_Y; y++) {
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		Entity *io = g_inventory[bag][x][y].io;
 		
+		Entity * io = g_inventory[bag][x][y].io;
 		if(!io || !g_inventory[bag][x][y].show) {
 			continue;
 		}
 		
-		TextureContainer *tc = io->m_icon;
-		TextureContainer *tc2 = NULL;
+		TextureContainer * tc = io->m_icon;
+		TextureContainer * tc2 = NULL;
 		
 		if(NeedHalo(io)) {
 			tc2 = io->m_icon->getHalo();
@@ -274,7 +282,8 @@ void PlayerInventoryHud::draw() {
 				}
 			}
 			
-			if(m_currentBag < player.bag-1) {
+			if(m_currentBag < player.bag - 1) {
+				
 				Rectf rect = Rectf(m_arrowsAnchor + Vec2f(0.f, 32.f + 5.f) * m_scale, 32.f * m_scale, 32.f * m_scale);
 				
 				EERIEDrawBitmap(rect, 0.001f, m_heroInventoryDown, Color::white);
@@ -290,6 +299,7 @@ void PlayerInventoryHud::draw() {
 						nextBag();
 					}
 				}
+				
 			}
 		}
 	} else if((player.Interface & INTER_INVENTORYALL) || m_isClosing) {
@@ -297,7 +307,7 @@ void PlayerInventoryHud::draw() {
 		Vec2f anchorPos = anchorPosition();
 		
 		//TODO see about these coords, might be calculated once only
-		const float fBag = (player.bag-1) * (-121 * m_scale);
+		const float fBag = (player.bag - 1) * (-121.f * m_scale);
 		const float fOffsetY = (121 * m_scale);
 		
 		int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
@@ -305,10 +315,11 @@ void PlayerInventoryHud::draw() {
 		int posy = checked_range_cast<int>(anchorPos.y + ((-3.f + 25 - 32) * m_scale));
 		
 		for(int i = 0; i < player.bag; i++) {
-			float linkPosY = static_cast<float>(posy + iOffsetY);
+			
+			float linkPosY = float(posy + iOffsetY);
 			Vec2f pos1 = Vec2f(posx + (45 * m_scale), linkPosY);
-			Vec2f pos2 = Vec2f(posx + (m_bagBackgroundSize.x * m_scale)*0.5f + (-16 * m_scale), linkPosY);
-			Vec2f pos3 = Vec2f(posx + (m_bagBackgroundSize.x * m_scale) + ((-45-32) * m_scale), linkPosY);
+			Vec2f pos2 = Vec2f(posx + (m_bagBackgroundSize.x * m_scale) * 0.5f + (-16.f * m_scale), linkPosY);
+			Vec2f pos3 = Vec2f(posx + (m_bagBackgroundSize.x * m_scale) + (-77.f * m_scale), linkPosY);
 			
 			TextureContainer * tex = m_heroInventoryLink;
 			Vec2f texSize = Vec2f(tex->m_size) * m_scale;
@@ -415,23 +426,21 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 	Vec2i iPos = Vec2i(anchorPos);
 	
 	if(player.Interface & INTER_INVENTORY) {
-		long tx = pos.x - iPos.x; //-4
-		long ty = pos.y - iPos.y; //-2
-
+		
+		long tx = pos.x - iPos.x;
+		long ty = pos.y - iPos.y;
 		if(tx >= 0 && ty >= 0) {
 			tx = checked_range_cast<long>((tx - 6 * m_scale) / (32 * m_scale));
 			ty = checked_range_cast<long>((ty - 5 * m_scale) / (32 * m_scale));
-
-			if((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y)) {
-				Entity *result = g_inventory[m_currentBag][tx][ty].io;
-
+			if(tx >= 0 && size_t(tx) < INVENTORY_X && ty >= 0 && size_t(ty) < INVENTORY_Y) {
+				Entity * result = g_inventory[m_currentBag][tx][ty].io;
 				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
 					return result;
 				}
 			}
-
 			return NULL;
 		}
+		
 	} else if(player.Interface & INTER_INVENTORYALL) {
 		
 		float fBag = (player.bag - 1) * (-121 * m_scale);
@@ -439,23 +448,22 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 		int iY = checked_range_cast<int>(fBag);
 
 		for(size_t bag = 0; bag < size_t(player.bag); bag++) {
+			
 			long tx = pos.x - iPos.x;
 			long ty = pos.y - iPos.y - iY;
-
 			tx = checked_range_cast<long>((tx - 6 * m_scale) / (32 * m_scale));
 			ty = checked_range_cast<long>((ty - 5 * m_scale) / (32 * m_scale));
-
-			if(tx >= 0 && (size_t)tx < INVENTORY_X && ty >= 0 && (size_t)ty < INVENTORY_Y) {
-				Entity *result = g_inventory[bag][tx][ty].io;
-
+			
+			if(tx >= 0 && size_t(tx) < INVENTORY_X && ty >= 0 && size_t(ty) < INVENTORY_Y) {
+				Entity * result = g_inventory[bag][tx][ty].io;
 				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
 					return result;
 				}
-
 				return NULL;
 			}
-
+			
 			iY += checked_range_cast<int>((121 * m_scale));
+			
 		}
 	}
 
@@ -588,10 +596,9 @@ void PlayerInventoryHud::dropEntity() {
 extern short sInventory;
 extern Vec2s sInventoryPos;
 
-void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s &pos) {
-	Vec2f anchorPos = g_playerInventoryHud.anchorPosition();
+void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 	
-	Vec2i iPos = Vec2i(anchorPos);
+	Vec2i iPos = Vec2i(g_playerInventoryHud.anchorPosition());
 	
 	if(g_playerInventoryHud.containsPos(pos)) {
 		if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
