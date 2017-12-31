@@ -79,13 +79,13 @@ void SaveGameList::update(bool verbose) {
 			continue;
 		}
 		
-		size_t index = (size_t)-1;
+		size_t index = size_t(-1);
 		for(size_t i = 0; i < old_count; i++) {
 			if(savelist[i].savefile == path) {
 				index = i;
 			}
 		}
-		if(index != (size_t)-1 && savelist[index].stime == stime) {
+		if(index != size_t(-1) && savelist[index].stime == stime) {
 			found[index] = SaveGameUnchanged;
 			continue;
 		}
@@ -100,7 +100,7 @@ void SaveGameList::update(bool verbose) {
 		
 		new_saves = true;
 		
-		if(index == (size_t)-1) {
+		if(index == size_t(-1)) {
 			// Make another save game slot at the end
 			index = savelist.size();
 			savelist.resize(savelist.size() + 1);
