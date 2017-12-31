@@ -69,7 +69,7 @@ template <class F, class E>
 inline void print_flag(F & flags, E flag, const std::string & name) {
 	if(flags & flag) {
 		std::cout << ' ' << name;
-		flags &= (int)~flag;
+		flags &= int(~flag);
 	}
 }
 
@@ -1094,7 +1094,7 @@ static int view_level(SaveBlock & save, const char * dat, size_t size) {
 		
 		for(s32 i = 0; i < asi.nb_paths; i++) {
 			
-			const ARX_CHANGELEVEL_PATH & p = *reinterpret_cast<const ARX_CHANGELEVEL_PATH*>(dat + pos);
+			const ARX_CHANGELEVEL_PATH & p = *reinterpret_cast<const ARX_CHANGELEVEL_PATH *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_PATH);
 			
 			std::cout << "  - " << boost::to_lower_copy(util::loadString(p.name));
@@ -1103,6 +1103,7 @@ static int view_level(SaveBlock & save, const char * dat, size_t size) {
 				std::cout << ": controlled by "; print_ident(save, controller);
 			}
 			std::cout << '\n';
+			
 		}
 		
 	}
@@ -1190,7 +1191,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	if(ais.ioflags & IO_FIERY) std::cout << " fiery";
 	if(ais.ioflags & IO_NO_NPC_COLLIDE) std::cout << " no_npc_collide";
 	if(ais.ioflags & IO_CAN_COMBINE) std::cout << " can_combine";
-	if(ais.ioflags & (1<<31)) std::cout << " (unknown)";
+	if(ais.ioflags & (1 << 31)) std::cout << " (unknown)";
 	std::cout << '\n';
 	
 	if(ais.pos.toVec3() != Vec3f_ZERO || ais.initpos.toVec3() != Vec3f_ZERO) {
