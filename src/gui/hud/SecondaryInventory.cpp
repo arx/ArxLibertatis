@@ -209,13 +209,15 @@ void SecondaryInventoryHud::draw() {
 	
 	for(long y = 0; y < inventory->m_size.y; y++) {
 		for(long x = 0; x < inventory->m_size.x; x++) {
-			Entity *io = inventory->slot[x][y].io;
-			if(!io)
+			
+			Entity * io = inventory->slot[x][y].io;
+			if(!io) {
 				continue;
+			}
 			
 			bool bItemSteal = false;
-			TextureContainer *tc = io->m_icon;
-			TextureContainer *tc2 = NULL;
+			TextureContainer * tc = io->m_icon;
+			TextureContainer * tc2 = NULL;
 			
 			if(NeedHalo(io))
 				tc2 = io->m_icon->getHalo();
@@ -231,10 +233,8 @@ void SecondaryInventoryHud::draw() {
 			if(tc && (inventory->slot[x][y].show || bItemSteal)) {
 				UpdateGoldObject(io);
 				
-				Vec2f p = Vec2f(
-				m_rect.left + (float)x*(32 * m_scale) + (2 * m_scale),
-				(float)y*(32 * m_scale) + (13 * m_scale)
-				);
+				Vec2f p = Vec2f(m_rect.left + float(x) * (32.f * m_scale) + (2.f * m_scale),
+				                float(y) * (32.f * m_scale) + (13.f * m_scale));
 				
 				Vec2f size = Vec2f(tc->size());
 				
@@ -269,8 +269,7 @@ void SecondaryInventoryHud::draw() {
 	
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
 		if(TSecondaryInventory) {
-			
-			Entity *temp = TSecondaryInventory->io;
+			Entity * temp = TSecondaryInventory->io;
 			if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
 				m_pickAllButton.draw();
 			}
@@ -405,7 +404,7 @@ void SecondaryInventoryHud::dropEntity() {
 		
 		for(long j = 0; j < s.y; j++) {
 		for(long i = 0; i < s.x; i++) {
-			Entity * ioo = SecondaryInventory->slot[t.x+i][t.y+j].io;
+			Entity * ioo = SecondaryInventory->slot[t.x + i][t.y + j].io;
 			
 			if(!ioo)
 				continue;
@@ -451,8 +450,8 @@ void SecondaryInventoryHud::dropEntity() {
 		}
 		for(long j = 0; j < s.y; j++) {
 		for(long i = 0; i < s.x; i++) {
-			SecondaryInventory->slot[t.x+i][t.y+j].io = DRAGINTER;
-			SecondaryInventory->slot[t.x+i][t.y+j].show = false;
+			SecondaryInventory->slot[t.x + i][t.y + j].io = DRAGINTER;
+			SecondaryInventory->slot[t.x + i][t.y + j].show = false;
 		}
 		}
 		
