@@ -60,7 +60,7 @@ void CycleTextWidget::selectLast() {
 	iPos = vText.size() - 1;
 }
 
-void CycleTextWidget::AddText(TextWidget *_pText) {
+void CycleTextWidget::AddText(TextWidget * _pText) {
 	
 	_pText->setEnabled(enabled);
 	
@@ -78,28 +78,27 @@ void CycleTextWidget::AddText(TextWidget *_pText) {
 	                           m_rect.top + m_rect.height() / 2 - pRightButton->m_rect.height() / 2));
 
 	float dx = m_rect.width() - pLeftButton->m_rect.width() - pRightButton->m_rect.width();
-	//on recentre tout
-	std::vector<TextWidget*>::iterator it;
-
-	for(it = vText.begin(); it < vText.end(); ++it) {
-		TextWidget *pMenuElementText=*it;
-		
+	
+	for(std::vector<TextWidget *>::iterator it = vText.begin(); it < vText.end(); ++it) {
+		TextWidget * pMenuElementText = *it;
 		textSize = pMenuElementText->m_rect.size();
-
 		float dxx = (dx - textSize.x) / 2.f;
-		pMenuElementText->SetPos(Vec2f(pLeftButton->m_rect.right + dxx, m_rect.top + m_rect.height() / 2 - textSize.y/2));
+		pMenuElementText->SetPos(Vec2f(pLeftButton->m_rect.right + dxx, m_rect.top + m_rect.height() / 2 - textSize.y / 2));
 	}
+	
 }
 
 void CycleTextWidget::Move(const Vec2f & offset) {
-
+	
 	Widget::Move(offset);
-
+	
 	pLeftButton->Move(offset);
 	pRightButton->Move(offset);
-
-	for(std::vector<TextWidget*>::const_iterator i = vText.begin(), i_end = vText.end(); i != i_end; ++i)
+	
+	for(std::vector<TextWidget *>::const_iterator i = vText.begin(), i_end = vText.end(); i != i_end; ++i) {
 		(*i)->Move(offset);
+	}
+	
 }
 
 void CycleTextWidget::EmptyFunction() {
