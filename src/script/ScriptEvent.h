@@ -26,7 +26,7 @@
 #include "script/Script.h"
 
 struct SCRIPT_EVENT {
-	explicit SCRIPT_EVENT(const std::string & str): name(str) {}
+	explicit SCRIPT_EVENT(const std::string & str) : name(str) { }
 	std::string name;
 };
 

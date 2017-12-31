@@ -154,11 +154,9 @@ SCRIPT_EVENT AS_EVENT[] = {
 	SCRIPT_EVENT("") // TODO is this really needed?
 };
 
-void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
-{
-	long nb = std::min((long)MAX_SHORTCUT, (long)SM_MAXCMD);
-
-	for (long j = 1; j < nb; j++) {
+void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT & es) {
+	size_t nb = std::min(MAX_SHORTCUT, size_t(SM_MAXCMD));
+	for(size_t j = 1; j < nb; j++) {
 		es.shortcut[j] = FindScriptPos(&es, AS_EVENT[j].name);
 	}
 }
@@ -426,7 +424,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				if(msg == SM_EXECUTELINE) {
 					msg = SM_DUMMY;
 				}
-				brackets = (size_t)-1;
+				brackets = size_t(-1);
 			}
 			
 		} else if(!word.compare(0, 2, ">>", 2)) {
@@ -434,11 +432,11 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		} else if(!word.compare(0, 5, "timer", 5)) {
 			script::timerCommand(word.substr(5), context);
 		} else if(word == "{") {
-			if(brackets != (size_t)-1) {
+			if(brackets != size_t(-1)) {
 				brackets++;
 			}
 		} else if(word == "}") {
-			if(brackets != (size_t)-1) {
+			if(brackets != size_t(-1)) {
 				brackets--;
 				if(brackets == 0) {
 					if(isBlockEndSuprressed(context, word)) { // TODO(broken-scripts)
