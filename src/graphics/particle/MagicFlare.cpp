@@ -203,15 +203,15 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 
 	switch(g_magicFlareCurrentColor) {
 		case 0: {
-			flare.rgb = Color3f(.4f, 0.f, .4f) + Color3f(2.f/3, 2.f/3, 2.f/3) * randomColor3f();
+			flare.rgb = Color3f(0.4f, 0.f, 0.4f) + Color3f(2.f / 3, 2.f / 3, 2.f / 3) * randomColor3f();
 			break;
 		}
 		case 1: {
-			flare.rgb = Color3f(.5f, .5f, 0.f) + Color3f(.625f, .625f, .55f) * randomColor3f();
+			flare.rgb = Color3f(0.5f, 0.5f, 0.f) + Color3f(0.625f, 0.625f, 0.55f) * randomColor3f();
 			break;
 		}
 		case 2: {
-			flare.rgb = Color3f(.4f, 0.f, 0.f) + Color3f(2.f/3, .55f, .55f) * randomColor3f();
+			flare.rgb = Color3f(0.4f, 0.f, 0.f) + Color3f(2.f / 3, 0.55f, 0.55f) * randomColor3f();
 			break;
 		}
 	}
@@ -272,11 +272,12 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		} else {
 			pd->siz = Random::getf(1.f, 2.f);
 		}
-		pd->rgb = Color3f(flare.rgb.r * (2.f/3), flare.rgb.g * (2.f/3), flare.rgb.b * (2.f/3));
+		pd->rgb = flare.rgb * (2.f / 3);
 		pd->m_rotation = 1.2f;
-
-		if(bookDraw)
+		if(bookDraw) {
 			pd->is2D = true;
+		}
+		
 	}
 }
 
