@@ -73,7 +73,7 @@ public:
 	//! MiniMap data
 	struct MiniMapData {
 		
-		TextureContainer* m_texContainer;
+		TextureContainer * m_texContainer;
 		
 		//! Start of scene pos x
 		Vec2f m_offset;
@@ -96,13 +96,13 @@ public:
 		std::string m_text;
 	};
 	
-	void mapMarkerRemove(const std::string &name);
-	void mapMarkerAdd(const Vec2f & pos, int lvl, const std::string &name);
+	void mapMarkerRemove(const std::string & name);
+	void mapMarkerAdd(const Vec2f & pos, int lvl, const std::string & name);
 	void mapMarkerInit(size_t reserveSize = 0);
 	size_t mapMarkerCount();
 	MapMarkerData mapMarkerGet(size_t id);
 	
-	void firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *entityMng); // This should be a constructor
+	void firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * entityMng); // This should be a constructor
 	void reset();
 	void purgeTexContainer();
 	
@@ -123,24 +123,24 @@ public:
 
 	void clearMarkerTexCont();
 	
-	void load(const SavedMiniMap *saved, size_t size);
-	void save(SavedMiniMap *toSave, size_t size);
+	void load(const SavedMiniMap * saved, size_t size);
+	void save(SavedMiniMap * toSave, size_t size);
 	
-	void setActiveBackground(BackgroundData *activeBkg);
+	void setActiveBackground(BackgroundData * activeBkg);
 	
 private:
 	
 	int m_currentLevel;
-	EntityManager *m_entities;
-	BackgroundData *m_activeBkg;
+	EntityManager * m_entities;
+	BackgroundData * m_activeBkg;
 	
 	Vec2f m_miniOffset[MAX_MINIMAP_LEVELS];
 	float m_mapMaxY[MAX_MINIMAP_LEVELS];
 	
-	TextureContainer *m_pTexDetect;
-	TextureContainer *m_mapMarkerTexCont;
+	TextureContainer * m_pTexDetect;
+	TextureContainer * m_mapMarkerTexCont;
 	
-	ARXCHARACTER *m_player;
+	ARXCHARACTER * m_player;
 	float m_playerLastPosX;
 	float m_playerLastPosZ;
 	
@@ -152,7 +152,7 @@ private:
 	
 	void getData(int showLevel);
 	void resetLevels();
-	void loadOffsets(PakReader *pakRes);
+	void loadOffsets(PakReader * pakRes);
 	void validatePos();
 	
 	/*!
@@ -165,7 +165,7 @@ private:
 	*
 	* \return MapMarker's id (int).
 	*/
-	int mapMarkerGetID(const std::string &name);
+	int mapMarkerGetID(const std::string & name);
 	
 	Vec2f computePlayerPos(float zoom, int showLevel);
 	void drawBackground(int showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder = 0.f, Vec2f decal = Vec2f(0.f, 0.f), bool invColor = false, float alpha = 1.f);
