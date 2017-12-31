@@ -98,7 +98,7 @@ public:
 
 class PathFinder::OpenNodeList {
 	
-	typedef std::vector<Node*> NodeList;
+	typedef std::vector<Node *> NodeList;
 	NodeList nodes;
 	
 public:
