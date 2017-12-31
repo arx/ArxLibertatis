@@ -52,9 +52,10 @@ static glm::mat4x4 createProjectionMatrix(const Vec2f & size, const Vec2f & cent
 	const float farDist = cam->cdepth;
 	const float frustumDepth = farDist - nearDist;
 	
-	float aspect = size.y / size.x;
-	float w = aspect * (glm::cos(fov / 2) / glm::sin(fov / 2));
-	float h =   1.0f  * (glm::cos(fov / 2) / glm::sin(fov / 2));
+	float aspectw = (size.y < size.x) ? size.y / size.x : 1.f;
+	float aspecth = (size.y < size.x) ? 1.f : size.x / size.y;
+	float w = aspectw * (glm::cos(fov / 2) / glm::sin(fov / 2));
+	float h = aspecth * (glm::cos(fov / 2) / glm::sin(fov / 2));
 	float Q = farDist / frustumDepth;
 	
 	glm::mat4x4 projectionMatrix;
