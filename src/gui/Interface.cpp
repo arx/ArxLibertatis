@@ -131,7 +131,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "window/RenderWindow.h"
 
 
-extern EERIE_3DOBJ *arrowobj;
+extern EERIE_3DOBJ * arrowobj;
 
 extern TextureContainer * inventory_font;
 
@@ -204,8 +204,8 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 		
 		char tx[7];
 		float ttx;
-		float divideX = 1.f/((float) inventory_font->m_size.x);
-		float divideY = 1.f/((float) inventory_font->m_size.y);
+		float divideX = 1.f / float(inventory_font->m_size.x);
+		float divideY = 1.f / float(inventory_font->m_size.y);
 		
 		sprintf(tx, "%*ld", _iNb, num); // TODO use a safe string function.
 		long removezero = 1;
@@ -531,7 +531,7 @@ static void ReleaseInfosCombine() {
 //-----------------------------------------------------------------------------
 static char * findParam(char * pcToken, const char * param) {
 	
-	char* pStartString = 0;
+	char * pStartString = 0;
 	
 	if(strstr(pcToken, "^$param1")) {
 		pStartString = strstr(pcToken, param);
@@ -553,7 +553,7 @@ static void GetInfosCombineWithIO_Script(Entity * combine, Entity * _pWithIO, co
 	if(pcFound) {
 		unsigned int uiNbOpen = 0;
 		
-		char *pcToken = strtok(pcFound, "\r\n");
+		char * pcToken = strtok(pcFound, "\r\n");
 		
 		if(strstr(pcToken, "{")) {
 			uiNbOpen++;
@@ -563,8 +563,8 @@ static void GetInfosCombineWithIO_Script(Entity * combine, Entity * _pWithIO, co
 			pcToken = strtok(NULL, "\r\n");
 			
 			bool bCanCombine = false;
-			char* pStartString;
-			char* pEndString;
+			char * pStartString;
+			char * pEndString;
 			
 			pStartString = findParam(pcToken, "isclass");
 			if(pStartString) {
@@ -613,7 +613,7 @@ static void GetInfosCombineWithIO_Script(Entity * combine, Entity * _pWithIO, co
 						if(pStartString) {
 							pStartString++;
 							pEndString = strstr(pStartString, " ");
-							char* pEndString2 = strstr(pStartString, ")");
+							char * pEndString2 = strstr(pStartString, ")");
 							
 							if(pEndString2 < pEndString) {
 								pEndString = pEndString2;
@@ -810,13 +810,10 @@ void ArxGame::managePlayerControls() {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(   eeMouseDoubleClick1()
-	   && !(player.Interface & INTER_COMBATMODE)
-	   && !player.doingmagic
-	   && !g_cursorOverBook
-	   && eMouseState != MOUSE_IN_NOTE
-	) {
-		Entity *t = InterClick(DANAEMouse);
+	if(eeMouseDoubleClick1() && !(player.Interface & INTER_COMBATMODE) && !player.doingmagic
+	   && !g_cursorOverBook && eMouseState != MOUSE_IN_NOTE) {
+		
+		Entity * t = InterClick(DANAEMouse);
 
 		if(t) {
 			if(t->ioflags & IO_NPC) {
@@ -840,7 +837,7 @@ void ArxGame::managePlayerControls() {
 							
 							if(SecondaryInventory) {
 								bForceEscapeFreeLook = true;
-								lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
+								lOldTruePlayerMouseLook = !TRUE_PLAYER_MOUSELOOK_ON;
 							}
 							
 						}
@@ -860,7 +857,7 @@ void ArxGame::managePlayerControls() {
 					
 					if(SecondaryInventory) {
 						bForceEscapeFreeLook = true;
-						lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
+						lOldTruePlayerMouseLook = !TRUE_PLAYER_MOUSELOOK_ON;
 					}
 					
 				} else if (t->script.data) {
@@ -928,18 +925,17 @@ void ArxGame::managePlayerControls() {
 			
 			if(val > -40.f) {
 				if(val <= 70.f) {
-					eyeball.pos.y += val-70.f;
+					eyeball.pos.y += val - 70.f;
 				}
-
 				if(!npc) {
 					MagicSightFader += g_platformTime.lastFrameDuration() / PlatformDurationMs(200);
-
 					if(MagicSightFader > 1.f)
 						MagicSightFader = 1.f;
 				}
 			} else {
 				eyeball.pos = old;
 			}
+			
 		}
 		
 		if(g_gameTime.isPaused()) {
@@ -992,13 +988,13 @@ void ArxGame::managePlayerControls() {
 		if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD) && !NOMOREMOVES) {
 			
 			player.m_strikeDirection = 2;
+			
 			float multi = 1;
-			
 			if(left || right) {
-				multi=0.8f;
+				multi = 0.8f;
 			}
-			
 			multi = 10.f * FD * MoveDiv * multi;
+			
 			tm += angleToVectorXZ(player.angle.getYaw()) * multi;
 			if(!USE_PLAYERCOLLISIONS) {
 				float t = glm::radians(player.angle.getPitch());
@@ -1353,7 +1349,7 @@ void ArxGame::managePlayerControls() {
 				bRenderInCursorMode = false;
 				InventoryOpenClose(2);
 				
-				if(player.Interface &INTER_INVENTORY) {
+				if(player.Interface & INTER_INVENTORY) {
 					g_secondaryInventoryHud.close();
 				}
 				
@@ -1372,7 +1368,7 @@ void ArxGame::managePlayerControls() {
 				
 				InventoryOpenClose(2);
 				
-				if(player.Interface &INTER_INVENTORY) {
+				if(player.Interface & INTER_INVENTORY) {
 					g_secondaryInventoryHud.close();
 				}
 				
@@ -1880,7 +1876,6 @@ void ArxGame::manageEditorControls() {
 		DRAGGING = false;
 	}
 	
-	// on ferme
 	if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
 		g_secondaryInventoryHud.close();
 	}
@@ -1890,23 +1885,20 @@ void ArxGame::manageEditorControls() {
 	
 	g_hudRoot.updateInput();
 	
-	// gros player book
 	if(player.Interface & INTER_PLAYERBOOK) {
+		
 		Vec2f pos(97 * g_sizeRatio.x, 64 * g_sizeRatio.y);
 		
-		TextureContainer* playerbook = g_bookResouces.playerbook;
+		TextureContainer * playerbook = g_bookResouces.playerbook;
 		arx_assert(g_bookResouces.playerbook);
 		
-		const Rect mouseTestRect(
-		s32(pos.x),
-		s32(pos.y),
-		s32(pos.x + playerbook->m_size.x * g_sizeRatio.x),
-		s32(pos.y + playerbook->m_size.y * g_sizeRatio.y)
-		);
-		
+		const Rect mouseTestRect(s32(pos.x), s32(pos.y),
+		                         s32(pos.x + playerbook->m_size.x * g_sizeRatio.x),
+		                         s32(pos.y + playerbook->m_size.y * g_sizeRatio.y));
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			eMouseState = MOUSE_IN_BOOK;
 		}
+		
 	}
 	
 	// gros book/note
@@ -1928,10 +1920,9 @@ void ArxGame::manageEditorControls() {
 		bool bOk = true;
 		
 		if(SecondaryInventory) {
-			Entity *temp = SecondaryInventory->io;
-			
-			if(IsInSecondaryInventory(FlyingOverIO) && (temp->ioflags & IO_SHOP))
+			if(IsInSecondaryInventory(FlyingOverIO) && (SecondaryInventory->io->ioflags & IO_SHOP)) {
 				bOk = false;
+			}
 		}
 		
 		if(   !(FlyingOverIO->ioflags & IO_MOVABLE)
@@ -2164,10 +2155,10 @@ void ArxGame::manageEditorControls() {
 		   && !DRAGINTER
 		) {
 			if(!TakeFromInventory(STARTDRAG)) {
+				
 				bool bOk = false;
 				
-				Entity *io = InterClick(STARTDRAG);
-				
+				Entity * io = InterClick(STARTDRAG);
 				if(io && !BLOCK_PLAYER_CONTROLS) {
 					if(g_cursorOverBook) {
 						if(io->show == SHOW_FLAG_ON_PLAYER)
