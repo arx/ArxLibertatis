@@ -438,7 +438,7 @@ public:
 		
 		Entity * io = context.getEntity();
 		if(io->ioflags & IO_NPC) {
-			io->_npcdata->pathfind.flags &= ~(PATHFIND_ALWAYS|PATHFIND_ONCE|PATHFIND_NO_UPDATE);
+			io->_npcdata->pathfind.flags &= ~(PATHFIND_ALWAYS | PATHFIND_ONCE | PATHFIND_NO_UPDATE);
 		}
 		
 		HandleFlags("san") {
@@ -460,7 +460,7 @@ public:
 			if(io->_npcdata->reachedtarget) {
 				old_target = io->targetinfo;
 			}
-			if(io->_npcdata->behavior & (BEHAVIOUR_FLEE|BEHAVIOUR_WANDER_AROUND)) {
+			if(io->_npcdata->behavior & (BEHAVIOUR_FLEE | BEHAVIOUR_WANDER_AROUND)) {
 				old_target = EntityHandle(-12);
 			}
 		}
