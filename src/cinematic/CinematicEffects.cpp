@@ -89,8 +89,8 @@ Color FX_FadeOUT(float a, Color color, Color colord)
 
 static float LastTime;
 
-bool FX_Blur(Cinematic *c, CinematicBitmap *tb, Camera & camera)
-{
+bool FX_Blur(Cinematic * c, CinematicBitmap * tb, Camera & camera) {
+	
 	if(c->numbitmap < 0 || !tb)
 		return false;
 
@@ -109,8 +109,8 @@ bool FX_Blur(Cinematic *c, CinematicBitmap *tb, Camera & camera)
 
 	float alpha = 32.f;
 	float dalpha = (127.f / NBOLDPOS);
-	Vec3f *pos = OldPos;
-	float *az = OldAz;
+	Vec3f * pos = OldPos;
+	float * az = OldAz;
 	int nb = TotOldPos;
 
 	while(nb) {
