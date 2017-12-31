@@ -126,7 +126,7 @@ struct PlatformCrashHandlers {
 	
 };
 
-CrashHandlerPOSIX* CrashHandlerPOSIX::m_sInstance = 0;
+CrashHandlerPOSIX * CrashHandlerPOSIX::m_sInstance = 0;
 
 CrashHandlerPOSIX::CrashHandlerPOSIX() : m_pPreviousCrashHandlers(NULL) {
 	m_sInstance = this;
@@ -322,7 +322,7 @@ CrashHandlerPOSIX::~CrashHandlerPOSIX() {
 	m_sInstance = 0;
 }
 
-CrashHandlerPOSIX& CrashHandlerPOSIX::getInstance() {
+CrashHandlerPOSIX & CrashHandlerPOSIX::getInstance() {
 	arx_assert(m_sInstance != 0);
 	return *m_sInstance;
 }
