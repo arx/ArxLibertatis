@@ -66,7 +66,7 @@ namespace platform {
 // Windows-specific functions
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
-typedef void (WINAPI *PGNSI)(LPSYSTEM_INFO);
+typedef void (WINAPI * PGNSI)(LPSYSTEM_INFO);
 
 //! Get a string describing the Windows version
 static std::string getWindowsVersionName() {
@@ -81,7 +81,7 @@ static std::string getWindowsVersionName() {
 	#pragma warning(push)
 	#pragma warning(disable:4996) // VC12+ deprecates GetVersionEx
 	#endif
-	if(GetVersionExW((OSVERSIONINFO *)&osvi) == 0) {
+	if(GetVersionExW(reinterpret_cast<OSVERSIONINFO *>(&osvi)) == 0) {
 		return "Windows";
 	}
 	#if ARX_COMPILER_MSVC
