@@ -94,7 +94,7 @@ public:
 		
 		if(!sub) {
 			size_t pos = context.skipCommand();
-			if(pos != (size_t)-1) {
+			if(pos != size_t(-1)) {
 				ScriptWarning << "unexpected text at " << pos;
 			}
 		}
@@ -314,8 +314,7 @@ public:
 				const EntityHandle handle = EntityHandle(l);
 				Entity * e = entities[handle];
 				
-				if(!e || e == io
-				   || (e->ioflags & (IO_CAMERA|IO_MARKER))) {
+				if(!e || e == io || (e->ioflags & (IO_CAMERA | IO_MARKER))) {
 					continue;
 				}
 				
@@ -350,7 +349,7 @@ public:
 				const EntityHandle handle = EntityHandle(l);
 				Entity * e = entities[handle];
 				
-				if(!e || (e->ioflags & (IO_CAMERA|IO_MARKER))) {
+				if(!e || (e->ioflags & (IO_CAMERA | IO_MARKER))) {
 					continue;
 				}
 				
