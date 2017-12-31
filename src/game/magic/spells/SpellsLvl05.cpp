@@ -137,11 +137,13 @@ void RuneOfGuardingSpell::Update() {
 	
 	
 	Sphere sphere = Sphere(m_pos, std::max(m_level * 15.f, 50.f));
-	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL)) {
+	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL
+	                                           | CAS_NO_FIX_COL | CAS_NO_DEAD_COL)) {
 		spawnFireHitParticle(m_pos, 0);
 		PolyBoomAddScorch(m_pos);
 		LaunchFireballBoom(m_pos, m_level);
-		DoSphericDamage(Sphere(m_pos, 30.f * m_level), 4.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
+		DoSphericDamage(Sphere(m_pos, 30.f * m_level), 4.f * m_level,
+		                DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 		ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING_END, &m_pos);
 		m_duration = 0;
 	}
@@ -629,7 +631,9 @@ void PoisonProjectileSpell::AddPoisonFog(const Vec3f & pos, float power) {
 		pd->tolive = Random::getu(4500, 9000);
 		pd->tc = TC_smoke;
 		pd->siz = (80.f + Random::getf(0.f, 160.f)) * (1.f / 3);
-		pd->rgb = Color3f(Random::getf(0.f, 1.f/3), 1.f, Random::getf(0.f, 0.1f));
+		pd->rgb = Color3f(Random::getf(0.f, 1.f / 3), 1.f, Random::getf(0.f, 0.1f));
 		pd->m_rotation = 0.001f;
+		
 	}
+	
 }
