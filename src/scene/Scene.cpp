@@ -185,8 +185,8 @@ public:
 
 static Plane efpPlaneNear;
 
-static std::vector<EERIEPOLY*> vPolyWater;
-static std::vector<EERIEPOLY*> vPolyLava;
+static std::vector<EERIEPOLY *> vPolyWater;
+static std::vector<EERIEPOLY *> vPolyLava;
 
 static std::vector<PORTAL_ROOM_DRAW> RoomDraw;
 static std::vector<size_t> RoomDrawList;
@@ -444,7 +444,7 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long fl
 		}
 		
 		ep = CheckInPoly(pos + Vec3f(off, -20, 0.f));
-		if(ep && ep->room>-1) {
+		if(ep && ep->room > -1) {
 			return ep;
 		}
 		
@@ -532,19 +532,17 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 			const EERIE_ROOM_DATA & room = portals->rooms[n];
 			for(long lll = 0; lll < room.nb_portals; lll++) {
 				const EERIE_PORTALS & po = portals->portals[room.portals[lll]];
-				const PortalPoly *epp = &po.poly;
-
+				const PortalPoly * epp = &po.poly;
 				if(PointIn2DPolyXZ(epp, pos.x, pos.z)) {
 					float yy;
-
 					if(GetTruePolyY(epp, pos, &yy)) {
 						if(height > yy) {
-							if(yy >= pos.y && yy-pos.y < nearest_dist) {
-								if(epp->norm.y>0)
+							if(yy >= pos.y && yy - pos.y < nearest_dist) {
+								if(epp->norm.y > 0) {
 									nearest = po.room_2;
-								else
+								} else {
 									nearest = po.room_1;
-
+								}
 								nearest_dist = yy - pos.y;
 							}
 						}
@@ -552,9 +550,11 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 				}
 			}
 		}
-
-		if(nearest>-1)
+		
+		if(nearest > -1) {
 			num = nearest;
+		}
+		
 	}
 	
 	return num;
@@ -585,13 +585,11 @@ static void ARX_PORTALS_InitDrawnRooms() {
 	ARX_PROFILE_FUNC();
 	
 	arx_assert(portals);
-
+	
 	for(size_t i = 0; i < portals->portals.size(); i++) {
-		EERIE_PORTALS *ep = &portals->portals[i];
-
-		ep->useportal = 0;
+		portals->portals[i].useportal = 0;
 	}
-
+	
 	for(size_t i = 0; i < portals->rooms.size(); i++) {
 		ARX_PORTALS_Frustrum_ClearIndexCount(i);
 	}
@@ -767,8 +765,9 @@ static Vec2f FluidTextureDisplacement(const Vec3f & p, float time,
                                       float divVar4, float addVar1,
                                       float addVar2, Vec2f sign) {
 	
-	float u = (p.x + addVar1)*(1.f/divVar1) + sign.x * (glm::sin((p.x + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
-	float v = (p.z + addVar1)*(1.f/divVar1) + sign.y * (glm::cos((p.z + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
+	float u = (p.x + addVar1) / divVar1 + sign.x * glm::sin((p.x + addVar2) / divVar2 + time / divVar3) / divVar4;
+	float v = (p.z + addVar1) / divVar1 + sign.y * glm::cos((p.z + addVar2) / divVar2 + time / divVar3) / divVar4;
+	
 	return Vec2f(u, v);
 }
 
@@ -858,7 +857,7 @@ static void RenderWater() {
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				Vec2f uv = CalculateWaterDisplacement(ep, time, j, i);
 				if(ep->type & POLY_FALL) {
-					uv.y += time * (1.f/4000);
+					uv.y += time * (1.f / 4000);
 				}
 				pVertex->uv[i] = uv;
 			}
@@ -1036,17 +1035,16 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 				}
 			}
 		}
-
-		EERIEPOLY *ep = &feg->polydata[pEPDATA.idx];
-
+		
+		EERIEPOLY * ep = &feg->polydata[pEPDATA.idx];
 		if(!ep->tex) {
 			continue;
 		}
-
-		if(ep->type & (POLY_IGNORE | POLY_NODRAW| POLY_HIDE)) {
+		
+		if(ep->type & (POLY_IGNORE | POLY_NODRAW | POLY_HIDE)) {
 			continue;
 		}
-
+		
 		if(FrustrumsClipPoly(frustrums, *ep)) {
 			continue;
 		}
@@ -1111,22 +1109,20 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 			} else {
 				if(!(ep->type & POLY_TRANS)) {
 					ApplyTileLights(ep, pEPDATA.tile);
-
 					pMyVertexCurr[ep->uslInd[0]].color = ep->color[0];
 					pMyVertexCurr[ep->uslInd[1]].color = ep->color[1];
 					pMyVertexCurr[ep->uslInd[2]].color = ep->color[2];
-
-					if(to&4) {
+					if(to & 4) {
 						pMyVertexCurr[ep->uslInd[3]].color = ep->color[3];
 					}
 				}
 
 				if(ep->type & POLY_LAVA) {
-					float uvScroll = toMsf(now) * (1.f/12000);
+					float uvScroll = toMsf(now) * (1.f / 12000);
 					ManageLava_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
 					vPolyLava.push_back(ep);
 				} else if(ep->type & POLY_WATER) {
-					float uvScroll = toMsf(now) * (1.f/1000);
+					float uvScroll = toMsf(now) * 0.001f;
 					ManageWater_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
 					vPolyWater.push_back(ep);
 				}
@@ -1139,8 +1135,9 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 
 				bool valid = true;
 				for(int k = 0; k < to; k++) {
+					
 					long lr = Color::fromRGBA(ep->color[k]).r;
-					float ffr=(float)(lr);
+					float ffr = float(lr);
 					
 					Vec4f p = worldToClipSpace(ep->v[1].p);
 					if(p.w <= 0.f || p.z <= 0.f) {
@@ -1149,18 +1146,15 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 					}
 					
 					float dd = 1.f / p.w;
-
 					dd = glm::clamp(dd, 0.f, 1.f);
-
 					Vec3f & norm = ep->nrml[k];
-
-					float fb=((1.f-dd)*6.f + (glm::abs(norm.x) + glm::abs(norm.y))) * 0.125f;
-					float fr=((.6f-dd)*6.f + (glm::abs(norm.z) + glm::abs(norm.y))) * 0.125f;
-
-					if(fr < 0.f)
+					float fb = ((1.f - dd) * 6.f + glm::abs(norm.x) + glm::abs(norm.y)) * 0.125f;
+					float fr = ((0.6f - dd) * 6.f + glm::abs(norm.z) + glm::abs(norm.y)) * 0.125f;
+					if(fr < 0.f) {
 						fr = 0.f;
-					else
+					} else {
 						fr = std::max(ffr, fr * 255.f);
+					}
 					
 					fr = std::min(fr, 255.f);
 					fb *= 255.f;
@@ -1199,7 +1193,7 @@ static void BackgroundRenderOpaque(size_t room_num) {
 	std::vector<TextureContainer *>::const_iterator itr;
 	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
 		
-		TextureContainer *pTexCurr = *itr;
+		TextureContainer * pTexCurr = *itr;
 		const SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches.tMatRoom[room_num];
 		
 		RenderState baseState = render3D();
@@ -1316,16 +1310,17 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 	RoomFrustrumAdd(roomIndex, frustrum);
 	RoomDraw[roomIndex].count++;
 	
-	float fClippZFar = camDepth * (fZFogEnd*1.1f);
+	float fClippZFar = camDepth * fZFogEnd * 1.1f;
 	
 	EERIE_ROOM_DATA & room = portals->rooms[roomIndex];
 	
 	// Now Checks For room Portals !!!
 	for(long lll = 0; lll < room.nb_portals; lll++) {
-		EERIE_PORTALS *po = &portals->portals[room.portals[lll]];
+		EERIE_PORTALS * po = &portals->portals[room.portals[lll]];
 		
-		if(po->useportal)
+		if(po->useportal) {
 			continue;
+		}
 		
 		PortalPoly & epp = po->poly;
 		
@@ -1416,26 +1411,27 @@ void ARX_SCENE_Update() {
 	for(short x = minx; x < maxx; x++) {
 		ACTIVEBKG->m_tileData[x][z].treat = false;
 	}
-
+	
 	ResetTileLights();
-
+	
 	long room_num = ARX_PORTALS_GetRoomNumForPosition(camPos, 1);
-	if(room_num>-1) {
-
+	if(room_num > -1) {
+		
 		ARX_PORTALS_InitDrawnRooms();
 		size_t roomIndex = static_cast<size_t>(room_num);
 		EERIE_FRUSTRUM frustrum = CreateScreenFrustrum();
 		ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, frustrum, camPos, camDepth);
-
+		
 		for(size_t i = 0; i < RoomDrawList.size(); i++) {
 			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, now, camPos);
 		}
+		
 	} else {
 		RoomDrawRelease();
 	}
-
+	
 	ARX_THROWN_OBJECT_Manage(g_gameTime.lastFrameDuration());
-
+	
 	UpdateInter();
 }
 
