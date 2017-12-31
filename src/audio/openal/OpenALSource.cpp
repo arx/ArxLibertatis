@@ -40,7 +40,7 @@
 
 namespace audio {
 
-#define ALPREFIX "[" << (s16)(((id) & 0xffff0000) >> 16) << "," << (s16)((id)&0xffff) << "," << (sample ? sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
+#define ALPREFIX "[" << (s16)(((id) & 0xffff0000) >> 16) << "," << (s16)((id) & 0xffff) << "," << (sample ? sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
 
 #undef ALError
 #define ALError LogError << ALPREFIX
