@@ -29,9 +29,9 @@
 #include "util/Flags.h"
 
 enum BufferFlag {
-	DiscardBuffer = (1<<0),
-	DiscardRange  = (1<<1),
-	NoOverwrite   = (1<<2)
+	DiscardBuffer = 1 << 0,
+	DiscardRange  = 1 << 1,
+	NoOverwrite   = 1 << 2
 };
 DECLARE_FLAGS(BufferFlag, BufferFlags)
 DECLARE_FLAGS_OPERATORS(BufferFlags)
@@ -45,7 +45,7 @@ public:
 	
 	virtual void setData(const Index * vertices, size_t count, size_t offset = 0, BufferFlags flags = 0) = 0;
 	
-	virtual Index * lock(BufferFlags flags = 0, size_t offset = 0, size_t count = (size_t)-1) = 0;
+	virtual Index * lock(BufferFlags flags = 0, size_t offset = 0, size_t count = size_t(-1)) = 0;
 	virtual void unlock() = 0;
 	
 	virtual ~IndexBuffer() { }
@@ -67,7 +67,7 @@ public:
 	
 	virtual void setData(const Vertex * vertices, size_t count, size_t offset = 0, BufferFlags flags = 0) = 0;
 	
-	virtual Vertex * lock(BufferFlags flags = 0, size_t offset = 0, size_t count = (size_t)-1) = 0;
+	virtual Vertex * lock(BufferFlags flags = 0, size_t offset = 0, size_t count = size_t(-1)) = 0;
 	virtual void unlock() = 0;
 	
 	virtual void draw(Renderer::Primitive primitive, size_t count, size_t offset = 0) const = 0;
