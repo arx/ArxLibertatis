@@ -287,8 +287,8 @@ void particleParametersInit() {
 	cp.m_speed = 10;
 	cp.m_speedRandom = 10;
 	cp.m_gravity = Vec3f_ZERO;
-	cp.m_flash = 21 * (1.f/100);
-	cp.m_rotation = 1.0f / (101 - 80);
+	cp.m_flash = 21 * 0.01f;
+	cp.m_rotation = 1.f / (101 - 80);
 	cp.m_rotationRandomDirection = true;
 	cp.m_rotationRandomStart = true;
 
