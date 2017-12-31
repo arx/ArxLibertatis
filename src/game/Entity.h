@@ -90,33 +90,33 @@ struct IO_PHYSICS {
 };
 
 enum IOCollisionFlag {
-	COLLIDE_WITH_PLAYER = (1<<0),
-	COLLIDE_WITH_WORLD  = (1<<1)
+	COLLIDE_WITH_PLAYER = 1 << 0,
+	COLLIDE_WITH_WORLD  = 1 << 1
 };
 DECLARE_FLAGS(IOCollisionFlag, IOCollisionFlags)
 DECLARE_FLAGS_OPERATORS(IOCollisionFlags)
 
 enum ItemTypeFlag {
-	OBJECT_TYPE_WEAPON   = (1<<0),
-	OBJECT_TYPE_DAGGER   = (1<<1),
-	OBJECT_TYPE_1H       = (1<<2),
-	OBJECT_TYPE_2H       = (1<<3),
-	OBJECT_TYPE_BOW      = (1<<4),
-	OBJECT_TYPE_SHIELD   = (1<<5),
-	OBJECT_TYPE_FOOD     = (1<<6),
-	OBJECT_TYPE_GOLD     = (1<<7),
-	OBJECT_TYPE_ARMOR    = (1<<8),
-	OBJECT_TYPE_HELMET   = (1<<9),
-	OBJECT_TYPE_RING     = (1<<10),
-	OBJECT_TYPE_LEGGINGS = (1<<11)
+	OBJECT_TYPE_WEAPON   = 1 << 0,
+	OBJECT_TYPE_DAGGER   = 1 << 1,
+	OBJECT_TYPE_1H       = 1 << 2,
+	OBJECT_TYPE_2H       = 1 << 3,
+	OBJECT_TYPE_BOW      = 1 << 4,
+	OBJECT_TYPE_SHIELD   = 1 << 5,
+	OBJECT_TYPE_FOOD     = 1 << 6,
+	OBJECT_TYPE_GOLD     = 1 << 7,
+	OBJECT_TYPE_ARMOR    = 1 << 8,
+	OBJECT_TYPE_HELMET   = 1 << 9,
+	OBJECT_TYPE_RING     = 1 << 10,
+	OBJECT_TYPE_LEGGINGS = 1 << 11
 };
 DECLARE_FLAGS(ItemTypeFlag, ItemType)
 DECLARE_FLAGS_OPERATORS(ItemType)
 
 enum HaloFlag {
-	HALO_ACTIVE   = (1<<0),
-	HALO_NEGATIVE = (1<<1),
-	HALO_DYNLIGHT = (1<<2)  //!< Unused
+	HALO_ACTIVE   = 1 << 0,
+	HALO_NEGATIVE = 1 << 1,
+	HALO_DYNLIGHT = 1 << 2  //!< Unused
 };
 DECLARE_FLAGS(HaloFlag, HaloFlags)
 DECLARE_FLAGS_OPERATORS(HaloFlags)
@@ -156,67 +156,67 @@ struct IO_SPELLCAST_DATA {
 };
 
 enum EntityFlag {
-	IO_UNDERWATER          = (1<<0),
-	IO_FREEZESCRIPT        = (1<<1),
-	IO_ITEM                = (1<<2),
-	IO_NPC                 = (1<<3),
-	IO_FIX                 = (1<<4),
-	IO_NOSHADOW            = (1<<5),
-	IO_CAMERA              = (1<<6),
-	IO_MARKER              = (1<<7),
-	IO_ICONIC              = (1<<8),
-	IO_NO_COLLISIONS       = (1<<9),
-	IO_GOLD                = (1<<10),
-	IO_INVULNERABILITY     = (1<<11),
-	IO_NO_PHYSICS_INTERPOL = (1<<12),
-	IO_HIT                 = (1<<13),
-	IO_PHYSICAL_OFF        = (1<<14),
-	IO_MOVABLE             = (1<<15),
-	IO_UNIQUE              = (1<<16),
-	IO_SHOP                = (1<<17),
-	IO_BLACKSMITH          = (1<<18),
-	IO_NOSAVE              = (1<<19),
-	IO_FORCEDRAW           = (1<<20),
-	IO_FIELD               = (1<<21),
-	IO_BUMP                = (1<<22),
-	IO_ANGULAR             = (1<<23),
-	IO_BODY_CHUNK          = (1<<24),
+	IO_UNDERWATER          = 1 << 0,
+	IO_FREEZESCRIPT        = 1 << 1,
+	IO_ITEM                = 1 << 2,
+	IO_NPC                 = 1 << 3,
+	IO_FIX                 = 1 << 4,
+	IO_NOSHADOW            = 1 << 5,
+	IO_CAMERA              = 1 << 6,
+	IO_MARKER              = 1 << 7,
+	IO_ICONIC              = 1 << 8,
+	IO_NO_COLLISIONS       = 1 << 9,
+	IO_GOLD                = 1 << 10,
+	IO_INVULNERABILITY     = 1 << 11,
+	IO_NO_PHYSICS_INTERPOL = 1 << 12,
+	IO_HIT                 = 1 << 13,
+	IO_PHYSICAL_OFF        = 1 << 14,
+	IO_MOVABLE             = 1 << 15,
+	IO_UNIQUE              = 1 << 16,
+	IO_SHOP                = 1 << 17,
+	IO_BLACKSMITH          = 1 << 18,
+	IO_NOSAVE              = 1 << 19,
+	IO_FORCEDRAW           = 1 << 20,
+	IO_FIELD               = 1 << 21,
+	IO_BUMP                = 1 << 22,
+	IO_ANGULAR             = 1 << 23,
+	IO_BODY_CHUNK          = 1 << 24,
 	// IO_ZMAP Currently has no effect, but keep for now as it affects save state
-	IO_ZMAP                = (1<<25),
-	IO_INVERTED            = (1<<26),
-	IO_JUST_COLLIDE        = (1<<27),
-	IO_FIERY               = (1<<28),
-	IO_NO_NPC_COLLIDE      = (1<<29),
-	IO_CAN_COMBINE         = (1<<30)
+	IO_ZMAP                = 1 << 25,
+	IO_INVERTED            = 1 << 26,
+	IO_JUST_COLLIDE        = 1 << 27,
+	IO_FIERY               = 1 << 28,
+	IO_NO_NPC_COLLIDE      = 1 << 29,
+	IO_CAN_COMBINE         = 1 << 30
 };
 DECLARE_FLAGS(EntityFlag, EntityFlags)
 DECLARE_FLAGS_OPERATORS(EntityFlags)
 
 enum EntitySfxFlag {
-	SFX_TYPE_YLSIDE_DEATH = (1<<0),
-	SFX_TYPE_INCINERATE   = (1<<1)
+	SFX_TYPE_YLSIDE_DEATH = 1 << 0,
+	SFX_TYPE_INCINERATE   = 1 << 1
 };
 DECLARE_FLAGS(EntitySfxFlag, EntitySfxFlags)
 DECLARE_FLAGS_OPERATORS(EntitySfxFlags)
 
 // TODO 16-bit due to save format
 enum GameFlag {
-	GFLAG_INTERACTIVITY     = (1<<0),
-	GFLAG_ISINTREATZONE     = (1<<1),
-	GFLAG_WASINTREATZONE    = (1<<2),
-	GFLAG_NEEDINIT          = (1<<3),
-	GFLAG_INTERACTIVITYHIDE = (1<<4),
-	GFLAG_DOOR              = (1<<5),
-	GFLAG_INVISIBILITY      = (1<<6),
-	GFLAG_NO_PHYS_IO_COL    = (1<<7),
-	GFLAG_VIEW_BLOCKER      = (1<<8),
-	GFLAG_PLATFORM          = (1<<9),
-	GFLAG_ELEVATOR          = (1<<10),
-	GFLAG_MEGAHIDE          = (1<<11),
-	GFLAG_HIDEWEAPON        = (1<<12),
-	GFLAG_NOGORE            = (1<<13),
-	GFLAG_GOREEXPLODE       = (1<<14),
-	GFLAG_NOCOMPUTATION     = (1<<15)
+	GFLAG_INTERACTIVITY     = 1 << 0,
+	GFLAG_ISINTREATZONE     = 1 << 1,
+	GFLAG_WASINTREATZONE    = 1 << 2,
+	GFLAG_NEEDINIT          = 1 << 3,
+	GFLAG_INTERACTIVITYHIDE = 1 << 4,
+	GFLAG_DOOR              = 1 << 5,
+	GFLAG_INVISIBILITY      = 1 << 6,
+	GFLAG_NO_PHYS_IO_COL    = 1 << 7,
+	GFLAG_VIEW_BLOCKER      = 1 << 8,
+	GFLAG_PLATFORM          = 1 << 9,
+	GFLAG_ELEVATOR          = 1 << 10,
+	GFLAG_MEGAHIDE          = 1 << 11,
+	GFLAG_HIDEWEAPON        = 1 << 12,
+	GFLAG_NOGORE            = 1 << 13,
+	GFLAG_GOREEXPLODE       = 1 << 14,
+	GFLAG_NOCOMPUTATION     = 1 << 15
 };
 DECLARE_FLAGS(GameFlag, GameFlags)
 DECLARE_FLAGS_OPERATORS(GameFlags)
