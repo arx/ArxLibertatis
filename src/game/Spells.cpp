@@ -225,7 +225,7 @@ bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle cas
 	return false;
 }
 
-SpellBase *SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) {
+SpellBase * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) {
 	
 	if(caster == EntityHandle())
 		return NULL;
@@ -276,15 +276,17 @@ void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster)
 	}
 }
 
-void SpellManager::removeTarget(Entity *io) {
+void SpellManager::removeTarget(Entity * io) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
-		if(!spell)
+		if(!spell) {
 			continue;
-		
-		spell->m_targets.erase(std::remove(spell->m_targets.begin(), spell->m_targets.end(), io->index()), spell->m_targets.end());
+		}
+		spell->m_targets.erase(std::remove(spell->m_targets.begin(), spell->m_targets.end(), io->index()),
+		                       spell->m_targets.end());
 	}
+	
 }
 
 bool SpellManager::hasFreeSlot()
@@ -475,9 +477,9 @@ void ARX_SPELLS_Fizzle(SpellBase * spell) {
 
 
 void ARX_SPELLS_ManageMagic() {
-	arx_assert(entities.player());
 	
-	Entity *io = entities.player();
+	arx_assert(entities.player());
+	Entity * io = entities.player();
 	
 	const ANIM_HANDLE * anim = io->animlayer[1].cur_anim;
 	
@@ -709,7 +711,7 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io, float damages) {
 		}
 		
 		if(io->ioflags & IO_NPC) {
-			damages -= io->_npcdata->resist_fire*( 1.0f / 100 )*damages;
+			damages -= io->_npcdata->resist_fire * 0.01f * damages;
 			if(damages < 0.f) {
 				damages = 0.f;
 			}
@@ -1158,7 +1160,7 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle t
 	io->spellcast_data.duration = duration;
 	io->spellcast_data.target = target;
 	
-	io->gameFlags &=~GFLAG_INVISIBILITY;
+	io->gameFlags &= ~GFLAG_INVISIBILITY;
 	
 	if (((io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM)
 	     && (io->spellcast_data.spell_flags & SPELLCAST_FLAG_NODRAW))
@@ -1173,6 +1175,6 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle t
 		
 		io->spellcast_data.castingspell = SPELL_NONE;
 	}
-
-	io->spellcast_data.spell_flags &=~SPELLCAST_FLAG_NODRAW; // temporary, removes colored flares
+	
+	io->spellcast_data.spell_flags &= ~SPELLCAST_FLAG_NODRAW; // temporary, removes colored flares
 }

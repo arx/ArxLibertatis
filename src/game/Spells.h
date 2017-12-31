@@ -70,6 +70,7 @@ const size_t MAX_SPELLS = 20;
 class SpellManager {
 	
 public:
+	
 	void init();
 	void clearAll();
 	
@@ -89,7 +90,7 @@ public:
 	SpellBase * getSpellOnTarget(EntityHandle target, SpellType type);
 	
 	void replaceCaster(EntityHandle oldCaster, EntityHandle newCaster);
-	void removeTarget(Entity *io);
+	void removeTarget(Entity * io);
 	
 	bool hasFreeSlot();
 	void addSpell(SpellBase * spell);
@@ -98,7 +99,9 @@ public:
 	SpellHandle create();
 	
 private:
+	
 	SpellBase * m_spells[MAX_SPELLS];
+	
 };
 
 extern SpellManager spells;
