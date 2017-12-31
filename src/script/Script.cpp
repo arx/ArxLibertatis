@@ -296,7 +296,7 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 }
 
 ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::string & name,
-                       std::string& txtcontent, float * fcontent, long * lcontent) {
+                       std::string & txtcontent, float * fcontent, long * lcontent) {
 	
 	arx_assert_msg(!name.empty() && name[0] == '^', "bad system variable: \"%s\"", name.c_str());
 	
@@ -1120,7 +1120,7 @@ void CloneLocalVars(Entity * ioo, Entity * io) {
 	ioo->script.lvar = io->script.lvar;
 }
 
-static SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VARIABLES& _svff) {
+static SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VARIABLES & _svff) {
 	_svff.resize(_svff.size() + 1);
 	SCRIPT_VAR * v = &_svff.back();
 	return v;
@@ -1153,7 +1153,7 @@ static const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf,
 	return NULL;
 }
 
-long GETVarValueLong(const SCRIPT_VARIABLES& svf, const std::string & name) {
+long GETVarValueLong(const SCRIPT_VARIABLES & svf, const std::string & name) {
 	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 
@@ -1162,7 +1162,7 @@ long GETVarValueLong(const SCRIPT_VARIABLES& svf, const std::string & name) {
 	return tsv->ival;
 }
 
-float GETVarValueFloat(const SCRIPT_VARIABLES& svf, const std::string & name) {
+float GETVarValueFloat(const SCRIPT_VARIABLES & svf, const std::string & name) {
 	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 
@@ -1171,10 +1171,10 @@ float GETVarValueFloat(const SCRIPT_VARIABLES& svf, const std::string & name) {
 	return tsv->fval;
 }
 
-std::string GETVarValueText(const SCRIPT_VARIABLES& svf, const std::string & name) {
+std::string GETVarValueText(const SCRIPT_VARIABLES & svf, const std::string & name) {
 	
-	const SCRIPT_VAR* tsv = GetVarAddress(svf, name);
-
+	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
+	
 	if (!tsv) return "";
 
 	return tsv->text;
@@ -1277,10 +1277,10 @@ float GetVarValueInterpretedAsFloat(const std::string & temp1, const EERIE_SCRIP
 	return (float)atof(temp1.c_str());
 }
 
-SCRIPT_VAR* SETVarValueLong(SCRIPT_VARIABLES& svf, const std::string& name, long val)
-{
-	SCRIPT_VAR* tsv = GetVarAddress(svf, name);
-
+SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES & svf, const std::string & name, long val) {
+	
+	SCRIPT_VAR * tsv = GetVarAddress(svf, name);
+	
 	if (!tsv)
 	{
 		tsv = GetFreeVarSlot(svf);
@@ -1295,10 +1295,10 @@ SCRIPT_VAR* SETVarValueLong(SCRIPT_VARIABLES& svf, const std::string& name, long
 	return tsv;
 }
 
-SCRIPT_VAR* SETVarValueFloat(SCRIPT_VARIABLES& svf, const std::string& name, float val)
-{
-	SCRIPT_VAR* tsv = GetVarAddress(svf, name);
-
+SCRIPT_VAR * SETVarValueFloat(SCRIPT_VARIABLES & svf, const std::string & name, float val) {
+	
+	SCRIPT_VAR * tsv = GetVarAddress(svf, name);
+	
 	if (!tsv)
 	{
 		tsv = GetFreeVarSlot(svf);
@@ -1364,17 +1364,15 @@ void MakeGlobalText(std::string & tx)
 	}
 }
 
-void MakeLocalText(EERIE_SCRIPT * es, std::string& tx)
-{
+void MakeLocalText(EERIE_SCRIPT * es, std::string & tx) {
+	
 	char texx[256];
 
 	if (es->master != NULL) es = es->master;
 
-	for(SCRIPT_VARIABLES::const_iterator it = es->lvar.begin(); it != es->lvar.end(); ++it)
-	{
-		const SCRIPT_VAR& v = *it;
-		switch (v.type)
-		{
+	for(SCRIPT_VARIABLES::const_iterator it = es->lvar.begin(); it != es->lvar.end(); ++it) {
+		const SCRIPT_VAR & v = *it;
+		switch(v.type) {
 			case TYPE_L_TEXT:
 				tx += v.name;
 				tx += " = ";
@@ -1536,8 +1534,9 @@ void Stack_SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string &
 	}
 }
 
-static ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
-{
+static ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, const std::string & params,
+                                             const std::string & eventname) {
+	
 	// checks invalid IO
 	if (!io) return REFUSE;
 
@@ -1564,8 +1563,8 @@ static ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, con
 	return REFUSE;
 }
 
-ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
-{
+ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string & params,
+                               const std::string & eventname) {
 	
 	ARX_PROFILE_FUNC();
 
