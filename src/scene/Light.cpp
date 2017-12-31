@@ -83,14 +83,15 @@ void culledStaticLightsReset() {
 	g_culledStaticLightsCount = 0;
 }
 
-void ColorMod::updateFromEntity(Entity *io, bool inBook) {
+void ColorMod::updateFromEntity(Entity * io, bool inBook) {
+	
 	factor = Color3f::white;
 	term = Color3f::black;
 	if(io) {
 		factor *= io->special_color;
 		term += io->highlightColor;
 	}
-
+	
 	if(player.m_improve) {
 		Color3f infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
 		
@@ -181,8 +182,8 @@ void TreatBackgroundDynlights() {
 	ARX_PROFILE_FUNC();
 	
 	for(size_t i = 0; i < g_staticLightsMax; i++) {
-		EERIE_LIGHT *light = g_staticLights[i];
-
+		EERIE_LIGHT * light = g_staticLights[i];
+		
 		if(light && (light->extras & EXTRAS_SEMIDYNAMIC)) {
 			
 			float fMaxdist = player.m_telekinesis ? 850 : 300;
@@ -471,8 +472,8 @@ static void Insertllight(boost::array<EERIE_LIGHT *, llightsSize> & llights,
 	
 	for(size_t i = 0; i < MAX_LLIGHTS; i++) {
 		if(!llights[i]) {
-			llights[i]=el;
-			values[i]=val;
+			llights[i] = el;
+			values[i] = val;
 			return;
 		} else if (val <= values[i]) { // Inserts light at the right place
 			for(size_t j = MAX_LLIGHTS - 1; j > i; j--) {
@@ -481,12 +482,12 @@ static void Insertllight(boost::array<EERIE_LIGHT *, llightsSize> & llights,
 					values[j] = values[j - 1];
 				}
 			}
-
-			llights[i]=el;
-			values[i]=val;
+			llights[i] = el;
+			values[i] = val;
 			return;
 		}
 	}
+	
 }
 
 void setMaxLLights(size_t count) {
@@ -580,7 +581,7 @@ void ClearTileLights() {
 	}
 }
 
-float GetColorz(const Vec3f &pos) {
+float GetColorz(const Vec3f & pos) {
 
 	ShaderLight lights[llightsSize];
 	size_t lightsCount;
@@ -646,8 +647,8 @@ float GetColorz(const Vec3f &pos) {
 		ff.g = ff.g * ratio2 + _ff.g * ratio;
 		ff.b = ff.b * ratio2 + _ff.b * ratio;
 	}
-
-	return (std::min(ff.r, 255.f) + std::min(ff.g, 255.f) + std::min(ff.b, 255.f)) * (1.f/3);
+	
+	return (std::min(ff.r, 255.f) + std::min(ff.g, 255.f) + std::min(ff.b, 255.f)) * (1.f / 3);
 }
 
 ColorRGBA ApplyLight(ShaderLight lights[], size_t lightsCount, const glm::quat & quat, const Vec3f & position,
