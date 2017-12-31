@@ -258,7 +258,7 @@ void ParticleSystem::Update(GameDuration delta) {
 		if(pP->isAlive()) {
 			pP->Update(delta);
 			pP->p3Velocity += m_parameters.m_gravity * fTimeSec;
-			iParticleNbAlive ++;
+			iParticleNbAlive++;
 			++i;
 		} else {
 			if(iParticleNbAlive >= m_parameters.m_nbMax) {
