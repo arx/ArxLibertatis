@@ -57,8 +57,8 @@
 /* Definitions for input/output functions passed to blast().  See below for
  * what the provided functions need to do.
  */
-typedef size_t (*blast_in)(void *how, const unsigned char **buf);
-typedef int (*blast_out)(void *how, unsigned char *buf, size_t len);
+typedef size_t (*blast_in)(void * how, const unsigned char ** buf);
+typedef int (*blast_out)(void * how, unsigned char * buf, size_t len);
 
 enum BlastResult {
 	BLAST_TRUNCATED_INPUT = 2, // ran out of input before completing decompression
@@ -90,7 +90,7 @@ enum BlastResult {
  * At the bottom of blast.c is an example program that uses blast() that can be
  * compiled to produce a command-line decompression filter by defining TEST.
  */
-BlastResult blast(blast_in infun, void *inhow, blast_out outfun, void *outhow);
+BlastResult blast(blast_in infun, void * inhow, blast_out outfun, void * outhow);
 
 // Convenience implementations.
 

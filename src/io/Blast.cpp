@@ -174,7 +174,7 @@ static int decode(state * s, huffman * h) {
 			code <<= 1;
 			len++;
 		}
-		left = (MAXBITS+1) - len;
+		left = (MAXBITS + 1) - len;
 		if(left == 0) break;
 		if(s->left == 0) {
 			s->left = s->infun(s->inhow, &(s->in));
@@ -209,7 +209,7 @@ static int construct(huffman * h, const unsigned char * rep, int n) {
 	int symbol;         /* current symbol when stepping through length[] */
 	int len;            /* current length when stepping through h->count[] */
 	int left;           /* number of possible codes left of current length */
-	short offs[MAXBITS+1];      /* offsets in symbol table for each length */
+	short offs[MAXBITS + 1];      /* offsets in symbol table for each length */
 	short length[256];  /* code lengths */
 	
 	/* convert compact repeat counts into symbol bit length list */
@@ -305,9 +305,9 @@ static BlastResult blastDecompress(state * s) {
 	int copy;           /* copy counter */
 	unsigned char * from, *to;   /* copy pointers */
 	static int virgin = 1;                              /* build tables once */
-	static short litcnt[MAXBITS+1], litsym[256];        /* litcode memory */
-	static short lencnt[MAXBITS+1], lensym[16];         /* lencode memory */
-	static short distcnt[MAXBITS+1], distsym[64];       /* distcode memory */
+	static short litcnt[MAXBITS + 1], litsym[256];        /* litcode memory */
+	static short lencnt[MAXBITS + 1], lensym[16];         /* lencode memory */
+	static short distcnt[MAXBITS + 1], distsym[64];       /* distcode memory */
 	static huffman litcode = {litcnt, litsym};   /* length code */
 	static huffman lencode = {lencnt, lensym};   /* length code */
 	static huffman distcode = {distcnt, distsym};/* distance code */
@@ -399,7 +399,7 @@ static BlastResult blastDecompress(state * s) {
 	return BLAST_SUCCESS;
 }
 
-BlastResult blast(blast_in infun, void *inhow, blast_out outfun, void *outhow) {
+BlastResult blast(blast_in infun, void * inhow, blast_out outfun, void * outhow) {
 	
 	state s;
 	
