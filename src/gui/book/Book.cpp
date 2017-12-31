@@ -129,7 +129,7 @@ void PlayerBookPage::drawActiveTab(long tabNum) {
 	DrawBookInterfaceItem(g_bookResouces.currentTab[tabNum], m_activeTabPositions[tabNum], Color::white, 0.000001f);
 }
 
-void PlayerBookPage::checkTabClick(long tabNum, long &activeTab) {
+void PlayerBookPage::checkTabClick(long tabNum, long & activeTab) {
 	if(MouseInBookRect(m_tabPositions[tabNum], Vec2f(32, 32))) {
 		UseRenderState state(render2D().blendAdditive());
 		DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], m_tabPositions[tabNum], Color::grayb(0x55), 0.000001f);
@@ -151,8 +151,7 @@ void PlayerBookPage::manageLeftTabs(long tabNum, long & activeTab) {
 	}
 }
 
-static void DrawBookTextCenter(Font* font, const Vec2f & pos, const std::string& text, Color col) {
-	
+static void DrawBookTextCenter(Font * font, const Vec2f & pos, const std::string & text, Color col) {
 	UNICODE_ARXDrawTextCenter(font, (BOOKDEC + pos) * g_sizeRatio, text, col);
 }
 
@@ -197,7 +196,7 @@ void PlayerBook::toggle() {
 	}
 	
 	if(player.Interface & INTER_COMBATMODE) {
-		player.Interface&=~INTER_COMBATMODE;
+		player.Interface &= ~INTER_COMBATMODE;
 		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 	}
 	
@@ -330,9 +329,10 @@ void PlayerBook::drawTopTabs() {
 	static const Vec2f BOOKMARKS_POS = Vec2f(216.f, 60.f);
 	
 	if(m_currentPage != BOOKMODE_STATS) {
+		
 		Vec2f pos = BOOKMARKS_POS;
 		
-		TextureContainer* tcBookmarkChar = g_bookResouces.bookmark_char;
+		TextureContainer * tcBookmarkChar = g_bookResouces.bookmark_char;
 		DrawBookInterfaceItem(tcBookmarkChar, pos, Color::white, 0.000001f);
 		
 		// Check for cursor on charcter sheet bookmark
@@ -352,6 +352,7 @@ void PlayerBook::drawTopTabs() {
 				pTextManage->Clear();
 			}
 		}
+		
 	}
 	
 	if(m_currentPage != BOOKMODE_SPELLS) {
@@ -660,20 +661,17 @@ void StatsPage::manageStats()
 		}
 	}
 	
-	//------------------------------ SEB 04/12/2001
+	
 	if(!flyover[FLYING_OVER].empty()) {
 		
 		int t = Random::get(0, 2);
-
+		
 		pTextManage->Clear();
-
+		
 		std::string toDisplay;
-
-		// Nuky Note: the text used never scrolls, centered function with wordwrap would be enough
 		if(FLYING_OVER == WND_XP) {
 			std::stringstream ss;
-			ss << flyover[WND_XP] << " " << std::setw(8) << GetXPforLevel(player.level+1)-player.xp;
-
+			ss << flyover[WND_XP] << " " << std::setw(8) << GetXPforLevel(player.level + 1) - player.xp;
 			toDisplay = ss.str();
 		} else {
 			toDisplay = flyover[FLYING_OVER];
