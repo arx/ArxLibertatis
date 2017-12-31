@@ -121,7 +121,7 @@ void RiseDeadSpell::End() {
 		if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
 			AddRandomSmoke(entity, 100);
 			Vec3f posi = entity->pos;
-			posi.y-=100.f;
+			posi.y -= 100.f;
 			MakeCoolFx(posi);
 			
 			EERIE_LIGHT * light = dynLightCreate();
@@ -184,7 +184,7 @@ void RiseDeadSpell::Update() {
 				
 				io->summoner = m_caster;
 				
-				io->ioflags|=IO_NOSAVE;
+				io->ioflags |= IO_NOSAVE;
 				m_entity = io->index();
 				io->scriptload = 1;
 				
