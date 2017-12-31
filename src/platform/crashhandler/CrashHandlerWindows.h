@@ -43,7 +43,7 @@ public:
 	
 	void handleCrash(int crashType, void * crashExtraInfo = 0, int fpeCode = 0);
 	
-	static CrashHandlerWindows& getInstance();
+	static CrashHandlerWindows & getInstance();
 	
 private:
 	
