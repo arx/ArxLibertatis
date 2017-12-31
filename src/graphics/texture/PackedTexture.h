@@ -46,7 +46,7 @@ public:
 	
 	Texture & getTexture(unsigned int index);
 	
-	unsigned int getTextureSize() const { return m_textureSize; }
+	size_t getTextureSize() const { return m_textureSize; }
 	size_t getTextureCount() const { return m_textures.size(); }
 	
 protected:
