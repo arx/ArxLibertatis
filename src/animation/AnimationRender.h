@@ -57,15 +57,15 @@ class Entity;
 struct RenderMaterial;
 struct TexturedQuad;
 
-float Cedric_GetInvisibility(Entity *io);
+float Cedric_GetInvisibility(Entity * io);
 
-void Cedric_ApplyLightingFirstPartRefactor(Entity *io);
+void Cedric_ApplyLightingFirstPartRefactor(Entity * io);
 
 void PopAllTriangleListOpaque(RenderState baseState = render3D(), bool clear = true);
 void PopAllTriangleListTransparency();
 
 void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat);
-void drawTriangle(const RenderMaterial & mat, const TexturedVertexUntransformed *vertices);
+void drawTriangle(const RenderMaterial & mat, const TexturedVertexUntransformed * vertices);
 
 struct TransformInfo {
 	
@@ -93,10 +93,10 @@ struct TransformInfo {
 
 EERIE_2D_BBOX UpdateBbox2d(const EERIE_3DOBJ & eobj);
 
-void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t);
-void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj);
+void DrawEERIEInter_ModelTransform(EERIE_3DOBJ * eobj, const TransformInfo & t);
+void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ * eobj);
 
-void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, float invisibility = 0.f);
+void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity * io, float invisibility = 0.f);
 
 void DrawEERIEInter(EERIE_3DOBJ * eobj,
                     const TransformInfo & t,
@@ -112,7 +112,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
                              Entity * io,
                              bool update_movement);
 
-void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility);
+void EERIEDrawAnimQuatRender(EERIE_3DOBJ * eobj, const Vec3f & pos, Entity * io, float invisibility);
 
 void AnimatedEntityRender(Entity * entity, float invisibility);
 

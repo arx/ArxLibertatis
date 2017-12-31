@@ -146,7 +146,7 @@ static void PopOneTriangleList(RenderState baseState, TextureContainer * _pTex, 
 
 }
 
-static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
+static void PopOneTriangleListTransparency(TextureContainer * _pTex) {
 	
 	ModelBatch & batch = _pTex->m_modelBatch;
 	
@@ -167,7 +167,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		if(batch.count[BatchBucket_Blended]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Blended],
 			                                      batch.count[BatchBucket_Blended]);
-			batch.count[BatchBucket_Blended]=0;
+			batch.count[BatchBucket_Blended] = 0;
 		}
 	}
 
@@ -176,7 +176,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		if(batch.count[BatchBucket_Additive]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Additive],
 			                                      batch.count[BatchBucket_Additive]);
-			batch.count[BatchBucket_Additive]=0;
+			batch.count[BatchBucket_Additive] = 0;
 		}
 	}
 
@@ -185,7 +185,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		if(batch.count[BatchBucket_Subtractive]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Subtractive],
 			                                      batch.count[BatchBucket_Subtractive]);
-			batch.count[BatchBucket_Subtractive]=0;
+			batch.count[BatchBucket_Subtractive] = 0;
 		}
 	}
 
@@ -233,7 +233,8 @@ void PopAllTriangleListTransparency() {
 
 extern bool EXTERNALVIEW;
 
-float Cedric_GetInvisibility(Entity *io) {
+float Cedric_GetInvisibility(Entity * io) {
+	
 	if(io) {
 		float invisibility = io->invisibility;
 
@@ -253,14 +254,16 @@ float Cedric_GetInvisibility(Entity *io) {
 	} else {
 		return 0.f;
 	}
+	
 }
 
-//TODO Move somewhere else
-void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
-
-	if(!io)
+// TODO Move somewhere else
+void Cedric_ApplyLightingFirstPartRefactor(Entity * io) {
+	
+	if(!io) {
 		return;
-
+	}
+	
 	io->special_color = Color3f::white;
 
 	float poisonpercent = 0.f;
@@ -477,25 +480,26 @@ static bool Cedric_IO_Visible(const Vec3f & pos) {
 	ARX_PROFILE_FUNC();
 	
 	if(ACTIVEBKG) {
+		
 		//TODO maybe readd this
 		//if(fartherThan(io->pos, g_camera->pos, g_camera->cdepth * 0.6f))
 		// return false;
-
+		
 		long xx = long(pos.x * ACTIVEBKG->m_mul.x);
 		long yy = long(pos.z * ACTIVEBKG->m_mul.y);
-
-		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->m_size.x-1 && yy < ACTIVEBKG->m_size.y-1) {
+		
+		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->m_size.x - 1 && yy < ACTIVEBKG->m_size.y - 1) {
 			for(short z = yy - 1; z <= yy + 1; z++)
 			for(short x = xx - 1; x <= xx + 1; x++) {
 				const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
 				if(feg.treat)
 					return true;
 			}
-
 			return false;
 		}
+		
 	}
-
+	
 	return true;
 }
 
@@ -523,7 +527,7 @@ static void Cedric_ApplyLighting(ShaderLight lights[], size_t lightsCount, EERIE
 	}
 }
 
-static EERIE_3D_BBOX UpdateBbox3d(EERIE_3DOBJ *eobj) {
+static EERIE_3D_BBOX UpdateBbox3d(EERIE_3DOBJ * eobj) {
 	
 	EERIE_3D_BBOX box3D;
 	box3D.reset();
@@ -556,7 +560,7 @@ EERIE_2D_BBOX UpdateBbox2d(const EERIE_3DOBJ & eobj) {
 	return box2D;
 }
 
-void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
+void DrawEERIEInter_ModelTransform(EERIE_3DOBJ * eobj, const TransformInfo & t) {
 	
 	arx_assert(eobj->vertexWorldPositions.size() == eobj->vertexlist.size());
 	
@@ -573,7 +577,7 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
 	}
 }
 
-void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj) {
+void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ * eobj) {
 	arx_assert(eobj->vertexClipPositions.size() == eobj->vertexWorldPositions.size());
 	for(size_t i = 0 ; i < eobj->vertexWorldPositions.size(); i++) {
 		eobj->vertexClipPositions[i] = worldToClipSpace(eobj->vertexWorldPositions[i].v);
@@ -605,7 +609,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 	
 	float mdist = g_camera->cdepth;
 	float ddist = mdist - fdist(t.pos, g_camera->m_pos);
-	ddist = ddist/mdist;
+	ddist = ddist / mdist;
 	ddist = glm::pow(ddist, 6.f);
 	ddist = glm::clamp(ddist, 0.25f, 0.9f);
 	
@@ -613,11 +617,11 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 	float _ffr[3];
 	
 	for(long o = 0; o < 3; o++) {
+		
 		Vec3f temporary3D;
 		temporary3D = t.rotation * eobj->vertexlist[face.vid[o]].norm;
-
-		float power = 255.f- glm::abs(255.f*(temporary3D.z)*( 1.0f / 2 ));
-
+		
+		float power = 255.f - glm::abs(255.f * temporary3D.z * 0.5f);
 		power = glm::clamp(power, 0.f, 255.f);
 
 		tot += power;
@@ -627,6 +631,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 		u8 lfg = u8(halo.color.g * power);
 		u8 lfb = u8(halo.color.b * power);
 		tvList[o].color = Color(lfr, lfg, lfb, 255).toRGBA();
+		
 	}
 
 	if(tot > 150.f) {
@@ -703,7 +708,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 
 extern float WATEREFFECT;
 
-void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, float invisibility) {
+void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity * io, float invisibility) {
 
 	ColorMod colorMod;
 	colorMod.updateFromEntity(io, !io);
@@ -731,14 +736,15 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 		if(face.texid < 0)
 			continue;
-
-		TextureContainer *pTex = eobj->texturecontainer[face.texid];
-		if(!pTex)
+		
+		TextureContainer * pTex = eobj->texturecontainer[face.texid];
+		if(!pTex) {
 			continue;
-
+		}
+		
 		float fTransp = 0.f;
-		TexturedVertex *tvList = GetNewVertexList(&pTex->m_modelBatch, face, invisibility, fTransp);
-
+		TexturedVertex * tvList = GetNewVertexList(&pTex->m_modelBatch, face, invisibility, fTransp);
+		
 		for(size_t n = 0; n < 3; n++) {
 
 			if(useFaceNormal) {
@@ -773,22 +779,24 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 			// TODO copy-paste
 			if(io && player.m_improve) {
+				
 				long lr = Color::fromRGBA(tvList[n].color).r;
-				float ffr=(float)(lr);
-
+				float ffr = float(lr);
+				
 				float dd = 1.f / tvList[n].w;
 
 				dd = glm::clamp(dd, 0.f, 1.f);
 
 				Vec3f & norm = eobj->vertexlist[face.vid[n]].norm;
-
-				float fb=((1.f-dd)*6.f + (glm::abs(norm.x) + glm::abs(norm.y))) * 0.125f;
-				float fr=((.6f-dd)*6.f + (glm::abs(norm.z) + glm::abs(norm.y))) * 0.125f;
-
-				if(fr < 0.f)
+				
+				float fb = ((1.f - dd) * 6.f + (glm::abs(norm.x) + glm::abs(norm.y))) * 0.125f;
+				float fr = ((0.6f - dd) * 6.f + (glm::abs(norm.z) + glm::abs(norm.y))) * 0.125f;
+				
+				if(fr < 0.f) {
 					fr = 0.f;
-				else
+				} else {
 					fr = std::max(ffr, fr * 255.f);
+				}
 				
 				fr = std::min(fr, 255.f);
 				fb = std::min(fb * 255.f, 255.f);
@@ -903,8 +911,8 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
 	float mdist = g_camera->cdepth;
 	mdist *= ( 1.0f / 2 );
 	
-	float ddist = mdist-fdist(ftrPos, g_camera->m_pos);
-	ddist = ddist/mdist;
+	float ddist = mdist - fdist(ftrPos, g_camera->m_pos);
+	ddist = ddist / mdist;
 	ddist = glm::pow(ddist, 6.f);
 	ddist = glm::clamp(ddist, 0.25f, 0.9f);
 	
@@ -1043,18 +1051,20 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 	}
 }
 
-static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io, const Vec3f & pos, float invisibility) {
+static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
+                                const Vec3f & pos, float invisibility) {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(invisibility == 1.f)
+	if(invisibility == 1.f) {
 		return;
-
-	Entity *use_io = io;
-
-	if(!io && IN_BOOK_DRAW && eobj == entities.player()->obj)
+	}
+	
+	Entity * use_io = io;
+	if(!io && IN_BOOK_DRAW && eobj == entities.player()->obj) {
 		use_io = entities.player();
-
+	}
+	
 	HaloInfo haloInfo;
 	if(use_io) {
 		if(use_io == entities.player()) {
@@ -1094,15 +1104,16 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 
 		if(face.texid < 0)
 			continue;
-
-		TextureContainer *pTex = eobj->texturecontainer[face.texid];
-		if(!pTex)
+		
+		TextureContainer * pTex = eobj->texturecontainer[face.texid];
+		if(!pTex) {
 			continue;
-
+		}
+		
 		float fTransp = 0.f;
-
-		TexturedVertex *tvList = GetNewVertexList(&pTex->m_modelBatch, face, invisibility, fTransp);
-
+		
+		TexturedVertex * tvList = GetNewVertexList(&pTex->m_modelBatch, face, invisibility, fTransp);
+		
 		for(size_t n = 0; n < 3; n++) {
 			tvList[n].p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
 			tvList[n].w = eobj->vertexClipPositions[face.vid[n]].w;
@@ -1129,10 +1140,10 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos,
                                            Entity * io, float invisibility) {
 	
-	Skeleton *obj = eobj->m_skeleton;
-	
-	if(!obj)
+	Skeleton * obj = eobj->m_skeleton;
+	if(!obj) {
 		return;
+	}
 	
 	ColorMod colorMod;
 	colorMod.updateFromEntity(io);
@@ -1260,16 +1271,17 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 	std::vector<unsigned char> grps(obj->bones.size());
 
 	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
-
+		
 		AnimLayer & layer = animlayer[count];
-
-		if(!layer.cur_anim)
+		if(!layer.cur_anim) {
 			continue;
-
-		EERIE_ANIM *eanim = layer.cur_anim->anims[layer.altidx_cur];
-		if(!eanim)
+		}
+		
+		EERIE_ANIM * eanim = layer.cur_anim->anims[layer.altidx_cur];
+		if(!eanim) {
 			continue;
-
+		}
+		
 		if(layer.currentFrame < 0) {
 			layer.currentFrame = 0;
 			layer.currentInterpolation = 0.f;
@@ -1290,8 +1302,8 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 			if(grps[j])
 				continue;
 
-			const EERIE_GROUP & sGroup = eanim->groups[j+(layer.currentFrame*eanim->nb_groups)];
-			const EERIE_GROUP & eGroup = eanim->groups[j+(layer.currentFrame*eanim->nb_groups)+eanim->nb_groups];
+			const EERIE_GROUP & sGroup = eanim->groups[j + (layer.currentFrame * eanim->nb_groups)];
+			const EERIE_GROUP & eGroup = eanim->groups[j + (layer.currentFrame * eanim->nb_groups) + eanim->nb_groups];
 
 			if(!eanim->voidgroups[j])
 				grps[j] = 1;
@@ -1550,7 +1562,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 	}
 }
 
-void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility) {
+void EERIEDrawAnimQuatRender(EERIE_3DOBJ * eobj, const Vec3f & pos, Entity * io, float invisibility) {
 	
 	ARX_PROFILE_FUNC();
 	
