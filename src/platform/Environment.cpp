@@ -88,11 +88,10 @@ std::string expandEnvironmentVariables(const std::string & in) {
 	
 	std::ostringstream oss;
 	for(size_t i = 0; i < p.we_wordc; i++) {
-		
 		oss << p.we_wordv[i];
-		
-		if(i != (p.we_wordc-1))
+		if(i != p.we_wordc - 1) {
 			oss << " ";
+		}
 	}
 	
 	wordfree(&p);
