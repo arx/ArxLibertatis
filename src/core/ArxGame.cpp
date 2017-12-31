@@ -1365,7 +1365,7 @@ void ArxGame::speechControlledCinematic() {
 	/////////////////////////////////////////////
 	// Now checks for speech controlled cinematic
 
-	long valid=-1;
+	long valid = -1;
 
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		if(aspeech[i].exist && aspeech[i].cine.type > 0) {
@@ -1477,7 +1477,7 @@ void ArxGame::speechControlledCinematic() {
 							targetpos = acs.pos2;
 						}
 						
-						float distance = (acs.startpos * itime + acs.endpos * rtime) * (1.0f/100);
+						float distance = (acs.startpos * itime + acs.endpos * rtime) * 0.01f;
 						Vec3f vect = sourcepos - targetpos;
 						Vec3f vect2 = VRotateY(vect, 90.f);;
 						vect2 = glm::normalize(vect2);
@@ -1512,10 +1512,12 @@ void ArxGame::speechControlledCinematic() {
 extern GameDuration DeadTime;
 
 void ArxGame::handlePlayerDeath() {
+	
 	if(player.lifePool.current <= 0) {
+		
 		DeadTime += g_gameTime.lastFrameDuration();
-		float mdist = glm::abs(player.physics.cyl.height)-60;
-
+		float mdist = glm::abs(player.physics.cyl.height) - 60;
+		
 		float startDistance = 40.f;
 
 		GameDuration startTime = GameDurationMs(2000);
@@ -1535,7 +1537,9 @@ void ArxGame::handlePlayerDeath() {
 		
 		EXTERNALVIEW = true;
 		BLOCK_PLAYER_CONTROLS = true;
+		
 	}
+	
 }
 
 void ArxGame::updateActiveCamera() {
@@ -1714,11 +1718,12 @@ void ArxGame::updateLevel() {
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
-		Entity *entity = entities[handle];
-
-		if(!entity)
+		
+		Entity * entity = entities[handle];
+		if(!entity) {
 			continue;
-
+		}
+		
 		if(entity->ignition > 0.f || (entity->ioflags & IO_FIERY))
 			ManageIgnition(entity);
 
