@@ -83,7 +83,7 @@ enum EquipmentModifierType {
 };
 
 enum EquipmentModifierFlag {
-	IO_ELEMENT_FLAG_PERCENT = (1<<0)
+	IO_ELEMENT_FLAG_PERCENT = 1 << 0
 };
 DECLARE_FLAGS(EquipmentModifierFlag, EquipmentModifierFlags)
 DECLARE_FLAGS_OPERATORS(EquipmentModifierFlags)
