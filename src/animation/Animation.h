@@ -111,14 +111,14 @@ struct ANIM_HANDLE {
 
 // Animation playing flags
 enum AnimUseTypeFlag {
-	EA_LOOP       = (1<<0), // Must be looped at end (indefinitely...)
-	EA_REVERSE    = (1<<1), // Is played reversed (from end to start)
-	EA_PAUSED     = (1<<2), // Is paused
-	EA_ANIMEND    = (1<<3), // Has just finished
-	EA_STATICANIM = (1<<4), // Is a static Anim (no movement offset returned).
-	EA_STOPEND    = (1<<5), // Must Be Stopped at end.
-	EA_FORCEPLAY  = (1<<6), // User controlled... MUST be played...
-	EA_EXCONTROL  = (1<<7) // ctime externally set, no update.
+	EA_LOOP       = 1 << 0, // Must be looped at end (indefinitely...)
+	EA_REVERSE    = 1 << 1, // Is played reversed (from end to start)
+	EA_PAUSED     = 1 << 2, // Is paused
+	EA_ANIMEND    = 1 << 3, // Has just finished
+	EA_STATICANIM = 1 << 4, // Is a static Anim (no movement offset returned).
+	EA_STOPEND    = 1 << 5, // Must Be Stopped at end.
+	EA_FORCEPLAY  = 1 << 6, // User controlled... MUST be played...
+	EA_EXCONTROL  = 1 << 7  // ctime externally set, no update.
 };
 DECLARE_FLAGS(AnimUseTypeFlag, AnimUseType)
 DECLARE_FLAGS_OPERATORS(AnimUseType)
@@ -198,7 +198,7 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim);
 ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const res::path & path);
 ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path);
 
-void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io);
+void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io);
 void ResetAnim(AnimLayer & layer);
 
 void AcquireLastAnim(Entity * io);
