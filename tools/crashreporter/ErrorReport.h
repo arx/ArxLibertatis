@@ -22,13 +22,11 @@
 
 #include <vector>
 
-// BOOST
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
 #include <boost/scope_exit.hpp>
 
-// Qt
 #include <QString>
 #include <QList>
 #include <QDateTime>
@@ -42,20 +40,23 @@ class ErrorReport {
 public:
 	
 	class IProgressNotifier {
+		
 	public:
-		virtual void taskStarted(const QString& taskDescription, int numSteps) = 0;
-		virtual void taskStepStarted(const QString& taskStepDescription) = 0;
+		
+		virtual void taskStarted(const QString & taskDescription, int numSteps) = 0;
+		virtual void taskStepStarted(const QString & taskStepDescription) = 0;
 		virtual void taskStepEnded() = 0;
-		virtual void setError(const QString& strError) = 0;
-		virtual void setDetailedError(const QString& strDetailedError) = 0;
+		virtual void setError(const QString & strError) = 0;
+		virtual void setDetailedError(const QString & strDetailedError) = 0;
+		
 	};
-
+	
 	struct File {
 		
 		fs::path path;
 		bool attachToReport;
 		
-		File(const fs::path _path, bool _attach) {
+		File(const fs::path & _path, bool _attach) {
 			path = _path;
 			attachToReport = _attach;
 		}
@@ -68,26 +69,26 @@ public:
 	
 	explicit ErrorReport(const QString & sharedMemoryName);
 	
-	bool GenerateReport(IProgressNotifier* progressNotifier);
-	bool SendReport(IProgressNotifier* progressNotifier);
-
-	FileList& GetAttachedFiles();
-
-	const QString& GetErrorDescription() const;
-	const QString& GetIssueLink() const;
+	bool GenerateReport(IProgressNotifier * progressNotifier);
+	bool SendReport(IProgressNotifier * progressNotifier);
+	
+	FileList & GetAttachedFiles();
+	
+	const QString & GetErrorDescription() const;
+	const QString & GetIssueLink() const;
 	
 	const QList<QString> & getFailedFiles() const { return m_failedFiles; }
-
-	void SetLoginInfo(const QString& username, const QString& password);
-	void SetReproSteps(const QString& reproSteps);
-
+	
+	void SetLoginInfo(const QString & username, const QString & password);
+	void SetReproSteps(const QString & reproSteps);
+	
 private:
 	
 	bool Initialize();
-
+	
 	void getCrashInfo();
-
-	void AddFile(const fs::path& fileName);
+	
+	void AddFile(const fs::path & fileName);
 	
 	void ReleaseApplicationLock();
 	

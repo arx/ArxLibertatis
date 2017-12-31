@@ -23,7 +23,6 @@
 
 #include <algorithm>
 
-// Qt
 #include <QApplication>
 #include <QMessageBox>
 #include <QDesktopWidget>
@@ -41,7 +40,6 @@
 #include <QWindow>
 #endif
 
-// Boost
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 
 #include "Configure.h"
@@ -59,16 +57,16 @@
 
 #include "util/String.h"
 
-ErrorReport::ErrorReport(const QString& sharedMemoryName)
+ErrorReport::ErrorReport(const QString & sharedMemoryName)
 	: m_SharedMemoryName(sharedMemoryName)
 	, m_pCrashInfo()
 	, m_Username("CrashBot")
 	, m_Password("WbAtVjS9")
 {
-#if ARX_HAVE_PRCTL && defined(DEBUG)
+	#if ARX_HAVE_PRCTL && defined(DEBUG)
 	// Allow debuggers to be attached to this process, for development purpose...
 	prctl(PR_SET_PTRACER, 1, 0, 0, 0);
-#endif
+	#endif
 }
 
 bool ErrorReport::Initialize() {
@@ -82,7 +80,7 @@ bool ErrorReport::Initialize() {
 		m_MemoryMappedRegion = boost::interprocess::mapped_region(m_SharedMemory, boost::interprocess::read_write);
 		
 		// Our SharedCrashInfo will be stored in this shared memory.
-		m_pCrashInfo = (CrashInfo*)m_MemoryMappedRegion.get_address();
+		m_pCrashInfo = static_cast<CrashInfo *>(m_MemoryMappedRegion.get_address());
 		
 		#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		if(m_pCrashInfo->window) {
@@ -137,23 +135,21 @@ void ErrorReport::getCrashInfo() {
 	
 }
 
-bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifier)
-{
-	ErrorReport* report = this;
-	BOOST_SCOPE_EXIT((report))
-	{
+bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier * pProgressNotifier) {
+	
+	ErrorReport * report = this;
+	BOOST_SCOPE_EXIT((report)) {
 		// Allow the crashed process to exit
 		report->ReleaseApplicationLock();
 	} BOOST_SCOPE_EXIT_END
-
+	
 	pProgressNotifier->taskStarted("Generating crash report", 3);
 	
 	// Initialize shared memory
 	pProgressNotifier->taskStepStarted("Connecting to crashed application");
 	bool bInit = Initialize();
 	pProgressNotifier->taskStepEnded();
-	if(!bInit)
-	{
+	if(!bInit) {
 		pProgressNotifier->setError("Could not prepare the crash report.");
 		pProgressNotifier->setDetailedError(m_DetailedError);
 		return false;
@@ -179,7 +175,7 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	return true;
 }
 
-bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier) {
+bool ErrorReport::SendReport(ErrorReport::IProgressNotifier * pProgressNotifier) {
 	
 	int nbFilesToSend = 0;
 	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) {
@@ -197,8 +193,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier) 
 	pProgressNotifier->taskStepStarted("Connecting to the bug tracker");
 	bool bLoggedIn = server.login(m_Username, m_Password);
 	pProgressNotifier->taskStepEnded();
-	if(!bLoggedIn)
-	{
+	if(!bLoggedIn) {
 		pProgressNotifier->setError("Could not connect to the bug tracker");
 		pProgressNotifier->setDetailedError(server.getErrorString());
 		return false;
@@ -244,30 +239,24 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier) 
 		server.setOperatingSystem(issue_id, os_id);
 		
 		// Set Architecture
-		int arch_id;
-		if(m_ProcessArchitecture == ARX_ARCH_X86_64)
+		int arch_id = TBG::Server::Arch_Other;
+		if(m_ProcessArchitecture == ARX_ARCH_X86_64) {
 			arch_id = TBG::Server::Arch_Amd64;
-		else if(m_ProcessArchitecture == ARX_ARCH_X86)
+		} else if(m_ProcessArchitecture == ARX_ARCH_X86) {
 			arch_id = TBG::Server::Arch_x86;
-		else
-			arch_id = TBG::Server::Arch_Other;
+		}
 		server.setArchitecture(issue_id, arch_id);
-
+		
 		pProgressNotifier->taskStepEnded();
-	}
-	else
-	{
-		if(!m_ReproSteps.isEmpty())
-		{
-			pProgressNotifier->taskStepStarted("Duplicate issue found, adding information");
-			bool bCommentAdded = server.addComment(issue_id, m_ReproSteps);
-			pProgressNotifier->taskStepEnded();
-			if(!bCommentAdded)
-			{
-				pProgressNotifier->setError("Failure occured when trying to add information to an existing issue");
-				pProgressNotifier->setDetailedError(server.getErrorString());
-				return false;
-			}
+		
+	} else if(!m_ReproSteps.isEmpty()) {
+		pProgressNotifier->taskStepStarted("Duplicate issue found, adding information");
+		bool bCommentAdded = server.addComment(issue_id, m_ReproSteps);
+		pProgressNotifier->taskStepEnded();
+		if(!bCommentAdded) {
+			pProgressNotifier->setError("Failure occured when trying to add information to an existing issue");
+			pProgressNotifier->setDetailedError(server.getErrorString());
+			return false;
 		}
 	}
 	
@@ -276,13 +265,15 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier) 
 	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) {
 		
 		// Ignore files that were removed by the user.
-		if(!it->attachToReport)
+		if(!it->attachToReport) {
 			continue;
-
+		}
+		
 		// One more check to verify that the file still exists.
-		if(!fs::exists(it->path))
+		if(!fs::exists(it->path)) {
 			continue;
-
+		}
+		
 		pProgressNotifier->taskStepStarted(QString("Sending file \"%1\"").arg(it->path.filename().c_str()));
 		QString path = it->path.parent().string().c_str();
 		QString file = it->path.string().c_str();
@@ -308,43 +299,42 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier) 
 }
 
 void ErrorReport::ReleaseApplicationLock() {
+	
 	if(m_pCrashInfo) {
 		// Kill the original, busy-waiting process.
 		platform::killProcess(m_pCrashInfo->processorProcessId);
 		m_pCrashInfo->exitLock.post();
 		platform::killProcess(m_pCrashInfo->processId);
 	}
+	
 }
 
-void ErrorReport::AddFile(const fs::path& fileName)
-{
+void ErrorReport::AddFile(const fs::path & fileName) {
+	
 	// Do not include files that can't be found, and empty files...
-	if(fs::exists(fileName) && fs::file_size(fileName) != 0)
+	if(fs::exists(fileName) && fs::file_size(fileName) != 0) {
 		m_AttachedFiles.push_back(File(fileName, true));
+	}
+	
 }
 
-ErrorReport::FileList& ErrorReport::GetAttachedFiles()
-{
+ErrorReport::FileList & ErrorReport::GetAttachedFiles() {
 	return m_AttachedFiles;
 }
 
-const QString& ErrorReport::GetErrorDescription() const
-{
+const QString & ErrorReport::GetErrorDescription() const {
 	return m_ReportDescription;
 }
 
-const QString& ErrorReport::GetIssueLink() const
-{
+const QString & ErrorReport::GetIssueLink() const {
 	return m_IssueLink;
 }
 
-void ErrorReport::SetLoginInfo(const QString& username, const QString& password)
-{
+void ErrorReport::SetLoginInfo(const QString & username, const QString & password) {
 	m_Username = username;
 	m_Password = password;
 }
 
-void ErrorReport::SetReproSteps(const QString& reproSteps)
-{
+void ErrorReport::SetReproSteps(const QString & reproSteps) {
 	m_ReproSteps = reproSteps;
 }
