@@ -23,187 +23,177 @@
 
 #include "platform/Platform.h"
 
-ScreenshotWidget::ScreenshotWidget(QWidget *parent) : QWidget(parent)
-{
-}
+ScreenshotWidget::ScreenshotWidget(QWidget * parent) : QWidget(parent) { }
 
-bool ScreenshotWidget::load(const QString& fileName)
-{
+bool ScreenshotWidget::load(const QString & fileName) {
 	return m_pixmap.load(fileName);
 }
 
-void ScreenshotWidget::setPixmap(const QPixmap& pixmap)
-{
+void ScreenshotWidget::setPixmap(const QPixmap & pixmap) {
 	m_pixmap = pixmap;
 }
 
-void ScreenshotWidget::paintEvent(QPaintEvent * event)
-{
+void ScreenshotWidget::paintEvent(QPaintEvent * event) {
+	
 	ARX_UNUSED(event);
+	
 	QPainter p(this);
 	p.setRenderHint(QPainter::SmoothPixmapTransform);
-
+	
 	QPixmap scaledPixmap = m_pixmap.scaled(size(), Qt::KeepAspectRatio);
 	p.drawPixmap(0, 0, scaledPixmap);
+	
 }
 
-ErrorReportDialog::ErrorReportDialog(ErrorReport& errorReport, QWidget *parent) :
-	QDialog(parent),
-	ui(new Ui::ErrorReportDialog),
-	m_pCurrentTask(0),
-	m_errorReport(errorReport)
+ErrorReportDialog::ErrorReportDialog(ErrorReport & errorReport, QWidget * parent)
+	: QDialog(parent)
+	, ui(new Ui::ErrorReportDialog)
+	, m_pCurrentTask(0)
+	, m_errorReport(errorReport)
 {
+	
 	ui->setupUi(this);
-
+	
 	ui->stackedWidget->setCurrentIndex(0);
 	ui->lblProgressTitle->setText("");
 	ui->progressBar->setMaximum(0);
 	ui->progressBar->setValue(0);
-
-	ErrorReportFileListModel* model = new ErrorReportFileListModel(errorReport, ui->listFiles);
-	QItemSelectionModel* selectionModel = new QItemSelectionModel(model);
-
+	
+	ErrorReportFileListModel * model = new ErrorReportFileListModel(errorReport, ui->listFiles);
+	QItemSelectionModel * selectionModel = new QItemSelectionModel(model);
+	
 	ui->listFiles->setModel(model);
 	ui->listFiles->setSelectionModel(selectionModel);
 	ui->listFiles->setSelectionMode(QAbstractItemView::SingleSelection);
 	connect(ui->listFiles->selectionModel(), SIGNAL(selectionChanged (const QItemSelection &, const QItemSelection &)),
 	        this, SLOT(onShowFileContent(const QItemSelection &, const QItemSelection &)));
-
+	
 	m_fileViewHex.setAsciiArea(false);
 	m_fileViewHex.setReadOnly(true);
 	m_fileViewHex.setAddressArea(false);
-
+	
 	ui->pageImage->layout()->addWidget(&m_fileViewImage);
 	ui->pageBinary->layout()->addWidget(&m_fileViewHex);
-
+	
 	startTask(new GatherInfoTask(m_errorReport), Pane_Welcome);
 	
 	setWindowIcon(QApplication::windowIcon());
 }
 
-ErrorReportDialog::~ErrorReportDialog()
-{
+ErrorReportDialog::~ErrorReportDialog() {
 	delete ui;
 }
 
-void ErrorReportDialog::onBack()
-{
+void ErrorReportDialog::onBack() {
 	ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex() - 1);
 }
 
-void ErrorReportDialog::onNext()
-{
+void ErrorReportDialog::onNext() {
 	ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex() + 1);
 }
 
-void ErrorReportDialog::onSend()
-{
-	if(!ui->lineEditUsername->text().isEmpty())
+void ErrorReportDialog::onSend() {
+	
+	if(!ui->lineEditUsername->text().isEmpty()) {
 		m_errorReport.SetLoginInfo(ui->lineEditUsername->text(), ui->lineEditPassword->text());
-
+	}
 	m_errorReport.SetReproSteps(ui->textEditReproSteps->toPlainText());
+	
 	startTask(new SendReportTask(m_errorReport), Pane_ExitSuccess);
+	
 }
 
-void ErrorReportDialog::onPaneChanged(int index)
-{
-	switch(index)
-	{
-	case Pane_Progress:
-	{
-		ui->btnBack->setEnabled(false);
-		ui->btnNext->setEnabled(false);
-		ui->btnSend->setEnabled(false);
-		break;
-	}
-
-	case Pane_Welcome:
-	{
-		ui->btnBack->setEnabled(false);
-		ui->btnNext->setEnabled(true);
-		ui->btnSend->setEnabled(false);
-		break;
-	}
-
-	case Pane_CrashDetails:
-	{
-		ui->btnBack->setEnabled(true);
-		ui->btnNext->setEnabled(true);
-		ui->btnSend->setEnabled(false);
-		ui->textEditErrorDescription->setText(m_errorReport.GetErrorDescription());
-		break;
-	}
-
-	case Pane_AttachedFiles:
-	{
-		ui->btnBack->setEnabled(true);
-		ui->btnNext->setEnabled(true);
-		ui->btnSend->setEnabled(false);
-		QModelIndex idx = ui->listFiles->model()->index(0, 0);
-		if(idx.isValid()) {
-			ui->listFiles->selectionModel()->select(idx, QItemSelectionModel::ClearAndSelect);
+void ErrorReportDialog::onPaneChanged(int index) {
+	
+	switch(index) {
+		
+		case Pane_Progress: {
+			ui->btnBack->setEnabled(false);
+			ui->btnNext->setEnabled(false);
+			ui->btnSend->setEnabled(false);
+			break;
 		}
-		break;
-	}
-
-	case Pane_ReproSteps:
-	{
-		ui->btnBack->setEnabled(true);
-		ui->btnNext->setEnabled(true);
-		ui->btnSend->setEnabled(false);
-		break;
-	}
-
-	case Pane_Send:
-	{
-		ui->btnBack->setEnabled(true);
-		ui->btnNext->setEnabled(false);
-		ui->btnSend->setEnabled(true);
-		break;
-	}
-
-	case Pane_ExitSuccess:
-	case Pane_ExitError:
-	{
-		ui->btnBack->setEnabled(false);
-		ui->btnNext->setEnabled(false);
-		ui->btnSend->setEnabled(false);
-		ui->btnClose->setEnabled(true);
-		break;
+		
+		case Pane_Welcome: {
+			ui->btnBack->setEnabled(false);
+			ui->btnNext->setEnabled(true);
+			ui->btnSend->setEnabled(false);
+			break;
+		}
+		
+		case Pane_CrashDetails: {
+			ui->btnBack->setEnabled(true);
+			ui->btnNext->setEnabled(true);
+			ui->btnSend->setEnabled(false);
+			ui->textEditErrorDescription->setText(m_errorReport.GetErrorDescription());
+			break;
+		}
+		
+		case Pane_AttachedFiles: {
+			ui->btnBack->setEnabled(true);
+			ui->btnNext->setEnabled(true);
+			ui->btnSend->setEnabled(false);
+			QModelIndex idx = ui->listFiles->model()->index(0, 0);
+			if(idx.isValid()) {
+				ui->listFiles->selectionModel()->select(idx, QItemSelectionModel::ClearAndSelect);
+			}
+			break;
+		}
+		
+		case Pane_ReproSteps: {
+			ui->btnBack->setEnabled(true);
+			ui->btnNext->setEnabled(true);
+			ui->btnSend->setEnabled(false);
+			break;
+		}
+		
+		case Pane_Send: {
+			ui->btnBack->setEnabled(true);
+			ui->btnNext->setEnabled(false);
+			ui->btnSend->setEnabled(true);
+			break;
+		}
+		
+		case Pane_ExitSuccess:
+		case Pane_ExitError: {
+			ui->btnBack->setEnabled(false);
+			ui->btnNext->setEnabled(false);
+			ui->btnSend->setEnabled(false);
+			ui->btnClose->setEnabled(true);
+			break;
+		}
+		
+		default: ARX_DEAD_CODE();
+		
 	}
 	
-	default:
-		ARX_DEAD_CODE();
-	}
 }
 
-void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, const QItemSelection & oldSelection)
-{
+void ErrorReportDialog::onShowFileContent(const QItemSelection & newSelection,
+                                          const QItemSelection & oldSelection) {
+	
 	ARX_UNUSED(oldSelection);
 	const QModelIndexList selectedIndexes = newSelection.indexes();
-	if(selectedIndexes.empty())
+	if(selectedIndexes.empty()) {
 		return;
-
+	}
+	
 	const QModelIndex selectedIndex = selectedIndexes.at(0);
-	if(!selectedIndex.isValid())
+	if(!selectedIndex.isValid()) {
 		return;
+	}
 	
 	fs::path fileName = m_errorReport.GetAttachedFiles()[selectedIndex.row()].path;
 	QString ext = fileName.ext().c_str();
-	if(ext == ".txt" || ext == ".log" || ext == ".ini" || ext == ".xml")
-	{
+	if(ext == ".txt" || ext == ".log" || ext == ".ini" || ext == ".xml") {
 		QFile textFile(fileName.string().c_str());
 		textFile.open(QIODevice::ReadOnly | QIODevice::Text);
 		ui->fileViewText->setText(QString::fromUtf8(textFile.readAll()));
 		ui->stackedFileViews->setCurrentIndex(0);
-	}
-	else if(ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".png" || ext == ".gif")
-	{
+	} else if(ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".png" || ext == ".gif") {
 		m_fileViewImage.load(fileName.string().c_str());
 		ui->stackedFileViews->setCurrentIndex(1);
-	}
-	else
-	{
+	} else {
 		QFile binaryFile(fileName.string().c_str());
 		binaryFile.open(QIODevice::ReadOnly);
 		if(binaryFile.size() > 20 * 1024 * 1024) {
@@ -213,10 +203,10 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 		m_fileViewHex.setData(binaryFile.readAll());
 		ui->stackedFileViews->setCurrentIndex(2);
 	}
+	
 }
 
-void ErrorReportDialog::onTaskStarted(const QString& taskDescription, int numSteps)
-{
+void ErrorReportDialog::onTaskStarted(const QString & taskDescription, int numSteps) {
 	ui->lblProgressTitle->setText(taskDescription);
 	ui->progressBar->setMaximum(numSteps);
 	ui->progressBar->setValue(0);
@@ -229,15 +219,14 @@ void ErrorReportDialog::onTaskStepStarted(const QString & taskStepDescription) {
 	ui->lblProgressDescription->setText(textDescription);
 }
 
-void ErrorReportDialog::onTaskStepEnded()
-{
+void ErrorReportDialog::onTaskStepEnded() {
 	ui->progressBar->setValue(ui->progressBar->value() + 1);
 }
 
-void ErrorReportDialog::onTaskCompleted()
-{
-	if(m_pCurrentTask->getErrorString().isEmpty())
-	{
+void ErrorReportDialog::onTaskCompleted() {
+	
+	if(m_pCurrentTask->getErrorString().isEmpty()) {
+		
 		QString link = m_errorReport.GetIssueLink();
 		QString prefix = "https://bugs.arx-libertatis.org/arx/issues/";
 		if(link.startsWith(prefix)) {
@@ -258,51 +247,46 @@ void ErrorReportDialog::onTaskCompleted()
 		}
 		
 		ui->stackedWidget->setCurrentIndex(m_nextPane);
-	}
-	else
-	{
+		
+	} else {
 		ui->lblExitFail->setText(m_pCurrentTask->getErrorString());
 		ui->lblExitFailDetails->setText(m_pCurrentTask->getDetailedErrorString());
 		ui->stackedWidget->setCurrentIndex(Pane_ExitError);
 	}
-
+	
 	m_pCurrentTask->deleteLater();
 	m_pCurrentTask = 0;
+	
 }
 
-void ErrorReportDialog::startTask(CrashReportTask* pTask, int nextPane)
-{
-	if(m_pCurrentTask)
+void ErrorReportDialog::startTask(CrashReportTask * pTask, int nextPane) {
+	
+	if(m_pCurrentTask) {
 		m_pCurrentTask->deleteLater();
-
+	}
+	
 	m_pCurrentTask = pTask;
-
-	connect(m_pCurrentTask, SIGNAL(taskStarted(const QString&, int)), SLOT(onTaskStarted(const QString&, int)));
-	connect(m_pCurrentTask, SIGNAL(taskStepStarted(const QString&)), SLOT(onTaskStepStarted(const QString&)));
+	
+	connect(m_pCurrentTask, SIGNAL(taskStarted(const QString &, int)), SLOT(onTaskStarted(const QString &, int)));
+	connect(m_pCurrentTask, SIGNAL(taskStepStarted(const QString &)), SLOT(onTaskStepStarted(const QString &)));
 	connect(m_pCurrentTask, SIGNAL(taskStepEnded()), SLOT(onTaskStepEnded()));
 	connect(m_pCurrentTask, SIGNAL(finished()), SLOT(onTaskCompleted()));
-
+	
 	ui->stackedWidget->setCurrentIndex(Pane_Progress);
 	m_nextPane = nextPane;
-
+	
 	m_pCurrentTask->start();
 }
 
-GatherInfoTask::GatherInfoTask(ErrorReport& errorReport) : CrashReportTask(errorReport, 0)
-{
-}
+GatherInfoTask::GatherInfoTask(ErrorReport & errorReport) : CrashReportTask(errorReport, 0) { }
 
-void GatherInfoTask::run()
-{
+void GatherInfoTask::run() {
 	m_errorReport.GenerateReport(this);
 }
 
-SendReportTask::SendReportTask(ErrorReport& errorReport) : CrashReportTask(errorReport, 0)
-{
-}
+SendReportTask::SendReportTask(ErrorReport & errorReport) : CrashReportTask(errorReport, 0) { }
 
-void SendReportTask::run()
-{
+void SendReportTask::run() {
 	// Send mail
 	m_errorReport.SendReport(this);
 }
