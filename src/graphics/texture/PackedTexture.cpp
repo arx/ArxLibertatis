@@ -80,8 +80,7 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::insertImage(const
 	return node;
 }
 
-bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex,
-                                Vec2i & offset) {
+bool PackedTexture::insertImage(const Image & image, size_t & textureIndex, Vec2i & offset) {
 	
 	// Validate image size
 	if(image.getWidth() > m_textureSize || image.getHeight() > m_textureSize) {
@@ -90,7 +89,7 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
 	
 	// Copy to one of the existing textures
 	TextureTree::Node * node = NULL;
-	unsigned int nodeTree = 0;
+	size_t nodeTree = 0;
 	
 	for(size_t i = 0; i < m_textures.size(); i++) {
 		node = m_textures[i]->insertImage(image);
@@ -125,7 +124,7 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
 	return node != NULL;
 }
 
-Texture & PackedTexture::getTexture(unsigned int index) {
+Texture & PackedTexture::getTexture(size_t index) {
 	arx_assert(index < m_textures.size());
 	arx_assert(m_textures[index]->texture);
 	return *m_textures[index]->texture;

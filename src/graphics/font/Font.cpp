@@ -288,7 +288,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 	FT_UInt prevGlyphIndex = 0;
 	FT_Pos prevRsbDelta = 0;
 
-	typedef std::map< unsigned int, std::vector<TexturedVertex> > MapTextureVertices;
+	typedef std::map< size_t, std::vector<TexturedVertex> > MapTextureVertices;
 	MapTextureVertices mapTextureVertices;
 	
 	for(text_iterator it = start; it != end; ) {
