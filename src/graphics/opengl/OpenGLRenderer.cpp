@@ -646,7 +646,7 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 
 void OpenGLRenderer::SetFogColor(Color color) {
 	Color4f colorf = color.to<float>();
-	GLfloat fogColor[4]= {colorf.r, colorf.g, colorf.b, colorf.a};
+	GLfloat fogColor[4] = { colorf.r, colorf.g, colorf.b, colorf.a };
 	glFogfv(GL_FOG_COLOR, fogColor);
 }
 
