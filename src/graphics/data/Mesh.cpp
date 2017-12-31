@@ -500,7 +500,7 @@ float PtIn2DPolyProj(const std::vector<Vec4f> & verts, EERIE_FACE * ef, float x,
 	
 	for(size_t i = 0, j = 2; i < 3; j = i++) {
 		if(((p[i].y <= z && z < p[j].y) || (p[j].y <= z && z < p[i].y))
-		   && x < (p[j].x - p[i].x) *(z - p[i].y) / (p[j].y - p[i].y) + p[i].x) {
+		   && x < (p[j].x - p[i].x) * (z - p[i].y) / (p[j].y - p[i].y) + p[i].x) {
 			c = !c;
 		}
 	}
@@ -698,7 +698,7 @@ void EERIEPOLY_Compute_PolyIn() {
 	
 	for(long z = 0; z < ACTIVEBKG->m_size.y; z++)
 	for(long x = 0; x < ACTIVEBKG->m_size.x; x++) {
-		BackgroundTileData *eg = &ACTIVEBKG->m_tileData[x][z];
+		BackgroundTileData * eg = &ACTIVEBKG->m_tileData[x][z];
 		
 		free(eg->polyin);
 		eg->polyin = NULL;
@@ -718,10 +718,10 @@ void EERIEPOLY_Compute_PolyIn() {
 		
 		for(long z2 = minz; z2 < maxz; z2++)
 		for(long x2 = minx; x2 < maxx; x2++) {
-			BackgroundTileData *eg2 = &ACTIVEBKG->m_tileData[x2][z2];
+			BackgroundTileData * eg2 = &ACTIVEBKG->m_tileData[x2][z2];
 			
 			for(long l = 0; l < eg2->nbpoly; l++) {
-				EERIEPOLY *ep2 = &eg2->polydata[l];
+				EERIEPOLY * ep2 = &eg2->polydata[l];
 				
 				if(fartherThan(bbcenter, Vec2f(ep2->center.x, ep2->center.z), 120.f))
 					continue;
@@ -839,10 +839,12 @@ long CountBkgVertex() {
 	return count;
 }
 
-void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, const Color4f & coll, RenderMaterial mat)
-{
-	if(!eobj)
+void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos,
+                  const Vec3f & scale, const Color4f & coll, RenderMaterial mat) {
+	
+	if(!eobj) {
 		return;
+	}
 	
 	TexturedVertex vert_list[3];
 	

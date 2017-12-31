@@ -152,7 +152,7 @@ void ClearBackground(BackgroundData * eb);
 void InitBkg(BackgroundData * eb, short sx, short sz, Vec2s tileSize);
 //****************************************************************************
 
-long MakeTopObjString(Entity * io, std::string& dest);
+long MakeTopObjString(Entity * io, std::string & dest);
 
 Vec2f getWaterFxUvOffset(float watereffect, const Vec3f & odtv);
 
