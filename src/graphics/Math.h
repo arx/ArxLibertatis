@@ -88,7 +88,7 @@ inline u8 clipByte255(int value) {
 inline u8 clipByte(int value) {
 	
 	// clamp negative values to zero
-	value &= -(int)!(value < 0);
+	value &= -int(!(value < 0));
 	
 	return clipByte255(value);
 }
