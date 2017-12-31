@@ -992,7 +992,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	util::storeString(ais.strikespeech, io->strikespeech);
 	
 	ais.nb_linked = 0;
-	memset(&ais.linked_data, 0, sizeof(IO_LINKED_DATA)*MAX_LINKED_SAVE);
+	memset(&ais.linked_data, 0, sizeof(IO_LINKED_DATA) * MAX_LINKED_SAVE);
 	
 	// Save Animations
 	for(size_t i = 0; i < MAX_ANIMS; i++) {
@@ -1465,7 +1465,7 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEV
 	arx_assert(*idx_io == NULL);
 	if(asi->nb_inter) {
 		*idx_io = new ARX_CHANGELEVEL_IO_INDEX[asi->nb_inter];
-		memcpy(*idx_io, dat + pos, sizeof(ARX_CHANGELEVEL_IO_INDEX)*asi->nb_inter);
+		memcpy(*idx_io, dat + pos, sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter);
 		pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
 	} else {
 		*idx_io = NULL;
@@ -1832,7 +1832,8 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	return 1;
 }
 
-static bool loadScriptVariables(SCRIPT_VARIABLES& var, const char * dat, size_t & pos, VariableType ttext, VariableType tlong, VariableType tfloat) {
+static bool loadScriptVariables(SCRIPT_VARIABLES & var, const char * dat, size_t & pos,
+                                VariableType ttext, VariableType tlong, VariableType tfloat) {
 	
 	for(size_t i = 0; i < var.size(); i++) {
 		
@@ -1875,10 +1876,11 @@ static bool loadScriptVariables(SCRIPT_VARIABLES& var, const char * dat, size_t 
 			}
 		}
 		
-		LogDebug(((type & (TYPE_G_TEXT|TYPE_G_LONG|TYPE_G_FLOAT)) ? "global " : "local ") \
-		<< ((type & (TYPE_L_TEXT|TYPE_G_TEXT)) ? "text" : (type & (TYPE_L_LONG|TYPE_G_LONG)) ? "long" : (type & (TYPE_L_FLOAT|TYPE_G_FLOAT)) ? "float" : "unknown") \
-		<< " \"" << var[i].name.substr(1) << "\" = " << var[i].fval << ' ' << var[i].text \
-		);
+		LogDebug(((type & (TYPE_G_TEXT | TYPE_G_LONG | TYPE_G_FLOAT)) ? "global " : "local ")
+		          << ((type & (TYPE_L_TEXT | TYPE_G_TEXT)) ? "text"
+		              : (type & (TYPE_L_LONG | TYPE_G_LONG)) ? "long"
+		              : (type & (TYPE_L_FLOAT | TYPE_G_FLOAT)) ? "float" : "unknown")
+		          << " \"" << var[i].name.substr(1) << "\" = " << var[i].fval << ' ' << var[i].text);
 		
 	}
 	
@@ -2432,7 +2434,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 		
 		if(!EERIE_PHYSICS_BOX_IsValidPosition(entity->pos - Vec3f(0.f, 20.f, 0.f))) {
 			LogWarning << "Found entity " << entity->idString() << " outside the world";
-			if((entity->ioflags & (IO_ITEM |IO_MOVABLE)) && (entity->gameFlags & GFLAG_INTERACTIVITY)) {
+			if((entity->ioflags & (IO_ITEM | IO_MOVABLE)) && (entity->gameFlags & GFLAG_INTERACTIVITY)) {
 				PutInFrontOfPlayer(entity);
 				movedOOBItems = true;
 			} else {
