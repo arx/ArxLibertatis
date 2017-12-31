@@ -306,7 +306,7 @@ void MagicMissileSpell::Update() {
 	{
 		long nbmissiles = 0;
 		for(size_t i = 0; i < m_missiles.size(); i++) {
-			CMagicMissile *pMM = m_missiles[i];
+			CMagicMissile * pMM = m_missiles[i];
 			if(pMM->bMove) {
 				nbmissiles++;
 			}
