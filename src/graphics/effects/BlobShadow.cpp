@@ -57,21 +57,17 @@ void ARXDRAW_DrawInterShadows() {
 	
 	g_shadowBatch.clear();
 	
-	for(long i=0; i<TREATZONE_CUR; i++) {
-		if(treatio[i].show != 1 || !treatio[i].io)
-			continue;
+	for(long i = 0; i < TREATZONE_CUR; i++) {
 		
-		Entity *io = treatio[i].io;
-		
-		if(   !io->obj
-		   || (io->ioflags & IO_JUST_COLLIDE)
-		   || (io->ioflags & IO_NOSHADOW)
-		   || (io->ioflags & IO_GOLD)
-		   || !(io->show == SHOW_FLAG_IN_SCENE)
-		) {
+		if(treatio[i].show != 1 || !treatio[i].io) {
 			continue;
 		}
 		
+		Entity * io = treatio[i].io;
+		if(!io->obj || (io->ioflags & IO_JUST_COLLIDE) || (io->ioflags & IO_NOSHADOW)
+		   || (io->ioflags & IO_GOLD) || io->show != SHOW_FLAG_IN_SCENE) {
+			continue;
+		}
 		
 		BackgroundTileData * bkgData = getFastBackgroundData(io->pos.x, io->pos.z);
 		if(bkgData && !bkgData->treat) { //TODO is that correct ?
@@ -86,22 +82,23 @@ void ARXDRAW_DrawInterShadows() {
 		
 		if(io->obj->grouplist.size() <= 1) {
 			for(size_t k = 0; k < io->obj->vertexlist.size(); k += 9) {
-				EERIEPOLY *ep = CheckInPoly(io->obj->vertexWorldPositions[k].v);
 				
-				if(!ep)
+				EERIEPOLY * ep = CheckInPoly(io->obj->vertexWorldPositions[k].v);
+				if(!ep) {
 					continue;
+				}
 				
 				Vec3f in;
 				in.y = ep->min.y - 3.f;
-				float r = 0.5f - glm::abs(io->obj->vertexWorldPositions[k].v.y - in.y) * (1.f/500);
+				float r = 0.5f - glm::abs(io->obj->vertexWorldPositions[k].v.y - in.y) * 0.002f;
 				r -= io->invisibility;
 				r *= io->scale;
-				
-				if(r <= 0.f)
+				if(r <= 0.f) {
 					continue;
+				}
 				
 				float s1 = 16.f * io->scale;
-				float s2 = s1 * (1.f/2);
+				float s2 = s1 * 0.5f;
 				in.x = io->obj->vertexWorldPositions[k].v.x - s2;
 				in.z = io->obj->vertexWorldPositions[k].v.z - s2;
 				
@@ -117,28 +114,30 @@ void ARXDRAW_DrawInterShadows() {
 					AddToShadowBatch(&ltv[0], &ltv[2], &ltv[1]);
 					AddToShadowBatch(&ltv[0], &ltv[3], &ltv[2]);
 				}
+				
 			}
 		} else {
 			for(size_t k = 0; k < io->obj->grouplist.size(); k++) {
+				
 				size_t origin = io->obj->grouplist[k].origin;
 				Vec3f pos = io->obj->vertexWorldPositions[origin].v;
 				
-				EERIEPOLY *ep = CheckInPoly(pos);
-				
-				if(!ep)
+				EERIEPOLY * ep = CheckInPoly(pos);
+				if(!ep) {
 					continue;
+				}
 				
 				Vec3f in;
 				in.y = ep->min.y - 3.f;
-				float r = 0.8f - glm::abs(pos.y - in.y) * (1.f/500);
+				float r = 0.8f - glm::abs(pos.y - in.y) * 0.002f;
 				r *= io->obj->grouplist[k].siz;
 				r -= io->invisibility;
-				
-				if(r <= 0.f)
+				if(r <= 0.f) {
 					continue;
+				}
 				
 				float s1 = io->obj->grouplist[k].siz * 44.f;
-				float s2 = s1 * (1.f/2);
+				float s2 = s1 * 0.5f;
 				in.x = pos.x - s2;
 				in.z = pos.z - s2;
 				
@@ -152,6 +151,7 @@ void ARXDRAW_DrawInterShadows() {
 				
 				AddToShadowBatch(&ltv[0], &ltv[2], &ltv[1]);
 				AddToShadowBatch(&ltv[0], &ltv[3], &ltv[2]);
+				
 			}
 		}
 	}
