@@ -64,7 +64,7 @@ CinematicBitmap::~CinematicBitmap()
 	grid.FreeGrille();
 }
 
-CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
+CinematicBitmap * CreateCinematicBitmap(const res::path & path, int scale) {
 	
 	std::string name = path.basename();
 	if(name.empty()) {
@@ -286,7 +286,7 @@ void CinematicGrid::AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitm
 
 void CinematicGrid::ReajustUV() {
 	
-	C_UV* uvs = m_uvs.data();
+	C_UV * uvs = m_uvs.data();
 	
 	for(std::vector<C_INDEXED>::iterator mat = m_mats.begin(); mat != m_mats.end(); ++mat) {
 		
@@ -325,13 +325,9 @@ size_t CinematicGrid::AddMaterial(Texture * tex) {
 	
 	size_t matIdx = m_mats.size();
 	m_mats.resize(matIdx + 1);
-
-	int deb;
-	if(matIdx == 0)
-		deb = 0;
-	else
-		deb = m_mats[matIdx-1].startind + m_mats[matIdx-1].nbind;
-
+	
+	int deb = (matIdx == 0) ? 0 : m_mats[matIdx - 1].startind + m_mats[matIdx - 1].nbind;
+	
 	m_mats[matIdx].tex = tex;
 	m_mats[matIdx].startind = deb;
 	m_mats[matIdx].nbind = 0;
