@@ -35,7 +35,7 @@ RenderBatcher::~RenderBatcher() {
 	reset();
 }
 
-void RenderBatcher::add(const RenderMaterial& mat, const TexturedVertex (&tri)[3]) {
+void RenderBatcher::add(const RenderMaterial & mat, const TexturedVertex (&tri)[3]) {
 	
 	VertexBatch & batch = m_BatchedSprites[mat];
 	
@@ -44,7 +44,7 @@ void RenderBatcher::add(const RenderMaterial& mat, const TexturedVertex (&tri)[3
 	batch.push_back(tri[2]);
 }
 
-void RenderBatcher::add(const RenderMaterial& mat, const TexturedQuad& sprite) {
+void RenderBatcher::add(const RenderMaterial & mat, const TexturedQuad & sprite) {
 	
 	VertexBatch & batch = m_BatchedSprites[mat];
 	
