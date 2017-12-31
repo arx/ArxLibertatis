@@ -46,7 +46,7 @@ private:
 	
 	void drawTab(long tabNum);
 	void drawActiveTab(long tabNum);
-	void checkTabClick(long tabNum, long &activeTab);
+	void checkTabClick(long tabNum, long & activeTab);
 	
 };
 
