@@ -776,13 +776,13 @@ static Vec2f CalculateWaterDisplacement(EERIEPOLY * ep, float time, int vertInde
 	const Vec3f & p = ep->v[vertIndex].p;
 	
 	switch(step) {
-	case(0): {
+	case 0: {
 		return FluidTextureDisplacement(p, time, 1000, 200, 1000, 32, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
-	case(1): {
+	case 1: {
 		return FluidTextureDisplacement(p, time, 1000, 200, 1000, 28, 30.f, 30, Vec2f(1.f, -1.f));
 	}
-	case(2): {
+	case 2: {
 		return FluidTextureDisplacement(p, time, 1000, 200, 1000, 40, 60.f, 60, Vec2f(-1.f, -1.f));
 	}
 	default:
@@ -795,13 +795,13 @@ static Vec2f CalculateLavaDisplacement(EERIEPOLY * ep, float time, int vertIndex
 	const Vec3f & p = ep->v[vertIndex].p;
 	
 	switch(step) {
-	case(0): {
+	case 0: {
 		return FluidTextureDisplacement(p, time, 1000, 200, 2000, 20, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
-	case(1): {
+	case 1: {
 		return FluidTextureDisplacement(p, time, 1000, 100, 2000, 10, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
-	case(2): {
+	case 2: {
 		return FluidTextureDisplacement(p, time, 600, 160, 2000, 11, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
 	default:
