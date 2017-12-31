@@ -28,28 +28,32 @@ class TextureContainer;
 
 
 class SecondaryInventoryPickAllHudIcon : public HudIconBase {
-private:
+	
 	Vec2f m_size;
 	
 public:
+	
 	void init();
 	void update(const Rectf & parent);
 	void updateInput();
+	
 };
 
 class SecondaryInventoryCloseHudIcon : public HudIconBase {
-private:
+	
 	Vec2f m_size;
 	
 public:
+	
 	void init();
 	void update(const Rectf & parent);
 	void updateInput();
+	
 };
 
 
 class SecondaryInventoryHud : public HudItem {
-private:
+	
 	Vec2f m_size;
 	TextureContainer * ingame_inventory;
 	TextureContainer * m_canNotSteal;
@@ -59,6 +63,7 @@ private:
 	SecondaryInventoryCloseHudIcon m_closeButton;
 	
 public:
+	
 	void init();
 	void update();
 	void updateRect();
@@ -73,7 +78,7 @@ public:
 	Entity * getObj(const Vec2s & pos);
 	
 	void dropEntity();
-	bool dragEntity(Entity * io, const Vec2s &pos);
+	bool dragEntity(Entity * io, const Vec2s & pos);
 	
 	void close();
 	
@@ -87,6 +92,7 @@ public:
 	
 	Fade m_fadeDirection;
 	float m_fadePosition;
+	
 };
 
 extern SecondaryInventoryHud g_secondaryInventoryHud;
