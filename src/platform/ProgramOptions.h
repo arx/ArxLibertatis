@@ -40,7 +40,7 @@ public:
 		
 protected:
 	
-	BaseOption(const char* longName, const char* shortName, const char* description);
+	BaseOption(const char * longName, const char * shortName, const char * description);
 	
 private:
 	
