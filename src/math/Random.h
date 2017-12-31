@@ -54,11 +54,11 @@ public:
 	
 	//! Return a random iterator in the given container.
 	template <class Container>
-	static typename Container::iterator getIterator(Container& container);
+	static typename Container::iterator getIterator(Container & container);
 	
 	//! Return a random const_iterator in the given container.
 	template <class Container>
-	static typename Container::const_iterator getIterator(const Container& container);
+	static typename Container::const_iterator getIterator(const Container & container);
 	
 	//! Seed the random number generator using the current time.
 	static void seed();
@@ -119,7 +119,7 @@ Iterator Random::getIterator(Iterator begin, Iterator end) {
 	typedef typename std::iterator_traits<Iterator>::difference_type diff_t;
 	
 	diff_t dist = std::distance(begin, end);
-	diff_t toAdvance = Random::get<diff_t>(0, dist-1);
+	diff_t toAdvance = Random::get<diff_t>(0, dist - 1);
 	
 	std::advance(begin, toAdvance);
 	
@@ -127,12 +127,12 @@ Iterator Random::getIterator(Iterator begin, Iterator end) {
 }
 
 template <class Container>
-typename Container::iterator Random::getIterator(Container& container) {
+typename Container::iterator Random::getIterator(Container & container) {
 	return getIterator(container.begin(), container.end());
 }
 
 template <class Container>
-typename Container::const_iterator Random::getIterator(const Container& container) {
+typename Container::const_iterator Random::getIterator(const Container & container) {
 	return getIterator(container.begin(), container.end());
 }
 
