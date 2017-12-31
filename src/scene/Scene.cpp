@@ -852,9 +852,7 @@ static void RenderWater() {
 		}
 		
 		for(int j = 0; j < iNbVertex; ++j) {
-			pVertex->p.x = ep->v[j].p.x;
-			pVertex->p.y = -ep->v[j].p.y;
-			pVertex->p.z = ep->v[j].p.z;
+			pVertex->p = ep->v[j].p;
 			pVertex->color = Color(80, 80, 80, 255).toRGBA();
 			
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
@@ -960,9 +958,7 @@ static void RenderLava() {
 		}
 		
 		for(int j = 0; j < iNbVertex; ++j) {
-			pVertex->p.x = ep->v[j].p.x;
-			pVertex->p.y = -ep->v[j].p.y;
-			pVertex->p.z = ep->v[j].p.z;
+			pVertex->p = ep->v[j].p;
 			pVertex->color = Color(102, 102, 102, 255).toRGBA();
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				Vec2f uv = CalculateLavaDisplacement(ep, time, j, i);
