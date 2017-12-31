@@ -187,13 +187,8 @@ long ARX_UNICODE_ForceFormattingInRect(Font * font, const std::string & text,
 	return numChars;
 }
 
-long ARX_UNICODE_DrawTextInRect(Font* font,
-                                const Vec2f & pos,
-                                float maxx,
-                                const std::string& _text,
-                                Color col,
-                                const Rect * pClipRect
-                               ) {
+long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, const std::string & _text,
+                                Color col, const Rect * pClipRect) {
 	
 	if(pClipRect) {
 		GRenderer->SetScissor(*pClipRect);
@@ -214,14 +209,14 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 	return height;
 }
 
-
-void UNICODE_ARXDrawTextCenter(Font* font, const Vec2f & pos, const std::string& str, Color col) {
-	
+void UNICODE_ARXDrawTextCenter(Font * font, const Vec2f & pos, const std::string & str, Color col) {
 	Vec2i size = font->getTextSize(str);
 	font->draw(Vec2i(pos.x - (size.x / 2), pos.y), str, col);
 }
 
-void UNICODE_ARXDrawTextCenteredScroll(Font* font, float x, float y, float x2, const std::string& str, Color col, PlatformDuration iTimeScroll, float fSpeed, int iNbLigne, PlatformDuration iTimeOut) {
+void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, const std::string & str,
+                                       Color col, PlatformDuration iTimeScroll, float fSpeed,
+                                       int iNbLigne, PlatformDuration iTimeOut) {
 	
 	Rect::Num _x = checked_range_cast<Rect::Num>(x - x2);
 	Rect::Num _y = checked_range_cast<Rect::Num>(y);
