@@ -102,10 +102,11 @@ static void ARX_SPEECH_MoveUp() {
 	}
 	
 	for(size_t j = 0; j < MAX_SPEECH - 1; j++) {
-		g_speech[j] = g_speech[j+1];
+		g_speech[j] = g_speech[j + 1];
 	}
-
-	g_speech[MAX_SPEECH-1].clear();
+	
+	g_speech[MAX_SPEECH - 1].clear();
+	
 }
 
 void ARX_SPEECH_ClearAll()
@@ -465,13 +466,11 @@ void ARX_SPEECH_Update() {
 	}
 
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		ARX_SPEECH *speech = &aspeech[i];
-
-		if(!speech->exist)
+		
+		ARX_SPEECH * speech = &aspeech[i];
+		if(!speech->exist || speech->text.empty()) {
 			continue;
-
-		if(speech->text.empty())
-			continue;
+		}
 		
 		if(!cinematicBorder.isActive())
 			continue;
@@ -491,8 +490,7 @@ void ARX_SPEECH_Update() {
 		
 		Rect::Num y = checked_range_cast<Rect::Num>(fZoneClippY);
 		Rect::Num h = checked_range_cast<Rect::Num>(fAdd);
-		
-		Rect clippingRect(0, y+1, g_size.width(), h);
+		Rect clippingRect(0, y + 1, g_size.width(), h);
 		if(config.interface.limitSpeechWidth) {
 			s32 w = std::min(g_size.width(), s32(640 * g_sizeRatio.y));
 			clippingRect.left = (g_size.width() - w) / 2;
