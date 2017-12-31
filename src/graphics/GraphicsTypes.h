@@ -80,34 +80,34 @@ struct EERIE_TRI {
 };
 
 enum PolyTypeFlag {
-	POLY_NO_SHADOW    = (1<<0),
-	POLY_DOUBLESIDED  = (1<<1),
-	POLY_TRANS        = (1<<2),
-	POLY_WATER        = (1<<3),
-	POLY_GLOW         = (1<<4),
-	POLY_IGNORE       = (1<<5),
-	POLY_QUAD         = (1<<6),
-	POLY_TILED        = (1<<7),
-	POLY_METAL        = (1<<8),
-	POLY_HIDE         = (1<<9),
-	POLY_STONE        = (1<<10),
-	POLY_WOOD         = (1<<11),
-	POLY_GRAVEL       = (1<<12),
-	POLY_EARTH        = (1<<13),
-	POLY_NOCOL        = (1<<14),
-	POLY_LAVA         = (1<<15),
-	POLY_CLIMB        = (1<<16),
-	POLY_FALL         = (1<<17),
-	POLY_NOPATH       = (1<<18),
-	POLY_NODRAW       = (1<<19),
-	POLY_PRECISE_PATH = (1<<20),
-	POLY_NO_CLIMB     = (1<<21),
-	POLY_ANGULAR      = (1<<22),
-	POLY_ANGULAR_IDX0 = (1<<23),
-	POLY_ANGULAR_IDX1 = (1<<24),
-	POLY_ANGULAR_IDX2 = (1<<25),
-	POLY_ANGULAR_IDX3 = (1<<26),
-	POLY_LATE_MIP     = (1<<27)
+	POLY_NO_SHADOW    = 1 << 0,
+	POLY_DOUBLESIDED  = 1 << 1,
+	POLY_TRANS        = 1 << 2,
+	POLY_WATER        = 1 << 3,
+	POLY_GLOW         = 1 << 4,
+	POLY_IGNORE       = 1 << 5,
+	POLY_QUAD         = 1 << 6,
+	POLY_TILED        = 1 << 7,
+	POLY_METAL        = 1 << 8,
+	POLY_HIDE         = 1 << 9,
+	POLY_STONE        = 1 << 10,
+	POLY_WOOD         = 1 << 11,
+	POLY_GRAVEL       = 1 << 12,
+	POLY_EARTH        = 1 << 13,
+	POLY_NOCOL        = 1 << 14,
+	POLY_LAVA         = 1 << 15,
+	POLY_CLIMB        = 1 << 16,
+	POLY_FALL         = 1 << 17,
+	POLY_NOPATH       = 1 << 18,
+	POLY_NODRAW       = 1 << 19,
+	POLY_PRECISE_PATH = 1 << 20,
+	POLY_NO_CLIMB     = 1 << 21,
+	POLY_ANGULAR      = 1 << 22,
+	POLY_ANGULAR_IDX0 = 1 << 23,
+	POLY_ANGULAR_IDX1 = 1 << 24,
+	POLY_ANGULAR_IDX2 = 1 << 25,
+	POLY_ANGULAR_IDX3 = 1 << 26,
+	POLY_LATE_MIP     = 1 << 27
 };
 DECLARE_FLAGS(PolyTypeFlag, PolyType)
 DECLARE_FLAGS_OPERATORS(PolyType)
@@ -265,7 +265,7 @@ struct EERIE_3DOBJ
 	std::vector<VertexGroup> grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;
 	std::vector<EERIE_SELECTIONS> selections;
-	std::vector<TextureContainer*> texturecontainer;
+	std::vector<TextureContainer *> texturecontainer;
 
 	std::vector<res::path> originaltextures;
 	CUB3D cub;
@@ -306,6 +306,7 @@ struct EP_DATA {
 };
 
 struct EERIE_ROOM_DATA {
+	
 	long nb_portals;
 	long * portals;
 	long nb_polys;
@@ -321,11 +322,11 @@ struct EERIE_ROOM_DATA {
 		, epdata()
 		, indexBuffer()
 		, pVertexBuffer()
-	{}
+	{ }
+	
 };
 
-struct EERIE_PORTAL_DATA
-{
+struct EERIE_PORTAL_DATA {
 	std::vector<EERIE_ROOM_DATA> rooms;
 	std::vector<EERIE_PORTALS> portals;
 };
