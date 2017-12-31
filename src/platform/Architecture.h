@@ -81,7 +81,7 @@ namespace platform {
 #define ARX_ARCH_NAME ARX_ARCH_NAME_MIPS
 
 #elif defined(__powerpc) || defined(__powerpc__) || defined(__POWERPC__) \
-      ||defined(__ppc__) || defined(_M_PPC) || defined(_ARCH_PPC)
+      || defined(__ppc__) || defined(_M_PPC) || defined(_ARCH_PPC)
 #define ARX_ARCH ARX_ARCH_POWERPC
 #define ARX_ARCH_NAME ARX_ARCH_NAME_POWERPC
 
