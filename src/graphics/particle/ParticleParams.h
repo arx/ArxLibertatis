@@ -48,8 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 
 enum ParticleSpawnFlag {
-	PARTICLE_CIRCULAR = (1<<0),
-	PARTICLE_BORDER   = (1<<1)
+	PARTICLE_CIRCULAR = 1 << 0,
+	PARTICLE_BORDER   = 1 << 1
 };
 DECLARE_FLAGS(ParticleSpawnFlag, ParticleSpawn)
 DECLARE_FLAGS_OPERATORS(ParticleSpawn)
