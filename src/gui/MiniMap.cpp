@@ -160,11 +160,11 @@ void MiniMap::validatePlayerPos(int currentLevel, long blockPlayerControls, ARX_
 	}
 }
 
-void MiniMap::loadOffsets(PakReader *pakRes) {
+void MiniMap::loadOffsets(PakReader * pakRes) {
 	
 	std::string iniMiniOffsets = "graph/levels/mini_offsets.ini";
 	
-	PakFile *file = pakRes->getFile(iniMiniOffsets.c_str());
+	PakFile * file = pakRes->getFile(iniMiniOffsets.c_str());
 	
 	if(!file) {
 		LogError << "Missing " << iniMiniOffsets;
@@ -216,9 +216,10 @@ void MiniMap::reveal() {
 			}
 		}
 	}
+	
 }
 
-void MiniMap::firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *entityMng) {
+void MiniMap::firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * entityMng) {
 	
 	m_pTexDetect = NULL;
 	m_mapMarkerTexCont = NULL;
@@ -554,9 +555,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 	
 	float fadeDiv = 0.f;
 	Rect fadeBounds(0, 0, 0, 0);
-	
 	if(fadeBorder > 0.f) {
-		fadeDiv = 1.f/fadeBorder;
+		fadeDiv = 1.f / fadeBorder;
 		fadeBounds.left = checked_range_cast<Rect::Num>((boundaries.left + fadeBorder) * g_sizeRatio.x);
 		fadeBounds.right = checked_range_cast<Rect::Num>((boundaries.right - fadeBorder) * g_sizeRatio.x);
 		fadeBounds.top = checked_range_cast<Rect::Num>((boundaries.top + fadeBorder) * g_sizeRatio.y);
@@ -762,7 +762,7 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 	
 	UseRenderState state(render2D().blendAdditive());
 	
-	const EntityManager &ents = *m_entities; // for convenience
+	const EntityManager & ents = *m_entities;
 	for(size_t lnpc = 1; lnpc < ents.size(); lnpc++) {
 		const EntityHandle handle = EntityHandle(lnpc);
 		Entity * npc = ents[handle];
@@ -821,11 +821,11 @@ void MiniMap::clearMarkerTexCont() {
 	m_mapMarkerTexCont = NULL;
 }
 
-void MiniMap::load(const SavedMiniMap *saved, size_t size) {
+void MiniMap::load(const SavedMiniMap * saved, size_t size) {
 	std::copy(saved, saved + size, m_levels);
 }
 
-void MiniMap::save(SavedMiniMap *toSave, size_t size) {
+void MiniMap::save(SavedMiniMap * toSave, size_t size) {
 	std::copy(m_levels, m_levels + size, toSave);
 }
 
@@ -836,7 +836,7 @@ void MiniMap::mapMarkerInit(size_t reserveSize) {
 		m_mapMarkers.reserve(reserveSize);
 }
 
-int MiniMap::mapMarkerGetID(const std::string &name) {
+int MiniMap::mapMarkerGetID(const std::string & name) {
 	
 	for(size_t i = 0; i < m_mapMarkers.size(); i++) {
 		if(m_mapMarkers[i].m_name == name) {
@@ -847,7 +847,7 @@ int MiniMap::mapMarkerGetID(const std::string &name) {
 	return -1;
 }
 
-void MiniMap::mapMarkerAdd(const Vec2f & pos, int lvl, const std::string &name) {
+void MiniMap::mapMarkerAdd(const Vec2f & pos, int lvl, const std::string & name) {
 	
 	int num = mapMarkerGetID(name);
 	
@@ -869,7 +869,7 @@ void MiniMap::mapMarkerAdd(const Vec2f & pos, int lvl, const std::string &name) 
 	m_mapMarkers.push_back(newMMD);
 }
 
-void MiniMap::mapMarkerRemove(const std::string &name) {
+void MiniMap::mapMarkerRemove(const std::string & name) {
 	
 	int num = mapMarkerGetID(name);
 	
@@ -890,6 +890,6 @@ MiniMap::MapMarkerData MiniMap::mapMarkerGet(size_t id) {
 	return m_mapMarkers[id];
 }
 
-void MiniMap::setActiveBackground(BackgroundData *activeBkg) {
+void MiniMap::setActiveBackground(BackgroundData * activeBkg) {
 	m_activeBkg = activeBkg;
 }
