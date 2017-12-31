@@ -485,7 +485,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 		pakDecrypt(fat, fat_size, key);
 	} else {
 		LogWarning << pakfile << ": unknown PAK key ID 0x" << std::hex << std::setfill('0')
-		           << std::setw(8) << *(u32*)fat << ", assuming no key";
+		           << std::setw(8) << *reinterpret_cast<u32 *>(fat) << ", assuming no key";
 	}
 	release |= key;
 	
@@ -653,7 +653,7 @@ bool PakReader::addFile(PakDirectory * dir, const fs::path & path,
 	}
 	
 	u64 size = fs::file_size(path);
-	if(size == (u64)-1) {
+	if(size == u64(-1)) {
 		return false;
 	}
 	
