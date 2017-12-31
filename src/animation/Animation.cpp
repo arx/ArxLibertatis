@@ -110,11 +110,12 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
 	
 }
 
-void ANIM_Set(AnimLayer & layer, ANIM_HANDLE *anim)
-{
-	if(!anim)
+void ANIM_Set(AnimLayer & layer, ANIM_HANDLE * anim) {
+	
+	if(!anim) {
 		return;
-
+	}
+	
 	layer.cur_anim = anim;
 	layer.altidx_cur = ANIM_GetAltIdx(anim, layer.altidx_cur);
 
@@ -562,7 +563,7 @@ Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx) {
  * \param time Time increment to current animation in Ms
  * \param io Referrence to Interactive Object (NULL if no IO)
  */
-void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
+void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 	
 	arx_assert(layer.cur_anim);
 	
@@ -675,11 +676,9 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 void ResetAnim(AnimLayer & layer) {
 	
 	layer.ctime = 0;
-	layer.lastframe=-1;
-	layer.flags&=~EA_PAUSED;
-	layer.flags&=~EA_ANIMEND;
-	layer.flags&=~EA_LOOP;
-	layer.flags&=~EA_FORCEPLAY;
+	layer.lastframe = -1;
+	layer.flags &= ~(EA_PAUSED | EA_ANIMEND | EA_LOOP | EA_FORCEPLAY);
+	
 }
 
 static void EERIE_ANIMMANAGER_Clear(ANIM_HANDLE & slot) {
