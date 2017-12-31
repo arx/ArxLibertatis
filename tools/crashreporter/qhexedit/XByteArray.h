@@ -87,6 +87,7 @@ private:
 	int _addressOffset;      //!< will be added to the real addres inside bytearray
 	int _realAddressNumbers; //!< real width of address area (can be greater then wanted width)
 	int _oldSize;            //!< size of data
+	
 };
 
 //! \endcond docNever
