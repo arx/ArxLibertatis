@@ -46,22 +46,24 @@
 class Profiler {
 	
 public:
+	
 	Profiler();
 	
 	void flush();
 	void reset();
 	
-	void registerThread(const std::string& threadName);
+	void registerThread(const std::string & threadName);
 	void unregisterThread();
 	
 	void addProfilePoint(const char * tag, thread_id_type threadId,
 	                     PlatformInstant startTime, PlatformInstant endTime);
 	
 private:
+	
 	static const u32 NB_SAMPLES = 100 * 1000;
 	
 	struct ProfilerSample {
-		const char*    tag;
+		const char * tag;
 		thread_id_type threadId;
 		PlatformInstant startTime;
 		PlatformInstant endTime;
@@ -83,6 +85,7 @@ private:
 	volatile bool    m_canWrite;
 	
 	void writeProfileLog();
+	
 };
 
 
@@ -96,7 +99,7 @@ void Profiler::reset() {
 	m_canWrite = true;
 }
 
-void Profiler::registerThread(const std::string& threadName) {
+void Profiler::registerThread(const std::string & threadName) {
 	thread_id_type threadId = Thread::getCurrentThreadId();
 	ProfilerThread & thread = m_threads[threadId];
 	thread.threadName = threadName;
@@ -111,7 +114,7 @@ void Profiler::unregisterThread() {
 	thread.endTime = platform::getTime();
 }
 
-void Profiler::addProfilePoint(const char* tag, thread_id_type threadId,
+void Profiler::addProfilePoint(const char * tag, thread_id_type threadId,
                                PlatformInstant startTime, PlatformInstant endTime) {
 	
 	while(!m_canWrite);
@@ -135,7 +138,7 @@ void Profiler::flush() {
 
 template <typename T>
 void writeStruct(std::ofstream & out, T & data, size_t & pos) {
-	out.write((const char*)&data, sizeof(T));
+	out.write(reinterpret_cast<const char *>(&data), sizeof(T));
 	pos += sizeof(T);
 }
 
@@ -247,7 +250,6 @@ void Profiler::writeProfileLog() {
 		std::string stringsData = stringTable.data();
 		size_t dataSize = stringsData.size() + 1; // termination
 		writeChunk(out, ArxProfilerChunkType_Strings, dataSize, pos);
-		
 		out.write(stringsData.c_str(), dataSize);
 		pos += dataSize;
 	}
@@ -255,16 +257,14 @@ void Profiler::writeProfileLog() {
 	{
 		size_t dataSize = threadsData.size() * sizeof(SavedProfilerThread);
 		writeChunk(out, ArxProfilerChunkType_Threads, dataSize, pos);
-		
-		out.write((const char*) threadsData.data(), dataSize);
+		out.write((const char *)threadsData.data(), dataSize);
 		pos += dataSize;
 	}
 	
 	{
 		size_t dataSize = samplesData.size() * sizeof(SavedProfilerSample);
 		writeChunk(out, ArxProfilerChunkType_Samples, dataSize, pos);
-		
-		out.write((const char*) samplesData.data(), dataSize);
+		out.write((const char *)samplesData.data(), dataSize);
 	}
 	
 	out.close();
