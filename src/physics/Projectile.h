@@ -27,10 +27,10 @@
 class Trail;
 
 enum ProjectileFlag {
-	ATO_EXIST      = (1<<0),
-	ATO_MOVING     = (1<<1),
-	ATO_UNDERWATER = (1<<2),
-	ATO_FIERY      = (1<<3)
+	ATO_EXIST      = 1 << 0,
+	ATO_MOVING     = 1 << 1,
+	ATO_UNDERWATER = 1 << 2,
+	ATO_FIERY      = 1 << 3
 };
 DECLARE_FLAGS(ProjectileFlag, ProjectileFlags)
 DECLARE_FLAGS_OPERATORS(ProjectileFlags)
