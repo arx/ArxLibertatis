@@ -280,8 +280,8 @@ public:
 	
 	//! Target surface
 	enum BufferType {
-		ColorBuffer   = (1<<0),
-		DepthBuffer   = (1<<1)
+		ColorBuffer = 1 << 0,
+		DepthBuffer = 1 << 1
 	};
 	DECLARE_FLAGS(BufferType, BufferFlags)
 	
