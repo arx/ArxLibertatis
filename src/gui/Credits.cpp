@@ -392,7 +392,7 @@ void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumbe
 				}
 			}
 			bool centered = false;
-			if(s != std::string::npos && s!= 0) {
+			if(s != std::string::npos && s != 0) {
 				int firstsize = hFontCredits->getTextSize(infomations.sText.substr(0, s)).width();
 				if(firstsize < g_size.width() / 2 && linesize - firstsize < g_size.width() / 2) {
 					infomations.sPos.x = g_size.width() / 2 - firstsize;
