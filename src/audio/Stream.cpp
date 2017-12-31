@@ -71,7 +71,7 @@ Stream * createStream(const res::path & name) {
 	return stream;
 }
 
-void deleteStream(Stream *& stream) {
+void deleteStream(Stream * & stream) {
 	PakFileHandle * file = stream->getStream();
 	delete file;
 	delete stream;
