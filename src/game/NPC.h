@@ -65,21 +65,21 @@ enum MoveMode {
 };
 
 enum BehaviourFlag {
-	BEHAVIOUR_NONE          = (1<<0), // no pathfind
-	BEHAVIOUR_FRIENDLY      = (1<<1), // no pathfind
-	BEHAVIOUR_MOVE_TO       = (1<<2),
-	BEHAVIOUR_WANDER_AROUND = (1<<3), //behavior_param = distance
-	BEHAVIOUR_FLEE          = (1<<4), //behavior_param = distance
-	BEHAVIOUR_HIDE          = (1<<5), //behavior_param = distance
-	BEHAVIOUR_LOOK_FOR      = (1<<6), //behavior_param = distance
-	BEHAVIOUR_SNEAK         = (1<<7),
-	BEHAVIOUR_FIGHT         = (1<<8),
-	BEHAVIOUR_DISTANT       = (1<<9),
-	BEHAVIOUR_MAGIC         = (1<<10),
-	BEHAVIOUR_GUARD         = (1<<11),
-	BEHAVIOUR_GO_HOME       = (1<<12),
-	BEHAVIOUR_LOOK_AROUND   = (1<<13),
-	BEHAVIOUR_STARE_AT      = (1<<14)
+	BEHAVIOUR_NONE          = 1 << 0, // no pathfind
+	BEHAVIOUR_FRIENDLY      = 1 << 1, // no pathfind
+	BEHAVIOUR_MOVE_TO       = 1 << 2,
+	BEHAVIOUR_WANDER_AROUND = 1 << 3, //behavior_param = distance
+	BEHAVIOUR_FLEE          = 1 << 4, //behavior_param = distance
+	BEHAVIOUR_HIDE          = 1 << 5, //behavior_param = distance
+	BEHAVIOUR_LOOK_FOR      = 1 << 6, //behavior_param = distance
+	BEHAVIOUR_SNEAK         = 1 << 7,
+	BEHAVIOUR_FIGHT         = 1 << 8,
+	BEHAVIOUR_DISTANT       = 1 << 9,
+	BEHAVIOUR_MAGIC         = 1 << 10,
+	BEHAVIOUR_GUARD         = 1 << 11,
+	BEHAVIOUR_GO_HOME       = 1 << 12,
+	BEHAVIOUR_LOOK_AROUND   = 1 << 13,
+	BEHAVIOUR_STARE_AT      = 1 << 14
 };
 DECLARE_FLAGS(BehaviourFlag, Behaviour)
 DECLARE_FLAGS_OPERATORS(Behaviour)
@@ -95,14 +95,15 @@ struct IO_BEHAVIOR_DATA {
 };
 
 enum PathfindFlag {
-	PATHFIND_ALWAYS    = (1<<0),
-	PATHFIND_ONCE      = (1<<1),
-	PATHFIND_NO_UPDATE = (1<<2)
+	PATHFIND_ALWAYS    = 1 << 0,
+	PATHFIND_ONCE      = 1 << 1,
+	PATHFIND_NO_UPDATE = 1 << 2
 };
 DECLARE_FLAGS(PathfindFlag, PathfindFlags)
 DECLARE_FLAGS_OPERATORS(PathfindFlags)
 
 struct IO_PATHFIND {
+	
 	PathfindFlags flags;
 	long listnb;
 	long * list;
@@ -117,7 +118,8 @@ struct IO_PATHFIND {
 		, listpos(0)
 		, pathwait(0)
 		, truetarget(0) // TODO is this correct ? use EntityHandle() ?
-	{}
+	{ }
+	
 };
 
 struct EERIE_EXTRA_ROTATE {
@@ -137,18 +139,18 @@ struct EERIE_EXTRA_SCALE {
 };
 
 enum NPCFlag {
-	NPCFLAG_BACKSTAB = (1<<0)
+	NPCFLAG_BACKSTAB = 1 << 0
 };
 DECLARE_FLAGS(NPCFlag, NPCFlags)
 DECLARE_FLAGS_OPERATORS(NPCFlags)
 
 enum DismembermentFlag {
-	FLAG_CUT_HEAD  = (1<<0),
-	FLAG_CUT_TORSO = (1<<1),
-	FLAG_CUT_LARM  = (1<<2),
-	FLAG_CUT_RARM  = (1<<3),
-	FLAG_CUT_LLEG  = (1<<4),
-	FLAG_CUT_RLEG  = (1<<5)
+	FLAG_CUT_HEAD  = 1 << 0,
+	FLAG_CUT_TORSO = 1 << 1,
+	FLAG_CUT_LARM  = 1 << 2,
+	FLAG_CUT_RARM  = 1 << 3,
+	FLAG_CUT_LLEG  = 1 << 4,
+	FLAG_CUT_RLEG  = 1 << 5
 };
 
 DECLARE_FLAGS(DismembermentFlag, DismembermentFlags)
@@ -261,7 +263,7 @@ void ARX_PHYSICS_Apply();
 void GetTargetPos(Entity * io, unsigned long smoothing = 0);
 
 float GetIOHeight(Entity * io);
-float GetIORadius(const Entity *io);
+float GetIORadius(const Entity * io);
 
 Cylinder GetIOCyl(Entity * io);
 
