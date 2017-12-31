@@ -1719,6 +1719,10 @@ list(APPEND STYLE_CHECKED_SOURCES
 	${arxprofiler_MANUAL_SOURCES}
 	${ArxIO_SOURCES}
 )
+list(REMOVE_ITEM STYLE_CHECKED_SOURCES
+	src/graphics/image/stb_image.h
+	src/graphics/image/stb_image.cpp
+)
 
 add_style_check_target(style "${STYLE_CHECKED_SOURCES}" ARX)
 
