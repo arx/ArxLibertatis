@@ -65,8 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static const float PATHFINDER_HEURISTIC_MIN = 0.2f;
 static const float PATHFINDER_HEURISTIC_MAX = PathFinder::HEURISTIC_MAX;
-static const float PATHFINDER_HEURISTIC_RANGE = PATHFINDER_HEURISTIC_MAX
-                                                - PATHFINDER_HEURISTIC_MIN;
+static const float PATHFINDER_HEURISTIC_RANGE = PATHFINDER_HEURISTIC_MAX - PATHFINDER_HEURISTIC_MIN;
 static const float PATHFINDER_DISTANCE_MAX = 5000.0f;
 
 // Pathfinder Definitions
@@ -199,7 +198,7 @@ void PathFinderThread::run() {
 		}
 		
 		if(!result.empty()) {
-			long * list = (long*)malloc(result.size() * sizeof(long));
+			long * list = (long *)malloc(result.size() * sizeof(long));
 			std::copy(result.begin(), result.end(), list);
 			// TODO potential memory leak
 			request.entity->_npcdata->pathfind.list = list;
