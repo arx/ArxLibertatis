@@ -2031,7 +2031,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		io->ignition = ais->ignition;
 		
 		if(ais->system_flags & SYSTEM_FLAG_USEPATH) {
-			ARX_USE_PATH * aup = io->usepath = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
+			ARX_USE_PATH * aup = io->usepath = new ARX_USE_PATH;
 			aup->aupflags = UsePathFlags::load(ais->usepath_aupflags); // TODO save/load flags
 			aup->_curtime = GameInstantMs(ais->usepath_curtime); // TODO save/load time
 			aup->initpos = ais->usepath_initpos.toVec3();
