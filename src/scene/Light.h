@@ -180,7 +180,7 @@ void ResetTileLights();
 void ComputeTileLights(short x, short z);
 void ClearTileLights();
 
-float GetColorz(const Vec3f &pos);
+float GetColorz(const Vec3f & pos);
 
 ColorRGBA ApplyLight(ShaderLight lights[], size_t lightsCount, const glm::quat & quat, const Vec3f & position,
                      const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f);
