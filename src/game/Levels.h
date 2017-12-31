@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-long GetLevelNumByName(const std::string& name);
+long GetLevelNumByName(const std::string & name);
 const char * GetLevelNameByNum(long num);
 long ARX_LEVELS_GetRealNum(long num);
 
