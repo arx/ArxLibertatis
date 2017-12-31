@@ -32,7 +32,7 @@ static TexturedVertex LATERDRAWHALO[2][HALOMAX * 6];
 void Halo_AddVertices(TexturedVertex (&inVerts)[4]) {
 	int blendType = inVerts[2].color == ColorRGBA_ZERO ? 0 : 1;
 
-	TexturedVertex *vert = &LATERDRAWHALO[blendType][(HALOCUR[blendType] * 6)];
+	TexturedVertex * vert = &LATERDRAWHALO[blendType][(HALOCUR[blendType] * 6)];
 	if(HALOCUR[blendType] < HALOMAX - 1) {
 		HALOCUR[blendType]++;
 	}
