@@ -312,7 +312,8 @@ void ProfilerView::setData(ThreadsData * threadsData) {
 	}
 	
 	setSceneRect(0, 0, qreal(lastTimestamp - firstTimestamp), nextPos);
-
+	
+	resetMatrix();
 	scale(size().width() / (qreal)(lastTimestamp - firstTimestamp), 1.0);
 	
 	setDragMode(ScrollHandDrag);
