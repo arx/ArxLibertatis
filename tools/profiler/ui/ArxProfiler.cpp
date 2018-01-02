@@ -311,10 +311,12 @@ void ProfilerView::setData(ThreadsData * threadsData) {
 		nextPos += qreal(threadData.maxDepth) * ITEM_HEIGHT + THREAD_SPACING;
 	}
 	
-	setSceneRect(0, 0, qreal(lastTimestamp - firstTimestamp), nextPos);
+	const qreal timeDiff = qreal(lastTimestamp - firstTimestamp);
+	
+	setSceneRect(0, 0, timeDiff, nextPos);
 	
 	resetMatrix();
-	scale(size().width() / (qreal)(lastTimestamp - firstTimestamp), 1.0);
+	scale(size().width() / timeDiff, 1.0);
 	
 	setDragMode(ScrollHandDrag);
 	setInteractive(false);
