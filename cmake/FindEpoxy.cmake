@@ -39,7 +39,7 @@ mark_as_advanced(Epoxy_INCLUDE_DIR)
 string(REGEX REPLACE "(.*)/include/?" "\\1" Epoxy_BASE_DIR "${Epoxy_INCLUDE_DIR}")
 
 find_library(Epoxy_LIBRARY
-	NAMES epoxy
+	NAMES epoxy libepoxy
 	HINTS
 		${_PC_Epoxy_LIBRARY_DIRS}
 		"${Epoxy_BASE_DIR}/lib"
