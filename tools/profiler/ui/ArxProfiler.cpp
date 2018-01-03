@@ -44,7 +44,7 @@
 #include "platform/profiler/ProfilerDataFormat.h"
 #include "util/String.h"
 
-ArxProfiler::ArxProfiler(QWidget *parent, Qt::WindowFlags flags)
+ArxProfiler::ArxProfiler(QWidget * parent, Qt::WindowFlags flags)
 	: QMainWindow(parent, flags)
 	, ui(new Ui::ArxProfilerClass)
 {
@@ -167,7 +167,7 @@ void ArxProfiler::openFile() {
 class QGraphicsProfilePoint : public QGraphicsRectItem {
 	
 public:
-	QGraphicsProfilePoint(const QRectF &rect, QGraphicsItem *parent = 0)
+	QGraphicsProfilePoint(const QRectF & rect, QGraphicsItem * parent = 0)
 		: QGraphicsRectItem(rect, parent)
 	{}
 	
@@ -180,7 +180,7 @@ public:
 		return Type;
 	}
 	
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) {
+	void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0) {
 		QGraphicsRectItem::paint(painter, option, widget);
 		
 		if(rect().width() * painter->transform().m11() >= 5) {
@@ -202,7 +202,7 @@ public:
 		return m_Text;
 	}
 	
-	void setText(const QString& text) {
+	void setText(const QString & text) {
 		m_Text = text;
 	}
 	
@@ -216,7 +216,7 @@ private:
 const qreal ITEM_HEIGHT = 15;
 const qreal THREAD_SPACING = 50;
 
-ProfilerView::ProfilerView(QWidget* parent)
+ProfilerView::ProfilerView(QWidget * parent)
 	: QGraphicsView(parent)
 	, m_data(NULL)
 {
@@ -284,14 +284,14 @@ void ProfilerView::setData(ThreadsData * threadsData) {
 			
 			qreal duration = qreal(it->endTime - it->startTime);
 			
-			const char* unitName = humanReadableTime(duration);
+			const char * unitName = humanReadableTime(duration);
 			
 			// Round to get 2 decimals of precision
 			duration = (int)(duration * 100);
 			duration /= 100;
 			
 			QRectF rect(qreal(it->startTime - firstTimestamp), offset, qreal(it->endTime - it->startTime), ITEM_HEIGHT);
-			QGraphicsProfilePoint* profilePoint = new QGraphicsProfilePoint(rect, group);
+			QGraphicsProfilePoint * profilePoint = new QGraphicsProfilePoint(rect, group);
 			
 			QString text = QString("%3 (%1 %2)").arg(duration).arg(unitName).arg(it->tag);
 			profilePoint->setText(text);
@@ -334,11 +334,9 @@ void ProfilerView::paintEvent(QPaintEvent * event) {
 	qreal nextY = 5;
 	
 	for(ThreadsData::iterator it = m_data->begin(); it != m_data->end(); ++it) {
-		ThreadData& threadData = it->second;
-		
+		ThreadData & threadData = it->second;
 		painter.drawLine(QPointF(0, nextY), QPointF(viewport()->width(), nextY));
 		painter.drawText(QPointF(0, nextY + 14), threadData.info.threadName);
-		
 		nextY += qreal(threadData.maxDepth) * ITEM_HEIGHT + THREAD_SPACING;
 	}
 	
@@ -364,11 +362,11 @@ void ProfilerView::zoomEvent(QPoint mousePos, bool zoomIn) {
 	centerOn(viewCenter() + offset);
 }
 
-void ProfilerView::wheelEvent(QWheelEvent* event) {
+void ProfilerView::wheelEvent(QWheelEvent * event) {
 	zoomEvent(event->pos(), event->delta() > 0);
 }
 
-void ProfilerView::keyPressEvent(QKeyEvent* event) {
+void ProfilerView::keyPressEvent(QKeyEvent * event) {
 	if(!underMouse())
 		return;
 	
@@ -385,7 +383,7 @@ void ProfilerView::keyPressEvent(QKeyEvent* event) {
 
 void ProfilerView::contextMenuEvent(QContextMenuEvent * event) {
 	
-	if(QGraphicsItem *item = itemAt(event->pos())) {
+	if(QGraphicsItem * item = itemAt(event->pos())) {
 		if(QGraphicsProfilePoint * sample = qgraphicsitem_cast<QGraphicsProfilePoint *>(item)) {
 			QMenu menu(this);
 			
@@ -397,6 +395,7 @@ void ProfilerView::contextMenuEvent(QContextMenuEvent * event) {
 			menu.exec(event->globalPos());
 		}
 	}
+	
 }
 
 void ProfilerView::copyToClipboard() {
@@ -410,8 +409,8 @@ void ProfilerView::copyToClipboard() {
 const char * ProfilerView::humanReadableTime(qreal & duration) {
 	
 	static const qint32 NUM_UNITS = 5;
-	static const char*  UNIT_NAME[NUM_UNITS + 1] = {"us", "ms", "s", "m", "h", "d"};
-	static const qreal  UNIT_NEXT[NUM_UNITS] =     {1000, 1000,  60,  60,  24     };
+	static const char * UNIT_NAME[NUM_UNITS + 1] = {"us", "ms", "s", "m", "h", "d"};
+	static const qreal UNIT_NEXT[NUM_UNITS] = {1000, 1000,  60,  60,  24     };
 	
 	int i;
 	for(i = 0; i < NUM_UNITS; i++) {
