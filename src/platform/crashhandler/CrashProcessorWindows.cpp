@@ -67,7 +67,7 @@ void CrashHandlerWindows::processCrashInfo() {
 		GetSystemTime(&time);
 		SystemTimeToFileTime(&time, &now);
 		u64 delta = convertFileTimeToInteger(now) - convertFileTimeToInteger(creation);
-		m_pCrashInfo->runningTime = double(delta) * 10e-08;
+		m_pCrashInfo->runningTime = double(delta) / 10000000;
 	}
 	
 	CloseHandle(process);
