@@ -60,10 +60,10 @@ struct PlatformCrashHandlers {
 LONG WINAPI SEHHandler(PEXCEPTION_POINTERS pExceptionPtrs);
 void PureCallHandler();
 int NewHandler(size_t);
-void InvalidParameterHandler(const wchar_t* expression, const wchar_t* function, const wchar_t* file, unsigned int line, uintptr_t pReserved);
+void InvalidParameterHandler(const wchar_t * expression, const wchar_t * function, const wchar_t * file, unsigned int line, uintptr_t pReserved);
 void SignalHandler(int signalCode);
 
-CrashHandlerWindows* CrashHandlerWindows::m_sInstance = 0;
+CrashHandlerWindows * CrashHandlerWindows::m_sInstance = 0;
 
 CrashHandlerWindows::CrashHandlerWindows() {
 	m_sInstance = this;
@@ -107,7 +107,7 @@ bool CrashHandlerWindows::initialize() {
 	return true;
 }
 
-CrashHandlerWindows& CrashHandlerWindows::getInstance() {
+CrashHandlerWindows & CrashHandlerWindows::getInstance() {
 	arx_assert(m_sInstance != 0);
 	return *m_sInstance;
 }
@@ -189,7 +189,7 @@ bool CrashHandlerWindows::registerThreadCrashHandlers() {
 		return false;
 	}
 	
-	ThreadExceptionHandlers& threadHandlers
+	ThreadExceptionHandlers & threadHandlers
 		= m_pPreviousCrashHandlers->m_threadExceptionHandlers[dwThreadId];
 	
 	// Catch terminate() calls.
@@ -231,7 +231,7 @@ void CrashHandlerWindows::unregisterThreadCrashHandlers() {
 		return;
 	}
 	
-	ThreadExceptionHandlers& threadHandlers = it->second;
+	ThreadExceptionHandlers & threadHandlers = it->second;
 	
 	set_terminate(threadHandlers.m_terminateHandler);
 	set_unexpected(threadHandlers.m_unexpectedHandler);
