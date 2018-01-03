@@ -819,8 +819,6 @@ endif(MSVC)
 
 # Sources
 
-set(SRC_DIR src)
-
 set(AI_SOURCES
 	src/ai/Anchors.cpp
 	src/ai/PathFinder.cpp
@@ -1160,9 +1158,9 @@ if(NOT WIN32 AND NOT MACOS)
 endif()
 
 # TODO manually specify theese like we do for the tools
-file(GLOB_RECURSE ALL_INCLUDES RELATIVE ${PROJECT_SOURCE_DIR} ${SRC_DIR}/*.h)
+file(GLOB_RECURSE ALL_INCLUDES RELATIVE ${PROJECT_SOURCE_DIR} src/*.h)
 
-include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/tools)
+include_directories(src ${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/tools)
 
 
 # Check for optional / alternative subsystem implementations
@@ -1339,16 +1337,16 @@ endif()
 list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
 create_source_groups(ALL_FILES_FOR_GROUPS)
 
-configure_file("${SRC_DIR}/Configure.h.in" "Configure.h" ESCAPE_QUOTES)
+configure_file("src/Configure.h.in" "Configure.h" ESCAPE_QUOTES)
 
-configure_file("${SRC_DIR}/io/fs/PathConstants.h.in" "io/fs/PathConstants.h"
+configure_file("src/io/fs/PathConstants.h.in" "io/fs/PathConstants.h"
                ESCAPE_QUOTES)
 
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/platform")
 set(PLATFORM_CONFIG_H "platform/PlatformConfig.h")
-configure_file("${SRC_DIR}/${PLATFORM_CONFIG_H}.in" "${PLATFORM_CONFIG_H}" ESCAPE_QUOTES)
+configure_file("src/${PLATFORM_CONFIG_H}.in" "${PLATFORM_CONFIG_H}" ESCAPE_QUOTES)
 
-set(VERSION_TEMPLATE "${SRC_DIR}/core/Version.cpp.in")
+set(VERSION_TEMPLATE "src/core/Version.cpp.in")
 set(VERSION_FILE     "${PROJECT_BINARY_DIR}/core/Version.cpp")
 set(VERSION_SOURCES  VERSION "VERSION" AUTHORS "AUTHORS" COPYING "COPYING")
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/core")
@@ -1357,7 +1355,7 @@ list(APPEND ARX_SOURCES ${VERSION_FILE})
 list(APPEND UTIL_CMDLINE_SOURCES ${VERSION_FILE})
 
 if(WIN32)
-	set(VERSION_RC_TEMPLATE "${SRC_DIR}/core/Version.rc.in")
+	set(VERSION_RC_TEMPLATE "src/core/Version.rc.in")
 	function(create_version_resource exe name)
 		set(rc_file "${PROJECT_BINARY_DIR}/${exe}-version.rc")
 		set(rc_sources VERSION "VERSION" COPYING "COPYING")
@@ -1369,7 +1367,7 @@ if(WIN32)
 		version_file("${VERSION_RC_TEMPLATE}"
 		             "${rc_file}" "${rc_sources}" ".git" "${rc_defines}")
 	endfunction()
-	set(APPLICATION_MANIFEST_TEMPLATE "${SRC_DIR}/core/Version.manifest.in")
+	set(APPLICATION_MANIFEST_TEMPLATE "src/core/Version.manifest.in")
 	function(create_application_manifest exe)
 		set(manifest_file "${PROJECT_BINARY_DIR}/${exe}.manifest")
 		set(manifest_sources VERSION "VERSION")
@@ -1447,8 +1445,6 @@ if(ARX_HAVE_CRASHREPORTER)
 		${arxcrashreporter_SOURCES}
 		${arxcrashreporter_Qt_SOURCES}
 	)
-	
-	set(SRC_DIR tools/crashreporter/)
 	
 	create_source_groups(arxcrashreporter_MANUAL_SOURCES)
 	
@@ -1550,8 +1546,6 @@ if(ARX_HAVE_PROFILER)
 		${arxprofiler_SOURCES}
 		${arxprofiler_Qt_SOURCES}
 	)
-	
-	set(SRC_DIR tools/profiler/)
 	
 	create_source_groups(arxprofiler_SOURCES)
 	
