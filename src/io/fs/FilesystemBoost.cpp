@@ -58,7 +58,7 @@ std::time_t last_write_time(const path & p) {
 u64 file_size(const path & p) {
 	boost::system::error_code ec;
 	uintmax_t size = fs_boost::file_size(p.string(), ec);
-	return ec ? (u64)-1 : (u64)size;
+	return ec ? u64(-1) : u64(size);
 }
 
 bool remove(const path & p) {
