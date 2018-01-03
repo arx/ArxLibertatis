@@ -102,10 +102,10 @@ u64 file_size(const path & p) {
 	                           FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
 	                           NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if(hFile == INVALID_HANDLE_VALUE) {
-		return (u64)-1;
+		return u64(-1);
 	}
 	
-	u64 fileSize = (u64)-1;
+	u64 fileSize = u64(-1);
 	LARGE_INTEGER retSize;
 	BOOL res = GetFileSizeEx(hFile, &retSize);
 	if(res) {
