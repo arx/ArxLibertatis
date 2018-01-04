@@ -70,7 +70,9 @@ typedef enum {
 	ARX_SDL_SYSWM_WAYLAND,
 	ARX_SDL_SYSWM_MIR,
 	ARX_SDL_SYSWM_WINRT,
-	ARX_SDL_SYSWM_ANDROID
+	ARX_SDL_SYSWM_ANDROID,
+	ARX_SDL_SYSWM_VIVANTE,
+	ARX_SDL_SYSWM_OS2,
 } ARX_SDL_SYSWM_TYPE;
 struct ARX_SDL_SysWMinfo {
 	SDL_version version;
@@ -381,6 +383,8 @@ bool SDL2Window::initialize() {
 					case ARX_SDL_SYSWM_UIKIT:     system = "UIKit"; break;
 					case ARX_SDL_SYSWM_MIR:       system = "Mir"; break;
 					case ARX_SDL_SYSWM_ANDROID:   system = "Android"; break;
+					case ARX_SDL_SYSWM_VIVANTE:   system = "Vivante"; break;
+					case ARX_SDL_SYSWM_OS2:       system = "OS2"; break;
 					case ARX_SDL_SYSWM_X11:{
 						system = "X11";
 						#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
