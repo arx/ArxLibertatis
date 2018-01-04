@@ -57,6 +57,9 @@
 // Video backend
 #cmakedefine01 ARX_HAVE_EPOXY
 #cmakedefine01 ARX_HAVE_GLEW
+#cmakedefine01 ARX_HAVE_GLX
+#cmakedefine01 ARX_HAVE_EGL
+#cmakedefine01 ARX_HAVE_GL_STATIC
 
 // Audio backend
 #cmakedefine01 ARX_HAVE_OPENAL
@@ -80,6 +83,7 @@
 #cmakedefine01 ARX_HAVE_BSWAP_64
 
 // Misc POSIX / Linux features
+#cmakedefine01 ARX_HAVE_DLSYM
 #cmakedefine01 ARX_HAVE_BACKTRACE
 #cmakedefine01 ARX_HAVE_WORDEXP
 #cmakedefine01 ARX_HAVE_UNAME
