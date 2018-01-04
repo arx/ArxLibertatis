@@ -423,6 +423,7 @@ bool SDL2Window::initialize() {
 					#if SDL_VERSION_ATLEAST(2, 0, 4)
 					case ARX_SDL_SYSWM_ANDROID:   system = "Android"; break;
 					#endif
+					default: LogWarning << "Unknown SDL video backend: " << info.subsystem;
 				}
 			}
 		}
