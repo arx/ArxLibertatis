@@ -677,9 +677,13 @@ else(MSVC)
 		endif()
 	endif()
 	
+	set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
+	check_symbol_exists(dlsym "dlfcn.h" ARX_HAVE_DLSYM)
+	unset(CMAKE_REQUIRED_LIBRARIES)
+	
 	check_symbol_exists(nanosleep "time.h" ARX_HAVE_NANOSLEEP)
 	
-	set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_THREAD_LIBS_INIT}")
+	set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 	check_symbol_exists(pthread_setname_np "pthread.h" ARX_HAVE_PTHREAD_SETNAME_NP)
 	if(NOT ARX_HAVE_PTHREAD_SETNAME_NP)
 		check_symbol_exists(pthread_set_name_np "pthread_np.h" ARX_HAVE_PTHREAD_SET_NAME_NP)
@@ -1311,6 +1315,10 @@ if(BUILD_CRASHHANDLER)
 		# Don't bother building arxcrashreporter if it will never be used.
 		set(ARX_HAVE_CRASHREPORTER 0)
 	endif()
+endif()
+
+if(ARX_HAVE_DLSYM)
+	list(APPEND ARX_LIBRARIES ${CMAKE_DL_LIBS})
 endif()
 
 if(LIBRT_LIBRARY AND (ARX_HAVE_CLOCK_GETTIME OR ARX_HAVE_CRASHHANDLER_POSIX))
