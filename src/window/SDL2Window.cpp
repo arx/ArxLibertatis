@@ -362,13 +362,6 @@ bool SDL2Window::initialize() {
 	{
 		const char * system = "(unknown)";
 		{
-			#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
-			#if ARX_HAVE_EPOXY
-			const char * wrangler = "libepoxy";
-			#else
-			const char * wrangler = "GLEW";
-			#endif
-			#endif
 		  ARX_SDL_SysWMinfo info;
 			info.version.major = 2;
 			info.version.minor = 0;
@@ -377,17 +370,26 @@ bool SDL2Window::initialize() {
 				switch(info.subsystem) {
 					case ARX_SDL_SYSWM_UNKNOWN:   break;
 					case ARX_SDL_SYSWM_WINDOWS:   system = "Windows"; break;
-					case ARX_SDL_SYSWM_WINRT:     system = "WinRT"; break;
+					case ARX_SDL_SYSWM_X11:       system = "X11"; break;
 					case ARX_SDL_SYSWM_DIRECTFB:  system = "DirectFB"; break;
 					case ARX_SDL_SYSWM_COCOA:     system = "Cocoa"; break;
 					case ARX_SDL_SYSWM_UIKIT:     system = "UIKit"; break;
+					case ARX_SDL_SYSWM_WAYLAND:   system = "Wayland"; break;
 					case ARX_SDL_SYSWM_MIR:       system = "Mir"; break;
+					case ARX_SDL_SYSWM_WINRT:     system = "WinRT"; break;
 					case ARX_SDL_SYSWM_ANDROID:   system = "Android"; break;
 					case ARX_SDL_SYSWM_VIVANTE:   system = "Vivante"; break;
 					case ARX_SDL_SYSWM_OS2:       system = "OS2"; break;
-					case ARX_SDL_SYSWM_X11:{
-						system = "X11";
-						#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
+					default: LogWarning << "Unknown SDL video backend: " << info.subsystem;
+				}
+				#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
+				#if ARX_HAVE_EPOXY
+				const char * wrangler = "libepoxy";
+				#else
+				const char * wrangler = "GLEW";
+				#endif
+				switch(info.subsystem) {
+					case ARX_SDL_SYSWM_X11: {
 						#if ARX_HAVE_GL_STATIC || !ARX_HAVE_DLSYM || !defined(RTLD_DEFAULT)
 						const bool haveGLX = ARX_HAVE_GLX
 						#elif ARX_HAVE_EPOXY
@@ -400,12 +402,10 @@ bool SDL2Window::initialize() {
 							           << " was built without GLX support";
 							LogWarning << "Try setting the SDL_VIDEODRIVER=wayland environment variable";
 						}
-						#endif
 						break;
 					}
-					case ARX_SDL_SYSWM_WAYLAND: {
-						system = "Wayland";
-						#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
+					case ARX_SDL_SYSWM_WAYLAND:
+					case ARX_SDL_SYSWM_MIR: {
 						#if ARX_HAVE_GL_STATIC || !ARX_HAVE_DLSYM || !defined(RTLD_DEFAULT)
 						const bool haveEGL = ARX_HAVE_EGL
 						#elif ARX_HAVE_EPOXY
@@ -414,15 +414,15 @@ bool SDL2Window::initialize() {
 						const bool haveEGL = (dlsym(RTLD_DEFAULT, "eglewInit") != NULL);
 						#endif
 						if(!haveEGL) {
-							LogWarning << "SDL is using the Wayland video backend but " << wrangler
+							LogWarning << "SDL is using the " << system << " video backend but " << wrangler
 							           << " was built without EGL support";
 							LogWarning << "Try setting the SDL_VIDEODRIVER=x11 environment variable";
 						}
-						#endif
 						break;
 					}
-					default: LogWarning << "Unknown SDL video backend: " << info.subsystem;
+					default: break;
 				}
+				#endif
 			}
 		}
 		
