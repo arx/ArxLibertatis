@@ -370,7 +370,7 @@ bool SDL2Window::initialize() {
 		  ARX_SDL_SysWMinfo info;
 			info.version.major = 2;
 			info.version.minor = 0;
-			info.version.patch = 4;
+			info.version.patch = 6;
 			if(SDL_GetWindowWMInfo(m_window, reinterpret_cast<SDL_SysWMinfo *>(&info))) {
 				switch(info.subsystem) {
 					case ARX_SDL_SYSWM_UNKNOWN:   break;
