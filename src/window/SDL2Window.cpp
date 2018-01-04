@@ -391,7 +391,7 @@ bool SDL2Window::initialize() {
 				switch(info.subsystem) {
 					case ARX_SDL_SYSWM_X11: {
 						#if ARX_HAVE_GL_STATIC || !ARX_HAVE_DLSYM || !defined(RTLD_DEFAULT)
-						const bool haveGLX = ARX_HAVE_GLX
+						const bool haveGLX = ARX_HAVE_GLX;
 						#elif ARX_HAVE_EPOXY
 						const bool haveGLX = (dlsym(RTLD_DEFAULT, "epoxy_has_glx") != NULL);
 						#else
@@ -407,7 +407,7 @@ bool SDL2Window::initialize() {
 					case ARX_SDL_SYSWM_WAYLAND:
 					case ARX_SDL_SYSWM_MIR: {
 						#if ARX_HAVE_GL_STATIC || !ARX_HAVE_DLSYM || !defined(RTLD_DEFAULT)
-						const bool haveEGL = ARX_HAVE_EGL
+						const bool haveEGL = ARX_HAVE_EGL;
 						#elif ARX_HAVE_EPOXY
 						const bool haveEGL = (dlsym(RTLD_DEFAULT, "epoxy_has_egl") != NULL);
 						#else
