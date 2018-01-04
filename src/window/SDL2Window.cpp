@@ -375,6 +375,12 @@ bool SDL2Window::initialize() {
 				switch(info.subsystem) {
 					case ARX_SDL_SYSWM_UNKNOWN:   break;
 					case ARX_SDL_SYSWM_WINDOWS:   system = "Windows"; break;
+					case ARX_SDL_SYSWM_WINRT:     system = "WinRT"; break;
+					case ARX_SDL_SYSWM_DIRECTFB:  system = "DirectFB"; break;
+					case ARX_SDL_SYSWM_COCOA:     system = "Cocoa"; break;
+					case ARX_SDL_SYSWM_UIKIT:     system = "UIKit"; break;
+					case ARX_SDL_SYSWM_MIR:       system = "Mir"; break;
+					case ARX_SDL_SYSWM_ANDROID:   system = "Android"; break;
 					case ARX_SDL_SYSWM_X11:{
 						system = "X11";
 						#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
@@ -393,13 +399,6 @@ bool SDL2Window::initialize() {
 						#endif
 						break;
 					}
-					#if SDL_VERSION_ATLEAST(2, 0, 3)
-					case ARX_SDL_SYSWM_WINRT:     system = "WinRT"; break;
-					#endif
-					case ARX_SDL_SYSWM_DIRECTFB:  system = "DirectFB"; break;
-					case ARX_SDL_SYSWM_COCOA:     system = "Cocoa"; break;
-					case ARX_SDL_SYSWM_UIKIT:     system = "UIKit"; break;
-					#if SDL_VERSION_ATLEAST(2, 0, 2)
 					case ARX_SDL_SYSWM_WAYLAND: {
 						system = "Wayland";
 						#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
@@ -418,11 +417,6 @@ bool SDL2Window::initialize() {
 						#endif
 						break;
 					}
-					case ARX_SDL_SYSWM_MIR:       system = "Mir"; break;
-					#endif
-					#if SDL_VERSION_ATLEAST(2, 0, 4)
-					case ARX_SDL_SYSWM_ANDROID:   system = "Android"; break;
-					#endif
 					default: LogWarning << "Unknown SDL video backend: " << info.subsystem;
 				}
 			}
