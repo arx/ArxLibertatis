@@ -562,13 +562,15 @@ void ScriptConsole::update() {
 		textUpdated();
 	}
 	
-	{
+	if(mainApp->getWindow()->hasFocus()) {
 		static const PlatformDuration BlinkDuration = PlatformDurationMs(600);
 		m_blinkTime += g_platformTime.lastFrameDuration();
 		if(m_blinkTime > (BlinkDuration + BlinkDuration)) {
 			m_blinkTime = 0;
 		}
 		m_blink = m_blinkTime > BlinkDuration;
+	} else {
+		m_blink = true;
 	}
 	
 }
