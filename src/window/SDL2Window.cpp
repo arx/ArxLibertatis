@@ -256,7 +256,7 @@ int SDL2Window::createWindowAndGLContext(const char * profile) {
 		m_window = SDL_CreateWindow(m_title.c_str(), x, y, m_size.x, m_size.y, windowFlags);
 		if(!m_window) {
 			if(lastTry) {
-				LogError << "Could not create window: " << SDL_GetError();
+				LogError << "Could not create " << profile << " window: " << SDL_GetError();
 				return 0;
 			}
 			continue;
