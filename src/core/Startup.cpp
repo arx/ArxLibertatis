@@ -102,6 +102,10 @@ int utf8_main(int argc, char ** argv) {
 		oss << ARX_COMPILER_VERNAME;
 		CrashHandler::setVariable("Compiler", oss.str());
 		credits::setLibraryCredits("compiler", oss.str());
+		oss.str(std::string());
+		oss << ARX_STDLIB_VERNAME;
+		CrashHandler::setVariable("stdlib", oss.str());
+		credits::setLibraryCredits("stdlib", oss.str());
 		CrashHandler::setVariable("CMake", cmake_version);
 		credits::setLibraryCredits("build", "CMake " + cmake_version);
 		oss.str(std::string());

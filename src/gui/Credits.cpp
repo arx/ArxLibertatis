@@ -197,9 +197,14 @@ bool Credits::load() {
 			m_text += compiler->second;
 			m_text += '\n';
 		}
+		Libraries::const_iterator stdlib = m_libraries.find("stdlib");
+		if(stdlib != m_libraries.end()) {
+			m_text += stdlib->second;
+			m_text += '\n';
+		}
 		std::vector<std::string> libraries;
 		BOOST_FOREACH(const Libraries::value_type & library, m_libraries) {
-			if(library.first != "compiler" && !library.second.empty()) {
+			if(library.first != "compiler" && library.first != "stdlib" && !library.second.empty()) {
 				boost::char_separator<char> sep("\n");
 				boost::tokenizer< boost::char_separator<char> > tokens(library.second, sep);
 				std::copy(tokens.begin(), tokens.end(), std::back_inserter(libraries));
