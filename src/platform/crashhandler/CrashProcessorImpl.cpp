@@ -187,6 +187,14 @@ void CrashHandlerImpl::processCrash() {
 			if(!distro.empty()) {
 				ofs << "- distribution: " << distro << '\n';
 			}
+			std::string libc = platform::getCLibraryVersion();
+			if(!libc.empty()) {
+				ofs << "- libc: " << libc << '\n';
+			}
+			std::string threading = platform::getThreadLibraryVersion();
+			if(!threading.empty()) {
+				ofs << "- threading: " << threading << '\n';
+			}
 			std::string cpu = platform::getCPUName();
 			if(!cpu.empty()) {
 				ofs << "- cpu: " << cpu << '\n';

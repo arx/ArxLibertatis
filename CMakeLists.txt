@@ -765,6 +765,8 @@ else(MSVC)
 	
 	check_symbol_exists(sysconf "unistd.h" ARX_HAVE_SYSCONF)
 	
+	check_symbol_exists(confstr "unistd.h" ARX_HAVE_CONFSTR)
+	
 	check_symbol_exists(sigaction "signal.h" ARX_HAVE_SIGACTION)
 	
 	check_symbol_exists(setrlimit "sys/resource.h" ARX_HAVE_SETRLIMIT)
