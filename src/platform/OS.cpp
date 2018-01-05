@@ -48,7 +48,7 @@
 #include ARX_INCLUDED_CPUID_H
 #endif
 
-#if ARX_HAVE_SYSCONF
+#if ARX_HAVE_SYSCONF || ARX_HAVE_CONFSTR
 #include <unistd.h>
 #endif
 
@@ -429,6 +429,51 @@ std::string getOSDistribution() {
 	#endif // ARX_PLATFORM == ARX_PLATFORM_LINUX
 	
 	return std::string();
+}
+
+#if ARX_HAVE_CONFSTR && (defined(_CS_GNU_LIBC_VERSION) || defined(_CS_GNU_LIBPTHREAD_VERSION))
+static std::string getCLibraryConfigString(int name) {
+	
+	int len = confstr(name, NULL, 0);
+	if(len <= 0) {
+		return std::string();
+	}
+	
+	std::vector<char> buffer;
+	buffer.resize(size_t(len));
+	len = confstr(name, &buffer.front(), int(buffer.size()));
+	if(len > 0) {
+		buffer.resize(size_t(len - 1));
+	}
+	return std::string(&*buffer.begin(), &*buffer.end());
+	
+}
+#endif
+
+std::string getCLibraryVersion() {
+	
+	#if ARX_HAVE_CONFSTR && defined(_CS_GNU_LIBC_VERSION)
+	return getCLibraryConfigString(_CS_GNU_LIBC_VERSION);
+	#elif defined(__GNU_LIBRARY__) || defined(__GLIBC__)
+	return "glibc";
+	#elif defined(__BIONIC__)
+	return "Bionic";
+	#elif defined(__UCLIBC__)
+	return "uClibc";
+	#else
+	return std::string();
+	#endif
+	
+}
+
+std::string getThreadLibraryVersion() {
+	
+	#if ARX_HAVE_CONFSTR && defined(_CS_GNU_LIBPTHREAD_VERSION)
+	return getCLibraryConfigString(_CS_GNU_LIBPTHREAD_VERSION);
+	#else
+	return std::string();
+	#endif
+	
 }
 
 std::string getCPUName() {

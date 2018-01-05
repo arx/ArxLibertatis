@@ -94,6 +94,7 @@
 #cmakedefine01 ARX_HAVE_SYSCTLBYNAME
 #cmakedefine01 ARX_HAVE_SETENV
 #cmakedefine01 ARX_HAVE_UNSETENV
+#cmakedefine01 ARX_HAVE_CONFSTR
 
 // Architure-specific features
 #cmakedefine01 ARX_HAVE_GET_CPUID

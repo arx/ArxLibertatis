@@ -58,6 +58,16 @@ std::string getOSArchitecture();
 std::string getOSDistribution();
 
 /*!
+ * \brief Get the name and version of the system C library
+ */
+std::string getCLibraryVersion();
+
+/*!
+ * \brief Get the name and version of the system threading
+ */
+std::string getThreadLibraryVersion();
+
+/*!
  * \brief Get the branding name of the CPU in the system
  *
  * \return the cpu branding name or an empty string if it could not be determined.
