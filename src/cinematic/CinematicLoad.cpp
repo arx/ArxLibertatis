@@ -287,6 +287,8 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.angzgrille = k175.angzgrille;
 			k.speedtrack = k175.speedtrack;
 			
+			arx_assert(k175.posgrille.toVec3() == Vec3f_ZERO);
+			arx_assert(k175.angzgrille == 0.f);
 		} else {
 			
 			C_KEY_1_76 k176;
@@ -313,6 +315,8 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			idsound = k176.idsound[0]; // 0 was the language code for 'French'
 			k.idsound = k176.idsound[3]; // 3 was the language code for 'English'
 			
+			arx_assert(k176.posgrille.toVec3() == Vec3f_ZERO);
+			arx_assert(k176.angzgrille == 0.f);
 		}
 		
 		if(k.force < 0) {
