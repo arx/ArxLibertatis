@@ -360,7 +360,7 @@ bool SDL2Window::initialize() {
 	
 	// All good
 	{
-		const char * system = "(unknown)";
+		const char * windowSystem = "(unknown)";
 		{
 		  ARX_SDL_SysWMinfo info;
 			info.version.major = 2;
@@ -369,17 +369,17 @@ bool SDL2Window::initialize() {
 			if(SDL_GetWindowWMInfo(m_window, reinterpret_cast<SDL_SysWMinfo *>(&info))) {
 				switch(info.subsystem) {
 					case ARX_SDL_SYSWM_UNKNOWN:   break;
-					case ARX_SDL_SYSWM_WINDOWS:   system = "Windows"; break;
-					case ARX_SDL_SYSWM_X11:       system = "X11"; break;
-					case ARX_SDL_SYSWM_DIRECTFB:  system = "DirectFB"; break;
-					case ARX_SDL_SYSWM_COCOA:     system = "Cocoa"; break;
-					case ARX_SDL_SYSWM_UIKIT:     system = "UIKit"; break;
-					case ARX_SDL_SYSWM_WAYLAND:   system = "Wayland"; break;
-					case ARX_SDL_SYSWM_MIR:       system = "Mir"; break;
-					case ARX_SDL_SYSWM_WINRT:     system = "WinRT"; break;
-					case ARX_SDL_SYSWM_ANDROID:   system = "Android"; break;
-					case ARX_SDL_SYSWM_VIVANTE:   system = "Vivante"; break;
-					case ARX_SDL_SYSWM_OS2:       system = "OS2"; break;
+					case ARX_SDL_SYSWM_WINDOWS:   windowSystem = "Windows"; break;
+					case ARX_SDL_SYSWM_X11:       windowSystem = "X11"; break;
+					case ARX_SDL_SYSWM_DIRECTFB:  windowSystem = "DirectFB"; break;
+					case ARX_SDL_SYSWM_COCOA:     windowSystem = "Cocoa"; break;
+					case ARX_SDL_SYSWM_UIKIT:     windowSystem = "UIKit"; break;
+					case ARX_SDL_SYSWM_WAYLAND:   windowSystem = "Wayland"; break;
+					case ARX_SDL_SYSWM_MIR:       windowSystem = "Mir"; break;
+					case ARX_SDL_SYSWM_WINRT:     windowSystem = "WinRT"; break;
+					case ARX_SDL_SYSWM_ANDROID:   windowSystem = "Android"; break;
+					case ARX_SDL_SYSWM_VIVANTE:   windowSystem = "Vivante"; break;
+					case ARX_SDL_SYSWM_OS2:       windowSystem = "OS2"; break;
 					default: LogWarning << "Unknown SDL video backend: " << info.subsystem;
 				}
 				#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
@@ -414,7 +414,7 @@ bool SDL2Window::initialize() {
 						const bool haveEGL = (dlsym(RTLD_DEFAULT, "eglewInit") != NULL);
 						#endif
 						if(!haveEGL) {
-							LogWarning << "SDL is using the " << system << " video backend but " << wrangler
+							LogWarning << "SDL is using the " << windowSystem << " video backend but " << wrangler
 							           << " was built without EGL support";
 							LogWarning << "Try setting the SDL_VIDEODRIVER=x11 environment variable";
 						}
@@ -433,7 +433,7 @@ bool SDL2Window::initialize() {
 		SDL_GL_GetAttribute(SDL_GL_ALPHA_SIZE, &alpha);
 		SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &depth);
 		SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &doublebuffer);
-		LogInfo << "Window: " << system << " r:" << red << " g:" << green << " b:" << blue
+		LogInfo << "Window: " << windowSystem << " r:" << red << " g:" << green << " b:" << blue
 		        << " a:" << alpha << " depth:" << depth << " aa:" << samples << "x"
 		        << " doublebuffer:" << doublebuffer;
 	}
