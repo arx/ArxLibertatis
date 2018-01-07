@@ -434,18 +434,19 @@ std::string getOSDistribution() {
 #if ARX_HAVE_CONFSTR && (defined(_CS_GNU_LIBC_VERSION) || defined(_CS_GNU_LIBPTHREAD_VERSION))
 static std::string getCLibraryConfigString(int name) {
 	
-	int len = confstr(name, NULL, 0);
-	if(len <= 0) {
+	size_t len = confstr(name, NULL, 0);
+	if(len == 0) {
 		return std::string();
 	}
 	
 	std::vector<char> buffer;
-	buffer.resize(size_t(len));
-	len = confstr(name, &buffer.front(), int(buffer.size()));
-	if(len > 0) {
-		buffer.resize(size_t(len - 1));
+	buffer.resize(len);
+	len = confstr(name, &buffer.front(), buffer.size());
+	if(len == 0) {
+		return std::string();
 	}
-	return std::string(&*buffer.begin(), &*buffer.end());
+	
+	return std::string(&*buffer.begin(), &*--buffer.end());
 	
 }
 #endif
