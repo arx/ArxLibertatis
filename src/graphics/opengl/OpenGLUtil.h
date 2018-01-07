@@ -23,6 +23,11 @@
 #include "platform/Platform.h"
 #include "Configure.h"
 
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+// Make sure we get the APIENTRY define from windows.h first to avoid a re-definition warning
+#include <windows.h>
+#endif
+
 #if ARX_HAVE_EPOXY
 
 #include <epoxy/gl.h>
