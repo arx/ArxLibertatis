@@ -441,14 +441,13 @@ class IfCommand : public Command {
 		char c = (var.empty() ? '\0' : var[0]);
 		
 		EERIE_SCRIPT * es = context.getMaster();
-		Entity * io = context.getEntity();
 		
 		switch(c) {
 			
 			case '^': {
 				
 				long l;
-				switch(getSystemVar(context.getSender(), context.getParameters(), es, io, var, s, &f, &l)) {
+				switch(getSystemVar(context, var, s, &f, &l)) {
 					
 					case TYPE_TEXT: return TYPE_TEXT;
 					

@@ -60,7 +60,7 @@ std::string Context::getStringVar(const std::string & name) const {
 		long lv;
 		float fv;
 		std::string tv;
-		switch(getSystemVar(getSender(), getParameters(), getMaster(), getEntity(), name, tv, &fv, &lv)) {
+		switch(getSystemVar(*this, name, tv, &fv, &lv)) {
 			case TYPE_TEXT:
 				return tv;
 			case TYPE_LONG:
@@ -274,7 +274,7 @@ float Context::getFloatVar(const std::string & name) const {
 		long lv;
 		float fv;
 		std::string tv;
-		switch(getSystemVar(getSender(), getParameters(), getMaster(), getEntity(), name, tv, &fv, &lv)) {
+		switch(getSystemVar(*this, name, tv, &fv, &lv)) {
 			case TYPE_TEXT:
 				return float(atof(tv.c_str()));
 			case TYPE_LONG:

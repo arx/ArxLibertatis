@@ -108,6 +108,7 @@ public:
 	Entity * getEntity() const { return m_entity; }
 	ScriptMessage getMessage() const { return m_message; }
 	const ScriptParameters & getParameters() const { return m_parameters; }
+	std::string getParameter(size_t i) const { return m_parameters.get(i); }
 	
 	bool getBool();
 	

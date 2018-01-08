@@ -85,6 +85,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 #include "script/ScriptEvent.h"
+#include "script/ScriptUtils.h"
 
 
 extern long lChangeWeapon;
@@ -364,7 +365,7 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	memset(es->shortcut, 0, sizeof(long) * SM_MAXCMD);
 }
 
-ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, const EERIE_SCRIPT * es, Entity * entity, const std::string & name,
+ValueType getSystemVar(const script::Context & context, const std::string & name,
                        std::string & txtcontent, float * fcontent, long * lcontent) {
 	
 	arx_assert_msg(!name.empty() && name[0] == '^', "bad system variable: \"%s\"", name.c_str());
@@ -375,24 +376,24 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 		case '$': {
 			
 			if(name == "^$param1") {
-				txtcontent = parameters.get(0);
+				txtcontent = context.getParameter(0);
 				return TYPE_TEXT;
 			}
 			
 			if(name == "^$param2") {
-				txtcontent = parameters.get(1);
+				txtcontent = context.getParameter(1);
 				return TYPE_TEXT;
 			}
 			
 			if(name == "^$param3") {
-				txtcontent = parameters.get(2);
+				txtcontent = context.getParameter(2);
 				return TYPE_TEXT;
 			}
 			
 			if(name == "^$objontop") {
 				txtcontent = "none";
-				if(entity) {
-					MakeTopObjString(entity, txtcontent);
+				if(context.getEntity()) {
+					MakeTopObjString(context.getEntity(), txtcontent);
 				}
 				return TYPE_TEXT;
 			}
@@ -403,23 +404,23 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 		case '&': {
 			
 			if(name == "^&param1") {
-				*fcontent = float(atof(parameters.get(0).c_str()));
+				*fcontent = float(atof(context.getParameter(0).c_str()));
 				return TYPE_FLOAT;
 			}
 			
 			if(name == "^&param2") {
-				*fcontent = float(atof(parameters.get(1).c_str()));
+				*fcontent = float(atof(context.getParameter(1).c_str()));
 				return TYPE_FLOAT;
 			}
 			
 			if(name == "^&param3") {
-				*fcontent = float(atof(parameters.get(2).c_str()));
+				*fcontent = float(atof(context.getParameter(2).c_str()));
 				return TYPE_FLOAT;
 			}
 			
 			if(name == "^&playerdist") {
-				if(entity) {
-					*fcontent = fdist(player.pos, entity->pos);
+				if(context.getEntity()) {
+					*fcontent = fdist(player.pos, context.getEntity()->pos);
 					return TYPE_FLOAT;
 				}
 			}
@@ -430,59 +431,59 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 		case '#': {
 			
 			if(name == "^#playerdist") {
-				if(entity) {
-					*lcontent = (long)fdist(player.pos, entity->pos);
+				if(context.getEntity()) {
+					*lcontent = (long)fdist(player.pos, context.getEntity()->pos);
 					return TYPE_LONG;
 				}
 			}
 			
 			if(name == "^#param1") {
-				*lcontent = atol(parameters.get(0).c_str());
+				*lcontent = atol(context.getParameter(0).c_str());
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#param2") {
-				*lcontent = atol(parameters.get(1).c_str());
+				*lcontent = atol(context.getParameter(1).c_str());
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#param3") {
-				*lcontent = atol(parameters.get(2).c_str());
+				*lcontent = atol(context.getParameter(2).c_str());
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#timer1") {
-				if(!entity || entity->script.timers[0] == 0) {
+				if(!context.getEntity() || context.getEntity()->script.timers[0] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMsi(g_gameTime.now() - es->timers[0]);
+					*lcontent = toMsi(g_gameTime.now() - context.getMaster()->timers[0]);
 				}
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#timer2") {
-				if(!entity || entity->script.timers[1] == 0) {
+				if(!context.getEntity() || context.getEntity()->script.timers[1] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMsi(g_gameTime.now() - es->timers[1]);
+					*lcontent = toMsi(g_gameTime.now() - context.getMaster()->timers[1]);
 				}
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#timer3") {
-				if(!entity || entity->script.timers[2] == 0) {
+				if(!context.getEntity() || context.getEntity()->script.timers[2] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMsi(g_gameTime.now() - es->timers[2]);
+					*lcontent = toMsi(g_gameTime.now() - context.getMaster()->timers[2]);
 				}
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#timer4") {
-				if(!entity || entity->script.timers[3] == 0) {
+				if(!context.getEntity() || context.getEntity()->script.timers[3] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMsi(g_gameTime.now() - es->timers[3]);
+					*lcontent = toMsi(g_gameTime.now() - context.getMaster()->timers[3]);
 				}
 				return TYPE_LONG;
 			}
@@ -523,8 +524,8 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 		case 'a': {
 			
 			if(boost::starts_with(name, "^amount")) {
-				if(entity && (entity->ioflags & IO_ITEM)) {
-					*fcontent = entity->_itemdata->count;
+				if(context.getEntity() && (context.getEntity()->ioflags & IO_ITEM)) {
+					*fcontent = context.getEntity()->_itemdata->count;
 				} else {
 					*fcontent = 0;
 				}
@@ -581,37 +582,37 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 		case 'r': {
 			
 			if(boost::starts_with(name, "^realdist_")) {
-				if(entity) {
+				if(context.getEntity()) {
 					const char * obj = name.c_str() + 10;
 					
 					if(!strcmp(obj, "player")) {
-						if(entity->requestRoomUpdate) {
-							UpdateIORoom(entity);
+						if(context.getEntity()->requestRoomUpdate) {
+							UpdateIORoom(context.getEntity());
 						}
 						long Player_Room = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
-						*fcontent = SP_GetRoomDist(entity->pos, player.pos, entity->room, Player_Room);
+						*fcontent = SP_GetRoomDist(context.getEntity()->pos, player.pos, context.getEntity()->room, Player_Room);
 						return TYPE_FLOAT;
 					}
 					
 					EntityHandle t = entities.getById(obj);
 					if(ValidIONum(t)) {
-						if((entity->show == SHOW_FLAG_IN_SCENE
-						    || entity->show == SHOW_FLAG_IN_INVENTORY)
+						if((context.getEntity()->show == SHOW_FLAG_IN_SCENE
+						    || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
 						   && (entities[t]->show == SHOW_FLAG_IN_SCENE
 						       || entities[t]->show == SHOW_FLAG_IN_INVENTORY)) {
 							
-							Vec3f pos  = GetItemWorldPosition(entity);
+							Vec3f pos  = GetItemWorldPosition(context.getEntity());
 							Vec3f pos2 = GetItemWorldPosition(entities[t]);
 							
-							if(entity->requestRoomUpdate) {
-								UpdateIORoom(entity);
+							if(context.getEntity()->requestRoomUpdate) {
+								UpdateIORoom(context.getEntity());
 							}
 							
 							if(entities[t]->requestRoomUpdate) {
 								UpdateIORoom(entities[t]);
 							}
 							
-							*fcontent = SP_GetRoomDist(pos, pos2, entity->room, entities[t]->room);
+							*fcontent = SP_GetRoomDist(pos, pos2, context.getEntity()->room, entities[t]->room);
 							
 						} else {
 							// Out of this world item
@@ -628,7 +629,7 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 			if(boost::starts_with(name, "^repairprice_")) {
 				EntityHandle t = entities.getById(name.substr(13));
 				if(ValidIONum(t)) {
-					*fcontent = ARX_DAMAGES_ComputeRepairPrice(entities[t], entity);
+					*fcontent = ARX_DAMAGES_ComputeRepairPrice(entities[t], context.getEntity());
 				} else {
 					*fcontent = 0;
 				}
@@ -704,8 +705,8 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 				const char * zone = name.c_str() + 8;
 				ARX_PATH * ap = ARX_PATH_GetAddressByName(zone);
 				*lcontent = 0;
-				if(entity && ap) {
-					if(ARX_PATH_IsPosInZone(ap, entity->pos)) {
+				if(context.getEntity() && ap) {
+					if(ARX_PATH_IsPosInZone(ap, context.getEntity()->pos)) {
 						*lcontent = 1;
 					}
 				}
@@ -714,9 +715,9 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 			
 			if(boost::starts_with(name, "^ininitpos")) {
 				*lcontent = 0;
-				if(entity) {
-					Vec3f pos = GetItemWorldPosition(entity);
-					if(pos == entity->initpos)
+				if(context.getEntity()) {
+					Vec3f pos = GetItemWorldPosition(context.getEntity());
+					if(pos == context.getEntity()->initpos)
 						*lcontent = 1;
 				}
 				return TYPE_LONG;
@@ -724,7 +725,7 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 			
 			if(boost::starts_with(name, "^inplayerinventory")) {
 				*lcontent = 0;
-				if(entity && (entity->ioflags & IO_ITEM) && IsInPlayerInventory(entity)) {
+				if(context.getEntity() && (context.getEntity()->ioflags & IO_ITEM) && IsInPlayerInventory(context.getEntity())) {
 					*lcontent = 1;
 				}
 				return TYPE_LONG;
@@ -737,47 +738,47 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 			
 			if(boost::starts_with(name, "^behavior")) {
 				txtcontent = "";
-				if(entity && (entity->ioflags & IO_NPC)) {
-					if(entity->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND) {
+				if(context.getEntity() && (context.getEntity()->ioflags & IO_NPC)) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND) {
 						txtcontent += "l";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_SNEAK) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_SNEAK) {
 						txtcontent += "s";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_DISTANT) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_DISTANT) {
 						txtcontent += "d";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_MAGIC) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_MAGIC) {
 						txtcontent += "m";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_FIGHT) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_FIGHT) {
 						txtcontent += "f";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
 						txtcontent += "h";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_FRIENDLY) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_FRIENDLY) {
 						txtcontent += "r";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_MOVE_TO) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_MOVE_TO) {
 						txtcontent += "t";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_FLEE) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_FLEE) {
 						txtcontent += "e";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
 						txtcontent += "o";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_HIDE) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_HIDE) {
 						txtcontent += "i";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 						txtcontent += "w";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_GUARD) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_GUARD) {
 						txtcontent += "u";
 					}
-					if(entity->_npcdata->behavior & BEHAVIOUR_STARE_AT) {
+					if(context.getEntity()->_npcdata->behavior & BEHAVIOUR_STARE_AT) {
 						txtcontent += "a";
 					}
 				}
@@ -790,25 +791,25 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 		case 's': {
 			
 			if(boost::starts_with(name, "^sender")) {
-				if(!sender) {
+				if(!context.getSender()) {
 					txtcontent = "none";
-				} else if(sender == entities.player()) {
+				} else if(context.getSender() == entities.player()) {
 					txtcontent = "player";
 				} else {
-					txtcontent = sender->idString();
+					txtcontent = context.getSender()->idString();
 				}
 				return TYPE_TEXT;
 			}
 			
 			if(boost::starts_with(name, "^scale")) {
-				*fcontent = (entity) ? entity->scale * 100.f : 0.f;
+				*fcontent = (context.getEntity()) ? context.getEntity()->scale * 100.f : 0.f;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^speaking")) {
-				if(entity) {
+				if(context.getEntity()) {
 					for(size_t i = 0; i < MAX_ASPEECH; i++) {
-						if(aspeech[i].exist && entity == aspeech[i].io) {
+						if(aspeech[i].exist && context.getEntity() == aspeech[i].io) {
 							*lcontent = 1;
 							return TYPE_LONG;
 						}
@@ -824,36 +825,36 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 		case 'm': {
 			
 			if(boost::starts_with(name, "^me")) {
-				if(!entity) {
+				if(!context.getEntity()) {
 					txtcontent = "none";
-				} else if(entity == entities.player()) {
+				} else if(context.getEntity() == entities.player()) {
 					txtcontent = "player";
 				} else {
-					txtcontent = entity->idString();
+					txtcontent = context.getEntity()->idString();
 				}
 				return TYPE_TEXT;
 			}
 			
 			if(boost::starts_with(name, "^maxlife")) {
 				*fcontent = 0;
-				if(entity && (entity->ioflags & IO_NPC)) {
-					*fcontent = entity->_npcdata->lifePool.max;
+				if(context.getEntity() && (context.getEntity()->ioflags & IO_NPC)) {
+					*fcontent = context.getEntity()->_npcdata->lifePool.max;
 				}
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^mana")) {
 				*fcontent = 0;
-				if(entity && (entity->ioflags & IO_NPC)) {
-					*fcontent = entity->_npcdata->manaPool.current;
+				if(context.getEntity() && (context.getEntity()->ioflags & IO_NPC)) {
+					*fcontent = context.getEntity()->_npcdata->manaPool.current;
 				}
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^maxmana")) {
 				*fcontent = 0;
-				if(entity && (entity->ioflags & IO_NPC)) {
-					*fcontent = entity->_npcdata->manaPool.max;
+				if(context.getEntity() && (context.getEntity()->ioflags & IO_NPC)) {
+					*fcontent = context.getEntity()->_npcdata->manaPool.max;
 				}
 				return TYPE_FLOAT;
 			}
@@ -861,7 +862,7 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 			if(boost::starts_with(name, "^myspell_")) {
 				SpellType id = GetSpellId(name.substr(9));
 				if(id != SPELL_NONE) {
-					if(spells.ExistAnyInstanceForThisCaster(id, entity->index())) {
+					if(spells.ExistAnyInstanceForThisCaster(id, context.getEntity()->index())) {
 						*lcontent = 1;
 						return TYPE_LONG;
 					}
@@ -871,7 +872,7 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 			}
 			
 			if(boost::starts_with(name, "^maxdurability")) {
-				*fcontent = (entity) ? entity->max_durability : 0.f;
+				*fcontent = (context.getEntity()) ? context.getEntity()->max_durability : 0.f;
 				return TYPE_FLOAT;
 			}
 			
@@ -882,8 +883,8 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 			
 			if(boost::starts_with(name, "^life")) {
 				*fcontent = 0;
-				if(entity && (entity->ioflags & IO_NPC)) {
-					*fcontent = entity->_npcdata->lifePool.current;
+				if(context.getEntity() && (context.getEntity()->ioflags & IO_NPC)) {
+					*fcontent = context.getEntity()->_npcdata->lifePool.current;
 				}
 				return TYPE_FLOAT;
 			}
@@ -899,21 +900,21 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 		case 'd': {
 			
 			if(boost::starts_with(name, "^dist_")) {
-				if(entity) {
+				if(context.getEntity()) {
 					const char * obj = name.c_str() + 6;
 					
 					if(!strcmp(obj, "player")) {
-						*fcontent = fdist(player.pos, entity->pos);
+						*fcontent = fdist(player.pos, context.getEntity()->pos);
 						return TYPE_FLOAT;
 					}
 					
 					EntityHandle t = entities.getById(obj);
 					if(ValidIONum(t)) {
-						if((entity->show == SHOW_FLAG_IN_SCENE
-						    || entity->show == SHOW_FLAG_IN_INVENTORY)
+						if((context.getEntity()->show == SHOW_FLAG_IN_SCENE
+						    || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
 						   && (entities[t]->show == SHOW_FLAG_IN_SCENE
 						       || entities[t]->show == SHOW_FLAG_IN_INVENTORY)) {
-							Vec3f pos  = GetItemWorldPosition(entity);
+							Vec3f pos  = GetItemWorldPosition(context.getEntity());
 							Vec3f pos2 = GetItemWorldPosition(entities[t]);
 							*fcontent = fdist(pos, pos2);
 							return TYPE_FLOAT;
@@ -931,7 +932,7 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 			}
 			
 			if(boost::starts_with(name, "^durability")) {
-				*fcontent = (entity) ? entity->durability : 0.f;
+				*fcontent = (context.getEntity()) ? context.getEntity()->durability : 0.f;
 				return TYPE_FLOAT;
 			}
 			
@@ -942,8 +943,8 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 			
 			if(boost::starts_with(name, "^price")) {
 				*fcontent = 0;
-				if(entity && (entity->ioflags & IO_ITEM)) {
-					*fcontent = static_cast<float>(entity->_itemdata->price);
+				if(context.getEntity() && (context.getEntity()->ioflags & IO_ITEM)) {
+					*fcontent = static_cast<float>(context.getEntity()->_itemdata->price);
 				}
 				return TYPE_FLOAT;
 			}
@@ -960,14 +961,14 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 			
 			if(boost::starts_with(name, "^poisoned")) {
 				*fcontent = 0;
-				if(entity && (entity->ioflags & IO_NPC)) {
-					*fcontent = entity->_npcdata->poisonned;
+				if(context.getEntity() && (context.getEntity()->ioflags & IO_NPC)) {
+					*fcontent = context.getEntity()->_npcdata->poisonned;
 				}
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^poisonous")) {
-				*fcontent = (entity) ? entity->poisonous : 0.f;
+				*fcontent = (context.getEntity()) ? context.getEntity()->poisonous : 0.f;
 				return TYPE_FLOAT;
 			}
 			
@@ -1121,7 +1122,7 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 		case 'n': {
 			
 			if(boost::starts_with(name, "^npcinsight")) {
-				Entity * ioo = ARX_NPC_GetFirstNPCInSight(entity);
+				Entity * ioo = ARX_NPC_GetFirstNPCInSight(context.getEntity());
 				if(!ioo) {
 					txtcontent = "none";
 				} else if(ioo == entities.player()) {
@@ -1138,14 +1139,14 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 		case 't': {
 			
 			if(boost::starts_with(name, "^target")) {
-				if(!entity) {
+				if(!context.getEntity()) {
 					txtcontent = "none";
-				} else if(entity->targetinfo == EntityHandle_Player) {
+				} else if(context.getEntity()->targetinfo == EntityHandle_Player) {
 					txtcontent = "player";
-				} else if(!ValidIONum(entity->targetinfo)) {
+				} else if(!ValidIONum(context.getEntity()->targetinfo)) {
 					txtcontent = "none";
 				} else {
-					txtcontent = entities[entity->targetinfo]->idString();
+					txtcontent = entities[context.getEntity()->targetinfo]->idString();
 				}
 				return TYPE_TEXT;
 			}
@@ -1156,8 +1157,8 @@ ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, con
 		case 'f': {
 			
 			if(boost::starts_with(name, "^focal")) {
-				if(entity && (entity->ioflags & IO_CAMERA)) {
-					*fcontent = entity->_camdata->cam.focal;
+				if(context.getEntity() && (context.getEntity()->ioflags & IO_CAMERA)) {
+					*fcontent = context.getEntity()->_camdata->cam.focal;
 					return TYPE_FLOAT;
 				}
 			}
