@@ -158,7 +158,7 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 	Entity * io_target = entities[target];
 	Entity * io_source = entities[source];
 	
-	SendIOScriptEvent(EVENT_SENDER, io_target, SM_AGGRESSION);
+	SendIOScriptEvent(io_source, io_target, SM_AGGRESSION);
 	
 	float distance = fdist(projectile.position, projectile.initial_position);
 	float distance_modifier = 1.f;
