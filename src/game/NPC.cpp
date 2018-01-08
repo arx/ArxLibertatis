@@ -2750,6 +2750,7 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 	max_distance *= presence;
 	max_distance /= factor;
 	
+	Entity * oes = EVENT_SENDER;
 	EVENT_SENDER = source;
 	
 	long Source_Room = ARX_PORTALS_GetRoomNumForPosition(pos, 1);
@@ -2793,6 +2794,8 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 			}
 		}
 	}
+	
+	EVENT_SENDER = oes;
 }
 
 void ManageIgnition(Entity * io) {
