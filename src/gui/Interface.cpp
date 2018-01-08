@@ -825,7 +825,7 @@ void ArxGame::managePlayerControls() {
 						if(t->inventory) {
 							
 							if((player.Interface & INTER_STEAL) && ioSteal && t != ioSteal) {
-								SendIOScriptEvent(EVENT_SENDER, ioSteal, SM_STEAL, "off");
+								SendIOScriptEvent(entities.player(), ioSteal, SM_STEAL, "off");
 								player.Interface &= ~INTER_STEAL;
 							}
 							
@@ -848,7 +848,7 @@ void ArxGame::managePlayerControls() {
 					
 					if(player.Interface & INTER_STEAL) {
 						if(ioSteal && t != ioSteal) {
-							SendIOScriptEvent(EVENT_SENDER, ioSteal, SM_STEAL, "off");
+							SendIOScriptEvent(entities.player(), ioSteal, SM_STEAL, "off");
 							player.Interface &= ~INTER_STEAL;
 						}
 					}
