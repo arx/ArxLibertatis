@@ -297,6 +297,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 					
 					if(ioo && (ioo->ioflags & IO_NPC)) {
 						if(ioo->targetinfo == EntityHandle(TARGET_PLAYER)) {
+							Entity * oes = EVENT_SENDER;
 							EVENT_SENDER = entities.player();
 							std::string killer;
 							if(source == EntityHandle_Player) {
@@ -307,6 +308,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 								killer = entities[source]->idString();
 							}
 							SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
+							EVENT_SENDER = oes;
 						}
 					}
 				}
