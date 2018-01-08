@@ -514,7 +514,8 @@ void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity
 ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEventName & event,
                                const std::string & params = std::string());
 
-ScriptResult SendMsgToAllIO(Entity * sender, ScriptMessage msg, const std::string & params = std::string());
+ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event,
+                            const std::string & params = std::string());
 
 void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEventName & event,
                              const std::string & params = std::string());

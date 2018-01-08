@@ -131,7 +131,7 @@ long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
 	return -1;
 }
 
-ScriptResult SendMsgToAllIO(Entity * sender, ScriptMessage msg, const std::string & params) {
+ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event, const std::string & params) {
 	
 	ScriptResult ret = ACCEPT;
 	
@@ -139,7 +139,7 @@ ScriptResult SendMsgToAllIO(Entity * sender, ScriptMessage msg, const std::strin
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
 		if(e) {
-			if(SendIOScriptEvent(sender, e, msg, params) == REFUSE) {
+			if(SendIOScriptEvent(sender, e, event, params) == REFUSE) {
 				ret = REFUSE;
 			}
 		}
