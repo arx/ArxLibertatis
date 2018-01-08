@@ -748,9 +748,11 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 											}
 
 										if(io->ioflags & IO_FIELD) {
+											Entity * oes = EVENT_SENDER;
 											EVENT_SENDER = NULL;
 											io->collide_door_time = g_gameTime.now();
 											SendIOScriptEvent(ioo, SM_COLLIDE_FIELD);
+											EVENT_SENDER = oes;
 										}
 										
 										if(!dealt && ioo && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
