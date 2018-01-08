@@ -187,7 +187,6 @@ void PlayerBook::toggle() {
 		g_miniMap.purgeTexContainer();
 		onClosePage();
 	} else {
-		SendIOScriptEvent(NULL, entities.player(), SM_NULL, "", "book_open");
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, Random::getf(0.9f, 1.1f));
 		SendIOScriptEvent(NULL, entities.player(), SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
