@@ -733,12 +733,14 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 							if(source && (io->gameFlags & GFLAG_DOOR)) {
 								GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
 								if(elapsed > GameDurationMs(500)) {
+									Entity * oes = EVENT_SENDER;
 									EVENT_SENDER = source;
 									io->collide_door_time = g_gameTime.now();
 									SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 									EVENT_SENDER = io;
 									io->collide_door_time = g_gameTime.now();
 									SendIOScriptEvent(source, SM_COLLIDE_DOOR);
+									EVENT_SENDER = oes;
 								}
 							}
 							return true;
