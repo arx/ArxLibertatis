@@ -87,11 +87,13 @@ class Context {
 	Entity * m_sender;
 	Entity * m_entity;
 	ScriptMessage m_message;
+	ScriptParameters m_parameters;
 	std::vector<size_t> m_stack;
 	
 public:
 	
-	explicit Context(EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity, ScriptMessage msg);
+	explicit Context(EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity, ScriptMessage msg,
+	                 const ScriptParameters & parameters);
 	
 	std::string getStringVar(const std::string & name) const;
 	std::string getFlags();
@@ -104,6 +106,8 @@ public:
 	
 	Entity * getSender() const { return m_sender; }
 	Entity * getEntity() const { return m_entity; }
+	ScriptMessage getMessage() const { return m_message; }
+	const ScriptParameters & getParameters() const { return m_parameters; }
 	
 	bool getBool();
 	
@@ -127,7 +131,6 @@ public:
 	
 	size_t getPosition() const { return m_pos; }
 	
-	ScriptMessage getMessage() const { return m_message; }
 	
 };
 

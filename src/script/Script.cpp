@@ -93,7 +93,6 @@ extern Entity * pIOChangeWeapon;
 Entity * LASTSPAWNED = NULL;
 SCRIPT_VARIABLES svar;
 
-ScriptParameters g_scriptParameters;
 long FORBID_SCRIPT_IO_CREATION = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;

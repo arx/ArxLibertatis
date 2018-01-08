@@ -301,9 +301,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	         << (entity == NULL ? "" : es == &entity->script ? " base" : " overriding")
 	         << " pos=" << pos);
 	
-	g_scriptParameters = ScriptParameters::parse(params);
-	
-	script::Context context(es, pos, sender, entity, event.getId());
+	script::Context context(es, pos, sender, entity, event.getId(), ScriptParameters::parse(params));
 	
 	if(event != SM_EXECUTELINE) {
 		std::string word = context.getCommand();

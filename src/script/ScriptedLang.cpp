@@ -448,7 +448,7 @@ class IfCommand : public Command {
 			case '^': {
 				
 				long l;
-				switch(getSystemVar(context.getSender(), g_scriptParameters, es, io, var, s, &f, &l)) {
+				switch(getSystemVar(context.getSender(), context.getParameters(), es, io, var, s, &f, &l)) {
 					
 					case TYPE_TEXT: return TYPE_TEXT;
 					

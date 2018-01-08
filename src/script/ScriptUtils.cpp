@@ -42,12 +42,14 @@ std::string loadUnlocalized(const std::string & str) {
 	return str;
 }
 
-Context::Context(EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity, ScriptMessage msg)
+Context::Context(EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity, ScriptMessage msg,
+                 const ScriptParameters & parameters)
 	: m_script(script)
 	, m_pos(pos)
 	, m_sender(sender)
 	, m_entity(entity)
 	, m_message(msg)
+	, m_parameters(parameters)
 { }
 
 std::string Context::getStringVar(const std::string & name) const {
@@ -58,7 +60,7 @@ std::string Context::getStringVar(const std::string & name) const {
 		long lv;
 		float fv;
 		std::string tv;
-		switch(getSystemVar(getSender(), g_scriptParamters, getMaster(), getEntity(), name, tv, &fv, &lv)) {
+		switch(getSystemVar(getSender(), getParameters(), getMaster(), getEntity(), name, tv, &fv, &lv)) {
 			case TYPE_TEXT:
 				return tv;
 			case TYPE_LONG:
@@ -272,7 +274,7 @@ float Context::getFloatVar(const std::string & name) const {
 		long lv;
 		float fv;
 		std::string tv;
-		switch(getSystemVar(getSender(), g_scriptParamters, getMaster(), getEntity(), name, tv, &fv, &lv)) {
+		switch(getSystemVar(getSender(), getParameters(), getMaster(), getEntity(), name, tv, &fv, &lv)) {
 			case TYPE_TEXT:
 				return float(atof(tv.c_str()));
 			case TYPE_LONG:
