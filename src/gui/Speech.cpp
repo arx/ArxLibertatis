@@ -324,7 +324,7 @@ void ARX_SPEECH_ClearIOSpeech(Entity * entity) {
 		ARX_SPEECH_Release(i);
 		
 		if(es && ValidIOAddress(scriptEntity)) {
-			ScriptEvent::send(es, EVENT_SENDER, scriptEntity, SM_EXECUTELINE, std::string(), std::string(), scrpos);
+			ScriptEvent::send(es, NULL, scriptEntity, SM_EXECUTELINE, std::string(), std::string(), scrpos);
 		}
 	}
 }
