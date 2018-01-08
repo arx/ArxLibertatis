@@ -1511,7 +1511,7 @@ void ArxGame::manageKeyMouse() {
 						
 						if(bOk) {
 							if(!(FlyingOverIO->_itemdata->playerstacksize <= 1 && FlyingOverIO->_itemdata->count > 1)) {
-								SendIOScriptEvent(EVENT_SENDER, FlyingOverIO, SM_INVENTORYUSE);
+								SendIOScriptEvent(entities.player(), FlyingOverIO, SM_INVENTORYUSE);
 								if(config.input.autoReadyWeapon == AlwaysAutoReadyWeapon || !config.input.mouseLookToggle) {
 									TRUE_PLAYER_MOUSELOOK_ON = false;
 								}
