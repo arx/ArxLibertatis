@@ -87,15 +87,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 
 
-#define MAX_SSEPARAMS 5
-
 extern long lChangeWeapon;
 extern Entity * pIOChangeWeapon;
 
 Entity * LASTSPAWNED = NULL;
 SCRIPT_VARIABLES svar;
 
-static char SSEPARAMS[MAX_SSEPARAMS][64];
+ScriptParameters g_scriptParameters;
 long FORBID_SCRIPT_IO_CREATION = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
@@ -155,6 +153,43 @@ std::ostream & operator<<(std::ostream & os, const ScriptEventName & event) {
 		return os << AS_EVENT[event.getId()].name << " event";
 	}
 	
+}
+
+ScriptParameters ScriptParameters::parse(const std::string & str) {
+	
+	ScriptParameters result;
+	
+	if(str.empty()) {
+		return result;
+	}
+	
+	for(size_t start = 0; start < str.length(); ) {
+		
+		size_t end = str.find(' ', start);
+		if(end == std::string::npos) {
+			end = str.length();
+		}
+		
+		result.push_back(str.substr(start, end - start));
+		
+		start = end + 1;
+	}
+	
+	return result;
+}
+
+std::ostream & operator<<(std::ostream & os, const ScriptParameters & parameters) {
+	
+	os << '"';
+	if(!parameters.empty()) {
+		os << parameters[0];
+		for(size_t i = 1; i < parameters.size(); i++) {
+			os << ' ' << parameters[i];
+		}
+	}
+	os << '"';
+	
+	return os;
 }
 
 long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
@@ -341,17 +376,17 @@ ValueType getSystemVar(Entity * sender, const EERIE_SCRIPT * es, Entity * entity
 		case '$': {
 			
 			if(name == "^$param1") {
-				txtcontent = SSEPARAMS[0];
+				txtcontent = g_scriptParameters.get(0);
 				return TYPE_TEXT;
 			}
 			
 			if(name == "^$param2") {
-				txtcontent = SSEPARAMS[1];
+				txtcontent = g_scriptParameters.get(1);
 				return TYPE_TEXT;
 			}
 			
 			if(name == "^$param3") {
-				txtcontent = SSEPARAMS[2];
+				txtcontent = g_scriptParameters.get(2);
 				return TYPE_TEXT;
 			}
 			
@@ -369,17 +404,17 @@ ValueType getSystemVar(Entity * sender, const EERIE_SCRIPT * es, Entity * entity
 		case '&': {
 			
 			if(name == "^&param1") {
-				*fcontent = (float)atof(SSEPARAMS[0]);
+				*fcontent = float(atof(g_scriptParameters.get(0).c_str()));
 				return TYPE_FLOAT;
 			}
 			
 			if(name == "^&param2") {
-				*fcontent = (float)atof(SSEPARAMS[1]);
+				*fcontent = float(atof(g_scriptParameters.get(1).c_str()));
 				return TYPE_FLOAT;
 			}
 			
 			if(name == "^&param3") {
-				*fcontent = (float)atof(SSEPARAMS[2]);
+				*fcontent = float(atof(g_scriptParameters.get(2).c_str()));
 				return TYPE_FLOAT;
 			}
 			
@@ -403,17 +438,17 @@ ValueType getSystemVar(Entity * sender, const EERIE_SCRIPT * es, Entity * entity
 			}
 			
 			if(name == "^#param1") {
-				*lcontent = atol(SSEPARAMS[0]);
+				*lcontent = atol(g_scriptParameters.get(0).c_str());
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#param2") {
-				*lcontent = atol(SSEPARAMS[1]);
+				*lcontent = atol(g_scriptParameters.get(1).c_str());
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#param3") {
-				*lcontent = atol(SSEPARAMS[2]);
+				*lcontent = atol(g_scriptParameters.get(2).c_str());
 				return TYPE_LONG;
 			}
 			
@@ -1336,41 +1371,6 @@ void MakeLocalText(EERIE_SCRIPT * es, std::string & tx) {
 			case TYPE_G_FLOAT:
 				break;
 		}
-	}
-}
-
-void MakeSSEPARAMS(const char * params)
-{
-	
-	for (long i = 0; i < MAX_SSEPARAMS; i++)
-	{
-		SSEPARAMS[i][0] = 0;
-	}
-
-	if(params == NULL) {
-		return;
-	}
-
-	long pos = 0;
-
-	while(*params != '\0' && pos < MAX_SSEPARAMS) {
-		
-		size_t tokensize = 0;
-		while(params[tokensize] != ' ' && params[tokensize] != '\0') {
-			tokensize++;
-		}
-		
-		arx_assert(tokensize < 64 - 1);
-		memcpy(SSEPARAMS[pos], params, tokensize);
-		SSEPARAMS[pos][tokensize] = 0;
-		
-		params += tokensize;
-		
-		if(*params != '\0') {
-			params++;
-		}
-		
-		pos++;
 	}
 }
 

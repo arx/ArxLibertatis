@@ -300,8 +300,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	         << " entity=" << (entity ? entity->idString() : "unknown")
 	         << (entity == NULL ? "" : es == &entity->script ? " base" : " overriding")
 	         << " pos=" << pos);
-
-	MakeSSEPARAMS(params.c_str());
+	
+	g_scriptParameters = ScriptParameters::parse(params);
 	
 	script::Context context(es, pos, sender, entity, event.getId());
 	
