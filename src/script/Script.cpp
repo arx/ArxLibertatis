@@ -1454,13 +1454,13 @@ void ARX_SCRIPT_EventStackExecuteAll() {
 }
 
 void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEventName & event,
-                             const std::string & params) {
+                             const ScriptParameters & parameters) {
 	BOOST_FOREACH(QueuedEvent & entry, g_eventQueue) {
 		if(!entry.exists) {
 			entry.sender = sender;
 			entry.entity = entity;
 			entry.event = event;
-			entry.parameters = ScriptParameters::parse(params);
+			entry.parameters = parameters;
 			entry.exists = true;
 			return;
 		}
