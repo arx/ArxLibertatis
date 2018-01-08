@@ -252,7 +252,7 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 			// Copy the even name to a local variable as it may change during execution
 			// and cause unexpected behavior in SendIOScriptEvent
 			std::string event = entities[i]->mainevent;
-			SendIOScriptEvent(NULL, entities[i], SM_NULL, std::string(), event);
+			SendIOScriptEvent(NULL, entities[i], event);
 		} else {
 			SendIOScriptEvent(NULL, entities[i], SM_MAIN);
 		}
@@ -1492,7 +1492,7 @@ void ARX_SCRIPT_EventStackExecute(size_t limit) {
 			Entity * sender = ValidIOAddress(event.sender) ? event.sender : NULL;
 			LogDebug("running queued " << ScriptEvent::getName(event.event.getId(), event.event.getMessage())
 			         << " for " << event.entity->idString());
-			SendIOScriptEvent(sender, event.entity, event.event.getId(), event.params, event.event.getName());
+			SendIOScriptEvent(sender, event.entity, event.event, event.params);
 		} else {
 			LogDebug("could not run queued " << ScriptEvent::getName(event.event.getId(), event.event.getMessage())
 			         << " params=\"" << event.params << "\" - entity vanished");
@@ -1526,8 +1526,8 @@ void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEvent
 	}
 }
 
-ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage event,
-                               const std::string & params, const std::string & eventname) {
+ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEventName & event,
+                               const std::string & params) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -1542,14 +1542,14 @@ ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage e
 	
 	// Send the event to the instance script first
 	if(entities[num]->over_script.data) {
-		ScriptResult ret = ScriptEvent::send(&entities[num]->over_script, sender, entities[num], event, params, eventname);
+		ScriptResult ret = ScriptEvent::send(&entities[num]->over_script, sender, entities[num], event, params);
 		if(ret == REFUSE || !entities[num]) {
 			return REFUSE;
 		}
 	}
 	
 	// If the instance script did not refuse the event also send it to the class script
-	return ScriptEvent::send(&entities[num]->script, sender, entities[num], event, params, eventname);
+	return ScriptEvent::send(&entities[num]->script, sender, entities[num], event, params);
 }
 
 ScriptResult SendInitScriptEvent(Entity * io) {
