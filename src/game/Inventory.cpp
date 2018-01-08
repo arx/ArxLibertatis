@@ -1221,7 +1221,7 @@ void ARX_INVENTORY_IdentifyIO(Entity * _pIO) {
 	if(_pIO && (_pIO->ioflags & IO_ITEM) && _pIO->_itemdata->equipitem) {
 		if(player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
 		   >= _pIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) {
-			SendIOScriptEvent(EVENT_SENDER, _pIO, SM_IDENTIFY);
+			SendIOScriptEvent(entities.player(), _pIO, SM_IDENTIFY);
 		}
 	}
 }
