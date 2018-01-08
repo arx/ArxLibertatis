@@ -1315,13 +1315,13 @@ void ArxGame::managePlayerControls() {
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
 			if(!CSEND) {
 				CSEND = 1;
-				SendIOScriptEvent(EVENT_SENDER, entities.player(), SM_EXPLORATIONMODE);
+				SendIOScriptEvent(NULL, entities.player(), SM_EXPLORATIONMODE);
 			}
 		}
 	} else {
 		if(CSEND) {
 			CSEND = 0;
-			SendIOScriptEvent(EVENT_SENDER, entities.player(), SM_CURSORMODE);
+			SendIOScriptEvent(NULL, entities.player(), SM_CURSORMODE);
 		}
 	}
 	
