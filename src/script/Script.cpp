@@ -1534,8 +1534,8 @@ void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage msg
 	}
 }
 
-static ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, const std::string & params,
-                                             const std::string & eventname) {
+static ScriptResult SendIOScriptEventReverse(Entity * sender, Entity * io, ScriptMessage msg,
+                                             const std::string & params, const std::string & eventname) {
 	
 	// checks invalid IO
 	if (!io) return REFUSE;
@@ -1545,16 +1545,16 @@ static ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, con
 	// if this IO only has a Local script, send event to it
 	if (entities[num] && !entities[num]->over_script.data)
 	{
-		return ScriptEvent::send(&entities[num]->script, EVENT_SENDER, entities[num], msg, params, eventname);
+		return ScriptEvent::send(&entities[num]->script, sender, entities[num], msg, params, eventname);
 	}
 	
 	// If this IO has a Global script send to Local (if exists)
 	// then to local if no overriden by Local
-	if (entities[num] && (ScriptEvent::send(&entities[num]->script, EVENT_SENDER, entities[num], msg, params, eventname) != REFUSE))
+	if (entities[num] && (ScriptEvent::send(&entities[num]->script, sender, entities[num], msg, params, eventname) != REFUSE))
 	{
 	
 		if (entities[num])
-			return (ScriptEvent::send(&entities[num]->over_script, EVENT_SENDER, entities[num], msg, params, eventname));
+			return (ScriptEvent::send(&entities[num]->over_script, sender, entities[num], msg, params, eventname));
 		else
 			return REFUSE;
 	}
@@ -1580,7 +1580,7 @@ ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string
 	{
 		if (entities[num])
 		{
-			SendIOScriptEventReverse(entities[num], msg, params, eventname);
+			SendIOScriptEventReverse(EVENT_SENDER, entities[num], msg, params, eventname);
 			EVENT_SENDER = oes;
 		}
 	}
