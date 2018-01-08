@@ -2363,6 +2363,8 @@ afterthat:
 			if(io->_npcdata->pathfind.listnb > 0) {
 				ManageNPCMovement_check_target_reached(io);
 			} else if(!io->_npcdata->reachedtarget) {
+				
+				Entity * oes = EVENT_SENDER;
 				if(ValidIONum(io->targetinfo))
 					EVENT_SENDER = entities[io->targetinfo];
 				else
@@ -2376,6 +2378,8 @@ afterthat:
 
 				if(io->targetinfo != io->index())
 					SendIOScriptEvent(io, SM_REACHEDTARGET);
+				
+				EVENT_SENDER = oes;
 			}
 		}
 	}
