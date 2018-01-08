@@ -195,39 +195,38 @@ void TreatBackgroundDynlights() {
 			}
 			
 			if(!light->m_ignitionStatus) {
+				
 				// just extinguished
 				EERIE_LIGHT * dynLight = lightHandleGet(light->m_ignitionLightHandle);
 				if(dynLight) {
 					dynLight->exist = 0;
 					light->m_ignitionLightHandle = LightHandle();
-					
 					for(size_t l = 0; l < entities.size(); l++) {
 						const EntityHandle handle = EntityHandle(l);
 						Entity * e = entities[handle];
-						
 						if(e && (e->ioflags & IO_MARKER)) {
 							Vec3f _pos2 = GetItemWorldPosition(e);
 							if(!fartherThan(light->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(EVENT_SENDER, e, SM_CUSTOM, "douse");
+								SendIOScriptEvent(NULL, e, SM_CUSTOM, "douse");
 							}
 						}
 					}
 				}
+				
 			} else {
+				
 				// just light up
 				if(!lightHandleGet(light->m_ignitionLightHandle)) {
 					for(size_t l = 0; l < entities.size(); l++) {
 						const EntityHandle handle = EntityHandle(l);
 						Entity * e = entities[handle];
-						
 						if(e && (e->ioflags & IO_MARKER)) {
 							Vec3f _pos2 = GetItemWorldPosition(e);
 							if(!fartherThan(light->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(EVENT_SENDER, e, SM_CUSTOM, "fire");
+								SendIOScriptEvent(NULL, e, SM_CUSTOM, "fire");
 							}
 						}
 					}
-
 					light->m_ignitionLightHandle = GetFreeDynLight();
 				}
 				
