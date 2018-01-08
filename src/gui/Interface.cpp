@@ -2093,7 +2093,7 @@ void ArxGame::manageEditorControls() {
 							if(light->m_ignitionStatus) {
 								light->m_ignitionStatus = false;
 								ARX_SOUND_PlaySFX(SND_TORCH_END, &light->pos);
-								SendIOScriptEvent(EVENT_SENDER, COMBINE, SM_CUSTOM, "douse");
+								SendIOScriptEvent(NULL, COMBINE, SM_CUSTOM, "douse");
 							}
 						}
 					}
