@@ -84,14 +84,14 @@ class Context {
 	
 	EERIE_SCRIPT * m_script;
 	size_t m_pos;
+	Entity * m_sender;
 	Entity * m_entity;
 	ScriptMessage m_message;
 	std::vector<size_t> m_stack;
 	
 public:
 	
-	explicit Context(EERIE_SCRIPT * script, size_t pos = 0, Entity * entity = NULL,
-	                 ScriptMessage msg = SM_NULL);
+	explicit Context(EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity, ScriptMessage msg);
 	
 	std::string getStringVar(const std::string & var) const;
 	std::string getFlags();
@@ -102,6 +102,7 @@ public:
 	
 	void skipWhitespace(bool skipNewlines = false);
 	
+	Entity * getSender() const { return m_sender; }
 	Entity * getEntity() const { return m_entity; }
 	
 	bool getBool();
