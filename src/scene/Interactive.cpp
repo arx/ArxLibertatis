@@ -186,17 +186,18 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 		std::string temp = op->name;
 
 		if(flags & 1) // no need when being destroyed !
-			SendIOScriptEvent(EVENT_SENDER, io, SM_LEAVEZONE, temp);
+			SendIOScriptEvent(NULL, io, SM_LEAVEZONE, temp);
 
 		if(!op->controled.empty()) {
 			EntityHandle t = entities.getById(op->controled);
-
 			if(t != EntityHandle()) {
 				std::string str = io->idString() + ' ' + temp;
-				SendIOScriptEvent(EVENT_SENDER, entities[t], SM_CONTROLLEDZONE_LEAVE, str);
+				SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 			}
 		}
+		
 	}
+	
 }
 
 void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
