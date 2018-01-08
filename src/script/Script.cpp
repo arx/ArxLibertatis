@@ -1285,33 +1285,6 @@ std::string GetVarValueInterpretedAsText(Entity * sender, const std::string & te
 	return var_text;
 }
 
-float GetVarValueInterpretedAsFloat(Entity * sender, const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io) {
-	
-	if(temp1[0] == '^') {
-		long lv;
-		float fv;
-		std::string tv;
-		switch(getSystemVar(sender, esss, io, temp1, tv, &fv, &lv)) {
-			case TYPE_TEXT:
-				return (float)atof(tv.c_str());
-			case TYPE_LONG:
-				return (float)lv;
-			default:
-				return fv;
-		}
-	} else if(temp1[0] == '#') {
-		return (float)GETVarValueLong(svar, temp1);
-	} else if(temp1[0] == '\xA7') {
-		return (float)GETVarValueLong(esss->lvar, temp1);
-	} else if(temp1[0] == '&') {
-		return GETVarValueFloat(svar, temp1);
-	} else if(temp1[0] == '@') {
-		return GETVarValueFloat(esss->lvar, temp1);
-	}
-	
-	return (float)atof(temp1.c_str());
-}
-
 SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES & svf, const std::string & name, long val) {
 	
 	SCRIPT_VAR * tsv = GetVarAddress(svf, name);
