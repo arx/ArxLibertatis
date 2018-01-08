@@ -525,7 +525,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		return;
 	}
 	
-	ARX_SCRIPT_SetMainEvent(io_dead, SM_DEAD);
+	io_dead->mainevent = SM_DEAD;
 	
 	if(fartherThan(io_dead->pos, g_camera->m_pos, 3200.f)) {
 		io_dead->animlayer[0].ctime = AnimationDurationMs(9999999);
