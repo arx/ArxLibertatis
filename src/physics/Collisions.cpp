@@ -593,6 +593,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 						if(!(flags & CFLAG_JUST_TEST) && ioo) {
 							GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
 							if(elapsed > GameDurationMs(500)) {
+								Entity * oes = EVENT_SENDER;
 								EVENT_SENDER = ioo;
 								io->collide_door_time = g_gameTime.now();
 
@@ -608,6 +609,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 									SendIOScriptEvent(ioo, SM_COLLIDE_NPC, "back");
 								else
 									SendIOScriptEvent(ioo, SM_COLLIDE_NPC);
+								EVENT_SENDER = oes;
 							}
 
 							if(ioo->damager_damages > 0 || io->damager_damages > 0) {
