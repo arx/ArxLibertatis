@@ -460,7 +460,7 @@ void ARX_SPEECH_Update() {
 			long scrpos = aspeech[i].scrpos;
 			ARX_SPEECH_Release(i);
 			if(es && ValidIOAddress(scriptEntity)) {
-				ScriptEvent::send(es, EVENT_SENDER, scriptEntity, SM_EXECUTELINE, std::string(), std::string(), scrpos);
+				ScriptEvent::send(es, NULL, scriptEntity, SM_EXECUTELINE, std::string(), std::string(), scrpos);
 			}
 		}
 	}
