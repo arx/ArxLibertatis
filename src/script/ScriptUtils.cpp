@@ -44,7 +44,7 @@ Context::Context(EERIE_SCRIPT * script, size_t pos, Entity * entity, ScriptMessa
 	: m_script(script), m_pos(pos), m_entity(entity), m_message(msg) { }
 
 std::string Context::getStringVar(const std::string & var) const {
-	return GetVarValueInterpretedAsText(var, getMaster(), m_entity);
+	return GetVarValueInterpretedAsText(EVENT_SENDER, var, getMaster(), m_entity);
 }
 
 #define ScriptParserWarning ARX_LOG(isSuppressed(*this, "?") ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(*this) << ": "

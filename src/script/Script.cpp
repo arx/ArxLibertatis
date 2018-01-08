@@ -1180,7 +1180,7 @@ std::string GETVarValueText(const SCRIPT_VARIABLES & svf, const std::string & na
 	return tsv->text;
 }
 
-std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io) {
+std::string GetVarValueInterpretedAsText(Entity * sender, const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io) {
 	
 	char var_text[256];
 	float t1;
@@ -1193,7 +1193,7 @@ std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_
 			float fv;
 			std::string tv;
 			
-			switch(getSystemVar(EVENT_SENDER, esss, io, temp1, tv, &fv, &lv)) {
+			switch(getSystemVar(sender, esss, io, temp1, tv, &fv, &lv)) {
 				case TYPE_TEXT:
 					return tv;
 					break;
