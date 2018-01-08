@@ -819,7 +819,7 @@ void ArxGame::managePlayerControls() {
 			if(t->ioflags & IO_NPC) {
 				if(t->script.data) {
 					if(t->_npcdata->lifePool.current > 0.f) {
-						SendIOScriptEvent(EVENT_SENDER, t, SM_CHAT);
+						SendIOScriptEvent(entities.player(), t, SM_CHAT);
 						DRAGGING = false;
 					} else {
 						if(t->inventory) {
