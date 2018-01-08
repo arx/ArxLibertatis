@@ -166,7 +166,7 @@ void ARX_Menu_Manage() {
 				if(cinematicBorder.isActive()) {
 					// Disabling ESC capture while fading in or out.
 					if(!FADEDIR) {
-						if(SendMsgToAllIO(EVENT_SENDER, SM_KEY_PRESSED) != REFUSE) {
+						if(SendMsgToAllIO(NULL, SM_KEY_PRESSED) != REFUSE) {
 							REQUEST_SPEECH_SKIP = true;
 						}
 					}
