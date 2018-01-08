@@ -287,7 +287,7 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	es->data = NULL;
 	
 	ARX_SCRIPT_ReleaseLabels(es);
-	memset(es->shortcut, 0, sizeof(long) * MAX_SHORTCUT);
+	memset(es->shortcut, 0, sizeof(long) * SM_MAXCMD);
 }
 
 ValueType getSystemVar(Entity * sender, const EERIE_SCRIPT * es, Entity * entity, const std::string & name,
