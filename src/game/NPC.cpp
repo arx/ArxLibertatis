@@ -2281,14 +2281,14 @@ afterthat:
 	if(io->_npcdata->pathfind.pathwait == 0) {
 		if(_dist > TOLERANCE && dis > TOLERANCE2) {
 			if(io->_npcdata->reachedtarget) {
-
+				Entity * oes = EVENT_SENDER;
 				if(ValidIONum(io->targetinfo))
 					EVENT_SENDER = entities[io->targetinfo];
 				else
 					EVENT_SENDER = NULL;
-
 				SendIOScriptEvent(io, SM_LOSTTARGET);
 				io->_npcdata->reachedtarget = 0;
+				EVENT_SENDER = oes;
 			}
 
 			// if not blocked & not Flee-Pathfinding
