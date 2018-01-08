@@ -166,6 +166,8 @@ void RiseDeadSpell::Update() {
 	
 	GameDuration tim = m_fissure.m_elapsed;
 	
+	Entity * oes = EVENT_SENDER;
+	
 	if(tim > GameDurationMs(3000) && m_entity == EntityHandle() && !m_creationFailed) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 		
@@ -218,6 +220,9 @@ void RiseDeadSpell::Update() {
 			MakeCoolFx(m_fissure.m_eSrc);
 		}
 	}
+	
+	EVENT_SENDER = oes;
+	
 }
 
 void ParalyseSpell::Launch() {
