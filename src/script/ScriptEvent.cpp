@@ -151,12 +151,10 @@ SCRIPT_EVENT AS_EVENT[] = {
 	SCRIPT_EVENT("on collide_field"),
 	SCRIPT_EVENT("on cursormode"),
 	SCRIPT_EVENT("on explorationmode"),
-	SCRIPT_EVENT("") // TODO is this really needed?
 };
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT & es) {
-	size_t nb = std::min(MAX_SHORTCUT, size_t(SM_MAXCMD));
-	for(size_t j = 1; j < nb; j++) {
+	for(size_t j = 1; j < SM_MAXCMD; j++) {
 		es.shortcut[j] = FindScriptPos(&es, AS_EVENT[j].name);
 	}
 }
@@ -326,7 +324,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 				default: break;
 			}
 			
-			arx_assert(event.getId() < SM_MAXCMD && event.getId() < (long)MAX_SHORTCUT);
+			arx_assert(event.getId() < SM_MAXCMD);
 			pos = es->shortcut[event.getId()];
 			arx_assert(pos <= (long)es->size);
 		}
