@@ -735,6 +735,9 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 	io->dmg_sum += dmg;
 	
 	GameDuration elapsed = g_gameTime.now() - io->ouch_time;
+	
+	Entity * oes = EVENT_SENDER;
+	
 	if(elapsed > GameDurationMs(500)) {
 		if(ValidIONum(source))
 			EVENT_SENDER = entities[source];
@@ -834,8 +837,10 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 					sprintf(dmm, "%f summoned", double(dmg));
 				}
 
-				if(SendIOScriptEvent(io, SM_HIT, dmm) != ACCEPT)
+				if(SendIOScriptEvent(io, SM_HIT, dmm) != ACCEPT) {
+					EVENT_SENDER = oes;
 					return damagesdone;
+				}
 			}
 		}
 
@@ -869,7 +874,9 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 			else ARX_DAMAGES_ForceDeath(io, NULL);
 		}
 	}
-
+	
+	EVENT_SENDER = oes;
+	
 	return damagesdone;
 }
 
