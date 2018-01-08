@@ -1148,7 +1148,7 @@ void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lC
 			   && slot.io->obj->texturecontainer[lTex]->m_texName == _lpszText
 			) {
 				if(slot.io->gameFlags & GFLAG_INTERACTIVITY) {
-					SendIOScriptEvent(EVENT_SENDER, slot.io, _lCommand);
+					SendIOScriptEvent(entities.player(), slot.io, _lCommand);
 				}
 				return;
 			}
