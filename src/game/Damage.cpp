@@ -226,10 +226,11 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 
 	entities.player()->dmg_sum += dmg;
 	
+	Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+	
 	GameDuration elapsed = g_gameTime.now() - entities.player()->ouch_time;
 	if(elapsed > GameDurationMs(500)) {
 		Entity * oes = EVENT_SENDER;
-		Entity * sender = ValidIONum(source) ? entities[source] : NULL;
 		EVENT_SENDER = sender;
 		entities.player()->ouch_time = g_gameTime.now();
 		char tex[32];
@@ -279,14 +280,14 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 			player.lifePool.current = 0.f;
 
 			if(alive) {
-				//g_canResumeGame = false;
+				
 				ARX_PLAYER_BecomesDead();
 
 				if((type & DAMAGE_TYPE_FIRE) || (type & DAMAGE_TYPE_FAKEFIRE)) {
 					ARX_SOUND_PlayInterface(SND_PLAYER_DEATH_BY_FIRE);
 				}
 
-				SendIOScriptEvent(EVENT_SENDER, entities.player(), SM_DIE);
+				SendIOScriptEvent(sender, entities.player(), SM_DIE);
 
 				for(size_t i = 1; i < entities.size(); i++) {
 					const EntityHandle handle = EntityHandle(i);
