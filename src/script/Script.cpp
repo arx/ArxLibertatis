@@ -1469,7 +1469,7 @@ void ARX_SCRIPT_EventStackClear(bool check_exist) {
 void ARX_SCRIPT_EventStackClearForIo(Entity * io) {
 	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
 		if(event.exists && event.entity == io) {
-			LogDebug("clearing queued " << ScriptEvent::getName(event.event.getId(), event.event.getMessage())
+			LogDebug("clearing queued " << ScriptEvent::getName(event.event)
 			         << " for " << io->idString());
 			event.clear();
 		}
@@ -1490,11 +1490,11 @@ void ARX_SCRIPT_EventStackExecute(size_t limit) {
 		
 		if(ValidIOAddress(event.entity)) {
 			Entity * sender = ValidIOAddress(event.sender) ? event.sender : NULL;
-			LogDebug("running queued " << ScriptEvent::getName(event.event.getId(), event.event.getMessage())
+			LogDebug("running queued " << ScriptEvent::getName(event.event)
 			         << " for " << event.entity->idString());
 			SendIOScriptEvent(sender, event.entity, event.event, event.params);
 		} else {
-			LogDebug("could not run queued " << ScriptEvent::getName(event.event.getId(), event.event.getMessage())
+			LogDebug("could not run queued " << ScriptEvent::getName(event.event)
 			         << " params=\"" << event.params << "\" - entity vanished");
 		}
 		event.clear();
@@ -1798,7 +1798,7 @@ void ARX_SCRIPT_Timer_Check() {
 		
 		if(es && ValidIOAddress(io)) {
 			LogDebug("running timer \"" << name << "\" for entity " << io->idString());
-			ScriptEvent::send(es, NULL, io, SM_EXECUTELINE, std::string(), std::string(), pos);
+			ScriptEvent::send(es, NULL, io, SM_EXECUTELINE, std::string(), pos);
 		} else {
 			LogDebug("could not run timer \"" << name << "\" - entity vanished");
 		}
