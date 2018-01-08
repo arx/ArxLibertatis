@@ -502,8 +502,6 @@ public:
 
 std::ostream & operator<<(std::ostream & os, const ScriptParameters & parameters);
 
-extern ScriptParameters g_scriptParameters;
-
 extern SCRIPT_VARIABLES svar;
 extern SCR_TIMER * scr_timer;
 extern long ActiveTimers;
