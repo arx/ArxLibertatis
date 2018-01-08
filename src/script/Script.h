@@ -499,7 +499,9 @@ ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string
 
 ScriptResult SendMsgToAllIO(ScriptMessage msg, const std::string & params = "");
 
-void Stack_SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string & params = "", const std::string & eventname = "");
+void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage msg,
+                             const std::string & params = std::string(),
+                             const std::string & eventname = std::string());
 
 /*!
  * Finds the first occurence of str in the script that is followed

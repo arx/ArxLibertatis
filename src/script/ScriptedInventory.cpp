@@ -472,16 +472,10 @@ public:
 		}
 		
 		if(unequip) {
-			Entity * oes = EVENT_SENDER;
-			EVENT_SENDER = entities[t];
-			Stack_SendIOScriptEvent(context.getEntity(), SM_EQUIPOUT);
-			EVENT_SENDER = oes;
+			Stack_SendIOScriptEvent(entities[t], context.getEntity(), SM_EQUIPOUT);
 			ARX_EQUIPMENT_UnEquip(entities[t], context.getEntity());
 		} else {
-			Entity * oes = EVENT_SENDER;
-			EVENT_SENDER = entities[t];
-			Stack_SendIOScriptEvent(context.getEntity(), SM_EQUIPIN);
-			EVENT_SENDER = oes;
+			Stack_SendIOScriptEvent(entities[t], context.getEntity(), SM_EQUIPIN);
 			ARX_EQUIPMENT_Equip(entities[t], context.getEntity());
 		}
 		
