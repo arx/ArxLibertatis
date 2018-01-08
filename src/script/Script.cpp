@@ -1381,14 +1381,14 @@ struct QueuedEvent {
 	Entity * sender;
 	Entity * entity;
 	ScriptEventName event;
-	std::string params;
+	ScriptParameters parameters;
 	
 	void clear() {
 		exists = false;
 		sender = NULL;
 		entity = NULL;
 		event = ScriptEventName();
-		params.clear();
+		parameters.clear();
 	}
 	
 };
@@ -1433,10 +1433,10 @@ void ARX_SCRIPT_EventStackExecute(size_t limit) {
 		if(ValidIOAddress(event.entity)) {
 			Entity * sender = ValidIOAddress(event.sender) ? event.sender : NULL;
 			LogDebug("running queued " << event.event << " for " << event.entity->idString());
-			SendIOScriptEvent(sender, event.entity, event.event, ScriptParameters::parse(event.params));
+			SendIOScriptEvent(sender, event.entity, event.event, event.parameters);
 		} else {
 			LogDebug("could not run queued " << event.event
-			         << " params=\"" << event.params << "\" - entity vanished");
+			         << " params=\"" << event.parameters << "\" - entity vanished");
 		}
 		event.clear();
 		
@@ -1460,7 +1460,7 @@ void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEvent
 			entry.sender = sender;
 			entry.entity = entity;
 			entry.event = event;
-			entry.params = params;
+			entry.parameters = ScriptParameters::parse(params);
 			entry.exists = true;
 			return;
 		}
