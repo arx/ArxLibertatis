@@ -528,8 +528,6 @@ void PrepareIOTreatZone(long flag) {
 		}
 	}
 	
-	Entity * oes = EVENT_SENDER;
-	
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
@@ -592,8 +590,6 @@ void PrepareIOTreatZone(long flag) {
 				io->gameFlags &= ~GFLAG_ISINTREATZONE;
 			}
 			
-			EVENT_SENDER = NULL;
-
 			if ((io->gameFlags & GFLAG_ISINTREATZONE)
 			        && (!(io->gameFlags & GFLAG_WASINTREATZONE)))
 			{
@@ -644,8 +640,6 @@ void PrepareIOTreatZone(long flag) {
 			}
 		}
 	}
-	
-	EVENT_SENDER = oes;
 	
 }
 
@@ -2079,14 +2073,11 @@ void UpdateCameras() {
 
 			if(aup->lastWP != last) {
 				if(last == -2) {
-					Entity * oes = EVENT_SENDER;
-					EVENT_SENDER = NULL;
 					std::string waypoint = boost::lexical_cast<std::string>(aup->path->pathways.size() - 1);
 					SendIOScriptEvent(NULL, io, SM_WAYPOINT, waypoint);
 					SendIOScriptEvent(NULL, io, SM_NULL, "", "waypoint" + waypoint);
 					SendIOScriptEvent(NULL, io, SM_PATHEND);
 					aup->lastWP = last;
-					EVENT_SENDER = oes;
 				} else {
 					last--;
 					long _from = aup->lastWP;
@@ -2100,16 +2091,13 @@ void UpdateCameras() {
 
 					long ii = _from + 1;
 
-					Entity * oes = EVENT_SENDER;
-					EVENT_SENDER = NULL;
 					std::string waypoint = boost::lexical_cast<std::string>(ii);
 					SendIOScriptEvent(NULL, io, SM_WAYPOINT, waypoint);
 					SendIOScriptEvent(NULL, io, SM_NULL, "", "waypoint" + waypoint);
 					if(size_t(ii) == aup->path->pathways.size()) {
 						SendIOScriptEvent(NULL, io, SM_PATHEND);
 					}
-					EVENT_SENDER = oes;
-
+					
 					aup->lastWP = last + 1;
 				}
 			}

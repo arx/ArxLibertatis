@@ -230,13 +230,10 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 	
 	GameDuration elapsed = g_gameTime.now() - entities.player()->ouch_time;
 	if(elapsed > GameDurationMs(500)) {
-		Entity * oes = EVENT_SENDER;
-		EVENT_SENDER = sender;
 		entities.player()->ouch_time = g_gameTime.now();
 		char tex[32];
 		sprintf(tex, "%5.2f", double(entities.player()->dmg_sum));
 		SendIOScriptEvent(sender, entities.player(), SM_OUCH, tex);
-		EVENT_SENDER = oes;
 		float power = entities.player()->dmg_sum / player.lifePool.max * 220.f;
 		AddQuakeFX(power * 3.5f, 500 + power * 3, Random::getf(200.f, 300.f) + power, false);
 		entities.player()->dmg_sum = 0.f;
@@ -295,8 +292,6 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 					
 					if(ioo && (ioo->ioflags & IO_NPC)) {
 						if(ioo->targetinfo == EntityHandle(TARGET_PLAYER)) {
-							Entity * oes = EVENT_SENDER;
-							EVENT_SENDER = entities.player();
 							std::string killer;
 							if(source == EntityHandle_Player) {
 								killer = "player";
@@ -306,7 +301,6 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 								killer = entities[source]->idString();
 							}
 							SendIOScriptEvent(entities.player(), entities[handle], SM_NULL, killer, "target_death");
-							EVENT_SENDER = oes;
 						}
 					}
 				}
@@ -439,9 +433,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 
 	io->dmg_sum += dmg;
 	
-	Entity * oes = EVENT_SENDER;
 	Entity * sender = ValidIONum(source) ? entities[source] : NULL;
-	EVENT_SENDER = sender;
 	
 	GameDuration elapsed = g_gameTime.now() - io->ouch_time;
 	if(elapsed > GameDurationMs(500)) {
@@ -494,8 +486,6 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 		SendIOScriptEvent(sender, io, SM_HIT, dmm);
 	}
 	
-	EVENT_SENDER = oes;
-	
 }
 
 void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
@@ -503,9 +493,6 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	if(io_dead->mainevent == "dead") {
 		return;
 	}
-
-	Entity * old_sender = EVENT_SENDER;
-	EVENT_SENDER = io_killer;
 
 	if(io_dead == DRAGINTER)
 		Set_DragInter(NULL);
@@ -535,7 +522,6 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	}
 	
 	if(!ValidIOAddress(io_dead)) {
-		EVENT_SENDER = old_sender;
 		return;
 	}
 	
@@ -570,22 +556,16 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		if(ioo && (ioo->ioflags & IO_NPC)) {
 			if(ValidIONum(ioo->targetinfo))
 				if(entities[ioo->targetinfo] == io_dead) {
-					Entity * oes = EVENT_SENDER;
-					EVENT_SENDER = io_dead;
 					Stack_SendIOScriptEvent(io_dead, entities[handle], SM_NULL, killer, "target_death");
 					ioo->targetinfo = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
-					EVENT_SENDER = oes;
 				}
 
 			if(ValidIONum(ioo->_npcdata->pathfind.truetarget))
 				if(entities[ioo->_npcdata->pathfind.truetarget] == io_dead) {
-					Entity * oes = EVENT_SENDER;
-					EVENT_SENDER = io_dead;
 					Stack_SendIOScriptEvent(io_dead, entities[handle], SM_NULL, killer, "target_death");
 					ioo->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
-					EVENT_SENDER = oes;
 				}
 		}
 	}
@@ -607,8 +587,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 			}
 		}
 	}
-
-	EVENT_SENDER = old_sender;
+	
 }
 
 static void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float power) {
@@ -738,8 +717,6 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 	
 	GameDuration elapsed = g_gameTime.now() - io->ouch_time;
 	
-	Entity * oes = EVENT_SENDER;
-	
 	if(elapsed > GameDurationMs(500)) {
 		
 		Entity * sender = ValidIONum(source) ? entities[source] : NULL;
@@ -753,7 +730,6 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 			sprintf(tex, "%5.2f", double(io->dmg_sum));
 		}
 		
-		EVENT_SENDER = sender;
 		SendIOScriptEvent(sender, io, SM_OUCH, tex);
 		
 		io->dmg_sum = 0.f;
@@ -835,11 +811,10 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 					sprintf(dmm, "%f summoned", double(dmg));
 				}
 				
-				EVENT_SENDER = sender;
 				if(SendIOScriptEvent(sender, io, SM_HIT, dmm) != ACCEPT) {
-					EVENT_SENDER = oes;
 					return damagesdone;
 				}
+				
 			}
 		}
 
@@ -873,8 +848,6 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 			else ARX_DAMAGES_ForceDeath(io, NULL);
 		}
 	}
-	
-	EVENT_SENDER = oes;
 	
 	return damagesdone;
 }
@@ -1000,8 +973,6 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 					if(damage.params.type & DAMAGE_TYPE_FIELD) {
 						GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
 						if(elapsed > GameDurationMs(500)) {
-							Entity * oes = EVENT_SENDER;
-							EVENT_SENDER = NULL;
 							io->collide_door_time = g_gameTime.now();
 							
 							const char * param = "";
@@ -1013,7 +984,6 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 								param = "cold";
 							
 							SendIOScriptEvent(NULL, io, SM_COLLIDE_FIELD, param);
-							EVENT_SENDER = oes;
 						}
 					}
 					

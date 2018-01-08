@@ -166,8 +166,6 @@ void RiseDeadSpell::Update() {
 	
 	GameDuration tim = m_fissure.m_elapsed;
 	
-	Entity * oes = EVENT_SENDER;
-	
 	if(tim > GameDurationMs(3000) && m_entity == EntityHandle() && !m_creationFailed) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 		
@@ -193,14 +191,7 @@ void RiseDeadSpell::Update() {
 				ARX_INTERACTIVE_Teleport(io, phys.origin);
 				SendInitScriptEvent(io);
 				
-				Entity * caster = entities.get(m_caster);
-				if(caster) {
-					EVENT_SENDER = caster;
-				} else {
-					EVENT_SENDER = NULL;
-				}
-				
-				SendIOScriptEvent(caster, io, SM_SUMMONED);
+				SendIOScriptEvent(entities.get(m_caster), io, SM_SUMMONED);
 				
 				Vec3f pos = m_fissure.m_eSrc;
 				pos += arx::randomVec3f() * 100.f;
@@ -220,8 +211,6 @@ void RiseDeadSpell::Update() {
 			MakeCoolFx(m_fissure.m_eSrc);
 		}
 	}
-	
-	EVENT_SENDER = oes;
 	
 }
 

@@ -229,15 +229,7 @@ void SummonCreatureSpell::Update() {
 					io->speed_modif = 1.f;
 				}
 				
-				Entity * oes = EVENT_SENDER;
-				Entity * caster = entities.get(m_caster);
-				if(caster) {
-					EVENT_SENDER = caster;
-				} else {
-					EVENT_SENDER = NULL;
-				}
-				
-				SendIOScriptEvent(caster, io, SM_SUMMONED);
+				SendIOScriptEvent(entities.get(m_caster), io, SM_SUMMONED);
 				
 				for(long j = 0; j < 3; j++) {
 					Vec3f pos = m_fissure.m_eSrc;
@@ -252,8 +244,6 @@ void SummonCreatureSpell::Update() {
 				} else {
 					m_summonedEntity = EntityHandle();
 				}
-				
-				EVENT_SENDER = oes;
 				
 			}
 		}

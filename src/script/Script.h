@@ -439,7 +439,6 @@ enum ScriptMessage {
 };
 
 extern SCRIPT_VARIABLES svar;
-extern Entity * EVENT_SENDER;
 extern SCR_TIMER * scr_timer;
 extern long ActiveTimers;
 extern long FORBID_SCRIPT_IO_CREATION;

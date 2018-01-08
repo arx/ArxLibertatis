@@ -314,9 +314,6 @@ public:
 	
 	Result execute(Context & context) {
 		
-		Entity * oes = EVENT_SENDER;
-		EVENT_SENDER = context.getEntity();
-		
 		bool enable = context.getBool();
 		
 		DebugScript(' ' << enable);
@@ -352,8 +349,6 @@ public:
 			BLOCK_PLAYER_CONTROLS = true;
 			player.Interface &= ~INTER_COMBATMODE;
 		}
-		
-		EVENT_SENDER = oes;
 		
 		return Success;
 	}
