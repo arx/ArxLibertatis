@@ -229,6 +229,7 @@ void SummonCreatureSpell::Update() {
 					io->speed_modif = 1.f;
 				}
 				
+				Entity * oes = EVENT_SENDER;
 				Entity * caster = entities.get(m_caster);
 				if(caster) {
 					EVENT_SENDER = caster;
@@ -251,6 +252,9 @@ void SummonCreatureSpell::Update() {
 				} else {
 					m_summonedEntity = EntityHandle();
 				}
+				
+				EVENT_SENDER = oes;
+				
 			}
 		}
 	} else if(m_summonedEntity == EntityHandle()) {
