@@ -621,7 +621,7 @@ void ManageCombatModeAnimations() {
 				} else if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT_CYCLE + j * 3] && !eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_BARE_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
-					SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "bare");
+					SendIOScriptEvent(NULL, io, SM_STRIKE, "bare");
 					player.m_weaponBlocked = AnimationDuration::ofRaw(-1); // TODO inband signaling AnimationDuration
 					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
@@ -691,7 +691,7 @@ void ManageCombatModeAnimations() {
 				} else if(layer1.cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT_CYCLE + j * 3] && !eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_DAGGER_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
-					SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "dagger");
+					SendIOScriptEvent(NULL, io, SM_STRIKE, "dagger");
 					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT + j * 3]) {
@@ -743,7 +743,7 @@ void ManageCombatModeAnimations() {
 				} else if(layer1.cur_anim == alist[ANIM_1H_STRIKE_LEFT_CYCLE + j * 3] && !eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_1H_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
-					SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "1h");
+					SendIOScriptEvent(NULL, io, SM_STRIKE, "1h");
 					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_1H_STRIKE_LEFT + j * 3]) {
@@ -795,7 +795,7 @@ void ManageCombatModeAnimations() {
 				} else if(layer1.cur_anim == alist[ANIM_2H_STRIKE_LEFT_CYCLE + j * 3] && !eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_2H_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
-					SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "2h");
+					SendIOScriptEvent(NULL, io, SM_STRIKE, "2h");
 					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_2H_STRIKE_LEFT + j * 3]) {
@@ -860,7 +860,7 @@ void ManageCombatModeAnimations() {
 			} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE] && !eeMousePressed1()) {
 				EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE]);
-				SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "bow");
+				SendIOScriptEvent(NULL, io, SM_STRIKE, "bow");
 				StrikeAimtime();
 				player.m_strikeAimRatio = player.m_bowAimRatio;
 				Entity * quiver = Player_Arrow_Count_Decrease();
