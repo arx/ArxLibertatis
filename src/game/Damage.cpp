@@ -794,10 +794,6 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 
 		if(io->script.data != NULL) {
 			if(source.handleData() >= EntityHandle_Player.handleData()) {
-				if(ValidIONum(source))
-					EVENT_SENDER = entities[source];
-				else
-					EVENT_SENDER = NULL;
 
 				char dmm[256];
 
@@ -829,12 +825,14 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 				}
 				else
 					sprintf(dmm, "%f", double(dmg));
-
-				if(EVENT_SENDER && EVENT_SENDER->summoner == EntityHandle_Player) {
-					EVENT_SENDER = entities.player();
+				
+				Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+				if(sender && sender->summoner == EntityHandle_Player) {
+					sender = entities.player();
 					sprintf(dmm, "%f summoned", double(dmg));
 				}
-
+				
+				EVENT_SENDER = sender;
 				if(SendIOScriptEvent(io, SM_HIT, dmm) != ACCEPT) {
 					EVENT_SENDER = oes;
 					return damagesdone;
