@@ -399,9 +399,10 @@ static void SPELLCAST_Notify(const SpellBase & spell) {
 	if(!spellName)
 		return;
 	
+	Entity * oes = EVENT_SENDER;
+	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
-		
 		if(entities[handle] != NULL) {
 			EVENT_SENDER = (source != EntityHandle()) ? entities[source] : NULL;
 			char param[256];
@@ -409,6 +410,9 @@ static void SPELLCAST_Notify(const SpellBase & spell) {
 			SendIOScriptEvent(entities[handle], SM_SPELLCAST, param);
 		}
 	}
+	
+	EVENT_SENDER = oes;
+	
 }
 
 static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
