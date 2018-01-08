@@ -1001,6 +1001,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 					if(damage.params.type & DAMAGE_TYPE_FIELD) {
 						GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
 						if(elapsed > GameDurationMs(500)) {
+							Entity * oes = EVENT_SENDER;
 							EVENT_SENDER = NULL;
 							io->collide_door_time = g_gameTime.now();
 							
@@ -1013,6 +1014,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 								param = "cold";
 							
 							SendIOScriptEvent(io, SM_COLLIDE_FIELD, param);
+							EVENT_SENDER = oes;
 						}
 					}
 					
