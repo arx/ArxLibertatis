@@ -465,12 +465,15 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon() {
 
 float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * position)
 {
+	Entity * oes = EVENT_SENDER;
 	EVENT_SENDER = io_source;
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
-
-	if(!io_source || !io_target)
+	
+	if(!io_source || !io_target) {
+		EVENT_SENDER = oes;
 		return 0.f;
-
+	}
+	
 	if(!(io_target->ioflags & IO_NPC)) {
 		if(io_target->ioflags & IO_FIX) {
 			if (io_source == entities.player())
@@ -480,7 +483,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			else
 				ARX_DAMAGES_DamageFIX(io_target, 1, io_source->index(), false);
 		}
-
+		EVENT_SENDER = oes;
 		return 0.f;
 	}
 
@@ -523,8 +526,11 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			}
 		}
 	} else {
-		if(!(io_source->ioflags & IO_NPC)) // no NPC source...
+		if(!(io_source->ioflags & IO_NPC)) {
+			// no NPC source...
+			EVENT_SENDER = oes;
 			return 0.f;
+		}
 		
 		if(!io_source->weaponmaterial.empty()) {
 			wmat = &io_source->weaponmaterial;
@@ -599,6 +605,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	
 	float chance = 100.f - (ac - attack);
 	if(Random::getf(0.f, 100.f) > chance) {
+		EVENT_SENDER = oes;
 		return 0.f;
 	}
 	
@@ -634,6 +641,8 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			ARX_DAMAGES_DamageNPC(io_target, dmgs, io_source->index(), false, targetPosition);
 		}
 	}
+	
+	EVENT_SENDER = oes;
 	
 	return dmgs;
 }
