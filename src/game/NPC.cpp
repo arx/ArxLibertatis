@@ -2692,9 +2692,11 @@ void CheckNPCEx(Entity * io) {
 	
 	// if not visible but was visible, sends an Undetectplayer Event
 	if(!Visible && io->_npcdata->detect) {
+		Entity * oes = EVENT_SENDER;
 		EVENT_SENDER = NULL;
 		SendIOScriptEvent(io, SM_UNDETECTPLAYER);
 		io->_npcdata->detect = 0;
+		EVENT_SENDER = oes;
 	}
 }
 
