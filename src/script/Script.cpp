@@ -1434,20 +1434,18 @@ void MakeSSEPARAMS(const char * params)
 
 struct QueuedEvent {
 	
-	bool          exists;
-	Entity *      sender;
-	Entity *      entity;
-	ScriptMessage msg;
-	std::string   params;
-	std::string   eventname;
+	bool exists;
+	Entity * sender;
+	Entity * entity;
+	ScriptEventName event;
+	std::string params;
 	
 	void clear() {
 		exists = false;
 		sender = NULL;
 		entity = NULL;
-		msg = SM_NULL;
+		event = ScriptEventName();
 		params.clear();
-		eventname.clear();
 	}
 	
 };
@@ -1471,7 +1469,7 @@ void ARX_SCRIPT_EventStackClear(bool check_exist) {
 void ARX_SCRIPT_EventStackClearForIo(Entity * io) {
 	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
 		if(event.exists && event.entity == io) {
-			LogDebug("clearing queued " << ScriptEvent::getName(event.msg, event.eventname)
+			LogDebug("clearing queued " << ScriptEvent::getName(event.event.getId(), event.event.getMessage())
 			         << " for " << io->idString());
 			event.clear();
 		}
@@ -1492,11 +1490,11 @@ void ARX_SCRIPT_EventStackExecute(size_t limit) {
 		
 		if(ValidIOAddress(event.entity)) {
 			Entity * sender = ValidIOAddress(event.sender) ? event.sender : NULL;
-			LogDebug("running queued " << ScriptEvent::getName(event.msg, event.eventname)
+			LogDebug("running queued " << ScriptEvent::getName(event.event.getId(), event.event.getMessage())
 			         << " for " << event.entity->idString());
-			SendIOScriptEvent(sender, event.entity, event.msg, event.params, event.eventname);
+			SendIOScriptEvent(sender, event.entity, event.event.getId(), event.params, event.event.getName());
 		} else {
-			LogDebug("could not run queued " << ScriptEvent::getName(event.msg, event.eventname)
+			LogDebug("could not run queued " << ScriptEvent::getName(event.event.getId(), event.event.getMessage())
 			         << " params=\"" << event.params << "\" - entity vanished");
 		}
 		event.clear();
@@ -1514,16 +1512,15 @@ void ARX_SCRIPT_EventStackExecuteAll() {
 	ARX_SCRIPT_EventStackExecute(std::numeric_limits<size_t>::max());
 }
 
-void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage msg, const std::string & params,
-                             const std::string & eventname) {
-	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
-		if(!event.exists) {
-			event.sender = sender;
-			event.entity = entity;
-			event.msg = msg;
-			event.params = params;
-			event.eventname = eventname;
-			event.exists = true;
+void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEventName & event,
+                             const std::string & params) {
+	BOOST_FOREACH(QueuedEvent & entry, g_eventQueue) {
+		if(!entry.exists) {
+			entry.sender = sender;
+			entry.entity = entity;
+			entry.event = event;
+			entry.params = params;
+			entry.exists = true;
 			return;
 		}
 	}

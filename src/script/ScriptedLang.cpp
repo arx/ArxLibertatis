@@ -326,7 +326,7 @@ public:
 					Vec3f _pos2 = GetItemWorldPosition(io);
 					if(!fartherThan(_pos, _pos2, rad)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(context.getEntity(), e, SM_NULL, params, event);
+						Stack_SendIOScriptEvent(context.getEntity(), e, event, params);
 					}
 				}
 				
@@ -358,7 +358,7 @@ public:
 					Vec3f _pos = GetItemWorldPosition(e);
 					if(ARX_PATH_IsPosInZone(ap, _pos)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(context.getEntity(), e, SM_NULL, params, event);
+						Stack_SendIOScriptEvent(context.getEntity(), e, event, params);
 					}
 				}
 				
@@ -379,7 +379,7 @@ public:
 				}
 				
 				io->stat_sent++;
-				Stack_SendIOScriptEvent(context.getEntity(), e, SM_NULL, params, event);
+				Stack_SendIOScriptEvent(context.getEntity(), e, event, params);
 				
 			}
 			
@@ -392,7 +392,7 @@ public:
 			}
 			
 			io->stat_sent++;
-			Stack_SendIOScriptEvent(context.getEntity(), t, SM_NULL, params, event);
+			Stack_SendIOScriptEvent(context.getEntity(), t, event, params);
 			
 		}
 		
