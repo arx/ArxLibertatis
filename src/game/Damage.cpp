@@ -801,7 +801,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 
 				char dmm[256];
 
-				if(EVENT_SENDER == entities.player()) {
+				if(source == EntityHandle_Player) {
 					if(isSpellHit) {
 						sprintf(dmm, "%f spell", double(dmg));
 					}
