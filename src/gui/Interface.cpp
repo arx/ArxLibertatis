@@ -2058,12 +2058,14 @@ void ArxGame::manageEditorControls() {
 				} else {
 					if(io != COMBINE) {
 						std::string temp = COMBINE->idString();
+						Entity * oes = EVENT_SENDER;
 						EVENT_SENDER = COMBINE;
 						if(boost::starts_with(COMBINE->className(), "keyring")) {
 							ARX_KEYRING_Combine(io);
 						} else {
 							SendIOScriptEvent(io, SM_COMBINE, temp);
 						}
+						EVENT_SENDER = oes;
 					}
 				}
 			} else { // GLights
