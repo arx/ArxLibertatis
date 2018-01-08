@@ -178,16 +178,13 @@ long ARX_INTERACTIVE_GetSellValue(Entity * item, Entity * shop, long count) {
 	return long(price + price * player.m_skillFull.intuition * 0.005f);
 }
 
-static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
+static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io) {
 	
 	ARX_PATH * op = io->inzone;
 
 	if(op) {
 		std::string temp = op->name;
-
-		if(flags & 1) // no need when being destroyed !
-			SendIOScriptEvent(NULL, io, SM_LEAVEZONE, temp);
-
+		
 		if(!op->controled.empty()) {
 			EntityHandle t = entities.getById(op->controled);
 			if(t != EntityHandle()) {
@@ -207,7 +204,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 
 	EntityHandle n = io->index();
 
-	ARX_INTERACTIVE_ForceIOLeaveZone(io, 0);
+	ARX_INTERACTIVE_ForceIOLeaveZone(io);
 
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(player.equiped[i] == n && ValidIONum(player.equiped[i])) {
