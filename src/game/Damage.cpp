@@ -440,12 +440,13 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	}
 
 	io->dmg_sum += dmg;
-
+	
+	Entity * oes = EVENT_SENDER;
 	if (ValidIONum(source))
 		EVENT_SENDER = entities[source];
 	else
 		EVENT_SENDER = NULL;
-
+	
 	GameDuration elapsed = g_gameTime.now() - io->ouch_time;
 	if(elapsed > GameDurationMs(500)) {
 		io->ouch_time = g_gameTime.now();
@@ -496,6 +497,8 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 
 		SendIOScriptEvent(io, SM_HIT, dmm);
 	}
+	
+	EVENT_SENDER = oes;
 	
 }
 
