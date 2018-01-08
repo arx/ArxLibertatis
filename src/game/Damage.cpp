@@ -1485,7 +1485,7 @@ void ARX_DAMAGES_DurabilityLoss(Entity * io, float loss) {
 	io->durability -= loss;
 	
 	if(io->durability <= 0) {
-		SendIOScriptEvent(EVENT_SENDER, io, SM_BREAK);
+		SendIOScriptEvent(NULL, io, SM_BREAK);
 	}
 	
 }
