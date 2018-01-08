@@ -53,6 +53,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <ostream>
 
+#include <limits>
+#include <boost/lexical_cast.hpp>
+#include <boost/utility/enable_if.hpp>
+
 #include "core/TimeTypes.h"
 #include "util/Flags.h"
 
@@ -471,6 +475,35 @@ public:
 
 std::ostream & operator<<(std::ostream & os, const ScriptEventName & event);
 
+class ScriptParameters : public std::vector<std::string> {
+	
+public:
+	
+	ScriptParameters() { }
+	/* implicit */ ScriptParameters(const std::string & parameter) : std::vector<std::string>(1, parameter) { }
+	/* implicit */ ScriptParameters(const char * parameter) : std::vector<std::string>(1, parameter) { }
+	template <typename T, typename Enable = typename boost::enable_if_c<std::numeric_limits<T>::is_specialized>::type>
+	/* implicit */ ScriptParameters(T parameter)
+		: std::vector<std::string>(1, boost::lexical_cast<std::string>(parameter))
+	{ }
+	
+	std::string get(size_t i) const { return i < size() ? operator[](i) : std::string(); }
+	
+	static ScriptParameters parse(const std::string & str);
+	
+	using std::vector<std::string>::push_back;
+	
+	template <typename T>
+	typename boost::enable_if_c<std::numeric_limits<T>::is_specialized>::type push_back(T parameter) {
+		push_back(boost::lexical_cast<std::string>(parameter));
+	}
+	
+};
+
+std::ostream & operator<<(std::ostream & os, const ScriptParameters & parameters);
+
+extern ScriptParameters g_scriptParameters;
+
 extern SCRIPT_VARIABLES svar;
 extern SCR_TIMER * scr_timer;
 extern long ActiveTimers;
@@ -503,9 +536,6 @@ void ManageCasseDArme(Entity * io);
 void ReleaseScript(EERIE_SCRIPT * es);
 void ARX_SCRIPT_Init_Event_Stats();
 ScriptResult SendInitScriptEvent(Entity * io);
-
-//used by scriptevent
-void MakeSSEPARAMS(const char * params);
 
 //! Generates a random name for an unnamed timer
 std::string ARX_SCRIPT_Timer_GetDefaultName();
