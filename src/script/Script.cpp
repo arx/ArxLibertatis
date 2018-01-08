@@ -1519,12 +1519,12 @@ void ARX_SCRIPT_EventStackExecuteAll() {
 	ARX_SCRIPT_EventStackExecute(std::numeric_limits<size_t>::max());
 }
 
-void Stack_SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string & params,
+void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage msg, const std::string & params,
                              const std::string & eventname) {
 	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
 		if(!event.exists) {
-			event.sender = EVENT_SENDER;
-			event.entity = io;
+			event.sender = sender;
+			event.entity = entity;
 			event.msg = msg;
 			event.params = params;
 			event.eventname = eventname;

@@ -198,22 +198,16 @@ public:
 			for(size_t k = 0; k < entities.size(); k++) {
 				const EntityHandle handle = EntityHandle(k);
 				Entity * ioo = entities[handle];
-				
 				if(ioo && IsCollidingIO(io, ioo)) {
-					Entity * oes = EVENT_SENDER;
-					EVENT_SENDER = ioo;
-					Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR_DETAIL);
-					EVENT_SENDER = oes;
+					Stack_SendIOScriptEvent(ioo, io, SM_COLLISION_ERROR_DETAIL);
 					colliding = true;
 				}
 			}
 			
 			if(colliding) {
-				Entity * oes = EVENT_SENDER;
-				EVENT_SENDER = NULL;
-				Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR);
-				EVENT_SENDER = oes;
+				Stack_SendIOScriptEvent(NULL, io, SM_COLLISION_ERROR);
 			}
+			
 		}
 		
 		io->ioflags &= ~IO_NO_COLLISIONS;

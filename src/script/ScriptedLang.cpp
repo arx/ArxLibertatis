@@ -325,15 +325,14 @@ public:
 				if(((sendto & SEND_NPC) && (e->ioflags & IO_NPC))
 				   || ((sendto & SEND_FIX) && (e->ioflags & IO_FIX))
 				   || ((sendto & SEND_ITEM) && (e->ioflags & IO_ITEM))) {
-					
 					Vec3f _pos  = GetItemWorldPosition(e);
 					Vec3f _pos2 = GetItemWorldPosition(io);
-					
 					if(!fartherThan(_pos, _pos2, rad)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(e, SM_NULL, params, event);
+						Stack_SendIOScriptEvent(context.getEntity(), e, SM_NULL, params, event);
 					}
 				}
+				
 			}
 			
 		} else if(zone) { // SEND EVENT TO ALL OBJECTS IN A ZONE
@@ -360,14 +359,13 @@ public:
 				if(((sendto & SEND_NPC) && (e->ioflags & IO_NPC))
 				   || ((sendto & SEND_FIX) && (e->ioflags & IO_FIX))
 				   || ((sendto & SEND_ITEM) && (e->ioflags & IO_ITEM))) {
-					
 					Vec3f _pos = GetItemWorldPosition(e);
-					
 					if(ARX_PATH_IsPosInZone(ap, _pos)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(e, SM_NULL, params, event);
+						Stack_SendIOScriptEvent(context.getEntity(), e, SM_NULL, params, event);
 					}
 				}
+				
 			}
 			
 		} else if(group) { // sends an event to all members of a group
@@ -385,7 +383,8 @@ public:
 				}
 				
 				io->stat_sent++;
-				Stack_SendIOScriptEvent(e, SM_NULL, params, event);
+				Stack_SendIOScriptEvent(context.getEntity(), e, SM_NULL, params, event);
+				
 			}
 			
 		} else { // single object event
@@ -398,7 +397,8 @@ public:
 			}
 			
 			io->stat_sent++;
-			Stack_SendIOScriptEvent(t, SM_NULL, params, event);
+			Stack_SendIOScriptEvent(context.getEntity(), t, SM_NULL, params, event);
+			
 		}
 		
 		EVENT_SENDER = oes;

@@ -302,9 +302,8 @@ class SetPlayerControlsCommand : public Command {
 		for(size_t i = 0; i < entities.size(); i++) {
 			const EntityHandle handle = EntityHandle(i);
 			Entity * e = entities[handle];
-			
 			if(e && (e->ioflags & IO_NPC)) {
-				Stack_SendIOScriptEvent(e, msg, dat);
+				Stack_SendIOScriptEvent(EVENT_SENDER, e, msg, dat);
 			}
 		}
 	}
