@@ -2055,7 +2055,7 @@ void ArxGame::manageEditorControls() {
 			
 			if(io) {
 				if(COMBINEGOLD) {
-					SendIOScriptEvent(EVENT_SENDER, io, SM_COMBINE, "gold_coin");
+					SendIOScriptEvent(NULL, io, SM_COMBINE, "gold_coin");
 				} else {
 					if(io != COMBINE) {
 						std::string temp = COMBINE->idString();
@@ -2064,7 +2064,7 @@ void ArxGame::manageEditorControls() {
 						if(boost::starts_with(COMBINE->className(), "keyring")) {
 							ARX_KEYRING_Combine(io);
 						} else {
-							SendIOScriptEvent(EVENT_SENDER, io, SM_COMBINE, temp);
+							SendIOScriptEvent(COMBINE, io, SM_COMBINE, temp);
 						}
 						EVENT_SENDER = oes;
 					}
