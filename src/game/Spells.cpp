@@ -424,6 +424,7 @@ static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 	const char * spellName = MakeSpellName(spell.m_type);
 	
 	if(spellName) {
+		Entity * oes = EVENT_SENDER;
 		if(source != EntityHandle())
 			EVENT_SENDER = entities[source];
 		else
@@ -431,6 +432,7 @@ static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 		char param[256];
 		sprintf(param, "%s %ld", spellName, long(spell.m_level));
 		SendIOScriptEvent(entities[spell.m_target], SM_SPELLCAST, param);
+		EVENT_SENDER = oes;
 	}
 }
 
