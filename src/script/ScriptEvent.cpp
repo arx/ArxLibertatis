@@ -344,14 +344,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 
 	MakeSSEPARAMS(params.c_str());
 	
-	if(event != SM_EXECUTELINE) {
-		if(!event.getName().empty()) {
-			pos += eventname.length(); // adding 'ON ' length
-		} else {
-			pos += AS_EVENT[msg].name.length();
-		}
-	}
-	
 	script::Context context(es, pos, sender, entity, event.getId());
 	
 	if(event != SM_EXECUTELINE) {
