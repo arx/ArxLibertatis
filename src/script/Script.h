@@ -475,7 +475,7 @@ ScriptResult SendInitScriptEvent(Entity * io);
 
 //used by scriptevent
 void MakeSSEPARAMS(const char * params);
-float GetVarValueInterpretedAsFloat(const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io);
+float GetVarValueInterpretedAsFloat(Entity * sender, const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io);
 std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io);
 
 //! Generates a random name for an unnamed timer
