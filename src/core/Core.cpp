@@ -231,7 +231,7 @@ float g_debugValues[10];
 // Sends ON GAME_READY msg to all IOs
 void SendGameReadyMsg() {
 	LogDebug("SendGameReadyMsg");
-	SendMsgToAllIO(EVENT_SENDER, SM_GAME_READY);
+	SendMsgToAllIO(NULL, SM_GAME_READY);
 }
 
 bool AdjustUI() {
