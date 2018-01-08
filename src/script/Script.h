@@ -449,6 +449,14 @@ public:
 	explicit ScriptEventName(const std::string & name) : m_id(SM_NULL), m_name(name) { }
 	/* implicit */ ScriptEventName(const char * name) : m_id(SM_NULL), m_name(name) { }
 	
+	bool operator==(ScriptMessage id) const {
+		return m_id == id;
+	}
+	
+	bool operator!=(ScriptMessage id) const {
+		return m_id != id;
+	}
+	
 	static ScriptEventName parse(const std::string & name);
 	
 	ScriptMessage getId() const { return m_id; }

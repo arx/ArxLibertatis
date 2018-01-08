@@ -1159,7 +1159,7 @@ bool IsDeadNPC(Entity * io) {
 	if(!io || !(io->ioflags & IO_NPC))
 		return false;
 	
-	return (io->_npcdata->lifePool.current <= 0 || io->mainevent.getId() == SM_DEAD);
+	return (io->_npcdata->lifePool.current <= 0 || io->mainevent == SM_DEAD);
 }
 
 //! Checks if Player is currently striking.
