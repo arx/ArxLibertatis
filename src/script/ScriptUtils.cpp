@@ -232,7 +232,32 @@ bool Context::getBool() {
 }
 
 float Context::getFloatVar(const std::string & name) const {
-	return GetVarValueInterpretedAsFloat(getSender(), name, getMaster(), getEntity());
+	
+	if(name.empty()) {
+		return 0.f;
+	} else if(name[0] == '^') {
+		long lv;
+		float fv;
+		std::string tv;
+		switch(getSystemVar(getSender(), getMaster(), getEntity(), name, tv, &fv, &lv)) {
+			case TYPE_TEXT:
+				return float(atof(tv.c_str()));
+			case TYPE_LONG:
+				return float(lv);
+			default:
+				return fv;
+		}
+	} else if(name[0] == '#') {
+		return float(GETVarValueLong(svar, name));
+	} else if(name[0] == '\xA7') {
+		return float(GETVarValueLong(getMaster()->lvar, name));
+	} else if(name[0] == '&') {
+		return GETVarValueFloat(svar, name);
+	} else if(name[0] == '@') {
+		return GETVarValueFloat(getMaster()->lvar, name);
+	}
+	
+	return float(atof(name.c_str()));
 }
 
 size_t Context::skipCommand() {
