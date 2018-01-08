@@ -1398,7 +1398,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	GetIOScript(io, script);
 	
 	if(!(flags & NO_ON_LOAD)) {
-		SendIOScriptEvent(EVENT_SENDER, io, SM_LOAD);
+		SendIOScriptEvent(NULL, io, SM_LOAD);
 	}
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
@@ -1640,7 +1640,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	io->_npcdata->stare_factor = 1.f;
 	
 	if(!(flags & NO_ON_LOAD)) {
-		SendIOScriptEvent(EVENT_SENDER, io, SM_LOAD);
+		SendIOScriptEvent(NULL, io, SM_LOAD);
 	}
 	
 	io->pos = player.pos;
@@ -1734,7 +1734,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	GetIOScript(io, script);
 	
 	if(!(flags & NO_ON_LOAD)) {
-		SendIOScriptEvent(EVENT_SENDER, io, SM_LOAD);
+		SendIOScriptEvent(NULL, io, SM_LOAD);
 	}
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
