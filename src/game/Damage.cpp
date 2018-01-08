@@ -494,9 +494,9 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 		else
 			sprintf(dmm, "%f", double(dmg));
 
-		if(SendIOScriptEvent(io, SM_HIT, dmm) != ACCEPT)
-			return;
+		SendIOScriptEvent(io, SM_HIT, dmm);
 	}
+	
 }
 
 void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
