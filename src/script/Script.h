@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <string>
 #include <vector>
+#include <ostream>
 
 #include "core/TimeTypes.h"
 #include "util/Flags.h"
@@ -467,6 +468,8 @@ public:
 	DisabledEvents toDisabledEventsMask() const;
 	
 };
+
+std::ostream & operator<<(std::ostream & os, const ScriptEventName & event);
 
 extern SCRIPT_VARIABLES svar;
 extern SCR_TIMER * scr_timer;

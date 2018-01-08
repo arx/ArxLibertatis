@@ -142,6 +142,21 @@ DisabledEvents ScriptEventName::toDisabledEventsMask() const {
 	
 }
 
+std::ostream & operator<<(std::ostream & os, const ScriptEventName & event) {
+	
+	if(event == SM_EXECUTELINE) {
+		return os << "executeline";
+	} else if(event == SM_DUMMY)  {
+		return os << "dummy event";
+	} else if(!event.getName().empty()) {
+		return os << "on " << event.getName() << " event";
+	} else {
+		arx_assert(event.getId() < SM_MAXCMD && AS_EVENT[event.getId()].name.length() > 3);
+		return os << AS_EVENT[event.getId()].name << " event";
+	}
+	
+}
+
 long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
 	
 	// TODO(script-parser) remove, respect quoted strings
@@ -1494,8 +1509,7 @@ void ARX_SCRIPT_EventStackClear(bool check_exist) {
 void ARX_SCRIPT_EventStackClearForIo(Entity * io) {
 	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
 		if(event.exists && event.entity == io) {
-			LogDebug("clearing queued " << ScriptEvent::getName(event.event)
-			         << " for " << io->idString());
+			LogDebug("clearing queued " << event.event << " for " << io->idString());
 			event.clear();
 		}
 	}
@@ -1515,11 +1529,10 @@ void ARX_SCRIPT_EventStackExecute(size_t limit) {
 		
 		if(ValidIOAddress(event.entity)) {
 			Entity * sender = ValidIOAddress(event.sender) ? event.sender : NULL;
-			LogDebug("running queued " << ScriptEvent::getName(event.event)
-			         << " for " << event.entity->idString());
+			LogDebug("running queued " << event.event << " for " << event.entity->idString());
 			SendIOScriptEvent(sender, event.entity, event.event, event.params);
 		} else {
-			LogDebug("could not run queued " << ScriptEvent::getName(event.event)
+			LogDebug("could not run queued " << event.event
 			         << " params=\"" << event.params << "\" - entity vanished");
 		}
 		event.clear();
