@@ -254,7 +254,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
                                ScriptEventName event, const std::string & params, long info) {
 	
 	ScriptResult ret = ACCEPT;
-	std::string eventname;
 	long pos;
 	
 	totalCount++;
@@ -277,8 +276,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	if(!event.getName().empty()) {
 		arx_assert(event.getId() == SM_NULL);
 		arx_assert_msg(ScriptEventName::parse(event.getName()).getId() == SM_NULL, "non-canonical event name");
-		eventname = "on " + event.getName();
-		pos = FindScriptPos(es, eventname);
+		pos = FindScriptPos(es, "on " + event.getName());
 	} else {
 		if(event == SM_EXECUTELINE) {
 			pos = info;
