@@ -861,7 +861,7 @@ void ArxGame::managePlayerControls() {
 					}
 					
 				} else if(t->script.data) {
-					SendIOScriptEvent(EVENT_SENDER, t, SM_ACTION);
+					SendIOScriptEvent(entities.player(), t, SM_ACTION);
 				}
 				
 				DRAGGING = false;
