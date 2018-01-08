@@ -438,6 +438,23 @@ enum ScriptMessage {
 	SM_DUMMY = 256
 };
 
+class ScriptEventName {
+	
+	ScriptMessage m_id;
+	std::string m_name;
+	
+public:
+	
+	ScriptEventName() : m_id(SM_NULL) { }
+	/* implicit */ ScriptEventName(ScriptMessage id) : m_id(id) { }
+	/* implicit */ ScriptEventName(const std::string & name) : m_id(SM_NULL), m_name(name) { }
+	/* implicit */ ScriptEventName(const char * name) : m_id(SM_NULL), m_name(name) { }
+	
+	ScriptMessage getId() const { return m_id; }
+	const std::string getName() const { return m_name; }
+	
+};
+
 extern SCRIPT_VARIABLES svar;
 extern SCR_TIMER * scr_timer;
 extern long ActiveTimers;
