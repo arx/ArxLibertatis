@@ -411,7 +411,8 @@ void ScriptConsole::execute() {
 	
 	// TODO Allow the "context.command" syntax in scripts too
 	long pos = 0;
-	ScriptEvent::send(&es, NULL, entity, SM_EXECUTELINE, ScriptParameters(), pos);
+	ScriptEvent::resume(&es, entity, pos);
+	
 }
 
 bool ScriptConsole::addContextSuggestion(void * self, const std::string & suggestion) {
