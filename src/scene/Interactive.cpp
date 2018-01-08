@@ -1310,7 +1310,9 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 	Entity * ioo = io->_npcdata->weapon = AddItem(file);
 	if(ioo) {
 		
+		SendIOScriptEventReverse(NULL, ioo, SM_INIT);
 		SendIOScriptEvent(NULL, ioo, SM_INIT);
+		SendIOScriptEventReverse(NULL, ioo, SM_INITEND);
 		SendIOScriptEvent(NULL, ioo, SM_INITEND);
 		io->_npcdata->weapontype = ioo->type_flags;
 		ioo->show = SHOW_FLAG_LINKED;
