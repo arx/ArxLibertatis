@@ -43,16 +43,15 @@ class ScriptEvent {
 	
 public:
 	
-	static std::string getName(ScriptMessage msg, const std::string & eventname);
+	static std::string getName(const ScriptEventName & event);
 	
 	static long totalCount;
 	
 	ScriptEvent();
 	virtual ~ScriptEvent();
 	
-	static ScriptResult send(EERIE_SCRIPT * es, Entity * sender, Entity * entity, ScriptMessage msg,
-	                         const std::string & params = std::string(),
-	                         const std::string & eventname = std::string(), long info = 0);
+	static ScriptResult send(EERIE_SCRIPT * es, Entity * sender, Entity * entity, ScriptEventName event,
+	                         const std::string & params = std::string(), long info = 0);
 	
 	static void registerCommand(script::Command * command);
 	

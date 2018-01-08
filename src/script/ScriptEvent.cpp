@@ -239,7 +239,7 @@ public:
 
 } // namespace script
 
-#define ScriptEventWarning ARX_LOG(isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << getName(msg, evname) << ": "
+#define ScriptEventWarning ARX_LOG(isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << getName(event) << ": "
 
 #ifdef ARX_DEBUG
 static const char * toString(ScriptResult ret) {
@@ -252,8 +252,8 @@ static const char * toString(ScriptResult ret) {
 }
 #endif
 
-ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * entity, ScriptMessage msg,
-                               const std::string & params, const std::string & evname, long info) {
+ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * entity,
+                               ScriptEventName event, const std::string & params, long info) {
 	
 	ScriptResult ret = ACCEPT;
 	std::string eventname;
@@ -261,7 +261,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	
 	totalCount++;
 	
-	if(entity && checkInteractiveObject(entity, msg, ret)) {
+	if(entity && checkInteractiveObject(entity, event.getId(), ret)) {
 		return ret;
 	}
 	
@@ -276,14 +276,14 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	}
 	
 	// Finds script position to execute code...
-	if (!evname.empty()) {
-		eventname = "on " + evname;
+	if (!event.getName().empty()) {
+		eventname = "on " + event.getName();
 		pos = FindScriptPos(es, eventname);
 	} else {
-		if (msg == SM_EXECUTELINE) {
+		if(event.getId() == SM_EXECUTELINE) {
 			pos = info;
 		} else {
-			switch(msg) {
+			switch(event.getId()) {
 				case SM_COLLIDE_NPC:
 					if (esss->allowevents & DISABLE_COLLIDE_NPC) return REFUSE;
 					break;
@@ -325,21 +325,21 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 				default: break;
 			}
 
-			if(msg < (long)MAX_SHORTCUT) {
-				pos = es->shortcut[msg];
+			if(event.getId() < (long)MAX_SHORTCUT) {
+				pos = es->shortcut[event.getId()];
 				arx_assert(pos <= (long)es->size);
 			} else {
 				
-				arx_assert(msg != SM_EXECUTELINE && evname.empty());
+				arx_assert(event.getId() != SM_EXECUTELINE && event.getName().empty());
 				
-				if(msg >= SM_MAXCMD) {
-					LogDebug("unknown message " << msg);
+				if(event.getId() >= SM_MAXCMD) {
+					LogDebug("unknown event ID: " << event.getId());
 					return ACCEPT;
 				}
 				
 				// TODO will never be reached as MAX_SHORTCUT > SM_MAXCMD
 				
-				pos = FindScriptPos(es, AS_EVENT[msg].name);
+				pos = FindScriptPos(es, AS_EVENT[event.getId()].name);
 			}
 		}
 	}
@@ -349,25 +349,25 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	}
 	
 	
-	LogDebug("--> " << getName(msg, evname)
+	LogDebug("--> " << getName(event)
 	         << " params=\"" << params << "\""
 	         << " entity=" << (entity ? entity->idString() : "unknown")
 	         << (entity == NULL ? "" : es == &entity->script ? " base" : " overriding")
 	         << " pos=" << pos);
 
 	MakeSSEPARAMS(params.c_str());
-
-	if (msg != SM_EXECUTELINE) {
-		if (!evname.empty()) {
+	
+	if(event.getId() != SM_EXECUTELINE) {
+		if(!event.getName().empty()) {
 			pos += eventname.length(); // adding 'ON ' length
 		} else {
 			pos += AS_EVENT[msg].name.length();
 		}
 	}
 	
-	script::Context context(es, pos, sender, entity, msg);
+	script::Context context(es, pos, sender, entity, event.getId());
 	
-	if(msg != SM_EXECUTELINE) {
+	if(event.getId() != SM_EXECUTELINE) {
 		std::string word = context.getCommand();
 		if(word != "{") {
 			ScriptEventWarning << "<-- missing bracket after event, got \"" << word << "\"";
@@ -379,9 +379,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	
 	for(;;) {
 		
-		std::string word = context.getCommand(msg != SM_EXECUTELINE);
+		std::string word = context.getCommand(event.getId() != SM_EXECUTELINE);
 		if(word.empty()) {
-			if(msg == SM_EXECUTELINE && context.getPosition() != es->size) {
+			if(event.getId() == SM_EXECUTELINE && context.getPosition() != es->size) {
 				arx_assert(es->data[context.getPosition()] == '\n');
 				LogDebug("<-- line end");
 				return ACCEPT;
@@ -421,8 +421,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 				ret =  BIGERROR;
 				break;
 			} else if(res == script::Command::Jumped) {
-				if(msg == SM_EXECUTELINE) {
-					msg = SM_DUMMY;
+				if(event.getId() == SM_EXECUTELINE) {
+					event = SM_DUMMY;
 				}
 				brackets = size_t(-1);
 			}
@@ -460,7 +460,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 		
 	}
 	
-	LogDebug("<-- " << getName(msg, evname) << " finished: " << toString(ret));
+	LogDebug("<-- " << getName(event) << " finished: " << toString(ret));
 	
 	return ret;
 }
@@ -522,15 +522,15 @@ void ScriptEvent::shutdown() {
 	LogInfo << "Scripting system shutdown";
 }
 
-std::string ScriptEvent::getName(ScriptMessage msg, const std::string & eventname) {
-	if(msg == SM_EXECUTELINE) {
+std::string ScriptEvent::getName(const ScriptEventName & event) {
+	if(event.getId() == SM_EXECUTELINE) {
 		return "executeline";
-	} else if(msg == SM_DUMMY)  {
+	} else if(event.getId() == SM_DUMMY)  {
 		return "dummy event";
-	} else if(!eventname.empty()) {
-		return "on " + eventname + " event";
-	} else if(size_t(msg) <= ARRAY_SIZE(AS_EVENT) - 1) {
-		return AS_EVENT[msg].name + " event";
+	} else if(!event.getName().empty()) {
+		return "on " + event.getName() + " event";
+	} else if(size_t(event.getId()) <= ARRAY_SIZE(AS_EVENT) - 1) {
+		return AS_EVENT[event.getId()].name + " event";
 	} else {
 		return "(no event)";
 	}
