@@ -250,25 +250,6 @@ static const char * toString(ScriptResult ret) {
 }
 #endif
 
-DisabledEvents ScriptEvent::getDisabledEventsMask(const ScriptEventName & event) {
-	
-	switch(event.getId()) {
-		case SM_COLLIDE_NPC: return DISABLE_COLLIDE_NPC;
-		case SM_CHAT: return DISABLE_CHAT;
-		case SM_HIT: return DISABLE_HIT;
-		case SM_INVENTORY2_OPEN: return DISABLE_INVENTORY2_OPEN;
-		case SM_HEAR: return DISABLE_HEAR;
-		case SM_UNDETECTPLAYER: return DISABLE_DETECT;
-		case SM_DETECTPLAYER: return DISABLE_DETECT;
-		case SM_AGGRESSION: return DISABLE_AGGRESSION;
-		case SM_MAIN: return DISABLE_MAIN;
-		case SM_CURSORMODE: return DISABLE_CURSORMODE;
-		case SM_EXPLORATIONMODE: return DISABLE_EXPLORATIONMODE;
-		default: return 0;
-	}
-	
-}
-
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * entity,
                                ScriptEventName event, const std::string & params, long info) {
 	
@@ -290,7 +271,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 		esss = es;
 	}
 	
-	if(esss->allowevents & getDisabledEventsMask(event)) {
+	if(esss->allowevents & event.toDisabledEventsMask()) {
 		return REFUSE;
 	}
 	if(event == SM_KEY_PRESSED && cinematicBorder.elapsedTime() < GameDurationMs(3000)) {

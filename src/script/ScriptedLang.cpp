@@ -416,7 +416,7 @@ public:
 		
 		DebugScript(' ' << name << ' ' << enable);
 		
-		DisabledEvents mask = ScriptEvent::getDisabledEventsMask(ScriptEventName::parse(name));
+		DisabledEvents mask = ScriptEventName::parse(name).toDisabledEventsMask();
 		if(!mask) {
 			ScriptWarning << "cannot disable event: " << name;
 			return Failed;

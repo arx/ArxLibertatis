@@ -464,6 +464,8 @@ public:
 	
 	std::string toString() const;
 	
+	DisabledEvents toDisabledEventsMask() const;
+	
 };
 
 extern SCRIPT_VARIABLES svar;
