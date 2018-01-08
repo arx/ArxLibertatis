@@ -176,7 +176,7 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	if(entities[num] && entities[num]->script.data) {
 		entities[num]->script.allowevents = 0;
 		if(init)
-			ScriptEvent::send(&entities[num]->script, SM_INIT, "", entities[num], "");
+			ScriptEvent::send(&entities[num]->script, EVENT_SENDER, entities[num], SM_INIT);
 		if(entities[num])
 			ARX_SCRIPT_SetMainEvent(entities[num], "main");
 	}
@@ -185,15 +185,15 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	if(entities[num] && entities[num]->over_script.data) {
 		entities[num]->over_script.allowevents = 0;
 		if(init)
-			ScriptEvent::send(&entities[num]->over_script, SM_INIT, "", entities[num], "");
+			ScriptEvent::send(&entities[num]->over_script, EVENT_SENDER, entities[num], SM_INIT);
 	}
 	
 	// Sends InitEnd Event
 	if(init) {
 		if(entities[num] && entities[num]->script.data)
-			ScriptEvent::send(&entities[num]->script, SM_INITEND, "", entities[num], "");
+			ScriptEvent::send(&entities[num]->script, EVENT_SENDER, entities[num], SM_INITEND);
 		if(entities[num] && entities[num]->over_script.data)
-			ScriptEvent::send(&entities[num]->over_script, SM_INITEND, "", entities[num], "");
+			ScriptEvent::send(&entities[num]->over_script, EVENT_SENDER, entities[num], SM_INITEND);
 	}
 	
 	if(entities[num])
@@ -1545,16 +1545,16 @@ static ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, con
 	// if this IO only has a Local script, send event to it
 	if (entities[num] && !entities[num]->over_script.data)
 	{
-		return ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname);
+		return ScriptEvent::send(&entities[num]->script, EVENT_SENDER, entities[num], msg, params, eventname);
 	}
 	
 	// If this IO has a Global script send to Local (if exists)
 	// then to local if no overriden by Local
-	if (entities[num] && (ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname) != REFUSE))
+	if (entities[num] && (ScriptEvent::send(&entities[num]->script, EVENT_SENDER, entities[num], msg, params, eventname) != REFUSE))
 	{
 	
 		if (entities[num])
-			return (ScriptEvent::send(&entities[num]->over_script, msg, params, entities[num], eventname));
+			return (ScriptEvent::send(&entities[num]->over_script, EVENT_SENDER, entities[num], msg, params, eventname));
 		else
 			return REFUSE;
 	}
@@ -1588,19 +1588,19 @@ ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string
 	// if this IO only has a Local script, send event to it
 	if (entities[num] && !entities[num]->over_script.data)
 	{
-		ScriptResult ret = ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname);
+		ScriptResult ret = ScriptEvent::send(&entities[num]->script, EVENT_SENDER, entities[num], msg, params, eventname);
 		EVENT_SENDER = oes;
 		return ret;
 	}
 
 	// If this IO has a Global script send to Local (if exists)
 	// then to Global if no overriden by Local
-	if (entities[num] && ScriptEvent::send(&entities[num]->over_script, msg, params, entities[num], eventname) != REFUSE) {
+	if (entities[num] && ScriptEvent::send(&entities[num]->over_script, EVENT_SENDER, entities[num], msg, params, eventname) != REFUSE) {
 		EVENT_SENDER = oes;
 
 		if (entities[num])
 		{
-			ScriptResult ret = ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname);
+			ScriptResult ret = ScriptEvent::send(&entities[num]->script, EVENT_SENDER, entities[num], msg, params, eventname);
 			EVENT_SENDER = oes;
 			return ret;
 		}
@@ -1619,27 +1619,23 @@ ScriptResult SendInitScriptEvent(Entity * io) {
 	Entity * oes = EVENT_SENDER;
 	EVENT_SENDER = NULL;
 	EntityHandle num = io->index();
-
-	if (entities[num] && entities[num]->script.data)
-	{
-		ScriptEvent::send(&entities[num]->script, SM_INIT, "", entities[num], "");
+	
+	if(entities[num] && entities[num]->script.data) {
+		ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INIT);
 	}
-
-	if (entities[num] && entities[num]->over_script.data)
-	{
-		ScriptEvent::send(&entities[num]->over_script, SM_INIT, "", entities[num], "");
+	
+	if(entities[num] && entities[num]->over_script.data) {
+		ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INIT);
 	}
-
-	if (entities[num] && entities[num]->script.data)
-	{
-		ScriptEvent::send(&entities[num]->script, SM_INITEND, "", entities[num], "");
+	
+	if(entities[num] && entities[num]->script.data) {
+		ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INITEND);
 	}
-
-	if (entities[num] && entities[num]->over_script.data)
-	{
-		ScriptEvent::send(&entities[num]->over_script, SM_INITEND, "", entities[num], "");
+	
+	if(entities[num] && entities[num]->over_script.data) {
+		ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INITEND);
 	}
-
+	
 	EVENT_SENDER = oes;
 	return ACCEPT;
 }
@@ -1865,7 +1861,7 @@ void ARX_SCRIPT_Timer_Check() {
 		
 		if(es && ValidIOAddress(io)) {
 			LogDebug("running timer \"" << name << "\" for entity " << io->idString());
-			ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", pos);
+			ScriptEvent::send(es, EVENT_SENDER, io, SM_EXECUTELINE, std::string(), std::string(), pos);
 		} else {
 			LogDebug("could not run timer \"" << name << "\" - entity vanished");
 		}

@@ -2459,11 +2459,11 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			}
 			
 			if(e->script.data != NULL) {
-				ScriptEvent::send(&e->script, SM_RELOAD, "change", e, "");
+				ScriptEvent::send(&e->script, EVENT_SENDER, e, SM_RELOAD, "change");
 			}
 			
 			if(e && e->over_script.data) {
-				ScriptEvent::send(&e->over_script, SM_RELOAD, "change", e, "");
+				ScriptEvent::send(&e->over_script, EVENT_SENDER, e, SM_RELOAD, "change");
 			}
 			
 			if(e && (e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
@@ -2486,19 +2486,19 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			}
 			
 			if(e->script.data) {
-				ScriptEvent::send(&e->script, SM_INIT, "", e, "");
+				ScriptEvent::send(&e->script, EVENT_SENDER, e, SM_INIT);
 			}
 			
 			if(e && e->over_script.data) {
-				ScriptEvent::send(&e->over_script, SM_INIT, "", e, "");
+				ScriptEvent::send(&e->over_script, EVENT_SENDER, e, SM_INIT);
 			}
 			
 			if(e && e->script.data) {
-				ScriptEvent::send(&e->script, SM_INITEND, "", e, "");
+				ScriptEvent::send(&e->script, EVENT_SENDER, e, SM_INITEND);
 			}
 			
 			if(e && e->over_script.data) {
-				ScriptEvent::send(&e->over_script, SM_INITEND, "", e, "");
+				ScriptEvent::send(&e->over_script, EVENT_SENDER, e, SM_INITEND);
 			}
 		}
 		
