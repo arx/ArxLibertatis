@@ -176,7 +176,7 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	if(entities[num] && entities[num]->script.data) {
 		entities[num]->script.allowevents = 0;
 		if(init)
-			ScriptEvent::send(&entities[num]->script, EVENT_SENDER, entities[num], SM_INIT);
+			ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INIT);
 		if(entities[num])
 			ARX_SCRIPT_SetMainEvent(entities[num], "main");
 	}
@@ -185,15 +185,15 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	if(entities[num] && entities[num]->over_script.data) {
 		entities[num]->over_script.allowevents = 0;
 		if(init)
-			ScriptEvent::send(&entities[num]->over_script, EVENT_SENDER, entities[num], SM_INIT);
+			ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INIT);
 	}
 	
 	// Sends InitEnd Event
 	if(init) {
 		if(entities[num] && entities[num]->script.data)
-			ScriptEvent::send(&entities[num]->script, EVENT_SENDER, entities[num], SM_INITEND);
+			ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INITEND);
 		if(entities[num] && entities[num]->over_script.data)
-			ScriptEvent::send(&entities[num]->over_script, EVENT_SENDER, entities[num], SM_INITEND);
+			ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INITEND);
 	}
 	
 	if(entities[num])
