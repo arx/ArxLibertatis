@@ -229,10 +229,9 @@ PlatformInstant g_debugTriggersTime[10] = { 0 };
 float g_debugValues[10];
 
 // Sends ON GAME_READY msg to all IOs
-void SendGameReadyMsg()
-{
+void SendGameReadyMsg() {
 	LogDebug("SendGameReadyMsg");
-	SendMsgToAllIO(SM_GAME_READY);
+	SendMsgToAllIO(EVENT_SENDER, SM_GAME_READY);
 }
 
 bool AdjustUI() {
