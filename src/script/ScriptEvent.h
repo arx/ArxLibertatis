@@ -43,7 +43,10 @@ class Command;
 
 class ScriptEvent {
 	
+	
 public:
+	
+	static DisabledEvents getDisabledEventsMask(const ScriptEventName & event);
 	
 	static std::string getName(const ScriptEventName & event);
 	
