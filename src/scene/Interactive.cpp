@@ -181,16 +181,14 @@ long ARX_INTERACTIVE_GetSellValue(Entity * item, Entity * shop, long count) {
 static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io) {
 	
 	ARX_PATH * op = io->inzone;
-
-	if(op) {
-		if(!op->controled.empty()) {
-			EntityHandle t = entities.getById(op->controled);
-			if(t != EntityHandle()) {
-				std::string str = io->idString() + ' ' + op->name;
-				SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, str);
-			}
-		}
-		
+	if(!op || op->controled.empty()) {
+		return;
+	}
+	
+	EntityHandle t = entities.getById(op->controled);
+	if(t != EntityHandle()) {
+		std::string str = io->idString() + ' ' + op->name;
+		SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 	}
 	
 }
