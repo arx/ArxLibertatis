@@ -346,7 +346,7 @@ public:
 					}
 				}
 				
-				Stack_SendMsgToAllNPC_IO(EVENT_SENDER, SM_CONTROLS_OFF, "");
+				Stack_SendMsgToAllNPC_IO(context.getEntity(), SM_CONTROLS_OFF, "");
 				spells.endByCaster(EntityHandle_Player);
 			}
 			BLOCK_PLAYER_CONTROLS = true;
