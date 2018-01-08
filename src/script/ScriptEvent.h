@@ -30,6 +30,8 @@ struct SCRIPT_EVENT {
 	std::string name;
 };
 
+extern SCRIPT_EVENT AS_EVENT[];
+
 namespace script {
 
 //! strip [] brackets

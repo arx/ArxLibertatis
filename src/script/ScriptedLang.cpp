@@ -55,8 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptUtils.h"
 
 
-extern SCRIPT_EVENT AS_EVENT[];
-
 namespace script {
 
 namespace {
