@@ -542,6 +542,8 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		io->_npcdata->pathfind.list = NULL;
 	}
 	
+	Entity * oes = EVENT_SENDER;
+	
 	Vec3f pos1, pos2;
 	if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 		pos1 = io->pos;
@@ -635,9 +637,12 @@ wander:
 		to = AnchorData_GetNearest(pos2, io->physics.cyl);
 
 	if(from != -1 && to != -1) {
-		if(from == to && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
+		
+		if(from == to && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)) {
+			EVENT_SENDER = oes;
 			return true;
-
+		}
+		
 		if ((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) ||
 		        closerThan(pos1, ACTIVEBKG->m_anchors[from].pos, 200.f))
 		{
@@ -645,6 +650,7 @@ wander:
 			        && !(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 			{
 				if(closerThan(ACTIVEBKG->m_anchors[from].pos, ACTIVEBKG->m_anchors[to].pos, 200.f)) {
+					EVENT_SENDER = oes;
 					return false;
 				}
 
@@ -667,9 +673,11 @@ wander:
 			tpr.from = from;
 			tpr.to = to;
 			tpr.entity = io;
-
-			if(EERIE_PATHFINDER_Add_To_Queue(tpr))
+			if(EERIE_PATHFINDER_Add_To_Queue(tpr)) {
+				EVENT_SENDER = oes;
 				return true;
+			}
+			
 		}
 	}
 
@@ -681,10 +689,15 @@ failure:
 
 	io->_npcdata->pathfind.listnb = -2;
 
-	if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)
+	if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) {
+		EVENT_SENDER = oes;
 		return false; // TODO was BEHAVIOUR_NONE
-
+	}
+	
 	SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
+	
+	EVENT_SENDER = oes;
+	
 	return false;
 }
 
