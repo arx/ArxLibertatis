@@ -454,6 +454,8 @@ public:
 	ScriptMessage getId() const { return m_id; }
 	const std::string getName() const { return m_name; }
 	
+	std::string toString() const;
+	
 };
 
 extern SCRIPT_VARIABLES svar;

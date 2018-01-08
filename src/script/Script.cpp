@@ -112,6 +112,17 @@ ScriptEventName ScriptEventName::parse(const std::string & name) {
 	return ScriptEventName(name);
 }
 
+std::string ScriptEventName::toString() const {
+	
+	if(!getName().empty()) {
+		arx_assert(getId() == SM_NULL);
+		return getName();
+	}
+	
+	arx_assert(getId() < SM_MAXCMD && AS_EVENT[getId()].name.length() > 3);
+	return AS_EVENT[getId()].name.substr(3);
+}
+
 long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
 	
 	// TODO(script-parser) remove, respect quoted strings
