@@ -1995,7 +1995,7 @@ void ArxGame::manageEditorControls() {
 				PutInInventory();
 			} else if(ARX_INTERFACE_MouseInBook()) {
 				if(g_playerBook.currentPage() == BOOKMODE_STATS) {
-					SendIOScriptEvent(EVENT_SENDER, DRAGINTER, SM_INVENTORYUSE);
+					SendIOScriptEvent(entities.player(), DRAGINTER, SM_INVENTORYUSE);
 					COMBINE = NULL;
 				}
 			} else if(DRAGINTER->ioflags & IO_GOLD) {
