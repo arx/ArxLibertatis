@@ -106,7 +106,7 @@ std::string Context::getWord() {
 				return word;
 			} else if(esdat[m_pos] == '~') {
 				if(tilde) {
-					word += GetVarValueInterpretedAsText(var, getMaster(), getEntity());
+					word += getStringVar(var);
 					var.clear();
 				}
 				tilde = !tilde;
@@ -132,7 +132,7 @@ std::string Context::getWord() {
 				ScriptParserWarning << "unexpected '\"' inside token";
 			} else if(esdat[m_pos] == '~') {
 				if(tilde) {
-					word += GetVarValueInterpretedAsText(var, getMaster(), getEntity());
+					word += getStringVar(var);
 					var.clear();
 				}
 				tilde = !tilde;
