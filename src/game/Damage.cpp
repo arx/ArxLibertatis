@@ -465,7 +465,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	} else {
 		char dmm[32];
 
-		if(EVENT_SENDER == entities.player()) {
+		if(source == EntityHandle_Player) {
 			if(isSpellHit) {
 				sprintf(dmm, "%f spell", double(dmg));
 			}
