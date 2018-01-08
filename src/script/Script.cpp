@@ -1529,8 +1529,8 @@ void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage msg
 	}
 }
 
-static ScriptResult SendIOScriptEventReverse(Entity * sender, Entity * io, ScriptMessage msg,
-                                             const std::string & params, const std::string & eventname) {
+ScriptResult SendIOScriptEventReverse(Entity * sender, Entity * io, ScriptMessage msg,
+                                      const std::string & params, const std::string & eventname) {
 	
 	// checks invalid IO
 	if (!io) return REFUSE;
@@ -1568,12 +1568,6 @@ ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage m
 	}
 	
 	EntityHandle num = entity->index();
-	
-	if(msg == SM_INIT || msg == SM_INITEND) {
-		if(entities[num]) {
-			SendIOScriptEventReverse(sender, entities[num], msg, params, eventname);
-		}
-	}
 	
 	// If this IO only has a Local script, send event to it
 	if(entities[num] && !entities[num]->over_script.data) {
