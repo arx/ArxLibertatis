@@ -252,7 +252,7 @@ static const char * toString(ScriptResult ret) {
 }
 #endif
 
-ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * io, ScriptMessage msg,
+ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * entity, ScriptMessage msg,
                                const std::string & params, const std::string & evname, long info) {
 	
 	ScriptResult ret = ACCEPT;
@@ -261,7 +261,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * io, 
 	
 	totalCount++;
 	
-	if(io && checkInteractiveObject(io, msg, ret)) {
+	if(entity && checkInteractiveObject(entity, msg, ret)) {
 		return ret;
 	}
 	
@@ -351,8 +351,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * io, 
 	
 	LogDebug("--> " << getName(msg, evname)
 	         << " params=\"" << params << "\""
-	         << " entity=" << (io ? io->idString() : "unknown")
-	         << (io == NULL ? "" : es == &io->script ? " base" : " overriding")
+	         << " entity=" << (entity ? entity->idString() : "unknown")
+	         << (entity == NULL ? "" : es == &entity->script ? " base" : " overriding")
 	         << " pos=" << pos);
 
 	MakeSSEPARAMS(params.c_str());
@@ -365,7 +365,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * io, 
 		}
 	}
 	
-	script::Context context(es, pos, sender, io, msg);
+	script::Context context(es, pos, sender, entity, msg);
 	
 	if(msg != SM_EXECUTELINE) {
 		std::string word = context.getCommand();
@@ -401,8 +401,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * io, 
 			
 			script::Command::Result res;
 			if(command.getEntityFlags()
-			   && (!io || (command.getEntityFlags() != script::Command::AnyEntity
-			               && !(command.getEntityFlags() & long(io->ioflags))))) {
+			   && (!entity || (command.getEntityFlags() != script::Command::AnyEntity
+			               && !(command.getEntityFlags() & long(entity->ioflags))))) {
 				ScriptEventWarning << "command " << command.getName() << " needs an IO of type "
 				                   << command.getEntityFlags();
 				context.skipCommand();
