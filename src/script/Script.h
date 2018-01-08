@@ -491,7 +491,7 @@ long GETVarValueLong(const SCRIPT_VARIABLES & svf, const std::string & name);
 float GETVarValueFloat(const SCRIPT_VARIABLES & svf, const std::string & name);
 std::string GETVarValueText(const SCRIPT_VARIABLES & svf, const std::string & name);
 
-ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * io, const std::string & name, std::string & txtcontent, float * fcontent, long * lcontent);
+ValueType getSystemVar(Entity * sender, const EERIE_SCRIPT * es, Entity * io, const std::string & name, std::string & txtcontent, float * fcontent, long * lcontent);
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io);
 void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity * io);
 

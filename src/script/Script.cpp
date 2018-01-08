@@ -295,7 +295,7 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	memset(es->shortcut, 0, sizeof(long) * MAX_SHORTCUT);
 }
 
-ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::string & name,
+ValueType getSystemVar(Entity * sender, const EERIE_SCRIPT * es, Entity * entity, const std::string & name,
                        std::string & txtcontent, float * fcontent, long * lcontent) {
 	
 	arx_assert_msg(!name.empty() && name[0] == '^', "bad system variable: \"%s\"", name.c_str());
@@ -721,12 +721,12 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 		case 's': {
 			
 			if(boost::starts_with(name, "^sender")) {
-				if(!EVENT_SENDER) {
+				if(!sender) {
 					txtcontent = "none";
-				} else if(EVENT_SENDER == entities.player()) {
+				} else if(sender == entities.player()) {
 					txtcontent = "player";
 				} else {
-					txtcontent = EVENT_SENDER->idString();
+					txtcontent = sender->idString();
 				}
 				return TYPE_TEXT;
 			}
@@ -1193,7 +1193,7 @@ std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_
 			float fv;
 			std::string tv;
 			
-			switch(getSystemVar(esss, io, temp1, tv, &fv, &lv)) {
+			switch(getSystemVar(EVENT_SENDER, esss, io, temp1, tv, &fv, &lv)) {
 				case TYPE_TEXT:
 					return tv;
 					break;
@@ -1256,7 +1256,7 @@ float GetVarValueInterpretedAsFloat(const std::string & temp1, const EERIE_SCRIP
 		long lv;
 		float fv;
 		std::string tv;
-		switch(getSystemVar(esss, io, temp1, tv, &fv, &lv)) {
+		switch(getSystemVar(EVENT_SENDER, esss, io, temp1, tv, &fv, &lv)) {
 			case TYPE_TEXT:
 				return (float)atof(tv.c_str());
 			case TYPE_LONG:

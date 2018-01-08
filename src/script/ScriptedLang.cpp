@@ -467,7 +467,7 @@ class IfCommand : public Command {
 			case '^': {
 				
 				long l;
-				switch(getSystemVar(es, io, var, s, &f, &l)) {
+				switch(getSystemVar(EVENT_SENDER, es, io, var, s, &f, &l)) {
 					
 					case TYPE_TEXT: return TYPE_TEXT;
 					
