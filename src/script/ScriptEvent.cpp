@@ -365,7 +365,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		}
 	}
 	
-	script::Context context(es, pos, io, msg);
+	script::Context context(es, pos, EVENT_SENDER, io, msg);
 	
 	if(msg != SM_EXECUTELINE) {
 		std::string word = context.getCommand();

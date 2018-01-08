@@ -40,11 +40,16 @@ std::string loadUnlocalized(const std::string & str) {
 	return str;
 }
 
-Context::Context(EERIE_SCRIPT * script, size_t pos, Entity * entity, ScriptMessage msg)
-	: m_script(script), m_pos(pos), m_entity(entity), m_message(msg) { }
+Context::Context(EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity, ScriptMessage msg)
+	: m_script(script)
+	, m_pos(pos)
+	, m_sender(sender)
+	, m_entity(entity)
+	, m_message(msg)
+{ }
 
 std::string Context::getStringVar(const std::string & var) const {
-	return GetVarValueInterpretedAsText(EVENT_SENDER, var, getMaster(), m_entity);
+	return GetVarValueInterpretedAsText(getSender(), var, getMaster(), getEntity());
 }
 
 #define ScriptParserWarning ARX_LOG(isSuppressed(*this, "?") ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(*this) << ": "
@@ -227,7 +232,7 @@ bool Context::getBool() {
 }
 
 float Context::getFloatVar(const std::string & name) const {
-	return GetVarValueInterpretedAsFloat(EVENT_SENDER, name, getMaster(), m_entity);
+	return GetVarValueInterpretedAsFloat(getSender(), name, getMaster(), getEntity());
 }
 
 size_t Context::skipCommand() {
