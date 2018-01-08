@@ -405,23 +405,9 @@ public:
 
 class SetEventCommand : public Command {
 	
-	typedef std::map<std::string, DisabledEvent> Events;
-	Events events;
-	
 public:
 	
-	SetEventCommand() : Command("setevent") {
-		events["collide_npc"] = DISABLE_COLLIDE_NPC;
-		events["chat"] = DISABLE_CHAT;
-		events["hit"] = DISABLE_HIT;
-		events["inventory2_open"] = DISABLE_INVENTORY2_OPEN;
-		events["detectplayer"] = DISABLE_DETECT;
-		events["hear"] = DISABLE_HEAR;
-		events["aggression"] = DISABLE_AGGRESSION;
-		events["main"] = DISABLE_MAIN;
-		events["cursormode"] = DISABLE_CURSORMODE;
-		events["explorationmode"] = DISABLE_EXPLORATIONMODE;
-	}
+	SetEventCommand() : Command("setevent") { }
 	
 	Result execute(Context & context) {
 		
@@ -430,16 +416,16 @@ public:
 		
 		DebugScript(' ' << name << ' ' << enable);
 		
-		Events::const_iterator it = events.find(name);
-		if(it == events.end()) {
-			ScriptWarning << "unknown event: " << name;
+		DisabledEvents mask = ScriptEvent::getDisabledEventsMask(ScriptEventName::parse(name));
+		if(!mask) {
+			ScriptWarning << "cannot disable event: " << name;
 			return Failed;
 		}
 		
 		if(enable) {
-			context.getMaster()->allowevents &= ~it->second;
+			context.getMaster()->allowevents &= ~mask;
 		} else {
-			context.getMaster()->allowevents |= it->second;
+			context.getMaster()->allowevents |= mask;
 		}
 		
 		return Success;
