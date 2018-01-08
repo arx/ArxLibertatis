@@ -293,14 +293,14 @@ public:
 			}
 		}
 		
-		std::string params = context.getWord();
+		ScriptParameters parameters = ScriptParameters::parse(context.getWord());
 		
 		if(radius) {
-			DebugScript(' ' << eventname << (params.empty() ? "" : " \"" + params + '"') << " to " << (group ? "group " + groupname : "everyone") << " in radius " << rad);
+			DebugScript(' ' << eventname << ' ' << parameters << " to " << (group ? "group " + groupname : "everyone") << " in radius " << rad);
 		} else if(zone) {
-			DebugScript(' ' << eventname << (params.empty() ? "" : " \"" + params + '"') << " to " << (group ? "group " + groupname : "everyone") << " in zone " << zonename);
+			DebugScript(' ' << eventname << ' ' << parameters << " to " << (group ? "group " + groupname : "everyone") << " in zone " << zonename);
 		} else {
-			DebugScript(' ' << eventname << (params.empty() ? "" : " \"" + params + '"') << " to " << target);
+			DebugScript(' ' << eventname << ' ' << parameters << " to " << target);
 		}
 		
 		ScriptEventName event = ScriptEventName::parse(eventname);
@@ -328,7 +328,7 @@ public:
 					Vec3f _pos2 = GetItemWorldPosition(io);
 					if(!fartherThan(_pos, _pos2, rad)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(context.getEntity(), e, event, params);
+						Stack_SendIOScriptEvent(context.getEntity(), e, event, parameters);
 					}
 				}
 				
@@ -360,7 +360,7 @@ public:
 					Vec3f _pos = GetItemWorldPosition(e);
 					if(ARX_PATH_IsPosInZone(ap, _pos)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(context.getEntity(), e, event, params);
+						Stack_SendIOScriptEvent(context.getEntity(), e, event, parameters);
 					}
 				}
 				
@@ -381,7 +381,7 @@ public:
 				}
 				
 				io->stat_sent++;
-				Stack_SendIOScriptEvent(context.getEntity(), e, event, params);
+				Stack_SendIOScriptEvent(context.getEntity(), e, event, parameters);
 				
 			}
 			
@@ -394,7 +394,7 @@ public:
 			}
 			
 			io->stat_sent++;
-			Stack_SendIOScriptEvent(context.getEntity(), t, event, params);
+			Stack_SendIOScriptEvent(context.getEntity(), t, event, parameters);
 			
 		}
 		

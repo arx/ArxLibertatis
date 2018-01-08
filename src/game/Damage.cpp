@@ -528,20 +528,18 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		io_dead->animBlend.lastanimtime = 0;
 	}
 	
-	std::string killer;
-
 	if(io_dead->ioflags & IO_NPC)
 		io_dead->_npcdata->weaponinhand = 0;
 
 	ARX_INTERACTIVE_DestroyDynamicInfo(io_dead);
-
+	
+	ScriptParameters killer;
 	if(io_killer == entities.player()) {
-		killer = "player";
-	} else {
-		if(io_killer)
-			killer = io_killer->idString();
+		killer.push_back("player");
+	} else if(io_killer) {
+		killer.push_back(io_killer->idString());
 	}
-
+	
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * ioo = entities[handle];
