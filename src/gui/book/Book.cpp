@@ -182,14 +182,14 @@ void PlayerBook::toggle() {
 	
 	if(player.Interface & INTER_PLAYERBOOK) {
 		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, Random::getf(0.9f, 1.1f));
-		SendIOScriptEvent(EVENT_SENDER, entities.player(), SM_BOOK_CLOSE);
+		SendIOScriptEvent(NULL, entities.player(), SM_BOOK_CLOSE);
 		player.Interface &= ~INTER_PLAYERBOOK;
 		g_miniMap.purgeTexContainer();
 		onClosePage();
 	} else {
-		SendIOScriptEvent(EVENT_SENDER, entities.player(), SM_NULL, "", "book_open");
+		SendIOScriptEvent(NULL, entities.player(), SM_NULL, "", "book_open");
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, Random::getf(0.9f, 1.1f));
-		SendIOScriptEvent(EVENT_SENDER, entities.player(), SM_BOOK_OPEN);
+		SendIOScriptEvent(NULL, entities.player(), SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_PLAYERBOOK;
 		map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0l, 7l));
