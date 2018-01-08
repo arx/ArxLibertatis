@@ -939,7 +939,7 @@ static void ARX_PLAYER_LEVEL_UP() {
 	player.lifePool.current = player.lifePool.max;
 	player.manaPool.current = player.manaPool.max;
 	player.m_skillOld = player.m_skill;
-	SendIOScriptEvent(NULL, entities.player(), SM_NULL, "", "level_up");
+	SendIOScriptEvent(NULL, entities.player(), "level_up");
 }
 
 /*!

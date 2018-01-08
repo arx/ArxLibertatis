@@ -2393,7 +2393,7 @@ static void ManageNPCMovement_check_target_reached(Entity * io) {
 		io->_npcdata->pathfind.list = NULL;
 		
 		if((io->_npcdata->behavior & BEHAVIOUR_FLEE) && !io->_npcdata->pathfind.pathwait) {
-			SendIOScriptEvent(NULL, io, SM_NULL, "", "flee_end");
+			SendIOScriptEvent(NULL, io, "flee_end");
 		}
 		
 		if((io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE)
