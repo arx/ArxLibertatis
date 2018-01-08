@@ -978,7 +978,7 @@ void ARX_PHYSICS_Apply() {
 
 			if(io->_npcdata->pathfind.pathwait) { // Waiting For Pathfinder Answer
 				if(io->_npcdata->pathfind.listnb == 0) { // Not Found
-					SendIOScriptEvent(EVENT_SENDER, io, SM_PATHFINDER_FAILURE);
+					SendIOScriptEvent(NULL, io, SM_PATHFINDER_FAILURE);
 					io->_npcdata->pathfind.pathwait = 0;
 
 					if(io->_npcdata->pathfind.list)
@@ -986,7 +986,7 @@ void ARX_PHYSICS_Apply() {
 
 					io->_npcdata->pathfind.listnb = -2;
 				} else if (io->_npcdata->pathfind.listnb > 0) { // Found
-					SendIOScriptEvent(EVENT_SENDER, io, SM_PATHFINDER_SUCCESS);
+					SendIOScriptEvent(NULL, io, SM_PATHFINDER_SUCCESS);
 					io->_npcdata->pathfind.pathwait = 0;
 					io->_npcdata->pathfind.listpos += (unsigned short)ARX_NPC_GetNextAttainableNodeIncrement(io);
 
@@ -1858,7 +1858,7 @@ static void ManageNPCMovement(Entity * io) {
 					io->_npcdata->reachedtarget = 1;
 					io->_npcdata->reachedtime = g_gameTime.now();
 					if(io->targetinfo != io->index()) {
-						SendIOScriptEvent(EVENT_SENDER, io, SM_REACHEDTARGET);
+						SendIOScriptEvent(NULL, io, SM_REACHEDTARGET);
 					}
 				} else if(layer0.cur_anim == alist[ANIM_WAIT] && (layer0.flags & EA_ANIMEND)) {
 					io->_npcdata->pathfind.listnb = -1;
