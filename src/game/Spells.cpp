@@ -442,8 +442,8 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 	const char * spellName = MakeSpellName(spell.m_type);
 
 	if(spell.m_type == SPELL_CONFUSE) {
+		Entity * oes = EVENT_SENDER;
 		EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
-		
 		if(ValidIONum(spell.m_target)) {
 			if(spellName) {
 				Entity * targ = entities[spell.m_target];
@@ -452,6 +452,7 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 				SendIOScriptEvent(targ, SM_SPELLEND, param);
 			}
 		}
+		EVENT_SENDER = oes;
 		return;
 	}
 	
