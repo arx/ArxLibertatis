@@ -1529,35 +1529,6 @@ void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage msg
 	}
 }
 
-ScriptResult SendIOScriptEventReverse(Entity * sender, Entity * io, ScriptMessage msg,
-                                      const std::string & params, const std::string & eventname) {
-	
-	// checks invalid IO
-	if (!io) return REFUSE;
-
-	EntityHandle num = io->index();
-	
-	// if this IO only has a Local script, send event to it
-	if (entities[num] && !entities[num]->over_script.data)
-	{
-		return ScriptEvent::send(&entities[num]->script, sender, entities[num], msg, params, eventname);
-	}
-	
-	// If this IO has a Global script send to Local (if exists)
-	// then to local if no overriden by Local
-	if (entities[num] && (ScriptEvent::send(&entities[num]->script, sender, entities[num], msg, params, eventname) != REFUSE))
-	{
-	
-		if (entities[num])
-			return (ScriptEvent::send(&entities[num]->over_script, sender, entities[num], msg, params, eventname));
-		else
-			return REFUSE;
-	}
-
-	// Refused further processing.
-	return REFUSE;
-}
-
 ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage msg, const std::string & params,
                                const std::string & eventname) {
 	

@@ -497,9 +497,6 @@ void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity
 ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage msg,
                                const std::string & params = std::string(),
                                const std::string & eventname = std::string());
-ScriptResult SendIOScriptEventReverse(Entity * sender, Entity * io, ScriptMessage msg,
-                                      const std::string & params = std::string(),
-                                      const std::string & eventname = std::string());
 
 ScriptResult SendMsgToAllIO(Entity * sender, ScriptMessage msg, const std::string & params = std::string());
 
