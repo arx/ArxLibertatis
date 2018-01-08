@@ -1246,7 +1246,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 	// CLOSING
 	if(!_io || SecondaryInventory == _io->inventory) {
 		if(SecondaryInventory && SecondaryInventory->io)
-			SendIOScriptEvent(EVENT_SENDER, SecondaryInventory->io, SM_INVENTORY2_CLOSE);
+			SendIOScriptEvent(entities.player(), SecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
 		TSecondaryInventory = SecondaryInventory;
@@ -1254,13 +1254,13 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 		DRAGGING = false;
 	} else {
 		if(TSecondaryInventory && TSecondaryInventory->io)
-			SendIOScriptEvent(EVENT_SENDER, TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
+			SendIOScriptEvent(entities.player(), TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_right;
 		TSecondaryInventory = SecondaryInventory = _io->inventory;
 
 		if(SecondaryInventory && SecondaryInventory->io != NULL) {
-			if(SendIOScriptEvent(EVENT_SENDER, SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE) {
+			if(SendIOScriptEvent(entities.player(), SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE) {
 				g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
 				TSecondaryInventory = SecondaryInventory = NULL;
 				return;
