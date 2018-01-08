@@ -2411,6 +2411,7 @@ static void ManageNPCMovement_check_target_reached(Entity * io) {
 		free(io->_npcdata->pathfind.list);
 		io->_npcdata->pathfind.list = NULL;
 		
+		Entity * oes = EVENT_SENDER;
 		EVENT_SENDER = NULL;
 
 		if((io->_npcdata->behavior & BEHAVIOUR_FLEE) && !io->_npcdata->pathfind.pathwait)
@@ -2437,6 +2438,9 @@ static void ManageNPCMovement_check_target_reached(Entity * io) {
 				io->_npcdata->pathfind.listnb = -2;
 			}
 		}
+		
+		EVENT_SENDER = oes;
+		
 	}
 }
 
