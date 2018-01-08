@@ -1208,7 +1208,7 @@ void ArxGame::managePlayerControls() {
 				{
 					lChangeWeapon--;
 					if(pIOChangeWeapon) {
-						SendIOScriptEvent(entities.player(), pIOChangeWeapon, SM_INVENTORYUSE, "");
+						SendIOScriptEvent(entities.player(), pIOChangeWeapon, SM_INVENTORYUSE);
 						pIOChangeWeapon = NULL;
 					}
 				} else {
@@ -2058,11 +2058,10 @@ void ArxGame::manageEditorControls() {
 					SendIOScriptEvent(NULL, io, SM_COMBINE, "gold_coin");
 				} else {
 					if(io != COMBINE) {
-						std::string temp = COMBINE->idString();
 						if(boost::starts_with(COMBINE->className(), "keyring")) {
 							ARX_KEYRING_Combine(io);
 						} else {
-							SendIOScriptEvent(COMBINE, io, SM_COMBINE, temp);
+							SendIOScriptEvent(COMBINE, io, SM_COMBINE, COMBINE->idString());
 						}
 					}
 				}

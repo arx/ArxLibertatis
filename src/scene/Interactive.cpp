@@ -187,8 +187,10 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io) {
 	
 	EntityHandle t = entities.getById(op->controled);
 	if(t != EntityHandle()) {
-		std::string str = io->idString() + ' ' + op->name;
-		SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, str);
+		ScriptParameters parameters;
+		parameters.push_back(io->idString());
+		parameters.push_back(op->name);
+		SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, parameters);
 	}
 	
 }

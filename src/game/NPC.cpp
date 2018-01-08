@@ -2735,32 +2735,25 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 		   && (entity->show == SHOW_FLAG_IN_SCENE || entity->show == SHOW_FLAG_HIDDEN)
 		   && (entity->_npcdata->lifePool.current > 0.f)
 		) {
+			
 			float distance = fdist(pos, entity->pos);
-
 			if(distance < max_distance) {
-				if(entity->requestRoomUpdate)
+				
+				if(entity->requestRoomUpdate) {
 					UpdateIORoom(entity);
-
+				}
+				
 				if(Source_Room > -1 && entity->room > -1) {
 					float fdist = SP_GetRoomDist(pos, entity->pos, Source_Room, entity->room);
-
 					if(fdist < max_distance * 1.5f) {
-						long ldistance = long(fdist);
-						char temp[64];
-
-						sprintf(temp, "%ld", ldistance);
-
-						SendIOScriptEvent(source, entity, SM_HEAR, temp);
+						distance = fdist;
 					}
-				} else {
-					long ldistance = long(distance);
-					char temp[64];
-
-					sprintf(temp, "%ld", ldistance);
-
-					SendIOScriptEvent(source, entity, SM_HEAR, temp);
 				}
+				
+				SendIOScriptEvent(source, entity, SM_HEAR, long(distance));
+				
 			}
+			
 		}
 	}
 	
