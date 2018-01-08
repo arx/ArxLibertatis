@@ -1917,7 +1917,7 @@ void ArxGame::manageEditorControls() {
 	   && FlyingOverIO
 	   && !DRAGINTER
 	) {
-		SendIOScriptEvent(EVENT_SENDER, FlyingOverIO, SM_CLICKED);
+		SendIOScriptEvent(entities.player(), FlyingOverIO, SM_CLICKED);
 		bool bOk = true;
 		
 		if(SecondaryInventory) {
