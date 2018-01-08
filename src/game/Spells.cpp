@@ -399,20 +399,15 @@ static void SPELLCAST_Notify(const SpellBase & spell) {
 	if(!spellName)
 		return;
 	
-	Entity * oes = EVENT_SENDER;
-	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		if(entities[handle] != NULL) {
 			Entity * sender = (source != EntityHandle()) ? entities[source] : NULL;
-			EVENT_SENDER = sender;
 			char param[256];
 			sprintf(param, "%s %ld", spellName, (long)spell.m_level);
 			SendIOScriptEvent(sender, entities[handle], SM_SPELLCAST, param);
 		}
 	}
-	
-	EVENT_SENDER = oes;
 	
 }
 
@@ -425,13 +420,10 @@ static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 	const char * spellName = MakeSpellName(spell.m_type);
 	
 	if(spellName) {
-		Entity * oes = EVENT_SENDER;
 		Entity * sender = (source != EntityHandle()) ? entities[source] : NULL;
-		EVENT_SENDER = sender;
 		char param[256];
 		sprintf(param, "%s %ld", spellName, long(spell.m_level));
 		SendIOScriptEvent(sender, entities[spell.m_target], SM_SPELLCAST, param);
-		EVENT_SENDER = oes;
 	}
 }
 
@@ -441,9 +433,7 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 	const char * spellName = MakeSpellName(spell.m_type);
 
 	if(spell.m_type == SPELL_CONFUSE) {
-		Entity * oes = EVENT_SENDER;
 		Entity * sender = ValidIONum(source) ? entities[source] : NULL;
-		EVENT_SENDER = sender;
 		if(ValidIONum(spell.m_target)) {
 			if(spellName) {
 				Entity * targ = entities[spell.m_target];
@@ -452,7 +442,6 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 				SendIOScriptEvent(sender, targ, SM_SPELLEND, param);
 			}
 		}
-		EVENT_SENDER = oes;
 		return;
 	}
 	
@@ -463,17 +452,14 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
-		
 		if(entities[handle]) {
-			Entity * oes = EVENT_SENDER;
 			Entity * sender = ValidIONum(source) ? entities[source] : NULL;
-			EVENT_SENDER = sender;
 			char param[128];
 			sprintf(param, "%s %ld", spellName, (long)spell.m_level);
 			SendIOScriptEvent(sender, entities[handle], SM_SPELLEND, param);
-			EVENT_SENDER = oes;
 		}
 	}
+	
 }
 
 //! Plays the sound of Fizzling spell

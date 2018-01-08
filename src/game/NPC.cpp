@@ -542,8 +542,6 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		io->_npcdata->pathfind.list = NULL;
 	}
 	
-	Entity * oes = EVENT_SENDER;
-	
 	Vec3f pos1, pos2;
 	if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 		pos1 = io->pos;
@@ -577,8 +575,6 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	if (old_target != target)
 		io->_npcdata->reachedtarget = 0;
 
-	EVENT_SENDER = NULL;
-	
 	pos1 = io->pos;
 	
 	if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
@@ -639,7 +635,6 @@ wander:
 	if(from != -1 && to != -1) {
 		
 		if(from == to && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)) {
-			EVENT_SENDER = oes;
 			return true;
 		}
 		
@@ -650,7 +645,6 @@ wander:
 			        && !(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 			{
 				if(closerThan(ACTIVEBKG->m_anchors[from].pos, ACTIVEBKG->m_anchors[to].pos, 200.f)) {
-					EVENT_SENDER = oes;
 					return false;
 				}
 
@@ -674,7 +668,6 @@ wander:
 			tpr.to = to;
 			tpr.entity = io;
 			if(EERIE_PATHFINDER_Add_To_Queue(tpr)) {
-				EVENT_SENDER = oes;
 				return true;
 			}
 			
@@ -690,13 +683,10 @@ failure:
 	io->_npcdata->pathfind.listnb = -2;
 
 	if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) {
-		EVENT_SENDER = oes;
 		return false; // TODO was BEHAVIOUR_NONE
 	}
 	
 	SendIOScriptEvent(NULL, io, SM_PATHFINDER_FAILURE);
-	
-	EVENT_SENDER = oes;
 	
 	return false;
 }
@@ -2280,15 +2270,13 @@ afterthat:
 	// We are still too far from our target...
 	if(io->_npcdata->pathfind.pathwait == 0) {
 		if(_dist > TOLERANCE && dis > TOLERANCE2) {
+			
 			if(io->_npcdata->reachedtarget) {
-				Entity * oes = EVENT_SENDER;
 				Entity * target = ValidIONum(io->targetinfo) ? entities[io->targetinfo] : NULL;
-				EVENT_SENDER = target;
 				SendIOScriptEvent(target, io, SM_LOSTTARGET);
 				io->_npcdata->reachedtarget = 0;
-				EVENT_SENDER = oes;
 			}
-
+			
 			// if not blocked & not Flee-Pathfinding
 			if(!(io->_npcdata->pathfind.listnb <= 0 && (io->_npcdata->behavior & BEHAVIOUR_FLEE))
 				|| (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
@@ -2362,10 +2350,6 @@ afterthat:
 				ManageNPCMovement_check_target_reached(io);
 			} else if(!io->_npcdata->reachedtarget) {
 				
-				Entity * oes = EVENT_SENDER;
-				Entity * target = ValidIONum(io->targetinfo) ? entities[io->targetinfo] : NULL;
-				EVENT_SENDER = target;
-
 				io->_npcdata->reachedtarget = 1;
 				io->_npcdata->reachedtime = g_gameTime.now();
 
@@ -2373,10 +2357,10 @@ afterthat:
 					io->animlayer[1].cur_anim = NULL;
 				
 				if(io->targetinfo != io->index()) {
+					Entity * target = ValidIONum(io->targetinfo) ? entities[io->targetinfo] : NULL;
 					SendIOScriptEvent(target, io, SM_REACHEDTARGET);
 				}
 				
-				EVENT_SENDER = oes;
 			}
 		}
 	}
@@ -2408,9 +2392,6 @@ static void ManageNPCMovement_check_target_reached(Entity * io) {
 		free(io->_npcdata->pathfind.list);
 		io->_npcdata->pathfind.list = NULL;
 		
-		Entity * oes = EVENT_SENDER;
-		EVENT_SENDER = NULL;
-		
 		if((io->_npcdata->behavior & BEHAVIOUR_FLEE) && !io->_npcdata->pathfind.pathwait) {
 			SendIOScriptEvent(NULL, io, SM_NULL, "", "flee_end");
 		}
@@ -2435,8 +2416,6 @@ static void ManageNPCMovement_check_target_reached(Entity * io) {
 				io->_npcdata->pathfind.listnb = -2;
 			}
 		}
-		
-		EVENT_SENDER = oes;
 		
 	}
 }
@@ -2679,22 +2658,16 @@ void CheckNPCEx(Entity * io) {
 		
 		if(Visible && !io->_npcdata->detect) {
 			// if visible but was NOT visible, sends an Detectplayer Event
-			Entity * oes = EVENT_SENDER;
-			EVENT_SENDER = NULL;
 			SendIOScriptEvent(NULL, io, SM_DETECTPLAYER);
 			io->_npcdata->detect = 1;
-			EVENT_SENDER = oes;
 		}
 		
 	}
 	
 	// if not visible but was visible, sends an Undetectplayer Event
 	if(!Visible && io->_npcdata->detect) {
-		Entity * oes = EVENT_SENDER;
-		EVENT_SENDER = NULL;
 		SendIOScriptEvent(NULL, io, SM_UNDETECTPLAYER);
 		io->_npcdata->detect = 0;
-		EVENT_SENDER = oes;
 	}
 	
 }
@@ -2749,9 +2722,6 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 	max_distance *= presence;
 	max_distance /= factor;
 	
-	Entity * oes = EVENT_SENDER;
-	EVENT_SENDER = source;
-	
 	long Source_Room = ARX_PORTALS_GetRoomNumForPosition(pos, 1);
 	
 	for(size_t i = 0; i < entities.size(); i++) {
@@ -2794,7 +2764,6 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 		}
 	}
 	
-	EVENT_SENDER = oes;
 }
 
 void ManageIgnition(Entity * io) {

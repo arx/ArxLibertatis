@@ -303,9 +303,6 @@ public:
 			DebugScript(' ' << event << (params.empty() ? "" : " \"" + params + '"') << " to " << target);
 		}
 		
-		Entity * oes = EVENT_SENDER;
-		EVENT_SENDER = context.getEntity();
-		
 		Entity * io = context.getEntity();
 		
 		if(radius) { // SEND EVENT TO ALL OBJECTS IN A RADIUS
@@ -340,7 +337,6 @@ public:
 			ARX_PATH * ap = ARX_PATH_GetAddressByName(zonename);
 			if(!ap) {
 				ScriptWarning << "unknown zone: " << zonename;
-				EVENT_SENDER = oes;
 				return Failed;
 			}
 			
@@ -392,7 +388,6 @@ public:
 			Entity * t = entities.getById(target, io);
 			if(!t) {
 				DebugScript(": target does not exist");
-				EVENT_SENDER = oes;
 				return Failed;
 			}
 			
@@ -400,8 +395,6 @@ public:
 			Stack_SendIOScriptEvent(context.getEntity(), t, SM_NULL, params, event);
 			
 		}
-		
-		EVENT_SENDER = oes;
 		
 		return Success;
 	}

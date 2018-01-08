@@ -593,23 +593,23 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 						if(!(flags & CFLAG_JUST_TEST) && ioo) {
 							GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
 							if(elapsed > GameDurationMs(500)) {
-								Entity * oes = EVENT_SENDER;
-								EVENT_SENDER = ioo;
+								
 								io->collide_door_time = g_gameTime.now();
-
-								if(CollidedFromBack(io, ioo))
+								
+								if(CollidedFromBack(io, ioo)) {
 									SendIOScriptEvent(ioo, io, SM_COLLIDE_NPC, "back");
-								else
+								} else {
 									SendIOScriptEvent(ioo, io, SM_COLLIDE_NPC);
-
-								EVENT_SENDER = io;
+								}
+								
 								io->collide_door_time = g_gameTime.now();
-
-								if(CollidedFromBack(ioo, io))
+								
+								if(CollidedFromBack(ioo, io)) {
 									SendIOScriptEvent(io, ioo, SM_COLLIDE_NPC, "back");
-								else
+								} else {
 									SendIOScriptEvent(io, ioo, SM_COLLIDE_NPC);
-								EVENT_SENDER = oes;
+								}
+								
 							}
 
 							if(ioo->damager_damages > 0 || io->damager_damages > 0) {
@@ -629,11 +629,8 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 									io->_npcdata->pathfind.list = NULL;
 								}
 								if(!io->_npcdata->reachedtarget) {
-									Entity * oes = EVENT_SENDER;
-									EVENT_SENDER = ioo;
 									SendIOScriptEvent(ioo, io, SM_REACHEDTARGET);
 									io->_npcdata->reachedtarget = 1;
-									EVENT_SENDER = oes;
 								}
 							}
 						}
@@ -672,23 +669,16 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 										if(io->gameFlags & GFLAG_DOOR) {
 											GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
 											if(elapsed > GameDurationMs(500)) {
-												Entity * oes = EVENT_SENDER;
-												EVENT_SENDER = ioo;
 												io->collide_door_time = g_gameTime.now();
 												SendIOScriptEvent(ioo, io, SM_COLLIDE_DOOR);
-												EVENT_SENDER = io;
 												io->collide_door_time = g_gameTime.now();
 												SendIOScriptEvent(io, ioo, SM_COLLIDE_DOOR);
-												EVENT_SENDER = oes;
 											}
 										}
 
 										if(io->ioflags & IO_FIELD) {
-											Entity * oes = EVENT_SENDER;
-											EVENT_SENDER = NULL;
 											io->collide_door_time = g_gameTime.now();
 											SendIOScriptEvent(NULL, ioo, SM_COLLIDE_FIELD);
-											EVENT_SENDER = oes;
 										}
 
 										if(!dealt && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
@@ -736,23 +726,16 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 											if(io->gameFlags & GFLAG_DOOR) {
 												GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
 												if(elapsed > GameDurationMs(500)) {
-													Entity * oes = EVENT_SENDER;
-													EVENT_SENDER = ioo;
 													io->collide_door_time = g_gameTime.now();
 													SendIOScriptEvent(ioo, io, SM_COLLIDE_DOOR);
-													EVENT_SENDER = io;
 													io->collide_door_time = g_gameTime.now();
 													SendIOScriptEvent(io, ioo, SM_COLLIDE_DOOR);
-													EVENT_SENDER = oes;
 												}
 											}
-
+										
 										if(io->ioflags & IO_FIELD) {
-											Entity * oes = EVENT_SENDER;
-											EVENT_SENDER = NULL;
 											io->collide_door_time = g_gameTime.now();
 											SendIOScriptEvent(NULL, ioo, SM_COLLIDE_FIELD);
-											EVENT_SENDER = oes;
 										}
 										
 										if(!dealt && ioo && (ioo->damager_damages > 0 || io->damager_damages > 0)) {

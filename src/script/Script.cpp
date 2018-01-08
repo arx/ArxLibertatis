@@ -93,7 +93,6 @@ extern long lChangeWeapon;
 extern Entity * pIOChangeWeapon;
 
 Entity * LASTSPAWNED = NULL;
-Entity * EVENT_SENDER = NULL;
 SCRIPT_VARIABLES svar;
 
 static char SSEPARAMS[MAX_SSEPARAMS][64];
@@ -234,8 +233,6 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 	if(g_gameTime.isPaused()) {
 		return;
 	}
-	
-	EVENT_SENDER = NULL;
 	
 	long heartbeat_count = std::min(long(entities.size()), 10l);
 	
@@ -1495,7 +1492,6 @@ void ARX_SCRIPT_EventStackExecute(size_t limit) {
 		
 		if(ValidIOAddress(event.entity)) {
 			Entity * sender = ValidIOAddress(event.sender) ? event.sender : NULL;
-			EVENT_SENDER = sender;
 			LogDebug("running queued " << ScriptEvent::getName(event.msg, event.eventname)
 			         << " for " << event.entity->idString());
 			SendIOScriptEvent(sender, event.entity, event.msg, event.params, event.eventname);
@@ -1576,24 +1572,20 @@ ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage m
 	if(msg == SM_INIT || msg == SM_INITEND) {
 		if(entities[num]) {
 			SendIOScriptEventReverse(sender, entities[num], msg, params, eventname);
-			EVENT_SENDER = sender;
 		}
 	}
 	
 	// If this IO only has a Local script, send event to it
 	if(entities[num] && !entities[num]->over_script.data) {
 		ScriptResult ret = ScriptEvent::send(&entities[num]->script, sender, entities[num], msg, params, eventname);
-		EVENT_SENDER = sender;
 		return ret;
 	}
 
 	// If this IO has a Global script send to Local (if exists)
 	// then to Global if no overriden by Local
 	if(entities[num] && ScriptEvent::send(&entities[num]->over_script, sender, entities[num], msg, params, eventname) != REFUSE) {
-		EVENT_SENDER = sender;
 		if(entities[num]) {
 			ScriptResult ret = ScriptEvent::send(&entities[num]->script, sender, entities[num], msg, params, eventname);
-			EVENT_SENDER = sender;
 			return ret;
 		}
 		else
@@ -1608,8 +1600,6 @@ ScriptResult SendInitScriptEvent(Entity * io) {
 	
 	if (!io) return REFUSE;
 
-	Entity * oes = EVENT_SENDER;
-	EVENT_SENDER = NULL;
 	EntityHandle num = io->index();
 	
 	if(entities[num] && entities[num]->script.data) {
@@ -1628,7 +1618,6 @@ ScriptResult SendInitScriptEvent(Entity * io) {
 		ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INITEND);
 	}
 	
-	EVENT_SENDER = oes;
 	return ACCEPT;
 }
 
