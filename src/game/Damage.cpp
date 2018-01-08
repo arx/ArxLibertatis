@@ -490,7 +490,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 
 void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	
-	if(io_dead->mainevent == "dead") {
+	if(io_dead->mainevent.getId() == SM_DEAD) {
 		return;
 	}
 
@@ -515,7 +515,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	//Kill all Timers...
 	ARX_SCRIPT_Timer_Clear_For_IO(io_dead);
 
-	if(io_dead->mainevent != "dead") {
+	if(io_dead->mainevent.getId() != SM_DEAD) {
 		if(SendIOScriptEvent(io_killer, io_dead, SM_DIE) != REFUSE && ValidIOAddress(io_dead)) {
 			io_dead->infracolor = Color3f::blue;
 		}
@@ -525,7 +525,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		return;
 	}
 	
-	ARX_SCRIPT_SetMainEvent(io_dead, "dead");
+	ARX_SCRIPT_SetMainEvent(io_dead, SM_DEAD);
 	
 	if(fartherThan(io_dead->pos, g_camera->m_pos, 3200.f)) {
 		io_dead->animlayer[0].ctime = AnimationDurationMs(9999999);

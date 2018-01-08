@@ -264,7 +264,7 @@ void ARX_NPC_Revive(Entity * io, bool init)
 		TSecondaryInventory = NULL;
 	}
 
-	ARX_SCRIPT_SetMainEvent(io, "main");
+	ARX_SCRIPT_SetMainEvent(io, SM_MAIN);
 
 	if(io->ioflags & IO_NPC) {
 		io->ioflags &= ~IO_NO_COLLISIONS;
@@ -1159,7 +1159,7 @@ bool IsDeadNPC(Entity * io) {
 	if(!io || !(io->ioflags & IO_NPC))
 		return false;
 	
-	return (io->_npcdata->lifePool.current <= 0 || io->mainevent == "dead");
+	return (io->_npcdata->lifePool.current <= 0 || io->mainevent.getId() == SM_DEAD);
 }
 
 //! Checks if Player is currently striking.

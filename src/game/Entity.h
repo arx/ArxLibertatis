@@ -288,7 +288,7 @@ public:
 	INVENTORY_DATA * inventory; // Inventory Data
 	EntityVisilibity show; // Show status (in scene, in inventory...)
 	IOCollisionFlags collision; // collision type
-	std::string mainevent;
+	ScriptEventName mainevent;
 	Color3f infracolor; // Improve Vision Color (Heat)
 	long changeanim;
 	
