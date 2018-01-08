@@ -197,7 +197,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	special_color = Color3f::white;
 	highlightColor = Color3f::black;
 	
-	ARX_SCRIPT_SetMainEvent(this, "main");
+	ARX_SCRIPT_SetMainEvent(this, SM_MAIN);
 	
 }
 

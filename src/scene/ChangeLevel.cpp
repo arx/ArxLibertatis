@@ -951,7 +951,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ais.scriptload = io->scriptload;
 	ais.show = io->show;
 	ais.collision = io->collision;
-	util::storeString(ais.mainevent, io->mainevent);
+	util::storeString(ais.mainevent, io->mainevent.toString());
 	ais.velocity = Vec3f_ZERO;
 	ais.stopped = 0;
 	ais.basespeed = io->basespeed;
@@ -2010,7 +2010,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		io->scriptload = ais->scriptload;
 		io->show = EntityVisilibity(ais->show); // TODO save/load enum
 		io->collision = IOCollisionFlags::load(ais->collision); // TODO save/load flags
-		io->mainevent = boost::to_lower_copy(util::loadString(ais->mainevent));
+		io->mainevent = ScriptEventName::parse(boost::to_lower_copy(util::loadString(ais->mainevent)));
 		
 		// Physics data
 		io->basespeed = 1;
