@@ -538,9 +538,11 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		}
 	}
 	
-	if (!ValidIOAddress(io_dead))
+	if(!ValidIOAddress(io_dead)) {
+		EVENT_SENDER = old_sender;
 		return;
-
+	}
+	
 	ARX_SCRIPT_SetMainEvent(io_dead, "dead");
 	
 	if(fartherThan(io_dead->pos, g_camera->m_pos, 3200.f)) {
