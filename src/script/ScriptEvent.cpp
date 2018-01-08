@@ -252,8 +252,8 @@ static const char * toString(ScriptResult ret) {
 }
 #endif
 
-ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string & params,
-                               Entity * io, const std::string & evname, long info) {
+ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * io, ScriptMessage msg,
+                               const std::string & params, const std::string & evname, long info) {
 	
 	ScriptResult ret = ACCEPT;
 	std::string eventname;
@@ -365,7 +365,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		}
 	}
 	
-	script::Context context(es, pos, EVENT_SENDER, io, msg);
+	script::Context context(es, pos, sender, io, msg);
 	
 	if(msg != SM_EXECUTELINE) {
 		std::string word = context.getCommand();
