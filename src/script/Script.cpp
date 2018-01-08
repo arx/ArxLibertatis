@@ -365,7 +365,7 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	memset(es->shortcut, 0, sizeof(long) * SM_MAXCMD);
 }
 
-ValueType getSystemVar(Entity * sender, const EERIE_SCRIPT * es, Entity * entity, const std::string & name,
+ValueType getSystemVar(Entity * sender, const ScriptParameters & parameters, const EERIE_SCRIPT * es, Entity * entity, const std::string & name,
                        std::string & txtcontent, float * fcontent, long * lcontent) {
 	
 	arx_assert_msg(!name.empty() && name[0] == '^', "bad system variable: \"%s\"", name.c_str());
@@ -376,17 +376,17 @@ ValueType getSystemVar(Entity * sender, const EERIE_SCRIPT * es, Entity * entity
 		case '$': {
 			
 			if(name == "^$param1") {
-				txtcontent = g_scriptParameters.get(0);
+				txtcontent = parameters.get(0);
 				return TYPE_TEXT;
 			}
 			
 			if(name == "^$param2") {
-				txtcontent = g_scriptParameters.get(1);
+				txtcontent = parameters.get(1);
 				return TYPE_TEXT;
 			}
 			
 			if(name == "^$param3") {
-				txtcontent = g_scriptParameters.get(2);
+				txtcontent = parameters.get(2);
 				return TYPE_TEXT;
 			}
 			
@@ -404,17 +404,17 @@ ValueType getSystemVar(Entity * sender, const EERIE_SCRIPT * es, Entity * entity
 		case '&': {
 			
 			if(name == "^&param1") {
-				*fcontent = float(atof(g_scriptParameters.get(0).c_str()));
+				*fcontent = float(atof(parameters.get(0).c_str()));
 				return TYPE_FLOAT;
 			}
 			
 			if(name == "^&param2") {
-				*fcontent = float(atof(g_scriptParameters.get(1).c_str()));
+				*fcontent = float(atof(parameters.get(1).c_str()));
 				return TYPE_FLOAT;
 			}
 			
 			if(name == "^&param3") {
-				*fcontent = float(atof(g_scriptParameters.get(2).c_str()));
+				*fcontent = float(atof(parameters.get(2).c_str()));
 				return TYPE_FLOAT;
 			}
 			
@@ -438,17 +438,17 @@ ValueType getSystemVar(Entity * sender, const EERIE_SCRIPT * es, Entity * entity
 			}
 			
 			if(name == "^#param1") {
-				*lcontent = atol(g_scriptParameters.get(0).c_str());
+				*lcontent = atol(parameters.get(0).c_str());
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#param2") {
-				*lcontent = atol(g_scriptParameters.get(1).c_str());
+				*lcontent = atol(parameters.get(1).c_str());
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#param3") {
-				*lcontent = atol(g_scriptParameters.get(2).c_str());
+				*lcontent = atol(parameters.get(2).c_str());
 				return TYPE_LONG;
 			}
 			
