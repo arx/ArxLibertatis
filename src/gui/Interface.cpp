@@ -1208,7 +1208,7 @@ void ArxGame::managePlayerControls() {
 				{
 					lChangeWeapon--;
 					if(pIOChangeWeapon) {
-						SendIOScriptEvent(EVENT_SENDER, pIOChangeWeapon, SM_INVENTORYUSE, "");
+						SendIOScriptEvent(entities.player(), pIOChangeWeapon, SM_INVENTORYUSE, "");
 						pIOChangeWeapon = NULL;
 					}
 				} else {
