@@ -171,20 +171,6 @@ ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event, cons
 	return ret;
 }
 
-void ARX_SCRIPT_SetMainEvent(Entity * io, const ScriptEventName & newevent) {
-	
-	if(!io) {
-		return;
-	}
-	
-	if(newevent == SM_MAIN) {
-		io->mainevent = ScriptEventName();
-	} else {
-		io->mainevent = newevent;
-	}
-	
-}
-
 //*************************************************************************************
 //*************************************************************************************
 void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
@@ -200,7 +186,7 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 		if(init)
 			ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INIT);
 		if(entities[num])
-			ARX_SCRIPT_SetMainEvent(entities[num], SM_MAIN);
+			entities[num]->mainevent = SM_MAIN;
 	}
 	
 	// Do the same for Local Script
@@ -272,14 +258,10 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 			continue;
 		}
 		
-		if(!entities[i]->mainevent.getName().empty() || entities[i]->mainevent != SM_NULL) {
-			// Copy the even name to a local variable as it may change during execution
-			// and cause unexpected behavior in SendIOScriptEvent
-			ScriptEventName event = entities[i]->mainevent;
-			SendIOScriptEvent(NULL, entities[i], event);
-		} else {
-			SendIOScriptEvent(NULL, entities[i], SM_MAIN);
-		}
+		// Copy the even name to a local variable as it may change during execution
+		// and cause unexpected behavior in SendIOScriptEvent
+		ScriptEventName event = entities[i]->mainevent;
+		SendIOScriptEvent(NULL, entities[i], event);
 		
 	}
 	

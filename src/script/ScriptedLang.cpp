@@ -180,7 +180,9 @@ public:
 		
 		DebugScript(' ' << event);
 		
-		ARX_SCRIPT_SetMainEvent(context.getEntity(), ScriptEventName::parse(event));
+		if(context.getEntity()) {
+			context.getEntity()->mainevent = ScriptEventName::parse(event);
+		}
 		
 		return Success;
 	}

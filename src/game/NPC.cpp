@@ -263,9 +263,9 @@ void ARX_NPC_Revive(Entity * io, bool init)
 	if(TSecondaryInventory && TSecondaryInventory->io == io) {
 		TSecondaryInventory = NULL;
 	}
-
-	ARX_SCRIPT_SetMainEvent(io, SM_MAIN);
-
+	
+	io->mainevent = SM_MAIN;
+	
 	if(io->ioflags & IO_NPC) {
 		io->ioflags &= ~IO_NO_COLLISIONS;
 		io->_npcdata->lifePool.current = io->_npcdata->lifePool.max;
