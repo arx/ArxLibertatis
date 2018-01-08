@@ -736,13 +736,14 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 											if(io->gameFlags & GFLAG_DOOR) {
 												GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
 												if(elapsed > GameDurationMs(500)) {
+													Entity * oes = EVENT_SENDER;
 													EVENT_SENDER = ioo;
 													io->collide_door_time = g_gameTime.now();
 													SendIOScriptEvent(io, SM_COLLIDE_DOOR);
-
 													EVENT_SENDER = io;
 													io->collide_door_time = g_gameTime.now();
 													SendIOScriptEvent(ioo, SM_COLLIDE_DOOR);
+													EVENT_SENDER = oes;
 												}
 											}
 
