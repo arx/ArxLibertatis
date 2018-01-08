@@ -164,6 +164,6 @@ void cinematicRender() {
 		}
 		
 		ARX_SPEECH_Reset();
-		SendMsgToAllIO(EVENT_SENDER, SM_CINE_END, LAST_LAUNCHED_CINE);
+		SendMsgToAllIO(NULL, SM_CINE_END, LAST_LAUNCHED_CINE);
 	}
 }
