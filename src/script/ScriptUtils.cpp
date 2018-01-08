@@ -21,6 +21,8 @@
 
 #include <set>
 
+#include <boost/lexical_cast.hpp>
+
 #include "game/Entity.h"
 #include "graphics/data/Mesh.h"
 
@@ -48,8 +50,39 @@ Context::Context(EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * en
 	, m_message(msg)
 { }
 
-std::string Context::getStringVar(const std::string & var) const {
-	return GetVarValueInterpretedAsText(getSender(), var, getMaster(), getEntity());
+std::string Context::getStringVar(const std::string & name) const {
+	
+	if(name.empty()) {
+		return std::string();
+	} else if(name[0] == '^') {
+		long lv;
+		float fv;
+		std::string tv;
+		switch(getSystemVar(getSender(), getMaster(), getEntity(), name, tv, &fv, &lv)) {
+			case TYPE_TEXT:
+				return tv;
+			case TYPE_LONG:
+				return boost::lexical_cast<std::string>(lv);
+			default:
+				return boost::lexical_cast<std::string>(fv);;
+		}
+	} else if(name[0] == '#') {
+		return boost::lexical_cast<std::string>(GETVarValueLong(svar, name));
+	} else if(name[0] == '\xA7') {
+		return boost::lexical_cast<std::string>(GETVarValueLong(getMaster()->lvar, name));
+	} else if(name[0] == '&') {
+		return boost::lexical_cast<std::string>(GETVarValueFloat(svar, name));
+	} else if(name[0] == '@') {
+		return boost::lexical_cast<std::string>(GETVarValueFloat(getMaster()->lvar, name));
+	} else if(name[0] == '$') {
+		const SCRIPT_VAR * var = GetVarAddress(svar, name);
+		return var ? var->text : "void";
+	} else if (name[0] == '\xA3') {
+		const SCRIPT_VAR * var = GetVarAddress(getMaster()->lvar, name);
+		return var ? var->text : "void";
+	}
+	
+	return name;
 }
 
 #define ScriptParserWarning ARX_LOG(isSuppressed(*this, "?") ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(*this) << ": "

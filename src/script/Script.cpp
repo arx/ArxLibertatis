@@ -1174,8 +1174,7 @@ static SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES & svf, const std::string & na
 	return NULL;
 }
 
-static const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf,
-                                        const std::string & name) {
+const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, const std::string & name) {
 	
 	for(SCRIPT_VARIABLES::const_iterator it = svf.begin(); it != svf.end(); ++it) {
 		if(it->type != TYPE_UNKNOWN) {
@@ -1213,76 +1212,6 @@ std::string GETVarValueText(const SCRIPT_VARIABLES & svf, const std::string & na
 	if (!tsv) return "";
 
 	return tsv->text;
-}
-
-std::string GetVarValueInterpretedAsText(Entity * sender, const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io) {
-	
-	char var_text[256];
-	float t1;
-
-	if(!temp1.empty())
-	{
-		if (temp1[0] == '^')
-		{
-			long lv;
-			float fv;
-			std::string tv;
-			
-			switch(getSystemVar(sender, esss, io, temp1, tv, &fv, &lv)) {
-				case TYPE_TEXT:
-					return tv;
-					break;
-				case TYPE_LONG:
-					sprintf(var_text, "%ld", lv);
-					return var_text;
-					break;
-				default:
-					sprintf(var_text, "%f", double(fv));
-					return var_text;
-					break;
-			}
-
-		}
-		else if (temp1[0] == '#')
-		{
-			long l1 = GETVarValueLong(svar, temp1);
-			sprintf(var_text, "%ld", l1);
-			return var_text;
-		}
-		else if (temp1[0] == '\xA7')
-		{
-			long l1 = GETVarValueLong(esss->lvar, temp1);
-			sprintf(var_text, "%ld", l1);
-			return var_text;
-		}
-		else if (temp1[0] == '&') t1 = GETVarValueFloat(svar, temp1);
-		else if (temp1[0] == '@') t1 = GETVarValueFloat(esss->lvar, temp1);
-		else if (temp1[0] == '$')
-		{
-			const SCRIPT_VAR * var = GetVarAddress(svar, temp1);
-
-			if (!var) return "void";
-			else return var->text;
-		}
-		else if (temp1[0] == '\xA3')
-		{
-			const SCRIPT_VAR * var = GetVarAddress(esss->lvar, temp1);
-
-			if (!var) return "void";
-			else return var->text;
-		}
-		else
-		{
-			return temp1;
-		}
-	}
-	else
-	{
-		return "";
-	}
-
-	sprintf(var_text, "%f", double(t1));
-	return var_text;
 }
 
 SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES & svf, const std::string & name, long val) {

@@ -93,7 +93,7 @@ public:
 	
 	explicit Context(EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity, ScriptMessage msg);
 	
-	std::string getStringVar(const std::string & var) const;
+	std::string getStringVar(const std::string & name) const;
 	std::string getFlags();
 	std::string getWord();
 	void skipWord();
