@@ -167,49 +167,49 @@ static void EntityEnteringCurrentZone(Entity * io, ARX_PATH * current) {
 	if(JUST_RELOADED && (current->name == "ingot_maker" || current->name == "mauld_user")) {
 		ARX_DEAD_CODE(); // TODO remove JUST_RELOADED global
 	} else {
-		SendIOScriptEvent(EVENT_SENDER, io, SM_ENTERZONE, current->name);
+		
+		SendIOScriptEvent(NULL, io, SM_ENTERZONE, current->name);
 		
 		if(!current->controled.empty()) {
 			EntityHandle t = entities.getById(current->controled);
-			
 			if(t != EntityHandle()) {
 				std::string params = io->idString() + ' ' + current->name;
-				SendIOScriptEvent(EVENT_SENDER, entities[t], SM_CONTROLLEDZONE_ENTER, params);
+				SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_ENTER, params);
 			}
 		}
+		
 	}
+	
 }
 
 static void EntityEnteringCurrentZone2(Entity * io, ARX_PATH * current) {
 	
 	io->inzone_show = io->show;
-	SendIOScriptEvent(EVENT_SENDER, io, SM_ENTERZONE, current->name);
+	SendIOScriptEvent(NULL, io, SM_ENTERZONE, current->name);
 	
 	if(!current->controled.empty()) {
 		EntityHandle t = entities.getById(current->controled);
-		
 		if(t != EntityHandle()) {
 			std::string params = io->idString() + ' ' + current->name;
-			SendIOScriptEvent(EVENT_SENDER, entities[t], SM_CONTROLLEDZONE_ENTER, params);
+			SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_ENTER, params);
 		}
 	}
+	
 }
 
 static void EntityLeavingLastZone(Entity * io, ARX_PATH * last) {
 	
-	SendIOScriptEvent(EVENT_SENDER, io, SM_LEAVEZONE, last->name);
+	SendIOScriptEvent(NULL, io, SM_LEAVEZONE, last->name);
 	
 	if(!last->controled.empty()) {
 		EntityHandle t = entities.getById(last->controled);
-		
 		if(t != EntityHandle()) {
 			std::string str = io->idString() + ' ' + last->name;
-			SendIOScriptEvent(EVENT_SENDER, entities[t], SM_CONTROLLEDZONE_LEAVE, str);
+			SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 		}
 	}
+	
 }
-
-
 
 void ARX_PATH_UpdateAllZoneInOutInside() {
 	
@@ -271,22 +271,25 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 		if(!last && !current) { // Not in a zone
 		} else if(last == current) { // Stayed inside last zone
 		} else if(last && !current) { // Leaving last zone
-			SendIOScriptEvent(EVENT_SENDER, entities.player(), SM_LEAVEZONE, last->name);
+			
+			SendIOScriptEvent(NULL, entities.player(), SM_LEAVEZONE, last->name);
 			CHANGE_LEVEL_ICON = NoChangeLevel;
-
+			
 			if(!last->controled.empty()) {
 				EntityHandle t = entities.getById(last->controled);
-
 				if(t != EntityHandle()) {
-					SendIOScriptEvent(EVENT_SENDER, entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + last->name);
+					SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + last->name);
 				}
 			}
+			
 		} else if(!last) { // Entering current zone
-			SendIOScriptEvent(EVENT_SENDER, entities.player(), SM_ENTERZONE, current->name);
-
-			if(current->flags & PATH_AMBIANCE && !current->ambiance.empty())
+			
+			SendIOScriptEvent(NULL, entities.player(), SM_ENTERZONE, current->name);
+			
+			if(current->flags & PATH_AMBIANCE && !current->ambiance.empty()) {
 				ARX_SOUND_PlayZoneAmbiance(current->ambiance, ARX_SOUND_PLAY_LOOPED, current->amb_max_vol * ( 1.0f / 100 ));
-
+			}
+			
 			if(current->flags & PATH_FARCLIP) {
 				g_desiredFogParameters.flags |= GMOD_ZCLIP;
 				g_desiredFogParameters.zclip = current->farclip;
@@ -304,7 +307,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			if(!current->controled.empty()) {
 				EntityHandle t = entities.getById(current->controled);
 				if(t != EntityHandle()) {
-					SendIOScriptEvent(EVENT_SENDER, entities[t], SM_CONTROLLEDZONE_ENTER, "player " + current->name);
+					SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_ENTER, "player " + current->name);
 				}
 			}
 			
@@ -313,14 +316,14 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			if(!last->controled.empty()) {
 				EntityHandle t = entities.getById(last->controled);
 				if(t != EntityHandle()) {
-					SendIOScriptEvent(EVENT_SENDER, entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + current->name);
+					SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + current->name);
 				}
 			}
 			
 			if(!last->controled.empty()) {
 				EntityHandle t = entities.getById(current->controled);
 				if(t != EntityHandle()) {
-					SendIOScriptEvent(EVENT_SENDER, entities[t], SM_CONTROLLEDZONE_ENTER, "player " + current->name);
+					SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_ENTER, "player " + current->name);
 				}
 			}
 			
