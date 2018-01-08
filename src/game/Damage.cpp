@@ -556,14 +556,14 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		if(ioo && (ioo->ioflags & IO_NPC)) {
 			if(ValidIONum(ioo->targetinfo))
 				if(entities[ioo->targetinfo] == io_dead) {
-					Stack_SendIOScriptEvent(io_dead, entities[handle], SM_NULL, killer, "target_death");
+					Stack_SendIOScriptEvent(io_dead, entities[handle], "target_death", killer);
 					ioo->targetinfo = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
 				}
 
 			if(ValidIONum(ioo->_npcdata->pathfind.truetarget))
 				if(entities[ioo->_npcdata->pathfind.truetarget] == io_dead) {
-					Stack_SendIOScriptEvent(io_dead, entities[handle], SM_NULL, killer, "target_death");
+					Stack_SendIOScriptEvent(io_dead, entities[handle], "target_death", killer);
 					ioo->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
 				}
