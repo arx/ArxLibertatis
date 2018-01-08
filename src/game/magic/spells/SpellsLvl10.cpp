@@ -224,10 +224,10 @@ void ControlTargetSpell::Launch()
 		}
 		
 		if(closerThan(ioo->pos, m_caster_pos, 900.f)) {
-			std::ostringstream oss;
-			oss << entities[m_target]->idString();
-			oss << ' ' << long(m_level);
-			SendIOScriptEvent(entities.get(m_caster), ioo, "npc_control", oss.str());
+			ScriptParameters parameters;
+			parameters.push_back(entities[m_target]->idString());
+			parameters.push_back(long(m_level));
+			SendIOScriptEvent(entities.get(m_caster), ioo, "npc_control", parameters);
 		}
 	}
 	

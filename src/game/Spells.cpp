@@ -399,13 +399,15 @@ static void SPELLCAST_Notify(const SpellBase & spell) {
 	if(!spellName)
 		return;
 	
+	Entity * sender = (source != EntityHandle()) ? entities[source] : NULL;
+	ScriptParameters parameters;
+	parameters.push_back(spellName);
+	parameters.push_back(long(spell.m_level));
+	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		if(entities[handle] != NULL) {
-			Entity * sender = (source != EntityHandle()) ? entities[source] : NULL;
-			char param[256];
-			sprintf(param, "%s %ld", spellName, (long)spell.m_level);
-			SendIOScriptEvent(sender, entities[handle], SM_SPELLCAST, param);
+			SendIOScriptEvent(sender, entities[handle], SM_SPELLCAST, parameters);
 		}
 	}
 	
@@ -421,9 +423,10 @@ static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 	
 	if(spellName) {
 		Entity * sender = (source != EntityHandle()) ? entities[source] : NULL;
-		char param[256];
-		sprintf(param, "%s %ld", spellName, long(spell.m_level));
-		SendIOScriptEvent(sender, entities[spell.m_target], SM_SPELLCAST, param);
+		ScriptParameters parameters;
+		parameters.push_back(spellName);
+		parameters.push_back(long(spell.m_level));
+		SendIOScriptEvent(sender, entities[spell.m_target], SM_SPELLCAST, parameters);
 	}
 }
 
@@ -433,14 +436,12 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 	const char * spellName = MakeSpellName(spell.m_type);
 
 	if(spell.m_type == SPELL_CONFUSE) {
-		Entity * sender = ValidIONum(source) ? entities[source] : NULL;
-		if(ValidIONum(spell.m_target)) {
-			if(spellName) {
-				Entity * targ = entities[spell.m_target];
-				char param[128];
-				sprintf(param, "%s %ld", spellName, long(spell.m_level));
-				SendIOScriptEvent(sender, targ, SM_SPELLEND, param);
-			}
+		if(ValidIONum(spell.m_target) && spellName) {
+			Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+			ScriptParameters parameters;
+			parameters.push_back(spellName);
+			parameters.push_back(long(spell.m_level));
+			SendIOScriptEvent(sender,entities[spell.m_target], SM_SPELLEND, parameters);
 		}
 		return;
 	}
@@ -450,13 +451,15 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 		return;
 	}
 	
+	Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+	ScriptParameters parameters;
+	parameters.push_back(spellName);
+	parameters.push_back(long(spell.m_level));
+	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		if(entities[handle]) {
-			Entity * sender = ValidIONum(source) ? entities[source] : NULL;
-			char param[128];
-			sprintf(param, "%s %ld", spellName, (long)spell.m_level);
-			SendIOScriptEvent(sender, entities[handle], SM_SPELLEND, param);
+			SendIOScriptEvent(sender, entities[handle], SM_SPELLEND, parameters);
 		}
 	}
 	

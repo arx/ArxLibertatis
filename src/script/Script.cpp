@@ -227,11 +227,13 @@ ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event, cons
 	
 	ScriptResult ret = ACCEPT;
 	
+	ScriptParameters parameters = ScriptParameters::parse(params);
+	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
 		if(e) {
-			if(SendIOScriptEvent(sender, e, event, params) == REFUSE) {
+			if(SendIOScriptEvent(sender, e, event, parameters) == REFUSE) {
 				ret = REFUSE;
 			}
 		}
@@ -1432,7 +1434,7 @@ void ARX_SCRIPT_EventStackExecute(size_t limit) {
 		if(ValidIOAddress(event.entity)) {
 			Entity * sender = ValidIOAddress(event.sender) ? event.sender : NULL;
 			LogDebug("running queued " << event.event << " for " << event.entity->idString());
-			SendIOScriptEvent(sender, event.entity, event.event, event.params);
+			SendIOScriptEvent(sender, event.entity, event.event, ScriptParameters::parse(event.params));
 		} else {
 			LogDebug("could not run queued " << event.event
 			         << " params=\"" << event.params << "\" - entity vanished");
@@ -1467,7 +1469,7 @@ void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEvent
 }
 
 ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEventName & event,
-                               const std::string & params) {
+                               const ScriptParameters & parameters) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -1479,8 +1481,6 @@ ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEve
 	if(!entities[num]) {
 		return REFUSE;
 	}
-	
-	ScriptParameters parameters = ScriptParameters::parse(params);
 	
 	// Send the event to the instance script first
 	if(entities[num]->over_script.data) {

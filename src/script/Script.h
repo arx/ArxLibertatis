@@ -556,7 +556,7 @@ void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io);
 void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity * io);
 
 ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEventName & event,
-                               const std::string & params = std::string());
+                               const ScriptParameters & parameters = ScriptParameters());
 
 ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event,
                             const std::string & params = std::string());

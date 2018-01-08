@@ -451,39 +451,35 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 		io->durability = 0.f;
 		SendIOScriptEvent(sender, io, SM_BREAK);
 	} else {
-		char dmm[32];
-
+		
+		ScriptParameters parameters(dmg);
 		if(source == EntityHandle_Player) {
 			if(isSpellHit) {
-				sprintf(dmm, "%f spell", double(dmg));
-			}
-			else
-				switch(ARX_EQUIPMENT_GetPlayerWeaponType())
-				{
+				parameters.push_back("spell");
+			} else {
+				switch(ARX_EQUIPMENT_GetPlayerWeaponType()) {
 					case WEAPON_BARE:
-						sprintf(dmm, "%f bare", double(dmg));
+						parameters.push_back("bare");
 						break;
 					case WEAPON_DAGGER:
-						sprintf(dmm, "%f dagger", double(dmg));
+						parameters.push_back("dagger");
 						break;
 					case WEAPON_1H:
-						sprintf(dmm, "%f 1h", double(dmg));
+						parameters.push_back("1h");
 						break;
 					case WEAPON_2H:
-						sprintf(dmm, "%f 2h", double(dmg));
+						parameters.push_back("2h");
 						break;
 					case WEAPON_BOW:
-						sprintf(dmm, "%f arrow", double(dmg));
+						parameters.push_back("arrow");
 						break;
-					default:
-						sprintf(dmm, "%f", double(dmg));
-						break;
+					default: break;
 				}
+			}
 		}
-		else
-			sprintf(dmm, "%f", double(dmg));
-
-		SendIOScriptEvent(sender, io, SM_HIT, dmm);
+		
+		SendIOScriptEvent(sender, io, SM_HIT, parameters);
+		
 	}
 	
 }
@@ -723,14 +719,15 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		
 		io->ouch_time = g_gameTime.now();
 		char tex[32];
+		sprintf(tex, "%5.2f", double(io->dmg_sum));
+		
+		ScriptParameters parameters(tex);
 		if(sender && sender->summoner == EntityHandle_Player) {
 			sender = entities.player();
-			sprintf(tex, "%5.2f summoned", double(io->dmg_sum));
-		} else {
-			sprintf(tex, "%5.2f", double(io->dmg_sum));
+			parameters.push_back("summoned");
 		}
 		
-		SendIOScriptEvent(sender, io, SM_OUCH, tex);
+		SendIOScriptEvent(sender, io, SM_OUCH, parameters);
 		
 		io->dmg_sum = 0.f;
 		
@@ -773,45 +770,40 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 
 		if(io->script.data != NULL) {
 			if(source.handleData() >= EntityHandle_Player.handleData()) {
-
-				char dmm[256];
-
+				
+				ScriptParameters parameters(dmg);
 				if(source == EntityHandle_Player) {
 					if(isSpellHit) {
-						sprintf(dmm, "%f spell", double(dmg));
-					}
-					else
+						parameters.push_back("spell");
+					} else {
 						switch (ARX_EQUIPMENT_GetPlayerWeaponType()) {
 							case WEAPON_BARE:
-								sprintf(dmm, "%f bare", double(dmg));
+								parameters.push_back("bare");
 								break;
 							case WEAPON_DAGGER:
-								sprintf(dmm, "%f dagger", double(dmg));
+								parameters.push_back("dagger");
 								break;
 							case WEAPON_1H:
-								sprintf(dmm, "%f 1h", double(dmg));
+								parameters.push_back("1h");
 								break;
 							case WEAPON_2H:
-								sprintf(dmm, "%f 2h", double(dmg));
+								parameters.push_back("2h");
 								break;
 							case WEAPON_BOW:
-								sprintf(dmm, "%f arrow", double(dmg));
+								parameters.push_back("arrow");
 								break;
-							default:
-								sprintf(dmm, "%f", double(dmg));
-								break;
+							default: break;
 						}
+					}
 				}
-				else
-					sprintf(dmm, "%f", double(dmg));
 				
 				Entity * sender = ValidIONum(source) ? entities[source] : NULL;
 				if(sender && sender->summoner == EntityHandle_Player) {
 					sender = entities.player();
-					sprintf(dmm, "%f summoned", double(dmg));
+					parameters.push_back("summoned");
 				}
 				
-				if(SendIOScriptEvent(sender, io, SM_HIT, dmm) != ACCEPT) {
+				if(SendIOScriptEvent(sender, io, SM_HIT, parameters) != ACCEPT) {
 					return damagesdone;
 				}
 				
@@ -975,15 +967,14 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 						if(elapsed > GameDurationMs(500)) {
 							io->collide_door_time = g_gameTime.now();
 							
-							const char * param = "";
+							ScriptParameters parameters;
+							if(damage.params.type & DAMAGE_TYPE_COLD) {
+								parameters = "cold";
+							} else if(damage.params.type & DAMAGE_TYPE_FIRE) {
+								parameters = "fire";
+							}
 							
-							if(damage.params.type & DAMAGE_TYPE_FIRE)
-								param = "fire";
-							
-							if(damage.params.type & DAMAGE_TYPE_COLD)
-								param = "cold";
-							
-							SendIOScriptEvent(NULL, io, SM_COLLIDE_FIELD, param);
+							SendIOScriptEvent(NULL, io, SM_COLLIDE_FIELD, parameters);
 						}
 					}
 					
