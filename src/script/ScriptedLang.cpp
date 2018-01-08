@@ -266,7 +266,7 @@ public:
 			groupname = context.getStringVar(context.getWord());
 		}
 		
-		std::string event = context.getWord();
+		std::string eventname = context.getWord();
 		
 		std::string zonename;
 		if(zone) {
@@ -285,7 +285,7 @@ public:
 			// TODO(broken-scripts) work around broken scripts
 			for(size_t i = 0; i < SM_MAXCMD; i++) {
 				if(target == AS_EVENT[i].name.c_str() + 3) {
-					std::swap(target, event);
+					std::swap(target, eventname);
 					break;
 				}
 			}
@@ -294,12 +294,14 @@ public:
 		std::string params = context.getWord();
 		
 		if(radius) {
-			DebugScript(' ' << event << (params.empty() ? "" : " \"" + params + '"') << " to " << (group ? "group " + groupname : "everyone") << " in radius " << rad);
+			DebugScript(' ' << eventname << (params.empty() ? "" : " \"" + params + '"') << " to " << (group ? "group " + groupname : "everyone") << " in radius " << rad);
 		} else if(zone) {
-			DebugScript(' ' << event << (params.empty() ? "" : " \"" + params + '"') << " to " << (group ? "group " + groupname : "everyone") << " in zone " << zonename);
+			DebugScript(' ' << eventname << (params.empty() ? "" : " \"" + params + '"') << " to " << (group ? "group " + groupname : "everyone") << " in zone " << zonename);
 		} else {
-			DebugScript(' ' << event << (params.empty() ? "" : " \"" + params + '"') << " to " << target);
+			DebugScript(' ' << eventname << (params.empty() ? "" : " \"" + params + '"') << " to " << target);
 		}
+		
+		ScriptEventName event = ScriptEventName::parse(eventname);
 		
 		Entity * io = context.getEntity();
 		

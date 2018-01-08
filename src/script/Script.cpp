@@ -100,6 +100,18 @@ long FORBID_SCRIPT_IO_CREATION = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
 
+ScriptEventName ScriptEventName::parse(const std::string & name) {
+	
+	for(size_t i = 1; i < SM_MAXCMD; i++) {
+		const std::string & event = AS_EVENT[i].name;
+		if(event.length() > 3 && event.compare(3, event.length() - 3, name) == 0) {
+			return ScriptEventName(ScriptMessage(i));
+		}
+	}
+	
+	return ScriptEventName(name);
+}
+
 long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
 	
 	// TODO(script-parser) remove, respect quoted strings
@@ -251,7 +263,7 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 		if(!entities[i]->mainevent.empty()) {
 			// Copy the even name to a local variable as it may change during execution
 			// and cause unexpected behavior in SendIOScriptEvent
-			std::string event = entities[i]->mainevent;
+			ScriptEventName event = ScriptEventName::parse(entities[i]->mainevent);
 			SendIOScriptEvent(NULL, entities[i], event);
 		} else {
 			SendIOScriptEvent(NULL, entities[i], SM_MAIN);

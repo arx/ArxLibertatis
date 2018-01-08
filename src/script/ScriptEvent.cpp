@@ -276,6 +276,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	// Finds script position to execute code...
 	if(!event.getName().empty()) {
 		arx_assert(event.getId() == SM_NULL);
+		arx_assert_msg(ScriptEventName::parse(event.getName()).getId() == SM_NULL, "non-canonical event name");
 		eventname = "on " + event.getName();
 		pos = FindScriptPos(es, eventname);
 	} else {
