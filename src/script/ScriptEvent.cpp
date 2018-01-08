@@ -237,7 +237,7 @@ public:
 
 } // namespace script
 
-#define ScriptEventWarning ARX_LOG(isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << getName(event) << ": "
+#define ScriptEventWarning ARX_LOG(isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << event << ": "
 
 #ifdef ARX_DEBUG
 static const char * toString(ScriptResult ret) {
@@ -296,8 +296,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	}
 	
 	
-	LogDebug("--> " << getName(event)
-	         << " params=\"" << params << "\""
+	LogDebug("--> " << event << " params=\"" << params << "\""
 	         << " entity=" << (entity ? entity->idString() : "unknown")
 	         << (entity == NULL ? "" : es == &entity->script ? " base" : " overriding")
 	         << " pos=" << pos);
@@ -399,7 +398,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 		
 	}
 	
-	LogDebug("<-- " << getName(event) << " finished: " << toString(ret));
+	LogDebug("<-- " << event << " finished: " << toString(ret));
 	
 	return ret;
 }
@@ -459,20 +458,6 @@ void ScriptEvent::shutdown() {
 	// Remove all the commands
 	commands.clear();
 	LogInfo << "Scripting system shutdown";
-}
-
-std::string ScriptEvent::getName(const ScriptEventName & event) {
-	if(event == SM_EXECUTELINE) {
-		return "executeline";
-	} else if(event == SM_DUMMY)  {
-		return "dummy event";
-	} else if(!event.getName().empty()) {
-		return "on " + event.getName() + " event";
-	} else if(size_t(event.getId()) <= ARRAY_SIZE(AS_EVENT) - 1) {
-		return AS_EVENT[event.getId()].name + " event";
-	} else {
-		return "(no event)";
-	}
 }
 
 void ScriptEvent::autocomplete(const std::string & prefix, AutocompleteHandler handler, void * context) {
