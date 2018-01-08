@@ -52,7 +52,7 @@ public:
 	virtual ~ScriptEvent();
 	
 	static ScriptResult send(EERIE_SCRIPT * es, Entity * sender, Entity * entity, ScriptEventName event,
-	                         const std::string & params = std::string(), long info = 0);
+	                         const ScriptParameters & parameters = ScriptParameters(), long info = 0);
 	
 	static void registerCommand(script::Command * command);
 	

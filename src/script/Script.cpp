@@ -1480,16 +1480,18 @@ ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEve
 		return REFUSE;
 	}
 	
+	ScriptParameters parameters = ScriptParameters::parse(params);
+	
 	// Send the event to the instance script first
 	if(entities[num]->over_script.data) {
-		ScriptResult ret = ScriptEvent::send(&entities[num]->over_script, sender, entities[num], event, params);
+		ScriptResult ret = ScriptEvent::send(&entities[num]->over_script, sender, entities[num], event, parameters);
 		if(ret == REFUSE || !entities[num]) {
 			return REFUSE;
 		}
 	}
 	
 	// If the instance script did not refuse the event also send it to the class script
-	return ScriptEvent::send(&entities[num]->script, sender, entities[num], event, params);
+	return ScriptEvent::send(&entities[num]->script, sender, entities[num], event, parameters);
 }
 
 ScriptResult SendInitScriptEvent(Entity * io) {
@@ -1738,7 +1740,7 @@ void ARX_SCRIPT_Timer_Check() {
 		
 		if(es && ValidIOAddress(io)) {
 			LogDebug("running timer \"" << name << "\" for entity " << io->idString());
-			ScriptEvent::send(es, NULL, io, SM_EXECUTELINE, std::string(), pos);
+			ScriptEvent::send(es, NULL, io, SM_EXECUTELINE, ScriptParameters(), pos);
 		} else {
 			LogDebug("could not run timer \"" << name << "\" - entity vanished");
 		}
