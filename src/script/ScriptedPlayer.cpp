@@ -298,12 +298,12 @@ public:
 
 class SetPlayerControlsCommand : public Command {
 	
-	static void Stack_SendMsgToAllNPC_IO(ScriptMessage msg, const char * dat) {
+	static void Stack_SendMsgToAllNPC_IO(Entity * sender, ScriptMessage msg, const char * dat) {
 		for(size_t i = 0; i < entities.size(); i++) {
 			const EntityHandle handle = EntityHandle(i);
-			Entity * e = entities[handle];
-			if(e && (e->ioflags & IO_NPC)) {
-				Stack_SendIOScriptEvent(EVENT_SENDER, e, msg, dat);
+			Entity * entity = entities[handle];
+			if(entity && (entity->ioflags & IO_NPC)) {
+				Stack_SendIOScriptEvent(sender, entity, msg, dat);
 			}
 		}
 	}
@@ -323,7 +323,7 @@ public:
 		
 		if(enable) {
 			if(BLOCK_PLAYER_CONTROLS) {
-				Stack_SendMsgToAllNPC_IO(SM_CONTROLS_ON, "");
+				Stack_SendMsgToAllNPC_IO(context.getEntity(), SM_CONTROLS_ON, "");
 			}
 			BLOCK_PLAYER_CONTROLS = false;
 		} else {
@@ -346,7 +346,7 @@ public:
 					}
 				}
 				
-				Stack_SendMsgToAllNPC_IO(SM_CONTROLS_OFF, "");
+				Stack_SendMsgToAllNPC_IO(EVENT_SENDER, SM_CONTROLS_OFF, "");
 				spells.endByCaster(EntityHandle_Player);
 			}
 			BLOCK_PLAYER_CONTROLS = true;
