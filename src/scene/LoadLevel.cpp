@@ -126,7 +126,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 		}
 	}
 	
-	if(SendIOScriptEvent(EVENT_SENDER, io, SM_LOAD) == ACCEPT && io->obj == NULL) {
+	if(SendIOScriptEvent(NULL, io, SM_LOAD) == ACCEPT && io->obj == NULL) {
 		bool pbox = (io->ioflags & IO_ITEM) == IO_ITEM;
 		io->obj = loadObject(io->classPath() + ".teo", pbox);
 		if(io->ioflags & IO_NPC) {
