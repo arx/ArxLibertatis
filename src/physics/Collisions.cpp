@@ -625,11 +625,8 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 								if(io->_npcdata->pathfind.listnb > 0) {
 									io->_npcdata->pathfind.listpos = 0;
 									io->_npcdata->pathfind.listnb = -1;
-
 									free(io->_npcdata->pathfind.list);
 									io->_npcdata->pathfind.list = NULL;
-
-									SendIOScriptEvent(io, SM_NULL, "", "pathfinder_end");
 								}
 								if(!io->_npcdata->reachedtarget) {
 									EVENT_SENDER = ioo;
