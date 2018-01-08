@@ -251,7 +251,8 @@ static const char * toString(ScriptResult ret) {
 #endif
 
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * entity,
-                               ScriptEventName event, const std::string & params, long info) {
+                               ScriptEventName event, const ScriptParameters & parameters,
+                               long info) {
 	
 	ScriptResult ret = ACCEPT;
 	
@@ -296,12 +297,12 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	}
 	
 	
-	LogDebug("--> " << event << " params=\"" << params << "\""
+	LogDebug("--> " << event << " params=\"" << parameters << "\""
 	         << " entity=" << (entity ? entity->idString() : "unknown")
 	         << (entity == NULL ? "" : es == &entity->script ? " base" : " overriding")
 	         << " pos=" << pos);
 	
-	script::Context context(es, pos, sender, entity, event.getId(), ScriptParameters::parse(params));
+	script::Context context(es, pos, sender, entity, event.getId(), parameters);
 	
 	if(event != SM_EXECUTELINE) {
 		std::string word = context.getCommand();
