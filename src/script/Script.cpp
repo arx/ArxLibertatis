@@ -1250,13 +1250,13 @@ std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_
 	return var_text;
 }
 
-float GetVarValueInterpretedAsFloat(const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io) {
+float GetVarValueInterpretedAsFloat(Entity * sender, const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io) {
 	
 	if(temp1[0] == '^') {
 		long lv;
 		float fv;
 		std::string tv;
-		switch(getSystemVar(EVENT_SENDER, esss, io, temp1, tv, &fv, &lv)) {
+		switch(getSystemVar(sender, esss, io, temp1, tv, &fv, &lv)) {
 			case TYPE_TEXT:
 				return (float)atof(tv.c_str());
 			case TYPE_LONG:

@@ -227,7 +227,7 @@ bool Context::getBool() {
 }
 
 float Context::getFloatVar(const std::string & name) const {
-	return GetVarValueInterpretedAsFloat(name, getMaster(), m_entity);
+	return GetVarValueInterpretedAsFloat(EVENT_SENDER, name, getMaster(), m_entity);
 }
 
 size_t Context::skipCommand() {
