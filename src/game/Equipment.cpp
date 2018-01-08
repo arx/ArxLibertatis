@@ -347,10 +347,12 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 				}
 			}
 			
+			Entity * oes = EVENT_SENDER;
 			EVENT_SENDER = tounequip;
 			SendIOScriptEvent(entities.player(), SM_EQUIPOUT);
 			EVENT_SENDER = entities.player();
 			SendIOScriptEvent(tounequip, SM_EQUIPOUT);
+			EVENT_SENDER = oes;
 		}
 	}
 
