@@ -181,7 +181,7 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 
 		if(Random::getf(0.f, 100.f) <= (player.m_attributeFull.dexterity - 9.f) * 2.f
 		                               + player.m_skillFull.projectile * 0.2f) {
-			if(SendIOScriptEvent(EVENT_SENDER, io_source, SM_CRITICAL, "bow") != REFUSE) {
+			if(SendIOScriptEvent(NULL, io_source, SM_CRITICAL, "bow") != REFUSE) {
 				critical = true;
 			}
 		}
@@ -190,7 +190,7 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 
 		if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
 			if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth) {
-				if(SendIOScriptEvent(EVENT_SENDER, io_source, SM_BACKSTAB, "bow") != REFUSE) {
+				if(SendIOScriptEvent(NULL, io_source, SM_BACKSTAB, "bow") != REFUSE) {
 					backstab = 1.5f;
 				}
 			}
