@@ -177,7 +177,7 @@ void ARX_SCRIPT_SetMainEvent(Entity * io, const ScriptEventName & newevent) {
 		return;
 	}
 	
-	if(newevent.getId() == SM_MAIN) {
+	if(newevent == SM_MAIN) {
 		io->mainevent = ScriptEventName();
 	} else {
 		io->mainevent = newevent;
@@ -272,7 +272,7 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 			continue;
 		}
 		
-		if(!entities[i]->mainevent.getName().empty() || entities[i]->mainevent.getid() != SM_NULL) {
+		if(!entities[i]->mainevent.getName().empty() || entities[i]->mainevent != SM_NULL) {
 			// Copy the even name to a local variable as it may change during execution
 			// and cause unexpected behavior in SendIOScriptEvent
 			ScriptEventName event = entities[i]->mainevent;

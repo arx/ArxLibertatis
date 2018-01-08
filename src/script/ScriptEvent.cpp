@@ -280,7 +280,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 		eventname = "on " + event.getName();
 		pos = FindScriptPos(es, eventname);
 	} else {
-		if(event.getId() == SM_EXECUTELINE) {
+		if(event == SM_EXECUTELINE) {
 			pos = info;
 		} else {
 			switch(event.getId()) {
@@ -344,7 +344,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 
 	MakeSSEPARAMS(params.c_str());
 	
-	if(event.getId() != SM_EXECUTELINE) {
+	if(event != SM_EXECUTELINE) {
 		if(!event.getName().empty()) {
 			pos += eventname.length(); // adding 'ON ' length
 		} else {
@@ -354,7 +354,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	
 	script::Context context(es, pos, sender, entity, event.getId());
 	
-	if(event.getId() != SM_EXECUTELINE) {
+	if(event != SM_EXECUTELINE) {
 		std::string word = context.getCommand();
 		if(word != "{") {
 			ScriptEventWarning << "<-- missing bracket after event, got \"" << word << "\"";
@@ -366,9 +366,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	
 	for(;;) {
 		
-		std::string word = context.getCommand(event.getId() != SM_EXECUTELINE);
+		std::string word = context.getCommand(event != SM_EXECUTELINE);
 		if(word.empty()) {
-			if(event.getId() == SM_EXECUTELINE && context.getPosition() != es->size) {
+			if(event == SM_EXECUTELINE && context.getPosition() != es->size) {
 				arx_assert(es->data[context.getPosition()] == '\n');
 				LogDebug("<-- line end");
 				return ACCEPT;
@@ -408,7 +408,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 				ret =  BIGERROR;
 				break;
 			} else if(res == script::Command::Jumped) {
-				if(event.getId() == SM_EXECUTELINE) {
+				if(event == SM_EXECUTELINE) {
 					event = SM_DUMMY;
 				}
 				brackets = size_t(-1);
@@ -510,9 +510,9 @@ void ScriptEvent::shutdown() {
 }
 
 std::string ScriptEvent::getName(const ScriptEventName & event) {
-	if(event.getId() == SM_EXECUTELINE) {
+	if(event == SM_EXECUTELINE) {
 		return "executeline";
-	} else if(event.getId() == SM_DUMMY)  {
+	} else if(event == SM_DUMMY)  {
 		return "dummy event";
 	} else if(!event.getName().empty()) {
 		return "on " + event.getName() + " event";
