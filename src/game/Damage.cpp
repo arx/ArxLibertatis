@@ -739,21 +739,19 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 	Entity * oes = EVENT_SENDER;
 	
 	if(elapsed > GameDurationMs(500)) {
-		if(ValidIONum(source))
-			EVENT_SENDER = entities[source];
-		else
-			EVENT_SENDER = NULL;
-
+		
+		Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+		
 		io->ouch_time = g_gameTime.now();
 		char tex[32];
-
-		if(EVENT_SENDER && EVENT_SENDER->summoner == EntityHandle_Player) {
-			EVENT_SENDER = entities.player();
+		if(sender && sender->summoner == EntityHandle_Player) {
+			sender = entities.player();
 			sprintf(tex, "%5.2f summoned", double(io->dmg_sum));
 		} else {
 			sprintf(tex, "%5.2f", double(io->dmg_sum));
 		}
-
+		
+		EVENT_SENDER = sender;
 		SendIOScriptEvent(io, SM_OUCH, tex);
 		io->dmg_sum = 0.f;
 		
