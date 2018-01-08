@@ -1559,7 +1559,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				if((elapsed > aimtime || (elapsed * 2 > aimtime && Random::getf() > 0.9f))
 				    && tdist < square(STRIKE_DISTANCE)) {
 					changeAnimation(io, 1, strike);
-					SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "bare");
+					SendIOScriptEvent(NULL, io, SM_STRIKE, "bare");
 				}
 				
 			} else if(isCurrentAnimation(io, 1, strike)) {
@@ -1659,13 +1659,13 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					   && tdist < square(STRIKE_DISTANCE)) {
 						changeAnimation(io, 1, strike);
 						if(io->_npcdata->weapontype & OBJECT_TYPE_1H) {
-							SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "1h");
+							SendIOScriptEvent(NULL, io, SM_STRIKE, "1h");
 						}
 						if(io->_npcdata->weapontype & OBJECT_TYPE_2H) {
-							SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "2h");
+							SendIOScriptEvent(NULL, io, SM_STRIKE, "2h");
 						}
 						if(io->_npcdata->weapontype & OBJECT_TYPE_DAGGER) {
-							SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "dagger");
+							SendIOScriptEvent(NULL, io, SM_STRIKE, "dagger");
 						}
 					}
 					
