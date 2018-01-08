@@ -291,6 +291,14 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 		esss = es;
 	}
 	
+	if(esss->allowevents & getDisabledEventsMask(event)) {
+		return REFUSE;
+	}
+	if(event == SM_KEY_PRESSED && cinematicBorder.elapsedTime() < GameDurationMs(3000)) {
+		LogDebug("refusing SM_KEY_PRESSED");
+		return REFUSE;
+	}
+	
 	// Finds script position to execute code...
 	if(!event.getName().empty()) {
 		arx_assert(event.getId() == SM_NULL);
@@ -300,13 +308,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 		if(event == SM_EXECUTELINE) {
 			pos = info;
 		} else {
-			if(esss->allowevents & getDisabledEventsMask(event)) {
-				return REFUSE;
-			}
-			if(event == SM_KEY_PRESSED && cinematicBorder.elapsedTime() < GameDurationMs(3000)) {
-				LogDebug("refusing SM_KEY_PRESSED");
-				return REFUSE;
-			}
 			arx_assert(event.getId() < SM_MAXCMD);
 			pos = es->shortcut[event.getId()];
 			arx_assert(pos <= (long)es->size);
