@@ -250,6 +250,25 @@ static const char * toString(ScriptResult ret) {
 }
 #endif
 
+DisabledEvents ScriptEvent::getDisabledEventsMask(const ScriptEventName & event) {
+	
+	switch(event.getId()) {
+		case SM_COLLIDE_NPC: return DISABLE_COLLIDE_NPC;
+		case SM_CHAT: return DISABLE_CHAT;
+		case SM_HIT: return DISABLE_HIT;
+		case SM_INVENTORY2_OPEN: return DISABLE_INVENTORY2_OPEN;
+		case SM_HEAR: return DISABLE_HEAR;
+		case SM_UNDETECTPLAYER: return DISABLE_DETECT;
+		case SM_DETECTPLAYER: return DISABLE_DETECT;
+		case SM_AGGRESSION: return DISABLE_AGGRESSION;
+		case SM_MAIN: return DISABLE_MAIN;
+		case SM_CURSORMODE: return DISABLE_CURSORMODE;
+		case SM_EXPLORATIONMODE: return DISABLE_EXPLORATIONMODE;
+		default: return 0;
+	}
+	
+}
+
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * entity,
                                ScriptEventName event, const std::string & params, long info) {
 	
@@ -281,48 +300,13 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 		if(event == SM_EXECUTELINE) {
 			pos = info;
 		} else {
-			switch(event.getId()) {
-				case SM_COLLIDE_NPC:
-					if (esss->allowevents & DISABLE_COLLIDE_NPC) return REFUSE;
-					break;
-				case SM_CHAT:
-					if (esss->allowevents & DISABLE_CHAT) return REFUSE;
-					break;
-				case SM_HIT:
-					if (esss->allowevents & DISABLE_HIT) return REFUSE;
-					break;
-				case SM_INVENTORY2_OPEN:
-					if (esss->allowevents & DISABLE_INVENTORY2_OPEN) return REFUSE;
-					break;
-				case SM_HEAR:
-					if (esss->allowevents & DISABLE_HEAR) return REFUSE;
-					break;
-				case SM_UNDETECTPLAYER:
-				case SM_DETECTPLAYER:
-					if (esss->allowevents & DISABLE_DETECT) return REFUSE;
-					break;
-				case SM_AGGRESSION:
-					if (esss->allowevents & DISABLE_AGGRESSION) return REFUSE;
-					break;
-				case SM_MAIN:
-					if (esss->allowevents & DISABLE_MAIN) return REFUSE;
-					break;
-				case SM_CURSORMODE:
-					if (esss->allowevents & DISABLE_CURSORMODE) return REFUSE;
-					break;
-				case SM_EXPLORATIONMODE:
-					if (esss->allowevents & DISABLE_EXPLORATIONMODE) return REFUSE;
-					break;
-				case SM_KEY_PRESSED: {
-					if(cinematicBorder.elapsedTime() < GameDurationMs(3000)) {
-						LogDebug("refusing SM_KEY_PRESSED");
-						return REFUSE;
-					}
-					break;
-				}
-				default: break;
+			if(esss->allowevents & getDisabledEventsMask(event)) {
+				return REFUSE;
 			}
-			
+			if(event == SM_KEY_PRESSED && cinematicBorder.elapsedTime() < GameDurationMs(3000)) {
+				LogDebug("refusing SM_KEY_PRESSED");
+				return REFUSE;
+			}
 			arx_assert(event.getId() < SM_MAXCMD);
 			pos = es->shortcut[event.getId()];
 			arx_assert(pos <= (long)es->size);
