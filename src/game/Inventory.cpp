@@ -124,11 +124,12 @@ void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
 		io->ignition = 0;
 	}
 	
+	Entity * oes = EVENT_SENDER;
 	EVENT_SENDER = io;
 	SendIOScriptEvent(entities.player(), SM_INVENTORYIN);
 	EVENT_SENDER = entities.player();
 	SendIOScriptEvent(io, SM_INVENTORYIN);
-	EVENT_SENDER = NULL;
+	EVENT_SENDER = oes;
 }
 
 /*!
