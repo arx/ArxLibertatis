@@ -123,6 +123,25 @@ std::string ScriptEventName::toString() const {
 	return AS_EVENT[getId()].name.substr(3);
 }
 
+DisabledEvents ScriptEventName::toDisabledEventsMask() const {
+	
+	switch(getId()) {
+		case SM_COLLIDE_NPC: return DISABLE_COLLIDE_NPC;
+		case SM_CHAT: return DISABLE_CHAT;
+		case SM_HIT: return DISABLE_HIT;
+		case SM_INVENTORY2_OPEN: return DISABLE_INVENTORY2_OPEN;
+		case SM_HEAR: return DISABLE_HEAR;
+		case SM_UNDETECTPLAYER: return DISABLE_DETECT;
+		case SM_DETECTPLAYER: return DISABLE_DETECT;
+		case SM_AGGRESSION: return DISABLE_AGGRESSION;
+		case SM_MAIN: return DISABLE_MAIN;
+		case SM_CURSORMODE: return DISABLE_CURSORMODE;
+		case SM_EXPLORATIONMODE: return DISABLE_EXPLORATIONMODE;
+		default: return 0;
+	}
+	
+}
+
 long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
 	
 	// TODO(script-parser) remove, respect quoted strings
