@@ -223,11 +223,10 @@ long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
 	return -1;
 }
 
-ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event, const std::string & params) {
+ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event,
+                            const ScriptParameters & parameters) {
 	
 	ScriptResult ret = ACCEPT;
-	
-	ScriptParameters parameters = ScriptParameters::parse(params);
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);

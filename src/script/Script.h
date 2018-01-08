@@ -559,7 +559,7 @@ ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEve
                                const ScriptParameters & parameters = ScriptParameters());
 
 ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event,
-                            const std::string & params = std::string());
+                            const ScriptParameters & params = ScriptParameters());
 
 void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEventName & event,
                              const std::string & params = std::string());
