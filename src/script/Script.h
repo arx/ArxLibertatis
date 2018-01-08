@@ -495,7 +495,9 @@ ValueType getSystemVar(Entity * sender, const EERIE_SCRIPT * es, Entity * io, co
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io);
 void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity * io);
 
-ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string & params = "", const std::string & eventname = "" );
+ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage msg,
+                               const std::string & params = std::string(),
+                               const std::string & eventname = std::string());
 
 ScriptResult SendMsgToAllIO(ScriptMessage msg, const std::string & params = "");
 

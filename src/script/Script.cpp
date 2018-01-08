@@ -141,7 +141,7 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const std::string & params) {
 		Entity * e = entities[handle];
 		
 		if(e) {
-			if(SendIOScriptEvent(e, msg, params) == REFUSE) {
+			if(SendIOScriptEvent(EVENT_SENDER, e, msg, params) == REFUSE) {
 				ret = REFUSE;
 			}
 		}
@@ -253,17 +253,16 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 		}
 		
 		if(!entities[i]->mainevent.empty()) {
-			
 			// Copy the even name to a local variable as it may change during execution
 			// and cause unexpected behavior in SendIOScriptEvent
 			std::string event = entities[i]->mainevent;
-			
-			SendIOScriptEvent(entities[i], SM_NULL, std::string(), event);
-			
+			SendIOScriptEvent(NULL, entities[i], SM_NULL, std::string(), event);
 		} else {
-			SendIOScriptEvent(entities[i], SM_MAIN);
+			SendIOScriptEvent(NULL, entities[i], SM_MAIN);
 		}
+		
 	}
+	
 }
 
 static void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es) {
@@ -1496,10 +1495,11 @@ void ARX_SCRIPT_EventStackExecute(size_t limit) {
 		}
 		
 		if(ValidIOAddress(event.entity)) {
-			EVENT_SENDER = ValidIOAddress(event.sender) ? event.sender : NULL;
+			Entity * sender = ValidIOAddress(event.sender) ? event.sender : NULL;
+			EVENT_SENDER = sender;
 			LogDebug("running queued " << ScriptEvent::getName(event.msg, event.eventname)
 			         << " for " << event.entity->idString());
-			SendIOScriptEvent(event.entity, event.msg, event.params, event.eventname);
+			SendIOScriptEvent(sender, event.entity, event.msg, event.params, event.eventname);
 		} else {
 			LogDebug("could not run queued " << ScriptEvent::getName(event.msg, event.eventname)
 			         << " params=\"" << event.params << "\" - entity vanished");
@@ -1563,45 +1563,38 @@ static ScriptResult SendIOScriptEventReverse(Entity * sender, Entity * io, Scrip
 	return REFUSE;
 }
 
-ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string & params,
+ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage msg, const std::string & params,
                                const std::string & eventname) {
 	
 	ARX_PROFILE_FUNC();
-
-	if(!io) {
+	
+	if(!entity) {
 		return REFUSE;
 	}
 	
-	EntityHandle num = io->index();
+	EntityHandle num = entity->index();
 	
-	Entity * oes = EVENT_SENDER;
-
-	if ((msg == SM_INIT) || (msg == SM_INITEND))
-	{
-		if (entities[num])
-		{
-			SendIOScriptEventReverse(EVENT_SENDER, entities[num], msg, params, eventname);
-			EVENT_SENDER = oes;
+	if(msg == SM_INIT || msg == SM_INITEND) {
+		if(entities[num]) {
+			SendIOScriptEventReverse(sender, entities[num], msg, params, eventname);
+			EVENT_SENDER = sender;
 		}
 	}
-
-	// if this IO only has a Local script, send event to it
-	if (entities[num] && !entities[num]->over_script.data)
-	{
-		ScriptResult ret = ScriptEvent::send(&entities[num]->script, EVENT_SENDER, entities[num], msg, params, eventname);
-		EVENT_SENDER = oes;
+	
+	// If this IO only has a Local script, send event to it
+	if(entities[num] && !entities[num]->over_script.data) {
+		ScriptResult ret = ScriptEvent::send(&entities[num]->script, sender, entities[num], msg, params, eventname);
+		EVENT_SENDER = sender;
 		return ret;
 	}
 
 	// If this IO has a Global script send to Local (if exists)
 	// then to Global if no overriden by Local
-	if (entities[num] && ScriptEvent::send(&entities[num]->over_script, EVENT_SENDER, entities[num], msg, params, eventname) != REFUSE) {
-		EVENT_SENDER = oes;
-
-		if (entities[num])
-		{
-			ScriptResult ret = ScriptEvent::send(&entities[num]->script, EVENT_SENDER, entities[num], msg, params, eventname);
-			EVENT_SENDER = oes;
+	if(entities[num] && ScriptEvent::send(&entities[num]->over_script, sender, entities[num], msg, params, eventname) != REFUSE) {
+		EVENT_SENDER = sender;
+		if(entities[num]) {
+			ScriptResult ret = ScriptEvent::send(&entities[num]->script, sender, entities[num], msg, params, eventname);
+			EVENT_SENDER = sender;
 			return ret;
 		}
 		else

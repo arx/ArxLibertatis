@@ -200,7 +200,7 @@ void RiseDeadSpell::Update() {
 					EVENT_SENDER = NULL;
 				}
 				
-				SendIOScriptEvent(io, SM_SUMMONED);
+				SendIOScriptEvent(caster, io, SM_SUMMONED);
 				
 				Vec3f pos = m_fissure.m_eSrc;
 				pos += arx::randomVec3f() * 100.f;

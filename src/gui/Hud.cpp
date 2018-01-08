@@ -383,7 +383,7 @@ void StealIconGui::updateInput() {
 				}
 				
 				if(SecondaryInventory) {
-					SendIOScriptEvent(ioSteal, SM_STEAL);
+					SendIOScriptEvent(EVENT_SENDER, ioSteal, SM_STEAL);
 					bForceEscapeFreeLook = true;
 					lOldTruePlayerMouseLook = !TRUE_PLAYER_MOUSELOOK_ON;
 				}

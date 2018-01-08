@@ -736,10 +736,10 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 									Entity * oes = EVENT_SENDER;
 									EVENT_SENDER = source;
 									io->collide_door_time = g_gameTime.now();
-									SendIOScriptEvent(io, SM_COLLIDE_DOOR);
+									SendIOScriptEvent(source, io, SM_COLLIDE_DOOR);
 									EVENT_SENDER = io;
 									io->collide_door_time = g_gameTime.now();
-									SendIOScriptEvent(source, SM_COLLIDE_DOOR);
+									SendIOScriptEvent(io, source, SM_COLLIDE_DOOR);
 									EVENT_SENDER = oes;
 								}
 							}

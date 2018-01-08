@@ -157,15 +157,14 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 	float distance_limit = 1000.f;
 	Entity * io_target = entities[target];
 	Entity * io_source = entities[source];
-
-	SendIOScriptEvent(io_target, SM_AGGRESSION);
-
+	
+	SendIOScriptEvent(EVENT_SENDER, io_target, SM_AGGRESSION);
+	
 	float distance = fdist(projectile.position, projectile.initial_position);
 	float distance_modifier = 1.f;
 
 	if(distance < distance_limit * 2.f) {
 		distance_modifier = distance / distance_limit;
-
 		if(distance_modifier < 0.5f)
 			distance_modifier = 0.5f;
 	} else {
@@ -182,16 +181,18 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 
 		if(Random::getf(0.f, 100.f) <= (player.m_attributeFull.dexterity - 9.f) * 2.f
 		                               + player.m_skillFull.projectile * 0.2f) {
-			if(SendIOScriptEvent(io_source, SM_CRITICAL, "bow") != REFUSE)
+			if(SendIOScriptEvent(EVENT_SENDER, io_source, SM_CRITICAL, "bow") != REFUSE) {
 				critical = true;
+			}
 		}
 
 		dmgs = attack;
 
 		if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
 			if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth) {
-				if(SendIOScriptEvent(io_source, SM_BACKSTAB, "bow") != REFUSE)
+				if(SendIOScriptEvent(EVENT_SENDER, io_source, SM_BACKSTAB, "bow") != REFUSE) {
 					backstab = 1.5f;
+				}
 			}
 		}
 	} else {

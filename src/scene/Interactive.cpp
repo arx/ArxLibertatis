@@ -186,14 +186,14 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 		std::string temp = op->name;
 
 		if(flags & 1) // no need when being destroyed !
-			SendIOScriptEvent(io, SM_LEAVEZONE, temp);
+			SendIOScriptEvent(EVENT_SENDER, io, SM_LEAVEZONE, temp);
 
 		if(!op->controled.empty()) {
 			EntityHandle t = entities.getById(op->controled);
 
 			if(t != EntityHandle()) {
 				std::string str = io->idString() + ' ' + temp;
-				SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
+				SendIOScriptEvent(EVENT_SENDER, entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 			}
 		}
 	}
@@ -604,14 +604,12 @@ void PrepareIOTreatZone(long flag) {
 			        && (!(io->gameFlags & GFLAG_WASINTREATZONE)))
 			{
 				//coming back; doesn't really matter right now
-				// SendIOScriptEvent(entities[i],SM_TREATIN);
-
 			} else if(!(io->gameFlags & GFLAG_ISINTREATZONE) && (io->gameFlags & GFLAG_WASINTREATZONE)) {
 				
 				//going away;
 				io->gameFlags |= GFLAG_ISINTREATZONE;
 
-				if(SendIOScriptEvent(io, SM_TREATOUT) != REFUSE) {
+				if(SendIOScriptEvent(NULL, io, SM_TREATOUT) != REFUSE) {
 					if(io->ioflags & IO_NPC)
 						io->_npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
 
@@ -1324,8 +1322,8 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 	Entity * ioo = io->_npcdata->weapon = AddItem(file);
 	if(ioo) {
 		
-		SendIOScriptEvent(ioo, SM_INIT);
-		SendIOScriptEvent(ioo, SM_INITEND);
+		SendIOScriptEvent(EVENT_SENDER, ioo, SM_INIT);
+		SendIOScriptEvent(EVENT_SENDER, ioo, SM_INITEND);
 		io->_npcdata->weapontype = ioo->type_flags;
 		ioo->show = SHOW_FLAG_LINKED;
 		ioo->scriptload = 2;
@@ -1406,7 +1404,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	GetIOScript(io, script);
 	
 	if(!(flags & NO_ON_LOAD)) {
-		SendIOScriptEvent(io, SM_LOAD);
+		SendIOScriptEvent(EVENT_SENDER, io, SM_LOAD);
 	}
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
@@ -1648,7 +1646,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	io->_npcdata->stare_factor = 1.f;
 	
 	if(!(flags & NO_ON_LOAD)) {
-		SendIOScriptEvent(io, SM_LOAD);
+		SendIOScriptEvent(EVENT_SENDER, io, SM_LOAD);
 	}
 	
 	io->pos = player.pos;
@@ -1742,7 +1740,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	GetIOScript(io, script);
 	
 	if(!(flags & NO_ON_LOAD)) {
-		SendIOScriptEvent(io, SM_LOAD);
+		SendIOScriptEvent(EVENT_SENDER, io, SM_LOAD);
 	}
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
@@ -2090,9 +2088,9 @@ void UpdateCameras() {
 					Entity * oes = EVENT_SENDER;
 					EVENT_SENDER = NULL;
 					std::string waypoint = boost::lexical_cast<std::string>(aup->path->pathways.size() - 1);
-					SendIOScriptEvent(io, SM_WAYPOINT, waypoint);
-					SendIOScriptEvent(io, SM_NULL, "", "waypoint" + waypoint);
-					SendIOScriptEvent(io, SM_PATHEND);
+					SendIOScriptEvent(NULL, io, SM_WAYPOINT, waypoint);
+					SendIOScriptEvent(NULL, io, SM_NULL, "", "waypoint" + waypoint);
+					SendIOScriptEvent(NULL, io, SM_PATHEND);
 					aup->lastWP = last;
 					EVENT_SENDER = oes;
 				} else {
@@ -2111,10 +2109,10 @@ void UpdateCameras() {
 					Entity * oes = EVENT_SENDER;
 					EVENT_SENDER = NULL;
 					std::string waypoint = boost::lexical_cast<std::string>(ii);
-					SendIOScriptEvent(io, SM_WAYPOINT, waypoint);
-					SendIOScriptEvent(io, SM_NULL, "", "waypoint" + waypoint);
+					SendIOScriptEvent(NULL, io, SM_WAYPOINT, waypoint);
+					SendIOScriptEvent(NULL, io, SM_NULL, "", "waypoint" + waypoint);
 					if(size_t(ii) == aup->path->pathways.size()) {
-						SendIOScriptEvent(io, SM_PATHEND);
+						SendIOScriptEvent(NULL, io, SM_PATHEND);
 					}
 					EVENT_SENDER = oes;
 

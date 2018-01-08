@@ -218,7 +218,7 @@ void ARX_KEYRING_Add(const std::string & key) {
 //! Sends COMBINE event to "io" for each keyring entry
 void ARX_KEYRING_Combine(Entity * io) {
 	for(size_t i = 0; i < g_playerKeyring.size(); i++) {
-		if(SendIOScriptEvent(io, SM_COMBINE, g_playerKeyring[i]) == REFUSE) {
+		if(SendIOScriptEvent(EVENT_SENDER, io, SM_COMBINE, g_playerKeyring[i]) == REFUSE) {
 			return;
 		}
 	}
@@ -939,7 +939,7 @@ static void ARX_PLAYER_LEVEL_UP() {
 	player.lifePool.current = player.lifePool.max;
 	player.manaPool.current = player.manaPool.max;
 	player.m_skillOld = player.m_skill;
-	SendIOScriptEvent(entities.player(), SM_NULL, "", "level_up");
+	SendIOScriptEvent(EVENT_SENDER, entities.player(), SM_NULL, "", "level_up");
 }
 
 /*!
