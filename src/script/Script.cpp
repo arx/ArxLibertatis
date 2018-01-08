@@ -1539,26 +1539,20 @@ ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage m
 	}
 	
 	EntityHandle num = entity->index();
+	if(!entities[num]) {
+		return REFUSE;
+	}
 	
-	// If this IO only has a Local script, send event to it
-	if(entities[num] && !entities[num]->over_script.data) {
-		ScriptResult ret = ScriptEvent::send(&entities[num]->script, sender, entities[num], msg, params, eventname);
-		return ret;
-	}
-
-	// If this IO has a Global script send to Local (if exists)
-	// then to Global if no overriden by Local
-	if(entities[num] && ScriptEvent::send(&entities[num]->over_script, sender, entities[num], msg, params, eventname) != REFUSE) {
-		if(entities[num]) {
-			ScriptResult ret = ScriptEvent::send(&entities[num]->script, sender, entities[num], msg, params, eventname);
-			return ret;
-		}
-		else
+	// Send the event to the instance script first
+	if(entities[num]->over_script.data) {
+		ScriptResult ret = ScriptEvent::send(&entities[num]->over_script, sender, entities[num], msg, params, eventname);
+		if(ret == REFUSE || !entities[num]) {
 			return REFUSE;
+		}
 	}
-
-	// Refused further processing.
-	return REFUSE;
+	
+	// If the instance script did not refuse the event also send it to the class script
+	return ScriptEvent::send(&entities[num]->script, sender, entities[num], msg, params, eventname);
 }
 
 ScriptResult SendInitScriptEvent(Entity * io) {
