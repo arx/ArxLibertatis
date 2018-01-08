@@ -1861,7 +1861,7 @@ void ARX_SCRIPT_Timer_Check() {
 		
 		if(es && ValidIOAddress(io)) {
 			LogDebug("running timer \"" << name << "\" for entity " << io->idString());
-			ScriptEvent::send(es, EVENT_SENDER, io, SM_EXECUTELINE, std::string(), std::string(), pos);
+			ScriptEvent::send(es, NULL, io, SM_EXECUTELINE, std::string(), std::string(), pos);
 		} else {
 			LogDebug("could not run timer \"" << name << "\" - entity vanished");
 		}
