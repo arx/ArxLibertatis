@@ -2087,12 +2087,14 @@ void UpdateCameras() {
 
 			if(aup->lastWP != last) {
 				if(last == -2) {
+					Entity * oes = EVENT_SENDER;
 					EVENT_SENDER = NULL;
 					std::string waypoint = boost::lexical_cast<std::string>(aup->path->pathways.size() - 1);
 					SendIOScriptEvent(io, SM_WAYPOINT, waypoint);
 					SendIOScriptEvent(io, SM_NULL, "", "waypoint" + waypoint);
 					SendIOScriptEvent(io, SM_PATHEND);
 					aup->lastWP = last;
+					EVENT_SENDER = oes;
 				} else {
 					last--;
 					long _from = aup->lastWP;
