@@ -506,7 +506,6 @@ ScriptResult SendInitScriptEvent(Entity * io);
 
 //used by scriptevent
 void MakeSSEPARAMS(const char * params);
-std::string GetVarValueInterpretedAsText(Entity * sender, const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io);
 
 //! Generates a random name for an unnamed timer
 std::string ARX_SCRIPT_Timer_GetDefaultName();
@@ -520,6 +519,7 @@ SCRIPT_VAR * SETVarValueFloat(SCRIPT_VARIABLES & svf, const std::string & name, 
 long GETVarValueLong(const SCRIPT_VARIABLES & svf, const std::string & name);
 float GETVarValueFloat(const SCRIPT_VARIABLES & svf, const std::string & name);
 std::string GETVarValueText(const SCRIPT_VARIABLES & svf, const std::string & name);
+const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, const std::string & name);
 
 ValueType getSystemVar(Entity * sender, const EERIE_SCRIPT * es, Entity * io, const std::string & name, std::string & txtcontent, float * fcontent, long * lcontent);
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io);
