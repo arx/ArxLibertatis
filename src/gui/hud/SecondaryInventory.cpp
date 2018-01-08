@@ -22,6 +22,7 @@
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
+#include "game/EntityManager.h"
 #include "core/GameTime.h"
 #include "game/Inventory.h"
 #include "game/Item.h"
@@ -109,7 +110,7 @@ void SecondaryInventoryCloseHudIcon::updateInput() {
 		if(io) {
 			ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 			g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
-			SendIOScriptEvent(EVENT_SENDER, io, SM_INVENTORY2_CLOSE);
+			SendIOScriptEvent(entities.player(), io, SM_INVENTORY2_CLOSE);
 			TSecondaryInventory = SecondaryInventory;
 			SecondaryInventory = NULL;
 		}
@@ -154,7 +155,7 @@ void SecondaryInventoryHud::update() {
 			if(m_fadeDirection != Fade_left) {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 				m_fadeDirection = Fade_left;
-				SendIOScriptEvent(EVENT_SENDER, io, SM_INVENTORY2_CLOSE);
+				SendIOScriptEvent(entities.player(), io, SM_INVENTORY2_CLOSE);
 				TSecondaryInventory = SecondaryInventory;
 				SecondaryInventory = NULL;
 			} else {
@@ -563,7 +564,7 @@ void SecondaryInventoryHud::close() {
 	
 	if(io) {
 		m_fadeDirection = Fade_left;
-		SendIOScriptEvent(EVENT_SENDER, io, SM_INVENTORY2_CLOSE);
+		SendIOScriptEvent(entities.player(), io, SM_INVENTORY2_CLOSE);
 		TSecondaryInventory = SecondaryInventory;
 		SecondaryInventory = NULL;
 	}
@@ -587,7 +588,7 @@ void SecondaryInventoryHud::updateFader() {
 			m_fadeDirection = Fade_stable;
 			
 			if(player.Interface & INTER_STEAL || ioSteal) {
-				SendIOScriptEvent(EVENT_SENDER, ioSteal, SM_STEAL, "off");
+				SendIOScriptEvent(entities.player(), ioSteal, SM_STEAL, "off");
 				player.Interface &= ~INTER_STEAL;
 				ioSteal = NULL;
 			}
