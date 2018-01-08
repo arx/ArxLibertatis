@@ -276,7 +276,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	}
 	
 	// Finds script position to execute code...
-	if (!event.getName().empty()) {
+	if(!event.getName().empty()) {
+		arx_assert(event.getId() == SM_NULL);
 		eventname = "on " + event.getName();
 		pos = FindScriptPos(es, eventname);
 	} else {
@@ -324,23 +325,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 				}
 				default: break;
 			}
-
-			if(event.getId() < (long)MAX_SHORTCUT) {
-				pos = es->shortcut[event.getId()];
-				arx_assert(pos <= (long)es->size);
-			} else {
-				
-				arx_assert(event.getId() != SM_EXECUTELINE && event.getName().empty());
-				
-				if(event.getId() >= SM_MAXCMD) {
-					LogDebug("unknown event ID: " << event.getId());
-					return ACCEPT;
-				}
-				
-				// TODO will never be reached as MAX_SHORTCUT > SM_MAXCMD
-				
-				pos = FindScriptPos(es, AS_EVENT[event.getId()].name);
-			}
+			
+			arx_assert(event.getId() < SM_MAXCMD && event.getId() < (long)MAX_SHORTCUT);
+			pos = es->shortcut[event.getId()];
+			arx_assert(pos <= (long)es->size);
 		}
 	}
 
