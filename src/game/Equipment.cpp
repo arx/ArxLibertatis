@@ -349,9 +349,9 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 			
 			Entity * oes = EVENT_SENDER;
 			EVENT_SENDER = tounequip;
-			SendIOScriptEvent(entities.player(), SM_EQUIPOUT);
+			SendIOScriptEvent(tounequip, entities.player(), SM_EQUIPOUT);
 			EVENT_SENDER = entities.player();
-			SendIOScriptEvent(tounequip, SM_EQUIPOUT);
+			SendIOScriptEvent(entities.player(), tounequip, SM_EQUIPOUT);
 			EVENT_SENDER = oes;
 		}
 	}
@@ -467,7 +467,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 {
 	Entity * oes = EVENT_SENDER;
 	EVENT_SENDER = io_source;
-	SendIOScriptEvent(io_target, SM_AGGRESSION);
+	SendIOScriptEvent(io_source, io_target, SM_AGGRESSION);
 	
 	if(!io_source || !io_target) {
 		EVENT_SENDER = oes;
@@ -511,7 +511,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 		if(Random::getf(0.f, 100.f) <= player.m_miscFull.criticalHit)
 		{
-			if(SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
+			if(SendIOScriptEvent(io_source, io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
 		}
 		else
@@ -521,7 +521,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		
 		if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
 			if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth * ( 1.0f / 2 )) {
-				if(SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
+				if(SendIOScriptEvent(io_source, io_source, SM_BACKSTAB) != REFUSE)
 					backstab = 1.5f;
 			}
 		}
@@ -553,14 +553,14 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		}
 
 		if(Random::getf(0.f, 100) <= io_source->_npcdata->critical) {
-			if(SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
+			if(SendIOScriptEvent(io_source, io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
 		}
 		else
 			critical = false;
 
 		if(Random::getf(0.f, 100.f) <= io_source->_npcdata->backstab_skill) {
-			if(SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
+			if(SendIOScriptEvent(io_source, io_source, SM_BACKSTAB) != REFUSE)
 				backstab = 1.5f;
 		}
 	}

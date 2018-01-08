@@ -694,7 +694,7 @@ failure:
 		return false; // TODO was BEHAVIOUR_NONE
 	}
 	
-	SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
+	SendIOScriptEvent(NULL, io, SM_PATHFINDER_FAILURE);
 	
 	EVENT_SENDER = oes;
 	
@@ -978,7 +978,7 @@ void ARX_PHYSICS_Apply() {
 
 			if(io->_npcdata->pathfind.pathwait) { // Waiting For Pathfinder Answer
 				if(io->_npcdata->pathfind.listnb == 0) { // Not Found
-					SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
+					SendIOScriptEvent(EVENT_SENDER, io, SM_PATHFINDER_FAILURE);
 					io->_npcdata->pathfind.pathwait = 0;
 
 					if(io->_npcdata->pathfind.list)
@@ -986,7 +986,7 @@ void ARX_PHYSICS_Apply() {
 
 					io->_npcdata->pathfind.listnb = -2;
 				} else if (io->_npcdata->pathfind.listnb > 0) { // Found
-					SendIOScriptEvent(io, SM_PATHFINDER_SUCCESS);
+					SendIOScriptEvent(EVENT_SENDER, io, SM_PATHFINDER_SUCCESS);
 					io->_npcdata->pathfind.pathwait = 0;
 					io->_npcdata->pathfind.listpos += (unsigned short)ARX_NPC_GetNextAttainableNodeIncrement(io);
 
@@ -1559,7 +1559,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				if((elapsed > aimtime || (elapsed * 2 > aimtime && Random::getf() > 0.9f))
 				    && tdist < square(STRIKE_DISTANCE)) {
 					changeAnimation(io, 1, strike);
-					SendIOScriptEvent(io, SM_STRIKE, "bare");
+					SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "bare");
 				}
 				
 			} else if(isCurrentAnimation(io, 1, strike)) {
@@ -1659,13 +1659,13 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					   && tdist < square(STRIKE_DISTANCE)) {
 						changeAnimation(io, 1, strike);
 						if(io->_npcdata->weapontype & OBJECT_TYPE_1H) {
-							SendIOScriptEvent(io, SM_STRIKE, "1h");
+							SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "1h");
 						}
 						if(io->_npcdata->weapontype & OBJECT_TYPE_2H) {
-							SendIOScriptEvent(io, SM_STRIKE, "2h");
+							SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "2h");
 						}
 						if(io->_npcdata->weapontype & OBJECT_TYPE_DAGGER) {
-							SendIOScriptEvent(io, SM_STRIKE, "dagger");
+							SendIOScriptEvent(EVENT_SENDER, io, SM_STRIKE, "dagger");
 						}
 					}
 					
@@ -1857,9 +1857,9 @@ static void ManageNPCMovement(Entity * io) {
 				if(io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE) {
 					io->_npcdata->reachedtarget = 1;
 					io->_npcdata->reachedtime = g_gameTime.now();
-
-					if(io->targetinfo != io->index())
-						SendIOScriptEvent(io, SM_REACHEDTARGET);
+					if(io->targetinfo != io->index()) {
+						SendIOScriptEvent(EVENT_SENDER, io, SM_REACHEDTARGET);
+					}
 				} else if(layer0.cur_anim == alist[ANIM_WAIT] && (layer0.flags & EA_ANIMEND)) {
 					io->_npcdata->pathfind.listnb = -1;
 					io->_npcdata->pathfind.pathwait = 0;
@@ -2282,11 +2282,9 @@ afterthat:
 		if(_dist > TOLERANCE && dis > TOLERANCE2) {
 			if(io->_npcdata->reachedtarget) {
 				Entity * oes = EVENT_SENDER;
-				if(ValidIONum(io->targetinfo))
-					EVENT_SENDER = entities[io->targetinfo];
-				else
-					EVENT_SENDER = NULL;
-				SendIOScriptEvent(io, SM_LOSTTARGET);
+				Entity * target = ValidIONum(io->targetinfo) ? entities[io->targetinfo] : NULL;
+				EVENT_SENDER = target;
+				SendIOScriptEvent(target, io, SM_LOSTTARGET);
 				io->_npcdata->reachedtarget = 0;
 				EVENT_SENDER = oes;
 			}
@@ -2365,19 +2363,18 @@ afterthat:
 			} else if(!io->_npcdata->reachedtarget) {
 				
 				Entity * oes = EVENT_SENDER;
-				if(ValidIONum(io->targetinfo))
-					EVENT_SENDER = entities[io->targetinfo];
-				else
-					EVENT_SENDER = NULL;
+				Entity * target = ValidIONum(io->targetinfo) ? entities[io->targetinfo] : NULL;
+				EVENT_SENDER = target;
 
 				io->_npcdata->reachedtarget = 1;
 				io->_npcdata->reachedtime = g_gameTime.now();
 
 				if(io->animlayer[1].flags & EA_ANIMEND)
 					io->animlayer[1].cur_anim = NULL;
-
-				if(io->targetinfo != io->index())
-					SendIOScriptEvent(io, SM_REACHEDTARGET);
+				
+				if(io->targetinfo != io->index()) {
+					SendIOScriptEvent(target, io, SM_REACHEDTARGET);
+				}
 				
 				EVENT_SENDER = oes;
 			}
@@ -2413,10 +2410,11 @@ static void ManageNPCMovement_check_target_reached(Entity * io) {
 		
 		Entity * oes = EVENT_SENDER;
 		EVENT_SENDER = NULL;
-
-		if((io->_npcdata->behavior & BEHAVIOUR_FLEE) && !io->_npcdata->pathfind.pathwait)
-			SendIOScriptEvent(io, SM_NULL, "", "flee_end");
-
+		
+		if((io->_npcdata->behavior & BEHAVIOUR_FLEE) && !io->_npcdata->pathfind.pathwait) {
+			SendIOScriptEvent(NULL, io, SM_NULL, "", "flee_end");
+		}
+		
 		if((io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE)
 		   && io->_npcdata->pathfind.pathwait == 0
 		) {
@@ -2424,9 +2422,8 @@ static void ManageNPCMovement_check_target_reached(Entity * io) {
 				EntityHandle num = io->index();
 				io->_npcdata->reachedtarget = 1;
 				io->_npcdata->reachedtime = g_gameTime.now();
-
 				if(io->targetinfo != num) {
-					SendIOScriptEvent(io, SM_REACHEDTARGET, "fake");
+					SendIOScriptEvent(NULL, io, SM_REACHEDTARGET, "fake");
 					io->targetinfo = num;
 				}
 			}
@@ -2684,20 +2681,22 @@ void CheckNPCEx(Entity * io) {
 			// if visible but was NOT visible, sends an Detectplayer Event
 			Entity * oes = EVENT_SENDER;
 			EVENT_SENDER = NULL;
-			SendIOScriptEvent(io, SM_DETECTPLAYER);
+			SendIOScriptEvent(NULL, io, SM_DETECTPLAYER);
 			io->_npcdata->detect = 1;
 			EVENT_SENDER = oes;
 		}
+		
 	}
 	
 	// if not visible but was visible, sends an Undetectplayer Event
 	if(!Visible && io->_npcdata->detect) {
 		Entity * oes = EVENT_SENDER;
 		EVENT_SENDER = NULL;
-		SendIOScriptEvent(io, SM_UNDETECTPLAYER);
+		SendIOScriptEvent(NULL, io, SM_UNDETECTPLAYER);
 		io->_npcdata->detect = 0;
 		EVENT_SENDER = oes;
 	}
+	
 }
 
 void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, const float power) {
@@ -2781,7 +2780,7 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 
 						sprintf(temp, "%ld", ldistance);
 
-						SendIOScriptEvent(entity, SM_HEAR, temp);
+						SendIOScriptEvent(source, entity, SM_HEAR, temp);
 					}
 				} else {
 					long ldistance = long(distance);
@@ -2789,7 +2788,7 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 
 					sprintf(temp, "%ld", ldistance);
 
-					SendIOScriptEvent(entity, SM_HEAR, temp);
+					SendIOScriptEvent(source, entity, SM_HEAR, temp);
 				}
 			}
 		}

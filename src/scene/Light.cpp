@@ -208,7 +208,7 @@ void TreatBackgroundDynlights() {
 						if(e && (e->ioflags & IO_MARKER)) {
 							Vec3f _pos2 = GetItemWorldPosition(e);
 							if(!fartherThan(light->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(e, SM_CUSTOM, "douse");
+								SendIOScriptEvent(EVENT_SENDER, e, SM_CUSTOM, "douse");
 							}
 						}
 					}
@@ -223,7 +223,7 @@ void TreatBackgroundDynlights() {
 						if(e && (e->ioflags & IO_MARKER)) {
 							Vec3f _pos2 = GetItemWorldPosition(e);
 							if(!fartherThan(light->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(e, SM_CUSTOM, "fire");
+								SendIOScriptEvent(EVENT_SENDER, e, SM_CUSTOM, "fire");
 							}
 						}
 					}

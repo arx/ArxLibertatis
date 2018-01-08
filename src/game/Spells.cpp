@@ -404,10 +404,11 @@ static void SPELLCAST_Notify(const SpellBase & spell) {
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		if(entities[handle] != NULL) {
-			EVENT_SENDER = (source != EntityHandle()) ? entities[source] : NULL;
+			Entity * sender = (source != EntityHandle()) ? entities[source] : NULL;
+			EVENT_SENDER = sender;
 			char param[256];
 			sprintf(param, "%s %ld", spellName, (long)spell.m_level);
-			SendIOScriptEvent(entities[handle], SM_SPELLCAST, param);
+			SendIOScriptEvent(sender, entities[handle], SM_SPELLCAST, param);
 		}
 	}
 	
@@ -425,13 +426,11 @@ static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 	
 	if(spellName) {
 		Entity * oes = EVENT_SENDER;
-		if(source != EntityHandle())
-			EVENT_SENDER = entities[source];
-		else
-			EVENT_SENDER = NULL;
+		Entity * sender = (source != EntityHandle()) ? entities[source] : NULL;
+		EVENT_SENDER = sender;
 		char param[256];
 		sprintf(param, "%s %ld", spellName, long(spell.m_level));
-		SendIOScriptEvent(entities[spell.m_target], SM_SPELLCAST, param);
+		SendIOScriptEvent(sender, entities[spell.m_target], SM_SPELLCAST, param);
 		EVENT_SENDER = oes;
 	}
 }
@@ -443,13 +442,14 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 
 	if(spell.m_type == SPELL_CONFUSE) {
 		Entity * oes = EVENT_SENDER;
-		EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
+		Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+		EVENT_SENDER = sender;
 		if(ValidIONum(spell.m_target)) {
 			if(spellName) {
 				Entity * targ = entities[spell.m_target];
 				char param[128];
 				sprintf(param, "%s %ld", spellName, long(spell.m_level));
-				SendIOScriptEvent(targ, SM_SPELLEND, param);
+				SendIOScriptEvent(sender, targ, SM_SPELLEND, param);
 			}
 		}
 		EVENT_SENDER = oes;
@@ -466,10 +466,11 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 		
 		if(entities[handle]) {
 			Entity * oes = EVENT_SENDER;
-			EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
+			Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+			EVENT_SENDER = sender;
 			char param[128];
 			sprintf(param, "%s %ld", spellName, (long)spell.m_level);
-			SendIOScriptEvent(entities[handle], SM_SPELLEND, param);
+			SendIOScriptEvent(sender, entities[handle], SM_SPELLEND, param);
 			EVENT_SENDER = oes;
 		}
 	}

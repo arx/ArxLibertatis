@@ -126,9 +126,9 @@ void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
 	
 	Entity * oes = EVENT_SENDER;
 	EVENT_SENDER = io;
-	SendIOScriptEvent(entities.player(), SM_INVENTORYIN);
+	SendIOScriptEvent(io, entities.player(), SM_INVENTORYIN);
 	EVENT_SENDER = entities.player();
-	SendIOScriptEvent(io, SM_INVENTORYIN);
+	SendIOScriptEvent(entities.player(), io, SM_INVENTORYIN);
 	EVENT_SENDER = oes;
 }
 
@@ -1148,7 +1148,7 @@ void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lC
 			   && slot.io->obj->texturecontainer[lTex]->m_texName == _lpszText
 			) {
 				if(slot.io->gameFlags & GFLAG_INTERACTIVITY) {
-					SendIOScriptEvent(slot.io, _lCommand);
+					SendIOScriptEvent(EVENT_SENDER, slot.io, _lCommand);
 				}
 				return;
 			}
@@ -1221,7 +1221,7 @@ void ARX_INVENTORY_IdentifyIO(Entity * _pIO) {
 	if(_pIO && (_pIO->ioflags & IO_ITEM) && _pIO->_itemdata->equipitem) {
 		if(player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
 		   >= _pIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) {
-			SendIOScriptEvent(_pIO, SM_IDENTIFY);
+			SendIOScriptEvent(EVENT_SENDER, _pIO, SM_IDENTIFY);
 		}
 	}
 }
@@ -1246,7 +1246,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 	// CLOSING
 	if(!_io || SecondaryInventory == _io->inventory) {
 		if(SecondaryInventory && SecondaryInventory->io)
-			SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_CLOSE);
+			SendIOScriptEvent(EVENT_SENDER, SecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
 		TSecondaryInventory = SecondaryInventory;
@@ -1254,13 +1254,13 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 		DRAGGING = false;
 	} else {
 		if(TSecondaryInventory && TSecondaryInventory->io)
-			SendIOScriptEvent(TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
+			SendIOScriptEvent(EVENT_SENDER, TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_right;
 		TSecondaryInventory = SecondaryInventory = _io->inventory;
 
 		if(SecondaryInventory && SecondaryInventory->io != NULL) {
-			if(SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE) {
+			if(SendIOScriptEvent(EVENT_SENDER, SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE) {
 				g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
 				TSecondaryInventory = SecondaryInventory = NULL;
 				return;

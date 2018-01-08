@@ -371,7 +371,8 @@ public:
 		DebugScript("");
 		
 		if(player.Interface & INTER_STEAL) {
-			SendIOScriptEvent(ioSteal, SM_STEAL, "off");
+			// TODO This sender does not make sense
+			SendIOScriptEvent(context.getSender(), ioSteal, SM_STEAL, "off");
 		}
 		
 		player.Interface |= INTER_STEAL;

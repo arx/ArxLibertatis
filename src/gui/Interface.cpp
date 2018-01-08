@@ -819,13 +819,13 @@ void ArxGame::managePlayerControls() {
 			if(t->ioflags & IO_NPC) {
 				if(t->script.data) {
 					if(t->_npcdata->lifePool.current > 0.f) {
-						SendIOScriptEvent(t, SM_CHAT);
+						SendIOScriptEvent(EVENT_SENDER, t, SM_CHAT);
 						DRAGGING = false;
 					} else {
 						if(t->inventory) {
 							
 							if((player.Interface & INTER_STEAL) && ioSteal && t != ioSteal) {
-								SendIOScriptEvent(ioSteal, SM_STEAL, "off");
+								SendIOScriptEvent(EVENT_SENDER, ioSteal, SM_STEAL, "off");
 								player.Interface &= ~INTER_STEAL;
 							}
 							
@@ -848,7 +848,7 @@ void ArxGame::managePlayerControls() {
 					
 					if(player.Interface & INTER_STEAL) {
 						if(ioSteal && t != ioSteal) {
-							SendIOScriptEvent(ioSteal, SM_STEAL, "off");
+							SendIOScriptEvent(EVENT_SENDER, ioSteal, SM_STEAL, "off");
 							player.Interface &= ~INTER_STEAL;
 						}
 					}
@@ -860,9 +860,10 @@ void ArxGame::managePlayerControls() {
 						lOldTruePlayerMouseLook = !TRUE_PLAYER_MOUSELOOK_ON;
 					}
 					
-				} else if (t->script.data) {
-					SendIOScriptEvent(t, SM_ACTION);
+				} else if(t->script.data) {
+					SendIOScriptEvent(EVENT_SENDER, t, SM_ACTION);
 				}
+				
 				DRAGGING = false;
 			}
 		}
@@ -1207,7 +1208,7 @@ void ArxGame::managePlayerControls() {
 				{
 					lChangeWeapon--;
 					if(pIOChangeWeapon) {
-						SendIOScriptEvent(pIOChangeWeapon, SM_INVENTORYUSE, "");
+						SendIOScriptEvent(EVENT_SENDER, pIOChangeWeapon, SM_INVENTORYUSE, "");
 						pIOChangeWeapon = NULL;
 					}
 				} else {
@@ -1314,13 +1315,13 @@ void ArxGame::managePlayerControls() {
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
 			if(!CSEND) {
 				CSEND = 1;
-				SendIOScriptEvent(entities.player(), SM_EXPLORATIONMODE);
+				SendIOScriptEvent(EVENT_SENDER, entities.player(), SM_EXPLORATIONMODE);
 			}
 		}
 	} else {
 		if(CSEND) {
 			CSEND = 0;
-			SendIOScriptEvent(entities.player(), SM_CURSORMODE);
+			SendIOScriptEvent(EVENT_SENDER, entities.player(), SM_CURSORMODE);
 		}
 	}
 	
@@ -1510,7 +1511,7 @@ void ArxGame::manageKeyMouse() {
 						
 						if(bOk) {
 							if(!(FlyingOverIO->_itemdata->playerstacksize <= 1 && FlyingOverIO->_itemdata->count > 1)) {
-								SendIOScriptEvent(FlyingOverIO, SM_INVENTORYUSE);
+								SendIOScriptEvent(EVENT_SENDER, FlyingOverIO, SM_INVENTORYUSE);
 								if(config.input.autoReadyWeapon == AlwaysAutoReadyWeapon || !config.input.mouseLookToggle) {
 									TRUE_PLAYER_MOUSELOOK_ON = false;
 								}
@@ -1916,7 +1917,7 @@ void ArxGame::manageEditorControls() {
 	   && FlyingOverIO
 	   && !DRAGINTER
 	) {
-		SendIOScriptEvent(FlyingOverIO, SM_CLICKED);
+		SendIOScriptEvent(EVENT_SENDER, FlyingOverIO, SM_CLICKED);
 		bool bOk = true;
 		
 		if(SecondaryInventory) {
@@ -1994,7 +1995,7 @@ void ArxGame::manageEditorControls() {
 				PutInInventory();
 			} else if(ARX_INTERFACE_MouseInBook()) {
 				if(g_playerBook.currentPage() == BOOKMODE_STATS) {
-					SendIOScriptEvent(DRAGINTER, SM_INVENTORYUSE);
+					SendIOScriptEvent(EVENT_SENDER, DRAGINTER, SM_INVENTORYUSE);
 					COMBINE = NULL;
 				}
 			} else if(DRAGINTER->ioflags & IO_GOLD) {
@@ -2054,7 +2055,7 @@ void ArxGame::manageEditorControls() {
 			
 			if(io) {
 				if(COMBINEGOLD) {
-					SendIOScriptEvent(io, SM_COMBINE, "gold_coin");
+					SendIOScriptEvent(EVENT_SENDER, io, SM_COMBINE, "gold_coin");
 				} else {
 					if(io != COMBINE) {
 						std::string temp = COMBINE->idString();
@@ -2063,7 +2064,7 @@ void ArxGame::manageEditorControls() {
 						if(boost::starts_with(COMBINE->className(), "keyring")) {
 							ARX_KEYRING_Combine(io);
 						} else {
-							SendIOScriptEvent(io, SM_COMBINE, temp);
+							SendIOScriptEvent(EVENT_SENDER, io, SM_COMBINE, temp);
 						}
 						EVENT_SENDER = oes;
 					}
@@ -2092,7 +2093,7 @@ void ArxGame::manageEditorControls() {
 							if(light->m_ignitionStatus) {
 								light->m_ignitionStatus = false;
 								ARX_SOUND_PlaySFX(SND_TORCH_END, &light->pos);
-								SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
+								SendIOScriptEvent(EVENT_SENDER, COMBINE, SM_CUSTOM, "douse");
 							}
 						}
 					}

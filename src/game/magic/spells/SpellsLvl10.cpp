@@ -227,7 +227,7 @@ void ControlTargetSpell::Launch()
 			std::ostringstream oss;
 			oss << entities[m_target]->idString();
 			oss << ' ' << long(m_level);
-			SendIOScriptEvent(ioo, SM_NULL, oss.str(), "npc_control");
+			SendIOScriptEvent(EVENT_SENDER, ioo, SM_NULL, oss.str(), "npc_control");
 		}
 	}
 	
