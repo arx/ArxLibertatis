@@ -1529,8 +1529,8 @@ void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage msg
 	}
 }
 
-ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage msg, const std::string & params,
-                               const std::string & eventname) {
+ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage event,
+                               const std::string & params, const std::string & eventname) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -1545,14 +1545,14 @@ ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, ScriptMessage m
 	
 	// Send the event to the instance script first
 	if(entities[num]->over_script.data) {
-		ScriptResult ret = ScriptEvent::send(&entities[num]->over_script, sender, entities[num], msg, params, eventname);
+		ScriptResult ret = ScriptEvent::send(&entities[num]->over_script, sender, entities[num], event, params, eventname);
 		if(ret == REFUSE || !entities[num]) {
 			return REFUSE;
 		}
 	}
 	
 	// If the instance script did not refuse the event also send it to the class script
-	return ScriptEvent::send(&entities[num]->script, sender, entities[num], msg, params, eventname);
+	return ScriptEvent::send(&entities[num]->script, sender, entities[num], event, params, eventname);
 }
 
 ScriptResult SendInitScriptEvent(Entity * io) {
