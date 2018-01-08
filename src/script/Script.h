@@ -446,8 +446,10 @@ public:
 	
 	ScriptEventName() : m_id(SM_NULL) { }
 	/* implicit */ ScriptEventName(ScriptMessage id) : m_id(id) { }
-	/* implicit */ ScriptEventName(const std::string & name) : m_id(SM_NULL), m_name(name) { }
+	explicit ScriptEventName(const std::string & name) : m_id(SM_NULL), m_name(name) { }
 	/* implicit */ ScriptEventName(const char * name) : m_id(SM_NULL), m_name(name) { }
+	
+	static ScriptEventName parse(const std::string & name);
 	
 	ScriptMessage getId() const { return m_id; }
 	const std::string getName() const { return m_name; }

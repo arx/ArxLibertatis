@@ -2074,7 +2074,7 @@ void UpdateCameras() {
 				if(last == -2) {
 					std::string waypoint = boost::lexical_cast<std::string>(aup->path->pathways.size() - 1);
 					SendIOScriptEvent(NULL, io, SM_WAYPOINT, waypoint);
-					SendIOScriptEvent(NULL, io, "waypoint" + waypoint);
+					SendIOScriptEvent(NULL, io, ScriptEventName("waypoint" + waypoint));
 					SendIOScriptEvent(NULL, io, SM_PATHEND);
 					aup->lastWP = last;
 				} else {
@@ -2092,7 +2092,7 @@ void UpdateCameras() {
 
 					std::string waypoint = boost::lexical_cast<std::string>(ii);
 					SendIOScriptEvent(NULL, io, SM_WAYPOINT, waypoint);
-					SendIOScriptEvent(NULL, io, "waypoint" + waypoint);
+					SendIOScriptEvent(NULL, io, ScriptEventName("waypoint" + waypoint));
 					if(size_t(ii) == aup->path->pathways.size()) {
 						SendIOScriptEvent(NULL, io, SM_PATHEND);
 					}
