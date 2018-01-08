@@ -183,12 +183,10 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io) {
 	ARX_PATH * op = io->inzone;
 
 	if(op) {
-		std::string temp = op->name;
-		
 		if(!op->controled.empty()) {
 			EntityHandle t = entities.getById(op->controled);
 			if(t != EntityHandle()) {
-				std::string str = io->idString() + ' ' + temp;
+				std::string str = io->idString() + ' ' + op->name;
 				SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 			}
 		}
