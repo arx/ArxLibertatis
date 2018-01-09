@@ -73,7 +73,7 @@ public:
 			return Failed;
 		}
 		
-		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getMaster()->lvar : svar;
+		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getEntity()->m_variables : svar;
 		
 		SCRIPT_VAR * sv = NULL;
 		switch(var[0]) {
@@ -155,7 +155,7 @@ public:
 			return Failed;
 		}
 		
-		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getMaster()->lvar : svar;
+		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getEntity()->m_variables : svar;
 		
 		SCRIPT_VAR * sv = NULL;
 		switch(var[0]) {
@@ -233,7 +233,7 @@ public:
 			return Failed;
 		}
 		
-		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getMaster()->lvar : svar;
+		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getEntity()->m_variables : svar;
 		
 		UNSETVar(variables, var);
 		
@@ -261,7 +261,7 @@ public:
 			return Failed;
 		}
 		
-		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getMaster()->lvar : svar;
+		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getEntity()->m_variables : svar;
 		
 		SCRIPT_VAR * sv = NULL;
 		switch(var[0]) {

@@ -330,15 +330,13 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 
 void ARX_SCRIPT_Reset(Entity * io, bool init) {
 	
-	//Release Script Local Variables
-	io->script.lvar.clear();
-		
-	//Release Script Over-Script Local Variables
-	io->over_script.lvar.clear();
+	// Release Script Over-Script Local Variables
+	io->m_variables.clear();
 	
 	if(!io->scriptload) {
 		ARX_SCRIPT_ResetObject(io, init);
 	}
+	
 }
 
 void ARX_SCRIPT_ResetAll(bool init) {
@@ -405,8 +403,6 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	if(!es) {
 		return;
 	}
-	
-	es->lvar.clear();
 	
 	free(es->data);
 	es->data = NULL;
@@ -1237,7 +1233,7 @@ void CloneLocalVars(Entity * ioo, Entity * io) {
 		return;
 	}
 	
-	ioo->script.lvar = io->script.lvar;
+	ioo->m_variables = io->m_variables;
 }
 
 static SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VARIABLES & _svff) {
@@ -1858,8 +1854,6 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 	std::transform(script.data, script.data + script.size, script.data, ::tolower);
 	
 	script.allowevents = 0;
-	
-	script.lvar.clear();
 	
 	script.master = NULL;
 	

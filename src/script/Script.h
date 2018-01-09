@@ -196,7 +196,6 @@ struct EERIE_SCRIPT {
 	
 	size_t size;
 	char * data;
-	SCRIPT_VARIABLES lvar;
 	GameInstant timers[MAX_SCRIPTTIMERS];
 	DisabledEvents allowevents;
 	EERIE_SCRIPT * master;
