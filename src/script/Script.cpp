@@ -214,7 +214,7 @@ long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
 		// Check if the line is commented out!
 		for(const char * search = dat; search[0] != '/' || search[1] != '/'; search--) {
 			if(*search == '\n' || search == es->data) {
-				return dat - es->data + str.length();
+				return dat - es->data + long(str.length());
 			}
 		}
 		
