@@ -98,6 +98,19 @@ long FORBID_SCRIPT_IO_CREATION = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
 
+bool isLocalVariable(const std::string & name) {
+	
+	arx_assert(!name.empty());
+	
+	switch(name[0]) {
+		case '\xA3': return true;
+		case '\xA7': return true;
+		case '@':    return true;
+		default:     return false;
+	}
+	
+}
+
 std::ostream & operator<<(std::ostream & os, const SCRIPT_VAR & var) {
 	
 	arx_assert(!var.name.empty());
