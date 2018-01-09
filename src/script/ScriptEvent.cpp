@@ -258,7 +258,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	
 	totalCount++;
 	
-	if(entity && checkInteractiveObject(entity, event.getId(), ret)) {
+	arx_assert(entity);
+	
+	if(checkInteractiveObject(entity, event.getId(), ret)) {
 		return ret;
 	}
 	
@@ -292,10 +294,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 	}
 	
 	
-	LogDebug("--> " << event << " params=\"" << parameters << "\""
-	         << " entity=" << (entity ? entity->idString() : "unknown")
-	         << (entity == NULL ? "" : es == &entity->script ? " base" : " overriding")
-	         << " pos=" << pos);
+	LogDebug("--> " << event << " params=\"" << parameters << "\"" << " entity=" << entity->idString()
+	         << (es == &entity->script ? " base" : " overriding") << " pos=" << pos);
 	
 	script::Context context(es, size_t(pos), sender, entity, event.getId(), parameters);
 	
@@ -333,9 +333,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 			
 			script::Command::Result res;
 			if(command.getEntityFlags()
-			   && (!entity || (command.getEntityFlags() != script::Command::AnyEntity
-			               && !(command.getEntityFlags() & long(entity->ioflags))))) {
-				ScriptEventWarning << "command " << command.getName() << " needs an IO of type "
+			   && (command.getEntityFlags() != script::Command::AnyEntity
+			       && !(command.getEntityFlags() & long(entity->ioflags)))) {
+				ScriptEventWarning << "Command " << command.getName() << " needs an IO of type "
 				                   << command.getEntityFlags();
 				context.skipCommand();
 				res = script::Command::Failed;
