@@ -151,65 +151,45 @@ public:
 		DebugScript(' ' << var << ' ' << val);
 		
 		if(var.empty()) {
-			ScriptWarning << "missing variable name";
+			ScriptWarning << "Missing variable name";
 			return Failed;
 		}
 		
-		EERIE_SCRIPT * es = context.getMaster();
+		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getMaster()->lvar : svar;
 		
+		SCRIPT_VAR * sv = NULL;
 		switch(var[0]) {
 			
-			case '$': // global text
+			case '$':      // global text
 			case '\xA3': { // local text
-				ScriptWarning << "cannot increment string variables";
+				ScriptWarning << "Cannot calculate with text variables";
 				return Failed;
 			}
 			
-			case '#':  {// global long
-				float old = (float)GETVarValueLong(svar, var);
-				SCRIPT_VAR * sv = SETVarValueLong(svar, var, (long)calculate(old, val));
-				if(!sv) {
-					ScriptWarning << "unable to set var " << var;
-					return Failed;
-				}
-				break;
-			}
-			
+			case '#':      // global long
 			case '\xA7': { // local long
-				float old = (float)GETVarValueLong(es->lvar, var);
-				SCRIPT_VAR * sv = SETVarValueLong(es->lvar, var, (long)calculate(old, val));
-				if(!sv) {
-					ScriptWarning << "unable to set var " << var;
-					return Failed;
-				}
+				long old = GETVarValueLong(variables, var);
+				sv = SETVarValueLong(variables, var, long(calculate(float(old), val)));
 				break;
 			}
 			
-			case '&': { // global float
-				float old = GETVarValueFloat(svar, var);
-				SCRIPT_VAR * sv = SETVarValueFloat(svar, var, calculate(old, val));
-				if(!sv) {
-					ScriptWarning << "unable to set var " << var;
-					return Failed;
-				}
-				break;
-			}
-			
+			case '&':   // global float
 			case '@': { // local float
-				float old = GETVarValueFloat(es->lvar, var);
-				SCRIPT_VAR * sv = SETVarValueFloat(es->lvar, var, calculate(old, val));
-				if(!sv) {
-					ScriptWarning << "unable to set var " << var;
-					return Failed;
-				}
+				float old = GETVarValueFloat(variables, var);
+				sv = SETVarValueFloat(variables, var, calculate(old, val));
 				break;
 			}
 			
 			default: {
-				ScriptWarning << "unknown variable type: " << var;
+				ScriptWarning << "Unknown variable type: " << var;
 				return Failed;
 			}
 			
+		}
+		
+		if(!sv) {
+			ScriptWarning << "Unable to set variable " << var;
+			return Failed;
 		}
 		
 		return Success;
