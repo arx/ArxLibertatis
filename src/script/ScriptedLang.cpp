@@ -423,9 +423,9 @@ public:
 		}
 		
 		if(enable) {
-			context.getMaster()->allowevents &= ~mask;
+			context.getEntity()->m_disabledEvents &= ~mask;
 		} else {
-			context.getMaster()->allowevents |= mask;
+			context.getEntity()->m_disabledEvents |= mask;
 		}
 		
 		return Success;
