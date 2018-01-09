@@ -154,30 +154,15 @@ enum ValueType {
 	TYPE_LONG = 3
 };
 
-
-enum VariableType {
-	TYPE_UNKNOWN = 0, // does not exist !
-	TYPE_G_TEXT = 1,
-	TYPE_L_TEXT = 2,
-	TYPE_G_LONG = 4,
-	TYPE_L_LONG = 8,
-	TYPE_G_FLOAT = 16,
-	TYPE_L_FLOAT = 32
-};
-
 struct SCRIPT_VAR {
 	
-	VariableType type;
+	std::string name;
+	
 	long ival;
 	float fval;
 	std::string text;
-	std::string name;
-
-	SCRIPT_VAR()
-		: type(TYPE_UNKNOWN)
-		, ival()
-		, fval()
-	{ }
+	
+	SCRIPT_VAR() : ival(), fval() { }
 	
 };
 

@@ -1236,26 +1236,22 @@ static SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VARIABLES & _svff) {
 static SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES & svf, const std::string & name) {
 	
 	for(SCRIPT_VARIABLES::iterator it = svf.begin(); it != svf.end(); ++it) {
-		if(it->type != TYPE_UNKNOWN) {
-			if(name == it->name) {
-				return &(*it);
-			}
+		if(name == it->name) {
+			return &(*it);
 		}
 	}
-
+	
 	return NULL;
 }
 
 const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, const std::string & name) {
 	
 	for(SCRIPT_VARIABLES::const_iterator it = svf.begin(); it != svf.end(); ++it) {
-		if(it->type != TYPE_UNKNOWN) {
-			if(name == it->name) {
-				return &(*it);
-			}
+		if(name == it->name) {
+			return &(*it);
 		}
 	}
-
+	
 	return NULL;
 }
 

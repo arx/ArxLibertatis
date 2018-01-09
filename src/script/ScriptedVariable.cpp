@@ -84,7 +84,6 @@ public:
 					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
 					return Failed;
 				}
-				sv->type = TYPE_G_TEXT;
 				break;
 			}
 			
@@ -95,7 +94,6 @@ public:
 					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
 					return Failed;
 				}
-				sv->type = TYPE_L_TEXT;
 				break;
 			}
 			
@@ -106,7 +104,6 @@ public:
 					ScriptWarning << "unable to set var " << var << " to " << v;
 					return Failed;
 				}
-				sv->type = TYPE_G_LONG;
 				break;
 			}
 			
@@ -117,7 +114,6 @@ public:
 					ScriptWarning << "unable to set var " << var << " to " << v;
 					return Failed;
 				}
-				sv->type = TYPE_L_LONG;
 				break;
 			}
 			
@@ -128,7 +124,6 @@ public:
 					ScriptWarning << "unable to set var " << var << " to " << v;
 					return Failed;
 				}
-				sv->type = TYPE_G_FLOAT;
 				break;
 			}
 			
@@ -139,7 +134,6 @@ public:
 					ScriptWarning << "unable to set var " << var << " to " << v;
 					return Failed;
 				}
-				sv->type = TYPE_L_FLOAT;
 				break;
 			}
 			
@@ -214,7 +208,6 @@ public:
 					ScriptWarning << "unable to set var " << var;
 					return Failed;
 				}
-				sv->type = TYPE_G_LONG;
 				break;
 			}
 			
@@ -225,7 +218,6 @@ public:
 					ScriptWarning << "unable to set var " << var;
 					return Failed;
 				}
-				sv->type = TYPE_L_LONG;
 				break;
 			}
 			
@@ -236,7 +228,6 @@ public:
 					ScriptWarning << "unable to set var " << var;
 					return Failed;
 				}
-				sv->type = TYPE_G_FLOAT;
 				break;
 			}
 			
@@ -247,7 +238,6 @@ public:
 					ScriptWarning << "unable to set var " << var;
 					return Failed;
 				}
-				sv->type = TYPE_L_FLOAT;
 				break;
 			}
 			
@@ -274,7 +264,7 @@ class UnsetCommand : public Command {
 		
 		SCRIPT_VARIABLES::iterator it;
 		for(it = svf.begin(); it != svf.end(); ++it) {
-			if(it->type != 0 && name == it->name) {
+			if(name == it->name) {
 				break;
 			}
 		}

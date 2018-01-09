@@ -88,6 +88,16 @@ enum SavePlayerFlag {
 	SP_SP2  = 1 << 9
 };
 
+enum VariableType {
+	TYPE_UNKNOWN = 0, // does not exist !
+	TYPE_G_TEXT = 1,
+	TYPE_L_TEXT = 2,
+	TYPE_G_LONG = 4,
+	TYPE_L_LONG = 8,
+	TYPE_G_FLOAT = 16,
+	TYPE_L_FLOAT = 32
+};
+
 
 #pragma pack(push, 1)
 
