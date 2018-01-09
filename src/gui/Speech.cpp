@@ -318,7 +318,7 @@ void ARX_SPEECH_ClearIOSpeech(Entity * entity) {
 			continue;
 		}
 		
-		EERIE_SCRIPT * es = aspeech[i].es;
+		const EERIE_SCRIPT * es = aspeech[i].es;
 		Entity * scriptEntity = aspeech[i].ioscript;
 		long scrpos = aspeech[i].scrpos;
 		ARX_SPEECH_Release(i);
@@ -455,7 +455,7 @@ void ARX_SPEECH_Update() {
 
 		// checks finished speech
 		if(now >= aspeech[i].time_creation + aspeech[i].duration) {
-			EERIE_SCRIPT * es = aspeech[i].es;
+			const EERIE_SCRIPT * es = aspeech[i].es;
 			Entity * scriptEntity = aspeech[i].ioscript;
 			long scrpos = aspeech[i].scrpos;
 			ARX_SPEECH_Release(i);

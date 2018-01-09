@@ -222,7 +222,7 @@ struct SCR_TIMER {
 	long longinfo;
 	GameInstant start;
 	Entity * io;
-	EERIE_SCRIPT * es;
+	const EERIE_SCRIPT * es;
 	
 	SCR_TIMER()
 		: exist(0)
