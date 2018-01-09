@@ -2433,7 +2433,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * entity = entities[handle];
 		
-		if(!entity->obj || entity->show != SHOW_FLAG_IN_SCENE || entity->pos == entity->initpos) {
+		if(!entity || !entity->obj || entity->show != SHOW_FLAG_IN_SCENE || entity->pos == entity->initpos) {
 			continue;
 		}
 		
