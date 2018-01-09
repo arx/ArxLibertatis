@@ -129,7 +129,6 @@ extern bool WILL_RESTORE_PLAYER_POSITION_FLAG;
 
 void SetEditMode();
 
-void SendGameReadyMsg();
 void DANAE_StartNewQuest();
 bool AdjustUI();
 
