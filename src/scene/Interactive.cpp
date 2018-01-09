@@ -1321,10 +1321,6 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 	}
 }
 
-static void GetIOScript(Entity * io, const res::path & script) {
-	loadScript(io->script, g_resources->getFile(script));
-}
-
 /*!
  * \brief Links an Interactive Object to another interactive object using an attach point
  */
@@ -1390,7 +1386,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	io->ioflags = IO_FIX;
 	io->_fixdata->trapvalue = -1;
 	
-	GetIOScript(io, script);
+	loadScript(io->script, g_resources->getFile(script));
 	
 	if(!(flags & NO_ON_LOAD)) {
 		SendIOScriptEvent(NULL, io, SM_LOAD);
@@ -1452,7 +1448,7 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	
 	Entity * io = new Entity(classPath, instance);
 	
-	GetIOScript(io, script);
+	loadScript(io->script, g_resources->getFile(script));
 	
 	io->pos = player.pos;
 	io->pos += angleToVectorXZ(player.angle.getYaw()) * 140.f;
@@ -1504,7 +1500,7 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	
 	Entity * io = new Entity(classPath, instance);
 	
-	GetIOScript(io, script);
+	loadScript(io->script, g_resources->getFile(script));
 	
 	io->pos = player.pos;
 	io->pos += angleToVectorXZ(player.angle.getYaw()) * 140.f;
@@ -1626,7 +1622,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	io->_npcdata = new IO_NPCDATA;
 	io->ioflags = IO_NPC;
 	
-	GetIOScript(io, script);
+	loadScript(io->script, g_resources->getFile(script));
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
 	io->_npcdata->manaPool.current = io->_npcdata->manaPool.max = 10.f;
@@ -1726,7 +1722,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 
 	io->_itemdata->playerstacksize = 1;
 
-	GetIOScript(io, script);
+	loadScript(io->script, g_resources->getFile(script));
 	
 	if(!(flags & NO_ON_LOAD)) {
 		SendIOScriptEvent(NULL, io, SM_LOAD);
