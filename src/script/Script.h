@@ -65,7 +65,7 @@ class Entity;
 
 namespace script { class Context; }
 
-const size_t MAX_SCRIPTTIMERS = 5;
+const size_t MAX_SCRIPTTIMERS = 4;
 
 enum ScriptMessage {
 	SM_NULL = 0,
@@ -196,7 +196,6 @@ struct EERIE_SCRIPT {
 	
 	size_t size;
 	char * data;
-	GameInstant timers[MAX_SCRIPTTIMERS];
 	DisabledEvents allowevents;
 	EERIE_SCRIPT * master;
 	long shortcut[SM_MAXCMD];
@@ -210,7 +209,6 @@ struct EERIE_SCRIPT {
 		, nb_labels()
 		, labels()
 	{
-		memset(&timers, 0, sizeof(timers));
 		memset(&shortcut, 0, sizeof(shortcut));
 	}
 	

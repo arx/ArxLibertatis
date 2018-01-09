@@ -2035,6 +2035,8 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		
 		bool scriptLoaded = true;
 		
+		// TODO store m_scriptTimers
+		
 		const ARX_CHANGELEVEL_SCRIPT_SAVE * ass;
 		ass = reinterpret_cast<const ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);

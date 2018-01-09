@@ -499,37 +499,37 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			}
 			
 			if(name == "^#timer1") {
-				if(!context.getEntity() || context.getEntity()->script.timers[0] == 0) {
+				if(!context.getEntity() || context.getEntity()->m_scriptTimers[0] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMsi(g_gameTime.now() - context.getMaster()->timers[0]);
+					*lcontent = toMsi(g_gameTime.now() - context.getEntity()->m_scriptTimers[0]);
 				}
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#timer2") {
-				if(!context.getEntity() || context.getEntity()->script.timers[1] == 0) {
+				if(!context.getEntity() || context.getEntity()->m_scriptTimers[1] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMsi(g_gameTime.now() - context.getMaster()->timers[1]);
+					*lcontent = toMsi(g_gameTime.now() - context.getEntity()->m_scriptTimers[1]);
 				}
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#timer3") {
-				if(!context.getEntity() || context.getEntity()->script.timers[2] == 0) {
+				if(!context.getEntity() || context.getEntity()->m_scriptTimers[2] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMsi(g_gameTime.now() - context.getMaster()->timers[2]);
+					*lcontent = toMsi(g_gameTime.now() - context.getEntity()->m_scriptTimers[2]);
 				}
 				return TYPE_LONG;
 			}
 			
 			if(name == "^#timer4") {
-				if(!context.getEntity() || context.getEntity()->script.timers[3] == 0) {
+				if(!context.getEntity() || context.getEntity()->m_scriptTimers[3] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMsi(g_gameTime.now() - context.getMaster()->timers[3]);
+					*lcontent = toMsi(g_gameTime.now() - context.getEntity()->m_scriptTimers[3]);
 				}
 				return TYPE_LONG;
 			}
@@ -1856,10 +1856,6 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 	script.allowevents = 0;
 	
 	script.master = NULL;
-	
-	for(size_t j = 0; j < MAX_SCRIPTTIMERS; j++) {
-		script.timers[j] = 0;
-	}
 	
 	ARX_SCRIPT_ComputeShortcuts(script);
 	
