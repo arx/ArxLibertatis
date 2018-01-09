@@ -441,7 +441,7 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 			ScriptParameters parameters;
 			parameters.push_back(spellName);
 			parameters.push_back(long(spell.m_level));
-			SendIOScriptEvent(sender,entities[spell.m_target], SM_SPELLEND, parameters);
+			SendIOScriptEvent(sender, entities[spell.m_target], SM_SPELLEND, parameters);
 		}
 		return;
 	}
