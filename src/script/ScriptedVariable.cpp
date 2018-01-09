@@ -199,10 +199,6 @@ public:
 
 class UnsetCommand : public Command {
 	
-	static bool isGlobal(char c) {
-		return (c == '$' || c == '#' || c == '&');
-	}
-	
 	// TODO move to variable context
 	static bool UNSETVar(SCRIPT_VARIABLES & svf, const std::string & name) {
 		
@@ -213,8 +209,9 @@ class UnsetCommand : public Command {
 			}
 		}
 		
-		if(it == svf.end())
+		if(it == svf.end()) {
 			return false;
+		}
 		
 		svf.erase(it);
 		
@@ -236,11 +233,9 @@ public:
 			return Failed;
 		}
 		
-		if(isGlobal(var[0])) {
-			UNSETVar(svar, var);
-		} else {
-			UNSETVar(context.getMaster()->lvar, var);
-		}
+		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getMaster()->lvar : svar;
+		
+		UNSETVar(variables, var);
 		
 		return Success;
 	}
