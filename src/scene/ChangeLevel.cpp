@@ -1149,7 +1149,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 	ARX_CHANGELEVEL_SCRIPT_SAVE * ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 	ass->allowevents = io->script.allowevents;
-	ass->lastcall = io->script.lastcall;
+	ass->lastcall = 0;
 	ass->nblvar = io->script.lvar.size();
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 	
@@ -1157,7 +1157,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	
 	ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 	ass->allowevents = io->over_script.allowevents;
-	ass->lastcall = io->over_script.lastcall;
+	ass->lastcall = 0;
 	ass->nblvar = io->over_script.lvar.size();
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 	
