@@ -186,15 +186,15 @@ public:
 
 struct PrintLocalVariables {
 	
-	EERIE_SCRIPT * m_script;
+	Entity * m_entity;
 	
-	PrintLocalVariables(EERIE_SCRIPT * script) : m_script(script) { }
+	PrintLocalVariables(Entity * entity) : m_entity(entity) { }
 	
 };
 
 std::ostream & operator<<(std::ostream & os, const PrintLocalVariables & data) {
 	
-	BOOST_FOREACH(const SCRIPT_VAR & var, data.m_script->lvar) {
+	BOOST_FOREACH(const SCRIPT_VAR & var, data.m_entity->m_variables) {
 		os << var << '\n';
 	}
 	
@@ -211,7 +211,7 @@ public:
 		
 		DebugScript("");
 		
-		LogInfo << "Local variables:\n" << PrintLocalVariables(context.getMaster());
+		LogInfo << "Local variables:\n" << PrintLocalVariables(context.getEntity());
 		
 		return Success;
 	}
@@ -231,7 +231,7 @@ public:
 		LogInfo << "Variables:\n"
 		        << PrintGlobalVariables()
 		        << "--------------------------\n"
-		        << PrintLocalVariables(context.getMaster());
+		        << PrintLocalVariables(context.getEntity());
 		
 		return Success;
 	}

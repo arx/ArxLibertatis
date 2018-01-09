@@ -309,6 +309,7 @@ public:
 	IO_HALO halo;
 	IO_HALO halo_native;
 	
+	SCRIPT_VARIABLES m_variables;
 	EERIE_SCRIPT script; // Primary Script
 	EERIE_SCRIPT over_script; // Overriding Script
 	short stat_count;

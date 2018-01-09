@@ -440,8 +440,6 @@ class IfCommand : public Command {
 		
 		char c = (var.empty() ? '\0' : var[0]);
 		
-		EERIE_SCRIPT * es = context.getMaster();
-		
 		switch(c) {
 			
 			case '^': {
@@ -472,7 +470,7 @@ class IfCommand : public Command {
 			}
 			
 			case '\xA7': {
-				f = GETVarValueLong(es->lvar, var);
+				f = GETVarValueLong(context.getEntity()->m_variables, var);
 				return TYPE_FLOAT;
 			}
 			
@@ -482,7 +480,7 @@ class IfCommand : public Command {
 			}
 			
 			case '@': {
-				f = GETVarValueFloat(es->lvar, var);
+				f = GETVarValueFloat(context.getEntity()->m_variables, var);
 				return TYPE_FLOAT;
 			}
 			
@@ -492,7 +490,7 @@ class IfCommand : public Command {
 			}
 			
 			case '\xA3': {
-				s = GETVarValueText(es->lvar, var);
+				s = GETVarValueText(context.getEntity()->m_variables, var);
 				return TYPE_TEXT;
 			}
 			

@@ -1097,9 +1097,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	long allocsize =
 		sizeof(ARX_CHANGELEVEL_IO_SAVE)
 		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
-		+ getScriptVariableSaveSize(io->script.lvar)
 		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
-		+ getScriptVariableSaveSize(io->over_script.lvar)
+		+ getScriptVariableSaveSize(io->m_variables)
 		+ struct_size
 		+ sizeof(SavedTweakerInfo)
 		+ sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE) + 1024
@@ -1146,22 +1145,27 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			}
 		}
 	}
+	
 
 	ARX_CHANGELEVEL_SCRIPT_SAVE * ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 	ass->allowevents = io->script.allowevents;
 	ass->lastcall = 0;
-	ass->nblvar = io->script.lvar.size();
+	ass->nblvar = io->script.data ? io->m_variables.size() : 0;
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 	
-	storeScriptVariables(dat, pos, io->script.lvar, 1);
+	if(io->script.data) {
+		storeScriptVariables(dat, pos, io->m_variables, 1);
+	}
 	
 	ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 	ass->allowevents = io->over_script.allowevents;
 	ass->lastcall = 0;
-	ass->nblvar = io->over_script.lvar.size();
+	ass->nblvar = !io->script.data ? io->m_variables.size() : 0;
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 	
-	storeScriptVariables(dat, pos, io->over_script.lvar, 1);
+	if(!io->script.data) {
+		storeScriptVariables(dat, pos, io->m_variables, 1);
+	}
 	
 	switch (type)
 	{
@@ -1767,20 +1771,6 @@ static bool loadScriptVariables(SCRIPT_VARIABLES & var, const char * dat, size_t
 	return true;
 }
 
-static bool loadScriptData(EERIE_SCRIPT & script, const char * dat, size_t & pos) {
-	
-	const ARX_CHANGELEVEL_SCRIPT_SAVE * ass;
-	ass = reinterpret_cast<const ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
-	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
-	
-	script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
-
-	script.lvar.clear();
-	script.lvar.resize(ass->nblvar);
-
-	return loadScriptVariables(script.lvar, dat, pos);
-}
-
 static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInstance instance) {
 	
 	LogDebug("--> loading interactive object " << idString);
@@ -2041,7 +2031,36 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			scr_timer[num].count = ats->count;
 		}
 		
-		if(!loadScriptData(io->script, dat, pos) || !loadScriptData(io->over_script, dat, pos)) {
+		io->m_variables.clear();
+		
+		bool scriptLoaded = true;
+		
+		const ARX_CHANGELEVEL_SCRIPT_SAVE * ass;
+		ass = reinterpret_cast<const ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
+		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
+		
+		io->script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
+		
+		if(ass->nblvar != 0) {
+			io->m_variables.resize(ass->nblvar);
+			scriptLoaded = loadScriptVariables(io->m_variables, dat, pos);
+		}
+		
+		const ARX_CHANGELEVEL_SCRIPT_SAVE * over_ass;
+		over_ass = reinterpret_cast<const ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
+		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
+		
+		io->over_script.allowevents = DisabledEvents::load(over_ass->allowevents); // TODO save/load flags
+		
+		if(over_ass->nblvar != 0) {
+			LogWarning << "Unexpected override script variables for entity " << idString;
+			SCRIPT_VARIABLES variables;
+			variables.resize(over_ass->nblvar);
+			loadScriptVariables(variables, dat, pos);
+			io->m_variables.insert(io->m_variables.end(), variables.begin(), variables.end());
+		}
+		
+		if(!scriptLoaded) {
 			LogError << "Save file is corrupted, trying to fix " << idString;
 			free(dat);
 			RestoreInitialIOStatusOfIO(io);

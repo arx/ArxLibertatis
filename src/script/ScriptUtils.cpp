@@ -71,16 +71,16 @@ std::string Context::getStringVar(const std::string & name) const {
 	} else if(name[0] == '#') {
 		return boost::lexical_cast<std::string>(GETVarValueLong(svar, name));
 	} else if(name[0] == '\xA7') {
-		return boost::lexical_cast<std::string>(GETVarValueLong(getMaster()->lvar, name));
+		return boost::lexical_cast<std::string>(GETVarValueLong(getEntity()->m_variables, name));
 	} else if(name[0] == '&') {
 		return boost::lexical_cast<std::string>(GETVarValueFloat(svar, name));
 	} else if(name[0] == '@') {
-		return boost::lexical_cast<std::string>(GETVarValueFloat(getMaster()->lvar, name));
+		return boost::lexical_cast<std::string>(GETVarValueFloat(getEntity()->m_variables, name));
 	} else if(name[0] == '$') {
 		const SCRIPT_VAR * var = GetVarAddress(svar, name);
 		return var ? var->text : "void";
 	} else if (name[0] == '\xA3') {
-		const SCRIPT_VAR * var = GetVarAddress(getMaster()->lvar, name);
+		const SCRIPT_VAR * var = GetVarAddress(getEntity()->m_variables, name);
 		return var ? var->text : "void";
 	}
 	
@@ -285,11 +285,11 @@ float Context::getFloatVar(const std::string & name) const {
 	} else if(name[0] == '#') {
 		return float(GETVarValueLong(svar, name));
 	} else if(name[0] == '\xA7') {
-		return float(GETVarValueLong(getMaster()->lvar, name));
+		return float(GETVarValueLong(getEntity()->m_variables, name));
 	} else if(name[0] == '&') {
 		return GETVarValueFloat(svar, name);
 	} else if(name[0] == '@') {
-		return GETVarValueFloat(getMaster()->lvar, name);
+		return GETVarValueFloat(getEntity()->m_variables, name);
 	}
 	
 	return float(atof(name.c_str()));
