@@ -117,13 +117,8 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	io->move = Vec3f_ZERO;
 	io->initangle = io->angle = angle;
 	
-	res::path tmp = io->instancePath(); // Get the directory name to check for
-	std::string id = io->className();
-	if(PakDirectory * dir = g_resources->getDirectory(tmp)) {
-		if(PakFile * file = dir->getFile(id + ".asl")) {
-			loadScript(io->over_script, file);
-			io->over_script.master = (io->script.data != NULL) ? &io->script : NULL;
-		}
+	if(PakDirectory * dir = g_resources->getDirectory(io->instancePath())) {
+		loadScript(io->over_script, dir->getFile(io->className() + ".asl"));
 	}
 	
 	if(SendIOScriptEvent(NULL, io, SM_LOAD) == ACCEPT && io->obj == NULL) {

@@ -128,7 +128,6 @@ public:
 	bool returnToCaller();
 	
 	EERIE_SCRIPT * getScript() const { return m_script; }
-	EERIE_SCRIPT * getMaster() const { return m_script->master ? m_script->master : m_script; }
 	
 	size_t getPosition() const { return m_pos; }
 	
