@@ -217,14 +217,14 @@ public:
 			return Failed;
 		}
 		
-		EERIE_SCRIPT * script = context.getMaster();
+		Entity * entity = context.getEntity();
 		if(start) {
-			script->timers[t] = g_gameTime.now();
-			if(script->timers[t] == 0) {
-				script->timers[t] = GameInstantMs(1);
+			entity->m_scriptTimers[t] = g_gameTime.now();
+			if(entity->m_scriptTimers[t] == 0) {
+				entity->m_scriptTimers[t] = GameInstantMs(1);
 			}
 		} else {
-			script->timers[t] = 0;
+			entity->m_scriptTimers[t] = 0;
 		}
 		
 		return Success;

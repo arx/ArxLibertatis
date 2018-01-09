@@ -150,6 +150,10 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	halo_native.flags = 0;
 	ARX_HALO_SetToNative(this);
 	
+	for(size_t j = 0; j < MAX_SCRIPTTIMERS; j++) {
+		m_scriptTimers[j] = 0;
+	}
+	
 	stat_count = 0;
 	stat_sent = 0;
 	tweakerinfo = NULL;
