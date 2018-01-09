@@ -1682,7 +1682,7 @@ void ARX_SCRIPT_Timer_Check() {
 			continue;
 		}
 		
-		EERIE_SCRIPT * es = st->es;
+		const EERIE_SCRIPT * es = st->es;
 		Entity * io = st->io;
 		long pos = st->pos;
 		

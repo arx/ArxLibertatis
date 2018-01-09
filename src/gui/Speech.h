@@ -152,7 +152,7 @@ struct ARX_SPEECH {
 	Entity * io;
 	Entity * ioscript;
 	CinematicSpeech cine;
-	EERIE_SCRIPT * es;
+	const EERIE_SCRIPT * es;
 	long scrpos;
 	
 	void clear() {

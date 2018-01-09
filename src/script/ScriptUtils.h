@@ -82,7 +82,7 @@ u64 flags(const char (&flags)[N]) {
 
 class Context {
 	
-	EERIE_SCRIPT * m_script;
+	const EERIE_SCRIPT * m_script;
 	size_t m_pos;
 	Entity * m_sender;
 	Entity * m_entity;
@@ -92,8 +92,8 @@ class Context {
 	
 public:
 	
-	explicit Context(EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity, ScriptMessage msg,
-	                 const ScriptParameters & parameters);
+	explicit Context(const EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity,
+	                 ScriptMessage msg, const ScriptParameters & parameters);
 	
 	std::string getStringVar(const std::string & name) const;
 	std::string getFlags();
@@ -127,7 +127,7 @@ public:
 	bool jumpToLabel(const std::string & target, bool substack = false);
 	bool returnToCaller();
 	
-	EERIE_SCRIPT * getScript() const { return m_script; }
+	const EERIE_SCRIPT * getScript() const { return m_script; }
 	
 	size_t getPosition() const { return m_pos; }
 	

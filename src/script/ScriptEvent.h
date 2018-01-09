@@ -51,10 +51,10 @@ public:
 	ScriptEvent();
 	virtual ~ScriptEvent();
 	
-	static ScriptResult send(EERIE_SCRIPT * es, Entity * sender, Entity * entity, ScriptEventName event,
+	static ScriptResult send(const EERIE_SCRIPT * es, Entity * sender, Entity * entity, ScriptEventName event,
 	                         const ScriptParameters & parameters = ScriptParameters(), long info = 0);
 	
-	static ScriptResult resume(EERIE_SCRIPT * es, Entity * entity, long position = 0) {
+	static ScriptResult resume(const EERIE_SCRIPT * es, Entity * entity, long position = 0) {
 		return send(es, NULL, entity, SM_EXECUTELINE, ScriptParameters(), position);
 	}
 	

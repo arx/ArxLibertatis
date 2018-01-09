@@ -42,8 +42,8 @@ std::string loadUnlocalized(const std::string & str) {
 	return str;
 }
 
-Context::Context(EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity, ScriptMessage msg,
-                 const ScriptParameters & parameters)
+Context::Context(const EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity,
+                 ScriptMessage msg, const ScriptParameters & parameters)
 	: m_script(script)
 	, m_pos(pos)
 	, m_sender(sender)
