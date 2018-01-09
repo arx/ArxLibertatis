@@ -166,6 +166,7 @@ enum VariableType {
 };
 
 struct SCRIPT_VAR {
+	
 	VariableType type;
 	long ival;
 	float fval;
@@ -177,7 +178,10 @@ struct SCRIPT_VAR {
 		, ival()
 		, fval()
 	{ }
+	
 };
+
+std::ostream & operator<<(std::ostream & os, const SCRIPT_VAR & var);
 
 struct LABEL_INFO {
 	char * string;
