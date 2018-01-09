@@ -228,12 +228,6 @@ bool g_debugTriggers[10];
 PlatformInstant g_debugTriggersTime[10] = { 0 };
 float g_debugValues[10];
 
-// Sends ON GAME_READY msg to all IOs
-void SendGameReadyMsg() {
-	LogDebug("SendGameReadyMsg");
-	SendMsgToAllIO(NULL, SM_GAME_READY);
-}
-
 bool AdjustUI() {
 	
 	// Sets Danae Screen size depending on windowed/full-screen state
@@ -483,8 +477,9 @@ void levelInit() {
 	ARX_PLAYER_RectifyPosition();
 
 	entities.player()->_npcdata->vvpos = -99999;
-
-	SendGameReadyMsg();
+	
+	SendMsgToAllIO(NULL, SM_GAME_READY);
+	
 	PLAYER_MOUSELOOK_ON = false;
 	player.Interface &= ~INTER_NOTE;
 
