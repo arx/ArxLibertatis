@@ -2484,28 +2484,9 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 		
 		for(size_t i = 0; i < entities.size(); i++) {
 			const EntityHandle handle = EntityHandle(i);
-			Entity * e = entities[handle];
-			
-			if(!e) {
-				continue;
+			if(entities[handle]) {
+				SendInitScriptEvent(entities[handle]);
 			}
-			
-			if(e->script.data) {
-				ScriptEvent::send(&e->script, NULL, e, SM_INIT);
-			}
-			
-			if(e && e->over_script.data) {
-				ScriptEvent::send(&e->over_script, NULL, e, SM_INIT);
-			}
-			
-			if(e && e->script.data) {
-				ScriptEvent::send(&e->script, NULL, e, SM_INITEND);
-			}
-			
-			if(e && e->over_script.data) {
-				ScriptEvent::send(&e->over_script, NULL, e, SM_INITEND);
-			}
-			
 		}
 		
 	} else {
