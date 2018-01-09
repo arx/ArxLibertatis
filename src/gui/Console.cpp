@@ -406,7 +406,7 @@ void ScriptConsole::execute() {
 	EERIE_SCRIPT es;
 	es.size = script.size();
 	es.data = const_cast<char *>(script.c_str());
-	es.master = entity ? &entity->script : NULL;
+	es.master = &entity->script;
 	// TODO Some script commands (timers, etc.) store references to the script
 	
 	// TODO Allow the "context.command" syntax in scripts too
