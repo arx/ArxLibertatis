@@ -345,7 +345,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 				ret = REFUSE;
 				break;
 			} else if(res == script::Command::AbortError) {
-				ret =  BIGERROR;
+				ret = BIGERROR;
 				break;
 			} else if(res == script::Command::Jumped) {
 				if(event == SM_EXECUTELINE) {
