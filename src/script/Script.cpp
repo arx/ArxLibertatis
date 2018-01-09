@@ -1853,8 +1853,6 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 	
 	std::transform(script.data, script.data + script.size, script.data, ::tolower);
 	
-	script.master = NULL;
-	
 	ARX_SCRIPT_ComputeShortcuts(script);
 	
 }

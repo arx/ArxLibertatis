@@ -196,7 +196,6 @@ struct EERIE_SCRIPT {
 	
 	size_t size;
 	char * data;
-	EERIE_SCRIPT * master;
 	long shortcut[SM_MAXCMD];
 	long nb_labels;
 	LABEL_INFO * labels;
@@ -204,7 +203,6 @@ struct EERIE_SCRIPT {
 	EERIE_SCRIPT()
 		: size()
 		, data()
-		, master()
 		, nb_labels()
 		, labels()
 	{
