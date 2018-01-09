@@ -244,11 +244,11 @@ public:
 
 class IncrementCommand : public Command {
 	
-	float diff;
+	long m_diff;
 	
 public:
 	
-	IncrementCommand(const std::string & name, float _diff) : Command(name), diff(_diff) { }
+	IncrementCommand(const std::string & name, long diff) : Command(name), m_diff(diff) { }
 	
 	Result execute(Context & context) {
 		
@@ -261,39 +261,39 @@ public:
 			return Failed;
 		}
 		
-		EERIE_SCRIPT & es = *context.getMaster();
+		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getMaster()->lvar : svar;
 		
+		SCRIPT_VAR * sv = NULL;
 		switch(var[0]) {
 			
-			case '#': {
-				long ival = GETVarValueLong(svar, var);
-				SETVarValueLong(svar, var, ival + (long)diff);
-				break;
-			}
-			
+			case '$':
 			case '\xA3': {
-				long ival = GETVarValueLong(es.lvar, var);
-				SETVarValueLong(es.lvar, var, ival + (long)diff);
+				ScriptWarning << "Cannot increment text variables";
+				return Failed;
+			}
+			
+			case '#':
+			case '\xA7': {
+				sv = SETVarValueLong(variables, var, GETVarValueLong(variables, var) + m_diff);
 				break;
 			}
 			
-			case '&': {
-				float fval = GETVarValueFloat(svar, var);
-				SETVarValueFloat(svar, var, fval + diff);
-				break;
-			}
-			
+			case '&':
 			case '@': {
-				float fval = GETVarValueFloat(es.lvar, var);
-				SETVarValueFloat(es.lvar, var, fval + diff);
+				sv = SETVarValueFloat(variables, var, GETVarValueFloat(variables, var) + float(m_diff));
 				break;
 			}
 			
 			default: {
-				ScriptWarning << "can only use " << getName() << " with number variables, got " << var;
+				ScriptWarning << "Unknown variable type: " << var;
 				return Failed;
 			}
 			
+		}
+		
+		if(!sv) {
+			ScriptWarning << "Unable to set variable " << var;
+			return Failed;
 		}
 		
 		return Success;
@@ -311,8 +311,8 @@ void setupScriptedVariable() {
 	ScriptEvent::registerCommand(new ArithmeticCommand("mul", ArithmeticCommand::Multiply));
 	ScriptEvent::registerCommand(new ArithmeticCommand("div", ArithmeticCommand::Divide));
 	ScriptEvent::registerCommand(new UnsetCommand);
-	ScriptEvent::registerCommand(new IncrementCommand("++", 1.f));
-	ScriptEvent::registerCommand(new IncrementCommand("--", -1.f));
+	ScriptEvent::registerCommand(new IncrementCommand("++", 1));
+	ScriptEvent::registerCommand(new IncrementCommand("--", -1));
 	
 }
 
