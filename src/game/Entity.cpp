@@ -153,6 +153,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	for(size_t j = 0; j < MAX_SCRIPTTIMERS; j++) {
 		m_scriptTimers[j] = 0;
 	}
+	m_disabledEvents = 0;
 	
 	stat_count = 0;
 	stat_sent = 0;

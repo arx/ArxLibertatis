@@ -297,11 +297,12 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	if(!io)
 		return;
 	
+	io->m_disabledEvents = 0;
+	
 	// Now go for Script INIT/RESET depending on Mode
 	EntityHandle num = io->index();
 	
 	if(entities[num] && entities[num]->script.data) {
-		entities[num]->script.allowevents = 0;
 		if(init)
 			ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INIT);
 		if(entities[num])
@@ -310,7 +311,6 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	
 	// Do the same for Local Script
 	if(entities[num] && entities[num]->over_script.data) {
-		entities[num]->over_script.allowevents = 0;
 		if(init)
 			ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INIT);
 	}
@@ -1852,8 +1852,6 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 	script.size = file->size();
 	
 	std::transform(script.data, script.data + script.size, script.data, ::tolower);
-	
-	script.allowevents = 0;
 	
 	script.master = NULL;
 	

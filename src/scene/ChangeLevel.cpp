@@ -1146,25 +1146,29 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		}
 	}
 	
-
-	ARX_CHANGELEVEL_SCRIPT_SAVE * ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
-	ass->allowevents = io->script.allowevents;
-	ass->lastcall = 0;
-	ass->nblvar = io->script.data ? io->m_variables.size() : 0;
-	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
+	if(!io->script.data) {
+		ARX_CHANGELEVEL_SCRIPT_SAVE * ass = reinterpret_cast<ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
+		ass->allowevents = 0;
+		ass->lastcall = 0;
+		ass->nblvar = 0;
+		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
+	}
 	
-	if(io->script.data) {
+	{
+		ARX_CHANGELEVEL_SCRIPT_SAVE * ass = reinterpret_cast<ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
+		ass->allowevents = io->m_disabledEvents;
+		ass->lastcall = 0;
+		ass->nblvar = io->m_variables.size();
+		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 		storeScriptVariables(dat, pos, io->m_variables, 1);
 	}
 	
-	ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
-	ass->allowevents = io->over_script.allowevents;
-	ass->lastcall = 0;
-	ass->nblvar = !io->script.data ? io->m_variables.size() : 0;
-	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
-	
-	if(!io->script.data) {
-		storeScriptVariables(dat, pos, io->m_variables, 1);
+	if(io->script.data) {
+		ARX_CHANGELEVEL_SCRIPT_SAVE * ass = reinterpret_cast<ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
+		ass->allowevents = 0;
+		ass->lastcall = 0;
+		ass->nblvar = 0;
+		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 	}
 	
 	switch (type)
@@ -2041,7 +2045,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		ass = reinterpret_cast<const ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 		
-		io->script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
+		io->m_disabledEvents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
 		
 		if(ass->nblvar != 0) {
 			io->m_variables.resize(ass->nblvar);
@@ -2052,7 +2056,12 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		over_ass = reinterpret_cast<const ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 		
-		io->over_script.allowevents = DisabledEvents::load(over_ass->allowevents); // TODO save/load flags
+		DisabledEvents over_allowevents = DisabledEvents::load(over_ass->allowevents); // TODO save/load flags
+		if(over_allowevents != 0) {
+			LogWarning << "Unexpected allowevents for entity " << io->idString() << ": "
+			           << io->m_disabledEvents << ' ' << over_allowevents;
+			io->m_disabledEvents |= over_allowevents;
+		}
 		
 		if(over_ass->nblvar != 0) {
 			LogWarning << "Unexpected override script variables for entity " << idString;

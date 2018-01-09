@@ -266,15 +266,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 		return ACCEPT;
 	}
 	
-	// Retrieves in esss script pointer to script holding variables.
-	EERIE_SCRIPT * esss = es->master;
-	if(esss == NULL) {
-		esss = es;
-	}
-	
-	if(esss->allowevents & event.toDisabledEventsMask()) {
+	if(entity->m_disabledEvents & event.toDisabledEventsMask()) {
 		return REFUSE;
 	}
+	
 	if(event == SM_KEY_PRESSED && cinematicBorder.elapsedTime() < GameDurationMs(3000)) {
 		LogDebug("refusing SM_KEY_PRESSED");
 		return REFUSE;

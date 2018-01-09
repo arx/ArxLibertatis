@@ -311,6 +311,7 @@ public:
 	
 	SCRIPT_VARIABLES m_variables;
 	GameInstant m_scriptTimers[MAX_SCRIPTTIMERS];
+	DisabledEvents m_disabledEvents;
 	EERIE_SCRIPT script; // Primary Script
 	EERIE_SCRIPT over_script; // Overriding Script
 	short stat_count;

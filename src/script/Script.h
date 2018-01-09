@@ -196,7 +196,6 @@ struct EERIE_SCRIPT {
 	
 	size_t size;
 	char * data;
-	DisabledEvents allowevents;
 	EERIE_SCRIPT * master;
 	long shortcut[SM_MAXCMD];
 	long nb_labels;
