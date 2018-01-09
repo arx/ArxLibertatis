@@ -69,79 +69,43 @@ public:
 		DebugScript(' ' << var << " \"" << val << '"');
 		
 		if(var.empty()) {
-			ScriptWarning << "missing var name";
+			ScriptWarning << "Missing variable name";
 			return Failed;
 		}
 		
-		EERIE_SCRIPT & es = *context.getMaster();
+		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getMaster()->lvar : svar;
 		
+		SCRIPT_VAR * sv = NULL;
 		switch(var[0]) {
 			
-			case '$': { // global text
-				std::string v = context.getStringVar(val);
-				SCRIPT_VAR * sv = SETVarValueText(svar, var, v);
-				if(!sv) {
-					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
-					return Failed;
-				}
-				break;
-			}
-			
+			case '$':      // global text
 			case '\xA3': { // local text
-				std::string v = context.getStringVar(val);
-				SCRIPT_VAR * sv = SETVarValueText(es.lvar, var, v);
-				if(!sv) {
-					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
-					return Failed;
-				}
+				sv = SETVarValueText(variables, var, context.getStringVar(val));
 				break;
 			}
 			
-			case '#': { // global long
-				long v = (long)context.getFloatVar(val);
-				SCRIPT_VAR * sv = SETVarValueLong(svar, var, v);
-				if(!sv) {
-					ScriptWarning << "unable to set var " << var << " to " << v;
-					return Failed;
-				}
-				break;
-			}
-			
+			case '#':      // global long
 			case '\xA7': { // local long
-				long v = (long)context.getFloatVar(val);
-				SCRIPT_VAR * sv = SETVarValueLong(es.lvar, var, v);
-				if(!sv) {
-					ScriptWarning << "unable to set var " << var << " to " << v;
-					return Failed;
-				}
+				sv = SETVarValueLong(variables, var, long(context.getFloatVar(val)));
 				break;
 			}
 			
-			case '&': { // global float
-				float v = context.getFloatVar(val);
-				SCRIPT_VAR * sv = SETVarValueFloat(svar, var, v);
-				if(!sv) {
-					ScriptWarning << "unable to set var " << var << " to " << v;
-					return Failed;
-				}
-				break;
-			}
-			
-			case '@': { // local float
-				float v = context.getFloatVar(val);
-				SCRIPT_VAR * sv = SETVarValueFloat(es.lvar, var, v);
-				if(!sv) {
-					ScriptWarning << "unable to set var " << var << " to " << v;
-					return Failed;
-				}
+			case '&':      // global float
+			case '@': {    // local float
+				sv = SETVarValueFloat(variables, var, context.getFloatVar(val));
 				break;
 			}
 			
 			default: {
-				ScriptWarning << "unknown variable type: " << var;
+				ScriptWarning << "Unknown variable type: " << var;
 				return Failed;
 			}
 			
+		}
+		
+		if(!sv) {
+			ScriptWarning << "Unable to set variable " << var;
+			return Failed;
 		}
 		
 		return Success;
