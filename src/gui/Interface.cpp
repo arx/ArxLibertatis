@@ -2059,7 +2059,7 @@ void ArxGame::manageEditorControls() {
 				} else {
 					if(io != COMBINE) {
 						if(boost::starts_with(COMBINE->className(), "keyring")) {
-							ARX_KEYRING_Combine(io);
+							ARX_KEYRING_Combine(COMBINE, io);
 						} else {
 							SendIOScriptEvent(COMBINE, io, SM_COMBINE, COMBINE->idString());
 						}
