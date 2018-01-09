@@ -547,6 +547,21 @@ static VariableType getVariableType(const std::string & name) {
 	
 }
 
+static size_t getScriptVariableSaveSize(const SCRIPT_VARIABLES & variables) {
+	
+	size_t size = 0;
+	
+	for(size_t i = 0; i < variables.size(); i++) {
+		size += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
+		VariableType type = getVariableType(variables[i].name);
+		if(type == TYPE_G_TEXT || type == TYPE_L_TEXT) {
+			size += size_t(float(variables[i].text.size() + 1));
+		}
+	}
+	
+	return size;
+}
+
 static void storeScriptVariables(char * dat, long & pos, const SCRIPT_VARIABLES & variables, size_t diff) {
 	
 	for(size_t i = 0; i < variables.size(); i++) {
@@ -602,8 +617,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	acsg.nb_globals = svar.size();
 	acsg.version = ARX_GAMESAVE_VERSION;
 	
-	long allocsize = sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE) * acsg.nb_globals
-	                 + sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + 1000 + 48000;
+	long allocsize = sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + getScriptVariableSaveSize(svar);
 	
 	char * dat = new char[allocsize];
 	long pos = 0;
@@ -613,6 +627,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	
 	storeScriptVariables(dat, pos, svar, 0);
 	
+	arx_assert(pos <= allocsize);
 	
 	g_currentSavedGame->save("globals", dat, pos);
 	
@@ -1082,9 +1097,9 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	long allocsize =
 		sizeof(ARX_CHANGELEVEL_IO_SAVE)
 		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
-		+ io->script.lvar.size() * (sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE) + 500)
+		+ getScriptVariableSaveSize(io->script.lvar)
 		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
-		+ io->over_script.lvar.size() * (sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE) + 500)
+		+ getScriptVariableSaveSize(io->over_script.lvar)
 		+ struct_size
 		+ sizeof(SavedTweakerInfo)
 		+ sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE) + 1024
