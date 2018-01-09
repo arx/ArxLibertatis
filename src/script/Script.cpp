@@ -98,6 +98,42 @@ long FORBID_SCRIPT_IO_CREATION = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
 
+std::ostream & operator<<(std::ostream & os, const SCRIPT_VAR & var) {
+	
+	arx_assert(!var.name.empty());
+	
+	os << var.name << " = ";
+	
+	switch(var.name[0]) {
+		
+		case '$':
+		case '\xA3': {
+			os << '\"' << var.text << '\"';
+			break;
+		}
+		
+		case '#':
+		case '\xA7': {
+			os << var.ival;
+			break;
+		}
+		
+		case '&':
+		case '@': {
+			os << var.fval;
+			break;
+		}
+		
+		default: {
+			os << "(unknown variable type)" << var;
+			break;
+		}
+		
+	}
+	
+	return os;
+}
+
 ScriptEventName ScriptEventName::parse(const std::string & name) {
 	
 	for(size_t i = 1; i < SM_MAXCMD; i++) {
@@ -1302,77 +1338,30 @@ SCRIPT_VAR * SETVarValueText(SCRIPT_VARIABLES & svf, const std::string & name, c
 	return tsv;
 }
 
-void MakeGlobalText(std::string & tx)
-{
-	char texx[256];
-
-	for(size_t i = 0; i < svar.size(); i++) {
-		switch(svar[i].type) {
-			case TYPE_G_TEXT:
-				tx += svar[i].name;
-				tx += " = ";
-				tx += svar[i].text;
-				tx += "\r\n";
-				break;
-			case TYPE_G_LONG:
-				tx += svar[i].name;
-				tx += " = ";
-				sprintf(texx, "%ld", svar[i].ival);
-				tx += texx;
-				tx += "\r\n";
-				break;
-			case TYPE_G_FLOAT:
-				tx += svar[i].name;
-				tx += " = ";
-				sprintf(texx, "%f", double(svar[i].fval));
-				tx += texx;
-				tx += "\r\n";
-				break;
-			case TYPE_UNKNOWN:
-			case TYPE_L_TEXT:
-			case TYPE_L_LONG:
-			case TYPE_L_FLOAT:
-				break;
-		}
+void MakeGlobalText(std::string & tx) {
+	
+	std::ostringstream oss;
+	
+	BOOST_FOREACH(const SCRIPT_VAR & var, svar) {
+		oss << var << '\n';
 	}
+	
+	tx += oss.str();
 }
 
 void MakeLocalText(EERIE_SCRIPT * es, std::string & tx) {
 	
-	char texx[256];
-
-	if (es->master != NULL) es = es->master;
-
-	for(SCRIPT_VARIABLES::const_iterator it = es->lvar.begin(); it != es->lvar.end(); ++it) {
-		const SCRIPT_VAR & v = *it;
-		switch(v.type) {
-			case TYPE_L_TEXT:
-				tx += v.name;
-				tx += " = ";
-				tx += v.text;
-				tx += "\r\n";
-				break;
-			case TYPE_L_LONG:
-				tx += v.name;
-				tx += " = ";
-				sprintf(texx, "%ld", v.ival);
-				tx += texx;
-				tx += "\r\n";
-				break;
-			case TYPE_L_FLOAT:
-				tx += v.name;
-				tx += " = ";
-				sprintf(texx, "%f", double(v.fval));
-				tx += texx;
-				tx += "\r\n";
-				break;
-			case TYPE_UNKNOWN:
-			case TYPE_G_TEXT:
-			case TYPE_G_LONG:
-			case TYPE_G_FLOAT:
-				break;
-		}
+	std::ostringstream oss;
+	
+	if(es->master) {
+		es = es->master;
 	}
+	
+	BOOST_FOREACH(const SCRIPT_VAR & var, es->lvar) {
+		oss << var << '\n';
+	}
+	
+	tx += oss.str();
 }
 
 struct QueuedEvent {
