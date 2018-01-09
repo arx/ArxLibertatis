@@ -166,6 +166,8 @@ struct SCRIPT_VAR {
 	
 };
 
+bool isLocalVariable(const std::string & name);
+
 std::ostream & operator<<(std::ostream & os, const SCRIPT_VAR & var);
 
 struct LABEL_INFO {
