@@ -547,10 +547,56 @@ static VariableType getVariableType(const std::string & name) {
 	
 }
 
+static void storeScriptVariables(char * dat, long & pos, const SCRIPT_VARIABLES & variables, size_t diff) {
+	
+	for(size_t i = 0; i < variables.size(); i++) {
+		
+		ARX_CHANGELEVEL_VARIABLE_SAVE * avs = reinterpret_cast<ARX_CHANGELEVEL_VARIABLE_SAVE *>(dat + pos);
+		memset(avs, 0, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
+		
+		util::storeStringTerminated(avs->name, variables[i].name);
+		
+		avs->type = getVariableType(variables[i].name);
+		
+		switch(avs->type) {
+			
+			case TYPE_G_TEXT:
+			case TYPE_L_TEXT: {
+				avs->fval = float(variables[i].text.size() + diff);
+				arx_assert(size_t(avs->fval) == variables[i].text.size() + diff);
+				break;
+			}
+			
+			case TYPE_G_LONG:
+			case TYPE_L_LONG: {
+				avs->fval = float(variables[i].ival);
+				break;
+			}
+			
+			case TYPE_G_FLOAT:
+			case TYPE_L_FLOAT: {
+				avs->fval = variables[i].fval;
+				break;
+			}
+			
+			default: ARX_DEAD_CODE();
+			
+		}
+		
+		pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
+		
+		if(avs->type == TYPE_G_TEXT || avs->type == TYPE_L_TEXT) {
+			memcpy(dat + pos, variables[i].text.c_str(), variables[i].text.size() + 1);
+			pos += long(avs->fval);
+		}
+		
+	}
+	
+}
+
 static void ARX_CHANGELEVEL_Push_Globals() {
 	
 	ARX_CHANGELEVEL_SAVE_GLOBALS acsg;
-	long pos = 0;
 	
 	memset(&acsg, 0, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
 	acsg.nb_globals = svar.size();
@@ -560,52 +606,13 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	                 + sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + 1000 + 48000;
 	
 	char * dat = new char[allocsize];
-	
-	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
-	ARX_CHANGELEVEL_VARIABLE_SAVE avs;
-	
-	for(size_t i = 0; i < svar.size(); i++) {
-		
-		util::storeStringTerminated(avs.name, svar[i].name);
-		
-		avs.type = getVariableType(svar[i].name);
-		
-		switch(avs.type) {
-			
-			case TYPE_G_TEXT:
-			case TYPE_L_TEXT: {
-				avs.fval = float(svar[i].text.size());
-				arx_assert(size_t(avs.fval) == svar[i].text.size());
-				break;
-			}
-			
-			case TYPE_G_LONG:
-			case TYPE_L_LONG: {
-				avs.fval = float(svar[i].ival);
-				break;
-			}
-			
-			case TYPE_G_FLOAT:
-			case TYPE_L_FLOAT: {
-				avs.fval = svar[i].fval;
-				break;
-			}
-			
-			default: ARX_DEAD_CODE();
-			
-		}
-		
-		memcpy(dat + pos, &avs, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
-		pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-		
-		if(avs.type == TYPE_G_TEXT || avs.type == TYPE_L_TEXT) {
-			memcpy(dat + pos, svar[i].text.c_str(), long(avs.fval) + 1);
-			pos += long(avs.fval);
-		}
-		
-	}
+	long pos = 0;
 	
 	memcpy(dat, &acsg, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
+	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
+	
+	storeScriptVariables(dat, pos, svar, 0);
+	
 	
 	g_currentSavedGame->save("globals", dat, pos);
 	
@@ -1131,97 +1138,15 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ass->nblvar = io->script.lvar.size();
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 	
-	for(size_t i = 0; i < io->script.lvar.size(); i++) {
-		
-		ARX_CHANGELEVEL_VARIABLE_SAVE * avs = reinterpret_cast<ARX_CHANGELEVEL_VARIABLE_SAVE *>(dat + pos);
-		memset(avs, 0, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
-		
-		util::storeStringTerminated(avs->name, io->script.lvar[i].name);
-		
-		avs->type = getVariableType(io->script.lvar[i].name);
-		
-		switch(avs->type) {
-			
-			case TYPE_G_TEXT:
-			case TYPE_L_TEXT: {
-				avs->fval = float(io->script.lvar[i].text.size() + 1);
-				arx_assert(size_t(avs->fval) == io->script.lvar[i].text.size());
-				break;
-			}
-			
-			case TYPE_G_LONG:
-			case TYPE_L_LONG: {
-				avs->fval = float(io->script.lvar[i].ival);
-				break;
-			}
-			
-			case TYPE_G_FLOAT:
-			case TYPE_L_FLOAT: {
-				avs->fval = io->script.lvar[i].fval;
-				break;
-			}
-			
-			default: ARX_DEAD_CODE();
-			
-		}
-		
-		pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-		
-		if(avs->type == TYPE_G_TEXT || avs->type == TYPE_L_TEXT) {
-			memcpy(dat + pos, io->over_script.lvar[i].text.c_str(), long(avs->fval));
-			pos += long(avs->fval);
-		}
-		
-	}
-
+	storeScriptVariables(dat, pos, io->script.lvar, 1);
+	
 	ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 	ass->allowevents = io->over_script.allowevents;
 	ass->lastcall = io->over_script.lastcall;
 	ass->nblvar = io->over_script.lvar.size();
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 	
-	for(size_t i = 0; i < io->over_script.lvar.size(); i++) {
-		
-		ARX_CHANGELEVEL_VARIABLE_SAVE * avs = reinterpret_cast<ARX_CHANGELEVEL_VARIABLE_SAVE *>(dat + pos);
-		memset(avs, 0, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
-		
-		util::storeStringTerminated(avs->name, io->over_script.lvar[i].name);
-		
-		avs->type = getVariableType(io->over_script.lvar[i].name);
-		
-		switch(avs->type) {
-			
-			case TYPE_G_TEXT:
-			case TYPE_L_TEXT: {
-				avs->fval = float(io->over_script.lvar[i].text.size() + 1);
-				arx_assert(size_t(avs->fval) == io->over_script.lvar[i].text.size());
-				break;
-			}
-			
-			case TYPE_G_LONG:
-			case TYPE_L_LONG: {
-				avs->fval = float(io->over_script.lvar[i].ival);
-				break;
-			}
-			
-			case TYPE_G_FLOAT:
-			case TYPE_L_FLOAT: {
-				avs->fval = io->over_script.lvar[i].fval;
-				break;
-			}
-			
-			default: ARX_DEAD_CODE();
-			
-		}
-		
-		pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-		
-		if(avs->type == TYPE_G_TEXT || avs->type == TYPE_L_TEXT) {
-			memcpy(dat + pos, io->script.lvar[i].text.c_str(), long(avs->fval));
-			pos += long(avs->fval);
-		}
-		
-	}
+	storeScriptVariables(dat, pos, io->over_script.lvar, 1);
 	
 	switch (type)
 	{
