@@ -165,7 +165,7 @@ void ARX_Menu_Manage() {
 			if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)) {
 				if(cinematicBorder.isActive()) {
 					// Disabling ESC capture while fading in or out.
-					if(!FADEDIR) {
+					if(!FADEDIR && cinematicBorder.elapsedTime() >= GameDurationMs(3000)) {
 						if(SendMsgToAllIO(NULL, SM_KEY_PRESSED) != REFUSE) {
 							REQUEST_SPEECH_SKIP = true;
 						}

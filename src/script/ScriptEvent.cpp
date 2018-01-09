@@ -272,11 +272,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, Entity * sender, Entity * enti
 		return REFUSE;
 	}
 	
-	if(event == SM_KEY_PRESSED && cinematicBorder.elapsedTime() < GameDurationMs(3000)) {
-		LogDebug("refusing SM_KEY_PRESSED");
-		return REFUSE;
-	}
-	
 	// Finds script position to execute code...
 	long pos = info;
 	if(!event.getName().empty()) {
