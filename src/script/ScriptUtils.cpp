@@ -328,7 +328,7 @@ bool Context::jumpToLabel(const std::string & target, bool substack) {
 		return false;
 	}
 	
-	m_pos = targetpos;
+	m_pos = size_t(targetpos);
 	return true;
 }
 
