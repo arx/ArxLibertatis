@@ -579,8 +579,6 @@ long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str);
 
 void CloneLocalVars(Entity * ioo, Entity * io);
 void ARX_SCRIPT_Free_All_Global_Variables();
-void MakeLocalText(EERIE_SCRIPT * es, std::string & tx);
-void MakeGlobalText(std::string & tx);
 
 void loadScript(EERIE_SCRIPT & script, PakFile * file);
 
