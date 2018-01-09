@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedInterface.h"
 
+#include <boost/foreach.hpp>
+
 #include "animation/Intro.h"
 #include "game/Inventory.h"
 #include "game/Entity.h"
@@ -152,6 +154,17 @@ public:
 	
 };
 
+struct PrintGlobalVariables { };
+
+std::ostream & operator<<(std::ostream & os, const PrintGlobalVariables & /* unused */) {
+	
+	BOOST_FOREACH(const SCRIPT_VAR & var, svar) {
+		os << var << '\n';
+	}
+	
+	return os;
+}
+
 class ShowGlobalsCommand : public Command {
 	
 public:
@@ -164,14 +177,29 @@ public:
 		
 		DebugScript("");
 		
-		std::string text;
-		MakeGlobalText(text);
-		LogInfo << "Global vars:\n" << text;
+		LogInfo << "Global variables:\n" << PrintGlobalVariables();
 		
 		return Success;
 	}
 	
 };
+
+struct PrintLocalVariables {
+	
+	EERIE_SCRIPT * m_script;
+	
+	PrintLocalVariables(EERIE_SCRIPT * script) : m_script(script) { }
+	
+};
+
+std::ostream & operator<<(std::ostream & os, const PrintLocalVariables & data) {
+	
+	BOOST_FOREACH(const SCRIPT_VAR & var, data.m_script->lvar) {
+		os << var << '\n';
+	}
+	
+	return os;
+}
 
 class ShowLocalsCommand : public Command {
 	
@@ -183,9 +211,7 @@ public:
 		
 		DebugScript("");
 		
-		std::string text;
-		MakeLocalText(context.getScript(), text);
-		LogInfo << "Local vars:\n" << text;
+		LogInfo << "Local variables:\n" << PrintLocalVariables(context.getMaster());
 		
 		return Success;
 	}
@@ -202,11 +228,10 @@ public:
 		
 		DebugScript("");
 		
-		std::string text;
-		MakeGlobalText(text);
-		text += "--------------------------\n";
-		MakeLocalText(context.getScript(), text);
-		LogInfo << "Vars:\n" << text;
+		LogInfo << "Variables:\n"
+		        << PrintGlobalVariables()
+		        << "--------------------------\n"
+		        << PrintLocalVariables(context.getMaster());
 		
 		return Success;
 	}

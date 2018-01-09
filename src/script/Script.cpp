@@ -1338,32 +1338,6 @@ SCRIPT_VAR * SETVarValueText(SCRIPT_VARIABLES & svf, const std::string & name, c
 	return tsv;
 }
 
-void MakeGlobalText(std::string & tx) {
-	
-	std::ostringstream oss;
-	
-	BOOST_FOREACH(const SCRIPT_VAR & var, svar) {
-		oss << var << '\n';
-	}
-	
-	tx += oss.str();
-}
-
-void MakeLocalText(EERIE_SCRIPT * es, std::string & tx) {
-	
-	std::ostringstream oss;
-	
-	if(es->master) {
-		es = es->master;
-	}
-	
-	BOOST_FOREACH(const SCRIPT_VAR & var, es->lvar) {
-		oss << var << '\n';
-	}
-	
-	tx += oss.str();
-}
-
 struct QueuedEvent {
 	
 	bool exists;
