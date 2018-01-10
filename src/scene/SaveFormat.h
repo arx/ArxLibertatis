@@ -303,7 +303,11 @@ struct SavedPrecast {
 		a.level = level;
 		a.launch_time = GameInstantMs(launch_time); // TODO save/load time
 		a.flags = SpellcastFlags::load(flags); // TODO save/load flags
-		a.duration = GameDurationMs(duration); // TODO save/load time
+		if(duration >= 0) {
+			a.duration = GameDurationMs(duration); // TODO save/load time
+		} else {
+			a.duration = GameDuration::ofRaw(-1);
+		}
 		return a;
 	}
 	
@@ -312,7 +316,11 @@ struct SavedPrecast {
 		level = b.level;
 		launch_time = toMsi(b.launch_time); // TODO save/load time
 		flags = b.flags;
-		duration = toMsi(b.duration); // TODO save/load time
+		if(b.duration >= 0) {
+			duration = toMsi(b.duration); // TODO save/load time
+		} else {
+			duration = -1;
+		}
 		return *this;
 	}
 	
