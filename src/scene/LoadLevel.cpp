@@ -494,10 +494,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			el->falldiffmul = 1.f / (el->fallend - el->fallstart);
 			el->intensity = dlight->intensity;
 			
-			el->pos = dlight->pos.toVec3();
-			if(FASTmse) {
-				el->pos += trans;
-			}
+			el->pos = dlight->pos.toVec3() + trans;
 			
 			el->rgb = dlight->rgb;
 			
