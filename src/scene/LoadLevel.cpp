@@ -215,10 +215,9 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		
 		res::path scene = res::path::load(util::loadString(dls->name));
 		
-		if(FastSceneLoad(scene)) {
+		if(FastSceneLoad(scene, trans)) {
 			LogDebug("done loading scene");
 			FASTmse = true;
-			trans = Mscenepos;
 		} else {
 			LogError << "Fast loading scene failed";
 		}

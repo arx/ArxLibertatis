@@ -140,7 +140,7 @@ void worldToClipSpace(const Vec3f & in, TexturedVertex & out);
 
 
 // FAST SAVE LOAD
-bool FastSceneLoad(const res::path & path);
+bool FastSceneLoad(const res::path & path, Vec3f & trans);
 
 struct RenderMaterial;
 
