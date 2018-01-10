@@ -422,12 +422,10 @@ void levelInit() {
 		} else {
 			player.pos.y += player.baseHeight();
 		}
-		progressBarAdvance(4.f);
-		LoadLevelScreen();
-	} else {
-		progressBarAdvance(4.f);
-		LoadLevelScreen();
 	}
+	
+	progressBarAdvance(4.f);
+	LoadLevelScreen();
 
 	if(player.torch) {
 		ARX_SOUND_PlaySFX(SND_TORCH_LOOP, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
