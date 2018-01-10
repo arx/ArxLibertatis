@@ -73,7 +73,6 @@ extern Vec2s DANAEMouse;
 extern Vec3f g_moveto;
 extern Vec2s STARTDRAG;
 extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
-extern Vec3f Mscenepos;
 extern Entity * COMBINE;
 extern res::path LastLoadedScene;
 

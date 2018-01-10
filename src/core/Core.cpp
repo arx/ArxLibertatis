@@ -174,7 +174,6 @@ TextureContainer * GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 
 Vec2s DANAEMouse;
 Vec3f g_moveto;
-Vec3f Mscenepos;
 Vec3f lastteleport;
 EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];// 3D Objects For Gold Coins
 EERIE_3DOBJ * arrowobj = NULL; // 3D Object for arrows
