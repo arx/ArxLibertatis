@@ -423,6 +423,7 @@ const AnimationNumber ANIM_DEFAULT = ANIM_WAIT;
 
 enum ScriptResult {
 	ACCEPT = 1,
+	DESTRUCTIVE = 2,
 	REFUSE = -1,
 	BIGERROR = -2
 };
@@ -462,15 +463,24 @@ std::ostream & operator<<(std::ostream & os, const ScriptEventName & event);
 
 class ScriptParameters : public std::vector<std::string> {
 	
+	bool m_peekOnly;
+	
 public:
 	
-	ScriptParameters() { }
-	/* implicit */ ScriptParameters(const std::string & parameter) : std::vector<std::string>(1, parameter) { }
-	/* implicit */ ScriptParameters(const char * parameter) : std::vector<std::string>(1, parameter) { }
+	ScriptParameters() : m_peekOnly(false) { }
+	/* implicit */ ScriptParameters(const std::string & parameter)
+		: std::vector<std::string>(1, parameter)
+		, m_peekOnly(false)
+	{ }
+	/* implicit */ ScriptParameters(const char * parameter)
+		: std::vector<std::string>(1, parameter)
+		, m_peekOnly(false)
+	{ }
 	template <typename T>
 	/* implicit */ ScriptParameters(T parameter,
 	                                typename boost::enable_if_c<std::numeric_limits<T>::is_specialized, bool>::type = true)
 		: std::vector<std::string>(1, boost::lexical_cast<std::string>(parameter))
+		, m_peekOnly(false)
 	{ }
 	
 	std::string get(size_t i) const { return i < size() ? operator[](i) : std::string(); }
@@ -483,6 +493,14 @@ public:
 	typename boost::enable_if_c<std::numeric_limits<T>::is_specialized>::type push_back(T parameter) {
 		push_back(boost::lexical_cast<std::string>(parameter));
 	}
+	
+	/*!
+	 * Sets if execution should abort as soon as a command is reached that would modify any state.
+	 *
+	 * If such a command is reached the script result will be \ref DESTRUCTIVE.
+	 */
+	void setPeekOnly(bool enable = true) { m_peekOnly = enable; }
+	bool isPeekOnly() const { return m_peekOnly; }
 	
 };
 

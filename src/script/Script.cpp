@@ -1452,8 +1452,8 @@ ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEve
 	// Send the event to the instance script first
 	if(entities[num]->over_script.data) {
 		ScriptResult ret = ScriptEvent::send(&entities[num]->over_script, sender, entities[num], event, parameters);
-		if(ret == REFUSE || !entities[num]) {
-			return REFUSE;
+		if(ret == REFUSE || ret == DESTRUCTIVE || !entities[num]) {
+			return !entities[num] ? REFUSE : ret;
 		}
 	}
 	

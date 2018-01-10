@@ -243,6 +243,7 @@ public:
 static const char * toString(ScriptResult ret) {
 	switch(ret) {
 		case ACCEPT: return "accept";
+		case DESTRUCTIVE: return "destructive";
 		case REFUSE: return "refuse";
 		case BIGERROR: return "error";
 		default: arx_assert(false); return NULL;
@@ -334,6 +335,8 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 				                   << command.getEntityFlags();
 				context.skipCommand();
 				res = script::Command::Failed;
+			} else if(parameters.isPeekOnly()) {
+				res = it->second->peek(context);
 			} else {
 				res = it->second->execute(context);
 			}
@@ -347,6 +350,9 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 			} else if(res == script::Command::AbortError) {
 				ret = BIGERROR;
 				break;
+			} if(res == script::Command::AbortDestructive) {
+				ret = DESTRUCTIVE;
+				break;
 			} else if(res == script::Command::Jumped) {
 				if(event == SM_EXECUTELINE) {
 					event = SM_DUMMY;
@@ -357,6 +363,10 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 		} else if(!word.compare(0, 2, ">>", 2)) {
 			context.skipCommand(); // labels
 		} else if(!word.compare(0, 5, "timer", 5)) {
+			if(parameters.isPeekOnly()) {
+				ret = DESTRUCTIVE;
+				break;
+			}
 			script::timerCommand(word.substr(5), context);
 		} else if(word == "{") {
 			if(brackets != size_t(-1)) {
