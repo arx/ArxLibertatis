@@ -1827,7 +1827,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	// TODO when we bump the save version, remove the ext in the save file
 	// if no class names contain dots, we might get away without changing the ver
 	res::path classPath = res::path::load(path).remove_ext();
-	Entity * io = LoadInter_Ex(classPath, instance, ais->pos.toVec3() + MSP, ais->angle);
+	Entity * io = LoadInter_Ex(classPath, instance, ais->pos.toVec3(), ais->angle);
 	
 	if(!io) {
 		LogError << "CHANGELEVEL Error: Unable to load " << idString;
