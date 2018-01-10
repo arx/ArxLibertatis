@@ -190,10 +190,9 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		}
 	}
 	
-	Vec3f playerpos = dlh.pos_edit.toVec3();
 	player.desiredangle = player.angle = dlh.angle_edit;
 	
-	g_playerCamera.m_pos = playerpos;
+	g_playerCamera.m_pos = dlh.pos_edit.toVec3();
 	g_playerCamera.angle = player.angle;
 	
 	if(strcmp(dlh.ident, "DANAE_FILE") != 0) {
@@ -202,8 +201,6 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	}
 	
 	LogDebug("Loading Scene");
-	
-	bool FASTmse = false;
 	
 	Vec3f trans = Vec3f_ZERO;
 	
@@ -217,7 +214,6 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		
 		if(FastSceneLoad(scene, trans)) {
 			LogDebug("done loading scene");
-			FASTmse = true;
 		} else {
 			LogError << "Fast loading scene failed";
 		}
@@ -226,9 +222,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		LastLoadedScene = scene;
 	}
 	
-	if(FASTmse) {
-		player.pos = playerpos + trans;
-	}
+	player.pos = dlh.pos_edit.toVec3() + trans;
 	
 	float increment = 0;
 	if(dlh.nb_inter > 0) {
