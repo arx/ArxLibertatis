@@ -215,15 +215,6 @@ void ARX_KEYRING_Add(const std::string & key) {
 	g_playerKeyring.push_back(key);
 }
 
-//! Sends COMBINE event to "io" for each keyring entry
-void ARX_KEYRING_Combine(Entity * keyring, Entity * entity) {
-	for(size_t i = 0; i < g_playerKeyring.size(); i++) {
-		if(SendIOScriptEvent(keyring, entity, SM_COMBINE, g_playerKeyring[i]) == REFUSE) {
-			return;
-		}
-	}
-}
-
 /*!
  * \return player "front pos" for sound purpose
  */

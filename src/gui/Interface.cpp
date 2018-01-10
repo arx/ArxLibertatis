@@ -503,6 +503,28 @@ void ResetPlayerInterface() {
 	SLID_START = g_platformTime.frameStart();
 }
 
+static ScriptResult combineEntities(Entity * source, Entity * target) {
+	
+	arx_assert(source != NULL);
+	
+	ScriptParameters parameters(source->idString());
+	
+	if(boost::starts_with(source->className(), "keyring")) {
+		
+		for(size_t i = 0; i < g_playerKeyring.size(); i++) {
+			parameters[0] = g_playerKeyring[i];
+			ScriptResult ret = SendIOScriptEvent(source, target, SM_COMBINE, parameters);
+			if(ret == REFUSE || ret == DESTRUCTIVE) {
+				return ret;
+			}
+		}
+		
+		return ACCEPT;
+	}
+	
+	return SendIOScriptEvent(source, target, SM_COMBINE, parameters);
+}
+
 static void ReleaseInfosCombine() {
 	
 	arx_assert(player.bag >= 0);
@@ -2056,14 +2078,8 @@ void ArxGame::manageEditorControls() {
 			if(io) {
 				if(COMBINEGOLD) {
 					SendIOScriptEvent(NULL, io, SM_COMBINE, "gold_coin");
-				} else {
-					if(io != COMBINE) {
-						if(boost::starts_with(COMBINE->className(), "keyring")) {
-							ARX_KEYRING_Combine(COMBINE, io);
-						} else {
-							SendIOScriptEvent(COMBINE, io, SM_COMBINE, COMBINE->idString());
-						}
-					}
+				} else if(io != COMBINE) {
+					combineEntities(COMBINE, io);
 				}
 			} else { // GLights
 				float fMaxdist = player.m_telekinesis ? 850 : 300;
