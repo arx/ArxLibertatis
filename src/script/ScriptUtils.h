@@ -147,6 +147,7 @@ public:
 		AbortAccept,
 		AbortRefuse,
 		AbortError,
+		AbortDestructive,
 		Jumped
 	};
 	
@@ -156,6 +157,13 @@ public:
 		: m_name(name), m_entityFlags(entityFlags) { }
 	
 	virtual Result execute(Context & context) = 0;
+	
+	virtual Result peek(Context & context) {
+		
+		ARX_UNUSED(context);
+		
+		return AbortDestructive;
+	}
 	
 	virtual ~Command() { }
 	

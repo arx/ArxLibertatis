@@ -74,6 +74,8 @@ public:
 		return Success;
 	}
 	
+	Result peek(Context & context) { return execute(context); }
+	
 };
 
 class GotoCommand : public Command {
@@ -105,6 +107,8 @@ public:
 		return Jumped;
 	}
 	
+	Result peek(Context & context) { return execute(context); }
+	
 };
 
 class AbortCommand : public Command {
@@ -123,6 +127,8 @@ public:
 		
 		return result;
 	}
+	
+	Result peek(Context & context) { return execute(context); }
 	
 };
 
@@ -165,6 +171,8 @@ public:
 		
 		return Success;
 	}
+	
+	Result peek(Context & context) { return execute(context); }
 	
 };
 
@@ -800,6 +808,8 @@ public:
 		return Success;
 	}
 	
+	Result peek(Context & context) { return execute(context); }
+	
 };
 
 class ElseCommand : public Command {
@@ -816,6 +826,8 @@ public:
 		
 		return Success;
 	}
+	
+	Result peek(Context & context) { return execute(context); }
 	
 };
 
