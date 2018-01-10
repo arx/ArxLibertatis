@@ -464,7 +464,6 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	// TODO size ignored
 	
 	if(!dat) {
-		LOADEDD = true;
 		USE_PLAYERCOLLISIONS = true;
 		LogInfo << "Done loading level";
 		return true;
@@ -561,7 +560,6 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	progressBarAdvance();
 	LoadLevelScreen();
 	
-	LOADEDD = true;
 	USE_PLAYERCOLLISIONS = true;
 	
 	LogInfo << "Done loading level";
