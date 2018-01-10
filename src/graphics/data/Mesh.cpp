@@ -1018,9 +1018,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		LogError << "FTS: size mismatch in FAST_SCENE_HEADER";
 		return false;
 	}
-	player.pos = fsh->playerpos.toVec3();
 	Mscenepos = fsh->Mscenepos.toVec3();
-	
 	
 	// Load textures
 	typedef std::map<s32, TextureContainer *> TextureContainerMap;
