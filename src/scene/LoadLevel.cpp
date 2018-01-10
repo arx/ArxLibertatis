@@ -205,6 +205,8 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	bool FASTmse = false;
 	
+	Vec3f trans = Vec3f_ZERO;
+	
 	// Loading Scene
 	if(dlh.nb_scn > 0) {
 		
@@ -216,6 +218,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		if(FastSceneLoad(scene)) {
 			LogDebug("done loading scene");
 			FASTmse = true;
+			trans = Mscenepos;
 		} else {
 			LogError << "Fast loading scene failed";
 		}
@@ -224,13 +227,11 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		LastLoadedScene = scene;
 	}
 	
-	Vec3f trans;
 	if(FASTmse) {
-		trans = Mscenepos;
 		player.pos = playerpos + trans;
 	} else {
 		lastteleport = player.baseOffset();
-		Mscenepos = trans = Vec3f_ZERO;
+		Mscenepos = Vec3f_ZERO;
 	}
 	
 	float increment = 0;
