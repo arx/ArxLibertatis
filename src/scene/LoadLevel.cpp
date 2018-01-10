@@ -138,7 +138,6 @@ static ColorBGRA savedColorConversion(u32 bgra) {
 
 static long LastLoadedLightningNb = 0;
 static ColorBGRA * LastLoadedLightning = NULL;
-Vec3f g_loddpos;
 Vec3f MSP;
 
 bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
@@ -193,10 +192,10 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		}
 	}
 	
-	g_loddpos = dlh.pos_edit.toVec3();
+	Vec3f playerpos = dlh.pos_edit.toVec3();
 	player.desiredangle = player.angle = dlh.angle_edit;
 	
-	g_playerCamera.m_pos = g_loddpos;
+	g_playerCamera.m_pos = playerpos;
 	g_playerCamera.angle = player.angle;
 	
 	if(strcmp(dlh.ident, "DANAE_FILE") != 0) {
@@ -230,7 +229,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	Vec3f trans;
 	if(FASTmse) {
 		trans = Mscenepos;
-		player.pos = g_loddpos + trans;
+		player.pos = playerpos + trans;
 	} else {
 		lastteleport = player.baseOffset();
 		Mscenepos = trans = Vec3f_ZERO;

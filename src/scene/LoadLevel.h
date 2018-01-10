@@ -56,8 +56,6 @@ class Entity;
 namespace res { class path; }
 struct BackgroundData;
 
-extern Vec3f g_loddpos;
-
 bool DanaeLoadLevel(const res::path & file, bool loadEntities = true);
 void DanaeClearLevel();
 void RestoreLastLoadedLightning(BackgroundData & eb);
