@@ -108,8 +108,6 @@ inline Vec2f RATIO_2(const Vec2f & in) {
 class Image;
 extern Image savegame_thumbnail;
 
-extern bool LOADEDD;
-
 extern bool g_debugToggles[10];
 extern bool g_debugTriggers[10];
 extern PlatformInstant g_debugTriggersTime[10];

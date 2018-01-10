@@ -202,12 +202,6 @@ bool REQUEST_SPEECH_SKIP = false;
 long CURRENTLEVEL = -1;
 bool DONT_ERASE_PLAYER = false;
 
-//-----------------------------------------------------------------------------
-// EDITOR FLAGS/Vars
-//-----------------------------------------------------------------------------
-// Flag used to Launch Moulinex
-bool LOADEDD = false; // Is a Level Loaded ?
-
 ChangeLevelIcon CHANGE_LEVEL_ICON = NoChangeLevel;
 
 bool g_cursorOverBook = false;
