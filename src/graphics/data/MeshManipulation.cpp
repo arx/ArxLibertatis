@@ -104,8 +104,21 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 	
 	arx_assert(obj->originaltextures.size() == obj->texturecontainer.size());
 	
+	bool found = false;
+	
 	for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
 		if(obj->originaltextures[i] == skintochange) {
+			obj->texturecontainer[i] = tex;
+			found = true;
+		}
+	}
+	
+	if(found) {
+		return;
+	}
+	
+	for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
+		if(obj->texturecontainer[i]->m_texName == skintochange) {
 			obj->texturecontainer[i] = tex;
 		}
 	}
