@@ -346,7 +346,6 @@ void PlayerBook::drawTopTabs() {
 			
 			// Check for click
 			if(eeMouseDown1() || eeMouseDown2()) {
-				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 				openPage(BOOKMODE_STATS);
 				pTextManage->Clear();
 			}
@@ -379,7 +378,6 @@ void PlayerBook::drawTopTabs() {
 				
 				// Check for click
 				if(eeMouseDown1() || eeMouseDown2()) {
-					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 					openPage(BOOKMODE_SPELLS);
 					pTextManage->Clear();
 				}
@@ -402,7 +400,6 @@ void PlayerBook::drawTopTabs() {
 			
 			// Check for click
 			if(eeMouseDown1() || eeMouseDown2()) {
-				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 				openPage(BOOKMODE_MINIMAP);
 				pTextManage->Clear();
 			}
@@ -424,7 +421,6 @@ void PlayerBook::drawTopTabs() {
 			
 			// Check for click
 			if(eeMouseDown1() || eeMouseDown2()) {
-				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 				openPage(BOOKMODE_QUESTS);
 				pTextManage->Clear();
 			}
