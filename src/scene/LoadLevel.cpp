@@ -228,8 +228,6 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	if(FASTmse) {
 		player.pos = playerpos + trans;
-	} else {
-		lastteleport = player.baseOffset();
 	}
 	
 	float increment = 0;
