@@ -137,7 +137,6 @@ static ColorBGRA savedColorConversion(u32 bgra) {
 
 static long LastLoadedLightningNb = 0;
 static ColorBGRA * LastLoadedLightning = NULL;
-Vec3f MSP;
 
 bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
@@ -233,8 +232,6 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		lastteleport = player.baseOffset();
 		Mscenepos = trans = Vec3f_ZERO;
 	}
-	
-	MSP = trans;
 	
 	float increment = 0;
 	if(dlh.nb_inter > 0) {

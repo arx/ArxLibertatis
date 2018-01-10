@@ -65,6 +65,4 @@ extern long FAST_RELEASE;
 Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
                       const Vec3f & pos, const Anglef & angle);
 
-extern Vec3f MSP;
-
 #endif // ARX_SCENE_LOADLEVEL_H
