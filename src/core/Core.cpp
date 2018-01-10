@@ -201,7 +201,6 @@ Vec2f g_sizeRatio(1.f, 1.f);
 bool REQUEST_SPEECH_SKIP = false;
 long CURRENTLEVEL = -1;
 bool DONT_ERASE_PLAYER = false;
-bool FASTmse = false;
 
 //-----------------------------------------------------------------------------
 // EDITOR FLAGS/Vars
