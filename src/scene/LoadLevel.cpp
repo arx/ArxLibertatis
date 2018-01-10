@@ -95,8 +95,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern bool bGCroucheToggle;
 
 Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
-                      const Vec3f & pos, const Anglef & angle,
-                      const Vec3f & trans) {
+                      const Vec3f & pos, const Anglef & angle) {
 	
 	EntityHandle t = entities.getById(EntityId(classPath, instance));
 	if(t != EntityHandle()) {
@@ -113,7 +112,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	RestoreInitialIOStatusOfIO(io);
 	ARX_INTERACTIVE_HideGore(io);
 	
-	io->lastpos = io->initpos = io->pos = pos + trans;
+	io->lastpos = io->initpos = io->pos = pos;
 	io->move = Vec3f_ZERO;
 	io->initangle = io->angle = angle;
 	
@@ -263,7 +262,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			}
 			
 			res::path classPath = res::path::load(pathstr).remove_ext();
-			LoadInter_Ex(classPath, dli->ident, dli->pos.toVec3(), dli->angle, trans);
+			LoadInter_Ex(classPath, dli->ident, dli->pos.toVec3() + trans, dli->angle);
 		}
 	}
 	
