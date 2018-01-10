@@ -190,7 +190,6 @@ void ShowInfoText() {
 	
 	DebugBox playerBox = DebugBox(Vec2i(10, camBox.size().y + 5), "Player");
 	playerBox.add("Position", player.pos);
-	playerBox.add("AnchorPos", player.pos - Mscenepos);
 	playerBox.add("Rotation", player.angle);
 	playerBox.add("Velocity", player.physics.velocity);
 	

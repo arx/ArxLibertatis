@@ -230,7 +230,6 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		player.pos = playerpos + trans;
 	} else {
 		lastteleport = player.baseOffset();
-		Mscenepos = Vec3f_ZERO;
 	}
 	
 	float increment = 0;
