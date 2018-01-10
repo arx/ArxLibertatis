@@ -192,9 +192,6 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	player.desiredangle = player.angle = dlh.angle_edit;
 	
-	g_playerCamera.m_pos = dlh.pos_edit.toVec3();
-	g_playerCamera.angle = player.angle;
-	
 	if(strcmp(dlh.ident, "DANAE_FILE") != 0) {
 		LogError << "Not a valid file " << file << ": \"" << util::loadString(dlh.ident) << '"';
 		return false;
