@@ -911,7 +911,7 @@ const T * fts_read(const char * & data, const char * end, size_t n = 1) {
 
 
 static bool loadFastScene(const res::path & file, const char * data,
-                          const char * end);
+                          const char * end, Vec3f & trans);
 
 template <typename T>
 class scoped_malloc {
@@ -929,7 +929,7 @@ public:
 	
 };
 
-bool FastSceneLoad(const res::path & partial_path) {
+bool FastSceneLoad(const res::path & partial_path, Vec3f & trans) {
 	
 	res::path file = "game" / partial_path / "fast.fts";
 	
@@ -997,7 +997,7 @@ bool FastSceneLoad(const res::path & partial_path) {
 	}
 	
 	try {
-		return loadFastScene(file, data, end);
+		return loadFastScene(file, data, end, trans);
 	} catch(const file_truncated_exception &) {
 		LogError << "FTS: truncated compressed data in " << file;
 		return false;
@@ -1005,7 +1005,7 @@ bool FastSceneLoad(const res::path & partial_path) {
 }
 
 
-static bool loadFastScene(const res::path & file, const char * data, const char * end) {
+static bool loadFastScene(const res::path & file, const char * data, const char * end, Vec3f & trans) {
 	
 	// Read the scene header
 	const FAST_SCENE_HEADER * fsh = fts_read<FAST_SCENE_HEADER>(data, end);
@@ -1018,7 +1018,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		LogError << "FTS: size mismatch in FAST_SCENE_HEADER";
 		return false;
 	}
-	Mscenepos = fsh->Mscenepos.toVec3();
+	trans = Mscenepos = fsh->Mscenepos.toVec3();
 	
 	// Load textures
 	typedef std::map<s32, TextureContainer *> TextureContainerMap;
