@@ -541,7 +541,7 @@ static void updateCombineFlagForEntity(Entity * source, Entity * target) {
 	
 }
 
-static void ReleaseInfosCombine() {
+static void updateCombineFlags(Entity * source) {
 	
 	arx_assert(player.bag >= 0);
 	arx_assert(player.bag <= 3);
@@ -549,40 +549,16 @@ static void ReleaseInfosCombine() {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		Entity * io = g_inventory[bag][x][y].io;
-
-		if(io)
-			io->ioflags &= ~IO_CAN_COMBINE;
-	}
-
-	if(SecondaryInventory) {
-		for(long y = 0; y < SecondaryInventory->m_size.y; y++)
-		for(long x = 0; x < SecondaryInventory->m_size.x; x++) {
-			Entity * io = SecondaryInventory->slot[x][y].io;
-
-			if(io)
-				io->ioflags &= ~IO_CAN_COMBINE;
-		}
-	}
-}
-
-static void GetInfosCombine() {
-	
-	arx_assert(player.bag >= 0);
-	arx_assert(player.bag <= 3);
-	
-	for(size_t bag = 0; bag < size_t(player.bag); bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		updateCombineFlagForEntity(COMBINE, g_inventory[bag][x][y].io);
+		updateCombineFlagForEntity(source, g_inventory[bag][x][y].io);
 	}
 	
 	if(SecondaryInventory) {
 		for(long y = 0; y < SecondaryInventory->m_size.y; y++)
 		for(long x = 0; x < SecondaryInventory->m_size.x; x++) {
-			updateCombineFlagForEntity(COMBINE, SecondaryInventory->slot[x][y].io);
+			updateCombineFlagForEntity(source, SecondaryInventory->slot[x][y].io);
 		}
 	}
+	
 }
 
 static bool isPlayerLookingAtEnemy() {
@@ -1939,7 +1915,8 @@ void ArxGame::manageEditorControls() {
 		}
 		
 		if(eeMouseDown1() && (COMBINE || COMBINEGOLD)) {
-			ReleaseInfosCombine();
+			
+			updateCombineFlags(NULL);
 			
 			Entity * io = FlyingOverIO;
 			
@@ -2026,7 +2003,7 @@ void ArxGame::manageEditorControls() {
 			if(accept_combine) {
 				if(FlyingOverIO && ((FlyingOverIO->ioflags & IO_ITEM) && !(FlyingOverIO->ioflags & IO_MOVABLE))) {
 					COMBINE = FlyingOverIO;
-					GetInfosCombine();
+					updateCombineFlags(COMBINE);
 				}
 			}
 		}
