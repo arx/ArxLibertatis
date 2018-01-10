@@ -413,17 +413,6 @@ void levelInit() {
 	
 	InitSnapShot(fs::getUserDir() / "snapshot");
 	
-	
-	if(FASTmse) {
-		FASTmse = false;
-		if(LOADEDD) {
-			Vec3f trans = Mscenepos;
-			player.pos = g_loddpos + trans;
-		} else {
-			player.pos.y += player.baseHeight();
-		}
-	}
-	
 	progressBarAdvance(4.f);
 	LoadLevelScreen();
 
