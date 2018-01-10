@@ -503,11 +503,13 @@ void ResetPlayerInterface() {
 	SLID_START = g_platformTime.frameStart();
 }
 
-static ScriptResult combineEntities(Entity * source, Entity * target) {
+static ScriptResult combineEntities(Entity * source, Entity * target, bool peekOnly = false) {
 	
 	arx_assert(source != NULL);
 	
 	ScriptParameters parameters(source->idString());
+	
+	parameters.setPeekOnly(peekOnly);
 	
 	if(boost::starts_with(source->className(), "keyring")) {
 		
@@ -523,6 +525,20 @@ static ScriptResult combineEntities(Entity * source, Entity * target) {
 	}
 	
 	return SendIOScriptEvent(source, target, SM_COMBINE, parameters);
+}
+
+static void updateCombineFlagForEntity(Entity * source, Entity * target) {
+	
+	if(!target) {
+		return;
+	}
+	
+	if(source && combineEntities(source, target, /* peekOnly = */ true) == DESTRUCTIVE) {
+		target->ioflags |= IO_CAN_COMBINE;
+	} else {
+		target->ioflags &= ~IO_CAN_COMBINE;
+	}
+	
 }
 
 static void ReleaseInfosCombine() {
@@ -550,152 +566,6 @@ static void ReleaseInfosCombine() {
 	}
 }
 
-//-----------------------------------------------------------------------------
-static char * findParam(char * pcToken, const char * param) {
-	
-	char * pStartString = 0;
-	
-	if(strstr(pcToken, "^$param1")) {
-		pStartString = strstr(pcToken, param);
-	}
-	
-	return pStartString;
-}
-
-static void GetInfosCombineWithIO_Script(Entity * combine, Entity * _pWithIO, const EERIE_SCRIPT & script) {
-	
-	std::string tcIndent = combine->idString();
-	
-	char * pCopyScript = new char[script.size + 1];
-	pCopyScript[script.size] = '\0';
-	memcpy(pCopyScript, script.data, script.size);
-	
-	char * pcFound = strstr(pCopyScript, "on combine");
-	
-	if(pcFound) {
-		unsigned int uiNbOpen = 0;
-		
-		char * pcToken = strtok(pcFound, "\r\n");
-		
-		if(strstr(pcToken, "{")) {
-			uiNbOpen++;
-		}
-		
-		while(pcToken) {
-			pcToken = strtok(NULL, "\r\n");
-			
-			bool bCanCombine = false;
-			char * pStartString;
-			char * pEndString;
-			
-			pStartString = findParam(pcToken, "isclass");
-			if(pStartString) {
-				pStartString = strstr(pStartString, "\"");
-				
-				if(pStartString) {
-					pStartString++;
-					pEndString = strstr(pStartString, "\"");
-					
-					if(pEndString) {
-						char tTxtCombineDest[256];
-						memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
-						tTxtCombineDest[pEndString - pStartString] = 0;
-						
-						if(tTxtCombineDest == combine->className()) {
-							// same class
-							bCanCombine = true;
-						}
-					}
-				}
-			} else {
-				pStartString = findParam(pcToken, "==");
-				if(pStartString) {
-					pStartString = strstr(pStartString, "\"");
-					
-					if(pStartString) {
-						pStartString++;
-						pEndString = strstr(pStartString, "\"");
-						
-						if(pEndString) {
-							char tTxtCombineDest[256];
-							memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
-							tTxtCombineDest[pEndString - pStartString] = 0;
-							
-							if(tTxtCombineDest == tcIndent) {
-								// same class
-								bCanCombine = true;
-							}
-						}
-					}
-				} else {
-					pStartString = findParam(pcToken, "isgroup");
-					if(pStartString) {
-						pStartString = strstr(pStartString, " ");
-						
-						if(pStartString) {
-							pStartString++;
-							pEndString = strstr(pStartString, " ");
-							char * pEndString2 = strstr(pStartString, ")");
-							
-							if(pEndString2 < pEndString) {
-								pEndString = pEndString2;
-							}
-							
-							if(pEndString) {
-								char tTxtCombineDest[256];
-								memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
-								tTxtCombineDest[pEndString - pStartString] = 0;
-								if(combine->groups.find(tTxtCombineDest) != combine->groups.end()) {
-									// same class
-									bCanCombine = true;
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			if(strstr(pcToken, "{")) {
-				uiNbOpen++;
-			}
-			
-			if(strstr(pcToken, "}")) {
-				uiNbOpen--;
-			}
-			
-			if(bCanCombine) {
-				uiNbOpen = 0;
-				_pWithIO->ioflags |= IO_CAN_COMBINE;
-			} else {
-				_pWithIO->ioflags &= ~IO_CAN_COMBINE;
-			}
-			
-			if(!uiNbOpen) {
-				break;
-			}
-		}
-	}
-	
-	delete[] pCopyScript;
-	
-}
-
-static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
-	
-	if(!combine || !_pWithIO || _pWithIO == combine || !_pWithIO->script.data) {
-		return;
-	}
-	
-	if(_pWithIO->over_script.data) {
-		GetInfosCombineWithIO_Script(combine, _pWithIO, _pWithIO->over_script);
-	}
-	
-	if(!(_pWithIO->ioflags & IO_CAN_COMBINE)) {
-		GetInfosCombineWithIO_Script(combine, _pWithIO, _pWithIO->script);
-	}
-	
-}
-
 static void GetInfosCombine() {
 	
 	arx_assert(player.bag >= 0);
@@ -704,15 +574,13 @@ static void GetInfosCombine() {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		Entity * io = g_inventory[bag][x][y].io;
-		GetInfosCombineWithIO(COMBINE, io);
+		updateCombineFlagForEntity(COMBINE, g_inventory[bag][x][y].io);
 	}
-
+	
 	if(SecondaryInventory) {
 		for(long y = 0; y < SecondaryInventory->m_size.y; y++)
 		for(long x = 0; x < SecondaryInventory->m_size.x; x++) {
-			Entity * io = SecondaryInventory->slot[x][y].io;
-			GetInfosCombineWithIO(COMBINE, io);
+			updateCombineFlagForEntity(COMBINE, SecondaryInventory->slot[x][y].io);
 		}
 	}
 }
