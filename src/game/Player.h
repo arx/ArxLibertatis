@@ -437,7 +437,6 @@ bool ARX_PLAYER_CanStealItem(Entity * item);
 
 void ARX_KEYRING_Init();
 void ARX_KEYRING_Add(const std::string & key);
-void ARX_KEYRING_Combine(Entity * keyring, Entity * entity);
 
 void ARX_PLAYER_Reset_Fall();
 void ARX_PLAYER_KillTorch();
