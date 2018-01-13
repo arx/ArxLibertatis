@@ -201,6 +201,21 @@ public:
 		return Success;
 	}
 	
+	Result peek(Context & context) {
+		
+		/*
+		 * TODO Technically this command has a side effect so it should abort non-destructive execution.
+		 * However, the on combine event for books unconditionally uses this command. resulting
+		 * in all books lighting up in the inventory when an item is selected for combining.
+		 */
+		
+		(void)context.getFlags();
+		
+		context.skipWord();
+		
+		return Success;
+	}
+	
 };
 
 class SetSpeakPitchCommand : public Command {
