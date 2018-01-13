@@ -289,7 +289,7 @@ static void ARX_PLAYER_ManageTorch() {
 	if(player.torch) {
 		
 		player.torch->ignition = 0;
-		player.torch->durability -= g_framedelay * ( 1.0f / 10000 );
+		player.torch->durability -= g_framedelay * 0.0001f;
 		
 		if(player.torch->durability <= 0) {
 			ARX_SOUND_PlaySFX(SND_TORCH_END);
@@ -300,6 +300,7 @@ static void ARX_PLAYER_ManageTorch() {
 		}
 		
 	}
+	
 }
 
 //! Init/Reset player Quest structures
@@ -973,10 +974,10 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 		
 		UpdateIOInvisibility(entities.player());
 		// Natural LIFE recovery
-		float inc = 0.00008f * Framedelay * (player.m_attributeFull.constitution + player.m_attributeFull.strength * ( 1.0f / 2 ) + player.m_skillFull.defense) * ( 1.0f / 50 );
-
+		float inc = 0.00008f * Framedelay * (player.m_attributeFull.constitution + player.m_attributeFull.strength * 0.5f + player.m_skillFull.defense) * 0.02f;
+		
 		if(player.lifePool.current > 0.f) {
-			float inc_hunger = 0.00008f * Framedelay * (player.m_attributeFull.constitution + player.m_attributeFull.strength * ( 1.0f / 2 )) * ( 1.0f / 50 );
+			float inc_hunger = 0.00008f * Framedelay * (player.m_attributeFull.constitution + player.m_attributeFull.strength * 0.5f) * 0.02f;
 
 			// Check for player hungry sample playing
 			if((player.hunger > 10.f && player.hunger - inc_hunger <= 10.f)
@@ -1005,14 +1006,14 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 
 			if(!BLOCK_PLAYER_CONTROLS) {
 				if(player.hunger < 0.f)
-					player.lifePool.current -= inc * ( 1.0f / 2 );
+					player.lifePool.current -= inc * 0.5f;
 				else
 					player.lifePool.current += inc;
 			}
-
+			
 			// Natural MANA recovery
-			player.manaPool.current += 0.00008f * Framedelay * ((player.m_attributeFull.mind + player.m_skillFull.etheralLink) * 10) * ( 1.0f / 100 ); //framedelay*( 1.0f / 1000 );
-
+			player.manaPool.current += 0.0000008f * Framedelay * ((player.m_attributeFull.mind + player.m_skillFull.etheralLink) * 10);
+			
 			if(player.manaPool.current > player.Full_maxmana)
 				player.manaPool.current = player.Full_maxmana;
 		}
@@ -1024,22 +1025,19 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 		// Now Checks Poison Progression
 		if(!BLOCK_PLAYER_CONTROLS)
 			if(player.poison > 0.f) {
-				float cp = player.poison;
-				cp *= ( 1.0f / 2 ) * Framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
+				float cp = player.poison * Framedelay * 0.00025f;
 				float faster = 10.f - player.poison;
-
-				if(faster < 0.f)
+				if(faster < 0.f) {
 					faster = 0.f;
-
+				}
 				if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison + faster) {
-					float dmg = cp * ( 1.0f / 3 );
-
-					if(player.lifePool.current - dmg <= 0.f)
+					float dmg = cp * (1.0f / 3);
+					if(player.lifePool.current - dmg <= 0.f) {
 						ARX_DAMAGES_DamagePlayer(dmg, DAMAGE_TYPE_POISON, EntityHandle());
-					else
+					} else {
 						player.lifePool.current -= dmg;
-
-					player.poison -= cp * ( 1.0f / 10 );
+					}
+					player.poison -= cp * 0.1f;
 				} else {
 					player.poison -= cp;
 				}
@@ -1705,14 +1703,14 @@ void ARX_PLAYER_Frame_Update()
 				extraRotation->group_rotate[2].setPitch(0); //chest
 				extraRotation->group_rotate[3].setPitch(v); //belt
 			} else {
-				v *= ( 1.0f / 10 );
+				v *= 0.1f;
 				extraRotation->group_rotate[0].setPitch(v); //head
 				extraRotation->group_rotate[1].setPitch(v); //neck
 				extraRotation->group_rotate[2].setPitch(v * 4); //chest
 				extraRotation->group_rotate[3].setPitch(v * 4); //belt
 			}
 		} else {
-			v *= ( 1.0f / 4 );
+			v *= 0.25f;
 			extraRotation->group_rotate[0].setPitch(v); //head
 			extraRotation->group_rotate[1].setPitch(v); //neck
 			extraRotation->group_rotate[2].setPitch(v); //chest
