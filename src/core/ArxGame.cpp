@@ -769,9 +769,6 @@ bool ArxGame::initGame()
 	
 	LogDebug("Svars Init");
 	
-	// Script Test
-	lastteleport = player.baseOffset();
-	
 	entities.init();
 	
 	player = ARXCHARACTER();
