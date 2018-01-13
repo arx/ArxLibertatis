@@ -195,9 +195,9 @@ static void CheckHit(Entity * source, float ratioaim) {
 					mindist = dist;
 			}
 		}
-
-		float ratio = (float)count / ((float)target->obj->vertexlist.size() * ( 1.0f / 2 ));
-
+		
+		float ratio = float(count) / (float(target->obj->vertexlist.size()) * 0.5f);
+		
 		if(target->ioflags & IO_NPC) {
 			if(mindist <= dist_limit) {
 				ARX_EQUIPMENT_ComputeDamages(source, target, ratioaim);
@@ -624,14 +624,14 @@ wander:
 	}
 	
 	long to;
-
-	if (io->_npcdata->behavior & BEHAVIOUR_FLEE)
+	if(io->_npcdata->behavior & BEHAVIOUR_FLEE) {
 		to = AnchorData_GetNearest(pos2, io->physics.cyl, from);
-	else if (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
+	} else if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 		to = from;
-	else
+	} else {
 		to = AnchorData_GetNearest(pos2, io->physics.cyl);
-
+	}
+	
 	if(from != -1 && to != -1) {
 		
 		if(from == to && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)) {
@@ -776,31 +776,30 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE) {
  */
 static void ARX_NPC_ManagePoison(Entity * io) {
 	
-	float cp = io->_npcdata->poisonned;
-	cp *= ( 1.0f / 2 ) * g_framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
+	float cp = io->_npcdata->poisonned * g_framedelay * 0.00025f;
 	float faster = 10.f - io->_npcdata->poisonned;
-
-	if(faster < 0.f)
+	if(faster < 0.f) {
 		faster = 0.f;
-
+	}
+	
 	if(Random::getf(0.f, 100.f) > io->_npcdata->resist_poison + faster) {
-		float dmg = cp * ( 1.0f / 3 );
-
+		float dmg = cp * (1.f / 3);
 		if(io->_npcdata->lifePool.current > 0 && io->_npcdata->lifePool.current - dmg <= 0.f) {
 			long xp = io->_npcdata->xpvalue;
 			ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle(), false, NULL);
 			ARX_PLAYER_Modify_XP(xp);
-		}
-		else
+		} else {
 			io->_npcdata->lifePool.current -= dmg;
-
-		io->_npcdata->poisonned -= cp * ( 1.0f / 10 );
-	}
-	else
+		}
+		io->_npcdata->poisonned -= cp * 0.1f;
+	} else {
 		io->_npcdata->poisonned -= cp;
-
-	if(io->_npcdata->poisonned < 0.1f)
+	}
+	
+	if(io->_npcdata->poisonned < 0.1f) {
 		io->_npcdata->poisonned = 0.f;
+	}
+	
 }
 
 /*!
@@ -958,30 +957,31 @@ void ARX_PHYSICS_Apply() {
 		}
 
 		if(io->ioflags & IO_NPC) {
+			
 			ARX_PROFILE(IO_NPC);
+			
 			if(io->_npcdata->climb_count != 0.f && g_framedelay > 0) {
-				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * g_framedelay * ( 1.0f / 1000 );
-
-				if(io->_npcdata->climb_count < 0)
+				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * g_framedelay * 0.001f;
+				if(io->_npcdata->climb_count < 0) {
 					io->_npcdata->climb_count = 0.f;
+				}
 			}
-
+			
 			if(io->_npcdata->pathfind.pathwait) { // Waiting For Pathfinder Answer
 				if(io->_npcdata->pathfind.listnb == 0) { // Not Found
 					SendIOScriptEvent(NULL, io, SM_PATHFINDER_FAILURE);
 					io->_npcdata->pathfind.pathwait = 0;
-
-					if(io->_npcdata->pathfind.list)
+					if(io->_npcdata->pathfind.list) {
 						ARX_NPC_ReleasePathFindInfo(io);
-
+					}
 					io->_npcdata->pathfind.listnb = -2;
-				} else if (io->_npcdata->pathfind.listnb > 0) { // Found
+				} else if(io->_npcdata->pathfind.listnb > 0) { // Found
 					SendIOScriptEvent(NULL, io, SM_PATHFINDER_SUCCESS);
 					io->_npcdata->pathfind.pathwait = 0;
 					io->_npcdata->pathfind.listpos += (unsigned short)ARX_NPC_GetNextAttainableNodeIncrement(io);
-
-					if(io->_npcdata->pathfind.listpos >= io->_npcdata->pathfind.listnb)
+					if(io->_npcdata->pathfind.listpos >= io->_npcdata->pathfind.listnb) {
 						io->_npcdata->pathfind.listpos = 0;
+					}
 				}
 			}
 
@@ -1107,11 +1107,10 @@ void StareAtTarget(Entity * io)
 		else
 			rot = -rot;
 	}
-
+	rot *= 0.5f;
+	
 	// Needed angle to turn toward target
-	rot *= ( 1.0f / 2 );
 	float HEAD_ANGLE_THRESHOLD;
-
 	if(io->ioflags & IO_NPC)
 		HEAD_ANGLE_THRESHOLD = 45.f * io->_npcdata->stare_factor;
 	else
@@ -1253,9 +1252,7 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 	
 	AnimLayer & layer1 = io->animlayer[1];
 	
-	// BARE HANDS fight !!! *******************************
-	if(io->_npcdata->weapontype == 0)
-	{
+	if(io->_npcdata->weapontype == 0) {
 		if((layer1.cur_anim != io->anims[ANIM_BARE_WAIT]
 		    && layer1.cur_anim != io->anims[ANIM_BARE_READY]
 		    && layer1.cur_anim != io->anims[ANIM_BARE_STRIKE_LEFT_START]
@@ -1277,10 +1274,7 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 		   || layer1.cur_anim == NULL) {
 			changeAnimation(io, 1, ANIM_BARE_WAIT, EA_LOOP);
 		}
-	}
-	// DAGGER fight !!! ***********************************
-	else if (io->_npcdata->weapontype & OBJECT_TYPE_DAGGER)
-	{
+	} else if(io->_npcdata->weapontype & OBJECT_TYPE_DAGGER) {
 		if((layer1.cur_anim != io->anims[ANIM_DAGGER_WAIT]
 		    && layer1.cur_anim != io->anims[ANIM_DAGGER_READY_PART_1]
 		    && layer1.cur_anim != io->anims[ANIM_DAGGER_READY_PART_2]
@@ -1303,10 +1297,7 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 		   || layer1.cur_anim == NULL) {
 			changeAnimation(io, 1, ANIM_DAGGER_WAIT, EA_LOOP);
 		}
-	}
-	// 1H fight !!! ***************************************
-	else if (io->_npcdata->weapontype & OBJECT_TYPE_1H)
-	{
+	} else if(io->_npcdata->weapontype & OBJECT_TYPE_1H) {
 		if((layer1.cur_anim != io->anims[ANIM_1H_WAIT]
 		    && layer1.cur_anim != io->anims[ANIM_1H_READY_PART_1]
 		    && layer1.cur_anim != io->anims[ANIM_1H_READY_PART_2]
@@ -1329,10 +1320,7 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 		   || layer1.cur_anim == NULL) {
 			changeAnimation(io, 1, ANIM_1H_WAIT, EA_LOOP);
 		}
-	}
-	// 2H fight !!! ***************************************
-	else if (io->_npcdata->weapontype & OBJECT_TYPE_2H)
-	{
+	} else if(io->_npcdata->weapontype & OBJECT_TYPE_2H) {
 		if((layer1.cur_anim != io->anims[ANIM_2H_WAIT]
 		    && layer1.cur_anim != io->anims[ANIM_2H_READY_PART_1]
 		    && layer1.cur_anim != io->anims[ANIM_2H_READY_PART_2]
@@ -1355,11 +1343,6 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 		   || layer1.cur_anim == NULL) {
 			changeAnimation(io, 1, ANIM_2H_WAIT, EA_LOOP);
 		}
-	}
-	// BOW fight !!! **************************************
-	else if (io->_npcdata->weapontype & OBJECT_TYPE_BOW)
-	{
-		////////////// later...
 	}
 }
 
@@ -1766,12 +1749,14 @@ static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 			TOLERANCE += 300.f;
 
 		// if target is a marker set to a minimal tolerance
-		if(entities[targ]->ioflags & IO_MARKER)
-			TOLERANCE = 21.f + io->_npcdata->moveproblem * ( 1.0f / 10 );
+		if(entities[targ]->ioflags & IO_MARKER) {
+			TOLERANCE = 21.f + io->_npcdata->moveproblem * 0.1f;
+		}
+		
 	}
-
+	
 	// Tolerance is modified by current moveproblem status
-	TOLERANCE += io->_npcdata->moveproblem * ( 1.0f / 10 );
+	TOLERANCE += io->_npcdata->moveproblem * 0.1f;
 	
 	return TOLERANCE;
 }
@@ -1940,7 +1925,7 @@ afterthat:
 
 				for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
 					Anglef & rotation = extraRotation->group_rotate[n];
-					float t = 1.5f - (float)n * ( 1.0f / 5 );
+					float t = 1.5f - float(n) * 0.2f;
 					rotation.setYaw(rotation.getYaw() + io->_npcdata->look_around_inc * g_framedelay * t);
 				}
 
@@ -2794,7 +2779,7 @@ void ManageIgnition(Entity * io) {
 	} else if(io->obj && io->obj->fastaccess.fire != ActionPoint() && io->ignition > 0.f) {
 		
 		io->ignition = 25.f;
-		io->durability -= g_framedelay * ( 1.0f / 10000 );
+		io->durability -= g_framedelay * 0.0001f;
 		
 		if(io->durability <= 0.f) {
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &io->pos);
@@ -2841,7 +2826,7 @@ void ManageIgnition_2(Entity * io) {
 
 		EERIE_LIGHT * light = dynLightCreate(io->ignit_light);
 		if(light) {
-			light->intensity = std::max(io->ignition * ( 1.0f / 10 ), 1.f);
+			light->intensity = std::max(io->ignition * 0.1f, 1.f);
 			light->fallstart = std::max(io->ignition * 10.f, 100.f);
 			light->fallend   = std::max(io->ignition * 25.f, 240.f);
 			float v = glm::clamp(io->ignition * 0.1f, 0.5f, 1.f);
