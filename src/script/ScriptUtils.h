@@ -102,7 +102,7 @@ public:
 	
 	std::string getCommand(bool skipNewlines = true);
 	
-	void skipWhitespace(bool skipNewlines = false);
+	void skipWhitespace(bool skipNewlines = false, bool warnNewlines = false);
 	
 	Entity * getSender() const { return m_sender; }
 	Entity * getEntity() const { return m_entity; }

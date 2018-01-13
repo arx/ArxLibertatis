@@ -123,7 +123,7 @@ std::string Context::getCommand(bool skipNewlines) {
 
 std::string Context::getWord() {
 	
-	skipWhitespace();
+	skipWhitespace(false, true);
 	
 	if(m_pos >= m_script->size) {
 		return std::string();
@@ -198,7 +198,7 @@ std::string Context::getWord() {
 
 void Context::skipWord() {
 	
-	skipWhitespace();
+	skipWhitespace(false, true);
 	
 	const char * esdat = m_script->data;
 	
@@ -232,21 +232,26 @@ void Context::skipWord() {
 	}
 }
 
-void Context::skipWhitespace(bool skipNewlines) {
+void Context::skipWhitespace(bool skipNewlines, bool warnNewlines) {
 	
 	const char * esdat = m_script->data;
 	
 	// First ignores spaces & unused chars
 	for(; m_pos != m_script->size && isWhitespace(esdat[m_pos]); m_pos++) {
-		if(!skipNewlines && esdat[m_pos] == '\n') {
-			return;
+		if(esdat[m_pos] == '\n') {
+			if(warnNewlines) {
+				ScriptParserWarning << "unexpected newline";
+			}
+			if(!skipNewlines) {
+				return;
+			}
 		}
 	}
 }
 
 std::string Context::getFlags() {
 	
-	skipWhitespace();
+	skipWhitespace(false, true);
 	
 	if(m_pos < m_script->size && m_script->data[m_pos] == '-') {
 		return getWord();
@@ -355,9 +360,7 @@ void Context::skipStatement() {
 		long brackets = 1;
 		while(brackets > 0) {
 			
-			if(m_script->data[m_pos] == '\n') {
-				m_pos++;
-			}
+			skipWhitespace(true);
 			word = getWord(); // TODO should not evaluate ~var~
 			if(m_pos == m_script->size) {
 				ScriptParserWarning << "missing '}' before end of script";
@@ -442,7 +445,9 @@ size_t initSuppressions() {
 	suppress("akbaa_phase2", 19998, "play"); // sound number is sonetimes too high; missing 'akbaa_hail1', should be 'akbaa_hail'
 	suppress("akbaa_phase2", 18549, "playanim"); // animation 'grunt' not loaded
 	
+	suppress("akbaa_tentacle", 2428, "?"); // unexpected newline (newline inside command)
 	suppress("akbaa_tentacle", 2432, "on"); // unknown command 'on' (bad newline!)
+	suppress("akbaa_tentacle", 3420, "?"); // unexpected newline (newline inside command)
 	suppress("akbaa_tentacle", 3424, "on"); // unknown command 'on' (bad newline!)
 	suppress("akbaa_tentacle", 3747, "dodamage"); // missing target parameter
 	
@@ -584,7 +589,9 @@ size_t initSuppressions() {
 	suppress("human_base_0079", 239, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
 	suppress("human_base_0079", 303, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
 	
+	suppress("human_base_0082", 24110, "?"); // unexpected newline (newline inside command)
 	suppress("human_base_0082", 24114, "on"); // unknown command 'on' (bad linebreak!)
+	suppress("human_base_0082", 24135, "?"); // unexpected newline (newline inside command)
 	suppress("human_base_0082", 24141, "hide"); // unknown command 'hide' (bad linebreak!)
 	
 	suppress("human_base_0085", 426, "loadanim"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
@@ -690,6 +697,8 @@ size_t initSuppressions() {
 	
 	suppress("rat_base_0059", 62, "behavior"); // unknown behavior 'firendly', should be 'friendly'
 	suppress("rat_base_0059", 160, "behavior"); // unknown behavior 'firendly', should be 'friendly'
+	
+	suppress("rat_base_0077", 38, "?"); // unexpected newline (missing parameter)
 	
 	suppress("ratman_base", 22834, "goto"); // missing label "main_alert"
 	
