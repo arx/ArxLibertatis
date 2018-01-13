@@ -2024,7 +2024,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			GameDuration remaining = GameDurationMs(ats->remaining);
 			if(remaining > GameDurationMs(ats->interval)) {
 				LogWarning << "Found bad script timer " << scr_timer[num].name
-				           << " for entity " << io->idString() << " in save file: remaining time ("
+				           << " for entity " << io->idString() << ": remaining time ("
 				           << toMsi(remaining) << "ms) > interval (" << ats->interval << "ms) " << ats->flags;
 				remaining = GameDurationMs(ats->interval);
 			}
