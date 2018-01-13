@@ -707,14 +707,13 @@ void EERIE_ANIMMANAGER_ClearAll() {
  * \brief Memorizes information for animation to animation smoothing interpolation
  * \param io the animated Entity
  */
-void AcquireLastAnim(Entity * io)
-{
-	if(!io->animlayer[0].cur_anim
-		&& !io->animlayer[1].cur_anim
-		&& !io->animlayer[2].cur_anim
-		&& !io->animlayer[3].cur_anim)
+void AcquireLastAnim(Entity * io) {
+	
+	if(!io->animlayer[0].cur_anim && !io->animlayer[1].cur_anim
+	   && !io->animlayer[2].cur_anim && !io->animlayer[3].cur_anim) {
 		return;
-
+	}
+	
 	// Stores Frametime and number of vertex for later interpolation
 	io->animBlend.lastanimtime = g_gameTime.now();
 	io->animBlend.m_active = true;
