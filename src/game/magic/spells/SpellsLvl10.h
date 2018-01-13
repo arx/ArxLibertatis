@@ -77,12 +77,4 @@ public:
 	void Update();
 };
 
-class TeleportSpell : public SpellBase {
-public:
-	bool CanLaunch();
-	void Launch();
-	void End();
-	void Update();
-};
-
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H
