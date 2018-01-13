@@ -271,7 +271,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity * io) {
 	float secretpercent = 0.f;
 
 	if((io->ioflags & IO_NPC) && io->_npcdata->poisonned > 0.f) {
-		poisonpercent = io->_npcdata->poisonned * ( 1.0f / 20 );
+		poisonpercent = io->_npcdata->poisonned * 0.05f;
 		if(poisonpercent > 1.f)
 			poisonpercent = 1.f;
 	}
@@ -285,7 +285,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity * io) {
 	if((io->ioflags & IO_FIX) && io->_fixdata->trapvalue > -1) {
 		trappercent = player.TRAP_DETECT - io->_fixdata->trapvalue;
 		if(trappercent > 0.f) {
-			trappercent = 0.6f + trappercent * ( 1.0f / 100 );
+			trappercent = 0.6f + trappercent * 0.01f;
 			trappercent = glm::clamp(trappercent, 0.6f, 1.f);
 		}
 	}
@@ -293,7 +293,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity * io) {
 	if((io->ioflags & IO_FIX) && io->secretvalue > -1) {
 		secretpercent = player.TRAP_SECRET - io->secretvalue;
 		if(secretpercent > 0.f) {
-			secretpercent = 0.6f + secretpercent * ( 1.0f / 100 );
+			secretpercent = 0.6f + secretpercent * 0.01f;
 			secretpercent = glm::clamp(secretpercent, 0.6f, 1.f);
 		}
 	}
@@ -909,7 +909,7 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
 	Vec3f ftrPos = pos;
 	//TODO copy-pase
 	float mdist = g_camera->cdepth;
-	mdist *= ( 1.0f / 2 );
+	mdist *= 0.5f;
 	
 	float ddist = mdist - fdist(ftrPos, g_camera->m_pos);
 	ddist = ddist / mdist;
@@ -953,7 +953,7 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 	ColorRGBA colors[3];
 	
 	for(size_t o = 0; o < 3; o++) {
-		float tttz = glm::abs(eobj->vertexWorldPositions[paf[o]].norm.z) * ( 1.0f / 2 );
+		float tttz = glm::abs(eobj->vertexWorldPositions[paf[o]].norm.z) * 0.5f;
 		float power = 255.f - (255.f * tttz);
 		power *= (1.f - invisibility);
 		power = glm::clamp(power, 0.f, 255.f);
@@ -1254,7 +1254,7 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 		if(io->ioflags & IO_NPC) {
 			ftr = Vec3f_ZERO;
 			io->move -= io->lastmove;
-		} else if (io->gameFlags & GFLAG_ELEVATOR) {
+		} else if(io->gameFlags & GFLAG_ELEVATOR) {
 			// Must recover translations for NON-NPC IO
 			PushIO_ON_Top(io, io->move.y - io->lastmove.y);
 		}
@@ -1330,19 +1330,18 @@ static void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBle
 	if(!animBlend->m_active) {
 		return;
 	}
-
+	
 	float timm = toMsf(g_gameTime.now() - animBlend->lastanimtime) + 0.0001f;
-
 	if(timm >= 300.f) {
 		animBlend->m_active = false;
 		return;
 	} else {
-		timm *= ( 1.0f / 300 );
-
-		if(timm < 0.f || timm >= 1.f)
+		timm *= 1.0f / 300;
+		if(timm < 0.f || timm >= 1.f) {
 			return;
+		}
 	}
-
+	
 	for(size_t i = 0; i < rig.bones.size(); i++) {
 		Bone & bone = rig.bones[i];
 
