@@ -1601,7 +1601,7 @@ def CheckSpacingForFunctionCall(filename, line, linenum, error):
       # If the closing parenthesis is preceded by only whitespaces,
       # try to give a more descriptive error message.
       if Search(r'^\s+\)', fncall):
-        error(filename, linenum, 'whitespace/parens', 2,
+        error(filename, linenum, 'whitespace/parens_newline', 2,
               'Closing ) should be moved to the previous line')
       else:
         error(filename, linenum, 'whitespace/parens', 2,
@@ -2049,9 +2049,9 @@ def CheckSpacing(filename, clean_lines, linenum, error):
               not match.group(2) and Search(r'\bfor\s*\(.*; \)', line)):
         error(filename, linenum, 'whitespace/parens', 5,
               'Mismatching spaces inside () in %s' % match.group(1))
-    if not len(match.group(2)) in [0, 1]:
+    if len(match.group(2)) != 0:
       error(filename, linenum, 'whitespace/parens', 5,
-            'Should have zero or one spaces inside ( and ) in %s' %
+            'Should have zero spaces inside ( and ) in %s' %
             match.group(1))
 
   # You should always have a space after a comma (either as fn arg or operator)
