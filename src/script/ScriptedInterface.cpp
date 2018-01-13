@@ -188,7 +188,7 @@ struct PrintLocalVariables {
 	
 	Entity * m_entity;
 	
-	PrintLocalVariables(Entity * entity) : m_entity(entity) { }
+	explicit PrintLocalVariables(Entity * entity) : m_entity(entity) { }
 	
 };
 
