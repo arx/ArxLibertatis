@@ -703,9 +703,7 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io, float damages) {
 		
 		SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_FIRE_PROTECTION);
 		if(spell) {
-			float modif = 1.f - (spell->m_level * ( 1.0f / 10 ));
-			modif = glm::clamp(modif, 0.f, 1.f);
-			damages *= modif;
+			damages *= glm::clamp(1.f - (spell->m_level * 0.1f), 0.f, 1.f);
 		}
 		
 		if(io->ioflags & IO_NPC) {
@@ -724,11 +722,7 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io, float damages) {
 	
 	SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_COLD_PROTECTION);
 	if(spell) {
-		float modif = 1.f - (spell->m_level * ( 1.0f / 10 ));
-		
-		modif = glm::clamp(modif, 0.f, 1.f);
-		
-		damages *= modif;
+		damages *= glm::clamp(1.f - (spell->m_level * 0.1f), 0.f, 1.f);
 	}
 	
 	return damages;
