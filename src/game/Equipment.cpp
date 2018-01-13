@@ -470,12 +470,13 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	
 	if(!(io_target->ioflags & IO_NPC)) {
 		if(io_target->ioflags & IO_FIX) {
-			if (io_source == entities.player())
+			if(io_source == entities.player()) {
 				ARX_DAMAGES_DamageFIX(io_target, player.m_miscFull.damages, EntityHandle_Player, false);
-			else if (io_source->ioflags & IO_NPC)
+			} else if(io_source->ioflags & IO_NPC) {
 				ARX_DAMAGES_DamageFIX(io_target, io_source->_npcdata->damages, io_source->index(), false);
-			else
+			} else {
 				ARX_DAMAGES_DamageFIX(io_target, 1, io_source->index(), false);
+			}
 		}
 		return 0.f;
 	}
@@ -513,7 +514,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		damages = attack * ratioaim;
 		
 		if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
-			if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth * ( 1.0f / 2 )) {
+			if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth * 0.5f) {
 				if(SendIOScriptEvent(io_source, io_source, SM_BACKSTAB) != REFUSE)
 					backstab = 1.5f;
 			}
@@ -562,7 +563,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 	if(io_target == entities.player()) {
 		ac = player.m_miscFull.armorClass;
-		absorb = player.m_skillFull.defense * ( 1.0f / 2 );
+		absorb = player.m_skillFull.defense * 0.5f;
 	} else {
 		ac = ARX_INTERACTIVE_GetArmorClass(io_target);
 		absorb = io_target->_npcdata->absorb;
@@ -772,7 +773,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							
 							Vec3f vertPos = target->obj->vertexWorldPositions[hitpoint].v;
 							
-							float power = (dmgs * ( 1.0f / 40 )) + 0.7f;
+							float power = (dmgs * 0.025f) + 0.7f;
 							
 							Vec3f vect;
 							vect.x = vertPos.x - io_source->pos.x;
@@ -1205,7 +1206,7 @@ void ARX_EQUIPMENT_IdentifyAll() {
 	}
 }
 
-float GetHitValue( const std::string & name) {
+float GetHitValue(const std::string & name) {
 	
 	if(boost::starts_with(name, "hit_")) {
 		// Get the number after the first 4 characters in the string
