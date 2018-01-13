@@ -302,25 +302,21 @@ static ObjSelection GetCutSelection(Entity * io, DismembermentFlag flag) {
 		return ObjSelection();
 
 	std::string tx;
-
-	if (flag == FLAG_CUT_HEAD)
+	if(flag == FLAG_CUT_HEAD) {
 		tx =  "cut_head";
-	else if (flag == FLAG_CUT_TORSO)
+	} else if(flag == FLAG_CUT_TORSO) {
 		tx = "cut_torso";
-	else if (flag == FLAG_CUT_LARM)
+	} else if(flag == FLAG_CUT_LARM) {
 		tx = "cut_larm";
-
-	if (flag == FLAG_CUT_RARM)
+	} else if(flag == FLAG_CUT_RARM) {
 		tx = "cut_rarm";
-
-	if (flag == FLAG_CUT_LLEG)
+	} else if(flag == FLAG_CUT_LLEG) {
 		tx = "cut_lleg";
-
-	if (flag == FLAG_CUT_RLEG)
+	} else if(flag == FLAG_CUT_RLEG) {
 		tx = "cut_rleg";
-
-	if ( !tx.empty() )
-	{
+	}
+	
+	if(!tx.empty()) {
 		typedef std::vector<EERIE_SELECTIONS>::iterator iterator; // Convenience
 		for(iterator iter = io->obj->selections.begin(); iter != io->obj->selections.end(); ++iter) {
 			if(!iter->selected.empty() && iter->name == tx) {
@@ -482,21 +478,20 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 		return; // Nothing to cut...
 
 	bool hid = false;
-
 	if(mindistSqr < square(60)) { // can only cut a close part...
-		DismembermentFlag fl = GetCutFlag( target->obj->selections[numsel.handleData()].name );
-
+		DismembermentFlag fl = GetCutFlag(target->obj->selections[numsel.handleData()].name);
 		if(fl && !(target->_npcdata->cuts & fl)) {
 			target->_npcdata->cuts |= fl;
 			hid = ARX_NPC_ApplyCuts(target);
 		}
 	}
-
+	
 	if(hid) {
 		audio::SampleId sample = ARX_SOUND_Load("flesh_critical");
 		ARX_SOUND_PlaySFX(sample, &target->pos, 1.0f);
 		ARX_NPC_SpawnMember(target, numsel);
 	}
+	
 }
 
 
