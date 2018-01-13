@@ -96,8 +96,7 @@ static void ARX_PATH_ComputeBB(ARX_PATH * ap) {
 	}
 }
 
-void ARX_PATH_ComputeAllBoundingBoxes()
-{
+void ARX_PATH_ComputeAllBoundingBoxes() {
 	for(long i = 0; i < nbARXpaths; i++) {
 		if(ARXpaths[i]) {
 			ARX_PATH_ComputeBB(ARXpaths[i]);
