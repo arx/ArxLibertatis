@@ -183,11 +183,12 @@ void MagicMissileSpell::Launch() {
 			const Vec3f & p1 = m_caster_pos;
 			const Vec3f & p2 = entities[io->targetinfo]->pos;
 			pitch = -(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
-		} else if (ValidIONum(m_target)) {
+		} else if(ValidIONum(m_target)) {
 			const Vec3f & p1 = m_caster_pos;
 			const Vec3f & p2 = entities[m_target]->pos;
 			pitch = -(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
 		}
+		
 	}
 	
 	m_mrCheat = (m_caster == EntityHandle_Player && cur_mr == 3);
@@ -286,7 +287,7 @@ void MagicMissileSpell::Update() {
 			DamageParameters damage;
 			damage.pos = missile->eCurPos;
 			damage.radius = 80.f;
-			damage.damages = (4 + m_level * ( 1.0f / 5 )) * .8f;
+			damage.damages = (4 + m_level * 0.2f) * 0.8f;
 			damage.area = DAMAGE_FULL;
 			damage.duration = GameDuration::ofRaw(-1);
 			damage.source = m_caster;
