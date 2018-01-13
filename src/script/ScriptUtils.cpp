@@ -241,6 +241,10 @@ void Context::skipWhitespace(bool skipNewlines, bool warnNewlines) {
 		if(esdat[m_pos] == '\n') {
 			if(warnNewlines) {
 				ScriptParserWarning << "unexpected newline";
+				if(isBlockEndSuprressed(*this, "?")) {
+					// Ignore the newline
+					continue;
+				}
 			}
 			if(!skipNewlines) {
 				return;
@@ -424,6 +428,9 @@ bool contains(const SuppressionsForPos & list, const Context & context, const st
 
 size_t initSuppressions() {
 	
+	suppressBlockEnd("akbaa_tentacle", 2428, "?"); // unexpected newline (newline inside command)
+	suppressBlockEnd("akbaa_tentacle", 3420, "?"); // unexpected newline (newline inside command)
+	
 	suppressBlockEnd("camera_0027", 1140, "}"); // '}' should be commented out!
 	
 	suppressBlockEnd("black_thing_0002", 1075, "on"); // missing '}' and accept/refuse
@@ -436,6 +443,9 @@ size_t initSuppressions() {
 	
 	suppressBlockEnd("goblin_base_0031", 974, "on"); // missing '}'
 	
+	suppressBlockEnd("human_base_0082", 24110, "?"); // unexpected newline (newline inside command)
+	suppressBlockEnd("human_base_0082", 24135, "?"); // unexpected newline (newline inside command)
+	
 	suppressBlockEnd("lever_0028", 402, "}"); // extranous '}'
 	
 	// TODO(broken-scripts)
@@ -446,9 +456,7 @@ size_t initSuppressions() {
 	suppress("akbaa_phase2", 18549, "playanim"); // animation 'grunt' not loaded
 	
 	suppress("akbaa_tentacle", 2428, "?"); // unexpected newline (newline inside command)
-	suppress("akbaa_tentacle", 2432, "on"); // unknown command 'on' (bad newline!)
 	suppress("akbaa_tentacle", 3420, "?"); // unexpected newline (newline inside command)
-	suppress("akbaa_tentacle", 3424, "on"); // unknown command 'on' (bad newline!)
 	suppress("akbaa_tentacle", 3747, "dodamage"); // missing target parameter
 	
 	suppress("axe_2handed", 26, "settwohanded"); // obsolete command
@@ -590,9 +598,7 @@ size_t initSuppressions() {
 	suppress("human_base_0079", 303, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
 	
 	suppress("human_base_0082", 24110, "?"); // unexpected newline (newline inside command)
-	suppress("human_base_0082", 24114, "on"); // unknown command 'on' (bad linebreak!)
 	suppress("human_base_0082", 24135, "?"); // unexpected newline (newline inside command)
-	suppress("human_base_0082", 24141, "hide"); // unknown command 'hide' (bad linebreak!)
 	
 	suppress("human_base_0085", 426, "loadanim"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
 	
