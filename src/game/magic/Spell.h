@@ -105,9 +105,6 @@ enum SpellType {
 	
 	SPELL_FAKE_SUMMON           ,// special =105
 	
-	// LEVEL ZOB
-	SPELL_TELEPORT = SPELL_FAKE_SUMMON + 2, // TODO explicit value for savegame compatability
-	
 	SPELL_NONE = -1
 };
 

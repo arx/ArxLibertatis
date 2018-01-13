@@ -770,7 +770,6 @@ float ARX_SPELLS_GetManaCost(SpellType spell, float casterLevel) {
 		case SPELL_DISPELL_FIELD:         return   7.f;
 		case SPELL_RUNE_OF_GUARDING:      return   9.f;
 		case SPELL_CURE_POISON:           return  10.f;
-		case SPELL_TELEPORT:              return  10.f;
 		case SPELL_RISE_DEAD:             return  12.f;
 		case SPELL_DISARM_TRAP:           return  15.f;
 		case SPELL_FIRE_FIELD:            return  15.f;
@@ -862,7 +861,6 @@ static SpellBase * createSpellInstance(SpellType type) {
 		case SPELL_CONTROL_TARGET: return new ControlTargetSpell();
 		case SPELL_FREEZE_TIME: return new FreezeTimeSpell();
 		case SPELL_MASS_INCINERATE: return new MassIncinerateSpell();
-		case SPELL_TELEPORT: return new TeleportSpell();
 	}
 	
 	return NULL;
