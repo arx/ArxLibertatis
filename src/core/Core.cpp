@@ -226,8 +226,8 @@ bool AdjustUI() {
 		
 	// Computes X & Y screen ratios compared to a standard 640x480 screen
 	
-	g_sizeRatio.x = g_size.width() * ( 1.0f / 640 );
-	g_sizeRatio.y = g_size.height() * ( 1.0f / 480 );
+	g_sizeRatio.x = float(g_size.width()) / 640.f;
+	g_sizeRatio.y = float(g_size.height()) / 480.f;
 	
 	if(!ARX_Text_Init()) {
 		return false;
@@ -1000,7 +1000,7 @@ void ManageCombatModeAnimationsEND() {
 						}
 						player.m_aimTime = PlatformDuration::ofRaw(1);
 						io->isHit = false;
-					} else if (layer1.cur_anim == alist[ANIM_1H_UNREADY_PART_1]) {
+					} else if(layer1.cur_anim == alist[ANIM_1H_UNREADY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 						changeAnimation(io, 1, alist[ANIM_1H_UNREADY_PART_2]);
 					}
