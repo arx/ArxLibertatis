@@ -79,11 +79,12 @@ void CheatDrawText() {
 	PlatformDuration elapsed = g_platformTime.frameStart() - sp_max_start;
 	
 	if(elapsed < PlatformDurationMs(20000)) {
-		float modi = (PlatformDurationMs(20000) - elapsed) / PlatformDurationMs(2000) * ( 1.0f / 10 );
+		
+		float modi = (PlatformDurationMs(20000) - elapsed) / PlatformDurationMs(2000) * 0.1f;
 		float sizX = 16;
 		
 		Vec2f p = Vec2f(g_size.center());
-		p.x -= sp_max_ch.length() * ( 1.0f / 2 ) * sizX;
+		p.x -= sp_max_ch.length() * 0.5f * sizX;
 		
 		for(size_t i = 0; i < sp_max_ch.length(); i++) {
 			Vec2f d = p + Vec2f(sizX * i, sp_max_y[i]);
@@ -95,7 +96,9 @@ void CheatDrawText() {
 			UNICODE_ARXDrawTextCenter(hFontInBook, d + Vec2f(1, 1), tex, Color::none);
 			UNICODE_ARXDrawTextCenter(hFontInBook, d, tex, sp_max_col[i]);
 		}
+		
 	}
+	
 }
 
 static void DisplayCheatText(const char * text) {
