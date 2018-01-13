@@ -139,23 +139,26 @@ extern Vec3f PUSH_PLAYER_FORCE;
 static float Blood_Pos = 0.f;
 static GameDuration Blood_Duration = 0;
 
-static void ARX_DAMAGES_IgnitIO(Entity * source, Entity * io, float dmg)
-{
-	if(!io || (io->ioflags & IO_INVULNERABILITY))
+static void ARX_DAMAGES_IgnitIO(Entity * source, Entity * io, float dmg) {
+	
+	if(!io || (io->ioflags & IO_INVULNERABILITY)) {
 		return;
+	}
 	
 	if(io->ignition <= 0.f && io->ignition + dmg > 1.f) {
 		SendIOScriptEvent(source, io, SM_ENTERZONE, "cook_s");
 	}
 	
-	if(io->ioflags & IO_FIX)
-		io->ignition += dmg * ( 1.0f / 10 );
-	else if(io->ioflags & IO_ITEM)
-		io->ignition += dmg * ( 1.0f / 8 );
-	else if(io->ioflags & IO_NPC)
-		io->ignition += dmg * ( 1.0f / 4 );
+	if(io->ioflags & IO_FIX) {
+		io->ignition += dmg * 0.1f;
+	} else if(io->ioflags & IO_ITEM) {
+		io->ignition += dmg * 0.125f;
+	} else if(io->ioflags & IO_NPC) {
+		io->ignition += dmg * 0.25f;
+	}
+	
 }
- 
+
 void ARX_DAMAGE_Reset_Blood_Info()
 {
 	Blood_Pos = 0.f;
@@ -171,7 +174,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 	if(Blood_Pos > 2.f) { // end of blood flash
 		Blood_Pos = 0.f;
 		duration = 0;
-	} else if (Blood_Pos > 1.f) {
+	} else if(Blood_Pos > 1.f) {
 		
 		if(player.poison > 1.f)
 			color = Color3f(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f).to<u8>();
@@ -443,10 +446,11 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 		SendIOScriptEvent(sender, io, SM_OUCH, tex);
 		io->dmg_sum = 0.f;
 	}
-
-	if(Random::getf(0.f, 100.f) > io->durability)
-		io->durability -= dmg * ( 1.0f / 2 ); //1.f;
-
+	
+	if(Random::getf(0.f, 100.f) > io->durability) {
+		io->durability -= dmg * 0.5f;
+	}
+	
 	if(io->durability <= 0.f) {
 		io->durability = 0.f;
 		SendIOScriptEvent(sender, io, SM_BREAK);
@@ -585,8 +589,10 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 }
 
 static void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float power) {
+	
 	if(power > 0.f && ValidIONum(source)) {
-		power *= ( 1.0f / 20 );
+		
+		power *= 0.05f;
 		Entity * io = entities[source];
 		Vec3f vect = io_target->pos - io->pos;
 		vect = glm::normalize(vect);
@@ -598,7 +604,9 @@ static void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float po
 		} else {
 			io_target->move += vect;
 		}
+		
 	}
+	
 }
 
 void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source, DamageType flags, Vec3f * pos) {
@@ -909,7 +917,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 	if(damage.params.flags & DAMAGE_FLAG_FOLLOW_SOURCE) {
 		if(damage.params.source == EntityHandle_Player) {
 			damage.params.pos = player.pos;
-		} else if (ValidIONum(damage.params.source)) {
+		} else if(ValidIONum(damage.params.source)) {
 			damage.params.pos = entities[damage.params.source]->pos;
 		}
 	}
@@ -984,7 +992,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 						}
 						break;
 						case DAMAGE_AREAHALF: {
-							float ratio = (damage.params.radius - (dist * ( 1.0f / 2 ))) * divradius;
+							float ratio = (damage.params.radius - dist * 0.5f) * divradius;
 							ratio = glm::clamp(ratio, 0.f, 1.f);
 							dmg = dmg * ratio + 1.f;
 						}
@@ -1043,7 +1051,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 								   && !(damage.params.type & DAMAGE_TYPE_FIRE)
 								   && !(damage.params.type & DAMAGE_TYPE_COLD)
 								) {
-									dmg -= player.m_miscFull.resistMagic * ( 1.0f / 100 ) * dmg;
+									dmg -= player.m_miscFull.resistMagic * 0.01f * dmg;
 									dmg = std::max(0.0f, dmg);
 								}
 								if(damage.params.type & DAMAGE_TYPE_FIRE) {
@@ -1075,7 +1083,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 								   && !(damage.params.type & DAMAGE_TYPE_FIRE)
 								   && !(damage.params.type & DAMAGE_TYPE_COLD)
 								) {
-									dmg -= io->_npcdata->resist_magic * ( 1.0f / 100 ) * dmg;
+									dmg -= io->_npcdata->resist_magic * 0.01f * dmg;
 									dmg = std::max(0.0f, dmg);
 								}
 								if(damage.params.type & DAMAGE_TYPE_COLD) {
@@ -1303,7 +1311,7 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 			}
 		}
 		
-		float ratio = glm::max(count, count2) / (ioo->obj->vertexlist.size() * ( 1.0f / 2 ));
+		float ratio = glm::max(count, count2) / (ioo->obj->vertexlist.size() * 0.5f);
 		
 		if(ratio > 2.f)
 			ratio = 2.f;
@@ -1315,7 +1323,7 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 						dmg = dmg * (sphere.radius + 30 - mindist) * rad;
 						break;
 					case DAMAGE_AREAHALF:
-						dmg = dmg * (sphere.radius + 30 - mindist * ( 1.0f / 2 )) * rad;
+						dmg = dmg * (sphere.radius + 30 - mindist * 0.5f) * rad;
 						break;
 					case DAMAGE_FULL: break;
 				}
@@ -1381,7 +1389,7 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 		io->durability = io->max_durability;
 	} else {
 		
-		float ratio = percent * ( 1.0f / 100 );
+		float ratio = percent * 0.01f;
 		float to_restore = (io->max_durability - io->durability) * ratio;
 		float v = Random::getf(0.f, 100.f) - percent;
 		
@@ -1394,12 +1402,13 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 
 			io->max_durability -= mloss;
 		} else {
-			if (v > 50.f)
+			
+			if(v > 50.f) {
 				v = 50.f;
-
-			v *= ( 1.0f / 100 );
+			}
+			v *= 0.01f;
+			
 			float mloss = io->max_durability * v;
-
 			if(io->ioflags & IO_ITEM) {
 				io->_itemdata->price -= static_cast<long>(io->_itemdata->price * v);
 			}
@@ -1440,12 +1449,12 @@ void ARX_DAMAGES_DurabilityLoss(Entity * io, float loss) {
 	
 }
 
-void ARX_DAMAGES_DamagePlayerEquipment(float damages)
-{
-	float ratio = damages * ( 1.0f / 20 );
-
-	if(ratio > 1.f)
+void ARX_DAMAGES_DamagePlayerEquipment(float damages) {
+	
+	float ratio = damages * 0.05f;
+	if(ratio > 1.f) {
 		ratio = 1.f;
+	}
 	
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		Entity * todamage = entities.get(player.equiped[i]);
@@ -1453,6 +1462,7 @@ void ARX_DAMAGES_DamagePlayerEquipment(float damages)
 			ARX_DAMAGES_DurabilityCheck(todamage, ratio);
 		}
 	}
+	
 }
 
 float ARX_DAMAGES_ComputeRepairPrice(const Entity * torepair, const Entity * blacksmith)
