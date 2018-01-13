@@ -295,7 +295,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			SendIOScriptEvent(NULL, entities.player(), SM_ENTERZONE, current->name);
 			
 			if(current->flags & PATH_AMBIANCE && !current->ambiance.empty()) {
-				ARX_SOUND_PlayZoneAmbiance(current->ambiance, ARX_SOUND_PLAY_LOOPED, current->amb_max_vol * ( 1.0f / 100 ));
+				ARX_SOUND_PlayZoneAmbiance(current->ambiance, ARX_SOUND_PLAY_LOOPED, current->amb_max_vol * 0.01f);
 			}
 			
 			if(current->flags & PATH_FARCLIP) {
