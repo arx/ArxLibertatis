@@ -350,7 +350,7 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 			} else if(res == script::Command::AbortError) {
 				ret = BIGERROR;
 				break;
-			} if(res == script::Command::AbortDestructive) {
+			} else if(res == script::Command::AbortDestructive) {
 				ret = DESTRUCTIVE;
 				break;
 			} else if(res == script::Command::Jumped) {
