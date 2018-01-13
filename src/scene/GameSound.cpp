@@ -210,7 +210,6 @@ SampleId SND_WHOOSH(INVALID_ID);
 // Player samples
 SampleId SND_PLAYER_DEATH_BY_FIRE(INVALID_ID);
 
-SampleId SND_PLAYER_FILLLIFEMANA(INVALID_ID);
 SampleId SND_PLAYER_HEART_BEAT(INVALID_ID);
 SampleId SND_PLAYER_LEVEL_UP(INVALID_ID);
 SampleId SND_PLAYER_POISONED(INVALID_ID);
@@ -247,11 +246,9 @@ SampleId SND_SPELL_DISPELL_FIELD(INVALID_ID);
 SampleId SND_SPELL_DISPELL_ILLUSION(INVALID_ID);
 SampleId SND_SPELL_DOUSE(INVALID_ID);
 SampleId SND_SPELL_ELECTRIC(INVALID_ID);
-SampleId SND_SPELL_ENCHANT_WEAPON(INVALID_ID);
 SampleId SND_SPELL_EXPLOSION(INVALID_ID);
 SampleId SND_SPELL_EYEBALL_IN(INVALID_ID);
 SampleId SND_SPELL_EYEBALL_OUT(INVALID_ID);
-SampleId SND_SPELL_FIRE_FIELD(INVALID_ID);
 SampleId SND_SPELL_FIRE_HIT(INVALID_ID);
 SampleId SND_SPELL_FIRE_LAUNCH(INVALID_ID);
 SampleId SND_SPELL_FIRE_PROTECTION(INVALID_ID);
@@ -293,7 +290,6 @@ SampleId SND_SPELL_MM_HIT(INVALID_ID);
 SampleId SND_SPELL_MM_LAUNCH(INVALID_ID);
 SampleId SND_SPELL_MM_LOOP(INVALID_ID);
 SampleId SND_SPELL_NEGATE_MAGIC(INVALID_ID);
-SampleId SND_SPELL_NO_EFFECT(INVALID_ID);
 SampleId SND_SPELL_PARALYSE(INVALID_ID);
 SampleId SND_SPELL_PARALYSE_END(INVALID_ID);
 SampleId SND_SPELL_POISON_PROJECTILE_LAUNCH(INVALID_ID);
@@ -311,8 +307,6 @@ SampleId SND_SPELL_SPEED_END(INVALID_ID);
 SampleId SND_SPELL_SUMMON_CREATURE(INVALID_ID);
 SampleId SND_SPELL_TELEKINESIS_START(INVALID_ID);
 SampleId SND_SPELL_TELEKINESIS_END(INVALID_ID);
-SampleId SND_SPELL_TELEPORT(INVALID_ID);
-SampleId SND_SPELL_TELEPORTED(INVALID_ID);
 SampleId SND_SPELL_VISION_START(INVALID_ID);
 SampleId SND_SPELL_VISION_LOOP(INVALID_ID);
 
@@ -1112,7 +1106,6 @@ static void ARX_SOUND_CreateStaticSamples() {
 	SND_WHOOSH                         = audio::createSample("whoosh07.wav");
 	
 	// Player
-	SND_PLAYER_FILLLIFEMANA            = audio::createSample("player_filllifemana.wav");
 	SND_PLAYER_HEART_BEAT              = audio::createSample("player_heartb.wav");
 	SND_PLAYER_LEVEL_UP                = audio::createSample("player_level_up.wav");
 	SND_PLAYER_POISONED                = audio::createSample("player_poisoned.wav");
@@ -1169,7 +1162,6 @@ static void ARX_SOUND_CreateStaticSamples() {
 	SND_SPELL_DISPELL_ILLUSION         = audio::createSample("magic_spell_dispell_illusion.wav");
 	SND_SPELL_DOUSE                    = audio::createSample("magic_spell_douse.wav");
 	SND_SPELL_ELECTRIC                 = audio::createSample("sfx_electric.wav");
-	SND_SPELL_ENCHANT_WEAPON           = audio::createSample("magic_spell_enchant_weapon.wav");
 	SND_SPELL_EXPLOSION                = audio::createSample("magic_spell_explosion.wav");
 	SND_SPELL_EYEBALL_IN               = audio::createSample("magic_spell_eyeball_in.wav");
 	SND_SPELL_EYEBALL_OUT              = audio::createSample("magic_spell_eyeball_out.wav");
@@ -1212,7 +1204,6 @@ static void ARX_SOUND_CreateStaticSamples() {
 	SND_SPELL_MM_LAUNCH                = audio::createSample("magic_spell_missilelaunch.wav");
 	SND_SPELL_MM_LOOP                  = audio::createSample("magic_spell_missileloop.wav");
 	SND_SPELL_NEGATE_MAGIC             = audio::createSample("magic_spell_negate_magic.wav");
-	SND_SPELL_NO_EFFECT                = audio::createSample("magic_spell_noeffect.wav");
 	SND_SPELL_PARALYSE                 = audio::createSample("magic_spell_paralyse.wav");
 	SND_SPELL_PARALYSE_END             = audio::createSample("magic_spell_paralyse_end.wav");
 	SND_SPELL_POISON_PROJECTILE_LAUNCH = audio::createSample("magic_spell_poison_projectile_launch.wav");
@@ -1230,8 +1221,6 @@ static void ARX_SOUND_CreateStaticSamples() {
 	SND_SPELL_SUMMON_CREATURE          = audio::createSample("magic_spell_summon_creature.wav");
 	SND_SPELL_TELEKINESIS_START        = audio::createSample("magic_spell_telekinesison.wav");
 	SND_SPELL_TELEKINESIS_END          = audio::createSample("magic_spell_telekinesisoff.wav");
-	SND_SPELL_TELEPORT                 = audio::createSample("magic_spell_teleport.wav");
-	SND_SPELL_TELEPORTED               = audio::createSample("magic_spell_teleported.wav");
 	SND_SPELL_VISION_START             = audio::createSample("magic_spell_vision2.wav");
 	SND_SPELL_VISION_LOOP              = audio::createSample("magic_spell_vision.wav");
 }
@@ -1264,7 +1253,6 @@ static void ARX_SOUND_ReleaseStaticSamples() {
 
 	// Player samples
 	SND_PLAYER_DEATH_BY_FIRE = INVALID_ID;
-	SND_PLAYER_FILLLIFEMANA = INVALID_ID;
 	SND_PLAYER_HEART_BEAT = INVALID_ID;
 	SND_PLAYER_LEVEL_UP = INVALID_ID;
 	SND_PLAYER_POISONED = INVALID_ID;
@@ -1320,11 +1308,9 @@ static void ARX_SOUND_ReleaseStaticSamples() {
 	SND_SPELL_DISPELL_ILLUSION = INVALID_ID;
 	SND_SPELL_DOUSE = INVALID_ID;
 	SND_SPELL_ELECTRIC = INVALID_ID;
-	SND_SPELL_ENCHANT_WEAPON = INVALID_ID;
 	SND_SPELL_EXPLOSION = INVALID_ID;
 	SND_SPELL_EYEBALL_IN = INVALID_ID;
 	SND_SPELL_EYEBALL_OUT = INVALID_ID;
-	SND_SPELL_FIRE_FIELD = INVALID_ID;
 	SND_SPELL_FIRE_HIT = INVALID_ID;
 	SND_SPELL_FIRE_LAUNCH = INVALID_ID;
 	SND_SPELL_FIRE_PROTECTION = INVALID_ID;
@@ -1382,8 +1368,6 @@ static void ARX_SOUND_ReleaseStaticSamples() {
 	SND_SPELL_SUMMON_CREATURE = INVALID_ID;
 	SND_SPELL_TELEKINESIS_START = INVALID_ID;
 	SND_SPELL_TELEKINESIS_END = INVALID_ID;
-	SND_SPELL_TELEPORT = INVALID_ID;
-	SND_SPELL_TELEPORTED = INVALID_ID;
 	SND_SPELL_VISION_START = INVALID_ID;
 	SND_SPELL_VISION_LOOP = INVALID_ID;
 }
