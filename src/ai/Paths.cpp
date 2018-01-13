@@ -303,11 +303,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 				g_desiredFogParameters.flags |= GMOD_ZCLIP;
 				g_desiredFogParameters.zclip = current->farclip;
 			}
-
-			if (current->flags & PATH_REVERB)
-			{
-			}
-
+			
 			if(current->flags & PATH_RGB) {
 				g_desiredFogParameters.flags |= GMOD_DCOLOR;
 				g_desiredFogParameters.depthcolor = current->rgb;
