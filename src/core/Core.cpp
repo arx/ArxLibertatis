@@ -174,7 +174,6 @@ TextureContainer * GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 
 Vec2s DANAEMouse;
 Vec3f g_moveto;
-Vec3f lastteleport;
 EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];// 3D Objects For Gold Coins
 EERIE_3DOBJ * arrowobj = NULL; // 3D Object for arrows
 EERIE_3DOBJ * cameraobj = NULL; // Camera 3D Object // NEEDTO: Remove for Final
@@ -412,7 +411,6 @@ void levelInit() {
 		ARX_SOUND_PlaySFX(SND_TORCH_LOOP, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	lastteleport = player.basePosition();
 	g_playerCamera.m_pos = g_moveto = player.pos;
 	g_playerCamera.angle = player.angle;
 	
