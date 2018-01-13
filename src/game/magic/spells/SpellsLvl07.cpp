@@ -514,7 +514,7 @@ void IceFieldSpell::Update() {
 				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
 			
-		} else if (t > 0.095f) {
+		} else if(t > 0.095f) {
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
@@ -529,7 +529,9 @@ void IceFieldSpell::Update() {
 			}
 			
 		}
+		
 	}
+	
 }
 
 Vec3f IceFieldSpell::getPosition() {
