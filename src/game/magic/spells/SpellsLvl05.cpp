@@ -420,9 +420,7 @@ void RepelUndeadSpell::Update() {
 	
 	float wave = timeWaveSin(g_gameTime.now(), GameDurationMsf(6283.185307f));
 	
-	float vv = 1.f + wave;
-	vv *= ( 1.0f / 2 );
-	vv += 1.1f;
+	float vv = (1.f + wave) * 0.5f + 1.1f;
 	
 	Draw3DObject(ssol, eObjAngle, m_pos + Vec3f(0.f, -5.f, 0.f), Vec3f(vv), Color3f(0.6f, 0.6f, 0.8f), mat);
 	
@@ -587,12 +585,10 @@ void PoisonProjectileSpell::Update() {
 		AddPoisonFog(projectile->eCurPos, m_level + 7);
 
 		if(m_elapsed > GameDurationMs(1600)) {
-			
 			DamageParameters damage;
 			damage.pos = projectile->eCurPos;
 			damage.radius = 120.f;
-			float v = 4.f + m_level * ( 1.0f / 10 ) * 6.f;
-			damage.damages = v * ( 1.0f / 1000 ) * g_framedelay;
+			damage.damages = (4.f + m_level * 0.6f) * 0.001f * g_framedelay;
 			damage.area = DAMAGE_FULL;
 			damage.duration = g_gameTime.lastFrameDuration();
 			damage.source = m_caster;
@@ -600,7 +596,9 @@ void PoisonProjectileSpell::Update() {
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
 			DamageCreate(damage);
 		}
+		
 	}
+	
 }
 
 void PoisonProjectileSpell::AddPoisonFog(const Vec3f & pos, float power) {
