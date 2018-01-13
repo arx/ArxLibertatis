@@ -40,6 +40,7 @@ set(STYLE_FILTER ${STYLE_FILTER},-runtime/virtual)
 # Very noisy and perhaps a matter of taste.
 set(STYLE_FILTER ${STYLE_FILTER},-whitespace/braces)
 set(STYLE_FILTER ${STYLE_FILTER},-whitespace/parens)
+set(STYLE_FILTER ${STYLE_FILTER},-whitespace/parens_newline)
 set(STYLE_FILTER ${STYLE_FILTER},-whitespace/newline)
 
 # Complains about using short, long, etc.
