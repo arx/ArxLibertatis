@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Animation.h"
 
+#include "core/Core.h"
+
 #include "game/Damage.h"
 #include "game/EntityManager.h"
 #include "game/Equipment.h"
@@ -761,8 +763,9 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							}
 						}
 
-						if(io_source == entities.player())
-							ARX_DAMAGES_DurabilityCheck(io_weapon, 0.2f);
+						if(io_source == entities.player()) {
+							ARX_DAMAGES_DurabilityCheck(io_weapon, g_framedelay * 0.006f);
+						}
 					}
 					
 					if((target->ioflags & IO_NPC) && (dmgs > 0.f || target->spark_n_blood == SP_BLOODY)) {
