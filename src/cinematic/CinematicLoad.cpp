@@ -331,8 +331,8 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			float f = std::min(k.light.fallin, k.light.fallout);
 			
 			float d0 = glm::distance(Vec2f(k.light.pos), Vec2f(-320.f, -240.f));
-			float d1 = glm::distance(Vec2f(k.light.pos), Vec2f( 320.f, -240.f));
-			float d2 = glm::distance(Vec2f(k.light.pos), Vec2f( 320.f,  240.f));
+			float d1 = glm::distance(Vec2f(k.light.pos), Vec2f(320.f, -240.f));
+			float d2 = glm::distance(Vec2f(k.light.pos), Vec2f(320.f,  240.f));
 			float d3 = glm::distance(Vec2f(k.light.pos), Vec2f(-320.f,  240.f));
 			
 			if(f > std::max(std::max(d0, d1), std::max(d2, d3))) {
