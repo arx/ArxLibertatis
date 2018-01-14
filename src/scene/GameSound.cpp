@@ -133,7 +133,7 @@ static bool bIsActive(false);
 static AmbianceId ambiance_zone = AmbianceId();
 static AmbianceId ambiance_menu = AmbianceId();
 
-static SampleId Inter_Materials[MAX_MATERIALS][MAX_MATERIALS][MAX_VARIANTS];
+static SampleId Inter_Materials[MAX_MATERIALS][MAX_MATERIALS];
 
 namespace {
 
@@ -616,7 +616,7 @@ long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	if(mat1 == MATERIAL_WATER || mat2 == MATERIAL_WATER)
 		ARX_PARTICLES_SpawnWaterSplash(position);
 
-	SampleId sample_id = Inter_Materials[mat1][mat2][0];
+	SampleId sample_id = Inter_Materials[mat1][mat2];
 
 	if(sample_id == INVALID_ID)
 		return 0;
@@ -1467,16 +1467,14 @@ static void ARX_SOUND_CreateCollisionMaps() {
 
 static void ARX_SOUND_CreateMaterials() {
 	
-	memset(Inter_Materials, -1, sizeof(SampleId) * MAX_MATERIALS * MAX_MATERIALS * MAX_VARIANTS);
+	memset(Inter_Materials, -1, sizeof(SampleId) * MAX_MATERIALS * MAX_MATERIALS);
 	
 	std::ostringstream oss;
 	for(Material i = MATERIAL_WEAPON; i <= MATERIAL_STONE; i = Material(i + 1)) {
 		for(Material j = i; j <= MATERIAL_STONE; j = Material(j + 1)) {
-			for(size_t k = 0; k < MAX_VARIANTS; k++) {
-				oss.str(std::string());
-				oss << ARX_MATERIAL_GetNameById(i) << "_on_" << ARX_MATERIAL_GetNameById(j) << '_' << (k + 1) << ".wav";
-				Inter_Materials[j][i][k] = Inter_Materials[i][j][k] = audio::createSample(oss.str());
-			}
+			oss.str(std::string());
+			oss << ARX_MATERIAL_GetNameById(i) << "_on_" << ARX_MATERIAL_GetNameById(j) << "_1.wav";
+			Inter_Materials[j][i] = Inter_Materials[i][j] = audio::createSample(oss.str());
 		}
 	}
 	
