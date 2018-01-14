@@ -695,18 +695,19 @@ static bool HandleGameFlowTransitions() {
 	if(GameFlow::getTransition() == GameFlow::LoadingScreen) {
 		ARX_INTERFACE_KillFISHTANK();
 		ARX_INTERFACE_KillARKANE();
-		char loadfrom[256];
 		
 		benchmark::begin(benchmark::LoadLevel);
 		
 		ARX_CHANGELEVEL_StartNew();
 		
-		sprintf(loadfrom, "graph/levels/level%d/level%d.dlf", LEVEL_TO_LOAD, LEVEL_TO_LOAD);
+		std::ostringstream oss;
+		oss << "graph/levels/level" << LEVEL_TO_LOAD << "/level" << LEVEL_TO_LOAD << ".dlf";
+		
 		progressBarReset();
 		progressBarSetTotal(108);
 		LoadLevelScreen(LEVEL_TO_LOAD);
 
-		DanaeLoadLevel(loadfrom);
+		DanaeLoadLevel(oss.str());
 		GameFlow::setTransition(GameFlow::InGame);
 		return false;
 	}
