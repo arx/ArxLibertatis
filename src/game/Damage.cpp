@@ -235,7 +235,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 	if(elapsed > GameDurationMs(500)) {
 		entities.player()->ouch_time = g_gameTime.now();
 		char tex[32];
-		sprintf(tex, "%5.2f", double(entities.player()->dmg_sum));
+		sprintf(tex, "%.2f", double(entities.player()->dmg_sum));
 		SendIOScriptEvent(sender, entities.player(), SM_OUCH, tex);
 		float power = entities.player()->dmg_sum / player.lifePool.max * 220.f;
 		AddQuakeFX(power * 3.5f, 500 + power * 3, Random::getf(200.f, 300.f) + power, false);
@@ -442,7 +442,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	if(elapsed > GameDurationMs(500)) {
 		io->ouch_time = g_gameTime.now();
 		char tex[32];
-		sprintf(tex, "%5.2f", double(io->dmg_sum));
+		sprintf(tex, "%.2f", double(io->dmg_sum));
 		SendIOScriptEvent(sender, io, SM_OUCH, tex);
 		io->dmg_sum = 0.f;
 	}
@@ -725,7 +725,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		
 		io->ouch_time = g_gameTime.now();
 		char tex[32];
-		sprintf(tex, "%5.2f", double(io->dmg_sum));
+		sprintf(tex, "%.2f", double(io->dmg_sum));
 		
 		ScriptParameters parameters(tex);
 		if(sender && sender->summoner == EntityHandle_Player) {
