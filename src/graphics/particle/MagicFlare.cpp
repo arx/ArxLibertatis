@@ -20,6 +20,7 @@
 #include "graphics/particle/MagicFlare.h"
 
 #include <cstdio>
+#include <sstream>
 
 #include "core/Application.h"
 #include "core/Core.h"
@@ -75,10 +76,11 @@ void MagicFlareLoadTextures() {
 	g_magicFlareTextures.lumignon2 = TextureContainer::LoadUI("graph/particles/lumignon2", flags);
 	g_magicFlareTextures.plasm = TextureContainer::LoadUI("graph/particles/plasm", flags);
 	
-	char temp[256];
-	for(long i = 1; i < 10; i++) {
-		sprintf(temp, "graph/particles/shine%ld", i);
-		g_magicFlareTextures.shine[i] = TextureContainer::LoadUI(temp, flags);
+	std::ostringstream oss;
+	for(size_t i = 1; i < 10; i++) {
+		oss.str(std::string());
+		oss << "graph/particles/shine" << i;
+		g_magicFlareTextures.shine[i] = TextureContainer::LoadUI(oss.str(), flags);
 	}
 	
 }
