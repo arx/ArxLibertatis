@@ -478,7 +478,8 @@ public:
 	{ }
 	template <typename T>
 	/* implicit */ ScriptParameters(T parameter,
-	                                typename boost::enable_if_c<std::numeric_limits<T>::is_specialized, bool>::type = true)
+	                                typename boost::enable_if_c<std::numeric_limits<T>::is_specialized, bool>::type
+	                                /* enable */ = true)
 		: std::vector<std::string>(1, boost::lexical_cast<std::string>(parameter))
 		, m_peekOnly(false)
 	{ }
