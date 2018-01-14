@@ -1396,18 +1396,16 @@ const char * ARX_MATERIAL_GetNameById(Material id) {
 	}
 	return "none";
 }
-static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const char * name)
-{
-	char path[256];
 
-	for (size_t i = 0; i < MAX_VARIANTS; i++)
-	{
-		sprintf(path, "%s_%lu.wav", name, (unsigned long)(i + 1));
-		Inter_Materials[mat1][mat2][i] = audio::createSample(path);
-
-		if (mat1 != mat2)
-			Inter_Materials[mat2][mat1][i] = Inter_Materials[mat1][mat2][i];
+static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const char * name) {
+	
+	std::ostringstream oss;
+	for(size_t i = 0; i < MAX_VARIANTS; i++) {
+		oss.str(std::string());
+		oss << name << '_' << (i + 1) << ".wav";
+		Inter_Materials[mat2][mat1][i] = Inter_Materials[mat1][mat2][i] = audio::createSample(oss.str());
 	}
+	
 }
 
 static void ARX_SOUND_CreateCollisionMaps() {
