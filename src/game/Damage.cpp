@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits>
 #include <string>
 #include <vector>
+#include <sstream>
 
 #include "ai/Paths.h"
 
@@ -213,6 +214,17 @@ void ARX_DAMAGE_Show_Hit_Blood()
 	Last_Blood_Pos = Blood_Pos;
 }
 
+static ScriptParameters getOuchEventParameter(const Entity * entity) {
+	
+	std::ostringstream oss;
+	oss.setf(std::ios_base::fixed, std::ios_base::floatfield);
+	oss.precision(2);
+	
+	oss << entity->dmg_sum;
+	
+	return oss.str();
+}
+
 float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) {
 	if (player.playerflags & PLAYERFLAGS_INVULNERABILITY)
 		return 0;
@@ -234,9 +246,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 	GameDuration elapsed = g_gameTime.now() - entities.player()->ouch_time;
 	if(elapsed > GameDurationMs(500)) {
 		entities.player()->ouch_time = g_gameTime.now();
-		char tex[32];
-		sprintf(tex, "%.2f", double(entities.player()->dmg_sum));
-		SendIOScriptEvent(sender, entities.player(), SM_OUCH, tex);
+		SendIOScriptEvent(sender, entities.player(), SM_OUCH, getOuchEventParameter(entities.player()));
 		float power = entities.player()->dmg_sum / player.lifePool.max * 220.f;
 		AddQuakeFX(power * 3.5f, 500 + power * 3, Random::getf(200.f, 300.f) + power, false);
 		entities.player()->dmg_sum = 0.f;
@@ -441,9 +451,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	GameDuration elapsed = g_gameTime.now() - io->ouch_time;
 	if(elapsed > GameDurationMs(500)) {
 		io->ouch_time = g_gameTime.now();
-		char tex[32];
-		sprintf(tex, "%.2f", double(io->dmg_sum));
-		SendIOScriptEvent(sender, io, SM_OUCH, tex);
+		SendIOScriptEvent(sender, io, SM_OUCH, getOuchEventParameter(io));
 		io->dmg_sum = 0.f;
 	}
 	
@@ -724,10 +732,8 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		Entity * sender = ValidIONum(source) ? entities[source] : NULL;
 		
 		io->ouch_time = g_gameTime.now();
-		char tex[32];
-		sprintf(tex, "%.2f", double(io->dmg_sum));
 		
-		ScriptParameters parameters(tex);
+		ScriptParameters parameters = getOuchEventParameter(io);
 		if(sender && sender->summoner == EntityHandle_Player) {
 			sender = entities.player();
 			parameters.push_back("summoned");
