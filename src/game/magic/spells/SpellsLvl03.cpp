@@ -320,9 +320,9 @@ void FireballSpell::Update() {
 		//m_duration = std::min(ulCurrentTime + 1500, m_duration);
 		
 		DoSphericDamage(Sphere(eCurPos, 30.f * m_level), 3.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
-		m_duration = 0;
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
 		ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
+		requestEnd();
 	}
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, eCurPos);
