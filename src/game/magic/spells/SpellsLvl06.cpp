@@ -346,9 +346,8 @@ void CreateFieldSpell::Update() {
 	if(io) {
 		io->pos = m_field.eSrc;
 		
-		if (IsAnyNPCInPlatform(io))
-		{
-			m_duration = 0;
+		if(IsAnyNPCInPlatform(io)) {
+			requestEnd();
 		}
 		
 		m_field.Update(g_gameTime.lastFrameDuration());
