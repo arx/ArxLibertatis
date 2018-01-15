@@ -328,10 +328,9 @@ void CreateFieldSpell::Launch() {
 		}
 		
 	} else {
-		//make the spell end in ARX_SPELLS_Update()
-		m_duration = 0;
-		m_hasDuration = true;
+		requestEnd();
 	}
+	
 }
 
 void CreateFieldSpell::End() {
