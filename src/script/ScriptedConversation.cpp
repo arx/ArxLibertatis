@@ -264,7 +264,7 @@ class SpeakCommand : public Command {
 		}
 	}
 	
-	static void parseParams(CinematicSpeech & acs, Context & context, bool player) {
+	static void parseParams(CinematicSpeech & acs, Context & context, Entity * speaker) {
 		
 		std::string target = context.getWord();
 		Entity * t = entities.getById(target, context.getEntity());
@@ -273,11 +273,7 @@ class SpeakCommand : public Command {
 		acs.startpos = context.getFloat();
 		acs.endpos = context.getFloat();
 		
-		if(player) {
-			computeACSPos(acs, entities.player(), acs.ionum);
-		} else {
-			computeACSPos(acs, context.getEntity(), acs.ionum);
-		}
+		computeACSPos(acs, speaker, acs.ionum);
 	}
 	
 public:
@@ -290,15 +286,18 @@ public:
 		acs.type = ARX_CINE_SPEECH_NONE;
 		
 		Entity * io = context.getEntity();
+		Entity * speaker = context.getEntity();
 		
-		bool player = false, unbreakable = false;
+		bool unbreakable = false;
 		SpeechFlags voixoff = 0;
 		AnimationNumber mood = ANIM_TALK_NEUTRAL;
 		HandleFlags("tuphaoc") {
 			
 			voixoff |= (flg & flag('t')) ? ARX_SPEECH_FLAG_NOTEXT : SpeechFlags(0);
 			unbreakable = test_flag(flg, 'u');
-			player = test_flag(flg, 'p');
+			if(flg & flag('p')) {
+				speaker = entities.player();
+			}
 			if(flg & flag('h')) {
 				mood = ANIM_TALK_HAPPY;
 			}
@@ -330,23 +329,19 @@ public:
 					acs.startpos = context.getFloat();
 					acs.endpos = context.getFloat();
 					acs.ionum = (io == NULL) ? EntityHandle() : io->index();
-					if(player) {
-						computeACSPos(acs, entities.player(), acs.ionum);
-					} else {
-						computeACSPos(acs, io, EntityHandle());
-					}
+					computeACSPos(acs, speaker, acs.ionum);
 					
 				} else if(command == "ccctalker_l" || command == "ccctalker_r") {
 					acs.type = (command == "ccctalker_r") ? ARX_CINE_SPEECH_CCCTALKER_R : ARX_CINE_SPEECH_CCCTALKER_L;
-					parseParams(acs, context, player);
+					parseParams(acs, context, speaker);
 					
 				} else if(command == "ccclistener_l" || command == "ccclistener_r") {
 					acs.type = (command == "ccclistener_r") ? ARX_CINE_SPEECH_CCCLISTENER_R :  ARX_CINE_SPEECH_CCCLISTENER_L;
-					parseParams(acs, context, player);
+					parseParams(acs, context, speaker);
 					
 				} else if(command == "side" || command == "side_l" || command == "side_r") {
 					acs.type = (command == "side_l") ? ARX_CINE_SPEECH_SIDE_LEFT : ARX_CINE_SPEECH_SIDE;
-					parseParams(acs, context, player);
+					parseParams(acs, context, speaker);
 					acs.m_startdist = context.getFloat(); // startdist
 					acs.m_enddist = context.getFloat(); // enddist
 					acs.m_heightModifier = context.getFloat(); // height modifier
@@ -383,12 +378,7 @@ public:
 			voixoff |= ARX_SPEECH_FLAG_NOTEXT;
 		}
 		
-		long speechnum;
-		if(player) {
-			speechnum = ARX_SPEECH_AddSpeech(entities.player(), data, mood, voixoff);
-		} else {
-			speechnum = ARX_SPEECH_AddSpeech(io, data, mood, voixoff);
-		}
+		long speechnum = ARX_SPEECH_AddSpeech(speaker, data, mood, voixoff);
 		if(speechnum < 0) {
 			return Failed;
 		}
