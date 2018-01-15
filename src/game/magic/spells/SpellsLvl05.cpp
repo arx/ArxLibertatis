@@ -145,7 +145,7 @@ void RuneOfGuardingSpell::Update() {
 		DoSphericDamage(Sphere(m_pos, 30.f * m_level), 4.f * m_level,
 		                DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 		ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING_END, &m_pos);
-		m_duration = 0;
+		requestEnd();
 	}
 }
 
