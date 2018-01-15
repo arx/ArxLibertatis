@@ -313,7 +313,7 @@ void MagicMissileSpell::Update() {
 			}
 		}
 		if(nbmissiles == 0) {
-			m_duration = 0;
+			requestEnd();
 		}
 	}
 	
