@@ -498,6 +498,9 @@ public:
 	/*!
 	 * Sets if execution should abort as soon as a command is reached that would modify any state.
 	 *
+	 * Speech commands are not considered to modify state for this purpose unless they are chanined with
+	 * other commands.
+	 *
 	 * If such a command is reached the script result will be \ref DESTRUCTIVE.
 	 */
 	void setPeekOnly(bool enable = true) { m_peekOnly = enable; }

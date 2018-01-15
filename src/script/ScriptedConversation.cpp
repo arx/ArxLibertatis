@@ -402,6 +402,41 @@ public:
 		return Success;
 	}
 	
+	Result peek(Context & context) {
+		
+		HandleFlags("tuphaoc") {
+			
+			if(flg & flag('c')) {
+				CinematicSpeech acs;
+				parseCinematicSpeech(acs, context, context.getEntity());
+			}
+			
+		}
+		
+		std::string text = context.getWord();
+		
+		if(text == "killall") {
+			return Success;
+		}
+		
+		std::string data = loadUnlocalized(context.getStringVar(text));
+		
+		if(data.empty()) {
+			return Success;
+		}
+		
+		std::string command = context.getCommand(false);
+		
+		size_t onspeechend = context.skipCommand();
+		
+		if((!command.empty() && command != "nop") || onspeechend != size_t(-1)) {
+			LogWarning << onspeechend;
+			return AbortDestructive;
+		}
+		
+		return Success;
+	}
+	
 };
 
 class SetStrikeSpeechCommand : public Command {
