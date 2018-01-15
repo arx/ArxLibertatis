@@ -247,9 +247,11 @@ void SummonCreatureSpell::Update() {
 				
 			}
 		}
+		
 	} else if(m_summonedEntity == EntityHandle()) {
-		m_duration = 0;
+		requestEnd();
 	}
+	
 }
 
 bool FakeSummonSpell::CanLaunch() {
