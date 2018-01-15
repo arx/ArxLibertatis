@@ -276,6 +276,48 @@ class SpeakCommand : public Command {
 		computeACSPos(acs, speaker, acs.ionum);
 	}
 	
+	void parseCinematicSpeech(CinematicSpeech & acs, Context & context, Entity * speaker) {
+		
+		std::string command = context.getWord();
+		
+		if(command == "keep") {
+			acs.type = ARX_CINE_SPEECH_KEEP;
+			acs.pos1 = LASTCAMPOS;
+			acs.pos2.x = LASTCAMANGLE.getPitch();
+			acs.pos2.y = LASTCAMANGLE.getYaw();
+			acs.pos2.z = LASTCAMANGLE.getRoll();
+			
+		} else if(command == "zoom") {
+			acs.type = ARX_CINE_SPEECH_ZOOM;
+			acs.startangle.setPitch(context.getFloat());
+			acs.startangle.setYaw(context.getFloat());
+			acs.endangle.setPitch(context.getFloat());
+			acs.endangle.setYaw(context.getFloat());
+			acs.startpos = context.getFloat();
+			acs.endpos = context.getFloat();
+			acs.ionum = context.getEntity()->index();
+			computeACSPos(acs, speaker, acs.ionum);
+			
+		} else if(command == "ccctalker_l" || command == "ccctalker_r") {
+			acs.type = (command == "ccctalker_r") ? ARX_CINE_SPEECH_CCCTALKER_R : ARX_CINE_SPEECH_CCCTALKER_L;
+			parseParams(acs, context, speaker);
+			
+		} else if(command == "ccclistener_l" || command == "ccclistener_r") {
+			acs.type = (command == "ccclistener_r") ? ARX_CINE_SPEECH_CCCLISTENER_R :  ARX_CINE_SPEECH_CCCLISTENER_L;
+			parseParams(acs, context, speaker);
+			
+		} else if(command == "side" || command == "side_l" || command == "side_r") {
+			acs.type = (command == "side_l") ? ARX_CINE_SPEECH_SIDE_LEFT : ARX_CINE_SPEECH_SIDE;
+			parseParams(acs, context, speaker);
+			acs.m_startdist = context.getFloat(); // startdist
+			acs.m_enddist = context.getFloat(); // enddist
+			acs.m_heightModifier = context.getFloat(); // height modifier
+		} else {
+			ScriptWarning << "unexpected command: " << command;
+		}
+		
+	}
+	
 public:
 	
 	SpeakCommand() : Command("speak") { }
@@ -310,46 +352,9 @@ public:
 			voixoff |= (flg & flag('o')) ? ARX_SPEECH_FLAG_OFFVOICE : SpeechFlags(0);
 			
 			if(flg & flag('c')) {
-				
-				std::string command = context.getWord();
-				
-				if(command == "keep") {
-					acs.type = ARX_CINE_SPEECH_KEEP;
-					acs.pos1 = LASTCAMPOS;
-					acs.pos2.x = LASTCAMANGLE.getPitch();
-					acs.pos2.y = LASTCAMANGLE.getYaw();
-					acs.pos2.z = LASTCAMANGLE.getRoll();
-					
-				} else if(command == "zoom") {
-					acs.type = ARX_CINE_SPEECH_ZOOM;
-					acs.startangle.setPitch(context.getFloat());
-					acs.startangle.setYaw(context.getFloat());
-					acs.endangle.setPitch(context.getFloat());
-					acs.endangle.setYaw(context.getFloat());
-					acs.startpos = context.getFloat();
-					acs.endpos = context.getFloat();
-					acs.ionum = (io == NULL) ? EntityHandle() : io->index();
-					computeACSPos(acs, speaker, acs.ionum);
-					
-				} else if(command == "ccctalker_l" || command == "ccctalker_r") {
-					acs.type = (command == "ccctalker_r") ? ARX_CINE_SPEECH_CCCTALKER_R : ARX_CINE_SPEECH_CCCTALKER_L;
-					parseParams(acs, context, speaker);
-					
-				} else if(command == "ccclistener_l" || command == "ccclistener_r") {
-					acs.type = (command == "ccclistener_r") ? ARX_CINE_SPEECH_CCCLISTENER_R :  ARX_CINE_SPEECH_CCCLISTENER_L;
-					parseParams(acs, context, speaker);
-					
-				} else if(command == "side" || command == "side_l" || command == "side_r") {
-					acs.type = (command == "side_l") ? ARX_CINE_SPEECH_SIDE_LEFT : ARX_CINE_SPEECH_SIDE;
-					parseParams(acs, context, speaker);
-					acs.m_startdist = context.getFloat(); // startdist
-					acs.m_enddist = context.getFloat(); // enddist
-					acs.m_heightModifier = context.getFloat(); // height modifier
-				} else {
-					ScriptWarning << "unexpected command: " << options << ' ' << command;
-				}
-				
+				parseCinematicSpeech(acs, context, speaker);
 			}
+			
 		}
 		
 		std::string text = context.getWord();
