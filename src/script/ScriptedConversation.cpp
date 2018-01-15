@@ -327,7 +327,6 @@ public:
 		CinematicSpeech acs;
 		acs.type = ARX_CINE_SPEECH_NONE;
 		
-		Entity * io = context.getEntity();
 		Entity * speaker = context.getEntity();
 		
 		bool unbreakable = false;
@@ -374,7 +373,7 @@ public:
 		DebugScript(' ' << options << ' ' << data); // TODO debug more
 		
 		if(data.empty()) {
-			ARX_SPEECH_ClearIOSpeech(io);
+			ARX_SPEECH_ClearIOSpeech(context.getEntity());
 			return Success;
 		}
 		
@@ -393,7 +392,7 @@ public:
 		if(onspeechend != size_t(-1)) {
 			aspeech[speechnum].scrpos = onspeechend;
 			aspeech[speechnum].es = context.getScript();
-			aspeech[speechnum].ioscript = io;
+			aspeech[speechnum].ioscript = context.getEntity();
 			if(unbreakable) {
 				aspeech[speechnum].flags |= ARX_SPEECH_FLAG_UNBREAKABLE;
 			}
