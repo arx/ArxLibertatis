@@ -213,8 +213,8 @@ fi
 
 cleanup_functions='' # List of functions to be run on exit
 
-# Add a function to ron on exit.
-# Functions are un in the order they are added.
+# Add a function to run on exit.
+# Functions are run in the order they are added.
 # Usage: on_exit <code>
 # Cleanup functions will receive one argument: the exit message if any or an empty string.
 on_exit() {
