@@ -204,7 +204,7 @@ void RiseDeadSpell::Update() {
 		} else {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 			m_creationFailed = true;
-			m_duration = 0;
+			requestEnd();
 		}
 	} else if(!g_gameTime.isPaused() && tim < GameDurationMs(4000)) {
 		if(Random::getf() > 0.95f) {
