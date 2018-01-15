@@ -457,6 +457,7 @@ size_t initSuppressions() {
 	
 	suppress("akbaa_tentacle", 2428, "?"); // unexpected newline (newline inside command)
 	suppress("akbaa_tentacle", 3420, "?"); // unexpected newline (newline inside command)
+	suppress("akbaa_tentacle", 3747, "?"); // unexpected newline (missing parameter)
 	suppress("akbaa_tentacle", 3747, "dodamage"); // missing target parameter
 	
 	suppress("axe_2handed", 26, "settwohanded"); // obsolete command
