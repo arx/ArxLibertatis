@@ -151,6 +151,11 @@ public:
 	void updateCasterHand();
 	void updateCasterPosition();
 	
+	void requestEnd() {
+		m_hasDuration = true;
+		m_duration = 0;
+	}
+	
 	SpellHandle m_thisHandle;
 	
 	EntityHandle m_caster; //!< Number of the source interactive obj (0==player)
