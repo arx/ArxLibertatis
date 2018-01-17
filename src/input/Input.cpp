@@ -1023,88 +1023,88 @@ bool Input::actionPressed(ControlAction actionId) const {
 				continue;
 			}
 			
-				if(key & Mouse::ButtonBase) {
-					if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
+			if(key & Mouse::ButtonBase) {
+				if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
+					return true;
+				}
+			} else if(key & Mouse::WheelBase) {
+				if (key == Mouse::Wheel_Down) {
+					if(getMouseWheelDir() < 0)
 						return true;
-					}
-				} else if(key & Mouse::WheelBase) {
-					if (key == Mouse::Wheel_Down) {
-						if(getMouseWheelDir() < 0)
-							return true;
+				} else {
+					if(getMouseWheelDir() > 0)
+						return true;
+				}
+			} else {
+				bool bCombine = true;
+				
+				if(key & INPUT_COMBINATION_MASK) {
+					if(!isKeyPressed((key >> 16) & 0xFFFF))
+						bCombine = false;
+				}
+				
+				if(isKeyPressed(key & 0xFFFF)) {
+					bool bQuit = false;
+					
+					if(actionId == CONTROLS_CUST_MAGICMODE) {
+						if(bCombine) {
+							if(!uiOneHandedMagicMode) {
+								uiOneHandedMagicMode = 1;
+							} else {
+								if(uiOneHandedMagicMode == 2) {
+									uiOneHandedMagicMode = 3;
+								}
+							}
+							
+							bQuit = true;
+						}
+					} else if(actionId == CONTROLS_CUST_STEALTHMODE) {
+						if(bCombine) {
+							if(!uiOneHandedStealth) {
+								uiOneHandedStealth = 1;
+							} else {
+								if(uiOneHandedStealth == 2) {
+									uiOneHandedStealth = 3;
+								}
+							}
+							
+							bQuit = true;
+						}
 					} else {
-						if(getMouseWheelDir() > 0)
-							return true;
+						return bCombine;
+					}
+					
+					if(bQuit) {
+						break;
 					}
 				} else {
-					bool bCombine = true;
-					
-					if(key & INPUT_COMBINATION_MASK) {
-						if(!isKeyPressed((key >> 16) & 0xFFFF))
-							bCombine = false;
-					}
-					
-					if(isKeyPressed(key & 0xFFFF)) {
-						bool bQuit = false;
+					if(actionId == CONTROLS_CUST_MAGICMODE) {
+						if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
+							continue;
+						}
 						
-						if(actionId == CONTROLS_CUST_MAGICMODE) {
-							if(bCombine) {
-								if(!uiOneHandedMagicMode) {
-									uiOneHandedMagicMode = 1;
-								} else {
-									if(uiOneHandedMagicMode == 2) {
-										uiOneHandedMagicMode = 3;
-									}
-								}
-								
-								bQuit = true;
-							}
-						} else if(actionId == CONTROLS_CUST_STEALTHMODE) {
-							if(bCombine) {
-								if(!uiOneHandedStealth) {
-									uiOneHandedStealth = 1;
-								} else {
-									if(uiOneHandedStealth == 2) {
-										uiOneHandedStealth = 3;
-									}
-								}
-								
-								bQuit = true;
-							}
+						if(uiOneHandedMagicMode == 1) {
+							uiOneHandedMagicMode = 2;
 						} else {
-							return bCombine;
+							if(uiOneHandedMagicMode == 3) {
+								uiOneHandedMagicMode = 0;
+							}
+						}
+					} else if(actionId == CONTROLS_CUST_STEALTHMODE) {
+						if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
+							continue;
 						}
 						
-						if(bQuit) {
-							break;
-						}
-					} else {
-						if(actionId == CONTROLS_CUST_MAGICMODE) {
-							if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
-								continue;
-							}
-							
-							if(uiOneHandedMagicMode == 1) {
-								uiOneHandedMagicMode = 2;
-							} else {
-								if(uiOneHandedMagicMode == 3) {
-									uiOneHandedMagicMode = 0;
-								}
-							}
-						} else if(actionId == CONTROLS_CUST_STEALTHMODE) {
-							if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
-								continue;
-							}
-							
-							if(uiOneHandedStealth == 1) {
-								uiOneHandedStealth = 2;
-							} else {
-								if(uiOneHandedStealth == 3) {
-									uiOneHandedStealth = 0;
-								}
+						if(uiOneHandedStealth == 1) {
+							uiOneHandedStealth = 2;
+						} else {
+							if(uiOneHandedStealth == 3) {
+								uiOneHandedStealth = 0;
 							}
 						}
 					}
 				}
+			}
 			
 		}
 		
@@ -1117,6 +1117,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 				return true;
 			}
 		}
+		
 	} else {
 		for(int j = 0; j < 2; j++) {
 			
@@ -1125,31 +1126,32 @@ bool Input::actionPressed(ControlAction actionId) const {
 				continue;
 			}
 			
-				if(key & Mouse::ButtonBase) {
-					if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
-						return true;
-					}
-				} else if(key & Mouse::WheelBase) {
-					if(key == Mouse::Wheel_Down) {
-						if(getMouseWheelDir() < 0)
-							return true;
-					} else {
-						if(getMouseWheelDir() > 0)
-							return true;
-					}
-				} else {
-					bool bCombine = true;
-					
-					if(key & INPUT_COMBINATION_MASK) {
-						if(!isKeyPressed((key >> 16) & 0xFFFF))
-							bCombine = false;
-					}
-					
-					if(isKeyPressed(key & 0xFFFF))
-						return bCombine;
+			if(key & Mouse::ButtonBase) {
+				if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
+					return true;
 				}
+			} else if(key & Mouse::WheelBase) {
+				if(key == Mouse::Wheel_Down) {
+					if(getMouseWheelDir() < 0)
+						return true;
+				} else {
+					if(getMouseWheelDir() > 0)
+						return true;
+				}
+			} else {
+				bool bCombine = true;
+				
+				if(key & INPUT_COMBINATION_MASK) {
+					if(!isKeyPressed((key >> 16) & 0xFFFF))
+						bCombine = false;
+				}
+				
+				if(isKeyPressed(key & 0xFFFF))
+					return bCombine;
+			}
 			
 		}
+		
 	}
 	
 	return false;
