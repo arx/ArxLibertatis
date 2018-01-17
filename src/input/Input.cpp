@@ -1001,6 +1001,7 @@ bool Input::actionNowPressed(ControlAction actionId) const {
 		if(isKeyPressedNowPressed(key & INPUT_KEYBOARD_MASK)) {
 			return bCombine;
 		}
+		
 	}
 	
 	return false;
@@ -1039,13 +1040,13 @@ bool Input::actionPressed(ControlAction actionId) const {
 			}
 			
 			bool bCombine = true;
-			
 			if(key & INPUT_COMBINATION_MASK) {
-				if(!isKeyPressed((key >> 16) & 0xFFFF))
+				if(!isKeyPressed((key >> 16) & INPUT_KEYBOARD_MASK)) {
 					bCombine = false;
+				}
 			}
 			
-			if(isKeyPressed(key & 0xFFFF)) {
+			if(isKeyPressed(key & INPUT_KEYBOARD_MASK)) {
 				bool bQuit = false;
 				
 				if(actionId == CONTROLS_CUST_MAGICMODE) {
@@ -1143,14 +1144,15 @@ bool Input::actionPressed(ControlAction actionId) const {
 			}
 			
 			bool bCombine = true;
-			
 			if(key & INPUT_COMBINATION_MASK) {
-				if(!isKeyPressed((key >> 16) & 0xFFFF))
+				if(!isKeyPressed((key >> 16) & INPUT_KEYBOARD_MASK)) {
 					bCombine = false;
+				}
 			}
 			
-			if(isKeyPressed(key & 0xFFFF))
+			if(isKeyPressed(key & INPUT_KEYBOARD_MASK)) {
 				return bCombine;
+			}
 			
 		}
 		
@@ -1189,6 +1191,7 @@ bool Input::actionNowReleased(ControlAction actionId) const {
 		if(isKeyPressedNowUnPressed(key & INPUT_KEYBOARD_MASK)) {
 			return bCombine;
 		}
+		
 	}
 	
 	return false;
