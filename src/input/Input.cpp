@@ -1016,98 +1016,98 @@ bool Input::actionPressed(ControlAction actionId) const {
 		return false;
 	}
 	
-		for(size_t j = 0; j < ARRAY_SIZE(config.actions[actionId].key); j++) {
-			
-			InputKeyId key = config.actions[actionId].key[j];
-			if(key == -1) {
-				continue;
-			}
-			
-			if(key & Mouse::ButtonBase) {
-				if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
-					return true;
-				}
-				continue;
-			}
-			
-			if(key & Mouse::WheelBase) {
-				if((key == Mouse::Wheel_Down) ? (getMouseWheelDir() < 0) : (getMouseWheelDir() > 0)) {
-					return true;
-				}
-				continue;
-			}
-			
-			bool bCombine = true;
-			if(key & INPUT_COMBINATION_MASK) {
-				if(!isKeyPressed((key >> 16) & INPUT_KEYBOARD_MASK)) {
-					bCombine = false;
-				}
-			}
-			
-			if(isKeyPressed(key & INPUT_KEYBOARD_MASK)) {
-				bool bQuit = false;
-				
-				if(config.misc.forceToggle && actionId == CONTROLS_CUST_MAGICMODE) {
-					if(bCombine) {
-						if(!uiOneHandedMagicMode) {
-							uiOneHandedMagicMode = 1;
-						} else {
-							if(uiOneHandedMagicMode == 2) {
-								uiOneHandedMagicMode = 3;
-							}
-						}
-						
-						bQuit = true;
-					}
-				} else if(config.misc.forceToggle && actionId == CONTROLS_CUST_STEALTHMODE) {
-					if(bCombine) {
-						if(!uiOneHandedStealth) {
-							uiOneHandedStealth = 1;
-						} else {
-							if(uiOneHandedStealth == 2) {
-								uiOneHandedStealth = 3;
-							}
-						}
-						
-						bQuit = true;
-					}
-				} else {
-					return bCombine;
-				}
-				
-				if(bQuit) {
-					break;
-				}
-				
-			} else if(config.misc.forceToggle) {
-				if(actionId == CONTROLS_CUST_MAGICMODE) {
-					if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
-						continue;
-					}
-					
-					if(uiOneHandedMagicMode == 1) {
-						uiOneHandedMagicMode = 2;
-					} else {
-						if(uiOneHandedMagicMode == 3) {
-							uiOneHandedMagicMode = 0;
-						}
-					}
-				} else if(actionId == CONTROLS_CUST_STEALTHMODE) {
-					if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
-						continue;
-					}
-					
-					if(uiOneHandedStealth == 1) {
-						uiOneHandedStealth = 2;
-					} else {
-						if(uiOneHandedStealth == 3) {
-							uiOneHandedStealth = 0;
-						}
-					}
-				}
-			}
-			
+	for(size_t j = 0; j < ARRAY_SIZE(config.actions[actionId].key); j++) {
+		
+		InputKeyId key = config.actions[actionId].key[j];
+		if(key == -1) {
+			continue;
 		}
+		
+		if(key & Mouse::ButtonBase) {
+			if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
+				return true;
+			}
+			continue;
+		}
+		
+		if(key & Mouse::WheelBase) {
+			if((key == Mouse::Wheel_Down) ? (getMouseWheelDir() < 0) : (getMouseWheelDir() > 0)) {
+				return true;
+			}
+			continue;
+		}
+		
+		bool bCombine = true;
+		if(key & INPUT_COMBINATION_MASK) {
+			if(!isKeyPressed((key >> 16) & INPUT_KEYBOARD_MASK)) {
+				bCombine = false;
+			}
+		}
+		
+		if(isKeyPressed(key & INPUT_KEYBOARD_MASK)) {
+			bool bQuit = false;
+			
+			if(config.misc.forceToggle && actionId == CONTROLS_CUST_MAGICMODE) {
+				if(bCombine) {
+					if(!uiOneHandedMagicMode) {
+						uiOneHandedMagicMode = 1;
+					} else {
+						if(uiOneHandedMagicMode == 2) {
+							uiOneHandedMagicMode = 3;
+						}
+					}
+				
+					bQuit = true;
+				}
+			} else if(config.misc.forceToggle && actionId == CONTROLS_CUST_STEALTHMODE) {
+				if(bCombine) {
+					if(!uiOneHandedStealth) {
+						uiOneHandedStealth = 1;
+					} else {
+						if(uiOneHandedStealth == 2) {
+							uiOneHandedStealth = 3;
+						}
+					}
+					
+					bQuit = true;
+				}
+			} else {
+				return bCombine;
+			}
+			
+			if(bQuit) {
+				break;
+			}
+			
+		} else if(config.misc.forceToggle) {
+			if(actionId == CONTROLS_CUST_MAGICMODE) {
+				if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
+					continue;
+				}
+				
+				if(uiOneHandedMagicMode == 1) {
+					uiOneHandedMagicMode = 2;
+				} else {
+					if(uiOneHandedMagicMode == 3) {
+						uiOneHandedMagicMode = 0;
+					}
+				}
+			} else if(actionId == CONTROLS_CUST_STEALTHMODE) {
+				if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
+					continue;
+				}
+				
+				if(uiOneHandedStealth == 1) {
+					uiOneHandedStealth = 2;
+				} else {
+					if(uiOneHandedStealth == 3) {
+						uiOneHandedStealth = 0;
+					}
+				}
+			}
+		}
+		
+	}
 	
 	
 	if(config.misc.forceToggle) {
