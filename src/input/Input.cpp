@@ -1045,7 +1045,6 @@ bool Input::actionPressed(ControlAction actionId) const {
 		}
 		
 		if(isKeyPressed(key & INPUT_KEYBOARD_MASK)) {
-			bool bQuit = false;
 			
 			if(config.misc.forceToggle && actionId == CONTROLS_CUST_MAGICMODE) {
 				if(bCombine) {
@@ -1057,7 +1056,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 						}
 					}
 				
-					bQuit = true;
+					break;
 				}
 			} else if(config.misc.forceToggle && actionId == CONTROLS_CUST_STEALTHMODE) {
 				if(bCombine) {
@@ -1069,14 +1068,10 @@ bool Input::actionPressed(ControlAction actionId) const {
 						}
 					}
 					
-					bQuit = true;
+					break;
 				}
 			} else {
 				return bCombine;
-			}
-			
-			if(bQuit) {
-				break;
 			}
 			
 		} else if(config.misc.forceToggle) {
