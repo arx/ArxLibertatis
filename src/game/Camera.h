@@ -57,6 +57,13 @@ struct IO_CAMDATA {
 	bool lastinfovalid;
 	float smoothing;
 	
+	IO_CAMDATA()
+		: lasttarget(Vec3f_ZERO)
+		, translatetarget(Vec3f_ZERO)
+		, lastinfovalid(false)
+		, smoothing(0.f)
+	{ }
+	
 };
 
 struct PreparedCamera {
