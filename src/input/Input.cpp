@@ -1035,7 +1035,9 @@ bool Input::actionPressed(ControlAction actionId) const {
 				if((key == Mouse::Wheel_Down) ? (getMouseWheelDir() < 0) : (getMouseWheelDir() > 0)) {
 					return true;
 				}
-			} else {
+				continue;
+			}
+			
 				bool bCombine = true;
 				
 				if(key & INPUT_COMBINATION_MASK) {
@@ -1104,7 +1106,6 @@ bool Input::actionPressed(ControlAction actionId) const {
 						}
 					}
 				}
-			}
 			
 		}
 		
@@ -1138,7 +1139,9 @@ bool Input::actionPressed(ControlAction actionId) const {
 				if((key == Mouse::Wheel_Down) ? (getMouseWheelDir() < 0) : (getMouseWheelDir() > 0)) {
 					return true;
 				}
-			} else {
+				continue;
+			}
+			
 				bool bCombine = true;
 				
 				if(key & INPUT_COMBINATION_MASK) {
@@ -1148,7 +1151,6 @@ bool Input::actionPressed(ControlAction actionId) const {
 				
 				if(isKeyPressed(key & 0xFFFF))
 					return bCombine;
-			}
 			
 		}
 		
