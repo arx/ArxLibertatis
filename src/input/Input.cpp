@@ -1017,13 +1017,16 @@ bool Input::actionPressed(ControlAction actionId) const {
 	
 	if(config.misc.forceToggle) {
 		for(int j = 0; j < 2; j++) {
-			if(config.actions[actionId].key[j] != -1) {
-				if(config.actions[actionId].key[j] & Mouse::ButtonBase) {
-					if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(config.actions[actionId].key[j])) {
+			
+			InputKeyId key = config.actions[actionId].key[j];
+			
+			if(key != -1) {
+				if(key & Mouse::ButtonBase) {
+					if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
 						return true;
 					}
-				} else if(config.actions[actionId].key[j] & Mouse::WheelBase) {
-					if (config.actions[actionId].key[j] == Mouse::Wheel_Down) {
+				} else if(key & Mouse::WheelBase) {
+					if (key == Mouse::Wheel_Down) {
 						if(getMouseWheelDir() < 0)
 							return true;
 					} else {
@@ -1033,12 +1036,12 @@ bool Input::actionPressed(ControlAction actionId) const {
 				} else {
 					bool bCombine = true;
 					
-					if(config.actions[actionId].key[j] & INPUT_COMBINATION_MASK) {
-						if(!isKeyPressed((config.actions[actionId].key[j] >> 16) & 0xFFFF))
+					if(key & INPUT_COMBINATION_MASK) {
+						if(!isKeyPressed((key >> 16) & 0xFFFF))
 							bCombine = false;
 					}
 					
-					if(isKeyPressed(config.actions[actionId].key[j] & 0xFFFF)) {
+					if(isKeyPressed(key & 0xFFFF)) {
 						bool bQuit = false;
 						
 						if(actionId == CONTROLS_CUST_MAGICMODE) {
@@ -1114,13 +1117,16 @@ bool Input::actionPressed(ControlAction actionId) const {
 		}
 	} else {
 		for(int j = 0; j < 2; j++) {
-			if(config.actions[actionId].key[j] != -1) {
-				if(config.actions[actionId].key[j] & Mouse::ButtonBase) {
-					if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(config.actions[actionId].key[j])) {
+			
+			InputKeyId key = config.actions[actionId].key[j];
+			
+			if(key != -1) {
+				if(key & Mouse::ButtonBase) {
+					if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
 						return true;
 					}
-				} else if(config.actions[actionId].key[j] & Mouse::WheelBase) {
-					if(config.actions[actionId].key[j] == Mouse::Wheel_Down) {
+				} else if(key & Mouse::WheelBase) {
+					if(key == Mouse::Wheel_Down) {
 						if(getMouseWheelDir() < 0)
 							return true;
 					} else {
@@ -1130,12 +1136,12 @@ bool Input::actionPressed(ControlAction actionId) const {
 				} else {
 					bool bCombine = true;
 					
-					if(config.actions[actionId].key[j] & INPUT_COMBINATION_MASK) {
-						if(!isKeyPressed((config.actions[actionId].key[j] >> 16) & 0xFFFF))
+					if(key & INPUT_COMBINATION_MASK) {
+						if(!isKeyPressed((key >> 16) & 0xFFFF))
 							bCombine = false;
 					}
 					
-					if(isKeyPressed(config.actions[actionId].key[j] & 0xFFFF))
+					if(isKeyPressed(key & 0xFFFF))
 						return bCombine;
 				}
 			}
