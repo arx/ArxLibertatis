@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/GameTime.h"
 #include "graphics/Math.h"
+#include "gui/Menu.h"
 #include "input/InputBackend.h"
 #include "io/log/Logger.h"
 #include "window/RenderWindow.h"
@@ -977,7 +978,7 @@ bool Input::actionNowPressed(ControlAction actionId) const {
 		}
 		
 		if(key & Mouse::ButtonBase) {
-			if(getMouseButtonNowPressed(key)) {
+			if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonNowPressed(key)) {
 				return true;
 			}
 			continue;
@@ -1018,8 +1019,9 @@ bool Input::actionPressed(ControlAction actionId) const {
 		for(int j = 0; j < 2; j++) {
 			if(config.actions[actionId].key[j] != -1) {
 				if(config.actions[actionId].key[j] & Mouse::ButtonBase) {
-					if(getMouseButtonRepeat(config.actions[actionId].key[j]))
+					if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(config.actions[actionId].key[j])) {
 						return true;
+					}
 				} else if(config.actions[actionId].key[j] & Mouse::WheelBase) {
 					if (config.actions[actionId].key[j] == Mouse::Wheel_Down) {
 						if(getMouseWheelDir() < 0)
@@ -1114,8 +1116,9 @@ bool Input::actionPressed(ControlAction actionId) const {
 		for(int j = 0; j < 2; j++) {
 			if(config.actions[actionId].key[j] != -1) {
 				if(config.actions[actionId].key[j] & Mouse::ButtonBase) {
-					if(getMouseButtonRepeat(config.actions[actionId].key[j]))
+					if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(config.actions[actionId].key[j])) {
 						return true;
+					}
 				} else if(config.actions[actionId].key[j] & Mouse::WheelBase) {
 					if(config.actions[actionId].key[j] == Mouse::Wheel_Down) {
 						if(getMouseWheelDir() < 0)
@@ -1152,7 +1155,7 @@ bool Input::actionNowReleased(ControlAction actionId) const {
 		}
 		
 		if(key & Mouse::ButtonBase) {
-			if(getMouseButtonNowUnPressed(key)) {
+			if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonNowUnPressed(key)) {
 				return true;
 			}
 			continue;
