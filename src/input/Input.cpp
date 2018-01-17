@@ -1070,7 +1070,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 			
 		} else if(config.misc.forceToggle) {
 			if(actionId == CONTROLS_CUST_MAGICMODE) {
-				if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
+				if(!j && isKeyPressed(config.actions[actionId].key[1] & INPUT_KEYBOARD_MASK)) {
 					continue;
 				}
 				if(uiOneHandedMagicMode == 1) {
@@ -1079,7 +1079,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 					uiOneHandedMagicMode = 0;
 				}
 			} else if(actionId == CONTROLS_CUST_STEALTHMODE) {
-				if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
+				if(!j && isKeyPressed(config.actions[actionId].key[1] & INPUT_KEYBOARD_MASK)) {
 					continue;
 				}
 				if(uiOneHandedStealth == 1) {
