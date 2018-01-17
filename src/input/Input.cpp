@@ -1016,8 +1016,6 @@ bool Input::actionPressed(ControlAction actionId) const {
 		return false;
 	}
 	
-	if(config.misc.forceToggle) {
-		
 		for(size_t j = 0; j < ARRAY_SIZE(config.actions[actionId].key); j++) {
 			
 			InputKeyId key = config.actions[actionId].key[j];
@@ -1049,7 +1047,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 			if(isKeyPressed(key & INPUT_KEYBOARD_MASK)) {
 				bool bQuit = false;
 				
-				if(actionId == CONTROLS_CUST_MAGICMODE) {
+				if(config.misc.forceToggle && actionId == CONTROLS_CUST_MAGICMODE) {
 					if(bCombine) {
 						if(!uiOneHandedMagicMode) {
 							uiOneHandedMagicMode = 1;
@@ -1061,7 +1059,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 						
 						bQuit = true;
 					}
-				} else if(actionId == CONTROLS_CUST_STEALTHMODE) {
+				} else if(config.misc.forceToggle && actionId == CONTROLS_CUST_STEALTHMODE) {
 					if(bCombine) {
 						if(!uiOneHandedStealth) {
 							uiOneHandedStealth = 1;
@@ -1080,7 +1078,8 @@ bool Input::actionPressed(ControlAction actionId) const {
 				if(bQuit) {
 					break;
 				}
-			} else {
+				
+			} else if(config.misc.forceToggle) {
 				if(actionId == CONTROLS_CUST_MAGICMODE) {
 					if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
 						continue;
@@ -1109,6 +1108,9 @@ bool Input::actionPressed(ControlAction actionId) const {
 			}
 			
 		}
+	
+	
+	if(config.misc.forceToggle) {
 		
 		if(actionId == CONTROLS_CUST_MAGICMODE) {
 			if(uiOneHandedMagicMode == 1 || uiOneHandedMagicMode == 2) {
@@ -1118,42 +1120,6 @@ bool Input::actionPressed(ControlAction actionId) const {
 			if(uiOneHandedStealth == 1 || uiOneHandedStealth == 2) {
 				return true;
 			}
-		}
-		
-	} else {
-		
-		for(size_t j = 0; j < ARRAY_SIZE(config.actions[actionId].key); j++) {
-			
-			InputKeyId key = config.actions[actionId].key[j];
-			if(key == -1) {
-				continue;
-			}
-			
-			if(key & Mouse::ButtonBase) {
-				if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
-					return true;
-				}
-				continue;
-			}
-			
-			if(key & Mouse::WheelBase) {
-				if((key == Mouse::Wheel_Down) ? (getMouseWheelDir() < 0) : (getMouseWheelDir() > 0)) {
-					return true;
-				}
-				continue;
-			}
-			
-			bool bCombine = true;
-			if(key & INPUT_COMBINATION_MASK) {
-				if(!isKeyPressed((key >> 16) & INPUT_KEYBOARD_MASK)) {
-					bCombine = false;
-				}
-			}
-			
-			if(isKeyPressed(key & INPUT_KEYBOARD_MASK)) {
-				return bCombine;
-			}
-			
 		}
 		
 	}
