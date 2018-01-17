@@ -2193,7 +2193,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				const ARX_CHANGELEVEL_CAMERA_IO_SAVE * ac;
 				ac = reinterpret_cast<const ARX_CHANGELEVEL_CAMERA_IO_SAVE *>(dat + pos);
 				pos += sizeof(ARX_CHANGELEVEL_CAMERA_IO_SAVE);
-				io->_camdata->cam = ac->cam;
+				*io->_camdata = *ac;
 				break;
 			}
 			
