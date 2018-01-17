@@ -1019,8 +1019,10 @@ bool Input::actionPressed(ControlAction actionId) const {
 		for(int j = 0; j < 2; j++) {
 			
 			InputKeyId key = config.actions[actionId].key[j];
+			if(key == -1) {
+				continue;
+			}
 			
-			if(key != -1) {
 				if(key & Mouse::ButtonBase) {
 					if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
 						return true;
@@ -1103,7 +1105,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 						}
 					}
 				}
-			}
+			
 		}
 		
 		if(actionId == CONTROLS_CUST_MAGICMODE) {
@@ -1119,8 +1121,10 @@ bool Input::actionPressed(ControlAction actionId) const {
 		for(int j = 0; j < 2; j++) {
 			
 			InputKeyId key = config.actions[actionId].key[j];
+			if(key == -1) {
+				continue;
+			}
 			
-			if(key != -1) {
 				if(key & Mouse::ButtonBase) {
 					if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
 						return true;
@@ -1144,7 +1148,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 					if(isKeyPressed(key & 0xFFFF))
 						return bCombine;
 				}
-			}
+			
 		}
 	}
 	
