@@ -1016,7 +1016,8 @@ bool Input::actionPressed(ControlAction actionId) const {
 	}
 	
 	if(config.misc.forceToggle) {
-		for(int j = 0; j < 2; j++) {
+		
+		for(size_t j = 0; j < 2; j++) {
 			
 			InputKeyId key = config.actions[actionId].key[j];
 			if(key == -1) {
@@ -1119,7 +1120,8 @@ bool Input::actionPressed(ControlAction actionId) const {
 		}
 		
 	} else {
-		for(int j = 0; j < 2; j++) {
+		
+		for(size_t j = 0; j < 2; j++) {
 			
 			InputKeyId key = config.actions[actionId].key[j];
 			if(key == -1) {
