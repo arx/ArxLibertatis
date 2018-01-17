@@ -1028,7 +1028,10 @@ bool Input::actionPressed(ControlAction actionId) const {
 				if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
 					return true;
 				}
-			} else if(key & Mouse::WheelBase) {
+				continue;
+			}
+			
+			if(key & Mouse::WheelBase) {
 				if (key == Mouse::Wheel_Down) {
 					if(getMouseWheelDir() < 0)
 						return true;
@@ -1132,7 +1135,10 @@ bool Input::actionPressed(ControlAction actionId) const {
 				if(ARXmenu.mode() != Mode_MainMenu && getMouseButtonRepeat(key)) {
 					return true;
 				}
-			} else if(key & Mouse::WheelBase) {
+				continue;
+			}
+			
+			if(key & Mouse::WheelBase) {
 				if(key == Mouse::Wheel_Down) {
 					if(getMouseWheelDir() < 0)
 						return true;
