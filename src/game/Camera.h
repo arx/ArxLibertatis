@@ -31,6 +31,13 @@ struct Camera {
 	Anglef angle;
 	float cdepth;
 	
+	Camera()
+		: m_pos(Vec3f_ZERO)
+		, focal(0.f)
+		, angle(Anglef::ZERO)
+		, cdepth(0.f)
+	{ }
+	
 	void lookAt(const Vec3f & target) {
 		if(m_pos != target) {
 			angle = getLookAtAngle(m_pos, target);
