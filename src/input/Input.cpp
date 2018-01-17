@@ -1048,26 +1048,20 @@ bool Input::actionPressed(ControlAction actionId) const {
 			
 			if(config.misc.forceToggle && actionId == CONTROLS_CUST_MAGICMODE) {
 				if(bCombine) {
-					if(!uiOneHandedMagicMode) {
+					if(uiOneHandedMagicMode == 0) {
 						uiOneHandedMagicMode = 1;
-					} else {
-						if(uiOneHandedMagicMode == 2) {
-							uiOneHandedMagicMode = 3;
-						}
+					} else if(uiOneHandedMagicMode == 2) {
+						uiOneHandedMagicMode = 3;
 					}
-				
 					break;
 				}
 			} else if(config.misc.forceToggle && actionId == CONTROLS_CUST_STEALTHMODE) {
 				if(bCombine) {
-					if(!uiOneHandedStealth) {
+					if(uiOneHandedStealth == 0) {
 						uiOneHandedStealth = 1;
-					} else {
-						if(uiOneHandedStealth == 2) {
-							uiOneHandedStealth = 3;
-						}
+					} else if(uiOneHandedStealth == 2) {
+						uiOneHandedStealth = 3;
 					}
-					
 					break;
 				}
 			} else {
@@ -1079,31 +1073,24 @@ bool Input::actionPressed(ControlAction actionId) const {
 				if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
 					continue;
 				}
-				
 				if(uiOneHandedMagicMode == 1) {
 					uiOneHandedMagicMode = 2;
-				} else {
-					if(uiOneHandedMagicMode == 3) {
-						uiOneHandedMagicMode = 0;
-					}
+				} else if(uiOneHandedMagicMode == 3) {
+					uiOneHandedMagicMode = 0;
 				}
 			} else if(actionId == CONTROLS_CUST_STEALTHMODE) {
 				if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
 					continue;
 				}
-				
 				if(uiOneHandedStealth == 1) {
 					uiOneHandedStealth = 2;
-				} else {
-					if(uiOneHandedStealth == 3) {
-						uiOneHandedStealth = 0;
-					}
+				} else if(uiOneHandedStealth == 3) {
+					uiOneHandedStealth = 0;
 				}
 			}
 		}
 		
 	}
-	
 	
 	if(config.misc.forceToggle) {
 		
