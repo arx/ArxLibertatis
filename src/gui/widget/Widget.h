@@ -91,8 +91,6 @@ public:
 	
 	MenuButton m_id;
 	
-	SavegameHandle m_savegame;
-	
 	ELEMPOS     ePlace;
 	ELEMSTATE   eState;
 	MENUSTATE   m_targetMenu;

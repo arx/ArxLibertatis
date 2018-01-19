@@ -207,8 +207,12 @@ private:
 class SaveSlotWidget : public TextWidget {
 	
 public:
-	SaveSlotWidget(Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO)
+	
+	SavegameHandle m_savegame;
+	
+	SaveSlotWidget(SavegameHandle savegame, Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO)
 		: TextWidget(font, text, pos)
+		, m_savegame(savegame)
 	{ }
 	
 	virtual ~SaveSlotWidget() { }
@@ -275,13 +279,13 @@ public:
 			std::ostringstream text;
 			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 			
-			SaveSlotWidget * txt = new SaveSlotWidget(hFontControls, text.str(), Vec2f(20, 0));
+			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), hFontControls, text.str(), Vec2f(20, 0));
 			txt->m_id = BUTTON_MENUEDITQUEST_LOAD;
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 			txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
-			txt->m_savegame = SavegameHandle(i);
 			addCenter(txt);
 			m_saveSlotWidgets.push_back(txt);
+			
 		}
 		
 		// Show regular saves.
@@ -294,20 +298,19 @@ public:
 			
 			std::string text = save.name +  "   " + save.time;
 			
-			SaveSlotWidget * txt = new SaveSlotWidget(hFontControls, text, Vec2f(20, 0));
+			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), hFontControls, text, Vec2f(20, 0));
 			txt->m_id = BUTTON_MENUEDITQUEST_LOAD;
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 			txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
-			txt->m_savegame = SavegameHandle(i);
 			addCenter(txt);
 			m_saveSlotWidgets.push_back(txt);
+			
 		}
 		
 		{
 			TextWidget * txt = new TextWidget(hFontControls, std::string(), Vec2f(20, 0));
 			txt->m_targetMenu = Page_SaveConfirm;
 			txt->SetCheckOff();
-			txt->m_savegame = SavegameHandle();
 			addCenter(txt);
 		}
 		
@@ -383,12 +386,14 @@ private:
 		pDeleteConfirm->lColor = Color::grayb(127);
 	}
 	
-	void onClickQuestLoad(TextWidget * txt) {
+	void onClickQuestLoad(TextWidget * widget) {
+		
 		resetSelection();
 		enableLoadDeleteButtons();
 		
-		m_selectedSave = txt->m_savegame;
-		txt->bSelected = true;
+		m_selectedSave = static_cast<SaveSlotWidget *>(widget)->m_savegame;
+		widget->bSelected = true;
+		
 	}
 	
 	void onDoubleClickQuestLoad(TextWidget * txt) {
@@ -462,14 +467,14 @@ public:
 			std::ostringstream text;
 			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 			
-			SaveSlotWidget * txt = new SaveSlotWidget(hFontControls, text.str(), Vec2f(20, 0));
+			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), hFontControls, text.str(), Vec2f(20, 0));
 			txt->m_id = BUTTON_MENUEDITQUEST_SAVEINFO;
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_SaveConfirm;
 			txt->setColor(Color::grayb(127));
 			txt->SetCheckOff();
-			txt->m_savegame = SavegameHandle(i);
 			addCenter(txt);
+			
 		}
 		
 		// Show regular saves.
@@ -482,12 +487,12 @@ public:
 			
 			std::string text = save.name +  "   " + save.time;
 			
-			SaveSlotWidget * txt = new SaveSlotWidget(hFontControls, text, Vec2f(20, 0));
+			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), hFontControls, text, Vec2f(20, 0));
 			txt->m_id = BUTTON_MENUEDITQUEST_SAVEINFO;
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_SaveConfirm;
-			txt->m_savegame = SavegameHandle(i);
 			addCenter(txt);
+			
 		}
 		
 		for(size_t i = savegames.size(); i <= 15; i++) {
@@ -495,19 +500,17 @@ public:
 			std::ostringstream text;
 			text << '-' << std::setfill('0') << std::setw(4) << i << '-';
 			
-			SaveSlotWidget * txt = new SaveSlotWidget(hFontControls, text.str(), Vec2f(20, 0));
+			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(), hFontControls, text.str(), Vec2f(20, 0));
 			txt->m_id = BUTTON_MENUEDITQUEST_SAVEINFO;
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_SaveConfirm;
-			txt->m_savegame = SavegameHandle();
 			addCenter(txt);
+			
 		}
 	
 		{
 			TextWidget * txt = new TextWidget(hFontControls, std::string(), Vec2f(20, 0));
-			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_SaveConfirm;
-			txt->m_savegame = SavegameHandle();
 			txt->SetCheckOff();
 			addCenter(txt);
 		}
@@ -518,12 +521,16 @@ public:
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
+		
 	}
 	
 private:
-	void onClickQuestSaveConfirm(TextWidget * txt) {
-		g_mainMenu->m_window->m_pageSaveConfirm->setSaveHandle(txt->m_savegame);
+	
+	void onClickQuestSaveConfirm(TextWidget * widget) {
+		SavegameHandle slot = static_cast<SaveSlotWidget *>(widget)->m_savegame;
+		g_mainMenu->m_window->m_pageSaveConfirm->setSaveHandle(slot);
 	}
+	
 };
 
 class ChooseLoadOrSaveMenuPage : public MenuPage {
@@ -543,7 +550,6 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&ChooseLoadOrSaveMenuPage::onClickLoad, this);
 			txt->m_targetMenu = Page_Load;
-			txt->m_savegame = SavegameHandle();
 			addCenter(txt, true);
 		}
 		

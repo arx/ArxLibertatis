@@ -27,7 +27,6 @@
 Widget::Widget()
 	: m_rect(0, 0, 0, 0)
 	, m_id(BUTTON_INVALID)
-	, m_savegame(0)
 	, enabled(true)
 	, bCheck(true)
 {
