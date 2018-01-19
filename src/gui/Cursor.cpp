@@ -571,7 +571,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 						if(v > 0.f) {
 							long t = long(v);
 							Vec2f nuberOffset = Vec2f(-16, -10) * iconScale;
-							ARX_INTERFACE_DrawNumber(mousePos + nuberOffset, t, 6, Color::cyan, 1.f);
+							ARX_INTERFACE_DrawNumber(mousePos + nuberOffset, t, 6, Color::cyan, iconScale);
 						}
 					}
 				} else {
