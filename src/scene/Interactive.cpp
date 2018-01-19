@@ -410,54 +410,44 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 }
 
 // First is always the player
-TREATZONE_IO * treatio = NULL;
-long TREATZONE_CUR = 0;
-static long TREATZONE_MAX = 0;
+std::vector<TREATZONE_IO> treatio;
 
 void TREATZONE_Clear() {
-	TREATZONE_CUR = 0;
+	treatio.clear();
 }
 
 void TREATZONE_Release() {
-	free(treatio);
-	treatio = NULL;
-	TREATZONE_MAX = 0;
-	TREATZONE_CUR = 0;
+	treatio.clear();
 }
 
-void TREATZONE_RemoveIO(Entity * io)
-{
-	if(treatio) {
-		for(long i = 0; i < TREATZONE_CUR; i++) {
-			if(treatio[i].io == io) {
-				treatio[i].io = NULL;
-				treatio[i].ioflags = 0;
-				treatio[i].show = 0;
-			}
+void TREATZONE_RemoveIO(Entity * io) {
+	for(size_t i = 0; i < treatio.size(); i++) {
+		if(treatio[i].io == io) {
+			treatio[i].io = NULL;
+			treatio[i].ioflags = 0;
+			treatio[i].show = 0;
 		}
 	}
 }
 
-void TREATZONE_AddIO(Entity * io, bool justCollide)
-{
-	if(TREATZONE_MAX == TREATZONE_CUR) {
-		TREATZONE_MAX++;
-		treatio = (TREATZONE_IO *)realloc(treatio, sizeof(TREATZONE_IO) * TREATZONE_MAX);
-	}
-
-	for(long i = 0; i < TREATZONE_CUR; i++) {
-		if(treatio[i].io == io)
+void TREATZONE_AddIO(Entity * io, bool justCollide) {
+	
+	for(size_t i = 0; i < treatio.size(); i++) {
+		if(treatio[i].io == io) {
 			return;
+		}
 	}
-
-	treatio[TREATZONE_CUR].io = io;
-	treatio[TREATZONE_CUR].ioflags = io->ioflags;
-
-	if(justCollide)
-		treatio[TREATZONE_CUR].ioflags |= IO_JUST_COLLIDE;
-
-	treatio[TREATZONE_CUR].show = io->show;
-	TREATZONE_CUR++;
+	
+	TREATZONE_IO entry;
+	entry.io = io;
+	entry.ioflags = io->ioflags;
+	if(justCollide) {
+		entry.ioflags |= IO_JUST_COLLIDE;
+	}
+	entry.show = io->show;
+	
+	treatio.push_back(entry);
+	
 }
 
 void CheckSetAnimOutOfTreatZone(Entity * io, AnimLayer & layer) {
@@ -610,9 +600,9 @@ void PrepareIOTreatZone(long flag) {
 			}
 		}
 	}
-
-	long M_TREAT = TREATZONE_CUR;
-
+	
+	size_t M_TREAT = treatio.size();
+	
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
@@ -626,7 +616,7 @@ void PrepareIOTreatZone(long flag) {
 
 			bool toadd = false;
 
-			for(long ii = 1; ii < M_TREAT; ii++) {
+			for(size_t ii = 1; ii < M_TREAT; ii++) {
 				Entity * ioo = treatio[ii].io;
 
 				if(ioo) {

@@ -635,7 +635,7 @@ static bool IsFULLObjectVertexInValidPosition(const PHYSICS_BOX_DATA & pbox, EER
 
 static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, Entity * source) {
 	
-	for(long i = 0; i < TREATZONE_CUR; i++) {
+	for(size_t i = 0; i < treatio.size(); i++) {
 
 		if(treatio[i].show != SHOW_FLAG_IN_SCENE || (treatio[i].ioflags & IO_NO_COLLISIONS))
 			continue;

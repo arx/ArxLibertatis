@@ -57,7 +57,7 @@ void ARXDRAW_DrawInterShadows() {
 	
 	g_shadowBatch.clear();
 	
-	for(long i = 0; i < TREATZONE_CUR; i++) {
+	for(size_t i = 0; i < treatio.size(); i++) {
 		
 		if(treatio[i].show != 1 || !treatio[i].io) {
 			continue;
