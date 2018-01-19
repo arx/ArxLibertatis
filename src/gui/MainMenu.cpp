@@ -29,6 +29,7 @@
 #include "core/Application.h"
 #include "core/Benchmark.h"
 #include "core/Config.h"
+#include "core/ArxGame.h"
 #include "core/Core.h"
 #include "core/Localisation.h"
 #include "core/SaveGame.h"
@@ -393,7 +394,10 @@ private:
 	void onClickQuestLoadConfirm() {
 		
 		if(m_selectedSave != SavegameHandle()) {
-			ARXMenu_LoadQuest(m_selectedSave);
+			
+			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+			
+			LOADQUEST_SLOT = m_selectedSave;
 			
 			bNoMenu = true;
 			
