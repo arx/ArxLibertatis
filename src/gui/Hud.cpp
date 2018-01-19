@@ -83,7 +83,7 @@ static void DrawItemPrice(float scale) {
 
 			Color color = (amount <= player.gold) ? Color::green : Color::red;
 			
-			ARX_INTERFACE_DrawNumber(pos, amount, 0, color, scale);
+			ARX_INTERFACE_DrawNumber(pos, amount, color, scale);
 		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
 			long amount = ARX_INTERACTIVE_GetSellValue(FlyingOverIO, temp);
 			if(amount) {
@@ -94,7 +94,7 @@ static void DrawItemPrice(float scale) {
 
 					color = Color::green;
 				}
-				ARX_INTERFACE_DrawNumber(pos, amount, 0, color, scale);
+				ARX_INTERFACE_DrawNumber(pos, amount, color, scale);
 			}
 		}
 	}
@@ -506,7 +506,7 @@ void PurseIconGui::draw() {
 	
 	if(m_isSelected) {
 		Vec2f numberPos = m_rect.topRight() + Vec2f(0.f, -15 * m_scale);
-		ARX_INTERFACE_DrawNumber(numberPos, player.gold, 0, Color::white, m_scale);
+		ARX_INTERFACE_DrawNumber(numberPos, player.gold, Color::white, m_scale);
 	}
 	
 }

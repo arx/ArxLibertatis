@@ -186,7 +186,7 @@ Entity * pIOChangeWeapon = NULL;
 PlayerInterfaceFlags lOldInterface;
 
 
-void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb, const Color color, float scale) {
+void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const Color color, float scale) {
 	
 	if(!inventory_font) {
 		return;
@@ -208,7 +208,7 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 	float divideX = 1.f / float(inventory_font->m_size.x);
 	float divideY = 1.f / float(inventory_font->m_size.y);
 	
-	Vec2f p = pos + Vec2f(float(_iNb) * 10.f * scale, 0.f);
+	Vec2f p = pos;
 	
 	for(long n = num; n != 0; n /= 10) {
 		
