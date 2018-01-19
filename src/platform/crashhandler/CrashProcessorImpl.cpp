@@ -87,10 +87,8 @@ void CrashHandlerImpl::processCrash() {
 	platform::process_handle reporter = 0;
 	{
 		fs::path executable = platform::getHelperExecutable("arxcrashreporter");
-		char argument[256];
-		strcpy(argument, "--crashinfo=");
-		strcat(argument, m_SharedMemoryName.c_str());
-		const char * args[] = { executable.string().c_str(), argument, NULL };
+		std::string arg = "--crashinfo=" + m_SharedMemoryName;
+		const char * args[] = { executable.string().c_str(), arg.c_str(), NULL };
 		reporter = platform::runAsync(args);
 	}
 	
