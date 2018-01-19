@@ -1620,9 +1620,6 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	entities.player()->pos = player.basePosition();
 	
-	WILL_RESTORE_PLAYER_POSITION = asp->pos.toVec3();
-	WILL_RESTORE_PLAYER_POSITION_FLAG = true;
-	
 	player.Attribute_Redistribute = glm::clamp(asp->Attribute_Redistribute, s16(0), s16(std::numeric_limits<unsigned char>::max()));
 	player.Skill_Redistribute = glm::clamp(asp->Skill_Redistribute, s16(0), s16(std::numeric_limits<unsigned char>::max()));
 	
