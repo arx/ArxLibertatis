@@ -102,6 +102,7 @@ private:
 	virtual void onResizeWindow(const Window & window);
 	virtual void onDestroyWindow(const Window & window);
 	virtual void onToggleFullscreen(const Window & window);
+	virtual void onDroppedFile(const Window & window, const fs::path & path);
 	
 	bool m_wasResized;
 	
