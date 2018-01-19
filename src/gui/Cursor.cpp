@@ -700,8 +700,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 							EERIEDrawBitmap(rect, .00001f, tc, color);
 							
 							if((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count != 1) {
-								Vec2f nuberOffset = Vec2f(2.f, 13.f) * iconScale;
-								ARX_INTERFACE_DrawNumber(pos + nuberOffset, DRAGINTER->_itemdata->count, 3, Color::white, 1.f);
+								ARX_INTERFACE_DrawNumber(rect.topRight(), DRAGINTER->_itemdata->count, 0, Color::white, 1.f);
 							}
 						} else {
 							if((InInventoryPos(DANAEMouse) || g_secondaryInventoryHud.containsPos(DANAEMouse)) || CANNOT_PUT_IT_HERE != EntityMoveCursor_Throw) {
