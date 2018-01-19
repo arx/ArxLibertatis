@@ -188,6 +188,10 @@ PlayerInterfaceFlags lOldInterface;
 
 void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb, const Color color, float scale) {
 	
+	if(!inventory_font) {
+		return;
+	}
+	
 	ColorRGBA col = color.toRGBA();
 	
 	TexturedVertex v[4];
@@ -197,8 +201,7 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 	v[3] = TexturedVertex(Vec3f_ZERO, 1.f, ColorRGBA(1), Vec2f_Y_AXIS);
 	
 	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.0000001f;
-
-	if(inventory_font) {
+	
 		
 		GRenderer->SetTexture(0, inventory_font);
 		
@@ -236,7 +239,7 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 				EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
 			}
 		}
-	}
+	
 }
 
 void INTERFACE_TC::init() {
