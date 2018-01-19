@@ -118,7 +118,8 @@ extern bool LOAD_N_ERASE;
 
 static bool ARX_CHANGELEVEL_Push_Index(long num);
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
-static bool ARX_CHANGELEVEL_PopLevel(long num, bool reloadflag = false);
+static bool ARX_CHANGELEVEL_PopLevel(long num, bool reloadflag = false,
+                                     const std::string target = std::string(), long angle = 0);
 static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player(long level);
@@ -357,21 +358,10 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	LogDebug("After  ARX_CHANGELEVEL_PushLevel");
 	
 	LogDebug("Before ARX_CHANGELEVEL_PopLevel");
-	ARX_CHANGELEVEL_PopLevel(num, true);
+	ARX_CHANGELEVEL_PopLevel(num, true, target, angle);
 	LogDebug("After  ARX_CHANGELEVEL_PopLevel");
 	
-	// Now restore player pos to destination
-	EntityHandle t = entities.getById(target);
-	if(t.handleData() > 0 && entities[t]) {
-		Vec3f pos = GetItemWorldPosition(entities[t]);
-		g_moveto = player.pos = pos + player.baseOffset();
-		WILL_RESTORE_PLAYER_POSITION = g_moveto;
-		WILL_RESTORE_PLAYER_POSITION_FLAG = true;
-	}
-	
 	CURRENTLEVEL = num;
-	player.desiredangle.setYaw(angle);
-	player.angle.setYaw(angle);
 	DONT_WANT_PLAYER_INZONE = 1;
 	ARX_PLAYER_RectifyPosition();
 	JUST_RELOADED = 1;
@@ -1497,7 +1487,7 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 	return 1;
 }
 
-static long ARX_CHANGELEVEL_Pop_Player() {
+static long ARX_CHANGELEVEL_Pop_Player(const std::string & target = std::string(), long angle = 0) {
 	
 	size_t size;
 	char * dat = g_currentSavedGame->load("player", size);
@@ -1517,7 +1507,19 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	const ARX_CHANGELEVEL_PLAYER * asp = reinterpret_cast<const ARX_CHANGELEVEL_PLAYER *>(dat + pos);
 	pos += sizeof(ARX_CHANGELEVEL_PLAYER);
 	
-	player.angle = asp->angle;
+	if(target.empty()) {
+		player.angle = asp->angle;
+		player.pos = asp->pos.toVec3();
+	} else {
+		if(Entity * targetEntity = entities.getById(target, NULL)) {
+			player.pos = GetItemWorldPosition(targetEntity) + player.baseOffset();
+		}
+		player.desiredangle.setYaw(angle);
+		player.angle.setYaw(angle);
+	}
+	
+	g_moveto = player.pos;
+	entities.player()->pos = player.basePosition();
 	player.desiredangle = player.angle;
 	
 	player.m_attribute.constitution = asp->Attribute_Constitution;
@@ -1587,8 +1589,6 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.poison = asp->poison;
 	player.hunger = std::min(asp->hunger, 100.f);
 	
-	player.pos = asp->pos.toVec3();
-	
 	if(asp->sp_flags & SP_ARM1) {
 		sp_arm = 1;
 	} else if(asp->sp_flags & SP_ARM2) {
@@ -1617,8 +1617,6 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 		cur_pom = 0;
 		sp_wep = 0;
 	}
-	
-	entities.player()->pos = player.basePosition();
 	
 	player.Attribute_Redistribute = glm::clamp(asp->Attribute_Redistribute, s16(0), s16(std::numeric_limits<unsigned char>::max()));
 	player.Skill_Redistribute = glm::clamp(asp->Skill_Redistribute, s16(0), s16(std::numeric_limits<unsigned char>::max()));
@@ -2458,7 +2456,7 @@ static void ARX_CHANGELEVEL_PopLevel_Abort(ARX_CHANGELEVEL_IO_INDEX * idx_io) {
 	FORBID_SCRIPT_IO_CREATION = 0;
 }
 
-static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
+static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::string target, long angle) {
 	
 	LogDebug("Before ARX_CHANGELEVEL_PopLevel Alloc'n'Free");
 	
@@ -2538,7 +2536,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	LoadLevelScreen(instance);
 	LogDebug("Before ARX_CHANGELEVEL_Pop_Player");
 	
-	if(ARX_CHANGELEVEL_Pop_Player() != 1) {
+	if(ARX_CHANGELEVEL_Pop_Player(target, angle) != 1) {
 		LogError << "Cannot Load Player data";
 		ARX_CHANGELEVEL_PopLevel_Abort(idx_io);
 		return false;
