@@ -332,7 +332,7 @@ void ConfigReader::getActionKey(const std::string & section, const std::string &
 		if(id == ActionKey::UNUSED && !setting->getValue().empty() && setting->getValue() != Input::KEY_NONE) {
 			LogWarning << "Error parsing key name for " <<  key << ": \"" << setting->getValue()
 			           << "\", resetting to \"" << Input::getKeyName(binding) << "\"";
-		} if(id == InputKeyId(Keyboard::Key_Escape)) {
+		} else if(id == InputKeyId(Keyboard::Key_Escape)) {
 			LogWarning << "Invalid key for " <<  key << ": \"" << setting->getValue()
 			           << "\", resetting to \"" << Input::getKeyName(binding) << "\"";
 		} else {
