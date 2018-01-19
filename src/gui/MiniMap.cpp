@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 
 #include <cstdio>
+#include <sstream>
+#include <limits>
 
 #include "core/Core.h"
 #include "core/Localisation.h"
@@ -177,26 +179,16 @@ void MiniMap::loadOffsets(PakReader * pakRes) {
 	
 	file->read(dat);
 	
-	size_t pos = 0;
+	std::istringstream iss(dat);
+	
+	std::string dummy;
 	
 	for(int i = 0; i < 29; i++) { // Why 29?
-		
-		char t[512];
-		int nRead = sscanf(dat + pos, "%s %f %f", t, &m_miniOffset[i].x, &m_miniOffset[i].y);
-		
-		if(nRead != 3) {
-			LogError << "Error parsing line " << i << " of mini_offsets.ini: read " << nRead;
+		iss >> dummy >> m_miniOffset[i].x >> m_miniOffset[i].y;
+		if(iss.fail()) {
+			LogError << "Error parsing line " << i << " of mini_offsets.ini";
 		}
-		
-		while((pos < fileSize) && (dat[pos] != '\n')) {
-			pos++;
-		}
-		
-		pos++;
-		
-		if(pos >= fileSize) {
-			break;
-		}
+		iss.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	}
 	
 	delete[] dat;
