@@ -361,7 +361,6 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	ARX_CHANGELEVEL_PopLevel(num, true, target, angle);
 	LogDebug("After  ARX_CHANGELEVEL_PopLevel");
 	
-	CURRENTLEVEL = num;
 	DONT_WANT_PLAYER_INZONE = 1;
 	ARX_PLAYER_RectifyPosition();
 	JUST_RELOADED = 1;
