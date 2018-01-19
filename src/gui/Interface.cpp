@@ -204,27 +204,24 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 	
 	GRenderer->SetTexture(0, inventory_font);
 	
-	char tx[7];
 	float ttx;
 	float divideX = 1.f / float(inventory_font->m_size.x);
 	float divideY = 1.f / float(inventory_font->m_size.y);
 	
-	sprintf(tx, "%*ld", _iNb, num); // TODO use a safe string function.
-	long removezero = 1;
+	Vec2f p = pos + Vec2f(float(_iNb) * 10.f * scale, 0.f);
 	
-	for(long i = 0; i < 6 && tx[i] != '\0'; i++) {
+	for(long n = num; n != 0; n /= 10) {
 		
-		long tt = tx[i] - '0';
-		
-		if(tt == 0 && removezero)
-			continue;
+		long tt = n % 10;
 		
 		if(tt >= 0) {
-			removezero = 0;
-			v[0].p.x = v[3].p.x = pos.x + i * (10 * scale);
-			v[1].p.x = v[2].p.x = v[0].p.x + (10 * scale);
-			v[0].p.y = v[1].p.y = pos.y;
-			v[2].p.y = v[3].p.y = pos.y + (10 * scale);
+			
+			p.x -= 10.f * scale;
+			
+			v[0].p.x = v[3].p.x = p.x;
+			v[1].p.x = v[2].p.x = p.x + (10 * scale);
+			v[0].p.y = v[1].p.y = p.y;
+			v[2].p.y = v[3].p.y = p.y + (10 * scale);
 			v[0].color = v[1].color = v[2].color = v[3].color = col;
 			
 			ttx = float(tt) * 11.f + 1.5f;
