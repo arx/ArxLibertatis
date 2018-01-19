@@ -30,9 +30,10 @@
 #include "io/resource/PakReader.h"
 #include "scene/ChangeLevel.h"
 
+const fs::path SAVEGAME_NAME = "gsave.sav";
+
 namespace {
 
-const fs::path SAVEGAME_NAME = "gsave.sav";
 const fs::path SAVEGAME_DIR = "save";
 const fs::path SAVEGAME_THUMBNAIL = "gsave.bmp";
 const std::string QUICKSAVE_ID = "ARX_QUICK_ARX";

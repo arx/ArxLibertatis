@@ -35,6 +35,7 @@ Here is a short summary of the options available in arx. Please refer to the det
 .TP
 .B Startup options:
     \-\-loadlevel LEVELID  Load a specific level
+    \-\-loadsave SAVEFILE  Load a specific savegame file
     \-\-loadslot SAVESLOT  Load a specific savegame slot
     \-\-skiplogo           Skip logos at startup
 .fi
@@ -45,7 +46,7 @@ Log time taken for startup, loading levels and shutdown, and the minimum, maximu
 
 If a \fITIMELIMIT\fP argument is given, the game will exit after the specified amout of time has been spent rendering normal frames. This time does not include the startup or loading time. Valid values are a number, optionally followed by a unit. Valid units are "\fIms\fP" (milliseconds), "\fIs\fP" (seconds), "\fIm\fP" (minutes) and "\fIh\fP" (hours). The default unit is milliseconds.
 
-This option can be combined with the \fB--loadlevel\fP or \fB--loadslot\fP options to benchmark a specific scene.
+This option can be combined with the \fB--loadlevel\fP, \fB--loadsave\fP or \fB--loadslot\fP options to benchmark a specific scene.
 .TP
 \fB\-c\fP, \fB\-\-config-dir\fP=\fIDIR\fP
 By default arx will store configuration files in directories specified by the \fBXDG Base Directory Specification\fP.
@@ -76,6 +77,9 @@ Show the data, user and config search directories and how they were determined. 
 .TP
 \fB\-\-loadlevel\fP=\fILEVELID\fP
 Load a level immediately after startup, without displaying logos or the main menu. \fILEVELID\fP is the number of the level to be loaded.
+.TP
+\fB\-\-loadsave\fP=\fISAVEFILE\fP
+Load a save file immediately after startup, without displaying logos or the main menu. \fISAVEFILE\fP is the path of the save directory or .sav file to be loaded.
 .TP
 \fB\-\-loadslot\fP=\fISAVESLOT\fP
 Load a save file immediately after startup, without displaying logos or the main menu. \fISAVESLOT\fP is the index of the save slot to be loaded.
