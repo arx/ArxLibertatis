@@ -552,8 +552,8 @@ long FAST_RELEASE = 0;
 
 extern long JUST_RELOADED;
 
-void DanaeClearLevel()
-{
+void DanaeClearLevel() {
+	
 	JUST_RELOADED = 0;
 	g_miniMap.reset();
 
@@ -588,6 +588,8 @@ void DanaeClearLevel()
 	TREATZONE_Clear();
 	
 	FAST_RELEASE = 0;
+	
+	CURRENTLEVEL = -1;
 }
 
 void RestoreLastLoadedLightning(BackgroundData & eb)
