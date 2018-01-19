@@ -187,9 +187,15 @@ private:
 	TextWidget * pDeleteButton;
 	
 	void onClickedSaveConfirm(TextWidget * txt) {
+
 		m_savegame = txt->m_savegame;
 		
-		ARXMenu_SaveQuest(m_textbox->m_text, m_textbox->m_savegame);
+		ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
+		
+		savegames.save(m_textbox->m_text, m_textbox->m_savegame.handleData(), savegame_thumbnail);
+		
+		ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
+		
 	}
 	
 	void onClickedSaveDelete(TextWidget * txt) {
