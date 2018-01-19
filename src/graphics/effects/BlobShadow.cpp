@@ -59,7 +59,7 @@ void ARXDRAW_DrawInterShadows() {
 	
 	for(size_t i = 0; i < treatio.size(); i++) {
 		
-		if(treatio[i].show != 1 || !treatio[i].io) {
+		if(treatio[i].show != SHOW_FLAG_IN_SCENE || !treatio[i].io) {
 			continue;
 		}
 		

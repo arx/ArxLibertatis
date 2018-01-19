@@ -169,7 +169,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io);
 struct TREATZONE_IO {
 	Entity * io;
 	EntityFlags ioflags;
-	long show;
+	EntityVisilibity show;
 };
 
 extern std::vector<TREATZONE_IO> treatio;

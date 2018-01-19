@@ -808,14 +808,10 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 
 			ret_idx = targ;
 		} else {
-			if(treatio[i].show != 1
-			   || treatio[i].io == NULL
-			   || treatio[i].io->index() == source
-			   || InExceptionList(treatio[i].io->index())
-			) {
+			if(treatio[i].show != SHOW_FLAG_IN_SCENE || !treatio[i].io || treatio[i].io->index() == source
+			   || InExceptionList(treatio[i].io->index())) {
 				continue;
 			}
-
 			io = treatio[i].io;
 			ret_idx = treatio[i].io->index();
 		}
@@ -973,9 +969,10 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 	
 	for(size_t i = 0; i < treatio.size(); i++) {
 		
-		if(treatio[i].show != 1 || !treatio[i].io || treatio[i].io->index() == source)
+		if(treatio[i].show != SHOW_FLAG_IN_SCENE || !treatio[i].io || treatio[i].io->index() == source) {
 			continue;
-
+		}
+		
 		Entity * io = treatio[i].io;
 
 		if(!io->obj)

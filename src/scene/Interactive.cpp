@@ -425,7 +425,7 @@ void TREATZONE_RemoveIO(Entity * io) {
 		if(treatio[i].io == io) {
 			treatio[i].io = NULL;
 			treatio[i].ioflags = 0;
-			treatio[i].show = 0;
+			treatio[i].show = SHOW_FLAG_NOT_DRAWN;
 		}
 	}
 }
