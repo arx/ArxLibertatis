@@ -20,6 +20,8 @@
 #ifndef ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERPOSIX_H
 #define ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERPOSIX_H
 
+#include <string>
+
 #include "platform/crashhandler/CrashHandlerImpl.h"
 
 class CrashHandlerPOSIX : public CrashHandlerImpl {
@@ -42,6 +44,8 @@ public:
 	static CrashHandlerPOSIX & getInstance();
 	
 private:
+	
+	std::string m_arg;
 	
 	bool registerCrashHandlers();
 	void unregisterCrashHandlers();

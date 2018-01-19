@@ -296,6 +296,8 @@ bool CrashHandlerPOSIX::initialize() {
 		return false;
 	}
 	
+	m_arg = "--crashinfo=" + m_SharedMemoryName;
+	
 	std::memset(m_pCrashInfo->backtrace, 0, sizeof(m_pCrashInfo->backtrace));
 	
 	#if ARX_HAVE_PRCTL
@@ -503,10 +505,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 		std::abort();
 	}
 	#ifdef ARX_HAVE_EXECVP
-	char argument[256];
-	strcpy(argument, "--crashinfo=");
-	strcat(argument, m_SharedMemoryName.c_str());
-	const char * args[] = { m_executable.string().c_str(), argument, NULL };
+	const char * args[] = { m_executable.string().c_str(), m_arg.c_str(), NULL };
 	execvp(m_executable.string().c_str(), const_cast<char **>(args));
 	#endif
 	
