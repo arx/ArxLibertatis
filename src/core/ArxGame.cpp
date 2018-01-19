@@ -1173,6 +1173,10 @@ void ArxGame::onToggleFullscreen(const Window & window) {
 	config.video.fullscreen = window.isFullScreen();
 }
 
+void ArxGame::onDroppedFile(const Window & /* window */, const fs::path & path) {
+	g_saveToLoad = path;
+}
+
 /*!
  * \brief Message-processing loop. Idle time is used to render the scene.
  */
