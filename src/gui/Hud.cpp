@@ -501,14 +501,14 @@ void PurseIconGui::updateInput() {
 }
 
 void PurseIconGui::draw() {
+	
 	HudIconBase::draw();
 	
 	if(m_isSelected) {
-		Vec2f numberPos = m_rect.topLeft();
-		numberPos += Vec2f(-30 * m_scale, -15 * m_scale);
-		
-		ARX_INTERFACE_DrawNumber(numberPos, player.gold, 6, Color::white, m_scale);
+		Vec2f numberPos = m_rect.topRight() + Vec2f(0.f, -15 * m_scale);
+		ARX_INTERFACE_DrawNumber(numberPos, player.gold, 0, Color::white, m_scale);
 	}
+	
 }
 
 
