@@ -570,8 +570,8 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 						float v = ARX_DAMAGES_ComputeRepairPrice(COMBINE, FlyingOverIO);
 						if(v > 0.f) {
 							long t = long(v);
-							Vec2f nuberOffset = Vec2f(-16, -10) * iconScale;
-							ARX_INTERFACE_DrawNumber(mousePos + nuberOffset, t, 6, Color::cyan, iconScale);
+							Vec2f nuberOffset = Vec2f(-76, -10) * iconScale;
+							ARX_INTERFACE_DrawNumber(mousePos + nuberOffset, t, 0, Color::cyan, iconScale);
 						}
 					}
 				} else {
