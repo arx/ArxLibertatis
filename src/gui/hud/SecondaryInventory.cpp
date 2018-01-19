@@ -261,8 +261,10 @@ void SecondaryInventoryHud::draw() {
 					EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
 				}
 				
-				if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-					ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white, m_scale);
+				if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1) {
+					ARX_INTERFACE_DrawNumber(rect.topRight(), io->_itemdata->count, 0, Color::white, m_scale);
+				}
+				
 			}
 		}
 	}
