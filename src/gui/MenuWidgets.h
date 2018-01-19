@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 class Font;
+struct SaveGame;
 
 class MenuPage : private boost::noncopyable {
 	
@@ -159,6 +160,7 @@ void Menu2_Close();
 
 void ARX_MENU_Clicked_QUIT();
 
+void ARX_LoadGame(const SaveGame & save);
 void ARX_QuickLoad();
 void ARX_QuickSave();
 void ARX_SlotLoad(SavegameHandle slotIndex);
