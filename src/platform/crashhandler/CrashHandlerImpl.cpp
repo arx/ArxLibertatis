@@ -120,7 +120,7 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 	m_pCrashInfo->memoryUsage = 0;
 	m_pCrashInfo->runningTime = 0.0;
 
-	strcpy(m_pCrashInfo->crashReportFolder, "crashes");
+	util::storeStringTerminated(m_pCrashInfo->crashReportFolder, "crashes");
 	
 	std::string exe = platform::getExecutablePath().string();
 	util::storeStringTerminated(m_pCrashInfo->executablePath, exe);
