@@ -119,6 +119,9 @@ void ARX_QuickSave() {
 
 static void ARX_LoadGame(const SaveGame & save) {
 	
+	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
+	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
+	
 	benchmark::begin(benchmark::LoadLevel);
 	
 	LoadLevelScreen();
@@ -140,8 +143,6 @@ void ARX_QuickLoad() {
 		return;
 	}
 	
-	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
-	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 	ARX_LoadGame(*save);
 }
 
@@ -152,8 +153,6 @@ void ARX_SlotLoad(SavegameHandle slotIndex) {
 		return;
 	}
 	
-	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
-	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 	ARX_LoadGame(savegames[slotIndex.handleData()]);
 }
 
