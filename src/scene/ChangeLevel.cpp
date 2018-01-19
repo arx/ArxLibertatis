@@ -513,9 +513,9 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		}
 	}
 	
-	char savefile[256];
-	sprintf(savefile, "lvl%03ld", num);
-	bool ret = g_currentSavedGame->save(savefile, dat, pos);
+	std::stringstream savefile;
+	savefile << "lvl" << std::setfill('0') << std::setw(3) << num;
+	bool ret = g_currentSavedGame->save(savefile.str(), dat, pos);
 	
 	delete[] dat;
 	
