@@ -75,8 +75,8 @@ public:
 	 * \param overwrite A savegame to overwrite with this save or end()
 	 * \return true if the game was successfully saved.
 	 */
-	bool save(const std::string & name, size_t overwrite = size_t(-1), const Image & th = Image()) {
-		return save(name, (overwrite == size_t(-1)) ? end() : begin() + overwrite, th);
+	bool save(const std::string & name, SavegameHandle overwrite = SavegameHandle(), const Image & th = Image()) {
+		return save(name, (overwrite == SavegameHandle()) ? end() : begin() + overwrite.handleData(), th);
 	}
 	
 	//! Perform a quicksave: Maintain a number of quicksave slots and always overwrite the oldest one.
