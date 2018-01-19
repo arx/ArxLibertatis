@@ -246,10 +246,8 @@ void ARXMenu_NewQuest() {
 void ARXMenu_LoadQuest(SavegameHandle num) {
 	
 	LOADQUEST_SLOT = num;
-
+	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-	g_canResumeGame = true;
-	ARX_MENU_Clicked_QUIT();
 }
 
 void ARXMenu_SaveQuest(const std::string & name, SavegameHandle num) {

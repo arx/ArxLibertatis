@@ -1263,7 +1263,6 @@ void ArxGame::doFrame() {
 	) {
 		
 		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD) && savegames.size() > 0) {
-			ARXmenu.requestMode(Mode_InGame);
 			ARX_QuickLoad();
 		}
 		
