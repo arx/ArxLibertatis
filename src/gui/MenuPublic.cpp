@@ -243,13 +243,6 @@ void ARXMenu_NewQuest() {
 	ARX_PLAYER_MakeFreshHero();
 }
 
-void ARXMenu_LoadQuest(SavegameHandle num) {
-	
-	LOADQUEST_SLOT = num;
-	
-	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-}
-
 void ARXMenu_SaveQuest(const std::string & name, SavegameHandle num) {
 	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
