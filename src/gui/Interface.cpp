@@ -202,43 +202,43 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 	
 	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.0000001f;
 	
+	GRenderer->SetTexture(0, inventory_font);
+	
+	char tx[7];
+	float ttx;
+	float divideX = 1.f / float(inventory_font->m_size.x);
+	float divideY = 1.f / float(inventory_font->m_size.y);
+	
+	sprintf(tx, "%*ld", _iNb, num); // TODO use a safe string function.
+	long removezero = 1;
+	
+	for(long i = 0; i < 6 && tx[i] != '\0'; i++) {
 		
-		GRenderer->SetTexture(0, inventory_font);
+		long tt = tx[i] - '0';
 		
-		char tx[7];
-		float ttx;
-		float divideX = 1.f / float(inventory_font->m_size.x);
-		float divideY = 1.f / float(inventory_font->m_size.y);
+		if(tt == 0 && removezero)
+			continue;
 		
-		sprintf(tx, "%*ld", _iNb, num); // TODO use a safe string function.
-		long removezero = 1;
-
-		for(long i = 0; i < 6 && tx[i] != '\0'; i++) {
-
-			long tt = tx[i] - '0';
-
-			if(tt == 0 && removezero)
-				continue;
-
-			if(tt >= 0) {
-				removezero = 0;
-				v[0].p.x = v[3].p.x = pos.x + i * (10 * scale);
-				v[1].p.x = v[2].p.x = v[0].p.x + (10 * scale);
-				v[0].p.y = v[1].p.y = pos.y;
-				v[2].p.y = v[3].p.y = pos.y + (10 * scale);
-				v[0].color = v[1].color = v[2].color = v[3].color = col;
-
-				ttx = float(tt) * 11.f + 1.5f;
-				v[3].uv.x = v[0].uv.x = ttx * divideX;
-				v[1].uv.x = v[2].uv.x = (ttx + 10.f) * divideX;
-
-				ttx = 0.5f * divideY;
-				v[1].uv.y = v[0].uv.y = divideY + ttx;
-				v[2].uv.y = v[3].uv.y = divideY * 12;
-
-				EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
-			}
+		if(tt >= 0) {
+			removezero = 0;
+			v[0].p.x = v[3].p.x = pos.x + i * (10 * scale);
+			v[1].p.x = v[2].p.x = v[0].p.x + (10 * scale);
+			v[0].p.y = v[1].p.y = pos.y;
+			v[2].p.y = v[3].p.y = pos.y + (10 * scale);
+			v[0].color = v[1].color = v[2].color = v[3].color = col;
+			
+			ttx = float(tt) * 11.f + 1.5f;
+			v[3].uv.x = v[0].uv.x = ttx * divideX;
+			v[1].uv.x = v[2].uv.x = (ttx + 10.f) * divideX;
+			
+			ttx = 0.5f * divideY;
+			v[1].uv.y = v[0].uv.y = divideY + ttx;
+			v[2].uv.y = v[3].uv.y = divideY * 12;
+			
+			EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
 		}
+		
+	}
 	
 }
 
