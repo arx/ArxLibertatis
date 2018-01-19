@@ -117,7 +117,7 @@ void ARX_QuickSave() {
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
 }
 
-static void ARX_LoadGame(const SaveGame & save) {
+void ARX_LoadGame(const SaveGame & save) {
 	
 	ARXmenu.requestMode(Mode_InGame);
 	
