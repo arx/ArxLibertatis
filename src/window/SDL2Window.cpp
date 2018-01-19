@@ -208,6 +208,7 @@ bool SDL2Window::initializeFramework() {
 	
 	SDL_EventState(SDL_WINDOWEVENT, SDL_ENABLE);
 	SDL_EventState(SDL_QUIT,        SDL_ENABLE);
+	SDL_EventState(SDL_DROPFILE,    SDL_ENABLE);
 	SDL_EventState(SDL_SYSWMEVENT,  SDL_IGNORE);
 	SDL_EventState(SDL_USEREVENT,   SDL_IGNORE);
 	
@@ -688,6 +689,12 @@ void SDL2Window::tick() {
 				// generates *both* SDL_WINDOWEVENT_CLOSE and SDL_QUIT
 				onDestroy();
 				return; // abort event loop!
+			}
+			
+			case SDL_DROPFILE: {
+				onDroppedFile(event.drop.file);
+				SDL_free(event.drop.file);
+				return;
 			}
 			
 		}

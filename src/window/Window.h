@@ -27,6 +27,7 @@
 #include "math/Vector.h"
 
 class InputBackend;
+namespace fs { class path; }
 
 struct DisplayMode {
 	
@@ -118,6 +119,7 @@ public:
 		virtual void onWindowGotFocus(const Window & window);
 		virtual void onWindowLostFocus(const Window & window);
 		virtual void onPaintWindow(const Window & window);
+		virtual void onDroppedFile(const Window & window, const fs::path & path);
 		
 	};
 	
@@ -153,6 +155,7 @@ protected:
 	void onFocus(bool hasFocus);
 	void onPaint();
 	void onCreate();
+	void onDroppedFile(const fs::path & path);
 	
 	std::string m_title; //!< Window title bar caption.
 	Vec2i m_position;    //!< Screen position in pixels (relative to the upper left corner)
