@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <vector>
 
 #include "game/Entity.h"
 #include "game/EntityId.h"
@@ -171,8 +172,7 @@ struct TREATZONE_IO {
 	long show;
 };
 
-extern TREATZONE_IO * treatio;
-extern long TREATZONE_CUR;
+extern std::vector<TREATZONE_IO> treatio;
 
 void TREATZONE_Clear();
 void TREATZONE_Release();

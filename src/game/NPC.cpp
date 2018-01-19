@@ -847,15 +847,15 @@ void ARX_PHYSICS_Apply() {
 	
 	ARX_PROFILE_FUNC();
 	
-	static long CURRENT_DETECT = 0;
+	static size_t CURRENT_DETECT = 0;
 
 	CURRENT_DETECT++;
-
-	if(CURRENT_DETECT > TREATZONE_CUR)
+	if(CURRENT_DETECT > treatio.size()) {
 		CURRENT_DETECT = 1;
-
+	}
+	
 	// We don't manage Player(0) this way
-	for(long i = 1; i < TREATZONE_CUR; i++) {
+	for(size_t i = 1; i < treatio.size(); i++) {
 		ARX_PROFILE(IO);
 
 		if(treatio[i].show != 1)

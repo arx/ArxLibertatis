@@ -501,7 +501,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	if(!(flags & CFLAG_NO_INTERCOL)) {
 		Entity * io;
 		long FULL_TEST = 0;
-		long AMOUNT = TREATZONE_CUR;
+		size_t AMOUNT = treatio.size();
 
 		if(ioo
 			&& (ioo->ioflags & IO_NPC)
@@ -511,7 +511,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 			AMOUNT = entities.size();
 		}
 
-		for(long i = 0; i < AMOUNT; i++) {
+		for(size_t i = 0; i < AMOUNT; i++) {
 			const EntityHandle handle = EntityHandle(i);
 			
 			if(FULL_TEST) {
@@ -791,9 +791,9 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 	float sr40 = sphere.radius + 30.f;
 	float sr180 = sphere.radius + 500.f;
 
-	for(long i = 0; i < TREATZONE_CUR; i++) {
+	for(size_t i = 0; i < treatio.size(); i++) {
 		if(ValidIONum(targ)) {
-			i = TREATZONE_CUR;
+			i = treatio.size();
 			io = entities[targ];
 
 			if(!io
@@ -970,8 +970,8 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 	float sr30 = sphere.radius + 20.f;
 	float sr40 = sphere.radius + 30.f;
 	float sr180 = sphere.radius + 500.f;
-
-	for(long i = 0; i < TREATZONE_CUR; i++) {
+	
+	for(size_t i = 0; i < treatio.size(); i++) {
 		
 		if(treatio[i].show != 1 || !treatio[i].io || treatio[i].io->index() == source)
 			continue;
