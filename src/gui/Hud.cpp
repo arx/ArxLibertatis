@@ -71,7 +71,7 @@ static void DrawItemPrice(float scale) {
 	Entity * temp = SecondaryInventory->io;
 	if(temp->ioflags & IO_SHOP) {
 		Vec2f pos = Vec2f(DANAEMouse);
-		pos += Vec2f(0, -10) * scale;
+		pos += Vec2f(60, -10) * scale;
 		
 		if(g_secondaryInventoryHud.containsPos(DANAEMouse)) {
 			
@@ -83,7 +83,7 @@ static void DrawItemPrice(float scale) {
 
 			Color color = (amount <= player.gold) ? Color::green : Color::red;
 			
-			ARX_INTERFACE_DrawNumber(pos, amount, 6, color, scale);
+			ARX_INTERFACE_DrawNumber(pos, amount, 0, color, scale);
 		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
 			long amount = ARX_INTERACTIVE_GetSellValue(FlyingOverIO, temp);
 			if(amount) {
@@ -94,7 +94,7 @@ static void DrawItemPrice(float scale) {
 
 					color = Color::green;
 				}
-				ARX_INTERFACE_DrawNumber(pos, amount, 6, color, scale);
+				ARX_INTERFACE_DrawNumber(pos, amount, 0, color, scale);
 			}
 		}
 	}
