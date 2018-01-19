@@ -61,7 +61,6 @@ if(NOT SET_NOISY_WARNING_FLAGS)
 	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/comments)
 	
 	# Unsafe functions.
-	set(STYLE_FILTER ${STYLE_FILTER},-runtime/printf)
 	set(STYLE_FILTER ${STYLE_FILTER},-runtime/threadsafe_fn)
 	
 	# Very much known...
