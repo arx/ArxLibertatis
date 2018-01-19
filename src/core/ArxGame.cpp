@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
+#include "core/SaveGame.h"
 #include "core/URLConstants.h"
 #include "core/Version.h"
 
@@ -1252,8 +1253,8 @@ void ArxGame::doFrame() {
 		TELEPORT_TO_POSITION.clear();
 	}
 
-	if(LOADQUEST_SLOT != SavegameHandle()) {
-		ARX_SlotLoad(LOADQUEST_SLOT);
+	if(LOADQUEST_SLOT != SavegameHandle() && LOADQUEST_SLOT.handleData() < int(savegames.size())) {
+		ARX_LoadGame(savegames[LOADQUEST_SLOT.handleData()]);
 		LOADQUEST_SLOT = SavegameHandle();
 	}
 

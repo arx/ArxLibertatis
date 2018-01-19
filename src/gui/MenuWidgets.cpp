@@ -148,16 +148,6 @@ void ARX_QuickLoad() {
 	ARX_LoadGame(*save);
 }
 
-void ARX_SlotLoad(SavegameHandle slotIndex) {
-	
-	if(slotIndex.handleData() >= (int)savegames.size()) {
-		// Invalid slot!
-		return;
-	}
-	
-	ARX_LoadGame(savegames[slotIndex.handleData()]);
-}
-
 bool MENU_NoActiveWindow() {
 	return (!g_mainMenu->m_window || g_mainMenu->m_window->currentPageId() == Page_None);
 }
