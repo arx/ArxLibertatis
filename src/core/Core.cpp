@@ -330,8 +330,6 @@ void SetEditMode() {
 bool GMOD_RESET = true;
 
 Vec3f LastValidPlayerPos;
-Vec3f WILL_RESTORE_PLAYER_POSITION;
-bool WILL_RESTORE_PLAYER_POSITION_FLAG = false;
 
 void levelInit() {
 	
@@ -462,13 +460,6 @@ void levelInit() {
 	EntityHandle t = entities.getById("seat_stool1_0012");
 	if(ValidIONum(t)) {
 		entities[t]->ioflags |= IO_FORCEDRAW;
-	}
-	
-	if(WILL_RESTORE_PLAYER_POSITION_FLAG) {
-		Entity * io = entities.player();
-		player.pos = WILL_RESTORE_PLAYER_POSITION;
-		io->pos = player.basePosition();
-		WILL_RESTORE_PLAYER_POSITION_FLAG = false;
 	}
 	
 	ARX_NPC_RestoreCuts();
