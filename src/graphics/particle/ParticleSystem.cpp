@@ -45,6 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 #include <cstring>
+#include <sstream>
+#include <iomanip>
 
 #include <boost/foreach.hpp>
 
@@ -144,19 +146,22 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime) {
 		tex_tab[0] = TextureContainer::Load(_pszTex);
 		iNbTex = 0;
 	} else {
+		
 		_iNbTex = std::min(_iNbTex, 20);
-		char cBuf[256];
-
+		
+		std::ostringstream oss;
 		for(int i = 0; i < _iNbTex; i++) {
-			memset(cBuf, 0, 256);
-			sprintf(cBuf, "%s_%04d", _pszTex, i + 1);
-			tex_tab[i] = TextureContainer::Load(cBuf);
+			oss.str(std::string());
+			oss << _pszTex << std::setfill('0') << std::setw(4) << (i + 1);
+			tex_tab[i] = TextureContainer::Load(oss.str());
 		}
-
+		
 		iNbTex = _iNbTex;
 		iTexTime = _iTime;
 		bTexLoop = true;
+		
 	}
+	
 }
 
 void ParticleSystem::SetParticleParams(Particle * pP) {
