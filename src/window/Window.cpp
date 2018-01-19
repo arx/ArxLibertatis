@@ -47,6 +47,7 @@ void Window::Listener::onToggleFullscreen( const Window & /*window*/ ) {}
 void Window::Listener::onWindowGotFocus( const Window & /*window*/ ) {}
 void Window::Listener::onWindowLostFocus( const Window & /*window*/ ) {}
 void Window::Listener::onPaintWindow( const Window & /*window*/ ) {}
+void Window::Listener::onDroppedFile(const Window & /*window*/, const fs::path & /* path */) { }
 
 Window::Window()
 	: m_position(0, 0)
@@ -155,5 +156,11 @@ void Window::onFocus(bool hasFocus) {
 void Window::onPaint() {
 	BOOST_FOREACH(Listener * listener, m_listeners) {
 		listener->onPaintWindow(*this);
+	}
+}
+
+void Window::onDroppedFile(const fs::path & path) {
+	BOOST_FOREACH(Listener * listener, m_listeners) {
+		listener->onDroppedFile(*this, path);
 	}
 }
