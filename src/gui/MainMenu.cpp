@@ -126,7 +126,6 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->m_savegame = SavegameHandle();
 			txt->eState = EDIT;
 			txt->ePlace = CENTER;
 			addCenter(txt, true);
@@ -165,8 +164,8 @@ public:
 	}
 	
 	void setSaveHandle(SavegameHandle savegame) {
+		
 		m_savegame = savegame;
-		m_textbox->m_savegame = savegame;
 		
 		if(savegame != SavegameHandle()) {
 			m_textbox->SetText(savegames[savegame.handleData()].name);
@@ -179,30 +178,30 @@ public:
 		}
 		
 		AlignElementCenter(m_textbox);
+		
 	}
 	
 private:
+	
 	SavegameHandle m_savegame;
 	TextWidget * m_textbox;
 	TextWidget * pDeleteButton;
 	
-	void onClickedSaveConfirm(TextWidget * txt) {
+	void onClickedSaveConfirm(TextWidget * /* widget */) {
 
-		m_savegame = txt->m_savegame;
-		
 		ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 		
-		savegames.save(m_textbox->m_text, m_textbox->m_savegame, savegame_thumbnail);
+		savegames.save(m_textbox->m_text, m_savegame, savegame_thumbnail);
 		
 		ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
 		
 	}
 	
-	void onClickedSaveDelete(TextWidget * txt) {
-		m_savegame = txt->m_savegame;
+	void onClickedSaveDelete(TextWidget * /* widget */) {
 		g_mainMenu->bReInitAll = true;
-		savegames.remove(m_textbox->m_savegame);
+		savegames.remove(m_savegame);
 	}
+	
 };
 
 class SaveSlotWidget : public TextWidget {
