@@ -857,10 +857,11 @@ void ARX_PHYSICS_Apply() {
 	// We don't manage Player(0) this way
 	for(size_t i = 1; i < treatio.size(); i++) {
 		ARX_PROFILE(IO);
-
-		if(treatio[i].show != 1)
+		
+		if(treatio[i].show != SHOW_FLAG_IN_SCENE) {
 			continue;
-
+		}
+		
 		if(treatio[i].ioflags & (IO_FIX | IO_JUST_COLLIDE))
 			continue;
 		
