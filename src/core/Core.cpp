@@ -436,7 +436,6 @@ void levelInit() {
 	LoadLevelScreen();
 	
 	PrepareIOTreatZone(1);
-	CURRENTLEVEL = GetLevelNumByName(LastLoadedScene.string());
 	
 	progressBarAdvance();
 	LoadLevelScreen();
