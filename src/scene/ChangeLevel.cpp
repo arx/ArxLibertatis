@@ -628,13 +628,13 @@ static void storeIdString(char (&tofill)[N], const Entity * io) {
 	
 	if(!io || !ValidIOAddress(io)) {
 		ARX_STATIC_ASSERT(N >= 4, "id string too short");
-		strcpy(tofill, "none");
+		util::storeString(tofill, "none");
 	} else {
 		
 		std::string idString = io->idString();
 		
 		arx_assert(idString.length() <= N);
-		strncpy(tofill, idString.c_str(),  N);
+		util::storeString(tofill, idString);
 	}
 }
 
@@ -785,23 +785,24 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	}
 	
 	for(size_t k = 0; k < MAX_EQUIPED; k++) {
-		if(ValidIONum(player.equiped[k]))
+		if(ValidIONum(player.equiped[k])) {
 			storeIdString(asp->equiped[k], entities[player.equiped[k]]);
-		else
-			strcpy(asp->equiped[k], "");
+		} else {
+			util::storeString(asp->equiped[k], std::string());
+		}
 	}
 	
 	for(size_t i = 0; i < g_playerQuestLogEntries.size(); i++) {
 		memset(dat + pos, 0, SAVED_QUEST_SLOT_SIZE);
 		assert(g_playerQuestLogEntries[i].length() < SAVED_QUEST_SLOT_SIZE);
-		strcpy(dat + pos, g_playerQuestLogEntries[i].c_str());
+		util::storeString(dat + pos, SAVED_QUEST_SLOT_SIZE, g_playerQuestLogEntries[i]);
 		pos += SAVED_QUEST_SLOT_SIZE;
 	}
 	
 	for(size_t i = 0; i < g_playerKeyring.size(); i++) {
 		memset(dat + pos, 0, SAVED_KEYRING_SLOT_SIZE);
 		assert(g_playerKeyring[i].length() < SAVED_KEYRING_SLOT_SIZE);
-		strcpy(dat + pos, g_playerKeyring[i].c_str());
+		util::storeString(dat + pos, SAVED_KEYRING_SLOT_SIZE, g_playerKeyring[i]);
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
@@ -866,15 +867,15 @@ template <size_t N>
 void FillTargetInfo(char (&info)[N], EntityHandle numtarget) {
 	ARX_STATIC_ASSERT(N >= 6, "id string too short");
 	if(numtarget == EntityHandle_Self) {
-		strcpy(info, "self");
+		util::storeString(info, "self");
 	} else if(numtarget == EntityHandle()) {
-		strcpy(info, "none");
+		util::storeString(info, "none");
 	} else if(numtarget == EntityHandle_Player) {
-		strcpy(info, "player");
+		util::storeString(info, "player");
 	} else if(ValidIONum(numtarget)) {
 		storeIdString(info, entities[numtarget]);
 	} else {
-		strcpy(info, "none");
+		util::storeString(info, "none");
 	}
 }
 
@@ -1209,7 +1210,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				if(io->_npcdata->stacked[i].exist) {
 					FillTargetInfo(as->stackedtarget[i], io->_npcdata->stacked[i].target);
 				} else {
-					strcpy(as->stackedtarget[i], "none");
+					util::storeString(as->stackedtarget[i], "none");
 				}
 			}
 
