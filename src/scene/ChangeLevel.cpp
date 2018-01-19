@@ -2724,7 +2724,6 @@ void ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
-		CURRENTLEVEL = pld.level;
 		ARX_CHANGELEVEL_PopLevel(pld.level, false);
 		
 	} else {
