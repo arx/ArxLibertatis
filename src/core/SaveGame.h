@@ -32,6 +32,8 @@
 
 typedef HandleType<struct SavegameHandleTag, long, -1> SavegameHandle;
 
+extern const fs::path SAVEGAME_NAME;
+
 struct SaveGame {
 	
 	bool quicksave;

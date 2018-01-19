@@ -173,6 +173,7 @@ InfoPanels g_debugInfo = InfoPanelNone;
 
 extern bool START_NEW_QUEST;
 SavegameHandle LOADQUEST_SLOT = SavegameHandle(); // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
+static fs::path g_saveToLoad;
 
 static const float CURRENT_BASE_FOCAL = 310.f;
 static const float defaultCameraFocal = 350.f;
@@ -623,6 +624,12 @@ static void loadSlot(u32 saveSlot) {
 	GameFlow::setTransition(GameFlow::InGame);
 }
 ARX_PROGRAM_OPTION_ARG("loadslot", "", "Load a specific savegame slot", &loadSlot, "SAVESLOT")
+
+static void loadSave(const std::string & saveFile) {
+	g_saveToLoad = saveFile;
+	GameFlow::setTransition(GameFlow::InGame);
+}
+ARX_PROGRAM_OPTION_ARG("loadsave", "", "Load a specific savegame file", &loadSave, "SAVEFILE")
 
 static void skipLogo() {
 	loadLevel(LEVEL10);
@@ -1257,7 +1264,26 @@ void ArxGame::doFrame() {
 		ARX_LoadGame(savegames[LOADQUEST_SLOT.handleData()]);
 		LOADQUEST_SLOT = SavegameHandle();
 	}
-
+	
+	if(!g_saveToLoad.empty()) {
+		if(fs::is_directory(g_saveToLoad)) {
+			g_saveToLoad /= SAVEGAME_NAME;
+		}
+		std::string name;
+		float version;
+		long level;
+		if(ARX_CHANGELEVEL_GetInfo(g_saveToLoad, name, version, level) == -1) {
+			LogError << "Unable to get save file info for " << g_saveToLoad;
+		} else {
+			SaveGame save;
+			save.name = name;
+			save.level = level;
+			save.savefile = g_saveToLoad;
+			ARX_LoadGame(save);
+		}
+		g_saveToLoad.clear();
+	}
+	
 	if(cinematicIsStopped()
 	   && !cinematicBorder.isActive()
 	   && !BLOCK_PLAYER_CONTROLS
