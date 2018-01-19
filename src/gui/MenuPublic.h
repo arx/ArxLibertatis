@@ -73,10 +73,6 @@ void ARXMenu_ResumeGame();
 
 void ARXMenu_NewQuest();
 
-// Save/Load quest
-
-void ARXMenu_SaveQuest(const std::string & name, SavegameHandle num = SavegameHandle());
-
 void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight);
 
 #endif // ARX_GUI_MENUPUBLIC_H

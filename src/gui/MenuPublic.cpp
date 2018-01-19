@@ -242,12 +242,3 @@ void ARXMenu_NewQuest() {
 	player.gold = 0;
 	ARX_PLAYER_MakeFreshHero();
 }
-
-void ARXMenu_SaveQuest(const std::string & name, SavegameHandle num) {
-	
-	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
-	
-	savegames.save(name, num.handleData(), savegame_thumbnail);
-	
-	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
-}
