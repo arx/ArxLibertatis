@@ -296,10 +296,14 @@ MenuWindow::MenuWindow() {
 
 	m_initalOffsetX = -m_size.x;
 	m_fadeDistance = m_size.x + m_pos.x;
+	
+	m_pageLoad = NULL;
+	m_pageSaveConfirm = NULL;
 	fAngle = 0.f;
 	
 	m_requestedPage = NOP;
 	m_currentPageId = NOP;
+	m_currentPage = NULL;
 	
 	m_pos.x = m_initalOffsetX + (m_fadeDistance * glm::sin(glm::radians(fAngle)));
 	
