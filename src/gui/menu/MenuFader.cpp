@@ -59,9 +59,10 @@ static void FadeInOut(float _fVal) {
 	vertices[3].w = 1.f;
 	vertices[3].color = iColor;
 	
-	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
-	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM(Renderer::TriangleStrip, vertices, 4, true);
+	// FIXME causes black menu with post proc shader
+	//UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
+	//GRenderer->ResetTexture(0);
+	//EERIEDRAWPRIM(Renderer::TriangleStrip, vertices, 4, true);
 	
 }
 

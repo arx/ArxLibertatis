@@ -2126,33 +2126,30 @@ void ArxGame::render() {
 	}
 	
 	
+	g_postProcess->use();
+	
+	
 	if(ARXmenu.mode() != Mode_InGame) {
 		benchmark::begin(benchmark::Menu);
 		ARX_Menu_Render();
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat); // << NEEDED?
 	} else if(isInCinematic()) {
 		benchmark::begin(benchmark::Cinematic);
-		
-		g_postProcess->use();
-		
 		cinematicRender();
-		
-		g_postProcess->render(g_size);
 	} else {
 		benchmark::begin(cinematicBorder.CINEMA_DECAL != 0.f ? benchmark::Cutscene : benchmark::Scene);
 		updateLevel();
-		
-		g_postProcess->use();
-		
 		renderLevel();
 		#ifdef ARX_DEBUG
 		if(g_debugToggles[9]) {
 			renderLevel();
 		}
 		#endif
-		
-		g_postProcess->render(g_size);
 	}
+	
+	
+	g_postProcess->render(g_size);
+	
 	
 	if(g_debugInfo != InfoPanelNone) {
 		switch(g_debugInfo) {
