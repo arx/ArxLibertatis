@@ -41,7 +41,7 @@ class PlayerInventoryHud : public HudItem {
 	Vec2f m_slotSize;
 	Vec2f m_slotSpacing;
 	
-	Vec2f m_bagBackgroundSize;
+	Vec2f m_bagSize;
 	
 	bool m_isClosing;
 	long m_inventoryY;
