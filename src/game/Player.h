@@ -327,7 +327,7 @@ struct ARXCHARACTER {
 	float hunger;
 	PlayerFlags playerflags;
 	long gold;
-	short bag;
+	short m_bags;
 	ARX_INTERFACE_MEMORIZE_SPELL SpellToMemorize;
 
 	float TRAP_DETECT;
@@ -366,7 +366,7 @@ struct ARXCHARACTER {
 		, poison(0)
 		, hunger(0)
 		, gold(0)
-		, bag(0)
+		, m_bags(0)
 		, TRAP_DETECT(0)
 		, TRAP_SECRET(0)
 		, m_cheatPnuxActive(0)

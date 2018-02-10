@@ -71,8 +71,8 @@ void PlayerInventoryHud::updateRect(){
 	Vec2f anchorPos = anchorPosition();
 	
 	if(player.Interface & INTER_INVENTORYALL) {
-		m_rect = Rectf(anchorPos - Vec2f(0, (player.bag - 1) * m_bagSize.y * m_scale),
-		                                 m_bagSize.x * m_scale, player.bag * m_bagSize.y * m_scale);
+		m_rect = Rectf(anchorPos - Vec2f(0, (player.m_bags - 1) * m_bagSize.y * m_scale),
+		                                 m_bagSize.x * m_scale, player.m_bags * m_bagSize.y * m_scale);
 	} else {
 		m_rect = Rectf(anchorPos, m_bagSize.x * m_scale, m_bagSize.y * m_scale);
 	}
@@ -95,7 +95,7 @@ bool PlayerInventoryHud::updateInput() {
 		
 	}
 
-	if(m_currentBag < player.bag - 1) {
+	if(m_currentBag < player.m_bags - 1) {
 		
 		float fRatio = (32 + 5) * m_scale;
 		pos.y += checked_range_cast<int>(fRatio);
@@ -139,7 +139,7 @@ void PlayerInventoryHud::update() {
 						ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 						player.Interface |= INTER_INVENTORYALL;
 						ARX_INTERFACE_NoteClose();
-						m_inventoryY = 121 * player.bag;
+						m_inventoryY = 121 * player.m_bags;
 						lOldInterface = INTER_INVENTORYALL;
 					}
 				}
@@ -157,13 +157,13 @@ void PlayerInventoryHud::update() {
 		float fSpeed = 1.f / 3;
 		long t = long((framedelay * fSpeed) + 2.f);
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-			if(m_inventoryY < 121 * player.bag) {
+			if(m_inventoryY < 121 * player.m_bags) {
 				m_inventoryY += t;
 			}
 		} else {
 			if(m_isClosing) {
 				m_inventoryY += t;
-				if(m_inventoryY > 121 * player.bag) {
+				if(m_inventoryY > 121 * player.m_bags) {
 					m_isClosing = false;
 					if(player.Interface & INTER_INVENTORYALL) {
 						player.Interface &= ~INTER_INVENTORYALL;
@@ -258,7 +258,7 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 
 void PlayerInventoryHud::draw() {
 	if(player.Interface & INTER_INVENTORY) {
-		if(player.bag) {
+		if(player.m_bags) {
 			drawBag(m_currentBag, Vec2i_ZERO);
 			
 			CalculateInventoryCoordinates();
@@ -283,7 +283,7 @@ void PlayerInventoryHud::draw() {
 				}
 			}
 			
-			if(m_currentBag < player.bag - 1) {
+			if(m_currentBag < player.m_bags - 1) {
 				
 				Rectf rect = Rectf(m_arrowsAnchor + Vec2f(0.f, 32.f + 5.f) * m_scale, 32.f * m_scale, 32.f * m_scale);
 				
@@ -308,14 +308,14 @@ void PlayerInventoryHud::draw() {
 		Vec2f anchorPos = anchorPosition();
 		
 		//TODO see about these coords, might be calculated once only
-		const float fBag = (player.bag - 1) * (-121.f * m_scale);
+		const float fBag = (player.m_bags - 1) * (-121.f * m_scale);
 		const float fOffsetY = (121 * m_scale);
 		
 		int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
 		int posx = checked_range_cast<int>(anchorPos.x);
 		int posy = checked_range_cast<int>(anchorPos.y + ((-3.f + 25 - 32) * m_scale));
 		
-		for(int i = 0; i < player.bag; i++) {
+		for(int i = 0; i < player.m_bags; i++) {
 			
 			float linkPosY = float(posy + iOffsetY);
 			Vec2f pos1 = Vec2f(posx + (45 * m_scale), linkPosY);
@@ -334,7 +334,7 @@ void PlayerInventoryHud::draw() {
 		
 		iOffsetY = checked_range_cast<int>(fBag);
 		
-		for(short i = 0; i < player.bag; i++) {
+		for(short i = 0; i < player.m_bags; i++) {
 			drawBag(i, Vec2i(0, iOffsetY));
 			iOffsetY += checked_range_cast<int>(fOffsetY);
 		}
@@ -343,7 +343,7 @@ void PlayerInventoryHud::draw() {
 
 void PlayerInventoryHud::nextBag() {
 	
-	if((player.Interface & INTER_INVENTORY) && player.bag != 0 && m_currentBag < player.bag - 1) {
+	if((player.Interface & INTER_INVENTORY) && player.m_bags != 0 && m_currentBag < player.m_bags - 1) {
 		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 		m_currentBag++;
 	}
@@ -352,7 +352,7 @@ void PlayerInventoryHud::nextBag() {
 
 void PlayerInventoryHud::previousBag() {
 	
-	if((player.Interface & INTER_INVENTORY) && player.bag != 0 && m_currentBag > 0) {
+	if((player.Interface & INTER_INVENTORY) && player.m_bags != 0 && m_currentBag > 0) {
 		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 		m_currentBag--;
 	}
@@ -392,7 +392,7 @@ bool PlayerInventoryHud::containsPos(const Vec2s & pos) {
 		
 		return InPlayerInventoryBag(t);
 	} else if(player.Interface & INTER_INVENTORYALL) {
-		float fBag = (player.bag - 1) * (-121 * m_scale);
+		float fBag = (player.m_bags - 1) * (-121 * m_scale);
 
 		short iY = checked_range_cast<short>(fBag);
 
@@ -404,7 +404,7 @@ bool PlayerInventoryHud::containsPos(const Vec2s & pos) {
 			return true;
 		}
 
-		for(int i = 0; i < player.bag; i++) {
+		for(int i = 0; i < player.m_bags; i++) {
 			Vec2s t = pos - iPos;
 			t.y -= iY;
 			
@@ -444,11 +444,11 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 		
 	} else if(player.Interface & INTER_INVENTORYALL) {
 		
-		float fBag = (player.bag - 1) * (-121 * m_scale);
+		float fBag = (player.m_bags - 1) * (-121 * m_scale);
 		
 		int iY = checked_range_cast<int>(fBag);
 
-		for(size_t bag = 0; bag < size_t(player.bag); bag++) {
+		for(size_t bag = 0; bag < size_t(player.m_bags); bag++) {
 			
 			long tx = pos.x - iPos.x;
 			long ty = pos.y - iPos.y - iY;
@@ -510,14 +510,14 @@ void PlayerInventoryHud::dropEntity() {
 	} else {
 		bool bOk = false;
 		
-		float fBag = (player.bag - 1) * (-121 * m_scale);
+		float fBag = (player.m_bags - 1) * (-121 * m_scale);
 		
 		short iY = checked_range_cast<short>(fBag);
 		
 		//We must enter the for-loop to initialyze tx/ty
-		arx_assert(0 < player.bag);
+		arx_assert(0 < player.m_bags);
 		
-		for(int i = 0; i < player.bag; i++) {
+		for(int i = 0; i < player.m_bags; i++) {
 			t.x = DANAEMouse.x - iPos.x;
 			t.y = DANAEMouse.y - iPos.y - iY;
 			
@@ -636,10 +636,10 @@ void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 		}
 	}
 	
-	arx_assert(player.bag >= 0);
-	arx_assert(player.bag <= 3);
+	arx_assert(player.m_bags >= 0);
+	arx_assert(player.m_bags <= 3);
 	
-	for(size_t bag = 0; bag < size_t(player.bag); bag++)
+	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
@@ -676,12 +676,12 @@ void PlayerInventoryHud::resetPos() {
 	if(player.Interface & INTER_INVENTORY) {
 		m_inventoryY = 110;
 	} else if(player.Interface & INTER_INVENTORYALL) {
-		m_inventoryY = 121 * player.bag;
+		m_inventoryY = 121 * player.m_bags;
 	}
 }
 
 void PlayerInventoryHud::setCurrentBag(short bag) {
-	if(bag < player.bag) {
+	if(bag < player.m_bags) {
 		m_currentBag = bag;
 	}
 }
