@@ -482,6 +482,11 @@ void PlayerInventoryHud::dropEntity() {
 	if(!g_playerInventoryHud.containsPos(DANAEMouse))
 		return;
 	
+	// If inventories overlap entity might have been dropped alreadry
+	if(!DRAGINTER) {
+		return;
+	}
+	
 	Vec2s itemSize = DRAGINTER->m_inventorySize;
 	
 	int bag = 0;
