@@ -53,8 +53,8 @@ void PlayerInventoryHud::init() {
 	m_slotSize = Vec2f(32, 32);
 	m_slotSpacing = Vec2f(7, 6);
 	
-	m_bagBackgroundSize = Vec2f(562, 121);
-
+	m_bagSize = Vec2f(562, 121);
+	
 	m_isClosing = false;
 	m_inventoryY = 110;
 }
@@ -71,10 +71,10 @@ void PlayerInventoryHud::updateRect(){
 	Vec2f anchorPos = anchorPosition();
 	
 	if(player.Interface & INTER_INVENTORYALL) {
-		m_rect = Rectf(anchorPos - Vec2f(0, (player.bag - 1) * m_bagBackgroundSize.y * m_scale),
-		                                 m_bagBackgroundSize.x * m_scale, player.bag * m_bagBackgroundSize.y * m_scale);
+		m_rect = Rectf(anchorPos - Vec2f(0, (player.bag - 1) * m_bagSize.y * m_scale),
+		                                 m_bagSize.x * m_scale, player.bag * m_bagSize.y * m_scale);
 	} else {
-		m_rect = Rectf(anchorPos, m_bagBackgroundSize.x * m_scale, m_bagBackgroundSize.y * m_scale);
+		m_rect = Rectf(anchorPos, m_bagSize.x * m_scale, m_bagSize.y * m_scale);
 	}
 	
 }
@@ -82,7 +82,7 @@ void PlayerInventoryHud::updateRect(){
 bool PlayerInventoryHud::updateInput() {
 	
 	Vec2f anchorPos = anchorPosition();
-	Vec2f pos = anchorPos + Vec2f((m_bagBackgroundSize.x * m_scale) - ((32 + 3) * m_scale), ((-3 + 25) * m_scale));
+	Vec2f pos = anchorPos + Vec2f((m_bagSize.x * m_scale) - ((32 + 3) * m_scale), ((-3 + 25) * m_scale));
 	
 	bool bQuitCombine = true;
 	
@@ -186,7 +186,7 @@ void PlayerInventoryHud::CalculateInventoryCoordinates() {
 	
 	Vec2f anchorPos = anchorPosition();
 	
-	m_arrowsAnchor.x = anchorPos.x + (m_bagBackgroundSize.x * m_scale) - ((32 + 3)  * m_scale);
+	m_arrowsAnchor.x = anchorPos.x + (m_bagSize.x * m_scale) - ((32 + 3)  * m_scale);
 	m_arrowsAnchor.y = anchorPos.y + ((-3 + 25) * m_scale);
 }
 
@@ -200,7 +200,7 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 	const Vec2f pos = anchorPos + Vec2f(i.x, i.y);
 	
 	{
-		Rectf rect = Rectf(pos + Vec2f(0.f, -(5 * m_scale)), m_bagBackgroundSize.x * m_scale, m_bagBackgroundSize.y * m_scale);
+		Rectf rect = Rectf(pos + Vec2f(0.f, -(5 * m_scale)), m_bagSize.x * m_scale, m_bagSize.y * m_scale);
 		EERIEDrawBitmap(rect, 0.001f, m_heroInventory, Color::white);
 	}
 	
@@ -319,8 +319,8 @@ void PlayerInventoryHud::draw() {
 			
 			float linkPosY = float(posy + iOffsetY);
 			Vec2f pos1 = Vec2f(posx + (45 * m_scale), linkPosY);
-			Vec2f pos2 = Vec2f(posx + (m_bagBackgroundSize.x * m_scale) * 0.5f + (-16.f * m_scale), linkPosY);
-			Vec2f pos3 = Vec2f(posx + (m_bagBackgroundSize.x * m_scale) + (-77.f * m_scale), linkPosY);
+			Vec2f pos2 = Vec2f(posx + (m_bagSize.x * m_scale) * 0.5f + (-16.f * m_scale), linkPosY);
+			Vec2f pos3 = Vec2f(posx + (m_bagSize.x * m_scale) + (-77.f * m_scale), linkPosY);
 			
 			TextureContainer * tex = m_heroInventoryLink;
 			Vec2f texSize = Vec2f(tex->m_size) * m_scale;
