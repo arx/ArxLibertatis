@@ -676,7 +676,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		case ConfirmChangeLevel: asp->CHANGE_LEVEL_ICON = 1;  break;
 		case ChangeLevelNow:     asp->CHANGE_LEVEL_ICON = 200; break;
 	}
-	asp->bag = player.bag;
+	asp->bag = player.m_bags;
 	storeIdString(asp->equipsecondaryIO, NULL);
 	storeIdString(asp->equipshieldIO, NULL);
 	storeIdString(asp->leftIO, NULL);
@@ -1552,7 +1552,7 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target = std::string(
 		CHANGE_LEVEL_ICON = ConfirmChangeLevel;
 	}
 	
-	player.bag = asp->bag;
+	player.m_bags = asp->bag;
 	
 	for(size_t i = 0; i < SAVED_MAX_PRECAST; i++) {
 		PRECAST_STRUCT precastSlot = asp->precast[i];

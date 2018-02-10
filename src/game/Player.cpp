@@ -737,7 +737,7 @@ void ARX_PLAYER_MakeFreshHero()
 	player.poison = 0.f;
 	player.hunger = 100.f;
 	player.skin = 0;
-	player.bag = 1;
+	player.m_bags = 1;
 
 	ARX_PLAYER_ComputePlayerStats();
 	player.rune_flags = 0;
@@ -1635,7 +1635,7 @@ void ARX_PLAYER_InitPlayer() {
 	player.falling = false;
 	player.torch = NULL;
 	player.gold = 0;
-	player.bag = 1;
+	player.m_bags = 1;
 	player.doingmagic = 0;
 	
 	ARX_PLAYER_MakeFreshHero();
@@ -2412,10 +2412,10 @@ void ARX_PLAYER_Start_New_Quest() {
 }
 
 void ARX_PLAYER_AddBag() {
-	++player.bag;
+	++player.m_bags;
 
-	if(player.bag > 3)
-		player.bag = 3;
+	if(player.m_bags > 3)
+		player.m_bags = 3;
 }
 
 bool ARX_PLAYER_CanStealItem(Entity * _io) {

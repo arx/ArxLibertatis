@@ -1771,14 +1771,14 @@ void ManageCasseDArme(Entity * io) {
 	if(!(io->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)))
 		return;
 	
-	arx_assert(player.bag >= 0);
-	arx_assert(player.bag <= 3);
+	arx_assert(player.m_bags >= 0);
+	arx_assert(player.m_bags <= 3);
 	
 	Entity * pObjMin = NULL;
 	Entity * pObjMax = NULL;
 	Entity * pObjFIX = NULL;
 	
-	for(size_t bag = 0; bag < size_t(player.bag); bag++)
+	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		Entity * bagEntity = g_inventory[bag][x][y].io;
