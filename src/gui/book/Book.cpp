@@ -215,6 +215,9 @@ void PlayerBook::manage() {
 
 	UseRenderState state(render2D());
 
+	BOOKDEC.x = 0;
+	BOOKDEC.y = 0;
+
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 
@@ -488,9 +491,7 @@ void StatsPage::loadStrings() {
 }
 
 void StatsPage::manage() {
-	BOOKDEC.x = 0;
-	BOOKDEC.y = 0;
-
+	
 	DrawBookInterfaceItem(g_bookResouces.playerbook, Vec2f(97, 64), Color::white, 0.9999f);
 
 	manageStats();
