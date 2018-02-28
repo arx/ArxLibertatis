@@ -45,6 +45,7 @@ struct Note {
 		, allocatedForRatio(Vec2f_ZERO)
 		, _page(0)
 		, _pageSpacing(20)
+		, m_maxPages(1)
 		, background(NULL)
 		, prevPage(NULL)
 		, nextPage(NULL)
@@ -86,6 +87,8 @@ private:
 	Rectf _prevPageButton;
 	Rectf _nextPageButton;
 	s32 _pageSpacing;
+
+	size_t m_maxPages;
 	
 	TextureContainer * background;
 	TextureContainer * prevPage;
