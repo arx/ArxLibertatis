@@ -128,54 +128,46 @@ bool Note::allocate() {
 
 	loadTextures();
 	
-	switch(_type) {
-		
-		// TODO this information should not be hardcoded
-		
-		case Notice: {
-			if(background) {
+	if(background) {
+		switch(_type) {
+			
+			// TODO this information should not be hardcoded
+			
+			case Notice: {
 				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(50.f, 50.f);
 				newTextEnd = Vec2f(background->size()) - Vec2f(50.f, 50.f);
 				m_maxPages = 1;
+				break;
 			}
-			break;
-		}
-		
-		case SmallNote: {
-			if(background) {
+
+			case SmallNote: {
 				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(30.f, 30.f);
 				newTextEnd = Vec2f(background->size()) - Vec2f(30.f, 40.f);
 				m_maxPages = 1;
+				break;
 			}
-			break;
-		}
-		
-		case BigNote: {
-			if(background) {
+
+			case BigNote: {
 				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(40.f, 40.f);
 				newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
 				m_maxPages = 2;
+				break;
 			}
-			break;
-		}
-		
-		case Book: {
-			if(background) {
+
+			case Book: {
 				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(40.f, 20.f);
 				newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
 				m_maxPages = std::numeric_limits<size_t>::max();
 				prevButtonOffset = Vec2f(8.f, -6.f);
 				nextButtonOffset = Vec2f(-15.f, -6.f);
+				break;
 			}
-			break;
-		}
-		
-		case QuestBook: {
-			if(background) {
+
+			case QuestBook: {
 				newPos = Vec2f(97, 64) * scale;
 				newTextStart = Vec2f(40.f, 40.f);
 				newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 65.f);
@@ -183,9 +175,9 @@ bool Note::allocate() {
 				prevButtonOffset = Vec2f(8.f, -6.f);
 				nextButtonOffset = Vec2f(-15.f, -6.f);
 			}
+
+			case Undefined: break; // Cannot handle notes of undefined type.
 		}
-		
-		case Undefined: break; // Cannot handle notes of undefined type.
 	}
 	
 	if(!background) {
