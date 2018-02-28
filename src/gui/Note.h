@@ -74,6 +74,8 @@ private:
 	bool allocate();
 	void deallocate();
 	
+	void loadTextures();
+	
 	Type _type;
 	std::string _text;
 	
