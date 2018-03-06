@@ -49,6 +49,7 @@ void Note::clear() {
 	deallocate();
 	_text.clear();
 	_type = Undefined;
+	m_isCleared = true;
 }
 
 void Note::deallocate() {
@@ -255,7 +256,8 @@ bool Note::allocate() {
 	setPage(_page);
 	
 	m_currentRatio = g_sizeRatio;
-	
+	m_isCleared = false;
+
 	return true;
 }
 

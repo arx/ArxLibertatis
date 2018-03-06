@@ -41,7 +41,8 @@ struct Note {
 	};
 	
 	Note()
-		: _type(Undefined)
+		: m_isCleared(true)
+		, _type(Undefined)
 		, m_currentRatio(Vec2f_ZERO)
 		, _page(0)
 		, _pageSpacing(20)
@@ -78,6 +79,8 @@ private:
 	void calculateLayout();
 	bool splitTextToPages();
 	
+	bool m_isCleared;
+
 	Type _type;
 	std::string _text;
 	
