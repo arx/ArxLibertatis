@@ -42,7 +42,7 @@ struct Note {
 	
 	Note()
 		: _type(Undefined)
-		, allocatedForRatio(Vec2f_ZERO)
+		, m_currentRatio(Vec2f_ZERO)
 		, _page(0)
 		, _pageSpacing(20)
 		, m_maxPages(1)
@@ -81,7 +81,7 @@ private:
 	Type _type;
 	std::string _text;
 	
-	Vec2f allocatedForRatio;
+	Vec2f m_currentRatio;
 	
 	std::vector<std::string> pages;
 	size_t _page;
