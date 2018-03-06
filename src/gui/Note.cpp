@@ -56,7 +56,7 @@ void Note::deallocate() {
 	// Don't bother actually deleting the textures, we'll just need them again!
 	background = NULL, prevPage = NULL, nextPage = NULL;
 	
-	allocatedForRatio = Vec2f_ZERO;
+	m_currentRatio = Vec2f_ZERO;
 	
 	_area = Rectf::ZERO;
 	_prevPageButton = Rectf::ZERO;
@@ -227,7 +227,7 @@ bool Note::splitTextToPages() {
 
 bool Note::allocate() {
 	
-	if(allocatedForRatio == g_sizeRatio) {
+	if(m_currentRatio == g_sizeRatio) {
 		return background != NULL;
 	}
 	
@@ -244,7 +244,7 @@ bool Note::allocate() {
 		}
 
 		if(!background) {
-			allocatedForRatio = g_sizeRatio;
+			m_currentRatio = g_sizeRatio;
 			return false;
 		}
 		
@@ -254,7 +254,7 @@ bool Note::allocate() {
 	// Clamp the current page to a valid page.
 	setPage(_page);
 	
-	allocatedForRatio = g_sizeRatio;
+	m_currentRatio = g_sizeRatio;
 	
 	return true;
 }
