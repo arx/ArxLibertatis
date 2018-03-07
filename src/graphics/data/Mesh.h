@@ -149,7 +149,7 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos, c
 //****************************************************************************
 // BACKGROUND MANAGEMENT FUNCTIONS START
 void ClearBackground(BackgroundData * eb);
-void InitBkg(BackgroundData * eb, short sx, short sz, Vec2s tileSize);
+void InitBkg(BackgroundData * eb, short sx, short sz);
 //****************************************************************************
 
 long MakeTopObjString(Entity * io, std::string & dest);
