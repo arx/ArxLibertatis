@@ -77,14 +77,14 @@ Font * hFontInGame = NULL;
 Font * hFontInGameNote = NULL;
 Font * hFontDebug = NULL;
 
-static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
+static void ARX_UNICODE_FormattingInRect(Font * font, std::string::const_iterator txtbegin, std::string::const_iterator txtend,
                                          const Rect & rect, Color col,
                                          long * textHeight = 0, long * numChars = 0,
                                          bool computeOnly = false) {
 	
-	std::string::const_iterator itLastLineBreak = text.begin();
-	std::string::const_iterator itLastWordBreak = text.begin();
-	std::string::const_iterator it = text.begin();
+	std::string::const_iterator itLastLineBreak = txtbegin;
+	std::string::const_iterator itLastWordBreak = txtbegin;
+	std::string::const_iterator it = txtbegin;
 	
 	int maxLineWidth;
 	if(rect.right == Rect::Limits::max()) {
@@ -109,9 +109,9 @@ static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 	}
 	
 	std::string::const_iterator next = it;
-	for(it = text.begin(); it != text.end(); it = next) {
+	for(it = txtbegin; it != txtend; it = next) {
 		
-		next = util::UTF8::next(it, text.end());
+		next = util::UTF8::next(it, txtend);
 		
 		// Line break ?
 		bool isLineBreak = false;
@@ -131,7 +131,7 @@ static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 				if(itLastWordBreak > itLastLineBreak) {
 					// Draw a line from the last line break up to the last word break
 					it = itLastWordBreak;
-					next = util::UTF8::next(it, text.end());
+					next = util::UTF8::next(it, txtend);
 				} else if(it == itLastLineBreak) {
 					// Not enough space to render even one character!
 					break;
@@ -146,7 +146,7 @@ static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 		// If we have to draw a line
 		//  OR
 		// This is the last character of the string
-		if(isLineBreak || next == text.end()) {
+		if(isLineBreak || next == txtend) {
 			
 			std::string::const_iterator itTextStart = itLastLineBreak;
 			std::string::const_iterator itTextEnd;
@@ -176,14 +176,14 @@ static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 	
 	// Return num characters displayed
 	if(numChars) {
-		*numChars = it - text.begin();
+		*numChars = it - txtbegin;
 	}
 }
 
-long ARX_UNICODE_ForceFormattingInRect(Font * font, const std::string & text,
+long ARX_UNICODE_ForceFormattingInRect(Font * font, std::string::const_iterator txtbegin, std::string::const_iterator txtend,
                                        const Rect & rect) {
 	long numChars;
-	ARX_UNICODE_FormattingInRect(font, text, rect, Color::none, 0, &numChars, true);
+	ARX_UNICODE_FormattingInRect(font, txtbegin, txtend, rect, Color::none, 0, &numChars, true);
 	return numChars;
 }
 
@@ -200,7 +200,7 @@ long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, cons
 	}
 
 	long height;
-	ARX_UNICODE_FormattingInRect(font, _text, rect, col, &height);
+	ARX_UNICODE_FormattingInRect(font, _text.begin(), _text.end(), rect, col, &height);
 
 	if(pClipRect) {
 		GRenderer->SetScissor(Rect::ZERO);
