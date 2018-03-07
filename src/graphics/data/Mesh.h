@@ -54,51 +54,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 #include "math/Rectangle.h"
 #include "game/Camera.h"
+#include "scene/Background.h"
 
 class Entity;
-
-struct BackgroundTileData {
-	
-	bool treat;
-	short nbpoly;
-	short nbpolyin;
-	EERIEPOLY * polydata;
-	EERIEPOLY ** polyin;
-	float maxy;
-	
-	BackgroundTileData()
-		: treat(false)
-		, nbpoly(0)
-		, nbpolyin(0)
-		, polydata(NULL)
-		, polyin(NULL)
-		, maxy(0.f)
-	{ }
-	
-};
-
-static const short MAX_BKGX = 160;
-static const short MAX_BKGZ = 160;
-static const short BKG_SIZX = 100;
-static const short BKG_SIZZ = 100;
-
-struct BackgroundData {
-	
-	long exist;
-	Vec2s m_size;
-	Vec2s m_tileSize;
-	Vec2f m_mul;
-	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
-	std::vector<ANCHOR_DATA> m_anchors;
-	
-	BackgroundData()
-		: exist(false)
-		, m_size(0, 0)
-		, m_tileSize(0, 0)
-		, m_mul(0, 0)
-	{ }
-	
-};
 
 extern long EERIEDrawnPolys;
 
@@ -146,12 +104,6 @@ struct RenderMaterial;
 
 void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, const Color4f & coll, RenderMaterial mat);
 
-//****************************************************************************
-// BACKGROUND MANAGEMENT FUNCTIONS START
-void ClearBackground(BackgroundData * eb);
-void InitBkg(BackgroundData * eb, short sx, short sz);
-//****************************************************************************
-
 long MakeTopObjString(Entity * io, std::string & dest);
 
 Vec2f getWaterFxUvOffset(float watereffect, const Vec3f & odtv);
@@ -160,6 +112,8 @@ Vec2f getWaterFxUvOffset(float watereffect, const Vec3f & odtv);
 //*************************************************************************************
 
 float PtIn2DPolyProj(const std::vector<Vec4f> & verts, EERIE_FACE * ef, float x, float z);
+
+void EERIE_PORTAL_Release();
 
 long CountBkgVertex();
 
@@ -212,6 +166,7 @@ struct ROOM_DIST_DATA {
 };
 
 extern ROOM_DIST_DATA * RoomDistance;
+extern size_t NbRoomDistance;
 
 void UpdateIORoom(Entity * io);
 float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long Cam_Room);

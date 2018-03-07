@@ -95,8 +95,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
-static void EERIE_PORTAL_Release();
-
 static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPOLY & ep, Vec3f * intersect) {
 	
 	Vec3f v = l2 - l1;
@@ -541,20 +539,6 @@ int PointIn2DPolyXZ(const PortalPoly * ep, float x, float z) {
 }
 
 //*************************************************************************************
-// Counts number of ignored polys in a background
-//*************************************************************************************
-
-// Releases BKG_INFO from a tile
-static void ReleaseBKG_INFO(BackgroundTileData * eg) {
-	free(eg->polydata);
-	eg->polydata = NULL;
-	free(eg->polyin);
-	eg->polyin = NULL;
-	eg->nbpolyin = 0;
-	*eg = BackgroundTileData();
-}
-
-//*************************************************************************************
 //*************************************************************************************
 
 void UpdateIORoom(Entity * io)
@@ -571,7 +555,7 @@ void UpdateIORoom(Entity * io)
 }
 
 ROOM_DIST_DATA * RoomDistance = NULL;
-static size_t NbRoomDistance = 0;
+size_t NbRoomDistance = 0;
 
 static void SetRoomDistance(size_t i, size_t j, float val, const Vec3f & p1, const Vec3f & p2) {
 	
@@ -630,48 +614,7 @@ float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long 
 	return dst;
 }
 
-// Clears a background of its infos
-void ClearBackground(BackgroundData * eb) {
-	
-	if(!eb)
-		return;
-	
-	AnchorData_ClearAll(eb);
-	
-	for(long z = 0; z < eb->m_size.y; z++)
-	for(long x = 0; x < eb->m_size.x; x++) {
-		ReleaseBKG_INFO(&eb->m_tileData[x][z]);
-	}
-	
-	free(RoomDistance);
-	RoomDistance = NULL;
-	NbRoomDistance = 0;
-}
 
-void InitBkg(BackgroundData * eb, short sx, short sz) {
-	
-	arx_assert(eb);
-	
-	if(eb->exist) {
-		EERIE_PORTAL_Release();
-		ClearBackground(eb);
-	}
-
-	eb->exist = 1;
-	eb->m_anchors.clear();
-	eb->m_size.x = sx;
-	eb->m_size.y = sz;
-	
-	eb->m_tileSize = Vec2s(BKG_SIZX, BKG_SIZZ);
-	
-	eb->m_mul.x = 1.f / (float)eb->m_tileSize.x;
-	eb->m_mul.y = 1.f / (float)eb->m_tileSize.y;
-	
-	for(short z = 0; z < eb->m_size.y; z++)
-	for(short x = 0; x < eb->m_size.x; x++) {
-		eb->m_tileData[x][z] = BackgroundTileData();
-	}
-}
 
 //*************************************************************************************
 //*************************************************************************************
@@ -793,7 +736,7 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 	}
 }
 
-static void EERIE_PORTAL_Release() {
+void EERIE_PORTAL_Release() {
 	
 	if(!portals)
 		return;
