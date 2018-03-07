@@ -76,6 +76,7 @@ private:
 	
 	void loadTextures();
 	void calculateLayout();
+	bool splitTextToPages();
 	
 	Type _type;
 	std::string _text;
