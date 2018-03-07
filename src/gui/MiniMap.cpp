@@ -430,7 +430,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 				Rect::Num bottom = checked_range_cast<Rect::Num>((bRect.bottom) * g_sizeRatio.y);
 				Rect rRect = Rect(left, top, right, bottom);
 				
-				long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, m_mapMarkers[i].m_text, rRect);
+				long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, m_mapMarkers[i].m_text.begin(), m_mapMarkers[i].m_text.end(), rRect);
 				
 				
 				ARX_UNICODE_DrawTextInRect(hFontInGameNote,

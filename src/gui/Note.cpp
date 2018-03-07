@@ -207,7 +207,7 @@ bool Note::splitTextToPages() {
 			return false;
 		}
 
-		long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, buffer, _textArea);
+		long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, buffer.begin(), buffer.end(), _textArea);
 		if(pageSize <= 0) {
 			LogWarning << "Error splitting note text into pages";
 			pages.push_back(buffer);

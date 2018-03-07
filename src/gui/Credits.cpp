@@ -332,7 +332,7 @@ void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumbe
 		drawpos += m_lineHeight;
 		
 		// Split long lines
-		long n = ARX_UNICODE_ForceFormattingInRect(hFontCredits, phrase, linerect);
+		long n = ARX_UNICODE_ForceFormattingInRect(hFontCredits, phrase.begin(), phrase.end(), linerect);
 		arx_assert(n >= 0 && size_t(n) < phrase.length());
 		
 		// Long lines are not simple
