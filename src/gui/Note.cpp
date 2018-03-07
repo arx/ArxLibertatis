@@ -192,55 +192,60 @@ bool Note::allocate() {
 		return background != NULL;
 	}
 	
-	deallocate();
-	
-	// Allocate textures and calculate sizes
-	loadTextures();
-	
-	if(background) {
-		calculateLayout();
-	}
-	
-	if(!background) {
-		allocatedForRatio = g_sizeRatio;
-		return false;
-	}
-	
-	// Split text into pages
-	
-	// TODO This buffer and related string copies can be avoided by
-	// using iterators for ARX_UNICODE_ForceFormattingInRect
-	std::string buffer = _text;
-	
-	while(!buffer.empty()) {
-		
-		// Change the note type if the text is too long.
-		if(pages.size() >= m_maxPages) {
-			switch(_type) {
-				case Notice: _type = SmallNote; break;
-				case SmallNote: _type = BigNote; break;
-				case BigNote: _type = Book; break;
-				default: ARX_DEAD_CODE(); break;
+	bool textSplitResult = true;
+
+	do {
+		deallocate();
+
+		// Allocate textures and calculate sizes
+		loadTextures();
+
+		if(background) {
+			calculateLayout();
+		}
+
+		if(!background) {
+			allocatedForRatio = g_sizeRatio;
+			return false;
+		}
+
+		// Split text into pages
+
+		// TODO This buffer and related string copies can be avoided by
+		// using iterators for ARX_UNICODE_ForceFormattingInRect
+		std::string buffer = _text;
+
+		while(!buffer.empty()) {
+
+			// Change the note type if the text is too long.
+			if(pages.size() >= m_maxPages) {
+				switch(_type) {
+					case Notice: _type = SmallNote; break;
+					case SmallNote: _type = BigNote; break;
+					case BigNote: _type = Book; break;
+					default: ARX_DEAD_CODE(); break;
+				}
+				textSplitResult = false;
 			}
-			return allocate();
+
+			long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, buffer, _textArea);
+			if(pageSize <= 0) {
+				LogWarning << "Error splitting note text into pages";
+				pages.push_back(buffer);
+				break;
+			}
+
+			pages.push_back(buffer.substr(0, pageSize));
+
+			// Skip whitespace at the start of pages.
+			while(size_t(pageSize) < buffer.size() && std::isspace(buffer[pageSize])) {
+				pageSize++;
+			}
+
+			buffer = buffer.substr(pageSize);
 		}
-		
-		long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, buffer, _textArea);
-		if(pageSize <= 0) {
-			LogWarning << "Error splitting note text into pages";
-			pages.push_back(buffer);
-			break;
-		}
-		
-		pages.push_back(buffer.substr(0, pageSize));
-		
-		// Skip whitespace at the start of pages.
-		while(size_t(pageSize) < buffer.size() && std::isspace(buffer[pageSize])) {
-			pageSize++;
-		}
-		
-		buffer = buffer.substr(pageSize);
-	}
+		textSplitResult = true;
+	} while(!textSplitResult);
 	
 	// Clamp the current page to a valid page.
 	setPage(_page);
