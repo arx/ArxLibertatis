@@ -188,14 +188,12 @@ void Note::calculateLayout() {
 }
 
 bool Note::splitTextToPages() {
-	// Split text into pages
-
-	// TODO This buffer and related string copies can be avoided by
-	// using iterators for ARX_UNICODE_ForceFormattingInRect
-	std::string buffer = _text;
-
-	while(!buffer.empty()) {
-
+	
+	std::string::const_iterator txtbegin = _text.begin();
+	std::string::const_iterator txtend = _text.end();
+	
+	while(txtbegin != txtend) {
+		
 		// Change the note type if the text is too long.
 		if(pages.size() >= m_maxPages) {
 			switch(_type) {
@@ -206,22 +204,22 @@ bool Note::splitTextToPages() {
 			}
 			return false;
 		}
-
-		long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, buffer.begin(), buffer.end(), _textArea);
+		
+		long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, txtbegin, txtend, _textArea);
 		if(pageSize <= 0) {
 			LogWarning << "Error splitting note text into pages";
-			pages.push_back(buffer);
+			pages.push_back(std::string(txtbegin, txtend));
 			break;
 		}
-
-		pages.push_back(buffer.substr(0, pageSize));
-
+		
+		pages.push_back(std::string(txtbegin, txtbegin + pageSize));
+		
 		// Skip whitespace at the start of pages.
-		while(size_t(pageSize) < buffer.size() && std::isspace(buffer[pageSize])) {
+		while(pageSize < txtend - txtbegin && std::isspace(*(txtbegin + pageSize))) {
 			pageSize++;
 		}
-
-		buffer = buffer.substr(pageSize);
+		
+		txtbegin += pageSize;
 	}
 	return true;
 }
