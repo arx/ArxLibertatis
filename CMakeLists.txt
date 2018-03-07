@@ -1147,6 +1147,7 @@ set(PLATFORM_CRASHHANDLER_WINDOWS_SOURCES
 set(PLATFORM_PROFILER_SOURCES src/platform/profiler/Profiler.cpp)
 
 set(SCENE_SOURCES
+	src/scene/Background.cpp
 	src/scene/ChangeLevel.cpp
 	src/scene/GameSound.cpp
 	src/scene/Interactive.cpp
