@@ -42,7 +42,7 @@ public:
 private:
 	
 	static const Vec2f m_activeTabPositions[10];
-	static const Vec2f m_tabPositions[10];
+	static const Vec2f m_tabOffsets[10];
 	
 	void drawTab(long tabNum);
 	void drawActiveTab(long tabNum);
