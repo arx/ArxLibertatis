@@ -67,5 +67,8 @@ struct BackgroundData {
 
 void InitBkg(BackgroundData * eb, short sx, short sz);
 void ClearBackground(BackgroundData * eb);
+void EERIEPOLY_Compute_PolyIn();
+
+BackgroundTileData * getFastBackgroundData(float x, float z);
 
 #endif // ARX_SCENE_BACKGROUND_H

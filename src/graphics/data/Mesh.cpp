@@ -280,17 +280,6 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 	return found;
 }
 
-BackgroundTileData * getFastBackgroundData(float x, float z) {
-	
-	long px = long(x * ACTIVEBKG->m_mul.x);
-	long pz = long(z * ACTIVEBKG->m_mul.y);
-
-	if(px < 0 || px >= ACTIVEBKG->m_size.x || pz < 0 || pz >= ACTIVEBKG->m_size.y)
-		return NULL;
-	
-	return &ACTIVEBKG->m_tileData[px][pz];
-}
-
 EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
 	
 	BackgroundTileData * feg = getFastBackgroundData(pos.x, pos.z);
@@ -614,88 +603,6 @@ float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long 
 	return dst;
 }
 
-
-
-//*************************************************************************************
-//*************************************************************************************
-
-static void EERIEPOLY_Add_PolyIn(BackgroundTileData * eg, EERIEPOLY * ep) {
-	
-	for(long i = 0; i < eg->nbpolyin; i++)
-		if(eg->polyin[i] == ep)
-			return;
-
-	eg->polyin = (EERIEPOLY **)realloc(eg->polyin, sizeof(EERIEPOLY *) * (eg->nbpolyin + 1));
-
-	eg->polyin[eg->nbpolyin] = ep;
-	eg->nbpolyin++;
-}
-
-static bool PointInBBox(const Vec3f & point, const Rectf & bb) {
-	return (point.x <= bb.right && point.x >= bb.left && point.z <= bb.bottom && point.z >= bb.top);
-}
-
-void EERIEPOLY_Compute_PolyIn() {
-	
-	for(long z = 0; z < ACTIVEBKG->m_size.y; z++)
-	for(long x = 0; x < ACTIVEBKG->m_size.x; x++) {
-		BackgroundTileData * eg = &ACTIVEBKG->m_tileData[x][z];
-		
-		free(eg->polyin);
-		eg->polyin = NULL;
-		eg->nbpolyin = 0;
-		
-		long minx = std::max(x - 2, 0L);
-		long minz = std::max(z - 2, 0L);
-		long maxx = std::min(x + 2, ACTIVEBKG->m_size.x - 1L);
-		long maxz = std::min(z + 2, ACTIVEBKG->m_size.y - 1L);
-		
-		Vec2f bbmin = Vec2f(x * ACTIVEBKG->m_tileSize.x - 10, z * ACTIVEBKG->m_tileSize.y - 10);
-		Vec2f bbmax = Vec2f(bbmin.x + ACTIVEBKG->m_tileSize.x + 20, bbmin.y + ACTIVEBKG->m_tileSize.y + 20);
-		
-		Rectf bb = Rectf(bbmin, bbmax);
-		
-		Vec2f bbcenter = bb.center();
-		
-		for(long z2 = minz; z2 < maxz; z2++)
-		for(long x2 = minx; x2 < maxx; x2++) {
-			BackgroundTileData * eg2 = &ACTIVEBKG->m_tileData[x2][z2];
-			
-			for(long l = 0; l < eg2->nbpoly; l++) {
-				EERIEPOLY * ep2 = &eg2->polydata[l];
-				
-				if(fartherThan(bbcenter, Vec2f(ep2->center.x, ep2->center.z), 120.f))
-					continue;
-				
-				long nbvert = (ep2->type & POLY_QUAD) ? 4 : 3;
-				
-				if(PointInBBox(ep2->center, bb)) {
-					EERIEPOLY_Add_PolyIn(eg, ep2);
-				} else {
-					for(long k = 0; k < nbvert; k++) {
-						if(PointInBBox(ep2->v[k].p, bb)) {
-							EERIEPOLY_Add_PolyIn(eg, ep2);
-							break;
-						} else {
-							Vec3f pt = (ep2->v[k].p + ep2->center) * .5f;
-							if(PointInBBox(pt, bb)) {
-								EERIEPOLY_Add_PolyIn(eg, ep2);
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		eg->maxy = -std::numeric_limits<float>::infinity();
-		for(long i = 0; i < eg->nbpolyin; i++) {
-			EERIEPOLY * ep = eg->polyin[i];
-			eg->maxy = std::max(eg->maxy, ep->max.y);
-		}
-		
-	}
-}
 
 static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 	
