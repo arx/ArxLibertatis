@@ -42,7 +42,7 @@ struct Note {
 	
 	Note()
 		: m_isCleared(true)
-		, _type(Undefined)
+		, m_type(Undefined)
 		, m_currentRatio(Vec2f_ZERO)
 		, _page(0)
 		, _pageSpacing(20)
@@ -59,7 +59,7 @@ struct Note {
 	void render();
 	bool manageActions();
 	
-	const Type & type() { return _type; }
+	const Type & type() { return m_type; }
 	const std::string & text() { return _text; }
 	
 	size_t page() const { return _page; }
@@ -81,8 +81,8 @@ private:
 	bool splitTextToPages();
 	
 	bool m_isCleared;
-
-	Type _type;
+	
+	Type m_type;
 	std::string _text;
 	
 	Vec2f m_currentRatio;
