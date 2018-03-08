@@ -40,14 +40,14 @@ void Note::setData(Type type, const std::string & text) {
 	deallocate();
 	
 	m_type = type;
-	_text = text;
+	m_text = text;
 	
 	allocate();
 }
 
 void Note::clear() {
 	deallocate();
-	_text.clear();
+	m_text.clear();
 	m_type = Undefined;
 	m_isCleared = true;
 }
@@ -186,8 +186,8 @@ void Note::calculateLayout() {
 
 bool Note::splitTextToPages() {
 	
-	std::string::const_iterator txtbegin = _text.begin();
-	std::string::const_iterator txtend = _text.end();
+	std::string::const_iterator txtbegin = m_text.begin();
+	std::string::const_iterator txtend = m_text.end();
 	
 	while(txtbegin != txtend) {
 		

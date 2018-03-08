@@ -60,7 +60,7 @@ struct Note {
 	bool manageActions();
 	
 	const Type & type() { return m_type; }
-	const std::string & text() { return _text; }
+	const std::string & text() { return m_text; }
 	
 	size_t page() const { return m_page; }
 	size_t pageCount() const { return pages.size(); }
@@ -83,7 +83,7 @@ private:
 	bool m_isCleared;
 	
 	Type m_type;
-	std::string _text;
+	std::string m_text;
 	
 	Vec2f m_currentRatio;
 	
