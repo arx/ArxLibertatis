@@ -55,7 +55,7 @@ void Note::clear() {
 void Note::deallocate() {
 	
 	// Don't bother actually deleting the textures, we'll just need them again!
-	background = NULL, prevPage = NULL, nextPage = NULL;
+	m_background = NULL, prevPage = NULL, nextPage = NULL;
 	
 	m_currentRatio = Vec2f_ZERO;
 	
@@ -72,29 +72,29 @@ void Note::loadTextures() {
 		// TODO this information should not be hardcoded
 		
 		case Notice: {
-			background = TextureContainer::LoadUI("graph/interface/book/notice");
+			m_background = TextureContainer::LoadUI("graph/interface/book/notice");
 			break;
 		}
 		
 		case SmallNote: {
-			background = TextureContainer::LoadUI("graph/interface/book/bignote");
+			m_background = TextureContainer::LoadUI("graph/interface/book/bignote");
 			break;
 		}
 		
 		case BigNote: {
-			background = TextureContainer::LoadUI("graph/interface/book/very_bignote");
+			m_background = TextureContainer::LoadUI("graph/interface/book/very_bignote");
 			break;
 		}
 		
 		case Book: {
-			background = TextureContainer::LoadUI("graph/interface/book/ingame_books");
+			m_background = TextureContainer::LoadUI("graph/interface/book/ingame_books");
 			prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner");
 			nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner");
 			break;
 		}
 		
 		case QuestBook: {
-			background = TextureContainer::LoadUI("graph/interface/book/questbook");
+			m_background = TextureContainer::LoadUI("graph/interface/book/questbook");
 			prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner_original");
 			nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner_original");
 		}
@@ -124,33 +124,33 @@ void Note::calculateLayout() {
 		// TODO this information should not be hardcoded
 		
 		case Notice: {
-			newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
+			newPos = Vec2f(320 * g_sizeRatio.x - m_background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
 			newTextStart = Vec2f(50.f, 50.f);
-			newTextEnd = Vec2f(background->size()) - Vec2f(50.f, 50.f);
+			newTextEnd = Vec2f(m_background->size()) - Vec2f(50.f, 50.f);
 			m_maxPages = 1;
 			break;
 		}
 		
 		case SmallNote: {
-			newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
+			newPos = Vec2f(320 * g_sizeRatio.x - m_background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
 			newTextStart = Vec2f(30.f, 30.f);
-			newTextEnd = Vec2f(background->size()) - Vec2f(30.f, 40.f);
+			newTextEnd = Vec2f(m_background->size()) - Vec2f(30.f, 40.f);
 			m_maxPages = 1;
 			break;
 		}
 		
 		case BigNote: {
-			newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
+			newPos = Vec2f(320 * g_sizeRatio.x - m_background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
 			newTextStart = Vec2f(40.f, 40.f);
-			newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
+			newTextEnd = Vec2f(m_background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
 			m_maxPages = 2;
 			break;
 		}
 		
 		case Book: {
-			newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
+			newPos = Vec2f(320 * g_sizeRatio.x - m_background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
 			newTextStart = Vec2f(40.f, 20.f);
-			newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
+			newTextEnd = Vec2f(m_background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
 			m_maxPages = std::numeric_limits<size_t>::max();
 			prevButtonOffset = Vec2f(8.f, -6.f);
 			nextButtonOffset = Vec2f(-15.f, -6.f);
@@ -160,7 +160,7 @@ void Note::calculateLayout() {
 		case QuestBook: {
 			newPos = Vec2f(97, 64) * scale;
 			newTextStart = Vec2f(40.f, 40.f);
-			newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 65.f);
+			newTextEnd = Vec2f(m_background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 65.f);
 			m_maxPages = std::numeric_limits<size_t>::max();
 			prevButtonOffset = Vec2f(8.f, -6.f);
 			nextButtonOffset = Vec2f(-15.f, -6.f);
@@ -169,16 +169,16 @@ void Note::calculateLayout() {
 		case Undefined: break; // Cannot handle notes of undefined type.
 	}
 	
-	_area = Rectf(newPos, background->m_size.x * scale.x, background->m_size.y * scale.y);
+	_area = Rectf(newPos, m_background->m_size.x * scale.x, m_background->m_size.y * scale.y);
 	_textArea = Rect(Vec2i(newTextStart * scale), Vec2i(newTextEnd * scale));
 	m_pageSpacing = s32(20 * scale.x);
 	if(prevPage) {
-		Vec2f pos = Vec2f(0.f, background->m_size.y - prevPage->m_size.y) + prevButtonOffset;
+		Vec2f pos = Vec2f(0.f, m_background->m_size.y - prevPage->m_size.y) + prevButtonOffset;
 		pos *= scale;
 		_prevPageButton = Rectf(newPos + pos, prevPage->m_size.x * scale.x, prevPage->m_size.y * scale.y);
 	}
 	if(nextPage) {
-		Vec2f pos = Vec2f(background->size() - nextPage->size()) + nextButtonOffset;
+		Vec2f pos = Vec2f(m_background->size() - nextPage->size()) + nextButtonOffset;
 		pos *= scale;
 		_nextPageButton = Rectf(newPos + pos, nextPage->m_size.x * scale.x, nextPage->m_size.y * scale.y);
 	}
@@ -224,7 +224,7 @@ bool Note::splitTextToPages() {
 bool Note::allocate() {
 	
 	if(m_currentRatio == g_sizeRatio) {
-		return background != NULL;
+		return m_background != NULL;
 	}
 	
 	do {
@@ -233,11 +233,11 @@ bool Note::allocate() {
 		// Allocate textures and calculate sizes
 		loadTextures();
 		
-		if(background) {
+		if(m_background) {
 			calculateLayout();
 		}
 		
-		if(!background) {
+		if(!m_background) {
 			m_currentRatio = g_sizeRatio;
 			return false;
 		}
@@ -269,8 +269,8 @@ void Note::render() {
 	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	
-	if(background) {
-		EERIEDrawBitmap(_area, z, background, Color::white);
+	if(m_background) {
+		EERIEDrawBitmap(_area, z, m_background, Color::white);
 	}
 	
 	if(pages.empty()) {
