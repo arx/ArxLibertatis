@@ -812,7 +812,7 @@ bool FastSceneLoad(const res::path & partial_path, Vec3f & trans) {
 		
 		// Skip .scn file list and initialize the scene data
 		(void)fts_read<UNIQUE_HEADER3>(data, end, uh->count);
-		InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ);
+		InitBkg(ACTIVEBKG);
 		progressBarAdvance();
 		LoadLevelScreen();
 		

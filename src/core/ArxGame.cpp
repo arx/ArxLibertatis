@@ -828,7 +828,7 @@ bool ArxGame::initGame()
 	LastLoadedScene.clear();
 	
 	ACTIVEBKG = new BackgroundData();
-	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ);
+	InitBkg(ACTIVEBKG);
 	
 	player.size = Vec3f(player.baseRadius(), -player.baseHeight(), player.baseRadius());
 	player.desiredangle = player.angle = Anglef(3.f, 268.f, 0.f);

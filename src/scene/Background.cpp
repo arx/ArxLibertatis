@@ -22,7 +22,7 @@
 #include "graphics/data/Mesh.h"
 
 
-void InitBkg(BackgroundData * eb, short sx, short sz) {
+void InitBkg(BackgroundData * eb) {
 	
 	arx_assert(eb);
 	
@@ -33,8 +33,8 @@ void InitBkg(BackgroundData * eb, short sx, short sz) {
 	
 	eb->exist = 1;
 	eb->m_anchors.clear();
-	eb->m_size.x = sx;
-	eb->m_size.y = sz;
+	eb->m_size.x = MAX_BKGX;
+	eb->m_size.y = MAX_BKGZ;
 	
 	eb->m_tileSize = Vec2s(BKG_SIZX, BKG_SIZZ);
 	
