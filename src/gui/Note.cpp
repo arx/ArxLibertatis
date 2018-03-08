@@ -55,7 +55,7 @@ void Note::clear() {
 void Note::deallocate() {
 	
 	// Don't bother actually deleting the textures, we'll just need them again!
-	m_background = NULL, prevPage = NULL, nextPage = NULL;
+	m_background = NULL, m_prevPage = NULL, nextPage = NULL;
 	
 	m_currentRatio = Vec2f_ZERO;
 	
@@ -88,14 +88,14 @@ void Note::loadTextures() {
 		
 		case Book: {
 			m_background = TextureContainer::LoadUI("graph/interface/book/ingame_books");
-			prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner");
+			m_prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner");
 			nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner");
 			break;
 		}
 		
 		case QuestBook: {
 			m_background = TextureContainer::LoadUI("graph/interface/book/questbook");
-			prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner_original");
+			m_prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner_original");
 			nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner_original");
 		}
 		
@@ -172,10 +172,10 @@ void Note::calculateLayout() {
 	_area = Rectf(newPos, m_background->m_size.x * scale.x, m_background->m_size.y * scale.y);
 	_textArea = Rect(Vec2i(newTextStart * scale), Vec2i(newTextEnd * scale));
 	m_pageSpacing = s32(20 * scale.x);
-	if(prevPage) {
-		Vec2f pos = Vec2f(0.f, m_background->m_size.y - prevPage->m_size.y) + prevButtonOffset;
+	if(m_prevPage) {
+		Vec2f pos = Vec2f(0.f, m_background->m_size.y - m_prevPage->m_size.y) + prevButtonOffset;
 		pos *= scale;
-		_prevPageButton = Rectf(newPos + pos, prevPage->m_size.x * scale.x, prevPage->m_size.y * scale.y);
+		_prevPageButton = Rectf(newPos + pos, m_prevPage->m_size.x * scale.x, m_prevPage->m_size.y * scale.y);
 	}
 	if(nextPage) {
 		Vec2f pos = Vec2f(m_background->size() - nextPage->size()) + nextButtonOffset;
@@ -282,8 +282,8 @@ void Note::render() {
 	// Draw the "previous page" button
 	Rectf prevRect = prevPageButton();
 	if(!prevRect.empty()) {
-		arx_assert(prevPage != NULL);
-		EERIEDrawBitmap(prevRect, z, prevPage, Color::white);
+		arx_assert(m_prevPage != NULL);
+		EERIEDrawBitmap(prevRect, z, m_prevPage, Color::white);
 	}
 	
 	// Draw the "next page" button
