@@ -227,8 +227,6 @@ bool Note::allocate() {
 		return background != NULL;
 	}
 	
-	bool textSplitResult = true;
-	
 	do {
 		deallocate();
 		
@@ -243,9 +241,7 @@ bool Note::allocate() {
 			m_currentRatio = g_sizeRatio;
 			return false;
 		}
-		
-		textSplitResult = splitTextToPages();
-	} while(!textSplitResult);
+	} while(!splitTextToPages());
 	
 	// Clamp the current page to a valid page.
 	setPage(_page);
