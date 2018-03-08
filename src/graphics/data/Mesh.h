@@ -62,8 +62,6 @@ extern long EERIEDrawnPolys;
 
 extern BackgroundData * ACTIVEBKG;
 
-BackgroundTileData * getFastBackgroundData(float x, float z);
-
 EERIEPOLY * CheckTopPoly(const Vec3f & pos);
 EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY = NULL);
 
@@ -118,8 +116,6 @@ void EERIE_PORTAL_Release();
 long CountBkgVertex();
 
 bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & ep, Vec3f * hit);
-
-void EERIEPOLY_Compute_PolyIn();
 
 
 #define MAX_FRUSTRUMS 32
