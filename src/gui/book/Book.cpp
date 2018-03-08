@@ -341,7 +341,7 @@ ARX_INTERFACE_BOOK_MODE PlayerBook::prevPage() {
 
 void PlayerBook::drawTopTabs() {
 	
-	static const Vec2f BOOKMARKS_POS = Vec2f(216.f, 60.f);
+	static const Vec2f BOOKMARKS_POS = g_bookRectOrig.topLeft() + Vec2f(119.f, -4.f);
 	
 	if(m_currentPage != BOOKMODE_STATS) {
 		
