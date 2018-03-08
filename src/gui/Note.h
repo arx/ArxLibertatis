@@ -91,7 +91,7 @@ private:
 	size_t m_page;
 	
 	Rectf m_area;
-	Rect _textArea;
+	Rect m_textArea;
 	Rectf _prevPageButton;
 	Rectf _nextPageButton;
 	s32 m_pageSpacing;
