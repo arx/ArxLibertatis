@@ -108,8 +108,8 @@ const Vec2f PlayerBookPage::m_activeTabPositions[10] = {
 };
 
 const Vec2f PlayerBookPage::m_tabPositions[10] = {
-	Vec2f(100.f, 82.f), Vec2f(98.f, 112.f), Vec2f(97.f, 143.f), Vec2f(95.f, 170.f), Vec2f(95.f, 200.f),
-	Vec2f(94.f, 229.f), Vec2f(94.f, 259.f), Vec2f(92.f, 282.f), Vec2f(90.f, 308.f), Vec2f(97.f, 331.f)
+	Vec2f(3.f, 18.f), Vec2f(1.f, 48.f), Vec2f(0.f, 79.f), Vec2f(-2.f, 106.f), Vec2f(-2.f, 136.f),
+	Vec2f(-3.f, 165.f), Vec2f(-3.f, 195.f), Vec2f(-5.f, 218.f), Vec2f(-7.f, 244.f), Vec2f(0.f, 267.f)
 };
 
 void PlayerBookPage::playReleaseSound() {
@@ -125,7 +125,8 @@ void PlayerBook::clearJournal() {
 }
 
 void PlayerBookPage::drawTab(long tabNum) {
-	DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], m_tabPositions[tabNum], Color::white, 0.000001f);
+	Vec2f bookPos = g_bookRectOrig.topLeft();
+	DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], bookPos + m_tabPositions[tabNum], Color::white, 0.000001f);
 }
 
 void PlayerBookPage::drawActiveTab(long tabNum) {
@@ -133,9 +134,12 @@ void PlayerBookPage::drawActiveTab(long tabNum) {
 }
 
 void PlayerBookPage::checkTabClick(long tabNum, long & activeTab) {
-	if(MouseInBookRect(m_tabPositions[tabNum], Vec2f(32, 32))) {
+	
+	Vec2f bookPos = g_bookRectOrig.topLeft();
+	
+	if(MouseInBookRect(bookPos + m_tabPositions[tabNum], Vec2f(32, 32))) {
 		UseRenderState state(render2D().blendAdditive());
-		DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], m_tabPositions[tabNum], Color::grayb(0x55), 0.000001f);
+		DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], bookPos + m_tabPositions[tabNum], Color::grayb(0x55), 0.000001f);
 		cursorSetInteraction();
 		if(eeMouseDown1() || eeMouseDown2()) {
 			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
