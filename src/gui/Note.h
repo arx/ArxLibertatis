@@ -54,6 +54,7 @@ struct Note {
 	
 	void setData(Type type, const std::string & text);
 	void clear();
+	bool isCleared() { return m_isCleared; }
 	
 	void render();
 	bool manageActions();
