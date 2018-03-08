@@ -171,7 +171,7 @@ void Note::calculateLayout() {
 	
 	_area = Rectf(newPos, background->m_size.x * scale.x, background->m_size.y * scale.y);
 	_textArea = Rect(Vec2i(newTextStart * scale), Vec2i(newTextEnd * scale));
-	_pageSpacing = s32(20 * scale.x);
+	m_pageSpacing = s32(20 * scale.x);
 	if(prevPage) {
 		Vec2f pos = Vec2f(0.f, background->m_size.y - prevPage->m_size.y) + prevButtonOffset;
 		pos *= scale;
@@ -310,8 +310,8 @@ void Note::render() {
 	if(m_page + 1 < pages.size()) {
 		ARX_UNICODE_DrawTextInRect(
 			font,
-			Vec2f(_area.left + _textArea.right + _pageSpacing, _area.top + _textArea.top),
-			_area.left + _textArea.right + _pageSpacing + _textArea.width(),
+			Vec2f(_area.left + _textArea.right + m_pageSpacing, _area.top + _textArea.top),
+			_area.left + _textArea.right + m_pageSpacing + _textArea.width(),
 			pages[m_page + 1],
 			Color::none
 		);
