@@ -500,8 +500,8 @@ void StatsPage::loadStrings() {
 
 void StatsPage::manage() {
 	
-	DrawBookInterfaceItem(g_bookResouces.playerbook, Vec2f(97, 64), Color::white, 0.9999f);
-
+	DrawBookInterfaceItem(g_bookResouces.playerbook, g_bookRectOrig.topLeft(), Color::white, 0.9999f);
+	
 	manageStats();
 }
 
@@ -1319,7 +1319,7 @@ SpellsPage::SpellsPage()
 
 void SpellsPage::manage() {
 	
-	DrawBookInterfaceItem(g_bookResouces.ptexspellbook, Vec2f(97, 64), Color::white, 0.9999f);
+	DrawBookInterfaceItem(g_bookResouces.ptexspellbook, g_bookRectOrig.topLeft(), Color::white, 0.9999f);
 	drawLeftTabs();
 	
 	Rect runeDrawRect = Rect(Vec2i((Vec2f(97, 64) + Vec2f(29, 210)) * g_sizeRatio),
@@ -1450,7 +1450,7 @@ MapPage::MapPage()
 }
 
 void MapPage::manage() {
-	DrawBookInterfaceItem(g_bookResouces.questbook, Vec2f(97, 64), Color::white, 0.9999f);
+	DrawBookInterfaceItem(g_bookResouces.questbook, g_bookRectOrig.topLeft(), Color::white, 0.9999f);
 	drawLeftTabs();
 	drawMaps();
 }
