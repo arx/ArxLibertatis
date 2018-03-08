@@ -61,7 +61,7 @@ void Note::deallocate() {
 	
 	m_area = Rectf::ZERO;
 	m_prevPageButton = Rectf::ZERO;
-	_nextPageButton = Rectf::ZERO;
+	m_nextPageButton = Rectf::ZERO;
 	
 	m_pages.clear();
 }
@@ -180,7 +180,7 @@ void Note::calculateLayout() {
 	if(m_nextPage) {
 		Vec2f pos = Vec2f(m_background->size() - m_nextPage->size()) + nextButtonOffset;
 		pos *= scale;
-		_nextPageButton = Rectf(newPos + pos, m_nextPage->m_size.x * scale.x, m_nextPage->m_size.y * scale.y);
+		m_nextPageButton = Rectf(newPos + pos, m_nextPage->m_size.x * scale.x, m_nextPage->m_size.y * scale.y);
 	}
 }
 

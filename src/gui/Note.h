@@ -68,7 +68,7 @@ struct Note {
 	
 	const Rectf & area() const { return m_area; }
 	Rectf prevPageButton() const { return m_page > 0 ? m_prevPageButton : Rectf::ZERO; }
-	Rectf nextPageButton() const { return m_page + 2 < m_pages.size() ? _nextPageButton : Rectf::ZERO; }
+	Rectf nextPageButton() const { return m_page + 2 < m_pages.size() ? m_nextPageButton : Rectf::ZERO; }
 	
 private:
 	
@@ -93,7 +93,7 @@ private:
 	Rectf m_area;
 	Rect m_textArea;
 	Rectf m_prevPageButton;
-	Rectf _nextPageButton;
+	Rectf m_nextPageButton;
 	s32 m_pageSpacing;
 
 	size_t m_maxPages;
