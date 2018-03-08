@@ -570,8 +570,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 	for(int x = -2; x < int(MINIMAP_MAX_X) + 2; x++) {
 		
 		Vec2f v3;
-		v3.x = float(x) * float(m_activeBkg->m_tileSize.x) * m_mod.x;
-		v3.y = float(z) * float(m_activeBkg->m_tileSize.y) * m_mod.y;
+		v3.x = float(x) * g_backgroundTileSize.x * m_mod.x;
+		v3.y = float(z) * g_backgroundTileSize.y * m_mod.y;
 		
 		Vec2f v4;
 		v4.x = (v3.x * div) * d.x;

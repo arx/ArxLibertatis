@@ -47,11 +47,12 @@ static const short MAX_BKGZ = 160;
 static const short BKG_SIZX = 100;
 static const short BKG_SIZZ = 100;
 
+static const Vec2f g_backgroundTileSize = Vec2f(BKG_SIZX, BKG_SIZZ);
+
 struct BackgroundData {
 	
 	long exist;
 	Vec2s m_size;
-	Vec2s m_tileSize;
 	Vec2f m_mul;
 	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
 	std::vector<ANCHOR_DATA> m_anchors;
@@ -59,7 +60,6 @@ struct BackgroundData {
 	BackgroundData()
 		: exist(false)
 		, m_size(0, 0)
-		, m_tileSize(0, 0)
 		, m_mul(0, 0)
 	{ }
 	

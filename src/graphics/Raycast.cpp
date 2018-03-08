@@ -44,7 +44,7 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	Vec2f dir = p2 - p1;
 	
 	// Side dimensions of the square cell
-	const Vec2f cellSide = Vec2f(ACTIVEBKG->m_tileSize.x, ACTIVEBKG->m_tileSize.y);
+	const Vec2f cellSide = g_backgroundTileSize;
 	
 	// Determine in which primary direction to step
 	Vec2i d;
@@ -235,7 +235,7 @@ struct ClosestHitRaycast {
 		}
 		
 		// Determine hit grid cell coordinates
-		const Vec2f cellSide = Vec2f(ACTIVEBKG->m_tileSize.x, ACTIVEBKG->m_tileSize.y);
+		const Vec2f cellSide = g_backgroundTileSize;
 		Vec3f hitPos = start + closestHit * dir;
 		Vec2i hitTile = Vec2i(glm::floor(Vec2f(hitPos.x, hitPos.z) / cellSide));
 		
