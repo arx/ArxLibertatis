@@ -170,7 +170,7 @@ void Note::calculateLayout() {
 	}
 	
 	m_area = Rectf(newPos, m_background->m_size.x * scale.x, m_background->m_size.y * scale.y);
-	_textArea = Rect(Vec2i(newTextStart * scale), Vec2i(newTextEnd * scale));
+	m_textArea = Rect(Vec2i(newTextStart * scale), Vec2i(newTextEnd * scale));
 	m_pageSpacing = s32(20 * scale.x);
 	if(m_prevPage) {
 		Vec2f pos = Vec2f(0.f, m_background->m_size.y - m_prevPage->m_size.y) + prevButtonOffset;
@@ -202,7 +202,7 @@ bool Note::splitTextToPages() {
 			return false;
 		}
 		
-		long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, txtbegin, txtend, _textArea);
+		long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, txtbegin, txtend, m_textArea);
 		if(pageSize <= 0) {
 			LogWarning << "Error splitting note text into pages";
 			m_pages.push_back(std::string(txtbegin, txtend));
@@ -299,8 +299,8 @@ void Note::render() {
 	{
 		ARX_UNICODE_DrawTextInRect(
 			font,
-			Vec2f(m_area.left + _textArea.left, m_area.top + _textArea.top),
-			m_area.left + _textArea.right,
+			Vec2f(m_area.left + m_textArea.left, m_area.top + m_textArea.top),
+			m_area.left + m_textArea.right,
 			m_pages[m_page],
 			Color::none
 		);
@@ -310,8 +310,8 @@ void Note::render() {
 	if(m_page + 1 < m_pages.size()) {
 		ARX_UNICODE_DrawTextInRect(
 			font,
-			Vec2f(m_area.left + _textArea.right + m_pageSpacing, m_area.top + _textArea.top),
-			m_area.left + _textArea.right + m_pageSpacing + _textArea.width(),
+			Vec2f(m_area.left + m_textArea.right + m_pageSpacing, m_area.top + m_textArea.top),
+			m_area.left + m_textArea.right + m_pageSpacing + m_textArea.width(),
 			m_pages[m_page + 1],
 			Color::none
 		);
