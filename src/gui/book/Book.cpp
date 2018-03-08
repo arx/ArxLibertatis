@@ -102,7 +102,7 @@ static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color,
 	EERIEDrawBitmap(rect, z, tc, color);
 }
 
-const Vec2f PlayerBookPage::m_activeTabPositions[10] = {
+const Vec2f PlayerBookPage::m_activeTabOffsets[10] = {
 	Vec2f(5.f, 18.f), Vec2f(3.f, 50.f), Vec2f(4.f, 77.f), Vec2f(3.f, 106.f), Vec2f(0.f, 135.f),
 	Vec2f(6.f, 162.f), Vec2f(4.f, 191.f), Vec2f(2.f, 219.f), Vec2f(2.f, 243.f), Vec2f(7.f, 267.f)
 };
@@ -131,7 +131,7 @@ void PlayerBookPage::drawTab(long tabNum) {
 
 void PlayerBookPage::drawActiveTab(long tabNum) {
 	Vec2f bookPos = g_bookRectOrig.topLeft();
-	DrawBookInterfaceItem(g_bookResouces.currentTab[tabNum], bookPos + m_activeTabPositions[tabNum], Color::white, 0.000001f);
+	DrawBookInterfaceItem(g_bookResouces.currentTab[tabNum], bookPos + m_activeTabOffsets[tabNum], Color::white, 0.000001f);
 }
 
 void PlayerBookPage::checkTabClick(long tabNum, long & activeTab) {
