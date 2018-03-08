@@ -63,12 +63,12 @@ struct Note {
 	const std::string & text() { return m_text; }
 	
 	size_t page() const { return m_page; }
-	size_t pageCount() const { return pages.size(); }
+	size_t pageCount() const { return m_pages.size(); }
 	void setPage(size_t page);
 	
 	const Rectf & area() const { return _area; }
 	Rectf prevPageButton() const { return m_page > 0 ? _prevPageButton : Rectf::ZERO; }
-	Rectf nextPageButton() const { return m_page + 2 < pages.size() ? _nextPageButton : Rectf::ZERO; }
+	Rectf nextPageButton() const { return m_page + 2 < m_pages.size() ? _nextPageButton : Rectf::ZERO; }
 	
 private:
 	
@@ -87,7 +87,7 @@ private:
 	
 	Vec2f m_currentRatio;
 	
-	std::vector<std::string> pages;
+	std::vector<std::string> m_pages;
 	size_t m_page;
 	
 	Rectf _area;
