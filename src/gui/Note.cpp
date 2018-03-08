@@ -55,7 +55,7 @@ void Note::clear() {
 void Note::deallocate() {
 	
 	// Don't bother actually deleting the textures, we'll just need them again!
-	m_background = NULL, m_prevPage = NULL, nextPage = NULL;
+	m_background = NULL, m_prevPage = NULL, m_nextPage = NULL;
 	
 	m_currentRatio = Vec2f_ZERO;
 	
@@ -89,14 +89,14 @@ void Note::loadTextures() {
 		case Book: {
 			m_background = TextureContainer::LoadUI("graph/interface/book/ingame_books");
 			m_prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner");
-			nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner");
+			m_nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner");
 			break;
 		}
 		
 		case QuestBook: {
 			m_background = TextureContainer::LoadUI("graph/interface/book/questbook");
 			m_prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner_original");
-			nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner_original");
+			m_nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner_original");
 		}
 		
 		case Undefined: break; // Cannot handle notes of undefined type.
@@ -177,10 +177,10 @@ void Note::calculateLayout() {
 		pos *= scale;
 		_prevPageButton = Rectf(newPos + pos, m_prevPage->m_size.x * scale.x, m_prevPage->m_size.y * scale.y);
 	}
-	if(nextPage) {
-		Vec2f pos = Vec2f(m_background->size() - nextPage->size()) + nextButtonOffset;
+	if(m_nextPage) {
+		Vec2f pos = Vec2f(m_background->size() - m_nextPage->size()) + nextButtonOffset;
 		pos *= scale;
-		_nextPageButton = Rectf(newPos + pos, nextPage->m_size.x * scale.x, nextPage->m_size.y * scale.y);
+		_nextPageButton = Rectf(newPos + pos, m_nextPage->m_size.x * scale.x, m_nextPage->m_size.y * scale.y);
 	}
 }
 
@@ -289,8 +289,8 @@ void Note::render() {
 	// Draw the "next page" button
 	Rectf nextRect = nextPageButton();
 	if(!nextRect.empty()) {
-		arx_assert(nextPage != NULL);
-		EERIEDrawBitmap(nextRect, z, nextPage, Color::white);
+		arx_assert(m_nextPage != NULL);
+		EERIEDrawBitmap(nextRect, z, m_nextPage, Color::white);
 	}
 	
 	Font * font = hFontInGameNote;
