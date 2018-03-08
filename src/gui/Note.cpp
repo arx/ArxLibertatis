@@ -244,7 +244,7 @@ bool Note::allocate() {
 	} while(!splitTextToPages());
 	
 	// Clamp the current page to a valid page.
-	setPage(_page);
+	setPage(m_page);
 	
 	m_currentRatio = g_sizeRatio;
 	m_isCleared = false;
@@ -253,8 +253,8 @@ bool Note::allocate() {
 }
 
 void Note::setPage(size_t page) {
-	_page = pages.empty() ? 0 : std::min(pages.size() - 1, page);
-	_page &= ~1; // Only allow even pages!
+	m_page = pages.empty() ? 0 : std::min(pages.size() - 1, page);
+	m_page &= ~1; // Only allow even pages!
 }
 
 void Note::render() {
@@ -277,7 +277,7 @@ void Note::render() {
 		return;
 	}
 	
-	arx_assert(_page < pages.size());
+	arx_assert(m_page < pages.size());
 	
 	// Draw the "previous page" button
 	Rectf prevRect = prevPageButton();
@@ -301,18 +301,18 @@ void Note::render() {
 			font,
 			Vec2f(_area.left + _textArea.left, _area.top + _textArea.top),
 			_area.left + _textArea.right,
-			pages[_page],
+			pages[m_page],
 			Color::none
 		);
 	}
 	
 	// Draw the right page
-	if(_page + 1 < pages.size()) {
+	if(m_page + 1 < pages.size()) {
 		ARX_UNICODE_DrawTextInRect(
 			font,
 			Vec2f(_area.left + _textArea.right + _pageSpacing, _area.top + _textArea.top),
 			_area.left + _textArea.right + _pageSpacing + _textArea.width(),
-			pages[_page + 1],
+			pages[m_page + 1],
 			Color::none
 		);
 	}
