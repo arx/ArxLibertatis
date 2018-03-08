@@ -986,17 +986,15 @@ void StatsPage::RenderBookPlayerCharacter() {
 	Rect rec;
 	if (ARXmenu.mode() == Mode_CharacterCreation) {
 		
-		rec = Rect(s32((120.f + BOOKDEC.x) * g_sizeRatio.x), s32((69.f + BOOKDEC.y) * g_sizeRatio.y),
-		           s32((330.f + BOOKDEC.x) * g_sizeRatio.x), s32((300.f + BOOKDEC.y) * g_sizeRatio.y));
+		rec = Rect(Vec2i((Vec2f(120.f, 69.f) + BOOKDEC) * g_sizeRatio), Vec2i((Vec2f(330.f, 300.f) + BOOKDEC) * g_sizeRatio));
 		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 		
-		Rect vp = Rect(Vec2i(s32(139.f * g_sizeRatio.x), 0), s32(139.f * g_sizeRatio.x), s32(310.f * g_sizeRatio.y));
+		Rect vp = Rect(Vec2i(Vec2f(139.f, 0.f) * g_sizeRatio), Vec2i((Vec2f(278.f, 310.f) * g_sizeRatio)));
 		GRenderer->SetScissor(vp);
 		
 	} else {
 		
-		rec = Rect(s32((118.f + BOOKDEC.x) * g_sizeRatio.x), s32((69.f + BOOKDEC.y) * g_sizeRatio.y),
-		           s32((350.f + BOOKDEC.x) * g_sizeRatio.x), s32((338.f + BOOKDEC.y) * g_sizeRatio.y));
+		rec = Rect(Vec2i((Vec2f(118.f, 69.f) + BOOKDEC) * g_sizeRatio), Vec2i((Vec2f(350.f, 338.f) + BOOKDEC) * g_sizeRatio));
 		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 		rec.right -= 50;
 		
