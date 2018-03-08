@@ -65,7 +65,7 @@ struct BackgroundData {
 	
 };
 
-void InitBkg(BackgroundData * eb, short sx, short sz);
+void InitBkg(BackgroundData * eb);
 void ClearBackground(BackgroundData * eb);
 void EERIEPOLY_Compute_PolyIn();
 
