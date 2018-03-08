@@ -63,7 +63,7 @@ void Note::deallocate() {
 	_prevPageButton = Rectf::ZERO;
 	_nextPageButton = Rectf::ZERO;
 	
-	pages.clear();
+	m_pages.clear();
 }
 
 void Note::loadTextures() {
@@ -192,7 +192,7 @@ bool Note::splitTextToPages() {
 	while(txtbegin != txtend) {
 		
 		// Change the note type if the text is too long.
-		if(pages.size() >= m_maxPages) {
+		if(m_pages.size() >= m_maxPages) {
 			switch(m_type) {
 				case Notice: m_type = SmallNote; break;
 				case SmallNote: m_type = BigNote; break;
@@ -205,11 +205,11 @@ bool Note::splitTextToPages() {
 		long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, txtbegin, txtend, _textArea);
 		if(pageSize <= 0) {
 			LogWarning << "Error splitting note text into pages";
-			pages.push_back(std::string(txtbegin, txtend));
+			m_pages.push_back(std::string(txtbegin, txtend));
 			break;
 		}
 		
-		pages.push_back(std::string(txtbegin, txtbegin + pageSize));
+		m_pages.push_back(std::string(txtbegin, txtbegin + pageSize));
 		
 		// Skip whitespace at the start of pages.
 		while(pageSize < txtend - txtbegin && std::isspace(*(txtbegin + pageSize))) {
@@ -253,7 +253,7 @@ bool Note::allocate() {
 }
 
 void Note::setPage(size_t page) {
-	m_page = pages.empty() ? 0 : std::min(pages.size() - 1, page);
+	m_page = m_pages.empty() ? 0 : std::min(m_pages.size() - 1, page);
 	m_page &= ~1; // Only allow even pages!
 }
 
@@ -273,11 +273,11 @@ void Note::render() {
 		EERIEDrawBitmap(_area, z, m_background, Color::white);
 	}
 	
-	if(pages.empty()) {
+	if(m_pages.empty()) {
 		return;
 	}
 	
-	arx_assert(m_page < pages.size());
+	arx_assert(m_page < m_pages.size());
 	
 	// Draw the "previous page" button
 	Rectf prevRect = prevPageButton();
@@ -301,18 +301,18 @@ void Note::render() {
 			font,
 			Vec2f(_area.left + _textArea.left, _area.top + _textArea.top),
 			_area.left + _textArea.right,
-			pages[m_page],
+			m_pages[m_page],
 			Color::none
 		);
 	}
 	
 	// Draw the right page
-	if(m_page + 1 < pages.size()) {
+	if(m_page + 1 < m_pages.size()) {
 		ARX_UNICODE_DrawTextInRect(
 			font,
 			Vec2f(_area.left + _textArea.right + m_pageSpacing, _area.top + _textArea.top),
 			_area.left + _textArea.right + m_pageSpacing + _textArea.width(),
-			pages[m_page + 1],
+			m_pages[m_page + 1],
 			Color::none
 		);
 	}
