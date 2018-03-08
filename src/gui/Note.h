@@ -45,7 +45,7 @@ struct Note {
 		, m_type(Undefined)
 		, m_currentRatio(Vec2f_ZERO)
 		, m_page(0)
-		, _pageSpacing(20)
+		, m_pageSpacing(20)
 		, m_maxPages(1)
 		, background(NULL)
 		, prevPage(NULL)
@@ -94,7 +94,7 @@ private:
 	Rect _textArea;
 	Rectf _prevPageButton;
 	Rectf _nextPageButton;
-	s32 _pageSpacing;
+	s32 m_pageSpacing;
 
 	size_t m_maxPages;
 	
