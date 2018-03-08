@@ -1459,7 +1459,7 @@ void MapPage::drawMaps()
 	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-		g_miniMap.showBookMiniMap(SHOWLEVEL);
+		g_miniMap.showBookMiniMap(SHOWLEVEL, Rect(360, 85, 555, 355));
 }
 
 void MapPage::drawLeftTabs() {
