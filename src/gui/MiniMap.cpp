@@ -355,7 +355,7 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
 	
 	float zoom = 250.f;
 	
-	Vec2f start(140.f, 120.f);
+	Vec2f start(rect.topLeft());
 	
 	Vec2f playerPos(0.f, 0.f);
 	
