@@ -1322,8 +1322,8 @@ void SpellsPage::manage() {
 	DrawBookInterfaceItem(g_bookResouces.ptexspellbook, g_bookRectOrig.topLeft(), Color::white, 0.9999f);
 	drawLeftTabs();
 	
-	Rect runeDrawRect = Rect(Vec2i((Vec2f(97, 64) + Vec2f(29, 210)) * g_sizeRatio),
-	                         s32(513 * 0.43f * g_sizeRatio.x), s32(313 * 0.25f * g_sizeRatio.y));
+	Rect runeDrawRect = Rect(Vec2i((g_bookRectOrig.topLeft() + Vec2f(29, 210)) * g_sizeRatio),
+	                         s32(g_bookRectOrig.width() * 0.43f * g_sizeRatio.x), s32(g_bookRectOrig.height() * 0.25f * g_sizeRatio.y));
 	
 	ARX_SPELLS_UpdateBookSymbolDraw(runeDrawRect);
 	gui::ARX_INTERFACE_ManageOpenedBook_Finish(Vec2f(DANAEMouse));
