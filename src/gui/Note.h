@@ -49,7 +49,7 @@ struct Note {
 		, m_maxPages(1)
 		, m_background(NULL)
 		, m_prevPage(NULL)
-		, nextPage(NULL)
+		, m_nextPage(NULL)
 	{}
 	
 	void setData(Type type, const std::string & text);
@@ -100,7 +100,7 @@ private:
 	
 	TextureContainer * m_background;
 	TextureContainer * m_prevPage;
-	TextureContainer * nextPage;
+	TextureContainer * m_nextPage;
 	
 };
 #endif // ARX_GUI_NOTE_H
