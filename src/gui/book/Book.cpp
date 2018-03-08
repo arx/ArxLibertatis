@@ -1454,7 +1454,7 @@ void MapPage::drawMaps()
 	long SHOWLEVEL = m_currentLevel;
 
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-		g_miniMap.showBookEntireMap(SHOWLEVEL, Rect(0, 0, 345, 290));
+		g_miniMap.showBookEntireMap(SHOWLEVEL, Rect(140, 120, 345, 290));
 
 	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
