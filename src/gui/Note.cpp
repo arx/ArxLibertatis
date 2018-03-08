@@ -39,7 +39,7 @@ void Note::setData(Type type, const std::string & text) {
 	
 	deallocate();
 	
-	_type = type;
+	m_type = type;
 	_text = text;
 	
 	allocate();
@@ -48,7 +48,7 @@ void Note::setData(Type type, const std::string & text) {
 void Note::clear() {
 	deallocate();
 	_text.clear();
-	_type = Undefined;
+	m_type = Undefined;
 	m_isCleared = true;
 }
 
@@ -67,7 +67,7 @@ void Note::deallocate() {
 }
 
 void Note::loadTextures() {
-	switch(_type) {
+	switch(m_type) {
 		
 		// TODO this information should not be hardcoded
 		
@@ -114,12 +114,12 @@ void Note::calculateLayout() {
 	
 	Vec2f scale = Vec2f(minSizeRatio(), minSizeRatio());
 	
-	if(_type == QuestBook) {
+	if(m_type == QuestBook) {
 		// TODO change this once the aspect ratio in character screen, spell book, etc. is fixed.
 		scale = g_sizeRatio;
 	}
 	
-	switch(_type) {
+	switch(m_type) {
 		
 		// TODO this information should not be hardcoded
 		
@@ -193,10 +193,10 @@ bool Note::splitTextToPages() {
 		
 		// Change the note type if the text is too long.
 		if(pages.size() >= m_maxPages) {
-			switch(_type) {
-				case Notice: _type = SmallNote; break;
-				case SmallNote: _type = BigNote; break;
-				case BigNote: _type = Book; break;
+			switch(m_type) {
+				case Notice: m_type = SmallNote; break;
+				case SmallNote: m_type = BigNote; break;
+				case BigNote: m_type = Book; break;
 				default: ARX_DEAD_CODE(); break;
 			}
 			return false;
