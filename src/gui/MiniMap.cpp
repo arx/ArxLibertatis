@@ -340,7 +340,7 @@ void MiniMap::showBookMiniMap(int showLevel, Rect rect) {
 	}
 }
 
-void MiniMap::showBookEntireMap(int showLevel) {
+void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
 	
 	UseRenderState state(render2D());
 	
@@ -364,7 +364,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 		playerPos += start;
 	}
 	
-	drawBackground(showLevel, Rect(0, 0, 345, 290), start, zoom);
+	drawBackground(showLevel, rect, start, zoom);
 	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
