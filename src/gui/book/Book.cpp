@@ -983,18 +983,23 @@ void StatsPage::RenderBookPlayerCharacter() {
 	if(!entities.player()->obj)
 		return;
 	
+	Vec2f bookPos = g_bookRectOrig.topLeft();
+	
 	Rect rec;
 	if (ARXmenu.mode() == Mode_CharacterCreation) {
 		
-		rec = Rect(Vec2i((Vec2f(120.f, 69.f) + BOOKDEC) * g_sizeRatio), Vec2i((Vec2f(330.f, 300.f) + BOOKDEC) * g_sizeRatio));
+		rec = Rect(Vec2i((bookPos + Vec2f(23.f, 5.f) + BOOKDEC) * g_sizeRatio),
+		           Vec2i((bookPos + Vec2f(233.f, 236.f) + BOOKDEC) * g_sizeRatio));
 		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 		
-		Rect vp = Rect(Vec2i(Vec2f(139.f, 0.f) * g_sizeRatio), Vec2i((Vec2f(278.f, 310.f) * g_sizeRatio)));
+		Rect vp = Rect(Vec2i((bookPos + Vec2f(42.f, 0.f)) * g_sizeRatio),
+		               Vec2i((bookPos + Vec2f(181.f, 246.f)) * g_sizeRatio));
 		GRenderer->SetScissor(vp);
 		
 	} else {
 		
-		rec = Rect(Vec2i((Vec2f(118.f, 69.f) + BOOKDEC) * g_sizeRatio), Vec2i((Vec2f(350.f, 338.f) + BOOKDEC) * g_sizeRatio));
+		rec = Rect(Vec2i((bookPos + Vec2f(21.f, 5.f) + BOOKDEC) * g_sizeRatio),
+		           Vec2i((bookPos + Vec2f(253.f, 274.f) + BOOKDEC) * g_sizeRatio));
 		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 		rec.right -= 50;
 		
@@ -1130,24 +1135,24 @@ void StatsPage::RenderBookPlayerCharacter() {
 	}
 	
 	if(Entity * tod = entities.get(player.equiped[EQUIP_SLOT_ARMOR])) {
-		tod->bbox2D.min = Vec2f(195.f, 116.f);
-		tod->bbox2D.max = Vec2f(284.f, 182.f);
+		tod->bbox2D.min = bookPos + Vec2f(98.f, 52.f);
+		tod->bbox2D.max = bookPos + Vec2f(187.f, 118.f);
 		tod->bbox2D.min = (tod->bbox2D.min + BOOKDEC) * g_sizeRatio;
 		tod->bbox2D.max = (tod->bbox2D.max + BOOKDEC) * g_sizeRatio;
 		tod->ioflags |= IO_ICONIC;
 	}
 	
 	if(Entity * tod = entities.get(player.equiped[EQUIP_SLOT_LEGGINGS])) {
-		tod->bbox2D.min = Vec2f(218.f, 183.f);
-		tod->bbox2D.max = Vec2f(277.f, 322.f);
+		tod->bbox2D.min = bookPos + Vec2f(121.f, 119.f);
+		tod->bbox2D.max = bookPos + Vec2f(180.f, 258.f);
 		tod->bbox2D.min = (tod->bbox2D.min + BOOKDEC) * g_sizeRatio;
 		tod->bbox2D.max = (tod->bbox2D.max + BOOKDEC) * g_sizeRatio;
 		tod->ioflags |= IO_ICONIC;
 	}
 	
 	if(Entity * tod = entities.get(player.equiped[EQUIP_SLOT_HELMET])) {
-		tod->bbox2D.min = Vec2f(218.f, 75.f);
-		tod->bbox2D.max = Vec2f(260.f, 115.f);
+		tod->bbox2D.min = bookPos + Vec2f(121.f, 11.f);
+		tod->bbox2D.max = bookPos + Vec2f(163.f, 51.f);
 		tod->bbox2D.min = (tod->bbox2D.min + BOOKDEC) * g_sizeRatio;
 		tod->bbox2D.max = (tod->bbox2D.max + BOOKDEC) * g_sizeRatio;
 		tod->ioflags |= IO_ICONIC;
@@ -1162,7 +1167,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 			tc2 = todraw->m_icon->getHalo();
 		
 		if(tc) {
-			todraw->bbox2D.min = Vec2f(146.f, 312.f);
+			todraw->bbox2D.min = bookPos + Vec2f(49.f, 248.f);
 			
 			if(tc2) {
 				ARX_INTERFACE_HALO_Render(todraw->halo.color, todraw->halo.flags, tc2, (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio, g_sizeRatio);
@@ -1189,7 +1194,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 			tc2 = todraw->m_icon->getHalo();
 		
 		if(tc) {
-			todraw->bbox2D.min = Vec2f(296.f, 312.f);
+			todraw->bbox2D.min = bookPos + Vec2f(199.f, 248.f);
 			
 			if(tc2) {
 				ARX_INTERFACE_HALO_Render(todraw->halo.color, todraw->halo.flags, tc2, (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio, g_sizeRatio);
