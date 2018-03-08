@@ -47,7 +47,7 @@ struct Note {
 		, m_page(0)
 		, m_pageSpacing(20)
 		, m_maxPages(1)
-		, background(NULL)
+		, m_background(NULL)
 		, prevPage(NULL)
 		, nextPage(NULL)
 	{}
@@ -98,7 +98,7 @@ private:
 
 	size_t m_maxPages;
 	
-	TextureContainer * background;
+	TextureContainer * m_background;
 	TextureContainer * prevPage;
 	TextureContainer * nextPage;
 	
