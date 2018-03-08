@@ -103,8 +103,8 @@ static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color,
 }
 
 const Vec2f PlayerBookPage::m_activeTabPositions[10] = {
-	Vec2f(102.f, 82.f), Vec2f(98.f, 112.f), Vec2f(101.f, 141.f), Vec2f(100.f, 170.f), Vec2f(97.f, 199.f),
-	Vec2f(103.f, 226.f), Vec2f(101.f, 255.f), Vec2f(99.f, 283.f), Vec2f(99.f, 307.f), Vec2f(104.f, 331.f)
+	Vec2f(5.f, 18.f), Vec2f(3.f, 50.f), Vec2f(4.f, 77.f), Vec2f(3.f, 106.f), Vec2f(0.f, 135.f),
+	Vec2f(6.f, 162.f), Vec2f(4.f, 191.f), Vec2f(2.f, 219.f), Vec2f(2.f, 243.f), Vec2f(7.f, 267.f)
 };
 
 const Vec2f PlayerBookPage::m_tabOffsets[10] = {
@@ -130,7 +130,8 @@ void PlayerBookPage::drawTab(long tabNum) {
 }
 
 void PlayerBookPage::drawActiveTab(long tabNum) {
-	DrawBookInterfaceItem(g_bookResouces.currentTab[tabNum], m_activeTabPositions[tabNum], Color::white, 0.000001f);
+	Vec2f bookPos = g_bookRectOrig.topLeft();
+	DrawBookInterfaceItem(g_bookResouces.currentTab[tabNum], bookPos + m_activeTabPositions[tabNum], Color::white, 0.000001f);
 }
 
 void PlayerBookPage::checkTabClick(long tabNum, long & activeTab) {
