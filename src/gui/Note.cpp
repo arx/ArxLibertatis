@@ -59,7 +59,7 @@ void Note::deallocate() {
 	
 	m_currentRatio = Vec2f_ZERO;
 	
-	_area = Rectf::ZERO;
+	m_area = Rectf::ZERO;
 	_prevPageButton = Rectf::ZERO;
 	_nextPageButton = Rectf::ZERO;
 	
@@ -169,7 +169,7 @@ void Note::calculateLayout() {
 		case Undefined: break; // Cannot handle notes of undefined type.
 	}
 	
-	_area = Rectf(newPos, m_background->m_size.x * scale.x, m_background->m_size.y * scale.y);
+	m_area = Rectf(newPos, m_background->m_size.x * scale.x, m_background->m_size.y * scale.y);
 	_textArea = Rect(Vec2i(newTextStart * scale), Vec2i(newTextEnd * scale));
 	m_pageSpacing = s32(20 * scale.x);
 	if(m_prevPage) {
@@ -270,7 +270,7 @@ void Note::render() {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	
 	if(m_background) {
-		EERIEDrawBitmap(_area, z, m_background, Color::white);
+		EERIEDrawBitmap(m_area, z, m_background, Color::white);
 	}
 	
 	if(m_pages.empty()) {
@@ -299,8 +299,8 @@ void Note::render() {
 	{
 		ARX_UNICODE_DrawTextInRect(
 			font,
-			Vec2f(_area.left + _textArea.left, _area.top + _textArea.top),
-			_area.left + _textArea.right,
+			Vec2f(m_area.left + _textArea.left, m_area.top + _textArea.top),
+			m_area.left + _textArea.right,
 			m_pages[m_page],
 			Color::none
 		);
@@ -310,8 +310,8 @@ void Note::render() {
 	if(m_page + 1 < m_pages.size()) {
 		ARX_UNICODE_DrawTextInRect(
 			font,
-			Vec2f(_area.left + _textArea.right + m_pageSpacing, _area.top + _textArea.top),
-			_area.left + _textArea.right + m_pageSpacing + _textArea.width(),
+			Vec2f(m_area.left + _textArea.right + m_pageSpacing, m_area.top + _textArea.top),
+			m_area.left + _textArea.right + m_pageSpacing + _textArea.width(),
 			m_pages[m_page + 1],
 			Color::none
 		);
