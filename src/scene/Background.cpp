@@ -36,10 +36,8 @@ void InitBkg(BackgroundData * eb) {
 	eb->m_size.x = MAX_BKGX;
 	eb->m_size.y = MAX_BKGZ;
 	
-	eb->m_tileSize = Vec2s(BKG_SIZX, BKG_SIZZ);
-	
-	eb->m_mul.x = 1.f / (float)eb->m_tileSize.x;
-	eb->m_mul.y = 1.f / (float)eb->m_tileSize.y;
+	eb->m_mul.x = 1.f / g_backgroundTileSize.x;
+	eb->m_mul.y = 1.f / g_backgroundTileSize.y;
 	
 	for(short z = 0; z < eb->m_size.y; z++)
 	for(short x = 0; x < eb->m_size.x; x++) {
@@ -105,8 +103,8 @@ void EERIEPOLY_Compute_PolyIn() {
 		long maxx = std::min(x + 2, ACTIVEBKG->m_size.x - 1L);
 		long maxz = std::min(z + 2, ACTIVEBKG->m_size.y - 1L);
 		
-		Vec2f bbmin = Vec2f(x * ACTIVEBKG->m_tileSize.x - 10, z * ACTIVEBKG->m_tileSize.y - 10);
-		Vec2f bbmax = Vec2f(bbmin.x + ACTIVEBKG->m_tileSize.x + 20, bbmin.y + ACTIVEBKG->m_tileSize.y + 20);
+		Vec2f bbmin = Vec2f(x * g_backgroundTileSize.x - 10, z * g_backgroundTileSize.y - 10);
+		Vec2f bbmax = Vec2f(bbmin.x + g_backgroundTileSize.x + 20, bbmin.y + g_backgroundTileSize.y + 20);
 		
 		Rectf bb = Rectf(bbmin, bbmax);
 		
