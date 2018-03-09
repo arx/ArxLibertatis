@@ -1474,12 +1474,14 @@ void MapPage::drawMaps()
 	Vec2f bookPos = g_bookRectOrig.topLeft();
 
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-		g_miniMap.showBookEntireMap(SHOWLEVEL, Rect(Vec2i(bookPos + Vec2f(43, 56)), Vec2i(bookPos + Vec2f(248, 226))));
+		g_miniMap.showBookEntireMap(SHOWLEVEL, Rect(Vec2i((bookPos + Vec2f(43, 56)) * g_sizeRatio),
+		                                            Vec2i((bookPos + Vec2f(248, 226)) * g_sizeRatio)));
 
 	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-		g_miniMap.showBookMiniMap(SHOWLEVEL, Rect(Vec2i(bookPos + Vec2f(263, 21)), Vec2i(bookPos + Vec2f(458, 291))));
+		g_miniMap.showBookMiniMap(SHOWLEVEL, Rect(Vec2i((bookPos + Vec2f(263, 21)) * g_sizeRatio),
+		                                          Vec2i((bookPos + Vec2f(458, 291)) * g_sizeRatio)));
 }
 
 void MapPage::drawLeftTabs() {
