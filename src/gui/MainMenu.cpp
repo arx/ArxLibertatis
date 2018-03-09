@@ -1323,7 +1323,21 @@ public:
 			cb->iState = config.interface.hudScaleInteger ? 1 : 0;
 			addCenter(cb);
 		}
-
+		
+		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_interface_book_scale",
+			                                      "Player book size");
+			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->setEnabled(false);
+			panel->AddElement(txt);
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
+			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedBookScale, this, _1);
+			sld->setValue(int(config.interface.bookScale * 10.f));
+			panel->AddElement(sld);
+			addCenter(panel);
+		}
+		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_interface_scale_cursor_with_hud",
 			                                      "Scale cursor with HUD");
@@ -1390,7 +1404,11 @@ private:
 		config.interface.hudScaleInteger = state != 0;
 		g_hudRoot.recalcScale();
 	}
-
+	
+	void onChangedBookScale(int state) {
+		config.interface.bookScale = float(state) * 0.1f;
+	}
+	
 	void onChangedScaleCursorWithHud(int state) {
 		config.interface.scaleCursorWithHud = state != 0;
 	}
