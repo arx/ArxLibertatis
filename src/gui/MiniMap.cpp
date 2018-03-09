@@ -270,7 +270,9 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 	ARX_PROFILE_FUNC();
 	
 	const float miniMapZoom = 300.f; // zoom of the minimap
-	const Rect miniMapRect(390, 135, 590, 295); // minimap rect on a 640*480 screen
+	const Vec2f minimapSizeOrig = Vec2f(200.0f, 160.0f);
+	// minimap rect on a 640*480 screen
+	const Rect miniMapRect(Vec2i(390, 135), s32(minimapSizeOrig.x), s32(minimapSizeOrig.y));
 	const float playerSize = 4.f; // red arrow size
 	
 	static const Vec2f decal = Vec2f(40.f, -150.f);
