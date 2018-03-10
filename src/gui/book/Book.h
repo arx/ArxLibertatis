@@ -131,7 +131,7 @@ private:
 	ARX_INTERFACE_BOOK_MODE nextPage();
 	ARX_INTERFACE_BOOK_MODE prevPage();
 	void onClosePage();
-	void drawTopTabs();
+	void manageTopTabs();
 
 	bool needsUpdate();
 	Vec2f calculatePos();
