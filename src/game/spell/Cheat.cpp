@@ -92,9 +92,9 @@ void CheatDrawText() {
 			sp_max_y[i] = std::sin(d.x + elapsed / PlatformDurationMs(100)) * 30.f * modi;
 			std::string tex(1, sp_max_ch[i]);
 			
-			UNICODE_ARXDrawTextCenter(hFontInBook, d + Vec2f(-1, -1), tex, Color::none);
-			UNICODE_ARXDrawTextCenter(hFontInBook, d + Vec2f(1, 1), tex, Color::none);
-			UNICODE_ARXDrawTextCenter(hFontInBook, d, tex, sp_max_col[i]);
+			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(-1, -1), tex, Color::none);
+			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(1, 1), tex, Color::none);
+			UNICODE_ARXDrawTextCenter(hFontInGame, d, tex, sp_max_col[i]);
 		}
 		
 	}
