@@ -21,6 +21,7 @@
 #define ARX_GUI_BOOK_BOOK_H
 
 #include "graphics/Color.h"
+#include "gui/Menu.h"
 #include "gui/Note.h"
 
 enum ARX_INTERFACE_BOOK_MODE
@@ -109,6 +110,7 @@ public:
 	ARX_INTERFACE_BOOK_MODE m_currentPage;
 
 	PlayerBook();
+	void update();
 	void manage();
 	void openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false);
 	void openNextPage();
@@ -121,11 +123,20 @@ public:
 
 	void clearJournal();
 private:
+	Vec2f lastRatio;
+	float lastScaleSetting;
+	MenuMode lastMenuMode;
+	
 	bool canOpenPage(ARX_INTERFACE_BOOK_MODE page);
 	ARX_INTERFACE_BOOK_MODE nextPage();
 	ARX_INTERFACE_BOOK_MODE prevPage();
 	void onClosePage();
 	void drawTopTabs();
+
+	bool needsUpdate();
+	Vec2f calculatePos();
+	void updateRect();
+	void updateScale();
 };
 
 extern PlayerBook g_playerBook;
