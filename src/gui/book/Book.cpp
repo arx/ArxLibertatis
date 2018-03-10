@@ -257,7 +257,7 @@ void PlayerBook::manage() {
 			}
 		}
 		
-		drawTopTabs();
+		manageTopTabs();
 
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
@@ -343,7 +343,7 @@ ARX_INTERFACE_BOOK_MODE PlayerBook::prevPage() {
 	return currentPage();
 }
 
-void PlayerBook::drawTopTabs() {
+void PlayerBook::manageTopTabs() {
 	
 	float scale = g_bookScale;
 	const Vec2f BOOKMARKS_POS = g_bookRect.topLeft() + Vec2f(119.f, -4.f) * scale;
