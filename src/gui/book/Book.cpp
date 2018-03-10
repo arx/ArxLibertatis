@@ -356,7 +356,7 @@ void PlayerBook::drawTopTabs() {
 		DrawBookInterfaceItem(tcBookmarkChar, pos, Color::white, 0.000001f);
 		
 		// Check for cursor on charcter sheet bookmark
-		if(MouseInBookRect(pos, Vec2f(tcBookmarkChar->m_size.x, tcBookmarkChar->m_size.y) * scale)) {
+		if(MouseInBookRect(pos, Vec2f(tcBookmarkChar->m_size) * scale)) {
 			
 			// Draw highlighted Character sheet icon
 			UseRenderState state(render2D().blendAdditive());
@@ -388,7 +388,7 @@ void PlayerBook::drawTopTabs() {
 				}
 			}
 			
-			if(MouseInBookRect(pos, Vec2f(g_bookResouces.bookmark_magic->m_size.x, g_bookResouces.bookmark_magic->m_size.y) * scale)) {
+			if(MouseInBookRect(pos, Vec2f(g_bookResouces.bookmark_magic->m_size) * scale)) {
 				
 				// Draw highlighted Magic sheet icon
 				UseRenderState state(render2D().blendAdditive());
@@ -411,7 +411,7 @@ void PlayerBook::drawTopTabs() {
 		
 		DrawBookInterfaceItem(g_bookResouces.bookmark_map, pos, Color::white, 0.000001f);
 		
-		if(MouseInBookRect(pos, Vec2f(g_bookResouces.bookmark_map->m_size.x, g_bookResouces.bookmark_map->m_size.y) * scale)) {
+		if(MouseInBookRect(pos, Vec2f(g_bookResouces.bookmark_map->m_size) * scale)) {
 			
 			UseRenderState state(render2D().blendAdditive());
 			DrawBookInterfaceItem(g_bookResouces.bookmark_map, pos, Color::grayb(0x55), 0.000001f);
@@ -432,7 +432,7 @@ void PlayerBook::drawTopTabs() {
 		
 		DrawBookInterfaceItem(g_bookResouces.bookmark_quest, pos, Color::white, 0.000001f);
 		
-		if(MouseInBookRect(pos, Vec2f(g_bookResouces.bookmark_quest->m_size.x, g_bookResouces.bookmark_quest->m_size.y) * scale)) {
+		if(MouseInBookRect(pos, Vec2f(g_bookResouces.bookmark_quest->m_size) * scale)) {
 			
 			UseRenderState state(render2D().blendAdditive());
 			DrawBookInterfaceItem(g_bookResouces.bookmark_quest, pos, Color::grayb(0x55), 0.000001f);
