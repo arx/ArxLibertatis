@@ -167,7 +167,7 @@ static void ARX_SPEECH_Render() {
 	
 	long igrec = 14;
 	
-	Vec2i sSize = hFontInBook->getTextSize("p");
+	Vec2i sSize = hFontInGame->getTextSize("p");
 	sSize.y *= 3;
 	
 	int iEnd = igrec + sSize.y;
@@ -188,7 +188,7 @@ static void ARX_SPEECH_Render() {
 		
 		EERIEDrawBitmap(rect, .00001f, arx_logo_tc, Color::white);
 		
-		igrec += ARX_UNICODE_DrawTextInRect(hFontInBook, Vec2f(120.f * g_sizeRatio.x, igrec), 500 * g_sizeRatio.x,
+		igrec += ARX_UNICODE_DrawTextInRect(hFontInGame, Vec2f(120.f * g_sizeRatio.x, igrec), 500 * g_sizeRatio.x,
 		                           ' ' + g_speech[i].text, Color::white, NULL);
 		
 		if(igrec > iEnd && !isLastSpeech(i)) {
@@ -478,7 +478,7 @@ void ARX_SPEECH_Update() {
 		if(cinematicBorder.CINEMA_DECAL < 100.f)
 			continue;
 
-		Vec2i sSize = hFontInBook->getTextSize(speech->text);
+		Vec2i sSize = hFontInGame->getTextSize(speech->text);
 		
 		float fZoneClippHeight = static_cast<float>(sSize.y * 3);
 		float fStartYY = 100 * g_sizeRatio.y;
@@ -497,7 +497,7 @@ void ARX_SPEECH_Update() {
 			clippingRect.right = (g_size.width() + w) / 2;
 		}
 		
-		float height = (float)ARX_UNICODE_DrawTextInRect(hFontInBook,
+		float height = (float)ARX_UNICODE_DrawTextInRect(hFontInGame,
 		                                                 Vec2f(clippingRect.left + 10.f, fDepY + fZoneClippHeight),
 		                                                 clippingRect.right - 10.f, speech->text,
 		                                                 Color::white, &clippingRect);
