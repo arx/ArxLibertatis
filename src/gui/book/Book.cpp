@@ -1380,7 +1380,7 @@ void SpellsPage::manage() {
 	                         s32(g_bookRect.width() * 0.43f), s32(g_bookRect.height() * 0.25f));
 	
 	ARX_SPELLS_UpdateBookSymbolDraw(runeDrawRect);
-	gui::ARX_INTERFACE_ManageOpenedBook_Finish(Vec2f(DANAEMouse), g_bookRect);
+	gui::ARX_INTERFACE_ManageOpenedBook_Finish(Vec2f(DANAEMouse), g_bookRect, g_bookScale);
 	drawSpells();
 	
 }
