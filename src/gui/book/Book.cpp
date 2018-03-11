@@ -1094,7 +1094,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	Camera bookcam;
 	bookcam.angle = Anglef::ZERO;
 	bookcam.m_pos = Vec3f_ZERO;
-	bookcam.focal = 350.f;
+	bookcam.focal = 520.f;
 	bookcam.cdepth = 2200.f;
 	
 	Camera * oldcam = g_camera;
