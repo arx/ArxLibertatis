@@ -1534,7 +1534,7 @@ void MapPage::drawMaps()
 
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
 		g_miniMap.showBookEntireMap(SHOWLEVEL, Rect(Vec2i(bookPos + Vec2f(43, 56) * scale),
-		                                            Vec2i(bookPos + Vec2f(248, 226) * scale)));
+		                                            Vec2i(bookPos + Vec2f(248, 226) * scale)), scale);
 
 	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 

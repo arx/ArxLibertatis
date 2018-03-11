@@ -343,7 +343,7 @@ void MiniMap::showBookMiniMap(int showLevel, Rect rect, float scale) {
 	}
 }
 
-void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
+void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 	
 	UseRenderState state(render2D());
 	
@@ -356,7 +356,6 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
 		return;
 	}
 	
-	float scale = minSizeRatio();
 	float zoom = 250.f * scale;
 	
 	Vec2f start(rect.topLeft());

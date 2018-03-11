@@ -116,7 +116,7 @@ public:
 	void showBookMiniMap(int showLevel, Rect rect, float scale);
 	
 	//! Shows the entire map in the book
-	void showBookEntireMap(int showLevel, Rect rect);
+	void showBookEntireMap(int showLevel, Rect rect, float scale);
 	
 	//! Reveals entirely all levels
 	void reveal();
