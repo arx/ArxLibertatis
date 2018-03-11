@@ -113,7 +113,7 @@ public:
 	void showPlayerMiniMap(int showLevel);
 	
 	//! Shows the zoomed-in minimap in the book
-	void showBookMiniMap(int showLevel, Rect rect);
+	void showBookMiniMap(int showLevel, Rect rect, float scale);
 	
 	//! Shows the entire map in the book
 	void showBookEntireMap(int showLevel, Rect rect);
