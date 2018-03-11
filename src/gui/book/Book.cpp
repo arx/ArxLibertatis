@@ -1540,7 +1540,7 @@ void MapPage::drawMaps()
 
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
 		g_miniMap.showBookMiniMap(SHOWLEVEL, Rect(Vec2i(bookPos + Vec2f(263, 21) * scale),
-		                                          Vec2i(bookPos + Vec2f(458, 291) * scale)), scale);
+		                                          Vec2i(bookPos + Vec2f(480, 291) * scale)), scale);
 }
 
 void MapPage::drawLeftTabs() {
