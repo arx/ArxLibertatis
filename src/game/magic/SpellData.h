@@ -42,5 +42,6 @@ struct SPELL_ICON {
 extern SPELL_ICON spellicons[SPELL_TYPES_COUNT];
 
 void spellDataInit();
+void spellDataRelease();
 
 #endif // ARX_GAME_MAGIC_SPELLDATA_H
