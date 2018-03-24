@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/EntityManager.h"
 #include "game/NPC.h"
 #include "game/Player.h"
+#include "game/spell/Cheat.h"
 
 #include "gui/Interface.h"
 
@@ -413,8 +414,6 @@ void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, const C
 		pd->m_rotation = 0.01f;
 	}
 }
-
-extern long cur_mr;
 
 void ManageTorch() {
 	arx_assert(entities.player());
