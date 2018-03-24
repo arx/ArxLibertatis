@@ -1059,10 +1059,9 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	FreeRoomDistance();
 	if(portals) {
 		NbRoomDistance = portals->rooms.size();
-		RoomDistance = (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA)
-		                                        * NbRoomDistance * NbRoomDistance);
-		LogDebug("FTS: loading " << (NbRoomDistance * NbRoomDistance)
-		         << " room distances ...");
+		const size_t count = NbRoomDistance * NbRoomDistance;
+		RoomDistance = (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * count);
+		LogDebug("FTS: loading " << count << " room distances ...");
 		
 		for(size_t n = 0; n < NbRoomDistance; n++) {
 			for(size_t m = 0; m < NbRoomDistance; m++) {
