@@ -168,8 +168,6 @@ extern long DONT_WANT_PLAYER_INZONE;
 
 //-----------------------------------------------------------------------------
 
-ParticleManager * pParticleManager = NULL;
-
 TextureContainer * GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 
 Vec2s DANAEMouse;

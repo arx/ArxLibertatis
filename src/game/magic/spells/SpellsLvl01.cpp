@@ -82,8 +82,6 @@ void MagicSightSpell::Update() {
 	}
 }
 
-extern ParticleManager * pParticleManager;
-
 static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 	
 	ParticleParams cp = g_particleParameters[ParticleParam_MagicMissileExplosion];

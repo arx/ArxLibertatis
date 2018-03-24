@@ -182,7 +182,6 @@ static const PlatformDuration runeDrawPointInterval = PlatformDurationMs(16); //
 
 extern EERIE_3DOBJ * arrowobj;
 
-extern ParticleManager * pParticleManager;
 extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
 extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
