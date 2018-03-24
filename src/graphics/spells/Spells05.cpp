@@ -75,9 +75,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <list>
 
-extern ParticleManager * pParticleManager;
-
-
 static void LaunchPoisonExplosion(const Vec3f & aePos) {
 	
 	// système de partoches pour l'explosion

@@ -134,8 +134,6 @@ extern bool REQUEST_SPEECH_SKIP;
 extern bool DONT_ERASE_PLAYER;
 extern bool GLOBAL_MAGIC_MODE;
 
-extern ParticleManager * pParticleManager;
-
 static const float WORLD_GRAVITY = 0.1f;
 static const float JUMP_GRAVITY = 0.02f;
 static const float STEP_DISTANCE = 120.f;
