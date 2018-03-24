@@ -650,3 +650,15 @@ void spellDataInit() {
 	}
 	
 }
+
+void spellDataRelease() {
+	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
+		if(!spellicons[i].name.empty())
+			//free(spellicons[i].name);
+			spellicons[i].name.clear();
+
+		if(!spellicons[i].description.empty())
+			//free(spellicons[i].description);
+			spellicons[i].description.clear();
+	}
+}
