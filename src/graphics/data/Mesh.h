@@ -160,10 +160,12 @@ struct ROOM_DIST_DATA {
 };
 
 extern ROOM_DIST_DATA * RoomDistance;
-extern size_t NbRoomDistance;
 
 void UpdateIORoom(Entity * io);
+
+void FreeRoomDistance();
 float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long Cam_Room);
+
 void EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 void ComputePortalVertexBuffer();
 
