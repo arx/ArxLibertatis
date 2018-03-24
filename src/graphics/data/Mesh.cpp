@@ -544,7 +544,13 @@ void UpdateIORoom(Entity * io)
 }
 
 ROOM_DIST_DATA * RoomDistance = NULL;
-size_t NbRoomDistance = 0;
+static size_t NbRoomDistance = 0;
+
+void FreeRoomDistance() {
+	free(RoomDistance);
+	RoomDistance = NULL;
+	NbRoomDistance = 0;
+}
 
 static void SetRoomDistance(size_t i, size_t j, float val, const Vec3f & p1, const Vec3f & p2) {
 	
@@ -1050,9 +1056,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	
 	
 	// Load distances between rooms
-	free(RoomDistance);
-	RoomDistance = NULL;
-	NbRoomDistance = 0;
+	FreeRoomDistance();
 	if(portals) {
 		NbRoomDistance = portals->rooms.size();
 		RoomDistance = (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA)

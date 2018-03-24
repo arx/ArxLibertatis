@@ -66,9 +66,7 @@ void ClearBackground(BackgroundData * eb) {
 		ReleaseBKG_INFO(&eb->m_tileData[x][z]);
 	}
 	
-	free(RoomDistance);
-	RoomDistance = NULL;
-	NbRoomDistance = 0;
+	FreeRoomDistance();
 }
 
 
