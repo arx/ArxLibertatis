@@ -70,6 +70,6 @@ public:
 	
 };
 
-extern ParticleManager * g_particleManager;
+extern ParticleManager g_particleManager;
 
 #endif // ARX_GRAPHICS_PARTICLE_PARTICLEMANAGER_H

@@ -341,9 +341,8 @@ void levelInit() {
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
 	
-	if(!g_particleManager)
-		g_particleManager = new ParticleManager();
-
+	g_particleManager.Clear();
+	
 	if(GMOD_RESET)
 		ARX_GLOBALMODS_Reset();
 
