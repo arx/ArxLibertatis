@@ -193,6 +193,8 @@ bool NeedHalo(Entity * io);
 void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer * haloTexture, Vec2f pos, Vec2f ratio);
 void ResetPlayerInterface();
 void Set_DragInter(Entity * io);
+
+void ARX_INTERFACE_DrawNumberInit();
 void ARX_INTERFACE_DrawNumber(const Vec2f & pos, long num, Color color, float scale);
 
 // 0 switch 1 forceopen 2 forceclose

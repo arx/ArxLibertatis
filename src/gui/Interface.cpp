@@ -133,8 +133,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern EERIE_3DOBJ * arrowobj;
 
-extern TextureContainer * inventory_font;
-
 extern AnimationDuration PLAYER_ROTATION;
 extern float SLID_VALUE;
 
@@ -185,6 +183,11 @@ Entity * pIOChangeWeapon = NULL;
 
 PlayerInterfaceFlags lOldInterface;
 
+static TextureContainer * inventory_font = NULL;
+
+void ARX_INTERFACE_DrawNumberInit() {
+	inventory_font = TextureContainer::LoadUI("graph/interface/font/font10x10_inventory");
+}
 
 void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const Color color, float scale) {
 	

@@ -509,7 +509,6 @@ bool ArxGame::initGameData() {
 }
 
 TextureContainer * enviro = NULL;
-TextureContainer * inventory_font = NULL;
 TextureContainer * ombrignon = NULL;
 TextureContainer * TC_fire = NULL;
 TextureContainer * TC_fire2 = NULL;
@@ -525,7 +524,8 @@ static void LoadSysTextures() {
 	spellDataInit();
 
 	enviro = TextureContainer::LoadUI("graph/particles/enviro");
-	inventory_font = TextureContainer::LoadUI("graph/interface/font/font10x10_inventory");
+	
+	ARX_INTERFACE_DrawNumberInit();
 	init2DFX();
 	ombrignon = TextureContainer::LoadUI("graph/particles/ombrignon");
 	TC_fire = TextureContainer::LoadUI("graph/particles/fire");
