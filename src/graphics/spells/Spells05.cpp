@@ -94,8 +94,8 @@ static void LaunchPoisonExplosion(const Vec3f & aePos) {
 		}
 	}
 
-	arx_assert(pParticleManager);
-	pParticleManager->AddSystem(pPS);
+	arx_assert(g_particleManager);
+	g_particleManager->AddSystem(pPS);
 }
 
 
