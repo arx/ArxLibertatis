@@ -20,6 +20,7 @@
 #ifndef ARX_GRAPHICS_EFFECTS_LIGHTFLARE_H
 #define ARX_GRAPHICS_EFFECTS_LIGHTFLARE_H
 
+void init2DFX();
 void update2DFX();
 void goFor2DFX();
 

@@ -32,6 +32,12 @@
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 
+static TextureContainer * tflare = NULL;
+
+void init2DFX() {
+	tflare = TextureContainer::LoadUI("graph/particles/flare");
+}
+
 void update2DFX() {
 	
 	RaycastDebugClear();
@@ -103,10 +109,6 @@ void update2DFX() {
 		}
 	}
 }
-
-extern TextureContainer * tflare;
-
-
 
 void goFor2DFX() {
 	
