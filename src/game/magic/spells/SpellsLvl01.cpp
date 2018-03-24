@@ -111,8 +111,8 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 		light->duration = GameDurationMs(1500);
 	}
 
-	arx_assert(pParticleManager);
-	pParticleManager->AddSystem(pPS);
+	arx_assert(g_particleManager);
+	g_particleManager->AddSystem(pPS);
 
 	ARX_SOUND_PlaySFX(SND_SPELL_MM_HIT, &_ePos);
 }
