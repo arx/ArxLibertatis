@@ -664,29 +664,6 @@ void EERIE_PORTAL_Release() {
 	portals = NULL;
 }
 
-
-long CountBkgVertex() {
-
-	long count = 0;
-
-	for(long z = 0; z < ACTIVEBKG->m_size.y; z++) {
-		for(long x = 0; x < ACTIVEBKG->m_size.x; x++) {
-			const BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
-
-			for(long l = 0; l < eg.nbpoly; l++) {
-				const EERIEPOLY & ep = eg.polydata[l];
-				
-				if(ep.type & POLY_QUAD)
-					count += 4;
-				else
-					count += 3;
-			}
-		}
-	}
-
-	return count;
-}
-
 void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos,
                   const Vec3f & scale, const Color4f & coll, RenderMaterial mat) {
 	

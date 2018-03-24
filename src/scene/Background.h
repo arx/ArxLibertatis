@@ -68,6 +68,7 @@ struct BackgroundData {
 void InitBkg(BackgroundData * eb);
 void ClearBackground(BackgroundData * eb);
 void EERIEPOLY_Compute_PolyIn();
+long CountBkgVertex();
 
 BackgroundTileData * getFastBackgroundData(float x, float z);
 
