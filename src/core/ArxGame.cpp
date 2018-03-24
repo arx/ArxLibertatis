@@ -1062,7 +1062,7 @@ void ArxGame::shutdownGame() {
 	// texts and textures
 	ClearSysTextures();
 	
-	delete g_particleManager, g_particleManager = NULL;
+	g_particleManager.Clear();
 	
 	//sound
 	ARX_SOUND_Release();
@@ -1856,8 +1856,7 @@ void ArxGame::updateLevel() {
 	
 	ARX_SCENE_Update();
 
-	arx_assert(g_particleManager);
-	g_particleManager->Update(g_gameTime.lastFrameDuration());
+	g_particleManager.Update(g_gameTime.lastFrameDuration());
 
 	ARX_FOGS_Render();
 
@@ -1941,8 +1940,7 @@ void ArxGame::renderLevel() {
 	drawDebugRender();
 
 	// Begin Particles
-	arx_assert(g_particleManager);
-	g_particleManager->Render();
+	g_particleManager.Render();
 	
 	ARX_PARTICLES_Update();
 	ParticleSparkUpdate();

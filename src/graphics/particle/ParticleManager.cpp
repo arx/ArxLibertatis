@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/profiler/Profiler.h"
 
-ParticleManager * g_particleManager = NULL;
+ParticleManager g_particleManager;
 
 ParticleManager::ParticleManager() {
 	listParticleSystem.clear();

@@ -2541,8 +2541,7 @@ void ARX_GAME_Reset() {
 	// Particles
 	ARX_PARTICLES_ClearAll();
 	ParticleSparkClear();
-	if(g_particleManager)
-		g_particleManager->Clear();
+	g_particleManager.Clear();
 
 	// Fogs
 	ARX_FOGS_Render();
