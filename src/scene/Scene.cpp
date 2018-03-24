@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Inventory.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "game/spell/Cheat.h"
 #include "game/spell/FlyingEye.h"
 
 #include "gui/Interface.h"
@@ -1434,8 +1435,6 @@ void ARX_SCENE_Update() {
 	
 	UpdateInter();
 }
-
-extern short uw_mode;
 
 //*************************************************************************************
 // Main Background Rendering Proc.
