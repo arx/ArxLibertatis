@@ -335,6 +335,8 @@ struct ARXCHARACTER {
 	
 	long m_cheatPnuxActive;
 	
+	GameDuration DeadTime;
+	
 	ARXCHARACTER()
 		: m_strikeDirection(0)
 		, m_weaponBlocked(AnimationDuration::ofRaw(-1)) // FIXME inband signaling
@@ -370,6 +372,7 @@ struct ARXCHARACTER {
 		, TRAP_DETECT(0)
 		, TRAP_SECRET(0)
 		, m_cheatPnuxActive(0)
+		, DeadTime(0)
 	{
 		heads.fill(NULL);
 	}
