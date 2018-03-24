@@ -1537,13 +1537,11 @@ void ArxGame::speechControlledCinematic() {
 	}
 }
 
-extern GameDuration DeadTime;
-
 void ArxGame::handlePlayerDeath() {
 	
 	if(player.lifePool.current <= 0) {
 		
-		DeadTime += g_gameTime.lastFrameDuration();
+		player.DeadTime += g_gameTime.lastFrameDuration();
 		float mdist = glm::abs(player.physics.cyl.height) - 60;
 		
 		float startDistance = 40.f;
@@ -1551,7 +1549,7 @@ void ArxGame::handlePlayerDeath() {
 		GameDuration startTime = GameDurationMs(2000);
 		GameDuration endTime = GameDurationMs(7000);
 
-		float DeadCameraDistance = startDistance + (mdist - startDistance) * ((DeadTime - startTime) / (endTime - startTime));
+		float DeadCameraDistance = startDistance + (mdist - startDistance) * ((player.DeadTime - startTime) / (endTime - startTime));
 		
 		ActionPoint id  = entities.player()->obj->fastaccess.view_attach;
 		Vec3f targetpos = (id != ActionPoint()) ? actionPointPosition(entities.player()->obj, id) : player.pos;
