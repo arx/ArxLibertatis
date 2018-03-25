@@ -69,6 +69,7 @@ suboption(BUILD_IO_LIBRARY "Build shared library for reading and writing arx dat
 if(INSTALL_BLENDER_PLUGIN)
 	set(BUILD_IO_LIBRARY ON)
 endif()
+option(BUILD_EDITOR "Build the editor GUI" ON)
 option(INSTALL_SCRIPTS "Install the data install script" ON)
 
 # Optional dependencies
@@ -517,9 +518,9 @@ endif()
 
 # Qt
 set(ARX_HAVE_CRASHREPORTER 0)
-if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
+if(BUILD_CRASHREPORTER OR BUILD_PROFILER OR BUILD_EDITOR)
 	
-	find_package(Qt 4.7 COMPONENTS Core Concurrent Gui Widgets ${OPTIONAL_DEPENDENCY})
+	find_package(Qt 4.7 COMPONENTS Core Concurrent Gui Widgets OpenGL ${OPTIONAL_DEPENDENCY})
 	
 	if(HAVE_QT4 AND NOT MSVC)
 		check_link_library(QtCore QtCore_LIBRARIES)
@@ -548,6 +549,9 @@ if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
 		set(ARX_HAVE_PROFILER 1)
 	endif()
 	
+	if(HAVE_QT AND BUILD_EDITOR)
+		set(ARX_HAVE_EDITOR 1)
+	endif()
 endif()
 
 find_package(Doxygen)
@@ -1640,6 +1644,126 @@ if(ARX_HAVE_PROFILER)
 	
 endif()
 
+if(ARX_HAVE_EDITOR)
+	if(NOT HAVE_QT5)
+		message(SEND_ERROR "Editor not supported on qt4.")
+	endif()
+	
+	unset(ARX_HAVE_SDL1)
+	unset(ARX_HAVE_SDL2)
+	configure_file("src/Configure.h.in" "Configure.h" ESCAPE_QUOTES)
+	
+	set(arxedit_filtered_SOURCES ${ARX_SOURCES})
+	list(REMOVE_ITEM
+		arxedit_filtered_SOURCES
+		"src/core/Startup.cpp"
+		"src/input/SDL2InputBackend.cpp"
+		"src/window/SDL2Window.cpp"
+		"src/window/SDL2X11Util.c"
+	)
+	
+	set(arxedit_SOURCES
+		tools/arxedit/ArxEdit.cpp
+		tools/arxedit/ui/ArxEditWindow.h
+		tools/arxedit/ui/ArxEditWindow.cpp
+		tools/arxedit/ui/ArxRenderWidget.h
+		tools/arxedit/ui/ArxRenderWidget.cpp
+		tools/arxedit/ui/ArxViewer.h
+		tools/arxedit/ui/ArxViewer.cpp
+		tools/arxedit/model/AnimationLayersModel.h
+		tools/arxedit/model/AnimationLayersModel.cpp
+		tools/arxedit/model/AssetsModel.h
+		tools/arxedit/model/AssetsModel.cpp
+		tools/arxedit/model/LightsModel.h
+		tools/arxedit/model/LightsModel.cpp
+		tools/arxedit/model/ResourcesTreeModel.h
+		tools/arxedit/model/ResourcesTreeModel.cpp
+		${arxedit_filtered_SOURCES}
+		"${VERSION_FILE}"
+	)
+	
+	set(arxedit_UIs
+		tools/arxedit/ui/ArxEditWindow.ui
+		tools/arxedit/ui/ArxViewer.ui
+	)
+	
+	set(arxedit_MOC_HEADERS
+		tools/arxedit/ui/ArxEditWindow.h
+		tools/arxedit/ui/ArxRenderWidget.h
+		tools/arxedit/ui/ArxViewer.h
+		tools/arxedit/model/AnimationLayersModel.h
+		tools/arxedit/model/AssetsModel.h
+		tools/arxedit/model/LightsModel.h
+		tools/arxedit/model/ResourcesTreeModel.h
+	)
+	
+	set(arxedit_RESOURCES
+		tools/arxedit/resources/ArxEdit.qrc
+	)
+	
+	qt5_wrap_ui(arxedit_Qt_SOURCES ${arxedit_UIs})
+	qt5_wrap_cpp(arxedit_Qt_SOURCES ${arxedit_MOC_HEADERS})
+	qt5_add_resources(arxedit_Qt_SOURCES ${arxedit_RESOURCES})
+	
+	set_property(
+		SOURCE ${arxedit_Qt_SOURCES}
+		APPEND PROPERTY COMPILE_FLAGS " ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}"
+	)
+	
+	set(arxedit_qt_LIBRARIES
+		${BASE_LIBRARIES}
+		${ZLIB_LIBRARIES}
+		${FREETYPE_LIBRARIES}
+		${Epoxy_LIBRARIES}
+		${OPENAL_LIBRARY}
+		${CMAKE_THREAD_LIBS_INIT}
+		
+		${Qt5Core_LIBRARIES}
+		${QtConcurrent_LIBRARIES}
+		${Qt5Gui_LIBRARIES}
+		${Qt5Widgets_LIBRARIES}
+		${Qt5Network_LIBRARIES}
+		${Qt5OpenGL_LIBRARIES}
+		${Qt5Core_QTMAIN_LIBRARIES}
+	)
+	
+	add_definitions(
+		${Qt5Core_DEFINITIONS}
+		${Qt5Gui_DEFINITIONS}
+		${Qt5Widgets_DEFINITIONS}
+		${Qt5Network_DEFINITIONS}
+		${Qt5OpenGL_DEFINITIONS}
+		-DQT_NO_DEBUG
+	)
+	
+	include_directories(SYSTEM
+		${Qt5Core_INCLUDE_DIRS}
+		${Qt5Gui_INCLUDE_DIRS}
+		${Qt5Widgets_INCLUDE_DIRS}
+		${Qt5Network_INCLUDE_DIRS}
+		${Qt5OpenGL_INCLUDE_DIRS}
+	)
+	
+	
+	# Always link agains release versions of the Qt libraries
+	# This is important on windows where we would otherwise end up
+	# with inconsistencies in the stdlib configuration.
+	if(MSVC AND NOT DEBUG_EXTRA)
+		foreach(lib IN LISTS arxedit_qt_LIBRARIES)
+			if(TARGET ${lib})
+				set_target_properties(${lib} PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "Release")
+			endif()
+		endforeach()
+	endif()
+	
+	list(APPEND arxedit_LIBRARIES ${arxedit_qt_LIBRARIES})
+	list(APPEND arxedit_SOURCES ${arxedit_Qt_SOURCES})
+	
+	add_executable_shared(arxedit "${arxedit_SOURCES}" "${arxedit_LIBRARIES}")
+	set_binary_type(arxedit WIN32)
+	set_binary_installdir(arxedit "${CMAKE_INSTALL_LIBEXECDIR}")
+endif()
+
 if(BUILD_TOOLS)
 	
 	set(arxsavetool_SOURCES
@@ -1724,7 +1848,6 @@ endif()
 if(INSTALL_BLENDER_PLUGIN)
 	install(DIRECTORY plugins/blender/arx_addon/ DESTINATION "${INSTALL_BLENDER_PLUGINDIR}")
 endif()
-
 
 # Build and link executables
 
@@ -1883,6 +2006,7 @@ print_configuration("Tools"
 	BUILD_TOOLS            "unpak"
 	ARX_HAVE_CRASHREPORTER "crash reporter"
 	ARX_HAVE_PROFILER      "profiler"
+	ARX_HAVE_EDITOR        "editor"
 )
 message("")
 
