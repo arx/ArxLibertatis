@@ -16,7 +16,9 @@
 # along with Arx Libertatis. If not, see <http://www.gnu.org/licenses/>.
 
 import os
-from collections import namedtuple
+import io
+import re
+from collections import namedtuple, OrderedDict
 
 
 def splitPath(path):
@@ -35,8 +37,6 @@ def splitPath(path):
 
 EntityInstance = namedtuple("ArxInstance", ["id", "script"])
 EntityData = namedtuple("EntityData", ["path", "script", "icon", "instances"])
-
-import io
 
 
 class Entities:
@@ -213,10 +213,21 @@ class Levels:
     def __init__(self):
         self.paths = ["graph/levels", "game/graph/levels"]
         self.danglingPaths = []
-        self.levels = {}
+        self.levels = OrderedDict()
 
     def update(self, absroot):
         dirs = os.listdir(absroot)
+
+        def sortFunc(x):
+            l = []
+            for p in re.split('([0-9]+)',  x):
+                if p.isdigit():
+                    l.append(int(p))
+                elif len(p) > 0:
+                    l.append(p)
+            return tuple(l)
+
+        dirs = sorted(dirs, key=sortFunc)
         for lvlName in dirs:
             l = os.path.join(absroot, lvlName)
             if os.path.isdir(l):
