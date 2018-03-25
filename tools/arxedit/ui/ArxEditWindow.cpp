@@ -18,6 +18,7 @@
  */
 
 #include "arxedit/ui/ArxEditWindow.h"
+#include "ui_ArxEditWindow.h"
 
 #include <QFileDialog>
 
@@ -40,10 +41,12 @@
 #include "arxedit/ui/ArxEditWindow.h"
 #include "arxedit/ui/ArxViewer.h"
 
+
 ArxMainWindow::ArxMainWindow(QWidget *parent)
 	: QMainWindow(parent)
+	, ui(new Ui::ArxMainWindowClass)
 {
-	ui.setupUi(this);
+	ui->setupUi(this);
 	
 	g_resources = new PakReader;
 	
@@ -82,12 +85,12 @@ ArxMainWindow::ArxMainWindow(QWidget *parent)
 	}
 	
 	m_assetsModel = new AssetsModel(*g_resources, this);
-	ui.assetsTree->setModel(m_assetsModel);
+	ui->assetsTree->setModel(m_assetsModel);
 	
 	
 	ResourcesTreeModel * model = new ResourcesTreeModel(g_resources, this);
 	
-	ui.treeView->setModel(model);
+	ui->treeView->setModel(model);
 }
 
 ArxMainWindow::~ArxMainWindow() {
@@ -97,15 +100,6 @@ ArxMainWindow::~ArxMainWindow() {
 void ArxMainWindow::onValidateAll()
 {
 	
-}
-
-void ArxMainWindow::showErrorMessageBox(const QString& text) {
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("Error");
-    msgBox.setIconPixmap(QPixmap(":/images/icons/dialog-error.svg"));
-    msgBox.setStandardButtons(QMessageBox::Ok);
-    msgBox.setText(text);
-    msgBox.exec();
 }
 
 void ArxMainWindow::on_assetsTree_doubleClicked(const QModelIndex &index) {

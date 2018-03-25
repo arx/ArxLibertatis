@@ -21,15 +21,13 @@
 #define ARX_TOOLS_ARXEDIT_UI_ARXMAINWINDOW_H
 
 #include <QMainWindow>
-#include <QMessageBox>
-#include <QtCore/QTimer>
-
-#include "ui_ArxMainWindow.h"
-
-#include "ArxRenderWidget.h"
 
 class AssetsModel;
 class ArxViewer;
+
+namespace Ui {
+class ArxMainWindowClass;
+}
 
 class ArxMainWindow : public QMainWindow {
 	Q_OBJECT
@@ -42,14 +40,12 @@ private slots:
 	void onValidateAll();
 	void on_assetsTree_doubleClicked(const QModelIndex &index);
 	
-	void showErrorMessageBox(const QString& text);
-	
 private:
 	void loadScene();
 	void loadLights();
 	
 private:
-	Ui::ArxMainWindowClass ui;
+	Ui::ArxMainWindowClass * ui;
 	AssetsModel * m_assetsModel = nullptr;
 	ArxViewer * m_modelViewer = nullptr;
 };
