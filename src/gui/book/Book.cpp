@@ -343,6 +343,11 @@ ARX_INTERFACE_BOOK_MODE PlayerBook::prevPage() {
 	return currentPage();
 }
 
+float PlayerBook::getScale() {
+	update();
+	return g_bookScale;
+}
+
 void PlayerBook::manageTopTabs() {
 	
 	float scale = g_bookScale;
