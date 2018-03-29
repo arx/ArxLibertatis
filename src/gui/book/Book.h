@@ -124,7 +124,7 @@ public:
 	void clearJournal();
 	
 	float getScale();
-	
+	const Rectf &getArea();
 private:
 	Vec2f lastRatio;
 	float lastScaleSetting;

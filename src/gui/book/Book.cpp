@@ -348,6 +348,11 @@ float PlayerBook::getScale() {
 	return g_bookScale;
 }
 
+const Rectf &PlayerBook::getArea() {
+	update();
+	return g_bookRect;
+}
+
 void PlayerBook::manageTopTabs() {
 	
 	float scale = g_bookScale;
