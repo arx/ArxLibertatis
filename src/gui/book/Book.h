@@ -120,8 +120,11 @@ public:
 	void open();
 	void close();
 	void toggle();
-
+	
 	void clearJournal();
+	
+	float getScale();
+	
 private:
 	Vec2f lastRatio;
 	float lastScaleSetting;
