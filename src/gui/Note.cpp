@@ -112,12 +112,7 @@ void Note::calculateLayout() {
 	Vec2f prevButtonOffset;
 	Vec2f nextButtonOffset;
 	
-	Vec2f scale = Vec2f(minSizeRatio(), minSizeRatio());
-	
-	if(m_type == QuestBook) {
-		// TODO change this once the aspect ratio in character screen, spell book, etc. is fixed.
-		scale = g_sizeRatio;
-	}
+	Vec2f scale = Vec2f(g_playerBook.getScale());
 	
 	switch(m_type) {
 		
