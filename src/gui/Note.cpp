@@ -153,7 +153,7 @@ void Note::calculateLayout() {
 		}
 		
 		case QuestBook: {
-			newPos = Vec2f(97, 64) * scale;
+			newPos = g_playerBook.getArea().topLeft();
 			newTextStart = Vec2f(40.f, 40.f);
 			newTextEnd = Vec2f(m_background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 65.f);
 			m_maxPages = std::numeric_limits<size_t>::max();
@@ -164,7 +164,11 @@ void Note::calculateLayout() {
 		case Undefined: break; // Cannot handle notes of undefined type.
 	}
 	
-	m_area = Rectf(newPos, m_background->m_size.x * scale.x, m_background->m_size.y * scale.y);
+	if(m_type == QuestBook) {
+		m_area = g_playerBook.getArea();
+	} else {
+		m_area = Rectf(newPos, m_background->m_size.x * scale.x, m_background->m_size.y * scale.y);
+	}
 	m_textArea = Rect(Vec2i(newTextStart * scale), Vec2i(newTextEnd * scale));
 	m_pageSpacing = s32(20 * scale.x);
 	if(m_prevPage) {
