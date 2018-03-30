@@ -222,7 +222,9 @@ bool Note::splitTextToPages() {
 
 bool Note::allocate() {
 	
-	if(m_currentRatio == g_sizeRatio) {
+	float bookScale = g_playerBook.getScale();
+	
+	if(m_currentRatio == g_sizeRatio && m_currentScale == bookScale) {
 		return m_background != NULL;
 	}
 	
@@ -238,6 +240,7 @@ bool Note::allocate() {
 		
 		if(!m_background) {
 			m_currentRatio = g_sizeRatio;
+			m_currentScale = bookScale;
 			return false;
 		}
 	} while(!splitTextToPages());
@@ -246,6 +249,7 @@ bool Note::allocate() {
 	setPage(m_page);
 	
 	m_currentRatio = g_sizeRatio;
+	m_currentScale = bookScale;
 	m_isCleared = false;
 	
 	return true;

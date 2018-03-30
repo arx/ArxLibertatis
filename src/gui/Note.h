@@ -86,6 +86,7 @@ private:
 	std::string m_text;
 	
 	Vec2f m_currentRatio;
+	float m_currentScale;
 	
 	std::vector<std::string> m_pages;
 	size_t m_page;
