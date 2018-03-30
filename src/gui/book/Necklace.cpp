@@ -157,7 +157,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 		
 		Vec2i projectionCenter = Vec2i(rect.topLeft() + (Vec2f(285, 36) + Vec2f(tmpPos) * Vec2f(45, 64)) * scale);
 		
-		PrepareCamera(&bookcam, g_size, projectionCenter);
+		PrepareCamera(&bookcam, Rect(rect), projectionCenter);
 		
 		if(player.hasRune((Rune)i)) {
 			Anglef angle = Anglef::ZERO;
@@ -189,12 +189,15 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 				tmpPos.y++;
 			}
 			
+			//TODO this is a workaround for vertexClipPositions being relative to viewport
+			Vec2f mousePosInViewport = mousePos - rect.topLeft();
+			
 			// Checks for Mouse floating over a rune...
-			if(runeBox.contains(mousePos)) {
+			if(runeBox.contains(mousePosInViewport)) {
 				bool r = false;
 				
 				for(size_t j = 0; j < rune->facelist.size(); j++) {
-					float n = PtIn2DPolyProj(rune->vertexClipPositions, &rune->facelist[j], mousePos.x, mousePos.y);
+					float n = PtIn2DPolyProj(rune->vertexClipPositions, &rune->facelist[j], mousePosInViewport.x, mousePosInViewport.y);
 					if(n != 0.f) {
 						r = true;
 						break;
