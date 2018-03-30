@@ -152,7 +152,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(const Rect & rect) {
 		if(timeRemaining < timePerComponent) {
 			float ratio = timeRemaining / timePerComponent;
 			pos += vect * ratio * 0.5f;
-			AddFlare(pos, 0.1f, 1, entities.player(), true);
+			AddFlare(pos, glm::min(scale.x, scale.y) * 0.2f, 1, entities.player(), true);
 
 			break;
 		}
