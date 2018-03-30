@@ -391,7 +391,7 @@ void ARX_MAGICAL_FLARES_Update() {
 			if(flare.type == 1) {
 				size = flare.size * 2 * z;
 			} else if(flare.type == 4) {
-				size = flare.size * 2.f * z + 10.f;
+				size = flare.size * 2.f * z * (4.0f / 3.0f);
 			} else {
 				size = flare.size;
 			}
