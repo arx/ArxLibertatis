@@ -146,7 +146,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 	Camera bookcam;
 	bookcam.angle = Anglef::ZERO;
 	bookcam.m_pos = Vec3f_ZERO;
-	bookcam.focal = 350.f;
+	bookcam.focal = 500.f;
 	bookcam.cdepth = 2200.f;
 	
 	for(size_t i = 0; i < RUNE_COUNT; i++) {
