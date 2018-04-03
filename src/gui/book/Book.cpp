@@ -1098,7 +1098,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	bookcam.cdepth = 2200.f;
 	
 	Camera * oldcam = g_camera;
-	PrepareCamera(&bookcam, g_size, rec.center());
+	PrepareCamera(&bookcam, Rect(g_bookRect), rec.center());
 	
 	Anglef ePlayerAngle = Anglef::ZERO;
 	
@@ -1189,6 +1189,15 @@ void StatsPage::RenderBookPlayerCharacter() {
 		if(weapon->type_flags & OBJECT_TYPE_2H) {
 			player.bookAnimation[0].cur_anim = herowait_2h;
 		}
+		//TODO workaround for bbox2D being relative to viewport
+		weapon->bbox2D.min += bookPos;
+		weapon->bbox2D.max += bookPos;
+	}
+	
+	//TODO workaround for bbox2D being relative to viewport
+	if(Entity *shield = entities.get(player.equiped[EQUIP_SLOT_SHIELD])) {
+		shield->bbox2D.min += bookPos;
+		shield->bbox2D.max += bookPos;
 	}
 	
 	if(Entity * tod = entities.get(player.equiped[EQUIP_SLOT_ARMOR])) {
