@@ -77,6 +77,7 @@ long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, cons
 
 bool ARX_Text_Init();
 void ARX_Text_scaleBookFont(float scale);
+void ARX_Text_scaleNoteFont(float scale);
 void ARX_Text_Close();
 
 /*!

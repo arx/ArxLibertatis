@@ -228,6 +228,8 @@ bool Note::allocate() {
 		return m_background != NULL;
 	}
 	
+	ARX_Text_scaleNoteFont(bookScale);
+	
 	do {
 		deallocate();
 		
