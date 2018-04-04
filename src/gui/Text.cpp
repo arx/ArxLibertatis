@@ -301,6 +301,17 @@ void ARX_Text_scaleBookFont(float scale) {
 	hFontInBook = nFontInBook;
 }
 
+void ARX_Text_scaleNoteFont(float scale) {
+	res::path file;
+	if(!getFontFile(file)) {
+		return;
+	}
+	
+	Font *nFontInGameNote = createFont(file, "system_font_note_size", 18, smallTextScale(scale));
+	FontCache::releaseFont(hFontInGameNote);
+	hFontInGameNote = nFontInGameNote;
+}
+
 bool ARX_Text_Init() {
 	
 	res::path file;
