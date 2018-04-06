@@ -114,12 +114,17 @@ void Note::calculateLayout() {
 	
 	Vec2f scale = Vec2f(g_playerBook.getScale());
 	
+	float noteY = 0.0f;
+	if(m_type != QuestBook) {
+		noteY = (m_background->m_size.y * minSizeRatio() / 2.0f + 47.f * minSizeRatio()) - m_background->m_size.y * scale.y / 2.0f;
+	}
+	
 	switch(m_type) {
 		
 		// TODO this information should not be hardcoded
 		
 		case Notice: {
-			newPos = Vec2f(320 * g_sizeRatio.x - m_background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
+			newPos = Vec2f(320 * g_sizeRatio.x - m_background->m_size.x * 0.5f * scale.x, noteY);
 			newTextStart = Vec2f(50.f, 50.f);
 			newTextEnd = Vec2f(m_background->size()) - Vec2f(50.f, 50.f);
 			m_maxPages = 1;
@@ -127,7 +132,7 @@ void Note::calculateLayout() {
 		}
 		
 		case SmallNote: {
-			newPos = Vec2f(320 * g_sizeRatio.x - m_background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
+			newPos = Vec2f(320 * g_sizeRatio.x - m_background->m_size.x * 0.5f * scale.x, noteY);
 			newTextStart = Vec2f(30.f, 30.f);
 			newTextEnd = Vec2f(m_background->size()) - Vec2f(30.f, 40.f);
 			m_maxPages = 1;
@@ -135,7 +140,7 @@ void Note::calculateLayout() {
 		}
 		
 		case BigNote: {
-			newPos = Vec2f(320 * g_sizeRatio.x - m_background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
+			newPos = Vec2f(320 * g_sizeRatio.x - m_background->m_size.x * 0.5f * scale.x, noteY);
 			newTextStart = Vec2f(40.f, 40.f);
 			newTextEnd = Vec2f(m_background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
 			m_maxPages = 2;
@@ -143,7 +148,7 @@ void Note::calculateLayout() {
 		}
 		
 		case Book: {
-			newPos = Vec2f(320 * g_sizeRatio.x - m_background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
+			newPos = Vec2f(320 * g_sizeRatio.x - m_background->m_size.x * 0.5f * scale.x, noteY);
 			newTextStart = Vec2f(40.f, 20.f);
 			newTextEnd = Vec2f(m_background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
 			m_maxPages = std::numeric_limits<size_t>::max();
