@@ -130,8 +130,8 @@ void ARX_SPELLS_UpdateBookSymbolDraw(const Rect & rect) {
 		timeRemaining = sd->duration;
 	
 	// Keep size ratios among runes
-	Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize) * g_sizeRatio);
-	Vec2f scale = glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y) * g_sizeRatio;
+	Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize));
+	Vec2f scale = Vec2f(glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y));
 
 	Vec2s iMin;
 	Vec2s iMax;
