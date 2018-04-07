@@ -62,8 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class TextureContainer;
 class Entity;
 
-extern Vec2f BOOKDEC;
-
 extern Entity * FlyingOverIO;
 
 //-----------------------------------------------------------------------------
