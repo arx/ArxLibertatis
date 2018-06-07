@@ -181,6 +181,9 @@ else(MSVC)
 				# 'external function definition with no prior declaration'
 				# This gets annoying fast with small inline/template functions.
 				add_cxxflag("-wd1418")
+				# 'offsetof applied to non-POD (Plain Old Data) types is nonstandard'
+				# This triggers Qt moc-generated headers
+				add_cxxflag("-wd1875")
 				# 'printf/scanf format not a string literal and no format arguments'
 				# balks when passing NULL as the format string
 				add_cxxflag("-wd2279")
