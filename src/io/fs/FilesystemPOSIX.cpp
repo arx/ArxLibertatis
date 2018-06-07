@@ -210,22 +210,11 @@ static void iterator_handle_free(void * handle) {
 	ARX_UNUSED(handle);
 }
 
-static mode_t dirstat(void * handle, const void * buf) {
-	
-	const dirent * entry = reinterpret_cast<const dirent *>(buf);
-	arx_assert(entry != NULL);
-	#if defined(DT_UNKNOWN) && defined(DT_DIR) && defined(DT_FILE)
-	if(entry->d_type == DT_FILE) {
-		return S_IFREG;
-	} else if(entry->d_type == DT_DIR) {
-		return S_IFDIR;
-	}
-	#endif
+static mode_t dirstat_fallback(void * handle, const char * name) {
 	
 	int fd = dirfd(iterator_handle_get(handle));
 	arx_assert(fd != -1);
 	
-	const char * name = entry->d_name;
 	struct stat result;
 	int ret = fstatat(fd, name, &result, 0);
 	arx_assert_msg(ret == 0, "fstatat failed: %d", ret); ARX_UNUSED(ret);
@@ -253,6 +242,18 @@ static void iterator_handle_free(void * handle) {
 	delete reinterpret_cast<iterator_handle *>(handle);
 }
 
+static mode_t dirstat_fallback(void * handle, const char * name) {
+	
+	fs::path file = reinterpret_cast<iterator_handle *>(handle)->path / name;
+	struct stat result;
+	int ret = stat(file.string().c_str(), &result);
+	arx_assert_msg(ret == 0, "stat failed: %d", ret); ARX_UNUSED(ret);
+	
+	return result.st_mode;
+}
+
+#endif
+
 static mode_t dirstat(void * handle, const void * buf) {
 	
 	const dirent * entry = reinterpret_cast<const dirent *>(buf);
@@ -265,15 +266,8 @@ static mode_t dirstat(void * handle, const void * buf) {
 	}
 	#endif
 	
-	fs::path file = reinterpret_cast<iterator_handle *>(handle)->path / entry->d_name;
-	struct stat result;
-	int ret = stat(file.string().c_str(), &result);
-	arx_assert_msg(ret == 0, "stat failed: %d", ret); ARX_UNUSED(ret);
-	
-	return result.st_mode;
+	return dirstat_fallback(handle, entry->d_name);
 }
-
-#endif
 
 static void do_readdir(void * _handle, void * & _buffer) {
 	
