@@ -216,6 +216,8 @@ else(MSVC)
 		add_cxxflag("-fsanitize=thread")
 		add_cxxflag("-fsanitize=leak")
 		add_cxxflag("-fsanitize=undefined")
+		add_definitions(-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC) # libstdc++
+		add_definitions(-D_LIBCPP_DEBUG=1) # libc++
 	endif(DEBUG_EXTRA)
 	
 	if(CMAKE_BUILD_TYPE STREQUAL "")
