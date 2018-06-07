@@ -105,7 +105,7 @@ enum AlignmentInfo_ {
 /*!
  * Allocate a buffer with a specific allignment.
  *
- * This is only neede if the required alignment is greater than \c GuaranteedAlignment.
+ * This is only needed if the required alignment is greater than \c GuaranteedAlignment.
  *
  * \param alignment The required alignment. This must be a power of two and
  *                  a multiple of \code sizeof( void *) \endcode.
