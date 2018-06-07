@@ -95,7 +95,7 @@ option(SET_WARNING_FLAGS "Adjust compiler warning flags" ON)
 option(SET_NOISY_WARNING_FLAGS "Enable noisy compiler warnings" OFF)
 option(SET_OPTIMIZATION_FLAGS "Adjust compiler optimization flags" ON)
 
-option(USE_CXX11 "Try to use C++11 if available" ON)
+suboption(CXX_STD_VERSION "Maximum C++ standard version to enable" STRING 2017)
 if(DEVELOPER OR CMAKE_BUILD_TYPE STREQUAL "Debug")
 	set(default_DEBUG ON)
 else()
@@ -267,7 +267,7 @@ endif()
 include(BuildSystem)
 include(BuildType)
 include(CompileCheck)
-include(CXX11Check)
+include(CXXVersionCheck)
 include(CreateSourceGroups)
 include(PrintConfiguration)
 include(StyleCheck)
@@ -589,8 +589,8 @@ endif()
 
 # Check for optional functionality and system configuration
 
-if(USE_CXX11)
-	enable_cxx11()
+if(NOT CXX_STD_VERSION LESS 2011)
+	enable_cxx_version(${CXX_STD_VERSION})
 	check_cxx11("alignas"                ARX_HAVE_CXX11_ALIGNAS            1900)
 	check_cxx11("alignof"                ARX_HAVE_CXX11_ALIGNOF            1900)
 	check_cxx11("auto"                   ARX_HAVE_CXX11_AUTO               1600)
@@ -626,7 +626,7 @@ else(MSVC)
 		add_ldflag("-static-libgcc")
 	endif()
 	
-	if(USE_CXX11 AND WIN32)
+	if(NOT CXX_STD_VERSION LESS 2011 AND WIN32)
 		add_definitions(-U__STRICT_ANSI__) # __argc and __argv
 	endif()
 	
