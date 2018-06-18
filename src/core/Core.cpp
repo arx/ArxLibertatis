@@ -254,14 +254,6 @@ void runGame() {
 	}
 }
 
-
-//*************************************************************************************
-// Entity * FlyingOverObject(EERIE_S2D * pos)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Returns IO under cursor, be it in inventories or in scene
-//   Returns NULL if no IO under cursor
-//*************************************************************************************
 Entity * FlyingOverObject(const Vec2s & pos) {
 	
 	// TODO do this properly!
@@ -303,9 +295,6 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f 
 	ARX_THROWN_OBJECT_Throw(EntityHandle_Player, position, vect, quat, velocity, damages, poisonous);
 }
 
-//*************************************************************************************
-// Switches from/to Game Mode/Editor Mode
-//*************************************************************************************
 void SetEditMode() {
 	
 	LAST_JUMP_ENDTIME = 0;
@@ -478,8 +467,6 @@ void levelInit() {
 	
 	g_gameTime.resume(GameTime::PauseInitial | GameTime::PauseMenu);
 }
-
-//*************************************************************************************
 
 void ManageNONCombatModeAnimations() {
 	arx_assert(entities.player());
