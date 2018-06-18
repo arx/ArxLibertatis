@@ -124,33 +124,21 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string & temp) {
 	arx_assert(std::tolower(c) == c);
 	
 	switch(c) {
-		case 'w':
-			return OBJECT_TYPE_WEAPON;
-		case 'd':
-			return OBJECT_TYPE_DAGGER;
-		case '1':
-			return OBJECT_TYPE_1H;
-		case '2':
-			return OBJECT_TYPE_2H;
-		case 'b':
-			return OBJECT_TYPE_BOW;
-		case 's':
-			return OBJECT_TYPE_SHIELD;
-		case 'f':
-			return OBJECT_TYPE_FOOD;
-		case 'g':
-			return OBJECT_TYPE_GOLD;
-		case 'r':
-			return OBJECT_TYPE_RING;
-		case 'a':
-			return OBJECT_TYPE_ARMOR;
-		case 'h':
-			return OBJECT_TYPE_HELMET;
-		case 'l':
-			return OBJECT_TYPE_LEGGINGS;
+		case 'w': return OBJECT_TYPE_WEAPON;
+		case 'd': return OBJECT_TYPE_DAGGER;
+		case '1': return OBJECT_TYPE_1H;
+		case '2': return OBJECT_TYPE_2H;
+		case 'b': return OBJECT_TYPE_BOW;
+		case 's': return OBJECT_TYPE_SHIELD;
+		case 'f': return OBJECT_TYPE_FOOD;
+		case 'g': return OBJECT_TYPE_GOLD;
+		case 'r': return OBJECT_TYPE_RING;
+		case 'a': return OBJECT_TYPE_ARMOR;
+		case 'h': return OBJECT_TYPE_HELMET;
+		case 'l': return OBJECT_TYPE_LEGGINGS;
+		default:  return 0;
 	}
 	
-	return 0;
 }
 
 //! \brief Releases Equiped Id from player
