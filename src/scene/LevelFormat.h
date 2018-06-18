@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsFormat.h"
 #include "platform/Platform.h"
 
-//Fileformat version
+// File format version
 const f32 DLH_CURRENT_VERSION = 1.44f;
 
 
