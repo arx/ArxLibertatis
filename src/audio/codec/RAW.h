@@ -66,11 +66,11 @@ public:
 	
 	size_t getPosition();
 	
-	aalError read(void * buffer, size_t to_read, size_t & read);
+	aalError read(void * buffer, size_t bufferSize, size_t & read);
 	
 private:
 	
-	PakFileHandle * stream;
+	PakFileHandle * m_stream;
 	size_t cursor;
 	
 };
