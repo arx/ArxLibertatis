@@ -541,14 +541,9 @@ static void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS
 		if(layer.altidx_next) std::cout << pf << "  Next alternative: " << layer.altidx_next << '\n';
 		if(layer.altidx_cur) std::cout << pf << "  Current alternative: " << layer.altidx_cur << '\n';
 		
-		//std::cout << pf << "  ctim: " << layer.ctime << '\n';
-		
 		if(layer.flags) print_anim_flags(std::cout << pf << "  Flags:", layer.flags) << '\n';
 		if(layer.nextflags) print_anim_flags(std::cout << pf << "  Next flags:", layer.nextflags) << '\n';
 		
-		//std::cout << pf << "  Last frame: " << layer.lastframe << '\n';
-		//std::cout << pf << "  pour: " << layer.pour << '\n';
-		//std::cout << pf << "  fr: " << layer.fr << '\n';
 	}
 	
 }
@@ -816,7 +811,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	
 	if(asp.version != 0) {
 		std::cout << "bad player save version: " << asp.version << '\n';
-		//return 3;
+		return 3;
 	}
 	
 	std::cout << "Aim time: " << asp.AimTime << '\n';
@@ -1879,8 +1874,6 @@ int main_view(SaveBlock & save, const std::vector<std::string> & args) {
 	if(args.size() > 1) {
 		return -1;
 	}
-	
-	//config.language = "english";
 	
 	g_resources = new PakReader();
 	
