@@ -70,13 +70,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
+enum DecalType {
+	ScorchMarkDecal,
+	BloodDecal,
+	WaterDecal
+};
 
 struct POLYBOOM {
 	EERIEPOLY * ep;
 	float u[4];
 	float v[4];
 	Color3f rgb;
-	short type;
+	DecalType type;
+	bool fastdecay;
 	short nbvert;
 	TextureContainer * tc;
 	GameInstant timecreation;
@@ -146,7 +152,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			
 			POLYBOOM pb;
 			
-			pb.type = 0;
+			pb.type = ScorchMarkDecal;
 			pb.ep = ep;
 			pb.tc = tc2;
 			pb.tolive = GameDurationMs(10000);
@@ -252,8 +258,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	GameInstant now = g_gameTime.now();
 	
 	BOOST_FOREACH(POLYBOOM & pb, polyboom) {
-		//TODO what does this do ?
-		pb.type |= 128;
+		pb.fastdecay = true;
 	}
 	
 	// TODO copy-paste background tiles
@@ -308,14 +313,14 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 					POLYBOOM pb;
 					
 					if(flags & 2) {
-						pb.type = 2;
+						pb.type = WaterDecal;
 						
 						long num = Random::get(0, 2);
 						pb.tc = water_splat[num];
 						
 						pb.tolive = GameDurationMs(1500);
 					} else {
-						pb.type = 1;
+						pb.type = BloodDecal;
 						
 						long num = Random::get(0, 5);
 						pb.tc = bloodsplat[num];
@@ -369,14 +374,12 @@ void PolyBoomDraw() {
 		
 		POLYBOOM & pb = polyboom[i];
 		
-		// FIXME what exactly does pb.type do ?
-		if(pb.type & 128) {
+		if(pb.fastdecay) {
 			if(pb.timecreation - g_gameTime.lastFrameDuration() > 0) {
-				pb.timecreation = pb.timecreation - g_gameTime.lastFrameDuration();
+				pb.timecreation -= g_gameTime.lastFrameDuration();
 			}
-			
 			if(pb.timecreation - g_gameTime.lastFrameDuration() > 0) {
-				pb.timecreation = pb.timecreation - g_gameTime.lastFrameDuration();
+				pb.timecreation -= g_gameTime.lastFrameDuration();
 			}
 		}
 		
@@ -401,12 +404,9 @@ void PolyBoomDraw() {
 		
 		GameDuration t = pb.timecreation + pb.tolive - now;
 		
-		long typp = pb.type;
-		typp &= ~128;
-		
-		switch(typp) {
+		switch(pb.type) {
 			
-			case 0: { // Scorch mark
+			case ScorchMarkDecal: {
 				
 				float tt = t / pb.tolive * 0.8f;
 				ColorRGBA col = (player.m_improve ? (Color3f::red * (tt * 0.5f)) : Color3f::gray(tt)).toRGB();
@@ -435,7 +435,7 @@ void PolyBoomDraw() {
 				break;
 			}
 			
-			case 1: { // Blood
+			case BloodDecal: {
 				
 				float tt = t / pb.tolive;
 				float tr = std::max(1.f, tt * 2 - 0.5f);
@@ -461,7 +461,7 @@ void PolyBoomDraw() {
 				break;
 			}
 			
-			case 2: { // Water
+			case WaterDecal: {
 				float tt = t / pb.tolive;
 				float tr = std::max(1.f, tt * 2 - 0.5f);
 				float ttt = tt * 0.5f;
