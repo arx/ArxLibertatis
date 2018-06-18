@@ -103,22 +103,28 @@ public:
 	static const size_t ALIGNMENT = 16;
 	
 	typedef T * const * iterator;
+	typedef const T * const * const_iterator;
 	
 	ResourceList() : _size(0), list(NULL) { }
 	~ResourceList() { clear(); }
 	
-	bool isValid(Handle handle) {
+	bool isValid(Handle handle) const {
 		return (get(handle) < _size && list[get(handle)]);
 	}
 	
 	T * operator[](Handle handle) { return list[get(handle)]; }
-	size_t size() { return _size; }
+	const T * operator[](Handle handle) const { return list[get(handle)]; }
+	size_t size() const { return _size; }
+
 	Handle add(T * element);
 	void remove(Handle handle);
 	void clear();
 	
 	iterator begin() { return list; }
 	iterator end() { return list + _size; }
+	const_iterator begin() const { return list; }
+	const_iterator end() const { return list + _size; }
+	
 	iterator remove(iterator i);
 	
 private:
