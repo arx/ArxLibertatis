@@ -58,7 +58,7 @@ static const short gai_p4[] = {
 };
 
 CodecADPCM::CodecADPCM() :
-	stream(NULL), header(NULL), padding(0), shift(0),
+	m_stream(NULL), m_header(NULL), padding(0), shift(0),
 	sample_i(0xffffffff), predictor(NULL), delta(NULL),
 	samp1(NULL), samp2(NULL), coef1(NULL), coef2(NULL),
 	nybble_l(NULL), nybble_c(0), nybble_i(0), nybble(0), odd(false),
@@ -76,19 +76,19 @@ CodecADPCM::~CodecADPCM() {
 	delete[] nybble_l;
 }
 
-aalError CodecADPCM::setHeader(void * _header) {
+aalError CodecADPCM::setHeader(void * header) {
 	
-	if(header || !_header) {
+	if(m_header || !header) {
 		return AAL_ERROR_SYSTEM;
 	}
 	
-	header = (ADPCMHeader *)_header;
+	m_header = static_cast<ADPCMHeader *>(header);
 	
-	if(header->wfx.channels != 1 && header->wfx.channels != 2) {
+	if(m_header->wfx.channels != 1 && m_header->wfx.channels != 2) {
 		return AAL_ERROR_FORMAT;
 	}
 	
-	shift = header->wfx.channels - 1;
+	shift = m_header->wfx.channels - 1;
 	padding = 0;
 	sample_i = 0xffffffff;
 	
@@ -110,7 +110,7 @@ aalError CodecADPCM::setHeader(void * _header) {
 		return AAL_ERROR_MEMORY;
 	}
 	
-	nybble_c = header->samplesPerBlock - 2;
+	nybble_c = m_header->samplesPerBlock - 2;
 	if(!shift) {
 		nybble_c >>= 1;
 	}
@@ -119,8 +119,8 @@ aalError CodecADPCM::setHeader(void * _header) {
 		return AAL_ERROR_MEMORY;
 	}
 	
-	padding = ((header->wfx.blockAlign - (7 << shift)) << 3) -
-	          (header->samplesPerBlock - 2) * (header->wfx.bitsPerSample << shift);
+	padding = ((m_header->wfx.blockAlign - (7 << shift)) << 3) -
+	          (m_header->samplesPerBlock - 2) * (m_header->wfx.bitsPerSample << shift);
 	
 	if(aalError error = getNextBlock()) {
 		return error;
@@ -131,19 +131,19 @@ aalError CodecADPCM::setHeader(void * _header) {
 	return AAL_OK;
 }
 
-void CodecADPCM::setStream(PakFileHandle * _stream) {
-	stream = _stream;
+void CodecADPCM::setStream(PakFileHandle * stream) {
+	m_stream = stream;
 }
 
-aalError CodecADPCM::setPosition(size_t _position) {
+aalError CodecADPCM::setPosition(size_t position) {
 	
-	size_t i = (_position >> shift) / header->samplesPerBlock;
+	size_t i = (position >> shift) / m_header->samplesPerBlock;
 	
-	if(stream->seek(SeekCur, i * header->wfx.blockAlign) == -1) {
+	if(m_stream->seek(SeekCur, i * m_header->wfx.blockAlign) == -1) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	i = _position - i * (header->samplesPerBlock << shift);
+	i = position - i * (m_header->samplesPerBlock << shift);
 	
 	// Get header from current block
 	if(aalError error = getNextBlock()) {
@@ -163,7 +163,7 @@ aalError CodecADPCM::setPosition(size_t _position) {
 		i -= nRead;
 	}
 	
-	cursor = _position;
+	cursor = position;
 	
 	return AAL_OK;
 }
@@ -172,26 +172,26 @@ size_t CodecADPCM::getPosition() {
 	return cursor;
 }
 
-void CodecADPCM::getSample(size_t i, s8 adpcm_sample) {
+void CodecADPCM::getSample(size_t channel, s8 adpcmSample) {
 	
 	// Update delta
-	s32 old_delta = delta[i];
-	delta[i] = s16((gai_p4[adpcm_sample] * old_delta) >> 8);
+	s32 old_delta = delta[channel];
+	delta[channel] = s16((gai_p4[adpcmSample] * old_delta) >> 8);
 	
-	if(delta[i] < 16) {
-		delta[i] = 16;
+	if(delta[channel] < 16) {
+		delta[channel] = 16;
 	}
 	
 	// Sign-extend adpcm_sample
-	if(adpcm_sample & 0x08) {
-		adpcm_sample -= 16;
+	if(adpcmSample & 0x08) {
+		adpcmSample -= 16;
 	}
 	
 	// Predict next sample
-	s32 predict = ((s32)samp1[i] * coef1[i] + (s32)samp2[i] * coef2[i]) >> 8;
+	s32 predict = ((s32)samp1[channel] * coef1[channel] + (s32)samp2[channel] * coef2[channel]) >> 8;
 	
 	// Reconstruct original PCM
-	s32 pcm_sample = adpcm_sample * old_delta + predict;
+	s32 pcm_sample = adpcmSample * old_delta + predict;
 	
 	// Clip value to signed 16 bits limits
 	if(pcm_sample > 32767) {
@@ -201,8 +201,8 @@ void CodecADPCM::getSample(size_t i, s8 adpcm_sample) {
 	}
 	
 	// Update samples
-	samp2[i] = samp1[i];
-	samp1[i] = (s16)pcm_sample;
+	samp2[channel] = samp1[channel];
+	samp1[channel] = (s16)pcm_sample;
 }
 
 aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
@@ -217,10 +217,10 @@ aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
 		}
 		
 		// Load next block header if there is no more sample in current one
-		if(sample_i >= header->samplesPerBlock) {
+		if(sample_i >= m_header->samplesPerBlock) {
 			
 			if(padding) {
-				stream->seek(SeekCur, padding);
+				m_stream->seek(SeekCur, padding);
 			}
 			
 			if(aalError error = getNextBlock()) {
@@ -228,13 +228,13 @@ aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
 			}
 			
 		} else if(sample_i == 1) {
-			for(size_t i = 0; i < header->wfx.channels; i++) {
+			for(size_t i = 0; i < m_header->wfx.channels; i++) {
 				((s16 *)cache_l)[i] = samp1[i];
 			}
 		} else {
 			
 			// Get new sample for each channel
-			for(size_t i = 0; i < header->wfx.channels; i++) {
+			for(size_t i = 0; i < m_header->wfx.channels; i++) {
 				if(odd) {
 					getSample(i, (s8)(nybble & 0x0f));
 					odd = false;
@@ -257,19 +257,19 @@ aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
 aalError CodecADPCM::getNextBlock() {
 	
 	// Load and check block header
-	if(!stream->read(predictor, sizeof(*predictor) << shift)) {
+	if(!m_stream->read(predictor, sizeof(*predictor) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!stream->read(delta, sizeof(*delta) << shift)) {
+	if(!m_stream->read(delta, sizeof(*delta) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!stream->read(samp1, sizeof(*samp1) << shift)) {
+	if(!m_stream->read(samp1, sizeof(*samp1) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!stream->read(samp2, sizeof(*samp2) << shift)) {
+	if(!m_stream->read(samp2, sizeof(*samp2) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
@@ -277,16 +277,16 @@ aalError CodecADPCM::getNextBlock() {
 	sample_i = 0;
 	nybble_i = 0;
 	
-	for(size_t i = 0; i < header->wfx.channels; i++) {
-		if(predictor[i] >= header->coefficientCount) {
+	for(size_t i = 0; i < m_header->wfx.channels; i++) {
+		if(predictor[i] >= m_header->coefficientCount) {
 			return AAL_ERROR_FORMAT;
 		}
-		coef1[i] = header->coefficients[(size_t)predictor[i]].coef1;
-		coef2[i] = header->coefficients[(size_t)predictor[i]].coef2;
+		coef1[i] = m_header->coefficients[(size_t)predictor[i]].coef1;
+		coef2[i] = m_header->coefficients[(size_t)predictor[i]].coef2;
 		((s16 *)cache_l)[i] = samp2[i];
 	}
 	
-	if(!stream->read(nybble_l, nybble_c)) {
+	if(!m_stream->read(nybble_l, nybble_c)) {
 		return AAL_ERROR_FILEIO;
 	}
 	

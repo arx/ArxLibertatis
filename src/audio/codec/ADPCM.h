@@ -72,11 +72,11 @@ public:
 	
 private:
 	
-	void getSample(size_t channel_i, s8 nybble);
+	void getSample(size_t channel, s8 adpcmSample);
 	aalError getNextBlock();
 	
-	PakFileHandle * stream;
-	ADPCMHeader * header;
+	PakFileHandle * m_stream;
+	ADPCMHeader * m_header;
 	u32 padding;
 	u32 shift;
 	u32 sample_i;
