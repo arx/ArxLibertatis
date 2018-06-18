@@ -780,8 +780,8 @@ static bool InExceptionList(EntityHandle val) {
 	return false;
 }
 
-bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityHandle targ, std::vector<EntityHandle> & sphereContent) //except source...
-{
+bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityHandle targ, std::vector<EntityHandle> & sphereContent) {
+	
 	bool vreturn = false;
 	
 	Entity * io;
@@ -908,7 +908,6 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 	return vreturn;
 }
 
-//except source...
 const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	
 	ARX_PROFILE_FUNC();
@@ -941,8 +940,8 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	return NULL;
 }
 
-bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags, EntityHandle * num) //except source...
-{
+bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags, EntityHandle * num) {
+	
 	ARX_PROFILE_FUNC();
 	
 	if(num)
@@ -1332,7 +1331,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 			// Found without complication
 			*ip = test;
 		} else {
-			//return false;
+			
 			if(mvector.x == 0.f && mvector.z == 0.f)
 				return true;
 			
@@ -1356,7 +1355,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 			long maxRANGLE = 90;
 			float ANGLESTEPP;
 
-			if(flags & CFLAG_EASY_SLIDING) { // player sliding in fact...
+			if(flags & CFLAG_EASY_SLIDING) { // Player sliding in fact...
 				ANGLESTEPP = 10.f;
 				maxRANGLE = 70;
 			} else {
@@ -1367,7 +1366,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 			float langle = 360.f - ANGLESTEPP;
 
 
-			while(rangle <= maxRANGLE) { //tries on the Right and Left sides
+			while(rangle <= maxRANGLE) { // Tries on the right and left sides
 				test.cyl = ip->cyl;
 				float t = MAKEANGLE(rangle);
 				vecatt = VRotateY(mvector, t);
@@ -1419,7 +1418,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 				ip->cyl.origin = rpos;
 				distance -= curmovedist;
 			} else {
-				//stopped
+				// Stopped
 				ip->velocity = Vec3f_ZERO;
 				MOVING_CYLINDER = 0;
 				return false;
@@ -1440,8 +1439,8 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 	return true;
 }
 
-bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit)
-{
+bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
+	
 	ARX_PROFILE_FUNC();
 	
 	Vec3f i;
@@ -1451,7 +1450,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit)
 	EERIEPOLY * found_ep = NULL;
 	float iter;
 	
-	//current ray pos
+	// Current ray position
 	Vec3f tmpPos = orgn;
 	
 	float distance;

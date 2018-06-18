@@ -94,13 +94,10 @@ enum CheckAnythingInSphereFlag {
 DECLARE_FLAGS(CheckAnythingInSphereFlag, CASFlags)
 DECLARE_FLAGS_OPERATORS(CASFlags)
 
-//except source...
 bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags = 0, EntityHandle * num = NULL);
 
-//except source...
 bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityHandle targ, std::vector<EntityHandle> & sphereContent);
 
-//except source...
 const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere);
  
 bool IsCollidingIO(Entity * io, Entity * ioo);
