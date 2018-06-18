@@ -161,7 +161,6 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 	m_nbvertexs = size_t(nb.x + 1) * size_t(nb.y + 1);
 	m_vertexs.reserve(m_nbvertexs);
 	
-	//vertexs
 	m_count = nb;
 	t *= .5f;
 	Vec2f dep = -t;
@@ -249,8 +248,6 @@ void CinematicGrid::AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitm
 		while(tcxx--) {
 			int i0, i1, i2, i3;
 			GetIndNumCube(depcxx, depcyy, &i0, &i1, &i2, &i3);
-
-			//uvs
 			C_UV cuv;
 			cuv.indvertex = i0;
 			cuv.uv.x = u;
