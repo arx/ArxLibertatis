@@ -81,7 +81,8 @@ extern MixerList g_mixers;
 extern ResourceList<Sample> g_samples;
 typedef ResourceList<Ambiance, AmbianceId> AmbianceList;
 extern AmbianceList g_ambiances;
-extern ResourceList<Environment> g_environments;
+typedef ResourceList<Environment, EnvId> EnvironmentList;
+extern EnvironmentList g_environments;
 
 inline float LinearToLogVolume(float volume) {
 	return 0.2F * std::log10(volume) + 1.0F;
