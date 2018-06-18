@@ -197,7 +197,7 @@ aalError StreamWAV::setStream(PakFileHandle * _stream) {
 	// Get codec specific infos from header for non-PCM format
 	if(AS_FORMAT_PCM(header)->formatTag != WAV_FORMAT_PCM) {
 		
-		//Load extra bytes from header
+		// Load extra bytes from header
 		if(!wave.read(&AS_FORMAT_PCM(header)->size, 2)) {
 			return AAL_ERROR_FORMAT;
 		}
