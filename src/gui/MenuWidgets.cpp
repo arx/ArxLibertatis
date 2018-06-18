@@ -569,8 +569,9 @@ void MenuPage::UpdateText() {
 TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId * pInputKeyId, bool _bValidateTest) {
 	
 	int iMouseButton = keyTouched ? 0 : GInput->getMouseButtonClicked();
+	int mouseButtonMask = int(Mouse::ButtonBase) | int(Mouse::WheelBase);
 	
-	if(keyTouched || (iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))) {
+	if(keyTouched || (iMouseButton & mouseButtonMask)) {
 		if(!keyTouched && !bMouseAttack) {
 			bMouseAttack = !bMouseAttack;
 			return NULL;
@@ -598,7 +599,7 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId * pInputK
 		}
 		
 		std::string pText;
-		if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase)) {
+		if(iMouseButton & mouseButtonMask) {
 			if(pInputKeyId)
 				*pInputKeyId = iMouseButton;
 			pText = GInput->getKeyName(iMouseButton, true);
