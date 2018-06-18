@@ -71,7 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace ARX_ANONYMOUS_NAMESPACE {
 
-const u32 AMBIANCE_FILE_SIGNATURE = 0x424d4147; //'GAMB'
+const u32 AMBIANCE_FILE_SIGNATURE = 0x424d4147; // 'GAMB'
 const u32 AMBIANCE_FILE_VERSION_1002 = 0x01000002;
 const u32 AMBIANCE_FILE_VERSION_1003 = 0x01000003;
 const u32 AMBIANCE_FILE_VERSION = AMBIANCE_FILE_VERSION_1003;
@@ -421,21 +421,21 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 		
 		arx_assert(queued == 0);
 		
-		//Key end
+		// Key end
 		key_i->delay = key_i->delay_max;
 		key_i->updateSynch();
 		key_i->n_start = key_i->start + key_i->delay;
 		key_i->pitch.tupdate -= ambiance->m_time;
 		
 		if(++key_i == keys.end()) {
-			//Track end
+			// Track end
 			
 			LogDebug("ambiance " << ambiance->getName() << ": track ended");
 			
 			arx_assert(source.isIdle());
 			
 			if(flags & Track::MASTER) {
-				//Ambiance end
+				// Ambiance end
 				ambiance->m_time = 0;
 				
 				LogDebug("ambiance " << ambiance->getName() << ": master track ended");
@@ -474,7 +474,7 @@ void Ambiance::Track::update(PlatformDuration time, PlatformDuration diff) {
 		return;
 	}
 	
-	//Run / update keys
+	// Run / update keys
 	if(key_i->n_start <= diff) {
 		keyPlay();
 		return;
@@ -690,7 +690,7 @@ aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration fad
 	TrackList::iterator track = m_tracks.begin();
 	for(; track != m_tracks.end(); ++track) {
 		
-		//Init track keys
+		// Init track keys
 		Track::KeyList::iterator key = track->keys.begin();
 		for(; key != track->keys.end(); ++key) {
 			
