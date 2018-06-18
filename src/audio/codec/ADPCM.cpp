@@ -62,7 +62,7 @@ CodecADPCM::CodecADPCM() :
 	sample_i(0xffffffff), predictor(NULL), delta(NULL),
 	samp1(NULL), samp2(NULL), coef1(NULL), coef2(NULL),
 	nybble_l(NULL), nybble_c(0), nybble_i(0), nybble(0), odd(false),
-	cache_c(0), cache_i(0), cache_l(NULL), cursor(0) {
+	cache_c(0), cache_i(0), cache_l(NULL) {
 }
 
 CodecADPCM::~CodecADPCM() {
@@ -163,13 +163,7 @@ aalError CodecADPCM::setPosition(size_t position) {
 		i -= nRead;
 	}
 	
-	cursor = position;
-	
 	return AAL_OK;
-}
-
-size_t CodecADPCM::getPosition() {
-	return cursor;
 }
 
 void CodecADPCM::getSample(size_t channel, s8 adpcmSample) {

@@ -66,8 +66,6 @@ public:
 	void setStream(PakFileHandle * stream);
 	aalError setPosition(size_t position);
 	
-	size_t getPosition();
-	
 	aalError read(void * buffer, size_t to_read, size_t & read);
 	
 private:
@@ -92,7 +90,6 @@ private:
 	bool odd;
 	u8 cache_c, cache_i;
 	void * cache_l;
-	size_t cursor;
 	
 };
 
