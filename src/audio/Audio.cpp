@@ -269,10 +269,12 @@ aalError update() {
 	}
 	
 	// Update samples
-	for(size_t i = 0; i < g_samples.size(); i++) {
-		Sample * sample = g_samples[i];
+	for(SampleList::iterator i = g_samples.begin(); i != g_samples.end();) {
+		Sample * sample = *i;
 		if(sample && sample->isReferenced() < 1) {
-			g_samples.remove(i);
+			i = g_samples.remove(i);
+		} else {
+			++i;
 		}
 	}
 	
