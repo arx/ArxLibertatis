@@ -314,12 +314,12 @@ public:
 
 };
 
-void ConfigWriter::writeActionKey(ControlAction index, const ActionKey & actionKey) {
+void ConfigWriter::writeActionKey(ControlAction index, const ActionKey & value) {
 	
-	std::string v1 = Input::getKeyName(actionKey.key[0]);
+	std::string v1 = Input::getKeyName(value.key[0]);
 	writeKey(Key::actions[index] + "_k0", v1);
 	
-	std::string v2 = Input::getKeyName(actionKey.key[1]);
+	std::string v2 = Input::getKeyName(value.key[1]);
 	writeKey(Key::actions[index] + "_k1", v2);
 }
 
