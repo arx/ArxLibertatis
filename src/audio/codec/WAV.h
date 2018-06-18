@@ -68,7 +68,6 @@ public:
 	PakFileHandle * getStream();
 	aalError getFormat(PCMFormat & format);
 	size_t getLength();
-	size_t getPosition();
 	
 	aalError read(void * buffer, size_t bufferSize, size_t & read);
 	

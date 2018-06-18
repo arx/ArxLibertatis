@@ -295,10 +295,6 @@ size_t StreamWAV::getLength() {
 	return outsize;
 }
 
-size_t StreamWAV::getPosition() {
-	return codec->getPosition();
-}
-
 aalError StreamWAV::read(void * buffer, size_t bufferSize, size_t & read) {
 	
 	read = 0;
