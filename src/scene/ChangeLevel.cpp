@@ -691,7 +691,6 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		}
 	}
 	
-	//inventaires
 	for(size_t bag = 0; bag < INVENTORY_BAGS; bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
