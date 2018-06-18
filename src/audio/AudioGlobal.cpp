@@ -64,7 +64,7 @@ PlatformInstant session_time = 0;
 
 // Resources
 MixerList g_mixers;
-ResourceList<Sample> g_samples;
+SampleList g_samples;
 AmbianceList g_ambiances;
 EnvironmentList g_environments;
 
