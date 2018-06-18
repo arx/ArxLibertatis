@@ -82,20 +82,20 @@ struct CinematicLight_1_71 {
 };
 
 // TODO macros
-//fx
+// Effects
 const u32 CinematicFxMask = 0x000000ff;
 #define FX_FADEIN  1
 #define FX_FADEOUT 2
 #define FX_BLUR    3
-//prefx
+// Pre-effects
 const u32 CinematicFxPreMask = 0x0000ff00;
 #define FX_DREAM   (1 << 8)
-//post fx
+// Post-effects
 const u32 CinematicFxPostMask = 0x00ff0000;
 #define FX_FLASH   (1 << 16)
 #define FX_APPEAR  (2 << 16)
 #define FX_APPEAR2 (3 << 16)
-//all time
+// All time
 const u32 CinematicFxAllMask = 0xff000000;
 #define FX_LIGHT   (1 << 24)
 
