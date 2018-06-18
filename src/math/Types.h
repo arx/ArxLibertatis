@@ -50,7 +50,7 @@ struct vec_traits_base {
 	ARX_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N, "vector has padding");
 };
 
-//in GLM version 0.9.6 the template vector and matrix types is exposed in 'glm' namespace
+// In GLM version 0.9.6 the template vector and matrix types is exposed in 'glm' namespace
 #if GLM_VERSION >= 96
 template <class T> struct vec2_traits : public vec_traits_base<T, glm::tvec2, 2>{};
 template <class T> struct vec3_traits : public vec_traits_base<T, glm::tvec3, 3>{};
