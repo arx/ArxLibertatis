@@ -368,7 +368,8 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 	
 	BackgroundTileData * bkgData = getFastBackgroundData(projectile.position.x, projectile.position.z);
 	if(!bkgData || !bkgData->treat) {
-		ARX_THROWN_OBJECT_Kill(i); //projectile got outside of the world
+		// Projectile got outside of the world
+		ARX_THROWN_OBJECT_Kill(i);
 		return;
 	}
 	
