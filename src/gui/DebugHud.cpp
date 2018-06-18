@@ -174,8 +174,8 @@ static std::string prettyUs(s64 us) {
 void ShowInfoText() {
 	
 	DebugBox frameInfo = DebugBox(Vec2i(10, 10), "FrameInfo");
-	frameInfo.add("PlatformTime", prettyUs(toUs(g_platformTime.frameStart())));
-	frameInfo.add("ArxTime", prettyUs(toUs(g_gameTime.now())));
+	frameInfo.add("Platform time", prettyUs(toUs(g_platformTime.frameStart())));
+	frameInfo.add("Game time", prettyUs(toUs(g_gameTime.now())));
 	frameInfo.add("Prims", EERIEDrawnPolys);
 	frameInfo.add("Particles", getParticleCount());
 	frameInfo.add("Sparks", ParticleSparkCount());
