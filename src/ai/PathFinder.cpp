@@ -177,10 +177,10 @@ public:
 	
 };
 
-PathFinder::PathFinder(size_t map_size, const ANCHOR_DATA * map_data,
-                       size_t slight_count, const EERIE_LIGHT * const * slight_list)
+PathFinder::PathFinder(size_t graphSize, const ANCHOR_DATA * graph,
+                       size_t lightCount, const EERIE_LIGHT * const * lights)
 	: m_radius(RADIUS_DEFAULT), m_height(HEIGHT_DEFAULT), m_heuristic(HEURISTIC_DEFAULT),
-	  map_s(map_size), map_d(map_data), slight_c(slight_count), slight_l(slight_list) { }
+	  map_s(graphSize), map_d(graph), slight_c(lightCount), slight_l(lights) { }
 
 void PathFinder::setHeuristic(float heuristic) {
 	if(heuristic >= HEURISTIC_MAX) {
@@ -256,12 +256,12 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 	return false;
 }
 
-bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result & rlist,
-                      bool stealth) const {
+bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDistance,
+                      Result & rlist, bool stealth) const {
 	
 	static const float FLEE_DISTANCE_COST = 130.0F;
 	
-	if(!closerThan(map_d[from].pos, danger, safeDist)) {
+	if(!closerThan(map_d[from].pos, danger, safeDistance)) {
 		rlist.push_back(from);
 		return true;
 	}
@@ -307,7 +307,7 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 			}
 			
 			// Estimated cost to get from this node to the destination.
-			float remaining = std::max(0.0f, safeDist - fdist(map_d[cid].pos, danger));
+			float remaining = std::max(0.0f, safeDistance - fdist(map_d[cid].pos, danger));
 			remaining *= FLEE_DISTANCE_COST;
 			
 			open.add(cid, node, distance, remaining);
@@ -320,13 +320,13 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 	return false;
 }
 
-bool PathFinder::wanderAround(NodeId from, float rad, Result & rlist, bool stealth) const {
+bool PathFinder::wanderAround(NodeId from, float aroundRadius, Result & rlist, bool stealth) const {
 	
 	if(map_d[from].linked.empty()) {
 		return false;
 	}
 	
-	if(rad <= MIN_RADIUS) {
+	if(aroundRadius <= MIN_RADIUS) {
 		rlist.push_back(from);
 		return true;
 	}
@@ -341,7 +341,7 @@ bool PathFinder::wanderAround(NodeId from, float rad, Result & rlist, bool steal
 		NodeId next = from;
 		
 		// Select the next node.
-		unsigned int nb = Random::getu(0, unsigned(rad / 50));
+		unsigned int nb = Random::getu(0, unsigned(aroundRadius / 50));
 		for(unsigned int j = 0; j < nb && !map_d[next].linked.empty(); j++) {
 			for(int notfinished = 0; notfinished < 4; notfinished++) {
 				
