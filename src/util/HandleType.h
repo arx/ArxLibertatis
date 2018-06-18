@@ -33,7 +33,7 @@
 #ifndef ARX_UTIL_HANDLETYPE_H
 #define ARX_UTIL_HANDLETYPE_H
 
-template <typename TAG, typename T, int INVALID_VALUE>
+template <typename TAG, typename T, T INVALID_VALUE>
 class HandleType {
 	
 	T t;
