@@ -537,7 +537,6 @@ static void LoadSysTextures() {
 	TextureContainer::LoadUI("graph/particles/fire_hit");
 	TextureContainer::LoadUI("graph/particles/light");
 	
-	//INTERFACE LOADING
 	g_hudRoot.init();
 	
 	// Load book textures and text
@@ -650,8 +649,9 @@ static bool HandleGameFlowTransitions() {
 	}
 		
 	if(GameFlow::getTransition() == GameFlow::FirstLogo) {
+		
 		benchmark::begin(benchmark::Splash);
-		//firsttime
+		
 		if(TRANSITION_START == 0) {
 			if(!ARX_INTERFACE_InitFISHTANK()) {
 				GameFlow::setTransition(GameFlow::SecondLogo);
@@ -674,8 +674,9 @@ static bool HandleGameFlowTransitions() {
 	}
 	
 	if(GameFlow::getTransition() == GameFlow::SecondLogo) {
+		
 		benchmark::begin(benchmark::Splash);
-		//firsttime
+		
 		if(TRANSITION_START == 0) {
 			if(!ARX_INTERFACE_InitARKANE()) {
 				GameFlow::setTransition(GameFlow::LoadingScreen);
@@ -1046,50 +1047,41 @@ void ArxGame::shutdownGame() {
 	TREATZONE_Release();
 	ClearTileLights();
 	
-	// texts and textures
 	spellDataRelease();
 	
 	g_particleManager.Clear();
 	
-	//sound
 	ARX_SOUND_Release();
+	
 	MCache_ClearAll();
 	
-	//pathfinding
 	ARX_PATH_ReleaseAllPath();
+	
 	ReleaseSystemObjects();
 	
-	//background
 	ClearBackground(ACTIVEBKG);
 	
-	//animations
 	EERIE_ANIMMANAGER_ClearAll();
 
-	//sprites
 	g_renderBatcher.reset();
 	
-	//Scripts
 	svar.clear();
-	
 	
 	ARX_SCRIPT_Timer_ClearAll();
 	
 	delete[] scr_timer, scr_timer = NULL;
 	
-	//Speech
 	ARX_SPEECH_ClearAll();
 	ARX_Text_Close();
 	
-	//object loaders from beforerun
 	gui::ReleaseNecklace();
 	
 	delete g_resources;
 	
-	// Current game
 	ARX_Changelevel_CurGame_Clear();
 	
-	//Halo
 	FreeSnapShot();
+	
 	ARX_INPUT_Release();
 	
 	if(getWindow()) {
@@ -1375,12 +1367,9 @@ void ArxGame::updateFirstPersonCamera() {
 }
 
 void ArxGame::speechControlledCinematic() {
-
-	/////////////////////////////////////////////
-	// Now checks for speech controlled cinematic
-
+	
 	long valid = -1;
-
+	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		if(aspeech[i].exist && aspeech[i].cine.type > 0) {
 			valid = i;
@@ -1416,7 +1405,7 @@ void ArxGame::speechControlledCinematic() {
 					
 					arx_assert(isallfinite(acs.pos1));
 					
-					//need to compute current values
+					// Need to compute current values
 					float alpha = acs.startangle.getPitch() * itime + acs.endangle.getPitch() * rtime;
 					float beta = acs.startangle.getYaw() * itime + acs.endangle.getYaw() * rtime;
 					float distance = acs.startpos * itime + acs.endpos * rtime;
@@ -1475,7 +1464,7 @@ void ArxGame::speechControlledCinematic() {
 				case ARX_CINE_SPEECH_CCCTALKER_R:
 				case ARX_CINE_SPEECH_CCCTALKER_L: {
 					
-					//need to compute current values
+					// Need to compute current values
 					if(ValidIONum(acs.ionum)) {
 						
 						arx_assert(isallfinite(acs.pos1));
@@ -1738,14 +1727,14 @@ void ArxGame::updateLevel() {
 		
 		if(entity->ignition > 0.f || (entity->ioflags & IO_FIERY))
 			ManageIgnition(entity);
-
-		//Highlight entity
+		
+		// Highlight entity
 		if(entity == FlyingOverIO && !(entity->ioflags & IO_NPC)) {
 			entity->highlightColor = Color3f::gray(float(iHighLight));
 		} else {
 			entity->highlightColor = Color3f::black;
 		}
-
+		
 		Cedric_ApplyLightingFirstPartRefactor(entity);
 
 		float speedModifier = 0.f;
