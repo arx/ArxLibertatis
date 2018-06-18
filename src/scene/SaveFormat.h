@@ -597,7 +597,7 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	f32 version;
 	char filename[256];
 	s32 ident;
-	s32 ioflags;//type;
+	s32 ioflags;
 	SavedVec3 pos;
 	SavedVec3 initpos;
 	SavedVec3 lastpos;
@@ -1006,7 +1006,7 @@ struct SavedCamera {
 	f32 ysin; // TODO Remove
 	f32 xsin; // TODO Remove
 	f32 xcos; // TODO Remove
-	f32 use_focal1; //TODO Remove
+	f32 use_focal1; // TODO Remove
 	f32 xmod; // TODO Remove
 	f32 ymod; // TODO Remove
 	f32 zmod; // TODO Remove
