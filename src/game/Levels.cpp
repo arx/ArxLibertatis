@@ -52,10 +52,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //-----------------------------------------------------------------------------
 //Used to know the true level of a "subdivided" level
-long ARX_LEVELS_GetRealNum(long num)
-{
-	switch (num)
-	{
+long ARX_LEVELS_GetRealNum(long num) {
+	
+	if(num < 0) {
+		return -1;
+	}
+	
+	switch(num) {
 		case 0:
 		case 8:
 		case 11:
@@ -85,11 +88,10 @@ long ARX_LEVELS_GetRealNum(long num)
 		case 7:
 		case 23:
 			return 7;
+		default:
+			return num;
 	}
-
-	if (num < 0) return -1;
-
-	return num;
+	
 }
 
 long GetLevelNumByName(const std::string & name) {
