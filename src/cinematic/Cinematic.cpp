@@ -365,9 +365,9 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	
 	GereTrack(this, frameDuration, resized, true);
 	
-	//sound
-	if(changekey && idsound >= 0)
+	if(changekey && idsound >= 0) {
 		PlaySoundKeyFramer(size_t(idsound));
+	}
 	
 	if(config.interface.cinematicWidescreenMode == CinematicLetterbox) {
 		s32 w = s32(640 * g_sizeRatio.y);
@@ -378,10 +378,9 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate);
 	
-	//image key
 	CinematicBitmap * tb = m_bitmaps[numbitmap];
 	
-	//fx
+	// Effect color
 	Color col = Color(255, 255, 255, 0);
 	
 	switch(fx & CinematicFxMask) {
@@ -398,7 +397,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 			break;
 	}
 	
-	//fx precalculation
+	// Effect precalculation
 	switch(fx & CinematicFxPreMask) {
 		case FX_DREAM:
 			
@@ -454,7 +453,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		
 	}
 	
-	//PASS #2
+	// Second pass
 	if(force & 1) {
 		switch(ti) {
 			case INTERP_NO:
@@ -501,7 +500,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpSelectArg1);
 	
-	//effets qui continuent avec le temps
+	// Effects that continue over time
 	if(FlashBlancEnCours && (fx & CinematicFxPostMask) != FX_FLASH) {
 		speed = OldSpeedFlashBlanc;
 		colorflash = OldColorFlashBlanc;
@@ -522,16 +521,14 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		changekey = false;
 	}
 	
-	//post fx
+	// Post-effect
 	switch(fx & CinematicFxPostMask) {
 		case FX_FLASH:
 			FlashBlancEnCours = FX_FlashBlanc(Vec2f(cinRenderSize), speed, colorflash, GetTrackFPS(), FPS);
 			break;
 		case FX_APPEAR:
-			
 			break;
 		case FX_APPEAR2:
-			
 			break;
 		default:
 			break;
