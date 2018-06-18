@@ -430,17 +430,17 @@ static TexturedVertex * GetNewVertexList(ModelBatch * container,
 		else
 			fTransp = face.transval;
 
-		if(fTransp >= 2.f) { //MULTIPLICATIVE
+		if(fTransp >= 2.f) {
 			fTransp *= (1.f / 2);
 			fTransp += 0.5f;
 			return PushVertexInTable(container, BatchBucket_Multiplicative);
-		} else if(fTransp >= 1.f) { //ADDITIVE
+		} else if(fTransp >= 1.f) {
 			fTransp -= 1.f;
 			return PushVertexInTable(container, BatchBucket_Additive);
-		} else if(fTransp > 0.f) { //NORMAL TRANS
+		} else if(fTransp > 0.f) {
 			fTransp = 1.f - fTransp;
 			return PushVertexInTable(container, BatchBucket_Blended);
-		} else { //SUBTRACTIVE
+		} else {
 			fTransp = 1.f - fTransp;
 			return PushVertexInTable(container, BatchBucket_Subtractive);
 		}
@@ -481,9 +481,9 @@ static bool Cedric_IO_Visible(const Vec3f & pos) {
 	
 	if(ACTIVEBKG) {
 		
-		//TODO maybe readd this
-		//if(fartherThan(io->pos, g_camera->pos, g_camera->cdepth * 0.6f))
-		// return false;
+		// TODO maybe readd this
+		// if(fartherThan(io->pos, g_camera->pos, g_camera->cdepth * 0.6f))
+		//  return false;
 		
 		long xx = long(pos.x * ACTIVEBKG->m_mul.x);
 		long yy = long(pos.z * ACTIVEBKG->m_mul.y);
@@ -907,7 +907,7 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
                                       Skeleton * obj, EERIE_3DOBJ * eobj) {
 	
 	Vec3f ftrPos = pos;
-	//TODO copy-pase
+	// TODO copy-pase
 	float mdist = g_camera->cdepth;
 	mdist *= 0.5f;
 	
@@ -1201,7 +1201,7 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 		return Vec3f_ZERO;
 	}
 	
-	//Avoiding impossible cases
+	// Avoiding impossible cases
 	if(layer.currentFrame < 0) {
 		layer.currentFrame = 0;
 		layer.currentInterpolation = 0.f;
@@ -1292,7 +1292,6 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 		layer.currentInterpolation = glm::clamp(layer.currentInterpolation, 0.f, 1.f);
 		
 		// FIXME animation indices are sometimes negative
-		//arx_assert(animuse->fr >= 0 && animuse->fr < eanim->nb_key_frames);
 		layer.currentFrame = glm::clamp(layer.currentFrame, 0l, eanim->nb_key_frames - 1l);
 		
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
