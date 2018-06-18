@@ -76,7 +76,8 @@ extern size_t stream_limit_bytes;
 extern PlatformInstant session_time;
 
 // Resources
-extern ResourceList<Mixer> g_mixers;
+typedef ResourceList<Mixer, MixerId> MixerList;
+extern MixerList g_mixers;
 extern ResourceList<Sample> g_samples;
 extern ResourceList<Ambiance> g_ambiances;
 extern ResourceList<Environment> g_environments;
