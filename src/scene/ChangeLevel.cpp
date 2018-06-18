@@ -119,7 +119,7 @@ extern bool LOAD_N_ERASE;
 static bool ARX_CHANGELEVEL_Push_Index(long num);
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
 static bool ARX_CHANGELEVEL_PopLevel(long num, bool reloadflag = false,
-                                     const std::string & target = std::string(), long angle = 0);
+                                     const std::string & target = std::string(), float angle = 0.f);
 static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player(long level);
@@ -315,7 +315,7 @@ void currentSavedGameRemoveEntity(const std::string & idString) {
 
 extern long JUST_RELOADED;
 
-void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle) {
+void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, float angle) {
 	
 	LogDebug("ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle);
 	
@@ -1487,7 +1487,7 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 	return 1;
 }
 
-static long ARX_CHANGELEVEL_Pop_Player(const std::string & target = std::string(), long angle = 0) {
+static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) {
 	
 	size_t size;
 	char * dat = g_currentSavedGame->load("player", size);
@@ -2456,7 +2456,7 @@ static void ARX_CHANGELEVEL_PopLevel_Abort(ARX_CHANGELEVEL_IO_INDEX * idx_io) {
 	FORBID_SCRIPT_IO_CREATION = 0;
 }
 
-static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::string & target, long angle) {
+static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::string & target, float angle) {
 	
 	LogDebug("Before ARX_CHANGELEVEL_PopLevel Alloc'n'Free");
 	
