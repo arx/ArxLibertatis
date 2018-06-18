@@ -96,9 +96,9 @@ public:
 	virtual aalError resume() = 0;
 	aalError update();
 	
-	SourceId getId() const { return id; }
+	SourceId getId() const { return m_id; }
 	Sample * getSample() const { return m_sample; }
-	const Channel & getChannel() const { return channel; }
+	const Channel & getChannel() const { return m_channel; }
 	Status getStatus() const { return status; }
 	bool isPlaying() const { return status == Playing; }
 	bool isIdle() const { return status == Idle; }
@@ -115,9 +115,9 @@ protected:
 	explicit Source(Sample * sample);
 	virtual ~Source();
 	
-	SourceId id;
+	SourceId m_id;
 	
-	Channel channel;
+	Channel m_channel;
 	
 	Sample * m_sample;
 	Status status;

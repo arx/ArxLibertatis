@@ -26,7 +26,7 @@
 
 namespace audio {
 
-Source::Source(Sample * sample) : id(INVALID_ID), m_sample(sample), status(Idle), time(0), callback_i(0) {
+Source::Source(Sample * sample) : m_id(INVALID_ID), m_sample(sample), status(Idle), time(0), callback_i(0) {
 	m_sample->reference();
 }
 
@@ -93,18 +93,18 @@ void Source::updateCallbacks() {
 
 aalError Source::setVolume(float volume) {
 	
-	if(!(channel.flags & FLAG_VOLUME)) {
+	if(!(m_channel.flags & FLAG_VOLUME)) {
 		return AAL_ERROR_INIT;
 	}
 	
-	channel.volume = glm::clamp(volume, 0.f, 1.f);
+	m_channel.volume = glm::clamp(volume, 0.f, 1.f);
 	
 	return updateVolume();
 }
 
 aalError Source::setMixer(MixerId mixer) {
 	
-	channel.mixer = mixer;
+	m_channel.mixer = mixer;
 	
 	return updateVolume();
 }

@@ -40,7 +40,7 @@
 
 namespace audio {
 
-#define ALPREFIX "[" << (s16)(((id) & 0xffff0000) >> 16) << "," << (s16)((id) & 0xffff) << "," << (m_sample ? m_sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
+#define ALPREFIX "[" << (s16)(((m_id) & 0xffff0000) >> 16) << "," << (s16)((m_id) & 0xffff) << "," << (m_sample ? m_sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
 
 #undef ALError
 #define ALError LogError << ALPREFIX
@@ -91,8 +91,8 @@ aalError OpenALSource::sourcePause() {
 	return AAL_OK;
 }
 
-OpenALSource::OpenALSource(Sample * _sample) :
-	Source(_sample),
+OpenALSource::OpenALSource(Sample * sample) :
+	Source(sample),
 	m_tooFar(false),
 	m_streaming(false), m_loadCount(0), m_written(0), m_stream(NULL),
 	m_read(0),
@@ -158,32 +158,32 @@ OpenALSource::~OpenALSource() {
 }
 
 bool OpenALSource::convertStereoToMono() {
-	return ((channel.flags & FLAG_ANY_3D_FX) && m_sample->getFormat().channels == 2);
+	return ((m_channel.flags & FLAG_ANY_3D_FX) && m_sample->getFormat().channels == 2);
 }
 
-aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _channel) {
+aalError OpenALSource::init(SourceId id, OpenALSource * instance, const Channel & channel) {
 	
 	arx_assert(!m_source);
 	
-	id = _id;
+	m_id = id;
 	
-	channel = _channel;
-	if(channel.flags & FLAG_ANY_3D_FX) {
-		channel.flags &= ~FLAG_PAN;
+	m_channel = channel;
+	if(m_channel.flags & FLAG_ANY_3D_FX) {
+		m_channel.flags &= ~FLAG_PAN;
 	}
 	
-	if(inst && !inst->m_streaming && convertStereoToMono() == inst->convertStereoToMono()) {
+	if(instance && !instance->m_streaming && convertStereoToMono() == instance->convertStereoToMono()) {
 		
-		arx_assert(inst->m_sample == m_sample);
+		arx_assert(instance->m_sample == m_sample);
 		
-		arx_assert(inst->m_buffers[0] != 0);
-		m_buffers[0] = inst->m_buffers[0];
-		m_bufferSizes[0] = inst->m_bufferSizes[0];
-		if(!inst->m_refcount) {
-			inst->m_refcount = new unsigned int;
-			*inst->m_refcount = 1;
+		arx_assert(instance->m_buffers[0] != 0);
+		m_buffers[0] = instance->m_buffers[0];
+		m_bufferSizes[0] = instance->m_bufferSizes[0];
+		if(!instance->m_refcount) {
+			instance->m_refcount = new unsigned int;
+			*instance->m_refcount = 1;
 		}
-		m_refcount = inst->m_refcount;
+		m_refcount = instance->m_refcount;
 		(*m_refcount)++;
 		
 	}
@@ -215,23 +215,23 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 		arx_assert(!m_stream && !m_loadCount);
 	}
 	
-	setVolume(channel.volume);
-	setPitch(channel.pitch);
+	setVolume(m_channel.volume);
+	setPitch(m_channel.pitch);
 	
-	if(!(channel.flags & FLAG_POSITION) || (channel.flags & FLAG_RELATIVE)) {
+	if(!(m_channel.flags & FLAG_POSITION) || (m_channel.flags & FLAG_RELATIVE)) {
 		alSourcei(m_source, AL_SOURCE_RELATIVE, AL_TRUE);
 		AL_CHECK_ERROR("setting relative flag")
 	}
 	
 	// Create 3D interface if required
-	if(channel.flags & FLAG_ANY_3D_FX) {
-		setPosition(channel.position);
-		setVelocity(channel.velocity);
-		setDirection(channel.direction);
-		setCone(channel.cone);
-		setFalloff(channel.falloff);
+	if(m_channel.flags & FLAG_ANY_3D_FX) {
+		setPosition(m_channel.position);
+		setVelocity(m_channel.velocity);
+		setDirection(m_channel.direction);
+		setCone(m_channel.cone);
+		setFalloff(m_channel.falloff);
 	} else {
-		setPan(channel.pan);
+		setPan(m_channel.pan);
 	}
 	
 	return AAL_OK;
@@ -374,12 +374,12 @@ aalError OpenALSource::updateVolume() {
 		return AAL_ERROR_INIT;
 	}
 	
-	const Mixer * mixer = g_mixers[channel.mixer];
+	const Mixer * mixer = g_mixers[m_channel.mixer];
 	float volume = mixer ? mixer->getFinalVolume() : 1.f;
 	
-	if(volume > 0.f && (channel.flags & FLAG_VOLUME)) {
-		// LogToLinearVolume(LinearToLogVolume(volume) * channel.volume)
-		volume = std::pow(100000.f * volume, channel.volume) / 100000.f;
+	if(volume > 0.f && (m_channel.flags & FLAG_VOLUME)) {
+		// LogToLinearVolume(LinearToLogVolume(volume) * m_channel.volume)
+		volume = std::pow(100000.f * volume, m_channel.volume) / 100000.f;
 	}
 	
 	alSourcef(m_source, AL_GAIN, volume * m_volume);
@@ -388,15 +388,15 @@ aalError OpenALSource::updateVolume() {
 	return AAL_OK;
 }
 
-aalError OpenALSource::setPitch(float p) {
+aalError OpenALSource::setPitch(float pitch) {
 	
-	if(!alIsSource(m_source) || !(channel.flags & FLAG_PITCH)) {
+	if(!alIsSource(m_source) || !(m_channel.flags & FLAG_PITCH)) {
 		return AAL_ERROR_INIT;
 	}
 	
-	channel.pitch = glm::clamp(p, 0.1f, 2.f);
+	m_channel.pitch = glm::clamp(pitch, 0.1f, 2.f);
 	
-	alSourcef(m_source, AL_PITCH, channel.pitch);
+	alSourcef(m_source, AL_PITCH, m_channel.pitch);
 	AL_CHECK_ERROR("setting source pitch")
 	
 	return AAL_OK;
@@ -404,20 +404,20 @@ aalError OpenALSource::setPitch(float p) {
 
 aalError OpenALSource::setPan(float pan) {
 	
-	if(!alIsSource(m_source) || !(channel.flags & FLAG_PAN)) {
+	if(!alIsSource(m_source) || !(m_channel.flags & FLAG_PAN)) {
 		return AAL_ERROR_INIT;
 	}
 	
-	channel.pan = glm::clamp(pan, -1.f, 1.f);
+	m_channel.pan = glm::clamp(pan, -1.f, 1.f);
 	
-	if(channel.pan != 0.f && m_sample->getFormat().channels != 1) {
+	if(m_channel.pan != 0.f && m_sample->getFormat().channels != 1) {
 		ALWarning << "panning only supported for mono samples";
 		return AAL_ERROR_SYSTEM;
 	}
 	
 	// Emulate pan using a listener-relative position
 	float distance = 0.1f; // something within the min attenuation distance;
-	Vec3f position = distance * angleToVectorXZ(-channel.pan * 90.f);
+	Vec3f position = distance * angleToVectorXZ(-m_channel.pan * 90.f);
 	alSource3f(m_source, AL_POSITION, position.x, position.z, position.y); // xzy swizzle
 	AL_CHECK_ERROR("setting source pan")
 	
@@ -426,13 +426,13 @@ aalError OpenALSource::setPan(float pan) {
 
 aalError OpenALSource::setPosition(const Vec3f & position) {
 	
-	if(!alIsSource(m_source) || !(channel.flags & FLAG_POSITION)) {
+	if(!alIsSource(m_source) || !(m_channel.flags & FLAG_POSITION)) {
 		return AAL_ERROR_INIT;
 	}
 	
 	arx_assert(isallfinite(position));
 	
-	channel.position = position;
+	m_channel.position = position;
 	
 	if(!isallfinite(position)) {
 		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
@@ -446,13 +446,13 @@ aalError OpenALSource::setPosition(const Vec3f & position) {
 
 aalError OpenALSource::setVelocity(const Vec3f & velocity) {
 	
-	if(!alIsSource(m_source) || !(channel.flags & FLAG_VELOCITY)) {
+	if(!alIsSource(m_source) || !(m_channel.flags & FLAG_VELOCITY)) {
 		return AAL_ERROR_INIT;
 	}
 	
 	arx_assert(isallfinite(velocity));
 	
-	channel.velocity = velocity;
+	m_channel.velocity = velocity;
 	
 	if(!isallfinite(velocity)) {
 		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
@@ -466,11 +466,11 @@ aalError OpenALSource::setVelocity(const Vec3f & velocity) {
 
 aalError OpenALSource::setDirection(const Vec3f & direction) {
 	
-	if(!alIsSource(m_source) || !(channel.flags & FLAG_DIRECTION)) {
+	if(!alIsSource(m_source) || !(m_channel.flags & FLAG_DIRECTION)) {
 		return AAL_ERROR_INIT;
 	}
 	
-	channel.direction = direction;
+	m_channel.direction = direction;
 	
 	alSource3f(m_source, AL_DIRECTION, direction.x, direction.y, direction.z);
 	AL_CHECK_ERROR("setting source direction")
@@ -480,17 +480,17 @@ aalError OpenALSource::setDirection(const Vec3f & direction) {
 
 aalError OpenALSource::setCone(const SourceCone & cone) {
 	
-	if(!alIsSource(m_source) || !(channel.flags & FLAG_CONE)) {
+	if(!alIsSource(m_source) || !(m_channel.flags & FLAG_CONE)) {
 		return AAL_ERROR_INIT;
 	}
 	
-	channel.cone.inner_angle = cone.inner_angle;
-	channel.cone.outer_angle = cone.outer_angle;
-	channel.cone.outer_volume = glm::clamp(cone.outer_volume, 0.f, 1.f);
+	m_channel.cone.inner_angle = cone.inner_angle;
+	m_channel.cone.outer_angle = cone.outer_angle;
+	m_channel.cone.outer_volume = glm::clamp(cone.outer_volume, 0.f, 1.f);
 	
-	alSourcef(m_source, AL_CONE_INNER_ANGLE, channel.cone.inner_angle);
-	alSourcef(m_source, AL_CONE_OUTER_ANGLE, channel.cone.outer_angle);
-	alSourcef(m_source, AL_CONE_OUTER_GAIN, channel.cone.outer_volume);
+	alSourcef(m_source, AL_CONE_INNER_ANGLE, m_channel.cone.inner_angle);
+	alSourcef(m_source, AL_CONE_OUTER_ANGLE, m_channel.cone.outer_angle);
+	alSourcef(m_source, AL_CONE_OUTER_GAIN, m_channel.cone.outer_volume);
 	AL_CHECK_ERROR("setting source cone")
 	
 	return AAL_OK;
@@ -498,11 +498,11 @@ aalError OpenALSource::setCone(const SourceCone & cone) {
 
 aalError OpenALSource::setFalloff(const SourceFalloff & falloff) {
 	
-	if(!alIsSource(m_source) || !(channel.flags & FLAG_FALLOFF)) {
+	if(!alIsSource(m_source) || !(m_channel.flags & FLAG_FALLOFF)) {
 		return AAL_ERROR_INIT;
 	}
 	
-	channel.falloff = falloff;
+	m_channel.falloff = falloff;
 	
 	alSourcef(m_source, AL_MAX_DISTANCE, falloff.end);
 	alSourcef(m_source, AL_REFERENCE_DISTANCE, falloff.start);
@@ -511,11 +511,11 @@ aalError OpenALSource::setFalloff(const SourceFalloff & falloff) {
 	return AAL_OK;
 }
 
-aalError OpenALSource::play(unsigned play_count) {
+aalError OpenALSource::play(unsigned playCount) {
 	
 	if(status != Playing) {
 		
-		LogAL("play(" << play_count << ") vol=" << channel.volume);
+		LogAL("play(" << playCount << ") vol=" << m_channel.volume);
 		
 		status = Playing;
 		
@@ -526,11 +526,11 @@ aalError OpenALSource::play(unsigned play_count) {
 		AL_CHECK_ERROR("set source offset")
 		
 	} else {
-		TraceAL("play(+" << play_count << ") vol=" << channel.volume);
+		TraceAL("play(+" << playCount << ") vol=" << m_channel.volume);
 	}
 	
-	if(play_count && m_loadCount != unsigned(-1)) {
-		m_loadCount += play_count;
+	if(playCount && m_loadCount != unsigned(-1)) {
+		m_loadCount += playCount;
 	} else {
 		m_loadCount = unsigned(-1);
 	}
@@ -621,29 +621,29 @@ bool OpenALSource::updateCulling() {
 	
 	arx_assert(status == Playing);
 	
-	if(!(channel.flags & FLAG_POSITION) || !(channel.flags & FLAG_FALLOFF)
+	if(!(m_channel.flags & FLAG_POSITION) || !(m_channel.flags & FLAG_FALLOFF)
 	   || !alIsSource(m_source)) {
 		return false;
 	}
 	
 	Vec3f listener_pos;
-	if(channel.flags & FLAG_RELATIVE) {
+	if(m_channel.flags & FLAG_RELATIVE) {
 		listener_pos = Vec3f_ZERO;
 	} else {
 		alGetListener3f(AL_POSITION, &listener_pos.x, &listener_pos.y, &listener_pos.z);
 		AL_CHECK_ERROR_C("getting listener position", return m_tooFar;)
 	}
 	
-	float d = glm::distance(channel.position, listener_pos);
+	float d = glm::distance(m_channel.position, listener_pos);
 	
 	if(m_tooFar) {
-		if(d <= channel.falloff.end) {
+		if(d <= m_channel.falloff.end) {
 			LogAL("in range");
 			m_tooFar = false;
 			sourcePlay();
 		}
 	} else {
-		if(d > channel.falloff.end) {
+		if(d > m_channel.falloff.end) {
 			LogAL("out of range");
 			m_tooFar = true;
 			sourcePause();
@@ -654,7 +654,7 @@ bool OpenALSource::updateCulling() {
 	}
 	
 	if(!m_tooFar) {
-		d = (d - channel.falloff.start) / (channel.falloff.end - channel.falloff.start);
+		d = (d - m_channel.falloff.start) / (m_channel.falloff.end - m_channel.falloff.start);
 		float v = 1.f - glm::clamp((d - 0.75f) / (1.f - 0.75f), 0.f, 1.f);
 		if(m_volume != v) {
 			m_volume = v;
@@ -817,7 +817,7 @@ aalError OpenALSource::setRolloffFactor(float factor) {
 
 #if ARX_HAVE_OPENAL_EFX
 void OpenALSource::setEffectSlot(ALuint slot) {
-	if(channel.flags & FLAG_REVERBERATION) {
+	if(m_channel.flags & FLAG_REVERBERATION) {
 		alSource3i(m_source, AL_AUXILIARY_SEND_FILTER, slot, 0, AL_FILTER_NULL);
 	}
 }
