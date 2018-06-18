@@ -196,7 +196,7 @@ static bool checkInteractiveObject(Entity * io, ScriptMessage msg, ScriptResult 
 		return true;
 	}
 	
-	//change weapons if you break
+	// Change weapons if an equpped weapon entity breaks
 	if(((io->ioflags & IO_FIX) || (io->ioflags & IO_ITEM)) && msg == SM_BREAK) {
 		ManageCasseDArme(io);
 	}
