@@ -283,7 +283,7 @@ MixerId createMixer() {
 	
 	Mixer * mixer = new Mixer();
 	
-	MixerId id = MixerId(g_mixers.add(mixer));
+	MixerId id = g_mixers.add(mixer);
 	if(id == MixerId()) {
 		delete mixer;
 	}
@@ -461,26 +461,26 @@ aalError setMixerVolume(MixerId m_id, float volume) {
 	
 	AAL_ENTRY
 	
-	if(!g_mixers.isValid(m_id.handleData())) {
+	if(!g_mixers.isValid(m_id)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug("SetMixerVolume " << m_id.handleData() << " volume=" << volume);
 	
-	return g_mixers[m_id.handleData()]->setVolume(volume);
+	return g_mixers[m_id]->setVolume(volume);
 }
 
 aalError setMixerParent(MixerId m_id, MixerId pm_id) {
 	
 	AAL_ENTRY
 	
-	if(m_id == pm_id || !g_mixers.isValid(m_id.handleData()) || !g_mixers.isValid(pm_id.handleData())) {
+	if(m_id == pm_id || !g_mixers.isValid(m_id) || !g_mixers.isValid(pm_id)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug("SetMixerParent " << m_id.handleData() << " parent=" << pm_id.handleData());
 	
-	return g_mixers[m_id.handleData()]->setParent(g_mixers[pm_id.handleData()]);
+	return g_mixers[m_id]->setParent(g_mixers[pm_id]);
 }
 
 // Mixer control
@@ -489,39 +489,39 @@ aalError mixerStop(MixerId m_id) {
 	
 	AAL_ENTRY
 	
-	if(!g_mixers.isValid(m_id.handleData())) {
+	if(!g_mixers.isValid(m_id)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug("MixerStop " << m_id.handleData());
 	
-	return g_mixers[m_id.handleData()]->stop();
+	return g_mixers[m_id]->stop();
 }
 
 aalError mixerPause(MixerId m_id) {
 	
 	AAL_ENTRY;
 	
-	if(!g_mixers.isValid(m_id.handleData())) {
+	if(!g_mixers.isValid(m_id)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug("MixerPause " << m_id.handleData());
 	
-	return g_mixers[m_id.handleData()]->pause();
+	return g_mixers[m_id]->pause();
 }
 
 aalError mixerResume(MixerId m_id) {
 	
 	AAL_ENTRY
 	
-	if(!g_mixers.isValid(m_id.handleData())) {
+	if(!g_mixers.isValid(m_id)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug("MixerResume " << m_id.handleData());
 	
-	return g_mixers[m_id.handleData()]->resume();
+	return g_mixers[m_id]->resume();
 }
 
 // Sample setup
@@ -621,7 +621,7 @@ aalError samplePlay(SampleId & sample_id, const Channel & channel, unsigned play
 	
 	SampleId s_id = Backend::getSampleId(sample_id);
 	sample_id = Backend::clearSource(sample_id);
-	if(!g_samples.isValid(s_id) || !g_mixers.isValid(channel.mixer.handleData())) {
+	if(!g_samples.isValid(s_id) || !g_mixers.isValid(channel.mixer)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
@@ -806,7 +806,7 @@ aalError ambiancePlay(AmbianceId a_id, const Channel & channel, bool loop, Platf
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!g_ambiances.isValid(a_id.handleData()) || !g_mixers.isValid(channel.mixer.handleData())) {
+	if(!g_ambiances.isValid(a_id.handleData()) || !g_mixers.isValid(channel.mixer)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
