@@ -192,10 +192,7 @@ static std::vector<EERIEPOLY *> vPolyLava;
 static std::vector<PORTAL_ROOM_DRAW> RoomDraw;
 static std::vector<size_t> RoomDrawList;
 
-//*************************************************************************************
-//*************************************************************************************
-Vec2f getWaterFxUvOffset(float watereffect, const Vec3f & odtv)
-{
+Vec2f getWaterFxUvOffset(float watereffect, const Vec3f & odtv) {
 	return Vec2f(std::sin(watereffect + odtv.x), std::cos(watereffect + odtv.z));
 }
 
@@ -233,7 +230,7 @@ static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
 	for(long k = 0; k < to; k++) {
 		Vec2f uv = ep->v[k].uv;
 		
-		uv += getWaterFxUvOffset(WATEREFFECT, ep->v[k].p) * (0.35f * 0.05f); //0.25f
+		uv += getWaterFxUvOffset(WATEREFFECT, ep->v[k].p) * (0.35f * 0.05f);
 		ApplyLavaGlowToVertex(ep->v[k].p, ep->color[k], 0.6f);
 			
 		if(ep->type & POLY_FALL) {
@@ -810,7 +807,7 @@ static Vec2f CalculateLavaDisplacement(EERIEPOLY * ep, float time, int vertIndex
 	}
 }
 
-const int FTVU_STEP_COUNT = 3; //For fTv and fTu calculations
+const int FTVU_STEP_COUNT = 3; // For fTv and fTu calculations
 
 static void RenderWater() {
 	
@@ -1239,7 +1236,6 @@ static void BackgroundRenderTransparent(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
-	//render transparency
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
 	std::vector<TextureContainer *>::const_iterator itr;
