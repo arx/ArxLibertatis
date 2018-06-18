@@ -57,15 +57,15 @@ namespace audio {
 
 Mixer::Mixer() :
 	paused(false),
-	volume(DEFAULT_VOLUME),
-	parent(NULL),
+	m_volume(DEFAULT_VOLUME),
+	m_parent(NULL),
 	finalVolume(DEFAULT_VOLUME) {
 }
 
 Mixer::~Mixer() {
 	
 	for(MixerList::iterator i = g_mixers.begin(); i != g_mixers.end();) {
-		if(*i && (*i)->parent == this) {
+		if(*i && (*i)->m_parent == this) {
 			i = g_mixers.remove(i);
 		} else {
 			++i;
@@ -103,13 +103,13 @@ void Mixer::clear(bool force) {
 	
 }
 
-aalError Mixer::setVolume(float v) {
+aalError Mixer::setVolume(float volume) {
 	
-	float vol = glm::clamp(v, 0.f, 1.f);
-	if(volume == vol) {
+	volume = glm::clamp(volume, 0.f, 1.f);
+	if(m_volume == volume) {
 		return AAL_OK;
 	}
-	volume = vol;
+	m_volume = volume;
 	
 	updateVolume();
 	
@@ -118,14 +118,14 @@ aalError Mixer::setVolume(float v) {
 
 void Mixer::updateVolume() {
 	
-	float vol = parent ? parent->finalVolume * volume : volume;
-	if(finalVolume == vol) {
+	float volume = m_parent ? m_parent->finalVolume * m_volume : m_volume;
+	if(finalVolume == volume) {
 		return;
 	}
-	finalVolume = vol;
+	finalVolume = volume;
 	
 	BOOST_FOREACH(Mixer * mixer, g_mixers) {
-		if(mixer && mixer->parent == this) {
+		if(mixer && mixer->m_parent == this) {
 			mixer->updateVolume();
 		}
 	}
@@ -138,26 +138,26 @@ void Mixer::updateVolume() {
 	
 }
 
-aalError Mixer::setParent(const Mixer * _mixer) {
+aalError Mixer::setParent(const Mixer * parent) {
 	
-	if(parent == _mixer) {
+	if(m_parent == parent) {
 		return AAL_OK;
 	}
 	
 	// Check for cyles.
-	const Mixer * mixer = _mixer;
+	const Mixer * mixer = parent;
 	while(mixer) {
 		if(mixer == this) {
 			return AAL_ERROR;
 		}
-		mixer = mixer->parent;
+		mixer = mixer->m_parent;
 	}
 	
-	parent = _mixer;
+	m_parent = parent;
 	
 	updateVolume();
 	
-	if(parent && !paused && parent->paused) {
+	if(m_parent && !paused && m_parent->paused) {
 		pause();
 	}
 	
@@ -167,7 +167,7 @@ aalError Mixer::setParent(const Mixer * _mixer) {
 aalError Mixer::stop() {
 	
 	BOOST_FOREACH(Mixer * mixer, g_mixers) {
-		if(mixer && mixer->parent == this) {
+		if(mixer && mixer->m_parent == this) {
 			mixer->stop();
 		}
 	}
@@ -182,7 +182,7 @@ aalError Mixer::stop() {
 aalError Mixer::pause() {
 	
 	BOOST_FOREACH(Mixer * mixer, g_mixers) {
-		if(mixer && mixer->parent == this) {
+		if(mixer && mixer->m_parent == this) {
 			mixer->pause();
 		}
 	}
@@ -212,7 +212,7 @@ aalError Mixer::resume() {
 	}
 	
 	BOOST_FOREACH(Mixer * mixer, g_mixers) {
-		if(mixer && mixer->parent == this) {
+		if(mixer && mixer->m_parent == this) {
 			mixer->resume();
 		}
 	}

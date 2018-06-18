@@ -56,7 +56,7 @@ public:
 	~Mixer();
 	
 	aalError setVolume(float volume);
-	aalError setParent(const Mixer * mixer);
+	aalError setParent(const Mixer * parent);
 	
 	bool isPaused() const { return paused; }
 	float getFinalVolume() const { return finalVolume; }
@@ -71,8 +71,8 @@ private:
 	void updateVolume();
 	
 	bool paused;
-	float volume;
-	const Mixer * parent;
+	float m_volume;
+	const Mixer * m_parent;
 	float finalVolume;
 	
 };
