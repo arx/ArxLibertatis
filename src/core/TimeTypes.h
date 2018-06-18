@@ -148,10 +148,10 @@ inline float timeWaveCos(InstantType<TAG, T> t, DurationType<TAG, T> period) {
 	return std::cos(timeWaveSaw(t, period) * 2.f * glm::pi<float>());
 }
 
-// ArxTime
+// GameTime
 // in microseconds
-typedef InstantType <struct ArxTime_TAG, s64> GameInstant;
-typedef DurationType<struct ArxTime_TAG, s64> GameDuration;
+typedef InstantType <struct GameTime_TAG, s64> GameInstant;
+typedef DurationType<struct GameTime_TAG, s64> GameDuration;
 
 inline GameInstant GameInstantUs(s64 val) {
 	return GameInstant::ofRaw(val);
