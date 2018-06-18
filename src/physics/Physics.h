@@ -76,7 +76,7 @@ struct PHYSICS_BOX_DATA {
 	boost::array<PhysicsParticle, 15> vert;
 	short active;
 	short stopcount;
-	float radius; //radius around vert[0].pos for spherical collision
+	float radius; //!< Radius around vert[0].pos for spherical collision
 	float storedtiming;
 	float surface;
 	

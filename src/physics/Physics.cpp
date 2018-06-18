@@ -433,7 +433,7 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 			return false;
 	}
 	
-	//TOP
+	// top
 	t1.v[0] = vert[1].pos;
 	t1.v[1] = vert[2].pos;
 	t1.v[2] = vert[3].pos;
@@ -442,7 +442,7 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 		return true;
 	}
 	
-	//BOTTOM
+	// bottom
 	t1.v[0] = vert[10].pos;
 	t1.v[1] = vert[9].pos;
 	t1.v[2] = vert[11].pos;
@@ -451,7 +451,7 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 		return true;
 	}
 	
-	//UP/FRONT
+	// up / front
 	t1.v[0] = vert[1].pos;
 	t1.v[1] = vert[4].pos;
 	t1.v[2] = vert[5].pos;
@@ -460,7 +460,7 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 		return true;
 	}
 	
-	//DOWN/FRONT
+	// down / front
 	t1.v[0] = vert[5].pos;
 	t1.v[1] = vert[8].pos;
 	t1.v[2] = vert[9].pos;
@@ -469,7 +469,7 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 		return true;
 	}
 	
-	//UP/BACK
+	// up / back
 	t1.v[0] = vert[3].pos;
 	t1.v[1] = vert[2].pos;
 	t1.v[2] = vert[7].pos;
@@ -478,7 +478,7 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 		return true;
 	}
 	
-	//DOWN/BACK
+	// down / back
 	t1.v[0] = vert[7].pos;
 	t1.v[1] = vert[6].pos;
 	t1.v[2] = vert[11].pos;
@@ -487,7 +487,7 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 		return true;
 	}
 
-	//UP/LEFT
+	// up / left
 	t1.v[0] = vert[6].pos;
 	t1.v[1] = vert[2].pos;
 	t1.v[2] = vert[1].pos;
@@ -496,7 +496,7 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 		return true;
 	}
 
-	//DOWN/LEFT
+	// down / left
 	t1.v[0] = vert[10].pos;
 	t1.v[1] = vert[6].pos;
 	t1.v[2] = vert[5].pos;
@@ -505,7 +505,7 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 		return true;
 	}
 
-	//UP/RIGHT
+	// up / right
 	t1.v[0] = vert[4].pos;
 	t1.v[1] = vert[3].pos;
 	t1.v[2] = vert[7].pos;
@@ -514,7 +514,7 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 		return true;
 	}
 
-	//DOWN/RIGHT
+	// down / right
 	t1.v[0] = vert[8].pos;
 	t1.v[1] = vert[7].pos;
 	t1.v[2] = vert[11].pos;
