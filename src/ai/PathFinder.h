@@ -69,8 +69,8 @@ public:
 	 * The pathfinder instance does not copy the provided data and will not clean it up
 	 * The light data is only used when the stealth parameter is set to true.
 	 */
-	PathFinder(size_t map_size, const ANCHOR_DATA * map_data,
-	           size_t light_count, const EERIE_LIGHT * const * light_list);
+	PathFinder(size_t graphSize, const ANCHOR_DATA * graph,
+	           size_t lightCount, const EERIE_LIGHT * const * lights);
 	
 	typedef unsigned long NodeId;
 	typedef std::vector<NodeId> Result;
