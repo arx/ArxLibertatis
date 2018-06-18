@@ -63,7 +63,7 @@ namespace audio {
  * If the audio system was already initialized, it is cleaned first, removing all loaded resources.
  * This is not threadsafe: The caller must ensure that no other audio methods are called at the same time.
  */
-aalError init(const std::string & backend, const std::string & device = std::string(),
+aalError init(const std::string & backendName, const std::string & deviceName = std::string(),
               HRTFAttribute hrtf = HRTFDefault);
 
 /*!
@@ -76,7 +76,7 @@ std::vector<std::string> getDevices();
  * This is not threadsafe: The caller must ensure that no other audio methods are called at the same time.
  */
 aalError clean();
-aalError setStreamLimit(size_t size);
+aalError setStreamLimit(size_t limit);
 aalError setSamplePath(const res::path & path);
 aalError setAmbiancePath(const res::path & path);
 aalError setEnvironmentPath(const res::path & path);
@@ -92,14 +92,14 @@ MixerId createMixer();
 SampleId createSample(const res::path & name);
 AmbianceId createAmbiance(const res::path & name);
 EnvId createEnvironment(const res::path & name);
-aalError deleteSample(SampleId sample_id);
-aalError deleteAmbiance(AmbianceId ambiance_id);
+aalError deleteSample(SampleId sampleId);
+aalError deleteAmbiance(AmbianceId ambianceId);
 
-AmbianceId getAmbiance(const res::path & ambiance_name);
-EnvId getEnvironment(const res::path & environment_name);
+AmbianceId getAmbiance(const res::path & name);
+EnvId getEnvironment(const res::path & name);
 
 //! Retrieving by ID (If resource_id == INVALID_ID, return first found)
-AmbianceId getNextAmbiance(AmbianceId ambiance_id = AmbianceId());
+AmbianceId getNextAmbiance(AmbianceId ambianceId = AmbianceId());
 
 // Listener
 
@@ -107,47 +107,45 @@ aalError setUnitFactor(float factor);
 aalError setRolloffFactor(float factor);
 aalError setListenerPosition(const Vec3f & position);
 aalError setListenerDirection(const Vec3f & front, const Vec3f & up);
-aalError setListenerEnvironment(EnvId environment_id);
+aalError setListenerEnvironment(EnvId environmentId);
 
 // Mixer
 
-aalError setMixerVolume(MixerId mixer_id, float volume);
-aalError setMixerParent(MixerId mixer_id, MixerId parent_mixer_id);
+aalError setMixerVolume(MixerId mixerId, float volume);
+aalError setMixerParent(MixerId mixerId, MixerId parentId);
 
-aalError mixerStop(MixerId mixer_id);
-aalError mixerPause(MixerId mixer_id);
-aalError mixerResume(MixerId mixer_id);
+aalError mixerStop(MixerId mixerId);
+aalError mixerPause(MixerId mixerId);
+aalError mixerResume(MixerId mixerId);
 
 // Sample
 
-aalError setSampleVolume(SourceId sample_id, float volume);
-aalError setSamplePitch(SourceId sample_id, float pitch);
-aalError setSamplePosition(SourceId sample_id, const Vec3f & position);
+aalError setSampleVolume(SourceId sourceId, float volume);
+aalError setSamplePitch(SourceId sourceId, float pitch);
+aalError setSamplePosition(SourceId sourceId, const Vec3f & position);
 
-aalError getSampleName(SampleId sample_id, res::path & name);
-aalError getSampleLength(SampleId sample_id, size_t & length);
-aalError getSamplePan(SourceId sample_id, float * pan);
-aalError getSampleCone(SourceId sample_id, SourceCone * cone);
-bool isSamplePlaying(SourceId sample_id);
+aalError getSampleName(SampleId sampleId, res::path & name);
+aalError getSampleLength(SampleId sampleId, size_t & length);
+bool isSamplePlaying(SourceId sourceId);
 
 //! play_count == 0 -> infinite loop, play_count > 0 -> play play_count times
-aalError samplePlay(SampleId & sample_id, const Channel & channel, unsigned play_count = 1);
-aalError sampleStop(SourceId & sample_id);
+aalError samplePlay(SampleId & sampleId, const Channel & channel, unsigned play_count = 1);
+aalError sampleStop(SourceId & sourceId);
 
 // Ambiance
 
-aalError setAmbianceType(AmbianceId ambiance_id, PlayingAmbianceType type);
-aalError setAmbianceVolume(AmbianceId ambiance_id, float volume);
+aalError setAmbianceType(AmbianceId ambianceId, PlayingAmbianceType type);
+aalError setAmbianceVolume(AmbianceId ambianceId, float volume);
 
-aalError getAmbianceName(AmbianceId ambiance_id, res::path & name);
-aalError getAmbianceType(AmbianceId ambiance_id, PlayingAmbianceType * type);
-aalError getAmbianceVolume(AmbianceId ambiance_id, float & volume);
-bool isAmbianceLooped(AmbianceId ambiance_id);
+aalError getAmbianceName(AmbianceId ambianceId, res::path & name);
+aalError getAmbianceType(AmbianceId ambianceId, PlayingAmbianceType * type);
+aalError getAmbianceVolume(AmbianceId ambianceId, float & volume);
+bool isAmbianceLooped(AmbianceId ambianceId);
 
 //! play_count == 0 -> infinite loop, play_count == 1 -> play once
-aalError ambiancePlay(AmbianceId ambiance_id, const Channel & channel, bool loop = false,
-                      PlatformDuration fade_interval = 0);
-aalError ambianceStop(AmbianceId ambiance_id, PlatformDuration fade_interval = 0);
+aalError ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop = false,
+                      PlatformDuration fadeInterval = 0);
+aalError ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval = 0);
 
 } // namespace audio
 
