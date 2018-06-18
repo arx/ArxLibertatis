@@ -65,7 +65,7 @@ PlatformInstant session_time = 0;
 // Resources
 MixerList g_mixers;
 ResourceList<Sample> g_samples;
-ResourceList<Ambiance> g_ambiances;
+AmbianceList g_ambiances;
 ResourceList<Environment> g_environments;
 
 } // namespace audio

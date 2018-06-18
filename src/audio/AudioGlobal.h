@@ -79,7 +79,8 @@ extern PlatformInstant session_time;
 typedef ResourceList<Mixer, MixerId> MixerList;
 extern MixerList g_mixers;
 extern ResourceList<Sample> g_samples;
-extern ResourceList<Ambiance> g_ambiances;
+typedef ResourceList<Ambiance, AmbianceId> AmbianceList;
+extern AmbianceList g_ambiances;
 extern ResourceList<Environment> g_environments;
 
 inline float LinearToLogVolume(float volume) {
