@@ -87,7 +87,6 @@ public:
 	}
 	
 	result_type operator()(argument_type args) const {
-		//TODO: add  : if(!is_reference<argument_type>)   argument_type = reference<argument_type>
 		return function(args);
 	}
 	
@@ -106,7 +105,6 @@ private:
 		}
 		
 		result_type operator()(argument_type args) {
-			//TODO: add  : if(!is_reference<argument_type>)   argument_type = reference<argument_type>
 			detail::args_adapter<typename Fn::signature> decoded_args(args);
 			return m_fn(decoded_args);
 		}
