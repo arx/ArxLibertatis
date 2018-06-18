@@ -254,13 +254,17 @@ aalError update() {
 	}
 	
 	// Update ambiances
-	for(size_t i = 0; i < g_ambiances.size(); i++) {
-		Ambiance * ambiance = g_ambiances[i];
+	for(AmbianceList::iterator i = g_ambiances.begin(); i != g_ambiances.end();) {
+		Ambiance * ambiance = *i;
 		if(ambiance) {
 			ambiance->update();
 			if(ambiance->getChannel().flags & FLAG_AUTOFREE && ambiance->isIdle()) {
-				g_ambiances.remove(i);
+				i = g_ambiances.remove(i);
+			} else {
+				++i;
 			}
+		} else {
+			++i;
 		}
 	}
 	
@@ -313,7 +317,7 @@ AmbianceId createAmbiance(const res::path & name) {
 	
 	Ambiance * ambiance = new Ambiance(name);
 	AmbianceId a_id = AmbianceId();
-	if(ambiance->load() || (a_id = AmbianceId(g_ambiances.add(ambiance))) == AmbianceId()) {
+	if(ambiance->load() || (a_id = g_ambiances.add(ambiance)) == AmbianceId()) {
 		delete ambiance;
 		LogError << "Ambiance " << name << " not found";
 	}
@@ -359,7 +363,7 @@ aalError deleteAmbiance(AmbianceId a_id) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	g_ambiances.remove(a_id.handleData());
+	g_ambiances.remove(a_id);
 	
 	return AAL_OK;
 }
@@ -369,7 +373,8 @@ AmbianceId getAmbiance(const res::path & name) {
 	AAL_ENTRY_V(AmbianceId())
 	
 	for(size_t i = 0; i < g_ambiances.size(); i++) {
-		if(g_ambiances[i] && name == g_ambiances[i]->getName()) {
+		Ambiance * ambiance = g_ambiances[AmbianceId(i)];
+		if(ambiance && ambiance->getName() == name) {
 			return AmbianceId(i);
 		}
 	}
@@ -396,11 +401,11 @@ AmbianceId getNextAmbiance(AmbianceId ambiance_id) {
 	
 	AAL_ENTRY_V(AmbianceId())
 	
-	size_t i = (ambiance_id != AmbianceId() && g_ambiances.isValid(ambiance_id.handleData()))
+	size_t i = (ambiance_id != AmbianceId() && g_ambiances.isValid(ambiance_id))
 	           ? ambiance_id.handleData() + 1 : 0;
 	
 	for(; i < g_ambiances.size(); i++) {
-		if(g_ambiances[i]) {
+		if(g_ambiances[AmbianceId(i)]) {
 			return AmbianceId(i);
 		}
 	}
@@ -692,13 +697,13 @@ aalError setAmbianceType(AmbianceId a_id, PlayingAmbianceType type) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!g_ambiances.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("SetAmbianceUserData " << g_ambiances[a_id.handleData()]->getName() << " " << type);
+	LogDebug("SetAmbianceUserData " << g_ambiances[a_id]->getName() << " " << type);
 	
-	g_ambiances[a_id.handleData()]->setType(type);
+	g_ambiances[a_id]->setType(type);
 	
 	return AAL_OK;
 }
@@ -711,13 +716,13 @@ aalError setAmbianceVolume(AmbianceId a_id, float volume) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!g_ambiances.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("SetAmbianceVolume " << g_ambiances[a_id.handleData()]->getName() << " " << volume);
+	LogDebug("SetAmbianceVolume " << g_ambiances[a_id]->getName() << " " << volume);
 	
-	return g_ambiances[a_id.handleData()]->setVolume(volume);
+	return g_ambiances[a_id]->setVolume(volume);
 }
 
 // Ambiance status
@@ -732,11 +737,11 @@ aalError getAmbianceName(AmbianceId a_id, res::path & name) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!g_ambiances.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	name = g_ambiances[a_id.handleData()]->getName();
+	name = g_ambiances[a_id]->getName();
 	
 	return AAL_OK;
 }
@@ -749,11 +754,11 @@ aalError getAmbianceType(AmbianceId a_id, PlayingAmbianceType * type) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!g_ambiances.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	*type = g_ambiances[a_id.handleData()]->getType();
+	*type = g_ambiances[a_id]->getType();
 	
 	return AAL_OK;
 }
@@ -768,15 +773,15 @@ aalError getAmbianceVolume(AmbianceId a_id, float & _volume) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!g_ambiances.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!(g_ambiances[a_id.handleData()]->getChannel().flags & FLAG_VOLUME)) {
+	if(!(g_ambiances[a_id]->getChannel().flags & FLAG_VOLUME)) {
 		return AAL_ERROR_INIT;
 	}
 	
-	_volume = g_ambiances[a_id.handleData()]->getChannel().volume;
+	_volume = g_ambiances[a_id]->getChannel().volume;
 	
 	return AAL_OK;
 }
@@ -789,11 +794,11 @@ bool isAmbianceLooped(AmbianceId a_id) {
 		return false;
 	}
 	
-	if(!g_ambiances.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id)) {
 		return false;
 	}
 	
-	return g_ambiances[a_id.handleData()]->isLooped();
+	return g_ambiances[a_id]->isLooped();
 }
 
 // Ambiance control
@@ -806,14 +811,14 @@ aalError ambiancePlay(AmbianceId a_id, const Channel & channel, bool loop, Platf
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!g_ambiances.isValid(a_id.handleData()) || !g_mixers.isValid(channel.mixer)) {
+	if(!g_ambiances.isValid(a_id) || !g_mixers.isValid(channel.mixer)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("AmbiancePlay " << g_ambiances[a_id.handleData()]->getName() << " loop=" << loop
+	LogDebug("AmbiancePlay " << g_ambiances[a_id]->getName() << " loop=" << loop
 	         << " fade=" << toMs(fade_interval));
 	
-	return g_ambiances[a_id.handleData()]->play(channel, loop, fade_interval);
+	return g_ambiances[a_id]->play(channel, loop, fade_interval);
 }
 
 aalError ambianceStop(AmbianceId a_id, PlatformDuration fade_interval) {
@@ -824,13 +829,13 @@ aalError ambianceStop(AmbianceId a_id, PlatformDuration fade_interval) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!g_ambiances.isValid(a_id.handleData())) {
+	if(!g_ambiances.isValid(a_id)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("AmbianceStop " << g_ambiances[a_id.handleData()]->getName() << " " << toMs(fade_interval));
+	LogDebug("AmbianceStop " << g_ambiances[a_id]->getName() << " " << toMs(fade_interval));
 	
-	g_ambiances[a_id.handleData()]->stop(fade_interval);
+	g_ambiances[a_id]->stop(fade_interval);
 	
 	return AAL_OK;
 }
