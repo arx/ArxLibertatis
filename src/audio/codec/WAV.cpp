@@ -71,17 +71,17 @@ public:
 	
 private:
 	
-	PakFileHandle * file;
+	PakFileHandle * m_file;
 	size_t offset;
 	
 };
 
-ChunkFile::ChunkFile(PakFileHandle * ptr) : file(ptr), offset(0) {
+ChunkFile::ChunkFile(PakFileHandle * file) : m_file(file), offset(0) {
 }
 
 bool ChunkFile::read(void * buffer, size_t size) {
 	
-	if(!file->read(buffer, size)) {
+	if(!m_file->read(buffer, size)) {
 		return false;
 	}
 	
@@ -94,7 +94,7 @@ bool ChunkFile::read(void * buffer, size_t size) {
 
 bool ChunkFile::skip(size_t size) {
 	
-	if(file->seek(SeekCur, size) == -1) {
+	if(m_file->seek(SeekCur, size) == -1) {
 		return false;
 	}
 	
@@ -107,19 +107,19 @@ bool ChunkFile::skip(size_t size) {
 
 bool ChunkFile::find(const char * id) {
 	
-	file->seek(SeekCur, offset);
+	m_file->seek(SeekCur, offset);
 	
 	u8 cc[4];
-	while(file->read(cc, 4)) {
+	while(m_file->read(cc, 4)) {
 		u32 _offset;
-		if(!file->read(&_offset, 4)) {
+		if(!m_file->read(&_offset, 4)) {
 			return false;
 		}
 		offset = _offset;
 		if(!memcmp(cc, id, 4)) {
 			return true;
 		}
-		if(file->seek(SeekCur, offset) == -1) {
+		if(m_file->seek(SeekCur, offset) == -1) {
 			return false;
 		}
 	}
@@ -130,7 +130,7 @@ bool ChunkFile::find(const char * id) {
 bool ChunkFile::check(const char * id) {
 	
 	u8 cc[4];
-	if(!file->read(cc, 4)) {
+	if(!m_file->read(cc, 4)) {
 		return false;
 	}
 	
@@ -149,7 +149,7 @@ bool ChunkFile::restart() {
 	
 	offset = 0;
 	
-	return (file->seek(SeekSet, 0) != -1);
+	return (m_file->seek(SeekSet, 0) != -1);
 }
 
 } // anonymous namespace
@@ -159,7 +159,7 @@ namespace audio {
 #define AS_FORMAT_PCM(x) ((WaveHeader *)x)
 
 StreamWAV::StreamWAV() :
-	stream(NULL), codec(NULL), header(NULL),
+	m_stream(NULL), codec(NULL), header(NULL),
 	size(0), outsize(0), offset(0), cursor(0) {
 }
 
@@ -168,20 +168,20 @@ StreamWAV::~StreamWAV() {
 	free(header);
 }
 
-aalError StreamWAV::setStream(PakFileHandle * _stream) {
+aalError StreamWAV::setStream(PakFileHandle * stream) {
 	
-	if(!_stream) {
+	if(!stream) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	stream = _stream;
+	m_stream = stream;
 	
 	header = malloc(sizeof(WaveHeader));
 	if(!header) {
 		return AAL_ERROR_MEMORY;
 	}
 	
-	ChunkFile wave(stream);
+	ChunkFile wave(m_stream);
 	
 	// Check for 'RIFF' chunk id and skip file size
 	if(!wave.check("RIFF") || !wave.skip(4) || !wave.check("WAVE") || !wave.find("fmt ")
@@ -243,9 +243,9 @@ aalError StreamWAV::setStream(PakFileHandle * _stream) {
 		outsize *= AS_FORMAT_PCM(header)->channels;
 	}
 	
-	offset = stream->tell();
+	offset = m_stream->tell();
 	
-	codec->setStream(stream);
+	codec->setStream(m_stream);
 	
 	if(aalError error = codec->setHeader(header)) {
 		return error;
@@ -263,7 +263,7 @@ aalError StreamWAV::setPosition(size_t position) {
 	cursor = position;
 	
 	// Reset stream position at the begining of data chunk
-	if(stream->seek(SeekSet, offset) == -1) {
+	if(m_stream->seek(SeekSet, offset) == -1) {
 		return AAL_ERROR_FILEIO;
 	}
 	
@@ -271,20 +271,20 @@ aalError StreamWAV::setPosition(size_t position) {
 }
 
 PakFileHandle * StreamWAV::getStream() {
-	return stream;
+	return m_stream;
 }
 
-aalError StreamWAV::getFormat(PCMFormat & _format) {
+aalError StreamWAV::getFormat(PCMFormat & format) {
 	
-	_format.frequency = AS_FORMAT_PCM(header)->samplesPerSec;
-	_format.channels = AS_FORMAT_PCM(header)->channels;
+	format.frequency = AS_FORMAT_PCM(header)->samplesPerSec;
+	format.channels = AS_FORMAT_PCM(header)->channels;
 	
 	switch (AS_FORMAT_PCM(header)->formatTag) {
 		case WAV_FORMAT_PCM   :
-			_format.quality = AS_FORMAT_PCM(header)->bitsPerSample;
+			format.quality = AS_FORMAT_PCM(header)->bitsPerSample;
 			break;
 		case WAV_FORMAT_ADPCM :
-			_format.quality = 16;
+			format.quality = 16;
 			break;
 	}
 	
@@ -299,21 +299,21 @@ size_t StreamWAV::getPosition() {
 	return codec->getPosition();
 }
 
-aalError StreamWAV::read(void * buffer, size_t to_read, size_t & _read) {
+aalError StreamWAV::read(void * buffer, size_t bufferSize, size_t & read) {
 	
-	_read = 0;
+	read = 0;
 	
 	if(cursor >= outsize) {
 		return AAL_OK;
 	}
 	
-	size_t count = cursor + to_read > outsize ? outsize - cursor : to_read;
+	size_t count = cursor + bufferSize > outsize ? outsize - cursor : bufferSize;
 	
-	if(aalError error = codec->read(buffer, count, _read)) {
+	if(aalError error = codec->read(buffer, count, read)) {
 		return error;
 	}
 	
-	cursor += _read;
+	cursor += read;
 	
 	return AAL_OK;
 }
