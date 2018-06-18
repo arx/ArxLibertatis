@@ -66,7 +66,6 @@ public:
 	virtual PakFileHandle * getStream() = 0;
 	virtual aalError getFormat(PCMFormat & format) = 0;
 	virtual size_t getLength() = 0;
-	virtual size_t getPosition() = 0;
 	
 	virtual aalError read(void * buffer, size_t to_read, size_t & read) = 0;
 	
