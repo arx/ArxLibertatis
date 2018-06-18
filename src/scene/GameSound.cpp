@@ -276,7 +276,6 @@ SampleId SND_SPELL_LIGHTNING_LOOP(INVALID_ID);
 SampleId SND_SPELL_LIGHTNING_END(INVALID_ID);
 SampleId SND_SPELL_MAGICAL_HIT(INVALID_ID);
 
-//SampleId SND_SPELL_MASS_LIGHTNING_END(INVALID_ID);
 SampleId SND_SPELL_FIRE_FIELD_START(INVALID_ID);
 SampleId SND_SPELL_FIRE_FIELD_LOOP(INVALID_ID);
 SampleId SND_SPELL_FIRE_FIELD_END(INVALID_ID);
@@ -1094,11 +1093,11 @@ static void ARX_SOUND_CreateStaticSamples() {
 	SND_INVSTD                         = audio::createSample("interface_invstd.wav");
 	SND_GOLD                           = audio::createSample("drop_coin.wav");
 	
-	//Menu
+	// Menu
 	SND_MENU_CLICK                     = audio::createSample("menu_click.wav");
 	SND_MENU_RELEASE                   = audio::createSample("menu_release.wav");
 	
-	//Other SFX samples
+	// Other SFX samples
 	SND_FIREPLACE                      = audio::createSample("fire_place.wav");
 	SND_PLOUF                          = audio::createSample("fishing_plouf.wav");
 	SND_QUAKE                          = audio::createSample("sfx_quake.wav");
@@ -1337,7 +1336,6 @@ static void ARX_SOUND_ReleaseStaticSamples() {
 	SND_SPELL_LIGHTNING_END = INVALID_ID;
 	SND_SPELL_MAGICAL_HIT = INVALID_ID;
 
-	//SND_SPELL_MASS_LIGHTNING_END = INVALID_ID;
 	SND_SPELL_FIRE_FIELD_START = INVALID_ID;
 	SND_SPELL_FIRE_FIELD_LOOP = INVALID_ID;
 	SND_SPELL_FIRE_FIELD_END = INVALID_ID;
