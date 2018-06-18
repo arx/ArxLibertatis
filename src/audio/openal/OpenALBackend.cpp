@@ -713,9 +713,9 @@ HRTFStatus OpenALBackend::getHRTFStatus() {
 		case ALC_HRTF_DENIED_SOFT:              return HRTFForbidden;
 		case ALC_HRTF_REQUIRED_SOFT:            return HRTFRequired;
 		case ALC_HRTF_HEADPHONES_DETECTED_SOFT: return HRTFEnabled;
+		default:                                return HRTFUnavailable;
 	}
 	
-	return HRTFUnavailable;
 }
 
 #else // !ARX_HAVE_OPENAL_HRTF
