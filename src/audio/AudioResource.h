@@ -85,8 +85,18 @@ private:
 	
 };
 
-template <class T>
+template <typename T, typename Handle = size_t>
 class ResourceList {
+	
+	template <typename Tag, typename IndexType, IndexType InvalidValue>
+	static size_t get(HandleType<Tag, IndexType, InvalidValue> handle) {
+		return size_t(handle.handleData());
+	}
+	
+	template <typename IndexType>
+	static size_t get(IndexType index) {
+		return size_t(index);
+	}
 	
 public:
 	
@@ -94,14 +104,17 @@ public:
 	
 	typedef T * const * iterator;
 	
-	ResourceList();
-	~ResourceList();
+	ResourceList() : _size(0), list(NULL) { }
+	~ResourceList() { clear(); }
 	
-	bool isValid(s32 index) { return ((size_t)index < _size && list[index]); }
-	T * operator[](s32 index) { return list[index]; }
+	bool isValid(Handle handle) {
+		return (get(handle) < _size && list[get(handle)]);
+	}
+	
+	T * operator[](Handle handle) { return list[get(handle)]; }
 	size_t size() { return _size; }
-	s32 add(T * element);
-	void remove(s32 index);
+	Handle add(T * element);
+	void remove(Handle handle);
 	void clear();
 	
 	iterator begin() { return list; }
@@ -115,28 +128,20 @@ private:
 	
 };
 
-template <class T>
-inline ResourceList<T>::ResourceList() : _size(0), list(NULL) { }
-
-template <class T>
-inline ResourceList<T>::~ResourceList() {
-	clear();
-}
-
-template <class T>
-inline s32 ResourceList<T>::add(T * element) {
+template <typename T, typename Handle>
+Handle ResourceList<T, Handle>::add(T * element) {
 	
 	size_t i = 0;
 	for(; i < _size; i++) {
 		if(!list[i]) {
 			list[i] = element;
-			return i;
+			return Handle(i);
 		}
 	}
 	
 	void * ptr = std::realloc(list, (_size + ALIGNMENT) * sizeof(*list));
 	if(!ptr) {
-		return INVALID_ID;
+		return Handle(INVALID_ID);
 	}
 	
 	list = (T **)ptr, _size += ALIGNMENT;
@@ -144,18 +149,18 @@ inline s32 ResourceList<T>::add(T * element) {
 	std::memset(&list[i], 0, ALIGNMENT * sizeof(*list));
 	list[i] = element;
 	
-	return i;
+	return Handle(i);
 }
 
-template <class T>
-inline void ResourceList<T>::remove(s32 index) {
+template <typename T, typename Handle>
+void ResourceList<T, Handle>::remove(Handle handle) {
 	
-	if((size_t)index >= _size || !list[index]) {
+	if(!isValid(handle)) {
 		return;
 	}
 	
-	T * toDelete = list[index];
-	list[index] = NULL;
+	T * toDelete = list[get(handle)];
+	list[get(handle)] = NULL;
 	
 	if(_size <= ALIGNMENT) {
 		delete toDelete;
@@ -173,8 +178,8 @@ inline void ResourceList<T>::remove(s32 index) {
 	delete toDelete;
 }
 
-template <class T>
-inline void ResourceList<T>::clear() {
+template <typename T, typename Handle>
+void ResourceList<T, Handle>::clear() {
 	
 	for(size_t i = 0; i < _size; i++) {
 		if(list[i]) {
@@ -189,10 +194,10 @@ inline void ResourceList<T>::clear() {
 	_size = 0;
 }
 
-template <class T>
-inline typename ResourceList<T>::iterator ResourceList<T>::remove(iterator i) {
+template <typename T, typename Handle>
+typename ResourceList<T, Handle>::iterator ResourceList<T, Handle>::remove(iterator i) {
 	size_t idx = i - begin();
-	remove(idx);
+	remove(Handle(idx));
 	if(idx >= _size) {
 		return end();
 	}
