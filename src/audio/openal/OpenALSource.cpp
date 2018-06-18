@@ -40,7 +40,7 @@
 
 namespace audio {
 
-#define ALPREFIX "[" << (s16)(((id) & 0xffff0000) >> 16) << "," << (s16)((id) & 0xffff) << "," << (sample ? sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
+#define ALPREFIX "[" << (s16)(((id) & 0xffff0000) >> 16) << "," << (s16)((id) & 0xffff) << "," << (m_sample ? m_sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
 
 #undef ALError
 #define ALError LogError << ALPREFIX
@@ -52,7 +52,7 @@ static size_t nbsources = 0;
 static size_t nbbuffers = 0;
 
 // How often to queue the buffer when looping but not streaming.
-#define MAXLOOPBUFFERS std::max((size_t)NBUFFERS, NBUFFERS * stream_limit_bytes / sample->getLength())
+#define MAXLOOPBUFFERS std::max((size_t)NBUFFERS, NBUFFERS * stream_limit_bytes / m_sample->getLength())
 
 aalError OpenALSource::sourcePlay() {
 	
@@ -158,7 +158,7 @@ OpenALSource::~OpenALSource() {
 }
 
 bool OpenALSource::convertStereoToMono() {
-	return ((channel.flags & FLAG_ANY_3D_FX) && sample->getFormat().channels == 2);
+	return ((channel.flags & FLAG_ANY_3D_FX) && m_sample->getFormat().channels == 2);
 }
 
 aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _channel) {
@@ -174,7 +174,7 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 	
 	if(inst && !inst->m_streaming && convertStereoToMono() == inst->convertStereoToMono()) {
 		
-		arx_assert(inst->sample == sample);
+		arx_assert(inst->m_sample == m_sample);
 		
 		arx_assert(inst->m_buffers[0] != 0);
 		m_buffers[0] = inst->m_buffers[0];
@@ -193,13 +193,13 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 	alSourcei(m_source, AL_LOOPING, AL_FALSE);
 	AL_CHECK_ERROR("generating source")
 	
-	m_streaming = (sample->getLength() > (stream_limit_bytes * NBUFFERS));
+	m_streaming = (m_sample->getLength() > (stream_limit_bytes * NBUFFERS));
 	
-	LogAL("init: length=" << sample->getLength() << " " << (m_streaming ? "m_streaming" : "static")
+	LogAL("init: length=" << m_sample->getLength() << " " << (m_streaming ? "m_streaming" : "static")
 	      << (m_buffers[0] ? " (copy)" : ""));
 	
 	if(!m_streaming && !m_buffers[0]) {
-		m_stream = createStream(sample->getName());
+		m_stream = createStream(m_sample->getName());
 		if(!m_stream) {
 			ALError << "error creating stream";
 			return AAL_ERROR_FILEIO;
@@ -209,7 +209,7 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 		AL_CHECK_ERROR("generating buffer")
 		arx_assert(m_buffers[0] != 0);
 		m_loadCount = 1;
-		if(aalError error = fillBuffer(0, sample->getLength())) {
+		if(aalError error = fillBuffer(0, m_sample->getLength())) {
 			return error;
 		}
 		arx_assert(!m_stream && !m_loadCount);
@@ -246,7 +246,7 @@ aalError OpenALSource::fillAllBuffers() {
 	}
 	
 	if(!m_stream) {
-		m_stream = createStream(sample->getName());
+		m_stream = createStream(m_sample->getName());
 		if(!m_stream) {
 			ALError << "error creating stream";
 			return AAL_ERROR_FILEIO;
@@ -301,7 +301,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	
 	arx_assert(m_loadCount > 0);
 	
-	size_t left = std::min(size, sample->getLength() - m_written);
+	size_t left = std::min(size, m_sample->getLength() - m_written);
 	if(m_loadCount == 1) {
 		size = left;
 	}
@@ -320,8 +320,8 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 		return AAL_ERROR_SYSTEM;
 	}
 	m_written += read;
-	arx_assert(m_written <= sample->getLength());
-	if(m_written == sample->getLength()) {
+	arx_assert(m_written <= m_sample->getLength());
+	if(m_written == m_sample->getLength()) {
 		m_written = 0;
 		if(!markAsLoaded()) {
 			deleteStream(m_stream);
@@ -335,12 +335,12 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 					return AAL_ERROR_SYSTEM;
 				}
 				m_written += read;
-				arx_assert(m_written < sample->getLength());
+				arx_assert(m_written < m_sample->getLength());
 			}
 		}
 	}
 	
-	const PCMFormat & f = sample->getFormat();
+	const PCMFormat & f = m_sample->getFormat();
 	if((f.channels != 1 && f.channels != 2) || (f.quality != 8 && f.quality != 16)) {
 		LogError << "Unsupported audio format: quality=" << f.quality << " channels=" << f.channels;
 		delete[] data;
@@ -410,7 +410,7 @@ aalError OpenALSource::setPan(float pan) {
 	
 	channel.pan = glm::clamp(pan, -1.f, 1.f);
 	
-	if(channel.pan != 0.f && sample->getFormat().channels != 1) {
+	if(channel.pan != 0.f && m_sample->getFormat().channels != 1) {
 		ALWarning << "panning only supported for mono samples";
 		return AAL_ERROR_SYSTEM;
 	}

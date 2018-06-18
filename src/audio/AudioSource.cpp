@@ -26,17 +26,17 @@
 
 namespace audio {
 
-Source::Source(Sample * _sample) : id(INVALID_ID), sample(_sample), status(Idle), time(0), callback_i(0) {
-	sample->reference();
+Source::Source(Sample * sample) : id(INVALID_ID), m_sample(sample), status(Idle), time(0), callback_i(0) {
+	m_sample->reference();
 }
 
 Source::~Source() {
-	sample->dereference();
+	m_sample->dereference();
 }
 
 void Source::addCallback(Callback * callback, size_t position) {
 	
-	size_t pos = std::min(position, sample->getLength());
+	size_t pos = std::min(position, m_sample->getLength());
 	
 	size_t i = 0;
 	while(i != callbacks.size() && callbacks[i].second <= pos) {
@@ -73,11 +73,11 @@ void Source::updateCallbacks() {
 			callbacks[callback_i].first->onSamplePosition(*this, callbacks[callback_i].second);
 		}
 		
-		if(time < sample->getLength()) {
+		if(time < m_sample->getLength()) {
 			break;
 		}
 		
-		time -= sample->getLength();
+		time -= m_sample->getLength();
 		callback_i = 0;
 		
 		if(!time && status != Playing) {
@@ -91,13 +91,13 @@ void Source::updateCallbacks() {
 	
 }
 
-aalError Source::setVolume(float v) {
+aalError Source::setVolume(float volume) {
 	
 	if(!(channel.flags & FLAG_VOLUME)) {
 		return AAL_ERROR_INIT;
 	}
 	
-	channel.volume = glm::clamp(v, 0.f, 1.f);
+	channel.volume = glm::clamp(volume, 0.f, 1.f);
 	
 	return updateVolume();
 }

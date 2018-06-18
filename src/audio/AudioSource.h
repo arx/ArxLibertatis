@@ -97,7 +97,7 @@ public:
 	aalError update();
 	
 	SourceId getId() const { return id; }
-	Sample * getSample() const { return sample; }
+	Sample * getSample() const { return m_sample; }
 	const Channel & getChannel() const { return channel; }
 	Status getStatus() const { return status; }
 	bool isPlaying() const { return status == Playing; }
@@ -119,7 +119,7 @@ protected:
 	
 	Channel channel;
 	
-	Sample * sample;
+	Sample * m_sample;
 	Status status;
 	
 	size_t time; // Elapsed 'time'
