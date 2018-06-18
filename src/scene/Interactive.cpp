@@ -342,7 +342,7 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 	if(gorenum > -1) {
 		for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
 			EERIE_FACE & face = io->obj->facelist[nn];
-			//Hide Gore Polys...
+			// Hide gore faces...
 			if(face.texid == gorenum)
 				face.facetype |= POLY_HIDE;
 			else if(!flag)
@@ -535,25 +535,25 @@ void PrepareIOTreatZone(long flag) {
 			} else if ((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) {
 				treat = true;
 			} else {
+				
 				float dists;
-
 				if(Cam_Room >= 0) {
 					if(io->show == SHOW_FLAG_TELEPORTING) {
 						Vec3f pos = GetItemWorldPosition(io);
 						dists = arx::distance2(cameraPos, pos);
 					} else {
-						if(io->requestRoomUpdate)
+						if(io->requestRoomUpdate) {
 							UpdateIORoom(io);
-
+						}
 						dists = square(SP_GetRoomDist(io->pos, cameraPos, io->room, Cam_Room));
 					}
 				} else {
 					if(io->show == SHOW_FLAG_TELEPORTING) {
 						Vec3f pos = GetItemWorldPosition(io);
-						dists = arx::distance2(cameraPos, pos); //&io->pos,&pos);
-					}
-					else
+						dists = arx::distance2(cameraPos, pos);
+					} else {
 						dists = arx::distance2(io->pos, cameraPos);
+					}
 				}
 				
 				treat = (dists < square(TREATZONE_LIMIT));
@@ -582,22 +582,18 @@ void PrepareIOTreatZone(long flag) {
 				io->gameFlags &= ~GFLAG_ISINTREATZONE;
 			}
 			
-			if ((io->gameFlags & GFLAG_ISINTREATZONE)
-			        && (!(io->gameFlags & GFLAG_WASINTREATZONE)))
-			{
-				//coming back; doesn't really matter right now
+			if((io->gameFlags & GFLAG_ISINTREATZONE) && (!(io->gameFlags & GFLAG_WASINTREATZONE))) {
+				// Coming back - doesn't really matter right now
 			} else if(!(io->gameFlags & GFLAG_ISINTREATZONE) && (io->gameFlags & GFLAG_WASINTREATZONE)) {
-				
-				//going away;
+				// Going away
 				io->gameFlags |= GFLAG_ISINTREATZONE;
-
 				if(SendIOScriptEvent(NULL, io, SM_TREATOUT) != REFUSE) {
 					if(io->ioflags & IO_NPC)
 						io->_npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
-
 					io->gameFlags &= ~GFLAG_ISINTREATZONE;
 				}
 			}
+			
 		}
 	}
 	
@@ -1829,11 +1825,10 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 			continue;
 
 		// Is Object Displayed on screen ???
-		if( !((io->show == SHOW_FLAG_IN_SCENE) ||
-			  (bPlayerEquiped && flag) ||
-			  (bPlayerEquiped && (player.Interface & INTER_PLAYERBOOK) && (g_playerBook.currentPage() == BOOKMODE_STATS))) )
-			//((io->show==9) && (player.Interface & INTER_PLAYERBOOK)) )
-		{
+		if(!(io->show == SHOW_FLAG_IN_SCENE
+		     || (bPlayerEquiped && flag)
+		     || (bPlayerEquiped && (player.Interface & INTER_PLAYERBOOK)
+		         && (g_playerBook.currentPage() == BOOKMODE_STATS)))) {
 			continue;
 		}
 
@@ -1981,9 +1976,6 @@ EntityHandle IsCollidingAnyInter(const Vec3f & pos, const Vec3f & size) {
 	return EntityHandle();
 }
 
-//*************************************************************************************
-// To upgrade to a more precise collision.
-//*************************************************************************************
 static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 	
 	if(!io || !io->obj)
