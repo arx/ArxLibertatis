@@ -327,7 +327,7 @@ directory_iterator::directory_iterator(const path & p) : m_buffer(NULL) {
 			size = sizeof(dirent);
 		}
 		m_buffer = std::malloc(size);
-		#endif //!ARX_HAVE_THREADSAFE_READDIR
+		#endif // !ARX_HAVE_THREADSAFE_READDIR
 		
 		do_readdir(m_handle, m_buffer);
 	}
