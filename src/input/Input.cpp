@@ -467,7 +467,7 @@ void Input::update(float time) {
 		iKeyId |= (modifier << 16);
 	}
 
-	if(iKeyId >= 0) {   //keys priority
+	if(iKeyId >= 0) {
 		switch(iKeyId) {
 			case Keyboard::Key_LeftShift:
 			case Keyboard::Key_RightShift:
@@ -948,15 +948,13 @@ bool Input::getMouseButtonDoubleClick(int buttonId) const {
 }
 
 int Input::getMouseButtonClicked() const {
-
-	//MouseButton
+	
 	for(int i = Mouse::ButtonBase; i < Mouse::ButtonMax; i++) {
 		if(getMouseButtonNowPressed(i)) {
 			return i;
 		}
 	}
-
-	//Wheel UP/DOWN
+	
 	if(iWheelDir < 0) {
 		return Mouse::Wheel_Down;
 	} else {
@@ -964,7 +962,7 @@ int Input::getMouseButtonClicked() const {
 			return Mouse::Wheel_Up;
 		}
 	}
-
+	
 	return 0;
 }
 
