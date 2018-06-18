@@ -64,14 +64,11 @@ public:
 	void setStream(PakFileHandle * stream);
 	aalError setPosition(size_t position);
 	
-	size_t getPosition();
-	
 	aalError read(void * buffer, size_t bufferSize, size_t & read);
 	
 private:
 	
 	PakFileHandle * m_stream;
-	size_t cursor;
 	
 };
 
