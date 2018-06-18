@@ -424,7 +424,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	LoadLevelScreen();
 	
 	
-	//Now LOAD Separate LLF Lighting File
+	// Now load a separate LLF lighting file
 	
 	free(dat);
 	pos = 0;
@@ -516,7 +516,6 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	long bcount = dll->nb_values;
 	LastLoadedLightningNb = bcount;
 	
-	//DANAE_LS_VLIGHTING
 	free(LastLoadedLightning);
 	ColorBGRA * ll = LastLoadedLightning = (ColorBGRA *)malloc(sizeof(ColorBGRA) * bcount);
 	if(dlh.version > 1.001f) {
