@@ -134,6 +134,10 @@ void ManageCombatModeAnimations();
 void ManageCombatModeAnimationsEND();
 void ManageNONCombatModeAnimations();
 
+/*!
+ * Returns IO under cursor, be it in inventories or in scene
+ * Returns NULL if no IO under cursor
+ */
 Entity * FlyingOverObject(const Vec2s & pos);
 
 void runGame();
