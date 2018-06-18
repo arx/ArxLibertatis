@@ -290,8 +290,6 @@ ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event,
 	return ret;
 }
 
-//*************************************************************************************
-//*************************************************************************************
 void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	
 	if(!io)
@@ -1513,9 +1511,6 @@ std::string ARX_SCRIPT_Timer_GetDefaultName() {
 	}
 }
 
-//*************************************************************************************
-// Get a free script timer
-//*************************************************************************************
 long ARX_SCRIPT_Timer_GetFree() {
 	
 	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
@@ -1526,17 +1521,10 @@ long ARX_SCRIPT_Timer_GetFree() {
 	return -1;
 }
 
-//*************************************************************************************
-// Count the number of active script timers...
-//*************************************************************************************
 long ARX_SCRIPT_CountTimers() {
 	return ActiveTimers;
 }
 
-//*************************************************************************************
-// ARX_SCRIPT_Timer_ClearByNum
-// Clears a timer by its Index (long timer_idx) on the timers list
-//*************************************************************************************
 void ARX_SCRIPT_Timer_ClearByNum(long timer_idx) {
 	if(scr_timer[timer_idx].exist) {
 		LogDebug("clearing timer " << scr_timer[timer_idx].name);
@@ -1566,10 +1554,8 @@ void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io)
 	}
 }
 
-//*************************************************************************************
-// Initialise the timer list for the first time.
-//*************************************************************************************
 long MAX_TIMER_SCRIPT = 0;
+
 void ARX_SCRIPT_Timer_FirstInit(long number)
 {
 	if (number < 100) number = 100;
