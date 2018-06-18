@@ -331,7 +331,8 @@ Out UTF8::write(Out it, Unicode chr) {
 		case 4 : bytes[3] = static_cast<u8>((chr | 0x80) & 0xBF); chr >>= 6; /* fall-through */
 		case 3 : bytes[2] = static_cast<u8>((chr | 0x80) & 0xBF); chr >>= 6; /* fall-through */
 		case 2 : bytes[1] = static_cast<u8>((chr | 0x80) & 0xBF); chr >>= 6; /* fall-through */
-		case 1 : bytes[0] = static_cast<u8>( chr | utf8FirstBytes[bytesToWrite]);
+		case 1 : bytes[0] = static_cast<u8>( chr | utf8FirstBytes[bytesToWrite]); break;
+		default: ARX_DEAD_CODE();
 	}
 	
 	// Add them to the output
@@ -340,7 +341,8 @@ Out UTF8::write(Out it, Unicode chr) {
 		case 4 : *it++ = *curByte++; /* fall-through */
 		case 3 : *it++ = *curByte++; /* fall-through */
 		case 2 : *it++ = *curByte++; /* fall-through */
-		case 1 : *it++ = *curByte++;
+		case 1 : *it++ = *curByte++; break;
+		default: ARX_DEAD_CODE();
 	}
 	
 	return it;
