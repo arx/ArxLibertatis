@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <cstring>
 
+#include <boost/noncopyable.hpp>
+
 #include "audio/AudioTypes.h"
 #include "platform/Platform.h"
 
@@ -86,7 +88,7 @@ private:
 };
 
 template <typename T, typename Handle = size_t>
-class ResourceList {
+class ResourceList : private boost::noncopyable {
 	
 	template <typename Tag, typename IndexType, IndexType InvalidValue>
 	static size_t get(HandleType<Tag, IndexType, InvalidValue> handle) {
