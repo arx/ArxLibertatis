@@ -136,46 +136,39 @@ static void UpDateKeyLight(int frame) {
 	
 	CinematicKeyframe * klightprev2, * klightnext2;
 	int num;
-
+	
 	CinematicKeyframe * k = SearchKey(frame, &num);
 	CinematicKeyframe * klightprev = k;
 	CinematicKeyframe * klightnext = k;
 	
 	CinematicKeyframe * kbase = k;
+	
+	// Look for the previous and next keyframes that change the light
+	
 	int num2 = num;
-
-	//on cherche le range de deux lights
-	//prev
 	while(num2) {
 		k--;
-
 		if((k->fx & CinematicFxAllMask) == FX_LIGHT) {
 			klightprev = k;
 			break;
 		}
-
 		num2--;
 	}
-
-	//next
+	
 	k = kbase;
 	num2 = num;
-
 	while(num2 < (CKTrack->nbkey - 1)) {
 		k++;
-
 		if((k->fx & CinematicFxAllMask) == FX_LIGHT) {
 			klightnext = k;
 			break;
 		}
-
 		num2++;
 	}
-
-	//on crépie le range avec ces deux valeurs
+	
 	kbase->light.prev = klightprev;
 	kbase->light.next = klightnext;
-
+	
 	if((kbase->fx & CinematicFxAllMask) == FX_LIGHT) {
 		klightprev2 = klightnext2 = kbase;
 	} else {
@@ -183,52 +176,45 @@ static void UpDateKeyLight(int frame) {
 		klightprev2 = klightprev;
 		klightnext2 = klightnext;
 	}
-
-	//prev
+	
 	k = kbase - 1;
-
 	while(k >= CKTrack->key) {
 		if(klightprev == kbase) {
 			k->light.intensity = -1.f;
 		}
-
 		k->light.next = klightnext2;
-
-		if((k->fx & CinematicFxAllMask) == FX_LIGHT)
+		if((k->fx & CinematicFxAllMask) == FX_LIGHT) {
 			break;
-
+		}
 		k->light.prev = klightprev;
 		k--;
 	}
-
-	//next
+	
 	k = kbase + 1;
-
 	while(k < (CKTrack->key + CKTrack->nbkey)) {
 		if(klightnext == kbase) {
 			k->light.intensity = -1.f;
 		}
-
 		k->light.prev = klightprev2;
-
-		if((k->fx & CinematicFxAllMask) == FX_LIGHT)
+		if((k->fx & CinematicFxAllMask) == FX_LIGHT) {
 			break;
-
+		}
 		k->light.next = klightnext;
 		k++;
 	}
+	
 }
 
 void UpDateAllKeyLight() {
 	
-	//update les lights
 	CinematicKeyframe * kk = CKTrack->key;
 	int nb = CKTrack->nbkey;
-
+	
 	while(nb--) {
 		UpDateKeyLight(kk->frame);
 		kk++;
 	}
+	
 }
 
 void AddKey(const CinematicKeyframe & key) {
@@ -554,7 +540,6 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 	c->m_lightd = lightnext->light;
 	
 	float alight = 0;
-	
 	if(lightprec != lightnext) {
 		alight = (CKTrack->currframe - (float)lightprec->frame) / ((float)(lightnext->frame - lightprec->frame));
 		if(alight > 1.f) {
@@ -564,7 +549,7 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 		if(current == (CKTrack->key + CKTrack->nbkey - 1)) {
 			alight = 1.f;
 		} else {
-			//alight can't be used because it is not initialized
+			// alight can't be used because it is not initialized
 			c->m_lightd = current->light;
 			lightprec = current;
 		}
