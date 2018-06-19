@@ -894,8 +894,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				const FAST_EERIEPOLY * ep = &eps[k];
 				EERIEPOLY * ep2 = &bkg.polydata[k];
 				
-				memset(ep2, 0, sizeof(EERIEPOLY));
-				
 				ep2->room = ep->room;
 				ep2->area = ep->area;
 				ep2->norm = ep->norm.toVec3();
@@ -926,6 +924,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				float div = 1.f / to;
 				
 				ep2->center = Vec3f_ZERO;
+				ep2->min = Vec3f_ZERO;
+				ep2->max = Vec3f_ZERO;
 				for(long h = 0; h < to; h++) {
 					ep2->center += ep2->v[h].p;
 					if(h != 0) {
@@ -943,6 +943,13 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 					dist = std::max(dist, d);
 				}
 				ep2->v[0].w = dist;
+				
+				
+				ep2->misc = 0;
+				for(int l = 0; l < 4; l++) {
+					ep2->uslInd[l] = 0;
+				}
+				
 			}
 			
 			if(fsi->nbianchors > 0) {
