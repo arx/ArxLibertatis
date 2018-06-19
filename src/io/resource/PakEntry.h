@@ -53,6 +53,7 @@ public:
 	
 	virtual void read(void * buf) const = 0;
 	char * readAlloc() const;
+	std::string read() const;
 	
 	virtual PakFileHandle * open() const = 0;
 	
