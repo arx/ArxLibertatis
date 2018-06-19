@@ -995,53 +995,45 @@ AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 	return ambiance_menu;
 }
 
-char * ARX_SOUND_AmbianceSavePlayList(size_t & size) {
+std::string ARX_SOUND_AmbianceSavePlayList() {
 	
-	unsigned long count(0);
-	PlayingAmbiance * play_list = NULL;
-	AmbianceId ambiance_id = audio::getNextAmbiance();
-
-	while (ambiance_id != AmbianceId())
-	{
+	std::string result;
+	
+	AmbianceId ambiance = audio::getNextAmbiance();
+	for(; ambiance != AmbianceId(); ambiance = audio::getNextAmbiance(ambiance)) {
+		
 		audio::PlayingAmbianceType type;
-		audio::getAmbianceType(ambiance_id, &type);
-
-		if (type == audio::PLAYING_AMBIANCE_SCRIPT || type == audio::PLAYING_AMBIANCE_ZONE)
-		{
-			void * ptr;
-			PlayingAmbiance * playing;
-
-			ptr = realloc(play_list, (count + 1) * sizeof(PlayingAmbiance));
-
-			if (!ptr) break;
-
-			play_list = (PlayingAmbiance *)ptr;
-			playing = &play_list[count];
-			
-			memset(playing->name, 0, sizeof(playing->name));
-			
-			res::path name;
-			audio::getAmbianceName(ambiance_id, name);
-			arx_assert(name.string().length() + 1 < ARRAY_SIZE(playing->name));
-			util::storeString(playing->name, name.string());
-			audio::getAmbianceVolume(ambiance_id, playing->volume);
-			playing->loop = audio::isAmbianceLooped(ambiance_id) ? ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
-			playing->type = (type == audio::PLAYING_AMBIANCE_SCRIPT ? 1 : 2);
-
-			count++;
+		audio::getAmbianceType(ambiance, &type);
+		if(type != audio::PLAYING_AMBIANCE_SCRIPT && type != audio::PLAYING_AMBIANCE_ZONE) {
+			continue;
 		}
-
-		ambiance_id = audio::getNextAmbiance(ambiance_id);
+		
+		result.resize(result.size() + sizeof(PlayingAmbiance));
+		
+		char * data = &result[result.size() - sizeof(PlayingAmbiance)];
+		PlayingAmbiance * playing = reinterpret_cast<PlayingAmbiance *>(data);
+		
+		memset(playing->name, 0, sizeof(playing->name));
+		res::path name;
+		audio::getAmbianceName(ambiance, name);
+		arx_assert(name.string().length() + 1 < ARRAY_SIZE(playing->name));
+		util::storeString(playing->name, name.string());
+		
+		audio::getAmbianceVolume(ambiance, playing->volume);
+		
+		playing->loop = audio::isAmbianceLooped(ambiance) ?  ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
+		
+		playing->type = (type == audio::PLAYING_AMBIANCE_SCRIPT ? 1 : 2);
+		
 	}
-
-	size = count * sizeof(PlayingAmbiance);
-	return reinterpret_cast<char *>(play_list);
+	
+	return result;
 }
 
-void ARX_SOUND_AmbianceRestorePlayList(const char * _play_list, size_t size) {
+void ARX_SOUND_AmbianceRestorePlayList(const char * playlist, size_t size) {
 	
 	size_t count = size / sizeof(PlayingAmbiance);
-	const PlayingAmbiance * play_list = reinterpret_cast<const PlayingAmbiance *>(_play_list);
+	const PlayingAmbiance * play_list = reinterpret_cast<const PlayingAmbiance *>(playlist);
 	
 	for(size_t i = 0; i < count; i++) {
 		

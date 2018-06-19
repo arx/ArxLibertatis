@@ -459,13 +459,12 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	                 + sizeof(ARX_CHANGELEVEL_PATH) * asi.nb_paths
 	                 + sizeof(ARX_CHANGELEVEL_LIGHT) * asi.nb_lights;
 	
-	size_t asize = 0;
-	char * playlist = ARX_SOUND_AmbianceSavePlayList(asize);
-	allocsize += asize;
+	std::string playlist = ARX_SOUND_AmbianceSavePlayList();
+	allocsize += long(playlist.size());
 	
 	char * dat = new char[allocsize];
 	
-	asi.ambiances_data_size = asize;
+	asi.ambiances_data_size = playlist.size();
 	memcpy(dat, &asi, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 	
@@ -497,11 +496,8 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		pos += sizeof(ARX_CHANGELEVEL_PATH);
 	}
 	
-	if(asi.ambiances_data_size > 0) {
-		memcpy(dat + pos, playlist, asi.ambiances_data_size);
-		pos += asi.ambiances_data_size;
-		free(playlist);
-	}
+	memcpy(dat + pos, playlist.data(), playlist.size());
+	pos += playlist.size();
 	
 	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		EERIE_LIGHT * el = g_staticLights[i];
