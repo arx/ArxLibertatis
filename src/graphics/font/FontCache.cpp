@@ -47,10 +47,7 @@ private:
 	
 	struct FontFile {
 		
-		size_t m_size;
-		char * m_data;
-		
-		FontFile() : m_size(0), m_data(NULL) { }
+		std::string m_data;
 		
 		FontMap m_sizes;
 		
@@ -118,10 +115,10 @@ Font * FontCache::Impl::getFont(const res::path & fontFile, unsigned int fontSiz
 
 Font * FontCache::Impl::create(const res::path & font, FontFile & file, unsigned int size) {
 	
-	if(!file.m_data) {
+	if(file.m_data.empty()) {
 		LogDebug("loading file " << font);
-		file.m_data = g_resources->readAlloc(font, file.m_size);
-		if(!file.m_data) {
+		file.m_data = g_resources->read(font);
+		if(file.m_data.empty()) {
 			return NULL;
 		}
 	}
@@ -130,8 +127,8 @@ Font * FontCache::Impl::create(const res::path & font, FontFile & file, unsigned
 	
 	// TODO The font face should be shared between multiple Font instances of the same file
 	FT_Face face;
-	const FT_Byte * data = reinterpret_cast<const FT_Byte *>(file.m_data);
-	FT_Error error = FT_New_Memory_Face(m_library, data, file.m_size, 0, &face);
+	const FT_Byte * data = reinterpret_cast<const FT_Byte *>(file.m_data.data());
+	FT_Error error = FT_New_Memory_Face(m_library, data, file.m_data.size(), 0, &face);
 	if(error == FT_Err_Unknown_File_Format) {
 		// the font file's format is unsupported
 		LogError << "Font creation error: FT_Err_Unknown_File_Format";
@@ -179,7 +176,6 @@ void FontCache::Impl::clean(const res::path & fontFile) {
 	
 	if(it != m_files.end() && it->second.m_sizes.empty()) {
 		LogDebug("unloading file " << fontFile);
-		free(it->second.m_data);
 		m_files.erase(it);
 	}
 }
