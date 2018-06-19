@@ -125,11 +125,11 @@ void ARX_SPELLS_UpdateBookSymbolDraw(const Rect & rect) {
 		timePerComponent = AnimationDurationMs(1);
 
 	AnimationDuration timeRemaining = elapsed;
-
+	
 	if(timeRemaining > sd->duration)
 		timeRemaining = sd->duration;
-
-	//keep size ratios among runes
+	
+	// Keep size ratios among runes
 	Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize) * g_sizeRatio);
 	Vec2f scale = glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y) * g_sizeRatio;
 
