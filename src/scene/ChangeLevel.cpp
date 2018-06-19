@@ -1766,12 +1766,13 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	
 	LogDebug("--> loading interactive object " << idString);
 	
-	size_t size = 0; // TODO size not used
-	char * dat = g_currentSavedGame->load(idString, size);
-	if(!dat) {
-		LogError << "Unable to Open " << idString << " for Read...";
+	std::string buffer = g_currentSavedGame->load(idString);
+	if(buffer.empty()) {
+		LogError << "Unable to read " << idString;
 		return NULL;
 	}
+	
+	const char * dat = buffer.data();
 	
 	size_t pos = 0;
 	
@@ -1780,21 +1781,18 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	
 	if(ais->version != ARX_GAMESAVE_VERSION) {
 		LogError << "Invalid PopIO version " << ais->version;
-		free(dat);
 		return NULL;
 	}
 	
 	if(ais->ioflags & IO_NOSAVE) {
 		// This item should not have been saved, yet here it is :(
 		LogWarning << "Tried to load entity that should never have been saved: " << idString;
-		free(dat);
 		return NULL;
 	}
 	
 	if(ais->show == SHOW_FLAG_DESTROYED || ais->show == SHOW_FLAG_KILLED) {
 		// Not supposed to happen anymore, but older saves have these (this is harmless bloat)
 		LogWarning << "Found destroyed entity " << idString << " in save file";
-		free(dat);
 		return NULL;
 	}
 	
@@ -2060,7 +2058,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		
 		if(!scriptLoaded) {
 			LogError << "Save file is corrupted, trying to fix " << idString;
-			free(dat);
 			RestoreInitialIOStatusOfIO(io);
 			SendInitScriptEvent(io);
 			return io;
@@ -2288,9 +2285,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		
 	}
 	
-	arx_assert_msg(pos <= size, "pos=%lu size=%lu", (unsigned long)pos, (unsigned long)size);
-	
-	free(dat);
+	arx_assert_msg(pos <= buffer.size(), "pos=%lu size=%lu", (unsigned long)pos, (unsigned long)buffer.size());
 	
 	return io;
 }
