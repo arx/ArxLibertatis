@@ -128,15 +128,13 @@ bool loadCinematic(Cinematic * c, const res::path & file) {
 	
 	LogInfo << "Loading cinematic " << file;
 	
-	size_t size;
-	char * data = g_resources->readAlloc(file, size);
-	if(!data) {
+	std::string buffer = g_resources->read(file);
+	if(buffer.empty()) {
 		LogError << "Cinematic " << file << " not found";
 		return false;
 	}
 	
-	bool ret = parseCinematic(c, data, size);
-	std::free(data);
+	bool ret = parseCinematic(c, buffer.data(), buffer.size());
 	if(!ret) {
 		LogError << "Could not load cinematic " << file;
 		c->New();
