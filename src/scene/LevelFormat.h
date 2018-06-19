@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCENE_LEVELFORMAT_H
 #define ARX_SCENE_LEVELFORMAT_H
 
+#include "graphics/Color.h"
 #include "graphics/GraphicsFormat.h"
 #include "platform/Platform.h"
 
@@ -98,9 +99,15 @@ struct DANAE_LS_LIGHTINGHEADER {
 };
 
 struct DANAE_LS_VLIGHTING {
+	
 	s32 r;
 	s32 g;
 	s32 b;
+	
+	operator ColorBGRA() const {
+		return Color(r & 255, g & 255, b & 255, 255).toBGRA();
+	}
+	
 };
 
 // version 1.003f
