@@ -109,12 +109,6 @@ static void ResetModelBatch(ModelBatch * tex) {
 	tex->list[BatchBucket_Multiplicative] = NULL;
 }
 
-static void ResetRoomBatches(RoomBatches & roomBatches) {
-	roomBatches.tMatRoomSize = 0;
-	free(roomBatches.tMatRoom);
-	roomBatches.tMatRoom = NULL;
-}
-
 TextureContainer::TextureContainer(const res::path & strName, TCFlags flags)
 	: m_texName(strName)
 {
@@ -139,7 +133,6 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags)
 
 	systemflags = 0;
 
-	m_roomBatches = RoomBatches();
 	m_modelBatch = ModelBatch();
 }
 
@@ -160,7 +153,6 @@ TextureContainer::~TextureContainer() {
 	}
 	
 	ResetModelBatch(&m_modelBatch);
-	ResetRoomBatches(m_roomBatches);
 }
 
 bool TextureContainer::LoadFile(const res::path & strPathname) {
