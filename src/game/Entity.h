@@ -293,7 +293,7 @@ public:
 	long changeanim;
 	
 	float weight;
-	std::string locname; //localisation
+	std::string locname; // Localisation key for the entity's name
 	GameFlags gameFlags;
 	float fall;
 
