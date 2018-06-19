@@ -160,7 +160,7 @@ void UpDateAllKeyLight() {
 
 struct HasFrame {
 	
-	HasFrame(int frame) : m_frame(frame) { }
+	explicit HasFrame(int frame) : m_frame(frame) { }
 	
 	bool operator()(const CinematicKeyframe & key) {
 		return key.frame == m_frame;
@@ -174,7 +174,7 @@ private:
 
 struct AfterFrame {
 	
-	AfterFrame(int frame) : m_frame(frame) { }
+	explicit AfterFrame(int frame) : m_frame(frame) { }
 	
 	bool operator()(const CinematicKeyframe & key) {
 		return key.frame > m_frame;
