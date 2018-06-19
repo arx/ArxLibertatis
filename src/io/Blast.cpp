@@ -462,29 +462,6 @@ size_t blastInMem(void * Param, const unsigned char ** buf) {
 	return size;
 }
 
-int blastOutMemRealloc(void * Param, unsigned char * buf, size_t len) {
-	
-	BlastMemOutBufferRealloc * p = (BlastMemOutBufferRealloc *)Param;
-	
-	if(p->fillSize + len > p->allocSize) {
-		p->allocSize = (p->fillSize + len) * 4 / 3;
-		char * newBuf = (char *)realloc(p->buf, p->allocSize);
-		if(!newBuf) {
-			free(p->buf);
-			p->allocSize = 0;
-			p->fillSize = 0;
-			return 1;
-		}
-		p->buf = newBuf;
-	}
-	
-	memcpy(p->buf + p->fillSize, buf, len);
-	
-	p->fillSize += len;
-	
-	return 0;
-}
-
 int blastOutString(void * Param, unsigned char * buf, size_t len) {
 	
 	BlastMemOutString * p = (BlastMemOutString *)Param;
@@ -492,38 +469,6 @@ int blastOutString(void * Param, unsigned char * buf, size_t len) {
 	p->buffer.append((char *)buf, len);
 	
 	return 0;
-}
-
-char * blastMemAlloc(const char * from, size_t fromSize, size_t & toSize) {
-	
-	BlastMemInBuffer in(from, fromSize);
-	BlastMemOutBufferRealloc out;
-	
-	BlastResult error = blast(blastInMem, &in, blastOutMemRealloc, &out);
-	if(error) {
-		LogError << "blastMemAlloc error " << error << " for " << fromSize;
-		toSize = 0;
-		return NULL;
-	}
-	
-	// TODO realloc to fit fill size?
-	
-	toSize = out.fillSize;
-	return out.buf;
-}
-
-size_t blastMem(const char * from, size_t fromSize, char * to, size_t toSize) {
-	
-	BlastMemInBuffer in(from, fromSize);
-	BlastMemOutBuffer out(to, toSize);
-	
-	BlastResult error = blast(blastInMem, &in, blastOutMem, &out);
-	if(error) {
-		LogError << "blastMem error " << error << " for " << fromSize << "/" << toSize;
-		return 0;
-	}
-	
-	return toSize - out.size;
 }
 
 std::string blast(const char * from, size_t fromSize, size_t toSizeHint) {

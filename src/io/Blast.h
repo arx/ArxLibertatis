@@ -116,18 +116,6 @@ struct BlastMemInBuffer {
 	
 };
 
-struct BlastMemOutBufferRealloc {
-	
-	char * buf;
-	
-	size_t allocSize;
-	size_t fillSize;
-	
-	explicit BlastMemOutBufferRealloc(char * b = NULL, size_t alloc = 0, size_t fill = 0)
-		: buf(b), allocSize(alloc), fillSize(fill) { }
-	
-};
-
 struct BlastMemOutString {
 	
 	std::string & buffer;
@@ -149,31 +137,9 @@ int blastOutMem(void * Param, unsigned char * buf, size_t len);
 size_t blastInMem(void * Param, const unsigned char ** buf);
 
 /*!
- * Writes data to a BlastMemOutBufferRealloc.
- * Increases fillSize and resizes the buffer if needed.
- * Uses realloc() for resize:
- *  - If there is an intitial buffer, it must be allocated with malloc()
- *  - The final buffer must be deallocated using free(), not delete
- */
-int blastOutMemRealloc(void * Param, unsigned char * buf, size_t len);
-
-/*!
  * Writes data to a BlastMemOutString.
  */
 int blastOutString(void * Param, unsigned char * buf, size_t len);
-
-/*!
- * Decompress data and allocate memory as needed.
- * Returned pointer should be deallocated using free(), not delete.
- * 
- * If the uncompressed size is known, always uses blastMem instead.
- */
-char * blastMemAlloc(const char * from, size_t fromSize, size_t & toSize);
-
-/*!
- * Decompress data.
- */
-size_t blastMem(const char * from, size_t fromSize, char * to, size_t toSize);
 
 /*!
  * Decompress data.
