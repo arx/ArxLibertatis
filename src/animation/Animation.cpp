@@ -170,20 +170,19 @@ ANIM_HANDLE::ANIM_HANDLE() {
 }
 
 static void ReleaseAnim(EERIE_ANIM * ea) {
-
-	if(!ea)
+	
+	if(!ea) {
 		return;
-
-	if(ea->frames) {
-		for(long i = 0; i < ea->nb_key_frames; i++) {
-			ARX_SOUND_Free(ea->frames[i].sample);
-		}
-		free(ea->frames);
 	}
-
+	
+	BOOST_FOREACH(EERIE_FRAME & frame, ea->frames) {
+		ARX_SOUND_Free(frame.sample);
+	}
+	
 	free(ea->groups);
 	free(ea->voidgroups);
 	delete ea;
+	
 }
 
 void EERIE_ANIMMANAGER_PurgeUnused() {
@@ -225,15 +224,17 @@ static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const res::path & path) {
 
 static float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2) {
 	
-	if(!ea || f1 < 0 || f1 > ea->nb_key_frames - 1 || f2 < 0 || f2 > ea->nb_key_frames - 1)
+	if(!ea || f1 < 0 || f1 > long(ea->frames.size()) - 1
+	   || f2 < 0 || f2 > long(ea->frames.size()) - 1) {
 		return 0;
-
+	}
+	
 	AnimationDuration time = 0;
-
+	
 	for(long kk = f1 + 1; kk <= f2; kk++) {
 		time += ea->frames[kk].time;
 	}
-
+	
 	return toMsf(time);
 }
 
@@ -260,9 +261,8 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	         << "  Groups " << th->nb_groups << "  KeyFrames " << th->nb_key_frames);
 	
 	eerie->nb_groups = th->nb_groups;
-	eerie->nb_key_frames = th->nb_key_frames;
 	
-	eerie->frames = allocStructZero<EERIE_FRAME>(th->nb_key_frames);
+	eerie->frames.resize(th->nb_key_frames);
 	eerie->groups = allocStructZero<EERIE_GROUP>(th->nb_key_frames * th->nb_groups);
 	eerie->voidgroups = allocStructZero<unsigned char>(th->nb_groups);
 
@@ -433,8 +433,8 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	for(long i = 0; i < eerie->nb_groups; i++) {
 
 		bool voidd = true;
-		for(long j = 0; j < eerie->nb_key_frames; j++) {
-			long group = i + (j * eerie->nb_groups);
+		for(size_t j = 0; j < eerie->frames.size(); j++) {
+			long group = i + (long(j) * eerie->nb_groups);
 
 			if(   eerie->groups[group].quat != glm::quat()
 			   || eerie->groups[group].translate != Vec3f_ZERO
@@ -548,11 +548,10 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
  */
 Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx) {
 	
-	if(!eanim || !eanim->anims[alt_idx] || !eanim->anims[alt_idx]->frames
-	   || eanim->anims[alt_idx]->nb_key_frames <= 0) {
+	if(!eanim || !eanim->anims[alt_idx] || eanim->anims[alt_idx]->frames.empty()) {
 		return Vec3f_ZERO;
 	} else {
-		long idx = eanim->anims[alt_idx]->nb_key_frames - 1;
+		size_t idx = eanim->anims[alt_idx]->frames.size() - 1;
 		return eanim->anims[alt_idx]->frames[idx].translate;
 	}
 }
@@ -614,18 +613,18 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 	
 	EERIE_ANIM * anim = layer.cur_anim->anims[layer.altidx_cur];
 	
-	layer.currentFrame = anim->nb_key_frames - 2;
+	layer.currentFrame = long(anim->frames.size()) - 2;
 	layer.currentInterpolation = 1.f;
 	
-	for(long i = 1; i < anim->nb_key_frames; i++) {
+	for(size_t i = 1; i < anim->frames.size(); i++) {
 		AnimationDuration tcf = anim->frames[i - 1].time;
 		AnimationDuration tnf = anim->frames[i].time;
 
 		if(tcf == tnf)
 			return;
 
-		if((tim < tnf && tim >= tcf) || (i == anim->nb_key_frames - 1 && tim == tnf)) {
-			long fr = i - 1;
+		if((tim < tnf && tim >= tcf) || (i == anim->frames.size() - 1 && tim == tnf)) {
+			long fr = long(i) - 1;
 			tim -= tcf;
 			float pour = toMsf(tim) / toMsf(tnf - tcf);
 			
@@ -744,7 +743,7 @@ std::vector< std::pair<res::path, size_t> > ARX_SOUND_PushAnimSamples() {
 		if(!animations[i].path.empty()) {
 			for(long j = 0; j < animations[i].alt_nb; j++) {
 				EERIE_ANIM * anim = animations[i].anims[j];
-				for(long k = 0; k < anim->nb_key_frames; k++) {
+				for(size_t k = 0; k < anim->frames.size(); k++) {
 					number++;
 					if(anim->frames[k].sample != -1) {
 						res::path dest;
@@ -775,7 +774,7 @@ void ARX_SOUND_PopAnimSamples(const std::vector< std::pair<res::path, size_t> > 
 		if(!animations[i].path.empty()) {
 			for(long j = 0; j < animations[i].alt_nb; j++) {
 				EERIE_ANIM * anim = animations[i].anims[j];
-				for(long k = 0; k < anim->nb_key_frames; k++) {
+				for(size_t k = 0; k < anim->frames.size(); k++) {
 					number++;
 					if(p != samples.end() && p->second == number) {
 						anim->frames[k].sample = audio::createSample(p->first);

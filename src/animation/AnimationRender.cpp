@@ -1205,14 +1205,14 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 	if(layer.currentFrame < 0) {
 		layer.currentFrame = 0;
 		layer.currentInterpolation = 0.f;
-	} else if(layer.currentFrame >= eanim->nb_key_frames - 1) {
-		layer.currentFrame = eanim->nb_key_frames - 2;
+	} else if(layer.currentFrame >= long(eanim->frames.size()) - 1) {
+		layer.currentFrame = long(eanim->frames.size()) - 2;
 		layer.currentInterpolation = 1.f;
 	}
 	layer.currentInterpolation = glm::clamp(layer.currentInterpolation, 0.f, 1.f);
 	
 	// FIXME animation indices prevent invalid memory access, should be fixed properly
-	if(layer.currentFrame < 0 || layer.currentFrame + 1 >= eanim->nb_key_frames)
+	if(layer.currentFrame < 0 || layer.currentFrame + 1 >= long(eanim->frames.size()))
 		return Vec3f_ZERO;
 	
 	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
@@ -1285,14 +1285,14 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 		if(layer.currentFrame < 0) {
 			layer.currentFrame = 0;
 			layer.currentInterpolation = 0.f;
-		} else if(layer.currentFrame >= eanim->nb_key_frames - 1) {
-			layer.currentFrame = eanim->nb_key_frames - 2;
+		} else if(layer.currentFrame >= long(eanim->frames.size()) - 1) {
+			layer.currentFrame = long(eanim->frames.size()) - 2;
 			layer.currentInterpolation = 1.f;
 		}
 		layer.currentInterpolation = glm::clamp(layer.currentInterpolation, 0.f, 1.f);
 		
 		// FIXME animation indices are sometimes negative
-		layer.currentFrame = glm::clamp(layer.currentFrame, 0l, eanim->nb_key_frames - 1l);
+		layer.currentFrame = glm::clamp(layer.currentFrame, 0l, long(eanim->frames.size()) - 1l);
 		
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
 		int l = std::min(long(obj->bones.size() - 1), eanim->nb_groups - 1);
@@ -1307,7 +1307,7 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 			if(!eanim->voidgroups[j])
 				grps[j] = 1;
 
-			if(eanim->nb_key_frames != 1) {
+			if(eanim->frames.size() != 1) {
 				Bone & bone = obj->bones[j];
 
 				BoneTransform temp;
