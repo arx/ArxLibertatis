@@ -308,16 +308,13 @@ struct EP_DATA {
 struct EERIE_ROOM_DATA {
 	
 	std::vector<long> portals;
-	long nb_polys;
-	EP_DATA * epdata;
+	std::vector<EP_DATA> epdata;
 	unsigned short * indexBuffer;
 	VertexBuffer<SMY_VERTEX> * pVertexBuffer;
 	std::vector<TextureContainer *> ppTextureContainer;
 
 	EERIE_ROOM_DATA()
-		: nb_polys()
-		, epdata()
-		, indexBuffer()
+		: indexBuffer()
 		, pVertexBuffer()
 	{ }
 	
