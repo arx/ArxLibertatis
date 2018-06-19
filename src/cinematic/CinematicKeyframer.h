@@ -84,7 +84,6 @@ struct CinematicTrack {
 
 void DeleteTrack();
 void AllocTrack(int ef, float fps);
-void AddKey(const CinematicKeyframe & key);
 void AddKeyLoad(const CinematicKeyframe & key);
 void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool play);
 
