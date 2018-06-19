@@ -61,9 +61,8 @@ static int main_extract(SaveBlock & save, const std::vector<std::string> & args)
 	
 	for(std::vector<std::string>::iterator file = files.begin(); file != files.end(); ++file) {
 		
-		size_t size;
-		char * data = save.load(*file, size);
-		if(!data) {
+		std::string buffer = save.load(*file);
+		if(buffer.empty()) {
 			std::cerr << "error loading " << *file << " from save\n";
 			continue;
 		}
@@ -71,15 +70,13 @@ static int main_extract(SaveBlock & save, const std::vector<std::string> & args)
 		fs::ofstream h(*file, std::ios_base::out | std::ios_base::binary);
 		if(!h.is_open()) {
 			std::cerr << "error opening " << *file << " for writing\n";
-			free(data);
 			continue;
 		}
 		
-		if(h.write(data, size).fail()) {
+		if(h.write(buffer.data(), buffer.size()).fail()) {
 			std::cerr << "error writing to " << *file << '\n';
 		}
 		
-		free(data);
 	}
 	
 	return 0;
