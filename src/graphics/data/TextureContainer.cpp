@@ -79,36 +79,6 @@ TextureContainer * GetTextureList() {
 	return g_ptcTextureList;
 }
 
-static void ResetModelBatch(ModelBatch * tex) {
-	
-	if(!tex) {
-		return;
-	}
-	
-	tex->count[BatchBucket_Opaque] = 0;
-	tex->count[BatchBucket_Blended] = 0;
-	tex->count[BatchBucket_Additive] = 0;
-	tex->count[BatchBucket_Subtractive] = 0;
-	tex->count[BatchBucket_Multiplicative] = 0;
-	
-	tex->max[BatchBucket_Opaque] = 0;
-	tex->max[BatchBucket_Blended] = 0;
-	tex->max[BatchBucket_Additive] = 0;
-	tex->max[BatchBucket_Subtractive] = 0;
-	tex->max[BatchBucket_Multiplicative] = 0;
-	
-	free(tex->list[BatchBucket_Opaque]);
-	tex->list[BatchBucket_Opaque] = NULL;
-	free(tex->list[BatchBucket_Blended]);
-	tex->list[BatchBucket_Blended] = NULL;
-	free(tex->list[BatchBucket_Additive]);
-	tex->list[BatchBucket_Additive] = NULL;
-	free(tex->list[BatchBucket_Subtractive]);
-	tex->list[BatchBucket_Subtractive] = NULL;
-	free(tex->list[BatchBucket_Multiplicative]);
-	tex->list[BatchBucket_Multiplicative] = NULL;
-}
-
 TextureContainer::TextureContainer(const res::path & strName, TCFlags flags)
 	: m_texName(strName)
 {
@@ -130,10 +100,9 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags)
 		m_pNext = g_ptcTextureList;
 		g_ptcTextureList = this;
 	}
-
+	
 	systemflags = 0;
-
-	m_modelBatch = ModelBatch();
+	
 }
 
 TextureContainer::~TextureContainer() {
@@ -152,7 +121,6 @@ TextureContainer::~TextureContainer() {
 		}
 	}
 	
-	ResetModelBatch(&m_modelBatch);
 }
 
 bool TextureContainer::LoadFile(const res::path & strPathname) {
