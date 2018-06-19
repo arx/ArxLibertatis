@@ -90,21 +90,15 @@ size_t Image::getNumChannels(Image::Format format) {
 
 bool Image::load(const res::path & filename) {
 	
-	size_t size = 0;
-	void * data = g_resources->readAlloc(filename, size);
-	
-	if(!data) {
+	std::string buffer = g_resources->read(filename);
+	if(buffer.empty()) {
 		return false;
 	}
 	
-	bool ret = load(data, size, filename.string().c_str());
-	
-	free(data);
-	
-	return ret;
+	return load(buffer.data(), buffer.size(), filename.string().c_str());
 }
 
-bool Image::load(void * data, size_t size, const char * file) {
+bool Image::load(const char * data, size_t size, const char * file) {
 	
 	if(!data) {
 		return false;
