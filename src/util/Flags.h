@@ -98,7 +98,7 @@ public:
 		return r;
 	}
 	
-	Flags & operator&=(const Flags & o) {
+	Flags & operator&=(Flags o) {
 		m_flags &= o.m_flags;
 		return *this;
 	}
