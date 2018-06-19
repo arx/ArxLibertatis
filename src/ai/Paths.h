@@ -109,7 +109,7 @@ struct ARX_PATH {
 	Vec3f bbmin;
 	Vec3f bbmax;
 	
-	Vec3f interpolateCurve(size_t i, float step);
+	Vec3f interpolateCurve(size_t i, float step) const;
 	
 };
 
@@ -144,8 +144,7 @@ enum PathMod {
 DECLARE_FLAGS(PathMod, PathMods)
 DECLARE_FLAGS_OPERATORS(PathMods)
 
-extern ARX_PATH ** ARXpaths;
-extern long nbARXpaths;
+extern std::vector<ARX_PATH *> g_paths;
 
 void ARX_PATH_UpdateAllZoneInOutInside();
 long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos);

@@ -72,8 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-ARX_PATH ** ARXpaths = NULL;
-long nbARXpaths = 0;
+std::vector<ARX_PATH *> g_paths;
 
 static void ARX_PATH_ComputeBB(ARX_PATH * ap) {
 	
@@ -97,9 +96,9 @@ static void ARX_PATH_ComputeBB(ARX_PATH * ap) {
 }
 
 void ARX_PATH_ComputeAllBoundingBoxes() {
-	for(long i = 0; i < nbARXpaths; i++) {
-		if(ARXpaths[i]) {
-			ARX_PATH_ComputeBB(ARXpaths[i]);
+	BOOST_FOREACH(ARX_PATH * path, g_paths) {
+		if(path) {
+			ARX_PATH_ComputeBB(path);
 		}
 	}
 }
@@ -128,35 +127,28 @@ long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos) {
 	return c;
 }
 
-static ARX_PATH * ARX_PATH_CheckInZone(Entity * io) {
-	arx_assert(io);
+static ARX_PATH * ARX_PATH_CheckInZone(const Vec3f & pos) {
 	
-	if(ARXpaths) {
-		Vec3f curpos = GetItemWorldPosition(io);
-
-		for(long i = 0; i < nbARXpaths; i++) {
-			if(ARXpaths[i] && ARXpaths[i]->height != 0) {
-				if(ARX_PATH_IsPosInZone(ARXpaths[i], curpos))
-					return ARXpaths[i];
+	BOOST_FOREACH(ARX_PATH * path, g_paths) {
+		if(path && path->height != 0) {
+			if(ARX_PATH_IsPosInZone(path, pos)) {
+				return path;
 			}
 		}
 	}
-
+	
 	return NULL;
+}
+
+static ARX_PATH * ARX_PATH_CheckInZone(Entity * io) {
+	arx_assert(io);
+	return ARX_PATH_CheckInZone(GetItemWorldPosition(io));
 }
 
 static ARX_PATH * ARX_PATH_CheckPlayerInZone() {
-	if(ARXpaths) {
-		for(long i = 0; i < nbARXpaths; i++) {
-			if(ARXpaths[i] && ARXpaths[i]->height != 0) {
-				if(ARX_PATH_IsPosInZone(ARXpaths[i], player.pos + Vec3f(0.f, 160.f, 0.f)))
-					return ARXpaths[i];
-			}
-		}
-	}
-
-	return NULL;
+	return ARX_PATH_CheckInZone(player.pos + Vec3f(0.f, 160.f, 0.f));
 }
+
 long JUST_RELOADED = 0;
 
 static void EntityEnteringCurrentZone(Entity * io, ARX_PATH * current) {
@@ -375,22 +367,22 @@ void ARX_PATH_ClearAllUsePath() {
 }
 
 void ARX_PATH_ClearAllControled() {
-	for(long i = 0; i < nbARXpaths; i++) {
-		if(ARXpaths[i]) {
-			ARXpaths[i]->controled.clear();
+	BOOST_FOREACH(ARX_PATH * path, g_paths) {
+		if(path) {
+			path->controled.clear();
 		}
 	}
 }
 
 ARX_PATH * ARX_PATH_GetAddressByName(const std::string & name) {
 
-	if(name.empty() || !ARXpaths) {
+	if(name.empty()) {
 		return NULL;
 	}
 	
-	for(long i = 0; i < nbARXpaths; i++) {
-		if(ARXpaths[i] && ARXpaths[i]->name == name) {
-			return ARXpaths[i];
+	BOOST_FOREACH(ARX_PATH * path, g_paths) {
+		if(path && path->name == name) {
+			return path;
 		}
 	}
 	
@@ -401,19 +393,15 @@ void ARX_PATH_ReleaseAllPath() {
 	
 	ARX_PATH_ClearAllUsePath();
 	
-	for(long i = 0; i < nbARXpaths; i++) {
-		if(ARXpaths[i]) {
-			delete ARXpaths[i];
-			ARXpaths[i] = NULL;
-		}
+	BOOST_FOREACH(ARX_PATH * path, g_paths) {
+		delete path;
 	}
 	
-	free(ARXpaths);
-	ARXpaths = NULL;
-	nbARXpaths = 0;
+	g_paths.clear();
+	
 }
 
-Vec3f ARX_PATH::interpolateCurve(size_t i, float step) {
+Vec3f ARX_PATH::interpolateCurve(size_t i, float step) const {
 	Vec3f p0 = pathways[i + 0].rpos, p1 = pathways[i + 1].rpos, p2 = pathways[i + 2].rpos;
 	return pos + p0 * (1 - step) + p1 * (step - square(step)) + p2 * square(step);
 }

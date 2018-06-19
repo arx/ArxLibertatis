@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits>
 #include <ctime>
 
+#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
@@ -427,7 +428,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	memset(&asi, 0, sizeof(asi));
 	asi.version       = ARX_GAMESAVE_VERSION;
 	asi.nb_inter      = 0;
-	asi.nb_paths      = nbARXpaths;
+	asi.nb_paths      = g_paths.size();
 	asi.time          = toMsi(g_gameTime.now()); // TODO save/load time
 	asi.nb_lights     = 0;
 	asi.gmods_stacked = GLOBAL_MODS();
@@ -488,11 +489,11 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		}
 	}
 	
-	for(int i = 0; i < nbARXpaths; i++) {
+	BOOST_FOREACH(const ARX_PATH * path, g_paths) {
 		ARX_CHANGELEVEL_PATH * acp = reinterpret_cast<ARX_CHANGELEVEL_PATH *>(dat + pos);
 		memset(acp, 0, sizeof(ARX_CHANGELEVEL_PATH));
-		util::storeString(acp->name, ARXpaths[i]->name);
-		util::storeString(acp->controled, ARXpaths[i]->controled);
+		util::storeString(acp->name, path->name);
+		util::storeString(acp->controled, path->controled);
 		pos += sizeof(ARX_CHANGELEVEL_PATH);
 	}
 	
