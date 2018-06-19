@@ -1113,8 +1113,8 @@ struct SavedCamera {
 		clip = Rect::ZERO;
 		clipz0 = 0.0f;
 		clipz1 = 0.0f;
-		centerx = 0.f;
-		centery = 0.f;
+		centerx = 0;
+		centery = 0;
 		
 		AddX = 0.f;
 		AddY = 0.f;
