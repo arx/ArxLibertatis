@@ -170,11 +170,6 @@ bool isLocalVariable(const std::string & name);
 
 std::ostream & operator<<(std::ostream & os, const SCRIPT_VAR & var);
 
-struct LABEL_INFO {
-	char * string;
-	long idx;
-};
-
 enum DisabledEvent {
 	DISABLE_HIT             = 1 << 0,
 	DISABLE_CHAT            = 1 << 1,
@@ -197,13 +192,9 @@ struct EERIE_SCRIPT {
 	bool valid;
 	std::string data;
 	long shortcut[SM_MAXCMD];
-	long nb_labels;
-	LABEL_INFO * labels;
 
 	EERIE_SCRIPT()
 		: valid(false)
-		, nb_labels(0)
-		, labels(NULL)
 	{
 		memset(&shortcut, 0, sizeof(shortcut));
 	}

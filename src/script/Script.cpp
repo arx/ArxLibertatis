@@ -379,20 +379,6 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 	
 }
 
-static void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es) {
-	
-	if(!es || !es->labels) {
-		return;
-	}
-	
-	for(long i = 0; i < es->nb_labels; i++) {
-		free(es->labels[i].string);
-	}
-	free(es->labels);
-	es->labels = NULL;
-	es->nb_labels = 0;
-}
-
 void ReleaseScript(EERIE_SCRIPT * es) {
 	
 	if(!es) {
@@ -403,7 +389,6 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	
 	es->data.clear();
 	
-	ARX_SCRIPT_ReleaseLabels(es);
 	memset(es->shortcut, 0, sizeof(long) * SM_MAXCMD);
 	
 }
