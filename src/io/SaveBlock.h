@@ -95,6 +95,8 @@ private:
 		
 		char * loadData(std::istream & handle, size_t & size, const std::string & name) const;
 		
+		std::string loadData(std::istream & handle, const std::string & name) const;
+		
 	};
 	
 	typedef boost::unordered_map<std::string, File> Files;
@@ -146,6 +148,7 @@ public:
 	void remove(const std::string & name);
 	
 	char * load(const std::string & name, size_t & size);
+	std::string load(const std::string & name);
 	bool hasFile(const std::string & name) const;
 	
 	std::vector<std::string> getFiles() const;
