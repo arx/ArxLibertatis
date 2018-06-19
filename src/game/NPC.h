@@ -68,10 +68,10 @@ enum BehaviourFlag {
 	BEHAVIOUR_NONE          = 1 << 0, // no pathfind
 	BEHAVIOUR_FRIENDLY      = 1 << 1, // no pathfind
 	BEHAVIOUR_MOVE_TO       = 1 << 2,
-	BEHAVIOUR_WANDER_AROUND = 1 << 3, //behavior_param = distance
-	BEHAVIOUR_FLEE          = 1 << 4, //behavior_param = distance
-	BEHAVIOUR_HIDE          = 1 << 5, //behavior_param = distance
-	BEHAVIOUR_LOOK_FOR      = 1 << 6, //behavior_param = distance
+	BEHAVIOUR_WANDER_AROUND = 1 << 3, // behavior_param = distance
+	BEHAVIOUR_FLEE          = 1 << 4, // behavior_param = distance
+	BEHAVIOUR_HIDE          = 1 << 5, // behavior_param = distance
+	BEHAVIOUR_LOOK_FOR      = 1 << 6, // behavior_param = distance
 	BEHAVIOUR_SNEAK         = 1 << 7,
 	BEHAVIOUR_FIGHT         = 1 << 8,
 	BEHAVIOUR_DISTANT       = 1 << 9,
