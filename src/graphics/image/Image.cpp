@@ -606,7 +606,7 @@ void Image::flipY() {
 	size_t imageSize = getSize();
 	size_t lineSize = getSize(getFormat(), getWidth(), 1);
 	
-	unsigned char * swapTmp = (unsigned char *)malloc(lineSize);
+	unsigned char * swapTmp = new unsigned char[lineSize];
 	arx_assert(swapTmp);
 	
 	unsigned char * top = getData();
@@ -622,7 +622,7 @@ void Image::flipY() {
 		bottom -= lineSize;
 	}
 	
-	free(swapTmp);
+	delete[] swapTmp;
 	
 }
 
