@@ -198,7 +198,7 @@ void PathFinderThread::run() {
 		}
 		
 		if(!result.empty()) {
-			long * list = (long *)malloc(result.size() * sizeof(long));
+			long * list = new long[result.size()];
 			std::copy(result.begin(), result.end(), list);
 			// TODO potential memory leak
 			request.entity->_npcdata->pathfind.list = list;
