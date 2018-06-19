@@ -453,8 +453,6 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		}
 		
 		eobj->vertexlocal = new Vec3f[eobj->vertexlist.size()];
-		// TODO constructor is better than memset
-		memset(eobj->vertexlocal, 0, sizeof(Vec3f) * eobj->vertexlist.size());
 		
 		for(size_t i = 0; i != obj->bones.size(); i++) {
 			const Bone & bone = obj->bones[i];
