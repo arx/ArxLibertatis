@@ -601,23 +601,22 @@ static void print_ident(SaveBlock & save, const std::string & ident) {
 		return;
 	}
 	
-	size_t size;
-	char * dat = save.load(ident, size);
-	if(!dat) {
+	std::string buffer = save.load(ident);
+	if(buffer.empty()) {
 		std::cout << " (unknown)";
 		return;
 	}
 	
+	const char * dat = buffer.data();
+	
 	size_t pos = 0;
-	ARX_CHANGELEVEL_IO_SAVE & ais = *reinterpret_cast<ARX_CHANGELEVEL_IO_SAVE *>(dat + pos);
+	const ARX_CHANGELEVEL_IO_SAVE & ais = *reinterpret_cast<const ARX_CHANGELEVEL_IO_SAVE *>(dat + pos);
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
-	if(pos > size) {
+	if(pos > buffer.size()) {
 		std::cout << " (bad save)";
-		free(dat);
 		return;
 	} else if(ais.version != ARX_GAMESAVE_VERSION) {
 		std::cout << " (bad version: " << ais.version << ')';
-		free(dat);
 		return;
 	}
 	
@@ -635,7 +634,6 @@ static void print_ident(SaveBlock & save, const std::string & ident) {
 	print_type(ais.savesystem_type);
 	std::cout << ')';
 	
-	free(dat);
 }
 
 template <size_t M, size_t N>
@@ -1928,9 +1926,8 @@ int main_view(SaveBlock & save, const std::vector<std::string> & args) {
 	
 	const std::string & name = args[0];
 	
-	size_t size;
-	char * dat = save.load(name, size);
-	if(!dat) {
+	std::string buffer = save.load(name);
+	if(buffer.empty()) {
 		std::cerr << name << " not found\n";
 		return 3;
 	}
@@ -1939,18 +1936,16 @@ int main_view(SaveBlock & save, const std::vector<std::string> & args) {
 	
 	int ret;
 	if(name == "pld") {
-		ret = view_pld(dat, size);
+		ret = view_pld(buffer.data(), buffer.size());
 	} else if(name == "player") {
-		ret = view_player(save, dat, size);
+		ret = view_player(save, buffer.data(), buffer.size());
 	} else if(name == "globals") {
-		ret = view_globals(dat, size);
+		ret = view_globals(buffer.data(), buffer.size());
 	} else if(is_level(name)) {
-		ret = view_level(save, dat, size);
+		ret = view_level(save, buffer.data(), buffer.size());
 	} else {
-		ret = view_io(save, dat, size);
+		ret = view_io(save, buffer.data(), buffer.size());
 	}
-	
-	free(dat);
 	
 	return ret;
 }
