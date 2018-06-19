@@ -166,10 +166,8 @@ public:
 	 * 
 	 * \param savefile the save block to load from
 	 * \param name the file to load
-	 * \param size will be set to the loaded size
-	 * \return a new, malloc-allocated buffer or NULL if eiether the saveblock could not be opened or doesn't contain a file with the given name.
 	 */
-	static char * load(const fs::path & savefile, const std::string & name, size_t & size);
+	static std::string load(const fs::path & savefile, const std::string & name);
 	
 };
 

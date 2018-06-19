@@ -2665,24 +2665,19 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 		return false;
 	}
 	
-	size_t size;
-	char * dat = SaveBlock::load(savefile, "pld", size);
-	if(!dat) {
+	std::string buffer = SaveBlock::load(savefile, "pld");
+	if(buffer.size() < sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA)) {
 		LogError << "Unable to open pld in " << savefile;
 		return false;
 	}
 	
 	// Stores Data in pld
-	memcpy(&pld, dat, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
+	std::memcpy(&pld, buffer.data(), sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
 	
 	if(pld.version != ARX_GAMESAVE_VERSION) {
 		LogError << "Invalid GameSave Version";
-		free(dat);
 		return false;
 	}
-	
-	// Release Data
-	free(dat);
 	
 	return true;
 }

@@ -691,33 +691,31 @@ std::vector<std::string> SaveBlock::getFiles() const {
 	return result;
 }
 
-char * SaveBlock::load(const fs::path & savefile, const std::string & name, size_t & size) {
+std::string SaveBlock::load(const fs::path & savefile, const std::string & name) {
 	
 	arx_assert_msg(name.find_first_of(BADSAVCHAR) == std::string::npos,
 	               "bad save filename: \"%s\"", name.c_str());
 	
 	LogDebug("reading savefile " << savefile);
 	
-	size = 0;
-	
 	fs::ifstream handle(savefile, fs::fstream::in | fs::fstream::binary);
 	if(!handle.is_open()) {
 		LogWarning << "Cannot open save file " << savefile;
-		return NULL;
+		return std::string();
 	}
 	
 	u32 fatOffset;
 	if(fs::read(handle, fatOffset).fail()) {
-		return NULL;
+		return std::string();
 	}
 	if(handle.seekg(fatOffset + 4).fail()) {
 		LogError << "Cannot seek to FAT";
-		return NULL;
+		return std::string();
 	}
 	
 	u32 version;
 	if(fs::read(handle, version).fail()) {
-		return NULL;
+		return std::string();
 	}
 	if(version != SAV_VERSION_DEFLATE && version != SAV_VERSION_RELEASE && version != SAV_VERSION_NOEXT) {
 		LogWarning << "Unexpected savegame version: " << version << " for " << savefile;
@@ -725,7 +723,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & name, size
 	
 	u32 nFiles;
 	if(fs::read(handle, nFiles).fail()) {
-		return NULL;
+		return std::string();
 	}
 	
 	File file;
@@ -735,7 +733,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & name, size
 		// Read the file name.
 		std::string filename;
 		if(fs::read(handle, filename).fail()) {
-			return NULL;
+			return std::string();
 		}
 		if(version < SAV_VERSION_NOEXT) {
 			boost::to_lower(filename);
@@ -745,7 +743,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & name, size
 		}
 		
 		if(!file.loadOffsets(handle, version)) {
-			return NULL;
+			return std::string();
 		}
 		
 		if(!i && version == SAV_VERSION_OLD) {
@@ -757,8 +755,8 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & name, size
 			continue;
 		}
 		
-		return file.loadData(handle, size, name);
+		return file.loadData(handle, name);
 	}
 	
-	return NULL;
+	return std::string();
 }
