@@ -26,17 +26,14 @@ struct BackgroundTileData {
 	
 	bool treat;
 	short nbpoly;
-	short nbpolyin;
 	EERIEPOLY * polydata;
-	EERIEPOLY ** polyin;
+	std::vector<EERIEPOLY *> polyin;
 	float maxy;
 	
 	BackgroundTileData()
 		: treat(false)
 		, nbpoly(0)
-		, nbpolyin(0)
 		, polydata(NULL)
-		, polyin(NULL)
 		, maxy(0.f)
 	{ }
 	

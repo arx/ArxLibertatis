@@ -21,6 +21,8 @@
 
 #include <limits>
 
+#include <boost/foreach.hpp>
+
 #include "graphics/data/Mesh.h"
 #include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
@@ -169,19 +171,19 @@ struct AnyHitRaycast {
 		Vec3f dir = end - start;
 		
 		const BackgroundTileData & eg = ACTIVEBKG->m_tileData[tile.x][tile.y];
-		for(long k = 0; k < eg.nbpolyin; k++) {
-			EERIEPOLY & ep = *eg.polyin[k];
+		BOOST_FOREACH(EERIEPOLY * ep, eg.polyin) {
 			
-			if(ep.type & POLY_TRANS) {
+			if(ep->type & POLY_TRANS) {
 				continue;
 			}
 			
-			float relDist = linePolyIntersection(start, dir, ep);
+			float relDist = linePolyIntersection(start, dir, *ep);
 			if(relDist <= 1.f) {
 				Vec3f hitPos = start + relDist * dir;
-				dbg_addPoly(&ep, hitPos, Color::green);
+				dbg_addPoly(ep, hitPos, Color::green);
 				return true;
 			}
+			
 		}
 		
 		return false;
@@ -210,20 +212,20 @@ struct ClosestHitRaycast {
 		bool previouslyHadHit = (closestHit <= 1.f);
 		
 		const BackgroundTileData & eg = ACTIVEBKG->m_tileData[tile.x][tile.y];
-		for(long k = 0; k < eg.nbpolyin; k++) {
-			EERIEPOLY & ep = *eg.polyin[k];
+		BOOST_FOREACH(EERIEPOLY * ep, eg.polyin) {
 			
-			if(ep.type & POLY_TRANS) {
+			if(ep->type & POLY_TRANS) {
 				continue;
 			}
 			
-			float relDist = linePolyIntersection(start, dir, ep);
+			float relDist = linePolyIntersection(start, dir, *ep);
 			if(relDist < closestHit) {
 				closestHit = relDist;
 				#ifdef RAYCAST_DEBUG
-				hitPoly = &ep;
+				hitPoly = ep;
 				#endif
 			}
+			
 		}
 		
 		if(previouslyHadHit) {

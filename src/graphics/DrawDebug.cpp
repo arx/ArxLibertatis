@@ -739,14 +739,9 @@ static void drawDebugMaterials() {
 			continue;
 		}
 		
-		for(long l = 0; l < feg.nbpolyin; l++) {
-			EERIEPOLY * ep = feg.polyin[l];
+		BOOST_FOREACH(EERIEPOLY * ep, feg.polyin) {
 			
-			if(!ep) {
-				continue;
-			}
-			
-			if(ep->type & skip) {
+			if(!ep || (ep->type & skip)) {
 				continue;
 			}
 			

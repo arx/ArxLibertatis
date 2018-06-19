@@ -21,6 +21,8 @@
 
 #include <string>
 
+#include <boost/foreach.hpp>
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 
@@ -280,13 +282,12 @@ static EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & en
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
 		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
-		for(long l = 0; l < feg.nbpolyin; l++) {
-			EERIEPOLY * ep = feg.polyin[l];
-
+		BOOST_FOREACH(EERIEPOLY * ep, feg.polyin) {
+			
 			if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 				continue;
 			}
-
+			
 			EERIE_TRI pol2;
 			pol2.v[0] = ep->v[0].p;
 			pol2.v[1] = ep->v[1].p;
@@ -304,7 +305,7 @@ static EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & en
 					return ep;
 				}
 			}
-
+			
 		}
 	}
 
