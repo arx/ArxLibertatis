@@ -30,15 +30,6 @@ PakFile::~PakFile() {
 	delete _alternative;
 }
 
-char * PakFile::readAlloc() const {
-	
-	char * buffer = static_cast<char *>(malloc(size()));
-	
-	read(buffer);
-	
-	return buffer;
-}
-
 std::string PakFile::read() const {
 	
 	std::string buffer;
