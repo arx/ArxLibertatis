@@ -241,16 +241,20 @@ void CompressedFile::read(void * buf) const {
 	
 	archive.seekg(offset);
 	
-	BlastFileInBuffer in(&archive, storedSize);
+	std::string buffer;
+	buffer.resize(storedSize);
+	fs::read(archive, &buffer[0], storedSize);
+	
+	BlastMemInBuffer in(buffer.data(), buffer.size());
 	BlastMemOutBuffer out(reinterpret_cast<char *>(buf), size());
 	
-	int r = blast(blastInFile, &in, blastOutMem, &out);
+	int r = blast(blastInMem, &in, blastOutMem, &out);
 	if(r) {
 		LogError << "Blast error " << r << " outSize=" << size();
 	}
 	
 	arx_assert(!archive.fail());
-	arx_assert(in.remaining == 0);
+	arx_assert(in.size == 0);
 	arx_assert(out.size == 0);
 	
 	archive.clear();
