@@ -91,8 +91,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 void ARX_INVENTORY_ReOrder();
 
-//------------------------------------------------------------------------------------
-//CInventory Inventory;
 INVENTORY_SLOT g_inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 INVENTORY_DATA * SecondaryInventory = NULL;
 Entity * DRAGINTER = NULL;
@@ -1078,10 +1076,10 @@ bool TakeFromInventory(const Vec2s & pos) {
 	}
 	
 	switch(result.second) {
-		case 1: //player inventory
+		case 1:
 			g_playerInventoryHud.dragEntity(result.first, pos);
 			break;
-		case 2: //secondary inventory
+		case 2:
 			g_secondaryInventoryHud.dragEntity(result.first, pos);
 			break;
 		default:
