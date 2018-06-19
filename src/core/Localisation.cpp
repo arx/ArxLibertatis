@@ -143,25 +143,23 @@ bool initLocalisation() {
 	
 	arx_assert(!config.language.empty());
 	
-	char * data = file->readAlloc();
-	if(!data) {
+	std::string buffer = file->read();
+	if(buffer.empty()) {
 		return false;
 	}
 	
 	LogDebug("Loaded localisation file of size " << file->size());
-	std::string out = util::convert<util::UTF16LE, util::UTF8>(data, data + file->size());
-	LogDebug("Converted to UTF8 string of length " << out.size());
+	buffer = util::convert<util::UTF16LE, util::UTF8>(buffer);
+	LogDebug("Converted to UTF8 string of length " << buffer.size());
 	
-	if(!out.empty()) {
+	if(!buffer.empty()) {
 		LogDebug("Preparing to parse localisation file");
-		std::istringstream iss(out);
+		std::istringstream iss(buffer);
 		if(!::g_localisation.read(iss)) {
 			LogWarning << "Error parsing localisation file localisation/utext_"
 			           << config.language << ".ini";
 		}
 	}
-	
-	free(data);
 	
 	return true;
 }
