@@ -56,6 +56,4 @@ namespace res { class path; }
  */
 EERIE_3DOBJ * ARX_FTL_Load(const res::path & file);
 
-void MCache_ClearAll();
-
 #endif // ARX_GRAPHICS_DATA_FTL_H

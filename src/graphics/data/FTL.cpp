@@ -70,64 +70,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
-// MESH cache structure definition & Globals
-struct MCACHE_DATA {
-	res::path name;
-	char * data;
-	size_t size;
-};
-static std::vector<MCACHE_DATA> meshCache;
-
-// Checks for Mesh file existence in cache
-static size_t MCache_Get(const res::path & file) {
-	
-	for(size_t i = 0; i < meshCache.size(); i++) {
-		if(meshCache[i].name == file) {
-			return i;
-		}
-	}
-	
-	return size_t(-1);
-}
-
-// Pushes a Mesh In Mesh Cache
-static bool MCache_Push(const res::path & file, char * data, size_t size) {
-	
-	if(MCache_Get(file) != size_t(-1)) {
-		return false; // already cached
-	}
-	
-	LogDebug(file << " #" << meshCache.size());
-	
-	MCACHE_DATA newMesh;
-	newMesh.size = size;
-	newMesh.data = data;
-	newMesh.name = file;
-	meshCache.push_back(newMesh);
-	
-	return true;
-}
-
-void MCache_ClearAll(){
-	for(std::vector<MCACHE_DATA>::iterator it = meshCache.begin(); it != meshCache.end(); ++it) {
-		free(it->data);
-	}
-
-	meshCache.clear();
-}
-
-// Retreives a Mesh File pointer from cache...
-static char * MCache_Pop(const res::path & file, size_t & size) {
-	
-	size_t num = MCache_Get(file);
-	if(num == size_t(-1)) {
-		return NULL;
-	}
-	
-	size = meshCache[num].size;
-	return meshCache[num].data;
-}
-
 EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	
 	// Creates FTL file name
@@ -139,16 +81,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		return NULL;
 	}
 	
-	size_t compressedSize = 0;
-	char * compressedData = MCache_Pop(filename, compressedSize);
-	LogDebug("File name check " << filename);
-	
-	bool NOrelease = true;
-	if(!compressedData) {
-		compressedData = pf->readAlloc();
-		compressedSize = pf->size();
-		NOrelease = MCache_Push(filename, compressedData, compressedSize);
-	}
+	size_t compressedSize = pf->size();
+	char * compressedData = pf->readAlloc();
 	
 	if(!compressedData) {
 		LogError << "ARX_FTL_Load: error loading from PAK/cache " << filename;
@@ -171,9 +105,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		}
 	}
 	
-	if(!NOrelease) {
-		free(compressedData);
-	}
+	free(compressedData);
 	
 	size_t pos = 0; // The position within the data
 	

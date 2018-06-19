@@ -1053,8 +1053,6 @@ void ArxGame::shutdownGame() {
 	
 	ARX_SOUND_Release();
 	
-	MCache_ClearAll();
-	
 	ARX_PATH_ReleaseAllPath();
 	
 	ReleaseSystemObjects();
