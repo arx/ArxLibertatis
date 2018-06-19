@@ -639,8 +639,6 @@ void EERIE_PORTAL_Release() {
 		return;
 	
 	for(size_t nn = 0; nn < portals->rooms.size(); nn++) {
-		free(portals->rooms[nn].epdata);
-		portals->rooms[nn].epdata = NULL;
 		delete portals->rooms[nn].pVertexBuffer;
 		portals->rooms[nn].pVertexBuffer = NULL;
 		free(portals->rooms[nn].indexBuffer);
@@ -979,23 +977,16 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		
 		EERIE_ROOM_DATA & room = portals->rooms[i];
 		
-		room.portals.resize(erd->nb_portals);
-		room.nb_polys = erd->nb_polys;
-		
 		LogDebug(" - room " << i << ": " << erd->nb_portals << " portals, "
-		         << room.nb_polys << " polygons");
+		         << erd->nb_polys << " polygons");
 		
+		room.portals.resize(erd->nb_portals);
 		const s32 * start = fts_read<s32>(data, end, erd->nb_portals);
 		std::copy(start, start + erd->nb_portals, room.portals.begin());
 		
-		if(room.nb_polys) {
-			room.epdata = (EP_DATA *)malloc(sizeof(EP_DATA) * room.nb_polys);
-			const FAST_EP_DATA * ed;
-			ed = fts_read<FAST_EP_DATA>(data, end, room.nb_polys);
-			std::copy(ed, ed + room.nb_polys, room.epdata);
-		} else {
-			portals->rooms[i].epdata = NULL;
-		}
+		room.epdata.resize(erd->nb_polys);
+		const FAST_EP_DATA * ed = fts_read<FAST_EP_DATA>(data, end, erd->nb_polys);
+		std::copy(ed, ed + erd->nb_polys, room.epdata.begin());
 		
 	}
 	
@@ -1121,7 +1112,7 @@ void ComputePortalVertexBuffer() {
 		EERIE_ROOM_DATA * room = &portals->rooms[i];
 		
 		// Skip empty rooms
-		if(!room->nb_polys) {
+		if(room->epdata.empty()) {
 			continue;
 		}
 		
@@ -1129,11 +1120,9 @@ void ComputePortalVertexBuffer() {
 		
 		// Count vertices / indices for each texture and blend types
 		int vertexCount = 0, indexCount = 0, ignored = 0, hidden = 0, notex = 0;
-		for(int j = 0; j < room->nb_polys; j++) {
-			int x = room->epdata[j].tile.x;
-			int y = room->epdata[j].tile.y;
-			BackgroundTileData & cell = ACTIVEBKG->m_tileData[x][y];
-			EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
+		BOOST_FOREACH(const EP_DATA & epd, room->epdata) {
+			BackgroundTileData & cell = ACTIVEBKG->m_tileData[epd.tile.x][epd.tile.y];
+			EERIEPOLY & poly = cell.polydata[epd.idx];
 			
 			if(poly.type & POLY_IGNORE) {
 				ignored++;
@@ -1229,10 +1218,9 @@ void ComputePortalVertexBuffer() {
 			unsigned short index = 0;
 			
 			// Upload all vertices for this texture and remember the indices
-			for(int j = 0; j < room->nb_polys; j++) {
-				Vec2s tilePos = room->epdata[j].tile;
-				BackgroundTileData & tile = ACTIVEBKG->m_tileData[tilePos.x][tilePos.y];
-				EERIEPOLY & poly = tile.polydata[room->epdata[j].idx];
+			BOOST_FOREACH(const EP_DATA & epd, room->epdata) {
+				BackgroundTileData & tile = ACTIVEBKG->m_tileData[epd.tile.x][epd.tile.y];
+				EERIEPOLY & poly = tile.polydata[epd.idx];
 				
 				if((poly.type & POLY_IGNORE) || (poly.type & POLY_HIDE) || !poly.tex) {
 					continue;

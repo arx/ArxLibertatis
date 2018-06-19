@@ -1008,15 +1008,14 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	
 	unsigned short * pIndices = room.indexBuffer;
 	
-	for(long lll = 0; lll < room.nb_polys; lll++) {
-		const EP_DATA & pEPDATA = room.epdata[lll];
+	BOOST_FOREACH(const EP_DATA & epd, room.epdata) {
 		
-		BackgroundTileData * feg = &ACTIVEBKG->m_tileData[pEPDATA.tile.x][pEPDATA.tile.y];
+		BackgroundTileData * feg = &ACTIVEBKG->m_tileData[epd.tile.x][epd.tile.y];
 		
 		if(!feg->treat) {
 			// TODO copy-paste background tiles
-			int tilex = pEPDATA.tile.x;
-			int tilez = pEPDATA.tile.y;
+			int tilex = epd.tile.x;
+			int tilez = epd.tile.y;
 			int radius = 1;
 			
 			int minx = std::max(tilex - radius, 0);
@@ -1035,7 +1034,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 			}
 		}
 		
-		EERIEPOLY * ep = &feg->polydata[pEPDATA.idx];
+		EERIEPOLY * ep = &feg->polydata[epd.idx];
 		if(!ep->tex) {
 			continue;
 		}
@@ -1107,7 +1106,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 				}
 			} else {
 				if(!(ep->type & POLY_TRANS)) {
-					ApplyTileLights(ep, pEPDATA.tile);
+					ApplyTileLights(ep, epd.tile);
 					pMyVertexCurr[ep->uslInd[0]].color = ep->color[0];
 					pMyVertexCurr[ep->uslInd[1]].color = ep->color[1];
 					pMyVertexCurr[ep->uslInd[2]].color = ep->color[2];
@@ -1130,7 +1129,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 		} else { // Improve Vision Activated
 			if(!(ep->type & POLY_TRANS)) {
 
-				ApplyTileLights(ep, pEPDATA.tile);
+				ApplyTileLights(ep, epd.tile);
 
 				bool valid = true;
 				for(int k = 0; k < to; k++) {
