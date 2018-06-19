@@ -72,14 +72,16 @@ struct CinematicKeyframe {
 };
 
 struct CinematicTrack {
+	
 	int endframe;
 	float currframe;
 	float fps;
-	int nbkey;
 	int pause;
-	CinematicKeyframe * key;
+	
+	std::vector<CinematicKeyframe> key;
 	
 	CinematicTrack(int endframe_, float fps_);
+	
 };
 
 void DeleteTrack();
