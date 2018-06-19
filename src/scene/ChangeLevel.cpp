@@ -1342,12 +1342,13 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEV
 	ss << "lvl" << std::setfill('0') << std::setw(3) << num;
 	loadfile = ss.str();
 	
-	size_t size; // TODO size is not used
-	char * dat = g_currentSavedGame->load(loadfile, size);
-	if(!dat) {
-		LogError << "Unable to Open " << loadfile << " for Read...";
+	std::string buffer = g_currentSavedGame->load(loadfile);
+	if(buffer.empty()) {
+		LogError << "Unable to read " << loadfile;
 		return -1;
 	}
+	
+	const char * dat = buffer.data();
 	
 	memcpy(asi, dat, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -1371,9 +1372,7 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEV
 	}
 	
 	ARX_UNUSED(pos);
-	arx_assert(pos <= size);
-	
-	free(dat);
+	arx_assert(pos <= buffer.size());
 	
 	return 1;
 }
