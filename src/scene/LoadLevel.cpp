@@ -376,10 +376,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	LogDebug("Loading Paths");
 	ARX_PATH_ReleaseAllPath();
 	
-	if(dlh.nb_paths) {
-		ARXpaths = (ARX_PATH **)malloc(sizeof(ARX_PATH *) * dlh.nb_paths);
-		nbARXpaths = dlh.nb_paths;
-	}
+	g_paths.resize(dlh.nb_paths);
 	
 	for(long i = 0; i < dlh.nb_paths; i++) {
 		
@@ -387,7 +384,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		pos += sizeof(DANAE_LS_PATH);
 		
 		Vec3f ppos = dlp->initpos.toVec3() + trans;
-		ARX_PATH * ap = ARXpaths[i] = new ARX_PATH(boost::to_lower_copy(util::loadString(dlp->name)), ppos);
+		ARX_PATH * ap = new ARX_PATH(boost::to_lower_copy(util::loadString(dlp->name)), ppos);
 		
 		ap->flags = PathFlags::load(dlp->flags); // TODO save/load flags
 		ap->pos = dlp->pos.toVec3() + trans;
@@ -413,6 +410,9 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			ap->pathways[j].rpos = dlpw->rpos.toVec3();
 			ap->pathways[j]._time = GameDurationMs(dlpw->time); // TODO save/load time
 		}
+		
+		g_paths[i] = ap;
+		
 	}
 	
 	ARX_PATH_ComputeAllBoundingBoxes();

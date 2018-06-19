@@ -185,9 +185,8 @@ static void drawDebugPortals() {
 
 static void drawDebugPaths() {
 	
-	for(long p = 0; p < nbARXpaths; p++) {
+	BOOST_FOREACH(const ARX_PATH * path, g_paths) {
 		
-		ARX_PATH * path = ARXpaths[p];
 		if(!path) {
 			continue;
 		}
