@@ -92,17 +92,18 @@ struct EERIE_GROUP {
 struct EERIE_ANIM {
 	
 	AnimationDuration anim_time;
-	long nb_groups;
 	std::vector<EERIE_FRAME> frames;
 	EERIE_GROUP * groups;
-	unsigned char * voidgroups;
+	std::vector<bool> voidgroups;
 	
 	EERIE_ANIM()
 		: anim_time(0)
-		, nb_groups(0)
 		, groups(NULL)
-		, voidgroups(NULL)
 	{ }
+	
+	size_t nb_groups() {
+		return voidgroups.size();
+	}
 	
 };
 

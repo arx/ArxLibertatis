@@ -180,7 +180,6 @@ static void ReleaseAnim(EERIE_ANIM * ea) {
 	}
 	
 	free(ea->groups);
-	free(ea->voidgroups);
 	delete ea;
 	
 }
@@ -260,11 +259,10 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	LogDebug("Version - " << th->version << "  Frames " << th->nb_frames
 	         << "  Groups " << th->nb_groups << "  KeyFrames " << th->nb_key_frames);
 	
-	eerie->nb_groups = th->nb_groups;
-	
 	eerie->frames.resize(th->nb_key_frames);
 	eerie->groups = allocStructZero<EERIE_GROUP>(th->nb_key_frames * th->nb_groups);
-	eerie->voidgroups = allocStructZero<unsigned char>(th->nb_groups);
+	eerie->voidgroups.resize(th->nb_groups);
+	std::fill(eerie->voidgroups.begin(), eerie->voidgroups.end(), false);
 
 	eerie->anim_time = 0;
 
@@ -428,25 +426,25 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		eerie->frames[i].f_translate = true;
 		eerie->frames[i].f_rotate = true;
 	}
-
+	
 	// Sets Flag for voidgroups (unmodified groups for whole animation)
-	for(long i = 0; i < eerie->nb_groups; i++) {
-
+	for(size_t i = 0; i < eerie->nb_groups(); i++) {
+		
 		bool voidd = true;
 		for(size_t j = 0; j < eerie->frames.size(); j++) {
-			long group = i + (long(j) * eerie->nb_groups);
-
-			if(   eerie->groups[group].quat != glm::quat()
+			size_t group = i + (j * eerie->nb_groups());
+			if(eerie->groups[group].quat != glm::quat()
 			   || eerie->groups[group].translate != Vec3f_ZERO
 			   || eerie->groups[group].zoom != Vec3f_ZERO) {
 				voidd = false;
 				break;
 			}
 		}
-
+		
 		if(voidd) {
-			eerie->voidgroups[i] = 1;
+			eerie->voidgroups[i] = true;
 		}
+		
 	}
 	
 	eerie->anim_time = AnimationDurationUs(s64(th->nb_frames) * 1000 * 1000 / 24);

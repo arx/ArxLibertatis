@@ -1295,14 +1295,14 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 		layer.currentFrame = glm::clamp(layer.currentFrame, 0l, long(eanim->frames.size()) - 1l);
 		
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
-		int l = std::min(long(obj->bones.size() - 1), eanim->nb_groups - 1);
+		int l = int(std::min(obj->bones.size(), eanim->nb_groups())) - 1;
 
 		for(int j = l; j >= 0; j--) {
 			if(grps[j])
 				continue;
 
-			const EERIE_GROUP & sGroup = eanim->groups[j + (layer.currentFrame * eanim->nb_groups)];
-			const EERIE_GROUP & eGroup = eanim->groups[j + (layer.currentFrame * eanim->nb_groups) + eanim->nb_groups];
+			const EERIE_GROUP & sGroup = eanim->groups[j + (layer.currentFrame * long(eanim->nb_groups()))];
+			const EERIE_GROUP & eGroup = eanim->groups[j + (layer.currentFrame * long(eanim->nb_groups())) + long(eanim->nb_groups())];
 
 			if(!eanim->voidgroups[j])
 				grps[j] = 1;
