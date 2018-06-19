@@ -1006,7 +1006,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	
 	SMY_VERTEX * pMyVertex = room.pVertexBuffer->lock(NoOverwrite);
 	
-	unsigned short * pIndices = room.indexBuffer;
+	unsigned short * pIndices = &room.indexBuffer[0];
 	
 	BOOST_FOREACH(const EP_DATA & epd, room.epdata) {
 		
