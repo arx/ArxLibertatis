@@ -828,13 +828,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			
 			BackgroundTileData & bkg = ACTIVEBKG->m_tileData[i][j];
 			
-			bkg.nbpoly = (short)fsi->nbpoly;
-			
-			if(fsi->nbpoly > 0) {
-				bkg.polydata = (EERIEPOLY *)malloc(sizeof(EERIEPOLY) * fsi->nbpoly);
-			} else {
-				bkg.polydata = NULL;
-			}
+			bkg.polydata.resize(fsi->nbpoly);
 			
 			bkg.treat = false;
 			

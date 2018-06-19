@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
+#include <boost/foreach.hpp>
+
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 #include "math/Vector.h"
@@ -575,9 +577,7 @@ static bool IsFULLObjectVertexInValidPosition(const PHYSICS_BOX_DATA & pbox, EER
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
 		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
-		
-		for(long k = 0; k < eg.nbpoly; k++) {
-			EERIEPOLY & ep = eg.polydata[k];
+		BOOST_FOREACH(EERIEPOLY & ep, eg.polydata) {
 			
 			if(ep.area > 190.f
 			   && !(ep.type & POLY_WATER)
@@ -627,6 +627,7 @@ static bool IsFULLObjectVertexInValidPosition(const PHYSICS_BOX_DATA & pbox, EER
 					return false;
 				}
 			}
+			
 		}
 	}
 

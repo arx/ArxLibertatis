@@ -476,20 +476,19 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 			continue;
 		
 		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
-		for(long k = 0; k < feg.nbpoly; k++) {
-			const EERIEPOLY & ep = feg.polydata[k];
-
-			if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+		BOOST_FOREACH(const EERIEPOLY & ep, feg.polydata) {
+			
+			if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 				continue;
-
+			}
+			
 			if(ep.min.y < anything) {
 				anything = std::min(anything, IsPolyInCylinder(ep, cyl, flags));
-
-				if(POLYIN) {
-					if(ep.type & POLY_CLIMB)
-						COLLIDED_CLIMB_POLY = 1;
+				if(POLYIN && (ep.type & POLY_CLIMB)) {
+					COLLIDED_CLIMB_POLY = 1;
 				}
 			}
+			
 		}
 	}
 	
@@ -926,16 +925,16 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
 		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
-
-		for(long k = 0; k < feg.nbpoly; k++) {
-			const EERIEPOLY & ep = feg.polydata[k];
-
-			if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+		BOOST_FOREACH(const EERIEPOLY & ep, feg.polydata) {
+			
+			if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 				continue;
-
+			}
+			
 			if(IsPolyInSphere(ep, sphere)) {
 				return &ep;
 			}
+			
 		}
 	}
 	

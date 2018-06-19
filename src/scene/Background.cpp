@@ -50,8 +50,6 @@ void InitBkg(BackgroundData * eb) {
 }
 
 static void ReleaseBKG_INFO(BackgroundTileData * eg) {
-	free(eg->polydata);
-	eg->polydata = NULL;
 	*eg = BackgroundTileData();
 }
 
@@ -102,32 +100,29 @@ void EERIEPOLY_Compute_PolyIn() {
 		
 		for(long z2 = minz; z2 < maxz; z2++)
 		for(long x2 = minx; x2 < maxx; x2++) {
-			BackgroundTileData * eg2 = &ACTIVEBKG->m_tileData[x2][z2];
-			
-			for(long l = 0; l < eg2->nbpoly; l++) {
-				EERIEPOLY * ep2 = &eg2->polydata[l];
+			BackgroundTileData & eg2 = ACTIVEBKG->m_tileData[x2][z2];
+			BOOST_FOREACH(EERIEPOLY & ep2, eg2.polydata) {
 				
-				if(fartherThan(bbcenter, Vec2f(ep2->center.x, ep2->center.z), 120.f))
+				if(fartherThan(bbcenter, Vec2f(ep2.center.x, ep2.center.z), 120.f)) {
 					continue;
+				}
 				
-				long nbvert = (ep2->type & POLY_QUAD) ? 4 : 3;
+				long nbvert = (ep2.type & POLY_QUAD) ? 4 : 3;
 				
-				if(PointInBBox(ep2->center, bb)) {
-					EERIEPOLY_Add_PolyIn(eg, ep2);
+				if(PointInBBox(ep2.center, bb)) {
+					EERIEPOLY_Add_PolyIn(eg, &ep2);
 				} else {
 					for(long k = 0; k < nbvert; k++) {
-						if(PointInBBox(ep2->v[k].p, bb)) {
-							EERIEPOLY_Add_PolyIn(eg, ep2);
+						if(PointInBBox(ep2.v[k].p, bb)) {
+							EERIEPOLY_Add_PolyIn(eg, &ep2);
 							break;
-						} else {
-							Vec3f pt = (ep2->v[k].p + ep2->center) * .5f;
-							if(PointInBBox(pt, bb)) {
-								EERIEPOLY_Add_PolyIn(eg, ep2);
-								break;
-							}
+						} else if(PointInBBox((ep2.v[k].p + ep2.center) * 0.5f, bb)) {
+							EERIEPOLY_Add_PolyIn(eg, &ep2);
+							break;
 						}
 					}
 				}
+				
 			}
 		}
 		
@@ -146,14 +141,8 @@ long CountBkgVertex() {
 	for(long z = 0; z < ACTIVEBKG->m_size.y; z++) {
 		for(long x = 0; x < ACTIVEBKG->m_size.x; x++) {
 			const BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
-			
-			for(long l = 0; l < eg.nbpoly; l++) {
-				const EERIEPOLY & ep = eg.polydata[l];
-				
-				if(ep.type & POLY_QUAD)
-					count += 4;
-				else
-					count += 3;
+			BOOST_FOREACH(const EERIEPOLY & ep, eg.polydata) {
+				count += (ep.type & POLY_QUAD) ? 4 : 3;
 			}
 		}
 	}
