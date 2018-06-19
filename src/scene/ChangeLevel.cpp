@@ -2164,11 +2164,11 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				io->_itemdata->playerstacksize = ai->playerstacksize;
 				io->_itemdata->LightValue = ai->LightValue;
 				
-				free(io->_itemdata->equipitem);
+				delete io->_itemdata->equipitem;
 				io->_itemdata->equipitem = NULL;
 				
 				if(ais->system_flags & SYSTEM_FLAG_EQUIPITEMDATA) {
-					io->_itemdata->equipitem = (IO_EQUIPITEM *)malloc(sizeof(IO_EQUIPITEM));
+					io->_itemdata->equipitem = new IO_EQUIPITEM;
 					*io->_itemdata->equipitem = ai->equipitem;
 				}
 				

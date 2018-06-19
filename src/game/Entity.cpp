@@ -245,7 +245,7 @@ Entity::~Entity() {
 	if(ioflags & IO_NPC) {
 		delete _npcdata;
 	} else if(ioflags & IO_ITEM) {
-		free(_itemdata->equipitem);
+		delete _itemdata->equipitem;
 		delete _itemdata;
 	} else if(ioflags & IO_FIX) {
 		delete _fixdata;
