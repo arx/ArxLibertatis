@@ -593,6 +593,16 @@ char * PakReader::readAlloc(const res::path & name, size_t & sizeRead) {
 	return f->readAlloc();
 }
 
+std::string PakReader::read(const res::path & name) {
+	
+	PakFile * f = getFile(name);
+	if(!f) {
+		return std::string();
+	}
+	
+	return f->read();
+}
+
 PakFileHandle * PakReader::open(const res::path & name) {
 	
 	PakFile * f = getFile(name);

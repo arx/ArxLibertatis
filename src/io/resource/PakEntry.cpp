@@ -39,6 +39,16 @@ char * PakFile::readAlloc() const {
 	return buffer;
 }
 
+std::string PakFile::read() const {
+	
+	std::string buffer;
+	buffer.resize(size());
+	
+	read(&buffer[0]);
+	
+	return buffer;
+}
+
 PakDirectory::PakDirectory() { }
 
 PakDirectory::~PakDirectory() {
