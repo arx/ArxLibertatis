@@ -405,9 +405,8 @@ static bool ARX_NPC_ApplyCuts(Entity * io) {
 	return hid;
 }
 
-void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
-{
-	//return;
+void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos) {
+	
 	if(!target || !(target->ioflags & IO_NPC))
 		return;
 
