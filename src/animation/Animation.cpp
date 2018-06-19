@@ -179,7 +179,6 @@ static void ReleaseAnim(EERIE_ANIM * ea) {
 		ARX_SOUND_Free(frame.sample);
 	}
 	
-	free(ea->groups);
 	delete ea;
 	
 }
@@ -260,7 +259,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	         << "  Groups " << th->nb_groups << "  KeyFrames " << th->nb_key_frames);
 	
 	eerie->frames.resize(th->nb_key_frames);
-	eerie->groups = allocStructZero<EERIE_GROUP>(th->nb_key_frames * th->nb_groups);
+	eerie->groups.resize(th->nb_key_frames * th->nb_groups);
 	eerie->voidgroups.resize(th->nb_groups);
 	std::fill(eerie->voidgroups.begin(), eerie->voidgroups.end(), false);
 

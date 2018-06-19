@@ -83,22 +83,29 @@ struct EERIE_FRAME {
 };
 
 struct EERIE_GROUP {
+	
 	int key;
 	Vec3f translate;
 	glm::quat quat;
 	Vec3f zoom;
+	
+	EERIE_GROUP()
+		: key(0)
+		, translate(Vec3f_ZERO)
+		, zoom(Vec3f_ONE)
+	{ }
+	
 };
 
 struct EERIE_ANIM {
 	
 	AnimationDuration anim_time;
 	std::vector<EERIE_FRAME> frames;
-	EERIE_GROUP * groups;
+	std::vector<EERIE_GROUP> groups;
 	std::vector<bool> voidgroups;
 	
 	EERIE_ANIM()
 		: anim_time(0)
-		, groups(NULL)
 	{ }
 	
 	size_t nb_groups() {
