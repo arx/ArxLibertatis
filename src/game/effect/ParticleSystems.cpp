@@ -137,7 +137,7 @@ void particleParametersInit() {
 	cp.m_endSegment.m_colorRandom = Color(40, 40, 0, 0).to<float>();
 
 	cp.m_blendMode = RenderMaterial::Additive;
-	cp.m_texture.set("graph/particles/create_food", 0, 100); //5
+	cp.m_texture.set("graph/particles/create_food", 0, 100);
 	cp.m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
 	
 	g_particleParameters[ParticleParam_CreateFood] = cp;
@@ -157,7 +157,7 @@ void particleParametersInit() {
 	cp.m_flash = 0;
 	cp.m_rotation = 1.0f / (101 - 80);
 
-	cp.m_startSegment.m_size = 8;//6;
+	cp.m_startSegment.m_size = 8;
 	cp.m_startSegment.m_sizeRandom = 8;
 	cp.m_startSegment.m_color = Color(20, 205, 20, 245).to<float>();
 	cp.m_startSegment.m_colorRandom = Color(50, 50, 50, 10).to<float>();
@@ -167,7 +167,7 @@ void particleParametersInit() {
 	cp.m_endSegment.m_color = Color(5, 20, 5, 0).to<float>();
 	cp.m_endSegment.m_colorRandom = Color(0, 40, 0, 0).to<float>();
 	cp.m_blendMode = RenderMaterial::Additive;
-	cp.m_texture.set("graph/particles/cure_poison", 0, 100); //5
+	cp.m_texture.set("graph/particles/cure_poison", 0, 100);
 	cp.m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
 	g_particleParameters[ParticleParam_CurePoison] = cp;
 	}
@@ -320,7 +320,7 @@ void particleParametersInit() {
 
 	cp.m_angle = glm::radians(4.f);
 	cp.m_speed = 150;
-	cp.m_speedRandom = 50;//15;
+	cp.m_speedRandom = 50;
 	cp.m_gravity = Vec3f(0, 10, 0);
 	cp.m_flash = 0;
 	cp.m_rotation = 1.0f / (101 - 80);
