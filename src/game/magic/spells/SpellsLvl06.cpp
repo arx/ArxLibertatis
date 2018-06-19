@@ -59,7 +59,7 @@ RiseDeadSpell::RiseDeadSpell()
 
 bool RiseDeadSpell::CanLaunch() {
 	
-	//TODO always cancel spell even if new one can't be launched ?
+	// TODO Always cancel spell even if new one can't be launched ?
 	spells.endByCaster(m_caster, SPELL_RISE_DEAD);
 	
 	float beta;
@@ -261,9 +261,9 @@ void CreateFieldSpell::Launch() {
 	
 	GameInstant start = g_gameTime.now();
 	if(m_flags & SPELLCAST_FLAG_RESTORE) {
-		//move time of creation back by 4 seconds or whatever elapsed after game time 0 (if it is smaller)
-		//prevents difference between creation time and elapsed time of m_field (or as small as possible)
-		//related to m_field.Update() with comment below
+		// Move time of creation back by 4 seconds or whatever elapsed after game time 0 (if it is smaller)
+		// Prevents difference between creation time and elapsed time of m_field (or as small as possible)
+		// related to m_field.Update() with comment below
 		start -= std::min(start - GameInstant(0), GameDurationMs(4000));
 	}
 	m_timcreation = start;
@@ -293,7 +293,7 @@ void CreateFieldSpell::Launch() {
 		target += angleToVectorXZ(beta) * 250.f;
 	}
 	
-	//don't play sound for persistent fields
+	// Don't play sound for persistent fields
 	if(!(m_flags & SPELLCAST_FLAG_RESTORE)) {
 		ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);
 	}
@@ -322,8 +322,8 @@ void CreateFieldSpell::Launch() {
 		}
 		
 		if(m_flags & SPELLCAST_FLAG_RESTORE) {
-			//fast forward the field's animation so that players don't see it
-			//being casted in front of them on game load
+			// Fast forward the field's animation so that players don't see it
+			// being casted in front of them on game load
 			m_field.Update(GameDurationMs(4000));
 		}
 		
