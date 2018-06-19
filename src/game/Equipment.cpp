@@ -1145,7 +1145,6 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 	
 	if(!io->_itemdata->equipitem) {
 		io->_itemdata->equipitem = new IO_EQUIPITEM;
-		memset(io->_itemdata->equipitem, 0, sizeof(IO_EQUIPITEM));
 		io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Duration].value = 10;
 		io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_AimTime].value = 10;
 	}
