@@ -356,7 +356,7 @@ void ShowDebugToggles() {
 	const int lineHeight = hFontDebug->getLineHeight();
 	int line = 0;
 	
-	hFontDebug->draw(0.f, line * lineHeight, "Key Toggle Trigger", Color::white);
+	hFontDebug->draw(0, line * lineHeight, "Key Toggle Trigger", Color::white);
 	line++;
 	
 	for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
@@ -367,20 +367,20 @@ void ShowDebugToggles() {
 		if(g_platformTime.frameStart() - g_debugTriggersTime[i] <= g_debugTriggersDecayDuration)
 			textStream << "fired";
 		
-		hFontDebug->draw(0.f, line * lineHeight, textStream.str(), Color::white);
+		hFontDebug->draw(0, line * lineHeight, textStream.str(), Color::white);
 		line++;
 	}
 	
 	line++;
 	
-	hFontDebug->draw(0.f, line * lineHeight, "Values", Color::white);
+	hFontDebug->draw(0, line * lineHeight, "Values", Color::white);
 	line++;
 	
 	for(size_t i = 0; i < ARRAY_SIZE(g_debugValues); i++) {
 		std::stringstream textStream;
 		textStream << i << "   ";
 		textStream << g_debugValues[i];
-		hFontDebug->draw(0.f, line * lineHeight, textStream.str(), Color::white);
+		hFontDebug->draw(0, line * lineHeight, textStream.str(), Color::white);
 		line++;
 	}
 }
