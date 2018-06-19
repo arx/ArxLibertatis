@@ -107,7 +107,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	animBlend.m_active = false;
 	animBlend.lastanimtime = 0;
 	
-	std::memset(&bbox3D, 0, sizeof(EERIE_3D_BBOX)); // TODO use constructor
+	bbox3D = EERIE_3D_BBOX(Vec3f_ZERO, Vec3f_ZERO);
 	
 	bbox2D.min = Vec2f(-1.f, -1.f);
 	bbox2D.max = Vec2f(-1.f, -1.f);
