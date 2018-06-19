@@ -2404,12 +2404,13 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 	
 	ARX_SCRIPT_Free_All_Global_Variables();
 	
-	size_t size;
-	char * dat = g_currentSavedGame->load("globals", size);
-	if(!dat) {
-		LogError << "Unable to Open globals for Read...";
+	std::string buffer = g_currentSavedGame->load("globals");
+	if(buffer.empty()) {
+		LogError << "Unable to read globals";
 		return;
 	}
+	
+	const char * dat = buffer.data();
 	
 	size_t pos = 0;
 	
@@ -2418,7 +2419,6 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
 	
 	if(acsg->version != ARX_GAMESAVE_VERSION) {
-		free(dat);
 		LogError << "Invalid version: globals";
 		return;
 	}
@@ -2431,9 +2431,8 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 		LogError << "Error loading globals";
 	}
 	
-	arx_assert_msg(pos <= size, "pos=%lu size=%lu", (unsigned long)pos, (unsigned long)size);
+	arx_assert_msg(pos <= buffer.size(), "pos=%lu size=%lu", (unsigned long)pos, (unsigned long)buffer.size());
 	
-	free(dat);
 }
 
 static void ARX_CHANGELEVEL_PopLevel_Abort(ARX_CHANGELEVEL_IO_INDEX * idx_io) {
