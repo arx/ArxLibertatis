@@ -159,7 +159,7 @@ struct ROOM_DIST_DATA {
 	Vec3f endpos;
 };
 
-extern ROOM_DIST_DATA * RoomDistance;
+extern std::vector<ROOM_DIST_DATA> g_roomDistance;
 
 void UpdateIORoom(Entity * io);
 

@@ -530,55 +530,53 @@ void UpdateIORoom(Entity * io)
 	io->requestRoomUpdate = false;
 }
 
-ROOM_DIST_DATA * RoomDistance = NULL;
-static size_t NbRoomDistance = 0;
+std::vector<ROOM_DIST_DATA> g_roomDistance;
 
 void FreeRoomDistance() {
-	free(RoomDistance);
-	RoomDistance = NULL;
-	NbRoomDistance = 0;
+	g_roomDistance.clear();
 }
 
-static void SetRoomDistance(size_t i, size_t j, float val, const Vec3f & p1, const Vec3f & p2) {
+static void SetRoomDistance(size_t i, size_t j, float val,
+                            const Vec3f & p1, const Vec3f & p2) {
 	
-	if(i >= NbRoomDistance || j >= NbRoomDistance || !RoomDistance)
-		return;
+	size_t index = i + j * portals->rooms.size();
+	arx_assert(index < g_roomDistance.size());
 	
-	size_t offs = i + j * NbRoomDistance;
+	g_roomDistance[index].startpos = p1;
+	g_roomDistance[index].endpos = p2;
+	g_roomDistance[index].distance = val;
 	
-	RoomDistance[offs].startpos = p1;
-	RoomDistance[offs].endpos = p2;
-	RoomDistance[offs].distance = val;
 }
 
-static float GetRoomDistance(size_t i, size_t j, Vec3f & p1, Vec3f & p2)
-{
-	if(i >= NbRoomDistance || j >= NbRoomDistance)
+static float GetRoomDistance(size_t i, size_t j, Vec3f & p1, Vec3f & p2) {
+	
+	if(!portals || i >= portals->rooms.size() || j >= portals->rooms.size()) {
 		return -1.f;
-
-	size_t offs = i + j * NbRoomDistance;
-
-	p1 = RoomDistance[offs].startpos;
-	p2 = RoomDistance[offs].endpos;
-
-	return RoomDistance[offs].distance;
+	}
+	
+	size_t index = i + j * portals->rooms.size();
+	
+	p1 = g_roomDistance[index].startpos;
+	p2 = g_roomDistance[index].endpos;
+	
+	return g_roomDistance[index].distance;
 }
 
-float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long Cam_Room)
-{
+float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long Cam_Room) {
+	
 	float dst = fdist(pos, c_pos);
-
-	if(dst < 150.f)
+	if(dst < 150.f) {
 		return dst;
-
-	if(!portals || !RoomDistance)
+	}
+	
+	if(!portals || g_roomDistance.empty()) {
 		return dst;
-
+	}
+	
 	long Room = io_room;
-
 	if(Room >= 0) {
-		Vec3f p1, p2;
 		
+		Vec3f p1, p2;
 		float v;
 		if(Cam_Room < 0 || Room < 0) {
 			v = -1.f;
@@ -591,8 +589,9 @@ float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long 
 			v += fdist(c_pos, p1);
 			return v;
 		}
+		
 	}
-
+	
 	return dst;
 }
 
@@ -994,13 +993,10 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	// Load distances between rooms
 	FreeRoomDistance();
 	if(portals) {
-		NbRoomDistance = portals->rooms.size();
-		const size_t count = NbRoomDistance * NbRoomDistance;
-		RoomDistance = (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * count);
-		LogDebug("FTS: loading " << count << " room distances ...");
-		
-		for(size_t n = 0; n < NbRoomDistance; n++) {
-			for(size_t m = 0; m < NbRoomDistance; m++) {
+		g_roomDistance.resize(portals->rooms.size() * portals->rooms.size());
+		LogDebug("FTS: loading " << g_roomDistance.size() << " room distances ...");
+		for(size_t n = 0; n < portals->rooms.size(); n++) {
+			for(size_t m = 0; m < portals->rooms.size(); m++) {
 				const ROOM_DIST_DATA_SAVE * rdds;
 				rdds = fts_read<ROOM_DIST_DATA_SAVE>(data, end);
 				SetRoomDistance(m, n, rdds->distance, rdds->startpos.toVec3(), rdds->endpos.toVec3());

@@ -504,7 +504,7 @@ void PrepareIOTreatZone(long flag) {
 		TREATZONE_AddIO(DRAGINTER);
 	
 	float TREATZONE_LIMIT = 3200;
-	if(RoomDistance) {
+	if(g_roomDistance.empty()) {
 		TREATZONE_LIMIT += 600;
 		if(CURRENTLEVEL == 4) {
 			TREATZONE_LIMIT += 1200;
