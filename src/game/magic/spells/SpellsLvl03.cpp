@@ -274,7 +274,7 @@ void FireballSpell::Update() {
 				Vec3f * p1 = &eCurPos;
 				Vec3f p2 = entities[io->targetinfo]->pos;
 				p2.y -= 60.f;
-				afAlpha = 360.f - (glm::degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+				afAlpha = 360.f - (glm::degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z)))));
 			}
 		}
 		
@@ -314,10 +314,7 @@ void FireballSpell::Update() {
 		LaunchFireballBoom(eCurPos, m_level);
 		
 		eMove *= 0.5f;
-		//SetTTL(1500);
 		bExplo = true;
-		
-		//m_duration = std::min(ulCurrentTime + 1500, m_duration);
 		
 		DoSphericDamage(Sphere(eCurPos, 30.f * m_level), 3.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
