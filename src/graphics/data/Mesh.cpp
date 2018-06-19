@@ -725,22 +725,6 @@ const T * fts_read(const char * & data, const char * end, size_t n = 1) {
 static bool loadFastScene(const res::path & file, const char * data,
                           const char * end, Vec3f & trans);
 
-template <typename T>
-class scoped_malloc {
-	
-	T * m_data;
-	
-public:
-	
-	explicit scoped_malloc(T * data) : m_data(data) { }
-	
-	~scoped_malloc() { std::free(m_data); }
-	
-	T * get() { return m_data; }
-	const T * get() const { return m_data; }
-	
-};
-
 bool FastSceneLoad(const res::path & partial_path, Vec3f & trans) {
 	
 	res::path file = "game" / partial_path / "fast.fts";
