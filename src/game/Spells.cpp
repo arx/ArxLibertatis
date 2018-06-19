@@ -573,8 +573,8 @@ void ARX_SPELLS_ManageMagic() {
 		ARX_FLARES_broken = 1;
 		MagicFlareChangeColor();
 		
-		if(player.doingmagic != 0) { //==2)
-			player.doingmagic = 0;//1
+		if(player.doingmagic != 0) {
+			player.doingmagic = 0;
 			if(io->anims[ANIM_CAST_END]) {
 				changeAnimation(io, 1, io->anims[ANIM_CAST_END]);
 			}
