@@ -156,16 +156,13 @@ bool ChunkFile::restart() {
 
 namespace audio {
 
-#define AS_FORMAT_PCM(x) ((WaveHeader *)x)
-
 StreamWAV::StreamWAV() :
-	m_stream(NULL), codec(NULL), header(NULL),
+	m_stream(NULL), codec(NULL),
 	size(0), outsize(0), offset(0), cursor(0) {
 }
 
 StreamWAV::~StreamWAV() {
 	delete codec;
-	free(header);
 }
 
 aalError StreamWAV::setStream(PakFileHandle * stream) {
@@ -176,38 +173,34 @@ aalError StreamWAV::setStream(PakFileHandle * stream) {
 	
 	m_stream = stream;
 	
-	header = malloc(sizeof(WaveHeader));
-	if(!header) {
-		return AAL_ERROR_MEMORY;
-	}
+	m_header.resize(sizeof(WaveHeader));
+	WaveHeader * header = reinterpret_cast<WaveHeader *>(&m_header[0]);
 	
 	ChunkFile wave(m_stream);
 	
 	// Check for 'RIFF' chunk id and skip file size
 	if(!wave.check("RIFF") || !wave.skip(4) || !wave.check("WAVE") || !wave.find("fmt ")
-	   || !wave.read(&AS_FORMAT_PCM(header)->formatTag, 2)
-	   || !wave.read(&AS_FORMAT_PCM(header)->channels, 2)
-	   || !wave.read(&AS_FORMAT_PCM(header)->samplesPerSec, 4)
-	   || !wave.read(&AS_FORMAT_PCM(header)->avgBytesPerSec, 4)
-	   || !wave.read(&AS_FORMAT_PCM(header)->blockAlign, 2)
-	   || !wave.read(&AS_FORMAT_PCM(header)->bitsPerSample, 2)) {
+	   || !wave.read(&header->formatTag, 2)
+	   || !wave.read(&header->channels, 2)
+	   || !wave.read(&header->samplesPerSec, 4)
+	   || !wave.read(&header->avgBytesPerSec, 4)
+	   || !wave.read(&header->blockAlign, 2)
+	   || !wave.read(&header->bitsPerSample, 2)) {
 		return AAL_ERROR_FORMAT;
 	}
 	
 	// Get codec specific infos from header for non-PCM format
-	if(AS_FORMAT_PCM(header)->formatTag != WAV_FORMAT_PCM) {
+	if(header->formatTag != WAV_FORMAT_PCM) {
 		
 		// Load extra bytes from header
-		if(!wave.read(&AS_FORMAT_PCM(header)->size, 2)) {
+		if(!wave.read(&header->size, 2)) {
 			return AAL_ERROR_FORMAT;
 		}
 		
-		void * ptr = realloc(header, sizeof(WaveHeader) + AS_FORMAT_PCM(header)->size);
-		if(!ptr) {
-			return AAL_ERROR_MEMORY;
-		}
-		header = ptr;
-		wave.read((char *)header + sizeof(WaveHeader), AS_FORMAT_PCM(header)->size);
+		m_header.resize(sizeof(WaveHeader) + header->size);
+		header = reinterpret_cast<WaveHeader *>(&m_header[0]);
+		
+		wave.read(&m_header[0] + sizeof(WaveHeader), header->size);
 		
 		// Get sample count from the 'fact' chunk
 		wave.find("fact");
@@ -215,7 +208,7 @@ aalError StreamWAV::setStream(PakFileHandle * stream) {
 	}
 	
 	// Create codec
-	switch(AS_FORMAT_PCM(header)->formatTag) {
+	switch(header->formatTag) {
 		case WAV_FORMAT_PCM   :
 			codec = new CodecRAW;
 			break;
@@ -237,10 +230,10 @@ aalError StreamWAV::setStream(PakFileHandle * stream) {
 	
 	size = wave.size();
 	
-	if(AS_FORMAT_PCM(header)->formatTag == WAV_FORMAT_PCM) {
+	if(header->formatTag == WAV_FORMAT_PCM) {
 		outsize = size;
 	} else {
-		outsize *= AS_FORMAT_PCM(header)->channels;
+		outsize *= header->channels;
 	}
 	
 	offset = m_stream->tell();
@@ -276,12 +269,14 @@ PakFileHandle * StreamWAV::getStream() {
 
 aalError StreamWAV::getFormat(PCMFormat & format) {
 	
-	format.frequency = AS_FORMAT_PCM(header)->samplesPerSec;
-	format.channels = AS_FORMAT_PCM(header)->channels;
+	const WaveHeader * header = reinterpret_cast<const WaveHeader *>(&m_header[0]);
 	
-	switch (AS_FORMAT_PCM(header)->formatTag) {
+	format.frequency = header->samplesPerSec;
+	format.channels = header->channels;
+	
+	switch(header->formatTag) {
 		case WAV_FORMAT_PCM   :
-			format.quality = AS_FORMAT_PCM(header)->bitsPerSample;
+			format.quality = header->bitsPerSample;
 			break;
 		case WAV_FORMAT_ADPCM :
 			format.quality = 16;
