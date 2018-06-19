@@ -252,6 +252,71 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 	}
 }
 
+std::string SaveBlock::File::loadData(std::istream & handle, const std::string & name) const {
+	
+	LogDebug("Loading " << name << ' ' << storedSize << "b in " << chunks.size() << " chunks, "
+	         << compressionName() << " -> " << (int)uncompressedSize << "b");
+	
+	std::string buffer;
+	buffer.resize(storedSize);
+	char * p = &buffer[0];
+	
+	for(File::ChunkList::const_iterator chunk = chunks.begin();
+	    chunk != chunks.end(); ++chunk) {
+		handle.seekg(chunk->offset + 4);
+		handle.read(p, chunk->size);
+		p += chunk->size;
+	}
+	
+	arx_assert(p == &buffer[0] + storedSize);
+	
+	switch(comp) {
+		
+		case File::None: {
+			arx_assert(uncompressedSize == storedSize);
+			return buffer;
+		}
+		
+		case File::ImplodeCrypt: {
+			for(size_t i = 0; i < storedSize; i += 2) {
+				buffer[i] = char(~u8(buffer[i]));
+			}
+			std::string uncompressed = blast(buffer, uncompressedSize);
+			if(uncompressedSize != size_t(-1)
+			   && uncompressed.size() != uncompressedSize) {
+				LogError << "Error decompressing imploded " << name;
+			}
+			return uncompressed;
+		}
+		
+		case File::Deflate: {
+			arx_assert(uncompressedSize != size_t(-1));
+			std::string uncompressed;
+			uncompressed.resize(uncompressedSize);
+			uLongf outSize = uncompressedSize;
+			Bytef * out = reinterpret_cast<Bytef *>(&uncompressed[0]);
+			const Bytef * in = reinterpret_cast<const Bytef *>(buffer.data());
+			int ret = uncompress(out, &outSize, in, storedSize);
+			if(ret != Z_OK) {
+				LogError << "Error decompressing deflated " << name << ": " << zError(ret) << " (" << ret << ')';
+				return std::string();
+			}
+			if(outSize != uncompressedSize) {
+				LogError << "Unexpedect uncompressed size " << outSize << " while loading "
+				         << name << ", expected " << uncompressedSize;
+			}
+			buffer.resize(outSize);
+			return uncompressed;
+		}
+		
+		default: {
+			LogError << "Error decompressing " << name << ": unknown format";
+			return std::string();
+		}
+		
+	}
+}
+
 SaveBlock::SaveBlock(const fs::path & savefile)
 	: m_savefile(savefile)
 	, m_totalSize(0)
@@ -594,6 +659,19 @@ char * SaveBlock::load(const std::string & name, size_t & size) {
 	Files::const_iterator file = m_files.find(name);
 	
 	return (file == m_files.end()) ? NULL : file->second.loadData(m_handle, size, name);
+}
+
+std::string SaveBlock::load(const std::string & name) {
+	
+	arx_assert_msg(name.find_first_of(BADSAVCHAR) == std::string::npos,
+	               "bad save filename: \"%s\"", name.c_str());
+	
+	Files::const_iterator file = m_files.find(name);
+	if(file == m_files.end()) {
+		return std::string();
+	}
+	
+	return file->second.loadData(m_handle, name);
 }
 
 bool SaveBlock::hasFile(const std::string & name) const {
