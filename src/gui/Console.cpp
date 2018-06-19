@@ -402,10 +402,9 @@ void ScriptConsole::execute() {
 		return;
 	}
 	
-	std::string script = command() + "\naccept\n";
 	EERIE_SCRIPT es;
-	es.size = script.size();
-	es.data = const_cast<char *>(script.c_str());
+	es.valid = true;
+	es.data = command() + "\naccept\n";
 	// TODO Some script commands (timers, etc.) store references to the script
 	
 	// TODO Allow the "context.command" syntax in scripts too

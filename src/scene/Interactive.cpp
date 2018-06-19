@@ -2360,7 +2360,7 @@ bool IsSameObject(Entity * io, Entity * ioo) {
 	}
 	
 	if((io->ioflags & IO_ITEM) && (ioo->ioflags & IO_ITEM)
-	   && io->over_script.data == NULL && ioo->over_script.data == NULL) {
+	   && !io->over_script.valid && !ioo->over_script.valid) {
 		if(io->locname == ioo->locname) {
 			return true;
 		}

@@ -1135,7 +1135,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		}
 	}
 	
-	if(!io->script.data) {
+	if(!io->script.valid) {
 		ARX_CHANGELEVEL_SCRIPT_SAVE * ass = reinterpret_cast<ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
 		ass->allowevents = 0;
 		ass->lastcall = 0;
@@ -1152,7 +1152,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		storeScriptVariables(dat, pos, io->m_variables, 1);
 	}
 	
-	if(io->script.data) {
+	if(io->script.valid) {
 		ARX_CHANGELEVEL_SCRIPT_SAVE * ass = reinterpret_cast<ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
 		ass->allowevents = 0;
 		ass->lastcall = 0;
@@ -2364,15 +2364,15 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 				continue;
 			}
 			
-			if(e->script.data != NULL) {
+			if(e->script.valid) {
 				ScriptEvent::send(&e->script, NULL, e, SM_RELOAD, "change");
 			}
 			
-			if(e && e->over_script.data) {
+			if(entities[handle] && e->over_script.valid) {
 				ScriptEvent::send(&e->over_script, NULL, e, SM_RELOAD, "change");
 			}
 			
-			if(e && (e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
+			if(entities[handle] && (e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
 				if(e->_npcdata->behavior != BEHAVIOUR_NONE) {
 					e->physics.cyl = GetIOCyl(e);
 					GetTargetPos(e);

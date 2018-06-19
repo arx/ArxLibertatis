@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <limits>
 
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/foreach.hpp>
 
@@ -245,25 +246,21 @@ long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
 	
 	// TODO(script-parser) remove, respect quoted strings
 	
-	const char * start = es->data;
-	const char * end = es->data + es->size;
-	
-	while(true) {
+	for(size_t pos = 0; pos < es->data.size(); pos++) {
 		
-		const char * dat = std::search(start, end, str.begin(), str.end());
-		if(dat + str.length() >= end) {
+		pos = es->data.find(str, pos);
+		if(pos == std::string::npos || pos + str.length() >= es->data.size()) {
 			return -1;
 		}
 		
-		start = dat + 1;
-		if(((unsigned char)dat[str.length()]) > 32) {
+		if(u8(es->data[pos + str.length()]) > 32) {
 			continue;
 		}
 		
 		// Check if the line is commented out!
-		for(const char * search = dat; search[0] != '/' || search[1] != '/'; search--) {
-			if(*search == '\n' || search == es->data) {
-				return dat - es->data + long(str.length());
+		for(size_t p = pos; es->data[p] != '/' || es->data[p + 1] != '/'; p--) {
+			if(es->data[p] == '\n' || p == 0) {
+				return long(pos + str.length());
 			}
 		}
 		
@@ -300,7 +297,7 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	// Now go for Script INIT/RESET depending on Mode
 	EntityHandle num = io->index();
 	
-	if(entities[num] && entities[num]->script.data) {
+	if(entities[num] && entities[num]->script.valid) {
 		if(init)
 			ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INIT);
 		if(entities[num])
@@ -308,16 +305,16 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	}
 	
 	// Do the same for Local Script
-	if(entities[num] && entities[num]->over_script.data) {
+	if(entities[num] && entities[num]->over_script.valid) {
 		if(init)
 			ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INIT);
 	}
 	
 	// Sends InitEnd Event
 	if(init) {
-		if(entities[num] && entities[num]->script.data)
+		if(entities[num] && entities[num]->script.valid)
 			ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INITEND);
-		if(entities[num] && entities[num]->over_script.data)
+		if(entities[num] && entities[num]->over_script.valid)
 			ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INITEND);
 	}
 	
@@ -402,11 +399,13 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 		return;
 	}
 	
-	free(es->data);
-	es->data = NULL;
+	es->valid = false;
+	
+	es->data.clear();
 	
 	ARX_SCRIPT_ReleaseLabels(es);
 	memset(es->shortcut, 0, sizeof(long) * SM_MAXCMD);
+	
 }
 
 ValueType getSystemVar(const script::Context & context, const std::string & name,
@@ -1448,7 +1447,7 @@ ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEve
 	}
 	
 	// Send the event to the instance script first
-	if(entities[num]->over_script.data) {
+	if(entities[num]->over_script.valid) {
 		ScriptResult ret = ScriptEvent::send(&entities[num]->over_script, sender, entities[num], event, parameters);
 		if(ret == REFUSE || ret == DESTRUCTIVE || !entities[num]) {
 			return !entities[num] ? REFUSE : ret;
@@ -1465,19 +1464,19 @@ ScriptResult SendInitScriptEvent(Entity * io) {
 
 	EntityHandle num = io->index();
 	
-	if(entities[num] && entities[num]->script.data) {
+	if(entities[num] && entities[num]->script.valid) {
 		ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INIT);
 	}
 	
-	if(entities[num] && entities[num]->over_script.data) {
+	if(entities[num] && entities[num]->over_script.valid) {
 		ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INIT);
 	}
 	
-	if(entities[num] && entities[num]->script.data) {
+	if(entities[num] && entities[num]->script.valid) {
 		ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INITEND);
 	}
 	
-	if(entities[num] && entities[num]->over_script.data) {
+	if(entities[num] && entities[num]->over_script.valid) {
 		ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INITEND);
 	}
 	
@@ -1832,12 +1831,11 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 		return;
 	}
 	
-	free(script.data);
+	script.valid = true;
 	
-	script.data = file->readAlloc();
-	script.size = file->size();
+	script.data = file->read();
 	
-	std::transform(script.data, script.data + script.size, script.data, ::tolower);
+	boost::to_lower(script.data);
 	
 	ARX_SCRIPT_ComputeShortcuts(script);
 	

@@ -230,8 +230,8 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	io->_itemdata = new IO_ITEMDATA();
 	
 	io->ioflags = IO_ITEM | IO_NOSAVE | IO_MOVABLE;
-	io->script.size = 0;
-	io->script.data = NULL;
+	io->script.valid = false;
+	io->script.data.clear();
 	io->gameFlags |= GFLAG_NO_PHYS_IO_COL;
 	
 	EERIE_COLLISION_Cylinder_Create(io);

@@ -194,17 +194,16 @@ typedef std::vector<SCRIPT_VAR> SCRIPT_VARIABLES;
 
 struct EERIE_SCRIPT {
 	
-	size_t size;
-	char * data;
+	bool valid;
+	std::string data;
 	long shortcut[SM_MAXCMD];
 	long nb_labels;
 	LABEL_INFO * labels;
 
 	EERIE_SCRIPT()
-		: size()
-		, data()
-		, nb_labels()
-		, labels()
+		: valid(false)
+		, nb_labels(0)
+		, labels(NULL)
 	{
 		memset(&shortcut, 0, sizeof(shortcut));
 	}

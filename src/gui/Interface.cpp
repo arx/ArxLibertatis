@@ -686,7 +686,7 @@ void ArxGame::managePlayerControls() {
 
 		if(t) {
 			if(t->ioflags & IO_NPC) {
-				if(t->script.data) {
+				if(t->script.valid) {
 					if(t->_npcdata->lifePool.current > 0.f) {
 						SendIOScriptEvent(entities.player(), t, SM_CHAT);
 						DRAGGING = false;
@@ -729,7 +729,7 @@ void ArxGame::managePlayerControls() {
 						lOldTruePlayerMouseLook = !TRUE_PLAYER_MOUSELOOK_ON;
 					}
 					
-				} else if(t->script.data) {
+				} else if(t->script.valid) {
 					SendIOScriptEvent(entities.player(), t, SM_ACTION);
 				}
 				
