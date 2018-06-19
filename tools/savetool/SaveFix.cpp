@@ -202,20 +202,20 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 	
 	const std::string & savefile = name;
 	
-	size_t size = 0;
-	char * dat = save.load(savefile, size);
-	if(!dat) {
+	std::string buffer = save.load(savefile);
+	if(buffer.empty()) {
 		remap[name] = 0;
 		return 0;
 	}
+	
+	char * dat = &buffer[0];
 	
 	Idents::iterator it = idents.find(name);
 	if(it != idents.end()) {
 		std::cout << "duplicate ident " << name << " detected: in " << it->second << " and " << where << '\n';
 		// we already fixed this!
-		long newIdent = copy_io(save, name, idents, where, dat, size);
+		long newIdent = copy_io(save, name, idents, where, dat, buffer.size());
 		std::cout << " -> copied " << name << " as " << newIdent << " for " << where << '\n';
-		free(dat);
 		remap[name] = newIdent;
 		return newIdent;
 	} else {
@@ -256,12 +256,10 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 	
 	if(changed) {
 		LogDebug("#saving fixed io " << savefile);
-		if(!save.save(savefile, dat, size)) {
+		if(!save.save(savefile, dat, buffer.size())) {
 			std::cerr << "error saving " << savefile;
 		}
 	}
-	
-	free(dat);
 	
 	return 0;
 }
@@ -307,11 +305,12 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 	
 	const std::string loadfile = "player";
 	
-	size_t size;
-	char * dat = save.load(loadfile, size);
-	if(!dat) {
+	std::string buffer = save.load(loadfile);
+	if(buffer.empty()) {
 		return;
 	}
+	
+	char * dat = &buffer[0];
 	
 	bool changed = false;
 	
@@ -344,10 +343,8 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 	
 	if(changed) {
 		LogDebug("saving fixed " << loadfile);
-		save.save(loadfile, dat, size);
+		save.save(loadfile, dat, buffer.size());
 	}
-	
-	free(dat);
 	
 }
 
@@ -360,11 +357,12 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 		return;
 	}
 	
-	size_t size;
-	char * dat = save.load(ss.str(), size);
-	if(!dat) {
+	std::string buffer = save.load(ss.str());
+	if(buffer.empty()) {
 		return;
 	}
+	
+	char * dat = &buffer[0];
 	
 	std::cout << "level " << num << '\n';
 	
@@ -399,10 +397,8 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	
 	if(changed) {
 		LogDebug("#saving fixed " << ss.str());
-		save.save(ss.str(), dat, size);
+		save.save(ss.str(), dat, buffer.size());
 	}
-	
-	free(dat);
 	
 }
 
