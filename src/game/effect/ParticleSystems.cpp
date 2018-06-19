@@ -200,7 +200,7 @@ void particleParametersInit() {
 	cp.m_texture.m_texLoop = true;
 
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
-	cp.m_freq = 150.0f;
+	cp.m_freq = 150;
 	cp.m_texture.set("graph/particles/firebase", 4, 100);
 	cp.m_spawnFlags = 0;
 	
@@ -235,7 +235,7 @@ void particleParametersInit() {
 	cp.m_texture.m_texLoop = false;
 
 	cp.m_blendMode = RenderMaterial::Additive;
-	cp.m_freq = 150.0f;
+	cp.m_freq = 150;
 	cp.m_texture.set("graph/particles/fire", 0, 500);
 	cp.m_spawnFlags = 0;
 	
