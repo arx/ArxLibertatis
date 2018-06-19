@@ -81,50 +81,38 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		return NULL;
 	}
 	
-	size_t compressedSize = pf->size();
-	char * compressedData = pf->readAlloc();
-	
-	if(!compressedData) {
-		LogError << "ARX_FTL_Load: error loading from PAK/cache " << filename;
+	std::string buffer = pf->read();
+	if(buffer.size() < 3) {
+		LogError << "Error loading FTL file: " << filename;
 		return NULL;
 	}
 	
-	char * dat;
-	
 	// Check if we have an uncompressed FTL file
-	if(compressedData[0] == 'F' && compressedData[1] == 'T' && compressedData[2] == 'L') {
-		LogInfo << "Uncompressed FTL found: " << filename;
-		dat = (char *) malloc(compressedSize);
-		memcpy(dat, compressedData, compressedSize);
-	} else {
-		size_t allocsize; // The size of the data TODO size ignored
-		dat = blastMemAlloc(compressedData, compressedSize, allocsize);
-		if(!dat) {
-			LogError << "ARX_FTL_Load: error decompressing " << filename;
+	if(buffer[0] != 'F' || buffer[1] != 'T' || buffer[2] != 'L') {
+		buffer = blast(buffer);
+		if(buffer.size() < 3) {
+			LogError << "Error decompressing FTL file: " << filename;
 			return NULL;
 		}
 	}
 	
-	free(compressedData);
-	
+	const char * dat = buffer.data();
 	size_t pos = 0; // The position within the data
 	
 	// Pointer to Primary Header
 	const ARX_FTL_PRIMARY_HEADER * afph = reinterpret_cast<const ARX_FTL_PRIMARY_HEADER *>(dat + pos);
 	pos += sizeof(ARX_FTL_PRIMARY_HEADER);
 	
-	// Verify FTL file Signature
+	// Verify FTL file signature
 	if(afph->ident[0] != 'F' || afph->ident[1] != 'T' || afph->ident[2] != 'L') {
-		LogError << "ARX_FTL_Load: wrong magic number in " << filename;
-		free(dat);
+		LogError << "Invalid FTL file: " << filename;
 		return NULL;
 	}
 	
 	// Verify FTL file version
 	if(afph->version != CURRENT_FTL_VERSION) {
-		LogError << "ARX_FTL_Load: wring version " << afph->version << ", expected "
+		LogError << "Unexpected ftl version " << afph->version << ", expected "
 		         << CURRENT_FTL_VERSION << " in " << filename;
-		free(dat);
 		return NULL;
 	}
 	
@@ -136,7 +124,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	afsh = reinterpret_cast<const ARX_FTL_SECONDARY_HEADER *>(dat + pos);
 	if(afsh->offset_3Ddata == -1) {
 		LogError << "ARX_FTL_Load: error loading data from " << filename;
-		free(dat);
 		return NULL;
 	}
 	pos = afsh->offset_3Ddata;
@@ -277,14 +264,14 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		pos += sizeof(s32) * obj->selections[i].selected.size(); // Advance to the next selection data block
 	}
 	
+	ARX_UNUSED(pos);
+	arx_assert(pos <= buffer.size());
+	
 	obj->pbox = NULL; // Reset physics
 	
 	if(afsh->offset_collision_spheres != -1) {
 		obj->sdata = true;
 	}
-	
-	// Free the loaded file memory
-	free(dat);
 	
 	EERIE_OBJECT_CenterObjectCoordinates(obj);
 	EERIE_CreateCedricData(obj);
