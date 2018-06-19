@@ -311,10 +311,7 @@ bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO) {
 	return false;
 }
 
-
-//***********************************************************************************************
 // flags & 1 == destroyed !
-//***********************************************************************************************
 void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 {
 	if(!target || !tounequip)
@@ -644,10 +641,7 @@ static float ARX_EQUIPMENT_GetSpecialValue(Entity * io, long val) {
 	return -1;
 }
 
-//***********************************************************************************************
 // flags & 1 = blood spawn only
-//-----------------------------------------------------------------------------------------------
-//***********************************************************************************************
 bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ratioaim, long flags, EntityHandle targ) {
 	
 	ARX_PROFILE_FUNC();
