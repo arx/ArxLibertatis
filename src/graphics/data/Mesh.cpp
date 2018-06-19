@@ -634,18 +634,17 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 
 void EERIE_PORTAL_Release() {
 	
-	if(!portals)
+	if(!portals) {
 		return;
+	}
 	
 	for(size_t nn = 0; nn < portals->rooms.size(); nn++) {
 		delete portals->rooms[nn].pVertexBuffer;
-		portals->rooms[nn].pVertexBuffer = NULL;
-		free(portals->rooms[nn].indexBuffer);
-		portals->rooms[nn].indexBuffer = NULL;
 	}
-		
+	
 	delete portals;
 	portals = NULL;
+	
 }
 
 void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos,
@@ -1049,10 +1048,10 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
 	for(size_t i = 0; i < portals->rooms.size(); i++) {
 		delete portals->rooms[i].pVertexBuffer;
 		portals->rooms[i].pVertexBuffer = NULL;
-		free(portals->rooms[i].indexBuffer);
-		portals->rooms[i].indexBuffer = NULL;
+		portals->rooms[i].indexBuffer.clear();
 		portals->rooms[i].ppTextureContainer.clear();
 	}
+	
 }
 
 namespace {
@@ -1181,8 +1180,7 @@ void ComputePortalVertexBuffer() {
 		
 		
 		// Allocate the index buffer for this room
-		room->indexBuffer = (unsigned short *)malloc(sizeof(unsigned short)
-		                                            * indexCount);
+		room->indexBuffer.resize(indexCount);
 		
 		// Allocate the vertex buffer for this room
 		// TODO should be static, but is updated for dynamic lighting
