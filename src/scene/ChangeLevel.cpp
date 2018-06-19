@@ -1486,18 +1486,18 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 
 static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) {
 	
-	size_t size;
-	char * dat = g_currentSavedGame->load("player", size);
-	if(!dat) {
-		LogError << "Unable to Open player for Read...";
+	std::string buffer = g_currentSavedGame->load("player");
+	if(buffer.empty()) {
+		LogError << "Unable to read player";
 		return -1;
 	}
 	
-	if(size < sizeof(ARX_CHANGELEVEL_PLAYER)) {
+	if(buffer.size() < sizeof(ARX_CHANGELEVEL_PLAYER)) {
 		LogError << "Truncated data";
-		free(dat);
 		return -1;
 	}
+	
+	const char * dat = buffer.data();
 	
 	size_t pos = 0;
 	
@@ -1661,9 +1661,8 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 		g_inventory[bag][x][y].show = asp->inventory_show[bag][x][y] != 0;
 	}
 	
-	if(size < pos + (asp->nb_PlayerQuest * SAVED_QUEST_SLOT_SIZE)) {
+	if(buffer.size() < pos + (asp->nb_PlayerQuest * SAVED_QUEST_SLOT_SIZE)) {
 		LogError << "Truncated data";
-		free(dat);
 		return -1;
 	}
 	ARX_PLAYER_Quest_Init();
@@ -1672,9 +1671,8 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 		pos += SAVED_QUEST_SLOT_SIZE;
 	}
 	
-	if(size < pos + (asp->keyring_nb * SAVED_KEYRING_SLOT_SIZE)) {
+	if(buffer.size() < pos + (asp->keyring_nb * SAVED_KEYRING_SLOT_SIZE)) {
 		LogError << "Truncated data";
-		free(dat);
 		return -1;
 	}
 	ARX_KEYRING_Init();
@@ -1684,9 +1682,8 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
-	if(size < pos + (asp->Nb_Mapmarkers * sizeof(SavedMapMarkerData))) {
+	if(buffer.size() < pos + (asp->Nb_Mapmarkers * sizeof(SavedMapMarkerData))) {
 		LogError << "Truncated data";
-		free(dat);
 		return -1;
 	}
 	g_miniMap.mapMarkerInit(asp->Nb_Mapmarkers);
@@ -1716,8 +1713,6 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 			player.equiped[i] = EntityHandle();
 		}
 	}
-	
-	free(dat);
 	
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
