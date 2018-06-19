@@ -175,83 +175,6 @@ void SaveBlock::File::writeEntry(std::ostream & handle, const std::string & name
 	
 }
 
-char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std::string & name) const {
-	
-	LogDebug("Loading " << name << ' ' << storedSize << "b in " << chunks.size() << " chunks, "
-	         << compressionName() << " -> " << (int)uncompressedSize << "b");
-	
-	if(storedSize == 0) {
-		size = 0;
-		return NULL;
-	}
-	
-	char * buf = static_cast<char *>(malloc(storedSize));
-	char * p = buf;
-	
-	for(File::ChunkList::const_iterator chunk = chunks.begin();
-	    chunk != chunks.end(); ++chunk) {
-		handle.seekg(chunk->offset + 4);
-		handle.read(p, chunk->size);
-		p += chunk->size;
-	}
-	
-	arx_assert(p == buf + storedSize);
-	
-	switch(comp) {
-		
-		case File::None: {
-			arx_assert(uncompressedSize == storedSize);
-			size = uncompressedSize;
-			return buf;
-		}
-		
-		case File::ImplodeCrypt: {
-			unsigned char * crypt = (unsigned char *)buf;
-			for(size_t i = 0; i < storedSize; i += 2) {
-				crypt[i] = static_cast<unsigned char>(~static_cast<unsigned int>(crypt[i]));
-			}
-			char * uncompressed = blastMemAlloc(buf, storedSize, size);
-			free(buf);
-			if(!uncompressed) {
-				LogError << "Error decompressing imploded " << name;
-				return NULL;
-			}
-			arx_assert(uncompressedSize == size_t(-1) || size == uncompressedSize);
-			return uncompressed;
-		}
-		
-		case File::Deflate: {
-			arx_assert(uncompressedSize != size_t(-1));
-			uLongf decompressedSize = uncompressedSize;
-			char * uncompressed = static_cast<char *>(malloc(uncompressedSize));
-			int ret = uncompress(reinterpret_cast<Bytef *>(uncompressed), &decompressedSize,
-			                     reinterpret_cast<const Bytef *>(buf), storedSize);
-			if(ret != Z_OK) {
-				LogError << "Error decompressing deflated " << name << ": " << zError(ret) << " (" << ret << ')';
-				free(buf);
-				free(uncompressed);
-				size = 0;
-				return NULL;
-			}
-			if(decompressedSize != uncompressedSize) {
-				LogError << "Unexpedect uncompressed size " << decompressedSize << " while loading "
-				         << name << ", expected " << uncompressedSize;
-			}
-			size = decompressedSize;
-			free(buf);
-			return uncompressed;
-		}
-		
-		default: {
-			LogError << "Error decompressing " << name << ": unknown format";
-			free(buf);
-			size = 0;
-			return NULL;
-		}
-		
-	}
-}
-
 std::string SaveBlock::File::loadData(std::istream & handle, const std::string & name) const {
 	
 	LogDebug("Loading " << name << ' ' << storedSize << "b in " << chunks.size() << " chunks, "
@@ -649,16 +572,6 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 
 void SaveBlock::remove(const std::string & name) {
 	m_files.erase(name);
-}
-
-char * SaveBlock::load(const std::string & name, size_t & size) {
-	
-	arx_assert_msg(name.find_first_of(BADSAVCHAR) == std::string::npos,
-	               "bad save filename: \"%s\"", name.c_str());
-	
-	Files::const_iterator file = m_files.find(name);
-	
-	return (file == m_files.end()) ? NULL : file->second.loadData(m_handle, size, name);
 }
 
 std::string SaveBlock::load(const std::string & name) {
