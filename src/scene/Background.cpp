@@ -19,6 +19,10 @@
 
 #include "scene/Background.h"
 
+#include <algorithm>
+
+#include <boost/foreach.hpp>
+
 #include "graphics/data/Mesh.h"
 
 
@@ -48,9 +52,6 @@ void InitBkg(BackgroundData * eb) {
 static void ReleaseBKG_INFO(BackgroundTileData * eg) {
 	free(eg->polydata);
 	eg->polydata = NULL;
-	free(eg->polyin);
-	eg->polyin = NULL;
-	eg->nbpolyin = 0;
 	*eg = BackgroundTileData();
 }
 
@@ -69,17 +70,10 @@ void ClearBackground(BackgroundData * eb) {
 	FreeRoomDistance();
 }
 
-
 static void EERIEPOLY_Add_PolyIn(BackgroundTileData * eg, EERIEPOLY * ep) {
-	
-	for(long i = 0; i < eg->nbpolyin; i++)
-		if(eg->polyin[i] == ep)
-			return;
-	
-	eg->polyin = (EERIEPOLY **)realloc(eg->polyin, sizeof(EERIEPOLY *) * (eg->nbpolyin + 1));
-	
-	eg->polyin[eg->nbpolyin] = ep;
-	eg->nbpolyin++;
+	if(std::find(eg->polyin.begin(), eg->polyin.end(), ep) == eg->polyin.end()) {
+		eg->polyin.push_back(ep);
+	}
 }
 
 static bool PointInBBox(const Vec3f & point, const Rectf & bb) {
@@ -92,9 +86,7 @@ void EERIEPOLY_Compute_PolyIn() {
 	for(long x = 0; x < ACTIVEBKG->m_size.x; x++) {
 		BackgroundTileData * eg = &ACTIVEBKG->m_tileData[x][z];
 		
-		free(eg->polyin);
-		eg->polyin = NULL;
-		eg->nbpolyin = 0;
+		eg->polyin.clear();
 		
 		long minx = std::max(x - 2, 0L);
 		long minz = std::max(z - 2, 0L);
@@ -140,8 +132,7 @@ void EERIEPOLY_Compute_PolyIn() {
 		}
 		
 		eg->maxy = -std::numeric_limits<float>::infinity();
-		for(long i = 0; i < eg->nbpolyin; i++) {
-			EERIEPOLY * ep = eg->polyin[i];
+		BOOST_FOREACH(EERIEPOLY * ep, eg->polyin) {
 			eg->maxy = std::max(eg->maxy, ep->max.y);
 		}
 		

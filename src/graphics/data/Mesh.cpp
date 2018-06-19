@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <map>
 #include <limits>
 
+#include <boost/foreach.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/unordered_map.hpp>
 
@@ -253,25 +254,19 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 	for(short x = minx; x <= maxx; x++) {
 		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
 		
-		for(short k = 0; k < feg.nbpolyin; k++) {
-			EERIEPOLY * ep = feg.polyin[k];
-			
-			if(poss.x >= ep->min.x
-			&& poss.x <= ep->max.x
-			&& poss.z >= ep->min.z
-			&& poss.z <= ep->max.z
-			&& !(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
-			&& ep->max.y >= poss.y
-			&& ep != found
-			&& PointIn2DPolyXZ(ep, poss.x, poss.z)
-			&& GetTruePolyY(ep, poss, &rz)
-			&& rz >= poss.y
-			&& (!found || rz <= foundY)
-			) {
+		BOOST_FOREACH(EERIEPOLY * ep, feg.polyin) {
+			if(poss.x >= ep->min.x && poss.x <= ep->max.x
+			   && poss.z >= ep->min.z && poss.z <= ep->max.z
+			   && !(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+			   && ep->max.y >= poss.y && ep != found
+			   && PointIn2DPolyXZ(ep, poss.x, poss.z)
+			   && GetTruePolyY(ep, poss, &rz)
+			   && rz >= poss.y && (!found || rz <= foundY)) {
 				found = ep;
 				foundY = rz;
 			}
 		}
+		
 	}
 	
 	if(needY)
@@ -288,9 +283,8 @@ EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
 	}
 	
 	EERIEPOLY * found = NULL;
-	for (long k = 0; k < feg->nbpolyin; k++) {
-		
-		EERIEPOLY * ep = feg->polyin[k];
+	
+	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
 		
 		if((!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
 		   && (ep->min.y < pos.y)
@@ -308,6 +302,7 @@ EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
 				}
 			}
 		}
+		
 	}
 	
 	return found;
@@ -320,10 +315,7 @@ bool IsAnyPolyThere(float x, float z) {
 		return false;
 	}
 	
-	for(long k = 0; k < feg->nbpolyin; k++) {
-		
-		EERIEPOLY * ep = feg->polyin[k];
-		
+	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
 		if(PointIn2DPolyXZ(ep, x, z)) {
 			return true;
 		}
@@ -341,13 +333,11 @@ EERIEPOLY * GetMinPoly(const Vec3f & pos) {
 	
 	EERIEPOLY * found = NULL;
 	float foundy = 0.0f;
-	for (long k = 0; k < feg->nbpolyin; k++) {
-		
-		EERIEPOLY * ep = feg->polyin[k];
-
-		if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+	
+	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
+		if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 			continue;
-		
+		}
 		if(PointIn2DPolyXZ(ep, pos.x, pos.z)) {
 			float ret;
 			if(GetTruePolyY(ep, pos, &ret)) {
@@ -371,13 +361,11 @@ EERIEPOLY * GetMaxPoly(const Vec3f & pos) {
 	
 	EERIEPOLY * found = NULL;
 	float foundy = 0.0f;
-	for(long k = 0; k < feg->nbpolyin; k++) {
-		
-		EERIEPOLY * ep = feg->polyin[k];
-		
-		if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+	
+	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
+		if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 			continue;
-		
+		}
 		if(PointIn2DPolyXZ(ep, pos.x, pos.z)) {
 			float ret;
 			if(GetTruePolyY(ep, pos, &ret)) {
@@ -400,10 +388,8 @@ EERIEPOLY * EEIsUnderWater(const Vec3f & pos) {
 	}
 	
 	EERIEPOLY * found = NULL;
-	for(short k = 0; k < feg->nbpolyin; k++) {
-		
-		EERIEPOLY * ep = feg->polyin[k];
-		
+	
+	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
 		if(ep->type & POLY_WATER) {
 			if(ep->max.y < pos.y && PointIn2DPolyXZ(ep, pos.x, pos.z)) {
 				if(!found || ep->max.y < found->max.y) {
@@ -412,6 +398,7 @@ EERIEPOLY * EEIsUnderWater(const Vec3f & pos) {
 			}
 		}
 	}
+	
 	return found;
 }
 

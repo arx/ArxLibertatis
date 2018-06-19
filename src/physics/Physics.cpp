@@ -789,7 +789,7 @@ bool EERIE_PHYSICS_BOX_IsValidPosition(const Vec3f & pos) {
 		return false;
 	}
 	
-	if(tile->nbpolyin <= 0) {
+	if(tile->polyin.empty()) {
 		// Position is in an empty tile
 		return false;
 	}
