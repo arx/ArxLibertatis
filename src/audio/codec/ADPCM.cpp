@@ -72,7 +72,7 @@ CodecADPCM::~CodecADPCM() {
 	delete[] samp2;
 	delete[] coef1;
 	delete[] coef2;
-	delete[] (s8 *)cache_l;
+	delete[] static_cast<s8 *>(cache_l);
 	delete[] nybble_l;
 }
 
@@ -104,7 +104,7 @@ aalError CodecADPCM::setHeader(void * header) {
 		return AAL_ERROR_MEMORY;
 	}
 	
-	cache_c = cache_i = (u8)(sizeof(s16) << shift);
+	cache_c = cache_i = u8(sizeof(s16) << shift);
 	cache_l = new s8[cache_c];
 	if(!cache_l) {
 		return AAL_ERROR_MEMORY;
@@ -182,7 +182,7 @@ void CodecADPCM::getSample(size_t channel, s8 adpcmSample) {
 	}
 	
 	// Predict next sample
-	s32 predict = ((s32)samp1[channel] * coef1[channel] + (s32)samp2[channel] * coef2[channel]) >> 8;
+	s32 predict = (s32(samp1[channel]) * coef1[channel] + s32(samp2[channel]) * coef2[channel]) >> 8;
 	
 	// Reconstruct original PCM
 	s32 pcm_sample = adpcmSample * old_delta + predict;
@@ -196,7 +196,7 @@ void CodecADPCM::getSample(size_t channel, s8 adpcmSample) {
 	
 	// Update samples
 	samp2[channel] = samp1[channel];
-	samp1[channel] = (s16)pcm_sample;
+	samp1[channel] = s16(pcm_sample);
 }
 
 aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
@@ -206,7 +206,7 @@ aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
 		
 		// If prefetched bytes are remaining, put the next one into the buffer
 		if(cache_i < cache_c) {
-			((s8 *)buffer)[read++] = ((s8 *)cache_l)[cache_i++];
+			static_cast<s8 *>(buffer)[read++] = static_cast<s8 *>(cache_l)[cache_i++];
 			continue;
 		}
 		
@@ -223,21 +223,21 @@ aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
 			
 		} else if(sample_i == 1) {
 			for(size_t i = 0; i < m_header->wfx.channels; i++) {
-				((s16 *)cache_l)[i] = samp1[i];
+				static_cast<s16 *>(cache_l)[i] = samp1[i];
 			}
 		} else {
 			
 			// Get new sample for each channel
 			for(size_t i = 0; i < m_header->wfx.channels; i++) {
 				if(odd) {
-					getSample(i, (s8)(nybble & 0x0f));
+					getSample(i, s8(nybble & 0x0f));
 					odd = false;
 				} else {
 					nybble = nybble_l[nybble_i++];
 					getSample(i, s8((nybble >> 4) & 0x0f));
 					odd = true;
 				}
-				((s16 *)cache_l)[i] = samp1[i];
+				static_cast<s16 *>(cache_l)[i] = samp1[i];
 			}
 		}
 		
@@ -275,9 +275,9 @@ aalError CodecADPCM::getNextBlock() {
 		if(predictor[i] >= m_header->coefficientCount) {
 			return AAL_ERROR_FORMAT;
 		}
-		coef1[i] = m_header->coefficients[(size_t)predictor[i]].coef1;
-		coef2[i] = m_header->coefficients[(size_t)predictor[i]].coef2;
-		((s16 *)cache_l)[i] = samp2[i];
+		coef1[i] = m_header->coefficients[size_t(predictor[i])].coef1;
+		coef2[i] = m_header->coefficients[size_t(predictor[i])].coef2;
+		static_cast<s16 *>(cache_l)[i] = samp2[i];
 	}
 	
 	if(!m_stream->read(nybble_l, nybble_c)) {
