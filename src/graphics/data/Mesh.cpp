@@ -1002,8 +1002,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		const EERIE_SAVE_PORTALS * epo = &epos[i];
 		EERIE_PORTALS & portal = portals->portals[i];
 		
-		memset(&portal, 0, sizeof(EERIE_PORTALS));
-		
 		portal.room_1 = epo->room_1;
 		portal.room_2 = epo->room_2;
 		portal.useportal = epo->useportal;
