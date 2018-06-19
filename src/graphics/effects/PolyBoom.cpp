@@ -153,6 +153,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			POLYBOOM pb;
 			
 			pb.type = ScorchMarkDecal;
+			pb.fastdecay = false;
 			pb.ep = ep;
 			pb.tc = tc2;
 			pb.tolive = GameDurationMs(10000);
@@ -327,6 +328,8 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 						
 						pb.tolive = GameDurationMsf((16000.f / 40) * size);
 					}
+					
+					pb.fastdecay = false;
 					
 					pb.ep = ep;
 					
