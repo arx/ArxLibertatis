@@ -50,8 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/predicate.hpp>
 
-//-----------------------------------------------------------------------------
-//Used to know the true level of a "subdivided" level
 long ARX_LEVELS_GetRealNum(long num) {
 	
 	if(num < 0) {
