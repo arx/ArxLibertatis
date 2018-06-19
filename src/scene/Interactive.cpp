@@ -229,7 +229,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 		while((io->_npcdata->pathfind.pathwait == 1) && count--) {
 			Thread::sleep(PlatformDurationMs(1));
 		}
-		free(io->_npcdata->pathfind.list);
+		delete[] io->_npcdata->pathfind.list;
 		io->_npcdata->pathfind = IO_PATHFIND();
 	}
 	
@@ -763,8 +763,7 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 	ARX_EQUIPMENT_ReleaseAll(io);
 	
 	if(io->ioflags & IO_NPC) {
-		free(io->_npcdata->pathfind.list);
-		io->_npcdata->pathfind.list = NULL;
+		delete[] io->_npcdata->pathfind.list;
 		io->_npcdata->pathfind = IO_PATHFIND();
 		io->_npcdata->pathfind.truetarget = EntityHandle();
 		io->_npcdata->pathfind.listnb = -1;
@@ -1582,7 +1581,7 @@ IO_NPCDATA::IO_NPCDATA() {
 
 IO_NPCDATA::~IO_NPCDATA() {
 	delete ex_rotate;
-	free(pathfind.list);
+	delete pathfind.list;
 }
 
 Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInteractiveFlags flags) {

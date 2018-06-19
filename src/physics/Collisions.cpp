@@ -626,7 +626,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 								if(io->_npcdata->pathfind.listnb > 0) {
 									io->_npcdata->pathfind.listpos = 0;
 									io->_npcdata->pathfind.listnb = -1;
-									free(io->_npcdata->pathfind.list);
+									delete[] io->_npcdata->pathfind.list;
 									io->_npcdata->pathfind.list = NULL;
 								}
 								if(!io->_npcdata->reachedtarget) {

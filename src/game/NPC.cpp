@@ -229,7 +229,7 @@ static void ARX_NPC_ReleasePathFindInfo(Entity * io) {
 		return;
 	
 	// Releases data & resets vars
-	free(io->_npcdata->pathfind.list);
+	delete[] io->_npcdata->pathfind.list;
 	io->_npcdata->pathfind.list = NULL;
 	io->_npcdata->pathfind.listnb = -1;
 	io->_npcdata->pathfind.listpos = 0;
@@ -538,7 +538,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		io->_npcdata->pathfind.listpos = 0;
 		io->_npcdata->pathfind.pathwait = 0;
 		io->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
-		free(io->_npcdata->pathfind.list);
+		delete[] io->_npcdata->pathfind.list;
 		io->_npcdata->pathfind.list = NULL;
 	}
 	
@@ -660,7 +660,7 @@ wander:
 			io->_npcdata->pathfind.listpos = 0;
 			io->_npcdata->pathfind.pathwait = 1;
 
-			free(io->_npcdata->pathfind.list);
+			delete[] io->_npcdata->pathfind.list;
 			io->_npcdata->pathfind.list = NULL;
 			
 			PATHFINDER_REQUEST tpr;
@@ -2322,7 +2322,7 @@ afterthat:
 				io->_npcdata->pathfind.listnb = -1;
 				io->_npcdata->pathfind.pathwait = 0;
 
-				free(io->_npcdata->pathfind.list);
+				delete[] io->_npcdata->pathfind.list;
 				io->_npcdata->pathfind.list = NULL;
 
 				if(layer0.cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]) {
@@ -2375,7 +2375,7 @@ static void ManageNPCMovement_check_target_reached(Entity * io) {
 		io->_npcdata->pathfind.listnb = -1;
 		io->_npcdata->pathfind.pathwait = 0;
 
-		free(io->_npcdata->pathfind.list);
+		delete[] io->_npcdata->pathfind.list;
 		io->_npcdata->pathfind.list = NULL;
 		
 		if((io->_npcdata->behavior & BEHAVIOUR_FLEE) && !io->_npcdata->pathfind.pathwait) {
