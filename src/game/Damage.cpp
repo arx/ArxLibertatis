@@ -439,7 +439,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	   || !io->show
 	   || !(io->ioflags & IO_FIX)
 	   || (io->ioflags & IO_INVULNERABILITY)
-	   || !io->script.data
+	   || !io->script.valid
 	) {
 		return;
 	}
@@ -780,7 +780,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 			}
 		}
 
-		if(io->script.data != NULL) {
+		if(io->script.valid) {
 			if(source.handleData() >= EntityHandle_Player.handleData()) {
 				
 				ScriptParameters parameters(dmg);

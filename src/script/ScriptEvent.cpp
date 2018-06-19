@@ -265,7 +265,7 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 		return ret;
 	}
 	
-	if(!es->data) {
+	if(!es->valid) {
 		return ACCEPT;
 	}
 	
@@ -282,7 +282,7 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 	} else if(event != SM_EXECUTELINE) {
 		arx_assert(event.getId() < SM_MAXCMD);
 		pos = es->shortcut[event.getId()];
-		arx_assert(pos <= (long)es->size);
+		arx_assert(pos <= long(es->data.size()));
 	}
 
 	if(pos <= -1) {
@@ -309,7 +309,7 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 		
 		std::string word = context.getCommand(event != SM_EXECUTELINE);
 		if(word.empty()) {
-			if(event == SM_EXECUTELINE && context.getPosition() != es->size) {
+			if(event == SM_EXECUTELINE && context.getPosition() != es->data.size()) {
 				arx_assert(es->data[context.getPosition()] == '\n');
 				LogDebug("<-- line end");
 				return ACCEPT;
