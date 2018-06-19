@@ -208,8 +208,8 @@ void ARXMenu_Options_Audio_SetDevice(const std::string & device) {
 	 */
 	
 	std::vector< std::pair<res::path, size_t> > animationSamples = ARX_SOUND_PushAnimSamples();
-	size_t ulSizeAmbiancePlayList;
-	char * pAmbiancePlayList = ARX_SOUND_AmbianceSavePlayList(ulSizeAmbiancePlayList);
+	
+	std::string playlist = ARX_SOUND_AmbianceSavePlayList();
 	
 	ARX_SOUND_Release();
 	ARX_SOUND_Init();
@@ -221,12 +221,9 @@ void ARXMenu_Options_Audio_SetDevice(const std::string & device) {
 	ARXMenu_Options_Audio_SetSfxVolume(config.audio.sfxVolume);
 	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
 	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
-
-	if(pAmbiancePlayList) {
-		ARX_SOUND_AmbianceRestorePlayList(pAmbiancePlayList, ulSizeAmbiancePlayList);
-		free(pAmbiancePlayList);
-	}
-
+	
+	ARX_SOUND_AmbianceRestorePlayList(playlist.data(), playlist.size());
+	
 	ARX_SOUND_PopAnimSamples(animationSamples);
 }
 
