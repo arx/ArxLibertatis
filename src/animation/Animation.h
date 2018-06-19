@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class Entity;
 
 struct EERIE_FRAME {
+	
 	long num_frame;
 	bool stepSound;
 	bool f_translate;
@@ -69,6 +70,16 @@ struct EERIE_FRAME {
 	Vec3f translate;
 	glm::quat quat;
 	audio::SampleId sample;
+	
+	EERIE_FRAME()
+		: num_frame(0)
+		, stepSound(false)
+		, f_translate(false)
+		, f_rotate(false)
+		, translate(Vec3f_ZERO)
+		, sample(audio::INVALID_ID)
+	{ }
+	
 };
 
 struct EERIE_GROUP {
@@ -82,16 +93,13 @@ struct EERIE_ANIM {
 	
 	AnimationDuration anim_time;
 	long nb_groups;
-	long nb_key_frames;
-	EERIE_FRAME * frames;
+	std::vector<EERIE_FRAME> frames;
 	EERIE_GROUP * groups;
 	unsigned char * voidgroups;
 	
 	EERIE_ANIM()
 		: anim_time(0)
 		, nb_groups(0)
-		, nb_key_frames(0)
-		, frames(NULL)
 		, groups(NULL)
 		, voidgroups(NULL)
 	{ }
