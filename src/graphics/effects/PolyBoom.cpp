@@ -121,20 +121,19 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
 		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
-		for(long l = 0; l < eg.nbpoly; l++) {
-			EERIEPOLY * ep = &eg.polydata[l];
+		BOOST_FOREACH(EERIEPOLY & ep, eg.polydata) {
 			
-			if((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER)) {
+			if((ep.type & POLY_TRANS) && !(ep.type & POLY_WATER)) {
 				continue;
 			}
 			
-			long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+			long nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
 			
 			float temp_uv1[4];
 			
 			bool dod = true;
 			for(long k = 0; k < nbvert; k++) {
-				float ddd = fdist(ep->v[k].p, poss);
+				float ddd = fdist(ep.v[k].p, poss);
 				if(ddd > BOOM_RADIUS) {
 					dod = false;
 					break;
@@ -154,7 +153,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			
 			pb.type = ScorchMarkDecal;
 			pb.fastdecay = false;
-			pb.ep = ep;
+			pb.ep = &ep;
 			pb.tc = tc2;
 			pb.tolive = GameDurationMs(10000);
 			pb.timecreation = g_gameTime.now();

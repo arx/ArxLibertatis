@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 
+#include <boost/foreach.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include "ai/PathFinderManager.h"
@@ -583,8 +584,7 @@ void RestoreLastLoadedLightning(BackgroundData & eb) {
 	for(short z = 0; z < eb.m_size.y; z++)
 	for(short x = 0; x < eb.m_size.x; x++) {
 		BackgroundTileData & eg = eb.m_tileData[x][z];
-		for(long l = 0; l < eg.nbpoly; l++) {
-			EERIEPOLY & ep = eg.polydata[l];
+		BOOST_FOREACH(EERIEPOLY & ep, eg.polydata) {
 			long nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
 			for(long k = 0; k < nbvert; k++) {
 				if(i >= g_levelLighting.size()) {
