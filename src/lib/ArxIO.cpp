@@ -24,6 +24,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <cstdlib>
 
 #include "io/Blast.h"
 #include "io/log/Logger.h"
@@ -93,9 +94,12 @@ int ArxIO_getLogLine(char * outMessage, int size) {
 }
 
 void ArxIO_unpack_alloc(const char * in, const size_t inSize, char ** out, size_t * outSize) {
-	*out = blastMemAlloc(in, inSize, *outSize);
+	std::string buffer = blast(in, inSize);
+	*outSize = buffer.size();
+	*out = static_cast<char *>(std::malloc(buffer.size()));
+	std::memcpy(*out, buffer.data(), buffer.size());
 }
 
 void ArxIO_unpack_free(char * buffer) {
-	free(buffer);
+	std::free(buffer);
 }
