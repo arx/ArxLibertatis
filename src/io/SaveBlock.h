@@ -93,8 +93,6 @@ private:
 		
 		void writeEntry(std::ostream & handle, const std::string & name) const;
 		
-		char * loadData(std::istream & handle, size_t & size, const std::string & name) const;
-		
 		std::string loadData(std::istream & handle, const std::string & name) const;
 		
 	};
@@ -147,7 +145,6 @@ public:
 	 */
 	void remove(const std::string & name);
 	
-	char * load(const std::string & name, size_t & size);
 	std::string load(const std::string & name);
 	bool hasFile(const std::string & name) const;
 	
