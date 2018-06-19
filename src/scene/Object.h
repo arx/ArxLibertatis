@@ -49,13 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
-template <class T>
-static T * allocStructZero(size_t n = 1) {
-	T * result = static_cast<T *>(malloc(n * sizeof(T)));
-	memset(result, 0, n * sizeof(T));
-	return result;
-}
-
 void MakeUserFlag(TextureContainer * tc);
 ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname);
 ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string & selname);
