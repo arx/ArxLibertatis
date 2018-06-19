@@ -1025,9 +1025,8 @@ Entity * CloneIOItem(Entity * src) {
 	dest->_itemdata->LightValue = src->_itemdata->LightValue;
 	
 	if(src->_itemdata->equipitem) {
-		dest->_itemdata->equipitem = (IO_EQUIPITEM *)malloc(sizeof(IO_EQUIPITEM));
-		memcpy(dest->_itemdata->equipitem, src->_itemdata->equipitem,
-		       sizeof(IO_EQUIPITEM));
+		dest->_itemdata->equipitem = new IO_EQUIPITEM;
+		*dest->_itemdata->equipitem = *src->_itemdata->equipitem;
 	}
 	
 	dest->locname = src->locname;
