@@ -100,15 +100,8 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	nouvo->vertexColors.resize(nvertex);
 
 	size_t inpos = 0;
-	long * equival = (long *)malloc(sizeof(long) * from->vertexlist.size());
-	if(!equival) {
-		delete nouvo;
-		return;
-	}
-
-	for(size_t k = 0; k < from->vertexlist.size(); k++) {
-		equival[k] = -1;
-	}
+	
+	std::vector<long> equival(from->vertexlist.size(), -1);
 	
 	const EERIE_SELECTIONS & cutSelection = from->selections[num.handleData()];
 
@@ -219,7 +212,6 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		}
 	}
 	
-	free(equival);
 	nouvo->texturecontainer = from->texturecontainer;
 	
 	nouvo->linked.clear();
