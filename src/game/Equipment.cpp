@@ -1150,8 +1150,6 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 		memset(io->_itemdata->equipitem, 0, sizeof(IO_EQUIPITEM));
 		io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Duration].value = 10;
 		io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_AimTime].value = 10;
-		io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value = 0;
-		io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value = 0;
 	}
 
 	if(special) {
