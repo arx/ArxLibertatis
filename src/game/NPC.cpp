@@ -421,9 +421,9 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 	
 	long MAX_TEST;
 	if(dists < square(g_camera->cdepth) * square(1.0f / 4)) {
-		MAX_TEST = 6; //4;
+		MAX_TEST = 6;
 	} else {
-		MAX_TEST = 4; //3;
+		MAX_TEST = 4;
 	}
 	
 	for(long l_try = MAX_TEST; l_try > 1; l_try--) {
@@ -1399,7 +1399,7 @@ static void TryAndCheckAnim(Entity * io, long animnum, long layerIndex) {
 	}
 }
 
-//Define Time of Strike Damage
+// Define Time of Strike Damage
 static const float STRIKE_MUL = 0.25f;
 static const float STRIKE_MUL2 = 0.8f;
 static const float STRIKE_DISTANCE = 220.f;
@@ -1712,19 +1712,21 @@ static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 	if(ValidIONum(targ)) {
 		
 		float self_dist, targ_dist;
-
+		
 		// Compute min target close-dist
-		if(entities[targ]->ioflags & IO_NO_COLLISIONS)
+		if(entities[targ]->ioflags & IO_NO_COLLISIONS) {
 			targ_dist = 0.f;
-		else
-			targ_dist = std::max(entities[targ]->physics.cyl.radius, GetIORadius(entities[targ])); //entities[targ]->physics.cyl.radius;
-
+		} else {
+			targ_dist = std::max(entities[targ]->physics.cyl.radius, GetIORadius(entities[targ]));
+		}
+		
 		// Compute min self close-dist
-		if(io->ioflags & IO_NO_COLLISIONS)
+		if(io->ioflags & IO_NO_COLLISIONS) {
 			self_dist = 0.f;
-		else
-			self_dist = std::max(io->physics.cyl.radius, GetIORadius(io)); //io->physics.cyl.radius;
-
+		} else {
+			self_dist = std::max(io->physics.cyl.radius, GetIORadius(io));
+		}
+		
 		// Base tolerance = radius added
 		TOLERANCE = targ_dist + self_dist + 5.f;
 
@@ -1749,7 +1751,7 @@ static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 		if((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT)) || (io->spellcast_data.castingspell != SPELL_NONE))
 			TOLERANCE += 300.f;
 
-		// if target is a marker set to a minimal tolerance
+		// If target is a marker set to a minimal tolerance
 		if(entities[targ]->ioflags & IO_MARKER) {
 			TOLERANCE = 21.f + io->_npcdata->moveproblem * 0.1f;
 		}
@@ -1761,10 +1763,6 @@ static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 	
 	return TOLERANCE;
 }
-
-//now APOS is computed in Anim but used here and mustn't be used elsewhere...
-//***********************************************************************************************
-//***********************************************************************************************
 
 static void ManageNPCMovement(Entity * io) {
 	
@@ -2263,14 +2261,13 @@ afterthat:
 				io->_npcdata->reachedtarget = 0;
 			}
 			
-			// if not blocked & not Flee-Pathfinding
+			// If not blocked and not Flee-Pathfinding
 			if(!(io->_npcdata->pathfind.listnb <= 0 && (io->_npcdata->behavior & BEHAVIOUR_FLEE))
 				|| (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 				|| (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
 			) {
 				ANIM_HANDLE * desiredanim = NULL;
 
-				//long desiredloop=1;
 				if(dis <= RUN_WALK_RADIUS
 				   && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
 				   && layer0.cur_anim != alist[ANIM_RUN]
@@ -2833,7 +2830,7 @@ void ManageIgnition_2(Entity * io) {
 			float v = glm::clamp(io->ignition * 0.1f, 0.5f, 1.f);
 			light->rgb = (Color3f(1.f, 0.8f, 0.6f) - randomColor3f() * Color3f(0.2f, 0.2f, 0.2f)) * v;
 			light->pos = position + Vec3f(0.f, -30.f, 0.f);
-			light->ex_flaresize = 40.f; //16.f;
+			light->ex_flaresize = 40.f;
 			light->extras |= EXTRAS_FLARE;
 		}
 
