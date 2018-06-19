@@ -764,23 +764,20 @@ bool FastSceneLoad(const res::path & partial_path, Vec3f & trans) {
 	
 	res::path file = "game" / partial_path / "fast.fts";
 	
-	const char * data = NULL, * end = NULL;
-	boost::scoped_array<char> bytes;
+	std::string uncompressed;
 	
 	try {
 		
 		// Load the whole file
 		LogDebug("Loading " << file);
-		size_t size;
-		scoped_malloc<char> dat(g_resources->readAlloc(file, size));
-		data = dat.get(), end = dat.get() + size;
-		// TODO use new[] instead of malloc so we can use (boost::)unique_ptr
-		LogDebug("FTS: read " << size << " bytes");
-		if(!data) {
+		std::string buffer = g_resources->read(file);
+		if(buffer.empty()) {
 			LogError << "FTS: could not read " << file;
 			return false;
 		}
 		
+		const char * data = buffer.data();
+		const char * end = buffer.data() + buffer.size();
 		
 		// Read the file header
 		const UNIQUE_HEADER * uh = fts_read<UNIQUE_HEADER>(data, end);
@@ -792,47 +789,36 @@ bool FastSceneLoad(const res::path & partial_path, Vec3f & trans) {
 		progressBarAdvance();
 		LoadLevelScreen();
 		
-		
 		// Skip .scn file list and initialize the scene data
 		(void)fts_read<UNIQUE_HEADER3>(data, end, uh->count);
 		InitBkg(ACTIVEBKG);
 		progressBarAdvance();
 		LoadLevelScreen();
 		
-		
 		// Decompress the actual scene data
-		size_t input_size = end - data;
-		LogDebug("FTS: decompressing " << input_size << " -> "
-		                               << uh->uncompressedsize);
-		bytes.reset(new char[uh->uncompressedsize]);
-		if(!bytes) {
-			LogError << "FTS: can't allocate buffer for uncompressed data";
+		uncompressed = blast(data, end - data, uh->uncompressedsize);
+		if(uncompressed.empty()) {
+			LogError << "Error decompressing scene data in " << file;
 			return false;
-		}
-		size = blastMem(data, input_size, bytes.get(), uh->uncompressedsize);
-		data = bytes.get(), end = bytes.get() + size;
-		if(!size) {
-			LogError << "FTS: error decompressing scene data in " << file;
-			return false;
-		} else if(size != size_t(uh->uncompressedsize)) {
-			LogWarning << "FTS: unexpected decompressed size: " << size << " < "
-			           << uh->uncompressedsize << " in " << file;
+		} else if(uncompressed.size() != size_t(uh->uncompressedsize)) {
+			LogWarning << "Unexpected decompressed FTS size: " << uncompressed.size()
+			           << " != " << uh->uncompressedsize << " in " << file;
 		}
 		progressBarAdvance(3.f);
 		LoadLevelScreen();
 		
-		
 	} catch(const file_truncated_exception &) {
-		LogError << "FTS: truncated file " << file;
+		LogError << "Truncated FTS file " << file;
 		return false;
 	}
 	
 	try {
-		return loadFastScene(file, data, end, trans);
+		return loadFastScene(file, uncompressed.data(), uncompressed.data() + uncompressed.size(), trans);
 	} catch(const file_truncated_exception &) {
-		LogError << "FTS: truncated compressed data in " << file;
+		LogError << "Truncated compressed data in FTS file " << file;
 		return false;
 	}
+	
 }
 
 
