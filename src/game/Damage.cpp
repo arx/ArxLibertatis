@@ -514,15 +514,12 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	
 	lightHandleDestroy(io_dead->dynlight);
 	
-	//Kill all speeches
-
 	ARX_NPC_Behaviour_Reset(io_dead);
-
+	
 	ARX_SPEECH_ReleaseIOSpeech(io_dead);
-
-	//Kill all Timers...
+	
 	ARX_SCRIPT_Timer_Clear_For_IO(io_dead);
-
+	
 	if(io_dead->mainevent != SM_DEAD) {
 		if(SendIOScriptEvent(io_killer, io_dead, SM_DIE) != REFUSE && ValidIOAddress(io_dead)) {
 			io_dead->infracolor = Color3f::blue;
@@ -697,9 +694,6 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 	}
 }
 
-//*************************************************************************************
-// flags & 1 == spell damage
-//*************************************************************************************
 float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool isSpellHit, const Vec3f * pos) {
 	
 	if(   !io
