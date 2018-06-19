@@ -51,7 +51,7 @@ public:
 	Image & operator=(const Image & other);
 	
 	bool load(const res::path & filename);
-	bool load(void * data, size_t size, const char * file = NULL);
+	bool load(const char * data, size_t size, const char * file = NULL);
 	
 	void create(size_t width, size_t height, Format format);
 	
