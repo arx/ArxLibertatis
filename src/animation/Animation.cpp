@@ -464,14 +464,12 @@ static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE & ah, const res::path & pat
 		return false;
 	}
 	
-	size_t FileSize;
-	char * adr = g_resources->readAlloc(path, FileSize);
-	if(!adr) {
+	std::string buffer = g_resources->read(path);
+	if(buffer.empty()) {
 		return false;
 	}
 	
-	EERIE_ANIM * temp = TheaToEerie(adr, FileSize, path);
-	free(adr);
+	EERIE_ANIM * temp = TheaToEerie(buffer.data(), buffer.size(), path);
 	if(!temp) {
 		return false;
 	}
@@ -508,17 +506,14 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 			continue;
 		}
 		
-		size_t FileSize;
-		char * adr = g_resources->readAlloc(path, FileSize);
-		if(!adr) {
+		std::string buffer = g_resources->read(path);
+		if(buffer.empty()) {
 			return NULL;
 		}
 		
 		animSlot.anims = (EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
-		animSlot.anims[0] = TheaToEerie(adr, FileSize, path);
+		animSlot.anims[0] = TheaToEerie(buffer.data(), buffer.size(), path);
 		animSlot.alt_nb = 1;
-		
-		free(adr);
 		
 		if(!animSlot.anims[0]) {
 			return NULL;
