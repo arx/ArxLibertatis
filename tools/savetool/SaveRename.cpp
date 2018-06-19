@@ -43,7 +43,7 @@ public:
 			return false;
 		}
 		
-		m_pld = reinterpret_cast<ARX_CHANGELEVEL_PLAYER_LEVEL_DATA *>(m_buffer.data());
+		m_pld = reinterpret_cast<ARX_CHANGELEVEL_PLAYER_LEVEL_DATA *>(&m_buffer[0]);
 		size_t pos = sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA);
 		
 		if(m_pld->version != ARX_GAMESAVE_VERSION) {
