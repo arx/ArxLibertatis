@@ -35,75 +35,75 @@ class TextureContainer;
 enum SpellType {
 	
 	// LEVEL 1
-	SPELL_MAGIC_SIGHT           ,//= 11,
-	SPELL_MAGIC_MISSILE         ,//= 12,
-	SPELL_IGNIT                 ,//= 13,
-	SPELL_DOUSE                 ,//= 14,
-	SPELL_ACTIVATE_PORTAL       ,//= 15,
+	SPELL_MAGIC_SIGHT,           // = 11,
+	SPELL_MAGIC_MISSILE,         // = 12,
+	SPELL_IGNIT,                 // = 13,
+	SPELL_DOUSE,                 // = 14,
+	SPELL_ACTIVATE_PORTAL,       // = 15,
 	
 	// LEVEL 2
-	SPELL_HEAL                  ,//= 21,
-	SPELL_DETECT_TRAP           ,//= 22,
-	SPELL_ARMOR                 ,//= 23,
-	SPELL_LOWER_ARMOR           ,//= 24,
-	SPELL_HARM                  ,//= 25,
+	SPELL_HEAL,                  // = 21,
+	SPELL_DETECT_TRAP,           // = 22,
+	SPELL_ARMOR,                 // = 23,
+	SPELL_LOWER_ARMOR,           // = 24,
+	SPELL_HARM,                  // = 25,
 	
 	// LEVEL 3
-	SPELL_SPEED                 ,//= 31,
-	SPELL_DISPELL_ILLUSION      ,//= 32,
-	SPELL_FIREBALL              ,//= 33,
-	SPELL_CREATE_FOOD           ,//= 34,
-	SPELL_ICE_PROJECTILE        ,//= 35,
+	SPELL_SPEED,                 // = 31,
+	SPELL_DISPELL_ILLUSION,      // = 32,
+	SPELL_FIREBALL,              // = 33,
+	SPELL_CREATE_FOOD,           // = 34,
+	SPELL_ICE_PROJECTILE,        // = 35,
 	
 	// LEVEL 4
-	SPELL_BLESS                 ,//= 41,
-	SPELL_DISPELL_FIELD         ,//= 42,
-	SPELL_FIRE_PROTECTION       ,//= 43,
-	SPELL_TELEKINESIS           ,//= 44,
-	SPELL_CURSE                 ,//= 45,
-	SPELL_COLD_PROTECTION       ,//= 46,
+	SPELL_BLESS,                 // = 41,
+	SPELL_DISPELL_FIELD,         // = 42,
+	SPELL_FIRE_PROTECTION,       // = 43,
+	SPELL_TELEKINESIS,           // = 44,
+	SPELL_CURSE,                 // = 45,
+	SPELL_COLD_PROTECTION,       // = 46,
 	
 	// LEVEL 5
-	SPELL_RUNE_OF_GUARDING      ,//= 51,
-	SPELL_LEVITATE              ,//= 52,
-	SPELL_CURE_POISON           ,//= 53,
-	SPELL_REPEL_UNDEAD          ,//= 54,
-	SPELL_POISON_PROJECTILE     ,//= 55,
+	SPELL_RUNE_OF_GUARDING,      // = 51,
+	SPELL_LEVITATE,              // = 52,
+	SPELL_CURE_POISON,           // = 53,
+	SPELL_REPEL_UNDEAD,          // = 54,
+	SPELL_POISON_PROJECTILE,     // = 55,
 	
 	// LEVEL 6
-	SPELL_RISE_DEAD             ,//= 61,
-	SPELL_PARALYSE              ,//= 62,
-	SPELL_CREATE_FIELD          ,//= 63,
-	SPELL_DISARM_TRAP           ,//= 64,
-	SPELL_SLOW_DOWN             ,//= 65, //secret
+	SPELL_RISE_DEAD,             // = 61,
+	SPELL_PARALYSE,              // = 62,
+	SPELL_CREATE_FIELD,          // = 63,
+	SPELL_DISARM_TRAP,           // = 64,
+	SPELL_SLOW_DOWN,             // = 65, //secret
 	
 	// LEVEL 7
-	SPELL_FLYING_EYE            ,//= 71,
-	SPELL_FIRE_FIELD            ,//= 72,
-	SPELL_ICE_FIELD             ,//= 73,
-	SPELL_LIGHTNING_STRIKE      ,//= 74,
-	SPELL_CONFUSE               ,//= 75,
+	SPELL_FLYING_EYE,            // = 71,
+	SPELL_FIRE_FIELD,            // = 72,
+	SPELL_ICE_FIELD,             // = 73,
+	SPELL_LIGHTNING_STRIKE,      // = 74,
+	SPELL_CONFUSE,               // = 75,
 	
 	// LEVEL 8
-	SPELL_INVISIBILITY          ,//= 81,
-	SPELL_MANA_DRAIN            ,//= 82,
-	SPELL_EXPLOSION             ,//= 83,
-	SPELL_ENCHANT_WEAPON        ,//= 84,
-	SPELL_LIFE_DRAIN            ,//= 85, //secret
+	SPELL_INVISIBILITY,          // = 81,
+	SPELL_MANA_DRAIN,            // = 82,
+	SPELL_EXPLOSION,             // = 83,
+	SPELL_ENCHANT_WEAPON,        // = 84,
+	SPELL_LIFE_DRAIN,            // = 85, //secret
 	
 	// LEVEL 9
-	SPELL_SUMMON_CREATURE       ,//= 91,
-	SPELL_NEGATE_MAGIC          ,//= 92,
-	SPELL_INCINERATE            ,//= 93,
-	SPELL_MASS_PARALYSE         ,//= 94,
+	SPELL_SUMMON_CREATURE,       // = 91,
+	SPELL_NEGATE_MAGIC,          // = 92,
+	SPELL_INCINERATE,            // = 93,
+	SPELL_MASS_PARALYSE,         // = 94,
 	
 	// LEVEL 10
-	SPELL_MASS_LIGHTNING_STRIKE ,//= 101,
-	SPELL_CONTROL_TARGET        ,//= 102,
-	SPELL_FREEZE_TIME           ,//= 103,
-	SPELL_MASS_INCINERATE       ,//= 104
+	SPELL_MASS_LIGHTNING_STRIKE, // = 101,
+	SPELL_CONTROL_TARGET,        // = 102,
+	SPELL_FREEZE_TIME,           // = 103,
+	SPELL_MASS_INCINERATE,       // = 104
 	
-	SPELL_FAKE_SUMMON           ,// special =105
+	SPELL_FAKE_SUMMON,           // special =105
 	
 	SPELL_NONE = -1
 };
