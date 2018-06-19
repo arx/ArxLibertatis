@@ -1403,15 +1403,13 @@ static void ARX_SOUND_CreateCollisionMaps() {
 		res::path file = ARX_SOUND_PATH_INI / ARX_SOUND_COLLISION_MAP_NAMES[i];
 		file.set_ext(ARX_SOUND_FILE_EXTENSION_INI);
 		
-		size_t fileSize;
-		char * data = g_resources->readAlloc(file, fileSize);
-		if(!data) {
-			LogWarning << "Could not find collision map " << file;
+		std::string data = g_resources->read(file);
+		if(data.empty()) {
+			LogWarning << "Could not read collision map " << file;
 			return;
 		}
 		
-		std::istringstream iss(std::string(data, fileSize));
-		free(data);
+		std::istringstream iss(data);
 		
 		IniReader reader;
 		if(!reader.read(iss)) {
@@ -1485,15 +1483,13 @@ static void ARX_SOUND_CreatePresenceMap() {
 	
 	res::path file = (ARX_SOUND_PATH_INI / ARX_SOUND_PRESENCE_NAME).set_ext(ARX_SOUND_FILE_EXTENSION_INI);
 	
-	size_t fileSize;
-	char * data = g_resources->readAlloc(file, fileSize);
-	if(!data) {
-		LogWarning << "Could not find presence map " << file;
+	std::string data = g_resources->read(file);
+	if(data.empty()) {
+		LogWarning << "Could not read presence map " << file;
 		return;
 	}
 	
-	std::istringstream iss(std::string(data, fileSize));
-	free(data);
+	std::istringstream iss(data);
 	
 	IniReader reader;
 	if(!reader.read(iss)) {
