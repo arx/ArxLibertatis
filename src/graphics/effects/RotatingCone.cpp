@@ -25,25 +25,11 @@
 #include "math/Random.h"
 
 RotatingCone::RotatingCone()
-	: m_def(16)
-	, m_currdurationang(0)
+	: m_currdurationang(0)
 	, m_ang(0.f)
 	, m_coneScale(0.f)
 	, m_tsouffle(NULL)
-{
-	conenbvertex = m_def * 2 + 2;
-	conenbfaces = m_def * 2 + 2;
-	coned3d = (TexturedVertexUntransformed *)malloc(conenbvertex * sizeof(TexturedVertexUntransformed));
-	conevertex = (Vec3f *)malloc(conenbvertex * sizeof(Vec3f));
-	coneind = (unsigned short *)malloc(conenbvertex * sizeof(unsigned short));
-}
-
-RotatingCone::~RotatingCone() {
-	
-	free(coned3d);
-	free(conevertex);
-	free(coneind);
-}
+{ }
 
 void RotatingCone::Init(float rbase, float rhaut, float hauteur) {
 	
@@ -51,9 +37,9 @@ void RotatingCone::Init(float rbase, float rhaut, float hauteur) {
 	unsigned short * pind = coneind;
 	unsigned short ind = 0;
 	float a = 0.f;
-	float da = 360.f / (float)m_def;
+	float da = 360.f / float(Def);
 	
-	int nb = conenbvertex >> 1;
+	int nb = VertexCount / 2;
 	
 	while(nb) {
 		*pind++ = ind++;
@@ -85,11 +71,11 @@ void RotatingCone::Update(GameDuration timeDelta, Vec3f pos, float coneScale) {
 void RotatingCone::Render() {
 	
 	float u = m_ang;
-	float du = .99999999f / (float)m_def;
+	float du = .99999999f / float(Def);
 	
 	Vec3f * vertex = conevertex;
 	TexturedVertexUntransformed * d3dv = coned3d;
-	int nb = (conenbvertex) >> 1;
+	int nb = VertexCount / 2;
 	
 	while(nb) {
 		Vec3f d3dvs;
@@ -140,7 +126,7 @@ void RotatingCone::Render() {
 	mat.setTexture(m_tsouffle);
 	mat.setCulling(CullCW);
 
-	int i = conenbfaces - 2;
+	int i = FaceCount - 2;
 	int j = 0;
 
 	while(i--) {
@@ -151,7 +137,7 @@ void RotatingCone::Render() {
 	//tracé du cone front
 	mat.setCulling(CullCCW);
 
-	i = conenbfaces - 2;
+	i = FaceCount - 2;
 	j = 0;
 
 	while(i--) {
