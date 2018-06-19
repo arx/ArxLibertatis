@@ -154,12 +154,14 @@ static void ARX_EQUIPMENT_Release(EntityHandle id) {
 
 //! \brief Releases Equipment Structure
 void ARX_EQUIPMENT_ReleaseAll(Entity * io) {
+	
 	if(!io || !(io->ioflags & IO_ITEM)) {
 		return;
 	}
 	
-	free(io->_itemdata->equipitem);
+	delete io->_itemdata->equipitem;
 	io->_itemdata->equipitem = NULL;
+	
 }
 
 extern long EXITING;
@@ -1140,18 +1142,14 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 	if (io == NULL) return;
 
 	if (!(io->ioflags & IO_ITEM)) return;
-
-	if (!io->_itemdata->equipitem)
-	{
-		io->_itemdata->equipitem = (IO_EQUIPITEM *) malloc(sizeof(IO_EQUIPITEM));
-
-		if (io->_itemdata->equipitem == NULL) return;
-
+	
+	if(!io->_itemdata->equipitem) {
+		io->_itemdata->equipitem = new IO_EQUIPITEM;
 		memset(io->_itemdata->equipitem, 0, sizeof(IO_EQUIPITEM));
 		io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Duration].value = 10;
 		io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_AimTime].value = 10;
 	}
-
+	
 	if(special) {
 		for (long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++)
 		{
