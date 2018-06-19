@@ -45,7 +45,7 @@ void CursorTrail::add(PlatformDuration time, const Vec2s & pos)
 {
 	iOldCoord[iNbOldCoord] = pos;
 	
-	const s64 targetFPS = 61.0;
+	const s64 targetFPS = 61;
 	const PlatformDuration targetDelay = PlatformDurationUs((1000 * 1000) / targetFPS);
 	
 	m_storedTime += time;
