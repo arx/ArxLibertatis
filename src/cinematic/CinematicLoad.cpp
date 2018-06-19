@@ -137,7 +137,6 @@ bool loadCinematic(Cinematic * c, const res::path & file) {
 	bool ret = parseCinematic(c, buffer.data(), buffer.size());
 	if(!ret) {
 		LogError << "Could not load cinematic " << file;
-		c->New();
 	}
 	
 	return ret;
