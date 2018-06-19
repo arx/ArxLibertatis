@@ -163,17 +163,16 @@ bool Credits::load() {
 	
 	std::string creditsFile = "localisation/ucredits_" +  config.language + ".txt";
 	
-	size_t creditsSize;
-	char * credits = g_resources->readAlloc(creditsFile, creditsSize);
+	std::string credits = g_resources->read(creditsFile);
 	
 	std::string englishCreditsFile;
-	if(!credits) {
+	if(credits.empty()) {
 		// Fallback if there is no localised credits file
 		englishCreditsFile = "localisation/ucredits_english.txt";
-		credits = g_resources->readAlloc(englishCreditsFile, creditsSize);
+		credits = g_resources->read(englishCreditsFile);
 	}
 	
-	if(!credits) {
+	if(credits.empty()) {
 		if(!englishCreditsFile.empty() && englishCreditsFile != creditsFile) {
 			LogWarning << "Unable to read credits files " << creditsFile
 			           << " and " << englishCreditsFile;
@@ -183,7 +182,7 @@ bool Credits::load() {
 		return false;
 	}
 	
-	LogDebug("Loaded credits file: " << creditsFile << " of size " << creditsSize);
+	LogDebug("Loaded credits file: " << creditsFile << " of size " << credits.size());
 	
 	m_text = arx_credits;
 	
@@ -219,12 +218,9 @@ bool Credits::load() {
 	
 	m_text += "\n\n\n\n~ORIGINAL ARX FATALIS CREDITS:\n\n\n";
 	
-	char * creditsEnd = credits + creditsSize;
-	m_text += util::convert<util::UTF16LE, util::UTF8>(credits, creditsEnd);
+	m_text += util::convert<util::UTF16LE, util::UTF8>(credits);
 	
 	LogDebug("Final credits length: " << m_text.size());
-	
-	free(credits);
 	
 	if(!m_message.empty()) {
 		m_text = "~" + m_message + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + m_text;
