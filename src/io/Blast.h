@@ -46,6 +46,8 @@
 
 #include <stddef.h>
 
+#include <string>
+
 /*
  * blast() decompresses the PKWare Data Compression Library (DCL) compressed
  * format.  It provides the same functionality as the explode() function in
@@ -126,6 +128,14 @@ struct BlastMemOutBufferRealloc {
 	
 };
 
+struct BlastMemOutString {
+	
+	std::string & buffer;
+	
+	explicit BlastMemOutString(std::string & destination) : buffer(destination) { }
+	
+};
+
 /*!
  * Writes data to a BlastMemOutBuffer.
  * Advances the buf pointer and decreases size.
@@ -148,6 +158,11 @@ size_t blastInMem(void * Param, const unsigned char ** buf);
 int blastOutMemRealloc(void * Param, unsigned char * buf, size_t len);
 
 /*!
+ * Writes data to a BlastMemOutString.
+ */
+int blastOutString(void * Param, unsigned char * buf, size_t len);
+
+/*!
  * Decompress data and allocate memory as needed.
  * Returned pointer should be deallocated using free(), not delete.
  * 
@@ -159,5 +174,17 @@ char * blastMemAlloc(const char * from, size_t fromSize, size_t & toSize);
  * Decompress data.
  */
 size_t blastMem(const char * from, size_t fromSize, char * to, size_t toSize);
+
+/*!
+ * Decompress data.
+ */
+std::string blast(const char * from, size_t fromSize, size_t toSizeHint = size_t(-1));
+
+/*!
+ * Decompress data.
+ */
+inline std::string blast(const std::string & from, size_t toSizeHint = size_t(-1)) {
+	return blast(from.data(), from.size(), toSizeHint);
+}
 
 #endif // ARX_IO_BLAST_H
