@@ -132,7 +132,7 @@ void EERIE_LIGHT_GlobalInit() {
 			if(dynLight) {
 				dynLight->exist = 0;
 			}
-			free(g_staticLights[i]);
+			delete g_staticLights[i];
 			g_staticLights[i] = NULL;
 		}
 	}
@@ -142,12 +142,7 @@ long EERIE_LIGHT_Create() {
 	
 	for (size_t i = 0; i < g_staticLightsMax; i++) {
 		if(!g_staticLights[i]) {
-			
-			g_staticLights[i] = (EERIE_LIGHT *)malloc(sizeof(EERIE_LIGHT));
-			if(!g_staticLights[i]) {
-				return -1;
-			}
-			
+			g_staticLights[i] = new EERIE_LIGHT;
 			memset(g_staticLights[i], 0, sizeof(EERIE_LIGHT));
 			g_staticLights[i]->sample = audio::INVALID_ID;
 			g_staticLights[i]->m_ignitionLightHandle = LightHandle();
