@@ -116,12 +116,13 @@ struct EERIE_ANIM {
 
 struct ANIM_HANDLE {
 	
-	ANIM_HANDLE();
-	
 	res::path path; // empty path means an unallocated slot
-	EERIE_ANIM ** anims;
-	short alt_nb;
+	std::vector<EERIE_ANIM *> anims;
 	long locks;
+	
+	ANIM_HANDLE()
+		: locks(0)
+	{ }
 	
 };
 

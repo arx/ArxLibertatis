@@ -86,23 +86,24 @@ std::vector<ANIM_HANDLE> animations(MAX_ANIMATIONS);
 
 static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 
-// ANIMATION HANDLES handling
-
 short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
-
-	if(ah->alt_nb == 1)
+	
+	if(ah->anims.size() == 1) {
 		return 0;
-
-	long tot = anim_power[0];
-
-	for(long i = 1; i < ah->alt_nb; i++) {
-		tot += anim_power[std::min(i, 14L)];
+	}
+	
+	long total = anim_power[0];
+	for(size_t i = 1; i < ah->anims.size(); i++) {
+		total += anim_power[std::min(i, size_t(boost::size(anim_power) - 1))];
 	}
 	
 	while(true) {
-		for(short i = 0; i < ah->alt_nb; i++) {
-			long r = Random::get(0l, tot);
-			if(r < anim_power[std::min((int)i, 14)] && i != old) {
+		for(size_t i = 0; i < ah->anims.size(); i++) {
+			if(long(i) == old) {
+				continue;
+			}
+			long r = Random::get(0l, total);
+			if(r < anim_power[std::min(i, size_t(boost::size(anim_power) - 1))]) {
 				return i;
 			}
 		}
@@ -118,10 +119,11 @@ void ANIM_Set(AnimLayer & layer, ANIM_HANDLE * anim) {
 	
 	layer.cur_anim = anim;
 	layer.altidx_cur = ANIM_GetAltIdx(anim, layer.altidx_cur);
-
-	if(layer.altidx_cur > layer.cur_anim->alt_nb)
+	
+	if(layer.altidx_cur > short(layer.cur_anim->anims.size())) {
 		layer.altidx_cur = 0;
-
+	}
+	
 	layer.ctime = 0;
 	layer.lastframe = -1;
 	layer.flags &= ~EA_PAUSED;
@@ -161,14 +163,6 @@ void setAnimation(Entity * entity, ANIM_HANDLE * animation,
 	}
 }
 
-ANIM_HANDLE::ANIM_HANDLE() {
-	
-	anims = NULL;
-	alt_nb = 0;
-	
-	locks = 0;
-}
-
 static void ReleaseAnim(EERIE_ANIM * ea) {
 	
 	if(!ea) {
@@ -183,19 +177,23 @@ static void ReleaseAnim(EERIE_ANIM * ea) {
 	
 }
 
+static void EERIE_ANIMMANAGER_Clear(ANIM_HANDLE & slot) {
+	
+	BOOST_FOREACH(EERIE_ANIM * anim, slot.anims) {
+		ReleaseAnim(anim);
+	}
+	slot.anims.clear();
+	slot.path.clear();
+}
+
 void EERIE_ANIMMANAGER_PurgeUnused() {
 	
-	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		if(!animations[i].path.empty() && animations[i].locks == 0) {
-			for(long k = 0; k < animations[i].alt_nb; k++) {
-				ReleaseAnim(animations[i].anims[k]);
-				animations[i].anims[k] = NULL;
-			}
-			free(animations[i].anims);
-			animations[i].anims = NULL;
-			animations[i].path.clear();
+	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+		if(!slot.path.empty() && slot.locks == 0) {
+			EERIE_ANIMMANAGER_Clear(slot);
 		}
 	}
+	
 }
 
 void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim) {
@@ -211,9 +209,9 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim) {
 
 static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const res::path & path) {
 	
-	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		if(animations[i].path == path) {
-			return &animations[i];
+	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+		if(slot.path == path) {
+			return &slot;
 		}
 	}
 	
@@ -469,14 +467,12 @@ static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE & ah, const res::path & pat
 		return false;
 	}
 	
-	EERIE_ANIM * temp = TheaToEerie(buffer.data(), buffer.size(), path);
-	if(!temp) {
+	EERIE_ANIM * anim = TheaToEerie(buffer.data(), buffer.size(), path);
+	if(!anim) {
 		return false;
 	}
 	
-	ah.alt_nb++;
-	ah.anims = (EERIE_ANIM **)realloc(ah.anims, sizeof(EERIE_ANIM *) * ah.alt_nb);
-	ah.anims[ah.alt_nb - 1] = temp;
+	ah.anims.push_back(anim);
 	
 	return true;
 }
@@ -493,16 +489,15 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const res::path & path) {
 
 ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 	
-	ANIM_HANDLE * handl = EERIE_ANIMMANAGER_GetHandle(path);
-	if(handl) {
-		handl->locks++;
-		return handl;
+	ANIM_HANDLE * handle = EERIE_ANIMMANAGER_GetHandle(path);
+	if(handle) {
+		handle->locks++;
+		return handle;
 	}
 	
-	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		ANIM_HANDLE & animSlot = animations[i];
+	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
 		
-		if(!animSlot.path.empty()) {
+		if(!slot.path.empty()) {
 			continue;
 		}
 		
@@ -511,25 +506,23 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 			return NULL;
 		}
 		
-		animSlot.anims = (EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
-		animSlot.anims[0] = TheaToEerie(buffer.data(), buffer.size(), path);
-		animSlot.alt_nb = 1;
-		
-		if(!animSlot.anims[0]) {
+		EERIE_ANIM * anim = TheaToEerie(buffer.data(), buffer.size(), path);
+		if(!anim) {
 			return NULL;
 		}
 		
-		animSlot.path = path;
-		animSlot.locks = 1;
+		slot.anims.push_back(anim);
+		slot.path = path;
+		slot.locks = 1;
 		
 		int pathcount = 2;
 		res::path altpath;
 		do {
 			altpath = res::path(path);
 			altpath.append_basename(boost::lexical_cast<std::string>(pathcount++));
-		} while(EERIE_ANIMMANAGER_AddAltAnim(animSlot, altpath));
+		} while(EERIE_ANIMMANAGER_AddAltAnim(slot, altpath));
 		
-		return &animSlot;
+		return &slot;
 	}
 	
 	return NULL;
@@ -563,10 +556,11 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 
 	if(io && (io->ioflags & IO_FREEZESCRIPT))
 		time = 0;
-
-	if(layer.altidx_cur >= layer.cur_anim->alt_nb)
+	
+	if(layer.altidx_cur >= short(layer.cur_anim->anims.size())) {
 		layer.altidx_cur = 0;
-
+	}
+	
 	if(!(layer.flags & EA_EXCONTROL))
 		layer.ctime += time;
 
@@ -672,19 +666,6 @@ void ResetAnim(AnimLayer & layer) {
 	
 }
 
-static void EERIE_ANIMMANAGER_Clear(ANIM_HANDLE & slot) {
-	
-	for(long k = 0; k < slot.alt_nb; k++) {
-		ReleaseAnim(slot.anims[k]);
-		slot.anims[k] = NULL;
-	}
-	
-	free(slot.anims);
-	slot.anims = NULL;
-	
-	slot.path.clear();
-}
-
 void EERIE_ANIMMANAGER_ClearAll() {
 	
 	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
@@ -731,18 +712,18 @@ std::vector< std::pair<res::path, size_t> > ARX_SOUND_PushAnimSamples() {
 	
 	size_t number = 0;
 	
-	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		if(!animations[i].path.empty()) {
-			for(long j = 0; j < animations[i].alt_nb; j++) {
-				EERIE_ANIM * anim = animations[i].anims[j];
-				for(size_t k = 0; k < anim->frames.size(); k++) {
-					number++;
-					if(anim->frames[k].sample != -1) {
-						res::path dest;
-						audio::getSampleName(anim->frames[k].sample, dest);
-						if(!dest.empty()) {
-							samples.push_back(std::make_pair(dest, number));
-						}
+	BOOST_FOREACH(const ANIM_HANDLE & slot, animations) {
+		if(slot.path.empty()) {
+			continue;
+		}
+		BOOST_FOREACH(const EERIE_ANIM * anim, slot.anims) {
+			BOOST_FOREACH(const EERIE_FRAME & frame, anim->frames) {
+				number++;
+				if(frame.sample != -1) {
+					res::path dest;
+					audio::getSampleName(frame.sample, dest);
+					if(!dest.empty()) {
+						samples.push_back(std::make_pair(dest, number));
 					}
 				}
 			}
@@ -762,16 +743,16 @@ void ARX_SOUND_PopAnimSamples(const std::vector< std::pair<res::path, size_t> > 
 	
 	size_t number = 0;
 	
-	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		if(!animations[i].path.empty()) {
-			for(long j = 0; j < animations[i].alt_nb; j++) {
-				EERIE_ANIM * anim = animations[i].anims[j];
-				for(size_t k = 0; k < anim->frames.size(); k++) {
-					number++;
-					if(p != samples.end() && p->second == number) {
-						anim->frames[k].sample = audio::createSample(p->first);
-						++p;
-					}
+	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+		if(slot.path.empty()) {
+			continue;
+		}
+		BOOST_FOREACH(EERIE_ANIM * anim, slot.anims) {
+			BOOST_FOREACH(EERIE_FRAME & frame, anim->frames) {
+				number++;
+				if(p != samples.end() && p->second == number) {
+					frame.sample = audio::createSample(p->first);
+					++p;
 				}
 			}
 		}
