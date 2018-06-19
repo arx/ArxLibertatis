@@ -131,12 +131,41 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	return io;
 }
 
-static ColorBGRA savedColorConversion(u32 bgra) {
-	return ColorBGRA(bgra);
-}
+struct ToColorBGRA {
+	template <typename T>
+	ColorBGRA operator()(const T & bgra) const {
+		return ColorBGRA(bgra);
+	}
+};
 
-static long LastLoadedLightningNb = 0;
-static ColorBGRA * LastLoadedLightning = NULL;
+static std::vector<ColorBGRA> g_levelLighting;
+
+static void loadLighting(const char * dat, size_t & pos, bool compact, bool skip = false) {
+	
+	const DANAE_LS_LIGHTINGHEADER * dll = reinterpret_cast<const DANAE_LS_LIGHTINGHEADER *>(dat + pos);
+	pos += sizeof(DANAE_LS_LIGHTINGHEADER);
+	
+	size_t count = dll->nb_values;
+	
+	if(!skip) {
+		g_levelLighting.resize(count);
+	}
+	
+	if(compact) {
+		if(!skip) {
+			const u32 * begin = reinterpret_cast<const u32 *>(dat + pos);
+			std::transform(begin, begin + count, g_levelLighting.begin(), ToColorBGRA());
+		}
+		pos += sizeof(u32) * count;
+	} else {
+		if(!skip) {
+			const DANAE_LS_VLIGHTING * begin = reinterpret_cast<const DANAE_LS_VLIGHTING *>(dat + pos);
+			std::transform(begin, begin + count, g_levelLighting.begin(), ToColorBGRA());
+		}
+		pos += sizeof(DANAE_LS_VLIGHTING) * count;
+	}
+	
+}
 
 bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
@@ -247,35 +276,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	}
 	
 	if(dlh.lighting) {
-		
-		const DANAE_LS_LIGHTINGHEADER * dll = reinterpret_cast<const DANAE_LS_LIGHTINGHEADER *>(dat + pos);
-		pos += sizeof(DANAE_LS_LIGHTINGHEADER);
-		long bcount = dll->nb_values;
-		
-		if(!lightingFile) {
-			
-			LastLoadedLightningNb = bcount;
-			
-			// DANAE_LS_VLIGHTING
-			free(LastLoadedLightning);
-			ColorBGRA * ll = LastLoadedLightning = (ColorBGRA *)malloc(sizeof(ColorBGRA) * bcount);
-			
-			if(dlh.version > 1.001f) {
-				std::transform((const u32 *)(dat + pos), (const u32 *)(dat + pos) + bcount, LastLoadedLightning, savedColorConversion);
-				pos += sizeof(u32) * bcount;
-			} else {
-				while(bcount) {
-					const DANAE_LS_VLIGHTING * dlv = reinterpret_cast<const DANAE_LS_VLIGHTING *>(dat + pos);
-					pos += sizeof(DANAE_LS_VLIGHTING);
-					*ll = Color((dlv->r & 255), (dlv->g & 255), (dlv->b & 255), 255).toBGRA();
-					ll++;
-					bcount--;
-				}
-			}
-			
-		} else {
-			pos += sizeof(u32) * bcount;
-		}
+		loadLighting(dat, pos, dlh.version > 1.001f, lightingFile != NULL);
 	}
 	
 	progressBarAdvance();
@@ -506,26 +507,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
 	
-	const DANAE_LS_LIGHTINGHEADER * dll = reinterpret_cast<const DANAE_LS_LIGHTINGHEADER *>(dat + pos);
-	pos += sizeof(DANAE_LS_LIGHTINGHEADER);
-	
-	long bcount = dll->nb_values;
-	LastLoadedLightningNb = bcount;
-	
-	free(LastLoadedLightning);
-	ColorBGRA * ll = LastLoadedLightning = (ColorBGRA *)malloc(sizeof(ColorBGRA) * bcount);
-	if(dlh.version > 1.001f) {
-		std::transform((const u32 *)(dat + pos), (const u32 *)(dat + pos) + bcount, LastLoadedLightning, savedColorConversion);
-		pos += sizeof(u32) * bcount;
-	} else {
-		while(bcount) {
-			const DANAE_LS_VLIGHTING * dlv = reinterpret_cast<const DANAE_LS_VLIGHTING *>(dat + pos);
-			pos += sizeof(DANAE_LS_VLIGHTING);
-			*ll = Color((dlv->r & 255), (dlv->g & 255), (dlv->b & 255), 255).toBGRA();
-			ll++;
-			bcount--;
-		}
-	}
+	loadLighting(dat, pos, dlh.version > 1.001f);
 	
 	ARX_UNUSED(pos);
 	arx_assert(pos <= buffer.size());
@@ -584,25 +566,18 @@ void DanaeClearLevel() {
 	CURRENTLEVEL = -1;
 }
 
-void RestoreLastLoadedLightning(BackgroundData & eb)
-{
-	long pos = 0;
-	long bcount = CountBkgVertex();
-
-	if(LastLoadedLightningNb <= 0)
-		return;
-
-	if(LastLoadedLightning == NULL)
-		return;
-
-	if(bcount != LastLoadedLightningNb) {
-		free(LastLoadedLightning);
-		LastLoadedLightning = NULL;
-		LastLoadedLightningNb = 0;
+void RestoreLastLoadedLightning(BackgroundData & eb) {
+	
+	if(g_levelLighting.empty()) {
 		return;
 	}
-
-	bcount = LastLoadedLightningNb;
+	
+	if(g_levelLighting.size() != size_t(CountBkgVertex())) {
+		g_levelLighting.clear();
+		return;
+	}
+	
+	size_t i = 0;
 	
 	// TODO copy-paste poly iteration
 	for(short z = 0; z < eb.m_size.y; z++)
@@ -610,24 +585,16 @@ void RestoreLastLoadedLightning(BackgroundData & eb)
 		BackgroundTileData & eg = eb.m_tileData[x][z];
 		for(long l = 0; l < eg.nbpoly; l++) {
 			EERIEPOLY & ep = eg.polydata[l];
-			
 			long nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
-			
 			for(long k = 0; k < nbvert; k++) {
-				Color dc = Color::fromBGRA(LastLoadedLightning[pos]);
-				pos++;
-				dc.a = 255;
-				ep.color[k] = ep.v[k].color = dc.toRGB();
-				bcount--;
-				
-				if(bcount <= 0)
-					goto plusloin;
+				if(i >= g_levelLighting.size()) {
+					g_levelLighting.clear();
+					return;
+				}
+				Color dc = Color::fromBGRA(g_levelLighting[i++]);
+				ep.color[k] = ep.v[k].color = dc.toRGB(255);
 			}
 		}
 	}
-
-plusloin:
-	free(LastLoadedLightning);
-	LastLoadedLightning = NULL;
-	LastLoadedLightningNb = 0;
+	
 }
