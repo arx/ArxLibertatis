@@ -1185,11 +1185,7 @@ void ComputePortalVertexBuffer() {
 				continue;
 			}
 			
-			RoomBatches & roomBatches = poly.tex->m_roomBatches;
-			if(roomBatches.tMatRoomSize != portals->rooms.size()) {
-				roomBatches.tMatRoomSize = portals->rooms.size();
-				roomBatches.tMatRoom = (SMY_ARXMAT *)realloc(roomBatches.tMatRoom, sizeof(SMY_ARXMAT) * (portals->rooms.size()));
-			}
+			poly.tex->m_roomBatches.resize(portals->rooms.size());
 			
 			SINFO_TEXTURE_VERTEX & info = infos[poly.tex];
 			
@@ -1321,7 +1317,7 @@ void ComputePortalVertexBuffer() {
 			
 			// Save the
 			
-			SMY_ARXMAT & m = texture->m_roomBatches.tMatRoom[i];
+			SMY_ARXMAT & m = texture->m_roomBatches[i];
 			
 			m.uslStartVertex = startIndex;
 			m.uslNbVertex = index;

@@ -89,16 +89,6 @@ struct SMY_ARXMAT
 	unsigned long count[5];
 };
 
-struct RoomBatches {
-	size_t tMatRoomSize;
-	SMY_ARXMAT * tMatRoom;
-	
-	RoomBatches()
-		: tMatRoomSize(0)
-		, tMatRoom(NULL)
-	{ }
-};
-
 // TODO This RenderBatch class should contain a pointer to the TextureContainer used by the batch
 struct ModelBatch {
 	unsigned long max[5];
@@ -201,7 +191,7 @@ public:
 	TextureContainer * m_pNext; // Linked list ptr
 	TCFlags systemflags;
 	
-	RoomBatches m_roomBatches;
+	std::vector<SMY_ARXMAT> m_roomBatches;
 	ModelBatch m_modelBatch;
 	
 };
