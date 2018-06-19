@@ -1383,13 +1383,14 @@ static long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long
 	ss << "lvl" << std::setfill('0') << std::setw(3) << num;
 	std::string loadfile = ss.str();
 	
-	size_t size; // TODO size not used
 	// TODO this has already been loaded and decompressed in ARX_CHANGELEVEL_Pop_Index!
-	char * dat = g_currentSavedGame->load(loadfile, size);
-	if(!dat) {
-		LogError << "Unable to Open " << loadfile << " for Read...";
+	std::string buffer = g_currentSavedGame->load(loadfile);
+	if(buffer.empty()) {
+		LogError << "Unable to read " << loadfile;
 		return -1;
 	}
+	
+	const char * dat = buffer.data();
 	
 	size_t pos = 0;
 	// Skip Changelevel Index
@@ -1432,8 +1433,6 @@ static long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long
 			}
 		}
 	}
-	
-	free(dat);
 	
 	return 1;
 }
