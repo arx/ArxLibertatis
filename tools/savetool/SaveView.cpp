@@ -1881,10 +1881,10 @@ int main_view(SaveBlock & save, const std::vector<std::string> & args) {
 		// TODO share this list with the game code
 		static const char * const filenames[2] = { "loc.pak", "loc_default.pak" };
 		if(g_resources->addArchive(fs::findDataFile(filenames[0]))) {
-			continue;
+			break;
 		}
 		if(filenames[1] && g_resources->addArchive(fs::findDataFile(filenames[1]))) {
-			continue;
+			break;
 		}
 		std::ostringstream oss;
 		oss << "Missing data file: \"" << filenames[0] << "\"";
