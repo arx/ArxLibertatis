@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <cstdlib>
 #include <cstring>
+#include <vector>
 
 #include <boost/noncopyable.hpp>
 
@@ -102,62 +103,50 @@ class ResourceList : private boost::noncopyable {
 	
 public:
 	
-	static const size_t ALIGNMENT = 16;
-	
 	typedef T * const * iterator;
 	typedef const T * const * const_iterator;
 	
-	ResourceList() : _size(0), list(NULL) { }
+	ResourceList() { }
 	~ResourceList() { clear(); }
 	
 	bool isValid(Handle handle) const {
-		return (get(handle) < _size && list[get(handle)]);
+		return (get(handle) < m_list.size() && m_list[get(handle)]);
 	}
 	
-	T * operator[](Handle handle) { return list[get(handle)]; }
-	const T * operator[](Handle handle) const { return list[get(handle)]; }
-	size_t size() const { return _size; }
+	T * operator[](Handle handle) { return m_list[get(handle)]; }
+	const T * operator[](Handle handle) const { return m_list[get(handle)]; }
+	size_t size() const { return m_list.size(); }
 
 	Handle add(T * element);
 	void remove(Handle handle);
 	void clear();
 	
-	iterator begin() { return list; }
-	iterator end() { return list + _size; }
-	const_iterator begin() const { return list; }
-	const_iterator end() const { return list + _size; }
+	iterator begin() { return &m_list[0]; }
+	iterator end() { return &m_list[0] + m_list.size(); }
+	const_iterator begin() const { return &m_list[0]; }
+	const_iterator end() const { return &m_list[0] + m_list.size(); }
 	
 	iterator remove(iterator i);
 	
 private:
 	
-	size_t _size;
-	T ** list;
+	std::vector<T *> m_list;
 	
 };
 
 template <typename T, typename Handle>
 Handle ResourceList<T, Handle>::add(T * element) {
 	
-	size_t i = 0;
-	for(; i < _size; i++) {
-		if(!list[i]) {
-			list[i] = element;
+	for(size_t i = 0; i < m_list.size(); i++) {
+		if(!m_list[i]) {
+			m_list[i] = element;
 			return Handle(i);
 		}
 	}
 	
-	void * ptr = std::realloc(list, (_size + ALIGNMENT) * sizeof(*list));
-	if(!ptr) {
-		return Handle(INVALID_ID);
-	}
+	m_list.push_back(element);
 	
-	list = (T **)ptr, _size += ALIGNMENT;
-	
-	std::memset(&list[i], 0, ALIGNMENT * sizeof(*list));
-	list[i] = element;
-	
-	return Handle(i);
+	return Handle(m_list.size() - 1);
 }
 
 template <typename T, typename Handle>
@@ -167,49 +156,42 @@ void ResourceList<T, Handle>::remove(Handle handle) {
 		return;
 	}
 	
-	T * toDelete = list[get(handle)];
-	list[get(handle)] = NULL;
+	size_t i = get(handle);
+	delete m_list[i];
+	m_list[i] = NULL;
 	
-	if(_size <= ALIGNMENT) {
-		delete toDelete;
-		return;
-	}
-	
-	for(size_t j(_size - ALIGNMENT); j < _size; j++) {
-		if(list[j]) {
-			delete toDelete;
+	for(size_t j = i + 1; j < m_list.size(); j++) {
+		if(m_list[j]) {
 			return;
 		}
 	}
 	
-	list = (T **)std::realloc(list, (_size -= ALIGNMENT) * sizeof(*list));
-	delete toDelete;
+	m_list.resize(i);
+	
 }
 
 template <typename T, typename Handle>
 void ResourceList<T, Handle>::clear() {
 	
-	for(size_t i = 0; i < _size; i++) {
-		if(list[i]) {
-			T * toDelete = list[i];
-			list[i] = NULL;
-			delete toDelete;
-		}
+	for(size_t i = 0; i < m_list.size(); i++) {
+		delete m_list[i];
 	}
 	
-	std::free(list);
-	list = NULL;
-	_size = 0;
+	m_list.clear();
+	
 }
 
 template <typename T, typename Handle>
 typename ResourceList<T, Handle>::iterator ResourceList<T, Handle>::remove(iterator i) {
-	size_t idx = i - begin();
-	remove(Handle(idx));
-	if(idx >= _size) {
+	
+	size_t index = i - begin();
+	
+	remove(Handle(index));
+	if(index >= m_list.size()) {
 		return end();
 	}
-	return begin() + idx + 1;
+	
+	return begin() + index + 1;
 }
 
 } // namespace audio
