@@ -637,15 +637,12 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		ep->center *= divide;
 		
 		for(size_t nroom = 0; nroom < portals->rooms.size(); nroom++) {
-			if(nroom == portal.room_1 || nroom == portal.room_2)
-			{
+			if(nroom == portal.room_1 || nroom == portal.room_2) {
 				EERIE_ROOM_DATA & room = portals->rooms[nroom];
-				
-				room.portals = (long *)realloc(room.portals, sizeof(long) * (room.nb_portals + 1));
-				room.portals[room.nb_portals] = num;
-				room.nb_portals++;
+				room.portals.push_back(num);
 			}
 		}
+		
 	}
 }
 
@@ -657,13 +654,10 @@ void EERIE_PORTAL_Release() {
 	for(size_t nn = 0; nn < portals->rooms.size(); nn++) {
 		free(portals->rooms[nn].epdata);
 		portals->rooms[nn].epdata = NULL;
-		free(portals->rooms[nn].portals);
-		portals->rooms[nn].portals = NULL;
 		delete portals->rooms[nn].pVertexBuffer;
 		portals->rooms[nn].pVertexBuffer = NULL;
 		free(portals->rooms[nn].indexBuffer);
 		portals->rooms[nn].indexBuffer = NULL;
-		portals->rooms[nn].ppTextureContainer.clear();
 	}
 		
 	delete portals;
@@ -1020,19 +1014,14 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		
 		EERIE_ROOM_DATA & room = portals->rooms[i];
 		
-		room.nb_portals = erd->nb_portals;
+		room.portals.resize(erd->nb_portals);
 		room.nb_polys = erd->nb_polys;
 		
-		LogDebug(" - room " << i << ": " << room.nb_portals << " portals, "
+		LogDebug(" - room " << i << ": " << erd->nb_portals << " portals, "
 		         << room.nb_polys << " polygons");
 		
-		if(room.nb_portals) {
-			room.portals = (long *)malloc(sizeof(long) * room.nb_portals);
-			const s32 * start = fts_read<s32>(data, end, room.nb_portals);
-			std::copy(start, start + room.nb_portals, room.portals);
-		} else {
-			room.portals = NULL;
-		}
+		const s32 * start = fts_read<s32>(data, end, erd->nb_portals);
+		std::copy(start, start + erd->nb_portals, room.portals.begin());
 		
 		if(room.nb_polys) {
 			room.epdata = (EP_DATA *)malloc(sizeof(EP_DATA) * room.nb_polys);

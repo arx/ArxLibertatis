@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cmath>
 
+#include <boost/foreach.hpp>
+
 #include "ai/Paths.h"
 
 #include "animation/AnimationRender.h"
@@ -526,10 +528,9 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 		long nearest = -1;
 		float nearest_dist = 99999.f;
 
-		for(size_t n = 0; n < portals->rooms.size(); n++) {
-			const EERIE_ROOM_DATA & room = portals->rooms[n];
-			for(long lll = 0; lll < room.nb_portals; lll++) {
-				const EERIE_PORTALS & po = portals->portals[room.portals[lll]];
+		BOOST_FOREACH(const EERIE_ROOM_DATA & room, portals->rooms) {
+			BOOST_FOREACH(long portal, room.portals) {
+				const EERIE_PORTALS & po = portals->portals[portal];
 				const PortalPoly * epp = &po.poly;
 				if(PointIn2DPolyXZ(epp, pos.x, pos.z)) {
 					float yy;
@@ -1309,11 +1310,9 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 	
 	float fClippZFar = camDepth * fZFogEnd * 1.1f;
 	
-	EERIE_ROOM_DATA & room = portals->rooms[roomIndex];
-	
 	// Now Checks For room Portals !!!
-	for(long lll = 0; lll < room.nb_portals; lll++) {
-		EERIE_PORTALS * po = &portals->portals[room.portals[lll]];
+	BOOST_FOREACH(long portal, portals->rooms[roomIndex].portals) {
+		EERIE_PORTALS * po = &portals->portals[portal];
 		
 		if(po->useportal) {
 			continue;
