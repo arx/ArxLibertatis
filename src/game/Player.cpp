@@ -426,25 +426,22 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// TODO why do this now and not after skills/stats have been calculated?
 	ARX_EQUIPMENT_IdentifyAll();
 	
-	//CHECK OVERFLOW
 	// TODO why not use relative modfiers?
 	float fFullAimTime = getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_AimTime);
 	float fCalcHandicap = (player.m_attributeFull.dexterity - 10.f) * 20.f;
 	
-	//CAST
 	player.Full_AimTime = PlatformDurationMsf(fFullAimTime);
-	
-	if(player.Full_AimTime <= 0)
+	if(player.Full_AimTime <= 0) {
 		player.Full_AimTime = PlatformDurationMs(1500);
+	}
 	
 	player.Full_AimTime -= PlatformDurationMsf(fCalcHandicap);
-	
-	if(player.Full_AimTime <= PlatformDurationMs(1500))
+	if(player.Full_AimTime <= PlatformDurationMs(1500)) {
 		player.Full_AimTime = PlatformDurationMs(1500);
+	}
 	
 	// TODO make these calculations moddable
 	
-	/////////////////////////////////////////////////////////////////////////////////////
 	// External modifiers
 	
 	// Calculate for modifiers from spells
@@ -997,7 +994,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 				}
 			}
 
-			player.hunger -= inc_hunger * .5f; //*.7f;
+			player.hunger -= inc_hunger * .5f;
 
 			if(player.hunger < -10.f)
 				player.hunger = -10.f;
@@ -1015,11 +1012,11 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 			if(player.manaPool.current > player.Full_maxmana)
 				player.manaPool.current = player.Full_maxmana;
 		}
-
-		//float pmaxlife=(float)player.Full_Attribute_Constitution*(float)(player.level+2);
-		if(player.lifePool.current > player.Full_maxlife)
+		
+		if(player.lifePool.current > player.Full_maxlife) {
 			player.lifePool.current = player.Full_maxlife;
-
+		}
+		
 		// Now Checks Poison Progression
 		if(!BLOCK_PLAYER_CONTROLS)
 			if(player.poison > 0.f) {
@@ -1091,7 +1088,7 @@ void ARX_PLAYER_Restore_Skin() {
 			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero_head";
 			tx4 = "graph/obj3d/textures/npc_human_leather_hero_head";
 			break;
-		case 6: //just in case
+		case 6: // Just in case
 			tx  = "graph/obj3d/textures/npc_human__base_hero_head";
 			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero_head";
 			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero_head";
@@ -1150,14 +1147,12 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	ANIM_Set(player.bookAnimation[0], herowaitbook);
 	player.bookAnimation[0].flags |= EA_LOOP;
 	
-	//todo free
 	io->_npcdata = new IO_NPCDATA;
 	
 	io->ioflags = IO_NPC;
 	io->_npcdata->lifePool.max = io->_npcdata->lifePool.current = 10.f;
 	io->_npcdata->vvpos = -99999.f;
-
-	//todo free
+	
 	io->armormaterial = "leather";
 	loadScript(io->script, g_resources->getFile("graph/obj3d/interactive/player/player.asl"));
 	
@@ -1696,23 +1691,23 @@ void ARX_PLAYER_Frame_Update()
 
 		if(player.Interface & INTER_COMBATMODE) {
 			if (ARX_EQUIPMENT_GetPlayerWeaponType() == WEAPON_BOW) {
-				extraRotation->group_rotate[0].setPitch(0); //head
-				extraRotation->group_rotate[1].setPitch(0); //neck
-				extraRotation->group_rotate[2].setPitch(0); //chest
-				extraRotation->group_rotate[3].setPitch(v); //belt
+				extraRotation->group_rotate[0].setPitch(0); // Head
+				extraRotation->group_rotate[1].setPitch(0); // Neck
+				extraRotation->group_rotate[2].setPitch(0); // Chest
+				extraRotation->group_rotate[3].setPitch(v); // Belt
 			} else {
 				v *= 0.1f;
-				extraRotation->group_rotate[0].setPitch(v); //head
-				extraRotation->group_rotate[1].setPitch(v); //neck
-				extraRotation->group_rotate[2].setPitch(v * 4); //chest
-				extraRotation->group_rotate[3].setPitch(v * 4); //belt
+				extraRotation->group_rotate[0].setPitch(v); // Head
+				extraRotation->group_rotate[1].setPitch(v); // Neck
+				extraRotation->group_rotate[2].setPitch(v * 4); // Chest
+				extraRotation->group_rotate[3].setPitch(v * 4); // Belt
 			}
 		} else {
 			v *= 0.25f;
-			extraRotation->group_rotate[0].setPitch(v); //head
-			extraRotation->group_rotate[1].setPitch(v); //neck
-			extraRotation->group_rotate[2].setPitch(v); //chest
-			extraRotation->group_rotate[3].setPitch(v); //belt*/
+			extraRotation->group_rotate[0].setPitch(v); // Head
+			extraRotation->group_rotate[1].setPitch(v); // Neck
+			extraRotation->group_rotate[2].setPitch(v); // Chest
+			extraRotation->group_rotate[3].setPitch(v); // Belt
 		}
 	}
 
@@ -1973,7 +1968,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		
 		Cylinder cyl = Cylinder(player.basePosition() + Vec3f(0.f, 1.f, 0.f), player.physics.cyl.radius, player.physics.cyl.height);
 		
-		float anything2 = CheckAnythingInCylinder(cyl, entities.player(), CFLAG_JUST_TEST | CFLAG_PLAYER); //-cyl->origin.y;
+		float anything2 = CheckAnythingInCylinder(cyl, entities.player(), CFLAG_JUST_TEST | CFLAG_PLAYER);
 		
 		if(anything2 > -5 && player.physics.velocity.y > (15.f / TARGET_DT) && !LAST_ON_PLATFORM
 		   && !TRUE_FIRM_GROUND && player.jumpphase == NotJumping && !player.levitate && anything > 80.f) {
