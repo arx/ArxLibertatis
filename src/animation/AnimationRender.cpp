@@ -97,106 +97,86 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // TODO: Convert to a RenderBatch & make TextureContainer constructor private
 static TextureContainer TexSpecialColor("specialcolor_list", TextureContainer::NoInsert);
 
-static TexturedVertex * PushVertexInTable(ModelBatch * pTex, BatchBucket type) {
-	
-	if(pTex->count[type] + 3 > pTex->max[type]) {
-		pTex->max[type] += 20 * 3;
-		pTex->list[type] = (TexturedVertex *)realloc(pTex->list[type], pTex->max[type] * sizeof(TexturedVertex));
-
-		if(!pTex->list[type]) {
-			pTex->max[type] = 0;
-			pTex->count[type] = 0;
-			return NULL;
-		}
-	}
-
-	pTex->count[type] += 3;
-	return &pTex->list[type][pTex->count[type] - 3];
+static TexturedVertex * PushVertexInTable(std::vector<TexturedVertex> & bucket) {
+	bucket.resize(bucket.size() + 3);
+	return &bucket[bucket.size() - 3];
 }
 
-static void PopOneTriangleList(RenderState baseState, TextureContainer * _pTex, bool clear) {
+static void PopOneTriangleList(RenderState baseState, TextureContainer * material, bool clear) {
 	
-	ModelBatch & batch = _pTex->m_modelBatch;
+	std::vector<TexturedVertex> & bucket = material->m_modelBatch[BatchBucket_Opaque];
 	
-	if(!batch.count[BatchBucket_Opaque]) {
+	if(bucket.empty()) {
 		return;
 	}
 	
-	GRenderer->SetTexture(0, _pTex);
-	baseState.setAlphaCutout(_pTex->m_pTexture && _pTex->m_pTexture->hasAlpha());
+	GRenderer->SetTexture(0, material);
+	baseState.setAlphaCutout(material->m_pTexture && material->m_pTexture->hasAlpha());
 	
 	UseRenderState state(baseState);
 	
-	if(_pTex->userflags & POLY_LATE_MIP) {
+	if(material->userflags & POLY_LATE_MIP) {
 		const float GLOBAL_NPC_MIPMAP_BIAS = -2.2f;
 		GRenderer->GetTextureStage(0)->setMipMapLODBias(GLOBAL_NPC_MIPMAP_BIAS);
 	}
-
-
-	EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Opaque], batch.count[BatchBucket_Opaque]);
+	
+	EERIEDRAWPRIM(Renderer::TriangleList, &bucket[0], bucket.size());
 	
 	if(clear) {
-		batch.count[BatchBucket_Opaque] = 0;
+		bucket.clear();
 	}
-
-	if(_pTex->userflags & POLY_LATE_MIP) {
+	
+	if(material->userflags & POLY_LATE_MIP) {
 		float biasResetVal = 0;
 		GRenderer->GetTextureStage(0)->setMipMapLODBias(biasResetVal);
 	}
 
 }
 
-static void PopOneTriangleListTransparency(TextureContainer * _pTex) {
+static void PopOneTriangleListTransparency(TextureContainer * material) {
 	
-	ModelBatch & batch = _pTex->m_modelBatch;
+	std::vector<TexturedVertex> * batch = material->m_modelBatch;
 	
-	if(!batch.count[BatchBucket_Blended]
-	   && !batch.count[BatchBucket_Additive]
-	   && !batch.count[BatchBucket_Subtractive]
-	   && !batch.count[BatchBucket_Multiplicative]) {
+	if(batch[BatchBucket_Blended].empty()
+	   && batch[BatchBucket_Additive].empty()
+	   && batch[BatchBucket_Subtractive].empty()
+	   && batch[BatchBucket_Multiplicative].empty()) {
 		return;
 	}
 	
 	RenderState baseState = render3D().depthWrite(false);
 	
-	GRenderer->SetTexture(0, _pTex);
-	baseState.setAlphaCutout(_pTex->m_pTexture && _pTex->m_pTexture->hasAlpha());
+	GRenderer->SetTexture(0, material);
+	baseState.setAlphaCutout(material->m_pTexture && material->m_pTexture->hasAlpha());
 	
-	if(batch.count[BatchBucket_Blended]) {
+	if(!batch[BatchBucket_Blended].empty()) {
 		UseRenderState state(baseState.blend(BlendDstColor, BlendSrcColor));
-		if(batch.count[BatchBucket_Blended]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Blended],
-			                                      batch.count[BatchBucket_Blended]);
-			batch.count[BatchBucket_Blended] = 0;
-		}
+		EERIEDRAWPRIM(Renderer::TriangleList, &batch[BatchBucket_Blended][0],
+		                                      batch[BatchBucket_Blended].size());
+		batch[BatchBucket_Blended].clear();
 	}
-
-	if(batch.count[BatchBucket_Additive]) {
+	
+	if(!batch[BatchBucket_Additive].empty()) {
 		UseRenderState state(baseState.blend(BlendOne, BlendOne));
-		if(batch.count[BatchBucket_Additive]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Additive],
-			                                      batch.count[BatchBucket_Additive]);
-			batch.count[BatchBucket_Additive] = 0;
-		}
+		EERIEDRAWPRIM(Renderer::TriangleList, &batch[BatchBucket_Additive][0],
+		                                      batch[BatchBucket_Additive].size());
+		batch[BatchBucket_Additive].clear();
 	}
-
-	if(batch.count[BatchBucket_Subtractive]) {
+	
+	if(!batch[BatchBucket_Subtractive].empty()) {
 		UseRenderState state(baseState.blend(BlendZero, BlendInvSrcColor));
-		if(batch.count[BatchBucket_Subtractive]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Subtractive],
-			                                      batch.count[BatchBucket_Subtractive]);
-			batch.count[BatchBucket_Subtractive] = 0;
-		}
+		EERIEDRAWPRIM(Renderer::TriangleList, &batch[BatchBucket_Subtractive][0],
+		                                      batch[BatchBucket_Subtractive].size());
+		batch[BatchBucket_Subtractive].clear();
 	}
-
-	if(batch.count[BatchBucket_Multiplicative]) {
+	
+	if(!batch[BatchBucket_Multiplicative].empty()) {
 		UseRenderState state(baseState.blend(BlendOne, BlendOne));
-		if(batch.count[BatchBucket_Multiplicative]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Multiplicative],
-			                                      batch.count[BatchBucket_Multiplicative]);
-			batch.count[BatchBucket_Multiplicative] = 0;
-		}
+		EERIEDRAWPRIM(Renderer::TriangleList, &batch[BatchBucket_Multiplicative][0],
+		                                      batch[BatchBucket_Multiplicative].size());
+		batch[BatchBucket_Multiplicative].clear();
 	}
+	
 }
 
 void PopAllTriangleListOpaque(RenderState baseState, bool clear) {
@@ -418,35 +398,36 @@ static void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 	}
 }
 
-static TexturedVertex * GetNewVertexList(ModelBatch * container,
+static TexturedVertex * GetNewVertexList(std::vector<TexturedVertex> * batch,
                                          const EERIE_FACE & face, float invisibility,
                                          float & fTransp) {
 	
 	fTransp = 0.f;
-
+	
 	if((face.facetype & POLY_TRANS) || invisibility > 0.f) {
-		if(invisibility > 0.f)
+		if(invisibility > 0.f) {
 			fTransp = 2.f - invisibility;
-		else
+		} else {
 			fTransp = face.transval;
-
+		}
 		if(fTransp >= 2.f) {
 			fTransp *= (1.f / 2);
 			fTransp += 0.5f;
-			return PushVertexInTable(container, BatchBucket_Multiplicative);
+			return PushVertexInTable(batch[BatchBucket_Multiplicative]);
 		} else if(fTransp >= 1.f) {
 			fTransp -= 1.f;
-			return PushVertexInTable(container, BatchBucket_Additive);
+			return PushVertexInTable(batch[BatchBucket_Additive]);
 		} else if(fTransp > 0.f) {
 			fTransp = 1.f - fTransp;
-			return PushVertexInTable(container, BatchBucket_Blended);
+			return PushVertexInTable(batch[BatchBucket_Blended]);
 		} else {
 			fTransp = 1.f - fTransp;
-			return PushVertexInTable(container, BatchBucket_Subtractive);
+			return PushVertexInTable(batch[BatchBucket_Subtractive]);
 		}
 	} else {
-		return PushVertexInTable(container, BatchBucket_Opaque);
+		return PushVertexInTable(batch[BatchBucket_Opaque]);
 	}
+	
 }
 
 void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat) {
@@ -743,7 +724,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 		}
 		
 		float fTransp = 0.f;
-		TexturedVertex * tvList = GetNewVertexList(&pTex->m_modelBatch, face, invisibility, fTransp);
+		TexturedVertex * tvList = GetNewVertexList(pTex->m_modelBatch, face, invisibility, fTransp);
 		
 		for(size_t n = 0; n < 3; n++) {
 
@@ -1112,7 +1093,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 		
 		float fTransp = 0.f;
 		
-		TexturedVertex * tvList = GetNewVertexList(&pTex->m_modelBatch, face, invisibility, fTransp);
+		TexturedVertex * tvList = GetNewVertexList(pTex->m_modelBatch, face, invisibility, fTransp);
 		
 		for(size_t n = 0; n < 3; n++) {
 			tvList[n].p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
@@ -1130,10 +1111,11 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 		}
 		
 		if(glow) {
-			TexturedVertex * tv2 = PushVertexInTable(&TexSpecialColor.m_modelBatch, BatchBucket_Opaque);
+			TexturedVertex * tv2 = PushVertexInTable(TexSpecialColor.m_modelBatch[BatchBucket_Opaque]);
 			std::copy(tvList, tvList + 3, tv2);
 			tv2[0].color = tv2[1].color = tv2[2].color = glowColor;
 		}
+		
 	}
 }
 

@@ -80,28 +80,11 @@ enum BatchBucket {
 	BatchBucket_Subtractive
 };
 
-struct SMY_ARXMAT
-{
+struct SMY_ARXMAT {
 	unsigned long uslStartVertex;
 	unsigned long uslNbVertex;
-
 	unsigned long offset[5];
 	unsigned long count[5];
-};
-
-// TODO This RenderBatch class should contain a pointer to the TextureContainer used by the batch
-struct ModelBatch {
-	unsigned long max[5];
-	unsigned long count[5];
-	TexturedVertex * list[5];
-	
-	ModelBatch() {
-		for(size_t i = 0; i < ARRAY_SIZE(max); i++) {
-			max[i] = 0;
-			count[i] = 0;
-			list[i] = NULL;
-		}
-	}
 };
 
 /*!
@@ -192,7 +175,7 @@ public:
 	TCFlags systemflags;
 	
 	std::vector<SMY_ARXMAT> m_roomBatches;
-	ModelBatch m_modelBatch;
+	std::vector<TexturedVertex> m_modelBatch[5];
 	
 };
 
