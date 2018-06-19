@@ -69,7 +69,7 @@ const RunePattern patternData[] = {
 	{RUNE_VISTA,       CheatRune_None,        "31"},
 	{RUNE_VITAE,       CheatRune_None,        "68"},
 	{RUNE_YOK,         CheatRune_None,        "268"},
-	//cheat runes
+	// Cheat runes
 	{RUNE_NONE,        CheatRune_O,          "9317"},
 	{RUNE_NONE,        CheatRune_M,          "8392"},
 	{RUNE_NONE,        CheatRune_A,          "934"},
@@ -155,7 +155,7 @@ void RuneRecognitionAlt::resampleInput(const std::vector<Vec2f> &in) {
 	
 	for(size_t segment = 0; segment < segmentCount; segment++) {
 		
-		//distance along curve from key point 1 to key point 2
+		// Distance along curve from key point 1 to key point 2
 		float segLen = 0.0;
 		for(size_t index = m_indices[segment]; index < m_indices[segment + 1]; index++) {
 			segLen += glm::distance(in[index], in[index + 1]);
@@ -180,8 +180,8 @@ void RuneRecognitionAlt::resampleInput(const std::vector<Vec2f> &in) {
 		float interval = segLen / pointsToAdd;
 		float remains = 0.0;
 		
-		bool newPointAdded = false; //was a new point added?
-		bool endOfSegment = false; //at the end of segment
+		bool newPointAdded = false; // Was a new point added?
+		bool endOfSegment = false; // At the end of segment
 		
 		size_t index = m_indices[segment] + 1;
 		int reallyAdded = 0;
@@ -190,7 +190,7 @@ void RuneRecognitionAlt::resampleInput(const std::vector<Vec2f> &in) {
 		Vec2f prevPoint = in[m_indices[segment]];
 		Vec2f thisPoint;
 		
-		//add points in between key points while retaining curvature
+		// Add points in between key points while retaining curvature
 		while(!endOfSegment || newPointAdded) {
 			if(!newPointAdded) {
 				if(!endOfSegment) {
@@ -222,7 +222,7 @@ void RuneRecognitionAlt::resampleInput(const std::vector<Vec2f> &in) {
 			prevPoint = thisPoint;
 		}
 		if(reallyAdded == pointsToAdd - 1) {
-			//fell short of one point due to rounding error
+			// Fell short of one point due to rounding error
 			m_points.push_back(in[endIndex]);
 		}
 	}
@@ -268,7 +268,7 @@ void RuneRecognitionAlt::findKeyPoints(std::vector<Vec2f> &in) {
 	const float TOLERANCE = 0.30f;
 	size_t inputSize = in.size();
 	
-	//calculate tolerance based on the overall size of the drawing
+	// Calculate tolerance based on the overall size of the drawing
 	Vec2f max = in[0];
 	Vec2f min = in[0];
 	for(size_t i = 1; i < inputSize; i++) {
@@ -393,7 +393,7 @@ int RuneRecognitionAlt::findMatchingPattern(){
 			}
 			
 			if(patternIndex < patternSize - 1 && nextInputDir >= 0 && nextInputDir != curInputDir) {
-				//if the pattern deviates, move to the next pattern dir only if the difference is smaller
+				// If the pattern deviates, move to the next pattern dir only if the difference is smaller
 				if(nextPatternDir >= 0  && (nextPatternDir == nextInputDir
 					|| angleDiff(nextInputDir, curPatternDir) > angleDiff(nextInputDir, nextPatternDir))) {
 					patternIndex++;
@@ -425,6 +425,7 @@ int RuneRecognitionAlt::findMatchingPattern(){
 }
 
 void RuneRecognitionAlt::analyze() {
+	
 	if(plist.size() < 2) {
 		plist.clear();
 		return;
@@ -434,12 +435,13 @@ void RuneRecognitionAlt::analyze() {
 	m_indices.clear();
 	
 	findKeyPoints(plist);
-	if(m_indices.size() > s_requiredPointCount) { //too deformed
+	if(m_indices.size() > s_requiredPointCount) {
+		// Too deformed
 		return;
 	}
 	resampleInput(plist);
 	inputToDirs();
-
+	
 	int index = findMatchingPattern();
 	if(index >= 0) {
 		callRuneHandlers(index);
@@ -449,10 +451,10 @@ void RuneRecognitionAlt::analyze() {
 	
 	bPrecastSpell = false;
 	
-	// wanna precast?
 	if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
 		bPrecastSpell = true;
 	}
+	
 }
 
 RuneRecognitionAlt g_altRecognizer;
@@ -466,7 +468,7 @@ static const size_t MAX_POINTS(200);
 Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 
 size_t CurrSpellSymbol = 0;
-std::string SpellMoves;
+std::string SpellMoves; // Rune directions encoded as numpad keys
 
 std::string LAST_FAILED_SEQUENCE = "none";
 
@@ -744,7 +746,7 @@ void ARX_SPELLS_Analyse() {
 			switch ( dirs[i] )
 			{
 				case AUP:
-					SpellMoves += "8"; //uses PAD values
+					SpellMoves += "8";
 					break;
 
 				case ADOWN:
