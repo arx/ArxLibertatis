@@ -91,8 +91,6 @@ public:
 	bool addArchive(const fs::path & pakfile);
 	void clear();
 	
-	bool read(const res::path & name, void * buf);
-	char * readAlloc(const res::path & name, size_t & size);
 	std::string read(const res::path & name);
 	
 	PakFileHandle * open(const res::path & name);

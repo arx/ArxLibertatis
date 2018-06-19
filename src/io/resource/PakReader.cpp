@@ -569,30 +569,6 @@ void PakReader::clear() {
 	}
 }
 
-bool PakReader::read(const res::path & name, void * buf) {
-	
-	PakFile * f = getFile(name);
-	if(!f) {
-		return false;
-	}
-	
-	f->read(buf);
-	
-	return true;
-}
-
-char * PakReader::readAlloc(const res::path & name, size_t & sizeRead) {
-	
-	PakFile * f = getFile(name);
-	if(!f) {
-		return NULL;
-	}
-	
-	sizeRead = f->size();
-	
-	return f->readAlloc();
-}
-
 std::string PakReader::read(const res::path & name) {
 	
 	PakFile * f = getFile(name);
