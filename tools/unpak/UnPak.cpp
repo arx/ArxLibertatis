@@ -76,8 +76,8 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 			if(action == UnpakExtract || action == UnpakManifest) {
 				
 				PakFile * file = entry.second;
-				char * data = file->readAlloc();
-				arx_assert(file->size() == 0 || data != NULL);
+				
+				std::string buffer = file->read();
 				
 				if(action == UnpakExtract) {
 					
@@ -88,7 +88,7 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 						std::exit(1);
 					}
 					
-					if(ofs.write(data, file->size()).fail()) {
+					if(ofs.write(buffer.data(), buffer.size()).fail()) {
 						LogError << "Error writing to file: " << filepath;
 						std::exit(1);
 					}
@@ -99,7 +99,7 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 					
 					util::md5 hash;
 					hash.init();
-					hash.update(data, file->size());
+					hash.update(buffer.data(), buffer.size());
 					char checksum[hash.size];
 					hash.finalize(checksum);
 					
@@ -109,8 +109,6 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 					std::cout << " *";
 					
 				}
-				
-				std::free(data);
 				
 			}
 			
