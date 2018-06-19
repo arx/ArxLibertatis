@@ -143,9 +143,6 @@ long EERIE_LIGHT_Create() {
 	for (size_t i = 0; i < g_staticLightsMax; i++) {
 		if(!g_staticLights[i]) {
 			g_staticLights[i] = new EERIE_LIGHT;
-			memset(g_staticLights[i], 0, sizeof(EERIE_LIGHT));
-			g_staticLights[i]->sample = audio::INVALID_ID;
-			g_staticLights[i]->m_ignitionLightHandle = LightHandle();
 			return i;
 		}
 	}
