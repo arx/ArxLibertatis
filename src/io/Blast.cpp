@@ -485,6 +485,15 @@ int blastOutMemRealloc(void * Param, unsigned char * buf, size_t len) {
 	return 0;
 }
 
+int blastOutString(void * Param, unsigned char * buf, size_t len) {
+	
+	BlastMemOutString * p = (BlastMemOutString *)Param;
+	
+	p->buffer.append((char *)buf, len);
+	
+	return 0;
+}
+
 char * blastMemAlloc(const char * from, size_t fromSize, size_t & toSize) {
 	
 	BlastMemInBuffer in(from, fromSize);
@@ -503,7 +512,6 @@ char * blastMemAlloc(const char * from, size_t fromSize, size_t & toSize) {
 	return out.buf;
 }
 
-
 size_t blastMem(const char * from, size_t fromSize, char * to, size_t toSize) {
 	
 	BlastMemInBuffer in(from, fromSize);
@@ -516,4 +524,21 @@ size_t blastMem(const char * from, size_t fromSize, char * to, size_t toSize) {
 	}
 	
 	return toSize - out.size;
+}
+
+std::string blast(const char * from, size_t fromSize, size_t toSizeHint) {
+	
+	std::string uncompressed;
+	uncompressed.reserve(toSizeHint == size_t(-1) ? fromSize : toSizeHint);
+	
+	BlastMemInBuffer in(from, fromSize);
+	BlastMemOutString out(uncompressed);
+	
+	BlastResult error = blast(blastInMem, &in, blastOutString, &out);
+	if(error) {
+		LogError << "blast error " << error << " for " << fromSize;
+		uncompressed.clear();
+	}
+	
+	return uncompressed;
 }
