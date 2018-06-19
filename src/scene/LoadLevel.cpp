@@ -148,10 +148,9 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 
 	LogDebug("fic2 " << lightingFileName);
 	LogDebug("fileDlf " << file);
-
-	size_t FileSize = 0;
-	char * dat = g_resources->readAlloc(file, FileSize);
-	if(!dat) {
+	
+	std::string buffer = g_resources->read(file);
+	if(buffer.empty()) {
 		LogError << "Unable to find " << file;
 		return false;
 	}
@@ -163,32 +162,28 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	progressBarAdvance();
 	LoadLevelScreen();
 	
-	size_t pos = 0;
-	
 	DANAE_LS_HEADER dlh;
-	memcpy(&dlh, dat + pos, sizeof(DANAE_LS_HEADER));
-	pos += sizeof(DANAE_LS_HEADER);
+	memcpy(&dlh, buffer.data(), sizeof(DANAE_LS_HEADER));
+	size_t pos = sizeof(DANAE_LS_HEADER);
 	
 	LogDebug("dlh.version " << dlh.version << " header size " << sizeof(DANAE_LS_HEADER));
 	
 	if(dlh.version > DLH_CURRENT_VERSION) {
 		LogError << "Unexpected level file version: " << dlh.version << " for " << file;
-		free(dat);
-		dat = NULL;
 		return false;
 	}
 	
 	// using compression
 	if(dlh.version >= 1.44f) {
-		char * torelease = dat;
-		dat = blastMemAlloc(dat + pos, FileSize - pos, FileSize);
-		free(torelease);
-		pos = 0;
-		if(!dat) {
+		buffer = blast(buffer.data() + pos, buffer.size() - pos);
+		if(buffer.empty()) {
 			LogError << "Could not decompress level file " << file;
 			return false;
 		}
+		pos = 0;
 	}
+	
+	const char * dat = buffer.data();
 	
 	player.desiredangle = player.angle = dlh.angle_edit;
 	
@@ -266,7 +261,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			ColorBGRA * ll = LastLoadedLightning = (ColorBGRA *)malloc(sizeof(ColorBGRA) * bcount);
 			
 			if(dlh.version > 1.001f) {
-				std::transform((u32 *)(dat + pos), (u32 *)(dat + pos) + bcount, LastLoadedLightning, savedColorConversion);
+				std::transform((const u32 *)(dat + pos), (const u32 *)(dat + pos) + bcount, LastLoadedLightning, savedColorConversion);
 				pos += sizeof(u32) * bcount;
 			} else {
 				while(bcount) {
@@ -423,36 +418,37 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	progressBarAdvance(5.f);
 	LoadLevelScreen();
 	
+	ARX_UNUSED(pos);
+	arx_assert(pos <= buffer.size());
+	
 	
 	// Now load a separate LLF lighting file
 	
-	free(dat);
 	pos = 0;
-	dat = NULL;
+	buffer.clear();
 	
 	if(lightingFile) {
 		
 		LogDebug("Loading LLF Info");
 		
+		buffer = lightingFile->read();
+		
 		// using compression
 		if(dlh.version >= 1.44f) {
-			char * compressed = lightingFile->readAlloc();
-			dat = blastMemAlloc(compressed, lightingFile->size(), FileSize);
-			free(compressed);
-		} else {
-			dat = lightingFile->readAlloc();
-			FileSize = lightingFile->size();
+			buffer = blast(buffer);
 		}
+		
 	}
-	// TODO size ignored
 	
-	if(!dat) {
+	if(buffer.empty()) {
 		USE_PLAYERCOLLISIONS = true;
 		LogInfo << "Done loading level";
 		return true;
 	}
 	
-	const DANAE_LLF_HEADER * llh = reinterpret_cast<DANAE_LLF_HEADER *>(dat + pos);
+	dat = buffer.data();
+	
+	const DANAE_LLF_HEADER * llh = reinterpret_cast<const DANAE_LLF_HEADER *>(dat + pos);
 	pos += sizeof(DANAE_LLF_HEADER);
 	
 	progressBarAdvance(4.f);
@@ -519,7 +515,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	free(LastLoadedLightning);
 	ColorBGRA * ll = LastLoadedLightning = (ColorBGRA *)malloc(sizeof(ColorBGRA) * bcount);
 	if(dlh.version > 1.001f) {
-		std::transform((u32 *)(dat + pos), (u32 *)(dat + pos) + bcount, LastLoadedLightning, savedColorConversion);
+		std::transform((const u32 *)(dat + pos), (const u32 *)(dat + pos) + bcount, LastLoadedLightning, savedColorConversion);
 		pos += sizeof(u32) * bcount;
 	} else {
 		while(bcount) {
@@ -531,10 +527,8 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		}
 	}
 	
-	ARX_UNUSED(pos), ARX_UNUSED(FileSize);
-	arx_assert(pos <= FileSize);
-	
-	free(dat);
+	ARX_UNUSED(pos);
+	arx_assert(pos <= buffer.size());
 	
 	progressBarAdvance();
 	LoadLevelScreen();
@@ -559,7 +553,6 @@ void DanaeClearLevel() {
 	fadeReset();
 	LAST_JUMP_ENDTIME = 0;
 	FAST_RELEASE = 1;
-	MCache_ClearAll();
 	ARX_GAME_Reset();
 	FlyingOverIO = NULL;
 
