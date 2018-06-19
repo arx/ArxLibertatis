@@ -95,6 +95,7 @@ DECLARE_FLAGS(EERIE_TYPES_EXTRAS_MODE, ExtrasType)
 DECLARE_FLAGS_OPERATORS(ExtrasType)
 
 struct EERIE_LIGHT {
+	
 	char exist;
 	bool m_isIgnitionLight; // TODO refactor special case
 	char treat;
@@ -125,6 +126,31 @@ struct EERIE_LIGHT {
 	
 	audio::SourceId sample;
 	math::Quantizer m_storedFlameTime;
+	
+	EERIE_LIGHT()
+		: exist(0)
+		, m_isIgnitionLight(false)
+		, treat(false)
+		, extras(0)
+		, m_ignitionStatus(false)
+		, pos(0)
+		, fallstart(0.f)
+		, fallend(0.f)
+		, falldiffmul(0.f)
+		, rgb255(Color3f::black)
+		, intensity(0.f)
+		, rgb(Color3f::black)
+		, m_screenRect(Rectf::ZERO)
+		, m_flareFader(0.f)
+		, ex_flicker(Color3f::black)
+		, ex_radius(0.f)
+		, ex_frequency(0.f)
+		, ex_size(0.f)
+		, ex_speed(0.f)
+		, ex_flaresize(0.f)
+		, sample(audio::INVALID_ID)
+	{ }
+	
 };
 
 struct ColorMod {
