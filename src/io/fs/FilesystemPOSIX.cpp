@@ -285,8 +285,8 @@ static void do_readdir(void * _handle, void * & _buffer) {
 		#else
 		dirent * entry;
 		if(readdir_r(handle, buffer, &entry) || !entry) {
-			std::free(buffer);
-			buffer = NULL;
+			delete[] static_cast<char *>(_buffer);
+			_buffer = NULL;
 			return;
 		}
 		#endif
@@ -326,7 +326,7 @@ directory_iterator::directory_iterator(const path & p) : m_buffer(NULL) {
 		if(size < sizeof(dirent)) {
 			size = sizeof(dirent);
 		}
-		m_buffer = std::malloc(size);
+		m_buffer = new char[size];
 		#endif // !ARX_HAVE_THREADSAFE_READDIR
 		
 		do_readdir(m_handle, m_buffer);
@@ -339,7 +339,7 @@ directory_iterator::~directory_iterator() {
 		iterator_handle_free(m_handle);
 	}
 	#if !ARX_HAVE_THREADSAFE_READDIR
-	std::free(m_buffer);
+	delete[] static_cast<char *>(m_buffer);
 	#endif
 }
 
