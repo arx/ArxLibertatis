@@ -625,7 +625,7 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		for(size_t nroom = 0; nroom < portals->rooms.size(); nroom++) {
 			if(nroom == portal.room_1 || nroom == portal.room_2) {
 				EERIE_ROOM_DATA & room = portals->rooms[nroom];
-				room.portals.push_back(num);
+				room.portals.push_back(long(num));
 			}
 		}
 		
