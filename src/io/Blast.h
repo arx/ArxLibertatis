@@ -128,18 +128,18 @@ struct BlastMemOutString {
  * Writes data to a BlastMemOutBuffer.
  * Advances the buf pointer and decreases size.
  */
-int blastOutMem(void * Param, unsigned char * buf, size_t len);
+int blastOutMem(void * param, unsigned char * buf, size_t len);
 
 /*!
  * Reads data from a BlastMemInBuffer.
  * Advances the buf pointer and decrises size.
  */
-size_t blastInMem(void * Param, const unsigned char ** buf);
+size_t blastInMem(void * param, const unsigned char ** buf);
 
 /*!
  * Writes data to a BlastMemOutString.
  */
-int blastOutString(void * Param, unsigned char * buf, size_t len);
+int blastOutString(void * param, unsigned char * buf, size_t len);
 
 /*!
  * Decompress data.
