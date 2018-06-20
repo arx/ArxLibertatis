@@ -422,13 +422,13 @@ static bool IsPlayerEquipedWith(Entity * io) {
 
 static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	
-	long pos = 0;
+	size_t pos = 0;
 	
 	ARX_CHANGELEVEL_INDEX asi;
 	memset(&asi, 0, sizeof(asi));
 	asi.version       = ARX_GAMESAVE_VERSION;
 	asi.nb_inter      = 0;
-	asi.nb_paths      = g_paths.size();
+	asi.nb_paths      = s32(g_paths.size());
 	asi.time          = toMsi(g_gameTime.now()); // TODO save/load time
 	asi.nb_lights     = 0;
 	asi.gmods_stacked = GLOBAL_MODS();
@@ -455,13 +455,13 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		}
 	}
 	
-	long allocsize = sizeof(ARX_CHANGELEVEL_INDEX)
-	                 + sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi.nb_inter
-	                 + sizeof(ARX_CHANGELEVEL_PATH) * asi.nb_paths
-	                 + sizeof(ARX_CHANGELEVEL_LIGHT) * asi.nb_lights;
+	size_t allocsize = sizeof(ARX_CHANGELEVEL_INDEX)
+	                   + sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi.nb_inter
+	                   + sizeof(ARX_CHANGELEVEL_PATH) * asi.nb_paths
+	                   + sizeof(ARX_CHANGELEVEL_LIGHT) * asi.nb_lights;
 	
 	std::string playlist = ARX_SOUND_AmbianceSavePlayList();
-	allocsize += long(playlist.size());
+	allocsize += playlist.size();
 	
 	char * dat = new char[allocsize];
 	
@@ -509,6 +509,8 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 			pos += sizeof(ARX_CHANGELEVEL_LIGHT);
 		}
 	}
+	
+	arx_assert(pos <= allocsize);
 	
 	std::stringstream savefile;
 	savefile << "lvl" << std::setfill('0') << std::setw(3) << num;
