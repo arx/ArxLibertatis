@@ -58,11 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/GameTime.h"
 
-static const float C_MIN_F32 = 1.175494351e-38f;
-inline bool C_NEQUAL_F32(float f1, float f2) {
-	return glm::abs(f1 - f2) >= C_MIN_F32;
-}
-
 CinematicTrack * CKTrack;
 
 CinematicTrack::CinematicTrack(int endframe_, float fps_)
