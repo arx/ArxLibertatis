@@ -298,28 +298,32 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	EntityHandle num = io->index();
 	
 	if(entities[num] && entities[num]->script.valid) {
-		if(init)
+		if(init) {
 			ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INIT);
-		if(entities[num])
+		}
+		if(entities[num]) {
 			entities[num]->mainevent = SM_MAIN;
+		}
 	}
 	
 	// Do the same for Local Script
-	if(entities[num] && entities[num]->over_script.valid) {
-		if(init)
-			ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INIT);
+	if(entities[num] && entities[num]->over_script.valid && init) {
+		ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INIT);
 	}
 	
 	// Sends InitEnd Event
 	if(init) {
-		if(entities[num] && entities[num]->script.valid)
+		if(entities[num] && entities[num]->script.valid) {
 			ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INITEND);
-		if(entities[num] && entities[num]->over_script.valid)
+		}
+		if(entities[num] && entities[num]->over_script.valid) {
 			ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INITEND);
+		}
 	}
 	
-	if(entities[num])
+	if(entities[num]) {
 		entities[num]->gameFlags &= ~GFLAG_NEEDINIT;
+	}
 	
 }
 
