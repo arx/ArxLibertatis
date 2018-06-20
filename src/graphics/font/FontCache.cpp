@@ -128,7 +128,7 @@ Font * FontCache::Impl::create(const res::path & font, FontFile & file, unsigned
 	// TODO The font face should be shared between multiple Font instances of the same file
 	FT_Face face;
 	const FT_Byte * data = reinterpret_cast<const FT_Byte *>(file.m_data.data());
-	FT_Error error = FT_New_Memory_Face(m_library, data, file.m_data.size(), 0, &face);
+	FT_Error error = FT_New_Memory_Face(m_library, data, FT_Long(file.m_data.size()), 0, &face);
 	if(error == FT_Err_Unknown_File_Format) {
 		// the font file's format is unsupported
 		LogError << "Font creation error: FT_Err_Unknown_File_Format";
