@@ -105,7 +105,7 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
 			}
 			long r = Random::get(0l, total);
 			if(r < anim_power[std::min(i, size_t(boost::size(anim_power) - 1))]) {
-				return i;
+				return short(i);
 			}
 		}
 	}
