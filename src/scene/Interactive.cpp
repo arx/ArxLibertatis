@@ -1581,7 +1581,7 @@ IO_NPCDATA::IO_NPCDATA() {
 
 IO_NPCDATA::~IO_NPCDATA() {
 	delete ex_rotate;
-	delete pathfind.list;
+	delete[] pathfind.list;
 }
 
 Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInteractiveFlags flags) {
