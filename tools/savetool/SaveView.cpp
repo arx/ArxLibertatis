@@ -1135,16 +1135,7 @@ static int view_level(SaveBlock & save, const char * dat, size_t size) {
 	return 0;
 }
 
-static int view_io(SaveBlock & save, const char * dat, size_t size) {
-	
-	size_t pos = 0;
-	const ARX_CHANGELEVEL_IO_SAVE & ais = *reinterpret_cast<const ARX_CHANGELEVEL_IO_SAVE *>(dat + pos);
-	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
-	
-	if(ais.version != ARX_GAMESAVE_VERSION) {
-		std::cout << "bad version: " << ais.version << '\n';
-		return 3;
-	}
+static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ais) {
 	
 	std::cout << "Type: "; print_type(ais.savesystem_type); std::cout << '\n';
 	
@@ -1441,30 +1432,370 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		std::cout << "  last waypoint: " << ais.usepath_lastWP << '\n';
 	}
 	
-	for(int i = 0; i < ais.nbtimers; i++) {
-		std::cout << "\nTimer #" << i << ":\n";
+}
+
+static void print_io_timer(size_t i, const ARX_CHANGELEVEL_TIMERS_SAVE * ats) {
+	
+	std::cout << "\nTimer #" << i << ":\n";
+	
+	if(ats->flags) {
+		std::cout << "  Flags:";
+		if(ats->flags & 1) std::cout << " idle";
+		if(ats->flags & ~1) std::cout << " (unknown)";
+		std::cout << '\n';
+	}
+	
+	std::cout << "  Script: " << (ats->script ? "overriding" : "base") << '\n';
+	std::cout << "  Interval: " << ats->interval << "ms\n";
+	std::cout << "  Name: " << boost::to_lower_copy(util::loadString(ats->name)) << '\n';
+	std::cout << "  Position: " << ats->pos << '\n';
+	std::cout << "  Remaining: " << ats->remaining << "ms\n";
+	if(ats->count == 0) {
+		std::cout << "  Count: ∞\n";
+	} else {
+		std::cout << "  Count: " << ats->count << '\n';
+	}
+	
+}
+
+static void print_io_script(size_t i, const ARX_CHANGELEVEL_SCRIPT_SAVE * ass) {
+	
+	if(i) {
+		std::cout << "\nOverriding script:\n";
+	} else {
+		std::cout << "\nBase script:\n";
+	}
+	
+	if(ass->allowevents) {
+		std::cout << "  Disabled events:";
+		if(ass->allowevents & DISABLE_HIT) std::cout << " hit";
+		if(ass->allowevents & DISABLE_CHAT) std::cout << " chat";
+		if(ass->allowevents & DISABLE_INVENTORY2_OPEN) std::cout << " inventory2_open";
+		if(ass->allowevents & DISABLE_HEAR) std::cout << " hear";
+		if(ass->allowevents & DISABLE_DETECT) std::cout << " detect";
+		if(ass->allowevents & DISABLE_AGGRESSION) std::cout << " aggression";
+		if(ass->allowevents & DISABLE_MAIN) std::cout << " main";
+		if(ass->allowevents & DISABLE_COLLIDE_NPC) std::cout << " collide_npc";
+		if(ass->allowevents & DISABLE_CURSORMODE) std::cout << " cursormode";
+		if(ass->allowevents & DISABLE_EXPLORATIONMODE) std::cout << " explorationmode";
+		std::cout << '\n';
+	}
+	
+}
+
+static void print_io_npc(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ais,
+                         const ARX_CHANGELEVEL_NPC_IO_SAVE * as) {
+	
+	std::cout << "\nNPC Data:\n";
+	
+	if(as->absorb != 0.f) std::cout << "  Absorption: " << as->absorb << '\n';
+	if(as->aimtime != 0.f) std::cout << "  Aim time: " << as->aimtime << '\n';
+	std::cout << "  Armor class: " << as->armor_class << '\n';
+	
+	if(as->behavior != BEHAVIOUR_NONE) print_behavior(std::cout << "  Behavior:", as->behavior) << '\n';
+	if(as->behavior_param != 0.f) std::cout << "  Behavior parameter: " << as->behavior_param << '\n';
+	
+	if(as->collid_state) std::cout << "  Collision state: " << as->collid_state << '\n';
+	if(as->collid_time) std::cout << "  Collision time: " << as->collid_time << '\n';
+	if(as->cut) std::cout << "  Cut: " << as->cut << '\n';
+	if(as->damages != 0.f) std::cout << "  Damages: " << as->damages << '\n';
+	if(as->detect) std::cout << "  Detect: " << as->detect << '\n';
+	if(as->fightdecision) std::cout << "  Fight decision: " << as->fightdecision << '\n';
+	
+	print_item(save, as->id_weapon, "Weapon");
+	
+	if(as->lastmouth != 0.f) std::cout << "  Last mouth: " << as->lastmouth << '\n';
+	if(as->look_around_inc != 0.f) std::cout << "  Look around status: " << as->look_around_inc << '\n';
+	std::cout << "  Life: " << as->life << " / " << as->maxlife << '\n';
+	std::cout << "  Mana: " << as->mana << " / " << as->maxmana << '\n';
+	
+	print_movemode(std::cout << "  Movement mode: ", as->movemode) << '\n';
+	
+	if(as->moveproblem != 0.f) std::cout << "  Movement problem: " << as->moveproblem << '\n';
+	if(as->reachedtarget) std::cout << "  Reached target: " << as->reachedtarget << '\n';
+	if(as->speakpitch != 1) std::cout << "  Speak pitch: " << as->speakpitch << '\n';
+	
+	if(as->tactics) print_tactics(std::cout << "  Tactics: ", as->tactics) << '\n';
+	
+	std::cout << "  To hit: " << as->tohit << '\n';
+	if(as->weaponinhand) std::cout << "  Weapon in hand: " << as->weaponinhand << '\n';
+	if(as->weapontype) print_item_type(std::cout << "  Weapon type:", as->weapontype) << '\n';
+	std::cout << "  XP: " << as->xpvalue << '\n';
+	
+	bool s = false;
+	for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
 		
+		const SavedBehaviour & b = as->stacked[i];
+		
+		if(!b.exist) {
+			continue;
+		}
+		s = true;
+		
+		std::cout << "\n  Stacked behavior #" << i << ":\n";
+		
+		print_behavior(std::cout << "    Behavior:", b.behavior) << '\n';
+		std::cout << "    Behavior parameter: " << b.behavior_param << '\n';
+		print_tactics(std::cout << "    Tactics: ", b.tactics) << '\n';
+		print_movemode(std::cout << "    Movement mode: ", b.movemode) << '\n';
+		
+		print_anim_layers(b.animlayer, "    ");
+		
+	}
+	
+	if(s) {
+		std::cout << '\n';
+	}
+	
+	for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
+		std::string target = boost::to_lower_copy(util::loadString(as->stackedtarget[i]));
+		if(target != "none" && !target.empty()) {
+			std::cout << "  Stacked target #" << i << ": "; print_ident(save, target); std::cout << '\n';
+		}
+	}
+	
+	std::cout << "  Critical: " << as->critical << '\n';
+	std::cout << "  Reach: " << as->reach << '\n';
+	if(as->backstab_skill != 0.f) std::cout << "  Backstab skill: " << as->backstab_skill << '\n';
+	if(as->poisonned != 0.f) std::cout << "  Poisoned: " << as->poisonned << '\n';
+	std::cout << "  Resist poison: " << (int)as->resist_poison << '\n';
+	std::cout << "  Resist magic: " << (int)as->resist_magic << '\n';
+	std::cout << "  Resist fire: " << (int)as->resist_fire << '\n';
+	if(as->strike_time) std::cout << "  Strike time: " << as->strike_time << '\n';
+	if(as->walk_start_time) std::cout << "  Walk start time: " << as->walk_start_time << '\n';
+	if(as->aiming_start) std::cout << "  Aiming time: " << as->aiming_start << '\n';
+	
+	NPCFlags npcflags = NPCFlags::load(as->npcflags);
+	if(npcflags) {
+		std::cout << "  NPC flags:";
+		if(npcflags & NPCFLAG_BACKSTAB) std::cout << " backstab";
+		if(npcflags & ~NPCFLAG_BACKSTAB) std::cout << " (unknown)";
+		std::cout << '\n';
+	}
+	
+	std::cout << "  Detect: " << as->fDetect << '\n';
+	if(as->cuts) std::cout << "  Cuts: " << as->cuts << '\n';
+	
+	if(as->pathfind.truetarget != TARGET_NONE) {
+		std::cout << "  True target: ";
+		switch(as->pathfind.truetarget) {
+			case TARGET_PATH: std::cout << "path"; break;
+			case TARGET_PLAYER: std::cout << "player"; break;
+			default: std::cout << "(unknown)";
+		}
+		std::cout << '\n';
+	}
+	
+	if(ais.saveflags & SAVEFLAGS_EXTRA_ROTATE) {
+		
+		std::cout << "\n  Extra rotate flags (unused): " << as->ex_rotate.flags << '\n';
+		
+		for(size_t i = 0; i < SAVED_MAX_EXTRA_ROTATE; i++) {
+			std::cout << "    Extra rotate #" << i << ": group=" << as->ex_rotate.group_number[i] << " rotation=" << as->ex_rotate.group_rotate[i] << '\n';
+		}
+		
+	}
+	
+	Color c = Color::fromBGRA(ColorBGRA(as->blood_color));
+	if(c != Color::red) {
+		std::cout << "  Blood color: (" << (int)c.r << ", " << (int)c.g << ", " << (int)c.b << ")\n";
+	}
+	
+}
+
+static void print_io_item(const ARX_CHANGELEVEL_IO_SAVE & ais,
+                          const ARX_CHANGELEVEL_ITEM_IO_SAVE * ai) {
+	
+	std::cout << "\nItem Data:\n";
+	
+	std::cout << "  Price: " << ai->price << '\n';
+	if(ai->count != 1 || ai->maxcount != 1) {
+		std::cout << "  Count: " << ai->count << " / " << ai->maxcount << '\n';
+	}
+	if(ai->food_value != 0) {
+		std::cout << "  Food value: " << (int)ai->food_value << '\n';
+	}
+	std::cout << "  Steal value: " << (int)ai->stealvalue << '\n';
+	if(ai->playerstacksize != 1) {
+		std::cout << "  Player stack size: " << ai->playerstacksize << '\n';
+	}
+	if(ai->LightValue != -1) {
+		std::cout << "  Light value: " << ai->LightValue << '\n';
+	}
+	
+	if(ais.system_flags & SYSTEM_FLAG_EQUIPITEMDATA) {
+		
+		for(size_t i = 0; i < SAVED_IO_EQUIPITEM_ELEMENT_Number; i++) {
+			
+			const SavedEquipItemElement & e = ai->equipitem.elements[i];
+			
+			if(e.value == 0 && e.flags == 0) {
+				continue;
+			}
+			
+			if(i < ARRAY_SIZE(equipitemNames)) {
+				std::cout << "\n  " << equipitemNames[i] << " modifier:";
+			} else {
+				std::cout << "\n  EquipItem #" << i << ':';
+			}
+			
+			if(e.flags || e.special) {
+				std::cout << "\n    Value: ";
+			} else {
+				std::cout << ' ';
+			}
+			
+			std::cout << e.value << '\n';
+			if(e.flags) {
+				std::cout << "    Flags:";
+				if(e.flags & 1) std::cout << " percentile";
+				if(e.flags & ~1) std::cout << " (unknown)";
+				std::cout << '\n';
+			}
+			if(e.special) {
+				std::cout << "    Special: ";
+				if(e.special == IO_SPECIAL_ELEM_PARALYZE) {
+					std::cout << "paralyze";
+				} else if(e.special == IO_SPECIAL_ELEM_DRAIN_LIFE) {
+					std::cout << "drain life";
+				} else {
+					std::cout << e.special;
+				}
+				std::cout << '\n';
+			}
+			
+		}
+	}
+	
+}
+
+static void print_io_fixed(const ARX_CHANGELEVEL_FIX_IO_SAVE * af) {
+	
+	std::cout << "\nFixed Data:\n";
+	
+	if(af->trapvalue != -1) std::cout << "  Trap value: " << (int)af->trapvalue << '\n';
+	
+}
+
+static void print_io_camera(const ARX_CHANGELEVEL_CAMERA_IO_SAVE * ac) {
+	
+	std::cout << "\nCamera Data:\n";
+	
+	std::cout << "  Transform:\n";
+	std::cout << "    pos=(" << ac->cam.pos.x << ", " << ac->cam.pos.y << ", " << ac->cam.pos.z << ")\n";
+	std::cout << "    ycos=" << ac->cam.ycos << " ysin=" << ac->cam.ysin << " xsin=" << ac->cam.xsin << " xcos=" << ac->cam.xcos << '\n';
+	std::cout << "    use_focal=" << ac->cam.use_focal1 << '\n';
+	std::cout << "    mod=(" << ac->cam.xmod << ", " << ac->cam.ymod << ", " << ac->cam.zmod << ")\n";
+	
+	std::cout << "  Position: " << ac->cam.pos2;
+	std::cout << "  cos=(" << ac->cam.Xcos << ", " << ac->cam.Ycos << ", " << ac->cam.Zcos << ")\n";
+	std::cout << "  sin=(" << ac->cam.Xsin << ", " << ac->cam.Ysin << ", " << ac->cam.Zsin << ")\n";
+	std::cout << "  focal=" << ac->cam.focal << " use_focal=" << ac->cam.use_focal << '\n';
+	std::cout << "  Zmul=" << ac->cam.Zmul << '\n';
+	std::cout << "  posleft=" << ac->cam.posleft << " postop=" << ac->cam.postop << '\n';
+	std::cout << "  xmod=" << ac->cam.xmod2 << " ymod=" << ac->cam.ymod2 << '\n';
+	
+	const SavedMatrix & m = ac->cam.matrix;
+	std::cout << "  Matrix:\n";
+	std::cout << "    " << m._11 << ", " << m._12 << ", " << m._13 << ", " << m._14 << '\n';
+	std::cout << "    " << m._21 << ", " << m._22 << ", " << m._23 << ", " << m._24 << '\n';
+	std::cout << "    " << m._31 << ", " << m._32 << ", " << m._33 << ", " << m._34 << '\n';
+	std::cout << "    " << m._41 << ", " << m._42 << ", " << m._43 << ", " << m._44 << '\n';
+	
+	std::cout << "  Angle: " << ac->cam.angle << '\n';
+	std::cout << "  Destination position: " << ac->cam.d_pos << '\n';
+	std::cout << "  Destination angle: " << ac->cam.d_angle << '\n';
+	std::cout << "  Last target: " << ac->cam.lasttarget << '\n';
+	std::cout << "  Last position: " << ac->cam.lastpos << '\n';
+	std::cout << "  Last translate target: " << ac->cam.translatetarget << '\n';
+	std::cout << "  Last info valid: " << ac->cam.lastinfovalid << '\n';
+	std::cout << "  Norm: " << ac->cam.norm << '\n';
+	std::cout << "  Fade color: " << ac->cam.fadecolor << '\n';
+	
+	std::cout << "  Clip: (" << ac->cam.clip.left << ", " << ac->cam.clip.top << ") -- (" << ac->cam.clip.right << ", " << ac->cam.clip.bottom << ")\n";
+	
+	std::cout << "  clipz0: " << ac->cam.clipz0 << '\n';
+	std::cout << "  clipz1: " << ac->cam.clipz1 << '\n';
+	std::cout << "  centerx: " << ac->cam.centerx << '\n';
+	std::cout << "  centery: " << ac->cam.centery << '\n';
+	std::cout << "  smoothing: " << ac->cam.smoothing << '\n';
+	std::cout << "  AddX: " << ac->cam.AddX << '\n';
+	std::cout << "  AddY: " << ac->cam.AddY << '\n';
+	std::cout << "  Xsnap: " << ac->cam.Xsnap << '\n';
+	std::cout << "  Zsnap: " << ac->cam.Zsnap << '\n';
+	std::cout << "  Zdiv: " << ac->cam.Zdiv << '\n';
+	std::cout << "  clip3D: " << ac->cam.clip3D << '\n';
+	
+	std::cout << "  Type: ";
+	switch(ac->cam.type) {
+		case CAM_SUBJVIEW: std::cout << "subject view"; break;
+		case CAM_TOPVIEW: std::cout << "top down view"; break;
+		default: std::cout << "(unknown)";
+	}
+	std::cout << '\n';
+	
+	std::cout << "  bkgcolor: " << ac->cam.bkgcolor << '\n';
+	std::cout << "  nbdrawn: " << ac->cam.nbdrawn << '\n';
+	std::cout << "  cdepth: " << ac->cam.cdepth << '\n';
+	std::cout << "  size: " << ac->cam.size << '\n';
+	
+}
+
+static void print_io_tweaker(const SavedTweakerInfo * sti) {
+	
+	std::cout << "\nTweaker Data:\n";
+	
+	std::cout << "  Filename: " << res::path::load(util::loadString(sti->filename)) << '\n';
+	std::cout << "  Old skin: \"" << boost::to_lower_copy(util::loadString(sti->skintochange)) << "\"\n";
+	std::cout << "  New skin: " << res::path::load(util::loadString(sti->skinchangeto)) << '\n';
+	
+}
+
+static void print_io_tweak(size_t i, const SavedTweakInfo * sti) {
+	
+	std::cout << "\nTweak #" << i << ":\n";
+	
+	std::cout << "  Type:";
+	if(!sti->type) std::cout << " (none)";
+	if(sti->type & TWEAK_REMOVE) std::cout << " remove";
+	if(sti->type & TWEAK_HEAD) std::cout << " head";
+	if(sti->type & TWEAK_TORSO) std::cout << " torso";
+	if(sti->type & TWEAK_LEGS) std::cout << " legs";
+	if(sti->type & TWEAK_TYPE_SKIN) std::cout << " skin";
+	if(sti->type & TWEAK_TYPE_ICON) std::cout << " icon";
+	if(sti->type & TWEAK_TYPE_MESH) std::cout << " mesh";
+	std::cout << '\n';
+	
+	res::path param1 = res::path::load(util::loadString(sti->param1));
+	if(!param1.empty()) {
+		std::cout << "  Parameter 1: " << param1 << '\n';
+	}
+	
+	res::path param2 = res::path::load(util::loadString(sti->param2));
+	if(!param2.empty()) {
+		std::cout << "  Parameter 2: " << param2 << '\n';
+	}
+	
+}
+
+static int view_io(SaveBlock & save, const char * dat, size_t size) {
+	
+	size_t pos = 0;
+	const ARX_CHANGELEVEL_IO_SAVE & ais = *reinterpret_cast<const ARX_CHANGELEVEL_IO_SAVE *>(dat + pos);
+	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
+	
+	if(ais.version != ARX_GAMESAVE_VERSION) {
+		std::cout << "bad version: " << ais.version << '\n';
+		return 3;
+	}
+	
+	print_io_header(save, ais);
+	
+	for(size_t i = 0; i < size_t(ais.nbtimers); i++) {
 		const ARX_CHANGELEVEL_TIMERS_SAVE * ats;
 		ats = reinterpret_cast<const ARX_CHANGELEVEL_TIMERS_SAVE *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_TIMERS_SAVE);
-		
-		if(ats->flags) {
-			std::cout << "  Flags:";
-			if(ats->flags & 1) std::cout << " idle";
-			if(ats->flags & ~1) std::cout << " (unknown)";
-			std::cout << '\n';
-		}
-		
-		std::cout << "  Script: " << (ats->script ? "overriding" : "base") << '\n';
-		std::cout << "  Interval: " << ats->interval << "ms\n";
-		std::cout << "  Name: " << boost::to_lower_copy(util::loadString(ats->name)) << '\n';
-		std::cout << "  Position: " << ats->pos << '\n';
-		std::cout << "  Remaining: " << ats->remaining << "ms\n";
-		if(ats->count == 0) {
-			std::cout << "  Count: ∞\n";
-		} else {
-			std::cout << "  Count: " << ats->count << '\n';
-		}
+		print_io_timer(i, ats);
 	}
 	
 	for(size_t i = 0; i < 2; i++) {
@@ -1477,306 +1808,45 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 			continue;
 		}
 		
-		if(i) {
-			std::cout << "\nOverriding script:\n";
-		} else {
-			std::cout << "\nBase script:\n";
-		}
-		
-		if(ass->allowevents) {
-			std::cout << "  Disabled events:";
-			if(ass->allowevents & DISABLE_HIT) std::cout << " hit";
-			if(ass->allowevents & DISABLE_CHAT) std::cout << " chat";
-			if(ass->allowevents & DISABLE_INVENTORY2_OPEN) std::cout << " inventory2_open";
-			if(ass->allowevents & DISABLE_HEAR) std::cout << " hear";
-			if(ass->allowevents & DISABLE_DETECT) std::cout << " detect";
-			if(ass->allowevents & DISABLE_AGGRESSION) std::cout << " aggression";
-			if(ass->allowevents & DISABLE_MAIN) std::cout << " main";
-			if(ass->allowevents & DISABLE_COLLIDE_NPC) std::cout << " collide_npc";
-			if(ass->allowevents & DISABLE_CURSORMODE) std::cout << " cursormode";
-			if(ass->allowevents & DISABLE_EXPLORATIONMODE) std::cout << " explorationmode";
-			std::cout << '\n';
-		}
+		print_io_script(i, ass);
 		
 		if(print_variables(ass->nblvar, dat, pos, "  ", TYPE_L_TEXT, TYPE_L_FLOAT, TYPE_L_LONG)) {
 			return -1;
 		}
+		
 	}
 	
 	switch(ais.savesystem_type) {
 		
 		case TYPE_NPC: {
-			
-			std::cout << "\nNPC Data:\n";
-			
 			const ARX_CHANGELEVEL_NPC_IO_SAVE * as;
 			as = reinterpret_cast<const ARX_CHANGELEVEL_NPC_IO_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
-			
-			if(as->absorb != 0.f) std::cout << "  Absorption: " << as->absorb << '\n';
-			if(as->aimtime != 0.f) std::cout << "  Aim time: " << as->aimtime << '\n';
-			std::cout << "  Armor class: " << as->armor_class << '\n';
-			
-			if(as->behavior != BEHAVIOUR_NONE) print_behavior(std::cout << "  Behavior:", as->behavior) << '\n';
-			if(as->behavior_param != 0.f) std::cout << "  Behavior parameter: " << as->behavior_param << '\n';
-			
-			if(as->collid_state) std::cout << "  Collision state: " << as->collid_state << '\n';
-			if(as->collid_time) std::cout << "  Collision time: " << as->collid_time << '\n';
-			if(as->cut) std::cout << "  Cut: " << as->cut << '\n';
-			if(as->damages != 0.f) std::cout << "  Damages: " << as->damages << '\n';
-			if(as->detect) std::cout << "  Detect: " << as->detect << '\n';
-			if(as->fightdecision) std::cout << "  Fight decision: " << as->fightdecision << '\n';
-			
-			print_item(save, as->id_weapon, "Weapon");
-			
-			if(as->lastmouth != 0.f) std::cout << "  Last mouth: " << as->lastmouth << '\n';
-			if(as->look_around_inc != 0.f) std::cout << "  Look around status: " << as->look_around_inc << '\n';
-			std::cout << "  Life: " << as->life << " / " << as->maxlife << '\n';
-			std::cout << "  Mana: " << as->mana << " / " << as->maxmana << '\n';
-			
-			print_movemode(std::cout << "  Movement mode: ", as->movemode) << '\n';
-			
-			if(as->moveproblem != 0.f) std::cout << "  Movement problem: " << as->moveproblem << '\n';
-			if(as->reachedtarget) std::cout << "  Reached target: " << as->reachedtarget << '\n';
-			if(as->speakpitch != 1) std::cout << "  Speak pitch: " << as->speakpitch << '\n';
-			
-			if(as->tactics) print_tactics(std::cout << "  Tactics: ", as->tactics) << '\n';
-			
-			std::cout << "  To hit: " << as->tohit << '\n';
-			if(as->weaponinhand) std::cout << "  Weapon in hand: " << as->weaponinhand << '\n';
-			if(as->weapontype) print_item_type(std::cout << "  Weapon type:", as->weapontype) << '\n';
-			std::cout << "  XP: " << as->xpvalue << '\n';
-			
-			bool s = false;
-			for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
-				
-				const SavedBehaviour & b = as->stacked[i];
-				
-				if(!b.exist) {
-					continue;
-				}
-				s = true;
-				
-				std::cout << "\n  Stacked behavior #" << i << ":\n";
-				
-				print_behavior(std::cout << "    Behavior:", b.behavior) << '\n';
-				std::cout << "    Behavior parameter: " << b.behavior_param << '\n';
-				print_tactics(std::cout << "    Tactics: ", b.tactics) << '\n';
-				print_movemode(std::cout << "    Movement mode: ", b.movemode) << '\n';
-				
-				print_anim_layers(b.animlayer, "    ");
-				
-			}
-			
-			if(s) {
-				std::cout << '\n';
-			}
-			
-			for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
-				std::string target = boost::to_lower_copy(util::loadString(as->stackedtarget[i]));
-				if(target != "none" && !target.empty()) {
-					std::cout << "  Stacked target #" << i << ": "; print_ident(save, target); std::cout << '\n';
-				}
-			}
-			
-			std::cout << "  Critical: " << as->critical << '\n';
-			std::cout << "  Reach: " << as->reach << '\n';
-			if(as->backstab_skill != 0.f) std::cout << "  Backstab skill: " << as->backstab_skill << '\n';
-			if(as->poisonned != 0.f) std::cout << "  Poisoned: " << as->poisonned << '\n';
-			std::cout << "  Resist poison: " << (int)as->resist_poison << '\n';
-			std::cout << "  Resist magic: " << (int)as->resist_magic << '\n';
-			std::cout << "  Resist fire: " << (int)as->resist_fire << '\n';
-			if(as->strike_time) std::cout << "  Strike time: " << as->strike_time << '\n';
-			if(as->walk_start_time) std::cout << "  Walk start time: " << as->walk_start_time << '\n';
-			if(as->aiming_start) std::cout << "  Aiming time: " << as->aiming_start << '\n';
-			
-			NPCFlags npcflags = NPCFlags::load(as->npcflags);
-			if(npcflags) {
-				std::cout << "  NPC flags:";
-				if(npcflags & NPCFLAG_BACKSTAB) std::cout << " backstab";
-				if(npcflags & ~NPCFLAG_BACKSTAB) std::cout << " (unknown)";
-				std::cout << '\n';
-			}
-			
-			std::cout << "  Detect: " << as->fDetect << '\n';
-			if(as->cuts) std::cout << "  Cuts: " << as->cuts << '\n';
-			
-			if(as->pathfind.truetarget != TARGET_NONE) {
-				std::cout << "  True target: ";
-				switch(as->pathfind.truetarget) {
-					case TARGET_PATH: std::cout << "path"; break;
-					case TARGET_PLAYER: std::cout << "player"; break;
-					default: std::cout << "(unknown)";
-				}
-				std::cout << '\n';
-			}
-			
-			if(ais.saveflags & SAVEFLAGS_EXTRA_ROTATE) {
-				
-				std::cout << "\n  Extra rotate flags (unused): " << as->ex_rotate.flags << '\n';
-				
-				for(size_t i = 0; i < SAVED_MAX_EXTRA_ROTATE; i++) {
-					std::cout << "    Extra rotate #" << i << ": group=" << as->ex_rotate.group_number[i] << " rotation=" << as->ex_rotate.group_rotate[i] << '\n';
-				}
-			}
-			
-			Color c = Color::fromBGRA(ColorBGRA(as->blood_color));
-			if(c != Color::red) {
-				std::cout << "  Blood color: (" << (int)c.r << ", " << (int)c.g << ", " << (int)c.b << ")\n";
-			}
-			
+			print_io_npc(save, ais, as);
 			break;
 		}
 		
 		case TYPE_ITEM: {
-			
-			std::cout << "\nItem Data:\n";
-			
 			const ARX_CHANGELEVEL_ITEM_IO_SAVE * ai;
 			ai = reinterpret_cast<const ARX_CHANGELEVEL_ITEM_IO_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_ITEM_IO_SAVE);
-			
-			std::cout << "  Price: " << ai->price << '\n';
-			if(ai->count != 1 || ai->maxcount != 1) {
-				std::cout << "  Count: " << ai->count << " / " << ai->maxcount << '\n';
-			}
-			if(ai->food_value != 0) {
-				std::cout << "  Food value: " << (int)ai->food_value << '\n';
-			}
-			std::cout << "  Steal value: " << (int)ai->stealvalue << '\n';
-			if(ai->playerstacksize != 1) {
-				std::cout << "  Player stack size: " << ai->playerstacksize << '\n';
-			}
-			if(ai->LightValue != -1) {
-				std::cout << "  Light value: " << ai->LightValue << '\n';
-			}
-			
-			if(ais.system_flags & SYSTEM_FLAG_EQUIPITEMDATA) {
-				
-				for(size_t i = 0; i < SAVED_IO_EQUIPITEM_ELEMENT_Number; i++) {
-					
-					const SavedEquipItemElement & e = ai->equipitem.elements[i];
-					
-					if(e.value == 0 && e.flags == 0) {
-						continue;
-					}
-					
-					if(i < ARRAY_SIZE(equipitemNames)) {
-						std::cout << "\n  " << equipitemNames[i] << " modifier:";
-					} else {
-						std::cout << "\n  EquipItem #" << i << ':';
-					}
-					
-					if(e.flags || e.special) {
-						std::cout << "\n    Value: ";
-					} else {
-						std::cout << ' ';
-					}
-					
-					std::cout << e.value << '\n';
-					if(e.flags) {
-						std::cout << "    Flags:";
-						if(e.flags & 1) std::cout << " percentile";
-						if(e.flags & ~1) std::cout << " (unknown)";
-						std::cout << '\n';
-					}
-					if(e.special) {
-						std::cout << "    Special: ";
-						if(e.special == IO_SPECIAL_ELEM_PARALYZE) {
-							std::cout << "paralyze";
-						} else if(e.special == IO_SPECIAL_ELEM_DRAIN_LIFE) {
-							std::cout << "drain life";
-						} else {
-							std::cout << e.special;
-						}
-						std::cout << '\n';
-					}
-					
-				}
-			}
-			
+			print_io_item(ais, ai);
 			break;
 		}
 		
 		case TYPE_FIX: {
-			
-			std::cout << "\nFixed Data:\n";
-			
 			const ARX_CHANGELEVEL_FIX_IO_SAVE * af;
 			af = reinterpret_cast<const ARX_CHANGELEVEL_FIX_IO_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_FIX_IO_SAVE);
-			
-			if(af->trapvalue != -1) std::cout << "  Trap value: " << (int)af->trapvalue << '\n';
-			
+			print_io_fixed(af);
 			break;
 		}
 		
 		case TYPE_CAMERA: {
-			
-			std::cout << "\nCamera Data:\n";
-			
 			const ARX_CHANGELEVEL_CAMERA_IO_SAVE * ac;
 			ac = reinterpret_cast<const ARX_CHANGELEVEL_CAMERA_IO_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_CAMERA_IO_SAVE);
-			
-			std::cout << "  Transform:\n";
-			std::cout << "    pos=(" << ac->cam.pos.x << ", " << ac->cam.pos.y << ", " << ac->cam.pos.z << ")\n";
-			std::cout << "    ycos=" << ac->cam.ycos << " ysin=" << ac->cam.ysin << " xsin=" << ac->cam.xsin << " xcos=" << ac->cam.xcos << '\n';
-			std::cout << "    use_focal=" << ac->cam.use_focal1 << '\n';
-			std::cout << "    mod=(" << ac->cam.xmod << ", " << ac->cam.ymod << ", " << ac->cam.zmod << ")\n";
-			
-			std::cout << "  Position: " << ac->cam.pos2;
-			std::cout << "  cos=(" << ac->cam.Xcos << ", " << ac->cam.Ycos << ", " << ac->cam.Zcos << ")\n";
-			std::cout << "  sin=(" << ac->cam.Xsin << ", " << ac->cam.Ysin << ", " << ac->cam.Zsin << ")\n";
-			std::cout << "  focal=" << ac->cam.focal << " use_focal=" << ac->cam.use_focal << '\n';
-			std::cout << "  Zmul=" << ac->cam.Zmul << '\n';
-			std::cout << "  posleft=" << ac->cam.posleft << " postop=" << ac->cam.postop << '\n';
-			std::cout << "  xmod=" << ac->cam.xmod2 << " ymod=" << ac->cam.ymod2 << '\n';
-			
-			const SavedMatrix & m = ac->cam.matrix;
-			std::cout << "  Matrix:\n";
-			std::cout << "    " << m._11 << ", " << m._12 << ", " << m._13 << ", " << m._14 << '\n';
-			std::cout << "    " << m._21 << ", " << m._22 << ", " << m._23 << ", " << m._24 << '\n';
-			std::cout << "    " << m._31 << ", " << m._32 << ", " << m._33 << ", " << m._34 << '\n';
-			std::cout << "    " << m._41 << ", " << m._42 << ", " << m._43 << ", " << m._44 << '\n';
-			
-			std::cout << "  Angle: " << ac->cam.angle << '\n';
-			std::cout << "  Destination position: " << ac->cam.d_pos << '\n';
-			std::cout << "  Destination angle: " << ac->cam.d_angle << '\n';
-			std::cout << "  Last target: " << ac->cam.lasttarget << '\n';
-			std::cout << "  Last position: " << ac->cam.lastpos << '\n';
-			std::cout << "  Last translate target: " << ac->cam.translatetarget << '\n';
-			std::cout << "  Last info valid: " << ac->cam.lastinfovalid << '\n';
-			std::cout << "  Norm: " << ac->cam.norm << '\n';
-			std::cout << "  Fade color: " << ac->cam.fadecolor << '\n';
-			
-			std::cout << "  Clip: (" << ac->cam.clip.left << ", " << ac->cam.clip.top << ") -- (" << ac->cam.clip.right << ", " << ac->cam.clip.bottom << ")\n";
-			
-			std::cout << "  clipz0: " << ac->cam.clipz0 << '\n';
-			std::cout << "  clipz1: " << ac->cam.clipz1 << '\n';
-			std::cout << "  centerx: " << ac->cam.centerx << '\n';
-			std::cout << "  centery: " << ac->cam.centery << '\n';
-			std::cout << "  smoothing: " << ac->cam.smoothing << '\n';
-			std::cout << "  AddX: " << ac->cam.AddX << '\n';
-			std::cout << "  AddY: " << ac->cam.AddY << '\n';
-			std::cout << "  Xsnap: " << ac->cam.Xsnap << '\n';
-			std::cout << "  Zsnap: " << ac->cam.Zsnap << '\n';
-			std::cout << "  Zdiv: " << ac->cam.Zdiv << '\n';
-			std::cout << "  clip3D: " << ac->cam.clip3D << '\n';
-			
-			std::cout << "  Type: ";
-			switch(ac->cam.type) {
-				case CAM_SUBJVIEW: std::cout << "subject view"; break;
-				case CAM_TOPVIEW: std::cout << "top down view"; break;
-				default: std::cout << "(unknown)";
-			}
-			std::cout << '\n';
-			
-			std::cout << "  bkgcolor: " << ac->cam.bkgcolor << '\n';
-			std::cout << "  nbdrawn: " << ac->cam.nbdrawn << '\n';
-			std::cout << "  cdepth: " << ac->cam.cdepth << '\n';
-			std::cout << "  size: " << ac->cam.size << '\n';
-			
+			print_io_camera(ac);
 			break;
 		}
 		
@@ -1787,28 +1857,17 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	}
 	
 	if(ais.system_flags & SYSTEM_FLAG_INVENTORY) {
-		
 		std::cout << "\nInventory:\n";
-		
 		const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE & i = *reinterpret_cast<const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
-		
 		std::cout << "  Size: " << i.sizex << 'x' << i.sizey << '\n';
-		
 		print_inventory(save, i.slot_io, i.slot_show);
-		
 	}
 	
 	if(ais.system_flags & SYSTEM_FLAG_TWEAKER_INFO) {
-		
-		std::cout << "\nTweaker Data:\n";
-		
 		const SavedTweakerInfo * sti = reinterpret_cast<const SavedTweakerInfo *>(dat + pos);
 		pos += sizeof(SavedTweakerInfo);
-		
-		std::cout << "  Filename: " << res::path::load(util::loadString(sti->filename)) << '\n';
-		std::cout << "  Old skin: \"" << boost::to_lower_copy(util::loadString(sti->skintochange)) << "\"\n";
-		std::cout << "  New skin: " << res::path::load(util::loadString(sti->skinchangeto)) << '\n';
+		print_io_tweaker(sti);
 	}
 	
 	if(ais.nb_iogroups) {
@@ -1821,32 +1880,10 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		std::cout << '\n';
 	}
 	
-	for(s16 i = 0; i < ais.Tweak_nb; i++) {
+	for(size_t i = 0; i < size_t(ais.Tweak_nb); i++) {
 		const SavedTweakInfo * sti = reinterpret_cast<const SavedTweakInfo *>(dat + pos);
 		pos += sizeof(SavedTweakInfo);
-		
-		std::cout << "\nTweak #" << i << ":\n";
-		
-		std::cout << "  Type:";
-		if(!sti->type) std::cout << " (none)";
-		if(sti->type & TWEAK_REMOVE) std::cout << " remove";
-		if(sti->type & TWEAK_HEAD) std::cout << " head";
-		if(sti->type & TWEAK_TORSO) std::cout << " torso";
-		if(sti->type & TWEAK_LEGS) std::cout << " legs";
-		if(sti->type & TWEAK_TYPE_SKIN) std::cout << " skin";
-		if(sti->type & TWEAK_TYPE_ICON) std::cout << " icon";
-		if(sti->type & TWEAK_TYPE_MESH) std::cout << " mesh";
-		std::cout << '\n';
-		
-		res::path param1 = res::path::load(util::loadString(sti->param1));
-		if(!param1.empty()) {
-			std::cout << "  Parameter 1: " << param1 << '\n';
-		}
-		
-		res::path param2 = res::path::load(util::loadString(sti->param2));
-		if(!param2.empty()) {
-			std::cout << "  Parameter 2: " << param2 << '\n';
-		}
+		print_io_tweak(i, sti);
 	}
 	
 	arx_assert(size >= pos); ARX_UNUSED(size);
