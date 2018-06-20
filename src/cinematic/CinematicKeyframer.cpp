@@ -375,7 +375,7 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 		return;
 	}
 	
-	if(bool(CKTrack->pause) == play) {
+	if(CKTrack->pause == play) {
 		return;
 	}
 	

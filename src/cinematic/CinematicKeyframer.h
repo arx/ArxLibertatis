@@ -76,7 +76,7 @@ struct CinematicTrack {
 	int endframe;
 	float currframe;
 	float fps;
-	int pause;
+	bool pause;
 	
 	std::vector<CinematicKeyframe> key;
 	
