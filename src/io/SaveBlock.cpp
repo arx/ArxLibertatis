@@ -216,10 +216,10 @@ std::string SaveBlock::File::loadData(std::istream & handle, const std::string &
 			arx_assert(uncompressedSize != size_t(-1));
 			std::string uncompressed;
 			uncompressed.resize(uncompressedSize);
-			uLongf outSize = uncompressedSize;
+			uLongf outSize = uLongf(uncompressedSize);
 			Bytef * out = reinterpret_cast<Bytef *>(&uncompressed[0]);
 			const Bytef * in = reinterpret_cast<const Bytef *>(buffer.data());
-			int ret = uncompress(out, &outSize, in, storedSize);
+			int ret = uncompress(out, &outSize, in, uLongf(storedSize));
 			if(ret != Z_OK) {
 				LogError << "Error decompressing deflated " << name << ": " << zError(ret) << " (" << ret << ')';
 				return std::string();
