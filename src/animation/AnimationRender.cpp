@@ -1194,8 +1194,9 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 	layer.currentInterpolation = glm::clamp(layer.currentInterpolation, 0.f, 1.f);
 	
 	// FIXME animation indices prevent invalid memory access, should be fixed properly
-	if(layer.currentFrame < 0 || layer.currentFrame + 1 >= long(eanim->frames.size()))
+	if(layer.currentFrame < 0 || layer.currentFrame + 1 >= long(eanim->frames.size())) {
 		return Vec3f_ZERO;
+	}
 	
 	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
 	if(eanim->frames[layer.currentFrame].f_translate && !(layer.flags & EA_STATICANIM)) {
