@@ -55,9 +55,9 @@
  * When combining -flto and -fvisibility=hidden we and up with a hidden
  * 'environ' symbol in crt1.o on FreeBSD 9, which causes the link to fail.
  */
-extern char ** environ __attribute__((visibility("default")));
+extern char ** environ __attribute__((visibility("default"))); // NOLINT
 #else
-extern char ** environ;
+extern char ** environ; // NOLINT
 #endif
 #endif
 
