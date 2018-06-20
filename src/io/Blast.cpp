@@ -433,9 +433,9 @@ BlastResult blast(blast_in infun, void * inhow, blast_out outfun, void * outhow)
 
 // Additional functions.
 
-int blastOutMem(void * Param, unsigned char * buf, size_t len) {
+int blastOutMem(void * param, unsigned char * buf, size_t len) {
 	
-	BlastMemOutBuffer * p = (BlastMemOutBuffer *)Param;
+	BlastMemOutBuffer * p = static_cast<BlastMemOutBuffer *>(param);
 	
 	if(len > p->size) {
 		return 1;
@@ -448,9 +448,9 @@ int blastOutMem(void * Param, unsigned char * buf, size_t len) {
 	return 0;
 }
 
-size_t blastInMem(void * Param, const unsigned char ** buf) {
+size_t blastInMem(void * param, const unsigned char ** buf) {
 	
-	BlastMemInBuffer * p = (BlastMemInBuffer *)Param;
+	BlastMemInBuffer * p = static_cast<BlastMemInBuffer *>(param);
 	
 	*buf = (const unsigned char *)p->buf;
 	
@@ -462,9 +462,9 @@ size_t blastInMem(void * Param, const unsigned char ** buf) {
 	return size;
 }
 
-int blastOutString(void * Param, unsigned char * buf, size_t len) {
+int blastOutString(void * param, unsigned char * buf, size_t len) {
 	
-	BlastMemOutString * p = (BlastMemOutString *)Param;
+	BlastMemOutString * p = static_cast<BlastMemOutString *>(param);
 	
 	p->buffer.append((char *)buf, len);
 	
