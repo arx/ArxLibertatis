@@ -1587,12 +1587,13 @@ void HudRoot::draw() {
 		backpackIconGui.draw();
 		bookIconGui.draw();
 		
+		levelUpIconGui.draw();
+		
 		// Draw/Manage Gold Purse Icon
 		if(player.gold > 0) {
 			purseIconGui.draw();
 		}
 		
-		levelUpIconGui.draw();
 	}
 	
 	precastSpellsGui.draw();
