@@ -528,8 +528,8 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 		long nearest = -1;
 		float nearest_dist = 99999.f;
 
-		BOOST_FOREACH(const EERIE_ROOM_DATA & room, portals->rooms) {
-			BOOST_FOREACH(long portal, room.portals) {
+		for(const EERIE_ROOM_DATA & room : portals->rooms) {
+			for(long portal : room.portals) {
 				const EERIE_PORTALS & po = portals->portals[portal];
 				const PortalPoly * epp = &po.poly;
 				if(PointIn2DPolyXZ(epp, pos.x, pos.z)) {
@@ -1008,7 +1008,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	
 	unsigned short * pIndices = &room.indexBuffer[0];
 	
-	BOOST_FOREACH(const EP_DATA & epd, room.epdata) {
+	for(const EP_DATA & epd : room.epdata) {
 		
 		BackgroundTileData * feg = &ACTIVEBKG->m_tileData[epd.tile.x][epd.tile.y];
 		
@@ -1310,7 +1310,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 	float fClippZFar = camDepth * fZFogEnd * 1.1f;
 	
 	// Now Checks For room Portals !!!
-	BOOST_FOREACH(long portal, portals->rooms[roomIndex].portals) {
+	for(long portal : portals->rooms[roomIndex].portals) {
 		EERIE_PORTALS * po = &portals->portals[portal];
 		
 		if(po->useportal) {

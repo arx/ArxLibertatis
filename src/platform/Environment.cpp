@@ -420,7 +420,7 @@ fs::path getHelperExecutable(const std::string & name) {
 		typedef boost::tokenizer< boost::char_separator<char> >  tokenizer;
 		boost::char_separator<char> sep(platform::env_list_seperators);
 		tokenizer tokens(decoded, sep);
-		BOOST_FOREACH(fs::path libexec_dir, tokens) {
+		for(fs::path libexec_dir : tokens) {
 			fs::path helper = libexec_dir / name;
 			if(helper.is_relative()) {
 				helper = exe / helper;

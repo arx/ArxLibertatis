@@ -114,7 +114,7 @@ ParticleSystem::ParticleSystem() {
 
 ParticleSystem::~ParticleSystem() {
 	
-	BOOST_FOREACH(Particle * p, listParticle) {
+	for(Particle * p : listParticle) {
 		delete p;
 	}
 	

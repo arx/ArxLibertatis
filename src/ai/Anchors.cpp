@@ -70,7 +70,7 @@ void ANCHOR_BLOCK_Clear() {
 		return;
 	}
 	
-	BOOST_FOREACH(ANCHOR_DATA & ad, eb->m_anchors) {
+	for(ANCHOR_DATA & ad : eb->m_anchors) {
 		ad.flags &= ~ANCHOR_FLAG_BLOCKED;
 	}
 	
@@ -80,7 +80,7 @@ void ANCHOR_BLOCK_By_IO(Entity * io, long status) {
 	
 	BackgroundData * eb = ACTIVEBKG;
 	
-	BOOST_FOREACH(ANCHOR_DATA & ad, eb->m_anchors) {
+	for(ANCHOR_DATA & ad : eb->m_anchors) {
 		
 		if(fartherThan(ad.pos, io->pos, 600.f))
 			continue;

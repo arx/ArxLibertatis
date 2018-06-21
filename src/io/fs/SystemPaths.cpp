@@ -167,8 +167,8 @@ path findUserPath(const char * name, const path & force,
 		prefixes.insert(prefixes.end(), paths.begin(), paths.end());
 	}
 	bool create_exists = false;
-	BOOST_FOREACH(const path & prefix, prefixes) {
-		BOOST_FOREACH(const path & suffix, suffixes) {
+	for(const path & prefix : prefixes) {
+		for(const path & suffix : suffixes) {
 			
 			path dir = canonical(prefix / suffix);
 			
@@ -258,7 +258,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	}
 	
 	// Use paths specifed on the command-line
-	BOOST_FOREACH(const path & dir, m_additionalDataDirs) {
+	for(const path & dir : m_additionalDataDirs) {
 		path tmp = canonical(dir);
 		if(addSearchPath(result, tmp, filter)) {
 			LogDebug("got data dir from command-line: " << dir << " = " << tmp);
@@ -286,7 +286,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	if(!exepath.empty()) {
 		std::string var = getSearchPathVar(exepath);
 		std::vector<path> paths = parsePathList(var.c_str());
-		BOOST_FOREACH(const path & p, paths) {
+		for(const path & p : paths) {
 			#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 			if(p.string() == var) {
 				continue; // not defined
@@ -310,7 +310,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 			           != ignored_dirs.end());
 		}
 		std::vector<path> relative_data_dirs = parsePathList(relative_data_dir);
-		BOOST_FOREACH(const path & p, relative_data_dirs) {
+		for(const path & p : relative_data_dirs) {
 			path dir = exedir / p;
 			if(!ignored && addSearchRoot(result, dir, filter)) {
 				LogDebug("got data dir from exe: " << exepath << " + " << p << " -> " << dir);
@@ -323,8 +323,8 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	// Search standard locations
 	std::vector<path> prefixes = parsePathList(data_dir_prefixes);
 	std::vector<path> suffixes = parsePathList(data_dir);
-	BOOST_FOREACH(const path & prefix, prefixes) {
-		BOOST_FOREACH(const path & suffix, suffixes) {
+	for(const path & prefix : prefixes) {
+		for(const path & suffix : suffixes) {
 			path dir = canonical(prefix / suffix);
 			if(addSearchRoot(result, dir, filter)) {
 				LogDebug("got data dir from search: " << prefix
@@ -419,8 +419,8 @@ void listDirectoriesFor(std::ostream & os, const std::string & regKey,
 		
 		std::set<path> result;
 		
-		BOOST_FOREACH(const path & prefix, prefixes) {
-			BOOST_FOREACH(const path & suffix, suffixes) {
+		for(const path & prefix : prefixes) {
+			for(const path & suffix : suffixes) {
 				path dir = canonical(prefix / suffix);
 				if(result.find(dir) == result.end()) {
 					os << "  -> " << dir << '\n';
@@ -478,7 +478,7 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 		os << " (none)\n";
 	} else {
 		os << '\n';
-		BOOST_FOREACH(const path & dir, m_dataDirs) {
+		for(const path & dir : m_dataDirs) {
 			os << " - " << dir << '\n';
 		}
 	}
@@ -514,7 +514,7 @@ path findDataFile(const path & resource) {
 		return exists(resource) ? resource : path();
 	}
 	
-	BOOST_FOREACH(const path & prefix, getDataDirs()) {
+	for(const path & prefix : getDataDirs()) {
 		path fullPath = prefix / resource;
 		if(exists(fullPath)) {
 			return fullPath;

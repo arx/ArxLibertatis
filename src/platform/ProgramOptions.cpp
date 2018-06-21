@@ -29,7 +29,7 @@ BaseOption::List & BaseOption::getOptionsList() {
 }
 
 void BaseOption::registerAll(util::cmdline::interpreter<std::string> & l) {
-	BOOST_FOREACH(BaseOption & opt, getOptionsList()) {
+	for(BaseOption & opt : getOptionsList()) {
 		opt.registerOption(l);
 	}
 }

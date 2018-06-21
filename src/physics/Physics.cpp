@@ -577,7 +577,7 @@ static bool IsFULLObjectVertexInValidPosition(const PHYSICS_BOX_DATA & pbox, EER
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
 		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
-		BOOST_FOREACH(EERIEPOLY & ep, eg.polydata) {
+		for(EERIEPOLY & ep : eg.polydata) {
 			
 			if(ep.area > 190.f
 			   && !(ep.type & POLY_WATER)

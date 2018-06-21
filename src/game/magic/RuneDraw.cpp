@@ -69,7 +69,7 @@ void ARX_SPELLS_Init_Rects() {
 	lMaxSymbolDrawSize.x = std::numeric_limits<s16>::min();
 	lMaxSymbolDrawSize.y = std::numeric_limits<s16>::min();
 
-	BOOST_FOREACH(RuneInfo & info, runeInfos) {
+	for(RuneInfo & info : runeInfos) {
 		
 		Vec2s iMin;
 		Vec2s iMax;
@@ -300,7 +300,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 }
 
 void ARX_SPELLS_ClearAllSymbolDraw() {
-	BOOST_FOREACH(Entity * e, entities) {
+	for(Entity * e : entities) {
 		if(e && e->symboldraw) {
 			delete e->symboldraw;
 			e->symboldraw = NULL;
@@ -335,7 +335,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 
 void ARX_SPELLS_RequestSymbolDraw(Entity * io, const std::string & name, float duration) {
 	
-	BOOST_FOREACH(RuneInfo & info, runeInfos) {
+	for(RuneInfo & info : runeInfos) {
 		if(info.name == name) {
 			ARX_SPELLS_RequestSymbolDrawCommon(io, duration, info);
 			break;
@@ -346,7 +346,7 @@ void ARX_SPELLS_RequestSymbolDraw(Entity * io, const std::string & name, float d
 
 void ARX_SPELLS_RequestSymbolDraw2(Entity * io, Rune symb, float duration) {
 	
-	BOOST_FOREACH(RuneInfo & info, runeInfos) {
+	for(RuneInfo & info : runeInfos) {
 		if(info.rune == symb) {
 			ARX_SPELLS_RequestSymbolDrawCommon(io, duration, info);
 			break;

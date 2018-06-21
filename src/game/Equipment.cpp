@@ -658,7 +658,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 	float drain_life = ARX_EQUIPMENT_GetSpecialValue(io_weapon, IO_SPECIAL_ELEM_DRAIN_LIFE);
 	float paralyse = ARX_EQUIPMENT_GetSpecialValue(io_weapon, IO_SPECIAL_ELEM_PARALYZE);
 
-	BOOST_FOREACH(const EERIE_ACTIONLIST & action, io_weapon->obj->actionlist) {
+	for(const EERIE_ACTIONLIST & action : io_weapon->obj->actionlist) {
 		
 		float rad = GetHitValue(action.name);
 
@@ -675,7 +675,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		std::vector<EntityHandle> sphereContent;
 
 		if(CheckEverythingInSphere(sphere, source, targ, sphereContent)) {
-			BOOST_FOREACH(const EntityHandle & content, sphereContent) {
+			for(const EntityHandle & content : sphereContent) {
 				if(ValidIONum(content) && !(entities[content]->ioflags & IO_BODY_CHUNK)) {
 					
 					bool HIT_SPARK = false;

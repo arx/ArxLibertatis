@@ -71,7 +71,7 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 			std::string name = util::convert<util::ISO_8859_1, util::UTF8>(i->first);
 			files[name] = i->second;
 		}
-		BOOST_FOREACH(const SortedFiles::value_type & entry, files) {
+		for(const SortedFiles::value_type & entry : files) {
 			res::path path = dirname / entry.first;
 			
 			if(action == UnpakExtract || action == UnpakManifest) {
@@ -126,7 +126,7 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 			std::string name = util::convert<util::ISO_8859_1, util::UTF8>(i->first);
 			subdirs[name] = &i->second;
 		}
-		BOOST_FOREACH(const SortedDirs::value_type & entry, subdirs) {
+		for(const SortedDirs::value_type & entry : subdirs) {
 			res::path path = dirname / entry.first;
 			if(action == UnpakManifest) {
 				std::cout << "                                  ";
@@ -234,7 +234,7 @@ static void addResourceDir(PakReader & resources, const fs::path & base) {
 		"editor", "game", "graph", "localisation", "misc", "sfx", "speech",
 	};
 	
-	BOOST_FOREACH(const char * dirname, resource_dirs) {
+	for(const char * dirname : resource_dirs) {
 		resources.addFiles(base / dirname, dirname);
 	}
 	
@@ -277,7 +277,7 @@ int utf8_main(int argc, char ** argv) {
 			{ "sfx.pak", NULL },
 			{ "speech.pak", "speech_default.pak" },
 		};
-		BOOST_FOREACH(const char * const * const filenames, default_paks) {
+		for(const char * const * const filenames : default_paks) {
 			if(resources.addArchive(fs::findDataFile(filenames[0]))) {
 				continue;
 			}
@@ -291,13 +291,13 @@ int utf8_main(int argc, char ** argv) {
 			}
 			LogError << oss.str();
 		}
-		BOOST_FOREACH(const fs::path & base, boost::adaptors::reverse(fs::getDataDirs())) {
+		for(const fs::path & base : boost::adaptors::reverse(fs::getDataDirs())) {
 			addResourceDir(resources, base);
 		}
 	}
 	
 	if(status == RunProgram) {
-		BOOST_FOREACH(const fs::path & archive, g_archives) {
+		for(const fs::path & archive : g_archives) {
 			if(fs::is_regular_file(archive)) {
 				if(!resources.addArchive(archive)) {
 					LogCritical << "Could not open archive " << archive << "!";

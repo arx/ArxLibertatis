@@ -158,7 +158,7 @@ struct PrintGlobalVariables { };
 
 std::ostream & operator<<(std::ostream & os, const PrintGlobalVariables & /* unused */) {
 	
-	BOOST_FOREACH(const SCRIPT_VAR & var, svar) {
+	for(const SCRIPT_VAR & var : svar) {
 		os << var << '\n';
 	}
 	
@@ -194,7 +194,7 @@ struct PrintLocalVariables {
 
 std::ostream & operator<<(std::ostream & os, const PrintLocalVariables & data) {
 	
-	BOOST_FOREACH(const SCRIPT_VAR & var, data.m_entity->m_variables) {
+	for(const SCRIPT_VAR & var : data.m_entity->m_variables) {
 		os << var << '\n';
 	}
 	

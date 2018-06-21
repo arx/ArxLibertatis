@@ -413,14 +413,14 @@ int main_fix(SaveBlock & save, const std::vector<std::string> & args) {
 	
 	// TODO share this list with the game code
 	static const char * const default_paks[] = { "data.pak", "data2.pak" };
-	BOOST_FOREACH(const char * const filename, default_paks) {
+	for(const char * const filename : default_paks) {
 		if(g_resources->addArchive(fs::findDataFile(filename))) {
 			continue;
 		}
 		LogError << "Missing required data file: \"" << filename << "\"";
 		return 3;
 	}
-	BOOST_FOREACH(const fs::path & base, boost::adaptors::reverse(fs::getDataDirs())) {
+	for(const fs::path & base : boost::adaptors::reverse(fs::getDataDirs())) {
 		const char * dirname = "graph";
 		g_resources->addFiles(base / dirname, dirname);
 	}

@@ -88,7 +88,7 @@ static int main_add(SaveBlock & save, const std::vector<std::string> & args) {
 		return 2;
 	}
 	
-	BOOST_FOREACH(fs::path file, args) {
+	for(fs::path file : args) {
 		
 		size_t size;
 		char * data = fs::read_file(file, size);

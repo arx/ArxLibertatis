@@ -518,7 +518,7 @@ public:
 		
 		LogDebug("sorting");
 		#ifdef ARX_DEBUG
-		BOOST_FOREACH(const Entity * item, items) {
+		for(const Entity * item : items) {
 			LogDebug(" - " << item->idString() << ": "
 			         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
 		}
@@ -527,7 +527,7 @@ public:
 		LogDebug("putting back items");
 		
 		// Now put the items back into the inventory
-		BOOST_FOREACH(Entity * item, items) {
+		for(Entity * item : items) {
 			if(!insertImpl(item)) {
 				// TODO: oops - there was no space for the item
 				// ideally this should not happen, but the current sorting algorithm does not

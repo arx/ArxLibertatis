@@ -83,13 +83,13 @@ void Renderer::removeListener(Listener * listener) {
 
 void Renderer::onRendererInit() {
 	m_initialized = true;
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		listener->onRendererInit(*this);
 	}
 }
 
 void Renderer::onRendererShutdown() {
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		listener->onRendererShutdown(*this);
 	}
 	m_initialized = false;

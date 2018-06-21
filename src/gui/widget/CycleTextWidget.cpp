@@ -51,7 +51,7 @@ CycleTextWidget::~CycleTextWidget() {
 	delete pLeftButton;
 	delete pRightButton;
 	
-	BOOST_FOREACH(Widget * w, vText) {
+	for(Widget * w : vText) {
 		delete w;
 	}
 }

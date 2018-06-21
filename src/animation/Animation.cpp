@@ -170,7 +170,7 @@ static void ReleaseAnim(EERIE_ANIM * ea) {
 		return;
 	}
 	
-	BOOST_FOREACH(EERIE_FRAME & frame, ea->frames) {
+	for(EERIE_FRAME & frame : ea->frames) {
 		ARX_SOUND_Free(frame.sample);
 	}
 	
@@ -180,7 +180,7 @@ static void ReleaseAnim(EERIE_ANIM * ea) {
 
 static void EERIE_ANIMMANAGER_Clear(ANIM_HANDLE & slot) {
 	
-	BOOST_FOREACH(EERIE_ANIM * anim, slot.anims) {
+	for(EERIE_ANIM * anim : slot.anims) {
 		ReleaseAnim(anim);
 	}
 	slot.anims.clear();
@@ -189,7 +189,7 @@ static void EERIE_ANIMMANAGER_Clear(ANIM_HANDLE & slot) {
 
 void EERIE_ANIMMANAGER_PurgeUnused() {
 	
-	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+	for(ANIM_HANDLE & slot : animations) {
 		if(!slot.path.empty() && slot.locks == 0) {
 			EERIE_ANIMMANAGER_Clear(slot);
 		}
@@ -210,7 +210,7 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim) {
 
 static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const res::path & path) {
 	
-	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+	for(ANIM_HANDLE & slot : animations) {
 		if(slot.path == path) {
 			return &slot;
 		}
@@ -496,7 +496,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 		return handle;
 	}
 	
-	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+	for(ANIM_HANDLE & slot : animations) {
 		
 		if(!slot.path.empty()) {
 			continue;
@@ -669,7 +669,7 @@ void ResetAnim(AnimLayer & layer) {
 
 void EERIE_ANIMMANAGER_ClearAll() {
 	
-	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+	for(ANIM_HANDLE & slot : animations) {
 		if(!slot.path.empty()) {
 			EERIE_ANIMMANAGER_Clear(slot);
 		}
@@ -713,12 +713,12 @@ std::vector< std::pair<res::path, size_t> > ARX_SOUND_PushAnimSamples() {
 	
 	size_t number = 0;
 	
-	BOOST_FOREACH(const ANIM_HANDLE & slot, animations) {
+	for(const ANIM_HANDLE & slot : animations) {
 		if(slot.path.empty()) {
 			continue;
 		}
-		BOOST_FOREACH(const EERIE_ANIM * anim, slot.anims) {
-			BOOST_FOREACH(const EERIE_FRAME & frame, anim->frames) {
+		for(const EERIE_ANIM * anim : slot.anims) {
+			for(const EERIE_FRAME & frame : anim->frames) {
 				number++;
 				if(frame.sample != -1) {
 					res::path dest;
@@ -744,12 +744,12 @@ void ARX_SOUND_PopAnimSamples(const std::vector< std::pair<res::path, size_t> > 
 	
 	size_t number = 0;
 	
-	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+	for(ANIM_HANDLE & slot : animations) {
 		if(slot.path.empty()) {
 			continue;
 		}
-		BOOST_FOREACH(EERIE_ANIM * anim, slot.anims) {
-			BOOST_FOREACH(EERIE_FRAME & frame, anim->frames) {
+		for(EERIE_ANIM * anim : slot.anims) {
+			for(EERIE_FRAME & frame : anim->frames) {
 				number++;
 				if(p != samples.end() && p->second == number) {
 					frame.sample = audio::createSample(p->first);

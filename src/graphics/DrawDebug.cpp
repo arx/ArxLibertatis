@@ -185,7 +185,7 @@ static void drawDebugPortals() {
 
 static void drawDebugPaths() {
 	
-	BOOST_FOREACH(const ARX_PATH * path, g_paths) {
+	for(const ARX_PATH * path : g_paths) {
 		
 		if(!path) {
 			continue;
@@ -278,7 +278,7 @@ static void drawDebugPathFinding() {
 		const ANCHOR_DATA & node = ACTIVEBKG->m_anchors[i];
 		
 		Color color1 = (node.flags & ANCHOR_FLAG_BLOCKED) ? Color::blue : Color::green;
-		BOOST_FOREACH(long k, node.linked) {
+		for(long k : node.linked) {
 			if(k >= 0 && size_t(k) < ACTIVEBKG->m_anchors.size() && i < size_t(k)) {
 				const ANCHOR_DATA & other = ACTIVEBKG->m_anchors[k];
 				Color color2 = (other.flags & ANCHOR_FLAG_BLOCKED) ? Color::blue : Color::green;
@@ -738,7 +738,7 @@ static void drawDebugMaterials() {
 			continue;
 		}
 		
-		BOOST_FOREACH(EERIEPOLY * ep, feg.polyin) {
+		for(EERIEPOLY * ep : feg.polyin) {
 			
 			if(!ep || (ep->type & skip)) {
 				continue;

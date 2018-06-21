@@ -568,7 +568,7 @@ void PakReader::clear() {
 	files.clear();
 	dirs.clear();
 	
-	BOOST_FOREACH(std::istream * is, paks) {
+	for(std::istream * is : paks) {
 		delete is;
 	}
 }

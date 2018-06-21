@@ -470,7 +470,7 @@ void ScriptEvent::autocomplete(const std::string & prefix, AutocompleteHandler h
 		}
 	}
 	
-	BOOST_FOREACH(const Commands::value_type & v, commands) {
+	for(const Commands::value_type & v : commands) {
 		if(boost::starts_with(v.first, cmd)) {
 			if(!handler(context, v.first + " ")) {
 				return;

@@ -79,7 +79,7 @@ static void ARX_PATH_ComputeBB(ARX_PATH * ap) {
 	ap->bbmin = Vec3f(9999999999.f);
 	ap->bbmax = Vec3f(-9999999999.f);
 	
-	BOOST_FOREACH(const ARX_PATHWAY & pathway, ap->pathways) {
+	for(const ARX_PATHWAY & pathway : ap->pathways) {
 		ap->bbmin.x = std::min(ap->bbmin.x, ap->pos.x + pathway.rpos.x);
 		ap->bbmax.x = std::max(ap->bbmax.x, ap->pos.x + pathway.rpos.x);
 		ap->bbmin.z = std::min(ap->bbmin.z, ap->pos.z + pathway.rpos.z);
@@ -96,7 +96,7 @@ static void ARX_PATH_ComputeBB(ARX_PATH * ap) {
 }
 
 void ARX_PATH_ComputeAllBoundingBoxes() {
-	BOOST_FOREACH(ARX_PATH * path, g_paths) {
+	for(ARX_PATH * path : g_paths) {
 		if(path) {
 			ARX_PATH_ComputeBB(path);
 		}
@@ -129,7 +129,7 @@ long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos) {
 
 static ARX_PATH * ARX_PATH_CheckInZone(const Vec3f & pos) {
 	
-	BOOST_FOREACH(ARX_PATH * path, g_paths) {
+	for(ARX_PATH * path : g_paths) {
 		if(path && path->height != 0) {
 			if(ARX_PATH_IsPosInZone(path, pos)) {
 				return path;
@@ -358,7 +358,7 @@ ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos)
 }
 
 void ARX_PATH_ClearAllUsePath() {
-	BOOST_FOREACH(Entity * e, entities) {
+	for(Entity * e : entities) {
 		if(e && e->usepath) {
 			delete e->usepath;
 			e->usepath = NULL;
@@ -367,7 +367,7 @@ void ARX_PATH_ClearAllUsePath() {
 }
 
 void ARX_PATH_ClearAllControled() {
-	BOOST_FOREACH(ARX_PATH * path, g_paths) {
+	for(ARX_PATH * path : g_paths) {
 		if(path) {
 			path->controled.clear();
 		}
@@ -380,7 +380,7 @@ ARX_PATH * ARX_PATH_GetAddressByName(const std::string & name) {
 		return NULL;
 	}
 	
-	BOOST_FOREACH(ARX_PATH * path, g_paths) {
+	for(ARX_PATH * path : g_paths) {
 		if(path && path->name == name) {
 			return path;
 		}
@@ -393,7 +393,7 @@ void ARX_PATH_ReleaseAllPath() {
 	
 	ARX_PATH_ClearAllUsePath();
 	
-	BOOST_FOREACH(ARX_PATH * path, g_paths) {
+	for(ARX_PATH * path : g_paths) {
 		delete path;
 	}
 	

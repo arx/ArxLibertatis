@@ -124,7 +124,7 @@ void Mixer::updateVolume() {
 	}
 	finalVolume = volume;
 	
-	BOOST_FOREACH(Mixer * mixer, g_mixers) {
+	for(Mixer * mixer : g_mixers) {
 		if(mixer && mixer->m_parent == this) {
 			mixer->updateVolume();
 		}
@@ -166,7 +166,7 @@ aalError Mixer::setParent(const Mixer * parent) {
 
 aalError Mixer::stop() {
 	
-	BOOST_FOREACH(Mixer * mixer, g_mixers) {
+	for(Mixer * mixer : g_mixers) {
 		if(mixer && mixer->m_parent == this) {
 			mixer->stop();
 		}
@@ -181,13 +181,13 @@ aalError Mixer::stop() {
 
 aalError Mixer::pause() {
 	
-	BOOST_FOREACH(Mixer * mixer, g_mixers) {
+	for(Mixer * mixer : g_mixers) {
 		if(mixer && mixer->m_parent == this) {
 			mixer->pause();
 		}
 	}
 	
-	BOOST_FOREACH(Ambiance * ambiance, g_ambiances) {
+	for(Ambiance * ambiance : g_ambiances) {
 		if(ambiance && g_mixers[ambiance->getChannel().mixer] == this) {
 			ambiance->pause();
 		}
@@ -211,13 +211,13 @@ aalError Mixer::resume() {
 		return AAL_OK;
 	}
 	
-	BOOST_FOREACH(Mixer * mixer, g_mixers) {
+	for(Mixer * mixer : g_mixers) {
 		if(mixer && mixer->m_parent == this) {
 			mixer->resume();
 		}
 	}
 	
-	BOOST_FOREACH(Ambiance * ambiance, g_ambiances) {
+	for(Ambiance * ambiance : g_ambiances) {
 		if(ambiance && g_mixers[ambiance->getChannel().mixer] == this) {
 			ambiance->resume();
 		}

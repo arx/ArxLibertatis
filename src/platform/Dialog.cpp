@@ -433,7 +433,7 @@ static bool showDialog(DialogType type, const std::string & message,
 		&xmessageCommand
 	};
 	
-	BOOST_FOREACH(dialogCommand_t command, commands) {
+	for(dialogCommand_t command : commands) {
 		int code = command(type, message, title);
 		if(code >= 0) {
 			return code == 0;

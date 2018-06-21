@@ -174,7 +174,7 @@ static ActionPoint GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
 	if(!obj)
 		return ActionPoint();
 	
-	BOOST_FOREACH(const EERIE_ACTIONLIST & act, obj->actionlist) {
+	for(const EERIE_ACTIONLIST & act : obj->actionlist) {
 		if(act.name == name) {
 			return act.idx;
 		}

@@ -101,7 +101,7 @@ void EERIEPOLY_Compute_PolyIn() {
 		for(long z2 = minz; z2 < maxz; z2++)
 		for(long x2 = minx; x2 < maxx; x2++) {
 			BackgroundTileData & eg2 = ACTIVEBKG->m_tileData[x2][z2];
-			BOOST_FOREACH(EERIEPOLY & ep2, eg2.polydata) {
+			for(EERIEPOLY & ep2 : eg2.polydata) {
 				
 				if(fartherThan(bbcenter, Vec2f(ep2.center.x, ep2.center.z), 120.f)) {
 					continue;
@@ -127,7 +127,7 @@ void EERIEPOLY_Compute_PolyIn() {
 		}
 		
 		eg->maxy = -std::numeric_limits<float>::infinity();
-		BOOST_FOREACH(EERIEPOLY * ep, eg->polyin) {
+		for(EERIEPOLY * ep : eg->polyin) {
 			eg->maxy = std::max(eg->maxy, ep->max.y);
 		}
 		
@@ -141,7 +141,7 @@ long CountBkgVertex() {
 	for(long z = 0; z < ACTIVEBKG->m_size.y; z++) {
 		for(long x = 0; x < ACTIVEBKG->m_size.x; x++) {
 			const BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
-			BOOST_FOREACH(const EERIEPOLY & ep, eg.polydata) {
+			for(const EERIEPOLY & ep : eg.polydata) {
 				count += (ep.type & POLY_QUAD) ? 4 : 3;
 			}
 		}

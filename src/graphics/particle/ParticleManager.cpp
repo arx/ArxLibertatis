@@ -61,7 +61,7 @@ ParticleManager::~ParticleManager() {
 
 void ParticleManager::Clear() {
 	
-	BOOST_FOREACH(ParticleSystem * p, listParticleSystem) {
+	for(ParticleSystem * p : listParticleSystem) {
 		delete p;
 	}
 	

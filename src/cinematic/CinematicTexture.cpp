@@ -219,7 +219,7 @@ void CinematicGrid::FreeGrille() {
 	m_uvs.clear();
 	m_inds.clear();
 	
-	BOOST_FOREACH(C_INDEXED & mat, m_mats) {
+	for(C_INDEXED & mat : m_mats) {
 		delete mat.tex;
 	}
 	

@@ -373,7 +373,7 @@ void MenuWindow::setCurrentPageId(MENUSTATE id) {
 	m_currentPageId = id;
 	
 	m_currentPage = NULL;
-	BOOST_FOREACH(MenuPage * page, m_pages) {
+	for(MenuPage * page : m_pages) {
 		if(id == page->eMenuState) {
 			m_currentPage = page;
 		}
@@ -424,7 +424,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
 	float iDy = widget->m_rect.height();
 	
-	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+	for(Widget * w : m_children.m_widgets) {
 		iDy += m_rowSpacing;
 		iDy += w->m_rect.height();
 	}
@@ -441,7 +441,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 		dy = int(iDepY - m_children.m_widgets[0]->m_rect.top);
 	}
 	
-	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+	for(Widget * w : m_children.m_widgets) {
 		iDepY += int(w->m_rect.height()) + m_rowSpacing;
 		w->Move(Vec2f(0, dy));
 	}
@@ -645,7 +645,7 @@ void MenuPage::Update(Vec2f pos) {
 	
 	if(!bEdit) {
 		
-		BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+		for(Widget * w : m_children.m_widgets) {
 			arx_assert(w);
 			
 			if(w->m_shortcut != ActionKey::UNUSED) {
@@ -734,7 +734,7 @@ void MenuPage::Render() {
 	if(bNoMenu)
 		return;
 	
-	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+	for(Widget * w : m_children.m_widgets) {
 		w->Update();
 		w->Render();
 	}
@@ -842,11 +842,11 @@ void MenuPage::drawDebug() {
 
 void MenuPage::ReInitActionKey() {
 	
-	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+	for(Widget * w : m_children.m_widgets) {
 		if(w->type() == WidgetType_Panel) {
 			PanelWidget * p = static_cast<PanelWidget *>(w);
 			
-			BOOST_FOREACH(Widget * c, p->m_children) {
+			for(Widget * c : p->m_children) {
 				if(c->type() == WidgetType_Text) {
 					TextWidget * t = static_cast<TextWidget *>(c);
 					if(t->m_isKeybind) {

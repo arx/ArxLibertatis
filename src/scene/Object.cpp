@@ -87,7 +87,7 @@ ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string &
 	if(!eobj)
 		return ObjVertHandle();
 	
-	BOOST_FOREACH(const VertexGroup & group, eobj->grouplist) {
+	for(const VertexGroup & group : eobj->grouplist) {
 		if(group.name == text) {
 			return ObjVertHandle(group.origin);
 		}
@@ -101,7 +101,7 @@ ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text
 	if(!eobj)
 		return ActionPoint();
 	
-	BOOST_FOREACH(const EERIE_ACTIONLIST & action, eobj->actionlist) {
+	for(const EERIE_ACTIONLIST & action : eobj->actionlist) {
 		if(action.name == text) {
 			return action.idx;
 		}

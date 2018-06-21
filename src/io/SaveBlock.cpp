@@ -427,7 +427,7 @@ bool SaveBlock::defragment() {
 	size_t checkTotalSize = 0;
 	#endif
 	std::vector<char> buffer;
-	BOOST_FOREACH(const File & file, m_files | boost::adaptors::map_values) {
+	for(const File & file : m_files | boost::adaptors::map_values) {
 		
 		if(file.storedSize == 0) {
 			continue;
@@ -436,7 +436,7 @@ bool SaveBlock::defragment() {
 		buffer.resize(file.storedSize);
 		char * p = &buffer.front();
 		
-		BOOST_FOREACH(const File::Chunk & chunk, file.chunks) {
+		for(const File::Chunk & chunk : file.chunks) {
 			m_handle.seekg(chunk.offset + 4);
 			m_handle.read(p, chunk.size);
 			p += chunk.size;

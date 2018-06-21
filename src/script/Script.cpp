@@ -1356,7 +1356,7 @@ void ARX_SCRIPT_EventStackInit() {
 
 void ARX_SCRIPT_EventStackClear(bool check_exist) {
 	LogDebug("clearing event queue");
-	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
+	for(QueuedEvent & event : g_eventQueue) {
 		if(!check_exist || event.exists) {
 			event.clear();
 		}
@@ -1364,7 +1364,7 @@ void ARX_SCRIPT_EventStackClear(bool check_exist) {
 }
 
 void ARX_SCRIPT_EventStackClearForIo(Entity * io) {
-	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
+	for(QueuedEvent & event : g_eventQueue) {
 		if(event.exists && event.entity == io) {
 			LogDebug("clearing queued " << event.event << " for " << io->idString());
 			event.clear();
@@ -1378,7 +1378,7 @@ void ARX_SCRIPT_EventStackExecute(size_t limit) {
 	
 	size_t count = 0;
 	
-	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
+	for(QueuedEvent & event : g_eventQueue) {
 		
 		if(!event.exists) {
 			continue;
@@ -1409,7 +1409,7 @@ void ARX_SCRIPT_EventStackExecuteAll() {
 
 void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEventName & event,
                              const ScriptParameters & parameters) {
-	BOOST_FOREACH(QueuedEvent & entry, g_eventQueue) {
+	for(QueuedEvent & entry : g_eventQueue) {
 		if(!entry.exists) {
 			entry.sender = sender;
 			entry.entity = entity;

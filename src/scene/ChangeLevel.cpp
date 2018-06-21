@@ -489,7 +489,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		}
 	}
 	
-	BOOST_FOREACH(const ARX_PATH * path, g_paths) {
+	for(const ARX_PATH * path : g_paths) {
 		ARX_CHANGELEVEL_PATH * acp = reinterpret_cast<ARX_CHANGELEVEL_PATH *>(dat + pos);
 		memset(acp, 0, sizeof(ARX_CHANGELEVEL_PATH));
 		util::storeString(acp->name, path->name);

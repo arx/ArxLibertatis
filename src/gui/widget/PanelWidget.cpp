@@ -24,7 +24,7 @@
 PanelWidget::PanelWidget() { }
 
 PanelWidget::~PanelWidget() {
-	BOOST_FOREACH(Widget * w, m_children) {
+	for(Widget * w : m_children) {
 		delete w;
 	}
 }
@@ -33,7 +33,7 @@ void PanelWidget::Move(const Vec2f & offset)
 {
 	m_rect.move(offset.x, offset.y);
 	
-	BOOST_FOREACH(Widget * w, m_children) {
+	for(Widget * w : m_children) {
 		w->Move(offset);
 	}
 }
@@ -62,7 +62,7 @@ void PanelWidget::Update()
 	m_rect.right = m_rect.left;
 	m_rect.bottom = m_rect.top;
 	
-	BOOST_FOREACH(Widget * w, m_children) {
+	for(Widget * w : m_children) {
 		w->Update();
 		m_rect.right = std::max(m_rect.right, w->m_rect.right);
 		m_rect.bottom = std::max(m_rect.bottom, w->m_rect.bottom);
@@ -70,7 +70,7 @@ void PanelWidget::Update()
 }
 
 void PanelWidget::Render() {
-	BOOST_FOREACH(Widget * w, m_children) {
+	for(Widget * w : m_children) {
 		w->Render();
 	}
 }
@@ -78,7 +78,7 @@ void PanelWidget::Render() {
 Widget * PanelWidget::IsMouseOver(const Vec2f & mousePos) {
 
 	if(m_rect.contains(mousePos)) {
-		BOOST_FOREACH(Widget * w, m_children) {
+		for(Widget * w : m_children) {
 			if(w->getCheck() && w->m_rect.contains(mousePos)) {
 				return w;
 			}

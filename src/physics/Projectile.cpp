@@ -282,7 +282,7 @@ static EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & en
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
 		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
-		BOOST_FOREACH(EERIEPOLY * ep, feg.polyin) {
+		for(EERIEPOLY * ep : feg.polyin) {
 			
 			if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 				continue;

@@ -148,7 +148,7 @@ static void UpDateKeyLight(CinematicKeyframe * kbase) {
 }
 
 void UpDateAllKeyLight() {
-	BOOST_FOREACH(CinematicKeyframe & key, CKTrack->key) {
+	for(CinematicKeyframe & key : CKTrack->key) {
 		UpDateKeyLight(&key);
 	}
 }

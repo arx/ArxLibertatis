@@ -171,7 +171,7 @@ struct AnyHitRaycast {
 		Vec3f dir = end - start;
 		
 		const BackgroundTileData & eg = ACTIVEBKG->m_tileData[tile.x][tile.y];
-		BOOST_FOREACH(EERIEPOLY * ep, eg.polyin) {
+		for(EERIEPOLY * ep : eg.polyin) {
 			
 			if(ep->type & POLY_TRANS) {
 				continue;
@@ -212,7 +212,7 @@ struct ClosestHitRaycast {
 		bool previouslyHadHit = (closestHit <= 1.f);
 		
 		const BackgroundTileData & eg = ACTIVEBKG->m_tileData[tile.x][tile.y];
-		BOOST_FOREACH(EERIEPOLY * ep, eg.polyin) {
+		for(EERIEPOLY * ep : eg.polyin) {
 			
 			if(ep->type & POLY_TRANS) {
 				continue;

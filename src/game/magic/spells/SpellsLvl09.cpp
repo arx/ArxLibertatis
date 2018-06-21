@@ -491,7 +491,7 @@ void MassParalyseSpell::Launch() {
 
 void MassParalyseSpell::End() {
 	
-	BOOST_FOREACH(EntityHandle handle, m_targets) {
+	for(EntityHandle handle : m_targets) {
 		Entity * target = entities.get(handle);
 		if(target) {
 			target->ioflags &= ~IO_FREEZESCRIPT;

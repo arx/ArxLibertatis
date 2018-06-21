@@ -150,7 +150,7 @@ void EntityManager::autocomplete(const std::string & prefix, AutocompleteHandler
 	std::string check = boost::to_lower_copy(prefix);
 	
 	// TODO we don't need to iterate over all entities if we have per-class indices
-	BOOST_FOREACH(Entity * entity, entries) {
+	for(Entity * entity : entries) {
 		if(entity) {
 			std::string id = entity->idString();
 			if(boost::starts_with(id, check)) {

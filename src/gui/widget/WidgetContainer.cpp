@@ -27,19 +27,19 @@
 WidgetContainer::WidgetContainer() { }
 
 WidgetContainer::~WidgetContainer() {
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	for(Widget * w : m_widgets) {
 		delete w;
 	}
 }
 
 void WidgetContainer::Update() {
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	for(Widget * w : m_widgets) {
 		w->Update();
 	}
 }
 
 void WidgetContainer::Render() {
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	for(Widget * w : m_widgets) {
 		w->Render();
 	}
 }
@@ -50,7 +50,7 @@ void WidgetContainer::add(Widget * widget) {
 
 Widget * WidgetContainer::getAtPos(const Vec2f & mousePos) const {
 	
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	for(Widget * w : m_widgets) {
 		
 		if(!w->getCheck()) {
 			continue;
@@ -67,7 +67,7 @@ Widget * WidgetContainer::getAtPos(const Vec2f & mousePos) const {
 }
 
 void WidgetContainer::Move(const Vec2f & offset) {
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	for(Widget * w : m_widgets) {
 		w->Move(offset);
 	}
 }
@@ -78,7 +78,7 @@ void WidgetContainer::drawDebug() {
 		return;
 	}
 	
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	for(Widget * w : m_widgets) {
 		drawLineRectangle(w->m_rect, 0.f, Color::red);
 	}
 	

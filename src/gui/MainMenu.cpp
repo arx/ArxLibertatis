@@ -1464,7 +1464,7 @@ public:
 			slider->AddText(new TextWidget(hFontControls, "Default"));
 			slider->selectLast();
 			
-			BOOST_FOREACH(const std::string & device, audio::getDevices()) {
+			for(const std::string & device : audio::getDevices()) {
 				TextWidget * txt = new TextWidget(hFontControls, device);
 				if(txt->m_rect.width() > maxwidth) {
 					txt->m_rect.right = txt->m_rect.left + maxwidth;

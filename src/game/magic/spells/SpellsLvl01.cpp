@@ -531,7 +531,7 @@ void DouseSpell::Launch() {
 
 void DouseSpell::End() {
 	
-	BOOST_FOREACH(size_t index, m_lights) {
+	for(size_t index : m_lights) {
 		EERIE_LIGHT * light = g_staticLights[index];
 		light->m_ignitionStatus = false;
 		ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &light->pos);

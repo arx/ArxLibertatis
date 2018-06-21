@@ -161,7 +161,7 @@ class PathFinder::ClosedNodeList {
 public:
 	
 	~ClosedNodeList() {
-		BOOST_FOREACH(NodeList::value_type & entry, nodes) {
+		for(NodeList::value_type & entry : nodes) {
 			delete entry.second;
 		}
 	}
@@ -224,7 +224,7 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 		}
 		
 		// Otherwise, generate child from current node.
-		BOOST_FOREACH(NodeId cid, map_d[nid].linked) {
+		for(NodeId cid : map_d[nid].linked) {
 			
 			if((map_d[cid].flags & ANCHOR_FLAG_BLOCKED) || map_d[cid].height > m_height
 			   || map_d[cid].radius < m_radius) {
@@ -289,7 +289,7 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDistance,
 		}
 		
 		// Otherwise, generate child from current node.
-		BOOST_FOREACH(NodeId cid, map_d[nid].linked) {
+		for(NodeId cid : map_d[nid].linked) {
 			
 			if((map_d[cid].flags & ANCHOR_FLAG_BLOCKED) || map_d[cid].height > m_height
 			   || map_d[cid].radius < m_radius) {

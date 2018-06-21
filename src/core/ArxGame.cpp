@@ -958,7 +958,7 @@ bool ArxGame::addPaks() {
 		std::ostringstream oss;
 		oss << "Searched in these locations:\n";
 		std::vector<fs::path> search = fs::getDataSearchPaths();
-		BOOST_FOREACH(const fs::path & dir, search) {
+		for(const fs::path & dir : search) {
 			oss << " * " << dir.string() << fs::path::dir_sep << "\n";
 		}
 		oss << "See " << url::help_install_data << " or `arx --list-dirs` for details.";
@@ -980,7 +980,7 @@ bool ArxGame::addPaks() {
 	}
 	
 	// Load optional patch files
-	BOOST_FOREACH(const fs::path & base, boost::adaptors::reverse(fs::getDataDirs())) {
+	for(const fs::path & base : boost::adaptors::reverse(fs::getDataDirs())) {
 		g_resources->addFiles(base / "editor", "editor");
 		g_resources->addFiles(base / "game", "game");
 		g_resources->addFiles(base / "graph", "graph");
@@ -1012,7 +1012,7 @@ static void ReleaseSystemObjects() {
 	
 	drawDebugRelease();
 
-	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
+	for(EERIE_3DOBJ * & obj : GoldCoinsObj) {
 		delete obj, obj = NULL;
 	}
 }
