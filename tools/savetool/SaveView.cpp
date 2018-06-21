@@ -26,6 +26,7 @@
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/io/ios_state.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 
 #include "Configure.h"
 
@@ -1928,7 +1929,7 @@ int main_view(SaveBlock & save, const std::vector<std::string> & args) {
 		}
 		LogWarning << oss.str();
 	} while(false);
-	BOOST_REVERSE_FOREACH(const fs::path & base, fs::getDataDirs()) {
+	BOOST_FOREACH(const fs::path & base, boost::adaptors::reverse(fs::getDataDirs())) {
 		const char * dirname = "localisation";
 		g_resources->addFiles(base / dirname, dirname);
 	}

@@ -27,6 +27,7 @@
 #include <map>
 
 #include <boost/foreach.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
@@ -290,7 +291,7 @@ int utf8_main(int argc, char ** argv) {
 			}
 			LogError << oss.str();
 		}
-		BOOST_REVERSE_FOREACH(const fs::path & base, fs::getDataDirs()) {
+		BOOST_FOREACH(const fs::path & base, boost::adaptors::reverse(fs::getDataDirs())) {
 			addResourceDir(resources, base);
 		}
 	}

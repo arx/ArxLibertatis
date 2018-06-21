@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/foreach.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
@@ -979,7 +980,7 @@ bool ArxGame::addPaks() {
 	}
 	
 	// Load optional patch files
-	BOOST_REVERSE_FOREACH(const fs::path & base, fs::getDataDirs()) {
+	BOOST_FOREACH(const fs::path & base, boost::adaptors::reverse(fs::getDataDirs())) {
 		g_resources->addFiles(base / "editor", "editor");
 		g_resources->addFiles(base / "game", "game");
 		g_resources->addFiles(base / "graph", "graph");

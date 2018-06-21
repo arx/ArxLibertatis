@@ -29,6 +29,7 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/io/ios_state.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 
 #include "Configure.h"
 
@@ -419,7 +420,7 @@ int main_fix(SaveBlock & save, const std::vector<std::string> & args) {
 		LogError << "Missing required data file: \"" << filename << "\"";
 		return 3;
 	}
-	BOOST_REVERSE_FOREACH(const fs::path & base, fs::getDataDirs()) {
+	BOOST_FOREACH(const fs::path & base, boost::adaptors::reverse(fs::getDataDirs())) {
 		const char * dirname = "graph";
 		g_resources->addFiles(base / dirname, dirname);
 	}
