@@ -584,13 +584,8 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId * pInputK
 				bool bOk = true;
 				if((iMouseButton & Mouse::ButtonBase) && !(iMouseButton & Mouse::WheelBase)) {
 					bOk = false;
-				} else {
-					for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++) {
-						if(keyId == buttonId) {
-							bOk = false;
-							break;
-						}
-					}
+				} else if(keyId >= int(Mouse::ButtonBase) && keyId < int(Mouse::ButtonMax)) {
+					bOk = false;
 				}
 				if(bOk) {
 					return NULL;
