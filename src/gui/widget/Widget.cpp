@@ -27,7 +27,6 @@
 
 Widget::Widget()
 	: m_rect(0, 0, 0, 0)
-	, ePlace(NOCENTER)
 	, eState(TNOP)
 	, m_targetMenu(NOP)
 	, m_shortcut(ActionKey::UNUSED)
