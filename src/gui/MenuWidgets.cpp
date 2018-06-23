@@ -612,17 +612,6 @@ KeybindWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId * pInp
 		widget->lColorHighlight = widget->lOldColor;
 		widget->eState = GETTOUCH;
 		widget->SetText(pText);
-
-		float iDx = m_selected->m_rect.width();
-
-		if(m_selected->ePlace) {
-			m_selected->m_rect.left = (m_rect.width() - iDx) / 2.f;
-			if(m_selected->m_rect.left < 0) {
-				m_selected->m_rect.left = 0;
-			}
-		}
-		
-		m_selected->m_rect.right = m_selected->m_rect.left + iDx;
 		
 		m_selected = NULL;
 		bEdit = false;
