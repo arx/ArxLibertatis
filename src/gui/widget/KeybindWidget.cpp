@@ -43,7 +43,7 @@ KeybindWidget::KeybindWidget(ControlAction keybindAction, size_t keybindIndex, F
 
 bool KeybindWidget::OnMouseClick() {
 	
-	if(!enabled) {
+	if(!m_enabled) {
 		return false;
 	}
 	
@@ -114,7 +114,7 @@ void KeybindWidget::render(bool mouseOver) {
 			blink = timeWaveSquare(g_platformTime.frameStart(), PlatformDurationMs(400));
 		}
 		color = blink ? Color(255, 0, 0) : Color(50, 0, 0);
-	} else if(!enabled) {
+	} else if(!m_enabled) {
 		color = Color::grayb(127);
 	} else if(mouseOver) {
 		color = Color::white;
