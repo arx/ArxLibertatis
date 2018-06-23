@@ -26,6 +26,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include "audio/Audio.h"
+
 #include "core/Application.h"
 #include "core/Benchmark.h"
 #include "core/Config.h"
@@ -49,14 +50,18 @@
 #include "gui/widget/PanelWidget.h"
 #include "gui/widget/SaveSlotWidget.h"
 #include "gui/widget/SliderWidget.h"
+
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
 #include "graphics/font/Font.h"
 #include "graphics/data/TextureContainer.h"
+
 #include "input/Input.h"
 #include "input/Keyboard.h"
+
 #include "scene/GameSound.h"
+
 #include "window/RenderWindow.h"
 
 TextWidget * pMenuElementApply = NULL;
@@ -375,6 +380,7 @@ private:
 	}
 	
 	void onClickQuestDelete() {
+		
 		if(m_selectedSave != SavegameHandle()) {
 			g_mainMenu->bReInitAll = true;
 			savegames.remove(m_selectedSave);
