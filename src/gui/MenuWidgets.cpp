@@ -395,21 +395,16 @@ MenuPage::MenuPage(MENUSTATE _eMenuState)
 MenuPage::~MenuPage() { }
 
 void MenuPage::add(Widget * widget) {
-	widget->ePlace = NOCENTER;
 	widget->Move(m_rect.topLeft());
 	m_children.add(widget);
 }
 
 void MenuPage::addCenter(Widget * widget, bool centerX) {
-
-	int dx;
 	
+	int dx;
 	if(centerX) {
-		widget->ePlace = CENTER;
-		
 		float iDx = widget->m_rect.width();
 		dx  = int(((m_rect.width() - iDx) / 2) - widget->m_rect.left);
-	
 		if(dx < 0) {
 			dx = 0;
 		}

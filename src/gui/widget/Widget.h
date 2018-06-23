@@ -35,15 +35,7 @@ enum ELEMSTATE
 	EDIT_TIME,      //etat en cours
 };
 
-enum ELEMPOS
-{
-	NOCENTER,
-	CENTER,
-	CENTERY
-};
-
-enum MENUSTATE
-{
+enum MENUSTATE {
 	Page_None,
 	RESUME_GAME,
 	Page_NewQuestConfirm,
@@ -81,7 +73,6 @@ class Widget : private boost::noncopyable {
 public:
 	Rectf m_rect;
 	
-	ELEMPOS     ePlace;
 	ELEMSTATE   eState;
 	MENUSTATE   m_targetMenu;
 	InputKeyId  m_shortcut;
