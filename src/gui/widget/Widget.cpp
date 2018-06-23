@@ -27,7 +27,6 @@
 Widget::Widget()
 	: m_rect(0, 0, 0, 0)
 	, m_enabled(true)
-	, bCheck(true)
 {
 	ePlace = NOCENTER;
 	eState = TNOP;
@@ -77,16 +76,4 @@ void Widget::SetShortCut(int _iShortCut) {
 
 void Widget::setEnabled(bool enable) {
 	m_enabled = enable;
-}
-
-void Widget::SetCheckOff() {
-	bCheck = false;
-}
-
-void Widget::SetCheckOn() {
-	bCheck = true;
-}
-
-bool Widget::getCheck() {
-	return bCheck;
 }

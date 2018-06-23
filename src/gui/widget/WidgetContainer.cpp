@@ -52,7 +52,7 @@ Widget * WidgetContainer::getAtPos(const Vec2f & mousePos) const {
 	
 	BOOST_FOREACH(Widget * w, m_widgets) {
 		
-		if(!w->getCheck()) {
+		if(!w->isEnabled()) {
 			continue;
 		}
 		

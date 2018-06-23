@@ -131,7 +131,7 @@ void SliderWidget::render(bool /* mouseOver */) {
 	
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
 	
-	if(bCheck) {
+	if(m_enabled) {
 		pLeftButton->render(pLeftButton->m_rect.contains(cursor));
 		pRightButton->render(pRightButton->m_rect.contains(cursor));
 	}
@@ -143,7 +143,7 @@ void SliderWidget::render(bool /* mouseOver */) {
 	for(int i = 0; i < 10; i++) {
 		TextureContainer * pTex = (i < m_value) ? pTex1 : pTex2;
 		Rectf rect = Rectf(pos, RATIO_X(pTex->m_size.x), RATIO_Y(pTex->m_size.y));
-		Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
+		Color color = m_enabled ? Color::white : Color(63, 63, 63, 255);
 		EERIEDrawBitmap(rect, 0, pTex, color);
 		pos.x += rect.width();
 	}

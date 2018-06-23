@@ -79,14 +79,14 @@ void PanelWidget::render(bool /* mouseOver */) {
 }
 
 Widget * PanelWidget::IsMouseOver(const Vec2f & mousePos) {
-
+	
 	if(m_rect.contains(mousePos)) {
 		BOOST_FOREACH(Widget * w, m_children) {
-			if(w->getCheck() && w->m_rect.contains(mousePos)) {
+			if(w->isEnabled() && w->m_rect.contains(mousePos)) {
 				return w;
 			}
 		}
 	}
-
+	
 	return NULL;
 }

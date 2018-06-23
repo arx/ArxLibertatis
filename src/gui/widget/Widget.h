@@ -85,8 +85,13 @@ public:
 	MENUSTATE   m_targetMenu;
 	InputKeyId  m_shortcut;
 	
+protected:
+	
+	bool m_enabled;
+	
 public:
-	explicit Widget();
+	
+	Widget();
 	virtual ~Widget();
 	
 	virtual bool OnMouseClick() { return false; }
@@ -100,22 +105,15 @@ public:
 	void SetShortCut(int _iShortCut);
 	
 	virtual void setEnabled(bool enable);
+	bool isEnabled() const { return m_enabled; }
 	
 	virtual void Move(const Vec2f & offset);
 	virtual void SetPos(Vec2f pos);
-	
-	void SetCheckOff();
-	void SetCheckOn();
-	
-	bool getCheck();
 	
 	virtual Widget * IsMouseOver(const Vec2f & mousePos);
 	
 	virtual WidgetType type() const = 0;
 	
-protected:
-	bool m_enabled;
-	bool bCheck;
 };
 
 #endif // ARX_GUI_WIDGET_WIDGET_H
