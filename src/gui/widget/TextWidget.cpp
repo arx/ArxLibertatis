@@ -19,69 +19,45 @@
 
 #include "gui/widget/TextWidget.h"
 
-#include "core/Config.h"
 #include "core/Core.h"
-#include "core/Localisation.h"
-#include "core/SaveGame.h"
-#include "graphics/Renderer.h"
-#include "graphics/data/TextureContainer.h"
 #include "graphics/font/Font.h"
-#include "gui/MainMenu.h"
-#include "gui/MenuWidgets.h"
-#include "gui/MenuPublic.h"
 #include "gui/Text.h"
-#include "gui/TextManager.h"
-#include "gui/widget/CheckboxWidget.h"
-#include "gui/widget/CycleTextWidget.h"
-#include "input/Input.h"
 #include "scene/GameSound.h"
 
 TextWidget::TextWidget(Font * font, const std::string & text, Vec2f pos) {
 	
 	m_font = font;
 	
-	Vec2f scaledPos = RATIO_2(pos);
-	
-	m_rect.left = scaledPos.x;
-	m_rect.top = scaledPos.y;
+	m_rect = Rectf(RATIO_2(pos), 0.f, 0.f);
 	
 	SetText(text);
 	
 	lColor = Color(232, 204, 142);
-	lColorHighlight = lOldColor = Color(255, 255, 255);
-
+	lColorHighlight = lOldColor = Color::white;
+	
 	bSelected = false;
 	
 }
 
-TextWidget::~TextWidget() { }
-
-void TextWidget::SetText(const std::string & _pText)
-{
-	m_text = _pText;
-
-	Vec2i textSize = m_font->getTextSize(_pText);
-
-	m_rect.right  = textSize.x + m_rect.left + 1;
-	m_rect.bottom = textSize.y + m_rect.top + 1;
-}
-
-void TextWidget::Update() {
+void TextWidget::SetText(const std::string & text) {
+	m_text = text;
+	Vec2i textSize = m_font->getTextSize(m_text);
+	m_rect = Rectf(m_rect.topLeft(), textSize.x + 1, textSize.y + 1);
 }
 
 void TextWidget::OnMouseDoubleClick() {
-	
 	if(doubleClicked) {
 		doubleClicked(this);
 	}
 }
 
-// true: block les zones de checks
 bool TextWidget::OnMouseClick() {
 	
 	if(!enabled) {
 		return false;
 	}
+	
+	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 	
 	if(clicked) {
 		clicked(this);
@@ -95,30 +71,14 @@ bool TextWidget::OnMouseClick() {
 		default: break;
 	}
 	
-	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-	
 	return false;
 }
 
-static void FontRenderText(Font * _pFont, const Rectf & rzone, const std::string & _pText, Color _c) {
-	
-	ARX_UNICODE_DrawTextInRect(_pFont, rzone.topLeft(), rzone.right, _pText, _c, NULL);
-}
-
 void TextWidget::Render() {
-	
-	if(bSelected) {
-		FontRenderText(m_font, m_rect, m_text, lColorHighlight);
-	} else if(enabled) {
-		FontRenderText(m_font, m_rect, m_text, lColor);
-	} else {
-		FontRenderText(m_font, m_rect, m_text, Color::grayb(127));
-	}
-	
+	Color color = bSelected ? lColorHighlight : enabled ? lColor : Color::grayb(127);
+	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, color, NULL);
 }
 
 void TextWidget::RenderMouseOver() {
-	
-	FontRenderText(m_font, m_rect, m_text, lColorHighlight);
-	
+	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, lColorHighlight, NULL);
 }
