@@ -25,6 +25,7 @@
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "graphics/Draw.h"
+#include "graphics/DrawLine.h"
 #include "graphics/Renderer.h"
 #include "graphics/font/Font.h"
 #include "gui/Text.h"
@@ -41,6 +42,38 @@ TextInputWidget::TextInputWidget(Font * font, const std::string & text, const Re
 	setText(text);
 }
 
+bool TextInputWidget::keyPressed(Keyboard::Key key, KeyModifiers mod) {
+	
+	switch(key) {
+		
+		case Keyboard::Key_Escape:
+		case Keyboard::Key_Enter:
+		case Keyboard::Key_NumPadEnter: {
+			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+			unfocus();
+			return true;
+			break;
+		}
+		
+		default: break;
+	}
+	
+	return BasicTextInput::keyPressed(key, mod);
+}
+
+void TextInputWidget::textUpdated() {
+	
+	// Limit text size to fit into the widget
+	while(!text().empty() && m_font->getTextSize(text()).width() > m_rect.width()) {
+		if(cursorPos() == 0) {
+			eraseRight();
+		} else {
+			eraseLeft();
+		}
+	}
+	
+}
+
 bool TextInputWidget::click() {
 	
 	bool result = Widget::click();
@@ -53,55 +86,11 @@ bool TextInputWidget::click() {
 	
 	if(!m_editing) {
 		m_editing = true;
+		GInput->startTextInput(Rect(m_rect), this);
 		return true;
 	}
 	
 	return result;
-}
-
-void TextInputWidget::update() {
-	
-	if(!m_editing) {
-		return;
-	}
-	
-	if(!GInput->isAnyKeyPressed()) {
-		return;
-	}
-	
-	if(GInput->isKeyPressed(Keyboard::Key_Enter)
-	   || GInput->isKeyPressed(Keyboard::Key_NumPadEnter)
-	   || GInput->isKeyPressed(Keyboard::Key_Escape)) {
-		ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-		unfocus();
-		return;
-	}
-	
-	if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace)) {
-		if(!m_text.empty()) {
-			m_text.resize(m_text.size() - 1);
-		}
-		return;
-	}
-	
-	int key = GInput->getKeyPressed() & INPUT_KEYBOARD_MASK;
-	
-	char chr;
-	if(!GInput->isKeyPressedNowPressed(key) || !GInput->getKeyAsText(key, chr)) {
-		return;
-	}
-	
-	int value = chr & 0xFF; // To prevent ascii chars between [128, 255] from causing an assertion n the functions below...
-	if(!(isalnum(value) || isspace(value) || ispunct(value)) || chr == '\t' || chr == '*') {
-		return;
-	}
-	
-	m_text += chr;
-	
-	if(m_font->getTextSize(m_text).width() > m_rect.width()) {
-		m_text.resize(m_text.size() - 1);
-	}
-	
 }
 
 void TextInputWidget::render(bool mouseOver) {
@@ -109,33 +98,54 @@ void TextInputWidget::render(bool mouseOver) {
 	Color color = Color(232, 204, 142);
 	if(!m_enabled) {
 		color = Color::grayb(127);
-	} else if(mouseOver) {
+	} else if(mouseOver || m_editing) {
 		color = Color::white;
 	}
 	
-	float width = m_font->getTextSize(m_text).width();
-	Vec2f pos = m_rect.topCenter() - Vec2f(width / 2, 0.f);
+	std::string displayText = text();
+	if(m_editing && !editText().empty()) {
+		displayText = displayText.substr(0, cursorPos()) + editText() + displayText.substr(cursorPos());
+	}
+	size_t displayCursorPos = cursorPos() + editCursorPos();
 	
-	Rect clip(m_rect);
-	ARX_UNICODE_DrawTextInRect(m_font, pos, std::numeric_limits<float>::infinity(), m_text, color, &clip);
+	std::string::const_iterator begin = displayText.begin();
+	std::string::const_iterator end = displayText.end();
 	
+	int width = m_font->getTextSize(displayText).width();
+	Vec2i pos = Vec2i(m_rect.topCenter() - Vec2f(width / 2, 0.f));
+	
+	// Highlight edit area
+	if(m_editing && !editText().empty()) {
+		int left = m_font->getTextSize(begin, begin + cursorPos()).advance();
+		int right = m_font->getTextSize(begin, begin + cursorPos() + editText().size()).advance();
+		int height = m_font->getLineHeight();
+		Rectf box = Rectf(Rect(pos + Vec2i(left, 0), right - left, height));
+		Color selection = Color::yellow;
+		selection.a = 40;
+		EERIEDrawBitmap(box, 0.f, NULL, selection);
+	}
+	
+	// Draw text
+	GRenderer->SetScissor(Rect(m_rect));
+	s32 x = m_font->draw(pos.x, pos.y, begin, end, color).next();
+	GRenderer->SetScissor(Rect::ZERO);
+	
+	// Draw cursor
 	if(m_editing) {
 		bool blink = true;
 		if(mainApp->getWindow()->hasFocus()) {
 			blink = timeWaveSquare(g_platformTime.frameStart(), PlatformDurationMs(1200));
 		}
 		if(blink) {
-			// Draw cursor
-			float cursorPos = pos.x + width + 1;
-			TexturedVertex v[4];
-			GRenderer->ResetTexture(0);
-			v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toRGB();
-			v[0].p = Vec3f(cursorPos, m_rect.top, 0.f);
-			v[1].p = v[0].p + Vec3f(2.f, 0.f, 0.f);
-			v[2].p = Vec3f(cursorPos, m_rect.bottom, 0.f);
-			v[3].p = v[2].p + Vec3f(2.f, 0.f, 0.f);
-			v[0].w = v[1].w = v[2].w = v[3].w = 1.f;
-			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
+			int cursor = x;
+			if(cursorPos() != displayText.size()) {
+				cursor = pos.x + m_font->getTextSize(begin, begin + displayCursorPos).next();
+			}
+			drawLine(Vec2f(cursor, pos.y), Vec2f(cursor, pos.y + m_font->getLineHeight()), 0.f, Color::white);
+			if(editCursorLength() > 0) {
+				int endX = pos.x + m_font->getTextSize(begin, begin + displayCursorPos + editCursorLength()).next();
+				drawLine(Vec2f(endX, pos.y), Vec2f(endX, pos.y + m_font->getLineHeight()), 0.f, Color::white);
+			}
 		}
 	}
 	
@@ -144,14 +154,11 @@ void TextInputWidget::render(bool mouseOver) {
 void TextInputWidget::unfocus() {
 	
 	if(m_editing) {
+		GInput->stopTextInput();
 		m_editing = false;
 		if(unfocused) {
 			unfocused(this);
 		}
 	}
 	
-}
-
-void TextInputWidget::setText(const std::string & text) {
-	m_text = text;
 }
