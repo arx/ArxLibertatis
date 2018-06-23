@@ -567,55 +567,6 @@ void MenuPage::UpdateText() {
 	
 }
 
-KeybindWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId * pInputKeyId, bool _bValidateTest) {
-	
-	if(m_selected->type() != WidgetType_Keybind) {
-		return NULL;
-	}
-	
-	int iMouseButton = keyTouched ? 0 : GInput->getMouseButtonClicked();
-	
-	if(keyTouched || iMouseButton) {
-		if(!keyTouched && !bMouseAttack) {
-			bMouseAttack = !bMouseAttack;
-			return NULL;
-		}
-		
-		KeybindWidget * widget = static_cast<KeybindWidget *>(m_selected);
-		
-		if(_bValidateTest) {
-			if(widget->m_keybindAction == CONTROLS_CUST_ACTION) {
-				bool bOk = true;
-				if((iMouseButton & Mouse::ButtonBase) && !(iMouseButton & Mouse::WheelBase)) {
-					bOk = false;
-				} else if(keyId >= int(Mouse::ButtonBase) && keyId < int(Mouse::ButtonMax)) {
-					bOk = false;
-				}
-				if(bOk) {
-					return NULL;
-				}
-			}
-		}
-		
-		if(iMouseButton) {
-			keyId = iMouseButton;
-			if(pInputKeyId) {
-				*pInputKeyId = iMouseButton;
-			}
-		}
-		
-		widget->setKey(keyId);
-		
-		m_selected = NULL;
-		bEdit = false;
-		bMouseAttack = false;
-		
-		return widget;
-	}
-	
-	return NULL;
-}
-
 void MenuPage::Update(Vec2f pos) {
 
 	m_children.Move(m_pos - m_oldPos);
@@ -766,7 +717,47 @@ void MenuPage::Render() {
 				}
 				
 				InputKeyId inputKeyId = keyId;
-				KeybindWidget * widget = GetTouch(keyTouched, keyId, &inputKeyId, true);
+				
+				arx_assert(m_selected->type() == WidgetType_Keybind);
+				
+				KeybindWidget * widget = NULL;
+				
+				int iMouseButton = keyTouched ? 0 : GInput->getMouseButtonClicked();
+				
+				if(keyTouched || iMouseButton) {
+					if(!keyTouched && !bMouseAttack) {
+						bMouseAttack = !bMouseAttack;
+						return;
+					}
+					
+					widget = static_cast<KeybindWidget *>(m_selected);
+					
+					if(true) {
+						if(widget->m_keybindAction == CONTROLS_CUST_ACTION) {
+							bool bOk = true;
+							if((iMouseButton & Mouse::ButtonBase) && !(iMouseButton & Mouse::WheelBase)) {
+								bOk = false;
+							} else if(keyId >= int(Mouse::ButtonBase) && keyId < int(Mouse::ButtonMax)) {
+								bOk = false;
+							}
+							if(bOk) {
+								return;
+							}
+						}
+					}
+					
+					if(iMouseButton) {
+						keyId = iMouseButton;
+						inputKeyId = iMouseButton;
+					}
+					
+					widget->setKey(keyId);
+					
+					m_selected = NULL;
+					bEdit = false;
+					bMouseAttack = false;
+					
+				}
 				
 				if(widget) {
 					if(!bEdit) {
@@ -804,7 +795,47 @@ void MenuPage::ReInitActionKey() {
 				if(c->type() == WidgetType_Keybind) {
 					KeybindWidget * t = static_cast<KeybindWidget *>(c);
 					m_selected = t;
-					GetTouch(true, config.actions[t->m_keybindAction].key[t->m_keybindIndex], NULL, false);
+					
+					bool keyTouched = true;
+					int keyId = config.actions[t->m_keybindAction].key[t->m_keybindIndex];
+					bool _bValidateTest = false;
+					
+					int iMouseButton = keyTouched ? 0 : GInput->getMouseButtonClicked();
+					
+					if(keyTouched || iMouseButton) {
+						if(!keyTouched && !bMouseAttack) {
+							bMouseAttack = !bMouseAttack;
+							continue;
+						}
+						
+						KeybindWidget * widget = static_cast<KeybindWidget *>(m_selected);
+						
+						if(_bValidateTest) {
+							if(widget->m_keybindAction == CONTROLS_CUST_ACTION) {
+								bool bOk = true;
+								if((iMouseButton & Mouse::ButtonBase) && !(iMouseButton & Mouse::WheelBase)) {
+									bOk = false;
+								} else if(keyId >= int(Mouse::ButtonBase) && keyId < int(Mouse::ButtonMax)) {
+									bOk = false;
+								}
+								if(bOk) {
+									continue;
+								}
+							}
+						}
+						
+						if(iMouseButton) {
+							keyId = iMouseButton;
+						}
+						
+						widget->setKey(keyId);
+						
+						m_selected = NULL;
+						bEdit = false;
+						bMouseAttack = false;
+						
+					}
+					
 				}
 			}
 			
