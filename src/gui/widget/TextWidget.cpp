@@ -29,10 +29,10 @@ TextWidget::TextWidget(Font * font, const std::string & text, Vec2f pos)
 	, m_display(Automatic)
 {
 	m_rect = Rectf(RATIO_2(pos), 0.f, 0.f);
-	SetText(text);
+	setText(text);
 }
 
-void TextWidget::SetText(const std::string & text) {
+void TextWidget::setText(const std::string & text) {
 	m_text = text;
 	Vec2i textSize = m_font->getTextSize(m_text);
 	m_rect = Rectf(m_rect.topLeft(), textSize.x + 1, textSize.y + 1);

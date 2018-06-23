@@ -58,7 +58,7 @@ public:
 	
 	void render(bool mouseOver = false);
 	
-	void SetText(const std::string & _pText);
+	void setText(const std::string & text);
 	const std::string & text() const { return m_text; }
 	
 	Font * font() const { return m_font; }

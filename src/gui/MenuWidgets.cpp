@@ -488,7 +488,7 @@ void MenuPage::UpdateText() {
 				std::string szMenuText;
 				szMenuText = getLocalised("system_menu_editquest_newsavegame");
 				
-				textWidget->SetText(szMenuText);
+				textWidget->setText(szMenuText);
 				
 				updateTextRect(textWidget);
 			}
@@ -527,12 +527,12 @@ void MenuPage::UpdateText() {
 		}
 		
 		if(bKey) {
-			textWidget->SetText(tText);
+			textWidget->setText(tText);
 			
 			if(textWidget->m_rect.width() > m_rect.width() - RATIO_X(64)) {
 				if(!tText.empty()) {
 					tText.resize(tText.size() - 1);
-					textWidget->SetText(tText);
+					textWidget->setText(tText);
 				}
 			}
 			
