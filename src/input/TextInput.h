@@ -94,6 +94,7 @@ public:
 	
 	void clear();
 	void setText(const std::string & text, size_t cursorPos = size_t(-1));
+	void setCursorPos(size_t cursorPos = size_t(-1));
 	void insert(const std::string & text);
 	void moveLeft();
 	void moveRight();
