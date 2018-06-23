@@ -137,23 +137,18 @@ bool CycleTextWidget::OnMouseClick() {
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
 			iPos--;
-
 			if(iPos < 0) {
 				iPos = vText.size() - 1;
 			}
-		}
-		
-		if(pRightButton->m_rect.contains(cursor)) {
+		} else {
 			iPos++;
-
 			arx_assert(iPos >= 0);
-
 			if(size_t(iPos) >= vText.size()) {
 				iPos = 0;
 			}
 		}
 	}
-
+	
 	if(valueChanged) {
 		valueChanged(iPos, vText.at(iPos)->text());
 	}
@@ -180,7 +175,7 @@ void CycleTextWidget::render(bool /* mouseOver */) {
 	}
 	
 	if(iPos >= 0 && size_t(iPos) < vText.size() && vText[iPos]) {
-		vText[iPos]->render();
+		vText[iPos]->render(vText[iPos]->m_rect.contains(cursor));
 	}
 	
 }
