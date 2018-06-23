@@ -25,7 +25,7 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 
 ## Dependencies
 
-* **[CMake](http://www.cmake.org/) 2.8.3**+ (compile-time only, 2.8.5+ under Windows)
+* **[CMake](http://www.cmake.org/) 2.8.3**+ (compile-time only)
 * **[zlib](http://zlib.net/)**
 * **[Boost](http://www.boost.org/) 1.48**+ (headers only^1)
 * **[GLM](http://glm.g-truc.net/) 0.9.5.0**+

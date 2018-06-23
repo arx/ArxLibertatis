@@ -1,17 +1,6 @@
 project(ArxLibertatis)
 
-if(MSVC)
-	# CMake 2.8.5 or newer is needed for CMAKE_LIBRARY_ARCHITECTURE support.
-	cmake_minimum_required(VERSION 2.8.5)
-	# Change CMAKE_LIBRARY_ARCHITECTURE to ensure the right libs are used
-	if(CMAKE_CL_64)
-		set(CMAKE_LIBRARY_ARCHITECTURE "x64")
-	else()
-		set(CMAKE_LIBRARY_ARCHITECTURE "x86")
-	endif()
-else()
-	cmake_minimum_required(VERSION 2.8.3)
-endif()
+cmake_minimum_required(VERSION 2.8.3)
 
 if(CMAKE_VERSION VERSION_GREATER 3.7)
 	cmake_policy(VERSION 3.7)
@@ -310,7 +299,7 @@ if(WIN32)
 	add_definitions(-DUNICODE)
 	add_definitions(-D_UNICODE)
 	if(MSVC)
-		if(CMAKE_LIBRARY_ARCHITECTURE STREQUAL "x64")
+		if(CMAKE_CL_64)
 			set(subsystem_xp "5.02")
 		else()
 			set(subsystem_xp "5.01")
