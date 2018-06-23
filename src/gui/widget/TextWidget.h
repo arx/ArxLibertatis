@@ -52,9 +52,9 @@ public:
 	
 	TextWidget(Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO);
 	
-	void OnMouseDoubleClick();
-	
 	bool click();
+	
+	void doubleClick();
 	
 	void render(bool mouseOver = false);
 	

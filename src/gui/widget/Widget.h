@@ -95,10 +95,10 @@ public:
 	virtual ~Widget();
 	
 	virtual bool click() { return false; }
+	virtual void doubleClick() { }
 	virtual void update() { }
 	virtual void render(bool mouseOver = false) = 0;
 	virtual void EmptyFunction() { }
-	virtual void OnMouseDoubleClick() { }
 	virtual bool wantFocus() const { return eState == EDIT_TIME; }
 	virtual void unfocus() { }
 	

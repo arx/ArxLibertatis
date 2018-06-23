@@ -38,12 +38,6 @@ void TextWidget::setText(const std::string & text) {
 	m_rect = Rectf(m_rect.topLeft(), textSize.x + 1, textSize.y + 1);
 }
 
-void TextWidget::OnMouseDoubleClick() {
-	if(doubleClicked) {
-		doubleClicked(this);
-	}
-}
-
 bool TextWidget::click() {
 	
 	if(!m_enabled) {
@@ -65,6 +59,12 @@ bool TextWidget::click() {
 	}
 	
 	return false;
+}
+
+void TextWidget::doubleClick() {
+	if(doubleClicked) {
+		doubleClicked(this);
+	}
 }
 
 void TextWidget::render(bool mouseOver) {
