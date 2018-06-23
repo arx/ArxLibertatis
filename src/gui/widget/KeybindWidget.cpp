@@ -31,19 +31,16 @@ KeybindWidget::KeybindWidget(ControlAction keybindAction, size_t keybindIndex, F
 	, m_action(keybindAction)
 	, m_index(keybindIndex)
 	, m_key(ActionKey::UNUSED)
+	, m_editing(false)
 	, m_allowMouse(false)
-{
-	
-	eState = GETTOUCH;
-	
-}
+{ }
 
 bool KeybindWidget::OnMouseClick() {
 	
 	bool ret = TextWidget::OnMouseClick();
 	
-	if(enabled && eState == GETTOUCH) {
-		eState = GETTOUCH_TIME;
+	if(enabled && !m_editing) {
+		m_editing = true;
 		lOldColor = lColorHighlight;
 		m_allowMouse = false;
 		return true;
@@ -54,7 +51,7 @@ bool KeybindWidget::OnMouseClick() {
 
 void KeybindWidget::Update() {
 	
-	if(eState != GETTOUCH_TIME) {
+	if(!m_editing) {
 		return;
 	}
 	
@@ -120,8 +117,8 @@ void KeybindWidget::Update() {
 
 void KeybindWidget::unfocus() {
 	
-	if(eState == GETTOUCH_TIME) {
-		eState = GETTOUCH;
+	if(m_editing) {
+		m_editing = false;
 		lColorHighlight = lOldColor;
 		m_allowMouse = false;
 	}

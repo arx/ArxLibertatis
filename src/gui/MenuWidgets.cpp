@@ -573,7 +573,7 @@ void MenuPage::Update(Vec2f pos) {
 	m_oldPos = m_pos;
 	m_pos = pos;
 	
-	if(m_selected && m_selected->eState != EDIT_TIME && m_selected->eState != GETTOUCH_TIME) {
+	if(m_selected && !m_selected->wantFocus()) {
 		m_selected = NULL;
 		bEdit = false;
 		m_disableShortcuts = true;

@@ -34,6 +34,7 @@ class KeybindWidget: public TextWidget {
 	ControlAction m_action;
 	size_t m_index;
 	InputKeyId m_key;
+	bool m_editing;
 	bool m_allowMouse;
 	
 public:
@@ -45,6 +46,8 @@ public:
 	bool OnMouseClick();
 	
 	void Update();
+	
+	bool wantFocus() const { return m_editing; }
 	
 	void unfocus();
 	
