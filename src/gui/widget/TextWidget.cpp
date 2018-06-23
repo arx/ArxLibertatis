@@ -53,14 +53,9 @@ TextWidget::TextWidget(Font * font, const std::string & text, Vec2f pos) {
 
 	bSelected = false;
 	
-	m_isKeybind = false;
-	m_keybindAction = CONTROLS_CUST_JUMP;
-	m_keybindIndex = 0;
 }
 
-TextWidget::~TextWidget()
-{
-}
+TextWidget::~TextWidget() { }
 
 void TextWidget::SetText(const std::string & _pText)
 {

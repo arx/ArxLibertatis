@@ -78,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/menu/MenuCursor.h"
 #include "gui/menu/MenuFader.h"
 #include "gui/widget/CycleTextWidget.h"
+#include "gui/widget/KeybindWidget.h"
 #include "gui/widget/PanelWidget.h"
 
 #include "graphics/Draw.h"
@@ -566,7 +567,11 @@ void MenuPage::UpdateText() {
 	
 }
 
-TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId * pInputKeyId, bool _bValidateTest) {
+KeybindWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId * pInputKeyId, bool _bValidateTest) {
+	
+	if(m_selected->type() != WidgetType_Keybind) {
+		return NULL;
+	}
 	
 	int iMouseButton = keyTouched ? 0 : GInput->getMouseButtonClicked();
 	
@@ -576,10 +581,10 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId * pInputK
 			return NULL;
 		}
 		
-		TextWidget * textWidget = static_cast<TextWidget *>(m_selected);
+		KeybindWidget * widget = static_cast<KeybindWidget *>(m_selected);
 		
 		if(_bValidateTest) {
-			if(textWidget->m_isKeybind && textWidget->m_keybindAction == CONTROLS_CUST_ACTION) {
+			if(widget->m_keybindAction == CONTROLS_CUST_ACTION) {
 				bool bOk = true;
 				if((iMouseButton & Mouse::ButtonBase) && !(iMouseButton & Mouse::WheelBase)) {
 					bOk = false;
@@ -605,9 +610,9 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId * pInputK
 			pText = "---";
 		}
 
-		textWidget->lColorHighlight = textWidget->lOldColor;
-		textWidget->eState = GETTOUCH;
-		textWidget->SetText(pText);
+		widget->lColorHighlight = widget->lOldColor;
+		widget->eState = GETTOUCH;
+		widget->SetText(pText);
 
 		float iDx = m_selected->m_rect.width();
 
@@ -624,7 +629,7 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId * pInputK
 		bEdit = false;
 		bMouseAttack = false;
 		
-		return textWidget;
+		return widget;
 	}
 	
 	return NULL;
@@ -804,17 +809,15 @@ void MenuPage::Render() {
 				}
 				
 				InputKeyId inputKeyId = keyId;
-				TextWidget * widget = GetTouch(keyTouched, keyId, &inputKeyId, true);
+				KeybindWidget * widget = GetTouch(keyTouched, keyId, &inputKeyId, true);
 				
 				if(widget) {
 					if(!bEdit) {
-						if(widget->m_isKeybind) {
-							if(inputKeyId == Keyboard::Key_Escape) {
-								inputKeyId = ActionKey::UNUSED;
-								m_disableShortcuts = true;
-							}
-							config.setActionKey(widget->m_keybindAction, widget->m_keybindIndex, inputKeyId);
+						if(inputKeyId == Keyboard::Key_Escape) {
+							inputKeyId = ActionKey::UNUSED;
+							m_disableShortcuts = true;
 						}
+						config.setActionKey(widget->m_keybindAction, widget->m_keybindIndex, inputKeyId);
 					}
 					ReInitActionKey();
 					bMouseAttack = false;
@@ -841,12 +844,10 @@ void MenuPage::ReInitActionKey() {
 			PanelWidget * p = static_cast<PanelWidget *>(w);
 			
 			BOOST_FOREACH(Widget * c, p->m_children) {
-				if(c->type() == WidgetType_Text) {
-					TextWidget * t = static_cast<TextWidget *>(c);
-					if(t->m_isKeybind) {
-						m_selected = t;
-						GetTouch(true, config.actions[t->m_keybindAction].key[t->m_keybindIndex], NULL, false);
-					}
+				if(c->type() == WidgetType_Keybind) {
+					KeybindWidget * t = static_cast<KeybindWidget *>(c);
+					m_selected = t;
+					GetTouch(true, config.actions[t->m_keybindAction].key[t->m_keybindIndex], NULL, false);
 				}
 			}
 			
