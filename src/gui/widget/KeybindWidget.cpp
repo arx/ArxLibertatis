@@ -93,17 +93,14 @@ void KeybindWidget::Update() {
 		}
 	}
 	
-	if(keyId < 0) {
-		if(m_allowMouse) {
-			keyId = GInput->getMouseButtonClicked();
-			if(!keyId) {
-				keyId = -1;
-			}
-		} else {
-			// Don't allow mouse input for the first update as the mouse is used to enter edit mode
-			m_allowMouse = true;
+	// Don't allow mouse input for the first update as the mouse is used to enter edit mode
+	if(keyId < 0 && m_allowMouse) {
+		keyId = GInput->getMouseButtonClicked();
+		if(!keyId) {
+			keyId = -1;
 		}
 	}
+	m_allowMouse = true;
 	
 	if(keyId < 0) {
 		return;
