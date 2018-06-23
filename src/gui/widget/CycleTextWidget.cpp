@@ -100,7 +100,7 @@ void CycleTextWidget::Move(const Vec2f & offset) {
 	
 }
 
-void CycleTextWidget::EmptyFunction() {
+void CycleTextWidget::hover() {
 
 	//Touche pour la selection
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow)) {

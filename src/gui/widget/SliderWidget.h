@@ -42,7 +42,7 @@ public:
 	bool click();
 	void update();
 	void render(bool mouseOver = false);
-	void EmptyFunction();
+	void hover();
 	
 	boost::function<void(int /* state */)> valueChanged;
 	

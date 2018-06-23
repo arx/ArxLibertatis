@@ -68,7 +68,7 @@ void SliderWidget::Move(const Vec2f & offset) {
 	pRightButton->Move(offset);
 }
 
-void SliderWidget::EmptyFunction() {
+void SliderWidget::hover() {
 
 	//Touche pour la selection
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow)) {
