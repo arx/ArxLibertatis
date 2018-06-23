@@ -24,14 +24,17 @@
 
 #include "graphics/Color.h"
 #include "gui/widget/Widget.h"
+#include "input/TextInput.h"
 
 class Font;
 
-class TextInputWidget: public Widget {
+class TextInputWidget: public Widget, public BasicTextInput {
 	
-	std::string m_text;
 	Font * m_font;
 	bool m_editing;
+	
+	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
+	void textUpdated();
 	
 public:
 	
@@ -41,16 +44,11 @@ public:
 	
 	bool click();
 	
-	void update();
-	
 	void render(bool mouseOver = false);
 	
 	bool wantFocus() const { return m_editing; }
 	
 	void unfocus();
-	
-	void setText(const std::string & text);
-	const std::string & text() const { return m_text; }
 	
 	Font * font() const { return m_font; }
 	
