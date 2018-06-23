@@ -26,12 +26,12 @@
 
 static const char emptyKeybindLabel[] = "---";
 
-KeybindWidget::KeybindWidget(ControlAction keybindAction, int keybindIndex, Font * font, Vec2f pos)
+KeybindWidget::KeybindWidget(ControlAction keybindAction, size_t keybindIndex, Font * font, Vec2f pos)
 	: TextWidget(font, emptyKeybindLabel, pos)
+	, m_action(keybindAction)
+	, m_index(keybindIndex)
 	, m_key(ActionKey::UNUSED)
 	, m_allowMouse(false)
-	, m_keybindAction(keybindAction)
-	, m_keybindIndex(keybindIndex)
 {
 	
 	eState = GETTOUCH;

@@ -31,17 +31,16 @@ class Font;
 
 class KeybindWidget: public TextWidget {
 	
+	ControlAction m_action;
+	size_t m_index;
 	InputKeyId m_key;
 	bool m_allowMouse;
 	
 public:
 	
-	ControlAction m_keybindAction;
-	int m_keybindIndex;
-	
 	boost::function<void(KeybindWidget * /* widget */)> keyChanged;
 	
-	KeybindWidget(ControlAction keybindAction, int keybindIndex, Font * font, const Vec2f pos = Vec2f_ZERO);
+	KeybindWidget(ControlAction keybindAction, size_t keybindIndex, Font * font, const Vec2f pos = Vec2f_ZERO);
 	
 	bool OnMouseClick();
 	
@@ -55,7 +54,9 @@ public:
 	
 	void setKey(InputKeyId keyId);
 	
-	InputKeyId key() { return m_key; }
+	ControlAction action() { return m_action; }
+	size_t index() const { return m_index; }
+	InputKeyId key() const { return m_key; }
 	
 };
 

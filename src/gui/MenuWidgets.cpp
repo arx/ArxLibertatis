@@ -698,7 +698,7 @@ void MenuPage::ReInitActionKey() {
 			BOOST_FOREACH(Widget * c, p->m_children) {
 				if(c->type() == WidgetType_Keybind) {
 					KeybindWidget * t = static_cast<KeybindWidget *>(c);
-					t->setKey(config.actions[t->m_keybindAction].key[t->m_keybindIndex]);
+					t->setKey(config.actions[t->action()].key[t->index()]);
 				}
 			}
 		}
