@@ -40,8 +40,10 @@ void TextWidget::setText(const std::string & text) {
 
 bool TextWidget::click() {
 	
+	bool result = Widget::click();
+	
 	if(!m_enabled) {
-		return false;
+		return result;
 	}
 	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
@@ -58,10 +60,12 @@ bool TextWidget::click() {
 		default: break;
 	}
 	
-	return false;
+	return result;
 }
 
 bool TextWidget::doubleClick() {
+	
+	bool result = Widget::click();
 	
 	if(m_enabled) {
 		if(doubleClicked) {
@@ -71,7 +75,7 @@ bool TextWidget::doubleClick() {
 		}
 	}
 	
-	return false;
+	return result;
 }
 
 void TextWidget::render(bool mouseOver) {

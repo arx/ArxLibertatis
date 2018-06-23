@@ -50,17 +50,16 @@ void ButtonWidget::SetPos(Vec2f pos) {
 
 bool ButtonWidget::click() {
 	
-	if(!m_enabled) {
-		return false;
+	bool result = Widget::click();
+	
+	if(m_enabled) {
+		ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+		if(clicked) {
+			clicked();
+		}
 	}
 	
-	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-	
-	if(clicked) {
-		clicked();
-	}
-	
-	return false;
+	return result;
 }
 
 void ButtonWidget::render(bool mouseOver) {

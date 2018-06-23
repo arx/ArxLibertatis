@@ -36,7 +36,7 @@ public:
 	
 	void update();
 	void render(bool mouseOver = false);
-	bool click() { return false; }
+	
 	Widget * IsMouseOver(const Vec2f & mousePos);
 	
 	virtual WidgetType type() const {
@@ -44,6 +44,7 @@ public:
 	}
 	
 	std::vector<Widget *> m_children;
+	
 };
 
 #endif // ARX_GUI_WIDGET_PANELWIDGET_H

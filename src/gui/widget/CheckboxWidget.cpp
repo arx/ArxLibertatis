@@ -62,6 +62,8 @@ void CheckboxWidget::Move(const Vec2f & offset) {
 
 bool CheckboxWidget::click() {
 	
+	bool result = Widget::click();
+	
 	if(iOldState < 0) {
 		iOldState = iState;
 	}
@@ -81,7 +83,7 @@ bool CheckboxWidget::click() {
 		stateChanged(iState);
 	}
 	
-	return false;
+	return result;
 }
 
 void CheckboxWidget::render(bool mouseOver) {

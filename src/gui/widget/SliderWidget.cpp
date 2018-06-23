@@ -88,6 +88,8 @@ void SliderWidget::hover() {
 
 bool SliderWidget::click() {
 	
+	bool result = Widget::click();
+	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
@@ -109,7 +111,7 @@ bool SliderWidget::click() {
 		valueChanged(m_value);
 	}
 	
-	return false;
+	return result;
 }
 
 void SliderWidget::update() {
