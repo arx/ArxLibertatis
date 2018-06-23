@@ -101,8 +101,6 @@ class ScriptConsole : protected BasicTextInput {
 	Suggestion m_error; //!< Error message and corresponding position in \ref text()
 	int m_selection; //!< The selected suggestion (positive) history item (negative) or current line (0)
 	EntityHandle m_lastSelectedEntity;
-	PlatformDuration m_blinkTime;
-	bool m_blink;
 	
 	size_t m_contextBegin; //!< Start of the context entity ID in \ref text()
 	size_t m_contextEnd; //!< End of the context entity ID in \ref text()
@@ -145,8 +143,6 @@ public:
 		, m_originalCursorPos(true)
 		, m_selection(0)
 		, m_lastSelectedEntity(EntityHandle_Player)
-		, m_blinkTime(0)
-		, m_blink(true)
 		, m_contextBegin(0)
 		, m_contextEnd(0)
 		, m_commandBegin(0)
