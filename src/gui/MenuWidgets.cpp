@@ -441,71 +441,6 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	m_children.add(widget);
 }
 
-void MenuPage::UpdateText() {
-	
-	arx_assert(m_focused->type() == WidgetType_TextInput);
-	TextInputWidget * textWidget = static_cast<TextInputWidget *>(m_focused);
-	
-	if(GInput->isAnyKeyPressed()) {
-		
-		if(GInput->isKeyPressed(Keyboard::Key_Enter)
-		   || GInput->isKeyPressed(Keyboard::Key_NumPadEnter)
-		   || GInput->isKeyPressed(Keyboard::Key_Escape)
-		) {
-			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-			textWidget->eState = EDIT;
-			
-			if(textWidget->text().empty()) {
-				std::string szMenuText;
-				szMenuText = getLocalised("system_menu_editquest_newsavegame");
-				
-				textWidget->setText(szMenuText);
-				
-			}
-			
-			m_focused = NULL;
-			return;
-		}
-		
-		bool bKey = false;
-		std::string tText;
-		
-		if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace)) {
-			tText = textWidget->text();
-			
-			if(!tText.empty()) {
-				tText.resize(tText.size() - 1);
-				bKey = true;
-			}
-		} else {
-			int iKey = GInput->getKeyPressed();
-			iKey &= 0xFFFF;
-			
-			if(GInput->isKeyPressedNowPressed(iKey)) {
-				tText = textWidget->text();
-				
-				char tCat;
-				
-				bKey = GInput->getKeyAsText(iKey, tCat);
-				
-				if(bKey) {
-					int iChar = tCat & 0x000000FF; // To prevent ascii chars between [128, 255] from causing an assertion in the functions below...
-					if((isalnum(iChar) || isspace(iChar) || ispunct(iChar)) && (tCat != '\t') && (tCat != '*'))
-						tText += tCat;
-				}
-			}
-		}
-		
-		if(bKey) {
-			if(textWidget->font()->getTextSize(tText).width() > textWidget->m_rect.width()) {
-				tText.resize(tText.size() - 1);
-			}
-			textWidget->setText(tText);
-		}
-	}
-	
-}
-
 void MenuPage::Update(Vec2f pos) {
 
 	m_children.Move(m_pos - m_oldPos);
@@ -599,19 +534,6 @@ void MenuPage::Render() {
 	
 	if(m_selected) {
 		pMenuCursor->SetMouseOver();
-	}
-	
-	if(m_focused) {
-		
-		switch(m_focused->eState) {
-			case EDIT_TIME:
-				UpdateText();
-				break;
-			break;
-			default:
-			break;
-		}
-		
 	}
 	
 }
