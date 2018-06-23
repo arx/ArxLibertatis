@@ -36,10 +36,10 @@
 #include "core/SaveGame.h"
 #include "core/Version.h"
 
-#include "gui/Menu.h"
-#include "gui/MenuWidgets.h"
-#include "gui/MenuPublic.h"
 #include "gui/Hud.h"
+#include "gui/Menu.h"
+#include "gui/MenuPublic.h"
+#include "gui/MenuWidgets.h"
 #include "gui/Text.h"
 #include "gui/TextManager.h"
 #include "gui/menu/MenuCursor.h"
@@ -50,6 +50,8 @@
 #include "gui/widget/PanelWidget.h"
 #include "gui/widget/SaveSlotWidget.h"
 #include "gui/widget/SliderWidget.h"
+#include "gui/widget/TextInputWidget.h"
+#include "gui/widget/TextWidget.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -132,8 +134,7 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->eState = EDIT;
+			TextInputWidget * txt = new TextInputWidget(hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->ePlace = CENTER;
 			addCenter(txt, true);
 			m_textbox = txt;
@@ -188,7 +189,7 @@ public:
 private:
 	
 	SavegameHandle m_savegame;
-	TextWidget * m_textbox;
+	TextInputWidget * m_textbox;
 	TextWidget * pDeleteButton;
 	
 	void onClickedSaveConfirm(TextWidget * /* widget */) {

@@ -71,6 +71,7 @@ enum WidgetType {
 	WidgetType_Panel,
 	WidgetType_Slider,
 	WidgetType_Text,
+	WidgetType_TextInput,
 	WidgetType_Keybind,
 	WidgetType_SaveSlot,
 };
