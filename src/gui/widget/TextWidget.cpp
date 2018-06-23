@@ -92,11 +92,6 @@ bool TextWidget::OnMouseClick() {
 			eState = EDIT_TIME;
 			return true;
 		}
-		case GETTOUCH: {
-			eState = GETTOUCH_TIME;
-			lOldColor = lColorHighlight;
-			return true;
-		}
 		default: break;
 	}
 	

@@ -38,6 +38,8 @@ public:
 	
 	KeybindWidget(ControlAction keybindAction, int keybindIndex, Font * font, const Vec2f pos = Vec2f_ZERO);
 	
+	bool OnMouseClick();
+	
 	virtual WidgetType type() const {
 		return WidgetType_Keybind;
 	}
