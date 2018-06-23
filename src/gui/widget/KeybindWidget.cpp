@@ -58,7 +58,7 @@ bool KeybindWidget::OnMouseClick() {
 	return false;
 }
 
-void KeybindWidget::Update() {
+void KeybindWidget::update() {
 	
 	if(!m_editing) {
 		return;

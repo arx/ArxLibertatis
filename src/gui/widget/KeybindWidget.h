@@ -49,7 +49,7 @@ public:
 	
 	bool OnMouseClick();
 	
-	void Update();
+	void update();
 	
 	void render(bool mouseOver = false);
 	

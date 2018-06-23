@@ -33,7 +33,7 @@ public:
 	void Move(const Vec2f & offset);
 	void AddElement(Widget * widget);
 	
-	void Update();
+	void update();
 	void render(bool mouseOver = false);
 	bool OnMouseClick() { return false; }
 	Widget * IsMouseOver(const Vec2f & mousePos);

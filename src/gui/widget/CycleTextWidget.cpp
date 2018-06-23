@@ -160,10 +160,10 @@ bool CycleTextWidget::OnMouseClick() {
 	return false;
 }
 
-void CycleTextWidget::Update() {
+void CycleTextWidget::update() {
 
-	pLeftButton->Update();
-	pRightButton->Update();
+	pLeftButton->update();
+	pRightButton->update();
 }
 
 void CycleTextWidget::setEnabled(bool enable) {

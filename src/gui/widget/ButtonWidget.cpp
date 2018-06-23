@@ -63,7 +63,7 @@ bool ButtonWidget::OnMouseClick() {
 	return false;
 }
 
-void ButtonWidget::Update() {
+void ButtonWidget::update() {
 }
 
 void ButtonWidget::render(bool mouseOver) {

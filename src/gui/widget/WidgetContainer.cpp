@@ -34,7 +34,7 @@ WidgetContainer::~WidgetContainer() {
 
 void WidgetContainer::Update() {
 	BOOST_FOREACH(Widget * w, m_widgets) {
-		w->Update();
+		w->update();
 	}
 }
 

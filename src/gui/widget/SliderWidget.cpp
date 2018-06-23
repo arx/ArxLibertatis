@@ -112,10 +112,10 @@ bool SliderWidget::OnMouseClick() {
 	return false;
 }
 
-void SliderWidget::Update() {
+void SliderWidget::update() {
 	
-	pLeftButton->Update();
-	pRightButton->Update();
+	pLeftButton->update();
+	pRightButton->update();
 	pRightButton->SetPos(m_rect.topLeft());
 	
 	float fWidth = pLeftButton->m_rect.width() + RATIO_X(10 * std::max(pTex1->m_size.x, pTex2->m_size.x));
