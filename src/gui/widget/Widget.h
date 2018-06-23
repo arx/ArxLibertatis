@@ -32,9 +32,7 @@ enum ELEMSTATE
 	TNOP,
 	//Element Text
 	EDIT,           //type d'etat
-	GETTOUCH,
 	EDIT_TIME,      //etat en cours
-	GETTOUCH_TIME
 };
 
 enum ELEMPOS
@@ -97,6 +95,8 @@ public:
 	virtual void RenderMouseOver() { }
 	virtual void EmptyFunction() { }
 	virtual void OnMouseDoubleClick() { }
+	virtual bool wantFocus() const { return eState == EDIT_TIME; }
+	virtual void unfocus() { }
 	
 	void SetShortCut(int _iShortCut);
 	
