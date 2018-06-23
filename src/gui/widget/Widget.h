@@ -96,9 +96,9 @@ public:
 	
 	virtual bool click() { return false; }
 	virtual void doubleClick() { }
+	virtual void hover() { }
 	virtual void update() { }
 	virtual void render(bool mouseOver = false) = 0;
-	virtual void EmptyFunction() { }
 	virtual bool wantFocus() const { return eState == EDIT_TIME; }
 	virtual void unfocus() { }
 	

@@ -45,7 +45,7 @@ public:
 	void Move(const Vec2f & offset);
 	bool click();
 	void render(bool mouseOver = false);
-	void EmptyFunction();
+	void hover();
 	virtual void setEnabled(bool enable);
 	
 	boost::function<void(int, const std::string &)> valueChanged;

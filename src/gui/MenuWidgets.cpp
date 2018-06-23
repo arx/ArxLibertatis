@@ -636,7 +636,7 @@ void MenuPage::Update(Vec2f pos) {
 			return;
 		}
 		
-		m_selected->EmptyFunction();
+		m_selected->hover();
 		
 	}
 	
