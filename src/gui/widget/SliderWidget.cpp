@@ -30,8 +30,6 @@
 
 SliderWidget::SliderWidget(const Vec2f & unscaled) {
 	
-	m_id = BUTTON_INVALID;
-	
 	Vec2f pos = RATIO_2(unscaled);
 	
 	Vec2f buttonSize = Vec2f(16, 16);
