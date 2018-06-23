@@ -446,31 +446,6 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	m_children.add(widget);
 }
 
-void MenuPage::AlignElementCenter(Widget * widget) {
-	
-	widget->Move(Vec2f(-widget->m_rect.left, 0));
-	widget->ePlace = CENTER;
-	
-	float iDx = widget->m_rect.width();
-	float dx = (m_rect.width() - iDx) / 2 - widget->m_rect.left;
-	
-	widget->Move(Vec2f(std::max(dx, 0.f), 0.f));
-}
-
-void MenuPage::updateTextRect(Widget * widget) {
-	
-	float iDx = widget->m_rect.width();
-	
-	if(widget->ePlace) {
-		widget->m_rect.left = m_pos.x + ((m_rect.width() - iDx) / 2.f);
-		if(widget->m_rect.left < 0) {
-			widget->m_rect.left = 0;
-		}
-	}
-	
-	widget->m_rect.right = widget->m_rect.left + iDx;
-}
-
 void MenuPage::UpdateText() {
 	
 	arx_assert(m_focused->type() == WidgetType_TextInput);
@@ -491,7 +466,6 @@ void MenuPage::UpdateText() {
 				
 				textWidget->setText(szMenuText);
 				
-				updateTextRect(textWidget);
 			}
 			
 			m_focused = NULL;
@@ -528,22 +502,11 @@ void MenuPage::UpdateText() {
 		}
 		
 		if(bKey) {
-			textWidget->setText(tText);
-			
-			if(textWidget->m_rect.width() > m_rect.width() - RATIO_X(64)) {
-				if(!tText.empty()) {
-					tText.resize(tText.size() - 1);
-					textWidget->setText(tText);
-				}
+			if(textWidget->font()->getTextSize(tText).width() > textWidget->m_rect.width()) {
+				tText.resize(tText.size() - 1);
 			}
-			
-			updateTextRect(textWidget);
+			textWidget->setText(tText);
 		}
-	}
-	
-	if(m_focused->m_rect.top == m_focused->m_rect.bottom) {
-		Vec2i textSize = textWidget->font()->getTextSize("|");
-		m_focused->m_rect.bottom += textSize.y;
 	}
 	
 }
