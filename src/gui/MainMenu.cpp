@@ -190,7 +190,7 @@ private:
 
 		ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 		
-		savegames.save(m_textbox->m_text, m_savegame, savegame_thumbnail);
+		savegames.save(m_textbox->text(), m_savegame, savegame_thumbnail);
 		
 		ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
 		
