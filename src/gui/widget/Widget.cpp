@@ -19,6 +19,7 @@
 
 #include "gui/widget/Widget.h"
 
+#include "gui/MainMenu.h"
 #include "gui/MenuWidgets.h"
 #include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
@@ -26,13 +27,12 @@
 
 Widget::Widget()
 	: m_rect(0, 0, 0, 0)
+	, ePlace(NOCENTER)
+	, eState(TNOP)
+	, m_targetMenu(NOP)
+	, m_shortcut(ActionKey::UNUSED)
 	, m_enabled(true)
-{
-	ePlace = NOCENTER;
-	eState = TNOP;
-	m_targetMenu = NOP;
-	m_shortcut = ActionKey::UNUSED;
-}
+{ }
 
 extern TextWidget * pMenuElementApply;
 
@@ -41,6 +41,16 @@ Widget::~Widget() {
 	if(this == pMenuElementApply) {
 		pMenuElementApply = NULL;
 	}
+}
+
+bool Widget::click() {
+	
+	if(m_enabled && m_targetMenu != NOP && g_mainMenu && g_mainMenu->m_window) {
+		g_mainMenu->m_window->requestPage(m_targetMenu);
+	}
+	
+	return false;
+	
 }
 
 void Widget::Move(const Vec2f & offset) {

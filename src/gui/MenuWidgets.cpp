@@ -605,8 +605,6 @@ void MenuPage::Update(Vec2f pos) {
 					m_focused = w;
 				}
 				
-				g_mainMenu->m_window->requestPage(w->m_targetMenu);
-				
 				return;
 			}
 			
@@ -627,7 +625,6 @@ void MenuPage::Update(Vec2f pos) {
 			if(m_selected->doubleClick()) {
 				m_focused = m_selected;
 			}
-			g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
 			return;
 		}
 		
@@ -635,7 +632,6 @@ void MenuPage::Update(Vec2f pos) {
 			if(m_selected->click()) {
 				m_focused = m_selected;
 			}
-			g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
 			return;
 		}
 		

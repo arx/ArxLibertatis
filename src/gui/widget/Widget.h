@@ -94,7 +94,7 @@ public:
 	Widget();
 	virtual ~Widget();
 	
-	virtual bool click() { return false; }
+	virtual bool click();
 	virtual bool doubleClick() { return click(); }
 	virtual void hover() { }
 	virtual void update() { }

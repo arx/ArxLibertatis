@@ -43,8 +43,10 @@ KeybindWidget::KeybindWidget(ControlAction keybindAction, size_t keybindIndex, F
 
 bool KeybindWidget::click() {
 	
+	bool result = Widget::click();
+	
 	if(!m_enabled) {
-		return false;
+		return result;
 	}
 	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
@@ -55,7 +57,7 @@ bool KeybindWidget::click() {
 		return true;
 	}
 	
-	return false;
+	return result;
 }
 
 void KeybindWidget::update() {

@@ -122,8 +122,10 @@ void CycleTextWidget::hover() {
 
 bool CycleTextWidget::click() {
 	
+	bool result = Widget::click();
+	
 	if(!m_enabled) {
-		return false;
+		return result;
 	}
 	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
@@ -153,7 +155,7 @@ bool CycleTextWidget::click() {
 		valueChanged(iPos, vText.at(iPos)->text());
 	}
 	
-	return false;
+	return result;
 }
 
 void CycleTextWidget::setEnabled(bool enable) {
