@@ -31,21 +31,22 @@ class TextWidget: public Widget {
 	
 public:
 	
+	enum ForceDisplay {
+		Automatic,
+		Dynamic,
+		Disabled,
+		Enabled,
+		MouseOver,
+	};
+	
 	std::string m_text;
 	Font * m_font;
-	Color lColor;
-	Color lOldColor;
-	Color lColorHighlight;
-	bool bSelected;
+	ForceDisplay m_display;
 	
 	boost::function<void(TextWidget * /* widget */)> clicked;
 	boost::function<void(TextWidget * /* widget */)> doubleClicked;
 	
-public:
-	
 	TextWidget(Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO);
-	
-	void setColor(Color color) { lColor = color; }
 	
 	void OnMouseDoubleClick();
 	
@@ -54,6 +55,8 @@ public:
 	void render(bool mouseOver = false);
 	
 	void SetText(const std::string & _pText);
+	
+	void forceDisplay(ForceDisplay display) { m_display = display; }
 	
 	virtual WidgetType type() const {
 		return WidgetType_Text;

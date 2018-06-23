@@ -44,7 +44,6 @@ public:
 	
 	void Move(const Vec2f & offset);
 	bool OnMouseClick();
-	void update();
 	void render(bool mouseOver = false);
 	void EmptyFunction();
 	virtual void setEnabled(bool enable);

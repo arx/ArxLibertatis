@@ -60,6 +60,7 @@ void CycleTextWidget::selectLast() {
 
 void CycleTextWidget::AddText(TextWidget * _pText) {
 	
+	_pText->forceDisplay(TextWidget::Dynamic);
 	_pText->setEnabled(m_enabled);
 	
 	_pText->Move(Vec2f(m_rect.left + pLeftButton->m_rect.width(), m_rect.top + 0));
@@ -158,12 +159,6 @@ bool CycleTextWidget::OnMouseClick() {
 	}
 	
 	return false;
-}
-
-void CycleTextWidget::update() {
-
-	pLeftButton->update();
-	pRightButton->update();
 }
 
 void CycleTextWidget::setEnabled(bool enable) {

@@ -63,14 +63,11 @@ bool ButtonWidget::OnMouseClick() {
 	return false;
 }
 
-void ButtonWidget::update() {
-}
-
 void ButtonWidget::render(bool mouseOver) {
 	
 	UseRenderState state(render2D().blendAdditive());
 	
-	Color color = bCheck ? Color::white : Color::grayb(63);
+	Color color = m_enabled ? Color::white : Color::grayb(63);
 	
 	EERIEDrawBitmap(m_rect, 0, m_texture, color);
 	

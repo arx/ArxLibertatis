@@ -76,14 +76,14 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			addCenter(txt, true);
 		}
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_main_newquest_confirm");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			addCenter(txt, true);
 		}
 		
@@ -121,7 +121,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(48, 48), "graph/interface/icons/menu_main_save");
-			cb->SetCheckOff();
+			cb->setEnabled(false);
 			addCenter(cb, true);
 		}
 		
@@ -141,7 +141,6 @@ public:
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveDelete, this, _1);
 			txt->m_targetMenu = Page_Save;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x - 10) - txt->m_rect.width(), RATIO_Y(5)));
-			txt->lOldColor = txt->lColor;
 			add(txt);
 			pDeleteButton = txt;
 		}
@@ -170,12 +169,10 @@ public:
 		m_savegame = savegame;
 		
 		if(savegame != SavegameHandle()) {
+			pDeleteButton->setEnabled(true);
 			m_textbox->SetText(savegames[savegame.handleData()].name);
-			pDeleteButton->lColor = pDeleteButton->lOldColor;
-			pDeleteButton->SetCheckOn();
 		} else {
-			pDeleteButton->lColor = Color::grayb(127);
-			pDeleteButton->SetCheckOff();
+			pDeleteButton->setEnabled(false);
 			m_textbox->SetText(getLocalised("system_menu_editquest_newsavegame"));
 		}
 		
@@ -222,7 +219,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(48, 48), "graph/interface/icons/menu_main_load");
-			cb->SetCheckOff();
+			cb->setEnabled(false);
 			addCenter(cb, true);
 		}
 		
@@ -274,7 +271,7 @@ public:
 		{
 			TextWidget * txt = new TextWidget(hFontControls, std::string(), Vec2f(20, 0));
 			txt->m_targetMenu = Page_SaveConfirm;
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			addCenter(txt);
 		}
 		
@@ -286,9 +283,7 @@ public:
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestDelete, this);
 			txt->m_targetMenu = Page_Load;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x - 10) - txt->m_rect.width(), RATIO_Y(14)));
-			txt->SetCheckOff();
-			txt->lOldColor = txt->lColor;
-			txt->lColor = Color::grayb(127);
+			txt->setEnabled(false);
 			add(txt);
 			pDeleteConfirm = txt;
 		}
@@ -301,9 +296,7 @@ public:
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoadConfirm, this);
 			txt->m_targetMenu = Page_None;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x - 10) - txt->m_rect.width(), RATIO_Y(380)));
-			txt->SetCheckOff();
-			txt->lOldColor = txt->lColor;
-			txt->lColor = Color::grayb(127);
+			txt->setEnabled(false);
 			add(txt);
 			pLoadConfirm = txt;
 		}
@@ -325,7 +318,7 @@ public:
 		
 		for(size_t j = 0; j < m_saveSlotWidgets.size(); j++) {
 			SaveSlotWidget * widget = m_saveSlotWidgets[j];
-			widget->bSelected = false;
+			widget->forceDisplay(TextWidget::Automatic);
 		}
 	}
 	
@@ -337,17 +330,13 @@ private:
 	TextWidget * pDeleteConfirm;
 	
 	void enableLoadDeleteButtons() {
-		pLoadConfirm->SetCheckOn();
-		pLoadConfirm->lColor = pLoadConfirm->lOldColor;
-		pDeleteConfirm->SetCheckOn();
-		pDeleteConfirm->lColor = pDeleteConfirm->lOldColor;
+		pLoadConfirm->setEnabled(true);
+		pDeleteConfirm->setEnabled(true);
 	}
 	
 	void disableLoadDeleteButtons() {
-		pLoadConfirm->SetCheckOff();
-		pLoadConfirm->lColor = Color::grayb(127);
-		pDeleteConfirm->SetCheckOff();
-		pDeleteConfirm->lColor = Color::grayb(127);
+		pLoadConfirm->setEnabled(false);
+		pDeleteConfirm->setEnabled(false);
 	}
 	
 	void onClickQuestLoad(TextWidget * widget) {
@@ -358,7 +347,7 @@ private:
 		arx_assert(widget->type() == WidgetType_SaveSlot);
 		m_selectedSave = static_cast<SaveSlotWidget *>(widget)->savegame();
 		
-		widget->bSelected = true;
+		widget->forceDisplay(TextWidget::MouseOver);
 		
 	}
 	
@@ -415,7 +404,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(10, 0), Vec2f(48, 48), "graph/interface/icons/menu_main_save");
-			cb->SetCheckOff();
+			cb->setEnabled(false);
 			addCenter(cb, true);
 		}
 		
@@ -436,8 +425,7 @@ public:
 			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), hFontControls, text.str(), Vec2f(20, 0));
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_SaveConfirm;
-			txt->setColor(Color::grayb(127));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			addCenter(txt);
 			
 		}
@@ -474,7 +462,7 @@ public:
 		{
 			TextWidget * txt = new TextWidget(hFontControls, std::string(), Vec2f(20, 0));
 			txt->m_targetMenu = Page_SaveConfirm;
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			addCenter(txt);
 		}
 		
@@ -521,11 +509,7 @@ public:
 			std::string szMenuText = getLocalised( "system_menus_main_editquest_save");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = Page_Save;
-			
-			if(!g_canResumeGame) {
-				txt->SetCheckOff();
-				txt->lColor = Color(127, 127, 127);
-			}
+			txt->setEnabled(g_canResumeGame);
 			addCenter(txt, true);
 		}
 		
@@ -651,7 +635,6 @@ public:
 				szMenuText = getLocalised("system_menus_options_video_full_screen");
 			}
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedFullscreen, this, _1);
 			cb->iState = config.video.fullscreen ? 1 : 0;
@@ -664,7 +647,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_video_resolution");
 			szMenuText += "  ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			pMenuSliderResol = new CycleTextWidget;
 			pMenuSliderResol->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedResolution, this, _1, _2);
@@ -719,7 +702,7 @@ public:
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_gamma");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedGamma, this, _1);
@@ -733,7 +716,6 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_videos_minimize_on_focus_lost",
 			                                      "Minimize on focus loss");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedMinimizeOnFocusLost, this, _1);
 			setMinimizeOnFocusLostState(cb, config.video.fullscreen);
@@ -751,7 +733,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
@@ -780,7 +762,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_video_fps_limit", "FPS Limit ");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
@@ -824,7 +806,7 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(240, 0));
 			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
 			txt->SetPos(Vec2f(RATIO_X(m_size.x - 10) - txt->m_rect.width(), RATIO_Y(380)));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			add(txt);
 			pMenuElementApply = txt;
 		}
@@ -844,12 +826,12 @@ private:
 		
 		if(!fullscreen) {
 			sld->setValue(5);
-			sld->SetCheckOff();
+			sld->setEnabled(false);
 			return;
 		}
 		
 		sld->setValue(int(config.video.gamma));
-		sld->SetCheckOn();
+		sld->setEnabled(true);
 		
 	}
 	
@@ -857,17 +839,13 @@ private:
 		
 		if(!fullscreen) {
 			cb->iState = 0;
-			cb->SetCheckOff();
+			cb->setEnabled(false);
 			return;
 		}
 		
 		Window::MinimizeSetting minimize = mainApp->getWindow()->willMinimizeOnFocusLost();
 		cb->iState = (minimize == Window::Enabled || minimize == Window::AlwaysEnabled) ? 1 : 0;
-		if(minimize != Window::AlwaysDisabled && minimize != Window::AlwaysEnabled) {
-			cb->SetCheckOn();
-		} else {
-			cb->SetCheckOff();
-		}
+		cb->setEnabled(minimize != Window::AlwaysDisabled && minimize != Window::AlwaysEnabled);
 		
 	}
 	
@@ -973,7 +951,7 @@ public:
 				std::string szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
 				szMenuText += "  ";
 				TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-				txt->SetCheckOff();
+				txt->setEnabled(false);
 				panel->AddElement(txt);
 			}
 			
@@ -1010,7 +988,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_detail");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
@@ -1033,7 +1011,7 @@ public:
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_brouillard");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedFogDistance, this, _1);
@@ -1045,7 +1023,6 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedAntialiasing, this, _1);
 			cb->iState = config.video.antialiasing ? 1 : 0;
@@ -1055,7 +1032,6 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video_colorkey_antialiasing", "Color Key AA");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedColorkeyAntialiasing, this, _1);
 			cb->iState = config.video.colorkeyAntialiasing ? 1 : 0;
@@ -1067,7 +1043,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising", "Alpha Cutout AA");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
@@ -1098,7 +1074,7 @@ public:
 			                                      "Anisotropic filtering");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
@@ -1249,7 +1225,6 @@ public:
 			                         "Cross hair cursor");
 			szMenuText = getLocalised("system_menus_options_interface_crosshair", szMenuText);
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCrosshair, this, _1);
 			cb->iState = config.interface.showCrosshair ? 1 : 0;
@@ -1260,7 +1235,6 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_interface_limit_speech_width",
 			                         "Limit speech text width");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedSpeechWidth, this, _1);
 			cb->iState = config.interface.limitSpeechWidth ? 1 : 0;
@@ -1273,7 +1247,7 @@ public:
 			                                      "Cinematics mode");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
@@ -1297,7 +1271,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_interface_hud_scale",
 			                                      "HUD size");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScale, this, _1);
@@ -1310,7 +1284,6 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_interface_hud_scale_integer",
 			                                      "Round HUD scale factor");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScaleInteger, this, _1);
 			cb->iState = config.interface.hudScaleInteger ? 1 : 0;
@@ -1321,7 +1294,6 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_interface_scale_cursor_with_hud",
 			                                      "Scale cursor with HUD");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedScaleCursorWithHud, this, _1);
 			cb->iState = config.interface.scaleCursorWithHud ? 1 : 0;
@@ -1334,7 +1306,7 @@ public:
 			                                      "HUD scale filter");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
@@ -1420,7 +1392,7 @@ public:
 				std::string szMenuText = getLocalised("system_menus_options_audio_device", "Device");
 				szMenuText += "  ";
 				TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-				txt->SetCheckOff();
+				txt->setEnabled(false);
 				panel->AddElement(txt);
 				labelwidth = txt->m_rect.width();
 			}
@@ -1455,7 +1427,7 @@ public:
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_master_volume");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedMasterVolume, this, _1);
@@ -1468,7 +1440,7 @@ public:
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_effects_volume");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedEffectsVolume, this, _1);
@@ -1481,7 +1453,7 @@ public:
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_speech_volume");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedSpeechVolume, this, _1);
@@ -1494,7 +1466,7 @@ public:
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedAmbianceVolume, this, _1);
@@ -1520,7 +1492,7 @@ public:
 			if(audio::isReverbSupported()) {
 				cb->iState = config.audio.eax ? 1 : 0;
 			} else {
-				cb->SetCheckOff();
+				cb->setEnabled(false);
 			}
 			addCenter(cb);
 		}
@@ -1532,7 +1504,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_audio_hrtf", "Virtual surround");
 			szMenuText += "  ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			
 			CycleTextWidget * slider = new CycleTextWidget;
@@ -1652,7 +1624,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
@@ -1684,7 +1656,7 @@ public:
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseSensitivity, this, _1);
@@ -1697,7 +1669,7 @@ public:
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_input_mouse_acceleration", "Mouse acceleration");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseAcceleration, this, _1);
@@ -1728,7 +1700,7 @@ public:
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->setMinimum(1);
@@ -1761,7 +1733,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_quick_level_transition", "Quick level transition");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
@@ -1864,7 +1836,7 @@ protected:
 			std::string szMenuText = getLocalised(a, defaultText);
 			szMenuText += specialSuffix;
 			TextWidget * txt = new TextWidget(hFontControls, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			panel->AddElement(txt);
 		}
 		
@@ -2082,13 +2054,13 @@ public:
 		
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_quit"));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			addCenter(txt, true);
 		}
 		
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_confirm"));
-			txt->SetCheckOff();
+			txt->setEnabled(false);
 			addCenter(txt, true);
 		}
 		
@@ -2292,12 +2264,11 @@ void MainMenu::init()
 		version += arx_release_codename;
 		version += "\"";
 	}
-
+	
 	float verPosX = g_size.right - 20 * g_sizeRatio.x - hFontControls->getTextSize(version).width();
 	TextWidget * txt = new TextWidget(hFontControls, version, Vec2f(verPosX / g_sizeRatio.x, 80));
-	
-	txt->SetCheckOff();
-	txt->lColor = Color(127, 127, 127);
+	txt->setEnabled(false);
+	txt->forceDisplay(TextWidget::Disabled);
 	m_widgets->add(txt);
 }
 
@@ -2324,16 +2295,11 @@ void MainMenu::onClickedCredits() {
 void MainMenu::Update() {
 	
 	if(m_resumeGame) {
-		if(g_canResumeGame) {
-			m_resumeGame->SetCheckOn();
-			m_resumeGame->lColor = Color(232, 204, 142);
-		} else if(savegames.size() == 0) {
-			m_resumeGame->SetCheckOff();
-			m_resumeGame->lColor = Color(127, 127, 127);
-		}
+		m_resumeGame->setEnabled(g_canResumeGame || savegames.size() != 0);
 	}
 	
 	m_selected = m_widgets->getAtPos(Vec2f(GInput->getMousePosition()));
+	
 }
 
 void MainMenu::Render() {

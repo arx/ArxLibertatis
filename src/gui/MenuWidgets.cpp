@@ -155,23 +155,12 @@ bool MENU_NoActiveWindow() {
 
 static void Check_Apply() {
 	if(pMenuElementApply) {
-		if(config.video.resolution.x != newWidth
-		   || config.video.resolution.y != newHeight
-		   || config.video.fullscreen != newFullscreen
-		) {
-			pMenuElementApply->SetCheckOn();
-			pMenuElementApply->lColor = pMenuElementApply->lOldColor;
-		} else {
-			if(pMenuElementApply->lColor != Color(127, 127, 127)) {
-				pMenuElementApply->SetCheckOff();
-				pMenuElementApply->lOldColor = pMenuElementApply->lColor;
-				pMenuElementApply->lColor = Color(127, 127, 127);
-			}
-		}
+		bool enable = config.video.resolution.x != newWidth
+		              || config.video.resolution.y != newHeight
+		              || config.video.fullscreen != newFullscreen;
+		pMenuElementApply->setEnabled(enable);
 	}
 }
-
-
 
 void MainMenuDoFrame() {
 	

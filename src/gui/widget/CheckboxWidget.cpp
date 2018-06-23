@@ -34,6 +34,8 @@ CheckboxWidget::CheckboxWidget(TextWidget * label) {
 	
 	arx_assert(label);
 	
+	label->forceDisplay(TextWidget::Dynamic);
+	
 	m_textureOff = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	m_textureOn = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 	arx_assert(m_textureOff);
@@ -54,7 +56,6 @@ CheckboxWidget::~CheckboxWidget() {
 }
 
 void CheckboxWidget::Move(const Vec2f & offset) {
-	
 	Widget::Move(offset);
 	m_label->Move(offset);
 }
@@ -92,7 +93,7 @@ void CheckboxWidget::render(bool mouseOver) {
 	checkboxRect.right = m_rect.right;
 	
 	TextureContainer * pTex = (iState == 0) ? m_textureOff : m_textureOn;
-	Color color = bCheck ? Color::white : Color(63, 63, 63, 255);
+	Color color = m_enabled ? Color::white : Color(63, 63, 63, 255);
 	
 	m_label->render(mouseOver);
 	

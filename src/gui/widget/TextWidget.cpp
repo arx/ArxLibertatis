@@ -24,19 +24,12 @@
 #include "gui/Text.h"
 #include "scene/GameSound.h"
 
-TextWidget::TextWidget(Font * font, const std::string & text, Vec2f pos) {
-	
-	m_font = font;
-	
+TextWidget::TextWidget(Font * font, const std::string & text, Vec2f pos)
+	: m_font(font)
+	, m_display(Automatic)
+{
 	m_rect = Rectf(RATIO_2(pos), 0.f, 0.f);
-	
 	SetText(text);
-	
-	lColor = Color(232, 204, 142);
-	lColorHighlight = lOldColor = Color::white;
-	
-	bSelected = false;
-	
 }
 
 void TextWidget::SetText(const std::string & text) {
@@ -76,11 +69,13 @@ bool TextWidget::OnMouseClick() {
 
 void TextWidget::render(bool mouseOver) {
 	
-	Color color = lColor;
-	if(!m_enabled) {
+	Color color = Color(232, 204, 142);
+	bool hasAction = m_targetMenu != NOP || clicked || doubleClicked;
+	bool dynamic =  m_display == Dynamic || (m_display == Automatic && hasAction);
+	if(m_display == Disabled || (dynamic && !m_enabled)) {
 		color = Color::grayb(127);
-	} else if(mouseOver || bSelected) {
-		color = lColorHighlight;
+	} else if(m_display == MouseOver || (dynamic && mouseOver)) {
+		color = Color::white;
 	}
 	
 	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, color, NULL);
