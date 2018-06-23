@@ -668,108 +668,72 @@ void MenuPage::Render() {
 				break;
 			case GETTOUCH_TIME: {
 				
+				arx_assert(m_selected->type() == WidgetType_Keybind);
+				KeybindWidget * widget = static_cast<KeybindWidget *>(m_selected);
+				
 				if(m_blink) {
-					static_cast<TextWidget *>(m_selected)->lColorHighlight = Color(255, 0, 0);
+					widget->lColorHighlight = Color(255, 0, 0);
 				} else {
-					static_cast<TextWidget *>(m_selected)->lColorHighlight = Color(50, 0, 0);
+					widget->lColorHighlight = Color(50, 0, 0);
 				}
 				
-				bool keyTouched = GInput->isAnyKeyPressed();
 				int keyId = GInput->getKeyPressed();
 				
 				if(GInput->isKeyPressed(Keyboard::Key_LeftShift) || GInput->isKeyPressed(Keyboard::Key_RightShift)
 				   || GInput->isKeyPressed(Keyboard::Key_LeftCtrl) || GInput->isKeyPressed(Keyboard::Key_RightCtrl)
 				   || GInput->isKeyPressed(Keyboard::Key_LeftAlt) || GInput->isKeyPressed(Keyboard::Key_RightAlt)) {
 					if(!((keyId & INPUT_COMBINATION_MASK) >> 16)) {
-						keyTouched = false;
+						keyId = -1;
 					}
 				} else {
-					
 					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftShift)) {
-						keyTouched = true;
 						keyId = Keyboard::Key_LeftShift;
 					}
-					
 					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightShift)) {
-						keyTouched = true;
 						keyId = Keyboard::Key_RightShift;
 					}
-					
 					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl)) {
-						keyTouched = true;
 						keyId = Keyboard::Key_LeftCtrl;
 					}
-					
 					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightCtrl)) {
-						keyTouched = true;
 						keyId = Keyboard::Key_RightCtrl;
 					}
-					
 					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftAlt)) {
-						keyTouched = true;
 						keyId = Keyboard::Key_LeftAlt;
 					}
-					
 					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightAlt)) {
-						keyTouched = true;
 						keyId = Keyboard::Key_RightAlt;
 					}
 				}
 				
-				InputKeyId inputKeyId = keyId;
-				
-				arx_assert(m_selected->type() == WidgetType_Keybind);
-				
-				KeybindWidget * widget = NULL;
-				
-				int iMouseButton = keyTouched ? 0 : GInput->getMouseButtonClicked();
-				
-				if(keyTouched || iMouseButton) {
-					if(!keyTouched && !bMouseAttack) {
-						bMouseAttack = !bMouseAttack;
-						return;
-					}
-					
-					widget = static_cast<KeybindWidget *>(m_selected);
-					
-					if(true) {
-						if(widget->m_keybindAction == CONTROLS_CUST_ACTION) {
-							bool bOk = true;
-							if((iMouseButton & Mouse::ButtonBase) && !(iMouseButton & Mouse::WheelBase)) {
-								bOk = false;
-							} else if(keyId >= int(Mouse::ButtonBase) && keyId < int(Mouse::ButtonMax)) {
-								bOk = false;
-							}
-							if(bOk) {
-								return;
-							}
+				if(keyId < 0) {
+					if(bMouseAttack) {
+						keyId = GInput->getMouseButtonClicked();
+						if(keyId == 0) {
+							keyId = -1;
 						}
+					} else {
+						bMouseAttack = true;
 					}
-					
-					if(iMouseButton) {
-						keyId = iMouseButton;
-						inputKeyId = iMouseButton;
-					}
-					
-					widget->setKey(keyId);
-					
-					m_selected = NULL;
-					bEdit = false;
-					bMouseAttack = false;
-					
 				}
 				
-				if(widget) {
-					if(!bEdit) {
-						if(inputKeyId == Keyboard::Key_Escape) {
-							inputKeyId = ActionKey::UNUSED;
-							m_disableShortcuts = true;
-						}
-						config.setActionKey(widget->m_keybindAction, widget->m_keybindIndex, inputKeyId);
+				if(widget->m_keybindAction == CONTROLS_CUST_ACTION && !(keyId & int(Mouse::ButtonBase))) {
+					// Only allow mouse buttons for for the action binding
+					keyId = -1;
+				}
+				
+				if(keyId >= 0) {
+					
+					if(keyId == Keyboard::Key_Escape) {
+						keyId = ActionKey::UNUSED;
+						m_disableShortcuts = true;
 					}
+					config.setActionKey(widget->m_keybindAction, widget->m_keybindIndex, keyId);
+					
 					ReInitActionKey();
-					bMouseAttack = false;
+					
 				}
+				
 			}
 			break;
 			default:
