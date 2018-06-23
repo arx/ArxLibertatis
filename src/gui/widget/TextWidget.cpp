@@ -31,7 +31,6 @@
 #include "gui/MenuPublic.h"
 #include "gui/Text.h"
 #include "gui/TextManager.h"
-#include "gui/menu/MenuCursor.h"
 #include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
 #include "input/Input.h"
@@ -112,7 +111,7 @@ static void FontRenderText(Font * _pFont, const Rectf & rzone, const std::string
 }
 
 void TextWidget::Render() {
-
+	
 	if(bSelected) {
 		FontRenderText(m_font, m_rect, m_text, lColorHighlight);
 	} else if(enabled) {
@@ -120,12 +119,11 @@ void TextWidget::Render() {
 	} else {
 		FontRenderText(m_font, m_rect, m_text, Color::grayb(127));
 	}
-
+	
 }
 
 void TextWidget::RenderMouseOver() {
 	
 	FontRenderText(m_font, m_rect, m_text, lColorHighlight);
 	
-	g_thumbnailCursor.clear();
 }
