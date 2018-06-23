@@ -31,9 +31,9 @@ class Font;
 
 class SaveSlotWidget : public TextWidget {
 	
-public:
-	
 	SavegameHandle m_savegame;
+	
+public:
 	
 	SaveSlotWidget(SavegameHandle savegame, Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO);
 	
@@ -41,6 +41,10 @@ public:
 	
 	virtual WidgetType type() const {
 		return WidgetType_SaveSlot;
+	}
+	
+	SavegameHandle savegame() const {
+		return m_savegame;
 	}
 	
 };
