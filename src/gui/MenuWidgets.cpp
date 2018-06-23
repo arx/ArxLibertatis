@@ -383,8 +383,6 @@ MenuPage::MenuPage(MENUSTATE _eMenuState)
 	, m_selected(NULL)
 	, m_focused(NULL)
 	, m_disableShortcuts(false)
-	, m_blinkTime(0)
-	, m_blink(true)
 {
 	m_size = Vec2f(321, 430);
 	
@@ -646,17 +644,6 @@ void MenuPage::Render() {
 	}
 	
 	if(m_focused) {
-		
-		if(mainApp->getWindow()->hasFocus()) {
-			static const PlatformDuration BlinkDuration = PlatformDurationMs(300);
-			m_blinkTime += g_platformTime.lastFrameDuration();
-			if(m_blinkTime > (BlinkDuration + BlinkDuration)) {
-				m_blinkTime = 0;
-			}
-			m_blink = m_blinkTime > BlinkDuration;
-		} else {
-			m_blink = true;
-		}
 		
 		switch(m_focused->eState) {
 			case EDIT_TIME:
