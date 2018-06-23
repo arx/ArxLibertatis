@@ -384,7 +384,6 @@ void MenuWindow::setCurrentPageId(MENUSTATE id) {
 MenuPage::MenuPage(MENUSTATE _eMenuState)
 	: m_rowSpacing(10)
 	, m_selected(NULL)
-	, bMouseAttack(false)
 	, bEdit(false)
 	, m_disableShortcuts(false)
 	, m_blinkTime(0)
@@ -574,20 +573,31 @@ void MenuPage::Update(Vec2f pos) {
 	m_oldPos = m_pos;
 	m_pos = pos;
 	
+	if(m_selected && m_selected->eState != EDIT_TIME && m_selected->eState != GETTOUCH_TIME) {
+		m_selected = NULL;
+		bEdit = false;
+		m_disableShortcuts = true;
+	}
+	
 	if(!bEdit) {
 		
-		BOOST_FOREACH(Widget * w, m_children.m_widgets) {
-			arx_assert(w);
-			
-			if(w->m_shortcut != ActionKey::UNUSED) {
-				if(GInput->isKeyPressedNowUnPressed(w->m_shortcut)) {
-					if(m_disableShortcuts) {
-						m_disableShortcuts = false;
-						break;
-					}
+		if(m_disableShortcuts) {
+			bool isShortcutPressed = false;
+			BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+				arx_assert(w);
+				if(w->m_shortcut != ActionKey::UNUSED && GInput->isKeyPressed(w->m_shortcut)) {
+					isShortcutPressed = true;
+				}
+			}
+			if(!isShortcutPressed) {
+				m_disableShortcuts = false;
+			}
+		} else {
+			BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+				arx_assert(w);
+				if(w->m_shortcut != ActionKey::UNUSED && GInput->isKeyPressedNowUnPressed(w->m_shortcut)) {
 					bEdit = w->OnMouseClick();
 					m_selected = w;
-					
 					g_mainMenu->m_window->requestPage(w->m_targetMenu);
 					return;
 				}
@@ -666,75 +676,6 @@ void MenuPage::Render() {
 			case EDIT_TIME:
 				UpdateText();
 				break;
-			case GETTOUCH_TIME: {
-				
-				arx_assert(m_selected->type() == WidgetType_Keybind);
-				KeybindWidget * widget = static_cast<KeybindWidget *>(m_selected);
-				
-				if(m_blink) {
-					widget->lColorHighlight = Color(255, 0, 0);
-				} else {
-					widget->lColorHighlight = Color(50, 0, 0);
-				}
-				
-				int keyId = GInput->getKeyPressed();
-				
-				if(GInput->isKeyPressed(Keyboard::Key_LeftShift) || GInput->isKeyPressed(Keyboard::Key_RightShift)
-				   || GInput->isKeyPressed(Keyboard::Key_LeftCtrl) || GInput->isKeyPressed(Keyboard::Key_RightCtrl)
-				   || GInput->isKeyPressed(Keyboard::Key_LeftAlt) || GInput->isKeyPressed(Keyboard::Key_RightAlt)) {
-					if(!((keyId & INPUT_COMBINATION_MASK) >> 16)) {
-						keyId = -1;
-					}
-				} else {
-					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftShift)) {
-						keyId = Keyboard::Key_LeftShift;
-					}
-					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightShift)) {
-						keyId = Keyboard::Key_RightShift;
-					}
-					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl)) {
-						keyId = Keyboard::Key_LeftCtrl;
-					}
-					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightCtrl)) {
-						keyId = Keyboard::Key_RightCtrl;
-					}
-					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftAlt)) {
-						keyId = Keyboard::Key_LeftAlt;
-					}
-					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightAlt)) {
-						keyId = Keyboard::Key_RightAlt;
-					}
-				}
-				
-				if(keyId < 0) {
-					if(bMouseAttack) {
-						keyId = GInput->getMouseButtonClicked();
-						if(keyId == 0) {
-							keyId = -1;
-						}
-					} else {
-						bMouseAttack = true;
-					}
-				}
-				
-				if(widget->m_keybindAction == CONTROLS_CUST_ACTION && !(keyId & int(Mouse::ButtonBase))) {
-					// Only allow mouse buttons for for the action binding
-					keyId = -1;
-				}
-				
-				if(keyId >= 0) {
-					
-					if(keyId == Keyboard::Key_Escape) {
-						keyId = ActionKey::UNUSED;
-						m_disableShortcuts = true;
-					}
-					config.setActionKey(widget->m_keybindAction, widget->m_keybindIndex, keyId);
-					
-					ReInitActionKey();
-					
-				}
-				
-			}
 			break;
 			default:
 			break;
@@ -762,10 +703,6 @@ void MenuPage::ReInitActionKey() {
 			}
 		}
 	}
-	
-	m_selected = NULL;
-	bEdit = false;
-	bMouseAttack = false;
 	
 }
 

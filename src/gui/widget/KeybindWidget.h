@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_WIDGET_KEYBINDWIDGET_H
 #define ARX_GUI_WIDGET_KEYBINDWIDGET_H
 
+#include <boost/function.hpp>
+
 #include "core/Config.h"
 #include "gui/widget/TextWidget.h"
 #include "gui/widget/Widget.h"
@@ -29,25 +31,31 @@ class Font;
 
 class KeybindWidget: public TextWidget {
 	
+	InputKeyId m_key;
+	bool m_allowMouse;
+	
 public:
 	
 	ControlAction m_keybindAction;
 	int m_keybindIndex;
-	int m_key;
 	
-public:
+	boost::function<void(KeybindWidget * /* widget */)> keyChanged;
 	
 	KeybindWidget(ControlAction keybindAction, int keybindIndex, Font * font, const Vec2f pos = Vec2f_ZERO);
 	
 	bool OnMouseClick();
 	
+	void Update();
+	
+	void unfocus();
+	
 	virtual WidgetType type() const {
 		return WidgetType_Keybind;
 	}
 	
-	void setKey(int keyId);
+	void setKey(InputKeyId keyId);
 	
-	int key() { return m_key; }
+	InputKeyId key() { return m_key; }
 	
 };
 

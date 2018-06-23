@@ -1868,9 +1868,11 @@ protected:
 			panel->AddElement(txt);
 		}
 		
-		panel->AddElement(new KeybindWidget(controlAction, 0, hFontControls, Vec2f(150, 0)));
-		
-		panel->AddElement(new KeybindWidget(controlAction, 1, hFontControls, Vec2f(245, 0)));
+		for(int i = 0; i < 2; i++) {
+			KeybindWidget * keybind = new KeybindWidget(controlAction, i, hFontControls, Vec2f(150 + 95 * i, 0));
+			keybind->keyChanged = boost::bind(&ControlOptionsPage::onKeyChanged, this, _1);
+			panel->AddElement(keybind);
+		}
 		
 		panel->Move(Vec2f(0, y));
 		add(panel);
@@ -1882,7 +1884,20 @@ protected:
 	void resetActionKeys() {
 		config.setDefaultActionKeys();
 		ReInitActionKey();
-		bMouseAttack = false;
+	}
+	
+	void onKeyChanged(KeybindWidget * keybind) {
+		
+		if(keybind->m_keybindAction == CONTROLS_CUST_ACTION && !(keybind->key() & int(Mouse::ButtonBase))) {
+			// Only allow mouse buttons for for the action binding
+			keybind->setKey(config.actions[keybind->m_keybindAction].key[keybind->m_keybindIndex]);
+			return;
+		}
+		
+		if(config.setActionKey(keybind->m_keybindAction, keybind->m_keybindIndex, keybind->key())) {
+			ReInitActionKey();
+		}
+		
 	}
 	
 };
@@ -1955,7 +1970,7 @@ public:
 	
 private:
 	
-	void onClickedBack(){
+	void onClickedBack() {
 		config.save();
 	}
 	
