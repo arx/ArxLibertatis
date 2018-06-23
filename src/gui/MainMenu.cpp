@@ -170,10 +170,10 @@ public:
 		
 		if(savegame != SavegameHandle()) {
 			pDeleteButton->setEnabled(true);
-			m_textbox->SetText(savegames[savegame.handleData()].name);
+			m_textbox->setText(savegames[savegame.handleData()].name);
 		} else {
 			pDeleteButton->setEnabled(false);
-			m_textbox->SetText(getLocalised("system_menu_editquest_newsavegame"));
+			m_textbox->setText(getLocalised("system_menu_editquest_newsavegame"));
 		}
 		
 		AlignElementCenter(m_textbox);
