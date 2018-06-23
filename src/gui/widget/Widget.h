@@ -83,6 +83,7 @@ enum WidgetType {
 	WidgetType_Slider,
 	WidgetType_Text,
 	WidgetType_Keybind,
+	WidgetType_SaveSlot,
 };
 
 class Widget : private boost::noncopyable {

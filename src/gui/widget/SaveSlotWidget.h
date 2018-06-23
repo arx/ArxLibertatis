@@ -39,6 +39,10 @@ public:
 	
 	void RenderMouseOver();
 	
+	virtual WidgetType type() const {
+		return WidgetType_SaveSlot;
+	}
+	
 };
 
 #endif // ARX_GUI_WIDGET_SAVESLOTWIDGET_H
