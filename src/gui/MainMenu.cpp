@@ -134,8 +134,8 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
-			TextInputWidget * txt = new TextInputWidget(hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->ePlace = CENTER;
+			Rectf rect(RATIO_X(20), 0, m_rect.right - RATIO_X(20), 0);
+			TextInputWidget * txt = new TextInputWidget(hFontMenu, szMenuText, rect);
 			addCenter(txt, true);
 			m_textbox = txt;
 		}
@@ -181,8 +181,6 @@ public:
 			pDeleteButton->setEnabled(false);
 			m_textbox->setText(getLocalised("system_menu_editquest_newsavegame"));
 		}
-		
-		AlignElementCenter(m_textbox);
 		
 	}
 	

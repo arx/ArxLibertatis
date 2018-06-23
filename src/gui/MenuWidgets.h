@@ -72,7 +72,6 @@ public:
 	
 	void add(Widget * widget);
 	void addCenter(Widget * widget, bool centerX = false);
-	void AlignElementCenter(Widget * widget);
 	void Update(Vec2f pos);
 	void Render();
 	void drawDebug();
@@ -91,7 +90,6 @@ protected:
 	
 private:
 	
-	void updateTextRect(Widget * widget);
 	void UpdateText();
 	
 	Widget * m_selected;

@@ -34,7 +34,7 @@ class TextInputWidget: public Widget {
 	
 public:
 	
-	TextInputWidget(Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO);
+	TextInputWidget(Font * font, const std::string & text, const Rectf & rect);
 	
 	bool click();
 	
