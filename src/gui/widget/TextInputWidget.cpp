@@ -89,6 +89,25 @@ bool TextInputWidget::click() {
 		return true;
 	}
 	
+	std::string displayText = text();
+	if(m_editing && !editText().empty()) {
+		displayText = displayText.substr(0, cursorPos()) + editText() + displayText.substr(cursorPos());
+	}
+	
+	int width = m_font->getTextSize(displayText).width();
+	int posx = int(m_rect.center().x - width / 2);
+	if(width > m_rect.width()) {
+		if(!m_editing) {
+			posx = int(m_rect.left);
+		} else {
+			int cursor = m_font->getTextSize(displayText.begin(), displayText.begin() + cursorPos()).next();
+			posx = int(m_rect.right) - std::min(int(m_rect.width() / 4), width - cursor) - cursor;
+			posx = std::min(int(m_rect.left), posx);
+		}
+	}
+	
+	setCursorPos(m_font->getPosition(displayText, GInput->getMousePosition().x - posx));
+	
 	return result;
 }
 
@@ -163,6 +182,7 @@ void TextInputWidget::unfocus() {
 	
 	if(m_editing) {
 		GInput->stopTextInput();
+		setCursorPos();
 		m_editing = false;
 		if(unfocused) {
 			unfocused(this);
