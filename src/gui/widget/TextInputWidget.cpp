@@ -17,28 +17,33 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gui/widget/TextWidget.h"
+#include "gui/widget/TextInputWidget.h"
 
+#include "core/Application.h"
 #include "core/Core.h"
+#include "core/GameTime.h"
+#include "graphics/Draw.h"
+#include "graphics/Renderer.h"
 #include "graphics/font/Font.h"
 #include "gui/Text.h"
 #include "scene/GameSound.h"
+#include "window/RenderWindow.h"
 
-TextWidget::TextWidget(Font * font, const std::string & text, Vec2f pos)
+TextInputWidget::TextInputWidget(Font * font, const std::string & text, Vec2f pos)
 	: m_font(font)
-	, m_display(Automatic)
 {
 	m_rect = Rectf(RATIO_2(pos), 0.f, 0.f);
 	setText(text);
+	eState = EDIT;
 }
 
-void TextWidget::setText(const std::string & text) {
+void TextInputWidget::setText(const std::string & text) {
 	m_text = text;
 	Vec2i textSize = m_font->getTextSize(m_text);
 	m_rect = Rectf(m_rect.topLeft(), textSize.x + 1, textSize.y + 1);
 }
 
-bool TextWidget::click() {
+bool TextInputWidget::click() {
 	
 	bool result = Widget::click();
 	
@@ -48,39 +53,42 @@ bool TextWidget::click() {
 	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 	
-	if(clicked) {
-		clicked(this);
+	if(eState == EDIT) {
+		eState = EDIT_TIME;
+		return true;
 	}
 	
 	return result;
 }
 
-bool TextWidget::doubleClick() {
-	
-	bool result = Widget::click();
-	
-	if(m_enabled) {
-		if(doubleClicked) {
-			doubleClicked(this);
-		} else if(clicked) {
-			clicked(this);
-		}
-	}
-	
-	return result;
-}
-
-void TextWidget::render(bool mouseOver) {
+void TextInputWidget::render(bool mouseOver) {
 	
 	Color color = Color(232, 204, 142);
-	bool hasAction = m_targetMenu != NOP || clicked || doubleClicked;
-	bool dynamic =  m_display == Dynamic || (m_display == Automatic && hasAction);
-	if(m_display == Disabled || (dynamic && !m_enabled)) {
+	if(!m_enabled) {
 		color = Color::grayb(127);
-	} else if(m_display == MouseOver || (dynamic && mouseOver)) {
+	} else if(mouseOver) {
 		color = Color::white;
 	}
 	
 	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, color, NULL);
+	
+	if(eState == EDIT_TIME) {
+		bool blink = true;
+		if(mainApp->getWindow()->hasFocus()) {
+			blink = timeWaveSquare(g_platformTime.frameStart(), PlatformDurationMs(1200));
+		}
+		if(blink) {
+			// Draw cursor
+			TexturedVertex v[4];
+			GRenderer->ResetTexture(0);
+			v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toRGB();
+			v[0].p = Vec3f(m_rect.right, m_rect.top, 0.f);
+			v[1].p = v[0].p + Vec3f(2.f, 0.f, 0.f);
+			v[2].p = Vec3f(m_rect.right, m_rect.bottom, 0.f);
+			v[3].p = v[2].p + Vec3f(2.f, 0.f, 0.f);
+			v[0].w = v[1].w = v[2].w = v[3].w = 1.f;
+			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
+		}
+	}
 	
 }

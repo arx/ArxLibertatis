@@ -1044,6 +1044,7 @@ set(GUI_SOURCES
 	src/gui/widget/PanelWidget.cpp
 	src/gui/widget/SaveSlotWidget.cpp
 	src/gui/widget/SliderWidget.cpp
+	src/gui/widget/TextInputWidget.cpp
 	src/gui/widget/TextWidget.cpp
 	src/gui/widget/Widget.cpp
 	src/gui/widget/WidgetContainer.cpp

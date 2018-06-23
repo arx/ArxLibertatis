@@ -80,6 +80,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/widget/CycleTextWidget.h"
 #include "gui/widget/KeybindWidget.h"
 #include "gui/widget/PanelWidget.h"
+#include "gui/widget/TextInputWidget.h"
+#include "gui/widget/TextWidget.h"
 
 #include "graphics/Draw.h"
 #include "graphics/DrawLine.h"
@@ -457,7 +459,7 @@ void MenuPage::AlignElementCenter(Widget * widget) {
 	widget->Move(Vec2f(std::max(dx, 0.f), 0.f));
 }
 
-void MenuPage::updateTextRect(TextWidget * widget) {
+void MenuPage::updateTextRect(Widget * widget) {
 	
 	float iDx = widget->m_rect.width();
 	
@@ -473,7 +475,8 @@ void MenuPage::updateTextRect(TextWidget * widget) {
 
 void MenuPage::UpdateText() {
 	
-	TextWidget * textWidget = static_cast<TextWidget *>(m_focused);
+	arx_assert(m_focused->type() == WidgetType_TextInput);
+	TextInputWidget * textWidget = static_cast<TextInputWidget *>(m_focused);
 	
 	if(GInput->isAnyKeyPressed()) {
 		
@@ -541,21 +544,8 @@ void MenuPage::UpdateText() {
 	}
 	
 	if(m_focused->m_rect.top == m_focused->m_rect.bottom) {
-		Vec2i textSize = static_cast<TextWidget *>(m_focused)->font()->getTextSize("|");
+		Vec2i textSize = textWidget->font()->getTextSize("|");
 		m_focused->m_rect.bottom += textSize.y;
-	}
-	
-	if(m_blink) {
-		//DRAW CURSOR
-		TexturedVertex v[4];
-		GRenderer->ResetTexture(0);
-		v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toRGB();
-		v[0].p = Vec3f(m_focused->m_rect.right, m_focused->m_rect.top, 0.f);
-		v[1].p = v[0].p + Vec3f(2.f, 0.f, 0.f);
-		v[2].p = Vec3f(m_focused->m_rect.right, m_focused->m_rect.bottom, 0.f);
-		v[3].p = v[2].p + Vec3f(2.f, 0.f, 0.f);
-		v[0].w = v[1].w = v[2].w = v[3].w = 1.f;
-		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
 	
 }

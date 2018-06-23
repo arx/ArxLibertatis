@@ -52,7 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/TimeTypes.h"
 #include "graphics/Color.h"
 #include "gui/widget/ButtonWidget.h"
-#include "gui/widget/TextWidget.h"
 #include "gui/widget/Widget.h"
 #include "gui/widget/WidgetContainer.h"
 #include "input/InputKey.h"
@@ -92,7 +91,7 @@ protected:
 	
 private:
 	
-	void updateTextRect(TextWidget * widget);
+	void updateTextRect(Widget * widget);
 	void UpdateText();
 	
 	Widget * m_selected;
