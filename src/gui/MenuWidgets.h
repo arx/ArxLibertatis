@@ -78,8 +78,6 @@ public:
 	void Render();
 	void drawDebug();
 	
-	void ReInitActionKey();
-	
 	Vec2f m_pos;
 	Vec2f m_oldPos;
 	int m_rowSpacing;

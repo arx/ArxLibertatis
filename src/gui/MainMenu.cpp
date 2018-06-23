@@ -1881,9 +1881,25 @@ protected:
 	
 protected:
 	
+	void reinitActionKeys() {
+		
+		BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+			if(w->type() == WidgetType_Panel) {
+				PanelWidget * p = static_cast<PanelWidget *>(w);
+				BOOST_FOREACH(Widget * c, p->m_children) {
+					if(c->type() == WidgetType_Keybind) {
+						KeybindWidget * t = static_cast<KeybindWidget *>(c);
+						t->setKey(config.actions[t->action()].key[t->index()]);
+					}
+				}
+			}
+		}
+		
+	}
+	
 	void resetActionKeys() {
 		config.setDefaultActionKeys();
-		ReInitActionKey();
+		reinitActionKeys();
 	}
 	
 	void onKeyChanged(KeybindWidget * keybind) {
@@ -1895,7 +1911,8 @@ protected:
 		}
 		
 		if(config.setActionKey(keybind->action(), keybind->index(), keybind->key())) {
-			ReInitActionKey();
+			// Changing one key can unbind others so we have to update them all
+			reinitActionKeys();
 		}
 		
 	}
@@ -1965,7 +1982,8 @@ public:
 			add(cb);
 		}
 	
-		ReInitActionKey();
+		reinitActionKeys();
+		
 	}
 	
 private:
@@ -2040,7 +2058,8 @@ public:
 			add(txt);
 		}
 		
-		ReInitActionKey();
+		reinitActionKeys();
+		
 	}
 	
 private:
