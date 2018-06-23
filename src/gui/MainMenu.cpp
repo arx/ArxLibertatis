@@ -357,7 +357,9 @@ private:
 		resetSelection();
 		enableLoadDeleteButtons();
 		
+		arx_assert(widget->type() == WidgetType_SaveSlot);
 		m_selectedSave = static_cast<SaveSlotWidget *>(widget)->m_savegame;
+		
 		widget->bSelected = true;
 		
 	}
@@ -493,6 +495,7 @@ public:
 private:
 	
 	void onClickQuestSaveConfirm(TextWidget * widget) {
+		arx_assert(widget->type() == WidgetType_SaveSlot);
 		SavegameHandle slot = static_cast<SaveSlotWidget *>(widget)->m_savegame;
 		g_mainMenu->m_window->m_pageSaveConfirm->setSaveHandle(slot);
 	}
