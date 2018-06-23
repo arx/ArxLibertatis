@@ -33,6 +33,7 @@ public:
 	
 	ControlAction m_keybindAction;
 	int m_keybindIndex;
+	int m_key;
 	
 public:
 	
@@ -45,6 +46,8 @@ public:
 	}
 	
 	void setKey(int keyId);
+	
+	int key() { return m_key; }
 	
 };
 
