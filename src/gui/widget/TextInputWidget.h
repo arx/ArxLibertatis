@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_WIDGET_TEXTINPUTWIDGET_H
 #define ARX_GUI_WIDGET_TEXTINPUTWIDGET_H
 
+#include <limits>
+
 #include <boost/function.hpp>
 
 #include "graphics/Color.h"
@@ -32,6 +34,7 @@ class TextInputWidget: public Widget, public BasicTextInput {
 	
 	Font * m_font;
 	bool m_editing;
+	size_t m_maxLength;
 	
 	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
 	void textUpdated();
@@ -49,6 +52,8 @@ public:
 	bool wantFocus() const { return m_editing; }
 	
 	void unfocus();
+	
+	void setMaxLength(size_t length = std::numeric_limits<size_t>::max()) { m_maxLength = length; }
 	
 	Font * font() const { return m_font; }
 	

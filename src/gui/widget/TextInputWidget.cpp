@@ -19,8 +19,6 @@
 
 #include "gui/widget/TextInputWidget.h"
 
-#include <limits>
-
 #include "core/Application.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -36,6 +34,7 @@
 TextInputWidget::TextInputWidget(Font * font, const std::string & text, const Rectf & rect)
 	: m_font(font)
 	, m_editing(false)
+	, m_maxLength(std::numeric_limits<size_t>::max())
 {
 	m_rect = rect;
 	m_rect.bottom = m_rect.top + m_font->getLineHeight() + 1;
@@ -64,7 +63,7 @@ bool TextInputWidget::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 void TextInputWidget::textUpdated() {
 	
 	// Limit text size to fit into the widget
-	while(!text().empty() && m_font->getTextSize(text()).width() > m_rect.width()) {
+	while(text().length() > m_maxLength) {
 		if(cursorPos() == 0) {
 			eraseRight();
 		} else {
@@ -113,6 +112,15 @@ void TextInputWidget::render(bool mouseOver) {
 	
 	int width = m_font->getTextSize(displayText).width();
 	Vec2i pos = Vec2i(m_rect.topCenter() - Vec2f(width / 2, 0.f));
+	if(width > m_rect.width()) {
+		if(!m_editing) {
+			pos.x = int(m_rect.left);
+		} else {
+			int cursor = m_font->getTextSize(begin, begin + cursorPos()).next();
+			pos.x = int(m_rect.right) - std::min(int(m_rect.width() / 4), width - cursor) - cursor;
+			pos.x = std::min(s32(m_rect.left), pos.x);
+		}
+	}
 	
 	// Highlight edit area
 	if(m_editing && !editText().empty()) {
