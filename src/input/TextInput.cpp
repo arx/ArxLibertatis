@@ -104,6 +104,9 @@ bool TextInputHandler::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 }
 
 void BasicTextInput::newText(const std::string & text) {
+	if(m_selected) {
+		setText(std::string());
+	}
 	if(!text.empty() || !m_editText.empty()) {
 		m_text.insert(m_cursorPos, text);
 		m_cursorPos += text.length();
@@ -118,6 +121,7 @@ void BasicTextInput::setText(const std::string & text, size_t cursorPos) {
 	if(text != m_text) {
 		m_text = text;
 		m_cursorPos = std::min(cursorPos, m_text.length());
+		m_selected = false;
 		while(m_cursorPos < m_text.size() && util::UTF8::isContinuationByte(m_text[m_cursorPos])) {
 			m_cursorPos++;
 		}
@@ -128,6 +132,7 @@ void BasicTextInput::setText(const std::string & text, size_t cursorPos) {
 }
 
 void BasicTextInput::setCursorPos(size_t cursorPos) {
+	m_selected = false;
 	if(cursorPos != m_cursorPos) {
 		m_cursorPos = std::min(cursorPos, m_text.length());
 		while(m_cursorPos < m_text.size() && util::UTF8::isContinuationByte(m_text[m_cursorPos])) {
@@ -138,6 +143,9 @@ void BasicTextInput::setCursorPos(size_t cursorPos) {
 }
 
 void BasicTextInput::insert(const std::string & text) {
+	if(m_selected) {
+		setText(std::string());
+	}
 	if(!text.empty()) {
 		m_text.insert(m_cursorPos, text);
 		m_cursorPos += text.length();
@@ -175,6 +183,7 @@ void BasicTextInput::moveLeft() {
 }
 
 void BasicTextInput::moveRight() {
+	m_selected = false;
 	if(m_cursorPos < m_text.size()) {
 		m_cursorPos++;
 		while(m_cursorPos < m_text.size() && util::UTF8::isContinuationByte(m_text[m_cursorPos])) {
@@ -185,6 +194,9 @@ void BasicTextInput::moveRight() {
 }
 
 void BasicTextInput::eraseLeft() {
+	if(m_selected) {
+		setText(std::string());
+	}
 	if(m_cursorPos > 0) {
 		size_t count = 1;
 		while(m_cursorPos > 0 && util::UTF8::isContinuationByte(m_text[m_cursorPos - 1])) {
@@ -198,6 +210,9 @@ void BasicTextInput::eraseLeft() {
 }
 
 void BasicTextInput::eraseRight() {
+	if(m_selected) {
+		setText(std::string());
+	}
 	if(m_cursorPos < m_text.size()) {
 		size_t end = m_cursorPos + 1;
 		while(end < m_text.size() && util::UTF8::isContinuationByte(m_text[end])) {
@@ -249,6 +264,7 @@ size_t BasicTextInput::findWordRight() const {
 }
 
 void BasicTextInput::moveWordLeft() {
+	m_selected = false;
 	if(m_cursorPos > 0) {
 		m_cursorPos = findWordLeft();
 		cursorUpdated();
@@ -256,6 +272,7 @@ void BasicTextInput::moveWordLeft() {
 }
 
 void BasicTextInput::moveWordRight() {
+	m_selected = false;
 	if(m_cursorPos < m_text.size()) {
 		m_cursorPos = findWordRight();
 		cursorUpdated();
@@ -263,6 +280,9 @@ void BasicTextInput::moveWordRight() {
 }
 
 void BasicTextInput::eraseWordLeft() {
+	if(m_selected) {
+		setText(std::string());
+	}
 	if(m_cursorPos > 0) {
 		size_t start = findWordLeft();
 		m_text.erase(start, m_cursorPos - start);
@@ -272,6 +292,9 @@ void BasicTextInput::eraseWordLeft() {
 }
 
 void BasicTextInput::eraseWordRight() {
+	if(m_selected) {
+		setText(std::string());
+	}
 	if(m_cursorPos < m_text.size()) {
 		size_t end = findWordRight();
 		m_text.erase(m_cursorPos, end - m_cursorPos);
@@ -280,6 +303,7 @@ void BasicTextInput::eraseWordRight() {
 }
 
 void BasicTextInput::moveStart() {
+	m_selected = false;
 	if(m_cursorPos > 0) {
 		m_cursorPos = 0;
 		cursorUpdated();
@@ -287,6 +311,7 @@ void BasicTextInput::moveStart() {
 }
 
 void BasicTextInput::moveEnd() {
+	m_selected = false;
 	if(m_cursorPos < m_text.size()) {
 		m_cursorPos = m_text.size();
 		cursorUpdated();
@@ -294,6 +319,9 @@ void BasicTextInput::moveEnd() {
 }
 
 void BasicTextInput::eraseStart() {
+	if(m_selected) {
+		setText(std::string());
+	}
 	if(m_cursorPos > 0) {
 		m_text.erase(0, m_cursorPos);
 		m_cursorPos = 0;
@@ -302,6 +330,9 @@ void BasicTextInput::eraseStart() {
 }
 
 void BasicTextInput::eraseEnd() {
+	if(m_selected) {
+		setText(std::string());
+	}
 	if(m_cursorPos < m_text.size()) {
 		m_text.erase(m_cursorPos);
 		textUpdated();
@@ -468,4 +499,12 @@ bool BasicTextInput::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 
 void BasicTextInput::droppedText(const std::string & text) {
 	paste(text);
+}
+
+void BasicTextInput::selectAll() {
+	
+	setCursorPos();
+	
+	m_selected = true;
+	
 }

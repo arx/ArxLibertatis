@@ -72,6 +72,7 @@ class BasicTextInput : protected TextInputHandler {
 	size_t m_cursorPos;
 	size_t m_editCursorPos;
 	size_t m_editCursorLength;
+	bool m_selected;
 	
 protected:
 	
@@ -85,6 +86,7 @@ public:
 		: m_cursorPos(0)
 		, m_editCursorPos(0)
 		, m_editCursorLength(0)
+		, m_selected(false)
 	{ }
 	
 	void newText(const std::string & text);
@@ -112,6 +114,9 @@ public:
 	void eraseEnd();
 	virtual void paste(const std::string & text);
 	static bool isWordSeparator(char c);
+	
+	void selectAll();
+	bool selected() { return m_selected; }
 	
 	const std::string & text() const { return m_text; }
 	size_t cursorPos() const { return m_cursorPos; }
