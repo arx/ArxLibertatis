@@ -47,6 +47,7 @@
 #include "gui/widget/CycleTextWidget.h"
 #include "gui/widget/KeybindWidget.h"
 #include "gui/widget/PanelWidget.h"
+#include "gui/widget/SaveSlotWidget.h"
 #include "gui/widget/SliderWidget.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -201,42 +202,6 @@ private:
 	void onClickedSaveDelete(TextWidget * /* widget */) {
 		g_mainMenu->bReInitAll = true;
 		savegames.remove(m_savegame);
-	}
-	
-};
-
-class SaveSlotWidget : public TextWidget {
-	
-public:
-	
-	SavegameHandle m_savegame;
-	
-	SaveSlotWidget(SavegameHandle savegame, Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO)
-		: TextWidget(font, text, pos)
-		, m_savegame(savegame)
-	{ }
-	
-	virtual ~SaveSlotWidget() { }
-	
-	void RenderMouseOver() {
-		TextWidget::RenderMouseOver();
-		
-		arx_assert(m_id == BUTTON_MENUEDITQUEST_LOAD || m_id == BUTTON_MENUEDITQUEST_SAVEINFO);
-		
-		if(m_savegame == SavegameHandle()) {
-			g_thumbnailCursor.clear();
-			return;
-		}
-		
-		const res::path & image = savegames[m_savegame.handleData()].thumbnail;
-		if(!image.empty()) {
-			TextureContainer * t = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
-			if(t != g_thumbnailCursor.m_loadTexture) {
-				delete g_thumbnailCursor.m_loadTexture;
-				g_thumbnailCursor.m_loadTexture = t;
-			}
-			g_thumbnailCursor.m_renderTexture = g_thumbnailCursor.m_loadTexture;
-		}
 	}
 	
 };
