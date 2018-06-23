@@ -184,6 +184,7 @@ public:
 		} else {
 			pDeleteButton->setEnabled(false);
 			m_textbox->setText(getLocalised("system_menu_editquest_newsavegame"));
+			m_textbox->selectAll();
 		}
 		
 	}
