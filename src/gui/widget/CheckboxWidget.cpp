@@ -60,7 +60,7 @@ void CheckboxWidget::Move(const Vec2f & offset) {
 	m_label->Move(offset);
 }
 
-bool CheckboxWidget::OnMouseClick() {
+bool CheckboxWidget::click() {
 	
 	if(iOldState < 0) {
 		iOldState = iState;

@@ -48,7 +48,7 @@ void ButtonWidget::SetPos(Vec2f pos) {
 	m_rect = Rectf(pos, scaledSize.x, scaledSize.y);
 }
 
-bool ButtonWidget::OnMouseClick() {
+bool ButtonWidget::click() {
 	
 	if(!m_enabled) {
 		return false;

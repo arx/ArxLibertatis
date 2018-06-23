@@ -41,7 +41,7 @@ KeybindWidget::KeybindWidget(ControlAction keybindAction, size_t keybindIndex, F
 	setKey(ActionKey::UNUSED);
 }
 
-bool KeybindWidget::OnMouseClick() {
+bool KeybindWidget::click() {
 	
 	if(!m_enabled) {
 		return false;

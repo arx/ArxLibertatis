@@ -54,7 +54,7 @@ public:
 	
 	void OnMouseDoubleClick();
 	
-	bool OnMouseClick();
+	bool click();
 	
 	void render(bool mouseOver = false);
 	

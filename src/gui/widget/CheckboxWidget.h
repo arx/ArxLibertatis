@@ -35,7 +35,7 @@ public:
 	virtual ~CheckboxWidget();
 	
 	void Move(const Vec2f & offset);
-	bool OnMouseClick();
+	bool click();
 	
 	void render(bool mouseOver = false);
 	

@@ -36,7 +36,7 @@ public:
 public:
 	void SetPos(Vec2f pos);
 	void AddText(const std::string & label);
-	bool OnMouseClick();
+	bool click();
 	void render(bool mouseOver = false);
 	
 	boost::function<void()> clicked;
