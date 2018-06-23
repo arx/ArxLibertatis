@@ -97,8 +97,6 @@ private:
 	Widget * m_selected;
 	Widget * m_focused;
 	bool m_disableShortcuts;
-	PlatformDuration m_blinkTime;
-	bool m_blink;
 	
 };
 
