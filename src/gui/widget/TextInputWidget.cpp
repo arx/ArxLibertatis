@@ -37,7 +37,7 @@ TextInputWidget::TextInputWidget(Font * font, const std::string & text, const Re
 	, m_editing(false)
 {
 	m_rect = rect;
-	m_rect.bottom = m_rect.top + m_font->getTextSize("|").height();
+	m_rect.bottom = m_rect.top + m_font->getLineHeight() + 1;
 	setText(text);
 }
 
