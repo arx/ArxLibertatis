@@ -669,19 +669,6 @@ void MenuPage::Update(Vec2f pos) {
 				MENUSTATE e = m_selected->m_targetMenu;
 				m_selected->OnMouseDoubleClick();
 				
-				switch(m_selected->m_id) {
-				case BUTTON_MENUEDITQUEST_LOAD:
-					bEdit = true;
-					break;
-				default:
-					bEdit = false;
-				}
-				
-				if(m_selected->m_id == BUTTON_MENUEDITQUEST_LOAD) {
-					g_mainMenu->m_window->requestPage(Page_None);
-					return;
-				}
-				
 				if(bEdit) {
 					g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
 					return;
@@ -703,21 +690,10 @@ void MenuPage::Update(Vec2f pos) {
 	} else {
 		if(!m_selected) {
 			Widget * widget = m_children.getAtPos(Vec2f(GInput->getMousePosition()));
-			
 			if(widget) {
 				m_selected = widget;
-				
 				if(GInput->getMouseButtonDoubleClick(Mouse::Button_0)) {
 					m_selected->OnMouseDoubleClick();
-					
-					switch(m_selected->m_id) {
-					case BUTTON_MENUEDITQUEST_LOAD:
-						bEdit = true;
-						break;
-					default:
-						bEdit = false;
-					}
-					
 					if(bEdit) {
 						g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
 						return;
