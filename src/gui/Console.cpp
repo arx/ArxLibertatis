@@ -561,17 +561,6 @@ void ScriptConsole::update() {
 		textUpdated();
 	}
 	
-	if(mainApp->getWindow()->hasFocus()) {
-		static const PlatformDuration BlinkDuration = PlatformDurationMs(600);
-		m_blinkTime += g_platformTime.lastFrameDuration();
-		if(m_blinkTime > (BlinkDuration + BlinkDuration)) {
-			m_blinkTime = 0;
-		}
-		m_blink = m_blinkTime > BlinkDuration;
-	} else {
-		m_blink = true;
-	}
-	
 }
 
 void ScriptConsole::draw() {
@@ -636,7 +625,11 @@ void ScriptConsole::draw() {
 	}
 	
 	// Draw cursor
-	if(m_blink) {
+	bool blink = true;
+	if(mainApp->getWindow()->hasFocus()) {
+		blink = timeWaveSquare(g_platformTime.frameStart(), PlatformDurationMs(1200));
+	}
+	if(blink) {
 		int cursor = x;
 		if(cursorPos() != displayText.size()) {
 			cursor = pos.x + hFontDebug->getTextSize(begin, begin + displayCursorPos).next();
