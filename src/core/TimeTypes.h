@@ -140,6 +140,10 @@ inline float timeWaveSaw(InstantType<TAG, T> t, DurationType<TAG, T> period) {
 	return float(t.t % period.t) / float(period.t);
 }
 template <typename TAG, typename T>
+inline bool timeWaveSquare(InstantType<TAG, T> t, DurationType<TAG, T> period) {
+	return t.t % period.t >= period.t / 2;
+}
+template <typename TAG, typename T>
 inline float timeWaveSin(InstantType<TAG, T> t, DurationType<TAG, T> period) {
 	return std::sin(timeWaveSaw(t, period) * 2.f * glm::pi<float>());
 }
