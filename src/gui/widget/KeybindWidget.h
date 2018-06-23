@@ -20,17 +20,21 @@
 #ifndef ARX_GUI_WIDGET_KEYBINDWIDGET_H
 #define ARX_GUI_WIDGET_KEYBINDWIDGET_H
 
+#include <string>
+
 #include <boost/function.hpp>
 
 #include "core/Config.h"
-#include "gui/widget/TextWidget.h"
 #include "gui/widget/Widget.h"
+#include "input/InputKey.h"
 #include "math/Vector.h"
 
 class Font;
 
-class KeybindWidget: public TextWidget {
+class KeybindWidget: public Widget {
 	
+	std::string m_text;
+	Font * m_font;
 	ControlAction m_action;
 	size_t m_index;
 	InputKeyId m_key;
@@ -46,6 +50,10 @@ public:
 	bool OnMouseClick();
 	
 	void Update();
+	
+	void Render();
+	
+	void RenderMouseOver();
 	
 	bool wantFocus() const { return m_editing; }
 	

@@ -20,33 +20,42 @@
 #include "gui/widget/KeybindWidget.h"
 
 #include "core/Application.h"
+#include "core/Core.h"
 #include "core/GameTime.h"
+#include "graphics/Color.h"
+#include "graphics/font/Font.h"
+#include "gui/Text.h"
 #include "input/Input.h"
+#include "scene/GameSound.h"
 #include "window/RenderWindow.h"
 
-static const char emptyKeybindLabel[] = "---";
-
 KeybindWidget::KeybindWidget(ControlAction keybindAction, size_t keybindIndex, Font * font, Vec2f pos)
-	: TextWidget(font, emptyKeybindLabel, pos)
+	: m_font(font)
 	, m_action(keybindAction)
 	, m_index(keybindIndex)
-	, m_key(ActionKey::UNUSED)
+	, m_key(ActionKey::UNUSED - 1)
 	, m_editing(false)
 	, m_allowMouse(false)
-{ }
+{
+	m_rect = Rectf(RATIO_2(pos), 0.f, 0.f);
+	setKey(ActionKey::UNUSED);
+}
 
 bool KeybindWidget::OnMouseClick() {
 	
-	bool ret = TextWidget::OnMouseClick();
+	if(!enabled) {
+		return false;
+	}
 	
-	if(enabled && !m_editing) {
+	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+	
+	if(!m_editing) {
 		m_editing = true;
-		lOldColor = lColorHighlight;
 		m_allowMouse = false;
 		return true;
 	}
 	
-	return ret;
+	return false;
 }
 
 void KeybindWidget::Update() {
@@ -54,13 +63,6 @@ void KeybindWidget::Update() {
 	if(!m_editing) {
 		return;
 	}
-	
-	bool blink = true;
-	if(mainApp->getWindow()->hasFocus()) {
-		blink = timeWaveSquare(g_platformTime.frameStart(), PlatformDurationMs(400));
-	}
-	
-	lColorHighlight = blink ? Color(255, 0, 0) : Color(50, 0, 0);
 	
 	InputKeyId keyId = GInput->getKeyPressed();
 	
@@ -115,11 +117,32 @@ void KeybindWidget::Update() {
 	
 }
 
+void KeybindWidget::Render() {
+	
+	bool blink = true;
+	if(mainApp->getWindow()->hasFocus()) {
+		blink = timeWaveSquare(g_platformTime.frameStart(), PlatformDurationMs(400));
+	}
+	
+	Color editColor = blink ? Color(255, 0, 0) : Color(50, 0, 0);
+	Color color = m_editing ? editColor : enabled ? Color(232, 204, 142) : Color::grayb(127);
+	
+	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, color, NULL);
+	
+}
+
+void KeybindWidget::RenderMouseOver() {
+	
+	if(!m_editing) {
+		ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, Color::white, NULL);
+	}
+	
+}
+
 void KeybindWidget::unfocus() {
 	
 	if(m_editing) {
 		m_editing = false;
-		lColorHighlight = lOldColor;
 		m_allowMouse = false;
 	}
 	
@@ -134,11 +157,13 @@ void KeybindWidget::setKey(InputKeyId keyId) {
 	}
 	m_key = keyId;
 	
-	std::string text = GInput->getKeyName(keyId, true);
-	if(text.empty()) {
-		text = emptyKeybindLabel;
+	m_text = GInput->getKeyName(keyId, true);
+	if(m_text.empty()) {
+		m_text = "---";
 	}
-	SetText(text);
+	
+	Vec2i textSize = m_font->getTextSize(m_text);
+	m_rect = Rectf(m_rect.topLeft(), textSize.x + 1, textSize.y + 1);
 	
 	if(keyChanged) {
 		keyChanged(this);
