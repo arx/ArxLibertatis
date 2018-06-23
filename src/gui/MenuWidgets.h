@@ -90,7 +90,6 @@ protected:
 	Rectf m_rect;
 	Vec2f m_size;
 	Widget * m_selected;
-	bool bMouseAttack;
 	
 private:
 	void updateTextRect(TextWidget * widget);
