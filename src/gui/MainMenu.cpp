@@ -465,6 +465,14 @@ public:
 			}
 			
 			std::string text = save.name +  "   " + save.time;
+			size_t length = save.name.length();
+			while(length > 0 && hFontControls->getTextSize(text).width() > m_rect.width() - RATIO_X(30)) {
+				length--;
+				while(length > 0 && util::UTF8::isContinuationByte(save.name[length])) {
+					length--;
+				}
+				text = save.name.substr(0, length) + "…   " + save.time;
+			}
 			
 			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), hFontControls, text, Vec2f(20, 0));
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
