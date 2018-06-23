@@ -371,7 +371,12 @@ void MenuWindow::Render() {
 }
 
 void MenuWindow::setCurrentPageId(MENUSTATE id) {
+	
 	m_currentPageId = id;
+	
+	if(m_currentPage) {
+		m_currentPage->unfocus();
+	}
 	
 	m_currentPage = NULL;
 	BOOST_FOREACH(MenuPage * page, m_pages) {
@@ -379,12 +384,13 @@ void MenuWindow::setCurrentPageId(MENUSTATE id) {
 			m_currentPage = page;
 		}
 	}
+	
 }
 
 MenuPage::MenuPage(MENUSTATE _eMenuState)
 	: m_rowSpacing(10)
 	, m_selected(NULL)
-	, bEdit(false)
+	, m_focused(NULL)
 	, m_disableShortcuts(false)
 	, m_blinkTime(0)
 	, m_blink(true)
@@ -478,7 +484,7 @@ void MenuPage::updateTextRect(TextWidget * widget) {
 
 void MenuPage::UpdateText() {
 	
-	TextWidget * textWidget = static_cast<TextWidget *>(m_selected);
+	TextWidget * textWidget = static_cast<TextWidget *>(m_focused);
 	
 	if(GInput->isAnyKeyPressed()) {
 		
@@ -498,8 +504,7 @@ void MenuPage::UpdateText() {
 				updateTextRect(textWidget);
 			}
 			
-			m_selected = NULL;
-			bEdit = false;
+			m_focused = NULL;
 			return;
 		}
 		
@@ -546,9 +551,9 @@ void MenuPage::UpdateText() {
 		}
 	}
 	
-	if(m_selected->m_rect.top == m_selected->m_rect.bottom) {
-		Vec2i textSize = static_cast<TextWidget *>(m_selected)->m_font->getTextSize("|");
-		m_selected->m_rect.bottom += textSize.y;
+	if(m_focused->m_rect.top == m_focused->m_rect.bottom) {
+		Vec2i textSize = static_cast<TextWidget *>(m_focused)->m_font->getTextSize("|");
+		m_focused->m_rect.bottom += textSize.y;
 	}
 	
 	if(m_blink) {
@@ -556,9 +561,9 @@ void MenuPage::UpdateText() {
 		TexturedVertex v[4];
 		GRenderer->ResetTexture(0);
 		v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toRGB();
-		v[0].p = Vec3f(m_selected->m_rect.right, m_selected->m_rect.top, 0.f);
+		v[0].p = Vec3f(m_focused->m_rect.right, m_focused->m_rect.top, 0.f);
 		v[1].p = v[0].p + Vec3f(2.f, 0.f, 0.f);
-		v[2].p = Vec3f(m_selected->m_rect.right, m_selected->m_rect.bottom, 0.f);
+		v[2].p = Vec3f(m_focused->m_rect.right, m_focused->m_rect.bottom, 0.f);
 		v[3].p = v[2].p + Vec3f(2.f, 0.f, 0.f);
 		v[0].w = v[1].w = v[2].w = v[3].w = 1.f;
 		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
@@ -573,77 +578,82 @@ void MenuPage::Update(Vec2f pos) {
 	m_oldPos = m_pos;
 	m_pos = pos;
 	
-	if(m_selected && !m_selected->wantFocus()) {
-		m_selected = NULL;
-		bEdit = false;
+	if(m_focused && !m_focused->wantFocus()) {
+		m_focused->unfocus();
+		m_focused = NULL;
 		m_disableShortcuts = true;
 	}
 	
-	if(!bEdit) {
+	if(m_disableShortcuts) {
 		
-		if(m_disableShortcuts) {
-			bool isShortcutPressed = false;
-			BOOST_FOREACH(Widget * w, m_children.m_widgets) {
-				arx_assert(w);
-				if(w->m_shortcut != ActionKey::UNUSED && GInput->isKeyPressed(w->m_shortcut)) {
-					isShortcutPressed = true;
-				}
-			}
-			if(!isShortcutPressed) {
-				m_disableShortcuts = false;
-			}
-		} else {
-			BOOST_FOREACH(Widget * w, m_children.m_widgets) {
-				arx_assert(w);
-				if(w->m_shortcut != ActionKey::UNUSED && GInput->isKeyPressedNowUnPressed(w->m_shortcut)) {
-					bEdit = w->OnMouseClick();
-					m_selected = w;
-					g_mainMenu->m_window->requestPage(w->m_targetMenu);
-					return;
-				}
+		bool isShortcutPressed = false;
+		
+		BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+			arx_assert(w);
+			if(w->m_shortcut != ActionKey::UNUSED && GInput->isKeyPressed(w->m_shortcut)) {
+				isShortcutPressed = true;
 			}
 		}
 		
-		m_selected = m_children.getAtPos(Vec2f(GInput->getMousePosition()));
+		if(!isShortcutPressed) {
+			m_disableShortcuts = false;
+		}
 		
-		if(m_selected) {
-			if(GInput->getMouseButtonDoubleClick(Mouse::Button_0)) {
-				MENUSTATE e = m_selected->m_targetMenu;
-				m_selected->OnMouseDoubleClick();
+	} else {
+		
+		BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+			arx_assert(w);
+			
+			if(m_focused && w != m_focused) {
+				continue;
+			}
+			
+			if(w->m_shortcut != ActionKey::UNUSED && GInput->isKeyPressedNowUnPressed(w->m_shortcut)) {
 				
-				if(bEdit) {
-					g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
-					return;
+				m_selected = w;
+				
+				if(w->OnMouseClick() && w != m_focused) {
+					m_focused = w;
 				}
 				
-				g_mainMenu->m_window->requestPage(e);
+				g_mainMenu->m_window->requestPage(w->m_targetMenu);
+				
 				return;
 			}
 			
-			if(GInput->getMouseButton(Mouse::Button_0)) {
-				MENUSTATE e = m_selected->m_targetMenu;
-				bEdit = m_selected->OnMouseClick();
-				g_mainMenu->m_window->requestPage(e);
-				return;
-			} else {
-				m_selected->EmptyFunction();
-			}
 		}
-	} else {
-		if(!m_selected) {
-			Widget * widget = m_children.getAtPos(Vec2f(GInput->getMousePosition()));
-			if(widget) {
-				m_selected = widget;
-				if(GInput->getMouseButtonDoubleClick(Mouse::Button_0)) {
-					m_selected->OnMouseDoubleClick();
-					if(bEdit) {
-						g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
-						return;
-					}
-				}
-			}
-		}
+		
 	}
+	
+	m_selected = m_children.getAtPos(Vec2f(GInput->getMousePosition()));
+	
+	if(m_focused && m_selected != m_focused && GInput->getMouseButton(Mouse::Button_0)) {
+		m_focused->unfocus();
+		m_focused = NULL;
+	}
+	
+	if(m_selected && !m_focused) {
+		
+		if(GInput->getMouseButtonDoubleClick(Mouse::Button_0)) {
+			m_selected->OnMouseDoubleClick();
+			g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
+		}
+		
+		if(GInput->getMouseButton(Mouse::Button_0)) {
+			
+			if(m_selected->OnMouseClick()) {
+				m_focused = m_selected;
+			}
+			
+			g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
+			
+			return;
+		}
+		
+		m_selected->EmptyFunction();
+		
+	}
+	
 }
 
 void MenuPage::Render() {
@@ -656,10 +666,16 @@ void MenuPage::Render() {
 		w->Render();
 	}
 	
-	//HIGHLIGHT
 	if(m_selected) {
 		pMenuCursor->SetMouseOver();
 		m_selected->RenderMouseOver();
+	}
+	
+	if(m_focused && m_focused != m_selected) {
+		m_focused->RenderMouseOver();
+	}
+	
+	if(m_focused) {
 		
 		if(mainApp->getWindow()->hasFocus()) {
 			static const PlatformDuration BlinkDuration = PlatformDurationMs(300);
@@ -672,7 +688,7 @@ void MenuPage::Render() {
 			m_blink = true;
 		}
 		
-		switch(m_selected->eState) {
+		switch(m_focused->eState) {
 			case EDIT_TIME:
 				UpdateText();
 				break;
@@ -680,7 +696,9 @@ void MenuPage::Render() {
 			default:
 			break;
 		}
+		
 	}
+	
 }
 
 void MenuPage::drawDebug() {
@@ -688,6 +706,15 @@ void MenuPage::drawDebug() {
 	drawLineRectangle(rect, 0.f, Color::green);
 	
 	m_children.drawDebug();
+}
+
+void MenuPage::unfocus() {
+	
+	if(m_focused) {
+		m_focused->unfocus();
+		m_focused = NULL;
+	}
+	
 }
 
 void Menu2_Close() {
