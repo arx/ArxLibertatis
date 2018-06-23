@@ -27,6 +27,7 @@ KeybindWidget::KeybindWidget(ControlAction keybindAction, int keybindIndex, Font
 	: TextWidget(font, emptyKeybindLabel, pos)
 	, m_keybindAction(keybindAction)
 	, m_keybindIndex(keybindIndex)
+	, m_key(ActionKey::UNUSED)
 {
 	
 	eState = GETTOUCH;
@@ -48,13 +49,18 @@ bool KeybindWidget::OnMouseClick() {
 
 void KeybindWidget::setKey(int keyId) {
 	
+	lColorHighlight = lOldColor;
+	eState = GETTOUCH;
+	
+	if(keyId == m_key) {
+		return;
+	}
+	m_key = keyId;
+	
 	std::string text = GInput->getKeyName(keyId, true);
 	if(text.empty()) {
 		text = emptyKeybindLabel;
 	}
 	SetText(text);
-	
-	lColorHighlight = lOldColor;
-	eState = GETTOUCH;
 	
 }
