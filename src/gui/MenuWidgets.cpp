@@ -624,18 +624,15 @@ void MenuPage::Update(Vec2f pos) {
 	if(m_selected && !m_focused) {
 		
 		if(GInput->getMouseButtonDoubleClick(Mouse::Button_0)) {
-			m_selected->OnMouseDoubleClick();
+			m_selected->doubleClick();
 			g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
 		}
 		
 		if(GInput->getMouseButton(Mouse::Button_0)) {
-			
 			if(m_selected->click()) {
 				m_focused = m_selected;
 			}
-			
 			g_mainMenu->m_window->requestPage(m_selected->m_targetMenu);
-			
 			return;
 		}
 		
