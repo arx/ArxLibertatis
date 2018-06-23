@@ -19,8 +19,12 @@
 
 #include "gui/widget/KeybindWidget.h"
 
+#include "input/Input.h"
+
+static const char emptyKeybindLabel[] = "---";
+
 KeybindWidget::KeybindWidget(ControlAction keybindAction, int keybindIndex, Font * font, Vec2f pos)
-	: TextWidget(font, "---", pos)
+	: TextWidget(font, emptyKeybindLabel, pos)
 	, m_keybindAction(keybindAction)
 	, m_keybindIndex(keybindIndex)
 {
@@ -40,4 +44,17 @@ bool KeybindWidget::OnMouseClick() {
 	}
 	
 	return ret;
+}
+
+void KeybindWidget::setKey(int keyId) {
+	
+	std::string text = GInput->getKeyName(keyId, true);
+	if(text.empty()) {
+		text = emptyKeybindLabel;
+	}
+	SetText(text);
+	
+	lColorHighlight = lOldColor;
+	eState = GETTOUCH;
+	
 }
