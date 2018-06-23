@@ -27,14 +27,6 @@
 #include "math/Rectangle.h"
 #include "util/HandleType.h"
 
-enum ELEMSTATE
-{
-	TNOP,
-	//Element Text
-	EDIT,           //type d'etat
-	EDIT_TIME,      //etat en cours
-};
-
 enum MENUSTATE {
 	Page_None,
 	RESUME_GAME,
@@ -73,7 +65,6 @@ class Widget : private boost::noncopyable {
 public:
 	Rectf m_rect;
 	
-	ELEMSTATE   eState;
 	MENUSTATE   m_targetMenu;
 	InputKeyId  m_shortcut;
 	
@@ -91,7 +82,7 @@ public:
 	virtual void hover() { }
 	virtual void update() { }
 	virtual void render(bool mouseOver = false) = 0;
-	virtual bool wantFocus() const { return eState == EDIT_TIME; }
+	virtual bool wantFocus() const { return false; }
 	virtual void unfocus() { }
 	
 	void SetShortCut(int _iShortCut);
