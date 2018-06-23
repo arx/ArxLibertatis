@@ -117,8 +117,23 @@ void BasicTextInput::newText(const std::string & text) {
 void BasicTextInput::setText(const std::string & text, size_t cursorPos) {
 	if(text != m_text) {
 		m_text = text;
-		m_cursorPos = std::min(cursorPos, text.length());
+		m_cursorPos = std::min(cursorPos, m_text.length());
+		while(m_cursorPos < m_text.size() && util::UTF8::isContinuationByte(m_text[m_cursorPos])) {
+			m_cursorPos++;
+		}
 		textUpdated();
+	} else {
+		setCursorPos(cursorPos);
+	}
+}
+
+void BasicTextInput::setCursorPos(size_t cursorPos) {
+	if(cursorPos != m_cursorPos) {
+		m_cursorPos = std::min(cursorPos, m_text.length());
+		while(m_cursorPos < m_text.size() && util::UTF8::isContinuationByte(m_text[m_cursorPos])) {
+			m_cursorPos++;
+		}
+		cursorUpdated();
 	}
 }
 
