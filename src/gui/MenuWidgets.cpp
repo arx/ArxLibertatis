@@ -597,19 +597,18 @@ KeybindWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId * pInp
 			}
 		}
 		
-		std::string pText;
 		if(iMouseButton) {
-			if(pInputKeyId)
+			keyId = iMouseButton;
+			if(pInputKeyId) {
 				*pInputKeyId = iMouseButton;
-			pText = GInput->getKeyName(iMouseButton, true);
-		} else {
-			pText = GInput->getKeyName(keyId, true);
+			}
 		}
-
+		
+		std::string pText = GInput->getKeyName(keyId, true);
 		if(pText.empty()) {
 			pText = "---";
 		}
-
+		
 		widget->lColorHighlight = widget->lOldColor;
 		widget->eState = GETTOUCH;
 		widget->SetText(pText);
