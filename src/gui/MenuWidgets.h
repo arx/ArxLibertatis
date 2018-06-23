@@ -62,7 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 class Font;
-class KeybindWidget;
 struct SaveGame;
 
 class MenuPage : private boost::noncopyable {
@@ -79,7 +78,6 @@ public:
 	void Render();
 	void drawDebug();
 	
-	KeybindWidget * GetTouch(bool keyTouched, int keyId, InputKeyId * pInputKeyId, bool _bValidateTest);
 	void ReInitActionKey();
 	
 	Vec2f m_pos;
