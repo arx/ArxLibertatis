@@ -28,3 +28,16 @@ KeybindWidget::KeybindWidget(ControlAction keybindAction, int keybindIndex, Font
 	eState = GETTOUCH;
 	
 }
+
+bool KeybindWidget::OnMouseClick() {
+	
+	bool ret = TextWidget::OnMouseClick();
+	
+	if(enabled && eState == GETTOUCH) {
+		eState = GETTOUCH_TIME;
+		lOldColor = lColorHighlight;
+		return true;
+	}
+	
+	return ret;
+}
