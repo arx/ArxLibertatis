@@ -662,7 +662,7 @@ void MenuPage::Render() {
 		return;
 	
 	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
-		w->Update();
+		w->update();
 		w->render(w == m_selected);
 	}
 	

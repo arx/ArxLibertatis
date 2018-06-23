@@ -90,7 +90,7 @@ public:
 	virtual ~Widget();
 	
 	virtual bool OnMouseClick() { return false; }
-	virtual void Update() { }
+	virtual void update() { }
 	virtual void render(bool mouseOver = false) = 0;
 	virtual void EmptyFunction() { }
 	virtual void OnMouseDoubleClick() { }

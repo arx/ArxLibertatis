@@ -59,13 +59,13 @@ void PanelWidget::AddElement(Widget * widget) {
 	widget->Move(Vec2f(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
 }
 
-void PanelWidget::Update()
+void PanelWidget::update()
 {
 	m_rect.right = m_rect.left;
 	m_rect.bottom = m_rect.top;
 	
 	BOOST_FOREACH(Widget * w, m_children) {
-		w->Update();
+		w->update();
 		m_rect.right = std::max(m_rect.right, w->m_rect.right);
 		m_rect.bottom = std::max(m_rect.bottom, w->m_rect.bottom);
 	}
