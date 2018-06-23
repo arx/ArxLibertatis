@@ -27,15 +27,6 @@
 #include "math/Rectangle.h"
 #include "util/HandleType.h"
 
-// Enum for all the buttons in the menu
-enum MenuButton {
-	BUTTON_INVALID = -1,
-
-	BUTTON_MENUEDITQUEST_LOAD = 1,
-
-	BUTTON_MENUEDITQUEST_SAVEINFO,
-};
-
 enum ELEMSTATE
 {
 	TNOP,
@@ -90,8 +81,6 @@ class Widget : private boost::noncopyable {
 	
 public:
 	Rectf m_rect;
-	
-	MenuButton m_id;
 	
 	ELEMPOS     ePlace;
 	ELEMSTATE   eState;

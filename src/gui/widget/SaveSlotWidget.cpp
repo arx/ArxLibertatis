@@ -31,8 +31,6 @@ void SaveSlotWidget::RenderMouseOver() {
 	
 	TextWidget::RenderMouseOver();
 	
-	arx_assert(m_id == BUTTON_MENUEDITQUEST_LOAD || m_id == BUTTON_MENUEDITQUEST_SAVEINFO);
-	
 	if(m_savegame == SavegameHandle()) {
 		g_thumbnailCursor.clear();
 		return;

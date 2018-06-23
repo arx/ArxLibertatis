@@ -32,8 +32,6 @@
 
 CheckboxWidget::CheckboxWidget(TextWidget * label) {
 	
-	m_id = BUTTON_INVALID; // TODO remove this
-	
 	arx_assert(label);
 	
 	m_textureOff = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");

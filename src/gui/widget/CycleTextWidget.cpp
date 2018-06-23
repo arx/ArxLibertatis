@@ -29,8 +29,6 @@
 
 CycleTextWidget::CycleTextWidget() {
 	
-	m_id = BUTTON_INVALID;
-	
 	Vec2f buttonSize = Vec2f(16, 16);
 	
 	pLeftButton = new ButtonWidget(Vec2f_ZERO, buttonSize, "graph/interface/menus/menu_slider_button_left");

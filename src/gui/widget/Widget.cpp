@@ -26,7 +26,6 @@
 
 Widget::Widget()
 	: m_rect(0, 0, 0, 0)
-	, m_id(BUTTON_INVALID)
 	, enabled(true)
 	, bCheck(true)
 {
