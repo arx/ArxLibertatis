@@ -120,7 +120,7 @@ void CycleTextWidget::EmptyFunction() {
 	}
 }
 
-bool CycleTextWidget::OnMouseClick() {
+bool CycleTextWidget::click() {
 	
 	if(!m_enabled) {
 		return false;

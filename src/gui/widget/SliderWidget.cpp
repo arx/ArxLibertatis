@@ -86,7 +86,7 @@ void SliderWidget::EmptyFunction() {
 	}
 }
 
-bool SliderWidget::OnMouseClick() {
+bool SliderWidget::click() {
 	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 

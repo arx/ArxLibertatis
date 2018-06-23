@@ -44,7 +44,7 @@ void TextWidget::OnMouseDoubleClick() {
 	}
 }
 
-bool TextWidget::OnMouseClick() {
+bool TextWidget::click() {
 	
 	if(!m_enabled) {
 		return false;

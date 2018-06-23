@@ -39,7 +39,7 @@ public:
 	int getValue() const { return m_value; }
 	
 	void Move(const Vec2f & offset);
-	bool OnMouseClick();
+	bool click();
 	void update();
 	void render(bool mouseOver = false);
 	void EmptyFunction();

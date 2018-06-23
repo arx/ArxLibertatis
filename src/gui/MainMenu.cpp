@@ -352,8 +352,8 @@ private:
 	}
 	
 	void onDoubleClickQuestLoad(TextWidget * txt) {
-		txt->OnMouseClick();
-		pLoadConfirm->OnMouseClick();
+		txt->click();
+		pLoadConfirm->click();
 	}
 	
 	void onClickQuestLoadConfirm() {

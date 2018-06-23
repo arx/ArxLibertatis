@@ -47,7 +47,7 @@ public:
 	
 	KeybindWidget(ControlAction keybindAction, size_t keybindIndex, Font * font, const Vec2f pos = Vec2f_ZERO);
 	
-	bool OnMouseClick();
+	bool click();
 	
 	void update();
 	

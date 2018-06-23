@@ -35,7 +35,7 @@ public:
 	
 	void update();
 	void render(bool mouseOver = false);
-	bool OnMouseClick() { return false; }
+	bool click() { return false; }
 	Widget * IsMouseOver(const Vec2f & mousePos);
 	
 	virtual WidgetType type() const {

@@ -203,7 +203,7 @@ void MainMenuDoFrame() {
 	MENUSTATE requestedMenuState = NOP;
 	
 	if(g_mainMenu->selected() && GInput->getMouseButton(Mouse::Button_0)) {
-		g_mainMenu->selected()->OnMouseClick();
+		g_mainMenu->selected()->click();
 		requestedMenuState = g_mainMenu->selected()->m_targetMenu;
 	}
 	
@@ -601,7 +601,7 @@ void MenuPage::Update(Vec2f pos) {
 				
 				m_selected = w;
 				
-				if(w->OnMouseClick() && w != m_focused) {
+				if(w->click() && w != m_focused) {
 					m_focused = w;
 				}
 				
@@ -630,7 +630,7 @@ void MenuPage::Update(Vec2f pos) {
 		
 		if(GInput->getMouseButton(Mouse::Button_0)) {
 			
-			if(m_selected->OnMouseClick()) {
+			if(m_selected->click()) {
 				m_focused = m_selected;
 			}
 			
