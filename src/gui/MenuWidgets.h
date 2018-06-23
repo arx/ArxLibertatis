@@ -77,6 +77,7 @@ public:
 	void Update(Vec2f pos);
 	void Render();
 	void drawDebug();
+	void unfocus();
 	
 	Vec2f m_pos;
 	Vec2f m_oldPos;
@@ -85,18 +86,21 @@ public:
 	WidgetContainer m_children;
 	
 protected:
+	
 	Rectf m_rect;
 	Vec2f m_size;
-	Widget * m_selected;
 	
 private:
+	
 	void updateTextRect(TextWidget * widget);
 	void UpdateText();
 	
-	bool bEdit;
+	Widget * m_selected;
+	Widget * m_focused;
 	bool m_disableShortcuts;
 	PlatformDuration m_blinkTime;
 	bool m_blink;
+	
 };
 
 class LoadMenuPage;
