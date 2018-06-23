@@ -790,57 +790,18 @@ void MenuPage::ReInitActionKey() {
 	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
 		if(w->type() == WidgetType_Panel) {
 			PanelWidget * p = static_cast<PanelWidget *>(w);
-			
 			BOOST_FOREACH(Widget * c, p->m_children) {
 				if(c->type() == WidgetType_Keybind) {
 					KeybindWidget * t = static_cast<KeybindWidget *>(c);
-					m_selected = t;
-					
-					bool keyTouched = true;
-					int keyId = config.actions[t->m_keybindAction].key[t->m_keybindIndex];
-					bool _bValidateTest = false;
-					
-					int iMouseButton = keyTouched ? 0 : GInput->getMouseButtonClicked();
-					
-					if(keyTouched || iMouseButton) {
-						if(!keyTouched && !bMouseAttack) {
-							bMouseAttack = !bMouseAttack;
-							continue;
-						}
-						
-						KeybindWidget * widget = static_cast<KeybindWidget *>(m_selected);
-						
-						if(_bValidateTest) {
-							if(widget->m_keybindAction == CONTROLS_CUST_ACTION) {
-								bool bOk = true;
-								if((iMouseButton & Mouse::ButtonBase) && !(iMouseButton & Mouse::WheelBase)) {
-									bOk = false;
-								} else if(keyId >= int(Mouse::ButtonBase) && keyId < int(Mouse::ButtonMax)) {
-									bOk = false;
-								}
-								if(bOk) {
-									continue;
-								}
-							}
-						}
-						
-						if(iMouseButton) {
-							keyId = iMouseButton;
-						}
-						
-						widget->setKey(keyId);
-						
-						m_selected = NULL;
-						bEdit = false;
-						bMouseAttack = false;
-						
-					}
-					
+					t->setKey(config.actions[t->m_keybindAction].key[t->m_keybindIndex]);
 				}
 			}
-			
 		}
 	}
+	
+	m_selected = NULL;
+	bEdit = false;
+	bMouseAttack = false;
 	
 }
 
