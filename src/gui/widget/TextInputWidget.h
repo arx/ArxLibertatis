@@ -47,6 +47,8 @@ public:
 	
 	bool click();
 	
+	bool doubleClick();
+	
 	void render(bool mouseOver = false);
 	
 	bool wantFocus() const { return m_editing; }

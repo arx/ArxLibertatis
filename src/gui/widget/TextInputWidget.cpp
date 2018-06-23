@@ -54,6 +54,13 @@ bool TextInputWidget::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 			break;
 		}
 		
+		case Keyboard::Key_A: {
+			if(mod.control) {
+				selectAll();
+				return true;
+			}
+		}
+		
 		default: break;
 	}
 	
@@ -111,6 +118,27 @@ bool TextInputWidget::click() {
 	return result;
 }
 
+bool TextInputWidget::doubleClick() {
+	
+	bool result = Widget::click();
+	
+	if(!m_enabled) {
+		return result;
+	}
+	
+	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+	
+	if(!m_editing) {
+		m_editing = true;
+		GInput->startTextInput(Rect(m_rect), this);
+		return true;
+	}
+	
+	selectAll();
+	
+	return result;
+}
+
 void TextInputWidget::render(bool mouseOver) {
 	
 	Color color = Color(232, 204, 142);
@@ -139,6 +167,16 @@ void TextInputWidget::render(bool mouseOver) {
 			pos.x = int(m_rect.right) - std::min(int(m_rect.width() / 4), width - cursor) - cursor;
 			pos.x = std::min(s32(m_rect.left), pos.x);
 		}
+	}
+	
+	// Highlight selection
+	if(m_editing && selected()) {
+		Rectf box = m_rect;
+		box.left = std::max(float(pos.x), box.left);
+		box.right = std::min(float(pos.x + width), box.right);
+		Color selection = Color::yellow;
+		selection.a = 30;
+		EERIEDrawBitmap(box, 0.f, NULL, selection);
 	}
 	
 	// Highlight edit area
