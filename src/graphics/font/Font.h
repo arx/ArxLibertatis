@@ -178,6 +178,12 @@ public:
 	
 	TextSize getTextSize(text_iterator start, text_iterator end);
 	
+	size_t getPosition(const std::string & str, int x) {
+		return getPosition(str.begin(), str.end(), x) - str.begin();
+	}
+	
+	text_iterator getPosition(text_iterator start, text_iterator end, int x);
+	
 	int getLineHeight() const;
 	
 private:

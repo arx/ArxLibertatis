@@ -376,6 +376,30 @@ Font::TextSize Font::getTextSize(text_iterator start, text_iterator end) {
 	return process<false>(0, 0, start, end, Color::none);
 }
 
+Font::text_iterator Font::getPosition(text_iterator start, text_iterator end, int x) {
+	
+	if(start == end || x < 0) {
+		return start;
+	}
+	
+	int last = 0;
+	
+	for(text_iterator p = start; ; p++) {
+		if(p + 1 != end && util::UTF8::isContinuationByte(*p)) {
+			continue;
+		}
+		int pos = getTextSize(start, p + 1).advance();
+		if(pos >= x || p + 1 == end) {
+			if(x - last <= pos - x) {
+				return p;
+			} else {
+				return p + 1;
+			}
+		}
+	}
+	
+}
+
 int Font::getLineHeight() const {
 	return m_face->size->metrics.height >> 6;
 }
