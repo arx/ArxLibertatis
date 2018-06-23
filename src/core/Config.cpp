@@ -366,24 +366,31 @@ void Config::setDefaultActionKeys() {
 	}
 }
 
-void Config::setActionKey(ControlAction actionId, size_t index, InputKeyId key) {
+bool Config::setActionKey(ControlAction actionId, size_t index, InputKeyId key) {
 	
 	if(actionId >= NUM_ACTION_KEY || index > 1) {
 		arx_assert(false);
-		return;
+		return false;
 	}
+	
+	bool changed = false;
 	
 	// remove existing key assignments
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
-		for(int k = 0; k < 2; k++) {
-			if(actions[i].key[k] == key) {
+		for(size_t k = 0; k < 2; k++) {
+			if((ControlAction(i) != actionId || k != index) && actions[i].key[k] == key) {
 				actions[i].key[k] = ActionKey::UNUSED;
+				changed = true;
 			}
 		}
 	}
-
-	ActionKey & action = actions[actionId];
-	action.key[index] = key;
+	
+	if(actions[actionId].key[index] != key) {
+		actions[actionId].key[index] = key;
+		changed = true;
+	}
+	
+	return changed;
 }
 
 void Config::setOutputFile(const fs::path & file) {

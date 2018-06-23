@@ -230,7 +230,7 @@ public:
 	
 public:
 	
-	void setActionKey(ControlAction actionId, size_t index, InputKeyId key);
+	bool setActionKey(ControlAction actionId, size_t index, InputKeyId key);
 	void setDefaultActionKeys();
 	
 	/*!
