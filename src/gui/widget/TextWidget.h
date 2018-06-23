@@ -39,9 +39,13 @@ public:
 		MouseOver,
 	};
 	
+private:
+	
 	std::string m_text;
 	Font * m_font;
 	ForceDisplay m_display;
+	
+public:
 	
 	boost::function<void(TextWidget * /* widget */)> clicked;
 	boost::function<void(TextWidget * /* widget */)> doubleClicked;
@@ -55,6 +59,9 @@ public:
 	void render(bool mouseOver = false);
 	
 	void SetText(const std::string & _pText);
+	const std::string & text() const { return m_text; }
+	
+	Font * font() const { return m_font; }
 	
 	void forceDisplay(ForceDisplay display) { m_display = display; }
 	

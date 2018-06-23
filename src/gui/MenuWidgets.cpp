@@ -484,7 +484,7 @@ void MenuPage::UpdateText() {
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 			textWidget->eState = EDIT;
 			
-			if(textWidget->m_text.empty()) {
+			if(textWidget->text().empty()) {
 				std::string szMenuText;
 				szMenuText = getLocalised("system_menu_editquest_newsavegame");
 				
@@ -501,7 +501,7 @@ void MenuPage::UpdateText() {
 		std::string tText;
 		
 		if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace)) {
-			tText = textWidget->m_text;
+			tText = textWidget->text();
 			
 			if(!tText.empty()) {
 				tText.resize(tText.size() - 1);
@@ -512,7 +512,7 @@ void MenuPage::UpdateText() {
 			iKey &= 0xFFFF;
 			
 			if(GInput->isKeyPressedNowPressed(iKey)) {
-				tText = textWidget->m_text;
+				tText = textWidget->text();
 				
 				char tCat;
 				
@@ -541,7 +541,7 @@ void MenuPage::UpdateText() {
 	}
 	
 	if(m_focused->m_rect.top == m_focused->m_rect.bottom) {
-		Vec2i textSize = static_cast<TextWidget *>(m_focused)->m_font->getTextSize("|");
+		Vec2i textSize = static_cast<TextWidget *>(m_focused)->font()->getTextSize("|");
 		m_focused->m_rect.bottom += textSize.y;
 	}
 	
