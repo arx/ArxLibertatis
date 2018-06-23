@@ -66,31 +66,22 @@ void KeybindWidget::Update() {
 	
 	InputKeyId keyId = GInput->getKeyPressed();
 	
-	if(GInput->isKeyPressed(Keyboard::Key_LeftShift) || GInput->isKeyPressed(Keyboard::Key_RightShift)
-			|| GInput->isKeyPressed(Keyboard::Key_LeftCtrl) || GInput->isKeyPressed(Keyboard::Key_RightCtrl)
-			|| GInput->isKeyPressed(Keyboard::Key_LeftAlt) || GInput->isKeyPressed(Keyboard::Key_RightAlt)) {
-		if(!((keyId & INPUT_COMBINATION_MASK) >> 16)) {
-			keyId = -1;
-		}
-	} else {
-		if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftShift)) {
-			keyId = Keyboard::Key_LeftShift;
-		}
-		if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightShift)) {
-			keyId = Keyboard::Key_RightShift;
-		}
-		if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl)) {
-			keyId = Keyboard::Key_LeftCtrl;
-		}
-		if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightCtrl)) {
-			keyId = Keyboard::Key_RightCtrl;
-		}
-		if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftAlt)) {
-			keyId = Keyboard::Key_LeftAlt;
-		}
-		if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightAlt)) {
-			keyId = Keyboard::Key_RightAlt;
-		}
+	if(keyId == Keyboard::Key_LeftShift || keyId == Keyboard::Key_RightShift
+			|| keyId == Keyboard::Key_LeftCtrl || keyId == Keyboard::Key_RightCtrl
+			|| keyId == Keyboard::Key_LeftAlt || keyId == Keyboard::Key_RightAlt) {
+		keyId = -1;
+	} else if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftShift)) {
+		keyId = Keyboard::Key_LeftShift;
+	} else if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightShift)) {
+		keyId = Keyboard::Key_RightShift;
+	} else if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl)) {
+		keyId = Keyboard::Key_LeftCtrl;
+	} else if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightCtrl)) {
+		keyId = Keyboard::Key_RightCtrl;
+	} else if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftAlt)) {
+		keyId = Keyboard::Key_LeftAlt;
+	} else if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightAlt)) {
+		keyId = Keyboard::Key_RightAlt;
 	}
 	
 	// Don't allow mouse input for the first update as the mouse is used to enter edit mode
