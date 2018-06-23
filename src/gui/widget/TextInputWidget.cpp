@@ -34,11 +34,11 @@
 
 TextInputWidget::TextInputWidget(Font * font, const std::string & text, const Rectf & rect)
 	: m_font(font)
+	, m_editing(false)
 {
 	m_rect = rect;
 	m_rect.bottom = m_rect.top + m_font->getTextSize("|").height();
 	setText(text);
-	eState = EDIT;
 }
 
 bool TextInputWidget::click() {
@@ -51,8 +51,8 @@ bool TextInputWidget::click() {
 	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 	
-	if(eState == EDIT) {
-		eState = EDIT_TIME;
+	if(!m_editing) {
+		m_editing = true;
 		return true;
 	}
 	
@@ -61,7 +61,7 @@ bool TextInputWidget::click() {
 
 void TextInputWidget::update() {
 	
-	if(eState != EDIT_TIME) {
+	if(!m_editing) {
 		return;
 	}
 	
@@ -119,7 +119,7 @@ void TextInputWidget::render(bool mouseOver) {
 	Rect clip(m_rect);
 	ARX_UNICODE_DrawTextInRect(m_font, pos, std::numeric_limits<float>::infinity(), m_text, color, &clip);
 	
-	if(eState == EDIT_TIME) {
+	if(m_editing) {
 		bool blink = true;
 		if(mainApp->getWindow()->hasFocus()) {
 			blink = timeWaveSquare(g_platformTime.frameStart(), PlatformDurationMs(1200));
@@ -143,8 +143,8 @@ void TextInputWidget::render(bool mouseOver) {
 
 void TextInputWidget::unfocus() {
 	
-	if(eState == EDIT_TIME) {
-		eState = EDIT;
+	if(m_editing) {
+		m_editing = false;
 		if(unfocused) {
 			unfocused(this);
 		}

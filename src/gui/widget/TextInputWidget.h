@@ -31,6 +31,7 @@ class TextInputWidget: public Widget {
 	
 	std::string m_text;
 	Font * m_font;
+	bool m_editing;
 	
 public:
 	
@@ -43,6 +44,8 @@ public:
 	void update();
 	
 	void render(bool mouseOver = false);
+	
+	bool wantFocus() const { return m_editing; }
 	
 	void unfocus();
 	
