@@ -2347,12 +2347,10 @@ void MainMenu::Render() {
 	}
 	
 	m_widgets->Update();
-	m_widgets->Render();
+	m_widgets->render(m_selected);
 	
-	//HIGHLIGHT
 	if(m_selected) {
 		pMenuCursor->SetMouseOver();
-		m_selected->RenderMouseOver();
 	}
 
 	//DEBUG ZONE

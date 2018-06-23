@@ -105,25 +105,22 @@ void KeybindWidget::Update() {
 	
 }
 
-void KeybindWidget::Render() {
+void KeybindWidget::render(bool mouseOver) {
 	
-	bool blink = true;
-	if(mainApp->getWindow()->hasFocus()) {
-		blink = timeWaveSquare(g_platformTime.frameStart(), PlatformDurationMs(400));
+	Color color = Color(232, 204, 142);
+	if(m_editing) {
+		bool blink = true;
+		if(mainApp->getWindow()->hasFocus()) {
+			blink = timeWaveSquare(g_platformTime.frameStart(), PlatformDurationMs(400));
+		}
+		color = blink ? Color(255, 0, 0) : Color(50, 0, 0);
+	} else if(!enabled) {
+		color = Color::grayb(127);
+	} else if(mouseOver) {
+		color = Color::white;
 	}
-	
-	Color editColor = blink ? Color(255, 0, 0) : Color(50, 0, 0);
-	Color color = m_editing ? editColor : enabled ? Color(232, 204, 142) : Color::grayb(127);
 	
 	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, color, NULL);
-	
-}
-
-void KeybindWidget::RenderMouseOver() {
-	
-	if(!m_editing) {
-		ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, Color::white, NULL);
-	}
 	
 }
 

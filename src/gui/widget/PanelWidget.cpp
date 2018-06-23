@@ -21,6 +21,8 @@
 
 #include <boost/foreach.hpp>
 
+#include "input/Input.h"
+
 PanelWidget::PanelWidget() { }
 
 PanelWidget::~PanelWidget() {
@@ -69,9 +71,10 @@ void PanelWidget::Update()
 	}
 }
 
-void PanelWidget::Render() {
+void PanelWidget::render(bool /* mouseOver */) {
+	const Vec2f cursor = Vec2f(GInput->getMousePosition());
 	BOOST_FOREACH(Widget * w, m_children) {
-		w->Render();
+		w->render(w->m_rect.contains(cursor));
 	}
 }
 

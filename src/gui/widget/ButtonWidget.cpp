@@ -66,16 +66,16 @@ bool ButtonWidget::OnMouseClick() {
 void ButtonWidget::Update() {
 }
 
-void ButtonWidget::Render() {
-	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
-	EERIEDrawBitmap(m_rect, 0, m_texture, color);
-}
-
-void ButtonWidget::RenderMouseOver() {
+void ButtonWidget::render(bool mouseOver) {
 	
-	const Vec2f cursor = Vec2f(GInput->getMousePosition());
-	if(m_rect.contains(cursor)) {
-		UseRenderState state(render2D().blendAdditive());
-		Render();
+	UseRenderState state(render2D().blendAdditive());
+	
+	Color color = bCheck ? Color::white : Color::grayb(63);
+	
+	EERIEDrawBitmap(m_rect, 0, m_texture, color);
+	
+	if(mouseOver) {
+		EERIEDrawBitmap(m_rect, 0, m_texture, color);
 	}
+	
 }

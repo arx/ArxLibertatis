@@ -74,11 +74,15 @@ bool TextWidget::OnMouseClick() {
 	return false;
 }
 
-void TextWidget::Render() {
-	Color color = bSelected ? lColorHighlight : enabled ? lColor : Color::grayb(127);
+void TextWidget::render(bool mouseOver) {
+	
+	Color color = lColor;
+	if(!enabled) {
+		color = Color::grayb(127);
+	} else if(mouseOver || bSelected) {
+		color = lColorHighlight;
+	}
+	
 	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, color, NULL);
-}
-
-void TextWidget::RenderMouseOver() {
-	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, lColorHighlight, NULL);
+	
 }

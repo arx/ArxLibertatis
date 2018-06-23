@@ -51,9 +51,7 @@ public:
 	
 	void Update();
 	
-	void Render();
-	
-	void RenderMouseOver();
+	void render(bool mouseOver = false);
 	
 	bool wantFocus() const { return m_editing; }
 	

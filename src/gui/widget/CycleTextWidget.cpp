@@ -166,18 +166,6 @@ void CycleTextWidget::Update() {
 	pRightButton->Update();
 }
 
-void CycleTextWidget::Render() {
-	
-	if(enabled) {
-		pLeftButton->Render();
-		pRightButton->Render();
-	}
-	
-	if(iPos >= 0 && size_t(iPos) < vText.size() && vText[iPos]) {
-		vText[iPos]->Render();
-	}
-}
-
 void CycleTextWidget::setEnabled(bool enable) {
 	Widget::setEnabled(enable);
 	pLeftButton->setEnabled(enable);
@@ -187,23 +175,17 @@ void CycleTextWidget::setEnabled(bool enable) {
 	}
 }
 
-void CycleTextWidget::RenderMouseOver() {
+void CycleTextWidget::render(bool /* mouseOver */) {
 	
 	Vec2f cursor = Vec2f(GInput->getMousePosition());
 	
-	if(!enabled) {
-		return;
+	if(enabled) {
+		pLeftButton->render(pLeftButton->m_rect.contains(cursor));
+		pRightButton->render(pRightButton->m_rect.contains(cursor));
 	}
 	
-	UseRenderState state(render2D().blendAdditive());
-	
-	if(m_rect.contains(cursor)) {
-		if(pLeftButton->m_rect.contains(cursor)) {
-			pLeftButton->Render();
-		}
-		
-		if(pRightButton->m_rect.contains(cursor)) {
-			pRightButton->Render();
-		}
+	if(iPos >= 0 && size_t(iPos) < vText.size() && vText[iPos]) {
+		vText[iPos]->render();
 	}
+	
 }
