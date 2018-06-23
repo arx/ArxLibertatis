@@ -500,7 +500,7 @@ void MenuPage::Update(Vec2f pos) {
 		m_focused = NULL;
 	}
 	
-	if(m_selected && !m_focused) {
+	if(m_selected && (!m_focused || m_focused == m_selected)) {
 		
 		if(GInput->getMouseButtonDoubleClick(Mouse::Button_0)) {
 			if(m_selected->doubleClick()) {
