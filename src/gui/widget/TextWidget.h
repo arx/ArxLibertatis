@@ -54,7 +54,7 @@ public:
 	
 	bool click();
 	
-	void doubleClick();
+	bool doubleClick();
 	
 	void render(bool mouseOver = false);
 	

@@ -27,6 +27,7 @@
 class PanelWidget : public Widget {
 	
 public:
+	
 	PanelWidget();
 	virtual ~PanelWidget();
 	

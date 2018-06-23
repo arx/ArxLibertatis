@@ -61,10 +61,17 @@ bool TextWidget::click() {
 	return false;
 }
 
-void TextWidget::doubleClick() {
-	if(doubleClicked) {
-		doubleClicked(this);
+bool TextWidget::doubleClick() {
+	
+	if(m_enabled) {
+		if(doubleClicked) {
+			doubleClicked(this);
+		} else if(clicked) {
+			clicked(this);
+		}
 	}
+	
+	return false;
 }
 
 void TextWidget::render(bool mouseOver) {
