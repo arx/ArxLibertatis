@@ -89,8 +89,8 @@ public:
 	explicit Widget();
 	virtual ~Widget();
 	
-	virtual bool OnMouseClick() = 0;
-	virtual void Update() = 0;
+	virtual bool OnMouseClick() { return false; }
+	virtual void Update() { }
 	virtual void Render() = 0;
 	virtual void RenderMouseOver() { }
 	virtual void EmptyFunction() { }
