@@ -1888,13 +1888,13 @@ protected:
 	
 	void onKeyChanged(KeybindWidget * keybind) {
 		
-		if(keybind->m_keybindAction == CONTROLS_CUST_ACTION && !(keybind->key() & int(Mouse::ButtonBase))) {
+		if(keybind->action() == CONTROLS_CUST_ACTION && !(keybind->key() & int(Mouse::ButtonBase))) {
 			// Only allow mouse buttons for for the action binding
-			keybind->setKey(config.actions[keybind->m_keybindAction].key[keybind->m_keybindIndex]);
+			keybind->setKey(config.actions[keybind->action()].key[keybind->index()]);
 			return;
 		}
 		
-		if(config.setActionKey(keybind->m_keybindAction, keybind->m_keybindIndex, keybind->key())) {
+		if(config.setActionKey(keybind->action(), keybind->index(), keybind->key())) {
 			ReInitActionKey();
 		}
 		
