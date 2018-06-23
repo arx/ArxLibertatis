@@ -138,6 +138,7 @@ public:
 			std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
 			Rectf rect(RATIO_X(20), 0, m_rect.right - RATIO_X(20), 0);
 			TextInputWidget * txt = new TextInputWidget(hFontMenu, szMenuText, rect);
+			txt->setMaxLength(255); // Don't allow the user to enter names that cannot be stored in save files
 			txt->unfocused = boost::bind(&SaveConfirmMenuPage::onUnfocusedText, this, _1);
 			addCenter(txt, true);
 			m_textbox = txt;
