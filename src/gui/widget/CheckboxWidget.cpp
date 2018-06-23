@@ -83,11 +83,7 @@ bool CheckboxWidget::OnMouseClick() {
 	return false;
 }
 
-void CheckboxWidget::Update() { }
-
-void CheckboxWidget::renderCommon() {
-	
-	UseRenderState state(render2D().blendAdditive());
+void CheckboxWidget::render(bool mouseOver) {
 	
 	Rectf checkboxRect;
 	checkboxRect.top = m_rect.top;
@@ -98,19 +94,14 @@ void CheckboxWidget::renderCommon() {
 	TextureContainer * pTex = (iState == 0) ? m_textureOff : m_textureOn;
 	Color color = bCheck ? Color::white : Color(63, 63, 63, 255);
 	
+	m_label->render(mouseOver);
+	
+	UseRenderState state(render2D().blendAdditive());
+	
 	EERIEDrawBitmap(checkboxRect, 0.f, pTex, color);
-}
-
-void CheckboxWidget::Render() {
-
-	renderCommon();
 	
-	m_label->Render();
-}
-
-void CheckboxWidget::RenderMouseOver() {
+	if(mouseOver) {
+		EERIEDrawBitmap(checkboxRect, 0.f, pTex, color);
+	}
 	
-	renderCommon();
-	
-	m_label->RenderMouseOver();
 }

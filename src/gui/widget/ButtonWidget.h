@@ -38,8 +38,7 @@ public:
 	void AddText(const std::string & label);
 	bool OnMouseClick();
 	void Update();
-	void Render();
-	void RenderMouseOver();
+	void render(bool mouseOver = false);
 	
 	boost::function<void()> clicked;
 	

@@ -36,11 +36,8 @@ public:
 	
 	void Move(const Vec2f & offset);
 	bool OnMouseClick();
-	void Update();
 	
-	void renderCommon();
-	void Render();
-	void RenderMouseOver();
+	void render(bool mouseOver = false);
 	
 	int iState;
 	int iOldState;

@@ -663,16 +663,11 @@ void MenuPage::Render() {
 	
 	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
 		w->Update();
-		w->Render();
+		w->render(w == m_selected);
 	}
 	
 	if(m_selected) {
 		pMenuCursor->SetMouseOver();
-		m_selected->RenderMouseOver();
-	}
-	
-	if(m_focused && m_focused != m_selected) {
-		m_focused->RenderMouseOver();
 	}
 	
 	if(m_focused) {

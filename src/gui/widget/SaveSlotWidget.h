@@ -37,7 +37,7 @@ public:
 	
 	SaveSlotWidget(SavegameHandle savegame, Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO);
 	
-	void RenderMouseOver();
+	void render(bool mouseOver = false);
 	
 	virtual WidgetType type() const {
 		return WidgetType_SaveSlot;

@@ -34,9 +34,8 @@ public:
 	void AddElement(Widget * widget);
 	
 	void Update();
-	void Render();
+	void render(bool mouseOver = false);
 	bool OnMouseClick() { return false; }
-	void RenderMouseOver() { }
 	Widget * IsMouseOver(const Vec2f & mousePos);
 	
 	virtual WidgetType type() const {

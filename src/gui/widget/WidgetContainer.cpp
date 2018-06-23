@@ -38,9 +38,9 @@ void WidgetContainer::Update() {
 	}
 }
 
-void WidgetContainer::Render() {
+void WidgetContainer::render(Widget * selected) {
 	BOOST_FOREACH(Widget * w, m_widgets) {
-		w->Render();
+		w->render(w == selected);
 	}
 }
 

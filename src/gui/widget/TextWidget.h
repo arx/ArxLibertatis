@@ -47,12 +47,13 @@ public:
 	
 	void setColor(Color color) { lColor = color; }
 	
-	bool OnMouseClick();
-	void Render();
-	void SetText(const std::string & _pText);
-	void RenderMouseOver();
-	
 	void OnMouseDoubleClick();
+	
+	bool OnMouseClick();
+	
+	void render(bool mouseOver = false);
+	
+	void SetText(const std::string & _pText);
 	
 	virtual WidgetType type() const {
 		return WidgetType_Text;

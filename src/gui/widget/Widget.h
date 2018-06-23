@@ -91,8 +91,7 @@ public:
 	
 	virtual bool OnMouseClick() { return false; }
 	virtual void Update() { }
-	virtual void Render() = 0;
-	virtual void RenderMouseOver() { }
+	virtual void render(bool mouseOver = false) = 0;
 	virtual void EmptyFunction() { }
 	virtual void OnMouseDoubleClick() { }
 	virtual bool wantFocus() const { return eState == EDIT_TIME; }

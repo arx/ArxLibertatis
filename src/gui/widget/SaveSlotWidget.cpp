@@ -27,11 +27,11 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, Font * font, const std::
 	, m_savegame(savegame)
 { }
 
-void SaveSlotWidget::RenderMouseOver() {
+void SaveSlotWidget::render(bool mouseOver) {
 	
-	TextWidget::RenderMouseOver();
+	TextWidget::render(mouseOver);
 	
-	if(m_savegame == SavegameHandle()) {
+	if(!mouseOver || m_savegame == SavegameHandle()) {
 		g_thumbnailCursor.clear();
 		return;
 	}
