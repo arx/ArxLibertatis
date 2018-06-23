@@ -60,7 +60,7 @@ void CycleTextWidget::selectLast() {
 
 void CycleTextWidget::AddText(TextWidget * _pText) {
 	
-	_pText->setEnabled(enabled);
+	_pText->setEnabled(m_enabled);
 	
 	_pText->Move(Vec2f(m_rect.left + pLeftButton->m_rect.width(), m_rect.top + 0));
 	vText.push_back(_pText);
@@ -121,7 +121,7 @@ void CycleTextWidget::EmptyFunction() {
 
 bool CycleTextWidget::OnMouseClick() {
 	
-	if(!enabled) {
+	if(!m_enabled) {
 		return false;
 	}
 	
@@ -179,7 +179,7 @@ void CycleTextWidget::render(bool /* mouseOver */) {
 	
 	Vec2f cursor = Vec2f(GInput->getMousePosition());
 	
-	if(enabled) {
+	if(m_enabled) {
 		pLeftButton->render(pLeftButton->m_rect.contains(cursor));
 		pRightButton->render(pRightButton->m_rect.contains(cursor));
 	}

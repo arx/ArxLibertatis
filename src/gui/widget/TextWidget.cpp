@@ -53,7 +53,7 @@ void TextWidget::OnMouseDoubleClick() {
 
 bool TextWidget::OnMouseClick() {
 	
-	if(!enabled) {
+	if(!m_enabled) {
 		return false;
 	}
 	
@@ -77,7 +77,7 @@ bool TextWidget::OnMouseClick() {
 void TextWidget::render(bool mouseOver) {
 	
 	Color color = lColor;
-	if(!enabled) {
+	if(!m_enabled) {
 		color = Color::grayb(127);
 	} else if(mouseOver || bSelected) {
 		color = lColorHighlight;

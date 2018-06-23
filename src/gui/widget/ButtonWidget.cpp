@@ -50,7 +50,7 @@ void ButtonWidget::SetPos(Vec2f pos) {
 
 bool ButtonWidget::OnMouseClick() {
 	
-	if(!enabled) {
+	if(!m_enabled) {
 		return false;
 	}
 	

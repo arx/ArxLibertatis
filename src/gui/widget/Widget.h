@@ -114,7 +114,7 @@ public:
 	virtual WidgetType type() const = 0;
 	
 protected:
-	bool enabled;
+	bool m_enabled;
 	bool bCheck;
 };
 
