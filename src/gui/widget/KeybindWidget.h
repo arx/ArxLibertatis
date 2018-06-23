@@ -44,6 +44,8 @@ public:
 		return WidgetType_Keybind;
 	}
 	
+	void setKey(int keyId);
+	
 };
 
 #endif // ARX_GUI_WIDGET_KEYBINDWIDGET_H
