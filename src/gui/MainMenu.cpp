@@ -45,6 +45,7 @@
 #include "gui/menu/MenuFader.h"
 #include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
+#include "gui/widget/KeybindWidget.h"
 #include "gui/widget/PanelWidget.h"
 #include "gui/widget/SliderWidget.h"
 #include "graphics/Draw.h"
@@ -1904,23 +1905,9 @@ protected:
 			panel->AddElement(txt);
 		}
 		
-		{
-			TextWidget * txt = new TextWidget(hFontControls, "---", Vec2f(150, 0));
-			txt->m_isKeybind = true;
-			txt->m_keybindAction = controlAction;
-			txt->m_keybindIndex = 0;
-			txt->eState = GETTOUCH;
-			panel->AddElement(txt);
-		}
+		panel->AddElement(new KeybindWidget(controlAction, 0, hFontControls, Vec2f(150, 0)));
 		
-		{
-			TextWidget * txt = new TextWidget(hFontControls, "---", Vec2f(245, 0));
-			txt->m_isKeybind = true;
-			txt->m_keybindAction = controlAction;
-			txt->m_keybindIndex = 1;
-			txt->eState = GETTOUCH;
-			panel->AddElement(txt);
-		}
+		panel->AddElement(new KeybindWidget(controlAction, 1, hFontControls, Vec2f(245, 0)));
 		
 		panel->Move(Vec2f(0, y));
 		add(panel);

@@ -22,7 +22,6 @@
 
 #include <boost/function.hpp>
 
-#include "core/Config.h"
 #include "graphics/Color.h"
 #include "gui/widget/Widget.h"
 
@@ -41,11 +40,6 @@ public:
 	
 	boost::function<void(TextWidget * /* widget */)> clicked;
 	boost::function<void(TextWidget * /* widget */)> doubleClicked;
-	
-	// TODO followind fields only used for keybinds
-	bool m_isKeybind;
-	ControlAction m_keybindAction;
-	int m_keybindIndex;
 	
 public:
 	

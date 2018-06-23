@@ -1040,6 +1040,7 @@ set(GUI_SOURCES
 	src/gui/widget/ButtonWidget.cpp
 	src/gui/widget/CheckboxWidget.cpp
 	src/gui/widget/CycleTextWidget.cpp
+	src/gui/widget/KeybindWidget.cpp
 	src/gui/widget/PanelWidget.cpp
 	src/gui/widget/SliderWidget.cpp
 	src/gui/widget/TextWidget.cpp

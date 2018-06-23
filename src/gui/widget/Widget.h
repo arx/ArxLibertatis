@@ -81,7 +81,8 @@ enum WidgetType {
 	WidgetType_CycleText,
 	WidgetType_Panel,
 	WidgetType_Slider,
-	WidgetType_Text
+	WidgetType_Text,
+	WidgetType_Keybind,
 };
 
 class Widget : private boost::noncopyable {
