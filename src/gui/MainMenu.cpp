@@ -136,6 +136,7 @@ public:
 			std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
 			Rectf rect(RATIO_X(20), 0, m_rect.right - RATIO_X(20), 0);
 			TextInputWidget * txt = new TextInputWidget(hFontMenu, szMenuText, rect);
+			txt->unfocused = boost::bind(&SaveConfirmMenuPage::onUnfocusedText, this, _1);
 			addCenter(txt, true);
 			m_textbox = txt;
 		}
@@ -190,9 +191,17 @@ private:
 	TextInputWidget * m_textbox;
 	TextWidget * pDeleteButton;
 	
+	void onUnfocusedText(TextInputWidget * /* widget */) {
+		if(m_textbox->text().empty()) {
+			setSaveHandle(m_savegame);
+		}
+	}
+	
 	void onClickedSaveConfirm(TextWidget * /* widget */) {
 
 		ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
+		
+		m_textbox->unfocus();
 		
 		savegames.save(m_textbox->text(), m_savegame, savegame_thumbnail);
 		

@@ -34,11 +34,17 @@ class TextInputWidget: public Widget {
 	
 public:
 	
+	boost::function<void(TextInputWidget * /* widget */)> unfocused;
+	
 	TextInputWidget(Font * font, const std::string & text, const Rectf & rect);
 	
 	bool click();
 	
+	void update();
+	
 	void render(bool mouseOver = false);
+	
+	void unfocus();
 	
 	void setText(const std::string & text);
 	const std::string & text() const { return m_text; }

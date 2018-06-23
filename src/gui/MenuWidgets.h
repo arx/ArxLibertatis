@@ -90,8 +90,6 @@ protected:
 	
 private:
 	
-	void UpdateText();
-	
 	Widget * m_selected;
 	Widget * m_focused;
 	bool m_disableShortcuts;

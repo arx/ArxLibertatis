@@ -28,6 +28,7 @@
 #include "graphics/Renderer.h"
 #include "graphics/font/Font.h"
 #include "gui/Text.h"
+#include "input/Input.h"
 #include "scene/GameSound.h"
 #include "window/RenderWindow.h"
 
@@ -38,10 +39,6 @@ TextInputWidget::TextInputWidget(Font * font, const std::string & text, const Re
 	m_rect.bottom = m_rect.top + m_font->getTextSize("|").height();
 	setText(text);
 	eState = EDIT;
-}
-
-void TextInputWidget::setText(const std::string & text) {
-	m_text = text;
 }
 
 bool TextInputWidget::click() {
@@ -60,6 +57,51 @@ bool TextInputWidget::click() {
 	}
 	
 	return result;
+}
+
+void TextInputWidget::update() {
+	
+	if(eState != EDIT_TIME) {
+		return;
+	}
+	
+	if(!GInput->isAnyKeyPressed()) {
+		return;
+	}
+	
+	if(GInput->isKeyPressed(Keyboard::Key_Enter)
+	   || GInput->isKeyPressed(Keyboard::Key_NumPadEnter)
+	   || GInput->isKeyPressed(Keyboard::Key_Escape)) {
+		ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+		unfocus();
+		return;
+	}
+	
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace)) {
+		if(!m_text.empty()) {
+			m_text.resize(m_text.size() - 1);
+		}
+		return;
+	}
+	
+	int key = GInput->getKeyPressed() & INPUT_KEYBOARD_MASK;
+	
+	char chr;
+	if(!GInput->isKeyPressedNowPressed(key) || !GInput->getKeyAsText(key, chr)) {
+		return;
+	}
+	
+	int value = chr & 0xFF; // To prevent ascii chars between [128, 255] from causing an assertion n the functions below...
+	if(!(isalnum(value) || isspace(value) || ispunct(value)) || chr == '\t' || chr == '*') {
+		return;
+	}
+	
+	m_text += chr;
+	
+	if(m_font->getTextSize(m_text).width() > m_rect.width()) {
+		m_text.resize(m_text.size() - 1);
+	}
+	
 }
 
 void TextInputWidget::render(bool mouseOver) {
@@ -97,4 +139,19 @@ void TextInputWidget::render(bool mouseOver) {
 		}
 	}
 	
+}
+
+void TextInputWidget::unfocus() {
+	
+	if(eState == EDIT_TIME) {
+		eState = EDIT;
+		if(unfocused) {
+			unfocused(this);
+		}
+	}
+	
+}
+
+void TextInputWidget::setText(const std::string & text) {
+	m_text = text;
 }
