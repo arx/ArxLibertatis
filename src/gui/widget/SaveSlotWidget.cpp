@@ -59,7 +59,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 		if(save.quicksave) {
 			
 			std::ostringstream text;
-			text << getLocalised("system_menus_main_quickloadsave", "Quicksave") << ' ' << i;
+			text << getLocalised("system_menus_main_quickloadsave", "Quicksave") << " #" << i;
 			m_name = text.str();
 			
 		} else {
