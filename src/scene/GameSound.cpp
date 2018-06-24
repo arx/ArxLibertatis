@@ -129,7 +129,7 @@ static const res::path ARX_SOUND_COLLISION_MAP_NAMES[] = {
 
 static bool g_soundInitialized = false;
 
-static AmbianceId ambiance_zone = AmbianceId();
+static AmbianceId g_zoneAmbiance = AmbianceId();
 static AmbianceId ambiance_menu = AmbianceId();
 
 static SampleId Inter_Materials[MAX_MATERIALS][MAX_MATERIALS];
@@ -321,7 +321,9 @@ static void ARX_SOUND_KillUpdateThread();
 
 bool ARX_SOUND_Init() {
 	
-	if (g_soundInitialized) ARX_SOUND_Release();
+	if(g_soundInitialized) {
+		ARX_SOUND_Release();
+	}
 	
 	if(audio::init(config.audio.backend, config.audio.device, config.audio.hrtf)) {
 		audio::clean();
@@ -908,8 +910,8 @@ bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, floa
 	if (!g_soundInitialized) return true;
 
 	if(name == "none") {
-		audio::ambianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
-		ambiance_zone = AmbianceId();
+		audio::ambianceStop(g_zoneAmbiance, AMBIANCE_FADE_TIME);
+		g_zoneAmbiance = AmbianceId();
 		return true;
 	}
 
@@ -925,7 +927,7 @@ bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, floa
 		}
 		audio::setAmbianceType(ambiance_id, audio::PLAYING_AMBIANCE_ZONE);
 	}
-	else if (ambiance_id == ambiance_zone)
+	else if (ambiance_id == g_zoneAmbiance)
 		return true;
 
 	audio::Channel channel;
@@ -934,9 +936,9 @@ bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, floa
 	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE;
 	channel.volume = volume;
 
-	audio::ambianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
-	ambiance_zone = ambiance_id;
-	audio::ambiancePlay(ambiance_zone, channel, loop == ARX_SOUND_PLAY_LOOPED, AMBIANCE_FADE_TIME);
+	audio::ambianceStop(g_zoneAmbiance, AMBIANCE_FADE_TIME);
+	g_zoneAmbiance = ambiance_id;
+	audio::ambiancePlay(g_zoneAmbiance, channel, loop == ARX_SOUND_PLAY_LOOPED, AMBIANCE_FADE_TIME);
 
 	return true;
 }
@@ -954,7 +956,7 @@ void ARX_SOUND_KillAmbiances() {
 		ambiance_id = audio::getNextAmbiance(ambiance_id);
 	}
 	
-	ambiance_zone = AmbianceId();
+	g_zoneAmbiance = AmbianceId();
 }
 
 AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
