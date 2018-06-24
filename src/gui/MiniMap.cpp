@@ -139,7 +139,7 @@ void MiniMap::validatePos() {
 	}
 }
 
-void MiniMap::validatePlayerPos(int currentLevel, long blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode) {
+void MiniMap::validatePlayerPos(int currentLevel, bool blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode) {
 	
 	m_currentLevel = currentLevel;
 	

@@ -107,7 +107,7 @@ public:
 	void purgeTexContainer();
 	
 	//! Calls revealPlayerPos if the player moved, also sets m_currentLevel and m_playerPos
-	void validatePlayerPos(int currentLevel, long blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode);
+	void validatePlayerPos(int currentLevel, bool blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode);
 	
 	//! Shows the top right minimap
 	void showPlayerMiniMap(int showLevel);
