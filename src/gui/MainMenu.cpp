@@ -247,7 +247,7 @@ public:
 		// TODO make this list scrollable
 		// TODO align the date part to the right!
 		
-		Rectf rect(Vec2f(20, 0), m_rect.width() - RATIO_X(25), 0.f);
+		Rectf rect(RATIO_2(Vec2f(20, 0)), m_rect.width() - RATIO_X(32), 0.f);
 		
 		// Show quicksaves.
 		size_t quicksaveNum = 0;
@@ -317,12 +317,9 @@ public:
 	}
 	
 	void resetSelection() {
-		
 		m_selectedSave = SavegameHandle();
-		
 		for(size_t j = 0; j < m_saveSlotWidgets.size(); j++) {
-			SaveSlotWidget * widget = m_saveSlotWidgets[j];
-			widget->forceDisplay(TextWidget::Automatic);
+			m_saveSlotWidgets[j]->setSelected(false);
 		}
 	}
 	
@@ -344,20 +341,19 @@ private:
 		pDeleteConfirm->setEnabled(false);
 	}
 	
-	void onClickQuestLoad(TextWidget * widget) {
+	void onClickQuestLoad(SaveSlotWidget * widget) {
 		
 		resetSelection();
 		enableLoadDeleteButtons();
 		
-		arx_assert(widget->type() == WidgetType_SaveSlot);
-		m_selectedSave = static_cast<SaveSlotWidget *>(widget)->savegame();
+		m_selectedSave = widget->savegame();
 		
-		widget->forceDisplay(TextWidget::MouseOver);
+		widget->setSelected(true);
 		
 	}
 	
-	void onDoubleClickQuestLoad(TextWidget * txt) {
-		txt->click();
+	void onDoubleClickQuestLoad(SaveSlotWidget * widget) {
+		widget->click();
 		pLoadConfirm->click();
 	}
 	
@@ -414,7 +410,7 @@ public:
 			addCenter(cb, true);
 		}
 		
-		Rectf rect(Vec2f(20, 0), m_rect.width() - RATIO_X(25), 0.f);
+		Rectf rect(RATIO_2(Vec2f(20, 0)), m_rect.width() - RATIO_X(32), 0.f);
 		
 		// Show quicksaves.
 		size_t quicksaveNum = 0;
@@ -463,10 +459,8 @@ public:
 	
 private:
 	
-	void onClickQuestSaveConfirm(TextWidget * widget) {
-		arx_assert(widget->type() == WidgetType_SaveSlot);
-		SavegameHandle slot = static_cast<SaveSlotWidget *>(widget)->savegame();
-		g_mainMenu->m_window->m_pageSaveConfirm->setSaveHandle(slot);
+	void onClickQuestSaveConfirm(SaveSlotWidget * widget) {
+		g_mainMenu->m_window->m_pageSaveConfirm->setSaveHandle(widget->savegame());
 	}
 	
 };
