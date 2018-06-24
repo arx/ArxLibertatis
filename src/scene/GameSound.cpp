@@ -503,16 +503,16 @@ audio::SourceId ARX_SOUND_PlaySFX(SourceId & sample_id, const Vec3f * position,
 	return sample_id;
 }
 
-void ARX_SOUND_PlayInterface(SourceId & sample_id, float pitch, SoundLoopMode loop) {
+static void playSample(audio::SourceId & sample_id, float pitch, SoundLoopMode loop, audio::MixerId mixer) {
 	
 	if(!bIsActive || sample_id == INVALID_ID) {
 		return;
 	}
 	
 	audio::Channel channel;
-	channel.mixer = ARX_SOUND_MixerGameSample;
+	channel.mixer = mixer;
 	channel.flags = FLAG_VOLUME;
-	channel.volume = 1.0F;
+	channel.volume = 1.f;
 	if(pitch != 1.f) {
 		channel.flags |= FLAG_PITCH;
 		channel.pitch = pitch;
@@ -522,23 +522,12 @@ void ARX_SOUND_PlayInterface(SourceId & sample_id, float pitch, SoundLoopMode lo
 	
 }
 
-void ARX_SOUND_PlayMenu(SourceId & sample_id, float pitch, SoundLoopMode loop) {
-	
-	if(!bIsActive || sample_id == INVALID_ID) {
-		return;
-	}
-	
-	audio::Channel channel;
-	channel.mixer = ARX_SOUND_MixerMenuSample;
-	channel.flags = FLAG_VOLUME;
-	channel.volume = 1.0F;
-	if(pitch != 1.f) {
-		channel.flags |= FLAG_PITCH;
-		channel.pitch = pitch;
-	}
-	
-	audio::samplePlay(sample_id, channel, loop);
-	
+void ARX_SOUND_PlayInterface(audio::SourceId & sample_id, float pitch, SoundLoopMode loop) {
+	playSample(sample_id, pitch, loop, ARX_SOUND_MixerGameSample);
+}
+
+void ARX_SOUND_PlayMenu(audio::SourceId & sample_id, float pitch, SoundLoopMode loop) {
+	playSample(sample_id, pitch, loop, ARX_SOUND_MixerMenuSample);
 }
 
 static void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos) {
