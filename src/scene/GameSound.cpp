@@ -130,7 +130,7 @@ static const res::path ARX_SOUND_COLLISION_MAP_NAMES[] = {
 static bool g_soundInitialized = false;
 
 static AmbianceId g_zoneAmbiance = AmbianceId();
-static AmbianceId ambiance_menu = AmbianceId();
+static AmbianceId g_menuAmbiance = AmbianceId();
 
 static SampleId Inter_Materials[MAX_MATERIALS][MAX_MATERIALS];
 
@@ -965,10 +965,10 @@ AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 		return AmbianceId();
 	}
 	
-	audio::deleteAmbiance(ambiance_menu);
-	ambiance_menu = audio::createAmbiance(ambiance_name);
+	audio::deleteAmbiance(g_menuAmbiance);
+	g_menuAmbiance = audio::createAmbiance(ambiance_name);
 	
-	audio::setAmbianceType(ambiance_menu, audio::PLAYING_AMBIANCE_MENU);
+	audio::setAmbianceType(g_menuAmbiance, audio::PLAYING_AMBIANCE_MENU);
 	
 	audio::Channel channel;
 	
@@ -976,9 +976,9 @@ AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 	channel.flags = FLAG_VOLUME;
 	channel.volume = 1.0F;
 	
-	audio::ambiancePlay(ambiance_menu, channel, true);
+	audio::ambiancePlay(g_menuAmbiance, channel, true);
 	
-	return ambiance_menu;
+	return g_menuAmbiance;
 }
 
 std::string ARX_SOUND_AmbianceSavePlayList() {
