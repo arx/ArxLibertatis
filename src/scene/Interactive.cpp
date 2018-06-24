@@ -1084,7 +1084,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 	if(!io)
 		return;
 
-	if(ARX_SCRIPT_GetSystemIOScript(io, "_r_a_t_") < 0) {
+	if(!scriptTimerExists(io, "_r_a_t_")) {
 		long num = ARX_SCRIPT_Timer_GetFree();
 
 		if(num != -1) {

@@ -501,13 +501,11 @@ public:
 std::ostream & operator<<(std::ostream & os, const ScriptParameters & parameters);
 
 extern SCRIPT_VARIABLES svar;
-extern SCR_TIMER * scr_timer;
+extern std::vector<SCR_TIMER> scr_timer;
 extern long ActiveTimers;
 extern long FORBID_SCRIPT_IO_CREATION;
-extern long MAX_TIMER_SCRIPT;
 
 void ARX_SCRIPT_Timer_Check();
-void ARX_SCRIPT_Timer_FirstInit(long number);
 void ARX_SCRIPT_Timer_ClearAll();
 void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io);
 long ARX_SCRIPT_Timer_GetFree();
@@ -518,11 +516,10 @@ void ARX_SCRIPT_EventStackInit();
 void ARX_SCRIPT_EventStackClear(bool check_exist = true);
 void ARX_SCRIPT_ResetObject(Entity * io, bool init);
 void ARX_SCRIPT_Reset(Entity * io, bool init);
-long ARX_SCRIPT_GetSystemIOScript(Entity * io, const std::string & name);
+bool scriptTimerExists(Entity * io, const std::string & name);
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT & es);
 void ARX_SCRIPT_AllowInterScriptExec();
 long ARX_SCRIPT_CountTimers();
-void ARX_SCRIPT_Timer_ClearByNum(long num);
 void ARX_SCRIPT_ResetAll(bool init);
 void ARX_SCRIPT_EventStackClearForIo(Entity * io);
 Entity * ARX_SCRIPT_Get_IO_Max_Events();
