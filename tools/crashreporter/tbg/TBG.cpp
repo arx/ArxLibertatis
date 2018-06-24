@@ -29,14 +29,13 @@
 #include <QXmlStreamReader>
 #include <QtConcurrentRun>
 
-#include "boost/scoped_ptr.hpp"
-
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QUrlQuery>
 #else
 typedef QUrl QUrlQuery;
 #endif
 
+#include <boost/scoped_ptr.hpp>
 #include <boost/range/size.hpp>
 
 #include "crashreporter/tbg/HTTPClient.h"
