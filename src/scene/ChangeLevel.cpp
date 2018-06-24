@@ -459,7 +459,8 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	std::string playlist = ARX_SOUND_AmbianceSavePlayList();
 	allocsize += playlist.size();
 	
-	char * dat = new char[allocsize];
+	std::vector<char> buffer(allocsize);
+	char * dat = &buffer[0];
 	
 	asi.ambiances_data_size = playlist.size();
 	memcpy(dat, &asi, sizeof(ARX_CHANGELEVEL_INDEX));
@@ -511,8 +512,6 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	std::stringstream savefile;
 	savefile << "lvl" << std::setfill('0') << std::setw(3) << num;
 	bool ret = g_currentSavedGame->save(savefile.str(), dat, pos);
-	
-	delete[] dat;
 	
 	return ret;
 }
@@ -603,7 +602,8 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	
 	long allocsize = sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + getScriptVariableSaveSize(svar);
 	
-	char * dat = new char[allocsize];
+	std::vector<char> buffer(allocsize);
+	char * dat = &buffer[0];
 	long pos = 0;
 	
 	memcpy(dat, &acsg, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
@@ -615,7 +615,6 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	
 	g_currentSavedGame->save("globals", dat, pos);
 	
-	delete[] dat;
 }
 
 template <size_t N>
@@ -641,11 +640,12 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	allocsize += g_playerKeyring.size() * SAVED_KEYRING_SLOT_SIZE;
 	allocsize += SAVED_QUEST_SLOT_SIZE * g_playerQuestLogEntries.size();
 	allocsize += sizeof(SavedMapMarkerData) * g_miniMap.mapMarkerCount();
-
-	char * dat = new char[allocsize];
-
-	asp = (ARX_CHANGELEVEL_PLAYER *)dat;
-
+	
+	std::vector<char> buffer(allocsize);
+	char * dat = &buffer[0];
+	
+	asp = reinterpret_cast<ARX_CHANGELEVEL_PLAYER *>(dat);
+	
 	long pos = 0;
 	pos += (sizeof(ARX_CHANGELEVEL_PLAYER));
 
@@ -809,8 +809,6 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	LastValidPlayerPos = asp->LAST_VALID_POS.toVec3();
 	
 	g_currentSavedGame->save("player", dat, pos);
-	
-	delete[] dat;
 	
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
@@ -1091,7 +1089,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		+ 48000;
 
 	// Allocate Main Save Buffer
-	char * dat = new char[allocsize];
+	std::vector<char> buffer(allocsize);
+	char * dat = &buffer[0];
 	long pos = 0;
 
 	ais.halo = io->halo_native;
@@ -1318,8 +1317,6 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	}
 	
 	g_currentSavedGame->save(savefile, dat, pos);
-	
-	delete[] dat;
 	
 	return 1;
 }
