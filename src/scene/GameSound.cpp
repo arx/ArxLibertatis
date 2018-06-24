@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <sstream>
 #include <cstdio>
+#include <cstring>
 
 #include <boost/algorithm/string/case_conv.hpp>
 
@@ -999,7 +1000,7 @@ std::string ARX_SOUND_AmbianceSavePlayList() {
 		char * data = &result[result.size() - sizeof(PlayingAmbiance)];
 		PlayingAmbiance * playing = reinterpret_cast<PlayingAmbiance *>(data);
 		
-		memset(playing->name, 0, sizeof(playing->name));
+		std::memset(playing->name, 0, sizeof(playing->name));
 		res::path name;
 		audio::getAmbianceName(ambiance, name);
 		arx_assert(name.string().length() + 1 < ARRAY_SIZE(playing->name));
