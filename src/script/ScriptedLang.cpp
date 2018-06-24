@@ -839,9 +839,6 @@ static const std::string getName() {
 
 void timerCommand(const std::string & name, Context & context) {
 	
-	// Checks if the timer is named by caller or if it needs a default name
-	std::string timername = name.empty() ? ARX_SCRIPT_Timer_GetDefaultName() : name;
-	
 	bool mili = false, idle = false;
 	HandleFlags("mi") {
 		mili = test_flag(flg, 'm');
@@ -856,9 +853,14 @@ void timerCommand(const std::string & name, Context & context) {
 		return;
 	}
 	
-	ARX_SCRIPT_Timer_Clear_By_Name_And_IO(timername, context.getEntity());
+	if(!name.empty()) {
+		ARX_SCRIPT_Timer_Clear_By_Name_And_IO(name, context.getEntity());
+	}
 	if(command == "off") {
-		DebugScript(timername << " off");
+		if(name.empty()) {
+			ScriptWarning << "Cannot turn off unamed timers";
+		}
+		DebugScript(name << " off");
 		return;
 	}
 	
@@ -870,6 +872,7 @@ void timerCommand(const std::string & name, Context & context) {
 		interval *= 1000;
 	}
 	
+	std::string timername = name.empty() ? ARX_SCRIPT_Timer_GetDefaultName() : name;
 	DebugScript(timername << ' ' << options << ' ' << count << ' ' << interval);
 	
 	size_t pos = context.skipCommand();
