@@ -156,7 +156,7 @@ void TextInputWidget::render(bool mouseOver) {
 	std::string::const_iterator begin = displayText.begin();
 	std::string::const_iterator end = displayText.end();
 	
-	int width = m_font->getTextSize(displayText).width();
+	int width = m_font->getTextSize(displayText).advance();
 	Vec2i pos = Vec2i(m_rect.topCenter() - Vec2f(width / 2, 0.f));
 	if(width > m_rect.width()) {
 		if(!m_editing) {
