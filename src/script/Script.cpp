@@ -1569,6 +1569,8 @@ bool scriptTimerExists(Entity * io, const std::string & name) {
 
 static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 	
+	arx_assert(st->name == "_r_a_t_");
+	
 	Entity * io = st->io;
 	GetTargetPos(io);
 	Vec3f target = io->target - io->pos;
@@ -1641,10 +1643,8 @@ void ARX_SCRIPT_Timer_Check() {
 		Entity * io = timer.io;
 		long pos = timer.pos;
 		
-		if(!es && timer.name == "_r_a_t_") {
-			if(Manage_Specific_RAT_Timer(&timer)) {
-				continue;
-			}
+		if(!es && Manage_Specific_RAT_Timer(&timer)) {
+			continue;
 		}
 		
 		#ifdef ARX_DEBUG
