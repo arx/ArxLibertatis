@@ -209,7 +209,6 @@ struct SCR_TIMER {
 	long count;
 	GameDuration interval;
 	long pos;
-	long longinfo;
 	GameInstant start;
 	Entity * io;
 	const EERIE_SCRIPT * es;
@@ -221,7 +220,6 @@ struct SCR_TIMER {
 		, count(0)
 		, interval(0)
 		, pos(0)
-		, longinfo(0)
 		, start(0)
 		, io(entity)
 		, es(NULL)
