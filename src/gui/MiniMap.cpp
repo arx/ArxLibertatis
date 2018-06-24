@@ -166,19 +166,12 @@ void MiniMap::loadOffsets(PakReader * pakRes) {
 	std::string iniMiniOffsets = "graph/levels/mini_offsets.ini";
 	
 	PakFile * file = pakRes->getFile(iniMiniOffsets.c_str());
-	
 	if(!file) {
 		LogError << "Missing " << iniMiniOffsets;
 		return;
 	}
 	
-	size_t fileSize = file->size();
-	char * dat = new char[fileSize + 1];
-	dat[fileSize] = '\0';
-	
-	file->read(dat);
-	
-	std::istringstream iss(dat);
+	std::istringstream iss(file->read());
 	
 	std::string dummy;
 	
@@ -189,8 +182,6 @@ void MiniMap::loadOffsets(PakReader * pakRes) {
 		}
 		iss.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	}
-	
-	delete[] dat;
 	
 	m_miniOffset[0] = Vec2f(0, -0.5);
 	m_miniOffset[1] = Vec2f(0, 0);
