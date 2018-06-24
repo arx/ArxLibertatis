@@ -96,7 +96,7 @@ Entity * LASTSPAWNED = NULL;
 SCRIPT_VARIABLES svar;
 
 long FORBID_SCRIPT_IO_CREATION = 0;
-std::vector<SCR_TIMER> scr_timer;
+std::vector<SCR_TIMER> g_scriptTimers;
 static size_t g_activeScriptTimers = 0;
 
 bool isLocalVariable(const std::string & name) {
@@ -1475,7 +1475,7 @@ ScriptResult SendInitScriptEvent(Entity * io) {
 //! Checks if timer named texx exists.
 static bool ARX_SCRIPT_Timer_Exist(const std::string & name) {
 	
-	BOOST_FOREACH(const SCR_TIMER & timer, scr_timer) {
+	BOOST_FOREACH(const SCR_TIMER & timer, g_scriptTimers) {
 		if(timer.exist && timer.name == name) {
 			return true;
 		}
@@ -1498,12 +1498,12 @@ std::string ARX_SCRIPT_Timer_GetDefaultName() {
 
 SCR_TIMER & createScriptTimer(Entity * io, const std::string & name) {
 	
-	arx_assert(g_activeScriptTimers <= scr_timer.size());
+	arx_assert(g_activeScriptTimers <= g_scriptTimers.size());
 	
 	g_activeScriptTimers++;
 	
-	if(g_activeScriptTimers != scr_timer.size() + 1) {
-		BOOST_FOREACH(SCR_TIMER & timer, scr_timer) {
+	if(g_activeScriptTimers != g_scriptTimers.size() + 1) {
+		BOOST_FOREACH(SCR_TIMER & timer, g_scriptTimers) {
 			if(!timer.exist) {
 				timer = SCR_TIMER(io, name);
 				return timer;
@@ -1511,9 +1511,9 @@ SCR_TIMER & createScriptTimer(Entity * io, const std::string & name) {
 		}
 	}
 	
-	scr_timer.push_back(SCR_TIMER(io, name));
+	g_scriptTimers.push_back(SCR_TIMER(io, name));
 	
-	return scr_timer.back();
+	return g_scriptTimers.back();
 }
 
 long ARX_SCRIPT_CountTimers() {
@@ -1530,7 +1530,7 @@ static void clearTimer(SCR_TIMER & timer) {
 }
 
 void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity * io) {
-	BOOST_FOREACH(SCR_TIMER & timer, scr_timer) {
+	BOOST_FOREACH(SCR_TIMER & timer, g_scriptTimers) {
 		if(timer.exist && timer.io == io && timer.name == timername) {
 			clearTimer(timer);
 		}
@@ -1538,7 +1538,7 @@ void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity
 }
 
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io) {
-	BOOST_FOREACH(SCR_TIMER & timer, scr_timer) {
+	BOOST_FOREACH(SCR_TIMER & timer, g_scriptTimers) {
 		if(timer.exist && timer.io == io && timer.es == &io->over_script) {
 			clearTimer(timer);
 		}
@@ -1546,12 +1546,12 @@ void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io) {
 }
 
 void ARX_SCRIPT_Timer_ClearAll() {
-	scr_timer.clear();
+	g_scriptTimers.clear();
 	g_activeScriptTimers = 0;
 }
 
 void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io) {
-	BOOST_FOREACH(SCR_TIMER & timer, scr_timer) {
+	BOOST_FOREACH(SCR_TIMER & timer, g_scriptTimers) {
 		if(timer.exist && timer.io == io) {
 			clearTimer(timer);
 		}
@@ -1561,7 +1561,7 @@ void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io) {
 bool scriptTimerExists(Entity * io, const std::string & name) {
 	
 	if(g_activeScriptTimers != 0) {
-		BOOST_FOREACH(const SCR_TIMER & timer, scr_timer) {
+		BOOST_FOREACH(const SCR_TIMER & timer, g_scriptTimers) {
 			if(timer.exist && timer.io == io && timer.name == name) {
 				return true;
 			}
@@ -1618,7 +1618,7 @@ void ARX_SCRIPT_Timer_Check() {
 		return;
 	}
 	
-	BOOST_FOREACH(SCR_TIMER & timer, scr_timer) {
+	BOOST_FOREACH(SCR_TIMER & timer, g_scriptTimers) {
 		
 		if(!timer.exist) {
 			continue;
