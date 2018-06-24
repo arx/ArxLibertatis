@@ -33,7 +33,6 @@
 #include <QStringList>
 
 #include "platform/crashhandler/CrashInfo.h"
-#include "io/fs/FilePath.h"
 
 class ErrorReport {
 	
@@ -53,10 +52,10 @@ public:
 	
 	struct File {
 		
-		fs::path path;
+		QString path;
 		bool attachToReport;
 		
-		File(const fs::path & _path, bool _attach) {
+		File(const QString & _path, bool _attach) {
 			path = _path;
 			attachToReport = _attach;
 		}
@@ -88,7 +87,7 @@ private:
 	
 	void getCrashInfo();
 	
-	void AddFile(const fs::path & fileName);
+	void AddFile(const QString & fileName);
 	
 	void ReleaseApplicationLock();
 	

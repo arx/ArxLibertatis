@@ -130,7 +130,7 @@ void ErrorReport::getCrashInfo() {
 	size_t nbFilesAttached = std::min(size_t(m_pCrashInfo->nbFilesAttached),
 	                                  size_t(CrashInfo::MaxNbFiles));
 	for(size_t i = 0; i < nbFilesAttached; i++) {
-		AddFile(util::loadString(m_pCrashInfo->attachedFiles[i]));
+		AddFile(util::loadString(m_pCrashInfo->attachedFiles[i]).c_str());
 	}
 	
 }
@@ -269,22 +269,22 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier * pProgressNotifier)
 			continue;
 		}
 		
+		QFileInfo path(it->path);
+		
 		// One more check to verify that the file still exists.
-		if(!fs::exists(it->path)) {
+		if(!path.exists()) {
 			continue;
 		}
 		
-		pProgressNotifier->taskStepStarted(QString("Sending file \"%1\"").arg(it->path.filename().c_str()));
-		QString path = it->path.parent().string().c_str();
-		QString file = it->path.string().c_str();
-		QString name = it->path.filename().c_str();
-		if(server.attachFile(issue_id, file, name, m_SharedMemoryName)) {
+		pProgressNotifier->taskStepStarted(QString("Sending file \"%1\"").arg(path.fileName()));
+		if(server.attachFile(issue_id, it->path, path.fileName(), m_SharedMemoryName)) {
 			commonPath.clear();
 		} else {
-			m_failedFiles.append(file);
+			m_failedFiles.append(it->path);
+			QString dir = path.dir().path();
 			if(it == m_AttachedFiles.begin()) {
-				commonPath = path;
-			} else if(path != commonPath) {
+				commonPath = dir;
+			} else if(dir != commonPath) {
 				commonPath.clear();
 			}
 		}
@@ -309,10 +309,12 @@ void ErrorReport::ReleaseApplicationLock() {
 	
 }
 
-void ErrorReport::AddFile(const fs::path & fileName) {
+void ErrorReport::AddFile(const QString & fileName) {
+	
+	QFileInfo file(fileName);
 	
 	// Do not include files that can't be found, and empty files...
-	if(fs::exists(fileName) && fs::file_size(fileName) != 0) {
+	if(file.exists() && file.size() != 0) {
 		m_AttachedFiles.push_back(File(fileName, true));
 	}
 	
