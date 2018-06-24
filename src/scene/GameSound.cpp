@@ -742,20 +742,20 @@ audio::SourceId ARX_SOUND_PlayScript(const res::path & name, const Entity * io,
 	return sample_id;
 }
 
-long ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position)
-{
-	if(!bIsActive || sample_id == INVALID_ID)
-		return INVALID_ID;
-
+void ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position) {
+	
+	if(!bIsActive || sample_id == INVALID_ID) {
+		return;
+	}
+	
 	audio::Channel channel;
-
 	channel.mixer = ARX_SOUND_MixerGameSample;
 	channel.flags = FLAG_VOLUME;
 	channel.volume = 1.0F;
 
 	if(position) {
 		if(g_camera && fartherThan(g_camera->m_pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
-			return -1;
+			return;
 		}
 		channel.flags |= FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 		res::path sample_name;
@@ -765,10 +765,9 @@ long ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position)
 		channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
 		channel.position = *position;
 	}
-
+	
 	audio::samplePlay(sample_id, channel);
-
-	return sample_id;
+	
 }
 
 audio::SourceId ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
