@@ -245,7 +245,6 @@ public:
 		}
 		
 		// TODO make this list scrollable
-		// TODO align the date part to the right!
 		
 		Rectf rect(RATIO_2(Vec2f(20, 0)), m_rect.width() - RATIO_X(32), 0.f);
 		

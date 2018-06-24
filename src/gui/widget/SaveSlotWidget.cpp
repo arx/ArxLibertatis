@@ -22,6 +22,7 @@
 #include <sstream>
 #include <iomanip>
 
+#include "core/Core.h"
 #include "core/Localisation.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/font/Font.h"
@@ -33,6 +34,7 @@
 SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, const Rectf & rect)
 	: m_font(font)
 	, m_savegame(savegame)
+	, m_dateOffset(rect.width())
 	, m_selected(false)
 {
 	
@@ -43,31 +45,35 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 		
 		std::ostringstream text;
 		text << '-' << std::setfill('0') << std::setw(4) << i << '-';
-		m_text = text.str();
+		m_name = text.str();
 		
 	} else {
 		
 		const SaveGame & save = savegames[savegame.handleData()];
 		
+		m_dateOffset = rect.width() - font->getTextSize("0000-00-00   00:00").width();
+		
 		if(save.quicksave) {
 			
 			std::ostringstream text;
-			text << getLocalised("system_menus_main_quickloadsave", "Quicksave") << ' ' << i << "   " << save.time;
-			m_text = text.str();
+			text << getLocalised("system_menus_main_quickloadsave", "Quicksave") << ' ' << i;
+			m_name = text.str();
 			
 		} else {
 			
-			m_text = save.name +  "   " + save.time;
+			m_name = save.name;
 			size_t length = save.name.length();
-			while(length > 0 && font->getTextSize(m_text).width() > rect.width()) {
+			while(length > 0 && font->getTextSize(m_name).width() > m_dateOffset - RATIO_X(20)) {
 				length--;
 				while(length > 0 && util::UTF8::isContinuationByte(save.name[length])) {
 					length--;
 				}
-				m_text = save.name.substr(0, length) + "…   " + save.time;
+				m_name = save.name.substr(0, length) + "…";
 			}
 			
 		}
+		
+		m_time = save.time;
 		
 	}
 	
@@ -114,7 +120,12 @@ void SaveSlotWidget::render(bool mouseOver) {
 		color = Color::white;
 	}
 	
-	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, color, NULL);
+	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_name, color);
+	
+	if(!m_time.empty()) {
+		Vec2f datePos = m_rect.topLeft() + Vec2f(m_dateOffset, 0.f);
+		ARX_UNICODE_DrawTextInRect(m_font, datePos, m_rect.right, m_time, color);
+	}
 	
 	if(!mouseOver || m_savegame == SavegameHandle()) {
 		return;
