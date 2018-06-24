@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Scene.h"
 
+#include <vector>
 #include <cstdio>
 #include <cmath>
 
@@ -115,23 +116,22 @@ private:
 public:
 	
 	size_t nbindices;
-	unsigned short * indices;
+	std::vector<unsigned short> indices;
 	size_t offset;
 	
 	DynamicVertexBuffer()
 		: vertices(NULL)
 		, start(0)
 		, nbindices(0)
-		, indices(NULL)
 		, offset(0)
-	{}
+	{ }
 	
 	void lock(size_t count) {
 		
 		arx_assert(!vertices);
 		
-		if(!indices) {
-			indices = new unsigned short[4 * pDynamicVertexBuffer->vb->capacity()];
+		if(indices.empty()) {
+			indices.resize(4 * pDynamicVertexBuffer->vb->capacity());
 			start = 0;
 		}
 		
@@ -163,7 +163,7 @@ public:
 	
 	void draw(Renderer::Primitive primitive) {
 		arx_assert(!vertices);
-		pDynamicVertexBuffer->vb->drawIndexed(primitive, pDynamicVertexBuffer->pos - start, start, indices, nbindices);
+		pDynamicVertexBuffer->vb->drawIndexed(primitive, pDynamicVertexBuffer->pos - start, start, &indices[0], nbindices);
 	}
 	
 	void done() {
@@ -176,10 +176,6 @@ public:
 		arx_assert(!vertices);
 		start = pDynamicVertexBuffer->pos = 0;
 		nbindices = 0;
-	}
-	
-	~DynamicVertexBuffer() {
-		delete[] indices;
 	}
 	
 } dynamicVertices;
@@ -829,7 +825,7 @@ static void RenderWater() {
 	GRenderer->SetTexture(1, enviro);
 	GRenderer->SetTexture(2, enviro);
 	
-	unsigned short * indices = dynamicVertices.indices;
+	unsigned short * indices = &dynamicVertices.indices[0];
 	
 	float time = toMsf(g_gameTime.now());
 
@@ -845,7 +841,7 @@ static void RenderWater() {
 			dynamicVertices.reset();
 			dynamicVertices.lock((iNb + 1) * 4);
 			iNbIndice = 0;
-			indices = dynamicVertices.indices;
+			indices = &dynamicVertices.indices[0];
 			pVertex = dynamicVertices.append(iNbVertex);
 		}
 		
@@ -935,7 +931,7 @@ static void RenderLava() {
 	GRenderer->SetTexture(1, enviro);
 	GRenderer->SetTexture(2, enviro);
 	
-	unsigned short * indices = dynamicVertices.indices;
+	unsigned short * indices = &dynamicVertices.indices[0];
 	
 	float time = toMsf(g_gameTime.now());
 
@@ -951,7 +947,7 @@ static void RenderLava() {
 			dynamicVertices.reset();
 			dynamicVertices.lock((iNb + 1) * 4);
 			iNbIndice = 0;
-			indices = dynamicVertices.indices;
+			indices = &dynamicVertices.indices[0];
 			pVertex = dynamicVertices.append(iNbVertex);
 		}
 		
