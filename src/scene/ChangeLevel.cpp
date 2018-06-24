@@ -1983,7 +1983,11 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			
 			SCR_TIMER & timer = createScriptTimer(io, boost::to_lower_copy(util::loadString(ats->name)));
 			
-			timer.es = ats->script ? &io->over_script : &io->script;
+			if(timer.name == "_r_a_t_") {
+				timer.es = NULL;
+			} else {
+				timer.es = ats->script ? &io->over_script : &io->script;
+			}
 			
 			timer.flags = sFlags;
 			timer.interval = GameDurationMs(ats->interval); // TODO save/load time
