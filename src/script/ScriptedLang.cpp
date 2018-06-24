@@ -883,7 +883,7 @@ void timerCommand(const std::string & name, Context & context) {
 	timer.pos = pos;
 	timer.start = g_gameTime.now();
 	timer.count = count;
-	timer.flags = (idle && context.getEntity()) ? 1 : 0;
+	timer.idle = idle;
 	
 }
 
