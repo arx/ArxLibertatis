@@ -25,19 +25,25 @@
 #include "core/Localisation.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/font/Font.h"
+#include "gui/Text.h"
 #include "gui/menu/MenuCursor.h"
+#include "scene/GameSound.h"
 #include "util/Unicode.h"
 
 SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, const Rectf & rect)
-	: TextWidget(font, std::string(), rect.topLeft())
+	: m_font(font)
 	, m_savegame(savegame)
+	, m_selected(false)
 {
+	
+	m_rect = rect;
+	m_rect.bottom = m_rect.top + font->getLineHeight();
 	
 	if(savegame == SavegameHandle()) {
 		
 		std::ostringstream text;
 		text << '-' << std::setfill('0') << std::setw(4) << i << '-';
-		setText(text.str());
+		m_text = text.str();
 		
 	} else {
 		
@@ -47,20 +53,19 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 			
 			std::ostringstream text;
 			text << getLocalised("system_menus_main_quickloadsave", "Quicksave") << ' ' << i << "   " << save.time;
-			setText(text.str());
+			m_text = text.str();
 			
 		} else {
 			
-			std::string text = save.name +  "   " + save.time;
+			m_text = save.name +  "   " + save.time;
 			size_t length = save.name.length();
-			while(length > 0 && font->getTextSize(text).width() > rect.width()) {
+			while(length > 0 && font->getTextSize(m_text).width() > rect.width()) {
 				length--;
 				while(length > 0 && util::UTF8::isContinuationByte(save.name[length])) {
 					length--;
 				}
-				text = save.name.substr(0, length) + "…   " + save.time;
+				m_text = save.name.substr(0, length) + "…   " + save.time;
 			}
-			setText(text);
 			
 		}
 		
@@ -68,9 +73,48 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 	
 }
 
+bool SaveSlotWidget::click() {
+	
+	bool result = Widget::click();
+	
+	if(!m_enabled) {
+		return result;
+	}
+	
+	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+	
+	if(clicked) {
+		clicked(this);
+	}
+	
+	return result;
+}
+
+bool SaveSlotWidget::doubleClick() {
+	
+	bool result = Widget::click();
+	
+	if(m_enabled) {
+		if(doubleClicked) {
+			doubleClicked(this);
+		} else if(clicked) {
+			clicked(this);
+		}
+	}
+	
+	return result;
+}
+
 void SaveSlotWidget::render(bool mouseOver) {
 	
-	TextWidget::render(mouseOver);
+	Color color = Color(232, 204, 142);
+	if(!m_enabled) {
+		color = Color::grayb(127);
+	} else if(m_selected || mouseOver) {
+		color = Color::white;
+	}
+	
+	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, color, NULL);
 	
 	if(!mouseOver || m_savegame == SavegameHandle()) {
 		return;

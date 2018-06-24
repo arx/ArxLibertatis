@@ -29,13 +29,23 @@
 
 class Font;
 
-class SaveSlotWidget : public TextWidget {
+class SaveSlotWidget: public Widget {
 	
+	Font * m_font;
 	SavegameHandle m_savegame;
+	std::string m_text;
+	bool m_selected;
 	
 public:
 	
+	boost::function<void(SaveSlotWidget * /* widget */)> clicked;
+	boost::function<void(SaveSlotWidget * /* widget */)> doubleClicked;
+	
 	SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, const Rectf & rect);
+	
+	bool click();
+	
+	bool doubleClick();
 	
 	void render(bool mouseOver = false);
 	
@@ -43,9 +53,9 @@ public:
 		return WidgetType_SaveSlot;
 	}
 	
-	SavegameHandle savegame() const {
-		return m_savegame;
-	}
+	SavegameHandle savegame() const { return m_savegame; }
+	
+	void setSelected(bool selected) { m_selected = selected; }
 	
 };
 
