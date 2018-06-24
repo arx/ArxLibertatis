@@ -314,25 +314,8 @@ static int tri_tri_intersect(const EERIE_TRI & VV, const EERIE_TRI & UU)  {
 // Computes Bounding Box for a triangle
 static EERIE_3D_BBOX Triangle_ComputeBoundingBox(const EERIE_TRI & v) {
 	EERIE_3D_BBOX bb;
-	
-	bb.min.x = std::min(v.v[0].x, v.v[1].x);
-	bb.min.x = std::min(bb.min.x, v.v[2].x);
-
-	bb.max.x = std::max(v.v[0].x, v.v[1].x);
-	bb.max.x = std::max(bb.max.x, v.v[2].x);
-
-	bb.min.y = std::min(v.v[0].y, v.v[1].y);
-	bb.min.y = std::min(bb.min.y, v.v[2].y);
-
-	bb.max.y = std::max(v.v[0].y, v.v[1].y);
-	bb.max.y = std::max(bb.max.y, v.v[2].y);
-
-	bb.min.z = std::min(v.v[0].z, v.v[1].z);
-	bb.min.z = std::min(bb.min.z, v.v[2].z);
-
-	bb.max.z = std::max(v.v[0].z, v.v[1].z);
-	bb.max.z = std::max(bb.max.z, v.v[2].z);
-	
+	bb.min = glm::min(glm::min(v.v[0], v.v[1]), v.v[2]);
+	bb.max = glm::max(glm::max(v.v[0], v.v[1]), v.v[2]);
 	return bb;
 }
 
