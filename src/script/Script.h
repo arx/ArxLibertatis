@@ -205,7 +205,7 @@ struct SCR_TIMER {
 	
 	std::string name;
 	short exist;
-	short flags;
+	bool idle;
 	long count;
 	GameDuration interval;
 	long pos;
@@ -217,7 +217,7 @@ struct SCR_TIMER {
 	explicit SCR_TIMER(Entity * entity = NULL, const std::string & timerName = std::string())
 		: name(timerName)
 		, exist(entity != NULL)
-		, flags(0)
+		, idle(0)
 		, count(0)
 		, interval(0)
 		, pos(0)

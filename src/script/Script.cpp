@@ -1621,7 +1621,7 @@ void ARX_SCRIPT_Timer_Check() {
 		}
 		
 		// Skip heartbeat timer events for far away objects
-		if((timer.flags & 1) && !(timer.io->gameFlags & GFLAG_ISINTREATZONE)) {
+		if(timer.idle && !(timer.io->gameFlags & GFLAG_ISINTREATZONE)) {
 			long increment = toMsi(now - timer.start) / toMsi(timer.interval);
 			timer.start += GameDurationMs(toMsi(timer.interval) * increment);
 			// TODO print full 64-bit time

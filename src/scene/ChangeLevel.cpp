@@ -1125,7 +1125,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 					ats->remaining = 0;
 
 				ats->count = timer.count;
-				ats->flags = timer.flags;
+				ats->flags = timer.idle ? 1 : 0;
 				pos += sizeof(ARX_CHANGELEVEL_TIMERS_SAVE);
 			}
 		}
@@ -1979,8 +1979,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			ats = reinterpret_cast<const ARX_CHANGELEVEL_TIMERS_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_TIMERS_SAVE);
 			
-			short sFlags = checked_range_cast<short>(ats->flags);
-			
 			SCR_TIMER & timer = createScriptTimer(io, boost::to_lower_copy(util::loadString(ats->name)));
 			
 			if(timer.name == "_r_a_t_") {
@@ -1989,7 +1987,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				timer.es = ats->script ? &io->over_script : &io->script;
 			}
 			
-			timer.flags = sFlags;
+			timer.idle = (ats->flags & 1) != 0;
 			timer.interval = GameDurationMs(ats->interval); // TODO save/load time
 			timer.pos = ats->pos;
 			// TODO if the script has changed since the last save, this position may be invalid
