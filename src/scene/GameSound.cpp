@@ -465,41 +465,37 @@ void ARX_SOUND_EnvironmentSet(const res::path & name) {
 	}
 }
 
-long ARX_SOUND_PlaySFX(SourceId & sample_id, const Vec3f * position, float pitch, SoundLoopMode loop) {
+audio::SourceId ARX_SOUND_PlaySFX(SourceId & sample_id, const Vec3f * position,
+                                  float pitch, SoundLoopMode loop) {
 	
 	if(!bIsActive || sample_id == INVALID_ID) {
 		return INVALID_ID;
 	}
 	
 	audio::Channel channel;
-	float presence;
-	
 	channel.mixer = ARX_SOUND_MixerGameSample;
 	channel.flags = FLAG_VOLUME | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
-	channel.volume = 1.0F;
+	channel.volume = 1.f;
 	
 	if(position) {
 		if(g_camera && fartherThan(g_camera->m_pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
-			return -1;
+			return INVALID_ID;
 		}
-	}
-	
-	res::path sample_name;
-	audio::getSampleName(sample_id, sample_name);
-	presence = GetSamplePresenceFactor(sample_name);
-	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
-	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
-	
-	if(pitch != 1.0F) {
-		channel.flags |= FLAG_PITCH;
-		channel.pitch = pitch;
-	}
-	
-	if(position) {
 		channel.position = *position;
 	} else {
 		channel.flags |= FLAG_RELATIVE;
 		channel.position = Vec3f_Z_AXIS;
+	}
+	
+	res::path sample_name;
+	audio::getSampleName(sample_id, sample_name);
+	float presence = GetSamplePresenceFactor(sample_name);
+	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
+	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
+	
+	if(pitch != 1.f) {
+		channel.flags |= FLAG_PITCH;
+		channel.pitch = pitch;
 	}
 	
 	audio::samplePlay(sample_id, channel, loop);
