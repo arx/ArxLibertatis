@@ -354,19 +354,15 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 		return;
 	}
 	
-	LogDebug("Before ARX_CHANGELEVEL_PushLevel");
 	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, num);
-	LogDebug("After  ARX_CHANGELEVEL_PushLevel");
 	
-	LogDebug("Before ARX_CHANGELEVEL_PopLevel");
 	ARX_CHANGELEVEL_PopLevel(num, true, target, angle);
-	LogDebug("After  ARX_CHANGELEVEL_PopLevel");
 	
 	DONT_WANT_PLAYER_INZONE = 1;
 	ARX_PLAYER_RectifyPosition();
 	JUST_RELOADED = 1;
 	GMOD_RESET = true;
-	LogDebug("-----------------------------------");
+	
 }
 
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
@@ -380,19 +376,19 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	
 	// Now we can save our things
 	if(!ARX_CHANGELEVEL_Push_Index(num)) {
-		LogError << "Error Saving Index...";
+		LogError << "Error saving index...";
 		return false;
 	}
 	
 	ARX_CHANGELEVEL_Push_Globals();
 	
 	if(ARX_CHANGELEVEL_Push_Player(newnum) != 1) {
-		LogError << "Error Saving Player...";
+		LogError << "Error saving player...";
 		return false;
 	}
 	
 	if(ARX_CHANGELEVEL_Push_AllIO(num) != 1) {
-		LogError << "Error Saving IOs...";
+		LogError << "Error saving entities...";
 		return false;
 	}
 	
@@ -1635,7 +1631,6 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 		return -1;
 	}
 	ARX_KEYRING_Init();
-	LogDebug(asp->keyring_nb);
 	for(int i = 0; i < asp->keyring_nb; i++) {
 		ARX_KEYRING_Add(boost::to_lower_copy(util::loadString(dat + pos, SAVED_KEYRING_SLOT_SIZE)));
 		pos += SAVED_KEYRING_SLOT_SIZE;
@@ -2398,14 +2393,7 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 
 static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::string & target, float angle) {
 	
-	LogDebug("Before ARX_CHANGELEVEL_PopLevel Alloc'n'Free");
-	
-	LogDebug("After  ARX_CHANGELEVEL_PopLevel Alloc'n'Free");
-	
-	// Clears All Scene contents...
-	LogDebug("Before DANAE ClearAll");
 	DanaeClearLevel();
-	LogDebug("After  DANAE ClearAll");
 	
 	// Open Saveblock for read
 	if(!openCurrentSavedGameFile()) {
@@ -2428,26 +2416,19 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::
 	
 	const ARX_CHANGELEVEL_INDEX * asi;
 	if(!firstTime) {
-		
-		LogDebug("Before ARX_CHANGELEVEL_Pop_Index");
-		
 		asi = ARX_CHANGELEVEL_Pop_Index(levelSave);
-		
-		LogDebug("After  ARX_CHANGELEVEL_Pop_Index");
 		if(asi->version != ARX_GAMESAVE_VERSION) {
-			LogError << "Invalid Save Version...";
+			LogError << "Invalid save version...";
 			FORBID_SCRIPT_IO_CREATION = 0;
 			return false;
 		}
-		
 	}
 	
 	progressBarAdvance(2.f);
 	LoadLevelScreen(instance);
 	
-	LogDebug("Before ARX_CHANGELEVEL_Pop_Level");
 	if(ARX_CHANGELEVEL_Pop_Level(instance, firstTime) != 1) {
-		LogError << "Cannot Load Level data";
+		LogError << "Error loading level data...";
 		FORBID_SCRIPT_IO_CREATION = 0;
 		return false;
 	}
@@ -2457,7 +2438,6 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::
 		GMOD_RESET = false;
 	}
 	
-	LogDebug("After  ARX_CHANGELEVEL_Pop_Index");
 	progressBarAdvance(20.f);
 	LoadLevelScreen(instance);
 	
@@ -2468,26 +2448,20 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::
 			}
 		}
 	} else {
-		LogDebug("Before ARX_CHANGELEVEL_PopAllIO");
 		ARX_CHANGELEVEL_PopAllIO(levelSave);
-		LogDebug("After  ARX_CHANGELEVEL_PopAllIO");
 	}
 	
 	progressBarAdvance(20.f);
 	LoadLevelScreen(instance);
-	LogDebug("Before ARX_CHANGELEVEL_Pop_Player");
 	
 	if(ARX_CHANGELEVEL_Pop_Player(target, angle) != 1) {
-		LogError << "Cannot Load Player data";
+		LogError << "Error loading player data...";
 		FORBID_SCRIPT_IO_CREATION = 0;
 		return false;
 	}
-	LogDebug("After  ARX_CHANGELEVEL_Pop_Player");
 	
-	LogDebug("Before ARX_CHANGELEVEL_PopAllIO_FINISH");
 	// Restoring all Missing Objects required by other objects...
 	ARX_CHANGELEVEL_PopAllIO_FINISH(reloadflag, firstTime);
-	LogDebug("After  ARX_CHANGELEVEL_PopAllIO_FINISH");
 	
 	progressBarAdvance(15.f);
 	LoadLevelScreen();
@@ -2496,27 +2470,19 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::
 	LoadLevelScreen();
 	
 	if(!firstTime) {
-		LogDebug("Before ARX_CHANGELEVEL_Pop_Zones_n_Lights");
 		ARX_CHANGELEVEL_Pop_Zones_n_Lights(levelSave);
-		LogDebug("After  ARX_CHANGELEVEL_Pop_Zones_n_Lights");
 	}
 	
 	progressBarAdvance();
 	LoadLevelScreen();
 	
-	LogDebug("Before Player Misc Init");
 	ARX_EQUIPMENT_RecreatePlayerMesh();
 	
 	progressBarAdvance();
 	LoadLevelScreen();
 	
-	LogDebug("After  Player Misc Init");
-	
-	LogDebug("Before Memory Release");
 	FORBID_SCRIPT_IO_CREATION = 0;
-	LogDebug("After  Memory Release");
 	
-	LogDebug("Before Final Inits");
 	HERO_SHOW_1ST = -1;
 	
 	if(EXTERNALVIEW) {
@@ -2536,8 +2502,6 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::
 	progressBarAdvance();
 	LoadLevelScreen();
 	
-	LogDebug("After  Final Inits");
-	
 	return true;
 }
 
@@ -2548,7 +2512,6 @@ bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 	LogDebug("ARX_CHANGELEVEL_Save " << savefile << " " << name);
 	
 	if(CURRENTLEVEL == -1) {
-		LogWarning << "Internal Non-Fatal Error";
 		return false;
 	}
 	
@@ -2675,7 +2638,6 @@ void ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	
 	JUST_RELOADED = 1;
 	
-	LogDebug("success ARX_CHANGELEVEL_Load");
 }
 
 long ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version,
