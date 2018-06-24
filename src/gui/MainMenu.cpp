@@ -244,57 +244,32 @@ public:
 			addCenter(cb, true);
 		}
 		
-		std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
-		
 		// TODO make this list scrollable
 		// TODO align the date part to the right!
 		
-		{
-		size_t quicksaveNum = 0;
+		Rectf rect(Vec2f(20, 0), m_rect.width() - RATIO_X(25), 0.f);
 		
 		// Show quicksaves.
+		size_t quicksaveNum = 0;
 		for(size_t i = 0; i < savegames.size(); i++) {
-			const SaveGame & save = savegames[i];
-			
-			if(!save.quicksave) {
-				continue;
+			if(savegames[i].quicksave) {
+				SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), ++quicksaveNum, hFontControls, rect);
+				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
+				txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
+				addCenter(txt);
+				m_saveSlotWidgets.push_back(txt);
 			}
-			
-			std::ostringstream text;
-			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
-			
-			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), hFontControls, text.str(), Vec2f(20, 0));
-			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
-			txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
-			addCenter(txt);
-			m_saveSlotWidgets.push_back(txt);
-			
 		}
 		
 		// Show regular saves.
 		for(size_t i = 0; i < savegames.size(); i++) {
-			const SaveGame & save = savegames[i];
-			
-			if(save.quicksave) {
-				continue;
+			if(!savegames[i].quicksave) {
+				SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), 0, hFontControls, rect);
+				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
+				txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
+				addCenter(txt);
+				m_saveSlotWidgets.push_back(txt);
 			}
-			
-			std::string text = save.name +  "   " + save.time;
-			size_t length = save.name.length();
-			while(length > 0 && hFontControls->getTextSize(text).width() > m_rect.width() - RATIO_X(30)) {
-				length--;
-				while(length > 0 && util::UTF8::isContinuationByte(save.name[length])) {
-					length--;
-				}
-				text = save.name.substr(0, length) + "…   " + save.time;
-			}
-			
-			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), hFontControls, text, Vec2f(20, 0));
-			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
-			txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
-			addCenter(txt);
-			m_saveSlotWidgets.push_back(txt);
-			
 		}
 		
 		{
@@ -338,7 +313,7 @@ public:
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
-		}
+		
 	}
 	
 	void resetSelection() {
@@ -352,6 +327,7 @@ public:
 	}
 	
 private:
+	
 	std::vector<SaveSlotWidget *> m_saveSlotWidgets;
 	
 	SavegameHandle m_selectedSave;
@@ -438,65 +414,37 @@ public:
 			addCenter(cb, true);
 		}
 		
-		std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
-		size_t quicksaveNum = 0;
+		Rectf rect(Vec2f(20, 0), m_rect.width() - RATIO_X(25), 0.f);
 		
 		// Show quicksaves.
+		size_t quicksaveNum = 0;
 		for(size_t i = 0; i < savegames.size(); i++) {
-			const SaveGame & save = savegames[i];
-			
-			if(!save.quicksave) {
-				continue;
+			if(savegames[i].quicksave) {
+				SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), ++quicksaveNum, hFontControls, rect);
+				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
+				txt->m_targetMenu = Page_SaveConfirm;
+				txt->setEnabled(false);
+				addCenter(txt);
 			}
-			
-			std::ostringstream text;
-			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
-			
-			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), hFontControls, text.str(), Vec2f(20, 0));
-			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
-			txt->m_targetMenu = Page_SaveConfirm;
-			txt->setEnabled(false);
-			addCenter(txt);
-			
 		}
 		
 		// Show regular saves.
 		for(size_t i = 0; i < savegames.size(); i++) {
-			const SaveGame & save = savegames[i];
-			
-			if(save.quicksave) {
-				continue;
+			if(!savegames[i].quicksave) {
+				SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), 0, hFontControls, rect);
+				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
+				txt->m_targetMenu = Page_SaveConfirm;
+				addCenter(txt);
 			}
-			
-			std::string text = save.name +  "   " + save.time;
-			size_t length = save.name.length();
-			while(length > 0 && hFontControls->getTextSize(text).width() > m_rect.width() - RATIO_X(30)) {
-				length--;
-				while(length > 0 && util::UTF8::isContinuationByte(save.name[length])) {
-					length--;
-				}
-				text = save.name.substr(0, length) + "…   " + save.time;
-			}
-			
-			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), hFontControls, text, Vec2f(20, 0));
-			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
-			txt->m_targetMenu = Page_SaveConfirm;
-			addCenter(txt);
-			
 		}
 		
 		for(size_t i = savegames.size(); i <= 15; i++) {
-			
-			std::ostringstream text;
-			text << '-' << std::setfill('0') << std::setw(4) << i << '-';
-			
-			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(), hFontControls, text.str(), Vec2f(20, 0));
+			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(), i, hFontControls, rect);
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_SaveConfirm;
 			addCenter(txt);
-			
 		}
-	
+		
 		{
 			TextWidget * txt = new TextWidget(hFontControls, std::string(), Vec2f(20, 0));
 			txt->m_targetMenu = Page_SaveConfirm;

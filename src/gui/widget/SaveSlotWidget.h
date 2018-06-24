@@ -35,7 +35,7 @@ class SaveSlotWidget : public TextWidget {
 	
 public:
 	
-	SaveSlotWidget(SavegameHandle savegame, Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO);
+	SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, const Rectf & rect);
 	
 	void render(bool mouseOver = false);
 	
