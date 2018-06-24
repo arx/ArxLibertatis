@@ -216,7 +216,7 @@ void ARX_SOUND_Free(const audio::SampleId & sample);
 long ARX_SOUND_PlaySFX(audio::SourceId & sample_id, const Vec3f * position = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_PlayInterface(audio::SourceId & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 
-long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io = NULL);
+audio::SourceId ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io = NULL);
 long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source);
 long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source);
 
