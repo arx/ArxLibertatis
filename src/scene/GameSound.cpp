@@ -1441,7 +1441,11 @@ static void ARX_SOUND_CreateCollisionMaps() {
 
 static void ARX_SOUND_CreateMaterials() {
 	
-	memset(g_soundMaterials, -1, sizeof(SampleId) * MAX_MATERIALS * MAX_MATERIALS);
+	for(size_t i = 0; i < size_t(MAX_MATERIALS); i++) {
+		for(size_t j = 0; j < size_t(MAX_MATERIALS); j++) {
+			g_soundMaterials[i][j] = audio::INVALID_ID;
+		}
+	}
 	
 	std::ostringstream oss;
 	for(Material i = MATERIAL_WEAPON; i <= MATERIAL_STONE; i = Material(i + 1)) {
