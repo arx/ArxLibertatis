@@ -32,7 +32,6 @@ void SaveSlotWidget::render(bool mouseOver) {
 	TextWidget::render(mouseOver);
 	
 	if(!mouseOver || m_savegame == SavegameHandle()) {
-		g_thumbnailCursor.clear();
 		return;
 	}
 	
