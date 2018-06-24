@@ -518,7 +518,7 @@ void ARX_SCRIPT_Init_Event_Stats();
 ScriptResult SendInitScriptEvent(Entity * io);
 
 //! Generates a random name for an unnamed timer
-std::string ARX_SCRIPT_Timer_GetDefaultName();
+std::string getDefaultScriptTimerName(Entity * io, const std::string & prefix = "timer");
 
 // Use to set the value of a script variable
 SCRIPT_VAR * SETVarValueText(SCRIPT_VARIABLES & svf, const std::string &  name, const std::string & val);

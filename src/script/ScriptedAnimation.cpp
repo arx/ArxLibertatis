@@ -264,7 +264,7 @@ public:
 				return Success;
 			}
 			
-			std::string timername = "anim_" + ARX_SCRIPT_Timer_GetDefaultName();
+			std::string timername = getDefaultScriptTimerName(context.getEntity(), "anim_timer");
 			
 			SCR_TIMER & timer = createScriptTimer(context.getEntity(), timername);
 			timer.es = context.getScript();
