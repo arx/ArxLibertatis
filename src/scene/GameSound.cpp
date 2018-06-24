@@ -127,8 +127,7 @@ static const res::path ARX_SOUND_COLLISION_MAP_NAMES[] = {
 	"snd_weapon"
 };
 
-static bool bIsActive(false);
-
+static bool g_soundInitialized = false;
 
 static AmbianceId ambiance_zone = AmbianceId();
 static AmbianceId ambiance_menu = AmbianceId();
@@ -322,7 +321,7 @@ static void ARX_SOUND_KillUpdateThread();
 
 bool ARX_SOUND_Init() {
 	
-	if (bIsActive) ARX_SOUND_Release();
+	if (g_soundInitialized) ARX_SOUND_Release();
 	
 	if(audio::init(config.audio.backend, config.audio.device, config.audio.hrtf)) {
 		audio::clean();
@@ -382,7 +381,7 @@ bool ARX_SOUND_Init() {
 	// Load environments, enable environment system and set default one if required
 	ARX_SOUND_CreateEnvironments();
 	
-	bIsActive = true;
+	g_soundInitialized = true;
 	
 	ARX_SOUND_SetReverb(config.audio.eax);
 	
@@ -398,7 +397,7 @@ void ARX_SOUND_SetReverb(bool enabled) {
 
 void ARX_SOUND_Release() {
 	
-	if(!bIsActive) {
+	if(!g_soundInitialized) {
 		return;
 	}
 	
@@ -407,34 +406,34 @@ void ARX_SOUND_Release() {
 	g_presenceFactors.clear();
 	ARX_SOUND_KillUpdateThread();
 	audio::clean();
-	bIsActive = false;
+	g_soundInitialized = false;
 }
 
 long ARX_SOUND_IsEnabled()
 {
-	return bIsActive ? 1 : 0;
+	return g_soundInitialized ? 1 : 0;
 }
 
 void ARX_SOUND_MixerSetVolume(audio::MixerId mixer_id, float volume) {
-	if(bIsActive) {
+	if(g_soundInitialized) {
 		audio::setMixerVolume(mixer_id, volume);
 	}
 }
 
 void ARX_SOUND_MixerStop(audio::MixerId mixer_id) {
-	if(bIsActive) {
+	if(g_soundInitialized) {
 		audio::mixerStop(mixer_id);
 	}
 }
 
 void ARX_SOUND_MixerPause(audio::MixerId mixer_id) {
-	if(bIsActive) {
+	if(g_soundInitialized) {
 		audio::mixerPause(mixer_id);
 	}
 }
 
 void ARX_SOUND_MixerResume(audio::MixerId mixer_id) {
-	if(bIsActive) {
+	if(g_soundInitialized) {
 		audio::mixerResume(mixer_id);
 	}
 }
@@ -449,7 +448,7 @@ void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Ve
 	
 	ARX_PROFILE_FUNC();
 	
-	if(bIsActive) {
+	if(g_soundInitialized) {
 		audio::setListenerPosition(position);
 		audio::setListenerDirection(front, up);
 	}
@@ -457,7 +456,7 @@ void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Ve
 
 void ARX_SOUND_EnvironmentSet(const res::path & name) {
 	
-	if(bIsActive) {
+	if(g_soundInitialized) {
 		EnvId e_id = audio::getEnvironment(name);
 		if(e_id != audio::EnvId()) {
 			audio::setListenerEnvironment(e_id);
@@ -468,7 +467,7 @@ void ARX_SOUND_EnvironmentSet(const res::path & name) {
 audio::SourceId ARX_SOUND_PlaySFX(SourceId & sample_id, const Vec3f * position,
                                   float pitch, SoundLoopMode loop) {
 	
-	if(!bIsActive || sample_id == INVALID_ID) {
+	if(!g_soundInitialized || sample_id == INVALID_ID) {
 		return INVALID_ID;
 	}
 	
@@ -505,7 +504,7 @@ audio::SourceId ARX_SOUND_PlaySFX(SourceId & sample_id, const Vec3f * position,
 
 static void playSample(audio::SourceId & sample_id, float pitch, SoundLoopMode loop, audio::MixerId mixer) {
 	
-	if(!bIsActive || sample_id == INVALID_ID) {
+	if(!g_soundInitialized || sample_id == INVALID_ID) {
 		return;
 	}
 	
@@ -552,7 +551,7 @@ static res::path speechFileName(const res::path & name) {
 
 audio::SourceId ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io) {
 	
-	if(!bIsActive) {
+	if(!g_soundInitialized) {
 		return INVALID_ID;
 	}
 	
@@ -594,7 +593,7 @@ audio::SourceId ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io) 
 
 long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source) {
 	
-	if(!bIsActive)
+	if(!g_soundInitialized)
 		return 0;
 
 	if(mat1 == MATERIAL_NONE || mat2 == MATERIAL_NONE)
@@ -637,7 +636,7 @@ long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 
 long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source) {
 	
-	if(!bIsActive)
+	if(!g_soundInitialized)
 		return 0;
 	
 	if(name1.empty() || name2.empty())
@@ -691,7 +690,7 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 audio::SourceId ARX_SOUND_PlayScript(const res::path & name, const Entity * io,
                                      float pitch, SoundLoopMode loop) {
 	
-	if(!bIsActive) {
+	if(!g_soundInitialized) {
 		return INVALID_ID;
 	}
 	
@@ -732,7 +731,7 @@ audio::SourceId ARX_SOUND_PlayScript(const res::path & name, const Entity * io,
 
 void ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position) {
 	
-	if(!bIsActive || sample_id == INVALID_ID) {
+	if(!g_soundInitialized || sample_id == INVALID_ID) {
 		return;
 	}
 	
@@ -790,13 +789,13 @@ audio::SourceId ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 }
 
 bool ARX_SOUND_IsPlaying(SourceId & sample_id) {
-	return bIsActive ? audio::isSamplePlaying(sample_id) : false;
+	return g_soundInitialized ? audio::isSamplePlaying(sample_id) : false;
 }
 
 
 GameDuration ARX_SOUND_GetDuration(SampleId & sample_id) {
 	
-	if(bIsActive && sample_id != INVALID_ID) {
+	if(g_soundInitialized && sample_id != INVALID_ID) {
 		size_t length;
 		audio::getSampleLength(sample_id, length);
 		return GameDurationMs(length);
@@ -806,27 +805,27 @@ GameDuration ARX_SOUND_GetDuration(SampleId & sample_id) {
 }
 
 void ARX_SOUND_RefreshVolume(SourceId & sample_id, float volume) {
-	if(bIsActive && sample_id != INVALID_ID) {
+	if(g_soundInitialized && sample_id != INVALID_ID) {
 		audio::setSampleVolume(sample_id, volume);
 	}
 }
 
 void ARX_SOUND_RefreshPitch(SourceId & sample_id, float pitch) {
-	if(bIsActive && sample_id != INVALID_ID) {
+	if(g_soundInitialized && sample_id != INVALID_ID) {
 		audio::setSamplePitch(sample_id, pitch);
 	}
 }
 
 void ARX_SOUND_RefreshPosition(SourceId & sample_id, const Vec3f & position) {
 	
-	if(bIsActive && sample_id != INVALID_ID) {
+	if(g_soundInitialized && sample_id != INVALID_ID) {
 		audio::setSamplePosition(sample_id, position);
 	}
 }
 
 void ARX_SOUND_RefreshSpeechPosition(SourceId & sample_id, const Entity * io) {
 	
-	if(!bIsActive || !io || sample_id == INVALID_ID) {
+	if(!g_soundInitialized || !io || sample_id == INVALID_ID) {
 		return;
 	}
 	
@@ -842,7 +841,7 @@ void ARX_SOUND_RefreshSpeechPosition(SourceId & sample_id, const Entity * io) {
 
 SampleId ARX_SOUND_Load(const res::path & name) {
 	
-	if(!bIsActive) {
+	if(!g_soundInitialized) {
 		return INVALID_ID;
 	}
 	
@@ -852,20 +851,20 @@ SampleId ARX_SOUND_Load(const res::path & name) {
 }
 
 void ARX_SOUND_Free(const SampleId & sample) {
-	if(bIsActive && sample != INVALID_ID) {
+	if(g_soundInitialized && sample != INVALID_ID) {
 		audio::deleteSample(sample);
 	}
 }
 
 void ARX_SOUND_Stop(SourceId & sample_id) {
-	if(bIsActive && sample_id != INVALID_ID) {
+	if(g_soundInitialized && sample_id != INVALID_ID) {
 		audio::sampleStop(sample_id);
 	}
 }
 
 bool ARX_SOUND_PlayScriptAmbiance(const res::path & name, SoundLoopMode loop, float volume) {
 	
-	if (!bIsActive) return INVALID_ID;
+	if (!g_soundInitialized) return INVALID_ID;
 
 	res::path temp = res::path(name).set_ext("amb");
 
@@ -906,7 +905,7 @@ bool ARX_SOUND_PlayScriptAmbiance(const res::path & name, SoundLoopMode loop, fl
 
 bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, float volume) {
 	
-	if (!bIsActive) return true;
+	if (!g_soundInitialized) return true;
 
 	if(name == "none") {
 		audio::ambianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
@@ -944,7 +943,7 @@ bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, floa
 
 void ARX_SOUND_KillAmbiances() {
 	
-	if(!bIsActive) {
+	if(!g_soundInitialized) {
 		return;
 	}
 	
@@ -960,7 +959,7 @@ void ARX_SOUND_KillAmbiances() {
 
 AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 	
-	if(!bIsActive) {
+	if(!g_soundInitialized) {
 		return AmbianceId();
 	}
 	
