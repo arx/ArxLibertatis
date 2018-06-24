@@ -804,8 +804,8 @@ audio::SourceId ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 	return sample_id;
 }
 
-long ARX_SOUND_IsPlaying(SourceId & sample_id) {
-	return bIsActive ? audio::isSamplePlaying(sample_id) : 0;
+bool ARX_SOUND_IsPlaying(SourceId & sample_id) {
+	return bIsActive ? audio::isSamplePlaying(sample_id) : false;
 }
 
 
