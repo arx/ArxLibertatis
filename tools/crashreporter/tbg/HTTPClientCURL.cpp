@@ -19,7 +19,7 @@
 
 #include "crashreporter/tbg/HTTPClient.h"
 
-#include "boost/scope_exit.hpp"
+#include <boost/scope_exit.hpp>
 
 #include <curl/curl.h>
 
