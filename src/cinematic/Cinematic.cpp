@@ -318,10 +318,10 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	
 	switch(fx & CinematicFxMask) {
 		case FX_FADEIN:
-			col = FX_FadeIN(a, color, colord);
+			col = (color.to<float>() * a + colord.to<float>() * (1.f - a)).to<u8>();
 			break;
 		case FX_FADEOUT:
-			col = FX_FadeOUT(a, color, colord);
+			col = (color.to<float>() * (1.f - a) + colord.to<float>() * a).to<u8>();
 			break;
 		case FX_BLUR:
 			FX_Blur(this, tb, m_camera);

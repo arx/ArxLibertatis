@@ -65,25 +65,6 @@ static const int NBOLDPOS = 10;
 static Vec3f OldPos[NBOLDPOS];
 static float OldAz[NBOLDPOS];
 
-Color FX_FadeIN(float a, Color color, Color colord) {
-	float r = (color.r - colord.r) * a + colord.r;
-	float g = (color.g - colord.g) * a + colord.g;
-	float b = (color.b - colord.b) * a + colord.b;
-	
-	return Color(u8(r), u8(g), u8(b), 0);
-
-}
-
-Color FX_FadeOUT(float a, Color color, Color colord) {
-	a = 1.f - a;
-	
-	float r = (color.r - colord.r) * a + colord.r;
-	float g = (color.g - colord.g) * a + colord.g;
-	float b = (color.b - colord.b) * a + colord.b;
-
-	return Color(u8(r), u8(g), u8(b), 0);
-}
-
 static float LastTime;
 
 bool FX_Blur(Cinematic * c, CinematicBitmap * tb, Camera & camera) {
