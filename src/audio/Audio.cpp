@@ -74,8 +74,6 @@ aalError init(const std::string & backendName, const std::string & deviceName, H
 	
 	LogDebug("Init");
 	
-	stream_limit_bytes = DEFAULT_STREAMLIMIT;
-	
 	bool autoBackend = (backendName == "auto");
 	aalError error = AAL_ERROR_INIT;
 	
@@ -169,15 +167,6 @@ std::vector<std::string> getDevices() {
 	AAL_ENTRY_V(std::vector<std::string>())
 	
 	return backend->getDevices();
-}
-
-aalError setStreamLimit(size_t limit) {
-	
-	AAL_ENTRY
-	
-	stream_limit_bytes = limit;
-	
-	return AAL_OK;
 }
 
 aalError setSamplePath(const res::path & path) {

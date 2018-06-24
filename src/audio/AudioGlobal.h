@@ -72,7 +72,6 @@ extern Backend * backend;
 extern res::path sample_path;
 extern res::path ambiance_path;
 extern res::path environment_path;
-extern size_t stream_limit_bytes;
 extern PlatformInstant session_time;
 
 // Resources

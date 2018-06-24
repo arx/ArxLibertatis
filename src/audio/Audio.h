@@ -76,7 +76,6 @@ std::vector<std::string> getDevices();
  * This is not threadsafe: The caller must ensure that no other audio methods are called at the same time.
  */
 aalError clean();
-aalError setStreamLimit(size_t limit);
 aalError setSamplePath(const res::path & path);
 aalError setAmbiancePath(const res::path & path);
 aalError setEnvironmentPath(const res::path & path);

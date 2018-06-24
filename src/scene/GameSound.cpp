@@ -104,7 +104,6 @@ struct PlayingAmbiance {
 };
 
 static const PlatformDuration ARX_SOUND_UPDATE_INTERVAL = PlatformDurationMs(100);
-static const unsigned long ARX_SOUND_STREAMING_LIMIT(176400);
 static const unsigned long MAX_VARIANTS(5);
 static const PlatformDuration AMBIANCE_FADE_TIME = PlatformDurationMs(2000);
 static const float ARX_SOUND_UNIT_FACTOR(0.01F);
@@ -367,8 +366,6 @@ bool ARX_SOUND_Init() {
 		audio::clean();
 		return false;
 	}
-	
-	audio::setStreamLimit(ARX_SOUND_STREAMING_LIMIT);
 	
 	audio::setUnitFactor(ARX_SOUND_UNIT_FACTOR);
 	audio::setRolloffFactor(ARX_SOUND_ROLLOFF_FACTOR);
