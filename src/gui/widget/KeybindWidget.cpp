@@ -144,7 +144,7 @@ void KeybindWidget::setKey(InputKeyId keyId) {
 	}
 	m_key = keyId;
 	
-	m_text = GInput->getKeyName(keyId, true);
+	m_text = Input::getKeyName(keyId, true);
 	if(m_text.empty()) {
 		m_text = "---";
 	}
