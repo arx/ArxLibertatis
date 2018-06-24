@@ -700,21 +700,19 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayScript(const res::path & name, const Entity * io, float pitch, SoundLoopMode loop)
-{
-	if (!bIsActive) {
+audio::SourceId ARX_SOUND_PlayScript(const res::path & name, const Entity * io,
+                                     float pitch, SoundLoopMode loop) {
+	
+	if(!bIsActive) {
 		return INVALID_ID;
 	}
-
-	audio::Channel channel;
-	SampleId sample_id;
-
-	sample_id = audio::createSample(name);
-
+	
+	audio::SourceId sample_id = audio::createSample(name);
 	if (sample_id == INVALID_ID) {
 		return INVALID_ID;
 	}
 	
+	audio::Channel channel;
 	channel.mixer = ARX_SOUND_MixerGameSample;
 	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	channel.volume = 1.0F;
