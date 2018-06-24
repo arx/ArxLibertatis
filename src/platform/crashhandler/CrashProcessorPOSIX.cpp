@@ -370,6 +370,8 @@ void CrashHandlerPOSIX::processCrashTrace() {
 		}
 		m_pCrashInfo->crashId = checksum.checksum();
 	}
+	#else
+	ARX_UNUSED(maps);
 	#endif
 	
 	// Get a stack trace via GDB
