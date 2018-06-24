@@ -1311,7 +1311,7 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 			}
 		}
 		
-		float ratio = glm::max(count, count2) / (ioo->obj->vertexlist.size() * 0.5f);
+		float ratio = glm::max(count, count2) / float(ioo->obj->vertexlist.size()) / 2.f;
 		
 		if(ratio > 2.f)
 			ratio = 2.f;
@@ -1397,7 +1397,7 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 			float mloss = 1.f;
 
 			if(io->ioflags & IO_ITEM) {
-				io->_itemdata->price -= checked_range_cast<long>(io->_itemdata->price / io->max_durability);
+				io->_itemdata->price -= checked_range_cast<long>(float(io->_itemdata->price) / io->max_durability);
 			}
 
 			io->max_durability -= mloss;
@@ -1410,7 +1410,7 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 			
 			float mloss = io->max_durability * v;
 			if(io->ioflags & IO_ITEM) {
-				io->_itemdata->price -= static_cast<long>(io->_itemdata->price * v);
+				io->_itemdata->price -= static_cast<long>(float(io->_itemdata->price) * v);
 			}
 
 			io->max_durability -= mloss;
@@ -1476,7 +1476,7 @@ float ARX_DAMAGES_ComputeRepairPrice(const Entity * torepair, const Entity * bla
 	if(torepair->durability == torepair->max_durability) return -1.f;
 
 	float ratio = (torepair->max_durability - torepair->durability) / torepair->max_durability;
-	float price = torepair->_itemdata->price * ratio;
+	float price = float(torepair->_itemdata->price) * ratio;
 
 	if(blacksmith->shop_multiply != 0.f)
 		price *= blacksmith->shop_multiply;
