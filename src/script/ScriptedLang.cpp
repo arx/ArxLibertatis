@@ -872,7 +872,7 @@ void timerCommand(const std::string & name, Context & context) {
 		interval *= 1000;
 	}
 	
-	std::string timername = name.empty() ? ARX_SCRIPT_Timer_GetDefaultName() : name;
+	std::string timername = name.empty() ? getDefaultScriptTimerName(context.getEntity()) : name;
 	DebugScript(timername << ' ' << options << ' ' << count << ' ' << interval);
 	
 	size_t pos = context.skipCommand();

@@ -1472,24 +1472,12 @@ ScriptResult SendInitScriptEvent(Entity * io) {
 	return ACCEPT;
 }
 
-//! Checks if timer named texx exists.
-static bool ARX_SCRIPT_Timer_Exist(const std::string & name) {
-	
-	BOOST_FOREACH(const SCR_TIMER & timer, g_scriptTimers) {
-		if(timer.exist && timer.name == name) {
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-std::string ARX_SCRIPT_Timer_GetDefaultName() {
+std::string getDefaultScriptTimerName(Entity * io, const std::string & prefix) {
 	
 	for(size_t i = 1; ; i++) {
 		std::ostringstream oss;
-		oss << "timer_" << i;
-		if(!ARX_SCRIPT_Timer_Exist(oss.str())) {
+		oss << prefix << '_' << i;
+		if(!scriptTimerExists(io, oss.str())) {
 			return oss.str();
 		}
 	}
