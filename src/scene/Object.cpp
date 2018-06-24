@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 #include <cstdio>
+#include <vector>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -368,9 +369,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Alloc the bones
 		eobj->m_skeleton->bones.resize(eobj->grouplist.size());
 		
-		bool * temp = new bool[eobj->vertexlist.size()];
-		memset(temp, 0, eobj->vertexlist.size());
-
+		std::vector<bool> vertexAssigned(eobj->vertexlist.size(), false);
+		
 		for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 			VertexGroup & group = eobj->grouplist[i];
 			Bone & bone = eobj->m_skeleton->bones[i];
@@ -378,8 +378,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			EERIE_VERTEX * v_origin = &eobj->vertexlist[group.origin];
 
 			for(size_t j = 0; j < group.indexes.size(); j++) {
-				if(!temp[group.indexes[j]]) {
-					temp[group.indexes[j]] = true;
+				if(!vertexAssigned[group.indexes[j]]) {
+					vertexAssigned[group.indexes[j]] = true;
 					bone.idxvertices.push_back(group.indexes[j]);
 				}
 			}
@@ -392,9 +392,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			bone.transinit_global = bone.init.trans;
 			bone.father = GetFather(eobj, group.origin, i - 1);
 		}
-
-		delete[] temp;
-
+		
 		// Try to correct lonely vertex
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 			long ok = 0;
