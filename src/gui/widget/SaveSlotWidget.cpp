@@ -19,13 +19,54 @@
 
 #include "gui/widget/SaveSlotWidget.h"
 
-#include "graphics/data/TextureContainer.h"
-#include "gui/menu/MenuCursor.h"
+#include <sstream>
+#include <iomanip>
 
-SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, Font * font, const std::string & text, Vec2f pos)
-	: TextWidget(font, text, pos)
+#include "core/Localisation.h"
+#include "graphics/data/TextureContainer.h"
+#include "graphics/font/Font.h"
+#include "gui/menu/MenuCursor.h"
+#include "util/Unicode.h"
+
+SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, const Rectf & rect)
+	: TextWidget(font, std::string(), rect.topLeft())
 	, m_savegame(savegame)
-{ }
+{
+	
+	if(savegame == SavegameHandle()) {
+		
+		std::ostringstream text;
+		text << '-' << std::setfill('0') << std::setw(4) << i << '-';
+		setText(text.str());
+		
+	} else {
+		
+		const SaveGame & save = savegames[savegame.handleData()];
+		
+		if(save.quicksave) {
+			
+			std::ostringstream text;
+			text << getLocalised("system_menus_main_quickloadsave", "Quicksave") << ' ' << i << "   " << save.time;
+			setText(text.str());
+			
+		} else {
+			
+			std::string text = save.name +  "   " + save.time;
+			size_t length = save.name.length();
+			while(length > 0 && font->getTextSize(text).width() > rect.width()) {
+				length--;
+				while(length > 0 && util::UTF8::isContinuationByte(save.name[length])) {
+					length--;
+				}
+				text = save.name.substr(0, length) + "…   " + save.time;
+			}
+			setText(text);
+			
+		}
+		
+	}
+	
+}
 
 void SaveSlotWidget::render(bool mouseOver) {
 	
