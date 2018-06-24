@@ -183,18 +183,18 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection & newSelection,
 		return;
 	}
 	
-	fs::path fileName = m_errorReport.GetAttachedFiles()[selectedIndex.row()].path;
-	QString ext = fileName.ext().c_str();
+	QString fileName = m_errorReport.GetAttachedFiles()[selectedIndex.row()].path;
+	QString ext = QFileInfo(fileName).suffix();
 	if(ext == ".txt" || ext == ".log" || ext == ".ini" || ext == ".xml") {
-		QFile textFile(fileName.string().c_str());
+		QFile textFile(fileName);
 		textFile.open(QIODevice::ReadOnly | QIODevice::Text);
 		ui->fileViewText->setText(QString::fromUtf8(textFile.readAll()));
 		ui->stackedFileViews->setCurrentIndex(0);
 	} else if(ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".png" || ext == ".gif") {
-		m_fileViewImage.load(fileName.string().c_str());
+		m_fileViewImage.load(fileName);
 		ui->stackedFileViews->setCurrentIndex(1);
 	} else {
-		QFile binaryFile(fileName.string().c_str());
+		QFile binaryFile(fileName);
 		binaryFile.open(QIODevice::ReadOnly);
 		if(binaryFile.size() > 20 * 1024 * 1024) {
 			ui->stackedFileViews->setCurrentIndex(3);

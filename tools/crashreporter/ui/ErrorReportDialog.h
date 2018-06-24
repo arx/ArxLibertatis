@@ -21,6 +21,7 @@
 #define ARX_TOOLS_CRASHREPORTER_UI_ERRORREPORTDIALOG_H
 
 #include <QDialog>
+#include <QFileInfo>
 #include <QAbstractButton>
 #include <QThread>
 #include <QSemaphore>
@@ -158,8 +159,7 @@ public:
 		}
 		
 		if(role == Qt::DisplayRole) {
-			fs::path filePath = m_errorReport.GetAttachedFiles()[index.row()].path;
-			return filePath.filename().c_str();
+			return QFileInfo(m_errorReport.GetAttachedFiles()[index.row()].path).fileName();
 		} else if(role == Qt::CheckStateRole) {
 			return m_errorReport.GetAttachedFiles()[index.row()].attachToReport ? Qt::Checked : Qt::Unchecked;
 		}
