@@ -25,25 +25,6 @@
 
 namespace fs {
 
-char * read_file(const path & p, size_t & size) {
-	
-	fs::ifstream ifs(p, fs::fstream::in | fs::fstream::binary | fs::fstream::ate);
-	if(!ifs.is_open()) {
-		return NULL;
-	}
-	
-	size = ifs.tellg();
-	
-	char * buf = new char[size];
-	
-	if(ifs.seekg(0).read(buf, size).fail()) {
-		delete[] buf;
-		return NULL;
-	}
-	
-	return buf;
-}
-
 std::string read(const path & p) {
 	
 	std::string result;

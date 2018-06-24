@@ -120,16 +120,6 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite = false);
 bool rename(const path & old_p, const path & new_p, bool overwrite = false);
 
 /*!
- * \brief Read a file into memory
- *
- * \param p The file to load.
- * \param size Will receive the size of the loaded file.
- *
- * \return a new[]-allocated buffer containing the file data or NULL on error.
- */
-char * read_file(const path & p, size_t & size);
-
-/*!
  * \brief Read a file into an \ref std::string
  *
  * \param p The file to load.
