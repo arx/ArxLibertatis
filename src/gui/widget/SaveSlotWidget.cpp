@@ -23,6 +23,8 @@
 #include <iomanip>
 #include <ctime>
 
+#include <boost/lexical_cast.hpp>
+
 #include "core/Core.h"
 #include "core/Localisation.h"
 #include "graphics/data/TextureContainer.h"
@@ -52,7 +54,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 		
 		const SaveGame & save = savegames[savegame.handleData()];
 		
-		m_dateOffset = rect.width() - font->getTextSize("0000-00-00  00:00").width();
+		m_dateOffset = rect.width() - font->getTextSize("0000-00-00    00:00").width();
 		
 		if(save.quicksave) {
 			
@@ -64,7 +66,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 			
 			m_name = save.name;
 			size_t length = save.name.length();
-			while(length > 0 && font->getTextSize(m_name).width() > m_dateOffset - RATIO_X(20)) {
+			while(length > 0 && font->getTextSize(m_name).width() > m_dateOffset - RATIO_X(10)) {
 				length--;
 				while(length > 0 && util::UTF8::isContinuationByte(save.name[length])) {
 					length--;
@@ -74,9 +76,44 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 			
 		}
 		
-		const struct tm & t = *std::localtime(&save.stime);
+		std::time_t now = std::time(NULL);
+		std::tm n = *std::localtime(&now);
+		std::tm t = *std::localtime(&save.stime);
 		
-		{
+		if(t.tm_year == n.tm_year && t.tm_yday == n.tm_yday) {
+			m_date = getLocalised("system_today", "Today");
+		} else if(t.tm_year == n.tm_year && t.tm_yday + 1 == n.tm_yday) {
+			m_date = getLocalised("system_yesterday", "Yesterday");
+		} else if(t.tm_year == n.tm_year && t.tm_yday <= n.tm_yday && t.tm_yday + 7 > n.tm_yday ) {
+			switch(t.tm_wday) {
+				case 0: m_date = getLocalised("system_sunday", "Sunday"); break;
+				case 1: m_date = getLocalised("system_monday", "Monday"); break;
+				case 2: m_date = getLocalised("system_tuesday", "Tuesday"); break;
+				case 3: m_date = getLocalised("system_wednesday", "Wednesday"); break;
+				case 4: m_date = getLocalised("system_thursday", "Thursday"); break;
+				case 5: m_date = getLocalised("system_saturday", "Saturday"); break;
+				case 6: m_date = getLocalised("system_friday", "Friday"); break;
+				default: ARX_DEAD_CODE();
+			}
+		} else if((t.tm_year == n.tm_year && t.tm_mon <= n.tm_mon)
+		          || (t.tm_year + 1 == n.tm_year && t.tm_mon + 12 > n.tm_mon)) {
+			switch(t.tm_mon) {
+				case 0: m_date = getLocalised("system_january", "January"); break;
+				case 1: m_date = getLocalised("system_february", "February"); break;
+				case 2: m_date = getLocalised("system_march", "March"); break;
+				case 3: m_date = getLocalised("system_april", "April"); break;
+				case 4: m_date = getLocalised("system_may", "May"); break;
+				case 5: m_date = getLocalised("system_june", "June"); break;
+				case 6: m_date = getLocalised("system_july", "July"); break;
+				case 7: m_date = getLocalised("system_august", "August"); break;
+				case 8: m_date = getLocalised("system_september", "September"); break;
+				case 9: m_date = getLocalised("system_october", "October"); break;
+				case 10: m_date = getLocalised("system_november", "November"); break;
+				case 11: m_date = getLocalised("system_december", "December"); break;
+				default: ARX_DEAD_CODE();
+			}
+			m_date += " " + boost::lexical_cast<std::string>(t.tm_mday);
+		} else {
 			std::ostringstream oss;
 			oss << std::setfill('0') << (t.tm_year + 1900) << "-"
 			    << std::setw(2) << (t.tm_mon + 1) << "-"
