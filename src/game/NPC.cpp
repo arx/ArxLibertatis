@@ -2793,7 +2793,7 @@ void ManageIgnition(Entity * io) {
 		io->ignition -= g_framedelay * 0.01f;
 		
 		if(addParticles && io->obj && !io->obj->facelist.empty()) {
-			float p = io->ignition * g_framedelay * 0.001f * io->obj->facelist.size() * 0.001f * 2.f;
+			float p = io->ignition * g_framedelay * 0.001f * float(io->obj->facelist.size()) * 0.001f * 2.f;
 			int positions = std::min(int(std::ceil(p)), 10);
 			
 			createObjFireParticles(io->obj, positions, 6, 180);
