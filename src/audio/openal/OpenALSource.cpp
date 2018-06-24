@@ -310,15 +310,13 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	
 	TraceAL("filling buffer " << m_buffers[i] << " with " << size << " bytes");
 	
-	char * data = new char[size];
-	if(!data) {
-		return AAL_ERROR_MEMORY;
-	}
+	char data[StreamLimitBytes * NBUFFERS];
+	
+	arx_assert(size <= sizeof(data));
 	
 	size_t read;
 	m_stream->read(data, left, read);
 	if(read != left) {
-		delete[] data;
 		return AAL_ERROR_SYSTEM;
 	}
 	m_written += read;
@@ -333,7 +331,6 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 			if(size > left) {
 				m_stream->read(data + left, size - left, read);
 				if(read != size - left) {
-					delete[] data;
 					return AAL_ERROR_SYSTEM;
 				}
 				m_written += read;
@@ -345,7 +342,6 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	const PCMFormat & f = m_sample->getFormat();
 	if((f.channels != 1 && f.channels != 2) || (f.quality != 8 && f.quality != 16)) {
 		LogError << "Unsupported audio format: quality=" << f.quality << " channels=" << f.channels;
-		delete[] data;
 		return AAL_ERROR_SYSTEM;
 	}
 	
@@ -362,7 +358,6 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	}
 	
 	alBufferData(m_buffers[i], alformat, data, alsize, f.frequency);
-	delete[] data;
 	AL_CHECK_ERROR("setting buffer data")
 	
 	m_bufferSizes[i] = size;
