@@ -474,26 +474,25 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 	}
 	
 	// Read the whole FAT.
-	char * fat = new char[fat_size];
-	if(ifs->read(fat, fat_size).fail()) {
+	std::vector<char> fat(fat_size);
+	if(ifs->read(&fat[0], fat_size).fail()) {
 		LogError << pakfile << ": error reading FAT at " << fat_offset
 		         << " with size " << fat_size;
-		delete[] fat;
 		delete ifs;
 		return false;
 	}
 	
 	// Decrypt the FAT.
-	ReleaseType key = guessReleaseType(*reinterpret_cast<const u32 *>(fat));
+	ReleaseType key = guessReleaseType(*reinterpret_cast<const u32 *>(&fat[0]));
 	if(key != Unknown) {
-		pakDecrypt(fat, fat_size, key);
+		pakDecrypt(&fat[0], fat_size, key);
 	} else {
 		LogWarning << pakfile << ": unknown PAK key ID 0x" << std::hex << std::setfill('0')
-		           << std::setw(8) << *reinterpret_cast<u32 *>(fat) << ", assuming no key";
+		           << std::setw(8) << *reinterpret_cast<u32 *>(&fat[0]) << ", assuming no key";
 	}
 	release |= key;
 	
-	char * pos = fat;
+	char * pos = &fat[0];
 	
 	paks.push_back(ifs);
 	
@@ -502,7 +501,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 		char * dirname = util::safeGetString(pos, fat_size);
 		if(!dirname) {
 			LogError << pakfile << ": error reading directory name from FAT, wrong key?";
-			goto error;
+			return false;
 		}
 		
 		PakDirectory * dir = addDirectory(res::path::load(dirname));
@@ -510,7 +509,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 		u32 nfiles;
 		if(!util::safeGet(nfiles, pos, fat_size)) {
 			LogError << pakfile << ": error reading file count from FAT, wrong key?";
-			goto error;
+			return false;
 		}
 		
 		while(nfiles--) {
@@ -518,7 +517,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 			char * filename =  util::safeGetString(pos, fat_size);
 			if(!filename) {
 				LogError << pakfile << ": error reading file name from FAT, wrong key?";
-				goto error;
+				return false;
 			}
 			
 			size_t len = std::strlen(filename);
@@ -532,7 +531,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 			   || !util::safeGet(uncompressedSize, pos, fat_size)
 				 || !util::safeGet(size, pos, fat_size)) {
 				LogError << pakfile << ": error reading file attributes from FAT, wrong key?";
-				goto error;
+				return false;
 			}
 			
 			const u32 PAK_FILE_COMPRESSED = 1;
@@ -548,17 +547,9 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 		
 	}
 	
-	delete[] fat;
-	
 	LogInfo << "Loaded PAK " << pakfile;
 	return true;
 	
-	
-error:
-	
-	delete[] fat;
-	
-	return false;
 }
 
 void PakReader::clear() {
