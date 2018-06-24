@@ -203,7 +203,7 @@ void EERIE_3DOBJ::clear() {
 
 		origin = 0;
 
-		vertexlocal = NULL;
+		vertexlocal.clear();
 		vertexlist.clear();
 		vertexWorldPositions.clear();
 
@@ -244,7 +244,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	
 	nouvo->pbox = NULL;
 	nouvo->m_skeleton = NULL;
-	nouvo->vertexlocal = NULL;
 	
 	nouvo->angle = obj->angle;
 	nouvo->pos = obj->pos;
@@ -335,7 +334,8 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj) {
 		return;
 	
 	delete eobj->m_skeleton, eobj->m_skeleton = NULL;
-	delete[] eobj->vertexlocal, eobj->vertexlocal = NULL;
+	eobj->vertexlocal.clear();
+	
 }
 
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
@@ -450,7 +450,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			bone.anim.scale = Vec3f_ONE;
 		}
 		
-		eobj->vertexlocal = new Vec3f[eobj->vertexlist.size()];
+		eobj->vertexlocal.resize(eobj->vertexlist.size());
 		
 		for(size_t i = 0; i != obj->bones.size(); i++) {
 			const Bone & bone = obj->bones[i];

@@ -214,18 +214,15 @@ struct EERIE_FASTACCESS {
 
 /////////////////////////////////////////////////////////////////////////////////
 
-struct EERIE_3DOBJ
-{
-	EERIE_3DOBJ()
-	{
+struct EERIE_3DOBJ {
+	
+	EERIE_3DOBJ() {
+		
 		point0 = pos = Vec3f_ZERO;
 		angle = Anglef::ZERO;
-
+		
 		origin = 0;
-		grouplist.clear();
-
-		vertexlocal = NULL;
-
+		
 		// TODO Make default constructor possible
 		cub.xmin = 0;
 		cub.xmax = 0;
@@ -234,15 +231,11 @@ struct EERIE_3DOBJ
 		cub.zmin = 0;
 		cub.zmax = 0;
 		
-		quat = glm::quat();
-		linked.clear();
-
 		pbox = NULL;
 		sdata = false;
 		
-		fastaccess = EERIE_FASTACCESS();
-		
 		m_skeleton = NULL;
+		
 	}
 	
 	void clear();
@@ -255,7 +248,7 @@ struct EERIE_3DOBJ
 	Vec3f point0;
 	Anglef angle;
 	size_t origin;
-	Vec3f * vertexlocal;
+	std::vector<Vec3f> vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexWorldPositions;
 	std::vector<Vec4f> vertexClipPositions;
