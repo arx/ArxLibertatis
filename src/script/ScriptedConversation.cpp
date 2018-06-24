@@ -124,7 +124,7 @@ public:
 				ARX_SOUND_Stop(io->sound);
 			}
 			
-			audio::SampleId num;
+			audio::SourceId num;
 			// TODO(broken-scripts) should be a flag instead of depending on the event
 			if(no_pos || SM_INVENTORYUSE == context.getMessage()) {
 				num = ARX_SOUND_PlayScript(sample, NULL, pitch, loop);
