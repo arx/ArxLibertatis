@@ -75,6 +75,8 @@ public:
 	void Update(Vec2f pos);
 	void Render();
 	void drawDebug();
+	virtual void focus() { }
+	void activate(Widget * widget);
 	void unfocus();
 	
 	Vec2f m_pos;

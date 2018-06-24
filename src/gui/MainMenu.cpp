@@ -174,6 +174,10 @@ public:
 		}
 	}
 	
+	void focus() {
+		activate(m_textbox);
+	}
+	
 	void setSaveHandle(SavegameHandle savegame) {
 		
 		m_savegame = savegame;

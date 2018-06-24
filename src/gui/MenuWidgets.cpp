@@ -373,6 +373,7 @@ void MenuWindow::setCurrentPageId(MENUSTATE id) {
 	BOOST_FOREACH(MenuPage * page, m_pages) {
 		if(id == page->eMenuState) {
 			m_currentPage = page;
+			m_currentPage->focus();
 		}
 	}
 	
@@ -550,6 +551,17 @@ void MenuPage::unfocus() {
 	if(m_focused) {
 		m_focused->unfocus();
 		m_focused = NULL;
+	}
+	
+}
+
+void MenuPage::activate(Widget * widget) {
+	
+	if(m_focused != widget) {
+		unfocus();
+		if(widget->click()) {
+			m_focused = widget;
+		}
 	}
 	
 }
