@@ -21,6 +21,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include <ctime>
 
 #include "core/Core.h"
 #include "core/Localisation.h"
@@ -51,7 +52,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 		
 		const SaveGame & save = savegames[savegame.handleData()];
 		
-		m_dateOffset = rect.width() - font->getTextSize("0000-00-00   00:00").width();
+		m_dateOffset = rect.width() - font->getTextSize("0000-00-00  00:00").width();
 		
 		if(save.quicksave) {
 			
@@ -73,7 +74,21 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 			
 		}
 		
-		m_time = save.time;
+		const struct tm & t = *std::localtime(&save.stime);
+		
+		{
+			std::ostringstream oss;
+			oss << std::setfill('0') << (t.tm_year + 1900) << "-"
+			    << std::setw(2) << (t.tm_mon + 1) << "-"
+			    << std::setw(2) << t.tm_mday;
+			m_date = oss.str();
+		}
+		
+		{
+			std::ostringstream oss;
+			oss << t.tm_hour << ":" << std::setfill('0') << std::setw(2) << t.tm_min;
+			m_time = oss.str();
+		}
 		
 	}
 	
@@ -122,9 +137,14 @@ void SaveSlotWidget::render(bool mouseOver) {
 	
 	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_name, color);
 	
-	if(!m_time.empty()) {
+	if(!m_date.empty()) {
 		Vec2f datePos = m_rect.topLeft() + Vec2f(m_dateOffset, 0.f);
-		ARX_UNICODE_DrawTextInRect(m_font, datePos, m_rect.right, m_time, color);
+		ARX_UNICODE_DrawTextInRect(m_font, datePos, m_rect.right, m_date, color);
+	}
+	
+	if(!m_time.empty()) {
+		Vec2f timePos = m_rect.topRight() - Vec2f(m_font->getTextSize(m_time).width(), 0.f);
+		ARX_UNICODE_DrawTextInRect(m_font, timePos, m_rect.right, m_time, color);
 	}
 	
 	if(!mouseOver || m_savegame == SavegameHandle()) {
