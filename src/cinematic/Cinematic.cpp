@@ -314,7 +314,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	CinematicBitmap * tb = m_bitmaps[numbitmap];
 	
 	// Effect color
-	Color col = Color(255, 255, 255, 0);
+	Color col = Color::white;
 	
 	switch(fx & CinematicFxMask) {
 		case FX_FADEIN:
