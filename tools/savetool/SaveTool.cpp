@@ -90,20 +90,17 @@ static int main_add(SaveBlock & save, const std::vector<std::string> & args) {
 	
 	BOOST_FOREACH(fs::path file, args) {
 		
-		size_t size;
-		char * data = fs::read_file(file, size);
-		
-		if(!data) {
+		std::string data = fs::read(file);
+		if(data.empty()) {
 			std::cerr << "error loading " << file;
 			continue;
 		}
 		
 		std::string name = file.filename();
-		if(!save.save(name, data, size)) {
+		if(!save.save(name, data.data(), data.size())) {
 			std::cerr << "error writing " << name << " to save";
 		}
 		
-		delete[] data;
 	}
 	
 	save.flush("pld");
