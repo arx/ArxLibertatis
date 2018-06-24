@@ -765,7 +765,7 @@ bool ArxGame::initGame()
 	ARX_EQUIPMENT_Init();
 	LogDebug("AEQ Init");
 	
-	ARX_SCRIPT_Timer_FirstInit(512);
+	ARX_SCRIPT_Timer_ClearAll();
 	LogDebug("Timer Init");
 	ARX_FOGS_Clear();
 	LogDebug("Fogs Init");
@@ -1064,8 +1064,6 @@ void ArxGame::shutdownGame() {
 	svar.clear();
 	
 	ARX_SCRIPT_Timer_ClearAll();
-	
-	delete[] scr_timer, scr_timer = NULL;
 	
 	ARX_SPEECH_ClearAll();
 	ARX_Text_Close();

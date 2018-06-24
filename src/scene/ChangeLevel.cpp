@@ -1076,8 +1076,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	
 	// Save Local Timers ?
 	ais.nbtimers = 0;
-	for(int i = 0; i < MAX_TIMER_SCRIPT; i++) {
-		if(scr_timer[i].exist && scr_timer[i].io == io) {
+	BOOST_FOREACH(const SCR_TIMER & timer, scr_timer) {
+		if(timer.exist && timer.io == io) {
 			ais.nbtimers++;
 		}
 	}
@@ -1102,11 +1102,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ais.Tweak_nb = io->tweaks.size();
 	memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
-
-	const GameInstant timm = g_gameTime.now();
-
-	for(int i = 0; i < MAX_TIMER_SCRIPT; i++) {
-		SCR_TIMER & timer = scr_timer[i];
+	
+	BOOST_FOREACH(const SCR_TIMER & timer, scr_timer) {
 		if(timer.exist) {
 			if(timer.io == io) {
 				ARX_CHANGELEVEL_TIMERS_SAVE * ats = (ARX_CHANGELEVEL_TIMERS_SAVE *)(dat + pos);
@@ -1121,7 +1118,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				else
 					ats->script = 1;
 
-				ats->remaining = toMsi((timer.start + timer.interval) - timm); // TODO save/load time
+				ats->remaining = toMsi((timer.start + timer.interval) - g_gameTime.now()); // TODO save/load time
 				arx_assert(ats->remaining <= toMsi(timer.interval));
 
 				if(ats->remaining < 0)
@@ -2506,9 +2503,9 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::
 	LoadLevelScreen(instance);
 	
 	if(firstTime) {
-		for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
-			if(scr_timer[i].exist) {
-				scr_timer[i].start = g_gameTime.now();
+		BOOST_FOREACH(SCR_TIMER & timer, scr_timer) {
+			if(timer.exist) {
+				timer.start = g_gameTime.now();
 			}
 		}
 	} else {

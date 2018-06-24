@@ -53,9 +53,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <limits>
 
+#include <boost/foreach.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/foreach.hpp>
 
 #include "ai/Paths.h"
 
@@ -96,7 +96,7 @@ Entity * LASTSPAWNED = NULL;
 SCRIPT_VARIABLES svar;
 
 long FORBID_SCRIPT_IO_CREATION = 0;
-SCR_TIMER * scr_timer = NULL;
+std::vector<SCR_TIMER> scr_timer;
 long ActiveTimers = 0;
 
 bool isLocalVariable(const std::string & name) {
@@ -1473,13 +1473,11 @@ ScriptResult SendInitScriptEvent(Entity * io) {
 }
 
 //! Checks if timer named texx exists.
-static bool ARX_SCRIPT_Timer_Exist(const std::string & texx) {
+static bool ARX_SCRIPT_Timer_Exist(const std::string & name) {
 	
-	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
-		if(scr_timer[i].exist) {
-			if(scr_timer[i].name == texx) {
-				return true;
-			}
+	BOOST_FOREACH(const SCR_TIMER & timer, scr_timer) {
+		if(timer.exist && timer.name == name) {
+			return true;
 		}
 	}
 	
@@ -1489,100 +1487,81 @@ static bool ARX_SCRIPT_Timer_Exist(const std::string & texx) {
 std::string ARX_SCRIPT_Timer_GetDefaultName() {
 	
 	for(size_t i = 1; ; i++) {
-		
 		std::ostringstream oss;
 		oss << "timer_" << i;
-		
 		if(!ARX_SCRIPT_Timer_Exist(oss.str())) {
 			return oss.str();
 		}
 	}
+	
 }
 
 long ARX_SCRIPT_Timer_GetFree() {
 	
-	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
-		if(!(scr_timer[i].exist))
-			return i;
+	for(size_t i = 0; i < scr_timer.size(); i++) {
+		if(!(scr_timer[i].exist)) {
+			return long(i);
+		}
 	}
 	
-	return -1;
+	scr_timer.resize(scr_timer.size() + 1);
+	
+	return long(scr_timer.size() - 1);
 }
 
 long ARX_SCRIPT_CountTimers() {
 	return ActiveTimers;
 }
 
-void ARX_SCRIPT_Timer_ClearByNum(long timer_idx) {
-	if(scr_timer[timer_idx].exist) {
-		LogDebug("clearing timer " << scr_timer[timer_idx].name);
-		scr_timer[timer_idx].name.clear();
+static void clearTimer(SCR_TIMER & timer) {
+	if(timer.exist) {
+		LogDebug("clearing timer " << timer.name);
+		timer.name.clear();
 		ActiveTimers--;
-		scr_timer[timer_idx].exist = 0;
+		timer.exist = 0;
 	}
 }
 
 void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity * io) {
-	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
-		if(scr_timer[i].exist && scr_timer[i].io == io && scr_timer[i].name == timername) {
-			ARX_SCRIPT_Timer_ClearByNum(i);
+	BOOST_FOREACH(SCR_TIMER & timer, scr_timer) {
+		if(timer.exist && timer.io == io && timer.name == timername) {
+			clearTimer(timer);
 		}
 	}
 }
 
-void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io)
-{
-	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
-	{
-		if (scr_timer[i].exist)
-		{
-			if ((scr_timer[i].io == io) && (scr_timer[i].es == &io->over_script))
-				ARX_SCRIPT_Timer_ClearByNum(i);
+void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io) {
+	BOOST_FOREACH(SCR_TIMER & timer, scr_timer) {
+		if(timer.exist && timer.io == io && timer.es == &io->over_script) {
+			clearTimer(timer);
 		}
 	}
 }
 
-long MAX_TIMER_SCRIPT = 0;
-
-void ARX_SCRIPT_Timer_FirstInit(long number)
-{
-	if (number < 100) number = 100;
-	
-	MAX_TIMER_SCRIPT = number;
-	
-	delete[] scr_timer;
-	scr_timer = new SCR_TIMER[MAX_TIMER_SCRIPT];
-	ActiveTimers = 0;
-}
-
-void ARX_SCRIPT_Timer_ClearAll()
-{
-	if (ActiveTimers)
-		for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
-			ARX_SCRIPT_Timer_ClearByNum(i);
-
+void ARX_SCRIPT_Timer_ClearAll() {
+	scr_timer.clear();
 	ActiveTimers = 0;
 }
 
 void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io) {
-	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
-		if(scr_timer[i].exist && scr_timer[i].io == io) {
-			ARX_SCRIPT_Timer_ClearByNum(i);
+	BOOST_FOREACH(SCR_TIMER & timer, scr_timer) {
+		if(timer.exist && timer.io == io) {
+			clearTimer(timer);
 		}
 	}
 }
 
-long ARX_SCRIPT_GetSystemIOScript(Entity * io, const std::string & name) {
+bool scriptTimerExists(Entity * io, const std::string & name) {
 	
 	if(ActiveTimers) {
-		for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
-			if(scr_timer[i].exist && scr_timer[i].io == io && scr_timer[i].name == name) {
-				return i;
+		BOOST_FOREACH(const SCR_TIMER & timer, scr_timer) {
+			if(timer.exist && timer.io == io && timer.name == name) {
+				return true;
 			}
 		}
 	}
 	
-	return -1;
+	return false;
 }
 
 static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
@@ -1630,53 +1609,52 @@ void ARX_SCRIPT_Timer_Check() {
 		return;
 	}
 	
-	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
+	BOOST_FOREACH(SCR_TIMER & timer, scr_timer) {
 		
-		SCR_TIMER * st = &scr_timer[i];
-		if(!st->exist) {
+		if(!timer.exist) {
 			continue;
 		}
 		
 		GameInstant now = g_gameTime.now();
-		GameInstant fire_time = st->start + st->interval;
-		arx_assert(st->start <= now);
+		GameInstant fire_time = timer.start + timer.interval;
+		arx_assert(timer.start <= now);
 		if(fire_time > now) {
 			// Timer not ready to fire yet
 			continue;
 		}
 		
 		// Skip heartbeat timer events for far away objects
-		if((st->flags & 1) && !(st->io->gameFlags & GFLAG_ISINTREATZONE)) {
-			long increment = toMsi(now - st->start) / toMsi(st->interval);
-			st->start += GameDurationMs(toMsi(st->interval) * increment);
+		if((timer.flags & 1) && !(timer.io->gameFlags & GFLAG_ISINTREATZONE)) {
+			long increment = toMsi(now - timer.start) / toMsi(timer.interval);
+			timer.start += GameDurationMs(toMsi(timer.interval) * increment);
 			// TODO print full 64-bit time
-			arx_assert_msg(st->start <= now && st->start + st->interval > now,
+			arx_assert_msg(timer.start <= now && timer.start + timer.interval > now,
 			               "start=%ld wait=%ld now=%ld",
-			               long(toMsi(st->start)), long(toMsi(st->interval)), long(toMsi(now)));
+			               long(toMsi(timer.start)), long(toMsi(timer.interval)), long(toMsi(now)));
 			continue;
 		}
 		
-		const EERIE_SCRIPT * es = st->es;
-		Entity * io = st->io;
-		long pos = st->pos;
+		const EERIE_SCRIPT * es = timer.es;
+		Entity * io = timer.io;
+		long pos = timer.pos;
 		
-		if(!es && st->name == "_r_a_t_") {
-			if(Manage_Specific_RAT_Timer(st)) {
+		if(!es && timer.name == "_r_a_t_") {
+			if(Manage_Specific_RAT_Timer(&timer)) {
 				continue;
 			}
 		}
 		
 		#ifdef ARX_DEBUG
-		std::string name = st->name;
+		std::string name = timer.name;
 		#endif
 		
-		if(st->count == 1) {
-			ARX_SCRIPT_Timer_ClearByNum(i);
+		if(timer.count == 1) {
+			clearTimer(timer);
 		} else {
-			if(st->count != 0) {
-				st->count--;
+			if(timer.count != 0) {
+				timer.count--;
 			}
-			st->start += st->interval;
+			timer.start += timer.interval;
 		}
 		
 		if(es && ValidIOAddress(io)) {
