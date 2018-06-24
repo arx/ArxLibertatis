@@ -138,7 +138,8 @@ void SaveGameList::update(bool verbose) {
 			save->thumbnail.clear();
 		}
 		
-		max_name_length = std::max(save->quicksave ? 9 : name.length(), max_name_length);
+		size_t length = save->quicksave ? 9 : std::min(name.length(), size_t(50));
+		max_name_length = std::max(length, max_name_length);
 		
 		const struct tm & t = *localtime(&stime);
 		std::ostringstream oss;
@@ -157,9 +158,12 @@ void SaveGameList::update(bool verbose) {
 			std::ostringstream oss;
 			if(savelist[i].quicksave) {
 				oss << "(quicksave)" << std::setw(max_name_length - 8) << ' ';
-			} else {
+			} else if(savelist[i].name.length() <= 50)  {
 				oss << "\"" << savelist[i].name << "\""
 				    << std::setw(max_name_length - savelist[i].name.length() + 1) << ' ';
+			} else {
+				oss << "\"" << savelist[i].name.substr(0, 49) << "\"…"
+				    << std::setw(max_name_length - 50 + 1) << ' ';
 			}
 			
 			const char * lead = """Found save ";
