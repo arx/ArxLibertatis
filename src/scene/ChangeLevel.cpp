@@ -1108,7 +1108,6 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			if(timer.io == io) {
 				ARX_CHANGELEVEL_TIMERS_SAVE * ats = (ARX_CHANGELEVEL_TIMERS_SAVE *)(dat + pos);
 				memset(ats, 0, sizeof(ARX_CHANGELEVEL_TIMERS_SAVE));
-				ats->longinfo = timer.longinfo;
 				ats->interval = toMsi(timer.interval); // TODO save/load time
 				util::storeString(ats->name, timer.name);
 				ats->pos = timer.pos;

@@ -279,7 +279,6 @@ public:
 			timer.pos = pos;
 			timer.start = g_gameTime.now();
 			timer.count = 1;
-			timer.longinfo = 0;
 			
 			DebugScript(": scheduled timer " << timername << " in " << toMsi(timer.interval) << "ms");
 			
