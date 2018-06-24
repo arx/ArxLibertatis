@@ -51,7 +51,6 @@ bool TextInputWidget::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 			unfocus();
 			return true;
-			break;
 		}
 		
 		case Keyboard::Key_A: {
