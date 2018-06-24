@@ -562,18 +562,18 @@ static res::path speechFileName(const res::path & name) {
 	return res::path("speech") / config.language / name;
 }
 
-long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
-{
-	if (!bIsActive) return INVALID_ID;
-
-	audio::Channel channel;
-	SampleId sample_id;
+audio::SourceId ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io) {
+	
+	if(!bIsActive) {
+		return INVALID_ID;
+	}
 	
 	res::path file = speechFileName(name);
 	file.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
 	
-	sample_id = audio::createSample(file);
-
+	audio::SourceId sample_id = audio::createSample(file);
+	
+	audio::Channel channel;
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
 	channel.flags = FLAG_VOLUME | FLAG_POSITION | FLAG_REVERBERATION | FLAG_AUTOFREE | FLAG_FALLOFF;
 	channel.volume = 1.f;

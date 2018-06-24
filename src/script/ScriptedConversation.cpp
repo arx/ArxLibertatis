@@ -161,7 +161,7 @@ public:
 		DebugScript(' ' << sample);
 		
 		Entity * io = context.getEntity();
-		audio::SampleId num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
+		audio::SourceId num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
 		
 		if(num == audio::INVALID_ID) {
 			ScriptWarning << "unable to load sound file " << sample;
