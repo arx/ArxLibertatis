@@ -70,6 +70,8 @@ public:
 	
 private:
 	
+	enum { MaxChannels = 2 };
+	
 	void getSample(size_t channel, s8 adpcmSample);
 	aalError getNextBlock();
 	
@@ -78,18 +80,18 @@ private:
 	u32 padding;
 	u32 shift;
 	u32 sample_i;
-	char * predictor;
-	s16 * delta;
-	s16 * samp1;
-	s16 * samp2;
-	s16 * coef1;
-	s16 * coef2;
+	char predictor[MaxChannels];
+	s16 delta[MaxChannels];
+	s16 samp1[MaxChannels];
+	s16 samp2[MaxChannels];
+	s16 coef1[MaxChannels];
+	s16 coef2[MaxChannels];
 	s8 * nybble_l;
 	u32 nybble_c, nybble_i;
 	s8 nybble;
 	bool odd;
 	u8 cache_c, cache_i;
-	void * cache_l;
+	s16 cache_l[MaxChannels];
 	
 };
 
