@@ -69,8 +69,8 @@ void KeybindWidget::update() {
 	InputKeyId keyId = GInput->getKeyPressed();
 	
 	if(keyId == Keyboard::Key_LeftShift || keyId == Keyboard::Key_RightShift
-			|| keyId == Keyboard::Key_LeftCtrl || keyId == Keyboard::Key_RightCtrl
-			|| keyId == Keyboard::Key_LeftAlt || keyId == Keyboard::Key_RightAlt) {
+	   || keyId == Keyboard::Key_LeftCtrl || keyId == Keyboard::Key_RightCtrl
+	   || keyId == Keyboard::Key_LeftAlt || keyId == Keyboard::Key_RightAlt) {
 		keyId = -1;
 	} else if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftShift)) {
 		keyId = Keyboard::Key_LeftShift;
