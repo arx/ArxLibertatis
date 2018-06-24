@@ -141,12 +141,6 @@ void SaveGameList::update(bool verbose) {
 		size_t length = save->quicksave ? 9 : std::min(name.length(), size_t(50));
 		max_name_length = std::max(length, max_name_length);
 		
-		const struct tm & t = *localtime(&stime);
-		std::ostringstream oss;
-		oss << std::setfill('0') << (t.tm_year + 1900) << "-" << std::setw(2) << (t.tm_mon + 1)
-		    << "-" << std::setw(2) << t.tm_mday << "   " << std::setfill(' ') << std::setw(2)
-		    << t.tm_hour << ":" << std::setfill('0') << std::setw(2) << t.tm_min;
-		save->time = oss.str();
 	}
 	
 	size_t o = 0;
@@ -175,7 +169,15 @@ void SaveGameList::update(bool verbose) {
 				}
 			}
 			
-			LogInfo << lead << oss.str() << "  " << savelist[i].time;
+			const std::tm & t = *localtime(&savelist[i].stime);
+			
+			LogInfo << lead << oss.str() << "  "
+			        << std::setfill('0') << (t.tm_year + 1900) << "-"
+			        << std::setw(2) << (t.tm_mon + 1) << "-"
+			        << std::setw(2) << t.tm_mday << "  "
+			        << std::setfill(' ') << std::setw(2) << t.tm_hour << ":"
+			        << std::setfill('0') << std::setw(2) << t.tm_min;
+			
 		}
 		
 		if(i >= old_count || found[i] != SaveGameRemoved) {
