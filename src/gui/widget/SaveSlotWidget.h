@@ -33,7 +33,9 @@ class SaveSlotWidget: public Widget {
 	
 	Font * m_font;
 	SavegameHandle m_savegame;
-	std::string m_text;
+	std::string m_name;
+	std::string m_time;
+	float m_dateOffset;
 	bool m_selected;
 	
 public:
