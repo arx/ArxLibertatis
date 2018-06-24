@@ -1981,39 +1981,28 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			
 			short sFlags = checked_range_cast<short>(ats->flags);
 			
-			long num = ARX_SCRIPT_Timer_GetFree();
-			if(num == -1) {
-				continue;
-			}
+			SCR_TIMER & timer = createScriptTimer(io, boost::to_lower_copy(util::loadString(ats->name)));
 			
-			ActiveTimers++;
+			timer.es = ats->script ? &io->over_script : &io->script;
 			
-			if(ats->script) {
-				scr_timer[num].es = &io->over_script;
-			} else {
-				scr_timer[num].es = &io->script;
-			}
-			
-			scr_timer[num].flags = sFlags;
-			scr_timer[num].exist = 1;
-			scr_timer[num].io = io;
-			scr_timer[num].interval = GameDurationMs(ats->interval); // TODO save/load time
-			scr_timer[num].name = boost::to_lower_copy(util::loadString(ats->name));
-			scr_timer[num].pos = ats->pos;
+			timer.flags = sFlags;
+			timer.interval = GameDurationMs(ats->interval); // TODO save/load time
+			timer.pos = ats->pos;
 			// TODO if the script has changed since the last save, this position may be invalid
 			
 			GameDuration remaining = GameDurationMs(ats->remaining);
 			if(remaining > GameDurationMs(ats->interval)) {
-				LogWarning << "Found bad script timer " << scr_timer[num].name
+				LogWarning << "Found bad script timer " << timer.name
 				           << " for entity " << io->idString() << ": remaining time ("
 				           << toMsi(remaining) << "ms) > interval (" << ats->interval << "ms) " << ats->flags;
 				remaining = GameDurationMs(ats->interval);
 			}
 			
 			const GameInstant tt = (g_gameTime.now() + remaining) - GameDurationMs(ats->interval);
-			scr_timer[num].start = tt;
+			timer.start = tt;
 			
-			scr_timer[num].count = ats->count;
+			timer.count = ats->count;
+			
 		}
 		
 		io->m_variables.clear();

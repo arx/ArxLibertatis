@@ -1496,17 +1496,20 @@ std::string ARX_SCRIPT_Timer_GetDefaultName() {
 	
 }
 
-long ARX_SCRIPT_Timer_GetFree() {
+SCR_TIMER & createScriptTimer(Entity * io, const std::string & name) {
 	
-	for(size_t i = 0; i < scr_timer.size(); i++) {
-		if(!(scr_timer[i].exist)) {
-			return long(i);
+	ActiveTimers++;
+	
+	BOOST_FOREACH(SCR_TIMER & timer, scr_timer) {
+		if(!timer.exist) {
+			timer = SCR_TIMER(io, name);
+			return timer;
 		}
 	}
 	
-	scr_timer.resize(scr_timer.size() + 1);
+	scr_timer.push_back(SCR_TIMER(io, name));
 	
-	return long(scr_timer.size() - 1);
+	return scr_timer.back();
 }
 
 long ARX_SCRIPT_CountTimers() {

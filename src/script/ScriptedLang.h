@@ -28,7 +28,7 @@ class Context;
 
 void setupScriptedLang();
 
-void timerCommand(const std::string & timer, Context & context);
+void timerCommand(const std::string & name, Context & context);
 
 } // namespace script
 

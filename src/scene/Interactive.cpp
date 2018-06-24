@@ -1079,41 +1079,32 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 	return false;
 }
 
-void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
-{
-	if(!io)
+void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io) {
+	
+	if(!io || scriptTimerExists(io, "_r_a_t_")) {
 		return;
-
-	if(!scriptTimerExists(io, "_r_a_t_")) {
-		long num = ARX_SCRIPT_Timer_GetFree();
-
-		if(num != -1) {
-			ActiveTimers++;
-			SCR_TIMER & timer = scr_timer[num];
-			
-			timer.es = NULL;
-			timer.exist = 1;
-			timer.io = io;
-			timer.interval = GameDurationMs(Random::get(3000, 6000));
-			timer.name = "_r_a_t_";
-			timer.pos = -1;
-			timer.start = g_gameTime.now();
-			timer.count = 1;
-			
-			io->show = SHOW_FLAG_TELEPORTING;
-			AddRandomSmoke(io, 10);
-			ARX_PARTICLES_Add_Smoke(io->pos, 3, 20);
-			Vec3f pos;
-			pos.x = io->pos.x;
-			pos.y = io->pos.y + io->physics.cyl.height * ( 1.0f / 2 );
-			pos.z = io->pos.z;
-			io->requestRoomUpdate = true;
-			io->room = -1;
-			ARX_PARTICLES_Add_Smoke(pos, 3, 20);
-			MakeCoolFx(io->pos);
-			io->gameFlags |= GFLAG_INVISIBILITY;
-		}
 	}
+	
+	SCR_TIMER & timer = createScriptTimer(io, "_r_a_t_");
+	timer.es = NULL;
+	timer.interval = GameDurationMs(Random::get(3000, 6000));
+	timer.pos = -1;
+	timer.start = g_gameTime.now();
+	timer.count = 1;
+	
+	io->show = SHOW_FLAG_TELEPORTING;
+	AddRandomSmoke(io, 10);
+	ARX_PARTICLES_Add_Smoke(io->pos, 3, 20);
+	Vec3f pos;
+	pos.x = io->pos.x;
+	pos.y = io->pos.y + io->physics.cyl.height * ( 1.0f / 2 );
+	pos.z = io->pos.z;
+	io->requestRoomUpdate = true;
+	io->room = -1;
+	ARX_PARTICLES_Add_Smoke(pos, 3, 20);
+	MakeCoolFx(io->pos);
+	io->gameFlags |= GFLAG_INVISIBILITY;
+	
 }
 
 void ResetVVPos(Entity * io)
