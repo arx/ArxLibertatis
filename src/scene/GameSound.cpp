@@ -773,12 +773,12 @@ long ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
+audio::SourceId ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 	
 	res::path file = (isSpeech) ? speechFileName(name) : name;
 	file.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
 	
-	s32 sample_id = audio::createSample(file);
+	audio::SourceId sample_id = audio::createSample(file);
 	if(sample_id == INVALID_ID) {
 		LogError << "Cannot load sound for cinematic: " << file;
 		return INVALID_ID;
