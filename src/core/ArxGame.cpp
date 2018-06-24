@@ -369,8 +369,7 @@ void ArxGame::setWindowSize(bool fullscreen) {
 		
 		// Clamp to a sane resolution!
 		if(config.video.resolution != Vec2i_ZERO) {
-			config.video.resolution.x = std::max(config.video.resolution.x, s32(640));
-			config.video.resolution.y = std::max(config.video.resolution.y, s32(480));
+			config.video.resolution = glm::max(config.video.resolution, Vec2i(640, 480));
 		}
 		
 		getWindow()->setFullscreenMode(config.video.resolution);
@@ -378,8 +377,7 @@ void ArxGame::setWindowSize(bool fullscreen) {
 	} else {
 		
 		// Clamp to a sane window size!
-		config.window.size.x = std::max(config.window.size.x, s32(640));
-		config.window.size.y = std::max(config.window.size.y, s32(480));
+		config.window.size = glm::max(config.window.size, Vec2i(640, 480));
 		
 		getWindow()->setWindowSize(config.window.size);
 		
