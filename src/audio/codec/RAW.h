@@ -58,7 +58,6 @@ class CodecRAW : public Codec {
 public:
 	
 	CodecRAW();
-	~CodecRAW();
 	
 	aalError setHeader(void * header);
 	void setStream(PakFileHandle * stream);
