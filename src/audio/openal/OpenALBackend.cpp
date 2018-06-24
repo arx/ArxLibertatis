@@ -424,8 +424,8 @@ Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel)
 	
 	OpenALSource * source = new OpenALSource(sample);
 	
-	size_t index = sources.add(source);
-	if(index == (size_t)INVALID_ID) {
+	SourceId index = sources.add(source);
+	if(index == INVALID_ID) {
 		delete source;
 		return NULL;
 	}
