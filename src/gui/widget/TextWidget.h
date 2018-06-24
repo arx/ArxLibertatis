@@ -20,10 +20,12 @@
 #ifndef ARX_GUI_WIDGET_TEXTWIDGET_H
 #define ARX_GUI_WIDGET_TEXTWIDGET_H
 
+#include <string>
+
 #include <boost/function.hpp>
 
-#include "graphics/Color.h"
 #include "gui/widget/Widget.h"
+#include "math/Vector.h"
 
 class Font;
 

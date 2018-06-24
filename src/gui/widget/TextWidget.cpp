@@ -20,6 +20,7 @@
 #include "gui/widget/TextWidget.h"
 
 #include "core/Core.h"
+#include "graphics/Color.h"
 #include "graphics/font/Font.h"
 #include "gui/Text.h"
 #include "scene/GameSound.h"
