@@ -144,8 +144,7 @@ void SaveGameList::update(bool verbose) {
 		std::ostringstream oss;
 		oss << std::setfill('0') << (t.tm_year + 1900) << "-" << std::setw(2) << (t.tm_mon + 1)
 		    << "-" << std::setw(2) << t.tm_mday << "   " << std::setfill(' ') << std::setw(2)
-		    << t.tm_hour << ":" << std::setfill('0') << std::setw(2) << t.tm_min << ":"
-		    << std::setw(2) << t.tm_sec;
+		    << t.tm_hour << ":" << std::setfill('0') << std::setw(2) << t.tm_min;
 		save->time = oss.str();
 	}
 	
