@@ -57,16 +57,18 @@ static const short gai_p4[] = {
 	768, 614, 512, 409, 307, 230, 230, 230
 };
 
-CodecADPCM::CodecADPCM() :
-	m_stream(NULL), m_header(NULL), padding(0), shift(0),
-	sample_i(0xffffffff),
-	nybble_l(NULL), nybble_c(0), nybble_i(0), nybble(0), odd(false),
-	cache_c(0), cache_i(0) {
-}
-
-CodecADPCM::~CodecADPCM() {
-	delete[] nybble_l;
-}
+CodecADPCM::CodecADPCM()
+	: m_stream(NULL)
+	, m_header(NULL)
+	, padding(0)
+	, shift(0)
+	, sample_i(0xffffffff)
+	, nybble_i(0)
+	, nybble(0)
+	, odd(false)
+	, cache_c(0)
+	, cache_i(0)
+{ }
 
 aalError CodecADPCM::setHeader(void * header) {
 	
@@ -88,14 +90,11 @@ aalError CodecADPCM::setHeader(void * header) {
 	cache_c = cache_i = u8(sizeof(s16) << shift);
 	arx_assert(cache_c <= sizeof(cache_l));
 	
-	nybble_c = m_header->samplesPerBlock - 2;
+	size_t nybble_c = m_header->samplesPerBlock - 2;
 	if(!shift) {
 		nybble_c >>= 1;
 	}
-	nybble_l = new s8[nybble_c];
-	if(!nybble_l) {
-		return AAL_ERROR_MEMORY;
-	}
+	nybble_l.resize(nybble_c);
 	
 	padding = ((m_header->wfx.blockAlign - (7 << shift)) << 3) -
 	          (m_header->samplesPerBlock - 2) * (m_header->wfx.bitsPerSample << shift);
@@ -260,7 +259,7 @@ aalError CodecADPCM::getNextBlock() {
 		cache_l[i] = samp2[i];
 	}
 	
-	if(!m_stream->read(nybble_l, nybble_c)) {
+	if(!m_stream->read(&nybble_l[0], nybble_l.size())) {
 		return AAL_ERROR_FILEIO;
 	}
 	

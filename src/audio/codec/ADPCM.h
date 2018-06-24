@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
+#include <vector>
+
 #include "audio/AudioTypes.h"
 #include "audio/codec/Codec.h"
 #include "platform/Platform.h"
@@ -60,7 +62,6 @@ class CodecADPCM : public Codec {
 public:
 	
 	CodecADPCM();
-	~CodecADPCM();
 	
 	aalError setHeader(void * header);
 	void setStream(PakFileHandle * stream);
@@ -86,8 +87,8 @@ private:
 	s16 samp2[MaxChannels];
 	s16 coef1[MaxChannels];
 	s16 coef2[MaxChannels];
-	s8 * nybble_l;
-	u32 nybble_c, nybble_i;
+	std::vector<s8> nybble_l;
+	u32 nybble_i;
 	s8 nybble;
 	bool odd;
 	u8 cache_c, cache_i;
