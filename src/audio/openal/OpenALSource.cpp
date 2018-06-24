@@ -40,6 +40,8 @@
 
 namespace audio {
 
+const size_t StreamLimitBytes = 176400;
+
 #define ALPREFIX "[" << (s16)(((m_id) & 0xffff0000) >> 16) << "," << (s16)((m_id) & 0xffff) << "," << (m_sample ? m_sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
 
 #undef ALError
@@ -52,7 +54,7 @@ static size_t nbsources = 0;
 static size_t nbbuffers = 0;
 
 // How often to queue the buffer when looping but not streaming.
-#define MAXLOOPBUFFERS std::max((size_t)NBUFFERS, NBUFFERS * stream_limit_bytes / m_sample->getLength())
+#define MAXLOOPBUFFERS std::max((size_t)NBUFFERS, NBUFFERS * StreamLimitBytes / m_sample->getLength())
 
 aalError OpenALSource::sourcePlay() {
 	
@@ -193,7 +195,7 @@ aalError OpenALSource::init(SourceId id, OpenALSource * instance, const Channel 
 	alSourcei(m_source, AL_LOOPING, AL_FALSE);
 	AL_CHECK_ERROR("generating source")
 	
-	m_streaming = (m_sample->getLength() > (stream_limit_bytes * NBUFFERS));
+	m_streaming = (m_sample->getLength() > (StreamLimitBytes * NBUFFERS));
 	
 	LogAL("init: length=" << m_sample->getLength() << " " << (m_streaming ? "m_streaming" : "static")
 	      << (m_buffers[0] ? " (copy)" : ""));
@@ -264,7 +266,7 @@ aalError OpenALSource::fillAllBuffers() {
 		AL_CHECK_ERROR("generating buffer")
 		arx_assert(m_buffers[i] != 0);
 		
-		if(aalError error = fillBuffer(i, stream_limit_bytes)) {
+		if(aalError error = fillBuffer(i, StreamLimitBytes)) {
 			return error;
 		}
 		
@@ -713,7 +715,7 @@ aalError OpenALSource::updateBuffers() {
 		
 		if(m_streaming) {
 			if(m_loadCount) {
-				fillBuffer(i, stream_limit_bytes);
+				fillBuffer(i, StreamLimitBytes);
 				TraceAL("queueing buffer " << buffer);
 				alSourceQueueBuffers(m_source, 1, &buffer);
 				AL_CHECK_ERROR("queueing buffer")

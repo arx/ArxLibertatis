@@ -52,8 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 namespace audio {
 
 // Default values
-const size_t DEFAULT_STREAMLIMIT = 88200; // in Bytes; ~1 second for the correct format
-
 const float DEFAULT_ENVIRONMENT_SIZE = 7.5f;
 const float DEFAULT_ENVIRONMENT_DIFFUSION = 1.f; // High density echoes
 const float DEFAULT_ENVIRONMENT_ABSORPTION = 0.05f; // Air-like absorbtion
