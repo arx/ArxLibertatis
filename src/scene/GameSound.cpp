@@ -525,21 +525,23 @@ long ARX_SOUND_PlayInterface(SourceId & sample_id, float pitch, SoundLoopMode lo
 	return sample_id;
 }
 
-long ARX_SOUND_PlayMenu(SourceId & sample_id, float pitch, SoundLoopMode loop) {
+void ARX_SOUND_PlayMenu(SourceId & sample_id, float pitch, SoundLoopMode loop) {
 	
-	if (!bIsActive || sample_id == INVALID_ID) return INVALID_ID;
-
+	if(!bIsActive || sample_id == INVALID_ID) {
+		return;
+	}
+	
 	audio::Channel channel;
-
 	channel.mixer = ARX_SOUND_MixerMenuSample;
 	channel.flags = FLAG_VOLUME;
 	channel.volume = 1.0F;
-
-	if (pitch != 1.0F) channel.flags |= FLAG_PITCH, channel.pitch = pitch;
-
+	if(pitch != 1.f) {
+		channel.flags |= FLAG_PITCH;
+		channel.pitch = pitch;
+	}
+	
 	audio::samplePlay(sample_id, channel, loop);
-
-	return sample_id;
+	
 }
 
 static void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos) {
