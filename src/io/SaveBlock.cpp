@@ -522,13 +522,13 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 	}
 	
 	uLongf compressedSize = size - 1;
-	char * compressed = new char[compressedSize];
+	std::vector<char> compressed(compressedSize);
 	const char * p;
-	if(compress2(reinterpret_cast<Bytef *>(compressed), &compressedSize,
+	if(compress2(reinterpret_cast<Bytef *>(&compressed[0]), &compressedSize,
 	             reinterpret_cast<const Bytef *>(data), size, 1) == Z_OK) {
 		file->comp = File::Deflate;
 		file->storedSize = compressedSize;
-		p = compressed;
+		p = &compressed[0];
 	} else {
 		file->comp = File::None;
 		file->storedSize = size;
@@ -555,7 +555,6 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 		
 		if(remaining == 0) {
 			file->chunks.erase(++chunk, file->chunks.end());
-			delete[] compressed;
 			return true;
 		}
 	}
@@ -564,8 +563,6 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 	m_handle.seekp(m_totalSize + 4);
 	m_handle.write(p, remaining);
 	m_totalSize += remaining, m_usedSize += remaining, m_chunkCount++;
-	
-	delete[] compressed;
 	
 	return !m_handle.fail();
 }
