@@ -1076,7 +1076,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	
 	// Save Local Timers ?
 	ais.nbtimers = 0;
-	BOOST_FOREACH(const SCR_TIMER & timer, scr_timer) {
+	BOOST_FOREACH(const SCR_TIMER & timer, g_scriptTimers) {
 		if(timer.exist && timer.io == io) {
 			ais.nbtimers++;
 		}
@@ -1103,7 +1103,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 	
-	BOOST_FOREACH(const SCR_TIMER & timer, scr_timer) {
+	BOOST_FOREACH(const SCR_TIMER & timer, g_scriptTimers) {
 		if(timer.exist) {
 			if(timer.io == io) {
 				ARX_CHANGELEVEL_TIMERS_SAVE * ats = (ARX_CHANGELEVEL_TIMERS_SAVE *)(dat + pos);
@@ -2496,7 +2496,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::
 	LoadLevelScreen(instance);
 	
 	if(firstTime) {
-		BOOST_FOREACH(SCR_TIMER & timer, scr_timer) {
+		BOOST_FOREACH(SCR_TIMER & timer, g_scriptTimers) {
 			if(timer.exist) {
 				timer.start = g_gameTime.now();
 			}

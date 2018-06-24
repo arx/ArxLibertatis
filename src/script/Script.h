@@ -489,7 +489,7 @@ public:
 std::ostream & operator<<(std::ostream & os, const ScriptParameters & parameters);
 
 extern SCRIPT_VARIABLES svar;
-extern std::vector<SCR_TIMER> scr_timer;
+extern std::vector<SCR_TIMER> g_scriptTimers;
 extern long FORBID_SCRIPT_IO_CREATION;
 
 void ARX_SCRIPT_Timer_Check();
