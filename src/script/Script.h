@@ -214,30 +214,18 @@ struct SCR_TIMER {
 	Entity * io;
 	const EERIE_SCRIPT * es;
 	
-	SCR_TIMER()
-		: exist(0)
+	explicit SCR_TIMER(Entity * entity = NULL, const std::string & timerName = std::string())
+		: name(timerName)
+		, exist(entity != NULL)
 		, flags(0)
 		, count(0)
 		, interval(0)
 		, pos(0)
 		, longinfo(0)
 		, start(0)
-		, io(NULL)
+		, io(entity)
 		, es(NULL)
 	{ }
-	
-	void reset() {
-		name.clear();
-		exist = 0;
-		flags = 0;
-		count = 0;
-		interval = 0;
-		pos = 0;
-		longinfo = 0;
-		start = 0;
-		io = NULL;
-		es = NULL;
-	}
 	
 };
 
@@ -508,7 +496,7 @@ extern long FORBID_SCRIPT_IO_CREATION;
 void ARX_SCRIPT_Timer_Check();
 void ARX_SCRIPT_Timer_ClearAll();
 void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io);
-long ARX_SCRIPT_Timer_GetFree();
+SCR_TIMER & createScriptTimer(Entity * io, const std::string & name);
  
 void ARX_SCRIPT_EventStackExecute(size_t limit = 20);
 void ARX_SCRIPT_EventStackExecuteAll();

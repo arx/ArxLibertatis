@@ -837,10 +837,10 @@ static const std::string getName() {
 	return "timer";
 }
 
-void timerCommand(const std::string & timer, Context & context) {
+void timerCommand(const std::string & name, Context & context) {
 	
 	// Checks if the timer is named by caller or if it needs a default name
-	std::string timername = timer.empty() ? ARX_SCRIPT_Timer_GetDefaultName() : timer;
+	std::string timername = name.empty() ? ARX_SCRIPT_Timer_GetDefaultName() : name;
 	
 	bool mili = false, idle = false;
 	HandleFlags("mi") {
@@ -850,15 +850,13 @@ void timerCommand(const std::string & timer, Context & context) {
 	
 	std::string command = context.getWord();
 	
-	Entity * io = context.getEntity();
-	
 	if(command == "kill_local") {
 		DebugScript(" kill_local");
-		ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(io);
+		ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(context.getEntity());
 		return;
 	}
 	
-	ARX_SCRIPT_Timer_Clear_By_Name_And_IO(timername, io);
+	ARX_SCRIPT_Timer_Clear_By_Name_And_IO(timername, context.getEntity());
 	if(command == "off") {
 		DebugScript(timername << " off");
 		return;
@@ -876,23 +874,13 @@ void timerCommand(const std::string & timer, Context & context) {
 	
 	size_t pos = context.skipCommand();
 	
-	long num = ARX_SCRIPT_Timer_GetFree();
-	if(num == -1) {
-		ScriptError << "no free timer available";
-		return;
-	}
-	
-	ActiveTimers++;
-	scr_timer[num].es = context.getScript();
-	scr_timer[num].exist = 1;
-	scr_timer[num].io = io;
-	scr_timer[num].interval = GameDurationMs(interval);
-	scr_timer[num].name = timername;
-	scr_timer[num].pos = pos;
-	scr_timer[num].start = g_gameTime.now();
-	scr_timer[num].count = count;
-	
-	scr_timer[num].flags = (idle && io) ? 1 : 0;
+	SCR_TIMER & timer = createScriptTimer(context.getEntity(), timername);
+	timer.es = context.getScript();
+	timer.interval = GameDurationMs(interval);
+	timer.pos = pos;
+	timer.start = g_gameTime.now();
+	timer.count = count;
+	timer.flags = (idle && context.getEntity()) ? 1 : 0;
 	
 }
 

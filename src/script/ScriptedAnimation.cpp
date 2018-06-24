@@ -258,26 +258,16 @@ public:
 		
 		if(execute) {
 			
-			std::string timername = "anim_" + ARX_SCRIPT_Timer_GetDefaultName();
-			long num2 = ARX_SCRIPT_Timer_GetFree();
-			if(num2 < 0) {
-				ScriptError << "no free timer";
-				return Failed;
-			}
-			
 			size_t pos = context.skipCommand();
 			if(pos == size_t(-1)) {
 				ScriptWarning << "used -e flag without command to execute";
 				return Success;
 			}
 			
-			SCR_TIMER & timer = scr_timer[num2];
+			std::string timername = "anim_" + ARX_SCRIPT_Timer_GetDefaultName();
 			
-			timer.reset();
-			ActiveTimers++;
+			SCR_TIMER & timer = createScriptTimer(context.getEntity(), timername);
 			timer.es = context.getScript();
-			timer.exist = 1;
-			timer.io = context.getEntity();
 			timer.interval = GameDurationMs(1000);
 			// Don't assume that we successfully set the animation - use the current animation
 			if(layer.cur_anim) {
@@ -286,14 +276,12 @@ public:
 					timer.interval = toGameDuration(layer.cur_anim->anims[layer.altidx_cur]->anim_time);
 				}
 			}
-			timer.name = timername;
 			timer.pos = pos;
 			timer.start = g_gameTime.now();
 			timer.count = 1;
 			timer.longinfo = 0;
 			
-			DebugScript(": scheduled timer #" << num2 << ' ' << timername << " in "
-			            << toMsi(timer.interval) << "ms");
+			DebugScript(": scheduled timer " << timername << " in " << toMsi(timer.interval) << "ms");
 			
 		}
 		
