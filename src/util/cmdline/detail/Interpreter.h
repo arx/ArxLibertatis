@@ -186,11 +186,11 @@ void interpreter<StringType, TypeCast>::do_add(const function_type & handler,
 
 template <typename StringType, typename TypeCast>
 template <typename It>
-void interpreter<StringType, TypeCast>::invoke(const string_type & key,
+void interpreter<StringType, TypeCast>::invoke(const string_type & option_name,
                                               It & args_begin, It args_optend, It args_end,
                                               type_cast_t & type_cast) const {
 	
-	typename alt_name_t::const_iterator primary_key = alt_name.find(key);
+	typename alt_name_t::const_iterator primary_key = alt_name.find(option_name);
 	
 	if(alt_name.end() == primary_key) {
 		throw error(error::cmd_not_found);
