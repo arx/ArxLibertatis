@@ -2339,7 +2339,8 @@ static void ManageNPCMovement(Entity * io) {
 					io->_npcdata->pathfind.listnb = -1;
 					io->_npcdata->pathfind.pathwait = 0;
 					ARX_NPC_LaunchPathfind(io, io->targetinfo);
-					goto afterthat;
+					ManageNPCMovement_End(io);
+					return;
 				}
 			}
 		}
@@ -2360,10 +2361,8 @@ static void ManageNPCMovement(Entity * io) {
 				return;
 			}
 		}
-
+		
 	}
-	
-afterthat:
 	
 	ManageNPCMovement_End(io);
 }
