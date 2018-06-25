@@ -103,7 +103,7 @@ void ARX_Menu_Resources_Release() {
 	
 	g_characterCreation.freeData();
 	
-	//Synchronize game mixers with menu mixers and switch between them
+	// Synchronize game mixers with menu mixers and switch between them
 	ARXMenu_Options_Audio_ApplyGameVolumes();
 	
 	delete g_thumbnailCursor.m_loadTexture, g_thumbnailCursor.m_loadTexture = NULL;
@@ -140,7 +140,7 @@ void ARX_MENU_Launch(bool allowResume) {
 
 	g_gameTime.pause(GameTime::PauseMenu);
 
-	//Synchronize menu mixers with game mixers and switch between them
+	// Synchronize menu mixers with game mixers and switch between them
 	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerGame, ARX_SOUND_MixerMenu);
 
 	ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
@@ -186,7 +186,7 @@ void ARX_Menu_Manage() {
 		}
 		case Mode_CharacterCreation: {
 			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
-			   && bFadeInOut == Fade_Out //TODO: comment seems incorrect -> // XS: Disabling ESC capture while fading in or out.
+			   && bFadeInOut == Fade_Out // TODO: comment seems incorrect -> // XS: Disabling ESC capture while fading in or out.
 			) {
 				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 				ARXmenu.requestMode(Mode_MainMenu);
