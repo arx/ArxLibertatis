@@ -242,7 +242,5 @@ void CCreateField::Render()
 		light->pos = eSrc + Vec3f(0.f, -150.f, 0.f);
 		light->duration = GameDurationMs(800);
 	}
-
-	//return falpha;
+	
 }
-
