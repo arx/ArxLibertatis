@@ -79,7 +79,7 @@ public:
 	
 	void init() { count_lo = count_hi = 0; transform::init(state); }
 	
-	void update(const char * data, size_t length);
+	void update(const char * input, size_t length);
 	
 	void finalize(char * result);
 	
@@ -101,40 +101,40 @@ private:
 };
 
 template <class T>
-void iterated_hash<T>::update(const char * input, size_t len) {
+void iterated_hash<T>::update(const char * input, size_t length) {
 	
 	hash_word old_count_lo = count_lo;
 	
-	if((count_lo = old_count_lo + hash_word(len)) < old_count_lo) {
+	if((count_lo = old_count_lo + hash_word(length)) < old_count_lo) {
 		count_hi++; // carry from low to high
 	}
 	
-	count_hi += hash_word(util::safe_right_shift<8 * sizeof(hash_word)>(len));
+	count_hi += hash_word(util::safe_right_shift<8 * sizeof(hash_word)>(length));
 	
 	size_t num = old_count_lo % size_t(block_size);
 	
 	if(num != 0) { // process left over data
-		if(num + len >= block_size) {
+		if(num + length >= block_size) {
 			std::memcpy(data + num, input, block_size - num);
 			hash(data, block_size);
 			input += (block_size - num);
-			len -= (block_size - num);
+			length -= (block_size - num);
 			// drop through and do the rest
 		} else {
-			std::memcpy(data + num, input, len);
+			std::memcpy(data + num, input, length);
 			return;
 		}
 	}
 	
 	// now process the input data in blocks of BlockSize bytes and save the leftovers to m_data
-	if(len >= block_size) {
-		size_t leftOver = hash(input, len);
-		input += (len - leftOver);
-		len = leftOver;
+	if(length >= block_size) {
+		size_t leftOver = hash(input, length);
+		input += (length - leftOver);
+		length = leftOver;
 	}
 	
-	if(len) {
-		memcpy(data, input, len);
+	if(length) {
+		memcpy(data, input, length);
 	}
 }
 
@@ -188,7 +188,7 @@ void iterated_hash<T>::pad(size_t last_block_size, char pad_first) {
 }
 
 template <class T>
-void iterated_hash<T>::finalize(char * digest) {
+void iterated_hash<T>::finalize(char * result) {
 	
 	size_t order = transform::offset * sizeof(hash_word);
 	
@@ -199,7 +199,7 @@ void iterated_hash<T>::finalize(char * digest) {
 	
 	hash(data, block_size);
 	
-	byte_order::store(state, hash_size, digest);
+	byte_order::store(state, hash_size, result);
 	
 }
 
