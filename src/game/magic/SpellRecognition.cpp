@@ -1140,13 +1140,9 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 			unrecognizedRune();
 		}
 	}
-
-	bPrecastSpell = false;
-
-	// wanna precast?
-	if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
-		bPrecastSpell = true;
-	}
+	
+	bPrecastSpell = GInput->actionPressed(CONTROLS_CUST_STEALTHMODE);
+	
 }
 
 bool ARX_SPELLS_AnalyseSPELL() {
