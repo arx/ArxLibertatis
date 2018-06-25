@@ -532,13 +532,13 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 	v2.y = 4.f * d.y * m_mod.y;
 	
 	float fadeDiv = 0.f;
-	Rect fadeBounds(0, 0, 0, 0);
+	Rect fadeBounds = boundaries;
 	if(fadeBorder > 0.f) {
 		fadeDiv = 1.f / fadeBorder;
-		fadeBounds.left = checked_range_cast<Rect::Num>(boundaries.left + fadeBorder);
-		fadeBounds.right = checked_range_cast<Rect::Num>(boundaries.right - fadeBorder);
-		fadeBounds.top = checked_range_cast<Rect::Num>(boundaries.top + fadeBorder);
-		fadeBounds.bottom = checked_range_cast<Rect::Num>(boundaries.bottom - fadeBorder);
+		fadeBounds.left += s32(fadeBorder);
+		fadeBounds.right -= s32(fadeBorder);
+		fadeBounds.top += s32(fadeBorder);
+		fadeBounds.bottom -= s32(fadeBorder);
 	}
 	
 	RenderState desiredState = render2D();
