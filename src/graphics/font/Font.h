@@ -112,44 +112,48 @@ public:
 			, m_height(height)
 		{ }
 		
-		Vec2i anchor() {
+		Vec2i anchor() const {
 			return m_anchor;
 		}
 		
-		s32 start() {
+		s32 start() const {
 			return m_start;
 		}
 		
-		s32 end() {
+		s32 end() const {
 			return m_end;
 		}
 		
-		s32 width() {
+		s32 width() const {
 			return m_end - m_start;
 		}
 		
-		s32 height() {
+		s32 height() const {
 			return m_height;
 		}
 		
-		s32 advance() {
+		s32 advance() const {
 			return m_next - m_anchor.x;
 		}
 		
-		s32 head() {
+		s32 head() const {
 			return m_start - m_anchor.x;
 		}
 		
-		s32 tail() {
+		s32 tail() const {
 			return m_next - m_end;
 		}
 		
-		s32 next() {
+		s32 next() const {
 			return m_next;
 		}
 		
-		operator Vec2i() {
+		Vec2i size() const {
 			return Vec2i(width(), height());
+		}
+		
+		operator Vec2i() const {
+			return size();
 		}
 		
 	};
