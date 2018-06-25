@@ -781,8 +781,6 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 		return false;
 	}
 	
-	bool vreturn = false;
-	
 	if(io->gameFlags & GFLAG_PLATFORM) {
 		float miny = io->bbox3D.min.y;
 		float maxy = io->bbox3D.max.y;
@@ -814,8 +812,7 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 					
 					if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
 						sphereContent.push_back(io->index());
-						vreturn = true;
-						goto suivant;
+						return true;
 					}
 					
 				}
@@ -831,8 +828,7 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 			for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
 				if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
 					sphereContent.push_back(io->index());
-					vreturn = true;
-					goto suivant;
+					return true;
 				}
 			}
 			amount = 2;
@@ -852,19 +848,14 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 			   || closerThan(vlist[ef->vid[1]].v, sphere.origin, sr30)
 			   || closerThan(vlist[ef->vid[2]].v, sphere.origin, sr30)) {
 				sphereContent.push_back(io->index());
-				vreturn = true;
-				goto suivant;
+				return true;
 			}
 			
 		}
 		
 	}
 	
-suivant:
-	{ }
-	
-	return vreturn;
-	
+	return false;
 }
 
 bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityHandle targ,
