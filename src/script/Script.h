@@ -191,7 +191,7 @@ struct EERIE_SCRIPT {
 	
 	bool valid;
 	std::string data;
-	long shortcut[SM_MAXCMD];
+	size_t shortcut[SM_MAXCMD];
 
 	EERIE_SCRIPT()
 		: valid(false)
