@@ -104,15 +104,15 @@ void CharacterCreation::render() {
 	
 	Vec2f spacing = Vec2f(20.f, 30.f) * minSizeRatio();
 	
-	Vec2f quickGenerateButtonSize(Vec2i(hFontMenu->getTextSize(str_button_quickgen)));
+	Vec2f quickGenerateButtonSize(hFontMenu->getTextSize(str_button_quickgen).size());
 	Rectf quickGenerateButton(book.bottomLeft() + Vec2f(0.f, spacing.y),
 	                          quickGenerateButtonSize.x, quickGenerateButtonSize.y);
 	
-	Vec2f doneButtonSize(Vec2i(hFontMenu->getTextSize(str_button_done)));
+	Vec2f doneButtonSize(hFontMenu->getTextSize(str_button_done).size());
 	Rectf doneButton(book.bottomRight() + Vec2f(-doneButtonSize.x, spacing.y),
 	                 doneButtonSize.x, doneButtonSize.y);
 	
-	Vec2f skinButtonSize(Vec2i(hFontMenu->getTextSize(str_button_skin)));
+	Vec2f skinButtonSize(hFontMenu->getTextSize(str_button_skin).size());
 	Rectf skinButton((quickGenerateButton.centerRight() + doneButton.centerLeft() - skinButtonSize) / 2.f,
 	                 skinButtonSize.x, skinButtonSize.y);
 	
