@@ -117,29 +117,24 @@ void RotatingCone::Render() {
 		nb--;
 	}
 	
-	//tracé du cone back
-	
 	RenderMaterial mat;
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Additive);
 	mat.setWrapMode(TextureStage::WrapMirror);
 	mat.setTexture(m_tsouffle);
 	mat.setCulling(CullCW);
-
+	
 	int i = FaceCount - 2;
 	int j = 0;
-
 	while(i--) {
 		drawTriangle(mat, &coned3d[j]);
 		j++;
 	}
-
-	//tracé du cone front
+	
 	mat.setCulling(CullCCW);
-
+	
 	i = FaceCount - 2;
 	j = 0;
-
 	while(i--) {
 		drawTriangle(mat, &coned3d[j]);
 		j++;
