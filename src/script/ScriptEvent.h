@@ -54,8 +54,8 @@ public:
 	static ScriptResult send(const EERIE_SCRIPT * es, Entity * sender, Entity * entity, ScriptEventName event,
 	                         const ScriptParameters & parameters = ScriptParameters(), long info = 0);
 	
-	static ScriptResult resume(const EERIE_SCRIPT * es, Entity * entity, long position = 0) {
-		return send(es, NULL, entity, SM_EXECUTELINE, ScriptParameters(), position);
+	static ScriptResult resume(const EERIE_SCRIPT * es, Entity * entity, size_t position = 0) {
+		return send(es, NULL, entity, SM_EXECUTELINE, ScriptParameters(), long(position));
 	}
 	
 	static void registerCommand(script::Command * command);

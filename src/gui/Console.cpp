@@ -408,7 +408,7 @@ void ScriptConsole::execute() {
 	// TODO Some script commands (timers, etc.) store references to the script
 	
 	// TODO Allow the "context.command" syntax in scripts too
-	long pos = 0;
+	size_t pos = 0;
 	ScriptEvent::resume(&es, entity, pos);
 	
 }

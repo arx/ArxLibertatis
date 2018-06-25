@@ -320,7 +320,7 @@ void ARX_SPEECH_ClearIOSpeech(Entity * entity) {
 		
 		const EERIE_SCRIPT * es = aspeech[i].es;
 		Entity * scriptEntity = aspeech[i].ioscript;
-		long scrpos = aspeech[i].scrpos;
+		size_t scrpos = size_t(aspeech[i].scrpos);
 		ARX_SPEECH_Release(i);
 		
 		if(es && ValidIOAddress(scriptEntity)) {
@@ -457,7 +457,7 @@ void ARX_SPEECH_Update() {
 		if(now >= aspeech[i].time_creation + aspeech[i].duration) {
 			const EERIE_SCRIPT * es = aspeech[i].es;
 			Entity * scriptEntity = aspeech[i].ioscript;
-			long scrpos = aspeech[i].scrpos;
+			size_t scrpos = size_t(aspeech[i].scrpos);
 			ARX_SPEECH_Release(i);
 			if(es && ValidIOAddress(scriptEntity)) {
 				ScriptEvent::resume(es, scriptEntity, scrpos);
