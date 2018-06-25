@@ -101,7 +101,9 @@ private:
 };
 
 class PlayerBook {
+	
 public:
+	
 	StatsPage stats;
 	SpellsPage spells;
 	MapPage map;
@@ -124,9 +126,12 @@ public:
 	void clearJournal();
 	
 	float getScale();
-	const Rectf &getArea();
+	const Rectf & getArea();
+	
 private:
+	
 	Vec2f lastRatio;
+	float lastHudScale;
 	float lastScaleSetting;
 	MenuMode lastMenuMode;
 	
@@ -135,11 +140,11 @@ private:
 	ARX_INTERFACE_BOOK_MODE prevPage();
 	void onClosePage();
 	void manageTopTabs();
-
+	
 	bool needsUpdate();
-	Vec2f calculatePos();
 	void updateRect();
 	void updateScale();
+	
 };
 
 extern PlayerBook g_playerBook;

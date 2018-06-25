@@ -38,10 +38,11 @@
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
 #include "gui/Cursor.h"
-#include "gui/hud/PlayerInventory.h"
+#include "gui/Hud.h"
 #include "gui/MiniMap.h"
 #include "gui/Speech.h"
 #include "gui/TextManager.h"
+#include "gui/hud/PlayerInventory.h"
 #include "input/Input.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
@@ -53,7 +54,6 @@ PlayerBook g_playerBook;
 
 float g_bookScale = 1.0f;
 Rectf g_bookRect = Rectf(Vec2f(97, 64), 513, 313);
-Rectf g_bookRectOrig = Rectf(Vec2f(97, 64), 513, 313);
 
 
 void PlayerBook::open() {
@@ -164,6 +164,7 @@ static void DrawBookTextCenter(Font * font, const Vec2f & pos, const std::string
 PlayerBook::PlayerBook()
 	: m_currentPage(BOOKMODE_STATS)
 	, lastRatio(Vec2f_ZERO)
+	, lastHudScale(0.f)
 	, lastScaleSetting(-1.0f)
 	, lastMenuMode(MenuMode(-1))
 { }
@@ -455,10 +456,12 @@ bool PlayerBook::needsUpdate() {
 	
 	if(   lastRatio == g_sizeRatio 
 	   && lastScaleSetting == config.interface.bookScale
+	   && lastHudScale == g_hudRoot.getScale()
 	   && lastMenuMode == ARXmenu.mode()) {
 		return false;
 	} else {
 		lastRatio = g_sizeRatio;
+		lastHudScale = g_hudRoot.getScale();
 		lastScaleSetting = config.interface.bookScale;
 		lastMenuMode = ARXmenu.mode();
 		return true;
@@ -472,30 +475,32 @@ void PlayerBook::updateScale() {
 	ARX_Text_scaleBookFont(g_bookScale);
 }
 
-/* Book position is not in the center, but slightly to the right to maintain previous
- * behaviour - to avoid collision with secondary inventory.
- */
-Vec2f PlayerBook::calculatePos() {
-	Vec2f bookPosOrig = g_bookRectOrig.topLeft();
-	Vec2f bookPosStretched = (bookPosOrig + g_bookRectOrig.size() / 2.0f) * g_sizeRatio;
-	Vec2f bookPosScaled = bookPosOrig + g_bookRectOrig.size() / 2.0f * g_bookScale;
-
-	return bookPosOrig + bookPosStretched - bookPosScaled;
-}
-
 void PlayerBook::updateRect() {
+	
 	float scale = g_bookScale;
+	
+	const Rectf bookRectOrig = Rectf(Vec2f(97.f, 64.f), 513.f, 313.f);
+	
+	g_bookRect = Rectf(Vec2f(g_size.center()) - bookRectOrig.size() * scale / 2.f,
+	                   bookRectOrig.width() * scale,
+	                   bookRectOrig.height() * scale);
+	
 	if(ARXmenu.mode() != Mode_CharacterCreation) {
-		//in-game player book
-		g_bookRect = Rectf(calculatePos(),
-		                   g_bookRectOrig.width() * scale,
-		                   g_bookRectOrig.height() * scale);
-	} else {
-		//new quest stats book
-		g_bookRect = Rectf(Vec2f(g_size.center()) - g_bookRectOrig.size() * scale / 2.0f,
-		                   g_bookRectOrig.width() * scale,
-		                   g_bookRectOrig.height() * scale);
+		Rectf availableArea((bookRectOrig.topLeft() + Vec2f(10.f, 0.f)) * g_hudRoot.getScale(),
+		                    Vec2f(g_size.bottomRight())
+		                    - (Vec2f(640.f, 480.f) - bookRectOrig.bottomRight()) * g_hudRoot.getScale());
+		// Move book horizontally to make place for other HUD elements if needed
+		// Otherwise keep it centered in the whole screen
+		if(g_bookRect.left < availableArea.left) {
+			g_bookRect.move(availableArea.left - g_bookRect.left, 0.f);
+		}
+		if(g_bookRect.right > availableArea.right) {
+			g_bookRect.move(availableArea.right - g_bookRect.right, 0.f);
+		}
+		// Center book vertically in the available area
+		g_bookRect.move(0.f, availableArea.center().y - g_bookRect.center().y);
 	}
+	
 }
 
 void PlayerBook::update() {
