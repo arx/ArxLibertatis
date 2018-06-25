@@ -1203,6 +1203,8 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			break;
 		}
 		
+		default: break;
+		
 	}
 	
 	*lcontent = 0;
