@@ -431,26 +431,27 @@ static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 	// Vert indices copied from
 	// IsObjectVertexCollidingTriangle
 	
-	//TOP
+	// TOP
 	drawLineTriangle(v[1].pos, v[2].pos, v[3].pos, c[0]);
-	//BOTTOM
+	// BOTTOM
 	drawLineTriangle(v[10].pos, v[9].pos, v[11].pos, c[1]);
-	//UP/FRONT
+	// UP/FRONT
 	drawLineTriangle(v[1].pos, v[4].pos, v[5].pos, c[2]);
-	//DOWN/FRONT
+	// DOWN/FRONT
 	drawLineTriangle(v[5].pos, v[8].pos, v[9].pos, c[3]);
-	//UP/BACK
+	// UP/BACK
 	drawLineTriangle(v[3].pos, v[2].pos, v[7].pos, c[4]);
-	//DOWN/BACK
+	// DOWN/BACK
 	drawLineTriangle(v[7].pos, v[6].pos, v[11].pos, c[5]);
-	//UP/LEFT
+	// UP/LEFT
 	drawLineTriangle(v[6].pos, v[2].pos, v[1].pos, c[6]);
-	//DOWN/LEFT
+	// DOWN/LEFT
 	drawLineTriangle(v[10].pos, v[6].pos, v[5].pos, c[7]);
-	//UP/RIGHT
+	// UP/RIGHT
 	drawLineTriangle(v[4].pos, v[3].pos, v[7].pos, c[8]);
-	//DOWN/RIGHT
+	// DOWN/RIGHT
 	drawLineTriangle(v[8].pos, v[7].pos, v[11].pos, c[9]);
+	
 }
 
 static void drawDebugEntityPhysicsCylinder(Entity * io) {
