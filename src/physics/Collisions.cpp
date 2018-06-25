@@ -1318,7 +1318,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 
 				if(AttemptValidCylinderPos(test.cyl, io, flags)) {
 					*ip = test;
-					goto oki;
+					continue;
 				}
 			}
 
@@ -1406,9 +1406,6 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 			if(glm::abs(ip->startpos.y - ip->cyl.origin.y) > 30.f)
 				return false;
 		}
-		
-	oki:
-		{ }
 		
 	}
 	
