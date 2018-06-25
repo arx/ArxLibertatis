@@ -43,7 +43,9 @@ protected:
 };
 
 class HudIconBase : public HudItem {
+	
 protected:
+	
 	TextureContainer * m_tex;
 	bool m_isSelected;
 	
@@ -51,10 +53,11 @@ protected:
 	Color3f m_haloColor;
 	
 public:
+	
 	HudIconBase();
 	
-	//Used for drawing icons like the book or backpack icon.
 	void draw();
+	
 };
 
 enum Anchor {
