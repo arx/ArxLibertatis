@@ -36,9 +36,9 @@ struct DisplayMode {
 	DisplayMode() { }
 	DisplayMode(const DisplayMode & o) : resolution(o.resolution) { }
 	/* implicit */ DisplayMode(Vec2i res) : resolution(res) { }
-	bool operator<(const DisplayMode & other) const;
-	bool operator==(const DisplayMode & other) const {
-		return resolution == other.resolution;
+	bool operator<(const DisplayMode & o) const;
+	bool operator==(const DisplayMode & o) const {
+		return resolution == o.resolution;
 	}
 	
 };
@@ -150,7 +150,7 @@ protected:
 	void onMinimize();
 	void onMaximize();
 	void onRestore();
-	void onShow(bool show);
+	void onShow(bool isVisible);
 	void onToggleFullscreen(bool fullscreen);
 	void onFocus(bool hasFocus);
 	void onPaint();
