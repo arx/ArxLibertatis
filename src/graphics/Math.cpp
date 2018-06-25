@@ -184,12 +184,6 @@ static int coplanar_tri_tri(const float N[3], const float V0[3], const float V1[
 		std::swap(a, b); \
 	}
 
-//***********************************************************************************************
-// Computes Intersection of 2 triangles
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/19)
-// OPTIMIZED (Cyril 2001/10/19) removed divisions, need some more optims perhaps...
-//***********************************************************************************************
 static int tri_tri_intersect(const EERIE_TRI & VV, const EERIE_TRI & UU)  {
 	
 	float E1[3], E2[3];
@@ -374,10 +368,6 @@ bool SphereInCylinder(const Cylinder & cyl1, const Sphere & s)
 	return !fartherThan(Vec2f(cyl1.origin.x, cyl1.origin.z), Vec2f(s.origin.x, s.origin.z), cyl1.radius + s.radius);
 }
 
-//--------------------------------------------------------------------------------------
-// Quaternions Funcs
-//--------------------------------------------------------------------------------------
-
 glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)
 {
 	float fCosTheta = from.x * to.x + from.y * to.y + from.z * to.z + from.w * to.w;
@@ -409,9 +399,6 @@ glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)
 	);
 }
 
-//*************************************************************************************
-// Converts euler angles to a unit quaternion.
-//*************************************************************************************
 glm::quat QuatFromAngles(const Anglef & angle) {
 	float A, B;
 	A = glm::radians(angle.getPitch()) * ( 1.0f / 2 );
@@ -444,7 +431,6 @@ glm::mat4 toRotationMatrix(const Anglef & angle) {
 	glm::mat4 rotateZ = arx::eulerAngleZ(-roll);
 	return rotateZ * rotateX * rotateY;
 }
-
 
 glm::quat angleToQuatForArrow(const Anglef & angle) {
 	float aa = angle.getPitch();
@@ -485,10 +471,6 @@ std::pair<Vec3f, Vec3f> angleToFrontUpVec(const Anglef & angle) {
 	
 	return std::make_pair(front, up);
 }
-
-//--------------------------------------------------------------------------------------
-// VECTORS Functions
-//--------------------------------------------------------------------------------------
 
 // Rotates a Vector around X. angle is given in degrees
 Vec3f VRotateX(const Vec3f in, const float angle) {
@@ -535,12 +517,9 @@ Vec3f angleToVector(const Anglef & angle) {
 	return cam_vector;
 }
 
-//A x B = <Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx>
 Vec3f CalcFaceNormal(const Vec3f * v) {
-	
 	Vec3f A = v[1] - v[0];
 	Vec3f B = v[2] - v[0];
-	
 	return glm::normalize(Vec3f(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x));
 }
 
