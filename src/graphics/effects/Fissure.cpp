@@ -700,14 +700,12 @@ void CSummonCreature::Update(GameDuration timeDelta)
 	m_elapsed += timeDelta;
 }
 
-//-----------------------------------------------------------------------------
 // rendu de la déchirure spatio temporelle
 void CSummonCreature::Render()
 {
 	if(m_elapsed >= m_duration)
 		return;
 	
-	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
 	if(m_elapsed < m_durationIntro) {
 		float fOneOnDurationIntro = 1.f / toMsf(m_durationIntro);
@@ -732,8 +730,4 @@ void CSummonCreature::Render()
 	
 	RenderFissure();
 	
-	//return (fSizeIntro / end);
 }
-
-
-
