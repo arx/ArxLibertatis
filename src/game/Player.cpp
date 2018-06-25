@@ -1345,7 +1345,6 @@ void ARX_PLAYER_Manage_Visual() {
 	ANIM_HANDLE * request0_anim = NULL;
 	ANIM_HANDLE * request3_anim = NULL;
 	bool request0_loop = true;
-	bool request0_stopend = false;
 	
 	if(io->ioflags & IO_FREEZESCRIPT) {
 		player.m_lastMovement = player.m_currentMovement;
@@ -1355,10 +1354,8 @@ void ARX_PLAYER_Manage_Visual() {
 	if(player.lifePool.current <= 0) {
 		HERO_SHOW_1ST = -1;
 		io->animlayer[1].cur_anim = NULL;
-		request0_anim = alist[ANIM_DIE];
-		request0_loop = false;
-		request0_stopend = true;
-		goto makechanges;
+		ARX_PLAYER_Manage_Visual_End(alist[ANIM_DIE], request3_anim, false, true);
+		return;
 	}
 	
 	if(   player.m_currentMovement == 0
@@ -1559,13 +1556,11 @@ void ARX_PLAYER_Manage_Visual() {
 retry:
 	
 	if(spells.ExistAnyInstanceForThisCaster(SPELL_FLYING_EYE, EntityHandle_Player)) {
-		request0_anim = alist[ANIM_MEDITATION];
-		request0_loop = true;
-		goto makechanges;
+		ARX_PLAYER_Manage_Visual_End(alist[ANIM_MEDITATION], request3_anim, true, false);
+		return;
 	} else if(spells.getSpellOnTarget(io->index(), SPELL_LEVITATE)) {
-		request0_anim = alist[ANIM_LEVITATE];
-		request0_loop = true;
-		goto makechanges;
+		ARX_PLAYER_Manage_Visual_End(alist[ANIM_LEVITATE], request3_anim, true, false);
+		return;
 	} else if(player.jumpphase != NotJumping) {
 		
 		switch(player.jumpphase) {
@@ -1623,9 +1618,7 @@ retry:
 		
 	}
 	
-	makechanges:
-	
-	ARX_PLAYER_Manage_Visual_End(request0_anim, request3_anim, request0_loop, request0_stopend);
+	ARX_PLAYER_Manage_Visual_End(request0_anim, request3_anim, request0_loop, false);
 
 }
 
