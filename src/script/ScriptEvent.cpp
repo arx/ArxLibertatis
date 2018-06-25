@@ -274,26 +274,25 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 	}
 	
 	// Finds script position to execute code...
-	long pos = position;
+	size_t pos = position;
 	if(!event.getName().empty()) {
 		arx_assert(event.getId() == SM_NULL);
 		arx_assert_msg(ScriptEventName::parse(event.getName()).getId() == SM_NULL, "non-canonical event name");
-		pos = long(FindScriptPos(es, "on " + event.getName()));
+		pos = FindScriptPos(es, "on " + event.getName());
 	} else if(event != SM_EXECUTELINE) {
 		arx_assert(event.getId() < SM_MAXCMD);
-		pos = long(es->shortcut[event.getId()]);
-		arx_assert(pos <= long(es->data.size()));
+		pos = es->shortcut[event.getId()];
+		arx_assert(pos == size_t(-1) || pos <= es->data.size());
 	}
 
-	if(pos <= -1) {
+	if(pos == size_t(-1)) {
 		return ACCEPT;
 	}
-	
 	
 	LogDebug("--> " << event << " params=\"" << parameters << "\"" << " entity=" << entity->idString()
 	         << (es == &entity->script ? " base" : " overriding") << " pos=" << pos);
 	
-	script::Context context(es, size_t(pos), sender, entity, event.getId(), parameters);
+	script::Context context(es, pos, sender, entity, event.getId(), parameters);
 	
 	if(event != SM_EXECUTELINE) {
 		std::string word = context.getCommand();
