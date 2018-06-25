@@ -702,7 +702,6 @@ void StatsPage::manageStats()
 			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 	} else {
-		//------------------------------------PRIMARY
 		if(MouseInBookRect(bookPos + Vec2f(282, 31) * scale, Vec2f(32, 32) * scale)) {
 			FLYING_OVER = BOOK_STRENGTH;
 		} else if(MouseInBookRect(bookPos + Vec2f(331, 31) * scale, Vec2f(32, 32) * scale)) {
@@ -712,7 +711,6 @@ void StatsPage::manageStats()
 		} else if(MouseInBookRect(bookPos + Vec2f(429, 31) * scale, Vec2f(32, 32) * scale)) {
 			FLYING_OVER = BOOK_CONSTITUTION;
 		}
-		//------------------------------------SECONDARY
 		if(MouseInBookRect(bookPos + Vec2f(292, 113) * scale, Vec2f(32, 32) * scale)) {
 			FLYING_OVER = BOOK_STEALTH;
 		} else if(MouseInBookRect(bookPos + Vec2f(356, 113) * scale, Vec2f(32, 32) * scale)) {
