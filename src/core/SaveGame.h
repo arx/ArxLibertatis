@@ -25,6 +25,9 @@
 #include <string>
 #include <ctime>
 
+#include <boost/iterator/counting_iterator.hpp>
+#include <boost/iterator/transform_iterator.hpp>
+
 #include "graphics/image/Image.h"
 #include "io/fs/FilePath.h"
 #include "io/resource/ResourcePath.h"
@@ -57,9 +60,18 @@ struct SaveGame {
 //! Central management of the list of savegames.
 class SaveGameList {
 	
+	struct IndexToHandle {
+		SavegameHandle operator()(size_t index) const {
+			return SavegameHandle(long(index));
+		}
+	};
+	
+	typedef boost::counting_iterator<size_t> iterator_base;
+	
 public:
 	
-	typedef std::vector<SaveGame>::const_iterator iterator;
+	typedef boost::transform_iterator<IndexToHandle, iterator_base> iterator;
+	typedef boost::transform_iterator<IndexToHandle, iterator_base> const_iterator;
 	
 	//! Update the savegame list. This is automatically called by save() and remove()
 	void update(bool verbose = false);
@@ -81,8 +93,8 @@ public:
 	//! Delete the given savegame. This removes the actual on-disk files.
 	void remove(SavegameHandle handle);
 	
-	iterator begin() const { return savelist.begin(); }
-	iterator end() const { return savelist.end(); }
+	iterator begin() const { return iterator(iterator_base(0), IndexToHandle()); }
+	iterator end() const { return iterator(iterator_base(size()), IndexToHandle()); }
 	
 	size_t size() const { return savelist.size(); }
 	const SaveGame & operator[](size_t index) const { return savelist[index]; }
