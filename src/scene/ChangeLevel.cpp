@@ -1327,8 +1327,8 @@ static const ARX_CHANGELEVEL_INDEX * ARX_CHANGELEVEL_Pop_Index(const std::string
 	
 	// Restore Ambiances
 	if(asi->ambiances_data_size) {
-		ARX_SOUND_AmbianceRestorePlayList(dat + pos, asi->ambiances_data_size);
-		pos += asi->ambiances_data_size;
+		ARX_SOUND_AmbianceRestorePlayList(dat + pos, size_t(asi->ambiances_data_size));
+		pos += size_t(asi->ambiances_data_size);
 	}
 	
 	ARX_UNUSED(pos);
