@@ -66,19 +66,11 @@ public:
 	
 	/*! Save the current game state
 	 * \param name The name of the new savegame.
-	 * \param overwrite A savegame to overwrite with this save or end()
+	 * \param overwrite A savegame to overwrite with this save or SavegameHandle()
 	 * \return true if the game was successfully saved.
 	 */
-	bool save(const std::string & name, iterator overwrite, const Image & thumbnail = Image());
-	
-	/*! Save the current game state
-	 * \param name The name of the new savegame.
-	 * \param overwrite A savegame to overwrite with this save or end()
-	 * \return true if the game was successfully saved.
-	 */
-	bool save(const std::string & name, SavegameHandle overwrite = SavegameHandle(), const Image & th = Image()) {
-		return save(name, (overwrite == SavegameHandle()) ? end() : begin() + overwrite.handleData(), th);
-	}
+	bool save(const std::string & name, SavegameHandle overwrite = SavegameHandle(),
+	          const Image & thumbnail = Image());
 	
 	//! Perform a quicksave: Maintain a number of quicksave slots and always overwrite the oldest one.
 	bool quicksave(const Image & thumbnail = Image());

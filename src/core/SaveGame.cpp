@@ -202,12 +202,10 @@ void SaveGameList::update(bool verbose) {
 
 void SaveGameList::remove(SavegameHandle handle) {
 	
-	iterator save = begin() + handle.handleData();
+	const SaveGame & save = savelist[handle.handleData()];
 	
-	arx_assert(save >= begin() && save < end());
-	
-	fs::remove(save->savefile);
-	fs::path savedir = save->savefile.parent();
+	fs::remove(save.savefile);
+	fs::path savedir = save.savefile.parent();
 	fs::remove(savedir / SAVEGAME_THUMBNAIL);
 	if(fs::directory_iterator(savedir).end()) {
 		fs::remove(savedir);
@@ -216,13 +214,11 @@ void SaveGameList::remove(SavegameHandle handle) {
 	update();
 }
 
-bool SaveGameList::save(const std::string & name, iterator overwrite, const Image & thumbnail) {
-	
-	arx_assert(overwrite >= begin() && overwrite <= end());
+bool SaveGameList::save(const std::string & name, SavegameHandle overwrite, const Image & thumbnail) {
 	
 	fs::path savefile;
-	if(overwrite != end()) {
-		savefile = overwrite->savefile;
+	if(overwrite != SavegameHandle()) {
+		savefile = savelist[size_t(overwrite.handleData())].savefile;
 	} else {
 		size_t index = 0;
 		do {
@@ -253,24 +249,25 @@ bool SaveGameList::save(const std::string & name, iterator overwrite, const Imag
 
 bool SaveGameList::quicksave(const Image & thumbnail) {
 	
-	iterator overwrite = end();
+	SavegameHandle overwrite = SavegameHandle();
 	std::time_t time = std::numeric_limits<std::time_t>::max();
 	
 	size_t nfound = 0;
 	
 	// Find the oldest quicksave.
-	for(iterator i = begin(); i != end(); ++i) {
-		if(i->quicksave) {
+	for(size_t i = 0; i != size(); ++i) {
+		if(savelist[i].quicksave) {
 			nfound++;
-			if(i->stime < time) {
-				overwrite = i, time = i->stime;
+			if(savelist[i].stime < time) {
+				overwrite = SavegameHandle(long(i));
+				time = savelist[i].stime;
 			}
 		}
 	}
 	
 	// Create a new quicksave slot if there aren't enough already.
-	if(nfound < (size_t)config.misc.quicksaveSlots) {
-		overwrite = end();
+	if(nfound < size_t(config.misc.quicksaveSlots)) {
+		overwrite = SavegameHandle();
 	}
 	
 	return save(QUICKSAVE_ID, overwrite, thumbnail);
