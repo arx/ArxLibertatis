@@ -583,7 +583,10 @@ endfunction()
 function(unity_build)
 	
 	if(CMAKE_GENERATOR MATCHES "(Makefiles|Ninja)")
-		add_custom_target(ub_notice COMMENT "Note: The unity build binaries may take a long time to compile, without any indication of progress. Be patient.")
+		add_custom_target(ub_notice
+			COMMAND "${CMAKE_COMMAND}" -E echo_append
+			COMMENT "Note: The unity build binaries may take a long time to compile, without any indication of progress. Be patient."
+		)
 	endif()
 	
 	foreach(bin IN LISTS SHARED_BUILD_BINARIES)
