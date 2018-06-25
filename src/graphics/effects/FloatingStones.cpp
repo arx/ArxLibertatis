@@ -110,16 +110,17 @@ void FloatingStones::DrawStone()
 				pd->m_rotation = 0.0000001f;
 			}
 			
-			//update mvt
+			// Update mvt
 			if(!g_gameTime.isPaused()) {
 				a = (m_currframetime * 100) / s.time;
 				s.pos.y += s.yvel * a;
 				s.ang += s.angvel * a;
-				
 				s.yvel *= 1.f - (1.f / 100.f);
-				
 				s.currtime += m_currframetime;
 			}
+			
 		}
+		
 	}
+	
 }
