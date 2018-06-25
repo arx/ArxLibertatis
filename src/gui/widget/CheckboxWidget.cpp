@@ -70,9 +70,7 @@ bool CheckboxWidget::click() {
 	
 	iState++;
 	
-	//NB : It seems that iState cannot be negative (used as tabular index / used as bool) but need further approval
 	arx_assert(iState >= 0);
-	
 	if((size_t)iState >= 2) {
 		iState = 0;
 	}
