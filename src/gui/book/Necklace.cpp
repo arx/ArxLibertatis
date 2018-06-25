@@ -189,7 +189,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 				tmpPos.y++;
 			}
 			
-			//TODO this is a workaround for vertexClipPositions being relative to viewport
+			// TODO this is a workaround for vertexClipPositions being relative to viewport
 			Vec2f mousePosInViewport = mousePos - rect.topLeft();
 			
 			// Checks for Mouse floating over a rune...
