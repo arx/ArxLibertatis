@@ -235,7 +235,7 @@ void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & text, Entity * io_sou
 	long speechnum = ARX_SPEECH_AddSpeech(io_source, text, mood, ARX_SPEECH_FLAG_NOTEXT);
 	if(speechnum >= 0) {
 		
-		aspeech[speechnum].scrpos = -1;
+		aspeech[speechnum].scrpos = size_t(-1);
 		aspeech[speechnum].es = NULL;
 		aspeech[speechnum].ioscript = io_source;
 		aspeech[speechnum].flags = 0;
@@ -320,7 +320,7 @@ void ARX_SPEECH_ClearIOSpeech(Entity * entity) {
 		
 		const EERIE_SCRIPT * es = aspeech[i].es;
 		Entity * scriptEntity = aspeech[i].ioscript;
-		size_t scrpos = size_t(aspeech[i].scrpos);
+		size_t scrpos = aspeech[i].scrpos;
 		ARX_SPEECH_Release(i);
 		
 		if(es && ValidIOAddress(scriptEntity)) {
@@ -457,7 +457,7 @@ void ARX_SPEECH_Update() {
 		if(now >= aspeech[i].time_creation + aspeech[i].duration) {
 			const EERIE_SCRIPT * es = aspeech[i].es;
 			Entity * scriptEntity = aspeech[i].ioscript;
-			size_t scrpos = size_t(aspeech[i].scrpos);
+			size_t scrpos = aspeech[i].scrpos;
 			ARX_SPEECH_Release(i);
 			if(es && ValidIOAddress(scriptEntity)) {
 				ScriptEvent::resume(es, scriptEntity, scrpos);
