@@ -70,7 +70,6 @@ void SliderWidget::Move(const Vec2f & offset) {
 
 void SliderWidget::hover() {
 
-	//Touche pour la selection
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow)) {
 		m_value--;
 
