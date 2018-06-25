@@ -532,15 +532,15 @@ bool SDL2Window::setGamma(float gamma) {
 	return true;
 }
 
-void SDL2Window::changeMode(DisplayMode mode, bool makeFullscreen) {
+void SDL2Window::changeMode(DisplayMode mode, bool fullscreen) {
 	
 	if(!m_window) {
 		m_size = mode.resolution;
-		m_fullscreen = makeFullscreen;
+		m_fullscreen = fullscreen;
 		return;
 	}
 	
-	if(m_fullscreen == makeFullscreen && m_size == mode.resolution) {
+	if(m_fullscreen == fullscreen && m_size == mode.resolution) {
 		return;
 	}
 	
@@ -548,7 +548,7 @@ void SDL2Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 	
 	m_renderer->beforeResize(false);
 	
-	if(makeFullscreen) {
+	if(fullscreen) {
 		if(wasFullscreen) {
 			// SDL will not update the window size with the new mode if already fullscreen
 			SDL_SetWindowFullscreen(m_window, 0);
@@ -573,12 +573,12 @@ void SDL2Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 		}
 	}
 	
-	Uint32 flags = getSDLFlagsForMode(mode.resolution, makeFullscreen);
+	Uint32 flags = getSDLFlagsForMode(mode.resolution, fullscreen);
 	if(SDL_SetWindowFullscreen(m_window, flags) < 0) {
 		return;
 	}
 	
-	if(!makeFullscreen) {
+	if(!fullscreen) {
 		if(wasFullscreen) {
 			restoreGamma();
 			SDL_RestoreWindow(m_window);
@@ -586,11 +586,11 @@ void SDL2Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 		SDL_SetWindowSize(m_window, mode.resolution.x, mode.resolution.y);
 	}
 	
-	if(wasFullscreen != makeFullscreen) {
-		onToggleFullscreen(makeFullscreen);
+	if(wasFullscreen != fullscreen) {
+		onToggleFullscreen(fullscreen);
 	}
 	
-	if(makeFullscreen) {
+	if(fullscreen) {
 		setGamma(m_gamma);
 		// SDL regrettably sends resize events when a fullscreen window is minimized.
 		// Because of that we ignore all size change events when fullscreen.
