@@ -340,7 +340,7 @@ float PlayerBook::getScale() {
 	return g_bookScale;
 }
 
-const Rectf &PlayerBook::getArea() {
+const Rectf & PlayerBook::getArea() {
 	update();
 	return g_bookRect;
 }
@@ -454,7 +454,7 @@ void PlayerBook::manageTopTabs() {
 
 bool PlayerBook::needsUpdate() {
 	
-	if(   lastRatio == g_sizeRatio 
+	if(lastRatio == g_sizeRatio
 	   && lastScaleSetting == config.interface.bookScale
 	   && lastHudScale == g_hudRoot.getScale()
 	   && lastMenuMode == ARXmenu.mode()) {
@@ -615,7 +615,7 @@ void StatsPage::manageStats()
 			FLYING_OVER = WND_AC;
 		} else if(MouseInBookRect(bookPos + Vec2f(41, 120) * scale, attribAreaSize)) {
 			FLYING_OVER = WND_RESIST_MAGIC;
-		} else if(MouseInBookRect(bookPos + Vec2f(41,178) * scale, attribAreaSize)) {
+		} else if(MouseInBookRect(bookPos + Vec2f(41, 178) * scale, attribAreaSize)) {
 			FLYING_OVER = WND_RESIST_POISON;
 		} else if(MouseInBookRect(bookPos + Vec2f(211, 62) * scale, attribAreaSize)) {
 			FLYING_OVER = WND_HP;
@@ -1200,13 +1200,13 @@ void StatsPage::RenderBookPlayerCharacter() {
 		if(weapon->type_flags & OBJECT_TYPE_2H) {
 			player.bookAnimation[0].cur_anim = herowait_2h;
 		}
-		//TODO workaround for bbox2D being relative to viewport
+		// TODO workaround for bbox2D being relative to viewport
 		weapon->bbox2D.min += bookPos;
 		weapon->bbox2D.max += bookPos;
 	}
 	
-	//TODO workaround for bbox2D being relative to viewport
-	if(Entity *shield = entities.get(player.equiped[EQUIP_SLOT_SHIELD])) {
+	if(Entity * shield = entities.get(player.equiped[EQUIP_SLOT_SHIELD])) {
+		// TODO workaround for bbox2D being relative to viewport
 		shield->bbox2D.min += bookPos;
 		shield->bbox2D.max += bookPos;
 	}
