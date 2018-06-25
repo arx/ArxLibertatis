@@ -545,17 +545,13 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 			}
 		}
 	} else if(io->ioflags & IO_FIX) {
+		
+		if(io->bbox3D.max.y <= cyl.origin.y + cyl.height || io->bbox3D.min.y >= cyl.origin.y) {
+			return;
+		}
+		
 		Sphere sp;
-
-		float miny = io->bbox3D.min.y;
-		float maxy = io->bbox3D.max.y;
-
-		if(maxy <= cyl.origin.y + cyl.height)
-			goto suivant;
-
-		if(miny >= cyl.origin.y)
-			goto suivant;
-
+		
 		if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius + 30.f)) {
 			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 			
@@ -663,9 +659,6 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 			}
 		}
 	}
-	
-suivant:
-	{ }
 	
 }
 
