@@ -2240,7 +2240,7 @@ static void ARX_CHANGELEVEL_PopAllIO(const std::string & buffer) {
 	
 	float increment = 0;
 	if(asi->nb_inter > 0) {
-		increment = 60.f / asi->nb_inter;
+		increment = 60.f / float(asi->nb_inter);
 	} else {
 		progressBarAdvance(60);
 		LoadLevelScreen();
