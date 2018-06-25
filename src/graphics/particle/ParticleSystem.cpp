@@ -188,11 +188,9 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	float fTTL = m_parameters.m_life + Random::getf() * m_parameters.m_lifeRandom;
 	pP->m_timeToLive = GameDurationMsf(fTTL);
 	
-	float fAngleX = Random::getf() * m_parameters.m_angle; //*0.5f;
+	float fAngleX = Random::getf() * m_parameters.m_angle;
 	
 	Vec3f vv1, vvz;
-	
-	// ici modifs ----------------------------------
 	
 	vv1 = -Vec3f_Y_AXIS;
 	
