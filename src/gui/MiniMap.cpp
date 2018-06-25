@@ -416,20 +416,14 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 				
 				Rect bRect(Vec2i(rect.left, rect.bottom), s32(205 * scale), s32(63 * scale));
 				
-				Rect::Num left = checked_range_cast<Rect::Num>(bRect.left);
-				Rect::Num right = checked_range_cast<Rect::Num>(bRect.right);
-				Rect::Num top = checked_range_cast<Rect::Num>(bRect.top);
-				Rect::Num bottom = checked_range_cast<Rect::Num>(bRect.bottom);
-				Rect rRect = Rect(left, top, right, bottom);
-				
-				long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, m_mapMarkers[i].m_text.begin(), m_mapMarkers[i].m_text.end(), rRect);
-				
+				long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, m_mapMarkers[i].m_text.begin(), m_mapMarkers[i].m_text.end(), bRect);
 				
 				ARX_UNICODE_DrawTextInRect(hFontInGameNote,
 				                           Vec2f(bRect.topLeft()),
 				                           float(bRect.right),
 				                           m_mapMarkers[i].m_text.substr(0, lLengthDraw),
 				                           Color::none);
+				
 			}
 		}
 		
