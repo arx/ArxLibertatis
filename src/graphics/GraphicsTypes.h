@@ -162,9 +162,9 @@ struct EERIE_FACE {
 struct EERIE_ACTIONLIST {
 	
 	std::string name;
-	ActionPoint idx; //index vertex;
-	long act; //action
-	long sfx; //sfx
+	ActionPoint idx;
+	long act;
+	long sfx;
 	
 	EERIE_ACTIONLIST()
 		: idx(0)
@@ -184,7 +184,7 @@ struct CUB3D {
 };
 
 struct EERIE_LINKED {
-	ObjVertGroup lgroup; //linked to group n° if lgroup=-1 NOLINK
+	ObjVertGroup lgroup;
 	ActionPoint lidx;
 	ActionPoint lidx2;
 	EERIE_3DOBJ * obj;
@@ -211,8 +211,6 @@ struct EERIE_FASTACCESS {
 	ObjSelection sel_leggings;
 	
 };
-
-/////////////////////////////////////////////////////////////////////////////////
 
 struct EERIE_3DOBJ {
 	
@@ -271,9 +269,6 @@ struct EERIE_3DOBJ {
 	Skeleton * m_skeleton;
 	
 };
-
-//-------------------------------------------------------------------------
-//Portal Data;
 
 struct PortalPoly {
 	Vec3f min;
