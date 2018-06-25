@@ -1064,7 +1064,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 		rec = Rect(Vec2i(bookPos + Vec2f(21.f, 5.f) * scale),
 		           Vec2i(bookPos + Vec2f(253.f, 274.f) * scale));
 		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
-		rec.right -= 50 * scale;
+		rec.right -= s32(50.f * scale);
 		
 	}
 	
