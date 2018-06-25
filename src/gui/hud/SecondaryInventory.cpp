@@ -168,19 +168,17 @@ void SecondaryInventoryHud::update() {
 		m_fadeDirection = Fade_left;
 	}
 	
-	
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
 		// Pick All/Close Secondary Inventory
 		if(TSecondaryInventory) {
-			//These have to be calculated on each frame (to make them move).
-			
+			// These have to be calculated on each frame (to make them move).
 			m_pickAllButton.setScale(m_scale);
 			m_closeButton.setScale(m_scale);
-			
 			m_pickAllButton.update(m_rect);
 			m_closeButton.update(m_rect);
 		}
 	}
+	
 }
 
 void SecondaryInventoryHud::updateRect() {
