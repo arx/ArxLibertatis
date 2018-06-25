@@ -3,11 +3,8 @@ find_package(PythonInterp)
 
 set(STYLE_FILTER)
 
-# Complains about any c-style cast -> too annoying.
-set(STYLE_FILTER ${STYLE_FILTER},-readability/casting)
-
 # Insists on including evrything in the .cpp file even if it is included in the header.
-# This behaviour conflicts with orther tools.
+# This behaviour conflicts with other tools.
 set(STYLE_FILTER ${STYLE_FILTER},-build/include_what_you_use)
 
 # Too many false positives and not very helpful error messages.
@@ -22,11 +19,7 @@ set(STYLE_FILTER ${STYLE_FILTER},-whitespace/tab)
 # Yes it is!
 set(STYLE_FILTER ${STYLE_FILTER},-whitespace/blank_line)
 
-# Suggessts excessive indentation.
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/labels)
-
 # Why?
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/todo)
 set(STYLE_FILTER ${STYLE_FILTER},-readability/todo)
 
 # "For a static/global string constant, use a C style string"
@@ -37,11 +30,11 @@ set(STYLE_FILTER ${STYLE_FILTER},-runtime/virtual)
 
 # TODO consider enabling these and fixing the warnings
 
+# Complains about any c-style cast
+set(STYLE_FILTER ${STYLE_FILTER},-readability/casting)
+
 # Very noisy and perhaps a matter of taste.
 set(STYLE_FILTER ${STYLE_FILTER},-whitespace/braces)
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/parens)
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/parens_newline)
-set(STYLE_FILTER ${STYLE_FILTER},-whitespace/newline)
 
 # Complains about using short, long, etc.
 set(STYLE_FILTER ${STYLE_FILTER},-runtime/int)
@@ -62,6 +55,12 @@ if(NOT SET_NOISY_WARNING_FLAGS)
 	
 	# Very much known...
 	set(STYLE_FILTER ${STYLE_FILTER},-readability/fn_size)
+	
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/parens)
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/parens_newline)
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/newline)
+	
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/todo)
 	
 endif()
 
