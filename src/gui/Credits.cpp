@@ -428,11 +428,9 @@ void Credits::layout() {
 	
 	m_lines.clear();
 	
-	// Retrieve the rows to display
 	std::istringstream iss(m_text);
 	std::string phrase;
 
-	//Use to calculate the positions
 	float drawpos = static_cast<float>(g_size.height());
 	
 	for(int sourceLineNumber = 0; std::getline(iss, phrase); sourceLineNumber++) {
@@ -530,24 +528,25 @@ void Credits::render() {
 		}
 	}
 	
-	for (; it != m_lines.end(); ++it)
-	{
-		//Update the Y word display
+	for(; it != m_lines.end(); ++it) {
+		
+		// Update the Y word display
 		float yy = it->sPos.y + m_scrollPosition;
 		
-		//Display the text only if he is on the viewport
-		if ((yy >= -m_lineHeight) && (yy <= g_size.height()))
-		{
+		// Display the text only if it is inside the viewport
+		if(yy >= -m_lineHeight && yy <= g_size.height()) {
 			hFontCredits->draw(it->sPos.x, static_cast<int>(yy), it->sText, it->fColors);
 		}
 		
-		if (yy <= -m_lineHeight)
-		{
+		if(yy <= -m_lineHeight) {
 			++m_firstVisibleLine;
 		}
 		
-		if ( yy >= g_size.height() )
-			break; //it's useless to continue because next phrase will not be inside the viewport
+		if(yy >= g_size.height()) {
+			// It's useless to continue because next line will not be inside the viewport
+			break;
+		}
+		
 	}
 	
 	if(m_firstVisibleLine >= m_lines.size() && iFadeAction != Mode_MainMenu) {
