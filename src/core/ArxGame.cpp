@@ -1265,7 +1265,7 @@ void ArxGame::doFrame() {
 	   && !BLOCK_PLAYER_CONTROLS
 	) {
 		
-		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD) && savegames.size() > 0) {
+		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD)) {
 			ARX_QuickLoad();
 		}
 		
