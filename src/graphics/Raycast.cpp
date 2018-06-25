@@ -160,8 +160,6 @@ static float linePolyIntersection(const Vec3f & start, const Vec3f & dir, const 
 	return std::numeric_limits<float>::max();
 }
 
-//#define RAYCAST_DEBUG 1
-
 namespace {
 
 struct AnyHitRaycast {
