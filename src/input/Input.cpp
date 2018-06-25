@@ -433,15 +433,9 @@ void Input::update(float time) {
 
 	for(int i = 0; i < Keyboard::KeyCount; i++) {
 		if(isKeyPressed(i)) {
-			switch(i) {
-			case Keyboard::Key_LeftShift:
-			case Keyboard::Key_RightShift:
-			case Keyboard::Key_LeftCtrl:
-			case Keyboard::Key_RightCtrl:
-			case Keyboard::Key_LeftAlt:
-			case Keyboard::Key_RightAlt:
+			
+			if(Keyboard::isModifier(i)) {
 				modifier = i;
-				break;
 			}
 
 			if(keysStates[i] < 2) {
@@ -462,48 +456,17 @@ void Input::update(float time) {
 			}
 		}
 	}
-
+	
 	if(modifier != 0 && iKeyId != modifier) {
 		iKeyId |= (modifier << 16);
 	}
-
-	if(iKeyId >= 0) {
-		switch(iKeyId) {
-			case Keyboard::Key_LeftShift:
-			case Keyboard::Key_RightShift:
-			case Keyboard::Key_LeftCtrl:
-			case Keyboard::Key_RightCtrl:
-			case Keyboard::Key_LeftAlt:
-			case Keyboard::Key_RightAlt: {
-				
-				bool bFound = false;
-				
-				for(int i = 0; i < Keyboard::KeyCount; i++) {
-					
-					if(bFound) {
-						break;
-					}
-					
-					switch(i & 0xFFFF) {
-						case Keyboard::Key_LeftShift:
-						case Keyboard::Key_RightShift:
-						case Keyboard::Key_LeftCtrl:
-						case Keyboard::Key_RightCtrl:
-						case Keyboard::Key_LeftAlt:
-						case Keyboard::Key_RightAlt:
-							continue;
-						default: {
-							if(keysStates[i]) {
-								bFound = true;
-								iKeyId &= ~0xFFFF;
-								iKeyId |= i;
-							}
-							break;
-						}
-					}
-					
-				}
-				
+	
+	if(Keyboard::isModifier(iKeyId)) {
+		for(int i = 0; i < Keyboard::KeyCount; i++) {
+			if(!Keyboard::isModifier(i & 0xFFFF) && keysStates[i]) {
+				break;
+				iKeyId &= ~0xFFFF;
+				iKeyId |= i;
 			}
 		}
 	}
