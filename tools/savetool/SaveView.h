@@ -25,6 +25,6 @@
 
 class SaveBlock;
 
-int main_view(SaveBlock & savefile, const std::vector<std::string> & args);
+int main_view(SaveBlock & save, const std::vector<std::string> & args);
 
 #endif // ARX_TOOLS_SAVETOOL_SAVEVIEW_H
