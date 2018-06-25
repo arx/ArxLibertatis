@@ -226,7 +226,7 @@ public:
 	void draw();
 };
 
-//The cogwheel icon that shows up when switching from mouseview to interaction mode.
+// The cogwheel icon that shows up when switching from mouseview to interaction mode.
 class MecanismIcon : public HudItem {
 private:
 	Vec2f m_iconSize;

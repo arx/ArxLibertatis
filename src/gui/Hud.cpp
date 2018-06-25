@@ -1659,6 +1659,7 @@ float HudRoot::getScale() {
 }
 
 void HudRoot::init() {
+	
 	changeLevelIconGui.init();
 	currentTorchIconGui.init();
 	activeSpellsGui.init();
@@ -1681,7 +1682,6 @@ void HudRoot::init() {
 	
 	hitStrengthGauge.init();
 	
-	//setHudScale(2);
 }
 
 void HudRoot::updateInput() {
