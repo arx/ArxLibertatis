@@ -619,7 +619,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		}
 	}
 
-	//Now recreates other selections...
+	// Now recreates other selections...
 	for(size_t i = 0; i < obj1->selections.size(); i++) {
 		
 		if(EERIE_OBJECT_GetSelection(work, obj1->selections[i].name) == ObjSelection()) {
