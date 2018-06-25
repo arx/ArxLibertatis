@@ -216,7 +216,7 @@ struct SCR_TIMER {
 	explicit SCR_TIMER(Entity * entity = NULL, const std::string & timerName = std::string())
 		: name(timerName)
 		, exist(entity != NULL)
-		, idle(0)
+		, idle(false)
 		, count(0)
 		, interval(0)
 		, pos(0)
