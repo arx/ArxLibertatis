@@ -1553,8 +1553,6 @@ void ARX_PLAYER_Manage_Visual() {
 		return;
 	}
 	
-retry:
-	
 	if(spells.ExistAnyInstanceForThisCaster(SPELL_FLYING_EYE, EntityHandle_Player)) {
 		ARX_PLAYER_Manage_Visual_End(alist[ANIM_MEDITATION], request3_anim, true, false);
 		return;
@@ -1572,6 +1570,7 @@ retry:
 				request0_anim = alist[ANIM_JUMP_UP];
 				player.jumpstarttime = g_platformTime.frameStart();
 				player.jumplastposition = -1.f;
+				request0_loop = false;
 				break;
 			}
 			case JumpAscending: { // Moving up
@@ -1581,6 +1580,7 @@ retry:
 					request0_anim = alist[ANIM_JUMP_CYCLE];
 					ARX_PLAYER_StartFall();
 				}
+				request0_loop = false;
 				break;
 			}
 			case JumpDescending: { // Post-synch
@@ -1592,6 +1592,7 @@ retry:
 				} else {
 					request0_anim = alist[ANIM_JUMP_END];
 				}
+				request0_loop = false;
 				break;
 			}
 			case JumpEnd: { // Post-synch
@@ -1599,22 +1600,19 @@ retry:
 				if(layer0.cur_anim == alist[ANIM_JUMP_END_PART2] && (layer0.flags & EA_ANIMEND)) {
 					AcquireLastAnim(io);
 					player.jumpphase = NotJumping;
-					goto retry;
 				} else if(layer0.cur_anim == alist[ANIM_JUMP_END_PART2]
 				          && glm::abs(player.physics.velocity.x) + glm::abs(player.physics.velocity.z)
 				             > (4.f / TARGET_DT)
 				          && layer0.ctime > AnimationDurationMs(1)) {
 					AcquireLastAnim(io);
 					player.jumpphase = NotJumping;
-					goto retry;
 				} else {
 					request0_anim = alist[ANIM_JUMP_END_PART2];
+					request0_loop = false;
 				}
 				break;
 			}
 		}
-		
-		request0_loop = false;
 		
 	}
 	
