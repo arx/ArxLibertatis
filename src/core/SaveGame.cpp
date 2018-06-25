@@ -276,13 +276,13 @@ bool SaveGameList::quicksave(const Image & thumbnail) {
 	return save(QUICKSAVE_ID, overwrite, thumbnail);
 }
 
-SaveGameList::iterator SaveGameList::quickload() {
+SavegameHandle SaveGameList::quickload() {
 	
 	if(savelist.empty()) {
-		return end();
+		return SavegameHandle();
 	}
 	
 	// update() already sorts the savegame list so we can just return the first one.
 	
-	return begin();
+	return SavegameHandle(0);
 }
