@@ -1763,105 +1763,11 @@ static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 	return TOLERANCE;
 }
 
-static void ManageNPCMovement(Entity * io) {
+static void ManageNPCMovement_End(Entity * io) {
 	
-	ARX_PROFILE_FUNC();
-	
-	// Ignores invalid or dead IO
-	if(!io || !io->show || !(io->ioflags & IO_NPC)) {
-		return;
-	}
-	
-	// Specific USEPATH management
-	ARX_USE_PATH * aup = io->usepath;
-	
-	if(aup && (aup->aupflags & ARX_USEPATH_WORM_SPECIFIC)) {
-		io->requestRoomUpdate = true;
-		Vec3f tv;
-
-		if(aup->_curtime - aup->_starttime > GameDurationMs(500)) {
-			aup->_curtime -= GameDurationMs(500);
-			ARX_PATHS_Interpolate(aup, &tv);
-			aup->_curtime += GameDurationMs(500);
-			io->angle.setYaw(MAKEANGLE(glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
-		} else {
-			aup->_curtime += GameDurationMs(500);
-			ARX_PATHS_Interpolate(aup, &tv);
-			aup->_curtime -= GameDurationMs(500);
-			io->angle.setYaw(MAKEANGLE(180.f + glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
-		}
-		return;
-	}
-
-	// Frozen ?
-	if(io->ioflags & IO_FREEZESCRIPT)
-		return;
-
-	// Dead ?
-	if(IsDeadNPC(io)) {
-		io->ioflags |= IO_NO_COLLISIONS;
-		return;
-	}
-
 	AnimLayer & layer0 = io->animlayer[0];
 	ANIM_HANDLE ** alist = io->anims;
-
-	// Using USER animation ?
-	if(layer0.cur_anim
-	   && (layer0.flags & EA_FORCEPLAY)
-	   && layer0.cur_anim != alist[ANIM_DIE]
-	   && layer0.cur_anim != alist[ANIM_HIT1]
-	   && layer0.cur_anim != alist[ANIM_HIT_SHORT]
-	   && !(layer0.flags & EA_ANIMEND)
-	) {
-		io->requestRoomUpdate = true;
-		io->lastpos = (io->pos += io->move);
-		return;
-	}
-
-	if(io->_npcdata->pathfind.listnb > 0 && !io->_npcdata->pathfind.list)
-		io->_npcdata->pathfind.listnb = 0;
 	
-	// Waiting for pathfinder or pathfinder failure ---> wait anim
-	if(io->_npcdata->pathfind.pathwait || io->_npcdata->pathfind.listnb == -2) {
-		
-		if(io->_npcdata->pathfind.listnb == -2) {
-			if(!io->_npcdata->pathfind.pathwait) {
-				if(io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE) {
-					io->_npcdata->reachedtarget = 1;
-					io->_npcdata->reachedtime = g_gameTime.now();
-					if(io->targetinfo != io->index()) {
-						SendIOScriptEvent(NULL, io, SM_REACHEDTARGET);
-					}
-				} else if(layer0.cur_anim == alist[ANIM_WAIT] && (layer0.flags & EA_ANIMEND)) {
-					io->_npcdata->pathfind.listnb = -1;
-					io->_npcdata->pathfind.pathwait = 0;
-					ARX_NPC_LaunchPathfind(io, io->targetinfo);
-					goto afterthat;
-				}
-			}
-		}
-		
-		if(!(io->_npcdata->behavior & BEHAVIOUR_FIGHT)) {
-			if(layer0.cur_anim == alist[ANIM_WALK]
-			   || layer0.cur_anim == alist[ANIM_RUN]
-			   || layer0.cur_anim == alist[ANIM_WALK_SNEAK]
-			) {
-				return changeAnimation(io, ANIM_WAIT, 0, true);
-			} else if(layer0.cur_anim == alist[ANIM_WAIT]) {
-				if(layer0.flags & EA_ANIMEND) {
-					// TODO why no AcquireLastAnim(io) like everywhere else?
-					FinishAnim(io, layer0.cur_anim);
-					ANIM_Set(layer0, alist[ANIM_WAIT]);
-					layer0.altidx_cur = 0;
-				}
-				return;
-			}
-		}
-
-	}
-	
-afterthat:
 	if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
 		ARX_NPC_Manage_Anims(io, 0);
 		if(!layer0.cur_anim || (layer0.flags & EA_ANIMEND)) {
@@ -2356,6 +2262,110 @@ afterthat:
 	}
 	
 	ManageNPCMovement_REFACTOR_end(io, TOLERANCE2);
+	
+}
+
+static void ManageNPCMovement(Entity * io) {
+	
+	ARX_PROFILE_FUNC();
+	
+	// Ignores invalid or dead IO
+	if(!io || !io->show || !(io->ioflags & IO_NPC)) {
+		return;
+	}
+	
+	// Specific USEPATH management
+	ARX_USE_PATH * aup = io->usepath;
+	
+	if(aup && (aup->aupflags & ARX_USEPATH_WORM_SPECIFIC)) {
+		io->requestRoomUpdate = true;
+		Vec3f tv;
+
+		if(aup->_curtime - aup->_starttime > GameDurationMs(500)) {
+			aup->_curtime -= GameDurationMs(500);
+			ARX_PATHS_Interpolate(aup, &tv);
+			aup->_curtime += GameDurationMs(500);
+			io->angle.setYaw(MAKEANGLE(glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
+		} else {
+			aup->_curtime += GameDurationMs(500);
+			ARX_PATHS_Interpolate(aup, &tv);
+			aup->_curtime -= GameDurationMs(500);
+			io->angle.setYaw(MAKEANGLE(180.f + glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
+		}
+		return;
+	}
+
+	// Frozen ?
+	if(io->ioflags & IO_FREEZESCRIPT)
+		return;
+
+	// Dead ?
+	if(IsDeadNPC(io)) {
+		io->ioflags |= IO_NO_COLLISIONS;
+		return;
+	}
+
+	AnimLayer & layer0 = io->animlayer[0];
+	ANIM_HANDLE ** alist = io->anims;
+
+	// Using USER animation ?
+	if(layer0.cur_anim
+	   && (layer0.flags & EA_FORCEPLAY)
+	   && layer0.cur_anim != alist[ANIM_DIE]
+	   && layer0.cur_anim != alist[ANIM_HIT1]
+	   && layer0.cur_anim != alist[ANIM_HIT_SHORT]
+	   && !(layer0.flags & EA_ANIMEND)
+	) {
+		io->requestRoomUpdate = true;
+		io->lastpos = (io->pos += io->move);
+		return;
+	}
+
+	if(io->_npcdata->pathfind.listnb > 0 && !io->_npcdata->pathfind.list)
+		io->_npcdata->pathfind.listnb = 0;
+	
+	// Waiting for pathfinder or pathfinder failure ---> wait anim
+	if(io->_npcdata->pathfind.pathwait || io->_npcdata->pathfind.listnb == -2) {
+		
+		if(io->_npcdata->pathfind.listnb == -2) {
+			if(!io->_npcdata->pathfind.pathwait) {
+				if(io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE) {
+					io->_npcdata->reachedtarget = 1;
+					io->_npcdata->reachedtime = g_gameTime.now();
+					if(io->targetinfo != io->index()) {
+						SendIOScriptEvent(NULL, io, SM_REACHEDTARGET);
+					}
+				} else if(layer0.cur_anim == alist[ANIM_WAIT] && (layer0.flags & EA_ANIMEND)) {
+					io->_npcdata->pathfind.listnb = -1;
+					io->_npcdata->pathfind.pathwait = 0;
+					ARX_NPC_LaunchPathfind(io, io->targetinfo);
+					goto afterthat;
+				}
+			}
+		}
+		
+		if(!(io->_npcdata->behavior & BEHAVIOUR_FIGHT)) {
+			if(layer0.cur_anim == alist[ANIM_WALK]
+			   || layer0.cur_anim == alist[ANIM_RUN]
+			   || layer0.cur_anim == alist[ANIM_WALK_SNEAK]
+			) {
+				return changeAnimation(io, ANIM_WAIT, 0, true);
+			} else if(layer0.cur_anim == alist[ANIM_WAIT]) {
+				if(layer0.flags & EA_ANIMEND) {
+					// TODO why no AcquireLastAnim(io) like everywhere else?
+					FinishAnim(io, layer0.cur_anim);
+					ANIM_Set(layer0, alist[ANIM_WAIT]);
+					layer0.altidx_cur = 0;
+				}
+				return;
+			}
+		}
+
+	}
+	
+afterthat:
+	
+	ManageNPCMovement_End(io);
 }
 
 static void ManageNPCMovement_check_target_reached(Entity * io) {
