@@ -116,7 +116,8 @@ void Note::calculateLayout() {
 	
 	float noteY = 0.0f;
 	if(m_type != QuestBook) {
-		noteY = (m_background->m_size.y * minSizeRatio() / 2.0f + 47.f * minSizeRatio()) - m_background->m_size.y * scale.y / 2.0f;
+		noteY = (float(m_background->m_size.y) * minSizeRatio() / 2.f + 47.f * minSizeRatio())
+		        - float(m_background->m_size.y) * scale.y / 2.0f;
 	}
 	
 	switch(m_type) {
