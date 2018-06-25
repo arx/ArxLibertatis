@@ -570,8 +570,9 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	if(target.handleData() < 0 || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)) {
 		target = io->index();
 
-		if(target == EntityHandle())
-			goto failure;
+		if(target == EntityHandle()) {
+			return ARX_NPC_LaunchPathfind_Cleanup(io);
+		}
 
 		io->_npcdata->pathfind.truetarget = target;
 		pos1 = io->pos;
@@ -665,9 +666,9 @@ wander:
 				if(closerThan(ACTIVEBKG->m_anchors[from].pos, ACTIVEBKG->m_anchors[to].pos, 200.f)) {
 					return false;
 				}
-
-				if(fartherThan(pos2, ACTIVEBKG->m_anchors[to].pos, 200.f))
-					goto failure;
+				if(fartherThan(pos2, ACTIVEBKG->m_anchors[to].pos, 200.f)) {
+					return ARX_NPC_LaunchPathfind_Cleanup(io);
+				}
 			}
 
 			if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
@@ -692,8 +693,6 @@ wander:
 		}
 	}
 
-failure:
-	
 	return ARX_NPC_LaunchPathfind_Cleanup(io);
 }
 
