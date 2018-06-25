@@ -149,7 +149,7 @@ public:
 	{ }
 	
 	int rowCount(const QModelIndex & /* parent */ = QModelIndex()) const {
-		return m_errorReport.GetAttachedFiles().size();
+		return int(m_errorReport.GetAttachedFiles().size());
 	}
 	
 	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const {
