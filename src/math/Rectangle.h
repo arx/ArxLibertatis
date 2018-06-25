@@ -192,8 +192,14 @@ public:
 		return Vec2(right, top);
 	}
 	
+	Vec2 centerLeft() const {
+		return Vec2(left, top + (bottom - top) / 2);
+	}
 	Vec2 center() const {
 		return Vec2(left + (right - left) / 2, top + (bottom - top) / 2);
+	}
+	Vec2 centerRight() const {
+		return Vec2(right, top + (bottom - top) / 2);
 	}
 	
 	Vec2 bottomLeft() const {
