@@ -208,7 +208,7 @@ struct SCR_TIMER {
 	bool idle;
 	long count;
 	GameDuration interval;
-	long pos;
+	size_t pos;
 	GameInstant start;
 	Entity * io;
 	const EERIE_SCRIPT * es;

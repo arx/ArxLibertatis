@@ -1936,7 +1936,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			
 			timer.idle = (ats->flags & 1) != 0;
 			timer.interval = GameDurationMs(ats->interval); // TODO save/load time
-			timer.pos = ats->pos;
+			timer.pos = size_t(ats->pos);
 			// TODO if the script has changed since the last save, this position may be invalid
 			
 			GameDuration remaining = GameDurationMs(ats->remaining);
