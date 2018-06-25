@@ -33,6 +33,7 @@
 #include "gui/menu/MenuFader.h"
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
+#include "graphics/font/Font.h"
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
@@ -97,26 +98,36 @@ void CharacterCreation::render() {
 		
 	bool DONE = (player.Skill_Redistribute == 0 && player.Attribute_Redistribute == 0);
 	
-	Vec2f pos;
-	pos.x = 0;
-	pos.y = 313 * g_sizeRatio.y + (g_size.height() - 313 * g_sizeRatio.y) * 0.70f;
-	
-	Vec2f size = g_sizeRatio;
-	size *= 100;
-	
 	Color color = Color::none;
 	
-	//---------------------------------------------------------------------
+	Rectf book = g_playerBook.getArea();
+	
+	Vec2f spacing = Vec2f(20.f, 30.f) * minSizeRatio();
+	
+	Vec2f quickGenerateButtonSize(Vec2i(hFontMenu->getTextSize(str_button_quickgen)));
+	Rectf quickGenerateButton(book.bottomLeft() + Vec2f(0.f, spacing.y),
+	                          quickGenerateButtonSize.x, quickGenerateButtonSize.y);
+	
+	Vec2f doneButtonSize(Vec2i(hFontMenu->getTextSize(str_button_done)));
+	Rectf doneButton(book.bottomRight() + Vec2f(-doneButtonSize.x, spacing.y),
+	                 doneButtonSize.x, doneButtonSize.y);
+	
+	Vec2f skinButtonSize(Vec2i(hFontMenu->getTextSize(str_button_skin)));
+	Rectf skinButton((quickGenerateButton.centerRight() + doneButton.centerLeft() - skinButtonSize) / 2.f,
+	                 skinButtonSize.x, skinButtonSize.y);
+	
+	if(quickGenerateButton.right > skinButton.left - spacing.x) {
+		quickGenerateButton.move(skinButton.left - spacing.x - quickGenerateButton.right, 0.f);
+	}
+	
+	if(doneButton.left < skinButton.right + spacing.x) {
+		doneButton.move(skinButton.right + spacing.x - doneButton.left, 0.f);
+	}
+	
 	// Button QUICK GENERATION
-	pos.x = (g_size.width() - (513 * g_sizeRatio.x)) * 0.5f;
 	
-	const Rectf quickGenerateButtonMouseTestRect(
-		pos,
-		size.x,
-		size.y
-	);
-	
-	if(quickGenerateButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
+	if(quickGenerateButton.contains(Vec2f(DANAEMouse))) {
+		
 		cursorSetInteraction();
 		
 		if(eeMousePressed1());
@@ -141,19 +152,11 @@ void CharacterCreation::render() {
 	else
 		color = Color(232, 204, 143);
 	
-	ARX_UNICODE_DrawTextInRect(hFontMenu, pos, 999999, str_button_quickgen, color);
+	ARX_UNICODE_DrawTextInRect(hFontMenu, quickGenerateButton.topLeft(), 999999, str_button_quickgen, color);
 	
-	//---------------------------------------------------------------------
 	// Button SKIN
-	pos.x = g_size.width() * 0.5f;
 	
-	const Rectf skinButtonMouseTestRect(
-		pos,
-		size.x,
-		size.y
-	);
-	
-	if(skinButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
+	if(skinButton.contains(Vec2f(DANAEMouse))) {
 		cursorSetInteraction();
 		
 		if(eeMouseUp1()) {
@@ -172,19 +175,11 @@ void CharacterCreation::render() {
 	else
 		color = Color(232, 204, 143);
 	
-	ARX_UNICODE_DrawTextInRect(hFontMenu, pos, 999999, str_button_skin, color);
+	ARX_UNICODE_DrawTextInRect(hFontMenu, skinButton.topLeft(), 999999, str_button_skin, color);
 	
-	//---------------------------------------------------------------------
 	// Button DONE
-	pos.x = g_size.width() - (g_size.width() - 513 * g_sizeRatio.x) * 0.5f - 40 * g_sizeRatio.x;
 	
-	const Rectf doneButtonMouseTestRect(
-		pos,
-		size.x,
-		size.y
-	);
-	
-	if(doneButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
+	if(doneButton.contains(Vec2f(DANAEMouse))) {
 		if(DONE)
 			cursorSetInteraction();
 		
@@ -224,7 +219,7 @@ void CharacterCreation::render() {
 	if(m_cheatSkinButtonClickCount < 0)
 		color = Color(255, 0, 255);
 	
-	ARX_UNICODE_DrawTextInRect(hFontMenu, pos, 999999, str_button_done, color);
+	ARX_UNICODE_DrawTextInRect(hFontMenu, doneButton.topLeft(), 999999, str_button_done, color);
 	}
 	
 	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
