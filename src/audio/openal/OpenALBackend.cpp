@@ -424,13 +424,13 @@ Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel)
 	
 	OpenALSource * source = new OpenALSource(sample);
 	
-	SourceId index = sources.add(source);
+	size_t index = sources.add(source);
 	if(index == INVALID_ID) {
 		delete source;
 		return NULL;
 	}
 	
-	SourceId id = (index << 16) | s_id;
+	SourceId id = SourceId(index << 16) | s_id;
 	if(source->init(id, orig, channel)) {
 		sources.remove(index);
 		return NULL;
