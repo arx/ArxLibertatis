@@ -250,9 +250,9 @@ public:
 		
 		// Show quicksaves.
 		size_t quicksaveNum = 0;
-		for(size_t i = 0; i < savegames.size(); i++) {
-			if(savegames[i].quicksave) {
-				SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), ++quicksaveNum, hFontControls, rect);
+		BOOST_FOREACH(SavegameHandle save, savegames) {
+			if(savegames[save.handleData()].quicksave) {
+				SaveSlotWidget * txt = new SaveSlotWidget(save, ++quicksaveNum, hFontControls, rect);
 				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 				txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
 				addCenter(txt);
@@ -261,9 +261,9 @@ public:
 		}
 		
 		// Show regular saves.
-		for(size_t i = 0; i < savegames.size(); i++) {
-			if(!savegames[i].quicksave) {
-				SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), 0, hFontControls, rect);
+		BOOST_FOREACH(SavegameHandle save, savegames) {
+			if(!savegames[save.handleData()].quicksave) {
+				SaveSlotWidget * txt = new SaveSlotWidget(save, 0, hFontControls, rect);
 				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 				txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
 				addCenter(txt);
@@ -413,9 +413,9 @@ public:
 		
 		// Show quicksaves.
 		size_t quicksaveNum = 0;
-		for(size_t i = 0; i < savegames.size(); i++) {
-			if(savegames[i].quicksave) {
-				SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), ++quicksaveNum, hFontControls, rect);
+		BOOST_FOREACH(SavegameHandle save, savegames) {
+			if(savegames[save.handleData()].quicksave) {
+				SaveSlotWidget * txt = new SaveSlotWidget(save, ++quicksaveNum, hFontControls, rect);
 				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 				txt->m_targetMenu = Page_SaveConfirm;
 				txt->setEnabled(false);
@@ -424,9 +424,9 @@ public:
 		}
 		
 		// Show regular saves.
-		for(size_t i = 0; i < savegames.size(); i++) {
-			if(!savegames[i].quicksave) {
-				SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(i), 0, hFontControls, rect);
+		BOOST_FOREACH(SavegameHandle save, savegames) {
+			if(!savegames[save.handleData()].quicksave) {
+				SaveSlotWidget * txt = new SaveSlotWidget(save, 0, hFontControls, rect);
 				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 				txt->m_targetMenu = Page_SaveConfirm;
 				addCenter(txt);
