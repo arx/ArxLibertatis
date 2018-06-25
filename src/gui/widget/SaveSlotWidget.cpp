@@ -42,7 +42,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 {
 	
 	m_rect = rect;
-	m_rect.bottom = m_rect.top + font->getLineHeight();
+	m_rect.bottom = m_rect.top + float(font->getLineHeight());
 	
 	if(savegame == SavegameHandle()) {
 		
@@ -54,7 +54,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 		
 		const SaveGame & save = savegames[savegame];
 		
-		m_dateOffset = rect.width() - font->getTextSize("0000-00-00    00:00").width();
+		m_dateOffset = rect.width() - float(font->getTextSize("0000-00-00    00:00").width());
 		
 		if(save.quicksave) {
 			
@@ -66,7 +66,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 			
 			m_name = save.name;
 			size_t length = save.name.length();
-			while(length > 0 && font->getTextSize(m_name).width() > m_dateOffset - RATIO_X(10)) {
+			while(length > 0 && float(font->getTextSize(m_name).width()) > m_dateOffset - RATIO_X(10)) {
 				length--;
 				while(length > 0 && util::UTF8::isContinuationByte(save.name[length])) {
 					length--;
