@@ -70,7 +70,7 @@ void ARXDRAW_DrawInterShadows() {
 		}
 		
 		BackgroundTileData * bkgData = getFastBackgroundData(io->pos.x, io->pos.z);
-		if(bkgData && !bkgData->treat) { //TODO is that correct ?
+		if(bkgData && !bkgData->treat) { // TODO is that correct ?
 			continue;
 		}
 		
