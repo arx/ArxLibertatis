@@ -142,13 +142,13 @@ void ARX_LoadGame(const SaveGame & save) {
 
 void ARX_QuickLoad() {
 	
-	SaveGameList::iterator save = savegames.quickload();
-	if(save == savegames.end()) {
+	SavegameHandle save = savegames.quickload();
+	if(save == SavegameHandle()) {
 		// No saves found!
 		return;
 	}
 	
-	ARX_LoadGame(*save);
+	ARX_LoadGame(savegames[save.handleData()]);
 }
 
 bool MENU_NoActiveWindow() {

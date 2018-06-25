@@ -84,7 +84,7 @@ public:
 	bool quicksave(const Image & thumbnail = Image());
 	
 	//! Return the newest savegame or end() if there is no savegame.
-	iterator quickload();
+	SavegameHandle quickload();
 	
 	//! Delete the given savegame. This removes the actual on-disk files.
 	void remove(SavegameHandle handle);
