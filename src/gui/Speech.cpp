@@ -403,10 +403,10 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	if(aspeech[num].sample == ARX_SOUND_TOO_FAR) {
 		aspeech[num].sample = audio::INVALID_ID;
 	}
-
-	//Next lines must be removed (use callback instead)
+	
+	// TODO Next lines must be removed (use callback instead)
 	aspeech[num].duration = ARX_SOUND_GetDuration(aspeech[num].sample);
-
+	
 	if ((io->ioflags & IO_NPC) && !(aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)) {
 		float fDiv = toMsf(aspeech[num].duration) / io->_npcdata->speakpitch;
 		aspeech[num].duration = GameDurationMsf(fDiv);
@@ -513,7 +513,6 @@ void ARX_SPEECH_Update() {
 		height += fZoneClippHeight;
 
 		if(speech->fDeltaY <= height) {
-			//vitesse du scroll
 			float fDTime;
 
 			if(speech->sample) {
