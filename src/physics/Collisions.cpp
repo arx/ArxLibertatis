@@ -762,128 +762,132 @@ static bool InExceptionList(EntityHandle val) {
 	return false;
 }
 
-bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityHandle targ, std::vector<EntityHandle> & sphereContent) {
-	
-	bool vreturn = false;
-	
-	Entity * io;
-	EntityHandle ret_idx = EntityHandle();
+static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
+                                          std::vector<EntityHandle> & sphereContent) {
 	
 	float sr30 = sphere.radius + 20.f;
 	float sr40 = sphere.radius + 30.f;
 	float sr180 = sphere.radius + 500.f;
+	
+	if(io->show != SHOW_FLAG_IN_SCENE || InExceptionList(io->index())) {
+		return false;
+	}
+	
+	if(!(io->ioflags & IO_NPC) && (io->ioflags & IO_NO_COLLISIONS)) {
+		return false;
+	}
+	
+	if(!io->obj) {
+		return false;
+	}
+	
+	bool vreturn = false;
+	
+	if(io->gameFlags & GFLAG_PLATFORM) {
+		float miny = io->bbox3D.min.y;
+		float maxy = io->bbox3D.max.y;
 
-	for(size_t i = 0; i < treatio.size(); i++) {
-		if(ValidIONum(targ)) {
-			i = treatio.size();
-			io = entities[targ];
-
-			if(!io
-			   || InExceptionList(targ)
-			   || targ == source
-			   || io->show != SHOW_FLAG_IN_SCENE
-			   || !(io->gameFlags & GFLAG_ISINTREATZONE)
-			   || !(io->obj)
-			) {
-				return false;
-			}
-
-			ret_idx = targ;
-		} else {
-			if(treatio[i].show != SHOW_FLAG_IN_SCENE || !treatio[i].io || treatio[i].io->index() == source
-			   || InExceptionList(treatio[i].io->index())) {
-				continue;
-			}
-			io = treatio[i].io;
-			ret_idx = treatio[i].io->index();
-		}
-
-		if(!(io->ioflags & IO_NPC) && (io->ioflags & IO_NO_COLLISIONS))
-			continue;
-
-		if(!io->obj)
-			continue;
-
-		if(io->gameFlags & GFLAG_PLATFORM) {
-			float miny = io->bbox3D.min.y;
-			float maxy = io->bbox3D.max.y;
-
-			if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y)
-			if(In3DBBoxTolerance(sphere.origin, io->bbox3D, sphere.radius))
-			{
-				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
+		if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y)
+		if(In3DBBoxTolerance(sphere.origin, io->bbox3D, sphere.radius))
+		{
+			if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
+				
+				EERIEPOLY ep;
+				ep.type = 0;
+				
+				for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
 					
-					EERIEPOLY ep;
-					ep.type = 0;
-					
-					for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
-						
-						float cx = 0;
-						float cz = 0;
-						for(long kk = 0; kk < 3; kk++) {
-							ep.v[kk].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v;
-							cx += ep.v[kk].p.x;
-							cz += ep.v[kk].p.z;
-						}
-						cx *= 1.f / 3;
-						cz *= 1.f / 3;
-						
-						for(int kk = 0; kk < 3; kk++) {
-							ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
-							ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
-						}
-						
-						if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
-							sphereContent.push_back(ret_idx);
-							vreturn = true;
-							goto suivant;
-						}
-						
+					float cx = 0;
+					float cz = 0;
+					for(long kk = 0; kk < 3; kk++) {
+						ep.v[kk].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v;
+						cx += ep.v[kk].p.x;
+						cz += ep.v[kk].p.z;
 					}
-				}
-			}
-		}
-
-		if(closerThan(io->pos, sphere.origin, sr180)) {
-
-			long amount = 1;
-			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
-			
-			if(io->obj->grouplist.size() > 4) {
-				for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
-					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
-						sphereContent.push_back(ret_idx);
+					cx *= 1.f / 3;
+					cz *= 1.f / 3;
+					
+					for(int kk = 0; kk < 3; kk++) {
+						ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
+						ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
+					}
+					
+					if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
+						sphereContent.push_back(io->index());
 						vreturn = true;
 						goto suivant;
 					}
+					
 				}
-				amount = 2;
 			}
-			
-			for(size_t ii = 0; ii < io->obj->facelist.size(); ii += amount) {
-				EERIE_FACE * ef = &io->obj->facelist[ii];
-				
-				if(ef->facetype & POLY_HIDE) {
-					continue;
-				}
-				
-				Vec3f fcenter = (vlist[ef->vid[0]].v + vlist[ef->vid[1]].v + vlist[ef->vid[2]].v) * (1.0f / 3);
-				
-				if(closerThan(fcenter, sphere.origin, sr30)
-				   || closerThan(vlist[ef->vid[0]].v, sphere.origin, sr30)
-				   || closerThan(vlist[ef->vid[1]].v, sphere.origin, sr30)
-				   || closerThan(vlist[ef->vid[2]].v, sphere.origin, sr30)) {
-					sphereContent.push_back(ret_idx);
+		}
+	}
+	
+	if(closerThan(io->pos, sphere.origin, sr180)) {
+		long amount = 1;
+		std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
+		
+		if(io->obj->grouplist.size() > 4) {
+			for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
+				if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
+					sphereContent.push_back(io->index());
 					vreturn = true;
 					goto suivant;
 				}
-				
+			}
+			amount = 2;
+		}
+		
+		for(size_t ii = 0; ii < io->obj->facelist.size(); ii += amount) {
+			EERIE_FACE * ef = &io->obj->facelist[ii];
+			
+			if(ef->facetype & POLY_HIDE) {
+				continue;
+			}
+			
+			Vec3f fcenter = (vlist[ef->vid[0]].v + vlist[ef->vid[1]].v + vlist[ef->vid[2]].v) * (1.0f / 3);
+			
+			if(closerThan(fcenter, sphere.origin, sr30)
+			   || closerThan(vlist[ef->vid[0]].v, sphere.origin, sr30)
+			   || closerThan(vlist[ef->vid[1]].v, sphere.origin, sr30)
+			   || closerThan(vlist[ef->vid[2]].v, sphere.origin, sr30)) {
+				sphereContent.push_back(io->index());
+				vreturn = true;
+				goto suivant;
 			}
 			
 		}
 		
-	suivant:
-		{ }
+	}
+	
+suivant:
+	{ }
+	
+	return vreturn;
+	
+}
+
+bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityHandle targ,
+                             std::vector<EntityHandle> & sphereContent) {
+	
+	if(ValidIONum(targ)) {
+		if(!entities[targ] || targ == source || !(entities[targ]->gameFlags & GFLAG_ISINTREATZONE)) {
+			return false;
+		}
+		return CheckEverythingInSphere_Inner(sphere, entities[targ], sphereContent);
+	}
+	
+	bool vreturn = false;
+	
+	for(size_t i = 0; i < treatio.size(); i++) {
+		
+		if(!treatio[i].io || treatio[i].io->index() == source) {
+			continue;
+		}
+		
+		if(CheckEverythingInSphere_Inner(sphere, treatio[i].io, sphereContent)) {
+			vreturn = true;
+		}
 		
 	}
 	
