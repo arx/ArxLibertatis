@@ -534,15 +534,15 @@ void Credits::render() {
 		float yy = it->sPos.y + m_scrollPosition;
 		
 		// Display the text only if it is inside the viewport
-		if(yy >= -m_lineHeight && yy <= g_size.height()) {
+		if(yy >= float(-m_lineHeight) && yy <= float(g_size.height())) {
 			hFontCredits->draw(it->sPos.x, static_cast<int>(yy), it->sText, it->fColors);
 		}
 		
-		if(yy <= -m_lineHeight) {
+		if(yy <= float(-m_lineHeight)) {
 			++m_firstVisibleLine;
 		}
 		
-		if(yy >= g_size.height()) {
+		if(yy >= float(g_size.height())) {
 			// It's useless to continue because next line will not be inside the viewport
 			break;
 		}
