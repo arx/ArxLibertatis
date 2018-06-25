@@ -1633,7 +1633,7 @@ void ARX_SCRIPT_Timer_Check() {
 		
 		const EERIE_SCRIPT * es = timer.es;
 		Entity * io = timer.io;
-		long pos = timer.pos;
+		size_t pos = timer.pos;
 		
 		if(!es && Manage_Specific_RAT_Timer(&timer)) {
 			continue;
@@ -1654,7 +1654,7 @@ void ARX_SCRIPT_Timer_Check() {
 		
 		if(es && ValidIOAddress(io)) {
 			LogDebug("running timer \"" << name << "\" for entity " << io->idString());
-			ScriptEvent::resume(es, io, pos);
+			ScriptEvent::resume(es, io, long(pos));
 		} else {
 			LogDebug("could not run timer \"" << name << "\" - entity vanished");
 		}

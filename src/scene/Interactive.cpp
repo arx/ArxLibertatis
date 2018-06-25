@@ -1086,9 +1086,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io) {
 	}
 	
 	SCR_TIMER & timer = createScriptTimer(io, "_r_a_t_");
-	timer.es = NULL;
 	timer.interval = GameDurationMs(Random::get(3000, 6000));
-	timer.pos = -1;
 	timer.start = g_gameTime.now();
 	timer.count = 1;
 	
