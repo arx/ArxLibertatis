@@ -512,6 +512,24 @@ static long AnchorData_GetNearest_2(float beta, const Vec3f & pos, const Cylinde
 	return AnchorData_GetNearest(posi, cyl);
 }
 
+static bool ARX_NPC_LaunchPathfind_Cleanup(Entity * io) {
+	
+	io->_npcdata->pathfind.pathwait = 0;
+	
+	if(io->_npcdata->pathfind.list)
+		ARX_NPC_ReleasePathFindInfo(io);
+
+	io->_npcdata->pathfind.listnb = -2;
+
+	if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) {
+		return false; // TODO was BEHAVIOUR_NONE
+	}
+	
+	SendIOScriptEvent(NULL, io, SM_PATHFINDER_FAILURE);
+	
+	return false;
+}
+
 bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 {
 	if(!io || !(io->ioflags & IO_NPC))
@@ -675,20 +693,8 @@ wander:
 	}
 
 failure:
-	io->_npcdata->pathfind.pathwait = 0;
-
-	if(io->_npcdata->pathfind.list)
-		ARX_NPC_ReleasePathFindInfo(io);
-
-	io->_npcdata->pathfind.listnb = -2;
-
-	if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) {
-		return false; // TODO was BEHAVIOUR_NONE
-	}
 	
-	SendIOScriptEvent(NULL, io, SM_PATHFINDER_FAILURE);
-	
-	return false;
+	return ARX_NPC_LaunchPathfind_Cleanup(io);
 }
 
 bool ARX_NPC_SetStat(Entity & io, const std::string & statname, float value) {
