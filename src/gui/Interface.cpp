@@ -1390,7 +1390,7 @@ void ArxGame::manageKeyMouse() {
 						EERIEMouseButton &= ~2;
 					}
 				}
-			} else { //!TRUE_PLAYER_MOUSELOOK_ON
+			} else {
 				if(eeMouseDown2()) {
 					STARTED_ACTION_ON_IO = FlyingOverIO;
 				}
@@ -1631,7 +1631,7 @@ void ArxGame::manageKeyMouse() {
 
 				if(player.desiredangle.getPitch() >= 74.9f && player.desiredangle.getPitch() <= 301.f) {
 					if(iangle < 75.f)
-						player.desiredangle.setPitch(74.9f); //69
+						player.desiredangle.setPitch(74.9f);
 					else
 						player.desiredangle.setPitch(301.f);
 				}
@@ -1857,7 +1857,6 @@ void ArxGame::manageEditorControls() {
 	if(!(player.Interface & INTER_COMBATMODE)) {
 		// Dropping an Interactive Object that has been dragged
 		if(eeMouseUp1() && DRAGINTER) {
-			//if (ARX_EQUIPMENT_PutOnPlayer(DRAGINTER))
 			if(InInventoryPos(DANAEMouse)) {// Attempts to put it in inventory
 				PutInInventory();
 			} else if(ARX_INTERFACE_MouseInBook()) {
@@ -1876,7 +1875,7 @@ void ArxGame::manageEditorControls() {
 				   && !InInventoryPos(DANAEMouse)
 				   && !g_cursorOverBook
 				) {
-					//Put object in fromt of player
+					// Put object in fromt of player
 					
 					bool res = Manage3DCursor(DRAGINTER, false);
 					// Throw Object
@@ -1972,7 +1971,6 @@ void ArxGame::manageEditorControls() {
 			}
 		}
 		
-		//lights
 		if(COMBINE) {
 			float fMaxdist = player.m_telekinesis ? 850 : 300;
 			
