@@ -1294,7 +1294,8 @@ void ARX_PLAYER_Manage_Visual() {
 			layer0.flags &= ~EA_STATICANIM;
 			player.pos = g_moveto = player.pos + io->move;
 			io->pos = player.basePosition();
-			goto nochanges;
+			player.m_lastMovement = player.m_currentMovement;
+			return;
 		}
 	}
 	
@@ -1304,7 +1305,8 @@ void ARX_PLAYER_Manage_Visual() {
 	bool request0_stopend = false;
 	
 	if(io->ioflags & IO_FREEZESCRIPT) {
-		goto nochanges;
+		player.m_lastMovement = player.m_currentMovement;
+		return;
 	}
 	
 	if(player.lifePool.current <= 0) {
@@ -1506,9 +1508,9 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 	}
 	
-	if(layer0.cur_anim == alist[ANIM_CROUCH_END]) {
-		if(!(layer0.flags & EA_ANIMEND))
-			goto nochanges;
+	if(layer0.cur_anim == alist[ANIM_CROUCH_END] && !(layer0.flags & EA_ANIMEND)) {
+		player.m_lastMovement = player.m_currentMovement;
+		return;
 	}
 	
 retry:
@@ -1612,8 +1614,8 @@ retry:
 	io->physics = player.physics;
 	}
 	
-nochanges:
 	player.m_lastMovement = player.m_currentMovement;
+	
 }
 
 /*!
