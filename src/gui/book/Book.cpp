@@ -1464,13 +1464,15 @@ void SpellsPage::drawSpells() {
 				2,
 				0);
 			
-			long count = 0;
+			size_t count = 0;
 			
-			for(long j = 0; j < 6; ++j)
-				if(spellInfo.symbols[j] != RUNE_NONE)
+			for(size_t j = 0; j < 6; ++j) {
+				if(spellInfo.symbols[j] != RUNE_NONE) {
 					++count;
+				}
+			}
 			
-			for(int j = 0; j < 6; ++j) {
+			for(size_t j = 0; j < 6; ++j) {
 				if(spellInfo.symbols[j] != RUNE_NONE) {
 					Vec2f pos;
 					pos.x = bookPos.x + 143.f * scale - float(count) * 32.f * scale * 0.5f + float(j) * 32 * scale;
@@ -1478,6 +1480,7 @@ void SpellsPage::drawSpells() {
 					DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], pos, Color::white, 0.000001f);
 				}
 			}
+			
 		}
 		
 		if(spellInfo.tc) {
