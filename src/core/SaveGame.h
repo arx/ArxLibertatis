@@ -97,7 +97,7 @@ public:
 	iterator end() const { return iterator(iterator_base(size()), IndexToHandle()); }
 	
 	size_t size() const { return savelist.size(); }
-	const SaveGame & operator[](size_t index) const { return savelist[index]; }
+	const SaveGame & operator[](SavegameHandle handle) const { return savelist[size_t(handle.handleData())]; }
 	
 private:
 	

@@ -1237,7 +1237,7 @@ void ArxGame::doFrame() {
 	}
 
 	if(LOADQUEST_SLOT != SavegameHandle() && LOADQUEST_SLOT.handleData() < long(savegames.size())) {
-		ARX_LoadGame(savegames[LOADQUEST_SLOT.handleData()]);
+		ARX_LoadGame(savegames[LOADQUEST_SLOT]);
 		LOADQUEST_SLOT = SavegameHandle();
 	}
 	

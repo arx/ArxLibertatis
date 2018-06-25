@@ -148,7 +148,7 @@ void ARX_QuickLoad() {
 		return;
 	}
 	
-	ARX_LoadGame(savegames[save.handleData()]);
+	ARX_LoadGame(savegames[save]);
 }
 
 bool MENU_NoActiveWindow() {
