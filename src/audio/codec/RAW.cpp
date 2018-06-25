@@ -55,8 +55,8 @@ aalError CodecRAW::setHeader(void * header) {
 	return AAL_OK;
 }
 
-void CodecRAW::setStream(PakFileHandle * _stream) {
-	m_stream = _stream;
+void CodecRAW::setStream(PakFileHandle * stream) {
+	m_stream = stream;
 }
 
 aalError CodecRAW::setPosition(size_t position) {
