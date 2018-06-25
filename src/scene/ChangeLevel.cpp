@@ -545,7 +545,7 @@ static size_t getScriptVariableSaveSize(const SCRIPT_VARIABLES & variables) {
 	return size;
 }
 
-static void storeScriptVariables(char * dat, long & pos, const SCRIPT_VARIABLES & variables, size_t diff) {
+static void storeScriptVariables(char * dat, size_t & pos, const SCRIPT_VARIABLES & variables, size_t diff) {
 	
 	for(size_t i = 0; i < variables.size(); i++) {
 		
@@ -585,7 +585,7 @@ static void storeScriptVariables(char * dat, long & pos, const SCRIPT_VARIABLES 
 		
 		if(avs->type == TYPE_G_TEXT || avs->type == TYPE_L_TEXT) {
 			memcpy(dat + pos, variables[i].text.c_str(), variables[i].text.size() + 1);
-			pos += long(avs->fval);
+			pos += size_t(avs->fval);
 		}
 		
 	}
@@ -600,18 +600,18 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	acsg.nb_globals = svar.size();
 	acsg.version = ARX_GAMESAVE_VERSION;
 	
-	long allocsize = sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + getScriptVariableSaveSize(svar);
+	size_t allocsize = sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + getScriptVariableSaveSize(svar);
 	
 	std::vector<char> buffer(allocsize);
 	char * dat = &buffer[0];
-	long pos = 0;
+	size_t pos = 0;
 	
 	memcpy(dat, &acsg, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
 	
 	storeScriptVariables(dat, pos, svar, 0);
 	
-	arx_assert(pos <= allocsize);
+	arx_assert(pos <= buffer.size());
 	
 	g_currentSavedGame->save("globals", dat, pos);
 	
@@ -1076,7 +1076,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		}
 	}
 	
-	long allocsize =
+	size_t allocsize =
 		sizeof(ARX_CHANGELEVEL_IO_SAVE)
 		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
 		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
@@ -1091,7 +1091,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	// Allocate Main Save Buffer
 	std::vector<char> buffer(allocsize);
 	char * dat = &buffer[0];
-	long pos = 0;
+	size_t pos = 0;
 
 	ais.halo = io->halo_native;
 	ais.Tweak_nb = io->tweaks.size();
@@ -1312,9 +1312,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		*sti = *i;
 	}
 	
-	if((pos > allocsize)) {
-		LogError << "SaveBuffer Overflow " << pos << " >> " << allocsize;
-	}
+	arx_assert(pos <= buffer.size());
 	
 	g_currentSavedGame->save(savefile, dat, pos);
 	
