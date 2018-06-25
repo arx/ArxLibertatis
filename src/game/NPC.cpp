@@ -627,11 +627,8 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		io->_npcdata->pathfind.list = NULL;
 	}
 	
-	Vec3f pos1, pos2;
 	if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
-		pos1 = io->pos;
-		pos2 = io->pos + Vec3f(1000.f, 0.f, 1000.f);
-		goto wander;
+		return ARX_NPC_LaunchPathfind_End(io, target, io->pos, io->pos + Vec3f(1000.f, 0.f, 1000.f));
 	}
 	
 	if(target.handleData() < 0 || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)) {
@@ -642,15 +639,10 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		}
 
 		io->_npcdata->pathfind.truetarget = target;
-		pos1 = io->pos;
 		
-		if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
-			pos2 = io->initpos;
-		} else {
-			pos2 = pos1;
-		}
-
-		goto suite;
+		Vec3f pos2 = (io->_npcdata->behavior & BEHAVIOUR_GO_HOME) ? io->initpos : io->pos;
+		
+		return ARX_NPC_LaunchPathfind_End(io, target, io->pos, pos2);
 	}
 
 	if(ValidIONum(target) && entities[target] == io) {
@@ -660,9 +652,8 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 
 	if (old_target != target)
 		io->_npcdata->reachedtarget = 0;
-
-	pos1 = io->pos;
 	
+	Vec3f pos2;
 	if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
 		pos2 = io->initpos;
 	} else if(ValidIONum(target)) {
@@ -673,15 +664,15 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	
 	io->_npcdata->pathfind.truetarget = target;
 	
-	if(closerThan(pos1, g_camera->m_pos, g_camera->cdepth * 0.5f)
-	   && glm::abs(pos1.y - pos2.y) < 50.f
-	   && closerThan(pos1, pos2, 520)
+	if(closerThan(io->pos, g_camera->m_pos, g_camera->cdepth * 0.5f)
+	   && glm::abs(io->pos.y - pos2.y) < 50.f
+	   && closerThan(io->pos, pos2, 520)
 	   && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 	   && !(io->_npcdata->behavior & BEHAVIOUR_SNEAK)
 	   && !(io->_npcdata->behavior & BEHAVIOUR_FLEE)) {
 		
 		// COLLISION Management START *********************************************************************
-		io->physics.startpos = pos1;
+		io->physics.startpos = io->pos;
 		io->physics.targetpos = pos2;
 		IO_PHYSICS phys = io->physics;
 		phys.cyl = GetIOCyl(io);
@@ -697,10 +688,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		}
 	}
 	
-suite:
-wander:
-	
-	return ARX_NPC_LaunchPathfind_End(io, target, pos1, pos2);
+	return ARX_NPC_LaunchPathfind_End(io, target, io->pos, pos2);
 }
 
 bool ARX_NPC_SetStat(Entity & io, const std::string & statname, float value) {
