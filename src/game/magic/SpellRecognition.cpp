@@ -791,6 +791,17 @@ static void handleRuneDetection(Rune rune) {
 	ARX_SOUND_PlaySFX(SND_SYMB[rune]);
 }
 
+static void unrecognizedRune() {
+	
+	if(SpellMoves.length() >= 127) {
+		SpellMoves.resize(127);
+	}
+	
+	LAST_FAILED_SEQUENCE = SpellMoves;
+	LogDebug("Unknown Symbol - " + SpellMoves);
+	
+}
+
 void ARX_SPELLS_AnalyseSYMBOL() {
 	
 	long sm = 0;
@@ -975,7 +986,8 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 236987:
 		case 23698:
 			handleCheatRuneDetection(CheatRune_U);
-			goto failed;
+			unrecognizedRune();
+			break;
 		case 2382398:
 		case 2829:
 		case 23982398:
@@ -1034,12 +1046,14 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 238298:
 		case 3939:
 			handleCheatRuneDetection(CheatRune_W);
-			goto failed;
+			unrecognizedRune();
+			break;
 		case 161:
 		case 1621:
 		case 1261:
 			handleCheatRuneDetection(CheatRune_S);
-			goto failed;
+			unrecognizedRune();
+			break;
 		case 83614:
 		case 8361:
 		case 8341:
@@ -1055,7 +1069,8 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 8234:
 		case 8231:
 			handleCheatRuneDetection(CheatRune_P);
-			goto failed;
+			unrecognizedRune();
+			break;
 		case 83692:
 		case 823982:
 		case 83982:
@@ -1065,7 +1080,8 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 823282:
 		case 8392:
 			handleCheatRuneDetection(CheatRune_M);
-			goto failed;
+			unrecognizedRune();
+			break;
 		case 98324:
 		case 92324:
 		case 89324:
@@ -1074,7 +1090,8 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 9234:
 		case 934:
 			handleCheatRuneDetection(CheatRune_A);
-			goto failed;
+			unrecognizedRune();
+			break;
 		case 3249:
 		case 2349:
 		case 323489:
@@ -1083,10 +1100,12 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 32498:
 		case 349:
 			handleCheatRuneDetection(CheatRune_X);
-			goto failed;
+			unrecognizedRune();
+			break;
 		case 26:
 			handleCheatRuneDetection(CheatRune_26);
-			goto failed;
+			unrecognizedRune();
+			break;
 		case 9232187:
 		case 93187:
 		case 9234187:
@@ -1096,30 +1115,29 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 93217:
 		case 9317:
 			handleCheatRuneDetection(CheatRune_O);
-			goto failed;
+			unrecognizedRune();
+			break;
 		case 82313:
 		case 8343:
 		case 82343:
 		case 83413:
 		case 8313:
 			handleCheatRuneDetection(CheatRune_R);
-			goto failed;
+			unrecognizedRune();
+			break;
 		case 86:
 			handleCheatRuneDetection(CheatRune_F);
-			goto failed;
+			unrecognizedRune();
+			break;
 		case 626262:
 			handleCheatRuneDetection(CheatRune_Passwall);
 			break;
 		case 828282:
 			handleCheatRuneDetection(CheatRune_ChangeSkin);
-			goto failed;
+			unrecognizedRune();
+			break;
 		default: {
-		failed:
-			if(SpellMoves.length() >= 127) {
-				SpellMoves.resize(127);
-			}
-			LAST_FAILED_SEQUENCE = SpellMoves;
-			LogDebug("Unknown Symbol - " + SpellMoves);
+			unrecognizedRune();
 		}
 	}
 
