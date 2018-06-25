@@ -184,7 +184,7 @@ public:
 		
 		if(savegame != SavegameHandle()) {
 			pDeleteButton->setEnabled(true);
-			m_textbox->setText(savegames[savegame.handleData()].name);
+			m_textbox->setText(savegames[savegame].name);
 		} else {
 			pDeleteButton->setEnabled(false);
 			m_textbox->setText(getLocalised("system_menu_editquest_newsavegame"));
@@ -251,7 +251,7 @@ public:
 		// Show quicksaves.
 		size_t quicksaveNum = 0;
 		BOOST_FOREACH(SavegameHandle save, savegames) {
-			if(savegames[save.handleData()].quicksave) {
+			if(savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, ++quicksaveNum, hFontControls, rect);
 				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 				txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
@@ -262,7 +262,7 @@ public:
 		
 		// Show regular saves.
 		BOOST_FOREACH(SavegameHandle save, savegames) {
-			if(!savegames[save.handleData()].quicksave) {
+			if(!savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, 0, hFontControls, rect);
 				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 				txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
@@ -414,7 +414,7 @@ public:
 		// Show quicksaves.
 		size_t quicksaveNum = 0;
 		BOOST_FOREACH(SavegameHandle save, savegames) {
-			if(savegames[save.handleData()].quicksave) {
+			if(savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, ++quicksaveNum, hFontControls, rect);
 				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 				txt->m_targetMenu = Page_SaveConfirm;
@@ -425,7 +425,7 @@ public:
 		
 		// Show regular saves.
 		BOOST_FOREACH(SavegameHandle save, savegames) {
-			if(!savegames[save.handleData()].quicksave) {
+			if(!savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, 0, hFontControls, rect);
 				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
 				txt->m_targetMenu = Page_SaveConfirm;

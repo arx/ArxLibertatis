@@ -52,7 +52,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 		
 	} else {
 		
-		const SaveGame & save = savegames[savegame.handleData()];
+		const SaveGame & save = savegames[savegame];
 		
 		m_dateOffset = rect.width() - font->getTextSize("0000-00-00    00:00").width();
 		
@@ -188,7 +188,7 @@ void SaveSlotWidget::render(bool mouseOver) {
 		return;
 	}
 	
-	const res::path & image = savegames[m_savegame.handleData()].thumbnail;
+	const res::path & image = savegames[m_savegame].thumbnail;
 	if(!image.empty()) {
 		TextureContainer * t = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
 		if(t != g_thumbnailCursor.m_loadTexture) {
