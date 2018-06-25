@@ -253,7 +253,7 @@ static const char * toString(ScriptResult ret) {
 
 ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity * entity,
                                ScriptEventName event, const ScriptParameters & parameters,
-                               long info) {
+                               size_t position) {
 	
 	ScriptResult ret = ACCEPT;
 	
@@ -274,7 +274,7 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 	}
 	
 	// Finds script position to execute code...
-	long pos = info;
+	long pos = position;
 	if(!event.getName().empty()) {
 		arx_assert(event.getId() == SM_NULL);
 		arx_assert_msg(ScriptEventName::parse(event.getName()).getId() == SM_NULL, "non-canonical event name");
