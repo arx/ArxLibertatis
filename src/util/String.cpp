@@ -46,8 +46,8 @@ struct character_escaper {
 	}
 };
 
-std::string escapeString(const std::string & str, const char * escapeChars) {
-	std::string escapedStr(str);
+std::string escapeString(const std::string & text, const char * escapeChars) {
+	std::string escapedStr(text);
 	boost::find_format_all(escapedStr,
 	                       boost::token_finder(boost::is_any_of(escapeChars)),
 	                                           character_escaper());
