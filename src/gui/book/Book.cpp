@@ -1473,8 +1473,8 @@ void SpellsPage::drawSpells() {
 			for(int j = 0; j < 6; ++j) {
 				if(spellInfo.symbols[j] != RUNE_NONE) {
 					Vec2f pos;
-					pos.x = bookPos.x + 143 * scale - (count * 32 * scale) * 0.5f + j * 32 * scale;
-					pos.y = bookPos.y + 242 * scale;
+					pos.x = bookPos.x + 143.f * scale - float(count) * 32.f * scale * 0.5f + float(j) * 32 * scale;
+					pos.y = bookPos.y + 242.f * scale;
 					DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], pos, Color::white, 0.000001f);
 				}
 			}
