@@ -79,9 +79,7 @@ static bool MouseInBookRect(const Vec2f pos, const Vec2f size) {
 
 bool ARX_INTERFACE_MouseInBook() {
 	if((player.Interface & INTER_PLAYERBOOK) && !(player.Interface & INTER_COMBATMODE)) {
-		Vec2f bookPos = g_bookRect.topLeft();
-		float scale = g_bookScale;
-		return MouseInBookRect(bookPos + Vec2f(2, 1) * scale, Vec2f(500, 307) * scale);
+		return MouseInBookRect(g_bookRect.topLeft() + Vec2f(2, 1) * g_bookScale, Vec2f(500, 307) * g_bookScale);
 	} else {
 		return false;
 	}
@@ -90,9 +88,7 @@ bool ARX_INTERFACE_MouseInBook() {
 
 static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color, float z) {
 	arx_assert(tc);
-	float scale = g_bookScale;
-
-	Rectf rect = Rectf(pos, tc->m_size.x * scale, tc->m_size.y * scale);
+	Rectf rect = Rectf(pos, float(tc->m_size.x) * g_bookScale, float(tc->m_size.y) * g_bookScale);
 	EERIEDrawBitmap(rect, z, tc, color);
 }
 
