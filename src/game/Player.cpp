@@ -1229,7 +1229,6 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 	}
 	
-	{
 	Entity * io = entities.player();
 	
 	if(!BLOCK_PLAYER_CONTROLS && sp_max) {
@@ -1578,44 +1577,42 @@ retry:
 		
 		request0_loop = false;
 		
-		goto makechanges;
-	} else {
+	}
+	
 	makechanges:
+	
+	if(request0_anim && request0_anim != layer0.cur_anim) {
+		AcquireLastAnim(io);
+		ResetAnim(layer0);
+		layer0.cur_anim = request0_anim;
+		layer0.flags = EA_STATICANIM;
 		
-		if(request0_anim && request0_anim != layer0.cur_anim) {
-			AcquireLastAnim(io);
-			ResetAnim(layer0);
-			layer0.cur_anim = request0_anim;
-			layer0.flags = EA_STATICANIM;
-			
-			if(request0_loop)
-				layer0.flags |= EA_LOOP;
-			
-			if(request0_stopend)
-				layer0.flags |= EA_STOPEND;
-			
-			if(request0_anim == alist[ANIM_U_TURN_LEFT]
-			   || request0_anim == alist[ANIM_U_TURN_RIGHT]
-			   || request0_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]
-			   || request0_anim == alist[ANIM_U_TURN_LEFT_FIGHT]
-			) {
-				layer0.flags |= EA_EXCONTROL;
-			}
-		}
+		if(request0_loop)
+			layer0.flags |= EA_LOOP;
 		
-		if(request3_anim && request3_anim != layer3.cur_anim) {
-			AcquireLastAnim(io);
-			ResetAnim(layer3);
-			layer3.cur_anim = request3_anim;
-			layer3.flags = EA_STATICANIM;
+		if(request0_stopend)
+			layer0.flags |= EA_STOPEND;
+		
+		if(request0_anim == alist[ANIM_U_TURN_LEFT]
+		   || request0_anim == alist[ANIM_U_TURN_RIGHT]
+		   || request0_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]
+		   || request0_anim == alist[ANIM_U_TURN_LEFT_FIGHT]
+		) {
+			layer0.flags |= EA_EXCONTROL;
 		}
+	}
+	
+	if(request3_anim && request3_anim != layer3.cur_anim) {
+		AcquireLastAnim(io);
+		ResetAnim(layer3);
+		layer3.cur_anim = request3_anim;
+		layer3.flags = EA_STATICANIM;
 	}
 	
 	io->physics = player.physics;
-	}
 	
 	player.m_lastMovement = player.m_currentMovement;
-	
+
 }
 
 /*!
