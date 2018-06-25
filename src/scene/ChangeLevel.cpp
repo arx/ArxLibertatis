@@ -1103,22 +1103,16 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			if(timer.io == io) {
 				ARX_CHANGELEVEL_TIMERS_SAVE * ats = (ARX_CHANGELEVEL_TIMERS_SAVE *)(dat + pos);
 				memset(ats, 0, sizeof(ARX_CHANGELEVEL_TIMERS_SAVE));
-				ats->interval = toMsi(timer.interval); // TODO save/load time
+				ats->interval = s32(toMsi(timer.interval)); // TODO save/load time
 				util::storeString(ats->name, timer.name);
-				ats->pos = timer.pos;
-
-				if (timer.es == &io->script)
-					ats->script = 0;
-				else
-					ats->script = 1;
-
-				ats->remaining = toMsi((timer.start + timer.interval) - g_gameTime.now()); // TODO save/load time
-				arx_assert(ats->remaining <= toMsi(timer.interval));
-
-				if(ats->remaining < 0)
+				ats->pos = s32(timer.pos);
+				ats->script = (timer.es == &io->script) ? 0 : 1;
+				ats->remaining = s32(toMsi((timer.start + timer.interval) - g_gameTime.now())); // TODO save/load time
+				arx_assert(ats->remaining <= ats->interval);
+				if(ats->remaining < 0) {
 					ats->remaining = 0;
-
-				ats->count = timer.count;
+				}
+				ats->count = s32(timer.count);
 				ats->flags = timer.idle ? 1 : 0;
 				pos += sizeof(ARX_CHANGELEVEL_TIMERS_SAVE);
 			}
