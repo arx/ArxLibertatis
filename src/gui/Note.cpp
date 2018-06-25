@@ -173,7 +173,7 @@ void Note::calculateLayout() {
 	if(m_type == QuestBook) {
 		m_area = g_playerBook.getArea();
 	} else {
-		m_area = Rectf(newPos, m_background->m_size.x * scale.x, m_background->m_size.y * scale.y);
+		m_area = Rectf(newPos, float(m_background->m_size.x) * scale.x, float(m_background->m_size.y) * scale.y);
 	}
 	m_textArea = Rect(Vec2i(newTextStart * scale), Vec2i(newTextEnd * scale));
 	m_pageSpacing = s32(20 * scale.x);
