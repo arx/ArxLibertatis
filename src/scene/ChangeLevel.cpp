@@ -885,7 +885,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	std::string savefile = io->idString();
 	
 	// Define Type & Affiliated Structure Size
-	long type;
+	SavedIOType type;
 	long struct_size;
 	if(io->ioflags & IO_NPC) {
 		type = TYPE_NPC;
@@ -910,7 +910,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	
 	// Store IO Data in Main IO Save Structure
 	ais.version = ARX_GAMESAVE_VERSION;
-	ais.savesystem_type = type;
+	ais.savesystem_type = s32(type);
 	ais.saveflags = 0;
 	util::storeString(ais.filename, (io->classPath() + ".teo").string());
 	ais.ident = io->instance();
