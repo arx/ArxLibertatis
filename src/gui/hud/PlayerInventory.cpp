@@ -307,7 +307,7 @@ void PlayerInventoryHud::draw() {
 		
 		Vec2f anchorPos = anchorPosition();
 		
-		//TODO see about these coords, might be calculated once only
+		// TODO see about these coords, might be calculated once only
 		const float fBag = (player.m_bags - 1) * (-121.f * m_scale);
 		const float fOffsetY = (121 * m_scale);
 		
@@ -514,7 +514,7 @@ void PlayerInventoryHud::dropEntity() {
 		
 		short iY = checked_range_cast<short>(fBag);
 		
-		//We must enter the for-loop to initialyze tx/ty
+		// We must enter the for-loop to initialyze tx/ty
 		arx_assert(0 < player.m_bags);
 		
 		for(int i = 0; i < player.m_bags; i++) {
