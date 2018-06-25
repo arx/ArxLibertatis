@@ -2243,6 +2243,9 @@ static void ARX_CHANGELEVEL_PopAllIO(const std::string & buffer) {
 	const ARX_CHANGELEVEL_IO_INDEX * idx_io = reinterpret_cast<const ARX_CHANGELEVEL_IO_INDEX *>(dat + pos);
 	pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
 	
+	ARX_UNUSED(pos);
+	arx_assert(pos <= buffer.size());
+	
 	float increment = 0;
 	if(asi->nb_inter > 0) {
 		increment = 60.f / asi->nb_inter;
