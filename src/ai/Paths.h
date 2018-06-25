@@ -87,7 +87,7 @@ DECLARE_FLAGS_OPERATORS(PathFlags)
 // TODO this struct is used both for paths followed by NPCs and for zones
 struct ARX_PATH {
 	
-	ARX_PATH(const std::string & name, const Vec3f & pos);
+	ARX_PATH(const std::string & _name, const Vec3f & _pos);
 	
 	std::string name;
 	PathFlags flags;
