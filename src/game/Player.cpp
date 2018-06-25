@@ -1208,6 +1208,50 @@ long LAST_ON_PLATFORM = 0;
 extern long MOVE_PRECEDENCE;
 extern bool EXTERNALVIEW;
 
+static void ARX_PLAYER_Manage_Visual_End(ANIM_HANDLE * request0_anim, ANIM_HANDLE * request3_anim,
+                                         bool request0_loop, bool request0_stopend) {
+	
+	Entity * io = entities.player();
+	
+	AnimLayer & layer0 = io->animlayer[0];
+	AnimLayer & layer3 = io->animlayer[3];
+	
+	ANIM_HANDLE ** alist = io->anims;
+	
+	if(request0_anim && request0_anim != layer0.cur_anim) {
+		AcquireLastAnim(io);
+		ResetAnim(layer0);
+		layer0.cur_anim = request0_anim;
+		layer0.flags = EA_STATICANIM;
+		
+		if(request0_loop)
+			layer0.flags |= EA_LOOP;
+		
+		if(request0_stopend)
+			layer0.flags |= EA_STOPEND;
+		
+		if(request0_anim == alist[ANIM_U_TURN_LEFT]
+		   || request0_anim == alist[ANIM_U_TURN_RIGHT]
+		   || request0_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]
+		   || request0_anim == alist[ANIM_U_TURN_LEFT_FIGHT]
+		) {
+			layer0.flags |= EA_EXCONTROL;
+		}
+	}
+	
+	if(request3_anim && request3_anim != layer3.cur_anim) {
+		AcquireLastAnim(io);
+		ResetAnim(layer3);
+		layer3.cur_anim = request3_anim;
+		layer3.flags = EA_STATICANIM;
+	}
+	
+	io->physics = player.physics;
+	
+	player.m_lastMovement = player.m_currentMovement;
+	
+}
+
 /*!
  * \brief Choose the set of animations to use to represent current player situation.
  */
@@ -1581,37 +1625,7 @@ retry:
 	
 	makechanges:
 	
-	if(request0_anim && request0_anim != layer0.cur_anim) {
-		AcquireLastAnim(io);
-		ResetAnim(layer0);
-		layer0.cur_anim = request0_anim;
-		layer0.flags = EA_STATICANIM;
-		
-		if(request0_loop)
-			layer0.flags |= EA_LOOP;
-		
-		if(request0_stopend)
-			layer0.flags |= EA_STOPEND;
-		
-		if(request0_anim == alist[ANIM_U_TURN_LEFT]
-		   || request0_anim == alist[ANIM_U_TURN_RIGHT]
-		   || request0_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]
-		   || request0_anim == alist[ANIM_U_TURN_LEFT_FIGHT]
-		) {
-			layer0.flags |= EA_EXCONTROL;
-		}
-	}
-	
-	if(request3_anim && request3_anim != layer3.cur_anim) {
-		AcquireLastAnim(io);
-		ResetAnim(layer3);
-		layer3.cur_anim = request3_anim;
-		layer3.flags = EA_STATICANIM;
-	}
-	
-	io->physics = player.physics;
-	
-	player.m_lastMovement = player.m_currentMovement;
+	ARX_PLAYER_Manage_Visual_End(request0_anim, request3_anim, request0_loop, request0_stopend);
 
 }
 
