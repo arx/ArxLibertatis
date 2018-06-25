@@ -677,8 +677,9 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 					TextureContainer * tc = DRAGINTER->m_icon;
 					TextureContainer * haloTc = NULL;
 					
-					if(NeedHalo(DRAGINTER))
-						haloTc = DRAGINTER->m_icon->getHalo();//>_itemdata->halo_tc;
+					if(NeedHalo(DRAGINTER)) {
+						haloTc = DRAGINTER->m_icon->getHalo();
+					}
 					
 					Color color = (DRAGINTER->poisonous && DRAGINTER->poisonous_count != 0) ? Color::green : Color::white;
 					
@@ -710,7 +711,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 						
 					}
 					
-					//cross not over inventory icon
+					// Cross not over inventory icon
 					if(   CANNOT_PUT_IT_HERE != EntityMoveCursor_Ok
 					   && (eMouseState != MOUSE_IN_INVENTORY_ICON)
 					   && !InInventoryPos(DANAEMouse)
@@ -738,7 +739,9 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 				}
 			}
 		}
-	} else { //mode system shock
+	} else {
+		
+		// System shock mode
 		
 		if(draginter) {
 			return;
@@ -762,6 +765,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 			EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.f, surf, Color3f::gray(.5f).to<u8>());
 			
 		}
+		
 	}
 }
 
