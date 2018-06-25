@@ -234,15 +234,13 @@ void CharacterCreation::render() {
 	ARX_INTERFACE_RenderCursor(true);
 	
 	if(MenuFader_process()) {
-		switch(iFadeAction) {
-			case Mode_InGame:
-				ARX_MENU_NEW_QUEST_Clicked_QUIT();
-				MenuFader_reset();
-				
-				if(pTextManage)
-					pTextManage->Clear();
-				
-				break;
+		if(iFadeAction == Mode_InGame) {
+			ARX_MENU_NEW_QUEST_Clicked_QUIT();
+			MenuFader_reset();
+			if(pTextManage) {
+				pTextManage->Clear();
+			}
 		}
 	}
+	
 }
