@@ -264,7 +264,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 	const float miniMapZoom = 300.f * scale; // zoom of the minimap
 	const Vec2f minimapSizeOrig = Vec2f(200.0f, 160.0f);
 	const Vec2f minimapSizeScaled = minimapSizeOrig * scale;
-	const Rect miniMapRect(Vec2i(g_size.right - minimapSizeScaled.x, -10 * scale),
+	const Rect miniMapRect(Vec2i(g_size.right - s32(minimapSizeScaled.x), s32(-10 * scale)),
 	                       s32(minimapSizeScaled.x),
 	                       s32(minimapSizeScaled.y));
 	const float playerSize = 4.f * scale; // red arrow size
