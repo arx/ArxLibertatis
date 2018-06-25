@@ -2300,10 +2300,11 @@ void MainMenu::Update() {
 }
 
 void MainMenu::Render() {
-
-	if(bNoMenu)
+	
+	if(bNoMenu) {
 		return;
-
+	}
+	
 	if(m_background) {
 		UseRenderState state(render2D().noBlend());
 		EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, m_background, Color::white);
@@ -2315,10 +2316,10 @@ void MainMenu::Render() {
 	if(m_selected) {
 		pMenuCursor->SetMouseOver();
 	}
-
-	//DEBUG ZONE
+	
 	GRenderer->ResetTexture(0);
 	m_widgets->drawDebug();
+	
 }
 
 MainMenu * g_mainMenu;
