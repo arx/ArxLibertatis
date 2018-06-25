@@ -242,7 +242,7 @@ std::ostream & operator<<(std::ostream & os, const ScriptParameters & parameters
 	return os;
 }
 
-long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
+size_t FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
 	
 	// TODO(script-parser) remove, respect quoted strings
 	
@@ -250,7 +250,7 @@ long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
 		
 		pos = es->data.find(str, pos);
 		if(pos == std::string::npos || pos + str.length() >= es->data.size()) {
-			return -1;
+			return size_t(-1);
 		}
 		
 		if(u8(es->data[pos + str.length()]) > 32) {
@@ -260,13 +260,13 @@ long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
 		// Check if the line is commented out!
 		for(size_t p = pos; es->data[p] != '/' || es->data[p + 1] != '/'; p--) {
 			if(es->data[p] == '\n' || p == 0) {
-				return long(pos + str.length());
+				return pos + str.length();
 			}
 		}
 		
 	}
 	
-	return -1;
+	return size_t(-1);
 }
 
 ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event,

@@ -155,7 +155,7 @@ SCRIPT_EVENT AS_EVENT[] = {
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT & es) {
 	for(size_t j = 1; j < SM_MAXCMD; j++) {
-		es.shortcut[j] = FindScriptPos(&es, AS_EVENT[j].name);
+		es.shortcut[j] = long(FindScriptPos(&es, AS_EVENT[j].name));
 	}
 }
 
@@ -278,7 +278,7 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 	if(!event.getName().empty()) {
 		arx_assert(event.getId() == SM_NULL);
 		arx_assert_msg(ScriptEventName::parse(event.getName()).getId() == SM_NULL, "non-canonical event name");
-		pos = FindScriptPos(es, "on " + event.getName());
+		pos = long(FindScriptPos(es, "on " + event.getName()));
 	} else if(event != SM_EXECUTELINE) {
 		arx_assert(event.getId() < SM_MAXCMD);
 		pos = es->shortcut[event.getId()];

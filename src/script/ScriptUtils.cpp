@@ -344,12 +344,12 @@ bool Context::jumpToLabel(const std::string & target, bool substack) {
 		m_stack.push_back(m_pos);
 	}
 	
-	long targetpos = FindScriptPos(m_script, ">>" + target);
-	if(targetpos == -1) {
+	size_t targetpos = FindScriptPos(m_script, ">>" + target);
+	if(targetpos == size_t(-1)) {
 		return false;
 	}
 	
-	m_pos = size_t(targetpos);
+	m_pos = targetpos;
 	return true;
 }
 
