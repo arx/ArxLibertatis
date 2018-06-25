@@ -100,6 +100,6 @@ void ArxIO_unpack_alloc(const char * in, const size_t inSize, char ** out, size_
 	std::memcpy(*out, buffer.data(), buffer.size());
 }
 
-void ArxIO_unpack_free(char * buffer) {
+void ArxIO_unpack_free(char * buffer) { // NOLINT const would not be appropriate here
 	delete[] buffer;
 }
