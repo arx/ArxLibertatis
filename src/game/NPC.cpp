@@ -530,17 +530,16 @@ static bool ARX_NPC_LaunchPathfind_Cleanup(Entity * io) {
 	return false;
 }
 
-static bool ARX_NPC_LaunchPathfind_End(Entity * io, EntityHandle target,
-                                       const Vec3f & pos1, const Vec3f & pos2) {
+static bool ARX_NPC_LaunchPathfind_End(Entity * io, EntityHandle target, const Vec3f & pos2) {
 	
 	io->targetinfo = target;
 	io->_npcdata->pathfind.truetarget = target;
 	
 	long from;
 	if((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) || (io->_npcdata->behavior & BEHAVIOUR_FLEE)) {
-		from = AnchorData_GetNearest(pos1, io->physics.cyl);
+		from = AnchorData_GetNearest(io->pos, io->physics.cyl);
 	} else {
-		from = AnchorData_GetNearest_2(io->angle.getYaw(), pos1, io->physics.cyl);
+		from = AnchorData_GetNearest_2(io->angle.getYaw(), io->pos, io->physics.cyl);
 	}
 	
 	long to;
@@ -559,7 +558,7 @@ static bool ARX_NPC_LaunchPathfind_End(Entity * io, EntityHandle target,
 		}
 		
 		if ((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) ||
-		        closerThan(pos1, ACTIVEBKG->m_anchors[from].pos, 200.f))
+		        closerThan(io->pos, ACTIVEBKG->m_anchors[from].pos, 200.f))
 		{
 			if (!(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 			        && !(io->_npcdata->behavior & BEHAVIOUR_FLEE))
@@ -628,7 +627,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	}
 	
 	if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
-		return ARX_NPC_LaunchPathfind_End(io, target, io->pos, io->pos + Vec3f(1000.f, 0.f, 1000.f));
+		return ARX_NPC_LaunchPathfind_End(io, target, io->pos + Vec3f(1000.f, 0.f, 1000.f));
 	}
 	
 	if(target.handleData() < 0 || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)) {
@@ -642,7 +641,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		
 		Vec3f pos2 = (io->_npcdata->behavior & BEHAVIOUR_GO_HOME) ? io->initpos : io->pos;
 		
-		return ARX_NPC_LaunchPathfind_End(io, target, io->pos, pos2);
+		return ARX_NPC_LaunchPathfind_End(io, target, pos2);
 	}
 
 	if(ValidIONum(target) && entities[target] == io) {
@@ -688,7 +687,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		}
 	}
 	
-	return ARX_NPC_LaunchPathfind_End(io, target, io->pos, pos2);
+	return ARX_NPC_LaunchPathfind_End(io, target, pos2);
 }
 
 bool ARX_NPC_SetStat(Entity & io, const std::string & statname, float value) {
