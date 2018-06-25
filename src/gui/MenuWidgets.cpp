@@ -267,6 +267,7 @@ void MainMenuDoFrame() {
 				mainApp->quit();
 				MenuFader_start(Fade_Out, -1);
 				break;
+			default: break;
 		}
 	}
 
