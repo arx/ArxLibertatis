@@ -504,7 +504,7 @@ void ARX_SCRIPT_Reset(Entity * io, bool init);
 bool scriptTimerExists(Entity * io, const std::string & name);
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT & es);
 void ARX_SCRIPT_AllowInterScriptExec();
-long ARX_SCRIPT_CountTimers();
+size_t ARX_SCRIPT_CountTimers();
 void ARX_SCRIPT_ResetAll(bool init);
 void ARX_SCRIPT_EventStackClearForIo(Entity * io);
 Entity * ARX_SCRIPT_Get_IO_Max_Events();

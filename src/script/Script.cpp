@@ -1504,8 +1504,8 @@ SCR_TIMER & createScriptTimer(Entity * io, const std::string & name) {
 	return g_scriptTimers.back();
 }
 
-long ARX_SCRIPT_CountTimers() {
-	return size_t(g_activeScriptTimers);
+size_t ARX_SCRIPT_CountTimers() {
+	return g_activeScriptTimers;
 }
 
 static void clearTimer(SCR_TIMER & timer) {

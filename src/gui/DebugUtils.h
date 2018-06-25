@@ -52,6 +52,7 @@ public:
 	
 	void add(const std::string & key, const std::string & value);
 	void add(const std::string & key, long value);
+	void add(const std::string & key, size_t value) { add(key, long(value)); }
 	void add(const std::string & key, float value);
 	void add(const std::string & key, Vec2i value);
 	void add(const std::string & key, Vec3f value);
