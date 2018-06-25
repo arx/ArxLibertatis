@@ -393,7 +393,7 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	
 	es->data.clear();
 	
-	memset(es->shortcut, 0, sizeof(long) * SM_MAXCMD);
+	memset(es->shortcut, 0, sizeof(es->shortcut));
 	
 }
 
