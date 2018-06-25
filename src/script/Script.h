@@ -548,7 +548,7 @@ void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEvent
  * 
  * \return The position of str in the script or -1 if str was not found.
  */
-long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str);
+size_t FindScriptPos(const EERIE_SCRIPT * es, const std::string & str);
 
 void CloneLocalVars(Entity * ioo, Entity * io);
 void ARX_SCRIPT_Free_All_Global_Variables();
