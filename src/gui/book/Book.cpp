@@ -1110,11 +1110,11 @@ void StatsPage::RenderBookPlayerCharacter() {
 	GRenderer->SetAntialiasing(true);
 	
 	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		Rect vp;
-		vp.left = static_cast<int>(rec.left + 52.f * scale);
-		vp.top = rec.top;
-		vp.right = static_cast<int>(rec.right - 21.f * scale);
-		vp.bottom = static_cast<int>(rec.bottom - 17.f * scale);
+		
+		Rect vp = rec;
+		vp.left += s32(52.f * scale);
+		vp.right -= s32(21.f * scale);
+		vp.bottom -= s32(17.f * scale);
 		GRenderer->SetScissor(vp);
 		
 		switch(player.skin) {
@@ -1134,6 +1134,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 		
 		pos = Vec3f(8, 162, 75);
 		eLight1.pos.z = -90.f;
+		
 	} else {
 		
 		ePlayerAngle.setYaw(-20.f);
