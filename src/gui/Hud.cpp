@@ -1252,6 +1252,7 @@ void DamagedEquipmentGui::update() {
 			case 2: eq = EQUIP_SLOT_HELMET; break;
 			case 3: eq = EQUIP_SLOT_ARMOR; break;
 			case 4: eq = EQUIP_SLOT_LEGGINGS; break;
+			default: ARX_DEAD_CODE();
 		}
 		
 		Entity * io = entities.get(player.equiped[eq]);
