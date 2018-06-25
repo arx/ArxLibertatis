@@ -119,11 +119,12 @@ void SliderWidget::update() {
 	pRightButton->update();
 	pRightButton->SetPos(m_rect.topLeft());
 	
-	float fWidth = pLeftButton->m_rect.width() + RATIO_X(10 * std::max(pTex1->m_size.x, pTex2->m_size.x));
+	float fWidth = pLeftButton->m_rect.width()
+	               + RATIO_X(10.f * float(std::max(pTex1->m_size.x, pTex2->m_size.x)));
 	pRightButton->Move(Vec2f(fWidth, 0));
 	
 	m_rect.right = m_rect.left + pLeftButton->m_rect.width() + pRightButton->m_rect.width()
-	               + RATIO_X(10 * std::max(pTex1->m_size.x, pTex2->m_size.x));
+	               + RATIO_X(10 * float(std::max(pTex1->m_size.x, pTex2->m_size.x)));
 	m_rect.bottom = m_rect.top + std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
 	
 }
