@@ -524,7 +524,7 @@ static void LoadSysTextures() {
 	enviro = TextureContainer::LoadUI("graph/particles/enviro");
 	
 	ARX_INTERFACE_DrawNumberInit();
-	init2DFX();
+	initLightFlares();
 	ombrignon = TextureContainer::LoadUI("graph/particles/ombrignon");
 	TC_fire = TextureContainer::LoadUI("graph/particles/fire");
 	TC_fire2 = TextureContainer::LoadUI("graph/particles/fire2");
@@ -1949,8 +1949,8 @@ void ArxGame::renderLevel() {
 	
 	GRenderer->SetAntialiasing(false);
 
-	update2DFX();
-	goFor2DFX();
+	updateLightFlares();
+	renderLightFlares();
 	
 	// Manage Death visual & Launch menu...
 	ARX_PLAYER_Manage_Death();
