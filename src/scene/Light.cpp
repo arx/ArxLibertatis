@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/array.hpp>
 #include <boost/foreach.hpp>
+#include <boost/range/size.hpp>
 
 #include "core/Application.h"
 #include "core/GameTime.h"
@@ -286,11 +287,8 @@ void PrecalcDynamicLighting(const Vec3f & camPos, float camDepth) {
 			if(closerThan(light.pos, camPos, camDepth + light.fallend)) {
 				light.treat = 1;
 				RecalcLight(&light);
-				g_culledDynamicLights[g_culledDynamicLightsCount] = &light;
-				g_culledDynamicLightsCount++;
-
-				if(g_culledDynamicLightsCount >= g_dynamicLightsMax)
-					g_culledDynamicLightsCount--;
+				arx_assert(g_culledDynamicLightsCount < boost::size(g_culledDynamicLights));
+				g_culledDynamicLights[g_culledDynamicLightsCount++] = &light;
 			}
 			else if(light.treat)
 				light.treat = 0;
