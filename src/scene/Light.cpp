@@ -274,16 +274,11 @@ void TreatBackgroundDynlights() {
 	}
 }
 
-void PrecalcDynamicLighting(long x0, long z0, long x1, long z1, const Vec3f & camPos, float camDepth) {
+void PrecalcDynamicLighting(const Vec3f & camPos, float camDepth) {
 	
 	ARX_PROFILE_FUNC();
 	
 	g_culledDynamicLightsCount = 0;
-	
-	float fx0 = g_backgroundTileSize.x * float(x0);
-	float fz0 = g_backgroundTileSize.y * float(z0);
-	float fx1 = g_backgroundTileSize.x * float(x1);
-	float fz1 = g_backgroundTileSize.y * float(z1);
 	
 	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
 		EERIE_LIGHT * el = &g_dynamicLights[i];
