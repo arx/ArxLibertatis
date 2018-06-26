@@ -282,7 +282,7 @@ void PrecalcDynamicLighting(const Vec3f & camPos, float camDepth) {
 	g_culledDynamicLightsCount = 0;
 	
 	BOOST_FOREACH(EERIE_LIGHT & light, g_dynamicLights) {
-		if(light.exist && light.rgb.r >= 0.f) {
+		if(light.exist && light.rgb != Color3f::black) {
 			if(closerThan(light.pos, camPos, camDepth + light.fallend)) {
 				light.treat = 1;
 				RecalcLight(&light);
