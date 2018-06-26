@@ -19,6 +19,8 @@
 
 #include "gui/widget/SliderWidget.h"
 
+#include <algorithm>
+
 #include "core/Core.h"
 #include "graphics/DrawLine.h"
 #include "graphics/Renderer.h"
@@ -70,19 +72,12 @@ void SliderWidget::Move(const Vec2f & offset) {
 
 void SliderWidget::hover() {
 
-	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow)) {
-		m_value--;
-
-		if(m_value <= m_minimum)
-			m_value = m_minimum;
-	} else {
-		if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow)) {
-			m_value++;
-
-			if(m_value >= 10)
-				m_value = 10;
-		}
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow) || GInput->getMouseWheelDir() < 0) {
+		m_value = std::max(m_value - 1, m_minimum);
+	} else if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow) || GInput->getMouseWheelDir() > 0) {
+		m_value = std::min(m_value + 1, 10);
 	}
+	
 }
 
 bool SliderWidget::click() {
