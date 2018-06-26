@@ -289,12 +289,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1, const Vec3f & ca
 		EERIE_LIGHT * el = &g_dynamicLights[i];
 
 		if(el->exist && el->rgb.r >= 0.f) {
-			if(   el->pos.x >= fx0
-			   && el->pos.x <= fx1
-			   && el->pos.z >= fz0
-			   && el->pos.z <= fz1
-			   && closerThan(el->pos, camPos, camDepth)
-			) {
+			if(closerThan(el->pos, camPos, camDepth + el->fallend)) {
 				el->treat = 1;
 				RecalcLight(el);
 				g_culledDynamicLights[g_culledDynamicLightsCount] = el;
