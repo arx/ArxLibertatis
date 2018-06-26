@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 
 #include <boost/array.hpp>
+#include <boost/foreach.hpp>
 
 #include "core/Application.h"
 #include "core/GameTime.h"
@@ -280,23 +281,22 @@ void PrecalcDynamicLighting(const Vec3f & camPos, float camDepth) {
 	
 	g_culledDynamicLightsCount = 0;
 	
-	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
-		EERIE_LIGHT * el = &g_dynamicLights[i];
-
-		if(el->exist && el->rgb.r >= 0.f) {
-			if(closerThan(el->pos, camPos, camDepth + el->fallend)) {
-				el->treat = 1;
-				RecalcLight(el);
-				g_culledDynamicLights[g_culledDynamicLightsCount] = el;
+	BOOST_FOREACH(EERIE_LIGHT & light, g_dynamicLights) {
+		if(light.exist && light.rgb.r >= 0.f) {
+			if(closerThan(light.pos, camPos, camDepth + light.fallend)) {
+				light.treat = 1;
+				RecalcLight(&light);
+				g_culledDynamicLights[g_culledDynamicLightsCount] = &light;
 				g_culledDynamicLightsCount++;
 
 				if(g_culledDynamicLightsCount >= g_dynamicLightsMax)
 					g_culledDynamicLightsCount--;
 			}
-			else if(el->treat)
-				el->treat = 0;
+			else if(light.treat)
+				light.treat = 0;
 		}
 	}
+	
 }
 
 void PrecalcIOLighting(const Vec3f & pos, float radius) {
