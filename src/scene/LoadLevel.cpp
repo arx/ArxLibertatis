@@ -301,7 +301,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 				EERIE_LIGHT * el = g_staticLights[j];
 				
 				el->exist = 1;
-				el->treat = 1;
+				el->m_isVisible = true;
 				el->fallend = dlight->fallend;
 				el->fallstart = dlight->fallstart;
 				el->falldiffmul = 1.f / (el->fallend - el->fallstart);
@@ -470,7 +470,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			EERIE_LIGHT * el = g_staticLights[j];
 			
 			el->exist = 1;
-			el->treat = 1;
+			el->m_isVisible = true;
 			el->fallend = dlight->fallend;
 			el->fallstart = dlight->fallstart;
 			el->falldiffmul = 1.f / (el->fallend - el->fallstart);
