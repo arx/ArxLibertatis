@@ -130,9 +130,8 @@ void EERIE_LIGHT_GlobalInit() {
 	
 	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		if(g_staticLights[i]) {
-			EERIE_LIGHT * dynLight = lightHandleGet(g_staticLights[i]->m_ignitionLightHandle);
-			if(dynLight) {
-				dynLight->exist = 0;
+			if(EERIE_LIGHT * dynLight = lightHandleGet(g_staticLights[i]->m_ignitionLightHandle)) {
+				dynLight->m_exists = false;
 			}
 			delete g_staticLights[i];
 			g_staticLights[i] = NULL;
@@ -193,7 +192,7 @@ void TreatBackgroundDynlights() {
 				// just extinguished
 				EERIE_LIGHT * dynLight = lightHandleGet(light->m_ignitionLightHandle);
 				if(dynLight) {
-					dynLight->exist = 0;
+					dynLight->m_exists = false;
 					light->m_ignitionLightHandle = LightHandle();
 					for(size_t l = 0; l < entities.size(); l++) {
 						const EntityHandle handle = EntityHandle(l);
@@ -247,7 +246,7 @@ void TreatBackgroundDynlights() {
 	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
 		EERIE_LIGHT * el = &g_dynamicLights[i];
 
-		if(el->exist && el->duration != 0) {
+		if(el->m_exists && el->duration != 0) {
 			const GameDuration elapsed = g_gameTime.now() - el->creationTime;
 			const GameDuration duration = el->duration;
 
@@ -268,7 +267,7 @@ void TreatBackgroundDynlights() {
 					el->rgb.b = 0.f;
 
 				if(el->rgb.r + el->rgb.g + el->rgb.b == 0) {
-					el->exist = 0;
+					el->m_exists = false;
 					el->duration = 0;
 				}
 			}
@@ -283,7 +282,7 @@ void PrecalcDynamicLighting(const Vec3f & camPos, float camDepth) {
 	g_culledDynamicLightsCount = 0;
 	
 	BOOST_FOREACH(EERIE_LIGHT & light, g_dynamicLights) {
-		if(light.exist && light.rgb != Color3f::black) {
+		if(light.m_exists && light.rgb != Color3f::black) {
 			light.m_isVisible = closerThan(light.pos, camPos, camDepth + light.fallend);
 			if(light.m_isVisible) {
 				RecalcLight(&light);
@@ -303,7 +302,7 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 		EERIE_LIGHT * el = g_staticLights[i];
 
 		if(   el
-		   && el->exist
+		   && el->m_exists
 		   && el->m_ignitionStatus
 		   && !(el->extras & EXTRAS_SEMIDYNAMIC)
 		   && (el->pos.x >= pos.x - radius)
@@ -324,7 +323,7 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 
 static bool lightHandleIsValid(LightHandle num)
 {
-	return (long)num.handleData() >= 0 && ((size_t)num.handleData() < g_dynamicLightsMax) && g_dynamicLights[num.handleData()].exist;
+	return (long)num.handleData() >= 0 && ((size_t)num.handleData() < g_dynamicLightsMax) && g_dynamicLights[num.handleData()].m_exists;
 }
 
 EERIE_LIGHT * lightHandleGet(LightHandle lightHandle) {
@@ -337,9 +336,8 @@ EERIE_LIGHT * lightHandleGet(LightHandle lightHandle) {
 
 void lightHandleDestroy(LightHandle & handle) {
 	
-	EERIE_LIGHT * light = lightHandleGet(handle);
-	if(light) {
-		light->exist = 0;
+	if(EERIE_LIGHT * light = lightHandleGet(handle)) {
+		light->m_exists = false;
 	}
 	
 	handle = LightHandle();
@@ -347,16 +345,16 @@ void lightHandleDestroy(LightHandle & handle) {
 
 void endLightDelayed(LightHandle & handle, GameDuration delay) {
 	
-	EERIE_LIGHT * light = lightHandleGet(handle);
-	if(light) {
+	if(EERIE_LIGHT * light = lightHandleGet(handle)) {
 		light->duration = delay;
 		light->creationTime = g_gameTime.now();
 	}
+	
 }
 
 void resetDynLights() {
 	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
-		g_dynamicLights[i].exist = 0;
+		g_dynamicLights[i].m_exists = false;
 	}
 }
 
@@ -365,8 +363,8 @@ LightHandle GetFreeDynLight() {
 
 	for(size_t i = 1; i < g_dynamicLightsMax; i++) {
 		EERIE_LIGHT & light = g_dynamicLights[i];
-		if(!(light.exist)) {
-			light.exist = 1;
+		if(!light.m_exists) {
+			light.m_exists = true;
 			light.m_isIgnitionLight = false;
 			light.intensity = 1.3f;
 			light.m_isVisible = true;
@@ -396,13 +394,11 @@ EERIE_LIGHT * dynLightCreate() {
 
 
 void ClearDynLights() {
-
+	
 	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
-		if(g_dynamicLights[i].exist) {
-			g_dynamicLights[i].exist = 0;
-		}
+		g_dynamicLights[i].m_exists = false;
 	}
-
+	
 	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		if(g_staticLights[i]) {
 			g_staticLights[i]->m_ignitionLightHandle = LightHandle();

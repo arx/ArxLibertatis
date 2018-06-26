@@ -124,7 +124,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 	EERIE_LIGHT tl = *light;
 	
 	light->pos = Vec3f(500.f, -1960.f, 1590.f);
-	light->exist = 1;
+	light->m_exists = true;
 	light->rgb = Color3f(0.6f, 0.7f, 0.9f);
 	light->intensity = 1.8f;
 	light->fallstart = 4520.f;

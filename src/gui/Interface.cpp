@@ -1933,7 +1933,7 @@ void ArxGame::manageEditorControls() {
 					EERIE_LIGHT * light = g_staticLights[i];
 					
 					if(   light
-					   && light->exist
+					   && light->m_exists
 					   && !fartherThan(light->pos, player.pos, fMaxdist)
 					   && !(light->extras & EXTRAS_NO_IGNIT)
 					   && light->m_screenRect.contains(Vec2f(DANAEMouse))
@@ -1978,7 +1978,7 @@ void ArxGame::manageEditorControls() {
 				EERIE_LIGHT * light = g_staticLights[i];
 				
 				if(   light
-				   && light->exist
+				   && light->m_exists
 				   && !fartherThan(light->pos, player.pos, fMaxdist)
 				   && !(light->extras & EXTRAS_NO_IGNIT)
 				   && light->m_screenRect.contains(Vec2f(DANAEMouse))

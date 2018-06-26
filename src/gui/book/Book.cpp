@@ -1072,14 +1072,14 @@ void StatsPage::RenderBookPlayerCharacter() {
 	EERIE_LIGHT eLight2;
 	
 	eLight1.pos = Vec3f(50.f, 50.f, 200.f);
-	eLight1.exist = 1;
+	eLight1.m_exists = true;
 	eLight1.rgb = Color3f(0.15f, 0.06f, 0.003f);
 	eLight1.intensity = 8.8f;
 	eLight1.fallstart = 2020;
 	eLight1.fallend = eLight1.fallstart + 60;
 	RecalcLight(&eLight1);
 	
-	eLight2.exist = 1;
+	eLight2.m_exists = true;
 	eLight2.pos = Vec3f(-50.f, -50.f, -200.f);
 	eLight2.rgb = Color3f::gray(0.6f);
 	eLight2.intensity = 3.8f;

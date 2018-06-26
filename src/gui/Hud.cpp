@@ -547,7 +547,7 @@ void CurrentTorchIconGui::updateInput() {
 				ARX_SOUND_PlaySFX(SND_TORCH_END);
 				ARX_SOUND_Stop(SND_TORCH_LOOP);
 				player.torch = NULL;
-				lightHandleGet(torchLightHandle)->exist = 0;
+				lightHandleGet(torchLightHandle)->m_exists = false;
 				io->ignition = 1;
 				Set_DragInter(io);
 			} else {

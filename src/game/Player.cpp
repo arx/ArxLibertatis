@@ -243,7 +243,7 @@ void ARX_PLAYER_KillTorch() {
 	giveToPlayer(player.torch);
 	
 	player.torch = NULL;
-	lightHandleGet(torchLightHandle)->exist = 0;
+	lightHandleGet(torchLightHandle)->m_exists = false;
 }
 
 void ARX_PLAYER_ClickedOnTorch(Entity * io)
@@ -294,7 +294,7 @@ static void ARX_PLAYER_ManageTorch() {
 			ARX_SOUND_Stop(SND_TORCH_LOOP);
 			player.torch->destroy();
 			player.torch = NULL;
-			lightHandleGet(torchLightHandle)->exist = 0;
+			lightHandleGet(torchLightHandle)->m_exists = false;
 		}
 		
 	}

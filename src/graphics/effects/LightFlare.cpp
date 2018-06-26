@@ -123,10 +123,11 @@ void goFor2DFX() {
 	
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		const EERIE_LIGHT & el = *g_culledDynamicLights[i];
-
-		if(!el.exist || !el.m_isVisible)
+		
+		if(!el.m_exists || !el.m_isVisible) {
 			continue;
-
+		}
+		
 		if(el.extras & EXTRAS_FLARE) {
 			if(el.m_flareFader > 0.f) {
 				Vec3f ltvv = EE_RT(el.pos);

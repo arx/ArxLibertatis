@@ -96,7 +96,7 @@ DECLARE_FLAGS_OPERATORS(ExtrasType)
 
 struct EERIE_LIGHT {
 	
-	char exist;
+	bool m_exists;
 	bool m_isIgnitionLight; // TODO refactor special case
 	bool m_isVisible;
 	ExtrasType extras;
@@ -128,7 +128,7 @@ struct EERIE_LIGHT {
 	math::Quantizer m_storedFlameTime;
 	
 	EERIE_LIGHT()
-		: exist(0)
+		: m_exists(false)
 		, m_isIgnitionLight(false)
 		, m_isVisible(false)
 		, extras(0)
