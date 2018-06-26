@@ -1948,6 +1948,9 @@ void ArxGame::renderLevel() {
 	GRenderer->SetFogColor(g_fogColor);
 	
 	GRenderer->SetAntialiasing(false);
+
+	update2DFX();
+	goFor2DFX();
 	
 	// Manage Death visual & Launch menu...
 	ARX_PLAYER_Manage_Death();
@@ -1971,9 +1974,6 @@ void ArxGame::renderLevel() {
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 	}
-
-	update2DFX();
-	goFor2DFX();
 
 	GRenderer->Clear(Renderer::DepthBuffer);
 
