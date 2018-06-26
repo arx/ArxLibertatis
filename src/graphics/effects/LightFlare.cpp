@@ -121,31 +121,23 @@ void renderLightFlares() {
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		const EERIE_LIGHT & el = *g_culledDynamicLights[i];
 		
-		if(!el.m_exists || !el.m_isVisible) {
+		if(!el.m_exists || !el.m_isVisible || !(el.extras & EXTRAS_FLARE) || el.m_flareFader <= 0.f) {
 			continue;
 		}
 		
-		if(el.extras & EXTRAS_FLARE) {
-			if(el.m_flareFader > 0.f) {
-				Vec3f ltvv = EE_RT(el.pos);
-				
-				float v = el.m_flareFader;
-
-				if(FADEDIR) {
-					v *= 1.f - LAST_FADEVALUE;
-				}
-
-				float siz;
-
-				if(el.extras & EXTRAS_FIXFLARESIZE)
-					siz = el.ex_flaresize;
-				else
-					siz = -el.ex_flaresize;
-
-				EERIEDrawSprite(el.pos, siz, tflare, (el.rgb * v).to<u8>(), ltvv.z);
-
-			}
+		float v = el.m_flareFader;
+		
+		if(FADEDIR) {
+			v *= 1.f - LAST_FADEVALUE;
 		}
+		
+		float size = -el.ex_flaresize;
+		if(el.extras & EXTRAS_FIXFLARESIZE) {
+			size = el.ex_flaresize;
+		}
+		
+		EERIEDrawSprite(el.pos, size, tflare, (el.rgb * v).to<u8>(), EE_RT(el.pos).z);
+		
 	}
 	
 }
