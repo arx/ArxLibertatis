@@ -98,7 +98,7 @@ struct EERIE_LIGHT {
 	
 	char exist;
 	bool m_isIgnitionLight; // TODO refactor special case
-	char treat;
+	bool m_isVisible;
 	ExtrasType extras;
 	bool m_ignitionStatus; // on/off
 	Vec3f pos;
@@ -130,7 +130,7 @@ struct EERIE_LIGHT {
 	EERIE_LIGHT()
 		: exist(0)
 		, m_isIgnitionLight(false)
-		, treat(false)
+		, m_isVisible(false)
 		, extras(0)
 		, m_ignitionStatus(false)
 		, pos(0)

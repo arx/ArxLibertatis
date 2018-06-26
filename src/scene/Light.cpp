@@ -284,14 +284,12 @@ void PrecalcDynamicLighting(const Vec3f & camPos, float camDepth) {
 	
 	BOOST_FOREACH(EERIE_LIGHT & light, g_dynamicLights) {
 		if(light.exist && light.rgb != Color3f::black) {
-			if(closerThan(light.pos, camPos, camDepth + light.fallend)) {
-				light.treat = 1;
+			light.m_isVisible = closerThan(light.pos, camPos, camDepth + light.fallend);
+			if(light.m_isVisible) {
 				RecalcLight(&light);
 				arx_assert(g_culledDynamicLightsCount < boost::size(g_culledDynamicLights));
 				g_culledDynamicLights[g_culledDynamicLightsCount++] = &light;
 			}
-			else if(light.treat)
-				light.treat = 0;
 		}
 	}
 	
@@ -371,7 +369,7 @@ LightHandle GetFreeDynLight() {
 			light.exist = 1;
 			light.m_isIgnitionLight = false;
 			light.intensity = 1.3f;
-			light.treat = 1;
+			light.m_isVisible = true;
 			light.creationTime = g_gameTime.now();
 			light.duration = 0;
 			light.extras = 0;

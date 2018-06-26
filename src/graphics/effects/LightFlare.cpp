@@ -61,7 +61,7 @@ void update2DFX() {
 		
 		BackgroundTileData * bkgData = getFastBackgroundData(el->pos.x, el->pos.z);
 		if(!bkgData || !bkgData->treat) {
-			el->treat = 0;
+			el->m_isVisible = false;
 			continue;
 		}
 		
@@ -124,7 +124,7 @@ void goFor2DFX() {
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		const EERIE_LIGHT & el = *g_culledDynamicLights[i];
 
-		if(!el.exist || !el.treat)
+		if(!el.exist || !el.m_isVisible)
 			continue;
 
 		if(el.extras & EXTRAS_FLARE) {
