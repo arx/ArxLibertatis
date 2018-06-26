@@ -133,6 +133,8 @@ void renderLightFlares() {
 		
 		float size = -el.ex_flaresize;
 		if(el.extras & EXTRAS_FIXFLARESIZE) {
+			// This is only used for one light in the whole game and makes it's flare gigantic when up close
+			// TODO Is this part of some puzze or a bug / obsolete workaround?
 			size = el.ex_flaresize;
 		}
 		
