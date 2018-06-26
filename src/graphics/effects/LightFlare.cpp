@@ -34,11 +34,11 @@
 
 static TextureContainer * tflare = NULL;
 
-void init2DFX() {
+void initLightFlares() {
 	tflare = TextureContainer::LoadUI("graph/particles/flare");
 }
 
-void update2DFX() {
+void updateLightFlares() {
 	
 	RaycastDebugClear();
 	
@@ -107,7 +107,7 @@ void update2DFX() {
 	}
 }
 
-void goFor2DFX() {
+void renderLightFlares() {
 	
 	ARX_PROFILE_FUNC();
 	
