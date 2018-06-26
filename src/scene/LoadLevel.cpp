@@ -141,6 +141,60 @@ struct ToColorBGRA {
 
 static std::vector<ColorBGRA> g_levelLighting;
 
+static void loadLights(const char * dat, size_t & pos, size_t count, const Vec3f & trans = Vec3f_ZERO) {
+	
+	if(count != 0) {
+		EERIE_LIGHT_GlobalInit();
+	}
+	
+	for(size_t i = 0; i < count; i++) {
+		
+		const DANAE_LS_LIGHT * dlight = reinterpret_cast<const DANAE_LS_LIGHT *>(dat + pos);
+		pos += sizeof(DANAE_LS_LIGHT);
+		
+		long j = EERIE_LIGHT_Create();
+		if(j >= 0) {
+			EERIE_LIGHT * el = g_staticLights[j];
+			
+			el->m_exists = true;
+			el->m_isVisible = true;
+			el->fallend = dlight->fallend;
+			el->fallstart = dlight->fallstart;
+			el->falldiffmul = 1.f / (el->fallend - el->fallstart);
+			el->intensity = dlight->intensity;
+			
+			el->pos = dlight->pos.toVec3() + trans;
+			
+			el->rgb = dlight->rgb;
+			
+			el->extras = ExtrasType::load(dlight->extras);
+			
+			el->ex_flicker = dlight->ex_flicker;
+			el->ex_radius = dlight->ex_radius;
+			el->ex_frequency = dlight->ex_frequency;
+			el->ex_size = dlight->ex_size;
+			el->ex_speed = dlight->ex_speed;
+			el->ex_flaresize = dlight->ex_flaresize;
+			
+			el->m_ignitionStatus = !(el->extras & EXTRAS_STARTEXTINGUISHED);
+			
+			if((el->extras & EXTRAS_SPAWNFIRE) && !(el->extras & EXTRAS_FLARE)) {
+				el->extras |= EXTRAS_FLARE;
+				if(el->extras & EXTRAS_FIREPLACE) {
+					el->ex_flaresize = 95.f;
+				} else {
+					el->ex_flaresize = 80.f;
+				}
+			}
+			
+			el->m_ignitionLightHandle = LightHandle();
+			el->sample = audio::INVALID_ID;
+			
+		}
+	}
+	
+}
+
 static void loadLighting(const char * dat, size_t & pos, bool compact, bool skip = false) {
 	
 	const DANAE_LS_LIGHTINGHEADER * dll = reinterpret_cast<const DANAE_LS_LIGHTINGHEADER *>(dat + pos);
@@ -283,53 +337,10 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	progressBarAdvance();
 	LoadLevelScreen();
 	
-	long nb_lights = (dlh.version < 1.003f) ? 0 : dlh.nb_lights;
+	size_t nb_lights = (dlh.version < 1.003f) ? 0 : size_t(dlh.nb_lights);
 	
 	if(!lightingFile) {
-		
-		if(nb_lights != 0) {
-			EERIE_LIGHT_GlobalInit();
-		}
-		
-		for(long i = 0; i < nb_lights; i++) {
-			
-			const DANAE_LS_LIGHT * dlight = reinterpret_cast<const DANAE_LS_LIGHT *>(dat + pos);
-			pos += sizeof(DANAE_LS_LIGHT);
-			
-			long j = EERIE_LIGHT_Create();
-			if(j >= 0) {
-				EERIE_LIGHT * el = g_staticLights[j];
-				
-				el->m_exists = true;
-				el->m_isVisible = true;
-				el->fallend = dlight->fallend;
-				el->fallstart = dlight->fallstart;
-				el->falldiffmul = 1.f / (el->fallend - el->fallstart);
-				el->intensity = dlight->intensity;
-				el->pos = dlight->pos.toVec3();
-				el->rgb = dlight->rgb;
-				
-				el->extras = ExtrasType::load(dlight->extras);
-				
-				el->ex_flicker = dlight->ex_flicker;
-				el->ex_radius = dlight->ex_radius;
-				el->ex_frequency = dlight->ex_frequency;
-				el->ex_size = dlight->ex_size;
-				el->ex_speed = dlight->ex_speed;
-				el->m_ignitionLightHandle = LightHandle();
-				el->sample = audio::INVALID_ID;
-				
-				if((el->extras & EXTRAS_SPAWNFIRE)) {
-					el->extras |= EXTRAS_FLARE;
-					if(el->extras & EXTRAS_FIREPLACE) {
-						el->ex_flaresize = 95.f;
-					} else {
-						el->ex_flaresize = 40.f;
-					}
-				}
-			}
-		}
-		
+		loadLights(dat, pos, nb_lights);
 	} else {
 		pos += sizeof(DANAE_LS_LIGHT) * nb_lights;
 	}
@@ -456,54 +467,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	progressBarAdvance(4.f);
 	LoadLevelScreen();
 	
-	if(llh->nb_lights != 0) {
-		EERIE_LIGHT_GlobalInit();
-	}
-	
-	for(int i = 0; i < llh->nb_lights; i++) {
-		
-		const DANAE_LS_LIGHT * dlight = reinterpret_cast<const DANAE_LS_LIGHT *>(dat + pos);
-		pos += sizeof(DANAE_LS_LIGHT);
-		
-		long j = EERIE_LIGHT_Create();
-		if(j >= 0) {
-			EERIE_LIGHT * el = g_staticLights[j];
-			
-			el->m_exists = true;
-			el->m_isVisible = true;
-			el->fallend = dlight->fallend;
-			el->fallstart = dlight->fallstart;
-			el->falldiffmul = 1.f / (el->fallend - el->fallstart);
-			el->intensity = dlight->intensity;
-			
-			el->pos = dlight->pos.toVec3() + trans;
-			
-			el->rgb = dlight->rgb;
-			
-			el->extras = ExtrasType::load(dlight->extras);
-			
-			el->ex_flicker = dlight->ex_flicker;
-			el->ex_radius = dlight->ex_radius;
-			el->ex_frequency = dlight->ex_frequency;
-			el->ex_size = dlight->ex_size;
-			el->ex_speed = dlight->ex_speed;
-			el->ex_flaresize = dlight->ex_flaresize;
-			
-			el->m_ignitionStatus = !(el->extras & EXTRAS_STARTEXTINGUISHED);
-			
-			if((el->extras & EXTRAS_SPAWNFIRE) && (!(el->extras & EXTRAS_FLARE))) {
-				el->extras |= EXTRAS_FLARE;
-				if(el->extras & EXTRAS_FIREPLACE) {
-					el->ex_flaresize = 95.f;
-				} else {
-					el->ex_flaresize = 80.f;
-				}
-			}
-			
-			el->m_ignitionLightHandle = LightHandle();
-			el->sample = audio::INVALID_ID;
-		}
-	}
+	loadLights(dat, pos, size_t(llh->nb_lights), trans);
 	
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
