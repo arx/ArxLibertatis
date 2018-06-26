@@ -1365,7 +1365,10 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 }
 
 void ARX_SCENE_Update() {
-	arx_assert(portals);
+	
+	if(!portals) {
+		return;
+	}
 	
 	ARX_PROFILE_FUNC();
 	
