@@ -427,7 +427,7 @@ void ManageTorch() {
 		el->intensity = 1.6f;
 		el->fallstart = 280.f + rr * 20.f;
 		el->fallend = el->fallstart + 280.f;
-		el->exist = 1;
+		el->m_exists = true;
 		el->rgb = player.m_torchColor - Color3f(rr, rr, rr) * Color3f(0.1f, 0.1f, 0.1f);
 		el->duration = 0;
 		el->extras = 0;
@@ -438,7 +438,7 @@ void ManageTorch() {
 		el->intensity = 1.8f;
 		el->fallstart = 480.f;
 		el->fallend = el->fallstart + 480.f;
-		el->exist = 1;
+		el->m_exists = true;
 		el->rgb = Color3f(1.f, .5f, .8f);
 		el->duration = 0;
 		el->extras = 0;
@@ -453,10 +453,10 @@ void ManageTorch() {
 			el->fallstart = 140.f + float(count) * 0.333333f + rr * 5.f;
 			el->fallend = 220.f + float(count) * 0.5f + rr * 5.f;
 			el->intensity = 1.6f;
-			el->exist = 1;
+			el->m_exists = true;
 			el->rgb = Color3f(0.01f * count, 0.009f * count, 0.008f * count);
 		} else {
-			el->exist = 0;
+			el->m_exists = false;
 		}
 	}
 	

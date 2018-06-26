@@ -444,7 +444,7 @@ float PathFinder::getIlluminationCost(const Vec3f & pos) const {
 	
 	for(size_t i = 0; i < slight_c; i++) {
 		
-		if(!slight_l[i] || !slight_l[i]->exist || !slight_l[i]->m_ignitionStatus) {
+		if(!slight_l[i] || !slight_l[i]->m_exists || !slight_l[i]->m_ignitionStatus) {
 			continue;
 		}
 		
