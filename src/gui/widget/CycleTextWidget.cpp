@@ -19,6 +19,8 @@
 
 #include "gui/widget/CycleTextWidget.h"
 
+#include <algorithm>
+
 #include <boost/foreach.hpp>
 
 #include "graphics/Renderer.h"
@@ -102,21 +104,12 @@ void CycleTextWidget::Move(const Vec2f & offset) {
 
 void CycleTextWidget::hover() {
 
-	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow)) {
-		iPos--;
-
-		if(iPos <= 0)
-			iPos = 0;
-	} else {
-		if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow)) {
-			iPos++;
-
-			arx_assert(iPos >= 0);
-
-			if((size_t)iPos >= vText.size() - 1)
-				iPos = vText.size() - 1;
-		}
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow) || GInput->getMouseWheelDir() < 0) {
+		iPos = std::max(iPos - 1, 0);
+	} else if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow) || GInput->getMouseWheelDir() > 0) {
+		iPos = std::min(iPos + 1, int(vText.size()) - 1);
 	}
+	
 }
 
 bool CycleTextWidget::click() {
