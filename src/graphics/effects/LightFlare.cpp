@@ -73,9 +73,6 @@ void update2DFX() {
 			
 			el->m_flareFader -= temp_increase;
 
-			if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_PLAYERBOOK))
-				continue;
-
 			if(p.w > 0.f && pos2d.x > 0.f && pos2d.x < g_size.width()
 			   && pos2d.y > (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y)
 				 && pos2d.y < (g_size.height() - (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y))) {
