@@ -96,6 +96,14 @@ public:
 	Color3() : b(T(0)), g(T(0)), r(T(0)) { }
 	Color3(T _r, T _g, T _b) : b(_b), g(_g), r(_r) { }
 	
+	bool operator==(const Color3 & o) const {
+		return (r == o.r && g == o.g && b == o.b);
+	}
+	
+	bool operator!=(const Color3 & o) const {
+		return !(*this == o);
+	}
+	
 	static Color3 fromRGB(ColorRGB rgb) {
 		return Color3(value(rgb.t), value(rgb.t >> 8), value(rgb.t >> 16));
 	}
