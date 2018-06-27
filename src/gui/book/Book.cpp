@@ -223,32 +223,40 @@ void PlayerBook::manage() {
 	
 	update();
 	
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-
-		switch (currentPage()) {
-			case BOOKMODE_STATS: {
-				stats.manage();
-				break;
-			}
-			case BOOKMODE_SPELLS: {
-				spells.manage();
-				break;
-			}
-			case BOOKMODE_MINIMAP: {
-				map.manage();
-				break;
-			}
-			case BOOKMODE_QUESTS: {
-				questBook.manage();
-				break;
-			}
+	TextureStage::FilterMode filter = TextureStage::FilterLinear;
+	if(config.interface.hudScaleFilter == UIFilterNearest) {
+		filter = TextureStage::FilterNearest;
+	}
+	GRenderer->GetTextureStage(0)->setMinFilter(filter);
+	GRenderer->GetTextureStage(0)->setMagFilter(filter);
+	
+	switch (currentPage()) {
+		case BOOKMODE_STATS: {
+			stats.manage();
+			break;
 		}
+		case BOOKMODE_SPELLS: {
+			spells.manage();
+			break;
+		}
+		case BOOKMODE_MINIMAP: {
+			map.manage();
+			break;
+		}
+		case BOOKMODE_QUESTS: {
+			questBook.manage();
+			break;
+		}
+	}
+	
+	GRenderer->GetTextureStage(0)->setMinFilter(filter);
+	GRenderer->GetTextureStage(0)->setMagFilter(filter);
 		
-		manageTopTabs();
-
+	manageTopTabs();
+	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+	
 }
 
 void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool _toggle) {
@@ -1450,6 +1458,13 @@ void SpellsPage::drawSpells() {
 			
 			cursorSetInteraction();
 			DrawBookTextCenter(hFontInBook, bookPos + Vec2f(111, 26) * scale, spellInfo.name, Color::none);
+			
+			TextureStage::FilterMode filter = TextureStage::FilterLinear;
+			if(config.interface.hudScaleFilter == UIFilterNearest) {
+				filter = TextureStage::FilterNearest;
+			}
+			GRenderer->GetTextureStage(0)->setMinFilter(filter);
+			GRenderer->GetTextureStage(0)->setMagFilter(filter);
 			
 			pTextManage->Clear();
 			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
