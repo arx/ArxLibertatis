@@ -2077,3 +2077,21 @@ void ArxGame::manageEditorControls() {
 		}
 	}
 }
+
+float getInterfaceScale(float scaleFactor, bool roundToInteger) {
+	
+	float maxScale = minSizeRatio();
+	float scale = glm::clamp(1.f, maxScale * scaleFactor, maxScale);
+	
+	if(roundToInteger && maxScale > 1.f) {
+		if(scale < 1.3f || maxScale < 1.5f) {
+			scale = 1.f;
+		} else if(scale < 1.75f || maxScale < 2.f) {
+			scale = 1.5f;
+		} else {
+			scale = std::floor(std::min(scale + 0.5f, maxScale));
+		}
+	}
+	
+	return scale;
+}

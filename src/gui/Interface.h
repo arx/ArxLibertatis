@@ -198,6 +198,8 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, long num, Color color, float sc
 // 0 switch 1 forceopen 2 forceclose
 void InventoryOpenClose(unsigned long t);
 
+float getInterfaceScale(float scaleFactor, bool roundToInteger);
+
 extern bool g_cursorOverBook;
 
 #endif // ARX_GUI_INTERFACE_H
