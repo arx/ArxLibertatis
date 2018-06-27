@@ -61,6 +61,7 @@ struct SaveGame {
 class SaveGameList {
 	
 	struct IndexToHandle {
+		typedef SavegameHandle result_type;
 		SavegameHandle operator()(size_t index) const {
 			return SavegameHandle(long(index));
 		}
