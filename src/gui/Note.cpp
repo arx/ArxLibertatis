@@ -230,11 +230,16 @@ bool Note::allocate() {
 	
 	float bookScale = g_playerBook.getScale();
 	
-	if(m_currentRatio == g_sizeRatio && m_currentScale == bookScale) {
+	if(m_currentRatio == g_sizeRatio && m_currentScale == bookScale
+	   && m_currentFontSize == config.interface.fontSize && m_currentFontWeight == config.interface.fontWeight) {
 		return m_background != NULL;
 	}
+	m_currentRatio = g_sizeRatio;
+	m_currentScale = bookScale;
+	m_currentFontSize = config.interface.fontSize;
+	m_currentFontWeight = config.interface.fontWeight;
 	
-	ARX_Text_scaleNoteFont(bookScale);
+	ARX_Text_scaleNoteFont(bookScale * config.interface.fontSize, config.interface.fontWeight);
 	
 	do {
 		deallocate();
@@ -247,8 +252,6 @@ bool Note::allocate() {
 		}
 		
 		if(!m_background) {
-			m_currentRatio = g_sizeRatio;
-			m_currentScale = bookScale;
 			return false;
 		}
 	} while(!splitTextToPages());
@@ -256,8 +259,6 @@ bool Note::allocate() {
 	// Clamp the current page to a valid page.
 	setPage(m_page);
 	
-	m_currentRatio = g_sizeRatio;
-	m_currentScale = bookScale;
 	m_isCleared = false;
 	
 	return true;
