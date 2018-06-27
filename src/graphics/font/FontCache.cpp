@@ -63,7 +63,7 @@ class FontCache::Impl : private boost::noncopyable {
 		
 		#if __cplusplus >= 201103L
 		FontFile(const FontFile & other) = delete;
-		FontFile(FontFile && other);
+		FontFile(FontFile && other) noexcept;
 		#endif
 		
 		~FontFile();
@@ -124,7 +124,7 @@ FontCache::Impl::FontFile::FontFile(FT_Library library, const res::path & file)
 }
 
 #if __cplusplus >= 201103L
-FontCache::Impl::FontFile::FontFile(FontFile && other)
+FontCache::Impl::FontFile::FontFile(FontFile && other) noexcept
 	: m_file(std::move(other.m_file))
 	, m_data(std::move(other.m_data))
 	, m_face(other.m_face)
