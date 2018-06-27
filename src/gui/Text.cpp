@@ -381,8 +381,13 @@ bool ARX_Text_Init() {
 		LogWarning << "Missing debug font " << debugFontFile;
 		debugFontFile = file;
 	}
-	unsigned debugFontSize = unsigned(14.f * std::max(1.f, scale / 2.5f));
-	Font * nFontDebug      = FontCache::getFont(debugFontFile, debugFontSize);
+	float debugFontScale = scale / 2.5f;
+	if(debugFontScale < 0.5f) {
+		debugFontScale *= 2.f;
+	} else if(debugFontScale < 1.f) {
+		debugFontScale = 1.f;
+	}
+	Font * nFontDebug = FontCache::getFont(debugFontFile, unsigned(14.f * debugFontScale));
 	
 	// Only release old fonts after creating new ones to allow same fonts to be cached.
 	FontCache::releaseFont(hFontMainMenu);
