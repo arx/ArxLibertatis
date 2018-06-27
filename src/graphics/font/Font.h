@@ -38,15 +38,16 @@ public:
 	
 	struct Info {
 		
-		Info(const res::path & fontFile, unsigned fontSize)
-			: name(fontFile), size(fontSize) { }
+		Info(const res::path & fontFile, unsigned fontSize, unsigned fontWeight)
+			: name(fontFile), size(fontSize), weight(fontWeight) { }
 		
 		bool operator==(const Info & other) const {
-			return name == other.name && size == other.size;
+			return name == other.name && size == other.size && weight == other.weight;
 		}
 		
 		res::path name;
 		unsigned size;
+		unsigned weight;
 		
 	};
 	
@@ -161,6 +162,7 @@ public:
 	const Info & getInfo() const { return m_info; }
 	const res::path & getName() const { return m_info.name; }
 	unsigned getSize() const { return m_info.size; }
+	unsigned getWeight() const { return m_info.weight; }
 	
 	TextSize draw(const Vec2i & p, const std::string & str, const Color & color) {
 		return draw(p.x, p.y, str, color);
@@ -189,7 +191,7 @@ public:
 private:
 	
 	// Construction/destruction handled by FontCache only
-	Font(const res::path & file, unsigned size, struct FT_FaceRec_ * face);
+	Font(const res::path & file, unsigned size, unsigned weight, struct FT_FaceRec_ * face);
 	~Font();
 	
 	//! Maps the given character to a placeholder glyph
