@@ -275,7 +275,8 @@ static Font * createFont(const res::path & fontFace,
 	return newFont;
 }
 
-static float created_font_scale = 0.f;
+static float g_currentFontScale = 0.f;
+static float g_currentFontSize = 0.f;
 
 static bool getFontFile(res::path & result) {
 	
@@ -351,14 +352,14 @@ bool ARX_Text_Init() {
 	res::path debugFontFile = "misc/dejavusansmono.ttf";
 	
 	float scale = std::max(std::min(g_sizeRatio.y, g_sizeRatio.x), .001f);
-	if(scale == created_font_scale) {
+	if(scale == g_currentFontScale && config.interface.fontSize == g_currentFontSize) {
 		return true;
 	}
-	created_font_scale = scale;
+	g_currentFontScale = scale;
+	g_currentFontSize = config.interface.fontSize;
 	
-	// Keep small font small when increasing resolution
-	// TODO font size jumps around scale = 1
-	float small_scale = smallTextScale(scale);
+	// Keep small fonts small when increasing resolution
+	float smallScale = smallTextScale(scale) * config.interface.fontSize;
 	
 	delete pTextManage;
 	pTextManage = new TextManager();
@@ -369,9 +370,9 @@ bool ARX_Text_Init() {
 	Font * nFontMenu       = createFont(file, "system_font_menu_size", 32, scale);
 	Font * nFontControls   = createFont(file, "system_font_menucontrols_size", 22, scale);
 	Font * nFontCredits    = createFont(file, "system_font_menucredits_size", 36, scale);
-	Font * nFontInGame     = createFont(file, "system_font_book_size", 18, small_scale);
-	Font * nFontInGameNote = createFont(file, "system_font_note_size", 18, small_scale);
-	Font * nFontInBook     = createFont(file, "system_font_book_size", 18, small_scale);
+	Font * nFontInGame     = createFont(file, "system_font_book_size", 18, smallScale);
+	Font * nFontInGameNote = createFont(file, "system_font_note_size", 18, smallTextScale(scale));
+	Font * nFontInBook     = createFont(file, "system_font_book_size", 18, smallTextScale(scale));
 	Font * nFontDebug      = FontCache::getFont(debugFontFile, 14);
 	
 	// Only release old fonts after creating new ones to allow same fonts to be cached.
@@ -402,7 +403,7 @@ bool ARX_Text_Init() {
 	   || !hFontInBook
 	) {
 		LogCritical << "Could not load font " << file << " for scale " << scale
-		            << " / small scale " << small_scale;
+		            << " / small scale " << smallScale;
 		return false;
 	}
 	
@@ -422,7 +423,8 @@ bool ARX_Text_Init() {
 
 void ARX_Text_Close() {
 	
-	created_font_scale = 0.f;
+	g_currentFontScale = 0.f;
+	g_currentFontSize = 0.f;
 	
 	delete pTextManage;
 	pTextManage = NULL;
