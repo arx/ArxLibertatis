@@ -119,7 +119,7 @@ bool Font::insertGlyph(Char character) {
 		return false;
 	}
 	
-	error = FT_Load_Glyph(m_face, glyphIndex, FT_LOAD_FORCE_AUTOHINT);
+	error = FT_Load_Glyph(m_face, glyphIndex, FT_LOAD_TARGET_LIGHT);
 	if(error) {
 		insertPlaceholderGlyph(character);
 		return false;
