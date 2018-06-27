@@ -251,7 +251,7 @@ void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, 
 
 static Font * createFont(const res::path & fontFace,
                          const std::string & configSizeKey, unsigned int fontSize,
-                         float scaleFactor) {
+                         float scaleFactor, int fontWeight = 0) {
 
 	arx_assert(fontSize > 0);
 	arx_assert(scaleFactor > 0.f);
@@ -267,7 +267,7 @@ static Font * createFont(const res::path & fontFace,
 	
 	fontSize = unsigned(fontSize * scaleFactor);
 
-	Font * newFont = FontCache::getFont(fontFace, fontSize);
+	Font * newFont = FontCache::getFont(fontFace, fontSize, fontWeight);
 	if(!newFont) {
 		LogError << "Error loading font: " << fontFace << " of size " << fontSize;
 	}
@@ -277,6 +277,7 @@ static Font * createFont(const res::path & fontFace,
 
 static float g_currentFontScale = 0.f;
 static float g_currentFontSize = 0.f;
+static bool g_currentFontWeight = 0;
 
 static bool getFontFile(res::path & result) {
 	
@@ -316,14 +317,14 @@ static float smallTextScale(float scale) {
 	}
 }
 
-void ARX_Text_scaleBookFont(float scale) {
+void ARX_Text_scaleBookFont(float scale, int weight) {
 	
 	res::path file;
 	if(!getFontFile(file)) {
 		return;
 	}
 	
-	Font * nFontInBook = createFont(file, "system_font_book_size", 18, smallTextScale(scale));
+	Font * nFontInBook = createFont(file, "system_font_book_size", 18, smallTextScale(scale), weight);
 	FontCache::releaseFont(hFontInBook);
 	hFontInBook = nFontInBook;
 	
@@ -352,14 +353,17 @@ bool ARX_Text_Init() {
 	res::path debugFontFile = "misc/dejavusansmono.ttf";
 	
 	float scale = std::max(std::min(g_sizeRatio.y, g_sizeRatio.x), .001f);
-	if(scale == g_currentFontScale && config.interface.fontSize == g_currentFontSize) {
+	if(scale == g_currentFontScale
+	   && config.interface.fontSize == g_currentFontSize && config.interface.fontWeight == g_currentFontWeight) {
 		return true;
 	}
 	g_currentFontScale = scale;
 	g_currentFontSize = config.interface.fontSize;
+	g_currentFontWeight = config.interface.fontWeight;
 	
 	// Keep small fonts small when increasing resolution
 	float smallScale = smallTextScale(scale) * config.interface.fontSize;
+	int smallWeight = config.interface.fontWeight;
 	
 	delete pTextManage;
 	pTextManage = new TextManager();
@@ -372,7 +376,7 @@ bool ARX_Text_Init() {
 	Font * nFontCredits    = createFont(file, "system_font_menucredits_size", 36, scale);
 	Font * nFontInGame     = createFont(file, "system_font_book_size", 18, smallScale);
 	Font * nFontInGameNote = createFont(file, "system_font_note_size", 18, smallTextScale(scale));
-	Font * nFontInBook     = createFont(file, "system_font_book_size", 18, smallTextScale(scale));
+	Font * nFontInBook     = createFont(file, "system_font_book_size", 18, smallTextScale(scale), smallWeight);
 	Font * nFontDebug      = FontCache::getFont(debugFontFile, 14);
 	
 	// Only release old fonts after creating new ones to allow same fonts to be cached.
@@ -425,6 +429,7 @@ void ARX_Text_Close() {
 	
 	g_currentFontScale = 0.f;
 	g_currentFontSize = 0.f;
+	g_currentFontWeight = 0;
 	
 	delete pTextManage;
 	pTextManage = NULL;

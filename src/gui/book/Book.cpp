@@ -161,7 +161,7 @@ PlayerBook::PlayerBook()
 	: m_currentPage(BOOKMODE_STATS)
 	, lastRatio(Vec2f_ZERO)
 	, lastHudScale(0.f)
-	, lastScaleSetting(-1.0f)
+	, lastScaleSetting(-1.f)
 	, lastMenuMode(MenuMode(-1))
 { }
 
@@ -467,8 +467,7 @@ bool PlayerBook::needsUpdate() {
 void PlayerBook::updateScale() {
 	float maxScale = minSizeRatio();
 	g_bookScale = glm::clamp(1.f, 1.0f + (maxScale - 1.0f) * config.interface.bookScale, maxScale);
-	
-	ARX_Text_scaleBookFont(g_bookScale);
+	ARX_Text_scaleBookFont(g_bookScale, config.interface.fontWeight);
 }
 
 void PlayerBook::updateRect() {
