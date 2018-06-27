@@ -205,10 +205,10 @@ const std::string
 	limitSpeechWidth = "limit_speech_width",
 	cinematicWidescreenMode = "cinematic_widescreen_mode",
 	hudScale = "hud_scale",
-	bookScale = "book_scale",
 	hudScaleInteger = "hud_scale_integer",
+	bookScale = "book_scale",
 	scaleCursorWithHud = "scale_cursor_with_hud",
-	hudScaleFilter = "hud_scale_filter",
+	hudScaleFilter = "scale_filter",
 	fontSize = "font_size",
 	fontWeight = "font_weight",
 	thumbnailSize = "save_thumbnail_size";
@@ -447,12 +447,12 @@ bool Config::save() {
 	writer.writeKey(Key::limitSpeechWidth, interface.limitSpeechWidth);
 	writer.writeKey(Key::cinematicWidescreenMode, int(interface.cinematicWidescreenMode));
 	writer.writeKey(Key::hudScale, interface.hudScale);
+	writer.writeKey(Key::hudScaleInteger, interface.hudScaleInteger);
 	writer.writeKey(Key::bookScale, interface.bookScale);
 	writer.writeKey(Key::fontSize, interface.fontSize);
 	writer.writeKey(Key::fontWeight, interface.fontWeight);
-	writer.writeKey(Key::hudScaleInteger, interface.hudScaleInteger);
 	writer.writeKey(Key::scaleCursorWithHud, interface.scaleCursorWithHud);
-	writer.writeKey(Key::hudScaleFilter, interface.hudScaleFilter);
+	writer.writeKey(Key::hudScaleFilter, interface.scaleFilter);
 	std::ostringstream osst;
 	osst << interface.thumbnailSize.x << 'x' << interface.thumbnailSize.y;
 	writer.writeKey(Key::thumbnailSize, osst.str());
@@ -600,7 +600,7 @@ bool Config::init(const fs::path & file) {
 	interface.fontWeight = glm::clamp(fontWeight, 0, 5);
 	interface.scaleCursorWithHud = reader.getKey(Section::Interface, Key::scaleCursorWithHud, Default::scaleCursorWithHud);
 	int hudScaleFilter = reader.getKey(Section::Interface, Key::hudScaleFilter, Default::hudScaleFilter);
-	interface.hudScaleFilter = UIScaleFilter(glm::clamp(hudScaleFilter, 0, 1));
+	interface.scaleFilter = UIScaleFilter(glm::clamp(hudScaleFilter, 0, 1));
 	std::string thumbnailSize = reader.getKey(Section::Interface, Key::thumbnailSize, Default::thumbnailSize);
 	interface.thumbnailSize = parseThumbnailSize(thumbnailSize);
 	

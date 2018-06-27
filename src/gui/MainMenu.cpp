@@ -1308,7 +1308,7 @@ public:
 			cb->AddText(new TextWidget(hFontMenu, szMenuText));
 			szMenuText = getLocalised("system_menus_options_video_filter_bilinear", "Bilinear");
 			cb->AddText(new TextWidget(hFontMenu, szMenuText));
-			cb->setValue(config.interface.hudScaleFilter);
+			cb->setValue(config.interface.scaleFilter);
 			
 			cb->Move(Vec2f(RATIO_X(m_size.x - 9) - cb->m_rect.width(), 0));
 			panel->AddElement(cb);
@@ -1402,7 +1402,7 @@ private:
 	
 	void onChangedScaleFilter(int pos, const std::string & str) {
 		ARX_UNUSED(str);
-		config.interface.hudScaleFilter = UIScaleFilter(pos);
+		config.interface.scaleFilter = UIScaleFilter(pos);
 	}
 	
 	void onChangedFontSize(int state) {

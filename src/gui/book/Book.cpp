@@ -224,7 +224,7 @@ void PlayerBook::manage() {
 	update();
 	
 	TextureStage::FilterMode filter = TextureStage::FilterLinear;
-	if(config.interface.hudScaleFilter == UIFilterNearest) {
+	if(config.interface.scaleFilter == UIFilterNearest) {
 		filter = TextureStage::FilterNearest;
 	}
 	GRenderer->GetTextureStage(0)->setMinFilter(filter);
@@ -1460,7 +1460,7 @@ void SpellsPage::drawSpells() {
 			DrawBookTextCenter(hFontInBook, bookPos + Vec2f(111, 26) * scale, spellInfo.name, Color::none);
 			
 			TextureStage::FilterMode filter = TextureStage::FilterLinear;
-			if(config.interface.hudScaleFilter == UIFilterNearest) {
+			if(config.interface.scaleFilter == UIFilterNearest) {
 				filter = TextureStage::FilterNearest;
 			}
 			GRenderer->GetTextureStage(0)->setMinFilter(filter);

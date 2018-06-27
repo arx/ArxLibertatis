@@ -156,10 +156,10 @@ public:
 		CinematicWidescreenMode cinematicWidescreenMode;
 		
 		float hudScale;
-		float bookScale;
 		bool hudScaleInteger;
+		float bookScale;
 		bool scaleCursorWithHud;
-		UIScaleFilter hudScaleFilter;
+		UIScaleFilter scaleFilter;
 		
 		float fontSize;
 		int fontWeight;
