@@ -1295,15 +1295,15 @@ public:
 		
 		{
 			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_interface_hud_scale_filter",
-			                                      "HUD scale filter");
+			std::string szMenuText = getLocalised("system_menus_options_interface_scale_filter",
+			                                      "Scale filter");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->setEnabled(false);
 			panel->AddElement(txt);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
-			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScaleFilter, this, _1, _2);
+			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedScaleFilter, this, _1, _2);
 			szMenuText = getLocalised("system_menus_options_video_filter_nearest", "Nearest");
 			cb->AddText(new TextWidget(hFontMenu, szMenuText));
 			szMenuText = getLocalised("system_menus_options_video_filter_bilinear", "Bilinear");
@@ -1400,7 +1400,7 @@ private:
 		config.interface.scaleCursorWithHud = state != 0;
 	}
 	
-	void onChangedHudScaleFilter(int pos, const std::string & str) {
+	void onChangedScaleFilter(int pos, const std::string & str) {
 		ARX_UNUSED(str);
 		config.interface.hudScaleFilter = UIScaleFilter(pos);
 	}
