@@ -1317,6 +1317,48 @@ public:
 		}
 		
 		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_interface_font_size",
+			                                      "Font size");
+			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->setEnabled(false);
+			panel->AddElement(txt);
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
+			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedFontSize, this, _1);
+			sld->setValue(int(glm::clamp((config.interface.fontSize - 0.75f) * 20.f + 0.5f, 0.f, 10.f)));
+			panel->AddElement(sld);
+			addCenter(panel);
+		}
+		
+		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_interface_font_weight",
+			                                      "Font weight");
+			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->setEnabled(false);
+			panel->AddElement(txt);
+			
+			CycleTextWidget * cb = new CycleTextWidget;
+			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedFontWeight, this, _1, _2);
+			szMenuText = getLocalised("system_menus_options_interface_font_weight_0", "Thin");
+			cb->AddText(new TextWidget(hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_interface_font_weight_1", "Light");
+			cb->AddText(new TextWidget(hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_interface_font_weight_2", "Normal");
+			cb->AddText(new TextWidget(hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_interface_font_weight_3", "Medium");
+			cb->AddText(new TextWidget(hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_interface_font_weight_4", "Bold");
+			cb->AddText(new TextWidget(hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_interface_font_weight_5", "Heavy");
+			cb->AddText(new TextWidget(hFontMenu, szMenuText));
+			cb->setValue(config.interface.fontWeight);
+			cb->Move(Vec2f(RATIO_X(m_size.x - 9) - cb->m_rect.width(), 0));
+			panel->AddElement(cb);
+			addCenter(panel);
+		}
+		
+		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
@@ -1360,8 +1402,18 @@ private:
 	
 	void onChangedHudScaleFilter(int pos, const std::string & str) {
 		ARX_UNUSED(str);
-		
 		config.interface.hudScaleFilter = UIScaleFilter(pos);
+	}
+	
+	void onChangedFontSize(int state) {
+		config.interface.fontSize = 0.75f + float(state) / 20.f;
+		ARX_Text_Init();
+	}
+	
+	void onChangedFontWeight(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		config.interface.fontWeight = pos;
+		ARX_Text_Init();
 	}
 	
 };
