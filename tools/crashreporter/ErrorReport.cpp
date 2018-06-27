@@ -78,7 +78,7 @@ bool ErrorReport::Initialize() {
 		// Our SharedCrashInfo will be stored in this shared memory.
 		m_pCrashInfo = static_cast<CrashInfo *>(m_MemoryMappedRegion.get_address());
 		
-		#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+		#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 		if(m_pCrashInfo->window) {
 			QWindow * window = QWindow::fromWinId(m_pCrashInfo->window);
 			if(window) {
