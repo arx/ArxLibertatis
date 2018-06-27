@@ -759,7 +759,7 @@ void StatsPage::manageStats()
 	//------------------------------
 	
 	{
-	Vec2f pos = bookPos + Vec2f(294, 65) * scale;
+	Vec2f pos = bookPos + Vec2f(294, 63) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.strength;
@@ -775,7 +775,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(343, 65) * scale;
+	Vec2f pos = bookPos + Vec2f(343, 63) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.mind;
@@ -791,7 +791,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(393, 65) * scale;
+	Vec2f pos = bookPos + Vec2f(393, 63) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.dexterity;
@@ -807,7 +807,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(441, 65) * scale;
+	Vec2f pos = bookPos + Vec2f(441, 63) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.constitution;
@@ -824,7 +824,7 @@ void StatsPage::manageStats()
 	
 	// Player Skills
 	{
-	Vec2f pos = bookPos + Vec2f(308, 146) * scale;
+	Vec2f pos = bookPos + Vec2f(305, 144) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.stealth;
@@ -840,7 +840,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-		Vec2f pos = bookPos + Vec2f(372, 146) * scale;
+		Vec2f pos = bookPos + Vec2f(369, 144) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.mecanism;
@@ -856,7 +856,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(436, 146) * scale;
+	Vec2f pos = bookPos + Vec2f(433, 144) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.intuition;
@@ -872,7 +872,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(308, 201) * scale;
+	Vec2f pos = bookPos + Vec2f(305, 198) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.etheralLink;
@@ -888,7 +888,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(372, 201) * scale;
+	Vec2f pos = bookPos + Vec2f(369, 198) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.objectKnowledge;
@@ -904,7 +904,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(436, 201) * scale;
+	Vec2f pos = bookPos + Vec2f(433, 198) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.casting;
@@ -920,7 +920,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(308, 255) * scale;
+	Vec2f pos = bookPos + Vec2f(305, 253) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.closeCombat;
@@ -936,7 +936,7 @@ void StatsPage::manageStats()
 	}
 
 	{
-	Vec2f pos = bookPos + Vec2f(372, 255) * scale;
+	Vec2f pos = bookPos + Vec2f(369, 253) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.projectile;
@@ -952,7 +952,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(436, 255) * scale;
+	Vec2f pos = bookPos + Vec2f(433, 253) * scale;
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.defense;
@@ -969,7 +969,7 @@ void StatsPage::manageStats()
 	
 	// Secondary Attributes
 	{
-	Vec2f pos = bookPos + Vec2f(227, 94) * scale;
+	Vec2f pos = bookPos + Vec2f(227, 90) * scale;
 	
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.Full_maxlife);
@@ -980,7 +980,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(227, 154) * scale;
+	Vec2f pos = bookPos + Vec2f(227, 150) * scale;
 	
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.Full_maxmana);
@@ -991,7 +991,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(227, 214) * scale;
+	Vec2f pos = bookPos + Vec2f(227, 210) * scale;
 	
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.m_miscFull.damages);
@@ -1002,7 +1002,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(56, 94) * scale;
+	Vec2f pos = bookPos + Vec2f(54, 90) * scale;
 	
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.m_miscFull.armorClass);
@@ -1013,7 +1013,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(56, 154) * scale;
+	Vec2f pos = bookPos + Vec2f(54, 150) * scale;
 	
 	std::stringstream ss4;
 	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistMagic );
@@ -1024,7 +1024,7 @@ void StatsPage::manageStats()
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(56, 214) * scale;
+	Vec2f pos = bookPos + Vec2f(54, 210) * scale;
 	
 	std::stringstream ss4;
 	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistPoison );

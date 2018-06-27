@@ -628,7 +628,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 				                float(surf->m_size.y) * g_sizeRatio.y), 0.f, surf, Color::white);
 				
 				Vec2f textPos = Vec2f(DANAEMouse);
-				textPos += Vec2f(17.5f, 12.5f) * g_sizeRatio;
+				textPos += Vec2f(16.5f, 11.5f) * g_sizeRatio;
 				
 				std::stringstream ss;
 				ss << std::setw(3) << lCursorRedistValue;

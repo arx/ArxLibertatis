@@ -210,8 +210,8 @@ long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, cons
 }
 
 void UNICODE_ARXDrawTextCenter(Font * font, const Vec2f & pos, const std::string & str, Color col) {
-	Vec2i size = font->getTextSize(str);
-	font->draw(Vec2i(pos.x - (size.x / 2), pos.y), str, col);
+	s32 size = font->getTextSize(str).advance();
+	font->draw(Vec2i(pos.x - (size / 2), pos.y), str, col);
 }
 
 void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, const std::string & str,
