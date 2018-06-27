@@ -27,6 +27,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_SIZES_H
+#include FT_OUTLINE_H
 
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
@@ -44,8 +45,8 @@
 //! Pre-load all visible characters below this one when creating a font object
 static const Font::Char FONT_PRELOAD_LIMIT = 127;
 
-Font::Font(const res::path & file, unsigned size, FT_Face face)
-	: m_info(file, size)
+Font::Font(const res::path & file, unsigned size, unsigned weight, FT_Face face)
+	: m_info(file, size, weight)
 	, m_referenceCount(0)
 	, m_size(NULL)
 	, m_textures(NULL) {
@@ -134,12 +135,21 @@ bool Font::insertGlyph(Char character) {
 		return false;
 	}
 	
-	if(FT_Load_Glyph(m_size->face, glyphIndex, FT_LOAD_TARGET_LIGHT)) {
+	FT_Int32 flags = FT_LOAD_TARGET_LIGHT;
+	if(m_info.weight != 0) {
+		flags |= FT_LOAD_FORCE_AUTOHINT;
+	}
+	if(FT_Load_Glyph(m_size->face, glyphIndex, flags)) {
 		insertPlaceholderGlyph(character);
 		return false;
 	}
 	
 	FT_GlyphSlot ftGlyph = m_size->face->glyph;
+	
+	if(m_info.weight != 0 && ftGlyph->format == FT_GLYPH_FORMAT_OUTLINE) {
+		FT_Pos strength = FT_MulFix(m_size->face->units_per_EM, m_size->metrics.y_scale) / 24 * m_info.weight / 4;
+		FT_Outline_Embolden(&ftGlyph->outline, strength);
+	}
 	
 	if(FT_Render_Glyph(ftGlyph, FT_RENDER_MODE_NORMAL)) {
 		insertPlaceholderGlyph(character);

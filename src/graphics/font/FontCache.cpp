@@ -53,7 +53,7 @@ class FontCache::Impl : private boost::noncopyable {
 		FontMap m_sizes;
 		FT_Face m_face;
 		
-		static u32 sizeKey(unsigned size);
+		static u32 sizeKey(unsigned size, unsigned weight);
 		
 		void create(FT_Library library);
 		
@@ -68,7 +68,7 @@ class FontCache::Impl : private boost::noncopyable {
 		
 		~FontFile();
 		
-		Font * getSize(unsigned size);
+		Font * getSize(unsigned size, unsigned weight);
 		
 		void releaseSize(Font * font);
 		
@@ -85,7 +85,7 @@ class FontCache::Impl : private boost::noncopyable {
 	
 	~Impl();
 	
-	Font * getFont(const res::path & file, unsigned size);
+	Font * getFont(const res::path & file, unsigned size, unsigned weight);
 	
 	void releaseFont(Font * font);
 	
@@ -93,8 +93,12 @@ class FontCache::Impl : private boost::noncopyable {
 	
 };
 
-u32 FontCache::Impl::FontFile::sizeKey(unsigned size) {
-	return size;
+u32 FontCache::Impl::FontFile::sizeKey(unsigned size, unsigned weight) {
+	arx_assert(!(size & 0xff000000));
+	u32 key = size;
+	arx_assert(!(weight & 0xffffff00));
+	key |= (weight << 24);
+	return key;
 }
 
 void FontCache::Impl::FontFile::create(FT_Library library) {
@@ -140,9 +144,9 @@ FontCache::Impl::FontFile::~FontFile() {
 	
 }
 
-Font * FontCache::Impl::FontFile::getSize(unsigned size) {
+Font * FontCache::Impl::FontFile::getSize(unsigned size, unsigned weight) {
 	
-	u32 key = sizeKey(size);
+	u32 key = sizeKey(size, weight);
 	
 	FontMap::iterator it = m_sizes.find(key);
 	if(it != m_sizes.end()) {
@@ -159,7 +163,7 @@ Font * FontCache::Impl::FontFile::getSize(unsigned size) {
 		return NULL;
 	}
 	
-	Font * font = new Font(m_file, size, m_face);
+	Font * font = new Font(m_file, size, weight, m_face);
 	
 	m_sizes.insert(FontMap::value_type(key, font));
 	
@@ -167,7 +171,7 @@ Font * FontCache::Impl::FontFile::getSize(unsigned size) {
 }
 
 void FontCache::Impl::FontFile::releaseSize(Font * font) {
-	m_sizes.erase(sizeKey(font->getSize()));
+	m_sizes.erase(sizeKey(font->getSize(), font->getWeight()));
 	delete font;
 }
 
@@ -194,7 +198,7 @@ FontCache::Impl::~Impl() {
 	
 }
 
-Font * FontCache::Impl::getFont(const res::path & file, unsigned size) {
+Font * FontCache::Impl::getFont(const res::path & file, unsigned size, unsigned weight) {
 	
 	FontFiles::iterator it = m_files.find(file);
 	if(it == m_files.end()) {
@@ -205,7 +209,7 @@ Font * FontCache::Impl::getFont(const res::path & file, unsigned size) {
 		#endif
 	}
 	
-	Font * font = it->second.getSize(size);
+	Font * font = it->second.getSize(size, weight);
 	
 	if(font) {
 		font->m_referenceCount++;
@@ -251,8 +255,8 @@ void FontCache::shutdown() {
 	instance = NULL;
 }
 
-Font * FontCache::getFont(const res::path & file, unsigned size) {
-	return instance->getFont(file, size);
+Font * FontCache::getFont(const res::path & file, unsigned size, unsigned weight) {
+	return instance->getFont(file, size, weight);
 }
 
 void FontCache::releaseFont(Font * font) {

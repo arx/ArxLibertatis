@@ -33,7 +33,7 @@ public:
 	static void initialize();
 	static void shutdown();
 	
-	static Font * getFont(const res::path & file, unsigned size);
+	static Font * getFont(const res::path & file, unsigned size, unsigned weight = 0);
 	
 	static void releaseFont(Font * font);
 	
