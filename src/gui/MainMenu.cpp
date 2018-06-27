@@ -1284,6 +1284,16 @@ public:
 		}
 		
 		{
+			std::string szMenuText = getLocalised("system_menus_options_interface_book_scale_integer",
+			                                      "Round book scale factor");
+			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedBookScaleInteger, this, _1);
+			cb->iState = config.interface.bookScaleInteger ? 1 : 0;
+			addCenter(cb);
+		}
+		
+		{
 			std::string szMenuText = getLocalised("system_menus_options_interface_scale_cursor_with_hud",
 			                                      "Scale cursor with HUD");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
@@ -1394,6 +1404,10 @@ private:
 	
 	void onChangedBookScale(int state) {
 		config.interface.bookScale = float(state) * 0.1f;
+	}
+	
+	void onChangedBookScaleInteger(int state) {
+		config.interface.bookScaleInteger = state != 0;
 	}
 	
 	void onChangedScaleCursorWithHud(int state) {
