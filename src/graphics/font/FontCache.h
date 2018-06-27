@@ -33,8 +33,9 @@ public:
 	static void initialize();
 	static void shutdown();
 	
-	static Font * getFont(const res::path & fontFile, unsigned int fontSize);
-	static void releaseFont(Font * pFont);
+	static Font * getFont(const res::path & file, unsigned size);
+	
+	static void releaseFont(Font * font);
 	
 private:
 	
@@ -43,6 +44,7 @@ private:
 	~FontCache();
 	
 	static Impl * instance;
+	
 };
 
 #endif // ARX_GRAPHICS_FONT_FONTCACHE_H

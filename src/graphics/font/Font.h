@@ -38,19 +38,15 @@ public:
 	
 	struct Info {
 		
-		Info(const res::path & fontFile, unsigned int fontSize)
+		Info(const res::path & fontFile, unsigned fontSize)
 			: name(fontFile), size(fontSize) { }
 		
 		bool operator==(const Info & other) const {
 			return name == other.name && size == other.size;
 		}
 		
-		bool operator<(const Info & other) const  {
-			return name == other.name ? size < other.size : name < other.name;
-		}
-		
 		res::path name;
-		unsigned int size;
+		unsigned size;
 		
 	};
 	
@@ -164,7 +160,7 @@ public:
 	
 	const Info & getInfo() const { return m_info; }
 	const res::path & getName() const { return m_info.name; }
-	unsigned int getSize() const { return m_info.size; }
+	unsigned getSize() const { return m_info.size; }
 	
 	TextSize draw(const Vec2i & p, const std::string & str, const Color & color) {
 		return draw(p.x, p.y, str, color);
@@ -193,7 +189,7 @@ public:
 private:
 	
 	// Construction/destruction handled by FontCache only
-	Font(const res::path & fontFile, unsigned int fontSize, struct FT_FaceRec_ * face);
+	Font(const res::path & file, unsigned size, struct FT_FaceRec_ * face);
 	~Font();
 	
 	//! Maps the given character to a placeholder glyph
@@ -221,7 +217,7 @@ private:
 	Info m_info;
 	unsigned int m_referenceCount;
 	
-	struct FT_FaceRec_ * m_face;
+	struct FT_SizeRec_ * m_size;
 	std::map<Char, Glyph> m_glyphs;
 	typedef std::map<Char, Glyph>::const_iterator glyph_iterator;
 	

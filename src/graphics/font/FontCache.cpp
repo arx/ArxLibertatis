@@ -28,6 +28,8 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include <boost/noncopyable.hpp>
+
 #include "gui/Credits.h"
 #include "graphics/font/Font.h"
 #include "io/fs/FilePath.h"
@@ -36,43 +38,143 @@
 #include "io/resource/ResourcePath.h"
 #include "platform/CrashHandler.h"
 
-class FontCache::Impl {
+
+class FontCache::Impl : private boost::noncopyable {
 	
-private:
-	
-	Impl();
-	~Impl();
-	
-	typedef std::map<unsigned, Font *> FontMap;
-	
-	struct FontFile {
+	class FontFile {
 		
+		typedef std::map<u32, Font *> FontMap;
+		
+		res::path m_file;
+		#if __cplusplus < 201103L
+		FT_Library m_library;
+		#endif
 		std::string m_data;
-		
 		FontMap m_sizes;
+		FT_Face m_face;
+		
+		static u32 sizeKey(unsigned size);
+		
+		void create(FT_Library library);
+		
+	public:
+		
+		explicit FontFile(FT_Library library, const res::path & file);
+		
+		#if __cplusplus >= 201103L
+		FontFile(const FontFile & other) = delete;
+		FontFile(FontFile && other);
+		#endif
+		
+		~FontFile();
+		
+		Font * getSize(unsigned size);
+		
+		void releaseSize(Font * font);
+		
+		bool empty() const { return m_sizes.empty(); }
 		
 	};
 	
-	Font * create(const res::path & fontFile, FontFile & file, unsigned int fontSize);
+	typedef std::map<res::path, FontFile> FontFiles;
 	
-	Font * getFont(const res::path & fontFile, unsigned int fontSize);
+	FontFiles m_files;
+	FT_Library m_library;
+	
+	Impl();
+	
+	~Impl();
+	
+	Font * getFont(const res::path & file, unsigned size);
 	
 	void releaseFont(Font * font);
 	
-	void clean(const res::path & fontFile);
-	
-	typedef std::map<res::path, FontFile> FontFiles;
-	FontFiles m_files;
-	
-	FT_Library m_library;
-	
 	friend class FontCache;
+	
 };
+
+u32 FontCache::Impl::FontFile::sizeKey(unsigned size) {
+	return size;
+}
+
+void FontCache::Impl::FontFile::create(FT_Library library) {
+	
+	const FT_Byte * data = reinterpret_cast<const FT_Byte *>(m_data.data());
+	FT_New_Memory_Face(library, data, FT_Long(m_data.size()), 0, &m_face);
+	
+}
+
+FontCache::Impl::FontFile::FontFile(FT_Library library, const res::path & file)
+	: m_file(file)
+	#if __cplusplus < 201103L
+	, m_library(library)
+	#endif
+	, m_data(g_resources->read(file))
+	, m_face(NULL)
+{
+	
+	#if __cplusplus >= 201103L
+	create(library);
+	#endif
+	
+}
+
+#if __cplusplus >= 201103L
+FontCache::Impl::FontFile::FontFile(FontFile && other)
+	: m_file(std::move(other.m_file))
+	, m_data(std::move(other.m_data))
+	, m_face(other.m_face)
+{
+	other.m_face = NULL;
+}
+#endif
+
+FontCache::Impl::FontFile::~FontFile() {
+	
+	arx_assert(empty());
+	
+	if(m_face) {
+		// Release FreeType face object.
+		FT_Done_Face(m_face);
+	}
+	
+}
+
+Font * FontCache::Impl::FontFile::getSize(unsigned size) {
+	
+	u32 key = sizeKey(size);
+	
+	FontMap::iterator it = m_sizes.find(key);
+	if(it != m_sizes.end()) {
+		return it->second;
+	}
+	
+	#if __cplusplus < 201103L
+	if(!m_face) {
+		create(m_library);
+	}
+	#endif
+	
+	if(!m_face) {
+		return NULL;
+	}
+	
+	Font * font = new Font(m_file, size, m_face);
+	
+	m_sizes.insert(FontMap::value_type(key, font));
+	
+	return font;
+}
+
+void FontCache::Impl::FontFile::releaseSize(Font * font) {
+	m_sizes.erase(sizeKey(font->getSize()));
+	delete font;
+}
 
 FontCache::Impl::Impl() : m_library(NULL) {
 	
 	FT_Init_FreeType(&m_library);
-
+	
 	FT_Int ftMajor, ftMinor, ftPatch;
 	FT_Library_Version(m_library, &ftMajor, &ftMinor, &ftPatch);
 	
@@ -85,68 +187,33 @@ FontCache::Impl::Impl() : m_library(NULL) {
 }
 
 FontCache::Impl::~Impl() {
-	arx_assert_msg(m_files.size() == 0, "Someone is probably leaking fonts!");
+	
+	arx_assert_msg(m_files.empty(), "Someone is probably leaking fonts!");
+	
 	FT_Done_FreeType(m_library);
+	
 }
 
-Font * FontCache::Impl::getFont(const res::path & fontFile, unsigned int fontSize) {
+Font * FontCache::Impl::getFont(const res::path & file, unsigned size) {
 	
-	FontFile & file = m_files[fontFile];
-	
-	Font * pFont = 0;
-	FontMap::iterator it = file.m_sizes.find(fontSize);
-	if(it == file.m_sizes.end()) {
-		pFont = create(fontFile, file, fontSize);
-		if(pFont) {
-			file.m_sizes[fontSize] = pFont;
-		}
-	} else {
-		pFont = (*it).second;
+	FontFiles::iterator it = m_files.find(file);
+	if(it == m_files.end()) {
+		#if __cplusplus >= 201103L
+		it = m_files.emplace(file, FontFile(m_library, file)).first;
+		#else
+		it = m_files.insert(FontFiles::value_type(file, FontFile(m_library, file))).first;
+		#endif
 	}
 	
-	if(pFont) {
-		pFont->m_referenceCount++;
-	} else {
-		clean(fontFile);
+	Font * font = it->second.getSize(size);
+	
+	if(font) {
+		font->m_referenceCount++;
+	} else if(it->second.empty()) {
+		m_files.erase(it);
 	}
 	
-	return pFont;
-}
-
-Font * FontCache::Impl::create(const res::path & font, FontFile & file, unsigned int size) {
-	
-	if(file.m_data.empty()) {
-		LogDebug("loading file " << font);
-		file.m_data = g_resources->read(font);
-		if(file.m_data.empty()) {
-			return NULL;
-		}
-	}
-	
-	LogDebug("creating font " << font << " @ " << size);
-	
-	// TODO The font face should be shared between multiple Font instances of the same file
-	FT_Face face;
-	const FT_Byte * data = reinterpret_cast<const FT_Byte *>(file.m_data.data());
-	FT_Error error = FT_New_Memory_Face(m_library, data, FT_Long(file.m_data.size()), 0, &face);
-	if(error == FT_Err_Unknown_File_Format) {
-		// the font file's format is unsupported
-		LogError << "Font creation error: FT_Err_Unknown_File_Format";
-		return NULL;
-	} else if(error) {
-		// ... another error code means that the font file could not
-		// ... be opened or read, or simply that it is broken...
-		return NULL;
-	}
-	
-	// Windows default is 96dpi
-	// FreeType default is 72dpi
-	error = FT_Set_Char_Size(face, 0, size * 64, 64, 64);
-	if(error) {
-		return NULL;
-	}
-	
-	return new Font(font, size, face);
+	return font;
 }
 
 void FontCache::Impl::releaseFont(Font * font) {
@@ -156,28 +223,19 @@ void FontCache::Impl::releaseFont(Font * font) {
 	}
 	
 	font->m_referenceCount--;
-	
-	if(font->m_referenceCount == 0) {
-		
-		FontFile & file = m_files[font->getName()];
-		
-		LogDebug("destroying font " << font->getName() << " @ " << font->getSize());
-		file.m_sizes.erase(font->getSize());
-		
-		clean(font->getName());
-		
-		delete font;
+	if(font->m_referenceCount != 0) {
+		return;
 	}
-}
-
-void FontCache::Impl::clean(const res::path & fontFile) {
 	
-	FontFiles::iterator it = m_files.find(fontFile);
+	FontFiles::iterator it = m_files.find(font->getName());
+	arx_assert(it != m_files.end());
 	
-	if(it != m_files.end() && it->second.m_sizes.empty()) {
-		LogDebug("unloading file " << fontFile);
+	it->second.releaseSize(font);
+	
+	if(it->second.empty()) {
 		m_files.erase(it);
 	}
+	
 }
 
 FontCache::Impl * FontCache::instance = NULL;
@@ -193,8 +251,8 @@ void FontCache::shutdown() {
 	instance = NULL;
 }
 
-Font * FontCache::getFont(const res::path & fontFile, unsigned int fontSize) {
-	return instance->getFont(fontFile, fontSize);
+Font * FontCache::getFont(const res::path & file, unsigned size) {
+	return instance->getFont(file, size);
 }
 
 void FontCache::releaseFont(Font * font) {
