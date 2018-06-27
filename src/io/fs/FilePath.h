@@ -57,16 +57,10 @@ public:
 	static const char ext_sep = '.';
 	
 	path() { }
-	path(const path & other) : pathstr(other.pathstr) { }
 	/* implicit */ path(const std::string & str) : pathstr(load(str)) { }
 	/* implicit */ path(const char * str) : pathstr(load(str)) { }
 	path(const char * begin, const char * end)
 		: pathstr(load(std::string(begin, end))) { }
-	
-	path & operator=(const path & other) {
-		pathstr = other.pathstr;
-		return *this;
-	}
 	
 	path operator/(const path & other) const;
 	
