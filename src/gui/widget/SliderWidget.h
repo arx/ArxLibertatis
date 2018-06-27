@@ -52,6 +52,8 @@ public:
 	
 private:
 	
+	void newValue(int);
+	
 	ButtonWidget * pLeftButton;
 	ButtonWidget * pRightButton;
 	TextureContainer * pTex1;
