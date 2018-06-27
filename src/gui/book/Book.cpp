@@ -474,7 +474,7 @@ bool PlayerBook::needsUpdate() {
 
 void PlayerBook::updateScale() {
 	float maxScale = minSizeRatio();
-	g_bookScale = glm::clamp(1.f, 1.0f + (maxScale - 1.0f) * config.interface.bookScale, maxScale);
+	g_bookScale = glm::clamp(1.f, maxScale * config.interface.bookScale, maxScale);
 	ARX_Text_scaleBookFont(g_bookScale, config.interface.fontWeight);
 }
 
