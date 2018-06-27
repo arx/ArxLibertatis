@@ -86,6 +86,7 @@ const bool
 	colorkeyAntialiasing = true,
 	limitSpeechWidth = true,
 	hudScaleInteger = true,
+	bookScaleInteger = false,
 	scaleCursorWithHud = true,
 	minimizeOnFocusLost = true,
 	eax = true,
@@ -207,6 +208,7 @@ const std::string
 	hudScale = "hud_scale",
 	hudScaleInteger = "hud_scale_integer",
 	bookScale = "book_scale",
+	bookScaleInteger = "book_scale_integer",
 	scaleCursorWithHud = "scale_cursor_with_hud",
 	hudScaleFilter = "scale_filter",
 	fontSize = "font_size",
@@ -449,6 +451,7 @@ bool Config::save() {
 	writer.writeKey(Key::hudScale, interface.hudScale);
 	writer.writeKey(Key::hudScaleInteger, interface.hudScaleInteger);
 	writer.writeKey(Key::bookScale, interface.bookScale);
+	writer.writeKey(Key::bookScaleInteger, interface.bookScaleInteger);
 	writer.writeKey(Key::fontSize, interface.fontSize);
 	writer.writeKey(Key::fontWeight, interface.fontWeight);
 	writer.writeKey(Key::scaleCursorWithHud, interface.scaleCursorWithHud);
@@ -594,6 +597,7 @@ bool Config::init(const fs::path & file) {
 	interface.hudScaleInteger = reader.getKey(Section::Interface, Key::hudScaleInteger, Default::hudScaleInteger);
 	float bookScale = reader.getKey(Section::Interface, Key::bookScale, Default::bookScale);
 	interface.bookScale = glm::clamp(bookScale, 0.f, 1.f);
+	interface.bookScaleInteger = reader.getKey(Section::Interface, Key::bookScaleInteger, Default::bookScaleInteger);
 	float fontSize = reader.getKey(Section::Interface, Key::fontSize, Default::fontSize);
 	interface.fontSize = glm::clamp(fontSize, 0.5f, 2.f);
 	int fontWeight = reader.getKey(Section::Interface, Key::fontWeight, Default::fontWeight);

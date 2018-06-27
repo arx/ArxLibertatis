@@ -158,6 +158,7 @@ public:
 		float hudScale;
 		bool hudScaleInteger;
 		float bookScale;
+		bool bookScaleInteger;
 		bool scaleCursorWithHud;
 		UIScaleFilter scaleFilter;
 		
