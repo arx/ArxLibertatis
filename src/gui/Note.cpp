@@ -160,8 +160,8 @@ void Note::calculateLayout() {
 		
 		case QuestBook: {
 			newPos = g_playerBook.getArea().topLeft();
-			newTextStart = Vec2f(40.f, 40.f);
-			newTextEnd = Vec2f(m_background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 65.f);
+			newTextStart = Vec2f(40.f, 30.f);
+			newTextEnd = Vec2f(m_background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 45.f);
 			m_maxPages = std::numeric_limits<size_t>::max();
 			prevButtonOffset = Vec2f(8.f, -6.f);
 			nextButtonOffset = Vec2f(-15.f, -6.f);
