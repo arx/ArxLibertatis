@@ -56,6 +56,7 @@
 #include "platform/CrashHandler.h"
 #include "platform/Environment.h"
 #include "platform/WindowsUtils.h"
+#include "platform/profiler/Profiler.h"
 #include "window/SDL2X11Util.h"
 
 // Avoid including SDL_syswm.h without SDL_PROTOTYPES_ONLY on non-Windows systems
@@ -713,6 +714,7 @@ void SDL2Window::tick() {
 }
 
 void SDL2Window::showFrame() {
+	ARX_PROFILE_FUNC();
 	SDL_GL_SwapWindow(m_window);
 }
 
