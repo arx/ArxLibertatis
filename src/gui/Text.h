@@ -72,7 +72,9 @@ void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y,
                                        PlatformDuration iTimeScroll, float fSpeed,
                                        int iNbLigne, PlatformDuration iTimeOut = PlatformDurationMs(INT_MAX));
 
-long ARX_UNICODE_ForceFormattingInRect(Font * font, std::string::const_iterator txtbegin, std::string::const_iterator txtend, const Rect & _rRect);
+long ARX_UNICODE_ForceFormattingInRect(Font * font, std::string::const_iterator txtbegin,
+                                       std::string::const_iterator txtend, const Rect & rect,
+                                       bool noOneLineParagraphs = false);
 long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, const std::string & text, Color col, const Rect * pClipRect = NULL);
 
 bool ARX_Text_Init();
