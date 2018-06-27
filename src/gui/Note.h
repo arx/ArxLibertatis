@@ -44,6 +44,9 @@ struct Note {
 		: m_isCleared(true)
 		, m_type(Undefined)
 		, m_currentRatio(Vec2f_ZERO)
+		, m_currentScale(0.f)
+		, m_currentFontSize(0.f)
+		, m_currentFontWeight(0)
 		, m_page(0)
 		, m_pageSpacing(20)
 		, m_maxPages(1)
@@ -87,6 +90,8 @@ private:
 	
 	Vec2f m_currentRatio;
 	float m_currentScale;
+	float m_currentFontSize;
+	int m_currentFontWeight;
 	
 	std::vector<std::string> m_pages;
 	size_t m_page;

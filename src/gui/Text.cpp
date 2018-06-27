@@ -330,14 +330,14 @@ void ARX_Text_scaleBookFont(float scale, int weight) {
 	
 }
 
-void ARX_Text_scaleNoteFont(float scale) {
+void ARX_Text_scaleNoteFont(float scale, int weight) {
 	
 	res::path file;
 	if(!getFontFile(file)) {
 		return;
 	}
 	
-	Font * nFontInGameNote = createFont(file, "system_font_note_size", 18, smallTextScale(scale));
+	Font * nFontInGameNote = createFont(file, "system_font_note_size", 18, smallTextScale(scale), weight);
 	FontCache::releaseFont(hFontInGameNote);
 	hFontInGameNote = nFontInGameNote;
 	
@@ -375,7 +375,7 @@ bool ARX_Text_Init() {
 	Font * nFontControls   = createFont(file, "system_font_menucontrols_size", 22, scale);
 	Font * nFontCredits    = createFont(file, "system_font_menucredits_size", 36, scale);
 	Font * nFontInGame     = createFont(file, "system_font_book_size", 18, smallScale);
-	Font * nFontInGameNote = createFont(file, "system_font_note_size", 18, smallTextScale(scale));
+	Font * nFontInGameNote = createFont(file, "system_font_note_size", 18, smallScale, smallWeight);
 	Font * nFontInBook     = createFont(file, "system_font_book_size", 18, smallTextScale(scale), smallWeight);
 	Font * nFontDebug      = FontCache::getFont(debugFontFile, 14);
 	
