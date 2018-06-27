@@ -775,7 +775,7 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 	
 	if(!draginter) {
 		TextureStage::FilterMode filter = TextureStage::FilterLinear;
-		if(config.interface.hudScaleFilter == UIFilterNearest) {
+		if(config.interface.scaleFilter == UIFilterNearest) {
 			filter = TextureStage::FilterNearest;
 		}
 		GRenderer->GetTextureStage(0)->setMinFilter(filter);
