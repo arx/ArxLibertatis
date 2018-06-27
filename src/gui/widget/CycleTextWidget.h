@@ -56,6 +56,8 @@ public:
 	
 private:
 	
+	void newValue(int);
+	
 	ButtonWidget * pLeftButton;
 	ButtonWidget * pRightButton;
 	std::vector<TextWidget *> vText;

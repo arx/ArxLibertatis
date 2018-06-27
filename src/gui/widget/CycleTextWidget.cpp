@@ -105,9 +105,9 @@ void CycleTextWidget::Move(const Vec2f & offset) {
 void CycleTextWidget::hover() {
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow) || GInput->getMouseWheelDir() < 0) {
-		iPos = std::max(iPos - 1, 0);
+		newValue(iPos - 1);
 	} else if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow) || GInput->getMouseWheelDir() > 0) {
-		iPos = std::min(iPos + 1, int(vText.size()) - 1);
+		newValue(iPos + 1);
 	}
 	
 }
@@ -130,21 +130,10 @@ bool CycleTextWidget::click() {
 	
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
-			iPos--;
-			if(iPos < 0) {
-				iPos = vText.size() - 1;
-			}
+			newValue(iPos - 1);
 		} else {
-			iPos++;
-			arx_assert(iPos >= 0);
-			if(size_t(iPos) >= vText.size()) {
-				iPos = 0;
-			}
+			newValue(iPos + 1);
 		}
-	}
-	
-	if(valueChanged) {
-		valueChanged(iPos, vText.at(iPos)->text());
 	}
 	
 	return result;
@@ -170,6 +159,23 @@ void CycleTextWidget::render(bool /* mouseOver */) {
 	
 	if(iPos >= 0 && size_t(iPos) < vText.size() && vText[iPos]) {
 		vText[iPos]->render(vText[iPos]->m_rect.contains(cursor));
+	}
+	
+}
+
+void CycleTextWidget::newValue(int value) {
+	
+	iPos = value;
+	
+	while(iPos >= int(vText.size())) {
+		iPos -= int(vText.size());
+	}
+	while(iPos < 0) {
+		iPos += int(vText.size());
+	}
+	
+	if(valueChanged) {
+		valueChanged(iPos, vText.at(iPos)->text());
 	}
 	
 }
