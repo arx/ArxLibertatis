@@ -473,9 +473,26 @@ bool PlayerBook::needsUpdate() {
 }
 
 void PlayerBook::updateScale() {
+	
 	float maxScale = minSizeRatio();
-	g_bookScale = glm::clamp(1.f, maxScale * config.interface.bookScale, maxScale);
-	ARX_Text_scaleBookFont(g_bookScale, config.interface.fontWeight);
+	float scale = glm::clamp(1.f, maxScale * config.interface.bookScale, maxScale);
+	
+	if(config.interface.bookScaleInteger && maxScale > 1.f) {
+		if(scale < 1.3f || maxScale < 1.5f) {
+			scale = 1.f;
+		} else if(scale < 1.75f || maxScale < 2.f) {
+			scale = 1.5f;
+		} else {
+			scale = std::floor(std::min(scale + 0.5f, maxScale));
+		}
+	}
+	
+	if(needsUpdate() || scale != g_bookScale) {
+		g_bookScale = scale;
+		ARX_Text_scaleBookFont(g_bookScale, config.interface.fontWeight);
+		updateRect();
+	}
+	
 }
 
 void PlayerBook::updateRect() {
@@ -507,10 +524,7 @@ void PlayerBook::updateRect() {
 }
 
 void PlayerBook::update() {
-	if(needsUpdate()) {
-		updateScale();
-		updateRect();
-	}
+	updateScale();
 }
 
 enum ARX_INTERFACE_BOOK_ITEM
