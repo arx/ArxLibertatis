@@ -267,7 +267,7 @@ static Font * createFont(const res::path & fontFace,
 	
 	fontSize = unsigned(fontSize * scaleFactor);
 
-	Font * newFont = FontCache::getFont(fontFace, fontSize, fontWeight);
+	Font * newFont = FontCache::getFont(fontFace, fontSize, unsigned(fontWeight));
 	if(!newFont) {
 		LogError << "Error loading font: " << fontFace << " of size " << fontSize;
 	}
@@ -277,7 +277,7 @@ static Font * createFont(const res::path & fontFace,
 
 static float g_currentFontScale = 0.f;
 static float g_currentFontSize = 0.f;
-static bool g_currentFontWeight = 0;
+static int g_currentFontWeight = 0;
 
 static bool getFontFile(res::path & result) {
 	
