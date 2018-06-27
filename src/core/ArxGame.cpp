@@ -2022,6 +2022,8 @@ void ArxGame::renderLevel() {
 
 void ArxGame::render() {
 	
+	ARX_PROFILE_FUNC();
+	
 	SetActiveCamera(&g_playerCamera);
 	
 	// Update Various Player Infos for this frame.
