@@ -161,6 +161,9 @@ public:
 		bool scaleCursorWithHud;
 		UIScaleFilter hudScaleFilter;
 		
+		float fontSize;
+		int fontWeight;
+		
 		Vec2i thumbnailSize;
 		
 	} interface;
