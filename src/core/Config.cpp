@@ -69,7 +69,7 @@ const int
 	alphaCutoutAntialiasing = 2,
 	cinematicWidescreenMode = CinematicFadeEdges,
 	hudScaleFilter = UIFilterBilinear,
-	fontWeight = 0,
+	fontWeight = 2,
 	hrtf = audio::HRTFDefault,
 	autoReadyWeapon = AutoReadyWeaponNearEnemies,
 	mouseSensitivity = 6,
