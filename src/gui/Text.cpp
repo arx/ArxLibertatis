@@ -350,8 +350,6 @@ bool ARX_Text_Init() {
 		return false;
 	}
 	
-	res::path debugFontFile = "misc/dejavusansmono.ttf";
-	
 	float scale = std::max(std::min(g_sizeRatio.y, g_sizeRatio.x), .001f);
 	if(scale == g_currentFontScale
 	   && config.interface.fontSize == g_currentFontSize && config.interface.fontWeight == g_currentFontWeight) {
@@ -377,7 +375,10 @@ bool ARX_Text_Init() {
 	Font * nFontInGame     = createFont(file, "system_font_book_size", 18, smallScale);
 	Font * nFontInGameNote = createFont(file, "system_font_note_size", 18, smallScale, smallWeight);
 	Font * nFontInBook     = createFont(file, "system_font_book_size", 18, smallTextScale(scale), smallWeight);
-	Font * nFontDebug      = FontCache::getFont(debugFontFile, 14);
+	
+	res::path debugFontFile = "misc/dejavusansmono.ttf";
+	unsigned debugFontSize = unsigned(14.f * std::max(1.f, scale / 2.5f));
+	Font * nFontDebug      = FontCache::getFont(debugFontFile, debugFontSize);
 	
 	// Only release old fonts after creating new ones to allow same fonts to be cached.
 	FontCache::releaseFont(hFontMainMenu);
