@@ -73,9 +73,9 @@ void SliderWidget::Move(const Vec2f & offset) {
 void SliderWidget::hover() {
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow) || GInput->getMouseWheelDir() < 0) {
-		m_value = std::max(m_value - 1, m_minimum);
+		newValue(m_value - 1);
 	} else if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow) || GInput->getMouseWheelDir() > 0) {
-		m_value = std::min(m_value + 1, 10);
+		newValue(m_value + 1);
 	}
 	
 }
@@ -90,19 +90,13 @@ bool SliderWidget::click() {
 	
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
-			m_value--;
+			newValue(m_value - 1);
 		} else  if(pRightButton->m_rect.contains(cursor)) {
-			m_value++;
+			newValue(m_value + 1);
 		} else {
 			float width = pRightButton->m_rect.left - pLeftButton->m_rect.right;
-			int value = int(glm::round((cursor.x - pLeftButton->m_rect.right ) / width * 10));
-			m_value = value;
+			newValue(int(glm::round((cursor.x - pLeftButton->m_rect.right ) / width * 10)));
 		}
-		m_value = arx::clamp(m_value, m_minimum, 10);
-	}
-	
-	if(valueChanged) {
-		valueChanged(m_value);
 	}
 	
 	return result;
@@ -143,6 +137,16 @@ void SliderWidget::render(bool /* mouseOver */) {
 		Color color = m_enabled ? Color::white : Color(63, 63, 63, 255);
 		EERIEDrawBitmap(rect, 0, pTex, color);
 		pos.x += rect.width();
+	}
+	
+}
+
+void SliderWidget::newValue(int value) {
+	
+	m_value = arx::clamp(value, m_minimum, 10);
+	
+	if(valueChanged) {
+		valueChanged(m_value);
 	}
 	
 }
