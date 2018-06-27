@@ -666,7 +666,7 @@ void StatsPage::manageStats()
 			cursorSetRedistribute(player.Skill_Redistribute);
 		}
 
-		if(CheckSkillClick(bookPos + Vec2f(356, 166), &player.m_skill.objectKnowledge, g_bookResouces.ic_object_knowledge, player.m_skillOld.objectKnowledge)) {
+		if(CheckSkillClick(bookPos + Vec2f(356, 166) * scale, &player.m_skill.objectKnowledge, g_bookResouces.ic_object_knowledge, player.m_skillOld.objectKnowledge)) {
 			FLYING_OVER = BOOK_OBJECT_KNOWLEDGE;
 			cursorSetRedistribute(player.Skill_Redistribute);
 
