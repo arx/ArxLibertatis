@@ -377,6 +377,10 @@ bool ARX_Text_Init() {
 	Font * nFontInBook     = createFont(file, "system_font_book_size", 18, smallTextScale(scale), smallWeight);
 	
 	res::path debugFontFile = "misc/dejavusansmono.ttf";
+	if(!g_resources->hasFile(debugFontFile)) {
+		LogWarning << "Missing debug font " << debugFontFile;
+		debugFontFile = file;
+	}
 	unsigned debugFontSize = unsigned(14.f * std::max(1.f, scale / 2.5f));
 	Font * nFontDebug      = FontCache::getFont(debugFontFile, debugFontSize);
 	
