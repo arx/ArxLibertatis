@@ -26,6 +26,7 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include FT_SIZES_H
 
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
@@ -43,11 +44,19 @@
 //! Pre-load all visible characters below this one when creating a font object
 static const Font::Char FONT_PRELOAD_LIMIT = 127;
 
-Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face)
-	: m_info(fontFile, fontSize)
+Font::Font(const res::path & file, unsigned size, FT_Face face)
+	: m_info(file, size)
 	, m_referenceCount(0)
-	, m_face(face)
+	, m_size(NULL)
 	, m_textures(NULL) {
+	
+	FT_New_Size(face, &m_size);
+	
+	FT_Activate_Size(m_size);
+	
+	// Windows default is 96dpi
+	// FreeType default is 72dpi
+	FT_Set_Char_Size(m_size->face, 0, m_info.size * 64, 64, 64);
 	
 	// TODO-font: Compute optimal size using m_FTFace->bbox
 	const unsigned int TEXTURE_SIZE = 512;
@@ -71,10 +80,12 @@ Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face)
 
 Font::~Font() {
 	
+	if(m_size) {
+		FT_Done_Size(m_size);
+	}
+	
 	delete m_textures;
 	
-	// Release FreeType face object.
-	FT_Done_Face(m_face);
 }
 
 void Font::insertPlaceholderGlyph(Char character) {
@@ -112,21 +123,25 @@ void Font::insertPlaceholderGlyph(Char character) {
 
 bool Font::insertGlyph(Char character) {
 	
-	FT_Error error;
-	FT_UInt glyphIndex = FT_Get_Char_Index(m_face, character);
+	if(!m_size) {
+		insertPlaceholderGlyph(character);
+		return false;
+	}
+	
+	FT_UInt glyphIndex = FT_Get_Char_Index(m_size->face, character);
 	if(!glyphIndex) {
 		insertPlaceholderGlyph(character);
 		return false;
 	}
 	
-	error = FT_Load_Glyph(m_face, glyphIndex, FT_LOAD_TARGET_LIGHT);
-	if(error) {
+	if(FT_Load_Glyph(m_size->face, glyphIndex, FT_LOAD_TARGET_LIGHT)) {
 		insertPlaceholderGlyph(character);
 		return false;
 	}
 	
-	error = FT_Render_Glyph(m_face->glyph, FT_RENDER_MODE_NORMAL);
-	if(error) {
+	FT_GlyphSlot ftGlyph = m_size->face->glyph;
+	
+	if(FT_Render_Glyph(ftGlyph, FT_RENDER_MODE_NORMAL)) {
 		insertPlaceholderGlyph(character);
 		return false;
 	}
@@ -134,14 +149,14 @@ bool Font::insertGlyph(Char character) {
 	// Fill in info for this glyph.
 	Glyph & glyph = m_glyphs[character];
 	glyph.index = glyphIndex;
-	glyph.size.x = m_face->glyph->bitmap.width;
-	glyph.size.y = m_face->glyph->bitmap.rows;
-	glyph.advance.x = float(m_face->glyph->linearHoriAdvance) / 65536.f;
-	glyph.advance.y = float(m_face->glyph->linearVertAdvance) / 65536.f;
-	glyph.lsb_delta = m_face->glyph->lsb_delta;
-	glyph.rsb_delta = m_face->glyph->rsb_delta;
-	glyph.draw_offset.x = m_face->glyph->bitmap_left;
-	glyph.draw_offset.y = m_face->glyph->bitmap_top - m_face->glyph->bitmap.rows;
+	glyph.size.x = ftGlyph->bitmap.width;
+	glyph.size.y = ftGlyph->bitmap.rows;
+	glyph.advance.x = float(ftGlyph->linearHoriAdvance) / 65536.f;
+	glyph.advance.y = float(ftGlyph->linearVertAdvance) / 65536.f;
+	glyph.lsb_delta = ftGlyph->lsb_delta;
+	glyph.rsb_delta = ftGlyph->rsb_delta;
+	glyph.draw_offset.x = ftGlyph->bitmap_left;
+	glyph.draw_offset.y = ftGlyph->bitmap_top - ftGlyph->bitmap.rows;
 	glyph.uv_start = Vec2f_ZERO;
 	glyph.uv_end = Vec2f_ZERO;
 	glyph.texture = 0;
@@ -152,12 +167,12 @@ bool Font::insertGlyph(Char character) {
 		Image imgGlyph;
 		imgGlyph.create(size_t(glyph.size.x), size_t(glyph.size.y), Image::Format_A8);
 		
-		FT_Bitmap * srcBitmap = &m_face->glyph->bitmap;
-		arx_assert(srcBitmap->pitch >= 0);
-		arx_assert(unsigned(srcBitmap->pitch) == unsigned(srcBitmap->width));
+		FT_Bitmap & srcBitmap = ftGlyph->bitmap;
+		arx_assert(srcBitmap.pitch >= 0);
+		arx_assert(unsigned(srcBitmap.pitch) == unsigned(srcBitmap.width));
 		
 		// Copy pixels
-		unsigned char * src = srcBitmap->buffer;
+		unsigned char * src = srcBitmap.buffer;
 		unsigned char * dst = imgGlyph.getData();
 		memcpy(dst, src, glyph.size.x * glyph.size.y);
 		
@@ -174,6 +189,7 @@ bool Font::insertGlyph(Char character) {
 		const float textureSize = float(m_textures->getTextureSize());
 		glyph.uv_start = Vec2f(offset) / Vec2f(textureSize);
 		glyph.uv_end = Vec2f(offset + glyph.size) / Vec2f(textureSize);
+		
 	}
 	
 	return true;
@@ -275,6 +291,8 @@ static void addGlyphVertices(std::vector<TexturedVertex> & vertices,
 template <bool DoDraw>
 Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator end, Color color) {
 	
+	FT_Activate_Size(m_size);
+	
 	Vec2f pen(x, y);
 		
 	int startX = 0;
@@ -282,7 +300,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 	
 	if(DoDraw) {
 		// Subtract one line height (since we flipped the Y origin to be like GDI)
-		pen.y += m_face->size->metrics.ascender >> 6;
+		pen.y += m_size->metrics.ascender >> 6;
 	}
 	
 	FT_UInt prevGlyphIndex = 0;
@@ -300,10 +318,10 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 		const Glyph & glyph = itGlyph->second;
 		
 		// Kerning
-		if(FT_HAS_KERNING(m_face)) {
+		if(FT_HAS_KERNING(m_size->face)) {
 			if(prevGlyphIndex != 0) {
 				FT_Vector delta;
-				FT_Get_Kerning(m_face, prevGlyphIndex, glyph.index, FT_KERNING_DEFAULT, &delta);
+				FT_Get_Kerning(m_size->face, prevGlyphIndex, glyph.index, FT_KERNING_DEFAULT, &delta);
 				pen.x += delta.x >> 6;
 			}
 			prevGlyphIndex = glyph.index;
@@ -401,5 +419,5 @@ Font::text_iterator Font::getPosition(text_iterator start, text_iterator end, in
 }
 
 int Font::getLineHeight() const {
-	return m_face->size->metrics.height >> 6;
+	return m_size->metrics.height >> 6;
 }
