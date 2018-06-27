@@ -69,6 +69,7 @@ const int
 	alphaCutoutAntialiasing = 2,
 	cinematicWidescreenMode = CinematicFadeEdges,
 	hudScaleFilter = UIFilterBilinear,
+	fontWeight = 0,
 	hrtf = audio::HRTFDefault,
 	autoReadyWeapon = AutoReadyWeaponNearEnemies,
 	mouseSensitivity = 6,
@@ -107,7 +108,8 @@ const float
 	fogDistance = 10.f,
 	gamma = 5.f,
 	hudScale = 0.5f,
-	bookScale = 1.0f,
+	bookScale = 1.f,
+	fontSize = 1.f,
 	volume = 10.f,
 	sfxVolume = 10.f,
 	speechVolume = 10.f,
@@ -207,6 +209,8 @@ const std::string
 	hudScaleInteger = "hud_scale_integer",
 	scaleCursorWithHud = "scale_cursor_with_hud",
 	hudScaleFilter = "hud_scale_filter",
+	fontSize = "font_size",
+	fontWeight = "font_weight",
 	thumbnailSize = "save_thumbnail_size";
 
 // Window options
@@ -444,6 +448,8 @@ bool Config::save() {
 	writer.writeKey(Key::cinematicWidescreenMode, int(interface.cinematicWidescreenMode));
 	writer.writeKey(Key::hudScale, interface.hudScale);
 	writer.writeKey(Key::bookScale, interface.bookScale);
+	writer.writeKey(Key::fontSize, interface.fontSize);
+	writer.writeKey(Key::fontWeight, interface.fontWeight);
 	writer.writeKey(Key::hudScaleInteger, interface.hudScaleInteger);
 	writer.writeKey(Key::scaleCursorWithHud, interface.scaleCursorWithHud);
 	writer.writeKey(Key::hudScaleFilter, interface.hudScaleFilter);
@@ -586,7 +592,12 @@ bool Config::init(const fs::path & file) {
 	float hudScale = reader.getKey(Section::Interface, Key::hudScale, Default::hudScale);
 	interface.hudScale = glm::clamp(hudScale, 0.f, 1.f);
 	interface.hudScaleInteger = reader.getKey(Section::Interface, Key::hudScaleInteger, Default::hudScaleInteger);
-	interface.bookScale = reader.getKey(Section::Interface, Key::bookScale, Default::bookScale);
+	float bookScale = reader.getKey(Section::Interface, Key::bookScale, Default::bookScale);
+	interface.bookScale = glm::clamp(bookScale, 0.f, 1.f);
+	float fontSize = reader.getKey(Section::Interface, Key::fontSize, Default::fontSize);
+	interface.fontSize = glm::clamp(fontSize, 0.5f, 2.f);
+	int fontWeight = reader.getKey(Section::Interface, Key::fontWeight, Default::fontWeight);
+	interface.fontWeight = glm::clamp(fontWeight, 0, 5);
 	interface.scaleCursorWithHud = reader.getKey(Section::Interface, Key::scaleCursorWithHud, Default::scaleCursorWithHud);
 	int hudScaleFilter = reader.getKey(Section::Interface, Key::hudScaleFilter, Default::hudScaleFilter);
 	interface.hudScaleFilter = UIScaleFilter(glm::clamp(hudScaleFilter, 0, 1));
