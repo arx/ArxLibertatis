@@ -520,16 +520,6 @@ void InitTileLights()
 	}
 }
 
-void ResetTileLights() {
-	
-	ARX_PROFILE_FUNC();
-	
-	for(long z = 0; z < ACTIVEBKG->m_size.y; z++)
-	for(long x = 0; x < ACTIVEBKG->m_size.x; x++) {
-		tilelights[x][z].el.clear();
-	}
-}
-
 void ComputeTileLights(short x, short z) {
 	
 	tilelights[x][z].el.clear();
