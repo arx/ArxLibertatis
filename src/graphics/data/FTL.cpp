@@ -235,9 +235,10 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		// Copy in the group index data
 		for(size_t i = 0; i < obj->grouplist.size(); i++) {
 			if(!obj->grouplist[i].indexes.empty()) {
-				size_t oldpos = pos;
-				pos += sizeof(s32) * obj->grouplist[i].indexes.size(); // Advance to the next index block
-				std::copy((const s32 *)(dat + oldpos), (const s32 *)(dat + pos), obj->grouplist[i].indexes.begin());
+				const s32 * begin = reinterpret_cast<const s32 *>(dat + pos);
+				pos += sizeof(s32) * obj->grouplist[i].indexes.size();
+				const s32 * end = reinterpret_cast<const s32 *>(dat + pos);
+				std::copy(begin, end, obj->grouplist[i].indexes.begin());
 			}
 		}
 	}
@@ -260,8 +261,10 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	
 	// Copy in the selections selected data
 	for(long i = 0; i < af3Ddh->nb_selections; i++) {
-		std::copy((const s32 *)(dat + pos), (const s32 *)(dat + pos) + obj->selections[i].selected.size(), obj->selections[i].selected.begin() );
-		pos += sizeof(s32) * obj->selections[i].selected.size(); // Advance to the next selection data block
+		const s32 * begin = reinterpret_cast<const s32 *>(dat + pos);
+		pos += sizeof(s32) * obj->selections[i].selected.size();
+		const s32 * end = reinterpret_cast<const s32 *>(dat + pos);
+		std::copy(begin, end, obj->selections[i].selected.begin());
 	}
 	
 	ARX_UNUSED(pos);
