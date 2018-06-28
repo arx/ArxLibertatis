@@ -1294,12 +1294,26 @@ public:
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_options_interface_scale_cursor_with_hud",
-			                                      "Scale cursor with HUD");
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_interface_cursor_scale",
+			                                      "Cursor size");
+			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->setEnabled(false);
+			panel->AddElement(txt);
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
+			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCursorScale, this, _1);
+			sld->setValue(int(config.interface.cursorScale * 10.f));
+			panel->AddElement(sld);
+			addCenter(panel);
+		}
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_options_interface_cursor_scale_integer",
+			                                      "Round cursor scale factor");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
 			CheckboxWidget * cb = new CheckboxWidget(txt);
-			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedScaleCursorWithHud, this, _1);
-			cb->iState = config.interface.scaleCursorWithHud ? 1 : 0;
+			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCursorScaleInteger, this, _1);
+			cb->iState = config.interface.cursorScaleInteger ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -1410,8 +1424,12 @@ private:
 		config.interface.bookScaleInteger = state != 0;
 	}
 	
-	void onChangedScaleCursorWithHud(int state) {
-		config.interface.scaleCursorWithHud = state != 0;
+	void onChangedCursorScale(int state) {
+		config.interface.cursorScale = float(state) * 0.1f;
+	}
+	
+	void onChangedCursorScaleInteger(int state) {
+		config.interface.cursorScaleInteger = state != 0;
 	}
 	
 	void onChangedScaleFilter(int pos, const std::string & str) {

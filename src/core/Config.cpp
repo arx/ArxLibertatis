@@ -87,7 +87,7 @@ const bool
 	limitSpeechWidth = true,
 	hudScaleInteger = true,
 	bookScaleInteger = false,
-	scaleCursorWithHud = true,
+	cursorScaleInteger = true,
 	minimizeOnFocusLost = true,
 	eax = true,
 	muteOnFocusLost = false,
@@ -110,6 +110,7 @@ const float
 	gamma = 5.f,
 	hudScale = 0.5f,
 	bookScale = 1.f,
+	cursorScale = 0.5f,
 	fontSize = 1.f,
 	volume = 10.f,
 	sfxVolume = 10.f,
@@ -209,7 +210,8 @@ const std::string
 	hudScaleInteger = "hud_scale_integer",
 	bookScale = "book_scale",
 	bookScaleInteger = "book_scale_integer",
-	scaleCursorWithHud = "scale_cursor_with_hud",
+	cursorScale = "cursor_scale",
+	cursorScaleInteger = "cursor_scale_integer",
 	hudScaleFilter = "scale_filter",
 	fontSize = "font_size",
 	fontWeight = "font_weight",
@@ -452,9 +454,10 @@ bool Config::save() {
 	writer.writeKey(Key::hudScaleInteger, interface.hudScaleInteger);
 	writer.writeKey(Key::bookScale, interface.bookScale);
 	writer.writeKey(Key::bookScaleInteger, interface.bookScaleInteger);
+	writer.writeKey(Key::cursorScale, interface.cursorScale);
+	writer.writeKey(Key::cursorScaleInteger, interface.cursorScaleInteger);
 	writer.writeKey(Key::fontSize, interface.fontSize);
 	writer.writeKey(Key::fontWeight, interface.fontWeight);
-	writer.writeKey(Key::scaleCursorWithHud, interface.scaleCursorWithHud);
 	writer.writeKey(Key::hudScaleFilter, interface.scaleFilter);
 	std::ostringstream osst;
 	osst << interface.thumbnailSize.x << 'x' << interface.thumbnailSize.y;
@@ -598,11 +601,13 @@ bool Config::init(const fs::path & file) {
 	float bookScale = reader.getKey(Section::Interface, Key::bookScale, Default::bookScale);
 	interface.bookScale = glm::clamp(bookScale, 0.f, 1.f);
 	interface.bookScaleInteger = reader.getKey(Section::Interface, Key::bookScaleInteger, Default::bookScaleInteger);
+	float cursorScale = reader.getKey(Section::Interface, Key::cursorScale, Default::cursorScale);
+	interface.cursorScale = glm::clamp(cursorScale, 0.f, 1.f);
+	interface.cursorScaleInteger = reader.getKey(Section::Interface, Key::cursorScaleInteger, Default::cursorScaleInteger);
 	float fontSize = reader.getKey(Section::Interface, Key::fontSize, Default::fontSize);
 	interface.fontSize = glm::clamp(fontSize, 0.5f, 2.f);
 	int fontWeight = reader.getKey(Section::Interface, Key::fontWeight, Default::fontWeight);
 	interface.fontWeight = glm::clamp(fontWeight, 0, 5);
-	interface.scaleCursorWithHud = reader.getKey(Section::Interface, Key::scaleCursorWithHud, Default::scaleCursorWithHud);
 	int hudScaleFilter = reader.getKey(Section::Interface, Key::hudScaleFilter, Default::hudScaleFilter);
 	interface.scaleFilter = UIScaleFilter(glm::clamp(hudScaleFilter, 0, 1));
 	std::string thumbnailSize = reader.getKey(Section::Interface, Key::thumbnailSize, Default::thumbnailSize);
