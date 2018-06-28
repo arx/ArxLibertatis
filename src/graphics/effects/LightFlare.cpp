@@ -59,8 +59,7 @@ void updateLightFlares() {
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		EERIE_LIGHT * el = g_culledDynamicLights[i];
 		
-		BackgroundTileData * bkgData = getFastBackgroundData(el->pos.x, el->pos.z);
-		if(!bkgData || !bkgData->treat) {
+		if(!ACTIVEBKG->isInActiveTile(el->pos)) {
 			el->m_isVisible = false;
 			continue;
 		}

@@ -815,15 +815,10 @@ void ARX_PARTICLES_Update()  {
 			continue;
 		}
 		
-		if(!part->is2D) {
-
-			BackgroundTileData * bkgData = getFastBackgroundData(part->ov.x, part->ov.z);
-
-			if(!bkgData || !bkgData->treat) {
-				part->exist = false;
-				ParticleCount--;
-				continue;
-			}
+		if(!part->is2D && !ACTIVEBKG->isInActiveTile(part->ov)) {
+			part->exist = false;
+			ParticleCount--;
+			continue;
 		}
 		
 		if(framediff <= 0) {

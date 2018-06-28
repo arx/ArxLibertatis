@@ -735,7 +735,7 @@ static void drawDebugMaterials() {
 	for(short x = 0; x < ACTIVEBKG->m_size.x; x++) {
 		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][y];
 		
-		if(!feg.treat) {
+		if(!ACTIVEBKG->isTileActive(Vec2s(x, y))) {
 			continue;
 		}
 		
