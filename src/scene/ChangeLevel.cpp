@@ -500,7 +500,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		EERIE_LIGHT * el = g_staticLights[i];
 		if(el != NULL && !el->m_isIgnitionLight) {
-			ARX_CHANGELEVEL_LIGHT * acl = (ARX_CHANGELEVEL_LIGHT *)(dat + pos);
+			ARX_CHANGELEVEL_LIGHT * acl = reinterpret_cast<ARX_CHANGELEVEL_LIGHT *>(dat + pos);
 			memset(acl, 0, sizeof(ARX_CHANGELEVEL_LIGHT));
 			acl->status = el->m_ignitionStatus;
 			pos += sizeof(ARX_CHANGELEVEL_LIGHT);
@@ -886,7 +886,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	
 	// Define Type & Affiliated Structure Size
 	SavedIOType type;
-	long struct_size;
+	long struct_size = 0;
 	if(io->ioflags & IO_NPC) {
 		type = TYPE_NPC;
 		struct_size = sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
@@ -1101,7 +1101,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	BOOST_FOREACH(const SCR_TIMER & timer, g_scriptTimers) {
 		if(timer.exist) {
 			if(timer.io == io) {
-				ARX_CHANGELEVEL_TIMERS_SAVE * ats = (ARX_CHANGELEVEL_TIMERS_SAVE *)(dat + pos);
+				ARX_CHANGELEVEL_TIMERS_SAVE * ats = reinterpret_cast<ARX_CHANGELEVEL_TIMERS_SAVE *>(dat + pos);
 				memset(ats, 0, sizeof(ARX_CHANGELEVEL_TIMERS_SAVE));
 				ats->interval = s32(toMsi(timer.interval)); // TODO save/load time
 				util::storeString(ats->name, timer.name);
@@ -1144,12 +1144,14 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 	}
 	
-	switch (type)
-	{
-		case TYPE_NPC:
-			ARX_CHANGELEVEL_NPC_IO_SAVE * as;
-			as = (ARX_CHANGELEVEL_NPC_IO_SAVE *)(dat + pos);
+	switch(type) {
+		
+		case TYPE_NPC: {
+			
+			ARX_CHANGELEVEL_NPC_IO_SAVE * as = reinterpret_cast<ARX_CHANGELEVEL_NPC_IO_SAVE *>(dat + pos);
+			
 			memset(as, 0, sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE));
+			
 			as->absorb = io->_npcdata->absorb;
 			as->aimtime = static_cast<f32>(toMsi(io->_npcdata->aimtime)); // TODO save/load time
 			as->armor_class = io->_npcdata->armor_class;
@@ -1221,12 +1223,16 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as->blood_color = io->_npcdata->blood_color.toBGRA().t;
 			as->fDetect = io->_npcdata->fDetect;
 			as->cuts = io->_npcdata->cuts;
-			pos += struct_size;
+			
 			break;
-		case TYPE_ITEM:
-			ARX_CHANGELEVEL_ITEM_IO_SAVE * ai;
-			ai = (ARX_CHANGELEVEL_ITEM_IO_SAVE *)(dat + pos);
+		}
+		
+		case TYPE_ITEM: {
+			
+			ARX_CHANGELEVEL_ITEM_IO_SAVE * ai = reinterpret_cast<ARX_CHANGELEVEL_ITEM_IO_SAVE *>(dat + pos);
+			
 			memset(ai, 0, sizeof(ARX_CHANGELEVEL_ITEM_IO_SAVE));
+			
 			ai->price = io->_itemdata->price;
 			ai->count = io->_itemdata->count;
 			ai->maxcount = io->_itemdata->maxcount;
@@ -1234,38 +1240,42 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			ai->stealvalue = io->_itemdata->stealvalue;
 			ai->playerstacksize = io->_itemdata->playerstacksize;
 			ai->LightValue = io->_itemdata->LightValue;
-
+			
 			if(io->_itemdata->equipitem) {
 				ai->equipitem = *io->_itemdata->equipitem;
 			}
-
-			pos += struct_size;
+			
 			break;
-		case TYPE_FIX:
-			ARX_CHANGELEVEL_FIX_IO_SAVE * af;
-			af = (ARX_CHANGELEVEL_FIX_IO_SAVE *)(dat + pos);
+		}
+		
+		case TYPE_FIX: {
+			ARX_CHANGELEVEL_FIX_IO_SAVE * af = reinterpret_cast<ARX_CHANGELEVEL_FIX_IO_SAVE *>(dat + pos);
 			memset(af, 0, sizeof(ARX_CHANGELEVEL_FIX_IO_SAVE));
 			af->trapvalue = io->_fixdata->trapvalue;
-			pos += struct_size;
 			break;
-		case TYPE_CAMERA:
-			ARX_CHANGELEVEL_CAMERA_IO_SAVE * ac;
-			ac = (ARX_CHANGELEVEL_CAMERA_IO_SAVE *)(dat + pos);
+		}
+		
+		case TYPE_CAMERA: {
+			ARX_CHANGELEVEL_CAMERA_IO_SAVE * ac = reinterpret_cast<ARX_CHANGELEVEL_CAMERA_IO_SAVE *>(dat + pos);
 			*ac = *io->_camdata;
-			pos += struct_size;
 			break;
-		case TYPE_MARKER:
-			ARX_CHANGELEVEL_MARKER_IO_SAVE * am;
-			am = (ARX_CHANGELEVEL_MARKER_IO_SAVE *)(dat + pos);
+		}
+		
+		case TYPE_MARKER: {
+			ARX_CHANGELEVEL_MARKER_IO_SAVE * am = reinterpret_cast<ARX_CHANGELEVEL_MARKER_IO_SAVE *>(dat + pos);
 			am->dummy = 0;
-			pos += struct_size;
 			break;
+		}
+		
 	}
-
-	if (ais.system_flags & SYSTEM_FLAG_INVENTORY)
-	{
+	
+	pos += struct_size;
+	
+	if(ais.system_flags & SYSTEM_FLAG_INVENTORY) {
+		
 		ARX_CHANGELEVEL_INVENTORY_DATA_SAVE * aids;
-		aids = (ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *)(dat + pos);
+		aids = reinterpret_cast<ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *>(dat + pos);
+		
 		memset(aids, 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
 		
 		INVENTORY_DATA * inv = io->inventory;
