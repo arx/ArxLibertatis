@@ -229,9 +229,8 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const Color col
 			v[3].uv.x = v[0].uv.x = ttx * divideX;
 			v[1].uv.x = v[2].uv.x = (ttx + 10.f) * divideX;
 			
-			ttx = 0.5f * divideY;
-			v[1].uv.y = v[0].uv.y = divideY + ttx;
-			v[2].uv.y = v[3].uv.y = divideY * 12;
+			v[1].uv.y = v[0].uv.y = 1.5f * divideY;
+			v[2].uv.y = v[3].uv.y = 11.5f * divideY;
 			
 			EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
 		}
