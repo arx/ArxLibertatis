@@ -1008,7 +1008,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 		
 		BackgroundTileData * feg = &ACTIVEBKG->m_tileData[epd.tile.x][epd.tile.y];
 		
-		if(!feg->treat) {
+		if(!ACTIVEBKG->isTileActive(epd.tile)) {
 			// TODO copy-paste background tiles
 			int tilex = epd.tile.x;
 			int tilez = epd.tile.y;
@@ -1018,13 +1018,10 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 			int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
 			int minz = std::max(tilez - radius, 0);
 			int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
-
 			for(int z = minz; z <= maxz; z++)
 			for(int x = minx; x <= maxx; x++) {
-				BackgroundTileData & feg2 = ACTIVEBKG->m_tileData[x][z];
-
-				if(!feg2.treat) {
-					feg2.treat = true;
+				if(!ACTIVEBKG->isTileActive(Vec2s(x, z))) {
+					ACTIVEBKG->setTileActive(Vec2s(x, z));
 					ComputeTileLights(x, z);
 				}
 			}
@@ -1394,16 +1391,14 @@ void ARX_SCENE_Update() {
 	int minz = std::max(tilez - radius, 0);
 	int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
 
-	ACTIVEBKG->m_tileData[tilex][tilez].treat = true;
+	ACTIVEBKG->setTileActive(Vec2s(tilex, tilez));
 	TreatBackgroundDynlights();
 	PrecalcDynamicLighting(camPos, camDepth);
-
-	// Go for a growing-square-spirallike-render around the camera position
-	// (To maximize Z-Buffer efficiency)
-
-	for(short z = minz; z <= maxz; z++)
-	for(short x = minx; x < maxx; x++) {
-		ACTIVEBKG->m_tileData[x][z].treat = false;
+	
+	for(short z = minz; z <= maxz; z++) {
+		for(short x = minx; x < maxx; x++) {
+			ACTIVEBKG->resetTileActive(Vec2s(x, z));
+		}
 	}
 	
 	ResetTileLights();

@@ -801,6 +801,9 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	progressBarAdvance(4.f);
 	LoadLevelScreen();
 	
+	// TODO Most tiles are empty, adjust ACTIVEBKG->m_size accordingly
+	
+	ACTIVEBKG->resetActiveTiles();
 	
 	// Load cells with polygons and anchors
 	LogDebug("FTS: loading " << fsh->sizex << " x " << fsh->sizez
@@ -813,8 +816,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			BackgroundTileData & bkg = ACTIVEBKG->m_tileData[i][j];
 			
 			bkg.polydata.resize(fsi->nbpoly);
-			
-			bkg.treat = false;
 			
 			const FAST_EERIEPOLY * eps;
 			eps = fts_read<FAST_EERIEPOLY>(data, end, fsi->nbpoly);

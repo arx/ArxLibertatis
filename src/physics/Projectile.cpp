@@ -367,8 +367,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 	
 	// Is Object Visible & Near ?
 	
-	BackgroundTileData * bkgData = getFastBackgroundData(projectile.position.x, projectile.position.z);
-	if(!bkgData || !bkgData->treat) {
+	if(!ACTIVEBKG->isInActiveTile(projectile.position)) {
 		// Projectile got outside of the world
 		ARX_THROWN_OBJECT_Kill(i);
 		return;
