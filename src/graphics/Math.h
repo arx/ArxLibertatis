@@ -240,7 +240,10 @@ inline long PointInUnderCylinder(const Cylinder & cyl, const Vec3f & pt) {
 	return 0;
 }
 
-
+template <typename T>
+T positive_modulo(T a, T b) {
+	return (a % b) + T(a < 0) * b;
+}
 
 
 #ifdef ARX_DEBUG
