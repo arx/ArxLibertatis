@@ -138,7 +138,9 @@ public:
 	
 	platform::EnvironmentOverride m_overrides[s_count];
 	
-	OpenALEnvironmentOverrides() {
+	OpenALEnvironmentOverrides()
+		: m_alpath(fs::findDataFile("openal/hrtf"))
+	{
 		
 		size_t i = 0;
 		
@@ -156,7 +158,6 @@ public:
 		i++;
 		#endif
 		
-		m_alpath = fs::findDataFile("openal/hrtf");
 		if(!m_alpath.empty()) {
 			m_overrides[i].name = "ALSOFT_LOCAL_PATH";
 			m_overrides[i].value = m_alpath.string().c_str();
