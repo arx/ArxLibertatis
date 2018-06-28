@@ -202,7 +202,6 @@ void setMaxLLights(size_t count);
 void UpdateLlights(ShaderLight lights[], size_t & lightsCount, Vec3f pos, bool forPlayerColor);
 
 void InitTileLights();
-void ResetTileLights();
 void ComputeTileLights(short x, short z);
 void ClearTileLights();
 

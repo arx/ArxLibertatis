@@ -1381,8 +1381,6 @@ void ARX_SCENE_Update() {
 	
 	ACTIVEBKG->resetActiveTiles();
 	
-	ResetTileLights();
-	
 	long room_num = ARX_PORTALS_GetRoomNumForPosition(camPos, 1);
 	if(room_num > -1) {
 		
