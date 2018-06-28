@@ -46,11 +46,10 @@ class WinHTTPSession : public Session {
 	
 public:
 	
-	explicit WinHTTPSession(const std::string & userAgent) {
-		m_session = WinHttpOpen(platform::WideString(userAgent),
-		                        WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME,
-		                        WINHTTP_NO_PROXY_BYPASS, 0);
-	};
+	explicit WinHTTPSession(const std::string & userAgent)
+		: m_session(WinHttpOpen(platform::WideString(userAgent), WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
+		                        WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0))
+	{ }
 	
 	~WinHTTPSession() {
 		if(m_connection) {
