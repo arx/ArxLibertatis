@@ -1391,7 +1391,6 @@ void ARX_SCENE_Update() {
 	int minz = std::max(tilez - radius, 0);
 	int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
 
-	ACTIVEBKG->setTileActive(Vec2s(tilex, tilez));
 	TreatBackgroundDynlights();
 	PrecalcDynamicLighting(camPos, camDepth);
 	
