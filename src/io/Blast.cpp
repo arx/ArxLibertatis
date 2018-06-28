@@ -452,7 +452,7 @@ size_t blastInMem(void * param, const unsigned char ** buf) {
 	
 	BlastMemInBuffer * p = static_cast<BlastMemInBuffer *>(param);
 	
-	*buf = (const unsigned char *)p->buf;
+	*buf = reinterpret_cast<const unsigned char *>(p->buf);
 	
 	size_t size = p->size;
 	
@@ -466,7 +466,7 @@ int blastOutString(void * param, unsigned char * buf, size_t len) {
 	
 	BlastMemOutString * p = static_cast<BlastMemOutString *>(param);
 	
-	p->buffer.append((char *)buf, len);
+	p->buffer.append(reinterpret_cast<const char *>(buf), len);
 	
 	return 0;
 }
