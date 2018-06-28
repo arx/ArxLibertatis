@@ -84,11 +84,11 @@ namespace {
 
 struct CreditsLine {
 	
-	CreditsLine() {
-		sPos = Vec2i_ZERO;
-		fColors = Color::none;
-		sourceLineNumber = -1;
-	}
+	CreditsLine()
+		: fColors(Color::none)
+		, sPos(Vec2i_ZERO)
+		, sourceLineNumber(-1)
+	{ }
 	
 	std::string  sText;
 	Color fColors;
