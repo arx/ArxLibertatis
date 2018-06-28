@@ -492,13 +492,9 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 			iHighLight = 0;
 		}
 	}
-
-	float iconScale = g_hudRoot.getScale();
-	float cursorScale = 1.0f;
 	
-	if(config.interface.scaleCursorWithHud) {
-		cursorScale = g_hudRoot.getScale();
-	}
+	float iconScale = g_hudRoot.getScale();
+	float cursorScale = getInterfaceScale(config.interface.cursorScale, config.interface.cursorScaleInteger);
 	
 	if(SpecialCursor || !PLAYER_MOUSELOOK_ON || DRAGINTER
 	   || (FlyingOverIO && PLAYER_MOUSELOOK_ON && !g_cursorOverBook && eMouseState != MOUSE_IN_NOTE
