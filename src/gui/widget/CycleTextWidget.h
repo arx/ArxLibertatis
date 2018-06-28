@@ -56,7 +56,7 @@ public:
 	
 private:
 	
-	void newValue(int);
+	void newValue(int value);
 	
 	ButtonWidget * pLeftButton;
 	ButtonWidget * pRightButton;
