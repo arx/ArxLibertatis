@@ -505,16 +505,17 @@ aalError OpenALBackend::setListenerOrientation(const Vec3f & front, const Vec3f 
 }
 
 Backend::source_iterator OpenALBackend::sourcesBegin() {
-	return (source_iterator)sources.begin();
+	return reinterpret_cast<source_iterator>(sources.begin());
 }
 
 Backend::source_iterator OpenALBackend::sourcesEnd() {
-	return (source_iterator)sources.end();
+	return reinterpret_cast<source_iterator>(sources.end());
 }
 
 Backend::source_iterator OpenALBackend::deleteSource(source_iterator it) {
 	arx_assert(it >= sourcesBegin() && it < sourcesEnd());
-	return (source_iterator)sources.remove((ResourceList<OpenALSource>::iterator)it);
+	ResourceList<OpenALSource>::iterator i = reinterpret_cast<ResourceList<OpenALSource>::iterator>(it);
+	return reinterpret_cast<source_iterator>(sources.remove(i));
 }
 
 aalError OpenALBackend::setUnitFactor(float factor) {
