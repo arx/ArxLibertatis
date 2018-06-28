@@ -27,6 +27,8 @@
 #include "graphics/Renderer.h"
 #include "graphics/texture/TextureStage.h"
 
+#include "gui/Interface.h"
+
 #include "input/Input.h"
 
 extern TextureContainer * scursor[];
@@ -165,7 +167,8 @@ void MenuCursor::DrawOneCursor(const Vec2s & mousePos) {
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	
-	EERIEDrawBitmap(Rectf(Vec2f(mousePos), m_size.x, m_size.y),
+	float scale = getInterfaceScale(config.interface.cursorScale, config.interface.cursorScaleInteger);
+	EERIEDrawBitmap(Rectf(Vec2f(mousePos), m_size.x * scale, m_size.y * scale),
 	                0.00000001f, scursor[m_currentFrame], Color::white);
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
