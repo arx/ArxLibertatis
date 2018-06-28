@@ -23,6 +23,7 @@
 
 #include <boost/foreach.hpp>
 
+#include "graphics/Math.h"
 #include "graphics/Renderer.h"
 #include "gui/MenuPublic.h"
 #include "gui/menu/MenuCursor.h"
@@ -165,14 +166,7 @@ void CycleTextWidget::render(bool /* mouseOver */) {
 
 void CycleTextWidget::newValue(int value) {
 	
-	iPos = value;
-	
-	while(iPos >= int(vText.size())) {
-		iPos -= int(vText.size());
-	}
-	while(iPos < 0) {
-		iPos += int(vText.size());
-	}
+	iPos = positive_modulo(value, int(vText.size()));
 	
 	if(valueChanged) {
 		valueChanged(iPos, vText.at(iPos)->text());
