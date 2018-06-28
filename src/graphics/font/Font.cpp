@@ -77,6 +77,7 @@ Font::Font(const res::path & file, unsigned size, unsigned weight, FT_Face face)
 	}
 	
 	m_textures->upload();
+	
 }
 
 Font::~Font() {
@@ -248,9 +249,6 @@ Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
 	// As we need to re-upload the textures now, first check for more missing glyphs
 	insertMissingGlyphs(it, end);
 	
-	// Re-upload the changed textures
-	m_textures->upload();
-	
 	return m_glyphs.find(chr); // the newly inserted glyph
 }
 
@@ -366,6 +364,8 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 	}
 	
 	if(DoDraw && !mapTextureVertices.empty()) {
+		
+		m_textures->upload();
 		
 		UseRenderState state(render2D());
 		
