@@ -65,10 +65,6 @@ public:
 		m_activeTiles.set(size_t(tile.x) * size_t(MAX_BKGZ) + size_t(tile.y));
 	}
 	
-	void resetTileActive(Vec2s tile) {
-		m_activeTiles.reset(size_t(tile.x) * size_t(MAX_BKGZ) + size_t(tile.y));
-	}
-	
 	void resetActiveTiles() {
 		m_activeTiles.reset();
 	}
