@@ -214,25 +214,22 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const Color col
 		
 		long digit = n % 10;
 		
-		if(digit >= 0) {
-			
-			p.x -= 10.f * scale;
-			
-			v[0].p.x = v[3].p.x = p.x;
-			v[1].p.x = v[2].p.x = p.x + (10 * scale);
-			v[0].p.y = v[1].p.y = p.y;
-			v[2].p.y = v[3].p.y = p.y + (10 * scale);
-			v[0].color = v[1].color = v[2].color = v[3].color = col;
-			
-			float ttx = float(digit) * 11.f + 1.5f;
-			v[3].uv.x = v[0].uv.x = ttx * divideX;
-			v[1].uv.x = v[2].uv.x = (ttx + 10.f) * divideX;
-			
-			v[1].uv.y = v[0].uv.y = 1.5f * divideY;
-			v[2].uv.y = v[3].uv.y = 11.5f * divideY;
-			
-			EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
-		}
+		p.x -= 10.f * scale;
+		
+		v[0].p.x = v[3].p.x = p.x;
+		v[1].p.x = v[2].p.x = p.x + (10 * scale);
+		v[0].p.y = v[1].p.y = p.y;
+		v[2].p.y = v[3].p.y = p.y + (10 * scale);
+		v[0].color = v[1].color = v[2].color = v[3].color = col;
+		
+		float ttx = float(digit) * 11.f + 1.5f;
+		v[3].uv.x = v[0].uv.x = ttx * divideX;
+		v[1].uv.x = v[2].uv.x = (ttx + 10.f) * divideX;
+		
+		v[1].uv.y = v[0].uv.y = 1.5f * divideY;
+		v[2].uv.y = v[3].uv.y = 11.5f * divideY;
+		
+		EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
 		
 	}
 	
