@@ -424,14 +424,17 @@ size_t PlainFileHandle::read(void * buf, size_t size) {
 	return fs::read(ifs, buf, size).gcount();
 }
 
-std::ios_base::seekdir arxToStlSeekOrigin[] = {
-	std::ios_base::beg,
-	std::ios_base::cur,
-	std::ios_base::end
-};
+static std::ios_base::seekdir arxToStlSeekOrigin(Whence whence) {
+	switch(whence) {
+		case SeekSet: return std::ios_base::beg;
+		case SeekCur: return std::ios_base::cur;
+		case SeekEnd: return std::ios_base::end;
+		default: ARX_DEAD_CODE();
+	}
+}
 
 int PlainFileHandle::seek(Whence whence, int offset) {
-	return ifs.seekg(offset, arxToStlSeekOrigin[whence]).tellg();
+	return ifs.seekg(offset, arxToStlSeekOrigin(whence)).tellg();
 }
 
 size_t PlainFileHandle::tell() {
