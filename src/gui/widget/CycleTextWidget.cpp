@@ -169,7 +169,7 @@ void CycleTextWidget::newValue(int value) {
 	iPos = positive_modulo(value, int(vText.size()));
 	
 	if(valueChanged) {
-		valueChanged(iPos, vText.at(iPos)->text());
+		valueChanged(iPos, vText[size_t(iPos)]->text());
 	}
 	
 }
