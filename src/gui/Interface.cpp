@@ -205,7 +205,6 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const Color col
 	
 	GRenderer->SetTexture(0, inventory_font);
 	
-	float ttx;
 	float divideX = 1.f / float(inventory_font->m_size.x);
 	float divideY = 1.f / float(inventory_font->m_size.y);
 	
@@ -213,9 +212,9 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const Color col
 	
 	for(long n = num; n != 0; n /= 10) {
 		
-		long tt = n % 10;
+		long digit = n % 10;
 		
-		if(tt >= 0) {
+		if(digit >= 0) {
 			
 			p.x -= 10.f * scale;
 			
@@ -225,7 +224,7 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const Color col
 			v[2].p.y = v[3].p.y = p.y + (10 * scale);
 			v[0].color = v[1].color = v[2].color = v[3].color = col;
 			
-			ttx = float(tt) * 11.f + 1.5f;
+			float ttx = float(digit) * 11.f + 1.5f;
 			v[3].uv.x = v[0].uv.x = ttx * divideX;
 			v[1].uv.x = v[2].uv.x = (ttx + 10.f) * divideX;
 			
