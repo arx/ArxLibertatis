@@ -286,7 +286,7 @@ void PrecalcDynamicLighting(const Vec3f & camPos, float camDepth) {
 			light.m_isVisible = closerThan(light.pos, camPos, camDepth + light.fallend);
 			if(light.m_isVisible) {
 				RecalcLight(&light);
-				arx_assert(g_culledDynamicLightsCount < boost::size(g_culledDynamicLights));
+				arx_assert(g_culledDynamicLightsCount < size_t(boost::size(g_culledDynamicLights)));
 				g_culledDynamicLights[g_culledDynamicLightsCount++] = &light;
 			}
 		}
