@@ -193,8 +193,6 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const Color col
 		return;
 	}
 	
-	ColorRGBA col = color.toRGBA();
-	
 	TexturedVertex v[4];
 	v[0] = TexturedVertex(Vec3f_ZERO, 1.f, ColorRGBA(1), Vec2f_ZERO);
 	v[1] = TexturedVertex(Vec3f_ZERO, 1.f, ColorRGBA(1), Vec2f_X_AXIS);
@@ -220,7 +218,7 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const Color col
 		v[1].p.x = v[2].p.x = p.x + (10 * scale);
 		v[0].p.y = v[1].p.y = p.y;
 		v[2].p.y = v[3].p.y = p.y + (10 * scale);
-		v[0].color = v[1].color = v[2].color = v[3].color = col;
+		v[0].color = v[1].color = v[2].color = v[3].color =  color.toRGBA();
 		
 		float ttx = float(digit) * 11.f + 1.5f;
 		v[3].uv.x = v[0].uv.x = ttx * divideX;
