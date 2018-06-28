@@ -464,7 +464,6 @@ void Input::update(float time) {
 	if(Keyboard::isModifier(iKeyId)) {
 		for(int i = 0; i < Keyboard::KeyCount; i++) {
 			if(!Keyboard::isModifier(i & 0xFFFF) && keysStates[i]) {
-				break;
 				iKeyId &= ~0xFFFF;
 				iKeyId |= i;
 			}
