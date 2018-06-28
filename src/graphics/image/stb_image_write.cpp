@@ -37,7 +37,7 @@ static int write_pixels(FILE * f, int x, int y, int comp, const void * data, int
 	for(int j = y - 1; j != -1; j--) {
 		
 		for(int i = 0; i < x; i++) {
-			const unsigned char * d = (const unsigned char *)data + (j * x + i) * comp;
+			const unsigned char * d = reinterpret_cast<const unsigned char *>(data) + (j * x + i) * comp;
 			
 			switch(comp) {
 				
