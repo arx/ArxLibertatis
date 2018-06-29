@@ -1252,7 +1252,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 			Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
 			DrawBookInterfaceItem(tc, todraw->bbox2D.min, color, 0);
 			
-			todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size());
+			todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size()) * g_bookScale;
 			
 			todraw->ioflags |= IO_ICONIC;
 		}
@@ -1276,7 +1276,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 			Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
 			DrawBookInterfaceItem(tc, todraw->bbox2D.min, color, 0);
 			
-			todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size());
+			todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size()) * g_bookScale;
 			
 			todraw->ioflags |= IO_ICONIC;
 		}
