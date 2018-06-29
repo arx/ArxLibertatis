@@ -1243,7 +1243,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 			tc2 = todraw->m_icon->getHalo();
 		
 		if(tc) {
-			todraw->bbox2D.min = bookPos + Vec2f(49.f, 248.f) * scale;
+			todraw->bbox2D.min = bookPos + Vec2f(50.f, 246.f) * scale;
 			
 			if(tc2) {
 				ARX_INTERFACE_HALO_Render(todraw->halo.color, todraw->halo.flags, tc2, todraw->bbox2D.min, Vec2f(scale));
@@ -1267,7 +1267,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 			tc2 = todraw->m_icon->getHalo();
 		
 		if(tc) {
-			todraw->bbox2D.min = bookPos + Vec2f(199.f, 248.f) * scale;
+			todraw->bbox2D.min = bookPos + Vec2f(200.f, 246.f) * scale;
 			
 			if(tc2) {
 				ARX_INTERFACE_HALO_Render(todraw->halo.color, todraw->halo.flags, tc2, todraw->bbox2D.min, Vec2f(scale));
