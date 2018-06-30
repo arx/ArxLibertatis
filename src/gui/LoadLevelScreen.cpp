@@ -79,8 +79,7 @@ void LoadLevelScreen(long num) {
 	PlatformInstant now = platform::getTime();
 	if(now - last_progress_bar_update > PlatformDurationMs(16) && OLD_PROGRESS_BAR_COUNT != PROGRESS_BAR_COUNT) {
 		
-		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+		UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
 		
 		float ratio = (PROGRESS_BAR_TOTAL > 0.f ? PROGRESS_BAR_COUNT / PROGRESS_BAR_TOTAL : 0);
 		
