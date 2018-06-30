@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "graphics/Color.h"
+#include "graphics/texture/TextureStage.h"
 #include "math/Types.h"
 #include "platform/Platform.h"
 #include "util/Flags.h"
@@ -32,7 +33,6 @@ struct TexturedVertex;
 struct SMY_VERTEX;
 struct SMY_VERTEX3;
 class TextureContainer;
-class TextureStage;
 class Image;
 class Texture;
 template <class Vertex> class VertexBuffer;
@@ -427,7 +427,7 @@ extern Renderer * GRenderer;
  */
 class UseRenderState {
 	
-	RenderState  m_old;
+	RenderState m_old;
 	
 public:
 	
@@ -439,6 +439,49 @@ public:
 	
 	~UseRenderState() {
 		GRenderer->setRenderState(m_old);
+	}
+	
+};
+
+/*!
+ * RAII helper class to set a texture state for the current scope
+ *
+ * Sets the requested texture state on construction and restores the old texture state
+ * on destruction.
+ */
+class UseTextureState {
+	
+	TextureStage::WrapMode m_oldWrapMode;
+	TextureStage::FilterMode m_oldMinFilter;
+	TextureStage::FilterMode m_oldMagFilter;
+	
+public:
+	
+	UseTextureState(TextureStage::FilterMode minFilter, TextureStage::FilterMode magFilter,
+	                TextureStage::WrapMode wrapMode)
+		: m_oldWrapMode(GRenderer->GetTextureStage(0)->getWrapMode())
+		, m_oldMinFilter(GRenderer->GetTextureStage(0)->getMinFilter())
+		, m_oldMagFilter(GRenderer->GetTextureStage(0)->getMagFilter())
+	{
+		GRenderer->GetTextureStage(0)->setWrapMode(wrapMode);
+		GRenderer->GetTextureStage(0)->setMinFilter(minFilter);
+		GRenderer->GetTextureStage(0)->setMagFilter(magFilter);
+	}
+	
+	UseTextureState(TextureStage::FilterMode filter, TextureStage::WrapMode wrapMode)
+		: m_oldWrapMode(GRenderer->GetTextureStage(0)->getWrapMode())
+		, m_oldMinFilter(GRenderer->GetTextureStage(0)->getMinFilter())
+		, m_oldMagFilter(GRenderer->GetTextureStage(0)->getMagFilter())
+	{
+		GRenderer->GetTextureStage(0)->setWrapMode(wrapMode);
+		GRenderer->GetTextureStage(0)->setMinFilter(filter);
+		GRenderer->GetTextureStage(0)->setMagFilter(filter);
+	}
+	
+	~UseTextureState() {
+		GRenderer->GetTextureStage(0)->setWrapMode(m_oldWrapMode);
+		GRenderer->GetTextureStage(0)->setMinFilter(m_oldMinFilter);
+		GRenderer->GetTextureStage(0)->setMagFilter(m_oldMagFilter);
 	}
 	
 };
