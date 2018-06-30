@@ -75,25 +75,6 @@ CrashHandlerWindows::~CrashHandlerWindows() {
 
 bool CrashHandlerWindows::initialize() {
 	
-	#if ARX_ARCH == ARX_ARCH_X86_64
-	HMODULE ntdll = GetModuleHandleW(L"ntdll.dll");
-	if(ntdll && GetProcAddress(ntdll, "wine_get_version")) {
-		/*
-		 * TODO boost::interprocess currently does not work with Wine:
-		 *  https://bugs.winehq.org/show_bug.cgi?id=37338
-		 *
-		 * Further, the exception it throws cannot be handled by Wine in 64-builds, leading
-		 * to a crash on startup:
-		 *  https://bugs.winehq.org/show_bug.cgi?id=35092
-		 *
-		 * Avoid the crash by not trying to create the shared memory object.
-		 * Note that other C++ exception may still crash the game on 64-bit wine, so this
-		 * is not perfect!
-		 */
-		return false;
-	}
-	#endif
-	
 	if(!CrashHandlerImpl::initialize()) {
 		return false;
 	}
