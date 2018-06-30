@@ -64,13 +64,14 @@ void RenderBatcher::render() {
 	for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
 		if(!it->second.empty()) {
 			UseRenderState state(it->first.apply());
+			UseTextureState textureState(TextureStage::FilterLinear, it->first.getWrapMode());
 			EERIEDRAWPRIM(Renderer::TriangleList, &it->second.front(), it->second.size(), true);
 			GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpSelectArg1);
 		}
 	}
-
+	
 	GRenderer->ResetTexture(0);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+	
 }
 
 void RenderBatcher::clear() {
@@ -151,7 +152,6 @@ RenderState RenderMaterial::apply() const {
 	
 	state.setAlphaCutout(m_texture && m_texture->hasAlpha());
 	
-	GRenderer->GetTextureStage(0)->setWrapMode(m_wrapMode);
 	state.setDepthOffset(m_depthBias);
 
 	state.setDepthTest(m_depthTest);
