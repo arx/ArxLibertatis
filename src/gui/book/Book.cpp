@@ -1064,8 +1064,8 @@ void StatsPage::RenderBookPlayerCharacter() {
 		           Vec2i(bookPos + Vec2f(233.f, 236.f) * scale));
 		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 		
-		Rect vp = Rect(Vec2i(bookPos + Vec2f(42.f, 0.f) * scale),
-		               Vec2i(bookPos + Vec2f(181.f, 246.f) * scale));
+		Rect vp = Rect(Vec2i(bookPos + Vec2f(75.f, 5.f) * scale),
+		               Vec2i(bookPos + Vec2f(212.f, 219.f) * scale));
 		GRenderer->SetScissor(vp);
 		
 	} else {
@@ -1120,12 +1120,6 @@ void StatsPage::RenderBookPlayerCharacter() {
 	GRenderer->SetAntialiasing(true);
 	
 	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		
-		Rect vp = rec;
-		vp.left += s32(52.f * scale);
-		vp.right -= s32(21.f * scale);
-		vp.bottom -= s32(17.f * scale);
-		GRenderer->SetScissor(vp);
 		
 		switch(player.skin) {
 			case 0:
