@@ -20,8 +20,6 @@
 #ifndef ARX_GUI_INTRO_H
 #define ARX_GUI_INTRO_H
 
-void LoadScreen();
-
 bool ARX_INTERFACE_InitFISHTANK();
 void ARX_INTERFACE_ShowFISHTANK();
 void ARX_INTERFACE_KillFISHTANK();

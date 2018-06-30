@@ -68,10 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 static TextureContainer * FISHTANK_img = NULL;
 static TextureContainer * ARKANE_img = NULL;
 
-void LoadScreen() {
-	GRenderer->Clear(Renderer::ColorBuffer);
-}
-
 bool ARX_INTERFACE_InitFISHTANK() {
 	if(FISHTANK_img == NULL) {
 		FISHTANK_img = TextureContainer::LoadUI("misc/logo", TextureContainer::NoColorKey);

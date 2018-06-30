@@ -1134,6 +1134,7 @@ void ArxGame::onResizeWindow(const Window & window) {
 		LogInfo << "Changed window size to " << window.getDisplayMode();
 		config.window.size = window.getSize();
 	}
+	
 }
 
 void ArxGame::onDestroyWindow(const Window & /* window */) {
@@ -1205,7 +1206,6 @@ void ArxGame::doFrame() {
 		m_wasResized = false;
 		MenuReInitAll();
 		AdjustUI();
-		LoadScreen();
 		g_hudRoot.recalcScale();
 	}
 
