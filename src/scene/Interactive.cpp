@@ -2226,7 +2226,6 @@ void RenderInter() {
 		Entity * io = entities[handle];
 
 		if(   !io
-		   || io == DRAGINTER
 		   || !(io->gameFlags & GFLAG_ISINTREATZONE)
 		   || io->show != SHOW_FLAG_IN_SCENE
 		   || (io->ioflags & IO_CAMERA)

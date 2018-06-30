@@ -295,9 +295,7 @@ bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 					DrawEERIEInter(io->obj, t, io, false, invisibility);
 				} else {
 					io->show = SHOW_FLAG_IN_SCENE;
-					TransformInfo t(pos, rotation, io->scale);
-					float invisibility = Cedric_GetInvisibility(io);
-					DrawEERIEInter(io->obj, t, io, false, invisibility);
+					// Entity will be rendered with the rest of the in-scene entities
 				}
 			}
 		} else {
