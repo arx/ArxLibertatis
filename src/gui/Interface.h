@@ -53,11 +53,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
+#include "graphics/Color.h"
+#include "graphics/texture/TextureStage.h"
 #include "gui/book/Book.h"
 #include "gui/CinematicBorder.h"
 #include "gui/Note.h"
-
-#include "graphics/Color.h"
 
 class TextureContainer;
 class Entity;
@@ -199,6 +199,7 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, long num, Color color, float sc
 void InventoryOpenClose(unsigned long t);
 
 float getInterfaceScale(float scaleFactor, bool roundToInteger);
+TextureStage::FilterMode getInterfaceTextureFilter();
 
 extern bool g_cursorOverBook;
 
