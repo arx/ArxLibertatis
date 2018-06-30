@@ -99,31 +99,23 @@ void ARX_INTERFACE_KillARKANE() {
 	ARKANE_img = NULL;
 }
 
-static void DrawCenteredImage(TextureContainer * tc) {
-	
-	UseRenderState state(render2D().noBlend());
-	
-	Vec2f size = Vec2f(tc->size());
-	
-	Vec2f pos = Vec2f(g_size.center());
-	pos += -size * 0.5f;
-	
-	EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.001f, tc, Color::white);
-}
-
 static void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
 	
 	if(logo == NULL) {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-	
 	GRenderer->Clear(Renderer::ColorBuffer);
 	
-	DrawCenteredImage(logo);
+	UseRenderState state(render2D().noBlend());
+	UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
 	
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+	Vec2f size = Vec2f(logo->size());
+	
+	Vec2f pos = Vec2f(g_size.center()) - size / 2.f;
+	
+	EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.001f, logo, Color::white);
+	
 }
 
 void ARX_INTERFACE_ShowFISHTANK() {
