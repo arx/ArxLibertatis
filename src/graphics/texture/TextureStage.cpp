@@ -19,4 +19,9 @@
 
 #include "graphics/texture/TextureStage.h"
 
-TextureStage::TextureStage(unsigned int stage) : mStage(stage) { }
+TextureStage::TextureStage(unsigned int stage)
+	: mStage(stage)
+	, m_wrapMode(WrapRepeat)
+	, m_minFilter(FilterLinear)
+	, m_magFilter(FilterLinear)
+{ }

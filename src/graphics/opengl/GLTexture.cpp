@@ -183,7 +183,7 @@ void GLTexture::apply(GLTextureStage * stage) {
 	arx_assert(stage->tex == this);
 	
 	// TODO: Fix callers and change this into an assert/error/warning.
-	TextureStage::WrapMode newWrapMode = (!isNPOT) ? stage->wrapMode
+	TextureStage::WrapMode newWrapMode = (!isNPOT) ? stage->getWrapMode()
 	                                               : TextureStage::WrapClamp;
 	if(newWrapMode != wrapMode) {
 		wrapMode = newWrapMode;
@@ -192,14 +192,14 @@ void GLTexture::apply(GLTextureStage * stage) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glwrap);
 	}
 	
-	if(stage->minFilter != minFilter) {
-		minFilter = stage->minFilter;
+	if(stage->getMinFilter() != minFilter) {
+		minFilter = stage->getMinFilter();
 		int mipFilter = hasMipmaps() ? 1 : 0;
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, arxToGlFilter[mipFilter][minFilter]);
 	}
 	
-	if(stage->magFilter != magFilter) {
-		magFilter = stage->magFilter;
+	if(stage->getMagFilter() != magFilter) {
+		magFilter = stage->getMagFilter();
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, arxToGlFilter[0][magFilter]);
 	}
 	
