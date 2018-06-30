@@ -276,10 +276,9 @@ void Note::render() {
 	}
 	
 	UseRenderState state(render2D());
+	UseTextureState textureState(getInterfaceTextureFilter(), TextureStage::WrapClamp);
 	
 	float z = 0.000001f;
-	
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	
 	if(m_background) {
 		EERIEDrawBitmap(m_area, z, m_background, Color::white);
