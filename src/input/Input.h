@@ -108,6 +108,8 @@ public:
 	static std::string getKeyName(InputKeyId key, bool localizedName = false);
 	static InputKeyId getKeyId(const std::string & keyName);
 	
+	std::string getKeyDisplayName(InputKeyId key);
+	
 	// Action
 	
 	bool actionNowPressed(ControlAction actionId) const;
