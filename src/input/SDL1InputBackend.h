@@ -49,6 +49,7 @@ public:
 	bool isKeyboardKeyPressed(int dikkey) const;
 	void startTextInput(const Rect & box, TextInputHandler * handler);
 	void stopTextInput();
+	std::string getKeyName(Keyboard::Key key) const;
 	
 	void onEvent(const SDL_Event & event);
 	

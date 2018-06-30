@@ -19,6 +19,8 @@
 
 #include "input/SDL1InputBackend.h"
 
+#include <boost/range/size.hpp>
+
 #include "io/log/Logger.h"
 #include "platform/Platform.h"
 #include "util/Unicode.h"
@@ -260,6 +262,21 @@ void SDL1InputBackend::stopTextInput() {
 		SDL_EnableUNICODE(0);
 	}
 	m_textHandler = NULL;
+}
+
+std::string SDL1InputBackend::getKeyName(Keyboard::Key key) const {
+	
+	arx_assert(key >= Keyboard::KeyBase && key < Keyboard::KeyMax);
+	
+	for(size_t i = 0; i < size_t(boost::size(sdlToArxKey)); i++) {
+		if(sdlToArxKey[i] == key) {
+			if(const char * name = SDL_GetKeyName(SDLKey(i))) {
+				return name;
+			}
+		}
+	}
+	
+	return std::string();
 }
 
 void SDL1InputBackend::onEvent(const SDL_Event & event) {
