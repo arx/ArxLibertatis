@@ -105,7 +105,7 @@ public:
 	
 	void update(float time);
 	
-	static std::string getKeyName(InputKeyId key, bool localizedName = false);
+	static std::string getKeyName(InputKeyId key);
 	static InputKeyId getKeyId(const std::string & keyName);
 	
 	std::string getKeyDisplayName(InputKeyId key);
