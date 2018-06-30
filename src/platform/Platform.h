@@ -312,7 +312,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 #elif ARX_HAVE_BUILTIN_UNREACHABLE
 #define ARX_DEAD_CODE() __builtin_unreachable()
 #else
-#define ARX_DEAD_CODE() ((void)0)
+#define ARX_DEAD_CODE() do { } while(true)
 #endif
 
 
