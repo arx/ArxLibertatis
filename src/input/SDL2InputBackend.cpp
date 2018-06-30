@@ -19,6 +19,8 @@
 
 #include "input/SDL2InputBackend.h"
 
+#include <boost/range/size.hpp>
+
 #include <glm/glm.hpp>
 
 #include "io/log/Logger.h"
@@ -386,6 +388,23 @@ void SDL2InputBackend::stopTextInput() {
 		SDL_StopTextInput();
 	}
 	m_textHandler = NULL;
+}
+
+std::string SDL2InputBackend::getKeyName(Keyboard::Key key) const {
+	
+	arx_assert(key >= Keyboard::KeyBase && key < Keyboard::KeyMax);
+	
+	for(size_t i = 0; i < size_t(boost::size(sdlToArxKey)); i++) {
+		if(sdlToArxKey[i] == key) {
+			const char * name = SDL_GetKeyName(SDL_GetKeyFromScancode(SDL_Scancode(i)));
+			if(name[0] == '\0') {
+				name = SDL_GetScancodeName(SDL_Scancode(i));
+			}
+			return name;
+		}
+	}
+	
+	return std::string();
 }
 
 void SDL2InputBackend::onEvent(const SDL_Event & event) {
