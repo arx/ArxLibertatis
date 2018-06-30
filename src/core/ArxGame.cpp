@@ -1961,7 +1961,7 @@ void ArxGame::renderLevel() {
 	// Draw game interface if needed
 	if(ARXmenu.mode() == Mode_InGame && !cinematicBorder.isActive()) {
 	
-		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+		UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
 		
 		ARX_INTERFACE_NoteManage();
 		g_hudRoot.draw();
@@ -1971,16 +1971,12 @@ void ArxGame::renderLevel() {
 			g_renderBatcher.render();
 		}
 		
-		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-		
 	}
 
 	GRenderer->Clear(Renderer::DepthBuffer);
 
 	// Speech Management
 	ARX_SPEECH_Check();
-
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	if(pTextManage && !pTextManage->Empty()) {
 		pTextManage->Update(g_platformTime.lastFrameDuration());
@@ -2077,7 +2073,6 @@ void ArxGame::render() {
 	if(ARXmenu.mode() != Mode_InGame) {
 		benchmark::begin(benchmark::Menu);
 		ARX_Menu_Render();
-		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat); // << NEEDED?
 	} else if(isInCinematic()) {
 		benchmark::begin(benchmark::Cinematic);
 		cinematicRender();
@@ -2148,9 +2143,6 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	renderer.RestoreAllTextures();
 
 	ARX_PLAYER_Restore_Skin();
-	
-	// Setup Texture Border RenderState
-	renderer.GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 	// Fog
 	float fogEnd = 0.48f;
