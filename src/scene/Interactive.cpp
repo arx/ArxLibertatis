@@ -2162,23 +2162,6 @@ void UpdateIOInvisibility(Entity * io)
 	}
 }
 
-static glm::mat4x4 convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA & box) {
-	
-	Vec3f tmp = box.vert[14].pos - box.vert[13].pos;
-	Vec3f up  = box.vert[2].pos  - box.vert[1].pos;
-	up += box.vert[3].pos  - box.vert[4].pos;
-	up += box.vert[10].pos - box.vert[9].pos;
-	up += box.vert[11].pos - box.vert[12].pos;
-	up *= 0.25f;
-
-	glm::mat4x4 mat;
-	MatrixSetByVectors(mat, up, tmp);
-	mat[0][3] = mat[1][3] = mat[2][3] = 0.f;
-	mat[3][0] = mat[3][1] = mat[3][2] = mat[3][3] = 0.f;
-
-	return mat;
-}
-
 void UpdateInter() {
 
 	for(size_t i = 1; i < entities.size(); i++) {
@@ -2252,58 +2235,38 @@ void RenderInter() {
 			continue;
 		}
 		
-		Anglef temp = io->angle;
-
-		if(io->ioflags & IO_NPC) {
-			temp.setYaw(MAKEANGLE(180.f - temp.getYaw()));
-		} else {
-			temp.setYaw(MAKEANGLE(270.f - temp.getYaw()));
-		}
-
+		float invisibility = Cedric_GetInvisibility(io);
+		
 		if(io->animlayer[0].cur_anim) {
-
+			
 			Vec3f pos = io->pos;
-
 			if(io->ioflags & IO_NPC) {
 				pos.y = io->_npcdata->vvpos;
 			}
-
-			float invisibility = Cedric_GetInvisibility(io);
-
+			
 			EERIEDrawAnimQuatRender(io->obj, pos, io, invisibility);
+			
 		} else {
+			
 			io->bbox2D.min.x = 9999;
 			io->bbox2D.max.x = -1;
-
+			
 			if(io->obj) {
 				UpdateGoldObject(io);
 			}
-
-			if(!(io->ioflags & IO_NPC)) {
-				if(io->obj) {
-
-					if(io->obj->pbox && io->obj->pbox->active) {
-						glm::mat4x4 mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
-						glm::quat rotation = glm::quat_cast(mat);
-						
-						TransformInfo t(io->obj->pbox->vert[0].pos, rotation, io->scale, io->obj->pbox->vert[0].initpos);
-
-						float invisibility = Cedric_GetInvisibility(io);
-
-						DrawEERIEInter(io->obj, t, io, false, invisibility);
-					} else {
-						glm::quat rotation = glm::quat_cast(toRotationMatrix(temp));
-						
-						TransformInfo t(io->pos, rotation, io->scale);
-
-						float invisibility = Cedric_GetInvisibility(io);
-
-						DrawEERIEInter(io->obj, t, io, false, invisibility);
-					}
-				}
+			
+			if(!(io->ioflags & IO_NPC) && io->obj) {
+				Anglef angle = io->angle;
+				angle.setYaw(MAKEANGLE(270.f - angle.getYaw()));
+				glm::quat rotation = glm::quat_cast(toRotationMatrix(angle));
+				TransformInfo t(io->pos, rotation, io->scale);
+				DrawEERIEInter(io->obj, t, io, false, invisibility);
 			}
+			
 		}
+		
 	}
+	
 }
 
 static std::vector<Entity *> toDestroy;
