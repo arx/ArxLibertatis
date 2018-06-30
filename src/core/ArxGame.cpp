@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Animation.h"
 #include "animation/AnimationRender.h"
-#include "animation/Intro.h"
 
 #include "cinematic/Cinematic.h"
 #include "cinematic/CinematicController.h"
@@ -114,6 +113,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Hud.h"
 #include "gui/Interface.h"
 #include "gui/LoadLevelScreen.h"
+#include "gui/Logo.h"
 #include "gui/Menu.h"
 #include "gui/MenuPublic.h"
 #include "gui/MenuWidgets.h"
