@@ -589,7 +589,7 @@ void Input::update(float time) {
 
 static std::map<std::string, InputKeyId> keyNames;
 
-std::string Input::getKeyName(InputKeyId key, bool localizedName) {
+std::string Input::getKeyName(InputKeyId key) {
 	
 	if(key == -1) {
 		return std::string();
@@ -600,7 +600,7 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 	std::string modifier;
 	if(key & INPUT_COMBINATION_MASK) {
 		// key combination
-		modifier = getKeyName((key >> 16) & 0x0fff, localizedName);
+		modifier = getKeyName((key >> 16) & 0x0fff);
 		key &= INPUT_MASK;
 	}
 	
