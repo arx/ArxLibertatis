@@ -1419,12 +1419,10 @@ void ARX_SCENE_Render() {
 	
 	ARX_THROWN_OBJECT_Render();
 	
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	GRenderer->GetTextureStage(0)->setMipMapLODBias(-0.6f);
 	
 	RenderInter();
 	
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	GRenderer->GetTextureStage(0)->setMipMapLODBias(-0.3f);
 	
 	// To render Dragged objs
