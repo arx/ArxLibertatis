@@ -166,11 +166,8 @@ static void Check_Apply() {
 
 void MainMenuDoFrame() {
 	
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-	
 	UseRenderState state(render2D());
+	UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
 	
 	MENUSTATE eOldMenuState = NOP;
 	MENUSTATE eM;
@@ -220,8 +217,6 @@ void MainMenuDoFrame() {
 		
 		delete g_mainMenu, g_mainMenu = NULL;
 		
-		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-		
 		return;
 	} else if(requestedMenuState != NOP) {
 		g_mainMenu->eOldMenuState = requestedMenuState;
@@ -246,8 +241,6 @@ void MainMenuDoFrame() {
 	
 	bNoMenu = false;
 	
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-
 	pMenuCursor->DrawCursor();
 	
 	g_thumbnailCursor.render();
@@ -270,10 +263,7 @@ void MainMenuDoFrame() {
 			default: break;
 		}
 	}
-
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+	
 }
 
 
