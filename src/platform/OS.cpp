@@ -177,6 +177,15 @@ static std::string getWindowsVersionName() {
 		}
 	}
 	
+	typedef const char * (CDECL * wine_get_version_ptr)();
+	wine_get_version_ptr wine_get_version = NULL;
+	if(ntdll) {
+		wine_get_version = wine_get_version_ptr(GetProcAddress(ntdll, "wine_get_version"));
+	}
+	if(wine_get_version) {
+		os << " (Wine " << wine_get_version() << ")";
+	}
+	
 	return os.str();
 }
 
