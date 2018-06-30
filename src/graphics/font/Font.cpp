@@ -368,13 +368,10 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 		m_textures->upload();
 		
 		UseRenderState state(render2D());
+		UseTextureState textureState(TextureStage::FilterNearest, TextureStage::WrapClamp);
 		
 		// Fixed pipeline texture stage operation
 		GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpDisable);
-
-		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
-		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 		
 		for(size_t texture = 0; texture < mapTextureVertices.size(); texture++) {
 			const std::vector<TexturedVertex> & vertices = mapTextureVertices[texture];
@@ -385,11 +382,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 		}
 		
 		GRenderer->ResetTexture(0);
-		TextureStage * stage = GRenderer->GetTextureStage(0);
-		stage->setColorOp(TextureStage::OpModulate);
-		stage->setWrapMode(TextureStage::WrapRepeat);
-		stage->setMinFilter(TextureStage::FilterLinear);
-		stage->setMagFilter(TextureStage::FilterLinear);
+		GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 		
 	}
 	
