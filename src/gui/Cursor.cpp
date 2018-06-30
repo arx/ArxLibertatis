@@ -160,14 +160,14 @@ bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 		return false;
 	}
 	
-	Anglef angle = Anglef::ZERO;
-
-	if(io->ioflags & IO_INVERTED) {
-		angle.setPitch(180.f);
-		angle.setYaw(-MAKEANGLE(270.f - io->angle.getYaw() - (player.angle.getYaw() - STARTED_ANGLE)));
-	} else {
-		angle.setYaw(MAKEANGLE(270.f - io->angle.getYaw() - (player.angle.getYaw() - STARTED_ANGLE)));
-	}
+	Anglef angle = io->angle;
+	
+	float deltaYaw = player.angle.getYaw() - STARTED_ANGLE;
+	angle.setPitch(MAKEANGLE(angle.getPitch() + std::sin(glm::radians(angle.getRoll())) * deltaYaw));
+	angle.setYaw(MAKEANGLE(angle.getYaw() + std::cos(glm::radians(angle.getRoll())) * deltaYaw));
+	
+	io->angle = angle;
+	STARTED_ANGLE = player.angle.getYaw();
 	
 	EERIE_3D_BBOX bbox;
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
@@ -262,7 +262,10 @@ bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 	
 	}
 	
+	angle.setYaw(MAKEANGLE(270.f - angle.getYaw()));
 	objcenter = VRotateY(objcenter, angle.getYaw());
+	objcenter = VRotateX(objcenter, -angle.getPitch());
+	objcenter = VRotateZ(objcenter, angle.getRoll());
 	
 	collidpos.x -= objcenter.x;
 	collidpos.z -= objcenter.z;
@@ -320,11 +323,7 @@ bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 				ARX_PLAYER_Remove_Invisibility();
 				ARX_SOUND_PlayInterface(SND_INVSTD);
 				ARX_INTERACTIVE_Teleport(io, pos, true);
-
-				io->angle.setPitch(angle.getPitch());
-				io->angle.setYaw(270.f - angle.getYaw());
-				io->angle.setRoll(angle.getRoll());
-
+				
 				io->show = SHOW_FLAG_IN_SCENE;
 				io->obj->pbox->active = 0;
 				Set_DragInter(NULL);
