@@ -123,12 +123,3 @@ void ARX_INTERFACE_ShowFISHTANK() {
 void ARX_INTERFACE_ShowARKANE() {
 	ARX_INTERFACE_ShowLogo(ARKANE_img);
 }
-
-
-
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_EndIntro()
-{
-	ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
-	ARX_MENU_Launch(false);
-}

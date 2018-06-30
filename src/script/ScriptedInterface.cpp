@@ -50,7 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
-#include "gui/Logo.h"
 #include "gui/Menu.h"
 #include "gui/MiniMap.h"
 #include "gui/hud/SecondaryInventory.h"
@@ -298,7 +297,8 @@ public:
 		
 		DebugScript("");
 		
-		ARX_INTERFACE_EndIntro();
+		ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
+		ARX_MENU_Launch(false);
 		
 		return Success;
 	}

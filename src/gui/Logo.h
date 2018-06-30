@@ -30,6 +30,4 @@ bool ARX_INTERFACE_InitARKANE();
 void ARX_INTERFACE_ShowARKANE();
 void ARX_INTERFACE_KillARKANE();
 
-void ARX_INTERFACE_EndIntro();
-
 #endif // ARX_GUI_INTRO_H
