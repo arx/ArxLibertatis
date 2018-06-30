@@ -925,7 +925,13 @@ void ARX_PHYSICS_Apply() {
 				}
 				
 				io->requestRoomUpdate = true;
-				io->pos = pbox->vert[0].pos;
+				
+				Vec3f offset = pbox->vert[0].initpos;
+				offset = VRotateY(offset, MAKEANGLE(270.f - io->angle.getYaw()));
+				offset = VRotateX(offset, -io->angle.getPitch());
+				offset = VRotateZ(offset, io->angle.getRoll());
+				io->pos = pbox->vert[0].pos - offset;
+				
 				arx_assert(isallfinite(io->pos));
 				
 				continue;
