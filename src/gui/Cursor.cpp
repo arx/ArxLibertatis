@@ -146,6 +146,10 @@ bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 	
 	arx_assert(io);
 	
+	if(simulate && draginter) {
+		io->show = SHOW_FLAG_ON_PLAYER;
+	}
+	
 	if(BLOCK_PLAYER_CONTROLS) {
 		return false;
 	}
@@ -281,25 +285,20 @@ bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 	if(collidpos_ok && closerThan(player.pos, pos, 300.f)) {
 		if(simulate) {
 			ARX_INTERACTIVE_Teleport(io, pos, true);
-
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
-			
 			glm::quat rotation = glm::quat_cast(toRotationMatrix(angle));
-			
-			if(draginter) {
-			if(glm::abs(lastanything) > glm::abs(height)) {
-				TransformInfo t(collidpos, rotation, io->scale);
-
-				static const float invisibility = 0.5f;
-
-				DrawEERIEInter(io->obj, t, io, false, invisibility);
-			} else {
-				TransformInfo t(pos, rotation, io->scale);
-
-				float invisibility = Cedric_GetInvisibility(io);
-
-				DrawEERIEInter(io->obj, t, io, false, invisibility);
-			}
+			if(draginter) {;
+				if(glm::abs(lastanything) > glm::abs(height)) {
+					io->show = SHOW_FLAG_TELEPORTING;
+					TransformInfo t(collidpos, rotation, io->scale);
+					static const float invisibility = 0.5f;
+					DrawEERIEInter(io->obj, t, io, false, invisibility);
+				} else {
+					io->show = SHOW_FLAG_IN_SCENE;
+					TransformInfo t(pos, rotation, io->scale);
+					float invisibility = Cedric_GetInvisibility(io);
+					DrawEERIEInter(io->obj, t, io, false, invisibility);
+				}
 			}
 		} else {
 			if(glm::abs(lastanything) > std::min(glm::abs(height), 12.0f)) {
