@@ -26,9 +26,6 @@
 GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : TextureStage(stage), renderer(_renderer), tex(NULL), current(NULL) {
 	
 	// Set default state
-	wrapMode = WrapRepeat;
-	minFilter = FilterLinear;
-	magFilter = FilterLinear;
 	
 	if(mStage == 0) {
 		ops[Color] = OpModulate;
@@ -41,6 +38,7 @@ GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : Tex
 		ops[Color] = OpDisable;
 		ops[Alpha] = OpDisable;
 	}
+	
 }
 
 GLTextureStage::~GLTextureStage() {
@@ -181,22 +179,6 @@ void GLTextureStage::setAlphaOp(TextureOp op) {
 	setOp(Alpha, op);
 }
 
-TextureStage::WrapMode GLTextureStage::getWrapMode() const {
-	return wrapMode;
-}
-
-void GLTextureStage::setWrapMode(WrapMode _wrapMode) {
-	wrapMode = _wrapMode;
-}
-
-void GLTextureStage::setMinFilter(FilterMode filterMode) {
-	minFilter = filterMode;
-}
-
-void GLTextureStage::setMagFilter(FilterMode filterMode) {
-	magFilter = filterMode;
-}
-
 void GLTextureStage::setMipMapLODBias(float bias) {
 	
 	if(mStage != 0) {
@@ -232,7 +214,8 @@ void GLTextureStage::apply() {
 			if(stage->tex == tex && stage->isEnabled()) {
 				apply = false;
 				#ifdef ARX_DEBUG
-				if(stage->wrapMode != wrapMode || stage->minFilter != minFilter || stage->magFilter != magFilter) {
+				if(stage->getWrapMode() != getWrapMode()
+				   || stage->getMinFilter() != getMinFilter() || stage->getMagFilter() != getMagFilter()) {
 					static bool warned = false;
 					if(!warned) {
 						LogWarning << "Same texture used in multiple stages with different attributes.";
@@ -248,6 +231,7 @@ void GLTextureStage::apply() {
 		if(apply) {
 			tex->apply(this);
 		}
+		
 	}
 
 	if(mStage != 0) {

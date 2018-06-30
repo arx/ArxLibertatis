@@ -42,12 +42,6 @@ public:
 	void setColorOp(TextureOp textureOp);
 	void setAlphaOp(TextureOp textureOp);
 	
-	WrapMode getWrapMode() const;
-	void setWrapMode(WrapMode wrapMode);
-	
-	void setMinFilter(FilterMode filterMode);
-	void setMagFilter(FilterMode filterMode);
-	
 	void setMipMapLODBias(float bias);
 	
 	void apply();
@@ -74,10 +68,6 @@ private:
 
 	GLTexture * tex;
 	GLTexture * current;
-	
-	WrapMode wrapMode;
-	FilterMode minFilter;
-	FilterMode magFilter;
 
 	typedef std::map<GLenum, GLint> IntegerStateCache;
 	IntegerStateCache m_stateCacheIntegers;
