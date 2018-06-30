@@ -147,7 +147,6 @@ public:
 	bool isKeyPressed(int keyId) const;
 	bool isKeyPressedNowPressed(int keyId) const;
 	bool isKeyPressedNowUnPressed(int keyId) const;
-	bool getKeyAsText(int keyId, char & result) const;
 	
 	/*!
 	 * Enter text input mode and send all text to the given handler
