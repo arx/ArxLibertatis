@@ -450,13 +450,15 @@ public:
 		return tc;
 	}
 };
+
 CursorAnimatedHand cursorAnimatedHand = CursorAnimatedHand();
 
-
-
-static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
+void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
+	
+	ARX_PROFILE_FUNC();
 	
 	UseRenderState state(render2D());
+	UseTextureState textureState(getInterfaceTextureFilter(), TextureStage::WrapClamp);
 	
 	if(!draginter && SelectSpellTargetCursorRender()) {
 		return;
@@ -763,29 +765,4 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag, bool draginter) {
 		}
 		
 	}
-}
-
-void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
-	
-	ARX_PROFILE_FUNC();
-	
-	if(!draginter) {
-		TextureStage::FilterMode filter = TextureStage::FilterLinear;
-		if(config.interface.scaleFilter == UIFilterNearest) {
-			filter = TextureStage::FilterNearest;
-		}
-		GRenderer->GetTextureStage(0)->setMinFilter(filter);
-		GRenderer->GetTextureStage(0)->setMagFilter(filter);
-		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-	}
-	
-	ARX_INTERFACE_RenderCursorInternal(flag, draginter);
-	
-	// Ensure filtering settings are restored in all cases
-	if(!draginter) {
-		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-	}
-	
 }
