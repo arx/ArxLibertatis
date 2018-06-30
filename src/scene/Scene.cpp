@@ -1108,15 +1108,6 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 					}
 				}
 
-				if(ep->type & POLY_LAVA) {
-					float uvScroll = toMsf(now) * (1.f / 12000);
-					ManageLava_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
-					vPolyLava.push_back(ep);
-				} else if(ep->type & POLY_WATER) {
-					float uvScroll = toMsf(now) * 0.001f;
-					ManageWater_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
-					vPolyWater.push_back(ep);
-				}
 			}
 
 		} else { // Improve Vision Activated
@@ -1169,6 +1160,17 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 				}
 			}
 		}
+		
+		if(ep->type & POLY_LAVA) {
+			float uvScroll = toMsf(now) * (1.f / 12000);
+			ManageLava_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
+			vPolyLava.push_back(ep);
+		} else if(ep->type & POLY_WATER) {
+			float uvScroll = toMsf(now) * 0.001f;
+			ManageWater_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
+			vPolyWater.push_back(ep);
+		}
+		
 	}
 
 	room.pVertexBuffer->unlock();
