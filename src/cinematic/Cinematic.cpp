@@ -308,7 +308,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	}
 	
 	UseRenderState state(render2D());
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+	UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
 	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate);
 	
 	CinematicBitmap * tb = m_bitmaps[numbitmap];
@@ -430,7 +430,6 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		
 	}
 	
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpSelectArg1);
 	
 	// Effects that continue over time
