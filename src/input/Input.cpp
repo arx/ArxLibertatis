@@ -605,30 +605,20 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 	}
 	
 	if(key >= InputKeyId(Mouse::ButtonBase) && key < InputKeyId(Mouse::ButtonMax)) {
-		
 		std::ostringstream oss;
 		oss << PREFIX_BUTTON << int(key - Mouse::ButtonBase + 1);
 		name = oss.str();
-	
 	} else if(key == InputKeyId(Mouse::Wheel_Up)) {
 		name = "WheelUp";
-
 	} else if(key == InputKeyId(Mouse::Wheel_Down)) {
 		name = "WheelDown";
-
-	} else {
-		BOOST_STATIC_ASSERT(ARRAY_SIZE(keysDescriptions) == Keyboard::KeyMax);
-		arx_assert(key >= 0 && key < int(ARRAY_SIZE(keysDescriptions)));
-		const KeyDescription & entity = keysDescriptions[key];
-		
+	} else if(key >= InputKeyId(Keyboard::KeyBase) && key < InputKeyId(Keyboard::KeyMax)) {
+		BOOST_STATIC_ASSERT(ARRAY_SIZE(keysDescriptions) == size_t(Keyboard::KeyMax - Keyboard::KeyBase));
+		const KeyDescription & entity = keysDescriptions[key - InputKeyId(Keyboard::KeyBase)];
 		arx_assert(entity.id == key);
 		name = entity.name;
-	}
-	
-	if(name.empty()) {
-		std::ostringstream oss;
-		oss << PREFIX_KEY << int(key);
-		name = oss.str();
+	} else {
+		ARX_DEAD_CODE();
 	}
 	
 	if(!modifier.empty()) {
@@ -636,6 +626,56 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 	} else {
 		return name;
 	}
+	
+}
+
+std::string Input::getKeyDisplayName(InputKeyId key) {
+	
+	if(key == -1) {
+		return std::string();
+	}
+	
+	std::string name;
+	
+	std::string modifier;
+	if(key & INPUT_COMBINATION_MASK) {
+		// key combination
+		modifier = getKeyDisplayName((key >> 16) & 0x0fff);
+		key &= INPUT_MASK;
+	}
+	
+	if(key == InputKeyId(Mouse::Button_0)) {
+		name = "Left Click";
+	} else if(key == InputKeyId(Mouse::Button_2)) {
+		name = "Middle Click";
+	} else if(key == InputKeyId(Mouse::Button_1)) {
+		name = "Right Click";
+	} else if(key >= InputKeyId(Mouse::ButtonBase) && key < InputKeyId(Mouse::ButtonMax)) {
+		std::ostringstream oss;
+		oss << "Mouse " << int(key - Mouse::ButtonBase + 1);
+		name = oss.str();
+	} else if(key == InputKeyId(Mouse::Wheel_Up)) {
+		name = "Wheel Up";
+	} else if(key == InputKeyId(Mouse::Wheel_Down)) {
+		name = "Wheel Down";
+	} else if(key >= InputKeyId(Keyboard::KeyBase) && key < InputKeyId(Keyboard::KeyMax)) {
+		name = backend->getKeyName(Keyboard::Key(key));
+		if(name.empty()) {
+			BOOST_STATIC_ASSERT(ARRAY_SIZE(keysDescriptions) == size_t(Keyboard::KeyMax - Keyboard::KeyBase));
+			const KeyDescription & entity = keysDescriptions[key - InputKeyId(Keyboard::KeyBase)];
+			arx_assert(entity.id == key);
+			name = entity.name;
+		}
+	} else {
+		ARX_DEAD_CODE();
+	}
+	
+	if(!modifier.empty()) {
+		return modifier + " + " + name;
+	} else {
+		return name;
+	}
+	
 }
 
 InputKeyId Input::getKeyId(const std::string & name) {
