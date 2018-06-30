@@ -2823,19 +2823,20 @@ void ManageIgnition_2(Entity * io) {
 	arx_assert(io);
 	
 	if(io->ignition > 0.f) {
-		if(io->ignition > 100.f)
+		
+		if(io->ignition > 100.f) {
 			io->ignition = 100.f;
-
-		Vec3f position;
-
-		if(io->obj && io->obj->fastaccess.fire != ActionPoint())
-			if(io == DRAGINTER)
+		}
+		
+		Vec3f position = io->pos;
+		if(io->obj && io->obj->fastaccess.fire != ActionPoint()) {
+			if(io == DRAGINTER && io->show == SHOW_FLAG_ON_PLAYER) {
 				position = player.pos;
-			else
+			} else {
 				position = actionPointPosition(io->obj, io->obj->fastaccess.fire);
-		else
-			position = io->pos;
-
+			}
+		}
+		
 		EERIE_LIGHT * light = dynLightCreate(io->ignit_light);
 		if(light) {
 			light->intensity = std::max(io->ignition * 0.1f, 1.f);
@@ -2845,7 +2846,11 @@ void ManageIgnition_2(Entity * io) {
 			light->rgb = (Color3f(1.f, 0.8f, 0.6f) - randomColor3f() * Color3f(0.2f, 0.2f, 0.2f)) * v;
 			light->pos = position + Vec3f(0.f, -30.f, 0.f);
 			light->ex_flaresize = 40.f;
-			light->extras |= EXTRAS_FLARE;
+			if(io->show == SHOW_FLAG_IN_SCENE || io->show == SHOW_FLAG_TELEPORTING) {
+				light->extras |= EXTRAS_FLARE;
+			} else {
+				light->extras &= ~EXTRAS_FLARE;
+			}
 		}
 
 		if(io->ignit_sound == audio::INVALID_ID) {
