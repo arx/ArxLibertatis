@@ -1904,6 +1904,10 @@ public:
 		: MenuPage(state)
 	{}
 	
+	void focus() {
+		reinitActionKeys();
+	}
+	
 protected:
 	
 	void addControlRow(long & y, ControlAction controlAction,
