@@ -1436,16 +1436,6 @@ void PlayerInterfaceFader::update() {
 	}
 }
 
-static void setHudTextureState() {
-	TextureStage::FilterMode filter = TextureStage::FilterLinear;
-	if(config.interface.scaleFilter == UIFilterNearest) {
-		filter = TextureStage::FilterNearest;
-	}
-	GRenderer->GetTextureStage(0)->setMinFilter(filter);
-	GRenderer->GetTextureStage(0)->setMagFilter(filter);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-}
-
 void HudRoot::draw() {
 	
 	if(player.lifePool.current <= 0) {
@@ -1496,9 +1486,8 @@ void HudRoot::draw() {
 	precastSpellsGui.updateRect(damagedEquipmentGui.rect());
 	precastSpellsGui.update();
 	
-	setHudTextureState();
-	
 	UseRenderState state(render2D());
+	UseTextureState textureState(getInterfaceTextureFilter(), TextureStage::WrapClamp);
 	
 	if(player.Interface & INTER_COMBATMODE) {
 		hitStrengthGauge.draw();
@@ -1542,8 +1531,6 @@ void HudRoot::draw() {
 
 	if((player.Interface & INTER_PLAYERBOOK) && !(player.Interface & INTER_COMBATMODE)) {
 		g_playerBook.manage();
-		
-		setHudTextureState();
 	}
 	
 	memorizedRunesHud.draw();
@@ -1602,9 +1589,6 @@ void HudRoot::draw() {
 	activeSpellsGui.updateInput(mousePos);
 	activeSpellsGui.draw();
 	
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 }
 
 void HudRoot::recalcScale() {
