@@ -142,7 +142,7 @@ void KeybindWidget::setKey(InputKeyId keyId) {
 	}
 	m_key = keyId;
 	
-	m_text = Input::getKeyName(keyId, true);
+	m_text = GInput->getKeyDisplayName(keyId);
 	if(m_text.empty()) {
 		m_text = "---";
 	}
