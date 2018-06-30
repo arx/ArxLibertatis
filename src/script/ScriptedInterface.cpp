@@ -45,12 +45,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/foreach.hpp>
 
-#include "animation/Intro.h"
 #include "game/Inventory.h"
 #include "game/Entity.h"
 #include "game/Player.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
+#include "gui/Logo.h"
 #include "gui/Menu.h"
 #include "gui/MiniMap.h"
 #include "gui/hud/SecondaryInventory.h"

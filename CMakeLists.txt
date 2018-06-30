@@ -862,7 +862,6 @@ set(ANIMATION_SOURCES
 	src/animation/Animation.cpp
 	src/animation/AnimationRender.cpp
 	src/animation/Skeleton.cpp
-	src/animation/Intro.cpp
 )
 
 set(CINEMATIC_SOURCES
@@ -1010,6 +1009,7 @@ set(GUI_SOURCES
 	src/gui/Hud.cpp
 	src/gui/Interface.cpp
 	src/gui/LoadLevelScreen.cpp
+	src/gui/Logo.cpp
 	src/gui/MainMenu.cpp
 	src/gui/Menu.cpp
 	src/gui/MenuPublic.cpp

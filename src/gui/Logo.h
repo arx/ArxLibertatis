@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_ANIMATION_INTRO_H
-#define ARX_ANIMATION_INTRO_H
+#ifndef ARX_GUI_INTRO_H
+#define ARX_GUI_INTRO_H
 
 void LoadScreen();
 
@@ -32,4 +32,4 @@ void ARX_INTERFACE_KillARKANE();
 
 void ARX_INTERFACE_EndIntro();
 
-#endif // ARX_ANIMATION_INTRO_H
+#endif // ARX_GUI_INTRO_H

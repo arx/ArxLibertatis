@@ -41,9 +41,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-// TODO header file
-
-#include "animation/Intro.h"
+#include "gui/Logo.h"
 
 #include <algorithm>
 #include <cstdio>
