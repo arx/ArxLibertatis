@@ -522,9 +522,6 @@ static void drawDebugEntities() {
 		if((entity->ioflags & IO_CAMERA) || (entity->ioflags & IO_MARKER)) {
 			color = Color::gray(0.7f), visible = false;
 		}
-		if(DRAGINTER == entity) {
-			color = Color::white, visible = true;
-		}
 		
 		if(visible) {
 			drawDebugBoundingBox(entity->bbox2D.toRect(), Color::blue);
