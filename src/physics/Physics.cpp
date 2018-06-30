@@ -275,8 +275,9 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 	for(size_t i = 0; i < obj->pbox->vert.size(); i++) {
 		PhysicsParticle * pv = &obj->pbox->vert[i];
 		pv->pos = pv->initpos;
-		pv->pos = VRotateY(pv->pos, angle.getYaw());
-		pv->pos = VRotateX(pv->pos, angle.getPitch());
+		
+		pv->pos = VRotateY(pv->pos, MAKEANGLE(270.f - angle.getYaw()));
+		pv->pos = VRotateX(pv->pos, -angle.getPitch());
 		pv->pos = VRotateZ(pv->pos, angle.getRoll());
 		pv->pos += pos;
 
