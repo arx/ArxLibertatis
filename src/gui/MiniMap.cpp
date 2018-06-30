@@ -289,8 +289,6 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		// Draw the background
 		drawBackground(showLevel, miniMapRect, start, miniMapZoom, 20.f, true, 0.5f);
 		
-		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-		
 		// Draw the player (red arrow)
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			drawPlayer(playerSize, playerPos, true);
@@ -323,8 +321,6 @@ void MiniMap::showBookMiniMap(int showLevel, Rect rect, float scale) {
 		}
 		
 		drawBackground(showLevel, rect, start, zoom, 20.f * scale);
-		
-		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			drawPlayer(6.f * scale, playerPos, false);
@@ -359,8 +355,6 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 	}
 	
 	drawBackground(showLevel, rect, start, zoom);
-	
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 		drawPlayer(3.f * scale, playerPos, false);
@@ -548,9 +542,7 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 		desiredState.setBlend(BlendZero, BlendInvSrcColor);
 	}
 	UseRenderState state(desiredState);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+	UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
 
 	for(int z = -2; z < int(MINIMAP_MAX_Z) + 2; z++) {
 	for(int x = -2; x < int(MINIMAP_MAX_X) + 2; x++) {
