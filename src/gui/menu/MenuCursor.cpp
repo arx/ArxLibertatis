@@ -163,21 +163,11 @@ void MenuCursor::DrawOneCursor(const Vec2s & mousePos) {
 		return;
 	}
 	
-	TextureStage::FilterMode filter = TextureStage::FilterLinear;
-	if(config.interface.scaleFilter == UIFilterNearest) {
-		filter = TextureStage::FilterNearest;
-	}
-	GRenderer->GetTextureStage(0)->setMinFilter(filter);
-	GRenderer->GetTextureStage(0)->setMagFilter(filter);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+	UseTextureState textureState(getInterfaceTextureFilter(), TextureStage::WrapClamp);
 	
 	float scale = getInterfaceScale(config.interface.cursorScale, config.interface.cursorScaleInteger);
 	EERIEDrawBitmap(Rectf(Vec2f(mousePos), m_size.x * scale, m_size.y * scale),
 	                0.00000001f, scursor[m_currentFrame], Color::white);
-	
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 }
 
