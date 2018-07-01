@@ -287,7 +287,7 @@ bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 			ARX_INTERACTIVE_Teleport(io, pos, true);
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 			glm::quat rotation = glm::quat_cast(toRotationMatrix(angle));
-			if(draginter) {;
+			if(draginter) {
 				if(glm::abs(lastanything) > glm::abs(height)) {
 					io->show = SHOW_FLAG_TELEPORTING;
 					TransformInfo t(collidpos, rotation, io->scale);
