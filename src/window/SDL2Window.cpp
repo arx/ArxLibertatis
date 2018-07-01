@@ -321,6 +321,10 @@ bool SDL2Window::initialize() {
 	
 	if(gldebug::isEnabled()) {
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+	} else {
+		#if SDL_VERSION_ATLEAST(2, 0, 6)
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_NO_ERROR, 1);
+		#endif
 	}
 	
 	bool autoRenderer = (config.video.renderer == "auto");
