@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GUI_INTRO_H
-#define ARX_GUI_INTRO_H
+#ifndef ARX_GUI_LOGO_H
+#define ARX_GUI_LOGO_H
 
 bool ARX_INTERFACE_InitFISHTANK();
 void ARX_INTERFACE_ShowFISHTANK();
@@ -28,4 +28,4 @@ bool ARX_INTERFACE_InitARKANE();
 void ARX_INTERFACE_ShowARKANE();
 void ARX_INTERFACE_KillARKANE();
 
-#endif // ARX_GUI_INTRO_H
+#endif // ARX_GUI_LOGO_H
