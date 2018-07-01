@@ -210,7 +210,8 @@ public:
 		
 		DebugScript("");
 		
-		LogInfo << "Local variables:\n" << PrintLocalVariables(context.getEntity());
+		LogInfo << "Local variables for " << context.getEntity()->idString() << ":\n"
+		        << PrintLocalVariables(context.getEntity());
 		
 		return Success;
 	}
@@ -227,10 +228,9 @@ public:
 		
 		DebugScript("");
 		
-		LogInfo << "Variables:\n"
-		        << PrintGlobalVariables()
-		        << "--------------------------\n"
+		LogInfo << "Local variables for " << context.getEntity()->idString() << ":\n"
 		        << PrintLocalVariables(context.getEntity());
+		LogInfo << "Global variables:\n" << PrintGlobalVariables();
 		
 		return Success;
 	}
