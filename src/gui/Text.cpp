@@ -182,7 +182,8 @@ static void ARX_UNICODE_FormattingInRect(Font * font, std::string::const_iterato
 		
 	}
 	
-	if(noOneLineParagraphs && linesInParagraph == 1 && itLastParagraphBreak != txtbegin && !wasLineBreak) {
+	if(noOneLineParagraphs && linesInParagraph == 1 && itLastParagraphBreak != txtbegin
+	   && !wasLineBreak && it != txtend) {
 		it = itLastParagraphBreak;
 		penY -= font->getLineHeight();
 	}
