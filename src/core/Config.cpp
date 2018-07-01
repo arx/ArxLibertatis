@@ -397,6 +397,12 @@ bool Config::setActionKey(ControlAction actionId, size_t index, InputKeyId key) 
 		}
 	}
 	
+	if(index == 1 && actions[actionId].key[0] == ActionKey::UNUSED) {
+		actions[actionId].key[index] = ActionKey::UNUSED;
+		changed = true;
+		index = 0;
+	}
+	
 	if(actions[actionId].key[index] != key) {
 		actions[actionId].key[index] = key;
 		changed = true;
