@@ -117,7 +117,7 @@ typedef double f64; // 64 bits double float
  * \brief Halt execution and notify any attached debugger
  */
 #if ARX_COMPILER_MSVC
-	#define ARX_DEBUG_BREAK() __debugbreak()
+	#define ARX_DEBUG_BREAK() do { __debugbreak(); std::abort(); } while(0)
 #elif ARX_HAVE_BUILTIN_TRAP
 	#define ARX_DEBUG_BREAK() __builtin_trap()
 #else
