@@ -128,6 +128,23 @@ void OpenGLRenderer::initialize() {
 	LogInfo << " ├─ Device: " << glRenderer;
 	CrashHandler::setVariable("OpenGL device", glRenderer);
 	
+	#if defined(GL_CONTEXT_FLAG_DEBUG_BIT) || defined(GL_CONTEXT_FLAG_NO_ERROR_BIT)
+	if(ARX_HAVE_GL_VER(3, 0)) {
+		GLint flags = 0;
+		glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+		#ifdef GL_CONTEXT_FLAG_DEBUG_BIT
+		if(flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
+			LogInfo << " ├─ Context type: debug";
+		}
+		#endif
+		#ifdef GL_CONTEXT_FLAG_NO_ERROR_BIT
+		if(flags & GL_CONTEXT_FLAG_NO_ERROR_BIT) {
+			LogInfo << " ├─ Context type: no error";
+		}
+		#endif
+	}
+	#endif
+	
 	u64 totalVRAM = 0, freeVRAM = 0;
 	{
 		#ifdef GL_NVX_gpu_memory_info
