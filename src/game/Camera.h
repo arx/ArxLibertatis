@@ -50,10 +50,19 @@ public:
 		return focalToFov(focal);
 	}
 	
+	void setFov(const float fov) {
+		focal = fovToFocal(fov);
+	}
+	
 	void lookAt(const Vec3f & target) {
 		if(m_pos != target) {
 			angle = getLookAtAngle(m_pos, target);
 		}
+	}
+	
+	//! \param fov vertical angle in radians
+	static float fovToFocal(float fov) {
+		return imagePlaneHeight() / 2.f / glm::tan(fov / 2.f);
 	}
 	
 	//! \return vertical angle in radians
