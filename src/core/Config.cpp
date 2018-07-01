@@ -108,6 +108,7 @@ const bool allowConsole = false;
 const float
 	fogDistance = 10.f,
 	gamma = 5.f,
+	fov = 75.f,
 	hudScale = 0.5f,
 	bookScale = 1.f,
 	cursorScale = 0.5f,
@@ -192,9 +193,10 @@ const std::string
 	levelOfDetail = "others_details",
 	fogDistance = "fog",
 	gamma = "gamma",
-	antialiasing = "antialiasing",
 	vsync = "vsync",
 	fpsLimit = "fps_limit",
+	fov = "fov",
+	antialiasing = "antialiasing",
 	maxAnisotropicFiltering = "max_anisotropic_filtering",
 	colorkeyAntialiasing = "colorkey_antialiasing",
 	alphaCutoutAntialiasing = "alpha_cutout_antialiasing",
@@ -436,9 +438,10 @@ bool Config::save() {
 	writer.writeKey(Key::levelOfDetail, video.levelOfDetail);
 	writer.writeKey(Key::fogDistance, video.fogDistance);
 	writer.writeKey(Key::gamma, video.gamma);
-	writer.writeKey(Key::antialiasing, video.antialiasing);
 	writer.writeKey(Key::vsync, video.vsync);
 	writer.writeKey(Key::fpsLimit, video.fpsLimit);
+	writer.writeKey(Key::fov, video.fov);
+	writer.writeKey(Key::antialiasing, video.antialiasing);
 	writer.writeKey(Key::maxAnisotropicFiltering, video.maxAnisotropicFiltering);
 	writer.writeKey(Key::colorkeyAntialiasing, video.colorkeyAntialiasing);
 	writer.writeKey(Key::alphaCutoutAntialiasing, video.alphaCutoutAntialiasing);
@@ -576,11 +579,13 @@ bool Config::init(const fs::path & file) {
 	video.levelOfDetail = reader.getKey(Section::Video, Key::levelOfDetail, Default::levelOfDetail);
 	video.fogDistance = reader.getKey(Section::Video, Key::fogDistance, Default::fogDistance);
 	video.gamma = reader.getKey(Section::Video, Key::gamma, Default::gamma);
-	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
 	int vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
 	video.vsync = glm::clamp(vsync, -1, 1);
 	int fpsLimit = reader.getKey(Section::Video, Key::fpsLimit, Default::fpsLimit);
 	video.fpsLimit = std::max(fpsLimit, 0);
+	float fov = reader.getKey(Section::Video, Key::fov, Default::fov);
+	video.fov = std::max(fov, 60.f);
+	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
 	int anisoFiltering = reader.getKey(Section::Video, Key::maxAnisotropicFiltering, Default::maxAnisotropicFiltering);
 	video.maxAnisotropicFiltering = std::max(anisoFiltering, 1);
 	video.colorkeyAntialiasing = reader.getKey(Section::Video, Key::colorkeyAntialiasing, Default::colorkeyAntialiasing);
