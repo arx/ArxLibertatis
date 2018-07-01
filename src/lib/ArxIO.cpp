@@ -46,13 +46,13 @@ public:
 
 		std::string levelName;
 		switch(level) {
-		case Logger::Debug:    levelName = "Debug"; break;
-		case Logger::Info:     levelName = "Info"; break;
-		case Logger::Console:  levelName = "Console"; break;
-		case Logger::Warning:  levelName = "Warning"; break;
-		case Logger::Error:    levelName = "Error"; break;
-		case Logger::Critical: levelName = "Critical"; break;
-		case Logger::None: ARX_DEAD_CODE(); return;
+			case Logger::Debug:    levelName = "Debug"; break;
+			case Logger::Info:     levelName = "Info"; break;
+			case Logger::Console:  levelName = "Console"; break;
+			case Logger::Warning:  levelName = "Warning"; break;
+			case Logger::Error:    levelName = "Error"; break;
+			case Logger::Critical: levelName = "Critical"; break;
+			case Logger::None: ARX_DEAD_CODE();
 		}
 
 		m_Lines.push_back(levelName + ": " + str);
