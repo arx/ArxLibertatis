@@ -620,6 +620,8 @@ size_t initSuppressions() {
 	
 	suppress("human_base_0095", 722, "setcontrolledzone"); // unknown zone 'maria_shop'
 	
+	suppress("human_base_0097", 9830, "speak"); // unexpected flags: -0 (should be -O?)
+	
 	suppress("human_base_0099", 997, "errata"); // unknown command 'errata', should be 'goto errata'
 	
 	suppress("human_base_0114", 6541, "teleport"); // unknown target 'marker_0327'
