@@ -73,6 +73,10 @@ if(MSVC)
 		# Force to always compile with warning level 3
 		string(REGEX REPLACE "/W[0-4]" "/W3" ${flag_var} "${${flag_var}}")
 		
+		if(NOT MSVC_VERSION LESS 1900)
+			add_definitions(/utf-8)
+		endif()
+		
 	endforeach(flag_var)
 	
 	# Avoid warning during link
