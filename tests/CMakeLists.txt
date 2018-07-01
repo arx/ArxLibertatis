@@ -14,28 +14,28 @@ include_directories(SYSTEM ${CppUnit_INCLUDE_DIR})
 add_definitions(-UARX_DEBUG)
 
 include_directories(
-	../src
-	../
+	${PROJECT_SOURCE_DIR}/src
+	${PROJECT_SOURCE_DIR}
 )
 
 add_executable(arxtest
 	TestMain.cpp
 	
-	../src/graphics/Math.cpp
-	../src/graphics/Color.h
-	../src/graphics/Renderer.cpp
-	../src/game/Camera.cpp
-	../src/util/String.cpp
+	${PROJECT_SOURCE_DIR}/src/graphics/Math.cpp
+	${PROJECT_SOURCE_DIR}/src/graphics/Color.h
+	${PROJECT_SOURCE_DIR}/src/graphics/Renderer.cpp
+	${PROJECT_SOURCE_DIR}/src/game/Camera.cpp
+	${PROJECT_SOURCE_DIR}/src/util/String.cpp
 	
 	graphics/ColorTest.cpp
 	
-	../src/io/fs/FilePath.cpp
+	${PROJECT_SOURCE_DIR}/src/io/fs/FilePath.cpp
 	io/fs/FilePathTest.cpp
 	
-	../src/io/resource/ResourcePath.cpp
+	${PROJECT_SOURCE_DIR}/src/io/resource/ResourcePath.cpp
 	io/resource/ResourcePathTest.cpp
 	
-	../src/io/IniSection.cpp
+	${PROJECT_SOURCE_DIR}/src/io/IniSection.cpp
 	io/IniTest.h
 	io/IniTest.cpp
 	
