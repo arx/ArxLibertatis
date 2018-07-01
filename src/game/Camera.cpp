@@ -46,7 +46,7 @@ Anglef Camera::getLookAtAngle(const Vec3f & origin, const Vec3f & target) {
 
 static glm::mat4x4 createProjectionMatrix(const Vec2f & size, const Vec2f & center, Camera * cam) {
 	
-	float fov = focalToFov(cam->focal);
+	float fov = cam->fov();
 	
 	const float nearDist = 1.f;
 	const float farDist = cam->cdepth;

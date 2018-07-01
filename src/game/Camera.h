@@ -20,11 +20,19 @@
 #ifndef ARX_GAME_CAMERA_H
 #define ARX_GAME_CAMERA_H
 
+#include <glm/glm.hpp>
+
 #include "graphics/GraphicsTypes.h"
 #include "math/Rectangle.h"
 #include "platform/Alignment.h"
 
 struct Camera {
+	
+private:
+	
+	static float imagePlaneHeight() { return 480.f; }
+	
+public:
 	
 	Vec3f m_pos;
 	float focal;
@@ -38,10 +46,19 @@ struct Camera {
 		, cdepth(0.f)
 	{ }
 	
+	float fov() const {
+		return focalToFov(focal);
+	}
+	
 	void lookAt(const Vec3f & target) {
 		if(m_pos != target) {
 			angle = getLookAtAngle(m_pos, target);
 		}
+	}
+	
+	//! \return vertical angle in radians
+	static float focalToFov(float focal) {
+		return 2.f * glm::atan(imagePlaneHeight() / 2.f / focal);
 	}
 	
 	static Anglef getLookAtAngle(const Vec3f & origin, const Vec3f & target);

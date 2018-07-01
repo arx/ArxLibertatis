@@ -21,9 +21,9 @@
 
 #include <sstream>
 
-#include "src/math/GtxFunctions.h"
-
+#include "game/Camera.h"
 #include "graphics/Math.h"
+#include "math/GtxFunctions.h"
 
 #include "AssertionTraits.h"
 #include "LegacyMath.h"
@@ -294,7 +294,7 @@ void LegacyMathTest::focalToFovTest() {
 		float focal = float(i) * 0.1f;
 		
 		float expected = glm::radians(focalToFovLegacy(focal));
-		float result = focalToFov(focal);
+		float result = Camera::focalToFov(focal);
 		
 		std::ostringstream ss;
 		ss << "In: " << focal;
