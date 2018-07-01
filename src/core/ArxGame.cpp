@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/URLConstants.h"
 #include "core/Version.h"
 
+#include "game/Camera.h"
 #include "game/Damage.h"
 #include "game/EntityManager.h"
 #include "game/Equipment.h"
@@ -174,9 +175,6 @@ InfoPanels g_debugInfo = InfoPanelNone;
 extern bool START_NEW_QUEST;
 SavegameHandle LOADQUEST_SLOT = SavegameHandle(); // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
 static fs::path g_saveToLoad;
-
-static const float CURRENT_BASE_FOCAL = 310.f;
-static const float defaultCameraFocal = 350.f;
 
 static const PlatformDuration runeDrawPointInterval = PlatformDurationMs(16); // ~60fps
 
@@ -832,7 +830,7 @@ bool ArxGame::initGame()
 	
 	g_playerCamera.angle = player.angle;
 	g_playerCamera.m_pos = Vec3f(900.f, player.baseHeight(), 4340.f);
-	g_playerCamera.focal = defaultCameraFocal;
+	g_playerCamera.setFov(glm::radians(config.video.fov));
 	g_playerCamera.cdepth = 2100.f;
 	SetActiveCamera(&g_playerCamera);
 	
@@ -1870,7 +1868,7 @@ void ArxGame::updateLevel() {
 	
 	{
 		
-		g_playerCamera.focal = CURRENT_BASE_FOCAL;
+		g_playerCamera.setFov(glm::radians(config.video.fov));
 		
 		SpellBase * spell = spells.getSpellByCaster(EntityHandle_Player, SPELL_MAGIC_SIGHT);
 		if(spell) {

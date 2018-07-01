@@ -129,15 +129,18 @@ public:
 		
 		std::string renderer;
 		
-		Vec2i resolution;
-		
 		bool fullscreen;
-		int levelOfDetail;
-		float fogDistance;
+		Vec2i resolution;
 		float gamma;
-		bool antialiasing;
+		
 		int vsync;
 		int fpsLimit;
+		
+		float fov;
+		
+		int levelOfDetail;
+		float fogDistance;
+		bool antialiasing;
 		int maxAnisotropicFiltering;
 		bool colorkeyAntialiasing;
 		int alphaCutoutAntialiasing;
