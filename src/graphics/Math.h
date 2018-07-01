@@ -188,12 +188,6 @@ inline float square(float x) {
 	return x * x;
 }
 
-//! \return vertical angle in radians
-inline float focalToFov(float focal) {
-	static const float imagePlaneHeight = 480;
-	return 2 * glm::atan(imagePlaneHeight / (2 * focal));
-}
-
 /*!
  * Compute (approximate) Distance between two 3D points
  * may use an approximative way of computing sqrt !
