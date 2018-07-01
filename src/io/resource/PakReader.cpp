@@ -424,7 +424,7 @@ size_t PlainFileHandle::read(void * buf, size_t size) {
 	return fs::read(ifs, buf, size).gcount();
 }
 
-static std::ios_base::seekdir arxToStlSeekOrigin(Whence whence) {
+std::ios_base::seekdir arxToStlSeekOrigin(Whence whence) {
 	switch(whence) {
 		case SeekSet: return std::ios_base::beg;
 		case SeekCur: return std::ios_base::cur;
