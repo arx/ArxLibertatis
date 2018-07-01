@@ -780,6 +780,24 @@ public:
 		}
 		
 		{
+			// Add spacing
+			addCenter(new TextWidget(hFontMenu, std::string(), Vec2f(20, 0)));
+		}
+		
+		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_video_fov", "Field of view");
+			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->setEnabled(false);
+			panel->AddElement(txt);
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
+			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFov, this, _1);
+			sld->setValue(glm::clamp(int((config.video.fov - 75.f) / 5.f), 0, 10));
+			panel->AddElement(sld);
+			addCenter(panel);
+		}
+		
+		{
 			std::string szMenuText = getLocalised("system_menus_video_apply");
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(240, 0));
@@ -878,6 +896,10 @@ private:
 		} else {
 			config.video.fpsLimit = boost::lexical_cast<int>(str);
 		}
+	}
+	
+	void onChangedFov(int state) {
+		config.video.fov = 75.f + float(state) * 5.f;
 	}
 	
 	void onClickedBack() {
