@@ -229,21 +229,18 @@ void FireFieldSpell::Launch() {
 	m_light = LightHandle();
 	
 	Vec3f target;
-	float beta = 0.f;
-	bool displace = false;
+	float beta;
+	bool displace;
 	if(m_caster == EntityHandle_Player) {
 		target = player.basePosition();
 		beta = player.angle.getYaw();
 		displace = true;
 	} else {
 		Entity * io = entities.get(m_caster);
-		if(io) {
-			target = io->pos;
-			beta = io->angle.getYaw();
-			displace = (io->ioflags & IO_NPC) == IO_NPC;
-		} else {
-			ARX_DEAD_CODE();
-		}
+		arx_assert(io);
+		target = io->pos;
+		beta = io->angle.getYaw();
+		displace = (io->ioflags & IO_NPC) == IO_NPC;
 	}
 	if(displace) {
 		target += angleToVectorXZ(beta) * 250.f;
@@ -357,21 +354,18 @@ void IceFieldSpell::Launch() {
 	m_light = LightHandle();
 	
 	Vec3f target;
-	float beta = 0.f;
-	bool displace = false;
+	float beta;
+	bool displace;
 	if(m_caster == EntityHandle_Player) {
 		target = player.basePosition();
 		beta = player.angle.getYaw();
 		displace = true;
 	} else {
 		Entity * io = entities.get(m_caster);
-		if(io) {
-			target = io->pos;
-			beta = io->angle.getYaw();
-			displace = (io->ioflags & IO_NPC) == IO_NPC;
-		} else {
-			ARX_DEAD_CODE();
-		}
+		arx_assert(io);
+		target = io->pos;
+		beta = io->angle.getYaw();
+		displace = (io->ioflags & IO_NPC) == IO_NPC;
 	}
 	if(displace) {
 		target += angleToVectorXZ(beta) * 250.f;
