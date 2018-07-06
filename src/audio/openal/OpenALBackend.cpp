@@ -206,16 +206,14 @@ void OpenALBackend::fillDeviceAttributes(ALCint (&attrs)[3]) {
 }
 
 static const char * getHRTFStatusString(HRTFStatus status) {
-	
 	switch(status) {
 		case HRTFDisabled:    return "Disabled";
 		case HRTFEnabled:     return "Enabled";
 		case HRTFForbidden:   return "Forbidden";
 		case HRTFRequired:    return "Required";
 		case HRTFUnavailable: return "Unavailable";
-		default:              return "Unknown";
 	}
-	
+	ARX_DEAD_CODE();
 }
 
 aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrtf) {
