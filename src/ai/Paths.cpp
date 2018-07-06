@@ -149,8 +149,6 @@ static ARX_PATH * ARX_PATH_CheckPlayerInZone() {
 	return ARX_PATH_CheckInZone(player.pos + Vec3f(0.f, 160.f, 0.f));
 }
 
-long JUST_RELOADED = 0;
-
 static void EntityEnteringCurrentZone(Entity * io, ARX_PATH * current) {
 	
 	io->inzone_show = io->show;
@@ -299,7 +297,6 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 		player.inzone = current;
 	}
 	
-	JUST_RELOADED = 0;
 }
 
 ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos)

@@ -314,8 +314,6 @@ void currentSavedGameRemoveEntity(const std::string & idString) {
 	}
 }
 
-extern long JUST_RELOADED;
-
 void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, float angle) {
 	
 	LogDebug("ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle);
@@ -360,7 +358,6 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	
 	DONT_WANT_PLAYER_INZONE = 1;
 	ARX_PLAYER_RectifyPosition();
-	JUST_RELOADED = 1;
 	GMOD_RESET = true;
 	
 }
@@ -2637,8 +2634,6 @@ void ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 	
 	entities.player()->animlayer[1].cur_anim = NULL;
-	
-	JUST_RELOADED = 1;
 	
 }
 
