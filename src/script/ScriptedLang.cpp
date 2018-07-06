@@ -464,12 +464,9 @@ class IfCommand : public Command {
 						return TYPE_FLOAT;
 					}
 					
-					default: {
-						ARX_DEAD_CODE();
-						return TYPE_TEXT;
-					}
-					
 				}
+				
+				ARX_DEAD_CODE();
 			}
 			
 			case '#': {
