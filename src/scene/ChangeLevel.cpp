@@ -285,7 +285,7 @@ bool currentSavedGameHasEntity(const std::string & idString) {
 	if(g_currentSavedGame) {
 		return g_currentSavedGame->hasFile(idString);
 	} else {
-		ARX_DEAD_CODE();
+		arx_assert(false);
 		return false;
 	}
 }
@@ -293,7 +293,7 @@ bool currentSavedGameHasEntity(const std::string & idString) {
 void currentSavedGameStoreEntityDeletion(const std::string & idString) {
 	
 	if(!g_currentSavedGame) {
-		ARX_DEAD_CODE();
+		arx_assert(false);
 		return;
 	}
 	
