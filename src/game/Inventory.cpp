@@ -1084,7 +1084,6 @@ bool TakeFromInventory(const Vec2s & pos) {
 			break;
 		default:
 			ARX_DEAD_CODE();
-			return false;
 	}
 	
 	return true;
