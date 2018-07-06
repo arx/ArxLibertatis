@@ -213,17 +213,16 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 				ARX_PATH * current = ARX_PATH_CheckInZone(io);
 				ARX_PATH * last = io->inzone;
 				
-				if(!last && !current) { // Not in a zone
-				} else if(last == current) { // Stayed inside last zone
-					if(io->show != io->inzone_show) {
+				if(current != last) {
+					// Changed zones
+					if(last) {
+						EntityLeavingLastZone(io, last);
+					}
+					if(current) {
 						EntityEnteringCurrentZone(io, current);
 					}
-				} else if(last && !current) { // Leaving last zone
-					EntityLeavingLastZone(io, last);
-				} else if(!last) { // Entering current zone
-					EntityEnteringCurrentZone(io, current);
-				} else { // Changed from last to current zone
-					EntityLeavingLastZone(io, last);
+				} else if(current && io->show != io->inzone_show) {
+					// Stayed in the same zone but show flag changed
 					EntityEnteringCurrentZone(io, current);
 				}
 				
