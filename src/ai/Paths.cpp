@@ -169,23 +169,6 @@ static void EntityEnteringCurrentZone(Entity * io, ARX_PATH * current) {
 	
 }
 
-static void EntityEnteringCurrentZone2(Entity * io, ARX_PATH * current) {
-	
-	io->inzone_show = io->show;
-	SendIOScriptEvent(NULL, io, SM_ENTERZONE, current->name);
-	
-	if(!current->controled.empty()) {
-		EntityHandle t = entities.getById(current->controled);
-		if(t != EntityHandle()) {
-			ScriptParameters parameters;
-			parameters.push_back(io->idString());
-			parameters.push_back(current->name);
-			SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_ENTER, parameters);
-		}
-	}
-	
-}
-
 static void EntityLeavingLastZone(Entity * io, ARX_PATH * last) {
 	
 	SendIOScriptEvent(NULL, io, SM_LEAVEZONE, last->name);
@@ -241,7 +224,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 					EntityEnteringCurrentZone(io, current);
 				} else { // Changed from last to current zone
 					EntityLeavingLastZone(io, last);
-					EntityEnteringCurrentZone2(io, current);
+					EntityEnteringCurrentZone(io, current);
 				}
 				
 				io->inzone = current;
