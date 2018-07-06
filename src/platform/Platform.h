@@ -304,6 +304,26 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 /*!
  * \def ARX_DEAD_CODE()
  * \brief Assert that a code branch cannot be reached.
+ *
+ * Unlike arx_assert(false) this macro also tells the compiler to assume that the branch is unreachable
+ * in release builds. Therefore there should never be any code after uses of this macro, including
+ * return statements, as wether this code is executed would be undefined.
+ *
+ * This macro can be used to avoid dummy values when switching over enums, ie if only A and B are possible:
+ * \code
+ * const char * enumToString(Enum value) {
+ *   switch(value) {
+ *     case A: return "A";
+ *     case B: return "B";
+ *     // default: return "invalid value";  -- this is not needed with ARX_DEAD_CODE()
+ *   }
+ *   ARX_DEAD_CODE();
+ * }
+ * \endcode
+ *
+ * If a switch is supposed to handle all values of an enum it is important to not add a default label
+ * for the ARX_DEAD_CODE() macro but instead place it after the switch. This allows tools to warn when
+ * ther is an enum value added that is not handled in the switch.
  */
 #ifdef ARX_DEBUG
 #define ARX_DEAD_CODE() arx_assert_impl(false, "unreachable code", NULL)
