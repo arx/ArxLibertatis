@@ -153,18 +153,15 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	}
 }
 
-static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHandle source,
-                                       EntityHandle target) {
+static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHandle target) {
 	
-	float distance_limit = 1000.f;
 	Entity * io_target = entities[target];
-	Entity * io_source = entities[source];
 	
-	SendIOScriptEvent(io_source, io_target, SM_AGGRESSION);
+	SendIOScriptEvent(entities.player(), io_target, SM_AGGRESSION);
 	
 	float distance = fdist(projectile.position, projectile.initial_position);
 	float distance_modifier = 1.f;
-
+	const float distance_limit = 1000.f;
 	if(distance < distance_limit * 2.f) {
 		distance_modifier = distance / distance_limit;
 		if(distance_modifier < 0.5f)
@@ -172,41 +169,25 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 	} else {
 		distance_modifier = 2.f;
 	}
-
-	float attack, dmgs, backstab, ac;
-
-	backstab = 1.f;
-	bool critical = false;
-
-	if(source == EntityHandle_Player) {
-		attack = projectile.damages;
-
-		if(Random::getf(0.f, 100.f) <= (player.m_attributeFull.dexterity - 9.f) * 2.f
-		                               + player.m_skillFull.projectile * 0.2f) {
-			if(SendIOScriptEvent(NULL, io_source, SM_CRITICAL, "bow") != REFUSE) {
-				critical = true;
-			}
+	
+	float critical = 1.f;
+	if(Random::getf(0.f, 100.f) <= (player.m_attributeFull.dexterity - 9.f) * 2.f
+	                               + player.m_skillFull.projectile * 0.2f) {
+		if(SendIOScriptEvent(NULL, entities.player(), SM_CRITICAL, "bow") != REFUSE) {
+			critical = 1.5f;
 		}
-
-		dmgs = attack;
-
-		if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
-			if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth) {
-				if(SendIOScriptEvent(NULL, io_source, SM_BACKSTAB, "bow") != REFUSE) {
-					backstab = 1.5f;
-				}
-			}
-		}
-	} else {
-		// TODO treat NPC !!!
-
-		ARX_DEAD_CODE();
-		attack = 0;
-		dmgs = 0;
 	}
-
-	float absorb;
-
+	
+	float backstab = 1.f;
+	if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
+		if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth) {
+			if(SendIOScriptEvent(NULL, entities.player(), SM_BACKSTAB, "bow") != REFUSE) {
+				backstab = 1.5f;
+			}
+		}
+	}
+	
+	float ac, absorb;
 	if(target == EntityHandle_Player) {
 		ac = player.m_miscFull.armorClass;
 		absorb = player.m_skillFull.defense * .5f;
@@ -214,16 +195,12 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 		ac = ARX_INTERACTIVE_GetArmorClass(io_target);
 		absorb = io_target->_npcdata->absorb;
 	}
-
+	
 	std::string _amat = "flesh";
 	const std::string * amat = &_amat;
-
-	const char * wmat = "dagger";
-
 	if(!io_target->armormaterial.empty()) {
 		amat = &io_target->armormaterial;
 	}
-
 	if(io_target == entities.player()) {
 		Entity * io = entities.get(player.equiped[EQUIP_SLOT_ARMOR]);
 		if(io) {
@@ -232,34 +209,17 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 			}
 		}
 	}
-
-	float power;
-	power = dmgs * ( 1.0f / 20 );
-
-	if(power > 1.f)
-		power = 1.f;
-
-	power = power * 0.15f + 0.85f;
-
-	ARX_SOUND_PlayCollision(*amat, wmat, power, 1.f, projectile.position, io_source);
-
-	dmgs *= backstab;
-	dmgs -= dmgs * (absorb * ( 1.0f / 100 ));
-
-	float chance = 100.f - (ac - attack);
-	float dice = Random::getf(0.f, 100.f);
-
-	if(dice <= chance) {
-		if(dmgs > 0.f) {
-			if(critical)
-				dmgs *= 1.5f;
-
-			dmgs *= distance_modifier;
-			return dmgs;
-		}
+	
+	float power = std::min(projectile.damages * 0.05f, 1.f) * 0.15f + 0.85f;
+	ARX_SOUND_PlayCollision(*amat, "dagger", power, 1.f, projectile.position, entities.player());
+	
+	float dmgs = projectile.damages * critical * backstab * (1.f - absorb * 0.01f) * distance_modifier;
+	
+	if(dmgs <= 0.f || Random::getf(0.f, 100.f) < ac - projectile.damages) {
+		return 0.f;
 	}
-
-	return 0.f;
+	
+	return dmgs;
 }
 
 static EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & end) {
@@ -547,7 +507,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 					
 					if(projectile.source == EntityHandle_Player) {
 						
-						float damages = ARX_THROWN_ComputeDamages(projectile, projectile.source, sphereContent[jj]);
+						float damages = ARX_THROWN_ComputeDamages(projectile, sphereContent[jj]);
 						if(damages > 0.f) {
 							
 							arx_assert(hitpoint >= 0);
