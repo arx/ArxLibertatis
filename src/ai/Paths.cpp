@@ -241,14 +241,40 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 		ARX_PATH * current = ARX_PATH_CheckPlayerInZone();
 		ARX_PATH * last = player.inzone;
 
-		if(!last && !current) { // Not in a zone
-		} else if(last == current) { // Stayed inside last zone
-		} else if(last && !current) { // Leaving last zone
+		if(current != last) {
 			
-			SendIOScriptEvent(NULL, entities.player(), SM_LEAVEZONE, last->name);
-			CHANGE_LEVEL_ICON = NoChangeLevel;
+			if(last && !current) {
+				
+				// TODO why is this not sent when changing directly between zones
+				
+				SendIOScriptEvent(NULL, entities.player(), SM_LEAVEZONE, last->name);
+				CHANGE_LEVEL_ICON = NoChangeLevel;
+				
+			}
 			
-			if(!last->controled.empty()) {
+			if(!last && current) {
+				
+				// TODO why is this not sent when changing directly between zones
+				
+				SendIOScriptEvent(NULL, entities.player(), SM_ENTERZONE, current->name);
+				
+				if(current->flags & PATH_AMBIANCE && !current->ambiance.empty()) {
+					ARX_SOUND_PlayZoneAmbiance(current->ambiance, ARX_SOUND_PLAY_LOOPED, current->amb_max_vol * 0.01f);
+				}
+				
+				if(current->flags & PATH_FARCLIP) {
+					g_desiredFogParameters.flags |= GMOD_ZCLIP;
+					g_desiredFogParameters.zclip = current->farclip;
+				}
+				
+				if(current->flags & PATH_RGB) {
+					g_desiredFogParameters.flags |= GMOD_DCOLOR;
+					g_desiredFogParameters.depthcolor = current->rgb;
+				}
+				
+			}
+			
+			if(last && !last->controled.empty()) {
 				EntityHandle t = entities.getById(last->controled);
 				if(t != EntityHandle()) {
 					ScriptParameters parameters;
@@ -258,47 +284,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 				}
 			}
 			
-		} else if(!last) { // Entering current zone
-			
-			SendIOScriptEvent(NULL, entities.player(), SM_ENTERZONE, current->name);
-			
-			if(current->flags & PATH_AMBIANCE && !current->ambiance.empty()) {
-				ARX_SOUND_PlayZoneAmbiance(current->ambiance, ARX_SOUND_PLAY_LOOPED, current->amb_max_vol * 0.01f);
-			}
-			
-			if(current->flags & PATH_FARCLIP) {
-				g_desiredFogParameters.flags |= GMOD_ZCLIP;
-				g_desiredFogParameters.zclip = current->farclip;
-			}
-			
-			if(current->flags & PATH_RGB) {
-				g_desiredFogParameters.flags |= GMOD_DCOLOR;
-				g_desiredFogParameters.depthcolor = current->rgb;
-			}
-			
-			if(!current->controled.empty()) {
-				EntityHandle t = entities.getById(current->controled);
-				if(t != EntityHandle()) {
-					ScriptParameters parameters;
-					parameters.push_back("player");
-					parameters.push_back(current->name);
-					SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_ENTER, parameters);
-				}
-			}
-			
-		} else { // Changed from last to current zone
-			
-			if(!last->controled.empty()) {
-				EntityHandle t = entities.getById(last->controled);
-				if(t != EntityHandle()) {
-					ScriptParameters parameters;
-					parameters.push_back("player");
-					parameters.push_back(last->name);
-					SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, parameters);
-				}
-			}
-			
-			if(!current->controled.empty()) {
+			if(current && !current->controled.empty()) {
 				EntityHandle t = entities.getById(current->controled);
 				if(t != EntityHandle()) {
 					ScriptParameters parameters;
@@ -309,7 +295,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			}
 			
 		}
-
+		
 		player.inzone = current;
 	}
 	
