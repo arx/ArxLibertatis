@@ -710,8 +710,9 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					if(hitpoint >= 0) {
 						color = (target->ioflags & IO_NPC) ? target->_npcdata->blood_color : Color::white;
 						pos = target->obj->vertexWorldPositions[hitpoint].v;
+					} else {
+						arx_assert(false);
 					}
-					else ARX_DEAD_CODE();
 					
 					float dmgs = 0.f;
 					if(!(flags & 1)) {
