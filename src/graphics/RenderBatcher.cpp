@@ -160,34 +160,31 @@ RenderState RenderMaterial::apply() const {
 
 	state.setCull(m_cullingMode);
 	
-	if(m_blendType == Opaque) {
-		state.disableBlend();
-	} else {
-		switch(m_blendType) {
-		
-		case Additive:
+	switch(m_blendType) {
+		case Opaque: {
+			state.disableBlend();
+			break;
+		}
+		case Additive: {
 			state.setBlend(BlendOne, BlendOne);
 			break;
-		
-		case AlphaAdditive:
+		}
+		case AlphaAdditive: {
 			state.setBlend(BlendSrcAlpha, BlendOne);
 			break;
-		
-		case Screen:
+		}
+		case Screen: {
 			state.setBlend(BlendOne, BlendInvSrcColor);
 			break;
-		
-		case Subtractive:
+		}
+		case Subtractive: {
 			state.setBlend(BlendZero, BlendInvSrcColor);
 			break;
-		
-		case Subtractive2:
+		}
+		case Subtractive2: {
 			GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate);
 			state.setBlend(BlendInvSrcAlpha, BlendInvSrcAlpha);
 			break;
-		
-		default:
-			ARX_DEAD_CODE();
 		}
 	}
 	
