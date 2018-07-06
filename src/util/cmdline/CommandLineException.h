@@ -69,7 +69,6 @@ public:
 			case invalid_cmd_syntax: return "commands must start with a dash (-)";
 		}
 		ARX_DEAD_CODE();
-		return "unknown error";
 	}
 	
 public:
