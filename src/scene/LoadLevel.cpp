@@ -490,13 +490,10 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 
 long FAST_RELEASE = 0;
 
-extern long JUST_RELOADED;
-
 void DanaeClearLevel() {
 	
-	JUST_RELOADED = 0;
 	g_miniMap.reset();
-
+	
 	fadeReset();
 	LAST_JUMP_ENDTIME = 0;
 	FAST_RELEASE = 1;
