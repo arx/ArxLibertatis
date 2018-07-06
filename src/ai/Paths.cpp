@@ -298,7 +298,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 				}
 			}
 			
-			if(!last->controled.empty()) {
+			if(!current->controled.empty()) {
 				EntityHandle t = entities.getById(current->controled);
 				if(t != EntityHandle()) {
 					ScriptParameters parameters;
