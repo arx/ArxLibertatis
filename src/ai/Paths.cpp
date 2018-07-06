@@ -155,22 +155,16 @@ static void EntityEnteringCurrentZone(Entity * io, ARX_PATH * current) {
 	
 	io->inzone_show = io->show;
 	
-	if(JUST_RELOADED && (current->name == "ingot_maker" || current->name == "mauld_user")) {
-		ARX_DEAD_CODE(); // TODO remove JUST_RELOADED global
-	} else {
-		
-		SendIOScriptEvent(NULL, io, SM_ENTERZONE, current->name);
-		
-		if(!current->controled.empty()) {
-			EntityHandle t = entities.getById(current->controled);
-			if(t != EntityHandle()) {
-				ScriptParameters parameters;
-				parameters.push_back(io->idString());
-				parameters.push_back(current->name);
-				SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_ENTER, parameters);
-			}
+	SendIOScriptEvent(NULL, io, SM_ENTERZONE, current->name);
+	
+	if(!current->controled.empty()) {
+		EntityHandle t = entities.getById(current->controled);
+		if(t != EntityHandle()) {
+			ScriptParameters parameters;
+			parameters.push_back(io->idString());
+			parameters.push_back(current->name);
+			SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_ENTER, parameters);
 		}
-		
 	}
 	
 }
