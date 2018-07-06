@@ -1258,14 +1258,14 @@ void ArxGame::doFrame() {
 		g_saveToLoad.clear();
 	}
 	
+	if(GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD)) {
+		ARX_QuickLoad();
+	}
+	
 	if(cinematicIsStopped()
 	   && !cinematicBorder.isActive()
 	   && !BLOCK_PLAYER_CONTROLS
 	) {
-		
-		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD)) {
-			ARX_QuickLoad();
-		}
 		
 		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE) && ARXmenu.mode() == Mode_InGame) {
 			g_hudRoot.quickSaveIconGui.show();
