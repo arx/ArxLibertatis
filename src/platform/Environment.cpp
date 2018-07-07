@@ -36,10 +36,6 @@
 #include <objbase.h>
 #endif
 
-#if ARX_HAVE_WORDEXP
-#include <wordexp.h>
-#endif
-
 #if ARX_HAVE_READLINK
 #include <unistd.h>
 #endif
@@ -78,27 +74,7 @@ namespace platform {
 
 std::string expandEnvironmentVariables(const std::string & in) {
 	
-	#if ARX_HAVE_WORDEXP
-	
-	wordexp_t p;
-	
-	if(wordexp(in.c_str(), &p, 0)) {
-		return in;
-	}
-	
-	std::ostringstream oss;
-	for(size_t i = 0; i < p.we_wordc; i++) {
-		oss << p.we_wordv[i];
-		if(i != p.we_wordc - 1) {
-			oss << " ";
-		}
-	}
-	
-	wordfree(&p);
-	
-	return oss.str();
-	
-	#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
 	platform::WideString win(in);
 	
@@ -120,8 +96,104 @@ std::string expandEnvironmentVariables(const std::string & in) {
 	return out.toUTF8();
 	
 	#else
-	# warning "Environment variable expansion not supported on this system."
-	return in;
+	
+	std::ostringstream oss;
+	
+	size_t depth = 0;
+	size_t skip = 0;
+	
+	for(size_t i = 0; i < in.size(); ) {
+		
+		if(in[i] == '\\') {
+			i++;
+			if(i < in.size()) {
+				if(skip == 0) {
+					oss << in[i];
+				}
+				i++;
+			}
+			continue;
+		}
+		
+		if(in[i] == '$') {
+			i++;
+			
+			bool nested = false;
+			if(i < in.size() && in[i] == '{') {
+				nested = true;
+				i++;
+			}
+			
+			size_t start = i;
+			while(i < in.size() && (in[i] == '_' || (in[i] >= '0' && in[i] <= '9')
+			                                     || (in[i] >= 'a' && in[i] <= 'z')
+			                                     || (in[i] >= 'A' && in[i] <= 'Z'))) {
+				i++;
+			}
+			
+			if(skip) {
+				if(nested) {
+					depth++;
+					skip++;
+				}
+				continue;
+			}
+			
+			const char * value = std::getenv(in.substr(start, i - start).c_str());
+			if(!nested) {
+				if(value) {
+					oss << value;
+				}
+				continue;
+			}
+			
+			bool empty = (value == NULL);
+			if(i < in.size() && in[i] == ':') {
+				empty = empty || *value == '\0';
+				i++;
+			}
+			
+			depth++;
+			
+			if(i < in.size() && in[i] == '+') {
+				if(empty) {
+					skip++;
+				}
+				i++;
+			} else {
+				if(!empty) {
+					oss << value;
+				}
+				if(i < in.size() && in[i] == '-') {
+					if(!empty) {
+						skip++;
+					}
+					i++;
+				} else {
+					skip++;
+				}
+			}
+			
+			continue;
+		}
+		
+		if(depth > 0 && in[i] == '}') {
+			if(skip > 0) {
+				skip--;
+			}
+			depth--;
+			i++;
+			continue;
+		}
+		
+		if(skip == 0) {
+			oss << in[i];
+		}
+		i++;
+	}
+	
+	return oss.str();
+	
 	#endif
 }
 
