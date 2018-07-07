@@ -220,20 +220,24 @@ bool addSearchPath(std::vector<path> & result, const path & dir, bool filter) {
 
 bool addSearchRoot(std::vector<path> & result, const path & dir, bool filter) {
 	
-	// Add "data" subdirectory or dirs referenced in "data" file
-	path subdir = dir / "data";
-	if(is_regular_file(subdir)) {
-		ifstream ifs(subdir);
+	// Add dirs referenced in "data.dirs" file
+	path config = dir / "data.dirs";
+	if(is_regular_file(config)) {
+		ifstream ifs(config);
 		std::string line;
 		while(std::getline(ifs, line)) {
 			path datadir = dir / line;
 			if(addSearchPath(result, datadir, filter)) {
-				LogDebug("got data dir from data file in dir: " << datadir);
+				LogDebug("got data dir from data.dirs file in dir: " << datadir);
 			} else {
 				LogDebug("ignoring data dir from data file in dir: " << datadir);
 			}
 		}
-	} else if(addSearchPath(result, subdir, filter)) {
+	}
+	
+	// Add "data" subdirectory or dirs referenced in "data" file
+	path subdir = dir / "data";
+	if(addSearchPath(result, subdir, filter)) {
 		LogDebug("got data dir from data subdir: " << subdir);
 	}
 	

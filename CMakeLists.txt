@@ -1782,10 +1782,10 @@ if(CMAKE_VERSION VERSION_LESS 2.8.12)
 	foreach(config IN LISTS BUILD_TYPES)
 		get_property(arx_location TARGET arx PROPERTY LOCATION_${config})
 		get_filename_component(arx_location "${arx_location}" PATH)
-		file(WRITE "${arx_location}/data" "${arx_core_dir}\n")
+		file(WRITE "${arx_location}/data.dirs" "${arx_core_dir}\n")
 	endforeach()
 else()
-	file(GENERATE OUTPUT "$<TARGET_FILE_DIR:arx>/data" CONTENT "${arx_core_dir}\n")
+	file(GENERATE OUTPUT "$<TARGET_FILE_DIR:arx>/data.dirs" CONTENT "${arx_core_dir}\n")
 endif()
 
 # Install the data install script
