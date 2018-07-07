@@ -180,7 +180,7 @@ void MainMenuDoFrame() {
 	
 	if(!g_mainMenu || g_mainMenu->bReInitAll) {
 		
-		if(g_mainMenu && g_mainMenu->bReInitAll) {
+		if(g_mainMenu) {
 			eOldMenuState = g_mainMenu->eOldMenuState;
 			delete g_mainMenu, g_mainMenu = NULL;
 		}
