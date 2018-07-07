@@ -170,6 +170,9 @@ void ARX_Menu_Manage() {
 							REQUEST_SPEECH_SKIP = true;
 						}
 					}
+				} else if(player.Interface & (INTER_PLAYERBOOK | INTER_NOTE)) {
+					g_playerBook.close();
+					ARX_INTERFACE_NoteClose();
 				} else {
 					GRenderer->getSnapshot(savegame_thumbnail, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
 					
