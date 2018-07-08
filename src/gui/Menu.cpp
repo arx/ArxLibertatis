@@ -55,6 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Animation.h"
 
+#include "cinematic/CinematicController.h"
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -163,7 +165,9 @@ void ARX_Menu_Manage() {
 		case Mode_InGame: {
 			// Checks for ESC key
 			if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)) {
-				if(cinematicBorder.isActive()) {
+				if(isInCinematic()) {
+					cinematicEnd();
+				} else if(cinematicBorder.isActive()) {
 					// Disabling ESC capture while fading in or out.
 					if(!FADEDIR && cinematicBorder.elapsedTime() >= GameDurationMs(3000)) {
 						if(SendMsgToAllIO(NULL, SM_KEY_PRESSED) != REFUSE) {

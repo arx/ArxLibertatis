@@ -35,6 +35,8 @@ void cinematicLaunchWaiting();
 
 bool cinematicIsStopped();
 
+void cinematicEnd();
+
 bool isInCinematic();
 void cinematicRender();
 
