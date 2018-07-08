@@ -136,6 +136,21 @@ bool isInCinematic() {
 	return PLAY_LOADED_CINEMATIC != Cinematic_Stopped && ControlCinematique && ControlCinematique->projectload;
 }
 
+void cinematicEnd() {
+	
+	StopSoundKeyFramer();
+	cinematicKill();
+	
+	if(g_camera) {
+		arx_assert(isallfinite(g_originalCameraPosition));
+		g_camera->m_pos = g_originalCameraPosition;
+	}
+	
+	ARX_SPEECH_Reset();
+	SendMsgToAllIO(NULL, SM_CINE_END, LAST_LAUNCHED_CINE);
+	
+}
+
 // Manages Currently playing 2D cinematic
 void cinematicRender() {
 
@@ -152,18 +167,8 @@ void cinematicRender() {
 	ControlCinematique->Render(diff);
 
 	// end the animation
-	if(   !ControlCinematique->m_key
-	   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
-	) {
-		StopSoundKeyFramer();
-		cinematicKill();
-		
-		if(g_camera) {
-			arx_assert(isallfinite(g_originalCameraPosition));
-			g_camera->m_pos = g_originalCameraPosition;
-		}
-		
-		ARX_SPEECH_Reset();
-		SendMsgToAllIO(NULL, SM_CINE_END, LAST_LAUNCHED_CINE);
+	if(!ControlCinematique->m_key) {
+		cinematicEnd();
 	}
+	
 }
