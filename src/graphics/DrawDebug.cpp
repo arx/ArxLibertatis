@@ -525,6 +525,14 @@ static void drawDebugEntities() {
 		
 		if(visible) {
 			drawDebugBoundingBox(entity->bbox2D.toRect(), Color::blue);
+			
+			Anglef a = entity->angle;
+			
+			// FIXME this does not always work
+			glm::quat q = glm::quat(
+				glm::mod(glm::radians(Vec3f(a.getPitch(), -a.getYaw(), a.getRoll())), Vec3f(glm::two_pi<float>())));
+			
+			drawLineAxis(entity->pos, q, 8.f);
 		}
 		
 		if(closerThan(entity->pos, player.pos, DebugTextMaxDistance)) {

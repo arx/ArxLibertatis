@@ -180,6 +180,13 @@ void drawLineCross(Vec3f v, Color c, float size) {
 	drawLine(v - Vec3f(0, 0, size), v + Vec3f(0, 0, size), c);
 }
 
+void drawLineAxis(Vec3f v, glm::quat q, float size) {
+	
+	drawLine(v, v + q * Vec3f(size, 0, 0), Color::red);
+	drawLine(v, v + q * Vec3f(0, size, 0), Color::green);
+	drawLine(v, v + q * Vec3f(0, 0, size), Color::blue);
+}
+
 void drawLineTriangle(Vec3f v0, Vec3f v1, Vec3f v2, Color color) {
 	drawLine(v0, v1, color);
 	drawLine(v1, v2, color);
