@@ -748,6 +748,10 @@ std::string SDL2Window::getClipboardText() {
 	return result;
 }
 
+void SDL2Window::setClipboardText(const std::string & text) {
+	SDL_SetClipboardText(text.c_str());
+}
+
 InputBackend * SDL2Window::getInputBackend() {
 	if(!m_input) {
 		m_input = new SDL2InputBackend(this);

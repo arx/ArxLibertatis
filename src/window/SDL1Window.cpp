@@ -486,6 +486,11 @@ std::string SDL1Window::getClipboardText() {
 	return std::string();
 }
 
+void SDL1Window::setClipboardText(const std::string & text) {
+	// Clipboard not supported by SDL 1
+	ARX_UNUSED(text);
+}
+
 InputBackend * SDL1Window::getInputBackend() {
 	if(!m_input) {
 		m_input = new SDL1InputBackend();

@@ -50,6 +50,7 @@ public:
 	MinimizeSetting willMinimizeOnFocusLost();
 	
 	std::string getClipboardText();
+	void setClipboardText(const std::string & text);
 	
 	InputBackend * getInputBackend();
 	
