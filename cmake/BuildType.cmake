@@ -166,6 +166,7 @@ else(MSVC)
 			
 			# These are too noisy to enable right now but we still want to track new warnings.
 			# TODO enable by default as soon as most are silenced
+			add_cxxflag("-Wconditionally-supported") # warns on casting from pointer to function pointer
 			add_cxxflag("-Wconversion") # very noisy
 			# add_cxxflag("-Wsign-conversion") # part of -Wconversion
 			# add_cxxflag("-Wshorten-64-to-32") # part of -Wconversion
@@ -199,8 +200,7 @@ else(MSVC)
 				check_compiler_flag(FLAG_FOUND "-Wmaybe-uninitialized")
 				if(FLAG_FOUND)
 					add_cxxflag("-Wno-maybe-uninitialized")
-				endif()
-				if(NOT FLAG_FOUND)
+				else()
 					add_cxxflag("-Wno-uninitialized")
 				endif()
 			endif()
