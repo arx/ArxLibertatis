@@ -113,15 +113,15 @@ typedef double f64; // 64 bits double float
 ------------------------------------------------------------*/
 
 /*!
- * \def ARX_DEBUG_BREAK()
+ * \def arx_trap()
  * \brief Halt execution and notify any attached debugger
  */
 #if ARX_COMPILER_MSVC
-	#define ARX_DEBUG_BREAK() do { __debugbreak(); std::abort(); } while(0)
+	#define arx_trap() (__debugbreak(), std::abort())
 #elif ARX_HAVE_BUILTIN_TRAP
-	#define ARX_DEBUG_BREAK() __builtin_trap()
+	#define arx_trap() __builtin_trap()
 #else
-	#define ARX_DEBUG_BREAK() std::abort()
+	#define arx_trap() std::abort()
 #endif
 
 /* ---------------------------------------------------------
@@ -273,13 +273,8 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 	 */
 	void assertionFailed(const char * expression, const char * file, unsigned line,
 	                     const char * message, ...) ARX_FORMAT_PRINTF(4, 5);
-	#define arx_assert_impl(Expression, ExpressionString, ...) \
-		do { \
-			if(!(Expression)) { \
-				assertionFailed(ExpressionString, (ARX_FILE), __LINE__, __VA_ARGS__); \
-				ARX_DEBUG_BREAK(); \
-			} \
-		} while(0)
+#define arx_assert_impl(Expression, ExpressionString, ...) \
+	((Expression) ? (void)0 : (assertionFailed(ExpressionString, ARX_FILE, __LINE__, __VA_ARGS__), arx_trap()))
 #else // ARX_DEBUG
 	#define arx_assert_impl(Expression, ExpressionString, ...) \
 		ARX_DISCARD(Expression, ExpressionString, __VA_ARGS__)
@@ -288,6 +283,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 /*!
  * \def arx_assert(Expression)
  * \brief Abort if \a Expression evaluates to false
+ *
  * Does nothing in release builds.
  */
 #define arx_assert(Expression)          arx_assert_impl(Expression, #Expression, NULL)
