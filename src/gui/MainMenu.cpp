@@ -360,8 +360,6 @@ private:
 			
 			LOADQUEST_SLOT = m_selectedSave;
 			
-			bNoMenu = true;
-			
 			if(pTextManage) {
 				pTextManage->Clear();
 			}
@@ -2397,10 +2395,6 @@ void MainMenu::Update() {
 }
 
 void MainMenu::Render() {
-	
-	if(bNoMenu) {
-		return;
-	}
 	
 	if(m_background) {
 		UseRenderState state(render2D().noBlend());

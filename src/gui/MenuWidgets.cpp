@@ -103,8 +103,6 @@ extern int newWidth;
 extern int newHeight;
 extern bool newFullscreen;
 
-bool bNoMenu = false;
-
 extern TextWidget * pMenuElementApply;
 
 void ARX_QuickSave() {
@@ -239,8 +237,6 @@ void MainMenuDoFrame() {
 		Check_Apply();
 	}
 	
-	bNoMenu = false;
-	
 	pMenuCursor->DrawCursor();
 	
 	g_thumbnailCursor.render();
@@ -320,9 +316,6 @@ void MenuWindow::Update() {
 }
 
 void MenuWindow::Render() {
-	
-	if(bNoMenu)
-		return;
 	
 	if(m_currentPage) {
 		m_currentPage->Update(m_pos);
@@ -515,9 +508,6 @@ void MenuPage::Update(Vec2f pos) {
 }
 
 void MenuPage::Render() {
-
-	if(bNoMenu)
-		return;
 	
 	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
 		w->update();
