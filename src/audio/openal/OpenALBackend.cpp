@@ -196,7 +196,7 @@ void OpenALBackend::fillDeviceAttributes(ALCint (&attrs)[3]) {
 			case HRTFDisable: attrs[i++] = ALC_FALSE; break;
 			case HRTFEnable:  attrs[i++] = ALC_TRUE; break;
 			case HRTFDefault: attrs[i++] = ALC_DONT_CARE_SOFT; break;
-			default: ARX_DEAD_CODE();
+			default: arx_unreachable();
 		}
 	}
 	#endif
@@ -213,7 +213,7 @@ static const char * getHRTFStatusString(HRTFStatus status) {
 		case HRTFRequired:    return "Required";
 		case HRTFUnavailable: return "Unavailable";
 	}
-	ARX_DEAD_CODE();
+	arx_unreachable();
 }
 
 aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrtf) {

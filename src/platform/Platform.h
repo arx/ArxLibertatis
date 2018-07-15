@@ -393,7 +393,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 #endif
 
 /*!
- * \def ARX_DEAD_CODE()
+ * \def arx_unreachable()
  * \brief Assume that a code branch cannot be reached.
  *
  * This is similar to arx_assume(false) falls back to a while loop instead of a no-op when we don't know
@@ -409,24 +409,24 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  *   switch(value) {
  *     case A: return "A";
  *     case B: return "B";
- *     // default: return "invalid value";  -- this is not needed with ARX_DEAD_CODE()
+ *     // default: return "invalid value";  -- this is not needed with arx_unreachable()
  *   }
- *   ARX_DEAD_CODE();
+ *   arx_unreachable();
  * }
  * \endcode
  *
  * If a switch is supposed to handle all values of an enum it is important to not add a default label
- * for the ARX_DEAD_CODE() macro but instead place it after the switch. This allows tools to warn when
+ * for the arx_unreachable() macro but instead place it after the switch. This allows tools to warn when
  * ther is an enum value added that is not handled in the switch.
  */
 #ifdef ARX_DEBUG
-	#define ARX_DEAD_CODE() arx_assert_impl(false, "unreachable code", NULL)
+	#define arx_unreachable() arx_assert_impl(false, "unreachable code", NULL)
 #elif ARX_HAVE_BUILTIN_UNREACHABLE
-	#define ARX_DEAD_CODE() __builtin_unreachable()
+	#define arx_unreachable() __builtin_unreachable()
 #elif defined(arx_assume_impl)
-	#define ARX_DEAD_CODE() arx_assume_impl(false)
+	#define arx_unreachable() arx_assume_impl(false)
 #else
-	#define ARX_DEAD_CODE() do { } while(true)
+	#define arx_unreachable() do { } while(true)
 #endif
 
 

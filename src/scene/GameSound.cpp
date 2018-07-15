@@ -1365,7 +1365,7 @@ const char * ARX_MATERIAL_GetNameById(Material id) {
 		case MATERIAL_FOOT_SHOE:    return "foot_shoe";
 		case MATERIAL_FOOT_METAL:   return "foot_metal";
 		case MATERIAL_FOOT_STEALTH: return "foot_stealth";
-		case MAX_MATERIALS: ARX_DEAD_CODE();
+		case MAX_MATERIALS: arx_unreachable();
 	}
 	return "none";
 }

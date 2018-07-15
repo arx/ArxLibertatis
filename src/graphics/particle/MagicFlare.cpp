@@ -216,7 +216,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 			flare.rgb = Color3f(0.4f, 0.f, 0.f) + Color3f(2.f / 3, 0.55f, 0.55f) * randomColor3f();
 			break;
 		}
-		default: ARX_DEAD_CODE();
+		default: arx_unreachable();
 	}
 	
 	static const float FLARE_MUL = 2.f;

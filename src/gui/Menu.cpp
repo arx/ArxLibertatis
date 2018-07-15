@@ -224,7 +224,7 @@ void ARX_Menu_Manage() {
 void ARX_Menu_Render() {
 	
 	switch(ARXmenu.mode()) {
-		case Mode_InGame: ARX_DEAD_CODE();
+		case Mode_InGame: arx_unreachable();
 		case Mode_CharacterCreation: {
 			delete g_mainMenu, g_mainMenu = NULL;
 			g_characterCreation.render();

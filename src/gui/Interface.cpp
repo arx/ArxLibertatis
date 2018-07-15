@@ -1811,7 +1811,7 @@ void ArxGame::manageEditorControls() {
 					}
 					
 					if(bfound)
-						ARX_DEAD_CODE();
+						arx_unreachable();
 				}
 				
 				bSecondary = true;
@@ -2094,5 +2094,5 @@ TextureStage::FilterMode getInterfaceTextureFilter() {
 		case UIFilterNearest:  return TextureStage::FilterNearest;
 		case UIFilterBilinear: return TextureStage::FilterLinear;
 	}
-	ARX_DEAD_CODE();
+	arx_unreachable();
 }

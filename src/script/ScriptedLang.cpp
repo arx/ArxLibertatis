@@ -466,7 +466,7 @@ class IfCommand : public Command {
 					
 				}
 				
-				ARX_DEAD_CODE();
+				arx_unreachable();
 			}
 			
 			case '#': {

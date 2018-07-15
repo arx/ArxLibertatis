@@ -1680,7 +1680,7 @@ private:
 			case 0: config.audio.hrtf = audio::HRTFDisable; break;
 			case 1: config.audio.hrtf = audio::HRTFDefault; break;
 			case 2: config.audio.hrtf = audio::HRTFEnable; break;
-			default: ARX_DEAD_CODE();
+			default: arx_unreachable();
 		}
 		audio::setHRTFEnabled(config.audio.hrtf);
 	}

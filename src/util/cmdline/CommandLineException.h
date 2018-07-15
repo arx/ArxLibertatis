@@ -68,7 +68,7 @@ public:
 			case cmd_not_found:      return "command not found";
 			case invalid_cmd_syntax: return "commands must start with a dash (-)";
 		}
-		ARX_DEAD_CODE();
+		arx_unreachable();
 	}
 	
 public:

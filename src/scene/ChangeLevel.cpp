@@ -574,7 +574,7 @@ static void storeScriptVariables(char * dat, size_t & pos, const SCRIPT_VARIABLE
 				break;
 			}
 			
-			default: ARX_DEAD_CODE();
+			default: arx_unreachable();
 			
 		}
 		

@@ -1083,7 +1083,7 @@ bool TakeFromInventory(const Vec2s & pos) {
 			g_secondaryInventoryHud.dragEntity(result.first, pos);
 			break;
 		default:
-			ARX_DEAD_CODE();
+			arx_unreachable();
 	}
 	
 	return true;
