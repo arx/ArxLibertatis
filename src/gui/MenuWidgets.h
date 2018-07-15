@@ -80,7 +80,6 @@ public:
 	void activate(Widget * widget);
 	void unfocus();
 	
-	Vec2f m_pos;
 	int m_rowSpacing;
 	MENUSTATE eMenuState;
 	WidgetContainer m_children;
