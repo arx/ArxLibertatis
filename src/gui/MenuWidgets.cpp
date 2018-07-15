@@ -388,9 +388,9 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 
 void MenuPage::Update(Vec2f pos) {
 	
-	m_children.Move(pos - m_pos);
+	m_children.Move(pos - m_rect.topLeft());
 	
-	m_pos = pos;
+	m_rect.moveTo(pos);
 	
 	if(m_focused && !m_focused->wantFocus()) {
 		m_focused->unfocus();
@@ -480,9 +480,7 @@ void MenuPage::Render() {
 }
 
 void MenuPage::drawDebug() {
-	Rectf rect = Rectf(Vec2f(m_pos.x, m_pos.y), m_rect.width(), m_rect.height());
-	drawLineRectangle(rect, 0.f, Color::green);
-	
+	drawLineRectangle(m_rect, 0.f, Color::green);
 	m_children.drawDebug();
 }
 
