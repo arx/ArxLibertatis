@@ -100,7 +100,12 @@ public:
 	 * Get the current text contents of the clipboard.
 	 */
 	virtual std::string getClipboardText() = 0;
-
+	
+	/*!
+	 * Get the contents of the clipboard to the given text.
+	 */
+	virtual void setClipboardText(const std::string & text) = 0;
+	
 	class Listener {
 		
 	public:
