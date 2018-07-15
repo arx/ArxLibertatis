@@ -152,8 +152,8 @@ public:
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveDelete, this, _1);
 			txt->m_targetMenu = Page_Save;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x - 10) - txt->m_rect.width(), RATIO_Y(5)));
+			txt->setEnabled(m_savegame != SavegameHandle());
 			add(txt);
-			pDeleteButton = txt;
 		}
 		
 		// Save button
@@ -173,9 +173,13 @@ public:
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
+		
+		setSaveHandle(m_savegame);
+		
 	}
 	
 	void focus() {
+		MenuPage::focus();
 		activate(m_textbox);
 	}
 	
@@ -183,13 +187,17 @@ public:
 		
 		m_savegame = savegame;
 		
-		if(savegame != SavegameHandle()) {
-			pDeleteButton->setEnabled(true);
-			m_textbox->setText(savegames[savegame].name);
-		} else {
-			pDeleteButton->setEnabled(false);
-			m_textbox->setText(getLocalised("system_menu_editquest_newsavegame"));
-			m_textbox->selectAll();
+		if(pDeleteButton) {
+			pDeleteButton->setEnabled(m_savegame != SavegameHandle());
+		}
+		
+		if(m_textbox) {
+			if(savegame != SavegameHandle()) {
+				m_textbox->setText(savegames[savegame].name);
+			} else {
+				m_textbox->setText(getLocalised("system_menu_editquest_newsavegame"));
+				m_textbox->selectAll();
+			}
 		}
 		
 	}
@@ -231,9 +239,12 @@ public:
 	
 	LoadMenuPage()
 		: MenuPage(Page_Load)
+		, m_selected(NULL)
 		, pLoadConfirm(NULL)
 		, pDeleteConfirm(NULL)
-	{ }
+	{
+		m_rowSpacing = 5;
+	}
 	
 	~LoadMenuPage() { }
 	
@@ -257,7 +268,6 @@ public:
 				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 				txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
 				addCenter(txt);
-				m_saveSlotWidgets.push_back(txt);
 			}
 		}
 		
@@ -268,7 +278,6 @@ public:
 				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
 				txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
 				addCenter(txt);
-				m_saveSlotWidgets.push_back(txt);
 			}
 		}
 		
@@ -312,17 +321,22 @@ public:
 	}
 	
 	void resetSelection() {
-		m_selectedSave = SavegameHandle();
-		for(size_t j = 0; j < m_saveSlotWidgets.size(); j++) {
-			m_saveSlotWidgets[j]->setSelected(false);
+		if(m_selected) {
+			m_selected->setSelected(false);
+			m_selected = NULL;
 		}
+	}
+	
+	void focus() {
+		MenuPage::focus();
+		resetSelection();
+		disableLoadDeleteButtons();
 	}
 	
 private:
 	
-	std::vector<SaveSlotWidget *> m_saveSlotWidgets;
+	SaveSlotWidget * m_selected;
 	
-	SavegameHandle m_selectedSave;
 	TextWidget * pLoadConfirm;
 	TextWidget * pDeleteConfirm;
 	
@@ -339,11 +353,11 @@ private:
 	void onClickQuestLoad(SaveSlotWidget * widget) {
 		
 		resetSelection();
+		
+		m_selected = widget;
+		m_selected->setSelected(true);
+		
 		enableLoadDeleteButtons();
-		
-		m_selectedSave = widget->savegame();
-		
-		widget->setSelected(true);
 		
 	}
 	
@@ -354,29 +368,32 @@ private:
 	
 	void onClickQuestLoadConfirm() {
 		
-		if(m_selectedSave != SavegameHandle()) {
+		if(m_selected && m_selected->savegame() != SavegameHandle()) {
 			
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 			
-			LOADQUEST_SLOT = m_selectedSave;
+			LOADQUEST_SLOT = m_selected->savegame();
 			
 			if(pTextManage) {
 				pTextManage->Clear();
 			}
+			
 		}
 		
 		disableLoadDeleteButtons();
+		
 	}
 	
 	void onClickQuestDelete() {
 		
-		if(m_selectedSave != SavegameHandle()) {
+		if(m_selected && m_selected->savegame() != SavegameHandle()) {
 			g_mainMenu->bReInitAll = true;
-			savegames.remove(m_selectedSave);
+			savegames.remove(m_selected->savegame());
 			return;
 		}
 		
 		disableLoadDeleteButtons();
+		
 	}
 	
 	void onClickBack() {
@@ -391,7 +408,9 @@ public:
 	
 	SaveMenuPage()
 		: MenuPage(Page_Save)
-	{}
+	{
+		m_rowSpacing = 5;
+	}
 	
 	~SaveMenuPage() { }
 	
@@ -468,8 +487,8 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->clicked = boost::bind(&ChooseLoadOrSaveMenuPage::onClickLoad, this);
 			txt->m_targetMenu = Page_Load;
+			txt->setEnabled(!savegames.empty());
 			addCenter(txt, true);
 		}
 		
@@ -487,12 +506,6 @@ public:
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
-	}
-	
-private:
-	
-	void onClickLoad() {
-		g_mainMenu->m_window->m_pageLoad->resetSelection();
 	}
 	
 };
@@ -1912,6 +1925,7 @@ public:
 	{}
 	
 	void focus() {
+		MenuPage::focus();
 		reinitActionKeys();
 	}
 	
@@ -2175,106 +2189,42 @@ private:
 	void onClickedYes() {
 		MenuFader_start(Fade_In, Mode_InGame);
 	}
+	
 };
 
-
-
-
-
-void MainMenu::initWindowPages()
-{
+void MainMenu::initWindowPages() {
 	
 	delete m_window, m_window = NULL;
 	
 	m_window = new MenuWindow();
 	
+	m_window->add(new NewQuestMenuPage());
+	
+	m_window->add(new OptionsMenuPage());
+	
+	m_window->add(new ChooseLoadOrSaveMenuPage());
+	m_window->add(new LoadMenuPage());
+	m_window->add(new SaveMenuPage());
 	{
-	NewQuestMenuPage * page = new NewQuestMenuPage();
-	page->init();
-	m_window->add(page);
-	}
-
-	{
-	ChooseLoadOrSaveMenuPage * page = new ChooseLoadOrSaveMenuPage();
-	page->init();
-	m_window->add(page);
+		SaveConfirmMenuPage * page = new SaveConfirmMenuPage();
+		m_window->add(page);
+		m_window->m_pageSaveConfirm = page;
 	}
 	
-	{
-	LoadMenuPage * page = new LoadMenuPage();
-	page->m_rowSpacing = 5;
-	page->init();
-	m_window->add(page);
-	m_window->m_pageLoad = page;
-	}
+	m_window->add(new VideoOptionsMenuPage());
 	
-	{
-	SaveMenuPage * page = new SaveMenuPage();
-	page->m_rowSpacing = 5;
-	page->init();
-	m_window->add(page);
-	}
+	m_window->add(new RenderOptionsMenuPage());
 	
-	{
-	SaveConfirmMenuPage * page = new SaveConfirmMenuPage();
-	page->init();
-	m_window->add(page);
-	m_window->m_pageSaveConfirm = page;
-	}
+	m_window->add(new InterfaceOptionsMenuPage());
 	
-	{
-	OptionsMenuPage * page = new OptionsMenuPage();
-	page->init();
-	m_window->add(page);
-	}
+	m_window->add(new AudioOptionsMenuPage());
 	
-	{
-	VideoOptionsMenuPage * page = new VideoOptionsMenuPage();
-	page->init();
-	m_window->add(page);
-	}
+	m_window->add(new InputOptionsMenuPage());
+	m_window->add(new ControlOptionsMenuPage1());
+	m_window->add(new ControlOptionsMenuPage2());
 	
-	{
-	RenderOptionsMenuPage * page = new RenderOptionsMenuPage();
-	page->init();
-	m_window->add(page);
-	}
+	m_window->add(new QuitConfirmMenuPage());
 	
-	{
-	InterfaceOptionsMenuPage * page = new InterfaceOptionsMenuPage();
-	page->init();
-	m_window->add(page);
-	}
-	
-	{
-	AudioOptionsMenuPage * page = new AudioOptionsMenuPage();
-	page->init();
-	m_window->add(page);
-	}
-	
-	{
-	InputOptionsMenuPage * page = new InputOptionsMenuPage();
-	page->init();
-	m_window->add(page);
-	}
-	
-	{
-	ControlOptionsMenuPage1 * page = new ControlOptionsMenuPage1();
-	page->init();
-	m_window->add(page);
-	}
-	
-	{
-	ControlOptionsMenuPage2 * page = new ControlOptionsMenuPage2();
-	page->init();
-	m_window->add(page);
-	}
-	
-	{
-	QuitConfirmMenuPage * page = new QuitConfirmMenuPage();
-	page->init();
-	m_window->add(page);
-	}
 }
 
 

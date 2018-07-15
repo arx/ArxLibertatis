@@ -276,7 +276,6 @@ MenuWindow::MenuWindow() {
 	m_initalOffsetX = -m_size.x;
 	m_fadeDistance = m_size.x + m_pos.x;
 	
-	m_pageLoad = NULL;
 	m_pageSaveConfirm = NULL;
 	fAngle = 0.f;
 	
@@ -365,6 +364,7 @@ void MenuWindow::setCurrentPageId(MENUSTATE id) {
 
 MenuPage::MenuPage(MENUSTATE _eMenuState)
 	: m_rowSpacing(10)
+	, m_initialized(false)
 	, m_selected(NULL)
 	, m_focused(NULL)
 	, m_disableShortcuts(false)
@@ -525,6 +525,15 @@ void MenuPage::drawDebug() {
 	drawLineRectangle(rect, 0.f, Color::green);
 	
 	m_children.drawDebug();
+}
+
+void MenuPage::focus() {
+	
+	if(!m_initialized) {
+		m_initialized = true;
+		init();
+	}
+	
 }
 
 void MenuPage::unfocus() {
