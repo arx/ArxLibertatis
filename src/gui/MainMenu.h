@@ -54,6 +54,10 @@ public:
 		m_requestedPage = page;
 	}
 	
+	MENUSTATE requestedPage() const {
+		return m_requestedPage;
+	}
+	
 private:
 	
 	MENUSTATE m_requestedPage;

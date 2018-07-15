@@ -173,8 +173,8 @@ void MainMenuDoFrame() {
 		float scroll = 0.f;
 		
 		if(g_mainMenu) {
+			page = g_mainMenu->requestedPage();
 			if(g_mainMenu->m_window) {
-				page = g_mainMenu->m_window->currentPageId();
 				scroll = g_mainMenu->m_window->scroll();
 			}
 			delete g_mainMenu, g_mainMenu = NULL;
@@ -183,9 +183,9 @@ void MainMenuDoFrame() {
 		g_mainMenu = new MainMenu();
 		g_mainMenu->init();
 		
+		g_mainMenu->requestPage(page);
 		if(page != Page_None) {
 			g_mainMenu->initWindowPages();
-			g_mainMenu->m_window->setCurrentPageId(page);
 			g_mainMenu->m_window->setScroll(scroll);
 		}
 		
