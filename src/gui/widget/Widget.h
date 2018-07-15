@@ -49,6 +49,7 @@ enum MENUSTATE {
 };
 
 enum WidgetType {
+	WidgetType_Spacer,
 	WidgetType_Button,
 	WidgetType_Checkbox,
 	WidgetType_CycleText,
