@@ -19,6 +19,8 @@
 #cmakedefine01 ARX_HAVE_CXX11_AUTO
 // std::atomic
 #cmakedefine01 ARX_HAVE_CXX11_ATOMIC
+// decltype(…)
+#cmakedefine01 ARX_HAVE_CXX11_DECLTYPE
 // std::forward in <utility>
 #cmakedefine01 ARX_HAVE_CXX11_FORWARD
 // std::itegral_constant in <type_traits>
@@ -39,8 +41,14 @@
 // GCC extensions
 // __attribute__((aligned(n)))
 #cmakedefine01 ARX_HAVE_ATTRIBUTE_ALIGNED
+// __attribute__((always_inline))
+#cmakedefine01 ARX_HAVE_ATTRIBUTE_ALWAYS_INLINE
 // __attribute__((format(printf, i, j)))
 #cmakedefine01 ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
+// __builtin_assume(e)
+#cmakedefine01 ARX_HAVE_BUILTIN_ASSUME
+// __builtin_assume_aligned(e, n)
+#cmakedefine01 ARX_HAVE_BUILTIN_ASSUME_ALIGNED
 // __builtin_trap()
 #cmakedefine01 ARX_HAVE_BUILTIN_TRAP
 // __builtin_unreachable()
@@ -49,6 +57,8 @@
 #cmakedefine01 ARX_HAVE_GCC_ALIGNOF
 // __thread
 #cmakedefine01 ARX_HAVE_GCC_THREADLOCAL
+// __typeof__(e)
+#cmakedefine01 ARX_HAVE_GCC_TYPEOF
 
 // MSVC extensions
 // __declspec(align(n))

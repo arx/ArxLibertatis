@@ -251,6 +251,18 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 #endif
 
 /*!
+ * \def arx_force_inline
+ * \brief Declare that a function never throws exceptions.
+ */
+#if ARX_COMPILER_MSVC
+	#define arx_force_inline __forceinline
+#elif ARX_HAVE_ATTRIBUTE_ALWAYS_INLINE
+	#define arx_force_inline __attribute__((always_inline)) inline
+#else
+	#define arx_force_inline inline
+#endif
+
+/*!
  * \def ARX_STATIC_ASSERT
  * \brief Declare that a function never throws exceptions.
  */
@@ -291,15 +303,101 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 /*!
  * \def arx_assert_msg(Expression, Message, MessageArguments...)
  * \brief Abort and print a message if \a Expression evaluates to false
+ *
  * You must provide a failure message in printf-like syntax and arguments for it as
  * as additional arguments after the expression.
+ *
  * Does nothing in release builds.
  */
 #define arx_assert_msg(Expression, ...) arx_assert_impl(Expression, #Expression, __VA_ARGS__)
 
+/* ---------------------------------------------------------
+                  Assumptions (Optimizer Hints)
+------------------------------------------------------------*/
+
+/*!
+ * \def arx_assume(Expression)
+ * \brief Assume that an expression is true for optimization purposes.
+ *
+ * In debug builds, assumptions are checked using \ref arx_assert().
+ *
+ * Unlike arx_assert(Expression) this macro also tells the compiler to assume that Expression is always true
+ * in release builds.
+ */
+#ifdef ARX_DEBUG
+	#define arx_assume_impl(Expression) arx_assert(Expression)
+#elif ARX_COMPILER_MSVC
+	#define arx_assume_impl(Expression) __assume(Expression)
+#elif ARX_HAVE_BUILTIN_ASSUME
+	#define arx_assume_impl(Expression) __builtin_assume(Expression)
+#elif ARX_HAVE_BUILTIN_UNREACHABLE
+	#define arx_assume_impl(Expression) ((Expression) ? (void)0 : __builtin_unreachable())
+#endif
+#ifdef arx_assume_impl
+#define arx_assume(Expression) arx_assume_impl(Expression)
+#else
+#define arx_assume(Expression) ARX_DISCARD(Expression)
+#endif
+
+/*!
+ * \def arx_is_aligned(Pointer, aligned)
+ * \brief Check if a pointer is aligned.
+ */
+#define arx_is_aligned(Pointer, Alignment) \
+	((reinterpret_cast<char *>(Pointer) - reinterpret_cast<char *>(NULL)) % (Alignment) == 0)
+
+/*!
+ * \def arx_assume_aligned(Pointer, Alignment)
+ * \brief Assume that a pointer is aligned.
+ *
+ * In debug builds, alignment is checked using \ref arx_assert().
+ *
+ * Unlike arx_assert(Expression) this macro also tells the compiler to assume the pointer is aligned
+ * in release builds.
+ *
+ * Depending on the compilter the alignment of the pointer is only assumed for the return value of the macro:
+ * \code
+ * const char * ptr = …;
+ * const char * aligned = arx_assume_aligned(ptr, 16);
+ * // Use aligned instead of ptr
+ * \endcode
+ */
+#ifdef ARX_DEBUG
+	template <typename T>
+	T * checkAlignment(T * pointer, size_t alignment, const char * file, unsigned line) {
+		if(!arx_is_aligned(pointer, alignment)) {
+			assertionFailed("unaligned pointer", file, line, NULL);
+			arx_trap();
+		}
+		return pointer;
+	}
+	#define arx_assume_aligned(Pointer, Alignment) \
+		checkAlignment((Pointer), (Alignment), ARX_FILE, __LINE__)
+#elif ARX_HAVE_BUILTIN_ASSUME_ALIGNED && ARX_HAVE_CXX11_DECLTYPE
+	#define arx_assume_aligned(Pointer, Alignment) \
+		static_cast<decltype(Pointer)>(__builtin_assume_aligned((Pointer), (Alignment)))
+#elif ARX_HAVE_BUILTIN_ASSUME_ALIGNED && ARX_HAVE_GCC_TYPEOF
+	#define arx_assume_aligned(Pointer, Alignment) \
+		static_cast<__typeof__(Pointer)>(__builtin_assume_aligned((Pointer), (Alignment)))
+#elif defined(arx_assume_impl)
+	// TODO Use lambda
+	template <size_t Alignment, typename T>
+	arx_force_inline T * assumeAlignment(T * pointer) {
+		arx_assume_impl(arx_is_aligned(pointer, Alignment));
+		return pointer;
+	}
+	#define arx_assume_aligned(Pointer, Alignment) \
+		assumeAlignment<(Alignment)>((Pointer))
+#else
+	#define arx_assume_aligned(Pointer, Alignment) (Pointer)
+#endif
+
 /*!
  * \def ARX_DEAD_CODE()
- * \brief Assert that a code branch cannot be reached.
+ * \brief Assume that a code branch cannot be reached.
+ *
+ * This is similar to arx_assume(false) falls back to a while loop instead of a no-op when we don't know
+ * of a way to tell the compiler about assumtions.
  *
  * Unlike arx_assert(false) this macro also tells the compiler to assume that the branch is unreachable
  * in release builds. Therefore there should never be any code after uses of this macro, including
@@ -322,13 +420,13 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  * ther is an enum value added that is not handled in the switch.
  */
 #ifdef ARX_DEBUG
-#define ARX_DEAD_CODE() arx_assert_impl(false, "unreachable code", NULL)
-#elif ARX_COMPILER_MSVC
-#define ARX_DEAD_CODE() __assume(0)
+	#define ARX_DEAD_CODE() arx_assert_impl(false, "unreachable code", NULL)
 #elif ARX_HAVE_BUILTIN_UNREACHABLE
-#define ARX_DEAD_CODE() __builtin_unreachable()
+	#define ARX_DEAD_CODE() __builtin_unreachable()
+#elif defined(arx_assume_impl)
+	#define ARX_DEAD_CODE() arx_assume_impl(false)
 #else
-#define ARX_DEAD_CODE() do { } while(true)
+	#define ARX_DEAD_CODE() do { } while(true)
 #endif
 
 
