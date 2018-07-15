@@ -429,6 +429,16 @@ bool BasicTextInput::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 			return true;
 		}
 		
+		case Keyboard::Key_Insert: {
+			if(mod.shift) {
+				paste(mainApp->getWindow()->getClipboardText());
+				return true;
+			} else if(mod.control) {
+				mainApp->getWindow()->setClipboardText(text());
+				return true;
+			}
+		}
+		
 		default: break;
 	}
 	
