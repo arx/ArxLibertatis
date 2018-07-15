@@ -81,7 +81,6 @@ public:
 	void unfocus();
 	
 	Vec2f m_pos;
-	Vec2f m_oldPos;
 	int m_rowSpacing;
 	MENUSTATE eMenuState;
 	WidgetContainer m_children;

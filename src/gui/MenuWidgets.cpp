@@ -297,9 +297,6 @@ MenuWindow::~MenuWindow() {
 
 void MenuWindow::add(MenuPage * page) {
 	m_pages.push_back(page);
-	page->m_oldPos.x = 0;
-	page->m_oldPos.y = 0;
-	page->m_pos = m_pos;
 }
 
 void MenuWindow::Update() {
@@ -427,10 +424,9 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 }
 
 void MenuPage::Update(Vec2f pos) {
-
-	m_children.Move(m_pos - m_oldPos);
 	
-	m_oldPos = m_pos;
+	m_children.Move(pos - m_pos);
+	
 	m_pos = pos;
 	
 	if(m_focused && !m_focused->wantFocus()) {
