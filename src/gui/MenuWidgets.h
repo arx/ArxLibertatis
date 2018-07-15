@@ -75,7 +75,8 @@ public:
 	void Update(Vec2f pos);
 	void Render();
 	void drawDebug();
-	virtual void focus() { }
+	virtual void focus();
+	virtual void init() = 0;
 	void activate(Widget * widget);
 	void unfocus();
 	
@@ -92,13 +93,13 @@ protected:
 	
 private:
 	
+	bool m_initialized;
 	Widget * m_selected;
 	Widget * m_focused;
 	bool m_disableShortcuts;
 	
 };
 
-class LoadMenuPage;
 class SaveConfirmMenuPage;
 
 class MenuWindow : private boost::noncopyable {
@@ -120,7 +121,6 @@ public:
 	void Render();
 	
 	std::vector<MenuPage *> m_pages;
-	LoadMenuPage * m_pageLoad;
 	SaveConfirmMenuPage * m_pageSaveConfirm;
 	
 	float fAngle;
