@@ -52,6 +52,7 @@
 #include "gui/widget/SliderWidget.h"
 #include "gui/widget/TextInputWidget.h"
 #include "gui/widget/TextWidget.h"
+#include "gui/widget/Spacer.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -271,12 +272,7 @@ public:
 			}
 		}
 		
-		{
-			TextWidget * txt = new TextWidget(hFontControls, std::string(), Vec2f(20, 0));
-			txt->m_targetMenu = Page_SaveConfirm;
-			txt->setEnabled(false);
-			addCenter(txt);
-		}
+		addCenter(new Spacer(hFontControls->getLineHeight()));
 		
 		// Delete button
 		{
@@ -440,12 +436,7 @@ public:
 			addCenter(txt);
 		}
 		
-		{
-			TextWidget * txt = new TextWidget(hFontControls, std::string(), Vec2f(20, 0));
-			txt->m_targetMenu = Page_SaveConfirm;
-			txt->setEnabled(false);
-			addCenter(txt);
-		}
+		addCenter(new Spacer(hFontControls->getLineHeight()));
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
@@ -702,10 +693,7 @@ public:
 			m_minimizeOnFocusLostCheckbox = cb;
 		}
 		
-		{
-			// Add spacing
-			addCenter(new TextWidget(hFontMenu, std::string(), Vec2f(20, 0)));
-		}
+		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
 			PanelWidget * panel = new PanelWidget;
@@ -779,10 +767,7 @@ public:
 			addCenter(panel);
 		}
 		
-		{
-			// Add spacing
-			addCenter(new TextWidget(hFontMenu, std::string(), Vec2f(20, 0)));
-		}
+		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
 			PanelWidget * panel = new PanelWidget;
@@ -979,10 +964,7 @@ public:
 			addCenter(panel);
 		}
 		
-		{
-			// Add spacing
-			addCenter(new TextWidget(hFontMenu, std::string(), Vec2f(20, 0)));
-		}
+		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
 			PanelWidget * panel = new PanelWidget;
@@ -1267,6 +1249,8 @@ public:
 			addCenter(panel);
 		}
 		
+		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
+		
 		{
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_interface_hud_scale",
@@ -1526,6 +1510,8 @@ public:
 			
 		}
 		
+		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
+		
 		{
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_master_volume");
@@ -1586,6 +1572,8 @@ public:
 			cb->iState = config.audio.muteOnFocusLost ? 1 : 0;
 			addCenter(cb);
 		}
+		
+		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
@@ -1916,7 +1904,6 @@ private:
 	}
 	
 };
-
 
 class ControlOptionsPage : public MenuPage {
 	
