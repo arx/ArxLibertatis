@@ -28,10 +28,14 @@
 // Taken from Crypto++ and modified to fit the project.
 
 #include <cstring>
+#include <string>
+#include <ostream>
+#include <iomanip>
 
 #include <boost/range/size.hpp>
 
 #include "platform/Alignment.h"
+#include "platform/Platform.h"
 
 namespace util {
 
@@ -65,6 +69,11 @@ T safe_right_shift(T value) {
 	return detail::safe_shifter<(bits >= (8 * sizeof(T)))>::right_shift(value, bits);
 }
 
+template <size_t N>
+struct checksum {
+	char data[N];
+};
+
 template <class T>
 class iterated_hash {
 	
@@ -76,12 +85,30 @@ public:
 	static const size_t block_size = transform::block_size;
 	static const size_t hash_size = transform::hash_size / sizeof(hash_word);
 	static const size_t size = transform::hash_size;
+	typedef util::checksum<size> checksum;
 	
 	void init() { count_lo = count_hi = 0; transform::init(state); }
 	
 	void update(const char * input, size_t length);
 	
 	void finalize(char * result);
+	
+	checksum finalize() {
+		checksum result;
+		finalize(result.data);
+		return result;
+	}
+	
+	static checksum compute(const char * input, size_t length) {
+		iterated_hash<T> hasher;
+		hasher.init();
+		hasher.update(input, length);
+		return hasher.finalize();
+	}
+	
+	static checksum compute(const std::string & input) {
+		return compute(input.data(), input.length());
+	}
 	
 private:
 
@@ -201,6 +228,22 @@ void iterated_hash<T>::finalize(char * result) {
 	
 	byte_order::store(state, hash_size, result);
 	
+}
+
+template <size_t N>
+inline std::ostream & operator<<(std::ostream & os, const checksum<N> & c) {
+	
+	std::ios_base::fmtflags old = os.flags();
+	char oldfill = os.fill('0');
+	
+	os << std::hex;
+	for(size_t i = 0; i < sizeof(c.data); i++) {
+		os << std::setw(2) << int(u8(c.data[i]));
+	}
+	
+	os.fill(oldfill);
+	os.setf(old, std::ios_base::basefield);
+	return os;
 }
 
 } // namespace util
