@@ -28,8 +28,8 @@
 #include "util/HandleType.h"
 
 enum MENUSTATE {
+	NOP,
 	Page_None,
-	RESUME_GAME,
 	Page_NewQuestConfirm,
 	Page_LoadOrSave,
 	Page_Load,
@@ -43,9 +43,7 @@ enum MENUSTATE {
 	Page_OptionsInput,
 	Page_OptionsInputCustomizeKeys1,
 	Page_OptionsInputCustomizeKeys2,
-	CREDITS,
 	Page_QuitConfirm,
-	NOP
 };
 
 enum WidgetType {

@@ -167,73 +167,40 @@ void MainMenuDoFrame() {
 	UseRenderState state(render2D());
 	UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
 	
-	MENUSTATE eOldMenuState = NOP;
-	MENUSTATE eM;
-	
-	if(!g_mainMenu) {
-		eM = NOP;
-	} else {
-		eM = g_mainMenu->eOldMenuWindowState;
-	}
-	
 	if(!g_mainMenu || g_mainMenu->bReInitAll) {
 		
+		MENUSTATE page = Page_None;
+		float scroll = 0.f;
+		
 		if(g_mainMenu) {
-			eOldMenuState = g_mainMenu->eOldMenuState;
+			if(g_mainMenu->m_window) {
+				page = g_mainMenu->m_window->currentPageId();
+				scroll = g_mainMenu->m_window->scroll();
+			}
 			delete g_mainMenu, g_mainMenu = NULL;
 		}
 		
 		g_mainMenu = new MainMenu();
-		g_mainMenu->eOldMenuWindowState = eM;
-		
 		g_mainMenu->init();
+		
+		if(page != Page_None) {
+			g_mainMenu->initWindowPages();
+			g_mainMenu->m_window->setCurrentPageId(page);
+			g_mainMenu->m_window->setScroll(scroll);
+		}
+		
 	}
-	
-	bool bScroll = true;
 	
 	if(pMenuCursor == NULL) {
 		pMenuCursor = new MenuCursor();
 	}
 	pMenuCursor->update();
+	
 	g_mainMenu->Update();
-	
-	MENUSTATE requestedMenuState = NOP;
-	
-	if(g_mainMenu->selected() && GInput->getMouseButton(Mouse::Button_0)) {
-		g_mainMenu->selected()->click();
-		requestedMenuState = g_mainMenu->selected()->m_targetMenu;
-	}
-	
-	if(eOldMenuState != NOP) {
-		requestedMenuState = eOldMenuState;
-		bScroll = false;
-	}
-	
-	if(requestedMenuState == RESUME_GAME) {
-		pTextManage->Clear();
-		ARXmenu.requestMode(Mode_InGame);
-		
-		delete g_mainMenu, g_mainMenu = NULL;
-		
-		return;
-	} else if(requestedMenuState != NOP) {
-		g_mainMenu->eOldMenuState = requestedMenuState;
-		g_mainMenu->initWindowPages();
-		g_mainMenu->m_window->setCurrentPageId(requestedMenuState);
-	}
 	
 	g_mainMenu->Render();
 	
-	if(g_mainMenu->m_window)
-	if(   (g_mainMenu->m_window->currentPageId() != Page_None && g_mainMenu->m_window->currentPageId() != Page_NewQuestConfirm && g_mainMenu->m_window->currentPageId() != CREDITS)
-	   || (g_mainMenu->m_window->currentPageId() == Page_NewQuestConfirm && g_canResumeGame)
-	) {
-		if(!bScroll) {
-			g_mainMenu->m_window->fAngle = 90.f;
-			g_mainMenu->m_window->setCurrentPageId(g_mainMenu->eOldMenuWindowState);
-		}
-		g_mainMenu->m_window->Update();
-		g_mainMenu->m_window->Render();
+	if(g_mainMenu->m_window && g_mainMenu->m_window->currentPageId() != Page_None) {
 		Check_Apply();
 	}
 	
@@ -279,14 +246,12 @@ MenuWindow::MenuWindow() {
 	m_pageSaveConfirm = NULL;
 	fAngle = 0.f;
 	
-	m_requestedPage = NOP;
-	m_currentPageId = NOP;
+	m_currentPageId = Page_None;
 	m_currentPage = NULL;
-	
-	m_pos.x = m_initalOffsetX + (m_fadeDistance * glm::sin(glm::radians(fAngle)));
 	
 	m_background = TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
 	m_border = TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
+	
 }
 
 MenuWindow::~MenuWindow() {
@@ -301,23 +266,21 @@ void MenuWindow::add(MenuPage * page) {
 
 void MenuWindow::Update() {
 	
-	m_requestedPage = NOP;
-	
 	m_pos.x = m_initalOffsetX + (m_fadeDistance * glm::sin(glm::radians(fAngle)));
 	
-	fAngle += g_platformTime.lastFrameDuration() / PlatformDurationMsf(12.5f);
-	
-	if(fAngle > 90.f)
-		fAngle = 90.f;
-}
-
-void MenuWindow::Render() {
+	fAngle = std::min(fAngle + g_platformTime.lastFrameDuration() / PlatformDurationMsf(12.5f), 90.f);
 	
 	if(m_currentPage) {
 		m_currentPage->Update(m_pos);
 	}
 	
-	if(m_currentPage) {
+}
+
+void MenuWindow::Render() {
+	
+	if(!m_currentPage) {
+		return;
+	}
 	
 	// Draw backgound and border
 	{
@@ -329,19 +292,19 @@ void MenuWindow::Render() {
 	EERIEDrawBitmap(Rectf(m_pos, RATIO_X(m_border->m_size.x), RATIO_Y(m_border->m_size.y)),
 	                0, m_border, Color::white);
 	
-		m_currentPage->Render();
-		
-		if(g_debugInfo == InfoPanelGuiDebug)
-			m_currentPage->drawDebug();
+	m_currentPage->Render();
+	
+	if(g_debugInfo == InfoPanelGuiDebug) {
+		m_currentPage->drawDebug();
 	}
 	
-	if(m_requestedPage != NOP) {
-		setCurrentPageId(m_requestedPage);
-		g_mainMenu->eOldMenuWindowState = m_requestedPage;
-	}
 }
 
 void MenuWindow::setCurrentPageId(MENUSTATE id) {
+	
+	if(m_currentPageId == id) {
+		return;
+	}
 	
 	m_currentPageId = id;
 	

@@ -122,21 +122,19 @@ public:
 	std::vector<MenuPage *> m_pages;
 	SaveConfirmMenuPage * m_pageSaveConfirm;
 	
-	float fAngle;
-	
 	MENUSTATE currentPageId() {
 		return m_currentPageId;
 	}
 	
 	void setCurrentPageId(MENUSTATE id);
 	
-	void requestPage(MENUSTATE page) {
-		m_requestedPage = page;
-	}
+	float scroll() { return fAngle; }
+	void setScroll(float scroll) { fAngle = scroll; }
 	
 private:
 	
-	MENUSTATE m_requestedPage;
+	float fAngle;
+	
 	MENUSTATE m_currentPageId;
 	MenuPage * m_currentPage;
 	

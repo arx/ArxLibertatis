@@ -231,6 +231,7 @@ void ARXMenu_ResumeGame() {
 	ARX_Menu_Resources_Release();
 	g_gameTime.resume(GameTime::PauseMenu);
 	EERIEMouseButton = 0;
+	ARXmenu.requestMode(Mode_InGame);
 }
 
 void ARXMenu_NewQuest() {
