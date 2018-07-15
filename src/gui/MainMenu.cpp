@@ -467,7 +467,8 @@ public:
 private:
 	
 	void onClickQuestSaveConfirm(SaveSlotWidget * widget) {
-		g_mainMenu->m_window->m_pageSaveConfirm->setSaveHandle(widget->savegame());
+		MenuPage * page = g_mainMenu->m_window->getPage(Page_SaveConfirm);
+		static_cast<SaveConfirmMenuPage *>(page)->setSaveHandle(widget->savegame());
 	}
 	
 };
@@ -2200,25 +2201,16 @@ void MainMenu::initWindowPages() {
 	
 	m_window->add(new NewQuestMenuPage());
 	
-	m_window->add(new OptionsMenuPage());
-	
 	m_window->add(new ChooseLoadOrSaveMenuPage());
 	m_window->add(new LoadMenuPage());
 	m_window->add(new SaveMenuPage());
-	{
-		SaveConfirmMenuPage * page = new SaveConfirmMenuPage();
-		m_window->add(page);
-		m_window->m_pageSaveConfirm = page;
-	}
+	m_window->add(new SaveConfirmMenuPage());
 	
+	m_window->add(new OptionsMenuPage());
 	m_window->add(new VideoOptionsMenuPage());
-	
 	m_window->add(new RenderOptionsMenuPage());
-	
 	m_window->add(new InterfaceOptionsMenuPage());
-	
 	m_window->add(new AudioOptionsMenuPage());
-	
 	m_window->add(new InputOptionsMenuPage());
 	m_window->add(new ControlOptionsMenuPage1());
 	m_window->add(new ControlOptionsMenuPage2());

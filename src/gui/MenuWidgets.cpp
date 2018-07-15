@@ -243,7 +243,6 @@ MenuWindow::MenuWindow() {
 	m_initalOffsetX = -m_size.x;
 	m_fadeDistance = m_size.x + m_pos.x;
 	
-	m_pageSaveConfirm = NULL;
 	fAngle = 0.f;
 	
 	m_currentPageId = Page_None;
@@ -312,14 +311,23 @@ void MenuWindow::setCurrentPageId(MENUSTATE id) {
 		m_currentPage->unfocus();
 	}
 	
-	m_currentPage = NULL;
+	m_currentPage = getPage(id);
+	
+	if(m_currentPage) {
+		m_currentPage->focus();
+	}
+	
+}
+
+MenuPage * MenuWindow::getPage(MENUSTATE id) const {
+	
 	BOOST_FOREACH(MenuPage * page, m_pages) {
-		if(id == page->eMenuState) {
-			m_currentPage = page;
-			m_currentPage->focus();
+		if(page->eMenuState == id) {
+			return page;
 		}
 	}
 	
+	return NULL;
 }
 
 MenuPage::MenuPage(MENUSTATE _eMenuState)
