@@ -96,18 +96,7 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 				}
 				
 				if(action == UnpakManifest) {
-					
-					util::md5 hash;
-					hash.init();
-					hash.update(buffer.data(), buffer.size());
-					char checksum[hash.size];
-					hash.finalize(checksum);
-					
-					for(size_t i = 0; i < hash.size; i++) {
-						std::cout << std::setfill('0') << std::hex << std::setw(2) << int(u8(checksum[i]));
-					}
-					std::cout << " *";
-					
+					std::cout << util::md5::compute(buffer) << " *";
 				}
 				
 			}
