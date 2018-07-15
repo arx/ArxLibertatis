@@ -161,6 +161,4 @@ void ARX_QuickSave();
 
 bool MENU_NoActiveWindow();
 
-extern bool bNoMenu;
-
 #endif // ARX_GUI_MENUWIDGETS_H
