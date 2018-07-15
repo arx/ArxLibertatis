@@ -112,6 +112,14 @@ public:
 		bottom += dy;
 	}
 	
+	void move(const Vec2 & offset) {
+		move(offset.x, offset.y);
+	}
+	
+	void moveTo(const Vec2 & position) {
+		move(position - topLeft());
+	}
+	
 	bool contains(const Vec2 & point) const {
 		return point.x >= left
 		    && point.x <  right

@@ -43,8 +43,8 @@ Widget::~Widget() {
 
 bool Widget::click() {
 	
-	if(m_enabled && m_targetMenu != NOP && g_mainMenu && g_mainMenu->m_window) {
-		g_mainMenu->m_window->requestPage(m_targetMenu);
+	if(m_enabled && m_targetMenu != NOP && g_mainMenu) {
+		g_mainMenu->requestPage(m_targetMenu);
 	}
 	
 	return false;

@@ -2231,14 +2231,13 @@ void MainMenu::initWindowPages() {
 
 MainMenu::MainMenu()
 	: bReInitAll(false)
-	, eOldMenuState(NOP)
-	, eOldMenuWindowState(NOP)
 	, m_window(NULL)
+	, m_requestedPage(NOP)
 	, m_background(NULL)
 	, m_widgets(new WidgetContainer())
 	, m_resumeGame(NULL)
 	, m_selected(NULL)
-{}
+{ }
 
 MainMenu::~MainMenu() {
 	delete m_window;
@@ -2257,7 +2256,6 @@ void MainMenu::init()
 	std::string szMenuText = getLocalised("system_menus_main_resumegame");
 	TextWidget * txt = new TextWidget(hFontMainMenu, szMenuText, pos);
 	txt->clicked = boost::bind(&MainMenu::onClickedResumeGame, this);
-	txt->m_targetMenu = RESUME_GAME;
 	m_widgets->add(txt);
 	m_resumeGame = txt;
 	}
@@ -2266,7 +2264,6 @@ void MainMenu::init()
 	std::string szMenuText = getLocalised("system_menus_main_newquest");
 	TextWidget * txt = new TextWidget(hFontMainMenu, szMenuText, pos);
 	txt->clicked = boost::bind(&MainMenu::onClickedNewQuest, this);
-	txt->m_targetMenu = Page_NewQuestConfirm;
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
@@ -2288,7 +2285,6 @@ void MainMenu::init()
 	std::string szMenuText = getLocalised("system_menus_main_credits");
 	TextWidget * txt = new TextWidget(hFontMainMenu, szMenuText, pos);
 	txt->clicked = boost::bind(&MainMenu::onClickedCredits, this);
-	txt->m_targetMenu = CREDITS;
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
@@ -2314,17 +2310,21 @@ void MainMenu::init()
 	m_widgets->add(txt);
 }
 
-void MainMenu::onClickedResumeGame(){
-	pTextManage->Clear();
-	if(!g_canResumeGame) {
-		ARX_QuickLoad();
-	} else {
+void MainMenu::onClickedResumeGame() {
+	if(g_canResumeGame) {
 		ARXMenu_ResumeGame();
+	} else {
+		ARX_QuickLoad();
 	}
 }
 
 void MainMenu::onClickedNewQuest() {
-	if(!g_canResumeGame) {
+	if(g_canResumeGame) {
+		requestPage(Page_NewQuestConfirm);
+		if(m_window) {
+			m_window->setScroll(0.f);
+		}
+	} else {
 		ARXMenu_NewQuest();
 	}
 }
@@ -2333,7 +2333,6 @@ void MainMenu::onClickedCredits() {
 	MenuFader_start(Fade_In, Mode_Credits);
 }
 
-
 void MainMenu::Update() {
 	
 	if(m_resumeGame) {
@@ -2341,6 +2340,31 @@ void MainMenu::Update() {
 	}
 	
 	m_selected = m_widgets->getAtPos(Vec2f(GInput->getMousePosition()));
+	
+	if(m_selected && GInput->getMouseButton(Mouse::Button_0)) {
+		m_selected->click();
+		if(m_selected->m_targetMenu != NOP && m_window) {
+			m_window->setScroll(0.f); 
+		}
+	}
+	
+	if(m_requestedPage != NOP && m_requestedPage != (m_window ? m_window->currentPageId() : Page_None)) {
+		if(!m_window) {
+			initWindowPages();
+		}
+		m_window->setCurrentPageId(m_requestedPage);
+		m_requestedPage = NOP;
+	}
+	
+	m_widgets->Update();
+	
+	if(m_selected) {
+		pMenuCursor->SetMouseOver();
+	}
+	
+	if(m_window) {
+		m_window->Update();
+	}
 	
 }
 
@@ -2351,15 +2375,13 @@ void MainMenu::Render() {
 		EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, m_background, Color::white);
 	}
 	
-	m_widgets->Update();
 	m_widgets->render(m_selected);
 	
-	if(m_selected) {
-		pMenuCursor->SetMouseOver();
-	}
-	
-	GRenderer->ResetTexture(0);
 	m_widgets->drawDebug();
+	
+	if(m_window) {
+		m_window->Render();
+	}
 	
 }
 

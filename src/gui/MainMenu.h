@@ -29,15 +29,11 @@
 #include "gui/widget/WidgetContainer.h"
 #include "math/Types.h"
 
-void MainMenuLeftCreate(MENUSTATE eMenuState);
-
 class MainMenu : private boost::noncopyable {
 	
 public:
 	
 	bool bReInitAll;
-	MENUSTATE eOldMenuState;
-	MENUSTATE eOldMenuWindowState;
 	
 	MenuWindow * m_window;
 	
@@ -54,11 +50,13 @@ public:
 	void Update();
 	void Render();
 	
-	Widget * selected() {
-		return m_selected;
+	void requestPage(MENUSTATE page) {
+		m_requestedPage = page;
 	}
 	
 private:
+	
+	MENUSTATE m_requestedPage;
 	
 	TextureContainer * m_background;
 	WidgetContainer * m_widgets;
