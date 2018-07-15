@@ -2232,7 +2232,7 @@ void MainMenu::initWindowPages() {
 MainMenu::MainMenu()
 	: bReInitAll(false)
 	, m_window(NULL)
-	, m_requestedPage(NOP)
+	, m_requestedPage(Page_None)
 	, m_background(NULL)
 	, m_widgets(new WidgetContainer())
 	, m_resumeGame(NULL)
@@ -2348,12 +2348,11 @@ void MainMenu::Update() {
 		}
 	}
 	
-	if(m_requestedPage != NOP && m_requestedPage != (m_window ? m_window->currentPageId() : Page_None)) {
+	if(m_requestedPage != (m_window ? m_window->currentPageId() : Page_None)) {
 		if(!m_window) {
 			initWindowPages();
 		}
 		m_window->setCurrentPageId(m_requestedPage);
-		m_requestedPage = NOP;
 	}
 	
 	m_widgets->Update();
