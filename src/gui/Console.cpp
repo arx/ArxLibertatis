@@ -154,6 +154,14 @@ bool ScriptConsole::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 	if(mod.control) {
 		switch(key) {
 			
+			case Keyboard::Key_C: {
+				if(!mod.shift) {
+					clear();
+					return true;
+				}
+				break;
+			}
+			
 			case Keyboard::Key_D: {
 				if(text().empty()) {
 					close();
