@@ -446,7 +446,7 @@ bool BasicTextInput::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 			}
 			
 			case Keyboard::Key_C: {
-				clear();
+				mainApp->getWindow()->setClipboardText(text());
 				return true;
 			}
 			
