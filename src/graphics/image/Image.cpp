@@ -82,7 +82,7 @@ size_t Image::getNumChannels(Image::Format format) {
 		case Format_R8G8B8A8: return 4;
 		case Format_B8G8R8A8: return 4;
 		case Format_Unknown:  return 0;
-		case Format_Num: ARX_DEAD_CODE();
+		case Format_Num: arx_unreachable();
 	}
 	
 	return 0;
@@ -444,7 +444,7 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 			case 2: extendImageRight<2>(in, src.getWidth(), getWidth(), src.getHeight()); break;
 			case 3: extendImageRight<3>(in, src.getWidth(), getWidth(), src.getHeight()); break;
 			case 4: extendImageRight<4>(in, src.getWidth(), getWidth(), src.getHeight()); break;
-			default: ARX_DEAD_CODE();
+			default: arx_unreachable();
 		}
 	}
 	
@@ -465,7 +465,7 @@ void Image::extendClampToEdgeBorder(const Image & src) {
 			case 2: extendImageBottomRight<2>(in, out, src.getWidth(), getWidth(), h); break;
 			case 3: extendImageBottomRight<3>(in, out, src.getWidth(), getWidth(), h); break;
 			case 4: extendImageBottomRight<4>(in, out, src.getWidth(), getWidth(), h); break;
-			default: ARX_DEAD_CODE();
+			default: arx_unreachable();
 		}
 	}
 }
@@ -653,7 +653,7 @@ std::ostream & operator<<(std::ostream & os, Image::Format format) {
 		case Image::Format_R8G8B8A8: return os << "RGBA";
 		case Image::Format_B8G8R8A8: return os << "BGRA";
 		case Image::Format_Unknown: return os << "(invalid)";
-		case Image::Format_Num: ARX_DEAD_CODE();
+		case Image::Format_Num: arx_unreachable();
 	}
 	return os;
 }

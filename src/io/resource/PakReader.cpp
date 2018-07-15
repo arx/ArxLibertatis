@@ -430,7 +430,7 @@ std::ios_base::seekdir arxToStlSeekOrigin(Whence whence) {
 		case SeekCur: return std::ios_base::cur;
 		case SeekEnd: return std::ios_base::end;
 	}
-	ARX_DEAD_CODE();
+	arx_unreachable();
 }
 
 int PlainFileHandle::seek(Whence whence, int offset) {

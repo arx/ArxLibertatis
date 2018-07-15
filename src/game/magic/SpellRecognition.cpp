@@ -312,7 +312,7 @@ char RuneRecognitionAlt::angle2arx(int dir) {
 		case 5: return '1';
 		case 6: return '2';
 		case 7: return '3';
-		default: ARX_DEAD_CODE();
+		default: arx_unreachable();
 	}
 }
 
@@ -329,7 +329,7 @@ int RuneRecognitionAlt::arx2angle(char dir) {
 		case '1': return 5;
 		case '2': return 6;
 		case '3': return 7;
-		default: ARX_DEAD_CODE();
+		default: arx_unreachable();
 	}
 }
 

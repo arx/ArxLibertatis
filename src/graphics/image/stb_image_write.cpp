@@ -69,7 +69,7 @@ static int write_pixels(FILE * f, int x, int y, int comp, const void * data, int
 					break;
 				}
 				
-				default: ARX_DEAD_CODE();
+				default: arx_unreachable();
 				
 			}
 			

@@ -35,7 +35,7 @@ void logger::Backend::format(std::ostream & os, const Source & file,
 		case Logger::Warning:  os << "[W]"; break;
 		case Logger::Error:    os << "[E]"; break;
 		case Logger::Critical: os << "[CRITICAL]", length = 10; break;
-		case Logger::None: ARX_DEAD_CODE();
+		case Logger::None: arx_unreachable();
 	}
 	os << ' ' << file.name << ':';
 	

@@ -52,7 +52,7 @@ public:
 			case Logger::Warning:  levelName = "Warning"; break;
 			case Logger::Error:    levelName = "Error"; break;
 			case Logger::Critical: levelName = "Critical"; break;
-			case Logger::None: ARX_DEAD_CODE();
+			case Logger::None: arx_unreachable();
 		}
 
 		m_Lines.push_back(levelName + ": " + str);

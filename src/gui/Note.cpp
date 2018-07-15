@@ -202,7 +202,7 @@ bool Note::splitTextToPages() {
 				case Notice: m_type = SmallNote; break;
 				case SmallNote: m_type = BigNote; break;
 				case BigNote: m_type = Book; break;
-				default: ARX_DEAD_CODE();
+				default: arx_unreachable();
 			}
 			return false;
 		}

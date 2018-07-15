@@ -163,7 +163,7 @@ void ErrorReportDialog::onPaneChanged(int index) {
 			break;
 		}
 		
-		default: ARX_DEAD_CODE();
+		default: arx_unreachable();
 		
 	}
 	

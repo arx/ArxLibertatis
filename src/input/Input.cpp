@@ -618,7 +618,7 @@ std::string Input::getKeyName(InputKeyId key) {
 		arx_assert(entity.id == key);
 		name = entity.name;
 	} else {
-		ARX_DEAD_CODE();
+		arx_unreachable();
 	}
 	
 	if(!modifier.empty()) {
@@ -667,7 +667,7 @@ std::string Input::getKeyDisplayName(InputKeyId key) {
 			name = entity.name;
 		}
 	} else {
-		ARX_DEAD_CODE();
+		arx_unreachable();
 	}
 	
 	if(!modifier.empty()) {

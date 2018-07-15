@@ -93,7 +93,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 				case 4: m_date = getLocalised("system_thursday", "Thursday"); break;
 				case 5: m_date = getLocalised("system_saturday", "Saturday"); break;
 				case 6: m_date = getLocalised("system_friday", "Friday"); break;
-				default: ARX_DEAD_CODE();
+				default: arx_unreachable();
 			}
 		} else if((t.tm_year == n.tm_year && t.tm_mon <= n.tm_mon)
 		          || (t.tm_year + 1 == n.tm_year && t.tm_mon + 12 > n.tm_mon)) {
@@ -110,7 +110,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 				case 9: m_date = getLocalised("system_october", "October"); break;
 				case 10: m_date = getLocalised("system_november", "November"); break;
 				case 11: m_date = getLocalised("system_december", "December"); break;
-				default: ARX_DEAD_CODE();
+				default: arx_unreachable();
 			}
 			m_date += " " + boost::lexical_cast<std::string>(t.tm_mday);
 		} else {

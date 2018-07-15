@@ -50,7 +50,7 @@ void ColorConsole::log(const Source & file, int line, Logger::LogLevel level,
 		                       os = &std::cerr, e = c, c = "\x1b[0;31m"; break;
 		case Logger::Critical: std::cerr << "\x1b[1;31m[CRITICAL]\x1b[0;31m";
 			                     os = &std::cerr, e = c, c = "\x1b[1;31m", length = 10; break;
-		case Logger::None: ARX_DEAD_CODE();
+		case Logger::None: arx_unreachable();
 	}
 	(*os) << ' ' << file.name << "\x1b[m:\x1b[0;33m";
 	
