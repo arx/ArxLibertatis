@@ -23,46 +23,86 @@
 
 #if ARX_HAVE_ALIGNED_MALLOC && ARX_HAVE_ALIGNED_FREE
 #include <malloc.h>
-#else
+#elif ARX_HAVE_ALIGNED_ALLOC || ARX_HAVE_POSIX_MEMALIGN
 #include <stdlib.h>
+#else
+#include <cstdlib>
 #endif
 
 namespace platform {
 
+#if ARX_HAVE_ALIGNED_MALLOC && ARX_HAVE_ALIGNED_FREE
+
 void * alloc_aligned(std::size_t alignment, std::size_t size) {
-	void * ptr;
-	#if ARX_HAVE_ALIGNED_MALLOC && ARX_HAVE_ALIGNED_FREE
 	// alignment needs to be a power of two
-	ptr = _aligned_malloc(size, alignment);
-	#elif ARX_HAVE_ALIGNED_ALLOC
+	return _aligned_malloc(size, alignment);
+}
+
+void free_aligned(void * ptr) {
+	_aligned_free(ptr);
+}
+
+#elif ARX_HAVE_ALIGNED_ALLOC
+
+void * alloc_aligned(std::size_t alignment, std::size_t size) {
+	
 	// alignment needs to be a power of two
 	// size needs to be a multiple of alignment
 	if((size & (alignment - 1)) != 0) {
 		size += alignment - (size & (alignment - 1));
 	}
-	ptr = aligned_alloc(alignment, size);
-	#elif ARX_HAVE_POSIX_MEMALIGN
+	
+	return aligned_alloc(alignment, size);
+}
+
+void free_aligned(void * ptr) {
+	free(ptr);
+}
+
+#elif ARX_HAVE_POSIX_MEMALIGN
+
+void * alloc_aligned(std::size_t alignment, std::size_t size) {
+	
 	// alignment needs to be a power of two
-	// alignment needs to be a multiple of sizeof( void *)
-	ptr = 0;
+	// alignment needs to be a multiple of sizeof(void *)
+	void * ptr = 0;
 	if(posix_memalign(&ptr, alignment, size)) {
 		ptr = 0;
 	}
-	#else
-	#error "No aligned memory allocator available!"
-	#endif
-	if(!ptr) {
-		throw std::bad_alloc();
-	}
+	
 	return ptr;
 }
 
 void free_aligned(void * ptr) {
-	#if ARX_HAVE_ALIGNED_MALLOC && ARX_HAVE_ALIGNED_FREE
-	_aligned_free(ptr);
-	#else
 	free(ptr);
-	#endif
 }
+
+#else
+
+void * alloc_aligned(std::size_t alignment, std::size_t size) {
+	
+	if(alignment < GuaranteedAlignment) {
+		alignment = GuaranteedAlignment;
+	}
+	
+	unsigned char * allocation = static_cast<unsigned char *>(std::malloc(size + alignment));
+	if(!allocation) {
+		return NULL;
+	}
+	
+	size_t offset = alignment - (allocation - static_cast<unsigned char *>(NULL)) % alignment;
+	
+	arx_assert(offset - 1 <= 0xff);
+	allocation[offset - 1] = static_cast<unsigned char>(offset - 1);
+	
+	return ptr = allocation + offset;
+}
+
+void free_aligned(void * ptr) {
+	unsigned char * data = static_cast<unsigned char *>(ptr) - 1;
+	std::free(data - *data);
+}
+
+#endif
 
 } // namespace platform

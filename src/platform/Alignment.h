@@ -135,13 +135,17 @@ struct AlignedAllocator {
 	ARX_STATIC_ASSERT((Alignment & (Alignment - 1)) == 0,
 	                  "Alignment must be a power of two");
 	static void * alloc_object(std::size_t size) {
-		return arx_assume_aligned(alloc_aligned(Alignment, size), Alignment);
+		void * ptr = arx_assume_aligned(alloc_aligned(Alignment, size), Alignment);
+		if(!ptr) {
+			throw std::bad_alloc();
+		}
+		return ptr;
 	}
-	static void * alloc_array(std::size_t size) {
-		return arx_assume_aligned(alloc_aligned(Alignment, size), Alignment);
+	static void free_object(void * ptr) {
+		free_aligned(ptr);
 	}
-	static void free_object(void * ptr) { free_aligned(ptr); }
-	static void free_array(void * ptr) { free_aligned(ptr); }
+	static void * alloc_array(std::size_t size) { return alloc_object(size); }
+	static void free_array(void * ptr) { free_object(ptr); }
 };
 
 template <size_t Alignment>
