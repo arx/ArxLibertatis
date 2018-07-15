@@ -98,8 +98,6 @@ private:
 	
 };
 
-class SaveConfirmMenuPage;
-
 class MenuWindow : private boost::noncopyable {
 	
 private:
@@ -118,19 +116,20 @@ public:
 	void Update();
 	void Render();
 	
-	std::vector<MenuPage *> m_pages;
-	SaveConfirmMenuPage * m_pageSaveConfirm;
-	
 	MENUSTATE currentPageId() {
 		return m_currentPageId;
 	}
 	
 	void setCurrentPageId(MENUSTATE id);
 	
+	MenuPage * getPage(MENUSTATE id) const;
+	
 	float scroll() { return fAngle; }
 	void setScroll(float scroll) { fAngle = scroll; }
 	
 private:
+	
+	std::vector<MenuPage *> m_pages;
 	
 	float fAngle;
 	
