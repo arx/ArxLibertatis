@@ -116,11 +116,9 @@ public:
 	void Update();
 	void Render();
 	
-	MENUSTATE currentPageId() {
-		return m_currentPageId;
-	}
+	MENUSTATE currentPageId() const { return m_currentPage ? m_currentPage->eMenuState : Page_None; }
 	
-	void setCurrentPageId(MENUSTATE id);
+	void setCurrentPage(MENUSTATE id);
 	
 	MenuPage * getPage(MENUSTATE id) const;
 	
@@ -133,7 +131,6 @@ private:
 	
 	float fAngle;
 	
-	MENUSTATE m_currentPageId;
 	MenuPage * m_currentPage;
 	
 	TextureContainer * m_background;
