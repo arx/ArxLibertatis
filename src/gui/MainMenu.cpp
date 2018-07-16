@@ -2344,7 +2344,7 @@ void MainMenu::Update() {
 		if(!m_window) {
 			initWindowPages();
 		}
-		m_window->setCurrentPageId(m_requestedPage);
+		m_window->setCurrentPage(m_requestedPage);
 	}
 	
 	m_widgets->Update();

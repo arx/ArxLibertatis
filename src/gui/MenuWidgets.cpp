@@ -230,7 +230,9 @@ void MainMenuDoFrame() {
 }
 
 
-MenuWindow::MenuWindow() {
+MenuWindow::MenuWindow()
+	: m_currentPage(NULL)
+{
 	
 	Vec2f windowMenuPos = Vec2f(20, 25);
 	Vec2f size = Vec2f(321, 430);
@@ -244,9 +246,6 @@ MenuWindow::MenuWindow() {
 	m_fadeDistance = m_size.x + m_pos.x;
 	
 	fAngle = 0.f;
-	
-	m_currentPageId = Page_None;
-	m_currentPage = NULL;
 	
 	m_background = TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
 	m_border = TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
@@ -299,13 +298,11 @@ void MenuWindow::Render() {
 	
 }
 
-void MenuWindow::setCurrentPageId(MENUSTATE id) {
+void MenuWindow::setCurrentPage(MENUSTATE id) {
 	
-	if(m_currentPageId == id) {
+	if(currentPageId() == id) {
 		return;
 	}
-	
-	m_currentPageId = id;
 	
 	if(m_currentPage) {
 		m_currentPage->unfocus();
