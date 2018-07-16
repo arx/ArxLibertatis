@@ -319,7 +319,7 @@ void MenuWindow::setCurrentPage(MENUSTATE id) {
 MenuPage * MenuWindow::getPage(MENUSTATE id) const {
 	
 	BOOST_FOREACH(MenuPage * page, m_pages) {
-		if(page->eMenuState == id) {
+		if(page->id() == id) {
 			return page;
 		}
 	}
@@ -327,8 +327,9 @@ MenuPage * MenuWindow::getPage(MENUSTATE id) const {
 	return NULL;
 }
 
-MenuPage::MenuPage(MENUSTATE _eMenuState)
+MenuPage::MenuPage(MENUSTATE id)
 	: m_rowSpacing(10)
+	, m_id(id)
 	, m_initialized(false)
 	, m_selected(NULL)
 	, m_focused(NULL)
@@ -338,8 +339,6 @@ MenuPage::MenuPage(MENUSTATE _eMenuState)
 	
 	Vec2f scaledSize = RATIO_2(m_size);
 	m_rect = Rectf(Vec2f_ZERO, scaledSize.x, scaledSize.y);
-	
-	eMenuState = _eMenuState;
 }
 
 MenuPage::~MenuPage() { }

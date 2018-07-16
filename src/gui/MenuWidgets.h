@@ -67,7 +67,7 @@ class MenuPage : private boost::noncopyable {
 	
 public:
 	
-	explicit MenuPage(MENUSTATE state);
+	explicit MenuPage(MENUSTATE id);
 	virtual ~MenuPage();
 	
 	void add(Widget * widget);
@@ -81,8 +81,9 @@ public:
 	void unfocus();
 	
 	int m_rowSpacing;
-	MENUSTATE eMenuState;
 	WidgetContainer m_children;
+	
+	MENUSTATE id() const { return m_id; }
 	
 protected:
 	
@@ -90,6 +91,8 @@ protected:
 	Vec2f m_size;
 	
 private:
+	
+	const MENUSTATE m_id;
 	
 	bool m_initialized;
 	Widget * m_selected;
@@ -116,7 +119,7 @@ public:
 	void Update();
 	void Render();
 	
-	MENUSTATE currentPageId() const { return m_currentPage ? m_currentPage->eMenuState : Page_None; }
+	MENUSTATE currentPageId() const { return m_currentPage ? m_currentPage->id() : Page_None; }
 	
 	void setCurrentPage(MENUSTATE id);
 	
