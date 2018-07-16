@@ -69,8 +69,6 @@
 
 #include "window/RenderWindow.h"
 
-TextWidget * pMenuElementApply = NULL;
-
 class NewQuestMenuPage : public MenuPage {
 	
 public:
@@ -511,12 +509,6 @@ public:
 	
 };
 
-
-
-int newWidth;
-int newHeight;
-bool newFullscreen;
-
 class OptionsMenuPage : public MenuPage {
 	
 public:
@@ -532,7 +524,6 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->clicked = boost::bind(&OptionsMenuPage::onClickedVideo, this);
 			txt->m_targetMenu = Page_OptionsVideo;
 			addCenter(txt, true);
 		}
@@ -573,40 +564,38 @@ public:
 		}
 	}
 	
-private:
-	
-	void onClickedVideo() {
-		newWidth = config.video.resolution.x;
-		newHeight = config.video.resolution.y;
-		newFullscreen = config.video.fullscreen;
-	}
-	
 };
 
-// TODO remove this
-const std::string AUTO_RESOLUTION_STRING = "Desktop";
-
 class VideoOptionsMenuPage : public MenuPage {
+	
+	CheckboxWidget * m_fullscreenCheckbox;
+	CycleTextWidget * m_resolutionSlider;
+	SliderWidget * m_gammaSlider;
+	CheckboxWidget * m_minimizeOnFocusLostCheckbox;
+	TextWidget * m_applyButton;
+	bool m_fullscreen;
+	Vec2i m_resolution;
 	
 public:
 	
 	VideoOptionsMenuPage()
 		: MenuPage(Page_OptionsVideo)
+		, m_fullscreenCheckbox(NULL)
+		, m_resolutionSlider(NULL)
 		, m_gammaSlider(NULL)
 		, m_minimizeOnFocusLostCheckbox(NULL)
-	{
-		fullscreenCheckbox = NULL;
-		pMenuSliderResol = NULL;
-	}
+		, m_applyButton(NULL)
+		, m_fullscreen(false)
+		, m_resolution(Vec2i_ZERO)
+	{ }
 	
 	~VideoOptionsMenuPage() { }
 	
-	CheckboxWidget * fullscreenCheckbox;
-	CycleTextWidget * pMenuSliderResol;
-	SliderWidget * m_gammaSlider;
-	CheckboxWidget * m_minimizeOnFocusLostCheckbox;
 	
 	void init() {
+		
+		m_fullscreen = config.video.fullscreen;
+		m_resolution = config.video.resolution;
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_videos_full_screen");
@@ -621,7 +610,7 @@ public:
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedFullscreen, this, _1);
 			cb->iState = config.video.fullscreen ? 1 : 0;
 			addCenter(cb);
-			fullscreenCheckbox = cb;
+			m_fullscreenCheckbox = cb;
 		}
 		
 		{
@@ -631,17 +620,14 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->setEnabled(false);
 			panel->AddElement(txt);
-			pMenuSliderResol = new CycleTextWidget;
-			pMenuSliderResol->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedResolution, this, _1, _2);
+			m_resolutionSlider = new CycleTextWidget;
+			m_resolutionSlider->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedResolution, this, _1, _2);
 			
-			pMenuSliderResol->setEnabled(config.video.fullscreen);
+			m_resolutionSlider->setEnabled(config.video.fullscreen);
 			
-			const RenderWindow::DisplayModes & modes = mainApp->getWindow()->getDisplayModes();
-			for(size_t i = 0; i != modes.size(); ++i) {
+			BOOST_FOREACH(const DisplayMode & mode, mainApp->getWindow()->getDisplayModes()) {
 				
-				const DisplayMode & mode = modes[i];
-				
-				// find the aspect ratio
+				// Find the aspect ratio
 				unsigned a = mode.resolution.x;
 				unsigned b = mode.resolution.y;
 				while(b != 0) {
@@ -652,7 +638,6 @@ public:
 				
 				std::stringstream ss;
 				ss << mode;
-				
 				if(aspect.x < 100 && aspect.y < 100) {
 					if(aspect == Vec2i(8, 5)) {
 						aspect = Vec2i(16, 10);
@@ -660,23 +645,23 @@ public:
 					ss << " (" << aspect.x << ':' << aspect.y << ')';
 				}
 				
-				pMenuSliderResol->AddText(new TextWidget(hFontMenu, ss.str()));
-				
+				m_resolutionSlider->AddText(new TextWidget(hFontMenu, ss.str()));
 				if(mode.resolution == config.video.resolution) {
-					pMenuSliderResol->selectLast();
+					m_resolutionSlider->selectLast();
 				}
+				
 			}
 			
-			pMenuSliderResol->AddText(new TextWidget(hFontMenu, AUTO_RESOLUTION_STRING));
-			
+			std::string desktop = getLocalised("system_menus_options_video_resolution_desktop", "Desktop");
+			m_resolutionSlider->AddText(new TextWidget(hFontMenu, desktop));
 			if(config.video.resolution == Vec2i_ZERO) {
-				pMenuSliderResol->selectLast();
+				m_resolutionSlider->selectLast();
 			}
 		
-			float fRatio = RATIO_X(m_size.x - 9) - pMenuSliderResol->m_rect.width();
-			pMenuSliderResol->Move(Vec2f(fRatio, 0));
+			float fRatio = RATIO_X(m_size.x - 9) - m_resolutionSlider->m_rect.width();
+			m_resolutionSlider->Move(Vec2f(fRatio, 0));
 			
-			panel->AddElement(pMenuSliderResol);
+			panel->AddElement(m_resolutionSlider);
 			addCenter(panel);
 		}
 		
@@ -688,10 +673,10 @@ public:
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedGamma, this, _1);
-			setGammaState(sld, config.video.fullscreen);
 			panel->AddElement(sld);
 			addCenter(panel);
 			m_gammaSlider = sld;
+			updateGammaSlider();
 		}
 		
 		{
@@ -700,9 +685,9 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f(20, 0));
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedMinimizeOnFocusLost, this, _1);
-			setMinimizeOnFocusLostState(cb, config.video.fullscreen);
 			addCenter(cb);
 			m_minimizeOnFocusLostCheckbox = cb;
+			updateMinimizeOnFocusLostStateCheckbox();
 		}
 		
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
@@ -802,12 +787,11 @@ public:
 			txt->SetPos(Vec2f(RATIO_X(m_size.x - 10) - txt->m_rect.width(), RATIO_Y(380)));
 			txt->setEnabled(false);
 			add(txt);
-			pMenuElementApply = txt;
+			m_applyButton = txt;
 		}
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
-			cb->clicked = boost::bind(&VideoOptionsMenuPage::onClickedBack, this);
 			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
@@ -816,59 +800,65 @@ public:
 	
 private:
 	
-	void setGammaState(SliderWidget * sld, bool fullscreen) {
+	void updateGammaSlider() {
 		
-		if(!fullscreen) {
-			sld->setValue(5);
-			sld->setEnabled(false);
-			return;
+		if(m_fullscreen) {
+			m_gammaSlider->setValue(int(config.video.gamma));
+			m_gammaSlider->setEnabled(true);
+		} else {
+			m_gammaSlider->setValue(5);
+			m_gammaSlider->setEnabled(false);
 		}
-		
-		sld->setValue(int(config.video.gamma));
-		sld->setEnabled(true);
 		
 	}
 	
-	void setMinimizeOnFocusLostState(CheckboxWidget * cb, bool fullscreen) {
+	void updateMinimizeOnFocusLostStateCheckbox() {
 		
-		if(!fullscreen) {
-			cb->iState = 0;
-			cb->setEnabled(false);
-			return;
+		bool checked = false;
+		bool enabled = false;
+		
+		if(m_fullscreen) {
+			Window::MinimizeSetting minimize = mainApp->getWindow()->willMinimizeOnFocusLost();
+			checked = (minimize == Window::Enabled || minimize == Window::AlwaysEnabled);
+			enabled = (minimize != Window::AlwaysDisabled && minimize != Window::AlwaysEnabled);
 		}
 		
-		Window::MinimizeSetting minimize = mainApp->getWindow()->willMinimizeOnFocusLost();
-		cb->iState = (minimize == Window::Enabled || minimize == Window::AlwaysEnabled) ? 1 : 0;
-		cb->setEnabled(minimize != Window::AlwaysDisabled && minimize != Window::AlwaysEnabled);
+		m_minimizeOnFocusLostCheckbox->iState = (checked ? 1 : 0);
+		m_minimizeOnFocusLostCheckbox->setEnabled(enabled);
+		
+	}
+	
+	void updateApplyButton() {
+		
+		bool enable = m_resolution != config.video.resolution || m_fullscreen != config.video.fullscreen;
+		m_applyButton->setEnabled(enable);
 		
 	}
 	
 	void onChangedFullscreen(int state) {
 		
-		newFullscreen = state != 0;
+		m_fullscreen = (state != 0);
 		
-		if(pMenuSliderResol) {
-			pMenuSliderResol->setEnabled(newFullscreen);
-			setGammaState(m_gammaSlider, newFullscreen);
-			setMinimizeOnFocusLostState(m_minimizeOnFocusLostCheckbox, newFullscreen);
-		}
+		m_resolutionSlider->setEnabled(m_fullscreen);
+		updateGammaSlider();
+		updateMinimizeOnFocusLostStateCheckbox();
+		updateApplyButton();
 		
 	}
 	
 	void onChangedResolution(int pos, const std::string & str) {
-		ARX_UNUSED(pos);
 		
-		if(str == AUTO_RESOLUTION_STRING) {
-			newWidth = newHeight = 0;
+		ARX_UNUSED(str);
+		
+		const RenderWindow::DisplayModes & modes = mainApp->getWindow()->getDisplayModes();
+		if(size_t(pos) < modes.size()) {
+			m_resolution = modes[size_t(pos)].resolution;
 		} else {
-			std::stringstream ss(str);
-			int iX = config.video.resolution.x;
-			int iY = config.video.resolution.y;
-			char tmp;
-			ss >> iX >> tmp >> iY;
-			newWidth = iX;
-			newHeight = iY;
+			m_resolution = Vec2i_ZERO;
 		}
+		
+		updateApplyButton();
+		
 	}
 	
 	void onChangedGamma(int state) {
@@ -899,28 +889,8 @@ private:
 		config.video.fov = 75.f + float(state) * 5.f;
 	}
 	
-	void onClickedBack() {
-		if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
-			pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());
-			pMenuSliderResol->setOldValue(-1);
-			newWidth = config.video.resolution.x;
-			newHeight = config.video.resolution.y;
-		}
-		
-		if(fullscreenCheckbox && fullscreenCheckbox->iOldState >= 0) {
-			fullscreenCheckbox->iState = fullscreenCheckbox->iOldState;
-			fullscreenCheckbox->iOldState = -1;
-			newFullscreen = config.video.fullscreen;
-		}
-	}
-	
 	void onClickedApply() {
-		if(newWidth != config.video.resolution.x || newHeight != config.video.resolution.y
-		   || newFullscreen != config.video.fullscreen) {
-			ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight);
-			pMenuSliderResol->setOldValue(-1);
-			fullscreenCheckbox->iOldState = -1;
-		}
+		ARXMenu_Private_Options_Video_SetResolution(m_fullscreen, m_resolution.x, m_resolution.y);
 		g_mainMenu->bReInitAll = true;
 	}
 	

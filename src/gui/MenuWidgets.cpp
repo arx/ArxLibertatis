@@ -99,12 +99,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/RenderWindow.h"
 
-extern int newWidth;
-extern int newHeight;
-extern bool newFullscreen;
-
-extern TextWidget * pMenuElementApply;
-
 void ARX_QuickSave() {
 	
 	if(!g_canResumeGame) {
@@ -153,15 +147,6 @@ bool MENU_NoActiveWindow() {
 	return (!g_mainMenu->m_window || g_mainMenu->m_window->currentPageId() == Page_None);
 }
 
-static void Check_Apply() {
-	if(pMenuElementApply) {
-		bool enable = config.video.resolution.x != newWidth
-		              || config.video.resolution.y != newHeight
-		              || config.video.fullscreen != newFullscreen;
-		pMenuElementApply->setEnabled(enable);
-	}
-}
-
 void MainMenuDoFrame() {
 	
 	UseRenderState state(render2D());
@@ -199,10 +184,6 @@ void MainMenuDoFrame() {
 	g_mainMenu->Update();
 	
 	g_mainMenu->Render();
-	
-	if(g_mainMenu->m_window && g_mainMenu->m_window->currentPageId() != Page_None) {
-		Check_Apply();
-	}
 	
 	pMenuCursor->DrawCursor();
 	

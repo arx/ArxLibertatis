@@ -32,14 +32,7 @@ Widget::Widget()
 	, m_enabled(true)
 { }
 
-extern TextWidget * pMenuElementApply;
-
-Widget::~Widget() {
-
-	if(this == pMenuElementApply) {
-		pMenuElementApply = NULL;
-	}
-}
+Widget::~Widget() { }
 
 bool Widget::click() {
 	
