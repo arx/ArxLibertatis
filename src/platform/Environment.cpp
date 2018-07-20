@@ -221,11 +221,11 @@ static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & 
 		buffer.resize(length / sizeof(WCHAR) + 1);
 		ret = RegQueryValueExW(handle, wname, NULL, &type, LPBYTE(buffer.data()), &length);
 	}
-	buffer.resize(length / sizeof(WCHAR));
 	
 	RegCloseKey(handle);
 	
 	if(ret == ERROR_SUCCESS && type == REG_SZ) {
+		buffer.resize(length / sizeof(WCHAR));
 		buffer.compact();
 		result = buffer.toUTF8();
 		return true;
