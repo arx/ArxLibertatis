@@ -2298,7 +2298,7 @@ void MainMenu::onClickedCredits() {
 void MainMenu::Update() {
 	
 	if(m_resumeGame) {
-		m_resumeGame->setEnabled(g_canResumeGame || savegames.size() != 0);
+		m_resumeGame->setEnabled(g_canResumeGame || !savegames.empty());
 	}
 	
 	m_selected = m_widgets->getAtPos(Vec2f(GInput->getMousePosition()));
