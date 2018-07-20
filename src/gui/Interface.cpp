@@ -2089,7 +2089,7 @@ float getInterfaceScale(float scaleFactor, bool roundToInteger) {
 	return scale;
 }
 
-TextureStage::FilterMode getInterfaceTextureFilter() {	
+TextureStage::FilterMode getInterfaceTextureFilter() {
 	switch(config.interface.scaleFilter) {
 		case UIFilterNearest:  return TextureStage::FilterNearest;
 		case UIFilterBilinear: return TextureStage::FilterLinear;
