@@ -2306,7 +2306,7 @@ void MainMenu::Update() {
 	if(m_selected && GInput->getMouseButton(Mouse::Button_0)) {
 		m_selected->click();
 		if(m_selected->m_targetMenu != NOP && m_window) {
-			m_window->setScroll(0.f); 
+			m_window->setScroll(0.f);
 		}
 	}
 	
