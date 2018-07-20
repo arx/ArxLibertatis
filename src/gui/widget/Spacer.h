@@ -30,8 +30,8 @@ class Spacer: public Widget {
 	
 public:
 	
-	explicit Spacer(float height) {
-		m_rect = Rectf(0, height);
+	explicit Spacer(int height) {
+		m_rect = Rectf(0, float(height));
 		setEnabled(false);
 	}
 	
