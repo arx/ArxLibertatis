@@ -192,6 +192,11 @@ else(MSVC)
 				# 'printf/scanf format not a string literal and no format arguments'
 				# balks when passing NULL as the format string
 				add_cxxflag("-wd2279")
+				if(DEBUG)
+					# 'missing return statement at end of non-void function' even with arx_unreachable()
+					# ICC does no handle the noreturn attribute with the comma operator
+					add_cxxflag("-wd1011")
+				endif()
 			endif()
 			
 			# -Wuninitialized causes too many false positives in older gcc versions
