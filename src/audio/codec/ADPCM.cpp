@@ -120,7 +120,7 @@ aalError CodecADPCM::setPosition(size_t position) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	i = position - i * (m_header->samplesPerBlock << shift);
+	i = position - i * (size_t(m_header->samplesPerBlock) << shift);
 	
 	// Get header from current block
 	if(aalError error = getNextBlock()) {
