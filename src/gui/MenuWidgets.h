@@ -71,7 +71,7 @@ public:
 	virtual ~MenuPage();
 	
 	void add(Widget * widget);
-	void addCenter(Widget * widget, bool centerX = false);
+	void addCenter(Widget * widget);
 	void Update(Vec2f pos);
 	void Render();
 	void drawDebug();
