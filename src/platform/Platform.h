@@ -344,7 +344,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  * \brief Check if a pointer is aligned.
  */
 #define arx_is_aligned(Pointer, Alignment) \
-	((reinterpret_cast<char *>(Pointer) - reinterpret_cast<char *>(NULL)) % (Alignment) == 0)
+	((reinterpret_cast<char *>(Pointer) - reinterpret_cast<char *>(0)) % (Alignment) == 0)
 
 /*!
  * \def arx_assume_aligned(Pointer, Alignment)
