@@ -90,7 +90,7 @@ void * alloc_aligned(std::size_t alignment, std::size_t size) {
 		return NULL;
 	}
 	
-	size_t offset = alignment - (allocation - static_cast<unsigned char *>(NULL)) % alignment;
+	size_t offset = alignment - (allocation - static_cast<unsigned char *>(0)) % alignment;
 	
 	arx_assert(offset - 1 <= 0xff);
 	allocation[offset - 1] = static_cast<unsigned char>(offset - 1);
