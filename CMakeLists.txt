@@ -1397,7 +1397,6 @@ set(VERSION_SOURCES  VERSION "VERSION" AUTHORS "AUTHORS" COPYING "COPYING")
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/core")
 version_file("${VERSION_TEMPLATE}" "${VERSION_FILE}" "${VERSION_SOURCES}" ".git")
 list(APPEND ARX_SOURCES ${VERSION_FILE})
-list(APPEND UTIL_CMDLINE_SOURCES ${VERSION_FILE})
 
 if(WIN32)
 	set(VERSION_RC_TEMPLATE "src/core/Version.rc.in")
@@ -1444,6 +1443,14 @@ else()
 	set(qt_dpiaware dpiaware)
 endif()
 
+set(BASE_SOURCES
+	${PLATFORM_SOURCES}
+	${IO_FILESYSTEM_SOURCES}
+	${IO_LOGGER_SOURCES}
+	${UTIL_SOURCES}
+	${VERSION_FILE}
+)
+
 if(ARX_HAVE_CRASHREPORTER)
 	
 	set(arxcrashreporter_Qt_SOURCES
@@ -1466,11 +1473,7 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 	set(arxcrashreporter_SOURCES
 		tools/crashreporter/tbg/HTTPClient.h
-		${PLATFORM_SOURCES}
-		${IO_FILESYSTEM_SOURCES}
-		${IO_LOGGER_SOURCES}
-		${UTIL_SOURCES}
-		${VERSION_FILE}
+		${BASE_SOURCES}
 	)
 	
 	if(WIN32 AND USE_WINHTTP)
@@ -1576,8 +1579,7 @@ if(ARX_HAVE_PROFILER)
 	
 	set(arxprofiler_SOURCES
 		src/platform/profiler/ProfilerDataFormat.h
-		${UTIL_SOURCES}
-		${VERSION_FILE}
+		${BASE_SOURCES}
 	)
 	
 	if(WIN32)
@@ -1641,12 +1643,9 @@ endif()
 if(BUILD_TOOLS)
 	
 	set(arxsavetool_SOURCES
-		${PLATFORM_SOURCES}
+		${BASE_SOURCES}
 		${PLATFORM_CONSOLE_SOURCES}
-		${IO_FILESYSTEM_SOURCES}
-		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
-		${UTIL_SOURCES}
 		${UTIL_CMDLINE_SOURCES}
 		src/core/Localisation.cpp
 		src/io/SaveBlock.cpp
@@ -1671,12 +1670,9 @@ if(BUILD_TOOLS)
 	add_executable_shared(arxsavetool "${arxsavetool_SOURCES}" "${arxsavetool_LIBRARIES}")
 	
 	set(arxunpak_SOURCES
-		${PLATFORM_SOURCES}
+		${BASE_SOURCES}
 		${PLATFORM_CONSOLE_SOURCES}
-		${IO_FILESYSTEM_SOURCES}
-		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
-		${UTIL_SOURCES}
 		${UTIL_CMDLINE_SOURCES}
 		${UTIL_MD5_SOURCES}
 		tools/unpak/UnPak.cpp
@@ -1697,14 +1693,8 @@ endif()
 if(BUILD_IO_LIBRARY)
 	
 	set(ArxIO_SOURCES
-		${IO_FILESYSTEM_SOURCES}
-		${IO_LOGGER_SOURCES}
-		${UTIL_SOURCES}
+		${BASE_SOURCES}
 		src/io/Blast.cpp
-		src/platform/Lock.cpp
-		src/platform/Platform.cpp
-		src/platform/ProgramOptions.cpp
-		src/platform/Environment.cpp
 		src/lib/ArxIO.cpp
 	)
 	if(WIN32)
