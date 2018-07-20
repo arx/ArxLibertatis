@@ -48,7 +48,7 @@ CheckboxWidget::CheckboxWidget(TextWidget * label) {
 	m_label = label;
 	m_rect = label->m_rect;
 	
-	m_rect.right = m_rect.left + RATIO_X(245.f);
+	m_rect.right = m_rect.left + RATIO_X(292.f);
 }
 
 CheckboxWidget::~CheckboxWidget() {
@@ -88,9 +88,9 @@ void CheckboxWidget::render(bool mouseOver) {
 	
 	Rectf checkboxRect;
 	checkboxRect.top = m_rect.top;
-	checkboxRect.left = m_rect.right - m_rect.height();
+	checkboxRect.left = m_rect.right - RATIO_X(47.f) - m_rect.height();
 	checkboxRect.bottom = m_rect.bottom;
-	checkboxRect.right = m_rect.right;
+	checkboxRect.right = checkboxRect.left + m_rect.height();
 	
 	TextureContainer * pTex = (iState == 0) ? m_textureOff : m_textureOn;
 	Color color = m_enabled ? Color::white : Color(63, 63, 63, 255);
