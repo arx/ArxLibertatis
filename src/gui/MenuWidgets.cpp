@@ -329,18 +329,9 @@ void MenuPage::add(Widget * widget) {
 	m_children.add(widget);
 }
 
-void MenuPage::addCenter(Widget * widget, bool centerX) {
+void MenuPage::addCenter(Widget * widget) {
 	
-	int dx;
-	if(centerX) {
-		float iDx = widget->m_rect.width();
-		dx  = int(((m_rect.width() - iDx) / 2) - widget->m_rect.left);
-		if(dx < 0) {
-			dx = 0;
-		}
-	} else {
-		dx = 0;
-	}
+	float x = std::floor(m_rect.left + (m_rect.width() - widget->m_rect.width()) / 2);
 	
 	float iDy = widget->m_rect.height();
 	
@@ -366,8 +357,8 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 		w->Move(Vec2f(0, dy));
 	}
 	
-	widget->Move(Vec2f(dx, iDepY));
-
+	widget->Move(Vec2f(x, iDepY) - widget->m_rect.topLeft());
+	
 	m_children.add(widget);
 }
 

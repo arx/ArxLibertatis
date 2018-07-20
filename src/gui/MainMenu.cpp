@@ -85,14 +85,14 @@ public:
 			std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
 			txt->setEnabled(false);
-			addCenter(txt, true);
+			addCenter(txt);
 		}
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_main_newquest_confirm");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
 			txt->setEnabled(false);
-			addCenter(txt, true);
+			addCenter(txt);
 		}
 		
 		{
@@ -130,7 +130,7 @@ public:
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(48, 48), "graph/interface/icons/menu_main_save");
 			cb->setEnabled(false);
-			addCenter(cb, true);
+			addCenter(cb);
 		}
 		
 		{
@@ -139,7 +139,7 @@ public:
 			TextInputWidget * txt = new TextInputWidget(hFontMenu, szMenuText, rect);
 			txt->setMaxLength(255); // Don't allow the user to enter names that cannot be stored in save files
 			txt->unfocused = boost::bind(&SaveConfirmMenuPage::onUnfocusedText, this, _1);
-			addCenter(txt, true);
+			addCenter(txt);
 			m_textbox = txt;
 		}
 		
@@ -251,7 +251,7 @@ public:
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(48, 48), "graph/interface/icons/menu_main_load");
 			cb->setEnabled(false);
-			addCenter(cb, true);
+			addCenter(cb);
 		}
 		
 		// TODO make this list scrollable
@@ -417,7 +417,7 @@ public:
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(10, 0), Vec2f(48, 48), "graph/interface/icons/menu_main_save");
 			cb->setEnabled(false);
-			addCenter(cb, true);
+			addCenter(cb);
 		}
 		
 		Rectf rect(RATIO_2(Vec2f(20, 0)), m_rect.width() - RATIO_X(32), 0.f);
@@ -488,7 +488,7 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = Page_Load;
 			txt->setEnabled(!savegames.empty());
-			addCenter(txt, true);
+			addCenter(txt);
 		}
 		
 		{
@@ -496,7 +496,7 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = Page_Save;
 			txt->setEnabled(g_canResumeGame);
-			addCenter(txt, true);
+			addCenter(txt);
 		}
 		
 		{
@@ -525,35 +525,35 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_video");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = Page_OptionsVideo;
-			addCenter(txt, true);
+			addCenter(txt);
 		}
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_render", "Render settings");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = Page_OptionsRender;
-			addCenter(txt, true);
+			addCenter(txt);
 		}
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_interface", "Interface settings");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = Page_OptionsInterface;
-			addCenter(txt, true);
+			addCenter(txt);
 		}
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_audio");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = Page_OptionsAudio;
-			addCenter(txt, true);
+			addCenter(txt);
 		}
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_input");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = Page_OptionsInput;
-			addCenter(txt, true);
+			addCenter(txt);
 		}
 		
 		{
@@ -2132,13 +2132,13 @@ public:
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_quit"));
 			txt->setEnabled(false);
-			addCenter(txt, true);
+			addCenter(txt);
 		}
 		
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_confirm"));
 			txt->setEnabled(false);
-			addCenter(txt, true);
+			addCenter(txt);
 		}
 		
 		{
