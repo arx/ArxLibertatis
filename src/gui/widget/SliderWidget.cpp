@@ -51,7 +51,16 @@ SliderWidget::SliderWidget(const Vec2f & unscaled) {
 	m_rect.right  = pos.x + pLeftButton->m_rect.width() + pRightButton->m_rect.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x);
 	m_rect.bottom = pos.y + std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
 	
-	pRightButton->Move(Vec2f(pLeftButton->m_rect.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x), 0));
+	pRightButton->SetPos(m_rect.topLeft());
+	
+	float fWidth = pLeftButton->m_rect.width()
+	               + RATIO_X(10.f * float(std::max(pTex1->m_size.x, pTex2->m_size.x)));
+	pRightButton->Move(Vec2f(fWidth, 0));
+	
+	m_rect.right = m_rect.left + pLeftButton->m_rect.width() + pRightButton->m_rect.width()
+	               + RATIO_X(10 * float(std::max(pTex1->m_size.x, pTex2->m_size.x)));
+	m_rect.bottom = m_rect.top + std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
+	
 }
 
 SliderWidget::~SliderWidget() {
@@ -106,15 +115,6 @@ void SliderWidget::update() {
 	
 	pLeftButton->update();
 	pRightButton->update();
-	pRightButton->SetPos(m_rect.topLeft());
-	
-	float fWidth = pLeftButton->m_rect.width()
-	               + RATIO_X(10.f * float(std::max(pTex1->m_size.x, pTex2->m_size.x)));
-	pRightButton->Move(Vec2f(fWidth, 0));
-	
-	m_rect.right = m_rect.left + pLeftButton->m_rect.width() + pRightButton->m_rect.width()
-	               + RATIO_X(10 * float(std::max(pTex1->m_size.x, pTex2->m_size.x)));
-	m_rect.bottom = m_rect.top + std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
 	
 }
 
