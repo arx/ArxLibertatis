@@ -36,8 +36,8 @@ extern "C" {
 	ARX_EXPORT_SYMBOL int AmdPowerXpressRequestHighPerformance = 1;
 }
 
-INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
-                   INT nCmdShow) {
+INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ PSTR lpCmdLine,
+                   _In_ INT nCmdShow) {
 	ARX_UNUSED(hInstance);
 	ARX_UNUSED(hPrevInstance);
 	ARX_UNUSED(lpCmdLine);
