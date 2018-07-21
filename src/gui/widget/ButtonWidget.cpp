@@ -26,14 +26,13 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-ButtonWidget::ButtonWidget(const Vec2f & pos, const Vec2f & size, const char * texturePath) {
+ButtonWidget::ButtonWidget(const Vec2f & size, const res::path & texture) {
 	
-	m_texture = TextureContainer::Load(texturePath);
+	m_texture = TextureContainer::Load(texture);
 	arx_assert(m_texture);
 	
-	Vec2f scaledPos = RATIO_2(pos);
 	Vec2f scaledSize = RATIO_2(size);
-	m_rect = Rectf(scaledPos, scaledSize.x, scaledSize.y);
+	m_rect = Rectf(scaledSize.x, scaledSize.y);
 	
 }
 
