@@ -61,7 +61,7 @@ enum SoundLoopMode {
 	ARX_SOUND_PLAY_ONCE = 1
 };
 
-const audio::SourcedSample ARX_SOUND_TOO_FAR = -2;
+const audio::SourcedSample ARX_SOUND_TOO_FAR = audio::SourcedSample(-2);
 
 extern audio::MixerId ARX_SOUND_MixerGame;
 extern audio::MixerId ARX_SOUND_MixerGameSample;

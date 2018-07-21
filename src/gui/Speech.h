@@ -155,9 +155,13 @@ struct ARX_SPEECH {
 	const EERIE_SCRIPT * es;
 	size_t scrpos;
 	
+	ARX_SPEECH()
+		: sample(0) // TODO SourcedSample is this correct ?
+	{ }
+	
 	void clear() {
 		exist = 0;
-		sample = 0;
+		sample = audio::SourcedSample(0);
 		mood = 0;
 		flags = 0;
 		time_creation = 0;

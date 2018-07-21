@@ -116,15 +116,15 @@ public:
 		Entity * io = context.getEntity();
 		if(stop) {
 			ARX_SOUND_Stop(io->sound);
-			io->sound = audio::INVALID_ID;
+			io->sound = audio::SourcedSample(audio::INVALID_ID);
 			
 		} else {
 			
-			if(unique && io->sound != audio::INVALID_ID) {
+			if(unique && io->sound != audio::SourcedSample(audio::INVALID_ID)) {
 				ARX_SOUND_Stop(io->sound);
 			}
 			
-			audio::SourcedSample num;
+			audio::SourcedSample num = audio::SourcedSample(audio::INVALID_ID);
 			// TODO(broken-scripts) should be a flag instead of depending on the event
 			if(no_pos || SM_INVENTORYUSE == context.getMessage()) {
 				num = ARX_SOUND_PlayScript(sample, NULL, pitch, loop);
@@ -133,10 +133,10 @@ public:
 			}
 			
 			if(unique) {
-				io->sound = (num == ARX_SOUND_TOO_FAR) ? audio::INVALID_ID : num;
+				io->sound = (num == ARX_SOUND_TOO_FAR) ? audio::SourcedSample(audio::INVALID_ID) : num;
 			}
 			
-			if(num == audio::INVALID_ID) {
+			if(num == audio::SourcedSample(audio::INVALID_ID)) {
 				ScriptWarning << "unable to load sound file " << sample;
 				return Failed;
 			}
@@ -163,7 +163,7 @@ public:
 		Entity * io = context.getEntity();
 		audio::SourcedSample num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
 		
-		if(num == audio::INVALID_ID) {
+		if(num == audio::SourcedSample(audio::INVALID_ID)) {
 			ScriptWarning << "unable to load sound file " << sample;
 			return Failed;
 		}

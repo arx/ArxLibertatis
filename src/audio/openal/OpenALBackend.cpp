@@ -407,11 +407,11 @@ Source * OpenALBackend::createSource(SourcedSample sampleId, const Channel & cha
 	
 	SourcedSample s_id = getSampleId(sampleId);
 	
-	if(!g_samples.isValid(s_id)) {
+	if(!g_samples.isValid(s_id.ss)) {
 		return NULL;
 	}
 	
-	Sample * sample = g_samples[s_id];
+	Sample * sample = g_samples[s_id.ss];
 	
 	OpenALSource * orig = NULL;
 	for(size_t i = 0; i < sources.size(); i++) {
@@ -425,7 +425,7 @@ Source * OpenALBackend::createSource(SourcedSample sampleId, const Channel & cha
 	
 	size_t index = sources.add(source);
 	
-	SourcedSample id = SourcedSample(index << 16) | s_id;
+	SourcedSample id = SourcedSample(s32(index << 16) | s_id.ss);
 	if(source->init(id, orig, channel)) {
 		sources.remove(index);
 		return NULL;
@@ -444,7 +444,7 @@ Source * OpenALBackend::createSource(SourcedSample sampleId, const Channel & cha
 
 Source * OpenALBackend::getSource(SourcedSample sourceId) {
 	
-	size_t index = ((sourceId >> 16) & 0x0000ffff);
+	size_t index = ((sourceId.ss >> 16) & 0x0000ffff);
 	if(!sources.isValid(index)) {
 		return NULL;
 	}
@@ -452,7 +452,7 @@ Source * OpenALBackend::getSource(SourcedSample sourceId) {
 	Source * source = sources[index];
 	
 	SourcedSample sample = getSampleId(sourceId);
-	if(!g_samples.isValid(sample) || source->getSample() != g_samples[sample]) {
+	if(!g_samples.isValid(sample.ss) || source->getSample() != g_samples[sample.ss]) {
 		return NULL;
 	}
 	

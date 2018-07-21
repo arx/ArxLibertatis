@@ -234,19 +234,19 @@ struct Ambiance::Track : public Source::Callback {
 	DECLARE_FLAGS(Flag, TrackFlags)
 	
 	~Track() {
-		if(s_id != INVALID_ID) {
+		if(s_id != SourcedSample(INVALID_ID)) {
 			if(Source * source = backend->getSource(s_id)) {
 				source->stop();
 			}
 			SourcedSample sid = Backend::getSampleId(s_id);
-			arx_assert(g_samples.isValid(sid));
-			g_samples[sid]->dereference();
+			arx_assert(g_samples.isValid(sid.ss));
+			g_samples[sid.ss]->dereference();
 		}
 	}
 	
 	bool operator==(const std::string & str) const {
 		return (name == str
-		        || g_samples[Backend::getSampleId(s_id)]->getName() == str);
+		        || g_samples[Backend::getSampleId(s_id).ss]->getName() == str);
 	}
 	
 private:
@@ -466,7 +466,7 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 
 void Ambiance::Track::update(PlatformDuration time, PlatformDuration diff) {
 	
-	if(!g_samples.isValid(Backend::getSampleId(s_id))) {
+	if(!g_samples.isValid(Backend::getSampleId(s_id).ss)) {
 		return;
 	}
 	
@@ -537,7 +537,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 		return error;
 	}
 	Sample * sample = new Sample(res::path::load(sampleName));
-	if(sample->load() || (s_id = g_samples.add(sample)) == INVALID_ID) {
+	if(sample->load() || (s_id = SourcedSample(g_samples.add(sample))) == SourcedSample(INVALID_ID)) {
 		LogError << "Ambiance \"" << ambiance->getName()
 		         << "\": missing sample \"" << sampleName << '"';
 		delete sample;

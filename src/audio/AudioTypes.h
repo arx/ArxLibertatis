@@ -135,7 +135,16 @@ struct SourceFalloff {
 
 const s32 INVALID_ID = -1;
 
-typedef s32 SourcedSample;
+struct SourcedSample {
+	explicit SourcedSample(const s32 ss_)
+		: ss(ss_)
+	{ }
+	
+	bool operator==(const SourcedSample & rhs) const { return ss == rhs.ss; }
+	bool operator!=(const SourcedSample & rhs) const { return ss != rhs.ss; }
+	
+	s32 ss;
+};
 
 typedef HandleType<struct MixerIdTag,    s32, -1> MixerId;
 typedef HandleType<struct EnvIdTag,      s32, -1> EnvId;
