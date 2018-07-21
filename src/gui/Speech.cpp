@@ -511,7 +511,7 @@ void ARX_SPEECH_Update() {
 		if(speech->fDeltaY <= height) {
 			float fDTime;
 
-			if(speech->sample != audio::SourcedSample(0)) {
+			if(speech->sample != audio::SourcedSample()) {
 				
 				GameDuration duration = ARX_SOUND_GetDuration(speech->sample);
 				if(duration == 0) {

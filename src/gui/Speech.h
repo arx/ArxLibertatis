@@ -156,12 +156,12 @@ struct ARX_SPEECH {
 	size_t scrpos;
 	
 	ARX_SPEECH()
-		: sample(0) // TODO SourcedSample is this correct ?
+		: sample()
 	{ }
 	
 	void clear() {
 		exist = 0;
-		sample = audio::SourcedSample(0);
+		sample = audio::SourcedSample();
 		mood = 0;
 		flags = 0;
 		time_creation = 0;
