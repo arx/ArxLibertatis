@@ -61,8 +61,6 @@ enum SoundLoopMode {
 	ARX_SOUND_PLAY_ONCE = 1
 };
 
-const audio::SourcedSample ARX_SOUND_TOO_FAR = audio::SourcedSample(-2);
-
 extern audio::MixerId ARX_SOUND_MixerGame;
 extern audio::MixerId ARX_SOUND_MixerGameSample;
 extern audio::MixerId ARX_SOUND_MixerGameSpeech;
@@ -220,7 +218,7 @@ void ARX_SOUND_PlayInterface(audio::SourcedSample & sample_id, float pitch = 1.f
 void ARX_SOUND_PlayMenu(audio::SourcedSample & sample_id, float pitch = 1.f,
                         SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 
-audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io = NULL);
+audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar = NULL, const Entity * io = NULL);
 long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source);
 long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source);
 

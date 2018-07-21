@@ -161,9 +161,12 @@ public:
 		DebugScript(' ' << sample);
 		
 		Entity * io = context.getEntity();
-		audio::SourcedSample num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
 		
-		if(num == audio::SourcedSample()) {
+		// TODO check if we actually need to succeed if tooFar becomes true
+		bool tooFar = false;
+		audio::SourcedSample num = ARX_SOUND_PlaySpeech(sample, &tooFar, io && io->show == 1 ? io : NULL);
+		
+		if(!tooFar && num == audio::SourcedSample()) {
 			ScriptWarning << "unable to load sound file " << sample;
 			return Failed;
 		}
