@@ -90,6 +90,8 @@ protected:
 	void reserveTop();
 	void reserveBottom();
 	
+	Vec2f buttonSize(float x, float y) const;
+	
 	Rectf m_rect;
 	
 private:

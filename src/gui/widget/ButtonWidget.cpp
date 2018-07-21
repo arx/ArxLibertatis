@@ -31,8 +31,7 @@ ButtonWidget::ButtonWidget(const Vec2f & size, const res::path & texture) {
 	m_texture = TextureContainer::Load(texture);
 	arx_assert(m_texture);
 	
-	Vec2f scaledSize = RATIO_2(size);
-	m_rect = Rectf(scaledSize.x, scaledSize.y);
+	m_rect = Rectf(size.x, size.y);
 	
 }
 
