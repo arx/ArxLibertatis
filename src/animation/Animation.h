@@ -77,7 +77,7 @@ struct EERIE_FRAME {
 		, f_translate(false)
 		, f_rotate(false)
 		, translate(Vec3f_ZERO)
-		, sample(audio::INVALID_ID)
+		, sample()
 	{ }
 	
 };

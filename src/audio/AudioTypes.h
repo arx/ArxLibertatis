@@ -133,10 +133,8 @@ struct SourceFalloff {
 	float end;
 };
 
-const s32 INVALID_ID = -1;
-
 struct SourcedSample {
-	SourcedSample() : ss(INVALID_ID) {}
+	SourcedSample() : ss(-1) {}
 	explicit SourcedSample(const s32 ss_)
 		: ss(ss_)
 	{ }

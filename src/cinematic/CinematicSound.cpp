@@ -60,7 +60,7 @@ namespace {
 struct CinematicSound {
 	
 	CinematicSound()
-		: exists(false), isSpeech(false), handle(audio::INVALID_ID) { }
+		: exists(false), isSpeech(false), handle() { }
 	
 	bool exists;
 	bool isSpeech;
