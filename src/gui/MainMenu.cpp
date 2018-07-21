@@ -308,7 +308,6 @@ public:
 		// Back button
 		{
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
-			cb->clicked = boost::bind(&LoadMenuPage::onClickBack, this);
 			cb->m_targetMenu = Page_LoadOrSave;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			addCorner(cb, BottomLeft);
@@ -326,7 +325,8 @@ public:
 	void focus() {
 		MenuPage::focus();
 		resetSelection();
-		disableLoadDeleteButtons();
+		pLoadConfirm->setEnabled(false);
+		pDeleteConfirm->setEnabled(false);
 	}
 	
 private:
@@ -336,16 +336,6 @@ private:
 	TextWidget * pLoadConfirm;
 	TextWidget * pDeleteConfirm;
 	
-	void enableLoadDeleteButtons() {
-		pLoadConfirm->setEnabled(true);
-		pDeleteConfirm->setEnabled(true);
-	}
-	
-	void disableLoadDeleteButtons() {
-		pLoadConfirm->setEnabled(false);
-		pDeleteConfirm->setEnabled(false);
-	}
-	
 	void onClickQuestLoad(SaveSlotWidget * widget) {
 		
 		resetSelection();
@@ -353,7 +343,8 @@ private:
 		m_selected = widget;
 		m_selected->setSelected(true);
 		
-		enableLoadDeleteButtons();
+		pLoadConfirm->setEnabled(true);
+		pDeleteConfirm->setEnabled(true);
 		
 	}
 	
@@ -376,8 +367,6 @@ private:
 			
 		}
 		
-		disableLoadDeleteButtons();
-		
 	}
 	
 	void onClickQuestDelete() {
@@ -388,12 +377,6 @@ private:
 			return;
 		}
 		
-		disableLoadDeleteButtons();
-		
-	}
-	
-	void onClickBack() {
-		disableLoadDeleteButtons();
 	}
 	
 };
