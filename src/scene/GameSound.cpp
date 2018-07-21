@@ -713,7 +713,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, const Entity *
 		if(loop != ARX_SOUND_PLAY_LOOPED) {
 			if (g_camera && fartherThan(g_camera->m_pos, channel.position, ARX_SOUND_REFUSE_DISTANCE)) {
 				// TODO the sample will never be freed!
-				return ARX_SOUND_TOO_FAR;
+				return audio::SourcedSample();
 			}
 		}
 	} else {
