@@ -86,11 +86,13 @@ bool CheckboxWidget::click() {
 
 void CheckboxWidget::render(bool mouseOver) {
 	
+	float size = RATIO_Y(20);
+	
 	Rectf checkboxRect;
-	checkboxRect.top = m_rect.top;
-	checkboxRect.left = m_rect.right - RATIO_X(47.f) - m_rect.height();
-	checkboxRect.bottom = m_rect.bottom;
-	checkboxRect.right = checkboxRect.left + m_rect.height();
+	checkboxRect.top = std::floor(m_rect.center().y - size / 2.f);
+	checkboxRect.bottom = checkboxRect.top + size;
+	checkboxRect.left = std::floor(m_rect.right - RATIO_X(56.f) - size / 2);
+	checkboxRect.right = checkboxRect.left + size;
 	
 	TextureContainer * pTex = (iState == 0) ? m_textureOff : m_textureOn;
 	Color color = m_enabled ? Color::white : Color(63, 63, 63, 255);
