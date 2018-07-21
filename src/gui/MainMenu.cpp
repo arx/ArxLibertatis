@@ -101,8 +101,7 @@ public:
 			std::string szMenuText = getLocalised("system_yes");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(ARXMenu_NewQuest);
-			txt->SetPos(m_rect.size() - txt->m_rect.size());
-			add(txt);
+			addCorner(txt, BottomRight);
 		}
 		
 		{
@@ -110,9 +109,9 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = Page_None;
 			txt->SetShortCut(Keyboard::Key_Escape);
-			txt->SetPos(Vec2f(0.f, m_rect.height() - txt->m_rect.height()));
-			add(txt);
+			addCorner(txt, BottomLeft);
 		}
+		
 	}
 	
 };
@@ -156,8 +155,7 @@ public:
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveDelete, this, _1);
 			txt->m_targetMenu = Page_Save;
 			txt->setEnabled(m_savegame != SavegameHandle());
-			txt->SetPos(Vec2f(m_rect.width() - txt->m_rect.width(), 0.f));
-			add(txt);
+			addCorner(txt, TopRight);
 		}
 		
 		// Save button
@@ -166,8 +164,7 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_None;
-			txt->SetPos(m_rect.size() - txt->m_rect.size());
-			add(txt);
+			addCorner(txt, BottomRight);
 		}
 		
 		// Back button
@@ -175,8 +172,7 @@ public:
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Save;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
-			add(cb);
+			addCorner(cb, BottomLeft);
 		}
 		
 		setSaveHandle(m_savegame);
@@ -294,8 +290,7 @@ public:
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestDelete, this);
 			txt->m_targetMenu = Page_Load;
 			txt->setEnabled(false);
-			txt->SetPos(Vec2f(m_rect.width() - txt->m_rect.width(), 0.f));
-			add(txt);
+			addCorner(txt, TopRight);
 			pDeleteConfirm = txt;
 		}
 		
@@ -306,8 +301,7 @@ public:
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoadConfirm, this);
 			txt->m_targetMenu = Page_None;
 			txt->setEnabled(false);
-			txt->SetPos(m_rect.size() - txt->m_rect.size());
-			add(txt);
+			addCorner(txt, BottomRight);
 			pLoadConfirm = txt;
 		}
 		
@@ -317,8 +311,7 @@ public:
 			cb->clicked = boost::bind(&LoadMenuPage::onClickBack, this);
 			cb->m_targetMenu = Page_LoadOrSave;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
-			add(cb);
+			addCorner(cb, BottomLeft);
 		}
 		
 	}
@@ -460,8 +453,7 @@ public:
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_LoadOrSave;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
-			add(cb);
+			addCorner(cb, BottomLeft);
 		}
 		
 	}
@@ -510,8 +502,7 @@ public:
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_None;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
-			add(cb);
+			addCorner(cb, BottomLeft);
 		}
 		
 	}
@@ -577,8 +568,7 @@ public:
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_None;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
-			add(cb);
+			addCorner(cb, BottomLeft);
 		}
 		
 	}
@@ -800,8 +790,7 @@ public:
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
 			txt->setEnabled(false);
-			txt->SetPos(m_rect.size() - txt->m_rect.size());
-			add(txt);
+			addCorner(txt, BottomRight);
 			m_applyButton = txt;
 		}
 		
@@ -809,8 +798,7 @@ public:
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
-			add(cb);
+			addCorner(cb, BottomLeft);
 		}
 		
 	}
@@ -1108,8 +1096,7 @@ public:
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
-			add(cb);
+			addCorner(cb, BottomLeft);
 		}
 		
 	}
@@ -1385,8 +1372,7 @@ public:
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
-			add(cb);
+			addCorner(cb, BottomLeft);
 		}
 		
 	}
@@ -1620,8 +1606,7 @@ public:
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
-			add(cb);
+			addCorner(cb, BottomLeft);
 		}
 		
 	}
@@ -1838,8 +1823,7 @@ public:
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
-			add(cb);
+			addCorner(cb, BottomLeft);
 		}
 		
 	}
@@ -2024,23 +2008,20 @@ public:
 			cb->m_targetMenu = Page_OptionsInput;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedBack, this);
-			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
-			add(cb);
+			addCorner(cb, BottomLeft);
 		}
 		
 		{
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
 			txt->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedDefault, this);
-			txt->SetPos(Vec2f((m_rect.width() - txt->m_rect.width()) / 2.f, m_rect.height() - txt->m_rect.height()));
-			add(txt);
+			addCorner(txt, BottomCenter);
 		}
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/next");
 			cb->m_targetMenu = Page_OptionsInputCustomizeKeys2;
-			cb->SetPos(m_rect.size() - cb->m_rect.size());
-			add(cb);
+			addCorner(cb, BottomRight);
 		}
 	
 		reinitActionKeys();
@@ -2108,16 +2089,14 @@ public:
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_OptionsInputCustomizeKeys1;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
-			add(cb);
+			addCorner(cb, BottomLeft);
 		}
 		
 		{
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
 			txt->clicked = boost::bind(&ControlOptionsMenuPage2::onClickedDefault, this);
-			txt->SetPos(Vec2f((m_rect.width() - txt->m_rect.width()) / 2.f, m_rect.height() - txt->m_rect.height()));
-			add(txt);
+			addCorner(txt, BottomCenter);
 		}
 		
 		reinitActionKeys();
@@ -2159,17 +2138,16 @@ public:
 		{
 			TextWidget * yes = new TextWidget(hFontMenu, getLocalised("system_yes"), Vec2f_ZERO);
 			yes->clicked = boost::bind(&QuitConfirmMenuPage::onClickedYes, this);
-			yes->SetPos(m_rect.size() - yes->m_rect.size());
-			add(yes);
+			addCorner(yes, BottomRight);
 		}
 		
 		{
 			TextWidget * no = new TextWidget(hFontMenu, getLocalised("system_no"), Vec2f_ZERO);
 			no->m_targetMenu = Page_None;
 			no->SetShortCut(Keyboard::Key_Escape);
-			no->SetPos(Vec2f(0.f, m_rect.height() - no->m_rect.height()));
-			add(no);
+			addCorner(no, BottomLeft);
 		}
+		
 	}
 	
 private:
