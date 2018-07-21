@@ -655,7 +655,8 @@ class IfCommand : public Command {
 		IsInOperator() : Operator("isin", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const std::string & needle, const std::string & haystack) {
-			return ARX_UNUSED(context), (haystack.find(needle) != std::string::npos);
+			ARX_UNUSED(context);
+			return haystack.find(needle) != std::string::npos;
 		}
 		
 	};
@@ -667,11 +668,13 @@ class IfCommand : public Command {
 		EqualOperator() : Operator("==", TYPE_FLOAT) { }
 		
 		bool text(const Context & context, const std::string & left, const std::string & right) {
-			return ARX_UNUSED(context), (left == right);
+			ARX_UNUSED(context);
+			return left == right;
 		}
 		
 		bool number(const Context & context, float left, float right) {
-			return ARX_UNUSED(context), (left == right);
+			ARX_UNUSED(context);
+			return left == right;
 		}
 		
 	};
@@ -683,11 +686,13 @@ class IfCommand : public Command {
 		NotEqualOperator() : Operator("!=", TYPE_FLOAT) { }
 		
 		bool text(const Context & context, const std::string & left, const std::string & right) {
-			return ARX_UNUSED(context), (left != right);
+			ARX_UNUSED(context);
+			return left != right;
 		}
 		
 		bool number(const Context & context, float left, float right) {
-			return ARX_UNUSED(context), (left != right);
+			ARX_UNUSED(context);
+			return left != right;
 		}
 		
 	};
@@ -699,7 +704,8 @@ class IfCommand : public Command {
 		LessEqualOperator() : Operator("<=", TYPE_FLOAT) { }
 		
 		bool number(const Context & context, float left, float right) {
-			return ARX_UNUSED(context), (left <= right);
+			ARX_UNUSED(context);
+			return left <= right;
 		}
 		
 	};
@@ -711,7 +717,8 @@ class IfCommand : public Command {
 		LessOperator() : Operator("<", TYPE_FLOAT) { }
 		
 		bool number(const Context & context, float left, float right) {
-			return ARX_UNUSED(context), (left < right);
+			ARX_UNUSED(context);
+			return left < right;
 		}
 		
 	};
@@ -723,7 +730,8 @@ class IfCommand : public Command {
 		GreaterEqualOperator() : Operator(">=", TYPE_FLOAT) { }
 		
 		bool number(const Context & context, float left, float right) {
-			return ARX_UNUSED(context), (left >= right);
+			ARX_UNUSED(context);
+			return left >= right;
 		}
 		
 	};
@@ -735,7 +743,8 @@ class IfCommand : public Command {
 		GreaterOperator() : Operator(">", TYPE_FLOAT) { }
 		
 		bool number(const Context & context, float left, float right) {
-			return ARX_UNUSED(context), (left > right);
+			ARX_UNUSED(context);
+			return left > right;
 		}
 		
 	};
