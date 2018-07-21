@@ -61,7 +61,7 @@ enum SoundLoopMode {
 	ARX_SOUND_PLAY_ONCE = 1
 };
 
-const audio::SampleId ARX_SOUND_TOO_FAR = -2;
+const audio::SourcedSample ARX_SOUND_TOO_FAR = -2;
 
 extern audio::MixerId ARX_SOUND_MixerGame;
 extern audio::MixerId ARX_SOUND_MixerGameSample;
@@ -77,126 +77,126 @@ const std::string AMB_MENU = "ambient_menu.amb";
 const std::string AMB_CREDITS = "ambient_credits.amb";
 
 // Menu samples
-extern audio::SampleId SND_MENU_CLICK;
-extern audio::SampleId SND_MENU_RELEASE;
+extern audio::SourcedSample SND_MENU_CLICK;
+extern audio::SourcedSample SND_MENU_RELEASE;
 
 // Interface samples
-extern audio::SampleId SND_BACKPACK;
-extern audio::SampleId SND_BOOK_OPEN;
-extern audio::SampleId SND_BOOK_CLOSE;
-extern audio::SampleId SND_BOOK_PAGE_TURN;
-extern audio::SampleId SND_GOLD;
-extern audio::SampleId SND_INVSTD;
-extern audio::SampleId SND_SCROLL_OPEN;
-extern audio::SampleId SND_SCROLL_CLOSE;
-extern audio::SampleId SND_TORCH_START;
-extern audio::SampleId SND_TORCH_LOOP;
-extern audio::SampleId SND_TORCH_END;
+extern audio::SourcedSample SND_BACKPACK;
+extern audio::SourcedSample SND_BOOK_OPEN;
+extern audio::SourcedSample SND_BOOK_CLOSE;
+extern audio::SourcedSample SND_BOOK_PAGE_TURN;
+extern audio::SourcedSample SND_GOLD;
+extern audio::SourcedSample SND_INVSTD;
+extern audio::SourcedSample SND_SCROLL_OPEN;
+extern audio::SourcedSample SND_SCROLL_CLOSE;
+extern audio::SourcedSample SND_TORCH_START;
+extern audio::SourcedSample SND_TORCH_LOOP;
+extern audio::SourcedSample SND_TORCH_END;
 
 // Other SFX samples
-extern audio::SampleId SND_FIREPLACE;
-extern audio::SampleId SND_PLOUF;
-extern audio::SampleId SND_QUAKE;
-extern audio::SampleId SND_WHOOSH;
+extern audio::SourcedSample SND_FIREPLACE;
+extern audio::SourcedSample SND_PLOUF;
+extern audio::SourcedSample SND_QUAKE;
+extern audio::SourcedSample SND_WHOOSH;
 
 // Player samples
-extern audio::SampleId SND_PLAYER_DEATH_BY_FIRE;
-extern audio::SampleId SND_PLAYER_HEART_BEAT;
-extern audio::SampleId SND_PLAYER_LEVEL_UP;
-extern audio::SampleId SND_PLAYER_POISONED;
+extern audio::SourcedSample SND_PLAYER_DEATH_BY_FIRE;
+extern audio::SourcedSample SND_PLAYER_HEART_BEAT;
+extern audio::SourcedSample SND_PLAYER_LEVEL_UP;
+extern audio::SourcedSample SND_PLAYER_POISONED;
 
 // Magic drawing samples
-extern audio::SampleId SND_MAGIC_AMBIENT;
-extern audio::SampleId SND_MAGIC_DRAW;
-extern audio::SampleId SND_MAGIC_FIZZLE;
+extern audio::SourcedSample SND_MAGIC_AMBIENT;
+extern audio::SourcedSample SND_MAGIC_DRAW;
+extern audio::SourcedSample SND_MAGIC_FIZZLE;
 
 // Magic symbols samples
-extern audio::SampleId SND_SYMB[RUNE_COUNT];
+extern audio::SourcedSample SND_SYMB[RUNE_COUNT];
 
 // Spells samples
-extern audio::SampleId SND_SPELL_ACTIVATE_PORTAL;
-extern audio::SampleId SND_SPELL_ARMOR_START;
-extern audio::SampleId SND_SPELL_ARMOR_END;
-extern audio::SampleId SND_SPELL_ARMOR_LOOP;
-extern audio::SampleId SND_SPELL_BLESS;
-extern audio::SampleId SND_SPELL_COLD_PROTECTION_START;
-extern audio::SampleId SND_SPELL_COLD_PROTECTION_LOOP;
-extern audio::SampleId SND_SPELL_COLD_PROTECTION_END;
-extern audio::SampleId SND_SPELL_CONFUSE;
-extern audio::SampleId SND_SPELL_CONTROL_TARGET;
-extern audio::SampleId SND_SPELL_CREATE_FIELD;
-extern audio::SampleId SND_SPELL_CREATE_FOOD;
-extern audio::SampleId SND_SPELL_CURE_POISON;
-extern audio::SampleId SND_SPELL_CURSE;
-extern audio::SampleId SND_SPELL_DETECT_TRAP;
-extern audio::SampleId SND_SPELL_DETECT_TRAP_LOOP;
-extern audio::SampleId SND_SPELL_DISARM_TRAP;
-extern audio::SampleId SND_SPELL_DISPELL_FIELD;
-extern audio::SampleId SND_SPELL_DISPELL_ILLUSION;
-extern audio::SampleId SND_SPELL_DOUSE;
-extern audio::SampleId SND_SPELL_ELECTRIC;
-extern audio::SampleId SND_SPELL_EXPLOSION;
-extern audio::SampleId SND_SPELL_EYEBALL_IN;
-extern audio::SampleId SND_SPELL_EYEBALL_OUT;
-extern audio::SampleId SND_SPELL_FIRE_HIT;
-extern audio::SampleId SND_SPELL_FIRE_LAUNCH;
-extern audio::SampleId SND_SPELL_FIRE_PROTECTION;
-extern audio::SampleId SND_SPELL_FIRE_PROTECTION_LOOP;
-extern audio::SampleId SND_SPELL_FIRE_PROTECTION_END;
-extern audio::SampleId SND_SPELL_FIRE_WIND;
-extern audio::SampleId SND_SPELL_FREEZETIME;
-extern audio::SampleId SND_SPELL_HARM;
-extern audio::SampleId SND_SPELL_HEALING;
-extern audio::SampleId SND_SPELL_ICE_FIELD;
-extern audio::SampleId SND_SPELL_ICE_FIELD_LOOP;
-extern audio::SampleId SND_SPELL_ICE_FIELD_END;
-extern audio::SampleId SND_SPELL_ICE_PROJECTILE_LAUNCH;
-extern audio::SampleId SND_SPELL_INCINERATE;
-extern audio::SampleId SND_SPELL_INCINERATE_LOOP;
-extern audio::SampleId SND_SPELL_INCINERATE_END;
-extern audio::SampleId SND_SPELL_IGNITE;
-extern audio::SampleId SND_SPELL_INVISIBILITY_START;
-extern audio::SampleId SND_SPELL_INVISIBILITY_END;
-extern audio::SampleId SND_SPELL_LEVITATE_START;
-extern audio::SampleId SND_SPELL_LEVITATE_LOOP;
-extern audio::SampleId SND_SPELL_LEVITATE_END;
-extern audio::SampleId SND_SPELL_LIGHTNING_START;
-extern audio::SampleId SND_SPELL_LIGHTNING_LOOP;
-extern audio::SampleId SND_SPELL_LIGHTNING_END;
-extern audio::SampleId SND_SPELL_LOWER_ARMOR;
-extern audio::SampleId SND_SPELL_LOWER_ARMOR_END;
-extern audio::SampleId SND_SPELL_FIRE_FIELD_START;
-extern audio::SampleId SND_SPELL_FIRE_FIELD_LOOP;
-extern audio::SampleId SND_SPELL_FIRE_FIELD_END;
+extern audio::SourcedSample SND_SPELL_ACTIVATE_PORTAL;
+extern audio::SourcedSample SND_SPELL_ARMOR_START;
+extern audio::SourcedSample SND_SPELL_ARMOR_END;
+extern audio::SourcedSample SND_SPELL_ARMOR_LOOP;
+extern audio::SourcedSample SND_SPELL_BLESS;
+extern audio::SourcedSample SND_SPELL_COLD_PROTECTION_START;
+extern audio::SourcedSample SND_SPELL_COLD_PROTECTION_LOOP;
+extern audio::SourcedSample SND_SPELL_COLD_PROTECTION_END;
+extern audio::SourcedSample SND_SPELL_CONFUSE;
+extern audio::SourcedSample SND_SPELL_CONTROL_TARGET;
+extern audio::SourcedSample SND_SPELL_CREATE_FIELD;
+extern audio::SourcedSample SND_SPELL_CREATE_FOOD;
+extern audio::SourcedSample SND_SPELL_CURE_POISON;
+extern audio::SourcedSample SND_SPELL_CURSE;
+extern audio::SourcedSample SND_SPELL_DETECT_TRAP;
+extern audio::SourcedSample SND_SPELL_DETECT_TRAP_LOOP;
+extern audio::SourcedSample SND_SPELL_DISARM_TRAP;
+extern audio::SourcedSample SND_SPELL_DISPELL_FIELD;
+extern audio::SourcedSample SND_SPELL_DISPELL_ILLUSION;
+extern audio::SourcedSample SND_SPELL_DOUSE;
+extern audio::SourcedSample SND_SPELL_ELECTRIC;
+extern audio::SourcedSample SND_SPELL_EXPLOSION;
+extern audio::SourcedSample SND_SPELL_EYEBALL_IN;
+extern audio::SourcedSample SND_SPELL_EYEBALL_OUT;
+extern audio::SourcedSample SND_SPELL_FIRE_HIT;
+extern audio::SourcedSample SND_SPELL_FIRE_LAUNCH;
+extern audio::SourcedSample SND_SPELL_FIRE_PROTECTION;
+extern audio::SourcedSample SND_SPELL_FIRE_PROTECTION_LOOP;
+extern audio::SourcedSample SND_SPELL_FIRE_PROTECTION_END;
+extern audio::SourcedSample SND_SPELL_FIRE_WIND;
+extern audio::SourcedSample SND_SPELL_FREEZETIME;
+extern audio::SourcedSample SND_SPELL_HARM;
+extern audio::SourcedSample SND_SPELL_HEALING;
+extern audio::SourcedSample SND_SPELL_ICE_FIELD;
+extern audio::SourcedSample SND_SPELL_ICE_FIELD_LOOP;
+extern audio::SourcedSample SND_SPELL_ICE_FIELD_END;
+extern audio::SourcedSample SND_SPELL_ICE_PROJECTILE_LAUNCH;
+extern audio::SourcedSample SND_SPELL_INCINERATE;
+extern audio::SourcedSample SND_SPELL_INCINERATE_LOOP;
+extern audio::SourcedSample SND_SPELL_INCINERATE_END;
+extern audio::SourcedSample SND_SPELL_IGNITE;
+extern audio::SourcedSample SND_SPELL_INVISIBILITY_START;
+extern audio::SourcedSample SND_SPELL_INVISIBILITY_END;
+extern audio::SourcedSample SND_SPELL_LEVITATE_START;
+extern audio::SourcedSample SND_SPELL_LEVITATE_LOOP;
+extern audio::SourcedSample SND_SPELL_LEVITATE_END;
+extern audio::SourcedSample SND_SPELL_LIGHTNING_START;
+extern audio::SourcedSample SND_SPELL_LIGHTNING_LOOP;
+extern audio::SourcedSample SND_SPELL_LIGHTNING_END;
+extern audio::SourcedSample SND_SPELL_LOWER_ARMOR;
+extern audio::SourcedSample SND_SPELL_LOWER_ARMOR_END;
+extern audio::SourcedSample SND_SPELL_FIRE_FIELD_START;
+extern audio::SourcedSample SND_SPELL_FIRE_FIELD_LOOP;
+extern audio::SourcedSample SND_SPELL_FIRE_FIELD_END;
 
-extern audio::SampleId SND_SPELL_MAGICAL_HIT;
-extern audio::SampleId SND_SPELL_MAGICAL_SHIELD;
-extern audio::SampleId SND_SPELL_MASS_INCINERATE;
-extern audio::SampleId SND_SPELL_MASS_PARALYSE;
-extern audio::SampleId SND_SPELL_MM_CREATE;
-extern audio::SampleId SND_SPELL_MM_HIT;
-extern audio::SampleId SND_SPELL_MM_LAUNCH;
-extern audio::SampleId SND_SPELL_MM_LOOP;
-extern audio::SampleId SND_SPELL_NEGATE_MAGIC;
-extern audio::SampleId SND_SPELL_PARALYSE;
-extern audio::SampleId SND_SPELL_PARALYSE_END;
-extern audio::SampleId SND_SPELL_POISON_PROJECTILE_LAUNCH;
-extern audio::SampleId SND_SPELL_RAISE_DEAD;
-extern audio::SampleId SND_SPELL_REPEL_UNDEAD;
-extern audio::SampleId SND_SPELL_REPEL_UNDEAD_LOOP;
-extern audio::SampleId SND_SPELL_RUNE_OF_GUARDING;
-extern audio::SampleId SND_SPELL_RUNE_OF_GUARDING_END;
-extern audio::SampleId SND_SPELL_SLOW_DOWN;
-extern audio::SampleId SND_SPELL_SLOW_DOWN_END;
-extern audio::SampleId SND_SPELL_SPARK;
-extern audio::SampleId SND_SPELL_SPEED_START;
-extern audio::SampleId SND_SPELL_SPEED_LOOP;
-extern audio::SampleId SND_SPELL_SPEED_END;
-extern audio::SampleId SND_SPELL_SUMMON_CREATURE;
-extern audio::SampleId SND_SPELL_TELEKINESIS_START;
-extern audio::SampleId SND_SPELL_TELEKINESIS_END;
-extern audio::SampleId SND_SPELL_VISION_START;
-extern audio::SampleId SND_SPELL_VISION_LOOP;
+extern audio::SourcedSample SND_SPELL_MAGICAL_HIT;
+extern audio::SourcedSample SND_SPELL_MAGICAL_SHIELD;
+extern audio::SourcedSample SND_SPELL_MASS_INCINERATE;
+extern audio::SourcedSample SND_SPELL_MASS_PARALYSE;
+extern audio::SourcedSample SND_SPELL_MM_CREATE;
+extern audio::SourcedSample SND_SPELL_MM_HIT;
+extern audio::SourcedSample SND_SPELL_MM_LAUNCH;
+extern audio::SourcedSample SND_SPELL_MM_LOOP;
+extern audio::SourcedSample SND_SPELL_NEGATE_MAGIC;
+extern audio::SourcedSample SND_SPELL_PARALYSE;
+extern audio::SourcedSample SND_SPELL_PARALYSE_END;
+extern audio::SourcedSample SND_SPELL_POISON_PROJECTILE_LAUNCH;
+extern audio::SourcedSample SND_SPELL_RAISE_DEAD;
+extern audio::SourcedSample SND_SPELL_REPEL_UNDEAD;
+extern audio::SourcedSample SND_SPELL_REPEL_UNDEAD_LOOP;
+extern audio::SourcedSample SND_SPELL_RUNE_OF_GUARDING;
+extern audio::SourcedSample SND_SPELL_RUNE_OF_GUARDING_END;
+extern audio::SourcedSample SND_SPELL_SLOW_DOWN;
+extern audio::SourcedSample SND_SPELL_SLOW_DOWN_END;
+extern audio::SourcedSample SND_SPELL_SPARK;
+extern audio::SourcedSample SND_SPELL_SPEED_START;
+extern audio::SourcedSample SND_SPELL_SPEED_LOOP;
+extern audio::SourcedSample SND_SPELL_SPEED_END;
+extern audio::SourcedSample SND_SPELL_SUMMON_CREATURE;
+extern audio::SourcedSample SND_SPELL_TELEKINESIS_START;
+extern audio::SourcedSample SND_SPELL_TELEKINESIS_END;
+extern audio::SourcedSample SND_SPELL_VISION_START;
+extern audio::SourcedSample SND_SPELL_VISION_LOOP;
 
 // inter-material sounds
 const char * ARX_MATERIAL_GetNameById(Material id);
@@ -210,32 +210,32 @@ long ARX_SOUND_IsEnabled();
 
 void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Vec3f & up);
 
-audio::SampleId ARX_SOUND_Load(const res::path & name);
-void ARX_SOUND_Free(const audio::SampleId & sample);
+audio::SourcedSample ARX_SOUND_Load(const res::path & name);
+void ARX_SOUND_Free(const audio::SourcedSample & sample);
 
-audio::SourceId ARX_SOUND_PlaySFX(audio::SourceId & sample_id, const Vec3f * position = NULL,
+audio::SourcedSample ARX_SOUND_PlaySFX(audio::SourcedSample & sample_id, const Vec3f * position = NULL,
                                   float pitch = 1.f, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
-void ARX_SOUND_PlayInterface(audio::SourceId & sample_id, float pitch = 1.f,
+void ARX_SOUND_PlayInterface(audio::SourcedSample & sample_id, float pitch = 1.f,
                              SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
-void ARX_SOUND_PlayMenu(audio::SourceId & sample_id, float pitch = 1.f,
+void ARX_SOUND_PlayMenu(audio::SourcedSample & sample_id, float pitch = 1.f,
                         SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 
-audio::SourceId ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io = NULL);
+audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io = NULL);
 long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source);
 long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source);
 
-audio::SourceId ARX_SOUND_PlayScript(const res::path & name, const Entity * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
-void ARX_SOUND_PlayAnim(audio::SourceId & sample_id, const Vec3f * position = NULL);
-audio::SourceId ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech);
-bool ARX_SOUND_IsPlaying(audio::SourceId & sample_id);
-GameDuration ARX_SOUND_GetDuration(audio::SampleId & sample_id);
+audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, const Entity * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
+void ARX_SOUND_PlayAnim(audio::SourcedSample & sample_id, const Vec3f * position = NULL);
+audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech);
+bool ARX_SOUND_IsPlaying(audio::SourcedSample & sample_id);
+GameDuration ARX_SOUND_GetDuration(audio::SourcedSample & sample_id);
 
-void ARX_SOUND_RefreshVolume(audio::SourceId & sample_id, float volume);
-void ARX_SOUND_RefreshPosition(audio::SourceId & sample_id, const Vec3f & position);
-void ARX_SOUND_RefreshPitch(audio::SourceId & sample_id, float pitch);
-void ARX_SOUND_RefreshSpeechPosition(audio::SourceId & sample_id, const Entity * io = NULL);
+void ARX_SOUND_RefreshVolume(audio::SourcedSample & sample_id, float volume);
+void ARX_SOUND_RefreshPosition(audio::SourcedSample & sample_id, const Vec3f & position);
+void ARX_SOUND_RefreshPitch(audio::SourcedSample & sample_id, float pitch);
+void ARX_SOUND_RefreshSpeechPosition(audio::SourcedSample & sample_id, const Entity * io = NULL);
 
-void ARX_SOUND_Stop(audio::SourceId & sample_id);
+void ARX_SOUND_Stop(audio::SourcedSample & sample_id);
 
 bool ARX_SOUND_PlayScriptAmbiance(const res::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
 bool ARX_SOUND_PlayZoneAmbiance(const res::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);

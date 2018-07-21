@@ -177,7 +177,7 @@ public:
 	float m_fManaCostPerSecond;
 	
 	SpellcastFlags m_flags;
-	audio::SourceId m_snd_loop;
+	audio::SourcedSample m_snd_loop;
 	
 	GameDuration m_launchDuration;
 

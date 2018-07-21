@@ -135,8 +135,7 @@ struct SourceFalloff {
 
 const s32 INVALID_ID = -1;
 
-typedef s32 SourceId;
-typedef s32 SampleId;
+typedef s32 SourcedSample;
 
 typedef HandleType<struct MixerIdTag,    s32, -1> MixerId;
 typedef HandleType<struct EnvIdTag,      s32, -1> EnvId;

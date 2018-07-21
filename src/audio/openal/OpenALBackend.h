@@ -53,9 +53,9 @@ public:
 	
 	std::vector<std::string> getDevices();
 	
-	Source * createSource(SampleId sampleId, const Channel & channel);
+	Source * createSource(SourcedSample sampleId, const Channel & channel);
 	
-	Source * getSource(SourceId sourceId);
+	Source * getSource(SourcedSample sourceId);
 	
 	aalError setReverbEnabled(bool enable);
 	bool isReverbSupported();

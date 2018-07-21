@@ -286,13 +286,13 @@ MixerId createMixer() {
 	return id;
 }
 
-SampleId createSample(const res::path & name) {
+SourcedSample createSample(const res::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
 	Sample * sample = new Sample(name);
 	
-	SampleId s_id = INVALID_ID;
+	SourcedSample s_id = INVALID_ID;
 	if(sample->load() || (s_id = g_samples.add(sample)) == INVALID_ID) {
 		delete sample;
 	} else {
@@ -332,7 +332,7 @@ EnvId createEnvironment(const res::path & name) {
 
 // Resource destruction
 
-aalError deleteSample(SampleId sampleId) {
+aalError deleteSample(SourcedSample sampleId) {
 	
 	AAL_ENTRY
 	
@@ -523,7 +523,7 @@ aalError mixerResume(MixerId mixerId) {
 
 // Sample setup
 
-aalError setSampleVolume(SourceId sourceId, float volume) {
+aalError setSampleVolume(SourcedSample sourceId, float volume) {
 	
 	AAL_ENTRY
 	
@@ -535,7 +535,7 @@ aalError setSampleVolume(SourceId sourceId, float volume) {
 	return source->setVolume(volume);
 }
 
-aalError setSamplePitch(SourceId sourceId, float pitch) {
+aalError setSamplePitch(SourcedSample sourceId, float pitch) {
 	
 	AAL_ENTRY
 	
@@ -547,7 +547,7 @@ aalError setSamplePitch(SourceId sourceId, float pitch) {
 	return source->setPitch(pitch);
 }
 
-aalError setSamplePosition(SourceId sourceId, const Vec3f & position) {
+aalError setSamplePosition(SourcedSample sourceId, const Vec3f & position) {
 	
 	AAL_ENTRY
 	
@@ -561,7 +561,7 @@ aalError setSamplePosition(SourceId sourceId, const Vec3f & position) {
 
 // Sample status
 
-aalError getSampleName(SampleId sampleId, res::path & name) {
+aalError getSampleName(SourcedSample sampleId, res::path & name) {
 	
 	name.clear();
 	
@@ -577,7 +577,7 @@ aalError getSampleName(SampleId sampleId, res::path & name) {
 	return AAL_OK;
 }
 
-aalError getSampleLength(SampleId sampleId, size_t & length) {
+aalError getSampleLength(SourcedSample sampleId, size_t & length) {
 	
 	length = 0;
 	
@@ -596,7 +596,7 @@ aalError getSampleLength(SampleId sampleId, size_t & length) {
 	return AAL_OK;
 }
 
-bool isSamplePlaying(SourceId sourceId) {
+bool isSamplePlaying(SourcedSample sourceId) {
 	
 	AAL_ENTRY_V(false)
 	
@@ -612,11 +612,11 @@ bool isSamplePlaying(SourceId sourceId) {
 
 // Sample control
 
-aalError samplePlay(SampleId & sampleId, const Channel & channel, unsigned play_count) {
+aalError samplePlay(SourcedSample & sampleId, const Channel & channel, unsigned play_count) {
 	
 	AAL_ENTRY
 	
-	SampleId s_id = Backend::getSampleId(sampleId);
+	SourcedSample s_id = Backend::getSampleId(sampleId);
 	sampleId = Backend::clearSource(sampleId);
 	if(!g_samples.isValid(s_id) || !g_mixers.isValid(channel.mixer)) {
 		return AAL_ERROR_HANDLE;
@@ -663,7 +663,7 @@ aalError samplePlay(SampleId & sampleId, const Channel & channel, unsigned play_
 	return AAL_OK;
 }
 
-aalError sampleStop(SourceId & sourceId) {
+aalError sampleStop(SourcedSample & sourceId) {
 	
 	AAL_ENTRY
 	

@@ -88,10 +88,10 @@ aalError update();
 // Resource
 
 MixerId createMixer();
-SampleId createSample(const res::path & name);
+SourcedSample createSample(const res::path & name);
 AmbianceId createAmbiance(const res::path & name);
 EnvId createEnvironment(const res::path & name);
-aalError deleteSample(SampleId sampleId);
+aalError deleteSample(SourcedSample sampleId);
 aalError deleteAmbiance(AmbianceId ambianceId);
 
 AmbianceId getAmbiance(const res::path & name);
@@ -119,17 +119,17 @@ aalError mixerResume(MixerId mixerId);
 
 // Sample
 
-aalError setSampleVolume(SourceId sourceId, float volume);
-aalError setSamplePitch(SourceId sourceId, float pitch);
-aalError setSamplePosition(SourceId sourceId, const Vec3f & position);
+aalError setSampleVolume(SourcedSample sourceId, float volume);
+aalError setSamplePitch(SourcedSample sourceId, float pitch);
+aalError setSamplePosition(SourcedSample sourceId, const Vec3f & position);
 
-aalError getSampleName(SampleId sampleId, res::path & name);
-aalError getSampleLength(SampleId sampleId, size_t & length);
-bool isSamplePlaying(SourceId sourceId);
+aalError getSampleName(SourcedSample sampleId, res::path & name);
+aalError getSampleLength(SourcedSample sampleId, size_t & length);
+bool isSamplePlaying(SourcedSample sourceId);
 
 //! play_count == 0 -> infinite loop, play_count > 0 -> play play_count times
-aalError samplePlay(SampleId & sampleId, const Channel & channel, unsigned play_count = 1);
-aalError sampleStop(SourceId & sourceId);
+aalError samplePlay(SourcedSample & sampleId, const Channel & channel, unsigned play_count = 1);
+aalError sampleStop(SourcedSample & sourceId);
 
 // Ambiance
 

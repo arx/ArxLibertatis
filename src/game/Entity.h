@@ -271,7 +271,7 @@ public:
 
 	res::path usemesh; // Alternate Mesh/path
 	EERIE_3DOBJ * tweaky; // tweaked original obj backup
-	audio::SourceId sound;
+	audio::SourcedSample sound;
 	ItemType type_flags; // object type (weapon,goblin...)
 	long scriptload; // Is This object Loaded by Script ?
 	Vec3f target; // Target position
@@ -345,7 +345,7 @@ public:
 	
 	float ignition;
 	LightHandle ignit_light;
-	audio::SampleId ignit_sound;
+	audio::SourcedSample ignit_sound;
 	float head_rot;
 	
 	short damager_damages;

@@ -124,7 +124,7 @@ struct EERIE_LIGHT {
 	// will start to fade before the end of duration...
 	GameDuration duration;
 	
-	audio::SourceId sample;
+	audio::SourcedSample sample;
 	math::Quantizer m_storedFlameTime;
 	
 	EERIE_LIGHT()

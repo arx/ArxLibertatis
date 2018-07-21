@@ -238,7 +238,7 @@ struct Ambiance::Track : public Source::Callback {
 			if(Source * source = backend->getSource(s_id)) {
 				source->stop();
 			}
-			SampleId sid = Backend::getSampleId(s_id);
+			SourcedSample sid = Backend::getSampleId(s_id);
 			arx_assert(g_samples.isValid(sid));
 			g_samples[sid]->dereference();
 		}
@@ -251,7 +251,7 @@ struct Ambiance::Track : public Source::Callback {
 	
 private:
 	
-	SourceId s_id; // Sample id
+	SourcedSample s_id; // Sample id
 	
 	Ambiance * ambiance; // Ambiance id
 	
