@@ -498,6 +498,8 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 
 void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	
+	arx_assert(io_dead);
+	
 	if(io_dead->mainevent == SM_DEAD) {
 		return;
 	}
