@@ -20,10 +20,13 @@
 #ifndef ARX_GUI_WIDGET_CHECKBOXWIDGET_H
 #define ARX_GUI_WIDGET_CHECKBOXWIDGET_H
 
+#include <string>
+
 #include <boost/function.hpp>
 
 #include "gui/widget/Widget.h"
 
+class Font;
 class TextWidget;
 class TextureContainer;
 
@@ -31,7 +34,7 @@ class CheckboxWidget : public Widget {
 	
 public:
 	
-	explicit CheckboxWidget(TextWidget * label, float width);
+	explicit CheckboxWidget(Font * font, const std::string & label, float width);
 	virtual ~CheckboxWidget();
 	
 	void Move(const Vec2f & offset);
