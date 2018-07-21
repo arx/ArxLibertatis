@@ -326,10 +326,10 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  */
 #ifdef ARX_DEBUG
 	#define arx_assume_impl(Expression) arx_assert(Expression)
-#elif ARX_COMPILER_MSVC
-	#define arx_assume_impl(Expression) __assume(Expression)
 #elif ARX_HAVE_BUILTIN_ASSUME
 	#define arx_assume_impl(Expression) __builtin_assume(Expression)
+#elif ARX_HAVE_ASSUME
+	#define arx_assume_impl(Expression) __assume(Expression)
 #elif ARX_HAVE_BUILTIN_UNREACHABLE
 	#define arx_assume_impl(Expression) ((Expression) ? (void)0 : __builtin_unreachable())
 #endif
