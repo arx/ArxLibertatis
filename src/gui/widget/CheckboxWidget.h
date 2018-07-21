@@ -31,7 +31,7 @@ class CheckboxWidget : public Widget {
 	
 public:
 	
-	explicit CheckboxWidget(TextWidget * label);
+	explicit CheckboxWidget(TextWidget * label, float width);
 	virtual ~CheckboxWidget();
 	
 	void Move(const Vec2f & offset);

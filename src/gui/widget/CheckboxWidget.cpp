@@ -30,7 +30,7 @@
 #include "gui/widget/TextWidget.h"
 #include "scene/GameSound.h"
 
-CheckboxWidget::CheckboxWidget(TextWidget * label) {
+CheckboxWidget::CheckboxWidget(TextWidget * label, float width) {
 	
 	arx_assert(label);
 	
@@ -46,9 +46,8 @@ CheckboxWidget::CheckboxWidget(TextWidget * label) {
 	iOldState = -1;
 	
 	m_label = label;
-	m_rect = label->m_rect;
+	m_rect = Rectf(width, label->m_rect.height());
 	
-	m_rect.right = m_rect.left + RATIO_X(292.f);
 }
 
 CheckboxWidget::~CheckboxWidget() {
