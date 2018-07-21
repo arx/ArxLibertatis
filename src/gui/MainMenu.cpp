@@ -620,8 +620,8 @@ public:
 				label = getLocalised("system_menus_options_video_full_screen");
 			}
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.video.fullscreen);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedFullscreen, this, _1);
-			cb->iState = config.video.fullscreen ? 1 : 0;
 			addCenter(cb);
 			m_fullscreenCheckbox = cb;
 		}
@@ -836,7 +836,7 @@ private:
 			enabled = (minimize != Window::AlwaysDisabled && minimize != Window::AlwaysEnabled);
 		}
 		
-		m_minimizeOnFocusLostCheckbox->iState = (checked ? 1 : 0);
+		m_minimizeOnFocusLostCheckbox->setChecked(checked);
 		m_minimizeOnFocusLostCheckbox->setEnabled(enabled);
 		
 	}
@@ -848,9 +848,9 @@ private:
 		
 	}
 	
-	void onChangedFullscreen(int state) {
+	void onChangedFullscreen(bool checked) {
 		
-		m_fullscreen = (state != 0);
+		m_fullscreen = checked;
 		
 		m_resolutionSlider->setEnabled(m_fullscreen);
 		updateGammaSlider();
@@ -878,8 +878,8 @@ private:
 		ARXMenu_Options_Video_SetGamma(float(state));
 	}
 	
-	void onChangedMinimizeOnFocusLost(int state) {
-		config.window.minimizeOnFocusLost = state != 0;
+	void onChangedMinimizeOnFocusLost(bool checked) {
+		config.window.minimizeOnFocusLost = checked;
 		mainApp->getWindow()->setMinimizeOnFocusLost(config.window.minimizeOnFocusLost);
 	}
 	
@@ -1002,16 +1002,16 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.video.antialiasing);
 			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedAntialiasing, this, _1);
-			cb->iState = config.video.antialiasing ? 1 : 0;
 			addCenter(cb);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_options_video_colorkey_antialiasing", "Color Key AA");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.video.colorkeyAntialiasing);
 			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedColorkeyAntialiasing, this, _1);
-			cb->iState = config.video.colorkeyAntialiasing ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -1152,13 +1152,13 @@ private:
 		ARXMenu_Options_Video_SetFogDistance(value);
 	}
 	
-	void onChangedAntialiasing(int state) {
-		config.video.antialiasing = state != 0;
+	void onChangedAntialiasing(bool checked) {
+		config.video.antialiasing = checked;
 		setAlphaCutoutAntialisingState();
 	}
 	
-	void onChangedColorkeyAntialiasing(int state) {
-		config.video.colorkeyAntialiasing = state != 0;
+	void onChangedColorkeyAntialiasing(bool checked) {
+		config.video.colorkeyAntialiasing = checked;
 		GRenderer->reloadColorKeyTextures();
 	}
 	
@@ -1205,8 +1205,8 @@ public:
 			                                 "Cross hair cursor");
 			label = getLocalised("system_menus_options_interface_crosshair", label);
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.interface.showCrosshair);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCrosshair, this, _1);
-			cb->iState = config.interface.showCrosshair ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -1214,8 +1214,8 @@ public:
 			std::string label = getLocalised("system_menus_options_interface_limit_speech_width",
 			                                 "Limit speech text width");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.interface.limitSpeechWidth);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedSpeechWidth, this, _1);
-			cb->iState = config.interface.limitSpeechWidth ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -1264,8 +1264,8 @@ public:
 			std::string label = getLocalised("system_menus_options_interface_hud_scale_integer",
 			                                 "Round HUD scale factor");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.interface.hudScaleInteger);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScaleInteger, this, _1);
-			cb->iState = config.interface.hudScaleInteger ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -1287,8 +1287,8 @@ public:
 			std::string label = getLocalised("system_menus_options_interface_book_scale_integer",
 			                                      "Round book scale factor");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.interface.bookScaleInteger);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedBookScaleInteger, this, _1);
-			cb->iState = config.interface.bookScaleInteger ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -1310,8 +1310,8 @@ public:
 			std::string label = getLocalised("system_menus_options_interface_cursor_scale_integer",
 			                                      "Round cursor scale factor");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.interface.cursorScaleInteger);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCursorScaleInteger, this, _1);
-			cb->iState = config.interface.cursorScaleInteger ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -1391,12 +1391,12 @@ public:
 	
 private:
 	
-	void onChangedCrosshair(int state) {
-		config.interface.showCrosshair = state != 0;
+	void onChangedCrosshair(bool checked) {
+		config.interface.showCrosshair = checked;
 	}
 	
-	void onChangedSpeechWidth(int state) {
-		config.interface.limitSpeechWidth = state != 0;
+	void onChangedSpeechWidth(bool checked) {
+		config.interface.limitSpeechWidth = checked;
 	}
 	
 	void onChangedCinematicMode(int pos, const std::string & str) {
@@ -1410,8 +1410,8 @@ private:
 		g_hudRoot.recalcScale();
 	}
 	
-	void onChangedHudScaleInteger(int state) {
-		config.interface.hudScaleInteger = state != 0;
+	void onChangedHudScaleInteger(bool checked) {
+		config.interface.hudScaleInteger = checked;
 		g_hudRoot.recalcScale();
 	}
 	
@@ -1419,16 +1419,16 @@ private:
 		config.interface.bookScale = float(state) * 0.1f;
 	}
 	
-	void onChangedBookScaleInteger(int state) {
-		config.interface.bookScaleInteger = state != 0;
+	void onChangedBookScaleInteger(bool checked) {
+		config.interface.bookScaleInteger = checked;
 	}
 	
 	void onChangedCursorScale(int state) {
 		config.interface.cursorScale = float(state) * 0.1f;
 	}
 	
-	void onChangedCursorScaleInteger(int state) {
-		config.interface.cursorScaleInteger = state != 0;
+	void onChangedCursorScaleInteger(bool checked) {
+		config.interface.cursorScaleInteger = checked;
 	}
 	
 	void onChangedScaleFilter(int pos, const std::string & str) {
@@ -1561,8 +1561,8 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_audio_mute_on_focus_lost", "Mute when not focused");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.audio.muteOnFocusLost);
 			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedMuteOnFocusLost, this, _1);
-			cb->iState = config.audio.muteOnFocusLost ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -1571,12 +1571,12 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_audio_eax", "EAX");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
-			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedEax, this, _1);
 			if(audio::isReverbSupported()) {
-				cb->iState = config.audio.eax ? 1 : 0;
+				cb->setChecked(config.audio.eax);
 			} else {
 				cb->setEnabled(false);
 			}
+			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedEax, this, _1);
 			addCenter(cb);
 		}
 		
@@ -1649,8 +1649,8 @@ private:
 		ARXMenu_Options_Audio_SetAmbianceVolume(value);
 	}
 	
-	void onChangedEax(int state) {
-		config.audio.eax = (state != 0);
+	void onChangedEax(bool checked) {
+		config.audio.eax = checked;
 		ARX_SOUND_SetReverb(config.audio.eax);
 	}
 	
@@ -1665,8 +1665,8 @@ private:
 		audio::setHRTFEnabled(config.audio.hrtf);
 	}
 	
-	void onChangedMuteOnFocusLost(int state) {
-		config.audio.muteOnFocusLost = (state != 0);
+	void onChangedMuteOnFocusLost(bool checked) {
+		config.audio.muteOnFocusLost = checked;
 		if(!mainApp->getWindow()->hasFocus()) {
 			ARXMenu_Options_Audio_SetMuted(config.audio.muteOnFocusLost);
 		}
@@ -1700,8 +1700,8 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_input_invert_mouse");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.input.invertMouse);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedInvertMouse, this, _1);
-			cb->iState = config.input.invertMouse ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -1732,8 +1732,8 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_input_mouse_look_toggle");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.input.mouseLookToggle);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedToggleMouselook, this, _1);
-			cb->iState = config.input.mouseLookToggle ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -1766,16 +1766,16 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_raw_mouse_input", "Raw mouse input");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.input.rawMouseInput);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedRawMouseInput, this, _1);
-			cb->iState = config.input.rawMouseInput ? 1 : 0;
 			addCenter(cb);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_autodescription", "auto_description");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.input.autoDescription);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoDescription, this, _1);
-			cb->iState = config.input.autoDescription ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -1796,16 +1796,16 @@ public:
 		{
 			std::string label = getLocalised("system_menus_border_turning", "Border turning");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.input.borderTurning);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedBorderTurning, this, _1);
-			cb->iState = config.input.borderTurning ? 1 : 0;
 			addCenter(cb);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_alt_rune_recognition", "Improved rune recognition");
 			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			cb->setChecked(config.input.useAltRuneRecognition);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAltRuneRecognition, this, _1);
-			cb->iState = config.input.useAltRuneRecognition ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -1844,8 +1844,8 @@ public:
 	
 private:
 	
-	void onChangedInvertMouse(int state) {
-		config.input.invertMouse = state != 0;
+	void onChangedInvertMouse(bool checked) {
+		config.input.invertMouse = checked;
 		GInput->setInvertMouseY(config.input.invertMouse);
 	}
 	
@@ -1854,8 +1854,8 @@ private:
 		config.input.autoReadyWeapon = AutoReadyWeapon(pos);
 	}
 	
-	void onChangedToggleMouselook(int state) {
-		config.input.mouseLookToggle = state != 0;
+	void onChangedToggleMouselook(bool checked) {
+		config.input.mouseLookToggle = checked;
 	}
 	
 	void onChangedMouseSensitivity(int value) {
@@ -1868,25 +1868,25 @@ private:
 		GInput->setMouseAcceleration(config.input.mouseAcceleration);
 	}
 	
-	void onChangedRawMouseInput(int state) {
-		config.input.rawMouseInput = state != 0;
+	void onChangedRawMouseInput(bool checked) {
+		config.input.rawMouseInput = checked;
 		GInput->setRawMouseInput(config.input.rawMouseInput);
 	}
 	
-	void onChangedAutoDescription(int state) {
-		config.input.autoDescription = state != 0;
+	void onChangedAutoDescription(bool checked) {
+		config.input.autoDescription = checked;
 	}
 	
 	void onChangedQuicksaveSlots(int value) {
 		config.misc.quicksaveSlots = value;
 	}
 	
-	void onChangedBorderTurning(int value) {
-		config.input.borderTurning = value != 0;
+	void onChangedBorderTurning(bool checked) {
+		config.input.borderTurning = checked;
 	}
 	
-	void onChangedAltRuneRecognition(int value) {
-		config.input.useAltRuneRecognition = value != 0;
+	void onChangedAltRuneRecognition(bool checked) {
+		config.input.useAltRuneRecognition = checked;
 	}
 	
 	void onChangedQuickLevelTransition(int pos, const std::string & str) {
