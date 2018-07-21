@@ -828,9 +828,9 @@ static void CheckUnderWaterIO(Entity * io) {
 
 			lightHandleDestroy(io->ignit_light);
 
-			if(io->ignit_sound != audio::SourcedSample(audio::INVALID_ID)) {
+			if(io->ignit_sound != audio::SourcedSample()) {
 				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = audio::SourcedSample(audio::INVALID_ID);
+				io->ignit_sound = audio::SourcedSample();
 			}
 
 			io->ignition = 0;
@@ -2763,10 +2763,10 @@ void ManageIgnition(Entity * io) {
 	if(player.torch == io) {
 		lightHandleDestroy(io->ignit_light);
 		
-		if (io->ignit_sound != audio::SourcedSample(audio::INVALID_ID))
+		if (io->ignit_sound != audio::SourcedSample())
 		{
 			ARX_SOUND_Stop(io->ignit_sound);
-			io->ignit_sound = audio::SourcedSample(audio::INVALID_ID);
+			io->ignit_sound = audio::SourcedSample();
 		}
 
 		return;
@@ -2853,7 +2853,7 @@ void ManageIgnition_2(Entity * io) {
 			}
 		}
 
-		if(io->ignit_sound == audio::SourcedSample(audio::INVALID_ID)) {
+		if(io->ignit_sound == audio::SourcedSample()) {
 			io->ignit_sound = SND_FIREPLACE;
 			ARX_SOUND_PlaySFX(io->ignit_sound, &position, Random::getf(0.95f, 1.05f), ARX_SOUND_PLAY_LOOPED);
 		} else {
@@ -2867,9 +2867,9 @@ void ManageIgnition_2(Entity * io) {
 	} else {
 		lightHandleDestroy(io->ignit_light);
 		
-		if(io->ignit_sound != audio::SourcedSample(audio::INVALID_ID)) {
+		if(io->ignit_sound != audio::SourcedSample()) {
 			ARX_SOUND_Stop(io->ignit_sound);
-			io->ignit_sound = audio::SourcedSample(audio::INVALID_ID);
+			io->ignit_sound = audio::SourcedSample();
 		}
 	}
 }

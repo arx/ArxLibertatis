@@ -234,7 +234,7 @@ struct Ambiance::Track : public Source::Callback {
 	DECLARE_FLAGS(Flag, TrackFlags)
 	
 	~Track() {
-		if(s_id != SourcedSample(INVALID_ID)) {
+		if(s_id != SourcedSample()) {
 			if(Source * source = backend->getSource(s_id)) {
 				source->stop();
 			}
@@ -537,7 +537,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 		return error;
 	}
 	Sample * sample = new Sample(res::path::load(sampleName));
-	if(sample->load() || (s_id = SourcedSample(g_samples.add(sample))) == SourcedSample(INVALID_ID)) {
+	if(sample->load() || (s_id = SourcedSample(g_samples.add(sample))) == SourcedSample()) {
 		LogError << "Ambiance \"" << ambiance->getName()
 		         << "\": missing sample \"" << sampleName << '"';
 		delete sample;

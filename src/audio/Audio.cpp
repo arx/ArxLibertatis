@@ -288,12 +288,12 @@ MixerId createMixer() {
 
 SourcedSample createSample(const res::path & name) {
 	
-	AAL_ENTRY_V(SourcedSample(INVALID_ID))
+	AAL_ENTRY_V(SourcedSample())
 	
 	Sample * sample = new Sample(name);
 	
-	SourcedSample s_id = SourcedSample(INVALID_ID);
-	if(sample->load() || (s_id = SourcedSample(g_samples.add(sample))) == SourcedSample(INVALID_ID)) {
+	SourcedSample s_id = SourcedSample();
+	if(sample->load() || (s_id = SourcedSample(g_samples.add(sample))) == SourcedSample()) {
 		delete sample;
 	} else {
 		sample->reference();

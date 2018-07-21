@@ -136,6 +136,7 @@ struct SourceFalloff {
 const s32 INVALID_ID = -1;
 
 struct SourcedSample {
+	SourcedSample() : ss(INVALID_ID) {}
 	explicit SourcedSample(const s32 ss_)
 		: ss(ss_)
 	{ }

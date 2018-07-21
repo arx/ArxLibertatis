@@ -349,7 +349,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	aspeech[num].io = io; // can be NULL
 	aspeech[num].duration = GameDurationMs(2000); // Minimum value
 	aspeech[num].flags = flags;
-	aspeech[num].sample = audio::SourcedSample(audio::INVALID_ID);
+	aspeech[num].sample = audio::SourcedSample();
 	aspeech[num].fDeltaY = 0.f;
 	aspeech[num].iTimeScroll = 0;
 	aspeech[num].fPixelScroll = 0.f;
@@ -401,7 +401,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	aspeech[num].sample = ARX_SOUND_PlaySpeech(sample, source);
 	
 	if(aspeech[num].sample == ARX_SOUND_TOO_FAR) {
-		aspeech[num].sample = audio::SourcedSample(audio::INVALID_ID);
+		aspeech[num].sample = audio::SourcedSample();
 	}
 	
 	// TODO Next lines must be removed (use callback instead)
