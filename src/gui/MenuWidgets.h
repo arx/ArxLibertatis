@@ -104,6 +104,7 @@ protected:
 	
 	Vec2f buttonSize(float x, float y) const;
 	Vec2f checkboxSize() const;
+	Vec2f sliderSize() const;
 	
 	Rectf m_rect;
 	

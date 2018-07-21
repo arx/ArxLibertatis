@@ -631,15 +631,10 @@ public:
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_video_gamma");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_video_gamma");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedGamma, this, _1);
-			panel->AddElement(sld);
-			addCenter(panel);
+			addCenter(sld);
 			m_gammaSlider = sld;
 			updateGammaSlider();
 		}
@@ -729,16 +724,11 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_video_fov", "Field of view");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_video_fov", "Field of view");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFov, this, _1);
 			sld->setValue(glm::clamp(int((config.video.fov - 75.f) / 5.f), 0, 10));
-			panel->AddElement(sld);
-			addCenter(panel);
+			addCenter(sld);
 		}
 		
 		{
@@ -932,16 +922,11 @@ public:
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_video_brouillard");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_video_brouillard");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedFogDistance, this, _1);
 			sld->setValue(int(config.video.fogDistance));
-			panel->AddElement(sld);
-			addCenter(panel);
+			addCenter(sld);
 		}
 		
 		{
@@ -1185,17 +1170,11 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_interface_hud_scale",
-			                                      "HUD size");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_interface_hud_scale", "HUD size");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScale, this, _1);
 			sld->setValue(int(config.interface.hudScale * 10.f));
-			panel->AddElement(sld);
-			addCenter(panel);
+			addCenter(sld);
 		}
 		
 		{
@@ -1208,17 +1187,11 @@ public:
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_interface_book_scale",
-			                                      "Player book size");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_interface_book_scale", "Player book size");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedBookScale, this, _1);
 			sld->setValue(int(config.interface.bookScale * 10.f));
-			panel->AddElement(sld);
-			addCenter(panel);
+			addCenter(sld);
 		}
 		
 		{
@@ -1231,17 +1204,11 @@ public:
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_interface_cursor_scale",
-			                                      "Cursor size");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_interface_cursor_scale", "Cursor size");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCursorScale, this, _1);
 			sld->setValue(int(config.interface.cursorScale * 10.f));
-			panel->AddElement(sld);
-			addCenter(panel);
+			addCenter(sld);
 		}
 		
 		{
@@ -1276,17 +1243,11 @@ public:
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_interface_font_size",
-			                                      "Font size");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_interface_font_size", "Font size");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedFontSize, this, _1);
 			sld->setValue(int(glm::clamp((config.interface.fontSize - 0.75f) * 20.f + 0.5f, 0.f, 10.f)));
-			panel->AddElement(sld);
-			addCenter(panel);
+			addCenter(sld);
 		}
 		
 		{
@@ -1439,55 +1400,35 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_audio_master_volume");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_audio_master_volume");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedMasterVolume, this, _1);
-			sld->setValue((int)config.audio.volume); // TODO use float sliders
-			panel->AddElement(sld);
-			addCenter(panel);
+			sld->setValue(int(config.audio.volume)); // TODO use float sliders
+			addCenter(sld);
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_audio_effects_volume");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_audio_effects_volume");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedEffectsVolume, this, _1);
-			sld->setValue((int)config.audio.sfxVolume);
-			panel->AddElement(sld);
-			addCenter(panel);
+			sld->setValue(int(config.audio.sfxVolume));
+			addCenter(sld);
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_audio_speech_volume");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_audio_speech_volume");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedSpeechVolume, this, _1);
-			sld->setValue((int)config.audio.speechVolume);
-			panel->AddElement(sld);
-			addCenter(panel);
+			sld->setValue(int(config.audio.speechVolume));
+			addCenter(sld);
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_audio_ambiance_volume");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedAmbianceVolume, this, _1);
-			sld->setValue((int)config.audio.ambianceVolume);
-			panel->AddElement(sld);
-			addCenter(panel);
+			sld->setValue(int(config.audio.ambianceVolume));
+			addCenter(sld);
 		}
 		
 		{
@@ -1665,29 +1606,19 @@ public:
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_input_mouse_sensitivity");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseSensitivity, this, _1);
 			sld->setValue(config.input.mouseSensitivity);
-			panel->AddElement(sld);
-			addCenter(panel);
+			addCenter(sld);
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_input_mouse_acceleration", "Mouse acceleration");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_input_mouse_acceleration", "Mouse acceleration");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseAcceleration, this, _1);
 			sld->setValue(config.input.mouseAcceleration);
-			panel->AddElement(sld);
-			addCenter(panel);
+			addCenter(sld);
 		}
 		
 		{
@@ -1707,17 +1638,12 @@ public:
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->setEnabled(false);
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(180, 0));
+			std::string label = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
+			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->setMinimum(1);
 			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedQuicksaveSlots, this, _1);
 			sld->setValue(config.misc.quicksaveSlots);
-			panel->AddElement(sld);
-			addCenter(panel);
+			addCenter(sld);
 		}
 		
 		{
