@@ -45,21 +45,14 @@ SliderWidget::SliderWidget(const Vec2f & unscaled) {
 	
 	m_minimum = 0;
 	m_value = 0;
-
+	
 	m_rect.left   = pos.x;
 	m_rect.top    = pos.y;
-	m_rect.right  = pos.x + pLeftButton->m_rect.width() + pRightButton->m_rect.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x);
+	m_rect.right  = pos.x + pLeftButton->m_rect.width() + pRightButton->m_rect.width() + RATIO_X(80.f);
 	m_rect.bottom = pos.y + std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
 	
 	pRightButton->SetPos(m_rect.topLeft());
-	
-	float fWidth = pLeftButton->m_rect.width()
-	               + RATIO_X(10.f * float(std::max(pTex1->m_size.x, pTex2->m_size.x)));
-	pRightButton->Move(Vec2f(fWidth, 0));
-	
-	m_rect.right = m_rect.left + pLeftButton->m_rect.width() + pRightButton->m_rect.width()
-	               + RATIO_X(10 * float(std::max(pTex1->m_size.x, pTex2->m_size.x)));
-	m_rect.bottom = m_rect.top + std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
+	pRightButton->SetPos(m_rect.topLeft() + Vec2f(pLeftButton->m_rect.width() + RATIO_X(80.f), 0));
 	
 }
 
@@ -133,7 +126,7 @@ void SliderWidget::render(bool /* mouseOver */) {
 	
 	for(int i = 0; i < 10; i++) {
 		TextureContainer * pTex = (i < m_value) ? pTex1 : pTex2;
-		Rectf rect = Rectf(pos, RATIO_X(pTex->m_size.x), RATIO_Y(pTex->m_size.y));
+		Rectf rect = Rectf(pos, RATIO_X(8), RATIO_Y(16));
 		Color color = m_enabled ? Color::white : Color(63, 63, 63, 255);
 		EERIEDrawBitmap(rect, 0, pTex, color);
 		pos.x += rect.width();
