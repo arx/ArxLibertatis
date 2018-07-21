@@ -97,6 +97,8 @@ protected:
 	
 	void addCenter(Widget * widget, bool centerX = true);
 	
+	void addBackButton(MENUSTATE page);
+	
 	void reserveTop();
 	void reserveBottom();
 	
