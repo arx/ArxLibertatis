@@ -881,7 +881,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->scale = 1.f;
 		io->move = Vec3f_ZERO;
 		io->type_flags = 0;
-		io->sound = audio::SourcedSample(-1);
+		io->sound = audio::SourcedSample();
 		io->soundtime = 0;
 		io->soundcount = 0;
 		io->material = MATERIAL_STONE;

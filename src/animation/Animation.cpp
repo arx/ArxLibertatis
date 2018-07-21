@@ -353,7 +353,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		pos += sizeof(s32);
 		LogDebug(" -> num_sample " << num_sample << " s32:" << sizeof(s32));
 
-		eerie->frames[i].sample = audio::SourcedSample(-1);
+		eerie->frames[i].sample = audio::SourcedSample();
 		if(num_sample != -1) {
 
 			const THEA_SAMPLE * ts = reinterpret_cast<const THEA_SAMPLE *>(adr + pos);
@@ -618,7 +618,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 			// Frame Sound Management
 			if(!(layer.flags & EA_ANIMEND)
 			   && time != 0
-			   && (anim->frames[fr].sample != audio::SourcedSample(-1))
+			   && (anim->frames[fr].sample != audio::SourcedSample())
 			   && (layer.lastframe != fr)) {
 
 				Vec3f * position = io ? &io->pos : NULL;
@@ -720,7 +720,7 @@ std::vector< std::pair<res::path, size_t> > ARX_SOUND_PushAnimSamples() {
 		BOOST_FOREACH(const EERIE_ANIM * anim, slot.anims) {
 			BOOST_FOREACH(const EERIE_FRAME & frame, anim->frames) {
 				number++;
-				if(frame.sample != audio::SourcedSample(-1)) {
+				if(frame.sample != audio::SourcedSample()) {
 					res::path dest;
 					audio::getSampleName(frame.sample, dest);
 					if(!dest.empty()) {
