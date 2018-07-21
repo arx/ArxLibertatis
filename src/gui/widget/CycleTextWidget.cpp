@@ -23,6 +23,7 @@
 
 #include <boost/foreach.hpp>
 
+#include "core/Core.h"
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
 #include "gui/MenuPublic.h"
@@ -44,7 +45,7 @@ CycleTextWidget::CycleTextWidget() {
 
 	m_rect.left   = 0;
 	m_rect.top    = 0;
-	m_rect.right  = pLeftButton->m_rect.width() + pRightButton->m_rect.width();
+	m_rect.right  = pLeftButton->m_rect.width() + RATIO_X(80) + pRightButton->m_rect.width();
 	m_rect.bottom = std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
 }
 
