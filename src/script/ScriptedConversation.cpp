@@ -133,7 +133,7 @@ public:
 			}
 			
 			if(unique) {
-				io->sound = (num == ARX_SOUND_TOO_FAR) ? audio::SourcedSample() : num;
+				io->sound = num;
 			}
 			
 			if(num == audio::SourcedSample()) {
