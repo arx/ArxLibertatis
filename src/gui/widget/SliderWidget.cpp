@@ -138,6 +138,9 @@ void SliderWidget::render(bool mouseOver) {
 		TextureContainer * texture = (i < m_value) ? m_textureOn : m_textureOff;
 		Color color = m_enabled ? Color::white : Color::grayb(63);
 		EERIEDrawBitmap(rect, 0, texture, color);
+		if(m_enabled && m_slider.contains(cursor) && cursor.x > rect.center().x) {
+			EERIEDrawBitmap(rect, 0, texture, color);
+		}
 		rect.move(m_slider.width() / 10, 0.f);
 	}
 	
