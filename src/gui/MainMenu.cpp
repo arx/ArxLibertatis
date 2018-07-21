@@ -446,6 +446,7 @@ public:
 	
 	void init() {
 		
+		reserveTop();
 		reserveBottom();
 		
 		{
@@ -486,6 +487,7 @@ public:
 	
 	void init() {
 		
+		reserveTop();
 		reserveBottom();
 		
 		{
