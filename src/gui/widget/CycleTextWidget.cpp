@@ -35,8 +35,8 @@ CycleTextWidget::CycleTextWidget() {
 	
 	Vec2f buttonSize = Vec2f(16, 16);
 	
-	pLeftButton = new ButtonWidget(Vec2f_ZERO, buttonSize, "graph/interface/menus/menu_slider_button_left");
-	pRightButton = new ButtonWidget(Vec2f_ZERO, buttonSize, "graph/interface/menus/menu_slider_button_right");
+	pLeftButton = new ButtonWidget(buttonSize, "graph/interface/menus/menu_slider_button_left");
+	pRightButton = new ButtonWidget(buttonSize, "graph/interface/menus/menu_slider_button_right");
 
 	vText.clear();
 

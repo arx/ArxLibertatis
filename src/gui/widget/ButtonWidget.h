@@ -27,11 +27,13 @@
 
 class TextureContainer;
 
+namespace res { class path; }
+
 class ButtonWidget: public Widget {
 	
 public:
 	
-	ButtonWidget(const Vec2f & pos, const Vec2f & size, const char * texturePath);
+	ButtonWidget(const Vec2f & size, const res::path & texture);
 	~ButtonWidget();
 	
 	void AddText(const std::string & label);

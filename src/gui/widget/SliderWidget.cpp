@@ -36,8 +36,8 @@ SliderWidget::SliderWidget(const Vec2f & unscaled) {
 	
 	Vec2f buttonSize = Vec2f(16, 16);
 	
-	pLeftButton = new ButtonWidget(unscaled, buttonSize, "graph/interface/menus/menu_slider_button_left");
-	pRightButton = new ButtonWidget(unscaled, buttonSize, "graph/interface/menus/menu_slider_button_right");
+	pLeftButton = new ButtonWidget(buttonSize, "graph/interface/menus/menu_slider_button_left");
+	pRightButton = new ButtonWidget(buttonSize, "graph/interface/menus/menu_slider_button_right");
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_slider_on");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_slider_off");
 	arx_assert(pTex1);
@@ -51,7 +51,7 @@ SliderWidget::SliderWidget(const Vec2f & unscaled) {
 	m_rect.right  = pos.x + pLeftButton->m_rect.width() + pRightButton->m_rect.width() + RATIO_X(80.f);
 	m_rect.bottom = pos.y + std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
 	
-	pRightButton->SetPos(m_rect.topLeft());
+	pLeftButton->SetPos(m_rect.topLeft());
 	pRightButton->SetPos(m_rect.topLeft() + Vec2f(pLeftButton->m_rect.width() + RATIO_X(80.f), 0));
 	
 }

@@ -135,7 +135,7 @@ public:
 		reserveBottom();
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(48, 48), "graph/interface/icons/menu_main_save");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(48, 48), "graph/interface/icons/menu_main_save");
 			cb->setEnabled(false);
 			addCenter(cb);
 		}
@@ -172,7 +172,7 @@ public:
 		
 		// Back button
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Save;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
@@ -259,7 +259,7 @@ public:
 		reserveBottom();
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(48, 48), "graph/interface/icons/menu_main_load");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(48, 48), "graph/interface/icons/menu_main_load");
 			cb->setEnabled(false);
 			addCenter(cb);
 		}
@@ -315,7 +315,7 @@ public:
 		
 		// Back button
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/back");
 			cb->clicked = boost::bind(&LoadMenuPage::onClickBack, this);
 			cb->m_targetMenu = Page_LoadOrSave;
 			cb->SetShortCut(Keyboard::Key_Escape);
@@ -424,7 +424,7 @@ public:
 		reserveBottom();
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f(10, 0), Vec2f(48, 48), "graph/interface/icons/menu_main_save");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(48, 48), "graph/interface/icons/menu_main_save");
 			cb->setEnabled(false);
 			addCenter(cb);
 		}
@@ -459,7 +459,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_LoadOrSave;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
@@ -508,7 +508,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_None;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
@@ -568,7 +568,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_None;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
@@ -802,7 +802,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
@@ -1103,7 +1103,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
@@ -1381,7 +1381,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
@@ -1615,7 +1615,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
@@ -1834,7 +1834,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_Options;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
@@ -2018,7 +2018,7 @@ public:
 		addControlRow(CONTROLS_CUST_MINIMAP,      "system_menus_options_input_customize_controls_bookmap", "?", "2");
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_OptionsInput;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedBack, this);
@@ -2035,7 +2035,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f(275.f, 380), Vec2f(16, 16), "graph/interface/menus/next");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/next");
 			cb->m_targetMenu = Page_OptionsInputCustomizeKeys2;
 			cb->SetPos(m_rect.size() - cb->m_rect.size());
 			add(cb);
@@ -2103,7 +2103,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_OptionsInputCustomizeKeys1;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
