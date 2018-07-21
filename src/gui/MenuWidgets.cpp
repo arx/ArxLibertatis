@@ -317,7 +317,7 @@ MenuPage::MenuPage(MENUSTATE id)
 	, m_disableShortcuts(false)
 {
 	Vec2f scaledSize = RATIO_2(Vec2f(292, 395));
-	m_rect = Rectf(Vec2f_ZERO, scaledSize.x, scaledSize.y);
+	m_content = m_rect = Rectf(Vec2f_ZERO, scaledSize.x, scaledSize.y);
 }
 
 MenuPage::~MenuPage() { }
@@ -329,40 +329,45 @@ void MenuPage::add(Widget * widget) {
 
 void MenuPage::addCenter(Widget * widget) {
 	
-	float x = std::floor(m_rect.left + (m_rect.width() - widget->m_rect.width()) / 2);
+	float x = std::floor(m_content.center().x - widget->m_rect.width() / 2.f);
 	
-	float iDy = widget->m_rect.height();
+	float height = widget->m_rect.height();
+	float whitespace = 0.f;
+	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+		height += RATIO_Y(m_rowSpacing);
+		height += w->m_rect.height();
+		whitespace += RATIO_Y(m_rowSpacing);
+		if(w->type() == WidgetType_Spacer) {
+			whitespace += w->m_rect.height();
+		}
+	}
+	
+	float squish = 1.f;
+	if(height > m_content.height() && whitespace > 0.f) {
+		height -= whitespace;
+		squish = std::max(0.f, m_content.height() - height) / whitespace;
+		height += whitespace * squish;
+	}
+	
+	float y = std::floor(m_content.center().y - height / 2.f);
 	
 	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
-		iDy += m_rowSpacing;
-		iDy += w->m_rect.height();
-	}
-
-	int iDepY = int(m_rect.left);
-
-	if(iDy < m_rect.height()) {
-		iDepY += int((m_rect.height() - iDy) / 2);
-	}
-
-	int dy = 0;
-
-	if(!m_children.m_widgets.empty()) {
-		dy = int(iDepY - m_children.m_widgets[0]->m_rect.top);
+		w->SetPos(Vec2f(w->m_rect.left, y));
+		y += w->m_rect.height() * ((w->type() == WidgetType_Spacer) ? squish : 1.f);
+		y += RATIO_Y(m_rowSpacing) * squish;
 	}
 	
-	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
-		iDepY += int(w->m_rect.height()) + m_rowSpacing;
-		w->Move(Vec2f(0, dy));
-	}
-	
-	widget->Move(Vec2f(x, iDepY) - widget->m_rect.topLeft());
+	widget->SetPos(Vec2f(x, y));
 	
 	m_children.add(widget);
+	
 }
 
 void MenuPage::Update(Vec2f pos) {
 	
 	m_children.Move(pos - m_rect.topLeft());
+	
+	m_content.move(pos - m_rect.topLeft());
 	
 	m_rect.moveTo(pos);
 	
@@ -455,7 +460,17 @@ void MenuPage::Render() {
 
 void MenuPage::drawDebug() {
 	drawLineRectangle(m_rect, 0.f, Color::green);
+	drawLineRectangle(m_content, 0.f, Color::blue);
 	m_children.drawDebug();
+}
+
+
+void MenuPage::reserveTop() {
+	m_content.top = m_rect.top + hFontMenu->getLineHeight() + RATIO_Y(5);
+}
+
+void MenuPage::reserveBottom() {
+	m_content.bottom = m_rect.bottom - hFontMenu->getLineHeight() - RATIO_Y(5);
 }
 
 void MenuPage::focus() {

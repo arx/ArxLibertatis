@@ -81,6 +81,8 @@ public:
 	
 	void init() {
 		
+		reserveBottom();
+		
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
@@ -128,6 +130,9 @@ public:
 	~SaveConfirmMenuPage() { }
 	
 	void init() {
+		
+		reserveTop();
+		reserveBottom();
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(48, 48), "graph/interface/icons/menu_main_save");
@@ -250,6 +255,9 @@ public:
 	
 	void init() {
 		
+		reserveTop();
+		reserveBottom();
+		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(48, 48), "graph/interface/icons/menu_main_load");
 			cb->setEnabled(false);
@@ -278,8 +286,6 @@ public:
 				addCenter(txt);
 			}
 		}
-		
-		addCenter(new Spacer(hFontControls->getLineHeight()));
 		
 		// Delete button
 		{
@@ -415,6 +421,8 @@ public:
 	
 	void init() {
 		
+		reserveBottom();
+		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(10, 0), Vec2f(48, 48), "graph/interface/icons/menu_main_save");
 			cb->setEnabled(false);
@@ -450,8 +458,6 @@ public:
 			addCenter(txt);
 		}
 		
-		addCenter(new Spacer(hFontControls->getLineHeight()));
-		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_LoadOrSave;
@@ -482,6 +488,8 @@ public:
 	~ChooseLoadOrSaveMenuPage() { }
 	
 	void init() {
+		
+		reserveBottom();
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
@@ -521,6 +529,8 @@ public:
 	~OptionsMenuPage() { }
 	
 	void init() {
+		
+		reserveBottom();
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video");
@@ -595,6 +605,8 @@ public:
 	
 	
 	void init() {
+		
+		reserveBottom();
 		
 		m_fullscreen = config.video.fullscreen;
 		m_resolution = config.video.resolution;
@@ -798,6 +810,7 @@ public:
 			cb->SetPos(Vec2f(0.f, m_rect.height() - cb->m_rect.height()));
 			add(cb);
 		}
+		
 	}
 	
 private:
@@ -912,6 +925,8 @@ public:
 	CycleTextWidget * m_alphaCutoutAntialiasingCycleText;
 	
 	void init() {
+		
+		reserveBottom();
 		
 		// Renderer selection
 		{
@@ -1187,6 +1202,8 @@ public:
 	
 	void init() {
 		
+		reserveBottom();
+		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video_crosshair",
 			                         "Cross hair cursor");
@@ -1454,6 +1471,8 @@ public:
 	
 	void init() {
 		
+		reserveBottom();
+		
 		// Audio backend selection
 		{
 			
@@ -1678,12 +1697,16 @@ public:
 	
 	void init() {
 		
+		reserveBottom();
+		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_input_customize_controls");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = Page_OptionsInputCustomizeKeys1;
 			addCenter(txt);
 		}
+		
+		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_input_invert_mouse");
@@ -1984,6 +2007,8 @@ public:
 	
 	void init() {
 		
+		reserveBottom();
+		
 		long y = 0;
 		
 		addControlRow(y, CONTROLS_CUST_USE,          "system_menus_options_input_customize_controls_mouselook");
@@ -2064,6 +2089,8 @@ public:
 	
 	void init() {
 		
+		reserveBottom();
+		
 		long y = 0;
 		
 		addControlRow(y, CONTROLS_CUST_INVENTORY,         "system_menus_options_input_customize_controls_inventory");
@@ -2134,6 +2161,8 @@ public:
 	~QuitConfirmMenuPage() { }
 	
 	void init() {
+		
+		reserveBottom();
 		
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_quit"));
