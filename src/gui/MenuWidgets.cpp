@@ -327,9 +327,12 @@ void MenuPage::add(Widget * widget) {
 	m_children.add(widget);
 }
 
-void MenuPage::addCenter(Widget * widget) {
+void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
-	float x = std::floor(m_content.center().x - widget->m_rect.width() / 2.f);
+	float x = m_content.left;
+	if(centerX) {
+		x = std::floor(m_content.center().x - widget->m_rect.width() / 2.f);
+	}
 	
 	float height = widget->m_rect.height();
 	float whitespace = 0.f;

@@ -1919,7 +1919,9 @@ public:
 	
 	explicit ControlOptionsPage(MENUSTATE state)
 		: MenuPage(state)
-	{}
+	{
+		m_rowSpacing = 3;
+	}
 	
 	void focus() {
 		MenuPage::focus();
@@ -1928,15 +1930,13 @@ public:
 	
 protected:
 	
-	void addControlRow(long & y, ControlAction controlAction,
-	                             const std::string & a,
-	                             const char * defaultText = "?",
-	                             const char * specialSuffix = "") {
+	void addControlRow(ControlAction controlAction, const std::string & text,
+	                   const char * defaultText = "?", const char * specialSuffix = "") {
 		
 		PanelWidget * panel = new PanelWidget;
 		
 		{
-			std::string szMenuText = getLocalised(a, defaultText);
+			std::string szMenuText = getLocalised(text, defaultText);
 			szMenuText += specialSuffix;
 			TextWidget * txt = new TextWidget(hFontControls, szMenuText, Vec2f_ZERO);
 			txt->setEnabled(false);
@@ -1949,9 +1949,8 @@ protected:
 			panel->AddElement(keybind);
 		}
 		
-		panel->SetPos(Vec2f(0, y));
-		add(panel);
-		y = long(y + panel->m_rect.height() + RATIO_Y(3.f));
+		addCenter(panel, false);
+		
 	}
 	
 protected:
@@ -2001,7 +2000,7 @@ public:
 	
 	ControlOptionsMenuPage1()
 		: ControlOptionsPage(Page_OptionsInputCustomizeKeys1)
-	{}
+	{ }
 	
 	~ControlOptionsMenuPage1() { }
 	
@@ -2009,33 +2008,31 @@ public:
 		
 		reserveBottom();
 		
-		long y = 0;
+		addControlRow(CONTROLS_CUST_USE,          "system_menus_options_input_customize_controls_mouselook");
 		
-		addControlRow(y, CONTROLS_CUST_USE,          "system_menus_options_input_customize_controls_mouselook");
+		addControlRow(CONTROLS_CUST_ACTION,       "system_menus_options_input_customize_controls_action_combine");
+		addControlRow(CONTROLS_CUST_JUMP,         "system_menus_options_input_customize_controls_jump");
+		addControlRow(CONTROLS_CUST_MAGICMODE,    "system_menus_options_input_customize_controls_magic_mode");
+		addControlRow(CONTROLS_CUST_STEALTHMODE,  "system_menus_options_input_customize_controls_stealth_mode");
+		addControlRow(CONTROLS_CUST_WALKFORWARD,  "system_menus_options_input_customize_controls_walk_forward");
+		addControlRow(CONTROLS_CUST_WALKBACKWARD, "system_menus_options_input_customize_controls_walk_backward");
+		addControlRow(CONTROLS_CUST_STRAFELEFT,   "system_menus_options_input_customize_controls_strafe_left");
+		addControlRow(CONTROLS_CUST_STRAFERIGHT,  "system_menus_options_input_customize_controls_strafe_right");
+		addControlRow(CONTROLS_CUST_LEANLEFT,     "system_menus_options_input_customize_controls_lean_left");
+		addControlRow(CONTROLS_CUST_LEANRIGHT,    "system_menus_options_input_customize_controls_lean_right");
+		addControlRow(CONTROLS_CUST_CROUCH,       "system_menus_options_input_customize_controls_crouch");
+		addControlRow(CONTROLS_CUST_CROUCHTOGGLE, "system_menus_options_input_customize_controls_crouch_toggle");
 		
-		addControlRow(y, CONTROLS_CUST_ACTION,       "system_menus_options_input_customize_controls_action_combine");
-		addControlRow(y, CONTROLS_CUST_JUMP,         "system_menus_options_input_customize_controls_jump");
-		addControlRow(y, CONTROLS_CUST_MAGICMODE,    "system_menus_options_input_customize_controls_magic_mode");
-		addControlRow(y, CONTROLS_CUST_STEALTHMODE,  "system_menus_options_input_customize_controls_stealth_mode");
-		addControlRow(y, CONTROLS_CUST_WALKFORWARD,  "system_menus_options_input_customize_controls_walk_forward");
-		addControlRow(y, CONTROLS_CUST_WALKBACKWARD, "system_menus_options_input_customize_controls_walk_backward");
-		addControlRow(y, CONTROLS_CUST_STRAFELEFT,   "system_menus_options_input_customize_controls_strafe_left");
-		addControlRow(y, CONTROLS_CUST_STRAFERIGHT,  "system_menus_options_input_customize_controls_strafe_right");
-		addControlRow(y, CONTROLS_CUST_LEANLEFT,     "system_menus_options_input_customize_controls_lean_left");
-		addControlRow(y, CONTROLS_CUST_LEANRIGHT,    "system_menus_options_input_customize_controls_lean_right");
-		addControlRow(y, CONTROLS_CUST_CROUCH,       "system_menus_options_input_customize_controls_crouch");
-		addControlRow(y, CONTROLS_CUST_CROUCHTOGGLE, "system_menus_options_input_customize_controls_crouch_toggle");
+		addControlRow(CONTROLS_CUST_STRAFE,       "system_menus_options_input_customize_controls_strafe");
+		addControlRow(CONTROLS_CUST_CENTERVIEW,   "system_menus_options_input_customize_controls_center_view");
+		addControlRow(CONTROLS_CUST_FREELOOK,     "system_menus_options_input_customize_controls_freelook");
 		
-		addControlRow(y, CONTROLS_CUST_STRAFE,       "system_menus_options_input_customize_controls_strafe");
-		addControlRow(y, CONTROLS_CUST_CENTERVIEW,   "system_menus_options_input_customize_controls_center_view");
-		addControlRow(y, CONTROLS_CUST_FREELOOK,     "system_menus_options_input_customize_controls_freelook");
+		addControlRow(CONTROLS_CUST_TURNLEFT,     "system_menus_options_input_customize_controls_turn_left");
+		addControlRow(CONTROLS_CUST_TURNRIGHT,    "system_menus_options_input_customize_controls_turn_right");
+		addControlRow(CONTROLS_CUST_LOOKUP,       "system_menus_options_input_customize_controls_look_up");
+		addControlRow(CONTROLS_CUST_LOOKDOWN,     "system_menus_options_input_customize_controls_look_down");
 		
-		addControlRow(y, CONTROLS_CUST_TURNLEFT,     "system_menus_options_input_customize_controls_turn_left");
-		addControlRow(y, CONTROLS_CUST_TURNRIGHT,    "system_menus_options_input_customize_controls_turn_right");
-		addControlRow(y, CONTROLS_CUST_LOOKUP,       "system_menus_options_input_customize_controls_look_up");
-		addControlRow(y, CONTROLS_CUST_LOOKDOWN,     "system_menus_options_input_customize_controls_look_down");
-		
-		addControlRow(y, CONTROLS_CUST_MINIMAP,      "system_menus_options_input_customize_controls_bookmap", "?", "2");
+		addControlRow(CONTROLS_CUST_MINIMAP,      "system_menus_options_input_customize_controls_bookmap", "?", "2");
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, Vec2f(16, 16), "graph/interface/menus/back");
@@ -2083,7 +2080,7 @@ public:
 	
 	ControlOptionsMenuPage2()
 		: ControlOptionsPage(Page_OptionsInputCustomizeKeys2)
-	{}
+	{ }
 	
 	~ControlOptionsMenuPage2() { }
 	
@@ -2091,37 +2088,35 @@ public:
 		
 		reserveBottom();
 		
-		long y = 0;
+		addControlRow(CONTROLS_CUST_INVENTORY,         "system_menus_options_input_customize_controls_inventory");
+		addControlRow(CONTROLS_CUST_BOOK,              "system_menus_options_input_customize_controls_book");
+		addControlRow(CONTROLS_CUST_BOOKCHARSHEET,     "system_menus_options_input_customize_controls_bookcharsheet");
+		addControlRow(CONTROLS_CUST_BOOKMAP,           "system_menus_options_input_customize_controls_bookmap");
+		addControlRow(CONTROLS_CUST_BOOKSPELL,         "system_menus_options_input_customize_controls_bookspell");
+		addControlRow(CONTROLS_CUST_BOOKQUEST,         "system_menus_options_input_customize_controls_bookquest");
+		addControlRow(CONTROLS_CUST_DRINKPOTIONLIFE,   "system_menus_options_input_customize_controls_drink_potion_life");
+		addControlRow(CONTROLS_CUST_DRINKPOTIONMANA,   "system_menus_options_input_customize_controls_drink_potion_mana");
+		addControlRow(CONTROLS_CUST_DRINKPOTIONCURE,   "system_menus_options_input_customize_controls_drink_potion_cure", "Antidote potion");
+		addControlRow(CONTROLS_CUST_TORCH,             "system_menus_options_input_customize_controls_torch");
 		
-		addControlRow(y, CONTROLS_CUST_INVENTORY,         "system_menus_options_input_customize_controls_inventory");
-		addControlRow(y, CONTROLS_CUST_BOOK,              "system_menus_options_input_customize_controls_book");
-		addControlRow(y, CONTROLS_CUST_BOOKCHARSHEET,     "system_menus_options_input_customize_controls_bookcharsheet");
-		addControlRow(y, CONTROLS_CUST_BOOKMAP,           "system_menus_options_input_customize_controls_bookmap");
-		addControlRow(y, CONTROLS_CUST_BOOKSPELL,         "system_menus_options_input_customize_controls_bookspell");
-		addControlRow(y, CONTROLS_CUST_BOOKQUEST,         "system_menus_options_input_customize_controls_bookquest");
-		addControlRow(y, CONTROLS_CUST_DRINKPOTIONLIFE,   "system_menus_options_input_customize_controls_drink_potion_life");
-		addControlRow(y, CONTROLS_CUST_DRINKPOTIONMANA,   "system_menus_options_input_customize_controls_drink_potion_mana");
-		addControlRow(y, CONTROLS_CUST_DRINKPOTIONCURE,   "system_menus_options_input_customize_controls_drink_potion_cure", "Antidote potion");
-		addControlRow(y, CONTROLS_CUST_TORCH,             "system_menus_options_input_customize_controls_torch");
+		addControlRow(CONTROLS_CUST_CANCELCURSPELL,    "system_menus_options_input_customize_controls_cancelcurrentspell");
+		addControlRow(CONTROLS_CUST_PRECAST1,          "system_menus_options_input_customize_controls_precast1");
+		addControlRow(CONTROLS_CUST_PRECAST2,          "system_menus_options_input_customize_controls_precast2");
+		addControlRow(CONTROLS_CUST_PRECAST3,          "system_menus_options_input_customize_controls_precast3");
 		
-		addControlRow(y, CONTROLS_CUST_CANCELCURSPELL,    "system_menus_options_input_customize_controls_cancelcurrentspell");
-		addControlRow(y, CONTROLS_CUST_PRECAST1,          "system_menus_options_input_customize_controls_precast1");
-		addControlRow(y, CONTROLS_CUST_PRECAST2,          "system_menus_options_input_customize_controls_precast2");
-		addControlRow(y, CONTROLS_CUST_PRECAST3,          "system_menus_options_input_customize_controls_precast3");
+		addControlRow(CONTROLS_CUST_WEAPON,            "system_menus_options_input_customize_controls_weapon");
+		addControlRow(CONTROLS_CUST_UNEQUIPWEAPON,     "system_menus_options_input_customize_controls_unequipweapon");
 		
-		addControlRow(y, CONTROLS_CUST_WEAPON,            "system_menus_options_input_customize_controls_weapon");
-		addControlRow(y, CONTROLS_CUST_UNEQUIPWEAPON,     "system_menus_options_input_customize_controls_unequipweapon");
+		addControlRow(CONTROLS_CUST_PREVIOUS,          "system_menus_options_input_customize_controls_previous");
+		addControlRow(CONTROLS_CUST_NEXT,              "system_menus_options_input_customize_controls_next");
 		
-		addControlRow(y, CONTROLS_CUST_PREVIOUS,          "system_menus_options_input_customize_controls_previous");
-		addControlRow(y, CONTROLS_CUST_NEXT,              "system_menus_options_input_customize_controls_next");
+		addControlRow(CONTROLS_CUST_QUICKLOAD,         "system_menus_options_input_customize_controls_quickload");
+		addControlRow(CONTROLS_CUST_QUICKSAVE,         "system_menus_options_input_customize_controls_quicksave");
 		
-		addControlRow(y, CONTROLS_CUST_QUICKLOAD,         "system_menus_options_input_customize_controls_quickload");
-		addControlRow(y, CONTROLS_CUST_QUICKSAVE,         "system_menus_options_input_customize_controls_quicksave");
-		
-		addControlRow(y, CONTROLS_CUST_TOGGLE_FULLSCREEN, "system_menus_options_input_customize_controls_toggle_fullscreen", "Toggle fullscreen");
+		addControlRow(CONTROLS_CUST_TOGGLE_FULLSCREEN, "system_menus_options_input_customize_controls_toggle_fullscreen", "Toggle fullscreen");
 		
 		if(config.input.allowConsole) {
-			addControlRow(y, CONTROLS_CUST_CONSOLE, "system_menus_options_input_customize_controls_console", "Script console");
+			addControlRow(CONTROLS_CUST_CONSOLE, "system_menus_options_input_customize_controls_console", "Script console");
 		}
 		
 		{
