@@ -76,7 +76,7 @@ CMagicMissile::CMagicMissile()
 	, iLength()
 	, iBezierPrecision()
 	, fTrail()
-	, snd_loop()
+	, snd_loop(audio::INVALID_ID)
 {
 	SetDuration(GameDurationMs(2000));
 	m_elapsed = m_duration + GameDurationMs(1);

@@ -188,7 +188,7 @@ static void loadLights(const char * dat, size_t & pos, size_t count, const Vec3f
 			}
 			
 			el->m_ignitionLightHandle = LightHandle();
-			el->sample = audio::INVALID_ID;
+			el->sample = audio::SourcedSample(audio::INVALID_ID);
 			
 		}
 	}

@@ -79,6 +79,8 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	, m_index(size_t(-1))
 	, m_id(classPath, instance)
 	, m_classPath(classPath)
+	, sound(audio::INVALID_ID)
+	, ignit_sound(audio::INVALID_ID)
 {
 	
 	m_index = entities.add(this);
@@ -113,7 +115,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	bbox2D.max = Vec2f(-1.f, -1.f);
 
 	tweaky = NULL;
-	sound = audio::INVALID_ID;
+	sound = audio::SourcedSample(audio::INVALID_ID);
 	type_flags = 0;
 	scriptload = 0;
 	target = Vec3f_ZERO;
@@ -185,7 +187,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	
 	ignition = 0.f;
 	ignit_light = LightHandle();
-	ignit_sound = audio::INVALID_ID;
+	ignit_sound = audio::SourcedSample(audio::INVALID_ID);
 	head_rot = 0.f;
 	
 	damager_damages = 0;
@@ -315,8 +317,8 @@ void Entity::cleanReferences() {
 	
 	lightHandleDestroy(ignit_light);
 	
-	if(ignit_sound != audio::INVALID_ID) {
-		ARX_SOUND_Stop(ignit_sound), ignit_sound = audio::INVALID_ID;
+	if(ignit_sound != audio::SourcedSample(audio::INVALID_ID)) {
+		ARX_SOUND_Stop(ignit_sound), ignit_sound = audio::SourcedSample(audio::INVALID_ID);
 	}
 	
 }

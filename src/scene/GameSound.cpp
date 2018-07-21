@@ -132,7 +132,331 @@ static bool g_soundInitialized = false;
 static AmbianceId g_zoneAmbiance = AmbianceId();
 static AmbianceId g_menuAmbiance = AmbianceId();
 
-static audio::SourcedSample g_soundMaterials[MAX_MATERIALS][MAX_MATERIALS];
+static audio::SourcedSample g_soundMaterials[MAX_MATERIALS][MAX_MATERIALS] = {
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	},
+	{
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID),
+		audio::SourcedSample(audio::INVALID_ID)
+	}
+};
 
 namespace {
 
@@ -219,7 +543,29 @@ SourcedSample SND_MAGIC_DRAW(INVALID_ID);
 SourcedSample SND_MAGIC_FIZZLE(INVALID_ID);
 
 // Magic symbols samples
-SourcedSample SND_SYMB[RUNE_COUNT] = {INVALID_ID};
+SourcedSample SND_SYMB[RUNE_COUNT] = {
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID),
+	audio::SourcedSample(audio::INVALID_ID)
+};
 
 // Spells samples
 SourcedSample SND_SPELL_ACTIVATE_PORTAL(INVALID_ID);
@@ -467,8 +813,8 @@ void ARX_SOUND_EnvironmentSet(const res::path & name) {
 audio::SourcedSample ARX_SOUND_PlaySFX(SourcedSample & sample_id, const Vec3f * position,
                                   float pitch, SoundLoopMode loop) {
 	
-	if(!g_soundInitialized || sample_id == INVALID_ID) {
-		return INVALID_ID;
+	if(!g_soundInitialized || sample_id == SourcedSample(INVALID_ID)) {
+		return SourcedSample(INVALID_ID);
 	}
 	
 	audio::Channel channel;
@@ -478,7 +824,7 @@ audio::SourcedSample ARX_SOUND_PlaySFX(SourcedSample & sample_id, const Vec3f * 
 	
 	if(position) {
 		if(g_camera && fartherThan(g_camera->m_pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
-			return INVALID_ID;
+			return SourcedSample(INVALID_ID);
 		}
 		channel.position = *position;
 	} else {
@@ -504,7 +850,7 @@ audio::SourcedSample ARX_SOUND_PlaySFX(SourcedSample & sample_id, const Vec3f * 
 
 static void playSample(audio::SourcedSample & sample_id, float pitch, SoundLoopMode loop, audio::MixerId mixer) {
 	
-	if(!g_soundInitialized || sample_id == INVALID_ID) {
+	if(!g_soundInitialized || sample_id == SourcedSample(INVALID_ID)) {
 		return;
 	}
 	
@@ -554,7 +900,7 @@ static res::path speechFileName(const res::path & name) {
 audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io) {
 	
 	if(!g_soundInitialized) {
-		return INVALID_ID;
+		return SourcedSample(INVALID_ID);
 	}
 	
 	res::path file = speechFileName(name);
@@ -606,7 +952,7 @@ long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 
 	SourcedSample sample_id = g_soundMaterials[mat1][mat2];
 
-	if(sample_id == INVALID_ID)
+	if(sample_id == SourcedSample(INVALID_ID))
 		return 0;
 
 	audio::Channel channel;
@@ -660,7 +1006,7 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	SoundMaterial & mat = ci->second;
 	
 	SourcedSample sample_id = mat.next();
-	arx_assert(sample_id != INVALID_ID);
+	arx_assert(sample_id != SourcedSample(INVALID_ID));
 	
 	audio::Channel channel;
 	channel.mixer = ARX_SOUND_MixerGameSample;
@@ -693,12 +1039,12 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, const Entity *
                                      float pitch, SoundLoopMode loop) {
 	
 	if(!g_soundInitialized) {
-		return INVALID_ID;
+		return SourcedSample(INVALID_ID);
 	}
 	
 	audio::SourcedSample sample_id = audio::createSample(name);
-	if (sample_id == INVALID_ID) {
-		return INVALID_ID;
+	if (sample_id == SourcedSample(INVALID_ID)) {
+		return SourcedSample(INVALID_ID);
 	}
 	
 	audio::Channel channel;
@@ -733,7 +1079,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, const Entity *
 
 void ARX_SOUND_PlayAnim(SourcedSample & sample_id, const Vec3f * position) {
 	
-	if(!g_soundInitialized || sample_id == INVALID_ID) {
+	if(!g_soundInitialized || sample_id == SourcedSample(INVALID_ID)) {
 		return;
 	}
 	
@@ -765,9 +1111,9 @@ audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpee
 	file.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
 	
 	audio::SourcedSample sample_id = audio::createSample(file);
-	if(sample_id == INVALID_ID) {
+	if(sample_id == SourcedSample(INVALID_ID)) {
 		LogError << "Cannot load sound for cinematic: " << file;
-		return INVALID_ID;
+		return SourcedSample(INVALID_ID);
 	}
 	
 	audio::Channel channel;
@@ -797,7 +1143,7 @@ bool ARX_SOUND_IsPlaying(SourcedSample & sample_id) {
 
 GameDuration ARX_SOUND_GetDuration(SourcedSample & sample_id) {
 	
-	if(g_soundInitialized && sample_id != INVALID_ID) {
+	if(g_soundInitialized && sample_id != SourcedSample(INVALID_ID)) {
 		size_t length;
 		audio::getSampleLength(sample_id, length);
 		return GameDurationMs(length);
@@ -807,27 +1153,27 @@ GameDuration ARX_SOUND_GetDuration(SourcedSample & sample_id) {
 }
 
 void ARX_SOUND_RefreshVolume(SourcedSample & sample_id, float volume) {
-	if(g_soundInitialized && sample_id != INVALID_ID) {
+	if(g_soundInitialized && sample_id != SourcedSample(INVALID_ID)) {
 		audio::setSampleVolume(sample_id, volume);
 	}
 }
 
 void ARX_SOUND_RefreshPitch(SourcedSample & sample_id, float pitch) {
-	if(g_soundInitialized && sample_id != INVALID_ID) {
+	if(g_soundInitialized && sample_id != SourcedSample(INVALID_ID)) {
 		audio::setSamplePitch(sample_id, pitch);
 	}
 }
 
 void ARX_SOUND_RefreshPosition(SourcedSample & sample_id, const Vec3f & position) {
 	
-	if(g_soundInitialized && sample_id != INVALID_ID) {
+	if(g_soundInitialized && sample_id != SourcedSample(INVALID_ID)) {
 		audio::setSamplePosition(sample_id, position);
 	}
 }
 
 void ARX_SOUND_RefreshSpeechPosition(SourcedSample & sample_id, const Entity * io) {
 	
-	if(!g_soundInitialized || !io || sample_id == INVALID_ID) {
+	if(!g_soundInitialized || !io || sample_id == SourcedSample(INVALID_ID)) {
 		return;
 	}
 	
@@ -844,7 +1190,7 @@ void ARX_SOUND_RefreshSpeechPosition(SourcedSample & sample_id, const Entity * i
 SourcedSample ARX_SOUND_Load(const res::path & name) {
 	
 	if(!g_soundInitialized) {
-		return INVALID_ID;
+		return SourcedSample(INVALID_ID);
 	}
 	
 	res::path sample_name = name;
@@ -853,20 +1199,20 @@ SourcedSample ARX_SOUND_Load(const res::path & name) {
 }
 
 void ARX_SOUND_Free(const SourcedSample & sample) {
-	if(g_soundInitialized && sample != INVALID_ID) {
+	if(g_soundInitialized && sample != SourcedSample(INVALID_ID)) {
 		audio::deleteSample(sample);
 	}
 }
 
 void ARX_SOUND_Stop(SourcedSample & sample_id) {
-	if(g_soundInitialized && sample_id != INVALID_ID) {
+	if(g_soundInitialized && sample_id != SourcedSample(INVALID_ID)) {
 		audio::sampleStop(sample_id);
 	}
 }
 
 bool ARX_SOUND_PlayScriptAmbiance(const res::path & name, SoundLoopMode loop, float volume) {
 	
-	if (!g_soundInitialized) return INVALID_ID;
+	if (!g_soundInitialized) return INVALID_ID; // TODO bogus return value
 
 	res::path temp = res::path(name).set_ext("amb");
 
@@ -1201,150 +1547,150 @@ static void ARX_SOUND_CreateStaticSamples() {
 	SND_SPELL_VISION_LOOP              = audio::createSample("magic_spell_vision.wav");
 }
 
-// Reset each static sample to INVALID_ID
+// Reset each static sample to SourcedSample(INVALID_ID)
 // Those samples are freed from memory when by audio::clean() is deleted
 static void ARX_SOUND_ReleaseStaticSamples() {
 	
 	// Interface samples
-	SND_BACKPACK = INVALID_ID;
-	SND_BOOK_OPEN = INVALID_ID;
-	SND_BOOK_CLOSE = INVALID_ID;
-	SND_BOOK_PAGE_TURN = INVALID_ID;
-	SND_GOLD = INVALID_ID;
-	SND_INVSTD = INVALID_ID;
-	SND_SCROLL_OPEN = INVALID_ID;
-	SND_SCROLL_CLOSE = INVALID_ID;
-	SND_TORCH_START = INVALID_ID;
-	SND_TORCH_LOOP = INVALID_ID;
-	SND_TORCH_END = INVALID_ID;
+	SND_BACKPACK = SourcedSample(INVALID_ID);
+	SND_BOOK_OPEN = SourcedSample(INVALID_ID);
+	SND_BOOK_CLOSE = SourcedSample(INVALID_ID);
+	SND_BOOK_PAGE_TURN = SourcedSample(INVALID_ID);
+	SND_GOLD = SourcedSample(INVALID_ID);
+	SND_INVSTD = SourcedSample(INVALID_ID);
+	SND_SCROLL_OPEN = SourcedSample(INVALID_ID);
+	SND_SCROLL_CLOSE = SourcedSample(INVALID_ID);
+	SND_TORCH_START = SourcedSample(INVALID_ID);
+	SND_TORCH_LOOP = SourcedSample(INVALID_ID);
+	SND_TORCH_END = SourcedSample(INVALID_ID);
 
 	// Other SFX samples
-	SND_FIREPLACE = INVALID_ID;
-	SND_PLOUF = INVALID_ID;
-	SND_QUAKE = INVALID_ID;
+	SND_FIREPLACE = SourcedSample(INVALID_ID);
+	SND_PLOUF = SourcedSample(INVALID_ID);
+	SND_QUAKE = SourcedSample(INVALID_ID);
 
 	// Menu samples
-	SND_MENU_CLICK = INVALID_ID;
-	SND_MENU_RELEASE = INVALID_ID;
+	SND_MENU_CLICK = SourcedSample(INVALID_ID);
+	SND_MENU_RELEASE = SourcedSample(INVALID_ID);
 
 	// Player samples
-	SND_PLAYER_DEATH_BY_FIRE = INVALID_ID;
-	SND_PLAYER_HEART_BEAT = INVALID_ID;
-	SND_PLAYER_LEVEL_UP = INVALID_ID;
-	SND_PLAYER_POISONED = INVALID_ID;
+	SND_PLAYER_DEATH_BY_FIRE = SourcedSample(INVALID_ID);
+	SND_PLAYER_HEART_BEAT = SourcedSample(INVALID_ID);
+	SND_PLAYER_LEVEL_UP = SourcedSample(INVALID_ID);
+	SND_PLAYER_POISONED = SourcedSample(INVALID_ID);
 
 	// Magic drawing samples
-	SND_MAGIC_AMBIENT = INVALID_ID;
-	SND_MAGIC_DRAW = INVALID_ID;
-	SND_MAGIC_FIZZLE = INVALID_ID;
+	SND_MAGIC_AMBIENT = SourcedSample(INVALID_ID);
+	SND_MAGIC_DRAW = SourcedSample(INVALID_ID);
+	SND_MAGIC_FIZZLE = SourcedSample(INVALID_ID);
 
 	// Magic symbols samples
-	SND_SYMB[RUNE_AAM] = INVALID_ID;
-	SND_SYMB[RUNE_CETRIUS] = INVALID_ID;
-	SND_SYMB[RUNE_COSUM] = INVALID_ID;
-	SND_SYMB[RUNE_COMUNICATUM] = INVALID_ID;
-	SND_SYMB[RUNE_FOLGORA] = INVALID_ID;
-	SND_SYMB[RUNE_FRIDD] = INVALID_ID;
-	SND_SYMB[RUNE_KAOM] = INVALID_ID;
-	SND_SYMB[RUNE_MEGA] = INVALID_ID;
-	SND_SYMB[RUNE_MORTE] = INVALID_ID;
-	SND_SYMB[RUNE_MOVIS] = INVALID_ID;
-	SND_SYMB[RUNE_NHI] = INVALID_ID;
-	SND_SYMB[RUNE_RHAA] = INVALID_ID;
-	SND_SYMB[RUNE_SPACIUM] = INVALID_ID;
-	SND_SYMB[RUNE_STREGUM] = INVALID_ID;
-	SND_SYMB[RUNE_TAAR] = INVALID_ID;
-	SND_SYMB[RUNE_TEMPUS] = INVALID_ID;
-	SND_SYMB[RUNE_TERA] = INVALID_ID;
-	SND_SYMB[RUNE_VISTA] = INVALID_ID;
-	SND_SYMB[RUNE_VITAE] = INVALID_ID;
-	SND_SYMB[RUNE_YOK] = INVALID_ID;
+	SND_SYMB[RUNE_AAM] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_CETRIUS] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_COSUM] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_COMUNICATUM] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_FOLGORA] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_FRIDD] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_KAOM] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_MEGA] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_MORTE] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_MOVIS] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_NHI] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_RHAA] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_SPACIUM] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_STREGUM] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_TAAR] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_TEMPUS] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_TERA] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_VISTA] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_VITAE] = SourcedSample(INVALID_ID);
+	SND_SYMB[RUNE_YOK] = SourcedSample(INVALID_ID);
 
 	// Spells samples
-	SND_SPELL_ACTIVATE_PORTAL = INVALID_ID;
-	SND_SPELL_ARMOR_START = INVALID_ID;
-	SND_SPELL_ARMOR_END = INVALID_ID;
-	SND_SPELL_ARMOR_LOOP = INVALID_ID;
-	SND_SPELL_LOWER_ARMOR = INVALID_ID;
-	SND_SPELL_LOWER_ARMOR_END = INVALID_ID;
-	SND_SPELL_BLESS = INVALID_ID;
-	SND_SPELL_COLD_PROTECTION_START = INVALID_ID;
-	SND_SPELL_COLD_PROTECTION_LOOP = INVALID_ID;
-	SND_SPELL_COLD_PROTECTION_END = INVALID_ID;
-	SND_SPELL_CONFUSE = INVALID_ID;
-	SND_SPELL_CONTROL_TARGET = INVALID_ID;
-	SND_SPELL_CREATE_FIELD = INVALID_ID;
-	SND_SPELL_CREATE_FOOD = INVALID_ID;
-	SND_SPELL_CURE_POISON = INVALID_ID;
-	SND_SPELL_CURSE = INVALID_ID;
-	SND_SPELL_DETECT_TRAP = INVALID_ID;
-	SND_SPELL_DETECT_TRAP_LOOP = INVALID_ID;
-	SND_SPELL_DISARM_TRAP = INVALID_ID;
-	SND_SPELL_DISPELL_FIELD = INVALID_ID;
-	SND_SPELL_DISPELL_ILLUSION = INVALID_ID;
-	SND_SPELL_DOUSE = INVALID_ID;
-	SND_SPELL_ELECTRIC = INVALID_ID;
-	SND_SPELL_EXPLOSION = INVALID_ID;
-	SND_SPELL_EYEBALL_IN = INVALID_ID;
-	SND_SPELL_EYEBALL_OUT = INVALID_ID;
-	SND_SPELL_FIRE_HIT = INVALID_ID;
-	SND_SPELL_FIRE_LAUNCH = INVALID_ID;
-	SND_SPELL_FIRE_PROTECTION = INVALID_ID;
-	SND_SPELL_FIRE_PROTECTION_LOOP = INVALID_ID;
-	SND_SPELL_FIRE_PROTECTION_END = INVALID_ID;
-	SND_SPELL_FIRE_WIND = INVALID_ID;
-	SND_SPELL_FREEZETIME = INVALID_ID;
-	SND_SPELL_HARM = INVALID_ID;
-	SND_SPELL_HEALING = INVALID_ID;
-	SND_SPELL_ICE_FIELD = INVALID_ID;
-	SND_SPELL_ICE_FIELD_LOOP = INVALID_ID;
-	SND_SPELL_ICE_FIELD_END = INVALID_ID;
-	SND_SPELL_ICE_PROJECTILE_LAUNCH = INVALID_ID;
-	SND_SPELL_INCINERATE = INVALID_ID;
-	SND_SPELL_INCINERATE_LOOP = INVALID_ID;
-	SND_SPELL_INCINERATE_END = INVALID_ID;
-	SND_SPELL_IGNITE = INVALID_ID;
-	SND_SPELL_INVISIBILITY_START = INVALID_ID;
-	SND_SPELL_INVISIBILITY_END = INVALID_ID;
-	SND_SPELL_LEVITATE_START = INVALID_ID;
-	SND_SPELL_LEVITATE_LOOP = INVALID_ID;
-	SND_SPELL_LEVITATE_END = INVALID_ID;
-	SND_SPELL_LIGHTNING_START = INVALID_ID;
-	SND_SPELL_LIGHTNING_LOOP = INVALID_ID;
-	SND_SPELL_LIGHTNING_END = INVALID_ID;
-	SND_SPELL_MAGICAL_HIT = INVALID_ID;
+	SND_SPELL_ACTIVATE_PORTAL = SourcedSample(INVALID_ID);
+	SND_SPELL_ARMOR_START = SourcedSample(INVALID_ID);
+	SND_SPELL_ARMOR_END = SourcedSample(INVALID_ID);
+	SND_SPELL_ARMOR_LOOP = SourcedSample(INVALID_ID);
+	SND_SPELL_LOWER_ARMOR = SourcedSample(INVALID_ID);
+	SND_SPELL_LOWER_ARMOR_END = SourcedSample(INVALID_ID);
+	SND_SPELL_BLESS = SourcedSample(INVALID_ID);
+	SND_SPELL_COLD_PROTECTION_START = SourcedSample(INVALID_ID);
+	SND_SPELL_COLD_PROTECTION_LOOP = SourcedSample(INVALID_ID);
+	SND_SPELL_COLD_PROTECTION_END = SourcedSample(INVALID_ID);
+	SND_SPELL_CONFUSE = SourcedSample(INVALID_ID);
+	SND_SPELL_CONTROL_TARGET = SourcedSample(INVALID_ID);
+	SND_SPELL_CREATE_FIELD = SourcedSample(INVALID_ID);
+	SND_SPELL_CREATE_FOOD = SourcedSample(INVALID_ID);
+	SND_SPELL_CURE_POISON = SourcedSample(INVALID_ID);
+	SND_SPELL_CURSE = SourcedSample(INVALID_ID);
+	SND_SPELL_DETECT_TRAP = SourcedSample(INVALID_ID);
+	SND_SPELL_DETECT_TRAP_LOOP = SourcedSample(INVALID_ID);
+	SND_SPELL_DISARM_TRAP = SourcedSample(INVALID_ID);
+	SND_SPELL_DISPELL_FIELD = SourcedSample(INVALID_ID);
+	SND_SPELL_DISPELL_ILLUSION = SourcedSample(INVALID_ID);
+	SND_SPELL_DOUSE = SourcedSample(INVALID_ID);
+	SND_SPELL_ELECTRIC = SourcedSample(INVALID_ID);
+	SND_SPELL_EXPLOSION = SourcedSample(INVALID_ID);
+	SND_SPELL_EYEBALL_IN = SourcedSample(INVALID_ID);
+	SND_SPELL_EYEBALL_OUT = SourcedSample(INVALID_ID);
+	SND_SPELL_FIRE_HIT = SourcedSample(INVALID_ID);
+	SND_SPELL_FIRE_LAUNCH = SourcedSample(INVALID_ID);
+	SND_SPELL_FIRE_PROTECTION = SourcedSample(INVALID_ID);
+	SND_SPELL_FIRE_PROTECTION_LOOP = SourcedSample(INVALID_ID);
+	SND_SPELL_FIRE_PROTECTION_END = SourcedSample(INVALID_ID);
+	SND_SPELL_FIRE_WIND = SourcedSample(INVALID_ID);
+	SND_SPELL_FREEZETIME = SourcedSample(INVALID_ID);
+	SND_SPELL_HARM = SourcedSample(INVALID_ID);
+	SND_SPELL_HEALING = SourcedSample(INVALID_ID);
+	SND_SPELL_ICE_FIELD = SourcedSample(INVALID_ID);
+	SND_SPELL_ICE_FIELD_LOOP = SourcedSample(INVALID_ID);
+	SND_SPELL_ICE_FIELD_END = SourcedSample(INVALID_ID);
+	SND_SPELL_ICE_PROJECTILE_LAUNCH = SourcedSample(INVALID_ID);
+	SND_SPELL_INCINERATE = SourcedSample(INVALID_ID);
+	SND_SPELL_INCINERATE_LOOP = SourcedSample(INVALID_ID);
+	SND_SPELL_INCINERATE_END = SourcedSample(INVALID_ID);
+	SND_SPELL_IGNITE = SourcedSample(INVALID_ID);
+	SND_SPELL_INVISIBILITY_START = SourcedSample(INVALID_ID);
+	SND_SPELL_INVISIBILITY_END = SourcedSample(INVALID_ID);
+	SND_SPELL_LEVITATE_START = SourcedSample(INVALID_ID);
+	SND_SPELL_LEVITATE_LOOP = SourcedSample(INVALID_ID);
+	SND_SPELL_LEVITATE_END = SourcedSample(INVALID_ID);
+	SND_SPELL_LIGHTNING_START = SourcedSample(INVALID_ID);
+	SND_SPELL_LIGHTNING_LOOP = SourcedSample(INVALID_ID);
+	SND_SPELL_LIGHTNING_END = SourcedSample(INVALID_ID);
+	SND_SPELL_MAGICAL_HIT = SourcedSample(INVALID_ID);
 
-	SND_SPELL_FIRE_FIELD_START = INVALID_ID;
-	SND_SPELL_FIRE_FIELD_LOOP = INVALID_ID;
-	SND_SPELL_FIRE_FIELD_END = INVALID_ID;
+	SND_SPELL_FIRE_FIELD_START = SourcedSample(INVALID_ID);
+	SND_SPELL_FIRE_FIELD_LOOP = SourcedSample(INVALID_ID);
+	SND_SPELL_FIRE_FIELD_END = SourcedSample(INVALID_ID);
 
-	SND_SPELL_MAGICAL_SHIELD = INVALID_ID;
-	SND_SPELL_MASS_INCINERATE = INVALID_ID;
-	SND_SPELL_MASS_PARALYSE = INVALID_ID;
-	SND_SPELL_MM_CREATE = INVALID_ID;
-	SND_SPELL_MM_HIT = INVALID_ID;
-	SND_SPELL_MM_LAUNCH = INVALID_ID;
-	SND_SPELL_MM_LOOP = INVALID_ID;
-	SND_SPELL_NEGATE_MAGIC = INVALID_ID;
-	SND_SPELL_PARALYSE = INVALID_ID;
-	SND_SPELL_PARALYSE_END = INVALID_ID;
-	SND_SPELL_POISON_PROJECTILE_LAUNCH = INVALID_ID;
-	SND_SPELL_RAISE_DEAD = INVALID_ID;
-	SND_SPELL_REPEL_UNDEAD = INVALID_ID;
-	SND_SPELL_REPEL_UNDEAD_LOOP = INVALID_ID;
-	SND_SPELL_RUNE_OF_GUARDING = INVALID_ID;
-	SND_SPELL_RUNE_OF_GUARDING_END = INVALID_ID;
-	SND_SPELL_SLOW_DOWN = INVALID_ID;
-	SND_SPELL_SLOW_DOWN_END = INVALID_ID;
-	SND_SPELL_SPARK = INVALID_ID;
-	SND_SPELL_SPEED_START = INVALID_ID;
-	SND_SPELL_SPEED_LOOP = INVALID_ID;
-	SND_SPELL_SPEED_END = INVALID_ID;
-	SND_SPELL_SUMMON_CREATURE = INVALID_ID;
-	SND_SPELL_TELEKINESIS_START = INVALID_ID;
-	SND_SPELL_TELEKINESIS_END = INVALID_ID;
-	SND_SPELL_VISION_START = INVALID_ID;
-	SND_SPELL_VISION_LOOP = INVALID_ID;
+	SND_SPELL_MAGICAL_SHIELD = SourcedSample(INVALID_ID);
+	SND_SPELL_MASS_INCINERATE = SourcedSample(INVALID_ID);
+	SND_SPELL_MASS_PARALYSE = SourcedSample(INVALID_ID);
+	SND_SPELL_MM_CREATE = SourcedSample(INVALID_ID);
+	SND_SPELL_MM_HIT = SourcedSample(INVALID_ID);
+	SND_SPELL_MM_LAUNCH = SourcedSample(INVALID_ID);
+	SND_SPELL_MM_LOOP = SourcedSample(INVALID_ID);
+	SND_SPELL_NEGATE_MAGIC = SourcedSample(INVALID_ID);
+	SND_SPELL_PARALYSE = SourcedSample(INVALID_ID);
+	SND_SPELL_PARALYSE_END = SourcedSample(INVALID_ID);
+	SND_SPELL_POISON_PROJECTILE_LAUNCH = SourcedSample(INVALID_ID);
+	SND_SPELL_RAISE_DEAD = SourcedSample(INVALID_ID);
+	SND_SPELL_REPEL_UNDEAD = SourcedSample(INVALID_ID);
+	SND_SPELL_REPEL_UNDEAD_LOOP = SourcedSample(INVALID_ID);
+	SND_SPELL_RUNE_OF_GUARDING = SourcedSample(INVALID_ID);
+	SND_SPELL_RUNE_OF_GUARDING_END = SourcedSample(INVALID_ID);
+	SND_SPELL_SLOW_DOWN = SourcedSample(INVALID_ID);
+	SND_SPELL_SLOW_DOWN_END = SourcedSample(INVALID_ID);
+	SND_SPELL_SPARK = SourcedSample(INVALID_ID);
+	SND_SPELL_SPEED_START = SourcedSample(INVALID_ID);
+	SND_SPELL_SPEED_LOOP = SourcedSample(INVALID_ID);
+	SND_SPELL_SPEED_END = SourcedSample(INVALID_ID);
+	SND_SPELL_SUMMON_CREATURE = SourcedSample(INVALID_ID);
+	SND_SPELL_TELEKINESIS_START = SourcedSample(INVALID_ID);
+	SND_SPELL_TELEKINESIS_END = SourcedSample(INVALID_ID);
+	SND_SPELL_VISION_START = SourcedSample(INVALID_ID);
+	SND_SPELL_VISION_LOOP = SourcedSample(INVALID_ID);
 }
 
 const char * ARX_MATERIAL_GetNameById(Material id) {
@@ -1412,13 +1758,13 @@ static void ARX_SOUND_CreateCollisionMaps() {
 					oss << ARX_SOUND_FILE_EXTENSION_WAV;
 					SourcedSample sample = audio::createSample(oss.str());
 					
-					if(sample == INVALID_ID) {
+					if(sample == SourcedSample(INVALID_ID)) {
 						std::ostringstream oss2;
 						oss2 << boost::to_lower_copy(key.getValue()) << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
 						sample = audio::createSample(oss2.str());
 					}
 					
-					if(sample != INVALID_ID) {
+					if(sample != SourcedSample(INVALID_ID)) {
 						mat.variants.push_back(sample);
 					}
 				}
@@ -1443,7 +1789,7 @@ static void ARX_SOUND_CreateMaterials() {
 	
 	for(size_t i = 0; i < size_t(MAX_MATERIALS); i++) {
 		for(size_t j = 0; j < size_t(MAX_MATERIALS); j++) {
-			g_soundMaterials[i][j] = audio::INVALID_ID;
+			g_soundMaterials[i][j] = audio::SourcedSample(audio::INVALID_ID);
 		}
 	}
 	

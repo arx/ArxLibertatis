@@ -1003,7 +1003,7 @@ void TreatBackgroundActions() {
 		if(dist > fZFar) {
 			// Out of treat range
 			ARX_SOUND_Stop(gl->sample);
-			gl->sample = audio::INVALID_ID;
+			gl->sample = audio::SourcedSample(audio::INVALID_ID);
 			continue;
 		}
 		
@@ -1021,14 +1021,14 @@ void TreatBackgroundActions() {
 		}
 		
 		if(!(gl->extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !gl->m_ignitionStatus) {
-			if(!gl->m_ignitionStatus && gl->sample != audio::INVALID_ID) {
+			if(!gl->m_ignitionStatus && gl->sample != audio::SourcedSample(audio::INVALID_ID)) {
 				ARX_SOUND_Stop(gl->sample);
-				gl->sample = audio::INVALID_ID;
+				gl->sample = audio::SourcedSample(audio::INVALID_ID);
 			}
 			continue;
 		}
 		
-		if(gl->sample == audio::INVALID_ID) {
+		if(gl->sample == audio::SourcedSample(audio::INVALID_ID)) {
 			gl->sample = SND_FIREPLACE;
 			ARX_SOUND_PlaySFX(gl->sample, &gl->pos, Random::getf(0.95f, 1.05f), ARX_SOUND_PLAY_LOOPED);
 		} else {

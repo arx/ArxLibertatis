@@ -95,8 +95,8 @@ public:
 	virtual source_iterator sourcesEnd() = 0;
 	virtual source_iterator deleteSource(source_iterator it) = 0;
 	
-	static SourcedSample getSampleId(SourcedSample sourceId) { return sourceId & 0x0000ffff; }
-	static SourcedSample clearSource(SourcedSample sourceId) { return sourceId | 0xffff0000; }
+	static SourcedSample getSampleId(SourcedSample sourceId) { return SourcedSample(sourceId.ss & 0x0000ffff); }
+	static SourcedSample clearSource(SourcedSample sourceId) { return SourcedSample(sourceId.ss | 0xffff0000); }
 	
 };
 

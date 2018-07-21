@@ -263,9 +263,9 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 		if(io->ignition > 0) {
 			lightHandleDestroy(io->ignit_light);
 
-			if(io->ignit_sound != audio::INVALID_ID) {
+			if(io->ignit_sound != audio::SourcedSample(audio::INVALID_ID)) {
 				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = audio::INVALID_ID;
+				io->ignit_sound = audio::SourcedSample(audio::INVALID_ID);
 			}
 
 			io->ignition = 0;

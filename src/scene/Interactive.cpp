@@ -881,7 +881,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->scale = 1.f;
 		io->move = Vec3f_ZERO;
 		io->type_flags = 0;
-		io->sound = -1;
+		io->sound = audio::SourcedSample(-1);
 		io->soundtime = 0;
 		io->soundcount = 0;
 		io->material = MATERIAL_STONE;
@@ -890,7 +890,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->dmg_sum = 0;
 		io->ignition = 0.f;
 		io->ignit_light = LightHandle();
-		io->ignit_sound = audio::INVALID_ID;
+		io->ignit_sound = audio::SourcedSample(audio::INVALID_ID);
 
 		if(io->obj && io->obj->pbox)
 			io->obj->pbox->active = 0;
