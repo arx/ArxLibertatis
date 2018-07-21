@@ -80,16 +80,21 @@ public:
 	void activate(Widget * widget);
 	void unfocus();
 	
-	int m_rowSpacing;
+	float m_rowSpacing;
 	WidgetContainer m_children;
 	
 	MENUSTATE id() const { return m_id; }
 	
 protected:
 	
+	void reserveTop();
+	void reserveBottom();
+	
 	Rectf m_rect;
 	
 private:
+	
+	Rectf m_content;
 	
 	const MENUSTATE m_id;
 	
