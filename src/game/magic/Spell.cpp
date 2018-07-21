@@ -32,7 +32,7 @@ SpellBase::SpellBase()
 	, m_duration(0)
 	, m_elapsed(0)
 	, m_fManaCostPerSecond(0.f)
-	, m_snd_loop(audio::INVALID_ID)
+	, m_snd_loop()
 	, m_launchDuration(GameDuration::ofRaw(-1))
 {
 	
