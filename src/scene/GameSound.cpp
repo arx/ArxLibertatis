@@ -551,7 +551,7 @@ static res::path speechFileName(const res::path & name) {
 	return res::path("speech") / config.language / name;
 }
 
-audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io) {
+audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar, const Entity * io) {
 	
 	if(!g_soundInitialized) {
 		return SourcedSample();
@@ -576,7 +576,11 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, const Entity *
 			channel.position = io->pos;
 
 		if(g_camera && fartherThan(g_camera->m_pos, io->pos, ARX_SOUND_REFUSE_DISTANCE)) {
-			return ARX_SOUND_TOO_FAR; // TODO sample is never freed!
+			if(tooFar) {
+				*tooFar = true;
+			}
+			// TODO sample is never freed!
+			return SourcedSample();
 		}
 
 		if(io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.f) {

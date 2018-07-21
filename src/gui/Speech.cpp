@@ -398,11 +398,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	}
 	
 	Entity * source = (aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? NULL : io;
-	aspeech[num].sample = ARX_SOUND_PlaySpeech(sample, source);
-	
-	if(aspeech[num].sample == ARX_SOUND_TOO_FAR) {
-		aspeech[num].sample = audio::SourcedSample();
-	}
+	aspeech[num].sample = ARX_SOUND_PlaySpeech(sample, NULL, source);
 	
 	// TODO Next lines must be removed (use callback instead)
 	aspeech[num].duration = ARX_SOUND_GetDuration(aspeech[num].sample);
