@@ -404,6 +404,15 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
 }
 
+void MenuPage::addBackButton(MENUSTATE page) {
+	
+	ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
+	cb->m_targetMenu = page;
+	cb->SetShortCut(Keyboard::Key_Escape);
+	addCorner(cb, BottomLeft);
+	
+}
+
 void MenuPage::Update(Vec2f pos) {
 	
 	m_children.Move(pos - m_rect.topLeft());
