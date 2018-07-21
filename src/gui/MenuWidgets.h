@@ -69,9 +69,6 @@ public:
 	
 	explicit MenuPage(MENUSTATE id);
 	virtual ~MenuPage();
-	
-	void add(Widget * widget);
-	void addCenter(Widget * widget, bool centerX = true);
 	void Update(Vec2f pos);
 	void Render();
 	void drawDebug();
@@ -86,6 +83,19 @@ public:
 	MENUSTATE id() const { return m_id; }
 	
 protected:
+	
+	enum Anchor {
+		TopLeft,
+		TopCenter,
+		TopRight,
+		BottomLeft,
+		BottomCenter,
+		BottomRight
+	};
+	
+	void addCorner(Widget * widget, Anchor anchor);
+	
+	void addCenter(Widget * widget, bool centerX = true);
 	
 	void reserveTop();
 	void reserveBottom();

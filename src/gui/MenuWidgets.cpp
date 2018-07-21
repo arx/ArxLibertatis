@@ -322,9 +322,47 @@ MenuPage::MenuPage(MENUSTATE id)
 
 MenuPage::~MenuPage() { }
 
-void MenuPage::add(Widget * widget) {
-	widget->Move(m_rect.topLeft());
+void MenuPage::addCorner(Widget * widget, Anchor anchor) {
+	
+	Vec2f pos = Vec2f_ZERO;
+	
+	switch(anchor) {
+		case TopLeft:
+		case BottomLeft: {
+			pos.x = m_rect.left;
+			break;
+		}
+		case TopCenter:
+		case BottomCenter: {
+			pos.x = m_rect.center().x - widget->m_rect.width() / 2;
+			break;
+		}
+		case TopRight:
+		case BottomRight: {
+			pos.x = m_rect.right - widget->m_rect.width();
+			break;
+		}
+	}
+	
+	switch(anchor) {
+		case TopLeft:
+		case TopCenter:
+		case TopRight: {
+			pos.y = m_rect.top;
+			break;
+		}
+		case BottomLeft:
+		case BottomCenter:
+		case BottomRight: {
+			pos.y = m_rect.bottom - widget->m_rect.height();
+			break;
+		}
+	}
+	
+	widget->SetPos(pos);
+	
 	m_children.add(widget);
+	
 }
 
 void MenuPage::addCenter(Widget * widget, bool centerX) {
