@@ -163,7 +163,7 @@ bool OpenALSource::convertStereoToMono() {
 	return ((m_channel.flags & FLAG_ANY_3D_FX) && m_sample->getFormat().channels == 2);
 }
 
-aalError OpenALSource::init(SourceId id, OpenALSource * instance, const Channel & channel) {
+aalError OpenALSource::init(SourcedSample id, OpenALSource * instance, const Channel & channel) {
 	
 	arx_assert(!m_source);
 	

@@ -65,7 +65,7 @@ struct CinematicSound {
 	bool exists;
 	bool isSpeech;
 	res::path file;
-	audio::SourceId handle;
+	audio::SourcedSample handle;
 	
 };
 

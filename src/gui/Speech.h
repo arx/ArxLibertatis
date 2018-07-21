@@ -140,7 +140,7 @@ DECLARE_FLAGS_OPERATORS(SpeechFlags)
 struct ARX_SPEECH {
 	
 	long exist;
-	audio::SourceId sample;
+	audio::SourcedSample sample;
 	long mood;
 	SpeechFlags flags;
 	GameInstant time_creation;

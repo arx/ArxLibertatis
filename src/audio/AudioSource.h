@@ -96,7 +96,7 @@ public:
 	virtual aalError resume() = 0;
 	aalError update();
 	
-	SourceId getId() const { return m_id; }
+	SourcedSample getId() const { return m_id; }
 	Sample * getSample() const { return m_sample; }
 	const Channel & getChannel() const { return m_channel; }
 	Status getStatus() const { return status; }
@@ -115,7 +115,7 @@ protected:
 	explicit Source(Sample * sample);
 	virtual ~Source();
 	
-	SourceId m_id;
+	SourcedSample m_id;
 	
 	Channel m_channel;
 	

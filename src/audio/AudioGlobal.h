@@ -77,7 +77,7 @@ extern PlatformInstant session_time;
 // Resources
 typedef ResourceList<Mixer, MixerId> MixerList;
 extern MixerList g_mixers;
-typedef ResourceList<Sample, SampleId> SampleList;
+typedef ResourceList<Sample, SourcedSample> SampleList;
 extern SampleList g_samples;
 typedef ResourceList<Ambiance, AmbianceId> AmbianceList;
 extern AmbianceList g_ambiances;

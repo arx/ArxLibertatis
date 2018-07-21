@@ -69,7 +69,7 @@ struct EERIE_FRAME {
 	AnimationDuration time;
 	Vec3f translate;
 	glm::quat quat;
-	audio::SampleId sample;
+	audio::SourcedSample sample;
 	
 	EERIE_FRAME()
 		: num_frame(0)

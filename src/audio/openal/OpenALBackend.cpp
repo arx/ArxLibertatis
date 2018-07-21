@@ -403,9 +403,9 @@ std::vector<std::string> OpenALBackend::getDevices() {
 	return result;
 }
 
-Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel) {
+Source * OpenALBackend::createSource(SourcedSample sampleId, const Channel & channel) {
 	
-	SampleId s_id = getSampleId(sampleId);
+	SourcedSample s_id = getSampleId(sampleId);
 	
 	if(!g_samples.isValid(s_id)) {
 		return NULL;
@@ -425,7 +425,7 @@ Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel)
 	
 	size_t index = sources.add(source);
 	
-	SourceId id = SourceId(index << 16) | s_id;
+	SourcedSample id = SourcedSample(index << 16) | s_id;
 	if(source->init(id, orig, channel)) {
 		sources.remove(index);
 		return NULL;
@@ -442,7 +442,7 @@ Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel)
 	return source;
 }
 
-Source * OpenALBackend::getSource(SourceId sourceId) {
+Source * OpenALBackend::getSource(SourcedSample sourceId) {
 	
 	size_t index = ((sourceId >> 16) & 0x0000ffff);
 	if(!sources.isValid(index)) {
@@ -451,7 +451,7 @@ Source * OpenALBackend::getSource(SourceId sourceId) {
 	
 	Source * source = sources[index];
 	
-	SampleId sample = getSampleId(sourceId);
+	SourcedSample sample = getSampleId(sourceId);
 	if(!g_samples.isValid(sample) || source->getSample() != g_samples[sample]) {
 		return NULL;
 	}

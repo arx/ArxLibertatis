@@ -124,7 +124,7 @@ public:
 				ARX_SOUND_Stop(io->sound);
 			}
 			
-			audio::SourceId num;
+			audio::SourcedSample num;
 			// TODO(broken-scripts) should be a flag instead of depending on the event
 			if(no_pos || SM_INVENTORYUSE == context.getMessage()) {
 				num = ARX_SOUND_PlayScript(sample, NULL, pitch, loop);
@@ -161,7 +161,7 @@ public:
 		DebugScript(' ' << sample);
 		
 		Entity * io = context.getEntity();
-		audio::SourceId num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
+		audio::SourcedSample num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
 		
 		if(num == audio::INVALID_ID) {
 			ScriptWarning << "unable to load sound file " << sample;

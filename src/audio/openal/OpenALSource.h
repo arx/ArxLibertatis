@@ -42,7 +42,7 @@ public:
 	explicit OpenALSource(Sample * sample);
 	~OpenALSource();
 	
-	aalError init(SourceId id, OpenALSource * instance, const Channel & channel);
+	aalError init(SourcedSample id, OpenALSource * instance, const Channel & channel);
 	
 	aalError setPitch(float pitch);
 	aalError setPan(float pan);
