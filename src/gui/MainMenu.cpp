@@ -660,7 +660,7 @@ public:
 					ss << " (" << aspect.x << ':' << aspect.y << ')';
 				}
 				
-				m_resolutionSlider->AddText(new TextWidget(hFontMenu, ss.str()));
+				m_resolutionSlider->AddText(new TextWidget(hFontControls, ss.str()));
 				if(mode.resolution == config.video.resolution) {
 					m_resolutionSlider->selectLast();
 				}
@@ -668,7 +668,7 @@ public:
 			}
 			
 			std::string desktop = getLocalised("system_menus_options_video_resolution_desktop", "Desktop");
-			m_resolutionSlider->AddText(new TextWidget(hFontMenu, desktop));
+			m_resolutionSlider->AddText(new TextWidget(hFontControls, desktop));
 			if(config.video.resolution == Vec2i_ZERO) {
 				m_resolutionSlider->selectLast();
 			}
