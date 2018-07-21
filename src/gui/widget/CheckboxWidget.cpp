@@ -42,7 +42,6 @@ CheckboxWidget::CheckboxWidget(Font * font, const std::string & label, float wid
 	arx_assert(m_textureOn);
 	
 	iState    = 0;
-	iOldState = -1;
 	
 	m_rect = Rectf(width, m_label->m_rect.height());
 	
@@ -60,10 +59,6 @@ void CheckboxWidget::Move(const Vec2f & offset) {
 bool CheckboxWidget::click() {
 	
 	bool result = Widget::click();
-	
-	if(iOldState < 0) {
-		iOldState = iState;
-	}
 	
 	iState++;
 	

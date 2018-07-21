@@ -43,7 +43,6 @@ public:
 	void render(bool mouseOver = false);
 	
 	int iState;
-	int iOldState;
 	
 	boost::function<void(int /* state */)> stateChanged;
 	
