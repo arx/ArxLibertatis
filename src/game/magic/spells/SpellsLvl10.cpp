@@ -398,7 +398,7 @@ void MassIncinerateSpell::Launch() {
 	if(!m_targets.empty()) {
 		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	} else {
-		m_snd_loop = audio::SourcedSample(audio::INVALID_ID);
+		m_snd_loop = audio::SourcedSample();
 	}
 }
 

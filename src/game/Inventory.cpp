@@ -114,9 +114,9 @@ void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
 		
 		lightHandleDestroy(io->ignit_light);
 		
-		if (io->ignit_sound != audio::SourcedSample(audio::INVALID_ID)) {
+		if (io->ignit_sound != audio::SourcedSample()) {
 			ARX_SOUND_Stop(io->ignit_sound);
-			io->ignit_sound = audio::SourcedSample(audio::INVALID_ID);
+			io->ignit_sound = audio::SourcedSample();
 		}
 		
 		io->ignition = 0;
