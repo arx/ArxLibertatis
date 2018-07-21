@@ -572,7 +572,7 @@ public:
 				// for the german version there
 				label = getLocalised("system_menus_options_video_full_screen");
 			}
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.fullscreen);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedFullscreen, this, _1);
 			addCenter(cb);
@@ -647,7 +647,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_videos_minimize_on_focus_lost",
 			                                 "Minimize on focus loss");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedMinimizeOnFocusLost, this, _1);
 			addCenter(cb);
 			m_minimizeOnFocusLostCheckbox = cb;
@@ -946,7 +946,7 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.antialiasing);
 			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedAntialiasing, this, _1);
 			addCenter(cb);
@@ -954,7 +954,7 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_options_video_colorkey_antialiasing", "Color Key AA");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.colorkeyAntialiasing);
 			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedColorkeyAntialiasing, this, _1);
 			addCenter(cb);
@@ -1143,7 +1143,7 @@ public:
 			std::string label = getLocalised("system_menus_options_video_crosshair",
 			                                 "Cross hair cursor");
 			label = getLocalised("system_menus_options_interface_crosshair", label);
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.showCrosshair);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCrosshair, this, _1);
 			addCenter(cb);
@@ -1152,7 +1152,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_interface_limit_speech_width",
 			                                 "Limit speech text width");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.limitSpeechWidth);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedSpeechWidth, this, _1);
 			addCenter(cb);
@@ -1201,7 +1201,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_interface_hud_scale_integer",
 			                                 "Round HUD scale factor");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.hudScaleInteger);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScaleInteger, this, _1);
 			addCenter(cb);
@@ -1223,8 +1223,8 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_options_interface_book_scale_integer",
-			                                      "Round book scale factor");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			                                 "Round book scale factor");
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.bookScaleInteger);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedBookScaleInteger, this, _1);
 			addCenter(cb);
@@ -1246,8 +1246,8 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_options_interface_cursor_scale_integer",
-			                                      "Round cursor scale factor");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			                                 "Round cursor scale factor");
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.cursorScaleInteger);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCursorScaleInteger, this, _1);
 			addCenter(cb);
@@ -1491,8 +1491,9 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_audio_mute_on_focus_lost", "Mute when not focused");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			std::string label = getLocalised("system_menus_options_audio_mute_on_focus_lost",
+			                                 "Mute when not focused");
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.audio.muteOnFocusLost);
 			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedMuteOnFocusLost, this, _1);
 			addCenter(cb);
@@ -1502,7 +1503,7 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_options_audio_eax", "EAX");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			if(audio::isReverbSupported()) {
 				cb->setChecked(config.audio.eax);
 			} else {
@@ -1626,7 +1627,7 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_options_input_invert_mouse");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.invertMouse);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedInvertMouse, this, _1);
 			addCenter(cb);
@@ -1657,7 +1658,7 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_options_input_mouse_look_toggle");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.mouseLookToggle);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedToggleMouselook, this, _1);
 			addCenter(cb);
@@ -1691,7 +1692,7 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_options_raw_mouse_input", "Raw mouse input");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.rawMouseInput);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedRawMouseInput, this, _1);
 			addCenter(cb);
@@ -1699,7 +1700,7 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_autodescription", "auto_description");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.autoDescription);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoDescription, this, _1);
 			addCenter(cb);
@@ -1721,7 +1722,7 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_border_turning", "Border turning");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.borderTurning);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedBorderTurning, this, _1);
 			addCenter(cb);
@@ -1729,7 +1730,7 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_alt_rune_recognition", "Improved rune recognition");
-			CheckboxWidget * cb = new CheckboxWidget(hFontMenu, label, m_rect.width());
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.useAltRuneRecognition);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAltRuneRecognition, this, _1);
 			addCenter(cb);

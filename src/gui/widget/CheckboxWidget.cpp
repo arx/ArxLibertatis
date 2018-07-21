@@ -19,6 +19,8 @@
 
 #include "gui/widget/CheckboxWidget.h"
 
+#include <algorithm>
+
 #include "core/Config.h"
 #include "core/Core.h"
 #include "graphics/DrawLine.h"
@@ -30,8 +32,9 @@
 #include "gui/widget/TextWidget.h"
 #include "scene/GameSound.h"
 
-CheckboxWidget::CheckboxWidget(Font * font, const std::string & label, float width) 
+CheckboxWidget::CheckboxWidget(const Vec2f & size, Font * font, const std::string & label)
 	: m_label(new TextWidget(font, label, Vec2f_ZERO))
+	, m_button(size.y, size.y)
 	, m_checked(false)
 {
 	
@@ -42,7 +45,11 @@ CheckboxWidget::CheckboxWidget(Font * font, const std::string & label, float wid
 	arx_assert(m_textureOff);
 	arx_assert(m_textureOn);
 	
-	m_rect = Rectf(width, m_label->m_rect.height());
+	m_rect = Rectf(std::max(m_button.width(), size.x), std::max(m_button.height(), m_label->m_rect.height()));
+	
+	float x = std::max(m_rect.right - 3.3f * m_button.width(), m_rect.center().x - m_button.width() / 2);
+	float y = m_rect.center().y - m_button.height() / 2;
+	m_button.moveTo(Vec2f(std::floor(x), std::floor(y)));
 	
 }
 
@@ -53,6 +60,7 @@ CheckboxWidget::~CheckboxWidget() {
 void CheckboxWidget::Move(const Vec2f & offset) {
 	Widget::Move(offset);
 	m_label->Move(offset);
+	m_button.move(offset);
 }
 
 bool CheckboxWidget::click() {
@@ -68,25 +76,17 @@ bool CheckboxWidget::click() {
 
 void CheckboxWidget::render(bool mouseOver) {
 	
-	float size = RATIO_Y(20);
-	
-	Rectf checkboxRect;
-	checkboxRect.top = std::floor(m_rect.center().y - size / 2.f);
-	checkboxRect.bottom = checkboxRect.top + size;
-	checkboxRect.left = std::floor(m_rect.right - RATIO_X(56.f) - size / 2);
-	checkboxRect.right = checkboxRect.left + size;
-	
-	TextureContainer * pTex = (m_checked ? m_textureOn : m_textureOff);
-	Color color = m_enabled ? Color::white : Color(63, 63, 63, 255);
-	
 	m_label->render(mouseOver);
+	
+	TextureContainer * texture = (m_checked ? m_textureOn : m_textureOff);
+	Color color = m_enabled ? Color::white : Color::grayb(63);
 	
 	UseRenderState state(render2D().blendAdditive());
 	
-	EERIEDrawBitmap(checkboxRect, 0.f, pTex, color);
+	EERIEDrawBitmap(m_button, 0.f, texture, color);
 	
 	if(mouseOver) {
-		EERIEDrawBitmap(checkboxRect, 0.f, pTex, color);
+		EERIEDrawBitmap(m_button, 0.f, texture, color);
 	}
 	
 }

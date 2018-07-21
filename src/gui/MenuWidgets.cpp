@@ -527,6 +527,10 @@ Vec2f MenuPage::buttonSize(float x, float y) const {
 	return RATIO_2(Vec2f(x, y));
 }
 
+Vec2f MenuPage::checkboxSize() const {
+	return Vec2f(m_rect.width(), RATIO_Y(20));
+}
+
 void MenuPage::focus() {
 	
 	if(!m_initialized) {

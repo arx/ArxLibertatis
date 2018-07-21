@@ -103,6 +103,7 @@ protected:
 	void reserveBottom();
 	
 	Vec2f buttonSize(float x, float y) const;
+	Vec2f checkboxSize() const;
 	
 	Rectf m_rect;
 	
