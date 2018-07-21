@@ -66,7 +66,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 			
 			m_name = save.name;
 			size_t length = save.name.length();
-			while(length > 0 && float(font->getTextSize(m_name).width()) > m_dateOffset - RATIO_X(10)) {
+			while(length > 0 && float(font->getTextSize(m_name).width()) > m_dateOffset - m_rect.height()) {
 				length--;
 				while(length > 0 && util::UTF8::isContinuationByte(save.name[length])) {
 					length--;
