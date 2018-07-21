@@ -145,6 +145,9 @@ struct SourcedSample {
 	s32 ss;
 };
 
+typedef HandleType<struct SampleHandleTag,    s32, -1> SampleHandle;
+
+
 typedef HandleType<struct MixerIdTag,    s32, -1> MixerId;
 typedef HandleType<struct EnvIdTag,      s32, -1> EnvId;
 typedef HandleType<struct AmbianceIdTag, s32, -1> AmbianceId;

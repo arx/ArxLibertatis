@@ -292,14 +292,14 @@ SourcedSample createSample(const res::path & name) {
 	
 	Sample * sample = new Sample(name);
 	
-	SourcedSample s_id = SourcedSample();
-	if(sample->load() || (s_id = SourcedSample(g_samples.add(sample))) == SourcedSample()) {
+	SampleHandle sampleHandle;
+	if(sample->load() || (sampleHandle = g_samples.add(sample)) == SampleHandle()) {
 		delete sample;
 	} else {
 		sample->reference();
 	}
 	
-	return Backend::clearSource(s_id);
+	return SourcedSample(sampleHandle.handleData());
 }
 
 AmbianceId createAmbiance(const res::path & name) {
@@ -336,12 +336,12 @@ aalError deleteSample(SourcedSample sampleId) {
 	
 	AAL_ENTRY
 	
-	sampleId = Backend::getSampleId(sampleId);
-	if(!g_samples.isValid(sampleId.ss)) {
+	SampleHandle sampleHandle = Backend::getSampleId(sampleId);
+	if(!g_samples.isValid(sampleHandle)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	g_samples.remove(sampleId.ss);
+	g_samples.remove(sampleHandle);
 	
 	return AAL_OK;
 }
@@ -567,12 +567,12 @@ aalError getSampleName(SourcedSample sampleId, res::path & name) {
 	
 	AAL_ENTRY
 	
-	sampleId = Backend::getSampleId(sampleId);
-	if(!g_samples.isValid(sampleId.ss)) {
+	SampleHandle sampleHandle = Backend::getSampleId(sampleId);
+	if(!g_samples.isValid(sampleHandle)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	name = g_samples[sampleId.ss]->getName();
+	name = g_samples[sampleHandle]->getName();
 	
 	return AAL_OK;
 }
@@ -583,12 +583,12 @@ aalError getSampleLength(SourcedSample sampleId, size_t & length) {
 	
 	AAL_ENTRY
 	
-	sampleId = Backend::getSampleId(sampleId);
-	if(!g_samples.isValid(sampleId.ss)) {
+	SampleHandle sampleHandle = Backend::getSampleId(sampleId);
+	if(!g_samples.isValid(sampleHandle)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	Sample * sample = g_samples[sampleId.ss];
+	Sample * sample = g_samples[sampleHandle];
 	const PCMFormat & format = sample->getFormat();
 	
 	length = size_t(u64(sample->getLength()) * 1000 / (format.frequency * format.channels * (format.quality >> 3)));
@@ -616,13 +616,13 @@ aalError samplePlay(SourcedSample & sampleId, const Channel & channel, unsigned 
 	
 	AAL_ENTRY
 	
-	SourcedSample s_id = Backend::getSampleId(sampleId);
+	SampleHandle s_id = Backend::getSampleId(sampleId);
 	sampleId = Backend::clearSource(sampleId);
-	if(!g_samples.isValid(s_id.ss) || !g_mixers.isValid(channel.mixer)) {
+	if(!g_samples.isValid(s_id) || !g_mixers.isValid(channel.mixer)) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug("SamplePlay " << g_samples[s_id.ss]->getName() << " play_count=" << play_count);
+	LogDebug("SamplePlay " << g_samples[s_id]->getName() << " play_count=" << play_count);
 	
 	Source * source = backend->getSource(sampleId);
 	if(source) {
@@ -657,7 +657,7 @@ aalError samplePlay(SourcedSample & sampleId, const Channel & channel, unsigned 
 	sampleId = source->getId();
 	
 	if(channel.flags & FLAG_AUTOFREE) {
-		g_samples[s_id.ss]->dereference();
+		g_samples[s_id]->dereference();
 	}
 	
 	return AAL_OK;

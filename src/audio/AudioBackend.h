@@ -48,7 +48,7 @@ public:
 	 * Use deleteSource to remove sources.
 	 * \param sampleId The sample to be played by the new source.
 	 */
-	virtual Source * createSource(SourcedSample sampleId, const Channel & channel) = 0;
+	virtual Source * createSource(SampleHandle sampleId, const Channel & channel) = 0;
 	
 	/*!
 	 * Get the source for the given id.
@@ -95,7 +95,7 @@ public:
 	virtual source_iterator sourcesEnd() = 0;
 	virtual source_iterator deleteSource(source_iterator it) = 0;
 	
-	static SourcedSample getSampleId(SourcedSample sourceId) { return SourcedSample(sourceId.ss & 0x0000ffff); }
+	static SampleHandle getSampleId(SourcedSample sourceId)  { return SampleHandle(sourceId.ss & 0x0000ffff); }
 	static SourcedSample clearSource(SourcedSample sourceId) { return SourcedSample(sourceId.ss | 0xffff0000); }
 	
 };

@@ -53,7 +53,7 @@ public:
 	
 	std::vector<std::string> getDevices();
 	
-	Source * createSource(SourcedSample sampleId, const Channel & channel);
+	Source * createSource(SampleHandle sampleId, const Channel & channel);
 	
 	Source * getSource(SourcedSample sourceId);
 	
