@@ -30,11 +30,10 @@ class TextureContainer;
 class ButtonWidget: public Widget {
 	
 public:
+	
 	ButtonWidget(const Vec2f & pos, const Vec2f & size, const char * texturePath);
 	~ButtonWidget();
 	
-public:
-	void SetPos(Vec2f pos);
 	void AddText(const std::string & label);
 	bool click();
 	void render(bool mouseOver = false);
@@ -46,10 +45,9 @@ public:
 	}
 	
 private:
-	Vec2f m_pos;
-	Vec2f m_size;
 	
 	TextureContainer * m_texture;
+	
 };
 
 #endif // ARX_GUI_WIDGET_BUTTONWIDGET_H

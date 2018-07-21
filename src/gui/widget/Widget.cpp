@@ -48,16 +48,6 @@ void Widget::Move(const Vec2f & offset) {
 	m_rect.move(offset.x, offset.y);
 }
 
-void Widget::SetPos(Vec2f pos) {
-	
-	Vec2f size = m_rect.size();
-	
-	m_rect.left   = pos.x;
-	m_rect.top    = pos.y;
-	m_rect.right  = pos.x + size.x;
-	m_rect.bottom = pos.y + size.y;
-}
-
 Widget * Widget::IsMouseOver(const Vec2f & mousePos) {
 	
 	if(   mousePos.x >= m_rect.left

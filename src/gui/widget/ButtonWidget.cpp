@@ -28,25 +28,16 @@
 
 ButtonWidget::ButtonWidget(const Vec2f & pos, const Vec2f & size, const char * texturePath) {
 	
-	m_pos = pos;
-	m_size = size;
-	
 	m_texture = TextureContainer::Load(texturePath);
 	arx_assert(m_texture);
 	
 	Vec2f scaledPos = RATIO_2(pos);
-	Vec2f scaledSize = RATIO_2(m_size);
+	Vec2f scaledSize = RATIO_2(size);
 	m_rect = Rectf(scaledPos, scaledSize.x, scaledSize.y);
-}
-
-ButtonWidget::~ButtonWidget() {
-}
-
-void ButtonWidget::SetPos(Vec2f pos) {
 	
-	Vec2f scaledSize = RATIO_2(m_size);
-	m_rect = Rectf(pos, scaledSize.x, scaledSize.y);
 }
+
+ButtonWidget::~ButtonWidget() { }
 
 bool ButtonWidget::click() {
 	
