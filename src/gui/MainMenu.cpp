@@ -290,7 +290,6 @@ public:
 		// Delete button
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
-			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestDelete, this);
 			txt->m_targetMenu = Page_Load;
@@ -303,7 +302,6 @@ public:
 		// Load button
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
-			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoadConfirm, this);
 			txt->m_targetMenu = Page_None;
@@ -708,7 +706,6 @@ public:
 		{
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->setEnabled(false);
 			panel->AddElement(txt);
@@ -736,8 +733,7 @@ public:
 		
 		{
 			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_video_fps_limit", "FPS Limit ");
-			szMenuText += " ";
+			std::string szMenuText = getLocalised("system_menus_options_video_fps_limit", "FPS Limit");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->setEnabled(false);
 			panel->AddElement(txt);
@@ -794,7 +790,6 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_video_apply");
-			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
 			txt->setEnabled(false);
@@ -967,7 +962,6 @@ public:
 		{
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_detail");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->setEnabled(false);
 			panel->AddElement(txt);
@@ -1019,8 +1013,8 @@ public:
 		
 		{
 			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising", "Alpha Cutout AA");
-			szMenuText += " ";
+			std::string szMenuText = getLocalised("system_menus_options_video_alpha_cutout_antialising",
+			                                      "Alpha Cutout AA");
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->setEnabled(false);
 			panel->AddElement(txt);
@@ -1051,7 +1045,6 @@ public:
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_texture_filter_anisotropic",
 			                                      "Anisotropic filtering");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->setEnabled(false);
 			panel->AddElement(txt);
@@ -1226,7 +1219,6 @@ public:
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_interface_cinematic_widescreen_mode",
 			                                      "Cinematics mode");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->setEnabled(false);
 			panel->AddElement(txt);
@@ -1322,7 +1314,6 @@ public:
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_interface_scale_filter",
 			                                      "Scale filter");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->setEnabled(false);
 			panel->AddElement(txt);
@@ -1713,7 +1704,6 @@ public:
 		{
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->setEnabled(false);
 			panel->AddElement(txt);
@@ -1817,7 +1807,6 @@ public:
 		{
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_quick_level_transition", "Quick level transition");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->setEnabled(false);
 			panel->AddElement(txt);
