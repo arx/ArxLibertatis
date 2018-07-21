@@ -476,6 +476,10 @@ void MenuPage::reserveBottom() {
 	m_content.bottom = m_rect.bottom - hFontMenu->getLineHeight() - RATIO_Y(5);
 }
 
+Vec2f MenuPage::buttonSize(float x, float y) const {
+	return RATIO_2(Vec2f(x, y));
+}
+
 void MenuPage::focus() {
 	
 	if(!m_initialized) {
