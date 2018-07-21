@@ -529,19 +529,21 @@ void ARX_SOUND_PlayMenu(audio::SourceId & sample_id, float pitch, SoundLoopMode 
 	playSample(sample_id, pitch, loop, ARX_SOUND_MixerMenuSample);
 }
 
-static void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos) {
+static Vec3f ARX_SOUND_IOFrontPos(const Entity * io) {
 	if(io == entities.player()) {
-		pos = ARX_PLAYER_FrontPos();
+		return ARX_PLAYER_FrontPos();
 	} else if(io) {
-		pos = io->pos;
+		Vec3f pos = io->pos;
 		pos += angleToVectorXZ(io->angle.getYaw()) * 100.f;
 		pos += Vec3f(0.f, -100.f, 0.f);
+		return pos;
 	} else if(g_camera) {
-		pos = g_camera->m_pos;
+		Vec3f pos = g_camera->m_pos;
 		pos += angleToVectorXZ(g_camera->angle.getYaw()) * 100.f;
 		pos += Vec3f(0.f, -100.f, 0.f);
+		return pos;
 	} else {
-		pos = Vec3f_ZERO;
+		return Vec3f_ZERO;
 	}
 }
 
@@ -569,7 +571,7 @@ audio::SourceId ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io) 
 
 	if(io) {
 		if((io == entities.player() && !EXTERNALVIEW))
-			ARX_SOUND_IOFrontPos(io, channel.position);
+			channel.position = ARX_SOUND_IOFrontPos(io);
 		else
 			channel.position = io->pos;
 
@@ -781,7 +783,7 @@ audio::SourceId ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 		ARX_SOUND_SetListener(g_camera->m_pos, frontUp.first, frontUp.second);
 	}
 	
-	ARX_SOUND_IOFrontPos(NULL, channel.position);
+	channel.position = ARX_SOUND_IOFrontPos(NULL);
 	
 	audio::samplePlay(sample_id, channel);
 	
@@ -831,7 +833,7 @@ void ARX_SOUND_RefreshSpeechPosition(SourceId & sample_id, const Entity * io) {
 	
 	Vec3f position;
 	if((io == entities.player() && !EXTERNALVIEW)) {
-		ARX_SOUND_IOFrontPos(io, position);
+		position = ARX_SOUND_IOFrontPos(io);
 	} else {
 		position = io->pos;
 	}
