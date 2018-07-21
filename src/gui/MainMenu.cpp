@@ -762,25 +762,24 @@ private:
 			m_gammaSlider->setValue(int(config.video.gamma));
 			m_gammaSlider->setEnabled(true);
 		} else {
-			m_gammaSlider->setValue(5);
 			m_gammaSlider->setEnabled(false);
+			m_gammaSlider->setValue(5);
 		}
 		
 	}
 	
 	void updateMinimizeOnFocusLostStateCheckbox() {
 		
-		bool checked = false;
-		bool enabled = false;
-		
 		if(m_fullscreen) {
 			Window::MinimizeSetting minimize = mainApp->getWindow()->willMinimizeOnFocusLost();
-			checked = (minimize == Window::Enabled || minimize == Window::AlwaysEnabled);
-			enabled = (minimize != Window::AlwaysDisabled && minimize != Window::AlwaysEnabled);
+			bool checked = (minimize == Window::Enabled || minimize == Window::AlwaysEnabled);
+			bool enabled = (minimize != Window::AlwaysDisabled && minimize != Window::AlwaysEnabled);
+			m_minimizeOnFocusLostCheckbox->setChecked(checked);
+			m_minimizeOnFocusLostCheckbox->setEnabled(enabled);
+		} else {
+			m_minimizeOnFocusLostCheckbox->setEnabled(false);
+			m_minimizeOnFocusLostCheckbox->setChecked(false);
 		}
-		
-		m_minimizeOnFocusLostCheckbox->setChecked(checked);
-		m_minimizeOnFocusLostCheckbox->setEnabled(enabled);
 		
 	}
 	
@@ -818,12 +817,16 @@ private:
 	}
 	
 	void onChangedGamma(int state) {
-		ARXMenu_Options_Video_SetGamma(float(state));
+		if(m_gammaSlider->isEnabled()) {
+			ARXMenu_Options_Video_SetGamma(float(state));
+		}
 	}
 	
 	void onChangedMinimizeOnFocusLost(bool checked) {
-		config.window.minimizeOnFocusLost = checked;
-		mainApp->getWindow()->setMinimizeOnFocusLost(config.window.minimizeOnFocusLost);
+		if(m_minimizeOnFocusLostCheckbox->isEnabled()) {
+			config.window.minimizeOnFocusLost = checked;
+			mainApp->getWindow()->setMinimizeOnFocusLost(config.window.minimizeOnFocusLost);
+		}
 	}
 	
 	void onChangedVSync(int pos, const std::string & str) {
