@@ -30,23 +30,21 @@
 #include "gui/widget/TextWidget.h"
 #include "scene/GameSound.h"
 
-CheckboxWidget::CheckboxWidget(TextWidget * label, float width) {
+CheckboxWidget::CheckboxWidget(Font * font, const std::string & label, float width) 
+	: m_label(new TextWidget(font, label, Vec2f_ZERO))
+{
 	
-	arx_assert(label);
-	
-	label->forceDisplay(TextWidget::Dynamic);
+	m_label->forceDisplay(TextWidget::Dynamic);
 	
 	m_textureOff = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	m_textureOn = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 	arx_assert(m_textureOff);
 	arx_assert(m_textureOn);
-	arx_assert(m_textureOff->size() == m_textureOn->size());
 	
 	iState    = 0;
 	iOldState = -1;
 	
-	m_label = label;
-	m_rect = Rectf(width, label->m_rect.height());
+	m_rect = Rectf(width, m_label->m_rect.height());
 	
 }
 
