@@ -42,9 +42,10 @@ public:
 	
 	void render(bool mouseOver = false);
 	
-	int iState;
+	void setChecked(bool checked);
+	bool checked() const { return m_checked; }
 	
-	boost::function<void(int /* state */)> stateChanged;
+	boost::function<void(bool /* checked */)> stateChanged;
 	
 	virtual WidgetType type() const {
 		return WidgetType_Checkbox;
@@ -55,6 +56,7 @@ private:
 	TextureContainer * m_textureOff;
 	TextureContainer * m_textureOn;
 	TextWidget * m_label;
+	bool m_checked;
 	
 };
 

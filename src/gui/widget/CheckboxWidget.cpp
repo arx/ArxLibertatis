@@ -32,6 +32,7 @@
 
 CheckboxWidget::CheckboxWidget(Font * font, const std::string & label, float width) 
 	: m_label(new TextWidget(font, label, Vec2f_ZERO))
+	, m_checked(false)
 {
 	
 	m_label->forceDisplay(TextWidget::Dynamic);
@@ -40,8 +41,6 @@ CheckboxWidget::CheckboxWidget(Font * font, const std::string & label, float wid
 	m_textureOn = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 	arx_assert(m_textureOff);
 	arx_assert(m_textureOn);
-	
-	iState    = 0;
 	
 	m_rect = Rectf(width, m_label->m_rect.height());
 	
@@ -60,18 +59,9 @@ bool CheckboxWidget::click() {
 	
 	bool result = Widget::click();
 	
-	iState++;
-	
-	arx_assert(iState >= 0);
-	if((size_t)iState >= 2) {
-		iState = 0;
-	}
-	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 	
-	if(stateChanged) {
-		stateChanged(iState);
-	}
+	setChecked(!m_checked);
 	
 	return result;
 }
@@ -86,7 +76,7 @@ void CheckboxWidget::render(bool mouseOver) {
 	checkboxRect.left = std::floor(m_rect.right - RATIO_X(56.f) - size / 2);
 	checkboxRect.right = checkboxRect.left + size;
 	
-	TextureContainer * pTex = (iState == 0) ? m_textureOff : m_textureOn;
+	TextureContainer * pTex = (m_checked ? m_textureOn : m_textureOff);
 	Color color = m_enabled ? Color::white : Color(63, 63, 63, 255);
 	
 	m_label->render(mouseOver);
@@ -97,6 +87,20 @@ void CheckboxWidget::render(bool mouseOver) {
 	
 	if(mouseOver) {
 		EERIEDrawBitmap(checkboxRect, 0.f, pTex, color);
+	}
+	
+}
+
+void CheckboxWidget::setChecked(bool checked) {
+	
+	if(checked == m_checked) {
+		return;
+	}
+	
+	m_checked = checked;
+	
+	if(stateChanged) {
+		stateChanged(m_checked);
 	}
 	
 }
