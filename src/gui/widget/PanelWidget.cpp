@@ -50,12 +50,10 @@ void PanelWidget::AddElement(Widget * widget) {
 	} else {
 		m_rect.left = std::min(m_rect.left, widget->m_rect.left);
 		m_rect.top = std::min(m_rect.top, widget->m_rect.top);
+		m_rect.right = std::max(m_rect.right, widget->m_rect.right);
+		m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
 	}
-
-	// + taille elem
-	m_rect.right = std::max(m_rect.right, widget->m_rect.right);
-	m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
-
+	
 	widget->Move(Vec2f(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
 }
 
