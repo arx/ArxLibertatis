@@ -250,7 +250,7 @@ void MenuWindow::Update() {
 	fAngle = std::min(fAngle + g_platformTime.lastFrameDuration() / PlatformDurationMsf(12.5f), 90.f);
 	
 	if(m_currentPage) {
-		m_currentPage->Update(m_pos);
+		m_currentPage->Update(m_pos + Vec2f(RATIO_X(14.5f), RATIO_Y(12.f)));
 	}
 	
 }
@@ -316,9 +316,7 @@ MenuPage::MenuPage(MENUSTATE id)
 	, m_focused(NULL)
 	, m_disableShortcuts(false)
 {
-	m_size = Vec2f(321, 430);
-	
-	Vec2f scaledSize = RATIO_2(m_size);
+	Vec2f scaledSize = RATIO_2(Vec2f(292, 395));
 	m_rect = Rectf(Vec2f_ZERO, scaledSize.x, scaledSize.y);
 }
 

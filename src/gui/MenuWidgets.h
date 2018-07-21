@@ -88,7 +88,6 @@ public:
 protected:
 	
 	Rectf m_rect;
-	Vec2f m_size;
 	
 private:
 	
