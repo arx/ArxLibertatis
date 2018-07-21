@@ -1990,7 +1990,6 @@ public:
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = Page_OptionsInput;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			cb->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedBack, this);
 			addCorner(cb, BottomLeft);
 		}
 		
@@ -2012,10 +2011,6 @@ public:
 	}
 	
 private:
-	
-	void onClickedBack() {
-		config.save();
-	}
 	
 	void onClickedDefault() {
 		resetActionKeys();
