@@ -531,6 +531,10 @@ Vec2f MenuPage::checkboxSize() const {
 	return Vec2f(m_rect.width(), RATIO_Y(20));
 }
 
+Vec2f MenuPage::sliderSize() const {
+	return Vec2f(m_rect.width(), RATIO_Y(16));
+}
+
 void MenuPage::focus() {
 	
 	if(!m_initialized) {

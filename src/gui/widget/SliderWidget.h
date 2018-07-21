@@ -20,17 +20,23 @@
 #ifndef ARX_GUI_WIDGET_SLIDERWIDGET_H
 #define ARX_GUI_WIDGET_SLIDERWIDGET_H
 
+#include <string>
+
 #include <boost/function.hpp>
 
-#include "gui/widget/ButtonWidget.h"
 #include "gui/widget/Widget.h"
+
+class Font;
+class ButtonWidget;
+class TextWidget;
+class TextureContainer;
 
 //! Slider with value in the range [0..10]
 class SliderWidget: public Widget {
 	
 public:
 	
-	explicit SliderWidget(const Vec2f & unscaled);
+	explicit SliderWidget(const Vec2f & size, Font * font, const std::string & label);
 	virtual ~SliderWidget();
 	
 	void setMinimum(int minimum);
@@ -54,10 +60,12 @@ private:
 	
 	void newValue(int value);
 	
-	ButtonWidget * pLeftButton;
-	ButtonWidget * pRightButton;
-	TextureContainer * pTex1;
-	TextureContainer * pTex2;
+	TextWidget * m_label;
+	ButtonWidget * m_left;
+	ButtonWidget * m_right;
+	TextureContainer * m_textureOff;
+	TextureContainer * m_textureOn;
+	Rectf m_slider;
 	
 	int m_minimum;
 	int m_value;
