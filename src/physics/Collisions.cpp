@@ -247,8 +247,10 @@ inline bool IsPolyInSphere(const EERIEPOLY & ep, const Sphere & sph) {
 
 bool IsCollidingIO(Entity * io, Entity * ioo) {
 	
-	if(ioo != NULL
-	   && io != ioo
+	arx_assert(io);
+	arx_assert(ioo);
+	
+	if(io != ioo
 	   && !(ioo->ioflags & IO_NO_COLLISIONS)
 	   && ioo->show == SHOW_FLAG_IN_SCENE
 	   && ioo->obj
