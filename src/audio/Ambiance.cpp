@@ -238,15 +238,15 @@ struct Ambiance::Track : public Source::Callback {
 			if(Source * source = backend->getSource(s_id)) {
 				source->stop();
 			}
-			SourcedSample sid = Backend::getSampleId(s_id);
-			arx_assert(g_samples.isValid(sid.ss));
-			g_samples[sid.ss]->dereference();
+			SampleHandle sid = Backend::getSampleId(s_id);
+			arx_assert(g_samples.isValid(sid));
+			g_samples[sid]->dereference();
 		}
 	}
 	
 	bool operator==(const std::string & str) const {
 		return (name == str
-		        || g_samples[Backend::getSampleId(s_id).ss]->getName() == str);
+		        || g_samples[Backend::getSampleId(s_id)]->getName() == str);
 	}
 	
 private:
@@ -322,7 +322,8 @@ void Ambiance::Track::keyPlay() {
 			channel.pan = key_i->pan.cur;
 		}
 		
-		source = backend->createSource(s_id, channel);
+		SampleHandle sourceHandle = Backend::getSampleId(s_id);
+		source = backend->createSource(sourceHandle, channel);
 		if(!source) {
 			s_id = Backend::clearSource(s_id);
 			return;
@@ -466,7 +467,7 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 
 void Ambiance::Track::update(PlatformDuration time, PlatformDuration diff) {
 	
-	if(!g_samples.isValid(Backend::getSampleId(s_id).ss)) {
+	if(!g_samples.isValid(Backend::getSampleId(s_id))) {
 		return;
 	}
 	
@@ -537,7 +538,9 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 		return error;
 	}
 	Sample * sample = new Sample(res::path::load(sampleName));
-	if(sample->load() || (s_id = SourcedSample(g_samples.add(sample))) == SourcedSample()) {
+	
+	SampleHandle sampleHandle;
+	if(sample->load() || (sampleHandle = g_samples.add(sample)) == SampleHandle()) {
 		LogError << "Ambiance \"" << ambiance->getName()
 		         << "\": missing sample \"" << sampleName << '"';
 		delete sample;
@@ -545,6 +548,8 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	} else {
 		sample->reference();
 	}
+	
+	s_id = SourcedSample(sampleHandle.handleData());
 	
 	if(version >= AMBIANCE_FILE_VERSION_1002) {
 		// Get track name (!= sample name)
