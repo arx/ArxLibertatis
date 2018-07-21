@@ -477,6 +477,9 @@ private:
 
 class ChooseLoadOrSaveMenuPage : public MenuPage {
 	
+	TextWidget * m_loadButton;
+	TextWidget * m_saveButton;
+	
 public:
 	
 	ChooseLoadOrSaveMenuPage()
@@ -490,19 +493,17 @@ public:
 		reserveBottom();
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->m_targetMenu = Page_Load;
-			txt->setEnabled(!savegames.empty());
-			addCenter(txt);
+			std::string label = getLocalised("system_menus_main_editquest_load");
+			m_loadButton = new TextWidget(hFontMenu, label, Vec2f_ZERO);
+			m_loadButton->m_targetMenu = Page_Load;
+			addCenter(m_loadButton);
 		}
 		
 		{
-			std::string szMenuText = getLocalised( "system_menus_main_editquest_save");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText, Vec2f_ZERO);
-			txt->m_targetMenu = Page_Save;
-			txt->setEnabled(g_canResumeGame);
-			addCenter(txt);
+			std::string label = getLocalised( "system_menus_main_editquest_save");
+			m_saveButton = new TextWidget(hFontMenu, label, Vec2f_ZERO);
+			m_saveButton->m_targetMenu = Page_Save;
+			addCenter(m_saveButton);
 		}
 		
 		{
@@ -513,6 +514,12 @@ public:
 			add(cb);
 		}
 		
+	}
+	
+	void focus() {
+		MenuPage::focus();
+		m_loadButton->setEnabled(!savegames.empty());
+		m_saveButton->setEnabled(g_canResumeGame);
 	}
 	
 };
