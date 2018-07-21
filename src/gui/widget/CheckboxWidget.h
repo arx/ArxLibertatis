@@ -34,7 +34,7 @@ class CheckboxWidget : public Widget {
 	
 public:
 	
-	explicit CheckboxWidget(Font * font, const std::string & label, float width);
+	explicit CheckboxWidget(const Vec2f & size, Font * font, const std::string & label);
 	virtual ~CheckboxWidget();
 	
 	void Move(const Vec2f & offset);
@@ -53,9 +53,11 @@ public:
 	
 private:
 	
+	TextWidget * m_label;
 	TextureContainer * m_textureOff;
 	TextureContainer * m_textureOn;
-	TextWidget * m_label;
+	Rectf m_button;
+	
 	bool m_checked;
 	
 };
