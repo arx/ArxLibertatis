@@ -149,6 +149,10 @@ struct SourcedSample {
 		return SampleHandle(ss & 0x0000ffff);
 	}
 	
+	void clearSource() {
+		ss = (ss | 0xffff0000);
+	}
+	
 	s32 ss;
 };
 
