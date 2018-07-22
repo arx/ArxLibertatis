@@ -449,7 +449,7 @@ Source * OpenALBackend::getSource(SourcedSample sourceId) {
 	
 	Source * source = sources[index];
 	
-	SampleHandle sample = getSampleId(sourceId);
+	SampleHandle sample = sourceId.getSampleId();
 	if(!g_samples.isValid(sample) || source->getSample() != g_samples[sample]) {
 		return NULL;
 	}

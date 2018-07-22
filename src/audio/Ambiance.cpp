@@ -238,7 +238,7 @@ struct Ambiance::Track : public Source::Callback {
 			if(Source * source = backend->getSource(s_id)) {
 				source->stop();
 			}
-			SampleHandle sid = Backend::getSampleId(s_id);
+			SampleHandle sid = s_id.getSampleId();
 			arx_assert(g_samples.isValid(sid));
 			g_samples[sid]->dereference();
 		}
@@ -246,7 +246,7 @@ struct Ambiance::Track : public Source::Callback {
 	
 	bool operator==(const std::string & str) const {
 		return (name == str
-		        || g_samples[Backend::getSampleId(s_id)]->getName() == str);
+		        || g_samples[s_id.getSampleId()]->getName() == str);
 	}
 	
 private:
@@ -322,7 +322,7 @@ void Ambiance::Track::keyPlay() {
 			channel.pan = key_i->pan.cur;
 		}
 		
-		SampleHandle sourceHandle = Backend::getSampleId(s_id);
+		SampleHandle sourceHandle = s_id.getSampleId();
 		source = backend->createSource(sourceHandle, channel);
 		if(!source) {
 			s_id = Backend::clearSource(s_id);
@@ -467,7 +467,7 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 
 void Ambiance::Track::update(PlatformDuration time, PlatformDuration diff) {
 	
-	if(!g_samples.isValid(Backend::getSampleId(s_id))) {
+	if(!g_samples.isValid(s_id.getSampleId())) {
 		return;
 	}
 	

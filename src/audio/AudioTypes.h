@@ -133,6 +133,9 @@ struct SourceFalloff {
 	float end;
 };
 
+
+typedef HandleType<struct SampleHandleTag,    s32, -1> SampleHandle;
+
 struct SourcedSample {
 	SourcedSample() : ss(-1) {}
 	explicit SourcedSample(const s32 ss_)
@@ -142,10 +145,12 @@ struct SourcedSample {
 	bool operator==(const SourcedSample & rhs) const { return ss == rhs.ss; }
 	bool operator!=(const SourcedSample & rhs) const { return ss != rhs.ss; }
 	
+	SampleHandle getSampleId() const {
+		return SampleHandle(ss & 0x0000ffff);
+	}
+	
 	s32 ss;
 };
-
-typedef HandleType<struct SampleHandleTag,    s32, -1> SampleHandle;
 
 
 typedef HandleType<struct MixerIdTag,    s32, -1> MixerId;
