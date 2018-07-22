@@ -692,7 +692,7 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	return (long)(channel.pitch * length);
 }
 
-audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, const Entity * io,
+audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar, const Entity * io,
                                      float pitch, SoundLoopMode loop) {
 	
 	if(!g_soundInitialized) {
@@ -716,6 +716,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, const Entity *
 		if(loop != ARX_SOUND_PLAY_LOOPED) {
 			if (g_camera && fartherThan(g_camera->m_pos, channel.position, ARX_SOUND_REFUSE_DISTANCE)) {
 				// TODO the sample will never be freed!
+				tooFar = true;
 				return audio::SourcedSample();
 			}
 		}

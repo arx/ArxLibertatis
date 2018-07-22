@@ -125,18 +125,19 @@ public:
 			}
 			
 			audio::SourcedSample num = audio::SourcedSample();
+			bool tooFar = false;
 			// TODO(broken-scripts) should be a flag instead of depending on the event
 			if(no_pos || SM_INVENTORYUSE == context.getMessage()) {
-				num = ARX_SOUND_PlayScript(sample, NULL, pitch, loop);
+				num = ARX_SOUND_PlayScript(sample, tooFar, NULL, pitch, loop);
 			} else {
-				num = ARX_SOUND_PlayScript(sample, io, pitch, loop);
+				num = ARX_SOUND_PlayScript(sample, tooFar, io, pitch, loop);
 			}
 			
 			if(unique) {
 				io->sound = num;
 			}
 			
-			if(num == audio::SourcedSample()) {
+			if(!tooFar && num == audio::SourcedSample()) {
 				ScriptWarning << "unable to load sound file " << sample;
 				return Failed;
 			}
