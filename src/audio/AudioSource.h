@@ -146,4 +146,10 @@ private:
 
 } // namespace audio
 
+namespace arx {
+namespace debug {
+std::stringstream &operator <<(std::stringstream & s, const audio::Source::Status val);
+} // namespace debug
+} // namespace arx
+
 #endif // ARX_AUDIO_AUDIOSOURCE_H

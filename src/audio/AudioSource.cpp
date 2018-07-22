@@ -110,3 +110,24 @@ aalError Source::setMixer(MixerId mixer) {
 }
 
 } // namespace audio
+
+namespace arx {
+namespace debug {
+std::stringstream &operator <<(std::stringstream & s, const audio::Source::Status val) {
+	switch(val) {
+		case audio::Source::Idle:
+			s << "idle";
+			break;
+		case audio::Source::Playing:
+			s << "playing";
+			break;
+		case audio::Source::Paused:
+			s << "paused";
+			break;
+		default:
+			break;
+	}
+	return s;
+}
+} // namespace debug
+} // namespace arx

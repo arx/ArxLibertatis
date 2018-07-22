@@ -27,6 +27,7 @@
 #include <boost/mpl/size.hpp>
 
 #include "game/GameTypes.h"
+#include "math/Angle.h"
 #include "math/Types.h"
 
 template <typename T>
@@ -46,31 +47,70 @@ std::string flagNames(const FlagName<T> (&names)[N], const T flags) {
 	return ss.str();
 }
 
+namespace arx {
+namespace debug {
+
+std::stringstream &operator <<(std::stringstream &ss, const Vec2i value);
+std::stringstream &operator <<(std::stringstream &ss, const Vec3f value);
+std::stringstream &operator <<(std::stringstream &ss, const Anglef value);
+std::stringstream &operator <<(std::stringstream &ss, const ResourcePool value);
+
+} // namespace debug
+} // namespace arx
+
 class DebugBox {
 public:
 	DebugBox(const Vec2i & pos, const std::string & title);
 	
-	void add(const std::string & key, const std::string & value);
-	void add(const std::string & key, long value);
-	void add(const std::string & key, size_t value) { add(key, long(value)); }
-	void add(const std::string & key, float value);
-	void add(const std::string & key, Vec2i value);
-	void add(const std::string & key, Vec3f value);
-	void add(const std::string & key, Anglef value);
-	void add(const std::string & key, ResourcePool value);
+	template<typename F1, typename F2>
+	void add(F1 f1, F2 f2) {
+		Row row;
+		put(row, f1);
+		put(row, f2);
+		m_elements.push_back(row);
+	}
+	
+	template<typename F1, typename F2, typename F3>
+	void add(F1 f1, F2 f2, F3 f3) {
+		Row row;
+		put(row, f1);
+		put(row, f2);
+		put(row, f3);
+		m_elements.push_back(row);
+	}
+	
+	template<typename F1, typename F2, typename F3, typename F4>
+	void add(F1 f1, F2 f2, F3 f3, F4 f4) {
+		Row row;
+		put(row, f1);
+		put(row, f2);
+		put(row, f3);
+		put(row, f4);
+		m_elements.push_back(row);
+	}
 	
 	void print();
-	
 	Vec2i size();
 	
 private:
+	
+	struct Row {
+		std::vector<std::string> fields;
+	};
+	
+	template<typename FIELD_T>
+	void put(Row & row, FIELD_T val) {
+		using namespace arx::debug;
+		std::stringstream ss;
+		ss << val;
+		row.fields.push_back(ss.str());
+	}
+	
 	Vec2i m_pos;
 	std::string m_title;
-	size_t m_maxKeyLen;
 	Vec2i m_size;
 	
-	
-	std::vector<std::pair<std::string, std::string> > m_elements;
+	std::vector<Row> m_elements;
 };
 
 #endif // ARX_GUI_DEBUGUTILS_H

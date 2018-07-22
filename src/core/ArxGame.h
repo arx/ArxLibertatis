@@ -123,6 +123,7 @@ enum InfoPanels {
 	InfoPanelDebug,
 	InfoPanelDebugToggles,
 	InfoPanelGuiDebug,
+	InfoPanelAudio,
 	InfoPanelEnumSize
 };
 

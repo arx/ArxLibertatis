@@ -1030,6 +1030,7 @@ set(GUI_SOURCES
 	src/gui/TextManager.cpp
 	src/gui/book/Book.cpp
 	src/gui/book/Necklace.cpp
+	src/gui/debug/DebugHudAudio.cpp
 	src/gui/hud/HudCommon.cpp
 	src/gui/hud/PlayerInventory.cpp
 	src/gui/hud/SecondaryInventory.cpp
