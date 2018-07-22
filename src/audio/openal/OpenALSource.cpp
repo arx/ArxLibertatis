@@ -42,7 +42,10 @@ namespace audio {
 
 const size_t StreamLimitBytes = 176400;
 
-#define ALPREFIX "[" << (s16)(((m_id.ss) & 0xffff0000) >> 16) << "," << (s16)((m_id.ss) & 0xffff) << "," << (m_sample ? m_sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
+#define ALPREFIX "[" << (s16)(m_id.source()) << \
+                 "," << (s16)(m_id.getSampleId().handleData()) << \
+                 "," << (m_sample ? m_sample->getName() : "(none)") << \
+                 "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
 
 #undef ALError
 #define ALError LogError << ALPREFIX
