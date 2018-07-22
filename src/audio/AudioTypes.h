@@ -137,29 +137,38 @@ struct SourceFalloff {
 typedef HandleType<struct SampleHandleTag,    s32, -1> SampleHandle;
 
 struct SourcedSample {
-	SourcedSample() : ss(-1) {}
+	SourcedSample()
+		: m_source(-1)
+		, m_sample()
+	{ }
 	
 	SourcedSample(s32 source, SampleHandle sample) {
-		ss = (s32(source << 16) | sample.handleData());
+		m_source = source;
+		m_sample = sample;
 	}
 	
-	bool operator==(const SourcedSample & rhs) const { return ss == rhs.ss; }
-	bool operator!=(const SourcedSample & rhs) const { return ss != rhs.ss; }
+	bool operator==(const SourcedSample & rhs) const {
+		return m_source == rhs.m_source && m_sample == rhs.m_sample;
+	}
+	bool operator!=(const SourcedSample & rhs) const {
+		return m_source != rhs.m_source || m_sample != rhs.m_sample;
+	}
 	
 	size_t source() const {
-		return ((ss >> 16) & 0x0000ffff);
+		return m_source;
 	}
 	
 	SampleHandle getSampleId() const {
-		return SampleHandle(ss & 0x0000ffff);
+		return m_sample;
 	}
 	
 	void clearSource() {
-		ss = (ss | 0xffff0000);
+		m_source = -1;
 	}
 	
 private:
-	s32 ss;
+	s32 m_source;
+	SampleHandle m_sample;
 };
 
 
