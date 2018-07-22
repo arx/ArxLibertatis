@@ -158,6 +158,7 @@ struct SourcedSample {
 		ss = (ss | 0xffff0000);
 	}
 	
+private:
 	s32 ss;
 };
 
