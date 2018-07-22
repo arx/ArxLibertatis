@@ -423,7 +423,7 @@ Source * OpenALBackend::createSource(SampleHandle s_id, const Channel & channel)
 	
 	size_t index = sources.add(source);
 	
-	SourcedSample id = SourcedSample(s32(index << 16) | s_id.handleData());
+	SourcedSample id = SourcedSample(index, s_id);
 	if(source->init(id, orig, channel)) {
 		sources.remove(index);
 		return NULL;
