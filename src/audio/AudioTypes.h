@@ -135,14 +135,15 @@ struct SourceFalloff {
 
 
 typedef HandleType<struct SampleHandleTag,    s32, -1> SampleHandle;
+typedef HandleType<struct SourceHandleTag,    s32, -1> SourceHandle;
 
 struct SourcedSample {
 	SourcedSample()
-		: m_source(-1)
+		: m_source()
 		, m_sample()
 	{ }
 	
-	SourcedSample(s32 source, SampleHandle sample) {
+	SourcedSample(SourceHandle source, SampleHandle sample) {
 		m_source = source;
 		m_sample = sample;
 	}
@@ -154,7 +155,7 @@ struct SourcedSample {
 		return m_source != rhs.m_source || m_sample != rhs.m_sample;
 	}
 	
-	size_t source() const {
+	SourceHandle source() const {
 		return m_source;
 	}
 	
@@ -163,11 +164,11 @@ struct SourcedSample {
 	}
 	
 	void clearSource() {
-		m_source = -1;
+		m_source = SourceHandle();
 	}
 	
 private:
-	s32 m_source;
+	SourceHandle m_source;
 	SampleHandle m_sample;
 };
 

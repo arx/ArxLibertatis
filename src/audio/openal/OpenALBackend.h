@@ -113,7 +113,7 @@ private:
 	
 	#endif
 	
-	typedef ResourceList<OpenALSource> SourceList;
+	typedef ResourceList<OpenALSource, SourceHandle> SourceList;
 	SourceList sources;
 	
 	float rolloffFactor;
