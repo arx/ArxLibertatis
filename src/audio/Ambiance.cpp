@@ -549,7 +549,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 		sample->reference();
 	}
 	
-	s_id = SourcedSample(sampleHandle.handleData());
+	s_id = SourcedSample(-1, sampleHandle);
 	
 	if(version >= AMBIANCE_FILE_VERSION_1002) {
 		// Get track name (!= sample name)

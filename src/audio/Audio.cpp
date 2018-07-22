@@ -299,7 +299,7 @@ SourcedSample createSample(const res::path & name) {
 		sample->reference();
 	}
 	
-	return SourcedSample(sampleHandle.handleData());
+	return SourcedSample(-1, sampleHandle);
 }
 
 AmbianceId createAmbiance(const res::path & name) {

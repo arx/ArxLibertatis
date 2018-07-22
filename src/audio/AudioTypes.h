@@ -138,9 +138,10 @@ typedef HandleType<struct SampleHandleTag,    s32, -1> SampleHandle;
 
 struct SourcedSample {
 	SourcedSample() : ss(-1) {}
-	explicit SourcedSample(const s32 ss_)
-		: ss(ss_)
-	{ }
+	
+	SourcedSample(s32 source, SampleHandle sample) {
+		ss = (s32(source << 16) | sample.handleData());
+	}
 	
 	bool operator==(const SourcedSample & rhs) const { return ss == rhs.ss; }
 	bool operator!=(const SourcedSample & rhs) const { return ss != rhs.ss; }
