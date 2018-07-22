@@ -422,7 +422,7 @@ Source * OpenALBackend::createSource(SampleHandle s_id, const Channel & channel)
 	
 	OpenALSource * source = new OpenALSource(sample);
 	
-	size_t index = sources.add(source);
+	SourceHandle index = sources.add(source);
 	
 	SourcedSample id = SourcedSample(index, s_id);
 	if(source->init(id, orig, channel)) {
@@ -443,7 +443,7 @@ Source * OpenALBackend::createSource(SampleHandle s_id, const Channel & channel)
 
 Source * OpenALBackend::getSource(SourcedSample sourceId) {
 	
-	size_t index = sourceId.source();
+	SourceHandle index = sourceId.source();
 	if(!sources.isValid(index)) {
 		return NULL;
 	}
