@@ -336,7 +336,7 @@ aalError deleteSample(SourcedSample sampleId) {
 	
 	AAL_ENTRY
 	
-	SampleHandle sampleHandle = Backend::getSampleId(sampleId);
+	SampleHandle sampleHandle = sampleId.getSampleId();
 	if(!g_samples.isValid(sampleHandle)) {
 		return AAL_ERROR_HANDLE;
 	}
@@ -567,7 +567,7 @@ aalError getSampleName(SourcedSample sampleId, res::path & name) {
 	
 	AAL_ENTRY
 	
-	SampleHandle sampleHandle = Backend::getSampleId(sampleId);
+	SampleHandle sampleHandle = sampleId.getSampleId();
 	if(!g_samples.isValid(sampleHandle)) {
 		return AAL_ERROR_HANDLE;
 	}
@@ -583,7 +583,7 @@ aalError getSampleLength(SourcedSample sampleId, size_t & length) {
 	
 	AAL_ENTRY
 	
-	SampleHandle sampleHandle = Backend::getSampleId(sampleId);
+	SampleHandle sampleHandle = sampleId.getSampleId();
 	if(!g_samples.isValid(sampleHandle)) {
 		return AAL_ERROR_HANDLE;
 	}
@@ -616,7 +616,7 @@ aalError samplePlay(SourcedSample & sampleId, const Channel & channel, unsigned 
 	
 	AAL_ENTRY
 	
-	SampleHandle s_id = Backend::getSampleId(sampleId);
+	SampleHandle s_id = sampleId.getSampleId();
 	sampleId = Backend::clearSource(sampleId);
 	if(!g_samples.isValid(s_id) || !g_mixers.isValid(channel.mixer)) {
 		return AAL_ERROR_HANDLE;
