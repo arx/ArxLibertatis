@@ -19,72 +19,106 @@
 
 #include "gui/DebugUtils.h"
 
+#include <algorithm>
 #include <iomanip>
 
 #include <boost/format.hpp>
+#include <boost/foreach.hpp>
 
 #include "graphics/font/Font.h"
 #include "gui/Text.h"
 #include "math/Angle.h"
 
+
+namespace arx {
+namespace debug {
+
+std::stringstream &operator <<(std::stringstream &ss, const Vec2i value) {
+	ss << boost::str(boost::format("(%d, %d)") % value.x % value.y);
+	return ss;
+}
+
+std::stringstream &operator <<(std::stringstream &ss, const Vec3f value) {
+	ss << boost::str(boost::format("%4.2f %4.2f %4.2f") % value.x % value.y % value.z);
+	return ss;
+}
+
+std::stringstream &operator <<(std::stringstream &ss, const Anglef value) {
+	ss << boost::str(boost::format("%4.2f %4.2f %4.2f") % value.getPitch() % value.getYaw() % value.getRoll());
+	return ss;
+}
+
+std::stringstream &operator <<(std::stringstream &ss, const ResourcePool value) {
+	ss << boost::str(boost::format("%4.2f/%4.2f") % value.current % value.max);
+	return ss;
+}
+
+} // namespace debug
+} // namespace arx
+
+
 DebugBox::DebugBox(const Vec2i & pos, const std::string & title)
 	: m_pos(pos)
 	, m_title(title)
-	, m_maxKeyLen(0)
 { }
 
-void DebugBox::add(const std::string & key, const std::string & value) {
-	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-	m_elements.push_back(std::make_pair(key, value));
-}
-
-void DebugBox::add(const std::string & key, const long value) {
-	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-	std::string valueStr = boost::str(boost::format("%ld") % value);
-	m_elements.push_back(std::make_pair(key, valueStr));
-}
-
-void DebugBox::add(const std::string & key, const float value) {
-	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-	std::string valueStr = boost::str(boost::format("%4.2f") % value);
-	m_elements.push_back(std::make_pair(key, valueStr));
-}
-
-void DebugBox::add(const std::string & key, const Vec2i value) {
-	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-	std::string valueStr = boost::str(boost::format("(%d, %d)") % value.x % value.y);
-	m_elements.push_back(std::make_pair(key, valueStr));
-}
-
-void DebugBox::add(const std::string & key, const Vec3f value) {
-	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-	std::string valueStr = boost::str(boost::format("%4.2f %4.2f %4.2f") % value.x % value.y % value.z);
-	m_elements.push_back(std::make_pair(key, valueStr));
-}
-
-void DebugBox::add(const std::string & key, const Anglef value) {
-	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-	std::string valueStr = boost::str(boost::format("%4.2f %4.2f %4.2f") % value.getPitch() % value.getYaw() % value.getRoll());
-	m_elements.push_back(std::make_pair(key, valueStr));
-}
-
-void DebugBox::add(const std::string & key, const ResourcePool value) {
-	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-	std::string valueStr = boost::str(boost::format("%4.2f/%4.2f") % value.current % value.max);
-	m_elements.push_back(std::make_pair(key, valueStr));
-}
-
 void DebugBox::print() {
+	
+	struct ColInfo {
+		int width;
+		bool numeric;
+		
+		ColInfo()
+			: width(0)
+			, numeric(true)
+		{ }
+	};
+	
+	std::vector<ColInfo> colums;
+	bool first = true;
+	BOOST_FOREACH(const Row & row, m_elements) {
+		colums.resize(std::max(colums.size(), row.fields.size()));
+		int i = 0;
+		BOOST_FOREACH(const std::string & field, row.fields){
+			colums[i].width = std::max(colums[i].width, int(field.size()));
+			
+			if(!first) {
+				bool numeric = true;
+				for(size_t u=0; u<field.size(); ++u) {
+					if(!(field[u] >= 48 && field[u] <= 57)) {
+						numeric = false;
+						break;
+					}
+				}
+				
+				if(!numeric) {
+					colums[i].numeric = false;
+				}
+			}
+			
+			i++;
+		}
+		first = false;
+	}
+	
 	int lineHeight = hFontDebug->getLineHeight();
 	Vec2i lineOffset = m_pos;
 	
 	hFontDebug->draw(lineOffset, std::string("╭─ ") + m_title, Color::white);
 	lineOffset.y += lineHeight;
 	
-	std::vector< std::pair<std::string, std::string> >::const_iterator itr;
-	for(itr = m_elements.begin(); itr != m_elements.end(); ++itr) {
+	BOOST_FOREACH(const Row & row, m_elements) {
 		std::stringstream out;
-		out << "│ " << std::left << std::setw(int(m_maxKeyLen)) << std::setfill(' ') << itr->first << " " << itr->second;
+		out << "│ ";
+		for(size_t i = 0; i < row.fields.size(); ++i) {
+			if(colums[i].numeric) {
+				out << std::right;
+			} else {
+				out << std::left;
+			}
+			out << std::setw(colums[i].width) << std::setfill(' ');
+			out << row.fields[i] << ' ';
+		}
 		hFontDebug->draw(lineOffset, out.str(), Color::white);
 		lineOffset.y += lineHeight;
 	}
