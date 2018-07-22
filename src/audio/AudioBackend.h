@@ -94,9 +94,6 @@ public:
 	virtual source_iterator sourcesBegin() = 0;
 	virtual source_iterator sourcesEnd() = 0;
 	virtual source_iterator deleteSource(source_iterator it) = 0;
-	
-	static SourcedSample clearSource(SourcedSample sourceId) { return SourcedSample(sourceId.ss | 0xffff0000); }
-	
 };
 
 } // namespace audio

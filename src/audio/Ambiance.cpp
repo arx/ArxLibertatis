@@ -325,7 +325,7 @@ void Ambiance::Track::keyPlay() {
 		SampleHandle sourceHandle = s_id.getSampleId();
 		source = backend->createSource(sourceHandle, channel);
 		if(!source) {
-			s_id = Backend::clearSource(s_id);
+			s_id.clearSource();
 			return;
 		}
 		
@@ -751,7 +751,7 @@ aalError Ambiance::stop(PlatformDuration fadeInterval) {
 		if(Source * source = backend->getSource(track->s_id)) {
 			source->stop();
 		}
-		track->s_id = Backend::clearSource(track->s_id);
+		track->s_id.clearSource();
 	}
 	
 	return AAL_OK;
