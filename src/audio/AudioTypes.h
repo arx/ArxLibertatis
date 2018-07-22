@@ -146,6 +146,10 @@ struct SourcedSample {
 	bool operator==(const SourcedSample & rhs) const { return ss == rhs.ss; }
 	bool operator!=(const SourcedSample & rhs) const { return ss != rhs.ss; }
 	
+	size_t source() const {
+		return ((ss >> 16) & 0x0000ffff);
+	}
+	
 	SampleHandle getSampleId() const {
 		return SampleHandle(ss & 0x0000ffff);
 	}
