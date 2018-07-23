@@ -25,7 +25,7 @@
 #include "audio/AudioTypes.h"
 #include "audio/Sample.h"
 
-#include "gui/DebugUtils.h"
+#include "gui/debug/DebugUtils.h"
 
 void debugHud_Audio() {
 	

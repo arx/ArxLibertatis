@@ -1013,8 +1013,6 @@ set(GUI_SOURCES
 	src/gui/Console.cpp
 	src/gui/Credits.cpp
 	src/gui/Cursor.cpp
-	src/gui/DebugHud.cpp
-	src/gui/DebugUtils.cpp
 	src/gui/Hud.cpp
 	src/gui/Interface.cpp
 	src/gui/LoadLevelScreen.cpp
@@ -1030,7 +1028,9 @@ set(GUI_SOURCES
 	src/gui/TextManager.cpp
 	src/gui/book/Book.cpp
 	src/gui/book/Necklace.cpp
+	src/gui/debug/DebugHud.cpp
 	src/gui/debug/DebugHudAudio.cpp
+	src/gui/debug/DebugUtils.cpp
 	src/gui/hud/HudCommon.cpp
 	src/gui/hud/PlayerInventory.cpp
 	src/gui/hud/SecondaryInventory.cpp
