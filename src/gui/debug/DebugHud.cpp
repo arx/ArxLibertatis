@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gui/DebugHud.h"
+#include "gui/debug/DebugHud.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -41,9 +41,9 @@
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/font/Font.h"
 
-#include "gui/DebugUtils.h"
 #include "gui/Text.h"
 #include "gui/Interface.h"
+#include "gui/debug/DebugUtils.h"
 
 #include "ai/PathFinderManager.h"
 #include "script/ScriptEvent.h"

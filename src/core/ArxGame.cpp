@@ -110,7 +110,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Console.h"
 #include "gui/Cursor.h"
-#include "gui/DebugHud.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
 #include "gui/LoadLevelScreen.h"
@@ -122,6 +121,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Speech.h"
 #include "gui/Text.h"
 #include "gui/TextManager.h"
+#include "gui/debug/DebugHud.h"
 #include "gui/debug/DebugHudAudio.h"
 
 #include "input/Input.h"

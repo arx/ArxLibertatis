@@ -17,12 +17,12 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GUI_DEBUGHUD_H
-#define ARX_GUI_DEBUGHUD_H
+#ifndef ARX_GUI_DEBUG_DEBUGHUD_H
+#define ARX_GUI_DEBUG_DEBUGHUD_H
 
 void ShowInfoText();
 void ShowFPS();
 void ShowFrameDurationPlot();
 void ShowDebugToggles();
 
-#endif // ARX_GUI_DEBUGHUD_H
+#endif // ARX_GUI_DEBUG_DEBUGHUD_H
