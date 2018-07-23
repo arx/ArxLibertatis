@@ -353,36 +353,20 @@ void ShowFPS() {
 
 void ShowDebugToggles() {
 	
-	const int lineHeight = hFontDebug->getLineHeight();
-	int line = 0;
-	
-	hFontDebug->draw(0, line * lineHeight, "Key Toggle Trigger", Color::white);
-	line++;
+	DebugBox togglesBox = DebugBox(Vec2i(10, 10), "Audio Sources");
+	togglesBox.add("Key", "Toggle", "Trigger");
 	
 	for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
-		std::stringstream textStream;
-		textStream << i << "   ";
-		textStream << (g_debugToggles[i] ? "on " : "off") << "    ";
-		
-		if(g_platformTime.frameStart() - g_debugTriggersTime[i] <= g_debugTriggersDecayDuration)
-			textStream << "fired";
-		
-		hFontDebug->draw(0, line * lineHeight, textStream.str(), Color::white);
-		line++;
+		togglesBox.add(i, (g_debugToggles[i] ? "on " : "off"),
+					   (g_platformTime.frameStart() - g_debugTriggersTime[i] <= g_debugTriggersDecayDuration) ? "fired" : "");
 	}
+	togglesBox.print();
 	
-	line++;
-	
-	hFontDebug->draw(0, line * lineHeight, "Values", Color::white);
-	line++;
-	
+	DebugBox valuesBox = DebugBox(Vec2i(10, togglesBox.size().y + 10), "Values");
 	for(size_t i = 0; i < ARRAY_SIZE(g_debugValues); i++) {
-		std::stringstream textStream;
-		textStream << i << "   ";
-		textStream << g_debugValues[i];
-		hFontDebug->draw(0, line * lineHeight, textStream.str(), Color::white);
-		line++;
+		valuesBox.add(i, g_debugValues[i]);
 	}
+	valuesBox.print();
 }
 
 
