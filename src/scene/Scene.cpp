@@ -1383,20 +1383,26 @@ void ARX_SCENE_Update() {
 	
 	ACTIVEBKG->resetActiveTiles();
 	
-	long room_num = ARX_PORTALS_GetRoomNumForPosition(camPos, 1);
-	if(room_num > -1) {
-		
-		ARX_PORTALS_InitDrawnRooms();
-		size_t roomIndex = static_cast<size_t>(room_num);
-		EERIE_FRUSTRUM frustrum = CreateScreenFrustrum();
-		ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, frustrum, camPos, camDepth);
-		
-		for(size_t i = 0; i < RoomDrawList.size(); i++) {
-			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, now, camPos);
+	ARX_PORTALS_InitDrawnRooms();
+	
+	EERIE_FRUSTRUM screenFrustrum = CreateScreenFrustrum();
+	
+	if(!USE_PLAYERCOLLISIONS) {
+		for(size_t i = 0; i < portals->rooms.size(); i++) {
+			RoomDraw[i].count = 1;
+			RoomDrawList.push_back(i);
+			RoomFrustrumAdd(i, screenFrustrum);
 		}
-		
 	} else {
-		RoomDrawRelease();
+		long room_num = ARX_PORTALS_GetRoomNumForPosition(camPos, 1);
+		if(room_num > -1) {
+			size_t roomIndex = static_cast<size_t>(room_num);
+			ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, screenFrustrum, camPos, camDepth);
+		}
+	}
+	
+	for(size_t i = 0; i < RoomDrawList.size(); i++) {
+		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, now, camPos);
 	}
 	
 	ARX_THROWN_OBJECT_Manage(g_gameTime.lastFrameDuration());
