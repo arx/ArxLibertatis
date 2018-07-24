@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gui/debug/DebugUtils.h"
+#include "gui/debug/DebugPanel.h"
 
 #include <algorithm>
 #include <iomanip>

@@ -43,7 +43,7 @@
 
 #include "gui/Text.h"
 #include "gui/Interface.h"
-#include "gui/debug/DebugUtils.h"
+#include "gui/debug/DebugPanel.h"
 
 #include "ai/PathFinderManager.h"
 #include "script/ScriptEvent.h"

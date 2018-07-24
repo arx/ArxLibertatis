@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GUI_DEBUG_DEBUGUTILS_H
-#define ARX_GUI_DEBUG_DEBUGUTILS_H
+#ifndef ARX_GUI_DEBUG_DEBUGPANEL_H
+#define ARX_GUI_DEBUG_DEBUGPANEL_H
 
 #include <sstream>
 #include <string>
@@ -113,4 +113,4 @@ private:
 	std::vector<Row> m_elements;
 };
 
-#endif // ARX_GUI_DEBUG_DEBUGUTILS_H
+#endif // ARX_GUI_DEBUG_DEBUGPANEL_H
