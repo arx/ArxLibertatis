@@ -123,6 +123,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 #include "gui/Text.h"
 #include "gui/TextManager.h"
+#include "gui/debug/DebugKeys.h"
 
 #include "input/Input.h"
 #include "input/Keyboard.h"
@@ -209,12 +210,6 @@ bool START_NEW_QUEST = false;
 static long LAST_WEAPON_TYPE = -1;
 
 float PULSATE;
-
-
-bool g_debugToggles[10];
-bool g_debugTriggers[10];
-PlatformInstant g_debugTriggersTime[10] = { 0 };
-float g_debugValues[10];
 
 bool AdjustUI() {
 	

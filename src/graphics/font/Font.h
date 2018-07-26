@@ -187,6 +187,7 @@ public:
 	text_iterator getPosition(text_iterator start, text_iterator end, int x);
 	
 	int getLineHeight() const;
+	int getMaxAdvance() const;
 	
 private:
 	

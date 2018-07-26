@@ -62,19 +62,10 @@ DebugBox::DebugBox(const Vec2i & pos, const std::string & title)
 	, m_title(title)
 { }
 
-void DebugBox::print() {
+void DebugBox::calcSizes() {
 	
-	struct ColInfo {
-		int width;
-		bool numeric;
-		
-		ColInfo()
-			: width(0)
-			, numeric(true)
-		{ }
-	};
+	colums.clear();
 	
-	std::vector<ColInfo> colums;
 	bool first = true;
 	BOOST_FOREACH(const Row & row, m_elements) {
 		colums.resize(std::max(colums.size(), row.fields.size()));
@@ -101,10 +92,42 @@ void DebugBox::print() {
 		first = false;
 	}
 	
+	int maxRowChars = 2;
+	for(size_t i = 0; i < colums.size(); ++i) {
+		maxRowChars += colums[i].width + 1;
+	}
+	
+	m_chars = Vec2i(maxRowChars, m_elements.size() + 2);
+	
+	int lineHeight = hFontDebug->getLineHeight();
+	int maxAdvance = hFontDebug->getMaxAdvance();
+	
+	m_size = Vec2f(m_chars.x * maxAdvance, m_chars.y * lineHeight);
+}
+
+void DebugBox::print() {
+	calcSizes();
+	printCommon();
+}
+
+void DebugBox::print(Vec2f parent) {
+	calcSizes();
+	m_pos = parent - m_size - Vec2f(40.f, 80.f);
+	printCommon();
+}
+
+void DebugBox::printCommon() {
+	
 	int lineHeight = hFontDebug->getLineHeight();
 	Vec2i lineOffset = m_pos;
 	
-	hFontDebug->draw(lineOffset, std::string("╭─ ") + m_title, Color::white);
+	std::stringstream top;
+	top << "╭─ " << m_title << " ";
+	for(int i=0; i<m_chars.x - 3 - m_title.size(); i++)
+		top << "─";
+	top << "┐";
+	
+	hFontDebug->draw(lineOffset, top.str(), Color::white);
 	lineOffset.y += lineHeight;
 	
 	BOOST_FOREACH(const Row & row, m_elements) {
@@ -123,12 +146,9 @@ void DebugBox::print() {
 		lineOffset.y += lineHeight;
 	}
 	
-	hFontDebug->draw(lineOffset, std::string("╰─ "), Color::white);
-	lineOffset.y += lineHeight;
-	
-	m_size = lineOffset;
+	hFontDebug->draw(lineOffset, std::string("╰─"), Color::white);
 }
 
-Vec2i DebugBox::size() {
-	return m_size;
+Vec2f DebugBox::size() {
+	return m_pos + m_size;
 }

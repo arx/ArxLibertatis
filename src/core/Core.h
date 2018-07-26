@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/TimeTypes.h"
 #include "graphics/Color.h"
 #include "graphics/data/Mesh.h"
+#include "gui/debug/DebugKeys.h"
 #include "io/resource/ResourcePath.h"
 #include "math/Types.h"
 
@@ -105,12 +106,6 @@ inline Vec2f RATIO_2(const Vec2f & in) {
 
 class Image;
 extern Image savegame_thumbnail;
-
-extern bool g_debugToggles[10];
-extern bool g_debugTriggers[10];
-extern PlatformInstant g_debugTriggersTime[10];
-static const PlatformDuration g_debugTriggersDecayDuration = PlatformDurationMs(200);
-extern float g_debugValues[10];
 
 enum ChangeLevelIcon {
 	NoChangeLevel,

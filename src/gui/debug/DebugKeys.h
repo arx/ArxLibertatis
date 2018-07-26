@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2018 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -17,11 +17,14 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GUI_DEBUG_DEBUGHUD_H
-#define ARX_GUI_DEBUG_DEBUGHUD_H
+#ifndef ARX_GUI_DEBUG_DEBUGKEYS_H
+#define ARX_GUI_DEBUG_DEBUGKEYS_H
 
-void ShowInfoText();
-void ShowFPS();
-void ShowFrameDurationPlot();
+extern bool g_debugToggles[10];
+extern bool g_debugTriggers[10];
+extern float g_debugValues[10];
 
-#endif // ARX_GUI_DEBUG_DEBUGHUD_H
+void debug_keysUpdate();
+void ShowDebugToggles();
+
+#endif // ARX_GUI_DEBUG_DEBUGKEYS_H

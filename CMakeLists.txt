@@ -1030,6 +1030,7 @@ set(GUI_SOURCES
 	src/gui/book/Necklace.cpp
 	src/gui/debug/DebugHud.cpp
 	src/gui/debug/DebugHudAudio.cpp
+	src/gui/debug/DebugKeys.cpp
 	src/gui/debug/DebugPanel.cpp
 	src/gui/hud/HudCommon.cpp
 	src/gui/hud/PlayerInventory.cpp

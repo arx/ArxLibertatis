@@ -351,24 +351,6 @@ void ShowFPS() {
 	hFontDebug->draw(Vec2i(10, 10), oss.str(), Color::white);
 }
 
-void ShowDebugToggles() {
-	
-	DebugBox togglesBox = DebugBox(Vec2i(10, 10), "Audio Sources");
-	togglesBox.add("Key", "Toggle", "Trigger");
-	
-	for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
-		togglesBox.add(i, (g_debugToggles[i] ? "on " : "off"),
-					   (g_platformTime.frameStart() - g_debugTriggersTime[i] <= g_debugTriggersDecayDuration) ? "fired" : "");
-	}
-	togglesBox.print();
-	
-	DebugBox valuesBox = DebugBox(Vec2i(10, togglesBox.size().y + 10), "Values");
-	for(size_t i = 0; i < ARRAY_SIZE(g_debugValues); i++) {
-		valuesBox.add(i, g_debugValues[i]);
-	}
-	valuesBox.print();
-}
-
 
 static boost::circular_buffer<float> frameDurationPlotValues;
 static std::vector<TexturedVertex> frameDurationPlotVertices;
