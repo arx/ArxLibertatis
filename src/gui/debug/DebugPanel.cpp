@@ -102,7 +102,7 @@ void DebugBox::calcSizes() {
 	int lineHeight = hFontDebug->getLineHeight();
 	int maxAdvance = hFontDebug->getMaxAdvance();
 	
-	m_size = Vec2f(m_chars.x * maxAdvance, m_chars.y * lineHeight);
+	m_size = Vec2i(m_chars.x * maxAdvance, m_chars.y * lineHeight);
 }
 
 void DebugBox::print() {
@@ -110,9 +110,9 @@ void DebugBox::print() {
 	printCommon();
 }
 
-void DebugBox::print(Vec2f parent) {
+void DebugBox::print(Vec2i parent) {
 	calcSizes();
-	m_pos = parent - m_size - Vec2f(40.f, 80.f);
+	m_pos = parent - m_size - Vec2i(40, 80);
 	printCommon();
 }
 
@@ -123,7 +123,7 @@ void DebugBox::printCommon() {
 	
 	std::stringstream top;
 	top << "╭─ " << m_title << " ";
-	for(int i=0; i<m_chars.x - 3 - m_title.size(); i++)
+	for(int i=0; i < m_chars.x - 3 - int(m_title.size()); i++)
 		top << "─";
 	top << "┐";
 	
@@ -149,6 +149,6 @@ void DebugBox::printCommon() {
 	hFontDebug->draw(lineOffset, std::string("╰─"), Color::white);
 }
 
-Vec2f DebugBox::size() {
+Vec2i DebugBox::size() {
 	return m_pos + m_size;
 }

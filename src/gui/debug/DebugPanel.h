@@ -75,9 +75,9 @@ class DebugBox {
 		{ }
 	};
 	
-	Vec2f m_pos;
-	Vec2f m_chars;
-	Vec2f m_size;
+	Vec2i m_pos;
+	Vec2i m_chars;
+	Vec2i m_size;
 	std::string m_title;
 	
 	std::vector<Row> m_elements;
@@ -125,9 +125,9 @@ public:
 	}
 	
 	void print();
-	void print(Vec2f parent);
+	void print(Vec2i parent);
 	
-	Vec2f size();
+	Vec2i size();
 };
 
 #endif // ARX_GUI_DEBUG_DEBUGPANEL_H
