@@ -1643,32 +1643,7 @@ void ArxGame::updateInput() {
 		if(g_debugInfo == InfoPanelEnumSize)
 			g_debugInfo = InfoPanelNone;
 	}
-
-	if(g_debugInfo == InfoPanelDebugToggles) {
-		
-		for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
-			g_debugTriggers[i] = false;
-			
-			if(GInput->isKeyPressed(Keyboard::Key_NumPadEnter)) {
-				if(   GInput->isKeyPressed(Keyboard::Key_NumPad0 + i)
-				   && g_platformTime.frameStart() - g_debugTriggersTime[i] > g_debugTriggersDecayDuration
-				) {
-					g_debugTriggersTime[i] = g_platformTime.frameStart();
-					g_debugTriggers[i] = true;
-				}
-			} else {
-				if(GInput->isKeyPressedNowPressed(Keyboard::Key_NumPad0 + i)) {
-					g_debugToggles[i] = !g_debugToggles[i];
-				}
-				if(GInput->isKeyPressed(Keyboard::Key_LeftShift)
-				   && GInput->isKeyPressed(Keyboard::Key_LeftAlt)
-				   && GInput->isKeyPressedNowPressed(Keyboard::Key_0 + i)) {
-					g_debugToggles[i] = !g_debugToggles[i];
-				}
-			}
-		}
-	}
-
+	
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F10)) {
 		GetSnapShot();
 	}
@@ -1680,6 +1655,8 @@ void ArxGame::updateInput() {
 	g_console.update();
 	
 #ifdef ARX_DEBUG
+	debug_keysUpdate();
+	
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_Pause)) {
 		if(g_gameTime.isPaused() & GameTime::PauseUser) {
 			g_gameTime.resume(GameTime::PauseUser);
@@ -2095,10 +2072,6 @@ void ArxGame::render() {
 			ShowInfoText();
 			break;
 		}
-		case InfoPanelDebugToggles: {
-			ShowDebugToggles();
-			break;
-		}
 		case InfoPanelAudio: {
 			debugHud_Audio();
 			break;
@@ -2106,6 +2079,10 @@ void ArxGame::render() {
 		default: break;
 		}
 	}
+	
+#ifdef ARX_DEBUG
+	ShowDebugToggles();
+#endif
 	
 	g_console.draw();
 	

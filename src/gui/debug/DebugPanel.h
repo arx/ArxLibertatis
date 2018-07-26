@@ -27,6 +27,7 @@
 #include <boost/mpl/size.hpp>
 
 #include "game/GameTypes.h"
+#include "gui/hud/HudCommon.h"
 #include "math/Angle.h"
 #include "math/Types.h"
 
@@ -59,6 +60,40 @@ std::stringstream &operator <<(std::stringstream &ss, const ResourcePool value);
 } // namespace arx
 
 class DebugBox {
+	
+	struct Row {
+		std::vector<std::string> fields;
+	};
+	
+	struct ColInfo {
+		int width;
+		bool numeric;
+		
+		ColInfo()
+			: width(0)
+			, numeric(true)
+		{ }
+	};
+	
+	Vec2f m_pos;
+	Vec2f m_chars;
+	Vec2f m_size;
+	std::string m_title;
+	
+	std::vector<Row> m_elements;
+	std::vector<ColInfo> colums;
+	
+	void calcSizes();
+	void printCommon();
+	
+	template<typename FIELD_T>
+	void put(Row & row, FIELD_T val) {
+		using namespace arx::debug;
+		std::stringstream ss;
+		ss << val;
+		row.fields.push_back(ss.str());
+	}
+	
 public:
 	DebugBox(const Vec2i & pos, const std::string & title);
 	
@@ -90,27 +125,9 @@ public:
 	}
 	
 	void print();
-	Vec2i size();
+	void print(Vec2f parent);
 	
-private:
-	
-	struct Row {
-		std::vector<std::string> fields;
-	};
-	
-	template<typename FIELD_T>
-	void put(Row & row, FIELD_T val) {
-		using namespace arx::debug;
-		std::stringstream ss;
-		ss << val;
-		row.fields.push_back(ss.str());
-	}
-	
-	Vec2i m_pos;
-	std::string m_title;
-	Vec2i m_size;
-	
-	std::vector<Row> m_elements;
+	Vec2f size();
 };
 
 #endif // ARX_GUI_DEBUG_DEBUGPANEL_H
