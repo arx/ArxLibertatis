@@ -215,8 +215,7 @@ audio::SourcedSample ARX_SOUND_PlaySFX(audio::SourcedSample & sample_id, const V
                                   float pitch = 1.f, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 void ARX_SOUND_PlayInterface(audio::SourcedSample & sample_id, float pitch = 1.f,
                              SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
-void ARX_SOUND_PlayMenu(audio::SourcedSample & sample_id, float pitch = 1.f,
-                        SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
+void ARX_SOUND_PlayMenu(audio::SourcedSample & sample_id);
 
 audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar = NULL, const Entity * io = NULL);
 long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source);
