@@ -426,8 +426,7 @@ void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & text) {
 	
 	switch(openNote.type()) {
 		case Note::Notice: {
-			audio::SourcedSample ss(audio::SourceHandle(), g_snd.MENU_CLICK);
-			ARX_SOUND_PlayInterface(ss, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(g_snd.MENU_CLICK, Random::getf(0.9f, 1.1f));
 			break;
 		}
 		case Note::Book:
@@ -458,8 +457,7 @@ void ARX_INTERFACE_NoteClose() {
 	
 	switch(openNote.type()) {
 		case Note::Notice: {
-			audio::SourcedSample ss(audio::SourceHandle(), g_snd.MENU_CLICK);
-			ARX_SOUND_PlayInterface(ss, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(g_snd.MENU_CLICK, Random::getf(0.9f, 1.1f));
 			break;
 		}
 		case Note::Book:
@@ -2042,7 +2040,7 @@ void ArxGame::manageEditorControls() {
 						} else {
 							if(io->ioflags & IO_UNDERWATER) {
 								io->ioflags &= ~IO_UNDERWATER;
-								ARX_SOUND_PlayInterface(g_snd.PLOUF, Random::getf(0.8f, 1.2f));
+								ARX_SOUND_PlayInterface(g_snd.PLOUF.getSampleId(), Random::getf(0.8f, 1.2f));
 							}
 							DRAGINTER->show = SHOW_FLAG_NOT_DRAWN;
 							ARX_SOUND_PlayInterface(g_snd.INVSTD);

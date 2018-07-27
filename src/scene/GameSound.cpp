@@ -397,8 +397,9 @@ static void playSample(audio::SourcedSample & sample_id, float pitch, SoundLoopM
 	
 }
 
-void ARX_SOUND_PlayInterface(audio::SourcedSample & sample_id, float pitch) {
-	playSample(sample_id, pitch, ARX_SOUND_PLAY_ONCE, ARX_SOUND_MixerGameSample);
+void ARX_SOUND_PlayInterface(audio::SampleHandle sample_id, float pitch) {
+	audio::SourcedSample ss(audio::SourceHandle(), sample_id);
+	playSample(ss, pitch, ARX_SOUND_PLAY_ONCE, ARX_SOUND_MixerGameSample);
 }
 
 void ARX_SOUND_PlayMenu(audio::SampleHandle sample_id) {
@@ -949,21 +950,21 @@ static void ARX_SOUND_CreateEnvironments() {
 static void ARX_SOUND_CreateStaticSamples() {
 	
 	// Interface
-	g_snd.BACKPACK                       = audio::createSample("interface_backpack.wav");
-	g_snd.BOOK_OPEN                      = audio::createSample("book_open.wav");
-	g_snd.BOOK_CLOSE                     = audio::createSample("book_close.wav");
-	g_snd.BOOK_PAGE_TURN                 = audio::createSample("book_page_turn.wav");
-	g_snd.SCROLL_OPEN                    = audio::createSample("scroll_open.wav");
-	g_snd.SCROLL_CLOSE                   = audio::createSample("scroll_close.wav");
+	g_snd.BACKPACK                       = audio::createSample2("interface_backpack.wav");
+	g_snd.BOOK_OPEN                      = audio::createSample2("book_open.wav");
+	g_snd.BOOK_CLOSE                     = audio::createSample2("book_close.wav");
+	g_snd.BOOK_PAGE_TURN                 = audio::createSample2("book_page_turn.wav");
+	g_snd.SCROLL_OPEN                    = audio::createSample2("scroll_open.wav");
+	g_snd.SCROLL_CLOSE                   = audio::createSample2("scroll_close.wav");
 	g_snd.TORCH_START                    = audio::createSample("torch_start.wav");
 	g_snd.TORCH_LOOP                     = audio::createSample("sfx_torch_11khz.wav");
 	g_snd.TORCH_END                      = audio::createSample("torch_end.wav");
-	g_snd.INVSTD                         = audio::createSample("interface_invstd.wav");
-	g_snd.GOLD                           = audio::createSample("drop_coin.wav");
+	g_snd.INVSTD                         = audio::createSample2("interface_invstd.wav");
+	g_snd.GOLD                           = audio::createSample2("drop_coin.wav");
 	
 	// Menu
 	g_snd.MENU_CLICK                     = audio::createSample2("menu_click.wav");
-	g_snd.MENU_RELEASE                   = audio::createSample("menu_release.wav");
+	g_snd.MENU_RELEASE                   = audio::createSample2("menu_release.wav");
 	
 	// Other SFX samples
 	g_snd.FIREPLACE                      = audio::createSample("fire_place.wav");
@@ -972,10 +973,10 @@ static void ARX_SOUND_CreateStaticSamples() {
 	g_snd.WHOOSH                         = audio::createSample("whoosh07.wav");
 	
 	// Player
-	g_snd.PLAYER_HEART_BEAT              = audio::createSample("player_heartb.wav");
-	g_snd.PLAYER_LEVEL_UP                = audio::createSample("player_level_up.wav");
-	g_snd.PLAYER_POISONED                = audio::createSample("player_poisoned.wav");
-	g_snd.PLAYER_DEATH_BY_FIRE           = audio::createSample("lava_death.wav");
+	g_snd.PLAYER_HEART_BEAT              = audio::createSample2("player_heartb.wav");
+	g_snd.PLAYER_LEVEL_UP                = audio::createSample2("player_level_up.wav");
+	g_snd.PLAYER_POISONED                = audio::createSample2("player_poisoned.wav");
+	g_snd.PLAYER_DEATH_BY_FIRE           = audio::createSample2("lava_death.wav");
 	
 	// Magic draw
 	g_snd.MAGIC_AMBIENT                  = audio::createSample("magic_ambient.wav");
@@ -1005,7 +1006,7 @@ static void ARX_SOUND_CreateStaticSamples() {
 	g_snd.SYMB[RUNE_YOK]                       = audio::createSample("magic_yok.wav");
 	
 	// Spells
-	g_snd.SPELL_ACTIVATE_PORTAL          = audio::createSample("magic_spell_activate_portal.wav");
+	g_snd.SPELL_ACTIVATE_PORTAL          = audio::createSample2("magic_spell_activate_portal.wav");
 	g_snd.SPELL_ARMOR_START              = audio::createSample("magic_spell_armor_start.wav");
 	g_snd.SPELL_ARMOR_END                = audio::createSample("magic_spell_armor_end.wav");
 	g_snd.SPELL_ARMOR_LOOP               = audio::createSample("magic_spell_armor_loop.wav");
@@ -1021,7 +1022,7 @@ static void ARX_SOUND_CreateStaticSamples() {
 	g_snd.SPELL_CREATE_FOOD              = audio::createSample("magic_spell_create_food.wav");
 	g_snd.SPELL_CURE_POISON              = audio::createSample("magic_spell_cure_poison.wav");
 	g_snd.SPELL_CURSE                    = audio::createSample("magic_spell_curse.wav");
-	g_snd.SPELL_DETECT_TRAP              = audio::createSample("magic_spell_detect_trap.wav");
+	g_snd.SPELL_DETECT_TRAP              = audio::createSample2("magic_spell_detect_trap.wav");
 	g_snd.SPELL_DETECT_TRAP_LOOP         = audio::createSample("magic_spell_detect_trap_loop.wav");
 	g_snd.SPELL_DISARM_TRAP              = audio::createSample("magic_spell_disarm_trap.wav");
 	g_snd.SPELL_DISPELL_FIELD            = audio::createSample("magic_spell_dispell_field.wav");

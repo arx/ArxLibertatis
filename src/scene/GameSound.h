@@ -77,17 +77,17 @@ const std::string AMB_CREDITS = "ambient_credits.amb";
 struct StaticSamples {
 // Menu samples
 audio::SampleHandle MENU_CLICK;
-audio::SourcedSample MENU_RELEASE;
+audio::SampleHandle MENU_RELEASE;
 
 // Interface samples
-audio::SourcedSample BACKPACK;
-audio::SourcedSample BOOK_OPEN;
-audio::SourcedSample BOOK_CLOSE;
-audio::SourcedSample BOOK_PAGE_TURN;
-audio::SourcedSample GOLD;
-audio::SourcedSample INVSTD;
-audio::SourcedSample SCROLL_OPEN;
-audio::SourcedSample SCROLL_CLOSE;
+audio::SampleHandle BACKPACK;
+audio::SampleHandle BOOK_OPEN;
+audio::SampleHandle BOOK_CLOSE;
+audio::SampleHandle BOOK_PAGE_TURN;
+audio::SampleHandle GOLD;
+audio::SampleHandle INVSTD;
+audio::SampleHandle SCROLL_OPEN;
+audio::SampleHandle SCROLL_CLOSE;
 audio::SourcedSample TORCH_START;
 audio::SourcedSample TORCH_LOOP;
 audio::SourcedSample TORCH_END;
@@ -99,10 +99,10 @@ audio::SourcedSample QUAKE;
 audio::SourcedSample WHOOSH;
 
 // Player samples
-audio::SourcedSample PLAYER_DEATH_BY_FIRE;
-audio::SourcedSample PLAYER_HEART_BEAT;
-audio::SourcedSample PLAYER_LEVEL_UP;
-audio::SourcedSample PLAYER_POISONED;
+audio::SampleHandle PLAYER_DEATH_BY_FIRE;
+audio::SampleHandle PLAYER_HEART_BEAT;
+audio::SampleHandle PLAYER_LEVEL_UP;
+audio::SampleHandle PLAYER_POISONED;
 
 // Magic drawing samples
 audio::SourcedSample MAGIC_AMBIENT;
@@ -113,7 +113,7 @@ audio::SourcedSample MAGIC_FIZZLE;
 audio::SourcedSample SYMB[RUNE_COUNT];
 
 // Spells samples
-audio::SourcedSample SPELL_ACTIVATE_PORTAL;
+audio::SampleHandle SPELL_ACTIVATE_PORTAL;
 audio::SourcedSample SPELL_ARMOR_START;
 audio::SourcedSample SPELL_ARMOR_END;
 audio::SourcedSample SPELL_ARMOR_LOOP;
@@ -127,7 +127,7 @@ audio::SourcedSample SPELL_CREATE_FIELD;
 audio::SourcedSample SPELL_CREATE_FOOD;
 audio::SourcedSample SPELL_CURE_POISON;
 audio::SourcedSample SPELL_CURSE;
-audio::SourcedSample SPELL_DETECT_TRAP;
+audio::SampleHandle SPELL_DETECT_TRAP;
 audio::SourcedSample SPELL_DETECT_TRAP_LOOP;
 audio::SourcedSample SPELL_DISARM_TRAP;
 audio::SourcedSample SPELL_DISPELL_FIELD;
@@ -216,7 +216,7 @@ void ARX_SOUND_Free(const audio::SourcedSample & sample);
 
 audio::SourcedSample ARX_SOUND_PlaySFX(audio::SourcedSample & sample_id, const Vec3f * position = NULL,
                                   float pitch = 1.f, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
-void ARX_SOUND_PlayInterface(audio::SourcedSample & sample_id, float pitch = 1.f);
+void ARX_SOUND_PlayInterface(audio::SampleHandle sample_id, float pitch = 1.f);
 void ARX_SOUND_PlayMenu(audio::SampleHandle sample_id);
 
 audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar = NULL, const Entity * io = NULL);
