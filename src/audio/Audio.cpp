@@ -287,8 +287,12 @@ MixerId createMixer() {
 }
 
 SourcedSample createSample(const res::path & name) {
+	return SourcedSample(SourceHandle(), createSample2(name));
+}
+
+SampleHandle createSample2(const res::path & name) {
 	
-	AAL_ENTRY_V(SourcedSample())
+	AAL_ENTRY_V(SampleHandle())
 	
 	Sample * sample = new Sample(name);
 	
@@ -299,7 +303,7 @@ SourcedSample createSample(const res::path & name) {
 		sample->reference();
 	}
 	
-	return SourcedSample(SourceHandle(), sampleHandle);
+	return sampleHandle;
 }
 
 AmbianceId createAmbiance(const res::path & name) {
