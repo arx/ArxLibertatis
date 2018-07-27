@@ -401,7 +401,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	aspeech[num].sample = ARX_SOUND_PlaySpeech(sample, NULL, source);
 	
 	// TODO Next lines must be removed (use callback instead)
-	aspeech[num].duration = ARX_SOUND_GetDuration(aspeech[num].sample);
+	aspeech[num].duration = ARX_SOUND_GetDuration(aspeech[num].sample.getSampleId());
 	
 	if ((io->ioflags & IO_NPC) && !(aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)) {
 		float fDiv = toMsf(aspeech[num].duration) / io->_npcdata->speakpitch;
@@ -513,7 +513,7 @@ void ARX_SPEECH_Update() {
 
 			if(speech->sample != audio::SourcedSample()) {
 				
-				GameDuration duration = ARX_SOUND_GetDuration(speech->sample);
+				GameDuration duration = ARX_SOUND_GetDuration(speech->sample.getSampleId());
 				if(duration == 0) {
 					duration = GameDurationMs(4000);
 				}

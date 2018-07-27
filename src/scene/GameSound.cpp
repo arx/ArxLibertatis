@@ -807,11 +807,11 @@ bool ARX_SOUND_IsPlaying(audio::SourcedSample & sample_id) {
 }
 
 
-GameDuration ARX_SOUND_GetDuration(audio::SourcedSample & sample_id) {
+GameDuration ARX_SOUND_GetDuration(audio::SampleHandle sample_id) {
 	
-	if(g_soundInitialized && sample_id != audio::SourcedSample()) {
+	if(g_soundInitialized && sample_id != audio::SampleHandle()) {
 		size_t length;
-		audio::getSampleLength(sample_id.getSampleId(), length);
+		audio::getSampleLength(sample_id, length);
 		return GameDurationMs(length);
 	}
 

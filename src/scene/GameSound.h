@@ -224,7 +224,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool &tooFar, 
 void ARX_SOUND_PlayAnim(audio::SourcedSample & sample_id, const Vec3f * position = NULL);
 audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech);
 bool ARX_SOUND_IsPlaying(audio::SourcedSample & sample_id);
-GameDuration ARX_SOUND_GetDuration(audio::SourcedSample & sample_id);
+GameDuration ARX_SOUND_GetDuration(audio::SampleHandle sample_id);
 
 void ARX_SOUND_RefreshVolume(audio::SourcedSample & sample_id, float volume);
 void ARX_SOUND_RefreshPosition(audio::SourcedSample & sample_id, const Vec3f & position);
