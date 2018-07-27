@@ -213,8 +213,7 @@ void ARX_SOUND_Free(const audio::SourcedSample & sample);
 
 audio::SourcedSample ARX_SOUND_PlaySFX(audio::SourcedSample & sample_id, const Vec3f * position = NULL,
                                   float pitch = 1.f, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
-void ARX_SOUND_PlayInterface(audio::SourcedSample & sample_id, float pitch = 1.f,
-                             SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
+void ARX_SOUND_PlayInterface(audio::SourcedSample & sample_id, float pitch = 1.f);
 void ARX_SOUND_PlayMenu(audio::SourcedSample & sample_id);
 
 audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar = NULL, const Entity * io = NULL);
