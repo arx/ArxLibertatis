@@ -377,9 +377,9 @@ audio::SourcedSample ARX_SOUND_PlaySFX(audio::SourcedSample & sample_id, const V
 	return sample_id;
 }
 
-static void playSample(audio::SourcedSample & sample_id, float pitch, SoundLoopMode loop, audio::MixerId mixer) {
+static void playSample(audio::SampleHandle sample_id, float pitch, SoundLoopMode loop, audio::MixerId mixer) {
 	
-	if(!g_soundInitialized || sample_id == audio::SourcedSample()) {
+	if(!g_soundInitialized || sample_id == audio::SampleHandle()) {
 		return;
 	}
 	
@@ -392,19 +392,16 @@ static void playSample(audio::SourcedSample & sample_id, float pitch, SoundLoopM
 		channel.pitch = pitch;
 	}
 	
-	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, sample_id.getSampleId(), channel, loop);
-	
+	audio::SourcedSample ignore;
+	audio::samplePlay(ignore, sample_id, channel, loop);
 }
 
 void ARX_SOUND_PlayInterface(audio::SampleHandle sample_id, float pitch) {
-	audio::SourcedSample ss(audio::SourceHandle(), sample_id);
-	playSample(ss, pitch, ARX_SOUND_PLAY_ONCE, ARX_SOUND_MixerGameSample);
+	playSample(sample_id, pitch, ARX_SOUND_PLAY_ONCE, ARX_SOUND_MixerGameSample);
 }
 
 void ARX_SOUND_PlayMenu(audio::SampleHandle sample_id) {
-	audio::SourcedSample ss(audio::SourceHandle(), sample_id);
-	playSample(ss, 1.f, ARX_SOUND_PLAY_ONCE, ARX_SOUND_MixerMenuSample);
+	playSample(sample_id, 1.f, ARX_SOUND_PLAY_ONCE, ARX_SOUND_MixerMenuSample);
 }
 
 static Vec3f ARX_SOUND_IOFrontPos(const Entity * io) {
