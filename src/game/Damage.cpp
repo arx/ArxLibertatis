@@ -294,7 +294,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 				ARX_PLAYER_BecomesDead();
 
 				if((type & DAMAGE_TYPE_FIRE) || (type & DAMAGE_TYPE_FAKEFIRE)) {
-					ARX_SOUND_PlayInterface(SND.PLAYER_DEATH_BY_FIRE);
+					ARX_SOUND_PlayInterface(g_snd.PLAYER_DEATH_BY_FIRE);
 				}
 
 				SendIOScriptEvent(sender, entities.player(), SM_DIE);
@@ -870,9 +870,9 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 	if(di.lastupd + GameDurationMs(200) < now) {
 		di.lastupd = now;
 		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
-			ARX_SOUND_PlaySFX(SND.SPELL_MAGICAL_HIT, &pos, Random::getf(0.8f, 1.2f));
+			ARX_SOUND_PlaySFX(g_snd.SPELL_MAGICAL_HIT, &pos, Random::getf(0.8f, 1.2f));
 		} else {
-			ARX_SOUND_PlaySFX(SND.SPELL_FIRE_HIT, &pos, Random::getf(0.8f, 1.2f));
+			ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &pos, Random::getf(0.8f, 1.2f));
 		}
 	}
 	

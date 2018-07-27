@@ -281,7 +281,7 @@ static void CheckExp(const Projectile & projectile) {
 		PolyBoomAddScorch(pos);
 		LaunchFireballBoom(pos, 10);
 		DoSphericDamage(Sphere(pos, 50.f), 4.f * 2, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle_Player);
-		ARX_SOUND_PlaySFX(SND.SPELL_FIRE_HIT, &pos);
+		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &pos);
 		ARX_NPC_SpawnAudibleSound(pos, entities.player());
 		
 		EERIE_LIGHT * light = dynLightCreate();
@@ -385,11 +385,11 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		if(projectile.flags & ATO_UNDERWATER) {
 			if(!ep) {
 				projectile.flags &= ~ATO_UNDERWATER;
-				ARX_SOUND_PlaySFX(SND.PLOUF, &projectile.position);
+				ARX_SOUND_PlaySFX(g_snd.PLOUF, &projectile.position);
 			}
 		} else if(ep) {
 			projectile.flags |= ATO_UNDERWATER;
-			ARX_SOUND_PlaySFX(SND.PLOUF, &projectile.position);
+			ARX_SOUND_PlaySFX(g_snd.PLOUF, &projectile.position);
 		}
 	}
 	

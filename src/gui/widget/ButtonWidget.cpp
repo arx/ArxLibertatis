@@ -42,7 +42,7 @@ bool ButtonWidget::click() {
 	bool result = Widget::click();
 	
 	if(m_enabled) {
-		ARX_SOUND_PlayMenu(SND.MENU_CLICK);
+		ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 		if(clicked) {
 			clicked();
 		}

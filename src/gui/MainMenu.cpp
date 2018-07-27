@@ -343,7 +343,7 @@ private:
 		
 		if(m_selected && m_selected->savegame() != SavegameHandle()) {
 			
-			ARX_SOUND_PlayMenu(SND.MENU_CLICK);
+			ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 			
 			LOADQUEST_SLOT = m_selected->savegame();
 			

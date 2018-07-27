@@ -48,7 +48,7 @@ bool TextInputWidget::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 		case Keyboard::Key_Escape:
 		case Keyboard::Key_Enter:
 		case Keyboard::Key_NumPadEnter: {
-			ARX_SOUND_PlayMenu(SND.MENU_CLICK);
+			ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 			unfocus();
 			return true;
 		}
@@ -87,7 +87,7 @@ bool TextInputWidget::click() {
 		return result;
 	}
 	
-	ARX_SOUND_PlayMenu(SND.MENU_CLICK);
+	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 	
 	if(!m_editing) {
 		m_editing = true;
@@ -125,7 +125,7 @@ bool TextInputWidget::doubleClick() {
 		return result;
 	}
 	
-	ARX_SOUND_PlayMenu(SND.MENU_CLICK);
+	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 	
 	if(!m_editing) {
 		m_editing = true;

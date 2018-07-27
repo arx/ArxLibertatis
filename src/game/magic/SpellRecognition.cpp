@@ -766,7 +766,7 @@ static void handleRuneDetection(Rune rune) {
 		CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 	}
 
-	ARX_SOUND_PlaySFX(SND.SYMB[rune]);
+	ARX_SOUND_PlaySFX(g_snd.SYMB[rune]);
 }
 
 static void unrecognizedRune() {
@@ -1145,7 +1145,7 @@ bool ARX_SPELLS_AnalyseSPELL() {
 	}
 	
 	if(spell == SPELL_NONE) {
-		ARX_SOUND_PlaySFX(SND.MAGIC_FIZZLE);
+		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
 		
 		if(player.SpellToMemorize.bSpell) {
 			CurrSpellSymbol = 0;

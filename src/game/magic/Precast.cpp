@@ -95,10 +95,10 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 		
 		if(precast.launch_time == 0) {
 			precast.launch_time = g_gameTime.now();
-			ARX_SOUND_PlaySFX(SND.SPELL_CREATE_FIELD);
+			ARX_SOUND_PlaySFX(g_snd.SPELL_CREATE_FIELD);
 		}
 	} else {
-		ARX_SOUND_PlaySFX(SND.MAGIC_FIZZLE);
+		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
 		
 		ARX_SPEECH_Add(getLocalised("player_cantcast"));
 		ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);

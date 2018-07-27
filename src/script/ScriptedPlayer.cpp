@@ -117,7 +117,7 @@ public:
 		DebugScript(' ' << val);
 		
 		if(val != 0.f) {
-			ARX_SOUND_PlayInterface(SND.GOLD);
+			ARX_SOUND_PlayInterface(g_snd.GOLD);
 		}
 		
 		ARX_PLAYER_AddGold(checked_range_cast<long>(val));
