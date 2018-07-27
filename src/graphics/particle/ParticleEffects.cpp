@@ -471,7 +471,7 @@ void ManageTorch() {
 void Add3DBoom(const Vec3f & position) {
 	
 	Vec3f poss = position;
-	ARX_SOUND_PlaySFX(SND.SPELL_FIRE_HIT, &poss);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &poss);
 	
 	{
 		float dist = fdist(player.pos - Vec3f(0, 160.f, 0.f), position);
@@ -1029,7 +1029,7 @@ void TreatBackgroundActions() {
 		}
 		
 		if(gl->sample == audio::SourcedSample()) {
-			gl->sample = SND.FIREPLACE;
+			gl->sample = g_snd.FIREPLACE;
 			ARX_SOUND_PlaySFX(gl->sample, &gl->pos, Random::getf(0.95f, 1.05f), ARX_SOUND_PLAY_LOOPED);
 		} else {
 			ARX_SOUND_RefreshPosition(gl->sample, gl->pos);

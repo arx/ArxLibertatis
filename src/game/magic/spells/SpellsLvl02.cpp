@@ -48,7 +48,7 @@ bool HealSpell::CanLaunch() {
 void HealSpell::Launch() {
 	
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
-		ARX_SOUND_PlaySFX(SND.SPELL_HEALING, &m_caster_pos);
+		ARX_SOUND_PlaySFX(g_snd.SPELL_HEALING, &m_caster_pos);
 	}
 	
 	m_hasDuration = true;
@@ -163,8 +163,8 @@ void DetectTrapSpell::Launch() {
 	if(m_caster == EntityHandle_Player) {
 		m_target = m_caster;
 		if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
-			ARX_SOUND_PlayInterface(SND.SPELL_DETECT_TRAP);
-			m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_DETECT_TRAP_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+			ARX_SOUND_PlayInterface(g_snd.SPELL_DETECT_TRAP);
+			m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_DETECT_TRAP_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 		}
 	}
 	
@@ -204,10 +204,10 @@ void ArmorSpell::Launch()
 	}
 	
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
-		ARX_SOUND_PlaySFX(SND.SPELL_ARMOR_START, &entities[m_target]->pos);
+		ARX_SOUND_PlaySFX(g_snd.SPELL_ARMOR_START, &entities[m_target]->pos);
 	}
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_ARMOR_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_ARMOR_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	
 	if(m_caster == EntityHandle_Player) {
 		m_duration = 0;
@@ -235,7 +235,7 @@ void ArmorSpell::End() {
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
-		ARX_SOUND_PlaySFX(SND.SPELL_ARMOR_END, &target->pos);
+		ARX_SOUND_PlaySFX(g_snd.SPELL_ARMOR_END, &target->pos);
 		ARX_HALO_SetToNative(target);
 	}
 	
@@ -272,7 +272,7 @@ void LowerArmorSpell::Launch() {
 	spells.endByCaster(m_caster, SPELL_COLD_PROTECTION);
 	
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
-		ARX_SOUND_PlaySFX(SND.SPELL_LOWER_ARMOR, &entities[m_target]->pos);
+		ARX_SOUND_PlaySFX(g_snd.SPELL_LOWER_ARMOR, &entities[m_target]->pos);
 	}
 	
 	if(m_caster == EntityHandle_Player) {
@@ -303,7 +303,7 @@ void LowerArmorSpell::Launch() {
 
 void LowerArmorSpell::End() {
 	
-	ARX_SOUND_PlaySFX(SND.SPELL_LOWER_ARMOR_END);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_LOWER_ARMOR_END);
 	
 	if(m_haloCreated) {
 		Entity * io = entities.get(m_target);
@@ -341,10 +341,10 @@ HarmSpell::HarmSpell() { }
 void HarmSpell::Launch() {
 	
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
-		ARX_SOUND_PlaySFX(SND.SPELL_HARM, &m_caster_pos);
+		ARX_SOUND_PlaySFX(g_snd.SPELL_HARM, &m_caster_pos);
 	}
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_MAGICAL_SHIELD, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_MAGICAL_SHIELD, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	
 	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);

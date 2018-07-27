@@ -57,10 +57,10 @@ void SpeedSpell::Launch() {
 		m_target = m_caster;
 	}
 	
-	ARX_SOUND_PlaySFX(SND.SPELL_SPEED_START, &entities[m_target]->pos);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_START, &entities[m_target]->pos);
 	
 	if(m_target == EntityHandle_Player) {
-		m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_SPEED_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+		m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 	
 	if(m_caster == EntityHandle_Player) {
@@ -105,7 +105,7 @@ void SpeedSpell::End() {
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
-		ARX_SOUND_PlaySFX(SND.SPELL_SPEED_END, &target->pos);
+		ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_END, &target->pos);
 	}
 	
 	for(size_t i = 0; i < m_trails.size(); i++) {
@@ -138,7 +138,7 @@ Vec3f SpeedSpell::getPosition() {
 
 void DispellIllusionSpell::Launch() {
 	
-	ARX_SOUND_PlaySFX(SND.SPELL_DISPELL_ILLUSION);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_DISPELL_ILLUSION);
 	
 	m_duration = GameDurationMs(1000);
 	
@@ -227,8 +227,8 @@ void FireballSpell::Launch() {
 	
 	eMove = angleToVector(Anglef(anglea, angleb, 0.f)) * 80.f;
 	
-	ARX_SOUND_PlaySFX(SND.SPELL_FIRE_LAUNCH, &m_caster_pos);
-	m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_FIRE_WIND, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_LAUNCH, &m_caster_pos);
+	m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_WIND, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 }
 
 void FireballSpell::End() {
@@ -317,7 +317,7 @@ void FireballSpell::Update() {
 		bExplo = true;
 		
 		DoSphericDamage(Sphere(eCurPos, 30.f * m_level), 3.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
-		ARX_SOUND_PlaySFX(SND.SPELL_FIRE_HIT, &sphere.origin);
+		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &sphere.origin);
 		ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
 		requestEnd();
 	}
@@ -335,7 +335,7 @@ CreateFoodSpell::CreateFoodSpell() { }
 
 void CreateFoodSpell::Launch() {
 	
-	ARX_SOUND_PlaySFX(SND.SPELL_CREATE_FOOD, &m_caster_pos);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_CREATE_FOOD, &m_caster_pos);
 	
 	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(3500);
 	m_hasDuration = true;
@@ -394,7 +394,7 @@ IceProjectileSpell::IceProjectileSpell()
 
 void IceProjectileSpell::Launch() {
 	
-	ARX_SOUND_PlaySFX(SND.SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
 	
 	m_duration = GameDurationMs(4200);
 	m_hasDuration = true;

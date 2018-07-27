@@ -469,7 +469,7 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 void ARX_SPELLS_Fizzle(SpellBase * spell) {
 	
 	if(ValidIONum(spell->m_caster)) {
-		ARX_SOUND_PlaySFX(SND.MAGIC_FIZZLE, &spell->m_caster_pos);
+		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE, &spell->m_caster_pos);
 	}
 }
 
@@ -561,10 +561,10 @@ void ARX_SPELLS_ManageMagic() {
 				
 				ARX_FLARES_broken = 0;
 				
-				if(!ARX_SOUND_IsPlaying(SND.MAGIC_DRAW))
-					ARX_SOUND_PlaySFX(SND.MAGIC_DRAW, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
+				if(!ARX_SOUND_IsPlaying(g_snd.MAGIC_DRAW))
+					ARX_SOUND_PlaySFX(g_snd.MAGIC_DRAW, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 			} else {
-				ARX_SOUND_Stop(SND.MAGIC_DRAW);
+				ARX_SOUND_Stop(g_snd.MAGIC_DRAW);
 			}
 			
 			snip = 0;
@@ -972,7 +972,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 				}
 				
 				if(tcount == 0) {
-					ARX_SOUND_PlaySFX(SND.MAGIC_FIZZLE, &cpos);
+					ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE, &cpos);
 					return false;
 				}
 				

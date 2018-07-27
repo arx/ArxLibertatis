@@ -363,7 +363,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity * io) {
 								else
 									ARX_DAMAGES_DamageNPC(io, damages, spell->m_caster, true, &io->pos);
 
-								ARX_SOUND_PlaySFX(SND.SPELL_FIRE_HIT, &io->pos);
+								ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &io->pos);
 							}
 						} else {
 							io->sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;

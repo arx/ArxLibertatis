@@ -197,7 +197,7 @@ audio::SourcedSample SPELL_TELEKINESIS_END;
 audio::SourcedSample SPELL_VISION_START;
 audio::SourcedSample SPELL_VISION_LOOP;
 };
-extern StaticSamples SND;
+extern StaticSamples g_snd;
 
 // inter-material sounds
 const char * ARX_MATERIAL_GetNameById(Material id);

@@ -53,11 +53,11 @@ void MagicSightSpell::Launch() {
 	m_hasDuration = m_launchDuration >= 0;
 	m_duration = m_hasDuration ? m_launchDuration : 0;
 	
-	ARX_SOUND_PlaySFX(SND.SPELL_VISION_START, &m_caster_pos);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_VISION_START, &m_caster_pos);
 	
 	if(m_caster == EntityHandle_Player) {
 		player.m_improve = true;
-		m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_VISION_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+		m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_VISION_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 }
 
@@ -70,7 +70,7 @@ void MagicSightSpell::End() {
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster) {
-		ARX_SOUND_PlaySFX(SND.SPELL_VISION_START, &caster->pos);
+		ARX_SOUND_PlaySFX(g_snd.SPELL_VISION_START, &caster->pos);
 	}
 }
 
@@ -113,7 +113,7 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 	
 	g_particleManager.AddSystem(pPS);
 	
-	ARX_SOUND_PlaySFX(SND.SPELL_MM_HIT, &_ePos);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_HIT, &_ePos);
 }
 
 
@@ -422,7 +422,7 @@ void IgnitSpell::End() {
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
 		EERIE_LIGHT * light = g_staticLights[itr->m_targetLight];
 		light->m_ignitionStatus = true;
-		ARX_SOUND_PlaySFX(SND.SPELL_IGNITE, &light->pos);
+		ARX_SOUND_PlaySFX(g_snd.SPELL_IGNITE, &light->pos);
 		lightHandleDestroy(itr->m_effectLight);
 	}
 	
@@ -534,7 +534,7 @@ void DouseSpell::End() {
 	BOOST_FOREACH(size_t index, m_lights) {
 		EERIE_LIGHT * light = g_staticLights[index];
 		light->m_ignitionStatus = false;
-		ARX_SOUND_PlaySFX(SND.SPELL_DOUSE, &light->pos);
+		ARX_SOUND_PlaySFX(g_snd.SPELL_DOUSE, &light->pos);
 	}
 }
 
@@ -544,7 +544,7 @@ void DouseSpell::Update() {
 
 void ActivatePortalSpell::Launch() {
 	
-	ARX_SOUND_PlayInterface(SND.SPELL_ACTIVATE_PORTAL);
+	ARX_SOUND_PlayInterface(g_snd.SPELL_ACTIVATE_PORTAL);
 	
 	m_duration = GameDurationMs(20);
 	m_hasDuration = true;

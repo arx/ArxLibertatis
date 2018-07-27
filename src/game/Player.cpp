@@ -237,8 +237,8 @@ void ARX_PLAYER_RectifyPosition() {
 
 void ARX_PLAYER_KillTorch() {
 	
-	ARX_SOUND_PlaySFX(SND.TORCH_END);
-	ARX_SOUND_Stop(SND.TORCH_LOOP);
+	ARX_SOUND_PlaySFX(g_snd.TORCH_END);
+	ARX_SOUND_Stop(g_snd.TORCH_LOOP);
 	
 	giveToPlayer(player.torch);
 	
@@ -271,8 +271,8 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 			io->ignition = 0;
 		}
 
-		ARX_SOUND_PlaySFX(SND.TORCH_START);
-		ARX_SOUND_PlaySFX(SND.TORCH_LOOP, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
+		ARX_SOUND_PlaySFX(g_snd.TORCH_START);
+		ARX_SOUND_PlaySFX(g_snd.TORCH_LOOP, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 		RemoveFromAllInventories(io);
 		player.torch = io;
 		io->show = SHOW_FLAG_ON_PLAYER;
@@ -290,8 +290,8 @@ static void ARX_PLAYER_ManageTorch() {
 		player.torch->durability -= g_framedelay * 0.0001f;
 		
 		if(player.torch->durability <= 0) {
-			ARX_SOUND_PlaySFX(SND.TORCH_END);
-			ARX_SOUND_Stop(SND.TORCH_LOOP);
+			ARX_SOUND_PlaySFX(g_snd.TORCH_END);
+			ARX_SOUND_Stop(g_snd.TORCH_LOOP);
 			player.torch->destroy();
 			player.torch = NULL;
 			lightHandleGet(torchLightHandle)->m_exists = false;
@@ -918,7 +918,7 @@ long GetXPforLevel(short level)
  * \brief Manages Player Level Up event
  */
 static void ARX_PLAYER_LEVEL_UP() {
-	ARX_SOUND_PlayInterface(SND.PLAYER_LEVEL_UP);
+	ARX_SOUND_PlayInterface(g_snd.PLAYER_LEVEL_UP);
 	player.level++;
 	player.Skill_Redistribute += 15;
 	player.Attribute_Redistribute++;
@@ -950,7 +950,7 @@ void ARX_PLAYER_Poison(float val) {
 	// Make a poison saving throw to see if player is affected
 	if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison) {
 		player.poison += val;
-		ARX_SOUND_PlayInterface(SND.PLAYER_POISONED);
+		ARX_SOUND_PlayInterface(g_snd.PLAYER_POISONED);
 	}
 }
 
@@ -2365,7 +2365,7 @@ void ARX_PLAYER_PutPlayerInNormalStance() {
 		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 	}
 	
-	ARX_SOUND_Stop(SND.MAGIC_DRAW);
+	ARX_SOUND_Stop(g_snd.MAGIC_DRAW);
 }
 
 /*!
@@ -2382,7 +2382,7 @@ void ARX_PLAYER_AddGold(Entity * gold) {
 	
 	ARX_PLAYER_AddGold(gold->_itemdata->price * std::max((short)1, gold->_itemdata->count));
 	
-	ARX_SOUND_PlayInterface(SND.GOLD);
+	ARX_SOUND_PlayInterface(g_snd.GOLD);
 	
 	gold->gameFlags &= ~GFLAG_ISINTREATZONE;
 	

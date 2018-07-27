@@ -106,8 +106,8 @@ void ReleaseNecklace() {
 
 static void PlayerBookDrawRune(Rune rune) {
 	
-	ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND.SYMB[rune].getSampleId()));
-	ARX_SOUND_PlayInterface(SND.SYMB[rune]);
+	ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(g_snd.SYMB[rune].getSampleId()));
+	ARX_SOUND_PlayInterface(g_snd.SYMB[rune]);
 }
 
 
