@@ -263,7 +263,7 @@ void FireProtectionSpell::Launch() {
 	
 	m_targets.push_back(m_target);
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_PROTECTION_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_FIRE_PROTECTION_LOOP, &entities[m_target]->pos, 1.f);
 }
 
 void FireProtectionSpell::End() {
@@ -325,7 +325,7 @@ void ColdProtectionSpell::Launch() {
 		io->halo.radius = 45.f;
 	}
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_COLD_PROTECTION_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_COLD_PROTECTION_LOOP, &entities[m_target]->pos, 1.f);
 	
 	m_targets.push_back(m_target);
 }

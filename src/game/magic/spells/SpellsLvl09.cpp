@@ -429,7 +429,7 @@ void IncinerateSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_INCINERATE, &tio->pos);
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_INCINERATE_LOOP, &tio->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_INCINERATE_LOOP, &tio->pos, 1.f);
 	
 	m_duration = GameDurationMs(20000);
 	m_hasDuration = true;

@@ -123,7 +123,7 @@ void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
 
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_CREATE, &eCurPos);
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_LAUNCH, &eCurPos);
-	snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_MM_LOOP, &eCurPos, 1.0F, ARX_SOUND_PLAY_LOOPED);
+	snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MM_LOOP, &eCurPos, 1.0F);
 }
 
 void CMagicMissile::SetTTL(GameDuration aulTTL)

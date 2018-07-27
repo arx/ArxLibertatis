@@ -259,7 +259,7 @@ void FireFieldSpell::Launch() {
 	damage.pos = target;
 	m_damage = DamageCreate(damage);
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_FIELD_LOOP, &target, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_FIRE_FIELD_LOOP, &target, 1.f);
 	
 	pPSStream.SetParams(g_particleParameters[ParticleParam_FireFieldBase]);
 	pPSStream.SetPos(m_pos);
@@ -419,7 +419,7 @@ void IceFieldSpell::Launch() {
 		}
 	}
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_ICE_FIELD_LOOP, &target, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_ICE_FIELD_LOOP, &target, 1.f);
 }
 
 void IceFieldSpell::End() {
@@ -544,7 +544,7 @@ void LightningStrikeSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_LIGHTNING_START, &m_caster_pos);
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_LIGHTNING_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_LIGHTNING_LOOP, &m_caster_pos, 1.f);
 }
 
 void LightningStrikeSpell::End() {

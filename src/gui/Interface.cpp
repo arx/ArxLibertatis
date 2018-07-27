@@ -940,7 +940,7 @@ void ArxGame::managePlayerControls() {
 	if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) {
 		if(!(player.m_currentMovement & PLAYER_CROUCH) && !BLOCK_PLAYER_CONTROLS && ARXmenu.mode() == Mode_InGame) {
 			if(!ARX_SOUND_IsPlaying(g_snd.MAGIC_AMBIENT))
-				ARX_SOUND_PlaySFX(g_snd.MAGIC_AMBIENT, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
+				ARX_SOUND_PlaySFX_loop(g_snd.MAGIC_AMBIENT, NULL, 1.0F);
 		}
 	} else {
 		ARX_SOUND_Stop(g_snd.MAGIC_AMBIENT);
