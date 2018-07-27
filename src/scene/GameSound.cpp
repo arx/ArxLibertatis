@@ -486,7 +486,7 @@ audio::SourcedSample ARX_SOUND_PlaySFX(SourcedSample & sample_id, const Vec3f * 
 	}
 	
 	res::path sample_name;
-	audio::getSampleName(sample_id, sample_name);
+	audio::getSampleName(sample_id.getSampleId(), sample_name);
 	float presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
@@ -617,7 +617,7 @@ long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	
 	res::path sample_name;
-	audio::getSampleName(sample_id, sample_name);
+	audio::getSampleName(sample_id.getSampleId(), sample_name);
 	float presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
@@ -670,7 +670,7 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	
 	res::path sample_name;
-	audio::getSampleName(sample_id, sample_name);
+	audio::getSampleName(sample_id.getSampleId(), sample_name);
 	float presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
@@ -752,7 +752,7 @@ void ARX_SOUND_PlayAnim(SourcedSample & sample_id, const Vec3f * position) {
 		}
 		channel.flags |= FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 		res::path sample_name;
-		audio::getSampleName(sample_id, sample_name);
+		audio::getSampleName(sample_id.getSampleId(), sample_name);
 		float presence = GetSamplePresenceFactor(sample_name);
 		channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 		channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
