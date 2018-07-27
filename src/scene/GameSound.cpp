@@ -634,7 +634,7 @@ long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	audio::samplePlay(sample_id, channel);
 	
 	size_t length;
-	audio::getSampleLength(sample_id, length);
+	audio::getSampleLength(sample_id.getSampleId(), length);
 	
 	return (long)(channel.pitch * length);
 }
@@ -687,7 +687,7 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	audio::samplePlay(sample_id, channel);
 	
 	size_t length;
-	audio::getSampleLength(sample_id, length);
+	audio::getSampleLength(sample_id.getSampleId(), length);
 	
 	return (long)(channel.pitch * length);
 }
@@ -803,7 +803,7 @@ GameDuration ARX_SOUND_GetDuration(SourcedSample & sample_id) {
 	
 	if(g_soundInitialized && sample_id != SourcedSample()) {
 		size_t length;
-		audio::getSampleLength(sample_id, length);
+		audio::getSampleLength(sample_id.getSampleId(), length);
 		return GameDurationMs(length);
 	}
 
