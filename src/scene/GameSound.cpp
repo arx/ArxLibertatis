@@ -1424,16 +1424,16 @@ static void ARX_SOUND_CreateCollisionMaps() {
 						oss << mi;
 					}
 					oss << ARX_SOUND_FILE_EXTENSION_WAV;
-					SourcedSample sample = audio::createSample(oss.str());
+					audio::SampleHandle sample = audio::createSample2(oss.str());
 					
-					if(sample == SourcedSample()) {
+					if(sample == audio::SampleHandle()) {
 						std::ostringstream oss2;
 						oss2 << boost::to_lower_copy(key.getValue()) << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
-						sample = audio::createSample(oss2.str());
+						sample = audio::createSample2(oss2.str());
 					}
 					
-					if(sample != SourcedSample()) {
-						mat.variants.push_back(sample);
+					if(sample != audio::SampleHandle()) {
+						mat.variants.push_back(SourcedSample(audio::SourceHandle(), sample));
 					}
 				}
 				
