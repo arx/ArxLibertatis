@@ -205,7 +205,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 						io->spellcast_data.symb[3] = RUNE_NONE;
 						float speedFactor = std::max(io->speed_modif + io->basespeed, 0.01f);
 						float duration = (1000 - (io->spellcast_data.spell_level * 60)) * speedFactor;
-						ARX_SPELLS_RequestSymbolDraw2(io, symb, duration);
+						ARX_SPELLS_RequestSymbolDraw2(io, symb, GameDurationMsf(duration));
 						io->gameFlags &= ~GFLAG_INVISIBILITY;
 					} else { // cast spell !!!
 						io->gameFlags &= ~GFLAG_INVISIBILITY;
@@ -308,7 +308,7 @@ void ARX_SPELLS_ClearAllSymbolDraw() {
 	}
 }
 
-static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
+static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, GameDuration duration,
                                                RuneInfo & info) {
 	
 	SYMBOL_DRAW * sd;
@@ -321,7 +321,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 		sd = &g_bookSymbolDraw;
 	}
 	
-	sd->duration = AnimationDurationMs(std::max(1l, long(duration)));
+	sd->duration = toAnimationDuration(std::max(GameDurationMs(1), duration));
 	sd->sequence = info.sequence;
 	
 	sd->starttime = g_gameTime.now();
@@ -333,7 +333,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 	
 }
 
-void ARX_SPELLS_RequestSymbolDraw(Entity * io, const std::string & name, float duration) {
+void ARX_SPELLS_RequestSymbolDraw(Entity * io, const std::string & name, GameDuration duration) {
 	
 	BOOST_FOREACH(RuneInfo & info, runeInfos) {
 		if(info.name == name) {
@@ -344,7 +344,7 @@ void ARX_SPELLS_RequestSymbolDraw(Entity * io, const std::string & name, float d
 	
 }
 
-void ARX_SPELLS_RequestSymbolDraw2(Entity * io, Rune symb, float duration) {
+void ARX_SPELLS_RequestSymbolDraw2(Entity * io, Rune symb, GameDuration duration) {
 	
 	BOOST_FOREACH(RuneInfo & info, runeInfos) {
 		if(info.rune == symb) {

@@ -380,7 +380,7 @@ public:
 		
 		DebugScript(' ' << symbol << ' ' << duration);
 		
-		ARX_SPELLS_RequestSymbolDraw(context.getEntity(), symbol, duration);
+		ARX_SPELLS_RequestSymbolDraw(context.getEntity(), symbol, GameDurationMsf(duration));
 		
 		return Success;
 	}
