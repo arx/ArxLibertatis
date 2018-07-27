@@ -114,9 +114,9 @@ static void MakeSpCol() {
 		sp_max_y[i] = 0;
 	}
 	
-	sp_max_col[0] = Color::fromRGBA(ColorRGBA(0x00FF0000));
-	sp_max_col[1] = Color::fromRGBA(ColorRGBA(0x0000FF00));
-	sp_max_col[2] = Color::fromRGBA(ColorRGBA(0x000000FF));
+	sp_max_col[0] = Color(0, 0, 255, 0);
+	sp_max_col[1] = Color(0, 255, 0, 0);
+	sp_max_col[2] = Color(255, 0, 0, 0);
 	
 	sp_max_col[3] = Color::fromRGBA(ColorRGBA(0x00FFFF00));
 	sp_max_col[4] = Color::fromRGBA(ColorRGBA(0x00FF00FF));
