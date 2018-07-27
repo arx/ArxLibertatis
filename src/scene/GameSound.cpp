@@ -561,7 +561,7 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 	res::path file = speechFileName(name);
 	file.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
 	
-	audio::SourcedSample sample_id = audio::createSample(file);
+	audio::SampleHandle sample_id = audio::createSample2(file);
 	
 	audio::Channel channel;
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
@@ -593,10 +593,10 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 		channel.position = Vec3f_Z_AXIS * 100.f;
 	}
 	
-	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, sample_id.getSampleId(), channel);
+	SourcedSample source = SourcedSample(audio::SourceHandle(), sample_id);
+	audio::samplePlay(source, sample_id, channel);
 
-	return sample_id;
+	return source;
 }
 
 long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source) {
@@ -706,8 +706,8 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 		return SourcedSample();
 	}
 	
-	audio::SourcedSample sample_id = audio::createSample(name);
-	if (sample_id == SourcedSample()) {
+	audio::SampleHandle sample_id = audio::createSample2(name);
+	if (sample_id == audio::SampleHandle()) {
 		return SourcedSample();
 	}
 	
@@ -737,10 +737,10 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 		channel.pitch = pitch;
 	}
 	
-	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, sample_id.getSampleId(), channel, loop);
+	SourcedSample source = SourcedSample(audio::SourceHandle(), sample_id);
+	audio::samplePlay(source, sample_id, channel, loop);
 	
-	return sample_id;
+	return source;
 }
 
 void ARX_SOUND_PlayAnim(SourcedSample & sample_id, const Vec3f * position) {
@@ -777,8 +777,8 @@ audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpee
 	res::path file = (isSpeech) ? speechFileName(name) : name;
 	file.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
 	
-	audio::SourcedSample sample_id = audio::createSample(file);
-	if(sample_id == SourcedSample()) {
+	audio::SampleHandle sample_id = audio::createSample2(file);
+	if(sample_id == audio::SampleHandle()) {
 		LogError << "Cannot load sound for cinematic: " << file;
 		return SourcedSample();
 	}
@@ -798,10 +798,10 @@ audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpee
 	
 	channel.position = ARX_SOUND_IOFrontPos(NULL);
 	
-	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, sample_id.getSampleId(), channel);
+	SourcedSample source = SourcedSample(audio::SourceHandle(), sample_id);
+	audio::samplePlay(source, sample_id, channel);
 	
-	return sample_id;
+	return source;
 }
 
 bool ARX_SOUND_IsPlaying(SourcedSample & sample_id) {
