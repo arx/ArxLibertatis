@@ -215,7 +215,10 @@ audio::SourcedSample ARX_SOUND_Load(const res::path & name);
 void ARX_SOUND_Free(const audio::SourcedSample & sample);
 
 audio::SourcedSample ARX_SOUND_PlaySFX(audio::SourcedSample & sample_id, const Vec3f * position = NULL,
-                                  float pitch = 1.f, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
+                                  float pitch = 1.f);
+audio::SourcedSample ARX_SOUND_PlaySFX_loop(audio::SourcedSample & sample_id, const Vec3f * position = NULL,
+                                  float pitch = 1.f);
+
 void ARX_SOUND_PlayInterface(audio::SampleHandle sample_id, float pitch = 1.f);
 void ARX_SOUND_PlayMenu(audio::SampleHandle sample_id);
 

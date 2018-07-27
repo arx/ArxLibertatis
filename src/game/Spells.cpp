@@ -562,7 +562,7 @@ void ARX_SPELLS_ManageMagic() {
 				ARX_FLARES_broken = 0;
 				
 				if(!ARX_SOUND_IsPlaying(g_snd.MAGIC_DRAW))
-					ARX_SOUND_PlaySFX(g_snd.MAGIC_DRAW, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
+					ARX_SOUND_PlaySFX_loop(g_snd.MAGIC_DRAW, NULL, 1.0F);
 			} else {
 				ARX_SOUND_Stop(g_snd.MAGIC_DRAW);
 			}

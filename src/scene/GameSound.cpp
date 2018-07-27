@@ -338,7 +338,7 @@ void ARX_SOUND_EnvironmentSet(const res::path & name) {
 	}
 }
 
-audio::SourcedSample ARX_SOUND_PlaySFX(audio::SourcedSample & sample_id, const Vec3f * position,
+static audio::SourcedSample ARX_SOUND_PlaySFX_int(audio::SourcedSample & sample_id, const Vec3f * position,
                                   float pitch, SoundLoopMode loop) {
 	
 	if(!g_soundInitialized || sample_id == audio::SourcedSample()) {
@@ -375,6 +375,16 @@ audio::SourcedSample ARX_SOUND_PlaySFX(audio::SourcedSample & sample_id, const V
 	audio::samplePlay(sample_id, sample_id.getSampleId(), channel, loop);
 	
 	return sample_id;
+}
+
+audio::SourcedSample ARX_SOUND_PlaySFX(audio::SourcedSample & sample_id, const Vec3f * position, float pitch) {
+	
+	return ARX_SOUND_PlaySFX_int(sample_id, position, pitch, ARX_SOUND_PLAY_ONCE);
+}
+
+audio::SourcedSample ARX_SOUND_PlaySFX_loop(audio::SourcedSample & sample_id, const Vec3f * position, float pitch) {
+	
+	return ARX_SOUND_PlaySFX_int(sample_id, position, pitch, ARX_SOUND_PLAY_LOOPED);
 }
 
 static void playSample(audio::SampleHandle sample_id, float pitch, SoundLoopMode loop, audio::MixerId mixer) {

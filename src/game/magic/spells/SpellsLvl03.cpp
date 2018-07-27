@@ -60,7 +60,7 @@ void SpeedSpell::Launch() {
 	ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_START, &entities[m_target]->pos);
 	
 	if(m_target == EntityHandle_Player) {
-		m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_SPEED_LOOP, &entities[m_target]->pos, 1.f);
 	}
 	
 	if(m_caster == EntityHandle_Player) {
@@ -228,7 +228,7 @@ void FireballSpell::Launch() {
 	eMove = angleToVector(Anglef(anglea, angleb, 0.f)) * 80.f;
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_LAUNCH, &m_caster_pos);
-	m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_WIND, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_FIRE_WIND, &m_caster_pos, 1.f);
 }
 
 void FireballSpell::End() {

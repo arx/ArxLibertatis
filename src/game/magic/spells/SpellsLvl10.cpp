@@ -103,7 +103,7 @@ void MassLightningStrikeSpell::Launch() {
 	}
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_LIGHTNING_START);
-	m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_LIGHTNING_LOOP, &m_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_LIGHTNING_LOOP, &m_pos, 1.f);
 	
 	// Draws White Flash on Screen
 	UseRenderState state(render2D().blend(BlendOne, BlendOne));
@@ -396,7 +396,7 @@ void MassIncinerateSpell::Launch() {
 	}
 	
 	if(!m_targets.empty()) {
-		m_snd_loop = ARX_SOUND_PlaySFX(g_snd.SPELL_INCINERATE_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_INCINERATE_LOOP, &m_caster_pos, 1.f);
 	} else {
 		m_snd_loop = audio::SourcedSample();
 	}
