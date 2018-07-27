@@ -610,11 +610,10 @@ bool isSamplePlaying(SourcedSample sourceId) {
 
 // Sample control
 
-aalError samplePlay(SourcedSample & sampleId, const Channel & channel, unsigned play_count) {
+aalError samplePlay(SourcedSample & sampleId, SampleHandle s_id, const Channel & channel, unsigned play_count) {
 	
 	AAL_ENTRY
 	
-	SampleHandle s_id = sampleId.getSampleId();
 	if(!g_samples.isValid(s_id) || !g_mixers.isValid(channel.mixer)) {
 		return AAL_ERROR_HANDLE;
 	}

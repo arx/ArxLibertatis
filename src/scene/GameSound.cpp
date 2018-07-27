@@ -497,7 +497,7 @@ audio::SourcedSample ARX_SOUND_PlaySFX(SourcedSample & sample_id, const Vec3f * 
 	}
 	
 	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, channel, loop);
+	audio::samplePlay(sample_id, sample_id.getSampleId(), channel, loop);
 	
 	return sample_id;
 }
@@ -518,7 +518,7 @@ static void playSample(audio::SourcedSample & sample_id, float pitch, SoundLoopM
 	}
 	
 	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, channel, loop);
+	audio::samplePlay(sample_id, sample_id.getSampleId(), channel, loop);
 	
 }
 
@@ -594,7 +594,7 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 	}
 	
 	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, channel);
+	audio::samplePlay(sample_id, sample_id.getSampleId(), channel);
 
 	return sample_id;
 }
@@ -636,7 +636,7 @@ long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	channel.volume = volume;
 	
 	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, channel);
+	audio::samplePlay(sample_id, sample_id.getSampleId(), channel);
 	
 	size_t length;
 	audio::getSampleLength(sample_id.getSampleId(), length);
@@ -691,7 +691,7 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	channel.volume = volume;
 	
 	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, channel);
+	audio::samplePlay(sample_id, sample_id.getSampleId(), channel);
 	
 	size_t length;
 	audio::getSampleLength(sample_id.getSampleId(), length);
@@ -738,7 +738,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 	}
 	
 	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, channel, loop);
+	audio::samplePlay(sample_id, sample_id.getSampleId(), channel, loop);
 	
 	return sample_id;
 }
@@ -768,7 +768,7 @@ void ARX_SOUND_PlayAnim(SourcedSample & sample_id, const Vec3f * position) {
 	}
 	
 	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, channel);
+	audio::samplePlay(sample_id, sample_id.getSampleId(), channel);
 	
 }
 
@@ -799,7 +799,7 @@ audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpee
 	channel.position = ARX_SOUND_IOFrontPos(NULL);
 	
 	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, channel);
+	audio::samplePlay(sample_id, sample_id.getSampleId(), channel);
 	
 	return sample_id;
 }
