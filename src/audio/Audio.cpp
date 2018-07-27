@@ -624,30 +624,9 @@ aalError samplePlay(SourcedSample & sampleId, const Channel & channel, unsigned 
 	
 	LogDebug("SamplePlay " << g_samples[s_id]->getName() << " play_count=" << play_count);
 	
-	Source * source = backend->getSource(sampleId);
-	if(source) {
-		if(channel.flags == source->getChannel().flags) {
-			source = NULL;
-		} else if(source->isIdle()) {
-			source->setMixer(channel.mixer);
-			source->setVolume(channel.volume);
-			source->setPitch(channel.pitch);
-			source->setPan(channel.pan);
-			source->setPosition(channel.position);
-			source->setVelocity(channel.velocity);
-			source->setDirection(channel.direction);
-			source->setCone(channel.cone);
-			source->setFalloff(channel.falloff);
-		} else {
-			source = NULL;
-		}
-	}
-	
+	Source * source = backend->createSource(s_id, channel);
 	if(!source) {
-		source = backend->createSource(s_id, channel);
-		if(!source) {
-			return AAL_ERROR_SYSTEM;
-		}
+		return AAL_ERROR_SYSTEM;
 	}
 	
 	if(aalError error = source->play(play_count)) {
