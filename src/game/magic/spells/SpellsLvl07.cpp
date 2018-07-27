@@ -74,7 +74,7 @@ void FlyingEyeSpell::Launch() {
 	
 	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
+	ARX_SOUND_PlaySFX(SND.SPELL_EYEBALL_IN);
 	
 	m_lastupdate = m_timcreation;
 	m_duration = 0;
@@ -116,12 +116,12 @@ void FlyingEyeSpell::End() {
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster) {
-		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &caster->pos);
+		ARX_SOUND_PlaySFX(SND.MAGIC_FIZZLE, &caster->pos);
 	}
 	
 	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_OUT);
+	ARX_SOUND_PlaySFX(SND.SPELL_EYEBALL_OUT);
 	eyeball.exist = -100;
 	
 	for(long n = 0; n < 12; n++) {
@@ -221,7 +221,7 @@ void FireFieldSpell::Launch() {
 	
 	spells.endByCaster(m_caster, SPELL_FIRE_FIELD);
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_START);
+	ARX_SOUND_PlaySFX(SND.SPELL_FIRE_FIELD_START);
 	
 	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(100000);
 	m_hasDuration = true;
@@ -259,7 +259,7 @@ void FireFieldSpell::Launch() {
 	damage.pos = target;
 	m_damage = DamageCreate(damage);
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_LOOP, &target, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_FIRE_FIELD_LOOP, &target, 1.f, ARX_SOUND_PLAY_LOOPED);
 	
 	pPSStream.SetParams(g_particleParameters[ParticleParam_FireFieldBase]);
 	pPSStream.SetPos(m_pos);
@@ -274,7 +274,7 @@ void FireFieldSpell::End() {
 	DamageRequestEnd(m_damage);
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
+	ARX_SOUND_PlaySFX(SND.SPELL_FIRE_FIELD_END);
 }
 
 void FireFieldSpell::Update() {
@@ -346,7 +346,7 @@ void IceFieldSpell::Launch() {
 	
 	spells.endByCaster(m_caster, SPELL_ICE_FIELD);
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
+	ARX_SOUND_PlaySFX(SND.SPELL_ICE_FIELD);
 	
 	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(100000);
 	m_hasDuration = true;
@@ -419,7 +419,7 @@ void IceFieldSpell::Launch() {
 		}
 	}
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_LOOP, &target, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_ICE_FIELD_LOOP, &target, 1.f, ARX_SOUND_PLAY_LOOPED);
 }
 
 void IceFieldSpell::End() {
@@ -427,7 +427,7 @@ void IceFieldSpell::End() {
 	DamageRequestEnd(m_damage);
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);
+	ARX_SOUND_PlaySFX(SND.SPELL_ICE_FIELD_END);
 }
 
 void IceFieldSpell::Update() {
@@ -542,9 +542,9 @@ void LightningStrikeSpell::Launch() {
 	m_duration = m_lightning.m_duration;
 	m_hasDuration = true;
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START, &m_caster_pos);
+	ARX_SOUND_PlaySFX(SND.SPELL_LIGHTNING_START, &m_caster_pos);
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_LIGHTNING_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 }
 
 void LightningStrikeSpell::End() {
@@ -553,8 +553,8 @@ void LightningStrikeSpell::End() {
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster) {
-		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &caster->pos);
-		ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &caster->pos);
+		ARX_SOUND_PlaySFX(SND.SPELL_ELECTRIC, &caster->pos);
+		ARX_SOUND_PlaySFX(SND.SPELL_LIGHTNING_END, &caster->pos);
 	}
 }
 
@@ -635,7 +635,7 @@ void ConfuseSpell::Launch() {
 		return;
 	}
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &target->pos);
+	ARX_SOUND_PlaySFX(SND.SPELL_CONFUSE, &target->pos);
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.5f;

@@ -135,7 +135,7 @@ void CharacterCreation::render() {
 		{
 			m_cheatQuickGenButtonClickCount++;
 			int iSkin = player.skin;
-			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+			ARX_SOUND_PlayMenu(SND.MENU_CLICK);
 			
 			if(bQuickGenFirstClick) {
 				ARX_PLAYER_MakeAverageHero();
@@ -161,7 +161,7 @@ void CharacterCreation::render() {
 		
 		if(eeMouseUp1()) {
 			m_cheatSkinButtonClickCount++;
-			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+			ARX_SOUND_PlayMenu(SND.MENU_CLICK);
 			player.skin++;
 			
 			if(player.skin > 3)
@@ -199,7 +199,7 @@ void CharacterCreation::render() {
 					SP_HEAD = 0;
 				}
 				
-				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+				ARX_SOUND_PlayMenu(SND.MENU_CLICK);
 				
 				MenuFader_start(Fade_In, Mode_InGame);
 			}

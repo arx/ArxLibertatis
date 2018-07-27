@@ -339,7 +339,7 @@ bool Note::manageActions() {
 	if(prevPageButton().contains(Vec2f(DANAEMouse))) {
 		cursorSetInteraction();
 		if(eeMouseUp1()) {
-			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(SND.BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 			arx_assert(page() >= 2);
 			setPage(page() - 2);
 		}
@@ -347,7 +347,7 @@ bool Note::manageActions() {
 	} else if(nextPageButton().contains(Vec2f(DANAEMouse))) {
 		cursorSetInteraction();
 		if(eeMouseUp1()) {
-			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(SND.BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 			setPage(page() + 2);
 		}
 		

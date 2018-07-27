@@ -146,7 +146,7 @@ void ARX_MENU_Launch(bool allowResume) {
 	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerGame, ARX_SOUND_MixerMenu);
 
 	ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
-	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+	ARX_SOUND_PlayMenu(SND.MENU_CLICK);
 
 	ARXmenu.requestMode(Mode_MainMenu);
 	
@@ -195,7 +195,7 @@ void ARX_Menu_Manage() {
 			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
 			   && bFadeInOut == Fade_Out // TODO: comment seems incorrect -> // XS: Disabling ESC capture while fading in or out.
 			) {
-				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+				ARX_SOUND_PlayMenu(SND.MENU_CLICK);
 				ARXmenu.requestMode(Mode_MainMenu);
 			}
 			break;
@@ -214,7 +214,7 @@ void ARX_Menu_Manage() {
 			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
 			   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Spacebar)
 			) {
-				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+				ARX_SOUND_PlayMenu(SND.MENU_CLICK);
 				MenuFader_start(Fade_In, Mode_MainMenu);
 				ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
 			}

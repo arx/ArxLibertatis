@@ -280,7 +280,7 @@ void BackpackIconGui::updateInput() {
 	// Check for backpack Icon
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
 		if(eeMouseUp1() && playerInventory.insert(DRAGINTER)) {
-			ARX_SOUND_PlayInterface(SND_INVSTD);
+			ARX_SOUND_PlayInterface(SND.INVSTD);
 			Set_DragInter(NULL);
 		}
 	}
@@ -291,7 +291,7 @@ void BackpackIconGui::updateInput() {
 		
 		
 		if(eeMouseDoubleClick1()) {
-			ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 			
 			playerInventory.optimize();
 			
@@ -309,7 +309,7 @@ void BackpackIconGui::updateInput() {
 			}
 			
 			if(player.Interface & INTER_INVENTORYALL) {
-				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+				ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 				g_playerInventoryHud.close();
 			} else {
 				bInverseInventory = !bInverseInventory;
@@ -323,11 +323,11 @@ void BackpackIconGui::updateInput() {
 				g_playerInventoryHud.close();
 			} else {
 				if(player.Interface & INTER_INVENTORY) {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+					ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 					g_playerInventoryHud.close();
 					bInventorySwitch = true;
 				} else {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+					ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 					player.Interface |= INTER_INVENTORYALL;
 					
 					g_playerInventoryHud.resetPos();
@@ -379,7 +379,7 @@ void StealIconGui::updateInput() {
 				ARX_INVENTORY_OpenClose(ioSteal);
 				
 				if(player.Interface & (INTER_INVENTORY | INTER_INVENTORYALL)) {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+					ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 				}
 				
 				if(SecondaryInventory) {
@@ -544,8 +544,8 @@ void CurrentTorchIconGui::updateInput() {
 			if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
 				Entity * io = player.torch;
 				player.torch->show = SHOW_FLAG_IN_SCENE;
-				ARX_SOUND_PlaySFX(SND_TORCH_END);
-				ARX_SOUND_Stop(SND_TORCH_LOOP);
+				ARX_SOUND_PlaySFX(SND.TORCH_END);
+				ARX_SOUND_Stop(SND.TORCH_LOOP);
 				player.torch = NULL;
 				lightHandleGet(torchLightHandle)->m_exists = false;
 				io->ignition = 1;
@@ -1059,7 +1059,7 @@ void ActiveSpellsGui::ActiveSpellIconSlot::updateInput(const Vec2f & mousePos) {
 		}
 		
 		if(eeMouseDoubleClick1()) {
-			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+			ARX_SOUND_PlaySFX(SND.MAGIC_FIZZLE);
 			spells.endSpell(spells[spellIndex]);
 		}
 	}

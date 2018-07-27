@@ -45,7 +45,7 @@ void AddQuakeFX(float intensity, float duration, float period, bool sound) {
 		QuakeFx.sound = QuakeFx.sound || sound;
 
 		if(sound)
-			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
+			ARX_SOUND_PlaySFX(SND.QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 	} else {
 		QuakeFx.intensity = intensity;
 
@@ -56,7 +56,7 @@ void AddQuakeFX(float intensity, float duration, float period, bool sound) {
 		QuakeFx.sound = sound;
 
 		if(sound)
-			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
+			ARX_SOUND_PlaySFX(SND.QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 	}
 
 	if(!sound) {
@@ -89,7 +89,7 @@ void ManageQuakeFX(Camera * cam) {
 		}
 
 		if(periodicity > 0.5f && QuakeFx.sound)
-			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
+			ARX_SOUND_PlaySFX(SND.QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 
 		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;
 		float halfpower = truepower * .5f;

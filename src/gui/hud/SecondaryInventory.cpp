@@ -108,7 +108,7 @@ void SecondaryInventoryCloseHudIcon::updateInput() {
 		}
 		
 		if(io) {
-			ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 			g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
 			SendIOScriptEvent(entities.player(), io, SM_INVENTORY2_CLOSE);
 			TSecondaryInventory = SecondaryInventory;
@@ -153,7 +153,7 @@ void SecondaryInventoryHud::update() {
 		
 		if(dist > maxDist) {
 			if(m_fadeDirection != Fade_left) {
-				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+				ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 				m_fadeDirection = Fade_left;
 				SendIOScriptEvent(entities.player(), io, SM_INVENTORY2_CLOSE);
 				TSecondaryInventory = SecondaryInventory;
@@ -384,8 +384,8 @@ void SecondaryInventoryHud::dropEntity() {
 			DRAGINTER->destroy();
 			
 			ARX_PLAYER_AddGold(price);
-			ARX_SOUND_PlayInterface(SND_GOLD);
-			ARX_SOUND_PlayInterface(SND_INVSTD);
+			ARX_SOUND_PlayInterface(SND.GOLD);
+			ARX_SOUND_PlayInterface(SND.INVSTD);
 			return;
 		}
 		}
@@ -431,14 +431,14 @@ void SecondaryInventoryHud::dropEntity() {
 					// SHOP
 					if(io->ioflags & IO_SHOP) {
 						ARX_PLAYER_AddGold(price);
-						ARX_SOUND_PlayInterface(SND_GOLD);
+						ARX_SOUND_PlayInterface(SND.GOLD);
 					}
 				} else {
 					return;
 				}
 			}
 			
-			ARX_SOUND_PlayInterface(SND_INVSTD);
+			ARX_SOUND_PlayInterface(SND.INVSTD);
 			Set_DragInter(NULL);
 			return;
 		}
@@ -459,11 +459,11 @@ void SecondaryInventoryHud::dropEntity() {
 		// SHOP
 		if(io->ioflags & IO_SHOP) {
 			ARX_PLAYER_AddGold(price);
-			ARX_SOUND_PlayInterface(SND_GOLD);
+			ARX_SOUND_PlayInterface(SND.GOLD);
 		}
 		SecondaryInventory->slot[t.x][t.y].show = true;
 		DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
-		ARX_SOUND_PlayInterface(SND_INVSTD);
+		ARX_SOUND_PlayInterface(SND.INVSTD);
 		Set_DragInter(NULL);
 		
 	}
@@ -490,7 +490,7 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 					return false;
 				}
 				
-				ARX_SOUND_PlayInterface(SND_GOLD);
+				ARX_SOUND_PlayInterface(SND.GOLD);
 				player.gold -= cos;
 				
 				if(io->_itemdata->count > 1) {
@@ -499,7 +499,7 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 					unstackedEntity->scriptload = 1;
 					unstackedEntity->_itemdata->count = 1;
 					io->_itemdata->count--;
-					ARX_SOUND_PlayInterface(SND_INVSTD);
+					ARX_SOUND_PlayInterface(SND.INVSTD);
 					Set_DragInter(unstackedEntity);
 					return true;
 				}
@@ -511,7 +511,7 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 					unstackedEntity->scriptload = 1;
 					unstackedEntity->_itemdata->count = 1;
 					io->_itemdata->count--;
-					ARX_SOUND_PlayInterface(SND_INVSTD);
+					ARX_SOUND_PlayInterface(SND.INVSTD);
 					Set_DragInter(unstackedEntity);
 					sInventory = 2;
 					

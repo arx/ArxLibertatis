@@ -47,7 +47,7 @@ bool TextWidget::click() {
 		return result;
 	}
 	
-	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+	ARX_SOUND_PlayMenu(SND.MENU_CLICK);
 	
 	if(clicked) {
 		clicked(this);

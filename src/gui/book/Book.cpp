@@ -103,11 +103,11 @@ const Vec2f PlayerBookPage::m_tabOffsets[10] = {
 };
 
 void PlayerBookPage::playReleaseSound() {
-	ARX_SOUND_PlayInterface(SND_MENU_RELEASE);
+	ARX_SOUND_PlayInterface(SND.MENU_RELEASE);
 }
 
 void PlayerBookPage::playErrorSound() {
-	ARX_SOUND_PlayInterface(SND_MENU_CLICK);
+	ARX_SOUND_PlayInterface(SND.MENU_CLICK);
 }
 
 void PlayerBook::clearJournal() {
@@ -136,7 +136,7 @@ void PlayerBookPage::checkTabClick(long tabNum, long & activeTab) {
 		DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], bookPos + m_tabOffsets[tabNum] * scale, Color::grayb(0x55), 0.000001f);
 		cursorSetInteraction();
 		if(eeMouseDown1() || eeMouseDown2()) {
-			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(SND.BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 			activeTab =  tabNum;
 		}
 	}
@@ -187,13 +187,13 @@ void PlayerBook::onClosePage() {
 void PlayerBook::toggle() {
 	
 	if(player.Interface & INTER_PLAYERBOOK) {
-		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, Random::getf(0.9f, 1.1f));
+		ARX_SOUND_PlayInterface(SND.BOOK_CLOSE, Random::getf(0.9f, 1.1f));
 		SendIOScriptEvent(NULL, entities.player(), SM_BOOK_CLOSE);
 		player.Interface &= ~INTER_PLAYERBOOK;
 		g_miniMap.purgeTexContainer();
 		onClosePage();
 	} else {
-		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, Random::getf(0.9f, 1.1f));
+		ARX_SOUND_PlayInterface(SND.BOOK_OPEN, Random::getf(0.9f, 1.1f));
 		SendIOScriptEvent(NULL, entities.player(), SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_PLAYERBOOK;
@@ -206,7 +206,7 @@ void PlayerBook::toggle() {
 	}
 	
 	if(player.Interface & INTER_INVENTORYALL) {
-		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+		ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 		g_playerInventoryHud.close();
 	}
 	
@@ -267,7 +267,7 @@ void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool _toggle) {
 		onClosePage();
 
 		// If the book is already open, play the page turn sound
-		ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
+		ARX_SOUND_PlayInterface(SND.BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 
 	} else {
 		// Otherwise open the book
