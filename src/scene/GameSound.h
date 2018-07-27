@@ -88,21 +88,21 @@ audio::SampleHandle GOLD;
 audio::SampleHandle INVSTD;
 audio::SampleHandle SCROLL_OPEN;
 audio::SampleHandle SCROLL_CLOSE;
-audio::SourcedSample TORCH_START;
-audio::SourcedSample TORCH_LOOP;
-audio::SourcedSample TORCH_END;
-
-// Other SFX samples
-audio::SourcedSample FIREPLACE;
-audio::SourcedSample PLOUF;
-audio::SourcedSample QUAKE;
-audio::SourcedSample WHOOSH;
 
 // Player samples
 audio::SampleHandle PLAYER_DEATH_BY_FIRE;
 audio::SampleHandle PLAYER_HEART_BEAT;
 audio::SampleHandle PLAYER_LEVEL_UP;
 audio::SampleHandle PLAYER_POISONED;
+
+// Other SFX samples
+audio::SourcedSample TORCH_START;
+audio::SourcedSample TORCH_LOOP;
+audio::SourcedSample TORCH_END;
+audio::SourcedSample FIREPLACE;
+audio::SourcedSample PLOUF;
+audio::SourcedSample QUAKE;
+audio::SourcedSample WHOOSH;
 
 // Magic drawing samples
 audio::SourcedSample MAGIC_AMBIENT;
