@@ -72,7 +72,7 @@ public:
 		CSpellFx();
 		virtual ~CSpellFx() { }
 		
-		virtual void SetDuration(GameDuration ulaDuration);
+		virtual void SetDuration(GameDuration duration);
 		
 		virtual void Update(GameDuration timeDelta) = 0;
 		virtual void Render() = 0;
