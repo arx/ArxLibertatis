@@ -946,6 +946,10 @@ static void ARX_SOUND_CreateEnvironments() {
 
 static void ARX_SOUND_CreateStaticSamples() {
 	
+	// Menu
+	g_snd.MENU_CLICK                     = audio::createSample2("menu_click.wav");
+	g_snd.MENU_RELEASE                   = audio::createSample2("menu_release.wav");
+	
 	// Interface
 	g_snd.BACKPACK                       = audio::createSample2("interface_backpack.wav");
 	g_snd.BOOK_OPEN                      = audio::createSample2("book_open.wav");
@@ -953,27 +957,23 @@ static void ARX_SOUND_CreateStaticSamples() {
 	g_snd.BOOK_PAGE_TURN                 = audio::createSample2("book_page_turn.wav");
 	g_snd.SCROLL_OPEN                    = audio::createSample2("scroll_open.wav");
 	g_snd.SCROLL_CLOSE                   = audio::createSample2("scroll_close.wav");
-	g_snd.TORCH_START                    = audio::createSample("torch_start.wav");
-	g_snd.TORCH_LOOP                     = audio::createSample("sfx_torch_11khz.wav");
-	g_snd.TORCH_END                      = audio::createSample("torch_end.wav");
 	g_snd.INVSTD                         = audio::createSample2("interface_invstd.wav");
 	g_snd.GOLD                           = audio::createSample2("drop_coin.wav");
-	
-	// Menu
-	g_snd.MENU_CLICK                     = audio::createSample2("menu_click.wav");
-	g_snd.MENU_RELEASE                   = audio::createSample2("menu_release.wav");
-	
-	// Other SFX samples
-	g_snd.FIREPLACE                      = audio::createSample("fire_place.wav");
-	g_snd.PLOUF                          = audio::createSample("fishing_plouf.wav");
-	g_snd.QUAKE                          = audio::createSample("sfx_quake.wav");
-	g_snd.WHOOSH                         = audio::createSample("whoosh07.wav");
 	
 	// Player
 	g_snd.PLAYER_HEART_BEAT              = audio::createSample2("player_heartb.wav");
 	g_snd.PLAYER_LEVEL_UP                = audio::createSample2("player_level_up.wav");
 	g_snd.PLAYER_POISONED                = audio::createSample2("player_poisoned.wav");
 	g_snd.PLAYER_DEATH_BY_FIRE           = audio::createSample2("lava_death.wav");
+	
+	// Other SFX samples
+	g_snd.TORCH_START                    = audio::createSample("torch_start.wav");
+	g_snd.TORCH_LOOP                     = audio::createSample("sfx_torch_11khz.wav");
+	g_snd.TORCH_END                      = audio::createSample("torch_end.wav");
+	g_snd.FIREPLACE                      = audio::createSample("fire_place.wav");
+	g_snd.PLOUF                          = audio::createSample("fishing_plouf.wav");
+	g_snd.QUAKE                          = audio::createSample("sfx_quake.wav");
+	g_snd.WHOOSH                         = audio::createSample("whoosh07.wav");
 	
 	// Magic draw
 	g_snd.MAGIC_AMBIENT                  = audio::createSample("magic_ambient.wav");
