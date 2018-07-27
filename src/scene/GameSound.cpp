@@ -496,6 +496,7 @@ audio::SourcedSample ARX_SOUND_PlaySFX(SourcedSample & sample_id, const Vec3f * 
 		channel.pitch = pitch;
 	}
 	
+	sample_id.clearSource(); // TODO is this correct ?
 	audio::samplePlay(sample_id, channel, loop);
 	
 	return sample_id;
@@ -516,6 +517,7 @@ static void playSample(audio::SourcedSample & sample_id, float pitch, SoundLoopM
 		channel.pitch = pitch;
 	}
 	
+	sample_id.clearSource(); // TODO is this correct ?
 	audio::samplePlay(sample_id, channel, loop);
 	
 }
@@ -590,7 +592,8 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 		channel.flags |= FLAG_RELATIVE;
 		channel.position = Vec3f_Z_AXIS * 100.f;
 	}
-
+	
+	sample_id.clearSource(); // TODO is this correct ?
 	audio::samplePlay(sample_id, channel);
 
 	return sample_id;
@@ -631,6 +634,8 @@ long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	channel.position = position;
 	channel.pitch = Random::getf(0.9f, 1.1f);
 	channel.volume = volume;
+	
+	sample_id.clearSource(); // TODO is this correct ?
 	audio::samplePlay(sample_id, channel);
 	
 	size_t length;
@@ -684,6 +689,8 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	channel.position = position;
 	channel.pitch = Random::getf(0.975f, 1.475f);
 	channel.volume = volume;
+	
+	sample_id.clearSource(); // TODO is this correct ?
 	audio::samplePlay(sample_id, channel);
 	
 	size_t length;
@@ -730,6 +737,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 		channel.pitch = pitch;
 	}
 	
+	sample_id.clearSource(); // TODO is this correct ?
 	audio::samplePlay(sample_id, channel, loop);
 	
 	return sample_id;
@@ -759,6 +767,7 @@ void ARX_SOUND_PlayAnim(SourcedSample & sample_id, const Vec3f * position) {
 		channel.position = *position;
 	}
 	
+	sample_id.clearSource(); // TODO is this correct ?
 	audio::samplePlay(sample_id, channel);
 	
 }
@@ -789,6 +798,7 @@ audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpee
 	
 	channel.position = ARX_SOUND_IOFrontPos(NULL);
 	
+	sample_id.clearSource(); // TODO is this correct ?
 	audio::samplePlay(sample_id, channel);
 	
 	return sample_id;
