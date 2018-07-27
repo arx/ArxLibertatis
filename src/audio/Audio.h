@@ -123,7 +123,7 @@ aalError setSampleVolume(SourcedSample sourceId, float volume);
 aalError setSamplePitch(SourcedSample sourceId, float pitch);
 aalError setSamplePosition(SourcedSample sourceId, const Vec3f & position);
 
-aalError getSampleName(SourcedSample sampleId, res::path & name);
+aalError getSampleName(SampleHandle sampleHandle, res::path & name);
 aalError getSampleLength(SourcedSample sampleId, size_t & length);
 bool isSamplePlaying(SourcedSample sourceId);
 

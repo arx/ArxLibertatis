@@ -561,13 +561,12 @@ aalError setSamplePosition(SourcedSample sourceId, const Vec3f & position) {
 
 // Sample status
 
-aalError getSampleName(SourcedSample sampleId, res::path & name) {
+aalError getSampleName(SampleHandle sampleHandle, res::path & name) {
 	
 	name.clear();
 	
 	AAL_ENTRY
 	
-	SampleHandle sampleHandle = sampleId.getSampleId();
 	if(!g_samples.isValid(sampleHandle)) {
 		return AAL_ERROR_HANDLE;
 	}
