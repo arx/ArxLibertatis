@@ -41,7 +41,7 @@ void ARX_SPELLS_UpdateSymbolDraw();
 void ARX_SPELLS_UpdateBookSymbolDraw(const Rect & bookRect);
 void ARX_SPELLS_ClearAllSymbolDraw();
 
-void ARX_SPELLS_RequestSymbolDraw(Entity * io, const std::string & name, float duration);
-void ARX_SPELLS_RequestSymbolDraw2(Entity * io, Rune symb, float duration);
+void ARX_SPELLS_RequestSymbolDraw(Entity * io, const std::string & name, GameDuration duration);
+void ARX_SPELLS_RequestSymbolDraw2(Entity * io, Rune symb, GameDuration duration);
 
 #endif // ARX_GAME_MAGIC_RUNEDRAW_H
