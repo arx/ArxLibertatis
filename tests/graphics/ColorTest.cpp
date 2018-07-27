@@ -41,12 +41,9 @@ namespace CppUnit {
 } // namespace CppUnit
 
 
-void ColorTest::ColorTypeConversionTests()
-{
-	Color3f white(1.f, 1.f, 1.f);
-
-	ColorBGRA result = white.toBGR(255);
-	CPPUNIT_ASSERT_EQUAL(ColorBGRA(0xFFFFFFFF), result);
+void ColorTest::ColorTypeConversionTests() {
+	
+	CPPUNIT_ASSERT_EQUAL(ColorBGRA(0xFFFFFFFF), Color3f(1.f, 1.f, 1.f).toBGR(255));
 	
 	CPPUNIT_ASSERT_EQUAL(Color::fromRGBA(ColorRGBA(0xFF000000)), Color(0, 0, 0, 255));
 	CPPUNIT_ASSERT_EQUAL(Color::fromRGBA(ColorRGBA(0x00FF0000)), Color(0, 0, 255, 0));
