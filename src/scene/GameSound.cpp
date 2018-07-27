@@ -81,8 +81,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 using audio::AmbianceId;
-using audio::SourcedSample;
-using audio::SourcedSample;
 using audio::EnvId;
 using audio::FLAG_VOLUME;
 using audio::FLAG_POSITION;
@@ -137,19 +135,19 @@ namespace {
 
 struct SoundMaterial {
 	
-	std::vector<SourcedSample> variants;
+	std::vector<audio::SourcedSample> variants;
 	
 	SoundMaterial() : current(0) { }
 	
 	~SoundMaterial() {
-		for(std::vector<SourcedSample>::const_iterator i = variants.begin(); i !=  variants.end(); ++i) {
+		for(std::vector<audio::SourcedSample>::const_iterator i = variants.begin(); i !=  variants.end(); ++i) {
 			audio::deleteSample(*i);
 		}
 	}
 	
-	SourcedSample next() {
+	audio::SourcedSample next() {
 		arx_assert(current < variants.size());
-		SourcedSample sample = variants[current];
+		audio::SourcedSample sample = variants[current];
 		current = (current + 1) % variants.size();
 		return sample;
 	}
@@ -183,129 +181,129 @@ audio::MixerId ARX_SOUND_MixerMenuSpeech;
 audio::MixerId ARX_SOUND_MixerMenuAmbiance;
 
 // Menu samples
-SourcedSample SND_MENU_CLICK;
-SourcedSample SND_MENU_RELEASE;
+audio::SourcedSample SND_MENU_CLICK;
+audio::SourcedSample SND_MENU_RELEASE;
 
 // Interface samples
-SourcedSample SND_BACKPACK;
-SourcedSample SND_BOOK_OPEN;
-SourcedSample SND_BOOK_CLOSE;
-SourcedSample SND_BOOK_PAGE_TURN;
-SourcedSample SND_GOLD;
-SourcedSample SND_INVSTD;
-SourcedSample SND_SCROLL_OPEN;
-SourcedSample SND_SCROLL_CLOSE;
-SourcedSample SND_TORCH_START;
-SourcedSample SND_TORCH_LOOP;
-SourcedSample SND_TORCH_END;
+audio::SourcedSample SND_BACKPACK;
+audio::SourcedSample SND_BOOK_OPEN;
+audio::SourcedSample SND_BOOK_CLOSE;
+audio::SourcedSample SND_BOOK_PAGE_TURN;
+audio::SourcedSample SND_GOLD;
+audio::SourcedSample SND_INVSTD;
+audio::SourcedSample SND_SCROLL_OPEN;
+audio::SourcedSample SND_SCROLL_CLOSE;
+audio::SourcedSample SND_TORCH_START;
+audio::SourcedSample SND_TORCH_LOOP;
+audio::SourcedSample SND_TORCH_END;
 
 // Other SFX samples
-SourcedSample SND_FIREPLACE;
-SourcedSample SND_PLOUF;
-SourcedSample SND_QUAKE;
-SourcedSample SND_WHOOSH;
+audio::SourcedSample SND_FIREPLACE;
+audio::SourcedSample SND_PLOUF;
+audio::SourcedSample SND_QUAKE;
+audio::SourcedSample SND_WHOOSH;
 
 // Player samples
-SourcedSample SND_PLAYER_DEATH_BY_FIRE;
+audio::SourcedSample SND_PLAYER_DEATH_BY_FIRE;
 
-SourcedSample SND_PLAYER_HEART_BEAT;
-SourcedSample SND_PLAYER_LEVEL_UP;
-SourcedSample SND_PLAYER_POISONED;
+audio::SourcedSample SND_PLAYER_HEART_BEAT;
+audio::SourcedSample SND_PLAYER_LEVEL_UP;
+audio::SourcedSample SND_PLAYER_POISONED;
 
 // Magic drawing samples
-SourcedSample SND_MAGIC_AMBIENT;
-SourcedSample SND_MAGIC_DRAW;
-SourcedSample SND_MAGIC_FIZZLE;
+audio::SourcedSample SND_MAGIC_AMBIENT;
+audio::SourcedSample SND_MAGIC_DRAW;
+audio::SourcedSample SND_MAGIC_FIZZLE;
 
 // Magic symbols samples
-SourcedSample SND_SYMB[RUNE_COUNT];
+audio::SourcedSample SND_SYMB[RUNE_COUNT];
 
 // Spells samples
-SourcedSample SND_SPELL_ACTIVATE_PORTAL;
-SourcedSample SND_SPELL_ARMOR_START;
-SourcedSample SND_SPELL_ARMOR_END;
-SourcedSample SND_SPELL_ARMOR_LOOP;
-SourcedSample SND_SPELL_LOWER_ARMOR;
-SourcedSample SND_SPELL_LOWER_ARMOR_END;
-SourcedSample SND_SPELL_BLESS;
-SourcedSample SND_SPELL_COLD_PROTECTION_START;
-SourcedSample SND_SPELL_COLD_PROTECTION_LOOP;
-SourcedSample SND_SPELL_COLD_PROTECTION_END;
-SourcedSample SND_SPELL_CONFUSE;
-SourcedSample SND_SPELL_CONTROL_TARGET;
-SourcedSample SND_SPELL_CREATE_FIELD;
-SourcedSample SND_SPELL_CREATE_FOOD;
-SourcedSample SND_SPELL_CURE_POISON;
-SourcedSample SND_SPELL_CURSE;
-SourcedSample SND_SPELL_DETECT_TRAP;
-SourcedSample SND_SPELL_DETECT_TRAP_LOOP;
-SourcedSample SND_SPELL_DISARM_TRAP;
-SourcedSample SND_SPELL_DISPELL_FIELD;
-SourcedSample SND_SPELL_DISPELL_ILLUSION;
-SourcedSample SND_SPELL_DOUSE;
-SourcedSample SND_SPELL_ELECTRIC;
-SourcedSample SND_SPELL_EXPLOSION;
-SourcedSample SND_SPELL_EYEBALL_IN;
-SourcedSample SND_SPELL_EYEBALL_OUT;
-SourcedSample SND_SPELL_FIRE_HIT;
-SourcedSample SND_SPELL_FIRE_LAUNCH;
-SourcedSample SND_SPELL_FIRE_PROTECTION;
-SourcedSample SND_SPELL_FIRE_PROTECTION_LOOP;
-SourcedSample SND_SPELL_FIRE_PROTECTION_END;
-SourcedSample SND_SPELL_FIRE_WIND;
-SourcedSample SND_SPELL_FREEZETIME;
-SourcedSample SND_SPELL_HARM;
-SourcedSample SND_SPELL_HEALING;
-SourcedSample SND_SPELL_ICE_FIELD;
-SourcedSample SND_SPELL_ICE_FIELD_LOOP;
-SourcedSample SND_SPELL_ICE_FIELD_END;
-SourcedSample SND_SPELL_ICE_PROJECTILE_LAUNCH;
-SourcedSample SND_SPELL_INCINERATE;
-SourcedSample SND_SPELL_INCINERATE_LOOP;
-SourcedSample SND_SPELL_INCINERATE_END;
-SourcedSample SND_SPELL_IGNITE;
-SourcedSample SND_SPELL_INVISIBILITY_START;
-SourcedSample SND_SPELL_INVISIBILITY_END;
-SourcedSample SND_SPELL_LEVITATE_START;
-SourcedSample SND_SPELL_LEVITATE_LOOP;
-SourcedSample SND_SPELL_LEVITATE_END;
-SourcedSample SND_SPELL_LIGHTNING_START;
-SourcedSample SND_SPELL_LIGHTNING_LOOP;
-SourcedSample SND_SPELL_LIGHTNING_END;
-SourcedSample SND_SPELL_MAGICAL_HIT;
+audio::SourcedSample SND_SPELL_ACTIVATE_PORTAL;
+audio::SourcedSample SND_SPELL_ARMOR_START;
+audio::SourcedSample SND_SPELL_ARMOR_END;
+audio::SourcedSample SND_SPELL_ARMOR_LOOP;
+audio::SourcedSample SND_SPELL_LOWER_ARMOR;
+audio::SourcedSample SND_SPELL_LOWER_ARMOR_END;
+audio::SourcedSample SND_SPELL_BLESS;
+audio::SourcedSample SND_SPELL_COLD_PROTECTION_START;
+audio::SourcedSample SND_SPELL_COLD_PROTECTION_LOOP;
+audio::SourcedSample SND_SPELL_COLD_PROTECTION_END;
+audio::SourcedSample SND_SPELL_CONFUSE;
+audio::SourcedSample SND_SPELL_CONTROL_TARGET;
+audio::SourcedSample SND_SPELL_CREATE_FIELD;
+audio::SourcedSample SND_SPELL_CREATE_FOOD;
+audio::SourcedSample SND_SPELL_CURE_POISON;
+audio::SourcedSample SND_SPELL_CURSE;
+audio::SourcedSample SND_SPELL_DETECT_TRAP;
+audio::SourcedSample SND_SPELL_DETECT_TRAP_LOOP;
+audio::SourcedSample SND_SPELL_DISARM_TRAP;
+audio::SourcedSample SND_SPELL_DISPELL_FIELD;
+audio::SourcedSample SND_SPELL_DISPELL_ILLUSION;
+audio::SourcedSample SND_SPELL_DOUSE;
+audio::SourcedSample SND_SPELL_ELECTRIC;
+audio::SourcedSample SND_SPELL_EXPLOSION;
+audio::SourcedSample SND_SPELL_EYEBALL_IN;
+audio::SourcedSample SND_SPELL_EYEBALL_OUT;
+audio::SourcedSample SND_SPELL_FIRE_HIT;
+audio::SourcedSample SND_SPELL_FIRE_LAUNCH;
+audio::SourcedSample SND_SPELL_FIRE_PROTECTION;
+audio::SourcedSample SND_SPELL_FIRE_PROTECTION_LOOP;
+audio::SourcedSample SND_SPELL_FIRE_PROTECTION_END;
+audio::SourcedSample SND_SPELL_FIRE_WIND;
+audio::SourcedSample SND_SPELL_FREEZETIME;
+audio::SourcedSample SND_SPELL_HARM;
+audio::SourcedSample SND_SPELL_HEALING;
+audio::SourcedSample SND_SPELL_ICE_FIELD;
+audio::SourcedSample SND_SPELL_ICE_FIELD_LOOP;
+audio::SourcedSample SND_SPELL_ICE_FIELD_END;
+audio::SourcedSample SND_SPELL_ICE_PROJECTILE_LAUNCH;
+audio::SourcedSample SND_SPELL_INCINERATE;
+audio::SourcedSample SND_SPELL_INCINERATE_LOOP;
+audio::SourcedSample SND_SPELL_INCINERATE_END;
+audio::SourcedSample SND_SPELL_IGNITE;
+audio::SourcedSample SND_SPELL_INVISIBILITY_START;
+audio::SourcedSample SND_SPELL_INVISIBILITY_END;
+audio::SourcedSample SND_SPELL_LEVITATE_START;
+audio::SourcedSample SND_SPELL_LEVITATE_LOOP;
+audio::SourcedSample SND_SPELL_LEVITATE_END;
+audio::SourcedSample SND_SPELL_LIGHTNING_START;
+audio::SourcedSample SND_SPELL_LIGHTNING_LOOP;
+audio::SourcedSample SND_SPELL_LIGHTNING_END;
+audio::SourcedSample SND_SPELL_MAGICAL_HIT;
 
-SourcedSample SND_SPELL_FIRE_FIELD_START;
-SourcedSample SND_SPELL_FIRE_FIELD_LOOP;
-SourcedSample SND_SPELL_FIRE_FIELD_END;
+audio::SourcedSample SND_SPELL_FIRE_FIELD_START;
+audio::SourcedSample SND_SPELL_FIRE_FIELD_LOOP;
+audio::SourcedSample SND_SPELL_FIRE_FIELD_END;
 
 
-SourcedSample SND_SPELL_MAGICAL_SHIELD;
-SourcedSample SND_SPELL_MASS_INCINERATE;
-SourcedSample SND_SPELL_MASS_PARALYSE;
-SourcedSample SND_SPELL_MM_CREATE;
-SourcedSample SND_SPELL_MM_HIT;
-SourcedSample SND_SPELL_MM_LAUNCH;
-SourcedSample SND_SPELL_MM_LOOP;
-SourcedSample SND_SPELL_NEGATE_MAGIC;
-SourcedSample SND_SPELL_PARALYSE;
-SourcedSample SND_SPELL_PARALYSE_END;
-SourcedSample SND_SPELL_POISON_PROJECTILE_LAUNCH;
-SourcedSample SND_SPELL_RAISE_DEAD;
-SourcedSample SND_SPELL_REPEL_UNDEAD;
-SourcedSample SND_SPELL_REPEL_UNDEAD_LOOP;
-SourcedSample SND_SPELL_RUNE_OF_GUARDING;
-SourcedSample SND_SPELL_RUNE_OF_GUARDING_END;
-SourcedSample SND_SPELL_SLOW_DOWN;
-SourcedSample SND_SPELL_SLOW_DOWN_END;
-SourcedSample SND_SPELL_SPARK;
-SourcedSample SND_SPELL_SPEED_START;
-SourcedSample SND_SPELL_SPEED_LOOP;
-SourcedSample SND_SPELL_SPEED_END;
-SourcedSample SND_SPELL_SUMMON_CREATURE;
-SourcedSample SND_SPELL_TELEKINESIS_START;
-SourcedSample SND_SPELL_TELEKINESIS_END;
-SourcedSample SND_SPELL_VISION_START;
-SourcedSample SND_SPELL_VISION_LOOP;
+audio::SourcedSample SND_SPELL_MAGICAL_SHIELD;
+audio::SourcedSample SND_SPELL_MASS_INCINERATE;
+audio::SourcedSample SND_SPELL_MASS_PARALYSE;
+audio::SourcedSample SND_SPELL_MM_CREATE;
+audio::SourcedSample SND_SPELL_MM_HIT;
+audio::SourcedSample SND_SPELL_MM_LAUNCH;
+audio::SourcedSample SND_SPELL_MM_LOOP;
+audio::SourcedSample SND_SPELL_NEGATE_MAGIC;
+audio::SourcedSample SND_SPELL_PARALYSE;
+audio::SourcedSample SND_SPELL_PARALYSE_END;
+audio::SourcedSample SND_SPELL_POISON_PROJECTILE_LAUNCH;
+audio::SourcedSample SND_SPELL_RAISE_DEAD;
+audio::SourcedSample SND_SPELL_REPEL_UNDEAD;
+audio::SourcedSample SND_SPELL_REPEL_UNDEAD_LOOP;
+audio::SourcedSample SND_SPELL_RUNE_OF_GUARDING;
+audio::SourcedSample SND_SPELL_RUNE_OF_GUARDING_END;
+audio::SourcedSample SND_SPELL_SLOW_DOWN;
+audio::SourcedSample SND_SPELL_SLOW_DOWN_END;
+audio::SourcedSample SND_SPELL_SPARK;
+audio::SourcedSample SND_SPELL_SPEED_START;
+audio::SourcedSample SND_SPELL_SPEED_LOOP;
+audio::SourcedSample SND_SPELL_SPEED_END;
+audio::SourcedSample SND_SPELL_SUMMON_CREATURE;
+audio::SourcedSample SND_SPELL_TELEKINESIS_START;
+audio::SourcedSample SND_SPELL_TELEKINESIS_END;
+audio::SourcedSample SND_SPELL_VISION_START;
+audio::SourcedSample SND_SPELL_VISION_LOOP;
 
 static void ARX_SOUND_EnvironmentSet(const res::path & name);
 static void ARX_SOUND_CreateEnvironments();
@@ -463,11 +461,11 @@ void ARX_SOUND_EnvironmentSet(const res::path & name) {
 	}
 }
 
-audio::SourcedSample ARX_SOUND_PlaySFX(SourcedSample & sample_id, const Vec3f * position,
+audio::SourcedSample ARX_SOUND_PlaySFX(audio::SourcedSample & sample_id, const Vec3f * position,
                                   float pitch, SoundLoopMode loop) {
 	
-	if(!g_soundInitialized || sample_id == SourcedSample()) {
-		return SourcedSample();
+	if(!g_soundInitialized || sample_id == audio::SourcedSample()) {
+		return audio::SourcedSample();
 	}
 	
 	audio::Channel channel;
@@ -477,7 +475,7 @@ audio::SourcedSample ARX_SOUND_PlaySFX(SourcedSample & sample_id, const Vec3f * 
 	
 	if(position) {
 		if(g_camera && fartherThan(g_camera->m_pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
-			return SourcedSample();
+			return audio::SourcedSample();
 		}
 		channel.position = *position;
 	} else {
@@ -504,7 +502,7 @@ audio::SourcedSample ARX_SOUND_PlaySFX(SourcedSample & sample_id, const Vec3f * 
 
 static void playSample(audio::SourcedSample & sample_id, float pitch, SoundLoopMode loop, audio::MixerId mixer) {
 	
-	if(!g_soundInitialized || sample_id == SourcedSample()) {
+	if(!g_soundInitialized || sample_id == audio::SourcedSample()) {
 		return;
 	}
 	
@@ -555,7 +553,7 @@ static res::path speechFileName(const res::path & name) {
 audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar, const Entity * io) {
 	
 	if(!g_soundInitialized) {
-		return SourcedSample();
+		return audio::SourcedSample();
 	}
 	
 	res::path file = speechFileName(name);
@@ -581,7 +579,7 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 				*tooFar = true;
 			}
 			// TODO sample is never freed!
-			return SourcedSample();
+			return audio::SourcedSample();
 		}
 
 		if(io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.f) {
@@ -593,7 +591,7 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 		channel.position = Vec3f_Z_AXIS * 100.f;
 	}
 	
-	SourcedSample source = SourcedSample(audio::SourceHandle(), sample_id);
+	audio::SourcedSample source = audio::SourcedSample(audio::SourceHandle(), sample_id);
 	audio::samplePlay(source, sample_id, channel);
 
 	return source;
@@ -610,9 +608,9 @@ long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	if(mat1 == MATERIAL_WATER || mat2 == MATERIAL_WATER)
 		ARX_PARTICLES_SpawnWaterSplash(position);
 
-	SourcedSample sample_id = g_soundMaterials[mat1][mat2];
+	audio::SourcedSample sample_id = g_soundMaterials[mat1][mat2];
 
-	if(sample_id == SourcedSample())
+	if(sample_id == audio::SourcedSample())
 		return 0;
 
 	audio::Channel channel;
@@ -667,8 +665,8 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	}
 	SoundMaterial & mat = ci->second;
 	
-	SourcedSample sample_id = mat.next();
-	arx_assert(sample_id != SourcedSample());
+	audio::SourcedSample sample_id = mat.next();
+	arx_assert(sample_id != audio::SourcedSample());
 	
 	audio::Channel channel;
 	channel.mixer = ARX_SOUND_MixerGameSample;
@@ -703,12 +701,12 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
                                      float pitch, SoundLoopMode loop) {
 	
 	if(!g_soundInitialized) {
-		return SourcedSample();
+		return audio::SourcedSample();
 	}
 	
 	audio::SampleHandle sample_id = audio::createSample2(name);
 	if (sample_id == audio::SampleHandle()) {
-		return SourcedSample();
+		return audio::SourcedSample();
 	}
 	
 	audio::Channel channel;
@@ -737,15 +735,15 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 		channel.pitch = pitch;
 	}
 	
-	SourcedSample source = SourcedSample(audio::SourceHandle(), sample_id);
+	audio::SourcedSample source = audio::SourcedSample(audio::SourceHandle(), sample_id);
 	audio::samplePlay(source, sample_id, channel, loop);
 	
 	return source;
 }
 
-void ARX_SOUND_PlayAnim(SourcedSample & sample_id, const Vec3f * position) {
+void ARX_SOUND_PlayAnim(audio::SourcedSample & sample_id, const Vec3f * position) {
 	
-	if(!g_soundInitialized || sample_id == SourcedSample()) {
+	if(!g_soundInitialized || sample_id == audio::SourcedSample()) {
 		return;
 	}
 	
@@ -780,7 +778,7 @@ audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpee
 	audio::SampleHandle sample_id = audio::createSample2(file);
 	if(sample_id == audio::SampleHandle()) {
 		LogError << "Cannot load sound for cinematic: " << file;
-		return SourcedSample();
+		return audio::SourcedSample();
 	}
 	
 	audio::Channel channel;
@@ -798,20 +796,20 @@ audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpee
 	
 	channel.position = ARX_SOUND_IOFrontPos(NULL);
 	
-	SourcedSample source = SourcedSample(audio::SourceHandle(), sample_id);
+	audio::SourcedSample source = audio::SourcedSample(audio::SourceHandle(), sample_id);
 	audio::samplePlay(source, sample_id, channel);
 	
 	return source;
 }
 
-bool ARX_SOUND_IsPlaying(SourcedSample & sample_id) {
+bool ARX_SOUND_IsPlaying(audio::SourcedSample & sample_id) {
 	return g_soundInitialized ? audio::isSamplePlaying(sample_id) : false;
 }
 
 
-GameDuration ARX_SOUND_GetDuration(SourcedSample & sample_id) {
+GameDuration ARX_SOUND_GetDuration(audio::SourcedSample & sample_id) {
 	
-	if(g_soundInitialized && sample_id != SourcedSample()) {
+	if(g_soundInitialized && sample_id != audio::SourcedSample()) {
 		size_t length;
 		audio::getSampleLength(sample_id.getSampleId(), length);
 		return GameDurationMs(length);
@@ -820,28 +818,28 @@ GameDuration ARX_SOUND_GetDuration(SourcedSample & sample_id) {
 	return 0;
 }
 
-void ARX_SOUND_RefreshVolume(SourcedSample & sample_id, float volume) {
-	if(g_soundInitialized && sample_id != SourcedSample()) {
+void ARX_SOUND_RefreshVolume(audio::SourcedSample & sample_id, float volume) {
+	if(g_soundInitialized && sample_id != audio::SourcedSample()) {
 		audio::setSampleVolume(sample_id, volume);
 	}
 }
 
-void ARX_SOUND_RefreshPitch(SourcedSample & sample_id, float pitch) {
-	if(g_soundInitialized && sample_id != SourcedSample()) {
+void ARX_SOUND_RefreshPitch(audio::SourcedSample & sample_id, float pitch) {
+	if(g_soundInitialized && sample_id != audio::SourcedSample()) {
 		audio::setSamplePitch(sample_id, pitch);
 	}
 }
 
-void ARX_SOUND_RefreshPosition(SourcedSample & sample_id, const Vec3f & position) {
+void ARX_SOUND_RefreshPosition(audio::SourcedSample & sample_id, const Vec3f & position) {
 	
-	if(g_soundInitialized && sample_id != SourcedSample()) {
+	if(g_soundInitialized && sample_id != audio::SourcedSample()) {
 		audio::setSamplePosition(sample_id, position);
 	}
 }
 
-void ARX_SOUND_RefreshSpeechPosition(SourcedSample & sample_id, const Entity * io) {
+void ARX_SOUND_RefreshSpeechPosition(audio::SourcedSample & sample_id, const Entity * io) {
 	
-	if(!g_soundInitialized || !io || sample_id == SourcedSample()) {
+	if(!g_soundInitialized || !io || sample_id == audio::SourcedSample()) {
 		return;
 	}
 	
@@ -855,10 +853,10 @@ void ARX_SOUND_RefreshSpeechPosition(SourcedSample & sample_id, const Entity * i
 	audio::setSamplePosition(sample_id, position);
 }
 
-SourcedSample ARX_SOUND_Load(const res::path & name) {
+audio::SourcedSample ARX_SOUND_Load(const res::path & name) {
 	
 	if(!g_soundInitialized) {
-		return SourcedSample();
+		return audio::SourcedSample();
 	}
 	
 	res::path sample_name = name;
@@ -866,14 +864,14 @@ SourcedSample ARX_SOUND_Load(const res::path & name) {
 	return audio::createSample(sample_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV));
 }
 
-void ARX_SOUND_Free(const SourcedSample & sample) {
-	if(g_soundInitialized && sample != SourcedSample()) {
+void ARX_SOUND_Free(const audio::SourcedSample & sample) {
+	if(g_soundInitialized && sample != audio::SourcedSample()) {
 		audio::deleteSample(sample);
 	}
 }
 
-void ARX_SOUND_Stop(SourcedSample & sample_id) {
-	if(g_soundInitialized && sample_id != SourcedSample()) {
+void ARX_SOUND_Stop(audio::SourcedSample & sample_id) {
+	if(g_soundInitialized && sample_id != audio::SourcedSample()) {
 		audio::sampleStop(sample_id);
 	}
 }
@@ -1215,150 +1213,150 @@ static void ARX_SOUND_CreateStaticSamples() {
 	SND_SPELL_VISION_LOOP              = audio::createSample("magic_spell_vision.wav");
 }
 
-// Reset each static sample to SourcedSample()
+// Reset each static sample to audio::SourcedSample()
 // Those samples are freed from memory when by audio::clean() is deleted
 static void ARX_SOUND_ReleaseStaticSamples() {
 	
 	// Interface samples
-	SND_BACKPACK = SourcedSample();
-	SND_BOOK_OPEN = SourcedSample();
-	SND_BOOK_CLOSE = SourcedSample();
-	SND_BOOK_PAGE_TURN = SourcedSample();
-	SND_GOLD = SourcedSample();
-	SND_INVSTD = SourcedSample();
-	SND_SCROLL_OPEN = SourcedSample();
-	SND_SCROLL_CLOSE = SourcedSample();
-	SND_TORCH_START = SourcedSample();
-	SND_TORCH_LOOP = SourcedSample();
-	SND_TORCH_END = SourcedSample();
+	SND_BACKPACK = audio::SourcedSample();
+	SND_BOOK_OPEN = audio::SourcedSample();
+	SND_BOOK_CLOSE = audio::SourcedSample();
+	SND_BOOK_PAGE_TURN = audio::SourcedSample();
+	SND_GOLD = audio::SourcedSample();
+	SND_INVSTD = audio::SourcedSample();
+	SND_SCROLL_OPEN = audio::SourcedSample();
+	SND_SCROLL_CLOSE = audio::SourcedSample();
+	SND_TORCH_START = audio::SourcedSample();
+	SND_TORCH_LOOP = audio::SourcedSample();
+	SND_TORCH_END = audio::SourcedSample();
 
 	// Other SFX samples
-	SND_FIREPLACE = SourcedSample();
-	SND_PLOUF = SourcedSample();
-	SND_QUAKE = SourcedSample();
+	SND_FIREPLACE = audio::SourcedSample();
+	SND_PLOUF = audio::SourcedSample();
+	SND_QUAKE = audio::SourcedSample();
 
 	// Menu samples
-	SND_MENU_CLICK = SourcedSample();
-	SND_MENU_RELEASE = SourcedSample();
+	SND_MENU_CLICK = audio::SourcedSample();
+	SND_MENU_RELEASE = audio::SourcedSample();
 
 	// Player samples
-	SND_PLAYER_DEATH_BY_FIRE = SourcedSample();
-	SND_PLAYER_HEART_BEAT = SourcedSample();
-	SND_PLAYER_LEVEL_UP = SourcedSample();
-	SND_PLAYER_POISONED = SourcedSample();
+	SND_PLAYER_DEATH_BY_FIRE = audio::SourcedSample();
+	SND_PLAYER_HEART_BEAT = audio::SourcedSample();
+	SND_PLAYER_LEVEL_UP = audio::SourcedSample();
+	SND_PLAYER_POISONED = audio::SourcedSample();
 
 	// Magic drawing samples
-	SND_MAGIC_AMBIENT = SourcedSample();
-	SND_MAGIC_DRAW = SourcedSample();
-	SND_MAGIC_FIZZLE = SourcedSample();
+	SND_MAGIC_AMBIENT = audio::SourcedSample();
+	SND_MAGIC_DRAW = audio::SourcedSample();
+	SND_MAGIC_FIZZLE = audio::SourcedSample();
 
 	// Magic symbols samples
-	SND_SYMB[RUNE_AAM] = SourcedSample();
-	SND_SYMB[RUNE_CETRIUS] = SourcedSample();
-	SND_SYMB[RUNE_COSUM] = SourcedSample();
-	SND_SYMB[RUNE_COMUNICATUM] = SourcedSample();
-	SND_SYMB[RUNE_FOLGORA] = SourcedSample();
-	SND_SYMB[RUNE_FRIDD] = SourcedSample();
-	SND_SYMB[RUNE_KAOM] = SourcedSample();
-	SND_SYMB[RUNE_MEGA] = SourcedSample();
-	SND_SYMB[RUNE_MORTE] = SourcedSample();
-	SND_SYMB[RUNE_MOVIS] = SourcedSample();
-	SND_SYMB[RUNE_NHI] = SourcedSample();
-	SND_SYMB[RUNE_RHAA] = SourcedSample();
-	SND_SYMB[RUNE_SPACIUM] = SourcedSample();
-	SND_SYMB[RUNE_STREGUM] = SourcedSample();
-	SND_SYMB[RUNE_TAAR] = SourcedSample();
-	SND_SYMB[RUNE_TEMPUS] = SourcedSample();
-	SND_SYMB[RUNE_TERA] = SourcedSample();
-	SND_SYMB[RUNE_VISTA] = SourcedSample();
-	SND_SYMB[RUNE_VITAE] = SourcedSample();
-	SND_SYMB[RUNE_YOK] = SourcedSample();
+	SND_SYMB[RUNE_AAM] = audio::SourcedSample();
+	SND_SYMB[RUNE_CETRIUS] = audio::SourcedSample();
+	SND_SYMB[RUNE_COSUM] = audio::SourcedSample();
+	SND_SYMB[RUNE_COMUNICATUM] = audio::SourcedSample();
+	SND_SYMB[RUNE_FOLGORA] = audio::SourcedSample();
+	SND_SYMB[RUNE_FRIDD] = audio::SourcedSample();
+	SND_SYMB[RUNE_KAOM] = audio::SourcedSample();
+	SND_SYMB[RUNE_MEGA] = audio::SourcedSample();
+	SND_SYMB[RUNE_MORTE] = audio::SourcedSample();
+	SND_SYMB[RUNE_MOVIS] = audio::SourcedSample();
+	SND_SYMB[RUNE_NHI] = audio::SourcedSample();
+	SND_SYMB[RUNE_RHAA] = audio::SourcedSample();
+	SND_SYMB[RUNE_SPACIUM] = audio::SourcedSample();
+	SND_SYMB[RUNE_STREGUM] = audio::SourcedSample();
+	SND_SYMB[RUNE_TAAR] = audio::SourcedSample();
+	SND_SYMB[RUNE_TEMPUS] = audio::SourcedSample();
+	SND_SYMB[RUNE_TERA] = audio::SourcedSample();
+	SND_SYMB[RUNE_VISTA] = audio::SourcedSample();
+	SND_SYMB[RUNE_VITAE] = audio::SourcedSample();
+	SND_SYMB[RUNE_YOK] = audio::SourcedSample();
 
 	// Spells samples
-	SND_SPELL_ACTIVATE_PORTAL = SourcedSample();
-	SND_SPELL_ARMOR_START = SourcedSample();
-	SND_SPELL_ARMOR_END = SourcedSample();
-	SND_SPELL_ARMOR_LOOP = SourcedSample();
-	SND_SPELL_LOWER_ARMOR = SourcedSample();
-	SND_SPELL_LOWER_ARMOR_END = SourcedSample();
-	SND_SPELL_BLESS = SourcedSample();
-	SND_SPELL_COLD_PROTECTION_START = SourcedSample();
-	SND_SPELL_COLD_PROTECTION_LOOP = SourcedSample();
-	SND_SPELL_COLD_PROTECTION_END = SourcedSample();
-	SND_SPELL_CONFUSE = SourcedSample();
-	SND_SPELL_CONTROL_TARGET = SourcedSample();
-	SND_SPELL_CREATE_FIELD = SourcedSample();
-	SND_SPELL_CREATE_FOOD = SourcedSample();
-	SND_SPELL_CURE_POISON = SourcedSample();
-	SND_SPELL_CURSE = SourcedSample();
-	SND_SPELL_DETECT_TRAP = SourcedSample();
-	SND_SPELL_DETECT_TRAP_LOOP = SourcedSample();
-	SND_SPELL_DISARM_TRAP = SourcedSample();
-	SND_SPELL_DISPELL_FIELD = SourcedSample();
-	SND_SPELL_DISPELL_ILLUSION = SourcedSample();
-	SND_SPELL_DOUSE = SourcedSample();
-	SND_SPELL_ELECTRIC = SourcedSample();
-	SND_SPELL_EXPLOSION = SourcedSample();
-	SND_SPELL_EYEBALL_IN = SourcedSample();
-	SND_SPELL_EYEBALL_OUT = SourcedSample();
-	SND_SPELL_FIRE_HIT = SourcedSample();
-	SND_SPELL_FIRE_LAUNCH = SourcedSample();
-	SND_SPELL_FIRE_PROTECTION = SourcedSample();
-	SND_SPELL_FIRE_PROTECTION_LOOP = SourcedSample();
-	SND_SPELL_FIRE_PROTECTION_END = SourcedSample();
-	SND_SPELL_FIRE_WIND = SourcedSample();
-	SND_SPELL_FREEZETIME = SourcedSample();
-	SND_SPELL_HARM = SourcedSample();
-	SND_SPELL_HEALING = SourcedSample();
-	SND_SPELL_ICE_FIELD = SourcedSample();
-	SND_SPELL_ICE_FIELD_LOOP = SourcedSample();
-	SND_SPELL_ICE_FIELD_END = SourcedSample();
-	SND_SPELL_ICE_PROJECTILE_LAUNCH = SourcedSample();
-	SND_SPELL_INCINERATE = SourcedSample();
-	SND_SPELL_INCINERATE_LOOP = SourcedSample();
-	SND_SPELL_INCINERATE_END = SourcedSample();
-	SND_SPELL_IGNITE = SourcedSample();
-	SND_SPELL_INVISIBILITY_START = SourcedSample();
-	SND_SPELL_INVISIBILITY_END = SourcedSample();
-	SND_SPELL_LEVITATE_START = SourcedSample();
-	SND_SPELL_LEVITATE_LOOP = SourcedSample();
-	SND_SPELL_LEVITATE_END = SourcedSample();
-	SND_SPELL_LIGHTNING_START = SourcedSample();
-	SND_SPELL_LIGHTNING_LOOP = SourcedSample();
-	SND_SPELL_LIGHTNING_END = SourcedSample();
-	SND_SPELL_MAGICAL_HIT = SourcedSample();
+	SND_SPELL_ACTIVATE_PORTAL = audio::SourcedSample();
+	SND_SPELL_ARMOR_START = audio::SourcedSample();
+	SND_SPELL_ARMOR_END = audio::SourcedSample();
+	SND_SPELL_ARMOR_LOOP = audio::SourcedSample();
+	SND_SPELL_LOWER_ARMOR = audio::SourcedSample();
+	SND_SPELL_LOWER_ARMOR_END = audio::SourcedSample();
+	SND_SPELL_BLESS = audio::SourcedSample();
+	SND_SPELL_COLD_PROTECTION_START = audio::SourcedSample();
+	SND_SPELL_COLD_PROTECTION_LOOP = audio::SourcedSample();
+	SND_SPELL_COLD_PROTECTION_END = audio::SourcedSample();
+	SND_SPELL_CONFUSE = audio::SourcedSample();
+	SND_SPELL_CONTROL_TARGET = audio::SourcedSample();
+	SND_SPELL_CREATE_FIELD = audio::SourcedSample();
+	SND_SPELL_CREATE_FOOD = audio::SourcedSample();
+	SND_SPELL_CURE_POISON = audio::SourcedSample();
+	SND_SPELL_CURSE = audio::SourcedSample();
+	SND_SPELL_DETECT_TRAP = audio::SourcedSample();
+	SND_SPELL_DETECT_TRAP_LOOP = audio::SourcedSample();
+	SND_SPELL_DISARM_TRAP = audio::SourcedSample();
+	SND_SPELL_DISPELL_FIELD = audio::SourcedSample();
+	SND_SPELL_DISPELL_ILLUSION = audio::SourcedSample();
+	SND_SPELL_DOUSE = audio::SourcedSample();
+	SND_SPELL_ELECTRIC = audio::SourcedSample();
+	SND_SPELL_EXPLOSION = audio::SourcedSample();
+	SND_SPELL_EYEBALL_IN = audio::SourcedSample();
+	SND_SPELL_EYEBALL_OUT = audio::SourcedSample();
+	SND_SPELL_FIRE_HIT = audio::SourcedSample();
+	SND_SPELL_FIRE_LAUNCH = audio::SourcedSample();
+	SND_SPELL_FIRE_PROTECTION = audio::SourcedSample();
+	SND_SPELL_FIRE_PROTECTION_LOOP = audio::SourcedSample();
+	SND_SPELL_FIRE_PROTECTION_END = audio::SourcedSample();
+	SND_SPELL_FIRE_WIND = audio::SourcedSample();
+	SND_SPELL_FREEZETIME = audio::SourcedSample();
+	SND_SPELL_HARM = audio::SourcedSample();
+	SND_SPELL_HEALING = audio::SourcedSample();
+	SND_SPELL_ICE_FIELD = audio::SourcedSample();
+	SND_SPELL_ICE_FIELD_LOOP = audio::SourcedSample();
+	SND_SPELL_ICE_FIELD_END = audio::SourcedSample();
+	SND_SPELL_ICE_PROJECTILE_LAUNCH = audio::SourcedSample();
+	SND_SPELL_INCINERATE = audio::SourcedSample();
+	SND_SPELL_INCINERATE_LOOP = audio::SourcedSample();
+	SND_SPELL_INCINERATE_END = audio::SourcedSample();
+	SND_SPELL_IGNITE = audio::SourcedSample();
+	SND_SPELL_INVISIBILITY_START = audio::SourcedSample();
+	SND_SPELL_INVISIBILITY_END = audio::SourcedSample();
+	SND_SPELL_LEVITATE_START = audio::SourcedSample();
+	SND_SPELL_LEVITATE_LOOP = audio::SourcedSample();
+	SND_SPELL_LEVITATE_END = audio::SourcedSample();
+	SND_SPELL_LIGHTNING_START = audio::SourcedSample();
+	SND_SPELL_LIGHTNING_LOOP = audio::SourcedSample();
+	SND_SPELL_LIGHTNING_END = audio::SourcedSample();
+	SND_SPELL_MAGICAL_HIT = audio::SourcedSample();
 
-	SND_SPELL_FIRE_FIELD_START = SourcedSample();
-	SND_SPELL_FIRE_FIELD_LOOP = SourcedSample();
-	SND_SPELL_FIRE_FIELD_END = SourcedSample();
+	SND_SPELL_FIRE_FIELD_START = audio::SourcedSample();
+	SND_SPELL_FIRE_FIELD_LOOP = audio::SourcedSample();
+	SND_SPELL_FIRE_FIELD_END = audio::SourcedSample();
 
-	SND_SPELL_MAGICAL_SHIELD = SourcedSample();
-	SND_SPELL_MASS_INCINERATE = SourcedSample();
-	SND_SPELL_MASS_PARALYSE = SourcedSample();
-	SND_SPELL_MM_CREATE = SourcedSample();
-	SND_SPELL_MM_HIT = SourcedSample();
-	SND_SPELL_MM_LAUNCH = SourcedSample();
-	SND_SPELL_MM_LOOP = SourcedSample();
-	SND_SPELL_NEGATE_MAGIC = SourcedSample();
-	SND_SPELL_PARALYSE = SourcedSample();
-	SND_SPELL_PARALYSE_END = SourcedSample();
-	SND_SPELL_POISON_PROJECTILE_LAUNCH = SourcedSample();
-	SND_SPELL_RAISE_DEAD = SourcedSample();
-	SND_SPELL_REPEL_UNDEAD = SourcedSample();
-	SND_SPELL_REPEL_UNDEAD_LOOP = SourcedSample();
-	SND_SPELL_RUNE_OF_GUARDING = SourcedSample();
-	SND_SPELL_RUNE_OF_GUARDING_END = SourcedSample();
-	SND_SPELL_SLOW_DOWN = SourcedSample();
-	SND_SPELL_SLOW_DOWN_END = SourcedSample();
-	SND_SPELL_SPARK = SourcedSample();
-	SND_SPELL_SPEED_START = SourcedSample();
-	SND_SPELL_SPEED_LOOP = SourcedSample();
-	SND_SPELL_SPEED_END = SourcedSample();
-	SND_SPELL_SUMMON_CREATURE = SourcedSample();
-	SND_SPELL_TELEKINESIS_START = SourcedSample();
-	SND_SPELL_TELEKINESIS_END = SourcedSample();
-	SND_SPELL_VISION_START = SourcedSample();
-	SND_SPELL_VISION_LOOP = SourcedSample();
+	SND_SPELL_MAGICAL_SHIELD = audio::SourcedSample();
+	SND_SPELL_MASS_INCINERATE = audio::SourcedSample();
+	SND_SPELL_MASS_PARALYSE = audio::SourcedSample();
+	SND_SPELL_MM_CREATE = audio::SourcedSample();
+	SND_SPELL_MM_HIT = audio::SourcedSample();
+	SND_SPELL_MM_LAUNCH = audio::SourcedSample();
+	SND_SPELL_MM_LOOP = audio::SourcedSample();
+	SND_SPELL_NEGATE_MAGIC = audio::SourcedSample();
+	SND_SPELL_PARALYSE = audio::SourcedSample();
+	SND_SPELL_PARALYSE_END = audio::SourcedSample();
+	SND_SPELL_POISON_PROJECTILE_LAUNCH = audio::SourcedSample();
+	SND_SPELL_RAISE_DEAD = audio::SourcedSample();
+	SND_SPELL_REPEL_UNDEAD = audio::SourcedSample();
+	SND_SPELL_REPEL_UNDEAD_LOOP = audio::SourcedSample();
+	SND_SPELL_RUNE_OF_GUARDING = audio::SourcedSample();
+	SND_SPELL_RUNE_OF_GUARDING_END = audio::SourcedSample();
+	SND_SPELL_SLOW_DOWN = audio::SourcedSample();
+	SND_SPELL_SLOW_DOWN_END = audio::SourcedSample();
+	SND_SPELL_SPARK = audio::SourcedSample();
+	SND_SPELL_SPEED_START = audio::SourcedSample();
+	SND_SPELL_SPEED_LOOP = audio::SourcedSample();
+	SND_SPELL_SPEED_END = audio::SourcedSample();
+	SND_SPELL_SUMMON_CREATURE = audio::SourcedSample();
+	SND_SPELL_TELEKINESIS_START = audio::SourcedSample();
+	SND_SPELL_TELEKINESIS_END = audio::SourcedSample();
+	SND_SPELL_VISION_START = audio::SourcedSample();
+	SND_SPELL_VISION_LOOP = audio::SourcedSample();
 }
 
 const char * ARX_MATERIAL_GetNameById(Material id) {
@@ -1433,7 +1431,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 					}
 					
 					if(sample != audio::SampleHandle()) {
-						mat.variants.push_back(SourcedSample(audio::SourceHandle(), sample));
+						mat.variants.push_back(audio::SourcedSample(audio::SourceHandle(), sample));
 					}
 				}
 				
