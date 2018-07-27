@@ -615,7 +615,6 @@ aalError samplePlay(SourcedSample & sampleId, const Channel & channel, unsigned 
 	AAL_ENTRY
 	
 	SampleHandle s_id = sampleId.getSampleId();
-	sampleId.clearSource(); // TODO is this correct ?
 	if(!g_samples.isValid(s_id) || !g_mixers.isValid(channel.mixer)) {
 		return AAL_ERROR_HANDLE;
 	}
