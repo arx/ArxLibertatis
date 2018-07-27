@@ -522,8 +522,8 @@ static void playSample(audio::SourcedSample & sample_id, float pitch, SoundLoopM
 	
 }
 
-void ARX_SOUND_PlayInterface(audio::SourcedSample & sample_id, float pitch, SoundLoopMode loop) {
-	playSample(sample_id, pitch, loop, ARX_SOUND_MixerGameSample);
+void ARX_SOUND_PlayInterface(audio::SourcedSample & sample_id, float pitch) {
+	playSample(sample_id, pitch, ARX_SOUND_PLAY_ONCE, ARX_SOUND_MixerGameSample);
 }
 
 void ARX_SOUND_PlayMenu(audio::SourcedSample & sample_id) {
