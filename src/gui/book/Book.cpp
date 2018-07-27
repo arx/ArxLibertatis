@@ -107,7 +107,8 @@ void PlayerBookPage::playReleaseSound() {
 }
 
 void PlayerBookPage::playErrorSound() {
-	ARX_SOUND_PlayInterface(g_snd.MENU_CLICK);
+	audio::SourcedSample ss(audio::SourceHandle(), g_snd.MENU_CLICK);
+	ARX_SOUND_PlayInterface(ss);
 }
 
 void PlayerBook::clearJournal() {

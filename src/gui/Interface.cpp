@@ -425,9 +425,11 @@ void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & text) {
 	player.Interface |= INTER_NOTE;
 	
 	switch(openNote.type()) {
-		case Note::Notice:
-			ARX_SOUND_PlayInterface(g_snd.MENU_CLICK, Random::getf(0.9f, 1.1f));
+		case Note::Notice: {
+			audio::SourcedSample ss(audio::SourceHandle(), g_snd.MENU_CLICK);
+			ARX_SOUND_PlayInterface(ss, Random::getf(0.9f, 1.1f));
 			break;
+		}
 		case Note::Book:
 			ARX_SOUND_PlayInterface(g_snd.BOOK_OPEN, Random::getf(0.9f, 1.1f));
 			break;
@@ -456,7 +458,8 @@ void ARX_INTERFACE_NoteClose() {
 	
 	switch(openNote.type()) {
 		case Note::Notice: {
-			ARX_SOUND_PlayInterface(g_snd.MENU_CLICK, Random::getf(0.9f, 1.1f));
+			audio::SourcedSample ss(audio::SourceHandle(), g_snd.MENU_CLICK);
+			ARX_SOUND_PlayInterface(ss, Random::getf(0.9f, 1.1f));
 			break;
 		}
 		case Note::Book:
