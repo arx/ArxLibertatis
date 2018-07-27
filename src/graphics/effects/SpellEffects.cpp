@@ -57,8 +57,8 @@ CSpellFx::CSpellFx()
 	SetDuration(GameDurationMs(1000));
 }
 
-void CSpellFx::SetDuration(GameDuration ulaDuration) {
-	m_duration = ulaDuration;
+void CSpellFx::SetDuration(GameDuration duration) {
+	m_duration = duration;
 
 	if(m_duration <= 0)
 		m_duration = GameDurationMs(100);
