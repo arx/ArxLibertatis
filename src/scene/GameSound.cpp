@@ -401,8 +401,9 @@ void ARX_SOUND_PlayInterface(audio::SourcedSample & sample_id, float pitch) {
 	playSample(sample_id, pitch, ARX_SOUND_PLAY_ONCE, ARX_SOUND_MixerGameSample);
 }
 
-void ARX_SOUND_PlayMenu(audio::SourcedSample & sample_id) {
-	playSample(sample_id, 1.f, ARX_SOUND_PLAY_ONCE, ARX_SOUND_MixerMenuSample);
+void ARX_SOUND_PlayMenu(audio::SampleHandle sample_id) {
+	audio::SourcedSample ss(audio::SourceHandle(), sample_id);
+	playSample(ss, 1.f, ARX_SOUND_PLAY_ONCE, ARX_SOUND_MixerMenuSample);
 }
 
 static Vec3f ARX_SOUND_IOFrontPos(const Entity * io) {
@@ -961,7 +962,7 @@ static void ARX_SOUND_CreateStaticSamples() {
 	g_snd.GOLD                           = audio::createSample("drop_coin.wav");
 	
 	// Menu
-	g_snd.MENU_CLICK                     = audio::createSample("menu_click.wav");
+	g_snd.MENU_CLICK                     = audio::createSample2("menu_click.wav");
 	g_snd.MENU_RELEASE                   = audio::createSample("menu_release.wav");
 	
 	// Other SFX samples

@@ -76,7 +76,7 @@ const std::string AMB_CREDITS = "ambient_credits.amb";
 
 struct StaticSamples {
 // Menu samples
-audio::SourcedSample MENU_CLICK;
+audio::SampleHandle MENU_CLICK;
 audio::SourcedSample MENU_RELEASE;
 
 // Interface samples
@@ -217,7 +217,7 @@ void ARX_SOUND_Free(const audio::SourcedSample & sample);
 audio::SourcedSample ARX_SOUND_PlaySFX(audio::SourcedSample & sample_id, const Vec3f * position = NULL,
                                   float pitch = 1.f, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 void ARX_SOUND_PlayInterface(audio::SourcedSample & sample_id, float pitch = 1.f);
-void ARX_SOUND_PlayMenu(audio::SourcedSample & sample_id);
+void ARX_SOUND_PlayMenu(audio::SampleHandle sample_id);
 
 audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar = NULL, const Entity * io = NULL);
 long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source);
