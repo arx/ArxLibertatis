@@ -329,7 +329,7 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 			
 			if(!flags) {
 				if(!DRAGINTER) {
-					ARX_SOUND_PlayInterface(SND_INVSTD);
+					ARX_SOUND_PlayInterface(SND.INVSTD);
 					Set_DragInter(tounequip);
 				} else {
 					giveToPlayer(tounequip);
@@ -924,7 +924,7 @@ void ARX_EQUIPMENT_UnEquipPlayerWeapon()
 		DRAGINTER = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
 		if(DRAGINTER)
-			ARX_SOUND_PlayInterface(SND_INVSTD);
+			ARX_SOUND_PlayInterface(SND.INVSTD);
 
 		ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[EQUIP_SLOT_WEAPON]]);
 		DRAGINTER = pioOldDragInter;

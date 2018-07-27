@@ -1276,7 +1276,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 	}
 
 	if(player.Interface & INTER_INVENTORYALL) {
-		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+		ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 		g_playerInventoryHud.close();
 	}
 }
@@ -1310,9 +1310,9 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 	}
 
 	if(bSound)
-		ARX_SOUND_PlayInterface(SND_INVSTD);
+		ARX_SOUND_PlayInterface(SND.INVSTD);
 	else
-		ARX_SOUND_PlayInterface(SND_INVSTD, 0.1f);
+		ARX_SOUND_PlayInterface(SND.INVSTD, 0.1f);
 }
 
 //-----------------------------------------------------------------------------

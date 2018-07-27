@@ -681,7 +681,7 @@ static bool HandleGameFlowTransitions() {
 			}
 			
 			TRANSITION_START = g_platformTime.frameStart();
-			ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT);
+			ARX_SOUND_PlayInterface(SND.PLAYER_HEART_BEAT);
 		}
 
 		ARX_INTERFACE_ShowARKANE();

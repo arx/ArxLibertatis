@@ -67,7 +67,7 @@ bool CheckboxWidget::click() {
 	
 	bool result = Widget::click();
 	
-	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+	ARX_SOUND_PlayMenu(SND.MENU_CLICK);
 	
 	setChecked(!m_checked);
 	

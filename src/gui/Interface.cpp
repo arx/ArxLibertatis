@@ -381,7 +381,7 @@ void InventoryOpenClose(unsigned long t) {
 	if(t == 2 && !(player.Interface & INTER_INVENTORY))
 		return;
 
-	ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+	ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 
 	if((player.Interface & INTER_INVENTORY) || (player.Interface & INTER_INVENTORYALL)) {
 		g_playerInventoryHud.close();
@@ -426,14 +426,14 @@ void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & text) {
 	
 	switch(openNote.type()) {
 		case Note::Notice:
-			ARX_SOUND_PlayInterface(SND_MENU_CLICK, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(SND.MENU_CLICK, Random::getf(0.9f, 1.1f));
 			break;
 		case Note::Book:
-			ARX_SOUND_PlayInterface(SND_BOOK_OPEN, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(SND.BOOK_OPEN, Random::getf(0.9f, 1.1f));
 			break;
 		case Note::SmallNote:
 		case Note::BigNote:
-			ARX_SOUND_PlayInterface(SND_SCROLL_OPEN, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(SND.SCROLL_OPEN, Random::getf(0.9f, 1.1f));
 			break;
 		default: break;
 	}
@@ -444,7 +444,7 @@ void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & text) {
 	
 	if(player.Interface & INTER_INVENTORYALL) {
 		g_playerInventoryHud.close();
-		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+		ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 	}
 }
 
@@ -456,15 +456,15 @@ void ARX_INTERFACE_NoteClose() {
 	
 	switch(openNote.type()) {
 		case Note::Notice: {
-			ARX_SOUND_PlayInterface(SND_MENU_CLICK, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(SND.MENU_CLICK, Random::getf(0.9f, 1.1f));
 			break;
 		}
 		case Note::Book:
-			ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(SND.BOOK_CLOSE, Random::getf(0.9f, 1.1f));
 			break;
 		case Note::SmallNote:
 		case Note::BigNote:
-			ARX_SOUND_PlayInterface(SND_SCROLL_CLOSE, Random::getf(0.9f, 1.1f));
+			ARX_SOUND_PlayInterface(SND.SCROLL_CLOSE, Random::getf(0.9f, 1.1f));
 			break;
 		default: break;
 	}
@@ -692,7 +692,7 @@ void ArxGame::managePlayerControls() {
 							ARX_INVENTORY_OpenClose(t);
 							
 							if(player.Interface & (INTER_INVENTORY | INTER_INVENTORYALL)) {
-								ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+								ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 							}
 							
 							if(SecondaryInventory) {
@@ -938,12 +938,12 @@ void ArxGame::managePlayerControls() {
 	// MAGIC
 	if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) {
 		if(!(player.m_currentMovement & PLAYER_CROUCH) && !BLOCK_PLAYER_CONTROLS && ARXmenu.mode() == Mode_InGame) {
-			if(!ARX_SOUND_IsPlaying(SND_MAGIC_AMBIENT))
-				ARX_SOUND_PlaySFX(SND_MAGIC_AMBIENT, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
+			if(!ARX_SOUND_IsPlaying(SND.MAGIC_AMBIENT))
+				ARX_SOUND_PlaySFX(SND.MAGIC_AMBIENT, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 		}
 	} else {
-		ARX_SOUND_Stop(SND_MAGIC_AMBIENT);
-		ARX_SOUND_Stop(SND_MAGIC_DRAW);
+		ARX_SOUND_Stop(SND.MAGIC_AMBIENT);
+		ARX_SOUND_Stop(SND.MAGIC_DRAW);
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONLIFE)) {
@@ -1034,7 +1034,7 @@ void ArxGame::managePlayerControls() {
 			
 			if(spell && spell->m_caster == EntityHandle_Player)
 				if(spellicons[spell->m_type].m_hasDuration) {
-					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+					ARX_SOUND_PlaySFX(SND.MAGIC_FIZZLE);
 					spells.endSpell(spell);
 					break;
 				}
@@ -1202,7 +1202,7 @@ void ArxGame::managePlayerControls() {
 				g_hudRoot.mecanismIcon.reset();
 				
 				if(player.Interface & INTER_INVENTORYALL) {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+					ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 					g_playerInventoryHud.close();
 					lOldInterfaceTemp = INTER_INVENTORYALL;
 				}
@@ -1247,7 +1247,7 @@ void ArxGame::managePlayerControls() {
 				if(lOldInterfaceTemp) {
 					lOldInterface = lOldInterfaceTemp;
 					lOldInterfaceTemp = 0;
-					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+					ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 				}
 				if(lOldInterface) {
 					player.Interface |= lOldInterface;
@@ -1821,9 +1821,9 @@ void ArxGame::manageEditorControls() {
 			FlyingOverIO->show = SHOW_FLAG_IN_INVENTORY;
 			
 			if(FlyingOverIO->ioflags & IO_GOLD)
-				ARX_SOUND_PlayInterface(SND_GOLD);
+				ARX_SOUND_PlayInterface(SND.GOLD);
 			
-			ARX_SOUND_PlayInterface(SND_INVSTD);
+			ARX_SOUND_PlayInterface(SND.INVSTD);
 			
 			if(!playerInventory.insert(FlyingOverIO)) {
 				if(TSecondaryInventory && bSecondary) {
@@ -1891,7 +1891,7 @@ void ArxGame::manageEditorControls() {
 						io->soundcount = 0;
 						
 						EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);
-						ARX_SOUND_PlaySFX(SND_WHOOSH, &io->pos);
+						ARX_SOUND_PlaySFX(SND.WHOOSH, &io->pos);
 						
 						io->show = SHOW_FLAG_IN_SCENE;
 						Set_DragInter(NULL);
@@ -1935,14 +1935,14 @@ void ArxGame::manageEditorControls() {
 						if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
 							if(!light->m_ignitionStatus) {
 								light->m_ignitionStatus = true;
-								ARX_SOUND_PlaySFX(SND_TORCH_START, &light->pos);
+								ARX_SOUND_PlaySFX(SND.TORCH_START, &light->pos);
 							}
 						}
 						
 						if(COMBINE->_itemdata->LightValue == 0) {
 							if(light->m_ignitionStatus) {
 								light->m_ignitionStatus = false;
-								ARX_SOUND_PlaySFX(SND_TORCH_END, &light->pos);
+								ARX_SOUND_PlaySFX(SND.TORCH_END, &light->pos);
 								SendIOScriptEvent(NULL, COMBINE, SM_CUSTOM, "douse");
 							}
 						}
@@ -2039,10 +2039,10 @@ void ArxGame::manageEditorControls() {
 						} else {
 							if(io->ioflags & IO_UNDERWATER) {
 								io->ioflags &= ~IO_UNDERWATER;
-								ARX_SOUND_PlayInterface(SND_PLOUF, Random::getf(0.8f, 1.2f));
+								ARX_SOUND_PlayInterface(SND.PLOUF, Random::getf(0.8f, 1.2f));
 							}
 							DRAGINTER->show = SHOW_FLAG_NOT_DRAWN;
-							ARX_SOUND_PlayInterface(SND_INVSTD);
+							ARX_SOUND_PlayInterface(SND.INVSTD);
 						}
 						
 					}

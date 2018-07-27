@@ -53,7 +53,7 @@ void InvisibilitySpell::Launch() {
 	entities[m_target]->gameFlags |= GFLAG_INVISIBILITY;
 	entities[m_target]->invisibility = 0.f;
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_START, &m_caster_pos);
+	ARX_SOUND_PlaySFX(SND.SPELL_INVISIBILITY_START, &m_caster_pos);
 	
 	m_targets.push_back(m_target);
 }
@@ -62,7 +62,7 @@ void InvisibilitySpell::End() {
 	Entity * target = entities.get(m_target);
 	if(target) {
 		target->gameFlags &= ~GFLAG_INVISIBILITY;
-		ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &target->pos);
+		ARX_SOUND_PlaySFX(SND.SPELL_INVISIBILITY_END, &target->pos);
 		m_targets.clear();
 	}
 }
@@ -100,7 +100,7 @@ void ManaDrainSpell::Launch() {
 	m_duration = m_hasDuration ? m_launchDuration : 0;
 	m_fManaCostPerSecond = 2.f;
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &m_caster_pos, 1.2f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_MAGICAL_SHIELD, &m_caster_pos, 1.2f, ARX_SOUND_PLAY_LOOPED);
 	
 	DamageParameters damage;
 	damage.radius = 150.f;
@@ -162,7 +162,7 @@ Vec3f ManaDrainSpell::getPosition() {
 ExplosionSpell::ExplosionSpell() { }
 
 void ExplosionSpell::Launch() {
-	ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
+	ARX_SOUND_PlaySFX(SND.SPELL_EXPLOSION);
 	
 	m_duration = GameDurationMs(2000);
 	m_hasDuration = true;
@@ -208,7 +208,7 @@ void ExplosionSpell::Launch() {
 		}
 	}
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND);
+	ARX_SOUND_PlaySFX(SND.SPELL_FIRE_WIND);
 }
 
 void ExplosionSpell::Update() {
@@ -260,7 +260,7 @@ void LifeDrainSpell::Launch() {
 	m_duration = m_hasDuration ? m_launchDuration : 0;
 	m_fManaCostPerSecond = 12.f;
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &m_caster_pos, 0.8f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_MAGICAL_SHIELD, &m_caster_pos, 0.8f, ARX_SOUND_PLAY_LOOPED);
 	
 	DamageParameters damage;
 	damage.radius = 150.f;

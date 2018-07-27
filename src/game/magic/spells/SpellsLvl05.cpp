@@ -48,7 +48,7 @@ void RuneOfGuardingSpell::Launch() {
 	
 	spells.endByCaster(m_caster, SPELL_RUNE_OF_GUARDING);
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING);
+	ARX_SOUND_PlaySFX(SND.SPELL_RUNE_OF_GUARDING);
 	
 	m_hasDuration = m_launchDuration >= 0;
 	m_duration = m_hasDuration ? m_launchDuration : 0;
@@ -144,7 +144,7 @@ void RuneOfGuardingSpell::Update() {
 		LaunchFireballBoom(m_pos, m_level);
 		DoSphericDamage(Sphere(m_pos, 30.f * m_level), 4.f * m_level,
 		                DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
-		ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING_END, &m_pos);
+		ARX_SOUND_PlaySFX(SND.SPELL_RUNE_OF_GUARDING_END, &m_pos);
 		requestEnd();
 	}
 }
@@ -166,7 +166,7 @@ void LevitateSpell::Launch() {
 		m_target = EntityHandle_Player;
 	}
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START, &entities[m_target]->pos);
+	ARX_SOUND_PlaySFX(SND.SPELL_LEVITATE_START, &entities[m_target]->pos);
 	
 	m_fManaCostPerSecond = 1.f;
 	
@@ -191,7 +191,7 @@ void LevitateSpell::Launch() {
 	cone2.Init(m_baseRadius, rhaut * 1.5f, hauteur * 0.5f);
 	m_stones.Init(m_baseRadius);
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_LOOP, &entities[m_target]->pos, 0.7f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_LEVITATE_LOOP, &entities[m_target]->pos, 0.7f, ARX_SOUND_PLAY_LOOPED);
 	
 	m_targets.push_back(m_target);
 }
@@ -202,7 +202,7 @@ void LevitateSpell::End() {
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
-		ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &target->pos);
+		ARX_SOUND_PlaySFX(SND.SPELL_LEVITATE_END, &target->pos);
 	}
 	
 	m_targets.clear();
@@ -284,12 +284,12 @@ void CurePoisonSpell::Launch() {
 	float cure = m_level * 10;
 	if(m_target == EntityHandle_Player) {
 		player.poison -= std::min(player.poison, cure);
-		ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON);
+		ARX_SOUND_PlaySFX(SND.SPELL_CURE_POISON);
 	} else if(Entity * io = entities.get(m_target)) {
 		if(io->ioflags & IO_NPC) {
 			io->_npcdata->poisonned -= std::min(io->_npcdata->poisonned, cure);
 		}
-		ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON, &io->pos);
+		ARX_SOUND_PlaySFX(SND.SPELL_CURE_POISON, &io->pos);
 	}
 	
 	m_duration = GameDurationMs(3500);
@@ -374,9 +374,9 @@ void RepelUndeadSpell::Launch() {
 		m_target = EntityHandle_Player;
 	}
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD, &entities[m_target]->pos);
+	ARX_SOUND_PlaySFX(SND.SPELL_REPEL_UNDEAD, &entities[m_target]->pos);
 	if(m_target == EntityHandle_Player) {
-		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+		m_snd_loop = ARX_SOUND_PlaySFX(SND.SPELL_REPEL_UNDEAD_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 	
 	m_hasDuration = m_launchDuration >= 0;
@@ -475,7 +475,7 @@ PoisonProjectileSpell::~PoisonProjectileSpell() {
 
 void PoisonProjectileSpell::Launch() {
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH,
+	ARX_SOUND_PlaySFX(SND.SPELL_POISON_PROJECTILE_LAUNCH,
 	                  &m_caster_pos);
 	
 	Vec3f srcPos = Vec3f_ZERO;

@@ -136,7 +136,7 @@ void PlayerInventoryHud::update() {
 					
 					if(bInventorySwitch) {
 						bInventorySwitch = false;
-						ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+						ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 						player.Interface |= INTER_INVENTORYALL;
 						ARX_INTERFACE_NoteClose();
 						m_inventoryY = 121 * player.m_bags;
@@ -344,7 +344,7 @@ void PlayerInventoryHud::draw() {
 void PlayerInventoryHud::nextBag() {
 	
 	if((player.Interface & INTER_INVENTORY) && player.m_bags != 0 && m_currentBag < player.m_bags - 1) {
-		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+		ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 		m_currentBag++;
 	}
 	
@@ -353,7 +353,7 @@ void PlayerInventoryHud::nextBag() {
 void PlayerInventoryHud::previousBag() {
 	
 	if((player.Interface & INTER_INVENTORY) && player.m_bags != 0 && m_currentBag > 0) {
-		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+		ARX_SOUND_PlayInterface(SND.BACKPACK, Random::getf(0.9f, 1.1f));
 		m_currentBag--;
 	}
 	
@@ -576,7 +576,7 @@ void PlayerInventoryHud::dropEntity() {
 				DRAGINTER->destroy();
 			}
 			
-			ARX_SOUND_PlayInterface(SND_INVSTD);
+			ARX_SOUND_PlayInterface(SND.INVSTD);
 			return;
 		}
 		
@@ -593,7 +593,7 @@ void PlayerInventoryHud::dropEntity() {
 	g_inventory[bag][t.x][t.y].show = true;
 	
 	ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
-	ARX_SOUND_PlayInterface(SND_INVSTD);
+	ARX_SOUND_PlayInterface(SND.INVSTD);
 	DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
 	Set_DragInter(NULL);
 }
@@ -616,7 +616,7 @@ void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 					ioo->_itemdata->count = 1;
 					io->_itemdata->count--;
 					ioo->scriptload = 1;
-					ARX_SOUND_PlayInterface(SND_INVSTD);
+					ARX_SOUND_PlayInterface(SND.INVSTD);
 					Set_DragInter(ioo);
 					RemoveFromAllInventories(ioo);
 					sInventory = 1;

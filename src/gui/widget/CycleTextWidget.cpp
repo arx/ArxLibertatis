@@ -122,7 +122,7 @@ bool CycleTextWidget::click() {
 		return result;
 	}
 	
-	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+	ARX_SOUND_PlayMenu(SND.MENU_CLICK);
 	
 	if(iOldPos < 0) {
 		iOldPos = iPos;

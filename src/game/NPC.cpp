@@ -815,16 +815,16 @@ static void CheckUnderWaterIO(Entity * io) {
 	if(io->ioflags & IO_UNDERWATER) {
 		if(!ep) {
 			io->ioflags &= ~IO_UNDERWATER;
-			ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
+			ARX_SOUND_PlaySFX(SND.PLOUF, &ppos);
 			ARX_PARTICLES_SpawnWaterSplash(ppos);
 		}
 	} else if(ep) {
 		io->ioflags |= IO_UNDERWATER;
-		ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
+		ARX_SOUND_PlaySFX(SND.PLOUF, &ppos);
 		ARX_PARTICLES_SpawnWaterSplash(ppos);
 
 		if(io->ignition > 0.f) {
-			ARX_SOUND_PlaySFX(SND_TORCH_END, &ppos);
+			ARX_SOUND_PlaySFX(SND.TORCH_END, &ppos);
 
 			lightHandleDestroy(io->ignit_light);
 
@@ -2794,7 +2794,7 @@ void ManageIgnition(Entity * io) {
 		io->durability -= g_framedelay * 0.0001f;
 		
 		if(io->durability <= 0.f) {
-			ARX_SOUND_PlaySFX(SND_TORCH_END, &io->pos);
+			ARX_SOUND_PlaySFX(SND.TORCH_END, &io->pos);
 			ARX_INTERACTIVE_DestroyIOdelayed(io);
 			return;
 		}
@@ -2854,7 +2854,7 @@ void ManageIgnition_2(Entity * io) {
 		}
 
 		if(io->ignit_sound == audio::SourcedSample()) {
-			io->ignit_sound = SND_FIREPLACE;
+			io->ignit_sound = SND.FIREPLACE;
 			ARX_SOUND_PlaySFX(io->ignit_sound, &position, Random::getf(0.95f, 1.05f), ARX_SOUND_PLAY_LOOPED);
 		} else {
 			ARX_SOUND_RefreshPosition(io->ignit_sound, position);

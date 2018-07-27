@@ -379,7 +379,7 @@ class InventoryCommand : public Command {
 			
 			if(SecondaryInventory != context.getEntity()->inventory) {
 				SecondaryInventory = context.getEntity()->inventory;
-				ARX_SOUND_PlayInterface(SND_BACKPACK);
+				ARX_SOUND_PlayInterface(SND.BACKPACK);
 			}
 			
 			return Success;
@@ -399,7 +399,7 @@ class InventoryCommand : public Command {
 			
 			if(context.getEntity()->inventory != NULL) {
 				SecondaryInventory = NULL;
-				ARX_SOUND_PlayInterface(SND_BACKPACK);
+				ARX_SOUND_PlayInterface(SND.BACKPACK);
 			}
 			
 			return Success;

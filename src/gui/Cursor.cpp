@@ -313,12 +313,12 @@ bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 				io->soundtime = 0;
 				io->soundcount = 0;
 				EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);
-				ARX_SOUND_PlaySFX(SND_WHOOSH, &pos);
+				ARX_SOUND_PlaySFX(SND.WHOOSH, &pos);
 				io->show = SHOW_FLAG_IN_SCENE;
 				Set_DragInter(NULL);
 			} else {
 				ARX_PLAYER_Remove_Invisibility();
-				ARX_SOUND_PlayInterface(SND_INVSTD);
+				ARX_SOUND_PlayInterface(SND.INVSTD);
 				ARX_INTERACTIVE_Teleport(io, pos, true);
 				
 				io->show = SHOW_FLAG_IN_SCENE;
@@ -348,7 +348,7 @@ static bool SelectSpellTargetCursorRender() {
 		
 		GameDuration elapsed = g_gameTime.now() - LOOKING_FOR_SPELL_TARGET_TIME;
 		if(elapsed > GameDurationMs(7000)) {
-			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
+			ARX_SOUND_PlaySFX(SND.MAGIC_FIZZLE, &player.pos);
 			ARX_SPELLS_CancelSpellTarget();
 		}
 		
@@ -367,7 +367,7 @@ static bool SelectSpellTargetCursorRender() {
 			surf = cursorTargetOff;
 			
 			if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) {
-				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
+				ARX_SOUND_PlaySFX(SND.MAGIC_FIZZLE, &player.pos);
 				ARX_SPELLS_CancelSpellTarget();
 			}
 		}
@@ -663,7 +663,7 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 				EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.f, surf, Color::white);
 			} else {
 				if(MAGICMODE) {
-					ARX_SOUND_Stop(SND_MAGIC_DRAW);
+					ARX_SOUND_Stop(SND.MAGIC_DRAW);
 					MAGICMODE = false;
 				}
 				
