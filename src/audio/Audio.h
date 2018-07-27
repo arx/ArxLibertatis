@@ -124,7 +124,7 @@ aalError setSamplePitch(SourcedSample sourceId, float pitch);
 aalError setSamplePosition(SourcedSample sourceId, const Vec3f & position);
 
 aalError getSampleName(SampleHandle sampleHandle, res::path & name);
-aalError getSampleLength(SourcedSample sampleId, size_t & length);
+aalError getSampleLength(SampleHandle sampleHandle, size_t & length);
 bool isSamplePlaying(SourcedSample sourceId);
 
 //! play_count == 0 -> infinite loop, play_count > 0 -> play play_count times

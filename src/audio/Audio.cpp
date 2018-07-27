@@ -576,13 +576,12 @@ aalError getSampleName(SampleHandle sampleHandle, res::path & name) {
 	return AAL_OK;
 }
 
-aalError getSampleLength(SourcedSample sampleId, size_t & length) {
+aalError getSampleLength(SampleHandle sampleHandle, size_t & length) {
 	
 	length = 0;
 	
 	AAL_ENTRY
 	
-	SampleHandle sampleHandle = sampleId.getSampleId();
 	if(!g_samples.isValid(sampleHandle)) {
 		return AAL_ERROR_HANDLE;
 	}
