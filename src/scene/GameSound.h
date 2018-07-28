@@ -99,14 +99,14 @@ audio::SampleHandle PLAYER_POISONED;
 audio::SampleHandle TORCH_START;
 audio::SampleHandle TORCH_LOOP;
 audio::SampleHandle TORCH_END;
-audio::SampleHandle FIREPLACE;
+audio::SampleHandle FIREPLACE_LOOP;
 audio::SampleHandle PLOUF;
 audio::SampleHandle QUAKE;
 audio::SampleHandle WHOOSH;
 
 // Magic drawing samples
-audio::SampleHandle MAGIC_AMBIENT;
-audio::SampleHandle MAGIC_DRAW;
+audio::SampleHandle MAGIC_AMBIENT_LOOP;
+audio::SampleHandle MAGIC_DRAW_LOOP;
 audio::SampleHandle MAGIC_FIZZLE;
 
 // Magic symbols samples
@@ -142,7 +142,7 @@ audio::SampleHandle SPELL_FIRE_LAUNCH;
 audio::SampleHandle SPELL_FIRE_PROTECTION;
 audio::SampleHandle SPELL_FIRE_PROTECTION_LOOP;
 audio::SampleHandle SPELL_FIRE_PROTECTION_END;
-audio::SampleHandle SPELL_FIRE_WIND;
+audio::SampleHandle SPELL_FIRE_WIND_LOOP;
 audio::SampleHandle SPELL_FREEZETIME;
 audio::SampleHandle SPELL_HARM;
 audio::SampleHandle SPELL_HEALING;
@@ -169,7 +169,7 @@ audio::SampleHandle SPELL_FIRE_FIELD_LOOP;
 audio::SampleHandle SPELL_FIRE_FIELD_END;
 
 audio::SampleHandle SPELL_MAGICAL_HIT;
-audio::SampleHandle SPELL_MAGICAL_SHIELD;
+audio::SampleHandle SPELL_MAGICAL_SHIELD_LOOP;
 audio::SampleHandle SPELL_MASS_INCINERATE;
 audio::SampleHandle SPELL_MASS_PARALYSE;
 audio::SampleHandle SPELL_MM_CREATE;

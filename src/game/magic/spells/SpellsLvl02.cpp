@@ -344,7 +344,7 @@ void HarmSpell::Launch() {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_HARM, &m_caster_pos);
 	}
 	
-	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MAGICAL_SHIELD, &m_caster_pos, 1.f);
+	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MAGICAL_SHIELD_LOOP, &m_caster_pos, 1.f);
 	
 	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
