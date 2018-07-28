@@ -286,11 +286,7 @@ MixerId createMixer() {
 	return id;
 }
 
-SourcedSample createSample(const res::path & name) {
-	return SourcedSample(SourceHandle(), createSample2(name));
-}
-
-SampleHandle createSample2(const res::path & name) {
+SampleHandle createSample(const res::path & name) {
 	
 	AAL_ENTRY_V(SampleHandle())
 	

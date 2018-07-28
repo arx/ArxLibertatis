@@ -752,7 +752,7 @@ void ARX_SOUND_PopAnimSamples(const std::vector< std::pair<res::path, size_t> > 
 			BOOST_FOREACH(EERIE_FRAME & frame, anim->frames) {
 				number++;
 				if(p != samples.end() && p->second == number) {
-					frame.sample = audio::createSample2(p->first);
+					frame.sample = audio::createSample(p->first);
 					++p;
 				}
 			}
