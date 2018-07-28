@@ -208,7 +208,7 @@ void ExplosionSpell::Launch() {
 		}
 	}
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_WIND);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_WIND.getSampleId());
 }
 
 void ExplosionSpell::Update() {

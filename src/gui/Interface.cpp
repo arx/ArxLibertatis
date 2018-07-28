@@ -2040,7 +2040,7 @@ void ArxGame::manageEditorControls() {
 						} else {
 							if(io->ioflags & IO_UNDERWATER) {
 								io->ioflags &= ~IO_UNDERWATER;
-								ARX_SOUND_PlayInterface(g_snd.PLOUF.getSampleId(), Random::getf(0.8f, 1.2f));
+								ARX_SOUND_PlayInterface(g_snd.PLOUF, Random::getf(0.8f, 1.2f));
 							}
 							DRAGINTER->show = SHOW_FLAG_NOT_DRAWN;
 							ARX_SOUND_PlayInterface(g_snd.INVSTD);

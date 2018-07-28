@@ -163,7 +163,7 @@ void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f &
 				light->pos = startpos;
 			}
 
-			ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_WIND, &missiles[i].startpos, 2.0F);
+			ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_WIND.getSampleId(), &missiles[i].startpos, 2.0F);
 			ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_LAUNCH, &missiles[i].startpos, 2.0F);
 		}
 	}

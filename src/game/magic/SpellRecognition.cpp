@@ -765,8 +765,8 @@ static void handleRuneDetection(Rune rune) {
 	if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 		CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 	}
-
-	ARX_SOUND_PlaySFX(g_snd.SYMB[rune]);
+	
+	ARX_SOUND_PlaySFX(g_snd.SYMB[rune].getSampleId());
 }
 
 static void unrecognizedRune() {
