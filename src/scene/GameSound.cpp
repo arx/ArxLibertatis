@@ -625,9 +625,9 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 	return source;
 }
 
-void ARX_SOUND_PlayAnim(audio::SourcedSample & sample_id, const Vec3f * position) {
+void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position) {
 	
-	if(!g_soundInitialized || sample_id == audio::SourcedSample()) {
+	if(!g_soundInitialized || sample_id == audio::SampleHandle()) {
 		return;
 	}
 	
@@ -642,16 +642,15 @@ void ARX_SOUND_PlayAnim(audio::SourcedSample & sample_id, const Vec3f * position
 		}
 		channel.flags |= FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 		res::path sample_name;
-		audio::getSampleName(sample_id.getSampleId(), sample_name);
+		audio::getSampleName(sample_id, sample_name);
 		float presence = GetSamplePresenceFactor(sample_name);
 		channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 		channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
 		channel.position = *position;
 	}
 	
-	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, sample_id.getSampleId(), channel);
-	
+	audio::SourcedSample ignore;
+	audio::samplePlay(ignore, sample_id, channel);
 }
 
 audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
@@ -737,20 +736,20 @@ void ARX_SOUND_RefreshSpeechPosition(audio::SourcedSample & sample_id, const Ent
 	audio::setSamplePosition(sample_id, position);
 }
 
-audio::SourcedSample ARX_SOUND_Load(const res::path & name) {
+audio::SampleHandle ARX_SOUND_Load(const res::path & name) {
 	
 	if(!g_soundInitialized) {
-		return audio::SourcedSample();
+		return audio::SampleHandle();
 	}
 	
 	res::path sample_name = name;
 	
-	return audio::createSample(sample_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV));
+	return audio::createSample2(sample_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV));
 }
 
-void ARX_SOUND_Free(const audio::SourcedSample & sample) {
-	if(g_soundInitialized && sample != audio::SourcedSample()) {
-		audio::deleteSample(sample.getSampleId());
+void ARX_SOUND_Free(const audio::SampleHandle & sample) {
+	if(g_soundInitialized && sample != audio::SampleHandle()) {
+		audio::deleteSample(sample);
 	}
 }
 
