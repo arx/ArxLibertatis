@@ -337,6 +337,8 @@ struct ARXCHARACTER {
 	
 	GameDuration DeadTime;
 	
+	audio::SourcedSample magic_ambient;
+	
 	ARXCHARACTER()
 		: m_strikeDirection(0)
 		, m_weaponBlocked(AnimationDuration::ofRaw(-1)) // FIXME inband signaling
