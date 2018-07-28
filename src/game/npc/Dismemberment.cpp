@@ -479,7 +479,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos) {
 	
 	if(hid) {
 		audio::SourcedSample sample = ARX_SOUND_Load("flesh_critical");
-		ARX_SOUND_PlaySFX(sample, &target->pos, 1.0f);
+		ARX_SOUND_PlaySFX(sample.getSampleId(), &target->pos, 1.0f);
 		ARX_NPC_SpawnMember(target, numsel);
 	}
 	
