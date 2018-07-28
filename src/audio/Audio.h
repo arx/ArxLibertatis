@@ -88,8 +88,7 @@ aalError update();
 // Resource
 
 MixerId createMixer();
-SourcedSample createSample(const res::path & name);
-SampleHandle createSample2(const res::path & name);
+SampleHandle createSample(const res::path & name);
 AmbianceId createAmbiance(const res::path & name);
 EnvId createEnvironment(const res::path & name);
 aalError deleteSample(SampleHandle sampleHandle);
