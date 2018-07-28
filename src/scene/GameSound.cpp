@@ -129,7 +129,7 @@ static bool g_soundInitialized = false;
 static AmbianceId g_zoneAmbiance = AmbianceId();
 static AmbianceId g_menuAmbiance = AmbianceId();
 
-static audio::SourcedSample g_soundMaterials[MAX_MATERIALS][MAX_MATERIALS];
+static audio::SampleHandle g_soundMaterials[MAX_MATERIALS][MAX_MATERIALS];
 
 namespace {
 
@@ -492,9 +492,9 @@ long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	if(mat1 == MATERIAL_WATER || mat2 == MATERIAL_WATER)
 		ARX_PARTICLES_SpawnWaterSplash(position);
 
-	audio::SourcedSample sample_id = g_soundMaterials[mat1][mat2];
+	audio::SampleHandle sample_id = g_soundMaterials[mat1][mat2];
 
-	if(sample_id == audio::SourcedSample())
+	if(sample_id == audio::SampleHandle())
 		return 0;
 
 	audio::Channel channel;
@@ -502,7 +502,7 @@ long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	
 	res::path sample_name;
-	audio::getSampleName(sample_id.getSampleId(), sample_name);
+	audio::getSampleName(sample_id, sample_name);
 	float presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
@@ -517,11 +517,11 @@ long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	channel.pitch = Random::getf(0.9f, 1.1f);
 	channel.volume = volume;
 	
-	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, sample_id.getSampleId(), channel);
+	audio::SourcedSample ss(audio::SourceHandle(), sample_id);
+	audio::samplePlay(ss, sample_id, channel);
 	
 	size_t length;
-	audio::getSampleLength(sample_id.getSampleId(), length);
+	audio::getSampleLength(sample_id, length);
 	
 	return (long)(channel.pitch * length);
 }
@@ -1199,7 +1199,7 @@ static void ARX_SOUND_CreateMaterials() {
 	
 	for(size_t i = 0; i < size_t(MAX_MATERIALS); i++) {
 		for(size_t j = 0; j < size_t(MAX_MATERIALS); j++) {
-			g_soundMaterials[i][j] = audio::SourcedSample();
+			g_soundMaterials[i][j] = audio::SampleHandle();
 		}
 	}
 	
@@ -1208,7 +1208,7 @@ static void ARX_SOUND_CreateMaterials() {
 		for(Material j = i; j <= MATERIAL_STONE; j = Material(j + 1)) {
 			oss.str(std::string());
 			oss << ARX_MATERIAL_GetNameById(i) << "_on_" << ARX_MATERIAL_GetNameById(j) << "_1.wav";
-			g_soundMaterials[j][i] = g_soundMaterials[i][j] = audio::createSample(oss.str());
+			g_soundMaterials[j][i] = g_soundMaterials[i][j] = audio::createSample2(oss.str());
 		}
 	}
 	
