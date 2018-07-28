@@ -2854,8 +2854,7 @@ void ManageIgnition_2(Entity * io) {
 		}
 
 		if(io->ignit_sound == audio::SourcedSample()) {
-			io->ignit_sound = g_snd.FIREPLACE;
-			ARX_SOUND_PlaySFX_loop(io->ignit_sound, &position, Random::getf(0.95f, 1.05f));
+			io->ignit_sound = ARX_SOUND_PlaySFX_loop(g_snd.FIREPLACE, &position, Random::getf(0.95f, 1.05f));
 		} else {
 			ARX_SOUND_RefreshPosition(io->ignit_sound, position);
 		}

@@ -338,10 +338,10 @@ void ARX_SOUND_EnvironmentSet(const res::path & name) {
 	}
 }
 
-static audio::SourcedSample ARX_SOUND_PlaySFX_int(audio::SourcedSample & sample_id, const Vec3f * position,
+static audio::SourcedSample ARX_SOUND_PlaySFX_int(audio::SampleHandle sample_id, const Vec3f * position,
                                   float pitch, SoundLoopMode loop) {
 	
-	if(!g_soundInitialized || sample_id == audio::SourcedSample()) {
+	if(!g_soundInitialized || sample_id == audio::SampleHandle()) {
 		return audio::SourcedSample();
 	}
 	
@@ -361,7 +361,7 @@ static audio::SourcedSample ARX_SOUND_PlaySFX_int(audio::SourcedSample & sample_
 	}
 	
 	res::path sample_name;
-	audio::getSampleName(sample_id.getSampleId(), sample_name);
+	audio::getSampleName(sample_id, sample_name);
 	float presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
@@ -371,18 +371,16 @@ static audio::SourcedSample ARX_SOUND_PlaySFX_int(audio::SourcedSample & sample_
 		channel.pitch = pitch;
 	}
 	
-	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, sample_id.getSampleId(), channel, loop);
-	
-	return sample_id;
+	audio::SourcedSample ss(audio::SourceHandle(), sample_id);
+	audio::samplePlay(ss, sample_id, channel, loop);
+	return ss;
 }
 
 void ARX_SOUND_PlaySFX(audio::SampleHandle sample_id, const Vec3f * position, float pitch) {
-	audio::SourcedSample ss(audio::SourceHandle(), sample_id);
-	ARX_SOUND_PlaySFX_int(ss, position, pitch, ARX_SOUND_PLAY_ONCE);
+	ARX_SOUND_PlaySFX_int(sample_id, position, pitch, ARX_SOUND_PLAY_ONCE);
 }
 
-audio::SourcedSample ARX_SOUND_PlaySFX_loop(audio::SourcedSample & sample_id, const Vec3f * position, float pitch) {
+audio::SourcedSample ARX_SOUND_PlaySFX_loop(audio::SampleHandle sample_id, const Vec3f * position, float pitch) {
 	
 	return ARX_SOUND_PlaySFX_int(sample_id, position, pitch, ARX_SOUND_PLAY_LOOPED);
 }
@@ -978,16 +976,16 @@ static void ARX_SOUND_CreateStaticSamples() {
 	
 	// Other SFX samples
 	g_snd.TORCH_START                    = audio::createSample2("torch_start.wav");
-	g_snd.TORCH_LOOP                     = audio::createSample("sfx_torch_11khz.wav");
+	g_snd.TORCH_LOOP                     = audio::createSample2("sfx_torch_11khz.wav");
 	g_snd.TORCH_END                      = audio::createSample2("torch_end.wav");
-	g_snd.FIREPLACE                      = audio::createSample("fire_place.wav");
+	g_snd.FIREPLACE                      = audio::createSample2("fire_place.wav");
 	g_snd.PLOUF                          = audio::createSample2("fishing_plouf.wav");
 	g_snd.QUAKE                          = audio::createSample2("sfx_quake.wav");
 	g_snd.WHOOSH                         = audio::createSample2("whoosh07.wav");
 	
 	// Magic draw
-	g_snd.MAGIC_AMBIENT                  = audio::createSample("magic_ambient.wav");
-	g_snd.MAGIC_DRAW                     = audio::createSample("magic_draw.wav");
+	g_snd.MAGIC_AMBIENT                  = audio::createSample2("magic_ambient.wav");
+	g_snd.MAGIC_DRAW                     = audio::createSample2("magic_draw.wav");
 	g_snd.MAGIC_FIZZLE                   = audio::createSample2("magic_fizzle.wav");
 	
 	// Magic symbols
@@ -1016,12 +1014,12 @@ static void ARX_SOUND_CreateStaticSamples() {
 	g_snd.SPELL_ACTIVATE_PORTAL          = audio::createSample2("magic_spell_activate_portal.wav");
 	g_snd.SPELL_ARMOR_START              = audio::createSample2("magic_spell_armor_start.wav");
 	g_snd.SPELL_ARMOR_END                = audio::createSample2("magic_spell_armor_end.wav");
-	g_snd.SPELL_ARMOR_LOOP               = audio::createSample("magic_spell_armor_loop.wav");
+	g_snd.SPELL_ARMOR_LOOP               = audio::createSample2("magic_spell_armor_loop.wav");
 	g_snd.SPELL_LOWER_ARMOR              = audio::createSample2("magic_spell_decrease_armor.wav");
 	g_snd.SPELL_LOWER_ARMOR_END          = audio::createSample2("magic_spell_lower_armor.wav");
 	g_snd.SPELL_BLESS                    = audio::createSample2("magic_spell_bless.wav");
 	g_snd.SPELL_COLD_PROTECTION_START    = audio::createSample2("magic_spell_cold_protection.wav");
-	g_snd.SPELL_COLD_PROTECTION_LOOP     = audio::createSample("magic_spell_cold_protection_loop.wav");
+	g_snd.SPELL_COLD_PROTECTION_LOOP     = audio::createSample2("magic_spell_cold_protection_loop.wav");
 	g_snd.SPELL_COLD_PROTECTION_END      = audio::createSample2("magic_spell_cold_protection_end.wav");
 	g_snd.SPELL_CONFUSE                  = audio::createSample2("magic_spell_confuse.wav");
 	g_snd.SPELL_CONTROL_TARGET           = audio::createSample2("magic_spell_control_target.wav");
@@ -1030,7 +1028,7 @@ static void ARX_SOUND_CreateStaticSamples() {
 	g_snd.SPELL_CURE_POISON              = audio::createSample2("magic_spell_cure_poison.wav");
 	g_snd.SPELL_CURSE                    = audio::createSample2("magic_spell_curse.wav");
 	g_snd.SPELL_DETECT_TRAP              = audio::createSample2("magic_spell_detect_trap.wav");
-	g_snd.SPELL_DETECT_TRAP_LOOP         = audio::createSample("magic_spell_detect_trap_loop.wav");
+	g_snd.SPELL_DETECT_TRAP_LOOP         = audio::createSample2("magic_spell_detect_trap_loop.wav");
 	g_snd.SPELL_DISARM_TRAP              = audio::createSample2("magic_spell_disarm_trap.wav");
 	g_snd.SPELL_DISPELL_FIELD            = audio::createSample2("magic_spell_dispell_field.wav");
 	g_snd.SPELL_DISPELL_ILLUSION         = audio::createSample2("magic_spell_dispell_illusion.wav");
@@ -1042,61 +1040,61 @@ static void ARX_SOUND_CreateStaticSamples() {
 	g_snd.SPELL_FIRE_HIT                 = audio::createSample2("magic_spell_firehit.wav");
 	g_snd.SPELL_FIRE_LAUNCH              = audio::createSample2("magic_spell_firelaunch.wav");
 	g_snd.SPELL_FIRE_PROTECTION          = audio::createSample2("magic_spell_fire_protection.wav");
-	g_snd.SPELL_FIRE_PROTECTION_LOOP     = audio::createSample("magic_spell_fire_protection_loop.wav");
+	g_snd.SPELL_FIRE_PROTECTION_LOOP     = audio::createSample2("magic_spell_fire_protection_loop.wav");
 	g_snd.SPELL_FIRE_PROTECTION_END      = audio::createSample2("magic_spell_fire_protection_end.wav");
-	g_snd.SPELL_FIRE_WIND                = audio::createSample("magic_spell_firewind.wav");
+	g_snd.SPELL_FIRE_WIND                = audio::createSample2("magic_spell_firewind.wav");
 	g_snd.SPELL_FREEZETIME               = audio::createSample2("magic_spell_freezetime.wav");
 	g_snd.SPELL_HARM                     = audio::createSample2("magic_spell_harm.wav");
 	g_snd.SPELL_HEALING                  = audio::createSample2("magic_spell_healing.wav");
 	g_snd.SPELL_ICE_FIELD                = audio::createSample2("magic_spell_ice_field.wav");
-	g_snd.SPELL_ICE_FIELD_LOOP           = audio::createSample("magic_spell_ice_fieldloop.wav");
+	g_snd.SPELL_ICE_FIELD_LOOP           = audio::createSample2("magic_spell_ice_fieldloop.wav");
 	g_snd.SPELL_ICE_FIELD_END            = audio::createSample2("magic_spell_ice_field_end.wav");
 	g_snd.SPELL_ICE_PROJECTILE_LAUNCH    = audio::createSample2("magic_spell_ice_projectile_launch.wav");
 	g_snd.SPELL_INCINERATE               = audio::createSample2("magic_spell_incinerate.wav");
-	g_snd.SPELL_INCINERATE_LOOP          = audio::createSample("magic_spell_incinerate_loop.wav");
+	g_snd.SPELL_INCINERATE_LOOP          = audio::createSample2("magic_spell_incinerate_loop.wav");
 	g_snd.SPELL_INCINERATE_END           = audio::createSample2("magic_spell_incinerate_end.wav");
 	g_snd.SPELL_IGNITE                   = audio::createSample2("magic_spell_ignite.wav");
 	g_snd.SPELL_INVISIBILITY_START       = audio::createSample2("magic_spell_invisibilityon.wav");
 	g_snd.SPELL_INVISIBILITY_END         = audio::createSample2("magic_spell_invisibilityoff.wav");
 	g_snd.SPELL_LEVITATE_START           = audio::createSample2("magic_spell_levitate_start.wav");
-	g_snd.SPELL_LEVITATE_LOOP            = audio::createSample("magic_spell_levitate_loop.wav");
+	g_snd.SPELL_LEVITATE_LOOP            = audio::createSample2("magic_spell_levitate_loop.wav");
 	g_snd.SPELL_LEVITATE_END             = audio::createSample2("magic_spell_levitate_end.wav");
 	g_snd.SPELL_LIGHTNING_START          = audio::createSample2("magic_spell_lightning_start.wav");
-	g_snd.SPELL_LIGHTNING_LOOP           = audio::createSample("magic_spell_lightning_loop.wav");
+	g_snd.SPELL_LIGHTNING_LOOP           = audio::createSample2("magic_spell_lightning_loop.wav");
 	g_snd.SPELL_LIGHTNING_END            = audio::createSample2("magic_spell_lightning_end.wav");
 	g_snd.SPELL_MAGICAL_HIT              = audio::createSample2("magic_spell_magicalhit.wav");
 	
 	g_snd.SPELL_FIRE_FIELD_START         = audio::createSample2("magic_spell_fire_field.wav");
-	g_snd.SPELL_FIRE_FIELD_LOOP          = audio::createSample("magic_spell_fire_field_loop.wav");
+	g_snd.SPELL_FIRE_FIELD_LOOP          = audio::createSample2("magic_spell_fire_field_loop.wav");
 	g_snd.SPELL_FIRE_FIELD_END           = audio::createSample2("magic_spell_fire_field_end.wav");
 	
-	g_snd.SPELL_MAGICAL_SHIELD           = audio::createSample("magic_spell_magicalshield.wav");
+	g_snd.SPELL_MAGICAL_SHIELD           = audio::createSample2("magic_spell_magicalshield.wav");
 	g_snd.SPELL_MASS_INCINERATE          = audio::createSample2("magic_spell_mass_incinerate.wav");
 	g_snd.SPELL_MASS_PARALYSE            = audio::createSample2("magic_spell_mass_paralyse.wav");
 	g_snd.SPELL_MM_CREATE                = audio::createSample2("magic_spell_missilecreate.wav");
 	g_snd.SPELL_MM_HIT                   = audio::createSample2("magic_spell_missilehit.wav");
 	g_snd.SPELL_MM_LAUNCH                = audio::createSample2("magic_spell_missilelaunch.wav");
-	g_snd.SPELL_MM_LOOP                  = audio::createSample("magic_spell_missileloop.wav");
+	g_snd.SPELL_MM_LOOP                  = audio::createSample2("magic_spell_missileloop.wav");
 	g_snd.SPELL_NEGATE_MAGIC             = audio::createSample2("magic_spell_negate_magic.wav");
 	g_snd.SPELL_PARALYSE                 = audio::createSample2("magic_spell_paralyse.wav");
 	g_snd.SPELL_PARALYSE_END             = audio::createSample2("magic_spell_paralyse_end.wav");
 	g_snd.SPELL_POISON_PROJECTILE_LAUNCH = audio::createSample2("magic_spell_poison_projectile_launch.wav");
 	g_snd.SPELL_RAISE_DEAD               = audio::createSample2("magic_spell_raise_dead.wav");
 	g_snd.SPELL_REPEL_UNDEAD             = audio::createSample2("magic_spell_repel_undead.wav");
-	g_snd.SPELL_REPEL_UNDEAD_LOOP        = audio::createSample("magic_spell_repell_loop.wav");
+	g_snd.SPELL_REPEL_UNDEAD_LOOP        = audio::createSample2("magic_spell_repell_loop.wav");
 	g_snd.SPELL_RUNE_OF_GUARDING         = audio::createSample2("magic_spell_rune_of_guarding.wav");
 	g_snd.SPELL_RUNE_OF_GUARDING_END     = audio::createSample2("magic_spell_rune_of_guarding_explode.wav");
 	g_snd.SPELL_SLOW_DOWN                = audio::createSample2("magic_spell_slow_down.wav");
 	g_snd.SPELL_SLOW_DOWN_END            = audio::createSample2("magic_spell_slow_down_end.wav");
 	g_snd.SPELL_SPARK                    = audio::createSample2("sfx_spark.wav");
 	g_snd.SPELL_SPEED_START              = audio::createSample2("magic_spell_speedstart.wav");
-	g_snd.SPELL_SPEED_LOOP               = audio::createSample("magic_spell_speed.wav");
+	g_snd.SPELL_SPEED_LOOP               = audio::createSample2("magic_spell_speed.wav");
 	g_snd.SPELL_SPEED_END                = audio::createSample2("magic_spell_speedend.wav");
 	g_snd.SPELL_SUMMON_CREATURE          = audio::createSample2("magic_spell_summon_creature.wav");
 	g_snd.SPELL_TELEKINESIS_START        = audio::createSample2("magic_spell_telekinesison.wav");
 	g_snd.SPELL_TELEKINESIS_END          = audio::createSample2("magic_spell_telekinesisoff.wav");
 	g_snd.SPELL_VISION_START             = audio::createSample2("magic_spell_vision2.wav");
-	g_snd.SPELL_VISION_LOOP              = audio::createSample("magic_spell_vision.wav");
+	g_snd.SPELL_VISION_LOOP              = audio::createSample2("magic_spell_vision.wav");
 }
 
 // Reset each static sample to audio::SourcedSample()
