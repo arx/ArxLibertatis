@@ -135,19 +135,19 @@ namespace {
 
 struct SoundMaterial {
 	
-	std::vector<audio::SourcedSample> variants;
+	std::vector<audio::SampleHandle> variants;
 	
 	SoundMaterial() : current(0) { }
 	
 	~SoundMaterial() {
-		for(std::vector<audio::SourcedSample>::const_iterator i = variants.begin(); i !=  variants.end(); ++i) {
+		for(std::vector<audio::SampleHandle>::const_iterator i = variants.begin(); i !=  variants.end(); ++i) {
 			audio::deleteSample(*i);
 		}
 	}
 	
-	audio::SourcedSample next() {
+	audio::SampleHandle next() {
 		arx_assert(current < variants.size());
-		audio::SourcedSample sample = variants[current];
+		audio::SampleHandle sample = variants[current];
 		current = (current + 1) % variants.size();
 		return sample;
 	}
@@ -549,15 +549,15 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	}
 	SoundMaterial & mat = ci->second;
 	
-	audio::SourcedSample sample_id = mat.next();
-	arx_assert(sample_id != audio::SourcedSample());
+	audio::SampleHandle sample_id = mat.next();
+	arx_assert(sample_id != audio::SampleHandle());
 	
 	audio::Channel channel;
 	channel.mixer = ARX_SOUND_MixerGameSample;
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	
 	res::path sample_name;
-	audio::getSampleName(sample_id.getSampleId(), sample_name);
+	audio::getSampleName(sample_id, sample_name);
 	float presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
@@ -572,11 +572,11 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	channel.pitch = Random::getf(0.975f, 1.475f);
 	channel.volume = volume;
 	
-	sample_id.clearSource(); // TODO is this correct ?
-	audio::samplePlay(sample_id, sample_id.getSampleId(), channel);
+	audio::SourcedSample ss(audio::SourceHandle(), sample_id);
+	audio::samplePlay(ss, sample_id, channel);
 	
 	size_t length;
-	audio::getSampleLength(sample_id.getSampleId(), length);
+	audio::getSampleLength(sample_id, length);
 	
 	return (long)(channel.pitch * length);
 }
@@ -750,7 +750,7 @@ audio::SourcedSample ARX_SOUND_Load(const res::path & name) {
 
 void ARX_SOUND_Free(const audio::SourcedSample & sample) {
 	if(g_soundInitialized && sample != audio::SourcedSample()) {
-		audio::deleteSample(sample);
+		audio::deleteSample(sample.getSampleId());
 	}
 }
 
@@ -1175,7 +1175,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 					}
 					
 					if(sample != audio::SampleHandle()) {
-						mat.variants.push_back(audio::SourcedSample(audio::SourceHandle(), sample));
+						mat.variants.push_back(sample);
 					}
 				}
 				

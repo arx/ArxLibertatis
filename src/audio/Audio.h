@@ -92,7 +92,7 @@ SourcedSample createSample(const res::path & name);
 SampleHandle createSample2(const res::path & name);
 AmbianceId createAmbiance(const res::path & name);
 EnvId createEnvironment(const res::path & name);
-aalError deleteSample(SourcedSample sampleId);
+aalError deleteSample(SampleHandle sampleHandle);
 aalError deleteAmbiance(AmbianceId ambianceId);
 
 AmbianceId getAmbiance(const res::path & name);
