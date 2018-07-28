@@ -1029,7 +1029,7 @@ void TreatBackgroundActions() {
 		}
 		
 		if(gl->sample == audio::SourcedSample()) {
-			gl->sample = ARX_SOUND_PlaySFX_loop(g_snd.FIREPLACE, &gl->pos, Random::getf(0.95f, 1.05f));
+			gl->sample = ARX_SOUND_PlaySFX_loop(g_snd.FIREPLACE_LOOP, &gl->pos, Random::getf(0.95f, 1.05f));
 		} else {
 			ARX_SOUND_RefreshPosition(gl->sample, gl->pos);
 		}

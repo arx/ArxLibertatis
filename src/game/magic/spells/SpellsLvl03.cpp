@@ -228,7 +228,7 @@ void FireballSpell::Launch() {
 	eMove = angleToVector(Anglef(anglea, angleb, 0.f)) * 80.f;
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_LAUNCH, &m_caster_pos);
-	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_FIRE_WIND, &m_caster_pos, 1.f);
+	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_FIRE_WIND_LOOP, &m_caster_pos, 1.f);
 }
 
 void FireballSpell::End() {

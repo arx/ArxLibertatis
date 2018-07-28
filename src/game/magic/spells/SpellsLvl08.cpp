@@ -100,7 +100,7 @@ void ManaDrainSpell::Launch() {
 	m_duration = m_hasDuration ? m_launchDuration : 0;
 	m_fManaCostPerSecond = 2.f;
 	
-	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MAGICAL_SHIELD, &m_caster_pos, 1.2f);
+	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MAGICAL_SHIELD_LOOP, &m_caster_pos, 1.2f);
 	
 	DamageParameters damage;
 	damage.radius = 150.f;
@@ -208,7 +208,7 @@ void ExplosionSpell::Launch() {
 		}
 	}
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_WIND);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_WIND_LOOP);
 }
 
 void ExplosionSpell::Update() {
@@ -260,7 +260,7 @@ void LifeDrainSpell::Launch() {
 	m_duration = m_hasDuration ? m_launchDuration : 0;
 	m_fManaCostPerSecond = 12.f;
 	
-	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MAGICAL_SHIELD, &m_caster_pos, 0.8f);
+	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MAGICAL_SHIELD_LOOP, &m_caster_pos, 0.8f);
 	
 	DamageParameters damage;
 	damage.radius = 150.f;
