@@ -371,9 +371,7 @@ static audio::SourcedSample ARX_SOUND_PlaySFX_int(audio::SampleHandle sample_id,
 		channel.pitch = pitch;
 	}
 	
-	audio::SourcedSample ss(audio::SourceHandle(), sample_id);
-	audio::samplePlay(ss, sample_id, channel, loop);
-	return ss;
+	return audio::samplePlay(sample_id, channel, loop);
 }
 
 void ARX_SOUND_PlaySFX(audio::SampleHandle sample_id, const Vec3f * position, float pitch) {
@@ -400,8 +398,7 @@ static void playSample(audio::SampleHandle sample_id, float pitch, SoundLoopMode
 		channel.pitch = pitch;
 	}
 	
-	audio::SourcedSample ignore;
-	audio::samplePlay(ignore, sample_id, channel, loop);
+	audio::samplePlay(sample_id, channel, loop);
 }
 
 void ARX_SOUND_PlayInterface(audio::SampleHandle sample_id, float pitch) {
@@ -475,10 +472,7 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 		channel.position = Vec3f_Z_AXIS * 100.f;
 	}
 	
-	audio::SourcedSample source = audio::SourcedSample(audio::SourceHandle(), sample_id);
-	audio::samplePlay(source, sample_id, channel);
-
-	return source;
+	return audio::samplePlay(sample_id, channel);
 }
 
 long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source) {
@@ -517,8 +511,7 @@ long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	channel.pitch = Random::getf(0.9f, 1.1f);
 	channel.volume = volume;
 	
-	audio::SourcedSample ss(audio::SourceHandle(), sample_id);
-	audio::samplePlay(ss, sample_id, channel);
+	audio::samplePlay(sample_id, channel);
 	
 	size_t length;
 	audio::getSampleLength(sample_id, length);
@@ -572,8 +565,7 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	channel.pitch = Random::getf(0.975f, 1.475f);
 	channel.volume = volume;
 	
-	audio::SourcedSample ss(audio::SourceHandle(), sample_id);
-	audio::samplePlay(ss, sample_id, channel);
+	audio::samplePlay(sample_id, channel);
 	
 	size_t length;
 	audio::getSampleLength(sample_id, length);
@@ -619,10 +611,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 		channel.pitch = pitch;
 	}
 	
-	audio::SourcedSample source = audio::SourcedSample(audio::SourceHandle(), sample_id);
-	audio::samplePlay(source, sample_id, channel, loop);
-	
-	return source;
+	return audio::samplePlay(sample_id, channel, loop);
 }
 
 void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position) {
@@ -649,8 +638,7 @@ void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position) {
 		channel.position = *position;
 	}
 	
-	audio::SourcedSample ignore;
-	audio::samplePlay(ignore, sample_id, channel);
+	audio::samplePlay(sample_id, channel);
 }
 
 audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
@@ -679,10 +667,7 @@ audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpee
 	
 	channel.position = ARX_SOUND_IOFrontPos(NULL);
 	
-	audio::SourcedSample source = audio::SourcedSample(audio::SourceHandle(), sample_id);
-	audio::samplePlay(source, sample_id, channel);
-	
-	return source;
+	return audio::samplePlay(sample_id, channel);
 }
 
 bool ARX_SOUND_IsPlaying(audio::SourcedSample & sample_id) {

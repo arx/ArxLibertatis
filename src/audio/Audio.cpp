@@ -609,32 +609,30 @@ bool isSamplePlaying(SourcedSample sourceId) {
 
 // Sample control
 
-aalError samplePlay(SourcedSample & sampleId, SampleHandle s_id, const Channel & channel, unsigned play_count) {
+SourcedSample samplePlay(SampleHandle s_id, const Channel & channel, unsigned play_count) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_V(SourcedSample())
 	
 	if(!g_samples.isValid(s_id) || !g_mixers.isValid(channel.mixer)) {
-		return AAL_ERROR_HANDLE;
+		return SourcedSample(SourceHandle(), s_id);
 	}
 	
 	LogDebug("SamplePlay " << g_samples[s_id]->getName() << " play_count=" << play_count);
 	
 	Source * source = backend->createSource(s_id, channel);
 	if(!source) {
-		return AAL_ERROR_SYSTEM;
+		return SourcedSample(SourceHandle(), s_id);
 	}
 	
 	if(aalError error = source->play(play_count)) {
-		return error;
+		return SourcedSample(SourceHandle(), s_id);
 	}
-	
-	sampleId = source->getId();
 	
 	if(channel.flags & FLAG_AUTOFREE) {
 		g_samples[s_id]->dereference();
 	}
 	
-	return AAL_OK;
+	return source->getId();
 }
 
 aalError sampleStop(SourcedSample & sourceId) {
