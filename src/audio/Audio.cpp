@@ -336,11 +336,10 @@ EnvId createEnvironment(const res::path & name) {
 
 // Resource destruction
 
-aalError deleteSample(SourcedSample sampleId) {
+aalError deleteSample(SampleHandle sampleHandle) {
 	
 	AAL_ENTRY
 	
-	SampleHandle sampleHandle = sampleId.getSampleId();
 	if(!g_samples.isValid(sampleHandle)) {
 		return AAL_ERROR_HANDLE;
 	}
