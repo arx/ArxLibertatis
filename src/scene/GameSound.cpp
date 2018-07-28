@@ -989,26 +989,26 @@ static void ARX_SOUND_CreateStaticSamples() {
 	g_snd.MAGIC_FIZZLE                   = audio::createSample2("magic_fizzle.wav");
 	
 	// Magic symbols
-	g_snd.SYMB[RUNE_AAM]                       = audio::createSample("magic_aam.wav");
-	g_snd.SYMB[RUNE_CETRIUS]                   = audio::createSample("magic_citrius.wav");
-	g_snd.SYMB[RUNE_COSUM]                     = audio::createSample("magic_cosum.wav");
-	g_snd.SYMB[RUNE_COMUNICATUM]               = audio::createSample("magic_comunicatum.wav");
-	g_snd.SYMB[RUNE_FOLGORA]                   = audio::createSample("magic_folgora.wav");
-	g_snd.SYMB[RUNE_FRIDD]                     = audio::createSample("magic_fridd.wav");
-	g_snd.SYMB[RUNE_KAOM]                      = audio::createSample("magic_kaom.wav");
-	g_snd.SYMB[RUNE_MEGA]                      = audio::createSample("magic_mega.wav");
-	g_snd.SYMB[RUNE_MORTE]                     = audio::createSample("magic_morte.wav");
-	g_snd.SYMB[RUNE_MOVIS]                     = audio::createSample("magic_movis.wav");
-	g_snd.SYMB[RUNE_NHI]                       = audio::createSample("magic_nhi.wav");
-	g_snd.SYMB[RUNE_RHAA]                      = audio::createSample("magic_rhaa.wav");
-	g_snd.SYMB[RUNE_SPACIUM]                   = audio::createSample("magic_spacium.wav");
-	g_snd.SYMB[RUNE_STREGUM]                   = audio::createSample("magic_stregum.wav");
-	g_snd.SYMB[RUNE_TAAR]                      = audio::createSample("magic_taar.wav");
-	g_snd.SYMB[RUNE_TEMPUS]                    = audio::createSample("magic_tempus.wav");
-	g_snd.SYMB[RUNE_TERA]                      = audio::createSample("magic_tera.wav");
-	g_snd.SYMB[RUNE_VISTA]                     = audio::createSample("magic_vista.wav");
-	g_snd.SYMB[RUNE_VITAE]                     = audio::createSample("magic_vitae.wav");
-	g_snd.SYMB[RUNE_YOK]                       = audio::createSample("magic_yok.wav");
+	g_snd.SYMB[RUNE_AAM]                       = audio::createSample2("magic_aam.wav");
+	g_snd.SYMB[RUNE_CETRIUS]                   = audio::createSample2("magic_citrius.wav");
+	g_snd.SYMB[RUNE_COSUM]                     = audio::createSample2("magic_cosum.wav");
+	g_snd.SYMB[RUNE_COMUNICATUM]               = audio::createSample2("magic_comunicatum.wav");
+	g_snd.SYMB[RUNE_FOLGORA]                   = audio::createSample2("magic_folgora.wav");
+	g_snd.SYMB[RUNE_FRIDD]                     = audio::createSample2("magic_fridd.wav");
+	g_snd.SYMB[RUNE_KAOM]                      = audio::createSample2("magic_kaom.wav");
+	g_snd.SYMB[RUNE_MEGA]                      = audio::createSample2("magic_mega.wav");
+	g_snd.SYMB[RUNE_MORTE]                     = audio::createSample2("magic_morte.wav");
+	g_snd.SYMB[RUNE_MOVIS]                     = audio::createSample2("magic_movis.wav");
+	g_snd.SYMB[RUNE_NHI]                       = audio::createSample2("magic_nhi.wav");
+	g_snd.SYMB[RUNE_RHAA]                      = audio::createSample2("magic_rhaa.wav");
+	g_snd.SYMB[RUNE_SPACIUM]                   = audio::createSample2("magic_spacium.wav");
+	g_snd.SYMB[RUNE_STREGUM]                   = audio::createSample2("magic_stregum.wav");
+	g_snd.SYMB[RUNE_TAAR]                      = audio::createSample2("magic_taar.wav");
+	g_snd.SYMB[RUNE_TEMPUS]                    = audio::createSample2("magic_tempus.wav");
+	g_snd.SYMB[RUNE_TERA]                      = audio::createSample2("magic_tera.wav");
+	g_snd.SYMB[RUNE_VISTA]                     = audio::createSample2("magic_vista.wav");
+	g_snd.SYMB[RUNE_VITAE]                     = audio::createSample2("magic_vitae.wav");
+	g_snd.SYMB[RUNE_YOK]                       = audio::createSample2("magic_yok.wav");
 	
 	// Spells
 	g_snd.SPELL_ACTIVATE_PORTAL          = audio::createSample2("magic_spell_activate_portal.wav");
