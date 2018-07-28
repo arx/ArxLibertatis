@@ -209,6 +209,8 @@ static void ApplyLavaGlowToVertex(const Vec3f & odtv, ColorRGBA & color, float p
 static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
                                      float uvScroll, SMY_VERTEX * _pVertex) {
 	
+	bool orig = GInput->isKeyPressed(Keyboard::Key_LeftShift);
+	
 	for(long k = 0; k < to; k++) {
 		Vec2f uv = ep->v[k].uv;
 		
@@ -218,12 +220,14 @@ static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
 			uv.y -= uvScroll;
 		}
 		
-		_pVertex[ep->uslInd[k]].uv = uv;
+		_pVertex[orig ? ep->ouslInd[k] : ep->uslInd[k]].uv = uv;
 	}
 }
 
 static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
                                     float uvScroll, SMY_VERTEX * _pVertex) {
+	
+	bool orig = GInput->isKeyPressed(Keyboard::Key_LeftShift);
 	
 	for(long k = 0; k < to; k++) {
 		Vec2f uv = ep->v[k].uv;
@@ -235,7 +239,7 @@ static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
 			uv.y -= uvScroll;
 		}
 		
-		_pVertex[ep->uslInd[k]].uv = uv;
+		_pVertex[orig ? ep->ouslInd[k] : ep->uslInd[k]].uv = uv;
 	}
 }
 
@@ -988,6 +992,8 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 ) {
 	ARX_PROFILE_FUNC();
 	
+	bool orig = GInput->isKeyPressed(Keyboard::Key_LeftShift);
+	
 	if(!RoomDraw[room_num].count)
 		return;
 
@@ -1074,6 +1080,22 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 		unsigned short * pIndicesCurr = pIndices + roomMat.offset[transparencyType] + roomMat.count[transparencyType];
 		unsigned long * pNumIndices = &roomMat.count[transparencyType];
 
+		if(orig) {
+		
+		*pIndicesCurr++ = ep->ouslInd[0];
+		*pIndicesCurr++ = ep->ouslInd[1];
+		*pIndicesCurr++ = ep->ouslInd[2];
+		*pNumIndices += 3;
+
+		if(to == 4) {
+			*pIndicesCurr++ = ep->ouslInd[3];
+			*pIndicesCurr++ = ep->ouslInd[2];
+			*pIndicesCurr++ = ep->ouslInd[1];
+			*pNumIndices += 3;
+		}
+		
+		} else {
+		
 		*pIndicesCurr++ = ep->uslInd[0];
 		*pIndicesCurr++ = ep->uslInd[1];
 		*pIndicesCurr++ = ep->uslInd[2];
@@ -1085,10 +1107,38 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 			*pIndicesCurr++ = ep->uslInd[1];
 			*pNumIndices += 3;
 		}
+		
+		}
 
 		SMY_VERTEX * pMyVertexCurr = &pMyVertex[roomMat.uslStartVertex];
 
 		if(!player.m_improve) { // Normal View...
+			
+			if(orig) {
+			
+			if(ep->type & POLY_GLOW) {
+				pMyVertexCurr[ep->ouslInd[0]].color = Color(255, 255, 255, 255).toRGBA();
+				pMyVertexCurr[ep->ouslInd[1]].color = Color(255, 255, 255, 255).toRGBA();
+				pMyVertexCurr[ep->ouslInd[2]].color = Color(255, 255, 255, 255).toRGBA();
+
+				if(to == 4) {
+					pMyVertexCurr[ep->ouslInd[3]].color = Color(255, 255, 255, 255).toRGBA();
+				}
+			} else {
+				if(!(ep->type & POLY_TRANS)) {
+					ApplyTileLights(ep, epd.tile);
+					pMyVertexCurr[ep->ouslInd[0]].color = ep->color[0];
+					pMyVertexCurr[ep->ouslInd[1]].color = ep->color[1];
+					pMyVertexCurr[ep->ouslInd[2]].color = ep->color[2];
+					if(to & 4) {
+						pMyVertexCurr[ep->ouslInd[3]].color = ep->color[3];
+					}
+				}
+
+			}
+				
+			} else {
+			
 			if(ep->type & POLY_GLOW) {
 				pMyVertexCurr[ep->uslInd[0]].color = Color(255, 255, 255, 255).toRGBA();
 				pMyVertexCurr[ep->uslInd[1]].color = Color(255, 255, 255, 255).toRGBA();
@@ -1108,6 +1158,8 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 					}
 				}
 
+			}
+			
 			}
 
 		} else { // Improve Vision Activated
@@ -1150,6 +1202,18 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 				if(!valid) {
 					continue;
 				}
+				
+				if(orig) {
+
+				pMyVertexCurr[ep->ouslInd[0]].color = ep->color[0];
+				pMyVertexCurr[ep->ouslInd[1]].color = ep->color[1];
+				pMyVertexCurr[ep->ouslInd[2]].color = ep->color[2];
+
+				if(to == 4) {
+					pMyVertexCurr[ep->ouslInd[3]].color = ep->color[3];
+				}
+				
+				} else {
 
 				pMyVertexCurr[ep->uslInd[0]].color = ep->color[0];
 				pMyVertexCurr[ep->uslInd[1]].color = ep->color[1];
@@ -1157,6 +1221,8 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 
 				if(to == 4) {
 					pMyVertexCurr[ep->uslInd[3]].color = ep->color[3];
+				}
+				
 				}
 			}
 		}

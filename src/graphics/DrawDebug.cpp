@@ -622,11 +622,40 @@ static void drawDebugMaterialTexture(Vec2f & textpos, const std::string & type,
 	textpos.y += hFontDebug->getLineHeight();
 }
 
+extern std::vector<Sphere> g_merges;
+
 static void drawDebugMaterials() {
+	
+	{
+		UseRenderState state(render3D().depthTest(false).depthWrite(false));
+		BOOST_FOREACH(const Sphere & sphere, g_merges) {
+			Color color = Color::green;
+			if(sphere.radius >= 4.f) {
+				color = Color::red;
+			} else if(sphere.radius >= 2.f) {
+				color = Color::red * 0.5f + Color::yellow * 0.5f;
+			} else if(sphere.radius >= 1.f) {
+				color = Color::yellow;
+			} else if(sphere.radius >= 0.5f) {
+				color = Color::yellow * 0.5f + Color::green * 0.5f;
+			} else if(sphere.radius <= -4.f) {
+				color = Color::white;
+			} else if(sphere.radius <= -3.f) {
+				color = Color::magenta;
+			} else if(sphere.radius <= -2.f) {
+				color = Color::blue;
+			} else if(sphere.radius <= -1.f) {
+				color = Color::cyan;
+			}
+			drawLineSphere(Sphere(sphere.origin, 8.f), color);
+		}
+	}
 	
 	if(!ACTIVEBKG || !ACTIVEBKG->exist) {
 		return;
 	}
+	
+	bool orig = GInput->isKeyPressed(Keyboard::Key_LeftShift);
 	
 	PolyType skip = POLY_NODRAW | POLY_HIDE;
 	if(GInput->isKeyPressed(Keyboard::Key_LeftShift)) {
@@ -635,7 +664,7 @@ static void drawDebugMaterials() {
 	
 	Vec2f point(DANAEMouse);
 	
-	Entity * owner = GetFirstInterAtPos(Vec2s(point));
+	std::string owner;
 	TextureContainer * material = NULL;
 	size_t count = 0;
 	Vec2f pp[4];
@@ -720,9 +749,11 @@ static void drawDebugMaterials() {
 				} else {
 					material = NULL;
 				}
-				owner = entity;
 				minz = z;
 				flags = face.facetype & ~(POLY_WATER | POLY_LAVA);
+				std::ostringstream oss;
+				oss << "Entity " << entity->idString() << " polygon #" << j;
+				owner= oss.str();
 			}
 			
 		}
@@ -730,22 +761,22 @@ static void drawDebugMaterials() {
 	
 	for(short y = 0; y < ACTIVEBKG->m_size.y; y++)
 	for(short x = 0; x < ACTIVEBKG->m_size.x; x++) {
-		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][y];
+		const BackgroundTileData & tile = ACTIVEBKG->m_tileData[x][y];
 		
 		if(!ACTIVEBKG->isTileActive(Vec2s(x, y))) {
 			continue;
 		}
 		
-		BOOST_FOREACH(EERIEPOLY * ep, feg.polyin) {
+		BOOST_FOREACH(const EERIEPOLY & ep, tile.polydata) {
 			
-			if(!ep || (ep->type & skip)) {
+			if(ep.type & skip) {
 				continue;
 			}
 			
 			bool bvalid = false;
 			Vec3f p[4];
-			for(size_t i = 0; i < ((ep->type & POLY_QUAD) ? 4u : 3u); i++) {
-				Vec4f pos = worldToClipSpace(ep->v[i].p);
+			for(size_t i = 0; i < ((ep.type & POLY_QUAD) ? 4u : 3u); i++) {
+				Vec4f pos = worldToClipSpace(orig ? ep.op[i] : ep.v[i].p);
 				if(pos.w <= 0.f) {
 					bvalid = false;
 					break;
@@ -760,20 +791,22 @@ static void drawDebugMaterials() {
 			}
 			
 			float z = pointInTriangle(point, p[0], p[1], p[2]);
-			if(z <= 0 && (ep->type & POLY_QUAD)) {
+			if(z <= 0 && (ep.type & POLY_QUAD)) {
 				z = pointInTriangle(point, p[1], p[3], p[2]);
 			}
 			
 			if(z > 0 && z <= minz) {
-				count = ((ep->type & POLY_QUAD) ? 4 : 3);
+				count = ((ep.type & POLY_QUAD) ? 4 : 3);
 				for(size_t i = 0; i < count; i++) {
 					pp[i] = Vec2f(p[i].x, p[i].y);
-					puv[i] = ep->v[i].uv;
+					puv[i] = ep.v[i].uv;
 				}
-				material = ep->tex;
-				owner = NULL;
+				material = ep.tex;
 				minz = z;
-				flags = ep->type;
+				flags = ep.type;
+				std::ostringstream oss;
+				oss << "Tile " << x << ',' << y << " polygon #" << (&ep - &tile.polydata.front());
+				owner= oss.str();
 			}
 			
 		}
@@ -804,7 +837,7 @@ static void drawDebugMaterials() {
 		
 		std::ostringstream oss;
 		
-		if(owner) {
+		if(!owner.empty()) {
 			textpos.y -= hFontDebug->getLineHeight();
 		}
 		if(material && material->m_pTexture) {
@@ -818,8 +851,89 @@ static void drawDebugMaterials() {
 		}
 		
 		
-		if(owner) {
-			drawTextCentered(hFontDebug, textpos, owner->idString(), Color::cyan);
+		if(!owner.empty()) {
+			if(flags & ~(POLY_QUAD | POLY_NO_SHADOW)) {
+				owner += ":";
+				if(flags & POLY_DOUBLESIDED) {
+					owner += " doublesided";
+				}
+				if(flags & POLY_TRANS) {
+					owner += " trans";
+				}
+				if(flags & POLY_WATER) {
+					owner += " water";
+				}
+				if(flags & POLY_GLOW) {
+					owner += " glow";
+				}
+				if(flags & POLY_IGNORE) {
+					owner += " ignore";
+				}
+				if(flags & POLY_TILED) {
+					owner += " tiled";
+				}
+				if(flags & POLY_METAL) {
+					owner += " metal";
+				}
+				if(flags & POLY_HIDE) {
+					owner += " hide";
+				}
+				if(flags & POLY_STONE) {
+					owner += " stone";
+				}
+				if(flags & POLY_WOOD) {
+					owner += " wood";
+				}
+				if(flags & POLY_GRAVEL) {
+					owner += " gravel";
+				}
+				if(flags & POLY_EARTH) {
+					owner += " earth";
+				}
+				if(flags & POLY_NOCOL) {
+					owner += " nocol";
+				}
+				if(flags & POLY_LAVA) {
+					owner += " lava";
+				}
+				if(flags & POLY_CLIMB ) {
+					owner += " climb";
+				}
+				if(flags & POLY_FALL) {
+					owner += " fall";
+				}
+				if(flags & POLY_NOPATH) {
+					owner += " nopath";
+				}
+				if(flags & POLY_NODRAW) {
+					owner += " nodraw";
+				}
+				if(flags & POLY_PRECISE_PATH) {
+					owner += " precise_path";
+				}
+				if(flags & POLY_NO_CLIMB) {
+					owner += " noclimb";
+				}
+				if(flags & POLY_ANGULAR) {
+					owner += " angular";
+				}
+				if(flags & POLY_ANGULAR_IDX0) {
+					owner += " angular_idx0";
+				}
+				if(flags & POLY_ANGULAR_IDX1) {
+					owner += " angular_idx1";
+				}
+				if(flags & POLY_ANGULAR_IDX2) {
+					owner += " angular_idx2";
+				}
+				if(flags & POLY_ANGULAR_IDX3) {
+					owner += " angular_idx3";
+				}
+				if(flags & POLY_LATE_MIP) {
+					owner += " late_mip";
+				}
+			}
+			drawTextCentered(hFontDebug, textpos, owner, Color::cyan);
 			textpos.y += hFontDebug->getLineHeight();
 		}
 		if(material && material->m_pTexture) {
@@ -840,7 +954,7 @@ static void drawDebugMaterials() {
 			oss.str(std::string());
 			oss.setf(std::ios_base::fixed, std::ios_base::floatfield);
 			oss.precision(2);
-			oss << '(' << puv[i].x << ',' << puv[i].y << ')';
+			oss << i << '(' << puv[i].x << ',' << puv[i].y << ')';
 			std::string text = oss.str();
 			
 			Vec2i coordpos = Vec2i(pp[i]);
@@ -899,7 +1013,6 @@ static void updateAndRenderDebugDrawables() {
 		}
 	}
 }
-
 
 void drawDebugRender() {
 	
@@ -976,4 +1089,5 @@ void drawDebugRender() {
 	pos += Vec2i(-width, 0);
 	
 	hFontDebug->draw(pos, ss.str(), Color::yellow);
+	
 }

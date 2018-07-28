@@ -120,6 +120,7 @@ struct EERIEPOLY {
 	Vec3f norm;
 	Vec3f norm2;
 	TexturedVertex v[4];
+	Vec3f op[4];
 	ColorRGBA color[4];
 	Vec3f nrml[4];
 	TextureContainer * tex;
@@ -129,6 +130,7 @@ struct EERIEPOLY {
 	short room;
 	short misc;
 	unsigned short uslInd[4];
+	unsigned short ouslInd[4];
 	
 	EERIEPOLY()
 		: type(0)

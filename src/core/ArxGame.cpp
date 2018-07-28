@@ -1888,7 +1888,7 @@ void ArxGame::renderLevel() {
 	ARX_PROFILE_FUNC();
 	
 	// Clear screen & Z buffers
-	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_fogColor);
+	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::magenta);
 	
 	cinematicBorder.render();
 	

@@ -848,6 +848,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 					ep2->v[kk].p = Vec3f(ep->v[kk].ssx, ep->v[kk].sy, ep->v[kk].ssz);
 					ep2->v[kk].uv = Vec2f(ep->v[kk].stu, ep->v[kk].stv);
 					ep2->color[kk] = Color(0, 0, 0, 255).toRGBA();
+					ep2->op[kk] = ep2->v[kk].p;
 				}
 				
 				long to = (ep->type & POLY_QUAD) ? 4 : 3;
@@ -1072,6 +1073,302 @@ struct HasAlphaChannel {
 	
 };
 
+std::vector<Sphere> g_merges;
+
+struct DuplicateVertex {
+	
+	EERIEPOLY * poly;
+	int vertex;
+	float distance2;
+	
+	Vec3f & p() { return poly->v[vertex].p; }
+	const Vec3f & p() const { return poly->v[vertex].p; }
+	
+	DuplicateVertex(EERIEPOLY * poly_, int vertex_, float distance2_)
+		: poly(poly_)
+		, vertex(vertex_)
+		, distance2(distance2_)
+	{ }
+	
+	bool operator<(const DuplicateVertex & o) const { return distance2 < o.distance2; }
+	
+};
+
+typedef std::vector<DuplicateVertex>  DuplicateVertices;
+
+static bool areAdjacent(const DuplicateVertex & polya, const DuplicateVertex & polyb) {
+	for(int a = 0; a < ((polya.poly->type & POLY_QUAD) ? 4 : 3); a++) {
+		for(int b = 0; b < ((polyb.poly->type & POLY_QUAD) ? 4 : 3); b++) {
+			if(a != polya.vertex && b != polyb.vertex && closerThan(polya.poly->v[a].p, polyb.poly->v[b].p, 1.f)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+static void addPoly(DuplicateVertices & candidates, std::vector<bool> & good, size_t i) {
+	
+	good[i] = true;
+	
+	for(size_t j = 0; j < candidates.size(); j++) {
+		
+		if(good[j]) {
+			continue;
+		}
+		
+		if(!closerThan(candidates[i].p(), candidates[j].p(), 0.1f)) {
+			if(!areAdjacent(candidates[i], candidates[j])) {
+				continue;
+			}
+		}
+		
+		addPoly(candidates, good, j);
+		
+	}
+	
+}
+
+static float hasPolygonCycle(const DuplicateVertices & candidates, size_t start) {
+	
+	// TODO LogInfo << " - cycle test " << n;
+	
+	static std::vector<bool> visited;
+	visited.clear();
+	
+	visited.resize(candidates.size(), false);
+	
+	const DuplicateVertex * last = NULL;
+	const DuplicateVertex * current = &candidates[start];
+	visited[start] = true;
+	
+	// TODO LogWarning << "   - " << candidates[0].poly;
+	
+	float maxDistance2 = 0.f;
+	
+	for(size_t i = 1; i < candidates.size(); i++) {
+		bool changed = false;
+		for(size_t j = 0; j < candidates.size(); j++) {
+			if(&candidates[j] != last && &candidates[j] != current && areAdjacent(*current, candidates[j])) {
+				// TODO LogWarning << "   - " << candidates[j].poly;
+				if(visited[j]) {
+					// TODO LogWarning << "   -> cycle";
+					return maxDistance2;
+				}
+				last = current;
+				current = &candidates[j];
+				visited[j] = true;
+				changed = true;
+				maxDistance2 = std::max(maxDistance2, arx::distance2(candidates[start].p(), candidates[j].p()));
+				break;
+			}
+		}
+		if(!changed) {
+			break;
+		}
+	}
+	
+	// TODO LogWarning << "   -> no cycle";
+	return -1.f;
+}
+
+static void mergeVerticesAt(const Vec3f & pos) {
+	
+	static DuplicateVertices candidates;
+	candidates.clear();
+	
+	const float SearchRadius = 8.f;
+	const float Delta = 0.1f; // Small distance that should not make a noticeable difference
+	
+	float maxDistance2 = 0.f;
+	float adjustedSearchRadius2 = square(SearchRadius);
+	
+	// Using just the tile containing pos, even polyin, is not enough because
+	// we need to consider vertices just outside the tile
+	
+	// TODO LogInfo << "Merging vertices at " << pos.x << ' ' << pos.y << ' ' << pos.z;
+	
+	// First collect all candidate vertices around the position
+	s32 px = s32(pos.x * ACTIVEBKG->m_mul.x);
+	s32 pz = s32(pos.z * ACTIVEBKG->m_mul.y);
+	for(int x = std::max(0, px - 2); x <= std::min(px + 2, ACTIVEBKG->m_size.x - 1); x++) {
+		for(int z = std::max(0, pz - 2); z <= std::min(pz + 2, ACTIVEBKG->m_size.y - 1); z++) {
+			BackgroundTileData & tile = ACTIVEBKG->m_tileData[x][z];
+			BOOST_FOREACH(EERIEPOLY & poly, tile.polydata) {
+			//BOOST_FOREACH(EERIEPOLY * poly, tile.polyin) {
+				if(!(poly.type & (POLY_IGNORE | POLY_NODRAW | POLY_DOUBLESIDED | POLY_NOCOL))) {
+					for(int vertex = 0; vertex < ((poly.type & POLY_QUAD) ? 4 : 3); vertex++) {
+						
+						float distance2 = arx::distance2(pos, poly.v[vertex].p);
+						if(distance2 > adjustedSearchRadius2) {
+							// Not in search radius
+							continue;
+						}
+						
+						// Adjust search radius if it contains more than one candidate vertex from the same polygon
+						if(!candidates.empty() && candidates.back().poly == &poly) {
+							float lastDistance2 = candidates.back().distance2;
+							adjustedSearchRadius2 = std::min(adjustedSearchRadius2, (lastDistance2 + distance2) / 2.f);
+							// TODO LogWarning << " - reducing search radius to " << std::sqrt(adjustedSearchRadius2);
+							if(distance2 > adjustedSearchRadius2) {
+								continue;
+							}
+						}
+						
+						// TODO LogWarning << " - " << &poly << " tile " << x << "," << z << " polygon #"
+						// TODO            << (&poly - &tile.polydata.front()) << " vertex #" << vertex << " at "
+						// TODO            << poly.v[vertex].p.x << ' ' << poly.v[vertex].p.y
+						// TODO            << ' ' << poly.v[vertex].p.z << ": distance " << std::sqrt(distance2);
+						
+						candidates.push_back(DuplicateVertex(&poly, vertex, distance2));
+						maxDistance2 = std::max(maxDistance2, distance2);
+						
+					}
+				}
+			}
+		}
+	}
+	
+	// Sort collected vertices by distance
+	if(adjustedSearchRadius2 < SearchRadius || maxDistance2 > square(Delta)) {
+		std::sort(candidates.begin(), candidates.end());
+		while(!candidates.empty() && candidates.back().distance2 > adjustedSearchRadius2) {
+			candidates.pop_back();
+		}
+	}
+	
+	
+	if(candidates.size() <= 1) {
+		// Nothing to merge
+		return;
+	}
+	
+	// TODO LogInfo << " -> " << candidates.size() << " candidates";
+	// TODO BOOST_FOREACH(const DuplicateVertex & candidate, candidates) {
+	// TODO 	LogInfo << "   - " << candidate.poly;
+	// TODO }
+	
+	if(candidates.size() > 3 && candidates.back().distance2 > square(Delta)) {
+		
+		// Throw away far candidates if we can patch the hole without them
+		bool foundCycle = false;
+		for(size_t i = 0; i < candidates.size() && candidates[i].distance2 <= square(Delta); i++) {
+			float cycle = hasPolygonCycle(candidates, i);
+			if(cycle >= 0.f) {
+				adjustedSearchRadius2 = candidates[i].distance2 + cycle + square(Delta);
+				while(candidates.back().distance2 > adjustedSearchRadius2) {
+					candidates.pop_back();
+				}
+				foundCycle = true;
+				break;
+			}
+		}
+		
+		// Throw away far candidates if they form a distinct cycle
+		foundCycle = !foundCycle;
+		while(foundCycle && candidates.size() > 3) {
+			foundCycle = false;
+			for(size_t i = candidates.size(); i > 0 && candidates[i - 1].distance2 > 2 * square(Delta); i--) {
+				float cycle = hasPolygonCycle(candidates, i - 1);
+				Vec3f & anchor = candidates[i - 1].p();
+				if(cycle >= 0.f /* && arx::distance2(anchor, candidates.front().p()) > cycle + square(Delta) */) {
+					for(size_t j = candidates.size(); j > 0; j--) {
+						if(arx::distance2(anchor, candidates[j - 1].p()) <= cycle + square(Delta)) {
+							candidates.erase(candidates.begin() + j - 1);
+						}
+					}
+					foundCycle = true;
+					g_merges.push_back(Sphere(anchor, -3.f)); // magenta
+					break;
+				}
+			}
+		}
+		
+		if(candidates.size() <= 1) {
+			// Nothing left to merge
+			return;
+		}
+		
+	}
+	
+	// Only consider polygons that share a whole edge with the start
+	if(candidates.back().distance2 > square(Delta)) {
+		static std::vector<bool> good;
+		good.clear();
+		good.resize(candidates.size(), false);
+		addPoly(candidates, good, 0);
+		for(size_t i = candidates.size(); i > 0; i--) {
+			if(!good[i - 1]) {
+				candidates.erase(candidates.begin() + i - 1);
+			}
+		}
+		if(candidates.size() == 1) {
+			// Nothing left to merge
+			g_merges.push_back(Sphere(candidates.front().p(), -4.f)); // white
+			return;
+		}
+	}
+	
+	// TODO center is not always the best position, try to keep horizontal surfaces horizontal
+	Vec3f center = Vec3f_ZERO;
+	BOOST_FOREACH(const DuplicateVertex & candidate, candidates) {
+		center += candidate.p();
+	}
+	center /= float(candidates.size());
+	
+	if(candidates.back().distance2 > square(Delta)) {
+		
+		// Abort if we would flatten something
+		// TODO don't re-check for mirrored vertex pairs
+		BOOST_FOREACH(const DuplicateVertex & a, candidates) {
+			BOOST_FOREACH(const DuplicateVertex & b, candidates) {
+				if(a.poly != b.poly && !closerThan(a.p(), b.p(), Delta)) {
+					size_t count = 0;
+					for(int vertexa = 0; vertexa < ((a.poly->type & POLY_QUAD) ? 4 : 3); vertexa++) {
+						for(int vertexb = 0; vertexb < ((b.poly->type & POLY_QUAD) ? 4 : 3); vertexb++) {
+							if(vertexa != a.vertex && vertexb != b.vertex) {
+								if(closerThan(a.poly->v[vertexa].p, b.poly->v[vertexb].p, Delta)) {
+									count++;
+									if(count >= 2) {
+										g_merges.push_back(Sphere(center, -2.f)); // blue
+										return;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		// Abort if we have polygons with opposite normals
+		// TODO don't re-check for mirrored vertex pairs
+		BOOST_FOREACH(const DuplicateVertex & a, candidates) {
+			BOOST_FOREACH(const DuplicateVertex & b, candidates) {
+				if(a.poly != b.poly && !closerThan(a.p(), b.p(), Delta)) {
+					float cosangle = glm::dot(a.poly->norm, b.poly->norm);
+					if(cosangle <= -0.7f) {
+						g_merges.push_back(Sphere(center, -1.f)); // cyan
+						return;
+					}
+				}
+			}
+		}
+		
+	}
+	
+	if(candidates.back().distance2 > square(Delta)) {
+		LogWarning << " -> merging " << candidates.size() << " vertices with distance "
+		           << std::sqrt(candidates.back().distance2);
+		g_merges.push_back(Sphere(center, candidates.back().distance2));
+	}
+	
+	BOOST_FOREACH(DuplicateVertex & candidate, candidates) {
+		candidate.p() = center;
+	}
+	
+}
+
 void ComputePortalVertexBuffer() {
 	
 	if(!portals) {
@@ -1090,6 +1387,53 @@ void ComputePortalVertexBuffer() {
 	typedef boost::unordered_map<TextureContainer *,  SINFO_TEXTURE_VERTEX>
 		TextureMap;
 	TextureMap infos;
+	
+	g_merges.clear();
+	
+	for(int x = 0; x < ACTIVEBKG->m_size.x; x++) {
+		for(int y = 0; y < ACTIVEBKG->m_size.y; y++) {
+			BackgroundTileData & tile = ACTIVEBKG->m_tileData[x][y];
+			BOOST_FOREACH(EERIEPOLY & poly, tile.polydata) {
+				if(!(poly.type & (POLY_IGNORE | POLY_NODRAW | POLY_DOUBLESIDED | POLY_NOCOL))) {
+					for(int vertex = 0; vertex < ((poly.type & POLY_QUAD) ? 4 : 3); vertex++) {
+						mergeVerticesAt(poly.v[vertex].p);
+					}
+				}
+			}
+		}
+	}
+	
+	/* TODO
+	{
+		LogInfo << "Tile 95,93";
+		BackgroundTileData & tile = ACTIVEBKG->m_tileData[95][93];
+		mergeVerticesAt(tile.polydata[1].v[2].p);
+		mergeVerticesAt(tile.polydata[2].v[0].p);
+	}
+	
+	{
+		LogInfo << "Tile 96,92";
+		BackgroundTileData & tile = ACTIVEBKG->m_tileData[96][92];
+		mergeVerticesAt(tile.polydata[1].v[2].p);
+	}
+	
+	{
+		LogInfo << "Tile 96,93";
+		BackgroundTileData & tile = ACTIVEBKG->m_tileData[96][93];
+		mergeVerticesAt(tile.polydata[0].v[0].p);
+		mergeVerticesAt(tile.polydata[0].v[1].p);
+		mergeVerticesAt(tile.polydata[1].v[0].p);
+		mergeVerticesAt(tile.polydata[3].v[0].p);
+		mergeVerticesAt(tile.polydata[4].v[1].p);
+		mergeVerticesAt(tile.polydata[4].v[2].p);
+	}
+	
+	{
+		LogInfo << "Tile 97,92";
+		BackgroundTileData & tile = ACTIVEBKG->m_tileData[97][92];
+		mergeVerticesAt(tile.polydata[1].v[3].p);
+	}
+	*/
 	
 	for(size_t i = 0; i < portals->rooms.size(); i++) {
 		
@@ -1173,7 +1517,7 @@ void ComputePortalVertexBuffer() {
 		
 		// Allocate the vertex buffer for this room
 		// TODO should be static, but is updated for dynamic lighting
-		room->pVertexBuffer = GRenderer->createVertexBuffer(vertexCount,
+		room->pVertexBuffer = GRenderer->createVertexBuffer(2 * vertexCount,
 		                                                    Renderer::Dynamic);
 		
 		
@@ -1246,6 +1590,41 @@ void ComputePortalVertexBuffer() {
 					vertex++;
 					poly.uslInd[3] = index++;
 				}
+				
+				vertex->p.x = poly.op[0].x;
+				vertex->p.y = poly.op[0].y;
+				vertex->p.z = poly.op[0].z;
+				vertex->color = poly.v[0].color;
+				vertex->uv = poly.v[0].uv + texture->hd;
+				vertex++;
+				poly.ouslInd[0] = index++;
+				
+				vertex->p.x = poly.op[1].x;
+				vertex->p.y = poly.op[1].y;
+				vertex->p.z = poly.op[1].z;
+				vertex->color = poly.v[1].color;
+				vertex->uv = poly.v[1].uv + texture->hd;
+				vertex++;
+				poly.ouslInd[1] = index++;
+				
+				vertex->p.x = poly.op[2].x;
+				vertex->p.y = poly.op[2].y;
+				vertex->p.z = poly.op[2].z;
+				vertex->color = poly.v[2].color;
+				vertex->uv = poly.v[2].uv + texture->hd;
+				vertex++;
+				poly.ouslInd[2] = index++;
+				
+				if(poly.type & POLY_QUAD) {
+					vertex->p.x = poly.op[3].x;
+					vertex->p.y = poly.op[3].y;
+					vertex->p.z = poly.op[3].z;
+					vertex->color = poly.v[3].color;
+					vertex->uv = poly.v[3].uv + texture->hd;
+					vertex++;
+					poly.ouslInd[3] = index++;
+				}
+				
 			}
 			
 			// Record that the texture is used for this room
