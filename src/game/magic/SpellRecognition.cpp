@@ -766,7 +766,7 @@ static void handleRuneDetection(Rune rune) {
 		CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 	}
 	
-	ARX_SOUND_PlaySFX(g_snd.SYMB[rune].getSampleId());
+	ARX_SOUND_PlaySFX(g_snd.SYMB[rune]);
 }
 
 static void unrecognizedRune() {

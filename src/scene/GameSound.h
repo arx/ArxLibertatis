@@ -110,7 +110,7 @@ audio::SampleHandle MAGIC_DRAW_LOOP;
 audio::SampleHandle MAGIC_FIZZLE;
 
 // Magic symbols samples
-audio::SourcedSample SYMB[RUNE_COUNT];
+audio::SampleHandle SYMB[RUNE_COUNT];
 
 // Spells samples
 audio::SampleHandle SPELL_ACTIVATE_PORTAL;
