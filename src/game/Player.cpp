@@ -2365,7 +2365,7 @@ void ARX_PLAYER_PutPlayerInNormalStance() {
 		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 	}
 	
-	ARX_SOUND_Stop(g_snd.MAGIC_DRAW);
+	ARX_SOUND_Stop(player.magic_draw);
 }
 
 /*!

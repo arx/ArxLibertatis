@@ -338,6 +338,7 @@ struct ARXCHARACTER {
 	GameDuration DeadTime;
 	
 	audio::SourcedSample magic_ambient;
+	audio::SourcedSample magic_draw;
 	
 	ARXCHARACTER()
 		: m_strikeDirection(0)

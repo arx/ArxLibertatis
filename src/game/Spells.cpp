@@ -561,10 +561,12 @@ void ARX_SPELLS_ManageMagic() {
 				
 				ARX_FLARES_broken = 0;
 				
-				if(!ARX_SOUND_IsPlaying(g_snd.MAGIC_DRAW))
-					ARX_SOUND_PlaySFX_loop(g_snd.MAGIC_DRAW, NULL, 1.0F);
+				if(!ARX_SOUND_IsPlaying(player.magic_draw)) {
+					player.magic_draw = g_snd.MAGIC_DRAW;
+					ARX_SOUND_PlaySFX_loop(player.magic_draw, NULL, 1.0F);
+				}
 			} else {
-				ARX_SOUND_Stop(g_snd.MAGIC_DRAW);
+				ARX_SOUND_Stop(player.magic_draw);
 			}
 			
 			snip = 0;

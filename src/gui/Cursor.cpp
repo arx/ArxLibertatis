@@ -663,7 +663,7 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 				EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.f, surf, Color::white);
 			} else {
 				if(MAGICMODE) {
-					ARX_SOUND_Stop(g_snd.MAGIC_DRAW);
+					ARX_SOUND_Stop(player.magic_draw);
 					MAGICMODE = false;
 				}
 				
