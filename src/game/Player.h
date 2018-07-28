@@ -339,6 +339,7 @@ struct ARXCHARACTER {
 	
 	audio::SourcedSample magic_ambient;
 	audio::SourcedSample magic_draw;
+	audio::SourcedSample torch_loop;
 	
 	ARXCHARACTER()
 		: m_strikeDirection(0)

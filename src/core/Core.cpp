@@ -386,7 +386,8 @@ void levelInit() {
 	LoadLevelScreen();
 
 	if(player.torch) {
-		ARX_SOUND_PlaySFX_loop(g_snd.TORCH_LOOP, NULL, 1.0F);
+		player.torch_loop = g_snd.TORCH_LOOP;
+		ARX_SOUND_PlaySFX_loop(player.torch_loop, NULL, 1.0F);
 	}
 	
 	g_playerCamera.m_pos = g_moveto = player.pos;
