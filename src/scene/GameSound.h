@@ -97,16 +97,16 @@ audio::SampleHandle PLAYER_POISONED;
 
 // Other SFX samples
 audio::SampleHandle TORCH_START;
-audio::SourcedSample TORCH_LOOP;
+audio::SampleHandle TORCH_LOOP;
 audio::SampleHandle TORCH_END;
-audio::SourcedSample FIREPLACE;
+audio::SampleHandle FIREPLACE;
 audio::SampleHandle PLOUF;
 audio::SampleHandle QUAKE;
 audio::SampleHandle WHOOSH;
 
 // Magic drawing samples
-audio::SourcedSample MAGIC_AMBIENT;
-audio::SourcedSample MAGIC_DRAW;
+audio::SampleHandle MAGIC_AMBIENT;
+audio::SampleHandle MAGIC_DRAW;
 audio::SampleHandle MAGIC_FIZZLE;
 
 // Magic symbols samples
@@ -116,10 +116,10 @@ audio::SourcedSample SYMB[RUNE_COUNT];
 audio::SampleHandle SPELL_ACTIVATE_PORTAL;
 audio::SampleHandle SPELL_ARMOR_START;
 audio::SampleHandle SPELL_ARMOR_END;
-audio::SourcedSample SPELL_ARMOR_LOOP;
+audio::SampleHandle SPELL_ARMOR_LOOP;
 audio::SampleHandle SPELL_BLESS;
 audio::SampleHandle SPELL_COLD_PROTECTION_START;
-audio::SourcedSample SPELL_COLD_PROTECTION_LOOP;
+audio::SampleHandle SPELL_COLD_PROTECTION_LOOP;
 audio::SampleHandle SPELL_COLD_PROTECTION_END;
 audio::SampleHandle SPELL_CONFUSE;
 audio::SampleHandle SPELL_CONTROL_TARGET;
@@ -128,7 +128,7 @@ audio::SampleHandle SPELL_CREATE_FOOD;
 audio::SampleHandle SPELL_CURE_POISON;
 audio::SampleHandle SPELL_CURSE;
 audio::SampleHandle SPELL_DETECT_TRAP;
-audio::SourcedSample SPELL_DETECT_TRAP_LOOP;
+audio::SampleHandle SPELL_DETECT_TRAP_LOOP;
 audio::SampleHandle SPELL_DISARM_TRAP;
 audio::SampleHandle SPELL_DISPELL_FIELD;
 audio::SampleHandle SPELL_DISPELL_ILLUSION;
@@ -140,62 +140,62 @@ audio::SampleHandle SPELL_EYEBALL_OUT;
 audio::SampleHandle SPELL_FIRE_HIT;
 audio::SampleHandle SPELL_FIRE_LAUNCH;
 audio::SampleHandle SPELL_FIRE_PROTECTION;
-audio::SourcedSample SPELL_FIRE_PROTECTION_LOOP;
+audio::SampleHandle SPELL_FIRE_PROTECTION_LOOP;
 audio::SampleHandle SPELL_FIRE_PROTECTION_END;
-audio::SourcedSample SPELL_FIRE_WIND;
+audio::SampleHandle SPELL_FIRE_WIND;
 audio::SampleHandle SPELL_FREEZETIME;
 audio::SampleHandle SPELL_HARM;
 audio::SampleHandle SPELL_HEALING;
 audio::SampleHandle SPELL_ICE_FIELD;
-audio::SourcedSample SPELL_ICE_FIELD_LOOP;
+audio::SampleHandle SPELL_ICE_FIELD_LOOP;
 audio::SampleHandle SPELL_ICE_FIELD_END;
 audio::SampleHandle SPELL_ICE_PROJECTILE_LAUNCH;
 audio::SampleHandle SPELL_INCINERATE;
-audio::SourcedSample SPELL_INCINERATE_LOOP;
+audio::SampleHandle SPELL_INCINERATE_LOOP;
 audio::SampleHandle SPELL_INCINERATE_END;
 audio::SampleHandle SPELL_IGNITE;
 audio::SampleHandle SPELL_INVISIBILITY_START;
 audio::SampleHandle SPELL_INVISIBILITY_END;
 audio::SampleHandle SPELL_LEVITATE_START;
-audio::SourcedSample SPELL_LEVITATE_LOOP;
+audio::SampleHandle SPELL_LEVITATE_LOOP;
 audio::SampleHandle SPELL_LEVITATE_END;
 audio::SampleHandle SPELL_LIGHTNING_START;
-audio::SourcedSample SPELL_LIGHTNING_LOOP;
+audio::SampleHandle SPELL_LIGHTNING_LOOP;
 audio::SampleHandle SPELL_LIGHTNING_END;
 audio::SampleHandle SPELL_LOWER_ARMOR;
 audio::SampleHandle SPELL_LOWER_ARMOR_END;
 audio::SampleHandle SPELL_FIRE_FIELD_START;
-audio::SourcedSample SPELL_FIRE_FIELD_LOOP;
+audio::SampleHandle SPELL_FIRE_FIELD_LOOP;
 audio::SampleHandle SPELL_FIRE_FIELD_END;
 
 audio::SampleHandle SPELL_MAGICAL_HIT;
-audio::SourcedSample SPELL_MAGICAL_SHIELD;
+audio::SampleHandle SPELL_MAGICAL_SHIELD;
 audio::SampleHandle SPELL_MASS_INCINERATE;
 audio::SampleHandle SPELL_MASS_PARALYSE;
 audio::SampleHandle SPELL_MM_CREATE;
 audio::SampleHandle SPELL_MM_HIT;
 audio::SampleHandle SPELL_MM_LAUNCH;
-audio::SourcedSample SPELL_MM_LOOP;
+audio::SampleHandle SPELL_MM_LOOP;
 audio::SampleHandle SPELL_NEGATE_MAGIC;
 audio::SampleHandle SPELL_PARALYSE;
 audio::SampleHandle SPELL_PARALYSE_END;
 audio::SampleHandle SPELL_POISON_PROJECTILE_LAUNCH;
 audio::SampleHandle SPELL_RAISE_DEAD;
 audio::SampleHandle SPELL_REPEL_UNDEAD;
-audio::SourcedSample SPELL_REPEL_UNDEAD_LOOP;
+audio::SampleHandle SPELL_REPEL_UNDEAD_LOOP;
 audio::SampleHandle SPELL_RUNE_OF_GUARDING;
 audio::SampleHandle SPELL_RUNE_OF_GUARDING_END;
 audio::SampleHandle SPELL_SLOW_DOWN;
 audio::SampleHandle SPELL_SLOW_DOWN_END;
 audio::SampleHandle SPELL_SPARK;
 audio::SampleHandle SPELL_SPEED_START;
-audio::SourcedSample SPELL_SPEED_LOOP;
+audio::SampleHandle SPELL_SPEED_LOOP;
 audio::SampleHandle SPELL_SPEED_END;
 audio::SampleHandle SPELL_SUMMON_CREATURE;
 audio::SampleHandle SPELL_TELEKINESIS_START;
 audio::SampleHandle SPELL_TELEKINESIS_END;
 audio::SampleHandle SPELL_VISION_START;
-audio::SourcedSample SPELL_VISION_LOOP;
+audio::SampleHandle SPELL_VISION_LOOP;
 };
 extern StaticSamples g_snd;
 
@@ -216,7 +216,7 @@ void ARX_SOUND_Free(const audio::SourcedSample & sample);
 
 void ARX_SOUND_PlaySFX(audio::SampleHandle sample_id, const Vec3f * position = NULL, float pitch = 1.f);
 
-audio::SourcedSample ARX_SOUND_PlaySFX_loop(audio::SourcedSample & sample_id, const Vec3f * position = NULL,
+audio::SourcedSample ARX_SOUND_PlaySFX_loop(audio::SampleHandle sample_id, const Vec3f * position = NULL,
                                   float pitch = 1.f);
 
 void ARX_SOUND_PlayInterface(audio::SampleHandle sample_id, float pitch = 1.f);
