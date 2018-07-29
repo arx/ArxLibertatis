@@ -33,8 +33,8 @@ public:
 	explicit CycleTextWidget();
 	virtual ~CycleTextWidget();
 	
-	void setValue(int value) { iPos = value; }
-	int getValue() const { return iPos; }
+	void setValue(int value) { m_value = value; }
+	int getValue() const { return m_value; }
 	
 	void selectLast();
 	
@@ -59,7 +59,7 @@ private:
 	ButtonWidget * pLeftButton;
 	ButtonWidget * pRightButton;
 	std::vector<TextWidget *> vText;
-	int iPos;
+	int m_value;
 	
 };
 
