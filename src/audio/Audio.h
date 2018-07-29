@@ -150,7 +150,7 @@ aalError getAmbianceVolume(AmbianceId ambianceId, float & volume);
 bool isAmbianceLooped(AmbianceId ambianceId);
 
 //! play_count == 0 -> infinite loop, play_count == 1 -> play once
-aalError ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop = false,
+void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop = false,
                       PlatformDuration fadeInterval = 0);
 aalError ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval = 0);
 

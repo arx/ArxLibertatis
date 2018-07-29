@@ -761,18 +761,18 @@ bool isAmbianceLooped(AmbianceId ambianceId) {
 
 // Ambiance control
 
-aalError ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop, PlatformDuration fadeInterval) {
+void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop, PlatformDuration fadeInterval) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	if(!g_ambiances.isValid(ambianceId) || !g_mixers.isValid(channel.mixer)) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
 	LogDebug("AmbiancePlay " << g_ambiances[ambianceId]->getName() << " loop=" << loop
 	         << " fade=" << toMs(fadeInterval));
 	
-	return g_ambiances[ambianceId]->play(channel, loop, fadeInterval);
+	g_ambiances[ambianceId]->play(channel, loop, fadeInterval);
 }
 
 aalError ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval) {
