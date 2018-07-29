@@ -129,7 +129,7 @@ bool isSamplePlaying(SourcedSample sourceId);
 
 //! play_count == 0 -> infinite loop, play_count > 0 -> play play_count times
 SourcedSample samplePlay(SampleHandle sampleHandle, const Channel & channel, unsigned play_count = 1);
-aalError sampleStop(SourcedSample & sourceId);
+void sampleStop(SourcedSample & sourceId);
 
 struct SourceInfo {
 	SourceHandle source;
