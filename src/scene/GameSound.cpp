@@ -735,6 +735,7 @@ void ARX_SOUND_Free(const audio::SampleHandle & sample) {
 void ARX_SOUND_Stop(audio::SourcedSample & sample_id) {
 	if(g_soundInitialized && sample_id != audio::SourcedSample()) {
 		audio::sampleStop(sample_id);
+		sample_id.clearSource();
 	}
 }
 
