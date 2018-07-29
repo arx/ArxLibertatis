@@ -92,7 +92,7 @@ MixerId createMixer(MixerId parent);
 SampleHandle createSample(const res::path & name);
 AmbianceId createAmbiance(const res::path & name);
 EnvId createEnvironment(const res::path & name);
-aalError deleteSample(SampleHandle sampleHandle);
+void deleteSample(SampleHandle sampleHandle);
 aalError deleteAmbiance(AmbianceId ambianceId);
 
 AmbianceId getAmbiance(const res::path & name);
