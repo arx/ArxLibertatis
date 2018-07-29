@@ -28,64 +28,79 @@
 #include "graphics/Renderer.h"
 #include "gui/MenuPublic.h"
 #include "gui/menu/MenuCursor.h"
+#include "gui/widget/ButtonWidget.h"
+#include "gui/widget/TextWidget.h"
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-CycleTextWidget::CycleTextWidget() {
+CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, const std::string & label)
+	: m_label(new TextWidget(font, label, Vec2f_ZERO))
+	, m_content(10 * size.y / 2, size.y)
+	, m_value(0)
+{
 	
-	Vec2f buttonSize = RATIO_2(Vec2f(16, 16));
+	m_label->forceDisplay(TextWidget::Dynamic);
 	
-	pLeftButton = new ButtonWidget(buttonSize, "graph/interface/menus/menu_slider_button_left");
-	pRightButton = new ButtonWidget(buttonSize, "graph/interface/menus/menu_slider_button_right");
-
-	vText.clear();
-
-	m_value = 0;
-
-	m_rect.left   = 0;
-	m_rect.top    = 0;
-	m_rect.right  = pLeftButton->m_rect.width() + RATIO_X(80) + pRightButton->m_rect.width();
-	m_rect.bottom = std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
+	m_left = new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_left");
+	m_right = new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_right");
+	
+	float minWidth = m_left->m_rect.width() + m_content.width() + m_right->m_rect.width();
+	m_rect = Rectf(std::max(minWidth, size.x), std::max(m_content.height(), m_label->m_rect.height()));
+	
+	m_right->SetPos(Vec2f(m_rect.right - m_right->m_rect.width(),
+	                      m_rect.center().y - m_right->m_rect.height() / 2));
+	m_content.moveTo(Vec2f(m_right->m_rect.left - m_content.width(),
+	                       m_rect.center().y - m_content.height() / 2));
+	m_left->SetPos(Vec2f(m_content.left - m_left->m_rect.width(),
+	                     m_rect.center().y - m_left->m_rect.height() / 2));
+	
 }
 
 CycleTextWidget::~CycleTextWidget() {
-	delete pLeftButton;
-	delete pRightButton;
 	
-	BOOST_FOREACH(Widget * w, vText) {
-		delete w;
+	delete m_label;
+	delete m_left;
+	delete m_right;
+	
+	BOOST_FOREACH(Widget * text, vText) {
+		delete text;
 	}
+	
 }
 
 void CycleTextWidget::selectLast() {
 	m_value = int(vText.size() - 1);
 }
 
-void CycleTextWidget::AddText(TextWidget * _pText) {
+void CycleTextWidget::AddText(TextWidget * widget) {
 	
-	_pText->forceDisplay(TextWidget::Dynamic);
-	_pText->setEnabled(m_enabled);
+	widget->forceDisplay(TextWidget::Dynamic);
+	widget->setEnabled(m_enabled);
 	
-	_pText->Move(Vec2f(m_rect.left + pLeftButton->m_rect.width(), m_rect.top + 0));
-	vText.push_back(_pText);
-
-	Vec2f textSize = _pText->m_rect.size();
-
-	m_rect.right  = std::max(m_rect.right, m_rect.left + pLeftButton->m_rect.width() + pRightButton->m_rect.width() + textSize.x);
-	m_rect.bottom = std::max(m_rect.bottom, m_rect.top + textSize.y);
-
-	pLeftButton->SetPos(Vec2f(m_rect.left,
-	                          m_rect.top + m_rect.height() / 2 - pLeftButton->m_rect.height() / 2));
-	pRightButton->SetPos(Vec2f(m_rect.right - pRightButton->m_rect.width(),
-	                           m_rect.top + m_rect.height() / 2 - pRightButton->m_rect.height() / 2));
-
-	float dx = m_rect.width() - pLeftButton->m_rect.width() - pRightButton->m_rect.width();
+	vText.push_back(widget);
 	
-	for(std::vector<TextWidget *>::iterator it = vText.begin(); it < vText.end(); ++it) {
-		TextWidget * pMenuElementText = *it;
-		textSize = pMenuElementText->m_rect.size();
-		float dxx = (dx - textSize.x) / 2.f;
-		pMenuElementText->SetPos(Vec2f(pLeftButton->m_rect.right + dxx, m_rect.top + m_rect.height() / 2 - textSize.y / 2));
+	float maxWidth = m_rect.width() - m_left->m_rect.width() - m_right->m_rect.width()
+	                  - m_label->m_rect.width() - m_label->m_rect.height();
+	maxWidth = std::max(maxWidth, m_content.width());
+	if(widget->m_rect.width() > maxWidth) {
+		widget->m_rect.right = widget->m_rect.left + maxWidth;
+	}
+	m_rect.bottom = m_rect.top + std::max(m_rect.height(), widget->m_rect.height());
+	
+	m_content.left = m_content.right - std::max(m_content.width(), widget->m_rect.width());
+	m_content.bottom = m_content.top + m_rect.height();
+	
+	m_right->SetPos(Vec2f(m_rect.right - m_right->m_rect.width(),
+	                      m_rect.center().y - m_right->m_rect.height() / 2));
+	m_content.moveTo(Vec2f(m_right->m_rect.left - m_content.width(),
+	                       m_rect.center().y - m_content.height() / 2));
+	m_left->SetPos(Vec2f(m_content.left - m_left->m_rect.width(),
+	                     m_rect.center().y - m_left->m_rect.height() / 2));
+	
+	m_label->SetPos(Vec2f(m_rect.left, m_rect.center().y - m_label->m_rect.height() / 2));
+	
+	BOOST_FOREACH(Widget * text, vText) {
+		text->SetPos(m_content.center() - text->m_rect.size() / 2.f);
 	}
 	
 }
@@ -94,8 +109,10 @@ void CycleTextWidget::Move(const Vec2f & offset) {
 	
 	Widget::Move(offset);
 	
-	pLeftButton->Move(offset);
-	pRightButton->Move(offset);
+	m_label->Move(offset);
+	m_left->Move(offset);
+	m_content.move(offset);
+	m_right->Move(offset);
 	
 	for(std::vector<TextWidget *>::const_iterator i = vText.begin(), i_end = vText.end(); i != i_end; ++i) {
 		(*i)->Move(offset);
@@ -126,7 +143,7 @@ bool CycleTextWidget::click() {
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
 	
 	if(m_rect.contains(cursor)) {
-		if(pLeftButton->m_rect.contains(cursor)) {
+		if(m_left->m_rect.contains(cursor)) {
 			newValue(m_value - 1);
 		} else {
 			newValue(m_value + 1);
@@ -137,32 +154,44 @@ bool CycleTextWidget::click() {
 }
 
 void CycleTextWidget::setEnabled(bool enable) {
+	
 	Widget::setEnabled(enable);
-	pLeftButton->setEnabled(enable);
-	pRightButton->setEnabled(enable);
-	for(size_t i = 0; i < vText.size(); i++) {
-		vText[i]->setEnabled(enable);
+	
+	m_left->setEnabled(enable);
+	m_right->setEnabled(enable);
+	
+	BOOST_FOREACH(Widget * text, vText) {
+		text->setEnabled(enable);
 	}
+	
 }
 
-void CycleTextWidget::render(bool /* mouseOver */) {
+void CycleTextWidget::render(bool mouseOver) {
+	
+	m_label->render(mouseOver);
 	
 	Vec2f cursor = Vec2f(GInput->getMousePosition());
 	
 	if(m_enabled) {
-		pLeftButton->render(pLeftButton->m_rect.contains(cursor));
-		pRightButton->render(pRightButton->m_rect.contains(cursor));
+		m_left->render(m_left->m_rect.contains(cursor));
+		m_right->render(m_right->m_rect.contains(cursor));
 	}
 	
-	if(m_value >= 0 && size_t(m_value) < vText.size() && vText[m_value]) {
-		vText[m_value]->render(vText[m_value]->m_rect.contains(cursor));
+	if(m_value >= 0 && size_t(m_value) < vText.size()) {
+		vText[m_value]->render(m_content.contains(cursor));
 	}
 	
 }
 
 void CycleTextWidget::newValue(int value) {
 	
-	m_value = positive_modulo(value, int(vText.size()));
+	value = positive_modulo(value, int(vText.size()));
+	
+	if(value == m_value) {
+		return;
+	}
+	
+	m_value = value;
 	
 	if(valueChanged) {
 		valueChanged(m_value, vText[size_t(m_value)]->text());

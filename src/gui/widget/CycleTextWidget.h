@@ -21,16 +21,21 @@
 #define ARX_GUI_WIDGET_CYCLETEXTWIDGET_H
 
 #include <vector>
+#include <string>
+
 #include <boost/function.hpp>
 
-#include "gui/widget/ButtonWidget.h"
 #include "gui/widget/Widget.h"
+
+class Font;
+class ButtonWidget;
+class TextWidget;
 
 class CycleTextWidget: public Widget {
 	
 public:
 	
-	explicit CycleTextWidget();
+	explicit CycleTextWidget(const Vec2f & size, Font * font, const std::string & label);
 	virtual ~CycleTextWidget();
 	
 	void setValue(int value) { m_value = value; }
@@ -56,9 +61,12 @@ private:
 	
 	void newValue(int value);
 	
-	ButtonWidget * pLeftButton;
-	ButtonWidget * pRightButton;
+	TextWidget * m_label;
+	ButtonWidget * m_left;
+	ButtonWidget * m_right;
 	std::vector<TextWidget *> vText;
+	Rectf m_content;
+	
 	int m_value;
 	
 };
