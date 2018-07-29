@@ -88,6 +88,7 @@ aalError update();
 // Resource
 
 MixerId createMixer();
+MixerId createMixer(MixerId parent);
 SampleHandle createSample(const res::path & name);
 AmbianceId createAmbiance(const res::path & name);
 EnvId createEnvironment(const res::path & name);
@@ -111,7 +112,6 @@ aalError setListenerEnvironment(EnvId environmentId);
 // Mixer
 
 aalError setMixerVolume(MixerId mixerId, float volume);
-aalError setMixerParent(MixerId mixerId, MixerId parentId);
 
 aalError mixerStop(MixerId mixerId);
 aalError mixerPause(MixerId mixerId);

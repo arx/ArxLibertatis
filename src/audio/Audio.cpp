@@ -272,9 +272,7 @@ aalError update() {
 
 // Resource creation
 
-MixerId createMixer() {
-	
-	AAL_ENTRY_V(MixerId())
+static MixerId createMixer_common() {
 	
 	Mixer * mixer = new Mixer();
 	
@@ -285,6 +283,32 @@ MixerId createMixer() {
 	
 	return id;
 }
+
+MixerId createMixer() {
+	
+	AAL_ENTRY_V(MixerId())
+	
+	return createMixer_common();
+}
+
+MixerId createMixer(MixerId parent) {
+	
+	AAL_ENTRY_V(MixerId())
+	
+	if(!g_mixers.isValid(parent)) {
+		return MixerId();
+	}
+	
+	MixerId mixer = createMixer_common();
+	if(mixer != MixerId()) {
+		Mixer * parentMixer = g_mixers[parent];
+		g_mixers[mixer]->setParent(parentMixer);
+		LogDebug("createMixer " << mixer.handleData() << " parent=" << parent.handleData());
+	}
+	
+	return mixer;
+}
+
 
 SampleHandle createSample(const res::path & name) {
 	
@@ -464,19 +488,6 @@ aalError setMixerVolume(MixerId mixerId, float volume) {
 	LogDebug("SetMixerVolume " << mixerId.handleData() << " volume=" << volume);
 	
 	return g_mixers[mixerId]->setVolume(volume);
-}
-
-aalError setMixerParent(MixerId mixerId, MixerId parentId) {
-	
-	AAL_ENTRY
-	
-	if(mixerId == parentId || !g_mixers.isValid(mixerId) || !g_mixers.isValid(parentId)) {
-		return AAL_ERROR_HANDLE;
-	}
-	
-	LogDebug("SetMixerParent " << mixerId.handleData() << " parent=" << parentId.handleData());
-	
-	return g_mixers[mixerId]->setParent(g_mixers[parentId]);
 }
 
 // Mixer control
