@@ -648,7 +648,7 @@ SourcedSample samplePlay(SampleHandle s_id, const Channel & channel, unsigned pl
 	return source->getId();
 }
 
-void sampleStop(SourcedSample & sourceId) {
+void sampleStop(SourcedSample sourceId) {
 	
 	AAL_ENTRY_VOID
 	
@@ -658,8 +658,6 @@ void sampleStop(SourcedSample & sourceId) {
 	}
 	
 	LogDebug("SampleStop " << source->getSample()->getName());
-	
-	sourceId.clearSource();
 	
 	source->stop();
 }
