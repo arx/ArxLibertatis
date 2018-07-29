@@ -131,6 +131,15 @@ bool isSamplePlaying(SourcedSample sourceId);
 SourcedSample samplePlay(SampleHandle sampleHandle, const Channel & channel, unsigned play_count = 1);
 aalError sampleStop(SourcedSample & sourceId);
 
+struct SourceInfo {
+	SourceHandle source;
+	SourceStatus status;
+	SampleHandle sample;
+	std::string sampleName;
+};
+
+aalError getSourceInfos(std::vector<SourceInfo> & infos);
+
 // Ambiance
 
 aalError setAmbianceType(AmbianceId ambianceId, PlayingAmbianceType type);

@@ -651,6 +651,25 @@ aalError sampleStop(SourcedSample & sourceId) {
 	return source->stop();
 }
 
+aalError getSourceInfos(std::vector<SourceInfo> & infos) {
+	AAL_ENTRY
+	
+	for(audio::Backend::source_iterator p = audio::backend->sourcesBegin(); p != audio::backend->sourcesEnd(); ++p) {
+		if(*p) {
+			audio::Source *s = *p;
+			SourceInfo si;
+			si.source = s->getId().source();
+			si.status = s->getStatus();
+			si.sample = s->getId().getSampleId();
+			si.sampleName = s->getSample()->getName().string();
+			infos.push_back(si);
+		}
+	}
+	
+	return AAL_OK;
+}
+
+
 // Ambiance setup
 
 aalError setAmbianceType(AmbianceId ambianceId, PlayingAmbianceType type) {
