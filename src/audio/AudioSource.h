@@ -51,12 +51,6 @@ public:
 		friend class Source;
 	};
 	
-	enum Status {
-		Idle,
-		Playing,
-		Paused
-	};
-	
 	/*!
 	 * Set the volume of this source and update the volume calculated from the sources mixers.
 	 * \param volume The new source volume. The volume will be clamped to the range [0,1].
@@ -99,7 +93,7 @@ public:
 	SourcedSample getId() const { return m_id; }
 	Sample * getSample() const { return m_sample; }
 	const Channel & getChannel() const { return m_channel; }
-	Status getStatus() const { return status; }
+	SourceStatus getStatus() const { return status; }
 	bool isPlaying() const { return status == Playing; }
 	bool isIdle() const { return status == Idle; }
 	
@@ -120,7 +114,7 @@ protected:
 	Channel m_channel;
 	
 	Sample * m_sample;
-	Status status;
+	SourceStatus status;
 	
 	size_t time; // Elapsed 'time'
 	
@@ -145,11 +139,5 @@ private:
 };
 
 } // namespace audio
-
-namespace arx {
-namespace debug {
-std::stringstream &operator <<(std::stringstream & s, const audio::Source::Status val);
-} // namespace debug
-} // namespace arx
 
 #endif // ARX_AUDIO_AUDIOSOURCE_H

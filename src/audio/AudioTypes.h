@@ -191,6 +191,12 @@ struct Channel {
 	SourceFalloff falloff;
 };
 
+enum SourceStatus {
+	Idle,
+	Playing,
+	Paused
+};
+
 } // namespace audio
 
 #endif // ARX_AUDIO_AUDIOTYPES_H
