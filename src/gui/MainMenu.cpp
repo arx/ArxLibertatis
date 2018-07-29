@@ -606,15 +606,14 @@ public:
 					ss << " (" << aspect.x << ':' << aspect.y << ')';
 				}
 				
-				m_resolutionSlider->AddText(new TextWidget(hFontControls, ss.str()));
+				m_resolutionSlider->addEntry(ss.str());
 				if(mode.resolution == config.video.resolution) {
 					m_resolutionSlider->selectLast();
 				}
 				
 			}
 			
-			std::string desktop = getLocalised("system_menus_options_video_resolution_desktop", "Desktop");
-			m_resolutionSlider->AddText(new TextWidget(hFontControls, desktop));
+			m_resolutionSlider->addEntry(getLocalised("system_menus_options_video_resolution_desktop", "Desktop"));
 			if(config.video.resolution == Vec2i_ZERO) {
 				m_resolutionSlider->selectLast();
 			}
@@ -647,16 +646,13 @@ public:
 			std::string label = getLocalised("system_menus_options_video_vsync", "VSync");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedVSync, this, _1, _2);
-			label = getLocalised("system_menus_options_video_vsync_off", "Disabled");
-			cb->AddText(new TextWidget(hFontMenu, label));
+			cb->addEntry(getLocalised("system_menus_options_video_vsync_off", "Disabled"));
 			if(benchmark::isEnabled()) {
 				cb->setValue(0);
 				cb->setEnabled(false);
 			} else {
-				label = getLocalised("system_menus_options_video_vsync_on", "Enabled");
-				cb->AddText(new TextWidget(hFontMenu, label));
-				label = getLocalised("system_menus_options_video_vsync_auto", "Adaptive");
-				cb->AddText(new TextWidget(hFontMenu, label));
+				cb->addEntry(getLocalised("system_menus_options_video_vsync_on", "Enabled"));
+				cb->addEntry(getLocalised("system_menus_options_video_vsync_auto", "Adaptive"));
 				cb->setValue(config.video.vsync < 0 ? 2 : config.video.vsync);
 			}
 			addCenter(cb);
@@ -666,16 +662,15 @@ public:
 			std::string label = getLocalised("system_menus_options_video_fps_limit", "FPS Limit");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFPSLimit, this, _1, _2);
-			label = getLocalised("system_menus_options_video_vsync_off", "Disabled");
-			cb->AddText(new TextWidget(hFontMenu, label));
+			cb->addEntry(getLocalised("system_menus_options_video_vsync_off", "Disabled"));
 			if(benchmark::isEnabled()) {
 				cb->setValue(0);
 				cb->setEnabled(false);
 			} else {
-				cb->AddText(new TextWidget(hFontMenu, "60"));
-				cb->AddText(new TextWidget(hFontMenu, "120"));
-				cb->AddText(new TextWidget(hFontMenu, "240"));
-				cb->AddText(new TextWidget(hFontMenu, "480"));
+				cb->addEntry("60");
+				cb->addEntry("120");
+				cb->addEntry("240");
+				cb->addEntry("480");
 				if(config.video.fpsLimit == 0) {
 					cb->setValue(0);
 				} else if(config.video.fpsLimit == 60) {
@@ -687,8 +682,7 @@ public:
 				} else if(config.video.fpsLimit == 480) {
 					cb->setValue(4);
 				} else {
-					std::string text = boost::lexical_cast<std::string>(config.video.fpsLimit);
-					cb->AddText(new TextWidget(hFontMenu, text));
+					cb->addEntry(boost::lexical_cast<std::string>(config.video.fpsLimit));
 					cb->setValue(5);
 				}
 			}
@@ -841,17 +835,11 @@ public:
 			std::string label = getLocalised("system_menus_options_video_renderer", "Renderer");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			slider->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedRenderer, this, _1, _2);
-			{
-				TextWidget * txt = new TextWidget(hFontMenu, "Auto-Select", Vec2f_ZERO);
-				slider->AddText(txt);
+			slider->addEntry("Auto-Select");
+			slider->selectLast();
+			slider->addEntry("OpenGL");
+			if(config.video.renderer == "OpenGL") {
 				slider->selectLast();
-			}
-			{
-				TextWidget * txt = new TextWidget(hFontMenu, "OpenGL", Vec2f_ZERO);
-				slider->AddText(txt);
-				if(config.video.renderer == "OpenGL") {
-					slider->selectLast();
-				}
 			}
 			addCenter(slider);
 		}
@@ -862,12 +850,9 @@ public:
 			std::string label = getLocalised("system_menus_options_detail");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedQuality, this, _1, _2);
-			label = getLocalised("system_menus_options_video_texture_low");
-			cb->AddText(new TextWidget(hFontMenu, label));
-			label = getLocalised("system_menus_options_video_texture_med");
-			cb->AddText(new TextWidget(hFontMenu, label));
-			label = getLocalised("system_menus_options_video_texture_high");
-			cb->AddText(new TextWidget(hFontMenu, label));
+			cb->addEntry(getLocalised("system_menus_options_video_texture_low"));
+			cb->addEntry(getLocalised("system_menus_options_video_texture_med"));
+			cb->addEntry(getLocalised("system_menus_options_video_texture_high"));
 			cb->setValue(config.video.levelOfDetail);
 			addCenter(cb);
 		}
@@ -901,16 +886,13 @@ public:
 			                                 "Alpha Cutout AA");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedAlphaCutoutAntialiasing, this, _1, _2);
-			label = getLocalised("system_menus_options_video_alpha_cutout_antialising_off", "Disabled");
-			cb->AddText(new TextWidget(hFontMenu, label));
+			cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_off", "Disabled"));
 			Renderer::AlphaCutoutAntialising maxAA = GRenderer->getMaxSupportedAlphaCutoutAntialiasing();
 			if(maxAA >= Renderer::FuzzyAlphaCutoutAA) {
-				label = getLocalised("system_menus_options_video_alpha_cutout_antialising_fuzzy", "Fuzzy");
-				cb->AddText(new TextWidget(hFontMenu, label));
+				cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_fuzzy", "Fuzzy"));
 			}
 			if(maxAA >= Renderer::CrispAlphaCutoutAA) {
-				label = getLocalised("system_menus_options_video_alpha_cutout_antialising_crisp", "Crisp");
-				cb->AddText(new TextWidget(hFontMenu, label));
+				cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_crisp", "Crisp"));
 			}
 			m_alphaCutoutAntialiasingCycleText = cb;
 			setAlphaCutoutAntialisingState();
@@ -922,8 +904,7 @@ public:
 			                                 "Anisotropic filtering");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedMaxAnisotropy, this, _1, _2);
-			label = getLocalised("system_menus_options_video_filter_anisotropic_off", "Disabled");
-			cb->AddText(new TextWidget(hFontMenu, label));
+			cb->addEntry(getLocalised("system_menus_options_video_filter_anisotropic_off", "Disabled"));
 			int maxAnisotropy = int(GRenderer->getMaxSupportedAnisotropy());
 			int selected = 0;
 			if(maxAnisotropy > 1) {
@@ -935,7 +916,7 @@ public:
 					}
 					oss.str(std::string());
 					oss << 'x' << anisotropy;
-					cb->AddText(new TextWidget(hFontMenu, oss.str()));
+					cb->addEntry(oss.str());
 					if(config.video.maxAnisotropicFiltering == anisotropy) {
 						selected = i;
 					}
@@ -944,7 +925,7 @@ public:
 					   && config.video.maxAnisotropicFiltering <= maxAnisotropy) {
 						oss.str(std::string());
 						oss << 'x' << config.video.maxAnisotropicFiltering;
-						cb->AddText(new TextWidget(hFontMenu, oss.str()));
+						cb->addEntry(oss.str());
 						selected = ++i;
 					}
 					if(anisotropy == maxAnisotropy) {
@@ -952,8 +933,7 @@ public:
 						break;
 					}
 				}
-				label = getLocalised("system_menus_options_video_filter_anisotropic_max", "Unlimited");
-				cb->AddText(new TextWidget(hFontMenu, label));
+				cb->addEntry(getLocalised("system_menus_options_video_filter_anisotropic_max", "Unlimited"));
 				if(config.video.maxAnisotropicFiltering > maxAnisotropy) {
 					selected = i;
 				}
@@ -1078,14 +1058,11 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_interface_cinematic_widescreen_mode",
 			                                 "Cinematics mode");
-			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
 			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCinematicMode, this, _1, _2);
-			label = getLocalised("system_menus_options_interface_letterbox", "Letterbox");
-			cb->AddText(new TextWidget(hFontControls, label));
-			label = getLocalised("system_menus_options_interface_hard_edges", "Hard Edges");
-			cb->AddText(new TextWidget(hFontControls, label));
-			label = getLocalised("system_menus_options_interface_fade_edges", "Fade Edges");
-			cb->AddText(new TextWidget(hFontControls, label));
+			cb->addEntry(getLocalised("system_menus_options_interface_letterbox", "Letterbox"));
+			cb->addEntry(getLocalised("system_menus_options_interface_hard_edges", "Hard Edges"));
+			cb->addEntry(getLocalised("system_menus_options_interface_fade_edges", "Fade Edges"));
 			cb->setValue(config.interface.cinematicWidescreenMode);
 			addCenter(cb);
 		}
@@ -1147,10 +1124,8 @@ public:
 			std::string label = getLocalised("system_menus_options_interface_scale_filter", "Scale filter");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedScaleFilter, this, _1, _2);
-			label = getLocalised("system_menus_options_video_filter_nearest", "Nearest");
-			cb->AddText(new TextWidget(hFontMenu, label));
-			label = getLocalised("system_menus_options_video_filter_bilinear", "Bilinear");
-			cb->AddText(new TextWidget(hFontMenu, label));
+			cb->addEntry(getLocalised("system_menus_options_video_filter_nearest", "Nearest"));
+			cb->addEntry(getLocalised("system_menus_options_video_filter_bilinear", "Bilinear"));
 			cb->setValue(config.interface.scaleFilter);
 			addCenter(cb);
 		}
@@ -1167,18 +1142,12 @@ public:
 			std::string label = getLocalised("system_menus_options_interface_font_weight", "Font weight");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedFontWeight, this, _1, _2);
-			label = getLocalised("system_menus_options_interface_font_weight_0", "Thin");
-			cb->AddText(new TextWidget(hFontMenu, label));
-			label = getLocalised("system_menus_options_interface_font_weight_1", "Light");
-			cb->AddText(new TextWidget(hFontMenu, label));
-			label = getLocalised("system_menus_options_interface_font_weight_2", "Normal");
-			cb->AddText(new TextWidget(hFontMenu, label));
-			label = getLocalised("system_menus_options_interface_font_weight_3", "Medium");
-			cb->AddText(new TextWidget(hFontMenu, label));
-			label = getLocalised("system_menus_options_interface_font_weight_4", "Bold");
-			cb->AddText(new TextWidget(hFontMenu, label));
-			label = getLocalised("system_menus_options_interface_font_weight_5", "Heavy");
-			cb->AddText(new TextWidget(hFontMenu, label));
+			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_0", "Thin"));
+			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_1", "Light"));
+			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_2", "Normal"));
+			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_3", "Medium"));
+			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_4", "Bold"));
+			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_5", "Heavy"));
 			cb->setValue(config.interface.fontWeight);
 			addCenter(cb);
 		}
@@ -1265,13 +1234,12 @@ public:
 		// Audio backend selection
 		{
 			std::string label = getLocalised("system_menus_options_audio_device", "Device");
-			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
 			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedDevice, this, _1, _2);
-			slider->AddText(new TextWidget(hFontControls, "Default"));
+			slider->addEntry("Default");
 			slider->selectLast();
 			BOOST_FOREACH(const std::string & device, audio::getDevices()) {
-				TextWidget * txt = new TextWidget(hFontControls, device);
-				slider->AddText(txt);
+				slider->addEntry(device);
 				if(config.audio.device == device) {
 					slider->selectLast();
 				}
@@ -1341,15 +1309,15 @@ public:
 			std::string label = getLocalised("system_menus_options_audio_hrtf", "Virtual surround");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedHRTF, this, _1, _2);
-			slider->AddText(new TextWidget(hFontMenu, "Disabled"));
+			slider->addEntry("Disabled");
 			if(config.audio.hrtf == audio::HRTFDisable || hrtf == audio::HRTFForbidden) {
 				slider->selectLast();
 			}
-			slider->AddText(new TextWidget(hFontMenu, "Automatic"));
+			slider->addEntry("Automatic");
 			if(config.audio.hrtf == audio::HRTFDefault) {
 				slider->selectLast();
 			}
-			slider->AddText(new TextWidget(hFontMenu, "Enabled"));
+			slider->addEntry("Enabled");
 			if(config.audio.hrtf == audio::HRTFEnable || hrtf == audio::HRTFRequired) {
 				slider->selectLast();
 			}
@@ -1449,12 +1417,9 @@ public:
 			std::string label = getLocalised("system_menus_options_auto_ready_weapon");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoReadyWeapon, this, _1, _2);
-			label = getLocalised("system_menus_options_auto_ready_weapon_off", "Disabled");
-			cb->AddText(new TextWidget(hFontMenu, label));
-			label = getLocalised("system_menus_options_auto_ready_weapon_enemies", "Enemies");
-			cb->AddText(new TextWidget(hFontMenu, label));
-			label = getLocalised("system_menus_options_auto_ready_weapon_always", "Always");
-			cb->AddText(new TextWidget(hFontMenu, label));
+			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_off", "Disabled"));
+			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_enemies", "Enemies"));
+			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_always", "Always"));
 			cb->setValue(int(config.input.autoReadyWeapon));
 			addCenter(cb);
 		}
@@ -1528,12 +1493,9 @@ public:
 			std::string label = getLocalised("system_menus_quick_level_transition", "Quick level transition");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedQuickLevelTransition, this, _1, _2);
-			label = getLocalised("system_menus_quick_level_transition_off", "Disabled");
-			cb->AddText(new TextWidget(hFontMenu, label));
-			label = getLocalised("system_menus_quick_level_transition_jump", "Jump");
-			cb->AddText(new TextWidget(hFontMenu, label));
-			label = getLocalised("system_menus_quick_level_transition_immediate", "Immediate");
-			cb->AddText(new TextWidget(hFontMenu, label));
+			cb->addEntry(getLocalised("system_menus_quick_level_transition_off", "Disabled"));
+			cb->addEntry(getLocalised("system_menus_quick_level_transition_jump", "Jump"));
+			cb->addEntry(getLocalised("system_menus_quick_level_transition_immediate", "Immediate"));
 			cb->setValue(int(config.input.quickLevelTransition));
 			addCenter(cb);
 		}

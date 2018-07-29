@@ -33,8 +33,9 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, const std::string & label)
+CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, const std::string & label, Font * entryFont)
 	: m_label(new TextWidget(font, label, Vec2f_ZERO))
+	, m_font(entryFont ? entryFont : font)
 	, m_content(10 * size.y / 2, size.y)
 	, m_value(0)
 {
@@ -72,7 +73,9 @@ void CycleTextWidget::selectLast() {
 	m_value = int(vText.size() - 1);
 }
 
-void CycleTextWidget::AddText(TextWidget * widget) {
+void CycleTextWidget::addEntry(const std::string & label) {
+	
+	TextWidget * widget = new TextWidget(m_font, label);
 	
 	widget->forceDisplay(TextWidget::Dynamic);
 	widget->setEnabled(m_enabled);
