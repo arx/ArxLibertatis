@@ -119,7 +119,7 @@ void mixerResume(MixerId mixerId);
 
 // Sample
 
-aalError setSampleVolume(SourcedSample sourceId, float volume);
+void setSampleVolume(SourcedSample sourceId, float volume);
 aalError setSamplePitch(SourcedSample sourceId, float pitch);
 aalError setSamplePosition(SourcedSample sourceId, const Vec3f & position);
 
