@@ -231,52 +231,6 @@ HRTFStatus getHRTFStatus() {
 	return backend->getHRTFStatus();
 }
 
-aalError update() {
-	
-	ARX_PROFILE_FUNC();
-	
-	AAL_ENTRY
-	
-	session_time = platform::getTime();
-	
-	// Update sources
-	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd();) {
-		Source * source = *p;
-		if(source && (source->update(), source->isIdle())) {
-			p = backend->deleteSource(p);
-		} else {
-			++p;
-		}
-	}
-	
-	// Update ambiances
-	for(AmbianceList::iterator i = g_ambiances.begin(); i != g_ambiances.end();) {
-		Ambiance * ambiance = *i;
-		if(ambiance) {
-			ambiance->update();
-			if(ambiance->getChannel().flags & FLAG_AUTOFREE && ambiance->isIdle()) {
-				i = g_ambiances.remove(i);
-			} else {
-				++i;
-			}
-		} else {
-			++i;
-		}
-	}
-	
-	// Update samples
-	for(SampleList::iterator i = g_samples.begin(); i != g_samples.end();) {
-		Sample * sample = *i;
-		if(sample && sample->isReferenced() < 1) {
-			i = g_samples.remove(i);
-		} else {
-			++i;
-		}
-	}
-	
-	return AAL_OK;
-}
-
 // Resource creation
 
 static MixerId createMixer_common() {
@@ -793,6 +747,8 @@ static const PlatformDuration ARX_SOUND_UPDATE_INTERVAL = PlatformDurationMs(100
 
 class SoundUpdateThread : public StoppableThread {
 	
+	aalError update();
+	
 	void run() {
 		
 		while(!isStopRequested()) {
@@ -801,12 +757,59 @@ class SoundUpdateThread : public StoppableThread {
 			
 			sleep(ARX_SOUND_UPDATE_INTERVAL);
 			
-			audio::update();
+			update();
 		}
 		
 	}
 	
 };
+
+aalError SoundUpdateThread::update() {
+	
+	ARX_PROFILE_FUNC();
+	
+	AAL_ENTRY
+	
+	session_time = platform::getTime();
+	
+	// Update sources
+	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd();) {
+		Source * source = *p;
+		if(source && (source->update(), source->isIdle())) {
+			p = backend->deleteSource(p);
+		} else {
+			++p;
+		}
+	}
+	
+	// Update ambiances
+	for(AmbianceList::iterator i = g_ambiances.begin(); i != g_ambiances.end();) {
+		Ambiance * ambiance = *i;
+		if(ambiance) {
+			ambiance->update();
+			if(ambiance->getChannel().flags & FLAG_AUTOFREE && ambiance->isIdle()) {
+				i = g_ambiances.remove(i);
+			} else {
+				++i;
+			}
+		} else {
+			++i;
+		}
+	}
+	
+	// Update samples
+	for(SampleList::iterator i = g_samples.begin(); i != g_samples.end();) {
+		Sample * sample = *i;
+		if(sample && sample->isReferenced() < 1) {
+			i = g_samples.remove(i);
+		} else {
+			++i;
+		}
+	}
+	
+	return AAL_OK;
+}
+
 
 static SoundUpdateThread * updateThread = NULL;
 

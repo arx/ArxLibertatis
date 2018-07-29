@@ -83,7 +83,6 @@ aalError setReverbEnabled(bool enable);
 bool isReverbSupported();
 aalError setHRTFEnabled(HRTFAttribute enable);
 HRTFStatus getHRTFStatus();
-aalError update();
 
 // Resource
 
