@@ -648,20 +648,20 @@ SourcedSample samplePlay(SampleHandle s_id, const Channel & channel, unsigned pl
 	return source->getId();
 }
 
-aalError sampleStop(SourcedSample & sourceId) {
+void sampleStop(SourcedSample & sourceId) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	Source * source = backend->getSource(sourceId);
 	if(!source) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
 	LogDebug("SampleStop " << source->getSample()->getName());
 	
 	sourceId.clearSource();
 	
-	return source->stop();
+	source->stop();
 }
 
 aalError getSourceInfos(std::vector<SourceInfo> & infos) {
