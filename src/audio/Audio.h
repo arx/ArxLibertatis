@@ -90,7 +90,7 @@ aalError update();
 MixerId createMixer();
 MixerId createMixer(MixerId parent);
 SampleHandle createSample(const res::path & name);
-AmbianceId createAmbiance(const res::path & name);
+AmbianceId createAmbiance(const res::path & name, PlayingAmbianceType type);
 EnvId createEnvironment(const res::path & name);
 void deleteSample(SampleHandle sampleHandle);
 void deleteAmbiance(AmbianceId ambianceId);
@@ -142,7 +142,6 @@ aalError getSourceInfos(std::vector<SourceInfo> & infos);
 
 // Ambiance
 
-aalError setAmbianceType(AmbianceId ambianceId, PlayingAmbianceType type);
 aalError setAmbianceVolume(AmbianceId ambianceId, float volume);
 
 aalError getAmbianceName(AmbianceId ambianceId, res::path & name);

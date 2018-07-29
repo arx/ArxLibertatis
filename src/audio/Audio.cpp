@@ -332,7 +332,7 @@ SampleHandle createSample(const res::path & name) {
 	return sampleHandle;
 }
 
-AmbianceId createAmbiance(const res::path & name) {
+AmbianceId createAmbiance(const res::path & name, PlayingAmbianceType type) {
 	
 	AAL_ENTRY_V(AmbianceId())
 	
@@ -342,6 +342,9 @@ AmbianceId createAmbiance(const res::path & name) {
 		delete ambiance;
 		LogError << "Ambiance " << name << " not found";
 	}
+	
+	LogDebug("createAmbiance " << ambiance->getName() << " " << type);
+	ambiance->setType(type);
 	
 	return a_id;
 }
@@ -682,21 +685,6 @@ aalError getSourceInfos(std::vector<SourceInfo> & infos) {
 
 
 // Ambiance setup
-
-aalError setAmbianceType(AmbianceId ambianceId, PlayingAmbianceType type) {
-	
-	AAL_ENTRY
-	
-	if(!g_ambiances.isValid(ambianceId)) {
-		return AAL_ERROR_HANDLE;
-	}
-	
-	LogDebug("SetAmbianceUserData " << g_ambiances[ambianceId]->getName() << " " << type);
-	
-	g_ambiances[ambianceId]->setType(type);
-	
-	return AAL_OK;
-}
 
 aalError setAmbianceVolume(AmbianceId ambianceId, float volume) {
 	
