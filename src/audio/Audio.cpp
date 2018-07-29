@@ -432,13 +432,13 @@ AmbianceId getNextAmbiance(AmbianceId ambianceId) {
 
 // Listener settings
 
-aalError setUnitFactor(float factor) {
+void setUnitFactor(float factor) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	LogDebug("SetUnitFactor " << factor);
 	
-	return backend->setUnitFactor(factor);
+	backend->setUnitFactor(factor);
 }
 
 aalError setRolloffFactor(float factor) {
