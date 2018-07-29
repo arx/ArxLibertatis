@@ -148,9 +148,7 @@ aalError getAmbianceType(AmbianceId ambianceId, PlayingAmbianceType * type);
 aalError getAmbianceVolume(AmbianceId ambianceId, float & volume);
 bool isAmbianceLooped(AmbianceId ambianceId);
 
-//! play_count == 0 -> infinite loop, play_count == 1 -> play once
-void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop = false,
-                      PlatformDuration fadeInterval = 0);
+void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop = false, PlatformDuration fadeInterval = 0);
 void ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval = 0);
 
 
