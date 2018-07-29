@@ -441,13 +441,13 @@ void setUnitFactor(float factor) {
 	backend->setUnitFactor(factor);
 }
 
-aalError setRolloffFactor(float factor) {
+void setRolloffFactor(float factor) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	LogDebug("SetRolloffFactor " << factor);
 	
-	return backend->setRolloffFactor(factor);
+	backend->setRolloffFactor(factor);
 }
 
 aalError setListenerPosition(const Vec3f & position) {

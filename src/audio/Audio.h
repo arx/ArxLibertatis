@@ -104,7 +104,7 @@ AmbianceId getNextAmbiance(AmbianceId ambianceId = AmbianceId());
 // Listener
 
 void setUnitFactor(float factor);
-aalError setRolloffFactor(float factor);
+void setRolloffFactor(float factor);
 aalError setListenerPosition(const Vec3f & position);
 aalError setListenerDirection(const Vec3f & front, const Vec3f & up);
 aalError setListenerEnvironment(EnvId environmentId);
