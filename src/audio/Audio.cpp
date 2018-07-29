@@ -507,17 +507,17 @@ void mixerStop(MixerId mixerId) {
 	g_mixers[mixerId]->stop();
 }
 
-aalError mixerPause(MixerId mixerId) {
+void mixerPause(MixerId mixerId) {
 	
-	AAL_ENTRY;
+	AAL_ENTRY_VOID;
 	
 	if(!g_mixers.isValid(mixerId)) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
 	LogDebug("MixerPause " << mixerId.handleData());
 	
-	return g_mixers[mixerId]->pause();
+	g_mixers[mixerId]->pause();
 }
 
 aalError mixerResume(MixerId mixerId) {

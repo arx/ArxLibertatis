@@ -114,7 +114,7 @@ void setListenerEnvironment(EnvId environmentId);
 void setMixerVolume(MixerId mixerId, float volume);
 
 void mixerStop(MixerId mixerId);
-aalError mixerPause(MixerId mixerId);
+void mixerPause(MixerId mixerId);
 aalError mixerResume(MixerId mixerId);
 
 // Sample
