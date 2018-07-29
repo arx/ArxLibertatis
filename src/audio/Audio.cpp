@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 #include "platform/Lock.h"
+#include "platform/Thread.h"
 #include "platform/Time.h"
 #include "platform/profiler/Profiler.h"
 
@@ -786,6 +787,46 @@ void ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval) {
 	LogDebug("AmbianceStop " << g_ambiances[ambianceId]->getName() << " " << toMs(fadeInterval));
 	
 	g_ambiances[ambianceId]->stop(fadeInterval);
+}
+
+static const PlatformDuration ARX_SOUND_UPDATE_INTERVAL = PlatformDurationMs(100);
+
+class SoundUpdateThread : public StoppableThread {
+	
+	void run() {
+		
+		while(!isStopRequested()) {
+			
+			ARX_PROFILE("SoundUpdate");
+			
+			sleep(ARX_SOUND_UPDATE_INTERVAL);
+			
+			audio::update();
+		}
+		
+	}
+	
+};
+
+static SoundUpdateThread * updateThread = NULL;
+
+void threadStart() {
+	
+	arx_assert(!updateThread);
+	
+	updateThread = new SoundUpdateThread();
+	updateThread->setThreadName("Sound Update");
+	updateThread->start();
+}
+
+void threadStop() {
+	
+	if(!updateThread) {
+		return;
+	}
+	
+	updateThread->stop();
+	delete updateThread, updateThread = NULL;
 }
 
 } // namespace audio

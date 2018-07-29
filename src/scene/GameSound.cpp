@@ -100,7 +100,6 @@ struct PlayingAmbiance {
 	s32 type;
 };
 
-static const PlatformDuration ARX_SOUND_UPDATE_INTERVAL = PlatformDurationMs(100);
 static const unsigned long MAX_VARIANTS(5);
 static const PlatformDuration AMBIANCE_FADE_TIME = PlatformDurationMs(2000);
 static const float ARX_SOUND_UNIT_FACTOR(0.01F);
@@ -190,8 +189,6 @@ static void ARX_SOUND_CreateCollisionMaps();
 static void ARX_SOUND_CreateMaterials();
 static void ARX_SOUND_CreatePresenceMap();
 static float GetSamplePresenceFactor(const res::path & name);
-static void ARX_SOUND_LaunchUpdateThread();
-static void ARX_SOUND_KillUpdateThread();
 
 bool ARX_SOUND_Init() {
 	
@@ -238,7 +235,7 @@ bool ARX_SOUND_Init() {
 	audio::setUnitFactor(ARX_SOUND_UNIT_FACTOR);
 	audio::setRolloffFactor(ARX_SOUND_ROLLOFF_FACTOR);
 	
-	ARX_SOUND_LaunchUpdateThread();
+	audio::threadStart();
 	
 	// Load samples
 	ARX_SOUND_CreateStaticSamples();
@@ -272,7 +269,7 @@ void ARX_SOUND_Release() {
 	ARX_SOUND_ReleaseStaticSamples();
 	collisionMaps.clear();
 	g_presenceFactors.clear();
-	ARX_SOUND_KillUpdateThread();
+	audio::threadStop();
 	audio::clean();
 	g_soundInitialized = false;
 }
@@ -1232,42 +1229,4 @@ static float GetSamplePresenceFactor(const res::path & name) {
 	}
 	
 	return 1.f;
-}
-
-class SoundUpdateThread : public StoppableThread {
-	
-	void run() {
-		
-		while(!isStopRequested()) {
-			
-			ARX_PROFILE("SoundUpdate");
-			
-			sleep(ARX_SOUND_UPDATE_INTERVAL);
-			
-			audio::update();
-		}
-		
-	}
-	
-};
-
-static SoundUpdateThread * updateThread = NULL;
-
-static void ARX_SOUND_LaunchUpdateThread() {
-	
-	arx_assert(!updateThread);
-	
-	updateThread = new SoundUpdateThread();
-	updateThread->setThreadName("Sound Update");
-	updateThread->start();
-}
-
-static void ARX_SOUND_KillUpdateThread() {
-	
-	if(!updateThread) {
-		return;
-	}
-	
-	updateThread->stop();
-	delete updateThread, updateThread = NULL;
 }
