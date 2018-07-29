@@ -494,17 +494,17 @@ void setMixerVolume(MixerId mixerId, float volume) {
 
 // Mixer control
 
-aalError mixerStop(MixerId mixerId) {
+void mixerStop(MixerId mixerId) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	if(!g_mixers.isValid(mixerId)) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
 	LogDebug("MixerStop " << mixerId.handleData());
 	
-	return g_mixers[mixerId]->stop();
+	g_mixers[mixerId]->stop();
 }
 
 aalError mixerPause(MixerId mixerId) {
