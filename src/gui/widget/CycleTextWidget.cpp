@@ -41,7 +41,6 @@ CycleTextWidget::CycleTextWidget() {
 	vText.clear();
 
 	iPos = 0;
-	iOldPos = -1;
 
 	m_rect.left   = 0;
 	m_rect.top    = 0;
@@ -123,10 +122,6 @@ bool CycleTextWidget::click() {
 	}
 	
 	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
-	
-	if(iOldPos < 0) {
-		iOldPos = iPos;
-	}
 	
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
 	

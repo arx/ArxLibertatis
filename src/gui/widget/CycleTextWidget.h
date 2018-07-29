@@ -35,8 +35,6 @@ public:
 	
 	void setValue(int value) { iPos = value; }
 	int getValue() const { return iPos; }
-	void setOldValue(int value) { iOldPos = value; }
-	int getOldValue() const { return iOldPos; }
 	
 	void selectLast();
 	
@@ -62,7 +60,6 @@ private:
 	ButtonWidget * pRightButton;
 	std::vector<TextWidget *> vText;
 	int iPos;
-	int iOldPos;
 	
 };
 
