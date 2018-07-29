@@ -624,7 +624,7 @@ SourcedSample samplePlay(SampleHandle s_id, const Channel & channel, unsigned pl
 		return SourcedSample(SourceHandle(), s_id);
 	}
 	
-	if(aalError error = source->play(play_count)) {
+	if(source->play(play_count)) {
 		return SourcedSample(SourceHandle(), s_id);
 	}
 	
