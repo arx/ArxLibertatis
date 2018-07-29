@@ -35,7 +35,8 @@ class CycleTextWidget: public Widget {
 	
 public:
 	
-	explicit CycleTextWidget(const Vec2f & size, Font * font, const std::string & label);
+	explicit CycleTextWidget(const Vec2f & size, Font * font, const std::string & label,
+	                         Font * entryFont = NULL);
 	virtual ~CycleTextWidget();
 	
 	void setValue(int value) { m_value = value; }
@@ -43,7 +44,7 @@ public:
 	
 	void selectLast();
 	
-	void AddText(TextWidget * text);
+	void addEntry(const std::string & label);
 	
 	void Move(const Vec2f & offset);
 	bool click();
@@ -64,6 +65,7 @@ private:
 	TextWidget * m_label;
 	ButtonWidget * m_left;
 	ButtonWidget * m_right;
+	Font * m_font;
 	std::vector<TextWidget *> vText;
 	Rectf m_content;
 	
