@@ -82,6 +82,8 @@ public:
 	
 	MENUSTATE id() const { return m_id; }
 	
+	void setSize(const Vec2f & size) { m_content = m_rect = Rectf(size.x, size.y); }
+	
 protected:
 	
 	enum Anchor {
