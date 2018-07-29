@@ -373,17 +373,15 @@ void deleteSample(SampleHandle sampleHandle) {
 	g_samples.remove(sampleHandle);
 }
 
-aalError deleteAmbiance(AmbianceId ambianceId) {
+void deleteAmbiance(AmbianceId ambianceId) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	if(!g_ambiances.isValid(ambianceId)) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
 	g_ambiances.remove(ambianceId);
-	
-	return AAL_OK;
 }
 
 AmbianceId getAmbiance(const res::path & name) {
