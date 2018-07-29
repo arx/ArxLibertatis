@@ -516,23 +516,23 @@ void MenuPage::drawDebug() {
 
 
 void MenuPage::reserveTop() {
-	m_content.top = m_rect.top + hFontMenu->getLineHeight() + RATIO_Y(5);
+	m_content.top = m_rect.top + hFontMenu->getLineHeight() + 5 * minSizeRatio();
 }
 
 void MenuPage::reserveBottom() {
-	m_content.bottom = m_rect.bottom - hFontMenu->getLineHeight() - RATIO_Y(5);
+	m_content.bottom = m_rect.bottom - hFontMenu->getLineHeight() - 5 * minSizeRatio();
 }
 
 Vec2f MenuPage::buttonSize(float x, float y) const {
-	return RATIO_2(Vec2f(x, y));
+	return Vec2f(x, y) * minSizeRatio();
 }
 
 Vec2f MenuPage::checkboxSize() const {
-	return Vec2f(m_rect.width(), RATIO_Y(20));
+	return Vec2f(m_rect.width(), 20.f * minSizeRatio());
 }
 
 Vec2f MenuPage::sliderSize() const {
-	return Vec2f(m_rect.width(), RATIO_Y(16));
+	return Vec2f(m_rect.width(), 16.f * minSizeRatio());
 }
 
 void MenuPage::focus() {
