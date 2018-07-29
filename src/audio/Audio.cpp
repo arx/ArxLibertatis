@@ -775,19 +775,17 @@ void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop, Pla
 	g_ambiances[ambianceId]->play(channel, loop, fadeInterval);
 }
 
-aalError ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval) {
+void ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	if(!g_ambiances.isValid(ambianceId)) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
 	LogDebug("AmbianceStop " << g_ambiances[ambianceId]->getName() << " " << toMs(fadeInterval));
 	
 	g_ambiances[ambianceId]->stop(fadeInterval);
-	
-	return AAL_OK;
 }
 
 } // namespace audio
