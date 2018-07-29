@@ -464,17 +464,17 @@ void setListenerDirection(const Vec3f & front, const Vec3f & up) {
 	backend->setListenerOrientation(front, up);
 }
 
-aalError setListenerEnvironment(EnvId environmentId) {
+void setListenerEnvironment(EnvId environmentId) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	if(!g_environments.isValid(environmentId)) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
 	LogDebug("SetListenerEnvironment " << g_environments[environmentId]->name);
 	
-	return backend->setListenerEnvironment(*g_environments[environmentId]);
+	backend->setListenerEnvironment(*g_environments[environmentId]);
 }
 
 // Mixer setup

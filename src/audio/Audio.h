@@ -107,7 +107,7 @@ void setUnitFactor(float factor);
 void setRolloffFactor(float factor);
 void setListenerPosition(const Vec3f & position);
 void setListenerDirection(const Vec3f & front, const Vec3f & up);
-aalError setListenerEnvironment(EnvId environmentId);
+void setListenerEnvironment(EnvId environmentId);
 
 // Mixer
 
