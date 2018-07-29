@@ -240,6 +240,7 @@ MenuWindow::~MenuWindow() {
 }
 
 void MenuWindow::add(MenuPage * page) {
+	page->setSize(RATIO_2(Vec2f(292, 395)));
 	m_pages.push_back(page);
 }
 
@@ -315,10 +316,7 @@ MenuPage::MenuPage(MENUSTATE id)
 	, m_selected(NULL)
 	, m_focused(NULL)
 	, m_disableShortcuts(false)
-{
-	Vec2f scaledSize = RATIO_2(Vec2f(292, 395));
-	m_content = m_rect = Rectf(Vec2f_ZERO, scaledSize.x, scaledSize.y);
-}
+{ }
 
 MenuPage::~MenuPage() { }
 
