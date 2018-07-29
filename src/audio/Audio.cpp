@@ -457,11 +457,11 @@ void setListenerPosition(const Vec3f & position) {
 	backend->setListenerPosition(position);
 }
 
-aalError setListenerDirection(const Vec3f & front, const Vec3f & up) {
+void setListenerDirection(const Vec3f & front, const Vec3f & up) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
-	return backend->setListenerOrientation(front, up);
+	backend->setListenerOrientation(front, up);
 }
 
 aalError setListenerEnvironment(EnvId environmentId) {
