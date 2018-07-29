@@ -154,6 +154,10 @@ void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop = fa
                       PlatformDuration fadeInterval = 0);
 void ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval = 0);
 
+
+void threadStart();
+void threadStop();
+
 } // namespace audio
 
 #endif // ARX_AUDIO_AUDIO_H
