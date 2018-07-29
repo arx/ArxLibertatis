@@ -40,7 +40,7 @@ CycleTextWidget::CycleTextWidget() {
 
 	vText.clear();
 
-	iPos = 0;
+	m_value = 0;
 
 	m_rect.left   = 0;
 	m_rect.top    = 0;
@@ -58,7 +58,7 @@ CycleTextWidget::~CycleTextWidget() {
 }
 
 void CycleTextWidget::selectLast() {
-	iPos = vText.size() - 1;
+	m_value = int(vText.size() - 1);
 }
 
 void CycleTextWidget::AddText(TextWidget * _pText) {
@@ -106,9 +106,9 @@ void CycleTextWidget::Move(const Vec2f & offset) {
 void CycleTextWidget::hover() {
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow) || GInput->getMouseWheelDir() < 0) {
-		newValue(iPos - 1);
+		newValue(m_value - 1);
 	} else if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow) || GInput->getMouseWheelDir() > 0) {
-		newValue(iPos + 1);
+		newValue(m_value + 1);
 	}
 	
 }
@@ -127,9 +127,9 @@ bool CycleTextWidget::click() {
 	
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
-			newValue(iPos - 1);
+			newValue(m_value - 1);
 		} else {
-			newValue(iPos + 1);
+			newValue(m_value + 1);
 		}
 	}
 	
@@ -154,18 +154,18 @@ void CycleTextWidget::render(bool /* mouseOver */) {
 		pRightButton->render(pRightButton->m_rect.contains(cursor));
 	}
 	
-	if(iPos >= 0 && size_t(iPos) < vText.size() && vText[iPos]) {
-		vText[iPos]->render(vText[iPos]->m_rect.contains(cursor));
+	if(m_value >= 0 && size_t(m_value) < vText.size() && vText[m_value]) {
+		vText[m_value]->render(vText[m_value]->m_rect.contains(cursor));
 	}
 	
 }
 
 void CycleTextWidget::newValue(int value) {
 	
-	iPos = positive_modulo(value, int(vText.size()));
+	m_value = positive_modulo(value, int(vText.size()));
 	
 	if(valueChanged) {
-		valueChanged(iPos, vText[size_t(iPos)]->text());
+		valueChanged(m_value, vText[size_t(m_value)]->text());
 	}
 	
 }
