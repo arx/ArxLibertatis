@@ -520,17 +520,17 @@ void mixerPause(MixerId mixerId) {
 	g_mixers[mixerId]->pause();
 }
 
-aalError mixerResume(MixerId mixerId) {
+void mixerResume(MixerId mixerId) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	if(!g_mixers.isValid(mixerId)) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
 	LogDebug("MixerResume " << mixerId.handleData());
 	
-	return g_mixers[mixerId]->resume();
+	g_mixers[mixerId]->resume();
 }
 
 // Sample setup

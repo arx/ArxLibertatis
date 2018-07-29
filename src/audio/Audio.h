@@ -115,7 +115,7 @@ void setMixerVolume(MixerId mixerId, float volume);
 
 void mixerStop(MixerId mixerId);
 void mixerPause(MixerId mixerId);
-aalError mixerResume(MixerId mixerId);
+void mixerResume(MixerId mixerId);
 
 // Sample
 
