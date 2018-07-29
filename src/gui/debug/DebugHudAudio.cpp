@@ -56,10 +56,7 @@ void debugHud_Audio() {
 	srcInfos.add("src", "status", "smp", "sample path");
 	
 	BOOST_FOREACH(const audio::SourceInfo & si, infos) {
-		srcInfos.add(long(si.source.handleData()),
-					  si.status,
-					  long(si.sample.handleData()),
-					  si.sampleName);
+		srcInfos.add(si.source, si.status, si.sample, si.sampleName);
 	}
 	
 	srcInfos.print();
