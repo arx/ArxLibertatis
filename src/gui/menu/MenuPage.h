@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2016 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2018 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -41,83 +41,74 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_GUI_MENUWIDGETS_H
-#define ARX_GUI_MENUWIDGETS_H
-
-#include <vector>
-#include <string>
+#ifndef ARX_GUI_MENU_MENUPAGE_H
+#define ARX_GUI_MENU_MENUPAGE_H
 
 #include <boost/noncopyable.hpp>
 
-#include "core/TimeTypes.h"
-#include "graphics/Color.h"
-#include "gui/menu/MenuPage.h"
-#include "gui/widget/ButtonWidget.h"
 #include "gui/widget/Widget.h"
 #include "gui/widget/WidgetContainer.h"
-#include "input/InputKey.h"
-#include "math/Vector.h"
 #include "math/Rectangle.h"
-#include "util/HandleType.h"
+#include "math/Vector.h"
 
-class TextureContainer;
-class Font;
-class MenuPage;
-struct SaveGame;
-
-class MenuWindow : private boost::noncopyable {
-	
-private:
-	
-	Vec2f m_pos;
-	Vec2f m_size;
-	float m_initalOffsetX;
-	float m_fadeDistance;
+class MenuPage : private boost::noncopyable {
 	
 public:
 	
-	MenuWindow();
-	virtual ~MenuWindow();
-	
-	void add(MenuPage * page);
-	void Update();
+	explicit MenuPage(MENUSTATE id);
+	virtual ~MenuPage();
+	void Update(Vec2f pos);
 	void Render();
+	void drawDebug();
+	virtual void focus();
+	virtual void init() = 0;
+	void activate(Widget * widget);
+	void unfocus();
 	
-	MENUSTATE currentPageId() const { return m_currentPage ? m_currentPage->id() : Page_None; }
+	float m_rowSpacing;
+	WidgetContainer m_children;
 	
-	void setCurrentPage(MENUSTATE id);
+	MENUSTATE id() const { return m_id; }
 	
-	MenuPage * getPage(MENUSTATE id) const;
+	void setSize(const Vec2f & size) { m_content = m_rect = Rectf(size.x, size.y); }
 	
-	float scroll() { return fAngle; }
-	void setScroll(float scroll) { fAngle = scroll; }
+protected:
+	
+	enum Anchor {
+		TopLeft,
+		TopCenter,
+		TopRight,
+		BottomLeft,
+		BottomCenter,
+		BottomRight
+	};
+	
+	void addCorner(Widget * widget, Anchor anchor);
+	
+	void addCenter(Widget * widget, bool centerX = true);
+	
+	void addBackButton(MENUSTATE page);
+	
+	void reserveTop();
+	void reserveBottom();
+	
+	Vec2f buttonSize(float x, float y) const;
+	Vec2f checkboxSize() const;
+	Vec2f sliderSize() const;
+	
+	Rectf m_rect;
 	
 private:
 	
-	std::vector<MenuPage *> m_pages;
+	Rectf m_content;
 	
-	float fAngle;
+	const MENUSTATE m_id;
 	
-	MenuPage * m_currentPage;
-	
-	TextureContainer * m_background;
-	TextureContainer * m_border;
+	bool m_initialized;
+	Widget * m_selected;
+	Widget * m_focused;
+	bool m_disableShortcuts;
 	
 };
 
-void MenuReInitAll();
-
-void MainMenuDoFrame();
-void Menu2_Close();
-
-
-
-void ARX_MENU_Clicked_QUIT();
-
-void ARX_LoadGame(const SaveGame & save);
-void ARX_QuickLoad();
-void ARX_QuickSave();
-
-bool MENU_NoActiveWindow();
-
-#endif // ARX_GUI_MENUWIDGETS_H
+#endif // ARX_GUI_MENU_MENUPAGE_H
