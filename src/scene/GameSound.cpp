@@ -213,21 +213,15 @@ bool ARX_SOUND_Init() {
 	
 	// Create game mixers
 	ARX_SOUND_MixerGame = audio::createMixer();
-	ARX_SOUND_MixerGameSample = audio::createMixer();
-	audio::setMixerParent(ARX_SOUND_MixerGameSample, ARX_SOUND_MixerGame);
-	ARX_SOUND_MixerGameSpeech = audio::createMixer();
-	audio::setMixerParent(ARX_SOUND_MixerGameSpeech, ARX_SOUND_MixerGame);
-	ARX_SOUND_MixerGameAmbiance = audio::createMixer();
-	audio::setMixerParent(ARX_SOUND_MixerGameAmbiance, ARX_SOUND_MixerGame);
+	ARX_SOUND_MixerGameSample = audio::createMixer(ARX_SOUND_MixerGame);
+	ARX_SOUND_MixerGameSpeech = audio::createMixer(ARX_SOUND_MixerGame);
+	ARX_SOUND_MixerGameAmbiance = audio::createMixer(ARX_SOUND_MixerGame);
 	
 	// Create menu mixers
 	ARX_SOUND_MixerMenu = audio::createMixer();
-	ARX_SOUND_MixerMenuSample = audio::createMixer();
-	audio::setMixerParent(ARX_SOUND_MixerMenuSample, ARX_SOUND_MixerMenu);
-	ARX_SOUND_MixerMenuSpeech = audio::createMixer();
-	audio::setMixerParent(ARX_SOUND_MixerMenuSpeech, ARX_SOUND_MixerMenu);
-	ARX_SOUND_MixerMenuAmbiance = audio::createMixer();
-	audio::setMixerParent(ARX_SOUND_MixerMenuAmbiance, ARX_SOUND_MixerMenu);
+	ARX_SOUND_MixerMenuSample = audio::createMixer(ARX_SOUND_MixerMenu);
+	ARX_SOUND_MixerMenuSpeech = audio::createMixer(ARX_SOUND_MixerMenu);
+	ARX_SOUND_MixerMenuAmbiance = audio::createMixer(ARX_SOUND_MixerMenu);
 	
 	if(ARX_SOUND_MixerGame == audio::MixerId()
 	   || ARX_SOUND_MixerGameSample == audio::MixerId()
