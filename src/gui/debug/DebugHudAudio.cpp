@@ -19,12 +19,9 @@
 
 #include "gui/debug/DebugHudAudio.h"
 
-#include "audio/AudioBackend.h"
-#include "audio/AudioGlobal.h"
-#include "audio/AudioSource.h"
-#include "audio/AudioTypes.h"
-#include "audio/Sample.h"
+#include <boost/foreach.hpp>
 
+#include "audio/Audio.h"
 #include "gui/debug/DebugPanel.h"
 
 namespace arx {
@@ -50,22 +47,19 @@ static std::stringstream &operator <<(std::stringstream & s, const audio::Source
 
 void debugHud_Audio() {
 	
-	if(!audio::backend) {
-		return;
-	}
+	static std::vector<audio::SourceInfo> infos;
+	infos.clear();
+	audio::getSourceInfos(infos);
+	
 	
 	DebugBox srcInfos = DebugBox(Vec2i(10, 10), "Audio Sources");
 	srcInfos.add("src", "status", "smp", "sample path");
 	
-	for(audio::Backend::source_iterator p = audio::backend->sourcesBegin(); p != audio::backend->sourcesEnd(); ++p) {
-		if(*p) {
-			audio::Source *s = *p;
-			audio::SourcedSample ss = s->getId();
-			srcInfos.add(long(ss.source().handleData()),
-						  s->getStatus(),
-						  long(ss.getSampleId().handleData()),
-						  s->getSample()->getName());
-		}
+	BOOST_FOREACH(const audio::SourceInfo & si, infos) {
+		srcInfos.add(long(si.source.handleData()),
+					  si.status,
+					  long(si.sample.handleData()),
+					  si.sampleName);
 	}
 	
 	srcInfos.print();
