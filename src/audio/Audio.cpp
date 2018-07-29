@@ -479,17 +479,17 @@ void setListenerEnvironment(EnvId environmentId) {
 
 // Mixer setup
 
-aalError setMixerVolume(MixerId mixerId, float volume) {
+void setMixerVolume(MixerId mixerId, float volume) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	if(!g_mixers.isValid(mixerId)) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
 	LogDebug("SetMixerVolume " << mixerId.handleData() << " volume=" << volume);
 	
-	return g_mixers[mixerId]->setVolume(volume);
+	g_mixers[mixerId]->setVolume(volume);
 }
 
 // Mixer control
