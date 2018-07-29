@@ -535,16 +535,16 @@ void mixerResume(MixerId mixerId) {
 
 // Sample setup
 
-aalError setSampleVolume(SourcedSample sourceId, float volume) {
+void setSampleVolume(SourcedSample sourceId, float volume) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	Source * source = backend->getSource(sourceId);
 	if(!source) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
-	return source->setVolume(volume);
+	source->setVolume(volume);
 }
 
 aalError setSamplePitch(SourcedSample sourceId, float pitch) {
