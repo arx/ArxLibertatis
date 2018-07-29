@@ -686,17 +686,17 @@ aalError getSourceInfos(std::vector<SourceInfo> & infos) {
 
 // Ambiance setup
 
-aalError setAmbianceVolume(AmbianceId ambianceId, float volume) {
+void setAmbianceVolume(AmbianceId ambianceId, float volume) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	if(!g_ambiances.isValid(ambianceId)) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
 	LogDebug("SetAmbianceVolume " << g_ambiances[ambianceId]->getName() << " " << volume);
 	
-	return g_ambiances[ambianceId]->setVolume(volume);
+	g_ambiances[ambianceId]->setVolume(volume);
 }
 
 // Ambiance status

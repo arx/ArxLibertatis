@@ -142,7 +142,7 @@ aalError getSourceInfos(std::vector<SourceInfo> & infos);
 
 // Ambiance
 
-aalError setAmbianceVolume(AmbianceId ambianceId, float volume);
+void setAmbianceVolume(AmbianceId ambianceId, float volume);
 
 aalError getAmbianceName(AmbianceId ambianceId, res::path & name);
 aalError getAmbianceType(AmbianceId ambianceId, PlayingAmbianceType * type);
