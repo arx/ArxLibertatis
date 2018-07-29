@@ -559,16 +559,16 @@ void setSamplePitch(SourcedSample sourceId, float pitch) {
 	source->setPitch(pitch);
 }
 
-aalError setSamplePosition(SourcedSample sourceId, const Vec3f & position) {
+void setSamplePosition(SourcedSample sourceId, const Vec3f & position) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	Source * source = backend->getSource(sourceId);
 	if(!source) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
-	return source->setPosition(position);
+	source->setPosition(position);
 }
 
 // Sample status

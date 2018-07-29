@@ -121,7 +121,7 @@ void mixerResume(MixerId mixerId);
 
 void setSampleVolume(SourcedSample sourceId, float volume);
 void setSamplePitch(SourcedSample sourceId, float pitch);
-aalError setSamplePosition(SourcedSample sourceId, const Vec3f & position);
+void setSamplePosition(SourcedSample sourceId, const Vec3f & position);
 
 aalError getSampleName(SampleHandle sampleHandle, res::path & name);
 aalError getSampleLength(SampleHandle sampleHandle, size_t & length);
