@@ -56,6 +56,15 @@ std::stringstream &operator <<(std::stringstream &ss, const Vec3f value);
 std::stringstream &operator <<(std::stringstream &ss, const Anglef value);
 std::stringstream &operator <<(std::stringstream &ss, const ResourcePool value);
 
+template <typename TAG, typename T, T INVALID_VALUE>
+std::stringstream &operator <<(std::stringstream &ss, const HandleType<TAG, T, INVALID_VALUE> value) {
+	ss << value.handleData();
+	if(value.handleData() == INVALID_VALUE) {
+		ss << " X";
+	}
+	return ss;
+}
+
 } // namespace debug
 } // namespace arx
 
