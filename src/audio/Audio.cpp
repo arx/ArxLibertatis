@@ -162,6 +162,12 @@ aalError clean() {
 	} \
 	Autolock lock(mutex);
 
+#define AAL_ENTRY_VOID \
+	if(!backend) { \
+		return; \
+	} \
+	Autolock lock(mutex);
+
 std::vector<std::string> getDevices() {
 	
 	AAL_ENTRY_V(std::vector<std::string>())
@@ -356,17 +362,15 @@ EnvId createEnvironment(const res::path & name) {
 
 // Resource destruction
 
-aalError deleteSample(SampleHandle sampleHandle) {
+void deleteSample(SampleHandle sampleHandle) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	if(!g_samples.isValid(sampleHandle)) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
 	g_samples.remove(sampleHandle);
-	
-	return AAL_OK;
 }
 
 aalError deleteAmbiance(AmbianceId ambianceId) {
