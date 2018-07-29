@@ -547,16 +547,16 @@ void setSampleVolume(SourcedSample sourceId, float volume) {
 	source->setVolume(volume);
 }
 
-aalError setSamplePitch(SourcedSample sourceId, float pitch) {
+void setSamplePitch(SourcedSample sourceId, float pitch) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	Source * source = backend->getSource(sourceId);
 	if(!source) {
-		return AAL_ERROR_HANDLE;
+		return;
 	}
 	
-	return source->setPitch(pitch);
+	source->setPitch(pitch);
 }
 
 aalError setSamplePosition(SourcedSample sourceId, const Vec3f & position) {
