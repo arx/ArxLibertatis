@@ -44,6 +44,7 @@
 #include "gui/TextManager.h"
 #include "gui/menu/MenuCursor.h"
 #include "gui/menu/MenuFader.h"
+#include "gui/menu/MenuPage.h"
 #include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
 #include "gui/widget/KeybindWidget.h"
