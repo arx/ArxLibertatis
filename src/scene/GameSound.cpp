@@ -751,13 +751,11 @@ bool ARX_SOUND_PlayScriptAmbiance(const res::path & name, SoundLoopMode loop, fl
 	{
 		if (volume == 0.f) return true;
 
-		ambiance_id = audio::createAmbiance(temp);
+		ambiance_id = audio::createAmbiance(temp, audio::PLAYING_AMBIANCE_SCRIPT);
 		if(ambiance_id == AmbianceId()) {
 			return false;
 		}
 		
-		audio::setAmbianceType(ambiance_id, audio::PLAYING_AMBIANCE_SCRIPT);
-
 		audio::Channel channel;
 
 		channel.mixer = ARX_SOUND_MixerGameAmbiance;
@@ -796,11 +794,10 @@ bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, floa
 
 	if (ambiance_id == AmbianceId())
 	{
-		ambiance_id = audio::createAmbiance(temp);
+		ambiance_id = audio::createAmbiance(temp, audio::PLAYING_AMBIANCE_ZONE);
 		if(ambiance_id == AmbianceId()) {
 			return false;
 		}
-		audio::setAmbianceType(ambiance_id, audio::PLAYING_AMBIANCE_ZONE);
 	}
 	else if (ambiance_id == g_zoneAmbiance)
 		return true;
@@ -841,9 +838,7 @@ AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 	}
 	
 	audio::deleteAmbiance(g_menuAmbiance);
-	g_menuAmbiance = audio::createAmbiance(ambiance_name);
-	
-	audio::setAmbianceType(g_menuAmbiance, audio::PLAYING_AMBIANCE_MENU);
+	g_menuAmbiance = audio::createAmbiance(ambiance_name, audio::PLAYING_AMBIANCE_MENU);
 	
 	audio::Channel channel;
 	
