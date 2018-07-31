@@ -158,7 +158,7 @@ void MenuPage::addBackButton(MENUSTATE page) {
 	
 }
 
-void MenuPage::Update(Vec2f pos) {
+void MenuPage::update(Vec2f pos) {
 	
 	m_children.move(pos - m_rect.topLeft());
 	
@@ -242,7 +242,7 @@ void MenuPage::Update(Vec2f pos) {
 	
 }
 
-void MenuPage::Render() {
+void MenuPage::render() {
 	
 	m_children.render(m_selected);
 	
