@@ -52,7 +52,7 @@ public:
 	boost::function<void(TextWidget * /* widget */)> clicked;
 	boost::function<void(TextWidget * /* widget */)> doubleClicked;
 	
-	TextWidget(Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO);
+	TextWidget(Font * font, const std::string & text);
 	
 	bool click();
 	
