@@ -39,9 +39,13 @@ public:
 	
 	Widget * IsMouseOver(const Vec2f & mousePos);
 	
+	const std::vector<Widget *> & children() const { return m_children; }
+	
 	virtual WidgetType type() const {
 		return WidgetType_Panel;
 	}
+	
+private:
 	
 	std::vector<Widget *> m_children;
 	
