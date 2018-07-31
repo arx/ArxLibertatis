@@ -152,7 +152,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 void MenuPage::addBackButton(MENUSTATE page) {
 	
 	ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
-	cb->m_targetMenu = page;
+	cb->setTargetPage(page);
 	cb->setShortcut(Keyboard::Key_Escape);
 	addCorner(cb, BottomLeft);
 	
