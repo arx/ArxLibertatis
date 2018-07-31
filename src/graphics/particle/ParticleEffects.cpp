@@ -1003,6 +1003,7 @@ void TreatBackgroundActions() {
 		if(dist > fZFar) {
 			// Out of treat range
 			ARX_SOUND_Stop(gl->sample);
+			gl->sample.clearSource();
 			gl->sample = audio::SourcedSample();
 			continue;
 		}
@@ -1023,6 +1024,7 @@ void TreatBackgroundActions() {
 		if(!(gl->extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !gl->m_ignitionStatus) {
 			if(!gl->m_ignitionStatus && gl->sample != audio::SourcedSample()) {
 				ARX_SOUND_Stop(gl->sample);
+				gl->sample.clearSource();
 				gl->sample = audio::SourcedSample();
 			}
 			continue;

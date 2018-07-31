@@ -237,7 +237,7 @@ void ARX_SOUND_RefreshPosition(audio::SourcedSample & sample_id, const Vec3f & p
 void ARX_SOUND_RefreshPitch(audio::SourcedSample & sample_id, float pitch);
 void ARX_SOUND_RefreshSpeechPosition(audio::SourcedSample & sample_id, const Entity * io = NULL);
 
-void ARX_SOUND_Stop(audio::SourcedSample & sample_id);
+void ARX_SOUND_Stop(const audio::SourcedSample &sample_id);
 
 bool ARX_SOUND_PlayScriptAmbiance(const res::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
 bool ARX_SOUND_PlayZoneAmbiance(const res::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);

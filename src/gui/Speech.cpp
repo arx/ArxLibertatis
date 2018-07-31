@@ -281,6 +281,7 @@ static void ARX_SPEECH_Release(long i) {
 	if(aspeech[i].exist) {
 		
 		ARX_SOUND_Stop(aspeech[i].sample);
+		aspeech[i].sample.clearSource();
 		
 		if(ValidIOAddress(aspeech[i].io) && aspeech[i].io->animlayer[2].cur_anim) {
 			AcquireLastAnim(aspeech[i].io);
