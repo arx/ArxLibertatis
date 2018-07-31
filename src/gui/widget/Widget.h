@@ -90,7 +90,7 @@ public:
 	bool isEnabled() const { return m_enabled; }
 	
 	virtual void move(const Vec2f & offset);
-	void SetPos(Vec2f pos) { move(pos - m_rect.topLeft()); }
+	void setPosition(Vec2f pos) { move(pos - m_rect.topLeft()); }
 	
 	virtual Widget * getWidgetAt(const Vec2f & mousePos);
 	

@@ -47,12 +47,12 @@ CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, const std::str
 	float minWidth = m_left->m_rect.width() + m_content.width() + m_right->m_rect.width();
 	m_rect = Rectf(std::max(minWidth, size.x), std::max(m_content.height(), m_label->m_rect.height()));
 	
-	m_right->SetPos(Vec2f(m_rect.right - m_right->m_rect.width(),
-	                      m_rect.center().y - m_right->m_rect.height() / 2));
+	m_right->setPosition(Vec2f(m_rect.right - m_right->m_rect.width(),
+	                           m_rect.center().y - m_right->m_rect.height() / 2));
 	m_content.moveTo(Vec2f(m_right->m_rect.left - m_content.width(),
 	                       m_rect.center().y - m_content.height() / 2));
-	m_left->SetPos(Vec2f(m_content.left - m_left->m_rect.width(),
-	                     m_rect.center().y - m_left->m_rect.height() / 2));
+	m_left->setPosition(Vec2f(m_content.left - m_left->m_rect.width(),
+	                          m_rect.center().y - m_left->m_rect.height() / 2));
 	
 }
 
@@ -92,17 +92,17 @@ void CycleTextWidget::addEntry(const std::string & label) {
 	m_content.left = m_content.right - std::max(m_content.width(), widget->m_rect.width());
 	m_content.bottom = m_content.top + m_rect.height();
 	
-	m_right->SetPos(Vec2f(m_rect.right - m_right->m_rect.width(),
-	                      m_rect.center().y - m_right->m_rect.height() / 2));
+	m_right->setPosition(Vec2f(m_rect.right - m_right->m_rect.width(),
+	                           m_rect.center().y - m_right->m_rect.height() / 2));
 	m_content.moveTo(Vec2f(m_right->m_rect.left - m_content.width(),
 	                       m_rect.center().y - m_content.height() / 2));
-	m_left->SetPos(Vec2f(m_content.left - m_left->m_rect.width(),
-	                     m_rect.center().y - m_left->m_rect.height() / 2));
+	m_left->setPosition(Vec2f(m_content.left - m_left->m_rect.width(),
+	                          m_rect.center().y - m_left->m_rect.height() / 2));
 	
-	m_label->SetPos(Vec2f(m_rect.left, m_rect.center().y - m_label->m_rect.height() / 2));
+	m_label->setPosition(Vec2f(m_rect.left, m_rect.center().y - m_label->m_rect.height() / 2));
 	
 	BOOST_FOREACH(Widget * entry, m_entries) {
-		entry->SetPos(m_content.center() - entry->m_rect.size() / 2.f);
+		entry->setPosition(m_content.center() - entry->m_rect.size() / 2.f);
 	}
 	
 }

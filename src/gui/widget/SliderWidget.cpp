@@ -51,12 +51,12 @@ SliderWidget::SliderWidget(const Vec2f & size, Font * font, const std::string & 
 	float minWidth = m_left->m_rect.width() + m_slider.width() + m_right->m_rect.width();
 	m_rect = Rectf(std::max(minWidth, size.x), std::max(m_slider.height(), m_label->m_rect.height()));
 	
-	m_right->SetPos(Vec2f(m_rect.right - m_right->m_rect.width(),
-	                      m_rect.center().y - m_right->m_rect.height() / 2));
+	m_right->setPosition(Vec2f(m_rect.right - m_right->m_rect.width(),
+	                           m_rect.center().y - m_right->m_rect.height() / 2));
 	m_slider.moveTo(Vec2f(m_right->m_rect.left - m_slider.width(),
 	                      m_rect.center().y - m_slider.height() / 2));
-	m_left->SetPos(Vec2f(m_slider.left - m_left->m_rect.width(),
-	                     m_rect.center().y - m_left->m_rect.height() / 2));
+	m_left->setPosition(Vec2f(m_slider.left - m_left->m_rect.width(),
+	                          m_rect.center().y - m_left->m_rect.height() / 2));
 	
 }
 
