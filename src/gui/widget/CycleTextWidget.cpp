@@ -107,17 +107,17 @@ void CycleTextWidget::addEntry(const std::string & label) {
 	
 }
 
-void CycleTextWidget::Move(const Vec2f & offset) {
+void CycleTextWidget::move(const Vec2f & offset) {
 	
-	Widget::Move(offset);
+	Widget::move(offset);
 	
-	m_label->Move(offset);
-	m_left->Move(offset);
+	m_label->move(offset);
+	m_left->move(offset);
 	m_content.move(offset);
-	m_right->Move(offset);
+	m_right->move(offset);
 	
 	BOOST_FOREACH(Widget * entry, m_entries) {
-		entry->Move(offset);
+		entry->move(offset);
 	}
 	
 }

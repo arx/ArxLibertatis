@@ -46,7 +46,7 @@ public:
 	
 	void addEntry(const std::string & label);
 	
-	void Move(const Vec2f & offset);
+	void move(const Vec2f & offset);
 	bool click();
 	void render(bool mouseOver = false);
 	void hover();

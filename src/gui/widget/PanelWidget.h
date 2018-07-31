@@ -31,7 +31,7 @@ public:
 	PanelWidget();
 	virtual ~PanelWidget();
 	
-	void Move(const Vec2f & offset);
+	void move(const Vec2f & offset);
 	void AddElement(Widget * widget);
 	
 	void update();

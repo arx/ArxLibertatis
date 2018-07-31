@@ -68,7 +68,7 @@ Widget * WidgetContainer::getAtPos(const Vec2f & mousePos) const {
 
 void WidgetContainer::Move(const Vec2f & offset) {
 	BOOST_FOREACH(Widget * w, m_widgets) {
-		w->Move(offset);
+		w->move(offset);
 	}
 }
 

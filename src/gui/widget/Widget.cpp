@@ -44,7 +44,7 @@ bool Widget::click() {
 	
 }
 
-void Widget::Move(const Vec2f & offset) {
+void Widget::move(const Vec2f & offset) {
 	m_rect.move(offset.x, offset.y);
 }
 

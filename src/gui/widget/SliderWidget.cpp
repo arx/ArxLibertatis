@@ -71,12 +71,12 @@ void SliderWidget::setMinimum(int minimum) {
 	m_value = std::max(m_minimum, m_value);
 }
 
-void SliderWidget::Move(const Vec2f & offset) {
-	Widget::Move(offset);
-	m_label->Move(offset);
-	m_left->Move(offset);
+void SliderWidget::move(const Vec2f & offset) {
+	Widget::move(offset);
+	m_label->move(offset);
+	m_left->move(offset);
 	m_slider.move(offset);
-	m_right->Move(offset);
+	m_right->move(offset);
 }
 
 void SliderWidget::hover() {

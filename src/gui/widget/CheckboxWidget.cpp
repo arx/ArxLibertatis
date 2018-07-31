@@ -57,9 +57,9 @@ CheckboxWidget::~CheckboxWidget() {
 	delete m_label;
 }
 
-void CheckboxWidget::Move(const Vec2f & offset) {
-	Widget::Move(offset);
-	m_label->Move(offset);
+void CheckboxWidget::move(const Vec2f & offset) {
+	Widget::move(offset);
+	m_label->move(offset);
 	m_button.move(offset);
 }
 

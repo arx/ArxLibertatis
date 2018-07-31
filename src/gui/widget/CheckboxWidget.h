@@ -37,7 +37,7 @@ public:
 	explicit CheckboxWidget(const Vec2f & size, Font * font, const std::string & label);
 	virtual ~CheckboxWidget();
 	
-	void Move(const Vec2f & offset);
+	void move(const Vec2f & offset);
 	bool click();
 	
 	void render(bool mouseOver = false);
