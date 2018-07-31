@@ -181,9 +181,9 @@ void MainMenuDoFrame() {
 	}
 	pMenuCursor->update();
 	
-	g_mainMenu->Update();
+	g_mainMenu->update();
 	
-	g_mainMenu->Render();
+	g_mainMenu->render();
 	
 	pMenuCursor->DrawCursor();
 	

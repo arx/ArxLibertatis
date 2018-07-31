@@ -47,8 +47,8 @@ public:
 	void onClickedNewQuest();
 	void onClickedCredits();
 	
-	void Update();
-	void Render();
+	void update();
+	void render();
 	
 	void requestPage(MENUSTATE page) {
 		m_requestedPage = page;
