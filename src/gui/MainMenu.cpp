@@ -85,29 +85,25 @@ public:
 		reserveBottom();
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_confirm"));
 			txt->setEnabled(false);
 			addCenter(txt);
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_main_newquest_confirm");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_newquest_confirm"));
 			txt->setEnabled(false);
 			addCenter(txt);
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_yes");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_yes"));
 			txt->clicked = boost::bind(ARXMenu_NewQuest);
 			addCorner(txt, BottomRight);
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_no");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_no"));
 			txt->m_targetMenu = Page_None;
 			txt->SetShortCut(Keyboard::Key_Escape);
 			addCorner(txt, BottomLeft);
@@ -141,8 +137,8 @@ public:
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
-			TextInputWidget * txt = new TextInputWidget(hFontMenu, szMenuText, m_rect);
+			std::string text = getLocalised("system_menu_editquest_newsavegame", "---");
+			TextInputWidget * txt = new TextInputWidget(hFontMenu, text, m_rect);
 			txt->setMaxLength(255); // Don't allow the user to enter names that cannot be stored in save files
 			txt->unfocused = boost::bind(&SaveConfirmMenuPage::onUnfocusedText, this, _1);
 			addCenter(txt);
@@ -151,8 +147,7 @@ public:
 		
 		// Delete button
 		{
-			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_delete"));
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveDelete, this, _1);
 			txt->m_targetMenu = Page_Save;
 			txt->setEnabled(m_savegame != SavegameHandle());
@@ -161,8 +156,7 @@ public:
 		
 		// Save button
 		{
-			std::string szMenuText = getLocalised("system_menus_main_editquest_save");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_save"));
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveConfirm, this, _1);
 			txt->m_targetMenu = Page_None;
 			addCorner(txt, BottomRight);
@@ -280,8 +274,7 @@ public:
 		
 		// Delete button
 		{
-			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_delete"));
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestDelete, this);
 			txt->m_targetMenu = Page_Load;
 			addCorner(txt, TopRight);
@@ -290,8 +283,7 @@ public:
 		
 		// Load button
 		{
-			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_load"));
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoadConfirm, this);
 			txt->m_targetMenu = Page_None;
 			addCorner(txt, BottomRight);
@@ -494,36 +486,36 @@ public:
 		reserveBottom();
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_options_video");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			std::string label = getLocalised("system_menus_options_video");
+			TextWidget * txt = new TextWidget(hFontMenu, label);
 			txt->m_targetMenu = Page_OptionsVideo;
 			addCenter(txt);
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_options_render", "Render settings");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			std::string label = getLocalised("system_menus_options_render", "Render settings");
+			TextWidget * txt = new TextWidget(hFontMenu, label);
 			txt->m_targetMenu = Page_OptionsRender;
 			addCenter(txt);
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_options_interface", "Interface settings");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			std::string label = getLocalised("system_menus_options_interface", "Interface settings");
+			TextWidget * txt = new TextWidget(hFontMenu, label);
 			txt->m_targetMenu = Page_OptionsInterface;
 			addCenter(txt);
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_options_audio");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			std::string label = getLocalised("system_menus_options_audio");
+			TextWidget * txt = new TextWidget(hFontMenu, label);
 			txt->m_targetMenu = Page_OptionsAudio;
 			addCenter(txt);
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_options_input");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			std::string label = getLocalised("system_menus_options_input");
+			TextWidget * txt = new TextWidget(hFontMenu, label);
 			txt->m_targetMenu = Page_OptionsInput;
 			addCenter(txt);
 		}
@@ -703,8 +695,7 @@ public:
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_video_apply");
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_video_apply"));
 			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
 			txt->setEnabled(false);
 			addCorner(txt, BottomRight);
@@ -1584,9 +1575,7 @@ protected:
 		PanelWidget * panel = new PanelWidget;
 		
 		{
-			std::string szMenuText = getLocalised(text, defaultText);
-			szMenuText += specialSuffix;
-			TextWidget * txt = new TextWidget(hFontControls, szMenuText);
+			TextWidget * txt = new TextWidget(hFontControls, getLocalised(text, defaultText) + specialSuffix);
 			txt->setEnabled(false);
 			panel->AddElement(txt);
 		}
@@ -1685,8 +1674,8 @@ public:
 		addBackButton(Page_OptionsInput);
 		
 		{
-			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			std::string label = getLocalised("system_menus_options_input_customize_default");
+			TextWidget * txt = new TextWidget(hFontMenu, label);
 			txt->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedDefault, this);
 			addCorner(txt, BottomCenter);
 		}
@@ -1757,8 +1746,8 @@ public:
 		addBackButton(Page_OptionsInputCustomizeKeys1);
 		
 		{
-			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
-			TextWidget * txt = new TextWidget(hFontMenu, szMenuText);
+			std::string label = getLocalised("system_menus_options_input_customize_default");
+			TextWidget * txt = new TextWidget(hFontMenu, label);
 			txt->clicked = boost::bind(&ControlOptionsMenuPage2::onClickedDefault, this);
 			addCorner(txt, BottomCenter);
 		}
@@ -1874,8 +1863,7 @@ void MainMenu::init()
 	float yOffset = RATIO_Y(50);
 	
 	{
-	std::string szMenuText = getLocalised("system_menus_main_resumegame");
-	TextWidget * txt = new TextWidget(hFontMainMenu, szMenuText);
+	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_resumegame"));
 	txt->clicked = boost::bind(&MainMenu::onClickedResumeGame, this);
 	txt->SetPos(pos);
 	m_widgets->add(txt);
@@ -1883,40 +1871,35 @@ void MainMenu::init()
 	}
 	pos.y += yOffset;
 	{
-	std::string szMenuText = getLocalised("system_menus_main_newquest");
-	TextWidget * txt = new TextWidget(hFontMainMenu, szMenuText);
+	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_newquest"));
 	txt->clicked = boost::bind(&MainMenu::onClickedNewQuest, this);
 	txt->SetPos(pos);
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
 	{
-	std::string szMenuText = getLocalised("system_menus_main_editquest");
-	TextWidget * txt = new TextWidget(hFontMainMenu, szMenuText);
+	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_editquest"));
 	txt->m_targetMenu = Page_LoadOrSave;
 	txt->SetPos(pos);
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
 	{
-	std::string szMenuText = getLocalised("system_menus_main_options");
-	TextWidget * txt = new TextWidget(hFontMainMenu, szMenuText);
+	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_options"));
 	txt->m_targetMenu = Page_Options;
 	txt->SetPos(pos);
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
 	{
-	std::string szMenuText = getLocalised("system_menus_main_credits");
-	TextWidget * txt = new TextWidget(hFontMainMenu, szMenuText);
+	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_credits"));
 	txt->clicked = boost::bind(&MainMenu::onClickedCredits, this);
 	txt->SetPos(pos);
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
 	{
-	std::string szMenuText = getLocalised("system_menus_main_quit");
-	TextWidget * txt = new TextWidget(hFontMainMenu, szMenuText);
+	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_quit"));
 	txt->m_targetMenu = Page_QuitConfirm;
 	txt->SetPos(pos);
 	m_widgets->add(txt);
