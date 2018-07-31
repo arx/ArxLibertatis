@@ -37,7 +37,7 @@ public:
 	void add(Widget * widget);
 	Widget * getAtPos(const Vec2f & mousePos) const;
 	
-	void Move(const Vec2f & offset);
+	void move(const Vec2f & offset);
 	void drawDebug();
 	
 	const std::vector<Widget *> widgets() const { return m_widgets; }
