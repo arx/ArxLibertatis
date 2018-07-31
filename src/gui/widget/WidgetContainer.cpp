@@ -32,7 +32,7 @@ WidgetContainer::~WidgetContainer() {
 	}
 }
 
-void WidgetContainer::Update() {
+void WidgetContainer::update() {
 	BOOST_FOREACH(Widget * w, m_widgets) {
 		w->update();
 	}
