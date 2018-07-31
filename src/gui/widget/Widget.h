@@ -84,7 +84,7 @@ public:
 	virtual void unfocus() { }
 	
 	InputKeyId shortcut() const { return m_shortcut; }
-	void SetShortCut(int _iShortCut);
+	void setShortcut(int key);
 	
 	virtual void setEnabled(bool enable);
 	bool isEnabled() const { return m_enabled; }
