@@ -24,11 +24,10 @@
 
 #include "gui/widget/Widget.h"
 
-class WidgetContainer
-{
+class WidgetContainer {
+	
 public:
-	std::vector<Widget *> m_widgets;
-public:
+	
 	WidgetContainer();
 	virtual ~WidgetContainer();
 	
@@ -40,6 +39,13 @@ public:
 	
 	void Move(const Vec2f & offset);
 	void drawDebug();
+	
+	const std::vector<Widget *> widgets() const { return m_widgets; }
+	
+private:
+	
+	std::vector<Widget *> m_widgets;
+	
 };
 
 #endif // ARX_GUI_WIDGET_WIDGETCONTAINER_H

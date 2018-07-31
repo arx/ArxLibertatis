@@ -1605,13 +1605,13 @@ protected:
 	
 	void reinitActionKeys() {
 		
-		BOOST_FOREACH(Widget * w, m_children.m_widgets) {
-			if(w->type() == WidgetType_Panel) {
-				PanelWidget * p = static_cast<PanelWidget *>(w);
-				BOOST_FOREACH(Widget * c, p->children()) {
-					if(c->type() == WidgetType_Keybind) {
-						KeybindWidget * t = static_cast<KeybindWidget *>(c);
-						t->setKey(config.actions[t->action()].key[t->index()]);
+		BOOST_FOREACH(Widget * widget, m_children.widgets()) {
+			if(widget->type() == WidgetType_Panel) {
+				PanelWidget * panel = static_cast<PanelWidget *>(widget);
+				BOOST_FOREACH(Widget * child, panel->children()) {
+					if(child->type() == WidgetType_Keybind) {
+						KeybindWidget * keybind = static_cast<KeybindWidget *>(child);
+						keybind->setKey(config.actions[keybind->action()].key[keybind->index()]);
 					}
 				}
 			}
