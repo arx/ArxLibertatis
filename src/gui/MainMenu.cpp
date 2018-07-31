@@ -1865,7 +1865,7 @@ void MainMenu::init()
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_resumegame"));
 	txt->clicked = boost::bind(&MainMenu::onClickedResumeGame, this);
-	txt->SetPos(pos);
+	txt->setPosition(pos);
 	m_widgets->add(txt);
 	m_resumeGame = txt;
 	}
@@ -1873,35 +1873,35 @@ void MainMenu::init()
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_newquest"));
 	txt->clicked = boost::bind(&MainMenu::onClickedNewQuest, this);
-	txt->SetPos(pos);
+	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_editquest"));
 	txt->m_targetMenu = Page_LoadOrSave;
-	txt->SetPos(pos);
+	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_options"));
 	txt->m_targetMenu = Page_Options;
-	txt->SetPos(pos);
+	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_credits"));
 	txt->clicked = boost::bind(&MainMenu::onClickedCredits, this);
-	txt->SetPos(pos);
+	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_quit"));
 	txt->m_targetMenu = Page_QuitConfirm;
-	txt->SetPos(pos);
+	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
@@ -1917,7 +1917,7 @@ void MainMenu::init()
 	TextWidget * txt = new TextWidget(hFontControls, version);
 	txt->setEnabled(false);
 	txt->forceDisplay(TextWidget::Disabled);
-	txt->SetPos(RATIO_2(Vec2f(verPosX / g_sizeRatio.x, 80)));
+	txt->setPosition(RATIO_2(Vec2f(verPosX / g_sizeRatio.x, 80)));
 	m_widgets->add(txt);
 }
 

@@ -104,7 +104,7 @@ void MenuPage::addCorner(Widget * widget, Anchor anchor) {
 		}
 	}
 	
-	widget->SetPos(pos);
+	widget->setPosition(pos);
 	
 	m_children.add(widget);
 	
@@ -138,12 +138,12 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	float y = std::floor(m_content.center().y - height / 2.f);
 	
 	BOOST_FOREACH(Widget * child, m_children.widgets()) {
-		child->SetPos(Vec2f(child->m_rect.left, y));
+		child->setPosition(Vec2f(child->m_rect.left, y));
 		y += child->m_rect.height() * ((child->type() == WidgetType_Spacer) ? squish : 1.f);
 		y += RATIO_Y(m_rowSpacing) * squish;
 	}
 	
-	widget->SetPos(Vec2f(x, y));
+	widget->setPosition(Vec2f(x, y));
 	
 	m_children.add(widget);
 	
