@@ -776,9 +776,9 @@ static void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, 
 			if(volume > 1.f)
 				volume = 1.f;
 			
-			long soundLength = ARX_SOUND_PlayCollision(material, collisionMaterial, volume, 1.f, source->pos, source);
+			ARX_SOUND_PlayCollision(material, collisionMaterial, volume, 1.f, source->pos, source);
 			
-			source->soundtime = now + GameDurationMs(soundLength >> 4) + GameDurationMs(50);
+			source->soundtime = now + GameDurationMs(100);
 		}
 	}
 }
