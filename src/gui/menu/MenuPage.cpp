@@ -160,7 +160,7 @@ void MenuPage::addBackButton(MENUSTATE page) {
 
 void MenuPage::Update(Vec2f pos) {
 	
-	m_children.Move(pos - m_rect.topLeft());
+	m_children.move(pos - m_rect.topLeft());
 	
 	m_content.move(pos - m_rect.topLeft());
 	
