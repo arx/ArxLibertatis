@@ -93,6 +93,7 @@ AmbianceId createAmbiance(const res::path & name, PlayingAmbianceType type);
 EnvId createEnvironment(const res::path & name);
 void deleteSample(SampleHandle sampleHandle);
 void deleteAmbiance(AmbianceId ambianceId);
+void deleteAmbianceAll();
 
 AmbianceId getAmbiance(const res::path & name);
 EnvId getEnvironment(const res::path & name);
