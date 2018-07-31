@@ -44,7 +44,10 @@ if(MSVC)
 	
 	if(SET_OPTIMIZATION_FLAGS)
 		
-		# Disable exceptions & rtti
+		# Enable exceptions
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+		
+		# Disable RTTI
 		add_definitions(/GR-) # No RTTI
 		foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE)
 			string(REGEX REPLACE "/GR( |$)" "/GR-\\1" ${flag_var} "${${flag_var}}")
