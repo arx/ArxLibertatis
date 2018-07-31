@@ -73,7 +73,7 @@ bool TextWidget::doubleClick() {
 void TextWidget::render(bool mouseOver) {
 	
 	Color color = Color(232, 204, 142);
-	bool hasAction = m_targetMenu != NOP || clicked || doubleClicked;
+	bool hasAction = targetPage() != NOP || clicked || doubleClicked;
 	bool dynamic =  m_display == Dynamic || (m_display == Automatic && hasAction);
 	if(m_display == Disabled || (dynamic && !m_enabled)) {
 		color = Color::grayb(127);

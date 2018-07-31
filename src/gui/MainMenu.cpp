@@ -104,7 +104,7 @@ public:
 		
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_no"));
-			txt->m_targetMenu = Page_None;
+			txt->setTargetPage(Page_None);
 			txt->setShortcut(Keyboard::Key_Escape);
 			addCorner(txt, BottomLeft);
 		}
@@ -149,7 +149,7 @@ public:
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_delete"));
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveDelete, this, _1);
-			txt->m_targetMenu = Page_Save;
+			txt->setTargetPage(Page_Save);
 			txt->setEnabled(m_savegame != SavegameHandle());
 			addCorner(txt, TopRight);
 		}
@@ -158,7 +158,7 @@ public:
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_save"));
 			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveConfirm, this, _1);
-			txt->m_targetMenu = Page_None;
+			txt->setTargetPage(Page_None);
 			addCorner(txt, BottomRight);
 		}
 		
@@ -276,7 +276,7 @@ public:
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_delete"));
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestDelete, this);
-			txt->m_targetMenu = Page_Load;
+			txt->setTargetPage(Page_Load);
 			addCorner(txt, TopRight);
 			pDeleteConfirm = txt;
 		}
@@ -285,7 +285,7 @@ public:
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_load"));
 			txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoadConfirm, this);
-			txt->m_targetMenu = Page_None;
+			txt->setTargetPage(Page_None);
 			addCorner(txt, BottomRight);
 			pLoadConfirm = txt;
 		}
@@ -388,7 +388,7 @@ public:
 			if(savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, ++quicksaveNum, hFontControls, m_rect);
 				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
-				txt->m_targetMenu = Page_SaveConfirm;
+				txt->setTargetPage(Page_SaveConfirm);
 				txt->setEnabled(false);
 				addCenter(txt);
 			}
@@ -399,7 +399,7 @@ public:
 			if(!savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, 0, hFontControls, m_rect);
 				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
-				txt->m_targetMenu = Page_SaveConfirm;
+				txt->setTargetPage(Page_SaveConfirm);
 				addCenter(txt);
 			}
 		}
@@ -407,7 +407,7 @@ public:
 		for(size_t i = savegames.size(); i <= 15; i++) {
 			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(), i, hFontControls, m_rect);
 			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
-			txt->m_targetMenu = Page_SaveConfirm;
+			txt->setTargetPage(Page_SaveConfirm);
 			addCenter(txt);
 		}
 		
@@ -447,14 +447,14 @@ public:
 		{
 			std::string label = getLocalised("system_menus_main_editquest_load");
 			m_loadButton = new TextWidget(hFontMenu, label);
-			m_loadButton->m_targetMenu = Page_Load;
+			m_loadButton->setTargetPage(Page_Load);
 			addCenter(m_loadButton);
 		}
 		
 		{
 			std::string label = getLocalised( "system_menus_main_editquest_save");
 			m_saveButton = new TextWidget(hFontMenu, label);
-			m_saveButton->m_targetMenu = Page_Save;
+			m_saveButton->setTargetPage(Page_Save);
 			addCenter(m_saveButton);
 		}
 		
@@ -488,35 +488,35 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
-			txt->m_targetMenu = Page_OptionsVideo;
+			txt->setTargetPage(Page_OptionsVideo);
 			addCenter(txt);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_options_render", "Render settings");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
-			txt->m_targetMenu = Page_OptionsRender;
+			txt->setTargetPage(Page_OptionsRender);
 			addCenter(txt);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_options_interface", "Interface settings");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
-			txt->m_targetMenu = Page_OptionsInterface;
+			txt->setTargetPage(Page_OptionsInterface);
 			addCenter(txt);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_options_audio");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
-			txt->m_targetMenu = Page_OptionsAudio;
+			txt->setTargetPage(Page_OptionsAudio);
 			addCenter(txt);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_options_input");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
-			txt->m_targetMenu = Page_OptionsInput;
+			txt->setTargetPage(Page_OptionsInput);
 			addCenter(txt);
 		}
 		
@@ -1393,7 +1393,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_input_customize_controls");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
-			txt->m_targetMenu = Page_OptionsInputCustomizeKeys1;
+			txt->setTargetPage(Page_OptionsInputCustomizeKeys1);
 			addCenter(txt);
 		}
 		
@@ -1682,7 +1682,7 @@ public:
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/next");
-			cb->m_targetMenu = Page_OptionsInputCustomizeKeys2;
+			cb->setTargetPage(Page_OptionsInputCustomizeKeys2);
 			addCorner(cb, BottomRight);
 		}
 		
@@ -1796,7 +1796,7 @@ public:
 		
 		{
 			TextWidget * no = new TextWidget(hFontMenu, getLocalised("system_no"));
-			no->m_targetMenu = Page_None;
+			no->setTargetPage(Page_None);
 			no->setShortcut(Keyboard::Key_Escape);
 			addCorner(no, BottomLeft);
 		}
@@ -1879,14 +1879,14 @@ void MainMenu::init()
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_editquest"));
-	txt->m_targetMenu = Page_LoadOrSave;
+	txt->setTargetPage(Page_LoadOrSave);
 	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_options"));
-	txt->m_targetMenu = Page_Options;
+	txt->setTargetPage(Page_Options);
 	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
@@ -1900,7 +1900,7 @@ void MainMenu::init()
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_quit"));
-	txt->m_targetMenu = Page_QuitConfirm;
+	txt->setTargetPage(Page_QuitConfirm);
 	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
@@ -1954,7 +1954,7 @@ void MainMenu::update() {
 	
 	if(m_selected && GInput->getMouseButton(Mouse::Button_0)) {
 		m_selected->click();
-		if(m_selected->m_targetMenu != NOP && m_window) {
+		if(m_selected->targetPage() != NOP && m_window) {
 			m_window->setScroll(0.f);
 		}
 	}

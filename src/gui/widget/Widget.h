@@ -64,12 +64,6 @@ class Widget : private boost::noncopyable {
 public:
 	Rectf m_rect;
 	
-	MENUSTATE   m_targetMenu;
-	
-protected:
-	
-	bool m_enabled;
-	
 public:
 	
 	Widget();
@@ -82,6 +76,9 @@ public:
 	virtual void render(bool mouseOver = false) = 0;
 	virtual bool wantFocus() const { return false; }
 	virtual void unfocus() { }
+	
+	MENUSTATE targetPage() const { return m_targetPage; }
+	void setTargetPage(MENUSTATE page) { m_targetPage = page; }
 	
 	InputKeyId shortcut() const { return m_shortcut; }
 	void setShortcut(int key);
@@ -96,8 +93,13 @@ public:
 	
 	virtual WidgetType type() const = 0;
 	
+protected:
+	
+	bool m_enabled;
+	
 private:
 	
+	MENUSTATE m_targetPage;
 	InputKeyId m_shortcut;
 	
 };
