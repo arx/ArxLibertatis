@@ -251,7 +251,7 @@ void MenuWindow::Update() {
 	fAngle = std::min(fAngle + g_platformTime.lastFrameDuration() / PlatformDurationMsf(12.5f), 90.f);
 	
 	if(m_currentPage) {
-		m_currentPage->Update(m_pos + Vec2f(RATIO_X(14.5f), RATIO_Y(12.f)));
+		m_currentPage->update(m_pos + Vec2f(RATIO_X(14.5f), RATIO_Y(12.f)));
 	}
 	
 }
@@ -272,7 +272,7 @@ void MenuWindow::Render() {
 	EERIEDrawBitmap(Rectf(m_pos, RATIO_X(m_border->m_size.x), RATIO_Y(m_border->m_size.y)),
 	                0, m_border, Color::white);
 	
-	m_currentPage->Render();
+	m_currentPage->render();
 	
 	if(g_debugInfo == InfoPanelGuiDebug) {
 		m_currentPage->drawDebug();

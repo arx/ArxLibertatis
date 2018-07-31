@@ -57,8 +57,8 @@ public:
 	
 	explicit MenuPage(MENUSTATE id);
 	virtual ~MenuPage();
-	void Update(Vec2f pos);
-	void Render();
+	void update(Vec2f pos);
+	void render();
 	void drawDebug();
 	virtual void focus();
 	virtual void init() = 0;
