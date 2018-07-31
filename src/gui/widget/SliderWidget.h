@@ -44,7 +44,7 @@ public:
 	void setValue(int value) { m_value = value; }
 	int getValue() const { return m_value; }
 	
-	void Move(const Vec2f & offset);
+	void move(const Vec2f & offset);
 	bool click();
 	void update();
 	void render(bool mouseOver = false);

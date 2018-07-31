@@ -31,13 +31,14 @@ PanelWidget::~PanelWidget() {
 	}
 }
 
-void PanelWidget::Move(const Vec2f & offset)
-{
+void PanelWidget::move(const Vec2f & offset) {
+	
 	m_rect.move(offset.x, offset.y);
 	
 	BOOST_FOREACH(Widget * w, m_children) {
-		w->Move(offset);
+		w->move(offset);
 	}
+	
 }
 
 // patch on ajoute à droite en ligne
@@ -54,7 +55,7 @@ void PanelWidget::AddElement(Widget * widget) {
 		m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
 	}
 	
-	widget->Move(Vec2f(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
+	widget->move(Vec2f(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
 }
 
 void PanelWidget::update()
