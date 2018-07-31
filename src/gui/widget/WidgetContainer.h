@@ -35,7 +35,7 @@ public:
 	void render(Widget * selected = NULL);
 	
 	void add(Widget * widget);
-	Widget * getAtPos(const Vec2f & mousePos) const;
+	Widget * getWidgetAt(const Vec2f & mousePos) const;
 	
 	void move(const Vec2f & offset);
 	void drawDebug();

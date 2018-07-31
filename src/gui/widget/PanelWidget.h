@@ -38,7 +38,7 @@ public:
 	void update();
 	void render(bool mouseOver = false);
 	
-	Widget * IsMouseOver(const Vec2f & mousePos);
+	Widget * getWidgetAt(const Vec2f & mousePos);
 	
 	const std::vector<Widget *> & children() const { return m_children; }
 	

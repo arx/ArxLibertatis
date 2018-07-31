@@ -48,7 +48,7 @@ void Widget::move(const Vec2f & offset) {
 	m_rect.move(offset.x, offset.y);
 }
 
-Widget * Widget::IsMouseOver(const Vec2f & mousePos) {
+Widget * Widget::getWidgetAt(const Vec2f & mousePos) {
 	return m_rect.contains(mousePos) ? this : NULL;
 }
 

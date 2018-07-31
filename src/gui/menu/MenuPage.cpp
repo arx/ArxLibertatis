@@ -213,7 +213,7 @@ void MenuPage::update(Vec2f pos) {
 		
 	}
 	
-	m_selected = m_children.getAtPos(Vec2f(GInput->getMousePosition()));
+	m_selected = m_children.getWidgetAt(Vec2f(GInput->getMousePosition()));
 	
 	if(m_focused && m_selected != m_focused && GInput->getMouseButton(Mouse::Button_0)) {
 		m_focused->unfocus();
