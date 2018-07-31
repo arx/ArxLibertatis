@@ -1950,7 +1950,7 @@ void MainMenu::update() {
 		m_resumeGame->setEnabled(g_canResumeGame || !savegames.empty());
 	}
 	
-	m_selected = m_widgets->getAtPos(Vec2f(GInput->getMousePosition()));
+	m_selected = m_widgets->getWidgetAt(Vec2f(GInput->getMousePosition()));
 	
 	if(m_selected && GInput->getMouseButton(Mouse::Button_0)) {
 		m_selected->click();

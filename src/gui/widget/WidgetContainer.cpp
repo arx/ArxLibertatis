@@ -48,16 +48,15 @@ void WidgetContainer::add(Widget * widget) {
 	m_widgets.push_back(widget);
 }
 
-Widget * WidgetContainer::getAtPos(const Vec2f & mousePos) const {
+Widget * WidgetContainer::getWidgetAt(const Vec2f & mousePos) const {
 	
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	BOOST_FOREACH(Widget * widget, m_widgets) {
 		
-		if(!w->isEnabled()) {
+		if(!widget->isEnabled()) {
 			continue;
 		}
 		
-		Widget * mouseOverWidget = w->IsMouseOver(mousePos);
-		if(mouseOverWidget) {
+		if(Widget * mouseOverWidget = widget->getWidgetAt(mousePos)) {
 			return mouseOverWidget;
 		}
 		

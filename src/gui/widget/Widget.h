@@ -92,7 +92,7 @@ public:
 	virtual void move(const Vec2f & offset);
 	void SetPos(Vec2f pos) { move(pos - m_rect.topLeft()); }
 	
-	virtual Widget * IsMouseOver(const Vec2f & mousePos);
+	virtual Widget * getWidgetAt(const Vec2f & mousePos);
 	
 	virtual WidgetType type() const = 0;
 	
