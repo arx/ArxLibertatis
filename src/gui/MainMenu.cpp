@@ -1973,7 +1973,7 @@ void MainMenu::Update() {
 	}
 	
 	if(m_window) {
-		m_window->Update();
+		m_window->update();
 	}
 	
 }
@@ -1990,7 +1990,7 @@ void MainMenu::Render() {
 	m_widgets->drawDebug();
 	
 	if(m_window) {
-		m_window->Render();
+		m_window->render();
 	}
 	
 }
