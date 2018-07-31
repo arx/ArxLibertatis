@@ -32,7 +32,8 @@ public:
 	virtual ~PanelWidget();
 	
 	void move(const Vec2f & offset);
-	void AddElement(Widget * widget);
+	
+	void add(Widget * widget);
 	
 	void update();
 	void render(bool mouseOver = false);

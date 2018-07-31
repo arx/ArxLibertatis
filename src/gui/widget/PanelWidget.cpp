@@ -41,8 +41,7 @@ void PanelWidget::move(const Vec2f & offset) {
 	
 }
 
-// patch on ajoute à droite en ligne
-void PanelWidget::AddElement(Widget * widget) {
+void PanelWidget::add(Widget * widget) {
 	
 	m_children.push_back(widget);
 	
@@ -56,10 +55,11 @@ void PanelWidget::AddElement(Widget * widget) {
 	}
 	
 	widget->move(Vec2f(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
+	
 }
 
-void PanelWidget::update()
-{
+void PanelWidget::update() {
+	
 	m_rect.right = m_rect.left;
 	m_rect.bottom = m_rect.top;
 	
@@ -68,6 +68,7 @@ void PanelWidget::update()
 		m_rect.right = std::max(m_rect.right, w->m_rect.right);
 		m_rect.bottom = std::max(m_rect.bottom, w->m_rect.bottom);
 	}
+	
 }
 
 void PanelWidget::render(bool /* mouseOver */) {

@@ -1577,13 +1577,13 @@ protected:
 		{
 			TextWidget * txt = new TextWidget(hFontControls, getLocalised(text, defaultText) + specialSuffix);
 			txt->setEnabled(false);
-			panel->AddElement(txt);
+			panel->add(txt);
 		}
 		
 		for(int i = 0; i < 2; i++) {
 			KeybindWidget * keybind = new KeybindWidget(controlAction, i, hFontControls, Vec2f(150 + 95 * i, 0));
 			keybind->keyChanged = boost::bind(&ControlOptionsPage::onKeyChanged, this, _1);
-			panel->AddElement(keybind);
+			panel->add(keybind);
 		}
 		
 		addCenter(panel, false);
