@@ -61,8 +61,8 @@ Widget * Widget::IsMouseOver(const Vec2f & mousePos) {
 	return NULL;
 }
 
-void Widget::SetShortCut(int _iShortCut) {
-	m_shortcut = _iShortCut;
+void Widget::setShortcut(int key) {
+	m_shortcut = key;
 }
 
 void Widget::setEnabled(bool enable) {

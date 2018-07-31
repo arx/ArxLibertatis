@@ -105,7 +105,7 @@ public:
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_no"));
 			txt->m_targetMenu = Page_None;
-			txt->SetShortCut(Keyboard::Key_Escape);
+			txt->setShortcut(Keyboard::Key_Escape);
 			addCorner(txt, BottomLeft);
 		}
 		
@@ -1797,7 +1797,7 @@ public:
 		{
 			TextWidget * no = new TextWidget(hFontMenu, getLocalised("system_no"));
 			no->m_targetMenu = Page_None;
-			no->SetShortCut(Keyboard::Key_Escape);
+			no->setShortcut(Keyboard::Key_Escape);
 			addCorner(no, BottomLeft);
 		}
 		
