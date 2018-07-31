@@ -62,14 +62,14 @@ CycleTextWidget::~CycleTextWidget() {
 	delete m_left;
 	delete m_right;
 	
-	BOOST_FOREACH(Widget * text, vText) {
-		delete text;
+	BOOST_FOREACH(Widget * entry, m_entries) {
+		delete entry;
 	}
 	
 }
 
 void CycleTextWidget::selectLast() {
-	m_value = int(vText.size() - 1);
+	m_value = int(m_entries.size() - 1);
 }
 
 void CycleTextWidget::addEntry(const std::string & label) {
@@ -79,7 +79,7 @@ void CycleTextWidget::addEntry(const std::string & label) {
 	widget->forceDisplay(TextWidget::Dynamic);
 	widget->setEnabled(m_enabled);
 	
-	vText.push_back(widget);
+	m_entries.push_back(widget);
 	
 	float maxWidth = m_rect.width() - m_left->m_rect.width() - m_right->m_rect.width()
 	                  - m_label->m_rect.width() - m_label->m_rect.height();
@@ -101,8 +101,8 @@ void CycleTextWidget::addEntry(const std::string & label) {
 	
 	m_label->SetPos(Vec2f(m_rect.left, m_rect.center().y - m_label->m_rect.height() / 2));
 	
-	BOOST_FOREACH(Widget * text, vText) {
-		text->SetPos(m_content.center() - text->m_rect.size() / 2.f);
+	BOOST_FOREACH(Widget * entry, m_entries) {
+		entry->SetPos(m_content.center() - entry->m_rect.size() / 2.f);
 	}
 	
 }
@@ -116,8 +116,8 @@ void CycleTextWidget::Move(const Vec2f & offset) {
 	m_content.move(offset);
 	m_right->Move(offset);
 	
-	for(std::vector<TextWidget *>::const_iterator i = vText.begin(), i_end = vText.end(); i != i_end; ++i) {
-		(*i)->Move(offset);
+	BOOST_FOREACH(Widget * entry, m_entries) {
+		entry->Move(offset);
 	}
 	
 }
@@ -162,8 +162,8 @@ void CycleTextWidget::setEnabled(bool enable) {
 	m_left->setEnabled(enable);
 	m_right->setEnabled(enable);
 	
-	BOOST_FOREACH(Widget * text, vText) {
-		text->setEnabled(enable);
+	BOOST_FOREACH(Widget * entry, m_entries) {
+		entry->setEnabled(enable);
 	}
 	
 }
@@ -179,15 +179,15 @@ void CycleTextWidget::render(bool mouseOver) {
 		m_right->render(m_right->m_rect.contains(cursor));
 	}
 	
-	if(m_value >= 0 && size_t(m_value) < vText.size()) {
-		vText[m_value]->render(m_content.contains(cursor));
+	if(m_value >= 0 && size_t(m_value) < m_entries.size()) {
+		m_entries[size_t(m_value)]->render(m_content.contains(cursor));
 	}
 	
 }
 
 void CycleTextWidget::newValue(int value) {
 	
-	value = positive_modulo(value, int(vText.size()));
+	value = positive_modulo(value, int(m_entries.size()));
 	
 	if(value == m_value) {
 		return;
@@ -196,7 +196,7 @@ void CycleTextWidget::newValue(int value) {
 	m_value = value;
 	
 	if(valueChanged) {
-		valueChanged(m_value, vText[size_t(m_value)]->text());
+		valueChanged(m_value, m_entries[size_t(m_value)]->text());
 	}
 	
 }

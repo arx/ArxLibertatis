@@ -66,7 +66,7 @@ private:
 	ButtonWidget * m_left;
 	ButtonWidget * m_right;
 	Font * m_font;
-	std::vector<TextWidget *> vText;
+	std::vector<TextWidget *> m_entries;
 	Rectf m_content;
 	
 	int m_value;
