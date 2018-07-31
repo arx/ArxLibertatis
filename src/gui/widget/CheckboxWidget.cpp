@@ -34,14 +34,14 @@
 
 CheckboxWidget::CheckboxWidget(const Vec2f & size, Font * font, const std::string & label)
 	: m_label(new TextWidget(font, label, Vec2f_ZERO))
+	, m_textureOff(TextureContainer::Load("graph/interface/menus/menu_checkbox_off"))
+	, m_textureOn(TextureContainer::Load("graph/interface/menus/menu_checkbox_on"))
 	, m_button(size.y, size.y)
 	, m_checked(false)
 {
 	
 	m_label->forceDisplay(TextWidget::Dynamic);
 	
-	m_textureOff = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-	m_textureOn = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 	arx_assert(m_textureOff);
 	arx_assert(m_textureOn);
 	
