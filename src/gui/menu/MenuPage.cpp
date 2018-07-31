@@ -118,13 +118,13 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	}
 	
 	float height = widget->m_rect.height();
-	float whitespace = 0.f;
-	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+	float whitespace = (widget->type() == WidgetType_Spacer) ? widget->m_rect.height() : 0.f;
+	BOOST_FOREACH(Widget * child, m_children.widgets()) {
 		height += RATIO_Y(m_rowSpacing);
-		height += w->m_rect.height();
+		height += child->m_rect.height();
 		whitespace += RATIO_Y(m_rowSpacing);
-		if(w->type() == WidgetType_Spacer) {
-			whitespace += w->m_rect.height();
+		if(child->type() == WidgetType_Spacer) {
+			whitespace += child->m_rect.height();
 		}
 	}
 	
@@ -137,9 +137,9 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
 	float y = std::floor(m_content.center().y - height / 2.f);
 	
-	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
-		w->SetPos(Vec2f(w->m_rect.left, y));
-		y += w->m_rect.height() * ((w->type() == WidgetType_Spacer) ? squish : 1.f);
+	BOOST_FOREACH(Widget * child, m_children.widgets()) {
+		child->SetPos(Vec2f(child->m_rect.left, y));
+		y += child->m_rect.height() * ((child->type() == WidgetType_Spacer) ? squish : 1.f);
 		y += RATIO_Y(m_rowSpacing) * squish;
 	}
 	
@@ -176,9 +176,9 @@ void MenuPage::Update(Vec2f pos) {
 		
 		bool isShortcutPressed = false;
 		
-		BOOST_FOREACH(Widget * w, m_children.m_widgets) {
-			arx_assert(w);
-			if(w->m_shortcut != ActionKey::UNUSED && GInput->isKeyPressed(w->m_shortcut)) {
+		BOOST_FOREACH(Widget * widget, m_children.widgets()) {
+			arx_assert(widget);
+			if(widget->m_shortcut != ActionKey::UNUSED && GInput->isKeyPressed(widget->m_shortcut)) {
 				isShortcutPressed = true;
 			}
 		}
@@ -189,19 +189,19 @@ void MenuPage::Update(Vec2f pos) {
 		
 	} else {
 		
-		BOOST_FOREACH(Widget * w, m_children.m_widgets) {
-			arx_assert(w);
+		BOOST_FOREACH(Widget * widget, m_children.widgets()) {
+			arx_assert(widget);
 			
-			if(m_focused && w != m_focused) {
+			if(m_focused && widget != m_focused) {
 				continue;
 			}
 			
-			if(w->m_shortcut != ActionKey::UNUSED && GInput->isKeyPressedNowUnPressed(w->m_shortcut)) {
+			if(widget->m_shortcut != ActionKey::UNUSED && GInput->isKeyPressedNowUnPressed(widget->m_shortcut)) {
 				
-				m_selected = w;
+				m_selected = widget;
 				
-				if(w->click() && w != m_focused) {
-					m_focused = w;
+				if(widget->click() && widget != m_focused) {
+					m_focused = widget;
 				}
 				
 				return;
@@ -242,9 +242,9 @@ void MenuPage::Update(Vec2f pos) {
 
 void MenuPage::Render() {
 	
-	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
-		w->update();
-		w->render(w == m_selected);
+	BOOST_FOREACH(Widget * widget, m_children.widgets()) {
+		widget->update();
+		widget->render(widget == m_selected);
 	}
 	
 	if(m_selected) {
