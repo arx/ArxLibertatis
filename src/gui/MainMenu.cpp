@@ -1944,7 +1944,7 @@ void MainMenu::onClickedCredits() {
 	MenuFader_start(Fade_In, Mode_Credits);
 }
 
-void MainMenu::Update() {
+void MainMenu::update() {
 	
 	if(m_resumeGame) {
 		m_resumeGame->setEnabled(g_canResumeGame || !savegames.empty());
@@ -1978,7 +1978,7 @@ void MainMenu::Update() {
 	
 }
 
-void MainMenu::Render() {
+void MainMenu::render() {
 	
 	if(m_background) {
 		UseRenderState state(render2D().noBlend());
