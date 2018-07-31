@@ -34,6 +34,10 @@
 
 SliderWidget::SliderWidget(const Vec2f & size, Font * font, const std::string & label)
 	: m_label(new TextWidget(font, label, Vec2f_ZERO))
+	, m_left(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_left"))
+	, m_right(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_right"))
+	, m_textureOff(TextureContainer::Load("graph/interface/menus/menu_slider_off"))
+	, m_textureOn(TextureContainer::Load("graph/interface/menus/menu_slider_on"))
 	, m_slider(10 * size.y / 2, size.y)
 	, m_minimum(0)
 	, m_value(0)
@@ -41,10 +45,6 @@ SliderWidget::SliderWidget(const Vec2f & size, Font * font, const std::string & 
 	
 	m_label->forceDisplay(TextWidget::Dynamic);
 	
-	m_left = new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_left");
-	m_right = new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_right");
-	m_textureOff = TextureContainer::Load("graph/interface/menus/menu_slider_off");
-	m_textureOn = TextureContainer::Load("graph/interface/menus/menu_slider_on");
 	arx_assert(m_textureOff);
 	arx_assert(m_textureOn);
 	
