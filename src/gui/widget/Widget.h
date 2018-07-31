@@ -65,7 +65,6 @@ public:
 	Rectf m_rect;
 	
 	MENUSTATE   m_targetMenu;
-	InputKeyId  m_shortcut;
 	
 protected:
 	
@@ -84,6 +83,7 @@ public:
 	virtual bool wantFocus() const { return false; }
 	virtual void unfocus() { }
 	
+	InputKeyId shortcut() const { return m_shortcut; }
 	void SetShortCut(int _iShortCut);
 	
 	virtual void setEnabled(bool enable);
@@ -95,6 +95,10 @@ public:
 	virtual Widget * IsMouseOver(const Vec2f & mousePos);
 	
 	virtual WidgetType type() const = 0;
+	
+private:
+	
+	InputKeyId m_shortcut;
 	
 };
 

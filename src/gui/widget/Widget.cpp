@@ -28,8 +28,8 @@
 Widget::Widget()
 	: m_rect(0, 0, 0, 0)
 	, m_targetMenu(NOP)
-	, m_shortcut(ActionKey::UNUSED)
 	, m_enabled(true)
+	, m_shortcut(ActionKey::UNUSED)
 { }
 
 Widget::~Widget() { }

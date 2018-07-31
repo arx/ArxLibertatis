@@ -178,7 +178,7 @@ void MenuPage::Update(Vec2f pos) {
 		
 		BOOST_FOREACH(Widget * widget, m_children.widgets()) {
 			arx_assert(widget);
-			if(widget->m_shortcut != ActionKey::UNUSED && GInput->isKeyPressed(widget->m_shortcut)) {
+			if(widget->shortcut() != ActionKey::UNUSED && GInput->isKeyPressed(widget->shortcut())) {
 				isShortcutPressed = true;
 			}
 		}
@@ -196,7 +196,7 @@ void MenuPage::Update(Vec2f pos) {
 				continue;
 			}
 			
-			if(widget->m_shortcut != ActionKey::UNUSED && GInput->isKeyPressedNowUnPressed(widget->m_shortcut)) {
+			if(widget->shortcut() != ActionKey::UNUSED && GInput->isKeyPressedNowUnPressed(widget->shortcut())) {
 				
 				m_selected = widget;
 				
