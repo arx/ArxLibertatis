@@ -223,8 +223,8 @@ void ARX_SOUND_PlayInterface(audio::SampleHandle sample_id, float pitch = 1.f);
 void ARX_SOUND_PlayMenu(audio::SampleHandle sample_id);
 
 audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar = NULL, const Entity * io = NULL);
-long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source);
-long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source);
+void ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source);
+void ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source);
 
 audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool &tooFar, const Entity * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position = NULL);
