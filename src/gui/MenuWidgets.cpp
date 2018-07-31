@@ -244,7 +244,7 @@ void MenuWindow::add(MenuPage * page) {
 	m_pages.push_back(page);
 }
 
-void MenuWindow::Update() {
+void MenuWindow::update() {
 	
 	m_pos.x = m_initalOffsetX + (m_fadeDistance * glm::sin(glm::radians(fAngle)));
 	
@@ -256,7 +256,7 @@ void MenuWindow::Update() {
 	
 }
 
-void MenuWindow::Render() {
+void MenuWindow::render() {
 	
 	if(!m_currentPage) {
 		return;

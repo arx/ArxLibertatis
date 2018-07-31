@@ -80,8 +80,8 @@ public:
 	virtual ~MenuWindow();
 	
 	void add(MenuPage * page);
-	void Update();
-	void Render();
+	void update();
+	void render();
 	
 	MENUSTATE currentPageId() const { return m_currentPage ? m_currentPage->id() : Page_None; }
 	
