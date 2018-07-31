@@ -33,7 +33,7 @@
 #include "scene/GameSound.h"
 
 CheckboxWidget::CheckboxWidget(const Vec2f & size, Font * font, const std::string & label)
-	: m_label(new TextWidget(font, label, Vec2f_ZERO))
+	: m_label(new TextWidget(font, label))
 	, m_textureOff(TextureContainer::Load("graph/interface/menus/menu_checkbox_off"))
 	, m_textureOn(TextureContainer::Load("graph/interface/menus/menu_checkbox_on"))
 	, m_button(size.y, size.y)

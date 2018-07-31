@@ -25,11 +25,10 @@
 #include "gui/Text.h"
 #include "scene/GameSound.h"
 
-TextWidget::TextWidget(Font * font, const std::string & text, Vec2f pos)
+TextWidget::TextWidget(Font * font, const std::string & text)
 	: m_font(font)
 	, m_display(Automatic)
 {
-	m_rect = Rectf(RATIO_2(pos), 0.f, 0.f);
 	setText(text);
 }
 
