@@ -166,6 +166,8 @@ void MenuPage::Update(Vec2f pos) {
 	
 	m_rect.moveTo(pos);
 	
+	m_children.update();
+	
 	if(m_focused && !m_focused->wantFocus()) {
 		m_focused->unfocus();
 		m_focused = NULL;
@@ -242,10 +244,7 @@ void MenuPage::Update(Vec2f pos) {
 
 void MenuPage::Render() {
 	
-	BOOST_FOREACH(Widget * widget, m_children.widgets()) {
-		widget->update();
-		widget->render(widget == m_selected);
-	}
+	m_children.render(m_selected);
 	
 	if(m_selected) {
 		pMenuCursor->SetMouseOver();
