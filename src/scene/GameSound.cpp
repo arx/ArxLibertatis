@@ -728,40 +728,38 @@ void ARX_SOUND_Stop(audio::SourcedSample & sample_id) {
 
 bool ARX_SOUND_PlayScriptAmbiance(const res::path & name, SoundLoopMode loop, float volume) {
 	
-	if (!g_soundInitialized) return -1; // TODO bogus return value
-
+	if (!g_soundInitialized) {
+		return -1; // TODO bogus return value
+	}
+	
 	res::path temp = res::path(name).set_ext("amb");
-
+	
 	AmbianceId ambiance_id = audio::getAmbiance(temp);
-
-	if (ambiance_id == AmbianceId())
-	{
-		if (volume == 0.f) return true;
-
+	
+	if(ambiance_id == AmbianceId()) {
+		if(volume == 0.f) {
+			return true;
+		}
+		
 		ambiance_id = audio::createAmbiance(temp, audio::PLAYING_AMBIANCE_SCRIPT);
 		if(ambiance_id == AmbianceId()) {
 			return false;
 		}
 		
 		audio::Channel channel;
-
 		channel.mixer = ARX_SOUND_MixerGameAmbiance;
 		channel.flags = FLAG_VOLUME | FLAG_AUTOFREE;
 		channel.volume = volume;
-
+		
 		audio::ambiancePlay(ambiance_id, channel, loop == ARX_SOUND_PLAY_LOOPED);
-	}
-	else
-	{
-		if (volume <= 0.0F)
-		{
+	} else {
+		if(volume <= 0.0F) {
 			audio::deleteAmbiance(ambiance_id);
 			return true;
 		}
-
 		audio::setAmbianceVolume(ambiance_id, volume);
 	}
-
+	
 	return true;
 }
 
