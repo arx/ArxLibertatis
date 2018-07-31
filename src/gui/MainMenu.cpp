@@ -441,7 +441,9 @@ public:
 	
 	ChooseLoadOrSaveMenuPage()
 		: MenuPage(Page_LoadOrSave)
-	{}
+		, m_loadButton(NULL)
+		, m_saveButton(NULL)
+	{ }
 	
 	~ChooseLoadOrSaveMenuPage() { }
 	
