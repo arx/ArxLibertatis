@@ -45,7 +45,7 @@ public:
 	
 	boost::function<void(KeybindWidget * /* widget */)> keyChanged;
 	
-	KeybindWidget(ControlAction keybindAction, size_t keybindIndex, Font * font, Vec2f pos = Vec2f_ZERO);
+	KeybindWidget(ControlAction keybindAction, size_t keybindIndex, Font * font);
 	
 	bool click();
 	

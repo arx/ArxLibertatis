@@ -29,7 +29,7 @@
 #include "scene/GameSound.h"
 #include "window/RenderWindow.h"
 
-KeybindWidget::KeybindWidget(ControlAction keybindAction, size_t keybindIndex, Font * font, Vec2f pos)
+KeybindWidget::KeybindWidget(ControlAction keybindAction, size_t keybindIndex, Font * font)
 	: m_font(font)
 	, m_action(keybindAction)
 	, m_index(keybindIndex)
@@ -37,7 +37,6 @@ KeybindWidget::KeybindWidget(ControlAction keybindAction, size_t keybindIndex, F
 	, m_editing(false)
 	, m_allowMouse(false)
 {
-	m_rect = Rectf(RATIO_2(pos), 0.f, 0.f);
 	setKey(ActionKey::UNUSED);
 }
 
