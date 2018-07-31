@@ -342,6 +342,13 @@ void deleteAmbiance(AmbianceId ambianceId) {
 	g_ambiances.remove(ambianceId);
 }
 
+void deleteAmbianceAll() {
+	AAL_ENTRY_VOID
+	
+	g_ambiances.clear();
+}
+
+
 AmbianceId getAmbiance(const res::path & name) {
 	
 	AAL_ENTRY_V(AmbianceId())

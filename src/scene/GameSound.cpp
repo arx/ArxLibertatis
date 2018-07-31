@@ -808,12 +808,7 @@ void ARX_SOUND_KillAmbiances() {
 		return;
 	}
 	
-	AmbianceId ambiance_id = audio::getNextAmbiance();
-	
-	while(ambiance_id != AmbianceId()) {
-		audio::deleteAmbiance(ambiance_id);
-		ambiance_id = audio::getNextAmbiance(ambiance_id);
-	}
+	audio::deleteAmbianceAll();
 	
 	g_zoneAmbiance = AmbianceId();
 }
