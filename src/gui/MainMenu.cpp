@@ -1966,7 +1966,7 @@ void MainMenu::Update() {
 		m_window->setCurrentPage(m_requestedPage);
 	}
 	
-	m_widgets->Update();
+	m_widgets->update();
 	
 	if(m_selected) {
 		pMenuCursor->SetMouseOver();

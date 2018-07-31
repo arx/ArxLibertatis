@@ -31,7 +31,7 @@ public:
 	WidgetContainer();
 	virtual ~WidgetContainer();
 	
-	void Update();
+	void update();
 	void render(Widget * selected = NULL);
 	
 	void add(Widget * widget);
