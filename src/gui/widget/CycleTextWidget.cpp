@@ -35,15 +35,14 @@
 
 CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, const std::string & label, Font * entryFont)
 	: m_label(new TextWidget(font, label, Vec2f_ZERO))
+	, m_left(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_left"))
+	, m_right(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_right"))
 	, m_font(entryFont ? entryFont : font)
 	, m_content(10 * size.y / 2, size.y)
 	, m_value(0)
 {
 	
 	m_label->forceDisplay(TextWidget::Dynamic);
-	
-	m_left = new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_left");
-	m_right = new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_right");
 	
 	float minWidth = m_left->m_rect.width() + m_content.width() + m_right->m_rect.width();
 	m_rect = Rectf(std::max(minWidth, size.x), std::max(m_content.height(), m_label->m_rect.height()));
