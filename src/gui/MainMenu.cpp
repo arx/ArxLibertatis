@@ -1581,8 +1581,9 @@ protected:
 		}
 		
 		for(int i = 0; i < 2; i++) {
-			KeybindWidget * keybind = new KeybindWidget(controlAction, i, hFontControls, Vec2f(150 + 95 * i, 0));
+			KeybindWidget * keybind = new KeybindWidget(controlAction, i, hFontControls);
 			keybind->keyChanged = boost::bind(&ControlOptionsPage::onKeyChanged, this, _1);
+			keybind->setPosition(RATIO_2(Vec2f(150 + 95 * i, 0)));
 			panel->add(keybind);
 		}
 		
