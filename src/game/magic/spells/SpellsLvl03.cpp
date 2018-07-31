@@ -100,8 +100,10 @@ void SpeedSpell::End() {
 	
 	m_targets.clear();
 	
-	if(m_caster == EntityHandle_Player)
+	if(m_caster == EntityHandle_Player) {
 		ARX_SOUND_Stop(m_snd_loop);
+		m_snd_loop.clearSource();
+	}
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
@@ -234,6 +236,8 @@ void FireballSpell::Launch() {
 void FireballSpell::End() {
 	
 	ARX_SOUND_Stop(m_snd_loop);
+	m_snd_loop.clearSource();
+	
 	endLightDelayed(m_light, GameDurationMs(500));
 }
 

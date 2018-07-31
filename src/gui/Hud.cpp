@@ -546,6 +546,7 @@ void CurrentTorchIconGui::updateInput() {
 				player.torch->show = SHOW_FLAG_IN_SCENE;
 				ARX_SOUND_PlaySFX(g_snd.TORCH_END);
 				ARX_SOUND_Stop(player.torch_loop);
+				player.torch_loop.clearSource();
 				player.torch = NULL;
 				lightHandleGet(torchLightHandle)->m_exists = false;
 				io->ignition = 1;

@@ -239,6 +239,7 @@ void ARX_PLAYER_KillTorch() {
 	
 	ARX_SOUND_PlaySFX(g_snd.TORCH_END);
 	ARX_SOUND_Stop(player.torch_loop);
+	player.torch_loop.clearSource();
 	
 	giveToPlayer(player.torch);
 	
@@ -265,6 +266,7 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 
 			if(io->ignit_sound != audio::SourcedSample()) {
 				ARX_SOUND_Stop(io->ignit_sound);
+				io->ignit_sound.clearSource();
 				io->ignit_sound = audio::SourcedSample();
 			}
 
@@ -292,6 +294,8 @@ static void ARX_PLAYER_ManageTorch() {
 		if(player.torch->durability <= 0) {
 			ARX_SOUND_PlaySFX(g_snd.TORCH_END);
 			ARX_SOUND_Stop(player.torch_loop);
+			player.torch_loop.clearSource();
+			
 			player.torch->destroy();
 			player.torch = NULL;
 			lightHandleGet(torchLightHandle)->m_exists = false;
@@ -2366,6 +2370,7 @@ void ARX_PLAYER_PutPlayerInNormalStance() {
 	}
 	
 	ARX_SOUND_Stop(player.magic_draw);
+	player.magic_draw.clearSource();
 }
 
 /*!

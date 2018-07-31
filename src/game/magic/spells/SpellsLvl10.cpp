@@ -115,6 +115,7 @@ void MassLightningStrikeSpell::End() {
 	endLightDelayed(m_light, GameDurationMs(200));
 	
 	ARX_SOUND_Stop(m_snd_loop);
+	m_snd_loop.clearSource();
 	ARX_SOUND_PlaySFX(g_snd.SPELL_LIGHTNING_END);
 	
 	for(std::vector<CLightning *>::iterator it = pTab.begin(); it != pTab.end(); ++it) {
@@ -405,6 +406,7 @@ void MassIncinerateSpell::Launch() {
 void MassIncinerateSpell::End() {
 	m_targets.clear();
 	ARX_SOUND_Stop(m_snd_loop);
+	m_snd_loop.clearSource();
 	ARX_SOUND_PlaySFX(g_snd.SPELL_INCINERATE_END);
 }
 

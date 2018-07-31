@@ -664,6 +664,7 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 			} else {
 				if(MAGICMODE) {
 					ARX_SOUND_Stop(player.magic_draw);
+					player.magic_draw.clearSource();
 					MAGICMODE = false;
 				}
 				

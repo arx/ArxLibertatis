@@ -566,6 +566,7 @@ void ARX_SPELLS_ManageMagic() {
 				}
 			} else {
 				ARX_SOUND_Stop(player.magic_draw);
+				player.magic_draw.clearSource();
 			}
 			
 			snip = 0;

@@ -91,6 +91,7 @@ CMagicMissile::~CMagicMissile() {
 	lLightId = LightHandle();
 
 	ARX_SOUND_Stop(snd_loop);
+	snd_loop.clearSource();
 }
 
 void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)

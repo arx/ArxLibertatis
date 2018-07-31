@@ -830,6 +830,7 @@ static void CheckUnderWaterIO(Entity * io) {
 
 			if(io->ignit_sound != audio::SourcedSample()) {
 				ARX_SOUND_Stop(io->ignit_sound);
+				io->ignit_sound.clearSource();
 				io->ignit_sound = audio::SourcedSample();
 			}
 
@@ -2766,6 +2767,7 @@ void ManageIgnition(Entity * io) {
 		if (io->ignit_sound != audio::SourcedSample())
 		{
 			ARX_SOUND_Stop(io->ignit_sound);
+			io->ignit_sound.clearSource();
 			io->ignit_sound = audio::SourcedSample();
 		}
 
@@ -2868,6 +2870,7 @@ void ManageIgnition_2(Entity * io) {
 		
 		if(io->ignit_sound != audio::SourcedSample()) {
 			ARX_SOUND_Stop(io->ignit_sound);
+			io->ignit_sound.clearSource();
 			io->ignit_sound = audio::SourcedSample();
 		}
 	}

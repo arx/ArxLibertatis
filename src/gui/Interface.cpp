@@ -945,7 +945,9 @@ void ArxGame::managePlayerControls() {
 		}
 	} else {
 		ARX_SOUND_Stop(player.magic_ambient);
+		player.magic_ambient.clearSource();
 		ARX_SOUND_Stop(player.magic_draw);
+		player.magic_draw.clearSource();
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONLIFE)) {

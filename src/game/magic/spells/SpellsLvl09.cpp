@@ -444,6 +444,7 @@ void IncinerateSpell::End() {
 	
 	m_targets.clear();
 	ARX_SOUND_Stop(m_snd_loop);
+	m_snd_loop.clearSource();
 	ARX_SOUND_PlaySFX(g_snd.SPELL_INCINERATE_END);
 }
 
