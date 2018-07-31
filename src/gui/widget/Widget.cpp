@@ -49,16 +49,7 @@ void Widget::Move(const Vec2f & offset) {
 }
 
 Widget * Widget::IsMouseOver(const Vec2f & mousePos) {
-	
-	if(   mousePos.x >= m_rect.left
-	   && mousePos.y >= m_rect.top
-	   && mousePos.x <= m_rect.right
-	   && mousePos.y <= m_rect.bottom
-	) {
-		return this;
-	}
-
-	return NULL;
+	return m_rect.contains(mousePos) ? this : NULL;
 }
 
 void Widget::setShortcut(int key) {
