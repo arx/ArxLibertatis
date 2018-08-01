@@ -260,11 +260,11 @@ void MenuPage::drawDebug() {
 
 
 void MenuPage::reserveTop() {
-	m_content.top = m_rect.top + hFontMenu->getLineHeight() + 5 * minSizeRatio();
+	m_content.top = m_rect.top + float(hFontMenu->getLineHeight()) + 5.f * minSizeRatio();
 }
 
 void MenuPage::reserveBottom() {
-	m_content.bottom = m_rect.bottom - hFontMenu->getLineHeight() - 5 * minSizeRatio();
+	m_content.bottom = m_rect.bottom - float(hFontMenu->getLineHeight()) - 5.f * minSizeRatio();
 }
 
 Vec2f MenuPage::buttonSize(float x, float y) const {
