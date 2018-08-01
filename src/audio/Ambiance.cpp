@@ -777,10 +777,10 @@ aalError Ambiance::pause() {
 	return AAL_OK;
 }
 
-aalError Ambiance::resume() {
+void Ambiance::resume() {
 	
 	if(!isPaused()) {
-		return AAL_ERROR;
+		return;
 	}
 	
 	TrackList::iterator track = m_tracks.begin();
@@ -795,8 +795,6 @@ aalError Ambiance::resume() {
 	
 	m_status = Playing;
 	m_start = session_time - m_time;
-	
-	return AAL_OK;
 }
 
 void Ambiance::update() {
