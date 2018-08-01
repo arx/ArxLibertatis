@@ -217,17 +217,14 @@ bool ARX_SOUND_Init() {
 	ARX_SOUND_MixerMenuSpeech = audio::createMixer(ARX_SOUND_MixerMenu);
 	ARX_SOUND_MixerMenuAmbiance = audio::createMixer(ARX_SOUND_MixerMenu);
 	
-	if(ARX_SOUND_MixerGame == audio::MixerId()
-	   || ARX_SOUND_MixerGameSample == audio::MixerId()
-	   || ARX_SOUND_MixerGameSpeech == audio::MixerId()
-	   || ARX_SOUND_MixerGameAmbiance == audio::MixerId()
-	   || ARX_SOUND_MixerMenu == audio::MixerId()
-	   || ARX_SOUND_MixerMenuSample == audio::MixerId()
-	   || ARX_SOUND_MixerMenuSpeech == audio::MixerId()
-	   || ARX_SOUND_MixerMenuAmbiance == audio::MixerId()) {
-		audio::clean();
-		return false;
-	}
+	arx_assert(ARX_SOUND_MixerGame != audio::MixerId());
+	arx_assert(ARX_SOUND_MixerGameSample != audio::MixerId());
+	arx_assert(ARX_SOUND_MixerGameSpeech != audio::MixerId());
+	arx_assert(ARX_SOUND_MixerGameAmbiance != audio::MixerId());
+	arx_assert(ARX_SOUND_MixerMenu != audio::MixerId());
+	arx_assert(ARX_SOUND_MixerMenuSample != audio::MixerId());
+	arx_assert(ARX_SOUND_MixerMenuSpeech != audio::MixerId());
+	arx_assert(ARX_SOUND_MixerMenuAmbiance != audio::MixerId());
 	
 	audio::setUnitFactor(ARX_SOUND_UNIT_FACTOR);
 	audio::setRolloffFactor(ARX_SOUND_ROLLOFF_FACTOR);
