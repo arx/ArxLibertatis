@@ -799,10 +799,10 @@ aalError Ambiance::resume() {
 	return AAL_OK;
 }
 
-aalError Ambiance::update() {
+void Ambiance::update() {
 	
 	if(!isPlaying()) {
-		return AAL_OK;
+		return;
 	}
 	
 	PlatformDuration interval = session_time - (m_start + m_time);
@@ -823,7 +823,7 @@ aalError Ambiance::update() {
 			m_channel.volume = m_fadeMax - m_fadeMax * (m_fadeTime / m_fadeInterval);
 			if(m_channel.volume <= 0.f) {
 				stop();
-				return AAL_OK;
+				return;
 			}
 		}
 		m_channel.volume = LinearToLogVolume(m_channel.volume);
@@ -834,8 +834,6 @@ aalError Ambiance::update() {
 	for(; track != m_tracks.end(); ++track) {
 		track->update(m_time, interval);
 	}
-	
-	return AAL_OK;
 }
 
 } // namespace audio
