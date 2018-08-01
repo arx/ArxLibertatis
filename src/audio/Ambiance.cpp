@@ -757,10 +757,10 @@ aalError Ambiance::stop(PlatformDuration fadeInterval) {
 	return AAL_OK;
 }
 
-aalError Ambiance::pause() {
+void Ambiance::pause() {
 	
 	if(!isPlaying()) {
-		return AAL_ERROR;
+		return;
 	}
 	
 	m_status = Paused;
@@ -773,8 +773,6 @@ aalError Ambiance::pause() {
 			track->flags |= Track::PAUSED;
 		}
 	}
-	
-	return AAL_OK;
 }
 
 void Ambiance::resume() {

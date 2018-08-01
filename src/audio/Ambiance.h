@@ -79,7 +79,7 @@ public:
 	
 	aalError play(const Channel & channel, bool loop = true, PlatformDuration fadeInterval = 0);
 	aalError stop(PlatformDuration fadeInterval = 0);
-	aalError pause();
+	void pause();
 	void resume();
 	void update();
 	
