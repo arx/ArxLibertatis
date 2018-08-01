@@ -70,7 +70,7 @@ public:
 	const Channel & getChannel() const { return m_channel; }
 	const res::path & getName() const { return m_name; }
 	
-	aalError setVolume(float volume);
+	void setVolume(float volume);
 	
 	bool isPaused() const { return m_status == Paused; }
 	bool isPlaying() const { return m_status == Playing; }
