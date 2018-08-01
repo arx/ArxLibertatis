@@ -139,8 +139,6 @@ typedef HandleType<struct SourceHandleTag,    s32, -1> SourceHandle;
 
 struct SourcedSample {
 	SourcedSample()
-		: m_source()
-		, m_sample()
 	{ }
 	
 	SourcedSample(SourceHandle source, SampleHandle sample) {

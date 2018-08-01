@@ -76,7 +76,6 @@ CMagicMissile::CMagicMissile()
 	, iLength()
 	, iBezierPrecision()
 	, fTrail()
-	, snd_loop()
 {
 	SetDuration(GameDurationMs(2000));
 	m_elapsed = m_duration + GameDurationMs(1);
