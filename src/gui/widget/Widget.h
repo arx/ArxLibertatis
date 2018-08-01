@@ -20,6 +20,7 @@
 #ifndef ARX_GUI_WIDGET_WIDGET_H
 #define ARX_GUI_WIDGET_WIDGET_H
 
+#include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 
 #include "core/SaveGame.h"
@@ -62,15 +63,12 @@ enum WidgetType {
 class Widget : private boost::noncopyable {
 	
 public:
-	Rectf m_rect;
-	
-public:
 	
 	Widget();
 	virtual ~Widget();
 	
 	virtual bool click();
-	virtual bool doubleClick() { return click(); }
+	virtual bool doubleClick();
 	virtual void hover() { }
 	virtual void update() { }
 	virtual void render(bool mouseOver = false) = 0;
@@ -92,6 +90,11 @@ public:
 	virtual Widget * getWidgetAt(const Vec2f & mousePos);
 	
 	virtual WidgetType type() const = 0;
+	
+	boost::function<void(Widget * /* widget */)> clicked;
+	boost::function<void(Widget * /* widget */)> doubleClicked;
+	
+	Rectf m_rect;
 	
 protected:
 	

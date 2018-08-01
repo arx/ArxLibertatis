@@ -31,7 +31,6 @@
 #include "graphics/font/Font.h"
 #include "gui/Text.h"
 #include "gui/menu/MenuCursor.h"
-#include "scene/GameSound.h"
 #include "util/Unicode.h"
 
 SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, const Rectf & rect)
@@ -129,38 +128,6 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 		
 	}
 	
-}
-
-bool SaveSlotWidget::click() {
-	
-	bool result = Widget::click();
-	
-	if(!m_enabled) {
-		return result;
-	}
-	
-	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
-	
-	if(clicked) {
-		clicked(this);
-	}
-	
-	return result;
-}
-
-bool SaveSlotWidget::doubleClick() {
-	
-	bool result = Widget::click();
-	
-	if(m_enabled) {
-		if(doubleClicked) {
-			doubleClicked(this);
-		} else if(clicked) {
-			clicked(this);
-		}
-	}
-	
-	return result;
 }
 
 void SaveSlotWidget::render(bool mouseOver) {

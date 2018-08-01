@@ -30,7 +30,6 @@
 #include "gui/MenuPublic.h"
 #include "gui/menu/MenuCursor.h"
 #include "gui/widget/TextWidget.h"
-#include "scene/GameSound.h"
 
 CheckboxWidget::CheckboxWidget(const Vec2f & size, Font * font, const std::string & label)
 	: m_label(new TextWidget(font, label))
@@ -66,8 +65,6 @@ void CheckboxWidget::move(const Vec2f & offset) {
 bool CheckboxWidget::click() {
 	
 	bool result = Widget::click();
-	
-	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 	
 	setChecked(!m_checked);
 	

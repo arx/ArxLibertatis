@@ -24,6 +24,7 @@
 #include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
 #include "input/Input.h"
+#include "scene/GameSound.h"
 
 Widget::Widget()
 	: m_rect(0, 0, 0, 0)
@@ -36,9 +37,37 @@ Widget::~Widget() { }
 
 bool Widget::click() {
 	
+	if(!m_enabled) {
+		return false;
+	}
+	
+	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
+	
 	if(m_enabled && m_targetPage != NOP && g_mainMenu) {
 		g_mainMenu->requestPage(m_targetPage);
 	}
+	
+	if(clicked) {
+		clicked(this);
+	}
+	
+	return false;
+	
+}
+
+bool Widget::doubleClick() {
+	
+	if(!doubleClicked) {
+		return click();
+	}
+	
+	if(!m_enabled) {
+		return false;
+	}
+	
+	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
+	
+	doubleClicked(this);
 	
 	return false;
 	

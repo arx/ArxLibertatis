@@ -26,7 +26,6 @@
 #include "graphics/font/Font.h"
 #include "gui/Text.h"
 #include "input/Input.h"
-#include "scene/GameSound.h"
 #include "window/RenderWindow.h"
 
 KeybindWidget::KeybindWidget(ControlAction keybindAction, size_t keybindIndex, Font * font)
@@ -47,8 +46,6 @@ bool KeybindWidget::click() {
 	if(!m_enabled) {
 		return result;
 	}
-	
-	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 	
 	if(!m_editing) {
 		m_editing = true;

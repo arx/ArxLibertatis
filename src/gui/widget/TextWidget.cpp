@@ -23,7 +23,6 @@
 #include "graphics/Color.h"
 #include "graphics/font/Font.h"
 #include "gui/Text.h"
-#include "scene/GameSound.h"
 
 TextWidget::TextWidget(Font * font, const std::string & text)
 	: m_font(font)
@@ -36,38 +35,6 @@ void TextWidget::setText(const std::string & text) {
 	m_text = text;
 	Vec2i textSize = m_font->getTextSize(m_text);
 	m_rect = Rectf(m_rect.topLeft(), float(textSize.x + 1), float(textSize.y + 1));
-}
-
-bool TextWidget::click() {
-	
-	bool result = Widget::click();
-	
-	if(!m_enabled) {
-		return result;
-	}
-	
-	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
-	
-	if(clicked) {
-		clicked(this);
-	}
-	
-	return result;
-}
-
-bool TextWidget::doubleClick() {
-	
-	bool result = Widget::click();
-	
-	if(m_enabled) {
-		if(doubleClicked) {
-			doubleClicked(this);
-		} else if(clicked) {
-			clicked(this);
-		}
-	}
-	
-	return result;
 }
 
 void TextWidget::render(bool mouseOver) {

@@ -24,7 +24,6 @@
 #include "graphics/data/TextureContainer.h"
 #include "gui/menu/MenuCursor.h"
 #include "input/Input.h"
-#include "scene/GameSound.h"
 
 ButtonWidget::ButtonWidget(const Vec2f & size, const res::path & texture)
 	: m_texture(TextureContainer::Load(texture))
@@ -37,20 +36,6 @@ ButtonWidget::ButtonWidget(const Vec2f & size, const res::path & texture)
 }
 
 ButtonWidget::~ButtonWidget() { }
-
-bool ButtonWidget::click() {
-	
-	bool result = Widget::click();
-	
-	if(m_enabled) {
-		ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
-		if(clicked) {
-			clicked();
-		}
-	}
-	
-	return result;
-}
 
 void ButtonWidget::render(bool mouseOver) {
 	

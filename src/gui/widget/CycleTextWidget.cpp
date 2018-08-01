@@ -31,7 +31,6 @@
 #include "gui/widget/ButtonWidget.h"
 #include "gui/widget/TextWidget.h"
 #include "input/Input.h"
-#include "scene/GameSound.h"
 
 CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, const std::string & label, Font * entryFont)
 	: m_label(new TextWidget(font, label))
@@ -139,8 +138,6 @@ bool CycleTextWidget::click() {
 	if(!m_enabled) {
 		return result;
 	}
-	
-	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 	
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
 	

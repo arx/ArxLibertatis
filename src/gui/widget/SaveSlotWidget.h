@@ -23,7 +23,6 @@
 #include <string>
 
 #include "core/SaveGame.h"
-#include "gui/widget/TextWidget.h"
 #include "gui/widget/Widget.h"
 #include "math/Vector.h"
 
@@ -41,14 +40,7 @@ class SaveSlotWidget: public Widget {
 	
 public:
 	
-	boost::function<void(SaveSlotWidget * /* widget */)> clicked;
-	boost::function<void(SaveSlotWidget * /* widget */)> doubleClicked;
-	
 	SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, const Rectf & rect);
-	
-	bool click();
-	
-	bool doubleClick();
 	
 	void render(bool mouseOver = false);
 	
