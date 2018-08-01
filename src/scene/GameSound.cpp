@@ -200,6 +200,10 @@ bool ARX_SOUND_Init() {
 	audio::setSamplePath("sfx");
 	audio::setAmbiancePath("sfx/ambiance");
 	audio::setEnvironmentPath(ARX_SOUND_PATH_ENVIRONMENT);
+	audio::setUnitFactor(0.01f);
+	audio::setRolloffFactor(1.3f);
+	
+	audio::threadStart();
 	
 	// Create game mixers
 	ARX_SOUND_MixerGame = audio::createMixer();
@@ -221,11 +225,6 @@ bool ARX_SOUND_Init() {
 	arx_assert(ARX_SOUND_MixerMenuSample != audio::MixerId());
 	arx_assert(ARX_SOUND_MixerMenuSpeech != audio::MixerId());
 	arx_assert(ARX_SOUND_MixerMenuAmbiance != audio::MixerId());
-	
-	audio::setUnitFactor(0.01f);
-	audio::setRolloffFactor(1.3f);
-	
-	audio::threadStart();
 	
 	// Load samples
 	ARX_SOUND_CreateStaticSamples();
