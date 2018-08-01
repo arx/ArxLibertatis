@@ -201,12 +201,9 @@ bool ARX_SOUND_Init() {
 		return false;
 	}
 	
-	if(audio::setSamplePath(ARX_SOUND_PATH_SAMPLE)
-	   || audio::setAmbiancePath(ARX_SOUND_PATH_AMBIANCE)
-	   || audio::setEnvironmentPath(ARX_SOUND_PATH_ENVIRONMENT)) {
-		audio::clean();
-		return false;
-	}
+	audio::setSamplePath(ARX_SOUND_PATH_SAMPLE);
+	audio::setAmbiancePath(ARX_SOUND_PATH_AMBIANCE);
+	audio::setEnvironmentPath(ARX_SOUND_PATH_ENVIRONMENT);
 	
 	// Create game mixers
 	ARX_SOUND_MixerGame = audio::createMixer();

@@ -176,31 +176,25 @@ std::vector<std::string> getDevices() {
 	return backend->getDevices();
 }
 
-aalError setSamplePath(const res::path & path) {
+void setSamplePath(const res::path & path) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	sample_path = path;
-	
-	return AAL_OK;
 }
 
-aalError setAmbiancePath(const res::path & path) {
+void setAmbiancePath(const res::path & path) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	ambiance_path = path;
-	
-	return AAL_OK;
 }
 
-aalError setEnvironmentPath(const res::path & path) {
+void setEnvironmentPath(const res::path & path) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	environment_path = path;
-	
-	return AAL_OK;
 }
 
 aalError setReverbEnabled(bool enable) {
