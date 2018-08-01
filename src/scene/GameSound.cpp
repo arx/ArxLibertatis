@@ -102,7 +102,6 @@ struct PlayingAmbiance {
 
 static const unsigned long MAX_VARIANTS(5);
 static const PlatformDuration AMBIANCE_FADE_TIME = PlatformDurationMs(2000);
-static const float ARX_SOUND_ROLLOFF_FACTOR(1.3F);
 static const float ARX_SOUND_DEFAULT_FALLSTART(200.0F);
 
 static const float ARX_SOUND_DEFAULT_FALLEND(2200.0F);
@@ -226,7 +225,7 @@ bool ARX_SOUND_Init() {
 	arx_assert(ARX_SOUND_MixerMenuAmbiance != audio::MixerId());
 	
 	audio::setUnitFactor(0.01f);
-	audio::setRolloffFactor(ARX_SOUND_ROLLOFF_FACTOR);
+	audio::setRolloffFactor(1.3f);
 	
 	audio::threadStart();
 	
