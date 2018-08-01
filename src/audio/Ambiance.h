@@ -77,7 +77,7 @@ public:
 	bool isIdle() const { return m_status == Idle; }
 	bool isLooped() const { return m_loop; }
 	
-	aalError play(const Channel & channel, bool loop = true, PlatformDuration fadeInterval = 0);
+	void play(const Channel & channel, bool loop = true, PlatformDuration fadeInterval = 0);
 	void stop(PlatformDuration fadeInterval = 0);
 	void pause();
 	void resume();
