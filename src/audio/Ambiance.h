@@ -81,7 +81,7 @@ public:
 	aalError stop(PlatformDuration fadeInterval = 0);
 	aalError pause();
 	aalError resume();
-	aalError update();
+	void update();
 	
 	struct Track;
 	typedef std::vector<Track> TrackList;
