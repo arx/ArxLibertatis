@@ -97,7 +97,7 @@ class DebugBox {
 	
 	template<typename FIELD_T>
 	void put(Row & row, FIELD_T val) {
-		using namespace arx::debug;
+		using arx::debug::operator<<;
 		std::stringstream ss;
 		ss << val;
 		row.fields.push_back(ss.str());
