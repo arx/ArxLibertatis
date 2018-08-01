@@ -672,7 +672,7 @@ aalError Ambiance::setVolume(float volume) {
 	return AAL_OK;
 }
 
-aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration fadeInterval) {
+void Ambiance::play(const Channel & channel, bool loop, PlatformDuration fadeInterval) {
 	
 	m_channel = channel;
 	
@@ -726,8 +726,6 @@ aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration fad
 	if(mixer && mixer->isPaused()) {
 		m_status = Paused;
 	}
-	
-	return AAL_OK;
 }
 
 void Ambiance::stop(PlatformDuration fadeInterval) {
