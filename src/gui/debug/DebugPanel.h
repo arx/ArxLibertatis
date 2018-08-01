@@ -51,13 +51,13 @@ std::string flagNames(const FlagName<T> (&names)[N], const T flags) {
 namespace arx {
 namespace debug {
 
-std::stringstream &operator <<(std::stringstream &ss, Vec2i value);
-std::stringstream &operator <<(std::stringstream &ss, Vec3f value);
-std::stringstream &operator <<(std::stringstream &ss, Anglef value);
-std::stringstream &operator <<(std::stringstream &ss, ResourcePool value);
+std::stringstream & operator<<(std::stringstream & ss, Vec2i value);
+std::stringstream & operator<<(std::stringstream & ss, Vec3f value);
+std::stringstream & operator<<(std::stringstream & ss, Anglef value);
+std::stringstream & operator<<(std::stringstream & ss, ResourcePool value);
 
 template <typename TAG, typename T, T INVALID_VALUE>
-std::stringstream &operator <<(std::stringstream &ss, HandleType<TAG, T, INVALID_VALUE> value) {
+std::stringstream & operator<<(std::stringstream & ss, HandleType<TAG, T, INVALID_VALUE> value) {
 	ss << value.handleData();
 	if(value.handleData() == INVALID_VALUE) {
 		ss << " X";
@@ -95,7 +95,7 @@ class DebugBox {
 	void calcSizes();
 	void printCommon();
 	
-	template<typename FIELD_T>
+	template <typename FIELD_T>
 	void put(Row & row, FIELD_T val) {
 		using arx::debug::operator<<;
 		std::stringstream ss;
@@ -106,7 +106,7 @@ class DebugBox {
 public:
 	DebugBox(const Vec2i & pos, const std::string & title);
 	
-	template<typename F1, typename F2>
+	template <typename F1, typename F2>
 	void add(F1 f1, F2 f2) {
 		Row row;
 		put(row, f1);
@@ -114,7 +114,7 @@ public:
 		m_elements.push_back(row);
 	}
 	
-	template<typename F1, typename F2, typename F3>
+	template <typename F1, typename F2, typename F3>
 	void add(F1 f1, F2 f2, F3 f3) {
 		Row row;
 		put(row, f1);
@@ -123,7 +123,7 @@ public:
 		m_elements.push_back(row);
 	}
 	
-	template<typename F1, typename F2, typename F3, typename F4>
+	template <typename F1, typename F2, typename F3, typename F4>
 	void add(F1 f1, F2 f2, F3 f3, F4 f4) {
 		Row row;
 		put(row, f1);

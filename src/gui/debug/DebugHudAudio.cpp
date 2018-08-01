@@ -26,7 +26,7 @@
 
 namespace arx {
 namespace debug {
-static std::stringstream &operator <<(std::stringstream & s, const audio::SourceStatus val) {
+static std::stringstream &operator<<(std::stringstream & s, const audio::SourceStatus val) {
 	switch(val) {
 		case audio::Idle:
 			s << "idle";
