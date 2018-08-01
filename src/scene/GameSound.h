@@ -212,7 +212,7 @@ long ARX_SOUND_IsEnabled();
 void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Vec3f & up);
 
 audio::SampleHandle ARX_SOUND_Load(const res::path & name);
-void ARX_SOUND_Free(const audio::SampleHandle &sample);
+void ARX_SOUND_Free(const audio::SampleHandle & sample);
 
 void ARX_SOUND_PlaySFX(audio::SampleHandle sample_id, const Vec3f * position = NULL, float pitch = 1.f);
 
@@ -226,7 +226,7 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar 
 void ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source);
 void ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source);
 
-audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool &tooFar, const Entity * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
+audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar, const Entity * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position = NULL);
 audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech);
 bool ARX_SOUND_IsPlaying(audio::SourcedSample & sample_id);

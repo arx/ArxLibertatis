@@ -33,22 +33,22 @@
 namespace arx {
 namespace debug {
 
-std::stringstream &operator <<(std::stringstream &ss, Vec2i value) {
+std::stringstream & operator<<(std::stringstream & ss, Vec2i value) {
 	ss << boost::str(boost::format("(%d, %d)") % value.x % value.y);
 	return ss;
 }
 
-std::stringstream &operator <<(std::stringstream &ss, Vec3f value) {
+std::stringstream & operator<<(std::stringstream & ss, Vec3f value) {
 	ss << boost::str(boost::format("%4.2f %4.2f %4.2f") % value.x % value.y % value.z);
 	return ss;
 }
 
-std::stringstream &operator <<(std::stringstream &ss, Anglef value) {
+std::stringstream & operator<<(std::stringstream & ss, Anglef value) {
 	ss << boost::str(boost::format("%4.2f %4.2f %4.2f") % value.getPitch() % value.getYaw() % value.getRoll());
 	return ss;
 }
 
-std::stringstream &operator <<(std::stringstream &ss, ResourcePool value) {
+std::stringstream & operator<<(std::stringstream & ss, ResourcePool value) {
 	ss << boost::str(boost::format("%4.2f/%4.2f") % value.current % value.max);
 	return ss;
 }
@@ -75,7 +75,7 @@ void DebugBox::calcSizes() {
 			
 			if(!first) {
 				bool numeric = true;
-				for(size_t u=0; u<field.size(); ++u) {
+				for(size_t u = 0; u < field.size(); ++u) {
 					if(!(field[u] >= 48 && field[u] <= 57)) {
 						numeric = false;
 						break;
@@ -123,7 +123,7 @@ void DebugBox::printCommon() {
 	
 	std::stringstream top;
 	top << "╭─ " << m_title << " ";
-	for(int i=0; i < m_chars.x - 3 - int(m_title.size()); i++)
+	for(int i = 0; i < m_chars.x - 3 - int(m_title.size()); i++)
 		top << "─";
 	top << "┐";
 	

@@ -17,9 +17,9 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GUI__DEBUG_DEBUGHUDAUDIO_H
-#define ARX_GUI__DEBUG_DEBUGHUDAUDIO_H
+#ifndef ARX_GUI_DEBUG_DEBUGHUDAUDIO_H
+#define ARX_GUI_DEBUG_DEBUGHUDAUDIO_H
 
 void debugHud_Audio();
 
-#endif // ARX_GUI__DEBUG_DEBUGHUDAUDIO_H
+#endif // ARX_GUI_DEBUG_DEBUGHUDAUDIO_H

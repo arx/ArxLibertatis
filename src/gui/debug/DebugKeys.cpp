@@ -78,9 +78,7 @@ void ShowDebugToggles() {
 	for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
 		bool trigg = (g_platformTime.frameStart() - g_debugTriggersTime[i] <= g_debugTriggersDecayDuration);
 		
-		togglesBox.add(i, (g_debugToggles[i] ? "on" : "off"),
-					   trigg ? "X" : "",
-					   g_debugValues[i]);
+		togglesBox.add(i, g_debugToggles[i] ? "on" : "off", trigg ? "X" : "", g_debugValues[i]);
 	}
 	togglesBox.print(g_size.bottomRight());
 }
