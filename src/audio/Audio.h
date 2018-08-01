@@ -76,9 +76,9 @@ std::vector<std::string> getDevices();
  * This is not threadsafe: The caller must ensure that no other audio methods are called at the same time.
  */
 aalError clean();
-aalError setSamplePath(const res::path & path);
-aalError setAmbiancePath(const res::path & path);
-aalError setEnvironmentPath(const res::path & path);
+void setSamplePath(const res::path & path);
+void setAmbiancePath(const res::path & path);
+void setEnvironmentPath(const res::path & path);
 aalError setReverbEnabled(bool enable);
 bool isReverbSupported();
 aalError setHRTFEnabled(HRTFAttribute enable);
