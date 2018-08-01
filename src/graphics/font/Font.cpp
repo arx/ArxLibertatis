@@ -422,9 +422,9 @@ Font::text_iterator Font::getPosition(text_iterator start, text_iterator end, in
 }
 
 int Font::getLineHeight() const {
-	return m_size->metrics.height >> 6;
+	return int(m_size->metrics.height >> 6);
 }
 
 int Font::getMaxAdvance() const {
-	return m_size->metrics.max_advance >> 6;
+	return int(m_size->metrics.max_advance >> 6);
 }
