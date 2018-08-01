@@ -268,7 +268,11 @@ private:
 	size_t queued; // How many loop counts are already queued.
 	
 	explicit Track(Ambiance * _ambiance)
-		: s_id(), ambiance(_ambiance), flags(0), loopc(0), queued(0) { }
+		: ambiance(_ambiance)
+		, flags(0)
+		, loopc(0)
+		, queued(0)
+	{ }
 	
 	void keyPlay();
 	

@@ -26,7 +26,12 @@
 
 namespace audio {
 
-Source::Source(Sample * sample) : m_id(), m_sample(sample), status(Idle), time(0), callback_i(0) {
+Source::Source(Sample * sample)
+	: m_sample(sample)
+	, status(Idle)
+	, time(0)
+	, callback_i(0)
+{
 	m_sample->reference();
 }
 

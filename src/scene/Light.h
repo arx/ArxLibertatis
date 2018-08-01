@@ -148,7 +148,6 @@ struct EERIE_LIGHT {
 		, ex_size(0.f)
 		, ex_speed(0.f)
 		, ex_flaresize(0.f)
-		, sample()
 	{ }
 	
 };

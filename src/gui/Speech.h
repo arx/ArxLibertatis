@@ -155,10 +155,6 @@ struct ARX_SPEECH {
 	const EERIE_SCRIPT * es;
 	size_t scrpos;
 	
-	ARX_SPEECH()
-		: sample()
-	{ }
-	
 	void clear() {
 		exist = 0;
 		sample = audio::SourcedSample();
