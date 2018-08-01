@@ -1859,7 +1859,7 @@ def CheckSpacing(filename, clean_lines, linenum, error):
           'Extra space in operator %s' % match.group(1))
 
   # Don't try to do spacing checks for operator methods
-  line = re.sub(r'operator[\s]*(==|!=|<|<<|<=|>=|>>|>|\+=|\*=|\-=|/=|\%=|\|=|\&=|\^=|\~|\~|\+|\*|\-|\/|\%|\||\&|\^|\+\+|\-\-|\-\>|=|\!|new|new\[\]|delete|delete\[\]|[\:\w\s\<\>\*\&]*)[\s]*\(', 'operator\(', line)
+  line = re.sub(r'operator[\s]*(==|!=|<|<<|<=|>=|>>|>|\+=|\*=|\-=|/=|\%=|\|=|\&=|\^=|\~|\~|\+|\*|\-|\/|\%|\||\&|\^|\+\+|\-\-|\-\>|=|\!|new|new\[\]|delete|delete\[\]|[\:\w\s\<\>\*\&]*)[\s]*([\(\;])', 'operator\\2', line)
 
   line = re.sub(r'^[\s]*\#[\s]*(include|pragma).*', '', line)
 
