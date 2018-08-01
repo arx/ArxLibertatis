@@ -648,16 +648,16 @@ aalError Ambiance::load() {
 	return AAL_OK;
 }
 
-aalError Ambiance::setVolume(float volume) {
+void Ambiance::setVolume(float volume) {
 	
 	if(!(m_channel.flags & FLAG_VOLUME)) {
-		return AAL_ERROR_INIT;
+		return;
 	}
 	
 	m_channel.volume = glm::clamp(volume, 0.f, 1.f);
 	
 	if(!isPlaying()) {
-		return AAL_OK;
+		return;
 	}
 	
 	TrackList::const_iterator track = m_tracks.begin();
@@ -668,8 +668,6 @@ aalError Ambiance::setVolume(float volume) {
 			}
 		}
 	}
-	
-	return AAL_OK;
 }
 
 void Ambiance::play(const Channel & channel, bool loop, PlatformDuration fadeInterval) {
