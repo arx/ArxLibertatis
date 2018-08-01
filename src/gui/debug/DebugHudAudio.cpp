@@ -28,13 +28,13 @@ namespace arx {
 namespace debug {
 static std::stringstream &operator <<(std::stringstream & s, const audio::SourceStatus val) {
 	switch(val) {
-		case audio::SourceStatus::Idle:
+		case audio::Idle:
 			s << "idle";
 			break;
-		case audio::SourceStatus::Playing:
+		case audio::Playing:
 			s << "playing";
 			break;
-		case audio::SourceStatus::Paused:
+		case audio::Paused:
 			s << "paused";
 			break;
 		default:
