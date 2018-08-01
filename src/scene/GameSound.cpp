@@ -108,7 +108,6 @@ static const float ARX_SOUND_DEFAULT_FALLEND(2200.0F);
 static const float ARX_SOUND_REFUSE_DISTANCE(2500.0F);
 
 static const res::path ARX_SOUND_PATH_INI = "localisation";
-static const char ARX_SOUND_PATH_AMBIANCE[] = "sfx/ambiance";
 static const char ARX_SOUND_PATH_ENVIRONMENT[] = "sfx/environment";
 static const res::path ARX_SOUND_PRESENCE_NAME = "presence";
 static const std::string ARX_SOUND_FILE_EXTENSION_WAV = ".wav";
@@ -199,7 +198,7 @@ bool ARX_SOUND_Init() {
 	}
 	
 	audio::setSamplePath("sfx");
-	audio::setAmbiancePath(ARX_SOUND_PATH_AMBIANCE);
+	audio::setAmbiancePath("sfx/ambiance");
 	audio::setEnvironmentPath(ARX_SOUND_PATH_ENVIRONMENT);
 	
 	// Create game mixers
