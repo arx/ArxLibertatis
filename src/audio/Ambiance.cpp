@@ -730,17 +730,17 @@ aalError Ambiance::play(const Channel & channel, bool loop, PlatformDuration fad
 	return AAL_OK;
 }
 
-aalError Ambiance::stop(PlatformDuration fadeInterval) {
+void Ambiance::stop(PlatformDuration fadeInterval) {
 	
 	if(isIdle()) {
-		return AAL_OK;
+		return;
 	}
 	
 	m_fadeInterval = fadeInterval;
 	if(m_fadeInterval != 0) {
 		m_fade = FadeDown;
 		m_fadeTime = 0;
-		return AAL_OK;
+		return;
 	}
 	
 	m_status = Idle;
@@ -753,8 +753,6 @@ aalError Ambiance::stop(PlatformDuration fadeInterval) {
 		}
 		track->s_id.clearSource();
 	}
-	
-	return AAL_OK;
 }
 
 void Ambiance::pause() {

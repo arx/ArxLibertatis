@@ -78,7 +78,7 @@ public:
 	bool isLooped() const { return m_loop; }
 	
 	aalError play(const Channel & channel, bool loop = true, PlatformDuration fadeInterval = 0);
-	aalError stop(PlatformDuration fadeInterval = 0);
+	void stop(PlatformDuration fadeInterval = 0);
 	void pause();
 	void resume();
 	void update();
