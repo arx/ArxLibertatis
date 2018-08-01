@@ -55,8 +55,8 @@ public:
 } // namespace profiler
 
 #if BUILD_PROFILER_INSTRUMENT
-	#define ARX_PROFILE(tag)           profiler::Scope profileScope##__LINE__(#tag)
-	#define ARX_PROFILE_FUNC()         profiler::Scope profileScope##__LINE__(__FUNCTION__)
+	#define ARX_PROFILE(tag)           profiler::Scope profileScopeTag##__LINE__(#tag)
+	#define ARX_PROFILE_FUNC()         profiler::Scope profileScopeFunc##__LINE__(__FUNCTION__)
 #else
 	#define ARX_PROFILE(tag)           ARX_DISCARD(tag)
 	#define ARX_PROFILE_FUNC()         ARX_DISCARD()
