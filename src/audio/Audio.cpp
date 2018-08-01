@@ -626,7 +626,7 @@ aalError getSourceInfos(std::vector<SourceInfo> & infos) {
 	
 	for(audio::Backend::source_iterator p = audio::backend->sourcesBegin(); p != audio::backend->sourcesEnd(); ++p) {
 		if(*p) {
-			audio::Source *s = *p;
+			audio::Source * s = *p;
 			SourceInfo si;
 			si.source = s->getId().source();
 			si.status = s->getStatus();
