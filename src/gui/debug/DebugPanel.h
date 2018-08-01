@@ -51,13 +51,13 @@ std::string flagNames(const FlagName<T> (&names)[N], const T flags) {
 namespace arx {
 namespace debug {
 
-std::stringstream &operator <<(std::stringstream &ss, const Vec2i value);
-std::stringstream &operator <<(std::stringstream &ss, const Vec3f value);
-std::stringstream &operator <<(std::stringstream &ss, const Anglef value);
-std::stringstream &operator <<(std::stringstream &ss, const ResourcePool value);
+std::stringstream &operator <<(std::stringstream &ss, Vec2i value);
+std::stringstream &operator <<(std::stringstream &ss, Vec3f value);
+std::stringstream &operator <<(std::stringstream &ss, Anglef value);
+std::stringstream &operator <<(std::stringstream &ss, ResourcePool value);
 
 template <typename TAG, typename T, T INVALID_VALUE>
-std::stringstream &operator <<(std::stringstream &ss, const HandleType<TAG, T, INVALID_VALUE> value) {
+std::stringstream &operator <<(std::stringstream &ss, HandleType<TAG, T, INVALID_VALUE> value) {
 	ss << value.handleData();
 	if(value.handleData() == INVALID_VALUE) {
 		ss << " X";
