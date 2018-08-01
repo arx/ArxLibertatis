@@ -204,7 +204,7 @@ private:
 		}
 	}
 	
-	void onClickedSaveConfirm(TextWidget * /* widget */) {
+	void onClickedSaveConfirm(Widget * /* widget */) {
 
 		ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 		
@@ -216,7 +216,7 @@ private:
 		
 	}
 	
-	void onClickedSaveDelete(TextWidget * /* widget */) {
+	void onClickedSaveDelete(Widget * /* widget */) {
 		g_mainMenu->bReInitAll = true;
 		savegames.remove(m_savegame);
 	}
@@ -315,11 +315,12 @@ private:
 	TextWidget * pLoadConfirm;
 	TextWidget * pDeleteConfirm;
 	
-	void onClickQuestLoad(SaveSlotWidget * widget) {
+	void onClickQuestLoad(Widget * widget) {
 		
 		resetSelection();
 		
-		m_selected = widget;
+		arx_assert(widget->type() == WidgetType_SaveSlot);
+		m_selected = static_cast<SaveSlotWidget *>(widget);
 		m_selected->setSelected(true);
 		
 		pLoadConfirm->setEnabled(true);
@@ -327,7 +328,7 @@ private:
 		
 	}
 	
-	void onDoubleClickQuestLoad(SaveSlotWidget * widget) {
+	void onDoubleClickQuestLoad(Widget * widget) {
 		widget->click();
 		pLoadConfirm->click();
 	}
@@ -417,9 +418,12 @@ public:
 	
 private:
 	
-	void onClickQuestSaveConfirm(SaveSlotWidget * widget) {
+	void onClickQuestSaveConfirm(Widget * widget) {
+		arx_assert(widget->type() == WidgetType_SaveSlot);
+		SavegameHandle savegame = static_cast<SaveSlotWidget *>(widget)->savegame();
 		MenuPage * page = g_mainMenu->m_window->getPage(Page_SaveConfirm);
-		static_cast<SaveConfirmMenuPage *>(page)->setSaveHandle(widget->savegame());
+		arx_assert(page->id() == Page_SaveConfirm);
+		static_cast<SaveConfirmMenuPage *>(page)->setSaveHandle(savegame);
 	}
 	
 };
@@ -696,7 +700,7 @@ public:
 		
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_video_apply"));
-			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
+			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this, _1);
 			txt->setEnabled(false);
 			addCorner(txt, BottomRight);
 			m_applyButton = txt;
@@ -800,7 +804,7 @@ private:
 		config.video.fov = 75.f + float(state) * 5.f;
 	}
 	
-	void onClickedApply() {
+	void onClickedApply(Widget * /* widget */) {
 		ARXMenu_Private_Options_Video_SetResolution(m_fullscreen, m_resolution.x, m_resolution.y);
 		g_mainMenu->bReInitAll = true;
 	}
@@ -1677,7 +1681,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_input_customize_default");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
-			txt->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedDefault, this);
+			txt->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedDefault, this, _1);
 			addCorner(txt, BottomCenter);
 		}
 		
@@ -1693,7 +1697,7 @@ public:
 	
 private:
 	
-	void onClickedDefault() {
+	void onClickedDefault(Widget * /* widget */) {
 		resetActionKeys();
 	}
 	
@@ -1749,7 +1753,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_input_customize_default");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
-			txt->clicked = boost::bind(&ControlOptionsMenuPage2::onClickedDefault, this);
+			txt->clicked = boost::bind(&ControlOptionsMenuPage2::onClickedDefault, this, _1);
 			addCorner(txt, BottomCenter);
 		}
 		
@@ -1758,9 +1762,11 @@ public:
 	}
 	
 private:
-	void onClickedDefault() {
+	
+	void onClickedDefault(Widget * /* widget */) {
 		resetActionKeys();
 	}
+	
 };
 
 class QuitConfirmMenuPage : public MenuPage {
@@ -1791,7 +1797,7 @@ public:
 		
 		{
 			TextWidget * yes = new TextWidget(hFontMenu, getLocalised("system_yes"));
-			yes->clicked = boost::bind(&QuitConfirmMenuPage::onClickedYes, this);
+			yes->clicked = boost::bind(&QuitConfirmMenuPage::onClickedYes, this, _1);
 			addCorner(yes, BottomRight);
 		}
 		
@@ -1806,7 +1812,7 @@ public:
 	
 private:
 	
-	void onClickedYes() {
+	void onClickedYes(Widget * /* widget */) {
 		MenuFader_start(Fade_In, Mode_InGame);
 	}
 	
@@ -1865,7 +1871,7 @@ void MainMenu::init()
 	
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_resumegame"));
-	txt->clicked = boost::bind(&MainMenu::onClickedResumeGame, this);
+	txt->clicked = boost::bind(&MainMenu::onClickedResumeGame, this, _1);
 	txt->setPosition(pos);
 	m_widgets->add(txt);
 	m_resumeGame = txt;
@@ -1873,7 +1879,7 @@ void MainMenu::init()
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_newquest"));
-	txt->clicked = boost::bind(&MainMenu::onClickedNewQuest, this);
+	txt->clicked = boost::bind(&MainMenu::onClickedNewQuest, this, _1);
 	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
@@ -1894,7 +1900,7 @@ void MainMenu::init()
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_credits"));
-	txt->clicked = boost::bind(&MainMenu::onClickedCredits, this);
+	txt->clicked = boost::bind(&MainMenu::onClickedCredits, this, _1);
 	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
@@ -1922,7 +1928,7 @@ void MainMenu::init()
 	m_widgets->add(txt);
 }
 
-void MainMenu::onClickedResumeGame() {
+void MainMenu::onClickedResumeGame(Widget * /* widget */) {
 	if(g_canResumeGame) {
 		ARXMenu_ResumeGame();
 	} else {
@@ -1930,7 +1936,7 @@ void MainMenu::onClickedResumeGame() {
 	}
 }
 
-void MainMenu::onClickedNewQuest() {
+void MainMenu::onClickedNewQuest(Widget * /* widget */) {
 	if(g_canResumeGame) {
 		requestPage(Page_NewQuestConfirm);
 		if(m_window) {
@@ -1941,7 +1947,7 @@ void MainMenu::onClickedNewQuest() {
 	}
 }
 
-void MainMenu::onClickedCredits() {
+void MainMenu::onClickedCredits(Widget * /* widget */) {
 	MenuFader_start(Fade_In, Mode_Credits);
 }
 

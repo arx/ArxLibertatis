@@ -30,7 +30,6 @@
 #include "gui/widget/ButtonWidget.h"
 #include "gui/widget/TextWidget.h"
 #include "input/Input.h"
-#include "scene/GameSound.h"
 
 SliderWidget::SliderWidget(const Vec2f & size, Font * font, const std::string & label)
 	: m_label(new TextWidget(font, label))
@@ -93,8 +92,6 @@ bool SliderWidget::click() {
 	
 	bool result = Widget::click();
 	
-	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
-
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
 	
 	if(m_rect.contains(cursor)) {

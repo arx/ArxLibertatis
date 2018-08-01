@@ -22,8 +22,6 @@
 
 #include <string>
 
-#include <boost/function.hpp>
-
 #include "gui/widget/Widget.h"
 #include "math/Vector.h"
 
@@ -49,14 +47,7 @@ private:
 	
 public:
 	
-	boost::function<void(TextWidget * /* widget */)> clicked;
-	boost::function<void(TextWidget * /* widget */)> doubleClicked;
-	
 	TextWidget(Font * font, const std::string & text);
-	
-	bool click();
-	
-	bool doubleClick();
 	
 	void render(bool mouseOver = false);
 	

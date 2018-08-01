@@ -87,8 +87,6 @@ bool TextInputWidget::click() {
 		return result;
 	}
 	
-	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
-	
 	if(!m_editing) {
 		m_editing = true;
 		GInput->startTextInput(Rect(m_rect), this);
@@ -124,8 +122,6 @@ bool TextInputWidget::doubleClick() {
 	if(!m_enabled) {
 		return result;
 	}
-	
-	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 	
 	if(!m_editing) {
 		m_editing = true;

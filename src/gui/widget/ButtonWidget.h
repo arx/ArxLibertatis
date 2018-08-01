@@ -20,8 +20,6 @@
 #ifndef ARX_GUI_WIDGET_BUTTONWIDGET_H
 #define ARX_GUI_WIDGET_BUTTONWIDGET_H
 
-#include <boost/function.hpp>
-
 #include "gui/widget/TextWidget.h"
 #include "gui/widget/Widget.h"
 
@@ -36,11 +34,7 @@ public:
 	ButtonWidget(const Vec2f & size, const res::path & texture);
 	~ButtonWidget();
 	
-	void AddText(const std::string & label);
-	bool click();
 	void render(bool mouseOver = false);
-	
-	boost::function<void()> clicked;
 	
 	virtual WidgetType type() const {
 		return WidgetType_Button;
