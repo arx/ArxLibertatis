@@ -129,7 +129,7 @@ void ManaDrainSpell::End() {
 	m_cabal.end();
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
 }
 
 void ManaDrainSpell::Update() {
@@ -288,7 +288,7 @@ void LifeDrainSpell::End() {
 	DamageRequestEnd(m_damage);
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
 	
 	m_cabal.end();
 }
