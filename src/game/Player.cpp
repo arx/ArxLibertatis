@@ -988,7 +988,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 					bool bOk = true;
 
 					for(size_t i = 0; i < MAX_ASPEECH; i++) {
-						if(aspeech[i].exist && (aspeech[i].io == entities.player())) {
+						if(g_aspeech[i].exist && (g_aspeech[i].io == entities.player())) {
 							bOk = false;
 						}
 					}

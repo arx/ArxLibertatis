@@ -176,7 +176,7 @@ struct ARX_SPEECH {
 };
 
 const size_t MAX_ASPEECH = 100;
-extern ARX_SPEECH aspeech[MAX_ASPEECH];
+extern ARX_SPEECH g_aspeech[MAX_ASPEECH];
 
 void ARX_SPEECH_FirstInit();
 void ARX_SPEECH_Reset();
