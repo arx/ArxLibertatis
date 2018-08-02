@@ -478,8 +478,8 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 						height = std::min(height, io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v.y);
 					}
 					
-					c.x *= ( 1.0f / 3 );
-					c.z *= ( 1.0f / 3 );
+					c.x *= (1.0f / 3);
+					c.z *= (1.0f / 3);
 					c.y = io->bbox3D.min.y;
 					long res = PointInUnderCylinder(cyl, c);
 					if(res > 0) {
@@ -1217,7 +1217,7 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 				}
 
 				float dist = std::max(glm::length(vector2D), 1.f);
-				float pente = glm::abs(anything) / dist * ( 1.0f / 2 );
+				float pente = glm::abs(anything) / dist * 0.5f;
 				io->_npcdata->climb_count += pente;
 
 				if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {

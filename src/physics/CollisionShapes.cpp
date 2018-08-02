@@ -87,7 +87,7 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 	io->physics.cyl.origin = io->pos;
 	
 	if(io->original_height > -40) {
-		float v = (-io->original_height) * ( 1.0f / 40 );
+		float v = (-io->original_height) * (1.0f / 40);
 		io->original_radius *= (0.5f + v * 0.5f);
 	}
 	

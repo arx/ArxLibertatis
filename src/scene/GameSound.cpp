@@ -765,15 +765,14 @@ bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, floa
 
 	AmbianceId ambiance_id = audio::getAmbiance(temp);
 
-	if (ambiance_id == AmbianceId())
-	{
+	if(ambiance_id == AmbianceId()) {
 		ambiance_id = audio::createAmbiance(temp, audio::PLAYING_AMBIANCE_ZONE);
 		if(ambiance_id == AmbianceId()) {
 			return false;
 		}
-	}
-	else if (ambiance_id == g_zoneAmbiance)
+	} else if(ambiance_id == g_zoneAmbiance) {
 		return true;
+	}
 
 	audio::Channel channel;
 

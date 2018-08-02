@@ -131,7 +131,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		
 		pbox->vert[14].pos.y = cubmax.y;
 		pbox->vert[13].pos.y = cubmin.y;
-		float RATI = diff * ( 1.0f / 8 );
+		float RATI = diff * (1.0f / 8);
 		
 		for(size_t k = 0; k < obj->vertexlist.size(); k++) {
 			
@@ -174,7 +174,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	}
 	else
 	{
-		float cut = (cubmax.y - cubmin.y) * ( 1.0f / 3 );
+		float cut = (cubmax.y - cubmin.y) * (1.0f / 3);
 		float ysec2 = cubmin.y + cut * 2.f;
 		float ysec1 = cubmin.y + cut;
 
@@ -185,16 +185,11 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 			Vec3f curr = obj->vertexlist[k].v;
 			size_t SEC;
 
-			if (curr.y < ysec1)
-			{
+			if(curr.y < ysec1) {
 				SEC = 1;
-			}
-			else if (curr.y < ysec2)
-			{
+			} else if(curr.y < ysec2) {
 				SEC = 5;
-			}
-			else
-			{
+			} else {
 				SEC = 9;
 			}
 			
@@ -268,9 +263,9 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 	arx_assert(obj);
 	arx_assert(obj->pbox);
 	
-	float ratio = obj->pbox->surface * ( 1.0f / 10000 );
+	float ratio = obj->pbox->surface * (1.0f / 10000);
 	ratio = glm::clamp(ratio, 0.f, 0.8f);
-	ratio = 1.f - (ratio * ( 1.0f / 4 ));
+	ratio = 1.f - (ratio * (1.0f / 4));
 	
 	for(size_t i = 0; i < obj->pbox->vert.size(); i++) {
 		PhysicsParticle * pv = &obj->pbox->vert[i];
@@ -334,7 +329,7 @@ static void RK4Integrate(boost::array<PhysicsParticle, N> & particles, float Del
 	
 	float halfDeltaT, sixthDeltaT;
 	halfDeltaT = DeltaTime * .5f; // some time values i will need
-	sixthDeltaT = ( 1.0f / 6 );
+	sixthDeltaT = (1.0f / 6);
 	
 	boost::array<boost::array<PhysicsParticle, N>, 5> m_TempSys;
 	
@@ -419,7 +414,7 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 
 	const boost::array<PhysicsParticle, 15> & vert = pbox.vert;
 
-	Vec3f center = (verts[0] + verts[1] + verts[2]) * ( 1.0f / 3 );
+	Vec3f center = (verts[0] + verts[1] + verts[2]) * (1.0f / 3);
 	float rad = fdist(center, verts[0]);
 
 	{
@@ -552,12 +547,12 @@ static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, const EER
 }
 
 static Material polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
-	if (ep.type & POLY_METAL) return MATERIAL_METAL;
-	else if (ep.type & POLY_WOOD) return MATERIAL_WOOD;
-	else if (ep.type & POLY_STONE) return MATERIAL_STONE;
-	else if (ep.type & POLY_GRAVEL) return MATERIAL_GRAVEL;
-	else if (ep.type & POLY_WATER) return MATERIAL_WATER;
-	else if (ep.type & POLY_EARTH) return MATERIAL_EARTH;
+	if(ep.type & POLY_METAL) return MATERIAL_METAL;
+	else if(ep.type & POLY_WOOD) return MATERIAL_WOOD;
+	else if(ep.type & POLY_STONE) return MATERIAL_STONE;
+	else if(ep.type & POLY_GRAVEL) return MATERIAL_GRAVEL;
+	else if(ep.type & POLY_WATER) return MATERIAL_WATER;
+	else if(ep.type & POLY_EARTH) return MATERIAL_EARTH;
 	else return MATERIAL_STONE;
 }
 

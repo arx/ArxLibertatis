@@ -888,13 +888,13 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	if(io->ioflags & IO_NPC) {
 		type = TYPE_NPC;
 		struct_size = sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
-	} else if (io->ioflags & IO_ITEM) {
+	} else if(io->ioflags & IO_ITEM) {
 		type = TYPE_ITEM;
 		struct_size = sizeof(ARX_CHANGELEVEL_ITEM_IO_SAVE);
-	} else if (io->ioflags & IO_FIX) {
+	} else if(io->ioflags & IO_FIX) {
 		type = TYPE_FIX;
 		struct_size = sizeof(ARX_CHANGELEVEL_FIX_IO_SAVE);
-	} else if (io->ioflags & IO_CAMERA) {
+	} else if(io->ioflags & IO_CAMERA) {
 		type = TYPE_CAMERA;
 		struct_size = sizeof(ARX_CHANGELEVEL_CAMERA_IO_SAVE);
 	} else {
@@ -2325,7 +2325,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			}
 		}
 		
-	} else if (firstTime) {
+	} else if(firstTime) {
 		
 		for(size_t i = 0; i < entities.size(); i++) {
 			const EntityHandle handle = EntityHandle(i);

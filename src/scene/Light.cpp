@@ -448,7 +448,7 @@ static void Insertllight(boost::array<EERIE_LIGHT *, llightsSize> & llights,
 			llights[i] = el;
 			values[i] = val;
 			return;
-		} else if (val <= values[i]) { // Inserts light at the right place
+		} else if(val <= values[i]) { // Inserts light at the right place
 			for(size_t j = MAX_LLIGHTS - 1; j > i; j--) {
 				if(llights[j - 1]) {
 					llights[j] = llights[j - 1];
@@ -603,7 +603,7 @@ float GetColorz(const Vec3f & pos) {
 		_ff.g *= div;
 		_ff.b *= div;
 		float ratio, ratio2;
-		ratio = glm::abs(needy - pos.y) * ( 1.0f / 300 );
+		ratio = glm::abs(needy - pos.y) * (1.0f / 300);
 		ratio = (1.f - ratio);
 		ratio2 = 1.f - ratio;
 		ff.r = ff.r * ratio2 + _ff.r * ratio;

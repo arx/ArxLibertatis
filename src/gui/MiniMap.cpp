@@ -762,7 +762,7 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 		float col = 1.f;
 		
 		if(d > 600.f) {
-			col = 1.f - (d - 600.f) * ( 1.0f / 200 );
+			col = 1.f - (d - 600.f) * (1.0f / 200);
 		}
 		
 		Rectf rect(

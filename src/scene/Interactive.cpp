@@ -530,9 +530,9 @@ void PrepareIOTreatZone(long flag) {
 			bool treat;
 			if (io->ioflags & IO_CAMERA) {
 				treat = false;
-			} else if (io->ioflags & IO_MARKER) {
+			} else if(io->ioflags & IO_MARKER) {
 				treat = false;
-			} else if ((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) {
+			} else if((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) {
 				treat = true;
 			} else {
 				
@@ -678,13 +678,13 @@ bool ARX_INTERACTIVE_USEMESH(Entity * io, const res::path & temp) {
 		io->usemesh = "graph/obj3d/interactive/npc" / temp;
 	} else if(io->ioflags & IO_FIX) {
 		io->usemesh = "graph/obj3d/interactive/fix_inter" / temp;
-	} else if (io->ioflags & IO_ITEM) {
+	} else if(io->ioflags & IO_ITEM) {
 		io->usemesh = "graph/obj3d/interactive/items" / temp;
 	} else {
 		io->usemesh.clear();
 	}
 	
-	if(io->usemesh.empty() ) {
+	if(io->usemesh.empty()) {
 		return false;
 	}
 	
@@ -1095,7 +1095,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io) {
 	ARX_PARTICLES_Add_Smoke(io->pos, 3, 20);
 	Vec3f pos;
 	pos.x = io->pos.x;
-	pos.y = io->pos.y + io->physics.cyl.height * ( 1.0f / 2 );
+	pos.y = io->pos.y + io->physics.cyl.height * 0.5f;
 	pos.z = io->pos.z;
 	io->requestRoomUpdate = true;
 	io->room = -1;
@@ -1127,7 +1127,7 @@ void ComputeVVPos(Entity * io) {
 		if(fdiff > 120.f) {
 			fdiff = 120.f;
 		} else {
-			float mul = ((fdiff * ( 1.0f / 120 )) * 0.9f + 0.6f);
+			float mul = ((fdiff * (1.0f / 120)) * 0.9f + 0.6f);
 			
 			float val;
 			if(io == entities.player()) {
@@ -1139,9 +1139,9 @@ void ComputeVVPos(Entity * io) {
 			
 			if(eediff < 15.f) {
 				if(eediff < 10.f) {
-					val *= ( 1.0f / 10 );
+					val *= (1.0f / 10);
 				} else {
-					float ratio = (eediff - 10.f) * ( 1.0f / 5 );
+					float ratio = (eediff - 10.f) * (1.0f / 5);
 					val = val * ratio + val * (1.f - ratio);
 				}
 			}
@@ -1735,9 +1735,9 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	}
 	
 	TextureContainer * tc;
-	if (io->ioflags & IO_MOVABLE) {
+	if(io->ioflags & IO_MOVABLE) {
 		tc = cursorMovable;
-	} else if (io->ioflags & IO_GOLD) {
+	} else if(io->ioflags & IO_GOLD) {
 		tc = GoldCoinsTC[0];
 	} else {
 		tc = TextureContainer::LoadUI(icon, TextureContainer::Level);
@@ -2116,7 +2116,7 @@ void UpdateCameras() {
 					if(vv > 8000)
 						vv = 8000;
 
-					vv = (8000 - vv) * ( 1.0f / 4000 );
+					vv = (8000 - vv) * (1.0f / 4000);
 
 					float f1 = g_gameTime.lastFrameDuration() / GameDurationMs(1000) * vv;
 

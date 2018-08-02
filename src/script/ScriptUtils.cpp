@@ -79,7 +79,7 @@ std::string Context::getStringVar(const std::string & name) const {
 	} else if(name[0] == '$') {
 		const SCRIPT_VAR * var = GetVarAddress(svar, name);
 		return var ? var->text : "void";
-	} else if (name[0] == '\xA3') {
+	} else if(name[0] == '\xA3') {
 		const SCRIPT_VAR * var = GetVarAddress(getEntity()->m_variables, name);
 		return var ? var->text : "void";
 	}
