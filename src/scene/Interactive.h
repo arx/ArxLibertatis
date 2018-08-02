@@ -158,7 +158,7 @@ void SetWeapon_On(Entity * io);
 void Prepare_SetWeapon(Entity * io, const res::path & temp);
 void ComputeVVPos(Entity * io);
 void SetYlsideDeath(Entity * io);
-std::string GetMaterialString(const res::path & origin );
+std::string GetMaterialString(const res::path & origin);
 Entity * CloneIOItem(Entity * src);
 
 float ARX_INTERACTIVE_GetArmorClass(Entity * io);

@@ -413,7 +413,7 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long fl
 	ep = GetMinPoly(pos);
 	if(ep && ep->room > -1) {
 		return ep;
-	} else if( !(flag & 1) ) {
+	} else if(!(flag & 1)) {
 		ep = CheckInPoly(pos);
 		if(ep && ep->room > -1) {
 			return ep;

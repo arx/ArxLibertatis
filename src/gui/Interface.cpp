@@ -1821,7 +1821,7 @@ void ArxGame::manageEditorControls() {
 				bSecondary = true;
 			}
 			
-			RemoveFromAllInventories( FlyingOverIO );
+			RemoveFromAllInventories(FlyingOverIO);
 			FlyingOverIO->show = SHOW_FLAG_IN_INVENTORY;
 			
 			if(FlyingOverIO->ioflags & IO_GOLD)
