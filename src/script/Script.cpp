@@ -840,11 +840,9 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			
 			if(boost::starts_with(name, "^speaking")) {
 				if(context.getEntity()) {
-					for(size_t i = 0; i < MAX_ASPEECH; i++) {
-						if(g_aspeech[i].exist && context.getEntity() == g_aspeech[i].io) {
-							*lcontent = 1;
-							return TYPE_LONG;
-						}
+					if(ARX_SPEECH_isEntitySpeaking(context.getEntity())) {
+						*lcontent = 1;
+						return TYPE_LONG;
 					}
 				}
 				*lcontent = 0;
