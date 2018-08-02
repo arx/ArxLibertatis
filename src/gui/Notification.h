@@ -22,8 +22,8 @@
 
 #include <string>
 
-void ARX_SPEECH_Init();
-void ARX_SPEECH_ClearAll();
+void notification_init();
+void notification_ClearAll();
 
 /*!
  * Add a raw text message to the "system" log (top of the screen).

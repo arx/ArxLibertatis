@@ -48,7 +48,7 @@ Notification g_notification[MAX_SPEECH];
 
 extern TextureContainer * arx_logo_tc;
 
-void ARX_SPEECH_Init() {
+void notification_init() {
 
 	for(size_t i = 0 ; i < MAX_SPEECH ; i++ )
 		g_notification[i].clear();
@@ -68,7 +68,7 @@ static void ARX_SPEECH_MoveUp() {
 	
 }
 
-void ARX_SPEECH_ClearAll()
+void notification_ClearAll()
 {
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 		
