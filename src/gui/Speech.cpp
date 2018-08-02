@@ -86,6 +86,17 @@ extern bool REQUEST_SPEECH_SKIP;
 ARX_SPEECH g_aspeech[MAX_ASPEECH];
 
 
+bool ARX_SPEECH_playerNotSpeaking() {
+	bool bOk = true;
+	
+	for(size_t i = 0; i < MAX_ASPEECH; i++) {
+		if(g_aspeech[i].exist && (g_aspeech[i].io == entities.player())) {
+			bOk = false;
+		}
+	}
+	return bOk;
+}
+
 
 void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & text, Entity * io_source) {
 	

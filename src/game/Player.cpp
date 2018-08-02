@@ -986,15 +986,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 				LastHungerSample = g_gameTime.now();
 
 				if(!BLOCK_PLAYER_CONTROLS) {
-					bool bOk = true;
-
-					for(size_t i = 0; i < MAX_ASPEECH; i++) {
-						if(g_aspeech[i].exist && (g_aspeech[i].io == entities.player())) {
-							bOk = false;
-						}
-					}
-
-					if(bOk)
+					if(ARX_SPEECH_playerNotSpeaking())
 						ARX_SPEECH_AddSpeech(entities.player(), "player_off_hungry", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 				}
 			}

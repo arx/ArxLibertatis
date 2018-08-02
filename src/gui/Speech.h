@@ -166,6 +166,8 @@ void ARX_SPEECH_FirstInit();
 void ARX_SPEECH_Reset();
 void ARX_SPEECH_Update();
 
+bool ARX_SPEECH_playerNotSpeaking();
+
 /*!
  * Add an entry to the conversation view.
  * \param data is a sample name / localised string id
