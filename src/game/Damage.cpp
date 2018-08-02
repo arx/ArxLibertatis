@@ -1247,7 +1247,6 @@ void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
 					
 					if(io->ignit_sound != audio::SourcedSample()) {
 						ARX_SOUND_Stop(io->ignit_sound);
-						io->ignit_sound.clearSource();
 						io->ignit_sound = audio::SourcedSample();
 					}
 				}

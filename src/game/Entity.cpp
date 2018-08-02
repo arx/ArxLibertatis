@@ -317,7 +317,6 @@ void Entity::cleanReferences() {
 	
 	if(ignit_sound != audio::SourcedSample()) {
 		ARX_SOUND_Stop(ignit_sound);
-		ignit_sound.clearSource();
 		ignit_sound = audio::SourcedSample();
 	}
 	

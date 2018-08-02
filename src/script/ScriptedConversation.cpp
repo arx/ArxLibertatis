@@ -116,9 +116,7 @@ public:
 		Entity * io = context.getEntity();
 		if(stop) {
 			ARX_SOUND_Stop(io->sound);
-			io->sound.clearSource();
 			io->sound = audio::SourcedSample();
-			
 		} else {
 			
 			if(unique && io->sound != audio::SourcedSample()) {
