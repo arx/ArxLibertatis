@@ -2369,7 +2369,7 @@ void ARX_PLAYER_PutPlayerInNormalStance() {
 	}
 	
 	ARX_SOUND_Stop(player.magic_draw);
-	player.magic_draw.clearSource();
+	player.magic_draw = audio::SourcedSample();
 }
 
 /*!
