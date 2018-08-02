@@ -394,13 +394,13 @@ public:
 		size_t onspeechend = context.skipCommand();
 		
 		if(onspeechend != size_t(-1)) {
-			aspeech[speechnum].scrpos = onspeechend;
-			aspeech[speechnum].es = context.getScript();
-			aspeech[speechnum].ioscript = context.getEntity();
+			g_aspeech[speechnum].scrpos = onspeechend;
+			g_aspeech[speechnum].es = context.getScript();
+			g_aspeech[speechnum].ioscript = context.getEntity();
 			if(unbreakable) {
-				aspeech[speechnum].flags |= ARX_SPEECH_FLAG_UNBREAKABLE;
+				g_aspeech[speechnum].flags |= ARX_SPEECH_FLAG_UNBREAKABLE;
 			}
-			aspeech[speechnum].cine = acs;
+			g_aspeech[speechnum].cine = acs;
 		}
 		
 		return Success;

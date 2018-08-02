@@ -85,7 +85,7 @@ extern TextureContainer * arx_logo_tc;
 extern bool EXTERNALVIEW;
 extern bool REQUEST_SPEECH_SKIP;
 
-ARX_SPEECH aspeech[MAX_ASPEECH];
+ARX_SPEECH g_aspeech[MAX_ASPEECH];
 Notification g_speech[MAX_SPEECH];
 
 
@@ -235,14 +235,14 @@ void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & text, Entity * io_sou
 	long speechnum = ARX_SPEECH_AddSpeech(io_source, text, mood, ARX_SPEECH_FLAG_NOTEXT);
 	if(speechnum >= 0) {
 		
-		aspeech[speechnum].scrpos = size_t(-1);
-		aspeech[speechnum].es = NULL;
-		aspeech[speechnum].ioscript = io_source;
-		aspeech[speechnum].flags = 0;
+		g_aspeech[speechnum].scrpos = size_t(-1);
+		g_aspeech[speechnum].es = NULL;
+		g_aspeech[speechnum].ioscript = io_source;
+		g_aspeech[speechnum].flags = 0;
 		
 		CinematicSpeech acs;
 		acs.type = ARX_CINE_SPEECH_NONE;
-		aspeech[speechnum].cine = acs;
+		g_aspeech[speechnum].cine = acs;
 	}
 }
 
@@ -250,8 +250,8 @@ static void ARX_CONVERSATION_CheckAcceleratedSpeech() {
 	
 	if(REQUEST_SPEECH_SKIP) {
 		for(size_t i = 0; i < MAX_ASPEECH; i++) {
-			if((aspeech[i].exist) && !(aspeech[i].flags & ARX_SPEECH_FLAG_UNBREAKABLE)) {
-				aspeech[i].duration = 0;
+			if((g_aspeech[i].exist) && !(g_aspeech[i].flags & ARX_SPEECH_FLAG_UNBREAKABLE)) {
+				g_aspeech[i].duration = 0;
 			}
 		}
 		REQUEST_SPEECH_SKIP = false;
@@ -260,15 +260,15 @@ static void ARX_CONVERSATION_CheckAcceleratedSpeech() {
 
 void ARX_SPEECH_FirstInit() {
 	for(size_t i = 0 ; i < MAX_ASPEECH ; i++) {
-		aspeech[i].clear();
+		g_aspeech[i].clear();
 	}
 }
 
 static long ARX_SPEECH_GetFree() {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(!aspeech[i].exist) {
-			aspeech[i].cine.type = ARX_CINE_SPEECH_NONE;
+		if(!g_aspeech[i].exist) {
+			g_aspeech[i].cine.type = ARX_CINE_SPEECH_NONE;
 			return i;
 		}
 	}
@@ -278,24 +278,24 @@ static long ARX_SPEECH_GetFree() {
 
 static void ARX_SPEECH_Release(long i) {
 	
-	if(aspeech[i].exist) {
+	if(g_aspeech[i].exist) {
 		
-		ARX_SOUND_Stop(aspeech[i].sample);
-		aspeech[i].sample = audio::SourcedSample();
+		ARX_SOUND_Stop(g_aspeech[i].sample);
+		g_aspeech[i].sample = audio::SourcedSample();
 		
-		if(ValidIOAddress(aspeech[i].io) && aspeech[i].io->animlayer[2].cur_anim) {
-			AcquireLastAnim(aspeech[i].io);
-			aspeech[i].io->animlayer[2].cur_anim = NULL;
+		if(ValidIOAddress(g_aspeech[i].io) && g_aspeech[i].io->animlayer[2].cur_anim) {
+			AcquireLastAnim(g_aspeech[i].io);
+			g_aspeech[i].io->animlayer[2].cur_anim = NULL;
 		}
 		
-		aspeech[i].clear();
+		g_aspeech[i].clear();
 	}
 }
 
 void ARX_SPEECH_ReleaseIOSpeech(Entity * io) {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(aspeech[i].exist && aspeech[i].io == io) {
+		if(g_aspeech[i].exist && g_aspeech[i].io == io) {
 			ARX_SPEECH_Release(i);
 		}
 	}
@@ -315,13 +315,13 @@ void ARX_SPEECH_ClearIOSpeech(Entity * entity) {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		
-		if(!aspeech[i].exist || aspeech[i].io != entity) {
+		if(!g_aspeech[i].exist || g_aspeech[i].io != entity) {
 			continue;
 		}
 		
-		const EERIE_SCRIPT * es = aspeech[i].es;
-		Entity * scriptEntity = aspeech[i].ioscript;
-		size_t scrpos = aspeech[i].scrpos;
+		const EERIE_SCRIPT * es = g_aspeech[i].es;
+		Entity * scriptEntity = g_aspeech[i].ioscript;
+		size_t scrpos = g_aspeech[i].scrpos;
 		ARX_SPEECH_Release(i);
 		
 		if(es && ValidIOAddress(scriptEntity)) {
@@ -345,16 +345,16 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 		return -1;
 	}
 	
-	aspeech[num].exist = 1;
-	aspeech[num].time_creation = g_gameTime.now();
-	aspeech[num].io = io; // can be NULL
-	aspeech[num].duration = GameDurationMs(2000); // Minimum value
-	aspeech[num].flags = flags;
-	aspeech[num].sample = audio::SourcedSample();
-	aspeech[num].fDeltaY = 0.f;
-	aspeech[num].iTimeScroll = 0;
-	aspeech[num].fPixelScroll = 0.f;
-	aspeech[num].mood = mood;
+	g_aspeech[num].exist = 1;
+	g_aspeech[num].time_creation = g_gameTime.now();
+	g_aspeech[num].io = io; // can be NULL
+	g_aspeech[num].duration = GameDurationMs(2000); // Minimum value
+	g_aspeech[num].flags = flags;
+	g_aspeech[num].sample = audio::SourcedSample();
+	g_aspeech[num].fDeltaY = 0.f;
+	g_aspeech[num].iTimeScroll = 0;
+	g_aspeech[num].fPixelScroll = 0.f;
+	g_aspeech[num].mood = mood;
 
 	LogDebug("speech \"" << data << '"');
 	
@@ -391,26 +391,26 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 		std::string _output = getLocalised(data);
 		
 		io->lastspeechflag = 0;
-		aspeech[num].text.clear();
-		aspeech[num].text = _output;
-		aspeech[num].duration = std::max(aspeech[num].duration, GameDurationMs(s64(_output.length() + 1) * 100));
+		g_aspeech[num].text.clear();
+		g_aspeech[num].text = _output;
+		g_aspeech[num].duration = std::max(g_aspeech[num].duration, GameDurationMs(s64(_output.length() + 1) * 100));
 		
 		sample = data;
 	}
 	
-	Entity * source = (aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? NULL : io;
-	aspeech[num].sample = ARX_SOUND_PlaySpeech(sample, NULL, source);
+	Entity * source = (g_aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? NULL : io;
+	g_aspeech[num].sample = ARX_SOUND_PlaySpeech(sample, NULL, source);
 	
 	// TODO Next lines must be removed (use callback instead)
-	aspeech[num].duration = ARX_SOUND_GetDuration(aspeech[num].sample.getSampleId());
+	g_aspeech[num].duration = ARX_SOUND_GetDuration(g_aspeech[num].sample.getSampleId());
 	
-	if ((io->ioflags & IO_NPC) && !(aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)) {
-		float fDiv = toMsf(aspeech[num].duration) / io->_npcdata->speakpitch;
-		aspeech[num].duration = GameDurationMsf(fDiv);
+	if ((io->ioflags & IO_NPC) && !(g_aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)) {
+		float fDiv = toMsf(g_aspeech[num].duration) / io->_npcdata->speakpitch;
+		g_aspeech[num].duration = GameDurationMsf(fDiv);
 	}
 
-	if (aspeech[num].duration < GameDurationMs(500))
-		aspeech[num].duration = GameDurationMs(2000);
+	if (g_aspeech[num].duration < GameDurationMs(500))
+		g_aspeech[num].duration = GameDurationMs(2000);
 	
 	return num;
 }
@@ -423,24 +423,24 @@ void ARX_SPEECH_Update() {
 		ARX_CONVERSATION_CheckAcceleratedSpeech();
 
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(!aspeech[i].exist)
+		if(!g_aspeech[i].exist)
 			continue;
 
-		Entity * io = aspeech[i].io;
+		Entity * io = g_aspeech[i].io;
 
 		// updates animations
 		if(io) {
-			if(aspeech[i].flags & ARX_SPEECH_FLAG_OFFVOICE)
-				ARX_SOUND_RefreshSpeechPosition(aspeech[i].sample);
+			if(g_aspeech[i].flags & ARX_SPEECH_FLAG_OFFVOICE)
+				ARX_SOUND_RefreshSpeechPosition(g_aspeech[i].sample);
 			else
-				ARX_SOUND_RefreshSpeechPosition(aspeech[i].sample, io);
+				ARX_SOUND_RefreshSpeechPosition(g_aspeech[i].sample, io);
 			
 			if((io != entities.player() || EXTERNALVIEW) && ValidIOAddress(io)) {
 				
-				if(!io->anims[aspeech[i].mood])
-					aspeech[i].mood = ANIM_TALK_NEUTRAL;
+				if(!io->anims[g_aspeech[i].mood])
+					g_aspeech[i].mood = ANIM_TALK_NEUTRAL;
 				
-				ANIM_HANDLE * anim = io->anims[aspeech[i].mood];
+				ANIM_HANDLE * anim = io->anims[g_aspeech[i].mood];
 				if(anim) {
 					AnimLayer & layer2 = io->animlayer[2];
 					if(layer2.cur_anim != anim || (layer2.flags & EA_ANIMEND)) {
@@ -451,10 +451,10 @@ void ARX_SPEECH_Update() {
 		}
 
 		// checks finished speech
-		if(now >= aspeech[i].time_creation + aspeech[i].duration) {
-			const EERIE_SCRIPT * es = aspeech[i].es;
-			Entity * scriptEntity = aspeech[i].ioscript;
-			size_t scrpos = aspeech[i].scrpos;
+		if(now >= g_aspeech[i].time_creation + g_aspeech[i].duration) {
+			const EERIE_SCRIPT * es = g_aspeech[i].es;
+			Entity * scriptEntity = g_aspeech[i].ioscript;
+			size_t scrpos = g_aspeech[i].scrpos;
 			ARX_SPEECH_Release(i);
 			if(es && ValidIOAddress(scriptEntity)) {
 				ScriptEvent::resume(es, scriptEntity, scrpos);
@@ -464,7 +464,7 @@ void ARX_SPEECH_Update() {
 
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		
-		ARX_SPEECH * speech = &aspeech[i];
+		ARX_SPEECH * speech = &g_aspeech[i];
 		if(!speech->exist || speech->text.empty()) {
 			continue;
 		}
