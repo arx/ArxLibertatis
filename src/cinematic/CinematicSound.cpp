@@ -138,7 +138,6 @@ void StopSoundKeyFramer() {
 	for(size_t i = 0; i < TabSound.size(); i++) {
 		if(TabSound[i].exists && TabSound[i].handle != audio::SourcedSample()) {
 			ARX_SOUND_Stop(TabSound[i].handle);
-			TabSound[i].handle.clearSource();
 			TabSound[i].handle = audio::SourcedSample();
 		}
 	}
