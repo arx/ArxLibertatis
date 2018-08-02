@@ -24,27 +24,6 @@
 #include "audio/Audio.h"
 #include "gui/debug/DebugPanel.h"
 
-namespace arx {
-namespace debug {
-static std::stringstream & operator<<(std::stringstream & s, const audio::SourceStatus val) {
-	switch(val) {
-		case audio::Idle:
-			s << "idle";
-			break;
-		case audio::Playing:
-			s << "playing";
-			break;
-		case audio::Paused:
-			s << "paused";
-			break;
-		default:
-			break;
-	}
-	return s;
-}
-} // namespace debug
-} // namespace arx
-
 void debugHud_Audio() {
 	
 	static std::vector<audio::SourceInfo> infos;

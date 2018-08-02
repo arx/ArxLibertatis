@@ -33,24 +33,41 @@
 namespace arx {
 namespace debug {
 
-std::stringstream & operator<<(std::stringstream & ss, Vec2i value) {
-	ss << boost::str(boost::format("(%d, %d)") % value.x % value.y);
+std::ostream & operator<<(std::ostream & ss, Vec2i value) {
+	ss << boost::format("(%d, %d)") % value.x % value.y;
 	return ss;
 }
 
-std::stringstream & operator<<(std::stringstream & ss, Vec3f value) {
-	ss << boost::str(boost::format("%4.2f %4.2f %4.2f") % value.x % value.y % value.z);
+std::ostream & operator<<(std::ostream & ss, Vec3f value) {
+	ss << boost::format("%4.2f %4.2f %4.2f") % value.x % value.y % value.z;
 	return ss;
 }
 
-std::stringstream & operator<<(std::stringstream & ss, Anglef value) {
-	ss << boost::str(boost::format("%4.2f %4.2f %4.2f") % value.getPitch() % value.getYaw() % value.getRoll());
+std::ostream & operator<<(std::ostream & ss, Anglef value) {
+	ss << boost::format("%4.2f %4.2f %4.2f") % value.getPitch() % value.getYaw() % value.getRoll();
 	return ss;
 }
 
-std::stringstream & operator<<(std::stringstream & ss, ResourcePool value) {
-	ss << boost::str(boost::format("%4.2f/%4.2f") % value.current % value.max);
+std::ostream & operator<<(std::ostream & ss, ResourcePool value) {
+	ss << boost::format("%4.2f/%4.2f") % value.current % value.max;
 	return ss;
+}
+
+std::ostream & operator<<(std::ostream & s, audio::SourceStatus val) {
+	switch(val) {
+		case audio::Idle:
+			s << "idle";
+			break;
+		case audio::Playing:
+			s << "playing";
+			break;
+		case audio::Paused:
+			s << "paused";
+			break;
+		default:
+			break;
+	}
+	return s;
 }
 
 } // namespace debug

@@ -26,6 +26,7 @@
 
 #include <boost/mpl/size.hpp>
 
+#include "audio/AudioTypes.h"
 #include "game/GameTypes.h"
 #include "gui/hud/HudCommon.h"
 #include "math/Angle.h"
@@ -51,13 +52,14 @@ std::string flagNames(const FlagName<T> (&names)[N], const T flags) {
 namespace arx {
 namespace debug {
 
-std::stringstream & operator<<(std::stringstream & ss, Vec2i value);
-std::stringstream & operator<<(std::stringstream & ss, Vec3f value);
-std::stringstream & operator<<(std::stringstream & ss, Anglef value);
-std::stringstream & operator<<(std::stringstream & ss, ResourcePool value);
+std::ostream & operator<<(std::ostream & ss, Vec2i value);
+std::ostream & operator<<(std::ostream & ss, Vec3f value);
+std::ostream & operator<<(std::ostream & ss, Anglef value);
+std::ostream & operator<<(std::ostream & ss, ResourcePool value);
+std::ostream & operator<<(std::ostream & s, audio::SourceStatus val);
 
 template <typename TAG, typename T, T INVALID_VALUE>
-std::stringstream & operator<<(std::stringstream & ss, HandleType<TAG, T, INVALID_VALUE> value) {
+std::ostream & operator<<(std::ostream & ss, HandleType<TAG, T, INVALID_VALUE> value) {
 	ss << value.handleData();
 	if(value.handleData() == INVALID_VALUE) {
 		ss << " X";
