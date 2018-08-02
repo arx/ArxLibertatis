@@ -27,6 +27,7 @@
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "gui/Interface.h"
+#include "gui/Notification.h"
 #include "gui/Speech.h"
 #include "scene/GameSound.h"
 

@@ -31,6 +31,7 @@
 
 #include "gui/Console.h"
 #include "gui/MiniMap.h"
+#include "gui/Notification.h"
 #include "gui/Speech.h"
 
 #include "scene/Interactive.h"
