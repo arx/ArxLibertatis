@@ -86,26 +86,26 @@ extern bool EXTERNALVIEW;
 extern bool REQUEST_SPEECH_SKIP;
 
 ARX_SPEECH g_aspeech[MAX_ASPEECH];
-Notification g_speech[MAX_SPEECH];
+Notification g_notification[MAX_SPEECH];
 
 
 void ARX_SPEECH_Init() {
 
 	for(size_t i = 0 ; i < MAX_SPEECH ; i++ )
-		g_speech[i].clear();
+		g_notification[i].clear();
 }
 
 static void ARX_SPEECH_MoveUp() {
 	
-	if(g_speech[0].timecreation != 0) {
-		g_speech[0].text.clear();
+	if(g_notification[0].timecreation != 0) {
+		g_notification[0].text.clear();
 	}
 	
 	for(size_t j = 0; j < MAX_SPEECH - 1; j++) {
-		g_speech[j] = g_speech[j + 1];
+		g_notification[j] = g_notification[j + 1];
 	}
 	
-	g_speech[MAX_SPEECH - 1].clear();
+	g_notification[MAX_SPEECH - 1].clear();
 	
 }
 
@@ -113,11 +113,11 @@ void ARX_SPEECH_ClearAll()
 {
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 		
-		if(g_speech[i].timecreation == 0) {
+		if(g_notification[i].timecreation == 0) {
 			continue;
 		}
 		
-		g_speech[i].clear();
+		g_notification[i].clear();
 	}
 }
 
@@ -128,20 +128,20 @@ void ARX_SPEECH_Add(const std::string & text) {
 	
 	GameInstant now = std::max(g_gameTime.now(), GameInstantMs(1));
 	
-	if(g_speech[MAX_SPEECH - 1].timecreation != 0) {
+	if(g_notification[MAX_SPEECH - 1].timecreation != 0) {
 		ARX_SPEECH_MoveUp();
 	}
 	
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 		
-		if(g_speech[i].timecreation != 0) {
+		if(g_notification[i].timecreation != 0) {
 			continue;
 		}
 		
 		// Sets creation time
-		g_speech[i].timecreation = now;
-		g_speech[i].duration = GameDurationMs(2000 + text.length() * 60);
-		g_speech[i].text = text;
+		g_notification[i].timecreation = now;
+		g_notification[i].duration = GameDurationMs(2000 + text.length() * 60);
+		g_notification[i].text = text;
 		return;
 	}
 	
@@ -152,11 +152,11 @@ static bool isLastSpeech(size_t index) {
 	
 	for(size_t i = index + 1; i < MAX_SPEECH; i++) {
 		
-		if(g_speech[i].timecreation == 0) {
+		if(g_notification[i].timecreation == 0) {
 			continue;
 		}
 		
-		if(!g_speech[i].text.empty())
+		if(!g_notification[i].text.empty())
 			return false;
 	}
 	
@@ -176,7 +176,7 @@ static void ARX_SPEECH_Render() {
 	
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 		
-		if(g_speech[i].timecreation == 0 || g_speech[i].text.empty()) {
+		if(g_notification[i].timecreation == 0 || g_notification[i].text.empty()) {
 			continue;
 		}
 		
@@ -189,7 +189,7 @@ static void ARX_SPEECH_Render() {
 		EERIEDrawBitmap(rect, .00001f, arx_logo_tc, Color::white);
 		
 		igrec += ARX_UNICODE_DrawTextInRect(hFontInGame, Vec2f(120.f * g_sizeRatio.x, igrec), 500 * g_sizeRatio.x,
-		                           ' ' + g_speech[i].text, Color::white, NULL);
+		                           ' ' + g_notification[i].text, Color::white, NULL);
 		
 		if(igrec > iEnd && !isLastSpeech(i)) {
 			ARX_SPEECH_MoveUp();
@@ -206,12 +206,12 @@ void ARX_SPEECH_Check()
 
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 		
-		if(g_speech[i].timecreation == 0) {
+		if(g_notification[i].timecreation == 0) {
 			continue;
 		}
 		
-		GameDuration elapsed = g_gameTime.now() - g_speech[i].timecreation;
-		if(elapsed > g_speech[i].duration) {
+		GameDuration elapsed = g_gameTime.now() - g_notification[i].timecreation;
+		if(elapsed > g_notification[i].duration) {
 			ARX_SPEECH_MoveUp();
 			i--;
 		} else {
