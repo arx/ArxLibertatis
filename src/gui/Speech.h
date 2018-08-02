@@ -57,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIE_SCRIPT;
 class Entity;
 
-const size_t MAX_SPEECH = 9;
-
 enum CinematicSpeechMode {
 	ARX_CINE_SPEECH_NONE,
 	ARX_CINE_SPEECH_ZOOM, // uses start/endangle alpha & beta, startpos & endpos
@@ -110,20 +108,6 @@ struct CinematicSpeech {
 		ionum = EntityHandle_Player; // TODO is this correct?
 		pos1 = Vec3f_ZERO;
 		pos2 = Vec3f_ZERO;
-	}
-	
-};
-
-struct Notification {
-	
-	GameInstant timecreation;
-	GameDuration duration;
-	std::string text;
-	
-	void clear() {
-		timecreation = 0;
-		duration = 0;
-		text.clear();
 	}
 	
 };
@@ -181,15 +165,6 @@ extern ARX_SPEECH g_aspeech[MAX_ASPEECH];
 void ARX_SPEECH_FirstInit();
 void ARX_SPEECH_Reset();
 void ARX_SPEECH_Update();
-void ARX_SPEECH_Init();
-void ARX_SPEECH_Check();
-
-/*!
- * Add a raw text message to the "system" log (top of the screen).
- * This message will be displayed as-is.
- */
-void ARX_SPEECH_Add(const std::string & text);
-void ARX_SPEECH_ClearAll();
 
 /*!
  * Add an entry to the conversation view.
