@@ -2295,7 +2295,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	}
 	
 	if(movedOOBItems) {
-		ARX_SPEECH_Add("Found out of bounds items and dropped them in front of the player.");
+		notification_add("Found out of bounds items and dropped them in front of the player.");
 	}
 	
 	if(reloadflag) {

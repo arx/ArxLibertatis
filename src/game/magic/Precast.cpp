@@ -101,7 +101,7 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	} else {
 		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
 		
-		ARX_SPEECH_Add(getLocalised("player_cantcast"));
+		notification_add(getLocalised("player_cantcast"));
 		ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
 	}
 }

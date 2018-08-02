@@ -29,8 +29,8 @@ void notification_ClearAll();
  * Add a raw text message to the "system" log (top of the screen).
  * This message will be displayed as-is.
  */
-void ARX_SPEECH_Add(const std::string & text);
+void notification_add(const std::string & text);
 
-void ARX_SPEECH_Check();
+void notification_check();
 
 #endif // ARX_GUI_NOTIFICATION_H
