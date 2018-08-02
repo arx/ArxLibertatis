@@ -274,7 +274,7 @@ void FireFieldSpell::End() {
 	DamageRequestEnd(m_damage);
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_FIELD_END);
 }
@@ -429,7 +429,7 @@ void IceFieldSpell::End() {
 	DamageRequestEnd(m_damage);
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_ICE_FIELD_END);
 }
@@ -554,7 +554,7 @@ void LightningStrikeSpell::Launch() {
 void LightningStrikeSpell::End() {
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster) {

@@ -177,10 +177,9 @@ void DetectTrapSpell::Launch() {
 
 void DetectTrapSpell::End() {
 	
-	if(m_caster == EntityHandle_Player) {
-		ARX_SOUND_Stop(m_snd_loop);
-		m_snd_loop.clearSource();
-	}
+	ARX_SOUND_Stop(m_snd_loop);
+	m_snd_loop = audio::SourcedSample();
+	
 	m_targets.clear();
 }
 
@@ -233,7 +232,7 @@ void ArmorSpell::Launch()
 void ArmorSpell::End() {
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
@@ -384,7 +383,7 @@ void HarmSpell::End() {
 	m_cabal.end();
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
 }
 
 void HarmSpell::Update()

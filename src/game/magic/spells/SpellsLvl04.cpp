@@ -269,7 +269,7 @@ void FireProtectionSpell::Launch() {
 void FireProtectionSpell::End() {
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
@@ -334,7 +334,7 @@ void ColdProtectionSpell::Launch() {
 void ColdProtectionSpell::End() {
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
 	
 	Entity * target = entities.get(m_target);
 	if(target) {

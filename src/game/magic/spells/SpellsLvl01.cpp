@@ -65,9 +65,10 @@ void MagicSightSpell::End() {
 	
 	if(m_caster == EntityHandle_Player) {
 		player.m_improve = false;
-		ARX_SOUND_Stop(m_snd_loop);
-		m_snd_loop.clearSource();
 	}
+	
+	ARX_SOUND_Stop(m_snd_loop);
+	m_snd_loop = audio::SourcedSample();
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster) {

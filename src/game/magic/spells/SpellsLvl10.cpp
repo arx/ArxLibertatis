@@ -115,7 +115,8 @@ void MassLightningStrikeSpell::End() {
 	endLightDelayed(m_light, GameDurationMs(200));
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
+	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_LIGHTNING_END);
 	
 	for(std::vector<CLightning *>::iterator it = pTab.begin(); it != pTab.end(); ++it) {
@@ -398,15 +399,15 @@ void MassIncinerateSpell::Launch() {
 	
 	if(!m_targets.empty()) {
 		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_INCINERATE_LOOP, &m_caster_pos, 1.f);
-	} else {
-		m_snd_loop = audio::SourcedSample();
 	}
 }
 
 void MassIncinerateSpell::End() {
 	m_targets.clear();
+	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
+	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_INCINERATE_END);
 }
 

@@ -199,7 +199,7 @@ void LevitateSpell::Launch() {
 void LevitateSpell::End() {
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
@@ -390,8 +390,9 @@ void RepelUndeadSpell::Launch() {
 }
 
 void RepelUndeadSpell::End() {
+	
 	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop.clearSource();
+	m_snd_loop = audio::SourcedSample();
 	
 	endLightDelayed(m_light, GameDurationMs(500));
 }
