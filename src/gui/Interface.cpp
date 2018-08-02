@@ -945,7 +945,7 @@ void ArxGame::managePlayerControls() {
 		}
 	} else {
 		ARX_SOUND_Stop(player.magic_ambient);
-		player.magic_ambient.clearSource();
+		player.magic_ambient = audio::SourcedSample();
 		ARX_SOUND_Stop(player.magic_draw);
 		player.magic_draw = audio::SourcedSample();
 	}
