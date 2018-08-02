@@ -167,6 +167,7 @@ void ARX_SPEECH_Reset();
 void ARX_SPEECH_Update();
 
 bool ARX_SPEECH_playerNotSpeaking();
+bool ARX_SPEECH_isEntitySpeaking(Entity * entity);
 
 /*!
  * Add an entry to the conversation view.

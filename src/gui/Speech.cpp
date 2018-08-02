@@ -97,6 +97,15 @@ bool ARX_SPEECH_playerNotSpeaking() {
 	return bOk;
 }
 
+bool ARX_SPEECH_isEntitySpeaking(Entity * entity) {
+	for(size_t i = 0; i < MAX_ASPEECH; i++) {
+		if(g_aspeech[i].exist && entity == g_aspeech[i].io) {
+			return true;
+		}
+	}
+	return false;
+}
+
 
 void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & text, Entity * io_source) {
 	
