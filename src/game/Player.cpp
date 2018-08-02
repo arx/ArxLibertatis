@@ -2532,7 +2532,7 @@ void ARX_GAME_Reset() {
 	
 	// Speech Things
 	REQUEST_SPEECH_SKIP = false;
-	ARX_SPEECH_ClearAll();
+	notification_ClearAll();
 	ARX_SPEECH_Reset();
 
 	// Spells

@@ -783,8 +783,8 @@ bool ArxGame::initGame()
 	CleanInventory();
 	
 	ARX_SPEECH_FirstInit();
-	ARX_SPEECH_Init();
-	ARX_SPEECH_ClearAll();
+	notification_init();
+	notification_ClearAll();
 	RemoveQuakeFX();
 	
 	LogDebug("Launching DANAE");
@@ -1065,7 +1065,7 @@ void ArxGame::shutdownGame() {
 	
 	ARX_SCRIPT_Timer_ClearAll();
 	
-	ARX_SPEECH_ClearAll();
+	notification_ClearAll();
 	ARX_Text_Close();
 	
 	gui::ReleaseNecklace();
