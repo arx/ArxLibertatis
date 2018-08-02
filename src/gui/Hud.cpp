@@ -798,7 +798,7 @@ void HealthGauge::updateInput(const Vec2f & mousePos) {
 			if(eeMouseDown1()) {
 				std::stringstream ss;
 				ss << checked_range_cast<int>(player.lifePool.current);
-				ARX_SPEECH_Add(ss.str());
+				notification_add(ss.str());
 			}
 		}
 	}
@@ -838,7 +838,7 @@ void ManaGauge::updateInput(const Vec2f & mousePos) {
 			if(eeMouseDown1()) {
 				std::stringstream ss;
 				ss << checked_range_cast<int>(player.manaPool.current);
-				ARX_SPEECH_Add(ss.str());
+				notification_add(ss.str());
 			}
 		}
 	}
@@ -959,7 +959,7 @@ void PrecastSpellsGui::PrecastSpellIconSlot::updateInput() {
 		
 		if(eeMouseUp1()) {
 			if(Precast[m_precastIndex.handleData()].typ >= 0) {
-				ARX_SPEECH_Add(spellicons[Precast[m_precastIndex.handleData()].typ].name);
+				notification_add(spellicons[Precast[m_precastIndex.handleData()].typ].name);
 			}
 		}
 		
@@ -1058,7 +1058,7 @@ void ActiveSpellsGui::ActiveSpellIconSlot::updateInput(const Vec2f & mousePos) {
 		
 		if(eeMouseUp1()) {
 			if(spells[spellIndex]->m_type >= 0) {
-				ARX_SPEECH_Add(spellicons[spells[spellIndex]->m_type].name);
+				notification_add(spellicons[spells[spellIndex]->m_type].name);
 			}
 		}
 		

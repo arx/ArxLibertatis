@@ -1947,7 +1947,7 @@ void ArxGame::renderLevel() {
 	GRenderer->Clear(Renderer::DepthBuffer);
 
 	// Speech Management
-	ARX_SPEECH_Check();
+	notification_check();
 
 	if(pTextManage && !pTextManage->Empty()) {
 		pTextManage->Update(g_platformTime.lastFrameDuration());

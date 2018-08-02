@@ -80,7 +80,7 @@ void notification_ClearAll()
 	}
 }
 
-void ARX_SPEECH_Add(const std::string & text) {
+void notification_add(const std::string & text) {
 	
 	if(text.empty())
 		return;
@@ -158,7 +158,7 @@ static void ARX_SPEECH_Render() {
 	
 }
 
-void ARX_SPEECH_Check()
+void notification_check()
 {
 	bool bClear = false;
 	long exist = 0;

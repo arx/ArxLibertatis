@@ -201,7 +201,7 @@ public:
 			text = getLocalised(loadUnlocalized(text), "Not Found");
 		}
 		
-		ARX_SPEECH_Add(text);
+		notification_add(text);
 		
 		return Success;
 	}
