@@ -58,15 +58,6 @@ std::ostream & operator<<(std::ostream & ss, Anglef value);
 std::ostream & operator<<(std::ostream & ss, ResourcePool value);
 std::ostream & operator<<(std::ostream & s, audio::SourceStatus val);
 
-template <typename TAG, typename T, T INVALID_VALUE>
-std::ostream & operator<<(std::ostream & ss, HandleType<TAG, T, INVALID_VALUE> value) {
-	ss << value.handleData();
-	if(value.handleData() == INVALID_VALUE) {
-		ss << " X";
-	}
-	return ss;
-}
-
 } // namespace debug
 } // namespace arx
 
