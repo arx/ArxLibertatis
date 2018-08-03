@@ -33,6 +33,8 @@
 #ifndef ARX_UTIL_HANDLETYPE_H
 #define ARX_UTIL_HANDLETYPE_H
 
+#include <ostream>
+
 template <typename TAG, typename T, T INVALID_VALUE>
 class HandleType {
 	
@@ -49,5 +51,15 @@ public:
 	const T & handleData() const { return t; }
 	
 };
+
+template <typename TAG, typename T, T INVALID_VALUE>
+std::ostream & operator<<(std::ostream & s, HandleType<TAG, T, INVALID_VALUE> v) {
+	if(v.handleData() != INVALID_VALUE) {
+		s << v.handleData();
+	} else {
+		s << "inv";
+	}
+	return s;
+}
 
 #endif // ARX_UTIL_HANDLETYPE_H

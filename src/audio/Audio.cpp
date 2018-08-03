@@ -274,8 +274,10 @@ SampleHandle createSample(const res::path & name) {
 	SampleHandle sampleHandle;
 	if(sample->load() || (sampleHandle = g_samples.add(sample)) == SampleHandle()) {
 		delete sample;
+		LogDebug("createSample " << sampleHandle << " " << name << " failed !");
 	} else {
 		sample->reference();
+		LogDebug("createSample " << sampleHandle << " " << name << " len " << sample->getLength());
 	}
 	
 	return sampleHandle;
