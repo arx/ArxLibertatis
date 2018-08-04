@@ -921,7 +921,6 @@ static void ARX_SOUND_CreateStaticSamples() {
 	g_snd.TORCH_END                      = audio::createSample("torch_end.wav");
 	g_snd.FIREPLACE_LOOP                 = audio::createSample("fire_place.wav");
 	g_snd.PLOUF                          = audio::createSample("fishing_plouf.wav");
-	g_snd.QUAKE                          = audio::createSample("sfx_quake.wav");
 	g_snd.WHOOSH                         = audio::createSample("whoosh07.wav");
 	
 	// Magic draw
