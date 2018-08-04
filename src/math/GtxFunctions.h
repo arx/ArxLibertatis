@@ -174,27 +174,13 @@ GLM_FUNC_QUALIFIER bool intersectLineTriangle
 	return true;
 }
 
-GLM_FUNC_QUALIFIER Vec2f rotate
-(
-	Vec2f const & v,
-	float const & angle
-)
-{
-	Vec2f Result;
-	float const Cos(glm::cos(angle));
-	float const Sin(glm::sin(angle));
-
-	Result.x = v.x * Cos - v.y * Sin;
-	Result.y = v.x * Sin + v.y * Cos;
-	return Result;
+GLM_FUNC_QUALIFIER Vec2f rotate(Vec2f const & v, float const & angle) {
+	float const cos(glm::cos(angle));
+	float const sin(glm::sin(angle));
+	return Vec2f(v.x * cos - v.y * sin, v.x * sin + v.y * cos);
 }
 
-GLM_FUNC_QUALIFIER float angle
-(
-	Vec2f const & x,
-	Vec2f const & y
-)
-{
+GLM_FUNC_QUALIFIER float angle(Vec2f const & x, Vec2f const & y) {
 	return glm::acos(glm::clamp(glm::dot(x, y), -1.f, 1.f));
 }
 
