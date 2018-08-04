@@ -716,8 +716,8 @@ void ARX_SOUND_Stop(const audio::SourcedSample & sample_id) {
 
 bool ARX_SOUND_PlayScriptAmbiance(const res::path & name, SoundLoopMode loop, float volume) {
 	
-	if (!g_soundInitialized) {
-		return -1; // TODO bogus return value
+	if(!g_soundInitialized) {
+		return true;
 	}
 	
 	res::path temp = res::path(name).set_ext("amb");
