@@ -248,7 +248,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 		entities.player()->ouch_time = g_gameTime.now();
 		SendIOScriptEvent(sender, entities.player(), SM_OUCH, getOuchEventParameter(entities.player()));
 		float power = entities.player()->dmg_sum / player.lifePool.max * 220.f;
-		AddQuakeFX(power * 3.5f, 500 + power * 3, Random::getf(200.f, 300.f) + power, false);
+		AddQuakeFX(power * 3.5f, GameDurationMsf(500 + power * 3), Random::getf(200.f, 300.f) + power, false);
 		entities.player()->dmg_sum = 0.f;
 	}
 

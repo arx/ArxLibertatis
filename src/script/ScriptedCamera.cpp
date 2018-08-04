@@ -227,7 +227,7 @@ public:
 		
 		DebugScript(' ' << intensity << ' ' << duration << ' ' << period);
 		
-		AddQuakeFX(intensity, duration, period, true);
+		AddQuakeFX(intensity, GameDurationMsf(duration), period, true);
 		
 		return Success;
 	}
