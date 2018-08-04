@@ -196,7 +196,7 @@ void ExplosionSpell::Launch() {
 		light->duration = GameDurationMs(200);
 	}
 	
-	AddQuakeFX(300, 2000, 400, true);
+	AddQuakeFX(300, GameDurationMs(2000), 400, true);
 	
 	for(long i_angle = 0 ; i_angle < 360 ; i_angle += 12) {
 		for(long j = -100 ; j < 100 ; j += 50) {

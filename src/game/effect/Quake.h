@@ -20,9 +20,11 @@
 #ifndef ARX_GAME_EFFECT_QUAKE_H
 #define ARX_GAME_EFFECT_QUAKE_H
 
+#include "core/TimeTypes.h"
+
 struct Camera;
 
-void AddQuakeFX(float intensity, float duration, float period, bool flags);
+void AddQuakeFX(float intensity, GameDuration duration, float period, bool flags);
 void RemoveQuakeFX();
 
 void ManageQuakeFX(Camera * cam);
