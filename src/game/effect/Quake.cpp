@@ -43,9 +43,6 @@ void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound
 		QuakeFx.frequency += period;
 		QuakeFx.frequency *= .5f;
 		QuakeFx.sound = QuakeFx.sound || sound;
-
-		if(sound)
-			ARX_SOUND_PlaySFX(g_snd.QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 	} else {
 		QuakeFx.intensity = intensity;
 
@@ -54,9 +51,6 @@ void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound
 		QuakeFx.duration = duration;
 		QuakeFx.frequency = period;
 		QuakeFx.sound = sound;
-
-		if(sound)
-			ARX_SOUND_PlaySFX(g_snd.QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 	}
 
 	if(!sound) {
@@ -87,10 +81,7 @@ void ManageQuakeFX(Camera * cam) {
 		if(QuakeFx.frequency > 0.f) {
 			periodicity = timeWaveSin(g_gameTime.now(), GameDurationMsf(628.319f / QuakeFx.frequency));
 		}
-
-		if(periodicity > 0.5f && QuakeFx.sound)
-			ARX_SOUND_PlaySFX(g_snd.QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
-
+		
 		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;
 		float halfpower = truepower * .5f;
 		

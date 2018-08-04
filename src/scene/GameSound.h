@@ -101,7 +101,6 @@ audio::SampleHandle TORCH_LOOP;
 audio::SampleHandle TORCH_END;
 audio::SampleHandle FIREPLACE_LOOP;
 audio::SampleHandle PLOUF;
-audio::SampleHandle QUAKE;
 audio::SampleHandle WHOOSH;
 
 // Magic drawing samples
