@@ -49,9 +49,7 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	const Vec2f cellSide = g_backgroundTileSize;
 	
 	// Determine in which primary direction to step
-	Vec2i d;
-	d.x = ((p1.x < p2.x) ? 1 : ((p1.x > p2.x) ? -1 : 0));
-	d.y = ((p1.y < p2.y) ? 1 : ((p1.y > p2.y) ? -1 : 0));
+	Vec2i d((p1.x <= p2.x) - (p1.x >= p2.x), (p1.y <= p2.y) - (p1.y >= p2.y));
 	
 	// Determine start grid cell coordinates
 	Vec2i tile = Vec2i(glm::floor(p1 / cellSide));
