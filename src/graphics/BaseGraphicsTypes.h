@@ -91,6 +91,8 @@ struct EERIE_2D_BBOX {
 	Vec2f min;
 	Vec2f max;
 	
+	EERIE_2D_BBOX() : min(0.f), max(0.f) { }
+	
 	void reset() {
 		min = Vec2f(32000);
 		max = Vec2f(-32000);
@@ -116,7 +118,7 @@ struct EERIE_3D_BBOX {
 	Vec3f min;
 	Vec3f max;
 	
-	EERIE_3D_BBOX() { }
+	EERIE_3D_BBOX() : min(0.f), max(0.f) { }
 	
 	EERIE_3D_BBOX(const Vec3f & min_, const Vec3f & max_) : min(min_), max(max_) { }
 	
