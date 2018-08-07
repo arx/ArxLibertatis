@@ -52,9 +52,7 @@ struct SavedVec3 {
 	f32 z;
 	
 	Vec3f toVec3() const {
-		Vec3f a;
-		a.x = x, a.y = y, a.z = z;
-		return a;
+		return Vec3f(x, y, z);
 	}
 	
 	SavedVec3 & operator=(const Vec3f & b) {
