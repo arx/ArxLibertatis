@@ -286,7 +286,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	arx_assert(obj->pos == Vec3f_ZERO);
 	arx_assert(obj->point0 == Vec3f_ZERO);
 	arx_assert(obj->angle == Anglef::ZERO);
-	arx_assert(obj->quat == glm::quat());
+	arx_assert(obj->quat == quat_identity());
 	
 	return obj;
 }
