@@ -91,20 +91,15 @@ void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & 
 		
 		rec++;
 		
-		Vec3f v[5];
-		// milieu
-		v[0] = p1 + (p3 - p1) * 0.5f;
-		// gauche
-		v[1] = p1 + (p4 - p1) * 0.5f;
-		// droite
-		v[2] = p2 + (p3 - p2) * 0.5f;
-		// haut
-		v[3] = p4 + (p3 - p4) * 0.5f;
-		// bas
-		v[4] = p1 + (p2 - p1) * 0.5f;
-
+		Vec3f v[5] = {
+			p1 + (p3 - p1) * 0.5f,
+			p1 + (p4 - p1) * 0.5f,
+			p2 + (p3 - p2) * 0.5f,
+			p4 + (p3 - p4) * 0.5f,
+			p1 + (p2 - p1) * 0.5f,
+		};
+		
 		float patchsize = 0.005f;
-
 		v[0].x += glm::sin(glm::radians((v[0].x - eSrc.x) * patchsize + fwrap)) * 5;
 		v[0].y += glm::sin(glm::radians((v[0].y - eSrc.y) * patchsize + fwrap)) * 5;
 		v[0].z += glm::sin(glm::radians((v[0].z - eSrc.z) * patchsize + fwrap)) * 5;
@@ -203,18 +198,20 @@ void CCreateField::Render()
 	float smul = 100 * size;
 
 	// bottom points
-	Vec3f b[4];
-	b[0] = eSrc + Vec3f(-smul, 0.f, -smul);
-	b[1] = eSrc + Vec3f(smul, 0.f, -smul);
-	b[2] = eSrc + Vec3f(smul, 0.f, smul);
-	b[3] = eSrc + Vec3f(-smul, 0.f, smul);
+	Vec3f b[4] = {
+		eSrc + Vec3f(-smul, 0.f, -smul),
+		eSrc + Vec3f(smul, 0.f, -smul),
+		eSrc + Vec3f(smul, 0.f, smul),
+		eSrc + Vec3f(-smul, 0.f, smul)
+	};
 	
 	// top points
-	Vec3f t[4];
-	t[0] = b[0] + Vec3f(0.f, -250 * ysize, 0.f);
-	t[1] = b[1] + Vec3f(0.f, -250 * ysize, 0.f);
-	t[2] = b[2] + Vec3f(0.f, -250 * ysize, 0.f);
-	t[3] = b[3] + Vec3f(0.f, -250 * ysize, 0.f);
+	Vec3f t[4] = {
+		b[0] + Vec3f(0.f, -250 * ysize, 0.f),
+		b[1] + Vec3f(0.f, -250 * ysize, 0.f),
+		b[2] + Vec3f(0.f, -250 * ysize, 0.f),
+		b[3] + Vec3f(0.f, -250 * ysize, 0.f)
+	};
 	
 	fwrap -= 5.0f; // TODO ignores the frame delay
 	while(fwrap < 0) {
