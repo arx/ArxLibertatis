@@ -523,55 +523,49 @@ Vec3f CalcFaceNormal(const Vec3f * v) {
 	return glm::normalize(Vec3f(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x));
 }
 
-void MatrixSetByVectors(glm::mat4x4 & m, const Vec3f & d, const Vec3f & u)
-{
-	float t;
-	Vec3f D, U, R;
-	D = glm::normalize(d);
-	U = u;
-	t = U.x * D.x + U.y * D.y + U.z * D.z;
-	U.x -= D.x * t;
-	U.y -= D.y * t;
-	U.z -= D.y * t; // TODO is this really supposed to be D.y?
+void MatrixSetByVectors(glm::mat4x4 & m, const Vec3f & d, const Vec3f & u) {
+	
+	Vec3f D = glm::normalize(d);
+	float t = u.x * D.x + u.y * D.y + u.z * D.z;
+	Vec3f U = u - Vec3f(D.x, D.y, D.y) * t; // TODO is this really supposed to be D.y?
 	U = glm::normalize(U);
-	R = glm::cross(U, D);
+	Vec3f R = glm::cross(U, D);
+	
 	m[0][0] = R.x;
 	m[0][1] = R.y;
+	m[0][2] = R.z;
 	m[1][0] = U.x;
 	m[1][1] = U.y;
+	m[1][2] = U.z;
 	m[2][0] = D.x;
 	m[2][1] = D.y;
 	m[2][2] = D.z;
-	m[0][2] = R.z;
-	m[1][2] = U.z;
+	
 }
 
-void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float rollDegrees)
-{
+void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float rollDegrees) {
+	
 	// Get our direction vector (the Z vector component of the matrix)
 	// and make sure it's normalized into a unit vector
 	Vec3f zAxis = glm::normalize(vect);
-
+	
 	// Build the Y vector of the matrix (handle the degenerate case
 	// in the way that 3DS does) -- This is not the true vector, only
 	// a reference vector.
-	Vec3f yAxis;
-
-	if(zAxis.x == 0.f && zAxis.z == 0.f)
+	Vec3f yAxis(0.f, 1.f, 0.f);
+	if(zAxis.x == 0.f && zAxis.z == 0.f) {
 		yAxis = Vec3f(-zAxis.y, 0.f, 0.f);
-	else
-		yAxis = Vec3f(0.f, 1.f, 0.f);
-
+	}
+	
 	// Build the X axis vector based on the two existing vectors
 	Vec3f xAxis = glm::normalize(glm::cross(yAxis, zAxis));
-
+	
 	// Correct the Y reference vector
 	yAxis = glm::normalize(glm::cross(xAxis, zAxis));
 	yAxis = -yAxis;
-
+	
 	// Generate rotation matrix without roll included
-	glm::mat4x4 rot;
-	glm::mat4x4 roll;
+	glm::mat4x4 rot(1.f);
 	rot[0][0] = yAxis.x;
 	rot[0][1] = yAxis.y;
 	rot[0][2] = yAxis.z;
@@ -581,15 +575,16 @@ void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float r
 	rot[2][0] = xAxis.x;
 	rot[2][1] = xAxis.y;
 	rot[2][2] = xAxis.z;
-
+	
 	// Generate the Z rotation matrix for roll
+	glm::mat4x4 roll(1.f);
 	roll[2][2] = 1.f;
 	roll[3][3] = 1.f;
 	roll[0][0] =  std::cos(glm::radians(rollDegrees));
 	roll[0][1] = -std::sin(glm::radians(rollDegrees));
 	roll[1][0] =  std::sin(glm::radians(rollDegrees));
 	roll[1][1] =  std::cos(glm::radians(rollDegrees));
-
+	
 	// Concatinate them for a complete rotation matrix that includes
 	// all rotations
 	matrix = roll * rot;
