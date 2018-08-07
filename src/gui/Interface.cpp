@@ -195,9 +195,9 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const Color col
 	
 	TexturedVertex v[4];
 	v[0] = TexturedVertex(Vec3f(0.f), 1.f, ColorRGBA(1), Vec2f(0.f));
-	v[1] = TexturedVertex(Vec3f(0.f), 1.f, ColorRGBA(1), Vec2f_X_AXIS);
+	v[1] = TexturedVertex(Vec3f(0.f), 1.f, ColorRGBA(1), Vec2f(1.f, 0.f));
 	v[2] = TexturedVertex(Vec3f(0.f), 1.f, ColorRGBA(1), Vec2f(1.f, 1.f));
-	v[3] = TexturedVertex(Vec3f(0.f), 1.f, ColorRGBA(1), Vec2f_Y_AXIS);
+	v[3] = TexturedVertex(Vec3f(0.f), 1.f, ColorRGBA(1), Vec2f(0.f, 1.f));
 	
 	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.0000001f;
 	

@@ -337,7 +337,7 @@ static audio::SourcedSample ARX_SOUND_PlaySFX_int(audio::SampleHandle sample_id,
 		channel.position = *position;
 	} else {
 		channel.flags |= FLAG_RELATIVE;
-		channel.position = Vec3f_Z_AXIS;
+		channel.position = Vec3f(0.f, 0.f, 1.f);
 	}
 	
 	res::path sample_name;
@@ -449,7 +449,7 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 		}
 	} else {
 		channel.flags |= FLAG_RELATIVE;
-		channel.position = Vec3f_Z_AXIS * 100.f;
+		channel.position = Vec3f(0.f, 0.f, 100.f);
 	}
 	
 	return audio::samplePlay(sample_id, channel);
@@ -573,7 +573,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 		}
 	} else {
 		channel.flags |= FLAG_RELATIVE;
-		channel.position = Vec3f_Z_AXIS * 100.f;
+		channel.position = Vec3f(0.f, 0.f, 100.f);
 	}
 	
 	if(pitch != 1.0F) {

@@ -123,9 +123,9 @@ void BlessSpell::Update() {
 	q.v[3].color = color;
 	
 	q.v[0].uv = Vec2f(0.f);
-	q.v[1].uv = Vec2f_X_AXIS;
+	q.v[1].uv = Vec2f(1.f, 0.f);
 	q.v[2].uv = Vec2f(1.f);
-	q.v[3].uv = Vec2f_Y_AXIS;
+	q.v[3].uv = Vec2f(0.f, 1.f);
 	
 	q.v[0].p.x = pos.x + fBetaRadCos - fBetaRadSin;
 	q.v[0].p.y = pos.y;

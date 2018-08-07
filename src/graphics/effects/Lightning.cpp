@@ -345,7 +345,7 @@ void CLightning::Render()
 		q.v[3].color = Color(255, 255, 255, 255).toRGBA();
 		q.v[0].uv = Vec2f(0.5f, 0.f);
 		q.v[1].uv = Vec2f(0.f);
-		q.v[2].uv = Vec2f_Y_AXIS;
+		q.v[2].uv = Vec2f(0.f, 1.f);
 		q.v[3].uv = Vec2f(0.5f, 1.f);
 		q.v[0].p = astart;
 		q.v[1].p = astart + Vec3f(0.f, zz, 0.f);
@@ -363,7 +363,7 @@ void CLightning::Render()
 		q.v[2].color = Color(0, 0, 90, 255).toRGBA();
 		q.v[3].color = Color(255, 255, 255, 255).toRGBA();
 		q.v[0].uv = Vec2f(0.5f, 0.f);
-		q.v[1].uv = Vec2f_X_AXIS;
+		q.v[1].uv = Vec2f(1.f, 0.f);
 		q.v[2].uv = Vec2f(1.f);
 		q.v[3].uv = Vec2f(0.5f, 1.f);
 		q.v[0].p = astart;
@@ -384,7 +384,7 @@ void CLightning::Render()
 		q.v[2].color = Color(0, 0, 90, 255).toRGBA();
 		q.v[3].color = Color(255, 255, 255, 255).toRGBA();
 		q.v[0].uv = Vec2f(0.5f, 0.f);
-		q.v[1].uv = Vec2f_X_AXIS;
+		q.v[1].uv = Vec2f(1.f, 0.f);
 		q.v[2].uv = Vec2f(1.f);
 		q.v[3].uv = Vec2f(0.5f, 1.f);
 		q.v[0].p = astart;
@@ -404,7 +404,7 @@ void CLightning::Render()
 		q.v[3].color = Color(255, 255, 255, 255).toRGBA();
 		q.v[0].uv = Vec2f(0.5f, 0.f);
 		q.v[1].uv = Vec2f(0.f);
-		q.v[2].uv = Vec2f_Y_AXIS;
+		q.v[2].uv = Vec2f(0.f, 1.f);
 		q.v[3].uv = Vec2f(0.5f, 1.f);
 		q.v[0].p = astart;
 		q.v[1].p = astart - Vec3f(xx, 0.f, zz);

@@ -80,9 +80,9 @@ void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, 
 	q1.v[2].color = q1.v[3].color = endColor.toRGBA();
 	
 	q1.v[0].uv = Vec2f(0.f);
-	q1.v[1].uv = Vec2f_X_AXIS;
+	q1.v[1].uv = Vec2f(1.f, 0.f);
 	q1.v[2].uv = Vec2f(1.f);
-	q1.v[3].uv = Vec2f_Y_AXIS;
+	q1.v[3].uv = Vec2f(0.f, 1.f);
 	
 	q1.v[0].p = startPos + Vec3f(0.f, zzs, 0.f);
 	q1.v[1].p = startPos + Vec3f(0.f, -zzs, 0.f);
@@ -102,9 +102,9 @@ void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, 
 	q2.v[2].color = q2.v[3].color = endColor.toRGBA();
 	
 	q2.v[0].uv = Vec2f(0.f);
-	q2.v[1].uv = Vec2f_X_AXIS;
+	q2.v[1].uv = Vec2f(1.f, 0.f);
 	q2.v[2].uv = Vec2f(1.f);
-	q2.v[3].uv = Vec2f_Y_AXIS;
+	q2.v[3].uv = Vec2f(0.f, 1.f);
 	
 	q2.v[0].p = startPos + Vec3f(xxs, 0.f, zzs);
 	q2.v[1].p = startPos + Vec3f(-xxs, 0.f, -zzs);
