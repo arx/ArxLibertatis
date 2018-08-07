@@ -76,7 +76,13 @@ typedef HandleType<struct ObjVertGroupTag, short, -1> ObjVertGroup;
 typedef HandleType<struct ObjVertHandleTag, s32,  -1> ObjVertHandle;
 
 struct EERIE_TRI {
+	
 	Vec3f v[3];
+	
+	EERIE_TRI() {
+		v[0] = v[1] = v[2] = Vec3f(0.f);
+	}
+	
 };
 
 enum PolyTypeFlag {
@@ -132,12 +138,20 @@ struct EERIEPOLY {
 	
 	EERIEPOLY()
 		: type(0)
+		, min(0.f)
+		, max(0.f)
+		, norm(0.f)
+		, norm2(0.f)
 		, tex(NULL)
+		, center(0.f)
 		, transval(0)
 		, area(0)
 		, room(0)
 		, misc(0)
-	{ }
+	{
+		nrml[0] = nrml[1] = nrml[2] = nrml[3] = Vec3f(0.f);
+		uslInd[0] = uslInd[1] = uslInd[2] = uslInd[3] = 0;
+	}
 	
 };
 
@@ -214,13 +228,17 @@ struct EERIE_FASTACCESS {
 
 struct EERIE_3DOBJ {
 	
-	EERIE_3DOBJ() {
+	EERIE_3DOBJ()
+		: pos(0.f)
+		, point0(0.f)
+		, angle(Anglef::ZERO)
+		, origin(0)
+		, quat(quat_identity())
+		, pbox(NULL)
+		, sdata(false)
+		, m_skeleton(NULL)
 		
-		point0 = pos = Vec3f_ZERO;
-		angle = Anglef::ZERO;
-		
-		origin = 0;
-		
+	{
 		// TODO Make default constructor possible
 		cub.xmin = 0;
 		cub.xmax = 0;
@@ -228,12 +246,6 @@ struct EERIE_3DOBJ {
 		cub.ymax = 0;
 		cub.zmin = 0;
 		cub.zmax = 0;
-		
-		pbox = NULL;
-		sdata = false;
-		
-		m_skeleton = NULL;
-		
 	}
 	
 	void clear();
@@ -271,12 +283,24 @@ struct EERIE_3DOBJ {
 };
 
 struct PortalPoly {
+	
 	Vec3f min;
 	Vec3f max;
 	Vec3f norm;
 	Vec3f p[4];
 	float rhw;
 	Vec3f center;
+	
+	PortalPoly()
+		: min(0.f)
+		, max(0.f)
+		, norm(0.f)
+		, rhw(1.f)
+		, center(0.f)
+	{
+		p[0] = p[1] = p[2] = p[3] = Vec3f(0.f);
+	}
+	
 };
 
 struct EERIE_PORTALS {
@@ -288,9 +312,15 @@ struct EERIE_PORTALS {
 };
 
 struct EP_DATA {
+	
 	Vec2s tile;
 	short idx;
-	short padd;
+	
+	EP_DATA()
+		: tile(0)
+		, idx(0)
+	{ }
+	
 };
 
 struct EERIE_ROOM_DATA {
