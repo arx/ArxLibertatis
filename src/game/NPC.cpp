@@ -362,7 +362,6 @@ void ARX_NPC_Behaviour_Stack(Entity * io) {
 		if(bd->exist == 0) {
 			bd->behavior = io->_npcdata->behavior;
 			bd->behavior_param = io->_npcdata->behavior_param;
-			bd->tactics = io->_npcdata->tactics;
 
 			if (io->_npcdata->pathfind.listnb > 0)
 				bd->target = io->_npcdata->pathfind.truetarget;
@@ -389,7 +388,6 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 			AcquireLastAnim(io);
 			io->_npcdata->behavior = bd->behavior;
 			io->_npcdata->behavior_param = bd->behavior_param;
-			io->_npcdata->tactics = bd->tactics;
 			io->targetinfo = bd->target;
 			io->_npcdata->movemode = bd->movemode;
 			bd->exist = 0;
