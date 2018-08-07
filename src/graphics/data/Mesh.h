@@ -151,9 +151,17 @@ struct PORTAL_ROOM_DRAW {
 };
 
 struct ROOM_DIST_DATA {
+	
 	float distance; // -1 means use truedist
 	Vec3f startpos;
 	Vec3f endpos;
+	
+	ROOM_DIST_DATA()
+		: distance(0.f)
+		, startpos(0.f)
+		, endpos(0.f)
+	{ }
+	
 };
 
 extern std::vector<ROOM_DIST_DATA> g_roomDistance;
