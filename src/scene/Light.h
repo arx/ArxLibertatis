@@ -186,6 +186,7 @@ void PrecalcDynamicLighting(const Vec3f & camPos, float camDepth);
 
 
 struct ShaderLight {
+	
 	Vec3f pos;
 	float fallstart;
 	float fallend;
@@ -193,6 +194,17 @@ struct ShaderLight {
 	float intensity;
 	Color3f rgb;
 	Color3f rgb255;
+	
+	ShaderLight()
+		: pos(0.f)
+		, fallstart(0.f)
+		, fallend(0.f)
+		, falldiffmul(0.f)
+		, intensity(0.f)
+		, rgb(Color3f::black)
+		, rgb255(Color3f::black)
+	{ }
+	
 };
 
 static const size_t llightsSize = 16;
