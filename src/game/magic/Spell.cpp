@@ -26,6 +26,8 @@
 
 SpellBase::SpellBase()
 	: m_level(1.f)
+	, m_hand_pos(0.f)
+	, m_caster_pos(0.f)
 	, m_type(SPELL_NONE)
 	, m_timcreation(0)
 	, m_hasDuration(false)
@@ -83,29 +85,24 @@ void SpellBase::updateCasterPosition() {
 	}
 }
 
-Vec3f SpellBase::getTargetPos(EntityHandle source, EntityHandle target)
-{
-	Vec3f targetPos;
-	if(target == EntityHandle()) {
-		// no target... targeted by sight
-		if(source == EntityHandle_Player) {
-			// no target... player spell targeted by sight
-			targetPos = player.pos;
-			targetPos += angleToVectorXZ(player.angle.getYaw()) * 60.f;
-			targetPos.y += std::sin(glm::radians(player.angle.getPitch())) * 60.f;
-		} else {
-			// TODO entities[target] with target < 0 ??? - uh oh!
-			targetPos = entities[target]->pos;
-			targetPos += angleToVectorXZ(entities[target]->angle.getYaw()) * 60.f;
-			targetPos += Vec3f(0.f, -120.f, 0.f);
-		}
-	} else if(target == EntityHandle_Player) {
+Vec3f SpellBase::getTargetPos(EntityHandle source, EntityHandle target) {
+	
+	if(target == EntityHandle_Player) {
 		// player target
-		targetPos = player.pos;
-	} else {
+		return player.pos;
+	} else if(target != EntityHandle()) {
 		// IO target
-		targetPos = entities[target]->pos;
+		return entities[target]->pos;
+	} else if(source == EntityHandle_Player) {
+		// no target... player spell targeted by sight
+		Vec3f targetPos = player.pos + angleToVectorXZ(player.angle.getYaw()) * 60.f;
+		targetPos.y += std::sin(glm::radians(player.angle.getPitch())) * 60.f;
+		return targetPos;
+	} else {
+		// no target... targeted by sight
+		Vec3f targetPos = entities[source]->pos + angleToVectorXZ(entities[source]->angle.getYaw()) * 60.f;
+		targetPos += Vec3f(0.f, -120.f, 0.f);
+		return targetPos;
 	}
 	
-	return targetPos;
 }
