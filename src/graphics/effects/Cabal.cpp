@@ -89,19 +89,15 @@ Color3f CabalFx::randomizeLightColor() {
 }
 
 Vec3f CabalFx::update(Vec3f casterPos) {
-
-	float refpos;
+	
 	const float frametime = toMsf(g_gameTime.now());
 	float mov = std::sin(frametime * (1.0f / 800)) * m_scaleY;
-
-	Vec3f cabalpos;
-	cabalpos.x = casterPos.x;
-	cabalpos.y = casterPos.y + m_offset - mov;
-	cabalpos.z = casterPos.z;
-	refpos = casterPos.y + m_offset;
-
+	
+	Vec3f cabalpos = casterPos + Vec3f(0.f, m_offset - mov, 0.f);
+	float refpos = casterPos.y + m_offset;
+	
 	float Es = std::sin(frametime * (1.0f / 800) + glm::radians(m_scaleY));
-
+	
 	EERIE_LIGHT * light = lightHandleGet(m_lightHandle);
 	if (light) {
 		light->pos.x = cabalpos.x;
