@@ -109,15 +109,16 @@ struct DamageParameters {
 	DamageType type; // damages type
 	EntityHandle source;
 	
-	DamageParameters() {
-		damages = 0.f;
-		radius = 100.f;
-		duration = GameDurationMs(1000);
-		area = DAMAGE_AREA;
-		flags = 0;
-		type = 0;
-		source = EntityHandle();
-	}
+	DamageParameters()
+		: pos(0.f)
+		, damages(0.f)
+		, radius(100.f)
+		, duration(GameDurationMs(1000))
+		, area(DAMAGE_AREA)
+		, flags(0)
+		, type(0)
+	{ }
+	
 };
 
 DamageHandle DamageCreate(const DamageParameters & params);
