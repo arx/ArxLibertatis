@@ -687,8 +687,6 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					
 					Entity * target = entities[content];
 					
-					Vec3f pos;
-					Color color = Color::white;
 					long hitpoint = -1;
 					float curdist = 999999.f;
 					
@@ -706,25 +704,21 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							curdist = d;
 						}
 					}
-
-					if(hitpoint >= 0) {
-						color = (target->ioflags & IO_NPC) ? target->_npcdata->blood_color : Color::white;
-						pos = target->obj->vertexWorldPositions[hitpoint].v;
-					} else {
-						arx_assert(false);
-					}
+					
+					arx_assert(hitpoint >= 0);
+					Color color = (target->ioflags & IO_NPC) ? target->_npcdata->blood_color : Color::white;
+					Vec3f pos = target->obj->vertexWorldPositions[hitpoint].v;
 					
 					float dmgs = 0.f;
 					if(!(flags & 1)) {
-						Vec3f posi;
-
+						
 						if(hitpoint >= 0) {
-							posi = target->obj->vertexWorldPositions[hitpoint].v;
+							Vec3f posi = target->obj->vertexWorldPositions[hitpoint].v;
 							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim, &posi);
 						} else {
 							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim);
 						}
-
+						
 						if(target->ioflags & IO_NPC) {
 							ret = true;
 							target->spark_n_blood = 0;
@@ -763,10 +757,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							
 							float power = (dmgs * 0.025f) + 0.7f;
 							
-							Vec3f vect;
-							vect.x = vertPos.x - io_source->pos.x;
-							vect.y = 0;
-							vect.z = vertPos.z - io_source->pos.z;
+							Vec3f vect(vertPos.x - io_source->pos.x, 0.f, vertPos.z - io_source->pos.z);
 							vect = glm::normalize(vect);
 							
 							Sphere sp;
