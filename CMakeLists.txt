@@ -498,7 +498,6 @@ endif()
 find_package(GLM 0.9.5.0 REQUIRED)
 include_directories(SYSTEM ${GLM_INCLUDE_DIRS})
 add_definitions(-DGLM_FORCE_RADIANS) # Only needed for older GLM versions
-add_definitions(-DGLM_FORCE_CTOR_INIT) # TODO Manually initialize glm types where needed
 
 # DbgHelp
 if(MSVC AND BUILD_CRASHHANDLER)
