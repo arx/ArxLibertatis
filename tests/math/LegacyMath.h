@@ -72,7 +72,8 @@ inline void Quat_Divide(glm::quat * dest, const glm::quat * q1, const glm::quat 
 
 //! Inverts a Quaternion
 inline void Quat_Reverse(glm::quat * q) {
-	glm::quat qw, qr;
+	glm::quat qw = quat_identity();
+	glm::quat qr;
 	Quat_Divide(&qr, q, &qw);
 	*q = qr;
 }
@@ -219,7 +220,7 @@ inline glm::quat toNonNpcRotation(const Anglef & src) {
 	Anglef ang = src;
 	ang.setPitch(360 - ang.getPitch());
 	
-	glm::mat4x4 mat;
+	glm::mat4x4 mat(1.f);
 	Vec3f vect(0, 0, 1);
 	Vec3f up(0, 1, 0);
 	vect = VRotateY(vect, ang.getYaw());
@@ -272,14 +273,10 @@ inline Vec2s inventorySizeFromTextureSize_1(u32 m_dwWidth, u32 m_dwHeight) {
 }
 
 inline Vec2s inventorySizeFromTextureSize_2(u32 m_dwWidth, u32 m_dwHeight) {
-	Vec2s m_inventorySize;
-
 	unsigned long w = m_dwWidth >> 5;
 	unsigned long h = m_dwHeight >> 5;
-	m_inventorySize.x = char(glm::clamp(((w << 5) != m_dwWidth) ? (w + 1) : w, 1ul, 3ul));
-	m_inventorySize.y = char(glm::clamp(((h << 5) != m_dwHeight) ? (h + 1) : h, 1ul, 3ul));
-	
-	return m_inventorySize;
+	return Vec2s(char(glm::clamp(((w << 5) != m_dwWidth) ? (w + 1) : w, 1ul, 3ul)),
+	             char(glm::clamp(((h << 5) != m_dwHeight) ? (h + 1) : h, 1ul, 3ul)));
 }
 
 inline float focalToFovLegacy(float focal) {
