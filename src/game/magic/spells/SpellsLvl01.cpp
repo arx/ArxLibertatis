@@ -145,39 +145,26 @@ void MagicMissileSpell::Launch() {
 		m_hand_pos = actionPointPosition(caster->obj, group);
 	}
 	
-	Vec3f startPos;
+	Vec3f startPos = m_hand_pos;
 	float pitch, yaw;
 	if(m_caster == EntityHandle_Player) {
-		yaw = player.angle.getYaw();
 		pitch = player.angle.getPitch();
-		
-		Vec3f vector = angleToVector(Anglef(pitch, yaw, 0.f)) * 60.f;
-		
-		if(m_hand_group != ActionPoint()) {
-			startPos = m_hand_pos;
-		} else {
-			startPos = player.pos;
-			startPos += angleToVectorXZ(yaw);
+		yaw = player.angle.getYaw();
+		if(m_hand_group == ActionPoint()) {
+			startPos = player.pos + angleToVectorXZ(yaw);
 		}
-		
-		startPos += vector;
-		
 	} else {
-		pitch = 0;
+		pitch = 0.f;
 		yaw = entities[m_caster]->angle.getYaw();
-		
-		Vec3f vector = angleToVector(Anglef(pitch, yaw, 0.f)) * 60.f;
-		
-		if(m_hand_group != ActionPoint()) {
-			startPos = m_hand_pos;
-		} else {
+		if(m_hand_group == ActionPoint()) {
 			startPos = entities[m_caster]->pos;
 		}
-		
-		startPos += vector;
-		
+	}
+	
+	startPos += angleToVector(Anglef(pitch, yaw, 0.f)) * 60.f;
+	
+	if(m_caster != EntityHandle_Player) {
 		Entity * io = entities[m_caster];
-		
 		if(ValidIONum(io->targetinfo)) {
 			const Vec3f & p1 = m_caster_pos;
 			const Vec3f & p2 = entities[io->targetinfo]->pos;
@@ -187,7 +174,6 @@ void MagicMissileSpell::Launch() {
 			const Vec3f & p2 = entities[m_target]->pos;
 			pitch = -(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z)))));
 		}
-		
 	}
 	
 	m_mrCheat = (m_caster == EntityHandle_Player && cur_mr == 3);
@@ -456,13 +442,7 @@ void DouseSpell::Launch() {
 	m_duration = GameDurationMs(500);
 	m_hasDuration = true;
 	
-	Vec3f target;
-	if(m_hand_group != ActionPoint()) {
-		target = m_hand_pos;
-	} else {
-		target = m_caster_pos;
-		target.y -= 50.f;
-	}
+	Vec3f target = (m_hand_group != ActionPoint()) ? m_hand_pos : (m_caster_pos - Vec3f(0.f, 50.f, 0.f));
 	
 	float fPerimeter = 400.f + m_level * 30.f;
 	
