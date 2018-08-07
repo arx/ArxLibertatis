@@ -154,7 +154,7 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	
 	Vec2f s = Vec2f(bi->m_count);
 	
-	Vec2i n = bi->m_count * 2 + Vec2i(2);
+	Vec2i n = bi->m_count * s32(2) + Vec2i(2);
 	
 	Vec2f nn = Vec2f(n) + s;
 	
