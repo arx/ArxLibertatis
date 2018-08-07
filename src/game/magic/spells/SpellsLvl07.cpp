@@ -215,7 +215,9 @@ Vec3f FlyingEyeSpell::getPosition() {
 	return eyeball.pos;
 }
 
-FireFieldSpell::FireFieldSpell() { }
+FireFieldSpell::FireFieldSpell()
+	: m_pos(0.f)
+{ }
 
 void FireFieldSpell::Launch() {
 	
@@ -338,9 +340,9 @@ Vec3f FireFieldSpell::getPosition() {
 	return m_pos;
 }
 
-
 IceFieldSpell::IceFieldSpell()
-	: tex_p1(NULL)
+	: m_pos(0.f)
+	, tex_p1(NULL)
 	, tex_p2(NULL)
 { }
 
@@ -401,12 +403,7 @@ void IceFieldSpell::Launch() {
 		tSize[i] = Vec3f_ZERO;
 		tSizeMax[i] = arx::randomVec3f() + Vec3f(0.f, 0.2f, 0.f);
 		
-		Vec3f minPos;
-		if(tType[i] == 0) {
-			minPos = Vec3f(1.2f, 1, 1.2f);
-		} else {
-			minPos = Vec3f(0.4f, 0.3f, 0.4f);
-		}
+		Vec3f minPos = (tType[i] == 0) ? Vec3f(1.2f, 1.f, 1.2f) : Vec3f(0.4f, 0.3f, 0.4f);
 		
 		tSizeMax[i] = glm::max(tSizeMax[i], minPos);
 		
@@ -460,36 +457,23 @@ void IceFieldSpell::Update() {
 		tSize[i] += Vec3f(0.1f);
 		tSize[i] = glm::min(tSize[i], tSizeMax[i]);
 		
-		Anglef stiteangle = Anglef::ZERO;
-		Vec3f stitepos;
-		Vec3f stitescale;
-		Color3f stitecolor;
-
-		stiteangle.setYaw(glm::cos(glm::radians(tPos[i].x)) * 360);
-		stitepos.x = tPos[i].x;
-		stitepos.y = m_pos.y;
-		stitepos.z = tPos[i].z;
+		Anglef stiteangle(0.f, glm::cos(glm::radians(tPos[i].x)) * 360, 0.f);
+		Vec3f stitepos(tPos[i].x, m_pos.y, tPos[i].z);
+		Vec3f stitescale(tSize[i].z, tSize[i].y, tSize[i].x);
+		Color3f stitecolor = Color3f(0.7f, 0.7f, 0.9f) * tSizeMax[i].y;
 		
-		stitecolor.r = tSizeMax[i].y * 0.7f;
-		stitecolor.g = tSizeMax[i].y * 0.7f;
-		stitecolor.b = tSizeMax[i].y * 0.9f;
-
 		if(stitecolor.r > 1) {
 			stitecolor.r = 1;
 		}
-
+		
 		if(stitecolor.g > 1) {
 			stitecolor.g = 1;
 		}
-
+		
 		if(stitecolor.b > 1) {
 			stitecolor.b = 1;
 		}
-
-		stitescale.z = tSize[i].x;
-		stitescale.y = tSize[i].y;
-		stitescale.x = tSize[i].z;
-
+		
 		EERIE_3DOBJ * obj = (tType[i] == 0) ? smotte : stite;
 		
 		Draw3DObject(obj, stiteangle, stitepos, stitescale, stitecolor, mat);
@@ -626,11 +610,10 @@ void LightningStrikeSpell::Update() {
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
 }
 
-
-
 ConfuseSpell::ConfuseSpell()
 	: tex_p1(NULL)
 	, tex_trail(NULL)
+	, eCurPos(0.f)
 { }
 
 void ConfuseSpell::Launch() {
