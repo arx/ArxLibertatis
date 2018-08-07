@@ -328,10 +328,15 @@ Input::Input()
 	: backend(NULL)
 	, m_useRawMouseInput(true)
 	, m_mouseMode(Mouse::Absolute)
-	, m_lastMousePosition(Vec2s_ZERO)
+	, m_mouseMovement(0.f)
+	, iMouseA(0)
+	, m_lastMousePosition(0.f)
 	, mouseInWindow(false)
+	, m_mouseSensitivity(0.f)
 	, m_mouseAcceleration(0)
 	, m_invertMouseY(false)
+	, iWheelDir(0)
+	, iKeyId(-1)
 {
 	setMouseSensitivity(2);
 	reset();
