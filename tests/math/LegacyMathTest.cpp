@@ -126,7 +126,7 @@ void LegacyMathTest::quaternionTests() {
 		
 		CPPUNIT_ASSERT_EQUAL(vecA, vecB);
 		
-		glm::mat4x4 matrixA;
+		glm::mat4x4 matrixA(1.f);
 		MatrixFromQuat(matrixA, A);
 		
 		glm::mat4x4 matrixB = glm::mat4_cast(B);
@@ -203,7 +203,7 @@ void LegacyMathTest::vecMatrixConversionTest() {
 		front = it->quat * front;
 		up = it->quat * up;
 		
-		glm::mat4 mat;
+		glm::mat4 mat(1.f);
 		MatrixSetByVectors(mat, front, up);
 		
 		CPPUNIT_ASSERT_EQUAL(glm::mat4(it->mat), mat);
