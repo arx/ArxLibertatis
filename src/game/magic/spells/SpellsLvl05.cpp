@@ -39,9 +39,9 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-
 RuneOfGuardingSpell::RuneOfGuardingSpell()
-	: tex_p2(NULL)
+	: m_pos(0.f)
+	, tex_p2(NULL)
 { }
 
 void RuneOfGuardingSpell::Launch() {
@@ -153,9 +153,9 @@ Vec3f RuneOfGuardingSpell::getPosition() {
 	return m_pos;
 }
 
-
 LevitateSpell::LevitateSpell()
-	: m_baseRadius(50.f)
+	: m_pos(0.f)
+	, m_baseRadius(50.f)
 { }
 
 void LevitateSpell::Launch() {
@@ -272,9 +272,9 @@ void LevitateSpell::createDustParticle() {
 	pd->m_rotation = 0.0000001f;
 }
 
-
-
-CurePoisonSpell::CurePoisonSpell() { }
+CurePoisonSpell::CurePoisonSpell()
+	: m_pos(0.f)
+{ }
 
 void CurePoisonSpell::Launch() {
 	
@@ -361,9 +361,9 @@ void CurePoisonSpell::Update() {
 	m_particles.Render();
 }
 
-
 RepelUndeadSpell::RepelUndeadSpell()
-	: m_yaw(0.f)
+	: m_pos(0.f)
+	, m_yaw(0.f)
 	, tex_p2(NULL)
 { }
 
