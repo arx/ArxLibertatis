@@ -68,7 +68,7 @@ EntityHandle EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
 static long POLYIN = 0;
 long COLLIDED_CLIMB_POLY = 0;
 long MOVING_CYLINDER = 0;
- 
+
 Vec3f vector2D;
 bool DIRECT_PATH = true;
 
@@ -123,18 +123,15 @@ inline float IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, long f
 		if(!(flags & CFLAG_EXTRA_PRECISION))
 			return anything;
 	}
-
 	
 	long r = to - 1;
 	
-	Vec3f center;
-	long n;
-	
-	for(n = 0; n < to; n++) {
+	for(long n = 0; n < to; n++) {
+		
 		if(flags & CFLAG_EXTRA_PRECISION) {
 			for(long o = 0; o < 5; o++) {
 				float p = float(o) * 0.2f;
-				center = ep.v[n].p * p + ep.center * (1.f - p);
+				Vec3f center = ep.v[n].p * p + ep.center * (1.f - p);
 				if(PointInCylinder(cyl, center)) {
 					anything = std::min(anything, center.y);
 					POLYIN = 1;
@@ -146,7 +143,7 @@ inline float IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, long f
 		}
 
 		if(ep.area > 2000.f || (flags & CFLAG_EXTRA_PRECISION)) {
-			center = (ep.v[n].p + ep.v[r].p) * 0.5f;
+			Vec3f center = (ep.v[n].p + ep.v[r].p) * 0.5f;
 			if(PointInCylinder(cyl, center)) {
 				anything = std::min(anything, center.y);
 				POLYIN = 1;
@@ -202,17 +199,17 @@ inline float IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, long f
 
 inline bool IsPolyInSphere(const EERIEPOLY & ep, const Sphere & sph) {
 	
-	if(ep.area < 100.f)
+	if(ep.area < 100.f) {
 		return false;
-
+	}
+	
 	long to = (ep.type & POLY_QUAD) ? 4 : 3;
-
 	long r = to - 1;
-	Vec3f center;
-
+	
 	for(long n = 0; n < to; n++) {
+		
 		if(ep.area > 2000.f) {
-			center = (ep.v[n].p + ep.v[r].p) * 0.5f;
+			Vec3f center = (ep.v[n].p + ep.v[r].p) * 0.5f;
 			if(sph.contains(center)) {
 				return true;
 			}
@@ -230,16 +227,15 @@ inline bool IsPolyInSphere(const EERIEPOLY & ep, const Sphere & sph) {
 			}
 		}
 		
-		Vec3f v(ep.v[n].p.x, ep.v[n].p.y, ep.v[n].p.z);
-
-		if(sph.contains(v)) {
+		if(sph.contains(ep.v[n].p)) {
 			return true;
 		}
-
+		
 		r++;
-
-		if(r >= to)
+		if(r >= to) {
 			r = 0;
+		}
+		
 	}
 
 	return false;
@@ -1326,7 +1322,6 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 
 			DIRECT_PATH = false;
 			// Must Attempt To Slide along collisions
-			Vec3f vecatt;
 			Vec3f rpos;
 			Vec3f lpos;
 			long RFOUND = 0;
@@ -1348,7 +1343,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 			while(rangle <= maxRANGLE) { // Tries on the right and left sides
 				test.cyl = ip->cyl;
 				float t = MAKEANGLE(rangle);
-				vecatt = VRotateY(mvector, t);
+				Vec3f vecatt = VRotateY(mvector, t);
 				test.cyl.origin += vecatt * curmovedist;
 				float cc = io->_npcdata->climb_count;
 
@@ -1419,7 +1414,6 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 	
 	ARX_PROFILE_FUNC();
 	
-	Vec3f i;
 	float pas = 35.f;
 	
 	Vec3f found_hit = Vec3f_ZERO;
@@ -1441,6 +1435,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 	// absolute ray incs
 	Vec3f ad = glm::abs(d);
 	
+	Vec3f i;
 	if(ad.x >= ad.y && ad.x >= ad.z) {
 		if(ad.x != d.x)
 			i.x = -pas;
