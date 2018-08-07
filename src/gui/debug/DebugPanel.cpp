@@ -73,9 +73,10 @@ std::ostream & operator<<(std::ostream & s, audio::SourceStatus val) {
 } // namespace debug
 } // namespace arx
 
-
 DebugBox::DebugBox(const Vec2i & pos, const std::string & title)
 	: m_pos(pos)
+	, m_chars(0)
+	, m_size(0)
 	, m_title(title)
 { }
 
