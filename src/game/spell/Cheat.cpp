@@ -299,7 +299,7 @@ static void ApplyCurPNux() {
 	
 	player.m_cheatPnuxActive = (player.m_cheatPnuxActive + 1) % 3;
 	
-	// TODO-RENDERING: Create a post-processing effect for that cheat... see original source...
+	// TODO Create a post-processing effect for that cheat... see original source...
 	
 	cur_pnux = 0;
 }
