@@ -94,12 +94,8 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 		float a = i * (glm::pi<float>() / (rings - 1));
 		for(size_t j = 0; j <= sections; j++) {
 			float b = j * ((2 * glm::pi<float>()) / sections);
-
-			Vec3f pos;
-			pos.x = glm::cos(b) * glm::sin(a);
-			pos.y = glm::sin(b) * glm::sin(a);
-			pos.z = glm::cos(a);
-
+			
+			Vec3f pos(glm::cos(b) * glm::sin(a), glm::sin(b) * glm::sin(a), glm::cos(a));
 			pos *= sphere.radius;
 			pos += sphere.origin;
 			
