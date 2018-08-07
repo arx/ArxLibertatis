@@ -76,7 +76,8 @@ struct EERIE_FRAME {
 		, stepSound(false)
 		, f_translate(false)
 		, f_rotate(false)
-		, translate(Vec3f_ZERO)
+		, translate(0.f)
+		, quat(quat_identity())
 	{ }
 	
 };
@@ -90,8 +91,9 @@ struct EERIE_GROUP {
 	
 	EERIE_GROUP()
 		: key(0)
-		, translate(Vec3f_ZERO)
-		, zoom(Vec3f_ONE)
+		, translate(0.f)
+		, quat(quat_identity())
+		, zoom(1.f)
 	{ }
 	
 };

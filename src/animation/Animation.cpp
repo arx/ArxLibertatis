@@ -431,9 +431,9 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		bool voidd = true;
 		for(size_t j = 0; j < eerie->frames.size(); j++) {
 			size_t group = i + (j * eerie->nb_groups());
-			if(eerie->groups[group].quat != glm::quat()
-			   || eerie->groups[group].translate != Vec3f_ZERO
-			   || eerie->groups[group].zoom != Vec3f_ZERO) {
+			if(eerie->groups[group].quat != quat_identity()
+			   || eerie->groups[group].translate != Vec3f(0.f)
+			   || eerie->groups[group].zoom != Vec3f(0.f)) {
 				voidd = false;
 				break;
 			}
