@@ -87,6 +87,18 @@ public:
 		//!< Texture page on which the glyph can be found
 		size_t texture;
 		
+		Glyph()
+			: index(0)
+			, size(0)
+			, draw_offset(0)
+			, advance(0.f)
+			, lsb_delta(0)
+			, rsb_delta(0)
+			, uv_start(0.f)
+			, uv_end(0.f)
+			, texture(0)
+		{ }
+		
 	};
 	
 public:
