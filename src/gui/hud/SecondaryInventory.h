@@ -33,6 +33,8 @@ class SecondaryInventoryPickAllHudIcon : public HudIconBase {
 	
 public:
 	
+	SecondaryInventoryPickAllHudIcon() : m_size(0.f) { }
+	
 	void init();
 	void update(const Rectf & parent);
 	void updateInput();
@@ -44,6 +46,8 @@ class SecondaryInventoryCloseHudIcon : public HudIconBase {
 	Vec2f m_size;
 	
 public:
+	
+	SecondaryInventoryCloseHudIcon() : m_size(0.f) { }
 	
 	void init();
 	void update(const Rectf & parent);
@@ -63,6 +67,13 @@ class SecondaryInventoryHud : public HudItem {
 	SecondaryInventoryCloseHudIcon m_closeButton;
 	
 public:
+	
+	SecondaryInventoryHud()
+		: m_size(0.f)
+		, ingame_inventory(NULL)
+		, m_canNotSteal(NULL)
+		, m_defaultBackground(NULL)
+	{ }
 	
 	void init();
 	void update();
