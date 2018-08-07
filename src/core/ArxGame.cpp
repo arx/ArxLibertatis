@@ -190,6 +190,8 @@ bool SHOW_INGAME_MINIMAP = true;
 
 bool ARX_FLARES_Block = true;
 
+Vec3f PUSH_PLAYER_FORCE;
+
 Vec3f LASTCAMPOS;
 Anglef LASTCAMANGLE;
 
@@ -197,7 +199,7 @@ Anglef LASTCAMANGLE;
 ArxGame::ArxGame()
 	: m_wasResized(false)
 	, m_gameInitialized(false)
-{}
+{ }
 
 ArxGame::~ArxGame() {
 }
@@ -719,9 +721,6 @@ static bool HandleGameFlowTransitions() {
 
 	return false;
 }
-
-
-Vec3f PUSH_PLAYER_FORCE;
 
 bool ArxGame::initGame()
 {
@@ -1428,12 +1427,7 @@ void ArxGame::speechControlledCinematic() {
 						const Vec3f & to = acs.pos2;
 						
 						Vec3f vect = glm::normalize(to - from);
-						Vec3f vect2;
-						if(acs.type == ARX_CINE_SPEECH_SIDE_LEFT) {
-							vect2 = VRotateY(vect, -90.f);
-						} else {
-							vect2 = VRotateY(vect, 90.f);
-						}
+						Vec3f vect2 = VRotateY(vect, (acs.type == ARX_CINE_SPEECH_SIDE_LEFT) ? -90.f : 90.f);
 						
 						float distance = acs.m_startdist * itime + acs.m_enddist * rtime;
 						vect2 *= distance;
@@ -1464,14 +1458,10 @@ void ArxGame::speechControlledCinematic() {
 						arx_assert(isallfinite(acs.pos1));
 						arx_assert(isallfinite(acs.pos2));
 						
-						Vec3f sourcepos;
-						Vec3f targetpos;
+						Vec3f sourcepos = acs.pos1;
+						Vec3f targetpos = acs.pos2;
 						if(acs.type == ARX_CINE_SPEECH_CCCLISTENER_L || acs.type == ARX_CINE_SPEECH_CCCLISTENER_R) {
-							sourcepos = acs.pos2;
-							targetpos = acs.pos1;
-						} else {
-							sourcepos = acs.pos1;
-							targetpos = acs.pos2;
+							std::swap(sourcepos, targetpos);
 						}
 						
 						float distance = (acs.startpos * itime + acs.endpos * rtime) * 0.01f;
