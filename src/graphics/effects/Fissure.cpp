@@ -157,11 +157,6 @@ void CRiseDead::Split(Vec3f * v, int a, int b, float yo)
 // TODO copy-paste spell effect Fissure
 void CRiseDead::RenderFissure() {
 	
-	float ff;
-	Vec3f vt[4];
-	TexturedVertexUntransformed vr[4];
-	Vec3f target;
-	
 	RenderMaterial mat;
 	mat.setCulling(CullNone);
 	mat.setDepthTest(false);
@@ -174,6 +169,8 @@ void CRiseDead::RenderFissure() {
 	// computation des sommets
 
 	for(int i = 0; i <= std::min(end, int(fSizeIntro)); i++) {
+		
+		float ff;
 		if(i <= end * 0.5f)
 			ff = i / (end * 0.5f);
 		else
@@ -199,6 +196,8 @@ void CRiseDead::RenderFissure() {
 	//-------------------------------------------------------------------------
 	// rendu de la fissure
 	mat.setBlendType(RenderMaterial::Opaque);
+	
+	TexturedVertexUntransformed vr[4];
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toRGB();
 
 	if(bIntro) {
@@ -226,7 +225,8 @@ void CRiseDead::RenderFissure() {
 	mat.setBlendType(RenderMaterial::Additive);
 	vr[0].color = vr[1].color = Color::black.toRGB();
 	vr[2].color = vr[3].color = m_colorBorder.toRGB();
-
+	
+	Vec3f vt[4];
 	for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 		
 		vt[2] = va[i] - (va[i] - m_eSrc) * 0.2f;
@@ -257,9 +257,7 @@ void CRiseDead::RenderFissure() {
 	mat.setWrapMode(TextureStage::WrapMirror);
 	mat.setTexture(tex_light);
 	
-	target.x = m_eSrc.x;
-	target.y = m_eSrc.y + 1.5f * sizeF;
-	target.z = m_eSrc.z;
+	Vec3f target = m_eSrc + Vec3f(0.f, 1.5f * sizeF, 0.f);
 	
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
 	vr[2].color = vr[3].color = m_colorRays2.toRGB();
@@ -515,16 +513,6 @@ void CSummonCreature::Split(Vec3f * v, int a, int b, float yo)
 // TODO copy-paste spell effect Fissure
 void CSummonCreature::RenderFissure() {
 	
-	float ff;
-	Vec3f vt[4];
-	TexturedVertexUntransformed vr[4];
-	Vec3f target;
-
-	Vec3f etarget;
-	etarget.x = fBetaRadCos;
-	etarget.y = 0;
-	etarget.z = fBetaRadSin;
-	
 	RenderMaterial mat;
 	mat.setCulling(CullNone);
 	mat.setDepthTest(false);
@@ -538,6 +526,8 @@ void CSummonCreature::RenderFissure() {
 	// computation des sommets
 
 	for(int i = 0; i <= std::min(end, int(fSizeIntro)); i++) {
+		
+		float ff;
 		if(i <= end * 0.5f)
 			ff = i / (end * 0.5f);
 		else
@@ -563,8 +553,10 @@ void CSummonCreature::RenderFissure() {
 	//-------------------------------------------------------------------------
 	// rendu de la fissure
 	mat.setBlendType(RenderMaterial::Opaque);
+	
+	TexturedVertexUntransformed vr[4];
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toRGB();
-
+	
 	if(bIntro) {
 		for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			vr[0].p = v1a[i];
@@ -591,6 +583,7 @@ void CSummonCreature::RenderFissure() {
 	vr[0].color = vr[1].color = Color::black.toRGB();
 	vr[2].color = vr[3].color = m_colorBorder.toRGB();
 	
+	Vec3f vt[4];
 	for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 		
 		vt[2] = va[i] - (va[i] - m_eSrc) * 0.2f;
@@ -621,9 +614,7 @@ void CSummonCreature::RenderFissure() {
 	mat.setWrapMode(TextureStage::WrapMirror);
 	mat.setTexture(tex_light);
 	
-	target.x = m_eSrc.x + -fBetaRadSin * (1.5f * sizeF);
-	target.y = m_eSrc.y;
-	target.z = m_eSrc.z + fBetaRadCos * (1.5f * sizeF);
+	Vec3f target = m_eSrc.x + Vec3f(-fBetaRadSin, 0.f, fBetaRadCos) * (1.5f * sizeF);
 	
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
 	vr[2].color = vr[3].color = m_colorRays2.toRGB();
