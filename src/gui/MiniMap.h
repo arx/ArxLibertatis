@@ -70,7 +70,6 @@ class MiniMap {
 	
 public:
 	
-	//! MiniMap data
 	struct MiniMapData {
 		
 		TextureContainer * m_texContainer;

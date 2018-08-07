@@ -376,10 +376,7 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 			continue;
 		}
 		
-		Vec2f pos;
-		pos.x = m_mapMarkers[i].m_pos.x * 8 * m_activeBkg->m_mul.x * casePos.x + start.x;
-		pos.y = m_mapMarkers[i].m_pos.y * 8 * m_activeBkg->m_mul.y * casePos.y + start.y;
-		
+		Vec2f pos = m_mapMarkers[i].m_pos * 8.f * m_activeBkg->m_mul * casePos + start;
 		float size = 5.f * scale;
 		verts[0].color = Color(255, 0, 0, 255).toRGBA();
 		verts[1].color = Color(255, 0, 0, 255).toRGBA();
@@ -435,10 +432,8 @@ void MiniMap::revealPlayerPos(int showLevel) {
 	
 	float zoom = 250.f;
 	float maxDistance = 6.0f;
-	Vec2f start = Vec2f(140.f, 120.f);
-	Vec2f cas;
-	cas.x = zoom / MINIMAP_MAX_X;
-	cas.y = zoom / MINIMAP_MAX_Z;
+	Vec2f start(140.f, 120.f);
+	Vec2f cas(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
 	
 	Vec2f playerPos = computePlayerPos(zoom, showLevel);
 	Vec2i playerCell = Vec2i(playerPos.x / cas.x, playerPos.y / cas.y);
@@ -464,9 +459,7 @@ void MiniMap::revealPlayerPos(int showLevel) {
 	for(int z = startCell.y; z <= endCell.y; z++) {
 	for(int x = startCell.x; x <= endCell.x; x++) {
 		
-		Vec2f pos;
-		pos.x = start.x + x * cas.x;
-		pos.y = start.y + z * cas.y;
+		Vec2f pos = start + Vec2f(x, z) * cas;
 		
 		float d = fdist(Vec2f(pos.x + cas.x * 0.5f, pos.y), playerPos);
 		if(d >= maxDistance) {
@@ -486,13 +479,11 @@ void MiniMap::revealPlayerPos(int showLevel) {
 
 Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 	
-	Vec2f cas;
-	cas.x = zoom / MINIMAP_MAX_X;
-	cas.y = zoom / MINIMAP_MAX_Z;
+	Vec2f cas(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
 	
 	float ratio = zoom / 250.f;
 	
-	Vec2f pos(0.f, 0.f);
+	Vec2f pos(0.f);
 	
 	const Vec2f of = m_miniOffset[m_currentLevel];
 	const Vec2f of2 = m_levels[showLevel].m_ratio;
@@ -509,21 +500,15 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 	
 	m_mapVertices.clear();
 	
-	Vec2f cas;
-	cas.x = zoom / MINIMAP_MAX_X;
-	cas.y = zoom / MINIMAP_MAX_Z;
+	Vec2f cas(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
 	
 	GRenderer->SetTexture(0, m_levels[showLevel].m_texContainer);
 	
 	float div = (1.0f / 25);
 	TextureContainer * tc = m_levels[showLevel].m_texContainer;
-	Vec2f d;
-	d.x = 1.f / tc->m_pTexture->getStoredSize().x;
-	d.y = 1.f / tc->m_pTexture->getStoredSize().y;
+	Vec2f d(1.f / tc->m_pTexture->getStoredSize().x, 1.f / tc->m_pTexture->getStoredSize().y);
 	
-	Vec2f v2;
-	v2.x = 4.f * d.x * m_mod.x;
-	v2.y = 4.f * d.y * m_mod.y;
+	Vec2f v2 = 4.f * d * m_mod;
 	
 	float fadeDiv = 0.f;
 	Rect fadeBounds = boundaries;
@@ -547,17 +532,11 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 	for(int z = -2; z < int(MINIMAP_MAX_Z) + 2; z++) {
 	for(int x = -2; x < int(MINIMAP_MAX_X) + 2; x++) {
 		
-		Vec2f v3;
-		v3.x = float(x) * g_backgroundTileSize.x * m_mod.x;
-		v3.y = float(z) * g_backgroundTileSize.y * m_mod.y;
+		Vec2f v3 = Vec2f(x, z) * g_backgroundTileSize * m_mod;
 		
-		Vec2f v4;
-		v4.x = (v3.x * div) * d.x;
-		v4.y = (v3.y * div) * d.y;
+		Vec2f v4 = v3 * div * d;
 		
-		Vec2f pos;
-		pos.x = (start.x + x * cas.x);
-		pos.y = (start.y + z * cas.y);
+		Vec2f pos = start + Vec2f(x, z) * cas;
 		
 		if((pos.x < boundaries.left)
 		   || (pos.x > boundaries.right)
@@ -673,15 +652,9 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 		verts[k].p.z = 0.00001f;
 	}
 	
-	Vec2f r1;
-	r1.x = 0.f;
-	r1.y = -playerSize * 1.8f;
-	Vec2f r2;
-	r2.x = -playerSize * (1.0f / 2);
-	r2.y = playerSize;
-	Vec2f r3;
-	r3.x = playerSize * (1.0f / 2);
-	r3.y = playerSize;
+	Vec2f r1(0.f, -playerSize * 1.8f);
+	Vec2f r2(-playerSize * 0.5f, playerSize);
+	Vec2f r3(playerSize * 0.5f, playerSize);
 	
 	float angle = glm::radians(m_player->angle.getYaw());
 	float ca = std::cos(angle);
@@ -706,9 +679,7 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 
 void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 	
-	Vec2f cas;
-	cas.x = zoom / MINIMAP_MAX_X;
-	cas.y = zoom / MINIMAP_MAX_Z;
+	Vec2f cas(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
 	
 	float ratio = zoom / 250.f;
 	
@@ -747,12 +718,12 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 			continue; // the player doesn't have enough skill to detect this NPC
 		}
 		
-		Vec2f fp;
+		Vec2f fp = start;
 		
-		fp.x = start.x + ((npc->pos.x - 100 + of.x - of2.x) * ( 1.0f / 100 ) * cas.x
+		fp.x += ((npc->pos.x - 100 + of.x - of2.x) * 0.01f * cas.x
 		+ of.x * ratio * m_mod.x) / m_mod.x;
-		fp.y = start.y + ((m_mapMaxY[showLevel] - of.y - of2.y) * ( 1.0f / 100 ) * cas.y
-		- (npc->pos.z + 200 + of.y - of2.y) * ( 1.0f / 100 ) * cas.y + of.y * ratio * m_mod.y) / m_mod.y;
+		fp.y += ((m_mapMaxY[showLevel] - of.y - of2.y) * 0.01f * cas.y
+		- (npc->pos.z + 200 + of.y - of2.y) * 0.01f * cas.y + of.y * ratio * m_mod.y) / m_mod.y;
 		
 		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc->pos.x, npc->pos.z));
 		if(d > 800 || glm::abs(ents.player()->pos.y - npc->pos.y) > 250.f) {
