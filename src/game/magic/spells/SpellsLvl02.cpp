@@ -36,9 +36,9 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-
-
-HealSpell::HealSpell() { }
+HealSpell::HealSpell()
+	: m_pos(0.f)
+{ }
 
 bool HealSpell::CanLaunch() {
 	
@@ -386,25 +386,18 @@ void HarmSpell::End() {
 	m_snd_loop = audio::SourcedSample();
 }
 
-void HarmSpell::Update()
-{
-	float scaley;
-	float offset;
-	Vec3f casterPos;
+void HarmSpell::Update() {
 	
-	if(m_caster == EntityHandle_Player) {
-		scaley = 90.f;
-		offset = 60.0f;
-		casterPos = player.pos;
-	} else {
+	float scaley = 90.f;
+	float offset = 60.f;
+	if(m_caster != EntityHandle_Player) {
 		scaley = glm::abs(entities[m_caster]->physics.cyl.height * (1.0f / 2)) + 30.f;
 		offset = -scaley;
-		casterPos = entities[m_caster]->pos;
 	}
-	
 	m_cabal.setYScale(scaley);
 	m_cabal.setOffset(offset);
 	
+	Vec3f casterPos = (m_caster == EntityHandle_Player) ? player.pos : entities[m_caster]->pos;
 	Vec3f cabalPos = m_cabal.update(casterPos);
 	ARX_SOUND_RefreshPosition(m_snd_loop, cabalPos);
 }
