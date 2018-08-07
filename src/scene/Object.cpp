@@ -341,11 +341,10 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj) {
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	
 	eobj->m_skeleton = new Skeleton();
-
+	
 	if(eobj->grouplist.empty()) {
 		// If no groups were specified
 		
-		// Make one bone
 		eobj->m_skeleton->bones.resize(1);
 		
 		Bone & bone = eobj->m_skeleton->bones[0];
@@ -356,15 +355,15 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		}
 		
 		bone.father = -1;
+		bone.anim.scale = Vec3f_ONE;
 		
 	} else {
 		// Groups were specified
 		
-		// Alloc the bones
 		eobj->m_skeleton->bones.resize(eobj->grouplist.size());
 		
+		// Create one bone for each vertex group and assign vertices to the inner-most group
 		std::vector<bool> vertexAssigned(eobj->vertexlist.size(), false);
-		
 		for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 			VertexGroup & group = eobj->grouplist[i];
 			Bone & bone = eobj->m_skeleton->bones[i];
@@ -376,74 +375,49 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				}
 			}
 			
-			bone.transinit_global = bone.init.trans = eobj->vertexlist[group.origin].v;
+			bone.anim.trans = eobj->vertexlist[group.origin].v;
 			bone.father = GetFather(eobj, group.origin, i - 1);
-			
-		}
-		
-		// Try to correct lonely vertex
-		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			long ok = 0;
-
-			for(size_t j = 0; j < eobj->grouplist.size(); j++) {
-				for(size_t k = 0; k < eobj->grouplist[j].indexes.size(); k++) {
-					if(eobj->grouplist[j].indexes[k] == i) {
-						ok = 1;
-						break;
-					}
-				}
-
-				if(ok)
-					break;
-			}
-
-			if(!ok) {
-				eobj->m_skeleton->bones[0].idxvertices.push_back(i);
-			}
-		}
-		
-		for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
-			Bone & bone = eobj->m_skeleton->bones[i];
-
-			if(bone.father >= 0) {
-				long father = bone.father;
-				bone.init.trans -= eobj->m_skeleton->bones[father].init.trans;
-			}
-			bone.transinit_global = bone.init.trans;
-		}
-
-	}
-
-	/* Build proper mesh */
-	{
-		Skeleton * obj = eobj->m_skeleton;
-		
-		for(size_t i = 0; i != obj->bones.size(); i++) {
-			Bone & bone = obj->bones[i];
-			
-			if(bone.father >= 0) {
-				arx_assert(size_t(bone.father) < i);
-				Bone & parent = obj->bones[size_t(bone.father)];
-				bone.anim.quat = parent.anim.quat * bone.init.quat;
-				bone.anim.trans = parent.anim.trans + parent.anim.quat * bone.init.trans;
-			} else {
-				bone.anim.quat = bone.init.quat;
-				bone.anim.trans = bone.init.trans;
-			}
-			
 			bone.anim.scale = Vec3f_ONE;
 			
 		}
 		
-		eobj->vertexlocal.resize(eobj->vertexlist.size());
-		for(size_t i = 0; i != obj->bones.size(); i++) {
-			const Bone & bone = obj->bones[i];
-			for(size_t v = 0; v != bone.idxvertices.size(); v++) {
-				size_t idx = bone.idxvertices[v];
-				eobj->vertexlocal[idx] = glm::inverse(bone.anim.quat) * (eobj->vertexlist[idx].v - bone.anim.trans);
+		// Assign vertices that are not in any group to the root bone
+		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
+			bool found = false;
+			BOOST_FOREACH(const VertexGroup & group, eobj->grouplist) {
+				BOOST_FOREACH(u32 index, group.indexes) {
+					if(index == i) {
+						found = true;
+						break;
+					}
+				}
+				if(found) {
+					break;
+				}
+			}
+			if(!found) {
+				eobj->m_skeleton->bones[0].idxvertices.push_back(i);
 			}
 		}
 		
+		// Calculate relative bone positions
+		BOOST_FOREACH(Bone & bone, eobj->m_skeleton->bones) {
+			if(bone.father >= 0) {
+				Bone & parent = eobj->m_skeleton->bones[size_t(bone.father)];
+				bone.transinit_global = bone.init.trans = bone.anim.trans - parent.anim.trans;
+			} else {
+				bone.transinit_global = bone.init.trans = bone.anim.trans;
+			}
+		}
+		
+	}
+	
+	// Calculate relative vertex positions
+	eobj->vertexlocal.resize(eobj->vertexlist.size());
+	BOOST_FOREACH(const Bone & bone, eobj->m_skeleton->bones) {
+		BOOST_FOREACH(u32 index, bone.idxvertices) {
+			eobj->vertexlocal[index] = eobj->vertexlist[index].v - bone.anim.trans;
+		}
 	}
 
 }
