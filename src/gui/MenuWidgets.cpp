@@ -210,28 +210,16 @@ void MainMenuDoFrame() {
 	
 }
 
-
 MenuWindow::MenuWindow()
-	: m_currentPage(NULL)
-{
-	
-	Vec2f windowMenuPos = Vec2f(20, 25);
-	Vec2f size = Vec2f(321, 430);
-	
-	m_pos = RATIO_2(windowMenuPos);
-	m_size = RATIO_2(size);
-
-	m_pages.clear();
-
-	m_initalOffsetX = -m_size.x;
-	m_fadeDistance = m_size.x + m_pos.x;
-	
-	fAngle = 0.f;
-	
-	m_background = TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
-	m_border = TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
-	
-}
+	: m_pos(RATIO_2(Vec2f(20, 25)))
+	, m_size(RATIO_2(Vec2f(321, 430)))
+	, m_initalOffsetX(-m_size.x)
+	, m_fadeDistance(m_size.x + m_pos.x)
+	, fAngle(0.f)
+	, m_currentPage(NULL)
+	, m_background(TextureContainer::LoadUI("graph/interface/menus/menu_console_background"))
+	, m_border(TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border"))
+{ }
 
 MenuWindow::~MenuWindow() {
 	for(std::vector<MenuPage *>::iterator it = m_pages.begin(), it_end = m_pages.end(); it < it_end; ++it) {
