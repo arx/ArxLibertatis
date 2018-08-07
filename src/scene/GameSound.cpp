@@ -681,11 +681,9 @@ void ARX_SOUND_RefreshSpeechPosition(audio::SourcedSample & sample_id, const Ent
 		return;
 	}
 	
-	Vec3f position;
+	Vec3f position = io->pos;
 	if((io == entities.player() && !EXTERNALVIEW)) {
 		position = ARX_SOUND_IOFrontPos(io);
-	} else {
-		position = io->pos;
 	}
 	
 	audio::setSamplePosition(sample_id, position);
