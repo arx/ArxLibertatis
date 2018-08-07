@@ -85,6 +85,7 @@ DECLARE_FLAGS(BehaviourFlag, Behaviour)
 DECLARE_FLAGS_OPERATORS(Behaviour)
 
 struct IO_BEHAVIOR_DATA {
+	
 	long exist;
 	Behaviour behavior;
 	float behavior_param;
@@ -92,6 +93,15 @@ struct IO_BEHAVIOR_DATA {
 	EntityHandle target;
 	MoveMode movemode;
 	AnimLayer animlayer[MAX_ANIM_LAYERS];
+	
+	IO_BEHAVIOR_DATA()
+		: exist(0)
+		, behavior(0)
+		, behavior_param(0.f)
+		, tactics(0)
+		, movemode(WALKMODE)
+	{ }
+	
 };
 
 enum PathfindFlag {
