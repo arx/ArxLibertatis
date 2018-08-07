@@ -505,10 +505,9 @@ void Ambiance::Track::update(PlatformDuration time, PlatformDuration diff) {
 		source->setPitch(key_i->pitch.update(time));
 	}
 	if(flags & Track::POSITION) {
-		Vec3f position;
-		position.x = key_i->x.interval != 0 ? key_i->x.update(time) : key_i->x.cur;
-		position.y = key_i->y.interval != 0 ? key_i->y.update(time) : key_i->y.cur;
-		position.z = key_i->z.interval != 0 ? key_i->z.update(time) : key_i->z.cur;
+		Vec3f position(key_i->x.interval != 0 ? key_i->x.update(time) : key_i->x.cur,
+		               key_i->y.interval != 0 ? key_i->y.update(time) : key_i->y.cur,
+		               key_i->z.interval != 0 ? key_i->z.update(time) : key_i->z.cur);
 		if(ambiance->getChannel().flags & FLAG_POSITION) {
 			position += ambiance->getChannel().position;
 		}
