@@ -92,12 +92,14 @@ struct CLightning::LIGHTNING {
 };
 
 CLightning::CLightning()
-	: m_pos(Vec3f_ZERO)
+	: m_pos(0.f)
 	, m_beta(0.f)
 	, m_alpha(0.f)
 	, m_level(1.f)
 	, m_fDamage(1)
 	, m_isMassLightning(false)
+	, fTotoro(0.f)
+	, fMySize(2.f)
 	, m_nbtotal(0)
 	, m_lNbSegments(40)
 	, m_invNbSegments(1.0f / 40.0f)
@@ -105,42 +107,35 @@ CLightning::CLightning()
 	, m_fLengthMax(40.0f)
 	, m_fAngleMin(5.0f, 5.0f, 5.0f)
 	, m_fAngleMax(32.0f, 32.0f, 32.0f)
+	, m_eSrc(0.f)
+	, m_eDest(0.f)
+	, m_tex_light(NULL)
 	, m_iTTL(0)
 {
 	SetDuration(GameDurationMs(2000));
 	m_elapsed = m_duration + GameDurationMs(1);
-	
-	m_tex_light = NULL;
-	fTotoro = 0;
-	fMySize = 2;
 }
 
-//------------------------------------------------------------------------------
-// Params une méchante struct
-//------------------------------------------------------------------------------
-
-void CLightning::BuildS(LIGHTNING * pLInfo)
-{
+void CLightning::BuildS(LIGHTNING * pLInfo) {
+	
 	Vec3f astart = pLInfo->eStart;
 	Vec3f avect = pLInfo->eVect;
-
+	
 	if(pLInfo->anb > 0 && m_nbtotal < (MAX_NODES - 1)) {
-		m_nbtotal++;
-		int moi = m_nbtotal;
-
+		
+		int moi = ++m_nbtotal;
+		
 		if(pLInfo->abFollow) {
 			avect = glm::normalize(m_eDest - pLInfo->eStart);
 		}
-
-		Vec3f fAngle;
-		fAngle.x = Random::getf(-1.f, 1.f) * (pLInfo->fAngleMax.x - pLInfo->fAngleMin.x) + pLInfo->fAngleMin.x;
-		fAngle.y = Random::getf(-1.f, 1.f) * (pLInfo->fAngleMax.y - pLInfo->fAngleMin.y) + pLInfo->fAngleMin.y;
-		fAngle.z = Random::getf(-1.f, 1.f) * (pLInfo->fAngleMax.z - pLInfo->fAngleMin.z) + pLInfo->fAngleMin.z;
-
-		Vec3f av;
-		av.x = glm::cos(glm::acos(avect.x) - glm::radians(fAngle.x));
-		av.y = glm::sin(glm::asin(avect.y) - glm::radians(fAngle.y));
-		av.z = glm::tan(glm::atan(avect.z) - glm::radians(fAngle.z));
+		
+		Vec3f fAngle(Random::getf(-1.f, 1.f) * (pLInfo->fAngleMax.x - pLInfo->fAngleMin.x) + pLInfo->fAngleMin.x,
+		             Random::getf(-1.f, 1.f) * (pLInfo->fAngleMax.y - pLInfo->fAngleMin.y) + pLInfo->fAngleMin.y,
+		             Random::getf(-1.f, 1.f) * (pLInfo->fAngleMax.z - pLInfo->fAngleMin.z) + pLInfo->fAngleMin.z);
+		
+		Vec3f av(glm::cos(glm::acos(avect.x) - glm::radians(fAngle.x)),
+		         glm::sin(glm::asin(avect.y) - glm::radians(fAngle.y)),
+		         glm::tan(glm::atan(avect.z) - glm::radians(fAngle.z)));
 		av = glm::normalize(av);
 		avect = av;
 
@@ -282,14 +277,10 @@ void CLightning::Render()
 		ReCreate(8);
 	}
 	
-	Vec3f ePos;
-	
+	Vec3f ePos(0.f);
 	float fBeta = 0.f;
 	float falpha = 0.f;
-	
-	if(m_isMassLightning) {
-		ePos = Vec3f_ZERO;
-	} else {
+	if(!m_isMassLightning) {
 		ePos = m_pos;
 		fBeta = m_beta;
 		falpha = m_alpha;
@@ -317,15 +308,10 @@ void CLightning::Render()
 		
 		Vec3f a = node.pos + z_z;
 		if(!m_isMassLightning) {
-			Vec3f vv2;
-			Vec3f vv1 = astart;
-			vv1 = VRotateX(vv1, (falpha));
-			vv2 = VRotateY(vv1, 180 - MAKEANGLE(fBeta));
-			astart = vv2;
-			vv1 = a;
-			vv1 = VRotateX(vv1, (falpha));
-			vv2 = VRotateY(vv1, 180 - MAKEANGLE(fBeta));
-			a = vv2;
+			Vec3f vv1 = VRotateX(astart, (falpha));
+			astart = VRotateY(vv1, 180.f - MAKEANGLE(fBeta));
+			Vec3f vv2 = VRotateX(a, (falpha));
+			a = VRotateY(vv2, 180.f - MAKEANGLE(fBeta));
 			astart += ePos;
 			a += ePos;
 		}
