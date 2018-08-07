@@ -261,11 +261,9 @@ static void addGlyphVertices(std::vector<TexturedVertex> & vertices,
 	float vStart = glyph.uv_end.y;
 	float uEnd = glyph.uv_end.x;
 	float vEnd = glyph.uv_start.y;
-
-	Vec2f p;
-	p.x = std::floor(pos.x + glyph.draw_offset.x) - .5f;
-	p.y = std::floor(pos.y - glyph.draw_offset.y) - .5f;
-
+	
+	Vec2f p(std::floor(pos.x + glyph.draw_offset.x) - .5f, std::floor(pos.y - glyph.draw_offset.y) - .5f);
+	
 	TexturedVertex quad[4];
 	quad[0].p = Vec3f(p.x, p.y, 0);
 	quad[0].uv = Vec2f(uStart, vStart);
