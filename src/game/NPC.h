@@ -225,7 +225,6 @@ struct IO_NPCDATA {
 	float stare_factor;
 	float fDetect;
 	DismembermentFlags cuts;
-	short unused;
 	
 };
 
