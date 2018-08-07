@@ -250,10 +250,9 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	io->obj->pbox->active = 1;
 	io->obj->pbox->stopcount = 0;
 	
-	Vec3f vector;
-	vector.x = -std::sin(glm::radians(io->angle.getYaw()));
-	vector.y = std::sin(glm::radians(io->angle.getPitch())) * 2.f;
-	vector.z = std::cos(glm::radians(io->angle.getYaw()));
+	Vec3f vector(-std::sin(glm::radians(io->angle.getYaw())),
+	             std::sin(glm::radians(io->angle.getPitch())) * 2.f,
+	             std::cos(glm::radians(io->angle.getYaw())));
 	vector = glm::normalize(vector);
 	io->rubber = 0.6f;
 	
