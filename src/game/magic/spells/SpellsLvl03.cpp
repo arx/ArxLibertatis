@@ -170,7 +170,9 @@ void DispellIllusionSpell::Update() { }
 
 
 FireballSpell::FireballSpell()
-	: bExplo(false)
+	: eCurPos(0.f)
+	, eMove(0.f)
+	, bExplo(false)
 	, m_createBallDuration(GameDurationMs(2000))
 { }
 
@@ -185,12 +187,9 @@ void FireballSpell::Launch() {
 		m_hand_group = ActionPoint();
 	}
 	
-	Vec3f target;
-	if(m_hand_group != ActionPoint()) {
-		target = m_hand_pos;
-	} else {
+	Vec3f target = m_hand_pos;
+	if(m_hand_group == ActionPoint()) {
 		target = m_caster_pos;
-		
 		Entity * c = entities.get(m_caster);
 		if(c) {
 			if(c->ioflags & IO_NPC) {
@@ -331,9 +330,9 @@ Vec3f FireballSpell::getPosition() {
 	return eCurPos;
 }
 
-
-
-CreateFoodSpell::CreateFoodSpell() { }
+CreateFoodSpell::CreateFoodSpell()
+	: m_pos(0.f)
+{ }
 
 void CreateFoodSpell::Launch() {
 	
