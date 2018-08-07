@@ -526,7 +526,7 @@ bool Config::save() {
 
 static Vec2i parseResolution(const std::string & resolution) {
 	
-	Vec2i res;
+	Vec2i res(0.f);
 	
 	std::istringstream iss(resolution);
 	iss >> res.x;
@@ -543,7 +543,7 @@ static Vec2i parseResolution(const std::string & resolution) {
 
 static Vec2i parseThumbnailSize(const std::string & thumbnailSize) {
 	
-	Vec2i res;
+	Vec2i res(0);
 	
 	std::istringstream iss(thumbnailSize);
 	iss >> res.x;
