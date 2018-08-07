@@ -36,6 +36,7 @@ DECLARE_FLAGS(ProjectileFlag, ProjectileFlags)
 DECLARE_FLAGS_OPERATORS(ProjectileFlags)
 
 struct Projectile {
+	
 	ProjectileFlags flags;
 	Vec3f vector;
 	glm::quat quat;
@@ -48,6 +49,21 @@ struct Projectile {
 	GameInstant creation_time;
 	float poisonous;
 	Trail * m_trail;
+	
+	Projectile()
+		: flags(0)
+		, vector(0.f)
+		, quat(quat_identity())
+		, initial_position(0.f)
+		, velocity(0.f)
+		, position(0.f)
+		, damages(0)
+		, obj(NULL)
+		, creation_time(0)
+		, poisonous(0.f)
+		, m_trail(NULL)
+	{ }
+	
 };
 
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect, const glm::quat & quat, float velocity, float damages, float poisonous);
