@@ -25,7 +25,8 @@
 #include "math/Random.h"
 
 RotatingCone::RotatingCone()
-	: m_currdurationang(0)
+	: m_pos(0.f)
+	, m_currdurationang(0)
 	, m_ang(0.f)
 	, m_coneScale(0.f)
 	, m_tsouffle(NULL)
@@ -78,15 +79,11 @@ void RotatingCone::Render() {
 	int nb = VertexCount / 2;
 	
 	while(nb) {
-		Vec3f d3dvs;
-		d3dvs.x = m_pos.x + (vertex + 1)->x + ((vertex->x - (vertex + 1)->x) * m_coneScale);
-		d3dvs.y = m_pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * m_coneScale);
-		d3dvs.z = m_pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * m_coneScale);
 		
-		d3dv->p = d3dvs;
-		int col = Random::get(0, 80);
+		d3dv->p = m_pos + *(vertex + 1) + ((*vertex - *(vertex + 1)) * m_coneScale);
 		
 		// TODO per-frame randomness
+		int col = Random::get(0, 80);
 		if(!g_gameTime.isPaused()) {
 			d3dv->color = Color::grayb(col).toRGB(col);
 		}
@@ -96,14 +93,10 @@ void RotatingCone::Render() {
 		vertex++;
 		d3dv++;
 		
-		d3dvs.x = m_pos.x + vertex->x;
-		d3dvs.y = m_pos.y;
-		d3dvs.z = m_pos.z + vertex->z;
-		
-		d3dv->p = d3dvs;
-		col = Random::get(0, 80);
+		d3dv->p = m_pos + Vec3f(vertex->x, 0.f, vertex->z);
 		
 		// TODO per-frame randomness
+		col = Random::get(0, 80);
 		if(!g_gameTime.isPaused()) {
 			d3dv->color = Color::black.toRGB(col);
 		}
