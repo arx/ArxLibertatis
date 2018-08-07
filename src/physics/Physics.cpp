@@ -276,7 +276,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 		pv->pos = VRotateZ(pv->pos, angle.getRoll());
 		pv->pos += pos;
 
-		pv->force = Vec3f_ZERO;
+		pv->force = Vec3f(0.f);
 		pv->velocity = vect * (250.f * ratio);
 		pv->mass = 0.4f + ratio * 0.1f;
 	}
@@ -303,7 +303,7 @@ static void ComputeForces(boost::array<PhysicsParticle, N> & particles) {
 		PhysicsParticle * pv = &particles[k];
 
 		// Reset Force
-		pv->force = Vec3f_ZERO;
+		pv->force = Vec3f(0.f);
 
 		// Apply Gravity
 		if(pv->mass > 0.f) {
@@ -388,7 +388,7 @@ static bool IsObjectInField(const PHYSICS_BOX_DATA & pbox) {
 			
 			Entity * pfrm = entities.get(sp->m_entity);
 			if(pfrm) {
-				Cylinder cyl = Cylinder(Vec3f_ZERO, 35.f, -35.f);
+				Cylinder cyl = Cylinder(Vec3f(0.f), 35.f, -35.f);
 				
 				for(size_t k = 0; k < pbox.vert.size(); k++) {
 					const PhysicsParticle * pv = &pbox.vert[k];

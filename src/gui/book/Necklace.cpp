@@ -136,7 +136,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 	g_culledDynamicLights[0] = light;
 	g_culledDynamicLightsCount = 1;
 	
-	Vec2i tmpPos = Vec2i_ZERO;
+	Vec2i tmpPos(0);
 	
 	GRenderer->SetAntialiasing(true);
 	
@@ -145,7 +145,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 	
 	Camera bookcam;
 	bookcam.angle = Anglef::ZERO;
-	bookcam.m_pos = Vec3f_ZERO;
+	bookcam.m_pos = Vec3f(0.f);
 	bookcam.focal = 500.f;
 	bookcam.cdepth = 2200.f;
 	

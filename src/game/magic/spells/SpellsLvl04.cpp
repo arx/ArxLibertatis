@@ -38,7 +38,7 @@
 
 
 BlessSpell::BlessSpell()
-	: m_pos(Vec3f_ZERO)
+	: m_pos(0.f)
 	, m_yaw(0)
 	, m_scale(0)
 	, tex_p1(NULL)
@@ -122,7 +122,7 @@ void BlessSpell::Update() {
 	q.v[2].color = color;
 	q.v[3].color = color;
 	
-	q.v[0].uv = Vec2f_ZERO;
+	q.v[0].uv = Vec2f(0.f);
 	q.v[1].uv = Vec2f_X_AXIS;
 	q.v[2].uv = Vec2f_ONE;
 	q.v[3].uv = Vec2f_Y_AXIS;
@@ -429,7 +429,7 @@ void CurseSpell::Update() {
 	
 	fRot += g_gameTime.lastFrameDuration() / GameDurationMs(4);
 	
-	Vec3f target = Vec3f_ZERO;
+	Vec3f target(0.f);
 	
 	Entity * targetIo = entities.get(m_target);
 	if(targetIo) {

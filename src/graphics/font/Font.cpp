@@ -103,12 +103,12 @@ void Font::insertPlaceholderGlyph(Char character) {
 		
 		// Ignore non-displayable ANSI characters
 		Glyph & glyph = m_glyphs[character];
-		glyph.size = Vec2i_ZERO;
-		glyph.advance = Vec2f_ZERO;
+		glyph.size = Vec2i(0);
+		glyph.advance = Vec2f(0.f);
 		glyph.lsb_delta = glyph.rsb_delta = 0;
-		glyph.draw_offset = Vec2i_ZERO;
-		glyph.uv_start = Vec2f_ZERO;
-		glyph.uv_end = Vec2f_ZERO;
+		glyph.draw_offset = Vec2i(0);
+		glyph.uv_start = Vec2f(0.f);
+		glyph.uv_end = Vec2f(0.f);
 		glyph.texture = 0;
 		
 	} else {
@@ -168,8 +168,8 @@ bool Font::insertGlyph(Char character) {
 	glyph.rsb_delta = ftGlyph->rsb_delta;
 	glyph.draw_offset.x = ftGlyph->bitmap_left;
 	glyph.draw_offset.y = ftGlyph->bitmap_top - ftGlyph->bitmap.rows;
-	glyph.uv_start = Vec2f_ZERO;
-	glyph.uv_end = Vec2f_ZERO;
+	glyph.uv_start = Vec2f(0.f);
+	glyph.uv_end = Vec2f(0.f);
 	glyph.texture = 0;
 	
 	// Some glyphs like spaces have a size of 0...

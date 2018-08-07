@@ -326,7 +326,7 @@ void CurePoisonSpell::Update() {
 	
 	if(ff < GameDurationMs(1500)) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
-		m_particles.m_parameters.m_gravity = Vec3f_ZERO;
+		m_particles.m_parameters.m_gravity = Vec3f(0.f);
 
 		std::list<Particle *>::iterator i;
 
@@ -481,7 +481,7 @@ void PoisonProjectileSpell::Launch() {
 	ARX_SOUND_PlaySFX(g_snd.SPELL_POISON_PROJECTILE_LAUNCH,
 	                  &m_caster_pos);
 	
-	Vec3f srcPos = Vec3f_ZERO;
+	Vec3f srcPos(0.f);
 	float afBeta = 0.f;
 	
 	Entity * caster = entities[m_caster];

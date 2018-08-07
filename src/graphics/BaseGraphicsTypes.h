@@ -53,7 +53,7 @@ struct Cylinder {
 	float height;
 	
 	Cylinder()
-		: origin(Vec3f_ZERO)
+		: origin(0.f)
 		, radius(0.f)
 		, height(0.f)
 	{}
@@ -71,7 +71,7 @@ struct Sphere {
 	float radius;
 	
 	Sphere()
-		: origin(Vec3f_ZERO)
+		: origin(0.f)
 		, radius(0.f)
 	{}
 	

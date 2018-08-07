@@ -373,7 +373,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	}
 	
 	// set pos to startpos
-	*pos = Vec3f_ZERO;
+	*pos = Vec3f(0.f);
 	
 	if(tim == 0) {
 		return 0;
@@ -385,7 +385,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 
 	if(!ap->pathways.empty()) {
 		ap->pathways[0]._time = 0;
-		ap->pathways[0].rpos = Vec3f_ZERO;
+		ap->pathways[0].rpos = Vec3f(0.f);
 	} else {
 		return -1;
 	}

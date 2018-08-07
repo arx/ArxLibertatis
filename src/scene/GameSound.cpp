@@ -403,7 +403,7 @@ static Vec3f ARX_SOUND_IOFrontPos(const Entity * io) {
 		pos += Vec3f(0.f, -100.f, 0.f);
 		return pos;
 	} else {
-		return Vec3f_ZERO;
+		return Vec3f(0.f);
 	}
 }
 

@@ -388,7 +388,7 @@ void AddRandomSmoke(Entity * io, long amount) {
 // flag 1 = randomize pos
 void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, const Color3f & rgb) {
 	
-	Vec3f mod = (flags & 1) ? arx::randomVec(-50.f, 50.f) : Vec3f_ZERO;
+	Vec3f mod = (flags & 1) ? arx::randomVec(-50.f, 50.f) : Vec3f(0.f);
 	
 	while(amount--) {
 		
@@ -573,7 +573,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		pd->source = NULL;
 		pd->delay = 0;
 		pd->zdec = false;
-		pd->move = Vec3f_ZERO;
+		pd->move = Vec3f(0.f);
 		pd->scale = Vec3f_ONE;
 		
 		return pd;

@@ -182,7 +182,7 @@ void particleParametersInit() {
 	cp.m_angle = 0;
 	cp.m_speed = 0;
 	cp.m_speedRandom = 0;
-	cp.m_gravity = Vec3f_ZERO;
+	cp.m_gravity = Vec3f(0.f);
 	cp.m_flash = 0;
 	cp.m_rotation = 0;
 	cp.m_rotationRandomDirection = false;
@@ -217,7 +217,7 @@ void particleParametersInit() {
 	cp.m_angle = glm::radians(10.f);
 	cp.m_speed = 0;
 	cp.m_speedRandom = 0;
-	cp.m_gravity = Vec3f_ZERO;
+	cp.m_gravity = Vec3f(0.f);
 	cp.m_flash = 0;
 	cp.m_rotation = 0;
 	cp.m_rotationRandomDirection = false;
@@ -281,12 +281,12 @@ void particleParametersInit() {
 	cp.m_nbMax = 5;
 	cp.m_life = 2000;
 	cp.m_lifeRandom = 1000;
-	cp.m_pos = Vec3f_ZERO;
+	cp.m_pos = Vec3f(0.f);
 	cp.m_direction = Vec3f(0.1f);
 	cp.m_angle = 0;
 	cp.m_speed = 10;
 	cp.m_speedRandom = 10;
-	cp.m_gravity = Vec3f_ZERO;
+	cp.m_gravity = Vec3f(0.f);
 	cp.m_flash = 21 * 0.01f;
 	cp.m_rotation = 1.f / (101 - 80);
 	cp.m_rotationRandomDirection = true;

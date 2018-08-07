@@ -114,7 +114,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	ARX_INTERACTIVE_HideGore(io);
 	
 	io->lastpos = io->initpos = io->pos = pos;
-	io->move = Vec3f_ZERO;
+	io->move = Vec3f(0.f);
 	io->initangle = io->angle = angle;
 	
 	if(PakDirectory * dir = g_resources->getDirectory(io->instancePath())) {
@@ -141,7 +141,7 @@ struct ToColorBGRA {
 
 static std::vector<ColorBGRA> g_levelLighting;
 
-static void loadLights(const char * dat, size_t & pos, size_t count, const Vec3f & trans = Vec3f_ZERO) {
+static void loadLights(const char * dat, size_t & pos, size_t count, const Vec3f & trans = Vec3f(0.f)) {
 	
 	if(count != 0) {
 		EERIE_LIGHT_GlobalInit();
@@ -278,7 +278,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	LogDebug("Loading Scene");
 	
-	Vec3f trans = Vec3f_ZERO;
+	Vec3f trans(0.f);
 	
 	// Loading Scene
 	if(dlh.nb_scn > 0) {

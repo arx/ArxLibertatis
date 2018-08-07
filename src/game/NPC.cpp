@@ -914,7 +914,7 @@ void ARX_PHYSICS_Apply() {
 					io->soundtime = 0;
 					io->soundcount = 0;
 					for(size_t k = 0; k < pbox->vert.size(); k++) {
-						pbox->vert[k].velocity = Vec3f_ZERO;
+						pbox->vert[k].velocity = Vec3f(0.f);
 					}
 					pbox->active = 2;
 					pbox->stopcount = 0;
@@ -2047,7 +2047,7 @@ static void ManageNPCMovement_End(Entity * io) {
 	io->physics.startpos = io->physics.cyl.origin = io->pos;
 	
 	Vec3f ForcedMove(0.f);
-	if(io->forcedmove != Vec3f_ZERO) {
+	if(io->forcedmove != Vec3f(0.f)) {
 		float dd = std::min(1.f, g_framedelay * (1.0f / 6) / glm::length(io->forcedmove));
 		ForcedMove = io->forcedmove * dd;
 	}

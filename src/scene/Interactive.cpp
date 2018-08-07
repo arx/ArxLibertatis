@@ -820,8 +820,8 @@ static void RestoreIOInitPos(Entity * io) {
 	{
 		ARX_INTERACTIVE_Teleport(io, io->initpos);
 		io->pos = io->lastpos = io->initpos;
-		io->move = Vec3f_ZERO;
-		io->lastmove = Vec3f_ZERO;
+		io->move = Vec3f(0.f);
+		io->lastmove = Vec3f(0.f);
 		io->angle = io->initangle;
 	}
 }
@@ -850,7 +850,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 
 		ARX_HALO_SetToNative(io);
 
-		io->forcedmove = Vec3f_ZERO;
+		io->forcedmove = Vec3f(0.f);
 		io->ioflags &= ~IO_NO_COLLISIONS;
 		io->ioflags &= ~IO_INVERTED;
 		io->lastspeechflag = 2;
@@ -879,7 +879,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->invisibility = 0.f;
 		io->rubber = BASE_RUBBER;
 		io->scale = 1.f;
-		io->move = Vec3f_ZERO;
+		io->move = Vec3f(0.f);
 		io->type_flags = 0;
 		io->sound = audio::SourcedSample();
 		io->soundtime = 0;
@@ -1571,7 +1571,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	Entity * io = new Entity(classPath, instance);
 	
-	io->forcedmove = Vec3f_ZERO;
+	io->forcedmove = Vec3f(0.f);
 	
 	io->_npcdata = new IO_NPCDATA;
 	io->ioflags = IO_NPC;

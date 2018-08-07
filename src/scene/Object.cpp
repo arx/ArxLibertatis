@@ -198,7 +198,7 @@ void MakeUserFlag(TextureContainer * tc) {
 // Warning Clear3DObj don't release Any pointer Just Clears Structures
 void EERIE_3DOBJ::clear() {
 	
-		point0 = pos = Vec3f_ZERO;
+		point0 = pos = Vec3f(0.f);
 		angle = Anglef::ZERO;
 
 		origin = 0;

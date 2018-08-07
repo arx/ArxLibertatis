@@ -87,12 +87,12 @@ ParticleSystem::ParticleSystem()
 	m_parameters.m_endSegment.m_color = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
 	m_parameters.m_speed = 10;
 	m_parameters.m_life = 1000;
-	m_parameters.m_pos = Vec3f_ZERO;
+	m_parameters.m_pos = Vec3f(0.f);
 	m_parameters.m_flash = 0;
 	m_parameters.m_rotation = 0;
 	m_parameters.m_rotationRandomDirection = false;
 	m_parameters.m_rotationRandomStart = false;
-	m_parameters.m_gravity = Vec3f_ZERO;
+	m_parameters.m_gravity = Vec3f(0.f);
 	m_parameters.m_lifeRandom = 1000;
 	m_parameters.m_angle = 0;
 	m_parameters.m_speedRandom = 10;
@@ -160,7 +160,7 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime) {
 
 void ParticleSystem::SetParticleParams(Particle * pP) {
 
-	pP->p3Pos = Vec3f_ZERO;
+	pP->p3Pos = Vec3f(0.f);
 	
 	if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
 		

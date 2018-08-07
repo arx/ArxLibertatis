@@ -105,9 +105,9 @@ public:
 	ParticleSpawn m_spawnFlags;
 	
 	ParticleParams()
-		: m_pos(Vec3f_ZERO)
-		, m_direction(Vec3f_ZERO)
-		, m_gravity(Vec3f_ZERO)
+		: m_pos(0.f)
+		, m_direction(0.f)
+		, m_gravity(0.f)
 		, m_looping(true)
 		, m_nbMax(0)
 		, m_freq(-1)

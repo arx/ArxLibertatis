@@ -41,8 +41,8 @@ struct SparkParticle {
 	
 	SparkParticle()
 		: m_duration(0)
-		, m_pos(Vec3f_ZERO)
-		, move(Vec3f_ZERO)
+		, m_pos(0.f)
+		, move(0.f)
 		, timcreation(0)
 		, rgb(Color::black.toRGB())
 		, m_tailLength(0.f)

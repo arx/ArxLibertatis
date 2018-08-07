@@ -86,7 +86,7 @@ struct CreditsLine {
 	
 	CreditsLine()
 		: fColors(Color::none)
-		, sPos(Vec2i_ZERO)
+		, sPos(0)
 		, sourceLineNumber(-1)
 	{ }
 	
@@ -107,7 +107,7 @@ public:
 		, m_lastUpdateTime(0)
 		, m_firstVisibleLine(0)
 		, m_lineHeight(-1)
-		, m_windowSize(Vec2i_ZERO)
+		, m_windowSize(0)
 	{ }
 	
 	void setLibraryCredits(const std::string & subsystem, const std::string & credits);
@@ -461,7 +461,7 @@ void Credits::render() {
 	
 	// Draw the background
 	if(m_background) {
-		Rectf rect(Vec2f_ZERO, g_size.width(), g_size.height() + 1);
+		Rectf rect(Vec2f(0.f), g_size.width(), g_size.height() + 1);
 		UseRenderState state(render2D().noBlend());
 		EERIEDrawBitmap(rect, .999f, m_background, Color::white);
 	}
@@ -569,7 +569,7 @@ void Credits::reset() {
 	m_scrollPosition = 0;
 	m_firstVisibleLine = 0;
 	m_lineHeight = -1;
-	m_windowSize = Vec2i_ZERO;
+	m_windowSize = Vec2i(0);
 	m_lines.clear();
 	delete m_background, m_background = NULL;
 	m_text.clear();

@@ -400,7 +400,7 @@ void IceFieldSpell::Launch() {
 			tType[i] = 1;
 		}
 		
-		tSize[i] = Vec3f_ZERO;
+		tSize[i] = Vec3f(0.f);
 		tSizeMax[i] = arx::randomVec3f() + Vec3f(0.f, 0.2f, 0.f);
 		
 		Vec3f minPos = (tType[i] == 0) ? Vec3f(1.2f, 1.f, 1.2f) : Vec3f(0.4f, 0.3f, 0.4f);
@@ -524,7 +524,7 @@ Vec3f IceFieldSpell::getPosition() {
 void LightningStrikeSpell::Launch() {
 	
 	Vec3f target(0.f, 0.f, -500.f);
-	m_lightning.Create(Vec3f_ZERO, target);
+	m_lightning.Create(Vec3f(0.f), target);
 	m_lightning.SetDuration(GameDurationMsf(500 * m_level));
 	m_lightning.m_isMassLightning = false;
 	m_duration = m_lightning.m_duration;
@@ -564,7 +564,7 @@ static Vec3f GetChestPos(EntityHandle num) {
 		}
 	} else {
 		// should not happen
-		return Vec3f_ZERO;
+		return Vec3f(0.f);
 	}
 }
 

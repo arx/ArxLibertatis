@@ -781,7 +781,7 @@ static Vec2f CalculateWaterDisplacement(EERIEPOLY * ep, float time, int vertInde
 		return FluidTextureDisplacement(p, time, 1000, 200, 1000, 40, 60.f, 60, Vec2f(-1.f, -1.f));
 	}
 	default:
-		return Vec2f_ZERO;
+		return Vec2f(0.f);
 	}
 }
 
@@ -800,7 +800,7 @@ static Vec2f CalculateLavaDisplacement(EERIEPOLY * ep, float time, int vertIndex
 		return FluidTextureDisplacement(p, time, 600, 160, 2000, 11, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
 	default:
-		return Vec2f_ZERO;
+		return Vec2f(0.f);
 	}
 }
 

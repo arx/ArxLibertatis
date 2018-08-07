@@ -433,7 +433,7 @@ bool Config::save() {
 	// video
 	writer.beginSection(Section::Video);
 	writer.writeKey(Key::renderer, video.renderer);
-	if(video.resolution == Vec2i_ZERO) {
+	if(video.resolution == Vec2i(0)) {
 		writer.writeKey(Key::resolution, Default::resolution);
 	} else {
 		std::ostringstream oss;
@@ -577,7 +577,7 @@ bool Config::init(const fs::path & file) {
 	video.renderer = reader.getKey(Section::Video, Key::renderer, Default::renderer);
 	std::string resolution = reader.getKey(Section::Video, Key::resolution, Default::resolution);
 	if(resolution == "auto") {
-		video.resolution = Vec2i_ZERO;
+		video.resolution = Vec2i(0);
 	} else {
 		video.resolution = parseResolution(resolution);
 	}

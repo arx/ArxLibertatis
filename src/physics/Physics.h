@@ -62,10 +62,10 @@ struct PhysicsParticle {
 	float mass;
 	
 	PhysicsParticle()
-		: initpos(Vec3f_ZERO)
-		, pos(Vec3f_ZERO)
-		, velocity(Vec3f_ZERO)
-		, force(Vec3f_ZERO)
+		: initpos(0.f)
+		, pos(0.f)
+		, velocity(0.f)
+		, force(0.f)
 		, mass(0.f)
 	{ }
 	

@@ -68,8 +68,8 @@ protected:
 	Texture()
 		: m_format(Image::Format_Unknown)
 		, m_flags(0)
-		, m_size(Vec2i_ZERO)
-		, m_storedSize(Vec2i_ZERO)
+		, m_size(0)
+		, m_storedSize(0)
 	{ }
 	
 	virtual bool create() = 0;

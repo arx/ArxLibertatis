@@ -1329,7 +1329,7 @@ void ARX_PLAYER_Manage_Visual() {
 		if(layer0.flags & EA_ANIMEND) {
 			layer0.flags &= ~EA_FORCEPLAY;
 			layer0.flags |= EA_STATICANIM;
-			io->move = io->lastmove = Vec3f_ZERO;
+			io->move = io->lastmove = Vec3f(0.f);
 		} else {
 			layer0.flags &= ~EA_STATICANIM;
 			player.pos = g_moveto = player.pos + io->move;
@@ -2031,7 +2031,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		Vec3f impulse = g_moveto - player.pos;
-		if(impulse != Vec3f_ZERO) {
+		if(impulse != Vec3f(0.f)) {
 			
 			const AnimLayer & layer0 = entities.player()->animlayer[0];
 			float scale = 1.25f / 1000;
@@ -2129,7 +2129,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		
 		// Apply push player force
 		player.physics.forces += PUSH_PLAYER_FORCE / TARGET_DT;
-		PUSH_PLAYER_FORCE = Vec3f_ZERO;
+		PUSH_PLAYER_FORCE = Vec3f(0.f);
 		
 		// Apply forces to velocity
 		player.physics.velocity += player.physics.forces * DeltaTime;
@@ -2162,7 +2162,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 
 		// Reset forces
-		player.physics.forces = Vec3f_ZERO;
+		player.physics.forces = Vec3f(0.f);
 		
 		// Check if player is already on firm ground AND not moving
 		if(glm::abs(player.physics.velocity.x) < 0.001f
@@ -2455,7 +2455,7 @@ void ARX_GAME_Reset() {
 	
 	player.DeadTime = 0;
 	
-	LastValidPlayerPos = Vec3f_ZERO;
+	LastValidPlayerPos = Vec3f(0.f);
 	
 	entities.player()->speed_modif = 0;
 	
@@ -2590,7 +2590,7 @@ void ARX_GAME_Reset() {
 	ROTATE_START = 0;
 	BLOCK_PLAYER_CONTROLS = false;
 	HERO_SHOW_1ST = -1;
-	PUSH_PLAYER_FORCE = Vec3f_ZERO;
+	PUSH_PLAYER_FORCE = Vec3f(0.f);
 	player.jumplastposition = 0;
 	player.jumpstarttime = 0;
 	player.jumpphase = NotJumping;

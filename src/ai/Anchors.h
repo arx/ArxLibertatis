@@ -71,7 +71,7 @@ struct ANCHOR_DATA {
 	float height;
 	
 	ANCHOR_DATA()
-		: pos(Vec3f_ZERO)
+		: pos(0.f)
 		, flags(0)
 		, radius(0)
 		, height(0)

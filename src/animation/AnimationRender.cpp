@@ -1176,12 +1176,12 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 static Vec3f CalcTranslation(AnimLayer & layer) {
 	
 	if(!layer.cur_anim) {
-		return Vec3f_ZERO;
+		return Vec3f(0.f);
 	}
 	
 	EERIE_ANIM * eanim = layer.cur_anim->anims[layer.altidx_cur];
 	if(!eanim) {
-		return Vec3f_ZERO;
+		return Vec3f(0.f);
 	}
 	
 	// Avoiding impossible cases
@@ -1196,7 +1196,7 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 	
 	// FIXME animation indices prevent invalid memory access, should be fixed properly
 	if(layer.currentFrame < 0 || layer.currentFrame + 1 >= long(eanim->frames.size())) {
-		return Vec3f_ZERO;
+		return Vec3f(0.f);
 	}
 	
 	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
@@ -1208,7 +1208,7 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 		return sFrame.translate + (eFrame.translate - sFrame.translate) * layer.currentInterpolation;
 	}
 	
-	return Vec3f_ZERO;
+	return Vec3f(0.f);
 }
 
 static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
@@ -1236,7 +1236,7 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
 		// Use calculated value to notify the Movement engine of the translation to do
 		if(io->ioflags & IO_NPC) {
-			ftr = Vec3f_ZERO;
+			ftr = Vec3f(0.f);
 			io->move -= io->lastmove;
 		} else if(io->gameFlags & GFLAG_ELEVATOR) {
 			// Must recover translations for NON-NPC IO

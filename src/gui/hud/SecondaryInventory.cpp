@@ -367,7 +367,7 @@ void SecondaryInventoryHud::dropEntity() {
 		}
 	}
 	
-	Vec2s t = Vec2s_ZERO;
+	Vec2s t(0);
 	t.x = s16(DANAEMouse.x + static_cast<short>(m_fadePosition) - (2 * m_scale));
 	t.y = s16(DANAEMouse.y - (13 * m_scale));
 	t.x = s16(t.x / (32 * m_scale));

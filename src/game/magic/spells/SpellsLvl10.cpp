@@ -42,7 +42,7 @@
 
 
 MassLightningStrikeSpell::MassLightningStrikeSpell()
-	: m_pos(Vec3f_ZERO)
+	: m_pos(0.f)
 	, m_soundEffectPlayed(false)
 { }
 
@@ -237,8 +237,8 @@ void ControlTargetSpell::Launch()
 	m_duration = GameDurationMs(1000);
 	m_hasDuration = true;
 	
-	eSrc = Vec3f_ZERO;
-	eTarget = Vec3f_ZERO;
+	eSrc = Vec3f(0.f);
+	eTarget = Vec3f(0.f);
 	fTrail = 0.f;
 	
 	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_ctrl_target");

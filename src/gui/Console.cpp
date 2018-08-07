@@ -591,7 +591,7 @@ void ScriptConsole::draw() {
 		EERIEDrawBitmap(box, 0.f, NULL, background);
 	}
 	
-	Vec2i pos = Vec2i_ZERO;
+	Vec2i pos(0);
 	for(size_t i = 0; i < m_buffer.lines(); i++) {
 		hFontDebug->draw(pos, m_buffer.line(i), Color::white);
 		pos.y += hFontDebug->getLineHeight();

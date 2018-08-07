@@ -72,7 +72,7 @@ public:
 	CinematicKeyframe * next;
 	
 	CinematicLight()
-		: pos(Vec3f_ZERO)
+		: pos(0.f)
 		, fallin(100.f)
 		, fallout(200.f)
 		, color(Color3f::white * 255.f)

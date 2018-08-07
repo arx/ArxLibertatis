@@ -221,7 +221,7 @@ static Uint32 getSDLFlagsForMode(const Vec2i & size, bool fullscreen) {
 	Uint32 flags = 0;
 	
 	if(fullscreen) {
-		if(size == Vec2i_ZERO) {
+		if(size == Vec2i(0)) {
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		} else {
 			flags |= SDL_WINDOW_FULLSCREEN;
@@ -558,7 +558,7 @@ void SDL2Window::changeMode(DisplayMode mode, bool fullscreen) {
 			// SDL will not update the window size with the new mode if already fullscreen
 			SDL_SetWindowFullscreen(m_window, 0);
 		}
-		if(mode.resolution != Vec2i_ZERO) {
+		if(mode.resolution != Vec2i(0)) {
 			SDL_DisplayMode sdlmode;
 			SDL_DisplayMode requested;
 			requested.driverdata = NULL;

@@ -358,7 +358,7 @@ bool Input::init(Window * window) {
 
 void Input::reset() {
 	
-	m_mouseMovement = Vec2f_ZERO;
+	m_mouseMovement = Vec2f(0.f);
 
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i][0] = 0;
@@ -582,7 +582,7 @@ void Input::update(float time) {
 		}
 		
 	} else {
-		m_mouseMovement = Vec2f_ZERO;
+		m_mouseMovement = Vec2f(0.f);
 		if(!m_useRawMouseInput) {
 			m_lastMousePosition = newMousePosition;
 		}

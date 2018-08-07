@@ -206,7 +206,7 @@ bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 	
 	Vec3f objcenter = bbox.min + (bbox.max - bbox.min) * Vec3f(0.5f);
 	
-	Vec3f collidpos = Vec3f_ZERO;
+	Vec3f collidpos(0.f);
 	bool collidpos_ok = false;
 	
 	{
@@ -230,7 +230,7 @@ bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 		}
 	}
 	
-	Cylinder cyl2 = Cylinder(Vec3f_ZERO, glm::clamp(maxdist, 20.f, 150.f), std::min(-30.f, height));
+	Cylinder cyl2 = Cylinder(Vec3f(0.f), glm::clamp(maxdist, 20.f, 150.f), std::min(-30.f, height));
 	
 	const float inc = 10.f;
 	long iterating = 40;
