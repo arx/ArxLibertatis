@@ -608,15 +608,15 @@ static void drawDebugMaterialTexture(Vec2f & textpos, const std::string & type,
 		pos.x = g_size.right - 5 - (type_s + name_s + format_s);
 	}
 	
-	hFontDebug->draw(pos + Vec2i_ONE, type, Color::black);
+	hFontDebug->draw(pos + Vec2i(1), type, Color::black);
 	hFontDebug->draw(pos, type, color);
 	pos.x += type_s;
 	
-	hFontDebug->draw(pos + Vec2i_ONE, name, Color::black);
+	hFontDebug->draw(pos + Vec2i(1), name, Color::black);
 	hFontDebug->draw(pos, name, Color::white);
 	pos.x += name_s;
 	
-	hFontDebug->draw(pos + Vec2i_ONE, format, Color::black);
+	hFontDebug->draw(pos + Vec2i(1), format, Color::black);
 	hFontDebug->draw(pos, format, Color::gray(0.7f));
 	
 	textpos.y += hFontDebug->getLineHeight();

@@ -661,7 +661,7 @@ void ScriptConsole::draw() {
 	if(!m_error.second.empty()) {
 		Vec2i errorPos = pos;
 		errorPos.x += hFontDebug->getTextSize(text().begin(), text().begin() + m_error.first).advance();
-		hFontDebug->draw(errorPos + Vec2i_ONE, m_error.second, Color::black);
+		hFontDebug->draw(errorPos + Vec2i(1), m_error.second, Color::black);
 		hFontDebug->draw(errorPos, m_error.second, Color::red);
 	} else if(!m_suggestions.empty()) {
 		Vec2i suggestionPos = pos;
@@ -675,7 +675,7 @@ void ScriptConsole::draw() {
 				std::ostringstream oss;
 				oss << "... " << (start + 1) << " - " << (start + MaxVisibleSuggestions - (start != 0))
 				    << " / " << m_suggestions.size();
-				hFontDebug->draw(suggestionPos + Vec2i_ONE, oss.str(), Color::black);
+				hFontDebug->draw(suggestionPos + Vec2i(1), oss.str(), Color::black);
 				hFontDebug->draw(suggestionPos, oss.str(), Color::red);
 				break;
 			}
@@ -684,7 +684,7 @@ void ScriptConsole::draw() {
 				suggestionPos.x = pos.x + hFontDebug->getTextSize(text().begin(), text().begin() + position).advance();
 			}
 			if(start != 0 && i == start) {
-				hFontDebug->draw(suggestionPos + Vec2i_ONE, "...", Color::black);
+				hFontDebug->draw(suggestionPos + Vec2i(1), "...", Color::black);
 				hFontDebug->draw(suggestionPos, "...", Color::red);
 				suggestionPos.y += hFontDebug->getLineHeight();
 			}
@@ -695,7 +695,7 @@ void ScriptConsole::draw() {
 				EERIEDrawBitmap(highlight, 0.f, NULL, selection);
 				drawLineRectangle(highlight, 0.f, background);
 			}
-			hFontDebug->draw(suggestionPos + Vec2i_ONE, m_suggestions[i].second, Color::black);
+			hFontDebug->draw(suggestionPos + Vec2i(1), m_suggestions[i].second, Color::black);
 			hFontDebug->draw(suggestionPos, m_suggestions[i].second, Color::white);
 			suggestionPos.y += hFontDebug->getLineHeight();
 		}

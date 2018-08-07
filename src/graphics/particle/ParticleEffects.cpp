@@ -574,7 +574,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		pd->delay = 0;
 		pd->zdec = false;
 		pd->move = Vec3f(0.f);
-		pd->scale = Vec3f_ONE;
+		pd->scale = Vec3f(1.f);
 		
 		return pd;
 	}

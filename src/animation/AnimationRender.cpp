@@ -1355,7 +1355,7 @@ static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
 			bone.anim.trans = parent.anim.trans + bone.anim.trans;
 
 			// Scale
-			bone.anim.scale = (bone.init.scale + Vec3f_ONE) * parent.anim.scale;
+			bone.anim.scale = (bone.init.scale + Vec3f(1.f)) * parent.anim.scale;
 		} else { // Root Bone
 			// Rotation
 			bone.anim.quat = t.rotation * bone.init.quat;
@@ -1367,7 +1367,7 @@ static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
 			bone.anim.trans += t.pos;
 
 			// Compute Global Object Scale AND Global Animation Scale
-			bone.anim.scale = (bone.init.scale + Vec3f_ONE) * t.scale;
+			bone.anim.scale = (bone.init.scale + Vec3f(1.f)) * t.scale;
 		}
 	}
 }
@@ -1483,7 +1483,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 
 	if(BH_MODE && eobj->fastaccess.head_group != ObjVertGroup()) {
 		extraScale.groupIndex = eobj->fastaccess.head_group;
-		extraScale.scale = Vec3f_ONE;
+		extraScale.scale = Vec3f(1.f);
 	}
 
 	arx_assert(eobj->m_skeleton);
