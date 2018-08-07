@@ -109,8 +109,8 @@ void Note::calculateLayout() {
 	Vec2f newTextStart;
 	Vec2f newTextEnd;
 	
-	Vec2f prevButtonOffset;
-	Vec2f nextButtonOffset;
+	Vec2f prevButtonOffset(0.f);
+	Vec2f nextButtonOffset(0.f);
 	
 	Vec2f scale = Vec2f(g_playerBook.getScale());
 	
@@ -167,7 +167,7 @@ void Note::calculateLayout() {
 			nextButtonOffset = Vec2f(-15.f, -6.f);
 		}
 		
-		case Undefined: break; // Cannot handle notes of undefined type.
+		case Undefined: return; // Cannot handle notes of undefined type.
 	}
 	
 	if(m_type == QuestBook) {
