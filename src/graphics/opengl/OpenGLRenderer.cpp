@@ -471,8 +471,8 @@ void OpenGLRenderer::shutdown() {
 	
 }
 
-static glm::mat4x4 projection;
-static glm::mat4x4 view;
+static glm::mat4x4 projection(1.f);
+static glm::mat4x4 view(1.f);
 
 void OpenGLRenderer::enableTransform() {
 	
