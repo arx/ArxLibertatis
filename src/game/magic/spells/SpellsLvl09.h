@@ -45,16 +45,24 @@ private:
 };
 
 class FakeSummonSpell : public SpellBase {
+	
 public:
+	
+	FakeSummonSpell()
+		: m_targetPos(0.f)
+	{ }
+	
 	bool CanLaunch();
 	void Launch();
 	void End();
 	void Update();
 	
 private:
+	
 	LightHandle m_light;
 	CSummonCreature m_fissure;
 	Vec3f m_targetPos;
+	
 };
 
 class NegateMagicSpell : public SpellBase {
