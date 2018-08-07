@@ -466,7 +466,7 @@ void PrepareIOTreatZone(long flag) {
 	ARX_PROFILE_FUNC();
 	
 	static long status = -1;
-	static Vec3f lastpos;
+	static Vec3f lastpos(0.f);
 	
 	const Vec3f cameraPos = g_camera->m_pos;
 	
@@ -1093,13 +1093,9 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io) {
 	io->show = SHOW_FLAG_TELEPORTING;
 	AddRandomSmoke(io, 10);
 	ARX_PARTICLES_Add_Smoke(io->pos, 3, 20);
-	Vec3f pos;
-	pos.x = io->pos.x;
-	pos.y = io->pos.y + io->physics.cyl.height * 0.5f;
-	pos.z = io->pos.z;
 	io->requestRoomUpdate = true;
 	io->room = -1;
-	ARX_PARTICLES_Add_Smoke(pos, 3, 20);
+	ARX_PARTICLES_Add_Smoke(io->pos + Vec3f(0.f, io->physics.cyl.height * 0.5f, 0.f), 3, 20);
 	MakeCoolFx(io->pos);
 	io->gameFlags |= GFLAG_INVISIBILITY;
 	
@@ -1504,69 +1500,56 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	return io;
 }
 
-IO_NPCDATA::IO_NPCDATA() {
-	
-	lifePool.current = lifePool.max = 20.f;
-	manaPool.current = manaPool.max = 0.f;
-	
-	reachedtime = 0;
-	reachedtarget = 0l;
-	weapon = NULL;
-	detect = 0;
-	movemode = WALKMODE;
-	armor_class = 0.f;
-	absorb = 0.f;
-	damages = 0.f;
-	tohit = 0.f;
-	aimtime = 0;
-	critical = 0.f;
-	reach = 0.f;
-	backstab_skill = 0.f;
-	
-	behavior = 0;
-	behavior_param = 0.f;
-	tactics = 0l;
-	xpvalue = 0l;
-	cut = 0l;
-	
-	moveproblem = 0.f;
-	weapontype = 0;
-	weaponinhand = 0l;
-	fightdecision = 0l;
-	
-	look_around_inc = 0.f;
-	collid_time = 0ul;
-	collid_state = 0l;
-	speakpitch = 1.f;
-	lastmouth = 0.f;
-	ltemp = 0l;
-	
-	memset(stacked, 0, sizeof(IO_BEHAVIOR_DATA) * MAX_STACKED_BEHAVIOR); // TODO use constructor
-	
-	poisonned = 0.f;
-	resist_poison = 0;
-	resist_magic = 0;
-	resist_fire = 0;
-	
-	walk_start_time = 0;
-	aiming_start = 0;
-	npcflags = 0l;
-	pathfind = IO_PATHFIND();
-	ex_rotate = 0;
-	blood_color = Color::red;
-	
-	SPLAT_DAMAGES = 0;
-	SPLAT_TOT_NB = 0;
-	last_splat_pos = Vec3f_ZERO;
-	vvpos = 0.f;
-	
-	climb_count = 0.f;
-	stare_factor = 0.f;
-	fDetect = 0.f;
-	cuts = 0;
-	unused = 0;
-	
-}
+IO_NPCDATA::IO_NPCDATA()
+	: lifePool(20.f)
+	, manaPool(0.f)
+	, reachedtime(0)
+	, reachedtarget(0)
+	, weapon(NULL)
+	, detect(0)
+	, movemode(WALKMODE)
+	, armor_class(0.f)
+	, absorb(0.f)
+	, damages(0.f)
+	, tohit(0.f)
+	, aimtime(0)
+	, critical(0.f)
+	, reach(0.f)
+	, backstab_skill(0.f)
+	, behavior(0)
+	, behavior_param(0.f)
+	, tactics(0)
+	, xpvalue(0)
+	, cut(0)
+	, moveproblem(0.f)
+	, weapontype(0)
+	, weaponinhand(0)
+	, fightdecision(0)
+	, look_around_inc(0.f)
+	, collid_time(0)
+	, collid_state(0)
+	, speakpitch(1.f)
+	, lastmouth(0.f)
+	, ltemp(0)
+	, poisonned(0.f)
+	, resist_poison(0)
+	, resist_magic(0)
+	, resist_fire(0)
+	, walk_start_time(0)
+	, aiming_start(0)
+	, npcflags(0)
+	, ex_rotate(0)
+	, blood_color(Color::red)
+	, SPLAT_DAMAGES(0)
+	, SPLAT_TOT_NB(0)
+	, last_splat_pos(0.f)
+	, vvpos(0.f)
+	, climb_count(0.f)
+	, stare_factor(0.f)
+	, fDetect(0.f)
+	, cuts(0)
+	, unused(0)
+{ }
 
 IO_NPCDATA::~IO_NPCDATA() {
 	delete ex_rotate;
