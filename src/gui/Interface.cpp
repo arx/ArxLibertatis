@@ -1884,9 +1884,7 @@ void ArxGame::manageEditorControls() {
 						io->pos = player.pos + Vec3f(0.f, 80.f, 0.f);
 						
 						Vec2f centerOffset = Vec2f(DANAEMouse) - Vec2f(g_size.center());
-						Vec2f ratio;
-						ratio.y = centerOffset.y / g_size.height() * 2;
-						ratio.x = -centerOffset.x / g_size.center().x;
+						Vec2f ratio(-centerOffset.x / g_size.center().x, centerOffset.y / g_size.height() * 2);
 						
 						Vec3f viewvector = angleToVector(player.angle + Anglef(0.f, ratio.x * 30.f, 0.f));
 						viewvector.y += ratio.y;
