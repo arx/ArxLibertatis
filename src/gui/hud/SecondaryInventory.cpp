@@ -294,20 +294,13 @@ void SecondaryInventoryHud::updateInputButtons() {
 }
 
 bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
+	
 	if(SecondaryInventory != NULL) {
-		Vec2s t;
-		t.x = s16(pos.x + checked_range_cast<short>(m_fadePosition) - (2 * m_scale));
-		t.y = s16(pos.y - (13 * m_scale));
-		t.x = s16(t.x / (32 * m_scale));
-		t.y = s16(t.y / (32 * m_scale));
-		
-		if(t.x < 0 || t.x >= SecondaryInventory->m_size.x)
+		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
+		          / s16(32 * m_scale);
+		if(t.x < 0 || t.x >= SecondaryInventory->m_size.x || t.y < 0 || t.y >= SecondaryInventory->m_size.y) {
 			return false;
-		
-		if(t.y < 0 || t.y >= SecondaryInventory->m_size.y)
-			return false;
-		
-		return true;
+		}
 	}
 	
 	return false;
@@ -316,34 +309,17 @@ bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 	
 	if(SecondaryInventory != NULL) {
-		short tx = short(pos.x + checked_range_cast<short>(m_fadePosition) - (2 * m_scale));
-		short ty = short(pos.y - (13 * m_scale));
-
-		if(tx >= 0 && ty >= 0) {
-			tx = short(tx / (32 * m_scale));
-			ty = short(ty / (32 * m_scale));
-
-			if(   tx >= 0
-			   && tx <= SecondaryInventory->m_size.x
-			   && ty >= 0
-			   && ty <= SecondaryInventory->m_size.y
-			) {
-				if(SecondaryInventory->slot[tx][ty].io == NULL)
-					return NULL;
-
-				if(   (player.Interface & INTER_STEAL)
-				   && !ARX_PLAYER_CanStealItem(SecondaryInventory->slot[tx][ty].io)
-				) {
-					return NULL;
-				}
-
-				Entity * io = SecondaryInventory->slot[tx][ty].io;
-
-				if(!(io->gameFlags & GFLAG_INTERACTIVITY))
-					return NULL;
-
-				return io;
+		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
+		          / s16(32 * m_scale);
+		if(t.x >= 0 && t.x <= SecondaryInventory->m_size.x && t.y >= 0 && t.y <= SecondaryInventory->m_size.y) {
+			Entity * io = SecondaryInventory->slot[t.x][t.y].io;
+			if(!io || !(io->gameFlags & GFLAG_INTERACTIVITY)) {
+				return NULL;
 			}
+			if((player.Interface & INTER_STEAL) && !ARX_PLAYER_CanStealItem(io)) {
+				return NULL;
+			}
+			return io;
 		}
 	}
 	
@@ -476,7 +452,11 @@ extern Vec2s sInventoryPos;
 
 bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 	
+	Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
+	          / s16(32 * m_scale);
+	
 	if(SecondaryInventory != NULL) {
+		
 		if(g_secondaryInventoryHud.containsPos(pos) && (io->ioflags & IO_ITEM)) {
 			Entity * ioo = SecondaryInventory->io;
 			
@@ -514,14 +494,7 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 					ARX_SOUND_PlayInterface(g_snd.INVSTD);
 					Set_DragInter(unstackedEntity);
 					sInventory = 2;
-					
-					Vec2f calc;
-					calc.x = (pos.x + m_fadePosition - (2 * m_scale)) / (32 * m_scale);
-					calc.y = (pos.y - (13 * m_scale)) / (32 * m_scale);
-					
-					sInventoryPos.x = checked_range_cast<short>(calc.x);
-					sInventoryPos.y = checked_range_cast<short>(calc.y);
-					
+					sInventoryPos = t;
 					ARX_INVENTORY_IdentifyIO(unstackedEntity);
 					return true;
 				}
@@ -531,20 +504,14 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 		for(long j = 0; j < SecondaryInventory->m_size.y; j++)
 		for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
 			INVENTORY_SLOT & slot = SecondaryInventory->slot[i][j];
-			
-			if(slot.io != io)
-				continue;
-			
-			slot.io = NULL;
-			slot.show = true;
-			sInventory = 2;
-			
-			float fCalcX = (pos.x + m_fadePosition - (2 * m_scale)) / (32 * m_scale);
-			float fCalcY = (pos.y - (13 * m_scale)) / (32 * m_scale);
-			
-			sInventoryPos.x = checked_range_cast<short>(fCalcX);
-			sInventoryPos.y = checked_range_cast<short>(fCalcY);
+			if(slot.io == io) {
+				slot.io = NULL;
+				slot.show = true;
+				sInventory = 2;
+				sInventoryPos = t;
+			}
 		}
+		
 	}
 	
 	Set_DragInter(io);
