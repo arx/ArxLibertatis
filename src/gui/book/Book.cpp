@@ -1065,10 +1065,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 		
 	}
 	
-	Vec3f pos;
 	EERIE_LIGHT eLight1;
-	EERIE_LIGHT eLight2;
-	
 	eLight1.pos = Vec3f(50.f, 50.f, 200.f);
 	eLight1.m_exists = true;
 	eLight1.rgb = Color3f(0.15f, 0.06f, 0.003f);
@@ -1077,6 +1074,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	eLight1.fallend = eLight1.fallstart + 60;
 	RecalcLight(&eLight1);
 	
+	EERIE_LIGHT eLight2;
 	eLight2.m_exists = true;
 	eLight2.pos = Vec3f(-50.f, -50.f, -200.f);
 	eLight2.rgb = Color3f::gray(0.6f);
@@ -1103,10 +1101,10 @@ void StatsPage::RenderBookPlayerCharacter() {
 	Camera * oldcam = g_camera;
 	PrepareCamera(&bookcam, Rect(g_bookRect), rec.center());
 	
-	Anglef ePlayerAngle = Anglef::ZERO;
-	
 	GRenderer->SetAntialiasing(true);
 	
+	Anglef ePlayerAngle = Anglef::ZERO;
+	Vec3f pos;
 	if(ARXmenu.mode() == Mode_CharacterCreation) {
 		
 		switch(player.skin) {
@@ -1466,9 +1464,7 @@ void SpellsPage::drawSpells() {
 			
 			for(size_t j = 0; j < 6; ++j) {
 				if(spellInfo.symbols[j] != RUNE_NONE) {
-					Vec2f pos;
-					pos.x = bookPos.x + 143.f * scale - float(count) * 32.f * scale * 0.5f + float(j) * 32 * scale;
-					pos.y = bookPos.y + 242.f * scale;
+					Vec2f pos = bookPos + Vec2f(143.f - float(count) * 16.f + float(j) * 32.f, 242.f) * scale;
 					DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], pos, Color::white, 0.000001f);
 				}
 			}
