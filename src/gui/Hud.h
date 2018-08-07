@@ -85,14 +85,20 @@ public:
 };
 
 class StealIconGui : public HudIconBase {
-private:
+	
 	Vec2f m_size;
 	
 public:
+	
+	StealIconGui()
+		: m_size(0.f)
+	{ }
+	
 	void init();
 	void updateRect(const Rectf & parent);
 	void updateInput();
 	void draw();
+	
 };
 
 class LevelUpIconGui : public HudIconBase {

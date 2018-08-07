@@ -101,16 +101,18 @@ static void DrawItemPrice(float scale) {
 	}
 }
 
-
 HitStrengthGauge::HitStrengthGauge()
 	: m_emptyTex(NULL)
 	, m_fullTex(NULL)
 	, m_hitTex(NULL)
+	, m_size(122.f, 70.f)
+	, m_hitSize(172.f, 130.f)
+	, m_hitRect(Rectf::ZERO)
 	, m_intensity(0.f)
 	, m_flashActive(false)
 	, m_flashTime(0)
 	, m_flashIntensity(0.f)
-{}
+{ }
 
 void HitStrengthGauge::init() {
 	m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/aim_empty");
@@ -119,9 +121,6 @@ void HitStrengthGauge::init() {
 	arx_assert(m_emptyTex);
 	arx_assert(m_fullTex);
 	arx_assert(m_hitTex);
-	
-	m_size = Vec2f(122.f, 70.f);
-	m_hitSize = Vec2f(172.f, 130.f);
 }
 
 void HitStrengthGauge::requestFlash(float flashIntensity) {
@@ -437,7 +436,6 @@ void LevelUpIconGui::updateInput() {
 	}
 }
 
-
 void LevelUpIconGui::draw() {
 	if(!m_visible)
 		return;
@@ -445,20 +443,16 @@ void LevelUpIconGui::draw() {
 	HudIconBase::draw();
 }
 
-
 PurseIconGui::PurseIconGui()
-	: m_haloTime(0)
+	: m_size(32.f, 32.f)
+	, m_haloTime(0)
 { }
 
 void PurseIconGui::init() {
 	m_tex = TextureContainer::LoadUI("graph/interface/inventory/gold");
 	arx_assert(m_tex);
-	m_size = Vec2f(32.f, 32.f);
-	
 	m_haloColor = Color3f(0.9f, 0.9f, 0.1f);
-	
 	m_haloActive = false;
-	m_haloTime = 0;
 }
 
 void PurseIconGui::requestHalo() {
@@ -512,15 +506,13 @@ void PurseIconGui::draw() {
 	
 }
 
-
 CurrentTorchIconGui::CurrentTorchIconGui()
 	: m_isActive(false)
 	, m_tex(NULL)
+	, m_size(32.f, 64.f)
 { }
 
-void CurrentTorchIconGui::init() {
-	m_size = Vec2f(32.f, 64.f);
-}
+void CurrentTorchIconGui::init() { }
 
 bool CurrentTorchIconGui::isVisible() {
 	return !(player.Interface & INTER_COMBATMODE) && player.torch;
@@ -604,16 +596,15 @@ void CurrentTorchIconGui::draw() {
 	EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
 }
 
-
 ChangeLevelIconGui::ChangeLevelIconGui()
 	: m_tex(NULL)
+	, m_size(32.f, 32.f)
 	, m_intensity(1.f)
-{}
+{ }
 
 void ChangeLevelIconGui::init() {
 	m_tex = TextureContainer::LoadUI("graph/interface/icons/change_lvl");
 	arx_assert(m_tex);
-	m_size = Vec2f(32.f, 32.f);
 }
 
 bool ChangeLevelIconGui::isVisible() {
@@ -687,9 +678,9 @@ void QuickSaveIconGui::draw() {
 	
 }
 
-
 MemorizedRunesHud::MemorizedRunesHud()
-	: m_count(0)
+	: m_size(0.f)
+	, m_count(0)
 { }
 
 void MemorizedRunesHud::update(const Rectf & parent) {
@@ -973,9 +964,9 @@ void PrecastSpellsGui::PrecastSpellIconSlot::draw() {
 	EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
 }
 
-PrecastSpellsGui::PrecastSpellsGui() {
-	m_iconSize = Vec2f(48, 48) / Vec2f(2);
-}
+PrecastSpellsGui::PrecastSpellsGui()
+	: m_iconSize(24.f, 24.f)
+{ }
 
 bool PrecastSpellsGui::isVisible() {
 	return !(player.Interface & INTER_PLAYERBOOK);
@@ -1079,18 +1070,17 @@ void ActiveSpellsGui::ActiveSpellIconSlot::draw() {
 
 ActiveSpellsGui::ActiveSpellsGui()
 	: m_texUnknown(NULL)
+	, m_slotSize(24.f, 24.f)
+	, m_spacerSize(60.f, 50.f)
+	, m_slotSpacerSize(0.f, 9.f)
+	, m_flickNow(false)
+	, m_flickTime(0)
+	, m_flickInterval(PlatformDurationMsf(1000.0f / 60.0f))
 { }
 
 void ActiveSpellsGui::init() {
 	m_texUnknown = TextureContainer::Load("graph/interface/icons/spell_unknown");
 	arx_assert(m_texUnknown);
-	
-	m_slotSize = Vec2f(24.f, 24.f);
-	m_spacerSize = Vec2f(60.f, 50.f);
-	m_slotSpacerSize = Vec2f(0.f, 9.f);
-	m_flickNow = false;
-	m_flickTime = 0;
-	m_flickInterval = PlatformDurationMsf(1000.0f / 60.0f);
 }
 
 void ActiveSpellsGui::update(const Rectf & parent) {
@@ -1284,16 +1274,16 @@ void DamagedEquipmentGui::draw() {
 	
 }
 
-
 StealthGauge::StealthGauge()
 	: m_texture(NULL)
 	, m_visible(false)
+	, m_color(Color::none)
+	, m_size(32.f, 32.f)
 { }
 
 void StealthGauge::init() {
 	m_texture = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
 	arx_assert(m_texture);
-	m_size = Vec2f(32.f, 32.f);
 }
 
 void StealthGauge::updateRect(const Rectf & parent) {
