@@ -69,6 +69,25 @@ struct CinematicKeyframe {
 	float angzgrille;
 	float speedtrack;
 	int idsound;
+	
+	CinematicKeyframe()
+		: frame(0)
+		, numbitmap(0)
+		, fx(0)
+		, typeinterp(0)
+		, force(0)
+		, pos(0.f)
+		, angz(0.f)
+		, color(Color::none)
+		, colord(Color::none)
+		, colorf(Color::none)
+		, speed(0.f)
+		, posgrille(0.f)
+		, angzgrille(0.f)
+		, speedtrack(0.f)
+		, idsound(0)
+	{ }
+	
 };
 
 struct CinematicTrack {
