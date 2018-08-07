@@ -166,7 +166,6 @@ struct FAST_EP_DATA {
 		b.tile.x = px;
 		b.tile.y = py;
 		b.idx = idx;
-		b.padd = padd;
 		return b;
 	}
 	
