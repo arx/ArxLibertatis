@@ -55,16 +55,17 @@ struct TexturedVertexUntransformed {
 	Vec2f uv;
 	
 	TexturedVertexUntransformed()
-		: p(Vec3f_ZERO)
-		, color(0x00000000)
-		, uv(0.f, 0.f)
-	{}
+		: p(0.f)
+		, color(0)
+		, uv(0.f)
+	{ }
 	
 	TexturedVertexUntransformed(const Vec3f & _p, ColorRGBA _color, Vec2f _uv)
 		: p(_p)
 		, color(_color)
 		, uv(_uv)
-	{}
+	{ }
+	
 };
 
 struct TexturedVertex {
@@ -77,18 +78,18 @@ struct TexturedVertex {
 	Vec2f uv;
 	
 	TexturedVertex()
-		: p(Vec3f_ZERO)
+		: p(0.f)
 		, w(1.f)
-		, color(0x00000000)
-		, uv(0.f, 0.f)
-	{}
+		, color(0)
+		, uv(0.f)
+	{ }
 	
 	TexturedVertex(const Vec3f & _p, float _w, ColorRGBA _color, Vec2f _uv)
 		: p(_p)
 		, w(_w)
 		, color(_color)
 		, uv(_uv)
-	{}
+	{ }
 	
 };
 
@@ -96,20 +97,44 @@ template <class Vertex>
 class VertexBuffer;
 
 struct SMY_VERTEX {
+	
 	Vec3f p;
 	ColorRGBA color;
 	Vec2f uv;
+	
+	SMY_VERTEX()
+		: p(0.f)
+		, color(0)
+		, uv(0.f)
+	{ }
+	
 };
 
 struct SMY_VERTEX3 {
+	
 	Vec3f p;
 	ColorRGBA color;
 	Vec2f uv[3];
+	
+	SMY_VERTEX3()
+		: p(0.f)
+		, color(0)
+	{
+		uv[0] = uv[1] = uv[2] = Vec2f(0.f);
+	}
+	
 };
 
 struct EERIE_VERTEX {
+	
 	Vec3f v;
 	Vec3f norm;
+	
+	EERIE_VERTEX()
+		: v(0.f)
+		, norm(0.f)
+	{ }
+	
 };
 
 #endif // ARX_GRAPHICS_VERTEX_H
