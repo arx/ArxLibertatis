@@ -58,7 +58,7 @@ static glm::mat4x4 createProjectionMatrix(const Vec2f & size, const Vec2f & cent
 	float h = aspecth * (glm::cos(fov / 2) / glm::sin(fov / 2));
 	float Q = farDist / frustumDepth;
 	
-	glm::mat4x4 projectionMatrix;
+	glm::mat4x4 projectionMatrix(1.f);
 	projectionMatrix[0][0] = w;
 	projectionMatrix[1][1] = -h;
 	projectionMatrix[2][2] = Q;
@@ -66,7 +66,7 @@ static glm::mat4x4 createProjectionMatrix(const Vec2f & size, const Vec2f & cent
 	projectionMatrix[2][3] = 1.f;
 	projectionMatrix[3][3] = 0.f;
 	
-	glm::mat4x4 centerShift(1);
+	glm::mat4x4 centerShift(1.f);
 	centerShift = glm::translate(centerShift, Vec3f(2.f * center.x / size.x - 1.f,
 	                                                1.f - 2.f * center.y / size.y,
 	                                                0.f));

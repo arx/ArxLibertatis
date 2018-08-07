@@ -40,9 +40,8 @@ public:
 	float cdepth;
 	
 	Camera()
-		: m_pos(Vec3f_ZERO)
+		: m_pos(0.f)
 		, focal(0.f)
-		, angle(Anglef::ZERO)
 		, cdepth(0.f)
 	{ }
 	
@@ -99,7 +98,15 @@ struct PreparedCamera {
 	glm::mat4x4 m_viewToScreen;
 	glm::mat4x4 m_worldToScreen;
 	
+	PreparedCamera()
+		: m_worldToView(1.f)
+		, m_viewToClip(1.f)
+		, m_viewToScreen(1.f)
+		, m_worldToScreen(1.f)
+	{ }
+	
 	ARX_USE_ALIGNED_NEW(PreparedCamera) // for matrices
+	
 };
 
 extern Entity * g_cameraEntity;
