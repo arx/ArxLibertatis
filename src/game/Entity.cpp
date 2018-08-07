@@ -75,7 +75,71 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern Entity * pIOChangeWeapon;
 
 Entity::Entity(const res::path & classPath, EntityInstance instance)
-	: mainevent(SM_MAIN)
+	: ioflags(0)
+	, lastpos(0.f)
+	, pos(0.f)
+	, move(0.f)
+	, lastmove(0.f)
+	, forcedmove(0.f)
+	, room(-1)
+	, requestRoomUpdate(true)
+	, original_height(0.f)
+	, original_radius(0.f)
+	, m_icon(NULL)
+	, obj(NULL)
+	, tweaky(NULL)
+	, type_flags(0)
+	, scriptload(0)
+	, target(0.f)
+	, targetinfo(TARGET_NONE)
+	, inventory(NULL)
+	, show(SHOW_FLAG_IN_SCENE)
+	, collision(0)
+	, mainevent(SM_MAIN)
+	, infracolor(Color3f::blue)
+	, changeanim(-1)
+	, weight(1.f)
+	, gameFlags(GFLAG_NEEDINIT | GFLAG_INTERACTIVITY)
+	, fall(0.f)
+	, initpos(0.f)
+	, scale(1.f)
+	, usepath(NULL)
+	, symboldraw(NULL)
+	, lastspeechflag(2)
+	, inzone(NULL)
+	, m_disabledEvents(0)
+	, stat_count(0)
+	, stat_sent(0)
+	, tweakerinfo(NULL)
+	, material(MATERIAL_NONE)
+	, m_inventorySize(1)
+	, soundtime(0)
+	, soundcount(0)
+	, sfx_time(0)
+	, collide_door_time(0)
+	, ouch_time(0)
+	, dmg_sum(0.f)
+	, flarecount(0)
+	, invisibility(0.f)
+	, basespeed(1.f)
+	, speed_modif(0.f)
+	, rubber(BASE_RUBBER)
+	, max_durability(100.f)
+	, durability(max_durability)
+	, poisonous(0)
+	, poisonous_count(0)
+	, ignition(0.f)
+	, head_rot(0.f)
+	, damager_damages(0)
+	, damager_type(0)
+	, sfx_flag(0)
+	, secretvalue(-1)
+	, shop_multiply(1.f)
+	, isHit(false)
+	, inzone_show(0)
+	, spark_n_blood(0)
+	, special_color(Color3f::white)
+	, highlightColor(Color3f::black)
 	, m_index(size_t(-1))
 	, m_id(classPath, instance)
 	, m_classPath(classPath)
@@ -83,21 +147,6 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	
 	m_index = entities.add(this);
 	
-	ioflags = 0;
-	lastpos = Vec3f_ZERO;
-	pos = Vec3f_ZERO;
-	move = Vec3f_ZERO;
-	lastmove = Vec3f_ZERO;
-	forcedmove = Vec3f_ZERO;
-	
-	angle = Anglef::ZERO;
-	physics = IO_PHYSICS();
-	room = -1;
-	requestRoomUpdate = true;
-	original_height = 0.f;
-	original_radius = 0.f;
-	m_icon = NULL;
-	obj = NULL;
 	std::fill_n(anims, MAX_ANIMS, (ANIM_HANDLE *)NULL);
 	
 	for(size_t l = 0; l < MAX_ANIM_LAYERS; l++) {
@@ -111,40 +160,12 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	
 	bbox2D.min = Vec2f(-1.f, -1.f);
 	bbox2D.max = Vec2f(-1.f, -1.f);
-
-	tweaky = NULL;
-	sound = audio::SourcedSample();
-	type_flags = 0;
-	scriptload = 0;
-	target = Vec3f_ZERO;
-	targetinfo = EntityHandle(TARGET_NONE);
 	
 	_itemdata = NULL;
 	_fixdata = NULL;
 	_npcdata = NULL;
 	_camdata = NULL;
 	
-	inventory = NULL;
-	show = SHOW_FLAG_IN_SCENE;
-	collision = 0;
-	infracolor = Color3f::blue;
-	changeanim = -1;
-	
-	weight = 1.f;
-	gameFlags = GFLAG_NEEDINIT | GFLAG_INTERACTIVITY;
-	fall = 0.f;
-	
-	initpos = Vec3f_ZERO;
-	initangle = Anglef::ZERO;
-	scale = 1.f;
-	
-	usepath = NULL;
-	symboldraw = NULL;
-	dynlight = LightHandle();
-	lastspeechflag = 2;
-	inzone = NULL;
-	halo = IO_HALO();
-	halo_native = IO_HALO();
 	halo_native.color = Color3f(0.2f, 0.5f, 1.f);
 	halo_native.radius = 45.f;
 	halo_native.flags = 0;
@@ -153,55 +174,6 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	for(size_t j = 0; j < MAX_SCRIPTTIMERS; j++) {
 		m_scriptTimers[j] = 0;
 	}
-	m_disabledEvents = 0;
-	
-	stat_count = 0;
-	stat_sent = 0;
-	tweakerinfo = NULL;
-	material = MATERIAL_NONE;
-	
-	m_inventorySize = Vec2s(1, 1);
-	
-	soundtime = 0;
-	soundcount = 0;
-	
-	sfx_time = 0;
-	collide_door_time = 0;
-	ouch_time = 0;
-	dmg_sum = 0.f;
-	
-	spellcast_data = IO_SPELLCAST_DATA();
-	flarecount = 0;
-	no_collide = EntityHandle();
-	invisibility = 0.f;
-	basespeed = 1.f;
-	
-	speed_modif = 0.f;
-	
-	rubber = BASE_RUBBER;
-	max_durability = durability = 100.f;
-	poisonous = 0;
-	poisonous_count = 0;
-	
-	ignition = 0.f;
-	ignit_light = LightHandle();
-	ignit_sound = audio::SourcedSample();
-	head_rot = 0.f;
-	
-	damager_damages = 0;
-	damager_type = 0;
-	
-	sfx_flag = 0;
-	secretvalue = -1;
-	
-	shop_multiply = 1.f;
-	isHit = false;
-	inzone_show = 0;
-	summoner = EntityHandle();
-	spark_n_blood = 0;
-
-	special_color = Color3f::white;
-	highlightColor = Color3f::black;
 	
 }
 
