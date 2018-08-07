@@ -342,7 +342,8 @@ struct ARXCHARACTER {
 	audio::SourcedSample torch_loop;
 	
 	ARXCHARACTER()
-		: m_strikeDirection(0)
+		: pos(0.f)
+		, m_strikeDirection(0)
 		, m_weaponBlocked(AnimationDuration::ofRaw(-1)) // FIXME inband signaling
 		, jumpstarttime(0)
 		, jumplastposition(0.f)
@@ -352,6 +353,7 @@ struct ARXCHARACTER {
 		, levitate(false)
 		, m_telekinesis(false)
 		, m_improve(false)
+		, size(0.f)
 		, inzone(NULL)
 		, falling(false)
 		, doingmagic(0)
