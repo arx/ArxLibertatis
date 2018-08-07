@@ -298,7 +298,7 @@ bool SDL1Window::setGamma(float gamma) {
 
 bool SDL1Window::setMode(DisplayMode mode, bool fullscreen) {
 	
-	if(fullscreen && mode.resolution == Vec2i_ZERO) {
+	if(fullscreen && mode.resolution == Vec2i(0)) {
 		mode = m_desktopMode;
 	}
 	

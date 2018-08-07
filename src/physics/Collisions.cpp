@@ -463,7 +463,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 				}
 				
 				for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
-					Vec3f c = Vec3f_ZERO;
+					Vec3f c(0.f);
 					float height = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[0]].v.y;
 					
 					for(long kk = 0; kk < 3; kk++) {
@@ -1393,7 +1393,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 				distance -= curmovedist;
 			} else {
 				// Stopped
-				ip->velocity = Vec3f_ZERO;
+				ip->velocity = Vec3f(0.f);
 				MOVING_CYLINDER = 0;
 				return false;
 			}
@@ -1416,7 +1416,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 	
 	float pas = 35.f;
 	
-	Vec3f found_hit = Vec3f_ZERO;
+	Vec3f found_hit(0.f);
 	EERIEPOLY * found_ep = NULL;
 	float iter;
 	

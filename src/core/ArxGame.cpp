@@ -370,7 +370,7 @@ void ArxGame::setWindowSize(bool fullscreen) {
 	if(fullscreen) {
 		
 		// Clamp to a sane resolution!
-		if(config.video.resolution != Vec2i_ZERO) {
+		if(config.video.resolution != Vec2i(0)) {
 			config.video.resolution = glm::max(config.video.resolution, Vec2i(640, 480));
 		}
 		
@@ -402,7 +402,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	m_MainWindow->getRenderer()->addListener(this);
 	
 	// Find the next best available fullscreen mode.
-	if(config.video.resolution != Vec2i_ZERO) {
+	if(config.video.resolution != Vec2i(0)) {
 		const RenderWindow::DisplayModes & modes = window->getDisplayModes();
 		DisplayMode mode = config.video.resolution;
 		RenderWindow::DisplayModes::const_iterator i;
@@ -742,7 +742,7 @@ bool ArxGame::initGame()
 	
 	LogDebug("Project Init");
 	
-	PUSH_PLAYER_FORCE = Vec3f_ZERO;
+	PUSH_PLAYER_FORCE = Vec3f(0.f);
 	ARX_SPECIAL_ATTRACTORS_Reset();
 	LogDebug("Attractors Init");
 	ARX_SPELLS_Precast_Reset();
@@ -1116,14 +1116,14 @@ void ArxGame::onWindowLostFocus(const Window & /* window */) {
 
 void ArxGame::onResizeWindow(const Window & window) {
 	
-	arx_assert(window.getSize() != Vec2i_ZERO);
+	arx_assert(window.getSize() != Vec2i(0));
 	
 	// A new window size will require a new backbuffer
 	// size, so the 3D structures must be changed accordingly.
 	m_wasResized = true;
 	
 	if(window.isFullScreen()) {
-		if(config.video.resolution == Vec2i_ZERO) {
+		if(config.video.resolution == Vec2i(0)) {
 			LogInfo << "Auto-selected fullscreen resolution " << window.getDisplayMode();
 		} else {
 			LogInfo << "Changed fullscreen resolution to " << window.getDisplayMode();

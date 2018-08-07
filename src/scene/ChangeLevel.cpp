@@ -949,7 +949,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	if(io->mainevent != SM_MAIN) {
 		util::storeString(ais.mainevent, io->mainevent.toString());
 	}
-	ais.velocity = Vec3f_ZERO;
+	ais.velocity = Vec3f(0.f);
 	ais.stopped = 0;
 	ais.basespeed = io->basespeed;
 	ais.speed_modif = io->speed_modif;
@@ -1797,13 +1797,13 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		io->move = ais->move.toVec3();
 		if(!isallfinite(io->move)) {
 			LogWarning << "Found bad entity move in " << io->idString();
-			io->move = Vec3f_ZERO;
+			io->move = Vec3f(0.f);
 		}
 
 		io->lastmove = ais->lastmove.toVec3();
 		if(!isallfinite(io->lastmove)) {
 			LogWarning << "Found bad entity lastmove in " << io->idString();
-			io->lastmove = Vec3f_ZERO;
+			io->lastmove = Vec3f(0.f);
 		}
 		
 		io->initangle = ais->initangle;

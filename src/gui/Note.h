@@ -43,7 +43,7 @@ struct Note {
 	Note()
 		: m_isCleared(true)
 		, m_type(Undefined)
-		, m_currentRatio(Vec2f_ZERO)
+		, m_currentRatio(0.f)
 		, m_currentScale(0.f)
 		, m_currentFontSize(0.f)
 		, m_currentFontWeight(0)

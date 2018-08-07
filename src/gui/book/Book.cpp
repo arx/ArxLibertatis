@@ -159,7 +159,7 @@ static void DrawBookTextCenter(Font * font, const Vec2f & pos, const std::string
 
 PlayerBook::PlayerBook()
 	: m_currentPage(BOOKMODE_STATS)
-	, lastRatio(Vec2f_ZERO)
+	, lastRatio(0.f)
 	, lastHudScale(0.f)
 	, lastScaleSetting(-1.f)
 	, lastMenuMode(MenuMode(-1))
@@ -1094,7 +1094,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	
 	Camera bookcam;
 	bookcam.angle = Anglef::ZERO;
-	bookcam.m_pos = Vec3f_ZERO;
+	bookcam.m_pos = Vec3f(0.f);
 	bookcam.focal = 520.f;
 	bookcam.cdepth = 2200.f;
 	
@@ -1412,7 +1412,7 @@ void SpellsPage::drawSpells() {
 	// Now Draws Spells for this level...
 	ARX_PLAYER_ComputePlayerFullStats();
 	
-	Vec2f tmpPos = Vec2f_ZERO;
+	Vec2f tmpPos(0.f);
 	
 	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
 		const SPELL_ICON & spellInfo = spellicons[i];

@@ -191,7 +191,7 @@ static void drawDebugPaths() {
 			continue;
 		}
 		
-		Vec3f center = Vec3f_ZERO;
+		Vec3f center(0.f);
 		int n = 0;
 		
 		std::vector<Vec3f> points;

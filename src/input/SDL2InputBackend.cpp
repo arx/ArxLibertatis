@@ -322,7 +322,7 @@ bool SDL2InputBackend::update() {
 	wheel = 0;
 	
 	cursorRel = cursorRelAccum;
-	cursorRelAccum = Vec2i_ZERO;
+	cursorRelAccum = Vec2i(0);
 	
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
 	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);

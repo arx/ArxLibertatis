@@ -69,7 +69,7 @@ Particle::Particle()
 Particle::~Particle() { }
 
 void Particle::Regen() {
-	p3Pos = Vec3f_ZERO;
+	p3Pos = Vec3f(0.f);
 	m_age = 0;
 	fSize = 1;
 	iTexTime = 0;

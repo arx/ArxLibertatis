@@ -196,7 +196,7 @@ SDL1InputBackend::SDL1InputBackend() : m_textHandler(NULL) {
 	
 	
 	wheel = 0;
-	cursorAbs = Vec2i_ZERO;
+	cursorAbs = Vec2i(0);
 	cursorInWindow = false;
 	std::fill_n(keyStates, ARRAY_SIZE(keyStates), false);
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);

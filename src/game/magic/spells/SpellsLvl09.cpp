@@ -58,7 +58,7 @@ void SummonCreatureSpell::GetTargetAndBeta(Vec3f & target, float & beta) {
 }
 
 SummonCreatureSpell::SummonCreatureSpell()
-	: m_targetPos(Vec3f_ZERO)
+	: m_targetPos(0.f)
 	, m_megaCheat(false)
 	, m_requestSummon(false)
 { }

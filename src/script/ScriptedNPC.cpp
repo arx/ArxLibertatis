@@ -472,7 +472,7 @@ public:
 		DebugScript(' ' << options << ' ' << target);
 		
 		if(io->ioflags & IO_CAMERA) {
-			io->_camdata->translatetarget = Vec3f_ZERO;
+			io->_camdata->translatetarget = Vec3f(0.f);
 		}
 		
 		EntityHandle i = EntityHandle();

@@ -81,7 +81,7 @@ struct TransformInfo {
 		, offset(0.f)
 	{ }
 	
-	TransformInfo(Vec3f pos_, glm::quat rotation_, float scale_ = 1.f, Vec3f offset_ = Vec3f_ZERO)
+	TransformInfo(Vec3f pos_, glm::quat rotation_, float scale_ = 1.f, Vec3f offset_ = Vec3f(0.f))
 		: pos(pos_)
 		, rotation(rotation_)
 		, scale(scale_)

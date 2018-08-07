@@ -27,7 +27,7 @@
 #include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
 
-static RaycastResult RaycastMiss() { return RaycastResult(false, Vec3f_ZERO); }
+static RaycastResult RaycastMiss() { return RaycastResult(false, Vec3f(0.f)); }
 static RaycastResult RaycastHit(Vec3f hit) { return RaycastResult(true, hit); }
 
 void dbg_addRay(Vec3f start, Vec3f end);

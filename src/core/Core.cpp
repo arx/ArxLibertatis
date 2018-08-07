@@ -330,8 +330,8 @@ void levelInit() {
 
 	GMOD_RESET = true;
 	
-	STARTDRAG = Vec2s_ZERO;
-	DANAEMouse = Vec2s_ZERO;
+	STARTDRAG = Vec2s(0);
+	DANAEMouse = Vec2s(0);
 	
 	PolyBoomClear();
 	ARX_DAMAGES_Reset();

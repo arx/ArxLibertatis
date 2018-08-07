@@ -318,7 +318,7 @@ void MagicMissileSpell::Update() {
 
 
 IgnitSpell::IgnitSpell()
-	: m_srcPos(Vec3f_ZERO)
+	: m_srcPos(0.f)
 { }
 
 void IgnitSpell::Launch() {

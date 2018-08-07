@@ -65,7 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 
 CCreateField::CCreateField()
-	: eSrc(Vec3f_ZERO)
+	: eSrc(0.f)
 	, youp(true)
 	, fwrap(0.f)
 	, size(0.1f)

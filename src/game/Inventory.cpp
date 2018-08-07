@@ -1332,7 +1332,7 @@ void ARX_INVENTORY_ReOrder() {
 		
 		RemoveFromAllInventories(io);
 		sInventory = 2;
-		sInventoryPos = Vec2s_ZERO;
+		sInventoryPos = Vec2s(0);
 		
 		if(CanBePutInSecondaryInventory(TSecondaryInventory, io)) {
 		} else{

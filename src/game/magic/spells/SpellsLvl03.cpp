@@ -299,12 +299,8 @@ void FireballSpell::Update() {
 		SpawnFireballTail(eCurPos, eMove, m_level, 0);
 	} else {
 		if(Random::getf() < 0.9f) {
-			Vec3f move = Vec3f_ZERO;
-			float dd = m_elapsed / m_createBallDuration * 10;
-			
-			dd = glm::clamp(dd, 1.f, m_level);
-			
-			SpawnFireballTail(eCurPos, move, dd, 1);
+			float dd = glm::clamp(m_elapsed / m_createBallDuration * 10, 1.f, m_level);
+			SpawnFireballTail(eCurPos, Vec3f(0.f), dd, 1);
 		}
 	}
 	
@@ -363,7 +359,7 @@ void CreateFoodSpell::Update() {
 	
 	if(timeRemaining < GameDurationMs(1500)) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
-		m_particles.m_parameters.m_gravity = Vec3f_ZERO;
+		m_particles.m_parameters.m_gravity = Vec3f(0.f);
 		
 		std::list<Particle *>::iterator i;
 		
@@ -461,7 +457,7 @@ void IceProjectileSpell::Launch() {
 			randomRange = 40;
 		}
 
-		icicle.size = Vec3f_ZERO;
+		icicle.size = Vec3f(0.f);
 		icicle.sizeMax = arx::randomVec() + Vec3f(0.f, 0.2f, 0.f);
 		icicle.sizeMax = glm::max(icicle.sizeMax, minSize);
 		

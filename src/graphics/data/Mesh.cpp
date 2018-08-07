@@ -853,9 +853,9 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				long to = (ep->type & POLY_QUAD) ? 4 : 3;
 				float div = 1.f / to;
 				
-				ep2->center = Vec3f_ZERO;
-				ep2->min = Vec3f_ZERO;
-				ep2->max = Vec3f_ZERO;
+				ep2->center = Vec3f(0.f);
+				ep2->min = Vec3f(0.f);
+				ep2->max = Vec3f(0.f);
 				for(long h = 0; h < to; h++) {
 					ep2->center += ep2->v[h].p;
 					if(h != 0) {

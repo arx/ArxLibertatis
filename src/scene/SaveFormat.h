@@ -1105,9 +1105,9 @@ struct SavedCamera {
 		ymod2 = 0.f;
 		matrix = glm::mat4x4(1.f);
 		
-		d_pos = Vec3f_ZERO;
+		d_pos = Vec3f(0.f);
 		d_angle = Anglef::ZERO;
-		norm = Vec3f_ZERO;
+		norm = Vec3f(0.f);
 		fadecolor = Color3f::black;
 		clip = Rect::ZERO;
 		clipz0 = 0.0f;

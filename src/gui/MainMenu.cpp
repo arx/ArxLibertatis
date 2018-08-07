@@ -550,7 +550,7 @@ public:
 		, m_minimizeOnFocusLostCheckbox(NULL)
 		, m_applyButton(NULL)
 		, m_fullscreen(false)
-		, m_resolution(Vec2i_ZERO)
+		, m_resolution(0)
 	{ }
 	
 	~VideoOptionsMenuPage() { }
@@ -613,7 +613,7 @@ public:
 			}
 			
 			m_resolutionSlider->addEntry(getLocalised("system_menus_options_video_resolution_desktop", "Desktop"));
-			if(config.video.resolution == Vec2i_ZERO) {
+			if(config.video.resolution == Vec2i(0)) {
 				m_resolutionSlider->selectLast();
 			}
 			
@@ -765,7 +765,7 @@ private:
 		if(size_t(pos) < modes.size()) {
 			m_resolution = modes[size_t(pos)].resolution;
 		} else {
-			m_resolution = Vec2i_ZERO;
+			m_resolution = Vec2i(0);
 		}
 		
 		updateApplyButton();

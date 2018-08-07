@@ -581,11 +581,11 @@ static void print_spellcast_flags(s32 flags) {
 }
 
 static void print_physics(const SavedIOPhysics & physics) {
-	if(physics.cyl.origin.toVec3() != Vec3f_ZERO || physics.cyl.radius != 0.f || physics.cyl.height != 0.f) std::cout << "  Cylinder: origin=" << physics.cyl.origin << " radius=" << physics.cyl.radius << " height=" << physics.cyl.height << '\n';
-	if(physics.startpos.toVec3() != Vec3f_ZERO) std::cout << "  Start position: " << physics.startpos << '\n';
-	if(physics.targetpos.toVec3() != Vec3f_ZERO) std::cout << "  Target position: " << physics.targetpos << '\n';
-	if(physics.velocity.toVec3() != Vec3f_ZERO) std::cout << "  Velocity: " << physics.velocity << '\n';
-	if(physics.forces.toVec3() != Vec3f_ZERO) std::cout << "  Forces: " << physics.forces << '\n';
+	if(physics.cyl.origin.toVec3() != Vec3f(0.f) || physics.cyl.radius != 0.f || physics.cyl.height != 0.f) std::cout << "  Cylinder: origin=" << physics.cyl.origin << " radius=" << physics.cyl.radius << " height=" << physics.cyl.height << '\n';
+	if(physics.startpos.toVec3() != Vec3f(0.f)) std::cout << "  Start position: " << physics.startpos << '\n';
+	if(physics.targetpos.toVec3() != Vec3f(0.f)) std::cout << "  Target position: " << physics.targetpos << '\n';
+	if(physics.velocity.toVec3() != Vec3f(0.f)) std::cout << "  Velocity: " << physics.velocity << '\n';
+	if(physics.forces.toVec3() != Vec3f(0.f)) std::cout << "  Forces: " << physics.forces << '\n';
 }
 
 static void print_ident(SaveBlock & save, const std::string & ident) {
@@ -1178,7 +1178,7 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 	if(ais.ioflags & (1 << 31)) std::cout << " (unknown)";
 	std::cout << '\n';
 	
-	if(ais.pos.toVec3() != Vec3f_ZERO || ais.initpos.toVec3() != Vec3f_ZERO) {
+	if(ais.pos.toVec3() != Vec3f(0.f) || ais.initpos.toVec3() != Vec3f(0.f)) {
 		std::cout << "Position: " << ais.pos;
 		if(ais.pos.toVec3() != ais.initpos.toVec3()) {
 			std::cout << " initial: " << ais.initpos;
@@ -1186,7 +1186,7 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 		std::cout << '\n';
 	}
 	if(ais.lastpos.toVec3() != ais.pos.toVec3()) std::cout << "Last position: " << ais.lastpos << '\n';
-	if(ais.move.toVec3() != Vec3f_ZERO) std::cout << "Movement: " << ais.move << '\n';
+	if(ais.move.toVec3() != Vec3f(0.f)) std::cout << "Movement: " << ais.move << '\n';
 	if(ais.lastmove.toVec3() != ais.move.toVec3()) std::cout << "Last movement: " << ais.lastmove << '\n';
 	if(Anglef(ais.angle) != Anglef::ZERO || Anglef(ais.initangle) != Anglef::ZERO) {
 		std::cout << "Angle: " << ais.angle;
@@ -1381,7 +1381,7 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 	print_anim_layers(ais.animlayer);
 	
 	std::cout << "\nPhysics:\n";
-	if(ais.velocity.toVec3() != Vec3f_ZERO) std::cout << "  Velocity: " << ais.velocity << '\n';
+	if(ais.velocity.toVec3() != Vec3f(0.f)) std::cout << "  Velocity: " << ais.velocity << '\n';
 	if(ais.stopped) std::cout << "  Stopped: " << ais.stopped << '\n';
 	print_physics(ais.physics);
 	if(ais.original_radius != 0.f) std::cout << "  Original radius: " << ais.original_radius << '\n';

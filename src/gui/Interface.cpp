@@ -194,10 +194,10 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const Color col
 	}
 	
 	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f_ZERO, 1.f, ColorRGBA(1), Vec2f_ZERO);
-	v[1] = TexturedVertex(Vec3f_ZERO, 1.f, ColorRGBA(1), Vec2f_X_AXIS);
-	v[2] = TexturedVertex(Vec3f_ZERO, 1.f, ColorRGBA(1), Vec2f(1.f, 1.f));
-	v[3] = TexturedVertex(Vec3f_ZERO, 1.f, ColorRGBA(1), Vec2f_Y_AXIS);
+	v[0] = TexturedVertex(Vec3f(0.f), 1.f, ColorRGBA(1), Vec2f(0.f));
+	v[1] = TexturedVertex(Vec3f(0.f), 1.f, ColorRGBA(1), Vec2f_X_AXIS);
+	v[2] = TexturedVertex(Vec3f(0.f), 1.f, ColorRGBA(1), Vec2f(1.f, 1.f));
+	v[3] = TexturedVertex(Vec3f(0.f), 1.f, ColorRGBA(1), Vec2f_Y_AXIS);
 	
 	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.0000001f;
 	
@@ -818,7 +818,7 @@ void ArxGame::managePlayerControls() {
 			}
 		}
 		
-		Vec3f tm = Vec3f_ZERO;
+		Vec3f tm(0.f);
 		
 		// Checks WALK_BACKWARD Key Status.
 		if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD) && !NOMOREMOVES) {
@@ -1510,7 +1510,7 @@ void ArxGame::manageKeyMouse() {
 		
 		if(bKeySpecialMove) {
 			
-			rotation = Vec2f_ZERO;
+			rotation = Vec2f(0.f);
 			
 			if(pushTime.turnLeft != 0 || pushTime.turnRight != 0) {
 				rotation.x = (pushTime.turnLeft < pushTime.turnRight) ? 1.f : -1.f;
@@ -1557,7 +1557,7 @@ void ArxGame::manageKeyMouse() {
 					borderDelay = PlatformDurationMs(600);
 				}
 				
-				rotation = Vec2f_ZERO;
+				rotation = Vec2f(0.f);
 				
 				if(distLeft < borderSize) {
 					rotation.x -= 1.f - float(distLeft) / float(borderSize);
@@ -1588,7 +1588,7 @@ void ArxGame::manageKeyMouse() {
 				}
 				
 				if(borderDelay > 0 && g_platformTime.frameStart() - mouseInBorderTime < borderDelay) {
-					rotation = Vec2f_ZERO;
+					rotation = Vec2f(0.f);
 				} else {
 					bKeySpecialMove = true;
 				}
@@ -1723,13 +1723,13 @@ void ArxGame::manageEditorControls() {
 	}
 	
 	if(eeMousePressed1()) {
-		static Vec2f dragThreshold = Vec2f_ZERO;
+		static Vec2f dragThreshold(0.f);
 		
 		if(eeMouseDown1()) {
 			
 			STARTDRAG = DANAEMouse;
 			DRAGGING = false;
-			dragThreshold = Vec2f_ZERO;
+			dragThreshold = Vec2f(0.f);
 		} else {
 			dragThreshold += GInput->getRelativeMouseMovement();
 			if((std::abs(DANAEMouse.x - STARTDRAG.x) > 2 && std::abs(DANAEMouse.y - STARTDRAG.y) > 2)
@@ -1797,7 +1797,7 @@ void ArxGame::manageEditorControls() {
 		   && !g_playerInventoryHud.containsPos(DANAEMouse)
 		   && !ARX_INTERFACE_MouseInBook()
 		) {
-			Vec2s s = Vec2s_ZERO;
+			Vec2s s(0);
 			bool bSecondary = false;
 			
 			if(TSecondaryInventory && IsInSecondaryInventory(FlyingOverIO)) {

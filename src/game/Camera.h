@@ -83,8 +83,8 @@ struct IO_CAMDATA {
 	float smoothing;
 	
 	IO_CAMDATA()
-		: lasttarget(Vec3f_ZERO)
-		, translatetarget(Vec3f_ZERO)
+		: lasttarget(0.f)
+		, translatetarget(0.f)
 		, lastinfovalid(false)
 		, smoothing(0.f)
 	{ }

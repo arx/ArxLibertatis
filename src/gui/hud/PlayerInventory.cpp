@@ -259,7 +259,7 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 void PlayerInventoryHud::draw() {
 	if(player.Interface & INTER_INVENTORY) {
 		if(player.m_bags) {
-			drawBag(m_currentBag, Vec2i_ZERO);
+			drawBag(m_currentBag, Vec2i(0));
 			
 			CalculateInventoryCoordinates();
 			
@@ -488,7 +488,7 @@ void PlayerInventoryHud::dropEntity() {
 	Vec2f anchorPos = g_playerInventoryHud.anchorPosition();
 	Vec2s iPos = Vec2s(anchorPos);
 	
-	Vec2s t = Vec2s_ZERO;
+	Vec2s t(0);
 	
 	if(player.Interface & INTER_INVENTORY) {
 		t.x = DANAEMouse.x - iPos.x;

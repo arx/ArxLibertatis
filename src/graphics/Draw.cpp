@@ -105,7 +105,7 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 		
 		ColorRGBA col = color.toRGBA();
 		
-		sprite.v[0] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f_ZERO);
+		sprite.v[0] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(0.f));
 		sprite.v[1] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f_X_AXIS);
 		sprite.v[2] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(1.f, 1.f));
 		sprite.v[3] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f_Y_AXIS);
@@ -156,7 +156,7 @@ static void CreateBitmap(TexturedQuad & s, Rectf rect, float z, TextureContainer
 	
 	rect.move(-.5f, -.5f);
 	
-	Vec2f uv = (tex) ? tex->uv : Vec2f_ZERO;
+	Vec2f uv = (tex) ? tex->uv : Vec2f(0.f);
 	ColorRGBA col = color.toRGBA();
 	
 	s.v[0] = TexturedVertex(Vec3f(rect.topLeft(), z), 1.f, col, Vec2f(0.f, 0.f));
@@ -215,7 +215,7 @@ void EERIEDrawBitmap2DecalY(Rectf rect, float z, TextureContainer * tex, Color c
 	
 	rect.top = rect.top + _fDeltaY * rect.height();
 	
-	Vec2f uv = (tex) ? tex->uv : Vec2f_ZERO;
+	Vec2f uv = (tex) ? tex->uv : Vec2f(0.f);
 	float sv = uv.y * _fDeltaY;
 	ColorRGBA col = color.toRGBA();
 	

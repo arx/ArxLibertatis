@@ -535,7 +535,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx) {
 	
 	if(!eanim || !eanim->anims[alt_idx] || eanim->anims[alt_idx]->frames.empty()) {
-		return Vec3f_ZERO;
+		return Vec3f(0.f);
 	} else {
 		size_t idx = eanim->anims[alt_idx]->frames.size() - 1;
 		return eanim->anims[alt_idx]->frames[idx].translate;
@@ -702,7 +702,7 @@ void FinishAnim(Entity * io, ANIM_HANDLE * eanim) {
 	
 	// Only layer 0 controls movement...
 	if(eanim == io->animlayer[0].cur_anim && (io->ioflags & IO_NPC)) {
-		io->move = io->lastmove = Vec3f_ZERO;
+		io->move = io->lastmove = Vec3f(0.f);
 	}
 	
 }

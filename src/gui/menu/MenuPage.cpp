@@ -69,7 +69,7 @@ MenuPage::~MenuPage() { }
 
 void MenuPage::addCorner(Widget * widget, Anchor anchor) {
 	
-	Vec2f pos = Vec2f_ZERO;
+	Vec2f pos(0.f);
 	
 	switch(anchor) {
 		case TopLeft:

@@ -112,7 +112,7 @@ void MiniMap::getData(int showLevel) {
 				m_levels[showLevel].m_ratio.y = minY;
 				
 				for(size_t l = 0; l < MAX_MINIMAP_LEVELS; l++) {
-					m_levels[l].m_offset = Vec2f_ZERO;
+					m_levels[l].m_offset = Vec2f(0.f);
 				}
 			}
 		}
@@ -222,7 +222,7 @@ void MiniMap::firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * e
 	resetLevels();
 	
 	for(size_t i = 0; i < MAX_MINIMAP_LEVELS; i++) {
-		m_miniOffset[i] = Vec2f_ZERO;
+		m_miniOffset[i] = Vec2f(0.f);
 	}
 	
 	loadOffsets(pakRes);
@@ -232,9 +232,9 @@ void MiniMap::resetLevels() {
 	
 	for(size_t i = 0; i < MAX_MINIMAP_LEVELS; i++) {
 		m_levels[i].m_texContainer = NULL;
-		m_levels[i].m_offset = Vec2f_ZERO;
-		m_levels[i].m_ratio = Vec2f_ZERO;
-		m_levels[i].m_size = Vec2f_ZERO;
+		m_levels[i].m_offset = Vec2f(0.f);
+		m_levels[i].m_ratio = Vec2f(0.f);
+		m_levels[i].m_size = Vec2f(0.f);
 		// Sets the whole array to 0
 		memset(m_levels[i].m_revealed, 0, sizeof(m_levels[i].m_revealed));
 	}
@@ -276,14 +276,11 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 	
 	if(m_levels[showLevel].m_texContainer) {
 		
-		Vec2f start = Vec2f_ZERO;
-		
-		Vec2f playerPos(0.f, 0.f);
-		
+		Vec2f start(0.f);
+		Vec2f playerPos(0.f);
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-			playerPos = computePlayerPos(miniMapZoom, showLevel);
-			start = Vec2f(miniMapRect.center()) - playerPos;
-			playerPos += start;
+			start = Vec2f(miniMapRect.center()) - computePlayerPos(miniMapZoom, showLevel);
+			playerPos = Vec2f(miniMapRect.center());
 		}
 		
 		// Draw the background
@@ -311,13 +308,11 @@ void MiniMap::showBookMiniMap(int showLevel, Rect rect, float scale) {
 		
 		float zoom = 900.f * scale;
 		
-		Vec2f start = Vec2f_ZERO;
-		Vec2f playerPos(0.f, 0.f);
-		
+		Vec2f start(0.f);
+		Vec2f playerPos(0.f);
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-			playerPos = computePlayerPos(zoom, showLevel);
-			start = Vec2f(rect.center()) - playerPos;
-			playerPos += start;
+			start = Vec2f(rect.center()) - computePlayerPos(zoom, showLevel);
+			playerPos = Vec2f(rect.center());
 		}
 		
 		drawBackground(showLevel, rect, start, zoom, 20.f * scale);
@@ -390,7 +385,7 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 		verts[2].p.y = (pos.y + size);
 		verts[3].p.x = (pos.x - size);
 		verts[3].p.y = (pos.y + size);
-		verts[0].uv = Vec2f_ZERO;
+		verts[0].uv = Vec2f(0.f);
 		verts[1].uv = Vec2f_X_AXIS;
 		verts[2].uv = Vec2f_ONE;
 		verts[3].uv = Vec2f_Y_AXIS;
@@ -453,8 +448,8 @@ void MiniMap::revealPlayerPos(int showLevel) {
 
 	Vec2i maxCell = Vec2i(MINIMAP_MAX_X - 1, MINIMAP_MAX_Z - 1);
 	
-	startCell = glm::clamp(startCell, Vec2i_ZERO, maxCell);
-	endCell = glm::clamp(endCell, Vec2i_ZERO, maxCell);
+	startCell = glm::clamp(startCell, Vec2i(0), maxCell);
+	endCell = glm::clamp(endCell, Vec2i(0), maxCell);
 	
 	for(int z = startCell.y; z <= endCell.y; z++) {
 	for(int x = startCell.x; x <= endCell.x; x++) {

@@ -43,7 +43,7 @@ static void FadeInOut(float _fVal) {
 	
 	ColorRGBA iColor = Color::gray(_fVal).toRGB();
 	
-	vertices[0].p = Vec3f_ZERO;
+	vertices[0].p = Vec3f(0.f);
 	vertices[0].w = 1.f;
 	vertices[0].color = iColor;
 	

@@ -104,7 +104,7 @@ void HealSpell::Update() {
 	
 	if(ff < GameDurationMs(1500)) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
-		m_particles.m_parameters.m_gravity = Vec3f_ZERO;
+		m_particles.m_parameters.m_gravity = Vec3f(0.f);
 
 		std::list<Particle *>::iterator i;
 

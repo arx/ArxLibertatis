@@ -49,7 +49,7 @@ Vec3f SpellBase::getCasterPosition() {
 		return entities[m_caster]->pos;
 	} else {
 		// should not happen
-		return Vec3f_ZERO;
+		return Vec3f(0.f);
 	}
 }
 
@@ -58,7 +58,7 @@ Vec3f SpellBase::getTargetPosition() {
 		return entities[m_target]->pos;
 	} else {
 		// should not happen
-		return Vec3f_ZERO;
+		return Vec3f(0.f);
 	}
 }
 

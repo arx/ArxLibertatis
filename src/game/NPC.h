@@ -141,7 +141,7 @@ struct EERIE_EXTRA_SCALE {
 	Vec3f scale;
 
 	EERIE_EXTRA_SCALE()
-		: scale(Vec3f_ZERO)
+		: scale(0.f)
 	{ }
 	
 };
