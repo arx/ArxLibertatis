@@ -221,7 +221,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 				}
 			}
 			
-			TransformInfo t1(pos, glm::quat());
+			TransformInfo t1(pos, quat_identity());
 			DrawEERIEInter(gui::necklace.lacet, t1, NULL, false, 0.f);
 			
 			PopAllTriangleListOpaque(baseState);
