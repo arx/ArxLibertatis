@@ -80,28 +80,26 @@ TextureContainer * GetTextureList() {
 }
 
 TextureContainer::TextureContainer(const res::path & strName, TCFlags flags)
-	: m_texName(strName)
+	: TextureHalo(NULL)
+	, m_texName(strName)
+	, m_size(0.f)
+	, m_dwFlags(flags)
+	, userflags(0)
+	, m_pTexture(NULL)
+	, uv(0.f)
+	, hd(0.f)
+	, m_pNext(NULL)
+	, systemflags(0)
 {
+	
 	arx_assert_msg(!strName.has_ext("bmp") && !strName.has_ext("tga"),
 	               "bad texture name: \"%s\"", strName.string().c_str());
-	
-	m_size = Vec2i_ZERO;
-	m_dwFlags = flags;
-
-	m_pTexture = NULL;
-
-	userflags = 0;
-	TextureHalo = NULL;
-	
-	m_pNext = NULL;
 	
 	// Add the texture to the head of the global texture list
 	if(!(flags & NoInsert)) {
 		m_pNext = g_ptcTextureList;
 		g_ptcTextureList = this;
 	}
-	
-	systemflags = 0;
 	
 }
 
