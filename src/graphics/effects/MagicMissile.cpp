@@ -68,21 +68,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-
 CMagicMissile::CMagicMissile()
 	: bExplo(false)
 	, bMove(true)
-	, lightIntensityFactor()
-	, iLength()
-	, iBezierPrecision()
-	, fTrail()
+	, eCurPos(0.f)
+	, lightIntensityFactor(0.f)
+	, m_trailColor(Color3f(0.9f, 0.9f, 0.7f) + Color3f(0.1f, 0.1f, 0.3f) * randomColor3f())
+	, m_projectileColor(0.3f, 0.3f, 0.5f)
+	, tex_mm(TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue"))
+	, iLength(0)
+	, iBezierPrecision(0)
+	, fTrail(0.f)
 {
 	SetDuration(GameDurationMs(2000));
 	m_elapsed = m_duration + GameDurationMs(1);
-	
-	m_trailColor = Color3f(0.9f, 0.9f, 0.7f) + Color3f(0.1f, 0.1f, 0.3f) * randomColor3f();
-	m_projectileColor = Color3f(0.3f, 0.3f, 0.5f);
-	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue");
 }
 
 CMagicMissile::~CMagicMissile() {
@@ -150,10 +149,9 @@ void CMagicMissile::Update(GameDuration timeDelta)
 
 void CMagicMissile::Render() {
 	
-	Vec3f lastpos, newpos;
-	
-	if(m_elapsed >= m_duration)
+	if(m_elapsed >= m_duration) {
 		return;
+	}
 	
 	RenderMaterial mat;
 	mat.setCulling(CullNone);
@@ -167,7 +165,8 @@ void CMagicMissile::Render() {
 		fTrail = (m_elapsed / m_duration) * (iBezierPrecision + 2) * 5;
 	}
 	
-	newpos = lastpos = pathways[0];
+	Vec3f lastpos = pathways[0];
+	Vec3f newpos = pathways[0];
 	
 	for(int i = 0; i < 5; i++) {
 		
