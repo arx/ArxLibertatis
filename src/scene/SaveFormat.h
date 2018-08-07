@@ -1104,7 +1104,7 @@ struct SavedCamera {
 		
 		xmod2 = 0.f;
 		ymod2 = 0.f;
-		matrix = glm::mat4x4();
+		matrix = glm::mat4x4(1.f);
 		
 		d_pos = Vec3f_ZERO;
 		d_angle = Anglef::ZERO;
