@@ -208,4 +208,8 @@ inline float getAngle(float x0, float y0, float x1, float y1) {
 	return getAngle(x1 - x0, y1 - y0);
 }
 
+inline glm::quat quat_identity() {
+	return glm::quat(1.f, 0.f, 0.f, 0.f);
+}
+
 #endif // ARX_MATH_ANGLE_H
