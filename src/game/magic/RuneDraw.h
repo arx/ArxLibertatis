@@ -28,11 +28,20 @@
 class Entity;
 
 struct SYMBOL_DRAW {
+	
 	GameInstant starttime;
 	AnimationDuration elapsed;
 	AnimationDuration duration;
 	std::string sequence;
 	Vec2s cPosStart;
+	
+	SYMBOL_DRAW()
+		: starttime(0)
+		, elapsed(0)
+		, duration(0)
+		, cPosStart(0)
+	{ }
+	
 };
 
 void ARX_SPELLS_Init_Rects();
