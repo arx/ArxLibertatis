@@ -344,28 +344,22 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 
 	if(eobj->grouplist.empty()) {
 		// If no groups were specified
-
+		
 		// Make one bone
 		eobj->m_skeleton->bones.resize(1);
 		
 		Bone & bone = eobj->m_skeleton->bones[0];
-
+		
 		// Add all vertices to the bone
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 			bone.idxvertices.push_back(i);
 		}
-
-		// Initialize the bone
-		bone.init.quat = glm::quat();
-		bone.anim.quat = glm::quat();
-		bone.init.scale = Vec3f_ZERO;
-		bone.anim.scale = Vec3f_ZERO;
-		bone.init.trans = Vec3f_ZERO;
-		bone.transinit_global = bone.init.trans;
+		
 		bone.father = -1;
+		
 	} else {
 		// Groups were specified
-
+		
 		// Alloc the bones
 		eobj->m_skeleton->bones.resize(eobj->grouplist.size());
 		
@@ -374,23 +368,17 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 			VertexGroup & group = eobj->grouplist[i];
 			Bone & bone = eobj->m_skeleton->bones[i];
-
-			EERIE_VERTEX * v_origin = &eobj->vertexlist[group.origin];
-
+			
 			for(size_t j = 0; j < group.indexes.size(); j++) {
 				if(!vertexAssigned[group.indexes[j]]) {
 					vertexAssigned[group.indexes[j]] = true;
 					bone.idxvertices.push_back(group.indexes[j]);
 				}
 			}
-
-			bone.init.quat = glm::quat();
-			bone.anim.quat = glm::quat();
-			bone.init.scale = Vec3f_ZERO;
-			bone.anim.scale = Vec3f_ZERO;
-			bone.init.trans = Vec3f(v_origin->v.x, v_origin->v.y, v_origin->v.z);
-			bone.transinit_global = bone.init.trans;
+			
+			bone.transinit_global = bone.init.trans = eobj->vertexlist[group.origin].v;
 			bone.father = GetFather(eobj, group.origin, i - 1);
+			
 		}
 		
 		// Try to correct lonely vertex
@@ -432,41 +420,32 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		
 		for(size_t i = 0; i != obj->bones.size(); i++) {
 			Bone & bone = obj->bones[i];
-
+			
 			if(bone.father >= 0) {
-				size_t parentIndex = size_t(bone.father);
-				Bone & parent = obj->bones[parentIndex];
-				/* Rotation*/
+				arx_assert(size_t(bone.father) < i);
+				Bone & parent = obj->bones[size_t(bone.father)];
 				bone.anim.quat = parent.anim.quat * bone.init.quat;
-				/* Translation */
-				bone.anim.trans = parent.anim.quat * bone.init.trans;
-				bone.anim.trans = parent.anim.trans + bone.anim.trans;
+				bone.anim.trans = parent.anim.trans + parent.anim.quat * bone.init.trans;
 			} else {
-				/* Rotation*/
 				bone.anim.quat = bone.init.quat;
-				/* Translation */
 				bone.anim.trans = bone.init.trans;
 			}
+			
 			bone.anim.scale = Vec3f_ONE;
+			
 		}
 		
 		eobj->vertexlocal.resize(eobj->vertexlist.size());
-		
 		for(size_t i = 0; i != obj->bones.size(); i++) {
 			const Bone & bone = obj->bones[i];
-			Vec3f vector = bone.anim.trans;
-			
 			for(size_t v = 0; v != bone.idxvertices.size(); v++) {
-				
 				size_t idx = bone.idxvertices[v];
-				const EERIE_VERTEX & inVert = eobj->vertexlist[idx];
-				Vec3f & outVert = eobj->vertexlocal[idx];
-				
-				Vec3f temp = inVert.v - vector;
-				outVert = glm::inverse(bone.anim.quat) * temp;
+				eobj->vertexlocal[idx] = glm::inverse(bone.anim.quat) * (eobj->vertexlist[idx].v - bone.anim.trans);
 			}
 		}
+		
 	}
+
 }
 
 EERIE_3DOBJ * loadObject(const res::path & file, bool pbox) {
