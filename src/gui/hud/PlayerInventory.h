@@ -49,6 +49,16 @@ class PlayerInventoryHud : public HudItem {
 	
 public:
 	
+	PlayerInventoryHud()
+		: m_arrowsAnchor(0.f)
+		, m_slotSize(0.f)
+		, m_slotSpacing(0.f)
+		, m_bagSize(0.f)
+		, m_isClosing(false)
+		, m_inventoryY(0)
+		, m_currentBag(0)
+	{ }
+	
 	void init();
 	Vec2f anchorPosition();
 	void update();
