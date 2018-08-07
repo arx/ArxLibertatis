@@ -188,7 +188,7 @@ void RuneRecognitionAlt::resampleInput(const std::vector<Vec2f> &in) {
 		size_t endIndex = m_indices[segment + 1];
 		
 		Vec2f prevPoint = in[m_indices[segment]];
-		Vec2f thisPoint;
+		Vec2f thisPoint(0.f);
 		
 		// Add points in between key points while retaining curvature
 		while(!endOfSegment || newPointAdded) {
