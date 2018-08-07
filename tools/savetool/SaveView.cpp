@@ -1188,7 +1188,7 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 	if(ais.lastpos.toVec3() != ais.pos.toVec3()) std::cout << "Last position: " << ais.lastpos << '\n';
 	if(ais.move.toVec3() != Vec3f(0.f)) std::cout << "Movement: " << ais.move << '\n';
 	if(ais.lastmove.toVec3() != ais.move.toVec3()) std::cout << "Last movement: " << ais.lastmove << '\n';
-	if(Anglef(ais.angle) != Anglef::ZERO || Anglef(ais.initangle) != Anglef::ZERO) {
+	if(Anglef(ais.angle) != Anglef() || Anglef(ais.initangle) != Anglef()) {
 		std::cout << "Angle: " << ais.angle;
 		if(Anglef(ais.angle) != Anglef(ais.initangle)) {
 			std::cout << " initial: " << ais.initangle;

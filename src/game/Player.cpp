@@ -231,7 +231,7 @@ void ARX_PLAYER_RectifyPosition() {
 	Entity * io = entities.player();
 	if(io->_npcdata->ex_rotate) {
 		for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
-			io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
+			io->_npcdata->ex_rotate->group_rotate[n] = Anglef();
 		}
 	}
 }
@@ -1163,7 +1163,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 		io->_npcdata->ex_rotate->group_number[2] = EERIE_OBJECT_GetGroup(io->obj, "chest");
 		io->_npcdata->ex_rotate->group_number[3] = EERIE_OBJECT_GetGroup(io->obj, "belt");
 		for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
-			io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
+			io->_npcdata->ex_rotate->group_rotate[n] = Anglef();
 		}
 	}
 	

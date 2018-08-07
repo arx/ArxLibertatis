@@ -1106,7 +1106,7 @@ struct SavedCamera {
 		matrix = glm::mat4x4(1.f);
 		
 		d_pos = Vec3f(0.f);
-		d_angle = Anglef::ZERO;
+		d_angle = Anglef();
 		norm = Vec3f(0.f);
 		fadecolor = Color3f::black;
 		clip = Rect::ZERO;
@@ -1126,7 +1126,7 @@ struct SavedCamera {
 		bkgcolor = Color::none.toBGRA().t;
 		nbdrawn = 0;
 		
-		size = Anglef::ZERO;
+		size = Anglef();
 		
 		return *this;
 	}

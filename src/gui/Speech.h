@@ -85,8 +85,6 @@ struct CinematicSpeech {
 	
 	CinematicSpeech()
 		: type(ARX_CINE_SPEECH_NONE)
-		, startangle(Anglef::ZERO)
-		, endangle(Anglef::ZERO)
 		, startpos(0.f)
 		, endpos(0.f)
 		, m_startdist(0.f)
@@ -99,8 +97,8 @@ struct CinematicSpeech {
 	
 	void clear() {
 		type = ARX_CINE_SPEECH_NONE;
-		startangle = Anglef::ZERO;
-		endangle = Anglef::ZERO;
+		startangle = Anglef();
+		endangle = Anglef();
 		startpos = 0;
 		endpos = 0;
 		m_startdist = 0;

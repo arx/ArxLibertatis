@@ -144,7 +144,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 	float ptDelta = toMs(g_platformTime.lastFrameDuration());
 	
 	Camera bookcam;
-	bookcam.angle = Anglef::ZERO;
+	bookcam.angle = Anglef();
 	bookcam.m_pos = Vec3f(0.f);
 	bookcam.focal = 500.f;
 	bookcam.cdepth = 2200.f;
@@ -160,12 +160,12 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 		PrepareCamera(&bookcam, Rect(rect), projectionCenter);
 		
 		if(player.hasRune((Rune)i)) {
-			Anglef angle = Anglef::ZERO;
 			
+			Anglef angle;
 			if(rune->angle.getYaw() != 0.f) {
-				if(rune->angle.getYaw() > 300.f)
+				if(rune->angle.getYaw() > 300.f) {
 					rune->angle.setYaw(300.f);
-				
+				}
 				angle.setYaw(wave * rune->angle.getYaw() * (1.0f / 40));
 			}
 			
