@@ -601,8 +601,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 	
 	for(long o = 0; o < 3; o++) {
 		
-		Vec3f temporary3D;
-		temporary3D = t.rotation * eobj->vertexlist[face.vid[o]].norm;
+		Vec3f temporary3D = t.rotation * eobj->vertexlist[face.vid[o]].norm;
 		
 		float power = 255.f - glm::abs(255.f * temporary3D.z * 0.5f);
 		power = glm::clamp(power, 0.f, 255.f);
@@ -1494,7 +1493,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 	for(size_t i = 0; i != skeleton.bones.size(); i++) {
 		Bone & bone = skeleton.bones[i];
 
-		bone.init.quat = glm::quat();
+		bone.init.quat = quat_identity();
 		bone.init.trans = bone.transinit_global;
 	}
 	

@@ -75,19 +75,18 @@ struct TransformInfo {
 	Vec3f offset;
 	
 	TransformInfo()
-		: pos(Vec3f_ZERO)
+		: pos(0.f)
+		, rotation(quat_identity())
 		, scale(1.f)
-		, offset(Vec3f_ZERO)
-	{
-		rotation = glm::quat();
-	}
+		, offset(0.f)
+	{ }
 	
 	TransformInfo(Vec3f pos_, glm::quat rotation_, float scale_ = 1.f, Vec3f offset_ = Vec3f_ZERO)
 		: pos(pos_)
 		, rotation(rotation_)
 		, scale(scale_)
 		, offset(offset_)
-	{}
+	{ }
 	
 };
 
