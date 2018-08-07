@@ -78,18 +78,13 @@ void updateLightFlares() {
 				
 				Vec3f vector = lv - camPos;
 				lv -= vector * (50.f / glm::length(vector));
-
-				Vec2s ees2dlv;
+				
 				Vec3f ee3dlv = lv;
-
-				ees2dlv.x = checked_range_cast<short>(pos2d.x);
-				ees2dlv.y = checked_range_cast<short>(pos2d.y);
-
+				Vec2s ees2dlv(checked_range_cast<short>(pos2d.x), checked_range_cast<short>(pos2d.y));
 				if(!bComputeIO) {
 					GetFirstInterAtPos(ees2dlv, 2, &ee3dlv, pTableIO, &nNbInTableIO);
 					bComputeIO = true;
 				}
-
 				
 				if(   pos2d.z > fZFar
 				   || RaycastLightFlare(camPos, el->pos)
