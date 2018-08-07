@@ -85,15 +85,40 @@ public:
 		
 		unsigned char m_revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
 		
+		MiniMapData()
+			: m_texContainer(NULL)
+			, m_offset(0.f)
+			, m_ratio(0.f)
+			, m_size(0.f)
+		{ }
+		
 	};
 	
-	//! Map markers
 	struct MapMarkerData {
+		
 		Vec2f m_pos;
 		int m_lvl;
 		std::string m_name;
 		std::string m_text;
+		
+		MapMarkerData()
+			: m_pos(0.f)
+			, m_lvl(0)
+		{ }
+		
 	};
+	
+	MiniMap()
+		: m_currentLevel(0)
+		, m_entities(NULL)
+		, m_activeBkg(NULL)
+		, m_pTexDetect(NULL)
+		, m_mapMarkerTexCont(NULL)
+		, m_player(NULL)
+		, m_playerLastPosX(0.f)
+		, m_playerLastPosZ(0.f)
+		, m_mod(0.f)
+	{ }
 	
 	void mapMarkerRemove(const std::string & name);
 	void mapMarkerAdd(const Vec2f & pos, int lvl, const std::string & name);
