@@ -251,7 +251,7 @@ static void ARX_NPC_CreateExRotateData(Entity * io) {
 	io->_npcdata->ex_rotate->group_number[3] = EERIE_OBJECT_GetGroup(io->obj, "belt");
 	
 	for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
-		io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
+		io->_npcdata->ex_rotate->group_rotate[n] = Anglef();
 	}
 	
 	io->_npcdata->look_around_inc = 0.f;

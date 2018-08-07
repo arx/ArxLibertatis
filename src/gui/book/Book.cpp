@@ -1093,7 +1093,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	g_culledDynamicLightsCount = 2;
 	
 	Camera bookcam;
-	bookcam.angle = Anglef::ZERO;
+	bookcam.angle = Anglef();
 	bookcam.m_pos = Vec3f(0.f);
 	bookcam.focal = 520.f;
 	bookcam.cdepth = 2200.f;
@@ -1103,7 +1103,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	
 	GRenderer->SetAntialiasing(true);
 	
-	Anglef ePlayerAngle = Anglef::ZERO;
+	Anglef ePlayerAngle;
 	Vec3f pos;
 	if(ARXmenu.mode() == Mode_CharacterCreation) {
 		

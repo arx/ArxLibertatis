@@ -199,7 +199,7 @@ void MakeUserFlag(TextureContainer * tc) {
 void EERIE_3DOBJ::clear() {
 	
 		point0 = pos = Vec3f(0.f);
-		angle = Anglef::ZERO;
+		angle = Anglef();
 
 		origin = 0;
 

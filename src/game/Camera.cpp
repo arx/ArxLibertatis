@@ -32,7 +32,7 @@ Camera g_playerCamera;
 
 Anglef Camera::getLookAtAngle(const Vec3f & origin, const Vec3f & target) {
 	
-	Anglef angle = Anglef::ZERO;
+	Anglef angle;
 	
 	if(origin != target) {
 		float targetz = origin.z + glm::distance(Vec2f(origin.x, origin.z), Vec2f(target.x, target.z));

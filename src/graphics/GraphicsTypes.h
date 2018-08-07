@@ -231,7 +231,6 @@ struct EERIE_3DOBJ {
 	EERIE_3DOBJ()
 		: pos(0.f)
 		, point0(0.f)
-		, angle(Anglef::ZERO)
 		, origin(0)
 		, quat(quat_identity())
 		, pbox(NULL)

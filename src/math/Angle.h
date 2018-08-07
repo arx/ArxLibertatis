@@ -50,7 +50,7 @@ public:
 		: m_pitch(0)
 		, m_yaw(0)
 		, m_roll(0)
-	{}
+	{ }
 	
 	/*!
 	 * Constructor accepting initial values.
@@ -176,16 +176,14 @@ public:
 		m_yaw = MAKEANGLE(m_yaw);
 		m_roll = MAKEANGLE(m_roll);
 	}
-
-	static const Angle ZERO; //!< A zero angle.
-
+	
 private:
+	
 	T m_pitch;
 	T m_yaw;
 	T m_roll;
+	
 };
-
-template <class T> const Angle<T> Angle<T>::ZERO(T(0), T(0), T(0));
 
 float AngleDifference(float d, float e);
 
