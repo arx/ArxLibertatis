@@ -68,12 +68,7 @@ struct ArxQuat {
 	f32 z;
 	
 	operator glm::quat() const {
-		glm::quat a;
-		a.x = x;
-		a.y = y;
-		a.z = z;
-		a.w = w;
-		return a;
+		return glm::quat(w, x, y, z);
 	}
 	
 };
