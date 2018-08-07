@@ -355,7 +355,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		}
 		
 		bone.father = -1;
-		bone.anim.scale = Vec3f_ONE;
+		bone.anim.scale = Vec3f(1.f);
 		
 	} else {
 		// Groups were specified
@@ -377,7 +377,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			
 			bone.anim.trans = eobj->vertexlist[group.origin].v;
 			bone.father = GetFather(eobj, group.origin, i - 1);
-			bone.anim.scale = Vec3f_ONE;
+			bone.anim.scale = Vec3f(1.f);
 			
 		}
 		

@@ -124,7 +124,7 @@ void BlessSpell::Update() {
 	
 	q.v[0].uv = Vec2f(0.f);
 	q.v[1].uv = Vec2f_X_AXIS;
-	q.v[2].uv = Vec2f_ONE;
+	q.v[2].uv = Vec2f(1.f);
 	q.v[3].uv = Vec2f_Y_AXIS;
 	
 	q.v[0].p.x = pos.x + fBetaRadCos - fBetaRadSin;
@@ -447,7 +447,7 @@ void CurseSpell::Update() {
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Opaque);
 	
-	Draw3DObject(svoodoo, Anglef(0, fRot, 0), m_pos, Vec3f_ONE, Color3f::white, mat);
+	Draw3DObject(svoodoo, Anglef(0, fRot, 0), m_pos, Vec3f(1.f), Color3f::white, mat);
 	
 	for(int i = 0; i < 4; i++) {
 		

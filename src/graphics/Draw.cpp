@@ -183,7 +183,7 @@ void EERIEDrawBitmap_uv(Rectf rect, float z, TextureContainer * tex,
 	
 	rect.move(-.5f, -.5f);
 	
-	Vec2f uv = (tex) ? tex->uv : Vec2f_ONE;
+	Vec2f uv = (tex) ? tex->uv : Vec2f(1.f);
 	u0 *= uv.x, u1 *= uv.x, v0 *= uv.y, v1 *= uv.y;
 
 	ColorRGBA col = color.toRGBA();

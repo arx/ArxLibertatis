@@ -241,7 +241,7 @@ void CMagicMissile::Render() {
 	if(stiteangle.getRoll() < 0)
 		stiteangle.setRoll(stiteangle.getRoll() + 360.0f);
 
-	Draw3DObject(smissile, stiteangle, eCurPos, Vec3f_ONE, m_projectileColor, mat);
+	Draw3DObject(smissile, stiteangle, eCurPos, Vec3f(1.f), m_projectileColor, mat);
 }
 
 
