@@ -480,11 +480,8 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 				
 				if(target->ioflags & IO_NPC) {
 					
-					Vec3f pos;
-					Color color = Color::none;
 					long hitpoint = -1;
 					float curdist = 999999.f;
-					
 					for(size_t ii = 0 ; ii < target->obj->facelist.size() ; ii++) {
 						
 						if(target->obj->facelist[ii].facetype & POLY_HIDE) {
@@ -500,17 +497,14 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 						
 					}
 					
-					if(hitpoint >= 0) {
-						color = target->_npcdata->blood_color;
-						pos = target->obj->vertexWorldPositions[hitpoint].v;
-					}
-					
 					if(projectile.source == EntityHandle_Player) {
 						
 						float damages = ARX_THROWN_ComputeDamages(projectile, sphereContent[jj]);
 						if(damages > 0.f) {
 							
 							arx_assert(hitpoint >= 0);
+							Color color = target->_npcdata->blood_color;
+							Vec3f pos = target->obj->vertexWorldPositions[hitpoint].v;
 							
 							if(target->ioflags & IO_NPC) {
 								target->_npcdata->SPLAT_TOT_NB = 0;
