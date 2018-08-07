@@ -60,8 +60,6 @@ if(NOT SET_NOISY_WARNING_FLAGS)
 	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/parens_newline)
 	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/newline)
 	
-	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/todo)
-	
 endif()
 
 set(STYLE_CHECK_SCRIPT "${PROJECT_SOURCE_DIR}/scripts/cpplint.py")
