@@ -386,9 +386,9 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 		verts[3].p.x = (pos.x - size);
 		verts[3].p.y = (pos.y + size);
 		verts[0].uv = Vec2f(0.f);
-		verts[1].uv = Vec2f_X_AXIS;
+		verts[1].uv = Vec2f(1.f, 0.f);
 		verts[2].uv = Vec2f(1.f);
-		verts[3].uv = Vec2f_Y_AXIS;
+		verts[3].uv = Vec2f(0.f, 1.f);
 		
 		const Rect mouseTestRect(
 			s32(verts[0].p.x),

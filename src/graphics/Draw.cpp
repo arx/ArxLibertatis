@@ -106,9 +106,9 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 		ColorRGBA col = color.toRGBA();
 		
 		sprite.v[0] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(0.f));
-		sprite.v[1] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f_X_AXIS);
+		sprite.v[1] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(1.f, 0.f));
 		sprite.v[2] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(1.f, 1.f));
-		sprite.v[3] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f_Y_AXIS);
+		sprite.v[3] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(0.f, 1.f));
 		
 		if(rot == 0) {
 			Vec3f maxs = p + t;

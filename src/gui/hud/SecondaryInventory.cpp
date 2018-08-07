@@ -147,7 +147,7 @@ static Entity * getSecondaryOrStealInvEntity() {
 void SecondaryInventoryHud::update() {
 	Entity * io = getSecondaryOrStealInvEntity();
 	if(io) {
-		float dist = fdist(io->pos, player.pos + (Vec3f_Y_AXIS * 80.f));
+		float dist = fdist(io->pos, player.pos + Vec3f(0.f, 80.f, 0.f));
 		
 		float maxDist = player.m_telekinesis ? 900.f : 350.f;
 		
