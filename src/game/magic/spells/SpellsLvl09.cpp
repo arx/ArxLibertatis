@@ -306,9 +306,9 @@ void FakeSummonSpell::Update() {
 	m_fissure.Render();
 }
 
-
 NegateMagicSpell::NegateMagicSpell()
-	: tex_p2(NULL)
+	: m_pos(0.f)
+	, tex_p2(NULL)
 	, tex_sol(NULL)
 { }
 
