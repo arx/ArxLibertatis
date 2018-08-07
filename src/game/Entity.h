@@ -82,11 +82,20 @@ static const size_t MAX_ANIM_LAYERS = 4;
 static const float BASE_RUBBER = 1.5f;
 
 struct IO_PHYSICS {
+	
 	Cylinder cyl;
 	Vec3f startpos;
 	Vec3f targetpos;
 	Vec3f velocity;
 	Vec3f forces;
+	
+	IO_PHYSICS()
+		: startpos(0.f)
+		, targetpos(0.f)
+		, velocity(0.f)
+		, forces(0.f)
+	{ }
+	
 };
 
 enum IOCollisionFlag {
@@ -122,10 +131,19 @@ DECLARE_FLAGS(HaloFlag, HaloFlags)
 DECLARE_FLAGS_OPERATORS(HaloFlags)
 
 struct IO_HALO {
+	
 	Color3f color;
 	float radius;
 	HaloFlags flags;
 	Vec3f offset;
+	
+	IO_HALO()
+		: color(Color3f::black)
+		, radius(0.f)
+		, flags(0)
+		, offset(0.f)
+	{ }
+	
 };
 
 struct IO_TWEAKER_INFO {
