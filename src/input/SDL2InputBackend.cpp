@@ -31,11 +31,20 @@ static Keyboard::Key sdlToArxKey[SDL_NUM_SCANCODES];
 
 static Mouse::Button sdlToArxButton[10];
 
-SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window), m_textHandler(NULL) {
+SDL2InputBackend::SDL2InputBackend(SDL2Window * window)
+	: m_window(window)
+	, m_textHandler(NULL)
+	, m_editCursorPos(0)
+	, m_editCursorLength(0)
+	, wheel(0)
+	, cursorAbs(0)
+	, cursorRel(0)
+	, cursorRelAccum(0)
+	, cursorInWindow(false)
+	, currentWheel(0)
+{
 	
 	arx_assert(window != NULL);
-	
-	cursorInWindow = false;
 	
 	SDL_EventState(SDL_WINDOWEVENT, SDL_ENABLE);
 	SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
@@ -298,12 +307,6 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window), m_te
 	ARX_STATIC_ASSERT(SDL_BUTTON_X2 < ARRAY_SIZE(sdlToArxButton), "array size mismatch");
 	sdlToArxButton[SDL_BUTTON_X2] = Mouse::Button_4;
 	
-	
-	wheel = 0;
-	cursorAbs = Vec2i_ZERO;
-	cursorInWindow = false;
-	cursorRel = Vec2i_ZERO;
-	cursorRelAccum = Vec2i_ZERO;
 	std::fill_n(keyStates, ARRAY_SIZE(keyStates), false);
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
 	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);
