@@ -301,20 +301,17 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 
 ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos)
 	: name(_name)
+	, flags(0)
 	, initpos(_pos)
 	, pos(_pos)
-{
-	flags = 0;
-	pathways.clear();
-	height = 0; // 0 NOT A ZONE
-	
-	rgb = Color3f::black;
-	farclip = 0.f;
-	reverb = 0.f;
-	amb_max_vol = 0.f;
-	bbmin = Vec3f_ZERO;
-	bbmax = Vec3f_ZERO;
-}
+	, height(0)
+	, rgb(Color3f::black)
+	, farclip(0.f)
+	, reverb(0.f)
+	, amb_max_vol(0.f)
+	, bbmin(0.f)
+	, bbmax(0.f)
+{ }
 
 void ARX_PATH_ClearAllUsePath() {
 	BOOST_FOREACH(Entity * e, entities) {

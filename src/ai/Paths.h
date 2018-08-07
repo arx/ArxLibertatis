@@ -68,9 +68,17 @@ enum PathwayType {
 };
 
 struct ARX_PATHWAY {
+	
 	Vec3f rpos; // Relative position
 	PathwayType flag;
 	GameDuration _time;
+	
+	ARX_PATHWAY()
+		: rpos(0.f)
+		, flag(PATHWAY_STANDARD)
+		, _time(0)
+	{ }
+	
 };
 
 // ARX_PATH@flags values
@@ -126,12 +134,23 @@ DECLARE_FLAGS(UsePathFlag, UsePathFlags)
 DECLARE_FLAGS_OPERATORS(UsePathFlags)
 
 struct ARX_USE_PATH {
+	
 	ARX_PATH * path;
 	GameInstant _starttime;
 	GameInstant _curtime;
 	UsePathFlags aupflags;
 	Vec3f initpos;
 	long lastWP;
+	
+	ARX_USE_PATH()
+		: path(NULL)
+		, _starttime(0)
+		, _curtime(0)
+		, aupflags(0)
+		, initpos(0.f)
+		, lastWP(0)
+	{ }
+	
 };
 
 enum PathMod {
