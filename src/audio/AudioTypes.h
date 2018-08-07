@@ -122,15 +122,30 @@ struct PCMFormat {
 
 // Source cone
 struct SourceCone {
+	
 	float inner_angle;
 	float outer_angle;
 	float outer_volume;
+	
+	SourceCone()
+		: inner_angle(0.f)
+		, outer_angle(0.f)
+		, outer_volume(0.f)
+	{ }
+	
 };
 
 // Source falloff
 struct SourceFalloff {
+	
 	float start;
 	float end;
+	
+	SourceFalloff()
+		: start(0.f)
+		, end(0.f)
+	{ }
+	
 };
 
 
@@ -177,6 +192,7 @@ typedef HandleType<struct AmbianceIdTag, s32, -1> AmbianceId;
 
 // Play channel initialization parameters
 struct Channel {
+	
 	ChannelFlags flags;
 	MixerId mixer;
 	float volume;
@@ -187,6 +203,17 @@ struct Channel {
 	Vec3f direction;
 	SourceCone cone;
 	SourceFalloff falloff;
+	
+	Channel()
+		: flags(0)
+		, volume(0.f)
+		, pitch(0.f)
+		, pan(0.f)
+		, position(0.f)
+		, velocity(0.f)
+		, direction(0.f)
+	{ }
+	
 };
 
 enum SourceStatus {
