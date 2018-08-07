@@ -75,9 +75,6 @@ public:
 			behavior |= (flg & flag('m')) ? BEHAVIOUR_MAGIC : Behaviour(0);
 			behavior |= (flg & flag('f')) ? BEHAVIOUR_FIGHT : Behaviour(0);
 			behavior |= (flg & flag('a')) ? BEHAVIOUR_STARE_AT : Behaviour(0);
-			if(flg & flags("012")) {
-				io->_npcdata->tactics = 0;
-			}
 		}
 		
 		std::string command = context.getWord();

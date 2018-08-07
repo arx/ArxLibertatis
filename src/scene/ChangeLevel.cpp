@@ -1180,7 +1180,6 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as->moveproblem = io->_npcdata->moveproblem;
 			as->reachedtarget = io->_npcdata->reachedtarget;
 			as->speakpitch = io->_npcdata->speakpitch;
-			as->tactics = io->_npcdata->tactics;
 			as->tohit = io->_npcdata->tohit;
 			as->weaponinhand = io->_npcdata->weaponinhand;
 			as->weapontype = io->_npcdata->weapontype;
@@ -2039,7 +2038,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				io->_npcdata->moveproblem = as->moveproblem;
 				io->_npcdata->reachedtarget = as->reachedtarget;
 				io->_npcdata->speakpitch = as->speakpitch;
-				io->_npcdata->tactics = as->tactics;
 				io->_npcdata->tohit = as->tohit;
 				io->_npcdata->weaponinhand = as->weaponinhand;
 				io->_npcdata->weapontype = ItemType::load(as->weapontype); // TODO save/load flags

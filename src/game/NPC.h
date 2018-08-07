@@ -89,7 +89,6 @@ struct IO_BEHAVIOR_DATA {
 	long exist;
 	Behaviour behavior;
 	float behavior_param;
-	long tactics; // 0=none ; 1=side ; 2=side+back
 	EntityHandle target;
 	MoveMode movemode;
 	AnimLayer animlayer[MAX_ANIM_LAYERS];
@@ -98,7 +97,6 @@ struct IO_BEHAVIOR_DATA {
 		: exist(0)
 		, behavior(0)
 		, behavior_param(0.f)
-		, tactics(0)
 		, movemode(WALKMODE)
 	{ }
 	
@@ -190,7 +188,6 @@ struct IO_NPCDATA {
 	
 	Behaviour behavior;
 	float behavior_param;
-	long tactics; // 0=none ; 1=side ; 2=side+back
 	long xpvalue;
 	long cut;
 	

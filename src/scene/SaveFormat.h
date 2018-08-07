@@ -686,7 +686,7 @@ struct SavedBehaviour {
 	s32 exist;
 	u32 behavior;
 	f32 behavior_param;
-	s32 tactics; // 0=none ; 1=side ; 2=side+back
+	s32 tactics; // TODO remove
 	s32 target;
 	s32 movemode;
 	SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS];
@@ -696,7 +696,6 @@ struct SavedBehaviour {
 		a.exist = exist;
 		a.behavior = Behaviour::load(behavior); // TODO save/load flags
 		a.behavior_param = behavior_param;
-		a.tactics = tactics;
 		a.target = EntityHandle(target);
 		a.movemode = (MoveMode)movemode; // TODO save/load enum
 		ARX_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS, "array size mismatch");
@@ -708,7 +707,7 @@ struct SavedBehaviour {
 		exist = b.exist;
 		behavior = b.behavior;
 		behavior_param = b.behavior_param;
-		tactics = b.tactics;
+		tactics = 0;
 		target = b.target.handleData();
 		movemode = b.movemode;
 		ARX_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS, "array size mismatch");
@@ -791,7 +790,7 @@ struct ARX_CHANGELEVEL_NPC_IO_SAVE {
 	f32 aimtime;
 	u32 behavior;
 	f32 behavior_param;
-	s32 tactics;
+	s32 tactics; // TODO remove
 	s32 xpvalue;
 	s32 cut;
 	f32 moveproblem;
