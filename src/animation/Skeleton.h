@@ -26,6 +26,7 @@
 #include "glm/gtc/quaternion.hpp"
 
 #include "math/Types.h"
+#include "math/Angle.h"
 
 struct VertexGroup {
 	
@@ -42,20 +43,35 @@ struct VertexGroup {
 };
 
 struct BoneTransform {
+	
 	glm::quat quat;
-	Vec3f     trans;
-	Vec3f     scale;
+	Vec3f trans;
+	Vec3f scale;
+	
+	BoneTransform()
+		: quat(quat_identity())
+		, trans(0.f)
+		, scale(0.f) // TODO should this be 1.f?
+	{ }
+	
 };
 
 struct Bone {
-	std::vector<u32>  idxvertices; // TODO use u16 here ?
-	long              father;
 	
-	BoneTransform     anim;
-	BoneTransform     last;
-	BoneTransform     init;
+	std::vector<u32> idxvertices; // TODO use u16 here ?
+	long father;
 	
-	Vec3f             transinit_global;
+	BoneTransform anim;
+	BoneTransform last;
+	BoneTransform init;
+	
+	Vec3f transinit_global;
+	
+	Bone()
+		: father(0)
+		, transinit_global(0.f)
+	{ }
+	
 };
 
 struct Skeleton {
