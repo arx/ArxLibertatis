@@ -69,18 +69,13 @@ void FissureFx::SetColorRays2(Color3f color)
 	m_colorRays2 = color;
 }
 
-//-----------------------------------------------------------------------------
-// RISE DEAD
-//-----------------------------------------------------------------------------
-CRiseDead::~CRiseDead() {
-}
+CRiseDead::~CRiseDead() { }
 
 CRiseDead::CRiseDead()
-	: FissureFx()
-	, m_eSrc(Vec3f_ZERO)
+	: m_eSrc(0.f)
 	, fBetaRadCos(0.f)
 	, fBetaRadSin(0.f)
-	, tex_light(NULL)
+	, tex_light(TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4"))
 	, end(40 - 1)
 	, iSize(100)
 	, bIntro(true)
@@ -88,14 +83,10 @@ CRiseDead::CRiseDead()
 	, fSizeIntro(0.f)
 {
 	m_elapsed = m_duration + GameDurationMs(1);
-	
-	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
-
-
-void CRiseDead::Create(Vec3f aeSrc, float afBeta)
-{
+void CRiseDead::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(m_durationIntro, m_durationRender, m_durationOuttro);
 
 	m_eSrc = aeSrc + Vec3f(0.f, -10.f, 0.f);
@@ -426,26 +417,19 @@ void CRiseDead::Render()
 	m_stones.DrawStone();
 }
 
-
-
 CSummonCreature::CSummonCreature()
-	: FissureFx()
+	: m_eSrc(0.f)
 	, fBetaRadCos(0.f)
 	, fBetaRadSin(0.f)
+	, tex_light(TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4"))
 	, end(0)
+	, iSize(100)
 	, bIntro(true)
+	, fOneOniSize(1.f / float(iSize))
 	, sizeF(0.f)
 	, fSizeIntro(0.f)
 {
-	
-	m_eSrc = Vec3f_ZERO;
-	
 	m_elapsed = m_duration + GameDurationMs(1);
-	
-	iSize = 100;
-	fOneOniSize = 1.0f / ((float) iSize);
-	
-	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
 void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
