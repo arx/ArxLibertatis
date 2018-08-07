@@ -362,16 +362,10 @@ void PlayerInventoryHud::previousBag() {
 PlayerInventoryHud g_playerInventoryHud;
 
 bool PlayerInventoryHud::InPlayerInventoryBag(const Vec2s & pos) {
+	
 	if(pos.x >= 0 && pos.y >= 0) {
-		Vec2s t;
-		t.x = s16(pos.x / (32 * m_scale));
-		t.y = s16((pos.y + 5 * m_scale) / (32 * m_scale));
-
-		if(   t.x >= 0
-		   && (size_t)t.x <= INVENTORY_X
-		   && t.y >= 0
-		   && (size_t)t.y <= INVENTORY_Y
-		) {
+		Vec2s t(s16(pos.x / (32 * m_scale)), s16((pos.y + 5 * m_scale) / (32 * m_scale)));
+		if(t.x >= 0 && size_t(t.x) <= INVENTORY_X && t.y >= 0 && size_t(t.y) <= INVENTORY_Y) {
 			return true;
 		}
 	}
@@ -604,7 +598,7 @@ extern Vec2s sInventoryPos;
 
 void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 	
-	Vec2i iPos = Vec2i(g_playerInventoryHud.anchorPosition());
+	Vec2s iPos = Vec2s(g_playerInventoryHud.anchorPosition());
 	
 	if(g_playerInventoryHud.containsPos(pos)) {
 		if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
@@ -620,13 +614,7 @@ void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 					Set_DragInter(ioo);
 					RemoveFromAllInventories(ioo);
 					sInventory = 1;
-					
-					Vec2f f;
-					f.x = (pos.x - iPos.x) / (32 * m_scale);
-					f.y = (pos.y - iPos.y) / (32 * m_scale);
-					
-					sInventoryPos.x = checked_range_cast<short>(f.x);
-					sInventoryPos.y = checked_range_cast<short>(f.y);
+					sInventoryPos = (pos - iPos) / s16(32.f * m_scale);
 					
 					SendInitScriptEvent(ioo);
 					ARX_INVENTORY_IdentifyIO(ioo);
@@ -648,13 +636,7 @@ void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 			slot.io = NULL;
 			slot.show = true;
 			sInventory = 1;
-			
-			Vec2f f;
-			f.x = (pos.x - iPos.x) / (32 * m_scale);
-			f.y = (pos.y - iPos.y) / (32 * m_scale);
-			
-			sInventoryPos.x = checked_range_cast<short>(f.x);
-			sInventoryPos.y = checked_range_cast<short>(f.y);
+			sInventoryPos = (pos - iPos) / s16(32.f * m_scale);
 		}
 	}
 	
