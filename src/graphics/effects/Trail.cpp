@@ -25,30 +25,27 @@
 #include "graphics/RenderBatcher.h"
 #include "graphics/effects/SpellEffects.h"
 
-
 Trail::Trail(long duration, Color4f startColor, Color4f endColor, float startSize, float endSize)
+	: m_timePerSegment(0)
+	, m_lastSegmentDuration(0)
+	, m_nextPosition(0.f)
 {
-	size_t segments = size_t(duration / 20);
 	
-	segments = std::max(segments, size_t(4));
-	
+	size_t segments = std::max(size_t(duration / 20), size_t(4));
 	m_timePerSegment = GameDurationMsf(float(duration) / float(segments));
-	m_lastSegmentDuration = 0;
 	
 	m_positions.set_capacity(segments);
 	m_segments.reserve(segments);
-
+	
 	Color4f colorDelta = endColor - startColor;
 	float sizeDelta = endSize - startSize;
-
 	for(size_t i = 0; i < segments; i++) {
-		float factor = (float)i / (float)segments;
-
+		float factor = float(i) / float(segments);
 		Color4f color = startColor + colorDelta * factor;
 		float size = startSize + sizeDelta * factor;
-
 		m_segments.push_back(TrailSegment(color.to<u8>(), size));
 	}
+	
 }
 
 void Trail::SetNextPosition(Vec3f & nextPosition)
