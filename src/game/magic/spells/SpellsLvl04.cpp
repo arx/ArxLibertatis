@@ -391,10 +391,9 @@ void TelekinesisSpell::End() {
 	}
 }
 
-
-
 CurseSpell::CurseSpell()
-	: tex_p1(NULL)
+	: m_pos(0.f)
+	, tex_p1(NULL)
 	, fRot(0.f)
 { }
 
