@@ -59,7 +59,7 @@ Font::Font(const res::path & file, unsigned size, unsigned weight, FT_Face face)
 	// FreeType default is 72dpi
 	FT_Set_Char_Size(m_size->face, 0, m_info.size * 64, 64, 64);
 	
-	// TODO-font: Compute optimal size using m_FTFace->bbox
+	// TODO Compute optimal size using m_FTFace->bbox
 	const unsigned int TEXTURE_SIZE = 512;
 	
 	// Insert all the glyphs into texture pages
