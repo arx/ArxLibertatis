@@ -64,7 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 Input * GInput = NULL;
 
-// TODO-input: Clean me!
 long EERIEMouseButton = 0;
 long LastMouseClick = 0;
 
