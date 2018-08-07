@@ -140,9 +140,7 @@ void MassLightningStrikeSpell::Update() {
 		pTab[i]->Render();
 	}
 	
-	Vec3f position;
-
-	position = m_pos + arx::randomVec(-250.f, 250.f);
+	Vec3f position = m_pos + arx::randomVec(-250.f, 250.f);
 	ARX_SOUND_RefreshPosition(m_snd_loop, position);
 	ARX_SOUND_RefreshVolume(m_snd_loop, 1.f);
 	ARX_SOUND_RefreshPitch(m_snd_loop, Random::getf(0.8f, 1.2f));
@@ -169,9 +167,10 @@ void MassLightningStrikeSpell::Update() {
 	
 }
 
-
 ControlTargetSpell::ControlTargetSpell()
-	: tex_mm(NULL)
+	: eSrc(0.f)
+	, eTarget(0.f)
+	, tex_mm(NULL)
 	, fTrail(0)
 { }
 
