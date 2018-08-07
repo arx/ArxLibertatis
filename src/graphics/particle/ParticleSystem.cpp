@@ -63,30 +63,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/RandomVector.h"
 
-
-ParticleSystem::ParticleSystem() {
+ParticleSystem::ParticleSystem()
+	: m_nextPosition(0.f)
+	, iParticleNbAlive(0)
+	, iNbTex(0)
+	, iTexTime(500)
+	, bTexLoop(true)
+	, eMat(1.f)
+{
 	
-	int i;
-	for(i = 0; i < 20; i++) {
+	for(size_t i = 0; i < 20; i++) {
 		tex_tab[i] = NULL;
 	}
 	
 	m_parameters.m_nbMax = 50;
-	
-	iParticleNbAlive = 0;
-	iNbTex = 0;
-	iTexTime = 500;
-	bTexLoop = true;
 	m_parameters.m_rotation = 0;
-	
 	m_parameters.m_freq = -1;
 	m_parameters.m_spawnFlags = 0;
-	
-	// default settings for EDITOR MODE only
-	Vec3f eVect = m_parameters.m_direction = -Vec3f_Y_AXIS;
-	eVect.y = -eVect.y;
-	GenerateMatrixUsingVector(eMat, eVect, 0);
-	
+	m_parameters.m_direction = Vec3f(0.f, -1.f, 0.f);
 	m_parameters.m_startSegment.m_size = 1;
 	m_parameters.m_endSegment.m_size = 1;
 	m_parameters.m_startSegment.m_color = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
@@ -102,14 +96,14 @@ ParticleSystem::ParticleSystem() {
 	m_parameters.m_lifeRandom = 1000;
 	m_parameters.m_angle = 0;
 	m_parameters.m_speedRandom = 10;
-
 	m_parameters.m_startSegment.m_sizeRandom = 1;
 	m_parameters.m_startSegment.m_colorRandom = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
-
 	m_parameters.m_endSegment.m_sizeRandom = 1;
 	m_parameters.m_endSegment.m_colorRandom = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
-
 	m_parameters.m_blendMode = RenderMaterial::Additive;
+	
+	GenerateMatrixUsingVector(eMat, Vec3f(0.f, 1.f, 0.f), 0);
+	
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -190,15 +184,10 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	
 	float fAngleX = Random::getf() * m_parameters.m_angle;
 	
-	Vec3f vv1, vvz;
+	Vec3f vvz = VRotateZ(Vec3f(0.f, -1.f, 0.f), glm::degrees(fAngleX));
+	vvz = VRotateY(vvz, Random::getf(0.f, 360.0f));
+	vvz = Vec3f(eMat * Vec4f(vvz, 1.f));
 	
-	vv1 = -Vec3f_Y_AXIS;
-	
-	vvz = VRotateZ(vv1, glm::degrees(fAngleX));
-	vv1 = VRotateY(vvz, Random::getf(0.f, 360.0f));
-	
-	vvz = Vec3f(eMat * Vec4f(vv1, 1.f));
-
 	float fSpeed = m_parameters.m_speed + Random::getf() * m_parameters.m_speedRandom;
 
 	pP->p3Velocity = vvz * fSpeed;
@@ -348,9 +337,7 @@ void ParticleSystem::Render() {
 				}
 			}
 			
-			Vec3f p3pos;
-			p3pos = p->p3Pos;
-			p3pos += m_nextPosition;
+			Vec3f p3pos = p->p3Pos + m_nextPosition;
 			
 			mat.setTexture(tex_tab[inumtex]);
 			
