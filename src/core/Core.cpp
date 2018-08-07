@@ -180,6 +180,10 @@ EERIE_3DOBJ * markerobj = NULL; // Marker 3D Object // NEEDTO: Remove for Final
 Vec2s STARTDRAG;
 Entity * COMBINE = NULL;
 
+bool GMOD_RESET = true;
+
+Vec3f LastValidPlayerPos;
+
 // START - Information for Player Teleport between/in Levels-------------------------------------
 std::string TELEPORT_TO_LEVEL;
 std::string TELEPORT_TO_POSITION;
@@ -306,11 +310,6 @@ void SetEditMode() {
 	}
 	
 }
-
-
-bool GMOD_RESET = true;
-
-Vec3f LastValidPlayerPos;
 
 void levelInit() {
 	
