@@ -97,14 +97,15 @@ static void LaunchPoisonExplosion(const Vec3f & aePos) {
 	g_particleManager.AddSystem(pPS);
 }
 
-
 CPoisonProjectile::CPoisonProjectile()
-	: eSrc(Vec3f_ZERO)
+	: eSrc(0.f)
+	, eCurPos(0.f)
 	, lightIntensityFactor(1.f)
 	, fBetaRadCos(0.f)
 	, fBetaRadSin(0.f)
 	, bOk(false)
 	, fTrail(-1.f)
+	, eMove(0.f)
 {
 	SetDuration(GameDurationMs(2000));
 	m_elapsed = m_duration + GameDurationMs(1);
