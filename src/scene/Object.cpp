@@ -213,7 +213,7 @@ void EERIE_3DOBJ::clear() {
 
 		originaltextures.clear();
 		
-		quat = glm::quat();
+		quat = quat_identity();
 		linked.clear();
 
 		pbox = 0;
