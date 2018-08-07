@@ -33,11 +33,11 @@
 
 extern TextureContainer * scursor[];
 
-CursorTrail::CursorTrail() {
-	m_storedTime = 0;
-	iNbOldCoord = 0;
-	iMaxOldCoord = 40;
-}
+CursorTrail::CursorTrail()
+	: m_storedTime(0)
+	, iNbOldCoord(0)
+	, iMaxOldCoord(40)
+{ }
 
 void CursorTrail::reset() {
 	iNbOldCoord = 0;
