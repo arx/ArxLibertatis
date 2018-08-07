@@ -652,13 +652,11 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	if (old_target != target)
 		io->_npcdata->reachedtarget = 0;
 	
-	Vec3f pos2;
+	Vec3f pos2 = io->pos;
 	if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
 		pos2 = io->initpos;
 	} else if(ValidIONum(target)) {
 		pos2 = entities[target]->pos;
-	} else {
-		pos2 = io->pos;
 	}
 	
 	io->_npcdata->pathfind.truetarget = target;
@@ -998,12 +996,11 @@ void ARX_PHYSICS_Apply() {
 	}
 }
 
-void FaceTarget2(Entity * io)
-{
-	Vec3f tv;
-
-	if(!io->show)
+void FaceTarget2(Entity * io) {
+	
+	if(!io->show) {
 		return;
+	}
 	
 	if(io->ioflags & IO_NPC) {
 		if(io->_npcdata->lifePool.current <= 0.f) {
@@ -1018,7 +1015,7 @@ void FaceTarget2(Entity * io)
 	}
 	
 	GetTargetPos(io);
-	tv = io->pos;
+	Vec3f tv = io->pos;
 	
 	if(!fartherThan(Vec2f(tv.x, tv.z), Vec2f(io->target.x, io->target.z), 5.f)) {
 		return;
@@ -2051,10 +2048,8 @@ static void ManageNPCMovement_End(Entity * io) {
 	// to targetpos (potentially invalid pos)
 	io->physics.startpos = io->physics.cyl.origin = io->pos;
 	
-	Vec3f ForcedMove;
-	if(io->forcedmove == Vec3f_ZERO) {
-		ForcedMove = Vec3f_ZERO;
-	} else {
+	Vec3f ForcedMove(0.f);
+	if(io->forcedmove != Vec3f_ZERO) {
 		float dd = std::min(1.f, g_framedelay * (1.0f / 6) / glm::length(io->forcedmove));
 		ForcedMove = io->forcedmove * dd;
 	}
@@ -2510,38 +2505,29 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 
 			continue;
 		}
-
-		Vec3f orgn, dest;
-
+		
 		float ab = MAKEANGLE(ioo->angle.getYaw());
 		
+		Vec3f orgn = ioo->pos + Vec3f(0.f, -90.f, 0.f);
 		{
-		ObjVertHandle grp = ioo->obj->fastaccess.head_group_origin;
-
-		if(grp == ObjVertHandle()) {
-			orgn = ioo->pos + Vec3f(0.f, -90.f, 0.f);
-			
-			if(ioo == entities.player())
+			ObjVertHandle grp = ioo->obj->fastaccess.head_group_origin;
+			if(grp != ObjVertHandle()) {
+				orgn = ioo->obj->vertexWorldPositions[grp.handleData()].v;
+			} else if(ioo == entities.player()) {
 				orgn.y = player.pos.y + 90.f;
-		} else {
-			orgn = ioo->obj->vertexWorldPositions[grp.handleData()].v;
-		}
+			}
 		}
 		
+		Vec3f dest = io->pos + Vec3f(0.f, -90.f, 0.f);
 		{
-		ObjVertHandle grp = io->obj->fastaccess.head_group_origin;
-
-		if(grp == ObjVertHandle()) {
-			dest = io->pos + Vec3f(0.f, -90.f, 0.f);
-			
-			if(io == entities.player())
+			ObjVertHandle grp = io->obj->fastaccess.head_group_origin;
+			if(grp != ObjVertHandle()) {
+				dest = io->obj->vertexWorldPositions[grp.handleData()].v;
+			} else if(io == entities.player()) {
 				dest.y = player.pos.y + 90.f;
-		} else {
-			dest = io->obj->vertexWorldPositions[grp.handleData()].v;
+			}
 		}
-		}
-
-
+		
 		float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 		aa = MAKEANGLE(glm::degrees(aa));
 
