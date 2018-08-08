@@ -385,7 +385,9 @@ bool PlayerInventoryHud::containsPos(const Vec2s & pos) {
 		Vec2s t = pos - iPos;
 		
 		return InPlayerInventoryBag(t);
-	} else if(player.Interface & INTER_INVENTORYALL) {
+	}
+	
+	if(player.Interface & INTER_INVENTORYALL) {
 		float fBag = (player.m_bags - 1) * (-121 * m_scale);
 
 		short iY = checked_range_cast<short>(fBag);
