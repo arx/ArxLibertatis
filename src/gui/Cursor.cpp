@@ -552,7 +552,7 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 				if(haloTc) {
 					Color3f haloColor = COMBINE->halo.color;
 					if(SpecialCursor != CURSOR_COMBINEON) {
-						haloColor *= Color(255, 170, 102).to<float>();
+						haloColor *= Color3f::rgb(1.f, 2.f / 3, 0.4f);
 					}
 					ARX_INTERFACE_HALO_Render(haloColor, COMBINE->halo.flags, haloTc, mousePos, Vec2f(iconScale));
 				}
