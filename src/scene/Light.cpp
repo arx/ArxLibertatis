@@ -660,7 +660,7 @@ ColorRGBA ApplyLight(ShaderLight lights[], size_t lightsCount, const glm::quat &
 	u8 ig = clipByte255(int(tempColor.g));
 	u8 ib = clipByte255(int(tempColor.b));
 
-	return Color(ir, ig, ib, 255).toRGBA();
+	return Color(ir, ig, ib).toRGBA();
 }
 
 void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
@@ -719,6 +719,6 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 		u8 ir = clipByte255(int(tempColor.r));
 		u8 ig = clipByte255(int(tempColor.g));
 		u8 ib = clipByte255(int(tempColor.b));
-		ep->color[j] = Color(ir, ig, ib, 255).toRGBA();
+		ep->color[j] = Color(ir, ig, ib).toRGBA();
 	}
 }
