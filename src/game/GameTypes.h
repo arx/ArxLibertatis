@@ -40,7 +40,7 @@ struct ResourcePool {
 		, max(0.f)
 	{ }
 	
-	ResourcePool(float value)
+	explicit ResourcePool(float value)
 		: current(value)
 		, max(value)
 	{ }
