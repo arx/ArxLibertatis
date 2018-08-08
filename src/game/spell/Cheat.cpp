@@ -115,13 +115,12 @@ static void MakeSpCol() {
 		sp_max_y[i] = 0;
 	}
 	
-	sp_max_col[0] = Color(0, 0, 255, 0);
-	sp_max_col[1] = Color(0, 255, 0, 0);
-	sp_max_col[2] = Color(255, 0, 0, 0);
-	
-	sp_max_col[3] = Color(0, 255, 255, 0);
-	sp_max_col[4] = Color(255, 0, 255, 0);
-	sp_max_col[5] = Color(255, 255, 0, 0);
+	sp_max_col[0] = Color::blue;
+	sp_max_col[1] = Color::green;
+	sp_max_col[2] = Color::red;
+	sp_max_col[3] = Color::cyan;
+	sp_max_col[4] = Color::magenta;
+	sp_max_col[5] = Color::yellow;
 	
 	for(size_t i = 6; i < 24; i++) {
 		sp_max_col[i] = sp_max_col[i - 6];
