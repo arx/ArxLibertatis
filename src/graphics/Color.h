@@ -99,9 +99,9 @@ public:
 	typedef T type;
 	typedef ColorTraits<T> Traits;
 	
-	T b;
-	T g;
 	T r;
+	T g;
+	T b;
 	
 	static const Color3 black;
 	static const Color3 white;
@@ -112,13 +112,13 @@ public:
 	static const Color3 cyan;
 	static const Color3 magenta;
 	
-	Color3() : b(T(0)), g(T(0)), r(T(0)) { }
-	Color3(T _r, T _g, T _b) : b(_b), g(_g), r(_r) { }
+	Color3() : r(T(0)), g(T(0)), b(T(0)) { }
+	Color3(T _r, T _g, T _b) : r(_r), g(_g), b(_b) { }
 	
 	#if ARX_HAVE_CXX11_DEFAULT
 	Color3(const Color3 & o) = default;
 	#else
-	Color3(const Color3 & o) : b(o.b), g(o.g), r(o.r) { }
+	Color3(const Color3 & o) : r(o.r), g(o.g), b(o.b) { }
 	#endif
 	
 	/*!
@@ -126,9 +126,9 @@ public:
 	 */
 	template <typename O>
 	explicit Color3(const Color3<O> & o)
-		: b(Traits::convert(o.b))
+		: r(Traits::convert(o.r))
 		, g(Traits::convert(o.g))
-		, r(Traits::convert(o.r))
+		, b(Traits::convert(o.b))
 	{ }
 	
 	bool operator==(const Color3 & o) const {
