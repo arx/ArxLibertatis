@@ -123,5 +123,5 @@ void ARX_GLOBALMODS_Apply() {
 	fZclipp += (g_camera->focal - 310.f) * 5.f;
 	g_camera->cdepth = std::min(current.zclip, fZclipp);
 	
-	g_fogColor = current.depthcolor.to<u8>();
+	g_fogColor = Color(current.depthcolor);
 }
