@@ -138,7 +138,8 @@ void SecondaryInventoryHud::init() {
 static Entity * getSecondaryOrStealInvEntity() {
 	if(SecondaryInventory) {
 		return SecondaryInventory->io;
-	} else if(player.Interface & INTER_STEAL) {
+	}
+	if(player.Interface & INTER_STEAL) {
 		return ioSteal;
 	}
 	return NULL;
