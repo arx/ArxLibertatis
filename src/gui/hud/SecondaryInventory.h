@@ -73,6 +73,8 @@ public:
 		, ingame_inventory(NULL)
 		, m_canNotSteal(NULL)
 		, m_defaultBackground(NULL)
+		, m_fadeDirection(Fade_stable)
+		, m_fadePosition(0.f)
 	{ }
 	
 	void init();
