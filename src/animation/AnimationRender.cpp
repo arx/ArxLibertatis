@@ -600,10 +600,10 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 	
 	for(long o = 0; o < 3; o++) {
 		Vec3f temporary3D = t.rotation * eobj->vertexlist[face.vid[o]].norm;
-		float power= glm::clamp(1.f - glm::abs(temporary3D.z * 0.5f), 0.f, 1.f);
+		float power = glm::clamp(1.f - glm::abs(temporary3D.z * 0.5f), 0.f, 1.f);
 		tot += power * 255.f;
 		_ffr[o] = power * 255.f;
-		tvList[o].color = Color(halo.color * power).toRGBA();
+		tvList[o].color = (halo.color * power).toRGB();
 	}
 	
 	if(tot > 150.f) {
@@ -752,8 +752,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 			// TODO copy-paste
 			if(io && player.m_improve) {
 				
-				long lr = Color::fromRGBA(tvList[n].color).r;
-				float ffr = float(lr);
+				float lr = Color4f::fromRGBA(tvList[n].color).r;
 				
 				float dd = 1.f / tvList[n].w;
 
@@ -767,15 +766,10 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 				if(fr < 0.f) {
 					fr = 0.f;
 				} else {
-					fr = std::max(ffr, fr * 255.f);
+					fr = std::max(lr, fr);
 				}
 				
-				fr = std::min(fr, 255.f);
-				fb = std::min(fb * 255.f, 255.f);
-				u8 lfr = u8(fr);
-				u8 lfb = u8(fb);
-				u8 lfg = 0x1E;
-				tvList[n].color = Color(lfr, lfg, lfb, 255).toRGBA();
+				tvList[n].color = Color::rgb(fr, 0.118f, fb).toRGB();
 			}
 
 			// Transparent poly: storing info to draw later
@@ -926,15 +920,10 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 	
 	for(size_t o = 0; o < 3; o++) {
 		float tttz = glm::abs(eobj->vertexWorldPositions[paf[o]].norm.z) * 0.5f;
-		float power = 255.f - (255.f * tttz);
-		power *= (1.f - invisibility);
-		power = glm::clamp(power, 0.f, 255.f);
-		tot += power;
-		_ffr[o] = power;
-		u8 lfr = u8(curhalo->color.r * power);
-		u8 lfg = u8(curhalo->color.g * power);
-		u8 lfb = u8(curhalo->color.b * power);
-		colors[o] = Color(lfr, lfg, lfb, 255).toRGBA();
+		float power =  glm::clamp((1.f - tttz) * (1.f - invisibility), 0.f, 1.f);
+		tot += power * 255.f;
+		_ffr[o] = power * 255.f;
+		colors[o] = (curhalo->color * power).toRGB();
 	}
 	
 	if(tot > 260) {
