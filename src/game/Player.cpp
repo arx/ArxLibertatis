@@ -2328,7 +2328,7 @@ void ARX_PLAYER_Manage_Death() {
 	}
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
-	EERIEDrawBitmap(Rectf(g_size), 0.000091f, NULL, Color3f::gray(ratio).to<u8>());
+	EERIEDrawBitmap(Rectf(g_size), 0.000091f, NULL, Color::gray(ratio));
 }
 
 /*!
