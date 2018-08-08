@@ -85,7 +85,6 @@ private:
 	Vec3f m_fAngleMax;
 	Vec3f m_eSrc;
 	Vec3f m_eDest;
-	TextureContainer * m_tex_light;
 	GameDuration m_iTTL;
 	
 	struct CLightningNode {
