@@ -321,7 +321,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity * io) {
 					if(io->ioflags & IO_NPC) {
 						MakePlayerAppearsFX(io);
 						AddRandomSmoke(io, 50);
-						Color3f rgb = io->_npcdata->blood_color.to<float>();
+						Color3f rgb(io->_npcdata->blood_color);
 						Sphere sp = Sphere(io->pos, 200.f);
 						
 						long count = 6;
