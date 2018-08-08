@@ -1553,11 +1553,14 @@ void ARX_PLAYER_Manage_Visual() {
 	if(spells.ExistAnyInstanceForThisCaster(SPELL_FLYING_EYE, EntityHandle_Player)) {
 		ARX_PLAYER_Manage_Visual_End(alist[ANIM_MEDITATION], request3_anim, true, false);
 		return;
-	} else if(spells.getSpellOnTarget(io->index(), SPELL_LEVITATE)) {
+	}
+	
+	if(spells.getSpellOnTarget(io->index(), SPELL_LEVITATE)) {
 		ARX_PLAYER_Manage_Visual_End(alist[ANIM_LEVITATE], request3_anim, true, false);
 		return;
-	} else if(player.jumpphase != NotJumping) {
-		
+	}
+	
+	if(player.jumpphase != NotJumping) {
 		switch(player.jumpphase) {
 			case NotJumping:
 			break;
