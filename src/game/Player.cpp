@@ -2173,7 +2173,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			g_moveto = player.pos;
 			setPlayerPositionColor();
 			return;
-		} else {
+		}
 			
 			// Need to apply some physics/collision tests
 			player.physics.cyl.origin = player.basePosition();
@@ -2274,7 +2274,6 @@ void PlayerMovementIterate(float DeltaTime) {
 			
 			g_moveto = player.physics.cyl.origin + player.baseOffset();
 			d = glm::distance(player.pos, g_moveto);
-		}
 	} else {
 		Vec3f vect = g_moveto - player.pos;
 		float divv = glm::length(vect);
