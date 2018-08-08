@@ -24,7 +24,7 @@
 
 struct Camera;
 
-void AddQuakeFX(float intensity, GameDuration duration, float period, bool flags);
+void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound);
 void RemoveQuakeFX();
 
 void ManageQuakeFX(Camera * cam);
