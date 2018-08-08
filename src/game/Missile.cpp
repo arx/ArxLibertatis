@@ -72,8 +72,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 
-struct ARX_MISSILE
-{
+struct ARX_MISSILE {
+	
 	ARX_SPELLS_MISSILE_TYPE type;
 	Vec3f startpos;
 	Vec3f velocity;
@@ -83,6 +83,17 @@ struct ARX_MISSILE
 	GameDuration tolive;
 	LightHandle m_light;
 	EntityHandle owner;
+	
+	ARX_MISSILE()
+		: type(MISSILE_NONE)
+		, startpos(0.f)
+		, velocity(0.f)
+		, lastpos(0.f)
+		, timecreation(0)
+		, lastupdate(0)
+		, tolive(0)
+	{ }
+	
 };
 
 static const size_t MAX_MISSILES = 100;
