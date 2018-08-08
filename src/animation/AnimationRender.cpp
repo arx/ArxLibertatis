@@ -1318,11 +1318,11 @@ static void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBle
 	if(timm >= 300.f) {
 		animBlend->m_active = false;
 		return;
-	} else {
-		timm *= 1.0f / 300;
-		if(timm < 0.f || timm >= 1.f) {
-			return;
-		}
+	}
+	
+	timm *= 1.0f / 300;
+	if(timm < 0.f || timm >= 1.f) {
+		return;
 	}
 	
 	for(size_t i = 0; i < rig.bones.size(); i++) {
