@@ -84,15 +84,6 @@ inline u8 clipByte255(int value) {
 	return static_cast<u8>(value);
 }
 
-//! Clamp a value to the range [0, 255]
-inline u8 clipByte(int value) {
-	
-	// clamp negative values to zero
-	value &= -int(!(value < 0));
-	
-	return clipByte255(value);
-}
-
 inline long F2L_RoundUp(float val) {
 	return static_cast<long>(std::ceil(val));
 }
