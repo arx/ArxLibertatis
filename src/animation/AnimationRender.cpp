@@ -222,9 +222,9 @@ float Cedric_GetInvisibility(Entity * io) {
 	}
 	
 	float invisibility = io->invisibility;
-	
-	if (invisibility > 1.f)
+	if(invisibility > 1.f) {
 		invisibility -= 1.f;
+	}
 	
 	if(io != entities.player() && invisibility > 0.f && !EXTERNALVIEW) {
 		SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_INVISIBILITY);
@@ -235,6 +235,7 @@ float Cedric_GetInvisibility(Entity * io) {
 			}
 		}
 	}
+	
 	return invisibility;
 }
 
