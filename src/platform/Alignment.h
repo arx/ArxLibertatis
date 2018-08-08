@@ -197,19 +197,19 @@ struct aligned_allocator {
 		if(n > max_size()) {
 			throw std::bad_alloc();
 		}
-		return (pointer)AlignedAllocator<Alignment>::alloc_array(n * sizeof(value_type));
+		return static_cast<pointer>(AlignedAllocator<Alignment>::alloc_array(n * sizeof(value_type)));
 	}
 	
 	void deallocate(pointer p, size_type n) {
 		ARX_UNUSED(n);
-		AlignedAllocator<Alignment>::free_array((void *)p);
+		AlignedAllocator<Alignment>::free_array(p);
 	}
 	
 	#if ARX_HAVE_CXX11_VARIADIC_TEMPLATES && ARX_HAVE_CXX11_FORWARD
 	
 	template <class U, class... Args>
 	void construct(U * p, Args &&... args) {
-		::new((void *)p) U(std::forward<Args>(args)...);
+		::new(static_cast<void *>(p)) U(std::forward<Args>(args)...);
 	}
 	
 	template <class U>
@@ -227,16 +227,16 @@ struct aligned_allocator {
 	 */
 	template <class U>
 	void construct(U * p) {
-		::new((void *)p) U();
+		::new(static_cast<void *>(p)) U();
 	}
 	template <class U, class V0>
 	void construct(U * p, V0 && v0) {
-		::new((void *)p) U(v0);
+		::new(static_cast<void *>(p)) U(v0);
 	}
 	#endif
 	
 	void construct(pointer p, const_reference val) {
-		::new((void *)p) value_type(val);
+		::new(static_cast<void *>(p)) value_type(val);
 	}
 	
 	void destroy(pointer p) {
