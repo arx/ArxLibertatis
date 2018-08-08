@@ -163,16 +163,6 @@ public:
 		return T(val & 0xff) * (Traits::max() / ColorTraits<u8>::max());
 	}
 	
-	template <class O>
-	Color4<O> to(O a = ColorTraits<O>::max()) const {
-		return Color4<O>(scale<O>(r), scale<O>(g), scale<O>(b), a);
-	}
-	
-	template <class O>
-	static O scale(T val) {
-		return O(val * (ColorTraits<O>::max() / Traits::max()));
-	}
-	
 	static Color3 gray(float val) {
 		val *= (Traits::max() / ColorTraits<float>::max());
 		return Color3(T(val), T(val), T(val));
@@ -299,16 +289,6 @@ public:
 	
 	static Color4 fromBGRA(ColorBGRA bgra) {
 		return fromBGR(ColorBGR(bgra.t), C3::value(bgra.t >> 24));
-	}
-	
-	template <class O>
-	Color4<O> to() const {
-		return C3::to(scale<O>(a));
-	}
-	
-	template <class O>
-	static O scale(T val) {
-		return O(val * (ColorTraits<O>::max() / Traits::max()));
 	}
 	
 	static Color4 gray(float val, float a = ColorTraits<float>::max()) {
