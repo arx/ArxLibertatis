@@ -125,9 +125,11 @@ EntityHandle EntityManager::getById(const EntityId & id) const {
 	if(id.isSpecial()) {
 		if(id.className().empty()) {
 			return EntityHandle();
-		} else if(id.className() == "self" || id.className() == "me") {
+		}
+		if(id.className() == "self" || id.className() == "me") {
 			return EntityHandle_Self;
-		} else if(id.className() == "player") {
+		}
+		if(id.className() == "player") {
 			return EntityHandle_Player;
 		}
 	}
