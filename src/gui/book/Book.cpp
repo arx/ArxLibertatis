@@ -1361,12 +1361,13 @@ bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, f
 }
 
 Color StatsPage::attributeModToColor(float modValue, float baseValue) {
-	if(modValue < baseValue)
+	if(modValue < baseValue) {
 		return Color::red;
-	else if(modValue > baseValue)
+	}
+	if(modValue > baseValue) {
 		return Color::blue;
-	else
-		return Color::black;
+	}
+	return Color::black;
 }
 
 SpellsPage::SpellsPage()
