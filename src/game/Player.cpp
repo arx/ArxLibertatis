@@ -2207,13 +2207,13 @@ void PlayerMovementIterate(float DeltaTime) {
 		float PLAYER_CYLINDER_STEP = 40.f;
 		if(player.climbing) {
 			test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(), PLAYER_CYLINDER_STEP,
-											   CFLAG_EASY_SLIDING | CFLAG_CLIMBING | CFLAG_PLAYER);
+			                                   CFLAG_EASY_SLIDING | CFLAG_CLIMBING | CFLAG_PLAYER);
 			if(!COLLIDED_CLIMB_POLY) {
 				player.climbing = false;
 			}
 		} else {
 			test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(), PLAYER_CYLINDER_STEP,
-											   levitate | CFLAG_EASY_SLIDING | CFLAG_PLAYER);
+			                                   levitate | CFLAG_EASY_SLIDING | CFLAG_PLAYER);
 			
 			if(!test && !LAST_FIRM_GROUND && !TRUE_FIRM_GROUND) {
 				player.physics.velocity.x = 0.f;
@@ -2237,10 +2237,8 @@ void PlayerMovementIterate(float DeltaTime) {
 				player.physics.targetpos.x = player.physics.startpos.x;
 				player.physics.targetpos.z = player.physics.startpos.z;
 				if(player.physics.targetpos.y != player.physics.startpos.y) {
-					test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(),
-													   PLAYER_CYLINDER_STEP,
-													   levitate | CFLAG_EASY_SLIDING
-													   | CFLAG_PLAYER);
+					test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(), PLAYER_CYLINDER_STEP,
+					                                   levitate | CFLAG_EASY_SLIDING | CFLAG_PLAYER);
 					entities.player()->_npcdata->vvpos = -99999.f;
 				}
 			}
