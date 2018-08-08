@@ -138,11 +138,6 @@ public:
 		return O(val * (ColorLimits<O>::max() / Limits::max()));
 	}
 	
-	static Color3 grayb(u8 val) {
-		T v = T(val * T(Limits::max() / ColorLimits<u8>::max()));
-		return Color3(v, v, v);
-	}
-	
 	static Color3 gray(float val) {
 		val *= (Limits::max() / ColorLimits<float>::max());
 		return Color3(T(val), T(val), T(val));

@@ -76,7 +76,7 @@ void CheckboxWidget::render(bool mouseOver) {
 	m_label->render(mouseOver);
 	
 	TextureContainer * texture = (m_checked ? m_textureOn : m_textureOff);
-	Color color = m_enabled ? Color::white : Color::grayb(63);
+	Color color = m_enabled ? Color::white : Color::gray(0.25f);
 	
 	UseRenderState state(render2D().blendAdditive());
 	

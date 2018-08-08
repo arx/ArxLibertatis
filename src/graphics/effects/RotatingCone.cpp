@@ -85,7 +85,7 @@ void RotatingCone::Render() {
 		// TODO per-frame randomness
 		int col = Random::get(0, 80);
 		if(!g_gameTime.isPaused()) {
-			d3dv->color = Color::grayb(col).toRGB(col);
+			d3dv->color = Color::gray(float(col) / 255.f).toRGB(col);
 		}
 		
 		d3dv->uv.x = u;
