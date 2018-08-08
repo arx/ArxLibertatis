@@ -1156,14 +1156,14 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 		
 	}
 	
-		for(long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++) {
-			if(modifierName == equipinfo[i].name) {
-				io->_itemdata->equipitem->elements[i].value = val;
-				io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_NONE;
-				io->_itemdata->equipitem->elements[i].flags = flags;
-				return;
-			}
+	for(long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++) {
+		if(modifierName == equipinfo[i].name) {
+			io->_itemdata->equipitem->elements[i].value = val;
+			io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_NONE;
+			io->_itemdata->equipitem->elements[i].flags = flags;
+			return;
 		}
+	}
 }
 
 void ARX_EQUIPMENT_IdentifyAll() {
