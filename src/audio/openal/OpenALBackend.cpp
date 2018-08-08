@@ -585,7 +585,9 @@ bool OpenALBackend::isReverbSupported() {
 	
 	if(!hasEFX) {
 		return false;
-	} else if(effectEnabled) {
+	}
+	
+	if(effectEnabled) {
 		return true;
 	}
 	
