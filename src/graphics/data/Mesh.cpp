@@ -749,7 +749,8 @@ bool FastSceneLoad(const res::path & partial_path, Vec3f & trans) {
 		if(uncompressed.empty()) {
 			LogError << "Error decompressing scene data in " << file;
 			return false;
-		} else if(uncompressed.size() != size_t(uh->uncompressedsize)) {
+		}
+		if(uncompressed.size() != size_t(uh->uncompressedsize)) {
 			LogWarning << "Unexpected decompressed FTS size: " << uncompressed.size()
 			           << " != " << uh->uncompressedsize << " in " << file;
 		}
