@@ -217,7 +217,10 @@ extern bool EXTERNALVIEW;
 
 float Cedric_GetInvisibility(Entity * io) {
 	
-	if(io) {
+	if(!io) {
+		return 0.f;
+	}
+	
 		float invisibility = io->invisibility;
 
 		if (invisibility > 1.f)
@@ -233,10 +236,6 @@ float Cedric_GetInvisibility(Entity * io) {
 			}
 		}
 		return invisibility;
-	} else {
-		return 0.f;
-	}
-	
 }
 
 // TODO Move somewhere else
