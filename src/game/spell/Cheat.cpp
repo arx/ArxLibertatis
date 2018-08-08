@@ -383,9 +383,8 @@ void CheckMr() {
 			Vec2f pos = Vec2f(g_size.topRight()) + Vec2f(-128.f * g_sizeRatio.x, 0.f);
 			Vec2f size = Vec2f(128.f, 128.f) * g_sizeRatio;
 			Rectf rect = Rectf(pos, size.x, size.y);
-			Color3f color = Color3f::gray(0.5f + PULSATE * 0.1f);
 			UseRenderState state(render2D().blendAdditive());
-			EERIEDrawBitmap(rect, 0.0001f, Mr_tc, color.to<u8>());
+			EERIEDrawBitmap(rect, 0.0001f, Mr_tc, Color::gray(0.5f + PULSATE * 0.1f));
 		} else {
 			Mr_tc = TextureContainer::LoadUI("graph/particles/(fx)_mr");
 		}
