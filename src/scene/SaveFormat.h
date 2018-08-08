@@ -846,8 +846,8 @@ struct SavedEquipItemElement {
 	
 	SavedEquipItemElement & operator=(const IO_EQUIPITEM_ELEMENT & b) {
 		value = b.value;
-		flags = b.flags;
-		special = b.special;
+		flags = s16(b.flags); // TODO save/load flags
+		special = s16(b.special); // TODO save/load enum
 		return *this;
 	}
 	
