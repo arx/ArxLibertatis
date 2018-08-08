@@ -94,6 +94,8 @@ struct ColorTraits<float> {
 template <typename T>
 class Color3 {
 	
+	typedef ColorTraits<u8> ByteTraits;
+	
 public:
 	
 	typedef T type;
@@ -147,16 +149,18 @@ public:
 		return Color3(value(bgr.t >> 16), value(bgr.t >> 8), value(bgr.t));
 	}
 	
-	ColorRGBA toRGB(u8 _a = ColorTraits<u8>::max()) const {
-		return ColorRGBA(byteval(r) | (byteval(g) << 8) | (byteval(b) << 16) | (u32(_a) << 24));
+	ColorRGBA toRGB(u8 _a = ByteTraits::max()) const {
+		return ColorRGBA(u32(ByteTraits::convert(r))
+		                 | (u32(ByteTraits::convert(g)) << 8)
+		                 | (u32(ByteTraits::convert(b)) << 16)
+		                 | (u32(_a) << 24));
 	}
 	
-	ColorBGRA toBGR(u8 _a = ColorTraits<u8>::max()) const {
-		return ColorBGRA(byteval(b) | (byteval(g) << 8) | (byteval(r) << 16) | (u32(_a) << 24));
-	}
-	
-	static u32 byteval(T val) {
-		return u32(val * (ColorTraits<u8>::max() / Traits::max()));
+	ColorBGRA toBGR(u8 _a = ByteTraits::max()) const {
+		return ColorBGRA(u32(ByteTraits::convert(b))
+		                 | (u32(ByteTraits::convert(g)) << 8)
+		                 | (u32(ByteTraits::convert(r)) << 16)
+		                 | (u32(_a) << 24));
 	}
 	
 	static T value(u32 val) {
@@ -216,6 +220,7 @@ template <typename T>
 class Color4 : public Color3<T> {
 	
 	typedef Color3<T> C3;
+	typedef ColorTraits<u8> ByteTraits;
 	
 public:
 	
@@ -268,11 +273,11 @@ public:
 	}
 	
 	ColorRGBA toRGBA() const {
-		return C3::toRGB((u8)C3::byteval(a));
+		return C3::toRGB(ByteTraits::convert(a));
 	}
 	
 	ColorBGRA toBGRA() const {
-		return C3::toBGR((u8)C3::byteval(a));
+		return C3::toBGR(ByteTraits::convert(a));
 	}
 	
 	static Color4 fromRGB(ColorRGB rgb, T a = Traits::max()) {
