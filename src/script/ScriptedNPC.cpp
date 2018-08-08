@@ -285,7 +285,7 @@ public:
 		
 		DebugScript(' ' << r << ' ' << g << ' ' << b);
 		
-		context.getEntity()->_npcdata->blood_color = Color3f(r, g, b).to<u8>();
+		context.getEntity()->_npcdata->blood_color = Color::rgb(r, g, b);
 		
 		return Success;
 	}
