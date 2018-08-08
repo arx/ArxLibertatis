@@ -1125,9 +1125,13 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
                             const std::string & modifierName, float val,
                             EquipmentModifierFlags flags) {
 	
-	if (io == NULL) return;
+	if(io == NULL) {
+		return;
+	}
 
-	if (!(io->ioflags & IO_ITEM)) return;
+	if(!(io->ioflags & IO_ITEM)) {
+		return;
+	}
 	
 	if(!io->_itemdata->equipitem) {
 		io->_itemdata->equipitem = new IO_EQUIPITEM;
@@ -1136,24 +1140,20 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 	}
 	
 	if(special) {
-		for (long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++)
-		{
-			if (io->_itemdata->equipitem->elements[i].special == IO_SPECIAL_ELEM_NONE)
-			{
+		for(long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++) {
+			if(io->_itemdata->equipitem->elements[i].special == IO_SPECIAL_ELEM_NONE) {
 				if(modifierName == "paralyse") {
 					io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_PARALYZE;
 				} else if(modifierName == "drainlife") {
 					io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_DRAIN_LIFE;
 				}
-
+				
 				io->_itemdata->equipitem->elements[i].value = val;
 				io->_itemdata->equipitem->elements[i].flags = flags;
 				return;
 			}
 		}
-
 		return;
-		
 	}
 	
 	for(long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++) {
