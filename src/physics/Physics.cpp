@@ -885,7 +885,8 @@ void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 	if(timing < t_threshold) {
 		pbox->storedtiming = timing;
 		return;
-	} else {
+	}
+	
 		while(timing >= t_threshold) {
 			ComputeForces(pbox->vert);
 
@@ -895,7 +896,6 @@ void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 		}
 
 		pbox->storedtiming = timing;
-	}
 
 	if(pbox->stopcount < 16)
 		return;
