@@ -2174,106 +2174,106 @@ void PlayerMovementIterate(float DeltaTime) {
 			setPlayerPositionColor();
 			return;
 		}
+		
+		// Need to apply some physics/collision tests
+		player.physics.cyl.origin = player.basePosition();
+		player.physics.startpos = player.physics.cyl.origin;
+		player.physics.targetpos = player.physics.startpos + player.physics.velocity * DeltaTime;
+		
+		// Jump impulse
+		if(player.jumpphase == JumpAscending) {
 			
-			// Need to apply some physics/collision tests
-			player.physics.cyl.origin = player.basePosition();
-			player.physics.startpos = player.physics.cyl.origin;
-			player.physics.targetpos = player.physics.startpos + player.physics.velocity * DeltaTime;
-			
-			// Jump impulse
-			if(player.jumpphase == JumpAscending) {
-				
-				if(player.jumplastposition == -1.f) {
-					player.jumplastposition = 0;
-					player.jumpstarttime = g_platformTime.frameStart();
-				}
-				
-				const float jump_up_time = 200.f;
-				const float jump_up_height = 130.f;
-				const PlatformInstant now = g_platformTime.frameStart();
-				const float elapsed = toMs(now - player.jumpstarttime);
-				float position = glm::clamp(elapsed / jump_up_time, 0.f, 1.f);
-				
-				float p = (position - player.jumplastposition) * jump_up_height;
-				player.physics.targetpos.y -= p;
-				player.jumplastposition = position;
-				levitate = 0;
+			if(player.jumplastposition == -1.f) {
+				player.jumplastposition = 0;
+				player.jumpstarttime = g_platformTime.frameStart();
 			}
 			
-			bool test;
-			float PLAYER_CYLINDER_STEP = 40.f;
-			if(player.climbing) {
-				test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(), PLAYER_CYLINDER_STEP,
-				                                   CFLAG_EASY_SLIDING | CFLAG_CLIMBING | CFLAG_PLAYER);
-				if(!COLLIDED_CLIMB_POLY) {
-					player.climbing = false;
-				}
-			} else {
-				test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(), PLAYER_CYLINDER_STEP,
-				                                   levitate | CFLAG_EASY_SLIDING | CFLAG_PLAYER);
-				
-				if(!test && !LAST_FIRM_GROUND && !TRUE_FIRM_GROUND) {
-					player.physics.velocity.x = 0.f;
-					player.physics.velocity.z = 0.f;
-					if(FALLING_TIME > 0 && player.falling) {
-						float fh = player.pos.y - Falling_Height;
-						if(fh > 400.f) {
-							float dmg = (fh - 400.f) * (1.f / 15);
-							if(dmg > 0.f) {
-								Falling_Height = (player.pos.y + Falling_Height * 2) * (1.f / 3);
-								ARX_DAMAGES_DamagePlayer(dmg, 0, EntityHandle());
-								ARX_DAMAGES_DamagePlayerEquipment(dmg);
-							}
+			const float jump_up_time = 200.f;
+			const float jump_up_height = 130.f;
+			const PlatformInstant now = g_platformTime.frameStart();
+			const float elapsed = toMs(now - player.jumpstarttime);
+			float position = glm::clamp(elapsed / jump_up_time, 0.f, 1.f);
+			
+			float p = (position - player.jumplastposition) * jump_up_height;
+			player.physics.targetpos.y -= p;
+			player.jumplastposition = position;
+			levitate = 0;
+		}
+		
+		bool test;
+		float PLAYER_CYLINDER_STEP = 40.f;
+		if(player.climbing) {
+			test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(), PLAYER_CYLINDER_STEP,
+											   CFLAG_EASY_SLIDING | CFLAG_CLIMBING | CFLAG_PLAYER);
+			if(!COLLIDED_CLIMB_POLY) {
+				player.climbing = false;
+			}
+		} else {
+			test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(), PLAYER_CYLINDER_STEP,
+											   levitate | CFLAG_EASY_SLIDING | CFLAG_PLAYER);
+			
+			if(!test && !LAST_FIRM_GROUND && !TRUE_FIRM_GROUND) {
+				player.physics.velocity.x = 0.f;
+				player.physics.velocity.z = 0.f;
+				if(FALLING_TIME > 0 && player.falling) {
+					float fh = player.pos.y - Falling_Height;
+					if(fh > 400.f) {
+						float dmg = (fh - 400.f) * (1.f / 15);
+						if(dmg > 0.f) {
+							Falling_Height = (player.pos.y + Falling_Height * 2) * (1.f / 3);
+							ARX_DAMAGES_DamagePlayer(dmg, 0, EntityHandle());
+							ARX_DAMAGES_DamagePlayerEquipment(dmg);
 						}
 					}
 				}
-				
-				if(!test && player.jumpphase != NotJumping) {
-					player.physics.startpos.x = player.physics.cyl.origin.x = player.pos.x;
-					player.physics.startpos.z = player.physics.cyl.origin.z = player.pos.z;
-					player.physics.targetpos.x = player.physics.startpos.x;
-					player.physics.targetpos.z = player.physics.startpos.z;
-					if(player.physics.targetpos.y != player.physics.startpos.y) {
-						test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(),
-						                                   PLAYER_CYLINDER_STEP,
-						                                   levitate | CFLAG_EASY_SLIDING
-						                                   | CFLAG_PLAYER);
-						entities.player()->_npcdata->vvpos = -99999.f;
-					}
-				}
 			}
 			
-			if(COLLIDED_CLIMB_POLY) {
-				player.climbing = true;
-			}
-			
-			if(player.climbing) {
-				if(player.m_currentMovement
-				   && player.m_currentMovement != PLAYER_ROTATE
-				   && !(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD)
-				   && !(player.m_currentMovement & PLAYER_MOVE_WALK_BACKWARD)
-				) {
-					player.climbing = false;
-				}
-				
-				if((player.m_currentMovement & PLAYER_MOVE_WALK_BACKWARD) && !test) {
-					player.climbing = false;
-				}
-				
-				if(player.climbing) {
-					player.jumpphase = NotJumping;
-					player.falling = false;
-					FALLING_TIME = 0;
-					Falling_Height = player.pos.y;
+			if(!test && player.jumpphase != NotJumping) {
+				player.physics.startpos.x = player.physics.cyl.origin.x = player.pos.x;
+				player.physics.startpos.z = player.physics.cyl.origin.z = player.pos.z;
+				player.physics.targetpos.x = player.physics.startpos.x;
+				player.physics.targetpos.z = player.physics.startpos.z;
+				if(player.physics.targetpos.y != player.physics.startpos.y) {
+					test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(),
+													   PLAYER_CYLINDER_STEP,
+													   levitate | CFLAG_EASY_SLIDING
+													   | CFLAG_PLAYER);
+					entities.player()->_npcdata->vvpos = -99999.f;
 				}
 			}
-			
-			if(player.jumpphase == JumpAscending) {
+		}
+		
+		if(COLLIDED_CLIMB_POLY) {
+			player.climbing = true;
+		}
+		
+		if(player.climbing) {
+			if(player.m_currentMovement
+			   && player.m_currentMovement != PLAYER_ROTATE
+			   && !(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD)
+			   && !(player.m_currentMovement & PLAYER_MOVE_WALK_BACKWARD)
+			) {
 				player.climbing = false;
 			}
 			
-			g_moveto = player.physics.cyl.origin + player.baseOffset();
-			d = glm::distance(player.pos, g_moveto);
+			if((player.m_currentMovement & PLAYER_MOVE_WALK_BACKWARD) && !test) {
+				player.climbing = false;
+			}
+			
+			if(player.climbing) {
+				player.jumpphase = NotJumping;
+				player.falling = false;
+				FALLING_TIME = 0;
+				Falling_Height = player.pos.y;
+			}
+		}
+		
+		if(player.jumpphase == JumpAscending) {
+			player.climbing = false;
+		}
+		
+		g_moveto = player.physics.cyl.origin + player.baseOffset();
+		d = glm::distance(player.pos, g_moveto);
 	} else {
 		Vec3f vect = g_moveto - player.pos;
 		float divv = glm::length(vect);
