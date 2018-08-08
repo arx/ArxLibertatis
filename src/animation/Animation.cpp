@@ -536,10 +536,10 @@ Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx) {
 	
 	if(!eanim || !eanim->anims[alt_idx] || eanim->anims[alt_idx]->frames.empty()) {
 		return Vec3f(0.f);
-	} else {
-		size_t idx = eanim->anims[alt_idx]->frames.size() - 1;
-		return eanim->anims[alt_idx]->frames[idx].translate;
 	}
+	
+	size_t idx = eanim->anims[alt_idx]->frames.size() - 1;
+	return eanim->anims[alt_idx]->frames[idx].translate;
 }
 
 /*!
