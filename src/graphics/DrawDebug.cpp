@@ -156,7 +156,7 @@ static void drawDebugLights() {
 			continue;
 		}
 		
-		EERIEDrawSprite(light->pos, 11.f, g_lightSourceTexture, light->rgb.to<u8>(), 0.5f);
+		EERIEDrawSprite(light->pos, 11.f, g_lightSourceTexture, Color(light->rgb), 0.5f);
 	}
 	
 }
