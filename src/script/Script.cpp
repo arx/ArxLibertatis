@@ -194,15 +194,16 @@ std::ostream & operator<<(std::ostream & os, const ScriptEventName & event) {
 	
 	if(event == SM_EXECUTELINE) {
 		return os << "executeline";
-	} else if(event == SM_DUMMY)  {
+	}
+	if(event == SM_DUMMY)  {
 		return os << "dummy event";
-	} else if(!event.getName().empty()) {
+	}
+	if(!event.getName().empty()) {
 		return os << "on " << event.getName() << " event";
-	} else {
-		arx_assert(event.getId() < SM_MAXCMD && AS_EVENT[event.getId()].name.length() > 3);
-		return os << AS_EVENT[event.getId()].name << " event";
 	}
 	
+	arx_assert(event.getId() < SM_MAXCMD && AS_EVENT[event.getId()].name.length() > 3);
+	return os << AS_EVENT[event.getId()].name << " event";
 }
 
 ScriptParameters ScriptParameters::parse(const std::string & str) {
