@@ -334,11 +334,10 @@ bool SDL2InputBackend::setMouseMode(Mouse::Mode mode) {
 	
 	if(SDL_SetRelativeMouseMode(mode == Mouse::Relative ? SDL_TRUE : SDL_FALSE) == 0) {
 		return true;
-	} else {
-		LogWarning << "Could not enable relative mouse mode: " << SDL_GetError();
-		return false;
 	}
 	
+	LogWarning << "Could not enable relative mouse mode: " << SDL_GetError();
+	return false;
 }
 
 bool SDL2InputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
