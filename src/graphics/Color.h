@@ -164,8 +164,8 @@ public:
 	}
 	
 	static Color3 gray(float val) {
-		val *= (Traits::max() / ColorTraits<float>::max());
-		return Color3(T(val), T(val), T(val));
+		T value = Traits::convert(val);
+		return Color3(value, value, value);
 	}
 	
 	static Color3 rgb(float r, float g, float b) {
