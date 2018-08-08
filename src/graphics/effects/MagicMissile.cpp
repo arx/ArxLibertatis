@@ -202,7 +202,7 @@ void CMagicMissile::Render() {
 				
 				c = glm::clamp(c, 0.f, 1.f);
 				
-				Color color = (m_trailColor * (c * alpha)).to<u8>();
+				Color color(m_trailColor * (c * alpha));
 
 				if(fsize < 0.5f)
 					fsize = fsize * 2 * 3;
