@@ -1,24 +1,24 @@
 
+int my_function() {
+	return 0;
+}
+
+template <typename Arg0, typename... Args>
+int my_function(Arg0 arg0, Args... args) {
+	(void)arg0;
+	return my_function(args...);
+}
+
+
+template <typename... Args>
 struct my_struct {
 	
-	my_struct(int value);
-	
-	my_struct() = default;
-	~my_struct() = default;
-	
-	my_struct(const my_struct & o) = default;
-	
-	my_struct & operator=(const my_struct & o) = default;
+	my_struct(Args... args) : value(my_function(args...)) { }
 	
 	int value;
 	
 };
 
 int main() {
-	
-	my_struct a(0);
-	my_struct b(a);
-	a = b;
-	
-	return a.value;
+	return my_struct<int, char, const char *>(0, '1', "2").value;
 }
