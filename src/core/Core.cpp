@@ -1062,13 +1062,13 @@ void ManageCombatModeAnimationsEND() {
 extern TextureContainer * ombrignon;
 
 void DrawImproveVisionInterface() {
-
+	
 	if(ombrignon) {
 		float mod = 0.6f + PULSATE * 0.35f;
-		Color3f color = Color3f((0.5f + PULSATE * 0.1f) * mod, 0.f, 0.f);
 		UseRenderState state(render2D().blendAdditive());
-		EERIEDrawBitmap(Rectf(g_size), 0.0001f, ombrignon, color.to<u8>());
+		EERIEDrawBitmap(Rectf(g_size), 0.0001f, ombrignon, Color::red * ((0.5f + PULSATE * 0.1f) * mod));
 	}
+	
 }
 
 void DANAE_StartNewQuest()
