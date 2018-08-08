@@ -80,7 +80,6 @@ void ManageFade() {
 	
 	UseRenderState state(render2D());
 	
-	Color color = Color4f(FADECOLOR, Visibility).to<u8>();
-	EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, color);
+	EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color(Color4f(FADECOLOR, Visibility)));
 	
 }
