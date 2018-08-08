@@ -1111,8 +1111,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 				bool valid = true;
 				for(int k = 0; k < to; k++) {
 					
-					long lr = Color::fromRGBA(ep->color[k]).r;
-					float ffr = float(lr);
+					float lr = Color4f::fromRGBA(ep->color[k]).r;
 					
 					Vec4f p = worldToClipSpace(ep->v[1].p);
 					if(p.w <= 0.f || p.z <= 0.f) {
@@ -1128,17 +1127,10 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 					if(fr < 0.f) {
 						fr = 0.f;
 					} else {
-						fr = std::max(ffr, fr * 255.f);
+						fr = std::max(lr, fr);
 					}
 					
-					fr = std::min(fr, 255.f);
-					fb *= 255.f;
-					fb = std::min(fb, 255.f);
-					u8 lfr = u8(fr);
-					u8 lfb = u8(fb);
-					u8 lfg = 0x1E;
-					
-					ep->color[k] = Color(lfr, lfg, lfb, 255).toRGBA();
+					ep->color[k] = Color3f(fr, 0.12f, fb).toRGB();
 				}
 				if(!valid) {
 					continue;
