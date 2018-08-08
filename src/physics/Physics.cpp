@@ -547,12 +547,24 @@ static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, const EER
 }
 
 static Material polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
-	if(ep.type & POLY_METAL)  return MATERIAL_METAL;
-	if(ep.type & POLY_WOOD)   return MATERIAL_WOOD;
-	if(ep.type & POLY_STONE)  return MATERIAL_STONE;
-	if(ep.type & POLY_GRAVEL) return MATERIAL_GRAVEL;
-	if(ep.type & POLY_WATER)  return MATERIAL_WATER;
-	if(ep.type & POLY_EARTH)  return MATERIAL_EARTH;
+	if(ep.type & POLY_METAL) {
+		return MATERIAL_METAL;
+	}
+	if(ep.type & POLY_WOOD) {
+		return MATERIAL_WOOD;
+	}
+	if(ep.type & POLY_STONE) {
+		return MATERIAL_STONE;
+	}
+	if(ep.type & POLY_GRAVEL) {
+		return MATERIAL_GRAVEL;
+	}
+	if(ep.type & POLY_WATER) {
+		return MATERIAL_WATER;
+	}
+	if(ep.type & POLY_EARTH) {
+		return MATERIAL_EARTH;
+	}
 	return MATERIAL_STONE;
 }
 
