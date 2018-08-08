@@ -671,7 +671,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 			vert[3].p.z += 0.0001f * vert[3].w;
 			
 			vert[1].color = Color::black.toRGB();
-			vert[2].color = ((halo.flags & HALO_NEGATIVE) ? Color::none : Color(Color::black)).toRGBA();
+			vert[2].color = ((halo.flags & HALO_NEGATIVE) ? Color::none : Color::black).toRGBA();
 			
 			Halo_AddVertices(vert);
 		}
@@ -1004,7 +1004,7 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 			
 			vert[0].color = colors[first];
 			vert[1].color = Color::black.toRGB();
-			vert[2].color = ((curhalo->flags & HALO_NEGATIVE) ? Color::none : Color(Color::black)).toRGBA();
+			vert[2].color = ((curhalo->flags & HALO_NEGATIVE) ? Color::none : Color::black).toRGBA();
 			vert[3].color = colors[second];
 			
 			Halo_AddVertices(vert);

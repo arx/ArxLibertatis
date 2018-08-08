@@ -228,6 +228,15 @@ public:
 	
 	T a;
 	
+	static const Color4 black;
+	static const Color4 white;
+	static const Color4 red;
+	static const Color4 blue;
+	static const Color4 green;
+	static const Color4 yellow;
+	static const Color4 cyan;
+	static const Color4 magenta;
+	
 	//! A fully transparent, black color.
 	static const Color4 none;
 	
@@ -313,6 +322,23 @@ public:
 	}
 	
 };
+
+template <typename T>
+const Color4<T> Color4<T>::black(T(0), T(0), T(0));
+template <typename T>
+const Color4<T> Color4<T>::white(ColorTraits<T>::max(), ColorTraits<T>::max(), ColorTraits<T>::max());
+template <typename T>
+const Color4<T> Color4<T>::red(ColorTraits<T>::max(), T(0), T(0));
+template <typename T>
+const Color4<T> Color4<T>::blue(T(0), T(0), ColorTraits<T>::max());
+template <typename T>
+const Color4<T> Color4<T>::green(T(0), ColorTraits<T>::max(), T(0));
+template <typename T>
+const Color4<T> Color4<T>::yellow(ColorTraits<T>::max(), ColorTraits<T>::max(), T(0));
+template <typename T>
+const Color4<T> Color4<T>::magenta(ColorTraits<T>::max(), T(0), ColorTraits<T>::max());
+template <typename T>
+const Color4<T> Color4<T>::cyan(T(0), ColorTraits<T>::max(), ColorTraits<T>::max());
 
 template <typename T>
 const Color4<T> Color4<T>::none(Color3<T>::black, T(0));
