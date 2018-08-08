@@ -84,11 +84,13 @@ public:
 				DebugScript(' ' << options << ' ' << command);
 				ARX_NPC_Behaviour_Stack(io);
 				return Success;
-			} else if(command == "unstack") {
+			}
+			if(command == "unstack") {
 				DebugScript(' ' << options << ' ' << command);
 				ARX_NPC_Behaviour_UnStack(io);
 				return Success;
-			} else if(command == "unstackall") {
+			}
+			if(command == "unstackall") {
 				DebugScript(' ' << options << ' ' << command);
 				ARX_NPC_Behaviour_Reset(io);
 				return Success;
