@@ -526,7 +526,7 @@ bool Config::save() {
 
 static Vec2i parseResolution(const std::string & resolution) {
 	
-	Vec2i res(0.f);
+	Vec2i res(0);
 	
 	std::istringstream iss(resolution);
 	iss >> res.x;
