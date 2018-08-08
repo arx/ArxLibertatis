@@ -1154,7 +1154,8 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 
 		return;
 		
-	} else {
+	}
+	
 		for(long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++) {
 			if(modifierName == equipinfo[i].name) {
 				io->_itemdata->equipitem->elements[i].value = val;
@@ -1163,7 +1164,6 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 				return;
 			}
 		}
-	}
 }
 
 void ARX_EQUIPMENT_IdentifyAll() {
