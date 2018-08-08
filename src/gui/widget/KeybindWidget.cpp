@@ -109,7 +109,7 @@ void KeybindWidget::render(bool mouseOver) {
 		if(mainApp->getWindow()->hasFocus()) {
 			blink = timeWaveSquare(g_platformTime.frameStart(), PlatformDurationMs(400));
 		}
-		color = blink ? Color(255, 0, 0) : Color(50, 0, 0);
+		color = blink ? Color::white : (Color::red * 0.2f);
 	} else if(!m_enabled) {
 		color = Color::gray(0.5f);
 	} else if(mouseOver) {
