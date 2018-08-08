@@ -142,11 +142,15 @@ public:
 	}
 	
 	static Color3 fromRGB(ColorRGB rgb) {
-		return Color3(value(rgb.t), value(rgb.t >> 8), value(rgb.t >> 16));
+		return Color3(Traits::convert(u8(rgb.t)),
+		              Traits::convert(u8(rgb.t >> 8)),
+		              Traits::convert(u8(rgb.t >> 16)));
 	}
 	
 	static Color3 fromBGR(ColorBGR bgr) {
-		return Color3(value(bgr.t >> 16), value(bgr.t >> 8), value(bgr.t));
+		return Color3(Traits::convert(u8(bgr.t >> 16)),
+		              Traits::convert(u8(bgr.t >> 8)),
+		              Traits::convert(u8(bgr.t)));
 	}
 	
 	ColorRGBA toRGB(u8 _a = ByteTraits::max()) const {
@@ -161,10 +165,6 @@ public:
 		                 | (u32(ByteTraits::convert(g)) << 8)
 		                 | (u32(ByteTraits::convert(r)) << 16)
 		                 | (u32(_a) << 24));
-	}
-	
-	static T value(u32 val) {
-		return T(val & 0xff) * (Traits::max() / ColorTraits<u8>::max());
 	}
 	
 	static Color3 gray(float val) {
@@ -289,11 +289,11 @@ public:
 	}
 	
 	static Color4 fromRGBA(ColorRGBA rgba) {
-		return fromRGB(ColorRGB(rgba.t), C3::value(rgba.t >> 24));
+		return fromRGB(ColorRGB(rgba.t), Traits::convert(u8(rgba.t >> 24)));
 	}
 	
 	static Color4 fromBGRA(ColorBGRA bgra) {
-		return fromBGR(ColorBGR(bgra.t), C3::value(bgra.t >> 24));
+		return fromBGR(ColorBGR(bgra.t), Traits::convert(u8(bgra.t >> 24)));
 	}
 	
 	static Color4 gray(float val, float a = ColorTraits<float>::max()) {
