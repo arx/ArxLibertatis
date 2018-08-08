@@ -221,21 +221,21 @@ float Cedric_GetInvisibility(Entity * io) {
 		return 0.f;
 	}
 	
-		float invisibility = io->invisibility;
-
-		if (invisibility > 1.f)
-			invisibility -= 1.f;
-
-		if(io != entities.player() && invisibility > 0.f && !EXTERNALVIEW) {
-			SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_INVISIBILITY);
-			if(spell) {
-				if(player.m_skillFull.intuition > spell->m_level * 10) {
-					invisibility -= player.m_skillFull.intuition * (1.0f / 100) + spell->m_level * (1.0f / 10);
-					invisibility = glm::clamp(invisibility, 0.1f, 1.f);
-				}
+	float invisibility = io->invisibility;
+	
+	if (invisibility > 1.f)
+		invisibility -= 1.f;
+	
+	if(io != entities.player() && invisibility > 0.f && !EXTERNALVIEW) {
+		SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_INVISIBILITY);
+		if(spell) {
+			if(player.m_skillFull.intuition > spell->m_level * 10) {
+				invisibility -= player.m_skillFull.intuition * (1.0f / 100) + spell->m_level * (1.0f / 10);
+				invisibility = glm::clamp(invisibility, 0.1f, 1.f);
 			}
 		}
-		return invisibility;
+	}
+	return invisibility;
 }
 
 // TODO Move somewhere else
