@@ -817,10 +817,9 @@ int Input::getMouseButtonClicked() const {
 	
 	if(iWheelDir < 0) {
 		return Mouse::Wheel_Down;
-	} else {
-		if(iWheelDir > 0) {
-			return Mouse::Wheel_Up;
-		}
+	}
+	if(iWheelDir > 0) {
+		return Mouse::Wheel_Up;
 	}
 	
 	return 0;
