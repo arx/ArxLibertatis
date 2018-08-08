@@ -156,7 +156,8 @@ static Color CalculLight(CinematicLight * light, Vec2f pos, Color col) {
 	
 	if(ra > light->fallout) {
 		return (col * LightRND);
-	} else {
+	}
+	
 		Color3f color;
 
 		if(ra < light->fallin) {
@@ -171,7 +172,6 @@ static Color CalculLight(CinematicLight * light, Vec2f pos, Color col) {
 		in.g = std::min(in.g + (int)color.g, 255);
 		in.b = std::min(in.b + (int)color.b, 255);
 		return in;
-	}
 }
 
 static Vec3f TransformLocalVertex(const Vec2f & vbase, const Vec3f & LocalPos, float LocalSin, float LocalCos) {
