@@ -271,7 +271,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 				}
 				
 				if(interp != 1.f) {
-					u8 iinterp = u8(interp * (Color::Limits::max() / ColorLimits<float>::max()));
+					u8 iinterp = Color::Traits::convert(interp);
 					Color color = Color::fromRGBA(AllTLVertex[uvs->indvertex].color);
 					color.a = std::min(color.a, iinterp);
 					AllTLVertex[uvs->indvertex].color = color.toRGBA();

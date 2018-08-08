@@ -23,6 +23,8 @@
 #include <limits>
 #include <algorithm>
 
+#include <glm/glm.hpp>
+
 #include "platform/Platform.h"
 
 template <typename TAG, typename T>
@@ -57,28 +59,45 @@ ARX_STATIC_ASSERT(sizeof(ColorBGRA) == sizeof(u32), "");
 const ColorRGBA ColorRGBA_ZERO = ColorRGBA(0);
 
 
-template <class T>
+template <typename T>
 class Color4;
 
-template <class T>
-struct ColorLimits {
+/*!
+ * Integer colors use the range [0, std::numeric_limits<T>::max()] and clamp values into that range.
+ */
+template <typename T>
+struct ColorTraits {
 	static T max() { return std::numeric_limits<T>::max(); }
+	template <typename O>
+	static T clamp(O value) { return T(glm::clamp(value, O(0), O(max()))); }
+	template <typename O>
+	static T convert(O value) { return clamp(value * (max() / ColorTraits<O>::max())); }
+	static T convert(T value) { return value; }
 };
+
+/*!
+ * Float colors use the range [0, 1.f] but don't clamp values.
+ */
 template <>
-struct ColorLimits<float> {
+struct ColorTraits<float> {
 	static float max() { return 1.f; }
+	template <typename O>
+	static float convert(O value) { return value * (max() / float(ColorTraits<O>::max())); }
+	static float convert(float value) { return value; }
 };
+
+// TODO add clamping to more color operations
 
 /*!
  * A color with red, blue and green components.
  */
-template <class T>
+template <typename T>
 class Color3 {
 	
 public:
 	
 	typedef T type;
-	typedef ColorLimits<T> Limits;
+	typedef ColorTraits<T> Traits;
 	
 	T b;
 	T g;
@@ -112,35 +131,39 @@ public:
 		return Color3(value(bgr.t >> 16), value(bgr.t >> 8), value(bgr.t));
 	}
 	
-	ColorRGBA toRGB(u8 _a = ColorLimits<u8>::max()) const {
+	ColorRGBA toRGB(u8 _a = ColorTraits<u8>::max()) const {
 		return ColorRGBA(byteval(r) | (byteval(g) << 8) | (byteval(b) << 16) | (u32(_a) << 24));
 	}
 	
-	ColorBGRA toBGR(u8 _a = ColorLimits<u8>::max()) const {
+	ColorBGRA toBGR(u8 _a = ColorTraits<u8>::max()) const {
 		return ColorBGRA(byteval(b) | (byteval(g) << 8) | (byteval(r) << 16) | (u32(_a) << 24));
 	}
 	
 	static u32 byteval(T val) {
-		return u32(val * (ColorLimits<u8>::max() / Limits::max()));
+		return u32(val * (ColorTraits<u8>::max() / Traits::max()));
 	}
 	
 	static T value(u32 val) {
-		return T(val & 0xff) * (Limits::max() / ColorLimits<u8>::max());
+		return T(val & 0xff) * (Traits::max() / ColorTraits<u8>::max());
 	}
 	
 	template <class O>
-	Color4<O> to(O a = ColorLimits<O>::max()) const {
+	Color4<O> to(O a = ColorTraits<O>::max()) const {
 		return Color4<O>(scale<O>(r), scale<O>(g), scale<O>(b), a);
 	}
 	
 	template <class O>
 	static O scale(T val) {
-		return O(val * (ColorLimits<O>::max() / Limits::max()));
+		return O(val * (ColorTraits<O>::max() / Traits::max()));
 	}
 	
 	static Color3 gray(float val) {
-		val *= (Limits::max() / ColorLimits<float>::max());
+		val *= (Traits::max() / ColorTraits<float>::max());
 		return Color3(T(val), T(val), T(val));
+	}
+	
+	static Color3 rgb(float r, float g, float b) {
+		return Color3(Traits::convert(r), Traits::convert(g), Traits::convert(b));
 	}
 	
 	Color3 operator*(float factor) const {
@@ -163,34 +186,34 @@ public:
 	
 };
 
-template <class T>
+template <typename T>
 const Color3<T> Color3<T>::black(T(0), T(0), T(0));
-template <class T>
-const Color3<T> Color3<T>::white(ColorLimits<T>::max(), ColorLimits<T>::max(), ColorLimits<T>::max());
-template <class T>
-const Color3<T> Color3<T>::red(ColorLimits<T>::max(), T(0), T(0));
-template <class T>
-const Color3<T> Color3<T>::blue(T(0), T(0), ColorLimits<T>::max());
-template <class T>
-const Color3<T> Color3<T>::green(T(0), ColorLimits<T>::max(), T(0));
-template <class T>
-const Color3<T> Color3<T>::yellow(ColorLimits<T>::max(), ColorLimits<T>::max(), T(0));
-template <class T>
-const Color3<T> Color3<T>::magenta(ColorLimits<T>::max(), T(0), ColorLimits<T>::max());
-template <class T>
-const Color3<T> Color3<T>::cyan(T(0), ColorLimits<T>::max(), ColorLimits<T>::max());
+template <typename T>
+const Color3<T> Color3<T>::white(ColorTraits<T>::max(), ColorTraits<T>::max(), ColorTraits<T>::max());
+template <typename T>
+const Color3<T> Color3<T>::red(ColorTraits<T>::max(), T(0), T(0));
+template <typename T>
+const Color3<T> Color3<T>::blue(T(0), T(0), ColorTraits<T>::max());
+template <typename T>
+const Color3<T> Color3<T>::green(T(0), ColorTraits<T>::max(), T(0));
+template <typename T>
+const Color3<T> Color3<T>::yellow(ColorTraits<T>::max(), ColorTraits<T>::max(), T(0));
+template <typename T>
+const Color3<T> Color3<T>::magenta(ColorTraits<T>::max(), T(0), ColorTraits<T>::max());
+template <typename T>
+const Color3<T> Color3<T>::cyan(T(0), ColorTraits<T>::max(), ColorTraits<T>::max());
 
 /*!
  * A color with red, blue, green and alpha components.
  */
-template <class T>
+template <typename T>
 class Color4 : public Color3<T> {
 	
 	typedef Color3<T> C3;
 	
 public:
 	
-	typedef ColorLimits<T> Limits;
+	typedef ColorTraits<T> Traits;
 	
 	T a;
 	
@@ -198,11 +221,11 @@ public:
 	static const Color4 none;
 	
 	Color4() : C3(), a(T(0)) { }
-	Color4(T _r, T _g, T _b, T _a = Limits::max()) : C3(_r, _g, _b), a(_a) { }
-	/* implicit */ Color4(const C3 & o, T _a = Limits::max()) : C3(o), a(_a) { }
+	Color4(T _r, T _g, T _b, T _a = Traits::max()) : C3(_r, _g, _b), a(_a) { }
+	/* implicit */ Color4(const C3 & o, T _a = Traits::max()) : C3(o), a(_a) { }
 	
 	Color4 & operator=(const C3 & o) {
-		C3::operator=(o), a = Limits::max();
+		C3::operator=(o), a = Traits::max();
 		return *this;
 	}
 	
@@ -222,11 +245,11 @@ public:
 		return C3::toBGR((u8)C3::byteval(a));
 	}
 	
-	static Color4 fromRGB(ColorRGB rgb, T a = Limits::max()) {
+	static Color4 fromRGB(ColorRGB rgb, T a = Traits::max()) {
 		return Color4(C3::fromRGB(rgb), a);
 	}
 	
-	static Color4 fromBGR(ColorBGR bgr, T a = Limits::max()) {
+	static Color4 fromBGR(ColorBGR bgr, T a = Traits::max()) {
 		return Color4(C3::fromBGR(bgr), a);
 	}
 	
@@ -245,7 +268,19 @@ public:
 	
 	template <class O>
 	static O scale(T val) {
-		return O(val * (ColorLimits<O>::max() / Limits::max()));
+		return O(val * (ColorTraits<O>::max() / Traits::max()));
+	}
+	
+	static Color4 gray(float val, float a = ColorTraits<float>::max()) {
+		return Color4(C3::gray(val), Traits::convert(a));
+	}
+	
+	static Color4 rgb(float r, float g, float b) {
+		return Color4(C3::rgb(r, g, b));
+	}
+	
+	static Color4 rgba(float r, float g, float b, float a) {
+		return Color4(C3::rgb(r, g, b), Traits::convert(a));
 	}
 	
 	Color4 operator*(float factor) const {
@@ -254,9 +289,8 @@ public:
 	
 };
 
-template <class T>
+template <typename T>
 const Color4<T> Color4<T>::none(Color3<T>::black, T(0));
-
 
 typedef Color3<float> Color3f;
 typedef Color4<float> Color4f;
@@ -291,7 +325,7 @@ Color3<T> operator-(Color3<T> c0, Color3<T> c1) {
 }
 template <typename T>
 Color3<T> operator*(Color3<T> c0, Color3<T> c1) {
-	T m = ColorLimits<T>::max();
+	T m = ColorTraits<T>::max();
 	return Color3<T>(c0.r * c1.r / m, c0.g * c1.g / m, c0.b * c1.b / m);
 }
 template <typename T>
@@ -309,7 +343,7 @@ Color4<T> operator-(Color4<T> c0, Color4<T> c1) {
 }
 template <typename T>
 Color4<T> operator*(Color4<T> c0, Color4<T> c1) {
-	T m = ColorLimits<T>::max();
+	T m = ColorTraits<T>::max();
 	return Color4<T>(c0.r * c1.r / m, c0.g * c1.g / m, c0.b * c1.b / m, c0.a * c1.a / m);
 }
 template <typename T>
