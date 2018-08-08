@@ -195,15 +195,8 @@ Vec2f getWaterFxUvOffset(float watereffect, const Vec3f & odtv) {
 }
 
 static void ApplyLavaGlowToVertex(const Vec3f & odtv, ColorRGBA & color, float power) {
-	
 	power = 1.f - std::sin(WATEREFFECT + odtv.x + odtv.z) * 0.05f * power;
-	Color inColor = Color::fromRGBA(color);
-	
-	u8 lr = clipByte(int(inColor.r * power));
-	u8 lg = clipByte(int(inColor.g * power));
-	u8 lb = clipByte(int(inColor.b * power));
-
-	color = Color(lr, lg, lb, 255).toRGBA();
+	color = (Color4f::fromRGBA(color) * power).toRGBA();
 }
 
 static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
