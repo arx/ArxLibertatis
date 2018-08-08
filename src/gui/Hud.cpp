@@ -773,9 +773,8 @@ void HealthGauge::update() {
 	m_amount = player.lifePool.current / player.Full_maxlife;
 	
 	if(player.poison > 0.f) {
-		float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
-		long g = long(val);
-		m_color = Color(u8(255 - g), u8(g) , 0);
+		float val = std::min(player.poison, 0.2f) * 5.f;
+		m_color = Color::rgb(1.f - val, val, 0.f);
 	} else {
 		m_color = Color::red;
 	}
