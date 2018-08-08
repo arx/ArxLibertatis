@@ -43,12 +43,12 @@ public:
 	
 		m_startSegment.m_size = 5;
 		m_startSegment.m_sizeRandom = 10;
-		m_startSegment.m_color = Color(110, 110, 110, 110).to<float>();
-		m_startSegment.m_colorRandom = Color(100, 100, 100, 100).to<float>();
+		m_startSegment.m_color = Color4f::gray(0.43f, 0.42f);
+		m_startSegment.m_colorRandom = Color4f::gray(0.39f, 0.39f);
 		m_endSegment.m_size = 0;
 		m_endSegment.m_sizeRandom = 2;
-		m_endSegment.m_color = Color(0, 0, 120, 10).to<float>();
-		m_endSegment.m_colorRandom = Color(50, 50, 50, 50).to<float>();
+		m_endSegment.m_color = Color4f(Color3f::blue * 0.47f, 0.04f);
+		m_endSegment.m_colorRandom = Color4f::gray(0.2f, 0.2f);
 		
 		m_texture.set("graph/particles/magicexplosion", 0, 500);
 		
@@ -72,7 +72,7 @@ public:
 		m_startSegment.m_size = 20;
 		m_startSegment.m_color = Color4f::none;
 		m_startSegment.m_colorRandom = Color4f::none;
-		m_endSegment.m_color = Color(255, 40, 120, 10).to<float>();
+		m_endSegment.m_color = Color4f::rgba(1.f, 0.17f, 0.47f, 0.04f);
 		m_texture.set("graph/particles/(fx)_mr", 0, 500);
 	}
 };
@@ -98,13 +98,13 @@ void particleParametersInit() {
 
 	cp.m_startSegment.m_size = 8;
 	cp.m_startSegment.m_sizeRandom = 8;
-	cp.m_startSegment.m_color = Color(205, 205, 255, 245).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(50, 50, 0, 10).to<float>();
+	cp.m_startSegment.m_color = Color4f::rgba(0.8f, 0.8f, 1.f, 0.96f);
+	cp.m_startSegment.m_colorRandom = Color4f(Color3f::yellow * 0.2f, 0.04f);
 
 	cp.m_endSegment.m_size = 6;
 	cp.m_endSegment.m_sizeRandom = 4;
-	cp.m_endSegment.m_color = Color(20, 20, 30, 0).to<float>();
-	cp.m_endSegment.m_colorRandom = Color(0, 0, 40, 0).to<float>();
+	cp.m_endSegment.m_color = Color4f::rgba(0.08f, 0.08f, 0.12f, 0.f);
+	cp.m_endSegment.m_colorRandom = Color4f(Color3f::blue * 0.16f, 0.f);
 	
 	cp.m_blendMode = RenderMaterial::Additive;
 	cp.m_texture.set("graph/particles/heal_0005", 0, 100);
@@ -128,13 +128,13 @@ void particleParametersInit() {
 
 	cp.m_startSegment.m_size = 8;
 	cp.m_startSegment.m_sizeRandom = 8;
-	cp.m_startSegment.m_color = Color(105, 105, 20, 145).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(50, 50, 0, 10).to<float>();
+	cp.m_startSegment.m_color = Color4f::rgba(0.41f, 0.41f, 0.08f, 0.57f);
+	cp.m_startSegment.m_colorRandom = Color4f(Color3f::yellow * 0.2f, 0.04f);
 
 	cp.m_endSegment.m_size = 6;
 	cp.m_endSegment.m_sizeRandom = 4;
-	cp.m_endSegment.m_color = Color(20, 20, 5, 0).to<float>();
-	cp.m_endSegment.m_colorRandom = Color(40, 40, 0, 0).to<float>();
+	cp.m_endSegment.m_color = Color4f::rgba(0.08f, 0.08f, 0.02f, 0.f);
+	cp.m_endSegment.m_colorRandom = Color4f::rgba(0.16f, 0.16f, 0.f, 0.f);
 
 	cp.m_blendMode = RenderMaterial::Additive;
 	cp.m_texture.set("graph/particles/create_food", 0, 100);
@@ -159,13 +159,13 @@ void particleParametersInit() {
 
 	cp.m_startSegment.m_size = 8;
 	cp.m_startSegment.m_sizeRandom = 8;
-	cp.m_startSegment.m_color = Color(20, 205, 20, 245).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(50, 50, 50, 10).to<float>();
+	cp.m_startSegment.m_color = Color4f::rgba(0.08f, 0.8f, 0.08f, 0.96f);
+	cp.m_startSegment.m_colorRandom = Color4f::gray(0.2f, 0.04f);
 
 	cp.m_endSegment.m_size = 6;
 	cp.m_endSegment.m_sizeRandom = 4;
-	cp.m_endSegment.m_color = Color(5, 20, 5, 0).to<float>();
-	cp.m_endSegment.m_colorRandom = Color(0, 40, 0, 0).to<float>();
+	cp.m_endSegment.m_color = Color4f::rgba(0.02f, 0.08f, 0.02f, 0.f);
+	cp.m_endSegment.m_colorRandom = Color4f(Color3f::green * 0.16f, 0.f);
 	cp.m_blendMode = RenderMaterial::Additive;
 	cp.m_texture.set("graph/particles/cure_poison", 0, 100);
 	cp.m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
@@ -190,13 +190,13 @@ void particleParametersInit() {
 
 	cp.m_startSegment.m_size = 10;
 	cp.m_startSegment.m_sizeRandom = 3;
-	cp.m_startSegment.m_color = Color(25, 25, 25, 50).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(51, 51, 51, 101).to<float>();
+	cp.m_startSegment.m_color = Color4f::gray(0.1f, 0.2f);
+	cp.m_startSegment.m_colorRandom = Color4f::gray(0.2f, 0.4f);
 
 	cp.m_endSegment.m_size = 10;
 	cp.m_endSegment.m_sizeRandom = 3;
-	cp.m_endSegment.m_color = Color(25, 25, 25, 50).to<float>();
-	cp.m_endSegment.m_colorRandom = Color(0, 0, 0, 100).to<float>();
+	cp.m_endSegment.m_color = Color4f::gray(0.1f, 0.2f);
+	cp.m_endSegment.m_colorRandom = Color4f(Color3f::black, 0.4f);
 	cp.m_texture.m_texLoop = true;
 
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
@@ -225,13 +225,13 @@ void particleParametersInit() {
 
 	cp.m_startSegment.m_size = 10;
 	cp.m_startSegment.m_sizeRandom = 10;
-	cp.m_startSegment.m_color = Color(40, 40, 40, 50).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(51, 51, 51, 100).to<float>();
+	cp.m_startSegment.m_color = Color4f::gray(0.16f, 0.2f);
+	cp.m_startSegment.m_colorRandom = Color4f::gray(0.2f, 0.4f);
 
 	cp.m_endSegment.m_size = 10;
 	cp.m_endSegment.m_sizeRandom = 10;
-	cp.m_endSegment.m_color = Color(0, 0, 0, 50).to<float>();
-	cp.m_endSegment.m_colorRandom = Color(0, 0, 0, 100).to<float>();
+	cp.m_endSegment.m_color = Color4f(Color3f::black, 0.2f);
+	cp.m_endSegment.m_colorRandom = Color4f(Color3f::black, 0.4f);
 	cp.m_texture.m_texLoop = false;
 
 	cp.m_blendMode = RenderMaterial::Additive;
@@ -260,13 +260,13 @@ void particleParametersInit() {
 
 	cp.m_startSegment.m_size = 5;
 	cp.m_startSegment.m_sizeRandom = 3;
-	cp.m_startSegment.m_color = Color(0, 76, 0, 0).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(0, 0, 0, 150).to<float>();
+	cp.m_startSegment.m_color = Color4f(Color3f::green * 0.3f, 0.f);
+	cp.m_startSegment.m_colorRandom = Color4f(Color3f::black, 0.59f);
 
 	cp.m_endSegment.m_size = 30;
 	cp.m_endSegment.m_sizeRandom = 5;
 	cp.m_endSegment.m_color = Color4f::none;
-	cp.m_endSegment.m_colorRandom = Color(0, 25, 0, 20).to<float>();
+	cp.m_endSegment.m_colorRandom = Color4f(Color3f::green * 0.1f, 0.08f);
 
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
 	cp.m_freq = -1;
@@ -294,13 +294,13 @@ void particleParametersInit() {
 
 	cp.m_startSegment.m_size = 5;
 	cp.m_startSegment.m_sizeRandom = 3;
-	cp.m_startSegment.m_color = Color(0, 50, 0, 40).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(0, 100, 0, 50).to<float>();
+	cp.m_startSegment.m_color = Color4f(Color3f::green * 0.2f, 0.16f);
+	cp.m_startSegment.m_colorRandom = Color4f(Color3f::green * 0.4f, 0.2f);
 
 	cp.m_endSegment.m_size = 8;
 	cp.m_endSegment.m_sizeRandom = 13;
-	cp.m_endSegment.m_color = Color(0, 60, 0, 40).to<float>();
-	cp.m_endSegment.m_colorRandom = Color(0, 100, 0, 50).to<float>();
+	cp.m_endSegment.m_color = Color4f(Color3f::green * 0.24f, 0.16f);
+	cp.m_endSegment.m_colorRandom = Color4f(Color3f::green * 0.4f, 0.2f);
 
 	cp.m_blendMode = RenderMaterial::Screen;
 	cp.m_freq = -1;
@@ -329,13 +329,13 @@ void particleParametersInit() {
 
 	cp.m_startSegment.m_size = 2;
 	cp.m_startSegment.m_sizeRandom = 2;
-	cp.m_startSegment.m_color = Color(0, 39, 0, 100).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(50, 21, 0, 0).to<float>();
+	cp.m_startSegment.m_color = Color4f(Color3f::green * 0.15f, 0.4f);
+	cp.m_startSegment.m_colorRandom = Color4f::rgba(0.2f, 0.08f, 0.f, 0.f);
 
 	cp.m_endSegment.m_size = 7;
 	cp.m_endSegment.m_sizeRandom = 5;
-	cp.m_endSegment.m_color = Color(0, 25, 0, 100).to<float>();
-	cp.m_endSegment.m_colorRandom = Color(50, 20, 0, 0).to<float>();
+	cp.m_endSegment.m_color = Color4f(Color3f::green * 0.1f, 0.4f);
+	cp.m_endSegment.m_colorRandom = Color4f::rgba(0.2f, 0.08f, 0.f, 0.f);
 
 	cp.m_blendMode = RenderMaterial::Screen;
 	cp.m_freq = 80;
