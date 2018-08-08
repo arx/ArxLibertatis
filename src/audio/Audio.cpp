@@ -292,6 +292,7 @@ AmbianceId createAmbiance(const res::path & name, PlayingAmbianceType type) {
 	if(ambiance->load() || (a_id = g_ambiances.add(ambiance)) == AmbianceId()) {
 		delete ambiance;
 		LogError << "Ambiance " << name << " not found";
+		return AmbianceId();
 	}
 	
 	LogDebug("createAmbiance " << ambiance->getName() << " " << type);
