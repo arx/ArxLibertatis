@@ -109,9 +109,11 @@ EntityHandle EntityManager::getById(const std::string & idString) const {
 	
 	if(idString.empty() || idString == "none") {
 		return EntityHandle();
-	} else if(idString == "self" || idString == "me") {
+	}
+	if(idString == "self" || idString == "me") {
 		return EntityHandle_Self;
-	} else if(idString == "player") {
+	}
+	if(idString == "player") {
 		return EntityHandle_Player;
 	}
 	
