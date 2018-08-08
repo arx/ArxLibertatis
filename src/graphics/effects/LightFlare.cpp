@@ -132,7 +132,7 @@ void renderLightFlares() {
 			size = el.ex_flaresize;
 		}
 		
-		EERIEDrawSprite(el.pos, size, tflare, (el.rgb * v).to<u8>(), EE_RT(el.pos).z);
+		EERIEDrawSprite(el.pos, size, tflare, Color(el.rgb * v), EE_RT(el.pos).z);
 		
 	}
 	
