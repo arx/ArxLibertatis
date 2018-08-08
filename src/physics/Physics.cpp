@@ -873,37 +873,37 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 
 void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float rubber, Entity * source) {
 	
-	if(pbox->active == 2)
+	if(pbox->active == 2) {
 		return;
-
-	if(framediff == 0.f)
+	}
+	
+	if(framediff == 0.f) {
 		return;
+	}
 	
 	float timing = pbox->storedtiming + framediff * rubber * 0.0055f;
 	float t_threshold = 0.18f;
-
+	
 	if(timing < t_threshold) {
 		pbox->storedtiming = timing;
 		return;
 	}
 	
-		while(timing >= t_threshold) {
-			ComputeForces(pbox->vert);
-
-			ARX_EERIE_PHYSICS_BOX_Compute(pbox, std::min(0.11f, timing * 10), source);
-
-			timing -= t_threshold;
-		}
-
-		pbox->storedtiming = timing;
-
-	if(pbox->stopcount < 16)
+	while(timing >= t_threshold) {
+		ComputeForces(pbox->vert);
+		ARX_EERIE_PHYSICS_BOX_Compute(pbox, std::min(0.11f, timing * 10), source);
+		timing -= t_threshold;
+	}
+	
+	pbox->storedtiming = timing;
+	
+	if(pbox->stopcount < 16) {
 		return;
-
+	}
+	
 	pbox->active = 2;
 	pbox->stopcount = 0;
-
+	
 	source->soundcount = 0;
 	source->soundtime = g_gameTime.now() + GameDurationMs(2000);
 }
-
