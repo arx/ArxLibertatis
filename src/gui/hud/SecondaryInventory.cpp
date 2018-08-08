@@ -252,7 +252,7 @@ void SecondaryInventoryHud::draw() {
 				if(!bItemSteal && io == FlyingOverIO) {
 					overlayColor = Color::white;
 				} else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
-					overlayColor = Color3f::gray(glm::abs(glm::cos(glm::radians(fDecPulse)))).to<u8>();
+					overlayColor = Color::gray(glm::abs(glm::cos(glm::radians(fDecPulse))));
 				}
 				
 				if(overlayColor != Color::black) {
