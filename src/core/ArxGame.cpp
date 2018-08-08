@@ -1896,7 +1896,7 @@ void ArxGame::renderLevel() {
 
 	if(player.m_paralysed) {
 		UseRenderState state(render2D().blendAdditive());
-		EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color(71, 71, 255));
+		EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color::rgb(0.28f, 0.28f, 1.f));
 	}
 
 	// Red screen fade for damages.
