@@ -336,11 +336,6 @@ void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer 
 	float power = 0.9f;
 	power -= wave * 0.3f;
 
-	color.r = glm::clamp(color.r * power, 0.f, 1.f);
-	color.g = glm::clamp(color.g * power, 0.f, 1.f);
-	color.b = glm::clamp(color.b * power, 0.f, 1.f);
-	Color col = Color4f(color).to<u8>();
-
 	RenderState desiredState = render2D().blendAdditive();
 	if(_lHaloType & HALO_NEGATIVE) {
 		desiredState.setBlend(BlendZero, BlendInvSrcColor);
@@ -353,7 +348,7 @@ void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer 
 	float width = haloTexture->m_size.x * ratio.x;
 	float height = haloTexture->m_size.y * ratio.y;
 	
-	EERIEDrawBitmap(Rectf(Vec2f(x, y), width, height), 0.00001f, haloTexture, col);
+	EERIEDrawBitmap(Rectf(Vec2f(x, y), width, height), 0.00001f, haloTexture, Color(color * power));
 }
 
 //-----------------------------------------------------------------------------
