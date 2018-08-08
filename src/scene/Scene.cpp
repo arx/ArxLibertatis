@@ -840,7 +840,7 @@ static void RenderWater() {
 		
 		for(int j = 0; j < iNbVertex; ++j) {
 			pVertex->p = ep->v[j].p;
-			pVertex->color = Color(80, 80, 80, 255).toRGBA();
+			pVertex->color = Color::gray(0.314f).toRGBA();
 			
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				Vec2f uv = CalculateWaterDisplacement(ep, time, j, i);
@@ -1083,12 +1083,12 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 
 		if(!player.m_improve) { // Normal View...
 			if(ep->type & POLY_GLOW) {
-				pMyVertexCurr[ep->uslInd[0]].color = Color(255, 255, 255, 255).toRGBA();
-				pMyVertexCurr[ep->uslInd[1]].color = Color(255, 255, 255, 255).toRGBA();
-				pMyVertexCurr[ep->uslInd[2]].color = Color(255, 255, 255, 255).toRGBA();
+				pMyVertexCurr[ep->uslInd[0]].color = Color::white.toRGBA();
+				pMyVertexCurr[ep->uslInd[1]].color = Color::white.toRGBA();
+				pMyVertexCurr[ep->uslInd[2]].color = Color::white.toRGBA();
 
 				if(to == 4) {
-					pMyVertexCurr[ep->uslInd[3]].color = Color(255, 255, 255, 255).toRGBA();
+					pMyVertexCurr[ep->uslInd[3]].color = Color::white.toRGBA();
 				}
 			} else {
 				if(!(ep->type & POLY_TRANS)) {
