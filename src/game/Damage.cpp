@@ -178,18 +178,18 @@ void ARX_DAMAGE_Show_Hit_Blood()
 	} else if(Blood_Pos > 1.f) {
 		
 		if(player.poison > 1.f)
-			color = Color3f(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f).to<u8>();
+			color = Color::rgb(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f);
 		else
-			color = Color3f(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f).to<u8>();
+			color = Color::rgb(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f);
 		
 		UseRenderState state(render2D().blend(BlendZero, BlendSrcColor));
 		EERIEDrawBitmap(Rectf(g_size), 0.00009f, NULL, color);
 	} else if(Blood_Pos > 0.f) {
 		
 		if(player.poison > 1.f)
-			color = Color3f(1.f - Blood_Pos, 1.f, 1.f - Blood_Pos).to<u8>();
+			color = Color::rgb(1.f - Blood_Pos, 1.f, 1.f - Blood_Pos);
 		else
-			color = Color3f(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos).to<u8>();
+			color = Color::rgb(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos);
 		
 		UseRenderState state(render2D().blend(BlendZero, BlendSrcColor));
 		EERIEDrawBitmap(Rectf(g_size), 0.00009f, NULL, color);
