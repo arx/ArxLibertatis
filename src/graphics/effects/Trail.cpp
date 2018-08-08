@@ -41,9 +41,9 @@ Trail::Trail(long duration, Color4f startColor, Color4f endColor, float startSiz
 	float sizeDelta = endSize - startSize;
 	for(size_t i = 0; i < segments; i++) {
 		float factor = float(i) / float(segments);
-		Color4f color = startColor + colorDelta * factor;
+		Color color(startColor + colorDelta * factor);
 		float size = startSize + sizeDelta * factor;
-		m_segments.push_back(TrailSegment(color.to<u8>(), size));
+		m_segments.push_back(TrailSegment(color, size));
 	}
 	
 }
