@@ -101,7 +101,7 @@ void ARXDRAW_DrawInterShadows() {
 				in.x = io->obj->vertexWorldPositions[k].v.x - s2;
 				in.z = io->obj->vertexWorldPositions[k].v.z - s2;
 				
-				ColorRGBA rgba = Color3f::gray(r).toRGB(255);
+				ColorRGBA rgba = Color::gray(r).toRGB();
 				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = rgba;
 				
 				ltv[0].p = in;
@@ -140,7 +140,7 @@ void ARXDRAW_DrawInterShadows() {
 				in.x = pos.x - s2;
 				in.z = pos.z - s2;
 				
-				ColorRGBA rgba = Color3f::gray(r).toRGB(255);
+				ColorRGBA rgba = Color::gray(r).toRGB();
 				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = rgba;
 				
 				ltv[0].p = in;
