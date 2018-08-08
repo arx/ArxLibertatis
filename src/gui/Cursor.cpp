@@ -757,7 +757,7 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 			Vec2f pos = Vec2f(g_size.center()) - Vec2f(surf->m_size) * .5f;
 			
 			Vec2f size = Vec2f(surf->m_size) * cursorScale;
-			EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.f, surf, Color3f::gray(.5f).to<u8>());
+			EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.f, surf, Color::gray(0.5f));
 			
 		}
 		
