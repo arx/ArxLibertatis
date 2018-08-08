@@ -155,23 +155,15 @@ static Color CalculLight(CinematicLight * light, Vec2f pos, Color col) {
 	                     + (light->pos.y - pos.y) * (light->pos.y - pos.y));
 	
 	if(ra > light->fallout) {
-		return (col * LightRND);
+		return col * LightRND;
 	}
 	
-	Color3f color;
-	
-	if(ra < light->fallin) {
-		color = light->color * LightRND;
-	} else {
-		ra = (light->fallout - ra) / (light->fallout - light->fallin);
-		color = light->color * (LightRND * ra);
+	Color3f color = light->color * (LightRND / 255.f);
+	if(ra >= light->fallin) {
+		color = color * ((light->fallout - ra) / (light->fallout - light->fallin));
 	}
 	
-	Color in = col;
-	in.r = std::min(in.r + (int)color.r, 255);
-	in.g = std::min(in.g + (int)color.g, 255);
-	in.b = std::min(in.b + (int)color.b, 255);
-	return in;
+	return Color(Color3f(col) + color);
 }
 
 static Vec3f TransformLocalVertex(const Vec2f & vbase, const Vec3f & LocalPos, float LocalSin, float LocalCos) {
