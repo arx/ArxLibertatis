@@ -554,7 +554,11 @@ static Vec3f GetChestPos(EntityHandle num) {
 	}
 	
 	Entity * io = entities.get(num);
-	if(io) {
+	if(!io) {
+		// should not happen
+		return Vec3f(0.f);
+	}
+	
 		ObjVertHandle idx = GetGroupOriginByName(io->obj, "chest");
 
 		if(idx != ObjVertHandle()) {
@@ -562,10 +566,6 @@ static Vec3f GetChestPos(EntityHandle num) {
 		} else {
 			return io->pos + Vec3f(0.f, -120.f, 0.f);
 		}
-	} else {
-		// should not happen
-		return Vec3f(0.f);
-	}
 }
 
 void LightningStrikeSpell::Update() {
