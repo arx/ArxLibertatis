@@ -163,7 +163,7 @@ void HitStrengthGauge::draw() {
 	
 	{
 		UseRenderState state(render2D().blendAdditive());
-		EERIEDrawBitmap(m_rect, 0.0001f, m_fullTex, Color3f::gray(m_intensity).to<u8>());
+		EERIEDrawBitmap(m_rect, 0.0001f, m_fullTex, Color::gray(m_intensity));
 	}
 	
 	EERIEDrawBitmap(m_rect, 0.0001f, m_emptyTex, Color::white);
@@ -622,7 +622,7 @@ void ChangeLevelIconGui::draw() {
 	if(!isVisible())
 		return;
 	
-	EERIEDrawBitmap(m_rect, 0.0001f, m_tex, Color3f::gray(m_intensity).to<u8>());
+	EERIEDrawBitmap(m_rect, 0.0001f, m_tex, Color::gray(m_intensity));
 	
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
 		cursorSetInteraction();
@@ -734,7 +734,7 @@ void MemorizedRunesHud::draw() {
 			
 			if(!player.hasRune(player.SpellToMemorize.iSpellSymbols[i])) {
 				UseRenderState state(render2D().blend(BlendInvDstColor, BlendOne).alphaCutout());
-				EERIEDrawBitmap(rect, 0, cursorMovable, Color3f::gray(.8f).to<u8>());
+				EERIEDrawBitmap(rect, 0, cursorMovable, Color::gray(0.8f));
 			}
 			
 			pos.x += 32 * m_scale;
@@ -926,7 +926,7 @@ void ScreenArrows::draw() {
 	
 	UseRenderState state(render2D().blendAdditive());
 	
-	Color lcolor = Color3f::gray(.5f).to<u8>();
+	Color lcolor = Color::gray(0.5f);
 	
 	EERIEDrawBitmap(m_left, 0.01f, m_arrowLeftTex, lcolor);
 	EERIEDrawBitmapUVs(m_right,  .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 0.f), Vec2f(0.f, 0.f), Vec2f(1.f, 1.f), Vec2f(0.f, 1.f));
@@ -1161,7 +1161,7 @@ void ActiveSpellsGui::spellsOnPlayerUpdate(float intensity) {
 
 void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool flag) {
 	
-	Color color = (flag) ? Color3f(intensity, 0, 0).to<u8>() : Color3f::gray(intensity).to<u8>();
+	Color color = (flag) ? Color3f(intensity, 0, 0).to<u8>() : Color::gray(intensity);
 	
 	bool flicker = true;
 	
@@ -1312,7 +1312,7 @@ void StealthGauge::update() {
 				v = (t * (1.0f / 15)) * 0.9f + 0.1f;
 			}
 			
-			m_color = Color3f::gray(v).to<u8>();
+			m_color = Color::gray(v);
 			
 			m_visible = true;
 		}
