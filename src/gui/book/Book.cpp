@@ -80,9 +80,8 @@ static bool MouseInBookRect(const Vec2f pos, const Vec2f size) {
 bool ARX_INTERFACE_MouseInBook() {
 	if((player.Interface & INTER_PLAYERBOOK) && !(player.Interface & INTER_COMBATMODE)) {
 		return MouseInBookRect(g_bookRect.topLeft() + Vec2f(2, 1) * g_bookScale, Vec2f(500, 307) * g_bookScale);
-	} else {
-		return false;
 	}
+	return false;
 }
 
 
