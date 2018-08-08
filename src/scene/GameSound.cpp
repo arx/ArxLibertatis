@@ -392,19 +392,20 @@ void ARX_SOUND_PlayMenu(audio::SampleHandle sample_id) {
 static Vec3f ARX_SOUND_IOFrontPos(const Entity * io) {
 	if(io == entities.player()) {
 		return ARX_PLAYER_FrontPos();
-	} else if(io) {
+	}
+	if(io) {
 		Vec3f pos = io->pos;
 		pos += angleToVectorXZ(io->angle.getYaw()) * 100.f;
 		pos += Vec3f(0.f, -100.f, 0.f);
 		return pos;
-	} else if(g_camera) {
+	}
+	if(g_camera) {
 		Vec3f pos = g_camera->m_pos;
 		pos += angleToVectorXZ(g_camera->angle.getYaw()) * 100.f;
 		pos += Vec3f(0.f, -100.f, 0.f);
 		return pos;
-	} else {
-		return Vec3f(0.f);
 	}
+	return Vec3f(0.f);
 }
 
 static res::path speechFileName(const res::path & name) {
