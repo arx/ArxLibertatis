@@ -119,6 +119,8 @@ public:
 	
 	#if ARX_HAVE_CXX11_DEFAULT
 	Color3(const Color3 & o) = default;
+	~Color3() = default;
+	Color3 & operator=(const Color3 & o) = default;
 	#else
 	Color3(const Color3 & o) : r(o.r), g(o.g), b(o.b) { }
 	#endif
@@ -246,6 +248,8 @@ public:
 	
 	#if ARX_HAVE_CXX11_DEFAULT
 	Color4(const Color4 & o) = default;
+	~Color4() = default;
+	Color4 & operator=(const Color4 & o) = default;
 	#else
 	Color4(const Color4 & o) : C3(o), a(o.a) { }
 	#endif
