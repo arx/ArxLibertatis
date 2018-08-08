@@ -419,9 +419,9 @@ void ARX_MAGICAL_FLARES_Update() {
 			
 			if(flare.bDrawBitmap) {
 				Vec3f pos = Vec3f(flare.p.x - size / 2.0f, flare.p.y - size / 2.0f, flare.p.z);
-				EERIEAddBitmap(mat, pos, size, size, surf, color.to<u8>());
+				EERIEAddBitmap(mat, pos, size, size, surf, Color(color));
 			} else {
-				EERIEAddSprite(mat, flare.p, size * 0.025f + 1.f, color.to<u8>(), 2.f);
+				EERIEAddSprite(mat, flare.p, size * 0.025f + 1.f, Color(color), 2.f);
 			}
 
 		}
