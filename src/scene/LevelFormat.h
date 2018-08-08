@@ -105,7 +105,7 @@ struct DANAE_LS_VLIGHTING {
 	s32 b;
 	
 	operator ColorBGRA() const {
-		return Color(u8(r), u8(g), u8(b), 255).toBGRA();
+		return Color(u8(r), u8(g), u8(b)).toBGRA();
 	}
 	
 };
