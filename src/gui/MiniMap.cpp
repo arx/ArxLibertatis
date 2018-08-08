@@ -501,7 +501,7 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 	
 	float div = (1.0f / 25);
 	TextureContainer * tc = m_levels[showLevel].m_texContainer;
-	Vec2f d(1.f / tc->m_pTexture->getStoredSize().x, 1.f / tc->m_pTexture->getStoredSize().y);
+	Vec2f d(1.f / float(tc->m_pTexture->getStoredSize().x), 1.f / float(tc->m_pTexture->getStoredSize().y));
 	
 	Vec2f v2 = 4.f * d * m_mod;
 	
