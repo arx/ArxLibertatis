@@ -563,9 +563,9 @@ static Vec3f GetChestPos(EntityHandle num) {
 
 		if(idx != ObjVertHandle()) {
 			return io->obj->vertexWorldPositions[idx.handleData()].v;
-		} else {
-			return io->pos + Vec3f(0.f, -120.f, 0.f);
 		}
+		
+		return io->pos + Vec3f(0.f, -120.f, 0.f);
 }
 
 void LightningStrikeSpell::Update() {
