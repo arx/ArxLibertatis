@@ -550,8 +550,7 @@ void RestoreLastLoadedLightning(BackgroundData & eb) {
 					g_levelLighting.clear();
 					return;
 				}
-				Color dc = Color::fromBGRA(g_levelLighting[i++]);
-				ep.color[k] = ep.v[k].color = dc.toRGB(255);
+				ep.color[k] = ep.v[k].color = Color::fromBGRA(g_levelLighting[i++]).toRGB();
 			}
 		}
 	}
