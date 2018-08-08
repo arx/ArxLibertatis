@@ -74,9 +74,9 @@ static res::path fixTexturePath(const std::string & path) {
 	
 	if(abs_dir != std::string::npos) {
 		return res::path::load(copy.substr(abs_dir + 4));
-	} else {
-		return res::path::load(copy);
 	}
+	
+	return res::path::load(copy);
 }
 
 static std::pair<res::path, bool> fixSoundPath(const std::string & str) {
