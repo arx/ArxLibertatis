@@ -559,13 +559,13 @@ static Vec3f GetChestPos(EntityHandle num) {
 		return Vec3f(0.f);
 	}
 	
-		ObjVertHandle idx = GetGroupOriginByName(io->obj, "chest");
-
-		if(idx != ObjVertHandle()) {
-			return io->obj->vertexWorldPositions[idx.handleData()].v;
-		}
-		
-		return io->pos + Vec3f(0.f, -120.f, 0.f);
+	ObjVertHandle idx = GetGroupOriginByName(io->obj, "chest");
+	
+	if(idx != ObjVertHandle()) {
+		return io->obj->vertexWorldPositions[idx.handleData()].v;
+	}
+	
+	return io->pos + Vec3f(0.f, -120.f, 0.f);
 }
 
 void LightningStrikeSpell::Update() {
