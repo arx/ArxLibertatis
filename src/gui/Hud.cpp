@@ -171,7 +171,7 @@ void HitStrengthGauge::draw() {
 	if(m_flashActive && player.m_skillFull.etheralLink >= 40) {
 		
 		float j = 1.0f - m_flashIntensity;
-		Color col = (j < 0.5f) ? Color3f(j * 2.f, 1.f, 0.f).to<u8>() : Color3f(1.f, m_flashIntensity, 0.f).to<u8>();
+		Color col = (j < 0.5f) ? Color::rgb(j * 2.f, 1.f, 0.f) : Color::rgb(1.f, m_flashIntensity, 0.f);
 		
 		UseRenderState state(render2D().blendAdditive());
 		EERIEDrawBitmap(m_hitRect, 0.0001f, m_hitTex, col);
@@ -1006,7 +1006,7 @@ void PrecastSpellsGui::update() {
 			val *= (1.f - tt);
 		}
 		
-		Color color = Color3f(0, val * 0.5f, val).to<u8>();
+		Color color = Color::rgb(0, val * 0.5f, val);
 		
 		Rectf childRect = createChild(m_rect, Anchor_BottomLeft, m_iconSize * m_scale, Anchor_BottomLeft);
 		childRect.move(i * m_iconSize.x * m_scale, 0);
@@ -1161,7 +1161,7 @@ void ActiveSpellsGui::spellsOnPlayerUpdate(float intensity) {
 
 void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool flag) {
 	
-	Color color = (flag) ? Color3f(intensity, 0, 0).to<u8>() : Color::gray(intensity);
+	Color color = (flag) ? Color::rgb(intensity, 0, 0) : Color::gray(intensity);
 	
 	bool flicker = true;
 	
@@ -1251,7 +1251,7 @@ void DamagedEquipmentGui::update() {
 		if(io) {
 			float ratio = io->durability / io->max_durability;
 			if(ratio <= 0.5f) {
-				m_colors[i] = Color3f(1.f - ratio, ratio, 0).to<u8>();
+				m_colors[i] = Color::rgb(1.f - ratio, ratio, 0);
 			}
 		}
 		
