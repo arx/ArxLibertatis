@@ -569,7 +569,7 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 						}
 					}
 				} else {
-					EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), 0.00001f, tc, Color(255, 170, 102, 255));
+					EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), 0.00001f, tc, Color(255, 170, 102));
 				}
 			}
 			
