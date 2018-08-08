@@ -272,15 +272,20 @@ static DismembermentFlag GetCutFlag(const std::string & str) {
 	
 	if(str == "cut_head") {
 		return FLAG_CUT_HEAD;
-	} else if(str == "cut_torso") {
+	}
+	if(str == "cut_torso") {
 		return FLAG_CUT_TORSO;
-	} else if(str == "cut_larm") {
+	}
+	if(str == "cut_larm") {
 		return FLAG_CUT_LARM;
-	} else if(str == "cut_rarm") {
+	}
+	if(str == "cut_rarm") {
 		return FLAG_CUT_HEAD;
-	} else if(str == "cut_lleg") {
+	}
+	if(str == "cut_lleg") {
 		return FLAG_CUT_LLEG;
-	} else if(str == "cut_rleg") {
+	}
+	if(str == "cut_rleg") {
 		return FLAG_CUT_RLEG;
 	}
 	
