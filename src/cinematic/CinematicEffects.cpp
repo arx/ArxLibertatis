@@ -152,11 +152,9 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	float a = DreamAng;
 	float a2 = DreamAng2;
 	
-	Vec2f s = Vec2f(bi->m_count);
-	
 	Vec2i n = bi->m_count * s32(2) + Vec2i(2);
 	
-	Vec2f nn = Vec2f(n) + s;
+	Vec2f nn = Vec2f(n) + Vec2f(bi->m_count);
 	
 	Vec2f o;
 	o.x = amp * ((2 * (std::sin(nn.x / 20) + std::sin(nn.x * nn.y / 2000)
@@ -172,13 +170,10 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	while(n.y) {
 		n.x = ((bi->m_count.x * bi->grid.m_scale) + 1);
 		while(n.x) {
-			s.x = float(bi->m_count.x) * std::cos(glm::radians(a));
-			s.y = float(bi->m_count.y) * std::cos(glm::radians(a2));
 			a -= 15.f;
 			a2 += 8.f;
 			
-			nn.x = float(n.x) + s.x;
-			nn.y = float(n.y) + s.y;
+			nn = Vec2f(n) + Vec2f(bi->m_count) * Vec2f(std::cos(glm::radians(a)), std::cos(glm::radians(a2)));
 			
 			*t++ = (-o.x + amp * ((2 * (std::sin(nn.x / 20) + std::sin(nn.x * nn.y / 2000)
 			                                  + std::sin((nn.x + nn.y) / 100) + std::sin((nn.y - nn.x) / 70) + std::sin((nn.x + 4 * nn.y) / 70)
