@@ -140,11 +140,11 @@ Entity * EntityManager::getById(const std::string & name, Entity * self) const {
 	EntityHandle handle = getById(name);
 	if(handle == EntityHandle()) {
 		return NULL;
-	} else if(handle == EntityHandle_Self) {
-		return self;
-	} else {
-		return entries[handle.handleData()];
 	}
+	if(handle == EntityHandle_Self) {
+		return self;
+	}
+	return entries[handle.handleData()];
 }
 
 void EntityManager::autocomplete(const std::string & prefix, AutocompleteHandler handler, void * context) {
