@@ -483,7 +483,9 @@ void Ambiance::Track::update(PlatformDuration time, PlatformDuration diff) {
 	if(key_i->n_start <= diff) {
 		keyPlay();
 		return;
-	} else if(key_i->n_start != KEY_CONTINUE) {
+	}
+	
+	if(key_i->n_start != KEY_CONTINUE) {
 		key_i->n_start -= diff;
 	}
 	
