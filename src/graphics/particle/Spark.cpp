@@ -162,8 +162,8 @@ void ParticleSparkUpdate() {
 		
 		TexturedVertex tv[3];
 		tv[0].color = spark.rgb;
-		tv[1].color = Color(102, 102, 102, 255).toRGBA();
-		tv[2].color = Color(0, 0, 0, 255).toRGBA();
+		tv[1].color = Color::gray(0.4f).toRGBA();
+		tv[2].color = Color::black.toRGBA();
 		
 		worldToClipSpace(in, tv[0]);
 		
