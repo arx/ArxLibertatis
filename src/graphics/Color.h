@@ -115,6 +115,22 @@ public:
 	Color3() : b(T(0)), g(T(0)), r(T(0)) { }
 	Color3(T _r, T _g, T _b) : b(_b), g(_g), r(_r) { }
 	
+	#if ARX_HAVE_CXX11_DEFAULT
+	Color3(const Color3 & o) = default;
+	#else
+	Color3(const Color3 & o) : b(o.b), g(o.g), r(o.r) { }
+	#endif
+	
+	/*!
+	 * Converts a color from a different type, clamping according to the color traits
+	 */
+	template <typename O>
+	explicit Color3(const Color3<O> & o)
+		: b(Traits::convert(o.b))
+		, g(Traits::convert(o.g))
+		, r(Traits::convert(o.r))
+	{ }
+	
 	bool operator==(const Color3 & o) const {
 		return (r == o.r && g == o.g && b == o.b);
 	}
@@ -223,6 +239,30 @@ public:
 	Color4() : C3(), a(T(0)) { }
 	Color4(T _r, T _g, T _b, T _a = Traits::max()) : C3(_r, _g, _b), a(_a) { }
 	/* implicit */ Color4(const C3 & o, T _a = Traits::max()) : C3(o), a(_a) { }
+	
+	#if ARX_HAVE_CXX11_DEFAULT
+	Color4(const Color4 & o) = default;
+	#else
+	Color4(const Color4 & o) : C3(o), a(o.a) { }
+	#endif
+	
+	/*!
+	 * Converts a color from a different type, clamping according to the color traits
+	 */
+	template <typename O>
+	explicit Color4(const Color3<O> & o, T alpha = Traits::max())
+		: C3(o)
+		, a(alpha)
+	{ }
+	
+	/*!
+	 * Converts a color from a different type, clamping according to the color traits
+	 */
+	template <typename O>
+	explicit Color4(const Color4<O> & o)
+		: C3(o)
+		, a(Traits::convert(o.a))
+	{ }
 	
 	Color4 & operator=(const C3 & o) {
 		C3::operator=(o), a = Traits::max();
