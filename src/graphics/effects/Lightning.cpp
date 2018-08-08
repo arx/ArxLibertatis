@@ -109,7 +109,6 @@ CLightning::CLightning()
 	, m_fAngleMax(32.0f, 32.0f, 32.0f)
 	, m_eSrc(0.f)
 	, m_eDest(0.f)
-	, m_tex_light(NULL)
 	, m_iTTL(0)
 {
 	SetDuration(GameDurationMs(2000));
