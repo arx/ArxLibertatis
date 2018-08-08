@@ -380,7 +380,7 @@ void ShowFrameDurationPlot() {
 	for(size_t i = 0; i < frameDurationPlotValues.size(); ++i)
 	{
 		float time = frameDurationPlotValues[i];
-		frameDurationPlotVertices[i].color = Color(255, 255, 255, 255).toRGBA();
+		frameDurationPlotVertices[i].color = Color::white.toRGB();
 		frameDurationPlotVertices[i].p.x = i;
 		frameDurationPlotVertices[i].p.y = OFFSET_Y + (time * SCALE_Y);
 		frameDurationPlotVertices[i].p.z = 1.0f;
