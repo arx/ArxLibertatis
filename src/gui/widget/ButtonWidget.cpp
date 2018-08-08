@@ -41,7 +41,7 @@ void ButtonWidget::render(bool mouseOver) {
 	
 	UseRenderState state(render2D().blendAdditive());
 	
-	Color color = m_enabled ? Color::white : Color::grayb(63);
+	Color color = m_enabled ? Color::white : Color::gray(0.25f);
 	
 	EERIEDrawBitmap(m_rect, 0, m_texture, color);
 	

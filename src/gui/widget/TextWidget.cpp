@@ -43,7 +43,7 @@ void TextWidget::render(bool mouseOver) {
 	bool hasAction = targetPage() != NOP || clicked || doubleClicked;
 	bool dynamic =  m_display == Dynamic || (m_display == Automatic && hasAction);
 	if(m_display == Disabled || (dynamic && !m_enabled)) {
-		color = Color::grayb(127);
+		color = Color::gray(0.5f);
 	} else if(m_display == MouseOver || (dynamic && mouseOver)) {
 		color = Color::white;
 	}

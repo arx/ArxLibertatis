@@ -138,7 +138,7 @@ void TextInputWidget::render(bool mouseOver) {
 	
 	Color color = Color(232, 204, 142);
 	if(!m_enabled) {
-		color = Color::grayb(127);
+		color = Color::gray(0.5f);
 	} else if(mouseOver || m_editing) {
 		color = Color::white;
 	}

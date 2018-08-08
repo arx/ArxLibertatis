@@ -111,7 +111,7 @@ void KeybindWidget::render(bool mouseOver) {
 		}
 		color = blink ? Color(255, 0, 0) : Color(50, 0, 0);
 	} else if(!m_enabled) {
-		color = Color::grayb(127);
+		color = Color::gray(0.5f);
 	} else if(mouseOver) {
 		color = Color::white;
 	}

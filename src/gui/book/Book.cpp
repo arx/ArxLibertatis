@@ -132,7 +132,8 @@ void PlayerBookPage::checkTabClick(long tabNum, long & activeTab) {
 
 	if(MouseInBookRect(bookPos + m_tabOffsets[tabNum] * scale, Vec2f(32, 32) * scale)) {
 		UseRenderState state(render2D().blendAdditive());
-		DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], bookPos + m_tabOffsets[tabNum] * scale, Color::grayb(0x55), 0.000001f);
+		DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], bookPos + m_tabOffsets[tabNum] * scale,
+		                      Color::gray(1.f / 3), 0.000001f);
 		cursorSetInteraction();
 		if(eeMouseDown1() || eeMouseDown2()) {
 			ARX_SOUND_PlayInterface(g_snd.BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
@@ -353,7 +354,7 @@ void PlayerBook::manageTopTabs() {
 			
 			// Draw highlighted Character sheet icon
 			UseRenderState state(render2D().blendAdditive());
-			DrawBookInterfaceItem(tcBookmarkChar, pos, Color::grayb(0x55), 0.000001f);
+			DrawBookInterfaceItem(tcBookmarkChar, pos, Color::gray(1.f / 3), 0.000001f);
 			
 			// Set cursor to interacting
 			cursorSetInteraction();
@@ -385,7 +386,7 @@ void PlayerBook::manageTopTabs() {
 				
 				// Draw highlighted Magic sheet icon
 				UseRenderState state(render2D().blendAdditive());
-				DrawBookInterfaceItem(g_bookResouces.bookmark_magic, pos, Color::grayb(0x55), 0.000001f);
+				DrawBookInterfaceItem(g_bookResouces.bookmark_magic, pos, Color::gray(1.f / 3), 0.000001f);
 				
 				// Set cursor to interacting
 				cursorSetInteraction();
@@ -407,7 +408,7 @@ void PlayerBook::manageTopTabs() {
 		if(MouseInBookRect(pos, Vec2f(g_bookResouces.bookmark_map->m_size) * scale)) {
 			
 			UseRenderState state(render2D().blendAdditive());
-			DrawBookInterfaceItem(g_bookResouces.bookmark_map, pos, Color::grayb(0x55), 0.000001f);
+			DrawBookInterfaceItem(g_bookResouces.bookmark_map, pos, Color::gray(1.f / 3), 0.000001f);
 			
 			// Set cursor to interacting
 			cursorSetInteraction();
@@ -428,7 +429,7 @@ void PlayerBook::manageTopTabs() {
 		if(MouseInBookRect(pos, Vec2f(g_bookResouces.bookmark_quest->m_size) * scale)) {
 			
 			UseRenderState state(render2D().blendAdditive());
-			DrawBookInterfaceItem(g_bookResouces.bookmark_quest, pos, Color::grayb(0x55), 0.000001f);
+			DrawBookInterfaceItem(g_bookResouces.bookmark_quest, pos, Color::gray(1.f / 3), 0.000001f);
 			
 			// Set cursor to interacting
 			cursorSetInteraction();

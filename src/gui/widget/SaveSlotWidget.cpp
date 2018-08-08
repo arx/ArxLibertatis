@@ -134,7 +134,7 @@ void SaveSlotWidget::render(bool mouseOver) {
 	
 	Color color = Color(232, 204, 142);
 	if(!m_enabled) {
-		color = Color::grayb(127);
+		color = Color::gray(0.5f);
 	} else if(m_selected || mouseOver) {
 		color = Color::white;
 	}
