@@ -147,7 +147,7 @@ void CharacterCreation::render() {
 			player.skin = checked_range_cast<char>(iSkin);
 		}
 		
-		color = Color(255, 255, 255);
+		color = Color::white;
 	}
 	else
 		color = Color(232, 204, 143);
@@ -170,7 +170,7 @@ void CharacterCreation::render() {
 			ARX_PLAYER_Restore_Skin();
 		}
 		
-		color = Color(255, 255, 255);
+		color = Color::white;
 	}
 	else
 		color = Color(232, 204, 143);
@@ -204,20 +204,23 @@ void CharacterCreation::render() {
 				MenuFader_start(Fade_In, Mode_InGame);
 			}
 		} else {
-			if(DONE)
-				color = Color(255, 255, 255);
-			else
-				color = Color(192, 192, 192);
+			if(DONE) {
+				color = Color::white;
+			} else {
+				color = Color::gray(0.75f);
+			}
 		}
 	} else {
-		if(DONE)
+		if(DONE) {
 			color = Color(232, 204, 143);
-		else
-			color = Color(192, 192, 192);
+		} else {
+			color = Color::gray(0.75f);
+		}
 	}
 	
-	if(m_cheatSkinButtonClickCount < 0)
-		color = Color(255, 0, 255);
+	if(m_cheatSkinButtonClickCount < 0) {
+		color = Color::magenta;
+	}
 	
 	ARX_UNICODE_DrawTextInRect(hFontMenu, doneButton.topLeft(), 999999, str_button_done, color);
 	}
