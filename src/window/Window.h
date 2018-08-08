@@ -33,7 +33,7 @@ struct DisplayMode {
 	
 	Vec2i resolution;
 	
-	DisplayMode() : resolution(0.f) { }
+	DisplayMode() : resolution(0) { }
 	/* implicit */ DisplayMode(Vec2i res) : resolution(res) { }
 	bool operator<(const DisplayMode & o) const;
 	bool operator==(const DisplayMode & o) const {
