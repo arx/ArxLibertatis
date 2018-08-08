@@ -553,9 +553,9 @@ static Vec2i parseThumbnailSize(const std::string & thumbnailSize) {
 	if (iss.fail() || x != 'x' || res.x <= 0 || res.y <= 0) {
 		LogWarning << "Bad thumbnail resolution string: " << thumbnailSize;
 		return Vec2i(THUMBNAIL_DEFAULT_WIDTH, THUMBNAIL_DEFAULT_HEIGHT);
-	} else {
-		return res;
 	}
+	
+	return res;
 }
 
 bool Config::init(const fs::path & file) {
