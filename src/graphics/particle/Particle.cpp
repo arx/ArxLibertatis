@@ -112,7 +112,6 @@ void Particle::Update(GameDuration delta) {
 		
 		fSize = fSizeStart + (fSizeEnd - fSizeStart) * ft;
 		
-		Color4f fColor = fColorStart + (fColorEnd - fColorStart) * ft;
-		ulColor = fColor.to<u8>();
+		ulColor = Color(fColorStart + (fColorEnd - fColorStart) * ft);
 	}
 }
