@@ -1003,8 +1003,8 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 			vert[3].p.z += 0.0001f * vert[3].w;
 			
 			vert[0].color = colors[first];
-			vert[1].color = Color(0, 0, 0, 255).toRGBA();
-			vert[2].color = Color(0, 0, 0, (curhalo->flags & HALO_NEGATIVE) ? 0 : 255).toRGBA();
+			vert[1].color = Color::black.toRGB();
+			vert[2].color = ((curhalo->flags & HALO_NEGATIVE) ? Color::none : Color(Color::black)).toRGBA();
 			vert[3].color = colors[second];
 			
 			Halo_AddVertices(vert);
