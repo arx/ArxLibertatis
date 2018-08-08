@@ -536,20 +536,6 @@ static void SetRoomDistance(size_t i, size_t j, float val,
 	
 }
 
-static float GetRoomDistance(size_t i, size_t j, Vec3f & p1, Vec3f & p2) {
-	
-	if(!portals || i >= portals->rooms.size() || j >= portals->rooms.size()) {
-		return -1.f;
-	}
-	
-	size_t index = i + j * portals->rooms.size();
-	
-	p1 = g_roomDistance[index].startpos;
-	p2 = g_roomDistance[index].endpos;
-	
-	return g_roomDistance[index].distance;
-}
-
 float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long Cam_Room) {
 	
 	float dst = fdist(pos, c_pos);
@@ -561,28 +547,18 @@ float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long 
 		return dst;
 	}
 	
-	long Room = io_room;
-	if(Room >= 0) {
-		
-		Vec3f p1, p2;
-		float v;
-		if(Cam_Room < 0 || Room < 0) {
-			v = -1.f;
-		} else {
-			v = GetRoomDistance(size_t(Cam_Room), size_t(Room), p1, p2);
-		}
-		
-		if(v > 0.f) {
-			v += fdist(pos, p2);
-			v += fdist(c_pos, p1);
-			return v;
-		}
-		
+	if(io_room < 0 || size_t(io_room) >= portals->rooms.size()) {
+		return dst;
 	}
 	
-	return dst;
+	if(Cam_Room < 0 || size_t(Cam_Room) >= portals->rooms.size()) {
+		return dst;
+	}
+	
+	const ROOM_DIST_DATA & dist = g_roomDistance[size_t(Cam_Room) + size_t(io_room) * portals->rooms.size()];
+	
+	return fdist(c_pos, dist.startpos) + dist.distance + fdist(dist.endpos, pos);
 }
-
 
 static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 	
