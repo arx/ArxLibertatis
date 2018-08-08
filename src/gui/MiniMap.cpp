@@ -358,7 +358,7 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 	
 	TexturedVertex verts[4];
 	for(int k = 0; k < 4; k++) {
-		verts[k].color = Color(255, 255, 255, 255).toRGBA();
+		verts[k].color = Color::white.toRGB();
 		verts[k].w = 1;
 		verts[k].p.z = 0.00001f;
 	}
@@ -373,10 +373,10 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 		
 		Vec2f pos = m_mapMarkers[i].m_pos * 8.f * m_activeBkg->m_mul * casePos + start;
 		float size = 5.f * scale;
-		verts[0].color = Color(255, 0, 0, 255).toRGBA();
-		verts[1].color = Color(255, 0, 0, 255).toRGBA();
-		verts[2].color = Color(255, 0, 0, 255).toRGBA();
-		verts[3].color = Color(255, 0, 0, 255).toRGBA();
+		verts[0].color = Color::red.toRGB();
+		verts[1].color = Color::red.toRGB();
+		verts[2].color = Color::red.toRGB();
+		verts[3].color = Color::red.toRGB();
 		verts[0].p.x = (pos.x - size);
 		verts[0].p.y = (pos.y - size);
 		verts[1].p.x = (pos.x + size);
@@ -556,7 +556,7 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 		float oo = 0.f;
 		
 		for(int vert = 0; vert < 4; vert++) {
-			verts[vert].color = Color(255, 255, 255, 255).toRGBA();
+			verts[vert].color = Color::white.toRGB();
 			verts[vert].w = 1;
 			verts[vert].p.z = 0.00001f;
 
@@ -642,7 +642,7 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	TexturedVertex verts[4];
 	
 	for(int k = 0; k < 4; k++) {
-		verts[k].color = Color(255, 0, 0, 255).toRGBA();
+		verts[k].color = Color::red.toRGB();
 		verts[k].w = 1;
 		verts[k].p.z = 0.00001f;
 	}
