@@ -642,7 +642,9 @@ static bool CanPayMana(SpellBase * spell, float cost) {
 		
 		player.manaPool.current -= cost;
 		return true;
-	} else if(ValidIONum(spell->m_caster)) {
+	}
+	
+	if(ValidIONum(spell->m_caster)) {
 		if(entities[spell->m_caster]->ioflags & IO_NPC) {
 			if(entities[spell->m_caster]->_npcdata->manaPool.current < cost) {
 				return false;
