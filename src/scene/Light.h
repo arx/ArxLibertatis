@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioTypes.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
+#include "math/Angle.h"
 #include "math/Types.h"
 #include "math/Quantizer.h"
 #include "util/Flags.h"
