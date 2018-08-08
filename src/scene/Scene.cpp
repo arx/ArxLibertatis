@@ -946,7 +946,7 @@ static void RenderLava() {
 		
 		for(int j = 0; j < iNbVertex; ++j) {
 			pVertex->p = ep->v[j].p;
-			pVertex->color = Color(102, 102, 102, 255).toRGBA();
+			pVertex->color = Color::gray(0.4f).toRGBA();
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				Vec2f uv = CalculateLavaDisplacement(ep, time, j, i);
 				pVertex->uv[i] = uv;
