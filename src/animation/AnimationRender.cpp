@@ -670,8 +670,8 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 			vert[0].p.z += 0.0001f * vert[0].w;
 			vert[3].p.z += 0.0001f * vert[3].w;
 			
-			vert[1].color = Color(0, 0, 0, 255).toRGBA();
-			vert[2].color = Color(0, 0, 0, (halo.flags & HALO_NEGATIVE) ? 0 : 255).toRGBA();
+			vert[1].color = Color::black.toRGB();
+			vert[2].color = ((halo.flags & HALO_NEGATIVE) ? Color::none : Color(Color::black)).toRGBA();
 			
 			Halo_AddVertices(vert);
 		}
@@ -743,7 +743,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 
 			if(face.facetype & POLY_GLOW) {
 				// unaffected by light
-				tvList[n].color = Color(255, 255, 255, 255).toRGBA();
+				tvList[n].color = Color::white.toRGB();
 			} else {
 				// Normal Illuminations
 				tvList[n].color = eobj->vertexColors[face.vid[n]];
