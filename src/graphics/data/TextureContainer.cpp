@@ -82,7 +82,7 @@ TextureContainer * GetTextureList() {
 TextureContainer::TextureContainer(const res::path & strName, TCFlags flags)
 	: TextureHalo(NULL)
 	, m_texName(strName)
-	, m_size(0.f)
+	, m_size(0)
 	, m_dwFlags(flags)
 	, userflags(0)
 	, m_pTexture(NULL)
