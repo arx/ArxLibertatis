@@ -536,9 +536,9 @@ static Vec2i parseResolution(const std::string & resolution) {
 	if(iss.fail() || x != 'x' || res.x <= 0 || res.y <= 0) {
 		LogWarning << "Bad resolution string: " << resolution;
 		return Vec2i(ARX_DEFAULT_WIDTH, ARX_DEFAULT_HEIGHT);
-	} else {
-		return res;
 	}
+	
+	return res;
 }
 
 static Vec2i parseThumbnailSize(const std::string & thumbnailSize) {
