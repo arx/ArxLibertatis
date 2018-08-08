@@ -1490,7 +1490,7 @@ void SpellsPage::drawSpells() {
 					player.SpellToMemorize.lTimeCreation = g_gameTime.now();
 				}
 			} else {
-				color = Color(168, 208, 223, 255);
+				color = Color(168, 208, 223);
 			}
 			
 			DrawBookInterfaceItem(spellInfo.tc, fPos, color, 0.000001f);
