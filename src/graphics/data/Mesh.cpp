@@ -820,11 +820,11 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				ep2->type = PolyType::load(ep->type);
 				
 				for(size_t kk = 0; kk < 4; kk++) {
-					ep2->v[kk].color = Color(255, 255, 255, 255).toRGBA();
+					ep2->v[kk].color = Color::white.toRGBA();
 					ep2->v[kk].w = 1;
 					ep2->v[kk].p = Vec3f(ep->v[kk].ssx, ep->v[kk].sy, ep->v[kk].ssz);
 					ep2->v[kk].uv = Vec2f(ep->v[kk].stu, ep->v[kk].stv);
-					ep2->color[kk] = Color(0, 0, 0, 255).toRGBA();
+					ep2->color[kk] = Color::black.toRGBA();
 				}
 				
 				long to = (ep->type & POLY_QUAD) ? 4 : 3;
