@@ -98,7 +98,8 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb, Camera & camera) {
 		camera.angle.setRoll(*az);
 		PrepareCamera(&camera, g_size);
 		
-		Color col = Color(255, 255, 255, int(alpha));
+		Color col = Color::white;
+		col.a = u8(alpha);
 		DrawGrille(tb, col, 0, NULL, c->posgrille, c->angzgrille, c->fadegrille);
 
 		alpha += dalpha;
