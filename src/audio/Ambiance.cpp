@@ -550,9 +550,9 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 		         << "\": missing sample \"" << sampleName << '"';
 		delete sample;
 		return AAL_ERROR_FILEIO;
-	} else {
-		sample->reference();
 	}
+	
+	sample->reference();
 	
 	s_id = SourcedSample(SourceHandle(), sampleHandle);
 	
