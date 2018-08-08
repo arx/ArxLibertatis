@@ -209,7 +209,7 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	pd->m_flags = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | SPLAT_GROUND;
 	pd->tolive = 1600;
 	pd->move = arx::randomVec3f() * Vec3f(60.f, -10.f, 60.f) - Vec3f(30.f, 15.f, 30.f);
-	pd->rgb = col.to<float>();
+	pd->rgb = Color3f(col);
 	long num = Random::get(0, 5);
 	pd->tc = bloodsplat[num];
 	pd->m_rotation = Random::getf(-0.05f, 0.05f);
@@ -229,7 +229,7 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 		pd->scale = Vec3f(-pd->siz * 0.5f);
 		pd->m_flags = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | flags;
 		pd->tolive = 1100;
-		pd->rgb = col.to<float>();
+		pd->rgb = Color3f(col);
 		pd->tc = bloodsplat[0];
 		pd->m_rotation = Random::getf(-0.05f, 0.05f);
 	}
@@ -620,7 +620,7 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 		pd->siz = 0.3f + 0.01f * power;
 		pd->scale = Vec3f(0.2f + 0.3f * power);
 		pd->zdec = true;
-		pd->rgb = col.to<float>();
+		pd->rgb = Color3f(col);
 	}
 }
 
@@ -921,7 +921,7 @@ void ARX_PARTICLES_Update()  {
 			}
 		}
 		
-		Color color = (part->rgb * r).to<u8>();
+		Color color(part->rgb * r);
 		if(player.m_improve) {
 			color.g = 0;
 		}
@@ -942,7 +942,7 @@ void ARX_PARTICLES_Update()  {
 		
 		if(part->m_flags & PARTICLE_SUB2) {
 			mat.setBlendType(RenderMaterial::Subtractive2);
-			color.a = u8(glm::clamp(r * 1.5f, 0.f, 1.f) * 255);
+			color.a = Color::Traits::convert(r * 1.5f);
 		} else if(part->m_flags & SUBSTRACT) {
 			mat.setBlendType(RenderMaterial::Subtractive);
 		} else {
