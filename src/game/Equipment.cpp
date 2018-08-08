@@ -767,12 +767,10 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							sp.radius = 3.5f * power * 20;
 							
 							if(CheckAnythingInSphere(sp, EntityHandle_Player, CAS_NO_NPC_COL)) {
-								Color3f rgb = color.to<float>();
-								
 								Sphere splatSphere;
 								splatSphere.origin = sp.origin;
 								splatSphere.radius = 30.f;
-								PolyBoomAddSplat(splatSphere, rgb, 1);
+								PolyBoomAddSplat(splatSphere, Color3f(color), 1);
 							}
 						}
 						
