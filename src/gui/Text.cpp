@@ -309,13 +309,13 @@ static bool getFontFile(res::path & result) {
 }
 
 static float smallTextScale(float scale) {
-	if(scale > 2.f)  {
+	if(scale > 2.f) {
 		return scale * 0.85f;
-	} else if(scale > 1.f) {
-		return scale * 0.7f + 0.3f;
-	} else {
-		return scale;
 	}
+	if(scale > 1.f) {
+		return scale * 0.7f + 0.3f;
+	}
+	return scale;
 }
 
 void ARX_Text_scaleBookFont(float scale, int weight) {
