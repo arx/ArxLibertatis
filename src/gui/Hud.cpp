@@ -300,13 +300,11 @@ void BackpackIconGui::updateInput() {
 			if(flDelay == 0) {
 				flDelay = g_platformTime.frameStart();
 				return;
-			} else {
-				if(g_platformTime.frameStart() - flDelay < PlatformDurationMs(300)) {
-					return;
-				} else {
-					flDelay = 0;
-				}
 			}
+			if(g_platformTime.frameStart() - flDelay < PlatformDurationMs(300)) {
+				return;
+			}
+			flDelay = 0;
 			
 			if(player.Interface & INTER_INVENTORYALL) {
 				ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
