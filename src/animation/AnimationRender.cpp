@@ -599,22 +599,13 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 	float _ffr[3];
 	
 	for(long o = 0; o < 3; o++) {
-		
 		Vec3f temporary3D = t.rotation * eobj->vertexlist[face.vid[o]].norm;
-		
-		float power = 255.f - glm::abs(255.f * temporary3D.z * 0.5f);
-		power = glm::clamp(power, 0.f, 255.f);
-
-		tot += power;
-		_ffr[o] = power;
-
-		u8 lfr = u8(halo.color.r * power);
-		u8 lfg = u8(halo.color.g * power);
-		u8 lfb = u8(halo.color.b * power);
-		tvList[o].color = Color(lfr, lfg, lfb, 255).toRGBA();
-		
+		float power= glm::clamp(1.f - glm::abs(temporary3D.z * 0.5f), 0.f, 1.f);
+		tot += power * 255.f;
+		_ffr[o] = power * 255.f;
+		tvList[o].color = Color(halo.color * power).toRGBA();
 	}
-
+	
 	if(tot > 150.f) {
 		long first;
 		long second;
