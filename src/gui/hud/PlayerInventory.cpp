@@ -240,7 +240,7 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 		if(io == FlyingOverIO)
 			overlayColor = Color::white;
 		else if(io->ioflags & IO_CAN_COMBINE)
-			overlayColor = Color3f::gray(glm::abs(glm::cos(glm::radians(fDecPulse)))).to<u8>();
+			overlayColor = Color::gray(glm::abs(glm::cos(glm::radians(fDecPulse))));
 		
 		
 		if(overlayColor != Color::black) {
