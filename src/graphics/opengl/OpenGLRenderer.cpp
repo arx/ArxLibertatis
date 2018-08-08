@@ -609,8 +609,8 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 	GLbitfield buffers = 0;
 	
 	if(bufferFlags & ColorBuffer) {
-		Color4f col = clearColor.to<float>();
-		glClearColor(col.r, col.g, col.b, col.a);
+		Color4f colorf(clearColor);
+		glClearColor(colorf.r, colorf.g, colorf.b, colorf.a);
 		buffers |= GL_COLOR_BUFFER_BIT;
 	}
 	
@@ -662,7 +662,7 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 }
 
 void OpenGLRenderer::SetFogColor(Color color) {
-	Color4f colorf = color.to<float>();
+	Color4f colorf(color);
 	GLfloat fogColor[4] = { colorf.r, colorf.g, colorf.b, colorf.a };
 	glFogfv(GL_FOG_COLOR, fogColor);
 }
