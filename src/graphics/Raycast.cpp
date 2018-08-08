@@ -278,9 +278,8 @@ RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end) {
 		dbg_addPoly(raycast.hitPoly, hitPos, Color::green);
 		#endif
 		return RaycastHit(hitPos);
-	} else {
-		return RaycastMiss();
 	}
+	return RaycastMiss();
 }
 
 
