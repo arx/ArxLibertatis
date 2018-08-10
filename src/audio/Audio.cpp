@@ -751,7 +751,7 @@ static const PlatformDuration ARX_SOUND_UPDATE_INTERVAL = PlatformDurationMs(100
 
 class SoundUpdateThread : public StoppableThread {
 	
-	aalError update();
+	void update();
 	
 	void run() {
 		
@@ -768,11 +768,11 @@ class SoundUpdateThread : public StoppableThread {
 	
 };
 
-aalError SoundUpdateThread::update() {
+void SoundUpdateThread::update() {
 	
 	ARX_PROFILE_FUNC();
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
 	session_time = platform::getTime();
 	
@@ -810,8 +810,6 @@ aalError SoundUpdateThread::update() {
 			++i;
 		}
 	}
-	
-	return AAL_OK;
 }
 
 
