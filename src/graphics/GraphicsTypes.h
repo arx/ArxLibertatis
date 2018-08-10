@@ -70,7 +70,7 @@ class Entity;
 struct EERIE_LIGHT;
 struct PHYSICS_BOX_DATA;
 
-typedef HandleType<struct ActionPointTag,  long,  -1> ActionPoint;
+typedef HandleType<struct ActionPointTag,  s32,   -1> ActionPoint;
 typedef HandleType<struct ObjSelectionTag, long,  -1> ObjSelection;
 typedef HandleType<struct ObjVertGroupTag, short, -1> ObjVertGroup;
 typedef HandleType<struct ObjVertHandleTag, s32,  -1> ObjVertHandle;
