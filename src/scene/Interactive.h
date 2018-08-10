@@ -85,7 +85,7 @@ DECLARE_FLAGS_OPERATORS(DeleteByIndexFlags)
 void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1);
 void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io);
 void ARX_INTERACTIVE_HideGore(Entity * io, long flag = 0);
-bool ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target, const std::string & ap_source, const std::string & ap_target);
+void ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target, const std::string & ap_source, const std::string & ap_target);
 void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target);
 void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state);
 
