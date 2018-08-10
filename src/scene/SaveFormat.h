@@ -800,7 +800,7 @@ struct ARX_CHANGELEVEL_NPC_IO_SAVE {
 	char padding[256];
 	f32 look_around_inc;
 	u32 collid_time; // TODO remove
-	s32 collid_state;
+	s32 collid_state; // TODO remove
 	f32 speakpitch;
 	f32 lastmouth;
 	SavedBehaviour stacked[SAVED_MAX_STACKED_BEHAVIOR];

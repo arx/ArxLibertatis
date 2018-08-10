@@ -2093,8 +2093,6 @@ static void ManageNPCMovement_End(Entity * io) {
 			io->_npcdata->moveproblem += 1;
 		else
 			io->_npcdata->moveproblem = 0;
-
-		io->_npcdata->collid_state = 0;
 	} else {
 		// Object was unable to move to target... Stop it
 		io->_npcdata->moveproblem += 3;
