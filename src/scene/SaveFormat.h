@@ -799,7 +799,7 @@ struct ARX_CHANGELEVEL_NPC_IO_SAVE {
 	s32 fightdecision;
 	char padding[256];
 	f32 look_around_inc;
-	u32 collid_time;
+	u32 collid_time; // TODO remove
 	s32 collid_state;
 	f32 speakpitch;
 	f32 lastmouth;
