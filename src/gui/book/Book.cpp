@@ -197,7 +197,7 @@ void PlayerBook::toggle() {
 		SendIOScriptEvent(NULL, entities.player(), SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_PLAYERBOOK;
-		map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0l, 7l));
+		map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0, 7));
 	}
 	
 	if(player.Interface & INTER_COMBATMODE) {

@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/predicate.hpp>
 
-long ARX_LEVELS_GetRealNum(long num) {
+int ARX_LEVELS_GetRealNum(long num) {
 	
 	if(num < 0) {
 		return -1;
