@@ -351,7 +351,7 @@ public:
 			
 			float x = context.getFloat();
 			float y = context.getFloat();
-			long level = (long)context.getFloat();
+			int level = int(context.getFloat());
 			
 			std::string marker = loadUnlocalized(context.getWord());
 			
