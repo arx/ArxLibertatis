@@ -197,7 +197,6 @@ struct IO_NPCDATA {
 	long fightdecision;
 	
 	float look_around_inc;
-	long collid_state;
 	float speakpitch;
 	float lastmouth;
 	long ltemp;

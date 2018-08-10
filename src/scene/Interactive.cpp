@@ -941,7 +941,6 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->_npcdata->weapontype = 0;
 			io->_npcdata->weaponinhand = 0;
 			io->_npcdata->fightdecision = 0;
-			io->_npcdata->collid_state = 0;
 			io->_npcdata->walk_start_time = 0;
 
 			io->_npcdata->reachedtarget = 0;
@@ -1525,7 +1524,6 @@ IO_NPCDATA::IO_NPCDATA()
 	, weaponinhand(0)
 	, fightdecision(0)
 	, look_around_inc(0.f)
-	, collid_state(0)
 	, speakpitch(1.f)
 	, lastmouth(0.f)
 	, ltemp(0)

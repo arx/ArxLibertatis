@@ -1155,7 +1155,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as->armor_class = io->_npcdata->armor_class;
 			as->behavior = io->_npcdata->behavior;
 			as->behavior_param = io->_npcdata->behavior_param;
-			as->collid_state = io->_npcdata->collid_state;
+			as->collid_state = 0;
 			as->collid_time = 0;
 			as->cut = io->_npcdata->cut;
 			as->damages = io->_npcdata->damages;
@@ -2017,7 +2017,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				io->_npcdata->armor_class = as->armor_class;
 				io->_npcdata->behavior = Behaviour::load(as->behavior); // TODO save/load flags
 				io->_npcdata->behavior_param = as->behavior_param;
-				io->_npcdata->collid_state = as->collid_state;
 				io->_npcdata->cut = as->cut;
 				io->_npcdata->damages = as->damages;
 				io->_npcdata->detect = as->detect;
