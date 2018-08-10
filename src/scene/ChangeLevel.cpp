@@ -207,7 +207,7 @@ static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	}
 }
 
-static long GetIOAnimIdx2(const Entity * io, ANIM_HANDLE * anim) {
+static s32 GetIOAnimIdx2(const Entity * io, ANIM_HANDLE * anim) {
 	
 	if(!io || !anim) {
 		return -1;
@@ -215,7 +215,7 @@ static long GetIOAnimIdx2(const Entity * io, ANIM_HANDLE * anim) {
 	
 	for(size_t i = 0; i < MAX_ANIMS; i++) {
 		if(io->anims[i] == anim) {
-			return i;
+			return s32(i);
 		}
 	}
 	
