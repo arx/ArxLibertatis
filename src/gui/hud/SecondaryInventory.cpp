@@ -299,8 +299,8 @@ bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 	if(SecondaryInventory != NULL) {
 		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
 		          / s16(32 * m_scale);
-		if(t.x < 0 || t.x >= SecondaryInventory->m_size.x || t.y < 0 || t.y >= SecondaryInventory->m_size.y) {
-			return false;
+		if(t.x >= 0 && t.x < SecondaryInventory->m_size.x && t.y >= 0 && t.y < SecondaryInventory->m_size.y) {
+			return true;
 		}
 	}
 	
