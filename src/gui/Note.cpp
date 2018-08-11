@@ -100,7 +100,7 @@ void Note::loadTextures() {
 			break;
 		}
 		
-		case Undefined: break; // Cannot handle notes of undefined type.
+		case Undefined: arx_unreachable(); // Cannot handle notes of undefined type.
 	}
 }
 
@@ -169,7 +169,7 @@ void Note::calculateLayout() {
 			break;
 		}
 		
-		case Undefined: return; // Cannot handle notes of undefined type.
+		case Undefined: arx_unreachable(); // Cannot handle notes of undefined type.
 	}
 	
 	if(m_type == QuestBook) {
