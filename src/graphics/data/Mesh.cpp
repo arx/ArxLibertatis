@@ -556,6 +556,9 @@ float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long 
 	}
 	
 	const ROOM_DIST_DATA & dist = g_roomDistance[size_t(Cam_Room) + size_t(io_room) * portals->rooms.size()];
+	if(dist.distance <= 0.f) {
+		return dst;
+	}
 	
 	return fdist(c_pos, dist.startpos) + dist.distance + fdist(dist.endpos, pos);
 }
