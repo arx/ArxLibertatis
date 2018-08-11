@@ -97,6 +97,7 @@ void Note::loadTextures() {
 			m_background = TextureContainer::LoadUI("graph/interface/book/questbook");
 			m_prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner_original");
 			m_nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner_original");
+			break;
 		}
 		
 		case Undefined: break; // Cannot handle notes of undefined type.
@@ -165,6 +166,7 @@ void Note::calculateLayout() {
 			m_maxPages = std::numeric_limits<size_t>::max();
 			prevButtonOffset = Vec2f(8.f, -6.f);
 			nextButtonOffset = Vec2f(-15.f, -6.f);
+			break;
 		}
 		
 		case Undefined: return; // Cannot handle notes of undefined type.
