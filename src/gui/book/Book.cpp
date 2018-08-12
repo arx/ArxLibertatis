@@ -1549,8 +1549,9 @@ void MapPage::drawLeftTabs() {
 }
 
 void QuestBookPage::manage() {
+	
 	// Cache the questbook data
-	if(m_questBook.isCleared()) {
+	if(m_questBook.type() == Note::Undefined) {
 		std::string text;
 		for(size_t i = 0; i < g_playerQuestLogEntries.size(); ++i) {
 			std::string quest = getLocalised(g_playerQuestLogEntries[i]);

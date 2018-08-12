@@ -49,7 +49,6 @@ void Note::clear() {
 	deallocate();
 	m_text.clear();
 	m_type = Undefined;
-	m_isCleared = true;
 }
 
 void Note::deallocate() {
@@ -260,8 +259,6 @@ bool Note::allocate() {
 	
 	// Clamp the current page to a valid page.
 	setPage(m_page);
-	
-	m_isCleared = false;
 	
 	return true;
 }
