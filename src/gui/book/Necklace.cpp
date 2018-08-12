@@ -153,14 +153,16 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 		if(!gui::necklace.runes[i])
 			continue;
 		
+		if(!player.hasRune((Rune)i)) {
+			continue;
+		}
+		
 		EERIE_3DOBJ * rune = gui::necklace.runes[i];
 		
 		Vec2i projectionCenter = Vec2i(rect.topLeft() + (Vec2f(285, 36) + Vec2f(tmpPos) * Vec2f(45, 64)) * scale);
 		
 		PrepareCamera(&bookcam, Rect(rect), projectionCenter);
 		
-		if(player.hasRune((Rune)i)) {
-			
 			Anglef angle;
 			if(rune->angle.getYaw() != 0.f) {
 				if(rune->angle.getYaw() > 300.f) {
@@ -225,7 +227,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 			DrawEERIEInter(gui::necklace.lacet, t1, NULL, false, 0.f);
 			
 			PopAllTriangleListOpaque(baseState);
-		}
 	}
 	
 	*light = tl;
