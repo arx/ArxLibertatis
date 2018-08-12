@@ -197,11 +197,11 @@ void setEnvironmentPath(const res::path & path) {
 	environment_path = path;
 }
 
-aalError setReverbEnabled(bool enable) {
+void setReverbEnabled(bool enable) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
-	return backend->setReverbEnabled(enable);
+	backend->setReverbEnabled(enable);
 }
 
 bool isReverbSupported() {

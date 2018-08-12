@@ -79,7 +79,7 @@ aalError clean();
 void setSamplePath(const res::path & path);
 void setAmbiancePath(const res::path & path);
 void setEnvironmentPath(const res::path & path);
-aalError setReverbEnabled(bool enable);
+void setReverbEnabled(bool enable);
 bool isReverbSupported();
 aalError setHRTFEnabled(HRTFAttribute enable);
 HRTFStatus getHRTFStatus();
