@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/TimeTypes.h"
 #include "audio/AudioTypes.h"
+#include "io/resource/ResourcePath.h"
 #include "math/Types.h"
 
 namespace res { class path; }
@@ -150,6 +151,15 @@ bool isAmbianceLooped(AmbianceId ambianceId);
 
 void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop = false, PlatformDuration fadeInterval = 0);
 void ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval = 0);
+
+struct AmbianceInfo {
+	res::path name;
+	PlayingAmbianceType type;
+	float volume;
+	bool isLooped;
+};
+
+void getAmbianceInfos(std::vector<AmbianceInfo> & infos);
 
 
 void threadStart();
