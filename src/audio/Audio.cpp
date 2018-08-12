@@ -598,8 +598,8 @@ void sampleStop(SourcedSample sourceId) {
 	source->stop();
 }
 
-aalError getSourceInfos(std::vector<SourceInfo> & infos) {
-	AAL_ENTRY
+void getSourceInfos(std::vector<SourceInfo> & infos) {
+	AAL_ENTRY_VOID
 	
 	for(audio::Backend::source_iterator p = audio::backend->sourcesBegin(); p != audio::backend->sourcesEnd(); ++p) {
 		if(*p) {
@@ -612,8 +612,6 @@ aalError getSourceInfos(std::vector<SourceInfo> & infos) {
 			infos.push_back(si);
 		}
 	}
-	
-	return AAL_OK;
 }
 
 

@@ -135,7 +135,7 @@ struct SourceInfo {
 	std::string sampleName;
 };
 
-aalError getSourceInfos(std::vector<SourceInfo> & infos);
+void getSourceInfos(std::vector<SourceInfo> & infos);
 
 // Ambiance
 
