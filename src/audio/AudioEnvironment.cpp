@@ -49,18 +49,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-Environment::Environment(const res::path & _name) :
-	name(_name),
-	size(DEFAULT_ENVIRONMENT_SIZE),
-	diffusion(DEFAULT_ENVIRONMENT_DIFFUSION),
-	absorption(DEFAULT_ENVIRONMENT_ABSORPTION),
-	reflect_volume(DEFAULT_ENVIRONMENT_REFLECTION_VOLUME),
-	reflect_delay(DEFAULT_ENVIRONMENT_REFLECTION_DELAY),
-	reverb_volume(DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME),
-	reverb_delay(DEFAULT_ENVIRONMENT_REVERBERATION_DELAY),
-	reverb_decay(DEFAULT_ENVIRONMENT_REVERBERATION_DECAY),
-	reverb_hf_decay(DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY) {
-}
+Environment::Environment(const res::path & _name)
+	: name(_name)
+	, size(7.5f)
+	, diffusion(1.f)       // High density echoes
+	, absorption(0.05f)    // Air-like absorbtion
+	, reflect_volume(0.8f)
+	, reflect_delay(7.f)
+	, reverb_volume(1.f)
+	, reverb_delay(10.f)
+	, reverb_decay(1500.f)
+	, reverb_hf_decay(1200.f)
+{ }
 
 aalError Environment::load() {
 	

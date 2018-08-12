@@ -51,17 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-// Default values
-const float DEFAULT_ENVIRONMENT_SIZE = 7.5f;
-const float DEFAULT_ENVIRONMENT_DIFFUSION = 1.f; // High density echoes
-const float DEFAULT_ENVIRONMENT_ABSORPTION = 0.05f; // Air-like absorbtion
-const float DEFAULT_ENVIRONMENT_REFLECTION_VOLUME = 0.8f;
-const float DEFAULT_ENVIRONMENT_REFLECTION_DELAY = 7.f;
-const float DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME = 1.f;
-const float DEFAULT_ENVIRONMENT_REVERBERATION_DELAY = 10.f;
-const float DEFAULT_ENVIRONMENT_REVERBERATION_DECAY = 1500.f;
-const float DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY = 1200.f;
-
 const float DEFAULT_VOLUME = 1.f; // Original gain
 
 // Flags
