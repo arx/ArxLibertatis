@@ -99,9 +99,6 @@ void deleteAmbianceAll();
 AmbianceId getAmbiance(const res::path & name);
 EnvId getEnvironment(const res::path & name);
 
-//! Retrieving by ID (If resource_id == INVALID_ID, return first found)
-AmbianceId getNextAmbiance(AmbianceId ambianceId = AmbianceId());
-
 // Listener
 
 void setUnitFactor(float factor);
@@ -143,11 +140,6 @@ aalError getSourceInfos(std::vector<SourceInfo> & infos);
 // Ambiance
 
 void setAmbianceVolume(AmbianceId ambianceId, float volume);
-
-aalError getAmbianceName(AmbianceId ambianceId, res::path & name);
-aalError getAmbianceType(AmbianceId ambianceId, PlayingAmbianceType * type);
-aalError getAmbianceVolume(AmbianceId ambianceId, float & volume);
-bool isAmbianceLooped(AmbianceId ambianceId);
 
 void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop = false, PlatformDuration fadeInterval = 0);
 void ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval = 0);

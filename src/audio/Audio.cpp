@@ -372,24 +372,6 @@ EnvId getEnvironment(const res::path & name) {
 	return EnvId();
 }
 
-// Retrieve next resource by ID
-
-AmbianceId getNextAmbiance(AmbianceId ambianceId) {
-	
-	AAL_ENTRY_V(AmbianceId())
-	
-	size_t i = (ambianceId != AmbianceId() && g_ambiances.isValid(ambianceId))
-	           ? ambianceId.handleData() + 1 : 0;
-	
-	for(; i < g_ambiances.size(); i++) {
-		if(g_ambiances[AmbianceId(i)]) {
-			return AmbianceId(i);
-		}
-	}
-	
-	return AmbianceId();
-}
-
 // Listener settings
 
 void setUnitFactor(float factor) {
@@ -651,60 +633,6 @@ void setAmbianceVolume(AmbianceId ambianceId, float volume) {
 }
 
 // Ambiance status
-
-aalError getAmbianceName(AmbianceId ambianceId, res::path & name) {
-	
-	name.clear();
-	
-	AAL_ENTRY
-	
-	if(!g_ambiances.isValid(ambianceId)) {
-		return AAL_ERROR_HANDLE;
-	}
-	
-	name = g_ambiances[ambianceId]->getName();
-	
-	return AAL_OK;
-}
-
-aalError getAmbianceType(AmbianceId ambianceId, PlayingAmbianceType * type) {
-	
-	AAL_ENTRY
-	
-	if(!g_ambiances.isValid(ambianceId)) {
-		return AAL_ERROR_HANDLE;
-	}
-	
-	*type = g_ambiances[ambianceId]->getType();
-	
-	return AAL_OK;
-}
-
-aalError getAmbianceVolume(AmbianceId ambianceId, float & volume) {
-	
-	volume = DEFAULT_VOLUME;
-	
-	AAL_ENTRY
-	
-	if(!g_ambiances.isValid(ambianceId)) {
-		return AAL_ERROR_HANDLE;
-	}
-	
-	volume = g_ambiances[ambianceId]->getChannel().volume;
-	
-	return AAL_OK;
-}
-
-bool isAmbianceLooped(AmbianceId ambianceId) {
-	
-	AAL_ENTRY_V(false)
-	
-	if(!g_ambiances.isValid(ambianceId)) {
-		return false;
-	}
-	
-	return g_ambiances[ambianceId]->isLooped();
-}
 
 void getAmbianceInfos(std::vector<AmbianceInfo> & infos) {
 	
