@@ -105,8 +105,7 @@ AmbianceId getNextAmbiance(AmbianceId ambianceId = AmbianceId());
 
 void setUnitFactor(float factor);
 void setRolloffFactor(float factor);
-void setListenerPosition(const Vec3f & position);
-void setListenerDirection(const Vec3f & front, const Vec3f & up);
+void setListenerPosition(const Vec3f & position, const Vec3f & front, const Vec3f & up);
 void setListenerEnvironment(EnvId environmentId);
 
 // Mixer
