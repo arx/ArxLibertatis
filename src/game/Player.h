@@ -88,7 +88,7 @@ enum PlayerInterfaceFlag {
 	INTER_MINIBACK     = 1 << 4,
 	INTER_LIFE_MANA    = 1 << 5,
 	INTER_COMBATMODE   = 1 << 6,
-	INTER_NOTE         = 1 << 7,
+	INTER_NOTE         = 1 << 7, // TODO remove
 	INTER_STEAL        = 1 << 8,
 	INTER_NO_STRIKE    = 1 << 9
 };
