@@ -303,8 +303,7 @@ void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Ve
 	ARX_PROFILE_FUNC();
 	
 	if(g_soundInitialized) {
-		audio::setListenerPosition(position);
-		audio::setListenerDirection(front, up);
+		audio::setListenerPosition(position, front, up);
 	}
 }
 

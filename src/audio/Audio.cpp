@@ -410,17 +410,11 @@ void setRolloffFactor(float factor) {
 	backend->setRolloffFactor(factor);
 }
 
-void setListenerPosition(const Vec3f & position) {
+void setListenerPosition(const Vec3f & position, const Vec3f & front, const Vec3f & up) {
 	
 	AAL_ENTRY_VOID
 	
 	backend->setListenerPosition(position);
-}
-
-void setListenerDirection(const Vec3f & front, const Vec3f & up) {
-	
-	AAL_ENTRY_VOID
-	
 	backend->setListenerOrientation(front, up);
 }
 
