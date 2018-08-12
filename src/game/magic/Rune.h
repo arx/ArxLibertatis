@@ -23,6 +23,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/array.hpp>
+
 #include "math/Types.h"
 
 class Entity;
@@ -56,6 +58,9 @@ enum Rune {
 };
 
 struct RuneInfo {
+	
+	RuneInfo()
+	{}
 
 	RuneInfo(Rune rune_, const std::string & name_, Vec2s startOffset_, const std::string & sequence_)
 		: rune(rune_)
@@ -70,7 +75,7 @@ struct RuneInfo {
 	std::string sequence;
 };
 
-extern std::vector<RuneInfo> runeInfos;
+extern boost::array<RuneInfo, RUNE_COUNT> runeInfos;
 
 void RuneInfosFill();
 
