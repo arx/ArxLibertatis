@@ -41,8 +41,7 @@ struct Note {
 	};
 	
 	Note()
-		: m_isCleared(true)
-		, m_type(Undefined)
+		: m_type(Undefined)
 		, m_currentRatio(0.f)
 		, m_currentScale(0.f)
 		, m_currentFontSize(0.f)
@@ -57,7 +56,6 @@ struct Note {
 	
 	void setData(Type type, const std::string & text);
 	void clear();
-	bool isCleared() { return m_isCleared; }
 	
 	void render();
 	bool manageActions();
@@ -82,8 +80,6 @@ private:
 	void loadTextures();
 	void calculateLayout();
 	bool splitTextToPages();
-	
-	bool m_isCleared;
 	
 	Type m_type;
 	std::string m_text;
