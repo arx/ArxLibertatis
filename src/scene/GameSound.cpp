@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cstring>
 
+#include <boost/foreach.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include "animation/Animation.h"
@@ -820,12 +821,12 @@ std::string ARX_SOUND_AmbianceSavePlayList() {
 	
 	std::string result;
 	
-	AmbianceId ambiance = audio::getNextAmbiance();
-	for(; ambiance != AmbianceId(); ambiance = audio::getNextAmbiance(ambiance)) {
+	std::vector<audio::AmbianceInfo> infos;
+	audio::getAmbianceInfos(infos);
+	
+	BOOST_FOREACH(const audio::AmbianceInfo & info, infos) {
 		
-		audio::PlayingAmbianceType type;
-		audio::getAmbianceType(ambiance, &type);
-		if(type != audio::PLAYING_AMBIANCE_SCRIPT && type != audio::PLAYING_AMBIANCE_ZONE) {
+		if(info.type != audio::PLAYING_AMBIANCE_SCRIPT && info.type != audio::PLAYING_AMBIANCE_ZONE) {
 			continue;
 		}
 		
@@ -835,16 +836,14 @@ std::string ARX_SOUND_AmbianceSavePlayList() {
 		PlayingAmbiance * playing = reinterpret_cast<PlayingAmbiance *>(data);
 		
 		std::memset(playing->name, 0, sizeof(playing->name));
-		res::path name;
-		audio::getAmbianceName(ambiance, name);
-		arx_assert(name.string().length() + 1 < ARRAY_SIZE(playing->name));
-		util::storeString(playing->name, name.string());
+		arx_assert(info.name.string().length() + 1 < ARRAY_SIZE(playing->name));
+		util::storeString(playing->name, info.name.string());
 		
-		audio::getAmbianceVolume(ambiance, playing->volume);
+		playing->volume = info.volume;
 		
-		playing->loop = audio::isAmbianceLooped(ambiance) ?  ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
+		playing->loop = info.isLooped ?  ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
 		
-		playing->type = (type == audio::PLAYING_AMBIANCE_SCRIPT ? 1 : 2);
+		playing->type = (info.type == audio::PLAYING_AMBIANCE_SCRIPT ? 1 : 2);
 		
 	}
 	

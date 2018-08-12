@@ -710,6 +710,28 @@ bool isAmbianceLooped(AmbianceId ambianceId) {
 	return g_ambiances[ambianceId]->isLooped();
 }
 
+void getAmbianceInfos(std::vector<AmbianceInfo> & infos) {
+	
+	AAL_ENTRY_VOID
+	
+	for(AmbianceList::const_iterator p = g_ambiances.begin(); p != g_ambiances.end(); ++p) {
+		if(*p) {
+			const Ambiance * ambiance = *p;
+			AmbianceInfo info;
+			info.name = ambiance->getName();
+			info.type = ambiance->getType();
+			if(ambiance->getChannel().flags & FLAG_VOLUME) {
+				info.volume = ambiance->getChannel().volume;
+			} else {
+				info.volume = DEFAULT_VOLUME;
+			}
+			info.isLooped = ambiance->isLooped();
+			infos.push_back(info);
+		}
+	}
+}
+
+
 // Ambiance control
 
 void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop, PlatformDuration fadeInterval) {
