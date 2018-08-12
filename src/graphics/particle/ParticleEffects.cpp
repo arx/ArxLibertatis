@@ -1021,7 +1021,7 @@ void TreatBackgroundActions() {
 		}
 		
 		if(!(gl->extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !gl->m_ignitionStatus) {
-			if(!gl->m_ignitionStatus && gl->sample != audio::SourcedSample()) {
+			if(!gl->m_ignitionStatus) {
 				ARX_SOUND_Stop(gl->sample);
 				gl->sample = audio::SourcedSample();
 			}

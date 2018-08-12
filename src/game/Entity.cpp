@@ -287,11 +287,8 @@ void Entity::cleanReferences() {
 	
 	lightHandleDestroy(ignit_light);
 	
-	if(ignit_sound != audio::SourcedSample()) {
 		ARX_SOUND_Stop(ignit_sound);
 		ignit_sound = audio::SourcedSample();
-	}
-	
 }
 
 void Entity::destroy() {

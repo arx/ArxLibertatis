@@ -824,10 +824,8 @@ static void CheckUnderWaterIO(Entity * io) {
 
 			lightHandleDestroy(io->ignit_light);
 
-			if(io->ignit_sound != audio::SourcedSample()) {
 				ARX_SOUND_Stop(io->ignit_sound);
 				io->ignit_sound = audio::SourcedSample();
-			}
 
 			io->ignition = 0;
 		}
@@ -2743,11 +2741,8 @@ void ManageIgnition(Entity * io) {
 	if(player.torch == io) {
 		lightHandleDestroy(io->ignit_light);
 		
-		if (io->ignit_sound != audio::SourcedSample())
-		{
 			ARX_SOUND_Stop(io->ignit_sound);
 			io->ignit_sound = audio::SourcedSample();
-		}
 
 		return;
 	}
@@ -2846,10 +2841,8 @@ void ManageIgnition_2(Entity * io) {
 	} else {
 		lightHandleDestroy(io->ignit_light);
 		
-		if(io->ignit_sound != audio::SourcedSample()) {
 			ARX_SOUND_Stop(io->ignit_sound);
 			io->ignit_sound = audio::SourcedSample();
-		}
 	}
 }
 
