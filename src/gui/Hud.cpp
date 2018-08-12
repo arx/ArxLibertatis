@@ -563,7 +563,7 @@ void CurrentTorchIconGui::update() {
 	if(!isVisible())
 		return;
 	
-	if((player.Interface & INTER_NOTE) && TSecondaryInventory != NULL
+	if(openNote.isOpen() && TSecondaryInventory != NULL
 	   && (openNote.type() == Note::BigNote || openNote.type() == Note::Book)) {
 		m_isActive = false;
 		return;

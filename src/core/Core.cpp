@@ -434,8 +434,9 @@ void levelInit() {
 	SendMsgToAllIO(NULL, SM_GAME_READY);
 	
 	PLAYER_MOUSELOOK_ON = false;
-	player.Interface &= ~INTER_NOTE;
-
+	
+	openNote.clear();
+	
 	EntityHandle t = entities.getById("seat_stool1_0012");
 	if(ValidIONum(t)) {
 		entities[t]->ioflags |= IO_FORCEDRAW;

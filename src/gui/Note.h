@@ -57,6 +57,8 @@ struct Note {
 	void setData(Type type, const std::string & text);
 	void clear();
 	
+	bool isOpen() { return m_type != Undefined; }
+	
 	void render();
 	bool manageActions();
 	

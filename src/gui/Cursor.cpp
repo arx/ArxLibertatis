@@ -742,9 +742,8 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 			return;
 		}
 		
-		if(   TRUE_PLAYER_MOUSELOOK_ON
-		   && config.interface.showCrosshair
-		   && !(player.Interface & (INTER_COMBATMODE | INTER_NOTE | INTER_PLAYERBOOK))) {
+		if(TRUE_PLAYER_MOUSELOOK_ON && config.interface.showCrosshair
+		   && !(player.Interface & (INTER_COMBATMODE | INTER_PLAYERBOOK)) && !openNote.isOpen()) {
 			
 			cursorAnimatedHand.reset();
 			

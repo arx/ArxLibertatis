@@ -393,31 +393,29 @@ void InventoryOpenClose(unsigned long t) {
 		if(TRUE_PLAYER_MOUSELOOK_ON)
 			WILLRETURNTOFREELOOK = true;
 	}
-
-	if(((player.Interface & INTER_INVENTORYALL) || TRUE_PLAYER_MOUSELOOK_ON) && (player.Interface & INTER_NOTE))
+	
+	if((player.Interface & INTER_INVENTORYALL) || TRUE_PLAYER_MOUSELOOK_ON) {
 		ARX_INTERFACE_NoteClose();
-
-	if(!g_playerInventoryHud.isClosing() && config.input.autoReadyWeapon != AlwaysAutoReadyWeapon)
+	}
+	
+	if(!g_playerInventoryHud.isClosing() && config.input.autoReadyWeapon != AlwaysAutoReadyWeapon) {
 		TRUE_PLAYER_MOUSELOOK_ON = false;
+	}
+	
 }
 
 void ARX_INTERFACE_NoteClear() {
-	player.Interface &= ~INTER_NOTE;
 	openNote.clear();
 }
 
 void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & text) {
 	
-	if(player.Interface & INTER_NOTE) {
-		ARX_INTERFACE_NoteClose();
-	}
+	ARX_INTERFACE_NoteClose();
 	
 	g_playerBook.close();
 	
 	openNote.setData(type, getLocalised(text));
 	openNote.setPage(0);
-	
-	player.Interface |= INTER_NOTE;
 	
 	switch(openNote.type()) {
 		case Note::Notice: {
@@ -442,11 +440,12 @@ void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & text) {
 		g_playerInventoryHud.close();
 		ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
 	}
+	
 }
 
 void ARX_INTERFACE_NoteClose() {
 	
-	if(!(player.Interface & INTER_NOTE)) {
+	if(!openNote.isOpen()) {
 		return;
 	}
 	
@@ -470,7 +469,7 @@ void ARX_INTERFACE_NoteClose() {
 
 void ARX_INTERFACE_NoteManage() {
 	
-	if(!(player.Interface & INTER_NOTE)) {
+	if(!openNote.isOpen()) {
 		return;
 	}
 	
@@ -1763,7 +1762,7 @@ void ArxGame::manageEditorControls() {
 	}
 	
 	// gros book/note
-	if(player.Interface & INTER_NOTE) {
+	if(openNote.isOpen()) {
 		if(openNote.area().contains(Vec2f(DANAEMouse))) {
 			eMouseState = MOUSE_IN_NOTE;
 			return;
