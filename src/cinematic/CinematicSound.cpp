@@ -136,7 +136,7 @@ bool PlaySoundKeyFramer(size_t index) {
 void StopSoundKeyFramer() {
 	
 	for(size_t i = 0; i < TabSound.size(); i++) {
-		if(TabSound[i].exists && TabSound[i].handle != audio::SourcedSample()) {
+		if(TabSound[i].exists) {
 			ARX_SOUND_Stop(TabSound[i].handle);
 			TabSound[i].handle = audio::SourcedSample();
 		}
