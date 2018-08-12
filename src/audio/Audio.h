@@ -75,7 +75,7 @@ std::vector<std::string> getDevices();
  * Cleanup the audio system.
  * This is not threadsafe: The caller must ensure that no other audio methods are called at the same time.
  */
-aalError clean();
+void clean();
 void setSamplePath(const res::path & path);
 void setAmbiancePath(const res::path & path);
 void setEnvironmentPath(const res::path & path);

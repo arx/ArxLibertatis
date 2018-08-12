@@ -127,10 +127,10 @@ aalError init(const std::string & backendName, const std::string & deviceName, H
 	return AAL_OK;
 }
 
-aalError clean() {
+void clean() {
 	
 	if(!backend) {
-		return AAL_OK;
+		return;
 	}
 	
 	LogDebug("Clean");
@@ -147,8 +147,6 @@ aalError clean() {
 	environment_path.clear();
 	
 	delete mutex, mutex = NULL;
-	
-	return AAL_OK;
 }
 
 #define AAL_ENTRY \
