@@ -264,10 +264,10 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 	if(io->durability > 0) {
 		if(io->ignition > 0) {
 			lightHandleDestroy(io->ignit_light);
-
-				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = audio::SourcedSample();
-
+			
+			ARX_SOUND_Stop(io->ignit_sound);
+			io->ignit_sound = audio::SourcedSample();
+			
 			io->ignition = 0;
 		}
 
