@@ -435,7 +435,7 @@ void levelInit() {
 	
 	PLAYER_MOUSELOOK_ON = false;
 	
-	openNote.clear();
+	g_note.clear();
 	
 	EntityHandle t = entities.getById("seat_stool1_0012");
 	if(ValidIONum(t)) {
