@@ -82,7 +82,7 @@ void setAmbiancePath(const res::path & path);
 void setEnvironmentPath(const res::path & path);
 void setReverbEnabled(bool enable);
 bool isReverbSupported();
-aalError setHRTFEnabled(HRTFAttribute enable);
+void setHRTFEnabled(HRTFAttribute enable);
 HRTFStatus getHRTFStatus();
 
 // Resource
