@@ -209,11 +209,11 @@ bool isReverbSupported() {
 	return backend->isReverbSupported();
 }
 
-aalError setHRTFEnabled(HRTFAttribute enable) {
+void setHRTFEnabled(HRTFAttribute enable) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_VOID
 	
-	return backend->setHRTFEnabled(enable);
+	backend->setHRTFEnabled(enable);
 }
 
 HRTFStatus getHRTFStatus() {
