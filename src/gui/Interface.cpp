@@ -476,9 +476,10 @@ void ARX_INTERFACE_NoteManage() {
 	
 	if(openNote.manageActions()) {
 		ARX_INTERFACE_NoteClose();
+	} else {
+		openNote.render();
 	}
 	
-	openNote.render();
 }
 
 
