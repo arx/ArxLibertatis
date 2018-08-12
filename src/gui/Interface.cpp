@@ -153,7 +153,7 @@ Entity * STARTED_ACTION_ON_IO = NULL;
 
 INTERFACE_TC g_bookResouces = INTERFACE_TC();
 
-Note openNote;
+Note g_note;
 
 extern PlatformInstant SLID_START;
 
@@ -405,7 +405,7 @@ void InventoryOpenClose(unsigned long t) {
 }
 
 void ARX_INTERFACE_NoteClear() {
-	openNote.clear();
+	g_note.clear();
 }
 
 void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & text) {
@@ -414,10 +414,10 @@ void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & text) {
 	
 	g_playerBook.close();
 	
-	openNote.setData(type, getLocalised(text));
-	openNote.setPage(0);
+	g_note.setData(type, getLocalised(text));
+	g_note.setPage(0);
 	
-	switch(openNote.type()) {
+	switch(g_note.type()) {
 		case Note::Notice: {
 			ARX_SOUND_PlayInterface(g_snd.MENU_CLICK, Random::getf(0.9f, 1.1f));
 			break;
@@ -445,11 +445,11 @@ void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & text) {
 
 void ARX_INTERFACE_NoteClose() {
 	
-	if(!openNote.isOpen()) {
+	if(!g_note.isOpen()) {
 		return;
 	}
 	
-	switch(openNote.type()) {
+	switch(g_note.type()) {
 		case Note::Notice: {
 			ARX_SOUND_PlayInterface(g_snd.MENU_CLICK, Random::getf(0.9f, 1.1f));
 			break;
@@ -469,14 +469,14 @@ void ARX_INTERFACE_NoteClose() {
 
 void ARX_INTERFACE_NoteManage() {
 	
-	if(!openNote.isOpen()) {
+	if(!g_note.isOpen()) {
 		return;
 	}
 	
-	if(openNote.manageActions()) {
+	if(g_note.manageActions()) {
 		ARX_INTERFACE_NoteClose();
 	} else {
-		openNote.render();
+		g_note.render();
 	}
 	
 }
@@ -1762,8 +1762,8 @@ void ArxGame::manageEditorControls() {
 	}
 	
 	// gros book/note
-	if(openNote.isOpen()) {
-		if(openNote.area().contains(Vec2f(DANAEMouse))) {
+	if(g_note.isOpen()) {
+		if(g_note.area().contains(Vec2f(DANAEMouse))) {
 			eMouseState = MOUSE_IN_NOTE;
 			return;
 		}

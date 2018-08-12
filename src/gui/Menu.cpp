@@ -174,7 +174,7 @@ void ARX_Menu_Manage() {
 							REQUEST_SPEECH_SKIP = true;
 						}
 					}
-				} else if((player.Interface & INTER_PLAYERBOOK) || openNote.isOpen()) {
+				} else if((player.Interface & INTER_PLAYERBOOK) || g_note.isOpen()) {
 					g_playerBook.close();
 					ARX_INTERFACE_NoteClose();
 				} else {

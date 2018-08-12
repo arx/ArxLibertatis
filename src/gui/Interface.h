@@ -170,7 +170,7 @@ extern bool PLAYER_MOUSELOOK_ON;
 extern bool bRenderInCursorMode;
 extern bool MAGICMODE;
 
-extern Note openNote;
+extern Note g_note;
 
 extern EntityHandle LastSelectedIONum;
 
