@@ -26,16 +26,7 @@ SPELL_ICON spellicons[SPELL_TYPES_COUNT];
 void spellDataInit() {
 	
 	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
-		// TODO use constructor for initialization
-		for(long j = 0; j < 6; j++) {
-			spellicons[i].symbols[j] = RUNE_NONE;
-		}
-		spellicons[i].level = 0;
-		spellicons[i].spellid = SPELL_NONE;
-		spellicons[i].tc = NULL;
-		spellicons[i].bSecret = false;
-		spellicons[i].m_hasDuration = true;
-		spellicons[i].bAudibleAtStart = false;
+		spellicons[i] = SPELL_ICON();
 	}
 	
 	{ // Magic_Sight Level 1
