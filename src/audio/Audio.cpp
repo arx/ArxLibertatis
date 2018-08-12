@@ -690,10 +690,6 @@ aalError getAmbianceVolume(AmbianceId ambianceId, float & volume) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	if(!(g_ambiances[ambianceId]->getChannel().flags & FLAG_VOLUME)) {
-		return AAL_ERROR_INIT;
-	}
-	
 	volume = g_ambiances[ambianceId]->getChannel().volume;
 	
 	return AAL_OK;
@@ -735,6 +731,8 @@ void getAmbianceInfos(std::vector<AmbianceInfo> & infos) {
 // Ambiance control
 
 void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop, PlatformDuration fadeInterval) {
+	
+	arx_assert(channel.flags & FLAG_VOLUME);
 	
 	AAL_ENTRY_VOID
 	
