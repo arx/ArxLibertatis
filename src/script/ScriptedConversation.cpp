@@ -116,13 +116,13 @@ public:
 		
 		Entity * io = context.getEntity();
 		if(stop) {
-			ARX_SOUND_Stop(io->sound);
-			io->sound = audio::SourcedSample();
+			ARX_SOUND_Stop(io->m_sound);
+			io->m_sound = audio::SourcedSample();
 		} else {
 			
-			if(unique && io->sound != audio::SourcedSample()) {
-				ARX_SOUND_Stop(io->sound);
-				io->sound.clearSource();
+			if(unique && io->m_sound != audio::SourcedSample()) {
+				ARX_SOUND_Stop(io->m_sound);
+				io->m_sound.clearSource();
 			}
 			
 			audio::SourcedSample num = audio::SourcedSample();
@@ -135,7 +135,7 @@ public:
 			}
 			
 			if(unique) {
-				io->sound = num;
+				io->m_sound = num;
 			}
 			
 			if(!tooFar && num == audio::SourcedSample()) {
