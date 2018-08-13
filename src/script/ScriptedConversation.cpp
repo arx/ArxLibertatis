@@ -122,7 +122,7 @@ public:
 			
 			if(unique && io->m_sound != audio::SourcedSample()) {
 				ARX_SOUND_Stop(io->m_sound);
-				io->m_sound.clearSource();
+				io->m_sound = audio::SourcedSample();
 			}
 			
 			audio::SourcedSample num = audio::SourcedSample();
