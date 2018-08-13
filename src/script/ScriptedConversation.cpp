@@ -120,7 +120,7 @@ public:
 			io->m_sound = audio::SourcedSample();
 		} else {
 			
-			if(unique && io->m_sound != audio::SourcedSample()) {
+			if(unique) {
 				ARX_SOUND_Stop(io->m_sound);
 				io->m_sound = audio::SourcedSample();
 			}
