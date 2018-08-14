@@ -378,14 +378,14 @@ void ARX_MAGICAL_FLARES_Update() {
 			if(!flare.exist || flare.type != j) {
 				continue;
 			}
-
+			
 			flare.tolive -= diff * 2;
 			if(flare.flags & 1) {
 				flare.tolive -= diff * 4;
-			} else if (key) {
+			} else if(key) {
 				flare.tolive -= diff * 6;
 			}
-
+			
 			float z = flare.tolive / PlatformDurationMs(4000);
 			float size;
 			if(flare.type == 1) {
