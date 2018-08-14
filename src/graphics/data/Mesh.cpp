@@ -215,10 +215,10 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 	(void)checked_range_cast<short>(pz + 1);
 	short sPz = static_cast<short>(pz);
 	
-	if (rz < -40.f) {
+	if(rz < -40.f) {
 		minz = sPz - 1;
 		maxz = sPz - 1;
-	} else if (rz < 40.f) {
+	} else if(rz < 40.f) {
 		minz = sPz - 1;
 		maxz = sPz;
 	} else if(rz > 60.f) {
