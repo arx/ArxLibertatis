@@ -339,11 +339,11 @@ void RaycastDebugDraw() {
 	}
 	
 	for(auto & tile: dbg_tiles) {
-		Vec3f foo = Vec3f(tile.x * 100, g_camera->pos.y + 80, tile.y * 100);
-		drawLine(foo, foo + Vec3f(100, 0, 0), Color::white);
-		drawLine(foo + Vec3f(100, 0, 0)  , foo + Vec3f(100, 0, 100), Color::white);
-		drawLine(foo + Vec3f(100, 0, 100), foo + Vec3f(  0, 0, 100), Color::white);
-		drawLine(foo, foo + Vec3f(  0, 0, 100), Color::white);
+		Vec3f foo = Vec3f(tile.x * 100.f, g_camera->pos.y + 80.f, tile.y * 100.f);
+		drawLine(foo, foo + Vec3f(100.f, 0.f, 0.f), Color::white);
+		drawLine(foo + Vec3f(100.f, 0.f, 0.f), foo + Vec3f(100.f, 0.f, 100.f), Color::white);
+		drawLine(foo + Vec3f(100.f, 0.f, 100.f), foo + Vec3f(0.f, 0.f, 100.f), Color::white);
+		drawLine(foo, foo + Vec3f(0.f, 0.f, 100.f), Color::white);
 	}
 	
 	for(auto hit : dbg_hits) {
