@@ -456,7 +456,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised( "system_menus_main_editquest_save");
+			std::string label = getLocalised("system_menus_main_editquest_save");
 			m_saveButton = new TextWidget(hFontMenu, label);
 			m_saveButton->setTargetPage(Page_Save);
 			addCenter(m_saveButton);
