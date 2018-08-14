@@ -967,69 +967,45 @@ void StatsPage::manageStats()
 	
 	// Secondary Attributes
 	{
-	Vec2f pos = bookPos + Vec2f(227, 90) * scale;
-	
-	std::stringstream ss4;
-	ss4 << F2L_RoundUp(player.Full_maxlife);
-	
-	Color color = attributeModToColor(player.Full_maxlife, player.lifePool.max);
-	
-	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
+		Vec2f pos = bookPos + Vec2f(227, 90) * scale;
+		std::string value = boost::lexical_cast<std::string>(std::ceil(player.Full_maxlife));
+		Color color = attributeModToColor(player.Full_maxlife, player.lifePool.max);
+		DrawBookTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(227, 150) * scale;
-	
-	std::stringstream ss4;
-	ss4 << F2L_RoundUp(player.Full_maxmana);
-	
-	Color color = attributeModToColor(player.Full_maxmana, player.manaPool.max);
-	
-	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
+		Vec2f pos = bookPos + Vec2f(227, 150) * scale;
+		std::string value = boost::lexical_cast<std::string>(std::ceil(player.Full_maxmana));
+		Color color = attributeModToColor(player.Full_maxmana, player.manaPool.max);
+		DrawBookTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(227, 210) * scale;
-	
-	std::stringstream ss4;
-	ss4 << F2L_RoundUp(player.m_miscFull.damages);
-	
-	Color color = attributeModToColor(player.m_miscMod.damages);
-	
-	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
+		Vec2f pos = bookPos + Vec2f(227, 210) * scale;
+		std::string value = boost::lexical_cast<std::string>(std::ceil(player.m_miscFull.damages));
+		Color color = attributeModToColor(player.m_miscMod.damages);
+		DrawBookTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(54, 90) * scale;
-	
-	std::stringstream ss4;
-	ss4 << F2L_RoundUp(player.m_miscFull.armorClass);
-	
-	Color color = attributeModToColor(player.m_miscMod.armorClass);
-	
-	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
+		Vec2f pos = bookPos + Vec2f(54, 90) * scale;
+		std::string value = boost::lexical_cast<std::string>(std::ceil(player.m_miscFull.armorClass));
+		Color color = attributeModToColor(player.m_miscMod.armorClass);
+		DrawBookTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(54, 150) * scale;
-	
-	std::stringstream ss4;
-	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistMagic );
-	
-	Color color = attributeModToColor(player.m_miscMod.resistMagic);
-	
-	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
+		Vec2f pos = bookPos + Vec2f(54, 150) * scale;
+		std::string value = boost::lexical_cast<std::string>(std::ceil(player.m_miscFull.resistMagic));
+		Color color = attributeModToColor(player.m_miscMod.resistMagic);
+		DrawBookTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(54, 210) * scale;
-	
-	std::stringstream ss4;
-	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistPoison );
-	
-	Color color = attributeModToColor(player.m_miscMod.resistPoison);
-	
-	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
+		Vec2f pos = bookPos + Vec2f(54, 210) * scale;
+		std::string value = boost::lexical_cast<std::string>(std::ceil(player.m_miscFull.resistPoison));
+		Color color = attributeModToColor(player.m_miscMod.resistPoison);
+		DrawBookTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	RenderBookPlayerCharacter();
