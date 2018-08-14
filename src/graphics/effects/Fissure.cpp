@@ -380,18 +380,16 @@ void CRiseDead::Update(GameDuration timeDelta)
 	m_stones.Update(timeDelta, m_eSrc);
 }
 
-//-----------------------------------------------------------------------------
 // render the space time tearing
-void CRiseDead::Render()
-{
-	if(m_elapsed >= m_duration)
-		return;
+void CRiseDead::Render() {
 	
-	//-------------------------------------------------------------------------
-	// render intro (opening + rays)
+	if(m_elapsed >= m_duration) {
+		return;
+	}
+	
 	if(m_elapsed < m_durationIntro) {
+		// Render intro (opening + rays)
 		float fOneOnDurationIntro = 1.f / toMsf(m_durationIntro);
-		
 		if(m_elapsed < GameDurationMsf(toMsf(m_durationIntro) * 0.666f)) {
 			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMsf(m_elapsed);
 			sizeF = 1;
@@ -399,20 +397,17 @@ void CRiseDead::Render()
 			bIntro = false;
 			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (toMsf(m_elapsed) - toMsf(m_durationIntro) * 0.666f);
 		}
-	}
-	// do nothing just render
-	else if (m_elapsed < (m_durationIntro + m_durationRender))
-	{
-	}
-	// close it all
-	else if (m_elapsed < m_duration)
-	{
+	} else if(m_elapsed < m_durationIntro + m_durationRender) {
+		// Do nothing, just render
+	} else if(m_elapsed < m_duration) {
+		// Close it all
 		sizeF = iSize - (iSize) * ((m_elapsed - (m_durationIntro + m_durationRender)) / m_durationOuttro);
 	}
 	
 	RenderFissure();
 	
 	m_stones.DrawStone();
+	
 }
 
 CSummonCreature::CSummonCreature()
@@ -676,15 +671,15 @@ void CSummonCreature::Update(GameDuration timeDelta)
 }
 
 // rendu de la déchirure spatio temporelle
-void CSummonCreature::Render()
-{
-	if(m_elapsed >= m_duration)
-		return;
+void CSummonCreature::Render() {
 	
-	// render intro (opening + rays)
+	if(m_elapsed >= m_duration) {
+		return;
+	}
+	
 	if(m_elapsed < m_durationIntro) {
+		// Render intro (opening + rays)
 		float fOneOnDurationIntro = 1.f / toMsf(m_durationIntro);
-		
 		if(m_elapsed < GameDurationMsf(toMsf(m_durationIntro) * 0.666f)) {
 			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMsf(m_elapsed);
 			sizeF = 1;
@@ -692,14 +687,10 @@ void CSummonCreature::Render()
 			bIntro = false;
 			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (toMsf(m_elapsed) - toMsf(m_durationIntro) * 0.666f);
 		}
-	}
-	// do nothing just render
-	else if (m_elapsed < (m_durationIntro + m_durationRender))
-	{
-	}
-	// close it all
-	else if (m_elapsed < m_duration)
-	{
+	} else if(m_elapsed < m_durationIntro + m_durationRender) {
+		// Do nothing, just render
+	} else if(m_elapsed < m_duration) {
+		// Close it all
 		sizeF = iSize - (iSize) * ((m_elapsed - (m_durationIntro + m_durationRender)) / m_durationOuttro);
 	}
 	
