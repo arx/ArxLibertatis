@@ -762,11 +762,13 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 			delete tobj;
 			return;
 		}
-
-		if (io->tweaky == NULL) io->tweaky = io->obj;
-		else if (io->tweaky != io->obj)
+		
+		if(!io->tweaky) {
+			io->tweaky = io->obj;
+		} else if(io->tweaky != io->obj) {
 			delete io->obj;
-
+		}
+		
 		io->obj = result;
 		EERIE_Object_Precompute_Fast_Access(io->obj);
 	}
