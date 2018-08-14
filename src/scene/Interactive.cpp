@@ -1216,7 +1216,7 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance, Ad
 		io = AddFix(classPath, instance, flags);
 	} else if(boost::contains(ficc, "camera")) {
 		io = AddCamera(classPath, instance);
-	} else if (boost::contains(ficc, "marker")) {
+	} else if(boost::contains(ficc, "marker")) {
 		io = AddMarker(classPath, instance);
 	}
 	
