@@ -575,19 +575,13 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		portal.poly.norm = CalcFaceNormal(portal.poly.p);
 		
 		ep->center = ep->p[0];
-
-		long to = 4;
-
-		float divide = ( 1.0f / to );
-		
 		ep->max = ep->min = ep->p[0];
-		for(long i = 1; i < to; i++) {
+		for(long i = 1; i < 4; i++) {
 			ep->center += ep->p[i];
 			ep->min = glm::min(ep->min, ep->p[i]);
 			ep->max = glm::max(ep->max, ep->p[i]);
 		}
-		
-		ep->center *= divide;
+		ep->center /= 4;
 		
 		for(size_t nroom = 0; nroom < portals->rooms.size(); nroom++) {
 			if(nroom == portal.room_1 || nroom == portal.room_2) {
