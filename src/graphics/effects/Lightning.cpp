@@ -319,13 +319,11 @@ void CLightning::Render()
 			Sphere sphere;
 			sphere.origin = a;
 			sphere.radius = std::min(node.size, 50.f);
-
 			if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
-
 				DamageParameters damage;
 				damage.pos = sphere.origin;
 				damage.radius = sphere.radius;
-				damage.damages = m_fDamage * m_level * ( 1.0f / 3 );
+				damage.damages = m_fDamage * m_level * (1.f / 3);
 				damage.area = DAMAGE_FULL;
 				damage.duration = GameDurationMs(1);
 				damage.source = m_caster;
