@@ -1189,9 +1189,9 @@ void ARX_PLAYER_BecomesDead() {
 		
 	// a mettre au final
 	BLOCK_PLAYER_CONTROLS = true;
-
-	player.Interface &= ~INTER_COMBATMODE;
+	
 	player.Interface = 0;
+	g_note.clear();
 	player.DeadTime = 0;
 	
 	spells.endByCaster(EntityHandle_Player);
