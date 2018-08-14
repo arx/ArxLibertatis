@@ -537,10 +537,10 @@ ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEve
                                const ScriptParameters & parameters = ScriptParameters());
 
 ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event,
-                            const ScriptParameters & params = ScriptParameters());
+                            const ScriptParameters & parameters = ScriptParameters());
 
 void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEventName & event,
-                             const ScriptParameters & params = ScriptParameters());
+                             const ScriptParameters & parameters = ScriptParameters());
 
 /*!
  * Finds the first occurence of str in the script that is followed
