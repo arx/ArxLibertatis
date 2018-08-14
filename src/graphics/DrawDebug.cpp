@@ -371,24 +371,24 @@ static void drawDebugFogs() {
 
 // TODO remove too similar colors
 static const Color distinctDebugColors[] = {
-	Color(230,  25,  75), // Red
-	Color( 60, 180,  75), // Green
-	Color(255, 225,  25), // Yellow
-	Color(  0, 130, 200), // Blue
-	Color(245, 130,  48), // Orange
-	Color(145,  30, 180), // Purple
-	Color( 70, 240, 240), // Cyan
-	Color(240,  50, 230), // Magenta
-	Color(250, 190, 190), // Pink
-	Color(  0, 128, 128), // Teal
-	Color(230, 190, 255), // Lavender
-	Color(170, 110,  40), // Brown
-	Color(255, 250, 200), // Beige
-	Color(128,   0,   0), // Maroon
-	Color(170, 255, 195), // Mint
-	Color(128, 128,   0), // Olive
-	Color(255, 215, 180), // Coral
-	Color(  0,   0, 128)  // Navy
+	Color::rgb(0.9f,  0.1f,  0.3f), // Red
+	Color::rgb(0.25f, 0.7f,  0.3f), // Green
+	Color::rgb(1.f, 0.88f,  0.1f), // Yellow
+	Color::rgb(0.f, 0.51f, 0.78f), // Blue
+	Color::rgb(0.95f, 0.51f, 0.19f), // Orange
+	Color::rgb(0.57f, 0.12f, 0.71f), // Purple
+	Color::rgb(0.27f, 0.94f, 0.94f), // Cyan
+	Color::rgb(0.94f, 0.2f, 0.9f), // Magenta
+	Color::rgb(0.98f, 0.75f, 0.75f), // Pink
+	Color::rgb(0.f, 0.5f, 0.5f), // Teal
+	Color::rgb(0.9f, 0.75f, 1.f), // Lavender
+	Color::rgb(0.67f, 0.43f, 0.16f), // Brown
+	Color::rgb(1.f, 0.98f, 0.78f), // Beige
+	Color::rgb(0.5f, 0.f, 0.f), // Maroon
+	Color::rgb(0.67f, 1.f, 0.76f), // Mint
+	Color::rgb(0.5f, 0.5f, 0.f), // Olive
+	Color::rgb(1.f, 0.84f, 0.71f), // Coral
+	Color::rgb(0.f, 0.f, 0.5f) // Navy
 };
 
 #include <boost/lexical_cast.hpp>
