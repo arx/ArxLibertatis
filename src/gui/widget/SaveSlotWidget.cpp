@@ -83,7 +83,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 			m_date = getLocalised("system_today", "Today");
 		} else if(t.tm_year == n.tm_year && t.tm_yday + 1 == n.tm_yday) {
 			m_date = getLocalised("system_yesterday", "Yesterday");
-		} else if(t.tm_year == n.tm_year && t.tm_yday <= n.tm_yday && t.tm_yday + 7 > n.tm_yday ) {
+		} else if(t.tm_year == n.tm_year && t.tm_yday <= n.tm_yday && t.tm_yday + 7 > n.tm_yday) {
 			switch(t.tm_wday) {
 				case 0: m_date = getLocalised("system_sunday", "Sunday"); break;
 				case 1: m_date = getLocalised("system_monday", "Monday"); break;
