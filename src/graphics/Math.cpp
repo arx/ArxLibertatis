@@ -400,15 +400,16 @@ glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)
 }
 
 glm::quat QuatFromAngles(const Anglef & angle) {
+	
 	float A, B;
-	A = glm::radians(angle.getPitch()) * ( 1.0f / 2 );
-	B = glm::radians(angle.getYaw()) * ( 1.0f / 2 );
-
+	A = glm::radians(angle.getPitch()) * 0.5f;
+	B = glm::radians(angle.getYaw()) * 0.5f;
+	
 	float fSinYaw   = glm::sin(A);
 	float fCosYaw   = glm::cos(A);
 	float fSinPitch = glm::sin(B);
 	float fCosPitch = glm::cos(B);
-	A = glm::radians(angle.getRoll()) * ( 1.0f / 2 );
+	A = glm::radians(angle.getRoll()) * 0.5f;
 	float fSinRoll  = glm::sin(A);
 	float fCosRoll  = glm::cos(A);
 	A = fCosRoll * fCosPitch;
