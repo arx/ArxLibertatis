@@ -84,10 +84,6 @@ inline u8 clipByte255(int value) {
 	return static_cast<u8>(value);
 }
 
-inline long F2L_RoundUp(float val) {
-	return static_cast<long>(std::ceil(val));
-}
-
 bool CylinderInCylinder(const Cylinder & cyl1, const Cylinder & cyl2);
 bool SphereInCylinder(const Cylinder & cyl1, const Sphere & s);
 
