@@ -435,7 +435,6 @@ public:
 		size_t onspeechend = context.skipCommand();
 		
 		if((!command.empty() && command != "nop") || onspeechend != size_t(-1)) {
-			LogWarning << onspeechend;
 			return AbortDestructive;
 		}
 		
