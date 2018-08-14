@@ -130,9 +130,8 @@ void CharacterCreation::render() {
 		
 		cursorSetInteraction();
 		
-		if(eeMousePressed1());
-		else if (eeMouseUp1())
-		{
+		if(!eeMousePressed1() && eeMouseUp1()) {
+			
 			m_cheatQuickGenButtonClickCount++;
 			int iSkin = player.skin;
 			ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
@@ -145,12 +144,14 @@ void CharacterCreation::render() {
 			}
 			
 			player.skin = checked_range_cast<char>(iSkin);
+			
 		}
 		
 		color = Color::white;
-	}
-	else
+		
+	} else {
 		color = Color(232, 204, 143);
+	}
 	
 	ARX_UNICODE_DrawTextInRect(hFontMenu, quickGenerateButton.topLeft(), 999999, str_button_quickgen, color);
 	
