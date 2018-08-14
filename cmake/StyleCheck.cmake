@@ -56,7 +56,6 @@ if(NOT SET_NOISY_WARNING_FLAGS)
 	# Very much known...
 	set(STYLE_FILTER ${STYLE_FILTER},-readability/fn_size)
 	
-	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/parens)
 	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/parens_newline)
 	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/newline)
 	
