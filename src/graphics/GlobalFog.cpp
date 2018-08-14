@@ -78,17 +78,11 @@ void ARX_GLOBALMODS_Reset() {
 static float Approach(float current, float desired, float increment) {
 	
 	if(desired > current) {
-		current += increment;
-
-		if (desired < current)
-			current = desired;
-	} else if (desired < current) {
-		current -= increment;
-
-		if (desired > current)
-			current = desired;
+		current = std::min(current + increment, desired);
+	} else if(desired < current) {
+		current = std::min(current - increment, desired);
 	}
-
+	
 	return current;
 }
 
@@ -97,7 +91,7 @@ void ARX_GLOBALMODS_Apply() {
 	ARX_PROFILE_FUNC();
 	
 	float baseinc = g_framedelay;
-	float incdiv1000 = g_framedelay * ( 1.0f / 1000 );
+	float incdiv1000 = g_framedelay * 0.001f;
 	
 	GLOBAL_MODS & current = g_currentFogParameters;
 	GLOBAL_MODS & desired = g_desiredFogParameters;
