@@ -97,7 +97,7 @@ bool CrashHandlerImpl::createSharedMemory() {
 		m_MemoryMappedRegion = bip::mapped_region(m_SharedMemory, bip::read_write);
 		
 		// Our CrashInfo will be stored in this shared memory.
-		m_pCrashInfo = new (m_MemoryMappedRegion.get_address()) CrashInfo;
+		m_pCrashInfo = new(m_MemoryMappedRegion.get_address()) CrashInfo;
 		m_textLength = 0;
 		
 	} catch(const bip::interprocess_exception &) {
