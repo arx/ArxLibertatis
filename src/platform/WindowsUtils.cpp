@@ -49,7 +49,7 @@ void WideString::allocateDynamic(size_t size) {
 	} else {
 		WCHAR backup[ARRAY_SIZE(m_static)];
 		std::copy(m_static, m_static + m_size, backup);
-		new (reinterpret_cast<char *>(&m_dynamic)) DynamicType(size, L'\0');
+		new(reinterpret_cast<char *>(&m_dynamic)) DynamicType(size, L'\0');
 		std::copy(backup, backup + m_size, str().begin());
 		m_size = size_t(-1);
 	}
