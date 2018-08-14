@@ -357,7 +357,7 @@ void Thread::disableFloatDenormals() {
 	
 	// Denormals are always disabled for NEON, disable them for VFP instructions as well
 	// Set bit 24 (flush-to-zero) in the floating-point status and control register
-	asm volatile (
+	asm volatile(
 		"vmrs r0, FPSCR \n"
 		"orr r0, r0, #0x1000000 \n"
 		"vmsr FPSCR, r0 \n"
