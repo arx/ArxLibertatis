@@ -55,17 +55,17 @@ const float DEFAULT_VOLUME = 1.f; // Original gain
 
 // Flags
 enum ChannelFlag {
-	FLAG_VOLUME        = 0x00000004, // Enable volume control
-	FLAG_PITCH         = 0x00000008, // Enable pitch control
-	FLAG_PAN           = 0x00000010, // Enable pan control
-	FLAG_POSITION      = 0x00000020, // Enable position control
-	FLAG_VELOCITY      = 0x00000040, // Enable velocity control
-	FLAG_DIRECTION     = 0x00000080, // Enable orientation control
-	FLAG_CONE          = 0x00000100, // Enable cone control
-	FLAG_FALLOFF       = 0x00000200, // Enable intensity control
-	FLAG_REVERBERATION = 0x00000400, // Enable environment reverberation
-	FLAG_RELATIVE      = 0x00001000, // Compute position relative to the listener
-	FLAG_AUTOFREE      = 0x00008000, // Free resource when playing is finished
+	FLAG_VOLUME        = 1 << 0,  // Enable volume control
+	FLAG_PITCH         = 1 << 1,  // Enable pitch control
+	FLAG_PAN           = 1 << 2,  // Enable pan control
+	FLAG_POSITION      = 1 << 3,  // Enable position control
+	FLAG_VELOCITY      = 1 << 4,  // Enable velocity control
+	FLAG_DIRECTION     = 1 << 5,  // Enable orientation control
+	FLAG_CONE          = 1 << 6,  // Enable cone control
+	FLAG_FALLOFF       = 1 << 7,  // Enable intensity control
+	FLAG_REVERBERATION = 1 << 8,  // Enable environment reverberation
+	FLAG_RELATIVE      = 1 << 9,  // Compute position relative to the listener
+	FLAG_AUTOFREE      = 1 << 10, // Free resource when playing is finished
 };
 DECLARE_FLAGS(ChannelFlag, ChannelFlags)
 DECLARE_FLAGS_OPERATORS(ChannelFlags)
