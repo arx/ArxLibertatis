@@ -27,7 +27,8 @@
 namespace audio {
 
 Source::Source(Sample * sample)
-	: m_sample(sample)
+	: m_channel(MixerId())
+	, m_sample(sample)
 	, status(Idle)
 	, time(0)
 	, callback_i(0)

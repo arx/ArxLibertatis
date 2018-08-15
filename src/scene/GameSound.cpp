@@ -325,8 +325,7 @@ static audio::SourcedSample ARX_SOUND_PlaySFX_int(audio::SampleHandle sample_id,
 		return audio::SourcedSample();
 	}
 	
-	audio::Channel channel;
-	channel.mixer = ARX_SOUND_MixerGameSample;
+	audio::Channel channel(ARX_SOUND_MixerGameSample);
 	channel.flags = FLAG_VOLUME | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	channel.volume = 1.f;
 	
@@ -369,8 +368,7 @@ static void playSample(audio::SampleHandle sample_id, float pitch, SoundLoopMode
 		return;
 	}
 	
-	audio::Channel channel;
-	channel.mixer = mixer;
+	audio::Channel channel(mixer);
 	channel.flags = FLAG_VOLUME;
 	channel.volume = 1.f;
 	if(pitch != 1.f) {
@@ -423,8 +421,7 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 	
 	audio::SampleHandle sample_id = audio::createSample(file);
 	
-	audio::Channel channel;
-	channel.mixer = ARX_SOUND_MixerGameSpeech;
+	audio::Channel channel(ARX_SOUND_MixerGameSpeech);
 	channel.flags = FLAG_VOLUME | FLAG_POSITION | FLAG_REVERBERATION | FLAG_AUTOFREE | FLAG_FALLOFF;
 	channel.volume = 1.f;
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART;
@@ -472,8 +469,7 @@ void ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	if(sample_id == audio::SampleHandle())
 		return;
 
-	audio::Channel channel;
-	channel.mixer = ARX_SOUND_MixerGameSample;
+	audio::Channel channel(ARX_SOUND_MixerGameSample);
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	
 	res::path sample_name;
@@ -521,8 +517,7 @@ void ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	audio::SampleHandle sample_id = mat.next();
 	arx_assert(sample_id != audio::SampleHandle());
 	
-	audio::Channel channel;
-	channel.mixer = ARX_SOUND_MixerGameSample;
+	audio::Channel channel(ARX_SOUND_MixerGameSample);
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	
 	res::path sample_name;
@@ -556,8 +551,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 		return audio::SourcedSample();
 	}
 	
-	audio::Channel channel;
-	channel.mixer = ARX_SOUND_MixerGameSample;
+	audio::Channel channel(ARX_SOUND_MixerGameSample);
 	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	channel.volume = 1.0F;
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * GetSamplePresenceFactor(name);
@@ -591,8 +585,7 @@ void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position) {
 		return;
 	}
 	
-	audio::Channel channel;
-	channel.mixer = ARX_SOUND_MixerGameSample;
+	audio::Channel channel(ARX_SOUND_MixerGameSample);
 	channel.flags = FLAG_VOLUME;
 	channel.volume = 1.0F;
 
@@ -623,8 +616,7 @@ audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpee
 		return audio::SourcedSample();
 	}
 	
-	audio::Channel channel;
-	channel.mixer = ARX_SOUND_MixerGameSpeech;
+	audio::Channel channel(ARX_SOUND_MixerGameSpeech);
 	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE | FLAG_POSITION | FLAG_FALLOFF
 	                | FLAG_REVERBERATION;
 	channel.volume = 1.0f;
@@ -733,8 +725,7 @@ bool ARX_SOUND_PlayScriptAmbiance(const res::path & name, SoundLoopMode loop, fl
 			return false;
 		}
 		
-		audio::Channel channel;
-		channel.mixer = ARX_SOUND_MixerGameAmbiance;
+		audio::Channel channel(ARX_SOUND_MixerGameAmbiance);
 		channel.flags = FLAG_VOLUME | FLAG_AUTOFREE;
 		channel.volume = volume;
 		
@@ -773,9 +764,7 @@ bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, floa
 		return true;
 	}
 
-	audio::Channel channel;
-
-	channel.mixer = ARX_SOUND_MixerGameAmbiance;
+	audio::Channel channel(ARX_SOUND_MixerGameAmbiance);
 	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE;
 	channel.volume = volume;
 
@@ -806,9 +795,7 @@ AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 	audio::deleteAmbiance(g_menuAmbiance);
 	g_menuAmbiance = audio::createAmbiance(ambiance_name, audio::PLAYING_AMBIANCE_MENU);
 	
-	audio::Channel channel;
-	
-	channel.mixer = ARX_SOUND_MixerMenuAmbiance;
+	audio::Channel channel(ARX_SOUND_MixerMenuAmbiance);
 	channel.flags = FLAG_VOLUME;
 	channel.volume = 1.0F;
 	

@@ -301,9 +301,7 @@ void Ambiance::Track::keyPlay() {
 	Source * source = backend->getSource(s_id);
 	if(!source) {
 		
-		Channel channel;
-		
-		channel.mixer = ambiance->getChannel().mixer;
+		Channel channel(ambiance->getChannel().mixer);
 		channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_RELATIVE;
 		channel.flags |= ambiance->getChannel().flags;
 		channel.volume = key_i->volume.cur;
@@ -599,6 +597,7 @@ Ambiance::Ambiance(const res::path & name)
 	: m_status(Idle)
 	, m_loop(false)
 	, m_fade(None)
+	, m_channel(MixerId())
 	, m_fadeTime(0)
 	, m_fadeInterval(0)
 	, m_fadeMax(0.f)
@@ -606,9 +605,7 @@ Ambiance::Ambiance(const res::path & name)
 	, m_time(0)
 	, m_name(name)
 	, m_type(PLAYING_AMBIANCE_MENU)
-{
-	m_channel.flags = 0;
-}
+{ }
 
 Ambiance::~Ambiance() {
 	LogDebug("deleting ambiance " << m_name);

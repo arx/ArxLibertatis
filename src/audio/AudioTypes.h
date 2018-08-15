@@ -193,8 +193,9 @@ struct Channel {
 	SourceCone cone;
 	SourceFalloff falloff;
 	
-	Channel()
+	Channel(MixerId _mixer)
 		: flags(0)
+		, mixer(_mixer)
 		, volume(0.f)
 		, pitch(0.f)
 		, pan(0.f)
