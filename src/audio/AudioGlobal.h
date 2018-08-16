@@ -62,7 +62,7 @@ class Environment;
 class Sample;
 class Mixer;
 
-const ChannelFlags FLAG_ANY_3D_FX = FLAG_POSITION | FLAG_VELOCITY | FLAG_DIRECTION |
+const ChannelFlags FLAG_ANY_3D_FX = FLAG_POSITION | FLAG_VELOCITY |
                                     FLAG_FALLOFF | FLAG_REVERBERATION;
 
 // Audio device interface

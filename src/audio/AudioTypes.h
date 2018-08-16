@@ -60,7 +60,6 @@ enum ChannelFlag {
 	FLAG_PAN           = 1 << 2,  // Enable pan control
 	FLAG_POSITION      = 1 << 3,  // Enable position control
 	FLAG_VELOCITY      = 1 << 4,  // Enable velocity control
-	FLAG_DIRECTION     = 1 << 5,  // Enable orientation control
 	FLAG_FALLOFF       = 1 << 7,  // Enable intensity control
 	FLAG_REVERBERATION = 1 << 8,  // Enable environment reverberation
 	FLAG_RELATIVE      = 1 << 9,  // Compute position relative to the listener
@@ -173,7 +172,6 @@ struct Channel {
 	float pan;
 	Vec3f position;
 	Vec3f velocity;
-	Vec3f direction;
 	SourceFalloff falloff;
 	
 	Channel(MixerId _mixer)
@@ -184,7 +182,6 @@ struct Channel {
 		, pan(0.f)
 		, position(0.f)
 		, velocity(0.f)
-		, direction(0.f)
 	{ }
 	
 };
