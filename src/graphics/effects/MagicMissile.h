@@ -64,10 +64,6 @@ public:
 	bool bMove;
 	Vec3f eCurPos;
 	
-	float lightIntensityFactor;
-	
-	LightHandle lLightId;
-	
 protected:
 	
 	Color3f m_trailColor;

@@ -215,24 +215,22 @@ void MagicMissileSpell::Launch() {
 		lMax = std::max(lMax, lTime);
 		
 		missile->SetDuration(lTime);
+	}
+	
+	EERIE_LIGHT * el = dynLightCreate(m_light);
+	if(el) {
+		el->intensity = 0.7f + 2.3f;
+		el->fallend = 190.f;
+		el->fallstart = 80.f;
 		
-		EERIE_LIGHT * el = dynLightCreate(missile->lLightId);
-		if(el) {
-			
-			el->intensity = 0.7f + 2.3f;
-			el->fallend = 190.f;
-			el->fallstart = 80.f;
-			
-			if(m_mrCheat) {
-				el->rgb = Color3f(1.f, 0.3f, 0.8f);
-			} else {
-				el->rgb = Color3f(0.f, 0.f, 1.f);
-			}
-			
-			el->pos = startPos;
-			el->duration = GameDurationMs(300);
-			
+		if(m_mrCheat) {
+			el->rgb = Color3f(1.f, 0.3f, 0.8f);
+		} else {
+			el->rgb = Color3f(0.f, 0.f, 1.f);
 		}
+		
+		el->pos = startPos;
+		el->duration = GameDurationMs(300);
 	}
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_CREATE, &startPos);
@@ -248,6 +246,8 @@ void MagicMissileSpell::End() {
 		delete m_missiles[i];
 	}
 	m_missiles.clear();
+	
+	endLightDelayed(m_light, GameDurationMs(500));
 	
 	ARX_SOUND_Stop(snd_loop);
 	snd_loop = audio::SourcedSample();
@@ -273,8 +273,6 @@ void MagicMissileSpell::Update() {
 			missile->SetTTL(GameDurationMs(1000));
 			missile->bExplo = true;
 			missile->bMove  = false;
-			
-			missile->lLightId = LightHandle();
 			
 			DamageParameters damage;
 			damage.pos = missile->eCurPos;
@@ -302,6 +300,13 @@ void MagicMissileSpell::Update() {
 	averageMissilePos /= Vec3f(m_missiles.size());
 	ARX_SOUND_RefreshPosition(snd_loop, averageMissilePos);
 	
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
+		light->intensity = 0.7f + 2.3f * Random::getf(0.5f, 1.0f);
+		light->pos = averageMissilePos;
+		light->creationTime = g_gameTime.now();
+	}
+	
 	{
 		long nbmissiles = 0;
 		for(size_t i = 0; i < m_missiles.size(); i++) {
@@ -317,15 +322,6 @@ void MagicMissileSpell::Update() {
 	
 	for(size_t i = 0; i < m_missiles.size(); i++) {
 		m_missiles[i]->Render();
-		
-		CMagicMissile * pMM = m_missiles[i];
-		
-		EERIE_LIGHT * el = lightHandleGet(pMM->lLightId);
-		if(el) {
-			el->intensity = 0.7f + 2.3f * pMM->lightIntensityFactor;
-			el->pos = pMM->eCurPos;
-			el->creationTime = g_gameTime.now();
-		}
 	}
 }
 

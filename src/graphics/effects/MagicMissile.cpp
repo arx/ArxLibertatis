@@ -72,7 +72,6 @@ CMagicMissile::CMagicMissile()
 	: bExplo(false)
 	, bMove(true)
 	, eCurPos(0.f)
-	, lightIntensityFactor(0.f)
 	, m_trailColor(Color3f(0.9f, 0.9f, 0.7f) + Color3f(0.1f, 0.1f, 0.3f) * randomColor3f())
 	, m_projectileColor(0.3f, 0.3f, 0.5f)
 	, tex_mm(TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue"))
@@ -85,8 +84,6 @@ CMagicMissile::CMagicMissile()
 }
 
 CMagicMissile::~CMagicMissile() {
-
-	lLightId = LightHandle();
 }
 
 void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
@@ -124,18 +121,11 @@ void CMagicMissile::SetTTL(GameDuration aulTTL)
 	m_duration = std::min(m_elapsed + aulTTL, m_duration);
 	SetDuration(m_duration);
 	m_elapsed = t;
-	
-	lLightId = LightHandle();
 }
 
 void CMagicMissile::Update(GameDuration timeDelta)
 {
 	m_elapsed += timeDelta;
-
-	if(m_elapsed >= m_duration)
-		lightIntensityFactor = 0.f;
-	else
-		lightIntensityFactor = Random::getf(0.5f, 1.0f);
 }
 
 void CMagicMissile::Render() {
