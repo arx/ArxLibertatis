@@ -235,6 +235,10 @@ void MagicMissileSpell::Launch() {
 		}
 	}
 	
+	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_CREATE, &startPos);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_LAUNCH, &startPos);
+	snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MM_LOOP, &startPos, 1.0F);
+	
 	m_duration = lMax + GameDurationMs(1000);
 }
 
@@ -244,6 +248,9 @@ void MagicMissileSpell::End() {
 		delete m_missiles[i];
 	}
 	m_missiles.clear();
+	
+	ARX_SOUND_Stop(snd_loop);
+	snd_loop = audio::SourcedSample();
 }
 
 void MagicMissileSpell::Update() {
@@ -285,9 +292,15 @@ void MagicMissileSpell::Update() {
 		}
 	}
 	
+	Vec3f averageMissilePos = Vec3f(0.f);
+	
 	for(size_t i = 0 ; i < m_missiles.size() ; i++) {
 		m_missiles[i]->Update(g_gameTime.lastFrameDuration());
+		averageMissilePos += m_missiles[i]->eCurPos;
 	}
+	
+	averageMissilePos /= Vec3f(m_missiles.size());
+	ARX_SOUND_RefreshPosition(snd_loop, averageMissilePos);
 	
 	{
 		long nbmissiles = 0;

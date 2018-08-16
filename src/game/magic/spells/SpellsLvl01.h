@@ -43,6 +43,7 @@ public:
 	
 private:
 	bool m_mrCheat;
+	audio::SourcedSample snd_loop;
 	std::vector<CMagicMissile *> m_missiles;
 };
 

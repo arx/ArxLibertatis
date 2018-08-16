@@ -87,9 +87,6 @@ CMagicMissile::CMagicMissile()
 CMagicMissile::~CMagicMissile() {
 
 	lLightId = LightHandle();
-
-	ARX_SOUND_Stop(snd_loop);
-	snd_loop = audio::SourcedSample();
 }
 
 void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
@@ -119,10 +116,6 @@ void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
 	iBezierPrecision = BEZIERPrecision;
 	bExplo = false;
 	bMove = true;
-
-	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_CREATE, &eCurPos);
-	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_LAUNCH, &eCurPos);
-	snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MM_LOOP, &eCurPos, 1.0F);
 }
 
 void CMagicMissile::SetTTL(GameDuration aulTTL)
@@ -137,8 +130,6 @@ void CMagicMissile::SetTTL(GameDuration aulTTL)
 
 void CMagicMissile::Update(GameDuration timeDelta)
 {
-	ARX_SOUND_RefreshPosition(snd_loop, eCurPos);
-
 	m_elapsed += timeDelta;
 
 	if(m_elapsed >= m_duration)
