@@ -80,8 +80,6 @@ private:
 	int iBezierPrecision;
 	float fTrail;
 	Vec3f pathways[6];
-	audio::SourcedSample snd_loop;
-	
 };
 
 class MrMagicMissileFx : public CMagicMissile {
