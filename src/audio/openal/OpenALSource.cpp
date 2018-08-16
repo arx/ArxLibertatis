@@ -232,7 +232,6 @@ aalError OpenALSource::init(SourcedSample id, OpenALSource * instance, const Cha
 	if(m_channel.flags & FLAG_ANY_3D_FX) {
 		setPosition(m_channel.position);
 		setVelocity(m_channel.velocity);
-		setDirection(m_channel.direction);
 		setFalloff(m_channel.falloff);
 	} else {
 		setPan(m_channel.pan);
@@ -459,20 +458,6 @@ aalError OpenALSource::setVelocity(const Vec3f & velocity) {
 	
 	alSource3f(m_source, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
 	AL_CHECK_ERROR("setting source velocity")
-	
-	return AAL_OK;
-}
-
-aalError OpenALSource::setDirection(const Vec3f & direction) {
-	
-	if(!alIsSource(m_source) || !(m_channel.flags & FLAG_DIRECTION)) {
-		return AAL_ERROR_INIT;
-	}
-	
-	m_channel.direction = direction;
-	
-	alSource3f(m_source, AL_DIRECTION, direction.x, direction.y, direction.z);
-	AL_CHECK_ERROR("setting source direction")
 	
 	return AAL_OK;
 }

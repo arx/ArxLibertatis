@@ -49,7 +49,6 @@ public:
 	
 	aalError setPosition(const Vec3f & position);
 	aalError setVelocity(const Vec3f & velocity);
-	aalError setDirection(const Vec3f & direction);
 	aalError setFalloff(const SourceFalloff & falloff);
 	
 	aalError play(unsigned playCount = 1);
