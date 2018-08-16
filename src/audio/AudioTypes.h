@@ -61,7 +61,6 @@ enum ChannelFlag {
 	FLAG_POSITION      = 1 << 3,  // Enable position control
 	FLAG_VELOCITY      = 1 << 4,  // Enable velocity control
 	FLAG_DIRECTION     = 1 << 5,  // Enable orientation control
-	FLAG_CONE          = 1 << 6,  // Enable cone control
 	FLAG_FALLOFF       = 1 << 7,  // Enable intensity control
 	FLAG_REVERBERATION = 1 << 8,  // Enable environment reverberation
 	FLAG_RELATIVE      = 1 << 9,  // Compute position relative to the listener
@@ -107,21 +106,6 @@ struct PCMFormat {
 	u32 frequency; // Samples per second
 	u16 quality; // Bits per sample
 	u16 channels; // Output channels count
-};
-
-// Source cone
-struct SourceCone {
-	
-	float inner_angle;
-	float outer_angle;
-	float outer_volume;
-	
-	SourceCone()
-		: inner_angle(0.f)
-		, outer_angle(0.f)
-		, outer_volume(0.f)
-	{ }
-	
 };
 
 // Source falloff
@@ -190,7 +174,6 @@ struct Channel {
 	Vec3f position;
 	Vec3f velocity;
 	Vec3f direction;
-	SourceCone cone;
 	SourceFalloff falloff;
 	
 	Channel(MixerId _mixer)

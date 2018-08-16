@@ -63,7 +63,7 @@ class Sample;
 class Mixer;
 
 const ChannelFlags FLAG_ANY_3D_FX = FLAG_POSITION | FLAG_VELOCITY | FLAG_DIRECTION |
-                                    FLAG_CONE | FLAG_FALLOFF | FLAG_REVERBERATION;
+                                    FLAG_FALLOFF | FLAG_REVERBERATION;
 
 // Audio device interface
 extern Backend * backend;

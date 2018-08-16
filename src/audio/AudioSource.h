@@ -72,7 +72,6 @@ public:
 	virtual aalError setPosition(const Vec3f & position) = 0;
 	virtual aalError setVelocity(const Vec3f & velocity) = 0;
 	virtual aalError setDirection(const Vec3f & direction) = 0;
-	virtual aalError setCone(const SourceCone & cone) = 0;
 	virtual aalError setFalloff(const SourceFalloff & falloff) = 0;
 	aalError setMixer(MixerId mixer);
 	
