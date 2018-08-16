@@ -104,9 +104,9 @@ enum PlayingAmbianceType {
 
 // Output format
 struct PCMFormat {
-	size_t frequency; // Samples per second
-	size_t quality; // Bits per sample
-	size_t channels; // Output channels count
+	u32 frequency; // Samples per second
+	u16 quality; // Bits per sample
+	u16 channels; // Output channels count
 };
 
 // Source cone
