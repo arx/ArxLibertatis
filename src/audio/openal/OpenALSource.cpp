@@ -233,7 +233,6 @@ aalError OpenALSource::init(SourcedSample id, OpenALSource * instance, const Cha
 		setPosition(m_channel.position);
 		setVelocity(m_channel.velocity);
 		setDirection(m_channel.direction);
-		setCone(m_channel.cone);
 		setFalloff(m_channel.falloff);
 	} else {
 		setPan(m_channel.pan);
@@ -474,24 +473,6 @@ aalError OpenALSource::setDirection(const Vec3f & direction) {
 	
 	alSource3f(m_source, AL_DIRECTION, direction.x, direction.y, direction.z);
 	AL_CHECK_ERROR("setting source direction")
-	
-	return AAL_OK;
-}
-
-aalError OpenALSource::setCone(const SourceCone & cone) {
-	
-	if(!alIsSource(m_source) || !(m_channel.flags & FLAG_CONE)) {
-		return AAL_ERROR_INIT;
-	}
-	
-	m_channel.cone.inner_angle = cone.inner_angle;
-	m_channel.cone.outer_angle = cone.outer_angle;
-	m_channel.cone.outer_volume = glm::clamp(cone.outer_volume, 0.f, 1.f);
-	
-	alSourcef(m_source, AL_CONE_INNER_ANGLE, m_channel.cone.inner_angle);
-	alSourcef(m_source, AL_CONE_OUTER_ANGLE, m_channel.cone.outer_angle);
-	alSourcef(m_source, AL_CONE_OUTER_GAIN, m_channel.cone.outer_volume);
-	AL_CHECK_ERROR("setting source cone")
 	
 	return AAL_OK;
 }
