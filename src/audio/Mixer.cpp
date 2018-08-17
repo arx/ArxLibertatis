@@ -103,17 +103,15 @@ void Mixer::clear(bool force) {
 	
 }
 
-aalError Mixer::setVolume(float volume) {
+void Mixer::setVolume(float volume) {
 	
 	volume = glm::clamp(volume, 0.f, 1.f);
 	if(m_volume == volume) {
-		return AAL_OK;
+		return;
 	}
 	m_volume = volume;
 	
 	updateVolume();
-	
-	return AAL_OK;
 }
 
 void Mixer::updateVolume() {
