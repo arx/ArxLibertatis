@@ -62,7 +62,7 @@ public:
 	float getFinalVolume() const { return finalVolume; }
 	
 	aalError stop();
-	aalError pause();
+	void pause();
 	void resume();
 	
 private:
