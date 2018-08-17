@@ -187,7 +187,28 @@ void MagicMissileSpell::Launch() {
 		number = glm::clamp<size_t>(size_t(m_level + 1) / 2, 1, 5);
 	}
 	
+	m_lights.reserve(number);
 	m_missiles.reserve(number);
+	
+	for(size_t i = 0; i < number; i++) {
+		LightHandle lightHandle;
+		EERIE_LIGHT * el = dynLightCreate(lightHandle);
+		if(el) {
+			el->intensity = 0.7f + 2.3f;
+			el->fallend = 190.f;
+			el->fallstart = 80.f;
+			
+			if(m_mrCheat) {
+				el->rgb = Color3f(1.f, 0.3f, 0.8f);
+			} else {
+				el->rgb = Color3f(0.f, 0.f, 1.f);
+			}
+			
+			el->pos = startPos;
+			el->duration = GameDurationMs(300);
+		}
+		m_lights.push_back(lightHandle);
+	}
 	
 	for(size_t i = 0; i < number; i++) {
 		
@@ -217,22 +238,6 @@ void MagicMissileSpell::Launch() {
 		missile->SetDuration(lTime);
 	}
 	
-	EERIE_LIGHT * el = dynLightCreate(m_light);
-	if(el) {
-		el->intensity = 0.7f + 2.3f;
-		el->fallend = 190.f;
-		el->fallstart = 80.f;
-		
-		if(m_mrCheat) {
-			el->rgb = Color3f(1.f, 0.3f, 0.8f);
-		} else {
-			el->rgb = Color3f(0.f, 0.f, 1.f);
-		}
-		
-		el->pos = startPos;
-		el->duration = GameDurationMs(300);
-	}
-	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_CREATE, &startPos);
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_LAUNCH, &startPos);
 	snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MM_LOOP, &startPos, 1.0F);
@@ -242,19 +247,20 @@ void MagicMissileSpell::Launch() {
 
 void MagicMissileSpell::End() {
 	
+	for(size_t i = 0; i < m_lights.size(); i++) {
+		endLightDelayed(m_lights[i], GameDurationMs(500));
+	}
+	
 	for(size_t i = 0; i < m_missiles.size(); i++) {
 		delete m_missiles[i];
 	}
 	m_missiles.clear();
-	
-	endLightDelayed(m_light, GameDurationMs(500));
 	
 	ARX_SOUND_Stop(snd_loop);
 	snd_loop = audio::SourcedSample();
 }
 
 void MagicMissileSpell::Update() {
-	
 	
 	for(size_t i = 0; i < m_missiles.size(); i++) {
 		CMagicMissile * missile = m_missiles[i];
@@ -300,11 +306,15 @@ void MagicMissileSpell::Update() {
 	averageMissilePos /= Vec3f(m_missiles.size());
 	ARX_SOUND_RefreshPosition(snd_loop, averageMissilePos);
 	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
-	if(light) {
-		light->intensity = 0.7f + 2.3f * Random::getf(0.5f, 1.0f);
-		light->pos = averageMissilePos;
-		light->creationTime = g_gameTime.now();
+	arx_assert(m_lights.size() == m_missiles.size());
+	
+	for(size_t i = 0; i < m_lights.size(); i++) {
+		EERIE_LIGHT * light = lightHandleGet(m_lights[i]);
+		if(light) {
+			light->intensity = 0.7f + 2.3f * Random::getf(0.5f, 1.0f);
+			light->pos = m_missiles[i]->eCurPos;
+			light->creationTime = g_gameTime.now();
+		}
 	}
 	
 	{
