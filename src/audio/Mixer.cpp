@@ -55,11 +55,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-Mixer::Mixer() :
+Mixer::Mixer(const Mixer * parent) :
 	paused(false),
 	m_volume(DEFAULT_VOLUME),
-	m_parent(NULL),
-	finalVolume(DEFAULT_VOLUME) {
+	m_parent(parent),
+	finalVolume(DEFAULT_VOLUME)
+{
+	updateVolume();
+	
+	if(m_parent && !paused && m_parent->paused) {
+		pause();
+	}
 }
 
 Mixer::~Mixer() {
@@ -134,32 +140,6 @@ void Mixer::updateVolume() {
 		}
 	}
 	
-}
-
-aalError Mixer::setParent(const Mixer * parent) {
-	
-	if(m_parent == parent) {
-		return AAL_OK;
-	}
-	
-	// Check for cyles.
-	const Mixer * mixer = parent;
-	while(mixer) {
-		if(mixer == this) {
-			return AAL_ERROR;
-		}
-		mixer = mixer->m_parent;
-	}
-	
-	m_parent = parent;
-	
-	updateVolume();
-	
-	if(m_parent && !paused && m_parent->paused) {
-		pause();
-	}
-	
-	return AAL_OK;
 }
 
 void Mixer::stop() {
