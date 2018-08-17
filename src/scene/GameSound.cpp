@@ -284,11 +284,6 @@ void ARX_SOUND_MixerResume(audio::MixerId mixer_id) {
 	}
 }
 
-void ARX_SOUND_MixerSwitch(audio::MixerId from, audio::MixerId to) {
-	ARX_SOUND_MixerPause(from);
-	ARX_SOUND_MixerResume(to);
-}
-
 // Sets the position of the listener
 void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Vec3f & up) {
 	

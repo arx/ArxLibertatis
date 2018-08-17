@@ -250,6 +250,5 @@ void ARX_SOUND_MixerSetVolume(audio::MixerId mixer_id, float volume);
 void ARX_SOUND_MixerStop(audio::MixerId mixer_id);
 void ARX_SOUND_MixerPause(audio::MixerId mixer_id);
 void ARX_SOUND_MixerResume(audio::MixerId mixer_id);
-void ARX_SOUND_MixerSwitch(audio::MixerId from, audio::MixerId to);
 
 #endif // ARX_SCENE_GAMESOUND_H

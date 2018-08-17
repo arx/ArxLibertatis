@@ -180,7 +180,10 @@ void ARXMenu_Options_Audio_SetAmbianceVolume(float volume) {
 }
 
 void ARXMenu_Options_Audio_ApplyGameVolumes() {
-	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerMenu, ARX_SOUND_MixerGame);
+	
+	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
+	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
+	
 	float volume = config.audio.volume * 0.1f;
 	if(config.audio.muteOnFocusLost && !mainApp->getWindow()->hasFocus()) {
 		volume = 0.f;
@@ -214,7 +217,9 @@ void ARXMenu_Options_Audio_SetDevice(const std::string & device) {
 	ARX_SOUND_Release();
 	ARX_SOUND_Init();
 	
-	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerGame, ARX_SOUND_MixerMenu);
+	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
+	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
+	
 	ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
 	
 	ARXMenu_Options_Audio_SetMasterVolume(config.audio.volume);
