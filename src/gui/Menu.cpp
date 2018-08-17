@@ -143,7 +143,8 @@ void ARX_MENU_Launch(bool allowResume) {
 	g_gameTime.pause(GameTime::PauseMenu);
 
 	// Synchronize menu mixers with game mixers and switch between them
-	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerGame, ARX_SOUND_MixerMenu);
+	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
+	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
 
 	ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
 	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
