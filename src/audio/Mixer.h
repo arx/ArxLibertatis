@@ -52,11 +52,10 @@ class Mixer {
 	
 public:
 	
-	Mixer();
+	Mixer(const Mixer * parent);
 	~Mixer();
 	
 	void setVolume(float volume);
-	aalError setParent(const Mixer * parent);
 	
 	bool isPaused() const { return paused; }
 	float getFinalVolume() const { return finalVolume; }

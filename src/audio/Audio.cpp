@@ -225,23 +225,17 @@ HRTFStatus getHRTFStatus() {
 
 // Resource creation
 
-static MixerId createMixer_common() {
-	
-	Mixer * mixer = new Mixer();
-	
-	MixerId id = g_mixers.add(mixer);
-	if(id == MixerId()) {
-		delete mixer;
-	}
-	
-	return id;
-}
-
 MixerId createMixer() {
 	
 	AAL_ENTRY_V(MixerId())
 	
-	return createMixer_common();
+	Mixer * mixer = new Mixer(NULL);
+	MixerId mixerHandle = g_mixers.add(mixer);
+	
+	arx_assert(mixerHandle != MixerId());
+	LogDebug("createMixer " << mixerHandle << " root");
+	
+	return mixerHandle;
 }
 
 MixerId createMixer(MixerId parent) {
@@ -252,14 +246,14 @@ MixerId createMixer(MixerId parent) {
 		return MixerId();
 	}
 	
-	MixerId mixer = createMixer_common();
-	if(mixer != MixerId()) {
-		Mixer * parentMixer = g_mixers[parent];
-		g_mixers[mixer]->setParent(parentMixer);
-		LogDebug("createMixer " << mixer.handleData() << " parent=" << parent.handleData());
-	}
+	Mixer * parentMixer = g_mixers[parent];
+	Mixer * mixer = new Mixer(parentMixer);
+	MixerId mixerHandle = g_mixers.add(mixer);
 	
-	return mixer;
+	arx_assert(mixerHandle != MixerId());
+	LogDebug("createMixer " << mixerHandle << " parent=" << parent);
+	
+	return mixerHandle;
 }
 
 
