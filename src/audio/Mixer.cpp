@@ -55,11 +55,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-Mixer::Mixer(const Mixer * parent) :
-	paused(false),
-	m_volume(DEFAULT_VOLUME),
-	m_parent(parent),
-	finalVolume(DEFAULT_VOLUME)
+Mixer::Mixer(const Mixer * parent)
+	: paused(false)
+	, m_volume(DEFAULT_VOLUME)
+	, m_parent(parent)
+	, finalVolume(DEFAULT_VOLUME)
 {
 	updateVolume();
 	
