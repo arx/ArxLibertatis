@@ -63,7 +63,7 @@ public:
 	
 	aalError stop();
 	aalError pause();
-	aalError resume();
+	void resume();
 	
 private:
 	
