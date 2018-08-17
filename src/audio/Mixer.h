@@ -61,7 +61,7 @@ public:
 	bool isPaused() const { return paused; }
 	float getFinalVolume() const { return finalVolume; }
 	
-	aalError stop();
+	void stop();
 	void pause();
 	void resume();
 	

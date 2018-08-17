@@ -164,7 +164,7 @@ aalError Mixer::setParent(const Mixer * parent) {
 	return AAL_OK;
 }
 
-aalError Mixer::stop() {
+void Mixer::stop() {
 	
 	BOOST_FOREACH(Mixer * mixer, g_mixers) {
 		if(mixer && mixer->m_parent == this) {
@@ -175,8 +175,6 @@ aalError Mixer::stop() {
 	clear(false);
 	
 	paused = false;
-	
-	return AAL_OK;
 }
 
 void Mixer::pause() {
