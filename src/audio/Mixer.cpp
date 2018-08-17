@@ -205,10 +205,10 @@ aalError Mixer::pause() {
 	return AAL_OK;
 }
 
-aalError Mixer::resume() {
+void Mixer::resume() {
 	
 	if(!paused) {
-		return AAL_OK;
+		return;
 	}
 	
 	BOOST_FOREACH(Mixer * mixer, g_mixers) {
@@ -231,8 +231,6 @@ aalError Mixer::resume() {
 	}
 	
 	paused = false;
-	
-	return AAL_OK;
 }
 
 } // namespace audio
