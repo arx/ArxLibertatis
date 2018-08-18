@@ -205,15 +205,10 @@ private:
 	}
 	
 	void onClickedSaveConfirm(Widget * /* widget */) {
-
-		ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 		
 		m_textbox->unfocus();
 		
 		savegames.save(m_textbox->text(), m_savegame, savegame_thumbnail);
-		
-		ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
-		
 	}
 	
 	void onClickedSaveDelete(Widget * /* widget */) {
