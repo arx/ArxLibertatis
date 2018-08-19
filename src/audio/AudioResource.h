@@ -60,8 +60,6 @@ namespace res { class path; }
 
 namespace audio {
 
-PakFileHandle * OpenResource(const res::path & name, const res::path & resource_path);
-
 class ResourceHandle {
 	
 public:

@@ -47,19 +47,4 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-PakFileHandle * OpenResource(const res::path & name, const res::path & resource_path) {
-	
-	PakFileHandle * file = NULL;
-	
-	if(!resource_path.empty()) {
-		file = g_resources->open(resource_path / name); // TODO do this earlier
-	}
-	
-	if(!file) {
-		file = g_resources->open(name);
-	}
-	
-	return file;
-}
-
 } // namespace audio

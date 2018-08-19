@@ -53,7 +53,16 @@ namespace audio {
 
 Stream * createStream(const res::path & name) {
 	
-	PakFileHandle * file = OpenResource(name, sample_path);
+	PakFileHandle * file = NULL;
+	
+	if(!sample_path.empty()) {
+		file = g_resources->open(sample_path / name); // TODO do this earlier
+	}
+	
+	if(!file) {
+		file = g_resources->open(name);
+	}
+	
 	if(!file) {
 		return NULL;
 	}
