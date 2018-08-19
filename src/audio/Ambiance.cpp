@@ -617,7 +617,17 @@ aalError Ambiance::load() {
 		return AAL_ERROR_INIT;
 	}
 	
-	boost::scoped_ptr<PakFileHandle> file(OpenResource(m_name, ambiance_path));
+	PakFileHandle * file2 = NULL;
+	
+	if(!ambiance_path.empty()) {
+		file2 = g_resources->open(ambiance_path / m_name); // TODO do this earlier
+	}
+	
+	if(!file2) {
+		file2 = g_resources->open(m_name);
+	}
+	
+	boost::scoped_ptr<PakFileHandle> file(file2);
 	if(!file) {
 		return AAL_ERROR_FILEIO;
 	}
