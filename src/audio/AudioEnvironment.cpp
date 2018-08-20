@@ -64,15 +64,9 @@ Environment::Environment(const res::path & _name)
 
 aalError Environment::load() {
 	
-	PakFileHandle * file = NULL;
+	arx_assert(!environment_path.empty());
 	
-	if(!environment_path.empty()) {
-		file = g_resources->open(environment_path / name); // TODO do this earlier
-	}
-	
-	if(!file) {
-		file = g_resources->open(name);
-	}
+	PakFileHandle * file = g_resources->open(environment_path / name);
 	
 	if(!file) {
 		return AAL_ERROR_FILEIO;
