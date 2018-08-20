@@ -10,10 +10,28 @@ from math import isclose
 
 from arx_addon.lib import ArxIO
 from arx_addon.files import ArxFiles
+from arx_addon.dataDlf import DlfSerializer
 from arx_addon.dataFts import FtsSerializer
 
+ioLib = ArxIO()
+dlfSerializer = DlfSerializer(ioLib)
+
+pathAmbianceNames = set()
+
+def checkLevelDlf(dlfFile):
+    dlfData = dlfSerializer.readContainer(dlfFile)
+
+    for path in dlfData.paths:
+        pathAmbianceNames.add(path[0].ambiance)
+
+    #print("Entities: {}".format(len(dlfData.entities)))
+    #print("Fogs: {}".format(len(dlfData.fogs)))
+
+def checkLevelDlfSummary():
+    print("amb names: {}".format(str(pathAmbianceNames)))
+
+
 def validateScenes():
-    ioLib = ArxIO()
     ftsSerializer = FtsSerializer(ioLib)
     
     totalTriangles = 0
@@ -27,7 +45,12 @@ def validateScenes():
     
     for levelId in arxFiles.levels.levels:
         parts = arxFiles.levels.levels[levelId]
-        
+
+        if not parts.dlf:
+            log.warning("Level {} is missing dlf file".format(levelId))
+        else:
+            checkLevelDlf(parts.dlf)
+
         if not parts.fts:
             log.warn("Level {} is missing fts file".format(levelId))
             continue
@@ -91,6 +114,8 @@ def validateScenes():
     print("maxPolyPerTile: {}".format(maxPolyPerTile))
     print("minPolyPerTile: {}".format(minPolyPerTile))
     print("avgPolyPerTile: {}".format(avgPolyPerTileSum / avgPolyPerTileCount))
+
+    checkLevelDlfSummary()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
