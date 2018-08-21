@@ -215,7 +215,8 @@ std::string convert(In begin, In end) {
 	std::string buffer;
 	buffer.resize(getConvertedLength<InEnc, OutEnc>(begin, end));
 	std::string::iterator oend = convert<InEnc, OutEnc>(begin, end, buffer.begin());
-	arx_assert(oend == buffer.end()); ARX_UNUSED(oend);
+	arx_assert(oend == buffer.end());
+	ARX_UNUSED(oend);
 	return buffer;
 }
 
@@ -243,7 +244,8 @@ std::string encode(Unicode character) {
 	std::string result;
 	result.resize(OutEnc::length(character));
 	std::string::iterator oend = OutEnc::write(result.begin(), character);
-	arx_assert(oend == result.end()); ARX_UNUSED(oend);
+	arx_assert(oend == result.end());
+	ARX_UNUSED(oend);
 	return result;
 }
 
@@ -328,10 +330,22 @@ Out UTF8::write(Out it, Unicode chr) {
 	// Extract bytes to write
 	u8 bytes[4];
 	switch(bytesToWrite) {
-		case 4 : bytes[3] = static_cast<u8>((chr | 0x80) & 0xBF); chr >>= 6; /* fall-through */
-		case 3 : bytes[2] = static_cast<u8>((chr | 0x80) & 0xBF); chr >>= 6; /* fall-through */
-		case 2 : bytes[1] = static_cast<u8>((chr | 0x80) & 0xBF); chr >>= 6; /* fall-through */
-		case 1 : bytes[0] = static_cast<u8>(chr | utf8FirstBytes[bytesToWrite]); break;
+		case 4: {
+			bytes[3] = static_cast<u8>((chr | 0x80) & 0xBF);
+			chr >>= 6;
+		} /* fall-through */
+		case 3: {
+			bytes[2] = static_cast<u8>((chr | 0x80) & 0xBF);
+			chr >>= 6;
+		} /* fall-through */
+		case 2: {
+			bytes[1] = static_cast<u8>((chr | 0x80) & 0xBF);
+			chr >>= 6;
+		} /* fall-through */
+		case 1: {
+			bytes[0] = static_cast<u8>(chr | utf8FirstBytes[bytesToWrite]);
+			break;
+		}
 		default: arx_unreachable();
 	}
 	
