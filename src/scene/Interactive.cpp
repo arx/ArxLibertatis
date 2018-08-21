@@ -963,7 +963,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->_npcdata->backstab_skill = 0;
 			io->_npcdata->fDetect = -1;
 		}
-
+		
 		if(io->ioflags & IO_ITEM) {
 			io->collision = COLLIDE_WITH_PLAYER;
 			io->_itemdata->count = 1;
@@ -972,12 +972,14 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->_itemdata->playerstacksize = 1;
 			io->_itemdata->stealvalue = -1;
 			io->_itemdata->LightValue = -1;
+		} else {
+			io->collision = 0;
 		}
-		else io->collision = 0;
-
+		
 		if(io->ioflags & IO_FIX) {
 			io->_fixdata->trapvalue = -1;
 		}
+		
 	}
 }
 
