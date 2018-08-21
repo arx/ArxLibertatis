@@ -552,27 +552,27 @@ bool isSamplePlaying(SourcedSample sourceId) {
 
 // Sample control
 
-SourcedSample samplePlay(SampleHandle s_id, const Channel & channel, unsigned play_count) {
+SourcedSample samplePlay(SampleHandle sampleHandle, const Channel & channel, unsigned playCount) {
 	
 	AAL_ENTRY_V(SourcedSample())
 	
-	if(!g_samples.isValid(s_id) || !g_mixers.isValid(channel.mixer)) {
-		return SourcedSample(SourceHandle(), s_id);
+	if(!g_samples.isValid(sampleHandle) || !g_mixers.isValid(channel.mixer)) {
+		return SourcedSample(SourceHandle(), sampleHandle);
 	}
 	
-	LogDebug("SamplePlay " << g_samples[s_id]->getName() << " play_count=" << play_count);
+	LogDebug("SamplePlay " << g_samples[sampleHandle]->getName() << " play_count=" << playCount);
 	
-	Source * source = backend->createSource(s_id, channel);
+	Source * source = backend->createSource(sampleHandle, channel);
 	if(!source) {
-		return SourcedSample(SourceHandle(), s_id);
+		return SourcedSample(SourceHandle(), sampleHandle);
 	}
 	
-	if(source->play(play_count)) {
-		return SourcedSample(SourceHandle(), s_id);
+	if(source->play(playCount)) {
+		return SourcedSample(SourceHandle(), sampleHandle);
 	}
 	
 	if(channel.flags & FLAG_AUTOFREE) {
-		g_samples[s_id]->dereference();
+		g_samples[sampleHandle]->dereference();
 	}
 	
 	return source->getId();

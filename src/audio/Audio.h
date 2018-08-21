@@ -125,7 +125,7 @@ aalError getSampleLength(SampleHandle sampleHandle, size_t & length);
 bool isSamplePlaying(SourcedSample sourceId);
 
 //! play_count == 0 -> infinite loop, play_count > 0 -> play play_count times
-SourcedSample samplePlay(SampleHandle sampleHandle, const Channel & channel, unsigned play_count = 1);
+SourcedSample samplePlay(SampleHandle sampleHandle, const Channel & channel, unsigned playCount = 1);
 void sampleStop(SourcedSample sourceId);
 
 struct SourceInfo {
