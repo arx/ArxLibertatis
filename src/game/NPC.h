@@ -253,7 +253,7 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source,
                                float presence = ARX_NPC_AUDIBLE_PRESENCE_DEFAULT);
 void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos,
                            float volume = ARX_NPC_AUDIBLE_VOLUME_DEFAULT,
-                           float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT);
+                           float power = ARX_NPC_AUDIBLE_FACTOR_DEFAULT);
 
 Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo);
 void CheckNPC(Entity * io);
