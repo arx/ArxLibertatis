@@ -35,21 +35,30 @@ ColorConsole::~ColorConsole() {
 void ColorConsole::log(const Source & file, int line, Logger::LogLevel level,
                        const std::string & str) {
 	
-	std::ostream * os;
+	std::ostream * os = (level >= Logger::Warning) ? &std::cerr : &std::cout;
 	
 	const char * c = "\x1b[m";
 	const char * e = "";
 	size_t length = 3;
 	switch(level) {
-		case Logger::Debug:    std::cout << "\x1b[1;36m[D]\x1b[0;36m", os = &std::cout; break;
-		case Logger::Info:     std::cout << "\x1b[1;32m[I]\x1b[0;32m", os = &std::cout; break;
-		case Logger::Console:  std::cout << "\x1b[1;37m[C]\x1b[0;37m", os = &std::cout; break;
-		case Logger::Warning:  std::cerr << "\x1b[1;33m[W]\x1b[0;33m";
-			                     os = &std::cerr, e = c, c = "\x1b[0;33m"; break;
-		case Logger::Error:    std::cerr << "\x1b[1;31m[E]\x1b[0;31m";
-		                       os = &std::cerr, e = c, c = "\x1b[0;31m"; break;
-		case Logger::Critical: std::cerr << "\x1b[1;31m[CRITICAL]\x1b[0;31m";
-			                     os = &std::cerr, e = c, c = "\x1b[1;31m", length = 10; break;
+		case Logger::Debug:    std::cout << "\x1b[1;36m[D]\x1b[0;36m"; break;
+		case Logger::Info:     std::cout << "\x1b[1;32m[I]\x1b[0;32m"; break;
+		case Logger::Console:  std::cout << "\x1b[1;37m[C]\x1b[0;37m"; break;
+		case Logger::Warning:  {
+			std::cerr << "\x1b[1;33m[W]\x1b[0;33m";
+			e = c, c = "\x1b[0;33m";
+			break;
+		}
+		case Logger::Error: {
+			std::cerr << "\x1b[1;31m[E]\x1b[0;31m";
+			e = c, c = "\x1b[0;31m";
+			break;
+		}
+		case Logger::Critical: {
+			std::cerr << "\x1b[1;31m[CRITICAL]\x1b[0;31m";
+			e = c, c = "\x1b[1;31m", length = 10;
+			break;
+		}
 		case Logger::None: arx_unreachable();
 	}
 	(*os) << ' ' << file.name << "\x1b[m:\x1b[0;33m";
