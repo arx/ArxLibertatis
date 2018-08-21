@@ -700,8 +700,6 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 
 	if ((!g_resources->getFile(ftl_file)) && (!g_resources->getFile(path))) return;
 
-	if (!tw) return;
-
 	if (io == NULL) return;
 
 	if (io->obj == NULL) return;
@@ -717,66 +715,58 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 		
 		return;
 	}
-
-	EERIE_3DOBJ * tobj = NULL;
+	
+	if(!(tw & (TWEAK_HEAD | TWEAK_TORSO | TWEAK_LEGS))){
+		return;
+	}
+	
+	EERIE_3DOBJ * tobj = loadObject(path);
+	if(!tobj) {
+		return;
+	}
+	
 	EERIE_3DOBJ * result = NULL;
-
-	{
-		tobj = loadObject(path);
-
-		if (!tobj) return;
-
-		switch (tw)
-		{
-			case (u32)TWEAK_HEAD | (u32)TWEAK_TORSO | (u32)TWEAK_LEGS:
-
-				if (!io->tweaky)
-					io->tweaky = io->obj;
-				else delete
-					io->obj;
-
-				io->obj = tobj;
-				return;
-				break;
-			case (u32)TWEAK_HEAD | (u32)TWEAK_TORSO: {
-				EERIE_3DOBJ * result2 = CreateIntermediaryMesh(io->obj, tobj, TWEAK_HEAD);
-				result = CreateIntermediaryMesh(result2, tobj, TWEAK_TORSO);
-				delete result2;
-				break;
-			}
-			case (u32)TWEAK_TORSO | (u32)TWEAK_LEGS: {
-				EERIE_3DOBJ * result2 = CreateIntermediaryMesh(io->obj, tobj, TWEAK_TORSO);
-				result = CreateIntermediaryMesh(result2, tobj, TWEAK_LEGS);
-				delete result2;
-				break;
-			}
-			case (u32)TWEAK_HEAD | (u32)TWEAK_LEGS:
-				result = CreateIntermediaryMesh(tobj, io->obj, TWEAK_TORSO);
-				break;
-			default:
-				result = CreateIntermediaryMesh(io->obj, tobj, tw);
-				break;
+	if(tw == (TWEAK_HEAD | TWEAK_TORSO | TWEAK_LEGS)) {
+		result = tobj; // Replace the entire mesh
+	} else {
+		
+		if(tw & TWEAK_HEAD) {
+			result = CreateIntermediaryMesh(io->obj, tobj, TWEAK_HEAD);
 		}
-
+		
+		if(result && (tw & TWEAK_TORSO)) {
+			EERIE_3DOBJ * result2 = CreateIntermediaryMesh(result ? result : io->obj, tobj, TWEAK_TORSO);
+			delete result;
+			result = result2;
+		}
+		
+		if(result && (tw & TWEAK_LEGS)) {
+			EERIE_3DOBJ * result2 = CreateIntermediaryMesh(result ? result : io->obj, tobj, TWEAK_LEGS);
+			delete result;
+			result = result2;
+		}
+		
+		delete tobj;
+		
 		if(!result) {
-			delete tobj;
 			return;
 		}
 		
-		if(!io->tweaky) {
-			io->tweaky = io->obj;
-		} else if(io->tweaky != io->obj) {
-			delete io->obj;
-		}
+		EERIE_Object_Precompute_Fast_Access(result);
 		
-		io->obj = result;
-		EERIE_Object_Precompute_Fast_Access(io->obj);
+		EERIE_CreateCedricData(result);
+		
+		// TODO also do this for the other branch?
+		io->animBlend.lastanimtime = 0;
+		io->animBlend.m_active = false;
 	}
-
-	EERIE_CreateCedricData(io->obj);
 	
-	io->animBlend.lastanimtime = 0;
-	io->animBlend.m_active = false;
+	if(!io->tweaky) {
+		io->tweaky = io->obj;
+	} else if(io->tweaky != io->obj) {
+		delete io->obj;
+	}
 	
-	delete tobj;
+	io->obj = result;
+	
 }
