@@ -489,16 +489,13 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 				wmat = &io->weaponmaterial;
 			}
 		}
-
+		
 		attack = player.m_miscFull.damages;
-
-		if(Random::getf(0.f, 100.f) <= player.m_miscFull.criticalHit)
-		{
-			if(SendIOScriptEvent(io_source, io_source, SM_CRITICAL) != REFUSE)
-				critical = true;
+		
+		if(Random::getf(0.f, 100.f) <= player.m_miscFull.criticalHit
+		   && SendIOScriptEvent(io_source, io_source, SM_CRITICAL) != REFUSE) {
+			critical = true;
 		}
-		else
-			critical = false;
 		
 		damages = attack * ratioaim;
 		
@@ -508,6 +505,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 					backstab = 1.5f;
 			}
 		}
+		
 	} else {
 		
 		if(!(io_source->ioflags & IO_NPC)) {
@@ -529,25 +527,24 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		attack = io_source->_npcdata->tohit;
 		
 		damages = io_source->_npcdata->damages * ratioaim * Random::getf(0.5f, 1.0f);
-
+		
 		SpellBase * spell = spells.getSpellOnTarget(io_source->index(), SPELL_CURSE);
 		if(spell) {
 			damages *= (1 - spell->m_level * 0.05f);
 		}
-
-		if(Random::getf(0.f, 100) <= io_source->_npcdata->critical) {
-			if(SendIOScriptEvent(io_source, io_source, SM_CRITICAL) != REFUSE)
-				critical = true;
+		
+		if(Random::getf(0.f, 100) <= io_source->_npcdata->critical
+		   && SendIOScriptEvent(io_source, io_source, SM_CRITICAL) != REFUSE) {
+			critical = true;
 		}
-		else
-			critical = false;
-
+		
 		if(Random::getf(0.f, 100.f) <= io_source->_npcdata->backstab_skill) {
 			if(SendIOScriptEvent(io_source, io_source, SM_BACKSTAB) != REFUSE)
 				backstab = 1.5f;
 		}
+		
 	}
-
+	
 	float absorb;
 
 	if(io_target == entities.player()) {
