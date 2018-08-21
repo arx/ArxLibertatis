@@ -217,7 +217,8 @@ static mode_t dirstat_fallback(void * handle, const char * name) {
 	
 	struct stat result;
 	int ret = fstatat(fd, name, &result, 0);
-	arx_assert_msg(ret == 0, "fstatat failed: %d", ret); ARX_UNUSED(ret);
+	arx_assert_msg(ret == 0, "fstatat failed: %d", ret);
+	ARX_UNUSED(ret);
 	
 	return result.st_mode;
 }
@@ -247,7 +248,8 @@ static mode_t dirstat_fallback(void * handle, const char * name) {
 	fs::path file = reinterpret_cast<iterator_handle *>(handle)->path / name;
 	struct stat result;
 	int ret = stat(file.string().c_str(), &result);
-	arx_assert_msg(ret == 0, "stat failed: %d", ret); ARX_UNUSED(ret);
+	arx_assert_msg(ret == 0, "stat failed: %d", ret);
+	ARX_UNUSED(ret);
 	
 	return result.st_mode;
 }
