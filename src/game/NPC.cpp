@@ -695,8 +695,11 @@ bool ARX_NPC_SetStat(Entity & io, const std::string & statname, float value) {
 	} else if(statname == "backstab_skill" || statname == "backstabskill") {
 		io._npcdata->backstab_skill = value < 0 ? 0 : value;
 	} else if(statname == "backstab") {
-		if (value == 0) io._npcdata->npcflags &= ~NPCFLAG_BACKSTAB;
-		else io._npcdata->npcflags |= NPCFLAG_BACKSTAB;
+		if(value == 0) {
+			io._npcdata->npcflags &= ~NPCFLAG_BACKSTAB;
+		} else {
+			io._npcdata->npcflags |= NPCFLAG_BACKSTAB;
+		}
 	} else if(statname == "reach") {
 		io._npcdata->reach = value < 0 ? 0 : value;
 	} else if(statname == "critical") {
