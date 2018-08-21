@@ -126,53 +126,69 @@ public:
 		
 		switch(primitive) {
 			
-			case Renderer::TriangleList: do {
-				num = std::min(count, vb->capacity());
-				num -= num % 3;
-				vb->setData(src, num, 0, DiscardBuffer);
-				vb->draw(primitive, num);
-				src += num, count -= num, pos = num;
-			} while(count); break;
+			case Renderer::TriangleList: {
+				do {
+					num = std::min(count, vb->capacity());
+					num -= num % 3;
+					vb->setData(src, num, 0, DiscardBuffer);
+					vb->draw(primitive, num);
+					src += num, count -= num, pos = num;
+				} while(count);
+				break;
+			}
 			
-			case Renderer::TriangleStrip: do {
-				count += 2, src -= 2;
-				num = std::min(count, vb->capacity());
-				if(num != count) {
-					// Draw an even number of triangles so we don't flip front and back faces between draw calls.
-					num -= num & 1;
-				}
-				vb->setData(src, num, 0, DiscardBuffer);
-				vb->draw(primitive, num);
-				src += num, count -= num, pos = num;
-			} while(count); break;
+			case Renderer::TriangleStrip: {
+				do {
+					count += 2, src -= 2;
+					num = std::min(count, vb->capacity());
+					if(num != count) {
+						// Draw an even number of triangles so we don't flip front and back faces between draw calls.
+						num -= num & 1;
+					}
+					vb->setData(src, num, 0, DiscardBuffer);
+					vb->draw(primitive, num);
+					src += num, count -= num, pos = num;
+				} while(count);
+				break;
+			}
 			
-			case Renderer::TriangleFan: do {
-				count += 1, src -= 1;
-				num = std::min(count, vb->capacity() - 1);
-				vb->setData(vertices, 1, 0, DiscardBuffer);
-				vb->setData(src, num, 1, NoOverwrite);
-				vb->draw(primitive, num + 1);
-				src += num, count -= num, pos = num + 1;
-			} while(count); break;
+			case Renderer::TriangleFan: {
+				do {
+					count += 1, src -= 1;
+					num = std::min(count, vb->capacity() - 1);
+					vb->setData(vertices, 1, 0, DiscardBuffer);
+					vb->setData(src, num, 1, NoOverwrite);
+					vb->draw(primitive, num + 1);
+					src += num, count -= num, pos = num + 1;
+				} while(count);
+				break;
+			}
 			
-			case Renderer::LineList: do {
-				num = std::min(count, vb->capacity()) & ~1;
-				vb->setData(src, num, 0, DiscardBuffer);
-				vb->draw(primitive, num);
-				src += num, count -= num, pos = num;
-			} while(count); break;
+			case Renderer::LineList: {
+				do {
+					num = std::min(count, vb->capacity()) & ~1;
+					vb->setData(src, num, 0, DiscardBuffer);
+					vb->draw(primitive, num);
+					src += num, count -= num, pos = num;
+				} while(count);
+				break;
+			}
 			
-			case Renderer::LineStrip: do {
-				count += 1, src -= 1;
-				num = std::min(count, vb->capacity());
-				vb->setData(src, num, 0, DiscardBuffer);
-				vb->draw(primitive, num);
-				src += num, count -= num, pos = num;
-			} while(count); break;
+			case Renderer::LineStrip: {
+				do {
+					count += 1, src -= 1;
+					num = std::min(count, vb->capacity());
+					vb->setData(src, num, 0, DiscardBuffer);
+					vb->draw(primitive, num);
+					src += num, count -= num, pos = num;
+				} while(count);
+				break;
+			}
 			
-			default:
+			default: {
 				arx_assert_msg(false, "too large vertex array (%lu) for primitive %d",
 				               (unsigned long)(count + num), primitive);
+			}
 			
 		}
 		
