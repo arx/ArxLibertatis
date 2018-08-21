@@ -174,7 +174,7 @@ struct Channel {
 	Vec3f velocity;
 	SourceFalloff falloff;
 	
-	Channel(MixerId _mixer)
+	explicit Channel(MixerId _mixer)
 		: flags(0)
 		, mixer(_mixer)
 		, volume(0.f)
