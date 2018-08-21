@@ -1461,46 +1461,42 @@ void ArxGame::manageKeyMouse() {
 		
 		if(!GInput->actionPressed(CONTROLS_CUST_STRAFE)) {
 			const PlatformInstant now = g_platformTime.frameStart();
-
 			if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
-				if(pushTime.turnLeft == 0)
+				if(pushTime.turnLeft == 0) {
 					pushTime.turnLeft = now;
-
+				}
 				bKeySpecialMove = true;
-			}
-			else
+			} else {
 				pushTime.turnLeft = 0;
-
-			if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)) {
-				if(pushTime.turnRight == 0)
-					pushTime.turnRight = now;
-
-				bKeySpecialMove = true;
 			}
-			else
+			if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)) {
+				if(pushTime.turnRight == 0) {
+					pushTime.turnRight = now;
+				}
+				bKeySpecialMove = true;
+			} else {
 				pushTime.turnRight = 0;
+			}
 		}
-
+		
 		if(USE_PLAYERCOLLISIONS) {
 			const PlatformInstant now = g_platformTime.frameStart();
-
 			if(GInput->actionPressed(CONTROLS_CUST_LOOKUP)) {
-				if(pushTime.lookUp == 0)
+				if(pushTime.lookUp == 0) {
 					pushTime.lookUp = now;
-
+				}
 				bKeySpecialMove = true;
-			}
-			else
+			} else {
 				pushTime.lookUp = 0;
-
-			if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN)) {
-				if(pushTime.lookDown == 0)
-					pushTime.lookDown = now;
-
-				bKeySpecialMove = true;
 			}
-			else
+			if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN)) {
+				if(pushTime.lookDown == 0) {
+					pushTime.lookDown = now;
+				}
+				bKeySpecialMove = true;
+			} else {
 				pushTime.lookDown = 0;
+			}
 		}
 		
 		if(bKeySpecialMove) {
