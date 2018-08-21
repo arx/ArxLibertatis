@@ -285,9 +285,9 @@ RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end) {
 
 #ifndef RAYCAST_DEBUG
 
-void dbg_addRay(Vec3f start, Vec3f end) { ARX_UNUSED(start); ARX_UNUSED(end); }
+void dbg_addRay(Vec3f start, Vec3f end) { ARX_UNUSED(start), ARX_UNUSED(end); }
 void dbg_addTile(Vec2i tile){ ARX_UNUSED(tile); }
-void dbg_addPoly(EERIEPOLY * poly, Vec3f hit, Color c){ ARX_UNUSED(poly); ARX_UNUSED(hit); ARX_UNUSED(c);}
+void dbg_addPoly(EERIEPOLY * poly, Vec3f hit, Color c){ ARX_UNUSED(poly), ARX_UNUSED(hit), ARX_UNUSED(c); }
 void RaycastDebugClear() {}
 void RaycastDebugDraw() {}
 
