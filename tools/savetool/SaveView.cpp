@@ -651,7 +651,9 @@ static void print_inventory(SaveBlock & save, const char (&slot_io)[M][N][SIZE_I
 			
 			hasItems = true;
 			
-			std::cout << "  - (" << m << ", " << n << "): "; print_ident(save, name); std::cout << '\n';
+			std::cout << "  - (" << m << ", " << n << "): ";
+			print_ident(save, name);
+			std::cout << '\n';
 		}
 	}
 	if(!hasItems) {
@@ -682,7 +684,9 @@ static void print_item(SaveBlock & save, const char (&ident)[64],  const std::st
 		return;
 	}
 	
-	std::cout << "  " << name << ": "; print_ident(save, i); std::cout << '\n';
+	std::cout << "  " << name << ": ";
+	print_ident(save, i);
+	std::cout << '\n';
 }
 
 static void print_version(u64 version) {
@@ -718,7 +722,9 @@ static int view_pld(const char * dat, size_t size) {
 		std::cout << "Name: \"" << name << "\"\n";
 	}
 	
-	std::cout << "Current level: "; print_level(pld.level); std::cout << '\n';
+	std::cout << "Current level: ";
+	print_level(pld.level);
+	std::cout << '\n';
 	
 	std::cout << "Game time: " << pld.time << '\n';
 	
@@ -760,7 +766,8 @@ static int view_pld(const char * dat, size_t size) {
 		std::cout << "Saved by: " << engine << '\n';
 	}
 	
-	arx_assert(size >= pos); ARX_UNUSED(size), ARX_UNUSED(pos);
+	arx_assert(size >= pos);
+	ARX_UNUSED(size), ARX_UNUSED(pos);
 	
 	return 0;
 }
@@ -778,7 +785,8 @@ static int view_globals(const char * dat, size_t size) {
 	
 	print_variables(pld.nb_globals, dat, pos, "", TYPE_G_TEXT, TYPE_G_FLOAT, TYPE_G_LONG);
 	
-	arx_assert(size >= pos); ARX_UNUSED(size);
+	arx_assert(size >= pos);
+	ARX_UNUSED(size);
 	
 	return 0;
 }
@@ -818,7 +826,9 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	std::cout << "Critical hit: " << asp.Critical_Hit << '\n';
 	
 	if(asp.Current_Movement) {
-		std::cout << "Current movement:"; print_player_movement(asp.Current_Movement); std::cout << '\n';
+		std::cout << "Current movement:";
+		print_player_movement(asp.Current_Movement);
+		std::cout << '\n';
 	}
 	
 	if(asp.damages != 0.f) std::cout << "Damages: " << asp.damages << '\n';
@@ -839,7 +849,9 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	
 	std::string teleportToPosition = boost::to_lower_copy(util::loadString(asp.TELEPORT_TO_POSITION));
 	if(!teleportToPosition.empty()) {
-		std::cout << "Teleporting to: "; print_ident(save, teleportToPosition); std::cout << '\n';
+		std::cout << "Teleporting to: ";
+		print_ident(save, teleportToPosition);
+		std::cout << '\n';
 	}
 	
 	if(!teleportToLevel.empty() || !teleportToPosition.empty()) {
@@ -884,7 +896,9 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	}
 	
 	if(asp.Last_Movement != asp.Current_Movement) {
-		std::cout << "Last movement:"; print_player_movement(asp.Last_Movement); std::cout << '\n';
+		std::cout << "Last movement:";
+		print_player_movement(asp.Last_Movement);
+		std::cout << '\n';
 	}
 	
 	std::cout << "Level: " << asp.level << '\n';
@@ -1017,11 +1031,15 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 		
 		std::cout << "\nPrecast #" << i << ":\n";
 		
-		std::cout << "  Spell: "; print_spell(p.typ); std::cout << '\n';
+		std::cout << "  Spell: ";
+		print_spell(p.typ);
+		std::cout << '\n';
 		std::cout << "  Level: " << p.level << '\n';
 		std::cout << "  Launch time: " << p.launch_time << '\n';
 		std::cout << "  Duration: " << p.duration << '\n';
-		std::cout << "  Flags:"; print_spellcast_flags(p.flags); std::cout << '\n';
+		std::cout << "  Flags:";
+		print_spellcast_flags(p.flags);
+		std::cout << '\n';
 		
 	}
 	
@@ -1038,7 +1056,8 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 		print_item(save, asp.equiped[i], equip_slot_name(i));
 	}
 	
-	arx_assert(size >= pos); ARX_UNUSED(size);
+	arx_assert(size >= pos);
+	ARX_UNUSED(size);
 	
 	return 0;
 }
@@ -1074,9 +1093,12 @@ static int view_level(SaveBlock & save, const char * dat, size_t size) {
 			pos += sizeof(ARX_CHANGELEVEL_IO_INDEX);
 			
 			std::ostringstream oss;
-			oss << res::path::load(util::loadString(io.filename)).basename() << '_' << std::setfill('0') << std::setw(4) << io.ident;
+			oss << res::path::load(util::loadString(io.filename)).basename() << '_'
+			    << std::setfill('0') << std::setw(4) << io.ident;
 			
-			std::cout << "  - "; print_ident(save, oss.str()); std::cout << '\n';
+			std::cout << "  - ";
+			print_ident(save, oss.str());
+			std::cout << '\n';
 		}
 		
 	}
@@ -1093,7 +1115,8 @@ static int view_level(SaveBlock & save, const char * dat, size_t size) {
 			std::cout << "  - " << boost::to_lower_copy(util::loadString(p.name));
 			std::string controller = boost::to_lower_copy(util::loadString(p.controled));
 			if(!controller.empty() && controller != "none") {
-				std::cout << ": controlled by "; print_ident(save, controller);
+				std::cout << ": controlled by ";
+				print_ident(save, controller);
 			}
 			std::cout << '\n';
 			
@@ -1130,7 +1153,8 @@ static int view_level(SaveBlock & save, const char * dat, size_t size) {
 		std::cout << '\n';
 	}
 	
-	arx_assert(size >= pos); ARX_UNUSED(size), ARX_UNUSED(save);
+	arx_assert(size >= pos);
+	ARX_UNUSED(size);
 	
 	return 0;
 }
@@ -1276,12 +1300,16 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 	}
 	
 	std::string mainevent = boost::to_lower_copy(util::loadString(ais.mainevent));
-	if(!mainevent.empty()) std::cout << "Main script event: " << mainevent << '\n';
+	if(!mainevent.empty()) {
+		std::cout << "Main script event: " << mainevent << '\n';
+	}
 	
 	{
 		std::string target = boost::to_lower_copy(util::loadString(ais.id_targetinfo));
 		if(target != "self") {
-			std::cout << "Target: "; print_ident(save, target); std::cout << '\n';
+			std::cout << "Target: ";
+			print_ident(save, target);
+			std::cout << '\n';
 		}
 	}
 	if(ais.basespeed != 1.f) std::cout << "Base speed: " << ais.basespeed << '\n';
@@ -1291,7 +1319,9 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 	if(ais.spellcast_data.castingspell >= 0 || ais.spellcast_data.spell_flags) {
 	
 		if(ais.spellcast_data.castingspell >= 0) {
-			std::cout << "Casting spell: "; print_spell(ais.spellcast_data.castingspell); std::cout << '\n';
+			std::cout << "Casting spell: ";
+			print_spell(ais.spellcast_data.castingspell);
+			std::cout << '\n';
 		}
 		
 		std::cout << "Runes to draw:";
@@ -1307,7 +1337,9 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 		std::cout << '\n';
 		
 		if(ais.spellcast_data.spell_flags) {
-			std::cout << "Spell flags:"; print_spellcast_flags(ais.spellcast_data.spell_flags); std::cout << '\n';
+			std::cout << "Spell flags:";
+			print_spellcast_flags(ais.spellcast_data.spell_flags);
+			std::cout << '\n';
 		}
 	}
 	
@@ -1396,7 +1428,9 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 		std::cout << "  Scale: " << ais.linked_data[i].modinfo.scale << '\n';
 		std::cout << "  Rotation: " << ais.linked_data[i].modinfo.rot << '\n';
 		std::cout << "  Flags: " << ais.linked_data[i].modinfo.flags << '\n';
-		std::cout << "  Ident: "; print_ident(save, boost::to_lower_copy(util::loadString(ais.linked_data[i].linked_id))); std::cout << '\n';
+		std::cout << "  Ident: ";
+		print_ident(save, boost::to_lower_copy(util::loadString(ais.linked_data[i].linked_id)));
+		std::cout << '\n';
 	}
 	
 	if(ais.halo.flags) {
@@ -1550,7 +1584,9 @@ static void print_io_npc(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ais,
 	for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
 		std::string target = boost::to_lower_copy(util::loadString(as->stackedtarget[i]));
 		if(target != "none" && !target.empty()) {
-			std::cout << "  Stacked target #" << i << ": "; print_ident(save, target); std::cout << '\n';
+			std::cout << "  Stacked target #" << i << ": ";
+			print_ident(save, target);
+			std::cout << '\n';
 		}
 	}
 	
@@ -1886,7 +1922,8 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		print_io_tweak(i, sti);
 	}
 	
-	arx_assert(size >= pos); ARX_UNUSED(size);
+	arx_assert(size >= pos);
+	ARX_UNUSED(size);
 	
 	return 0;
 }
