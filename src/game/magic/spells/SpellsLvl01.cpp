@@ -303,7 +303,7 @@ void MagicMissileSpell::Update() {
 		averageMissilePos += m_missiles[i]->eCurPos;
 	}
 	
-	averageMissilePos /= Vec3f(m_missiles.size());
+	averageMissilePos /= float(m_missiles.size());
 	ARX_SOUND_RefreshPosition(snd_loop, averageMissilePos);
 	
 	arx_assert(m_lights.size() == m_missiles.size());
