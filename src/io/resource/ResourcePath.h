@@ -211,7 +211,10 @@ public:
 	path & append(const std::string & str);
 	
 	//! \return append(str)
-	path & operator+=(const std::string & str) { append(str); return *this; }
+	path & operator+=(const std::string & str) {
+		append(str);
+		return *this;
+	}
 	
 	//! \return path(*this).append(str)
 	path operator+(const std::string & str) const {
