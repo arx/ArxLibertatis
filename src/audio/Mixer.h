@@ -52,7 +52,7 @@ class Mixer {
 	
 public:
 	
-	Mixer(const Mixer * parent);
+	explicit Mixer(const Mixer * parent);
 	~Mixer();
 	
 	void setVolume(float volume);
