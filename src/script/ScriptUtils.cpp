@@ -61,12 +61,9 @@ std::string Context::getStringVar(const std::string & name) const {
 		float fv;
 		std::string tv;
 		switch(getSystemVar(*this, name, tv, &fv, &lv)) {
-			case TYPE_TEXT:
-				return tv;
-			case TYPE_LONG:
-				return boost::lexical_cast<std::string>(lv);
-			default:
-				return boost::lexical_cast<std::string>(fv);;
+			case TYPE_TEXT: return tv;
+			case TYPE_LONG: return boost::lexical_cast<std::string>(lv);
+			default: return boost::lexical_cast<std::string>(fv);
 		}
 	} else if(name[0] == '#') {
 		return boost::lexical_cast<std::string>(GETVarValueLong(svar, name));
