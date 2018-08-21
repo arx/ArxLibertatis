@@ -194,23 +194,22 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		UseRenderState state(render2D().blend(BlendZero, BlendSrcColor));
 		EERIEDrawBitmap(Rectf(g_size), 0.00009f, NULL, color);
 	}
-
+	
 	if(Blood_Pos > 0.f) {
 		if(Blood_Pos > 1.f) {
 			if(Last_Blood_Pos <= 1.f) {
 				Blood_Pos = 1.0001f;
 				duration = 0;
 			}
-
-			if(duration > Blood_Duration)
+			if(duration > Blood_Duration) {
 				Blood_Pos += g_gameTime.lastFrameDuration() / GameDurationMs(300);
-
+			}
 			duration += g_gameTime.lastFrameDuration();
-		}
-		else
+		} else {
 			Blood_Pos += g_gameTime.lastFrameDuration() / GameDurationMs(40);
+		}
 	}
-
+	
 	Last_Blood_Pos = Blood_Pos;
 }
 
@@ -832,21 +831,21 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		
 		if(io->_npcdata->lifePool.current <= 0.f) {
 			io->_npcdata->lifePool.current = 0.f;
-
 			if(source != EntityHandle_Player || ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 				if((dmg >= io->_npcdata->lifePool.max * ( 1.0f / 2 )) && pos)
 					ARX_NPC_TryToCutSomething(io, pos);
 			}
-
 			if(ValidIONum(source)) {
 				long xp = io->_npcdata->xpvalue;
 				ARX_DAMAGES_ForceDeath(io, entities[source]);
-
-				if(source == EntityHandle_Player || entities[source]->summoner == EntityHandle_Player)
+				if(source == EntityHandle_Player || entities[source]->summoner == EntityHandle_Player) {
 					ARX_PLAYER_Modify_XP(xp);
+				}
+			} else {
+				ARX_DAMAGES_ForceDeath(io, NULL);
 			}
-			else ARX_DAMAGES_ForceDeath(io, NULL);
 		}
+		
 	}
 	
 	return damagesdone;
