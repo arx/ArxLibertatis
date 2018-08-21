@@ -619,9 +619,7 @@ aalError Ambiance::load() {
 	
 	arx_assert(!ambiance_path.empty());
 	
-	PakFileHandle *	file2 = g_resources->open(ambiance_path / m_name);
-	
-	boost::scoped_ptr<PakFileHandle> file(file2);
+	boost::scoped_ptr<PakFileHandle> file(g_resources->open(ambiance_path / m_name));
 	if(!file) {
 		return AAL_ERROR_FILEIO;
 	}
