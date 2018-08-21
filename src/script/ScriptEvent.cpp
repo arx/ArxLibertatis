@@ -246,7 +246,7 @@ static const char * toString(ScriptResult ret) {
 		case DESTRUCTIVE: return "destructive";
 		case REFUSE: return "refuse";
 		case BIGERROR: return "error";
-		default: arx_assert(false); return NULL;
+		default: arx_unreachable();
 	}
 }
 #endif
