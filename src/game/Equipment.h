@@ -78,7 +78,7 @@ enum EquipmentSlot {
 void ARX_EQUIPMENT_Init();
 void ARX_EQUIPMENT_Remove_All_Special(Entity * io);
 void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
-                            const std::string & param2, float val,
+                            const std::string & modifierName, float val,
                             EquipmentModifierFlags flags);
 
 //! Sets/unsets an object type flag
@@ -86,7 +86,7 @@ bool ARX_EQUIPMENT_SetObjectType(Entity & io, const std::string & temp, bool set
 
 ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string & temp);
 void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip);
-void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * toequip, long flags = 0);
+void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags = 0);
 void ARX_EQUIPMENT_ReleaseAll(Entity * io);
 
 void ARX_EQUIPMENT_AttachPlayerWeaponToHand();
@@ -121,7 +121,7 @@ float getEquipmentBaseModifier(EquipmentModifierType modifier, bool relative = f
  */
 float getEquipmentModifier(EquipmentModifierType modifier, float baseval);
 
-bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float percentaim, long flags, EntityHandle targ = EntityHandle());
+bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ratioaim, long flags, EntityHandle targ = EntityHandle());
 void ARX_EQUIPMENT_RecreatePlayerMesh();
 float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * pos = NULL);
  
