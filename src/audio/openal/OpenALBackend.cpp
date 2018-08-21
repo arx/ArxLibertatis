@@ -403,13 +403,13 @@ std::vector<std::string> OpenALBackend::getDevices() {
 	return result;
 }
 
-Source * OpenALBackend::createSource(SampleHandle s_id, const Channel & channel) {
+Source * OpenALBackend::createSource(SampleHandle sampleId, const Channel & channel) {
 	
-	if(!g_samples.isValid(s_id)) {
+	if(!g_samples.isValid(sampleId)) {
 		return NULL;
 	}
 	
-	Sample * sample = g_samples[s_id];
+	Sample * sample = g_samples[sampleId];
 	
 	OpenALSource * orig = NULL;
 	
@@ -424,7 +424,7 @@ Source * OpenALBackend::createSource(SampleHandle s_id, const Channel & channel)
 	
 	SourceHandle index = sources.add(source);
 	
-	SourcedSample id = SourcedSample(index, s_id);
+	SourcedSample id = SourcedSample(index, sampleId);
 	if(source->init(id, orig, channel)) {
 		sources.remove(index);
 		return NULL;
