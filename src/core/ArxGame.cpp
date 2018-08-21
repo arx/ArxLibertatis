@@ -1467,7 +1467,7 @@ void ArxGame::speechControlledCinematic() {
 						
 						float distance = (acs.startpos * itime + acs.endpos * rtime) * 0.01f;
 						Vec3f vect = sourcepos - targetpos;
-						Vec3f vect2 = VRotateY(vect, 90.f);;
+						Vec3f vect2 = VRotateY(vect, 90.f);
 						vect2 = glm::normalize(vect2);
 						Vec3f vect3 = glm::normalize(vect);
 						vect = vect * distance + vect3 * 80.f;
