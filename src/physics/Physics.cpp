@@ -171,9 +171,9 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 			pbox->vert[SEC  + 3].pos.z = std::min(pbox->vert[SEC + 3].pos.z, curr.z);
 			
 		}
-	}
-	else
-	{
+		
+	} else {
+		
 		float cut = (cubmax.y - cubmin.y) * (1.0f / 3);
 		float ysec2 = cubmin.y + cut * 2.f;
 		float ysec1 = cubmin.y + cut;
@@ -651,43 +651,42 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 		}
 		
 		Entity * io = treatio[i].io;
-		if(!io
-		   || io == source
-		   || !io->obj
-		   || io == entities.player()
+		if(!io || io == source || !io->obj || io == entities.player()
 		   || treatio[i].io->index() == source->no_collide
 		   || (io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM))
 		   || io->usepath
 		   || ((io->ioflags & IO_NPC) && source && (source->ioflags & IO_NO_NPC_COLLIDE))
 		   || !closerThan(io->pos, pbox.vert[0].pos, 600.f)
-		   || !In3DBBoxTolerance(pbox.vert[0].pos, io->bbox3D, pbox.radius)
-		) {
+		   || !In3DBBoxTolerance(pbox.vert[0].pos, io->bbox3D, pbox.radius)) {
 			continue;
 		}
-
+		
 		if((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current > 0.f) {
-			for(size_t kk = 0; kk < pbox.vert.size(); kk++)
-				if(PointInCylinder(io->physics.cyl, pbox.vert[kk].pos))
+			for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
+				if(PointInCylinder(io->physics.cyl, pbox.vert[kk].pos)) {
 					return true;
+				}
+			}
 		} else if(io->ioflags & IO_FIX) {
+			
 			size_t step;
 			const size_t nbv = io->obj->vertexlist.size();
 			Sphere sp;
 			sp.radius = 28.f;
-
+			
 			if(nbv < 500) {
 				step = 1;
 				sp.radius = 36.f;
-			}
-			else if(nbv < 900)
+			} else if(nbv < 900) {
 				step = 2;
-			else if(nbv < 1500)
+			} else if(nbv < 1500) {
 				step = 4;
-			else
+			} else {
 				step = 6;
-
+			}
+			
 			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
-
+			
 			if(io->gameFlags & GFLAG_PLATFORM) {
 				for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
 					Sphere sphere;
