@@ -68,24 +68,42 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 		if(D0D1 > 0.0f) { \
 			/* here we know that D0D2 <= 0.0 */ \
 			/* that is D0, D1 are on the same side, D2 on the other or on the plane */ \
-			A = VV2; B = (VV0 - VV2) * D2; C = (VV1 - VV2) * D2; X0 = D2 - D0; X1 = D2 - D1; \
+			A = VV2; \
+			B = (VV0 - VV2) * D2; \
+			C = (VV1 - VV2) * D2; \
+			X0 = D2 - D0; \
+			X1 = D2 - D1; \
 		} else if(D0D2 > 0.0f) { \
 			/* here we know that d0d1 <= 0.0 */ \
-			A = VV1; B = (VV0 - VV1) * D1; C = (VV2 - VV1) * D1; X0 = D1 - D0; X1 = D1 - D2; \
-		} else if(D1 * D2 > 0.0f || D0 != 0.0f) { \
-			/* here we know that d0d1 <=0 .0 or that D0 != 0.0 */ \
-			A = VV0; B = (VV1 - VV0) * D0; C = (VV2 - VV0) * D0; X0 = D0 - D1; X1 = D0 - D2; \
+			A = VV1; \
+			B = (VV0 - VV1) * D1; \
+			C = (VV2 - VV1) * D1; \
+			X0 = D1 - D0; \
+			X1 = D1 - D2; \
+		} else if(D1 * D2 > 0.f || D0 != 0.f) { \
+			/* here we know that d0d1 <= 0 or that D0 != 0 */ \
+			A = VV0; \
+			B = (VV1 - VV0) * D0; \
+			C = (VV2 - VV0) * D0; \
+			X0 = D0 - D1; \
+			X1 = D0 - D2; \
 		} else if(D1 != 0.0f) { \
-			A = VV1; B = (VV0 - VV1) * D1; C = (VV2 - VV1) * D1; X0 = D1 - D0; X1 = D1 - D2; \
+			A = VV1; \
+			B = (VV0 - VV1) * D1; \
+			C = (VV2 - VV1) * D1; \
+			X0 = D1 - D0; \
+			X1 = D1 - D2; \
 		} else if(D2 != 0.0f) { \
-			A = VV2; B = (VV0 - VV2) * D2; C = (VV1 - VV2) * D2; X0 = D2 - D0; X1 = D2 - D1; \
+			A = VV2; \
+			B = (VV0 - VV2) * D2; \
+			C = (VV1 - VV2) * D2; \
+			X0 = D2 - D0; \
+			X1 = D2 - D1; \
 		} else { \
 			/* triangles are coplanar */ \
 			return coplanar_tri_tri(N1, V0, V1, V2, U0, U1, U2); \
 		} \
 	}
-
-
 
 /* this edge to edge test is based on Franlin Antonio's gem:
    "Faster Line Segment Intersection", in Graphics Gems III,
@@ -130,39 +148,31 @@ static int coplanar_tri_tri(const float N[3], const float V0[3], const float V1[
 	A[0] = glm::abs(N[0]);
 	A[1] = glm::abs(N[1]);
 	A[2] = glm::abs(N[2]);
-
-	if (A[0] > A[1])
-	{
-		if (A[0] > A[2])
-		{
-			i0 = 1;    /* A[0] is greatest */
+	
+	if(A[0] > A[1]) {
+		if(A[0] > A[2]) {
+			i0 = 1; /* A[0] is greatest */
 			i1 = 2;
-		}
-		else
-		{
-			i0 = 0;    /* A[2] is greatest */
+		} else {
+			i0 = 0; /* A[2] is greatest */
 			i1 = 1;
 		}
-	}
-	else   /* A[0]<=A[1] */
-	{
-		if (A[2] > A[1])
-		{
-			i0 = 0;    /* A[2] is greatest */
+	} else {
+		/* A[0]<=A[1] */
+		if(A[2] > A[1]) {
+			i0 = 0; /* A[2] is greatest */
 			i1 = 1;
-		}
-		else
-		{
-			i0 = 0;    /* A[1] is greatest */
+		} else {
+			i0 = 0; /* A[1] is greatest */
 			i1 = 2;
 		}
 	}
-
+	
 	/* test all edges of triangle 1 against the edges of triangle 2 */
 	EDGE_AGAINST_TRI_EDGES(V0, V1, U0, U1, U2);
 	EDGE_AGAINST_TRI_EDGES(V1, V2, U0, U1, U2);
 	EDGE_AGAINST_TRI_EDGES(V2, V0, U0, U1, U2);
-
+	
 	return 0;
 }
 
