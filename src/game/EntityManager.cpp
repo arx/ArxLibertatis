@@ -137,9 +137,9 @@ EntityHandle EntityManager::getById(const EntityId & id) const {
 	return m_impl->getById(id.string());
 }
 
-Entity * EntityManager::getById(const std::string & name, Entity * self) const {
+Entity * EntityManager::getById(const std::string & idString, Entity * self) const {
 	
-	EntityHandle handle = getById(name);
+	EntityHandle handle = getById(idString);
 	if(handle == EntityHandle()) {
 		return NULL;
 	}
