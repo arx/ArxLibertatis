@@ -1187,7 +1187,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			
 			assert(SAVED_MAX_STACKED_BEHAVIOR == MAX_STACKED_BEHAVIOR);
 			std::copy(io->_npcdata->stacked, io->_npcdata->stacked + SAVED_MAX_STACKED_BEHAVIOR, as->stacked);
-
+			
 			for (size_t i = 0; i < SAVED_MAX_STACKED_BEHAVIOR; i++) {
 				if(io->_npcdata->stacked[i].exist) {
 					FillTargetInfo(as->stackedtarget[i], io->_npcdata->stacked[i].target);
@@ -1195,7 +1195,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 					util::storeString(as->stackedtarget[i], "none");
 				}
 			}
-
+			
 			as->critical = io->_npcdata->critical;
 			as->reach = io->_npcdata->reach;
 			as->backstab_skill = io->_npcdata->backstab_skill;
@@ -1207,16 +1207,18 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as->aiming_start = static_cast<s32>(toMsi(io->_npcdata->aiming_start)); // TODO save/load time
 			as->npcflags = io->_npcdata->npcflags;
 			as->pathfind = IO_PATHFIND();
-
-			if (io->_npcdata->pathfind.listnb > 0)
+			
+			if(io->_npcdata->pathfind.listnb > 0) {
 				as->pathfind.truetarget = io->_npcdata->pathfind.truetarget.handleData();
-			else as->pathfind.truetarget = -1;
-
+			} else {
+				as->pathfind.truetarget = -1;
+			}
+			
 			if(io->_npcdata->ex_rotate) {
 				ais.saveflags |= SAVEFLAGS_EXTRA_ROTATE;
 				as->ex_rotate = *io->_npcdata->ex_rotate;
 			}
-
+			
 			as->blood_color = io->_npcdata->blood_color.toBGRA().t;
 			as->fDetect = io->_npcdata->fDetect;
 			as->cuts = io->_npcdata->cuts;
