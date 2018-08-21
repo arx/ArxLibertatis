@@ -159,22 +159,19 @@ void CharacterCreation::render() {
 	
 	if(skinButton.contains(Vec2f(DANAEMouse))) {
 		cursorSetInteraction();
-		
 		if(eeMouseUp1()) {
 			m_cheatSkinButtonClickCount++;
 			ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 			player.skin++;
-			
-			if(player.skin > 3)
+			if(player.skin > 3) {
 				player.skin = 0;
-			
+			}
 			ARX_PLAYER_Restore_Skin();
 		}
-		
 		color = Color::white;
+	} else {
+		color = Color::rgb(0.91f, 0.8f, 0.56f);
 	}
-	else
-		color = Color(232, 204, 143);
 	
 	ARX_UNICODE_DrawTextInRect(hFontMenu, skinButton.topLeft(), 999999, str_button_skin, color);
 	
