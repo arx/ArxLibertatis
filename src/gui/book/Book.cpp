@@ -1311,9 +1311,9 @@ bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, f
 				t++;
 				*val = t;
 				playReleaseSound();
-			}
-			else
+			} else {
 				playErrorSound();
+			}
 		}
 		
 		if(eeMouseUp2()) {
