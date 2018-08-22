@@ -732,21 +732,29 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 		
 		if(tw & TWEAK_HEAD) {
 			result = CreateIntermediaryMesh(io->obj, tobj, TWEAK_HEAD);
+		} else {
+			result = io->obj;
 		}
 		
 		if(result && (tw & TWEAK_TORSO)) {
-			EERIE_3DOBJ * result2 = CreateIntermediaryMesh(result ? result : io->obj, tobj, TWEAK_TORSO);
-			delete result;
+			EERIE_3DOBJ * result2 = CreateIntermediaryMesh(result, tobj, TWEAK_TORSO);
+			if(result != io->obj) {
+				delete result;
+			}
 			result = result2;
 		}
 		
 		if(result && (tw & TWEAK_LEGS)) {
-			EERIE_3DOBJ * result2 = CreateIntermediaryMesh(result ? result : io->obj, tobj, TWEAK_LEGS);
-			delete result;
+			EERIE_3DOBJ * result2 = CreateIntermediaryMesh(result, tobj, TWEAK_LEGS);
+			if(result != io->obj) {
+				delete result;
+			}
 			result = result2;
 		}
 		
 		delete tobj;
+		
+		arx_assert(result != io->obj);
 		
 		if(!result) {
 			return;
