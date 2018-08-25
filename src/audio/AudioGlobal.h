@@ -69,7 +69,6 @@ const ChannelFlags FLAG_ANY_3D_FX = FLAG_POSITION | FLAG_VELOCITY |
 extern Backend * backend;
 
 // Global settings
-extern res::path sample_path;
 extern res::path ambiance_path;
 extern res::path environment_path;
 extern PlatformInstant session_time;

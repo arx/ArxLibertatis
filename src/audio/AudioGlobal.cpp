@@ -56,7 +56,6 @@ namespace audio {
 Backend * backend = NULL;
 
 // Global settings
-res::path sample_path;
 res::path ambiance_path;
 res::path environment_path;
 PlatformInstant session_time = 0;
