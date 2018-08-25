@@ -102,7 +102,7 @@ from ctypes import sizeof
 from typing import List
 from collections import namedtuple
 
-TeaFrame = namedtuple("TeaFrame", ['duration', 'flags', 'translation', 'rotation', 'groups'])
+TeaFrame = namedtuple("TeaFrame", ['duration', 'flags', 'translation', 'rotation', 'groups', 'sampleName'])
 
 class TeaSerializer(object):
     def __init__(self):
@@ -193,9 +193,13 @@ class TeaSerializer(object):
             num_sample = c_int32.from_buffer_copy(data, pos)
             pos += sizeof(c_int32)
 
+            sampleName = None
             if num_sample.value != -1:
                 sample = THEA_SAMPLE.from_buffer_copy(data, pos)
                 pos += sizeof(THEA_SAMPLE)
+
+                sampleName = sample.sample_name.decode('iso-8859-1');
+
                 self.log.debug("sample_size: {0}".format(sample.sample_size))
                 pos += sample.sample_size  # skip data
 
@@ -206,7 +210,8 @@ class TeaSerializer(object):
                 flags=flags,
                 translation=translation,
                 rotation=rotation,
-                groups=groups
+                groups=groups,
+                sampleName=sampleName
             ))
 
         # Sanity check the deserialized data

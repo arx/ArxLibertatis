@@ -328,6 +328,8 @@ class AudioEffects:
         self.paths = ["sfx"]
         self.danglingPaths = []
         self.effects = []
+        self.ambiances = []
+        self.environments = []
 
     def update(self, root):
         for root, dirs, files in os.walk(root):
@@ -335,8 +337,12 @@ class AudioEffects:
             for f in files:
                 foo = os.path.join(root, f)
                 name, ext = os.path.splitext(f)
-                if ext == ".wav" or ext == ".amb" or ext == ".aef":
-                    self.effects.append(foo)
+                if ext == ".wav":
+                    self.effects.append(name)
+                elif ext == ".amb":
+                    self.ambiances.append(name)
+                elif ext == ".aef":
+                    self.environments.append(name)
                 else:
                     self.danglingPaths.append(foo)
 
