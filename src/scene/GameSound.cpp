@@ -904,26 +904,26 @@ static void ARX_SOUND_CreateStaticSamples() {
 	g_snd.MAGIC_FIZZLE                   = createEffectSample("magic_fizzle.wav");
 	
 	// Magic symbols
-	g_snd.SYMB[RUNE_AAM]                       = createEffectSample("magic_aam.wav");
-	g_snd.SYMB[RUNE_CETRIUS]                   = createEffectSample("magic_citrius.wav");
-	g_snd.SYMB[RUNE_COSUM]                     = createEffectSample("magic_cosum.wav");
-	g_snd.SYMB[RUNE_COMUNICATUM]               = createEffectSample("magic_comunicatum.wav");
-	g_snd.SYMB[RUNE_FOLGORA]                   = createEffectSample("magic_folgora.wav");
-	g_snd.SYMB[RUNE_FRIDD]                     = createEffectSample("magic_fridd.wav");
-	g_snd.SYMB[RUNE_KAOM]                      = createEffectSample("magic_kaom.wav");
-	g_snd.SYMB[RUNE_MEGA]                      = createEffectSample("magic_mega.wav");
-	g_snd.SYMB[RUNE_MORTE]                     = createEffectSample("magic_morte.wav");
-	g_snd.SYMB[RUNE_MOVIS]                     = createEffectSample("magic_movis.wav");
-	g_snd.SYMB[RUNE_NHI]                       = createEffectSample("magic_nhi.wav");
-	g_snd.SYMB[RUNE_RHAA]                      = createEffectSample("magic_rhaa.wav");
-	g_snd.SYMB[RUNE_SPACIUM]                   = createEffectSample("magic_spacium.wav");
-	g_snd.SYMB[RUNE_STREGUM]                   = createEffectSample("magic_stregum.wav");
-	g_snd.SYMB[RUNE_TAAR]                      = createEffectSample("magic_taar.wav");
-	g_snd.SYMB[RUNE_TEMPUS]                    = createEffectSample("magic_tempus.wav");
-	g_snd.SYMB[RUNE_TERA]                      = createEffectSample("magic_tera.wav");
-	g_snd.SYMB[RUNE_VISTA]                     = createEffectSample("magic_vista.wav");
-	g_snd.SYMB[RUNE_VITAE]                     = createEffectSample("magic_vitae.wav");
-	g_snd.SYMB[RUNE_YOK]                       = createEffectSample("magic_yok.wav");
+	g_snd.SYMB[RUNE_AAM]                 = createEffectSample("magic_aam.wav");
+	g_snd.SYMB[RUNE_CETRIUS]             = createEffectSample("magic_citrius.wav");
+	g_snd.SYMB[RUNE_COSUM]               = createEffectSample("magic_cosum.wav");
+	g_snd.SYMB[RUNE_COMUNICATUM]         = createEffectSample("magic_comunicatum.wav");
+	g_snd.SYMB[RUNE_FOLGORA]             = createEffectSample("magic_folgora.wav");
+	g_snd.SYMB[RUNE_FRIDD]               = createEffectSample("magic_fridd.wav");
+	g_snd.SYMB[RUNE_KAOM]                = createEffectSample("magic_kaom.wav");
+	g_snd.SYMB[RUNE_MEGA]                = createEffectSample("magic_mega.wav");
+	g_snd.SYMB[RUNE_MORTE]               = createEffectSample("magic_morte.wav");
+	g_snd.SYMB[RUNE_MOVIS]               = createEffectSample("magic_movis.wav");
+	g_snd.SYMB[RUNE_NHI]                 = createEffectSample("magic_nhi.wav");
+	g_snd.SYMB[RUNE_RHAA]                = createEffectSample("magic_rhaa.wav");
+	g_snd.SYMB[RUNE_SPACIUM]             = createEffectSample("magic_spacium.wav");
+	g_snd.SYMB[RUNE_STREGUM]             = createEffectSample("magic_stregum.wav");
+	g_snd.SYMB[RUNE_TAAR]                = createEffectSample("magic_taar.wav");
+	g_snd.SYMB[RUNE_TEMPUS]              = createEffectSample("magic_tempus.wav");
+	g_snd.SYMB[RUNE_TERA]                = createEffectSample("magic_tera.wav");
+	g_snd.SYMB[RUNE_VISTA]               = createEffectSample("magic_vista.wav");
+	g_snd.SYMB[RUNE_VITAE]               = createEffectSample("magic_vitae.wav");
+	g_snd.SYMB[RUNE_YOK]                 = createEffectSample("magic_yok.wav");
 	
 	// Spells
 	g_snd.SPELL_ACTIVATE_PORTAL          = createEffectSample("magic_spell_activate_portal.wav");
