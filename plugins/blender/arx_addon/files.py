@@ -367,6 +367,7 @@ class AudioSpeech:
 class ArxFiles(object):
     def __init__(self, rootPath):
         self.rootPath = str(rootPath)
+        self.allFiles = set()
 
         self.entities = Entities()
         self.models = Models()
@@ -384,6 +385,13 @@ class ArxFiles(object):
         self.danglingPaths = []
 
     def updateAll(self):
+        for root, dirs, files in os.walk(self.rootPath):
+            relRoot = os.path.relpath(root, self.rootPath)
+
+            for f in files:
+                relFile = os.path.join(relRoot, f)
+                self.allFiles.add(relFile)
+
         for root, dirs, files in os.walk(self.rootPath):
             relRoot = os.path.relpath(root, self.rootPath)
 

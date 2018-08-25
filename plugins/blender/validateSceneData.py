@@ -10,6 +10,7 @@ from math import isclose
 
 from arx_addon.lib import ArxIO
 from arx_addon.files import ArxFiles
+from arx_addon.dataAmb import AmbSerializer
 from arx_addon.dataDlf import DlfSerializer
 from arx_addon.dataFts import FtsSerializer
 from arx_addon.dataTea import TeaSerializer
@@ -134,6 +135,17 @@ def validateAnimations():
                 if sampleName not in allEffectSamples:
                     print("Animation {} references missing sample {}".format(animFile, sampleName))
 
+def validateAmbiances():
+    ambSerializer = AmbSerializer()
+
+    for ambName in arxFiles.audioEffects.ambiances:
+        ambFile = arxFiles.rootPath + "/sfx/ambiance/" + ambName + ".amb"
+        tracks = ambSerializer.read(ambFile)
+
+        for track in tracks:
+            if track.samplePath not in arxFiles.allFiles:
+                print("Ambiance [{}] references missing sample [{}]".format(ambFile, track.samplePath))
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -144,11 +156,16 @@ if __name__ == "__main__":
     arxFiles = ArxFiles(args.data_dir)
     arxFiles.updateAll()
 
+    with open(args.data_dir + '/dataCheck-allFiles.txt', 'w') as writer:
+        for s in arxFiles.allFiles:
+            writer.write(s + '\n')
+
     # TODO Currently too verbose readd later
     if arxFiles.danglingPaths and False:
         print("Found unexpected files:")
         for p in arxFiles.danglingPaths:
             print(p);
 
+    validateAmbiances()
     validateAnimations()
     validateScenes()

@@ -23,6 +23,30 @@ from ctypes import (
     c_float
 )
 
+import struct
+
+
+class SerializationException(Exception):
+    pass
+
+
+class UnexpectedValueException(SerializationException):
+    pass
+
+
+def readCstr(data, pos):
+    strEnd = data[pos:].index(b'\x00')
+    strEndPos = pos + strEnd
+    somStr = data[pos:strEndPos]
+    decoded = somStr.decode('iso-8859-1')
+    return (decoded, strEndPos + 1) # +1 for the null
+
+
+def read_s32(data, pos):
+    value = struct.unpack_from('<i', data, pos)[0]
+    endPos = pos + 4;
+    return (value, endPos)
+
 
 class SavedVec3(LittleEndianStructure):
     _pack_ = 1
@@ -35,6 +59,7 @@ class SavedVec3(LittleEndianStructure):
     def __str__(self):
         return "<SavedVec3 (x={self.x}, y={self.y}, z={self.z})>".format(self=self)
 
+
 class SavedAnglef(LittleEndianStructure):
     _pack_ = 1
     _fields_ = [
@@ -45,6 +70,7 @@ class SavedAnglef(LittleEndianStructure):
     
     def __str__(self):
         return "<SavedAnglef (a={self.a}, b={self.b}, g={self.g})>".format(self=self)
+
 
 class ArxQuat(LittleEndianStructure):
     _pack_ = 1
@@ -58,6 +84,7 @@ class ArxQuat(LittleEndianStructure):
     def __str__(self):
         return "<ArxQuat (w={self.w}, x={self.x}, y={self.y}, z={self.z})>".format(self=self)
 
+
 class SavedColor(LittleEndianStructure):
     _pack_ = 1
     _fields_ = [
@@ -68,6 +95,7 @@ class SavedColor(LittleEndianStructure):
     
     def __str__(self):
         return "<SavedColor (r={self.r}, g={self.g}, b={self.b})>".format(self=self)
+
 
 class PolyTypeFlag_bits(LittleEndianStructure):
      _fields_ = [
@@ -101,17 +129,10 @@ class PolyTypeFlag_bits(LittleEndianStructure):
         ("POLY_LATE_MIP",     c_uint8, 1),
     ]
 
+
 class PolyTypeFlag(Union):
     _fields_ = [
         ("b",      PolyTypeFlag_bits),
         ("asUInt", c_uint32),
     ]
     _anonymous_ = ("b")
-
-
-class SerializationException(Exception):
-    pass
-
-
-class UnexpectedValueException(SerializationException):
-    pass
