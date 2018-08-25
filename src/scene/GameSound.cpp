@@ -108,6 +108,8 @@ static const float ARX_SOUND_DEFAULT_FALLSTART(200.0F);
 static const float ARX_SOUND_DEFAULT_FALLEND(2200.0F);
 static const float ARX_SOUND_REFUSE_DISTANCE(2500.0F);
 
+static const res::path sample_path = "sfx";
+
 static const res::path ARX_SOUND_PATH_INI = "localisation";
 static const char ARX_SOUND_PATH_ENVIRONMENT[] = "sfx/environment";
 static const res::path ARX_SOUND_PRESENCE_NAME = "presence";
@@ -198,7 +200,6 @@ bool ARX_SOUND_Init() {
 		return false;
 	}
 	
-	audio::setSamplePath("sfx");
 	audio::setAmbiancePath("sfx/ambiance");
 	audio::setEnvironmentPath(ARX_SOUND_PATH_ENVIRONMENT);
 	audio::setUnitFactor(0.01f);
@@ -532,7 +533,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 		return audio::SourcedSample();
 	}
 	
-	audio::SampleHandle sample_id = audio::createSample(name);
+	audio::SampleHandle sample_id = audio::createSample(sample_path / name);
 	if (sample_id == audio::SampleHandle()) {
 		return audio::SourcedSample();
 	}
@@ -593,7 +594,7 @@ void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position) {
 
 audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 	
-	res::path file = (isSpeech) ? speechFileName(name) : name;
+	res::path file = (isSpeech) ? speechFileName(name) : (sample_path / name);
 	file.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
 	
 	audio::SampleHandle sample_id = audio::createSample(file);
@@ -674,7 +675,7 @@ audio::SampleHandle ARX_SOUND_Load(const res::path & name) {
 		return audio::SampleHandle();
 	}
 	
-	res::path sample_name = name;
+	res::path sample_name = sample_path / name;
 	
 	return audio::createSample(sample_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV));
 }
@@ -864,7 +865,7 @@ static void ARX_SOUND_CreateEnvironments() {
 }
 
 static audio::SampleHandle createEffectSample(const res::path & path) {
-	return audio::createSample(path);
+	return audio::createSample(sample_path / path);
 }
 
 static void ARX_SOUND_CreateStaticSamples() {
@@ -1081,12 +1082,12 @@ static void ARX_SOUND_CreateCollisionMaps() {
 						oss << mi;
 					}
 					oss << ARX_SOUND_FILE_EXTENSION_WAV;
-					audio::SampleHandle sample = audio::createSample(oss.str());
+					audio::SampleHandle sample = audio::createSample(sample_path / oss.str());
 					
 					if(sample == audio::SampleHandle()) {
 						std::ostringstream oss2;
 						oss2 << boost::to_lower_copy(key.getValue()) << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
-						sample = audio::createSample(oss2.str());
+						sample = audio::createSample(sample_path / oss2.str());
 					}
 					
 					if(sample != audio::SampleHandle()) {
@@ -1123,7 +1124,7 @@ static void ARX_SOUND_CreateMaterials() {
 		for(Material j = i; j <= MATERIAL_STONE; j = Material(j + 1)) {
 			oss.str(std::string());
 			oss << ARX_MATERIAL_GetNameById(i) << "_on_" << ARX_MATERIAL_GetNameById(j) << "_1.wav";
-			g_soundMaterials[j][i] = g_soundMaterials[i][j] = audio::createSample(oss.str());
+			g_soundMaterials[j][i] = g_soundMaterials[i][j] = audio::createSample(sample_path / oss.str());
 		}
 	}
 	

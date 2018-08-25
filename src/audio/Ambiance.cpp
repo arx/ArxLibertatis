@@ -540,12 +540,15 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	if(aalError error = loadString(file, sampleName)) {
 		return error;
 	}
-	Sample * sample = new Sample(res::path::load(sampleName));
+	
+	res::path path = res::path::load(sampleName);
+	
+	Sample * sample = new Sample(path);
 	
 	SampleHandle sampleHandle;
 	if(sample->load() || (sampleHandle = g_samples.add(sample)) == SampleHandle()) {
 		LogError << "Ambiance \"" << ambiance->getName()
-		         << "\": missing sample \"" << sampleName << '"';
+		         << "\": missing sample \"" << path << '"';
 		delete sample;
 		return AAL_ERROR_FILEIO;
 	}

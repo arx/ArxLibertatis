@@ -77,7 +77,6 @@ std::vector<std::string> getDevices();
  * This is not threadsafe: The caller must ensure that no other audio methods are called at the same time.
  */
 void clean();
-void setSamplePath(const res::path & path);
 void setAmbiancePath(const res::path & path);
 void setEnvironmentPath(const res::path & path);
 void setReverbEnabled(bool enable);

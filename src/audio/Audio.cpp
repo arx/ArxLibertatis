@@ -142,7 +142,6 @@ void clean() {
 	
 	delete backend, backend = NULL;
 	
-	sample_path.clear();
 	ambiance_path.clear();
 	environment_path.clear();
 	
@@ -172,13 +171,6 @@ std::vector<std::string> getDevices() {
 	AAL_ENTRY_V(std::vector<std::string>())
 	
 	return backend->getDevices();
-}
-
-void setSamplePath(const res::path & path) {
-	
-	AAL_ENTRY_VOID
-	
-	sample_path = path;
 }
 
 void setAmbiancePath(const res::path & path) {
