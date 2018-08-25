@@ -27,7 +27,9 @@ from ctypes import (
 from .dataCommon import (
     SavedVec3,
     SavedColor,
-    UnexpectedValueException
+    UnexpectedValueException,
+    readCstr,
+    read_s32
 )
 
 def structToString(struct):
@@ -123,20 +125,7 @@ class CIN_KEY_1_76(LittleEndianStructure):
 
 import logging
 from ctypes import sizeof
-import struct
 import os
-
-def read_s32(data, pos):
-    value = struct.unpack_from('<i', data, pos)[0]
-    endPos = pos + 4;
-    return (value, endPos)
-
-def readCstr(data, pos):
-    strEnd = data[pos:].index(b'\x00')
-    strEndPos = pos + strEnd
-    somStr = data[pos:strEndPos]
-    decoded = somStr.decode('iso-8859-1')
-    return (decoded, strEndPos + 1) # +1 for the null
 
 from collections import namedtuple
 
