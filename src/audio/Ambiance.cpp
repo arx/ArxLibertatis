@@ -244,11 +244,6 @@ struct Ambiance::Track : public Source::Callback {
 		}
 	}
 	
-	bool operator==(const std::string & str) const {
-		return (name == str
-		        || g_samples[s_id.getSampleId()]->getName() == str);
-	}
-	
 private:
 	
 	SourcedSample s_id; // Sample id
