@@ -250,8 +250,6 @@ private:
 	
 	Ambiance * ambiance; // Ambiance id
 	
-	std::string name; // Track name
-	
 	TrackFlags flags;
 
 	typedef std::vector<TrackKey> KeyList;
@@ -553,10 +551,11 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	s_id = SourcedSample(SourceHandle(), sampleHandle);
 	
 	if(version >= AMBIANCE_FILE_VERSION_1002) {
-		// Get track name (!= sample name)
+		std::string name;
 		if(aalError error = loadString(file, name)) {
 			return error;
 		}
+		arx_assert(name == "");
 	}
 	
 	// Read flags and key count
