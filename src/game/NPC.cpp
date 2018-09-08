@@ -909,7 +909,7 @@ void ARX_PHYSICS_Apply() {
 			PHYSICS_BOX_DATA * pbox = io->obj->pbox;
 			
 			if(pbox->active == 1) {
-				ARX_PHYSICS_BOX_ApplyModel(pbox, g_framedelay, io->rubber, io);
+				ARX_PHYSICS_BOX_ApplyModel(pbox, g_framedelay, io->rubber, *io);
 				
 				if(io->soundcount > 12) {
 					io->soundtime = 0;

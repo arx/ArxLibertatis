@@ -642,7 +642,7 @@ static bool IsFULLObjectVertexInValidPosition(const PHYSICS_BOX_DATA & pbox, EER
 	return true;
 }
 
-static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, Entity * source) {
+static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, Entity & source) {
 	
 	for(size_t i = 0; i < treatio.size(); i++) {
 		
@@ -651,11 +651,11 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 		}
 		
 		Entity * io = treatio[i].io;
-		if(!io || io == source || !io->obj || io == entities.player()
-		   || treatio[i].io->index() == source->no_collide
+		if(!io || io == &source || !io->obj || io == entities.player()
+		   || treatio[i].io->index() == source.no_collide
 		   || (io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM))
 		   || io->usepath
-		   || ((io->ioflags & IO_NPC) && source && (source->ioflags & IO_NO_NPC_COLLIDE))
+		   || ((io->ioflags & IO_NPC) && (source.ioflags & IO_NO_NPC_COLLIDE))
 		   || !closerThan(io->pos, pbox.vert[0].pos, 600.f)
 		   || !In3DBBoxTolerance(pbox.vert[0].pos, io->bbox3D, pbox.radius)) {
 			continue;
@@ -738,13 +738,13 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 
 					for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
 						if(sp.contains(pbox.vert[kk].pos)) {
-							if(source && (io->gameFlags & GFLAG_DOOR)) {
+							if((io->gameFlags & GFLAG_DOOR)) {
 								GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
 								if(elapsed > GameDurationMs(500)) {
 									io->collide_door_time = g_gameTime.now();
-									SendIOScriptEvent(source, io, SM_COLLIDE_DOOR);
+									SendIOScriptEvent(&source, io, SM_COLLIDE_DOOR);
 									io->collide_door_time = g_gameTime.now();
-									SendIOScriptEvent(io, source, SM_COLLIDE_DOOR);
+									SendIOScriptEvent(io, &source, SM_COLLIDE_DOOR);
 								}
 							}
 							return true;
@@ -810,7 +810,7 @@ bool EERIE_PHYSICS_BOX_IsValidPosition(const Vec3f & pos) {
 	return true;
 }
 
-static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framediff, Entity * source) {
+static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framediff, Entity & source) {
 
 	Vec3f oldpos[32];
 	
@@ -830,7 +830,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	for(size_t i = 0; i < pbox->vert.size(); i += 2) {
 		if(!EERIE_PHYSICS_BOX_IsValidPosition(pbox->vert[i].pos - Vec3f(0.f, 10.f, 0.f))) {
 			// This indicaties that entity-world collisions are broken
-			LogWarning << "Entity " << source->idString() << " escaped the world";
+			LogWarning << "Entity " << source.idString() << " escaped the world";
 			invalidPosition = true;
 			break;
 		}
@@ -842,7 +842,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	   || IsObjectInField(*pbox)
 	) {
 		
-		if(!(source->ioflags & IO_BODY_CHUNK)) {
+		if(!(source.ioflags & IO_BODY_CHUNK)) {
 			Material collisionMat = MATERIAL_STONE;
 			if(collisionPoly) {
 				collisionMat = polyTypeToCollisionMaterial(*collisionPoly);
@@ -852,7 +852,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 			
 			float power = (glm::abs(velocity.x) + glm::abs(velocity.y) + glm::abs(velocity.z)) * .01f;
 			
-			ARX_TEMPORARY_TrySound(source, collisionMat, 0.4f + power);
+			ARX_TEMPORARY_TrySound(&source, collisionMat, 0.4f + power);
 		}
 
 		if(!collisionPoly) {
@@ -882,7 +882,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	}
 }
 
-void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float rubber, Entity * source) {
+void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float rubber, Entity & source) {
 	
 	if(pbox->active == 2) {
 		return;
@@ -915,6 +915,6 @@ void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 	pbox->active = 2;
 	pbox->stopcount = 0;
 	
-	source->soundcount = 0;
-	source->soundtime = g_gameTime.now() + GameDurationMs(2000);
+	source.soundcount = 0;
+	source.soundtime = g_gameTime.now() + GameDurationMs(2000);
 }
