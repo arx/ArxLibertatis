@@ -175,6 +175,7 @@ else(MSVC)
 			# add_cxxflag("-Wshorten-64-to-32") # part of -Wconversion
 			add_cxxflag("-Wstrict-aliasing=1") # has false positives
 			add_cxxflag("-Wuseless-cast") # has false positives
+			add_cxxflag("-Wold-style-cast") # very noisy
 			# add_cxxflag("-Wnull-dereference") not that useful without deduction path
 			
 		else()
