@@ -759,32 +759,32 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 }
 
 
-static void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, float volume) {
+static void ARX_TEMPORARY_TrySound(Entity & source, Material collisionMaterial, float volume) {
 	
-	if(source->ioflags & IO_BODY_CHUNK)
+	if(source.ioflags & IO_BODY_CHUNK)
 		return;
 	
 	GameInstant now = g_gameTime.now();
 	
-	if(now > source->soundtime) {
+	if(now > source.soundtime) {
 		
-		source->soundcount++;
+		source.soundcount++;
 		
-		if(source->soundcount < 5) {
+		if(source.soundcount < 5) {
 			Material material;
-			if(EEIsUnderWater(source->pos))
+			if(EEIsUnderWater(source.pos))
 				material = MATERIAL_WATER;
-			else if(source->material)
-				material = source->material;
+			else if(source.material)
+				material = source.material;
 			else
 				material = MATERIAL_STONE;
 			
 			if(volume > 1.f)
 				volume = 1.f;
 			
-			ARX_SOUND_PlayCollision(material, collisionMaterial, volume, 1.f, source->pos, source);
+			ARX_SOUND_PlayCollision(material, collisionMaterial, volume, 1.f, source.pos, &source);
 			
-			source->soundtime = now + GameDurationMs(100);
+			source.soundtime = now + GameDurationMs(100);
 		}
 	}
 }
@@ -852,7 +852,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 			
 			float power = (glm::abs(velocity.x) + glm::abs(velocity.y) + glm::abs(velocity.z)) * .01f;
 			
-			ARX_TEMPORARY_TrySound(&source, collisionMat, 0.4f + power);
+			ARX_TEMPORARY_TrySound(source, collisionMat, 0.4f + power);
 		}
 
 		if(!collisionPoly) {
