@@ -204,6 +204,8 @@ More options and required tools (depending on the source file) are documented in
 
 ## Developer information
 
+New contributors should first read the CONTRIBUTING.md file.
+
 To build developer documentation (doxygen), run this from the build directory:
 
     $ make doc
