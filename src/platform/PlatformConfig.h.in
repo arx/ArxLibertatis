@@ -10,7 +10,6 @@
  */
 
 // C++11 features
-
 // alignas(n)
 #cmakedefine01 ARX_HAVE_CXX11_ALIGNAS
 // alignof(T)
@@ -40,13 +39,27 @@
 // = default
 #cmakedefine01 ARX_HAVE_CXX11_DEFAULT
 
+// C++17 features
+// [[nodiscard]]
+#cmakedefine01 ARX_HAVE_CXX17_NODISCARD
+
 // GCC extensions
 // __attribute__((aligned(n)))
 #cmakedefine01 ARX_HAVE_ATTRIBUTE_ALIGNED
+// __attribute__((alloc_align(i)))
+#cmakedefine01 ARX_HAVE_ATTRIBUTE_ALLOC_ALIGN
+// __attribute__((alloc_size(i)))
+#cmakedefine01 ARX_HAVE_ATTRIBUTE_ALLOC_SIZE
 // __attribute__((always_inline))
 #cmakedefine01 ARX_HAVE_ATTRIBUTE_ALWAYS_INLINE
+// __attribute__((assume_aligned(n)))
+#cmakedefine01 ARX_HAVE_ATTRIBUTE_ASSUME_ALIGNED
 // __attribute__((format(printf, i, j)))
 #cmakedefine01 ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
+// __attribute__((malloc))
+#cmakedefine01 ARX_HAVE_ATTRIBUTE_MALLOC
+// __attribute__((warn_unused_result))
+#cmakedefine01 ARX_HAVE_ATTRIBUTE_WARN_UNUSED_RESULT
 // __builtin_assume(e)
 #cmakedefine01 ARX_HAVE_BUILTIN_ASSUME
 // __builtin_assume_aligned(e, n)

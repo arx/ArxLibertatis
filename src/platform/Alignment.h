@@ -81,6 +81,85 @@
 	#error "No way to specify required alignment!"
 #endif
 
+/*!
+ * \def arx_is_aligned(Pointer, aligned)
+ * \brief Check if a pointer is aligned.
+ */
+#define arx_is_aligned(Pointer, Alignment) \
+	((reinterpret_cast<char *>(Pointer) - reinterpret_cast<char *>(0)) % (Alignment) == 0)
+
+/*!
+ * \def arx_return_aligned(Alignment)
+ * \brief Declare that the pointer returned by a function has a specific alignment
+ */
+#if ARX_HAVE_ATTRIBUTE_ASSUME_ALIGNED
+#define arx_return_aligned_impl(Alignment) __attribute__((assume_aligned(Alignment)))
+#endif
+#ifdef arx_return_aligned_impl
+#define arx_return_aligned(Alignment) arx_return_aligned_impl(Alignment)
+#else
+#define arx_return_aligned(Alignment)
+#endif
+
+/*!
+ * \def arx_assume_aligned(Pointer, Alignment)
+ * \brief Assume that a pointer is aligned.
+ *
+ * In debug builds, alignment is checked using \ref arx_assert().
+ *
+ * Unlike arx_assert(Expression) this macro also tells the compiler to assume the pointer is aligned
+ * in release builds.
+ *
+ * Depending on the compilter the alignment of the pointer is only assumed for the return value of the macro:
+ * \code
+ * const char * ptr = …;
+ * const char * aligned = arx_assume_aligned(ptr, 16);
+ * // Use aligned instead of ptr
+ * \endcode
+ */
+#ifdef ARX_DEBUG
+	template <typename T>
+	T * checkAlignment(T * pointer, size_t alignment, const char * file, unsigned line) {
+		if(!arx_is_aligned(pointer, alignment)) {
+			assertionFailed("unaligned pointer", file, line, NULL);
+			arx_trap();
+		}
+		return pointer;
+	}
+	#define arx_assume_aligned(Pointer, Alignment) \
+		checkAlignment((Pointer), (Alignment), ARX_FILE, __LINE__)
+#elif ARX_HAVE_BUILTIN_ASSUME_ALIGNED && ARX_HAVE_CXX11_DECLTYPE
+	#define arx_assume_aligned(Pointer, Alignment) \
+		static_cast<decltype(Pointer)>(__builtin_assume_aligned((Pointer), (Alignment)))
+#elif ARX_HAVE_BUILTIN_ASSUME_ALIGNED && ARX_HAVE_GCC_TYPEOF
+	#define arx_assume_aligned(Pointer, Alignment) \
+		static_cast<__typeof__(Pointer)>(__builtin_assume_aligned((Pointer), (Alignment)))
+#elif defined(arx_assume_impl) || defined(arx_return_aligned_impl)
+	// TODO Use lambda
+	template <size_t Alignment, typename T>
+	arx_force_inline T * assumeAlignment(T * pointer) arx_return_aligned(Alignment) {
+		arx_assume_impl(arx_is_aligned(pointer, Alignment));
+		return pointer;
+	}
+	#define arx_assume_aligned(Pointer, Alignment) \
+		assumeAlignment<(Alignment)>((Pointer))
+#else
+	#define arx_assume_aligned(Pointer, Alignment) (Pointer)
+#endif
+
+/*!
+ * \def arx_alloc_align(SizeArg, AlignArg)
+ * \brief Annotate a function that returns a pointer whose alignment is given by parameter with index
+ *        AlignArg and that doesn't alias with anything and points to uninitialized or zeroed memory of
+ *        size given by the function parameter with index SizeArg
+ */
+#if ARX_HAVE_ATTRIBUTE_ALLOC_ALIGN
+#define arx_alloc_align(SizeArg, AlignArg) arx_alloc(SizeArg) __attribute__((alloc_align(AlignArg)))
+#else
+#define arx_alloc_align(SizeArg, AlignArg) arx_alloc(SizeArg)
+#endif
+
+#define arx_alloc_align_static(SizeArg, Alignment) arx_alloc(SizeArg) arx_return_aligned(Alignment)
 
 namespace platform {
 
@@ -111,7 +190,7 @@ enum AlignmentInfo_ {
  *                  a multiple of \code sizeof( void *) \endcode.
  * \param size      The required buffer size.
  */
-void * alloc_aligned(std::size_t alignment, std::size_t size);
+arx_nodiscard void * alloc_aligned(std::size_t alignment, std::size_t size) arx_alloc_align(2, 1);
 
 /*!
  * Free a pointer that was allocated with \ref alloc_aligned.
@@ -134,7 +213,7 @@ struct AlignedAllocator {
 	                  "Alignment must be a multiple of sizeof(void *)");
 	ARX_STATIC_ASSERT((Alignment & (Alignment - 1)) == 0,
 	                  "Alignment must be a power of two");
-	static void * alloc_object(std::size_t size) {
+	arx_nodiscard static void * alloc_object(std::size_t size) arx_alloc_align_static(1, Alignment) {
 		void * ptr = arx_assume_aligned(alloc_aligned(Alignment, size), Alignment);
 		if(!ptr) {
 			throw std::bad_alloc();
@@ -144,16 +223,28 @@ struct AlignedAllocator {
 	static void free_object(void * ptr) {
 		free_aligned(ptr);
 	}
-	static void * alloc_array(std::size_t size) { return alloc_object(size); }
-	static void free_array(void * ptr) { free_object(ptr); }
+	arx_nodiscard static void * alloc_array(std::size_t size) arx_alloc_align_static(1, Alignment) {
+		return alloc_object(size);
+	}
+	static void free_array(void * ptr) {
+		free_object(ptr);
+	}
 };
 
 template <size_t Alignment>
 struct AlignedAllocator<Alignment, false> {
-	static void * alloc_object(std::size_t size) { return ::operator new(size); }
-	static void * alloc_array(std::size_t size) { return ::operator new[](size); }
-	static void free_object(void * ptr) { ::operator delete(ptr); }
-	static void free_array(void * ptr) { ::operator delete[](ptr); }
+	arx_nodiscard static void * alloc_object(std::size_t size) arx_alloc_align_static(1, GuaranteedAlignment) {
+		return ::operator new(size);
+	}
+	static void free_object(void * ptr) {
+		::operator delete(ptr);
+	}
+	arx_nodiscard static void * alloc_array(std::size_t size) arx_alloc_align_static(1, GuaranteedAlignment) {
+		return ::operator new[](size);
+	}
+	static void free_array(void * ptr) {
+		::operator delete[](ptr);
+	}
 };
 
 /*!

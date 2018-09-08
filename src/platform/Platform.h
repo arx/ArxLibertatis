@@ -340,59 +340,6 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 #endif
 
 /*!
- * \def arx_is_aligned(Pointer, aligned)
- * \brief Check if a pointer is aligned.
- */
-#define arx_is_aligned(Pointer, Alignment) \
-	((reinterpret_cast<char *>(Pointer) - reinterpret_cast<char *>(0)) % (Alignment) == 0)
-
-/*!
- * \def arx_assume_aligned(Pointer, Alignment)
- * \brief Assume that a pointer is aligned.
- *
- * In debug builds, alignment is checked using \ref arx_assert().
- *
- * Unlike arx_assert(Expression) this macro also tells the compiler to assume the pointer is aligned
- * in release builds.
- *
- * Depending on the compilter the alignment of the pointer is only assumed for the return value of the macro:
- * \code
- * const char * ptr = …;
- * const char * aligned = arx_assume_aligned(ptr, 16);
- * // Use aligned instead of ptr
- * \endcode
- */
-#ifdef ARX_DEBUG
-	template <typename T>
-	T * checkAlignment(T * pointer, size_t alignment, const char * file, unsigned line) {
-		if(!arx_is_aligned(pointer, alignment)) {
-			assertionFailed("unaligned pointer", file, line, NULL);
-			arx_trap();
-		}
-		return pointer;
-	}
-	#define arx_assume_aligned(Pointer, Alignment) \
-		checkAlignment((Pointer), (Alignment), ARX_FILE, __LINE__)
-#elif ARX_HAVE_BUILTIN_ASSUME_ALIGNED && ARX_HAVE_CXX11_DECLTYPE
-	#define arx_assume_aligned(Pointer, Alignment) \
-		static_cast<decltype(Pointer)>(__builtin_assume_aligned((Pointer), (Alignment)))
-#elif ARX_HAVE_BUILTIN_ASSUME_ALIGNED && ARX_HAVE_GCC_TYPEOF
-	#define arx_assume_aligned(Pointer, Alignment) \
-		static_cast<__typeof__(Pointer)>(__builtin_assume_aligned((Pointer), (Alignment)))
-#elif defined(arx_assume_impl)
-	// TODO Use lambda
-	template <size_t Alignment, typename T>
-	arx_force_inline T * assumeAlignment(T * pointer) {
-		arx_assume_impl(arx_is_aligned(pointer, Alignment));
-		return pointer;
-	}
-	#define arx_assume_aligned(Pointer, Alignment) \
-		assumeAlignment<(Alignment)>((Pointer))
-#else
-	#define arx_assume_aligned(Pointer, Alignment) (Pointer)
-#endif
-
-/*!
  * \def arx_unreachable()
  * \brief Assume that a code branch cannot be reached.
  *
@@ -429,5 +376,50 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 	#define arx_unreachable() do { } while(true)
 #endif
 
+/*!
+ * \def arx_nodiscard
+ * \brief Annotate a function return attribute to warn if it is not checked by callers
+ *
+ * Should go before the return type and static specifier of a function declaration.
+ */
+#if ARX_HAVE_CXX17_NODISCARD
+#define arx_nodiscard [[nodiscard]]
+#elif ARX_HAVE_ATTRIBUTE_WARN_UNUSED_RESULT
+#define arx_nodiscard __attribute__((warn_unused_result))
+#elif ARX_COMPILER_MSVC && _MSC_VER >= 1700
+#define arx_nodiscard _Check_return_
+#else
+#define arx_nodiscard
+#endif
+
+/*!
+ * \def arx_malloc
+ * \brief Annotate a function that returns a pointer that doesn't alias with anything and
+ *        points to uninitialized or zeroed memory
+ */
+#if ARX_HAVE_ATTRIBUTE_MALLOC
+#define arx_malloc __attribute__((malloc))
+#else
+#define arx_malloc
+#endif
+
+/*!
+ * \def arx_alloc_size(SizeArg)
+ * \brief Annotate a function that returns a pointer to memory of size given by the function
+ *        parameter with index SizeArg
+ */
+#if ARX_HAVE_ATTRIBUTE_ALLOC_SIZE
+#define arx_alloc_size(SizeArg) __attribute__((alloc_size(SizeArg)))
+#else
+#define arx_alloc_size(SizeArg)
+#endif
+
+/*!
+ * \def arx_alloc(SizeArg)
+ * \brief Annotate a function that returns a pointer that doesn't alias with anything and
+ *        points to uninitialized or zeroed memory of size given by the function
+ *        parameter with index SizeArg
+ */
+#define arx_alloc(SizeArg) arx_malloc arx_alloc_size(SizeArg)
 
 #endif // ARX_PLATFORM_PLATFORM_H
