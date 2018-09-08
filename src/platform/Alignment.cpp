@@ -99,8 +99,10 @@ void * alloc_aligned(std::size_t alignment, std::size_t size) {
 }
 
 void free_aligned(void * ptr) {
-	unsigned char * data = static_cast<unsigned char *>(ptr) - 1;
-	std::free(data - *data);
+	if(ptr) {
+		unsigned char * data = static_cast<unsigned char *>(ptr) - 1;
+		std::free(data - *data);
+	}
 }
 
 #endif
