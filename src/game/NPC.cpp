@@ -906,28 +906,28 @@ void ARX_PHYSICS_Apply() {
 		if(io->obj && io->obj->pbox) {
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 			
-			PHYSICS_BOX_DATA * pbox = io->obj->pbox;
+			PHYSICS_BOX_DATA & pbox = *io->obj->pbox;
 			
-			if(pbox->active == 1) {
+			if(pbox.active == 1) {
 				ARX_PHYSICS_BOX_ApplyModel(pbox, g_framedelay, io->rubber, *io);
 				
 				if(io->soundcount > 12) {
 					io->soundtime = 0;
 					io->soundcount = 0;
-					for(size_t k = 0; k < pbox->vert.size(); k++) {
-						pbox->vert[k].velocity = Vec3f(0.f);
+					for(size_t k = 0; k < pbox.vert.size(); k++) {
+						pbox.vert[k].velocity = Vec3f(0.f);
 					}
-					pbox->active = 2;
-					pbox->stopcount = 0;
+					pbox.active = 2;
+					pbox.stopcount = 0;
 				}
 				
 				io->requestRoomUpdate = true;
 				
-				Vec3f offset = pbox->vert[0].initpos;
+				Vec3f offset = pbox.vert[0].initpos;
 				offset = VRotateY(offset, MAKEANGLE(270.f - io->angle.getYaw()));
 				offset = VRotateX(offset, -io->angle.getPitch());
 				offset = VRotateZ(offset, io->angle.getRoll());
-				io->pos = pbox->vert[0].pos - offset;
+				io->pos = pbox.vert[0].pos - offset;
 				
 				arx_assert(isallfinite(io->pos));
 				
