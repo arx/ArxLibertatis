@@ -810,25 +810,25 @@ bool EERIE_PHYSICS_BOX_IsValidPosition(const Vec3f & pos) {
 	return true;
 }
 
-static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framediff, Entity & source) {
+static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA & pbox, float framediff, Entity & source) {
 
 	Vec3f oldpos[32];
 	
-	for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
-		PhysicsParticle * pv = &pbox->vert[kk];
+	for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
+		PhysicsParticle * pv = &pbox.vert[kk];
 		oldpos[kk] = pv->pos;
 		pv->velocity.x = glm::clamp(pv->velocity.x, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 		pv->velocity.y = glm::clamp(pv->velocity.y, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 		pv->velocity.z = glm::clamp(pv->velocity.z, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 	}
 
-	RK4Integrate(pbox->vert, framediff);
+	RK4Integrate(pbox.vert, framediff);
 	
 	EERIEPOLY * collisionPoly = NULL;
 	
 	bool invalidPosition = false;
-	for(size_t i = 0; i < pbox->vert.size(); i += 2) {
-		if(!EERIE_PHYSICS_BOX_IsValidPosition(pbox->vert[i].pos - Vec3f(0.f, 10.f, 0.f))) {
+	for(size_t i = 0; i < pbox.vert.size(); i += 2) {
+		if(!EERIE_PHYSICS_BOX_IsValidPosition(pbox.vert[i].pos - Vec3f(0.f, 10.f, 0.f))) {
 			// This indicaties that entity-world collisions are broken
 			LogWarning << "Entity " << source.idString() << " escaped the world";
 			invalidPosition = true;
@@ -836,10 +836,10 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 		}
 	}
 	
-	if(   !IsFULLObjectVertexInValidPosition(*pbox, collisionPoly)
-	   || ARX_INTERACTIVE_CheckFULLCollision(*pbox, source)
+	if(   !IsFULLObjectVertexInValidPosition(pbox, collisionPoly)
+	   || ARX_INTERACTIVE_CheckFULLCollision(pbox, source)
 	   || invalidPosition
-	   || IsObjectInField(*pbox)
+	   || IsObjectInField(pbox)
 	) {
 		
 		if(!(source.ioflags & IO_BODY_CHUNK)) {
@@ -848,7 +848,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 				collisionMat = polyTypeToCollisionMaterial(*collisionPoly);
 			}
 			
-			Vec3f velocity = pbox->vert[0].velocity;
+			Vec3f velocity = pbox.vert[0].velocity;
 			
 			float power = (glm::abs(velocity.x) + glm::abs(velocity.y) + glm::abs(velocity.z)) * .01f;
 			
@@ -856,14 +856,14 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 		}
 
 		if(!collisionPoly) {
-			for(size_t k = 0; k < pbox->vert.size(); k++) {
-				PhysicsParticle * pv = &pbox->vert[k];
+			for(size_t k = 0; k < pbox.vert.size(); k++) {
+				PhysicsParticle * pv = &pbox.vert[k];
 				pv->velocity *= Vec3f(-0.3f, -0.4f, -0.3f);
 				pv->pos = oldpos[k];
 			}
 		} else {
-			for(size_t k = 0; k < pbox->vert.size(); k++) {
-				PhysicsParticle * pv = &pbox->vert[k];
+			for(size_t k = 0; k < pbox.vert.size(); k++) {
+				PhysicsParticle * pv = &pbox.vert[k];
 
 				float t = glm::dot(collisionPoly->norm, pv->velocity);
 				pv->velocity -= collisionPoly->norm * (2.f * t);
@@ -873,18 +873,18 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 			}
 		}
 		
-		pbox->stopcount += 1;
+		pbox.stopcount += 1;
 	} else {
-		pbox->stopcount -= 2;
+		pbox.stopcount -= 2;
 
-		if(pbox->stopcount < 0)
-			pbox->stopcount = 0;
+		if(pbox.stopcount < 0)
+			pbox.stopcount = 0;
 	}
 }
 
-void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float rubber, Entity & source) {
+void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA & pbox, float framediff, float rubber, Entity & source) {
 	
-	if(pbox->active == 2) {
+	if(pbox.active == 2) {
 		return;
 	}
 	
@@ -892,28 +892,28 @@ void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 		return;
 	}
 	
-	float timing = pbox->storedtiming + framediff * rubber * 0.0055f;
+	float timing = pbox.storedtiming + framediff * rubber * 0.0055f;
 	float t_threshold = 0.18f;
 	
 	if(timing < t_threshold) {
-		pbox->storedtiming = timing;
+		pbox.storedtiming = timing;
 		return;
 	}
 	
 	while(timing >= t_threshold) {
-		ComputeForces(pbox->vert);
+		ComputeForces(pbox.vert);
 		ARX_EERIE_PHYSICS_BOX_Compute(pbox, std::min(0.11f, timing * 10), source);
 		timing -= t_threshold;
 	}
 	
-	pbox->storedtiming = timing;
+	pbox.storedtiming = timing;
 	
-	if(pbox->stopcount < 16) {
+	if(pbox.stopcount < 16) {
 		return;
 	}
 	
-	pbox->active = 2;
-	pbox->stopcount = 0;
+	pbox.active = 2;
+	pbox.stopcount = 0;
 	
 	source.soundcount = 0;
 	source.soundtime = g_gameTime.now() + GameDurationMs(2000);
