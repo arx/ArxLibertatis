@@ -2791,60 +2791,58 @@ void ManageIgnition(Entity & io) {
 		}
 	}
 	
-	ManageIgnition_2(&io);
+	ManageIgnition_2(io);
 }
 
 
-void ManageIgnition_2(Entity * io) {
+void ManageIgnition_2(Entity & io) {
 	
-	arx_assert(io);
-	
-	if(io->ignition > 0.f) {
+	if(io.ignition > 0.f) {
 		
-		if(io->ignition > 100.f) {
-			io->ignition = 100.f;
+		if(io.ignition > 100.f) {
+			io.ignition = 100.f;
 		}
 		
-		Vec3f position = io->pos;
-		if(io->obj && io->obj->fastaccess.fire != ActionPoint()) {
-			if(io == DRAGINTER && io->show == SHOW_FLAG_ON_PLAYER) {
+		Vec3f position = io.pos;
+		if(io.obj && io.obj->fastaccess.fire != ActionPoint()) {
+			if(&io == DRAGINTER && io.show == SHOW_FLAG_ON_PLAYER) {
 				position = player.pos;
 			} else {
-				position = actionPointPosition(io->obj, io->obj->fastaccess.fire);
+				position = actionPointPosition(io.obj, io.obj->fastaccess.fire);
 			}
 		}
 		
-		EERIE_LIGHT * light = dynLightCreate(io->ignit_light);
+		EERIE_LIGHT * light = dynLightCreate(io.ignit_light);
 		if(light) {
-			light->intensity = std::max(io->ignition * 0.1f, 1.f);
-			light->fallstart = std::max(io->ignition * 10.f, 100.f);
-			light->fallend   = std::max(io->ignition * 25.f, 240.f);
-			float v = glm::clamp(io->ignition * 0.1f, 0.5f, 1.f);
+			light->intensity = std::max(io.ignition * 0.1f, 1.f);
+			light->fallstart = std::max(io.ignition * 10.f, 100.f);
+			light->fallend   = std::max(io.ignition * 25.f, 240.f);
+			float v = glm::clamp(io.ignition * 0.1f, 0.5f, 1.f);
 			light->rgb = (Color3f(1.f, 0.8f, 0.6f) - randomColor3f() * Color3f(0.2f, 0.2f, 0.2f)) * v;
 			light->pos = position + Vec3f(0.f, -30.f, 0.f);
 			light->ex_flaresize = 40.f;
-			if(io->show == SHOW_FLAG_IN_SCENE || io->show == SHOW_FLAG_TELEPORTING) {
+			if(io.show == SHOW_FLAG_IN_SCENE || io.show == SHOW_FLAG_TELEPORTING) {
 				light->extras |= EXTRAS_FLARE;
 			} else {
 				light->extras &= ~EXTRAS_FLARE;
 			}
 		}
 
-		if(io->ignit_sound == audio::SourcedSample()) {
-			io->ignit_sound = ARX_SOUND_PlaySFX_loop(g_snd.FIREPLACE_LOOP, &position, Random::getf(0.95f, 1.05f));
+		if(io.ignit_sound == audio::SourcedSample()) {
+			io.ignit_sound = ARX_SOUND_PlaySFX_loop(g_snd.FIREPLACE_LOOP, &position, Random::getf(0.95f, 1.05f));
 		} else {
-			ARX_SOUND_RefreshPosition(io->ignit_sound, position);
+			ARX_SOUND_RefreshPosition(io.ignit_sound, position);
 		}
 		
 		if(Random::getf() > 0.9f) {
-			CheckForIgnition(Sphere(position, io->ignition), true, 0);
+			CheckForIgnition(Sphere(position, io.ignition), true, 0);
 		}
 		
 	} else {
-		lightHandleDestroy(io->ignit_light);
+		lightHandleDestroy(io.ignit_light);
 		
-		ARX_SOUND_Stop(io->ignit_sound);
-		io->ignit_sound = audio::SourcedSample();
+		ARX_SOUND_Stop(io.ignit_sound);
+		io.ignit_sound = audio::SourcedSample();
 	}
 }
 
