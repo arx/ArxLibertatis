@@ -168,7 +168,11 @@ class PlayAnimCommand : public Command {
 	
 	static void setNextAnim(Entity * io, ANIM_HANDLE * ea, AnimLayer & layer, bool loop, bool nointerpol) {
 		
-		if(IsDeadNPC(io)) {
+		if(!io) {
+			return;
+		}
+		
+		if(IsDeadNPC(*io)) {
 			return;
 		}
 		

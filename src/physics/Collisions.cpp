@@ -955,7 +955,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 		if(!(io->ioflags & IO_NPC) && (io->ioflags & IO_NO_COLLISIONS))
 			continue;
 
-		if((flags & CAS_NO_DEAD_COL) && (io->ioflags & IO_NPC) && IsDeadNPC(io))
+		if((flags & CAS_NO_DEAD_COL) && (io->ioflags & IO_NPC) && IsDeadNPC(*io))
 			continue;
 
 		if((io->ioflags & IO_FIX) && (flags & CAS_NO_FIX_COL))
