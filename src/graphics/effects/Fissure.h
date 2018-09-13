@@ -114,7 +114,6 @@ private:
 	int end;
 	int iSize;
 	bool bIntro;
-	float fOneOniSize;
 	
 	float sizeF;
 	float fSizeIntro;
