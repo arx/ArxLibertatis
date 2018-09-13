@@ -87,19 +87,19 @@ std::vector<ANIM_HANDLE> animations(MAX_ANIMATIONS);
 
 static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 
-short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
+short ANIM_GetAltIdx(const ANIM_HANDLE & ah, long old) {
 	
-	if(ah->anims.size() == 1) {
+	if(ah.anims.size() == 1) {
 		return 0;
 	}
 	
 	long total = anim_power[0];
-	for(size_t i = 1; i < ah->anims.size(); i++) {
+	for(size_t i = 1; i < ah.anims.size(); i++) {
 		total += anim_power[std::min(i, size_t(boost::size(anim_power) - 1))];
 	}
 	
 	while(true) {
-		for(size_t i = 0; i < ah->anims.size(); i++) {
+		for(size_t i = 0; i < ah.anims.size(); i++) {
 			if(long(i) == old) {
 				continue;
 			}
@@ -119,7 +119,7 @@ void ANIM_Set(AnimLayer & layer, ANIM_HANDLE * anim) {
 	}
 	
 	layer.cur_anim = anim;
-	layer.altidx_cur = ANIM_GetAltIdx(anim, layer.altidx_cur);
+	layer.altidx_cur = ANIM_GetAltIdx(*anim, layer.altidx_cur);
 	
 	if(layer.altidx_cur > short(layer.cur_anim->anims.size())) {
 		layer.altidx_cur = 0;
