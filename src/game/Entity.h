@@ -308,7 +308,6 @@ public:
 	IOCollisionFlags collision; // collision type
 	ScriptEventName mainevent;
 	Color3f infracolor; // Improve Vision Color (Heat)
-	long changeanim;
 	
 	float weight;
 	std::string locname; // Localisation key for the entity's name
