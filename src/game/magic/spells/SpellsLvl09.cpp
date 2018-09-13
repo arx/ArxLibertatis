@@ -120,7 +120,7 @@ void SummonCreatureSpell::End() {
 		
 		if(io->scriptload && (io->ioflags & IO_NOSAVE)) {
 			
-			AddRandomSmoke(io, 100);
+			AddRandomSmoke(*io, 100);
 			Vec3f posi = io->pos;
 			posi.y -= 100.f;
 			MakeCoolFx(posi);

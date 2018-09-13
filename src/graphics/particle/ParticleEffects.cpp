@@ -349,18 +349,14 @@ void MakeCoolFx(const Vec3f & pos) {
 	PolyBoomAddScorch(pos);
 }
 
-void MakePlayerAppearsFX(Entity * io) {
-	MakeCoolFx(io->pos);
-	MakeCoolFx(io->pos);
+void MakePlayerAppearsFX(const Entity & io) {
+	MakeCoolFx(io.pos);
+	MakeCoolFx(io.pos);
 	AddRandomSmoke(io, 30);
-	ARX_PARTICLES_Add_Smoke(io->pos, 1 | 2, 20); // flag 1 = randomize pos
+	ARX_PARTICLES_Add_Smoke(io.pos, 1 | 2, 20); // flag 1 = randomize pos
 }
 
-void AddRandomSmoke(Entity * io, long amount) {
-	
-	if(!io) {
-		return;
-	}
+void AddRandomSmoke(const Entity & io, long amount) {
 	
 	for(long i = 0; i < amount; i++) {
 		
@@ -369,8 +365,8 @@ void AddRandomSmoke(Entity * io, long amount) {
 			return;
 		}
 		
-		long vertex = Random::get(0, io->obj->vertexlist.size() - 1);
-		pd->ov = io->obj->vertexWorldPositions[vertex].v + arx::randomVec(-5.f, 5.f);
+		long vertex = Random::get(0, io.obj->vertexlist.size() - 1);
+		pd->ov = io.obj->vertexWorldPositions[vertex].v + arx::randomVec(-5.f, 5.f);
 		pd->siz = Random::getf(0.f, 8.f);
 		if(pd->siz < 4.f) {
 			pd->siz = 4.f;
