@@ -772,30 +772,30 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE) {
 /*!
  * \brief Diminishes life of a Poisoned NPC
  */
-static void ARX_NPC_ManagePoison(Entity * io) {
+static void ARX_NPC_ManagePoison(Entity & io) {
 	
-	float cp = io->_npcdata->poisonned * g_framedelay * 0.00025f;
-	float faster = 10.f - io->_npcdata->poisonned;
+	float cp = io._npcdata->poisonned * g_framedelay * 0.00025f;
+	float faster = 10.f - io._npcdata->poisonned;
 	if(faster < 0.f) {
 		faster = 0.f;
 	}
 	
-	if(Random::getf(0.f, 100.f) > io->_npcdata->resist_poison + faster) {
+	if(Random::getf(0.f, 100.f) > io._npcdata->resist_poison + faster) {
 		float dmg = cp * (1.f / 3);
-		if(io->_npcdata->lifePool.current > 0 && io->_npcdata->lifePool.current - dmg <= 0.f) {
-			long xp = io->_npcdata->xpvalue;
-			ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle(), false, NULL);
+		if(io._npcdata->lifePool.current > 0 && io._npcdata->lifePool.current - dmg <= 0.f) {
+			long xp = io._npcdata->xpvalue;
+			ARX_DAMAGES_DamageNPC(&io, dmg, EntityHandle(), false, NULL);
 			ARX_PLAYER_Modify_XP(xp);
 		} else {
-			io->_npcdata->lifePool.current -= dmg;
+			io._npcdata->lifePool.current -= dmg;
 		}
-		io->_npcdata->poisonned -= cp * 0.1f;
+		io._npcdata->poisonned -= cp * 0.1f;
 	} else {
-		io->_npcdata->poisonned -= cp;
+		io._npcdata->poisonned -= cp;
 	}
 	
-	if(io->_npcdata->poisonned < 0.1f) {
-		io->_npcdata->poisonned = 0.f;
+	if(io._npcdata->poisonned < 0.1f) {
+		io._npcdata->poisonned = 0.f;
 	}
 	
 }
@@ -866,8 +866,9 @@ void ARX_PHYSICS_Apply() {
 			continue;
 		}
 		
-		if((io->ioflags & IO_NPC) && io->_npcdata->poisonned > 0.f)
-			ARX_NPC_ManagePoison(io);
+		if((io->ioflags & IO_NPC) && io->_npcdata->poisonned > 0.f) {
+			ARX_NPC_ManagePoison(*io);
+		}
 
 		if(   (io->ioflags & IO_ITEM)
 		   && (io->gameFlags & GFLAG_GOREEXPLODE)
