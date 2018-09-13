@@ -988,7 +988,7 @@ void ARX_PHYSICS_Apply() {
 			}
 
 			ManageNPCMovement(io);
-			CheckNPC(io);
+			CheckNPC(*io);
 
 			if(CURRENT_DETECT == i)
 				CheckNPCEx(*io);
@@ -2563,15 +2563,15 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 }
 
 //! Checks if a NPC is dead to prevent further Layers Animation
-void CheckNPC(Entity * io)
+void CheckNPC(Entity & io)
 {
-	if(!io || (io->show != SHOW_FLAG_IN_SCENE))
+	if((io.show != SHOW_FLAG_IN_SCENE))
 		return;
 	
-	if(IsDeadNPC(*io)) {
-		io->animlayer[1].cur_anim = NULL;
-		io->animlayer[2].cur_anim = NULL;
-		io->animlayer[3].cur_anim = NULL;
+	if(IsDeadNPC(io)) {
+		io.animlayer[1].cur_anim = NULL;
+		io.animlayer[2].cur_anim = NULL;
+		io.animlayer[3].cur_anim = NULL;
 	}
 }
 
