@@ -567,7 +567,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 
 	layer.flags &= ~EA_ANIMEND;
 
-	AnimationDuration animTime = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
+	AnimationDuration animTime = layer.currentAltAnim()->anim_time;
 	
 	if(layer.ctime > animTime) {
 	
@@ -587,7 +587,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 				FinishAnim(io, layer.cur_anim);
 		} else {
 			layer.flags |= EA_ANIMEND;
-			layer.ctime = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
+			layer.ctime = layer.currentAltAnim()->anim_time;
 		}
 	
 	}
@@ -598,7 +598,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 	else
 		tim = layer.ctime;
 	
-	EERIE_ANIM * anim = layer.cur_anim->anims[layer.altidx_cur];
+	EERIE_ANIM * anim = layer.currentAltAnim();
 	
 	layer.currentFrame = long(anim->frames.size()) - 2;
 	layer.currentInterpolation = 1.f;

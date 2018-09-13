@@ -1159,7 +1159,7 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 		return Vec3f(0.f);
 	}
 	
-	EERIE_ANIM * eanim = layer.cur_anim->anims[layer.altidx_cur];
+	EERIE_ANIM * eanim = layer.currentAltAnim();
 	if(!eanim) {
 		return Vec3f(0.f);
 	}
@@ -1241,7 +1241,7 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 			continue;
 		}
 		
-		EERIE_ANIM * eanim = layer.cur_anim->anims[layer.altidx_cur];
+		EERIE_ANIM * eanim = layer.currentAltAnim();
 		if(!eanim) {
 			continue;
 		}

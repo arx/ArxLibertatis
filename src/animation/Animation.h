@@ -161,6 +161,9 @@ struct AnimLayer {
 	float currentInterpolation;
 	long currentFrame;
 	
+	EERIE_ANIM * currentAltAnim() {
+		return cur_anim->anims[altidx_cur];
+	}
 };
 
 /*!

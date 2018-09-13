@@ -568,8 +568,8 @@ void ManageCombatModeAnimations() {
 						player.m_strikeDirection = 0;
 						player.m_aimTime = PlatformDuration::ofRaw(1);
 						player.m_weaponBlocked = AnimationDuration::ofRaw(-1);
-					} else if( layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.2f
-					        && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.8f
+					} else if( layer1.ctime > layer1.currentAltAnim()->anim_time * 0.2f
+					        && layer1.ctime < layer1.currentAltAnim()->anim_time * 0.8f
 					        && player.m_weaponBlocked == AnimationDuration::ofRaw(-1)) {
 						
 						ActionPoint id = ActionPoint();
@@ -632,8 +632,8 @@ void ManageCombatModeAnimations() {
 					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT + j * 3]) {
-					if(   layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.3f
-					   && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.7f
+					if(   layer1.ctime > layer1.currentAltAnim()->anim_time * 0.3f
+					   && layer1.ctime < layer1.currentAltAnim()->anim_time * 0.7f
 					) {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						
@@ -653,7 +653,7 @@ void ManageCombatModeAnimations() {
 					}
 					
 					if(   player.m_weaponBlocked != AnimationDuration::ofRaw(-1)
-					   && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.9f
+					   && layer1.ctime < layer1.currentAltAnim()->anim_time * 0.9f
 					) {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 1);
@@ -684,8 +684,8 @@ void ManageCombatModeAnimations() {
 					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_1H_STRIKE_LEFT + j * 3]) {
-					if(   layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.3f
-					   && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.7f
+					if(   layer1.ctime > layer1.currentAltAnim()->anim_time * 0.3f
+					   && layer1.ctime < layer1.currentAltAnim()->anim_time * 0.7f
 					) {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						
@@ -705,7 +705,7 @@ void ManageCombatModeAnimations() {
 					}
 					
 					if(   player.m_weaponBlocked != AnimationDuration::ofRaw(-1)
-					   && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.9f
+					   && layer1.ctime < layer1.currentAltAnim()->anim_time * 0.9f
 					) {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 1);
@@ -736,8 +736,8 @@ void ManageCombatModeAnimations() {
 					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_2H_STRIKE_LEFT + j * 3]) {
-					if(   layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.3f
-					   && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.7f
+					if(   layer1.ctime > layer1.currentAltAnim()->anim_time * 0.3f
+					   && layer1.ctime < layer1.currentAltAnim()->anim_time * 0.7f
 					) {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						
@@ -757,7 +757,7 @@ void ManageCombatModeAnimations() {
 					}
 					
 					if(   player.m_weaponBlocked != AnimationDuration::ofRaw(-1)
-					   && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.9f
+					   && layer1.ctime < layer1.currentAltAnim()->anim_time * 0.9f
 					) {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 1);
