@@ -1092,7 +1092,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io) {
 	timer.count = 1;
 	
 	io->show = SHOW_FLAG_TELEPORTING;
-	AddRandomSmoke(io, 10);
+	AddRandomSmoke(*io, 10);
 	ARX_PARTICLES_Add_Smoke(io->pos, 3, 20);
 	io->requestRoomUpdate = true;
 	io->room = -1;

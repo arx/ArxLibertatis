@@ -120,7 +120,7 @@ void RiseDeadSpell::End() {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &entity->pos);
 		
 		if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
-			AddRandomSmoke(entity, 100);
+			AddRandomSmoke(*entity, 100);
 			Vec3f posi = entity->pos;
 			posi.y -= 100.f;
 			MakeCoolFx(posi);

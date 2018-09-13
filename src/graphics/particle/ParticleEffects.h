@@ -136,11 +136,11 @@ void RestoreAllLightsInitialStatus();
 void TreatBackgroundActions();
 
 void Add3DBoom(const Vec3f & position);
-void AddRandomSmoke(Entity * io, long amount);
+void AddRandomSmoke(const Entity & io, long amount);
 
 void ManageTorch();
 
-void MakePlayerAppearsFX(Entity * io);
+void MakePlayerAppearsFX(const Entity & io);
 void MakeCoolFx(const Vec3f & pos);
 
 PARTICLE_DEF * createParticle(bool allocateWhilePaused = false);

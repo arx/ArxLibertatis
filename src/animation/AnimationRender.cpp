@@ -306,18 +306,18 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 					float ratio = elapsed / GameDurationMs(3000);
 					io.special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
 					io.highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
-					AddRandomSmoke(&io, 1);
+					AddRandomSmoke(io, 1);
 				} else if(elapsed < GameDurationMs(6000)) { // 5 seconds to White
 					float ratio = elapsed / GameDurationMs(3000);
 					io.special_color = Color3f::red;
 					io.highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
-					AddRandomSmoke(&io, 2);
+					AddRandomSmoke(io, 2);
 				} else { // SFX finish
 					io.sfx_time = 0;
 
 					if(io.ioflags & IO_NPC) {
-						MakePlayerAppearsFX(&io);
-						AddRandomSmoke(&io, 50);
+						MakePlayerAppearsFX(io);
+						AddRandomSmoke(io, 50);
 						Color3f rgb(io._npcdata->blood_color);
 						Sphere sp = Sphere(io.pos, 200.f);
 						

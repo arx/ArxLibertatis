@@ -405,7 +405,7 @@ public:
 				ScriptWarning << "can only use 'specialfx player_appears' in IO context";
 				return Failed;
 			}
-			MakePlayerAppearsFX(io);
+			MakePlayerAppearsFX(*io);
 			
 		} else if(type == "heal") {
 			
