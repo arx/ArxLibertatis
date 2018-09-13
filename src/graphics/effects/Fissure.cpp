@@ -418,7 +418,6 @@ CSummonCreature::CSummonCreature()
 	, end(0)
 	, iSize(100)
 	, bIntro(true)
-	, fOneOniSize(1.f / float(iSize))
 	, sizeF(0.f)
 	, fSizeIntro(0.f)
 {
