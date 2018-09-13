@@ -208,7 +208,7 @@ void setAnimation(Entity * entity, ANIM_HANDLE * animation,
  */
 void stopAnimation(Entity * entity, size_t layer = 0);
 
-short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old);
+short ANIM_GetAltIdx(const ANIM_HANDLE & ah, long old);
 void ANIM_Set(AnimLayer & layer, ANIM_HANDLE * anim);
 
 Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx);
