@@ -806,31 +806,31 @@ static void ARX_NPC_ManagePoison(Entity & io) {
  * Plays Water sounds
  * Decrease/stops Ignition of this IO if necessary
  */
-static void CheckUnderWaterIO(Entity * io) {
+static void CheckUnderWaterIO(Entity & io) {
 	
-	Vec3f ppos = io->pos;
+	Vec3f ppos = io.pos;
 	EERIEPOLY * ep = EEIsUnderWater(ppos);
 
-	if(io->ioflags & IO_UNDERWATER) {
+	if(io.ioflags & IO_UNDERWATER) {
 		if(!ep) {
-			io->ioflags &= ~IO_UNDERWATER;
+			io.ioflags &= ~IO_UNDERWATER;
 			ARX_SOUND_PlaySFX(g_snd.PLOUF, &ppos);
 			ARX_PARTICLES_SpawnWaterSplash(ppos);
 		}
 	} else if(ep) {
-		io->ioflags |= IO_UNDERWATER;
+		io.ioflags |= IO_UNDERWATER;
 		ARX_SOUND_PlaySFX(g_snd.PLOUF, &ppos);
 		ARX_PARTICLES_SpawnWaterSplash(ppos);
 
-		if(io->ignition > 0.f) {
+		if(io.ignition > 0.f) {
 			ARX_SOUND_PlaySFX(g_snd.TORCH_END, &ppos);
 
-			lightHandleDestroy(io->ignit_light);
+			lightHandleDestroy(io.ignit_light);
 
-				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = audio::SourcedSample();
+				ARX_SOUND_Stop(io.ignit_sound);
+				io.ignit_sound = audio::SourcedSample();
 
-			io->ignition = 0;
+			io.ignition = 0;
 		}
 	}
 }
@@ -902,7 +902,7 @@ void ARX_PHYSICS_Apply() {
 			}
 		}
 		
-		CheckUnderWaterIO(io);
+		CheckUnderWaterIO(*io);
 		
 		if(io->obj && io->obj->pbox) {
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
