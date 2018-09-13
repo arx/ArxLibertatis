@@ -240,40 +240,36 @@ float Cedric_GetInvisibility(Entity * io) {
 }
 
 // TODO Move somewhere else
-void Cedric_ApplyLightingFirstPartRefactor(Entity * io) {
+void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 	
-	if(!io) {
-		return;
-	}
-	
-	io->special_color = Color3f::white;
+	io.special_color = Color3f::white;
 
 	float poisonpercent = 0.f;
 	float trappercent = 0.f;
 	float secretpercent = 0.f;
 
-	if((io->ioflags & IO_NPC) && io->_npcdata->poisonned > 0.f) {
-		poisonpercent = io->_npcdata->poisonned * 0.05f;
+	if((io.ioflags & IO_NPC) && io._npcdata->poisonned > 0.f) {
+		poisonpercent = io._npcdata->poisonned * 0.05f;
 		if(poisonpercent > 1.f)
 			poisonpercent = 1.f;
 	}
 
-	if((io->ioflags & IO_ITEM) && io->poisonous > 0.f && io->poisonous_count) {
-		poisonpercent = io->poisonous * (1.0f / 20);
+	if((io.ioflags & IO_ITEM) && io.poisonous > 0.f && io.poisonous_count) {
+		poisonpercent = io.poisonous * (1.0f / 20);
 		if(poisonpercent > 1.f)
 			poisonpercent = 1.f;
 	}
 
-	if((io->ioflags & IO_FIX) && io->_fixdata->trapvalue > -1) {
-		trappercent = player.TRAP_DETECT - io->_fixdata->trapvalue;
+	if((io.ioflags & IO_FIX) && io._fixdata->trapvalue > -1) {
+		trappercent = player.TRAP_DETECT - io._fixdata->trapvalue;
 		if(trappercent > 0.f) {
 			trappercent = 0.6f + trappercent * 0.01f;
 			trappercent = glm::clamp(trappercent, 0.6f, 1.f);
 		}
 	}
 
-	if((io->ioflags & IO_FIX) && io->secretvalue > -1) {
-		secretpercent = player.TRAP_SECRET - io->secretvalue;
+	if((io.ioflags & IO_FIX) && io.secretvalue > -1) {
+		secretpercent = player.TRAP_SECRET - io.secretvalue;
 		if(secretpercent > 0.f) {
 			secretpercent = 0.6f + secretpercent * 0.01f;
 			secretpercent = glm::clamp(secretpercent, 0.6f, 1.f);
@@ -281,57 +277,57 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity * io) {
 	}
 
 	if(poisonpercent > 0.f) {
-		io->special_color = Color3f::green;
+		io.special_color = Color3f::green;
 	}
 
 	if(trappercent > 0.f) {
-		io->special_color = Color3f(trappercent, 1.f - trappercent, 1.f - trappercent);
+		io.special_color = Color3f(trappercent, 1.f - trappercent, 1.f - trappercent);
 	}
 
 	if(secretpercent > 0.f) {
-		io->special_color = Color3f(1.f - secretpercent, 1.f - secretpercent, secretpercent);
+		io.special_color = Color3f(1.f - secretpercent, 1.f - secretpercent, secretpercent);
 	}
 
-	if(io->ioflags & IO_FREEZESCRIPT) {
-		io->special_color = Color3f::blue;
+	if(io.ioflags & IO_FREEZESCRIPT) {
+		io.special_color = Color3f::blue;
 	}
 
-	if(io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
-		if(io->show == SHOW_FLAG_TELEPORTING) {
-			io->sfx_time = io->sfx_time + g_gameTime.lastFrameDuration();
+	if(io.sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
+		if(io.show == SHOW_FLAG_TELEPORTING) {
+			io.sfx_time = io.sfx_time + g_gameTime.lastFrameDuration();
 
-			if (io->sfx_time >= g_gameTime.now())
-				io->sfx_time = g_gameTime.now();
+			if (io.sfx_time >= g_gameTime.now())
+				io.sfx_time = g_gameTime.now();
 		} else {
-			const GameDuration elapsed = g_gameTime.now() - io->sfx_time;
+			const GameDuration elapsed = g_gameTime.now() - io.sfx_time;
 
 			if(elapsed > 0) {
 				if(elapsed < GameDurationMs(3000)) { // 5 seconds to red
 					float ratio = elapsed / GameDurationMs(3000);
-					io->special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
-					io->highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
-					AddRandomSmoke(io, 1);
+					io.special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
+					io.highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
+					AddRandomSmoke(&io, 1);
 				} else if(elapsed < GameDurationMs(6000)) { // 5 seconds to White
 					float ratio = elapsed / GameDurationMs(3000);
-					io->special_color = Color3f::red;
-					io->highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
-					AddRandomSmoke(io, 2);
+					io.special_color = Color3f::red;
+					io.highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
+					AddRandomSmoke(&io, 2);
 				} else { // SFX finish
-					io->sfx_time = 0;
+					io.sfx_time = 0;
 
-					if(io->ioflags & IO_NPC) {
-						MakePlayerAppearsFX(io);
-						AddRandomSmoke(io, 50);
-						Color3f rgb(io->_npcdata->blood_color);
-						Sphere sp = Sphere(io->pos, 200.f);
+					if(io.ioflags & IO_NPC) {
+						MakePlayerAppearsFX(&io);
+						AddRandomSmoke(&io, 50);
+						Color3f rgb(io._npcdata->blood_color);
+						Sphere sp = Sphere(io.pos, 200.f);
 						
 						long count = 6;
 						while(count--) {
 							Sphere splatSphere = Sphere(sp.origin, Random::getf(30.f, 60.f));
 							PolyBoomAddSplat(splatSphere, rgb, 1);
 							sp.origin.y -= Random::getf(0.f, 150.f);
-							ARX_PARTICLES_Spawn_Splat(sp.origin, 200.f, io->_npcdata->blood_color);
-							sp.origin = io->pos + arx::randomVec3f() * Vec3f(200.f, 20.f, 200.f) - Vec3f(100.f, 10.f, 100.f);
+							ARX_PARTICLES_Spawn_Splat(sp.origin, 200.f, io._npcdata->blood_color);
+							sp.origin = io.pos + arx::randomVec3f() * Vec3f(200.f, 20.f, 200.f) - Vec3f(100.f, 10.f, 100.f);
 							sp.radius = Random::getf(100.f, 200.f);
 						}
 						
@@ -341,33 +337,33 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity * io) {
 							light->fallend = 600.f;
 							light->fallstart = 400.f;
 							light->rgb = Color3f(1.0f, 0.8f, 0.f);
-							light->pos = io->pos + Vec3f(0.f, -80.f, 0.f);
+							light->pos = io.pos + Vec3f(0.f, -80.f, 0.f);
 							light->duration = GameDurationMs(600);
 						}
 
-						if(io->sfx_flag & SFX_TYPE_INCINERATE) {
-							io->sfx_flag &= ~SFX_TYPE_INCINERATE;
-							io->sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
-							SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_INCINERATE);
+						if(io.sfx_flag & SFX_TYPE_INCINERATE) {
+							io.sfx_flag &= ~SFX_TYPE_INCINERATE;
+							io.sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
+							SpellBase * spell = spells.getSpellOnTarget(io.index(), SPELL_INCINERATE);
 
 							if(!spell)
-								spell = spells.getSpellOnTarget(io->index(), SPELL_MASS_INCINERATE);
+								spell = spells.getSpellOnTarget(io.index(), SPELL_MASS_INCINERATE);
 
 							if(spell) {
 								spells.endSpell(spell);
 								float damages = 20 * spell->m_level;
-								damages = ARX_SPELLS_ApplyFireProtection(io, damages);
+								damages = ARX_SPELLS_ApplyFireProtection(&io, damages);
 
 								if (ValidIONum(spell->m_caster))
-									ARX_DAMAGES_DamageNPC(io, damages, spell->m_caster, true, &entities[spell->m_caster]->pos);
+									ARX_DAMAGES_DamageNPC(&io, damages, spell->m_caster, true, &entities[spell->m_caster]->pos);
 								else
-									ARX_DAMAGES_DamageNPC(io, damages, spell->m_caster, true, &io->pos);
+									ARX_DAMAGES_DamageNPC(&io, damages, spell->m_caster, true, &io.pos);
 
-								ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &io->pos);
+								ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &io.pos);
 							}
 						} else {
-							io->sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
-							ARX_INTERACTIVE_DestroyIOdelayed(io);
+							io.sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
+							ARX_INTERACTIVE_DestroyIOdelayed(&io);
 						}
 					}
 				}

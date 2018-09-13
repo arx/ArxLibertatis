@@ -59,7 +59,7 @@ struct TexturedQuad;
 
 float Cedric_GetInvisibility(Entity * io);
 
-void Cedric_ApplyLightingFirstPartRefactor(Entity * io);
+void Cedric_ApplyLightingFirstPartRefactor(Entity & io);
 
 void PopAllTriangleListOpaque(RenderState baseState = render3D(), bool clear = true);
 void PopAllTriangleListTransparency();

@@ -1697,7 +1697,7 @@ void ArxGame::updateLevel() {
 			entity->highlightColor = Color3f::black;
 		}
 		
-		Cedric_ApplyLightingFirstPartRefactor(entity);
+		Cedric_ApplyLightingFirstPartRefactor(*entity);
 
 		float speedModifier = 0.f;
 
