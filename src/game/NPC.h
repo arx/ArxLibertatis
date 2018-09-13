@@ -256,7 +256,7 @@ void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos,
                            float power = ARX_NPC_AUDIBLE_FACTOR_DEFAULT);
 
 Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo);
-void CheckNPC(Entity * io);
+void CheckNPC(Entity & io);
 void ManageIgnition(Entity * io);
 void ManageIgnition_2(Entity * io);
 
