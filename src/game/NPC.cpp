@@ -2738,20 +2738,18 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 	
 }
 
-void ManageIgnition(Entity * io) {
+void ManageIgnition(Entity & io) {
 	
-	arx_assert(io);
-	
-	if(player.torch == io) {
-		lightHandleDestroy(io->ignit_light);
+	if(player.torch == &io) {
+		lightHandleDestroy(io.ignit_light);
 		
-		ARX_SOUND_Stop(io->ignit_sound);
-		io->ignit_sound = audio::SourcedSample();
+		ARX_SOUND_Stop(io.ignit_sound);
+		io.ignit_sound = audio::SourcedSample();
 		
 		return;
 	}
 	
-	bool addParticles = !(io == DRAGINTER && CANNOT_PUT_IT_HERE != EntityMoveCursor_Ok);
+	bool addParticles = !(&io == DRAGINTER && CANNOT_PUT_IT_HERE != EntityMoveCursor_Ok);
 	
 	// Torch Management
 	Entity * plw = NULL;
@@ -2759,41 +2757,41 @@ void ManageIgnition(Entity * io) {
 	if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
 		plw = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 	
-	if((io->ioflags & IO_FIERY) && (!(io->type_flags & OBJECT_TYPE_BOW))
-	   && (io->show == SHOW_FLAG_IN_SCENE || io == plw)) {
+	if((io.ioflags & IO_FIERY) && (!(io.type_flags & OBJECT_TYPE_BOW))
+	   && (io.show == SHOW_FLAG_IN_SCENE || &io == plw)) {
 		
-		io->ignition = 25.f;
+		io.ignition = 25.f;
 		
-		if(addParticles && io->obj && !io->obj->facelist.empty()) {
-			createObjFireParticles(io->obj, 4, 1, 1);
+		if(addParticles && io.obj && !io.obj->facelist.empty()) {
+			createObjFireParticles(io.obj, 4, 1, 1);
 		}
-	} else if(io->obj && io->obj->fastaccess.fire != ActionPoint() && io->ignition > 0.f) {
+	} else if(io.obj && io.obj->fastaccess.fire != ActionPoint() && io.ignition > 0.f) {
 		
-		io->ignition = 25.f;
-		io->durability -= g_framedelay * 0.0001f;
+		io.ignition = 25.f;
+		io.durability -= g_framedelay * 0.0001f;
 		
-		if(io->durability <= 0.f) {
-			ARX_SOUND_PlaySFX(g_snd.TORCH_END, &io->pos);
-			ARX_INTERACTIVE_DestroyIOdelayed(io);
+		if(io.durability <= 0.f) {
+			ARX_SOUND_PlaySFX(g_snd.TORCH_END, &io.pos);
+			ARX_INTERACTIVE_DestroyIOdelayed(&io);
 			return;
 		}
 		
 		if(addParticles) {
-			Vec3f pos = actionPointPosition(io->obj, io->obj->fastaccess.fire);
+			Vec3f pos = actionPointPosition(io.obj, io.obj->fastaccess.fire);
 			createFireParticles(pos, 2, 2);
 		}
 	} else {
-		io->ignition -= g_framedelay * 0.01f;
+		io.ignition -= g_framedelay * 0.01f;
 		
-		if(addParticles && io->obj && !io->obj->facelist.empty()) {
-			float p = io->ignition * g_framedelay * 0.001f * float(io->obj->facelist.size()) * 0.001f * 2.f;
+		if(addParticles && io.obj && !io.obj->facelist.empty()) {
+			float p = io.ignition * g_framedelay * 0.001f * float(io.obj->facelist.size()) * 0.001f * 2.f;
 			int positions = std::min(int(std::ceil(p)), 10);
 			
-			createObjFireParticles(io->obj, positions, 6, 180);
+			createObjFireParticles(io.obj, positions, 6, 180);
 		}
 	}
 	
-	ManageIgnition_2(io);
+	ManageIgnition_2(&io);
 }
 
 
