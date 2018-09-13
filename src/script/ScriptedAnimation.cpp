@@ -272,8 +272,8 @@ public:
 			// Don't assume that we successfully set the animation - use the current animation
 			if(layer.cur_anim) {
 				arx_assert(layer.altidx_cur >= 0 && layer.altidx_cur < short(layer.cur_anim->anims.size()));
-				if(layer.cur_anim->anims[layer.altidx_cur]->anim_time > toAnimationDuration(timer.interval)) {
-					timer.interval = toGameDuration(layer.cur_anim->anims[layer.altidx_cur]->anim_time);
+				if(layer.currentAltAnim()->anim_time > toAnimationDuration(timer.interval)) {
+					timer.interval = toGameDuration(layer.currentAltAnim()->anim_time);
 				}
 			}
 			timer.pos = pos;

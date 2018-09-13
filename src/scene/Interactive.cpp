@@ -457,7 +457,7 @@ void CheckSetAnimOutOfTreatZone(Entity * io, AnimLayer & layer) {
 	
 	if(layer.cur_anim && !(io->gameFlags & GFLAG_ISINTREATZONE)
 	   && fartherThan(io->pos, g_camera->m_pos, 2500.f)) {
-		layer.ctime = layer.cur_anim->anims[layer.altidx_cur]->anim_time - AnimationDurationMs(1);
+		layer.ctime = layer.currentAltAnim()->anim_time - AnimationDurationMs(1);
 	}
 	
 }
