@@ -476,22 +476,22 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 					continue;
 				}
 				
-				Entity * target = entities[sphereContent[jj]];
+				Entity & target = *entities[sphereContent[jj]];
 				
-				if(target->ioflags & IO_NPC) {
+				if(target.ioflags & IO_NPC) {
 					
 					long hitpoint = -1;
 					float curdist = 999999.f;
-					for(size_t ii = 0 ; ii < target->obj->facelist.size() ; ii++) {
+					for(size_t ii = 0 ; ii < target.obj->facelist.size() ; ii++) {
 						
-						if(target->obj->facelist[ii].facetype & POLY_HIDE) {
+						if(target.obj->facelist[ii].facetype & POLY_HIDE) {
 							continue;
 						}
 						
-						unsigned short vid = target->obj->facelist[ii].vid[0];
-						float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[vid].v);
+						unsigned short vid = target.obj->facelist[ii].vid[0];
+						float d = glm::distance(sphere.origin, target.obj->vertexWorldPositions[vid].v);
 						if(d < curdist) {
-							hitpoint = target->obj->facelist[ii].vid[0];
+							hitpoint = target.obj->facelist[ii].vid[0];
 							curdist = d;
 						}
 						
@@ -503,19 +503,19 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 						if(damages > 0.f) {
 							
 							arx_assert(hitpoint >= 0);
-							Color color = target->_npcdata->blood_color;
-							Vec3f pos = target->obj->vertexWorldPositions[hitpoint].v;
+							Color color = target._npcdata->blood_color;
+							Vec3f pos = target.obj->vertexWorldPositions[hitpoint].v;
 							
-							if(target->ioflags & IO_NPC) {
-								target->_npcdata->SPLAT_TOT_NB = 0;
-								ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, target);
+							if(target.ioflags & IO_NPC) {
+								target._npcdata->SPLAT_TOT_NB = 0;
+								ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, &target);
 							}
 							
-							ARX_PARTICLES_Spawn_Blood2(pos, damages, color, target);
-							ARX_DAMAGES_DamageNPC(target, damages, projectile.source, false, &pos);
+							ARX_PARTICLES_Spawn_Blood2(pos, damages, color, &target);
+							ARX_DAMAGES_DamageNPC(&target, damages, projectile.source, false, &pos);
 							
-							if(Random::getf(0.f, 100.f) > target->_npcdata->resist_poison) {
-								target->_npcdata->poisonned += projectile.poisonous;
+							if(Random::getf(0.f, 100.f) > target._npcdata->resist_poison) {
+								target._npcdata->poisonned += projectile.poisonous;
 							}
 							
 							CheckExp(projectile);
@@ -529,8 +529,8 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 					
 				} else { // not NPC
 					
-					if((target->ioflags & IO_FIX) && ValidIONum(projectile.source)) {
-						ARX_DAMAGES_DamageFIX(target, 0.1f, projectile.source, false);
+					if((target.ioflags & IO_FIX) && ValidIONum(projectile.source)) {
+						ARX_DAMAGES_DamageFIX(&target, 0.1f, projectile.source, false);
 					}
 					
 					ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
