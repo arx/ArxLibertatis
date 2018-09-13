@@ -1688,7 +1688,7 @@ void ArxGame::updateLevel() {
 		}
 		
 		if(entity->ignition > 0.f || (entity->ioflags & IO_FIERY))
-			ManageIgnition(entity);
+			ManageIgnition(*entity);
 		
 		// Highlight entity
 		if(entity == FlyingOverIO && !(entity->ioflags & IO_NPC)) {

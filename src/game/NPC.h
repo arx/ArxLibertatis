@@ -257,7 +257,7 @@ void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos,
 
 Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo);
 void CheckNPC(Entity & io);
-void ManageIgnition(Entity * io);
+void ManageIgnition(Entity & io);
 void ManageIgnition_2(Entity * io);
 
 void ARX_NPC_Kill_Spell_Launch(Entity * io);
