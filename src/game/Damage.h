@@ -142,7 +142,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source =
 void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isSpellHit);
 float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool isSpellHit, const Vec3f * pos);
 bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, EntityHandle source);
-void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer);
+void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer);
 void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source, DamageType flags, Vec3f * pos);
 
 void ARX_DAMAGES_HealInter(Entity * io, float dmg);

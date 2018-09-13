@@ -520,7 +520,7 @@ public:
 			return Failed;
 		}
 		
-		ARX_DAMAGES_ForceDeath(t, context.getEntity());
+		ARX_DAMAGES_ForceDeath(*t, context.getEntity());
 		
 		return Success;
 	}

@@ -495,53 +495,51 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	
 }
 
-void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
+void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 	
-	arx_assert(io_dead);
-	
-	if(io_dead->mainevent == SM_DEAD) {
+	if(io_dead.mainevent == SM_DEAD) {
 		return;
 	}
 
-	if(io_dead == DRAGINTER)
+	if(&io_dead == DRAGINTER)
 		Set_DragInter(NULL);
 
-	if(io_dead == FlyingOverIO)
+	if(&io_dead == FlyingOverIO)
 		FlyingOverIO = NULL;
 	
-	if(g_cameraEntity == io_dead) {
+	if(g_cameraEntity == &io_dead) {
 		g_cameraEntity = NULL;
 	}
 	
-	lightHandleDestroy(io_dead->dynlight);
+	lightHandleDestroy(io_dead.dynlight);
 	
-	ARX_NPC_Behaviour_Reset(io_dead);
+	ARX_NPC_Behaviour_Reset(&io_dead);
 	
-	ARX_SPEECH_ReleaseIOSpeech(io_dead);
+	ARX_SPEECH_ReleaseIOSpeech(&io_dead);
 	
-	ARX_SCRIPT_Timer_Clear_For_IO(io_dead);
+	ARX_SCRIPT_Timer_Clear_For_IO(&io_dead);
 	
-	if(io_dead->mainevent != SM_DEAD) {
-		if(SendIOScriptEvent(io_killer, io_dead, SM_DIE) != REFUSE && ValidIOAddress(io_dead)) {
-			io_dead->infracolor = Color3f::blue;
+	if(io_dead.mainevent != SM_DEAD) {
+		if(SendIOScriptEvent(io_killer, &io_dead, SM_DIE) != REFUSE && ValidIOAddress(&io_dead)) {
+			io_dead.infracolor = Color3f::blue;
 		}
 	}
 	
-	if(!ValidIOAddress(io_dead)) {
+	if(!ValidIOAddress(&io_dead)) {
 		return;
 	}
 	
-	io_dead->mainevent = SM_DEAD;
+	io_dead.mainevent = SM_DEAD;
 	
-	if(fartherThan(io_dead->pos, g_camera->m_pos, 3200.f)) {
-		io_dead->animlayer[0].ctime = AnimationDurationMs(9999999);
-		io_dead->animBlend.lastanimtime = 0;
+	if(fartherThan(io_dead.pos, g_camera->m_pos, 3200.f)) {
+		io_dead.animlayer[0].ctime = AnimationDurationMs(9999999);
+		io_dead.animBlend.lastanimtime = 0;
 	}
 	
-	if(io_dead->ioflags & IO_NPC)
-		io_dead->_npcdata->weaponinhand = 0;
+	if(io_dead.ioflags & IO_NPC)
+		io_dead._npcdata->weaponinhand = 0;
 
-	ARX_INTERACTIVE_DestroyDynamicInfo(io_dead);
+	ARX_INTERACTIVE_DestroyDynamicInfo(&io_dead);
 	
 	ScriptParameters killer;
 	if(io_killer == entities.player()) {
@@ -554,35 +552,35 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * ioo = entities[handle];
 
-		if(ioo == io_dead)
+		if(ioo == &io_dead)
 			continue;
 
 		if(ioo && (ioo->ioflags & IO_NPC)) {
 			if(ValidIONum(ioo->targetinfo))
-				if(entities[ioo->targetinfo] == io_dead) {
-					Stack_SendIOScriptEvent(io_dead, entities[handle], "target_death", killer);
+				if(entities[ioo->targetinfo] == &io_dead) {
+					Stack_SendIOScriptEvent(&io_dead, entities[handle], "target_death", killer);
 					ioo->targetinfo = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
 				}
 
 			if(ValidIONum(ioo->_npcdata->pathfind.truetarget))
-				if(entities[ioo->_npcdata->pathfind.truetarget] == io_dead) {
-					Stack_SendIOScriptEvent(io_dead, entities[handle], "target_death", killer);
+				if(entities[ioo->_npcdata->pathfind.truetarget] == &io_dead) {
+					Stack_SendIOScriptEvent(&io_dead, entities[handle], "target_death", killer);
 					ioo->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
 				}
 		}
 	}
 
-	io_dead->animlayer[1].cur_anim = NULL;
-	io_dead->animlayer[2].cur_anim = NULL;
-	io_dead->animlayer[3].cur_anim = NULL;
+	io_dead.animlayer[1].cur_anim = NULL;
+	io_dead.animlayer[2].cur_anim = NULL;
+	io_dead.animlayer[3].cur_anim = NULL;
 
-	if(io_dead->ioflags & IO_NPC) {
-		io_dead->_npcdata->lifePool.current = 0;
+	if(io_dead.ioflags & IO_NPC) {
+		io_dead._npcdata->lifePool.current = 0;
 
-		if(io_dead->_npcdata->weapon) {
-			Entity * ioo = io_dead->_npcdata->weapon;
+		if(io_dead._npcdata->weapon) {
+			Entity * ioo = io_dead._npcdata->weapon;
 			if(ValidIOAddress(ioo)) {
 				ioo->show = SHOW_FLAG_IN_SCENE;
 				ioo->ioflags |= IO_NO_NPC_COLLIDE;
@@ -837,12 +835,12 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 			}
 			if(ValidIONum(source)) {
 				long xp = io->_npcdata->xpvalue;
-				ARX_DAMAGES_ForceDeath(io, entities[source]);
+				ARX_DAMAGES_ForceDeath(*io, entities[source]);
 				if(source == EntityHandle_Player || entities[source]->summoner == EntityHandle_Player) {
 					ARX_PLAYER_Modify_XP(xp);
 				}
 			} else {
-				ARX_DAMAGES_ForceDeath(io, NULL);
+				ARX_DAMAGES_ForceDeath(*io, NULL);
 			}
 		}
 		
