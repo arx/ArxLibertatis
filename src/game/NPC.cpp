@@ -114,7 +114,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-void CheckNPCEx(Entity * io);
+void CheckNPCEx(Entity & io);
 
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP(600.0F);
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM(800.0F);
@@ -991,7 +991,7 @@ void ARX_PHYSICS_Apply() {
 			CheckNPC(io);
 
 			if(CURRENT_DETECT == i)
-				CheckNPCEx(io);
+				CheckNPCEx(*io);
 		}
 	}
 }
@@ -2581,12 +2581,12 @@ void CheckNPC(Entity * io)
  *
  * \remarks Uses Invisibility/Confuse/Torch infos.
  */
-void CheckNPCEx(Entity * io) {
+void CheckNPCEx(Entity & io) {
 	
 	ARX_PROFILE_FUNC();
 
 	// Distance Between Player and IO
-	float ds = arx::distance2(io->pos, player.basePosition());
+	float ds = arx::distance2(io.pos, player.basePosition());
 	
 	// Start as not visible
 	long Visible = 0;
@@ -2595,31 +2595,31 @@ void CheckNPCEx(Entity * io) {
 	if(entities.player()->invisibility <= 0.f && ds < square(2000.f) && player.lifePool.current > 0.f) {
 		
 		// checks for near contact +/- 15 cm --> force visibility
-		if(io->requestRoomUpdate) {
-			UpdateIORoom(io);
+		if(io.requestRoomUpdate) {
+			UpdateIORoom(&io);
 		}
 		
 		long playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
 		
-		float fdist = SP_GetRoomDist(io->pos, player.pos, io->room, playerRoom);
+		float fdist = SP_GetRoomDist(io.pos, player.pos, io.room, playerRoom);
 		
 		// Use Portal Room Distance for Extra Visibility Clipping.
-		if(playerRoom > -1 && io->room > -1 && fdist > 2000.f) {
+		if(playerRoom > -1 && io.room > -1 && fdist > 2000.f) {
 			// nothing to do
-		} else if(ds < square(GetIORadius(io) + GetIORadius(entities.player()) + 15.f)
-		          && glm::abs(player.pos.y - io->pos.y) < 200.f) {
+		} else if(ds < square(GetIORadius(&io) + GetIORadius(entities.player()) + 15.f)
+		          && glm::abs(player.pos.y - io.pos.y) < 200.f) {
 			Visible = 1;
 		} else { // Make full visibility test
 			
 			// Retreives Head group position for "eye" pos.
-			ObjVertHandle grp = io->obj->fastaccess.head_group_origin;
-			Vec3f orgn = io->pos - Vec3f(0.f, (grp == ObjVertHandle()) ? 90.f : 120.f, 0.f);
+			ObjVertHandle grp = io.obj->fastaccess.head_group_origin;
+			Vec3f orgn = io.pos - Vec3f(0.f, (grp == ObjVertHandle()) ? 90.f : 120.f, 0.f);
 			Vec3f dest = player.pos + Vec3f(0.f, 90.f, 0.f);
 
 			// Check for Field of vision angle
 			float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 			aa = MAKEANGLE(glm::degrees(aa));
-			float ab = MAKEANGLE(io->angle.getYaw());
+			float ab = MAKEANGLE(io.angle.getYaw());
 			if(glm::abs(AngularDifference(aa, ab)) < 110.f) {
 				
 				// Check for Darkness/Stealth
@@ -2635,18 +2635,18 @@ void CheckNPCEx(Entity * io) {
 			}
 		}
 		
-		if(Visible && !io->_npcdata->detect) {
+		if(Visible && !io._npcdata->detect) {
 			// if visible but was NOT visible, sends an Detectplayer Event
-			SendIOScriptEvent(NULL, io, SM_DETECTPLAYER);
-			io->_npcdata->detect = 1;
+			SendIOScriptEvent(NULL, &io, SM_DETECTPLAYER);
+			io._npcdata->detect = 1;
 		}
 		
 	}
 	
 	// if not visible but was visible, sends an Undetectplayer Event
-	if(!Visible && io->_npcdata->detect) {
-		SendIOScriptEvent(NULL, io, SM_UNDETECTPLAYER);
-		io->_npcdata->detect = 0;
+	if(!Visible && io._npcdata->detect) {
+		SendIOScriptEvent(NULL, &io, SM_UNDETECTPLAYER);
+		io._npcdata->detect = 0;
 	}
 	
 }
