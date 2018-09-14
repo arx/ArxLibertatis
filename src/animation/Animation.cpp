@@ -532,7 +532,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 /*!
  * \brief Fill "pos" with "eanim" total translation
  */
-Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx) {
+Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, size_t alt_idx) {
 	
 	if(!eanim || !eanim->anims[alt_idx] || eanim->anims[alt_idx]->frames.empty()) {
 		return Vec3f(0.f);
