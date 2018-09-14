@@ -154,7 +154,7 @@ struct AnimLayer {
 	{}
 	
 	ANIM_HANDLE * cur_anim;
-	short altidx_cur; // idx to alternate anims...
+	u16 altidx_cur; // idx to alternate anims...
 	AnimationDuration ctime;
 	AnimUseType flags;
 	long lastframe;
@@ -208,7 +208,7 @@ void setAnimation(Entity * entity, ANIM_HANDLE * animation,
  */
 void stopAnimation(Entity * entity, size_t layer = 0);
 
-short ANIM_GetAltIdx(const ANIM_HANDLE & ah, long old);
+u16 ANIM_GetAltIdx(const ANIM_HANDLE & ah, u16 old);
 void ANIM_Set(AnimLayer & layer, ANIM_HANDLE * anim);
 
 Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, size_t alt_idx);

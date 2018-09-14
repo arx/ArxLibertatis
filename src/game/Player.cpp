@@ -2052,10 +2052,8 @@ void PlayerMovementIterate(float DeltaTime) {
 				} else if(levitate && !player.climbing) {
 					scale = 0.875f / 1000;
 				} else {
-					arx_assert(layer0.altidx_cur >= 0);
-					size_t idx = size_t(layer0.altidx_cur);
-					Vec3f mv = GetAnimTotalTranslate(layer0.cur_anim, idx);
-					AnimationDuration time = layer0.cur_anim->anims[idx]->anim_time;
+					Vec3f mv = GetAnimTotalTranslate(layer0.cur_anim, layer0.altidx_cur);
+					AnimationDuration time = layer0.cur_anim->anims[layer0.altidx_cur]->anim_time;
 					scale = glm::length(mv) / toMsf(time) * 0.0125f;
 				}
 			}

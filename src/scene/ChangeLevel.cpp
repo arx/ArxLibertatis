@@ -1915,7 +1915,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				layer.cur_anim = NULL;
 			} else {
 				layer.cur_anim = io->anims[nn];
-				if(layer.cur_anim && layer.altidx_cur >= short(layer.cur_anim->anims.size())) {
+				if(layer.cur_anim && layer.altidx_cur >= layer.cur_anim->anims.size()) {
 					LogWarning << "Out of bounds animation alternative index " << layer.altidx_cur << " for " << layer.cur_anim->path << ", resetting to 0";
 					layer.altidx_cur = 0;
 				}
