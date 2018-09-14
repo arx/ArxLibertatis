@@ -1226,8 +1226,8 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 /*!
  * Animate skeleton
  */
-static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
-{
+static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer) {
+	
 	std::vector<unsigned char> grps(obj->bones.size());
 
 	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
@@ -1255,14 +1255,14 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 		layer.currentFrame = glm::clamp(layer.currentFrame, 0l, long(eanim->frames.size()) - 1l);
 		
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
-		int l = int(std::min(obj->bones.size(), eanim->nb_groups())) - 1;
-
-		for(int j = l; j >= 0; j--) {
+		size_t l = std::min(obj->bones.size(), eanim->nb_groups());
+		
+		for(size_t j = l - 1; j < l; --j) {
 			if(grps[j])
 				continue;
 
-			const EERIE_GROUP & sGroup = eanim->groups[j + (layer.currentFrame * long(eanim->nb_groups()))];
-			const EERIE_GROUP & eGroup = eanim->groups[j + (layer.currentFrame * long(eanim->nb_groups())) + long(eanim->nb_groups())];
+			const EERIE_GROUP & sGroup = eanim->groups[j + (size_t(layer.currentFrame) * eanim->nb_groups())];
+			const EERIE_GROUP & eGroup = eanim->groups[j + (size_t(layer.currentFrame) * eanim->nb_groups()) + eanim->nb_groups()];
 
 			if(!eanim->voidgroups[j])
 				grps[j] = 1;
