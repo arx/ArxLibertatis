@@ -26,6 +26,7 @@ from ctypes import (
 from .dataCommon import (
     SavedVec3,
     ArxQuat,
+    SerializationException,
     UnexpectedValueException
 )
 
@@ -125,6 +126,15 @@ class TeaSerializer(object):
                                                                                                   header.nb_frames,
                                                                                                   header.nb_groups,
                                                                                                   header.nb_key_frames))
+
+        if header.nb_frames < 0:
+            raise UnexpectedValueException("header.nb_frames = " + str(header.nb_frames))
+
+        if header.nb_groups < 0:
+            raise UnexpectedValueException("header.nb_groups = " + str(header.nb_groups))
+
+        if header.nb_key_frames < 0:
+            raise UnexpectedValueException("header.nb_key_frames = " + str(header.nb_key_frames))
 
         results = []
         for i in range(header.nb_key_frames):
