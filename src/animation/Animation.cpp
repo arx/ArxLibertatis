@@ -87,7 +87,7 @@ std::vector<ANIM_HANDLE> animations(MAX_ANIMATIONS);
 
 static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 
-short ANIM_GetAltIdx(const ANIM_HANDLE & ah, long old) {
+u16 ANIM_GetAltIdx(const ANIM_HANDLE & ah, u16 old) {
 	
 	if(ah.anims.size() == 1) {
 		return 0;
@@ -100,12 +100,12 @@ short ANIM_GetAltIdx(const ANIM_HANDLE & ah, long old) {
 	
 	while(true) {
 		for(size_t i = 0; i < ah.anims.size(); i++) {
-			if(long(i) == old) {
+			if(i == old) {
 				continue;
 			}
 			long r = Random::get(0l, total);
 			if(r < anim_power[std::min(i, size_t(boost::size(anim_power) - 1))]) {
-				return short(i);
+				return u16(i);
 			}
 		}
 	}
@@ -121,7 +121,8 @@ void ANIM_Set(AnimLayer & layer, ANIM_HANDLE * anim) {
 	layer.cur_anim = anim;
 	layer.altidx_cur = ANIM_GetAltIdx(*anim, layer.altidx_cur);
 	
-	if(layer.altidx_cur > short(layer.cur_anim->anims.size())) {
+	// TODO is this > correct ?
+	if(layer.altidx_cur > layer.cur_anim->anims.size()) {
 		layer.altidx_cur = 0;
 	}
 	
@@ -561,7 +562,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 	if(io && (io->ioflags & IO_FREEZESCRIPT))
 		time = 0;
 	
-	if(layer.altidx_cur >= short(layer.cur_anim->anims.size())) {
+	if(layer.altidx_cur >= layer.cur_anim->anims.size()) {
 		layer.altidx_cur = 0;
 	}
 	
