@@ -258,10 +258,11 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	         << "  Groups " << th->nb_groups << "  KeyFrames " << th->nb_key_frames);
 	
 	size_t keyFrames = size_t(th->nb_key_frames);
+	size_t groupCount = size_t(th->nb_groups);
 	
 	eerie->frames.resize(keyFrames);
-	eerie->groups.resize(keyFrames * th->nb_groups);
-	eerie->voidgroups.resize(th->nb_groups);
+	eerie->groups.resize(keyFrames * groupCount);
+	eerie->voidgroups.resize(groupCount);
 	std::fill(eerie->voidgroups.begin(), eerie->voidgroups.end(), false);
 
 	eerie->anim_time = 0;
@@ -338,12 +339,12 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		}
 
 		// Now go for Group Rotations/Translations/scaling for each GROUP
-		for(long j = 0; j < th->nb_groups; j++) {
+		for(size_t j = 0; j < groupCount; j++) {
 
 			const THEO_GROUPANIM * tga = reinterpret_cast<const THEO_GROUPANIM *>(adr + pos);
 			pos += sizeof(THEO_GROUPANIM);
 
-			EERIE_GROUP * eg = &eerie->groups[j + i * th->nb_groups];
+			EERIE_GROUP * eg = &eerie->groups[j + i * groupCount];
 			eg->key = tga->key_group;
 			eg->quat = tga->Quaternion;
 			eg->translate = tga->translate.toVec3();
