@@ -257,15 +257,17 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	LogDebug("Version - " << th->version << "  Frames " << th->nb_frames
 	         << "  Groups " << th->nb_groups << "  KeyFrames " << th->nb_key_frames);
 	
-	eerie->frames.resize(th->nb_key_frames);
-	eerie->groups.resize(th->nb_key_frames * th->nb_groups);
+	size_t keyFrames = size_t(th->nb_key_frames);
+	
+	eerie->frames.resize(keyFrames);
+	eerie->groups.resize(keyFrames * th->nb_groups);
 	eerie->voidgroups.resize(th->nb_groups);
 	std::fill(eerie->voidgroups.begin(), eerie->voidgroups.end(), false);
 
 	eerie->anim_time = 0;
 
 	// Go For Keyframes read
-	for(long i = 0; i < th->nb_key_frames; i++) {
+	for(size_t i = 0; i < keyFrames; i++) {
 		LogDebug("Loading keyframe " << i);
 
 		THEA_KEYFRAME_2015 kf2015;
@@ -369,7 +371,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		pos += 4; // num_sfx
 	}
 
-	for(long i = 0; i < th->nb_key_frames; i++) {
+	for(size_t i = 0; i < keyFrames; i++) {
 
 		if(!eerie->frames[i].f_translate) {
 
@@ -379,11 +381,11 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 			}
 
 			long j = i;
-			while((j < th->nb_key_frames) && (!eerie->frames[j].f_translate)) {
+			while((j < keyFrames) && (!eerie->frames[j].f_translate)) {
 				j++;
 			}
 
-			if((j < th->nb_key_frames) && (k >= 0)) {
+			if((j < keyFrames) && (k >= 0)) {
 				float r1 = GetTimeBetweenKeyFrames(eerie, k, i);
 				float r2 = GetTimeBetweenKeyFrames(eerie, i, j);
 				float tot = 1.f / (r1 + r2);
@@ -401,11 +403,11 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 			}
 
 			long j = i;
-			while ((j < th->nb_key_frames) && (!eerie->frames[j].f_rotate)) {
+			while ((j < keyFrames) && (!eerie->frames[j].f_rotate)) {
 				j++;
 			}
 
-			if ((j < th->nb_key_frames) && (k >= 0)) {
+			if ((j < keyFrames) && (k >= 0)) {
 				float r1 = GetTimeBetweenKeyFrames(eerie, k, i);
 				float r2 = GetTimeBetweenKeyFrames(eerie, i, j);
 				float tot = 1.f / (r1 + r2);
@@ -420,7 +422,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		}
 	}
 
-	for(long i = 0; i < th->nb_key_frames; i++) {
+	for(size_t i = 0; i < keyFrames; i++) {
 		eerie->frames[i].f_translate = true;
 		eerie->frames[i].f_rotate = true;
 	}
