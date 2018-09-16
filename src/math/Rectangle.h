@@ -32,7 +32,7 @@ public:
 	
 	typedef T Num;
 	typedef std::numeric_limits<T> Limits;
-	typedef typename vec2_traits<T>::type Vec2;
+	typedef typename vec_traits<T, 2>::type Vec2;
 	
 	T left;
 	T top;
