@@ -39,7 +39,7 @@ struct character_escaper {
 	template <typename FinderT>
 	std::string operator()(const FinderT & match) const {
 		std::string s;
-		for(typename FinderT::const_iterator i = match.begin(); i != match.end(); i++) {
+		for(typename FinderT::const_iterator i = match.begin(); i != match.end(); ++i) {
 			s += std::string("\\") + *i;
 		}
 		return s;
