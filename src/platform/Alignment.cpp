@@ -33,7 +33,7 @@ namespace platform {
 
 #if ARX_HAVE_ALIGNED_MALLOC && ARX_HAVE_ALIGNED_FREE
 
-void * alloc_aligned(std::size_t alignment, std::size_t size) {
+arx_nodiscard void * alloc_aligned(std::size_t alignment, std::size_t size) {
 	// alignment needs to be a power of two
 	return _aligned_malloc(size, alignment);
 }
@@ -44,7 +44,7 @@ void free_aligned(void * ptr) {
 
 #elif ARX_HAVE_ALIGNED_ALLOC
 
-void * alloc_aligned(std::size_t alignment, std::size_t size) {
+arx_nodiscard void * alloc_aligned(std::size_t alignment, std::size_t size) {
 	
 	// alignment needs to be a power of two
 	// size needs to be a multiple of alignment
@@ -61,7 +61,7 @@ void free_aligned(void * ptr) {
 
 #elif ARX_HAVE_POSIX_MEMALIGN
 
-void * alloc_aligned(std::size_t alignment, std::size_t size) {
+arx_nodiscard void * alloc_aligned(std::size_t alignment, std::size_t size) {
 	
 	// alignment needs to be a power of two
 	// alignment needs to be a multiple of sizeof(void *)
@@ -79,7 +79,7 @@ void free_aligned(void * ptr) {
 
 #else
 
-void * alloc_aligned(std::size_t alignment, std::size_t size) {
+arx_nodiscard void * alloc_aligned(std::size_t alignment, std::size_t size) {
 	
 	if(alignment < GuaranteedAlignment) {
 		alignment = GuaranteedAlignment;
