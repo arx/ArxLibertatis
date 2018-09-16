@@ -29,6 +29,7 @@ function(check_compile RESULT FILE FLAG TYPE)
 		"unknown .*option"                             # Clang
 		"ignoring unknown option"                      # MSVC
 		"warning D9002"                                # MSVC, any lang
+		"warning #[0-9]*:"                             # Intel
 		"option.*not supported"                        # Intel
 		"invalid argument .*option"                    # Intel
 		"ignoring option .*argument required"          # Intel
