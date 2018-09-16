@@ -35,17 +35,18 @@ typedef Rectangle_<s32> Rect;
 typedef Rectangle_<float> Rectf;
 
 #if GLM_VERSION >= 990
-typedef glm::qualifier vec_precision_type;
-#else
-typedef glm::precision vec_precision_type;
-#endif
 
-template <class T, template <class, vec_precision_type> class V, int N>
+template <class T, int N> struct vec_traits {
+	typedef glm::vec<N, T, glm::highp> type;
+	ARX_STATIC_ASSERT(sizeof(type) == sizeof(T) * N, "vector has padding");
+};
+
+#else
+
+template <class T, template <class, glm::precision> class V, int N>
 struct vec_traits_base {
-	enum { num_components = N };
-	typedef T component_type;
 	typedef V<T, glm::highp> type;
-	ARX_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N, "vector has padding");
+	ARX_STATIC_ASSERT(sizeof(type) == sizeof(T) * N, "vector has padding");
 };
 
 // In GLM version 0.9.6 the template vector and matrix types is exposed in 'glm' namespace
@@ -64,15 +65,12 @@ template <class T> struct vec_traits<T, 2> : public vec2_traits<T>{};
 template <class T> struct vec_traits<T, 3> : public vec3_traits<T>{};
 template <class T> struct vec_traits<T, 4> : public vec4_traits<T>{};
 
+#endif
 
 typedef vec_traits<s32, 2>::type Vec2i;
 typedef vec_traits<s16, 2>::type Vec2s;
 typedef vec_traits<f32, 2>::type Vec2f;
-
-typedef vec_traits<s32, 3>::type Vec3i;
 typedef vec_traits<f32, 3>::type Vec3f;
-
-typedef vec_traits<s32, 4>::type Vec4i;
 typedef vec_traits<f32, 4>::type Vec4f;
 
 ARX_USE_ALIGNED_ALLOCATOR(Vec4f)
