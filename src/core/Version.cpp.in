@@ -34,7 +34,12 @@ const std::string arx_icon_name = "${VERSION_1_STRING}";
 const std::string arx_version = "${VERSION_0_STRING}${VERSION_SUFFIX}${GIT_SUFFIX_7}";
 const u64 arx_version_number = (u64(${VERSION_MAJOR}) << 48) | (u64(${VERSION_MINOR}) << 32)
                              | (u64(${VERSION_PATCH}) << 16) | (u64(${VERSION_BUILD}) << 0);
+#cmakedefine VERSION_6
+#ifdef VERSION_6
 const std::string arx_release_codename = "${VERSION_6}";
+#else
+const std::string arx_release_codename;
+#endif
 
 // TODO move this to an external file once we ship our own resources
 const std::string arx_credits = "${AUTHORS}";
