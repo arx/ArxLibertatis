@@ -77,7 +77,7 @@ static std::string qUrlQueryToPostData(const QUrlQuery & query) {
 #endif
 }
 
-http::Response * Server::wait(QFuture<http::Response *> future) {
+http::Response * Server::wait(const QFuture<http::Response *> & future) {
 	
 	QEventLoop loop;
 	
