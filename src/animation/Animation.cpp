@@ -372,22 +372,22 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 
 		pos += 4; // num_sfx
 	}
-
+	
 	for(size_t i = 0; i < keyFrames; i++) {
-
+		
 		if(!eerie->frames[i].f_translate) {
-
+			
 			long k = i;
-			while((k >= 0) && (!eerie->frames[k].f_translate)) {
+			while(k >= 0 && !eerie->frames[k].f_translate) {
 				k--;
 			}
-
-			long j = i;
-			while((j < keyFrames) && (!eerie->frames[j].f_translate)) {
+			
+			size_t j = i;
+			while(j < keyFrames && !eerie->frames[j].f_translate) {
 				j++;
 			}
-
-			if((j < keyFrames) && (k >= 0)) {
+			
+			if(j < keyFrames && k >= 0) {
 				float r1 = GetTimeBetweenKeyFrames(eerie, k, i);
 				float r2 = GetTimeBetweenKeyFrames(eerie, i, j);
 				float tot = 1.f / (r1 + r2);
@@ -395,21 +395,22 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 				r2 *= tot;
 				eerie->frames[i].translate = eerie->frames[j].translate * r1 + eerie->frames[k].translate * r2;
 			}
+			
 		}
-
+		
 		if(!eerie->frames[i].f_rotate) {
-
+			
 			long k = i;
-			while((k >= 0) && (!eerie->frames[k].f_rotate)) {
+			while(k >= 0 && !eerie->frames[k].f_rotate) {
 				k--;
 			}
-
-			long j = i;
-			while ((j < keyFrames) && (!eerie->frames[j].f_rotate)) {
+			
+			size_t j = i;
+			while(j < keyFrames && !eerie->frames[j].f_rotate) {
 				j++;
 			}
-
-			if ((j < keyFrames) && (k >= 0)) {
+			
+			if(j < keyFrames && k >= 0) {
 				float r1 = GetTimeBetweenKeyFrames(eerie, k, i);
 				float r2 = GetTimeBetweenKeyFrames(eerie, i, j);
 				float tot = 1.f / (r1 + r2);
@@ -421,7 +422,9 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 				eerie->frames[i].quat.y = eerie->frames[j].quat.y * r1 + eerie->frames[k].quat.y * r2;
 				eerie->frames[i].quat.z = eerie->frames[j].quat.z * r1 + eerie->frames[k].quat.z * r2;
 			}
+			
 		}
+		
 	}
 
 	for(size_t i = 0; i < keyFrames; i++) {
