@@ -618,20 +618,20 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 			return;
 
 		if((tim < tnf && tim >= tcf) || (i == anim.frames.size() - 1 && tim == tnf)) {
-			long fr = long(i) - 1;
+			const size_t fr = i - 1;
 			tim -= tcf;
 			float pour = toMsf(tim) / toMsf(tnf - tcf);
 			
 			if(!(layer.flags & EA_ANIMEND)
 			   && time != 0
-			   && (layer.lastframe != fr)) {
+			   && layer.lastframe != long(fr)) {
 			
 				// Frame Sound Management
 				if(anim.frames[fr].sample != audio::SampleHandle()) {
 					Vec3f * position = io ? &io->pos : NULL;
 					
-					if(layer.lastframe < fr && layer.lastframe != -1) {
-						for(long n = layer.lastframe + 1; n <= fr; n++)
+					if(layer.lastframe < long(fr) && layer.lastframe != -1) {
+						for(size_t n = size_t(layer.lastframe) + 1; n <= fr; n++)
 							ARX_SOUND_PlayAnim(anim.frames[n].sample, position);
 					} else {
 						ARX_SOUND_PlayAnim(anim.frames[fr].sample, position);
@@ -641,8 +641,8 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 				// Frame Flags Management
 				if(anim.frames[fr].stepSound && io && io != entities.player()) {
 					
-					if(layer.lastframe < fr && layer.lastframe != -1) {
-						for(long n = layer.lastframe + 1; n <= fr; n++) {
+					if(layer.lastframe < long(fr) && layer.lastframe != -1) {
+						for(size_t n = size_t(layer.lastframe) + 1; n <= fr; n++) {
 							if(anim.frames[n].stepSound)
 								ARX_NPC_NeedStepSound(io, io->pos);
 						}
@@ -653,8 +653,8 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 			}
 			
 			// Memorize this frame as lastframe.
-			layer.lastframe = fr;
-			layer.currentFrame = fr;
+			layer.lastframe = long(fr);
+			layer.currentFrame = long(fr);
 			layer.currentInterpolation = pour;
 			break;
 		}
