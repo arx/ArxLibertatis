@@ -32,7 +32,7 @@ static struct InitCURL {
 } initCURL;
 
 static size_t writeToString(void * ptr, size_t size, size_t nmemb, void * string) {
-	std::string & data = *(std::string *)string;
+	std::string & data = *static_cast<std::string *>(string);
 	data.append(reinterpret_cast<const char *>(ptr), size * nmemb);
 	return nmemb;
 }
