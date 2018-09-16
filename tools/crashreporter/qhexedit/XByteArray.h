@@ -52,7 +52,7 @@ public:
 	void setAddressWidth(int width);
 	
 	QByteArray & data();
-	void setData(QByteArray data);
+	void setData(const QByteArray & data);
 	
 	bool dataChanged(int i);
 	QByteArray dataChanged(int i, int len);
