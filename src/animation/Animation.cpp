@@ -639,9 +639,8 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 			}
 
 			// Frame Flags Management
-			if(anim->frames[fr].stepSound) {
+			if(anim->frames[fr].stepSound && io && io != entities.player()) {
 				
-				if(io && io != entities.player()) {
 					if(layer.lastframe < fr && layer.lastframe != -1) {
 						for(long n = layer.lastframe + 1; n <= fr; n++) {
 							if(anim->frames[n].stepSound)
@@ -650,7 +649,6 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 					} else if(anim->frames[fr].stepSound) {
 						ARX_NPC_NeedStepSound(io, io->pos);
 					}
-				}
 			}
 			}
 			
