@@ -55,10 +55,7 @@ public:
 		QString path;
 		bool attachToReport;
 		
-		File(const QString & _path, bool _attach) {
-			path = _path;
-			attachToReport = _attach;
-		}
+		File(const QString & _path, bool _attach) : path(_path), attachToReport(_attach) { }
 		
 	};
 	
