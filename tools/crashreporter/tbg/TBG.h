@@ -70,7 +70,7 @@ public:
 	
 private:
 	
-	http::Response * wait(QFuture<http::Response *> future);
+	http::Response * wait(const QFuture<http::Response *> & future);
 	http::Response * get(const http::Request & request);
 	http::Response * post(const http::POSTRequest & request);
 	
