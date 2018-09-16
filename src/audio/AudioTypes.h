@@ -125,13 +125,14 @@ typedef HandleType<struct SampleHandleTag,    s32, -1> SampleHandle;
 typedef HandleType<struct SourceHandleTag,    s32, -1> SourceHandle;
 
 struct SourcedSample {
+	
 	SourcedSample()
 	{ }
 	
-	SourcedSample(SourceHandle source, SampleHandle sample) {
-		m_source = source;
-		m_sample = sample;
-	}
+	SourcedSample(SourceHandle source, SampleHandle sample)
+		: m_source(source)
+		, m_sample(sample)
+	{ }
 	
 	bool operator==(const SourcedSample & rhs) const {
 		return m_source == rhs.m_source && m_sample == rhs.m_sample;
@@ -153,8 +154,10 @@ struct SourcedSample {
 	}
 	
 private:
+	
 	SourceHandle m_source;
 	SampleHandle m_sample;
+	
 };
 
 
