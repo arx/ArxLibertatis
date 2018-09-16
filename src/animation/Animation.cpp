@@ -622,12 +622,12 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 			tim -= tcf;
 			float pour = toMsf(tim) / toMsf(tnf - tcf);
 			
-			// Frame Sound Management
 			if(!(layer.flags & EA_ANIMEND)
 			   && time != 0
-			   && (anim->frames[fr].sample != audio::SampleHandle())
 			   && (layer.lastframe != fr)) {
-
+			
+			// Frame Sound Management
+			if(anim->frames[fr].sample != audio::SampleHandle()) {
 				Vec3f * position = io ? &io->pos : NULL;
 				
 				if(layer.lastframe < fr && layer.lastframe != -1) {
@@ -639,10 +639,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 			}
 
 			// Frame Flags Management
-			if(!(layer.flags & EA_ANIMEND)
-			   && time != 0
-			   && (anim->frames[fr].stepSound)
-			   && (layer.lastframe != fr)) {
+			if(anim->frames[fr].stepSound) {
 				
 				if(io && io != entities.player()) {
 					if(layer.lastframe < fr && layer.lastframe != -1) {
@@ -654,6 +651,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 						ARX_NPC_NeedStepSound(io, io->pos);
 					}
 				}
+			}
 			}
 			
 			// Memorize this frame as lastframe.
