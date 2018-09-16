@@ -80,7 +80,7 @@ class ArrayCommand : public QUndoCommand {
 public:
 	
 	enum Cmd {insert, remove, replace};
-	ArrayCommand(XByteArray * xData, Cmd cmd, int baPos, QByteArray newBa = QByteArray(),
+	ArrayCommand(XByteArray * xData, Cmd cmd, int baPos, const QByteArray & newBa = QByteArray(),
 	             int len = 0, QUndoCommand * parent = 0);
 	void undo();
 	void redo();
