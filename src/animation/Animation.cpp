@@ -605,19 +605,19 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 	else
 		tim = layer.ctime;
 	
-	EERIE_ANIM * anim = layer.currentAltAnim();
+	const EERIE_ANIM & anim = *layer.currentAltAnim();
 	
-	layer.currentFrame = long(anim->frames.size()) - 2;
+	layer.currentFrame = long(anim.frames.size()) - 2;
 	layer.currentInterpolation = 1.f;
 	
-	for(size_t i = 1; i < anim->frames.size(); i++) {
-		AnimationDuration tcf = anim->frames[i - 1].time;
-		AnimationDuration tnf = anim->frames[i].time;
+	for(size_t i = 1; i < anim.frames.size(); i++) {
+		AnimationDuration tcf = anim.frames[i - 1].time;
+		AnimationDuration tnf = anim.frames[i].time;
 
 		if(tcf == tnf)
 			return;
 
-		if((tim < tnf && tim >= tcf) || (i == anim->frames.size() - 1 && tim == tnf)) {
+		if((tim < tnf && tim >= tcf) || (i == anim.frames.size() - 1 && tim == tnf)) {
 			long fr = long(i) - 1;
 			tim -= tcf;
 			float pour = toMsf(tim) / toMsf(tnf - tcf);
@@ -627,26 +627,26 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 			   && (layer.lastframe != fr)) {
 			
 				// Frame Sound Management
-				if(anim->frames[fr].sample != audio::SampleHandle()) {
+				if(anim.frames[fr].sample != audio::SampleHandle()) {
 					Vec3f * position = io ? &io->pos : NULL;
 					
 					if(layer.lastframe < fr && layer.lastframe != -1) {
 						for(long n = layer.lastframe + 1; n <= fr; n++)
-							ARX_SOUND_PlayAnim(anim->frames[n].sample, position);
+							ARX_SOUND_PlayAnim(anim.frames[n].sample, position);
 					} else {
-						ARX_SOUND_PlayAnim(anim->frames[fr].sample, position);
+						ARX_SOUND_PlayAnim(anim.frames[fr].sample, position);
 					}
 				}
 	
 				// Frame Flags Management
-				if(anim->frames[fr].stepSound && io && io != entities.player()) {
+				if(anim.frames[fr].stepSound && io && io != entities.player()) {
 					
 					if(layer.lastframe < fr && layer.lastframe != -1) {
 						for(long n = layer.lastframe + 1; n <= fr; n++) {
-							if(anim->frames[n].stepSound)
+							if(anim.frames[n].stepSound)
 								ARX_NPC_NeedStepSound(io, io->pos);
 						}
-					} else if(anim->frames[fr].stepSound) {
+					} else if(anim.frames[fr].stepSound) {
 						ARX_NPC_NeedStepSound(io, io->pos);
 					}
 				}
