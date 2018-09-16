@@ -95,7 +95,7 @@ arx_nodiscard void * alloc_aligned(std::size_t alignment, std::size_t size) {
 	arx_assert(offset - 1 <= 0xff);
 	allocation[offset - 1] = static_cast<unsigned char>(offset - 1);
 	
-	return ptr = allocation + offset;
+	return allocation + offset;
 }
 
 void free_aligned(void * ptr) {
