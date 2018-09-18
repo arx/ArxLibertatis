@@ -358,14 +358,14 @@ void MakePlayerAppearsFX(const Entity & io) {
 
 void AddRandomSmoke(const Entity & io, long amount) {
 	
-	for(long i = 0; i < amount; i++) {
+	for(size_t i = 0; i < size_t(amount); i++) {
 		
 		PARTICLE_DEF * pd = createParticle();
 		if(!pd) {
 			return;
 		}
 		
-		long vertex = Random::get(0, io.obj->vertexlist.size() - 1);
+		size_t vertex = Random::get(size_t(0), io.obj->vertexlist.size() - 1);
 		pd->ov = io.obj->vertexWorldPositions[vertex].v + arx::randomVec(-5.f, 5.f);
 		pd->siz = Random::getf(0.f, 8.f);
 		if(pd->siz < 4.f) {
