@@ -129,14 +129,17 @@ else(MSVC)
 		add_cxxflag("-Wextra-semi")
 		add_cxxflag("-Wformat=2")
 		add_cxxflag("-Wheader-guard")
+		add_cxxflag("-Winit-self")
 		add_cxxflag("-Wlogical-op")
 		add_cxxflag("-Wmissing-declarations")
+		add_cxxflag("-Wnoexcept")
 		add_cxxflag("-Woverflow")
 		add_cxxflag("-Woverloaded-virtual")
 		add_cxxflag("-Wpessimizing-move")
 		add_cxxflag("-Wpointer-arith")
 		add_cxxflag("-Wredundant-decls")
 		add_cxxflag("-Wshift-overflow")
+		add_cxxflag("-Wstrict-null-sentinel")
 		add_cxxflag("-Wstringop-overflow=4")
 		add_cxxflag("-Wundef")
 		add_cxxflag("-Wunused-const-variable=1")
@@ -176,7 +179,13 @@ else(MSVC)
 			add_cxxflag("-Wstrict-aliasing=1") # has false positives
 			add_cxxflag("-Wuseless-cast") # has false positives
 			add_cxxflag("-Wold-style-cast") # very noisy
+			add_cxxflag("-Wsign-promo")
 			# add_cxxflag("-Wnull-dereference") not that useful without deduction path
+			
+			# Possible optimization opportunities
+			add_cxxflag("-Wdisabled-optimization")
+			add_cxxflag("-Wpadded")
+			add_cxxflag("-Wunsafe-loop-optimizations")
 			
 		else()
 			
