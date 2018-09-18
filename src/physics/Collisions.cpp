@@ -948,30 +948,33 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 		}
 		
 		Entity * io = treatio[i].io;
-
-		if(!io->obj)
-			continue;
-
-		if(!(io->ioflags & IO_NPC) && (io->ioflags & IO_NO_COLLISIONS))
-			continue;
-
-		if((flags & CAS_NO_DEAD_COL) && (io->ioflags & IO_NPC) && IsDeadNPC(*io))
-			continue;
-
-		if((io->ioflags & IO_FIX) && (flags & CAS_NO_FIX_COL))
-			continue;
-
-		if((io->ioflags & IO_ITEM) && (flags & CAS_NO_ITEM_COL))
-			continue;
-
-		if(   treatio[i].io->index() != EntityHandle_Player
-		   && source != EntityHandle_Player
-		   && validsource
-		   && HaveCommonGroup(io, entities[source])
-		) {
+		if(!io->obj) {
 			continue;
 		}
-
+		
+		if(!(io->ioflags & IO_NPC) && (io->ioflags & IO_NO_COLLISIONS)) {
+			continue;
+		}
+		
+		if((flags & CAS_NO_DEAD_COL) && (io->ioflags & IO_NPC) && IsDeadNPC(*io)) {
+			continue;
+		}
+		
+		if((io->ioflags & IO_FIX) && (flags & CAS_NO_FIX_COL)) {
+			continue;
+		}
+		
+		if((io->ioflags & IO_ITEM) && (flags & CAS_NO_ITEM_COL)) {
+			continue;
+		}
+		
+		if(treatio[i].io->index() != EntityHandle_Player
+		   && source != EntityHandle_Player
+		   && validsource
+		   && HaveCommonGroup(io, entities[source])) {
+			continue;
+		}
+		
 		if(io->gameFlags & GFLAG_PLATFORM) {
 			float miny = io->bbox3D.min.y;
 			float maxy = io->bbox3D.max.y;
