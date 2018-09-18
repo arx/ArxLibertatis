@@ -1261,8 +1261,8 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer) {
 			if(grps[j])
 				continue;
 
-			const EERIE_GROUP & sGroup = eanim->groups[j + (size_t(layer.currentFrame) * eanim->nb_groups())];
-			const EERIE_GROUP & eGroup = eanim->groups[j + (size_t(layer.currentFrame) * eanim->nb_groups()) + eanim->nb_groups()];
+			const EERIE_GROUP & sGroup = eanim->groups[j + size_t(layer.currentFrame) * eanim->nb_groups()];
+			const EERIE_GROUP & eGroup = eanim->groups[j + size_t(layer.currentFrame + 1) * eanim->nb_groups()];
 
 			if(!eanim->voidgroups[j])
 				grps[j] = 1;
