@@ -65,7 +65,7 @@ ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx);
 EERIE_3DOBJ * loadObject(const res::path & file, bool pbox = true);
 
 EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj);
-void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * obj);
+void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * object);
 void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj);
 void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret);
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj);

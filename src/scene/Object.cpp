@@ -128,34 +128,29 @@ ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx) {
 	return ObjVertGroup();
 }
 
-void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
+void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * object) {
 	
-	if(!eerie)
+	if(!object) {
 		return;
-
-	// GetActionPointIdx(eerie, "v_right");
-	// GetActionPointIdx(eerie, "u_right");
-	// GetActionPointIdx(eerie, "carry_attach");
-	// EERIE_OBJECT_GetGroup(eerie, "jaw");
-	// EERIE_OBJECT_GetGroup(eerie, "mouth all");
-	
-	eerie->fastaccess.view_attach       = GetActionPointIdx(eerie, "view_attach");
-	eerie->fastaccess.primary_attach    = GetActionPointIdx(eerie, "primary_attach");
-	eerie->fastaccess.left_attach       = GetActionPointIdx(eerie, "left_attach");
-	eerie->fastaccess.weapon_attach     = GetActionPointIdx(eerie, "weapon_attach");
-	eerie->fastaccess.secondary_attach  = GetActionPointIdx(eerie, "secondary_attach");
-	eerie->fastaccess.fire              = GetActionPointIdx(eerie, "fire");
-	
-	eerie->fastaccess.head_group = EERIE_OBJECT_GetGroup(eerie, "head");
-
-	if(eerie->fastaccess.head_group != ObjVertGroup()) {
-		ObjVertHandle lHeadOrigin = ObjVertHandle(eerie->grouplist[eerie->fastaccess.head_group.handleData()].origin);
-		eerie->fastaccess.head_group_origin = lHeadOrigin;
 	}
 	
-	eerie->fastaccess.sel_head     = EERIE_OBJECT_GetSelection(eerie, "head");
-	eerie->fastaccess.sel_chest    = EERIE_OBJECT_GetSelection(eerie, "chest");
-	eerie->fastaccess.sel_leggings = EERIE_OBJECT_GetSelection(eerie, "leggings");
+	object->fastaccess.view_attach       = GetActionPointIdx(object, "view_attach");
+	object->fastaccess.primary_attach    = GetActionPointIdx(object, "primary_attach");
+	object->fastaccess.left_attach       = GetActionPointIdx(object, "left_attach");
+	object->fastaccess.weapon_attach     = GetActionPointIdx(object, "weapon_attach");
+	object->fastaccess.secondary_attach  = GetActionPointIdx(object, "secondary_attach");
+	object->fastaccess.fire              = GetActionPointIdx(object, "fire");
+	
+	object->fastaccess.head_group = EERIE_OBJECT_GetGroup(object, "head");
+	
+	if(object->fastaccess.head_group != ObjVertGroup()) {
+		ObjVertHandle lHeadOrigin = ObjVertHandle(object->grouplist[object->fastaccess.head_group.handleData()].origin);
+		object->fastaccess.head_group_origin = lHeadOrigin;
+	}
+	
+	object->fastaccess.sel_head     = EERIE_OBJECT_GetSelection(object, "head");
+	object->fastaccess.sel_chest    = EERIE_OBJECT_GetSelection(object, "chest");
+	object->fastaccess.sel_leggings = EERIE_OBJECT_GetSelection(object, "leggings");
 }
 
 void MakeUserFlag(TextureContainer * tc) {
