@@ -1257,31 +1257,34 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer) {
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
 		size_t l = std::min(obj->bones.size(), eanim->nb_groups());
 		
-		for(size_t j = l - 1; j < l; --j) {
-			if(grps[j])
+		for(size_t j = 0; j < l; j++) {
+			
+			if(grps[j]) {
 				continue;
-
+			}
+			
 			const EERIE_GROUP & sGroup = eanim->groups[j + size_t(layer.currentFrame) * eanim->nb_groups()];
 			const EERIE_GROUP & eGroup = eanim->groups[j + size_t(layer.currentFrame + 1) * eanim->nb_groups()];
-
-			if(!eanim->voidgroups[j])
+			
+			if(!eanim->voidgroups[j]) {
 				grps[j] = 1;
-
+			}
+			
 			if(eanim->frames.size() != 1) {
-				Bone & bone = obj->bones[j];
-
 				BoneTransform temp;
-
 				temp.quat = Quat_Slerp(sGroup.quat, eGroup.quat, layer.currentInterpolation);
 				temp.trans = sGroup.translate + (eGroup.translate - sGroup.translate) * layer.currentInterpolation;
 				temp.scale = sGroup.zoom + (eGroup.zoom - sGroup.zoom) * layer.currentInterpolation;
-
+				Bone & bone = obj->bones[j];
 				bone.init.quat = bone.init.quat * temp.quat;
 				bone.init.trans = temp.trans + bone.transinit_global;
 				bone.init.scale = temp.scale;
 			}
+			
 		}
+		
 	}
+	
 }
 
 static void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBlend) {
