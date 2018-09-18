@@ -30,7 +30,7 @@ namespace http {
 	class Request;
 	class POSTRequest;
 	class Response;
-}
+} // namespace http
 
 namespace TBG {
 
@@ -84,6 +84,6 @@ private:
 	
 };
 
-}
+} // namespace TBG
 
 #endif // ARX_TOOLS_CRASHREPORTER_TBG_TBG_H
