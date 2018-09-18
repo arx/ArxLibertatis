@@ -168,7 +168,7 @@ public:
 	QColor highlightingColor();
 	void setSelectionColor(QColor const & color);
 	QColor selectionColor();
-	void setOverwriteMode(bool readOnly);
+	void setOverwriteMode(bool overwriteMode);
 	bool overwriteMode();
 	void setReadOnly(bool readOnly);
 	bool isReadOnly();
