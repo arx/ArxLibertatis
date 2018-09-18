@@ -247,7 +247,7 @@ private slots:
 	void onBack();
 	void onNext();
 	void onSend();
-	void onShowFileContent(const QItemSelection & current, const QItemSelection & previous);
+	void onShowFileContent(const QItemSelection & newSelection, const QItemSelection & oldSelection);
 	
 private:
 	
