@@ -1273,8 +1273,8 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer) {
 			if(eanim->frames.size() != 1) {
 				BoneTransform temp;
 				temp.quat = Quat_Slerp(sGroup.quat, eGroup.quat, layer.currentInterpolation);
-				temp.trans = sGroup.translate + (eGroup.translate - sGroup.translate) * layer.currentInterpolation;
-				temp.scale = sGroup.zoom + (eGroup.zoom - sGroup.zoom) * layer.currentInterpolation;
+				temp.trans = glm::mix(sGroup.translate, eGroup.translate, layer.currentInterpolation);
+				temp.scale = glm::mix(sGroup.zoom, eGroup.zoom, layer.currentInterpolation);
 				Bone & bone = obj->bones[j];
 				bone.init.quat = bone.init.quat * temp.quat;
 				bone.init.trans = temp.trans + bone.transinit_global;
