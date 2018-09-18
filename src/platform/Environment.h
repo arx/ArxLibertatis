@@ -62,7 +62,7 @@ enum SystemPathId {
  *
  * \return the path(s) or an empty string if the path is not known.
  */
-std::vector<fs::path> getSystemPaths(SystemPathId path);
+std::vector<fs::path> getSystemPaths(SystemPathId id);
 
 /*!
  * \brief Get a Windows registry entry
