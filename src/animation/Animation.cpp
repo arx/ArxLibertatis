@@ -638,7 +638,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 						ARX_SOUND_PlayAnim(anim.frames[fr].sample, position);
 					}
 				}
-	
+				
 				// Frame Flags Management
 				if(anim.frames[fr].stepSound && io && io != entities.player()) {
 					
