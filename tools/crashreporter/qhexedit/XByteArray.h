@@ -65,7 +65,7 @@ public:
 	QByteArray & insert(int i, char ch);
 	QByteArray & insert(int i, const QByteArray & ba);
 	
-	QByteArray & remove(int pos, int len);
+	QByteArray & remove(int i, int len);
 	
 	QByteArray & replace(int index, char ch);
 	QByteArray & replace(int index, const QByteArray & ba);
