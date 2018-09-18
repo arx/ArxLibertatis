@@ -631,8 +631,9 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 					Vec3f * position = io ? &io->pos : NULL;
 					
 					if(layer.lastframe < long(fr) && layer.lastframe != -1) {
-						for(size_t n = size_t(layer.lastframe) + 1; n <= fr; n++)
+						for(size_t n = size_t(layer.lastframe) + 1; n <= fr; n++) {
 							ARX_SOUND_PlayAnim(anim.frames[n].sample, position);
+						}
 					} else {
 						ARX_SOUND_PlayAnim(anim.frames[fr].sample, position);
 					}
@@ -643,8 +644,9 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 					
 					if(layer.lastframe < long(fr) && layer.lastframe != -1) {
 						for(size_t n = size_t(layer.lastframe) + 1; n <= fr; n++) {
-							if(anim.frames[n].stepSound)
+							if(anim.frames[n].stepSound) {
 								ARX_NPC_NeedStepSound(io, io->pos);
+							}
 						}
 					} else if(anim.frames[fr].stepSound) {
 						ARX_NPC_NeedStepSound(io, io->pos);
