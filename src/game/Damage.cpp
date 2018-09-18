@@ -500,12 +500,14 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 	if(io_dead.mainevent == SM_DEAD) {
 		return;
 	}
-
-	if(&io_dead == DRAGINTER)
+	
+	if(&io_dead == DRAGINTER) {
 		Set_DragInter(NULL);
-
-	if(&io_dead == FlyingOverIO)
+	}
+	
+	if(&io_dead == FlyingOverIO) {
 		FlyingOverIO = NULL;
+	}
 	
 	if(g_cameraEntity == &io_dead) {
 		g_cameraEntity = NULL;
@@ -536,9 +538,10 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 		io_dead.animBlend.lastanimtime = 0;
 	}
 	
-	if(io_dead.ioflags & IO_NPC)
+	if(io_dead.ioflags & IO_NPC) {
 		io_dead._npcdata->weaponinhand = 0;
-
+	}
+	
 	ARX_INTERACTIVE_DestroyDynamicInfo(&io_dead);
 	
 	ScriptParameters killer;
@@ -551,10 +554,11 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * ioo = entities[handle];
-
-		if(ioo == &io_dead)
+		
+		if(ioo == &io_dead) {
 			continue;
-
+		}
+		
 		if(ioo && (ioo->ioflags & IO_NPC)) {
 			if(ValidIONum(ioo->targetinfo))
 				if(entities[ioo->targetinfo] == &io_dead) {
