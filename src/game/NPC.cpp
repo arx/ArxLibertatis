@@ -935,10 +935,11 @@ void ARX_PHYSICS_Apply() {
 				continue;
 			}
 		}
-
-		if(IsDeadNPC(*io))
+		
+		if(IsDeadNPC(*io)) {
 			continue;
-
+		}
+		
 		if(io->ioflags & IO_PHYSICAL_OFF) {
 			if(io->ioflags & IO_NPC) {
 				AnimLayer & layer0 = io->animlayer[0];
@@ -1156,10 +1157,11 @@ static float GetTRUETargetDist(Entity * io) {
 //! Checks If a NPC is dead
 bool IsDeadNPC(const Entity & io) {
 	
-	if(!(io.ioflags & IO_NPC))
-		return false;
+	if(io.ioflags & IO_NPC) {
+		return (io._npcdata->lifePool.current <= 0 || io.mainevent == SM_DEAD);
+	}
 	
-	return (io._npcdata->lifePool.current <= 0 || io.mainevent == SM_DEAD);
+	return false;
 }
 
 //! Checks if Player is currently striking.
@@ -2563,16 +2565,14 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 }
 
 //! Checks if a NPC is dead to prevent further Layers Animation
-void CheckNPC(Entity & io)
-{
-	if((io.show != SHOW_FLAG_IN_SCENE))
-		return;
+void CheckNPC(Entity & io) {
 	
-	if(IsDeadNPC(io)) {
+	if(io.show == SHOW_FLAG_IN_SCENE && IsDeadNPC(io)) {
 		io.animlayer[1].cur_anim = NULL;
 		io.animlayer[2].cur_anim = NULL;
 		io.animlayer[3].cur_anim = NULL;
 	}
+	
 }
 
 /*!
