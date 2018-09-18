@@ -53,7 +53,7 @@ public:
 		Arch_Other = -1
 	};
 	
-	explicit Server(const QString & adress, const std::string & userAgent);
+	explicit Server(const QString & serverAddress, const std::string & userAgent);
 	~Server();
 	
 	bool login(const QString & username, const QString & password);
