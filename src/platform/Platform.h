@@ -393,14 +393,16 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 #endif
 
 /*!
- * \def arx_malloc
+ * \def arx_return_noalias
  * \brief Annotate a function that returns a pointer that doesn't alias with anything and
  *        points to uninitialized or zeroed memory
  */
 #if ARX_HAVE_ATTRIBUTE_MALLOC
-#define arx_malloc __attribute__((malloc))
+#define arx_return_noalias __attribute__((malloc))
+#elif ARX_COMPILER_MSVC
+#define arx_return_noalias __declspec(restrict)
 #else
-#define arx_malloc
+#define arx_return_noalias
 #endif
 
 /*!
@@ -420,6 +422,6 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  *        points to uninitialized or zeroed memory of size given by the function
  *        parameter with index SizeArg
  */
-#define arx_alloc(SizeArg) arx_malloc arx_alloc_size(SizeArg)
+#define arx_alloc(SizeArg) arx_return_noalias arx_alloc_size(SizeArg)
 
 #endif // ARX_PLATFORM_PLATFORM_H
