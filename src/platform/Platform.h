@@ -129,10 +129,10 @@ typedef double f64; // 64 bits double float
 ------------------------------------------------------------*/
 
 /*!
- * \def ARX_FORMAT_PRINTF(message_arg, param_vararg)
+ * \def arx_format_printf(message_arg, param_vararg)
  * \brief Declare that a function argument is a printf-like format string
  *
- * Usage: T function(args, message, ...) ARX_FORMAT_PRINTF(message_arg, param_vararg)
+ * Usage: T function(args, message, ...) arx_format_printf(message_arg, param_vararg)
  *
  * \param message_arg index of the format string arg (1 for the first)
  * \param param_vararg index of the vararg for the parameters
@@ -142,10 +142,10 @@ typedef double f64; // 64 bits double float
  *  b) Prevent warnings due to a non-literal format string in the implementation
  */
 #if ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
-	#define ARX_FORMAT_PRINTF(message_arg, param_vararg) \
+	#define arx_format_printf(message_arg, param_vararg) \
 		__attribute__((format(printf, message_arg, param_vararg)))
 #else
-	#define ARX_FORMAT_PRINTF(message_arg, param_vararg)
+	#define arx_format_printf(message_arg, param_vararg)
 #endif
 
 /* ---------------------------------------------------------
@@ -283,8 +283,8 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 	 *
 	 * This is a low-level implementation, use arx_assert() instead!
 	 */
-	void assertionFailed(const char * expression, const char * file, unsigned line,
-	                     const char * message, ...) ARX_FORMAT_PRINTF(4, 5);
+	arx_format_printf(4, 5)
+	void assertionFailed(const char * expression, const char * file, unsigned line, const char * message, ...);
 #define arx_assert_impl(Expression, ExpressionString, ...) \
 	((Expression) ? (void)0 : (assertionFailed(ExpressionString, ARX_FILE, __LINE__, __VA_ARGS__), arx_trap()))
 #else // ARX_DEBUG
