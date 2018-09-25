@@ -1,5 +1,6 @@
 
-__attribute__((always_inline)) inline int my_function() {
+__attribute__((always_inline))
+inline int my_function() {
 	return 0;
 }
 
