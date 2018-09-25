@@ -192,7 +192,6 @@ enum AlignmentInfo_ {
  *                  a multiple of \code sizeof( void *) \endcode.
  * \param size      The required buffer size.
  */
-arx_nodiscard
 arx_alloc_align(2, 1)
 void * alloc_aligned(std::size_t alignment, std::size_t size);
 
@@ -217,7 +216,6 @@ struct AlignedAllocator {
 	                  "Alignment must be a multiple of sizeof(void *)");
 	ARX_STATIC_ASSERT((Alignment & (Alignment - 1)) == 0,
 	                  "Alignment must be a power of two");
-	arx_nodiscard
 	arx_alloc_align_static(1, Alignment)
 	static void * alloc_object(std::size_t size) {
 		void * ptr = arx_assume_aligned(alloc_aligned(Alignment, size), Alignment);
@@ -229,7 +227,6 @@ struct AlignedAllocator {
 	static void free_object(void * ptr) {
 		free_aligned(ptr);
 	}
-	arx_nodiscard
 	arx_alloc_align_static(1, Alignment)
 	static void * alloc_array(std::size_t size) {
 		return alloc_object(size);
@@ -241,7 +238,6 @@ struct AlignedAllocator {
 
 template <size_t Alignment>
 struct AlignedAllocator<Alignment, false> {
-	arx_nodiscard
 	arx_alloc_align_static(1, GuaranteedAlignment)
 	static void * alloc_object(std::size_t size) {
 		return ::operator new(size);
@@ -249,7 +245,6 @@ struct AlignedAllocator<Alignment, false> {
 	static void free_object(void * ptr) {
 		::operator delete(ptr);
 	}
-	arx_nodiscard
 	arx_alloc_align_static(1, GuaranteedAlignment)
 	static void * alloc_array(std::size_t size) {
 		return ::operator new[](size);
