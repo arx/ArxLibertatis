@@ -422,6 +422,6 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  *        points to uninitialized or zeroed memory of size given by the function
  *        parameter with index SizeArg
  */
-#define arx_alloc(SizeArg) arx_return_noalias arx_alloc_size(SizeArg)
+#define arx_alloc(SizeArg) arx_nodiscard arx_return_noalias arx_alloc_size(SizeArg)
 
 #endif // ARX_PLATFORM_PLATFORM_H
