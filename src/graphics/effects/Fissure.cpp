@@ -419,7 +419,7 @@ CSummonCreature::CSummonCreature()
 	, iSize(100)
 	, bIntro(true)
 	, sizeF(0.f)
-	, m_visibleNotches(0.f)
+	, m_visibleNotches(0)
 {
 	m_elapsed = m_duration + GameDurationMs(1);
 }
@@ -435,7 +435,7 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	fBetaRadSin = glm::sin(fBetaRad);
 	
 	sizeF = 0;
-	m_visibleNotches = 0.0f;
+	m_visibleNotches = 0;
 	end = 40 - 1;
 	bIntro = true;
 
@@ -519,7 +519,7 @@ void CSummonCreature::RenderFissure() {
 	//-------------------------------------------------------------------------
 	// computation des sommets
 
-	for(int i = 0; i <= std::min(end, int(m_visibleNotches)); i++) {
+	for(int i = 0; i <= std::min(end, m_visibleNotches); i++) {
 		
 		float ff;
 		if(i <= end * 0.5f)
@@ -552,7 +552,7 @@ void CSummonCreature::RenderFissure() {
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toRGB();
 	
 	if(bIntro) {
-		for(int i = 0; i < std::min(end, (int)m_visibleNotches); i++) {
+		for(int i = 0; i < std::min(end, m_visibleNotches); i++) {
 			vr[0].p = v1a[i];
 			vr[1].p = v1b[i];
 			vr[2].p = v1a[i + 1];
@@ -561,7 +561,7 @@ void CSummonCreature::RenderFissure() {
 			drawTriangle(mat, &vr[1]);
 		}
 	} else {
-		for(int i = 0; i < std::min(end, (int)m_visibleNotches); i++) {
+		for(int i = 0; i < std::min(end, m_visibleNotches); i++) {
 			vr[0].p = va[i];
 			vr[1].p = vb[i];
 			vr[2].p = va[i + 1];
@@ -578,7 +578,7 @@ void CSummonCreature::RenderFissure() {
 	vr[2].color = vr[3].color = m_colorBorder.toRGB();
 	
 	Vec3f vt[4];
-	for(int i = 0; i < std::min(end, (int)m_visibleNotches); i++) {
+	for(int i = 0; i < std::min(end, m_visibleNotches); i++) {
 		
 		vt[2] = va[i] - (va[i] - m_eSrc) * 0.2f;
 		vt[3] = va[i + 1] - (va[i + 1] - m_eSrc) * 0.2f;
@@ -680,7 +680,7 @@ void CSummonCreature::Render() {
 		// Render intro (opening + rays)
 		float fOneOnDurationIntro = 1.f / toMsf(m_durationIntro);
 		if(m_elapsed < GameDurationMsf(toMsf(m_durationIntro) * 0.666f)) {
-			m_visibleNotches = (end + 2) * fOneOnDurationIntro * (1.5f) * toMsf(m_elapsed);
+			m_visibleNotches = int((end + 2) * fOneOnDurationIntro * (1.5f) * toMsf(m_elapsed));
 			sizeF = 1;
 		} else {
 			bIntro = false;
