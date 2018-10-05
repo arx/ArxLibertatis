@@ -75,7 +75,7 @@ private:
 	int iSize;
 	bool bIntro;
 	float sizeF;
-	float fSizeIntro;
+	float m_visibleNotches;
 	float tfRaysa[40];
 	float tfRaysb[40];
 	Vec3f va[40];

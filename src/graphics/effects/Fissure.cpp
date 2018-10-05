@@ -80,7 +80,7 @@ CRiseDead::CRiseDead()
 	, iSize(100)
 	, bIntro(true)
 	, sizeF(0)
-	, fSizeIntro(0.f)
+	, m_visibleNotches(0.f)
 {
 	m_elapsed = m_duration + GameDurationMs(1);
 }
@@ -96,7 +96,7 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta) {
 	fBetaRadSin = glm::sin(fBetaRad);
 	
 	sizeF = 0;
-	fSizeIntro = 0.0f;
+	m_visibleNotches = 0.0f;
 	end = 40 - 1;
 	bIntro = true;
 
@@ -168,7 +168,7 @@ void CRiseDead::RenderFissure() {
 	//-------------------------------------------------------------------------
 	// computation des sommets
 
-	for(int i = 0; i <= std::min(end, int(fSizeIntro)); i++) {
+	for(int i = 0; i <= std::min(end, int(m_visibleNotches)); i++) {
 		
 		float ff;
 		if(i <= end * 0.5f)
@@ -201,7 +201,7 @@ void CRiseDead::RenderFissure() {
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toRGB();
 
 	if(bIntro) {
-		for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
+		for(int i = 0; i < std::min(end, (int)m_visibleNotches); i++) {
 			vr[0].p = v1a[i];
 			vr[1].p = v1b[i];
 			vr[2].p = v1a[i + 1];
@@ -210,7 +210,7 @@ void CRiseDead::RenderFissure() {
 			drawTriangle(mat, &vr[1]);
 		}
 	} else {
-		for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
+		for(int i = 0; i < std::min(end, (int)m_visibleNotches); i++) {
 			vr[0].p = va[i];
 			vr[1].p = vb[i];
 			vr[2].p = va[i + 1];
@@ -227,7 +227,7 @@ void CRiseDead::RenderFissure() {
 	vr[2].color = vr[3].color = m_colorBorder.toRGB();
 	
 	Vec3f vt[4];
-	for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
+	for(int i = 0; i < std::min(end, (int)m_visibleNotches); i++) {
 		
 		vt[2] = va[i] - (va[i] - m_eSrc) * 0.2f;
 		vt[3] = va[i + 1] - (va[i + 1] - m_eSrc) * 0.2f;
@@ -328,7 +328,7 @@ void CRiseDead::RenderFissure() {
 			}
 		}
 		
-		if(i < fSizeIntro) {
+		if(i < m_visibleNotches) {
 			vt[0] = va[i];
 			vt[1] = va[i + 1];
 			vt[2].x = va[i].x;
@@ -349,7 +349,7 @@ void CRiseDead::RenderFissure() {
 			drawTriangle(mat, &vr[1]);
 		}
 		
-		if(i < fSizeIntro) {
+		if(i < m_visibleNotches) {
 			vt[0] = vb[i + 1];
 			vt[1] = vb[i];
 			vt[2].x = vb[i + 1].x;
@@ -391,7 +391,7 @@ void CRiseDead::Render() {
 		// Render intro (opening + rays)
 		float fOneOnDurationIntro = 1.f / toMsf(m_durationIntro);
 		if(m_elapsed < GameDurationMsf(toMsf(m_durationIntro) * 0.666f)) {
-			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMsf(m_elapsed);
+			m_visibleNotches = (end + 2) * fOneOnDurationIntro * (1.5f) * toMsf(m_elapsed);
 			sizeF = 1;
 		} else {
 			bIntro = false;
