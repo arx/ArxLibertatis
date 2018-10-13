@@ -621,10 +621,6 @@ else(MSVC)
 		add_ldflag("-static-libgcc")
 	endif()
 	
-	if(NOT CXX_STD_VERSION LESS 2011 AND WIN32)
-		add_definitions(-U__STRICT_ANSI__) # __argc and __argv
-	endif()
-	
 	# Don't expose internal symbols to the outside world by default
 	add_cxxflag("-fvisibility=hidden")
 	add_cxxflag("-fvisibility-inlines-hidden")
