@@ -26,7 +26,7 @@
 
 namespace fs {
 
-#if ARX_COMPILER_MSVC
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32 && ARX_HAVE_CXX17_FSTREAM_WCHAR
 
 ifstream::ifstream(const path & p, openmode mode)
 	: std::ifstream(platform::WideString(p.string()), mode)

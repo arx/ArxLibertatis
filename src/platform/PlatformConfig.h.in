@@ -42,6 +42,8 @@
 // C++17 features
 // [[nodiscard]]
 #cmakedefine01 ARX_HAVE_CXX17_NODISCARD
+// wide character support for filenames in fstream
+#cmakedefine01 ARX_HAVE_CXX17_FSTREAM_WCHAR
 
 // GCC extensions
 // __attribute__((aligned(n)))
