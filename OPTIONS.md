@@ -50,7 +50,10 @@ Arx Libertatis adjust the compiler flags to provide an optimal configuration for
 
 * `SET_WARNING_FLAGS` (default: `ON`): Adjust compiler warning flags. This should not affect the produced binaries but is useful to catch potential problems.
 * `SET_OPTIMIZATION_FLAGS` (default: `ON`): Adjust compiler optimization flags. For non-debug builds the only thing this does is instruct the linker to only link against libraries that are actually needed.
+* `FASTLINK` (default: `OFF`^1: Optimize for link speed
 * `CXX_STD_VERSION` (default: `2017`): Maximum C++ standard version to enable.
+
+1. Enabled automatically if `DEVELOPER` is enabled.
 
 ### Static linking
 

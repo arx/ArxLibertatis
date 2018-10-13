@@ -83,6 +83,8 @@ option(DEBUG_EXTRA "Expensive debug options" OFF)
 option(SET_WARNING_FLAGS "Adjust compiler warning flags" ON)
 option(SET_NOISY_WARNING_FLAGS "Enable noisy compiler warnings" OFF)
 option(SET_OPTIMIZATION_FLAGS "Adjust compiler optimization flags" ON)
+suboption(USE_LDGOLD "Use the Gold linker" BOOL ${SET_OPTIMIZATION_FLAGS})
+suboption(FASTLINK "Optimize (incremental) linking speed" BOOL ${DEVELOPER})
 
 suboption(CXX_STD_VERSION "Maximum C++ standard version to enable" STRING 2017)
 if(DEVELOPER OR CMAKE_BUILD_TYPE STREQUAL "Debug")
