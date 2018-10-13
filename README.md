@@ -85,6 +85,8 @@ For Linux run:
     $ cmake ..
     $ make
 
+The default build settings are tuned for users - if you plan to make changes to Arx Libertatis you should append the `-DDEVELOPER=1` option to the `cmake` command to enable tests, debug checks and fast incremental builds.
+
 To install the binaries system-wide, run as root:
 
     # make install
@@ -97,24 +99,26 @@ Getting all the dependencies set up for Windows is more tricky. Pre-built depend
 
 ### Build options:
 
-* `BUILD_TOOLS` (default=ON): Build tools
-* `BUILD_IO_LIBRARY` (default=ON): Build helper library for the Blender plugin
-* `BUILD_CRASHHANDLER` (default=ON): Enable the built-in crash handler (default OFF for macOS)
-* `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui - requires `BUILD_CRASHHANDLER` (default OFF for macOS)
-* `BUILD_PROFILER` (default=OFF unless BUILD_PROFILER_INSTRUMENT is enabled): Build the profiler GUI
-* `BUILD_TESTS` (default=OFF): Build tests that can be run using `make check`
-* `BUILD_ALL` (default=OFF): Enable all the BUILD_* options above by default - they can still be disabled individually
-* `UNITY_BUILD` (default=ON): Unity build (faster build, better optimizations but no incremental build)
-* `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
-* `DEBUG` (default=OFF^1): Enable debug output and runtime checks
-* `DEBUG_GL` (default=OFF^2): Enable OpenGL debug output by default
-* `DEBUG_EXTRA` (default=OFF): Expensive debug options
-* `DEVELOPER` (default=OFF): Enable build options suitable for developers^3
-* `BUILD_PROFILER_INSTRUMENT` (default=OFF): Add profiling instructions to the main arx binary
+* `BUILD_TOOLS` (default: `ON`): Build tools
+* `BUILD_IO_LIBRARY` (default: `ON`): Build helper library for the Blender plugin
+* `BUILD_CRASHHANDLER` (default: `ON`): Enable the built-in crash handler (default OFF for macOS)
+* `BUILD_CRASHREPORTER` (default: `ON`): Build the Qt crash reporter gui - requires `BUILD_CRASHHANDLER` (default OFF for macOS)
+* `BUILD_PROFILER` (default: `OFF`^1): Build the profiler GUI
+* `BUILD_TESTS` (default: `OFF`^2): Build tests that can be run using `make check`
+* `BUILD_ALL` (default: `OFF`): Enable all the BUILD_* options above by default - they can still be disabled individually
+* `UNITY_BUILD` (default: `ON`): Unity build (faster build, better optimizations but no incremental build)
+* `CMAKE_BUILD_TYPE` (default: `Release`): Set to `Debug` for debug binaries
+* `DEBUG` (default: `OFF`^3): Enable debug output and runtime checks
+* `DEBUG_GL` (default: `OFF`^4): Enable OpenGL debug output by default
+* `DEBUG_EXTRA` (default: `OFF`): Expensive debug options
+* `DEVELOPER` (default: `OFF`): Enable build options suitable for developers^5
+* `BUILD_PROFILER_INSTRUMENT` (default: `OFF`): Add profiling instructions to the main arx binary
 
-1. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug` or if `DEVELOPER` is enabled.
-1. Enabled automatically if `DEBUG` is enabled. If disabled, OpenGL debug output can be enabled at run-time using the `--debug-gl` command-line option.
-3. Currently this disables `UNITY_BUILD` for faster incremental builds and enables `DEBUG`, unless those options have been explicitly specified by the user.
+1. Enabled automatically if `BUILD_ALL` or `BUILD_PROFILER_INSTRUMENT` is enabled
+2. Enabled automatically if `BUILD_ALL` or `DEVELOPER` is enabled
+3. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug` or if `DEVELOPER` is enabled.
+4. Enabled automatically if `DEBUG` is enabled. If disabled, OpenGL debug output can be enabled at run-time using the `--debug-gl` command-line option.
+5. Currently this disables `UNITY_BUILD` and enables `DEBUG`, `BUILD_TESTS` and `FASTLINK` for faster incremental builds and improved debug checks, unless those options have been explicitly specified by the user.
 
 Install options:
 

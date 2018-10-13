@@ -88,28 +88,35 @@ if(MSVC)
 	# Disable randomized base address (for better callstack matching)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DYNAMICBASE:NO")
 	
-	# Always generate a PDB file
+	# Always build with debug information
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
 	
 	# Enable compiler optimization in release
 	set(CMAKE_CXX_FLAGS_RELEASE
-	    "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GL /GS- /fp:fast")
+	    "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GS- /fp:fast")
 	if(CMAKE_SIZEOF_VOID_P EQUAL 4)
 		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /arch:SSE2")
 	endif()
 	
-	# Always build with debug information
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
-	
-	# Enable linker optimization in release
-	#  /OPT:REF   Eliminate unreferenced code
-	#  /OPT:ICF   COMDAT folding (merge functions generating the same code)
-	set(CMAKE_EXE_LINKER_FLAGS_RELEASE
-		"${CMAKE_EXE_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF /LTCG")
-	set(CMAKE_SHARED_LINKER_FLAGS_RELEASE
-		"${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF /LTCG")
-	set(CMAKE_STATIC_LINKER_FLAGS_RELEASE
-		"${CMAKE_STATIC_LINKER_FLAGS_RELEASE} /LTCG")
+	if(FASTLINK)
+		
+		# Optimize for link speed in developer builds
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DEBUG:FASTLINK")
+		
+	elseif(SET_OPTIMIZATION_FLAGS)
+		
+		# Use link-time code generation
+		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GL")
+		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
+		set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LTCG")
+		set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS_RELEASE} /LTCG")
+		
+		# Merge symbols and discard unused symbols
+		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF")
+		set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF")
+		
+	endif()
 	
 else(MSVC)
 	
@@ -290,6 +297,27 @@ else(MSVC)
 		endif()
 		
 	endif(SET_OPTIMIZATION_FLAGS)
+	
+	if(USE_LDGOLD)
+		add_ldflag("-fuse-ld=gold")
+	endif()
+	
+	if(FASTLINK)
+		
+		# Optimize for link speed in developer builds
+		add_cxxflag("-gsplit-dwarf")
+		
+	elseif(SET_OPTIMIZATION_FLAGS)
+		
+		# Use link-time code generation
+		add_cxxflag("-flto")
+		add_ldflag("-fuse-linker-plugin")
+		
+		# Merge symbols and discard unused symbols
+		add_ldflag("-Wl,--gc-sections")
+		add_ldflag("-Wl,--icf=all")
+		
+	endif()
 	
 endif(MSVC)
 
