@@ -40,7 +40,7 @@ disable_color() {
 	dim_cyan='' ; dim_white='' ; reset=''
 }
 disable_color
-if [ -t 1 ] && [ "$(tput colors 2> /dev/null)" != -1 ] ; then
+if [ -z "${NO_COLOR:-1}" ] && [ -t 1 ] && [ "$(tput colors 2> /dev/null)" != -1 ] ; then
 	
 	       red="$(printf '\033[1;31m')"
 	     green="$(printf '\033[1;32m')"
