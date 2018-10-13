@@ -85,9 +85,6 @@ if(MSVC)
 	# Avoid warning during link
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
 	
-	# Disable randomized base address (for better callstack matching)
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DYNAMICBASE:NO")
-	
 	# Always build with debug information
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
