@@ -28,15 +28,15 @@ GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : Tex
 	// Set default state
 	
 	if(mStage == 0) {
-		ops[Color] = OpModulate;
-		ops[Alpha] = OpSelectArg1;
+		ops[ColorOp] = OpModulate;
+		ops[AlphaOp] = OpSelectArg1;
 		glActiveTexture(GL_TEXTURE0);
 		setTexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 		setTexEnv(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE); // TODO change the AL default to match OpenGL
 		glEnable(GL_TEXTURE_2D);
 	} else {
-		ops[Color] = OpDisable;
-		ops[Alpha] = OpDisable;
+		ops[ColorOp] = OpDisable;
+		ops[AlphaOp] = OpDisable;
 	}
 	
 }
@@ -172,11 +172,11 @@ void GLTextureStage::setTexEnv(GLenum target, GLenum pname, GLint param) {
 }
 
 void GLTextureStage::setColorOp(TextureOp op) {
-	setOp(Color, op);
+	setOp(ColorOp, op);
 }
 
 void GLTextureStage::setAlphaOp(TextureOp op) {
-	setOp(Alpha, op);
+	setOp(AlphaOp, op);
 }
 
 void GLTextureStage::setMipMapLODBias(float bias) {
