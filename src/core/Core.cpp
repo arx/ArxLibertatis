@@ -177,7 +177,7 @@ EERIE_3DOBJ * arrowobj = NULL; // 3D Object for arrows
 EERIE_3DOBJ * cameraobj = NULL; // Camera 3D Object // NEEDTO: Remove for Final
 EERIE_3DOBJ * markerobj = NULL; // Marker 3D Object // NEEDTO: Remove for Final
 
-Vec2s STARTDRAG;
+Vec2s g_dragStartPos;
 Entity * COMBINE = NULL;
 
 bool GMOD_RESET = true;
@@ -330,7 +330,7 @@ void levelInit() {
 
 	GMOD_RESET = true;
 	
-	STARTDRAG = Vec2s(0);
+	g_dragStartPos = Vec2s(0);
 	DANAEMouse = Vec2s(0);
 	
 	PolyBoomClear();
