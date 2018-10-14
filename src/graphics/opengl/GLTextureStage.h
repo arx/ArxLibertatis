@@ -48,13 +48,13 @@ public:
 	
 private:
 	
-	bool isEnabled() { return ((ops[Color] != OpDisable) || (ops[Alpha] != OpDisable)); }
+	bool isEnabled() { return ((ops[ColorOp] != OpDisable) || (ops[AlphaOp] != OpDisable)); }
 	
 	OpenGLRenderer * renderer;
 	
 	enum OpType {
-		Color,
-		Alpha
+		ColorOp,
+		AlphaOp
 	};
 	
 	TextureOp ops[2];
