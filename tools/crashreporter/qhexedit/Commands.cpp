@@ -40,7 +40,7 @@ bool CharCommand::mergeWith(const QUndoCommand * command) {
 	const CharCommand * nextCommand = static_cast<const CharCommand *>(command);
 	bool result = false;
 	
-	if(_cmd != remove && nextCommand->_cmd == replace && nextCommand->_charPos == _charPos) {
+	if(_cmd != Remove && nextCommand->_cmd == Replace && nextCommand->_charPos == _charPos) {
 		_newChar = nextCommand->_newChar;
 		result = true;
 	}
@@ -51,16 +51,16 @@ bool CharCommand::mergeWith(const QUndoCommand * command) {
 void CharCommand::undo() {
 	
 	switch(_cmd) {
-		case insert: {
+		case Insert: {
 			_xData->remove(_charPos, 1);
 			break;
 		}
-		case replace: {
+		case Replace: {
 			_xData->replace(_charPos, _oldChar);
 			_xData->setDataChanged(_charPos, _wasChanged);
 			break;
 		}
-		case remove: {
+		case Remove: {
 			_xData->insert(_charPos, _oldChar);
 			_xData->setDataChanged(_charPos, _wasChanged);
 			break;
@@ -72,17 +72,17 @@ void CharCommand::undo() {
 void CharCommand::redo() {
 	
 	switch(_cmd) {
-		case insert: {
+		case Insert: {
 			_xData->insert(_charPos, _newChar);
 			break;
 		}
-		case replace: {
+		case Replace: {
 			_oldChar = _xData->data()[_charPos];
 			_wasChanged = _xData->dataChanged(_charPos);
 			_xData->replace(_charPos, _newChar);
 			break;
 		}
-		case remove: {
+		case Remove: {
 			_oldChar = _xData->data()[_charPos];
 			_wasChanged = _xData->dataChanged(_charPos);
 			_xData->remove(_charPos, 1);
@@ -105,16 +105,16 @@ ArrayCommand::ArrayCommand(XByteArray * xData, Cmd cmd, int baPos, const QByteAr
 void ArrayCommand::undo() {
 	
 	switch(_cmd) {
-		case insert: {
+		case Insert: {
 			_xData->remove(_baPos, _newBa.length());
 			break;
 		}
-		case replace: {
+		case Replace: {
 			_xData->replace(_baPos, _oldBa);
 			_xData->setDataChanged(_baPos, _wasChanged);
 			break;
 		}
-		case remove: {
+		case Remove: {
 			_xData->insert(_baPos, _oldBa);
 			_xData->setDataChanged(_baPos, _wasChanged);
 			break;
@@ -126,17 +126,17 @@ void ArrayCommand::undo() {
 void ArrayCommand::redo() {
 	
 	switch(_cmd) {
-		case insert: {
+		case Insert: {
 			_xData->insert(_baPos, _newBa);
 			break;
 		}
-		case replace: {
+		case Replace: {
 			_oldBa = _xData->data().mid(_baPos, _len);
 			_wasChanged = _xData->dataChanged(_baPos, _len);
 			_xData->replace(_baPos, _newBa);
 			break;
 		}
-		case remove: {
+		case Remove: {
 			_oldBa = _xData->data().mid(_baPos, _len);
 			_wasChanged = _xData->dataChanged(_baPos, _len);
 			_xData->remove(_baPos, _len);
