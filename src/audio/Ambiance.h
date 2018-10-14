@@ -94,13 +94,7 @@ private:
 		FadeDown
 	};
 	
-	enum Status {
-		Idle,
-		Playing,
-		Paused
-	};
-	
-	Status m_status;
+	SourceStatus m_status;
 	bool m_loop;
 	Fade m_fade;
 	
