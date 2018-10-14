@@ -1714,17 +1714,14 @@ void ArxGame::manageEditorControls() {
 	}
 	
 	if(eeMousePressed1()) {
-		static Vec2f dragThreshold(0.f);
-		
+		static float s_dragDistance = 0.f;
 		if(eeMouseDown1()) {
-			
-			STARTDRAG = DANAEMouse;
+			g_dragStartPos = DANAEMouse;
 			DRAGGING = false;
-			dragThreshold = Vec2f(0.f);
-		} else {
-			dragThreshold += GInput->getRelativeMouseMovement();
-			if((std::abs(DANAEMouse.x - STARTDRAG.x) > 2 && std::abs(DANAEMouse.y - STARTDRAG.y) > 2)
-			   || (std::abs(dragThreshold.x) > 0.28f || std::abs(dragThreshold.y) > 0.28f)) {
+			s_dragDistance = 0.f;
+		} else if(!DRAGGING) {
+			s_dragDistance += 5.f * glm::length(GInput->getRelativeMouseMovement());
+			if(s_dragDistance + glm::length(Vec2f(DANAEMouse - g_dragStartPos)) > 5.f) {
 				DRAGGING = true;
 			}
 		}
@@ -1999,11 +1996,11 @@ void ArxGame::manageEditorControls() {
 		   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 		   && !DRAGINTER
 		) {
-			if(!TakeFromInventory(STARTDRAG)) {
+			if(!TakeFromInventory(g_dragStartPos)) {
 				
 				bool bOk = false;
 				
-				Entity * io = InterClick(STARTDRAG);
+				Entity * io = InterClick(g_dragStartPos);
 				if(io && !BLOCK_PLAYER_CONTROLS) {
 					if(g_cursorOverBook) {
 						if(io->show == SHOW_FLAG_ON_PLAYER)
