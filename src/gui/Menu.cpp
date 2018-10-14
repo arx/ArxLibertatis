@@ -231,12 +231,10 @@ void ARX_Menu_Render() {
 	switch(ARXmenu.mode()) {
 		case Mode_InGame: arx_unreachable();
 		case Mode_CharacterCreation: {
-			delete g_mainMenu, g_mainMenu = NULL;
 			g_characterCreation.render();
 			return;
 		}
 		case Mode_Credits: {
-			delete g_mainMenu, g_mainMenu = NULL;
 			credits::render();
 			return;
 		}

@@ -2032,6 +2032,10 @@ void ArxGame::render() {
 	if(g_debugTriggers[1])
 		g_hudRoot.bookIconGui.requestFX();
 	
+	if(ARXmenu.mode() != Mode_MainMenu) {
+		Menu2_Close();
+	}
+	
 	if(ARXmenu.mode() != Mode_InGame) {
 		benchmark::begin(benchmark::Menu);
 		ARX_Menu_Render();
