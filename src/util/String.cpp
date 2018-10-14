@@ -32,7 +32,7 @@ std::string loadString(const char * data, size_t maxLength) {
 }
 
 void storeString(char * dst, size_t maxLength, const std::string & src) {
-	std::strncpy(dst, src.c_str(), maxLength);
+	std::memcpy(dst, src.c_str(), std::min(maxLength, src.length() + 1));
 }
 
 struct character_escaper {
