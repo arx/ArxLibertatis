@@ -265,9 +265,15 @@ void OpenGLRenderer::reinit() {
 			LogError << "OpenGL ES version 1.0 or newer required";
 		}
 	} else {
+		#if ARX_HAVE_EPOXY
+		if(!ARX_HAVE_GL_VER(1, 5) && (!ARX_HAVE_GL_VER(1, 4) || !ARX_HAVE_GL_EXT(ARB_vertex_buffer_object))) {
+			LogError << "OpenGL version 1.5 or newer or 1.4 + GL_ARB_vertex_buffer_object required";
+		}
+		#else
 		if(!ARX_HAVE_GL_VER(1, 5)) {
 			LogError << "OpenGL version 1.5 or newer required";
 		}
+		#endif
 	}
 	
 	if(isES) {
