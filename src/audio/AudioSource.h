@@ -40,10 +40,6 @@ public:
 	
 	class Callback {
 		
-	public:
-		
-		virtual ~Callback() { }
-		
 	private:
 		
 		virtual void onSamplePosition(Source & source, size_t position) = 0;
