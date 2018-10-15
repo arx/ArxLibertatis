@@ -96,18 +96,19 @@ if(MSVC)
 		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /arch:SSE2")
 	endif()
 	
+	if(USE_LTO)
+		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GL")
+		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
+		set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LTCG")
+		set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS_RELEASE} /LTCG")
+	endif()
+	
 	if(FASTLINK)
 		
 		# Optimize for link speed in developer builds
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DEBUG:FASTLINK")
 		
 	elseif(SET_OPTIMIZATION_FLAGS)
-		
-		# Use link-time code generation
-		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GL")
-		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
-		set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LTCG")
-		set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS_RELEASE} /LTCG")
 		
 		# Merge symbols and discard unused symbols
 		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF")
@@ -299,16 +300,17 @@ else(MSVC)
 		add_ldflag("-fuse-ld=gold")
 	endif()
 	
+	if(USE_LTO)
+		add_cxxflag("-flto")
+		add_ldflag("-fuse-linker-plugin")
+	endif()
+	
 	if(FASTLINK)
 		
 		# Optimize for link speed in developer builds
 		add_cxxflag("-gsplit-dwarf")
 		
 	elseif(SET_OPTIMIZATION_FLAGS)
-		
-		# Use link-time code generation
-		add_cxxflag("-flto")
-		add_ldflag("-fuse-linker-plugin")
 		
 		# Merge symbols and discard unused symbols
 		add_ldflag("-Wl,--gc-sections")

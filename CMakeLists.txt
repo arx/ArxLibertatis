@@ -85,6 +85,12 @@ option(SET_NOISY_WARNING_FLAGS "Enable noisy compiler warnings" OFF)
 option(SET_OPTIMIZATION_FLAGS "Adjust compiler optimization flags" ON)
 suboption(USE_LDGOLD "Use the Gold linker" BOOL ${SET_OPTIMIZATION_FLAGS})
 suboption(FASTLINK "Optimize (incremental) linking speed" BOOL ${DEVELOPER})
+set(default_USE_LTO OFF)
+if(SET_OPTIMIZATION_FLAGS AND NOT FASTLINK)
+	set(default_USE_LTO ON)
+endif()
+suboption(USE_LTO "Use link-time code generation" BOOL ${default_USE_LTO})
+	
 
 suboption(CXX_STD_VERSION "Maximum C++ standard version to enable" STRING 2017)
 if(DEVELOPER OR CMAKE_BUILD_TYPE STREQUAL "Debug")
