@@ -313,6 +313,7 @@ else(MSVC)
 		# Merge symbols and discard unused symbols
 		add_ldflag("-Wl,--gc-sections")
 		add_ldflag("-Wl,--icf=all")
+		add_cxxflag("-fmerge-all-constants")
 		
 	endif()
 	
