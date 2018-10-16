@@ -29,13 +29,14 @@
 #include "audio/AudioTypes.h"
 #include "audio/AudioSource.h"
 #include "math/Types.h"
+#include "platform/Platform.h"
 
 namespace audio {
 
 class Sample;
 class Stream;
 
-class OpenALSource : public Source {
+class OpenALSource arx_final : public Source {
 	
 public:
 	

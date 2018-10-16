@@ -37,12 +37,13 @@
 #include "audio/AudioTypes.h"
 #include "audio/AudioResource.h"
 #include "math/Types.h"
+#include "platform/Platform.h"
 
 namespace audio {
 
 class OpenALSource;
 
-class OpenALBackend : public Backend {
+class OpenALBackend arx_final : public Backend {
 	
 public:
 	
