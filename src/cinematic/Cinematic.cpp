@@ -151,19 +151,18 @@ static float LightRND;
 
 static Color CalculLight(CinematicLight * light, Vec2f pos, Color col) {
 	
-	float ra = std::sqrt((light->pos.x - pos.x) * (light->pos.x - pos.x)
-	                     + (light->pos.y - pos.y) * (light->pos.y - pos.y));
+	float distance = glm::distance(Vec2f(light->pos), pos);
 	
-	if(ra > light->fallout) {
+	if(distance > light->fallout) {
 		return col * LightRND;
 	}
 	
-	Color3f color = light->color * (LightRND / 255.f);
-	if(ra >= light->fallin) {
-		color = color * ((light->fallout - ra) / (light->fallout - light->fallin));
+	float attenuation = LightRND / 255.f;
+	if(distance >= light->fallin) {
+		attenuation *= (light->fallout - distance) / (light->fallout - light->fallin);
 	}
 	
-	return Color(Color3f(col) + color, col.a);
+	return Color(Color3f(col) + light->color * attenuation, col.a);
 }
 
 static Vec3f TransformLocalVertex(const Vec2f & vbase, const Vec3f & LocalPos, float LocalSin, float LocalCos) {
