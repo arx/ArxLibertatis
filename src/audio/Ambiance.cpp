@@ -65,6 +65,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/Vector.h"
 
+#include "platform/Platform.h"
+
 #include "util/Flags.h"
 
 #include "Configure.h"
@@ -223,7 +225,7 @@ namespace audio {
 
 static const PlatformDuration KEY_CONTINUE = PlatformDurationUs(std::numeric_limits<s64>::max());
 
-struct Ambiance::Track : public Source::Callback {
+struct Ambiance::Track arx_final : public Source::Callback {
 	
 	enum Flag {
 		POSITION   = 0x00000001,
