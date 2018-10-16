@@ -115,108 +115,117 @@ CLightning::CLightning()
 	m_elapsed = m_duration + GameDurationMs(1);
 }
 
-void CLightning::BuildS(LIGHTNING * pLInfo) {
+void CLightning::BuildS(LIGHTNING * lightingInfo) {
 	
-	Vec3f astart = pLInfo->eStart;
-	Vec3f avect = pLInfo->eVect;
+	Vec3f astart = lightingInfo->eStart;
+	Vec3f avect = lightingInfo->eVect;
 	
-	if(pLInfo->anb > 0 && m_nbtotal < (MAX_NODES - 1)) {
+	if(lightingInfo->anb > 0 && m_nbtotal < (MAX_NODES - 1)) {
 		
 		int moi = ++m_nbtotal;
 		
-		if(pLInfo->abFollow) {
-			avect = glm::normalize(m_eDest - pLInfo->eStart);
+		if(lightingInfo->abFollow) {
+			avect = glm::normalize(m_eDest - lightingInfo->eStart);
 		}
 		
-		Vec3f fAngle(Random::getf(-1.f, 1.f) * (pLInfo->fAngleMax.x - pLInfo->fAngleMin.x) + pLInfo->fAngleMin.x,
-		             Random::getf(-1.f, 1.f) * (pLInfo->fAngleMax.y - pLInfo->fAngleMin.y) + pLInfo->fAngleMin.y,
-		             Random::getf(-1.f, 1.f) * (pLInfo->fAngleMax.z - pLInfo->fAngleMin.z) + pLInfo->fAngleMin.z);
+		Vec3f fAngle(Random::getf(-1.f, 1.f) * (lightingInfo->fAngleMax.x - lightingInfo->fAngleMin.x)
+		             + lightingInfo->fAngleMin.x,
+		             Random::getf(-1.f, 1.f) * (lightingInfo->fAngleMax.y - lightingInfo->fAngleMin.y)
+		             + lightingInfo->fAngleMin.y,
+		             Random::getf(-1.f, 1.f) * (lightingInfo->fAngleMax.z - lightingInfo->fAngleMin.z)
+		             + lightingInfo->fAngleMin.z);
 		
 		Vec3f av(glm::cos(glm::acos(avect.x) - glm::radians(fAngle.x)),
 		         glm::sin(glm::asin(avect.y) - glm::radians(fAngle.y)),
 		         glm::tan(glm::atan(avect.z) - glm::radians(fAngle.z)));
 		av = glm::normalize(av);
 		avect = av;
-
+		
 		float ts = Random::getf();
-		av *= ts * (m_fLengthMax - m_fLengthMin) * pLInfo->anb * m_invNbSegments + m_fLengthMin;
-
+		av *= ts * (m_fLengthMax - m_fLengthMin) * lightingInfo->anb * m_invNbSegments + m_fLengthMin;
+		
 		astart += av;
-		pLInfo->eStart = astart;
+		lightingInfo->eStart = astart;
 		
-		m_cnodetab[m_nbtotal].pos = pLInfo->eStart;
-		m_cnodetab[m_nbtotal].size = m_cnodetab[0].size * pLInfo->anb * m_invNbSegments;
-		m_cnodetab[m_nbtotal].parent = pLInfo->aParent;
+		m_cnodetab[m_nbtotal].pos = lightingInfo->eStart;
+		m_cnodetab[m_nbtotal].size = m_cnodetab[0].size * lightingInfo->anb * m_invNbSegments;
+		m_cnodetab[m_nbtotal].parent = lightingInfo->aParent;
 		
-		int anb = pLInfo->anb;
-		int anbrec = pLInfo->anbrec;
+		int anb = lightingInfo->anb;
+		int anbrec = lightingInfo->anbrec;
 
 		float p = Random::getf();
 
-		if(p <= 0.15f && pLInfo->anbrec < 7) {
+		if(p <= 0.15f && lightingInfo->anbrec < 7) {
 			float m = Random::getf();
-
-			if(pLInfo->abFollow) {
-				pLInfo->eStart = astart;
-				pLInfo->eVect = avect;
-				pLInfo->abFollow = false;
-				pLInfo->anb =  anb - (int)(10 * (1 - m));
-				pLInfo->anbrec = anbrec + (int)(2 * m);
-				pLInfo->aParent = moi;
-				pLInfo->fAngleMin = m_fAngleMin;
-				pLInfo->fAngleMax = m_fAngleMax;
+			
+			if(lightingInfo->abFollow) {
 				
-				BuildS(pLInfo);
-
-				pLInfo->eStart = astart;
-				pLInfo->eVect = avect;
-				pLInfo->abFollow = true;
-				pLInfo->anb = anb - (int)(10 * m);
-				pLInfo->anbrec = anbrec + (int)(2 * m);
-				pLInfo->aParent = moi;
-				pLInfo->fAngleMin = m_fAngleMin;
-				pLInfo->fAngleMax = m_fAngleMax;
+				lightingInfo->eStart = astart;
+				lightingInfo->eVect = avect;
+				lightingInfo->abFollow = false;
+				lightingInfo->anb =  anb - (int)(10 * (1 - m));
+				lightingInfo->anbrec = anbrec + (int)(2 * m);
+				lightingInfo->aParent = moi;
+				lightingInfo->fAngleMin = m_fAngleMin;
+				lightingInfo->fAngleMax = m_fAngleMax;
 				
-				BuildS(pLInfo);
+				BuildS(lightingInfo);
+
+				lightingInfo->eStart = astart;
+				lightingInfo->eVect = avect;
+				lightingInfo->abFollow = true;
+				lightingInfo->anb = anb - (int)(10 * m);
+				lightingInfo->anbrec = anbrec + (int)(2 * m);
+				lightingInfo->aParent = moi;
+				lightingInfo->fAngleMin = m_fAngleMin;
+				lightingInfo->fAngleMax = m_fAngleMax;
+				
+				BuildS(lightingInfo);
+				
 			} else {
-				pLInfo->abFollow = false;
-				pLInfo->eStart = astart;
-				pLInfo->eVect = avect;
-				pLInfo->anb = anb - (int)(10 * (1 - m));
-				pLInfo->anbrec = anbrec + (int)(2 * m);
-				pLInfo->aParent = moi;
-				pLInfo->fAngleMin = m_fAngleMin;
-				pLInfo->fAngleMax = m_fAngleMax;
 				
-				BuildS(pLInfo);
+				lightingInfo->abFollow = false;
+				lightingInfo->eStart = astart;
+				lightingInfo->eVect = avect;
+				lightingInfo->anb = anb - (int)(10 * (1 - m));
+				lightingInfo->anbrec = anbrec + (int)(2 * m);
+				lightingInfo->aParent = moi;
+				lightingInfo->fAngleMin = m_fAngleMin;
+				lightingInfo->fAngleMax = m_fAngleMax;
+				
+				BuildS(lightingInfo);
 
-				pLInfo->abFollow = false;
-				pLInfo->eStart = astart;
-				pLInfo->eVect = avect;
-				pLInfo->anb = anb - (int)(10 * m);
-				pLInfo->anbrec = anbrec + (int)(2 * m);
-				pLInfo->aParent = moi;
-				pLInfo->fAngleMin = m_fAngleMin;
-				pLInfo->fAngleMax = m_fAngleMax;
+				lightingInfo->abFollow = false;
+				lightingInfo->eStart = astart;
+				lightingInfo->eVect = avect;
+				lightingInfo->anb = anb - (int)(10 * m);
+				lightingInfo->anbrec = anbrec + (int)(2 * m);
+				lightingInfo->aParent = moi;
+				lightingInfo->fAngleMin = m_fAngleMin;
+				lightingInfo->fAngleMax = m_fAngleMax;
 				
-				BuildS(pLInfo);
+				BuildS(lightingInfo);
+				
 			}
 		} else {
-			if(Random::getf() <= 0.10f) {
-				pLInfo->abFollow = true;
-			}
-
-			pLInfo->eStart = astart;
-			pLInfo->eVect = avect;
-			pLInfo->anb = anb - 1;
-			pLInfo->anbrec = anbrec;
-			pLInfo->aParent = moi;
-			pLInfo->fAngleMin = m_fAngleMin;
-			pLInfo->fAngleMax = m_fAngleMax;
 			
-			BuildS(pLInfo);
+			if(Random::getf() <= 0.10f) {
+				lightingInfo->abFollow = true;
+			}
+			lightingInfo->eStart = astart;
+			lightingInfo->eVect = avect;
+			lightingInfo->anb = anb - 1;
+			lightingInfo->anbrec = anbrec;
+			lightingInfo->aParent = moi;
+			lightingInfo->fAngleMin = m_fAngleMin;
+			lightingInfo->fAngleMax = m_fAngleMax;
+			
+			BuildS(lightingInfo);
+			
 		}
 	}
+	
 }
 
 void CLightning::Create(Vec3f aeFrom, Vec3f aeTo) {
