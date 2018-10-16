@@ -38,6 +38,8 @@
 #cmakedefine01 ARX_HAVE_CXX11_THREADLOCAL
 // = default
 #cmakedefine01 ARX_HAVE_CXX11_DEFAULT
+// final
+#cmakedefine01 ARX_HAVE_CXX11_FINAL
 
 // C++17 features
 // [[nodiscard]]
