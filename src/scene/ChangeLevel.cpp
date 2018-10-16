@@ -120,7 +120,7 @@ extern bool LOAD_N_ERASE;
 
 static bool ARX_CHANGELEVEL_Push_Index(long num);
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
-static bool ARX_CHANGELEVEL_PopLevel(long num, bool reloadflag = false,
+static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag = false,
                                      const std::string & target = std::string(), float angle = 0.f);
 static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
