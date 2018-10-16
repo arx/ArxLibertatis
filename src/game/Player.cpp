@@ -1813,53 +1813,7 @@ static void setPlayerPositionColor(){
 	}
 }
 
-void PlayerMovementIterate(float DelatTime);
-
-void ARX_PLAYER_Manage_Movement() {
-	
-	ARX_PROFILE_FUNC();
-	
-	// Is our player able to move ?
-	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS || !entities.player())
-		return;
-
-	// Compute current player speedfactor
-	float speedfactor = entities.player()->basespeed + entities.player()->speed_modif;
-
-	if(speedfactor < 0)
-		speedfactor = 0;
-
-	// Compute time things
-	const float FIXED_TIMESTEP = 25.f;
-	const float MAX_FRAME_TIME = 200.f;
-
-	static float StoredTime = 0;
-
-	float DeltaTime = std::min(toMs(g_platformTime.lastFrameDuration()), MAX_FRAME_TIME);
-	DeltaTime = StoredTime + DeltaTime * speedfactor;
-	
-	if(player.jumpphase != NotJumping) {
-		while(DeltaTime > FIXED_TIMESTEP) {
-			/*
-			 * TODO: should be PlayerMovementIterate(FIXED_TIMESTEP);
-			 * However, jump forward movement is only applied the the first
-			 * iteration, so we need this to not completely break the jump
-			 * at lower framerates.
-			 * Should only cause minor differences at higher framerates.
-			 * Fix this once PlayerMovementIterate has been cleaned up!
-			 */
-			PlayerMovementIterate(DeltaTime);
-			DeltaTime -= FIXED_TIMESTEP;
-		}
-	} else {
-		PlayerMovementIterate(DeltaTime);
-		DeltaTime = 0;
-	}
-	
-	StoredTime = DeltaTime;
-}
-
-void PlayerMovementIterate(float DeltaTime) {
+static void PlayerMovementIterate(float DeltaTime) {
 	
 	float d = 0;
 	
@@ -2305,6 +2259,50 @@ void PlayerMovementIterate(float DeltaTime) {
 	player.pos = g_moveto;
 	
 	setPlayerPositionColor();
+}
+
+void ARX_PLAYER_Manage_Movement() {
+	
+	ARX_PROFILE_FUNC();
+	
+	// Is our player able to move ?
+	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS || !entities.player())
+		return;
+
+	// Compute current player speedfactor
+	float speedfactor = entities.player()->basespeed + entities.player()->speed_modif;
+
+	if(speedfactor < 0)
+		speedfactor = 0;
+
+	// Compute time things
+	const float FIXED_TIMESTEP = 25.f;
+	const float MAX_FRAME_TIME = 200.f;
+
+	static float StoredTime = 0;
+
+	float DeltaTime = std::min(toMs(g_platformTime.lastFrameDuration()), MAX_FRAME_TIME);
+	DeltaTime = StoredTime + DeltaTime * speedfactor;
+	
+	if(player.jumpphase != NotJumping) {
+		while(DeltaTime > FIXED_TIMESTEP) {
+			/*
+			 * TODO: should be PlayerMovementIterate(FIXED_TIMESTEP);
+			 * However, jump forward movement is only applied the the first
+			 * iteration, so we need this to not completely break the jump
+			 * at lower framerates.
+			 * Should only cause minor differences at higher framerates.
+			 * Fix this once PlayerMovementIterate has been cleaned up!
+			 */
+			PlayerMovementIterate(DeltaTime);
+			DeltaTime -= FIXED_TIMESTEP;
+		}
+	} else {
+		PlayerMovementIterate(DeltaTime);
+		DeltaTime = 0;
+	}
+	
+	StoredTime = DeltaTime;
 }
 
 /*!
