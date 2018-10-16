@@ -51,9 +51,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleSystem.h"
 #include "math/Types.h"
 #include "math/Vector.h"
+#include "platform/Platform.h"
 
 // Done By : Didier Pedreno
-class CLightning : public CSpellFx {
+class CLightning arx_final : public CSpellFx {
 	
 public:
 	

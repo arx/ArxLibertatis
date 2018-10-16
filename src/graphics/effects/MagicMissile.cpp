@@ -83,8 +83,7 @@ CMagicMissile::CMagicMissile()
 	m_elapsed = m_duration + GameDurationMs(1);
 }
 
-CMagicMissile::~CMagicMissile() {
-}
+CMagicMissile::~CMagicMissile() { }
 
 void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
 {
@@ -226,9 +225,7 @@ void CMagicMissile::Render() {
 }
 
 
-MrMagicMissileFx::MrMagicMissileFx()
-	: CMagicMissile()
-{
+MrMagicMissileFx::MrMagicMissileFx() {
 	m_trailColor = Color3f(0.9f, 0.2f, 0.5f);
 	m_projectileColor = Color3f(1.f, 0.f, 0.2f);
 	tex_mm = NULL;
