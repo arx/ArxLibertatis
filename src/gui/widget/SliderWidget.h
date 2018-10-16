@@ -25,6 +25,7 @@
 #include <boost/function.hpp>
 
 #include "gui/widget/Widget.h"
+#include "platform/Platform.h"
 
 class Font;
 class ButtonWidget;
@@ -32,7 +33,7 @@ class TextWidget;
 class TextureContainer;
 
 //! Slider with value in the range [0..10]
-class SliderWidget: public Widget {
+class SliderWidget arx_final : public Widget {
 	
 public:
 	

@@ -22,12 +22,13 @@
 
 #include "gui/widget/TextWidget.h"
 #include "gui/widget/Widget.h"
+#include "platform/Platform.h"
 
 class TextureContainer;
 
 namespace res { class path; }
 
-class ButtonWidget: public Widget {
+class ButtonWidget arx_final : public Widget {
 	
 public:
 	

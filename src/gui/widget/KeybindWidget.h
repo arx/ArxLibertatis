@@ -28,10 +28,11 @@
 #include "gui/widget/Widget.h"
 #include "input/InputKey.h"
 #include "math/Vector.h"
+#include "platform/Platform.h"
 
 class Font;
 
-class KeybindWidget: public Widget {
+class KeybindWidget arx_final : public Widget {
 	
 	std::string m_text;
 	Font * m_font;

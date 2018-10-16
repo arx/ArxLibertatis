@@ -27,10 +27,11 @@
 #include "graphics/Color.h"
 #include "gui/widget/Widget.h"
 #include "input/TextInput.h"
+#include "platform/Platform.h"
 
 class Font;
 
-class TextInputWidget: public Widget, public BasicTextInput {
+class TextInputWidget arx_final : public Widget, public BasicTextInput {
 	
 	Font * m_font;
 	bool m_editing;

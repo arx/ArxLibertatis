@@ -24,10 +24,11 @@
 
 #include "gui/widget/Widget.h"
 #include "math/Vector.h"
+#include "platform/Platform.h"
 
 class Font;
 
-class TextWidget: public Widget {
+class TextWidget arx_final : public Widget {
 	
 public:
 	

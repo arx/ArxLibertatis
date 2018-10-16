@@ -25,10 +25,11 @@
 #include "core/SaveGame.h"
 #include "gui/widget/Widget.h"
 #include "math/Vector.h"
+#include "platform/Platform.h"
 
 class Font;
 
-class SaveSlotWidget: public Widget {
+class SaveSlotWidget arx_final : public Widget {
 	
 	Font * m_font;
 	SavegameHandle m_savegame;
