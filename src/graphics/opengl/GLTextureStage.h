@@ -24,11 +24,12 @@
 
 #include "graphics/opengl/OpenGLUtil.h"
 #include "graphics/texture/TextureStage.h"
+#include "platform/Platform.h"
 
 class OpenGLRenderer;
 class GLTexture;
 
-class GLTextureStage : public TextureStage {
+class GLTextureStage arx_final : public TextureStage {
 	
 public:
 	
