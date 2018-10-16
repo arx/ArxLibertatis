@@ -141,6 +141,7 @@ void DispellIllusionSpell::Launch() {
 	ARX_SOUND_PlaySFX(g_snd.SPELL_DISPELL_ILLUSION);
 	
 	m_duration = GameDurationMs(1000);
+	m_hasDuration = true;
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		SpellBase * spell = spells[SpellHandle(n)];

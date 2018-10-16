@@ -240,6 +240,7 @@ void ExplosionSpell::Update() {
 
 void EnchantWeaponSpell::Launch() {
 	m_duration = GameDurationMs(20);
+	m_hasDuration = true;
 }
 
 void EnchantWeaponSpell::End() { }
