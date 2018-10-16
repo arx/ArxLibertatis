@@ -45,9 +45,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_EFFECTS_FIELD_H
 
 #include "graphics/effects/SpellEffects.h"
+#include "platform/Platform.h"
 
 // Done By : Didier Pedreno
-class CCreateField : public CSpellFx {
+class CCreateField arx_final : public CSpellFx {
 	
 public:
 	CCreateField();

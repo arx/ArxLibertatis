@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_EFFECTS_MAGICMISSILE_H
 
 #include "graphics/effects/SpellEffects.h"
+#include "platform/Platform.h"
 
 // Done By : Didier Pédreno
 class CMagicMissile : public CSpellFx {
@@ -76,11 +77,15 @@ private:
 	int iBezierPrecision;
 	float fTrail;
 	Vec3f pathways[6];
+	
 };
 
-class MrMagicMissileFx : public CMagicMissile {
+class MrMagicMissileFx arx_final : public CMagicMissile {
+	
 public:
+	
 	MrMagicMissileFx();
+	
 };
 
 #endif // ARX_GRAPHICS_EFFECTS_MAGICMISSILE_H
