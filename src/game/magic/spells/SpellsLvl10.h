@@ -23,9 +23,12 @@
 #include "game/magic/Spell.h"
 
 #include "graphics/effects/Lightning.h"
+#include "platform/Platform.h"
 
-class MassLightningStrikeSpell : public SpellBase {
+class MassLightningStrikeSpell arx_final : public SpellBase {
+	
 public:
+	
 	MassLightningStrikeSpell();
 	~MassLightningStrikeSpell();
 	
@@ -34,15 +37,19 @@ public:
 	void Update();
 	
 private:
+	
 	Vec3f m_pos;
 	bool m_soundEffectPlayed;
 	LightHandle m_light;
 	
 	std::vector<CLightning *> pTab;
+	
 };
 
-class ControlTargetSpell : public SpellBase {
+class ControlTargetSpell arx_final : public SpellBase {
+	
 public:
+	
 	ControlTargetSpell();
 	
 	bool CanLaunch();
@@ -51,15 +58,19 @@ public:
 	void Update();
 	
 private:
+	
 	Vec3f eSrc;
 	Vec3f eTarget;
 	TextureContainer * tex_mm;
 	Vec3f pathways[40];
 	float fTrail;
+	
 };
 
-class FreezeTimeSpell : public SpellBase {
+class FreezeTimeSpell arx_final : public SpellBase {
+	
 public:
+	
 	FreezeTimeSpell();
 	
 	bool CanLaunch();
@@ -67,14 +78,19 @@ public:
 	void End();
 	
 private:
+	
 	float m_slowdown;
+	
 };
 
-class MassIncinerateSpell : public SpellBase {
+class MassIncinerateSpell arx_final : public SpellBase {
+	
 public:
+	
 	void Launch();
 	void End();
 	void Update();
+	
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H

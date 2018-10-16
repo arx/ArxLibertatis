@@ -24,9 +24,12 @@
 
 #include "graphics/effects/Fissure.h"
 #include "graphics/effects/Field.h"
+#include "platform/Platform.h"
 
-class RiseDeadSpell : public SpellBase {
+class RiseDeadSpell arx_final : public SpellBase {
+	
 public:
+	
 	RiseDeadSpell();
 	
 	bool CanLaunch();
@@ -35,6 +38,7 @@ public:
 	void Update();
 	
 private:
+	
 	void GetTargetAndBeta(Vec3f & target, float & beta);
 	
 	CRiseDead m_fissure;
@@ -42,18 +46,24 @@ private:
 	Vec3f m_targetPos;
 	bool m_creationFailed;
 	EntityHandle m_entity;
+	
 };
 
-class ParalyseSpell : public SpellBase {
+class ParalyseSpell arx_final : public SpellBase {
+	
 public:
+	
 	void Launch();
 	void End();
 	
 	Vec3f getPosition();
+	
 };
 
-class CreateFieldSpell : public SpellBase {
+class CreateFieldSpell arx_final : public SpellBase {
+	
 public:
+	
 	CreateFieldSpell();
 	
 	void Launch();
@@ -66,22 +76,30 @@ public:
 	EntityHandle m_entity;
 	
 private:
+	
 	CCreateField m_field;
+	
 };
 
-class DisarmTrapSpell : public SpellBase {
+class DisarmTrapSpell arx_final : public SpellBase {
+	
 public:
+	
 	void Launch();
+	
 };
 
-class SlowDownSpell : public SpellBase {
+class SlowDownSpell arx_final : public SpellBase {
+	
 public:
+	
 	bool CanLaunch();
 	void Launch();
 	void End();
 	void Update();
 	
 	Vec3f getPosition();
+	
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H

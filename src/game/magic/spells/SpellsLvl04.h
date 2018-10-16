@@ -21,9 +21,12 @@
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H
 
 #include "game/magic/Spell.h"
+#include "platform/Platform.h"
 
-class BlessSpell : public SpellBase {
+class BlessSpell arx_final : public SpellBase {
+	
 public:
+	
 	BlessSpell();
 	
 	bool CanLaunch();
@@ -34,6 +37,7 @@ public:
 	Vec3f getPosition();
 	
 private:
+	
 	Vec3f m_pos;
 	float m_yaw;
 	float m_scale;
@@ -41,40 +45,55 @@ private:
 	TextureContainer * tex_p1;
 	TextureContainer * tex_sol;
 	float fRot;
+	
 };
 
-class DispellFieldSpell : public SpellBase {
+class DispellFieldSpell arx_final : public SpellBase {
+	
 public:
+	
 	void Launch();
+	
 };
 
-class FireProtectionSpell : public SpellBase {
+class FireProtectionSpell arx_final : public SpellBase {
+	
 public:
+	
 	void Launch();
 	void End();
 	void Update();
 	
 	Vec3f getPosition();
+	
 };
 
-class ColdProtectionSpell : public SpellBase {
+class ColdProtectionSpell arx_final : public SpellBase {
+	
 public:
+	
 	void Launch();
 	void End();
 	void Update();
 	
 	Vec3f getPosition();
+	
 };
 
-class TelekinesisSpell : public SpellBase {
+class TelekinesisSpell arx_final : public SpellBase {
+	
 public:
+	
 	bool CanLaunch();
 	void Launch();
 	void End();
+	
 };
 
-class CurseSpell : public SpellBase {
+class CurseSpell arx_final : public SpellBase {
+	
 public:
+	
 	CurseSpell();
 	
 	void Launch();
@@ -84,9 +103,11 @@ public:
 	Vec3f getPosition();
 	
 private:
+	
 	Vec3f m_pos;
 	TextureContainer * tex_p1;
 	float fRot;
+	
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H
