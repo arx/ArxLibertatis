@@ -424,4 +424,12 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  */
 #define arx_alloc(SizeArg) arx_nodiscard arx_return_noalias arx_alloc_size(SizeArg)
 
+#if ARX_HAVE_CXX11_FINAL
+#define arx_final final
+#elif ARX_COMPILER_MSVC
+#define arx_final sealed
+#else
+#define arx_final
+#endif
+
 #endif // ARX_PLATFORM_PLATFORM_H
