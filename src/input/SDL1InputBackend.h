@@ -28,9 +28,10 @@
 #include "input/TextInput.h"
 #include "math/Vector.h"
 #include "math/Types.h"
+#include "platform/Platform.h"
 #include "window/SDL1Window.h"
 
-class SDL1InputBackend : public InputBackend {
+class SDL1InputBackend arx_final : public InputBackend {
 	
 public:
 	
