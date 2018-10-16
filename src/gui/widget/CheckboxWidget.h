@@ -25,12 +25,13 @@
 #include <boost/function.hpp>
 
 #include "gui/widget/Widget.h"
+#include "platform/Platform.h"
 
 class Font;
 class TextWidget;
 class TextureContainer;
 
-class CheckboxWidget : public Widget {
+class CheckboxWidget arx_final : public Widget {
 	
 public:
 	

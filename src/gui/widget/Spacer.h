@@ -26,7 +26,7 @@
 #include "math/Rectangle.h"
 #include "platform/Platform.h"
 
-class Spacer: public Widget {
+class Spacer arx_final : public Widget {
 	
 public:
 	

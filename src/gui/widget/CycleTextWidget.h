@@ -26,12 +26,13 @@
 #include <boost/function.hpp>
 
 #include "gui/widget/Widget.h"
+#include "platform/Platform.h"
 
 class Font;
 class ButtonWidget;
 class TextWidget;
 
-class CycleTextWidget: public Widget {
+class CycleTextWidget arx_final : public Widget {
 	
 public:
 	

@@ -23,8 +23,9 @@
 #include <vector>
 
 #include "gui/widget/Widget.h"
+#include "platform/Platform.h"
 
-class PanelWidget : public Widget {
+class PanelWidget arx_final : public Widget {
 	
 public:
 	
