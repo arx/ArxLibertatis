@@ -26,10 +26,11 @@
 #include "graphics/opengl/GLTexture.h"
 #include "graphics/opengl/OpenGLUtil.h"
 #include "math/Rectangle.h"
+#include "platform/Platform.h"
 
 class GLTextureStage;
 
-class OpenGLRenderer : public Renderer {
+class OpenGLRenderer arx_final : public Renderer {
 	
 public:
 	
