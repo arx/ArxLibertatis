@@ -24,10 +24,13 @@
 
 #include "graphics/effects/Trail.h"
 #include "graphics/particle/ParticleSystem.h"
+#include "platform/Platform.h"
 
 
-class SpeedSpell : public SpellBase {
+class SpeedSpell arx_final : public SpellBase {
+	
 public:
+	
 	~SpeedSpell();
 	
 	void Launch();
@@ -37,22 +40,29 @@ public:
 	Vec3f getPosition();
 	
 private:
+	
 	struct SpeedTrail {
 		short vertexIndex;
 		Trail * trail;
 	};
 	
 	std::vector<SpeedTrail> m_trails;
+	
 };
 
-class DispellIllusionSpell : public SpellBase {
+class DispellIllusionSpell arx_final : public SpellBase {
+	
 public:
+	
 	void Launch();
 	void Update();
+	
 };
 
-class FireballSpell : public SpellBase {
+class FireballSpell arx_final : public SpellBase {
+	
 public:
+	
 	FireballSpell();
 	~FireballSpell();
 	
@@ -63,6 +73,7 @@ public:
 	Vec3f getPosition();
 	
 private:
+	
 	LightHandle m_light;
 	
 	Vec3f eCurPos;
@@ -70,10 +81,13 @@ private:
 	bool bExplo;
 	
 	GameDuration m_createBallDuration;
+	
 };
 
-class CreateFoodSpell : public SpellBase {
+class CreateFoodSpell arx_final : public SpellBase {
+	
 public:
+	
 	CreateFoodSpell();
 	
 	void Launch();
@@ -81,13 +95,17 @@ public:
 	void Update();
 	
 private:
+	
 	Vec3f m_pos;
 	ParticleSystem m_particles;
+	
 };
 
 
-class IceProjectileSpell : public SpellBase {
+class IceProjectileSpell arx_final : public SpellBase {
+	
 public:
+	
 	IceProjectileSpell();
 	
 	void Launch();
@@ -95,6 +113,7 @@ public:
 	void Update();
 	
 private:
+	
 	int iNumber;
 	TextureContainer * tex_p1;
 	TextureContainer * tex_p2;
@@ -105,8 +124,10 @@ private:
 		Vec3f size;
 		Vec3f sizeMax;
 	};
+	
 	static const int MAX_ICE = 150;
 	Icicle m_icicles[MAX_ICE];
+	
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
