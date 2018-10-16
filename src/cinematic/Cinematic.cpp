@@ -163,7 +163,7 @@ static Color CalculLight(CinematicLight * light, Vec2f pos, Color col) {
 		color = color * ((light->fallout - ra) / (light->fallout - light->fallin));
 	}
 	
-	return Color(Color3f(col) + color);
+	return Color(Color3f(col) + color, col.a);
 }
 
 static Vec3f TransformLocalVertex(const Vec2f & vbase, const Vec3f & LocalPos, float LocalSin, float LocalCos) {
