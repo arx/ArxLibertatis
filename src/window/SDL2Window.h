@@ -22,11 +22,12 @@
 
 #include <SDL.h>
 
+#include "platform/Platform.h"
 #include "window/RenderWindow.h"
 
 class SDL2InputBackend;
 
-class SDL2Window : public RenderWindow {
+class SDL2Window arx_final : public RenderWindow {
 	
 public:
 	
