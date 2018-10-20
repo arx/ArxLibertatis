@@ -196,6 +196,8 @@ else(MSVC)
 			add_cxxflag("-Wduplicated-branches")
 		endif()
 		
+		add_ldflag("-Wl,--no-undefined")
+		
 		if(SET_NOISY_WARNING_FLAGS)
 			
 			# These are too noisy to enable right now but we still want to track new warnings.
