@@ -72,7 +72,6 @@ patch_name_localized="ArxFatalis_${patch_ver}_%s.exe"
 patch_url_path="arxfatalis/patches/${patch_ver}/${patch_name}"
 patch_url_master="http://cdn.bethsoft.com/${patch_url_path}"
 patch_urls="http://arx.vg/${patch_name} ${patch_url_master}"
-patch_urls="$patch_urls http://download.zenimax.com/${patch_url_path}"
 patch_urls="$patch_urls http://web.archive.org/web/${patch_url_master}"
 
 # Name and download locations for the Japanese 1.02j patch
