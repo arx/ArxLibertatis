@@ -9,6 +9,26 @@ option(SET_OPTIMIZATION_FLAGS "Adjust compiler optimization flags" ON)
 
 if(MSVC)
 	
+	if(USE_LTO)
+		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GL")
+		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
+		set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LTCG")
+		set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS_RELEASE} /LTCG")
+	endif()
+	
+	if(FASTLINK)
+		
+		# Optimize for link speed in developer builds
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DEBUG:FASTLINK")
+		
+	elseif(SET_OPTIMIZATION_FLAGS)
+		
+		# Merge symbols and discard unused symbols
+		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF")
+		set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF")
+		
+	endif()
+	
 	if(SET_WARNING_FLAGS AND NOT SET_NOISY_WARNING_FLAGS)
 		
 		# Disable deprecation warnings
@@ -96,27 +116,30 @@ if(MSVC)
 		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /arch:SSE2")
 	endif()
 	
+else(MSVC)
+	
+	if(USE_LDGOLD)
+		add_ldflag("-fuse-ld=gold")
+	endif()
+	
 	if(USE_LTO)
-		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GL")
-		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
-		set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LTCG")
-		set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS_RELEASE} /LTCG")
+		add_cxxflag("-flto")
+		add_ldflag("-fuse-linker-plugin")
 	endif()
 	
 	if(FASTLINK)
 		
 		# Optimize for link speed in developer builds
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DEBUG:FASTLINK")
+		add_cxxflag("-gsplit-dwarf")
 		
 	elseif(SET_OPTIMIZATION_FLAGS)
 		
 		# Merge symbols and discard unused symbols
-		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF")
-		set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF")
+		add_ldflag("-Wl,--gc-sections")
+		add_ldflag("-Wl,--icf=all")
+		add_cxxflag("-fmerge-all-constants")
 		
 	endif()
-	
-else(MSVC)
 	
 	if(SET_WARNING_FLAGS)
 		
@@ -295,29 +318,6 @@ else(MSVC)
 		endif()
 		
 	endif(SET_OPTIMIZATION_FLAGS)
-	
-	if(USE_LDGOLD)
-		add_ldflag("-fuse-ld=gold")
-	endif()
-	
-	if(USE_LTO)
-		add_cxxflag("-flto")
-		add_ldflag("-fuse-linker-plugin")
-	endif()
-	
-	if(FASTLINK)
-		
-		# Optimize for link speed in developer builds
-		add_cxxflag("-gsplit-dwarf")
-		
-	elseif(SET_OPTIMIZATION_FLAGS)
-		
-		# Merge symbols and discard unused symbols
-		add_ldflag("-Wl,--gc-sections")
-		add_ldflag("-Wl,--icf=all")
-		add_cxxflag("-fmerge-all-constants")
-		
-	endif()
 	
 endif(MSVC)
 
