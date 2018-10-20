@@ -215,6 +215,8 @@ else(MSVC)
 			add_cxxflag("-Wpadded")
 			add_cxxflag("-Wunsafe-loop-optimizations")
 			
+			add_ldflag("-Wl,--detect-odr-violations")
+			
 		else()
 			
 			# icc
