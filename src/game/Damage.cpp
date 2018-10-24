@@ -1312,7 +1312,7 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 			}
 		}
 		
-		float ratio = glm::max(count, count2) / float(ioo->obj->vertexlist.size()) / 2.f;
+		float ratio = glm::max(count, count2) / (float(ioo->obj->vertexlist.size()) / 2.f);
 		
 		if(ratio > 2.f)
 			ratio = 2.f;
