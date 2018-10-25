@@ -31,8 +31,8 @@ enum SpawnSparkType {
 void ParticleSparkClear();
 long ParticleSparkCount();
 
-void ParticleSparkSpawn(const Vec3f & pos, unsigned rate, SpawnSparkType type);
-void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned int count, SpawnSparkType type);
+void ParticleSparkSpawn(const Vec3f & pos, unsigned count, SpawnSparkType type);
+void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate, SpawnSparkType type);
 
 void ParticleSparkUpdate();
 
