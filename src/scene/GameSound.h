@@ -226,7 +226,8 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar 
 void ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source);
 void ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source);
 
-audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar, const Entity * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
+audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar, const Entity * io = NULL,
+                                          float pitch = 1.f, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position = NULL);
 audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech);
 bool ARX_SOUND_IsPlaying(audio::SourcedSample & sample_id);
@@ -239,8 +240,10 @@ void ARX_SOUND_RefreshSpeechPosition(audio::SourcedSample & sample_id, const Ent
 
 void ARX_SOUND_Stop(const audio::SourcedSample & sample_id);
 
-bool ARX_SOUND_PlayScriptAmbiance(const res::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
-bool ARX_SOUND_PlayZoneAmbiance(const res::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
+bool ARX_SOUND_PlayScriptAmbiance(const res::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED,
+                                  float volume = 1.f);
+bool ARX_SOUND_PlayZoneAmbiance(const res::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED,
+                                float volume = 1.f);
 audio::AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name);
 void ARX_SOUND_KillAmbiances();
 std::string ARX_SOUND_AmbianceSavePlayList();
