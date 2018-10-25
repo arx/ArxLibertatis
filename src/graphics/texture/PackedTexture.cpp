@@ -68,12 +68,12 @@ PackedTexture::TextureTree::~TextureTree() {
 	delete texture;
 }
 
-PackedTexture::TextureTree::Node * PackedTexture::TextureTree::insertImage(const Image & img) {
+PackedTexture::TextureTree::Node * PackedTexture::TextureTree::insertImage(const Image & image) {
 	
-	Node * node = root.insertImage(img);
+	Node * node = root.insertImage(image);
 	
 	if(node != NULL) {
-		texture->getImage().copy(img, size_t(node->rect.left), size_t(node->rect.top));
+		texture->getImage().copy(image, size_t(node->rect.left), size_t(node->rect.top));
 		dirty = true;
 	}
 	
