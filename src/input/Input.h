@@ -128,7 +128,7 @@ public:
 	void setRawMouseInput(bool enabled);
 	
 	void setMouseSensitivity(int sensitivity);
-	void setMouseAcceleration(int acceletation);
+	void setMouseAcceleration(int acceleration);
 	void setInvertMouseY(bool invert);
 	
 	bool getMouseButton(int buttonId) const;
