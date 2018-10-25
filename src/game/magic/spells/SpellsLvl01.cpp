@@ -240,7 +240,7 @@ void MagicMissileSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_CREATE, &startPos);
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_LAUNCH, &startPos);
-	snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MM_LOOP, &startPos, 1.0F);
+	snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MM_LOOP, &startPos, 1.f);
 	
 	m_duration = lMax + GameDurationMs(1000);
 }
