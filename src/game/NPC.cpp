@@ -116,8 +116,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 void CheckNPCEx(Entity & io);
 
-static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP(600.0F);
-static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM(800.0F);
+static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP = 600.f;
+static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM = 800.f;
 
 void StareAtTarget(Entity * io);
 
@@ -2368,7 +2368,7 @@ static void ManageNPCMovement(Entity * io) {
 
 static void ManageNPCMovement_check_target_reached(Entity * io) {
 	
-	long lMax = std::max(ARX_NPC_GetNextAttainableNodeIncrement(io), 1L);
+	long lMax = std::max(ARX_NPC_GetNextAttainableNodeIncrement(io), 1l);
 
 	io->_npcdata->pathfind.listpos = checked_range_cast<unsigned short>(io->_npcdata->pathfind.listpos + lMax);
 
