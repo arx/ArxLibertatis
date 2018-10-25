@@ -59,10 +59,10 @@ inline u64 rotl_fixed<u64>(u64 x, unsigned int y) {
 #endif
 
 void md5_transform::init(hash_word * state) {
-	state[0] = 0x67452301L;
-	state[1] = 0xefcdab89L;
-	state[2] = 0x98badcfeL;
-	state[3] = 0x10325476L;
+	state[0] = 0x67452301;
+	state[1] = 0xefcdab89;
+	state[2] = 0x98badcfe;
+	state[3] = 0x10325476;
 }
 
 void md5_transform::transform(hash_word * digest, const hash_word * data) {
