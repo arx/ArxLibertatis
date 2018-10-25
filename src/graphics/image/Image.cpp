@@ -302,8 +302,8 @@ bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY,
 	return true;
 }
 
-bool Image::copy(const Image & srcImage, size_t destX, size_t destY) {
-	return copy(srcImage, destX, destY, 0, 0, srcImage.getWidth(), srcImage.getHeight());
+bool Image::copy(const Image & srcImage, size_t dstX, size_t dstY) {
+	return copy(srcImage, dstX, dstY, 0, 0, srcImage.getWidth(), srcImage.getHeight());
 }
 
 void Image::applyGamma(float gamma) {
