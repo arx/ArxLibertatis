@@ -120,9 +120,9 @@ void ParticleSystem::SetPos(const Vec3f & pos) {
 	m_nextPosition = pos;
 }
 
-void ParticleSystem::SetParams(const ParticleParams & _pp) {
+void ParticleSystem::SetParams(const ParticleParams & params) {
 	
-	m_parameters = _pp;
+	m_parameters = params;
 	
 	m_parameters.m_direction = glm::normalize(m_parameters.m_direction);
 	Vec3f eVect(m_parameters.m_direction.x, -m_parameters.m_direction.y, m_parameters.m_direction.z);
@@ -158,29 +158,29 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime) {
 	
 }
 
-void ParticleSystem::SetParticleParams(Particle * pP) {
-
-	pP->p3Pos = Vec3f(0.f);
+void ParticleSystem::SetParticleParams(Particle * particle) {
+	
+	particle->p3Pos = Vec3f(0.f);
 	
 	if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
 		
 		Vec2f pos = arx::circularRand(1.f);
-		pP->p3Pos.x = pos.x;
-		pP->p3Pos.z = pos.y;
+		particle->p3Pos.x = pos.x;
+		particle->p3Pos.z = pos.y;
 		
-		pP->p3Pos.y = Random::getf();
+		particle->p3Pos.y = Random::getf();
 		
 		if((m_parameters.m_spawnFlags & PARTICLE_BORDER) != PARTICLE_BORDER) {
-			pP->p3Pos *= Vec3f(Random::getf(), 1.f, Random::getf());
+			particle->p3Pos *= Vec3f(Random::getf(), 1.f, Random::getf());
 		}
 	} else {
-		pP->p3Pos = arx::randomVec(-1.f, 1.f);
+		particle->p3Pos = arx::randomVec(-1.f, 1.f);
 	}
 	
-	pP->p3Pos *= m_parameters.m_pos;
+	particle->p3Pos *= m_parameters.m_pos;
 	
 	float fTTL = m_parameters.m_life + Random::getf() * m_parameters.m_lifeRandom;
-	pP->m_timeToLive = GameDurationMsf(fTTL);
+	particle->m_timeToLive = GameDurationMsf(fTTL);
 	
 	float fAngleX = Random::getf() * m_parameters.m_angle;
 	
@@ -189,39 +189,37 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	vvz = Vec3f(eMat * Vec4f(vvz, 1.f));
 	
 	float fSpeed = m_parameters.m_speed + Random::getf() * m_parameters.m_speedRandom;
-
-	pP->p3Velocity = vvz * fSpeed;
-	pP->fSizeStart = m_parameters.m_startSegment.m_size + Random::getf() * m_parameters.m_startSegment.m_sizeRandom;
-
+	particle->p3Velocity = vvz * fSpeed;
+	particle->fSizeStart = m_parameters.m_startSegment.m_size + Random::getf() * m_parameters.m_startSegment.m_sizeRandom;
 	{
-	Color4f rndColor = Color4f(Random::getf(), Random::getf(), Random::getf(), Random::getf());
-	pP->fColorStart = m_parameters.m_startSegment.m_color + rndColor * m_parameters.m_startSegment.m_colorRandom;
+		Color4f rndColor = Color4f(Random::getf(), Random::getf(), Random::getf(), Random::getf());
+		particle->fColorStart = m_parameters.m_startSegment.m_color + rndColor * m_parameters.m_startSegment.m_colorRandom;
 	}
 
-	pP->fSizeEnd = m_parameters.m_endSegment.m_size + Random::getf() * m_parameters.m_endSegment.m_sizeRandom;
-
+	particle->fSizeEnd = m_parameters.m_endSegment.m_size + Random::getf() * m_parameters.m_endSegment.m_sizeRandom;
 	{
-	Color4f rndColor = Color4f(Random::getf(), Random::getf(), Random::getf(), Random::getf());
-	pP->fColorEnd = m_parameters.m_endSegment.m_color + rndColor * m_parameters.m_endSegment.m_colorRandom;
+		Color4f rndColor = Color4f(Random::getf(), Random::getf(), Random::getf(), Random::getf());
+		particle->fColorEnd = m_parameters.m_endSegment.m_color + rndColor * m_parameters.m_endSegment.m_colorRandom;
 	}
 	
 	if(m_parameters.m_rotationRandomDirection) {
-		pP->iRot = Random::get(-1, 1);
-
-		if(pP->iRot < 0)
-			pP->iRot = -1;
-
-		if(pP->iRot >= 0)
-			pP->iRot = 1;
+		particle->iRot = Random::get(-1, 1);
+		if(particle->iRot < 0) {
+			particle->iRot = -1;
+		}
+		if(particle->iRot >= 0) {
+			particle->iRot = 1;
+		}
 	} else {
-		pP->iRot = 1;
+		particle->iRot = 1;
 	}
-
+	
 	if(m_parameters.m_rotationRandomStart) {
-		pP->fRotStart = Random::getf(0.f, 360.0f);
+		particle->fRotStart = Random::getf(0.f, 360.0f);
 	} else {
-		pP->fRotStart = 0;
+		particle->fRotStart = 0;
 	}
+	
 }
 
 
