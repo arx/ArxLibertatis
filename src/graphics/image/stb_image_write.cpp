@@ -85,9 +85,9 @@ static int write_pixels(FILE * f, int x, int y, int comp, const void * data, int
 	return 1;
 }
 
-int stbi_write_bmp(char const * filename, int x, int y, int comp, const void * data) {
+int stbi_write_bmp(char const * filename, int w, int h, int comp, const void * data) {
 	
-	if(y < 0 || x < 0) {
+	if(h < 0 || w < 0) {
 		return 0;
 	}
 	
@@ -99,16 +99,16 @@ int stbi_write_bmp(char const * filename, int x, int y, int comp, const void * d
 	// File header
 	fputc('B', f);
 	fputc('M', f);
-	int pad = (-x * 3) & 3;
-	write4(f, u32(14 + 40 + (x * 3 + pad) * y));
+	int pad = (-w * 3) & 3;
+	write4(f, u32(14 + 40 + (w * 3 + pad) * h));
 	write2(f, 0);
 	write2(f, 0);
 	write4(f, 14 + 40);
 	
 	// Bitmap header
 	write4(f, 40);
-	write4(f, u32(x));
-	write4(f, u32(y));
+	write4(f, u32(w));
+	write4(f, u32(h));
 	write2(f, 1);
 	write2(f, 24);
 	write4(f, 0);
@@ -118,7 +118,7 @@ int stbi_write_bmp(char const * filename, int x, int y, int comp, const void * d
 	write4(f, 0);
 	write4(f, 0);
 	
-	int ret = write_pixels(f, x, y, comp, data, pad);
+	int ret = write_pixels(f, w, h, comp, data, pad);
 	
 	fclose(f);
 	
