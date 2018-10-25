@@ -119,8 +119,9 @@ void ARXMenu_Options_Video_SetFogDistance(float distance) {
 	config.video.fogDistance = glm::clamp(distance, 0.f, 10.f);
 }
 
-void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality) {
-	config.video.levelOfDetail = glm::clamp(_iQuality, 0, 2);
+void ARXMenu_Options_Video_SetDetailsQuality(int lod) {
+	
+	config.video.levelOfDetail = glm::clamp(lod, 0, 2);
 	
 	switch(config.video.levelOfDetail) {
 		case 0: {
@@ -136,6 +137,7 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality) {
 			break;
 		}
 	}
+	
 }
 
 void ARXMenu_Options_Video_SetGamma(float gamma) {
