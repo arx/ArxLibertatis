@@ -101,12 +101,12 @@ struct PlayingAmbiance {
 	s32 type;
 };
 
-static const unsigned long MAX_VARIANTS(5);
+static const unsigned long MAX_VARIANTS = 5;
 static const PlatformDuration AMBIANCE_FADE_TIME = PlatformDurationMs(2000);
-static const float ARX_SOUND_DEFAULT_FALLSTART(200.0F);
+static const float ARX_SOUND_DEFAULT_FALLSTART = 200.f;
 
-static const float ARX_SOUND_DEFAULT_FALLEND(2200.0F);
-static const float ARX_SOUND_REFUSE_DISTANCE(2500.0F);
+static const float ARX_SOUND_DEFAULT_FALLEND = 2200.f;
+static const float ARX_SOUND_REFUSE_DISTANCE = 2500.f;
 
 static const res::path sample_path = "sfx";
 
@@ -540,7 +540,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 	
 	audio::Channel channel(ARX_SOUND_MixerGameSample);
 	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
-	channel.volume = 1.0F;
+	channel.volume = 1.f;
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * GetSamplePresenceFactor(name);
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
 	
@@ -558,7 +558,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 		channel.position = Vec3f(0.f, 0.f, 100.f);
 	}
 	
-	if(pitch != 1.0F) {
+	if(pitch != 1.f) {
 		channel.flags |= FLAG_PITCH;
 		channel.pitch = pitch;
 	}
@@ -574,7 +574,7 @@ void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position) {
 	
 	audio::Channel channel(ARX_SOUND_MixerGameSample);
 	channel.flags = FLAG_VOLUME;
-	channel.volume = 1.0F;
+	channel.volume = 1.f;
 
 	if(position) {
 		if(g_camera && fartherThan(g_camera->m_pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
@@ -718,7 +718,7 @@ bool ARX_SOUND_PlayScriptAmbiance(const res::path & name, SoundLoopMode loop, fl
 		
 		audio::ambiancePlay(ambiance_id, channel, loop == ARX_SOUND_PLAY_LOOPED);
 	} else {
-		if(volume <= 0.0F) {
+		if(volume <= 0.f) {
 			audio::deleteAmbiance(ambiance_id);
 			return true;
 		}
@@ -784,7 +784,7 @@ AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 	
 	audio::Channel channel(ARX_SOUND_MixerMenuAmbiance);
 	channel.flags = FLAG_VOLUME;
-	channel.volume = 1.0F;
+	channel.volume = 1.f;
 	
 	audio::ambiancePlay(g_menuAmbiance, channel, true);
 	
