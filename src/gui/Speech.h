@@ -173,7 +173,7 @@ bool ARX_SPEECH_isEntitySpeaking(Entity * entity);
  */
 long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood, SpeechFlags flags = 0);
 void ARX_SPEECH_ReleaseIOSpeech(Entity * io);
-void ARX_SPEECH_ClearIOSpeech(Entity * io);
-void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & string, Entity * io_source);
+void ARX_SPEECH_ClearIOSpeech(Entity * entity);
+void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & text, Entity * io_source);
 
 #endif // ARX_GUI_SPEECH_H
