@@ -25,6 +25,6 @@ void progressBarSetTotal(float total);
 void progressBarAdvance(float delta = 1.f);
 
 void LoadLevelScreen();
-void LoadLevelScreen(long lev);
+void LoadLevelScreen(long num);
 
 #endif // ARX_GUI_LOADLEVELSCREEN_H
