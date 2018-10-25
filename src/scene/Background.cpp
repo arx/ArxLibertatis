@@ -86,10 +86,10 @@ void EERIEPOLY_Compute_PolyIn() {
 		
 		eg->polyin.clear();
 		
-		long minx = std::max(x - 2, 0L);
-		long minz = std::max(z - 2, 0L);
-		long maxx = std::min(x + 2, ACTIVEBKG->m_size.x - 1L);
-		long maxz = std::min(z + 2, ACTIVEBKG->m_size.y - 1L);
+		long minx = std::max(x - 2, 0l);
+		long minz = std::max(z - 2, 0l);
+		long maxx = std::min(x + 2, ACTIVEBKG->m_size.x - 1l);
+		long maxz = std::min(z + 2, ACTIVEBKG->m_size.y - 1l);
 		
 		Vec2f bbmin = Vec2f(x * g_backgroundTileSize.x - 10, z * g_backgroundTileSize.y - 10);
 		Vec2f bbmax = Vec2f(bbmin.x + g_backgroundTileSize.x + 20, bbmin.y + g_backgroundTileSize.y + 20);
