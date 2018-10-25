@@ -143,7 +143,7 @@ void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float r
 
 // QUATERNION Funcs/Defs
 
-glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float t);
+glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio);
 
 glm::quat QuatFromAngles(const Anglef & angle);
 glm::mat4 toRotationMatrix(const Anglef & angle);
