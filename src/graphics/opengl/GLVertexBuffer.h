@@ -34,7 +34,7 @@
 #include "io/log/Logger.h"
 
 template <class Vertex>
-static void setVertexArray(OpenGLRenderer * renderer, const Vertex * vertex, const void * ref);
+static void setVertexArray(OpenGLRenderer * renderer, const Vertex * vertices, const void * ref);
 
 // cached vertex array definitions
 enum GLArrayClientState {
