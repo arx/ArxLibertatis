@@ -76,7 +76,7 @@ void Application::quit() {
 void CalcFPS(bool reset) {
 	
 	static PlatformInstant fLastTime = 0;
-	static u32 dwFrames  = 0L;
+	static u32 dwFrames  = 0;
 
 	if(reset) {
 		dwFrames = 0;
@@ -93,7 +93,7 @@ void CalcFPS(bool reset) {
 		if(tmp > 1.f) {
 			FPS = float(dwFrames) / tmp;
 			fLastTime = fTime;
-			dwFrames  = 0L;
+			dwFrames  = 0;
 		}
 	}
 }
