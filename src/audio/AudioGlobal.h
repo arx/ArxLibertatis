@@ -84,7 +84,7 @@ typedef ResourceList<Environment, EnvId> EnvironmentList;
 extern EnvironmentList g_environments;
 
 inline float LinearToLogVolume(float volume) {
-	return 0.2F * std::log10(volume) + 1.0F;
+	return 0.2f * std::log10(volume) + 1.f;
 }
 
 } // namespace audio
