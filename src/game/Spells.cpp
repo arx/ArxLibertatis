@@ -563,8 +563,9 @@ void ARX_SPELLS_ManageMagic() {
 				ARX_FLARES_broken = 0;
 				
 				if(!ARX_SOUND_IsPlaying(player.magic_draw)) {
-					player.magic_draw = ARX_SOUND_PlaySFX_loop(g_snd.MAGIC_DRAW_LOOP, NULL, 1.0F);
+					player.magic_draw = ARX_SOUND_PlaySFX_loop(g_snd.MAGIC_DRAW_LOOP, NULL, 1.f);
 				}
+				
 			} else {
 				ARX_SOUND_Stop(player.magic_draw);
 				player.magic_draw = audio::SourcedSample();
@@ -874,7 +875,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	}
 
 	if(sp_max) {
-		level = std::max(level, 15L);
+		level = std::max(level, 15l);
 	}
 	
 	if(   source == EntityHandle_Player
