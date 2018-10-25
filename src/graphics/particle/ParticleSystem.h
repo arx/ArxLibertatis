@@ -73,7 +73,7 @@ public:
 	ParticleSystem();
 	~ParticleSystem();
 	
-	void SetParams(const ParticleParams & app);
+	void SetParams(const ParticleParams & params);
 	
 	void SetPos(const Vec3f & pos);
 	
