@@ -47,7 +47,7 @@ public:
 	void getMouseButtonClickCount(int buttonId, int & numClick, int & numUnClick) const;
 	
 	// Keyboard
-	bool isKeyboardKeyPressed(int dikkey) const;
+	bool isKeyboardKeyPressed(int keyId) const;
 	void startTextInput(const Rect & box, TextInputHandler * handler);
 	void stopTextInput();
 	std::string getKeyName(Keyboard::Key key) const;
