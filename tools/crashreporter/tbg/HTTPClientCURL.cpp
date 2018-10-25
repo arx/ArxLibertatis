@@ -78,11 +78,11 @@ void CURLSession::setup(const Request & request) {
 	curl_easy_reset(m_curl);
 	
 	curl_easy_setopt(m_curl, CURLOPT_URL, request.url().c_str());
-	curl_easy_setopt(m_curl, CURLOPT_FOLLOWLOCATION, request.followRedirects() ? 1L : 0L);
+	curl_easy_setopt(m_curl, CURLOPT_FOLLOWLOCATION, request.followRedirects() ? 1l : 0l);
 	
 	curl_easy_setopt(m_curl, CURLOPT_USERAGENT, m_userAgent.c_str());
 	
-	curl_easy_setopt(m_curl, CURLOPT_NOPROGRESS, 1L);
+	curl_easy_setopt(m_curl, CURLOPT_NOPROGRESS, 1l);
 	
 }
 
@@ -137,7 +137,7 @@ Response * CURLSession::post(const POSTRequest & request) {
 		}
 	} BOOST_SCOPE_EXIT_END
 	if(m_curl) {
-		curl_easy_setopt(m_curl, CURLOPT_POST, 1L);
+		curl_easy_setopt(m_curl, CURLOPT_POST, 1l);
 		curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, request.data().c_str());
 		curl_easy_setopt(m_curl, CURLOPT_INFILESIZE_LARGE, curl_off_t(request.data().size()));
 		if(!request.contentType().empty()) {
