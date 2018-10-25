@@ -68,16 +68,16 @@ TextManager::~TextManager() {
 	Clear();
 }
 
-bool TextManager::AddText(Font * _pFont, const std::string & _lpszUText,
-                          const Rect & _rRect, Color _lCol,
-                          PlatformDuration _lTimeOut, PlatformDuration _lTimeScroll,
-                          float _fSpeedScroll, int iNbLigneClipp) {
+bool TextManager::AddText(Font * font, const std::string & text,
+                          const Rect & bbox, Color color,
+                          PlatformDuration displayTime, PlatformDuration scrollTime,
+                          float scrollSpeed, int nLineClipp) {
 	
-	if(_lpszUText.empty()) {
+	if(text.empty()) {
 		return false;
 	}
 	
-	if(!_pFont) {
+	if(!font) {
 		LogWarning << "Adding text with NULL font.";
 		return false;
 	}
@@ -87,21 +87,21 @@ bool TextManager::AddText(Font * _pFont, const std::string & _lpszUText,
 		return false;
 	}
 	
-	arx_assert(!_rRect.empty());
+	arx_assert(!bbox.empty());
 	
-	pArxText->pFont = _pFont;
-	pArxText->lpszUText = _lpszUText;
-	pArxText->rRect = _rRect;
-	pArxText->lCol = _lCol;
-	pArxText->lTimeScroll = _lTimeScroll;
+	pArxText->pFont = font;
+	pArxText->lpszUText = text;
+	pArxText->rRect = bbox;
+	pArxText->lCol = color;
+	pArxText->lTimeScroll = scrollTime;
 	pArxText->fDeltaY = 0.f;
-	pArxText->fSpeedScrollY = _fSpeedScroll;
-	pArxText->lTimeOut = _lTimeOut;
+	pArxText->fSpeedScrollY = scrollSpeed;
+	pArxText->lTimeOut = displayTime;
 	pArxText->rRectClipp = pArxText->rRect;
 	
-	if(iNbLigneClipp) {
-		Vec2i sSize = _pFont->getTextSize(pArxText->lpszUText);
-		sSize.y *= iNbLigneClipp;
+	if(nLineClipp) {
+		Vec2i sSize = font->getTextSize(pArxText->lpszUText);
+		sSize.y *= nLineClipp;
 		pArxText->rRectClipp.bottom = pArxText->rRect.top + sSize.y;
 	}
 	
@@ -110,13 +110,13 @@ bool TextManager::AddText(Font * _pFont, const std::string & _lpszUText,
 	return true;
 }
 
-bool TextManager::AddText(Font * font, const std::string & str, Vec2i pos, Color fgcolor) {
-	Rect r;
-	r.left = pos.x;
-	r.top = pos.y;
-	r.right = Rect::Limits::max();
-	r.bottom = Rect::Limits::max();
-	return AddText(font, str, r, fgcolor);
+bool TextManager::AddText(Font * font, const std::string & text, Vec2i pos, Color color) {
+	Rect bbox;
+	bbox.left = pos.x;
+	bbox.top = pos.y;
+	bbox.right = Rect::Limits::max();
+	bbox.bottom = Rect::Limits::max();
+	return AddText(font, text, bbox, color);
 }
 
 void TextManager::Update(PlatformDuration _iDiffFrame) {

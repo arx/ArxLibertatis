@@ -60,11 +60,11 @@ public:
 	TextManager();
 	~TextManager();
 	
-	bool AddText(Font * font, const std::string & str, const Rect & bbox,
+	bool AddText(Font * font, const std::string & text, const Rect & bbox,
 	             Color color = Color::white, PlatformDuration displayTime = 0,
 	             PlatformDuration scrollTime = 0, float scrollSpeed = 0.f, int nLineClipp = 0);
 	
-	bool AddText(Font * font, const std::string & str, Vec2i pos, Color color);
+	bool AddText(Font * font, const std::string & text, Vec2i pos, Color color);
 	void Update(PlatformDuration _iDiffFrame);
 	void Render();
 	void Clear();
