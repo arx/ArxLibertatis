@@ -84,7 +84,7 @@ struct ANCHOR_DATA {
  */
 void AnchorData_ClearAll(BackgroundData * eb);
 
-void ANCHOR_BLOCK_By_IO(Entity * io, long status);
+void ANCHOR_BLOCK_By_IO(Entity * io, bool blocked);
 void ANCHOR_BLOCK_Clear();
 
 #endif // ARX_AI_ANCHORS_H

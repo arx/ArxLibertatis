@@ -76,7 +76,7 @@ void ANCHOR_BLOCK_Clear() {
 	
 }
 
-void ANCHOR_BLOCK_By_IO(Entity * io, long status) {
+void ANCHOR_BLOCK_By_IO(Entity * io, bool blocked) {
 	
 	BackgroundData * eb = ACTIVEBKG;
 	
@@ -110,10 +110,11 @@ void ANCHOR_BLOCK_By_IO(Entity * io, long status) {
 				}
 
 				if(PointIn2DPolyXZ(&ep, ad.pos.x, ad.pos.z)) {
-					if(status)
+					if(blocked) {
 						ad.flags |= ANCHOR_FLAG_BLOCKED;
-					else
+					} else {
 						ad.flags &= ~ANCHOR_FLAG_BLOCKED;
+					}
 				}
 			}
 		}
