@@ -39,7 +39,7 @@ private:
 	
 	static path resolve(const path & base, const path & branch);
 	
-	static std::string load(const std::string & src);
+	static std::string load(const std::string & str);
 	
 	static path create(const std::string & src);
 	

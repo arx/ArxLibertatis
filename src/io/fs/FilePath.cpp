@@ -46,44 +46,44 @@ path path::create(const std::string & src) {
 	return result;
 }
 
-path path::resolve(const path & a, const path & b) {
+path path::resolve(const path & base, const path & branch) {
 	
 	size_t bpos = 0;
-	size_t apos = a.pathstr.length();
+	size_t apos = base.pathstr.length();
 	while(true) {
 		
-		size_t dirpos = a.pathstr.find_last_of(dir_sep, apos - 1);
+		size_t dirpos = base.pathstr.find_last_of(dir_sep, apos - 1);
 		
-		if(is_path_up(a.pathstr, (dirpos == std::string::npos) ? 0 : dirpos + 1)) {
-			return create(a.pathstr.substr(0, apos) + dir_sep + b.pathstr.substr(bpos));
+		if(is_path_up(base.pathstr, (dirpos == std::string::npos) ? 0 : dirpos + 1)) {
+			return create(base.pathstr.substr(0, apos) + dir_sep + branch.pathstr.substr(bpos));
 		}
 		
 		if(dirpos == std::string::npos) {
-			if(bpos + 3 >= b.pathstr.length()) {
+			if(bpos + 3 >= branch.pathstr.length()) {
 				return create(".");
 			} else {
-				return b.pathstr.substr(bpos + 3);
+				return branch.pathstr.substr(bpos + 3);
 			}
 		}
 		
-		if(dirpos == 0 || (dirpos == 1 && a.pathstr[0] == dir_sep)) {
+		if(dirpos == 0 || (dirpos == 1 && base.pathstr[0] == dir_sep)) {
 			if(dirpos != apos - 1) {
 				bpos += 3;
 			}
-			if(bpos >= b.pathstr.length()) {
-				return create(a.pathstr.substr(0, dirpos) + dir_sep);
+			if(bpos >= branch.pathstr.length()) {
+				return create(base.pathstr.substr(0, dirpos) + dir_sep);
 			} else {
-				return create(a.pathstr.substr(0, dirpos) + dir_sep + b.pathstr.substr(bpos));
+				return create(base.pathstr.substr(0, dirpos) + dir_sep + branch.pathstr.substr(bpos));
 			}
 		}
 		
 		apos = dirpos, bpos += 3;
 		
-		if(!is_path_up(b.pathstr, bpos)) {
-			if(bpos >= b.pathstr.length()) {
-				return create(a.pathstr.substr(0, apos));
+		if(!is_path_up(branch.pathstr, bpos)) {
+			if(bpos >= branch.pathstr.length()) {
+				return create(base.pathstr.substr(0, apos));
 			} else {
-				return create(a.pathstr.substr(0, apos) + dir_sep + b.pathstr.substr(bpos));
+				return create(base.pathstr.substr(0, apos) + dir_sep + branch.pathstr.substr(bpos));
 			}
 		}
 	}
