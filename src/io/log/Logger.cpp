@@ -169,12 +169,12 @@ void Logger::log(const char * file, int line, LogLevel level, const std::string 
 	LogManager::lock.unlock();
 }
 
-void Logger::set(const std::string & prefix, Logger::LogLevel level) {
+void Logger::set(const std::string & component, Logger::LogLevel level) {
 	
 	Autolock lock(LogManager::lock);
 	
 	std::pair<LogManager::Rules::iterator, bool> ret;
-	ret = LogManager::rules.insert(std::make_pair(prefix, level));
+	ret = LogManager::rules.insert(std::make_pair(component, level));
 	
 	if(!ret.second) {
 		// entry already existed
@@ -201,11 +201,11 @@ void Logger::set(const std::string & prefix, Logger::LogLevel level) {
 	LogManager::sources.clear();
 }
 
-void Logger::reset(const std::string & prefix) {
+void Logger::reset(const std::string & component) {
 	
 	Autolock lock(LogManager::lock);
 	
-	LogManager::Rules::iterator i = LogManager::rules.find(prefix);
+	LogManager::Rules::iterator i = LogManager::rules.find(component);
 	if(i == LogManager::rules.end()) {
 		return;
 	}
