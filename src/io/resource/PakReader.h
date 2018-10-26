@@ -66,7 +66,7 @@ public:
 	PakReader() : release(0) { }
 	~PakReader();
 	
-	void removeFile(const res::path & name);
+	void removeFile(const res::path & file);
 	
 	/*!
 	 * Remove an empty directory.
