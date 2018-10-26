@@ -56,25 +56,19 @@ struct BackgroundData;
 struct Cylinder;
 class Entity;
 
-enum AnchorFlag {
-	ANCHOR_FLAG_BLOCKED = 1 << 3
-};
-DECLARE_FLAGS(AnchorFlag, AnchorFlags)
-DECLARE_FLAGS_OPERATORS(AnchorFlags)
-
 struct ANCHOR_DATA {
 	
 	Vec3f pos;
-	AnchorFlags flags;
 	std::vector<long> linked;
 	float radius;
 	float height;
+	bool blocked;
 	
 	ANCHOR_DATA()
 		: pos(0.f)
-		, flags(0)
 		, radius(0)
 		, height(0)
+		, blocked(false)
 	{ }
 	
 };

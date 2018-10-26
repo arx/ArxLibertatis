@@ -226,8 +226,7 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 		// Otherwise, generate child from current node.
 		BOOST_FOREACH(NodeId cid, map_d[nid].linked) {
 			
-			if((map_d[cid].flags & ANCHOR_FLAG_BLOCKED) || map_d[cid].height > m_height
-			   || map_d[cid].radius < m_radius) {
+			if(map_d[cid].blocked || map_d[cid].height > m_height || map_d[cid].radius < m_radius) {
 				continue;
 			}
 			
@@ -291,8 +290,7 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDistance,
 		// Otherwise, generate child from current node.
 		BOOST_FOREACH(NodeId cid, map_d[nid].linked) {
 			
-			if((map_d[cid].flags & ANCHOR_FLAG_BLOCKED) || map_d[cid].height > m_height
-			   || map_d[cid].radius < m_radius) {
+			if(map_d[cid].blocked || map_d[cid].height > m_height || map_d[cid].radius < m_radius) {
 				continue;
 			}
 			
@@ -351,7 +349,7 @@ bool PathFinder::wanderAround(NodeId from, float aroundRadius, Result & rlist, b
 				arx_assert(map_d[next].linked[r] >= 0);
 				
 				NodeId nid = map_d[next].linked[r];
-				if((!(map_d[nid].flags & ANCHOR_FLAG_BLOCKED)) && !map_d[nid].linked.empty()
+				if(!map_d[nid].blocked && !map_d[nid].linked.empty()
 				   && (map_d[nid].height <= m_height) && (map_d[nid].radius >= m_radius)) {
 					next = nid;
 					break;
@@ -379,7 +377,7 @@ PathFinder::NodeId PathFinder::getNearestNode(const Vec3f & pos) const {
 	
 	for(size_t i = 0; i < map_s; i++) {
 		float dist = arx::distance2(map_d[i].pos, pos);
-		if(dist < distance && !map_d[i].linked.empty() && !(map_d[i].flags & ANCHOR_FLAG_BLOCKED)) {
+		if(dist < distance && !map_d[i].linked.empty() && !map_d[i].blocked) {
 			best = i;
 			distance = dist;
 		}
