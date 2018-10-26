@@ -110,6 +110,10 @@ struct FAST_TEXTURE_CONTAINER {
 	char fic[256];
 };
 
+enum FastAnchorFlag {
+	FastAnchorFlagBlocked = 1 << 3
+};
+
 struct FAST_ANCHOR_DATA {
 	SavedVec3 pos;
 	f32 radius;
