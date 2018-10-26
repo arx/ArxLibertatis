@@ -177,7 +177,7 @@ public:
 	 * Otherwise, \ref end() will return \c true and information about the first directory entry
 	 * can be queried using \ref name(), \ref is_directory() and \ref is_regular_file().
 	 */
-	explicit directory_iterator(const path & dir);
+	explicit directory_iterator(const path & p);
 	
 	~directory_iterator();
 	
