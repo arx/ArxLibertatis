@@ -24,15 +24,16 @@
 #include "io/log/Logger.h"
 #include "platform/Platform.h"
 
-const IniSection * IniReader::getSection(const std::string & section) const {
+const IniSection * IniReader::getSection(const std::string & sectionName) const {
 	
-	iterator iter = sections.find(section);
+	iterator iter = sections.find(sectionName);
 	
 	if(iter != sections.end()) {
 		return &(iter->second);
 	} else {
 		return NULL;
 	}
+	
 }
 
 size_t IniReader::getKeyCount(const std::string & sectionName) const {
@@ -40,24 +41,26 @@ size_t IniReader::getKeyCount(const std::string & sectionName) const {
 	const IniSection * section = getSection(sectionName);
 	if(section) {
 		return section->size();
-	} else {
-		return 0;
 	}
+	
+	return 0;
 }
 
-const std::string & IniReader::getKey(const std::string & section, const std::string & keyName, const std::string & default_value) const {
+const std::string & IniReader::getKey(const std::string & sectionName, const std::string & keyName,
+                                      const std::string & defaultValue) const {
 	
-	const IniKey * key = getKey(section, keyName);
+	const IniKey * key = getKey(sectionName, keyName);
 	if(!key) {
-		return default_value;
+		return defaultValue;
 	}
 	
 	return key->getValue();
 }
 
-int IniReader::getKey(const std::string & section, const std::string & keyName, int defaultValue) const {
+int IniReader::getKey(const std::string & sectionName, const std::string & keyName,
+                      int defaultValue) const {
 	
-	const IniKey * key = getKey(section, keyName);
+	const IniKey * key = getKey(sectionName, keyName);
 	if(!key) {
 		return defaultValue;
 	}
@@ -65,9 +68,10 @@ int IniReader::getKey(const std::string & section, const std::string & keyName, 
 	return key->getValue(defaultValue);
 }
 
-float IniReader::getKey(const std::string & section, const std::string & keyName, float defaultValue) const {
+float IniReader::getKey(const std::string & sectionName, const std::string & keyName,
+                        float defaultValue) const {
 	
-	const IniKey * key = getKey(section, keyName);
+	const IniKey * key = getKey(sectionName, keyName);
 	if(!key) {
 		return defaultValue;
 	}
@@ -76,9 +80,10 @@ float IniReader::getKey(const std::string & section, const std::string & keyName
 }
 
 
-bool IniReader::getKey(const std::string & section, const std::string & keyName, bool defaultValue) const {
+bool IniReader::getKey(const std::string & sectionName, const std::string & keyName,
+                       bool defaultValue) const {
 	
-	const IniKey * key = getKey(section, keyName);
+	const IniKey * key = getKey(sectionName, keyName);
 	if(!key) {
 		return defaultValue;
 	}
@@ -86,7 +91,7 @@ bool IniReader::getKey(const std::string & section, const std::string & keyName,
 	return key->getValue(defaultValue);
 }
 
-const IniKey * IniReader::getKey(const std::string & sectionName, const std::string & key) const {
+const IniKey * IniReader::getKey(const std::string & sectionName, const std::string & keyName) const {
 	
 	// Look for a section
 	const IniSection * section = getSection(sectionName);
@@ -102,11 +107,11 @@ const IniKey * IniReader::getKey(const std::string & sectionName, const std::str
 	}
 	
 	// If the key is not specified, return the first ones value( to avoid breakage with legacy assets )
-	if(key.empty()) {
+	if(keyName.empty()) {
 		return &*section->begin();
 	}
 	
-	return section->getKey(key);
+	return section->getKey(keyName);
 }
 
 static const std::string WHITESPACE = " \t\r\n";
