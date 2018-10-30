@@ -41,7 +41,7 @@ public:
 	/*!
 	 * Parses an input stream for configuration section and respective keys.
 	 * Stores them all in a section map as IniSection objects.
-	 * \param input The input stream with the ini data.
+	 * \param is The input stream with the ini data.
 	 * \return false if there were problems (some data may have been read)
 	 */
 	bool read(std::istream & is);
