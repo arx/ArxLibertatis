@@ -58,8 +58,8 @@ class Entity;
 
 struct ANCHOR_DATA {
 	
-	Vec3f pos;
 	std::vector<long> linked;
+	Vec3f pos;
 	float radius;
 	float height;
 	bool blocked;
