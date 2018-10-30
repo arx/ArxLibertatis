@@ -874,7 +874,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		const FAST_ANCHOR_DATA * fad = fts_read<FAST_ANCHOR_DATA>(data, end);
 		
 		ANCHOR_DATA & anchor = ACTIVEBKG->m_anchors[i];
-		anchor.blocked = (fad->flags & FastAnchorFlagBlocked);
+		anchor.blocked = (fad->flags & FastAnchorFlagBlocked) != 0;
 		anchor.pos = fad->pos.toVec3();
 		anchor.height = fad->height;
 		anchor.radius = fad->radius;
