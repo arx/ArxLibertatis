@@ -23,6 +23,10 @@
 
 #include "util/MD5.h"
 
+#ifdef _MSC_VER
+#include <intrin.h> // for _rotl8 and _rotl16
+#endif
+
 namespace util {
 
 //! Rotate left.
