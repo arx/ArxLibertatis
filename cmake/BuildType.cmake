@@ -39,12 +39,7 @@ if(MSVC)
 		# TODO TEMP - disable very noisy warning
 		# Conversion from 'A' to 'B', possible loss of data
 		add_definitions(/wd4244)
-		
-		# TODO TEMP - disable warning caused by conversion from a 64-bit type to a 32-bit one...
-		if(CMAKE_CL_64)
-			# Conversion from 'size_t' to 'xxx', possible loss of data
-			add_definitions(/wd4267)
-		endif()
+		add_definitions(/wd4267)
 		
 		# warning C4127: conditional expression is constant
 		add_definitions(/wd4127)
