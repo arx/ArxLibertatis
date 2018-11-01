@@ -19,12 +19,14 @@
 
 #include "core/Localisation.h"
 
+#include <map>
 #include <stddef.h>
 #include <sstream>
 #include <cstdlib>
 #include <iterator>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/foreach.hpp>
 
 #include "core/Config.h"
 
@@ -107,6 +109,63 @@ PakFile * autodetectLanguage() {
 	return localisation;
 }
 
+static std::string removeStart(std::string str, std::string remove) {
+	return str.substr(remove.length(), str.length() - remove.length());
+}
+
+static void loadLocalisations() {
+	
+	const std::string suffix = ".ini";
+	const std::string fallbackPrefix = "xtext_english_";
+	const std::string localizedPrefix = "xtext_" + config.language + "_";
+	
+	typedef std::map<std::string, bool> LocalizationFiles;
+	
+	LocalizationFiles localizationFiles;
+	
+	PakDirectory * dir = g_resources->getDirectory("localisation");
+	PakDirectory::files_iterator fileIter = dir->files_begin();
+	
+	for(; fileIter != dir->files_end(); ++fileIter) {
+		const std::string & name = fileIter->first;
+		
+		if(boost::ends_with(name, suffix)) {
+			if(boost::starts_with(name, fallbackPrefix)) {
+				localizationFiles[removeStart(name, fallbackPrefix)];
+			}
+			if(boost::starts_with(name, localizedPrefix)) {
+				localizationFiles[removeStart(name, localizedPrefix)] = true;
+			}
+		}
+	}
+	
+	BOOST_FOREACH(const LocalizationFiles::value_type & i, localizationFiles) {
+		std::string name = (i.second ? localizedPrefix : fallbackPrefix) + i.first;
+		
+		PakFile * file = dir->getFile(name);
+		arx_assert(file);
+		
+		std::string buffer = file->read();
+		if(buffer.empty()) {
+			LogWarning << "Error reading localisation file localisation/" << name;
+			continue;
+		}
+		
+		if(buffer.size() >= 2 && buffer[0] == '\xFF' && buffer[1] == '\xFE') {
+			LogWarning << "UTF16le character encoding is unsupported for new localizations "
+			              "please use UTF8 for file localisation/" << name;
+			continue;
+		}
+		
+		LogInfo << "Loading: " << name;
+		
+		std::istringstream iss(buffer);
+		if(!::g_localisation.read(iss)) {
+			LogWarning << "Error parsing localisation file localisation/" << name;
+		}
+	}
+}
+
 } // anonymous namespace
 
 bool initLocalisation() {
@@ -160,6 +219,8 @@ bool initLocalisation() {
 			           << config.language << ".ini";
 		}
 	}
+	
+	loadLocalisations();
 	
 	return true;
 }
