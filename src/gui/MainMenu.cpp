@@ -1722,7 +1722,7 @@ public:
 		addControlRow(CONTROLS_CUST_BOOKQUEST,         "system_menus_options_input_customize_controls_bookquest");
 		addControlRow(CONTROLS_CUST_DRINKPOTIONLIFE,   "system_menus_options_input_customize_controls_drink_potion_life");
 		addControlRow(CONTROLS_CUST_DRINKPOTIONMANA,   "system_menus_options_input_customize_controls_drink_potion_mana");
-		addControlRow(CONTROLS_CUST_DRINKPOTIONCURE,   "system_menus_options_input_customize_controls_drink_potion_cure", "Antidote potion");
+		addControlRow(CONTROLS_CUST_DRINKPOTIONCURE,   "system_menus_options_input_customize_controls_drink_potion_cure");
 		addControlRow(CONTROLS_CUST_TORCH,             "system_menus_options_input_customize_controls_torch");
 		
 		addControlRow(CONTROLS_CUST_CANCELCURSPELL,    "system_menus_options_input_customize_controls_cancelcurrentspell");
@@ -1739,10 +1739,10 @@ public:
 		addControlRow(CONTROLS_CUST_QUICKLOAD,         "system_menus_options_input_customize_controls_quickload");
 		addControlRow(CONTROLS_CUST_QUICKSAVE,         "system_menus_options_input_customize_controls_quicksave");
 		
-		addControlRow(CONTROLS_CUST_TOGGLE_FULLSCREEN, "system_menus_options_input_customize_controls_toggle_fullscreen", "Toggle fullscreen");
+		addControlRow(CONTROLS_CUST_TOGGLE_FULLSCREEN, "system_menus_options_input_customize_controls_toggle_fullscreen");
 		
 		if(config.input.allowConsole) {
-			addControlRow(CONTROLS_CUST_CONSOLE, "system_menus_options_input_customize_controls_console", "Script console");
+			addControlRow(CONTROLS_CUST_CONSOLE, "system_menus_options_input_customize_controls_console");
 		}
 		
 		addBackButton(Page_OptionsInputCustomizeKeys1);
