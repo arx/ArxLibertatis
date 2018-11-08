@@ -1663,14 +1663,14 @@ void ArxGame::manageEntityDescription() {
 		}
 		
 		if(temp->poisonous > 0 && temp->poisonous_count != 0) {
-			std::string Text = getLocalised("description_poisoned", "error");
+			std::string Text = getLocalised("description_poisoned");
 			std::stringstream ss;
 			ss << " (" << Text << " " << (int)temp->poisonous << ")";
 			description += ss.str();
 		}
 		
 		if((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
-			std::string Text = getLocalised("description_durability", "error");
+			std::string Text = getLocalised("description_durability");
 			std::stringstream ss;
 			ss << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
 			description += ss.str();
