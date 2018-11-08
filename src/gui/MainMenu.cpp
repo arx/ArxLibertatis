@@ -494,14 +494,14 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_render", "Render settings");
+			std::string label = getLocalised("system_menus_options_render");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
 			txt->setTargetPage(Page_OptionsRender);
 			addCenter(txt);
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface", "Interface settings");
+			std::string label = getLocalised("system_menus_options_interface");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
 			txt->setTargetPage(Page_OptionsInterface);
 			addCenter(txt);
@@ -609,7 +609,7 @@ public:
 				
 			}
 			
-			m_resolutionSlider->addEntry(getLocalised("system_menus_options_video_resolution_desktop", "Desktop"));
+			m_resolutionSlider->addEntry(getLocalised("system_menus_options_video_resolution_desktop"));
 			if(config.video.resolution == Vec2i(0)) {
 				m_resolutionSlider->selectLast();
 			}
@@ -627,8 +627,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_videos_minimize_on_focus_lost",
-			                                 "Minimize on focus loss");
+			std::string label = getLocalised("system_menus_options_videos_minimize_on_focus_lost");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedMinimizeOnFocusLost, this, _1);
 			addCenter(cb);
@@ -639,26 +638,26 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_vsync", "VSync");
+			std::string label = getLocalised("system_menus_options_video_vsync");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedVSync, this, _1, _2);
-			cb->addEntry(getLocalised("system_menus_options_video_vsync_off", "Disabled"));
+			cb->addEntry(getLocalised("system_menus_options_video_vsync_off"));
 			if(benchmark::isEnabled()) {
 				cb->setValue(0);
 				cb->setEnabled(false);
 			} else {
-				cb->addEntry(getLocalised("system_menus_options_video_vsync_on", "Enabled"));
-				cb->addEntry(getLocalised("system_menus_options_video_vsync_auto", "Adaptive"));
+				cb->addEntry(getLocalised("system_menus_options_video_vsync_on"));
+				cb->addEntry(getLocalised("system_menus_options_video_vsync_auto"));
 				cb->setValue(config.video.vsync < 0 ? 2 : config.video.vsync);
 			}
 			addCenter(cb);
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_fps_limit", "FPS Limit");
+			std::string label = getLocalised("system_menus_options_video_fps_limit");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFPSLimit, this, _1, _2);
-			cb->addEntry(getLocalised("system_menus_options_video_vsync_off", "Disabled"));
+			cb->addEntry(getLocalised("system_menus_options_video_vsync_off"));
 			if(benchmark::isEnabled()) {
 				cb->setValue(0);
 				cb->setEnabled(false);
@@ -688,7 +687,7 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_fov", "Field of view");
+			std::string label = getLocalised("system_menus_options_video_fov");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFov, this, _1);
 			sld->setValue(glm::clamp(int((config.video.fov - 75.f) / 5.f), 0, 10));
@@ -827,7 +826,7 @@ public:
 		
 		// Renderer selection
 		{
-			std::string label = getLocalised("system_menus_options_video_renderer", "Renderer");
+			std::string label = getLocalised("system_menus_options_video_renderer");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			slider->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedRenderer, this, _1, _2);
 			slider->addEntry("Auto-Select");
@@ -861,7 +860,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
+			std::string label = getLocalised("system_menus_options_video_antialiasing");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.antialiasing);
 			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedAntialiasing, this, _1);
@@ -869,7 +868,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_colorkey_antialiasing", "Color Key AA");
+			std::string label = getLocalised("system_menus_options_video_colorkey_antialiasing");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.colorkeyAntialiasing);
 			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedColorkeyAntialiasing, this, _1);
@@ -877,17 +876,16 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_alpha_cutout_antialising",
-			                                 "Alpha Cutout AA");
+			std::string label = getLocalised("system_menus_options_video_alpha_cutout_antialising");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedAlphaCutoutAntialiasing, this, _1, _2);
-			cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_off", "Disabled"));
+			cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_off"));
 			Renderer::AlphaCutoutAntialising maxAA = GRenderer->getMaxSupportedAlphaCutoutAntialiasing();
 			if(maxAA >= Renderer::FuzzyAlphaCutoutAA) {
-				cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_fuzzy", "Fuzzy"));
+				cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_fuzzy"));
 			}
 			if(maxAA >= Renderer::CrispAlphaCutoutAA) {
-				cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_crisp", "Crisp"));
+				cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_crisp"));
 			}
 			m_alphaCutoutAntialiasingCycleText = cb;
 			setAlphaCutoutAntialisingState();
@@ -895,11 +893,10 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_texture_filter_anisotropic",
-			                                 "Anisotropic filtering");
+			std::string label = getLocalised("system_menus_options_video_texture_filter_anisotropic");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedMaxAnisotropy, this, _1, _2);
-			cb->addEntry(getLocalised("system_menus_options_video_filter_anisotropic_off", "Disabled"));
+			cb->addEntry(getLocalised("system_menus_options_video_filter_anisotropic_off"));
 			int maxAnisotropy = int(GRenderer->getMaxSupportedAnisotropy());
 			int selected = 0;
 			if(maxAnisotropy > 1) {
@@ -928,7 +925,7 @@ public:
 						break;
 					}
 				}
-				cb->addEntry(getLocalised("system_menus_options_video_filter_anisotropic_max", "Unlimited"));
+				cb->addEntry(getLocalised("system_menus_options_video_filter_anisotropic_max"));
 				if(config.video.maxAnisotropicFiltering > maxAnisotropy) {
 					selected = i;
 				}
@@ -1032,8 +1029,7 @@ public:
 		reserveBottom();
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_crosshair",
-			                                 "Cross hair cursor");
+			std::string label = getLocalised("system_menus_options_video_crosshair");
 			label = getLocalised("system_menus_options_interface_crosshair", label);
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.showCrosshair);
@@ -1042,8 +1038,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_limit_speech_width",
-			                                 "Limit speech text width");
+			std::string label = getLocalised("system_menus_options_interface_limit_speech_width");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.limitSpeechWidth);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedSpeechWidth, this, _1);
@@ -1051,13 +1046,12 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_cinematic_widescreen_mode",
-			                                 "Cinematics mode");
+			std::string label = getLocalised("system_menus_options_interface_cinematic_widescreen_mode");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
 			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCinematicMode, this, _1, _2);
-			cb->addEntry(getLocalised("system_menus_options_interface_letterbox", "Letterbox"));
-			cb->addEntry(getLocalised("system_menus_options_interface_hard_edges", "Hard Edges"));
-			cb->addEntry(getLocalised("system_menus_options_interface_fade_edges", "Fade Edges"));
+			cb->addEntry(getLocalised("system_menus_options_interface_letterbox"));
+			cb->addEntry(getLocalised("system_menus_options_interface_hard_edges"));
+			cb->addEntry(getLocalised("system_menus_options_interface_fade_edges"));
 			cb->setValue(config.interface.cinematicWidescreenMode);
 			addCenter(cb);
 		}
@@ -1065,7 +1059,7 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_hud_scale", "HUD size");
+			std::string label = getLocalised("system_menus_options_interface_hud_scale");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScale, this, _1);
 			sld->setValue(int(config.interface.hudScale * 10.f));
@@ -1073,8 +1067,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_hud_scale_integer",
-			                                 "Round HUD scale factor");
+			std::string label = getLocalised("system_menus_options_interface_hud_scale_integer");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.hudScaleInteger);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScaleInteger, this, _1);
@@ -1082,7 +1075,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_book_scale", "Player book size");
+			std::string label = getLocalised("system_menus_options_interface_book_scale");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedBookScale, this, _1);
 			sld->setValue(int(config.interface.bookScale * 10.f));
@@ -1090,8 +1083,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_book_scale_integer",
-			                                 "Round book scale factor");
+			std::string label = getLocalised("system_menus_options_interface_book_scale_integer");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.bookScaleInteger);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedBookScaleInteger, this, _1);
@@ -1099,7 +1091,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_cursor_scale", "Cursor size");
+			std::string label = getLocalised("system_menus_options_interface_cursor_scale");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCursorScale, this, _1);
 			sld->setValue(int(config.interface.cursorScale * 10.f));
@@ -1107,8 +1099,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_cursor_scale_integer",
-			                                 "Round cursor scale factor");
+			std::string label = getLocalised("system_menus_options_interface_cursor_scale_integer");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.cursorScaleInteger);
 			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCursorScaleInteger, this, _1);
@@ -1116,17 +1107,17 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_scale_filter", "Scale filter");
+			std::string label = getLocalised("system_menus_options_interface_scale_filter");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedScaleFilter, this, _1, _2);
-			cb->addEntry(getLocalised("system_menus_options_video_filter_nearest", "Nearest"));
-			cb->addEntry(getLocalised("system_menus_options_video_filter_bilinear", "Bilinear"));
+			cb->addEntry(getLocalised("system_menus_options_video_filter_nearest"));
+			cb->addEntry(getLocalised("system_menus_options_video_filter_bilinear"));
 			cb->setValue(config.interface.scaleFilter);
 			addCenter(cb);
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_font_size", "Font size");
+			std::string label = getLocalised("system_menus_options_interface_font_size");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedFontSize, this, _1);
 			sld->setValue(int(glm::clamp((config.interface.fontSize - 0.75f) * 20.f + 0.5f, 0.f, 10.f)));
@@ -1134,15 +1125,15 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_font_weight", "Font weight");
+			std::string label = getLocalised("system_menus_options_interface_font_weight");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedFontWeight, this, _1, _2);
-			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_0", "Thin"));
-			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_1", "Light"));
-			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_2", "Normal"));
-			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_3", "Medium"));
-			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_4", "Bold"));
-			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_5", "Heavy"));
+			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_0"));
+			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_1"));
+			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_2"));
+			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_3"));
+			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_4"));
+			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_5"));
 			cb->setValue(config.interface.fontWeight);
 			addCenter(cb);
 		}
@@ -1228,7 +1219,7 @@ public:
 		
 		// Audio backend selection
 		{
-			std::string label = getLocalised("system_menus_options_audio_device", "Device");
+			std::string label = getLocalised("system_menus_options_audio_device");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
 			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedDevice, this, _1, _2);
 			slider->addEntry("Default");
@@ -1277,8 +1268,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_audio_mute_on_focus_lost",
-			                                 "Mute when not focused");
+			std::string label = getLocalised("system_menus_options_audio_mute_on_focus_lost");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.audio.muteOnFocusLost);
 			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedMuteOnFocusLost, this, _1);
@@ -1288,7 +1278,7 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			std::string label = getLocalised("system_menus_options_audio_eax", "EAX");
+			std::string label = getLocalised("system_menus_options_audio_eax");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			if(audio::isReverbSupported()) {
 				cb->setChecked(config.audio.eax);
@@ -1301,7 +1291,7 @@ public:
 		
 		audio::HRTFStatus hrtf = audio::getHRTFStatus();
 		if(hrtf != audio::HRTFUnavailable) {
-			std::string label = getLocalised("system_menus_options_audio_hrtf", "Virtual surround");
+			std::string label = getLocalised("system_menus_options_audio_hrtf");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedHRTF, this, _1, _2);
 			slider->addEntry("Disabled");
