@@ -139,7 +139,7 @@ public:
 		}
 		
 		{
-			std::string text = getLocalised("system_menu_editquest_newsavegame", "---");
+			std::string text = getLocalised("system_menu_editquest_newsavegame");
 			TextInputWidget * txt = new TextInputWidget(hFontMenu, text, m_rect);
 			txt->setMaxLength(255); // Don't allow the user to enter names that cannot be stored in save files
 			txt->unfocused = boost::bind(&SaveConfirmMenuPage::onUnfocusedText, this, _1);
