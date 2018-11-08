@@ -109,6 +109,32 @@ PakFile * autodetectLanguage() {
 	return localisation;
 }
 
+
+void loadLocalisation(PakDirectory * dir, const std::string & name) {
+	
+	PakFile * file = dir->getFile(name);
+	arx_assert(file);
+	
+	std::string buffer = file->read();
+	if(buffer.empty()) {
+		LogWarning << "Error reading localisation file localisation/" << name;
+		return;
+	}
+	
+	if(buffer.size() >= 2 && buffer[0] == '\xFF' && buffer[1] == '\xFE') {
+		LogWarning << "UTF16le character encoding is unsupported for new localizations "
+					  "please use UTF8 for file localisation/" << name;
+		return;
+	}
+	
+	LogInfo << "Loading: " << name;
+	
+	std::istringstream iss(buffer);
+	if(!::g_localisation.read(iss)) {
+		LogWarning << "Error parsing localisation file localisation/" << name;
+	}
+}
+
 std::string removeStart(const std::string & str, const std::string & remove) {
 	return str.substr(remove.length(), str.length() - remove.length());
 }
@@ -140,28 +166,11 @@ void loadLocalisations() {
 	}
 	
 	BOOST_FOREACH(const LocalizationFiles::value_type & i, localizationFiles) {
-		std::string name = (i.second ? localizedPrefix : fallbackPrefix) + i.first;
 		
-		PakFile * file = dir->getFile(name);
-		arx_assert(file);
+		loadLocalisation(dir, fallbackPrefix + i.first);
 		
-		std::string buffer = file->read();
-		if(buffer.empty()) {
-			LogWarning << "Error reading localisation file localisation/" << name;
-			continue;
-		}
-		
-		if(buffer.size() >= 2 && buffer[0] == '\xFF' && buffer[1] == '\xFE') {
-			LogWarning << "UTF16le character encoding is unsupported for new localizations "
-			              "please use UTF8 for file localisation/" << name;
-			continue;
-		}
-		
-		LogInfo << "Loading: " << name;
-		
-		std::istringstream iss(buffer);
-		if(!::g_localisation.read(iss)) {
-			LogWarning << "Error parsing localisation file localisation/" << name;
+		if(i.second) {
+			loadLocalisation(dir, localizedPrefix + i.first);
 		}
 	}
 }
