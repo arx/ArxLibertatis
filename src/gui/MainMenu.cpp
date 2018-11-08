@@ -1570,13 +1570,12 @@ public:
 	
 protected:
 	
-	void addControlRow(ControlAction controlAction, const std::string & text,
-	                   const char * defaultText = "?", const char * specialSuffix = "") {
+	void addControlRow(ControlAction controlAction, const std::string & text) {
 		
 		PanelWidget * panel = new PanelWidget;
 		
 		{
-			TextWidget * txt = new TextWidget(hFontControls, getLocalised(text, defaultText) + specialSuffix);
+			TextWidget * txt = new TextWidget(hFontControls, getLocalised(text, "?"));
 			txt->setEnabled(false);
 			panel->add(txt);
 		}
