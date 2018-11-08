@@ -1575,7 +1575,7 @@ protected:
 		PanelWidget * panel = new PanelWidget;
 		
 		{
-			TextWidget * txt = new TextWidget(hFontControls, getLocalised(text, "?"));
+			TextWidget * txt = new TextWidget(hFontControls, getLocalised(text));
 			txt->setEnabled(false);
 			panel->add(txt);
 		}
