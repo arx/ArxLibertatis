@@ -1412,9 +1412,9 @@ public:
 			std::string label = getLocalised("system_menus_options_auto_ready_weapon");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoReadyWeapon, this, _1, _2);
-			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_off", "Disabled"));
-			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_enemies", "Enemies"));
-			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_always", "Always"));
+			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_off"));
+			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_enemies"));
+			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_always"));
 			cb->setValue(int(config.input.autoReadyWeapon));
 			addCenter(cb);
 		}
@@ -1436,7 +1436,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_input_mouse_acceleration", "Mouse acceleration");
+			std::string label = getLocalised("system_menus_options_input_mouse_acceleration");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseAcceleration, this, _1);
 			sld->setValue(config.input.mouseAcceleration);
@@ -1444,7 +1444,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_raw_mouse_input", "Raw mouse input");
+			std::string label = getLocalised("system_menus_options_raw_mouse_input");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.rawMouseInput);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedRawMouseInput, this, _1);
@@ -1452,7 +1452,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_autodescription", "auto_description");
+			std::string label = getLocalised("system_menus_autodescription");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.autoDescription);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoDescription, this, _1);
@@ -1460,7 +1460,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
+			std::string label = getLocalised("system_menus_options_misc_quicksave_slots");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->setMinimum(1);
 			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedQuicksaveSlots, this, _1);
@@ -1469,7 +1469,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_border_turning", "Border turning");
+			std::string label = getLocalised("system_menus_border_turning");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.borderTurning);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedBorderTurning, this, _1);
@@ -1477,7 +1477,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_alt_rune_recognition", "Improved rune recognition");
+			std::string label = getLocalised("system_menus_alt_rune_recognition");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.useAltRuneRecognition);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAltRuneRecognition, this, _1);
@@ -1485,12 +1485,12 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_quick_level_transition", "Quick level transition");
+			std::string label = getLocalised("system_menus_quick_level_transition");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedQuickLevelTransition, this, _1, _2);
-			cb->addEntry(getLocalised("system_menus_quick_level_transition_off", "Disabled"));
-			cb->addEntry(getLocalised("system_menus_quick_level_transition_jump", "Jump"));
-			cb->addEntry(getLocalised("system_menus_quick_level_transition_immediate", "Immediate"));
+			cb->addEntry(getLocalised("system_menus_quick_level_transition_off"));
+			cb->addEntry(getLocalised("system_menus_quick_level_transition_jump"));
+			cb->addEntry(getLocalised("system_menus_quick_level_transition_immediate"));
 			cb->setValue(int(config.input.quickLevelTransition));
 			addCenter(cb);
 		}
