@@ -58,7 +58,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 		if(save.quicksave) {
 			
 			std::ostringstream text;
-			text << getLocalised("system_menus_main_quickloadsave", "Quicksave") << " #" << i;
+			text << getLocalised("system_menus_main_quickloadsave") << " #" << i;
 			m_name = text.str();
 			
 		} else {
@@ -80,35 +80,35 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 		std::tm t = *std::localtime(&save.stime);
 		
 		if(t.tm_year == n.tm_year && t.tm_yday == n.tm_yday) {
-			m_date = getLocalised("system_today", "Today");
+			m_date = getLocalised("system_today");
 		} else if(t.tm_year == n.tm_year && t.tm_yday + 1 == n.tm_yday) {
-			m_date = getLocalised("system_yesterday", "Yesterday");
+			m_date = getLocalised("system_yesterday");
 		} else if(t.tm_year == n.tm_year && t.tm_yday <= n.tm_yday && t.tm_yday + 7 > n.tm_yday) {
 			switch(t.tm_wday) {
-				case 0: m_date = getLocalised("system_sunday", "Sunday"); break;
-				case 1: m_date = getLocalised("system_monday", "Monday"); break;
-				case 2: m_date = getLocalised("system_tuesday", "Tuesday"); break;
-				case 3: m_date = getLocalised("system_wednesday", "Wednesday"); break;
-				case 4: m_date = getLocalised("system_thursday", "Thursday"); break;
-				case 5: m_date = getLocalised("system_saturday", "Saturday"); break;
-				case 6: m_date = getLocalised("system_friday", "Friday"); break;
+				case 0: m_date = getLocalised("system_sunday"); break;
+				case 1: m_date = getLocalised("system_monday"); break;
+				case 2: m_date = getLocalised("system_tuesday"); break;
+				case 3: m_date = getLocalised("system_wednesday"); break;
+				case 4: m_date = getLocalised("system_thursday"); break;
+				case 5: m_date = getLocalised("system_saturday"); break;
+				case 6: m_date = getLocalised("system_friday"); break;
 				default: arx_unreachable();
 			}
 		} else if((t.tm_year == n.tm_year && t.tm_mon <= n.tm_mon)
 		          || (t.tm_year + 1 == n.tm_year && t.tm_mon + 12 > n.tm_mon)) {
 			switch(t.tm_mon) {
-				case 0: m_date = getLocalised("system_january", "January"); break;
-				case 1: m_date = getLocalised("system_february", "February"); break;
-				case 2: m_date = getLocalised("system_march", "March"); break;
-				case 3: m_date = getLocalised("system_april", "April"); break;
-				case 4: m_date = getLocalised("system_may", "May"); break;
-				case 5: m_date = getLocalised("system_june", "June"); break;
-				case 6: m_date = getLocalised("system_july", "July"); break;
-				case 7: m_date = getLocalised("system_august", "August"); break;
-				case 8: m_date = getLocalised("system_september", "September"); break;
-				case 9: m_date = getLocalised("system_october", "October"); break;
-				case 10: m_date = getLocalised("system_november", "November"); break;
-				case 11: m_date = getLocalised("system_december", "December"); break;
+				case 0: m_date = getLocalised("system_january"); break;
+				case 1: m_date = getLocalised("system_february"); break;
+				case 2: m_date = getLocalised("system_march"); break;
+				case 3: m_date = getLocalised("system_april"); break;
+				case 4: m_date = getLocalised("system_may"); break;
+				case 5: m_date = getLocalised("system_june"); break;
+				case 6: m_date = getLocalised("system_july"); break;
+				case 7: m_date = getLocalised("system_august"); break;
+				case 8: m_date = getLocalised("system_september"); break;
+				case 9: m_date = getLocalised("system_october"); break;
+				case 10: m_date = getLocalised("system_november"); break;
+				case 11: m_date = getLocalised("system_december"); break;
 				default: arx_unreachable();
 			}
 			m_date += " " + boost::lexical_cast<std::string>(t.tm_mday);
