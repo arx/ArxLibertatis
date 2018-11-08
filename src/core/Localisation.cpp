@@ -109,11 +109,11 @@ PakFile * autodetectLanguage() {
 	return localisation;
 }
 
-static std::string removeStart(std::string str, std::string remove) {
+std::string removeStart(const std::string & str, const std::string & remove) {
 	return str.substr(remove.length(), str.length() - remove.length());
 }
 
-static void loadLocalisations() {
+void loadLocalisations() {
 	
 	const std::string suffix = ".ini";
 	const std::string fallbackPrefix = "xtext_english_";
