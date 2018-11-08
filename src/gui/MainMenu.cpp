@@ -1671,7 +1671,7 @@ public:
 		addControlRow(CONTROLS_CUST_LOOKUP,       "system_menus_options_input_customize_controls_look_up");
 		addControlRow(CONTROLS_CUST_LOOKDOWN,     "system_menus_options_input_customize_controls_look_down");
 		
-		addControlRow(CONTROLS_CUST_MINIMAP,      "system_menus_options_input_customize_controls_bookmap", "?", "2");
+		addControlRow(CONTROLS_CUST_MINIMAP,      "system_menus_options_input_customize_controls_minimap");
 		
 		addBackButton(Page_OptionsInput);
 		
