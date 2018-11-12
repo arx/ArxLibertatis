@@ -64,10 +64,9 @@ void CharacterCreation::loadData() {
 	str_button_skin = getLocalised("system_charsheet_button_skin");
 	str_button_done = getLocalised("system_charsheet_button_done");
 	
-	// TODO unused button descriptions, readd ?
-	// getLocalised("system_charsheet_quickgenerate");
-	// getLocalised("system_charsheet_done");
-	// getLocalised("system_charsheet_skin");
+	m_desc_quickgen = getLocalised("system_charsheet_quickgenerate");
+	m_desc_skin = getLocalised("system_charsheet_skin");
+	m_desc_done = getLocalised("system_charsheet_done");
 }
 
 void CharacterCreation::freeData() {
@@ -78,6 +77,23 @@ void CharacterCreation::freeData() {
 void CharacterCreation::resetCheat() {
 	m_cheatSkinButtonClickCount = 0;
 	m_cheatQuickGenButtonClickCount = 0;
+}
+
+static void characterCreationAddDescription(const std::string & text) {
+	
+	const int t = 0;
+	
+	// TODO copy-paste
+	UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
+		float(g_size.width()) * 0.5f,
+		4,
+		float(g_size.center().x) * 0.82f,
+		text,
+		Color(232 + t, 204 + t, 143 + t),
+		PlatformDurationMs(1000),
+		0.01f,
+		3,
+		0);
 }
 
 void CharacterCreation::render() {
@@ -147,8 +163,8 @@ void CharacterCreation::render() {
 			
 		}
 		
+		characterCreationAddDescription(m_desc_quickgen);
 		color = Color::white;
-		
 	} else {
 		color = Color(232, 204, 143);
 	}
@@ -168,6 +184,8 @@ void CharacterCreation::render() {
 			}
 			ARX_PLAYER_Restore_Skin();
 		}
+		
+		characterCreationAddDescription(m_desc_skin);
 		color = Color::white;
 	} else {
 		color = Color::rgb(0.91f, 0.8f, 0.56f);
@@ -208,6 +226,8 @@ void CharacterCreation::render() {
 				color = Color::gray(0.75f);
 			}
 		}
+		
+		characterCreationAddDescription(m_desc_done);
 	} else {
 		if(DONE) {
 			color = Color(232, 204, 143);
