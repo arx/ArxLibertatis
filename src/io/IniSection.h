@@ -59,6 +59,11 @@ class IniSection {
 	 * All preceding space and trailing space / commens must already be removed.
 	 */
 	void addKey(const std::string & key, const std::string & value);
+	/*!
+	 * Set a key in the ini format (name=value or name="value")
+	 * All preceding space and trailing space / commens must already be removed.
+	 */
+	void setKey(const std::string & key, const std::string & value);
 	
 	friend class IniReader;
 	

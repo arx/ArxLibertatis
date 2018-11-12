@@ -42,9 +42,10 @@ public:
 	 * Parses an input stream for configuration section and respective keys.
 	 * Stores them all in a section map as IniSection objects.
 	 * \param is The input stream with the ini data.
+	 * \param overrideValues override values if key already exists
 	 * \return false if there were problems (some data may have been read)
 	 */
-	bool read(std::istream & is);
+	bool read(std::istream & is, bool overrideValues = false);
 	
 	void clear();
 	

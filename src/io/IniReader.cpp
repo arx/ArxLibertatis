@@ -117,7 +117,7 @@ const IniKey * IniReader::getKey(const std::string & sectionName, const std::str
 static const std::string WHITESPACE = " \t\r\n";
 static const std::string ALPHANUM = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";
 
-bool IniReader::read(std::istream & is) {
+bool IniReader::read(std::istream & is, bool overrideValues) {
 	
 	// The current section
 	IniSection * section = NULL;
@@ -209,7 +209,11 @@ bool IniReader::read(std::istream & is) {
 		size_t valueStart = str.find_first_not_of(WHITESPACE, separator + 1);
 		if(valueStart == std::string::npos) {
 			// Empty value.
-			section->addKey(str.substr(start, nameEnd - start), std::string());
+			if(overrideValues) {
+				section->setKey(str.substr(start, nameEnd - start), std::string());
+			} else {
+				section->addKey(str.substr(start, nameEnd - start), std::string());
+			}
 			continue;
 		}
 		
@@ -292,7 +296,11 @@ bool IniReader::read(std::istream & is) {
 			value = str.substr(valueStart, valueEnd - valueStart);
 		}
 		
-		section->addKey(key, value);
+		if(overrideValues) {
+			section->setKey(key, value);
+		} else {
+			section->addKey(key, value);
+		}
 		
 		// Ignoring rest of the line, not verifying that it's only whitespace / comment
 		
