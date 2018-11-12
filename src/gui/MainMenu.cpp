@@ -562,12 +562,6 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_options_videos_full_screen");
-			if(label.empty()) {
-				// TODO once we ship our own amendmends to the loc files a cleaner
-				// fix would be to just define system_menus_options_videos_full_screen
-				// for the german version there
-				label = getLocalised("system_menus_options_video_full_screen");
-			}
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.fullscreen);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedFullscreen, this, _1);
