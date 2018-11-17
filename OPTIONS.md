@@ -109,13 +109,13 @@ By default, optional components will be automatically disabled if their dependen
 ### Icons
 
 * `ICON_TYPE` (default: *platform specific*): Type(s) of icons to generate and install. Valid options are:
- * `ico` Windows .ico files (linked into the appropriate executables) [default on Windows]
- * `icns` macOS .icns files (installed under `ICONDIR`) [default on macOS]
- * `iconset` Themable .png icon sets (installed in a `${size}x${size}/apps/${name}.png` hierarchy under `ICONTHEMEDIR`) [default on Linux and other systems]
- * `png` Portable .png  icons (installed under `ICONDIR`)
- * `overview` Icon size comparison montage (not installed)
- * `all` Generate all possible icon types
- * `none` Don't generate any icons
+  * `ico` Windows .ico files (linked into the appropriate executables) [default on Windows]
+  * `icns` macOS .icns files (installed under `ICONDIR`) [default on macOS]
+  * `iconset` Themable .png icon sets (installed in a `${size}x${size}/apps/${name}.png` hierarchy under `ICONTHEMEDIR`) [default on Linux and other systems]
+  * `png` Portable .png  icons (installed under `ICONDIR`)
+  * `overview` Icon size comparison montage (not installed)
+  * `all` Generate all possible icon types
+  * `none` Don't generate any icons
 
 * `DATA_FILES` (default: *not set*): Locations to search for pre-built data files. This is only useful when building git checkouts as release and development snapshot tarballs already include those files in the source tree. See the *Git Build Dependencies* section in README.md.
 * `OPTIMIZE_ICONS` (default: ON): Optimize the compression of generated PNG files using OptiPNG. This is only useful when building git checkouts as release and development snapshot tarballs already include pre-built images that this option doesn't apply to.
