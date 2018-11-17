@@ -71,11 +71,11 @@ Building checkouts from git on their own requires additional dependencies:
 * **[ImageMagick](http://www.imagemagick.org/script/index.php)**
 * **[OptiPNG](http://optipng.sourceforge.net/)**
 
-These are needed to render and scale the svg icons, which currently only render correctly in in Inkscape. Release and development snapshot source tarballs include the pre-built icon files and do not need these dependencies to build.
+These are needed to render and scale the SVG icons, which currently only render correctly in Inkscape. Release and development snapshot source tarballs include pre-built icon files and do not need these dependencies to build.
 
-To avoid the Inkscape (and ImageMagick) dependency for git builds, pre-built icons can be downloaded from http://arx-libertatis.org/files/data/ or the [ArxLibertatisData](https://github.com/arx/ArxLibertatisData/) repository. The required data version is listed in the VERSION file. Place `arx-libertatis-data-$version` directory into the build directory or tell the build system about it's location using the `DATA_FILES` cmake variable (`-DDATA_FILES=…` on the command-line).
+To avoid the Inkscape (as well as ImageMagick and OptiPNG) dependency for git builds, pre-built icons can be downloaded from http://arx-libertatis.org/files/data/ or the [ArxLibertatisData](https://github.com/arx/ArxLibertatisData/) repository. The required data version is listed in the VERSION file. Place `arx-libertatis-data-$version` directory into the build directory or tell the build system about it's location using the `DATA_FILES` CMake variable (`-DDATA_FILES=…` on the command-line).
 
-Alternatively, icons can be disabled by setting the `ICON_TYPE` cmake variable to `none`. See **OPTIONS.md** for other supported icon type values.
+Alternatively, icons can be disabled by setting the `ICON_TYPE` CMake variable to `none`. See **OPTIONS.md** for other supported icon type values.
 
 ## Compile and install
 
@@ -124,7 +124,7 @@ Install options:
 
 * `CMAKE_INSTALL_PREFIX` (default: `/usr/local` on UNIX and `C:/Program Files` on Windows): Where to install Arx Libertatis
 
-Set options by passing `-D<option>=<value>` to cmake.
+Set options by passing `-D<option>=<value>` to `cmake`.
 
 Backends that are not available are disabled by default. The `cmake` run should display a summary of the enabled backends at the end.
 
