@@ -242,7 +242,7 @@ int SDL2Window::createWindowAndGLContext(const char * profile) {
 	windowFlags |= SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN;
 	
 	for(int msaa = m_maxMSAALevel; true; msaa--) {
-		bool lastTry = (msaa == 1);
+		bool lastTry = (msaa == 0);
 		
 		// Cleanup context and window from previous tries
 		if(m_glcontext) {
@@ -258,6 +258,10 @@ int SDL2Window::createWindowAndGLContext(const char * profile) {
 		
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, msaa > 1 ? 1 : 0);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa > 1 ? msaa : 0);
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, msaa > 0 ? 24 : 16);
+		SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   msaa > 0 ? 8 : 3);
+		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, msaa > 0 ? 8 : 3);
+		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  msaa > 0 ? 8 : 2);
 		
 		m_window = SDL_CreateWindow(m_title.c_str(), x, y, m_size.x, m_size.y, windowFlags);
 		if(!m_window) {
@@ -278,10 +282,10 @@ int SDL2Window::createWindowAndGLContext(const char * profile) {
 		}
 		
 		// Verify that the MSAA setting matches what was requested
-		int msaaEnabled, msaaValue;
-		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLEBUFFERS, &msaaEnabled);
-		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &msaaValue);
-		if(!lastTry) {
+		if(msaa > 1) {
+			int msaaEnabled, msaaValue;
+			SDL_GL_GetAttribute(SDL_GL_MULTISAMPLEBUFFERS, &msaaEnabled);
+			SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &msaaValue);
 			if(!msaaEnabled || msaaValue < msaa) {
 				continue;
 			}
@@ -301,7 +305,7 @@ int SDL2Window::createWindowAndGLContext(const char * profile) {
 			continue;
 		}
 		
-		return msaa;
+		return std::max(msaa, 1);
 	}
 	
 }
@@ -311,7 +315,6 @@ bool SDL2Window::initialize() {
 	arx_assert(!m_displayModes.empty());
 	
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	// Used on Windows to prevent software opengl fallback.
