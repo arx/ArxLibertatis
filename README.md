@@ -27,7 +27,7 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 
 * **[CMake](http://www.cmake.org/) 2.8.3**+ (compile-time only)
 * **[zlib](http://zlib.net/)**
-* **[Boost](http://www.boost.org/) 1.48**+ (headers only^1)
+* **[Boost](http://www.boost.org/) 1.48**+ (headers only¹)
 * **[GLM](http://glm.g-truc.net/) 0.9.5.0**+
 * **[FreeType](http://www.freetype.org/) 2.3.0**+
 * **OpenAL 1.1**+ ([OpenAL Soft](http://openal-soft.org/) strongly recommended!)
@@ -40,7 +40,7 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 There is currently a single rendering backend for OpenGL:
 
 * **[SDL](http://www.libsdl.org/)** **1.2.10**+ *or* **2.0.0**+
-* **OpenGL 1.5**+ (OpenGL 2.1 or newer is recommended) *or* **OpenGL ES-CM 1.x**^1
+* **OpenGL 1.5**+ (OpenGL 2.1 or newer is recommended) *or* **OpenGL ES-CM 1.x**¹
 * **[libepoxy](https://github.com/anholt/libepoxy) 1.2**+ (recommended) *or* **[GLEW](http://glew.sourceforge.net/) 1.5.2**+
 
 1. OpenGL ES support requires libepoxy
@@ -49,7 +49,7 @@ There is currently a single rendering backend for OpenGL:
 
 Arx Libertatis comes with an optional gui crash reporter which has additional dependencies:
 
-* **[Qt](http://www.qt.io/) 4.7**+ or **5** (`QtCore`, `QtConcurrent`^1, `QtGui` and `QtWidgets`^1 libraries)
+* **[Qt](http://www.qt.io/) 4.7**+ or **5** (`QtCore`, `QtConcurrent`¹, `QtGui` and `QtWidgets`¹ libraries)
 * **[libcurl](http://curl.haxx.se/libcurl/) 7.20.0**+ (not required on Windows)
 * **GDB** (Linux-only, optional, run-time only)
 * **DbgHelp** (Windows-only)
@@ -103,15 +103,15 @@ Getting all the dependencies set up for Windows is more tricky. Pre-built depend
 * `BUILD_IO_LIBRARY` (default: `ON`): Build helper library for the Blender plugin
 * `BUILD_CRASHHANDLER` (default: `ON`): Enable the built-in crash handler (default OFF for macOS)
 * `BUILD_CRASHREPORTER` (default: `ON`): Build the Qt crash reporter gui - requires `BUILD_CRASHHANDLER` (default OFF for macOS)
-* `BUILD_PROFILER` (default: `OFF`^1): Build the profiler GUI
-* `BUILD_TESTS` (default: `OFF`^2): Build tests that can be run using `make check`
+* `BUILD_PROFILER` (default: `OFF`¹): Build the profiler GUI
+* `BUILD_TESTS` (default: `OFF`²): Build tests that can be run using `make check`
 * `BUILD_ALL` (default: `OFF`): Enable all the BUILD_* options above by default - they can still be disabled individually
 * `UNITY_BUILD` (default: `ON`): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default: `Release`): Set to `Debug` for debug binaries
-* `DEBUG` (default: `OFF`^3): Enable debug output and runtime checks
-* `DEBUG_GL` (default: `OFF`^4): Enable OpenGL debug output by default
+* `DEBUG` (default: `OFF`³): Enable debug output and runtime checks
+* `DEBUG_GL` (default: `OFF`⁴): Enable OpenGL debug output by default
 * `DEBUG_EXTRA` (default: `OFF`): Expensive debug options
-* `DEVELOPER` (default: `OFF`): Enable build options suitable for developers^5
+* `DEVELOPER` (default: `OFF`): Enable build options suitable for developers⁵
 * `BUILD_PROFILER_INSTRUMENT` (default: `OFF`): Add profiling instructions to the main arx binary
 
 1. Enabled automatically if `BUILD_ALL` or `BUILD_PROFILER_INSTRUMENT` is enabled
