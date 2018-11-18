@@ -734,8 +734,8 @@ class ArxSceneManager(object):
         scene.collection.objects.link(obj)
 
     def AddScenePortals(self, scene, data):
-        groupObject = bpy.data.objects.new(scene.name + '-portals', None)
-        scene.collection.objects.link(groupObject)
+        portals_col = bpy.data.collections.new(scene.name + '-portals')
+        scene.collection.children.link(portals_col)
 
         for portal in data.portals:
             bm = bmesh.new()
@@ -762,13 +762,16 @@ class ArxSceneManager(object):
             obj.display.show_shadows = False
             # obj.show_x_ray = True
             # obj.hide = True
-            obj.parent_type = 'OBJECT'
-            obj.parent = groupObject
-            scene.collection.objects.link(obj)
+            #obj.parent_type = 'OBJECT'
+            #obj.parent = groupObject
+            portals_col.objects.link(obj)
 
     def AddSceneLights(self, scene, llfData, sceneOffset):
+        lights_col = bpy.data.collections.new(scene.name + '-lights')
+        scene.collection.children.link(lights_col)
+
         groupObject = bpy.data.objects.new(scene.name + '-lights', None)
-        scene.collection.objects.link(groupObject)
+        lights_col.objects.link(groupObject)
         groupObject.location = correctionMatrix @ mathutils.Vector(sceneOffset)
 
         for light in llfData.lights:
@@ -783,9 +786,11 @@ class ArxSceneManager(object):
             obj.parent_type = 'OBJECT'
             obj.parent = groupObject
 
-            scene.collection.objects.link(obj)
+            lights_col.objects.link(obj)
 
     def AddSceneObjects(self, scene, dlfData, sceneOffset):
+        entities_col = bpy.data.collections.new(scene.name + '-entities')
+        scene.collection.children.link(entities_col)
 
         for e in dlfData.entities:
             
@@ -805,7 +810,7 @@ class ArxSceneManager(object):
             
             #TODO link the objects instead of jus reusing the mesh
             proxyObject = bpy.data.objects.new("e:" + entityId, mesh)
-            scene.collection.objects.link(proxyObject)
+            entities_col.objects.link(proxyObject)
 
             proxyObject.location = correctionMatrix @ mathutils.Vector([e.pos.x, e.pos.y, e.pos.z])
             proxyObject.location += correctionMatrix @ mathutils.Vector(sceneOffset)
