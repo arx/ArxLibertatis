@@ -796,21 +796,20 @@ class ArxSceneManager(object):
             
             legacyPath = e.name.decode('iso-8859-1').replace("\\", "/").lower().split('/')
             objectId = '/'.join(legacyPath[legacyPath.index('interactive') + 1 : -1])
-            
-            targetObject = bpy.data.objects.get(objectId)
-            
-            if targetObject is None:
+
+            object_col = bpy.data.collections.get(objectId)
+
+            if object_col is None:
                 self.log.info("Object not found: [{}]".format(objectId))
                 continue;
-            
-            mesh = bpy.data.meshes[objectId]
-            
-            entityId = objectId + "." + str(e.ident).zfill(4)
+
+            entityId = objectId + "_" + str(e.ident).zfill(4)
             self.log.info("Creating entity [{}]".format(entityId))
-            
-            #TODO link the objects instead of jus reusing the mesh
-            proxyObject = bpy.data.objects.new("e:" + entityId, mesh)
+
+            proxyObject = bpy.data.objects.new(name='e:' + entityId, object_data=None)
             entities_col.objects.link(proxyObject)
+            proxyObject.dupli_type = 'COLLECTION'
+            proxyObject.dupli_group = object_col
 
             proxyObject.location = correctionMatrix @ mathutils.Vector([e.pos.x, e.pos.y, e.pos.z])
             proxyObject.location += correctionMatrix @ mathutils.Vector(sceneOffset)
