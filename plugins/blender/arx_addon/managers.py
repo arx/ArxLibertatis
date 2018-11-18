@@ -770,9 +770,9 @@ class ArxSceneManager(object):
         lights_col = bpy.data.collections.new(scene.name + '-lights')
         scene.collection.children.link(lights_col)
 
-        groupObject = bpy.data.objects.new(scene.name + '-lights', None)
-        lights_col.objects.link(groupObject)
-        groupObject.location = correctionMatrix @ mathutils.Vector(sceneOffset)
+        #groupObject = bpy.data.objects.new(scene.name + '-lights', None)
+        #lights_col.objects.link(groupObject)
+        #groupObject.location = correctionMatrix @ mathutils.Vector(sceneOffset)
 
         for light in llfData.lights:
             lampData = bpy.data.lights.new(name=scene.name + "-lamp-data", type='POINT')
@@ -782,9 +782,10 @@ class ArxSceneManager(object):
             lampData.distance = light.fallend;
             lampData.energy = light.intensity
             obj = bpy.data.objects.new(name=scene.name + "-lamp", object_data=lampData)
-            obj.location = correctionMatrix @ mathutils.Vector([light.pos.x, light.pos.y, light.pos.z])
-            obj.parent_type = 'OBJECT'
-            obj.parent = groupObject
+            abs_loc = mathutils.Vector(sceneOffset) + mathutils.Vector([light.pos.x, light.pos.y, light.pos.z])
+            obj.location = correctionMatrix @ abs_loc
+            #obj.parent_type = 'OBJECT'
+            #obj.parent = groupObject
 
             lights_col.objects.link(obj)
 
