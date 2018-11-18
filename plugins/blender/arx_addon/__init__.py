@@ -18,8 +18,8 @@
 bl_info = {
     "name": "Arx Libertatis Addon",
     "author": "Arx Libertatis Team",
-    "version": (0, 0, 1),
-    "blender": (2, 74, 0),
+    "version": (0, 0, 2),
+    "blender": (2, 80, 0),
     "location": "",
     "description": "Addon for managing Arx Libertatis assets",
     "warning": "This is alpha software, read the documentation, keep your original blend files!",

@@ -22,22 +22,46 @@ import logging
 
 log = logging.getLogger('Materials')
 
-def getBlackTexture():
-    if "solid_black" in bpy.data.textures:
-        return bpy.data.textures["solid_black"]
+
+def arx_create_image(rootDirectory, relativePath):
+    extensions = [".png", ".jpg", ".jpeg", ".bmp", ".tga"]
+    for ext in extensions:
+        fullPath = os.path.join(rootDirectory, relativePath) + ext
+        if os.path.exists(fullPath):
+            break
+
+    if not os.path.exists(fullPath):
+        log.warning("Texture not found: %s" % relativePath)
+        return None
+
+    if relativePath in bpy.data.images:
+        img = bpy.data.images[relativePath]
     else:
-        img = bpy.data.images.new("solid_black", 32, 32)
-        img.source = 'GENERATED'
-        img.generated_type = "BLANK"
-        img.generated_color = [0, 0, 0, 1]
+        img = bpy.data.images.load(fullPath)
+        img.name = relativePath
 
-        tex = bpy.data.textures.new("solid_black", type='IMAGE')
-        tex.image = img
+    return img
 
-        return tex
+def arx_create_material_nodes(material, image):
+    tree = material.node_tree
 
+    n_output = [node for node in tree.nodes if node.type == 'OUTPUT_MATERIAL'][0]
+    n_output.location = (0, 0)
+
+    n_diffuse = tree.nodes.new('ShaderNodeBsdfDiffuse')
+    n_diffuse.name = 'n_diffuse'
+    n_diffuse.location = (-200, 0)
+    tree.links.new(n_diffuse.outputs['BSDF'], n_output.inputs['Surface'])
+
+    n_tex_image = tree.nodes.new('ShaderNodeTexImage')
+    n_tex_image.name = 'n_tex_image'
+    n_tex_image.location = (-600, 0)
+    tree.links.new(n_tex_image.outputs['Color'], n_diffuse.inputs['Color'])
+
+    n_tex_image.image = image
 
 def createMaterial(rootDirectory, textureName) -> bpy.types.Material:
+
     relativePath, fileExtension = os.path.splitext(textureName.replace("\\", "/").lower())
     foo, fileName = os.path.split(relativePath)
     
@@ -47,27 +71,15 @@ def createMaterial(rootDirectory, textureName) -> bpy.types.Material:
     matches = [m for m in mats if m.name == matName]
     if matches:
         return matches[0]
-    
+
+    image = arx_create_image(rootDirectory, relativePath)
+
     mat = bpy.data.materials.new(matName)
-    mat.use_shadeless = True
-    
-    extensions = [".png", ".jpg", ".jpeg", ".bmp", ".tga"]
-    for ext in extensions:
-        fullPath = os.path.join(rootDirectory, relativePath) + ext
-        if os.path.exists(fullPath):
-            break
-    
-    if not os.path.exists(fullPath):
-        log.warning("Texture not found: %s" % textureName)
-        return mat
-    
-    if relativePath in bpy.data.images:
-        img = bpy.data.images[relativePath]
-    else:
-        img = bpy.data.images.load(fullPath)
-        img.name = relativePath
-    
-    
+    mat.use_nodes = True
+    arx_create_material_nodes(mat, image)
+
+    return mat
+
     if relativePath in bpy.data.textures:
         tex = bpy.data.textures[relativePath]
     else:

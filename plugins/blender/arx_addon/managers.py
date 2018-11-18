@@ -46,7 +46,7 @@ from .common import *
 from .files import *
 
 correctionMatrix = \
-    mathutils.Matrix.Rotation(math.radians(180), 4, 'Z') * \
+    mathutils.Matrix.Rotation(math.radians(180), 4, 'Z') @ \
     mathutils.Matrix.Rotation(math.radians(-90), 4, 'X')
 
 
@@ -125,7 +125,7 @@ class ArxObjectManager(object):
 
         return facesToDrop
 
-    def createBmesh(self, vertData, faceData) -> bmesh.types.BMesh:
+    def createBmesh(self, context, vertData, faceData) -> bmesh.types.BMesh:
 
         facesToDrop = self.analyzeFaceData(faceData)
 
@@ -177,8 +177,8 @@ class ArxObjectManager(object):
 
         return bm
 
-    def createObject(self, bm, data, canonicalId, scene) -> bpy.types.Object:
-        
+    def createObject(self, context, bm, data, canonicalId, collection) -> bpy.types.Object:
+
         idString = "/".join(canonicalId);
         self.validateObjectName(idString)
         mesh = bpy.data.meshes.new(idString)
@@ -211,17 +211,16 @@ class ArxObjectManager(object):
 
         for (name, vidx) in data.actions:
             action = bpy.data.objects.new(name, None)
-            scene.objects.link(action)
             action.parent = obj
             action.parent_type = 'VERTEX'
             action.parent_vertices = [vidx, 0, 0]  # last two are ignored
-            action.show_x_ray = True
             action.show_name = True
-            
+            collection.objects.link(action)
+
             if name.lower().startswith("hit_"):
                 radius = int(name[4:])
-                action.empty_draw_type = 'SPHERE'
-                action.empty_draw_size = radius
+                action.empty_display_type = 'SPHERE'
+                action.empty_display_size = radius
                 action.lock_rotation = [True, True, True]
                 action.lock_scale = [True, True, True]
             else:
@@ -231,11 +230,11 @@ class ArxObjectManager(object):
         #armatureModifier = obj.modifiers.new(type='ARMATURE', name="Skeleton")
         #armatureModifier.object = armatureObj
 
-        for toDeSel in scene.objects: #deselect all first just to be sure
-            toDeSel.select = False
 
-        scene.objects.link(obj)
+        # for toDeSel in scene.objects: #deselect all first just to be sure
+        #    toDeSel.select = False
 
+        collection.objects.link(obj)
         #FIXME properly bind bones to mesh via vertex groups
         #obj.select = True
         #armatureObj.select = True
@@ -246,8 +245,9 @@ class ArxObjectManager(object):
 
         #bpy.ops.object.mode_set(mode='EDIT', toggle=False)  # initialises UVmap correctly
 
-        mesh.uv_textures.new()
 
+        # TODO 2.8
+        # mesh.uv_textures.new()
         for m in data.mats:
             mat = createMaterial(self.dataPath, m)
             obj.data.materials.append(mat)
@@ -264,13 +264,13 @@ class ArxObjectManager(object):
         amt = bpy.data.armatures.new(amtname)
         amt.draw_type = 'WIRE'
         amtobject = bpy.data.objects.new(amtname + "-amt", amt)
-        amtobject.show_x_ray = True
+        # amtobject.show_x_ray = True
         amtobject.location = origin
         # ob.show_name = True
 
         # Link object to scene and make active
-        bpy.context.scene.objects.link(amtobject)
-        bpy.context.scene.objects.active = amtobject
+        bpy.context.scene.collection.link(amtobject)
+        bpy.context.scene.collection.active = amtobject
         amtobject.select = True
 
         bpy.ops.object.mode_set(mode='EDIT')
@@ -293,7 +293,7 @@ class ArxObjectManager(object):
 
         return amtobject
 
-    def loadFile(self, filePath, scene) -> bpy.types.Object:
+    def loadFile(self, context, filePath, scene) -> bpy.types.Object:
         self.validateAssetDirectory();
         
         log.debug("Loading file: %s" % filePath)
@@ -315,12 +315,18 @@ class ArxObjectManager(object):
         relPath = os.path.relpath(filePath, objPath)
         split = splitPath(relPath)
         canonicalId = split[:-1]
-        log.debug("Canonical ID: %s" % str(canonicalId))
+
+        object_id_string = "/".join(canonicalId);
+
+        log.debug("Canonical ID: %s" % object_id_string)
 
         ftlData = self.ftlSerializer.read(unpacked)
 
-        bm = self.createBmesh(ftlData.verts, ftlData.faces)
-        obj = self.createObject(bm, ftlData, canonicalId, scene)
+        collection = bpy.data.collections.new(object_id_string)
+        context.scene.collection.children.link(collection)
+
+        bm = self.createBmesh(context, ftlData.verts, ftlData.faces)
+        obj = self.createObject(context, bm, ftlData, canonicalId, collection)
 
         return obj
 
@@ -603,7 +609,7 @@ class ArxSceneManager(object):
         self.arxFiles = arxFiles
         self.objectManager = objectManager
 
-    def importScene(self, sceneName, scene):
+    def importScene(self, context, sceneName, scene):
         self.log.info("Importing scene: %s" % sceneName)
         
         arxLevel = self.arxFiles.levels.levels[sceneName]
@@ -639,7 +645,7 @@ class ArxSceneManager(object):
 
         # Create background object
         obj = bpy.data.objects.new(sceneName + "-background", mesh)
-        scene.objects.link(obj)
+        scene.collection.objects.link(obj)
         # scn.objects.active = obj
         # obj.select = True
 
@@ -723,14 +729,13 @@ class ArxSceneManager(object):
         bm.to_mesh(mesh)
         bm.free()
         obj = bpy.data.objects.new(scene.name + '-anchors', mesh)
-        obj.draw_type = 'WIRE'
-        obj.show_x_ray = True
-        scene.objects.link(obj)
-        
+        # obj.draw_type = 'WIRE'
+        # obj.show_x_ray = True
+        scene.collection.objects.link(obj)
 
     def AddScenePortals(self, scene, data):
         groupObject = bpy.data.objects.new(scene.name + '-portals', None)
-        scene.objects.link(groupObject)
+        scene.collection.objects.link(groupObject)
 
         for portal in data.portals:
             bm = bmesh.new()
@@ -753,31 +758,32 @@ class ArxSceneManager(object):
             bm.to_mesh(mesh)
             bm.free()
             obj = bpy.data.objects.new(scene.name + '-portal', mesh)
-            obj.draw_type = 'WIRE'
-            obj.show_x_ray = True
+            obj.display_type = 'WIRE'
+            obj.display.show_shadows = False
+            # obj.show_x_ray = True
             # obj.hide = True
             obj.parent_type = 'OBJECT'
             obj.parent = groupObject
-            scene.objects.link(obj)
+            scene.collection.objects.link(obj)
 
     def AddSceneLights(self, scene, llfData, sceneOffset):
         groupObject = bpy.data.objects.new(scene.name + '-lights', None)
-        scene.objects.link(groupObject)
-        groupObject.location = correctionMatrix * mathutils.Vector(sceneOffset)
+        scene.collection.objects.link(groupObject)
+        groupObject.location = correctionMatrix @ mathutils.Vector(sceneOffset)
 
         for light in llfData.lights:
-            lampData = bpy.data.lamps.new(name=scene.name + "-lamp-data", type='POINT')
-            lampData.use_specular = False
+            lampData = bpy.data.lights.new(name=scene.name + "-lamp-data", type='POINT')
+            # lampData.use_specular = False
             lampData.color = (light.rgb.r, light.rgb.g, light.rgb.b)
-            lampData.use_sphere = True
+            # lampData.use_sphere = True
             lampData.distance = light.fallend;
             lampData.energy = light.intensity
             obj = bpy.data.objects.new(name=scene.name + "-lamp", object_data=lampData)
-            obj.location = correctionMatrix * mathutils.Vector([light.pos.x, light.pos.y, light.pos.z])
+            obj.location = correctionMatrix @ mathutils.Vector([light.pos.x, light.pos.y, light.pos.z])
             obj.parent_type = 'OBJECT'
             obj.parent = groupObject
 
-            scene.objects.link(obj)
+            scene.collection.objects.link(obj)
 
     def AddSceneObjects(self, scene, dlfData, sceneOffset):
 
@@ -799,10 +805,10 @@ class ArxSceneManager(object):
             
             #TODO link the objects instead of jus reusing the mesh
             proxyObject = bpy.data.objects.new("e:" + entityId, mesh)
-            scene.objects.link(proxyObject)
+            scene.collection.objects.link(proxyObject)
 
-            proxyObject.location = correctionMatrix * mathutils.Vector([e.pos.x, e.pos.y, e.pos.z])
-            proxyObject.location += correctionMatrix * mathutils.Vector(sceneOffset)
+            proxyObject.location = correctionMatrix @ mathutils.Vector([e.pos.x, e.pos.y, e.pos.z])
+            proxyObject.location += correctionMatrix @ mathutils.Vector(sceneOffset)
 
             # FIXME proper rotation conversion
             proxyObject.rotation_mode = 'YXZ'
@@ -816,13 +822,12 @@ class ArxAssetManager(object):
         self.arxFiles = arxFiles
         self.objectManager = objectManager
         self.sceneManager = sceneManager
-    
-    
-    def importAllModels(self):
+
+    def importAllModels(self, context):
         sortedModels = sorted(self.arxFiles.models.data.items())
         
         for i, (key, val) in enumerate(sortedModels):
-            
+            """
             sceneName = "m:" + '/'.join(key)
             
             scene = bpy.data.scenes.get(sceneName)
@@ -835,9 +840,12 @@ class ArxAssetManager(object):
             else:
                 self.log.info("Scene [{}] already exists".format(sceneName))
                 continue
-            
+            """
+            scene = None
+
             import_file = os.path.join(val.path, val.model)
-            self.objectManager.loadFile(import_file, scene);
+            self.objectManager.loadFile(context, import_file, scene);
+
 
 class ArxAddon(object):
     def __init__(self, dataPath, allowLibFallback):
