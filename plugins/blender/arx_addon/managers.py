@@ -770,24 +770,20 @@ class ArxSceneManager(object):
         lights_col = bpy.data.collections.new(scene.name + '-lights')
         scene.collection.children.link(lights_col)
 
-        #groupObject = bpy.data.objects.new(scene.name + '-lights', None)
-        #lights_col.objects.link(groupObject)
-        #groupObject.location = correctionMatrix @ mathutils.Vector(sceneOffset)
+        for index, light in enumerate(llfData.lights):
+            light_name = scene.name + '-light_' + str(index).zfill(4)
 
-        for light in llfData.lights:
-            lampData = bpy.data.lights.new(name=scene.name + "-lamp-data", type='POINT')
-            # lampData.use_specular = False
+            lampData = bpy.data.lights.new(name=light_name, type='POINT')
             lampData.color = (light.rgb.r, light.rgb.g, light.rgb.b)
-            # lampData.use_sphere = True
-            lampData.distance = light.fallend;
-            lampData.energy = light.intensity
-            obj = bpy.data.objects.new(name=scene.name + "-lamp", object_data=lampData)
+            lampData.use_custom_distance = True
+            lampData.cutoff_distance = light.fallend
+            lampData.energy = light.intensity * 1000 # TODO this is a guessed factor
+
+            obj = bpy.data.objects.new(name=light_name, object_data=lampData)
+            lights_col.objects.link(obj)
             abs_loc = mathutils.Vector(sceneOffset) + mathutils.Vector([light.pos.x, light.pos.y, light.pos.z])
             obj.location = correctionMatrix @ abs_loc
-            #obj.parent_type = 'OBJECT'
-            #obj.parent = groupObject
 
-            lights_col.objects.link(obj)
 
     def AddSceneObjects(self, scene, dlfData, sceneOffset):
         entities_col = bpy.data.collections.new(scene.name + '-entities')
