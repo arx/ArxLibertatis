@@ -88,6 +88,7 @@ SDL2Window::SDL2Window()
 	, m_glcontext(NULL)
 	, m_input(NULL)
 	, m_minimizeOnFocusLost(AlwaysEnabled)
+	, m_allowScreensaver(AlwaysDisabled)
 	, m_gamma(1.f)
 	, m_gammaOverridden(false)
 {
@@ -117,12 +118,23 @@ SDL2Window::~SDL2Window() {
 	
 }
 
+#ifndef SDL_HINT_VIDEO_ALLOW_SCREENSAVER // SDL 2.0.2+
+#define SDL_HINT_VIDEO_ALLOW_SCREENSAVER "SDL_VIDEO_ALLOW_SCREENSAVER"
+#endif
 #ifndef SDL_HINT_NO_SIGNAL_HANDLERS // SDL 2.0.4+
 #define SDL_HINT_NO_SIGNAL_HANDLERS "SDL_NO_SIGNAL_HANDLERS"
 #endif
 #ifndef SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH // SDL 2.0.5+
 #define SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH "SDL_MOUSE_FOCUS_CLICKTHROUGH"
 #endif
+
+static Window::MinimizeSetting getInitialSDLSetting(const char * hint, Window::MinimizeSetting def) {
+	const char * setting = SDL_GetHint(hint);
+	if(!setting) {
+		return def;
+	}
+	return (*setting == '0') ? Window::AlwaysDisabled : Window::AlwaysEnabled;
+}
 
 bool SDL2Window::initializeFramework() {
 	
@@ -132,16 +144,8 @@ bool SDL2Window::initializeFramework() {
 	
 	SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 	
-	const char * minimize = SDL_GetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS);
-	if(minimize) {
-		if(*minimize == '0') {
-			m_minimizeOnFocusLost = AlwaysDisabled;
-		} else {
-			m_minimizeOnFocusLost = AlwaysEnabled;
-		}
-	} else {
-		m_minimizeOnFocusLost = Enabled;
-	}
+	m_minimizeOnFocusLost = getInitialSDLSetting(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, Enabled);
+	m_allowScreensaver = getInitialSDLSetting(SDL_HINT_VIDEO_ALLOW_SCREENSAVER, Disabled);
 	
 	arx_assert_msg(s_mainWindow == NULL, "SDL only supports one window"); // TODO it supports multiple windows now!
 	arx_assert(m_displayModes.empty());
@@ -396,6 +400,16 @@ bool SDL2Window::initialize() {
 				#endif
 				switch(info.subsystem) {
 					case ARX_SDL_SYSWM_X11: {
+						SDL_version ver;
+						SDL_GetVersion(&ver);
+						if(ver.major == 2 && ver.minor == 0 && ver.patch < 9) {
+							// Work around a bug causing dbus-daemon memory usage to continually rise while AL is running
+							// if the org.gnome.ScreenSaver service does not exist.
+							if(m_allowScreensaver != AlwaysDisabled && m_allowScreensaver != AlwaysEnabled) {
+								SDL_EnableScreenSaver();
+								m_allowScreensaver = AlwaysEnabled;
+							}
+						}
 						#if ARX_HAVE_GL_STATIC || !ARX_HAVE_DLSYM || !defined(RTLD_DEFAULT)
 						const bool haveGLX = ARX_HAVE_GLX;
 						#elif ARX_HAVE_EPOXY
