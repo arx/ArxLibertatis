@@ -491,6 +491,11 @@ void SDL1Window::setClipboardText(const std::string & text) {
 	ARX_UNUSED(text);
 }
 
+void void SDL1Window::allowScreensaver(bool allowed) {
+	// Toggling screensaver not supported by SDL 1
+	ARX_UNUSED(allowed);
+}
+
 InputBackend * SDL1Window::getInputBackend() {
 	if(!m_input) {
 		m_input = new SDL1InputBackend();

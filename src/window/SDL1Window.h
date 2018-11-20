@@ -53,6 +53,8 @@ public:
 	std::string getClipboardText();
 	void setClipboardText(const std::string & text);
 	
+	void allowScreensaver(bool allowed);
+	
 	InputBackend * getInputBackend();
 	
 private:

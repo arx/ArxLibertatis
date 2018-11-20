@@ -105,6 +105,11 @@ public:
 	 */
 	virtual void setClipboardText(const std::string & text) = 0;
 	
+	/*!
+	 * Set if the user's screensaver is allowed to start.
+	 */
+	virtual void allowScreensaver(bool allowed) = 0;
+	
 	class Listener {
 		
 	public:

@@ -53,6 +53,8 @@ public:
 	std::string getClipboardText();
 	void setClipboardText(const std::string & text);
 	
+	void allowScreensaver(bool allowed);
+	
 	InputBackend * getInputBackend();
 	
 private:
@@ -72,6 +74,7 @@ private:
 	SDL2InputBackend * m_input;
 	
 	MinimizeSetting m_minimizeOnFocusLost;
+	MinimizeSetting m_allowScreensaver;
 	
 	float m_gamma;
 	bool m_gammaOverridden;
