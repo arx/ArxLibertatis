@@ -839,7 +839,7 @@ public:
 
 } // anonymous namespace
 
-static const std::string getName() {
+static std::string getName() {
 	return "timer";
 }
 
