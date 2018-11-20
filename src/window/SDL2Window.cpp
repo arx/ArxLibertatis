@@ -766,6 +766,23 @@ void SDL2Window::setClipboardText(const std::string & text) {
 	SDL_SetClipboardText(text.c_str());
 }
 
+void SDL2Window::allowScreensaver(bool allowed) {
+	
+	if(m_allowScreensaver == AlwaysDisabled || m_allowScreensaver == AlwaysEnabled) {
+		return;
+	}
+	
+	MinimizeSetting setting = allowed ? Enabled : Disabled;
+	if(m_allowScreensaver != setting) {
+		if(allowed) {
+			SDL_EnableScreenSaver();
+		} else {
+			SDL_DisableScreenSaver();
+		}
+		m_allowScreensaver = setting;
+	}
+}
+
 InputBackend * SDL2Window::getInputBackend() {
 	if(!m_input) {
 		m_input = new SDL2InputBackend(this);
