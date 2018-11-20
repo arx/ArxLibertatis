@@ -33,7 +33,7 @@ Reddit: [http://old.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 * **OpenAL 1.1**+ ([OpenAL Soft](http://openal-soft.org/) strongly recommended!)
 * **iconutil** (from Xcode) or **[icnsutil](https://github.com/pornel/libicns)** (macOS only)
 
-1. Systems without Win32 or POSIX filesystem support will also the `filesystem` and `system` libraries from Boost.
+1. Systems without Win32 or POSIX filesystem support will also need the `filesystem` and `system` libraries from Boost.
 
 ### Renderer
 
