@@ -130,7 +130,7 @@ void loadLocalisation(PakDirectory * dir, const std::string & name) {
 	LogInfo << "Loading: " << name;
 	
 	std::istringstream iss(buffer);
-	if(!::g_localisation.read(iss, true)) {
+	if(!g_localisation.read(iss, true)) {
 		LogWarning << "Error parsing localisation file localisation/" << name;
 	}
 }
@@ -223,7 +223,7 @@ bool initLocalisation() {
 	if(!buffer.empty()) {
 		LogDebug("Preparing to parse localisation file");
 		std::istringstream iss(buffer);
-		if(!::g_localisation.read(iss)) {
+		if(!g_localisation.read(iss)) {
 			LogWarning << "Error parsing localisation file localisation/utext_"
 			           << config.language << ".ini";
 		}
