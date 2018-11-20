@@ -144,7 +144,7 @@ public:
 	
 	const Vec2i & getPosition() const { return m_position; }
 	const Vec2i & getSize() const { return m_size; }
-	const DisplayMode getDisplayMode() const { return DisplayMode(m_size); }
+	DisplayMode getDisplayMode() const { return DisplayMode(m_size); }
 	
 	bool isFullScreen() const { return m_fullscreen; }
 	
