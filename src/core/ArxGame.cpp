@@ -1657,6 +1657,9 @@ void ArxGame::updateInput() {
 		}
 	}
 #endif
+	
+	m_MainWindow->allowScreensaver( !m_MainWindow->isFullScreen() && ARXmenu.mode() == Mode_MainMenu );
+	
 }
 
 extern int iHighLight;
