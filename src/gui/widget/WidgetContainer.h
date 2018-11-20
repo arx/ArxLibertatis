@@ -40,7 +40,7 @@ public:
 	void move(const Vec2f & offset);
 	void drawDebug();
 	
-	const std::vector<Widget *> widgets() const { return m_widgets; }
+	const std::vector<Widget *> & widgets() const { return m_widgets; }
 	
 private:
 	
