@@ -427,7 +427,7 @@ public:
 	static ScriptEventName parse(const std::string & name);
 	
 	ScriptMessage getId() const { return m_id; }
-	const std::string getName() const { return m_name; }
+	const std::string & getName() const { return m_name; }
 	
 	std::string toString() const;
 	
