@@ -149,6 +149,11 @@ if(UNIX AND NOT DEFINED SDL2_VERSION_STRING AND _PC_SDL2_FOUND)
 	set(SDL2_VERSION_STRING "${_PC_SDL2_VERSION}")
 endif()
 
+if(SDL2_VERSION_STRING VERSION_EQUAL 2.0.9)
+	# Workaround for https://bugzilla.libsdl.org/show_bug.cgi?id=4362
+	set(SDL2_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/SDL-2.0.9" "${SDL2_INCLUDE_DIR}")
+endif()
+
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(SDL2 REQUIRED_VARS SDL2_LIBRARY SDL2_INCLUDE_DIR
