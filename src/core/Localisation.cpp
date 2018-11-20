@@ -109,7 +109,6 @@ PakFile * autodetectLanguage() {
 	return localisation;
 }
 
-
 void loadLocalisation(PakDirectory * dir, const std::string & name) {
 	
 	PakFile * file = dir->getFile(name);
@@ -135,10 +134,6 @@ void loadLocalisation(PakDirectory * dir, const std::string & name) {
 	}
 }
 
-std::string removeStart(const std::string & str, const std::string & remove) {
-	return str.substr(remove.length(), str.length() - remove.length());
-}
-
 void loadLocalisations() {
 	
 	const std::string suffix = ".ini";
@@ -157,10 +152,10 @@ void loadLocalisations() {
 		
 		if(boost::ends_with(name, suffix)) {
 			if(boost::starts_with(name, fallbackPrefix)) {
-				localizationFiles[removeStart(name, fallbackPrefix)];
+				localizationFiles[name.substr(fallbackPrefix.length())];
 			}
 			if(boost::starts_with(name, localizedPrefix)) {
-				localizationFiles[removeStart(name, localizedPrefix)] = true;
+				localizationFiles[name.substr(localizedPrefix.length())] = true;
 			}
 		}
 	}
