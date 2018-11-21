@@ -122,7 +122,7 @@ void loadLocalisation(PakDirectory * dir, const std::string & name) {
 	
 	if(buffer.size() >= 2 && buffer[0] == '\xFF' && buffer[1] == '\xFE') {
 		LogWarning << "UTF16le character encoding is unsupported for new localizations "
-					  "please use UTF8 for file localisation/" << name;
+		              "please use UTF8 for file localisation/" << name;
 		return;
 	}
 	
