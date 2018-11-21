@@ -127,12 +127,12 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 				continue;
 			}
 			
-			long nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
+			size_t nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
 			
 			float temp_uv1[4];
 			
 			bool dod = true;
-			for(long k = 0; k < nbvert; k++) {
+			for(size_t k = 0; k < nbvert; k++) {
 				float ddd = fdist(ep.v[k].p, poss);
 				if(ddd > BOOM_RADIUS) {
 					dod = false;
@@ -158,7 +158,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			pb.tolive = GameDurationMs(10000);
 			pb.timecreation = g_gameTime.now();
 			pb.rgb = Color3f::black;
-			for(int k = 0; k < nbvert; k++) {
+			for(size_t k = 0; k < nbvert; k++) {
 				pb.v[k] = pb.u[k] = temp_uv1[k];
 			}
 			pb.nbvert = short(nbvert);
