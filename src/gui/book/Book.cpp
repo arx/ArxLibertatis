@@ -1517,11 +1517,12 @@ void MapPage::drawMaps()
 
 void MapPage::drawLeftTabs() {
 	
-	long max_onglet = 7;
+	size_t max_onglet = 7;
 	
-	for(int i = 0; i <= max_onglet; i++) {
-		PlayerBookPage::manageLeftTabs(i, m_currentLevel);
+	for(size_t i = 0; i <= max_onglet; i++) {
+		PlayerBookPage::manageLeftTabs(long(i), m_currentLevel);
 	}
+	
 }
 
 void QuestBookPage::manage() {
