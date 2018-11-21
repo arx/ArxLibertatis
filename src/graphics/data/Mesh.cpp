@@ -824,13 +824,13 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 					ep2->color[kk] = Color::black.toRGBA();
 				}
 				
-				long to = (ep->type & POLY_QUAD) ? 4 : 3;
+				size_t to = (ep->type & POLY_QUAD) ? 4 : 3;
 				float div = 1.f / to;
 				
 				ep2->center = Vec3f(0.f);
 				ep2->min = Vec3f(0.f);
 				ep2->max = Vec3f(0.f);
-				for(long h = 0; h < to; h++) {
+				for(size_t h = 0; h < to; h++) {
 					ep2->center += ep2->v[h].p;
 					if(h != 0) {
 						ep2->max = glm::max(ep2->max, ep2->v[h].p);
@@ -842,7 +842,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				ep2->center *= div;
 				
 				float dist = 0.f;
-				for(int h = 0; h < to; h++) {
+				for(size_t h = 0; h < to; h++) {
 					float d = glm::distance(ep2->v[h].p, ep2->center);
 					dist = std::max(dist, d);
 				}
