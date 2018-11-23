@@ -86,6 +86,11 @@ class InconsistentStateException(Exception):
     pass
 
 
+
+def arx_pos_to_blender_for_model(pos):
+    """x=>x; y=>-z; z=>y"""
+    return Vector((pos[0], pos[2], -pos[1]))
+
 import itertools
 
 class ArxObjectManager(object):
@@ -136,7 +141,7 @@ class ArxObjectManager(object):
 
         uvData = bm.loops.layers.uv.verify()
         for i, (position, normal) in enumerate(vertData):
-            vertex = bm.verts.new(position)
+            vertex = bm.verts.new(arx_pos_to_blender_for_model(position))
             vertex.normal = normal
             vertex.index = i
 
@@ -812,8 +817,8 @@ class ArxSceneManager(object):
             proxyObject.location += correctionMatrix @ mathutils.Vector(sceneOffset)
 
             # FIXME proper rotation conversion
-            proxyObject.rotation_mode = 'YXZ'
-            proxyObject.rotation_euler = [math.radians(e.angle.a-90), math.radians(e.angle.g+90), math.radians(e.angle.b)]
+            #proxyObject.rotation_mode = 'YXZ'
+            proxyObject.rotation_euler = [math.radians(e.angle.a), math.radians(e.angle.g), math.radians(e.angle.b)]
 
 class ArxAssetManager(object):
     def __init__(self, arxFiles, objectManager, sceneManager):
