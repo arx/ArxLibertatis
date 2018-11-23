@@ -691,7 +691,7 @@ class ArxSceneManager(object):
 
                     vertIdx = []
                     for i in tempVerts:
-                        vertIdx.append(bm.verts.new(i[0]))
+                        vertIdx.append(bm.verts.new(arx_pos_to_blender_for_model(i[0])))
 
                     bmFace = bm.faces.new(vertIdx)
 
@@ -708,7 +708,7 @@ class ArxSceneManager(object):
 
         bm.verts.index_update()
         bm.edges.index_update()
-        bm.transform(correctionMatrix)
+        #bm.transform(correctionMatrix)
         return bm
     
     def AddScenePathfinderAnchors(self, scene, anchors):
@@ -717,7 +717,7 @@ class ArxSceneManager(object):
         
         bVerts = []
         for anchor in anchors:
-            bVerts.append(bm.verts.new(anchor[0]))
+            bVerts.append(bm.verts.new(arx_pos_to_blender_for_model(anchor[0])))
         
         bm.verts.index_update()
         
@@ -729,7 +729,7 @@ class ArxSceneManager(object):
                 except ValueError:
                     pass
         
-        bm.transform(correctionMatrix)
+        #bm.transform(correctionMatrix)
         mesh = bpy.data.meshes.new(scene.name + '-anchors-mesh')
         bm.to_mesh(mesh)
         bm.free()
@@ -755,10 +755,10 @@ class ArxSceneManager(object):
 
             bVerts = []
             for i in tempVerts:
-                bVerts.append(bm.verts.new(i))
+                bVerts.append(bm.verts.new(arx_pos_to_blender_for_model(i)))
 
             bm.faces.new(bVerts)
-            bm.transform(correctionMatrix)
+            #bm.transform(correctionMatrix)
             mesh = bpy.data.meshes.new(scene.name + '-portal-mesh')
             bm.to_mesh(mesh)
             bm.free()
@@ -787,7 +787,7 @@ class ArxSceneManager(object):
             obj = bpy.data.objects.new(name=light_name, object_data=lampData)
             lights_col.objects.link(obj)
             abs_loc = mathutils.Vector(sceneOffset) + mathutils.Vector([light.pos.x, light.pos.y, light.pos.z])
-            obj.location = correctionMatrix @ abs_loc
+            obj.location = arx_pos_to_blender_for_model(abs_loc)
 
 
     def AddSceneObjects(self, scene, dlfData, sceneOffset):
@@ -813,8 +813,8 @@ class ArxSceneManager(object):
             proxyObject.dupli_type = 'COLLECTION'
             proxyObject.dupli_group = object_col
 
-            proxyObject.location = correctionMatrix @ mathutils.Vector([e.pos.x, e.pos.y, e.pos.z])
-            proxyObject.location += correctionMatrix @ mathutils.Vector(sceneOffset)
+            pos = mathutils.Vector(sceneOffset) + mathutils.Vector([e.pos.x, e.pos.y, e.pos.z])
+            proxyObject.location = arx_pos_to_blender_for_model(pos)
 
             # FIXME proper rotation conversion
             #proxyObject.rotation_mode = 'YXZ'
