@@ -37,7 +37,7 @@ import mathutils
 from mathutils import Vector,Quaternion
 
 from .lib import ArxIO
-from .dataDlf import DlfSerializer
+from .dataDlf import DlfSerializer, DlfData
 from .dataFtl import FtlSerializer, FtlData, FtlMetadata, FtlVertex, FtlFace
 from .dataFts import FtsSerializer
 from .dataLlf import LlfSerializer
@@ -790,7 +790,7 @@ class ArxSceneManager(object):
             obj.location = arx_pos_to_blender_for_model(abs_loc)
 
 
-    def AddSceneObjects(self, scene, dlfData, sceneOffset):
+    def AddSceneObjects(self, scene, dlfData: DlfData, sceneOffset):
         entities_col = bpy.data.collections.new(scene.name + '-entities')
         scene.collection.children.link(entities_col)
 
