@@ -166,9 +166,14 @@ class DANAE_LS_PATHWAYS(LittleEndianStructure):
 import logging
 from ctypes import sizeof, create_string_buffer
 
-from collections import namedtuple
+from dataclasses import dataclass
+from typing import List, Tuple
 
-DlfData = namedtuple('DlfData', ['entities', 'fogs', 'paths'])
+@dataclass
+class DlfData:
+    entities: List[DANAE_LS_INTER]
+    fogs:     List[DANAE_LS_FOG]
+    paths:    List[Tuple[DANAE_LS_PATH, List[DANAE_LS_PATHWAYS]]]
 
 class DlfSerializer(object):
     def __init__(self, ioLib):
