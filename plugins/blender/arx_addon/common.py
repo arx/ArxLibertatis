@@ -80,6 +80,7 @@ def createMaterial(rootDirectory, textureName) -> bpy.types.Material:
 
     mat = bpy.data.materials.new(matName)
     mat.use_nodes = True
+    mat.blend_method = 'HASHED'
     arx_create_material_nodes(mat, image)
 
     return mat
