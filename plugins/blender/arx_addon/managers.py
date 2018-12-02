@@ -810,8 +810,8 @@ class ArxSceneManager(object):
 
             proxyObject = bpy.data.objects.new(name='e:' + entityId, object_data=None)
             entities_col.objects.link(proxyObject)
-            proxyObject.dupli_type = 'COLLECTION'
-            proxyObject.dupli_group = object_col
+            proxyObject.instance_type = 'COLLECTION'
+            proxyObject.instance_collection = object_col
 
             pos = mathutils.Vector(sceneOffset) + mathutils.Vector([e.pos.x, e.pos.y, e.pos.z])
             proxyObject.location = arx_pos_to_blender_for_model(pos)
