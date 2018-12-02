@@ -662,6 +662,7 @@ class ArxSceneManager(object):
         self.AddScenePortals(scene, ftsData)
         self.AddSceneLights(scene, llfData, ftsData.sceneOffset)
         self.AddSceneObjects(scene, dlfData, ftsData.sceneOffset)
+        self.add_scene_map_camera(scene)
 
     def AddSceneBackground(self, cells, mappedMaterials):
         bm = bmesh.new()
@@ -819,6 +820,23 @@ class ArxSceneManager(object):
             # FIXME proper rotation conversion
             #proxyObject.rotation_mode = 'YXZ'
             proxyObject.rotation_euler = [math.radians(e.angle.a), math.radians(e.angle.g), math.radians(e.angle.b)]
+
+    def add_scene_map_camera(self, scene):
+        """Grid size is 160x160m"""
+        cam = bpy.data.cameras.new('Map Camera')
+        cam.type = 'ORTHO'
+        cam.ortho_scale = 16000
+        cam.clip_start = 100 # 1m
+        cam.clip_end = 20000 # 200m
+        cam.show_name = True
+        cam_obj = bpy.data.objects.new('Map Camera', cam)
+        cam_obj.location = Vector((8000.0, 8000.0, 5000.0))
+        scene.collection.objects.link(cam_obj)
+
+        scene.render.engine = 'BLENDER_EEVEE'
+        scene.render.resolution_x = 1000
+        scene.render.resolution_y = 1000
+
 
 class ArxAssetManager(object):
     def __init__(self, arxFiles, objectManager, sceneManager):
