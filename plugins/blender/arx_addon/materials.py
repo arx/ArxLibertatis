@@ -50,21 +50,27 @@ def arx_get_material_node_group():
     n_diffuse.name = 'n_diffuse'
     n_diffuse.location = Vector((-520.0, 0.0))
 
-    n_less_than = group.nodes.new('ShaderNodeMath')
-    n_less_than.name = 'n_less_than'
-    n_less_than.location = Vector((-520.0, 180.0))
+    n_math1 = group.nodes.new('ShaderNodeMath')
+    n_math1.name = 'n_math1'
+    n_math1.location = Vector((-520.0, 180.0))
+    n_math1.operation = 'FLOOR'
+
+    n_geometry = group.nodes.new('ShaderNodeNewGeometry')
+    n_geometry.name = 'n_geometry'
+    n_geometry.location = Vector((-760.0, 420.0))
 
     n_in = group.nodes.new('NodeGroupInput')
     n_in.name = 'n_in'
-    n_in.location = Vector((-1120.0, 0.0))
+    n_in.location = Vector((-1300.0, 0.0))
 
     group.links.new(n_mix.outputs['Shader'], n_out.inputs['Shader'])
 
-    group.links.new(n_less_than.outputs['Value'], n_mix.inputs['Fac'])
+    group.links.new(n_math1.outputs['Value'], n_mix.inputs['Fac'])
     group.links.new(n_diffuse.outputs['BSDF'], n_mix.inputs[1])
     group.links.new(n_transparent.outputs['BSDF'], n_mix.inputs[2])
 
+    group.links.new(n_geometry.outputs['Backfacing'], n_math1.inputs['Value'])
+
     group.links.new(n_in.outputs['Color'], n_diffuse.inputs['Color'])
-    group.links.new(n_in.outputs['Color'], n_less_than.inputs['Value'])
 
     return group
