@@ -22,6 +22,8 @@ import logging
 
 log = logging.getLogger('Materials')
 
+from .materials import arx_get_material_node_group
+
 
 def arx_create_image(rootDirectory, relativePath):
     extensions = [".png", ".jpg", ".jpeg", ".bmp", ".tga"]
@@ -48,15 +50,17 @@ def arx_create_material_nodes(material, image):
     n_output = [node for node in tree.nodes if node.type == 'OUTPUT_MATERIAL'][0]
     n_output.location = (0, 0)
 
-    n_diffuse = tree.nodes.new('ShaderNodeBsdfDiffuse')
-    n_diffuse.name = 'n_diffuse'
-    n_diffuse.location = (-200, 0)
-    tree.links.new(n_diffuse.outputs['BSDF'], n_output.inputs['Surface'])
+    n_arx = tree.nodes.new('ShaderNodeGroup')
+    n_arx.name = 'n_arx'
+    n_arx.location = (-200, 0)
+    n_arx.node_tree = arx_get_material_node_group()
 
     n_tex_image = tree.nodes.new('ShaderNodeTexImage')
     n_tex_image.name = 'n_tex_image'
     n_tex_image.location = (-600, 0)
-    tree.links.new(n_tex_image.outputs['Color'], n_diffuse.inputs['Color'])
+
+    tree.links.new(n_arx.outputs['Shader'], n_output.inputs['Surface'])
+    tree.links.new(n_tex_image.outputs['Color'], n_arx.inputs['Color'])
 
     n_tex_image.image = image
 
