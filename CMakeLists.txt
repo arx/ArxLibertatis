@@ -605,7 +605,7 @@ if(NOT CXX_STD_VERSION LESS 2011)
 	check_cxx11("final"                  ARX_HAVE_CXX11_FINAL              1700)
 	check_cxx17("[[nodiscard]]"          ARX_HAVE_CXX17_NODISCARD          1911)
 	if(WIN32)
-		check_cxx17("fstream(wchar*)" ARX_HAVE_CXX17_FSTREAM_WCHAR 0)
+		check_cxx17("fstream(wchar*)" ARX_HAVE_CXX17_FSTREAM_WCHAR ALWAYS)
 	endif()
 endif()
 
