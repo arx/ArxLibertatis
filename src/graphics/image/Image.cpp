@@ -25,7 +25,6 @@
 #include <limits>
 
 #include "graphics/image/stb_image.h"
-#include "graphics/image/stb_image_write.h"
 
 #include "graphics/Math.h"
 #include "io/fs/FilePath.h"
@@ -624,23 +623,6 @@ void Image::flipY() {
 	
 	delete[] swapTmp;
 	
-}
-
-bool Image::save(const fs::path & filename) const {
-	
-	if(getFormat() >= Format_Unknown) {
-		return false;
-	}
-	
-	int ret = 0;
-	if(filename.ext() == ".bmp") {
-		ret = stbi::stbi_write_bmp(filename.string().c_str(), int(getWidth()), int(getHeight()),
-		                           int(getNumChannels()), getData());
-	} else {
-		LogError << "Unsupported file extension: " << filename.ext();
-	}
-	
-	return ret != 0;
 }
 
 std::ostream & operator<<(std::ostream & os, Image::Format format) {
