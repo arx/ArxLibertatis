@@ -1919,6 +1919,9 @@ endif()
 if(NOT (ARX_HAVE_CLOCK_GETTIME OR WIN32 OR ARX_HAVE_MACH_CLOCK))
 	message(SEND_ERROR "Need either clock_gettime or WIN32 or mach clock_get_time.")
 endif()
+if(WIN32 AND NOT ARX_HAVE_CXX17_FSTREAM_WCHAR)
+	message(WARNING "Missing support for Unicode file paths")
+endif()
 
 # Check for consistent configuration between SDL and libepoxy/GLEW
 if(ARX_HAVE_SDL AND ARX_HAVE_OPENGL AND NOT WIN32 AND NOT APPLE)
