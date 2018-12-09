@@ -290,7 +290,7 @@ struct aligned_allocator {
 		return std::numeric_limits<size_type>::max() / sizeof(value_type);
 	}
 	
-	pointer allocate(size_type n, std::allocator<void>::const_pointer hint = 0) {
+	pointer allocate(size_type n, const void * hint = 0) {
 		ARX_UNUSED(hint);
 		if(n > max_size()) {
 			throw std::bad_alloc();
