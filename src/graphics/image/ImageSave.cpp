@@ -150,7 +150,7 @@ bool Image::save(const fs::path & filename) const {
 		if(scanline_pad > 0) {
 			const char padding[] = { 0, 0 };
 			arx_assert(scanline_pad <= sizeof(padding));
-			if(!f.write(padding, scanline_pad).good()) {
+			if(!f.write(padding, std::streamsize(scanline_pad)).good()) {
 				return false;
 			}
 		}
