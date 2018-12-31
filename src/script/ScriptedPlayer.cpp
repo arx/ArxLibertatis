@@ -547,7 +547,7 @@ public:
 		HandleFlags("df") {
 			if(flg & flag('d')) {
 				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
-				duration = (long)context.getFloat();
+				duration = long(context.getFloat());
 				dur = true;
 			}
 			if(flg & flag('f')) {
@@ -555,7 +555,7 @@ public:
 			}
 		}
 		
-		long level = glm::clamp((long)context.getFloat(), 1l, 10l);
+		long level = glm::clamp(long(context.getFloat()), 1l, 10l);
 		
 		std::string spellname = context.getWord();
 		
