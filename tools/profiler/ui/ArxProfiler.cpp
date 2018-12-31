@@ -287,7 +287,7 @@ void ProfilerView::setData(ThreadsData * threadsData) {
 			const char * unitName = humanReadableTime(duration);
 			
 			// Round to get 2 decimals of precision
-			duration = (int)(duration * 100);
+			duration = int(duration * 100);
 			duration /= 100;
 			
 			QRectF rect(qreal(it->startTime - firstTimestamp), offset, qreal(it->endTime - it->startTime), ITEM_HEIGHT);
