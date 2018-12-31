@@ -263,7 +263,7 @@ public:
 		if(detectvalue == "off") {
 			context.getEntity()->_npcdata->fDetect = -1;
 		} else {
-			context.getEntity()->_npcdata->fDetect = glm::clamp((int)context.getFloatVar(detectvalue), -1, 100);
+			context.getEntity()->_npcdata->fDetect = glm::clamp(int(context.getFloatVar(detectvalue)), -1, 100);
 		}
 		
 		return Success;
@@ -368,7 +368,7 @@ public:
 		
 		DebugScript(' ' << xpvalue);
 		
-		context.getEntity()->_npcdata->xpvalue = (long)xpvalue;
+		context.getEntity()->_npcdata->xpvalue = long(xpvalue);
 		
 		return Success;
 	}
