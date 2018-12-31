@@ -165,7 +165,7 @@ public:
 		if(trapvalue == "off") {
 			context.getEntity()->_fixdata->trapvalue = -1;
 		} else {
-			context.getEntity()->_fixdata->trapvalue = glm::clamp((int)context.getFloatVar(trapvalue), -1, 100);
+			context.getEntity()->_fixdata->trapvalue = glm::clamp(int(context.getFloatVar(trapvalue)), -1, 100);
 		}
 		
 		return Success;
@@ -188,7 +188,7 @@ public:
 		if(secretvalue == "off") {
 			context.getEntity()->secretvalue = -1;
 		} else {
-			context.getEntity()->secretvalue = glm::clamp((int)context.getFloatVar(secretvalue), -1, 100);
+			context.getEntity()->secretvalue = glm::clamp(int(context.getFloatVar(secretvalue)), -1, 100);
 		}
 		
 		return Success;
