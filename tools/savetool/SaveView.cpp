@@ -429,7 +429,7 @@ static std::ostream & print_movemode(std::ostream & strm, s32 movemode) {
 
 static void print_spell(s32 spell) {
 	
-	if((size_t)spell < ARRAY_SIZE(spellNames)) {
+	if(size_t(spell) < ARRAY_SIZE(spellNames)) {
 		std::cout << spellNames[spell];
 	} else {
 		std::cout << "(unknown)";
@@ -452,7 +452,7 @@ static int print_variables(size_t n, const char * dat, size_t & pos, const std::
 			
 			VariableType type;
 			if(avs->type == s || avs->type == f || avs->type == l) {
-				type = (VariableType)avs->type;
+				type = VariableType(avs->type);
 			} else if(avs->name[0] == '$' || avs->name[0] == '\xA3') {
 				type = s;
 			} else if(avs->name[0] == '&' || avs->name[0] == '@') {
@@ -468,13 +468,13 @@ static int print_variables(size_t n, const char * dat, size_t & pos, const std::
 			
 			std::cout << '\n';
 			if(type == s) {
-				std::string value = boost::to_lower_copy(util::loadString(dat + pos, (long)avs->fval));
-				pos += (long)avs->fval;
+				std::string value = boost::to_lower_copy(util::loadString(dat + pos, long(avs->fval)));
+				pos += long(avs->fval);
 				std::cout << p << "  s " << name << " = \"" << value << '"';
 			} else if(type == f) {
 				std::cout << p << "  f " << name << " = " << avs->fval;
 			} else if(type == l) {
-				std::cout << p << "  l " << name << " = " << (long)avs->fval;
+				std::cout << p << "  l " << name << " = " << long(avs->fval);
 			}
 			
 		}
@@ -523,7 +523,7 @@ static void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS
 		std::cout << '\n' << pf << "Animation layer #" << i << ":\n";
 		
 		if(layer.next_anim != ANIM_NONE) {
-			if((size_t)layer.next_anim < ARRAY_SIZE(animationNames)) {
+			if(size_t(layer.next_anim) < ARRAY_SIZE(animationNames)) {
 				std::cout << pf << "  Next animation: " << animationNames[layer.next_anim] << '\n';
 			} else {
 				std::cout << pf << "  Next animation: animation #" << layer.next_anim << '\n';
@@ -531,7 +531,7 @@ static void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS
 		}
 		
 		if(layer.cur_anim != ANIM_NONE) {
-			if((size_t)layer.cur_anim < ARRAY_SIZE(animationNames)) {
+			if(size_t(layer.cur_anim) < ARRAY_SIZE(animationNames)) {
 				std::cout << pf << "  Current animation: " << animationNames[layer.cur_anim] << '\n';
 			} else {
 				std::cout << pf << "  Current animation: animation #" << layer.cur_anim << '\n';
@@ -1328,7 +1328,7 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 		for(size_t i = 0; i < 4; i++) {
 			if(ais.spellcast_data.symb[i] == RUNE_NONE) {
 				std::cout << " (none)";
-			} else if((size_t)ais.spellcast_data.symb[i] < ARRAY_SIZE(runeNames)) {
+			} else if(size_t(ais.spellcast_data.symb[i]) < ARRAY_SIZE(runeNames)) {
 				std::cout << ' ' << runeNames[i];
 			} else {
 				std::cout << " (unknown)";
@@ -1391,7 +1391,7 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 	std::string strikespeech = loadUnlocalized(util::loadString(ais.strikespeech));
 	if(!strikespeech.empty()) std::cout << "Strike speech: " << strikespeech << " = \"" << getLocalised(strikespeech) << "\"\n";
 	
-	if(ais.secretvalue != -1) std::cout << "Secret value: " << (int)ais.secretvalue << '\n';
+	if(ais.secretvalue != -1) std::cout << "Secret value: " << int(ais.secretvalue) << '\n';
 	std::string shop = boost::to_lower_copy(util::loadString(ais.shop_category));
 	if(!shop.empty()) std::cout << "Shop category: " << shop << '\n';
 	if(ais.shop_multiply != 1) std::cout << "Shop multiply: " << ais.shop_multiply << '\n';
@@ -1419,7 +1419,7 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 	if(ais.original_radius != 0.f) std::cout << "  Original radius: " << ais.original_radius << '\n';
 	if(ais.original_height != 0.f) std::cout << "  Original height: " << ais.original_height << '\n';
 	
-	for(size_t i = 0; (s32)i < ais.nb_linked; i++) {
+	for(size_t i = 0; s32(i) < ais.nb_linked; i++) {
 		std::cout << "\nLinked object #" << i << ":\n";
 		std::cout << "  Group: " << ais.linked_data[i].lgroup << '\n';
 		std::cout << "  Indices: " << ais.linked_data[i].lidx << ", " << ais.linked_data[i].lidx2 << '\n';
@@ -1594,9 +1594,9 @@ static void print_io_npc(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ais,
 	std::cout << "  Reach: " << as->reach << '\n';
 	if(as->backstab_skill != 0.f) std::cout << "  Backstab skill: " << as->backstab_skill << '\n';
 	if(as->poisonned != 0.f) std::cout << "  Poisoned: " << as->poisonned << '\n';
-	std::cout << "  Resist poison: " << (int)as->resist_poison << '\n';
-	std::cout << "  Resist magic: " << (int)as->resist_magic << '\n';
-	std::cout << "  Resist fire: " << (int)as->resist_fire << '\n';
+	std::cout << "  Resist poison: " << int(as->resist_poison) << '\n';
+	std::cout << "  Resist magic: " << int(as->resist_magic) << '\n';
+	std::cout << "  Resist fire: " << int(as->resist_fire) << '\n';
 	if(as->strike_time) std::cout << "  Strike time: " << as->strike_time << '\n';
 	if(as->walk_start_time) std::cout << "  Walk start time: " << as->walk_start_time << '\n';
 	if(as->aiming_start) std::cout << "  Aiming time: " << as->aiming_start << '\n';
@@ -1634,7 +1634,7 @@ static void print_io_npc(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ais,
 	
 	Color c = Color::fromBGRA(ColorBGRA(as->blood_color));
 	if(c != Color::red) {
-		std::cout << "  Blood color: (" << (int)c.r << ", " << (int)c.g << ", " << (int)c.b << ")\n";
+		std::cout << "  Blood color: (" << int(c.r) << ", " << int(c.g) << ", " << int(c.b) << ")\n";
 	}
 	
 }
@@ -1649,9 +1649,9 @@ static void print_io_item(const ARX_CHANGELEVEL_IO_SAVE & ais,
 		std::cout << "  Count: " << ai->count << " / " << ai->maxcount << '\n';
 	}
 	if(ai->food_value != 0) {
-		std::cout << "  Food value: " << (int)ai->food_value << '\n';
+		std::cout << "  Food value: " << int(ai->food_value) << '\n';
 	}
-	std::cout << "  Steal value: " << (int)ai->stealvalue << '\n';
+	std::cout << "  Steal value: " << int(ai->stealvalue) << '\n';
 	if(ai->playerstacksize != 1) {
 		std::cout << "  Player stack size: " << ai->playerstacksize << '\n';
 	}
@@ -1709,7 +1709,7 @@ static void print_io_fixed(const ARX_CHANGELEVEL_FIX_IO_SAVE * af) {
 	
 	std::cout << "\nFixed Data:\n";
 	
-	if(af->trapvalue != -1) std::cout << "  Trap value: " << (int)af->trapvalue << '\n';
+	if(af->trapvalue != -1) std::cout << "  Trap value: " << int(af->trapvalue) << '\n';
 	
 }
 
