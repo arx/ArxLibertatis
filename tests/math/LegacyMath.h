@@ -251,29 +251,6 @@ inline void VectorRotateZ(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
 	_eOut.z =  _eIn.z;
 }
 
-
-inline Vec2s inventorySizeFromTextureSize_1(u32 m_dwWidth, u32 m_dwHeight) {
-	Vec2s m_inventorySize;
-	
-	unsigned long w = m_dwWidth >> 5;
-	unsigned long h = m_dwHeight >> 5;
-
-	if ((w << 5) != m_dwWidth)
-		m_inventorySize.x = (char)(w + 1);
-	else
-		m_inventorySize.x = (char)(w);
-
-	if ((h << 5) != m_dwHeight)
-		m_inventorySize.y = (char)(h + 1);
-	else
-		m_inventorySize.y = (char)(h);
-	
-	m_inventorySize.x = glm::clamp(m_inventorySize.x, short(1), short(3));
-	m_inventorySize.y = glm::clamp(m_inventorySize.y, short(1), short(3));
-
-	return m_inventorySize;
-}
-
 inline Vec2s inventorySizeFromTextureSize_2(u32 m_dwWidth, u32 m_dwHeight) {
 	unsigned long w = m_dwWidth >> 5;
 	unsigned long h = m_dwHeight >> 5;
