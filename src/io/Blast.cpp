@@ -96,7 +96,7 @@ static int bits(state * s, int need) {
 			s->left = s->infun(s->inhow, &(s->in));
 			if (s->left == 0) throw blast_truncated_error(); /* out of input */
 		}
-		val |= (int)(*(s->in)++) << s->bitcnt;          /* load eight bits */
+		val |= int(*(s->in)++) << s->bitcnt; /* load eight bits */
 		s->left--;
 		s->bitcnt += 8;
 	}
@@ -364,15 +364,16 @@ static BlastResult blastDecompress(state * s) {
 			dist = decode(s, &distcode) << symbol;
 			dist += bits(s, symbol);
 			dist++;
-			if (s->first && dist > (int)s->next)
+			if(s->first && dist > int(s->next)) {
 				return BLAST_INVALID_OFFSET;
+			}
 			
 			/* copy length bytes from distance bytes back */
 			do {
 				to = s->out + s->next;
 				from = to - dist;
 				copy = MAXWIN;
-				if ((int)s->next < dist) {
+				if(int(s->next) < dist) {
 					from += copy;
 					copy = dist;
 				}
