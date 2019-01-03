@@ -1029,7 +1029,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		spellLevel = playerSpellLevel; // Level of caster
 	} else {
 		// IO source
-		spellLevel = (float)glm::clamp(level, 1l, 10l);
+		spellLevel = float(glm::clamp(level, 1l, 10l));
 	}
 	
 	if(flags & SPELLCAST_FLAG_LAUNCHPRECAST) {
