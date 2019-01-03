@@ -511,7 +511,7 @@ bool Config::save() {
 	// key
 	writer.beginSection(Section::Key);
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
-		writer.writeActionKey((ControlAction)i, actions[i]);
+		writer.writeActionKey(ControlAction(i), actions[i]);
 	}
 	
 	// misc
@@ -659,12 +659,12 @@ bool Config::init(const fs::path & file) {
 	
 	// Get action key settings
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
-		actions[i] = reader.getActionKey(Section::Key, (ControlAction)i);
+		actions[i] = reader.getActionKey(Section::Key, ControlAction(i));
 	}
 	
 	// Get miscellaneous settings
 	misc.forceToggle = reader.getKey(Section::Misc, Key::forceToggle, Default::forceToggle);
-	misc.migration = (MigrationStatus)reader.getKey(Section::Misc, Key::migration, Default::migration);
+	misc.migration = MigrationStatus(reader.getKey(Section::Misc, Key::migration, Default::migration));
 	misc.quicksaveSlots = std::max(reader.getKey(Section::Misc, Key::quicksaveSlots, Default::quicksaveSlots), 1);
 	misc.debug = reader.getKey(Section::Misc, Key::debugLevels, Default::debugLevels);
 	
