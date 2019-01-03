@@ -253,7 +253,7 @@ die() {
 If you think this is a bug in the install script
 please report the complete output at
   $bug_report_url"
-		if [ ! -z "$logfile" ] && [ -f "$logfile" ] ; then
+		if [ -n "$logfile" ] && [ -f "$logfile" ] ; then
 			_die_message="$_die_message
 
 Also attach the contents of
@@ -356,7 +356,7 @@ set_append() {
 # Check if a directory contains a file while ignoring case differences.
 # Usage: icontains <dir> <filename>
 icontains() {
-	[ ! -z "$(find "$1" -mindepth 1 -maxdepth 1 -iname "$2")" ]
+	[ -n "$(find "$1" -mindepth 1 -maxdepth 1 -iname "$2")" ]
 }
 
 # Check if a directory or file is writable or can be created.
@@ -575,7 +575,7 @@ Usage: $command [--source] source [--patch patchfile] [[--data-dir] datadir]
 
 --gui is enabled by default if there are no arguments *and* stdin, stdout or stderr is not a terminal
 "
-	[ ! -z "${1-}" ] && exit $false
+	[ -n "${1-}" ] && exit $false
 	help_innosetup="$(print_help_or extract_innosetup_reqs "$dim_pink")"
 	help_cdrom="$(print_help_or extract_cdrom_reqs "$dim_pink") or root access"
 	help_cab="$(print_help_or extract_ms_cab_reqs "$dim_pink")"
@@ -741,9 +741,9 @@ print "See \`${dim_pink}$command --help${reset}\` for available options."
 esac
 
 # Make user-provided paths absolute
-[ ! -z "$sourcefile" ] && sourcefile="$(abspath "$sourcefile")"
-[ ! -z "$datadir" ]    && datadir="$(abspath "$datadir")"
-[ ! -z "$patchfile" ]  && patchfile="$(abspath "$patchfile")"
+[ -n "$sourcefile" ] && sourcefile="$(abspath "$sourcefile")"
+[ -n "$datadir" ]    && datadir="$(abspath "$datadir")"
+[ -n "$patchfile" ]  && patchfile="$(abspath "$patchfile")"
 
 # Sanity check
 [ $install = 1 ] && [ $batch = 1 ] && [ -z "$sourcefile" ] && [ $user_is_sane = 1 ] \
@@ -1532,7 +1532,7 @@ user_select_entry() {
 	
 	# Select the first element if in batch mode
 	eval "_user_select_entry_current=\"\$$_user_select_entry_var\""
-	if [ $batch = 1 ] || [ ! -z "$_user_select_entry_current" ] ; then
+	if [ $batch = 1 ] || [ -n "$_user_select_entry_current" ] ; then
 		_user_select_entry_=''
 		eval "set -- $_user_select_entry_list"
 		for _user_select_entry ; do
@@ -1992,7 +1992,7 @@ probe_cdrom() {
 # If sourcefile is already set, uses that.
 probe_source_files() {
 	
-	if [ ! -z "$sourcefile" ] ; then
+	if [ -n "$sourcefile" ] ; then
 		
 		# Trust the user
 		found_source_file "$sourcefile" && return $true
@@ -2014,7 +2014,7 @@ probe_source_files() {
 	probe_steam && return $true
 	
 	# Find an Arx Fatalis installation in $WINEPREFIX
-	[ ! -z "${WINEPREFIX-}" ] && probe_wineprefix "$WINEPREFIX" && return $true
+	[ -n "${WINEPREFIX-}" ] && probe_wineprefix "$WINEPREFIX" && return $true
 	
 	# Find an Arx Fatalis installation in ~/.wine
 	[ ! "${WINEPREFIX-}" = "$HOME/.wine" ] && probe_wineprefix "$HOME/.wine" && return $true
@@ -2058,7 +2058,7 @@ probe_data_dir() {
 # If datadir is already set, uses that.
 probe_data_dirs() {
 	
-	if [ ! -z "$datadir" ] ; then
+	if [ -n "$datadir" ] ; then
 		found_data_dir "$datadir"
 		return $true
 	fi
@@ -2068,7 +2068,7 @@ probe_data_dirs() {
 	for _probe_data_dirs_existing in 1 0 ; do
 		
 		# Try paths supplied by wrapper scripts
-		if [ ! -z "$data_path" ] ; then
+		if [ -n "$data_path" ] ; then
 			eval "set -- $(to_list "$data_path")"
 			for _probe_data_dirs_path ; do
 				if [ -f "$_probe_data_dirs_path/data" ] ; then
@@ -2309,7 +2309,7 @@ extract_iso() {
 		
 		# Older versions of bsdtar don't always get the names right - fix them
 		_extrac_cdrom_f="$(find "$PWD" -depth -iname '*;1' | lines_to_list)"
-		if [ ! -z "$_extrac_cdrom_f" ] ; then
+		if [ -n "$_extrac_cdrom_f" ] ; then
 			eval "for _extract_iso_f in $_extrac_cdrom_f ; do mv -f \"\$_extract_iso_f\" \"\$(print \"\$_extract_iso_f\" | sed 's:;1$::')\" ; done"
 		fi
 		
@@ -2560,7 +2560,7 @@ $(print_help_list " - $dim_white" probe_file_dirs)"
 
 workdir=''
 cleanup_workdir() {
-	[ ! -z "$workdir" ] && [ -e "$workdir" ] && rm -rf "$workdir"
+	[ -n "$workdir" ] && [ -e "$workdir" ] && rm -rf "$workdir"
 }
 # Create the work directory if it doesn't exist.
 # Also regiter a cleanup function to remove the work directory on exit.
@@ -2621,7 +2621,7 @@ extract_mount_cdrom() {
 
 cdromdir=''
 cleanup_cdrom() {
-	[ ! -z "$cdromdir" ] && [ -e "$cdromdir" ] && unmount_cdrom "$cdromdir"
+	[ -n "$cdromdir" ] && [ -e "$cdromdir" ] && unmount_cdrom "$cdromdir"
 }
 # Mount a source CDROM/ISO and adjust $sourcefile or extract it into $sourcedir/cdrom.
 # Usage: extract_source_cdrom <sourcefile>
@@ -2705,16 +2705,16 @@ find_file_impl() {
 	_file_d="$(print "$_file" | sed 's/^\(.*\)\(\.[^.]*\)$/\1_default\2/')"
 	
 	# Prefer files from the patch - if availbale, they are most likely the correct ones
-	[ "$_patchable" = 1 ] && [ ! -z "$patchdir" ]  \
+	[ "$_patchable" = 1 ] && [ -n "$patchdir" ]  \
 		&& find "$patchdir" \( -name "$_file" -o -name "$_file_d" \)  -print
 	
 	# Find the file in the source
-	[ ! -z "$sourcedir" ] && find "$sourcedir" -iname "$_file" -print
+	[ -n "$sourcedir" ] && find "$sourcedir" -iname "$_file" -print
 	[ -d "$sourcefile" ]  && find "$sourcefile" -iname "$_file" -print
 	# Find the _default.pak variant only after the .pak variant
 	# This is required to detect the correct language fro Steam installs
 	# as the english version is always present as speech_default.pak and loc_default.pak
-	[ ! -z "$sourcedir" ] && find "$sourcedir" -iname "$_file_d" -print
+	[ -n "$sourcedir" ] && find "$sourcedir" -iname "$_file_d" -print
 	[ -d "$sourcefile" ]  && find "$sourcefile" -iname "$_file_d" -print
 	
 	# Also find the file if it is already in the data directory, but don't ignore case
@@ -2833,7 +2833,7 @@ probe_patch_file_impl() {
 	_patch_names="$4"
 	_patch_urls="$5"
 	
-	if [ ! -z "$_patch_file" ] ; then
+	if [ -n "$_patch_file" ] ; then
 		
 		# Check the filename of user-supplied patchse
 		patch_check_file_name "$_patch_file" "$_patch_names"
@@ -2893,7 +2893,7 @@ probe_patch_file() {
 	esac
 	_patch_names=''
 	list_append _patch_names "$patch_name"
-	if [ ! -z "$_patch_file_lang" ] ; then
+	if [ -n "$_patch_file_lang" ] ; then
 		list_append _patch_names "$(printf "$patch_name_localized" "$_patch_file_lang")"
 	fi
 	
@@ -2923,7 +2923,7 @@ extract_patch() {
 	create_dir "$patchdir" 'patch work'
 	
 	# Extract the main patch file
-	if [ ! -z "$patchfile" ] ; then
+	if [ -n "$patchfile" ] ; then
 		_patchdir_main="$patchdir/main"
 		create_dir "$_patchdir_main" 'main patch work'
 		cd "$_patchdir_main"
@@ -2932,7 +2932,7 @@ extract_patch() {
 		innosetup_language=''
 	fi
 	
-	if [ ! -z "$patchfile_jp" ] ; then
+	if [ -n "$patchfile_jp" ] ; then
 		
 		# Extract the Japanese patch file
 		_patchdir_jp="$patchdir/main"
@@ -2987,7 +2987,7 @@ required_file() {
 	# If we didn't use the patch yet, fetch it and try again!
 	if [ $patch = 1 ] && [ $_patchable = 1 ] && [ -z "$patchdir" ] ; then
 		extract_patch "$data_lang"
-		if [ ! -z "$patchdir" ] ; then
+		if [ -n "$patchdir" ] ; then
 			required_file "$_patchable" "$_name" "$_valid"
 			return $?
 		fi
@@ -3156,7 +3156,7 @@ case "$data_lang" in
 	japanese-demo) loc_checksum='9d84cede805b13fdf7fce856ecc15b19' ;;
 	*)             loc_checksum=''
 esac
-if [ ! -z "$loc_checksum" ] ; then
+if [ -n "$loc_checksum" ] ; then
 	f 1 'loc.pak' "$loc_checksum"
 fi
 
@@ -3166,7 +3166,7 @@ case "$data_lang" in
 	japanese*)    font_checksum='58eab00842d8adea8d553ae1f66b0c9b' ;;
 	*)            font_checksum='9a95ff96795c034524ba1c2e94ea12c7' ;;
 esac
-if [ ! -z "$font_checksum" ] ; then
+if [ -n "$font_checksum" ] ; then
 	f 1 'misc/arx.ttf' "$font_checksum"
 fi
 
