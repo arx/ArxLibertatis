@@ -152,11 +152,12 @@ CinematicBitmap * CreateCinematicBitmap(const res::path & path, int scale) {
 }
 
 bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
+	
 	m_scale = scale;
 	Vec2i oldnb = nb + Vec2i(1);
 	nb *= scale;
 	Vec2f oldd = d;
-	d /= (float)scale;
+	d /= float(scale);
 	
 	m_nbvertexs = size_t(nb.x + 1) * size_t(nb.y + 1);
 	m_vertexs.reserve(m_nbvertexs);
@@ -193,7 +194,7 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 
 				if(olddxx > (t.x * 2.f)) {
 					dxx = t.x - depxx;
-					dxx /= (float)scale;
+					dxx /= float(scale);
 				}
 				
 			}
@@ -205,7 +206,7 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 
 			if(olddyy > (t.y * 2.f)) {
 				d.y = t.y - dep.y;
-				d.y /= (float)scale;
+				d.y /= float(scale);
 			}
 		
 	}
@@ -233,8 +234,8 @@ void CinematicGrid::AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitm
 	m_mats[matIdx].nbvertexs = (tc.x + 1) * (tc.y + 1);
 	
 	float v = 0.f;
-	float du = 0.999999f / (float)tc.x;
-	float dv = 0.999999f / (float)tc.y;
+	float du = 0.999999f / float(tc.x);
+	float dv = 0.999999f / float(tc.y);
 	tc.y++;
 	tc.x++;
 	int tcyy = tc.y;
