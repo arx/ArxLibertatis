@@ -61,10 +61,11 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		return;
 
 	EERIE_3DOBJ * from = ioo->obj;
-
-	if(!from || num == ObjSelection() || (size_t)num.handleData() >= from->selections.size())
+	
+	if(!from || num == ObjSelection() || size_t(num.handleData()) >= from->selections.size()) {
 		return;
-
+	}
+	
 	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ;
 
 	if(!nouvo)
@@ -185,9 +186,9 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 			   && equival[from->facelist[k].vid[2]] != -1
 			) {
 				EERIE_FACE newface = from->facelist[k];
-				newface.vid[0] = (unsigned short)equival[from->facelist[k].vid[0]];
-				newface.vid[1] = (unsigned short)equival[from->facelist[k].vid[1]];
-				newface.vid[2] = (unsigned short)equival[from->facelist[k].vid[2]];
+				newface.vid[0] = static_cast<unsigned short>(equival[from->facelist[k].vid[0]]);
+				newface.vid[1] = static_cast<unsigned short>(equival[from->facelist[k].vid[1]]);
+				newface.vid[2] = static_cast<unsigned short>(equival[from->facelist[k].vid[2]]);
 				nouvo->facelist.push_back(newface);
 			}
 		}
