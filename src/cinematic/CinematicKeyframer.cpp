@@ -374,7 +374,7 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 		return;
 	}
 	
-	CinematicKeyframe * current = GetKey((int) CKTrack->currframe);
+	CinematicKeyframe * current = GetKey(int(CKTrack->currframe));
 	if(!current) {
 		return;
 	}
@@ -492,12 +492,12 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 	if(play) {
 	
 	c->flTime = c->flTime + frameDuration;
-	CKTrack->currframe = toMs(c->flTime) / 1000.f * float(CKTrack->endframe) / GetTimeKeyFramer();
+	CKTrack->currframe = toS(c->flTime) * float(CKTrack->endframe) / GetTimeKeyFramer();
 	
 	// TODO this assert fails if you pause the gametime before a cinematic starts and unpause after
 	arx_assert(CKTrack->currframe >= 0);
 	
-	if(CKTrack->currframe > (float)CKTrack->endframe) {
+	if(CKTrack->currframe > float(CKTrack->endframe)) {
 		CKTrack->currframe = 0;
 		c->m_key = NULL;
 		c->flTime = 0;
@@ -546,5 +546,5 @@ void SetCurrFrame(int frame) {
 		return;
 	}
 	
-	CKTrack->currframe = (float)frame;
+	CKTrack->currframe = float(frame);
 }
