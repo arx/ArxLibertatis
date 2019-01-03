@@ -357,8 +357,8 @@ void ARX_SPEECH_Update() {
 		
 		float fZoneClippHeight = static_cast<float>(sSize.y * 3);
 		float fStartYY = 100 * g_sizeRatio.y;
-		float fStartY = static_cast<float>(((int)fStartYY - (int)fZoneClippHeight) >> 1);
-		float fDepY = ((float)g_size.height()) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
+		float fStartY = float((int(fStartYY) - int(fZoneClippHeight)) / 2);
+		float fDepY = float(g_size.height()) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
 		float fZoneClippY = fDepY + speech->fDeltaY;
 		
 		float fAdd = fZoneClippY + fZoneClippHeight;
@@ -372,10 +372,10 @@ void ARX_SPEECH_Update() {
 			clippingRect.right = (g_size.width() + w) / 2;
 		}
 		
-		float height = (float)ARX_UNICODE_DrawTextInRect(hFontInGame,
-		                                                 Vec2f(clippingRect.left + 10.f, fDepY + fZoneClippHeight),
-		                                                 clippingRect.right - 10.f, speech->text,
-		                                                 Color::white, &clippingRect);
+		float height = float(ARX_UNICODE_DrawTextInRect(hFontInGame,
+		                                                Vec2f(clippingRect.left + 10.f, fDepY + fZoneClippHeight),
+		                                                clippingRect.right - 10.f, speech->text,
+		                                                Color::white, &clippingRect));
 		
 		UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
 		EERIEDrawFill2DRectDegrad(Vec2f(0.f, fZoneClippY - 1.f),
