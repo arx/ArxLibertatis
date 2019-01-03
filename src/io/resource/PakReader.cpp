@@ -159,11 +159,11 @@ int UncompressedFileHandle::seek(Whence whence, int _offset) {
 		default: return -1;
 	}
 	
-	if((int)base + _offset < 0) {
+	if(int(base) + _offset < 0) {
 		return -1;
 	}
 	
-	offset = (int)base + _offset;
+	offset = int(base) + _offset;
 	
 	return offset;
 }
@@ -356,11 +356,11 @@ int CompressedFileHandle::seek(Whence whence, int _offset) {
 		default: return -1;
 	}
 	
-	if((int)base + _offset < 0) {
+	if(int(base) + _offset < 0) {
 		return -1;
 	}
 	
-	offset = (int)base + _offset;
+	offset = int(base) + _offset;
 	
 	return offset;
 }
