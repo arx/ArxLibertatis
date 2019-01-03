@@ -133,7 +133,7 @@ aalError CodecADPCM::setPosition(size_t position) {
 	while(i) {
 		char buffer[256];
 		size_t nRead;
-		size_t to_read = std::min(i, (size_t)256);
+		size_t to_read = std::min(i, size_t(256));
 		if(aalError error = read(buffer, to_read, nRead)) {
 			return error;
 		}
