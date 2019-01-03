@@ -1495,8 +1495,8 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 			}
 		}
 
-		long px = (long)(tmpPos.x * ACTIVEBKG->m_mul.x);
-		long pz = (long)(tmpPos.z * ACTIVEBKG->m_mul.y);
+		long px = long(tmpPos.x * ACTIVEBKG->m_mul.x);
+		long pz = long(tmpPos.z * ACTIVEBKG->m_mul.y);
 
 		if(px < 0 || px >= ACTIVEBKG->m_size.x || pz < 0 || pz >= ACTIVEBKG->m_size.y)
 			break;
