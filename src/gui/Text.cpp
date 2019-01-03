@@ -214,7 +214,7 @@ long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, cons
 		GRenderer->SetScissor(*pClipRect);
 	}
 
-	Rect rect((Rect::Num)pos.x, (Rect::Num)pos.y, (Rect::Num)maxx, Rect::Limits::max());
+	Rect rect(Rect::Num(pos.x), Rect::Num(pos.y), Rect::Num(maxx), Rect::Limits::max());
 	if(maxx == std::numeric_limits<float>::infinity()) {
 		rect.right = Rect::Limits::max();
 	}
