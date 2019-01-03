@@ -78,7 +78,7 @@ inline bool In3DBBoxTolerance(const Vec3f & pos, const EERIE_3D_BBOX & bbox, con
 inline u8 clipByte255(int value) {
 	
 	// clamp larger values to 255
-	value |= (-(int)(value > 255));
+	value |= -int(value > 255);
 	value &= 255;
 	
 	return static_cast<u8>(value);
