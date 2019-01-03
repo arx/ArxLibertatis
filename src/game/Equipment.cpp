@@ -222,7 +222,7 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const std::string & se
 		   && IsInSelection(io->obj, face.vid[2], sel)
 		) {
 			if(face.texid == textochange) {
-				face.texid = (short)mapidx;
+				face.texid = short(mapidx);
 			}
 		}
 	}
