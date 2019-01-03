@@ -282,7 +282,7 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity
 		
 	} else {
 		if(isNpc) {
-			io->_npcdata->SPLAT_DAMAGES = (short)dmgs;
+			io->_npcdata->SPLAT_DAMAGES = short(dmgs);
 		}
 		ARX_PARTICLES_Spawn_Blood3(pos, dmgs, col, SPLAT_GROUND);
 		if(isNpc) {
