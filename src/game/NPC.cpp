@@ -323,7 +323,7 @@ void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_par
 	}
 	
 	io->_npcdata->behavior = behavior;
-	io->_npcdata->behavior_param = (float)behavior_param;
+	io->_npcdata->behavior_param = float(behavior_param);
 }
 
 //! Resets all behaviour data from a NPC
@@ -715,11 +715,11 @@ bool ARX_NPC_SetStat(Entity & io, const std::string & statname, float value) {
 	} else if(statname == "mana") {
 		io._npcdata->manaPool.max = io._npcdata->manaPool.current = value < 0 ? 0 : value;
 	} else if(statname == "resistfire") {
-		io._npcdata->resist_fire = (unsigned char)glm::clamp(value, 0.f, 100.f);
+		io._npcdata->resist_fire = static_cast<unsigned char>(glm::clamp(value, 0.f, 100.f));
 	} else if(statname == "resistpoison") {
-		io._npcdata->resist_poison = (unsigned char)glm::clamp(value, 0.f, 100.f);
+		io._npcdata->resist_poison = static_cast<unsigned char>(glm::clamp(value, 0.f, 100.f));
 	} else if(statname == "resistmagic") {
-		io._npcdata->resist_magic = (unsigned char)glm::clamp(value, 0.f, 100.f);
+		io._npcdata->resist_magic = static_cast<unsigned char>(glm::clamp(value, 0.f, 100.f));
 	} else {
 		return false;
 	}
@@ -979,7 +979,7 @@ void ARX_PHYSICS_Apply() {
 				} else if(io->_npcdata->pathfind.listnb > 0) { // Found
 					SendIOScriptEvent(NULL, io, SM_PATHFINDER_SUCCESS);
 					io->_npcdata->pathfind.pathwait = 0;
-					io->_npcdata->pathfind.listpos += (unsigned short)ARX_NPC_GetNextAttainableNodeIncrement(io);
+					io->_npcdata->pathfind.listpos += ARX_NPC_GetNextAttainableNodeIncrement(io);
 					if(io->_npcdata->pathfind.listpos >= io->_npcdata->pathfind.listnb) {
 						io->_npcdata->pathfind.listpos = 0;
 					}
