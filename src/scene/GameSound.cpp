@@ -835,14 +835,14 @@ void ARX_SOUND_AmbianceRestorePlayList(const char * playlist, size_t size) {
 		
 		res::path name = res::path::load(util::loadString(playing->name));
 		
-		switch (playing->type) {
+		switch(playing->type) {
 			
-			case 1 :
-				ARX_SOUND_PlayScriptAmbiance(name, (SoundLoopMode)playing->loop, playing->volume);
+			case 1:
+				ARX_SOUND_PlayScriptAmbiance(name, SoundLoopMode(playing->loop), playing->volume);
 				break;
 			
-			case 2 :
-				ARX_SOUND_PlayZoneAmbiance(name, (SoundLoopMode)playing->loop, playing->volume);
+			case 2:
+				ARX_SOUND_PlayZoneAmbiance(name, SoundLoopMode(playing->loop), playing->volume);
 				break;
 			
 			default:
