@@ -379,10 +379,10 @@ void ARX_SPEECH_Update() {
 		
 		UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
 		EERIEDrawFill2DRectDegrad(Vec2f(0.f, fZoneClippY - 1.f),
-		                          Vec2f(static_cast<float>(g_size.width()), fZoneClippY + (sSize.y * 3 / 4)),
+		                          Vec2f(float(g_size.width()), fZoneClippY + float(sSize.y) * 1.5f),
 		                          0.f, Color::white, Color::black);
-		EERIEDrawFill2DRectDegrad(Vec2f(0.f, fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4)),
-		                          Vec2f(static_cast<float>(g_size.width()), fZoneClippY + fZoneClippHeight),
+		EERIEDrawFill2DRectDegrad(Vec2f(0.f, fZoneClippY + fZoneClippHeight - float(sSize.y) * 1.5f),
+		                          Vec2f(float(g_size.width()), fZoneClippY + fZoneClippHeight),
 		                          0.f, Color::black, Color::white);
 		
 		height += fZoneClippHeight;
