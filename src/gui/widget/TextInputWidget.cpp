@@ -99,7 +99,7 @@ bool TextInputWidget::click() {
 	}
 	
 	int width = m_font->getTextSize(displayText).width();
-	int posx = int(m_rect.center().x - width / 2);
+	int posx = int(m_rect.center().x) - width / 2;
 	if(width > m_rect.width()) {
 		if(!m_editing) {
 			posx = int(m_rect.left);
