@@ -202,8 +202,8 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 	if(pz <= 0 || pz >= ACTIVEBKG->m_size.y - 1 || px <= 0 || px >= ACTIVEBKG->m_size.x - 1)
 		return NULL;
 	
-	float rx = poss.x - ((float)px * g_backgroundTileSize.x);
-	float rz = poss.z - ((float)pz * g_backgroundTileSize.y);
+	float rx = poss.x - float(px) * g_backgroundTileSize.x;
+	float rz = poss.z - float(pz) * g_backgroundTileSize.y;
 	
 	
 	short minx;
