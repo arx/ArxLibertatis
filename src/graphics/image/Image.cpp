@@ -358,13 +358,13 @@ void Image::applyGamma(float gamma) {
 			for(size_t j = 0; j < numComponents; j++) {
 				// normalize the components by max component value
 				components[j] *= reciprocal;
-				data[j] = (unsigned char)components[j];
+				data[j] = static_cast<unsigned char>(components[j]);
 			}
 			
 		} else {
 			
 			for(size_t j = 0; j < numComponents; j++) {
-				data[j] = (unsigned char)components[j];
+				data[j] = static_cast<unsigned char>(components[j]);
 			}
 			
 		}
