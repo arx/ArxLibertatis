@@ -520,7 +520,7 @@ static aalError loadString(PakFileHandle * file, std::string & str) {
 	aalError ret = AAL_OK;
 	char c;
 	while(file->read(&c, 1) ? c : (ret = AAL_ERROR_FILEIO, false)) {
-		oss << (char)std::tolower(c);
+		oss << char(std::tolower(c));
 	}
 	
 	str = oss.str();
