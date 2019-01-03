@@ -91,8 +91,8 @@ public:
 		, bookmark_map(NULL)
 		, bookmark_quest(NULL)
 	{
-		std::fill_n(accessibleTab, ARRAY_SIZE(accessibleTab), (TextureContainer *)NULL);
-		std::fill_n(currentTab, ARRAY_SIZE(currentTab), (TextureContainer *)NULL);
+		std::fill_n(accessibleTab, ARRAY_SIZE(accessibleTab), static_cast<TextureContainer *>(NULL));
+		std::fill_n(currentTab, ARRAY_SIZE(currentTab), static_cast<TextureContainer *>(NULL));
 	}
 	
 	void init();
