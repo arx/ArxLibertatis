@@ -466,7 +466,7 @@ void MiniMap::revealPlayerPos(int showLevel) {
 		
 		int r = int(revealPercent * 255.f);
 		
-		int ucLevel = std::max(r, (int)m_levels[showLevel].m_revealed[x][z]);
+		int ucLevel = std::max(r, int(m_levels[showLevel].m_revealed[x][z]));
 		m_levels[showLevel].m_revealed[x][z] = checked_range_cast<unsigned char>(ucLevel);
 	}
 	}
