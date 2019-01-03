@@ -440,7 +440,7 @@ void SDL2InputBackend::onEvent(const SDL_Event & event) {
 				}
 				keyStates[arxkey - Keyboard::KeyBase] = (event.key.state == SDL_PRESSED);
 			} else {
-				LogWarning << "Unmapped SDL key: " << (int)key << " = " << SDL_GetScancodeName(key);
+				LogWarning << "Unmapped SDL key: " << int(key) << " = " << SDL_GetScancodeName(key);
 			}
 			break;
 		}
@@ -497,7 +497,7 @@ void SDL2InputBackend::onEvent(const SDL_Event & event) {
 					unclickCount[i]++;
 				}
 			} else if(button != 0) {
-				LogWarning << "Unmapped SDL mouse button: " << (int)button;
+				LogWarning << "Unmapped SDL mouse button: " << int(button);
 			}
 			break;
 		}
