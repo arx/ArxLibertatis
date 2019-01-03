@@ -116,14 +116,11 @@ void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, 
 }
 
 
-void Split(Vec3f * v, int a, int b, Vec3f f)
-{
-	if (a != b)
-	{
-		int i = (int)((a + b) * 0.5f);
-
-		if ((i != a) && (i != b))
-		{
+void Split(Vec3f * v, int a, int b, Vec3f f) {
+	
+	if(a != b) {
+		int i = (a + b) / 2;
+		if(i != a && i != b) {
 			v[i].x = (v[a].x + v[b].x) * 0.5f + f.x * Random::getf(-1.f, 1.f);
 			v[i].y = (v[a].y + v[b].y) * 0.5f + f.y * Random::getf(-1.f, 1.f);
 			v[i].z = (v[a].z + v[b].z) * 0.5f + f.z * Random::getf(-1.f, 1.f);
@@ -131,21 +128,20 @@ void Split(Vec3f * v, int a, int b, Vec3f f)
 			Split(v, i, b, f);
 		}
 	}
+	
 }
 
-void Split(Vec3f * v, int a, int b, float yo, float fMul)
-{
-	if (a != b)
-	{
-		int i = (int)((a + b) * 0.5f);
-
-		if ((i != a) && (i != b))
-		{
+void Split(Vec3f * v, int a, int b, float yo, float fMul) {
+	
+	if(a != b) {
+		int i = (a + b) / 2;
+		if(i != a && i != b) {
 			v[i] = (v[a] + v[b]) * 0.5f + arx::randomVec(-yo, yo);
 			Split(v, a, i, yo * fMul);
 			Split(v, i, b, yo * fMul);
 		}
 	}
+	
 }
 
 EERIE_3DOBJ * cabal = NULL;
