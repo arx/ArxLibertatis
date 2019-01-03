@@ -1665,7 +1665,7 @@ void ArxGame::manageEntityDescription() {
 		if(temp->poisonous > 0 && temp->poisonous_count != 0) {
 			std::string Text = getLocalised("description_poisoned");
 			std::stringstream ss;
-			ss << " (" << Text << " " << (int)temp->poisonous << ")";
+			ss << " (" << Text << " " << temp->poisonous << ")";
 			description += ss.str();
 		}
 		
