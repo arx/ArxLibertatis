@@ -1009,7 +1009,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			}
 		}
 
-		if((size_t)ais.nb_linked > MAX_LINKED_SAVE) {
+		if(size_t(ais.nb_linked) > MAX_LINKED_SAVE) {
 			ais.nb_linked = MAX_LINKED_SAVE;
 		}
 
@@ -1814,7 +1814,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		io->weight = ais->weight;
 		io->locname = script::loadUnlocalized(boost::to_lower_copy(util::loadString(ais->locname)));
 		io->gameFlags = GameFlags::load(ais->gameFlags); // TODO save/load flags
-		io->material = (Material)ais->material; // TODO save/load enum
+		io->material = Material(ais->material); // TODO save/load enum
 		
 		// Script data
 		io->scriptload = ais->scriptload;
@@ -1910,7 +1910,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		for(size_t k = 0; k < MAX_ANIM_LAYERS; k++) {
 			AnimLayer & layer = io->animlayer[k];
 			
-			long nn = (long)ais->animlayer[k].cur_anim;
+			s32 nn = ais->animlayer[k].cur_anim;
 			if(nn == -1) {
 				layer.cur_anim = NULL;
 			} else {
@@ -2034,7 +2034,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				io->_npcdata->lifePool.max = as->maxlife;
 				io->_npcdata->manaPool.max = as->maxmana;
 				
-				io->_npcdata->movemode = (MoveMode)as->movemode; // TODO save/load enum
+				io->_npcdata->movemode = MoveMode(as->movemode); // TODO save/load enum
 				io->_npcdata->moveproblem = as->moveproblem;
 				io->_npcdata->reachedtarget = as->reachedtarget;
 				io->_npcdata->speakpitch = as->speakpitch;
