@@ -299,7 +299,7 @@ struct SavedPrecast {
 	
 	operator PRECAST_STRUCT() const {
 		PRECAST_STRUCT a;
-		a.typ = (typ < 0) ? SPELL_NONE : (SpellType)typ; // TODO save/load enum
+		a.typ = (typ < 0) ? SPELL_NONE : SpellType(typ); // TODO save/load enum
 		a.level = level;
 		a.launch_time = GameInstantMs(launch_time); // TODO save/load time
 		a.flags = SpellcastFlags::load(flags); // TODO save/load flags
@@ -537,12 +537,12 @@ struct SavedSpellcastData {
 	
 	operator IO_SPELLCAST_DATA() const {
 		IO_SPELLCAST_DATA a;
-		a.castingspell = (castingspell < 0) ? SPELL_NONE : (SpellType)castingspell; // TODO save/load enum
+		a.castingspell = (castingspell < 0) ? SPELL_NONE : SpellType(castingspell); // TODO save/load enum
 		ARX_STATIC_ASSERT(ARRAY_SIZE(a.symb) == 4, "array size mismatch");
-		a.symb[0] = (Rune)symb[0]; // TODO save/load enum
-		a.symb[1] = (Rune)symb[1];
-		a.symb[2] = (Rune)symb[2];
-		a.symb[3] = (Rune)symb[3];
+		a.symb[0] = Rune(symb[0]); // TODO save/load enum
+		a.symb[1] = Rune(symb[1]);
+		a.symb[2] = Rune(symb[2]);
+		a.symb[3] = Rune(symb[3]);
 		a.spell_flags = SpellcastFlags::load(spell_flags); // TODO save/load flags
 		a.spell_level = spell_level;
 		a.target = EntityHandle(target); // TODO saved internum not valid after loading
@@ -697,7 +697,7 @@ struct SavedBehaviour {
 		a.behavior = Behaviour::load(behavior); // TODO save/load flags
 		a.behavior_param = behavior_param;
 		a.target = EntityHandle(target);
-		a.movemode = (MoveMode)movemode; // TODO save/load enum
+		a.movemode = MoveMode(movemode); // TODO save/load enum
 		ARX_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS, "array size mismatch");
 		std::copy(animlayer, animlayer + SAVED_MAX_ANIM_LAYERS, a.animlayer);
 		return a;
