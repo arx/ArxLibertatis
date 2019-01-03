@@ -501,6 +501,10 @@ if(NOT Boost_VERSION VERSION_LESS 106200 AND Boost_VERSION VERSION_LESS 106300)
 		add_definitions("-DBOOST_NO_CXX14_CONSTEXPR")
 	endif()
 endif()
+if(NOT Boost_VERSION VERSION_LESS 106900 AND Boost_VERSION VERSION_LESS 107000)
+	message("Suppressing warnings for deprecated headers used internally in Boost")
+	add_definitions("-DBOOST_ALLOW_DEPRECATED_HEADERS")
+endif()
 
 # glm
 find_package(GLM 0.9.5.0 REQUIRED)
