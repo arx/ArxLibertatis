@@ -2373,7 +2373,7 @@ void ARX_PLAYER_AddGold(Entity * gold) {
 	
 	arx_assert(gold->ioflags & IO_GOLD);
 	
-	ARX_PLAYER_AddGold(gold->_itemdata->price * std::max((short)1, gold->_itemdata->count));
+	ARX_PLAYER_AddGold(gold->_itemdata->price * std::max(short(1), gold->_itemdata->count));
 	
 	ARX_SOUND_PlayInterface(g_snd.GOLD);
 	

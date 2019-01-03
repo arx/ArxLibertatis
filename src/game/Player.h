@@ -318,7 +318,7 @@ struct ARXCHARACTER {
 	
 	RuneFlags rune_flags;
 	bool hasRune(Rune rune) {
-		return (rune_flags & (RuneFlag)(1 << rune)) != 0;
+		return (rune_flags & RuneFlag(1 << rune)) != 0;
 	}
 	
 	
