@@ -321,9 +321,9 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 	}
 }
 
-static bool lightHandleIsValid(LightHandle num)
-{
-	return (long)num.handleData() >= 0 && ((size_t)num.handleData() < g_dynamicLightsMax) && g_dynamicLights[num.handleData()].m_exists;
+static bool lightHandleIsValid(LightHandle num) {
+	return num.handleData() >= 0 && size_t(num.handleData()) < g_dynamicLightsMax
+	       && g_dynamicLights[num.handleData()].m_exists;
 }
 
 EERIE_LIGHT * lightHandleGet(LightHandle lightHandle) {
