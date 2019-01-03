@@ -642,7 +642,7 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 		#endif
 		{
 			// Not available in OpenGL ES
-			glClearDepth((GLclampd)clearDepth);
+			glClearDepth(GLclampd(clearDepth));
 		}
 		buffers |= GL_DEPTH_BUFFER_BIT;
 	}
