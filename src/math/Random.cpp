@@ -28,7 +28,7 @@ void Random::seed() {
 		rng = new Generator;
 	}
 	
-	rng->seed((size_t)std::time(NULL));
+	rng->seed(size_t(std::time(NULL)));
 }
 
 void Random::seed(unsigned int seedVal) {
