@@ -465,7 +465,7 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			
 			if(name == "^#playerdist") {
 				if(context.getEntity()) {
-					*lcontent = (long)fdist(player.pos, context.getEntity()->pos);
+					*lcontent = long(fdist(player.pos, context.getEntity()->pos));
 					return TYPE_LONG;
 				}
 			}
@@ -674,7 +674,7 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 				// TODO should max be inclusive or exclusive?
 				// if inclusive, use proper integer random, otherwise fix rnd()?
 				if(max[0]) {
-					float t = (float)atof(max);
+					float t = float(atof(max));
 					*fcontent = Random::getf(0.f, t);
 					return TYPE_FLOAT;
 				}
