@@ -164,8 +164,8 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 				lightingInfo->eStart = astart;
 				lightingInfo->eVect = avect;
 				lightingInfo->abFollow = false;
-				lightingInfo->anb =  anb - (int)(10 * (1 - m));
-				lightingInfo->anbrec = anbrec + (int)(2 * m);
+				lightingInfo->anb =  anb - int(10 * (1 - m));
+				lightingInfo->anbrec = anbrec + int(2 * m);
 				lightingInfo->aParent = moi;
 				lightingInfo->fAngleMin = m_fAngleMin;
 				lightingInfo->fAngleMax = m_fAngleMax;
@@ -175,8 +175,8 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 				lightingInfo->eStart = astart;
 				lightingInfo->eVect = avect;
 				lightingInfo->abFollow = true;
-				lightingInfo->anb = anb - (int)(10 * m);
-				lightingInfo->anbrec = anbrec + (int)(2 * m);
+				lightingInfo->anb = anb - int(10 * m);
+				lightingInfo->anbrec = anbrec + int(2 * m);
 				lightingInfo->aParent = moi;
 				lightingInfo->fAngleMin = m_fAngleMin;
 				lightingInfo->fAngleMax = m_fAngleMax;
@@ -188,8 +188,8 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 				lightingInfo->abFollow = false;
 				lightingInfo->eStart = astart;
 				lightingInfo->eVect = avect;
-				lightingInfo->anb = anb - (int)(10 * (1 - m));
-				lightingInfo->anbrec = anbrec + (int)(2 * m);
+				lightingInfo->anb = anb - int(10 * (1 - m));
+				lightingInfo->anbrec = anbrec + int(2 * m);
 				lightingInfo->aParent = moi;
 				lightingInfo->fAngleMin = m_fAngleMin;
 				lightingInfo->fAngleMax = m_fAngleMax;
@@ -199,8 +199,8 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 				lightingInfo->abFollow = false;
 				lightingInfo->eStart = astart;
 				lightingInfo->eVect = avect;
-				lightingInfo->anb = anb - (int)(10 * m);
-				lightingInfo->anbrec = anbrec + (int)(2 * m);
+				lightingInfo->anb = anb - int(10 * m);
+				lightingInfo->anbrec = anbrec + int(2 * m);
 				lightingInfo->aParent = moi;
 				lightingInfo->fAngleMin = m_fAngleMin;
 				lightingInfo->fAngleMax = m_fAngleMax;
