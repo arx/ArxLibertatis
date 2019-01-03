@@ -132,18 +132,14 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta) {
 	m_stones.Init(80.f);
 }
 
-GameDuration CRiseDead::GetDuration()
-{
+GameDuration CRiseDead::GetDuration() {
 	return m_duration;
 }
 
-
-
-void CRiseDead::Split(Vec3f * v, int a, int b, float yo)
-{
+void CRiseDead::Split(Vec3f * v, int a, int b, float yo) {
+	
 	if(a != b) {
-		int i = (int)((a + b) * 0.5f);
-
+		int i = int((a + b) * 0.5f);
 		if(i != a && i != b) {
 			v[i].x = (v[a].x + v[b].x) * 0.5f + yo * Random::getf(-1.f, 1.f) * fBetaRadCos;
 			v[i].y = v[0].y;// + (i+1)*5;
@@ -152,6 +148,7 @@ void CRiseDead::Split(Vec3f * v, int a, int b, float yo)
 			Split(v, i, b, yo * 0.8f);
 		}
 	}
+	
 }
 
 // TODO copy-paste spell effect Fissure
@@ -489,11 +486,10 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	sizeF = 0;
 }
 
-void CSummonCreature::Split(Vec3f * v, int a, int b, float yo)
-{
+void CSummonCreature::Split(Vec3f * v, int a, int b, float yo) {
+	
 	if(a != b) {
-		int i = (int)((a + b) * 0.5f);
-
+		int i = int((a + b) * 0.5f);
 		if((i != a) && (i != b)) {
 			v[i].x = (v[a].x + v[b].x) * 0.5f + yo * Random::getf(-1.f, 1.f) * (sizeF * 0.005f) * fBetaRadCos;
 			v[i].y = v[0].y + (i + 1) * 5;
@@ -502,6 +498,7 @@ void CSummonCreature::Split(Vec3f * v, int a, int b, float yo)
 			Split(v, i, b, yo * 0.8f);
 		}
 	}
+	
 }
 
 // TODO copy-paste spell effect Fissure
