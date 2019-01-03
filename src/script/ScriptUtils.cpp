@@ -29,7 +29,7 @@
 namespace script {
 
 static bool isWhitespace(char c) {
-	return (((unsigned char)c) <= 32 || c == '(' || c == ')');
+	return (static_cast<unsigned char>(c) <= 32 || c == '(' || c == ')');
 }
 
 std::string loadUnlocalized(const std::string & str) {
