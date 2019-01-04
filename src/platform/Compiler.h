@@ -85,7 +85,7 @@
 	#define ARX_STDLIB_NAME           "libstdc++"
 	#define ARX_STDLIB_VERNAME        ARX_STDLIB_NAME " " ARX_STR(__GLIBCPP__)
 #elif defined(_CPPLIB_VER)
-	#define ARX_STDLIB_NAME           "Dinkumware"
+	#define ARX_STDLIB_NAME           "Dinkumware C++ stdlib"
 	struct arx_dinkumware_vername { };
 	inline std::ostream & operator<<(std::ostream & os, const arx_dinkumware_vername & /* tag */) {
 		return os << ARX_STDLIB_NAME << ' ' << (_CPPLIB_VER / 100) << '.' << (_CPPLIB_VER % 100);
