@@ -14,7 +14,7 @@
 #  - Allow #ifdef BOOST_PP_IS_ITERATING + #endif in place of header guards
 #  - C++ source files are named .cpp, not .cc
 #
-# Copyright (c) 2011-2014 Arx Libertatis Team (see the AUTHORS file)
+# Copyright (c) 2011-2018 Arx Libertatis Team (see the AUTHORS file)
 # Copyright (c) 2009 Google Inc. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
