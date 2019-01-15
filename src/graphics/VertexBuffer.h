@@ -187,7 +187,7 @@ public:
 			
 			default: {
 				arx_assert_msg(false, "too large vertex array (%lu) for primitive %d",
-				               (unsigned long)(count + num), primitive);
+				               static_cast<unsigned long>(count + num), primitive);
 			}
 			
 		}
