@@ -2225,7 +2225,8 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		
 	}
 	
-	arx_assert_msg(pos <= buffer.size(), "pos=%lu size=%lu", (unsigned long)pos, (unsigned long)buffer.size());
+	arx_assert_msg(pos <= buffer.size(), "pos=%lu size=%lu", static_cast<unsigned long>(pos),
+	               static_cast<unsigned long>(buffer.size()));
 	
 	return io;
 }
@@ -2385,7 +2386,8 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 		LogError << "Error loading globals";
 	}
 	
-	arx_assert_msg(pos <= buffer.size(), "pos=%lu size=%lu", (unsigned long)pos, (unsigned long)buffer.size());
+	arx_assert_msg(pos <= buffer.size(), "pos=%lu size=%lu", static_cast<unsigned long>(pos),
+	               static_cast<unsigned long>(buffer.size()));
 	
 }
 
