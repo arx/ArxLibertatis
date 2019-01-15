@@ -42,8 +42,8 @@ namespace audio {
 
 const size_t StreamLimitBytes = 176400;
 
-#define ALPREFIX "[" << (s16)(m_id.source().handleData()) << \
-                 "," << (s16)(m_id.getSampleId().handleData()) << \
+#define ALPREFIX "[" << m_id.source().handleData() << \
+                 "," << m_id.getSampleId().handleData() << \
                  "," << (m_sample ? m_sample->getName() : "(none)") << \
                  "," << nbsources << "," << nbbuffers << "," << m_loadCount << "] "
 
@@ -57,7 +57,7 @@ static size_t nbsources = 0;
 static size_t nbbuffers = 0;
 
 // How often to queue the buffer when looping but not streaming.
-#define MAXLOOPBUFFERS std::max((size_t)NBUFFERS, NBUFFERS * StreamLimitBytes / m_sample->getLength())
+#define MAXLOOPBUFFERS std::max(size_t(NBUFFERS), NBUFFERS * StreamLimitBytes / m_sample->getLength())
 
 aalError OpenALSource::sourcePlay() {
 	
@@ -758,9 +758,9 @@ aalError OpenALSource::updateBuffers() {
 	TraceAL("update: read " << m_read << " -> " << newRead << "  time " << oldTime << " -> " << time);
 	
 	arx_assert_msg(time >= oldTime, "oldTime=%lu time=%lu read=%lu newRead=%d"
-	               " nbuffersProcessed=%d status=%d sourceState=%d", (unsigned long)oldTime,
-	               (unsigned long)time, (unsigned long)m_read, newRead, nbuffersProcessed,
-	               (int)status, sourceState);
+	               " nbuffersProcessed=%d status=%d sourceState=%d", static_cast<unsigned long>(oldTime),
+	               static_cast<unsigned long>(time), static_cast<unsigned long>(m_read), newRead,
+	               nbuffersProcessed, int(status), sourceState);
 	ARX_UNUSED(oldTime);
 	m_read = newRead;
 	
