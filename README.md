@@ -21,7 +21,7 @@ IRC: \#arxfatalis on irc.freenode.net
 
 Wiki: [http://wiki.arx-libertatis.org/](http://wiki.arx-libertatis.org/)
 
-Reddit: [http://old.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis/)
+Reddit: [http://old.reddit.com/r/ArxFatalis/](http://old.reddit.com/r/ArxFatalis/)
 
 ## Dependencies
 
