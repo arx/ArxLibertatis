@@ -178,7 +178,7 @@ void SaveBlock::File::writeEntry(std::ostream & handle, const std::string & name
 std::string SaveBlock::File::loadData(std::istream & handle, const std::string & name) const {
 	
 	LogDebug("Loading " << name << ' ' << storedSize << "b in " << chunks.size() << " chunks, "
-	         << compressionName() << " -> " << (int)uncompressedSize << "b");
+	         << compressionName() << " -> " << int(uncompressedSize) << "b");
 	
 	std::string buffer;
 	buffer.resize(storedSize);
