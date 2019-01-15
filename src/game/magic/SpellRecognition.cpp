@@ -548,7 +548,7 @@ static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], SpellType spell, con
 		if(symbols[i] == RUNE_NONE) {
 			break;
 		}
-		arx_assert(symbols[i] >= 0 && (size_t)symbols[i] < RUNE_COUNT);
+		arx_assert(symbols[i] >= 0 && size_t(symbols[i]) < RUNE_COUNT);
 		if(def->next[symbols[i]] == NULL) {
 			def->next[symbols[i]] = new SpellDefinition();
 		}
@@ -637,7 +637,7 @@ static SpellType getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
 		if(symbols[i] == RUNE_NONE) {
 			break;
 		}
-		arx_assert(symbols[i] >= 0 && (size_t)symbols[i] < RUNE_COUNT);
+		arx_assert(symbols[i] >= 0 && size_t(symbols[i]) < RUNE_COUNT);
 		if(def->next[symbols[i]] == NULL) {
 			return SPELL_NONE;
 		}
