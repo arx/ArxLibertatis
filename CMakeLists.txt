@@ -1231,6 +1231,8 @@ endif()
 # TODO manually specify theese like we do for the tools
 file(GLOB_RECURSE ALL_INCLUDES RELATIVE ${PROJECT_SOURCE_DIR} src/*.h)
 
+set_property(SOURCE src/graphics/image/stb_image.cpp APPEND PROPERTY COMPILE_FLAGS ${conservative_warnings})
+
 include_directories(src ${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/tools)
 
 

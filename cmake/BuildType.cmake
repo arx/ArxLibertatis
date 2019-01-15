@@ -6,6 +6,7 @@ option(SET_WARNING_FLAGS "Adjust compiler warning flags" ON)
 option(SET_NOISY_WARNING_FLAGS "Enable noisy compiler warnings" OFF)
 option(SET_OPTIMIZATION_FLAGS "Adjust compiler optimization flags" ON)
 
+set(conservative_warnings)
 
 if(MSVC)
 	
@@ -174,6 +175,11 @@ else(MSVC)
 		add_cxxflag("-Wfloat-conversion") # part of -Wconversion
 		add_cxxflag("-Wstring-conversion") # part of -Wconversion
 		
+		add_cxxflag("-Wold-style-cast")
+		if(FLAG_FOUND AND NOT SET_NOISY_WARNING_FLAGS)
+			list(APPEND conservative_warnings "-Wno-old-style-cast")
+		endif()
+		
 		if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5
 		   AND NOT SET_NOISY_WARNING_FLAGS)
 			# In older GCC versions this warning is too strict
@@ -203,7 +209,6 @@ else(MSVC)
 			# add_cxxflag("-Wshorten-64-to-32") # part of -Wconversion
 			add_cxxflag("-Wstrict-aliasing=1") # has false positives
 			add_cxxflag("-Wuseless-cast") # has false positives
-			add_cxxflag("-Wold-style-cast") # very noisy
 			add_cxxflag("-Wsign-promo")
 			# add_cxxflag("-Wnull-dereference") not that useful without deduction path
 			
