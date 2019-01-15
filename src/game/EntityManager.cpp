@@ -78,7 +78,7 @@ EntityManager::~EntityManager() {
 	
 #ifdef ARX_DEBUG
 	for(size_t i = 0; i < size(); i++) {
-		arx_assert_msg(entries[i] == NULL, "object %lu not cleared", (unsigned long)i);
+		arx_assert_msg(entries[i] == NULL, "object %lu not cleared", static_cast<unsigned long>(i));
 	}
 #endif
 	
@@ -188,7 +188,7 @@ size_t EntityManager::add(Entity * entity) {
 void EntityManager::remove(size_t index) {
 	
 	arx_assert_msg(index < size() && entries[index] != NULL,
-	               "double free or memory corruption detected: index=%lu", (unsigned long)index);
+	               "double free or memory corruption detected: index=%lu", static_cast<unsigned long>(index));
 	
 	m_impl->m_index.erase(entries[index]->idString());
 	
