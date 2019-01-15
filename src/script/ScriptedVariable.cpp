@@ -133,7 +133,7 @@ private:
 			case Multiply: return left * right;
 			case Divide: return (right == 0.f) ? 0.f : left / right;
 		}
-		arx_assert_msg(false, "Invalid op used in ArithmeticCommand: %d", (int)op);
+		arx_assert_msg(false, "Invalid op used in ArithmeticCommand: %d", int(op));
 		return 0.f;
 	}
 	
