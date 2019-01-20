@@ -80,15 +80,15 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 		return false;
 	}
 	
-		float t;
-		if(siz < 0) {
-			t = -siz * g_sizeRatio.y;
-		} else {
-			t = siz * (1.f / out.w * 3000.f - 1.f) * BASICFOCAL * g_sizeRatio.y * 0.001f;
-			if(t <= 0.f) {
-				t = 0.00000001f;
-			}
+	float t;
+	if(siz < 0) {
+		t = -siz * g_sizeRatio.y;
+	} else {
+		t = siz * (1.f / out.w * 3000.f - 1.f) * BASICFOCAL * g_sizeRatio.y * 0.001f;
+		if(t <= 0.f) {
+			t = 0.00000001f;
 		}
+	}
 	
 	Vec3f p = Vec3f(out) / out.w;
 	if(p.x + t < g_size.left || p.x - t > g_size.right || p.y + t < g_size.top || p.y - t > g_size.bottom) {
@@ -96,33 +96,33 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 		return false;
 	}
 	
-		if(Zpos <= 1.f) {
-			p.z = Zpos;
-			out.w = 1.f / (1.f - Zpos);
+	if(Zpos <= 1.f) {
+		p.z = Zpos;
+		out.w = 1.f / (1.f - Zpos);
+	}
+	
+	ColorRGBA col = color.toRGBA();
+	
+	sprite.v[0] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(0.f));
+	sprite.v[1] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(1.f, 0.f));
+	sprite.v[2] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(1.f, 1.f));
+	sprite.v[3] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(0.f, 1.f));
+	
+	if(rot == 0) {
+		Vec3f maxs = p + t;
+		Vec3f mins = p - t;
+		sprite.v[0].p = Vec3f(mins.x, mins.y, p.z) * out.w;
+		sprite.v[1].p = Vec3f(maxs.x, mins.y, p.z) * out.w;
+		sprite.v[2].p = Vec3f(maxs.x, maxs.y, p.z) * out.w;
+		sprite.v[3].p = Vec3f(mins.x, maxs.y, p.z) * out.w;
+	} else {
+		for(long i = 0; i < 4; i++) {
+			float tt = glm::radians(MAKEANGLE(rot + 90.f * i + 135.f));
+			sprite.v[i].p = (p + Vec3f(std::sin(tt) * t, std::cos(tt) * t, 0.f)) * out.w;
 		}
-		
-		ColorRGBA col = color.toRGBA();
-		
-		sprite.v[0] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(0.f));
-		sprite.v[1] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(1.f, 0.f));
-		sprite.v[2] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(1.f, 1.f));
-		sprite.v[3] = TexturedVertex(Vec3f(0.f), out.w, col, Vec2f(0.f, 1.f));
-		
-		if(rot == 0) {
-			Vec3f maxs = p + t;
-			Vec3f mins = p - t;
-			sprite.v[0].p = Vec3f(mins.x, mins.y, p.z) * out.w;
-			sprite.v[1].p = Vec3f(maxs.x, mins.y, p.z) * out.w;
-			sprite.v[2].p = Vec3f(maxs.x, maxs.y, p.z) * out.w;
-			sprite.v[3].p = Vec3f(mins.x, maxs.y, p.z) * out.w;
-		} else {
-			for(long i = 0; i < 4; i++) {
-				float tt = glm::radians(MAKEANGLE(rot + 90.f * i + 135.f));
-				sprite.v[i].p = (p + Vec3f(std::sin(tt) * t, std::cos(tt) * t, 0.f)) * out.w;
-			}
-		}
-		
-		return true;
+	}
+	
+	return true;
 }
 
 void EERIEAddSprite(const RenderMaterial & mat, const Vec3f & in, float siz, Color color, float Zpos, float rot) {
