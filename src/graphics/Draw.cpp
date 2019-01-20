@@ -63,8 +63,6 @@ void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertice
 	pDynamicVertexBuffer_TLVERTEX->draw(primitive, vertices, count);
 }
 
-static const float BASICFOCAL = 350.f;
-
 static void SetTextureDrawPrim(TextureContainer * tex, const TexturedVertex * v,
                                Renderer::Primitive prim) {
 	GRenderer->SetTexture(0, tex);
@@ -84,7 +82,7 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 	if(siz < 0) {
 		t *= -siz;
 	} else {
-		t *= siz * (1.f / out.w * 3000.f - 1.f) * BASICFOCAL * 0.001f;
+		t *= siz * (1.f / out.w * 3000.f - 1.f) * g_camera->focal * (350.f / 310 * 0.001f);
 		if(t <= 0.f) {
 			t = 0.00000001f;
 		}
