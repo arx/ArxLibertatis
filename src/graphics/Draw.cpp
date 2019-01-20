@@ -80,11 +80,11 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 		return false;
 	}
 	
-	float t;
+	float t = float(std::min(g_size.width(), g_size.height())) / 480.f;
 	if(siz < 0) {
-		t = -siz * g_sizeRatio.y;
+		t *= -siz;
 	} else {
-		t = siz * (1.f / out.w * 3000.f - 1.f) * BASICFOCAL * g_sizeRatio.y * 0.001f;
+		t *= siz * (1.f / out.w * 3000.f - 1.f) * BASICFOCAL * 0.001f;
 		if(t <= 0.f) {
 			t = 0.00000001f;
 		}
