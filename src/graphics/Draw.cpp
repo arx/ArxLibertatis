@@ -88,14 +88,13 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 	   && p.y < 1800.f
 	) {
 		float t;
-
 		if(siz < 0) {
 			t = -siz * g_sizeRatio.y;
 		} else {
 			t = siz * (1.f / out.w * 3000.f - 1.f) * BASICFOCAL * g_sizeRatio.y * 0.001f;
-
-			if(t <= 0.f)
+			if(t <= 0.f) {
 				t = 0.00000001f;
+			}
 		}
 		
 		if(Zpos <= 1.f) {
@@ -113,7 +112,6 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 		if(rot == 0) {
 			Vec3f maxs = p + t;
 			Vec3f mins = p - t;
-
 			sprite.v[0].p = Vec3f(mins.x, mins.y, p.z) * out.w;
 			sprite.v[1].p = Vec3f(maxs.x, mins.y, p.z) * out.w;
 			sprite.v[2].p = Vec3f(maxs.x, maxs.y, p.z) * out.w;
@@ -121,13 +119,10 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 		} else {
 			for(long i = 0; i < 4; i++) {
 				float tt = glm::radians(MAKEANGLE(rot + 90.f * i + 135.f));
-				sprite.v[i].p.x = std::sin(tt) * t + p.x;
-				sprite.v[i].p.y = std::cos(tt) * t + p.y;
-				sprite.v[i].p.z = p.z;
-				sprite.v[i].p *= out.w;
+				sprite.v[i].p = (p + Vec3f(std::sin(tt) * t, std::cos(tt) * t, 0.f)) * out.w;
 			}
 		}
-
+		
 		return true;
 	}
 
