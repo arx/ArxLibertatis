@@ -76,17 +76,10 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 	
 	Vec4f out = worldToClipSpace(in);
 	if(out.w <= 0.f) {
+		// Sprite is behind the camera
 		return false;
 	}
-	Vec3f p = Vec3f(out) / out.w;
 	
-	if(   p.z > 0.f
-	   && p.z < 1000.f
-	   && p.x > -1000.f
-	   && p.x < 2500.f
-	   && p.y > -500.f
-	   && p.y < 1800.f
-	) {
 		float t;
 		if(siz < 0) {
 			t = -siz * g_sizeRatio.y;
@@ -96,7 +89,13 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 				t = 0.00000001f;
 			}
 		}
-		
+	
+	Vec3f p = Vec3f(out) / out.w;
+	if(p.x + t < g_size.left || p.x - t > g_size.right || p.y + t < g_size.top || p.y - t > g_size.bottom) {
+		// Sprite is entirely outside the viewport
+		return false;
+	}
+	
 		if(Zpos <= 1.f) {
 			p.z = Zpos;
 			out.w = 1.f / (1.f - Zpos);
@@ -124,9 +123,6 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 		}
 		
 		return true;
-	}
-
-	return false;
 }
 
 void EERIEAddSprite(const RenderMaterial & mat, const Vec3f & in, float siz, Color color, float Zpos, float rot) {
