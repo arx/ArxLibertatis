@@ -295,7 +295,7 @@ std::vector<fs::path> getSystemPaths(SystemPathId id) {
 			
 			FARPROC proc = GetProcAddress(dll, "SHGetKnownFolderPath");
 			if(proc) {
-				PSHGetKnownFolderPath GetKnownFolderPath = (PSHGetKnownFolderPath)proc;
+				PSHGetKnownFolderPath GetKnownFolderPath = reinterpret_cast<PSHGetKnownFolderPath>(proc);
 				
 				LPWSTR savedgames = NULL;
 				HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, kfFlagCreate | kfFlagNoAlias,
