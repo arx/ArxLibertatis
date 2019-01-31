@@ -175,9 +175,11 @@ else(MSVC)
 		add_cxxflag("-Wfloat-conversion") # part of -Wconversion
 		add_cxxflag("-Wstring-conversion") # part of -Wconversion
 		
-		add_cxxflag("-Wold-style-cast")
-		if(FLAG_FOUND AND NOT SET_NOISY_WARNING_FLAGS)
-			list(APPEND conservative_warnings "-Wno-old-style-cast")
+		if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
+			add_cxxflag("-Wold-style-cast")
+			if(FLAG_FOUND AND NOT SET_NOISY_WARNING_FLAGS)
+				list(APPEND conservative_warnings "-Wno-old-style-cast")
+			endif()
 		endif()
 		
 		if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5
