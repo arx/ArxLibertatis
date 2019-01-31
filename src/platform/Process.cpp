@@ -404,7 +404,7 @@ bool isWoW64Process(process_handle process) {
 	
 	// IsWow64Process is not available on all versions of Windows - load it dynamically.
 	HMODULE handle = GetModuleHandleW(L"kernel32");
-	IsWow64Process_p = (IsWow64Process_t)GetProcAddress(handle, "IsWow64Process");
+	IsWow64Process_p = reinterpret_cast<IsWow64Process_t>(GetProcAddress(handle, "IsWow64Process"));
 	if(!IsWow64Process_p) {
 		return false;
 	}
