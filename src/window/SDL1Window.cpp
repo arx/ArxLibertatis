@@ -88,7 +88,7 @@ bool SDL1Window::initializeFramework() {
 	
 	u32 flags = SDL_FULLSCREEN | SDL_ANYFORMAT | SDL_OPENGL | SDL_HWSURFACE;
 	SDL_Rect ** modes = SDL_ListModes(NULL, flags);
-	if(modes == (SDL_Rect **)(-1)) {
+	if(modes == reinterpret_cast<SDL_Rect **>(-1)) {
 		
 		// Any mode is supported, add some standard modes.
 		
