@@ -231,7 +231,7 @@ void SetCurrentThreadName(const std::string & threadName) {
 	__try {
 		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), reinterpret_cast<ULONG_PTR *>(&info));
 	}
-	__except(EXCEPTION_CONTINUE_EXECUTION) { }
+	__except(EXCEPTION_EXECUTE_HANDLER) { }
 	
 	#else
 	ARX_UNUSED(threadName);
