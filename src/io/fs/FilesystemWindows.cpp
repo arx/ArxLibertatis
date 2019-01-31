@@ -88,7 +88,7 @@ std::time_t last_write_time(const path & p) {
 		value <<= 32;
 		value |= modificationTime.dwLowDateTime;
 		value -= 116444736000000000;
-		writeTime = (std::time_t)(value / 10000000);
+		writeTime = std::time_t(value / 10000000);
 	}
 	
 	::CloseHandle(hFile);
