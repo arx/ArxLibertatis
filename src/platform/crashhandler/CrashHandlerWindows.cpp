@@ -226,11 +226,12 @@ void CrashHandlerWindows::unregisterThreadCrashHandlers() {
 
 void CrashHandlerWindows::writeCrashDump(PEXCEPTION_POINTERS pointers) {
 	
-	GetTempPath(boost::size(m_pCrashInfo->miniDumpTmpFile), m_pCrashInfo->miniDumpTmpFile);
 	WCHAR tick[24];
-	_ultow(GetTickCount(), tick, 10);
-	wcscat(m_pCrashInfo->miniDumpTmpFile, tick);
-	wcscat(m_pCrashInfo->miniDumpTmpFile, L"-arx-crash.dmp");
+	if(!GetTempPath(boost::size(m_pCrashInfo->miniDumpTmpFile), m_pCrashInfo->miniDumpTmpFile)
+		 || _ultow_s(GetTickCount(), tick, 10) || wcscat_s(m_pCrashInfo->miniDumpTmpFile, tick)
+		 || wcscat_s(m_pCrashInfo->miniDumpTmpFile, L"-arx-crash.dmp")) {
+		return;
+	}
 	
 	HANDLE file = CreateFileW(m_pCrashInfo->miniDumpTmpFile, GENERIC_READ | GENERIC_WRITE,
 	                          0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
