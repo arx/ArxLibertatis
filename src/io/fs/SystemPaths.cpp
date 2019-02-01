@@ -221,9 +221,9 @@ bool addSearchPath(std::vector<path> & result, const path & dir, bool filter) {
 bool addSearchRoot(std::vector<path> & result, const path & dir, bool filter) {
 	
 	// Add dirs referenced in "data.dirs" file
-	path config = dir / "data.dirs";
-	if(is_regular_file(config)) {
-		ifstream ifs(config);
+	path configFile = dir / "data.dirs";
+	if(is_regular_file(configFile)) {
+		ifstream ifs(configFile);
 		std::string line;
 		while(std::getline(ifs, line)) {
 			path datadir = dir / line;
