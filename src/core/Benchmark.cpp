@@ -24,6 +24,7 @@
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/range/size.hpp>
 
 #include "core/Application.h"
 #include "core/TimeTypes.h"
@@ -206,7 +207,7 @@ static void end() {
 		
 		display(g_currentStatus, g_current);
 		
-		arx_assert(size_t(g_currentStatus) < ARRAY_SIZE(g_results));
+		arx_assert(size_t(g_currentStatus) < size_t(boost::size(g_results)));
 		g_results[g_currentStatus] += g_current;
 		if(isNormalFrame(g_currentStatus)) {
 			g_results[0] += g_current;
@@ -260,7 +261,7 @@ void shutdown() {
 	
 	size_t last = 0;
 	if(g_results[0].empty()) {
-		for(size_t i = ARRAY_SIZE(g_results) - 1; i > 0; i--) {
+		for(size_t i = boost::size(g_results) - 1; i > 0; i--) {
 			if(!g_results[i].empty()) {
 				last = i;
 				break;
@@ -273,7 +274,7 @@ void shutdown() {
 	
 	LogInfo << "Benchmark summary:";
 	
-	for(size_t i = 1; i < ARRAY_SIZE(g_results); i++) {
+	for(size_t i = 1; i < size_t(boost::size(g_results)); i++) {
 		display(Status(i), g_results[i], true, (i == last));
 	}
 	
