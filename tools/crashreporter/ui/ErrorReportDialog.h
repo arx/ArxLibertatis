@@ -161,7 +161,7 @@ public:
 		if(role == Qt::DisplayRole) {
 			return QFileInfo(m_errorReport.GetAttachedFiles()[index.row()].path).fileName();
 		} else if(role == Qt::CheckStateRole) {
-			return m_errorReport.GetAttachedFiles()[index.row()].attachToReport ? Qt::Checked : Qt::Unchecked;
+			return int(m_errorReport.GetAttachedFiles()[index.row()].attachToReport ? Qt::Checked : Qt::Unchecked);
 		}
 		
 		return QVariant();
