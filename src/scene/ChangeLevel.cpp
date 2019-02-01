@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 #include <limits>
+#include <cctype>
 #include <ctime>
 
 #include <boost/foreach.hpp>
@@ -1750,7 +1751,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	
 	std::string path = util::loadString(ais->filename);
 	if((!path.empty() && path[0] == '\\')
-	   || (path.length() >= 3 && isalpha(path[0]) && path[1] == ':'
+	   || (path.length() >= 3 && std::isalpha(static_cast<unsigned char>(path[0])) && path[1] == ':'
 		     && path[2] == '\\')) {
 		// Old save files stored absolute paths,
 		// strip everything before 'graph' when loading.
