@@ -393,7 +393,7 @@ bool SDL2Window::initialize() {
 					case ARX_SDL_SYSWM_ANDROID:   windowSystem = "Android"; break;
 					case ARX_SDL_SYSWM_VIVANTE:   windowSystem = "Vivante"; break;
 					case ARX_SDL_SYSWM_OS2:       windowSystem = "OS2"; break;
-					default: LogWarning << "Unknown SDL video backend: " << info.subsystem;
+					default: LogWarning << "Unknown SDL video backend: " << int(info.subsystem);
 				}
 				#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
 				#if ARX_HAVE_EPOXY
