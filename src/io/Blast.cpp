@@ -488,7 +488,7 @@ std::string blast(const char * from, size_t fromSize, size_t toSizeHint) {
 	
 	BlastResult error = blast(blastInMem, &in, blastOutString, &out);
 	if(error) {
-		LogError << "blast error " << error << " for " << fromSize;
+		LogError << "blast error " << int(error) << " for " << fromSize;
 		uncompressed.clear();
 	}
 	
