@@ -284,7 +284,7 @@ std::vector<fs::path> getSystemPaths(SystemPathId id) {
 		
 		const int kfFlagCreate  = 0x00008000; // KF_FLAG_CREATE
 		const int kfFlagNoAlias = 0x00001000; // KF_FLAG_NO_ALIAS
-		const GUID FOLDERID_SavedGames = {
+		const GUID folderIdSavedGames = {
 			0x4C5C32FF, 0xBB9D, 0x43b0, { 0xB5, 0xB4, 0x2D, 0x72, 0xE5, 0x4E, 0xAA, 0xA4 }
 		};
 		
@@ -298,7 +298,7 @@ std::vector<fs::path> getSystemPaths(SystemPathId id) {
 				PSHGetKnownFolderPath GetKnownFolderPath = reinterpret_cast<PSHGetKnownFolderPath>(proc);
 				
 				LPWSTR savedgames = NULL;
-				HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, kfFlagCreate | kfFlagNoAlias,
+				HRESULT hr = GetKnownFolderPath(folderIdSavedGames, kfFlagCreate | kfFlagNoAlias,
 				                                NULL, &savedgames);
 				if(SUCCEEDED(hr)) {
 					result.push_back(platform::WideString::toUTF8(savedgames));
