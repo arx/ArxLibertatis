@@ -933,7 +933,7 @@ bool ArxGame::addPaks() {
 	
 	// Load required pak files
 	bool missing = false;
-	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
+	for(size_t i = 0; i < size_t(boost::size(default_paks)); i++) {
 		if(g_resources->addArchive(fs::findDataFile(default_paks[i][0]))) {
 			continue;
 		}
