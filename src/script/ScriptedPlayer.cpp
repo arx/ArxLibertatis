@@ -632,9 +632,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		bool player = false;
+		bool targetPlayer = false;
 		HandleFlags("p") {
-			player = test_flag(flg, 'p');
+			targetPlayer = test_flag(flg, 'p');
 		}
 		
 		bool enable = context.getBool();
@@ -642,20 +642,20 @@ public:
 		DebugScript(' ' << options << ' ' << enable);
 		
 		Entity * io = context.getEntity();
-		if(!player && !io) {
+		if(!targetPlayer && !io) {
 			ScriptWarning << "must either use -p or execute in IO context";
 			return Failed;
 		}
 		
 		
 		if(enable) {
-			if(player) {
+			if(targetPlayer) {
 				ARX_PLAYER_Invulnerability(1);
 			} else {
 				io->ioflags |= IO_INVULNERABILITY;
 			}
 		} else {
-			if(player) {
+			if(targetPlayer) {
 				ARX_PLAYER_Invulnerability(0);
 			} else {
 				io->ioflags &= ~IO_INVULNERABILITY;
