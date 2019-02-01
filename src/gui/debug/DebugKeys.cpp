@@ -19,6 +19,8 @@
 
 #include "gui/debug/DebugKeys.h"
 
+#include <boost/range/size.hpp>
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "gui/debug/DebugPanel.h"
@@ -43,7 +45,7 @@ void debug_keysUpdate() {
 		return;
 	}
 	
-	for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
+	for(size_t i = 0; i < size_t(boost::size(g_debugToggles)); i++) {
 		g_debugTriggers[i] = false;
 		
 		if(GInput->isKeyPressed(Keyboard::Key_NumPadEnter)) {
@@ -75,7 +77,7 @@ void ShowDebugToggles() {
 	DebugBox togglesBox = DebugBox(Vec2i(10, 10), "Debug Keys");
 	togglesBox.add("Key", "Tog", "Trig", "Val");
 	
-	for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
+	for(size_t i = 0; i < size_t(boost::size(g_debugToggles)); i++) {
 		bool trigg = (g_platformTime.frameStart() - g_debugTriggersTime[i] <= g_debugTriggersDecayDuration);
 		
 		togglesBox.add(i, g_debugToggles[i] ? "on" : "off", trigg ? "X" : "", g_debugValues[i]);
