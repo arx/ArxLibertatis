@@ -468,8 +468,8 @@ static bool Cedric_IO_Visible(const Vec3f & pos) {
 		long yy = long(pos.z * ACTIVEBKG->m_mul.y);
 		
 		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->m_size.x - 1 && yy < ACTIVEBKG->m_size.y - 1) {
-			for(short z = yy - 1; z <= yy + 1; z++)
-			for(short x = xx - 1; x <= xx + 1; x++) {
+			for(long z = yy - 1; z <= yy + 1; z++)
+			for(long x = xx - 1; x <= xx + 1; x++) {
 				if(ACTIVEBKG->isTileActive(Vec2s(x, z))) {
 					return true;
 				}
