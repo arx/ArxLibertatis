@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <cctype>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -213,13 +214,13 @@ bool ScriptConsole::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 }
 
 static bool isScriptContextChar(char c) {
-	return isalnum(c) || c == '_';
+	return std::isalnum(static_cast<unsigned char>(c)) || c == '_';
 }
 
 void ScriptConsole::parse(bool allowEmptyPrefix) {
 	
 	m_contextBegin = 0;
-	while(m_contextBegin < text().size() && isspace(text()[m_contextBegin])) {
+	while(m_contextBegin < text().size() && std::isspace(static_cast<unsigned char>(text()[m_contextBegin]))) {
 		++m_contextBegin;
 	}
 	m_contextEnd = m_contextBegin;
@@ -228,7 +229,7 @@ void ScriptConsole::parse(bool allowEmptyPrefix) {
 	}
 	
 	size_t dot = m_contextEnd;
-	while(dot < text().size() && isspace(text()[dot])) {
+	while(dot < text().size() && std::isspace(static_cast<unsigned char>(text()[dot]))) {
 		++dot;
 	}
 	
@@ -237,12 +238,12 @@ void ScriptConsole::parse(bool allowEmptyPrefix) {
 	if(dot < text().size() && text()[dot] == '.') {
 		hasContext = true;
 		m_commandBegin = dot + 1;
-		while(m_commandBegin < text().size() && isspace(text()[m_commandBegin])) {
+		while(m_commandBegin < text().size() && std::isspace(static_cast<unsigned char>(text()[m_commandBegin]))) {
 			++m_commandBegin;
 		}
 	}
 	size_t commandEnd = m_commandBegin;
-	while(commandEnd < text().size() && !isspace(text()[commandEnd])) {
+	while(commandEnd < text().size() && !std::isspace(static_cast<unsigned char>(text()[commandEnd]))) {
 		++commandEnd;
 	}
 	
