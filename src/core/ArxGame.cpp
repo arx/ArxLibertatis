@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/foreach.hpp>
+#include <boost/range/size.hpp>
 
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
@@ -287,7 +288,7 @@ static bool migrateFilenames(const fs::path & configFile) {
 	 "save", "editor", "game", "graph", "localisation", "misc", "sfx", "speech" };
 	
 	std::set<std::string> fileset;
-	for(size_t i = 0; i < ARRAY_SIZE(files); i++) {
+	for(size_t i = 0; i < size_t(boost::size(files)); i++) {
 		fileset.insert(files[i]);
 	}
 	
