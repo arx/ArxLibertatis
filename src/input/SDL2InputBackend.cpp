@@ -58,7 +58,7 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window)
 	SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_ENABLE);
 	SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
 	
-	std::fill_n(sdlToArxKey, ARRAY_SIZE(sdlToArxKey), Keyboard::Key_Invalid);
+	std::fill_n(sdlToArxKey, boost::size(sdlToArxKey), Keyboard::Key_Invalid);
 	
 	sdlToArxKey[SDL_SCANCODE_BACKSPACE] = Keyboard::Key_Backspace;
 	sdlToArxKey[SDL_SCANCODE_TAB] = Keyboard::Key_Tab;
@@ -290,7 +290,7 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window)
 	sdlToArxKey[SDL_SCANCODE_AC_REFRESH] = Keyboard::Key_ACRefresh;
 	sdlToArxKey[SDL_SCANCODE_AC_BOOKMARKS] = Keyboard::Key_ACBookmarks;
 	
-	std::fill_n(sdlToArxButton, ARRAY_SIZE(sdlToArxButton), Mouse::Button_Invalid);
+	std::fill_n(sdlToArxButton, boost::size(sdlToArxButton), Mouse::Button_Invalid);
 	
 	ARX_STATIC_ASSERT(9 < ARRAY_SIZE(sdlToArxButton), "array size mismatch");
 	sdlToArxButton[8] = Mouse::Button_5;
@@ -307,25 +307,25 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window)
 	ARX_STATIC_ASSERT(SDL_BUTTON_X2 < ARRAY_SIZE(sdlToArxButton), "array size mismatch");
 	sdlToArxButton[SDL_BUTTON_X2] = Mouse::Button_4;
 	
-	std::fill_n(keyStates, ARRAY_SIZE(keyStates), false);
-	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
-	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);
+	std::fill_n(keyStates, boost::size(keyStates), false);
+	std::fill_n(clickCount, boost::size(clickCount), 0);
+	std::fill_n(unclickCount, boost::size(unclickCount), 0);
 	
 }
 
 bool SDL2InputBackend::update() {
 	
 	currentWheel = wheel;
-	std::copy(clickCount, clickCount + ARRAY_SIZE(clickCount), currentClickCount);
-	std::copy(unclickCount, unclickCount + ARRAY_SIZE(unclickCount), currentUnclickCount);
+	std::copy(clickCount, clickCount + boost::size(clickCount), currentClickCount);
+	std::copy(unclickCount, unclickCount + boost::size(unclickCount), currentUnclickCount);
 	
 	wheel = 0;
 	
 	cursorRel = cursorRelAccum;
 	cursorRelAccum = Vec2i(0);
 	
-	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
-	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);
+	std::fill_n(clickCount, boost::size(clickCount), 0);
+	std::fill_n(unclickCount, boost::size(unclickCount), 0);
 	
 	return true;
 }
@@ -425,7 +425,7 @@ void SDL2InputBackend::onEvent(const SDL_Event & event) {
 		case SDL_KEYDOWN:
 		case SDL_KEYUP: {
 			SDL_Scancode key = event.key.keysym.scancode;
-			if(size_t(key) < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[size_t(key)] != Keyboard::Key_Invalid) {
+			if(size_t(key) < size_t(boost::size(sdlToArxKey)) && sdlToArxKey[size_t(key)] != Keyboard::Key_Invalid) {
 				Keyboard::Key arxkey = sdlToArxKey[size_t(key)];
 				if(m_textHandler && event.key.state == SDL_PRESSED) {
 					KeyModifiers mod;
@@ -489,7 +489,7 @@ void SDL2InputBackend::onEvent(const SDL_Event & event) {
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP: {
 			Uint8 button = event.button.button;
-			if(button < ARRAY_SIZE(sdlToArxButton) && sdlToArxButton[button] != Mouse::Button_Invalid) {
+			if(button < size_t(boost::size(sdlToArxButton)) && sdlToArxButton[button] != Mouse::Button_Invalid) {
 				size_t i = sdlToArxButton[button] - Mouse::ButtonBase;
 				if(event.button.state == SDL_PRESSED) {
 					clickCount[i]++;
