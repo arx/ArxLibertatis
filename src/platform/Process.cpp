@@ -67,6 +67,8 @@ extern char ** environ; // NOLINT
 
 #endif // ARX_PLATFORM != ARX_PLATFORM_WIN32
 
+#include <boost/range/size.hpp>
+
 #include "io/fs/FilePath.h"
 
 #include "platform/Environment.h"
@@ -439,7 +441,7 @@ std::string getOutputOf(const char * exe, const char * const args[], bool unloca
 	std::string result;
 	while(true) {
 		char buffer[1024];
-		ssize_t count = read(pipefd[0], buffer, ARRAY_SIZE(buffer));
+		ssize_t count = read(pipefd[0], buffer, boost::size(buffer));
 		if(count < 0) {
 			return std::string();
 		} else if(count == 0) {
