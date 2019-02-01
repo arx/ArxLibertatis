@@ -48,6 +48,7 @@
 #include "platform/Alignment.h"
 #include "platform/CrashHandler.h"
 #include "platform/Platform.h"
+#include "platform/WindowsUtils.h"
 #include "platform/profiler/Profiler.h"
 
 void Thread::setThreadName(const std::string & threadName) {
@@ -205,11 +206,10 @@ Thread::~Thread() {
 
 namespace {
 
-void SetCurrentThreadName(const std::string & threadName) {
+#if ARX_COMPILER_MSVC
+void setCurrentThreadName(const std::string & threadName) {
 	
-	#if ARX_COMPILER_MSVC
-	
-	if(threadName.empty() || !IsDebuggerPresent()) {
+	if(!IsDebuggerPresent()) {
 		return;
 	}
 	
@@ -233,11 +233,8 @@ void SetCurrentThreadName(const std::string & threadName) {
 	}
 	__except(EXCEPTION_EXECUTE_HANDLER) { }
 	
-	#else
-	ARX_UNUSED(threadName);
-	#endif
-	
 }
+#endif
 
 } // anonymous namespace
 
@@ -246,7 +243,26 @@ DWORD WINAPI Thread::entryPoint(LPVOID param) {
 	// Denormals must be disabled for each thread separately
 	disableFloatDenormals();
 	
-	SetCurrentThreadName(static_cast<Thread *>(param)->m_threadName);
+	if(!static_cast<Thread *>(param)->m_threadName.empty()) {
+		
+		// Requires Windows 10 and only works with MSVC 2017+ but will be stored in minidumps
+		HMODULE kernel32 = GetModuleHandleW(L"kernel32.dll");
+		if(kernel32) {
+			typedef HRESULT (WINAPI * SetThreadDescriptionPtr)(HANDLE hThread, PCWSTR lpThreadDescription);
+			SetThreadDescriptionPtr setThreadDescription;
+			setThreadDescription = SetThreadDescriptionPtr(GetProcAddress(kernel32, "SetThreadDescription"));
+			if(setThreadDescription) {
+				setThreadDescription(GetCurrentThread(),
+				                     platform::WideString(static_cast<Thread *>(param)->m_threadName));
+			}
+		}
+		
+		// For older MSVC versions but only works if debugger is present when this is run
+		#if ARX_COMPILER_MSVC
+		setCurrentThreadName(static_cast<Thread *>(param)->m_threadName);
+		#endif
+		
+	}
 	
 	Random::seed();
 	CrashHandler::registerThreadCrashHandlers();
