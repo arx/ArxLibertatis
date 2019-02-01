@@ -910,7 +910,7 @@ long GetXPforLevel(short level)
 	};
 
 	long xpNeeded;
-	if(level < short(ARRAY_SIZE(XP_FOR_LEVEL)))
+	if(level < short(boost::size(XP_FOR_LEVEL)))
 		xpNeeded = XP_FOR_LEVEL[level];
 	else
 		xpNeeded = level * 60000;
