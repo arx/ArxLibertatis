@@ -31,6 +31,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/range/size.hpp>
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <windows.h>
@@ -352,7 +353,7 @@ std::string getOSDistribution() {
 		fs::ifstream ifs("/etc/os-release");
 		if(ifs.is_open()) {
 			const char * keys[] = { "PRETTY_NAME", "NAME", "VERSION", "VERSION_ID" };
-			std::string distro = parseDistributionName(ifs, '=', keys, ARRAY_SIZE(keys));
+			std::string distro = parseDistributionName(ifs, '=', keys, boost::size(keys));
 			if(!distro.empty()) {
 				return distro;
 			}
@@ -366,7 +367,7 @@ std::string getOSDistribution() {
 		const char * args[] = { "lsb_release", "-a", NULL };
 		std::istringstream iss(getOutputOf(args));
 		const char * keys[] = { "Description", "Distributor ID", "Release", "(Codename" };
-		std::string distro = parseDistributionName(iss, ':', keys, ARRAY_SIZE(keys));
+		std::string distro = parseDistributionName(iss, ':', keys, boost::size(keys));
 		if(!distro.empty()) {
 			return distro;
 		}
@@ -415,7 +416,7 @@ std::string getOSDistribution() {
 		"/etc/mageia-release",
 		"/etc/system-release",
 	};
-	for(size_t i = 0; i < ARRAY_SIZE(release_files); i++) {
+	for(size_t i = 0; i < size_t(boost::size(release_files)); i++) {
 		std::string distro = fs::read(release_files[i]);
 		boost::trim(distro);
 		if(!distro.empty()) {
@@ -430,7 +431,7 @@ std::string getOSDistribution() {
 		{ "/etc/slackware-version", "Slackware " },
 		{ "/etc/angstrom-version", "Ångström " },
 	};
-	for(size_t i = 0; i < ARRAY_SIZE(version_files); i++) {
+	for(size_t i = 0; i < size_t(boost::size(version_files)); i++) {
 		if(fs::exists(version_files[i][0])) {
 			std::string distro = version_files[i][1] + fs::read(release_files[i]);
 			boost::trim(distro);
@@ -445,7 +446,7 @@ std::string getOSDistribution() {
 			const char * keys[] = {
 				"DISTRIB_DESCRIPTION", "DISTRIB_ID", "DISTRIB_RELEASE", "(DISTRIB_CODENAME"
 			};
-			std::string distro = parseDistributionName(ifs, '=', keys, ARRAY_SIZE(keys));
+			std::string distro = parseDistributionName(ifs, '=', keys, boost::size(keys));
 			if(!distro.empty()) {
 				return distro;
 			}
