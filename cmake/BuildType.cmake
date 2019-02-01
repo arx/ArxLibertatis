@@ -89,8 +89,14 @@ if(MSVC)
 		# Remove definition of _DEBUG as it might conflict with libs we're linking with
 		string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")
 		
-		# Force to always compile with warning level 3
-		string(REGEX REPLACE "/W[0-4]" "/W3" ${flag_var} "${${flag_var}}")
+		# Force compiler warning level
+		if(SET_WARNING_FLAGS)
+			if(SET_NOISY_WARNING_FLAGS)
+				string(REGEX REPLACE "/W[0-4]" "/W4" ${flag_var} "${${flag_var}}")
+			else()
+				string(REGEX REPLACE "/W[0-4]" "/W3" ${flag_var} "${${flag_var}}")
+			endif()
+		endif()
 		
 		if(NOT MSVC_VERSION LESS 1900)
 			add_definitions(/utf-8)
