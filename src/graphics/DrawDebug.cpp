@@ -22,6 +22,7 @@
 #include <sstream>
 
 #include <boost/foreach.hpp>
+#include <boost/range/size.hpp>
 
 #include "ai/Anchors.h"
 #include "ai/Paths.h"
@@ -395,7 +396,7 @@ static const Color distinctDebugColors[] = {
 
 static void drawColorChart() {
 	Vec2f p = Vec2f(50, 50);
-	for(size_t i = 0; i < ARRAY_SIZE(distinctDebugColors); i++) {
+	for(size_t i = 0; i < size_t(boost::size(distinctDebugColors)); i++) {
 		drawLine(p, p + Vec2f(40, 0), 1.f, distinctDebugColors[i]);
 		
 		drawTextCentered(hFontDebug, p + Vec2f(-5, 0), boost::lexical_cast<std::string>(i), Color::white);
