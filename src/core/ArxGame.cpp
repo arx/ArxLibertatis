@@ -709,7 +709,7 @@ static bool HandleGameFlowTransitions() {
 		ARX_CHANGELEVEL_StartNew();
 		
 		std::ostringstream oss;
-		oss << "graph/levels/level" << LEVEL_TO_LOAD << "/level" << LEVEL_TO_LOAD << ".dlf";
+		oss << "graph/levels/level" << int(LEVEL_TO_LOAD) << "/level" << int(LEVEL_TO_LOAD) << ".dlf";
 		
 		progressBarReset();
 		progressBarSetTotal(108);
