@@ -30,6 +30,8 @@
 
 #include <windows.h>
 
+#include <boost/range/size.hpp>
+
 namespace platform {
 
 /*!
@@ -63,7 +65,7 @@ class WideString {
 	
 public:
 	
-	size_t capacity() const { return ARRAY_SIZE(m_static) - 1; }
+	size_t capacity() const { return size_t(boost::size(m_static)) - 1; }
 	
 	WideString(const char * utf8, size_t length) : m_size(0) { assign(utf8, length); }
 	/* implicit */ WideString(const char * utf8) : m_size(0) { assign(utf8); }
