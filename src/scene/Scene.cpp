@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 
 #include <boost/foreach.hpp>
+#include <boost/range/size.hpp>
 
 #include "ai/Paths.h"
 
@@ -1229,7 +1230,7 @@ static void BackgroundRenderTransparent(size_t room_num) {
 		
 		SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches[room_num];
 
-		for(size_t i = 0; i < ARRAY_SIZE(transRenderOrder); i++) {
+		for(size_t i = 0; i < size_t(boost::size(transRenderOrder)); i++) {
 			BatchBucket transType = transRenderOrder[i];
 
 			if(!roomMat.count[transType])
@@ -1302,7 +1303,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 		unsigned char ucVisibilityNear = 0;
 		unsigned char ucVisibilityFar = 0;
 		
-		for(size_t i = 0; i < ARRAY_SIZE(epp.p); i++) {
+		for(size_t i = 0; i < size_t(boost::size(epp.p)); i++) {
 			float fDist0 = distanceToPoint(efpPlaneNear, epp.p[i]);
 			if(fDist0 < 0.f) {
 				ucVisibilityNear++;
