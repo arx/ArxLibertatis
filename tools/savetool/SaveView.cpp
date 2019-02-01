@@ -22,6 +22,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <cctype>
 
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
@@ -1939,7 +1940,9 @@ static bool is_level(const std::string & name) {
 		return false;
 	}
 	
-	return (isdigit(name[3]) && isdigit(name[4]) && isdigit(name[5]));
+	return (std::isdigit(static_cast<unsigned char>(name[3]))
+	        && std::isdigit(static_cast<unsigned char>(name[4]))
+	        && std::isdigit(static_cast<unsigned char>(name[5])));
 }
 
 int main_view(SaveBlock & save, const std::vector<std::string> & args) {
