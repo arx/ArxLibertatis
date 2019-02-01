@@ -26,6 +26,7 @@
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/foreach.hpp>
+#include <boost/range/size.hpp>
 
 #include "io/log/Logger.h"
 #include "io/Blast.h"
@@ -61,9 +62,9 @@ void pakDecrypt(char * fat, size_t fat_size, PakReader::ReleaseType keyId) {
 	const char * key;
 	size_t keysize;
 	if(keyId == PakReader::FullGame) {
-		key = PAK_KEY_FULL, keysize = ARRAY_SIZE(PAK_KEY_FULL) - 1;
+		key = PAK_KEY_FULL, keysize = boost::size(PAK_KEY_FULL) - 1;
 	} else {
-		key = PAK_KEY_DEMO, keysize = ARRAY_SIZE(PAK_KEY_DEMO) - 1;
+		key = PAK_KEY_DEMO, keysize = boost::size(PAK_KEY_DEMO) - 1;
 	}
 	
 	for(size_t i = 0, ki = 0; i < fat_size; i++, ki = (ki + 1) % keysize) {
@@ -230,7 +231,7 @@ size_t blastInFile(void * Param, const unsigned char ** buf) {
 	
 	*buf = p->readbuf;
 	
-	size_t count = std::min(p->remaining, ARRAY_SIZE(p->readbuf));
+	size_t count = std::min(p->remaining, size_t(boost::size(p->readbuf)));
 	p->remaining -= count;
 	
 	return fs::read(p->file, p->readbuf, count).gcount();
