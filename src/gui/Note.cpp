@@ -218,7 +218,7 @@ bool Note::splitTextToPages() {
 		m_pages.push_back(std::string(txtbegin, txtbegin + pageSize));
 		
 		// Skip whitespace at the start of pages.
-		while(pageSize < txtend - txtbegin && std::isspace(*(txtbegin + pageSize))) {
+		while(pageSize < txtend - txtbegin && std::isspace(static_cast<unsigned char>(*(txtbegin + pageSize)))) {
 			pageSize++;
 		}
 		
