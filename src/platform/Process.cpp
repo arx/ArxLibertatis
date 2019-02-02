@@ -19,6 +19,7 @@
 
 #include "platform/Process.h"
 
+#include <algorithm>
 #include <sstream>
 #include <vector>
 
@@ -189,7 +190,7 @@ static process_handle run(const char * exe, const char * const args[], int outfd
 	#warning "Executing helper processes not supported on this system."
 	#endif
 	
-	return (pid <= 0) ? 0 : pid;
+	return std::max(pid_t(0), pid);
 }
 #endif // ARX_PLATFORM != ARX_PLATFORM_WIN32
 
