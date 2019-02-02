@@ -40,6 +40,7 @@
 #include <boost/preprocessor/enum_params.hpp>
 #include <boost/preprocessor/iteration/iterate.hpp>
 
+#include "platform/Platform.h"
 #include "util/cmdline/detail/Construct.h"
 
 namespace util { namespace cmdline { namespace detail {
