@@ -393,6 +393,20 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 #endif
 
 /*!
+ * \def arx_noreturn
+ * \brief Annotate a function that does not return
+ *
+ * Should go before the return type (void) and static specifier of a function declaration.
+ */
+#if ARX_HAVE_CXX11_NORETURN
+#define arx_noreturn [[noreturn]]
+#elif ARX_COMPILER_MSVC
+#define arx_noreturn __declspec(noreturn)
+#else
+#define arx_noreturn
+#endif
+
+/*!
  * \def arx_return_noalias
  * \brief Annotate a function that returns a pointer that doesn't alias with anything and
  *        points to uninitialized or zeroed memory
