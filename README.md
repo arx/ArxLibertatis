@@ -111,14 +111,16 @@ Getting all the dependencies set up for Windows is more tricky. Pre-built depend
 * `DEBUG` (default: `OFF`³): Enable debug output and runtime checks
 * `DEBUG_GL` (default: `OFF`⁴): Enable OpenGL debug output by default
 * `DEBUG_EXTRA` (default: `OFF`): Expensive debug options
-* `DEVELOPER` (default: `OFF`): Enable build options suitable for developers⁵
+* `RUN_TESTS` (default: `OFF`⁵): automatically run tests
+* `DEVELOPER` (default: `OFF`): Enable build options suitable for developers⁶
 * `BUILD_PROFILER_INSTRUMENT` (default: `OFF`): Add profiling instructions to the main arx binary
 
 1. Enabled automatically if `BUILD_ALL` or `BUILD_PROFILER_INSTRUMENT` is enabled
 2. Enabled automatically if `BUILD_ALL` or `DEVELOPER` is enabled
 3. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug` or if `DEVELOPER` is enabled.
 4. Enabled automatically if `DEBUG` is enabled. If disabled, OpenGL debug output can be enabled at run-time using the `--debug-gl` command-line option.
-5. Currently this disables `UNITY_BUILD` and enables `DEBUG`, `BUILD_TESTS` and `FASTLINK` for faster incremental builds and improved debug checks, unless those options have been explicitly specified by the user.
+5. Enabled automatically if `DEVELOPER` is enabled
+5. Currently this disables `UNITY_BUILD` and enables `DEBUG`, `BUILD_TESTS`, `RUN_TESTS` and `FASTLINK` for faster incremental builds and improved debug checks, unless those options have been explicitly specified by the user.
 
 Install options:
 
