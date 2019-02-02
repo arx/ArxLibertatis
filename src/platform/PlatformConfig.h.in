@@ -40,6 +40,8 @@
 #cmakedefine01 ARX_HAVE_CXX11_DEFAULT
 // final
 #cmakedefine01 ARX_HAVE_CXX11_FINAL
+// [[noreturn]]
+#cmakedefine01 ARX_HAVE_CXX11_NORETURN
 
 // C++17 features
 // [[nodiscard]]
