@@ -33,7 +33,8 @@ namespace platform {
 
 #if ARX_HAVE_ALIGNED_MALLOC && ARX_HAVE_ALIGNED_FREE
 
-arx_nodiscard void * alloc_aligned(std::size_t alignment, std::size_t size) {
+arx_alloc_align(2, 1)
+void * alloc_aligned(std::size_t alignment, std::size_t size) {
 	// alignment needs to be a power of two
 	return _aligned_malloc(size, alignment);
 }
