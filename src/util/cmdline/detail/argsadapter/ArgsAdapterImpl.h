@@ -54,6 +54,7 @@ struct args_adapter_impl<void(BOOST_PP_ENUM_PARAMS(N, A))>
 		(s, static_cast<const typename IMPL_T::BOOST_PP_CAT(BOOST_PP_CAT(arg, DEC_N), _t) *>(0)))
 		#endif // (N > 0)
 	{
+		ARX_UNUSED(s);
 	}
 };
 
