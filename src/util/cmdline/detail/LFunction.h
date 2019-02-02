@@ -41,6 +41,8 @@
 #include <boost/preprocessor/repeat_from_to.hpp>
 #include <boost/preprocessor/iteration/iterate.hpp>
 
+#include "platform/Platform.h"
+
 namespace util { namespace cmdline {
 
 namespace detail {
