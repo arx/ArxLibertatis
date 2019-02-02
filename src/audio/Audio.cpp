@@ -279,7 +279,7 @@ AmbianceId createAmbiance(const res::path & name, PlayingAmbianceType type) {
 		return AmbianceId();
 	}
 	
-	LogDebug("createAmbiance " << ambiance->getName() << " " << type);
+	LogDebug("createAmbiance " << ambiance->getName() << " " << int(type));
 	ambiance->setType(type);
 	
 	return a_id;
