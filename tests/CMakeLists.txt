@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 # compile tests tool
 
 suboption(CppUnit_USE_STATIC_LIBS "Statically link CppUnit" BOOL ${USE_STATIC_LIBS})
+suboption(RUN_TESTS "Run tests as part of the default build target" BOOL ${DEVELOPER})
 
 find_package(CppUnit REQUIRED)
 
@@ -47,7 +48,12 @@ add_executable(arxtest
 
 target_link_libraries(arxtest ${CppUnit_LIBRARIES})
 
-add_custom_target(check
+set(run_tests)
+if(RUN_TESTS)
+	set(run_tests ALL)
+endif()
+
+add_custom_target(check ${run_tests}
 	COMMAND "$<TARGET_FILE:arxtest>"
 	DEPENDS arxtest
 	WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
