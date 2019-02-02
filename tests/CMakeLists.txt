@@ -2,7 +2,13 @@ cmake_minimum_required(VERSION 2.8)
 # compile tests tool
 
 suboption(CppUnit_USE_STATIC_LIBS "Statically link CppUnit" BOOL ${USE_STATIC_LIBS})
-suboption(RUN_TESTS "Run tests as part of the default build target" BOOL ${DEVELOPER})
+set(RUN_TARGET CACHE STRING "Wrapper to run built targets")
+mark_as_advanced(RUN_TARGET)
+set(default_RUN_TESTS OFF)
+if(DEVELOPER AND (NOT CMAKE_CROSSCOMPILING OR NOT RUN_TARGET STREQUAL ""))
+	set(default_RUN_TESTS ON)
+endif()
+suboption(RUN_TESTS "Run tests as part of the default build target" BOOL ${default_RUN_TESTS})
 
 find_package(CppUnit REQUIRED)
 
@@ -54,7 +60,7 @@ if(RUN_TESTS)
 endif()
 
 add_custom_target(check ${run_tests}
-	COMMAND "$<TARGET_FILE:arxtest>"
+	COMMAND ${RUN_TARGET} "$<TARGET_FILE:arxtest>"
 	DEPENDS arxtest
 	WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
 	COMMENT "Running tests" VERBATIM
