@@ -111,8 +111,7 @@ std::string getErrorString(WORD error, HMODULE module) {
 	}
 	
 	LPWSTR buffer = NULL;
-	DWORD n = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-	                         module, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+	DWORD n = FormatMessageW(flags, module, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 	                         reinterpret_cast<LPWSTR>(&buffer), 0, NULL);
 	if(n != 0) {
 		std::string message = WideString::toUTF8(buffer, n);
