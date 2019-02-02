@@ -66,6 +66,8 @@ struct lfn_invoker<void(BOOST_PP_ENUM_PARAMS(N, ARG))> {
 		function(BOOST_PP_REPEAT_FROM_TO(0, N, BOOST_COMMAND_LINE_LFN_INVOKER, ~));
 		
 		#undef BOOST_COMMAND_LINE_LFN_INVOKER
+		
+		ARX_UNUSED(args);
 	}
 };
 
