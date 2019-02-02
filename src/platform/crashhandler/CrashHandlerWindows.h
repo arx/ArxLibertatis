@@ -22,9 +22,9 @@
 
 #include <windows.h>
 
-#include "platform/crashhandler/CrashHandlerImpl.h"
-
+#include "platform/Platform.h"
 #include "platform/WindowsUtils.h"
+#include "platform/crashhandler/CrashHandlerImpl.h"
 
 class CrashHandlerWindows : public CrashHandlerImpl {
 	
@@ -41,7 +41,7 @@ public:
 	void registerCrashCallback(CrashHandler::CrashCallback crashCallback);
 	void unregisterCrashCallback(CrashHandler::CrashCallback crashCallback);
 	
-	void handleCrash(int crashType, void * crashExtraInfo = 0, int fpeCode = 0);
+	arx_noreturn void handleCrash(int crashType, void * crashExtraInfo = 0, int fpeCode = 0);
 	
 	static CrashHandlerWindows & getInstance();
 	

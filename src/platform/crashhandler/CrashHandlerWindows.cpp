@@ -255,7 +255,7 @@ void CrashHandlerWindows::writeCrashDump(PEXCEPTION_POINTERS pointers) {
 	
 }
 
-void CrashHandlerWindows::handleCrash(int crashType, void * crashExtraInfo, int fpeCode) {
+arx_noreturn void CrashHandlerWindows::handleCrash(int crashType, void * crashExtraInfo, int fpeCode) {
 	
 	Autolock autoLock(&m_Lock);
 	
@@ -339,7 +339,6 @@ void CrashHandlerWindows::handleCrash(int crashType, void * crashExtraInfo, int 
 
 LONG WINAPI SEHHandler(PEXCEPTION_POINTERS pExceptionPtrs) {
 	CrashHandlerWindows::getInstance().handleCrash(SEH_EXCEPTION, pExceptionPtrs);
-	return EXCEPTION_EXECUTE_HANDLER;
 }
 
 void TerminateHandler() {
@@ -362,7 +361,6 @@ void InvalidParameterHandler(const wchar_t * /*expression*/, const wchar_t * /*f
 
 int NewHandler(size_t) {
 	CrashHandlerWindows::getInstance().handleCrash(NEW_OPERATOR_ERROR);
-	return 0;
 }
 
 void SignalHandler(int signalCode) {
