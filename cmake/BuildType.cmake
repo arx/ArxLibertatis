@@ -43,7 +43,13 @@ if(MSVC)
 		add_definitions(/wd4267)
 		# warning C4456: declaration of 'xxx' hides previous local declaration
 		add_definitions(/wd4456) # TODO triggers on nested BOOST_FOREACH, remove after moving to C++11
+		# warning C4459: declaration of 'xxx' hides global declaration
+		add_definitions(/wd4459) # TODO triggers on BOOST_SCOPE_EXIT, remove after moving to C++11
 		
+		if(MSVC_VERSION LESS 1910)
+			# warning C4100: 'xxx': unreferenced formal parameter
+			add_definitions(/wd4100) # has false positives
+		endif()
 		# warning C4127: conditional expression is constant
 		add_definitions(/wd4127)
 		# warning C4201: nonstandard extension used: nameless struct/union
@@ -54,13 +60,19 @@ if(MSVC)
 		endif()
 		# warning C4324: 'xxx': structure was padded due to alignment specifier
 		add_definitions(/wd4324)
+		if(MSVC_VERSION LESS 1900)
+			# warning C4503: 'xxx': decorated name length exceeded, name was truncated
+			add_definitions(/wd4503)
+			# warning C4512: 'xxx' : assignment operator could not be generated
+			add_definitions(/wd4512) # not all classes need an assignment operator...
+		endif()
 		# warning C4701: potentially uninitialized local variable 'xxx' used
 		add_definitions(/wd4701)
 		# warning C4703: potentially uninitialized local pointer variable 'xxx' used
 		add_definitions(/wd4703)
 		if(MSVC_VERSION LESS 1900)
-			# warning C4503: 'xxx': decorated name length exceeded, name was truncated
-			add_definitions(/wd4503)
+			# warning C4718: 'xxx' : recursive call has no side effects, deleting
+			add_definitions(/wd4718) # warns in Qt
 		endif()
 		
 	endif()
