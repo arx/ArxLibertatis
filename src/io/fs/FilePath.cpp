@@ -29,6 +29,8 @@ namespace fs {
 
 const char path::dir_or_ext_sep[] = "\\/.";
 const char path::any_dir_sep[] = "\\/";
+const char path::dir_sep;
+const char path::ext_sep;
 
 namespace {
 
