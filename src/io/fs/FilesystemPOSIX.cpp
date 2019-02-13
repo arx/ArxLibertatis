@@ -324,7 +324,7 @@ directory_iterator::directory_iterator(const path & p) : m_buffer(NULL) {
 		#else
 		#  error "buffer size for readdir_r cannot be determined"
 		#endif
-		size_t size = (size_t)offsetof(dirent, d_name) + name_max + 1;
+		size_t size = size_t(offsetof(dirent, d_name)) + name_max + 1;
 		if(size < sizeof(dirent)) {
 			size = sizeof(dirent);
 		}
