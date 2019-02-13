@@ -19,6 +19,7 @@
 
 #include "tests/io/fs/FilePathTest.h"
 
+#include <algorithm>
 #include <string>
 
 #include "io/fs/FilePath.h"
@@ -26,8 +27,13 @@
 CPPUNIT_TEST_SUITE_REGISTRATION(FilePathTest);
 
 void FilePathTest::testPath(const char * input, const char * expected) {
+	
+	std::string target = expected;
+	std::replace(target.begin(), target.end(), '/', fs::path::dir_sep);
+	
 	fs::path path = input;
-	CPPUNIT_ASSERT_EQUAL_MESSAGE(std::string(input), std::string(expected), path.string());
+	CPPUNIT_ASSERT_EQUAL_MESSAGE(std::string(input), target, path.string());
+	
 }
 
 void FilePathTest::pathTest() {
@@ -145,14 +151,17 @@ void FilePathTest::pathTest() {
 
 void FilePathTest::testResolve(const char * left, const char * right, const char * expected) {
 	
+	std::string target = expected;
+	std::replace(target.begin(), target.end(), '/', fs::path::dir_sep);
+	
 	std::string message = "\"" + std::string(left) + "\" / \"" + std::string(right) + "\"";
 	
 	fs::path result = fs::path(left) / right;
-	CPPUNIT_ASSERT_EQUAL_MESSAGE(message, std::string(expected), result.string());
+	CPPUNIT_ASSERT_EQUAL_MESSAGE(message, target, result.string());
 	
 	fs::path temp = left;
 	temp /= right;
-	CPPUNIT_ASSERT_EQUAL_MESSAGE(message, std::string(expected), temp.string());
+	CPPUNIT_ASSERT_EQUAL_MESSAGE(message, target, temp.string());
 	
 }
 
@@ -233,12 +242,15 @@ void FilePathTest::resolveTest() {
 
 void FilePathTest::testParent(const char * input, const char * expected) {
 	
+	std::string target = expected;
+	std::replace(target.begin(), target.end(), '/', fs::path::dir_sep);
+	
 	fs::path parent = fs::path(input).parent();
-	CPPUNIT_ASSERT_EQUAL_MESSAGE(std::string(input), std::string(expected), parent.string());
+	CPPUNIT_ASSERT_EQUAL_MESSAGE(std::string(input), target, parent.string());
 	
 	fs::path temp = input;
 	temp.up();
-	CPPUNIT_ASSERT_EQUAL_MESSAGE(std::string(input), std::string(expected), temp.string());
+	CPPUNIT_ASSERT_EQUAL_MESSAGE(std::string(input), target, temp.string());
 	
 }
 
