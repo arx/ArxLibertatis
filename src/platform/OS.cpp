@@ -195,11 +195,6 @@ static std::string getWindowsVersionName() {
 
 std::string getOSName() {
 	
-	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	// Get operating system friendly name from registry.
-	return getWindowsVersionName();
-	#endif
-	
 	#if ARX_HAVE_UNAME
 	struct utsname uname_buf;
 	if(uname(&uname_buf) == 0) {
@@ -207,7 +202,10 @@ std::string getOSName() {
 	}
 	#endif
 	
-	#if ARX_PLATFORM == ARX_PLATFORM_LINUX
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	// Get operating system friendly name from registry.
+	return getWindowsVersionName();
+	#elif ARX_PLATFORM == ARX_PLATFORM_LINUX
 	return "Linux";
 	#elif ARX_PLATFORM == ARX_PLATFORM_MACOS
 	return "macOS";
@@ -223,6 +221,13 @@ std::string getOSName() {
 
 std::string getOSArchitecture() {
 	
+	#if ARX_HAVE_UNAME
+	struct utsname uname_buf;
+	if(uname(&uname_buf) == 0) {
+		return uname_buf.machine;
+	}
+	#endif
+	
 	// Determine if Windows is 64-bit.
 	#if defined(_WIN64)
 	return ARX_ARCH_NAME_X86_64; // 64-bit programs run only on Win64
@@ -233,16 +238,9 @@ std::string getOSArchitecture() {
 	} else {
 		return ARX_ARCH_NAME_X86;
 	}
-	#endif
-	
-	#if ARX_HAVE_UNAME
-	struct utsname uname_buf;
-	if(uname(&uname_buf) == 0) {
-		return uname_buf.machine;
-	}
-	#endif
-	
+	#else
 	return std::string();
+	#endif
 }
 
 
@@ -570,9 +568,11 @@ std::string getCPUName() {
 		
 	}
 	
-	#endif
-	
 	return std::string();
+	
+	#else
+	return std::string();
+	#endif
 }
 
 MemoryInfo getMemoryInfo() {
