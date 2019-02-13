@@ -244,7 +244,7 @@ Response * WinHTTPSession::post(const POSTRequest & request) {
 	LPVOID data = const_cast<LPVOID>(static_cast<LPCVOID>(request.data().data()));
 	DWORD size = request.data().size();
 	std::basic_string<WCHAR> redirect;
-	BOOL result = WinHttpSendRequest(wrequest, headers, -1, data, size, size,
+	BOOL result = WinHttpSendRequest(wrequest, headers, DWORD(-1), data, size, size,
 	                                reinterpret_cast<DWORD_PTR>(&redirect));
 	if(!result) {
 		return new Response("Could not send request: " + errorString());
