@@ -507,6 +507,12 @@ if(NOT Boost_VERSION VERSION_LESS 106900 AND Boost_VERSION VERSION_LESS 107000)
 	message("Suppressing warnings for deprecated headers used internally in Boost")
 	add_definitions("-DBOOST_ALLOW_DEPRECATED_HEADERS")
 endif()
+# Prevent warning in boost/crc.cpp
+# warning C4245: 'initializing': conversion from 'int' to 'const boost::detail::mask_uint_t<8>::least', signed/unsigned mismatch
+# warning C4245: 'initializing': conversion from 'int' to 'const boost::detail::mask_uint_t<16>::least', signed/unsigned mismatch
+if(MSVC AND Boost_VERSION VERSION_LESS 106900)
+	add_definitions(/wd4245)
+endif()
 
 # glm
 find_package(GLM 0.9.5.0 REQUIRED)
