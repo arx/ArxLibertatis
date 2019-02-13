@@ -72,6 +72,7 @@ static std::string errorString(DWORD error = GetLastError()) {
 
 static void APIENTRY statusCallback(HINTERNET handle, DWORD_PTR context, DWORD status,
                                     LPVOID info, DWORD size) {
+	ARX_UNUSED(handle);
 	if(status == WINHTTP_CALLBACK_STATUS_REDIRECT && context && size >= 1) {
 		std::basic_string<WCHAR> * url = reinterpret_cast<std::basic_string<WCHAR> *>(context);
 		url->assign(reinterpret_cast<LPWSTR>(info), size - 1);
