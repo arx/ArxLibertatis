@@ -59,8 +59,13 @@ if(RUN_TESTS)
 	set(run_tests ALL)
 endif()
 
+set(arxtest_binary "$<TARGET_FILE:arxtest>")
+if(CMAKE_VERSION VERSION_LESS 2.8.12)
+	get_property(arxtest_binary TARGET arxtest PROPERTY LOCATION_${CMAKE_BUILD_TYPE})
+endif()
+
 add_custom_target(check ${run_tests}
-	COMMAND ${RUN_TARGET} "$<TARGET_FILE:arxtest>"
+	COMMAND ${RUN_TARGET} "${arxtest_binary}"
 	DEPENDS arxtest
 	WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
 	COMMENT "Running tests" VERBATIM
