@@ -36,22 +36,22 @@ bool showDialog(DialogType type, const std::string & message, const std::string 
 		
 		default:
 		case DialogInfo:
-			[alert setAlertStyle: NSInformationalAlertStyle];
+			[alert setAlertStyle: NSAlertStyleInformational];
 			[alert runModal];
 			break;
 		
 		case DialogWarning:
-			[alert setAlertStyle: NSWarningAlertStyle];
+			[alert setAlertStyle: NSAlertStyleWarning];
 			[alert runModal];
 			break;
 		
 		case DialogError:
-			[alert setAlertStyle: NSCriticalAlertStyle];
+			[alert setAlertStyle: NSAlertStyleCritical];
 			[alert runModal];
 			break;
 		
 		case DialogWarnYesNo:
-			[alert setAlertStyle: NSWarningAlertStyle];
+			[alert setAlertStyle: NSAlertStyleWarning];
 			/* fall-through */
 		
 		case DialogYesNo:
