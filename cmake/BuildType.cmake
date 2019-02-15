@@ -77,6 +77,10 @@ if(MSVC)
 		
 	endif()
 	
+	if(WERROR)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
+	endif()
+	
 	if(NOT DEBUG_EXTRA)
 		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
 		add_definitions(-D_SECURE_SCL=0)
@@ -304,6 +308,10 @@ else(MSVC)
 		endif()
 		
 	endif(SET_WARNING_FLAGS)
+	
+	if(WERROR)
+		add_cxxflag("-Werror")
+	endif()
 	
 	if(DEBUG_EXTRA)
 		add_cxxflag("-ftrapv") # to add checks for (undefined) signed integer overflow
