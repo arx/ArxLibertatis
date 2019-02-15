@@ -35,15 +35,35 @@ def qdump__Anglef(d, value):
     d.putValue(valueStr)
     d.putPlainChildren(value)
 
+# Color =======================================================================
+
+def qdump__Color3(d, value):
+    r = value['r'].value()
+    g = value['g'].value()
+    b = value['b'].value()
+    d.putType('Color3')
+    d.putValue('{:03d} {:03d} {:03d}'.format(r, g, b))
+    d.putPlainChildren(value)
+
+def qdump__Color(d, value):
+    r = value['r'].value()
+    g = value['g'].value()
+    b = value['b'].value()
+    a = value['a'].value()
+    d.putType('Color')
+    d.putValue('{:03d} {:03d} {:03d} {:03d}'.format(r, g, b, a))
+    d.putPlainChildren(value)
+
 def qdump__Color3f(d, value):
     r = value['r'].value()
     g = value['g'].value()
     b = value['b'].value()
     valueStr = "{:10.4f} {:10.4f} {:10.4f}".format(r, g, b)
-    
     d.putType("Color3f")
     d.putValue(valueStr)
     d.putPlainChildren(value)
+
+# Entity ======================================================================
 
 def qdump__Entity(d, value):
     index = value['m_index'].value()
@@ -92,14 +112,15 @@ def qdump__LightHandle(d, v):
     arx_HandleType_helper(d, v)
 
 # Time Types ==================================================================
+#            src/core/TimeTypes.h
 
 def arx_TimeType_helper(d, v):
     d.putValue(v['t'].value())
     d.putPlainChildren(v)
 
-def qdump__ArxInstant(d, v):
+def qdump__GameInstant(d, v):
     arx_TimeType_helper(d, v)
-def qdump__ArxDuration(d, v):
+def qdump__GameDuration(d, v):
     arx_TimeType_helper(d, v)
 def qdump__PlatformInstant(d, v):
     arx_TimeType_helper(d, v)
