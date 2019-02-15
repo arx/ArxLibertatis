@@ -149,9 +149,6 @@ if(MSVC)
 	# Enable compiler optimization in release
 	set(CMAKE_CXX_FLAGS_RELEASE
 	    "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GS- /fp:fast")
-	if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /arch:SSE2")
-	endif()
 	
 else(MSVC)
 	
