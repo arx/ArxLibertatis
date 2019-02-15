@@ -29,6 +29,7 @@
 #include "Configure.h"
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
+struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permissive-
 #include <windows.h>
 #include <shlobj.h>
 #include <wchar.h>
