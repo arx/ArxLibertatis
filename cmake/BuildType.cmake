@@ -120,11 +120,24 @@ if(MSVC)
 			string(REGEX REPLACE "/W[0-4]" "/W4" ${flag_var} "${${flag_var}}")
 		endif()
 		
-		if(NOT MSVC_VERSION LESS 1900)
-			add_definitions(/utf-8)
-		endif()
-		
 	endforeach(flag_var)
+	
+	if(NOT MSVC_VERSION LESS 1900)
+		add_definitions(/utf-8)
+	endif()
+	
+	# Turn on standards compliant mode
+	# /Za is not compatible with /fp:fast, leave it off
+	if(NOT MSVC_VERSION LESS 1910)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
+		# /permissive- enables /Zc:twoPhase wich would be good if two phase lookup wasn't still broken in VS 2017
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:twoPhase-")
+	endif()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:inline")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:throwingNew")
+	if(NOT MSVC_VERSION LESS 1914)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
+	endif()
 	
 	# Avoid warning during link
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
