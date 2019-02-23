@@ -29,8 +29,10 @@ namespace fs {
 
 const char path::dir_or_ext_sep[] = "\\/.";
 const char path::any_dir_sep[] = "\\/";
+#if !ARX_COMPILER_MSVC || _MSC_VER >= 1900
 const char path::dir_sep;
 const char path::ext_sep;
+#endif
 
 namespace {
 
