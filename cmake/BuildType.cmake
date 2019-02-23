@@ -264,7 +264,9 @@ else(MSVC)
 			add_cxxflag("-Wpadded")
 			add_cxxflag("-Wunsafe-loop-optimizations")
 			
-			add_ldflag("-Wl,--detect-odr-violations")
+			if(NOT DEBUG_EXTRA OR NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+				add_ldflag("-Wl,--detect-odr-violations")
+			endif()
 			
 		else()
 			
