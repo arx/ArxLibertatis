@@ -1,6 +1,14 @@
 
 include(CompileCheck)
 
+if(NOT CMAKE_VERSION VERSION_LESS 2.8.6)
+	include(CheckCXXSymbolExists)
+	check_cxx_symbol_exists(_LIBCPP_VERSION "cstddef" IS_LIBCXX)
+else()
+	set(IS_LIBCXX OFF)
+endif()
+
+
 option(DEBUG_EXTRA "Expensive debug options" OFF)
 option(SET_WARNING_FLAGS "Adjust compiler warning flags" ON)
 option(SET_NOISY_WARNING_FLAGS "Enable noisy compiler warnings" OFF)
@@ -325,9 +333,13 @@ else(MSVC)
 		add_cxxflag("-fsanitize=address")
 		add_cxxflag("-fsanitize=thread")
 		add_cxxflag("-fsanitize=leak")
-		add_cxxflag("-fsanitize=undefined")
-		add_definitions(-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC) # libstdc++
-		add_definitions(-D_LIBCPP_DEBUG=1) # libc++
+		if(IS_LIBCXX)
+			add_definitions(-D_LIBCPP_DEBUG=1) # libc++
+			# libc++'s debug checks fail with -fsanitize=undefined
+		else()
+			add_definitions(-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC) # libstdc++
+			add_cxxflag("-fsanitize=undefined")
+		endif()
 	endif(DEBUG_EXTRA)
 	
 	if(CMAKE_BUILD_TYPE STREQUAL "")
