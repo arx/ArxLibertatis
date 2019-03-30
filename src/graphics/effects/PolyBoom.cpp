@@ -107,8 +107,6 @@ void PolyBoomClear() {
 
 void PolyBoomAddScorch(const Vec3f & poss) {
 	
-	static TextureContainer * tc2 = TextureContainer::Load("graph/particles/boom");
-	
 	// TODO copy-paste background tiles
 	int tilex = int(poss.x * ACTIVEBKG->m_mul.x);
 	int tilez = int(poss.z * ACTIVEBKG->m_mul.y);
@@ -155,7 +153,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			pb.type = ScorchMarkDecal;
 			pb.fastdecay = false;
 			pb.ep = &ep;
-			pb.tc = tc2;
+			pb.tc = g_particleTextures.boom;
 			pb.tolive = GameDurationMs(10000);
 			pb.timecreation = g_gameTime.now();
 			pb.rgb = Color3f::black;
