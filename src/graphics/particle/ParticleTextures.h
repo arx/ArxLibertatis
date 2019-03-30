@@ -33,6 +33,7 @@ struct ParticleTextures {
 	TextureContainer * healing;
 	TextureContainer * tzupouf;
 	TextureContainer * fire2;
+	TextureContainer * fire_hit;
 	
 	// TextureContainer for animated explosion bitmaps (24 frames)
 	static const size_t MAX_EXPLO = 24;
