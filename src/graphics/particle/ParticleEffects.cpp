@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/PolyBoom.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/MagicFlare.h"
+#include "graphics/particle/ParticleTextures.h"
 
 #include "input/Input.h"
 
@@ -91,18 +92,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 static const size_t MAX_PARTICLES = 2200;
 static long ParticleCount = 0;
 static PARTICLE_DEF g_particles[MAX_PARTICLES];
-
-static TextureContainer * blood_splat = NULL;
-TextureContainer * bloodsplat[6];
-TextureContainer * water_splat[3];
-static TextureContainer * water_drop[3];
-static TextureContainer * smokeparticle = NULL;
-TextureContainer * healing = NULL;
-static TextureContainer * tzupouf = NULL;
-TextureContainer * fire2 = NULL;
-
-static const size_t MAX_EXPLO = 24;
-static TextureContainer * explo[MAX_EXPLO]; // TextureContainer for animated explosion bitmaps (24 frames)
 
 long NewSpell = 0;
 
@@ -127,7 +116,7 @@ void createFireParticles(Vec3f & pos, int perPos, int delay) {
 		pd->siz = 7.f;
 		pd->tolive = Random::getu(500, 1500);
 		pd->m_flags = FIRE_TO_SMOKE | ROTATING;
-		pd->tc = fire2;
+		pd->tc = g_particleTextures.fire2;
 		pd->m_rotation = Random::getf(-0.1f, 0.1f);
 		pd->scale = Vec3f(-8.f);
 		pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
@@ -187,7 +176,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f pos, Entity * io) {
 	pd->ov = pos;
 	pd->move = arx::randomVec3f() * Vec3f(2.f, -12.f, 2.f) - Vec3f(4.f, 15.f, 4.f);
 	pd->tolive = 800;
-	pd->tc = smokeparticle;
+	pd->tc = g_particleTextures.smokeparticle;
 	pd->siz = 15.f;
 	pd->scale = arx::randomVec(15.f, 20.f);
 	pd->m_flags = FIRE_TO_SMOKE;
@@ -211,7 +200,7 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	pd->move = arx::randomVec3f() * Vec3f(60.f, -10.f, 60.f) - Vec3f(30.f, 15.f, 30.f);
 	pd->rgb = Color3f(col);
 	long num = Random::get(0, 5);
-	pd->tc = bloodsplat[num];
+	pd->tc = g_particleTextures.bloodsplat[num];
 	pd->m_rotation = Random::getf(-0.05f, 0.05f);
 	
 }
@@ -230,7 +219,7 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 		pd->m_flags = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | flags;
 		pd->tolive = 1100;
 		pd->rgb = Color3f(col);
-		pd->tc = bloodsplat[0];
+		pd->tc = g_particleTextures.bloodsplat[0];
 		pd->m_rotation = Random::getf(-0.05f, 0.05f);
 	}
 	
@@ -338,7 +327,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 		totdelay += 45 + Random::getu(0, 150 - spawn_nb);
 		pd->delay = totdelay;
 		pd->rgb = Color3f(.9f, 0.f, 0.f);
-		pd->tc = bloodsplat[0];
+		pd->tc = g_particleTextures.bloodsplat[0];
 		pd->m_rotation = Random::getf(-0.05f, 0.05f);
 	}
 }
@@ -376,7 +365,7 @@ void AddRandomSmoke(const Entity & io, long amount) {
 		pd->tolive = Random::getu(900, 1300);
 		pd->move = arx::linearRand(Vec3f(-0.25f, -0.7f, -0.25f), Vec3f(0.25f, 0.3f, 0.25f));
 		pd->rgb = Color3f(0.3f, 0.3f, 0.34f);
-		pd->tc = smokeparticle;
+		pd->tc = g_particleTextures.smokeparticle;
 		pd->m_rotation = 0.001f;
 	}
 }
@@ -406,7 +395,7 @@ void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, const C
 		pd->delay = amount * 120 + Random::getu(0, 100);
 		pd->move = arx::linearRand(Vec3f(-0.25f, -0.7f, -0.25f), Vec3f(0.25f, 0.3f, 0.25f));
 		pd->rgb = rgb;
-		pd->tc = smokeparticle;
+		pd->tc = g_particleTextures.smokeparticle;
 		pd->m_rotation = 0.01f;
 	}
 }
@@ -504,38 +493,6 @@ void Add3DBoom(const Vec3f & position) {
 
 void ARX_PARTICLES_FirstInit() {
 	
-	smokeparticle = TextureContainer::Load("graph/particles/smoke");
-	
-	// TODO bloodsplat and water_splat cannot use mipmapping because they need a constant color border pixel
-	// this may also apply to other textures
-	
-	TextureContainer::TCFlags flags = TextureContainer::NoMipmap;
-	flags |= TextureContainer::NoColorKey | TextureContainer::Intensity;
-	bloodsplat[0] = TextureContainer::Load("graph/particles/new_blood", flags);
-	bloodsplat[1] = TextureContainer::Load("graph/particles/new_blood_splat1", flags);
-	bloodsplat[2] = TextureContainer::Load("graph/particles/new_blood_splat2", flags);
-	bloodsplat[3] = TextureContainer::Load("graph/particles/new_blood_splat3", flags);
-	bloodsplat[4] = TextureContainer::Load("graph/particles/new_blood_splat4", flags);
-	bloodsplat[5] = TextureContainer::Load("graph/particles/new_blood_splat5", flags);
-	blood_splat = TextureContainer::Load("graph/particles/new_blood2", flags);
-	
-	water_splat[0] = TextureContainer::Load("graph/particles/[fx]_water01", TextureContainer::NoMipmap);
-	water_splat[1] = TextureContainer::Load("graph/particles/[fx]_water02", TextureContainer::NoMipmap);
-	water_splat[2] = TextureContainer::Load("graph/particles/[fx]_water03", TextureContainer::NoMipmap);
-	
-	water_drop[0] = TextureContainer::Load("graph/particles/[fx]_water_drop01");
-	water_drop[1] = TextureContainer::Load("graph/particles/[fx]_water_drop02");
-	water_drop[2] = TextureContainer::Load("graph/particles/[fx]_water_drop03");
-	healing = TextureContainer::Load("graph/particles/heal_0005");
-	tzupouf = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_greypouf");
-	fire2 = TextureContainer::Load("graph/particles/fire2");
-	
-	for(unsigned int i = 0; i < MAX_EXPLO; i++) {
-		std::string texturePath = boost::str(boost::format("graph/particles/fireb_%02u") % (i + 1));
-		TextureContainer * texture = TextureContainer::LoadUI(texturePath);
-		arx_assert(texture);
-		explo[i] = texture;
-	}
 }
 
 void ARX_PARTICLES_ClearAll() {
@@ -589,7 +546,7 @@ void MagFX(const Vec3f & pos, float size) {
 	pd->move = Vec3f(Random::getf(-6.f, 6.f), Random::getf(-8.f, 8.f), 0.f);
 	pd->scale = Vec3f(4.4f, 4.4f, 1.f);
 	pd->tolive = Random::getu(1500, 2400);
-	pd->tc = healing;
+	pd->tc = g_particleTextures.healing;
 	pd->rgb = Color3f::magenta;
 	pd->siz = 56.f * size;
 	pd->is2D = true;
@@ -612,7 +569,7 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 		pd->ov = pos;
 		pd->move = arx::randomVec(-11.5f, 11.5f);
 		pd->tolive = tolive;
-		pd->tc = blood_splat;
+		pd->tc = g_particleTextures.blood_splat;
 		pd->siz = 0.3f + 0.01f * power;
 		pd->scale = Vec3f(0.2f + 0.3f * power);
 		pd->zdec = true;
@@ -635,7 +592,7 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & _ePos) {
 		pd->ov = _ePos + Vec3f(30.f, -20.f, 30.f) * arx::randomVec3f();
 		pd->move = arx::linearRand(Vec3f(-6.5f, -11.5f, -6.5f), Vec3f(6.5f, 0.f, 6.5f));
 		pd->tolive = Random::getu(1000, 1300);
-		pd->tc = water_drop[Random::get(0, 2)];
+		pd->tc = g_particleTextures.water_drop[Random::get(0, 2)];
 		pd->siz = 0.4f;
 		float s = Random::getf();
 		pd->zdec = true;
@@ -647,7 +604,7 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & _ePos) {
 
 void SpawnFireballTail(const Vec3f & poss, const Vec3f & vecto, float level, long flags) {
 	
-	if(!explo[0]) {
+	if(!g_particleTextures.explo[0]) {
 		return;
 	}
 	
@@ -661,7 +618,7 @@ void SpawnFireballTail(const Vec3f & poss, const Vec3f & vecto, float level, lon
 		pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED | ROTATING;
 		pd->m_rotation = Random::getf(0.f, 0.02f);
 		pd->move = Vec3f(0.f, Random::getf(-3.f, 0.f), 0.f);
-		pd->tc = explo[0];
+		pd->tc = g_particleTextures.explo[0];
 		pd->rgb = Color3f::gray(.7f);
 		pd->siz = (level + Random::getf()) * 2.f;
 		
@@ -675,7 +632,7 @@ void SpawnFireballTail(const Vec3f & poss, const Vec3f & vecto, float level, lon
 		}
 		
 		pd->cval1 = 0;
-		pd->cval2 = MAX_EXPLO - 1;
+		pd->cval2 = g_particleTextures.MAX_EXPLO - 1;
 		
 		if(nn == 1) {
 			pd->delay = Random::getu(150, 250);
@@ -690,7 +647,7 @@ void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction, Colo
 	
 	level *= 1.6f;
 	
-	if(explo[0] == NULL) {
+	if(g_particleTextures.explo[0] == NULL) {
 		return;
 	}
 	
@@ -703,12 +660,12 @@ void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction, Colo
 	pd->ov = poss;
 	pd->move = (direction) ? *direction : Vec3f(0.f, Random::getf(-5.f, 0.f), 0.f);
 	pd->tolive = Random::getu(1600, 2200);
-	pd->tc = explo[0];
+	pd->tc = g_particleTextures.explo[0];
 	pd->siz = level * 3.f + Random::getf(0.f, 2.f);
 	pd->scale = Vec3f(level * 3.f);
 	pd->zdec = true;
 	pd->cval1 = 0;
-	pd->cval2 = MAX_EXPLO - 1;
+	pd->cval2 = g_particleTextures.MAX_EXPLO - 1;
 	if(rgb) {
 		pd->rgb = *rgb;
 	}
@@ -760,7 +717,7 @@ void spawn2DFireParticle(const Vec2f & pos, float scale) {
 	pd->move = Vec3f(Random::getf(-1.5f, 1.5f), Random::getf(-6.f, -5.f), 0.f) * scale;
 	pd->scale = Vec3f(1.8f, 1.8f, 1.f);
 	pd->tolive = Random::getu(500, 900);
-	pd->tc = fire2;
+	pd->tc = g_particleTextures.fire2;
 	pd->rgb = Color3f(1.f, .6f, .5f);
 	pd->siz = 14.f * scale;
 	pd->is2D = true;
@@ -823,7 +780,7 @@ void ARX_PARTICLES_Update()  {
 				part->ov += part->move;
 				part->tolive = u32(part->tolive * 1.375f);
 				part->m_flags &= ~FIRE_TO_SMOKE;
-				part->tc = smokeparticle;
+				part->tc = g_particleTextures.smokeparticle;
 				part->scale = glm::abs(part->scale * 2.4f);
 				part->rgb = Color3f::gray(.45f);
 				part->move *= 0.5f;
@@ -923,11 +880,11 @@ void ARX_PARTICLES_Update()  {
 		}
 		
 		TextureContainer * tc = part->tc;
-		if(tc == explo[0] && (part->m_flags & PARTICLE_ANIMATED)) {
+		if(tc == g_particleTextures.explo[0] && (part->m_flags & PARTICLE_ANIMATED)) {
 			long animrange = part->cval2 - part->cval1;
 			long num = long(float(framediff2) / float(part->tolive) * animrange);
 			num = glm::clamp(num, long(part->cval1), long(part->cval2));
-			tc = explo[num];
+			tc = g_particleTextures.explo[num];
 		}
 		
 		float siz = part->siz + part->scale.x * fd;
@@ -1055,7 +1012,7 @@ void TreatBackgroundActions() {
 					if((gl->extras & EXTRAS_SPAWNFIRE) && (gl->extras & EXTRAS_SPAWNSMOKE)) {
 						pd->m_flags = FIRE_TO_SMOKE;
 					}
-					pd->tc = (gl->extras & EXTRAS_SPAWNFIRE) ? fire2 : smokeparticle;
+					pd->tc = (gl->extras & EXTRAS_SPAWNFIRE) ? g_particleTextures.fire2 : g_particleTextures.smokeparticle;
 					pd->m_flags |= ROTATING;
 					pd->m_rotation = 0.1f - Random::getf(0.f, 0.2f) * gl->ex_speed;
 					pd->scale = Vec3f(-8.f);
@@ -1078,7 +1035,7 @@ void TreatBackgroundActions() {
 					pd->move = Vec3f(vect.x * d, Random::getf(-18.f, -10.f), vect.z * d) * gl->ex_speed;
 					pd->siz = 4.f * gl->ex_size * 0.3f;
 					pd->tolive = 1200 + Random::getu(0, unsigned(500 * gl->ex_speed));
-					pd->tc = fire2;
+					pd->tc = g_particleTextures.fire2;
 					pd->m_flags |= ROTATING | GRAVITY;
 					pd->m_rotation = 0.1f - Random::getf(0.f, 0.2f) * gl->ex_speed;
 					pd->scale = Vec3f(-3.f);

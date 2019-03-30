@@ -33,6 +33,7 @@
 #include "game/spell/FlyingEye.h"
 
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleTextures.h"
 
 #include "gui/Interface.h"
 #include "math/RandomVector.h"
@@ -319,7 +320,7 @@ void FireFieldSpell::Update() {
 			pd->move = Vec3f(2.f, 1.f, 2.f) + Vec3f(-4.f, -8.f, -4.f) * arx::randomVec3f();
 			pd->siz = 7.f;
 			pd->tolive = Random::getu(500, 1500);
-			pd->tc = fire2;
+			pd->tc = g_particleTextures.fire2;
 			pd->m_flags = ROTATING | FIRE_TO_SMOKE;
 			pd->m_rotation = Random::getf(-0.1f, 0.1f);
 			pd->scale = Vec3f(-8.f);

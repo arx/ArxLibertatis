@@ -64,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleTextures.h"
 #include "graphics/texture/TextureStage.h"
 #include "platform/profiler/Profiler.h"
 
@@ -167,9 +168,6 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 		}
 	}
 }
-
-extern TextureContainer * bloodsplat[6];
-extern TextureContainer * water_splat[3];
 
 void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
@@ -315,14 +313,14 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 						pb.type = WaterDecal;
 						
 						long num = Random::get(0, 2);
-						pb.tc = water_splat[num];
+						pb.tc = g_particleTextures.water_splat[num];
 						
 						pb.tolive = GameDurationMs(1500);
 					} else {
 						pb.type = BloodDecal;
 						
 						long num = Random::get(0, 5);
-						pb.tc = bloodsplat[num];
+						pb.tc = g_particleTextures.bloodsplat[num];
 						
 						pb.tolive = GameDurationMsf((16000.f / 40) * size);
 					}

@@ -128,7 +128,6 @@ struct PARTICLE_DEF {
 
 //-----------------------------------------------------------------------------
 
-extern TextureContainer * fire2;
 extern long NewSpell;
 
 void MagFX(const Vec3f & pos, float size);
