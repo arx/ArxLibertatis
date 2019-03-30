@@ -82,6 +82,8 @@ function(version_file SRC DST VERSION_SOURCES GIT_DIR)
 		if(EXISTS "${abs_git_dir}/logs/HEAD")
 			list(APPEND dependencies "${abs_git_dir}/logs/HEAD")
 		endif()
+	else()
+		set(abs_git_dir "")
 	endif()
 	
 	add_custom_command(
