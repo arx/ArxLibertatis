@@ -35,6 +35,7 @@
 #include "graphics/Math.h"
 #include "graphics/Vertex.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleTextures.h"
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
@@ -267,7 +268,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->scale = Vec3f(-2.f);
 		pd->tolive = 1300 + kk * 100 + Random::getu(0, 800);
-		pd->tc = fire2;
+		pd->tc = g_particleTextures.fire2;
 		if(kk == 1) {
 			pd->move.y = 4.f;
 			pd->siz = 1.5f;

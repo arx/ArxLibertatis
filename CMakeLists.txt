@@ -1025,6 +1025,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/particle/ParticleEffects.cpp
 	src/graphics/particle/ParticleManager.cpp
 	src/graphics/particle/ParticleSystem.cpp
+	src/graphics/particle/ParticleTextures.cpp
 	src/graphics/particle/MagicFlare.cpp
 	src/graphics/particle/Spark.cpp
 	src/graphics/spells/Spells05.cpp

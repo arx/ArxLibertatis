@@ -109,6 +109,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/image/Image.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
+#include "graphics/particle/ParticleTextures.h"
 #include "graphics/particle/MagicFlare.h"
 #include "graphics/particle/Spark.h"
 #include "graphics/texture/TextureStage.h"
@@ -317,6 +318,7 @@ void levelInit() {
 	
 	LogDebug("Initializing level ...");
 	
+	g_particleTextures.init();
 	ARX_PARTICLES_FirstInit();
 	g_renderBatcher.reset();
 	
