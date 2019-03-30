@@ -676,13 +676,10 @@ void spawnFireHitParticle(const Vec3f & poss, long type) {
 	
 	PARTICLE_DEF * pd = createParticle(true);
 	if(pd) {
-		
-		static TextureContainer * tc1 = TextureContainer::Load("graph/particles/fire_hit");
-		
 		pd->ov = poss;
 		pd->move = Vec3f(3.f, 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * arx::randomVec3f();
 		pd->tolive = Random::getu(600, 700);
-		pd->tc = tc1;
+		pd->tc = g_particleTextures.fire_hit;
 		pd->siz = Random::getf(100.f, 110.f) * ((type == 1) ? 2.f : 1.f);
 		pd->zdec = true;
 		if(type == 1) {
@@ -694,7 +691,7 @@ void spawnFireHitParticle(const Vec3f & poss, long type) {
 			pd->ov = poss;
 			pd->move = Vec3f(3.f , 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * arx::randomVec3f();
 			pd->tolive = Random::getu(600, 700);
-			pd->tc = tc1;
+			pd->tc = g_particleTextures.fire_hit;
 			pd->siz = Random::getf(40.f, 70.f) * ((type == 1) ? 2.f : 1.f);
 			pd->zdec = true;
 			if(type == 1) {
