@@ -73,8 +73,6 @@ bool FlyingEyeSpell::CanLaunch() {
 
 void FlyingEyeSpell::Launch() {
 	
-	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
-	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_EYEBALL_IN);
 	
 	m_lastupdate = m_timcreation;
@@ -101,7 +99,7 @@ void FlyingEyeSpell::Launch() {
 		pd->siz = 28.f;
 		pd->tolive = Random::getu(2000, 6000);
 		pd->scale = Vec3f(12.f);
-		pd->tc = tc4;
+		pd->tc = g_particleTextures.smokeparticle;
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 		pd->m_rotation = 0.0000001f;
 		pd->rgb = Color3f(0.7f, 0.7f, 1.f);
@@ -120,8 +118,6 @@ void FlyingEyeSpell::End() {
 		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE, &caster->pos);
 	}
 	
-	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
-	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_EYEBALL_OUT);
 	eyeball.exist = -100;
 	
@@ -137,7 +133,7 @@ void FlyingEyeSpell::End() {
 		pd->siz = 28.f;
 		pd->tolive = Random::getu(2000, 6000);
 		pd->scale = Vec3f(12.f);
-		pd->tc = tc4;
+		pd->tc = g_particleTextures.smokeparticle;
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 		pd->m_rotation = 0.0000001f;
 		pd->rgb = Color3f(0.7f, 0.7f, 1.f);
