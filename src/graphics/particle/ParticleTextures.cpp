@@ -53,6 +53,7 @@ void ParticleTextures::init() {
 	tzupouf = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_greypouf");
 	fire2 = TextureContainer::Load("graph/particles/fire2");
 	fire_hit = TextureContainer::Load("graph/particles/fire_hit");
+	boom = TextureContainer::Load("graph/particles/boom");
 	
 	for(unsigned int i = 0; i < MAX_EXPLO; i++) {
 		std::string texturePath = boost::str(boost::format("graph/particles/fireb_%02u") % (i + 1));
