@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/ArxGame.h"
 #include "core/Config.h"
 #include "core/Core.h"
+#include "core/FpsCounter.h"
 #include "graphics/Color.h"
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"

@@ -77,12 +77,4 @@ protected:
 
 extern Application * mainApp;
 
-struct FpsCounter {
-	
-	float FPS;
-	void CalcFPS(bool reset = false);
-};
-
-extern FpsCounter g_fpsCounter;
-
 #endif // ARX_CORE_APPLICATION_H

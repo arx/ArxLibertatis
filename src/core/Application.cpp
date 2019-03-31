@@ -70,30 +70,3 @@ void Application::shutdown() {
 void Application::quit() {
 	m_RunLoop = false;
 }
-
-FpsCounter g_fpsCounter;
-
-void FpsCounter::CalcFPS(bool reset) {
-	
-	static PlatformInstant fLastTime = 0;
-	static u32 dwFrames  = 0;
-
-	if(reset) {
-		dwFrames = 0;
-		fLastTime = 0;
-		FPS = 7.f * FPS;
-	} else {
-		// Keep track of the time lapse and frame count
-		PlatformInstant fTime = g_platformTime.frameStart();
-		++dwFrames;
-
-		float tmp = toS(fTime - fLastTime);
-
-		// Update the frame rate once per second
-		if(tmp > 1.f) {
-			FPS = float(dwFrames) / tmp;
-			fLastTime = fTime;
-			dwFrames  = 0;
-		}
-	}
-}
