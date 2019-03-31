@@ -733,7 +733,7 @@ bool ArxGame::initGame()
 	
 	ScriptEvent::init();
 	
-	CalcFPS(true);
+	g_fpsCounter.CalcFPS(true);
 	
 	g_miniMap.mapMarkerInit();
 	
@@ -2060,7 +2060,7 @@ void ArxGame::render() {
 	if(g_debugInfo != InfoPanelNone) {
 		switch(g_debugInfo) {
 		case InfoPanelFramerate: {
-			CalcFPS();
+			g_fpsCounter.CalcFPS();
 			ShowFPS();
 			break;
 		}

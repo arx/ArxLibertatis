@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "window/RenderWindow.h"
 
 Application * mainApp = 0;
-float FPS;
-
 
 Application::Application() : m_MainWindow(NULL) {
 	m_bReady = true;
@@ -73,7 +71,9 @@ void Application::quit() {
 	m_RunLoop = false;
 }
 
-void CalcFPS(bool reset) {
+FpsCounter g_fpsCounter;
+
+void FpsCounter::CalcFPS(bool reset) {
 	
 	static PlatformInstant fLastTime = 0;
 	static u32 dwFrames  = 0;

@@ -329,9 +329,9 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		case FX_DREAM:
 			
 			if ((m_nextFx & CinematicFxPreMask) == FX_DREAM)
-				FX_DreamPrecalc(tb, 15.f, (FPS > 1.f) ? GetTrackFPS() / FPS : 0.f);
+				FX_DreamPrecalc(tb, 15.f, (g_fpsCounter.FPS > 1.f) ? GetTrackFPS() / g_fpsCounter.FPS : 0.f);
 			else
-				FX_DreamPrecalc(tb, 15.f * a, (FPS > 1.f) ? GetTrackFPS() / FPS : 0.f);
+				FX_DreamPrecalc(tb, 15.f * a, (g_fpsCounter.FPS > 1.f) ? GetTrackFPS() / g_fpsCounter.FPS : 0.f);
 			
 			break;
 		default:
@@ -450,7 +450,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	// Post-effect
 	switch(fx & CinematicFxPostMask) {
 		case FX_FLASH:
-			FlashBlancEnCours = FX_FlashBlanc(Vec2f(cinRenderSize), speed, colorflash, GetTrackFPS(), FPS);
+			FlashBlancEnCours = FX_FlashBlanc(Vec2f(cinRenderSize), speed, colorflash, GetTrackFPS(), g_fpsCounter.FPS);
 			break;
 		case FX_APPEAR:
 			break;
@@ -460,7 +460,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 			break;
 	}
 	
-	CalcFPS();
+	g_fpsCounter.CalcFPS();
 	
 	if(config.interface.cinematicWidescreenMode == CinematicLetterbox) {
 		GRenderer->SetScissor(Rect::ZERO);
