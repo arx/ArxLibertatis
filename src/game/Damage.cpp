@@ -133,12 +133,7 @@ void DamageRequestEnd(DamageHandle handle) {
 	}
 }
 
-
-
 extern Vec3f PUSH_PLAYER_FORCE;
-
-static float Blood_Pos = 0.f;
-static GameDuration Blood_Duration = 0;
 
 static void ARX_DAMAGES_IgnitIO(Entity * source, Entity * io, float dmg) {
 	
@@ -160,14 +155,40 @@ static void ARX_DAMAGES_IgnitIO(Entity * source, Entity * io, float dmg) {
 	
 }
 
-void ARX_DAMAGE_Reset_Blood_Info()
-{
+class ScreenFxBloodSplash {
+	
+	float Blood_Pos;
+	GameDuration Blood_Duration;
+	
+public:
+	ScreenFxBloodSplash()
+		: Blood_Pos(0.f)
+		, Blood_Duration(0)
+	{ }
+	
+	void reset();
+	void hit(float strength);
+	void render();
+};
+
+static ScreenFxBloodSplash g_screenFxBloodSplash;
+
+void ScreenFxBloodSplash::reset() {
 	Blood_Pos = 0.f;
 	Blood_Duration = 0;
 }
 
-void ARX_DAMAGE_Show_Hit_Blood()
-{
+void ScreenFxBloodSplash::hit(float strength) {
+	if(Blood_Pos == 0.f) {
+		Blood_Pos = 0.000001f;
+		Blood_Duration = GameDurationMsf(100.f + strength * 200.f);
+	} else {
+		Blood_Duration += GameDurationMsf(strength * 800.f);
+	}
+}
+
+void ScreenFxBloodSplash::render() {
+	
 	Color color;
 	static float Last_Blood_Pos = 0.f;
 	static GameDuration duration;
@@ -212,6 +233,15 @@ void ARX_DAMAGE_Show_Hit_Blood()
 	
 	Last_Blood_Pos = Blood_Pos;
 }
+
+void ARX_DAMAGE_Reset_Blood_Info() {
+	g_screenFxBloodSplash.reset();
+}
+
+void ARX_DAMAGE_Show_Hit_Blood() {
+	g_screenFxBloodSplash.render();
+}
+
 
 static ScriptParameters getOuchEventParameter(const Entity * entity) {
 	
@@ -323,13 +353,8 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 			return damagesdone;
 
 		float t = dmg / player.lifePool.max;
-
-		if(Blood_Pos == 0.f) {
-			Blood_Pos = 0.000001f;
-			Blood_Duration = GameDurationMsf(100.f + t * 200.f);
-		} else {
-			Blood_Duration += GameDurationMsf(t * 800.f);
-		}
+		
+		g_screenFxBloodSplash.hit(t);
 	}
 
 	// revient les barres
