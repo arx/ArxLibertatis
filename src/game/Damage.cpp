@@ -159,11 +159,15 @@ class ScreenFxBloodSplash {
 	
 	float Blood_Pos;
 	GameDuration Blood_Duration;
+	float Last_Blood_Pos = 0.f;
+	GameDuration duration;
 	
 public:
 	ScreenFxBloodSplash()
 		: Blood_Pos(0.f)
 		, Blood_Duration(0)
+		, Last_Blood_Pos(0.f)
+		, duration()
 	{ }
 	
 	void reset();
@@ -190,9 +194,6 @@ void ScreenFxBloodSplash::hit(float strength) {
 void ScreenFxBloodSplash::render() {
 	
 	Color color;
-	static float Last_Blood_Pos = 0.f;
-	static GameDuration duration;
-
 	if(Blood_Pos > 2.f) { // end of blood flash
 		Blood_Pos = 0.f;
 		duration = 0;
