@@ -30,6 +30,7 @@
 #include <boost/format.hpp>
 
 #include "core/Core.h"
+#include "core/FpsCounter.h"
 #include "core/Application.h"
 #include "core/Version.h"
 #include "core/GameTime.h"
