@@ -20,7 +20,17 @@
 #ifndef ARX_CORE_FPSCOUNTER_H
 #define ARX_CORE_FPSCOUNTER_H
 
-struct FpsCounter {
+#include "core/TimeTypes.h"
+
+class FpsCounter {
+	PlatformInstant fLastTime;
+	u32 dwFrames;
+	
+public:
+	FpsCounter()
+		: fLastTime(0)
+		, dwFrames(0)
+	{ }
 	
 	float FPS;
 	void CalcFPS(bool reset = false);

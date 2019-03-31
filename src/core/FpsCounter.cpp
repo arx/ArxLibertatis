@@ -25,9 +25,6 @@ FpsCounter g_fpsCounter;
 
 void FpsCounter::CalcFPS(bool reset) {
 	
-	static PlatformInstant fLastTime = 0;
-	static u32 dwFrames  = 0;
-
 	if(reset) {
 		dwFrames = 0;
 		fLastTime = 0;
