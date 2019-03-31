@@ -275,8 +275,6 @@ void BackpackIconGui::update(const Rectf & parent) {
 
 void BackpackIconGui::updateInput() {
 	
-	static PlatformInstant flDelay = 0;
-	
 	// Check for backpack Icon
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
 		if(eeMouseUp1() && playerInventory.insert(DRAGINTER)) {
