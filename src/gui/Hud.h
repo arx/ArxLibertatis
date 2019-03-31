@@ -77,7 +77,15 @@ private:
 };
 
 class BackpackIconGui : public HudIconBase {
+	
+	PlatformInstant flDelay;
+	
 public:
+	BackpackIconGui()
+		: HudIconBase()
+		, flDelay(0)
+	{ }
+	
 	void init();
 	void update(const Rectf & parent);
 	void updateInput();
