@@ -31,16 +31,13 @@
  * \brief the hit strength diamond shown at the bottom of the UI.
  */
 class HitStrengthGauge : public HudItem {
-private:
+	
 	TextureContainer * m_emptyTex;
 	TextureContainer * m_fullTex;
 	TextureContainer * m_hitTex;
-	
 	Vec2f m_size;
 	Vec2f m_hitSize;
-	
 	Rectf m_hitRect;
-	
 	float m_intensity;
 	bool m_flashActive;
 	PlatformDuration m_flashTime;
@@ -53,14 +50,14 @@ public:
 	void updateRect(const Rectf & parent);
 	void update();
 	void draw();
-	
 	void requestFlash(float flashIntensity);
 };
 
 class BookIconGui : public HudIconBase {
-private:
+	
 	Vec2f m_size;
 	PlatformDuration ulBookHaloTime;
+	void MakeBookFX();
 	
 public:
 	BookIconGui();
@@ -68,12 +65,8 @@ public:
 	void init();
 	void update(const Rectf & parent);
 	void updateInput();
-	
 	void requestHalo();
 	void requestFX();
-	
-private:
-	void MakeBookFX();
 };
 
 class BackpackIconGui : public HudIconBase {
@@ -97,7 +90,6 @@ class StealIconGui : public HudIconBase {
 	Vec2f m_size;
 	
 public:
-	
 	StealIconGui()
 		: m_size(0.f)
 	{ }
@@ -106,11 +98,10 @@ public:
 	void updateRect(const Rectf & parent);
 	void updateInput();
 	void draw();
-	
 };
 
 class LevelUpIconGui : public HudIconBase {
-private:
+	
 	Vec2f m_size;
 	bool m_visible;
 	
@@ -124,9 +115,8 @@ public:
 };
 
 class PurseIconGui : public HudIconBase {
-private:
-	Vec2f m_size;
 	
+	Vec2f m_size;
 	PlatformDuration m_haloTime;
 	
 public:
@@ -136,15 +126,16 @@ public:
 	void update(const Rectf & parent);
 	void updateInput();
 	void draw();
-	
 	void requestHalo();
 };
 
 class CurrentTorchIconGui : public HudItem {
-private:
+	
 	bool m_isActive;
 	TextureContainer * m_tex;
 	Vec2f m_size;
+	bool isVisible();
+	void createFireParticle();
 	
 public:
 	CurrentTorchIconGui();
@@ -154,14 +145,10 @@ public:
 	void updateInput();
 	void update();
 	void draw();
-	
-private:
-	bool isVisible();
-	void createFireParticle();
 };
 
 class ChangeLevelIconGui : public HudItem {
-private:
+	
 	TextureContainer * m_tex;
 	Vec2f m_size;
 	float m_intensity;
@@ -176,7 +163,7 @@ public:
 };
 
 class QuickSaveIconGui {
-private:
+	
 	//! Time in ms to show the icon
 	GameDuration m_duration;
 	//! Remaining time for the quick save icon
@@ -187,13 +174,12 @@ public:
 	
 	void update();
 	void draw();
-	
 	void show();
 	void hide();
 };
 
 class MemorizedRunesHud : public HudIconBase {
-private:
+	
 	Vec2f m_size;
 	int m_count;
 	
@@ -205,9 +191,8 @@ public:
 };
 
 class HealthGauge : public HudItem {
-private:
-	Vec2f m_size;
 	
+	Vec2f m_size;
 	Color m_color;
 	TextureContainer * m_emptyTex;
 	TextureContainer * m_filledTex;
@@ -224,9 +209,8 @@ public:
 };
 
 class ManaGauge : public HudItem {
-private:
-	Vec2f m_size;
 	
+	Vec2f m_size;
 	TextureContainer * m_emptyTex;
 	TextureContainer * m_filledTex;
 	float m_amount;
@@ -242,7 +226,7 @@ public:
 
 // The cogwheel icon that shows up when switching from mouseview to interaction mode.
 class MecanismIcon : public HudItem {
-private:
+	
 	Vec2f m_iconSize;
 	TextureContainer * m_tex;
 	Color m_color;
@@ -259,18 +243,16 @@ public:
 };
 
 class ScreenArrows : public HudItem {
-private:
+	
 	Vec2f m_horizontalArrowSize;
 	Vec2f m_verticalArrowSize;
-	
 	Rectf m_left;
 	Rectf m_right;
 	Rectf m_top;
 	Rectf m_bottom;
-	
 	TextureContainer * m_arrowLeftTex;
-	
 	float fArrowMove;
+	
 public:
 	ScreenArrows();
 	
@@ -280,7 +262,7 @@ public:
 };
 
 class PrecastSpellsGui : public HudItem {
-private:
+	
 	struct PrecastSpellIconSlot {
 		Rectf m_rect;
 		TextureContainer * m_tc;
@@ -307,8 +289,7 @@ public:
 #include "game/magic/Spell.h"
 
 class ActiveSpellsGui : public HudItem {
-private:
-
+	
 	struct ActiveSpellIconSlot {
 		Rectf m_rect;
 		TextureContainer * m_tc;
@@ -321,15 +302,6 @@ private:
 		void draw();
 	};
 	
-public:
-	ActiveSpellsGui();
-	
-	void init();
-	void update(const Rectf & parent);
-	void updateInput(const Vec2f & mousePos);
-	void draw();
-	
-private:
 	TextureContainer * m_texUnknown;
 	Vec2f m_slotSize;
 	Vec2f m_spacerSize;
@@ -343,13 +315,21 @@ private:
 	void spellsByPlayerUpdate(float intensity);
 	void spellsOnPlayerUpdate(float intensity);
 	void ManageSpellIcon(SpellBase & spell, float intensity, bool flag);
+	
+public:
+	ActiveSpellsGui();
+	
+	void init();
+	void update(const Rectf & parent);
+	void updateInput(const Vec2f & mousePos);
+	void draw();
 };
 
 /*!
  * \brief Damaged Equipment Drawing
  */
 class DamagedEquipmentGui : public HudItem {
-private:
+	
 	Vec2f m_size;
 	TextureContainer * iconequip[5];
 	Color m_colors[5];
@@ -367,7 +347,7 @@ public:
  * \brief Stealth Gauge Drawing
  */
 class StealthGauge : public HudItem {
-private:
+	
 	TextureContainer * m_texture;
 	bool m_visible;
 	Color m_color;
@@ -388,7 +368,7 @@ enum FadeDirection {
 };
 
 class PlayerInterfaceFader {
-private:
+	
 	long m_direction;
 	PlatformDuration m_current;
 	
@@ -402,26 +382,7 @@ public:
 };
 
 class HudRoot : public HudItem {
-public:
-	void setScale(float scale);
-	float getScale();
 	
-	void init();
-	void updateInput();
-	
-	void draw();
-	
-	void recalcScale();
-	
-	PlayerInterfaceFader playerInterfaceFader;
-	
-	HitStrengthGauge hitStrengthGauge;
-	BookIconGui bookIconGui;
-	PurseIconGui purseIconGui;
-	QuickSaveIconGui quickSaveIconGui;
-	MecanismIcon mecanismIcon;
-	
-private:
 	BackpackIconGui backpackIconGui;
 	StealIconGui stealIconGui;
 	LevelUpIconGui levelUpIconGui;
@@ -435,6 +396,21 @@ private:
 	ActiveSpellsGui activeSpellsGui;
 	DamagedEquipmentGui damagedEquipmentGui;
 	StealthGauge stealthGauge;
+	
+public:
+	PlayerInterfaceFader playerInterfaceFader;
+	HitStrengthGauge hitStrengthGauge;
+	BookIconGui bookIconGui;
+	PurseIconGui purseIconGui;
+	QuickSaveIconGui quickSaveIconGui;
+	MecanismIcon mecanismIcon;
+	
+	void setScale(float scale);
+	float getScale();
+	void init();
+	void updateInput();
+	void draw();
+	void recalcScale();
 };
 
 extern HudRoot g_hudRoot;
