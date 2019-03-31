@@ -347,7 +347,7 @@ void ShowInfoText() {
 
 void ShowFPS() {
 	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(2) << FPS << " FPS";
+	oss << std::fixed << std::setprecision(2) << g_fpsCounter.FPS << " FPS";
 	hFontDebug->draw(Vec2i(10, 10), oss.str(), Color::white);
 }
 

@@ -50,8 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class RenderWindow;
 
-extern float FPS;
-
 class Application {
 	
 public:
@@ -79,6 +77,12 @@ protected:
 
 extern Application * mainApp;
 
-void CalcFPS(bool reset = false);
+struct FpsCounter {
+	
+	float FPS;
+	void CalcFPS(bool reset = false);
+};
+
+extern FpsCounter g_fpsCounter;
 
 #endif // ARX_CORE_APPLICATION_H
