@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/foreach.hpp>
 #include <boost/range/size.hpp>
 
@@ -985,6 +986,14 @@ bool ArxGame::addPaks() {
 		g_resources->addFiles(base / "misc", "misc");
 		g_resources->addFiles(base / "sfx", "sfx");
 		g_resources->addFiles(base / "speech", "speech");
+	}
+	
+	BOOST_REVERSE_FOREACH(const fs::path & dataDir, fs::getDataDirs()) {
+		for(fs::directory_iterator it(dataDir); !it.end(); ++it) {
+			if(boost::ends_with(it.name(), ".arxpk")) {
+				g_resources->addZip(dataDir / it.name());
+			}
+		}
 	}
 	
 	return true;

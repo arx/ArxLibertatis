@@ -24,6 +24,7 @@
 #include <iomanip>
 #include <ios>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/foreach.hpp>
 #include <boost/range/size.hpp>
@@ -34,6 +35,7 @@
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
+#include "io/zip/ZipReader.h"
 
 #include "util/String.h"
 
@@ -554,6 +556,51 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 	return true;
 	
 }
+
+
+bool PakReader::addZip(const fs::path & file) {
+	
+	fs::ifstream * ifs = new fs::ifstream(file, fs::fstream::in | fs::fstream::binary);
+	
+	if(!ifs->is_open()) {
+		delete ifs;
+		return false;
+	}
+	
+	struct Callback : public zip::ZipCallback {
+		PakDirectory * m_dir;
+		fs::ifstream * m_ifs;
+		Callback(PakDirectory * dir, fs::ifstream * ifs)
+			: m_dir(dir)
+			, m_ifs(ifs)
+		{ }
+		
+		virtual void zipEntry(const std::string & filePath, size_t offset, size_t size) {
+			
+			std::string normalizedFilePath = boost::algorithm::to_lower_copy(filePath);
+			
+			res::path path = res::path(normalizedFilePath);
+			res::path parent = path.parent();
+			PakDirectory * dir = m_dir->addDirectory(parent);
+			PakFile * file = new UncompressedFile(m_ifs, offset, size);
+			dir->addFile(path.filename(), file);
+			LogInfo << "Foo";
+		}
+	};
+	Callback callback(this, ifs);
+	
+	try {
+		zip::readFile(*ifs, callback);
+	} catch(const zip::ZipFileException & x) {
+		LogWarning << "Loading ZIP failed " << x.what();
+		//delete ifs;
+		return false;
+	}
+	
+	LogInfo << "Loaded ZIP " << file;
+	return true;
+}
+
 
 void PakReader::clear() {
 	
