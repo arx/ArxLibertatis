@@ -321,17 +321,30 @@ class ArxObjectManager(object):
         split = splitPath(relPath)
         canonicalId = split[:-1]
 
+        # build the collection tree
+        parent_collection = context.scene.collection
+        idLen = len(canonicalId)
+        for i in range(1, idLen + 1):
+            prefix_str = "/".join(canonicalId[:i])
+            if prefix_str in bpy.data.collections:
+                parent_collection = bpy.data.collections[prefix_str]
+            else:
+                col = bpy.data.collections.new(prefix_str)
+                parent_collection.children.link(col)
+                parent_collection = col
+
+
         object_id_string = "/".join(canonicalId);
 
         log.debug("Canonical ID: %s" % object_id_string)
 
         ftlData = self.ftlSerializer.read(unpacked)
 
-        collection = bpy.data.collections.new(object_id_string)
-        context.scene.collection.children.link(collection)
+        #collection = bpy.data.collections.new(object_id_string)
+        #context.scene.collection.children.link(collection)
 
         bm = self.createBmesh(context, ftlData.verts, ftlData.faces)
-        obj = self.createObject(context, bm, ftlData, canonicalId, collection)
+        obj = self.createObject(context, bm, ftlData, canonicalId, parent_collection)
 
         return obj
 
