@@ -54,7 +54,7 @@ def getAddon(context):
     global g_arxAddon
     if not g_arxAddon:
         log.info("creating")
-        addon_prefs = context.user_preferences.addons[__package__].preferences
+        addon_prefs = context.preferences.addons[__package__].preferences
         g_arxAddon = ArxAddon(addon_prefs.arxAssetPath, addon_prefs.arxAllowLibFallback)
     
     return g_arxAddon

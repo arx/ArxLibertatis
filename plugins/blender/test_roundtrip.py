@@ -225,7 +225,7 @@ class RoundtripTester(object):
                 default, enable = addon_utils.check(name)
                 if not enable:
                     addon_utils.enable(name, default_set=True, persistent=False, handle_error=None)
-                    context.user_preferences.addons[name].preferences.arxAssetPath = self.dataDirectory
+                    context.preferences.addons[name].preferences.arxAssetPath = self.dataDirectory
                 moduleFound = True
 
         if not moduleFound:
