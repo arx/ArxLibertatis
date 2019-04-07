@@ -270,25 +270,25 @@ def menu_func_import_tea(self, context):
 
 # ============= Registration
 
+classes = (
+    ArxAddonPreferences,
+    #ArxOperatorCreateLevelEditScreen
+    ArxOperatorImportAllModels,
+    ArxOperatorImportLevel,
+    ArxOperatorImportAllLevels,
+    ArxScenesPanel,
+    ArxMeshAddCustomProperties,
+    ArxFacePanel,
+    ImportFTL,
+    ExportFTL,
+    ImportTea
+)
+
 def register():
     log.debug("register")
-    bpy.utils.register_class(ArxAddonPreferences)
-    #bpy.utils.register_class(ArxOperatorCreateLevelEditScreen)
-    
-    bpy.utils.register_class(ArxOperatorImportAllModels)
-    
-    bpy.utils.register_class(ArxOperatorImportLevel)
-    bpy.utils.register_class(ArxOperatorImportAllLevels)
-    
-    bpy.utils.register_class(ArxScenesPanel)
 
-    bpy.utils.register_class(ArxMeshAddCustomProperties)
-    bpy.utils.register_class(ArxFacePanel)
-
-    bpy.utils.register_class(ImportFTL)
-    bpy.utils.register_class(ExportFTL)
-
-    bpy.utils.register_class(ImportTea)
+    for c in classes:
+        bpy.utils.register_class(c)
 
     bpy.types.TOPBAR_MT_file_import.append(menu_func_import_ftl)
     bpy.types.TOPBAR_MT_file_export.append(menu_func_export_ftl)
@@ -302,23 +302,7 @@ def unregister():
     bpy.types.TOPBAR_MT_file_export.remove(menu_func_export_ftl)
     bpy.types.TOPBAR_MT_file_import.remove(menu_func_import_tea)
 
-    bpy.utils.unregister_class(ArxAddonPreferences)
-    #bpy.utils.unregister_class(ArxOperatorCreateLevelEditScreen)
+    for c in classes:
+        bpy.utils.unregister_class(c)
 
-    bpy.utils.unregister_class(ArxOperatorImportAllModels)
-    
-    bpy.utils.unregister_class(ArxOperatorImportLevel)
-    bpy.utils.unregister_class(ArxOperatorImportAllLevels)
-    
-    bpy.utils.unregister_class(ArxScenesPanel)
-
-    bpy.utils.unregister_class(ArxMeshAddCustomProperties)
-    bpy.utils.unregister_class(ArxFacePanel)
-
-    bpy.utils.unregister_class(ImportFTL)
-    bpy.utils.unregister_class(ExportFTL)
-
-    bpy.utils.unregister_class(ImportTea)
-
-    
     arxAddonReload()
