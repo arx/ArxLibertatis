@@ -47,6 +47,11 @@ def arx_create_image(rootDirectory, relativePath):
 def arx_create_material_nodes(material, image):
     tree = material.node_tree
 
+    # Remove default principled bsdf node
+    n_principled = [node for node in tree.nodes if node.type == 'BSDF_PRINCIPLED'][0]
+    if n_principled:
+        tree.nodes.remove(n_principled)
+
     n_output = [node for node in tree.nodes if node.type == 'OUTPUT_MATERIAL'][0]
     n_output.location = (0, 0)
 
