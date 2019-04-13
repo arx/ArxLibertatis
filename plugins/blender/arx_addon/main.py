@@ -25,7 +25,8 @@ if "ArxAddon" in locals():
 if "ArxFacePanel" in locals():
     importlib.reload(sys.modules["arx_addon.meshEdit"])
 
-from .managers import ArxAddon, ArxException
+from .arx_io_util import ArxException
+from .managers import ArxAddon
 from .meshEdit import ArxFacePanel, ArxMeshAddCustomProperties
 
 import bpy
