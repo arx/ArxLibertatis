@@ -236,7 +236,7 @@ class ArxObjectManager(object):
 
         return amtobject
 
-    def loadFile(self, context, filePath, scene) -> bpy.types.Object:
+    def loadFile_data(self, filePath) -> bpy.types.Object:
         self.validateAssetDirectory();
         
         self.log.debug("Loading file: %s" % filePath)
@@ -252,6 +252,13 @@ class ArxObjectManager(object):
                     f.write(unpacked)
                     self.log.debug("Written unpacked ftl")
                 self.log.debug("Loaded %i packed bytes from file %s" % (len(data), filePath))
+
+        ftlData = self.ftlSerializer.read(unpacked)
+        return ftlData
+
+
+    def loadFile(self, context, filePath, scene) -> bpy.types.Object:
+        ftlData = self.loadFile_data(filePath)
 
         # create canonical id
         objPath = os.path.join(self.dataPath, "game/graph/obj3d/interactive")
@@ -276,8 +283,6 @@ class ArxObjectManager(object):
 
         self.log.debug("Canonical ID: %s" % object_id_string)
 
-        ftlData = self.ftlSerializer.read(unpacked)
-
         #collection = bpy.data.collections.new(object_id_string)
         #context.scene.collection.children.link(collection)
 
@@ -288,14 +293,14 @@ class ArxObjectManager(object):
 
     # =============================================================
 
-    def toFtlData(self) -> FtlData:
+    def toFtlData(self, obj) -> FtlData:
 
-        objs = [o for o in bpy.data.objects if o.type == 'MESH' and not o.hide]
+        #objs = [o for o in bpy.data.objects if o.type == 'MESH' and not o.hide]
 
-        if not objs:
-            self.log.info("Nothing to export")
+        #if not objs:
+        #    self.log.info("Nothing to export")
 
-        obj = objs[0]
+        #obj = objs[0]
 
         canonicalId = obj.name.split("/")
         self.log.debug("Exporting Canonical Id: %s" % str(canonicalId))
@@ -303,7 +308,7 @@ class ArxObjectManager(object):
         # obj.update_from_editmode()
 
         bm = bmesh.new()
-        bm.from_object(obj, bpy.context.scene)
+        bm.from_mesh(obj.data)
         bm.normal_update()
 
         arxFaceType = bm.faces.layers.int.get('arx_facetype')
@@ -443,7 +448,9 @@ class ArxObjectManager(object):
                     # TODO hardcoded use of mesh vertex at index 0
                     origin = 0
                 
-                grps.append((s[2], origin, v))
+                # TODO get the real data from armature
+                parentIndex = -1
+                grps.append((s[2], origin, v, parentIndex))
             else:
                 sels.append((s[2], v))
 

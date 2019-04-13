@@ -129,8 +129,23 @@ class ArxScenesPanel(bpy.types.Panel):
         layout.separator()
         layout.operator("arx.operator_import_level")
         layout.operator("arx.operator_import_all_levels")
+        layout.separator()
+        layout.operator("arx.operator_test_model_export")
 
 # ======================================================================================================================
+
+class ArxOperatorTestModelExport(bpy.types.Operator):
+    bl_idname = "arx.operator_test_model_export"
+    bl_label = "Test model export"
+    
+    def execute(self, context):
+        try:
+            getAddon(context).testModelExport()
+            return {'FINISHED'}
+        except ArxException as e:
+            self.report({'ERROR'}, str(e))
+            return {'CANCELLED'}
+
 
 class ArxOperatorImportAllModels(bpy.types.Operator):
     bl_idname = "arx.operator_import_all_models"
@@ -282,7 +297,8 @@ classes = (
     ArxFacePanel,
     ImportFTL,
     ExportFTL,
-    ImportTea
+    ImportTea,
+    ArxOperatorTestModelExport
 )
 
 def register():

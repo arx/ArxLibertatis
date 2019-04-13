@@ -26,6 +26,7 @@ if "bpy" in locals():
     importlib.reload(sys.modules["arx_addon.arx_io_area"])
     importlib.reload(sys.modules["arx_addon.arx_io_material"])
     importlib.reload(sys.modules["arx_addon.arx_io_model"])
+    importlib.reload(sys.modules["arx_addon.arx_io_test_roundtrip"])
     importlib.reload(sys.modules["arx_addon.arx_io_util"])
     importlib.reload(sys.modules["arx_addon.dataCommon"])
     importlib.reload(sys.modules["arx_addon.dataDlf"])
@@ -45,7 +46,7 @@ from .files import *
 from .arx_io_animation import ArxAnimationManager
 from .arx_io_area import ArxSceneManager
 from .arx_io_model import ArxObjectManager
-
+from .arx_io_test_roundtrip import test_export_of_current_scene_objects
 
 def triangulate(bm):
     while True:
@@ -136,3 +137,7 @@ class ArxAddon(object):
         self.sceneManager = ArxSceneManager(ioLib, dataPath, self.arxFiles, self.objectManager)
         self.animationManager = ArxAnimationManager()
         self.assetManager = ArxAssetManager(self.arxFiles, self.objectManager, self.sceneManager)
+    
+    def testModelExport(self):
+        
+        test_export_of_current_scene_objects(self.assetManager)
