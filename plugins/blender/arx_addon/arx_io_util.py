@@ -28,3 +28,6 @@ class InconsistentStateException(Exception):
 def arx_pos_to_blender_for_model(pos):
     """x=>x; y=>-z; z=>y"""
     return Vector((pos[0], pos[2], -pos[1]))
+
+def blender_pos_to_arx(pos):
+    return (pos[0], -pos[2], pos[1])
