@@ -24,11 +24,13 @@ import bpy
 import bmesh
 from mathutils import Vector
 
-from .arx_io_util import arx_pos_to_blender_for_model, ArxException
 from .arx_io_material import createMaterial
-
+from .arx_io_util import (
+    arx_pos_to_blender_for_model,
+    blender_pos_to_arx,
+    ArxException
+)
 from .files import splitPath
-
 from .dataFtl import (
     FtlMetadata,
     FtlVertex,
@@ -383,12 +385,15 @@ class ArxObjectManager(object):
             for n in vertexNormals:
                 normal += v.normal
             normal.normalize()
-            verts.append(FtlVertex(v.co[:], normal))
+            verts.append(FtlVertex(
+                blender_pos_to_arx(v.co[:]),
+                blender_pos_to_arx(normal)
+            ))
         
         originVertexIndex = -1
         for index, vert in enumerate(verts):
             if vert.xyz == (0.0, 0.0, 0.0):
-                self.log.info("Origin vertex found at index {}".format(index))
+                #self.log.info("Origin vertex found at index {}".format(index))
                 originVertexIndex = index
         
         if originVertexIndex == -1:
@@ -424,7 +429,7 @@ class ArxObjectManager(object):
             vertexUvs = []
             vertexNormals = []
             for c in f.loops:
-                vertexIndices.append(allXYZ.index(c.vert.co[:]))
+                vertexIndices.append(allXYZ.index(blender_pos_to_arx(c.vert.co[:])))
                 vertexUvs.append((c[uvData].uv[0], 1 - c[uvData].uv[1]))
                 vertexNormals.append((c.vert.normal[0], c.vert.normal[1], c.vert.normal[2]))
             mat = f.material_index
@@ -432,8 +437,14 @@ class ArxObjectManager(object):
             faceType = f[arxFaceType]
             transval = f[arxTransVal]
 
-            faces.append(FtlFace(vids=vertexIndices, uvs=vertexUvs, texid=mat, facetype=faceType, transval=transval,
-                                 normal=vertexNormals))
+            faces.append(FtlFace(
+                vids=tuple(vertexIndices),
+                uvs=vertexUvs,
+                texid=mat,
+                facetype=faceType,
+                transval=transval,
+                normal=vertexNormals
+            ))
 
         grps = []
         sels = []

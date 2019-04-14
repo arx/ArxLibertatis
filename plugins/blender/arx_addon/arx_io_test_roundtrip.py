@@ -66,22 +66,26 @@ class DiffNode(object):
 def equal_float(a, b, tol = 0.00001):
     return abs(a - b) < tol
 
-def equal_vector(a, b, tol = 0.00001):
-    for a_e, b_e in zip(a, b):
-        if not equal_float(a_e, b_e, tol):
-            return False
-    return True
+def value_equal(expected, actual):
+    if isinstance(expected, tuple):
+        for expected_e, actual_e in zip(expected, actual):
+            if type(expected_e) != type(actual_e):
+                return False
+            if type(expected_e) == float:
+                if not equal_float(expected_e, actual_e):
+                    return False
+            else:
+                if expected_e != actual_e:
+                    return False
+        return True
+    else:
+        return expected == actual
 
-def compare_value(name, a, b, parent, comp=lambda a, b: a==b):
-    if not comp(a, b):
-        value_node = DiffNode(name, parent)
-        DiffNode("expecteded {0}".format(a), value_node)
-        DiffNode("actual     {0}".format(b), value_node)
 
 def arx_deep_compare(a, b, parent) -> DiffNode:
     name = type(a).__name__
     node = DiffNode(name, parent)
-    if a == b:
+    if value_equal(a, b):
         DiffNode('OK', node)
     else:
         if dataclasses.is_dataclass(a):
@@ -89,7 +93,7 @@ def arx_deep_compare(a, b, parent) -> DiffNode:
                 field_a = getattr(a, field.name)
                 field_b = getattr(b, field.name)
                 field_node = DiffNode(field.name, node)
-                if field_a == field_b:
+                if value_equal(field_a, field_b):
                     DiffNode('OK', field_node)
                     continue
                 arx_deep_compare(field_a, field_b, field_node)
@@ -98,7 +102,7 @@ def arx_deep_compare(a, b, parent) -> DiffNode:
                 DiffNode("length; expecteded {0} actual {1}".format(len(a), len(b)), node)
             limit = 0
             for i, (field_a, field_b) in enumerate(zip(a, b)):
-                if field_a == field_b:
+                if value_equal(field_a, field_b):
                     continue
                 index_node = DiffNode("Index: {0}".format(i), node)
                 arx_deep_compare(field_a, field_b, index_node)
