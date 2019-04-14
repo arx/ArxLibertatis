@@ -30,7 +30,7 @@ endforeach()
 
 # Check for a git directory and fill in the git commit hash if one exists.
 unset(GIT_COMMIT)
-if(EXISTS "${GIT_DIR}")
+if(NOT GIT_DIR STREQUAL "")
 	
 	unset(git_head)
 	
