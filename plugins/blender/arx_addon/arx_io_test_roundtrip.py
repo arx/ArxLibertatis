@@ -1,6 +1,7 @@
 
-import os
+import dataclasses
 import logging
+import os
 
 import bpy
 
@@ -77,83 +78,42 @@ def compare_value(name, a, b, parent, comp=lambda a, b: a==b):
         DiffNode("expecteded {0}".format(a), value_node)
         DiffNode("actual     {0}".format(b), value_node)
 
-def compare_attrib(name, a, b, parent, comp=lambda a, b: a==b):
-    attr_a = getattr(a, name)
-    attr_b = getattr(b, name)
-    compare_value(name, attr_a, attr_b, parent, comp)
+def arx_deep_compare(a, b, parent) -> DiffNode:
+    name = type(a).__name__
+    node = DiffNode(name, parent)
+    if a == b:
+        DiffNode('OK', node)
+    else:
+        if dataclasses.is_dataclass(a):
+            for field in dataclasses.fields(a):
+                field_a = getattr(a, field.name)
+                field_b = getattr(b, field.name)
+                field_node = DiffNode(field.name, node)
+                if field_a == field_b:
+                    DiffNode('OK', field_node)
+                    continue
+                arx_deep_compare(field_a, field_b, field_node)
+        elif isinstance(a, list):
+            if len(a) != len(b):
+                DiffNode("length; expecteded {0} actual {1}".format(len(a), len(b)), node)
+            limit = 0
+            for i, (field_a, field_b) in enumerate(zip(a, b)):
+                if field_a == field_b:
+                    continue
+                index_node = DiffNode("Index: {0}".format(i), node)
+                arx_deep_compare(field_a, field_b, index_node)
+                limit += 1
+                if limit > 2:
+                    DiffNode("Omitted more errors ...", index_node)
+                    break
+        else:
+            DiffNode("expecteded {0}".format(a), node)
+            DiffNode("actual     {0}".format(b), node)
 
-skipArrayOnError = True
-
-def compare_array(name, a, b, parent, entryComparer):
-    array_node = DiffNode(name + " array")
-
-    if len(a) != len(b):
-        DiffNode("length; expecteded {0} actual {1}".format(len(a), len(b)), array_node)
-
-    for i, (a_e, b_e) in enumerate(zip(a, b)):
-        index_node = DiffNode("Index: {0}".format(i))
-
-        entryComparer(a_e, b_e, index_node)
-
-        if index_node.children:
-            array_node.addChild(index_node)
-            if skipArrayOnError:
-                break
-
-    if array_node.children:
-        parent.addChild(array_node)
-
-def compare_array_value(a, b, parent):
-    if a != b:
-        DiffNode("expecteded {0}".format(a), parent)
-        DiffNode("actual     {0}".format(b), parent)
-
-
-def arx_ftl_compare(a, b):
-    root = DiffNode("root")
-    arx_ftl_compareMetadata(a.metadata, b.metadata, root)
-    compare_array("Vertex", a.verts, b.verts, root, arx_ftl_compareVert)
-    compare_array("Faces", a.faces, b.faces, root, arx_ftl_compareFace)
-    compare_array("Materials", a.mats, b.mats, root, arx_ftl_compareMaterial)
-    compare_array("Groups", a.groups, b.groups, root, arx_ftl_compareGroup)
-    compare_array("Actions", a.actions, b.actions, root, arx_ftl_compareAction)
-    compare_array("Selections", a.sels, b.sels, root, arx_ftl_compareSelection)
+def arx_ftl_compare(a, b) -> DiffNode:
+    root = DiffNode('root')
+    arx_deep_compare(a, b, root)
     return root
-
-def arx_ftl_compareMetadata(a, b, parent):
-    compare_attrib('name', a, b, parent)
-    compare_attrib('org', a, b, parent)
-
-def arx_ftl_compareVert(a, b, parent):
-    compare_attrib('xyz', a, b, parent, equal_vector)
-    compare_attrib('n', a, b, parent, equal_vector)
-
-def arx_ftl_compareFace(a, b, parent):
-    compare_attrib('vids', a, b, parent)
-    compare_attrib('uvs', a, b, parent)
-    compare_attrib('normal', a, b, parent)
-    compare_attrib('texid', a, b, parent)
-    compare_attrib('facetype', a, b, parent)
-    compare_attrib('transval', a, b, parent)
-
-def arx_ftl_compareMaterial(a, b, parent):
-    # TODO either export with file ext BMP or ignore both import and export
-    foo = os.path.splitext(b.upper())[0] + ".BMP"
-    compare_value("name", a, foo, parent)
-
-def arx_ftl_compareGroup(a, b, parent):
-    compare_value("name", a[0], b[0], parent)
-    compare_value("origin", a[1], b[1], parent)
-    compare_array("vertices", a[2], b[2], parent, lambda a, b, p: compare_array_value(a, b, p))
-    compare_value("father", a[3], b[3], parent)
-
-def arx_ftl_compareAction(a, b, parent):
-    compare_value("name", a[0], b[0], parent)
-    compare_value("index", a[1], b[1], parent)
-
-def arx_ftl_compareSelection(a, b, parent):
-    compare_value("name", a[0], b[0], parent)
-    compare_array("vertices", a[1], b[1], parent, lambda a, b, p: compare_array_value(a, b, p))
 
 # ======================================================================================================================
 
