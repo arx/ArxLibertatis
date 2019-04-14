@@ -29,7 +29,16 @@ from .arx_io_material import createMaterial
 
 from .files import splitPath
 
-from .dataFtl import FtlSerializer, FtlData, FtlMetadata, FtlVertex, FtlFace
+from .dataFtl import (
+    FtlMetadata,
+    FtlVertex,
+    FtlFace,
+    FtlGroup,
+    FtlSelection,
+    FtlAction,
+    FtlData,
+    FtlSerializer
+)
 
 class ArxObjectManager(object):
     def __init__(self, ioLib, dataPath):
@@ -78,22 +87,22 @@ class ArxObjectManager(object):
         arxTransVal = bm.faces.layers.float.new('arx_transval')
 
         uvData = bm.loops.layers.uv.verify()
-        for i, (position, normal) in enumerate(vertData):
-            vertex = bm.verts.new(arx_pos_to_blender_for_model(position))
-            vertex.normal = normal
+        for i, v in enumerate(vertData):
+            vertex = bm.verts.new(arx_pos_to_blender_for_model(v.xyz))
+            vertex.normal = v.n
             vertex.index = i
 
-        bm.verts.ensure_lookup_table();
+        bm.verts.ensure_lookup_table()
 
-        for i, (vids, uvs, texid, facetype, transval, normal) in enumerate(faceData):
+        for i, f in enumerate(faceData):
 
             if i in facesToDrop:
                 continue
 
-            # if texid < 0:
+            # if f.texid < 0:
             #    continue
 
-            faceVerts = [bm.verts[v] for v in vids]
+            faceVerts = [bm.verts[v] for v in f.vids]
             evDict = {}
             try:
                 face = bm.faces.new(faceVerts)
@@ -101,26 +110,26 @@ class ArxObjectManager(object):
             except ValueError:
                 self.log.debug("Extra face")
 
-            face.normal = Vector(normal)
+            face.normal = Vector(f.normal)
 
-            if texid >= 0:
-                face.material_index = texid
+            if f.texid >= 0:
+                face.material_index = f.texid
 
-            face[arxFaceType] = facetype
-            face[arxTransVal] = transval
+            face[arxFaceType] = f.facetype
+            face[arxTransVal] = f.transval
 
             for j, loop in enumerate(face.loops):
-                u, v = uvs[j]
+                u, v = f.uvs[j]
                 loop[uvData].uv = u, 1.0 - v
 
-        bm.faces.ensure_lookup_table();
+        bm.faces.ensure_lookup_table()
 
         bm.edges.index_update()
         bm.edges.ensure_lookup_table()
 
         return bm
 
-    def createObject(self, context, bm, data, canonicalId, collection) -> bpy.types.Object:
+    def createObject(self, context, bm, data:FtlData, canonicalId, collection) -> bpy.types.Object:
 
         idString = "/".join(canonicalId);
         self.validateObjectName(idString)
@@ -140,28 +149,28 @@ class ArxObjectManager(object):
         obj['arx.ftl.name'] = data.metadata.name
         obj['arx.ftl.org'] = data.metadata.org
 
-        for i, (name, origin, indices, parentIndex) in enumerate(data.groups):
-            grp = obj.vertex_groups.new(name="grp:" + str(i).zfill(2) + ":" + name)
+        for i, g in enumerate(data.groups):
+            grp = obj.vertex_groups.new(name="grp:" + str(i).zfill(2) + ":" + g.name)
             # XXX add the origin to the group ?
-            for v in indices:
+            for v in g.indices:
                 grp.add([v], 0.0, 'ADD')
 
-        for i, (name, indices) in enumerate(data.sels):
-            grp = obj.vertex_groups.new(name="sel:" + str(i).zfill(2) + ":" + name)
+        for i, s in enumerate(data.sels):
+            grp = obj.vertex_groups.new(name="sel:" + str(i).zfill(2) + ":" + s.name)
 
-            for v in indices:
+            for v in s.indices:
                 grp.add([v], 0.0, 'ADD')
 
-        for (name, vidx) in data.actions:
-            action = bpy.data.objects.new(name, None)
+        for a in data.actions:
+            action = bpy.data.objects.new(a.name, None)
             action.parent = obj
             action.parent_type = 'VERTEX'
-            action.parent_vertices = [vidx, 0, 0]  # last two are ignored
+            action.parent_vertices = [a.vidx, 0, 0]  # last two are ignored
             action.show_name = True
             collection.objects.link(action)
 
-            if name.lower().startswith("hit_"):
-                radius = int(name[4:])
+            if a.name.lower().startswith("hit_"):
+                radius = int(a.name[4:])
                 action.empty_display_type = 'SPHERE'
                 action.empty_display_size = radius
                 action.lock_rotation = [True, True, True]
@@ -236,7 +245,7 @@ class ArxObjectManager(object):
 
         return amtobject
 
-    def loadFile_data(self, filePath) -> bpy.types.Object:
+    def loadFile_data(self, filePath) -> FtlData:
         self.validateAssetDirectory();
         
         self.log.debug("Loading file: %s" % filePath)
@@ -397,11 +406,11 @@ class ArxObjectManager(object):
                 name = nameParts[0]
                 if o.parent_type == 'VERTEX':
                     actionVertexIndex = o.parent_vertices[0]
-                    actions.append((name, actionVertexIndex))
+                    actions.append(FtlAction(name, actionVertexIndex))
                 elif o.parent_type == 'OBJECT':
                     actionVertexIndex = len(verts)
                     verts.append(FtlVertex((o.location[0], o.location[1], o.location[2]), (0.0, 0.0, 0.0)))
-                    actions.append((name, actionVertexIndex))
+                    actions.append(FtlAction(name, actionVertexIndex))
                 else:
                     self.log.warn("Unhandled empty parent type {}".format(o.parent_type))
 
@@ -450,9 +459,9 @@ class ArxObjectManager(object):
                 
                 # TODO get the real data from armature
                 parentIndex = -1
-                grps.append((s[2], origin, v, parentIndex))
+                grps.append(FtlGroup(s[2], origin, v, parentIndex))
             else:
-                sels.append((s[2], v))
+                sels.append(FtlSelection(s[2], v))
 
         matNames = []
         for o in bpy.data.objects:

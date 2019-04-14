@@ -153,6 +153,7 @@ def comp(a, b):
 
 
 from collections import namedtuple
+from dataclasses import dataclass
 
 from ctypes import sizeof
 import itertools
@@ -160,18 +161,63 @@ import itertools
 import logging
 logging.basicConfig(level=logging.INFO)
 
-FtlData = namedtuple("FtlData", ["metadata", "verts", "faces", "mats", "groups", "actions", "sels"])
-FtlMetadata = namedtuple("FtlMetadata", ["name", "org"])
-FtlVertex = namedtuple("FtlVertex", ["xyz", "n"])
-FtlFace = namedtuple("FtlFace", ["vids", "uvs", "texid", "facetype", "transval", "normal"])
+from typing import Any, List
+
+
+@dataclass(frozen=True)
+class FtlMetadata():
+    name: Any
+    org: Any
+
+@dataclass(frozen=True)
+class FtlVertex():
+    xyz: Any
+    n: Any
+
+@dataclass(frozen=True)
+class FtlFace():
+    vids: Any
+    uvs: Any
+    texid: Any
+    facetype: Any
+    transval: Any
+    normal: Any
+
+@dataclass
+class FtlGroup():
+    name: Any
+    origin: Any
+    indices: Any
+    parentIndex: Any
+
+@dataclass(frozen=True)
+class FtlSelection():
+    name: Any
+    indices: Any
+
+@dataclass(frozen=True)
+class FtlAction():
+    name: Any
+    vidx: Any
+
+@dataclass(frozen=True)
+class FtlData():
+    metadata: FtlMetadata
+    verts: List[FtlVertex]
+    faces: List[FtlFace]
+    mats: List[str]
+    groups: List[FtlGroup]
+    actions: List[FtlAction]
+    sels: List[FtlSelection]
+
 
 def getFatherIndex(groups, childIndex):
     child = groups[childIndex]
     i = childIndex-1
     while i >= 0:
         group = groups[i]
-        for vertexIndex in group[2]:
-            if vertexIndex == child[1]:
+        for vertexIndex in group.indices:
+            if vertexIndex == child.origin:
                 return i
         i-=1
 
@@ -277,21 +323,20 @@ class FtlSerializer(object):
             vertArray = c_int32 * count
             vertsIndices = vertArray.from_buffer_copy(data, pos)
             pos += sizeof(vertsIndices)
-            groups.append([name, origin, list(vertsIndices),0]) #0 temporarily for parentIndex. using list cause tuples cant be changed
+            # 0 temporarily for parentIndex.
+            groups.append(FtlGroup(name, origin, list(vertsIndices), 0))
 
-        #parenting
-        for i,group in enumerate(groups):
-            father = getFatherIndex(groups,i)
+        # parenting
+        for i, group in enumerate(groups):
+            father = getFatherIndex(groups, i)
             self.log.debug("group %d with father %d" % (i,father))
-            group[3] = father
-
-        groups = [tuple(l) for l in groups] # converting stuff back to tuples so it doesnt break code
+            group.parentIndex = father
 
         actions = []
         for i in range(chunkHeader.nb_action):
             action = EERIE_ACTIONLIST_FTL.from_buffer_copy(data, pos)
             pos += sizeof(EERIE_ACTIONLIST_FTL)
-            actions.append((action.name.decode('iso-8859-1'), action.idx))
+            actions.append(FtlAction(action.name.decode('iso-8859-1'), action.idx))
 
         temp = []
         for i in range(chunkHeader.nb_selections):
@@ -304,7 +349,7 @@ class FtlSerializer(object):
             vertArray = c_int32 * count
             vertsIndices = vertArray.from_buffer_copy(data, pos)
             pos += sizeof(vertsIndices)
-            sels.append((name, list(vertsIndices)))
+            sels.append(FtlSelection(name, list(vertsIndices)))
 
         return FtlData(
             metadata=metadata,
