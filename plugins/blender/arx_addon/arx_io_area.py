@@ -43,24 +43,24 @@ class ArxSceneManager(object):
         self.arxFiles = arxFiles
         self.objectManager = objectManager
 
-    def importScene(self, context, sceneName, scene):
-        self.log.info("Importing scene: %s" % sceneName)
+    def importScene(self, context, scene, area_id):
+        self.log.info('Importing Area: {}'.format(area_id))
         
-        arxLevel = self.arxFiles.levels.levels[sceneName]
+        area_files = self.arxFiles.levels.levels[area_id]
         
-        if arxLevel.dlf is None:
+        if area_files.dlf is None:
             self.log.error("dlf file not found")
             return
-        if arxLevel.fts is None:
+        if area_files.fts is None:
             self.log.error("fts file not found")
             return
-        if arxLevel.llf is None:
+        if area_files.llf is None:
             self.log.error("llf file not found")
             return
         
-        dlfData = self.dlfSerializer.readContainer(arxLevel.dlf)
-        ftsData = self.ftsSerializer.read_fts_container(arxLevel.fts)
-        llfData = self.llfSerializer.read(arxLevel.llf)
+        dlfData = self.dlfSerializer.readContainer(area_files.dlf)
+        ftsData = self.ftsSerializer.read_fts_container(area_files.fts)
+        llfData = self.llfSerializer.read(area_files.llf)
 
         # bpy.types.Material.Shader_Name = bpy.props.StringProperty(name='Group Name')
 
@@ -73,12 +73,12 @@ class ArxSceneManager(object):
 
         # Create mesh
         bm = self.AddSceneBackground(ftsData.cells, mappedMaterials)
-        mesh = bpy.data.meshes.new(sceneName + "-mesh")
+        mesh = bpy.data.meshes.new(scene.name + "-mesh")
         bm.to_mesh(mesh)
         bm.free()
 
         # Create background object
-        obj = bpy.data.objects.new(sceneName + "-background", mesh)
+        obj = bpy.data.objects.new(scene.name + "-background", mesh)
         scene.collection.objects.link(obj)
         # scn.objects.active = obj
         # obj.select = True
