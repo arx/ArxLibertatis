@@ -217,49 +217,39 @@ class Levels:
 
     def update(self, absroot):
         dirs = os.listdir(absroot)
-
-        def sortFunc(x):
-            l = []
-            for p in re.split('([0-9]+)',  x):
-                if p.isdigit():
-                    l.append(int(p))
-                elif len(p) > 0:
-                    l.append(p)
-            return tuple(l)
-
-        dirs = sorted(dirs, key=sortFunc)
         for lvlName in dirs:
             l = os.path.join(absroot, lvlName)
-            if os.path.isdir(l):
-                foo = os.listdir(l)
+            if not os.path.isdir(l):
+                self.danglingPaths.append(l)
+                continue
+            if not lvlName.startswith('level'):
+                self.danglingPaths.append(l)
+                continue
 
-                if lvlName in self.levels:
-                    info = self.levels[lvlName]
-                else:
-                    info = LevelInfos()
+            area_index = int(lvlName[5:])
 
-                for bar in foo:
-                    blubb = os.path.join(l, bar)
-                    if not os.path.isdir(blubb):
-                        name, ext = os.path.splitext(bar)
-                        if ext == ".fts":
-                            info.fts = blubb
-                        elif ext == ".llf":
-                            info.llf = blubb
-                        elif ext == ".dlf":
-                            info.dlf = blubb
-                        elif bar == "map.bmp":
-                            info.map = blubb
-                        elif name == "loading":
-                            info.load = blubb
-                        else:
-                            self.danglingPaths.append(blubb)
+            info = self.levels.setdefault(area_index, LevelInfos())
+            
+            foo = os.listdir(l)
+            for bar in foo:
+                blubb = os.path.join(l, bar)
+                if not os.path.isdir(blubb):
+                    name, ext = os.path.splitext(bar)
+                    if ext == ".fts":
+                        info.fts = blubb
+                    elif ext == ".llf":
+                        info.llf = blubb
+                    elif ext == ".dlf":
+                        info.dlf = blubb
+                    elif bar == "map.bmp":
+                        info.map = blubb
+                    elif name == "loading":
+                        info.load = blubb
                     else:
                         self.danglingPaths.append(blubb)
-
-                self.levels[lvlName] = info
-            else:
-                self.danglingPaths.append(l)
+                else:
+                    self.danglingPaths.append(blubb)
+        self.levels = OrderedDict(sorted(self.levels.items()))
 
 
 class Cinematics:

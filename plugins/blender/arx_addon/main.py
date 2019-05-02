@@ -40,9 +40,8 @@ from bpy.props import BoolProperty, StringProperty
 import logging
 
 from .arx_ui_area import (
-    ArxOperatorImportLevel,
-    ArxOperatorImportAllLevels,
-    ArxAreaPanel
+    arx_ui_area_register,
+    arx_ui_area_unregister
 )
 
 from .managers import (
@@ -239,10 +238,6 @@ def menu_func_import_tea(self, context):
 classes = (
     ArxAddonPreferences,
 #
-    ArxOperatorImportLevel,
-    ArxOperatorImportAllLevels,
-    ArxAreaPanel,
-#
     ArxOperatorImportAllModels,
     ArxOperatorTestModelExport,
     ArxModelsPanel,
@@ -260,6 +255,8 @@ def register():
     for c in classes:
         bpy.utils.register_class(c)
 
+    arx_ui_area_register()
+
     bpy.types.TOPBAR_MT_file_import.append(menu_func_import_ftl)
     bpy.types.TOPBAR_MT_file_export.append(menu_func_export_ftl)
     bpy.types.TOPBAR_MT_file_import.append(menu_func_import_tea)
@@ -274,5 +271,7 @@ def unregister():
 
     for c in classes:
         bpy.utils.unregister_class(c)
+
+    arx_ui_area_unregister()
 
     arxAddonReload()
