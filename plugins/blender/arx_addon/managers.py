@@ -48,6 +48,8 @@ from .arx_io_area import ArxSceneManager
 from .arx_io_model import ArxObjectManager
 from .arx_io_test_roundtrip import test_export_of_current_scene_objects
 
+log = logging.getLogger('ArxAddon')
+
 def triangulate(bm):
     while True:
         nonTris = [f for f in bm.faces if len(f.verts) > 3]
@@ -141,3 +143,21 @@ class ArxAddon(object):
     def testModelExport(self):
         
         test_export_of_current_scene_objects(self.assetManager)
+
+# ======================================================================================================================
+
+g_arxAddon = None
+
+def arxAddonReload():
+    log.info("invalidating")
+    global g_arxAddon
+    g_arxAddon = None
+
+def getAddon(context):
+    global g_arxAddon
+    if not g_arxAddon:
+        log.info("creating")
+        addon_prefs = context.preferences.addons[__package__].preferences
+        g_arxAddon = ArxAddon(addon_prefs.arxAssetPath, addon_prefs.arxAllowLibFallback)
+    
+    return g_arxAddon

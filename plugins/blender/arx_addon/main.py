@@ -39,26 +39,19 @@ from bpy.props import BoolProperty, StringProperty
 
 import logging
 
+from .arx_ui_area import (
+    ArxOperatorImportLevel,
+    ArxOperatorImportAllLevels,
+    ArxAreaPanel
+)
+
+from .managers import (
+    arxAddonReload,
+    getAddon
+)
+
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('ArxAddon')
-
-# ======================================================================================================================
-
-g_arxAddon = None
-
-def arxAddonReload():
-    log.info("invalidating")
-    global g_arxAddon
-    g_arxAddon = None
-
-def getAddon(context):
-    global g_arxAddon
-    if not g_arxAddon:
-        log.info("creating")
-        addon_prefs = context.preferences.addons[__package__].preferences
-        g_arxAddon = ArxAddon(addon_prefs.arxAssetPath, addon_prefs.arxAllowLibFallback)
-    
-    return g_arxAddon
 
 # ======================================================================================================================
 
@@ -84,6 +77,9 @@ class ArxAddonPreferences(bpy.types.AddonPreferences):
         layout.prop(self, "arxAllowLibFallback")
 
 # ======================================================================================================================
+
+
+
 
 """
 class ArxOperatorCreateLevelEditScreen(bpy.types.Operator):
@@ -114,22 +110,16 @@ class ArxOperatorCreateLevelEditScreen(bpy.types.Operator):
 
 # ======================================================================================================================
 
-class ArxScenesPanel(bpy.types.Panel):
-    bl_idname = "arx.scene.Panel"
-    bl_label = "Arx Libertatis Scenes"
+class ArxModelsPanel(bpy.types.Panel):
+    bl_idname = "SCENE_PT_models_panel"
+    bl_label = "Arx Libertatis Models"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "scene"
 
     def draw(self, context):
         layout = self.layout
-        #layout.operator("arx.operator_create_level_edit_screen")
-        #layout.separator()
         layout.operator("arx.operator_import_all_models")
-        layout.separator()
-        layout.operator("arx.operator_import_level")
-        layout.operator("arx.operator_import_all_levels")
-        layout.separator()
         layout.operator("arx.operator_test_model_export")
 
 # ======================================================================================================================
@@ -159,46 +149,6 @@ class ArxOperatorImportAllModels(bpy.types.Operator):
             self.report({'ERROR'}, str(e))
             return {'CANCELLED'}
 
-class ArxOperatorImportLevel(bpy.types.Operator):
-    bl_idname = "arx.operator_import_level"
-    bl_label = "Import level"
-    
-    levelName: bpy.props.StringProperty()
-    
-    def invoke(self, context, event):
-        wm = context.window_manager
-        return wm.invoke_props_dialog(self)
-    
-    def execute(self, context):
-        levelId = int(self.levelName[5:]) # strip of level prefix
-        sceneName = "level-" + str(levelId).zfill(3)
-        
-        scene = bpy.data.scenes.get(sceneName)
-        if scene:
-            self.report({'INFO'}, "Scene [{}] already exists".format(sceneName))
-            return {'CANCELLED'}
-        
-        self.report({'INFO'}, "Creating new scene [{}]".format(sceneName))
-        scene = bpy.data.scenes.new(name=sceneName)
-        scene.unit_settings.system = 'METRIC'
-        scene.unit_settings.scale_length = 0.01
-        
-        try:
-            getAddon(context).sceneManager.importScene(context, self.levelName, scene)
-            return {'FINISHED'}
-        except ArxException as e:
-            self.report({'ERROR'}, str(e))
-            return {'CANCELLED'}
-
-class ArxOperatorImportAllLevels(bpy.types.Operator):
-    bl_idname = "arx.operator_import_all_levels"
-    bl_label = "Import all levels"
-
-    def execute(self, context):
-        for levelName, value in getAddon(context).arxFiles.levels.levels.items():
-            bpy.ops.arx.operator_import_level('EXEC_DEFAULT', levelName=levelName)
-        
-        return {'FINISHED'}
 
 
 class ImportFTL(bpy.types.Operator, ImportHelper):
@@ -288,17 +238,20 @@ def menu_func_import_tea(self, context):
 
 classes = (
     ArxAddonPreferences,
-    #ArxOperatorCreateLevelEditScreen
-    ArxOperatorImportAllModels,
+#
     ArxOperatorImportLevel,
     ArxOperatorImportAllLevels,
-    ArxScenesPanel,
+    ArxAreaPanel,
+#
+    ArxOperatorImportAllModels,
+    ArxOperatorTestModelExport,
+    ArxModelsPanel,
+#
     ArxMeshAddCustomProperties,
     ArxFacePanel,
     ImportFTL,
     ExportFTL,
-    ImportTea,
-    ArxOperatorTestModelExport
+    ImportTea
 )
 
 def register():
