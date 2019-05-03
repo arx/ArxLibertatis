@@ -229,19 +229,21 @@ class ArxSceneManager(object):
             legacyPath = e.name.decode('iso-8859-1').replace("\\", "/").lower().split('/')
             objectId = '/'.join(legacyPath[legacyPath.index('interactive') + 1 : -1])
 
-            object_col = bpy.data.collections.get(objectId)
-
-            if object_col is None:
-                self.log.info("Object not found: [{}]".format(objectId))
-                continue;
-
             entityId = objectId + "_" + str(e.ident).zfill(4)
             self.log.info("Creating entity [{}]".format(entityId))
 
             proxyObject = bpy.data.objects.new(name='e:' + entityId, object_data=None)
             entities_col.objects.link(proxyObject)
-            proxyObject.instance_type = 'COLLECTION'
-            proxyObject.instance_collection = object_col
+
+            object_col = bpy.data.collections.get(objectId)
+            if object_col:
+                proxyObject.instance_type = 'COLLECTION'
+                proxyObject.instance_collection = object_col
+            else:
+                proxyObject.show_name = True
+                proxyObject.empty_display_type = 'ARROWS'
+                proxyObject.empty_display_size = 20 #cm
+                #self.log.info("Object not found: [{}]".format(objectId))
 
             pos = Vector(sceneOffset) + Vector([e.pos.x, e.pos.y, e.pos.z])
             proxyObject.location = arx_pos_to_blender_for_model(pos)
