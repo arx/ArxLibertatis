@@ -165,10 +165,15 @@ class ImportFTL(bpy.types.Operator, ImportHelper):
         options={'HIDDEN'}
     )
 
+    import_tweaks: BoolProperty(
+        name="Import Tweaks",
+        default=False
+    )
+
     def execute(self, context):
         try:
             scene = bpy.context.scene
-            getAddon(context).objectManager.loadFile(context, self.filepath, scene);
+            getAddon(context).objectManager.loadFile(context, self.filepath, scene, self.import_tweaks)
             return {'FINISHED'}
         except ArxException as e:
             self.report({'ERROR'}, str(e))

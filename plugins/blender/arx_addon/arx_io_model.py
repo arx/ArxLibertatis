@@ -268,7 +268,7 @@ class ArxObjectManager(object):
         return ftlData
 
 
-    def loadFile(self, context, filePath, scene) -> bpy.types.Object:
+    def loadFile(self, context, filePath, scene, import_tweaks: bool) -> bpy.types.Object:
         ftlData = self.loadFile_data(filePath)
 
         # create canonical id
@@ -290,7 +290,7 @@ class ArxObjectManager(object):
                 parent_collection = col
 
 
-        object_id_string = "/".join(canonicalId);
+        object_id_string = "/".join(canonicalId)
 
         self.log.debug("Canonical ID: %s" % object_id_string)
 
@@ -299,6 +299,22 @@ class ArxObjectManager(object):
 
         bm = self.createBmesh(context, ftlData.verts, ftlData.faces)
         obj = self.createObject(context, bm, ftlData, canonicalId, parent_collection)
+
+        if import_tweaks:
+            file_dir = os.path.dirname(filePath)
+            tweak_dir = os.path.join(file_dir, 'tweaks')
+            if os.path.isdir(tweak_dir):
+                for rel_tweak_file in os.listdir(tweak_dir):
+                    abs_tweak_file = os.path.join(tweak_dir, rel_tweak_file)
+                    tweak_data = self.loadFile_data(abs_tweak_file)
+                    tweak_mesh = self.createBmesh(context, tweak_data.verts, tweak_data.faces)
+
+                    tweak_obj_id = canonicalId.copy()
+                    tweak_obj_id.append(os.path.splitext(rel_tweak_file)[0])
+
+                    tweak_obj = self.createObject(context, tweak_mesh, tweak_data, tweak_obj_id, parent_collection)
+                    tweak_obj.parent = obj
+
 
         return obj
 
