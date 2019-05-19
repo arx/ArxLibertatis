@@ -108,7 +108,7 @@ class ArxAssetManager(object):
             scene = None
 
             import_file = os.path.join(val.path, val.model)
-            self.objectManager.loadFile(context, import_file, scene);
+            self.objectManager.loadFile(context, import_file, scene, False)
 
 
 class ArxAddon(object):
