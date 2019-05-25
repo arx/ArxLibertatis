@@ -120,14 +120,6 @@ void RecalcLight(EERIE_LIGHT * el) {
 
 void EERIE_LIGHT_GlobalInit() {
 	
-	static long init = 0;
-	
-	if(!init) {
-		memset(g_staticLights, 0, sizeof(*g_staticLights) * g_staticLightsMax);
-		init = 1;
-		return;
-	}
-	
 	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		if(g_staticLights[i]) {
 			if(EERIE_LIGHT * dynLight = lightHandleGet(g_staticLights[i]->m_ignitionLightHandle)) {
@@ -137,6 +129,7 @@ void EERIE_LIGHT_GlobalInit() {
 			g_staticLights[i] = NULL;
 		}
 	}
+	
 }
 
 long EERIE_LIGHT_Create() {
