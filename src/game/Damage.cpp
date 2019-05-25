@@ -159,10 +159,11 @@ class ScreenFxBloodSplash {
 	
 	float Blood_Pos;
 	GameDuration Blood_Duration;
-	float Last_Blood_Pos = 0.f;
+	float Last_Blood_Pos;
 	GameDuration duration;
 	
 public:
+	
 	ScreenFxBloodSplash()
 		: Blood_Pos(0.f)
 		, Blood_Duration(0)
@@ -173,6 +174,7 @@ public:
 	void reset();
 	void hit(float strength);
 	void render();
+	
 };
 
 static ScreenFxBloodSplash g_screenFxBloodSplash;
