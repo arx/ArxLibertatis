@@ -168,7 +168,6 @@ public:
 		: Blood_Pos(0.f)
 		, Blood_Duration(0)
 		, Last_Blood_Pos(0.f)
-		, duration()
 	{ }
 	
 	void reset();
