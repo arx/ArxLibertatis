@@ -542,30 +542,30 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	}
 	if(player.m_cheatPnuxActive) {
 		PlayerAttribute attributeMod;
-		attributeMod.strength = Random::get(0, 5);
-		attributeMod.mind = Random::get(0, 5);
-		attributeMod.constitution = Random::get(0, 5);
-		attributeMod.dexterity = Random::get(0, 5);
+		attributeMod.strength = float(Random::get(0, 5));
+		attributeMod.mind = float(Random::get(0, 5));
+		attributeMod.constitution = float(Random::get(0, 5));
+		attributeMod.dexterity = float(Random::get(0, 5));
 		player.m_attributeMod.add(attributeMod);
 		
 		PlayerSkill skillMod;
-		skillMod.stealth = Random::get(0, 20);
-		skillMod.mecanism = Random::get(0, 20);
-		skillMod.intuition = Random::get(0, 20);
-		skillMod.etheralLink = Random::get(0, 20);
-		skillMod.objectKnowledge = Random::get(0, 20);
-		skillMod.casting = Random::get(0, 20);
-		skillMod.projectile = Random::get(0, 20);
-		skillMod.closeCombat = Random::get(0, 20);
-		skillMod.defense = Random::get(0, 30);
+		skillMod.stealth = float(Random::get(0, 20));
+		skillMod.mecanism = float(Random::get(0, 20));
+		skillMod.intuition = float(Random::get(0, 20));
+		skillMod.etheralLink = float(Random::get(0, 20));
+		skillMod.objectKnowledge = float(Random::get(0, 20));
+		skillMod.casting = float(Random::get(0, 20));
+		skillMod.projectile = float(Random::get(0, 20));
+		skillMod.closeCombat = float(Random::get(0, 20));
+		skillMod.defense = float(Random::get(0, 30));
 		player.m_skillMod.add(skillMod);
 		
 		PlayerMisc miscMod;
-		miscMod.resistMagic = Random::get(0, 20);
-		miscMod.resistPoison = Random::get(0, 20);
-		miscMod.criticalHit = Random::get(0, 20);
-		miscMod.damages = Random::get(0, 20);
-		miscMod.armorClass = Random::get(0, 20);
+		miscMod.resistMagic = float(Random::get(0, 20));
+		miscMod.resistPoison = float(Random::get(0, 20));
+		miscMod.criticalHit = float(Random::get(0, 20));
+		miscMod.damages = float(Random::get(0, 20));
+		miscMod.armorClass = float(Random::get(0, 20));
 		player.m_miscMod.add(miscMod);
 	}
 	if(cur_rf == 3) {
