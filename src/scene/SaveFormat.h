@@ -338,7 +338,7 @@ struct ARX_CHANGELEVEL_PLAYER {
 	f32 version;
 	s32 Current_Movement;
 	s32 Last_Movement;
-	s32 misc_flags;
+	u32 misc_flags;
 	// Player Values
 	f32 Attribute_Strength;
 	f32 Attribute_Dexterity;

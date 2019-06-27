@@ -912,7 +912,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	
 	if(asp.misc_flags) {
 		std::cout << "Misc flags:";
-		s16 interface_flags = asp.misc_flags;
+		u32 interface_flags = asp.misc_flags;
 		print_flag(interface_flags, 1, "on_firm_ground");
 		print_flag(interface_flags, 2, "will_return_to_combat_mode");
 		print_unknown_flags(interface_flags);
