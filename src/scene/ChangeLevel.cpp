@@ -2411,7 +2411,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::
 	std::string levelSave = g_currentSavedGame->load(loadfile.str());
 	
 	// first time in this level ?
-	bool firstTime = levelSave.empty();
+	const bool firstTime = levelSave.empty();
 	FORBID_SCRIPT_IO_CREATION = firstTime ? 0 : 1;
 	LogDebug("firstTime = " << firstTime);
 	
