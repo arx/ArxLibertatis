@@ -157,16 +157,15 @@ static void ARX_DAMAGES_IgnitIO(Entity * source, Entity * io, float dmg) {
 
 class ScreenFxBloodSplash {
 	
-	float Blood_Pos;
 	GameDuration Blood_Duration;
-	float Last_Blood_Pos;
 	GameDuration duration;
+	float Blood_Pos;
+	float Last_Blood_Pos;
 	
 public:
 	
 	ScreenFxBloodSplash()
 		: Blood_Pos(0.f)
-		, Blood_Duration(0)
 		, Last_Blood_Pos(0.f)
 	{ }
 	
