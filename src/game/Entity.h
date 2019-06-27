@@ -380,7 +380,7 @@ public:
 	float shop_multiply;
 	res::path inventory_skin;
 	long isHit;
-	short inzone_show;
+	EntityVisilibity inzone_show;
 	EntityHandle summoner;
 	long spark_n_blood;
 
