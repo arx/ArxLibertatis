@@ -309,7 +309,8 @@ static void drawDebugPathFinding() {
 		
 		// Draw visited nodes yellow and target nodes as red
 		for(long j = 1; j < pathfind.listnb; j++) {
-			short k0 = pathfind.list[j - 1], k1 = pathfind.list[j];
+			long k0 = pathfind.list[j - 1];
+			long k1 = pathfind.list[j];
 			if(k0 >= 0 && size_t(k0) < ACTIVEBKG->m_anchors.size()
 			   && k1 >= 0 && size_t(k1) < ACTIVEBKG->m_anchors.size()) {
 				const ANCHOR_DATA & n0 = ACTIVEBKG->m_anchors[k0], & n1 = ACTIVEBKG->m_anchors[k1];
