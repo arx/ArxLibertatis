@@ -160,7 +160,7 @@ public:
 		
 		if(si == m_map.end()) {
 			m_list.push_back(value);
-			stringIndex = m_list.size() - 1;
+			stringIndex = u32(m_list.size() - 1);
 			m_map[value] = stringIndex;
 		} else {
 			stringIndex = si->second;
