@@ -81,7 +81,7 @@ private:
 	ThreadInfos        m_threads;
 	
 	boost::array<ProfilerSample, NB_SAMPLES> m_samples;
-	std::atomic<int> m_writeIndex;
+	std::atomic<u32> m_writeIndex;
 	volatile bool    m_canWrite;
 	
 	void writeProfileLog();
