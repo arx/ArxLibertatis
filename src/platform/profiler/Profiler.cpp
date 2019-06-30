@@ -250,21 +250,21 @@ void Profiler::writeProfileLog() {
 		std::string stringsData = stringTable.data();
 		size_t dataSize = stringsData.size() + 1; // termination
 		writeChunk(out, ArxProfilerChunkType_Strings, dataSize, pos);
-		out.write(stringsData.c_str(), dataSize);
+		out.write(stringsData.c_str(), std::streamsize(dataSize));
 		pos += dataSize;
 	}
 	
 	{
 		size_t dataSize = threadsData.size() * sizeof(SavedProfilerThread);
 		writeChunk(out, ArxProfilerChunkType_Threads, dataSize, pos);
-		out.write(reinterpret_cast<const char *>(threadsData.data()), dataSize);
+		out.write(reinterpret_cast<const char *>(threadsData.data()), std::streamsize(dataSize));
 		pos += dataSize;
 	}
 	
 	{
 		size_t dataSize = samplesData.size() * sizeof(SavedProfilerSample);
 		writeChunk(out, ArxProfilerChunkType_Samples, dataSize, pos);
-		out.write(reinterpret_cast<const char *>(samplesData.data()), dataSize);
+		out.write(reinterpret_cast<const char *>(samplesData.data()), std::streamsize(dataSize));
 	}
 	
 	out.close();
