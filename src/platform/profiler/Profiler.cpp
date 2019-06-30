@@ -191,7 +191,7 @@ void Profiler::writeProfileLog() {
 	fs::ofstream out(fs::path(filename), std::ios::binary | std::ios::out);
 	size_t pos = 0;
 	
-	int fileVersion = 1;
+	u32 fileVersion = 1;
 	
 	LogDebug("Writing Header");
 	
