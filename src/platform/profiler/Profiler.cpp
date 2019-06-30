@@ -169,7 +169,7 @@ public:
 		return stringIndex;
 	}
 	
-	int entries() {
+	size_t entries() {
 		return m_list.size();
 	}
 	
