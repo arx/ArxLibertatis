@@ -403,12 +403,10 @@ int runHelper(const char * const args[], bool wait, bool detach) {
 
 bool isWoW64Process(process_handle process) {
 	
-	typedef BOOL (WINAPI * IsWow64Process_t)(HANDLE, PBOOL);
-	IsWow64Process_t IsWow64Process_p;
-	
 	// IsWow64Process is not available on all versions of Windows - load it dynamically.
 	if(HMODULE handle = GetModuleHandleW(L"kernel32")) {
-		IsWow64Process_p = reinterpret_cast<IsWow64Process_t>(GetProcAddress(handle, "IsWow64Process"));
+		typedef BOOL (WINAPI * IsWow64Process_t)(HANDLE, PBOOL);
+		IsWow64Process_t IsWow64Process_p = getProcAddress<IsWow64Process_t>(handle, "IsWow64Process");
 		BOOL result;
 		if(IsWow64Process_p && IsWow64Process_p(process, &result) && result == TRUE) {
 			return true;

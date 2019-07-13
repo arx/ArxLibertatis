@@ -117,6 +117,11 @@ public:
 
 std::string getErrorString(WORD error = GetLastError(), HMODULE module = NULL);
 
+template <typename FunctionType>
+FunctionType getProcAddress(HMODULE module, const char * symbol) {
+	return reinterpret_cast<FunctionType>(reinterpret_cast<void(*)()>(GetProcAddress(module, symbol)));
+}
+
 } // namespace
 
 #endif
