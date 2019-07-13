@@ -28,6 +28,7 @@
 #include <math.h>
 
 #include "platform/Architecture.h"
+#include "platform/WindowsUtils.h"
 
 class WindowsMain {
 	
@@ -60,7 +61,7 @@ public:
 		if(kernel32) {
 			typedef DWORD64 (WINAPI * PGETENABLEDXSTATEFEATURES)();
 			PGETENABLEDXSTATEFEATURES GetEnabledXStateFeatures
-				= (PGETENABLEDXSTATEFEATURES)GetProcAddress(kernel32, "GetEnabledXStateFeatures");
+				= getProcAddress<PGETENABLEDXSTATEFEATURES>(kernel32, "GetEnabledXStateFeatures");
 			if(GetEnabledXStateFeatures) {
 				DWORD64 features = GetEnabledXStateFeatures();
 				if(features & XSTATE_MASK_GSSE) {

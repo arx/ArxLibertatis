@@ -250,7 +250,7 @@ DWORD WINAPI Thread::entryPoint(LPVOID param) {
 		if(kernel32) {
 			typedef HRESULT (WINAPI * SetThreadDescriptionPtr)(HANDLE hThread, PCWSTR lpThreadDescription);
 			SetThreadDescriptionPtr setThreadDescription;
-			setThreadDescription = SetThreadDescriptionPtr(GetProcAddress(kernel32, "SetThreadDescription"));
+			setThreadDescription = platform::getProcAddress<SetThreadDescriptionPtr>(kernel32, "SetThreadDescription");
 			if(setThreadDescription) {
 				setThreadDescription(GetCurrentThread(),
 				                     platform::WideString(static_cast<Thread *>(param)->m_threadName));

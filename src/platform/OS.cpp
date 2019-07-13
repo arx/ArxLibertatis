@@ -84,7 +84,7 @@ static std::string getWindowsVersionName() {
 	typedef LONG (WINAPI * RtlGetVersionPtr)(POSVERSIONINFOW);
 	RtlGetVersionPtr RtlGetVersion = NULL;
 	if(ntdll) {
-		RtlGetVersion = RtlGetVersionPtr(GetProcAddress(ntdll, "RtlGetVersion"));
+		RtlGetVersion = getProcAddress<RtlGetVersionPtr>(ntdll, "RtlGetVersion");
 	}
 	if(RtlGetVersion && RtlGetVersion(reinterpret_cast<POSVERSIONINFOW>(&osvi)) == 0) {
 		osviValid = true;
@@ -105,7 +105,7 @@ static std::string getWindowsVersionName() {
 	typedef void (WINAPI * GetNativeSystemInfoPtr)(LPSYSTEM_INFO);
 	GetNativeSystemInfoPtr GetNativeSystemInfo = NULL;
 	if(kernel32) {
-		GetNativeSystemInfo = GetNativeSystemInfoPtr(GetProcAddress(kernel32, "GetNativeSystemInfo"));
+		GetNativeSystemInfo = getProcAddress<GetNativeSystemInfoPtr>(kernel32, "GetNativeSystemInfo");
 	}
 	if(GetNativeSystemInfo) {
 		GetNativeSystemInfo(&si);
@@ -181,7 +181,7 @@ static std::string getWindowsVersionName() {
 	typedef const char * (CDECL * wine_get_version_ptr)();
 	wine_get_version_ptr wine_get_version = NULL;
 	if(ntdll) {
-		wine_get_version = wine_get_version_ptr(GetProcAddress(ntdll, "wine_get_version"));
+		wine_get_version = getProcAddress<wine_get_version_ptr>(ntdll, "wine_get_version");
 	}
 	if(wine_get_version) {
 		os << " (Wine " << wine_get_version() << ")";

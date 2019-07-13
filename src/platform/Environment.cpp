@@ -294,10 +294,8 @@ std::vector<fs::path> getSystemPaths(SystemPathId id) {
 		HMODULE dll = GetModuleHandleW(L"shell32.dll");
 		if(dll) {
 			
-			FARPROC proc = GetProcAddress(dll, "SHGetKnownFolderPath");
-			if(proc) {
-				PSHGetKnownFolderPath GetKnownFolderPath = reinterpret_cast<PSHGetKnownFolderPath>(proc);
-				
+			PSHGetKnownFolderPath GetKnownFolderPath = getProcAddress<PSHGetKnownFolderPath>(dll, "SHGetKnownFolderPath");
+			if(GetKnownFolderPath) {
 				LPWSTR savedgames = NULL;
 				HRESULT hr = GetKnownFolderPath(folderIdSavedGames, kfFlagCreate | kfFlagNoAlias,
 				                                NULL, &savedgames);
@@ -305,7 +303,6 @@ std::vector<fs::path> getSystemPaths(SystemPathId id) {
 					result.push_back(platform::WideString::toUTF8(savedgames));
 				}
 				CoTaskMemFree(savedgames);
-				
 			}
 			
 		}
