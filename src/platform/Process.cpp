@@ -41,7 +41,7 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 #endif
 
 #if (ARX_HAVE_FORK && ARX_HAVE_EXECVP) \
- || (ARX_HAVE_PIPE && ARX_HAVE_READ && ARX_HAVE_CLOSE) \
+ || ((ARX_HAVE_PIPE2 || ARX_HAVE_PIPE) && ARX_HAVE_READ && ARX_HAVE_CLOSE) \
  || ARX_HAVE_GETPID
 #include <unistd.h>
 #endif
@@ -78,7 +78,7 @@ extern char ** environ; // NOLINT
 
 #include "util/String.h"
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_HAVE_OPEN && !ARX_HAVE_O_CLOEXEC
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && (ARX_HAVE_OPEN || ARX_HAVE_PIPE2) && !ARX_HAVE_O_CLOEXEC
 #define O_CLOEXEC 0
 #endif
 
@@ -422,10 +422,15 @@ bool isWoW64Process(process_handle process) {
 
 std::string getOutputOf(const char * exe, const char * const args[], bool unlocalized) {
 	
-	#if ARX_HAVE_PIPE && ARX_HAVE_READ && ARX_HAVE_CLOSE
+	#if (ARX_HAVE_PIPE2 || ARX_HAVE_PIPE) && ARX_HAVE_READ && ARX_HAVE_CLOSE
 	
 	int pipefd[2];
-	if(pipe(pipefd)) {
+	#if ARX_HAVE_PIPE2
+	int ret = pipe2(pipefd, O_CLOEXEC);
+	#else
+	int ret = pipe(pipefd);
+	#endif
+	if(ret) {
 		return std::string();
 	}
 	
