@@ -61,7 +61,7 @@ public:
 		if(kernel32) {
 			typedef DWORD64 (WINAPI * PGETENABLEDXSTATEFEATURES)();
 			PGETENABLEDXSTATEFEATURES GetEnabledXStateFeatures
-				= getProcAddress<PGETENABLEDXSTATEFEATURES>(kernel32, "GetEnabledXStateFeatures");
+				= platform::getProcAddress<PGETENABLEDXSTATEFEATURES>(kernel32, "GetEnabledXStateFeatures");
 			if(GetEnabledXStateFeatures) {
 				DWORD64 features = GetEnabledXStateFeatures();
 				if(features & XSTATE_MASK_GSSE) {
