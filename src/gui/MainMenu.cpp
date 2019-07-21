@@ -589,9 +589,10 @@ public:
 				
 				std::stringstream ss;
 				ss << mode;
-				if(aspect.x < 100 && aspect.y < 100) {
-					if(aspect == Vec2i(8, 5)) {
-						aspect = Vec2i(16, 10);
+				if(aspect.x < 50 && aspect.y < 50) {
+					if(aspect.y == 5) {
+						// 8:5 is conventionally called 16:10
+						aspect *= 2;
 					}
 					ss << " (" << aspect.x << ':' << aspect.y << ')';
 				}
