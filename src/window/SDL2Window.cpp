@@ -326,41 +326,60 @@ bool SDL2Window::initialize() {
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	#endif
 	
-	if(gldebug::isEnabled()) {
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
-	} else {
-		#if SDL_VERSION_ATLEAST(2, 0, 6)
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_NO_ERROR, 1);
-		#endif
-	}
-	
 	bool autoRenderer = (config.video.renderer == "auto");
 	
 	int samples = 0;
-	for(int i = 0; i < 2 && samples == 0; i++) {
-		bool first = (i == 0);
+	for(int api = 0; api < 2 && samples == 0; api++) {
+		bool first = (api == 0);
 		
 		bool matched = false;
 		
-		if(samples == 0 && first == (autoRenderer || config.video.renderer == "OpenGL")) {
-			matched = true;
-			// TODO core profile are not supported yet
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
-			samples = createWindowAndGLContext("Desktop OpenGL");
+		for(int type = 0; type < (gldebug::isEnabled() ? 1 : 2) && samples == 0; type++) {
+			
+			int flags = 0;
+			if(gldebug::isEnabled() && type == 0) {
+				flags |= SDL_GL_CONTEXT_DEBUG_FLAG;
+			}
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, flags);
+			
+			if(samples == 0 && first == (autoRenderer || config.video.renderer == "OpenGL")) {
+				matched = true;
+				// TODO core profile are not supported yet
+				#if SDL_VERSION_ATLEAST(2, 0, 6)
+				if(!gldebug::isEnabled()) {
+					// Set SDL_GL_CONTEXT_PROFILE_MASK to != 0 so SDL won't ignore SDL_GL_CONTEXT_NO_ERROR
+					SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+					SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+					SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+					SDL_GL_SetAttribute(SDL_GL_CONTEXT_NO_ERROR, 1); // Requires OpenGL 2.0
+					samples = createWindowAndGLContext("Desktop OpenGL");
+				}
+				#endif
+				if(samples == 0) {
+					// Set SDL_GL_CONTEXT_PROFILE_MASK to 0 so SDL will try the legacy glXCreateContext() path
+					SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0);
+					SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+					SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
+					#if SDL_VERSION_ATLEAST(2, 0, 6)
+					SDL_GL_SetAttribute(SDL_GL_CONTEXT_NO_ERROR, 0);
+					#endif
+					samples = createWindowAndGLContext("Desktop OpenGL");
+				}
+			}
+			
+			#if ARX_HAVE_EPOXY
+			if(samples == 0 && first == (autoRenderer || config.video.renderer == "OpenGL ES")) {
+				matched = true;
+				// TODO OpenGL ES 2.0+ is not supported yet
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+				// SDL_GL_CONTEXT_NO_ERROR requires OpenGL ES 2.0
+				samples = createWindowAndGLContext("OpenGL ES");
+			}
+			#endif
+			
 		}
-		
-		#if ARX_HAVE_EPOXY
-		if(samples == 0 && first == (autoRenderer || config.video.renderer == "OpenGL ES")) {
-			matched = true;
-			// TODO OpenGL ES 2.0+ is not supported yet
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-			samples = createWindowAndGLContext("OpenGL ES");
-		}
-		#endif
 		
 		if(first && !matched) {
 			LogError << "Unknown renderer: " << config.video.renderer;
