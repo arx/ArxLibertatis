@@ -194,7 +194,7 @@ bool SDL1Window::initialize() {
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, msaa > 1 ? 1 : 0);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa > 1 ? msaa : 0);
 		
-		if(!setMode(m_size, m_fullscreen)) {
+		if(!setMode(m_mode.resolution, m_fullscreen)) {
 			if(lastTry) {
 				LogError << "Could not initialize window: " << SDL_GetError();
 				return false;
@@ -314,12 +314,12 @@ bool SDL1Window::setMode(DisplayMode mode, bool fullscreen) {
 void SDL1Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 	
 	if(!m_initialized) {
-		m_size = mode.resolution;
+		m_mode = mode;
 		m_fullscreen = makeFullscreen;
 		return;
 	}
 	
-	if(m_fullscreen == makeFullscreen && m_size == mode.resolution) {
+	if(m_fullscreen == makeFullscreen && m_mode == mode) {
 		return;
 	}
 	
@@ -350,15 +350,15 @@ void SDL1Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 
 void SDL1Window::updateSize(bool force) {
 	
-	Vec2i oldSize = m_size;
+	Vec2i oldSize = m_mode.resolution;
 	
 	const SDL_VideoInfo * vid = SDL_GetVideoInfo();
-	m_size = Vec2i(vid->current_w, vid->current_h);
+	m_mode.resolution = Vec2i(vid->current_w, vid->current_h);
 	
-	if(force || m_size != oldSize) {
+	if(force || m_mode.resolution != oldSize) {
 		m_renderer->afterResize();
-		m_renderer->SetViewport(Rect(m_size.x, m_size.y));
-		onResize(m_size);
+		m_renderer->SetViewport(Rect(m_mode.resolution.x, m_mode.resolution.y));
+		onResize(m_mode.resolution);
 	}
 }
 
@@ -459,7 +459,7 @@ void SDL1Window::tick() {
 	if(!m_renderer->isInitialized()) {
 		updateSize();
 		m_renderer->afterResize();
-		m_renderer->SetViewport(Rect(m_size.x, m_size.y));
+		m_renderer->SetViewport(Rect(m_mode.resolution.x, m_mode.resolution.y));
 	}
 }
 

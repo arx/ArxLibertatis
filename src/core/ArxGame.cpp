@@ -372,11 +372,11 @@ void ArxGame::setWindowSize(bool fullscreen) {
 	if(fullscreen) {
 		
 		// Clamp to a sane resolution!
-		if(config.video.resolution != Vec2i(0)) {
-			config.video.resolution = glm::max(config.video.resolution, Vec2i(640, 480));
+		if(config.video.mode.resolution != Vec2i(0)) {
+			config.video.mode.resolution = glm::max(config.video.mode.resolution, Vec2i(640, 480));
 		}
 		
-		getWindow()->setFullscreenMode(config.video.resolution);
+		getWindow()->setFullscreenMode(config.video.mode);
 		
 	} else {
 		
@@ -404,9 +404,9 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	m_MainWindow->getRenderer()->addListener(this);
 	
 	// Find the next best available fullscreen mode.
-	if(config.video.resolution != Vec2i(0)) {
+	if(config.video.mode.resolution != Vec2i(0)) {
 		const RenderWindow::DisplayModes & modes = window->getDisplayModes();
-		DisplayMode mode = config.video.resolution;
+		DisplayMode mode = config.video.mode;
 		RenderWindow::DisplayModes::const_iterator i;
 		i = std::lower_bound(modes.begin(), modes.end(), mode);
 		if(i == modes.end()) {
@@ -414,12 +414,9 @@ bool ArxGame::initWindow(RenderWindow * window) {
 		} else {
 			mode = *i;
 		}
-		if(config.video.resolution != mode.resolution) {
-			LogWarning << "Fullscreen mode " << config.video.resolution.x << 'x'
-			           << config.video.resolution.y
-			           << " not supported, using " << mode.resolution.x << 'x'
-			           << mode.resolution.y << " instead";
-			config.video.resolution = mode.resolution;
+		if(config.video.mode != mode) {
+			LogWarning << "Fullscreen mode " << config.video.mode << " not supported, using " << mode << " instead";
+			config.video.mode = mode;
 		}
 	}
 	
@@ -1125,11 +1122,11 @@ void ArxGame::onResizeWindow(const Window & window) {
 	m_wasResized = true;
 	
 	if(window.isFullScreen()) {
-		if(config.video.resolution == Vec2i(0)) {
-			LogInfo << "Auto-selected fullscreen resolution " << window.getDisplayMode();
+		if(config.video.mode.resolution == Vec2i(0)) {
+			LogInfo << "Using fullscreen desktop mode " << window.getDisplayMode();
 		} else {
-			LogInfo << "Changed fullscreen resolution to " << window.getDisplayMode();
-			config.video.resolution = window.getSize();
+			LogInfo << "Changed fullscreen mode to " << window.getDisplayMode();
+			config.video.mode = window.getDisplayMode();
 		}
 	} else {
 		LogInfo << "Changed window size to " << window.getDisplayMode();

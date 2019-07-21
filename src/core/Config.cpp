@@ -62,6 +62,7 @@ const std::string
 	                BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_HEIGHT);
 
 const int
+	refreshRate = 0,
 	levelOfDetail = 2,
 	vsync = -1,
 	fpsLimit = 240,
@@ -189,6 +190,7 @@ const std::string language = "string";
 const std::string
 	renderer = "renderer",
 	resolution = "resolution",
+	refreshRate = "refresh_rate",
 	fullscreen = "full_screen",
 	levelOfDetail = "others_details",
 	fogDistance = "fog",
@@ -433,13 +435,14 @@ bool Config::save() {
 	// video
 	writer.beginSection(Section::Video);
 	writer.writeKey(Key::renderer, video.renderer);
-	if(video.resolution == Vec2i(0)) {
+	if(video.mode.resolution == Vec2i(0)) {
 		writer.writeKey(Key::resolution, Default::resolution);
 	} else {
 		std::ostringstream oss;
-		oss << video.resolution.x << 'x' << video.resolution.y;
+		oss << video.mode.resolution.x << 'x' << video.mode.resolution.y;
 		writer.writeKey(Key::resolution, oss.str());
 	}
+	writer.writeKey(Key::refreshRate, video.mode.refresh);
 	writer.writeKey(Key::fullscreen, video.fullscreen);
 	writer.writeKey(Key::levelOfDetail, video.levelOfDetail);
 	writer.writeKey(Key::fogDistance, video.fogDistance);
@@ -577,10 +580,11 @@ bool Config::init(const fs::path & file) {
 	video.renderer = reader.getKey(Section::Video, Key::renderer, Default::renderer);
 	std::string resolution = reader.getKey(Section::Video, Key::resolution, Default::resolution);
 	if(resolution == "auto") {
-		video.resolution = Vec2i(0);
+		video.mode.resolution = Vec2i(0);
 	} else {
-		video.resolution = parseResolution(resolution);
+		video.mode.resolution = parseResolution(resolution);
 	}
+	video.mode.refresh = reader.getKey(Section::Video, Key::refreshRate, Default::refreshRate);
 	video.fullscreen = reader.getKey(Section::Video, Key::fullscreen, Default::fullscreen);
 	video.levelOfDetail = reader.getKey(Section::Video, Key::levelOfDetail, Default::levelOfDetail);
 	video.fogDistance = reader.getKey(Section::Video, Key::fogDistance, Default::fogDistance);

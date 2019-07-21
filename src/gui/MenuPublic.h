@@ -73,6 +73,4 @@ void ARXMenu_ResumeGame();
 
 void ARXMenu_NewQuest();
 
-void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight);
-
 #endif // ARX_GUI_MENUPUBLIC_H

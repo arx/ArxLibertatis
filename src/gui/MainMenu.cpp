@@ -64,6 +64,8 @@
 #include "input/Input.h"
 #include "input/Keyboard.h"
 
+#include "io/log/Logger.h"
+
 #include "platform/Platform.h"
 
 #include "scene/GameSound.h"
@@ -535,7 +537,7 @@ class VideoOptionsMenuPage arx_final : public MenuPage {
 	CheckboxWidget * m_minimizeOnFocusLostCheckbox;
 	TextWidget * m_applyButton;
 	bool m_fullscreen;
-	Vec2i m_resolution;
+	DisplayMode m_mode;
 	
 public:
 	
@@ -547,7 +549,6 @@ public:
 		, m_minimizeOnFocusLostCheckbox(NULL)
 		, m_applyButton(NULL)
 		, m_fullscreen(false)
-		, m_resolution(0)
 	{ }
 	
 	~VideoOptionsMenuPage() { }
@@ -558,7 +559,7 @@ public:
 		reserveBottom();
 		
 		m_fullscreen = config.video.fullscreen;
-		m_resolution = config.video.resolution;
+		m_mode = config.video.mode;
 		
 		{
 			std::string label = getLocalised("system_menus_options_videos_full_screen");
@@ -571,7 +572,7 @@ public:
 		
 		{
 			std::string label = getLocalised("system_menus_options_video_resolution");
-			m_resolutionSlider = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			m_resolutionSlider = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
 			m_resolutionSlider->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedResolution, this, _1, _2);
 			
 			m_resolutionSlider->setEnabled(config.video.fullscreen);
@@ -598,14 +599,14 @@ public:
 				}
 				
 				m_resolutionSlider->addEntry(ss.str());
-				if(mode.resolution == config.video.resolution) {
+				if(mode == config.video.mode) {
 					m_resolutionSlider->selectLast();
 				}
 				
 			}
 			
 			m_resolutionSlider->addEntry(getLocalised("system_menus_options_video_resolution_desktop"));
-			if(config.video.resolution == Vec2i(0)) {
+			if(config.video.mode.resolution == Vec2i(0)) {
 				m_resolutionSlider->selectLast();
 			}
 			
@@ -658,7 +659,10 @@ public:
 				cb->setEnabled(false);
 			} else {
 				cb->addEntry("60");
+				cb->addEntry("75");
+				cb->addEntry("100");
 				cb->addEntry("120");
+				cb->addEntry("144");
 				cb->addEntry("240");
 				cb->addEntry("480");
 				if(config.video.fpsLimit == 0) {
@@ -732,7 +736,7 @@ private:
 	
 	void updateApplyButton() {
 		
-		bool enable = m_resolution != config.video.resolution || m_fullscreen != config.video.fullscreen;
+		bool enable = (m_mode != config.video.mode || m_fullscreen != config.video.fullscreen);
 		m_applyButton->setEnabled(enable);
 		
 	}
@@ -754,9 +758,9 @@ private:
 		
 		const RenderWindow::DisplayModes & modes = mainApp->getWindow()->getDisplayModes();
 		if(size_t(pos) < modes.size()) {
-			m_resolution = modes[size_t(pos)].resolution;
+			m_mode = modes[size_t(pos)];
 		} else {
-			m_resolution = Vec2i(0);
+			m_mode = DisplayMode();
 		}
 		
 		updateApplyButton();
@@ -796,7 +800,25 @@ private:
 	}
 	
 	void onClickedApply(Widget * /* widget */) {
-		ARXMenu_Private_Options_Video_SetResolution(m_fullscreen, m_resolution.x, m_resolution.y);
+		
+		config.video.mode = m_mode;
+		
+		if(!m_fullscreen) {
+			if(config.video.mode.resolution == Vec2i(0)) {
+				LogInfo << "Configuring automatic fullscreen resolution selection";
+			} else {
+				LogInfo << "Configuring fullscreen resolution to " << config.video.mode;
+			}
+		}
+		
+		RenderWindow * window = mainApp->getWindow();
+		
+		if(window->isFullScreen() != m_fullscreen || m_fullscreen) {
+			GRenderer->Clear(Renderer::ColorBuffer);
+			mainApp->getWindow()->showFrame();
+			mainApp->setWindowSize(m_fullscreen);
+		}
+		
 		g_mainMenu->bReInitAll = true;
 	}
 	
