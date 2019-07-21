@@ -26,13 +26,19 @@
 bool DisplayMode::operator<(const DisplayMode & o) const {
 	if(resolution.x != o.resolution.x) {
 		return (resolution.x < o.resolution.x);
-	} else {
+	} else if(resolution.y != o.resolution.y) {
 		return (resolution.y < o.resolution.y);
+	} else {
+		return (refresh < o.refresh);
 	}
 }
 
 std::ostream & operator<<(std::ostream & os, const DisplayMode & mode) {
-	return os << mode.resolution.x << 'x' << mode.resolution.y;
+	os << mode.resolution.x << 'x' << mode.resolution.y;
+	if(mode.refresh != 0) {
+		os << '@' << mode.refresh << "Hz";
+	}
+	return os;
 }
 
 void Window::Listener::onCreateWindow(const Window & /* window */) { }
@@ -51,7 +57,7 @@ void Window::Listener::onDroppedFile(const Window & /*window*/, const fs::path &
 
 Window::Window()
 	: m_position(0, 0)
-	, m_size(640, 480)
+	, m_mode(Vec2i(640, 480))
 	, m_minimized(false)
 	, m_maximized(false)
 	, m_visible(false)
@@ -102,7 +108,7 @@ void Window::onMove(s32 x, s32 y) {
 }
 
 void Window::onResize(const Vec2i & size) {
-	m_size = size;
+	m_mode.resolution = size;
 	BOOST_FOREACH(Listener * listener, m_listeners) {
 		listener->onResizeWindow(*this);
 	}

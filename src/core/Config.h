@@ -31,6 +31,8 @@
 #include "math/Types.h"
 #include "math/Vector.h"
 
+#include "window/DisplayMode.h"
+
 //! Enum for all the controlling actions
 enum ControlAction {
 	CONTROLS_CUST_JUMP = 0,
@@ -130,7 +132,7 @@ public:
 		std::string renderer;
 		
 		bool fullscreen;
-		Vec2i resolution;
+		DisplayMode mode;
 		float gamma;
 		
 		int vsync;

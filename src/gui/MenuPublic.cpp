@@ -86,35 +86,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern bool bQuickGenFirstClick;
 
-void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight) {
-	
-	if(!GRenderer) {
-		return;
-	}
-	
-	config.video.resolution = Vec2i(_iWidth, _iHeight);
-	
-	if(!fullscreen) {
-		if(config.video.resolution == Vec2i(0)) {
-			LogInfo << "Configuring automatic fullscreen resolution selection";
-		} else {
-			LogInfo << "Configuring fullscreen resolution to " << DisplayMode(config.video.resolution);
-		}
-	}
-	
-	RenderWindow * window = mainApp->getWindow();
-	
-	if(window->isFullScreen() != fullscreen || fullscreen) {
-		
-		GRenderer->Clear(Renderer::ColorBuffer);
-		
-		mainApp->getWindow()->showFrame();
-		
-		mainApp->setWindowSize(fullscreen);
-		
-	}
-}
-
 void ARXMenu_Options_Video_SetFogDistance(float distance) {
 	config.video.fogDistance = glm::clamp(distance, 0.f, 10.f);
 }

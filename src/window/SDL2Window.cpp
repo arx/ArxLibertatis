@@ -198,7 +198,7 @@ bool SDL2Window::initializeFramework() {
 		for(int i = 0; i < modes; i++) {
 			SDL_DisplayMode mode;
 			if(SDL_GetDisplayMode(display, i, &mode) >= 0) {
-				m_displayModes.push_back(Vec2i(mode.w, mode.h));
+				m_displayModes.push_back(DisplayMode(Vec2i(mode.w, mode.h), mode.refresh_rate));
 			}
 		}
 	}
@@ -238,7 +238,7 @@ static Uint32 getSDLFlagsForMode(const Vec2i & size, bool fullscreen) {
 int SDL2Window::createWindowAndGLContext(const char * profile) {
 	
 	int x = SDL_WINDOWPOS_UNDEFINED, y = SDL_WINDOWPOS_UNDEFINED;
-	Uint32 windowFlags = getSDLFlagsForMode(m_size, m_fullscreen);
+	Uint32 windowFlags = getSDLFlagsForMode(m_mode.resolution, m_fullscreen);
 	windowFlags |= SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN;
 	
 	for(int msaa = m_maxMSAALevel; true; msaa--) {
@@ -263,7 +263,7 @@ int SDL2Window::createWindowAndGLContext(const char * profile) {
 		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, msaa > 0 ? 8 : 3);
 		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  msaa > 0 ? 8 : 2);
 		
-		m_window = SDL_CreateWindow(m_title.c_str(), x, y, m_size.x, m_size.y, windowFlags);
+		m_window = SDL_CreateWindow(m_title.c_str(), x, y, m_mode.resolution.x, m_mode.resolution.y, windowFlags);
 		if(!m_window) {
 			if(lastTry) {
 				LogError << "Could not create " << profile << " window: " << SDL_GetError();
@@ -576,12 +576,12 @@ bool SDL2Window::setGamma(float gamma) {
 void SDL2Window::changeMode(DisplayMode mode, bool fullscreen) {
 	
 	if(!m_window) {
-		m_size = mode.resolution;
+		m_mode = mode;
 		m_fullscreen = fullscreen;
 		return;
 	}
 	
-	if(m_fullscreen == fullscreen && m_size == mode.resolution) {
+	if(m_fullscreen == fullscreen && m_mode == mode) {
 		return;
 	}
 	
@@ -599,7 +599,7 @@ void SDL2Window::changeMode(DisplayMode mode, bool fullscreen) {
 			SDL_DisplayMode requested;
 			requested.driverdata = NULL;
 			requested.format = 0;
-			requested.refresh_rate = 0;
+			requested.refresh_rate = mode.refresh;
 			requested.w = mode.resolution.x;
 			requested.h = mode.resolution.y;
 			int display = SDL_GetWindowDisplayIndex(m_window);
@@ -644,17 +644,30 @@ void SDL2Window::changeMode(DisplayMode mode, bool fullscreen) {
 
 void SDL2Window::updateSize(bool force) {
 	
-	Vec2i oldSize = m_size;
+	DisplayMode oldMode = m_mode;
 	
 	int w, h;
 	SDL_GetWindowSize(m_window, &w, &h);
-	m_size = Vec2i(w, h);
+	m_mode.resolution = Vec2i(w, h);
 	
-	if(force || m_size != oldSize) {
-		m_renderer->afterResize();
-		m_renderer->SetViewport(Rect(m_size.x, m_size.y));
-		onResize(m_size);
+	int display = SDL_GetWindowDisplayIndex(m_window);
+	
+	SDL_DisplayMode mode;
+	if(SDL_GetCurrentDisplayMode(display, &mode) == 0) {
+		m_mode.refresh = mode.refresh_rate;
+	} else {
+		m_mode.refresh = 0;
 	}
+	
+	if(force || m_mode.resolution != oldMode.resolution) {
+		m_renderer->afterResize();
+		m_renderer->SetViewport(Rect(m_mode.resolution.x, m_mode.resolution.y));
+	}
+	
+	if(force || m_mode != oldMode) {
+		onResize(m_mode.resolution);
+	}
+	
 }
 
 void SDL2Window::setFullscreenMode(const DisplayMode & mode) {
@@ -697,13 +710,16 @@ void SDL2Window::tick() {
 					case SDL_WINDOWEVENT_FOCUS_LOST:   onFocus(false); break;
 					
 					case SDL_WINDOWEVENT_MOVED: {
+						if(!m_fullscreen) {
+							updateSize();
+						}
 						onMove(event.window.data1, event.window.data2);
 						break;
 					}
 					
 					case SDL_WINDOWEVENT_SIZE_CHANGED: {
 						Vec2i newSize(event.window.data1, event.window.data2);
-						if(newSize != m_size && !m_fullscreen) {
+						if(newSize != m_mode.resolution && !m_fullscreen) {
 							m_renderer->beforeResize(false);
 							updateSize();
 						} else {
@@ -749,7 +765,7 @@ void SDL2Window::tick() {
 	if(!m_renderer->isInitialized()) {
 		updateSize();
 		m_renderer->afterResize();
-		m_renderer->SetViewport(Rect(m_size.x, m_size.y));
+		m_renderer->SetViewport(Rect(m_mode.resolution.x, m_mode.resolution.y));
 	}
 }
 

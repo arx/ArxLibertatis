@@ -25,22 +25,10 @@
 #include <vector>
 
 #include "math/Vector.h"
+#include "window/DisplayMode.h"
 
 class InputBackend;
 namespace fs { class path; }
-
-struct DisplayMode {
-	
-	Vec2i resolution;
-	
-	DisplayMode() : resolution(0) { }
-	/* implicit */ DisplayMode(Vec2i res) : resolution(res) { }
-	bool operator<(const DisplayMode & o) const;
-	bool operator==(const DisplayMode & o) const {
-		return resolution == o.resolution;
-	}
-	
-};
 
 std::ostream & operator<<(std::ostream & os, const DisplayMode & mode);
 
@@ -143,8 +131,8 @@ public:
 	bool isVisible() const { return m_visible; }
 	
 	const Vec2i & getPosition() const { return m_position; }
-	const Vec2i & getSize() const { return m_size; }
-	DisplayMode getDisplayMode() const { return DisplayMode(m_size); }
+	const Vec2i & getSize() const { return m_mode.resolution; }
+	DisplayMode getDisplayMode() const { return m_mode; }
 	
 	bool isFullScreen() const { return m_fullscreen; }
 	
@@ -168,7 +156,7 @@ protected:
 	
 	std::string m_title; //!< Window title bar caption.
 	Vec2i m_position;    //!< Screen position in pixels (relative to the upper left corner)
-	Vec2i m_size;        //!< Size in pixels
+	DisplayMode m_mode;
 	bool m_minimized;    //!< Is minimized ?
 	bool m_maximized;    //!< Is maximized ?
 	bool m_visible;      //!< Is visible ?
