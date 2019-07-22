@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 #include "core/SaveGame.h"
+#include "core/TimeTypes.h"
 
 #include "graphics/Renderer.h"
 
@@ -114,6 +115,9 @@ private:
 	void setWindowSize(bool fullscreen);
 	
 	bool m_gameInitialized;
+	
+	PlatformInstant m_frameStart;
+	PlatformDuration m_frameDelta;
 };
 
 enum InfoPanels {
