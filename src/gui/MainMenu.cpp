@@ -19,7 +19,9 @@
 
 #include "gui/MainMenu.h"
 
+#include <algorithm>
 #include <iomanip>
+#include <vector>
 
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
@@ -654,30 +656,38 @@ public:
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFPSLimit, this, _1, _2);
 			cb->addEntry(getLocalised("system_menus_options_video_vsync_off"));
+			cb->setValue(0);
 			if(benchmark::isEnabled()) {
-				cb->setValue(0);
 				cb->setEnabled(false);
 			} else {
-				cb->addEntry("60");
-				cb->addEntry("75");
-				cb->addEntry("100");
-				cb->addEntry("120");
-				cb->addEntry("144");
-				cb->addEntry("240");
-				cb->addEntry("480");
-				if(config.video.fpsLimit == 0) {
-					cb->setValue(0);
-				} else if(config.video.fpsLimit == 60) {
-					cb->setValue(1);
-				} else if(config.video.fpsLimit == 120) {
-					cb->setValue(2);
-				} else if(config.video.fpsLimit == 240) {
-					cb->setValue(3);
-				} else if(config.video.fpsLimit == 480) {
-					cb->setValue(4);
-				} else {
-					cb->addEntry(boost::lexical_cast<std::string>(config.video.fpsLimit));
-					cb->setValue(5);
+				std::vector<s32> rates;
+				rates.push_back(30);
+				rates.push_back(60);
+				rates.push_back(72);
+				rates.push_back(75);
+				rates.push_back(100);
+				rates.push_back(120);
+				rates.push_back(144);
+				rates.push_back(150);
+				rates.push_back(200);
+				BOOST_FOREACH(const DisplayMode & mode, mainApp->getWindow()->getDisplayModes()) {
+					if(mode.refresh) {
+						rates.push_back(mode.refresh);
+						if(mode.refresh >= 60) {
+							rates.push_back(2 * mode.refresh);
+						}
+					}
+				}
+				if(config.video.fpsLimit > 0) {
+					rates.push_back(config.video.fpsLimit);
+				}
+				std::sort(rates.begin(), rates.end());
+				rates.erase(std::unique(rates.begin(), rates.end()), rates.end());
+				BOOST_FOREACH(s32 refresh, rates) {
+					cb->addEntry(boost::lexical_cast<std::string>(refresh));
+					if(config.video.fpsLimit == refresh) {
+						cb->selectLast();
+					}
 				}
 			}
 			addCenter(cb);
