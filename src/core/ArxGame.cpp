@@ -1188,8 +1188,15 @@ void ArxGame::doFrame() {
 		m_frameStart = now;
 		
 		int targetFps = config.video.fpsLimit;
-		if(config.video.fpsLimit <= 0) {
-			targetFps = m_MainWindow->getDisplayMode().refresh + (config.video.vsync ? 1 : 0);
+		if(targetFps <= 0) {
+			targetFps = m_MainWindow->getDisplayMode().refresh;
+			if(targetFps <= 0) {
+				targetFps = 60;
+			}
+			if(config.video.vsync) {
+				// Give Vsync some headroom in case the refresh rate was rounded down
+				targetFps += 1;
+			}
 		}
 		PlatformDuration targetDuration = PlatformDurationUs(1000000 / targetFps);
 		
