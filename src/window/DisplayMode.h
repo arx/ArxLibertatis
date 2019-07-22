@@ -29,7 +29,7 @@ struct DisplayMode {
 	s32 refresh;
 	
 	DisplayMode() : resolution(0), refresh(0) { }
-	/* implicit */ DisplayMode(Vec2i res, u32 rate = 0) : resolution(res), refresh(rate) { }
+	/* implicit */ DisplayMode(Vec2i res, s32 rate = 0) : resolution(res), refresh(rate) { }
 	bool operator<(const DisplayMode & o) const;
 	bool operator==(const DisplayMode & o) const {
 		return resolution == o.resolution && refresh == o.refresh;
