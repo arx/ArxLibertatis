@@ -65,7 +65,7 @@ const int
 	refreshRate = 0,
 	levelOfDetail = 2,
 	vsync = -1,
-	fpsLimit = 240,
+	fpsLimit = -1,
 	maxAnisotropicFiltering = 9001,
 	alphaCutoutAntialiasing = 2,
 	cinematicWidescreenMode = CinematicFadeEdges,
@@ -592,7 +592,7 @@ bool Config::init(const fs::path & file) {
 	int vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
 	video.vsync = glm::clamp(vsync, -1, 1);
 	int fpsLimit = reader.getKey(Section::Video, Key::fpsLimit, Default::fpsLimit);
-	video.fpsLimit = std::max(fpsLimit, 0);
+	video.fpsLimit = std::max(fpsLimit, -1);
 	float fov = reader.getKey(Section::Video, Key::fov, Default::fov);
 	video.fov = std::max(fov, 60.f);
 	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
