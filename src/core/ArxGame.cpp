@@ -1188,6 +1188,9 @@ void ArxGame::doFrame() {
 		m_frameStart = now;
 		
 		int targetFps = config.video.fpsLimit;
+		if(config.video.fpsLimit <= 0) {
+			targetFps = m_MainWindow->getDisplayMode().refresh + (config.video.vsync ? 1 : 0);
+		}
 		PlatformDuration targetDuration = PlatformDurationUs(1000000 / targetFps);
 		
 		PlatformDuration min = PlatformDuration::ofRaw(-targetDuration.t);

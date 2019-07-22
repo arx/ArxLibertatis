@@ -655,7 +655,7 @@ public:
 			std::string label = getLocalised("system_menus_options_video_fps_limit");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFPSLimit, this, _1, _2);
-			cb->addEntry(getLocalised("system_menus_options_video_vsync_off"));
+			cb->addEntry(getLocalised("system_menus_options_video_fps_limit_off"));
 			cb->setValue(0);
 			if(benchmark::isEnabled()) {
 				cb->setEnabled(false);
@@ -688,6 +688,10 @@ public:
 					if(config.video.fpsLimit == refresh) {
 						cb->selectLast();
 					}
+				}
+				cb->addEntry(getLocalised("system_menus_options_video_fps_limit_display"));
+				if(config.video.fpsLimit < 0) {
+					cb->selectLast();
 				}
 			}
 			addCenter(cb);
@@ -801,7 +805,11 @@ private:
 		if(pos == 0) {
 			config.video.fpsLimit = 0;
 		} else {
-			config.video.fpsLimit = boost::lexical_cast<int>(str);
+			try {
+				config.video.fpsLimit = boost::lexical_cast<int>(str);
+			} catch(...) {
+				config.video.fpsLimit = -1;
+			}
 		}
 	}
 	
