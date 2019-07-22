@@ -201,6 +201,8 @@ Anglef LASTCAMANGLE;
 ArxGame::ArxGame()
 	: m_wasResized(false)
 	, m_gameInitialized(false)
+	, m_frameStart(0)
+	, m_frameDelta(0)
 { }
 
 ArxGame::~ArxGame() {
@@ -1180,15 +1182,19 @@ void ArxGame::doFrame() {
 	
 	if(config.video.fpsLimit && !benchmark::isEnabled()) {
 		
-		PlatformDuration renderDuration = platform::getTime() - g_platformTime.frameStart();
+		PlatformInstant now = platform::getTime();
+		
+		PlatformDuration lastDuration = now - m_frameStart;
+		m_frameStart = now;
 		
 		int targetFps = config.video.fpsLimit;
-		if(config.video.vsync) {
-			targetFps = std::max(targetFps, 480);
-		}
-		PlatformDuration targetDuration = PlatformDurationUs(1000000 / (targetFps + targetFps / 20 + 1) - 100);
-		if(renderDuration < targetDuration) {
-			Thread::sleep(targetDuration - renderDuration);
+		PlatformDuration targetDuration = PlatformDurationUs(1000000 / targetFps);
+		
+		PlatformDuration min = PlatformDuration::ofRaw(-targetDuration.t);
+		m_frameDelta = arx::clamp(m_frameDelta + targetDuration - lastDuration, min, targetDuration);
+		
+		if(m_frameDelta > 0) {
+			Thread::sleep(m_frameDelta);
 		}
 		
 	}
