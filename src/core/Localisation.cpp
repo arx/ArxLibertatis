@@ -140,11 +140,15 @@ void loadLocalisations() {
 	const std::string fallbackPrefix = "xtext_english_";
 	const std::string localizedPrefix = "xtext_" + config.language + "_";
 	
+	PakDirectory * dir = g_resources->getDirectory("localisation");
+	if(!dir) {
+		return;
+	}
+	
 	typedef std::map<std::string, bool> LocalizationFiles;
 	
 	LocalizationFiles localizationFiles;
 	
-	PakDirectory * dir = g_resources->getDirectory("localisation");
 	PakDirectory::files_iterator fileIter = dir->files_begin();
 	
 	for(; fileIter != dir->files_end(); ++fileIter) {
