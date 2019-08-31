@@ -30,6 +30,7 @@ public:
 	FpsCounter()
 		: fLastTime(0)
 		, dwFrames(0)
+		, FPS(0.f)
 	{ }
 	
 	float FPS;
