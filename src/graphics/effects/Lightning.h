@@ -78,7 +78,7 @@ private:
 	float fTotoro;
 	float fMySize;
 	size_t m_nbtotal;
-	long m_lNbSegments;
+	int m_lNbSegments;
 	float m_invNbSegments;
 	float m_fLengthMin;
 	float m_fLengthMax;
