@@ -30,7 +30,7 @@ typedef s32 EntityInstance;
 namespace res { class path; }
 
 /*!
- * An ID that can be used to identify \class Entity instances
+ * An ID that can be used to identify \ref Entity instances
  */
 struct EntityId {
 	

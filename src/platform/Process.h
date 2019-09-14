@@ -175,12 +175,12 @@ void reapZombies();
  *
  * \param wait true if the helper should be run synchronously
  *
- * If \ref wait is \c false this call is equivalent to
+ * If \p wait is \c false this call is equivalent to
  * \code platform::runAsync(getHelperExecutable(args[0]).string(), args); \endcode
  * Otherwise it is equivalent to
  * \code platform::run(getHelperExecutable(args[0]).string(), args); \endcode
  *
- * \return if \ref wait is \c true, the return code of the executed program.
+ * \return if \p wait is \c true, the return code of the executed program.
  */
 int runHelper(const char * const args[], bool wait = false, bool detach = false);
 
