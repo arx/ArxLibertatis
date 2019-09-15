@@ -175,14 +175,14 @@ public:
 	/*!
 	* Send a HTTP GET request
 	* 
-	* \return A \ref Response object that should be freed using \ref delete.
+	* \return A \ref Response object that should be freed using delete.
 	*/
 	virtual Response * get(const Request & request) = 0;
 	
 	/*!
 	* Send a HTTP POSY request
 	* 
-	* \return A \ref Response object that should be freed using \ref delete.
+	* \return A \ref Response object that should be freed using delete.
 	*/
 	virtual Response * post(const POSTRequest & request) = 0;
 	
@@ -193,7 +193,7 @@ public:
  *
  * \param userAgent HTTP User-Agent header to send with requests.
  * 
- * \return A \ref Session object that should be freed using \ref delete.
+ * \return A \ref Session object that should be freed using delete.
  */
 Session * createSession(const std::string & userAgent);
 
