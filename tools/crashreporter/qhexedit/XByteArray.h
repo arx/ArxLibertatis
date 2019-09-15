@@ -25,8 +25,6 @@
 #ifndef ARX_TOOLS_CRASHREPORTER_QHEXEDIT_XBYTEARRAY_H
 #define ARX_TOOLS_CRASHREPORTER_QHEXEDIT_XBYTEARRAY_H
 
-//! \cond docNever
-
 #include <QtCore>
 
 /*!
@@ -89,7 +87,5 @@ private:
 	int _oldSize;            //!< size of data
 	
 };
-
-//! \endcond docNever
 
 #endif // ARX_TOOLS_CRASHREPORTER_QHEXEDIT_XBYTEARRAY_H

@@ -25,8 +25,6 @@
 #ifndef ARX_TOOLS_CRASHREPORTER_QHEXEDIT_COMMANDS_H
 #define ARX_TOOLS_CRASHREPORTER_QHEXEDIT_COMMANDS_H
 
-//! \cond docNever
-
 #include <QUndoCommand>
 
 #include "crashreporter/qhexedit/XByteArray.h"
@@ -97,7 +95,5 @@ private:
 	QByteArray _oldBa;
 	
 };
-
-//! \endcond docNever
 
 #endif // ARX_TOOLS_CRASHREPORTER_QHEXEDIT_COMMANDS_H

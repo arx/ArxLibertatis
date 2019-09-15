@@ -25,8 +25,6 @@
 #ifndef ARX_TOOLS_CRASHREPORTER_QHEXEDIT_QHEXEDITPRIVATE_H
 #define ARX_TOOLS_CRASHREPORTER_QHEXEDIT_QHEXEDITPRIVATE_H
 
-//! \cond docNever
-
 #include <QtGui>
 #include <QScrollArea>
 #include <QUndoStack>
@@ -147,7 +145,5 @@ private:
 	int _size;
 	
 };
-
-//! \endcond docNever
 
 #endif // ARX_TOOLS_CRASHREPORTER_QHEXEDIT_QHEXEDITPRIVATE_H
