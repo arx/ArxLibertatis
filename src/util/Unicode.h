@@ -93,6 +93,7 @@ struct UTF8 {
 	* Encode one character to an UTF8 string
 	* \tparam Out  An OutputIterator type for the input string
 	* \param  it  Output iterator to write the encoded caracter to
+	* \param  chr Character to write
 	* \return new output iterator after the written bytes
 	*/
 	template <typename Out>
