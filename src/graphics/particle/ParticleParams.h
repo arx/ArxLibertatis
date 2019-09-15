@@ -71,7 +71,6 @@ public:
 	float m_angle;
 	float m_speed;
 	float m_speedRandom;
-	float m_flash;
 	float m_rotation;
 	
 	struct TextureInfo {
@@ -118,7 +117,6 @@ public:
 		, m_angle(0)
 		, m_speed(0)
 		, m_speedRandom(0)
-		, m_flash(0)
 		, m_rotation(0)
 		, m_texture()
 		, m_blendMode(RenderMaterial::Additive)
