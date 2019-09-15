@@ -278,39 +278,6 @@ void particleParametersInit() {
 	
 	{
 	ParticleParams cp = ParticleParams();
-	cp.m_nbMax = 5;
-	cp.m_life = 2000;
-	cp.m_lifeRandom = 1000;
-	cp.m_pos = Vec3f(0.f);
-	cp.m_direction = Vec3f(0.1f);
-	cp.m_angle = 0;
-	cp.m_speed = 10;
-	cp.m_speedRandom = 10;
-	cp.m_gravity = Vec3f(0.f);
-	cp.m_flash = 21 * 0.01f;
-	cp.m_rotation = 1.f / (101 - 80);
-	cp.m_rotationRandomDirection = true;
-	cp.m_rotationRandomStart = true;
-
-	cp.m_startSegment.m_size = 5;
-	cp.m_startSegment.m_sizeRandom = 3;
-	cp.m_startSegment.m_color = Color4f(Color3f::green * 0.2f, 0.16f);
-	cp.m_startSegment.m_colorRandom = Color4f(Color3f::green * 0.4f, 0.2f);
-
-	cp.m_endSegment.m_size = 8;
-	cp.m_endSegment.m_sizeRandom = 13;
-	cp.m_endSegment.m_color = Color4f(Color3f::green * 0.24f, 0.16f);
-	cp.m_endSegment.m_colorRandom = Color4f(Color3f::green * 0.4f, 0.2f);
-
-	cp.m_blendMode = RenderMaterial::Screen;
-	cp.m_freq = -1;
-	cp.m_texture.set("graph/particles/big_greypouf", 0, 200);
-	cp.m_spawnFlags = 0;
-	g_particleParameters[ParticleParam_Poison2] = cp;
-	}
-	
-	{
-	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 100;
 	cp.m_life = 500;
 	cp.m_lifeRandom = 300;

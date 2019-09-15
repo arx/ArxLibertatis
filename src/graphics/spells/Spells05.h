@@ -78,7 +78,6 @@ private:
 	
 	Vec3f eMove;
 	Vec3f pathways[40];
-	ParticleSystem pPS;
 	ParticleSystem pPSStream;
 	
 };

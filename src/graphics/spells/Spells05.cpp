@@ -138,13 +138,6 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	Split(pathways, 0, 9, Vec3f(10 * fBetaRadCos, 10, 10 * fBetaRadSin));
 	
 	fTrail = -1;
-	
-	ParticleParams pp = g_particleParameters[ParticleParam_Poison2];
-	pp.m_direction *= -eMove;
-	
-	pPS.SetParams(pp);
-	pPS.SetPos(eSrc);
-	pPS.Update(0);
 }
 
 void CPoisonProjectile::Update(GameDuration timeDelta)
@@ -155,8 +148,6 @@ void CPoisonProjectile::Update(GameDuration timeDelta)
 
 	// on passe de 5 à 100 partoches en 1.5secs
 	if(m_elapsed < GameDurationMs(750)) {
-		pPS.m_parameters.m_nbMax = 2;
-		pPS.Update(timeDelta);
 	} else {
 		if(!bOk) {
 			bOk = true;
@@ -171,9 +162,6 @@ void CPoisonProjectile::Update(GameDuration timeDelta)
 
 		pPSStream.Update(timeDelta);
 		pPSStream.SetPos(eCurPos);
-
-		pPS.Update(timeDelta);
-		pPS.SetPos(eCurPos);
 
 		fTrail = ((m_elapsed - GameDurationMs(750)) / (m_duration - GameDurationMs(750))) * 9 * (BEZIERPrecision + 2);
 	}
