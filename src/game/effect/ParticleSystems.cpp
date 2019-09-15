@@ -21,65 +21,68 @@
 
 ParticleParams g_particleParameters[ParticleParam_MAX];
 
-
-class MagicMissileExplosionParticle : public ParticleParams {
-public:
-	MagicMissileExplosionParticle() {
-		load();
-	}
-	
-	void load() {
-		m_nbMax = 100;
-		m_life = 1500;
-		m_lifeRandom = 0;
-		m_pos = Vec3f(10.f);
-		m_direction = Vec3f(0.f, -1.f, 0.f);
-		m_angle = glm::radians(360.f);
-		m_speed = 130;
-		m_speedRandom = 100;
-		m_gravity = Vec3f(0.f, 10.f, 0.f);
-		m_rotation = 1.0f / (101 - 16);
-	
-		m_startSegment.m_size = 5;
-		m_startSegment.m_sizeRandom = 10;
-		m_startSegment.m_color = Color4f::gray(0.43f, 0.42f);
-		m_startSegment.m_colorRandom = Color4f::gray(0.39f, 0.39f);
-		m_endSegment.m_size = 0;
-		m_endSegment.m_sizeRandom = 2;
-		m_endSegment.m_color = Color4f(Color3f::blue * 0.47f, 0.04f);
-		m_endSegment.m_colorRandom = Color4f::gray(0.2f, 0.2f);
-		
-		m_texture.set("graph/particles/magicexplosion", 0, 500);
-		
-		m_blendMode = RenderMaterial::Additive;
-		m_spawnFlags = 0;
-		m_looping = false;
-	}
-};
-
-class MagicMissileExplosionMrCheatParticle : public MagicMissileExplosionParticle {
-public:
-	MagicMissileExplosionMrCheatParticle() {
-		load();
-	}
-	
-	void load() {
-		MagicMissileExplosionParticle::load();
-		
-		m_speed = 13;
-		m_speedRandom = 10;
-		m_startSegment.m_size = 20;
-		m_startSegment.m_color = Color4f::none;
-		m_startSegment.m_colorRandom = Color4f::none;
-		m_endSegment.m_color = Color4f::rgba(1.f, 0.17f, 0.47f, 0.04f);
-		m_texture.set("graph/particles/(fx)_mr", 0, 500);
-	}
-};
-
 void particleParametersInit() {
 	
-	g_particleParameters[ParticleParam_MagicMissileExplosion]    = MagicMissileExplosionParticle();
-	g_particleParameters[ParticleParam_MagicMissileExplosionMar] = MagicMissileExplosionMrCheatParticle();
+	{
+	ParticleParams cp;
+	cp.m_nbMax = 100;
+	cp.m_life = 1500;
+	cp.m_lifeRandom = 0;
+	cp.m_pos = Vec3f(10.f);
+	cp.m_direction = Vec3f(0.f, -1.f, 0.f);
+	cp.m_angle = glm::radians(360.f);
+	cp.m_speed = 130;
+	cp.m_speedRandom = 100;
+	cp.m_gravity = Vec3f(0.f, 10.f, 0.f);
+	cp.m_rotation = 1.0f / (101 - 16);
+	
+	cp.m_startSegment.m_size = 5;
+	cp.m_startSegment.m_sizeRandom = 10;
+	cp.m_startSegment.m_color = Color4f::gray(0.43f, 0.42f);
+	cp.m_startSegment.m_colorRandom = Color4f::gray(0.39f, 0.39f);
+	cp.m_endSegment.m_size = 0;
+	cp.m_endSegment.m_sizeRandom = 2;
+	cp.m_endSegment.m_color = Color4f(Color3f::blue * 0.47f, 0.04f);
+	cp.m_endSegment.m_colorRandom = Color4f::gray(0.2f, 0.2f);
+	
+	cp.m_texture.set("graph/particles/magicexplosion", 0, 500);
+	
+	cp.m_blendMode = RenderMaterial::Additive;
+	cp.m_spawnFlags = 0;
+	cp.m_looping = false;
+	g_particleParameters[ParticleParam_MagicMissileExplosion] = cp;
+	}
+	
+	
+	{
+	ParticleParams cp;
+	cp.m_nbMax = 100;
+	cp.m_life = 1500;
+	cp.m_lifeRandom = 0;
+	cp.m_pos = Vec3f(10.f);
+	cp.m_direction = Vec3f(0.f, -1.f, 0.f);
+	cp.m_angle = glm::radians(360.f);
+	cp.m_speed = 13;
+	cp.m_speedRandom = 10;
+	cp.m_gravity = Vec3f(0.f, 10.f, 0.f);
+	cp.m_rotation = 1.0f / (101 - 16);
+	
+	cp.m_startSegment.m_size = 20;
+	cp.m_startSegment.m_sizeRandom = 10;
+	cp.m_startSegment.m_color = Color4f::none;
+	cp.m_startSegment.m_colorRandom = Color4f::none;
+	cp.m_endSegment.m_size = 0;
+	cp.m_endSegment.m_sizeRandom = 2;
+	cp.m_endSegment.m_color = Color4f::rgba(1.f, 0.17f, 0.47f, 0.04f);
+	cp.m_endSegment.m_colorRandom = Color4f::gray(0.2f, 0.2f);
+	
+	cp.m_texture.set("graph/particles/(fx)_mr", 0, 500);
+	
+	cp.m_blendMode = RenderMaterial::Additive;
+	cp.m_spawnFlags = 0;
+	cp.m_looping = false;
+	g_particleParameters[ParticleParam_MagicMissileExplosionMar] = cp;
+	}
 	
 	{
 	ParticleParams cp;
