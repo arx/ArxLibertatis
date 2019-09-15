@@ -78,8 +78,6 @@ private:
 	
 	Vec3f eMove;
 	Vec3f pathways[40];
-	ParticleSystem pPSStream;
-	
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS05_H
