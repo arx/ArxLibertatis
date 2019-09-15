@@ -38,7 +38,6 @@ public:
 		m_speed = 130;
 		m_speedRandom = 100;
 		m_gravity = Vec3f(0.f, 10.f, 0.f);
-		m_flash = 0;
 		m_rotation = 1.0f / (101 - 16);
 	
 		m_startSegment.m_size = 5;
@@ -93,7 +92,6 @@ void particleParametersInit() {
 	cp.m_speed = 120;
 	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);
-	cp.m_flash = 0;
 	cp.m_rotation = 1.0f / (101 - 80);
 
 	cp.m_startSegment.m_size = 8;
@@ -123,7 +121,6 @@ void particleParametersInit() {
 	cp.m_speed = 120;
 	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);
-	cp.m_flash = 0;
 	cp.m_rotation = 1.0f / (101 - 80);
 
 	cp.m_startSegment.m_size = 8;
@@ -154,7 +151,6 @@ void particleParametersInit() {
 	cp.m_speed = 120;
 	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);
-	cp.m_flash = 0;
 	cp.m_rotation = 1.0f / (101 - 80);
 
 	cp.m_startSegment.m_size = 8;
@@ -183,7 +179,6 @@ void particleParametersInit() {
 	cp.m_speed = 0;
 	cp.m_speedRandom = 0;
 	cp.m_gravity = Vec3f(0.f);
-	cp.m_flash = 0;
 	cp.m_rotation = 0;
 	cp.m_rotationRandomDirection = false;
 	cp.m_rotationRandomStart = false;
@@ -218,7 +213,6 @@ void particleParametersInit() {
 	cp.m_speed = 0;
 	cp.m_speedRandom = 0;
 	cp.m_gravity = Vec3f(0.f);
-	cp.m_flash = 0;
 	cp.m_rotation = 0;
 	cp.m_rotationRandomDirection = false;
 	cp.m_rotationRandomStart = false;
@@ -253,7 +247,6 @@ void particleParametersInit() {
 	cp.m_speed = 200;
 	cp.m_speedRandom = 0;
 	cp.m_gravity = Vec3f(0, 17, 0);
-	cp.m_flash = 0;
 	cp.m_rotation = 1.0f / (101 - 80);
 	cp.m_rotationRandomDirection = true;
 	cp.m_rotationRandomStart = true;

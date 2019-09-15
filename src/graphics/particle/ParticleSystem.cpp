@@ -88,7 +88,6 @@ ParticleSystem::ParticleSystem()
 	m_parameters.m_speed = 10;
 	m_parameters.m_life = 1000;
 	m_parameters.m_pos = Vec3f(0.f);
-	m_parameters.m_flash = 0;
 	m_parameters.m_rotation = 0;
 	m_parameters.m_rotationRandomDirection = false;
 	m_parameters.m_rotationRandomStart = false;
@@ -302,10 +301,6 @@ void ParticleSystem::Render() {
 		Particle * p = *i;
 
 		if(p->isAlive()) {
-			if(m_parameters.m_flash > 0) {
-				if(Random::getf() < m_parameters.m_flash)
-					continue;
-			}
 
 			if(iNbTex > 0) {
 				inumtex = p->iTexNum;
