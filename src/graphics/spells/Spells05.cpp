@@ -152,16 +152,7 @@ void CPoisonProjectile::Update(GameDuration timeDelta)
 		if(!bOk) {
 			bOk = true;
 			// go
-			
-			ParticleParams pp = g_particleParameters[ParticleParam_Poison3];
-			pp.m_pos = Vec3f(fBetaRadSin * 20, 0.f, fBetaRadCos * 20);
-			pp.m_direction = -eMove * 0.1f;
-			
-			pPSStream.SetParams(pp);
 		}
-
-		pPSStream.Update(timeDelta);
-		pPSStream.SetPos(eCurPos);
 
 		fTrail = ((m_elapsed - GameDurationMs(750)) / (m_duration - GameDurationMs(750))) * 9 * (BEZIERPrecision + 2);
 	}

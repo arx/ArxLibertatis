@@ -275,39 +275,4 @@ void particleParametersInit() {
 	cp.m_looping = false;
 	g_particleParameters[ParticleParam_Poison1] = cp;
 	}
-	
-	{
-	ParticleParams cp = ParticleParams();
-	cp.m_nbMax = 100;
-	cp.m_life = 500;
-	cp.m_lifeRandom = 300;
-	cp.m_pos = Vec3f(20, 0.f, 20);
-
-	cp.m_direction = Vec3f(0.1f);
-
-	cp.m_angle = glm::radians(4.f);
-	cp.m_speed = 150;
-	cp.m_speedRandom = 50;
-	cp.m_gravity = Vec3f(0, 10, 0);
-	cp.m_flash = 0;
-	cp.m_rotation = 1.0f / (101 - 80);
-	cp.m_rotationRandomDirection = true;
-	cp.m_rotationRandomStart = true;
-
-	cp.m_startSegment.m_size = 2;
-	cp.m_startSegment.m_sizeRandom = 2;
-	cp.m_startSegment.m_color = Color4f(Color3f::green * 0.15f, 0.4f);
-	cp.m_startSegment.m_colorRandom = Color4f::rgba(0.2f, 0.08f, 0.f, 0.f);
-
-	cp.m_endSegment.m_size = 7;
-	cp.m_endSegment.m_sizeRandom = 5;
-	cp.m_endSegment.m_color = Color4f(Color3f::green * 0.1f, 0.4f);
-	cp.m_endSegment.m_colorRandom = Color4f::rgba(0.2f, 0.08f, 0.f, 0.f);
-
-	cp.m_blendMode = RenderMaterial::Screen;
-	cp.m_freq = 80;
-	cp.m_texture.set("graph/particles/big_greypouf", 0, 200);
-	cp.m_spawnFlags = 0;
-	g_particleParameters[ParticleParam_Poison3] = cp;
-	}
 }

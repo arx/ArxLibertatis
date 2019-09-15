@@ -31,7 +31,6 @@ enum ParticleParam {
 	ParticleParam_FireFieldBase,
 	ParticleParam_FireFieldFlame,
 	ParticleParam_Poison1,
-	ParticleParam_Poison3,
 	ParticleParam_MAX
 };
 
