@@ -132,6 +132,8 @@ std::string read(const path & p);
  * \brief Write a string into a file
  *
  * \param p The file to write to.
+ * \param contents The content to write
+ * \param size The size of the content to write
  *
  * \return true if the write succeeded
  */
@@ -141,6 +143,7 @@ bool write(const path & p, const char * contents, size_t size);
  * \brief Write an \ref std::string into a file
  *
  * \param p The file to write to.
+ * \param contents The content to write
  *
  * \return true if the write succeeded
  */
