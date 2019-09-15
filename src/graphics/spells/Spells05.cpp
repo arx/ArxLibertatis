@@ -75,27 +75,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <list>
 
-static void LaunchPoisonExplosion(const Vec3f & aePos) {
-	
-	// système de partoches pour l'explosion
-	ParticleSystem * pPS = new ParticleSystem();
-	
-	pPS->SetParams(g_particleParameters[ParticleParam_Poison1]);
-	pPS->SetPos(aePos);
-	pPS->Update(0);
-
-	std::list<Particle *>::iterator i;
-
-	for(i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i) {
-		Particle * pP = *i;
-
-		if(pP->isAlive()) {
-			pP->p3Velocity = glm::clamp(pP->p3Velocity, Vec3f(0, -100, 0), Vec3f(0, 100, 0));
-		}
-	}
-
-	g_particleManager.AddSystem(pPS);
-}
 
 CPoisonProjectile::CPoisonProjectile()
 	: eSrc(0.f)
@@ -198,9 +177,4 @@ void CPoisonProjectile::Render() {
 	}
 	
 	eCurPos = lastpos;
-	
-	if(fTrail >= (i * n)) {
-		LaunchPoisonExplosion(lastpos);
-	}
-	
 }
