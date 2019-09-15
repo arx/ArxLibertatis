@@ -157,7 +157,6 @@ public:
 	//! Gives back a formatted image of the selected content of QHexEdit
 	QString selectionToReadableString();
 	
-	//! \cond docNever
 	void setAddressOffset(int offset);
 	int addressOffset();
 	void setData(QByteArray const & data);
@@ -174,7 +173,6 @@ public:
 	bool isReadOnly();
 	const QFont & font() const;
 	void setFont(const QFont & font);
-	//! \endcond docNever
 	
 public slots:
 	
@@ -230,9 +228,7 @@ signals:
 	
 private:
 	
-	//! \cond docNever
 	QHexEditPrivate * qHexEdit_p;
-	//! \endcond docNever
 	
 };
 
