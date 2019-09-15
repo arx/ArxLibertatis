@@ -235,37 +235,4 @@ void particleParametersInit() {
 	
 	g_particleParameters[ParticleParam_FireFieldFlame] = cp;
 	}
-	
-	{
-	ParticleParams cp = ParticleParams();
-	cp.m_nbMax = 80;
-	cp.m_life = 1500;
-	cp.m_lifeRandom = 500;
-	cp.m_pos = Vec3f(5);
-	cp.m_direction = Vec3f(0.f, 1.f, 0.f);
-	cp.m_angle = glm::radians(360.f);
-	cp.m_speed = 200;
-	cp.m_speedRandom = 0;
-	cp.m_gravity = Vec3f(0, 17, 0);
-	cp.m_rotation = 1.0f / (101 - 80);
-	cp.m_rotationRandomDirection = true;
-	cp.m_rotationRandomStart = true;
-
-	cp.m_startSegment.m_size = 5;
-	cp.m_startSegment.m_sizeRandom = 3;
-	cp.m_startSegment.m_color = Color4f(Color3f::green * 0.3f, 0.f);
-	cp.m_startSegment.m_colorRandom = Color4f(Color3f::black, 0.59f);
-
-	cp.m_endSegment.m_size = 30;
-	cp.m_endSegment.m_sizeRandom = 5;
-	cp.m_endSegment.m_color = Color4f::none;
-	cp.m_endSegment.m_colorRandom = Color4f(Color3f::green * 0.1f, 0.08f);
-
-	cp.m_blendMode = RenderMaterial::AlphaAdditive;
-	cp.m_freq = -1;
-	cp.m_texture.set("graph/particles/big_greypouf", 0, 200);
-	cp.m_spawnFlags = 0;
-	cp.m_looping = false;
-	g_particleParameters[ParticleParam_Poison1] = cp;
-	}
 }
