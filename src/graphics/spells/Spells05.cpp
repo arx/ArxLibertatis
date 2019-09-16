@@ -82,7 +82,6 @@ CPoisonProjectile::CPoisonProjectile()
 	, lightIntensityFactor(1.f)
 	, fBetaRadCos(0.f)
 	, fBetaRadSin(0.f)
-	, bOk(false)
 	, fTrail(-1.f)
 	, eMove(0.f)
 {
@@ -100,8 +99,6 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	eSrc = _eSrc;
 
-	bOk = false;
-	
 	eMove = Vec3f(-fBetaRadSin * 2, 0.f, fBetaRadCos * 2);
 	
 	Vec3f rayEnd = eSrc;
@@ -126,13 +123,7 @@ void CPoisonProjectile::Update(GameDuration timeDelta)
 	}
 
 	// on passe de 5 à 100 partoches en 1.5secs
-	if(m_elapsed < GameDurationMs(750)) {
-	} else {
-		if(!bOk) {
-			bOk = true;
-			// go
-		}
-
+	if(m_elapsed >= GameDurationMs(750)) {
 		fTrail = ((m_elapsed - GameDurationMs(750)) / (m_duration - GameDurationMs(750))) * 9 * (BEZIERPrecision + 2);
 	}
 

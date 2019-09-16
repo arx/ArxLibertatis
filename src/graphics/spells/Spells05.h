@@ -73,7 +73,6 @@ private:
 	float fBetaRadCos;
 	float fBetaRadSin;
 	
-	bool  bOk;
 	float fTrail;
 	
 	Vec3f eMove;
