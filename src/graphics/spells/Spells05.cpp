@@ -80,8 +80,6 @@ CPoisonProjectile::CPoisonProjectile()
 	: eSrc(0.f)
 	, eCurPos(0.f)
 	, lightIntensityFactor(1.f)
-	, fBetaRadCos(0.f)
-	, fBetaRadSin(0.f)
 	, fTrail(-1.f)
 	, eMove(0.f)
 {
@@ -94,8 +92,8 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	SetDuration(m_duration);
 	
 	float fBetaRad = glm::radians(_fBeta);
-	fBetaRadCos = glm::cos(fBetaRad);
-	fBetaRadSin = glm::sin(fBetaRad);
+	float fBetaRadCos = glm::cos(fBetaRad);
+	float fBetaRadSin = glm::sin(fBetaRad);
 
 	eSrc = _eSrc;
 
