@@ -70,9 +70,6 @@ public:
 	
 private:
 	
-	float fBetaRadCos;
-	float fBetaRadSin;
-	
 	float fTrail;
 	
 	Vec3f eMove;
