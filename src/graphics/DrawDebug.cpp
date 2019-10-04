@@ -251,12 +251,24 @@ static void drawDebugPaths() {
 				center = path->pos;
 			}
 			if(closerThan(center, player.pos, DebugTextMaxDistance)) {
-				std::string controlledby;
-				if(!path->controled.empty()) {
-					controlledby = "Controlled by: " + path->controled;
+				drawTextAt(hFontDebug, center, path->name, color * 0.5f + Color::gray(0.5f));
+				float offset = 0;
+				if(path->flags & PATH_AMBIANCE) {
+					offset += float(hFontDebug->getLineHeight()) + 2.f;
+					drawTextAt(hFontDebug, center, "On enter play ambiance: " + path->ambiance.string(),
+					           Color::yellow, offset);
 				}
-				Color textcolor = color * 0.5f + Color::gray(0.5f);
-				drawTextAt(hFontDebug, center, path->name, textcolor, controlledby);
+				if(path->flags & PATH_RGB) {
+					std::ostringstream oss;
+					oss << "On enter change fog color to: rgb(" << path->rgb.r << ", " << path->rgb.g
+					    << ", " << path->rgb.b << ")";
+					offset += float(hFontDebug->getLineHeight()) + 2.f;
+					drawTextAt(hFontDebug, center, oss.str(), Color::cyan, offset);
+				}
+				if(!path->controled.empty()) {
+					offset += float(hFontDebug->getLineHeight()) + 2.f;
+					drawTextAt(hFontDebug, center, "Controlled by: " + path->controled, Color::white, offset);
+				}
 			}
 		}
 		
