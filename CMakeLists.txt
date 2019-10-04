@@ -1,12 +1,10 @@
-project(ArxLibertatis)
+cmake_minimum_required(VERSION 2.8.3...3.15)
 
-cmake_minimum_required(VERSION 2.8.3)
-
-if(CMAKE_VERSION VERSION_GREATER 3.12)
-	cmake_policy(VERSION 3.12)
-else()
+if(CMAKE_VERSION VERSION_LESS 3.12)
 	cmake_policy(VERSION ${CMAKE_VERSION})
 endif()
+
+project(arx-libertatis)
 
 
 # Define configuration options
