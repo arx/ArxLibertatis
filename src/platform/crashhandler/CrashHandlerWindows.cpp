@@ -108,7 +108,7 @@ bool CrashHandlerWindows::registerCrashHandlers() {
 	// Because there is one _purecall_handler for the whole process,
 	// calling this function immediately impacts all threads. The last
 	// caller on any thread sets the handler.
-	// http://msdn.microsoft.com/en-us/library/t296ys27.aspx
+	// https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/get-purecall-handler-set-purecall-handler
 	m_pPreviousCrashHandlers->m_pureCallHandler = _set_purecall_handler(PureCallHandler);
 	
 	// Catch new operator memory allocation exceptions.
@@ -177,14 +177,14 @@ bool CrashHandlerWindows::registerThreadCrashHandlers() {
 	// In a multithreaded environment, terminate functions are maintained
 	// separately for each thread. Each new thread needs to install its own
 	// terminate function. Thus, each thread is in charge of its own termination handling.
-	// http://msdn.microsoft.com/en-us/library/t6fk7h29.aspx
+	// https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/set-terminate-crt
 	threadHandlers.m_terminateHandler = set_terminate(TerminateHandler);
 	
 	// Catch unexpected() calls.
 	// In a multithreaded environment, unexpected functions are maintained
 	// separately for each thread. Each new thread needs to install its own
 	// unexpected function. Thus, each thread is in charge of its own unexpected handling.
-	// http://msdn.microsoft.com/en-us/library/h46t5b69.aspx
+	// https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/set-unexpected-crt
 	threadHandlers.m_unexpectedHandler = set_unexpected(UnexpectedHandler);
 	
 	// Catch a floating point error

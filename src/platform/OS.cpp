@@ -346,7 +346,7 @@ std::string getOSDistribution() {
 	#if ARX_PLATFORM == ARX_PLATFORM_LINUX
 	
 	// Get distribution information from SystemD's /etc/os-release
-	// Spec: http://www.freedesktop.org/software/systemd/man/os-release.html
+	// Spec: https://freedesktop.org/software/systemd/man/os-release.html
 	{
 		fs::ifstream ifs("/etc/os-release");
 		if(ifs.is_open()) {

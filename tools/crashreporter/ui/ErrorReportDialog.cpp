@@ -230,7 +230,7 @@ void ErrorReportDialog::onTaskCompleted() {
 		QString link = m_errorReport.GetIssueLink();
 		QString prefix = "https://bugs.arx-libertatis.org/arx/issues/";
 		if(link.startsWith(prefix)) {
-			link = "http://arx.vg/" + link.mid(prefix.length());
+			link = "https://arx.vg/" + link.mid(prefix.length());
 		}
 		QString htmlLink = QString("<a href=\"%1\">%1</a>").arg(link);
 		ui->lblIssueLink->setText(htmlLink);

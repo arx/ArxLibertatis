@@ -70,35 +70,35 @@ patch_ver='1.21'
 patch_name="ArxFatalis_${patch_ver}_MULTILANG.exe"
 patch_name_localized="ArxFatalis_${patch_ver}_%s.exe"
 patch_url_path="arxfatalis/patches/${patch_ver}/${patch_name}"
-patch_url_master="http://cdn.bethsoft.com/${patch_url_path}"
-patch_urls="http://arx.vg/${patch_name} ${patch_url_master}"
-patch_urls="$patch_urls http://web.archive.org/web/${patch_url_master}"
+patch_url_master="https://cdn.bethsoft.com/${patch_url_path}"
+patch_urls="https://arx.vg/${patch_name} ${patch_url_master}"
+patch_urls="$patch_urls https://web.archive.org/web/${patch_url_master}"
 
 # Name and download locations for the Japanese 1.02j patch
 patch_jp_ver='1.02j'
 patch_jp_name="arx_jpn_patch_${patch_jp_ver}.exe"
 patch_jp_url_master="http://www.capcom.co.jp/pc/arx/patch/${patch_jp_name}"
-patch_jp_urls="http://arx.vg/${patch_jp_name}" # master URL is no longer available
-patch_jp_urls="$patch_jp_urls http://web.archive.org/web/${patch_jp_url_master}"
+patch_jp_urls="https://arx.vg/${patch_jp_name}" # master URL is no longer available
+patch_jp_urls="$patch_jp_urls https://web.archive.org/web/${patch_jp_url_master}"
 
 # Name and store page for the GOG.com download
 gog_names='setup_arx_fatalis.exe setup_arx_fatalis_2.0.0.7.exe'
-gog_url='http://www.gog.com/gamecard/arx_fatalis'
+gog_url='https://www.gog.com/gamecard/arx_fatalis'
 
 # Store page for the Steam download
 steam_appid='1700'
-steam_url="http://store.steampowered.com/app/$steam_appid/"
+steam_url="https://store.steampowered.com/app/$steam_appid/Arx_Fatalis/"
 steam_install_dir="Arx Fatalis"
 
 # Name and wiki page for the demo download
 demo_names="arx_demo_english.zip arxdemoenglish.zip arx_demo_english.exe"
 demo_names="$demo_names arx_fatalis_demo_fr.zip arx_demo_german.exe arx_jpn_demo.exe"
-demo_url='http://arx.vg/demo-data'
+demo_url='https://arx.vg/demo-data'
 
-bug_report_url='http://arx.vg/bug'
+bug_report_url='https://arx.vg/bug'
 
-cabextract_url='http://www.cabextract.org.uk/'
-innoextract_url='http://constexpr.org/innoextract/'
+cabextract_url='https://cabextract.org.uk/'
+innoextract_url='https://constexpr.org/innoextract/'
 
 
 ##########################################################################################

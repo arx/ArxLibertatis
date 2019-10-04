@@ -54,8 +54,8 @@ void LegacyMathTest::setUp() {
 	using glm::mat3;
 	
 	// Data from:
-	// http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/steps/index.htm
-	// http://www.euclideanspace.com/maths/algebra/matrix/transforms/examples/index.htm
+	// https://euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/steps/index.htm
+	// https://euclideanspace.com/maths/algebra/matrix/transforms/examples/index.htm
 	
 	// Identity (no rotation)
 	addTestData(quat(    1.f,    0.0f,    0.0f,    0.0f), Anglef(  0,  0,  0), mat3( 1, 0, 0,  0, 1, 0,  0, 0, 1));

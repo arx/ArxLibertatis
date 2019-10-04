@@ -8,29 +8,29 @@
 
 Cross-platform port of Arx Fatalis
 
-Arx Libertatis is based on the publicly released [Arx Fatalis source code](http://web.archive.org/web/20180105233341/https://www.arkane-studios.com/uk/arx_downloads.php).
+Arx Libertatis is based on the publicly released [Arx Fatalis source code](https://web.archive.org/web/20180105233341/https://www.arkane-studios.com/uk/arx_downloads.php).
 The source code is available under the GPLv3+ license with some additional terms - see the COPYING and LICENSE files for details.
 
 ## Contact
 
-Website: [http://arx-libertatis.org/](http://arx-libertatis.org/)
+Website: [arx-libertatis.org](https://arx-libertatis.org/)
 
-Bug Tracker: [https://bugs.arx-libertatis.org/](https://bugs.arx-libertatis.org/)
+Bug Tracker: [bugs.arx-libertatis.org](https://bugs.arx-libertatis.org/)
 
 IRC: \#arxfatalis on irc.freenode.net
 
-Wiki: [http://wiki.arx-libertatis.org/](http://wiki.arx-libertatis.org/)
+Wiki: [wiki.arx-libertatis.org](https://wiki.arx-libertatis.org/)
 
-Reddit: [http://old.reddit.com/r/ArxFatalis/](http://old.reddit.com/r/ArxFatalis/)
+Reddit: [/r/ArxFatalis/](https://old.reddit.com/r/ArxFatalis/)
 
 ## Dependencies
 
-* **[CMake](http://www.cmake.org/) 2.8.3**+ (compile-time only)
-* **[zlib](http://zlib.net/)**
-* **[Boost](http://www.boost.org/) 1.48**+ (headers only¹)
-* **[GLM](http://glm.g-truc.net/) 0.9.5.0**+
-* **[FreeType](http://www.freetype.org/) 2.3.0**+
-* **OpenAL 1.1**+ ([OpenAL Soft](http://openal-soft.org/) strongly recommended!)
+* **[CMake](https://cmake.org/) 2.8.3**+ (compile-time only)
+* **[zlib](https://zlib.net/)**
+* **[Boost](https://www.boost.org/) 1.48**+ (headers only¹)
+* **[GLM](https://glm.g-truc.net/) 0.9.5.0**+
+* **[FreeType](https://freetype.org/) 2.3.0**+
+* **OpenAL 1.1**+ ([OpenAL Soft](https://openal-soft.org/) strongly recommended!)
 * **iconutil** (from Xcode) or **[icnsutil](https://github.com/pornel/libicns)** (macOS only)
 
 1. Systems without Win32 or POSIX filesystem support will also need the `filesystem` and `system` libraries from Boost.
@@ -39,7 +39,7 @@ Reddit: [http://old.reddit.com/r/ArxFatalis/](http://old.reddit.com/r/ArxFatalis
 
 There is currently a single rendering backend for OpenGL:
 
-* **[SDL](http://www.libsdl.org/)** **1.2.10**+ *or* **2.0.0**+
+* **[SDL](https://libsdl.org/)** **1.2.10**+ *or* **2.0.0**+
 * **OpenGL 1.5**+ (OpenGL 2.1 or newer is recommended) *or* **OpenGL ES-CM 1.x**¹
 * **[libepoxy](https://github.com/anholt/libepoxy) 1.2**+ (recommended) *or* **[GLEW](http://glew.sourceforge.net/) 1.5.2**+
 
@@ -49,8 +49,8 @@ There is currently a single rendering backend for OpenGL:
 
 Arx Libertatis comes with an optional gui crash reporter which has additional dependencies:
 
-* **[Qt](http://www.qt.io/) 4.7**+ or **5** (`QtCore`, `QtConcurrent`¹, `QtGui` and `QtWidgets`¹ libraries)
-* **[libcurl](http://curl.haxx.se/libcurl/) 7.20.0**+ (not required on Windows)
+* **[Qt](https://www.qt.io/) 4.7**+ or **5** (`QtCore`, `QtConcurrent`¹, `QtGui` and `QtWidgets`¹ libraries)
+* **[libcurl](https://curl.haxx.se/libcurl/) 7.20.0**+ (not required on Windows)
 * **GDB** (Linux-only, optional, run-time only)
 * **DbgHelp** (Windows-only)
 
@@ -68,12 +68,12 @@ Building and running tests has additional dependencies:
 
 Building checkouts from git on their own requires additional dependencies:
 * **[Inkscape](https://inkscape.org/)**
-* **[ImageMagick](http://www.imagemagick.org/script/index.php)**
+* **[ImageMagick](https://imagemagick.org/)**
 * **[OptiPNG](http://optipng.sourceforge.net/)**
 
 These are needed to render and scale the SVG icons, which currently only render correctly in Inkscape. Release and development snapshot source tarballs include pre-built icon files and do not need these dependencies to build.
 
-To avoid the Inkscape (as well as ImageMagick and OptiPNG) dependency for git builds, pre-built icons can be downloaded from http://arx-libertatis.org/files/data/ or the [ArxLibertatisData](https://github.com/arx/ArxLibertatisData/) repository. The required data version is listed in the VERSION file. Place `arx-libertatis-data-$version` directory into the build directory or tell the build system about it's location using the `DATA_FILES` CMake variable (`-DDATA_FILES=…` on the command-line).
+To avoid the Inkscape (as well as ImageMagick and OptiPNG) dependency for git builds, pre-built icons can be downloaded from https://arx-libertatis.org/files/data/ or the [ArxLibertatisData](https://github.com/arx/ArxLibertatisData/) repository. The required data version is listed in the VERSION file. Place `arx-libertatis-data-$version` directory into the build directory or tell the build system about it's location using the `DATA_FILES` CMake variable (`-DDATA_FILES=…` on the command-line).
 
 Alternatively, icons can be disabled by setting the `ICON_TYPE` CMake variable to `none`. See **OPTIONS.md** for other supported icon type values.
 
@@ -93,9 +93,9 @@ To install the binaries system-wide, run as root:
 
 Alternatively you can run the game by specifying the full path to the `arx` binary in the `build` directory.
 
-The wiki has more detailed instructions on [compiling under Linux](http://wiki.arx-libertatis.org/Downloading_and_Compiling_under_Linux).
+The wiki has more detailed instructions on [compiling under Linux](https://wiki.arx-libertatis.org/Downloading_and_Compiling_under_Linux).
 
-Getting all the dependencies set up for Windows is more tricky. Pre-built dependencies are available in the [ArxWindows repository](https://github.com/arx/ArxWindows) and [instructions on how to use them](http://wiki.arx-libertatis.org/Downloading_and_Compiling_under_Windows) are available on the wiki.
+Getting all the dependencies set up for Windows is more tricky. Pre-built dependencies are available in the [ArxWindows repository](https://github.com/arx/ArxWindows) and [instructions on how to use them](https://wiki.arx-libertatis.org/Downloading_and_Compiling_under_Windows) are available on the wiki.
 
 ### Build options:
 
@@ -135,9 +135,9 @@ Advanced options not listed here are documented in **OPTIONS.md**.
 
 ## Data file, config and savegame locations
 
-You will need to [get either the full game or demo data of Arx Fatalis](http://arx.vg/data).
+You will need to [get either the full game or demo data of Arx Fatalis](https://arx.vg/data).
 
-Where arx will look for data files and write config and save files depends on the operating system and environment - the wiki has a page detailing the [full data directory detection algorithm](http://arx.vg/paths).
+Where arx will look for data files and write config and save files depends on the operating system and environment - the wiki has a page detailing the [full data directory detection algorithm](https://arx.vg/paths).
 
 **For Unix-like systems**:
 The game will try to rename all used files in the user directory (but not the data directory) to lowercase on the first run. System-wide installations with case-sensitive filesystems always need to manually rename the files to lowercase. The `arx-install-data` script can be used to install the data files, convert them to lowercase and verify that all required files are present.
@@ -199,7 +199,7 @@ See the `arx --help` and `man arx` output for more details.
 
 ## Scripts
 
-The `arx-install-data` script can extract and install the game data under Linux and FreeBSD from the CD, demo, [GOG.com](http://www.gog.com/) installer or any Arx Fatalis install (such as on Steam) - simply run it and follow the GUI dialogs. Also see the [wiki page on installing the game data under non-Windows systems](http://arx.vg/install-data).
+The `arx-install-data` script can extract and install the game data under Linux and FreeBSD from the CD, demo, [GOG.com](https://www.gog.com/) installer or any Arx Fatalis install (such as on Steam) - simply run it and follow the GUI dialogs. Also see the [wiki page on installing the game data under non-Windows systems](https://arx.vg/install-data).
 
 Or, if you prefer a command-line interface, run it as
 
