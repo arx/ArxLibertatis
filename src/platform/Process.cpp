@@ -42,7 +42,7 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 
 #if (ARX_HAVE_FORK && ARX_HAVE_EXECVP) \
  || ((ARX_HAVE_PIPE2 || ARX_HAVE_PIPE) && ARX_HAVE_READ && ARX_HAVE_CLOSE) \
- || ARX_HAVE_GETPID
+ || ARX_HAVE_GETPID || ARX_HAVE_UNISTD_ENVIRON
 #include <unistd.h>
 #endif
 
@@ -52,6 +52,8 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 
 #if ARX_HAVE_POSIX_SPAWNP
 #include <spawn.h>
+#if !ARX_HAVE_UNISTD_ENVIRON
+extern "C" {
 #if defined(__FreeBSD__) && defined(__GNUC__) && __GNUC__ >= 4
 /*
  * When combining -flto and -fvisibility=hidden we and up with a hidden
@@ -60,6 +62,8 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 extern char ** environ __attribute__((visibility("default"))); // NOLINT
 #else
 extern char ** environ; // NOLINT
+#endif
+}
 #endif
 #endif
 

@@ -22,6 +22,7 @@
 #cmakedefine01 ARX_HAVE_SETPGID
 #cmakedefine01 ARX_HAVE_EXECVP
 #cmakedefine01 ARX_HAVE_POSIX_SPAWNP
+#cmakedefine01 ARX_HAVE_UNISTD_ENVIRON
 #cmakedefine01 ARX_HAVE_WAITPID
 #cmakedefine01 ARX_HAVE_SIGACTION
 #cmakedefine01 ARX_HAVE_GETPID
