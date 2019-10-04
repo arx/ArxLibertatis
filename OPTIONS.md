@@ -49,7 +49,8 @@ The config directory defaults to the user directory if not specified.
 Arx Libertatis adjust the compiler flags to provide an optimal configuration for developers and most users. The following CMake options can be used to disable this and use only the default flags provided by the build environment.
 
 * `SET_WARNING_FLAGS` (default: `ON`): Adjust compiler warning flags. This should not affect the produced binaries but is useful to catch potential problems.
-* `SET_OPTIMIZATION_FLAGS` (default: `ON`): Adjust compiler optimization flags. For non-debug builds the only thing this does is instruct the linker to only link against libraries that are actually needed.
+* `SET_NOISY_WARNING_FLAGS` (default: `OFF`): Enable warnings with false positives many cases that still need to be fixed
+* `SET_OPTIMIZATION_FLAGS` (default: `ON`): Adjust compiler optimization flags.
 * `FASTLINK` (default: `OFF`¹: Optimize for link speed
 * `USE_LTO` (default: `ON`²: Use link-time code generation
 * `CXX_STD_VERSION` (default: `2017`): Maximum C++ standard version to enable.
