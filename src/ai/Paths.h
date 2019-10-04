@@ -86,8 +86,7 @@ enum PathFlag {
 	PATH_LOOP     = 1 << 0,
 	PATH_AMBIANCE = 1 << 1,
 	PATH_RGB      = 1 << 2,
-	PATH_FARCLIP  = 1 << 3,
-	PATH_REVERB   = 1 << 4
+	PATH_FARCLIP  = 1 << 3
 };
 DECLARE_FLAGS(PathFlag, PathFlags)
 DECLARE_FLAGS_OPERATORS(PathFlags)

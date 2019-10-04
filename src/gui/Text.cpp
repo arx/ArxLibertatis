@@ -477,8 +477,7 @@ void drawTextCentered(Font * font, Vec2f center, const std::string & text, Color
 	font->draw(int(corner.x), int(corner.y), text, color);
 }
 
-void drawTextAt(Font * font, const Vec3f & pos, const std::string & text, Color color,
-                const std::string & text2, Color color2) {
+void drawTextAt(Font * font, const Vec3f & pos, const std::string & text, Color color, float offset) {
 	
 	// Project the 3d coordinates to get an on-screen position
 	Vec4f p = worldToClipSpace(pos);
@@ -487,12 +486,7 @@ void drawTextAt(Font * font, const Vec3f & pos, const std::string & text, Color 
 		return;
 	}
 	
-	Vec2f pos2d = Vec2f(p) / p.w;
+	Vec2f pos2d = Vec2f(p) / p.w + Vec2f(0, offset);
 	drawTextCentered(font, pos2d, text, color);
-	
-	if(!text2.empty()) {
-		pos2d.y += font->getLineHeight() + 2;
-		drawTextCentered(font, pos2d, text2, color2);
-	}
 	
 }
