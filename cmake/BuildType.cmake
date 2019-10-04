@@ -104,11 +104,9 @@ if(MSVC)
 		# Disable RTTI
 		add_definitions(/GR-) # No RTTI
 		foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE)
-			string(REGEX REPLACE "/GR( |$)" "/GR-\\1" ${flag_var} "${${flag_var}}")
+			string(REGEX REPLACE "/GR( |$)" "" ${flag_var} "${${flag_var}}")
+			set(${flag_var} "${${flag_var}} /GR-")
 		endforeach(flag_var)
-		
-		# Enable multiprocess build
-		add_definitions(/MP)
 		
 	endif()
 	
@@ -116,20 +114,24 @@ if(MSVC)
 		
 		# Disable Run time checks
 		if(NOT DEBUG_EXTRA)
-			string(REGEX REPLACE "/RTC1" "" ${flag_var} "${${flag_var}}")
+			string(REGEX REPLACE "(^| )/RTC1( |$)" "\\1" ${flag_var} "${${flag_var}}")
 		endif()
 		
 		# Change runtime library from "Multi-threaded Debug DLL" to "Multi-threaded DLL"
 		if(NOT DEBUG_EXTRA)
-			string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
+			string(REGEX REPLACE "(^| )/MDd( |$)" "\\1" ${flag_var} "${${flag_var}}")
+			set(${flag_var} "${${flag_var}} /MD")
+			set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
 		endif()
 		
 		# Remove definition of _DEBUG as it might conflict with libs we're linking with
-		string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")
+		string(REGEX REPLACE "(^| )/D_DEBUG( |$)" "\\1" ${flag_var} "${${flag_var}}")
+		set(${flag_var} "${${flag_var}} /DNDEBUG")
 		
 		# Force compiler warning level
 		if(SET_WARNING_FLAGS)
-			string(REGEX REPLACE "/W[0-4]" "/W4" ${flag_var} "${${flag_var}}")
+			string(REGEX REPLACE "(^| )/W[0-4]( |$)" "\\1" ${flag_var} "${${flag_var}}")
+			set(${flag_var} "${${flag_var}} /W4")
 		endif()
 		
 	endforeach(flag_var)
@@ -172,6 +174,7 @@ else(MSVC)
 	
 	if(USE_LTO)
 		add_cxxflag("-flto")
+		# TODO set CMAKE_INTERPROCEDURAL_OPTIMIZATION instead
 		add_ldflag("-fuse-linker-plugin")
 	endif()
 	
@@ -371,14 +374,16 @@ else(MSVC)
 			# set debug symbol level to -g3
 			check_compiler_flag(RESULT "-g3")
 			if(NOT RESULT STREQUAL "")
-				string(REGEX REPLACE "-g(|[0-9]|gdb)" "" CMAKE_CXX_FLAGS_DEBUG
-				       "${CMAKE_CXX_FLAGS_DEBUG}")
+				string(REGEX REPLACE "(^| )-g(|[0-9]|gdb)( |$)" "\\1" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 				set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
 			endif()
 			
 			# disable optimizations
-			check_compiler_flag(RESULT "-O0")
-			string(REGEX REPLACE "-O[0-9]" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+			check_compiler_flag(RESULT "-Og")
+			if(NOT RESULT)
+				check_compiler_flag(RESULT "-O0")
+			endif()
+			string(REGEX REPLACE "(^| )-O[0-9g]( |$)" "\\1" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 			set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
 			
 		elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
