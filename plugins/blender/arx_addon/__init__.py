@@ -23,7 +23,7 @@ bl_info = {
     "location": "",
     "description": "Addon for managing Arx Libertatis assets",
     "warning": "This is alpha software, read the documentation, keep your original blend files!",
-    "wiki_url": "http://wiki.arx-libertatis.org/Blender",
+    "wiki_url": "https://wiki.arx-libertatis.org/Blender",
     "tracker_url": "https://bugs.arx-libertatis.org/arx/issues/new",
     "category": "Import-Export",
     "support": "COMMUNITY",

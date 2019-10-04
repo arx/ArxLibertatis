@@ -25,13 +25,13 @@ namespace url {
 typedef const char * const str_t;
 
 //! Documentation on how to get the game data
-static str_t help_get_data = "http://arx.vg/data";
+static str_t help_get_data = "https://arx.vg/data";
 
 //! Documentation on how and where to install the game data
-static str_t help_install_data = "http://arx.vg/paths";
+static str_t help_install_data = "https://arx.vg/paths";
 
 //! Where users can report bugs
-static str_t bug_report = "http://arx.vg/bug";
+static str_t bug_report = "https://arx.vg/bug";
 
 } // namespace url
 

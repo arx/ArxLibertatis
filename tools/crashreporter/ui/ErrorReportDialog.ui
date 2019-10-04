@@ -440,7 +440,7 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QLabel" name="lblLoginInfo">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can enter your &lt;a href=&quot;http://bugs.arx-libertatis.org/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;bugs.arx-libertatis.org&lt;/span&gt;&lt;/a&gt; login information in order to have this crash report associated with your username. If you do not have an account yet, you can freely &lt;a href=&quot;http://bugs.arx-libertatis.org/login&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;create one here&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;You can leave these fields empty if you prefer. In this case, the issue will be assigned to a default user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can enter your &lt;a href=&quot;https://bugs.arx-libertatis.org/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;bugs.arx-libertatis.org&lt;/span&gt;&lt;/a&gt; login information in order to have this crash report associated with your username. If you do not have an account yet, you can freely &lt;a href=&quot;https://bugs.arx-libertatis.org/login&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;create one here&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;You can leave these fields empty if you prefer. In this case, the issue will be assigned to a default user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="scaledContents">
           <bool>false</bool>
@@ -692,7 +692,7 @@ Thank you!</string>
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
-          <string>&lt;a href=&quot;http://arx.vg/bugs&quot;&gt;http://arx.vg/bugs&lt;/a&gt;</string>
+          <string>&lt;a href=&quot;https://arx.vg/bugs&quot;&gt;https://arx.vg/bugs&lt;/a&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -867,7 +867,7 @@ Thank you!</string>
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
-          <string>&lt;a href=&quot;http://arx.vg/bug&quot;&gt;http://arx.vg/bug&lt;/a&gt;</string>
+          <string>&lt;a href=&quot;https://arx.vg/bug&quot;&gt;https://arx.vg/bug&lt;/a&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -915,7 +915,7 @@ Thank you!</string>
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>&lt;a href=&quot;http://arx-libertatis.org/&quot;&gt;http://arx-libertatis.org/&lt;/a&gt;</string>
+        <string>&lt;a href=&quot;https://arx-libertatis.org/&quot;&gt;https://arx-libertatis.org/&lt;/a&gt;</string>
        </property>
        <property name="margin">
         <number>5</number>

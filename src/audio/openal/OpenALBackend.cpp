@@ -357,7 +357,7 @@ aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrt
 		 * even if a valid device is given. Since the only specification I can find for
 		 * ALC_ENUMERATE_ALL_EXT [1] doesn't say anything about using a device
 		 * with ALC_ALL_DEVICES_SPECIFIER, only do that if ALC_DEVICE_SPECIFIER is useless.
-		 *  [1] http://icculus.org/alextreg/wiki/ALC_ENUMERATE_ALL_EXT
+		 *  [1] https://icculus.org/alextreg/wiki/ALC_ENUMERATE_ALL_EXT
 		 */
 		deviceName = alcGetString(device, ALC_ALL_DEVICES_SPECIFIER);
 	}

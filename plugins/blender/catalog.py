@@ -1,5 +1,5 @@
 # this script requires blender as a module:
-# http://wiki.blender.org/index.php/User:Ideasman42/BlenderAsPyModule
+# https://archive.blender.org/wiki/index.php/User:Ideasman42/BlenderAsPyModule/
 
 import argparse
 

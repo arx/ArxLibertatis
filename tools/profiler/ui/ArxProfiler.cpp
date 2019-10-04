@@ -230,7 +230,7 @@ ProfilerView::ProfilerView(QWidget * parent)
 	m_scene = new QGraphicsScene(this);
 	// This is a workaround for bad performance using the default BspTreeIndex
 	// Maybe we are hitting this bug:
-	// http://stackoverflow.com/questions/6164543/qgraphicsscene-item-coordinates-affect-performance
+	// https://stackoverflow.com/questions/6164543/qgraphicsscene-item-coordinates-affect-performance
 	m_scene->setItemIndexMethod(QGraphicsScene::NoIndex);
 	
 	setScene(m_scene);
