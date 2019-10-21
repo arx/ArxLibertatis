@@ -178,21 +178,6 @@ bool create_directory(const path & p) {
 	return ret;
 }
 
-bool create_directories(const path & p) {
-	
-	if(p.empty()) {
-		return true;
-	}
-	
-	path parent = p.parent();
-	if(!exists(parent)) {
-		if(!create_directories(parent)) {
-			return false;
-		}
-	}
-	
-	return create_directory(p);
-}
 
 static void update_last_write_time(const path & p) {
 	

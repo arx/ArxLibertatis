@@ -21,9 +21,26 @@
 
 #include <iterator>
 
+#include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"
 
 namespace fs {
+
+bool create_directories(const path & p) {
+	
+	if(p.empty()) {
+		return true;
+	}
+	
+	path parent = p.parent();
+	if(!exists(parent)) {
+		if(!create_directories(parent)) {
+			return false;
+		}
+	}
+	
+	return create_directory(p);
+}
 
 std::string read(const path & p) {
 	
