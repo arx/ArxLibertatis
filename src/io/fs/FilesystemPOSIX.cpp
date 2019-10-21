@@ -98,22 +98,6 @@ bool create_directory(const path & p) {
 	return !ret || is_directory(p);
 }
 
-bool create_directories(const path & p) {
-	
-	if(p.empty()) {
-		return true;
-	}
-	
-	path parent = p.parent();
-	if(!exists(parent)) {
-		if(!create_directories(parent)) {
-			return false;
-		}
-	}
-	
-	return create_directory(p);
-}
-
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	
 	if(!overwrite && exists(to_p)) {

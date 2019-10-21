@@ -79,12 +79,6 @@ bool create_directory(const path & p) {
 	return !ec;
 }
 
-bool create_directories(const path & p) {
-	boost::system::error_code ec;
-	fs_boost::create_directories(p.string(), ec);
-	return !ec;
-}
-
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	boost::system::error_code ec;
 	BOOST_SCOPED_ENUM(fs_boost::copy_option) o;
