@@ -30,26 +30,44 @@ namespace fs {
 
 class path;
 
+enum FileType {
+	DoesNotExist,
+	Directory,
+	RegularFile,
+	SpecialFile
+};
+
+/*!
+ * \brief Check if a path exists and determine the type
+ */
+FileType get_type(const path & p);
+
 /*!
  * \brief Check if a file (directory or regular file) exists
  *
  * \return true if the file exists, false if it doesn't exist or there was an error
  */
-bool exists(const path & p);
+inline bool exists(const path & p) {
+	return get_type(p) != DoesNotExist;
+}
 
 /*!
  * \brief Check if a path points to a directory
  *
  * \return true if the p exists and is a directory, false otherwise
  */
-bool is_directory(const path & p);
+inline bool is_directory(const path & p) {
+	return get_type(p) == Directory;
+}
 
 /*!
  * \brief Check if a path points to a regular file
  *
  * \return true if the p exists and is a regular file, false otherwise.
  */
-bool is_regular_file(const path & p);
+inline bool is_regular_file(const path & p) {
+	return get_type(p) == RegularFile;
+}
 
 /*!
  * \brief Get the last write time of a file
@@ -160,6 +178,7 @@ path current_path();
 class directory_iterator {
 	
 	//! Prevent postfix ++
+	
 	const directory_iterator operator++(int dummy);
 	
 	//! Prevent assignment
@@ -217,6 +236,11 @@ public:
 	std::string name();
 	
 	/*!
+	 * \brief Get the type of the current directory entry (file or subdirectory)
+	 */
+	FileType type();
+	
+	/*!
 	 * \brief Check if the current directory entry is a subdirectory
 	 *
 	 * The result of this function is equivalent to calling \ref fs::is_directory with the
@@ -224,7 +248,9 @@ public:
 	 *
 	 * \ref end() == \c false
 	 */
-	bool is_directory();
+	bool is_directory() {
+		return type() == Directory;
+	}
 	
 	/*!
 	 * \brief Check if the current directory entry is a plain file
@@ -234,7 +260,9 @@ public:
 	 *
 	 * \ref end() == \c false
 	 */
-	bool is_regular_file();
+	bool is_regular_file() {
+		return type() == RegularFile;
+	}
 	
 };
 

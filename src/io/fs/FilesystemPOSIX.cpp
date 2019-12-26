@@ -38,25 +38,30 @@
 
 namespace fs {
 
-bool exists(const path & p) {
-	if(p.empty()) {
-		return true;
+static FileType stat_to_filetype(const struct stat & buf) {
+	
+	if((buf.st_mode & S_IFMT) == S_IFDIR) {
+		return Directory;
 	}
-	struct stat buf;
-	return !stat(p.string().c_str(), &buf);
+	if((buf.st_mode & S_IFMT) == S_IFREG) {
+		return RegularFile;
+	}
+	
+	return SpecialFile;
 }
 
-bool is_directory(const path & p) {
+FileType get_type(const path & p) {
+	
 	if(p.empty()) {
-		return true;
+		return Directory;
 	}
+	
 	struct stat buf;
-	return !stat(p.string().c_str(), &buf) && ((buf.st_mode & S_IFMT) == S_IFDIR);
-}
-
-bool is_regular_file(const path & p) {
-	struct stat buf;
-	return !stat(p.string().c_str(), &buf) && ((buf.st_mode & S_IFMT) == S_IFREG);
+	if(!stat(p.string().c_str(), &buf)) {
+		return DoesNotExist;
+	}
+	
+	return stat_to_filetype(buf);
 }
 
 std::time_t last_write_time(const path & p) {
@@ -194,17 +199,17 @@ static void iterator_handle_free(void * handle) {
 	ARX_UNUSED(handle);
 }
 
-static mode_t dirstat_fallback(void * handle, const char * name) {
+static FileType get_type_at(void * handle, const char * name) {
 	
 	int fd = dirfd(iterator_handle_get(handle));
 	arx_assert(fd != -1);
 	
-	struct stat result;
-	int ret = fstatat(fd, name, &result, 0);
-	arx_assert_msg(ret == 0, "fstatat failed: %d", ret);
-	ARX_UNUSED(ret);
+	struct stat buf;
+	if(!fstatat(fd, name, &buf, 0)) {
+		return DoesNotExist;
+	}
 	
-	return result.st_mode;
+	return stat_to_filetype(buf);
 }
 
 #else
@@ -227,33 +232,11 @@ static void iterator_handle_free(void * handle) {
 	delete reinterpret_cast<iterator_handle *>(handle);
 }
 
-static mode_t dirstat_fallback(void * handle, const char * name) {
-	
-	fs::path file = reinterpret_cast<iterator_handle *>(handle)->path / name;
-	struct stat result;
-	int ret = stat(file.string().c_str(), &result);
-	arx_assert_msg(ret == 0, "stat failed: %d", ret);
-	ARX_UNUSED(ret);
-	
-	return result.st_mode;
+static FileType get_type_at(void * handle, const char * name) {
+	return get_type(reinterpret_cast<iterator_handle *>(handle)->path / name);
 }
 
 #endif
-
-static mode_t dirstat(void * handle, const void * buf) {
-	
-	const dirent * entry = reinterpret_cast<const dirent *>(buf);
-	arx_assert(entry != NULL);
-	#if defined(DT_UNKNOWN) && defined(DT_DIR) && defined(DT_FILE)
-	if(entry->d_type == DT_FILE) {
-		return S_IFREG;
-	} else if(entry->d_type == DT_DIR) {
-		return S_IFDIR;
-	}
-	#endif
-	
-	return dirstat_fallback(handle, entry->d_name);
-}
 
 static void do_readdir(void * _handle, void * & _buffer) {
 	
@@ -346,14 +329,28 @@ std::string directory_iterator::name() {
 	return reinterpret_cast<dirent *>(m_buffer)->d_name;
 }
 
-bool directory_iterator::is_directory() {
+FileType directory_iterator::type() {
+	
 	arx_assert(m_buffer != NULL);
-	return ((dirstat(m_handle, m_buffer) & S_IFMT) == S_IFDIR);
-}
-
-bool directory_iterator::is_regular_file() {
-	arx_assert(m_buffer != NULL);
-	return ((dirstat(m_handle, m_buffer) & S_IFMT) == S_IFREG);
+	
+	const dirent * entry = reinterpret_cast<const dirent *>(m_buffer);
+	#if defined(DT_DIR)
+	if(entry->d_type == DT_DIR) {
+		return Directory;
+	}
+	#endif
+	#if defined(DT_REG)
+	if(entry->d_type == DT_REG) {
+		return RegularFile;
+	}
+	#endif
+	#if defined(DT_UNKNOWN) && defined(DT_LNK)
+	if(entry->d_type != DT_UNKNOWN && entry->d_type != DT_LNK) {
+		return SpecialFile;
+	}
+	#endif
+	
+	return get_type_at(m_handle, entry->d_name);
 }
 
 } // namespace fs
