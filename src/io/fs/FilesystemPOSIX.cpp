@@ -79,22 +79,6 @@ bool remove(const path & p) {
 	return !ret || ret == ENOENT || ret == ENOTDIR;
 }
 
-bool remove_all(const path & p) {
-	
-	struct stat buf;
-	if(stat(p.string().c_str(), &buf)) {
-		return true;
-	}
-	
-	if((buf.st_mode & S_IFMT) == S_IFDIR) {
-		for(directory_iterator it(p); !it.end(); ++it) {
-			remove_all(p / it.name());
-		}
-	}
-	
-	return remove(p);
-}
-
 bool create_directory(const path & p) {
 	if(p.empty()) {
 		return true;
