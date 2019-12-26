@@ -291,6 +291,14 @@ thread_id_type Thread::getCurrentThreadId() {
 
 #endif
 
+#if ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64
+#ifdef _MM_DENORMALS_ZERO_ON
+#define ARX_SSE_DENORMALS_ZERO_ON _MM_DENORMALS_ZERO_ON
+#else
+#define ARX_SSE_DENORMALS_ZERO_ON 0x0040
+#endif
+#endif
+
 void Thread::disableFloatDenormals() {
 	
 	#if ARX_ARCH == ARX_ARCH_X86 && !ARX_HAVE_SSE
@@ -340,17 +348,18 @@ void Thread::disableFloatDenormals() {
 		#endif
 		unsigned mxcsr_mask;
 		std::memcpy(&mxcsr_mask, buffer + 28, sizeof(mxcsr_mask));
-		have_daz = (mxcsr_mask & _MM_DENORMALS_ZERO_ON) != 0;
+		have_daz = (mxcsr_mask & ARX_SSE_DENORMALS_ZERO_ON) != 0;
 	}
 	#endif
 	
 	#endif // !ARX_HAVE_SSE3
 	
 	if(have_daz) {
-		#if defined(_MM_SET_DENORMALS_ZERO_MODE) && defined(_MM_DENORMALS_ZERO_ON)
-		_MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON); // SSE3 (and most SSE2 CPUs)
+		// SSE3 (and most SSE2 CPUs)
+		#if defined(_MM_SET_DENORMALS_ZERO_MODE)
+		_MM_SET_DENORMALS_ZERO_MODE(ARX_SSE_DENORMALS_ZERO_ON);
 		#else
-		_mm_setcsr(_mm_getcsr() | 0x0040);
+		_mm_setcsr(_mm_getcsr() | ARX_SSE_DENORMALS_ZERO_ON);
 		#endif
 	}
 	
