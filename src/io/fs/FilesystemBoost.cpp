@@ -82,12 +82,6 @@ bool remove(const path & p) {
 	return !ec;
 }
 
-bool remove_all(const path & p) {
-	boost::system::error_code ec;
-	fs_boost::remove_all(p.string(), ec);
-	return !ec;
-}
-
 bool create_directory(const path & p) {
 	boost::system::error_code ec;
 	fs_boost::create_directory(p.string(), ec);

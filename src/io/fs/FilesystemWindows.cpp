@@ -120,29 +120,6 @@ bool remove(const path & p) {
 	return succeeded;
 }
 
-bool remove_all(const path & p) {
-	
-	if(!exists(p)) {
-		return true;
-	}
-	
-	bool succeeded = true;
-	
-	if(is_directory(p)) {
-		for(directory_iterator it(p); !it.end(); ++it) {
-			if(it.is_regular_file()) {
-				succeeded &= remove(p / it.name());
-			} else {
-				succeeded &= remove_all(p / it.name());
-			}
-		}
-	}
-	
-	succeeded &= remove(p);
-	
-	return succeeded;
-}
-
 bool create_directory(const path & p) {
 	
 	if(p.empty()) {

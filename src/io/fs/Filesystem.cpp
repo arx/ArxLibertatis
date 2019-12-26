@@ -42,6 +42,32 @@ bool create_directories(const path & p) {
 	return create_directory(p);
 }
 
+static void clear_directory(const path & p) {
+	
+	for(directory_iterator it(p); !it.end(); ++it) {
+		fs::path entry = p / it.name();
+		if(it.is_directory()) {
+			clear_directory(entry);
+		}
+		remove(entry);
+	}
+	
+}
+
+bool remove_all(const path & p) {
+	
+	FileType type = get_type(p);
+	if(type == DoesNotExist) {
+		return true;
+	}
+	
+	if(type == Directory) {
+		clear_directory(p);
+	}
+	
+	return remove(p);
+}
+
 std::string read(const path & p) {
 	
 	std::string result;
