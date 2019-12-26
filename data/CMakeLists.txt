@@ -119,7 +119,7 @@ add_icon(arx-libertatis
 	INSTALL
 )
 
-add_icon(TARGET arx-libertatis-logo arx-libertatis-logo.svg 58 512)
+add_icon(TARGET arx-libertatis-logo arx-libertatis-logo.svg 58 3080x512)
 
 add_custom_target(data DEPENDS
 	arx-libertatis-icon
