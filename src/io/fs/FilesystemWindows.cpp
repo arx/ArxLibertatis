@@ -29,42 +29,26 @@
 #include "io/fs/FilePath.h"
 #include "io/log/Logger.h"
 
+#include "platform/Thread.h"
 #include "platform/WindowsUtils.h"
 
 namespace fs {
 
-bool exists(const path & p) {
+FileType get_type(const path & p) {
 	
 	if(p.empty()) {
-		return true;
-	}
-	
-	DWORD result = GetFileAttributesW(platform::WideString(p.string()));
-	return result != INVALID_FILE_ATTRIBUTES;
-}
-
-bool is_directory(const path & p) {
-	
-	if(p.empty()) {
-		return true;
+		return Directory;
 	}
 	
 	DWORD attributes = GetFileAttributesW(platform::WideString(p.string()));
 	if(attributes == INVALID_FILE_ATTRIBUTES) {
-		return false;
+		return DoesNotExist;
+	} else if(attributes & FILE_ATTRIBUTE_DIRECTORY) {
+		return Directory;
+	} else {
+		return RegularFile;
 	}
 	
-	return (attributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
-}
-
-bool is_regular_file(const path & p) {
-	
-	DWORD attributes = GetFileAttributesW(platform::WideString(p.string()));
-	if(attributes == INVALID_FILE_ATTRIBUTES) {
-		return false;
-	}
-	
-	return (attributes & FILE_ATTRIBUTE_DIRECTORY) == 0;
 }
 
 std::time_t last_write_time(const path & p) {
@@ -300,22 +284,18 @@ std::string directory_iterator::name() {
 	return platform::WideString::toUTF8(data->cFileName);
 }
 
-bool directory_iterator::is_directory() {
+FileType directory_iterator::type() {
 	
 	arx_assert(m_buffer != NULL);
 	
 	const WIN32_FIND_DATAW * data = reinterpret_cast<const WIN32_FIND_DATAW *>(m_buffer);
 	
-	return (data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
-}
-
-bool directory_iterator::is_regular_file() {
+	if(data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+		return Directory;
+	} else {
+		return RegularFile;
+	}
 	
-	arx_assert(m_buffer != NULL);
-	
-	const WIN32_FIND_DATAW * data = reinterpret_cast<const WIN32_FIND_DATAW *>(m_buffer);
-	
-	return (data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0;
 }
 
 } // namespace fs

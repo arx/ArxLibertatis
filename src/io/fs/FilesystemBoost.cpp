@@ -34,19 +34,34 @@ namespace fs {
 
 namespace fs_boost = boost::filesystem;
 
-bool exists(const path & p) {
-	boost::system::error_code ec;
-	return fs_boost::exists(p.string(), ec) && !ec;
+static FileType status_to_filetype(const fs_boost::file_status & buf) {
+	
+	if(fs_boost::exists(buf)) {
+		return DoesNotExist;
+	}
+	if(fs_boost::is_directory(buf)) {
+		return Directory;
+	}
+	if(fs_boost::is_regular_file(buf)) {
+		return RegularFile;
+	}
+	
+	return SpecialFile;
 }
 
-bool is_directory(const path & p) {
+FileType get_type(const path & p) {
+	
+	if(p.empty()) {
+		return Directory;
+	}
+	
 	boost::system::error_code ec;
-	return fs_boost::is_directory(p.string(), ec) && !ec;
-}
-
-bool is_regular_file(const path & p) {
-	boost::system::error_code ec;
-	return fs_boost::is_regular_file(p.string(), ec) && !ec;
+	fs_boost::file_status buf = fs_boost::status(p.string(), ec);
+	if(ec) {
+		return DoesNotExist;
+	}
+	
+	return status_to_filetype(buf);
 }
 
 std::time_t last_write_time(const path & p) {
@@ -137,16 +152,17 @@ std::string directory_iterator::name() {
 	return (*reinterpret_cast<fs_boost::directory_iterator *>(m_handle))->path().filename().string();
 }
 
-bool directory_iterator::is_directory() {
+FileType directory_iterator::type() {
+	
 	arx_assert(!end());
+	
 	boost::system::error_code ec;
-	return fs_boost::is_directory((*reinterpret_cast<fs_boost::directory_iterator *>(m_handle))->status(ec)) && !ec;
-}
-
-bool directory_iterator::is_regular_file() {
-	arx_assert(!end());
-	boost::system::error_code ec;
-	return fs_boost::is_regular_file((*reinterpret_cast<fs_boost::directory_iterator *>(m_handle))->status(ec)) && !ec;
+	fs_boost::file_status buf = (*reinterpret_cast<fs_boost::directory_iterator *>(m_handle))->status(ec);
+	if(ec) {
+		return DoesNotExist;
+	}
+	
+	return status_to_filetype(buf);
 }
 
 } // namespace fs
