@@ -799,12 +799,22 @@ function(_add_icon_size var size)
 		endif()
 		
 		set(render_size ${source_render_size_${match}})
+		if(render_size MATCHES "^[0-9]+$")
+			set(render_w ${render_size})
+			set(render_h ${render_size})
+		elseif(render_size MATCHES "^([0-9]+)x([0-9]+)$")
+			set(render_w ${CMAKE_MATCH_1})
+			set(render_h ${CMAKE_MATCH_2})
+		else()
+			message(FATAL_ERROR "Unknown render size spec: ${render_size}")
+		endif()
 		
 		add_custom_command(
 			OUTPUT "${source_file}"
 			COMMAND "${CMAKE_COMMAND}" -E make_directory "${ICON_BINARY_DIR}"
-			COMMAND "${Inkscape_EXECUTABLE}" -z ${Inkscape_OPTIONS}
-				-f "${source_svg}" -h "${render_size}" -e "${source_file}"
+			COMMAND "${Inkscape_EXECUTABLE}" "--without-gui" ${Inkscape_OPTIONS}
+				"${source_svg}" "--export-width=${render_w}" "--export-height=${render_h}"
+				"${Inkscape_EXPORT}=${source_file}"
 			MAIN_DEPENDENCY "${source_svg}"
 			DEPENDS "${Inkscape_EXECUTABLE}"
 			COMMENT "Rendering ${source_file_${match}} to ${source_filename}"
@@ -814,7 +824,7 @@ function(_add_icon_size var size)
 		# We let the user override the rasterize size
 		# If they have done so we need to scale the result to the source pixel size
 		
-		if(NOT render_size EQUAL source_res)
+		if(NOT render_h EQUAL source_res)
 			
 			find_package(ImageMagick COMPONENTS mogrify REQUIRED)
 			
