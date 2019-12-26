@@ -491,6 +491,10 @@ endif()
 find_package(Boost 1.48 REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 add_definitions(-DBOOST_ALL_NO_LIB)
+if(WIN32)
+	# Newer MSVC 2019 versions don't like Boost's redeclaration of Winapi functions in a private namespace
+	add_definitions(-DBOOST_USE_WINDOWS_H)
+endif()
 # We compile with -fno-rtti and boost is not able to detect that for all compilers.
 add_definitions(-DBOOST_NO_RTTI -DBOOST_NO_TYPEID)
 if(NOT Boost_VERSION_MACRO)
