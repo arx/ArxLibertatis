@@ -89,7 +89,7 @@ void Thread::start() {
 	param.sched_priority = m_priority;
 	pthread_attr_setschedparam(&attr, &param);
 	
-	pthread_create(&m_thread, NULL, entryPoint, this);
+	pthread_create(&m_thread, &attr, entryPoint, this);
 	
 	pthread_attr_destroy(&attr);
 	
