@@ -103,21 +103,35 @@ u64 file_size(const path & p) {
 
 bool remove(const path & p) {
 	
-	bool succeeded = true;
-	
-	if(is_directory(p)) {
-		succeeded &= RemoveDirectoryW(platform::WideString(p.string())) == TRUE;
-		if(!succeeded) {
-			LogWarning << "RemoveDirectory(" << p << ") failed: " << platform::getErrorString();
+	for(int tries = 1;; tries++) {
+		
+		if(is_directory(p)) {
+			if(RemoveDirectoryW(platform::WideString(p.string()))) {
+				return true;
+			}
+		} else {
+			if(DeleteFileW(platform::WideString(p.string()))) {
+				return true;
+			}
 		}
-	} else {
-		succeeded &= DeleteFileW(platform::WideString(p.string())) == TRUE;
-		if(!succeeded) {
-			LogWarning << "DeleteFile(" << p << ") failed: " << platform::getErrorString();
+		
+		DWORD error = GetLastError();
+		if(error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND) {
+			return true;
 		}
+		
+		LogWarning << "Failed to remove file " << p << ": " << error << " = "
+		           << platform::getErrorString(error) << " (try " << tries << ")";
+		
+		if(tries < 10 && (error == ERROR_ACCESS_DENIED || error == ERROR_SHARING_VIOLATION ||
+		                  error == ERROR_LOCK_VIOLATION)) {
+			Sleep(100);
+			continue;
+		}
+		
+		return false;
 	}
 	
-	return succeeded;
 }
 
 bool create_directory(const path & p) {
@@ -157,29 +171,58 @@ static void update_last_write_time(const path & p) {
 
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	
-	bool ret = CopyFileW(platform::WideString(from_p.string()),
-	                     platform::WideString(to_p.string()), !overwrite) == TRUE;
-	if(!ret) {
-		LogWarning << "CopyFile(" << from_p << ", " << to_p << ", " << !overwrite
-		           << ") failed: " << platform::getErrorString();
-	} else {
-		update_last_write_time(to_p);
+	for(int tries = 1;; tries++) {
+		
+		if(CopyFileW(platform::WideString(from_p.string()), platform::WideString(to_p.string()), !overwrite)) {
+			update_last_write_time(to_p);
+			return true;
+		}
+		
+		DWORD error = GetLastError();
+		if(error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND || error == ERROR_FILE_EXISTS) {
+			return false;
+		}
+		
+		LogWarning << "Failed to copy file from " << from_p << " to " << to_p << ": " << error << " = "
+		           << platform::getErrorString(error) << " (try " << tries << ")";
+		
+		if(tries < 10 && (error == ERROR_ACCESS_DENIED || error == ERROR_SHARING_VIOLATION ||
+		                  error == ERROR_LOCK_VIOLATION)) {
+			Sleep(100);
+			continue;
+		}
+		
+		return false;
 	}
 	
-	return ret;
 }
 
 bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	
-	DWORD flags = overwrite ? MOVEFILE_REPLACE_EXISTING : 0;
-	bool ret = MoveFileExW(platform::WideString(old_p.string()),
-	                       platform::WideString(new_p.string()), flags) == TRUE;
-	if(!ret) {
-		LogWarning << "MoveFileEx(" << old_p << ", " << new_p << ", " << flags << ") failed: "
-		           << platform::getErrorString();
+	DWORD flags = MOVEFILE_COPY_ALLOWED | (overwrite ? MOVEFILE_REPLACE_EXISTING : 0);
+	for(int tries = 1;; tries++) {
+		
+		if(MoveFileExW(platform::WideString(old_p.string()), platform::WideString(new_p.string()), flags)) {
+			return true;
+		}
+		
+		DWORD error = GetLastError();
+		if(error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND || error == ERROR_FILE_EXISTS) {
+			return false;
+		}
+		
+		LogWarning << "Failed to move file from " << old_p << " to " << new_p << ": " << error << " = "
+		           << platform::getErrorString(error) << " (try " << tries << ")";
+		
+		if(tries < 10 && (error == ERROR_ACCESS_DENIED || error == ERROR_SHARING_VIOLATION ||
+		                  error == ERROR_LOCK_VIOLATION)) {
+			Sleep(100);
+			continue;
+		}
+		
+		return false;
 	}
 	
-	return ret;
 }
 
 path current_path() {
