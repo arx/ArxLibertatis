@@ -201,7 +201,7 @@ void directory_iterator::read_entry() {
 		#else
 		dirent * result;
 		if(readdir_r(m_handle, m_entry, &result) || !result) {
-			delete[] static_cast<char *>(m_entry);
+			delete[] reinterpret_cast<char *>(m_entry);
 			m_entry = NULL;
 			return;
 		}
@@ -267,7 +267,7 @@ directory_iterator::directory_iterator(const path & p)
 	if(size < sizeof(dirent)) {
 		size = sizeof(dirent);
 	}
-	m_entry = static_cast<dirent *>(new char[size]);
+	m_entry = reinterpret_cast<dirent *>(new char[size]);
 	#endif // !ARX_HAVE_THREADSAFE_READDIR
 	
 	read_entry();
@@ -281,7 +281,7 @@ directory_iterator::~directory_iterator() {
 	}
 	
 	#if !ARX_HAVE_THREADSAFE_READDIR
-	delete[] static_cast<char *>(m_entry);
+	delete[] reinterpret_cast<char *>(m_entry);
 	#endif
 	
 }
