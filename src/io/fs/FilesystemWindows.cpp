@@ -269,19 +269,15 @@ path current_path() {
 	return path(buffer.toUTF8());
 }
 
-directory_iterator::directory_iterator(const path & p) : m_handle(INVALID_HANDLE_VALUE), m_buffer(NULL) {
+directory_iterator::directory_iterator(const path & p) : m_handle(INVALID_HANDLE_VALUE) {
 	
 	std::string searchPath = (p.empty() ? "." : p.string()) + "\\*";
 	
-	WIN32_FIND_DATAW * data = new WIN32_FIND_DATAW;
-	m_handle = FindFirstFileW(platform::WideString(searchPath), data);
+	m_handle = FindFirstFileW(platform::WideString(searchPath), &m_data);
 	if(m_handle != INVALID_HANDLE_VALUE) {
-		m_buffer = data;
-		if(!wcscmp(data->cFileName, L".") || !wcscmp(data->cFileName, L"..")) {
+		if(!wcscmp(m_data.cFileName, L".") || !wcscmp(m_data.cFileName, L"..")) {
 			operator++();
 		}
-	} else {
-		delete data;
 	}
 	
 }
@@ -292,49 +288,41 @@ directory_iterator::~directory_iterator() {
 		FindClose(m_handle);
 	}
 	
-	delete reinterpret_cast<WIN32_FIND_DATAW *>(m_buffer);
 }
 
 directory_iterator & directory_iterator::operator++() {
 	
-	arx_assert(m_buffer != NULL);
 	arx_assert(m_handle != INVALID_HANDLE_VALUE);
-	
-	WIN32_FIND_DATAW * data = reinterpret_cast<WIN32_FIND_DATAW *>(m_buffer);
 	
 	do {
 		
-		if(!FindNextFileW(m_handle, data)) {
-			delete data;
-			m_buffer = NULL;
+		if(!FindNextFileW(m_handle, &m_data)) {
+			CloseHandle(m_handle);
+			m_handle = INVALID_HANDLE_VALUE;
 			break;
 		}
 		
-	} while(!wcscmp(data->cFileName, L".") || !wcscmp(data->cFileName, L".."));
+	} while(!wcscmp(m_data.cFileName, L".") || !wcscmp(m_data.cFileName, L".."));
 	
 	return *this;
 }
 
 bool directory_iterator::end() {
-	return !m_buffer;
+	return m_handle != INVALID_HANDLE_VALUE;
 }
 
 std::string directory_iterator::name() {
 	
-	arx_assert(m_buffer != NULL);
+	arx_assert(m_handle != INVALID_HANDLE_VALUE);
 	
-	const WIN32_FIND_DATAW * data = reinterpret_cast<const WIN32_FIND_DATAW *>(m_buffer);
-	
-	return platform::WideString::toUTF8(data->cFileName);
+	return platform::WideString::toUTF8(m_data.cFileName);
 }
 
 FileType directory_iterator::type() {
 	
-	arx_assert(m_buffer != NULL);
+	arx_assert(m_handle != INVALID_HANDLE_VALUE);
 	
-	const WIN32_FIND_DATAW * data = reinterpret_cast<const WIN32_FIND_DATAW *>(m_buffer);
-	
-	if(data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+	if(m_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 		return Directory;
 	} else {
 		return RegularFile;

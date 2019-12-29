@@ -24,6 +24,16 @@
 #include <ctime>
 #include <string>
 
+#include "Configure.h"
+#if ARX_HAVE_POSIX_FILESYSTEM
+#include <sys/stat.h>
+#include <dirent.h>
+#elif ARX_HAVE_WIN32_FILESYSTEM
+#include <windows.h>
+#else
+#include <boost/filesystem/directory.hpp>
+#endif
+
 #include "platform/Platform.h"
 
 namespace fs {
@@ -194,8 +204,28 @@ class directory_iterator {
 	//! Prevent copy construction
 	directory_iterator(const directory_iterator &);
 	
-	void * m_handle;
-	void * m_buffer;
+	#if ARX_HAVE_POSIX_FILESYSTEM
+	
+	DIR * m_handle;
+	#if !ARX_HAVE_DIRFD || !ARX_HAVE_FSTATAT
+	fs::path m_path;
+	#endif
+	dirent * m_entry;
+	struct stat m_info;
+	
+	void read_entry();
+	bool read_info();
+	
+	#elif ARX_HAVE_WIN32_FILESYSTEM
+	
+	HANDLE m_handle;
+	WIN32_FIND_DATAW m_data;
+	
+	#else
+	
+	boost::filesystem::directory_iterator m_it;
+	
+	#endif
 	
 public:
 	

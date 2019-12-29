@@ -119,35 +119,33 @@ path current_path() {
 
 directory_iterator::directory_iterator(const path & p) {
 	boost::system::error_code ec;
-	m_handle = new fs_boost::directory_iterator(p.empty() ? "./" : p.string(), ec);
+	m_it = fs_boost::directory_iterator(p.empty() ? "./" : p.string(), ec);
 	if(ec) {
-		delete reinterpret_cast<fs_boost::directory_iterator *>(m_handle);
-		m_handle = new fs_boost::directory_iterator();
+		m_it = fs_boost::directory_iterator();
 	}
 }
 
 directory_iterator::~directory_iterator() {
-	delete reinterpret_cast<fs_boost::directory_iterator *>(m_handle);
+	// nothing to do
 }
 
 directory_iterator & directory_iterator::operator++() {
 	arx_assert(!end());
 	boost::system::error_code ec;
-	(*reinterpret_cast<fs_boost::directory_iterator *>(m_handle)).increment(ec);
+	m_it.increment(ec);
 	if(ec) {
-		delete reinterpret_cast<fs_boost::directory_iterator *>(m_handle);
-		m_handle = new fs_boost::directory_iterator();
+		m_it = fs_boost::directory_iterator();
 	}
 	return *this;
 }
 
 bool directory_iterator::end() {
-	return (*reinterpret_cast<fs_boost::directory_iterator *>(m_handle) == fs_boost::directory_iterator());
+	return (m_it == fs_boost::directory_iterator());
 }
 
 std::string directory_iterator::name() {
 	arx_assert(!end());
-	return (*reinterpret_cast<fs_boost::directory_iterator *>(m_handle))->path().filename().string();
+	return m_it->path().filename().string();
 }
 
 FileType directory_iterator::type() {
@@ -155,7 +153,7 @@ FileType directory_iterator::type() {
 	arx_assert(!end());
 	
 	boost::system::error_code ec;
-	fs_boost::file_status buf = (*reinterpret_cast<fs_boost::directory_iterator *>(m_handle))->status(ec);
+	fs_boost::file_status buf = m_it->status(ec);
 	if(ec) {
 		return DoesNotExist;
 	}
