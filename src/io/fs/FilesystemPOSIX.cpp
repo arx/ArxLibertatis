@@ -75,8 +75,7 @@ u64 file_size(const path & p) {
 }
 
 bool remove(const path & p) {
-	int ret = ::remove(p.string().c_str());
-	return !ret || ret == ENOENT || ret == ENOTDIR;
+	return !::remove(p.string().c_str()) || errno == ENOENT || errno == ENOTDIR;
 }
 
 bool create_directory(const path & p) {
