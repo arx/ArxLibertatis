@@ -82,6 +82,10 @@ bool remove(const path & p) {
 	return !ec || ec == boost::system::errc::no_such_file_or_directory || ec == boost::system::errc::not_a_directory;
 }
 
+bool remove_directory(const path & p) {
+	return remove(p);
+}
+
 bool create_directory(const path & p) {
 	boost::system::error_code ec;
 	fs_boost::create_directory(p.string(), ec);

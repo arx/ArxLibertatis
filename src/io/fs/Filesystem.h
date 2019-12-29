@@ -84,11 +84,18 @@ std::time_t last_write_time(const path & p);
 u64 file_size(const path & p);
 
 /*!
- * \brief Remove a file or empty directory
+ * \brief Remove a file
  *
  * \return true if the file was removed or didn't exist.
  */
 bool remove(const path & p);
+
+/*!
+ * \brief Remove an empty directory
+ *
+ * \return true if the file was removed or didn't exist.
+ */
+bool remove_directory(const path & p);
 
 /*!
  * \brief Recursively remove a file or directory
