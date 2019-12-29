@@ -70,6 +70,17 @@ FileType get_link_type(const path & p) {
 	
 }
 
+static std::time_t filetime_to_time_t(const FILETIME & time) {
+	
+	// Convert FILETIME to time_t: http://support.microsoft.com/default.aspx?scid=KB;en-us;q167296
+	LONGLONG value = time.dwHighDateTime;
+	value <<= 32;
+	value |= time.dwLowDateTime;
+	value -= 116444736000000000;
+	
+	return std::time_t(value / 10000000);
+}
+
 std::time_t last_write_time(const path & p) {
 	
 	FILETIME creationTime;
@@ -86,12 +97,7 @@ std::time_t last_write_time(const path & p) {
 	std::time_t writeTime = 0;
 	BOOL res = GetFileTime(hFile, &creationTime, &accessTime, &modificationTime);
 	if(res) {
-		// Convert FILETIME to time_t: http://support.microsoft.com/default.aspx?scid=KB;en-us;q167296
-		LONGLONG value = modificationTime.dwHighDateTime;
-		value <<= 32;
-		value |= modificationTime.dwLowDateTime;
-		value -= 116444736000000000;
-		writeTime = std::time_t(value / 10000000);
+		writeTime = filetime_to_time_t(modificationTime);
 	}
 	
 	::CloseHandle(hFile);
@@ -361,6 +367,13 @@ FileType directory_iterator::link_type() {
 		return RegularFile;
 	}
 	
+}
+
+std::time_t directory_iterator::last_write_time() {
+	
+	arx_assert(m_handle != INVALID_HANDLE_VALUE);
+	
+	return filetime_to_time_t(m_data.ftLastWriteTime);
 }
 
 } // namespace fs

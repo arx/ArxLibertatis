@@ -323,6 +323,13 @@ public:
 		return type() == RegularFile;
 	}
 	
+	/*!
+	 * \brief Get the last write time of the current directory entry
+	 *
+	 * \return the last write time or 0 if there was an error
+	 */
+	std::time_t last_write_time();
+	
 };
 
 } // namespace fs
