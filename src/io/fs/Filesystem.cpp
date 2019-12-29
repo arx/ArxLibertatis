@@ -28,15 +28,13 @@ namespace fs {
 
 bool create_directories(const path & p) {
 	
-	if(p.empty()) {
-		return true;
+	FileType type = get_type(p);
+	if(type != DoesNotExist) {
+		return type == Directory;
 	}
 	
-	path parent = p.parent();
-	if(!exists(parent)) {
-		if(!create_directories(parent)) {
-			return false;
-		}
+	if(p.is_root() || !create_directories(p.parent())) {
+		return false;
 	}
 	
 	return create_directory(p);
