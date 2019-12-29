@@ -330,6 +330,13 @@ public:
 	 */
 	std::time_t last_write_time();
 	
+	/*!
+	 * \brief Get the file size of the current directory entry
+	 *
+	 * \return the filesize or (u64)-1 if there was an error
+	 */
+	u64 file_size();
+	
 };
 
 } // namespace fs

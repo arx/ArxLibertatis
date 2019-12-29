@@ -376,4 +376,11 @@ std::time_t directory_iterator::last_write_time() {
 	return filetime_to_time_t(m_data.ftLastWriteTime);
 }
 
+u64 directory_iterator::file_size() {
+	
+	arx_assert(m_handle != INVALID_HANDLE_VALUE);
+	
+	return (u64(m_data.nFileSizeHigh) << 32) + u64(m_data.nFileSizeLow);
+}
+
 } // namespace fs
