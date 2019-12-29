@@ -286,13 +286,14 @@ int utf8_main(int argc, char ** argv) {
 	
 	if(status == RunProgram) {
 		BOOST_FOREACH(const fs::path & archive, g_archives) {
-			if(fs::is_regular_file(archive)) {
+			fs::FileType type = fs::get_type(archive);
+			if(type == fs::RegularFile) {
 				if(!resources.addArchive(archive)) {
 					LogCritical << "Could not open archive " << archive << "!";
 					status = ExitFailure;
 					break;
 				}
-			} else if(fs::is_directory(archive)) {
+			} else if(type == fs::Directory) {
 				addResourceDir(resources, archive);
 			} else {
 				LogCritical << "File or directory " << archive << " does not exist!";
