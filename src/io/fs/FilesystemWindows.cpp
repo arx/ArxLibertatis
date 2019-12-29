@@ -105,14 +105,8 @@ bool remove(const path & p) {
 	
 	for(int tries = 1;; tries++) {
 		
-		if(is_directory(p)) {
-			if(RemoveDirectoryW(platform::WideString(p.string()))) {
-				return true;
-			}
-		} else {
-			if(DeleteFileW(platform::WideString(p.string()))) {
-				return true;
-			}
+		if(DeleteFileW(platform::WideString(p.string()))) {
+			return true;
 		}
 		
 		DWORD error = GetLastError();
@@ -121,6 +115,36 @@ bool remove(const path & p) {
 		}
 		
 		LogWarning << "Failed to remove file " << p << ": " << error << " = "
+		           << platform::getErrorString(error) << " (try " << tries << ")";
+		
+		if(tries < 10 && (error == ERROR_ACCESS_DENIED || error == ERROR_SHARING_VIOLATION ||
+		                  error == ERROR_LOCK_VIOLATION)) {
+			Sleep(100);
+			continue;
+		}
+		
+		return false;
+	}
+	
+}
+
+bool remove_directory(const path & p) {
+	
+	for(int tries = 1;; tries++) {
+		
+		if(RemoveDirectoryW(platform::WideString(p.string()))) {
+			return true;
+		}
+		
+		DWORD error = GetLastError();
+		if(error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND) {
+			return true;
+		}
+		if(error == ERROR_DIR_NOT_EMPTY) {
+			return false;
+		}
+		
+		LogWarning << "Failed to remove directory " << p << ": " << error << " = "
 		           << platform::getErrorString(error) << " (try " << tries << ")";
 		
 		if(tries < 10 && (error == ERROR_ACCESS_DENIED || error == ERROR_SHARING_VIOLATION ||

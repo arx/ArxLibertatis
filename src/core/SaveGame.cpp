@@ -207,9 +207,7 @@ void SaveGameList::remove(SavegameHandle handle) {
 	fs::remove(save.savefile);
 	fs::path savedir = save.savefile.parent();
 	fs::remove(savedir / SAVEGAME_THUMBNAIL);
-	if(fs::directory_iterator(savedir).end()) {
-		fs::remove(savedir);
-	}
+	fs::remove_directory(savedir);
 	
 	update();
 }
