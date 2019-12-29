@@ -57,7 +57,7 @@ FileType get_type(const path & p) {
 	}
 	
 	struct stat buf;
-	if(!stat(p.string().c_str(), &buf)) {
+	if(stat(p.string().c_str(), &buf)) {
 		return DoesNotExist;
 	}
 	
@@ -189,7 +189,7 @@ static FileType get_type_at(void * handle, const char * name) {
 	arx_assert(fd != -1);
 	
 	struct stat buf;
-	if(!fstatat(fd, name, &buf, 0)) {
+	if(fstatat(fd, name, &buf, 0)) {
 		return DoesNotExist;
 	}
 	
