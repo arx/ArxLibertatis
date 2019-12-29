@@ -36,7 +36,7 @@ namespace fs_boost = boost::filesystem;
 
 static FileType status_to_filetype(const fs_boost::file_status & buf) {
 	
-	if(fs_boost::exists(buf)) {
+	if(!fs_boost::exists(buf)) {
 		return DoesNotExist;
 	}
 	if(fs_boost::is_directory(buf)) {
