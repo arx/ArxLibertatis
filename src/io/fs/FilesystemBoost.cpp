@@ -21,12 +21,12 @@
 
 #include "Configure.h"
 
-#define try
-#define catch(a) if(false)
+//#define try
+//#define catch(a) if(false)
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
-#undef try
-#undef catch
+//#undef try
+//#undef catch
 
 #include "io/fs/FilePath.h"
 
