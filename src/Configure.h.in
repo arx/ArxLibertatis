@@ -36,6 +36,9 @@
 #cmakedefine01 ARX_HAVE_MACH_CLOCK
 
 // Filesystem & I/O
+#cmakedefine01 ARX_HAVE_POSIX_FILESYSTEM
+#cmakedefine01 ARX_HAVE_WIN32_FILESYSTEM
+#cmakedefine01 ARX_HAVE_BOOST_FILESYSTEM_V3
 #cmakedefine01 ARX_HAVE_READLINK
 #cmakedefine01 ARX_HAVE_OPEN
 #cmakedefine01 ARX_HAVE_O_CLOEXEC

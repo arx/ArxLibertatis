@@ -171,173 +171,148 @@ path current_path() {
 	
 }
 
-#if ARX_HAVE_DIRFD && ARX_HAVE_FSTATAT
-
-static void * iterator_handle_init(const fs::path & dir, DIR * handle) {
-	ARX_UNUSED(dir);
-	return handle;
-}
-
-static DIR * iterator_handle_get(void * handle) {
-	return reinterpret_cast<DIR *>(handle);
-}
-
-static void iterator_handle_free(void * handle) {
-	ARX_UNUSED(handle);
-}
-
-static FileType get_type_at(void * handle, const char * name) {
-	
-	int fd = dirfd(iterator_handle_get(handle));
-	arx_assert(fd != -1);
-	
-	struct stat buf;
-	if(fstatat(fd, name, &buf, 0)) {
-		return DoesNotExist;
-	}
-	
-	return stat_to_filetype(buf);
-}
-
-#else
-
-struct iterator_handle {
-	fs::path path;
-	DIR * handle;
-	iterator_handle(const fs::path & p, DIR * h) : path(p), handle(h) { }
-};
-
-static void * iterator_handle_init(const fs::path & dir, DIR * handle) {
-	return new iterator_handle(dir, handle);
-}
-
-static DIR * iterator_handle_get(void * handle) {
-	return reinterpret_cast<iterator_handle *>(handle)->handle;
-}
-
-static void iterator_handle_free(void * handle) {
-	delete reinterpret_cast<iterator_handle *>(handle);
-}
-
-static FileType get_type_at(void * handle, const char * name) {
-	return get_type(reinterpret_cast<iterator_handle *>(handle)->path / name);
-}
-
-#endif
-
-static void do_readdir(void * _handle, void * & _buffer) {
-	
-	DIR * handle = iterator_handle_get(_handle);
-	
-	dirent * & buffer = reinterpret_cast<dirent * &>(_buffer);
+void directory_iterator::read_entry() {
 	
 	do {
 		
 		#if ARX_HAVE_THREADSAFE_READDIR
-		buffer = readdir(handle);
-		if(!buffer) {
+		m_entry = readdir(m_handle);
+		if(!m_entry) {
 			return;
 		}
 		#else
-		dirent * entry;
-		if(readdir_r(handle, buffer, &entry) || !entry) {
-			delete[] static_cast<char *>(_buffer);
-			_buffer = NULL;
+		dirent * result;
+		if(readdir_r(m_handle, m_entry, &result) || !result) {
+			delete[] static_cast<char *>(m_entry);
+			m_entry = NULL;
 			return;
 		}
 		#endif
 		
-	} while(!strcmp(buffer->d_name, ".") || !strcmp(buffer->d_name, ".."));
+	} while(!strcmp(m_entry->d_name, ".") || !strcmp(m_entry->d_name, ".."));
+	
+	// We use st_nlink to remember if we already called stat() for this file
+	m_info.st_nlink = 0;
 	
 }
 
-directory_iterator::directory_iterator(const path & p) : m_buffer(NULL) {
+bool directory_iterator::read_info() {
 	
-	m_handle = iterator_handle_init(p, opendir(p.empty() ? "./" : p.string().c_str()));
+	if(m_info.st_nlink) {
+		// We already called stat() for this file
+		return true;
+	}
 	
-	if(iterator_handle_get(m_handle)) {
-		
-		#if !ARX_HAVE_THREADSAFE_READDIR
-		// Allocate a large enough buffer for readdir_r.
-		long name_max;
-		#if ((ARX_HAVE_DIRFD && ARX_HAVE_FPATHCONF) || ARX_HAVE_PATHCONF) && ARX_HAVE_PC_NAME_MAX
-		#  if ARX_HAVE_DIRFD && ARX_HAVE_FPATHCONF
-		name_max = fpathconf(dirfd(iterator_handle_get(m_handle)), _PC_NAME_MAX);
-		#  else
-		name_max = pathconf(p.string().c_str(), _PC_NAME_MAX);
-		#  endif
-		if(name_max == -1) {
-			#if ARX_HAVE_NAME_MAX
-			name_max = std::max(NAME_MAX, 255);
-			#else
-			arx_assert_msg(false, "cannot determine maximum dirname size");
-			#endif
-		}
-		#elif ARX_HAVE_NAME_MAX
+	#if ARX_HAVE_DIRFD && ARX_HAVE_FSTATAT
+	m_info.st_nlink = !fstatat(dirfd(m_handle), m_entry->d_name, &m_info, 0);
+	#else
+	m_info.st_nlink = !stat(m_path / m_entry->d_name, &m_info);
+	#endif
+	
+	return m_info.st_nlink;
+}
+
+directory_iterator::directory_iterator(const path & p)
+	: m_handle(opendir(p.empty() ? "./" : p.string().c_str()))
+	#if !ARX_HAVE_DIRFD || !ARX_HAVE_FSTATAT
+	, m_path(p)
+	#endif
+	, m_entry(NULL)
+{
+	
+	if(!m_handle) {
+		return;
+	}
+	
+	#if !ARX_HAVE_THREADSAFE_READDIR
+	// Allocate a large enough buffer for readdir_r.
+	long name_max;
+	#if ((ARX_HAVE_DIRFD && ARX_HAVE_FPATHCONF) || ARX_HAVE_PATHCONF) && ARX_HAVE_PC_NAME_MAX
+	#  if ARX_HAVE_DIRFD && ARX_HAVE_FPATHCONF
+	name_max = fpathconf(dirfd(m_handle), _PC_NAME_MAX);
+	#  else
+	name_max = pathconf(p.string().c_str(), _PC_NAME_MAX);
+	#  endif
+	if(name_max == -1) {
+		#if ARX_HAVE_NAME_MAX
 		name_max = std::max(NAME_MAX, 255);
 		#else
-		#  error "buffer size for readdir_r cannot be determined"
+		arx_assert_msg(false, "cannot determine maximum dirname size");
 		#endif
-		size_t size = size_t(offsetof(dirent, d_name)) + name_max + 1;
-		if(size < sizeof(dirent)) {
-			size = sizeof(dirent);
-		}
-		m_buffer = new char[size];
-		#endif // !ARX_HAVE_THREADSAFE_READDIR
-		
-		do_readdir(m_handle, m_buffer);
 	}
+	#elif ARX_HAVE_NAME_MAX
+	name_max = std::max(NAME_MAX, 255);
+	#else
+	#  error "buffer size for readdir_r cannot be determined"
+	#endif
+	size_t size = size_t(offsetof(dirent, d_name)) + name_max + 1;
+	if(size < sizeof(dirent)) {
+		size = sizeof(dirent);
+	}
+	m_entry = static_cast<dirent *>(new char[size]);
+	#endif // !ARX_HAVE_THREADSAFE_READDIR
+	
+	read_entry();
+	
 }
 
 directory_iterator::~directory_iterator() {
+	
 	if(m_handle) {
-		closedir(iterator_handle_get(m_handle));
-		iterator_handle_free(m_handle);
+		closedir(m_handle);
 	}
+	
 	#if !ARX_HAVE_THREADSAFE_READDIR
-	delete[] static_cast<char *>(m_buffer);
+	delete[] static_cast<char *>(m_entry);
 	#endif
+	
 }
 
 directory_iterator & directory_iterator::operator++() {
-	arx_assert(m_buffer != NULL);
 	
-	do_readdir(m_handle, m_buffer);
+	arx_assert(m_entry != NULL);
+	
+	read_entry();
 	
 	return *this;
 }
 
 bool directory_iterator::end() {
-	return !m_buffer;
+	return !m_entry;
 }
 
 std::string directory_iterator::name() {
-	arx_assert(m_buffer != NULL);
-	return reinterpret_cast<dirent *>(m_buffer)->d_name;
+	
+	arx_assert(m_entry != NULL);
+	
+	return m_entry->d_name;
 }
 
 FileType directory_iterator::type() {
 	
-	arx_assert(m_buffer != NULL);
+	arx_assert(m_entry != NULL);
 	
-	const dirent * entry = reinterpret_cast<const dirent *>(m_buffer);
 	#if defined(DT_DIR)
-	if(entry->d_type == DT_DIR) {
+	if(m_entry->d_type == DT_DIR) {
 		return Directory;
 	}
 	#endif
 	#if defined(DT_REG)
-	if(entry->d_type == DT_REG) {
+	if(m_entry->d_type == DT_REG) {
 		return RegularFile;
 	}
 	#endif
 	#if defined(DT_UNKNOWN) && defined(DT_LNK)
-	if(entry->d_type != DT_UNKNOWN && entry->d_type != DT_LNK) {
+	if(m_entry->d_type != DT_UNKNOWN && m_entry->d_type != DT_LNK) {
 		return SpecialFile;
 	}
 	#endif
 	
-	return get_type_at(m_handle, entry->d_name);
+	if(!read_info()) {
+		return DoesNotExist;
+	}
+	
+	return stat_to_filetype(m_info);
 }
 
 } // namespace fs
