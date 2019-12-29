@@ -234,11 +234,9 @@ bool ARX_Changelevel_CurGame_Clear() {
 	}
 	
 	// If there's a left over current game file, clear it
-	if(fs::is_regular_file(CURRENT_GAME_FILE)) {
-		if(!fs::remove(CURRENT_GAME_FILE)) {
-			LogError << "Failed to remove current game file " << CURRENT_GAME_FILE;
-			return false;
-		}
+	if(!fs::remove(CURRENT_GAME_FILE)) {
+		LogError << "Failed to remove current game file " << CURRENT_GAME_FILE;
+		return false;
 	}
 	
 	return true;
@@ -2564,11 +2562,6 @@ bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 
 static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld,
                                                  const fs::path & savefile) {
-	
-	// Checks For Directory
-	if(!fs::is_regular_file(savefile)) {
-		return false;
-	}
 	
 	std::string buffer = SaveBlock::load(savefile, "pld");
 	if(buffer.size() < sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA)) {
