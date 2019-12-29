@@ -51,6 +51,25 @@ FileType get_type(const path & p) {
 	
 }
 
+FileType get_link_type(const path & p) {
+	
+	if(p.empty()) {
+		return Directory;
+	}
+	
+	DWORD attributes = GetFileAttributesW(platform::WideString(p.string()));
+	if(attributes == INVALID_FILE_ATTRIBUTES) {
+		return DoesNotExist;
+	} else if(attributes & FILE_ATTRIBUTE_REPARSE_POINT) {
+		return SymbolicLink;
+	} else if(attributes & FILE_ATTRIBUTE_DIRECTORY) {
+		return Directory;
+	} else {
+		return RegularFile;
+	}
+	
+}
+
 std::time_t last_write_time(const path & p) {
 	
 	FILETIME creationTime;
@@ -323,6 +342,20 @@ FileType directory_iterator::type() {
 	arx_assert(m_handle != INVALID_HANDLE_VALUE);
 	
 	if(m_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+		return Directory;
+	} else {
+		return RegularFile;
+	}
+	
+}
+
+FileType directory_iterator::link_type() {
+	
+	arx_assert(m_handle != INVALID_HANDLE_VALUE);
+	
+	if(m_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) {
+		return SymbolicLink;
+	} else if(m_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 		return Directory;
 	} else {
 		return RegularFile;

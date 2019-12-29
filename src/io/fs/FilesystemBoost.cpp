@@ -64,6 +64,25 @@ FileType get_type(const path & p) {
 	return status_to_filetype(buf);
 }
 
+FileType get_link_type(const path & p) {
+	
+	if(p.empty()) {
+		return Directory;
+	}
+	
+	boost::system::error_code ec;
+	fs_boost::file_status buf = fs_boost::symlink_status(p.string(), ec);
+	if(ec) {
+		return DoesNotExist;
+	}
+	
+	if(fs_boost::is_symlink(buf)) {
+		return SymbolicLink;
+	}
+	
+	return status_to_filetype(buf);
+}
+
 std::time_t last_write_time(const path & p) {
 	boost::system::error_code ec;
 	std::time_t time = fs_boost::last_write_time(p.string(), ec);
@@ -156,6 +175,23 @@ FileType directory_iterator::type() {
 	fs_boost::file_status buf = m_it->status(ec);
 	if(ec) {
 		return DoesNotExist;
+	}
+	
+	return status_to_filetype(buf);
+}
+
+FileType directory_iterator::link_type() {
+	
+	arx_assert(!end());
+	
+	boost::system::error_code ec;
+	fs_boost::file_status buf = m_it->symlink_status(ec);
+	if(ec) {
+		return DoesNotExist;
+	}
+	
+	if(fs_boost::is_symlink(buf)) {
+		return SymbolicLink;
 	}
 	
 	return status_to_filetype(buf);

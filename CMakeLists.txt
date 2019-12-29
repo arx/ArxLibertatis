@@ -862,6 +862,9 @@ else(MSVC)
 		check_symbol_exists(dirfd "dirent.h" ARX_HAVE_DIRFD)
 		if(ARX_HAVE_DIRFD)
 			check_symbol_exists(fstatat "sys/stat.h" ARX_HAVE_FSTATAT)
+			if(ARX_HAVE_FSTATAT)
+				check_symbol_exists(AT_SYMLINK_NOFOLLOW "fcntl.h" ARX_HAVE_AT_SYMLINK_NOFOLLOW)
+			endif()
 		endif()
 		
 		# readdir_r is complicated to use and is deprecated in glibc 2.24

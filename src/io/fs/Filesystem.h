@@ -28,6 +28,9 @@
 #if ARX_HAVE_POSIX_FILESYSTEM
 #include <sys/stat.h>
 #include <dirent.h>
+#if ARX_HAVE_AT_SYMLINK_NOFOLLOW
+#include <fcntl.h>
+#endif
 #elif ARX_HAVE_WIN32_FILESYSTEM
 #include <windows.h>
 #else
@@ -44,13 +47,23 @@ enum FileType {
 	DoesNotExist,
 	Directory,
 	RegularFile,
+	SymbolicLink,
 	SpecialFile
 };
 
 /*!
  * \brief Check if a path exists and determine the type
+ *
+ * Never returns \ref SymbolicLink.
  */
 FileType get_type(const path & p);
+
+/*!
+ * \brief Check if a path exists and determine the link type
+ *
+ * \return \ref SymbolicLink if p is a symbolic link
+ */
+FileType get_link_type(const path & p);
 
 /*!
  * \brief Check if a file (directory or regular file) exists
@@ -207,7 +220,7 @@ class directory_iterator {
 	#if ARX_HAVE_POSIX_FILESYSTEM
 	
 	DIR * m_handle;
-	#if !ARX_HAVE_DIRFD || !ARX_HAVE_FSTATAT
+	#if !ARX_HAVE_DIRFD || !ARX_HAVE_FSTATAT || !ARX_HAVE_AT_SYMLINK_NOFOLLOW
 	fs::path m_path;
 	#endif
 	dirent * m_entry;
@@ -274,8 +287,17 @@ public:
 	
 	/*!
 	 * \brief Get the type of the current directory entry (file or subdirectory)
+	 *
+	 * Never returns \ref SymbolicLink.
 	 */
 	FileType type();
+	
+	/*!
+	 * \brief Get the link type of the current directory entry
+	 *
+	 * \return \ref SymbolicLink if p is a symbolic link
+	 */
+	FileType link_type();
 	
 	/*!
 	 * \brief Check if the current directory entry is a subdirectory

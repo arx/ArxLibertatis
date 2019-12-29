@@ -44,7 +44,7 @@ static bool clear_directory(const path & p) {
 	
 	for(directory_iterator it(p); !it.end(); ++it) {
 		fs::path entry = p / it.name();
-		if(it.is_directory()) {
+		if(it.link_type() == Directory) {
 			clear_directory(entry);
 		} else {
 			remove(entry);
@@ -56,7 +56,7 @@ static bool clear_directory(const path & p) {
 
 bool remove_all(const path & p) {
 	
-	FileType type = get_type(p);
+	FileType type = get_link_type(p);
 	if(type == DoesNotExist) {
 		return true;
 	}

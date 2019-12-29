@@ -64,6 +64,24 @@ FileType get_type(const path & p) {
 	return stat_to_filetype(buf);
 }
 
+FileType get_link_type(const path & p) {
+	
+	if(p.empty()) {
+		return Directory;
+	}
+	
+	struct stat buf;
+	if(lstat(p.string().c_str(), &buf)) {
+		return DoesNotExist;
+	}
+	
+	if((buf.st_mode & S_IFMT) == S_IFLNK) {
+		return SymbolicLink;
+	}
+	
+	return stat_to_filetype(buf);
+}
+
 std::time_t last_write_time(const path & p) {
 	struct stat buf;
 	return stat(p.string().c_str(), &buf) ? 0 : buf.st_mtime;
@@ -214,7 +232,7 @@ bool directory_iterator::read_info() {
 
 directory_iterator::directory_iterator(const path & p)
 	: m_handle(opendir(p.empty() ? "./" : p.string().c_str()))
-	#if !ARX_HAVE_DIRFD || !ARX_HAVE_FSTATAT
+	#if !ARX_HAVE_DIRFD || !ARX_HAVE_FSTATAT || !ARX_HAVE_AT_SYMLINK_NOFOLLOW
 	, m_path(p)
 	#endif
 	, m_entry(NULL)
@@ -313,6 +331,48 @@ FileType directory_iterator::type() {
 	}
 	
 	return stat_to_filetype(m_info);
+}
+
+FileType directory_iterator::link_type() {
+	
+	arx_assert(m_entry != NULL);
+	
+	#if defined(DT_DIR)
+	if(m_entry->d_type == DT_DIR) {
+		return Directory;
+	}
+	#endif
+	#if defined(DT_REG)
+	if(m_entry->d_type == DT_REG) {
+		return RegularFile;
+	}
+	#endif
+	#if defined(DT_LNK)
+	if(m_entry->d_type == DT_LNK) {
+		return SymbolicLink;
+	}
+	#endif
+	#if defined(DT_UNKNOWN)
+	if(m_entry->d_type != DT_UNKNOWN && m_entry->d_type != DT_LNK) {
+		return SpecialFile;
+	}
+	#endif
+	
+	struct stat buf;
+	#if ARX_HAVE_DIRFD && ARX_HAVE_FSTATAT && ARX_HAVE_AT_SYMLINK_NOFOLLOW
+	int ret = fstatat(dirfd(m_handle), m_entry->d_name, &buf, AT_SYMLINK_NOFOLLOW);
+	#else
+	int ret = lstat(m_path / m_entry->d_name, &buf);
+	#endif
+	if(ret) {
+		return DoesNotExist;
+	}
+	
+	if((buf.st_mode & S_IFMT) == S_IFLNK) {
+		return SymbolicLink;
+	}
+	
+	return stat_to_filetype(buf);
 }
 
 } // namespace fs
