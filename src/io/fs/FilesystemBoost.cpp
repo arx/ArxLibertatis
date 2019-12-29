@@ -79,7 +79,7 @@ u64 file_size(const path & p) {
 bool remove(const path & p) {
 	boost::system::error_code ec;
 	fs_boost::remove(p.string(), ec);
-	return !ec;
+	return !ec || ec == boost::system::no_such_file_or_directory || ec == boost::system::not_a_directory;
 }
 
 bool create_directory(const path & p) {
