@@ -61,7 +61,7 @@ FileType get_type(const path & p);
 /*!
  * \brief Check if a path exists and determine the link type
  *
- * \return \ref SymbolicLink if p is a symbolic link
+ * \return the file type or \ref SymbolicLink if p is a symbolic link
  */
 FileType get_link_type(const path & p);
 
@@ -295,7 +295,7 @@ public:
 	/*!
 	 * \brief Get the link type of the current directory entry
 	 *
-	 * \return \ref SymbolicLink if p is a symbolic link
+	 * \return the file type or \ref SymbolicLink if p is a symbolic link
 	 */
 	FileType link_type();
 	
