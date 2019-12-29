@@ -197,4 +197,13 @@ FileType directory_iterator::link_type() {
 	return status_to_filetype(buf);
 }
 
+std::time_t directory_iterator::last_write_time() {
+	
+	arx_assert(!end());
+	
+	boost::system::error_code ec;
+	std::time_t time = fs_boost::last_write_time(m_it->path(), ec);
+	return ec ? 0 : time;
+}
+
 } // namespace fs

@@ -375,4 +375,15 @@ FileType directory_iterator::link_type() {
 	return stat_to_filetype(buf);
 }
 
+std::time_t directory_iterator::last_write_time() {
+	
+	arx_assert(m_entry != NULL);
+	
+	if(!read_info()) {
+		return 0;
+	}
+	
+	return m_info.st_mtime;
+}
+
 } // namespace fs
