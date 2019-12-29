@@ -206,4 +206,13 @@ std::time_t directory_iterator::last_write_time() {
 	return ec ? 0 : time;
 }
 
+u64 directory_iterator::file_size() {
+	
+	arx_assert(!end());
+	
+	boost::system::error_code ec;
+	uintmax_t size = fs_boost::file_size(m_it->path(), ec);
+	return ec ? u64(-1) : u64(size);
+}
+
 } // namespace fs

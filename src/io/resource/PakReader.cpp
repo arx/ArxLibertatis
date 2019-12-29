@@ -604,9 +604,15 @@ bool PakReader::addFiles(const fs::path & path, const res::path & mount) {
 		
 	} else if(type == fs::RegularFile && !mount.empty()) {
 		
+		// TODO this stat() call is redundant
+		u64 size = fs::file_size(path);
+		if(size == u64(-1)) {
+			return false;
+		}
+		
 		PakDirectory * dir = addDirectory(mount.parent());
 		
-		return addFile(dir, path, mount.filename());
+		return addFile(dir, path, mount.filename(), size);
 		
 	}
 	
@@ -632,14 +638,9 @@ bool PakReader::removeDirectory(const res::path & name) {
 }
 
 bool PakReader::addFile(PakDirectory * dir, const fs::path & path,
-                        const std::string & name) {
+                        const std::string & name, u64 size) {
 	
 	if(name.empty()) {
-		return false;
-	}
-	
-	u64 size = fs::file_size(path);
-	if(size == u64(-1)) {
 		return false;
 	}
 	
@@ -669,7 +670,7 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 		if(type == fs::Directory) {
 			ret &= addFiles(dir->addDirectory(name), entry);
 		} else if(type == fs::RegularFile) {
-			ret &= addFile(dir, entry, name);
+			ret &= addFile(dir, entry, name, it.file_size());
 		}
 		
 	}

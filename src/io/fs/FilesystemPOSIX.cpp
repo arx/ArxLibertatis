@@ -386,4 +386,15 @@ std::time_t directory_iterator::last_write_time() {
 	return m_info.st_mtime;
 }
 
+u64 directory_iterator::file_size() {
+	
+	arx_assert(m_entry != NULL);
+	
+	if(!read_info()) {
+		return u64(-1);
+	}
+	
+	return u64(m_info.st_size);
+}
+
 } // namespace fs
