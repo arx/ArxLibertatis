@@ -589,7 +589,9 @@ PakFileHandle * PakReader::open(const res::path & name) {
 
 bool PakReader::addFiles(const fs::path & path, const res::path & mount) {
 	
-	if(fs::is_directory(path)) {
+	fs::FileType type = fs::get_type(path);
+	
+	if(type == fs::Directory) {
 		
 		bool ret = addFiles(addDirectory(mount), path);
 		
@@ -600,7 +602,7 @@ bool PakReader::addFiles(const fs::path & path, const res::path & mount) {
 		
 		return ret;
 		
-	} else if(fs::is_regular_file(path) && !mount.empty()) {
+	} else if(type == fs::RegularFile && !mount.empty()) {
 		
 		PakDirectory * dir = addDirectory(mount.parent());
 		
@@ -662,9 +664,11 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 		
 		boost::to_lower(name);
 		
-		if(it.is_directory()) {
+		fs::FileType type = it.type();
+		
+		if(type == fs::Directory) {
 			ret &= addFiles(dir->addDirectory(name), entry);
-		} else if(it.is_regular_file()) {
+		} else if(type == fs::RegularFile) {
 			ret &= addFile(dir, entry, name);
 		}
 		
