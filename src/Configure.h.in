@@ -57,6 +57,7 @@
 #cmakedefine01 ARX_HAVE_PC_CASE_SENSITIVE
 #cmakedefine01 ARX_HAVE_DIRFD
 #cmakedefine01 ARX_HAVE_FSTATAT
+#cmakedefine01 ARX_HAVE_AT_SYMLINK_NOFOLLOW
 #cmakedefine01 ARX_HAVE_CHDIR
 
 // Video backend
