@@ -298,7 +298,8 @@ directory_iterator::directory_iterator(const path & p) : m_handle(INVALID_HANDLE
 	
 	std::string searchPath = (p.empty() ? "." : p.string()) + "\\*";
 	
-	m_handle = FindFirstFileW(platform::WideString(searchPath), &m_data);
+	m_handle = FindFirstFileExW(platform::WideString(searchPath), FindExInfoBasic, &m_data,
+	                            FindExSearchNameMatch, NULL, 0);
 	if(m_handle != INVALID_HANDLE_VALUE) {
 		if(!wcscmp(m_data.cFileName, L".") || !wcscmp(m_data.cFileName, L"..")) {
 			operator++();
