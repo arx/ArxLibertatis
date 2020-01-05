@@ -239,8 +239,6 @@ public:
 		
 	} misc;
 	
-public:
-	
 	bool setActionKey(ControlAction actionId, size_t index, InputKeyId key);
 	void setDefaultActionKeys();
 	
