@@ -83,7 +83,7 @@ public:
 	void Regen();
 	void Update(GameDuration delta);
 	
-	bool isAlive() {
+	bool isAlive() const {
 		return (m_age < m_timeToLive);
 	}
 	
