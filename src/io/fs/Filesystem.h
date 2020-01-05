@@ -34,7 +34,7 @@
 #elif ARX_HAVE_WIN32_FILESYSTEM
 #include <windows.h>
 #else
-#include <boost/filesystem/directory.hpp>
+#include <boost/filesystem/operations.hpp>
 #endif
 
 #include "platform/Platform.h"
