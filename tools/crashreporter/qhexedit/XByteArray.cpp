@@ -31,7 +31,7 @@ XByteArray::XByteArray() {
 	_realAddressNumbers = 0;
 }
 
-int XByteArray::addressOffset() {
+int XByteArray::addressOffset() const {
 	return _addressOffset;
 }
 
@@ -39,7 +39,7 @@ void XByteArray::setAddressOffset(int offset) {
 	_addressOffset = offset;
 }
 
-int XByteArray::addressWidth() {
+int XByteArray::addressWidth() const {
 	return _addressNumbers;
 }
 
