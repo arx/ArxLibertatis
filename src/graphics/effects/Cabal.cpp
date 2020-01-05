@@ -66,7 +66,7 @@ void CabalFx::disableSecondRingSet() {
 	m_hasTwoRingSets = false;
 }
 
-Color3f CabalFx::randomizeLightColor() {
+Color3f CabalFx::randomizeLightColor() const {
 	
 	Color3f color;
 	
@@ -85,6 +85,7 @@ Color3f CabalFx::randomizeLightColor() {
 	} else {
 		color.g = m_colorRangeLower.g;
 	}
+	
 	return color;
 }
 
