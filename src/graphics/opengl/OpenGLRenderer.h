@@ -92,7 +92,7 @@ public:
 	template <class Vertex>
 	void beforeDraw() { flushState(); selectTrasform<Vertex>(); }
 	
-	bool hasTextureNPOT() { return m_hasTextureNPOT; }
+	bool hasTextureNPOT() const { return m_hasTextureNPOT; }
 	bool hasSizedTextureFormats() const { return m_hasSizedTextureFormats; }
 	bool hasIntensityTextures() const { return m_hasIntensityTextures; }
 	bool hasBGRTextureTransfer() const { return m_hasBGRTextureTransfer; }
