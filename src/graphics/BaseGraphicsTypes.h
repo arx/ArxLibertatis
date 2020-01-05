@@ -107,7 +107,7 @@ struct EERIE_2D_BBOX {
 		return (min.x <= max.x && min.y <= max.y);
 	}
 	
-	Rectf toRect() {
+	Rectf toRect() const {
 		return Rectf(min.x, min.y, max.x, max.y);
 	}
 	
