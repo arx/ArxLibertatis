@@ -27,10 +27,12 @@
 
 #include <math.h>
 
+#include <boost/noncopyable.hpp>
+
 #include "platform/Architecture.h"
 #include "platform/WindowsUtils.h"
 
-class WindowsMain {
+class WindowsMain : private boost::noncopyable {
 	
 public:
 	
