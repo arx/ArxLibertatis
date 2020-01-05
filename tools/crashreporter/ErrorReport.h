@@ -61,8 +61,6 @@ public:
 	
 	typedef std::vector<File> FileList;
 	
-public:
-	
 	explicit ErrorReport(const QString & sharedMemoryName);
 	
 	bool GenerateReport(IProgressNotifier * progressNotifier);
@@ -87,8 +85,6 @@ private:
 	void AddFile(const QString & fileName);
 	
 	void ReleaseApplicationLock();
-	
-private:
 	
 	FileList m_AttachedFiles;
 	
