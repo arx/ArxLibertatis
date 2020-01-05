@@ -157,7 +157,7 @@ struct HasFrame {
 	
 	explicit HasFrame(int frame) : m_frame(frame) { }
 	
-	bool operator()(const CinematicKeyframe & key) {
+	bool operator()(const CinematicKeyframe & key) const {
 		return key.frame == m_frame;
 	}
 	
@@ -171,7 +171,7 @@ struct AfterFrame {
 	
 	explicit AfterFrame(int frame) : m_frame(frame) { }
 	
-	bool operator()(const CinematicKeyframe & key) {
+	bool operator()(const CinematicKeyframe & key) const {
 		return key.frame > m_frame;
 	}
 	
