@@ -291,14 +291,6 @@ thread_id_type Thread::getCurrentThreadId() {
 
 #endif
 
-#if ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64
-#ifdef _MM_DENORMALS_ZERO_ON
-#define ARX_SSE_DENORMALS_ZERO_ON _MM_DENORMALS_ZERO_ON
-#else
-#define ARX_SSE_DENORMALS_ZERO_ON 0x0040
-#endif
-#endif
-
 void Thread::disableFloatDenormals() {
 	
 	#if ARX_ARCH == ARX_ARCH_X86 && !ARX_HAVE_SSE
@@ -316,6 +308,12 @@ void Thread::disableFloatDenormals() {
 	_MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON); // SSE
 	
 	#if ARX_HAVE_SSE3 || ARX_COMPILER_MSVC || ARX_HAVE_GET_CPUID
+	
+	#ifdef _MM_DENORMALS_ZERO_ON
+	#define ARX_SSE_DENORMALS_ZERO_ON _MM_DENORMALS_ZERO_ON
+	#else
+	#define ARX_SSE_DENORMALS_ZERO_ON 0x0040
+	#endif
 	
 	#if ARX_HAVE_SSE3
 	
