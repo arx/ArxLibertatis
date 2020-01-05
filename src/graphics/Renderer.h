@@ -99,8 +99,8 @@ public:
 		disableBlend();
 	}
 	
-	bool operator==(const RenderState & o) { return m_state == o.m_state; }
-	bool operator!=(const RenderState & o) { return m_state != o.m_state; }
+	bool operator==(const RenderState & o) const { return m_state == o.m_state; }
+	bool operator!=(const RenderState & o) const { return m_state != o.m_state; }
 	
 	void setCull(CullingMode mode) {
 		arx_assert(mode >= 0 && unsigned(mode) < (1u << CullSize));
@@ -240,7 +240,7 @@ public:
 		return BlendingFactor(get<BlendDst, BlendSize>());
 	}
 	
-	bool isBlendEnabled() {
+	bool isBlendEnabled() const {
 		return getBlendSrc() != BlendOne || getBlendDst() != BlendZero;
 	}
 	
@@ -316,7 +316,7 @@ public:
 	virtual void initialize() = 0;
 	
 	//! * \return true if the renderer has been fully initialized and is ready for use.
-	bool isInitialized() { return m_initialized; }
+	bool isInitialized() const { return m_initialized; }
 	
 	/*!
 	 * Indicate that the renderer's window will be resized and the renderer may need
