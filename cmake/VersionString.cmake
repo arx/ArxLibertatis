@@ -98,6 +98,8 @@ function(version_file SRC DST VERSION_SOURCES GIT_DIR)
 			"-DGIT_COMMAND=${GIT_COMMAND}"
 			${defines}
 			-P "${VERSION_STRING_SCRIPT}"
+		COMMAND
+			${CMAKE_COMMAND} -E touch "${abs_dst}"
 		MAIN_DEPENDENCY
 			"${abs_src}"
 		DEPENDS
