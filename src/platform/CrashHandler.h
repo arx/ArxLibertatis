@@ -52,8 +52,6 @@ public:
 	//! Crash callback type that can be used with registerCrashCallback().
 	typedef void (*CrashCallback)();
 
-public:
-	
 	/*!
 	 * \brief Initialize the crash handler
 	 *
