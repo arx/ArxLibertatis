@@ -81,7 +81,7 @@ void InvisibilitySpell::Update() {
 	}
 }
 
-Vec3f InvisibilitySpell::getPosition() {
+Vec3f InvisibilitySpell::getPosition() const {
 	return getTargetPosition();
 }
 
@@ -155,7 +155,7 @@ void ManaDrainSpell::Update() {
 	ARX_SOUND_RefreshPosition(m_snd_loop, cabalPos);
 }
 
-Vec3f ManaDrainSpell::getPosition() {
+Vec3f ManaDrainSpell::getPosition() const {
 	return getTargetPosition();
 }
 
@@ -317,6 +317,6 @@ void LifeDrainSpell::Update() {
 	ARX_SOUND_RefreshPosition(m_snd_loop, cabalPos);
 }
 
-Vec3f LifeDrainSpell::getPosition() {
+Vec3f LifeDrainSpell::getPosition() const {
 	return getTargetPosition();
 }

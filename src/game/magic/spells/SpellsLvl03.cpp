@@ -131,7 +131,7 @@ void SpeedSpell::Update() {
 	}
 }
 
-Vec3f SpeedSpell::getPosition() {
+Vec3f SpeedSpell::getPosition() const {
 	return getTargetPosition();
 }
 
@@ -323,7 +323,7 @@ void FireballSpell::Update() {
 	ARX_SOUND_RefreshPosition(m_snd_loop, eCurPos);
 }
 
-Vec3f FireballSpell::getPosition() {
+Vec3f FireballSpell::getPosition() const {
 	return eCurPos;
 }
 

@@ -56,7 +56,7 @@ public:
 	void Launch();
 	void End();
 	
-	Vec3f getPosition();
+	Vec3f getPosition() const;
 	
 };
 
@@ -70,7 +70,7 @@ public:
 	void End();
 	void Update();
 	
-	Vec3f getPosition();
+	Vec3f getPosition() const;
 	
 	// TODO this is directly used in physics and projectile
 	EntityHandle m_entity;
@@ -98,7 +98,7 @@ public:
 	void End();
 	void Update();
 	
-	Vec3f getPosition();
+	Vec3f getPosition() const;
 	
 };
 

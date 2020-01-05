@@ -40,11 +40,11 @@ SpellBase::SpellBase()
 	m_targets.clear();
 }
 
-Vec3f SpellBase::getPosition() {
+Vec3f SpellBase::getPosition() const {
 	return getCasterPosition();
 }
 
-Vec3f SpellBase::getCasterPosition() {
+Vec3f SpellBase::getCasterPosition() const {
 	if(ValidIONum(m_caster)) {
 		return entities[m_caster]->pos;
 	} else {
@@ -53,7 +53,7 @@ Vec3f SpellBase::getCasterPosition() {
 	}
 }
 
-Vec3f SpellBase::getTargetPosition() {
+Vec3f SpellBase::getTargetPosition() const {
 	if(ValidIONum(m_target)) {
 		return entities[m_target]->pos;
 	} else {

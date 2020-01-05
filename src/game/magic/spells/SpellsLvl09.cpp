@@ -459,8 +459,7 @@ void IncinerateSpell::Update() {
 	
 }
 
-Vec3f IncinerateSpell::getPosition() {
-	
+Vec3f IncinerateSpell::getPosition() const {
 	return getTargetPosition();
 }
 
