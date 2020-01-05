@@ -251,7 +251,7 @@ void ParalyseSpell::End() {
 	ARX_SOUND_PlaySFX(g_snd.SPELL_PARALYSE_END);
 }
 
-Vec3f ParalyseSpell::getPosition() {
+Vec3f ParalyseSpell::getPosition() const {
 	return getTargetPosition();
 }
 
@@ -353,8 +353,7 @@ void CreateFieldSpell::Update() {
 	}
 }
 
-Vec3f CreateFieldSpell::getPosition() {
-	
+Vec3f CreateFieldSpell::getPosition() const {
 	return m_field.eSrc;
 }
 
@@ -427,7 +426,6 @@ void SlowDownSpell::Update() {
 	
 }
 
-Vec3f SlowDownSpell::getPosition() {
-	
+Vec3f SlowDownSpell::getPosition() const {
 	return getTargetPosition();
 }

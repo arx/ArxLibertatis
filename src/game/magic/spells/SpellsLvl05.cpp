@@ -149,7 +149,7 @@ void RuneOfGuardingSpell::Update() {
 	}
 }
 
-Vec3f RuneOfGuardingSpell::getPosition() {
+Vec3f RuneOfGuardingSpell::getPosition() const {
 	return m_pos;
 }
 

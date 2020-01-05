@@ -161,7 +161,7 @@ void BlessSpell::Update() {
 	}
 }
 
-Vec3f BlessSpell::getPosition() {
+Vec3f BlessSpell::getPosition() const {
 	return getTargetPosition();
 }
 
@@ -292,7 +292,7 @@ void FireProtectionSpell::Update() {
 	}
 }
 
-Vec3f FireProtectionSpell::getPosition() {
+Vec3f FireProtectionSpell::getPosition() const {
 	return getTargetPosition();
 }
 
@@ -357,8 +357,7 @@ void ColdProtectionSpell::Update() {
 	}
 }
 
-Vec3f ColdProtectionSpell::getPosition() {
-	
+Vec3f ColdProtectionSpell::getPosition() const {
 	return getTargetPosition();
 }
 
@@ -466,6 +465,6 @@ void CurseSpell::Update() {
 	}
 }
 
-Vec3f CurseSpell::getPosition() {
+Vec3f CurseSpell::getPosition() const {
 	return getTargetPosition();
 }

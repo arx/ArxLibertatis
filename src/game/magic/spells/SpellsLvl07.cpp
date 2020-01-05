@@ -208,7 +208,7 @@ void FlyingEyeSpell::Update() {
 	}
 }
 
-Vec3f FlyingEyeSpell::getPosition() {
+Vec3f FlyingEyeSpell::getPosition() const {
 	return eyeball.pos;
 }
 
@@ -333,7 +333,7 @@ void FireFieldSpell::Update() {
 	}
 }
 
-Vec3f FireFieldSpell::getPosition() {
+Vec3f FireFieldSpell::getPosition() const {
 	return m_pos;
 }
 
@@ -513,7 +513,7 @@ void IceFieldSpell::Update() {
 	
 }
 
-Vec3f IceFieldSpell::getPosition() {
+Vec3f IceFieldSpell::getPosition() const {
 	return m_pos;
 }
 
@@ -724,6 +724,6 @@ void ConfuseSpell::Update() {
 	}
 }
 
-Vec3f ConfuseSpell::getPosition() {
+Vec3f ConfuseSpell::getPosition() const {
 	return getTargetPosition();
 }

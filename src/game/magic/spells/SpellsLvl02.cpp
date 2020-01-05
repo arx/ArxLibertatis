@@ -255,7 +255,7 @@ void ArmorSpell::Update() {
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
-Vec3f ArmorSpell::getPosition() {
+Vec3f ArmorSpell::getPosition() const {
 	return getTargetPosition();
 }
 
@@ -333,7 +333,7 @@ void LowerArmorSpell::Update() {
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
-Vec3f LowerArmorSpell::getPosition() {
+Vec3f LowerArmorSpell::getPosition() const {
 	return getTargetPosition();
 }
 
