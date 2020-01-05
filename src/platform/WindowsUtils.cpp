@@ -121,13 +121,13 @@ void WinPath::assign(const fs::path & path) {
 	
 	const WCHAR * prefix = L"\\\\?\\";
 	
-	if(path.is_absolute() && path.string().length() > PATH_MAX) {
+	if(path.is_absolute() && path.string().length() > MAX_PATH) {
 		reserve(path.string().length() + 4);
 		assign(prefix);
 		append(path.string());
 	} else {
 		assign(path.string());
-		if(path.is_absolute() && size() > PATH_MAX) {
+		if(path.is_absolute() && size() > MAX_PATH) {
 			allocate(size() + 4);
 			std::memmove(data() + 4, data(), size() * sizeof(WCHAR));
 			std::copy(prefix, prefix + 4, data());
