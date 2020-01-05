@@ -51,7 +51,7 @@ public:
 		
 	}
 	
-	float get() { return glm::mix(m_lastValue, m_nextValue, m_time); }
+	float get() const { return glm::mix(m_lastValue, m_nextValue, m_time); }
 	
 private:
 	
