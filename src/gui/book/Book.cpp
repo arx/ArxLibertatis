@@ -165,7 +165,7 @@ PlayerBook::PlayerBook()
 	, lastMenuMode(MenuMode(-1))
 { }
 
-bool PlayerBook::canOpenPage(ARX_INTERFACE_BOOK_MODE page) {
+bool PlayerBook::canOpenPage(ARX_INTERFACE_BOOK_MODE page) const {
 	switch (page) {
 		case BOOKMODE_SPELLS:  return !!player.rune_flags;
 		default:               return true;
@@ -1384,7 +1384,7 @@ void SpellsPage::drawLeftTabs() {
 	}
 }
 
-void SpellsPage::drawSpells() {
+void SpellsPage::drawSpells() const {
 	
 	// Now Draws Spells for this level...
 	ARX_PLAYER_ComputePlayerFullStats();
@@ -1498,21 +1498,24 @@ void MapPage::setMapLevel(long level) {
 	m_currentLevel = level;
 }
 
-void MapPage::drawMaps()
-{
+void MapPage::drawMaps() const {
+	
 	long SHOWLEVEL = m_currentLevel;
 	Vec2f bookPos = g_bookRect.topLeft();
 	float scale = g_bookScale;
-
-	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
+	
+	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32) {
 		g_miniMap.showBookEntireMap(SHOWLEVEL, Rect(Vec2i(bookPos + Vec2f(43, 56) * scale),
 		                                            Vec2i(bookPos + Vec2f(248, 226) * scale)), scale);
-
+	}
+	
 	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
-
-	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
+	
+	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32) {
 		g_miniMap.showBookMiniMap(SHOWLEVEL, Rect(Vec2i(bookPos + Vec2f(263, 21) * scale),
 		                                          Vec2i(bookPos + Vec2f(480, 291) * scale)), scale);
+	}
+	
 }
 
 void MapPage::drawLeftTabs() {
