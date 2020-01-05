@@ -955,7 +955,7 @@ void PrecastSpellsGui::PrecastSpellIconSlot::updateInput() {
 	}
 }
 
-void PrecastSpellsGui::PrecastSpellIconSlot::draw() {
+void PrecastSpellsGui::PrecastSpellIconSlot::draw() const {
 	EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
 }
 
@@ -1055,12 +1055,13 @@ void ActiveSpellsGui::ActiveSpellIconSlot::updateInput(const Vec2f & mousePos) {
 	}
 }
 
-void ActiveSpellsGui::ActiveSpellIconSlot::draw() {
+void ActiveSpellsGui::ActiveSpellIconSlot::draw() const {
 	
 	if(!m_flicker)
 		return;
 	
 	EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
+	
 }
 
 ActiveSpellsGui::ActiveSpellsGui()
