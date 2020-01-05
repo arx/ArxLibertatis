@@ -136,7 +136,7 @@ void WinPath::assign(const fs::path & path) {
 	
 }
 
-std::string getErrorString(WORD error, HMODULE module) {
+std::string getErrorString(DWORD error, HMODULE module) {
 	
 	DWORD flags = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS;
 	if(module) {
