@@ -67,16 +67,19 @@ public:
 	ResourceHandle() {
 		reference_count_ = 0;
 	}
+	
 	virtual ~ResourceHandle() { }
 	
 	void reference() {
 		++reference_count_;
 	}
+	
 	void dereference() {
 		arx_assert(reference_count_ > 0);
 		--reference_count_;
 	}
-	s32 isReferenced() {
+	
+	s32 isReferenced() const {
 		return reference_count_;
 	}
 	
