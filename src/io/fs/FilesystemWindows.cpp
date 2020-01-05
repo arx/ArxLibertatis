@@ -40,7 +40,7 @@ FileType get_type(const path & p) {
 		return Directory;
 	}
 	
-	DWORD attributes = GetFileAttributesW(platform::WideString(p.string()));
+	DWORD attributes = GetFileAttributesW(platform::WinPath(p));
 	if(attributes == INVALID_FILE_ATTRIBUTES) {
 		return DoesNotExist;
 	} else if(attributes & FILE_ATTRIBUTE_DIRECTORY) {
@@ -57,7 +57,7 @@ FileType get_link_type(const path & p) {
 		return Directory;
 	}
 	
-	DWORD attributes = GetFileAttributesW(platform::WideString(p.string()));
+	DWORD attributes = GetFileAttributesW(platform::WinPath(p));
 	if(attributes == INVALID_FILE_ATTRIBUTES) {
 		return DoesNotExist;
 	} else if(attributes & FILE_ATTRIBUTE_REPARSE_POINT) {
@@ -87,7 +87,7 @@ std::time_t last_write_time(const path & p) {
 	FILETIME accessTime;
 	FILETIME modificationTime;
 	
-	HANDLE hFile = CreateFileW(platform::WideString(p.string()), GENERIC_READ,
+	HANDLE hFile = CreateFileW(platform::WinPath(p), GENERIC_READ,
 	                           FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
 	                           NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if(hFile == INVALID_HANDLE_VALUE) {
@@ -107,7 +107,7 @@ std::time_t last_write_time(const path & p) {
 
 u64 file_size(const path & p) {
 	
-	HANDLE hFile = CreateFileW(platform::WideString(p.string()), GENERIC_READ,
+	HANDLE hFile = CreateFileW(platform::WinPath(p), GENERIC_READ,
 	                           FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
 	                           NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if(hFile == INVALID_HANDLE_VALUE) {
@@ -130,7 +130,7 @@ bool remove(const path & p) {
 	
 	for(int tries = 1;; tries++) {
 		
-		if(DeleteFileW(platform::WideString(p.string()))) {
+		if(DeleteFileW(platform::WinPath(p))) {
 			return true;
 		}
 		
@@ -157,7 +157,7 @@ bool remove_directory(const path & p) {
 	
 	for(int tries = 1;; tries++) {
 		
-		if(RemoveDirectoryW(platform::WideString(p.string()))) {
+		if(RemoveDirectoryW(platform::WinPath(p))) {
 			return true;
 		}
 		
@@ -189,7 +189,7 @@ bool create_directory(const path & p) {
 		return true;
 	}
 	
-	bool ret = CreateDirectoryW(platform::WideString(p.string()), NULL) == TRUE;
+	bool ret = CreateDirectoryW(platform::WinPath(p), NULL) == TRUE;
 	if(!ret) {
 		int lastError = GetLastError();
 		ret = lastError == ERROR_ALREADY_EXISTS;
@@ -205,7 +205,7 @@ bool create_directory(const path & p) {
 
 static void update_last_write_time(const path & p) {
 	
-	HANDLE handle = CreateFileW(platform::WideString(p.string()), GENERIC_WRITE, 0,
+	HANDLE handle = CreateFileW(platform::WinPath(p), GENERIC_WRITE, 0,
 	                            NULL, OPEN_EXISTING, 0, NULL);
 	if(handle == INVALID_HANDLE_VALUE) {
 		return;
@@ -222,7 +222,7 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	
 	for(int tries = 1;; tries++) {
 		
-		if(CopyFileW(platform::WideString(from_p.string()), platform::WideString(to_p.string()), !overwrite)) {
+		if(CopyFileW(platform::WinPath(from_p), platform::WinPath(to_p), !overwrite)) {
 			update_last_write_time(to_p);
 			return true;
 		}
@@ -251,7 +251,7 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	DWORD flags = MOVEFILE_COPY_ALLOWED | (overwrite ? MOVEFILE_REPLACE_EXISTING : 0);
 	for(int tries = 1;; tries++) {
 		
-		if(MoveFileExW(platform::WideString(old_p.string()), platform::WideString(new_p.string()), flags)) {
+		if(MoveFileExW(platform::WinPath(old_p), platform::WinPath(new_p), flags)) {
 			return true;
 		}
 		
@@ -296,10 +296,14 @@ path current_path() {
 
 directory_iterator::directory_iterator(const path & p) : m_handle(INVALID_HANDLE_VALUE) {
 	
-	std::string searchPath = (p.empty() ? "." : p.string()) + "\\*";
+	platform::WinPath searchPath(p);
+	if(p.empty()) {
+		searchPath = L".\\*";
+	} else {
+		searchPath.append(L"\\*");
+	}
 	
-	m_handle = FindFirstFileExW(platform::WideString(searchPath), FindExInfoBasic, &m_data,
-	                            FindExSearchNameMatch, NULL, 0);
+	m_handle = FindFirstFileExW(searchPath, FindExInfoBasic, &m_data, FindExSearchNameMatch, NULL, 0);
 	if(m_handle != INVALID_HANDLE_VALUE) {
 		if(!wcscmp(m_data.cFileName, L".") || !wcscmp(m_data.cFileName, L"..")) {
 			operator++();
