@@ -109,7 +109,7 @@ struct EERIE_ANIM {
 		: anim_time(0)
 	{ }
 	
-	size_t nb_groups() {
+	size_t nb_groups() const {
 		return voidgroups.size();
 	}
 	
@@ -161,7 +161,7 @@ struct AnimLayer {
 	float currentInterpolation;
 	long currentFrame;
 	
-	EERIE_ANIM * currentAltAnim() {
+	EERIE_ANIM * currentAltAnim() const {
 		return cur_anim->anims[altidx_cur];
 	}
 };
