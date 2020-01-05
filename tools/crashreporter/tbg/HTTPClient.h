@@ -135,10 +135,10 @@ public:
 	{ }
 	
 	//! HTTP status code returned by the server or \c 0 if there was an error
-	int status() { return m_status; }
+	int status() const { return m_status; }
 	
 	//! Check if the request completed successfully
-	bool ok() { return m_error.empty() && m_status >= 200 && m_status < 400; }
+	bool ok() const { return m_error.empty() && m_status >= 200 && m_status < 400; }
 	
 	//! Get a string describing the error that prevented the request
 	const std::string & error() const { return m_error; }
