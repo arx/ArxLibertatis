@@ -312,7 +312,7 @@ void CinematicGrid::ReajustUV() {
 	}
 }
 
-void CinematicGrid::GetIndNumCube(int cx, int cy, int * i1, int * i2, int * i3, int * i4) {
+void CinematicGrid::GetIndNumCube(int cx, int cy, int * i1, int * i2, int * i3, int * i4) const {
 	*i1 = cy * (m_count.x + 1) + cx;
 	*i2 = *i1 + 1;
 	*i3 = *i1 + (m_count.x + 1);
