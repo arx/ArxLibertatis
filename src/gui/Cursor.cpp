@@ -440,11 +440,12 @@ public:
 		
 	}
 	
-	TextureContainer * getCurrentTexture() {
+	TextureContainer * getCurrentTexture() const {
 		TextureContainer * tc = scursor[m_frame];
 		arx_assert(tc);
 		return tc;
 	}
+	
 };
 
 CursorAnimatedHand cursorAnimatedHand = CursorAnimatedHand();
