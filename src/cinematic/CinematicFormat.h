@@ -68,7 +68,7 @@ struct CinematicLight_1_71 {
 	s32 prev; // ignored
 	s32 next; // ignored
 	
-	operator CinematicLight() {
+	operator CinematicLight() const {
 		CinematicLight l;
 		l.pos = pos.toVec3();
 		l.fallin = fallin;
