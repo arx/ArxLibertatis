@@ -77,8 +77,6 @@ public:
 	int iTexTime;
 	int iTexNum;
 	
-public:
-	
 	Particle();
 	~Particle();
 	
