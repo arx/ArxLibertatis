@@ -35,6 +35,9 @@
 #include <windows.h>
 #else
 #include <boost/filesystem/operations.hpp>
+#if BOOST_VERSION >= 17200
+#include <boost/filesystem/directory.hpp>
+#endif
 #endif
 
 #include "platform/Platform.h"
