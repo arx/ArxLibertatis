@@ -116,7 +116,7 @@ public:
 	static bool isWordSeparator(char c);
 	
 	void selectAll();
-	bool selected() { return m_selected; }
+	bool selected() const { return m_selected; }
 	
 	const std::string & text() const { return m_text; }
 	size_t cursorPos() const { return m_cursorPos; }
