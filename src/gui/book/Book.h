@@ -70,26 +70,36 @@ private:
 };
 
 class SpellsPage : public PlayerBookPage {
+	
 public:
+	
 	SpellsPage();
 	void manage();
+	
 private:
+	
 	long m_currentTab;
-
+	
 	void drawLeftTabs();
-	void drawSpells();
+	void drawSpells() const;
+	
 };
 
 class MapPage : public PlayerBookPage {
+	
 public:
+	
 	MapPage();
 	void manage();
 	void setMapLevel(long level);
+	
 private:
+	
 	long m_currentLevel;
-
+	
 	void drawLeftTabs();
-	void drawMaps();
+	void drawMaps() const;
+	
 };
 
 class QuestBookPage : public PlayerBookPage {
@@ -117,7 +127,7 @@ public:
 	void openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false);
 	void openNextPage();
 	void openPrevPage();
-	ARX_INTERFACE_BOOK_MODE currentPage() { return m_currentPage; }
+	ARX_INTERFACE_BOOK_MODE currentPage() const { return m_currentPage; }
 	void forcePage(ARX_INTERFACE_BOOK_MODE page);
 	void open();
 	void close();
@@ -135,7 +145,7 @@ private:
 	float lastScaleSetting;
 	MenuMode lastMenuMode;
 	
-	bool canOpenPage(ARX_INTERFACE_BOOK_MODE page);
+	bool canOpenPage(ARX_INTERFACE_BOOK_MODE page) const;
 	ARX_INTERFACE_BOOK_MODE nextPage();
 	ARX_INTERFACE_BOOK_MODE prevPage();
 	void onClosePage();
