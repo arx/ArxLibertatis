@@ -118,7 +118,7 @@ struct CinematicGrid {
 	
 private:
 	
-	void GetIndNumCube(int cx, int cy, int * i1, int * i2, int * i3, int * i4);
+	void GetIndNumCube(int cx, int cy, int * i1, int * i2, int * i3, int * i4) const;
 	size_t AddMaterial(Texture * tex);
 	void AddPoly(size_t matIdx, int i0, int i1, int i2);
 	
