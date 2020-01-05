@@ -652,7 +652,7 @@ void PlayerInventoryHud::close() {
 	m_isClosing = true;
 }
 
-bool PlayerInventoryHud::isClosing() {
+bool PlayerInventoryHud::isClosing() const {
 	return m_isClosing;
 }
 
