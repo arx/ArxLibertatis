@@ -43,10 +43,10 @@ public:
 	
 	explicit XByteArray();
 	
-	int addressOffset();
+	int addressOffset() const;
 	void setAddressOffset(int offset);
 	
-	int addressWidth();
+	int addressWidth() const;
 	void setAddressWidth(int width);
 	
 	QByteArray & data();
