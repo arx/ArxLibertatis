@@ -77,8 +77,6 @@ protected:
 		}
 	}
 	
-protected:
-	
 	ErrorReport & m_errorReport;
 	
 private:
