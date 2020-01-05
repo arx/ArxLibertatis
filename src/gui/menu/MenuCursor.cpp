@@ -159,7 +159,7 @@ void MenuCursor::SetMouseOver() {
 	bMouseOver = true;
 }
 
-void MenuCursor::DrawOneCursor(const Vec2s & mousePos) {
+void MenuCursor::DrawOneCursor(const Vec2s & mousePos) const {
 	
 	if(!GInput->isMouseInWindow()) {
 		return;
