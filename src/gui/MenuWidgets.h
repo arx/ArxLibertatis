@@ -89,7 +89,7 @@ public:
 	
 	MenuPage * getPage(MENUSTATE id) const;
 	
-	float scroll() { return fAngle; }
+	float scroll() const { return fAngle; }
 	void setScroll(float scroll) { fAngle = scroll; }
 	
 private:
