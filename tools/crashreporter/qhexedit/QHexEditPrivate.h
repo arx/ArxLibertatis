@@ -40,28 +40,28 @@ public:
 	explicit QHexEditPrivate(QScrollArea * parent);
 	
 	void setAddressAreaColor(QColor const & color);
-	QColor addressAreaColor();
+	QColor addressAreaColor() const;
 	
 	void setAddressOffset(int offset);
-	int addressOffset();
+	int addressOffset() const;
 	
 	void setCursorPos(int position);
-	int cursorPos();
+	int cursorPos() const;
 	
 	void setData(QByteArray const & data);
 	QByteArray data();
 	
 	void setHighlightingColor(QColor const & color);
-	QColor highlightingColor();
+	QColor highlightingColor() const;
 	
 	void setOverwriteMode(bool overwriteMode);
-	bool overwriteMode();
+	bool overwriteMode() const;
 	
 	void setReadOnly(bool readOnly);
-	bool isReadOnly();
+	bool isReadOnly() const;
 	
 	void setSelectionColor(QColor const & color);
-	QColor selectionColor();
+	QColor selectionColor() const;
 	
 	XByteArray & xData();
 	
@@ -99,15 +99,15 @@ protected:
 	void paintEvent(QPaintEvent * event);
 	
 	//! calc cursorpos from graphics position. DOES NOT STORE POSITION
-	int cursorPos(QPoint pos);
+	int cursorPos(QPoint pos) const;
 	
 	void resetSelection(int pos);
 	
 	//! set min (if below init) or max (if greater init)
 	void setSelection(int pos);
 	
-	int getSelectionBegin();
-	int getSelectionEnd();
+	int getSelectionBegin() const;
+	int getSelectionEnd() const;
 	
 private slots:
 	
