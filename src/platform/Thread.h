@@ -101,7 +101,7 @@ public:
 	/*!
 	 * \brief Wait until the thread exists
 	 */
-	void waitForCompletion();
+	void waitForCompletion() const;
 	
 	static thread_id_type getCurrentThreadId();
 	
@@ -132,7 +132,7 @@ public:
 		waitForCompletion();
 	}
 	
-	bool isStopRequested() {
+	bool isStopRequested() const {
 		return m_stopRequested;
 	}
 	

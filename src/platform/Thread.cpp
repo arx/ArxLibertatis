@@ -118,7 +118,7 @@ void Thread::setPriority(Priority priority) {
 
 Thread::~Thread() { }
 
-void Thread::waitForCompletion() {
+void Thread::waitForCompletion() const {
 	if(m_started) {
 		pthread_join(m_thread, NULL);
 	}
@@ -279,7 +279,7 @@ void Thread::exit() {
 	ExitThread(0);
 }
 
-void Thread::waitForCompletion() {
+void Thread::waitForCompletion() const {
 	DWORD ret = WaitForSingleObject(m_thread, INFINITE);
 	arx_assert(ret == WAIT_OBJECT_0);
 	ARX_UNUSED(ret);
