@@ -153,7 +153,7 @@ public:
 	
 };
 
-std::string getErrorString(WORD error = GetLastError(), HMODULE module = NULL);
+std::string getErrorString(DWORD error = GetLastError(), HMODULE module = NULL);
 
 template <typename FunctionType>
 FunctionType getProcAddress(HMODULE module, const char * symbol) {
