@@ -26,15 +26,15 @@ class CinematicBorder {
 public:
 	CinematicBorder();
 	
-	bool isActive();
-	GameDuration elapsedTime();
+	bool isActive() const;
+	GameDuration elapsedTime() const;
 	
 	void reset();
 	
 	void update();
 	void set(bool status, bool smooth);
 	
-	void render();
+	void render() const;
 	
 	float CINEMA_DECAL;
 	
