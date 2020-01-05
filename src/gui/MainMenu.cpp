@@ -1616,8 +1616,6 @@ protected:
 		
 	}
 	
-protected:
-	
 	void reinitActionKeys() {
 		
 		BOOST_FOREACH(Widget * widget, m_children.widgets()) {
