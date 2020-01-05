@@ -226,7 +226,7 @@ void ParticleSystem::StopEmission() {
 	m_parameters.m_nbMax = 0;
 }
 
-bool ParticleSystem::IsAlive() {
+bool ParticleSystem::IsAlive() const {
 	return (iParticleNbAlive != 0 || m_parameters.m_nbMax != 0);
 }
 
