@@ -81,7 +81,7 @@ public:
 	void dragEntity(Entity * io, const Vec2s & pos);
 	
 	void close();
-	bool isClosing();
+	bool isClosing() const;
 	void resetPos();
 	
 private:
