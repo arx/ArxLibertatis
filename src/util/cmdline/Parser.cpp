@@ -164,19 +164,19 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 					oss << " argument \"" << util::escapeString(*p, "\\\" '$!") << "\"";
 				}
 				oss << ": ";
-				if(e.m_code == error::cmd_not_found) {
+				if(e.code() == error::cmd_not_found) {
 					oss << "positional arguments not supported";
 				} else {
 					oss << e.what();
 				}
 			} else {
 				oss << " option " << option << ": " << e.what();
-				if(p != end && e.m_code == error::invalid_arg_count) {
+				if(p != end && e.code() == error::invalid_arg_count) {
 					oss << ": \"" << util::escapeString(*p, "\\\" '$!") << "\"";
 				}
 			}
 			
-			throw error(e.m_code, oss.str());
+			throw error(e.code(), oss.str());
 			
 		}
 		

@@ -71,7 +71,9 @@ public:
 		arx_unreachable();
 	}
 	
-public:
+	exception_code code() const { return m_code; }
+	
+private:
 	
 	exception_code m_code;
 	
