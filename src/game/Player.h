@@ -318,7 +318,7 @@ struct ARXCHARACTER {
 	char skin;
 	
 	RuneFlags rune_flags;
-	bool hasRune(Rune rune) {
+	bool hasRune(Rune rune) const {
 		return (rune_flags & RuneFlag(1 << rune)) != 0;
 	}
 	
@@ -391,11 +391,11 @@ struct ARXCHARACTER {
 	
 	static Vec3f baseOffset() { return Vec3f(0.f, baseHeight(), 0.f); }
 	
-	Vec3f basePosition() {
+	Vec3f basePosition() const {
 		return Vec3f(pos.x, pos.y - baseHeight(), pos.z);
 	}
 	
-	Cylinder baseCylinder() {
+	Cylinder baseCylinder() const {
 		return Cylinder(basePosition(), baseRadius(), baseHeight());
 	}
 	
