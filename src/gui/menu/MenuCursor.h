@@ -62,7 +62,7 @@ public:
 	
 private:
 	
-	void DrawOneCursor(const Vec2s & mousePos);
+	void DrawOneCursor(const Vec2s & mousePos) const;
 	
 	Vec2s m_size;
 	bool exited; //! Has the mouse exited the window
