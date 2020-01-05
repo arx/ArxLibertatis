@@ -101,8 +101,6 @@ public:
 		
 	};
 	
-public:
-	
 	class TextSize {
 		
 		Vec2i m_anchor;
@@ -223,8 +221,6 @@ private:
 	 * \return true if the glyph textures were changed
 	 */
 	bool insertMissingGlyphs(text_iterator begin, text_iterator end);
-	
-private:
 	
 	template <bool Draw>
 	TextSize process(int pX, int pY, text_iterator start, text_iterator end, Color color);
