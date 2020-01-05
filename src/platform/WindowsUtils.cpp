@@ -26,21 +26,28 @@
 
 #include <boost/algorithm/string/trim.hpp>
 
+#include "io/fs/FilePath.h"
+
 namespace platform {
 
-void WideString::assign(const char * utf8, size_t utf8_length) {
-	if(!dynamic() && utf8_length <= capacity()) {
+void WideString::assign(const char * utf8, size_t utf8_length, size_t offset) {
+	if(!dynamic() && offset + utf8_length <= capacity()) {
 		// Optimistically assume that the wide length is not longer than the utf8 length
-		INT length = MultiByteToWideChar(CP_UTF8, 0, utf8, utf8_length, m_static, capacity());
+		INT length = MultiByteToWideChar(CP_UTF8, 0, utf8, utf8_length, m_static + offset, capacity() - offset);
 		if(length || !utf8_length) {
-			m_static[length] = L'\0';
-			m_size = length;
+			m_static[offset + length] = L'\0';
+			m_size = offset + length;
 			return;
 		}
 	}
 	INT length = MultiByteToWideChar(CP_UTF8, 0, utf8, utf8_length, NULL, 0);
-	allocate(length);
-	MultiByteToWideChar(CP_UTF8, 0, utf8, utf8_length, data(), length);
+	allocate(offset + length);
+	MultiByteToWideChar(CP_UTF8, 0, utf8, utf8_length, data() + offset, length);
+}
+
+void WideString::assign(const WCHAR * text, size_t length, size_t offset) {
+	allocate(offset + length);
+	std::copy(text, text + length, data() + offset);
 }
 
 void WideString::allocateDynamic(size_t size) {
@@ -52,6 +59,15 @@ void WideString::allocateDynamic(size_t size) {
 		new(reinterpret_cast<char *>(&m_dynamic)) DynamicType(size, L'\0');
 		std::copy(backup, backup + m_size, str().begin());
 		m_size = size_t(-1);
+	}
+}
+
+void WideString::reserve(size_t futureSize) {
+	if(futureSize > capacity()) {
+		if(!dynamic()) {
+			allocateDynamic(size());
+		}
+		str().reserve(futureSize);
 	}
 }
 
@@ -99,6 +115,25 @@ std::string WideString::toUTF8(const WCHAR * string) {
 
 std::string WideString::toUTF8() const {
 	return toUTF8(c_str(), length());
+}
+
+void WinPath::assign(const fs::path & path) {
+	
+	const WCHAR * prefix = L"\\\\?\\";
+	
+	if(path.is_absolute() && path.string().length() > PATH_MAX) {
+		reserve(path.string().length() + 4);
+		assign(prefix);
+		append(path.string());
+	} else {
+		assign(path.string());
+		if(path.is_absolute() && size() > PATH_MAX) {
+			allocate(size() + 4);
+			std::memmove(data() + 4, data(), size() * sizeof(WCHAR));
+			std::copy(prefix, prefix + 4, data());
+		}
+	}
+	
 }
 
 std::string getErrorString(WORD error, HMODULE module) {

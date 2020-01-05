@@ -32,6 +32,8 @@
 
 #include <boost/range/size.hpp>
 
+namespace fs { class path; }
+
 namespace platform {
 
 /*!
@@ -84,6 +86,8 @@ public:
 	size_t size() const { return dynamic() ? str().size() : m_size; }
 	size_t length() const { return size(); }
 	
+	void reserve(size_t futureSize);
+	
 	//! Resize the buffer but leave the contents undefined
 	void allocate(size_t size);
 	
@@ -93,9 +97,13 @@ public:
 	//! Resize the buffer to the first NULL byte
 	void compact();
 	
-	void assign(const char * utf8, size_t length);
+	void assign(const char * utf8, size_t length, size_t offset = 0);
 	void assign(const char * utf8) { assign(utf8, std::strlen(utf8)); }
 	void assign(const std::string & utf8) { assign(utf8.data(), utf8.length()); }
+	
+	void append(const char * utf8, size_t length) { assign(utf8, length, size()); }
+	void append(const char * utf8) { append(utf8, std::strlen(utf8)); }
+	void append(const std::string & utf8) { append(utf8.data(), utf8.length()); }
 	
 	WideString & operator=(const char * utf8) {
 		assign(utf8);
@@ -106,11 +114,41 @@ public:
 		return *this;
 	}
 	
+	void assign(const WCHAR * text, size_t length, size_t offset = 0);
+	void assign(const WCHAR * text) { assign(text, std::wcslen(text)); }
+	
+	void append(const WCHAR * text, size_t length) { assign(text, length, size()); }
+	void append(const WCHAR * text) { append(text, std::wcslen(text)); }
+	
+	WideString & operator=(const WCHAR * text) {
+		assign(text);
+		return *this;
+	}
+	
 	std::string toUTF8() const;
 	static std::string toUTF8(const WCHAR * string, size_t length);
 	static std::string toUTF8(const WCHAR * string);
 	static std::string toUTF8(const std::basic_string<WCHAR> & str) {
 		return toUTF8(str.data(), str.length());
+	}
+	
+};
+
+class WinPath : public WideString {
+	
+public:
+	
+	WinPath(const fs::path & path) : WideString() { assign(path); }
+	explicit WinPath(size_t size) : WideString(size) { }
+	WinPath() : WideString() { }
+	
+	using WideString::assign;
+	void assign(const fs::path & path);
+	
+	using WideString::operator=;
+	WideString & operator=(const fs::path & path) {
+		assign(path);
+		return *this;
 	}
 	
 };

@@ -29,27 +29,27 @@ namespace fs {
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32 && ARX_HAVE_CXX17_FSTREAM_WCHAR
 
 ifstream::ifstream(const path & p, openmode mode)
-	: std::ifstream(platform::WideString(p.string()), mode)
+	: std::ifstream(platform::WinPath(p), mode)
 { }
 
 void ifstream::open(const path & p, openmode mode) {
-	std::ifstream::open(platform::WideString(p.string()), mode);
+	std::ifstream::open(platform::WinPath(p), mode);
 }
 
 ofstream::ofstream(const path & p, openmode mode)
-	: std::ofstream(platform::WideString(p.string()), mode)
+	: std::ofstream(platform::WinPath(p), mode)
 { }
 
 void ofstream::open(const path & p, openmode mode) {
-	std::ofstream::open(platform::WideString(p.string()), mode);
+	std::ofstream::open(platform::WinPath(p), mode);
 }
 
 fstream::fstream(const path & p, openmode mode)
-	: std::fstream(platform::WideString(p.string()), mode)
+	: std::fstream(platform::WinPath(p), mode)
 { }
 
 void fstream::open(const path & p, openmode mode) {
-	std::fstream::open(platform::WideString(p.string()), mode);
+	std::fstream::open(platform::WinPath(p), mode);
 }
 
 #else
