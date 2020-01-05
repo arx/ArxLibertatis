@@ -80,7 +80,7 @@ public:
 	void Render();
 	
 	void StopEmission();
-	bool IsAlive();
+	bool IsAlive() const;
 	
 	void Update(GameDuration delta);
 	
