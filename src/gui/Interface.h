@@ -66,10 +66,10 @@ class Entity;
 
 extern Entity * FlyingOverIO;
 
-//-----------------------------------------------------------------------------
-class INTERFACE_TC
-{
+class INTERFACE_TC {
+	
 public:
+	
 	INTERFACE_TC()
 		: playerbook(NULL)
 		, ic_casting(NULL)
@@ -98,8 +98,7 @@ public:
 	}
 	
 	void init();
-
-public:
+	
 	TextureContainer * playerbook;
 	TextureContainer * ic_casting;
 	TextureContainer * ic_close_combat;
@@ -127,6 +126,7 @@ public:
 	
 	std::string        Level;
 	std::string        Xp;
+	
 };
 
 enum E_ARX_STATE_MOUSE
@@ -139,8 +139,6 @@ enum E_ARX_STATE_MOUSE
 	MOUSE_IN_INVENTORY,
 	MOUSE_IN_NOTE
 };
-
-//-----------------------------------------------------------------------------
 
 enum ARX_INTERFACE_MOVE_MODE
 {
