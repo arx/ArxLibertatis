@@ -70,8 +70,8 @@ public:
 	size_t capacity() const { return size_t(boost::size(m_static)) - 1; }
 	
 	WideString(const char * utf8, size_t length) : m_size(0) { assign(utf8, length); }
-	/* implicit */ WideString(const char * utf8) : m_size(0) { assign(utf8); }
-	/* implicit */ WideString(const std::string & utf8) : m_size(0) { assign(utf8); }
+	explicit WideString(const char * utf8) : m_size(0) { assign(utf8); }
+	explicit WideString(const std::string & utf8) : m_size(0) { assign(utf8); }
 	explicit WideString(size_t size) : m_size(0) { resize(size); }
 	WideString() : m_size(0) { m_static[0] = '\0'; }
 	
@@ -138,7 +138,7 @@ class WinPath : public WideString {
 	
 public:
 	
-	WinPath(const fs::path & path) : WideString() { assign(path); }
+	explicit WinPath(const fs::path & path) : WideString() { assign(path); }
 	explicit WinPath(size_t size) : WideString(size) { }
 	WinPath() : WideString() { }
 	
