@@ -99,7 +99,7 @@ public:
 		m_queue.clear();
 	}
 	
-	bool isBusy() {
+	bool isBusy() const {
 		return m_busy;
 	}
 	
