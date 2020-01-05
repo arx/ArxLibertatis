@@ -67,6 +67,9 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasClearDepthf(false)
 	, m_hasVertexFogCoordinate(false)
 	, m_hasSampleShading(false)
+	, m_currentTransform(GL_UnsetTransform)
+	, m_projection(1.f)
+	, m_view(1.f)
 { }
 
 OpenGLRenderer::~OpenGLRenderer() {
@@ -78,14 +81,6 @@ OpenGLRenderer::~OpenGLRenderer() {
 	// TODO textures must be destructed before OpenGLRenderer or not at all
 	
 }
-
-enum GLTransformMode {
-	GL_UnsetTransform,
-	GL_NoTransform,
-	GL_ModelViewProjectionTransform
-};
-
-static GLTransformMode currentTransform;
 
 void OpenGLRenderer::initialize() {
 	
@@ -451,7 +446,7 @@ void OpenGLRenderer::reinit() {
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	currentTransform = GL_UnsetTransform;
+	m_currentTransform = GL_UnsetTransform;
 	switchVertexArray(GL_NoArray, 0, 1);
 	
 	onRendererInit();
@@ -474,31 +469,28 @@ void OpenGLRenderer::shutdown() {
 	
 }
 
-static glm::mat4x4 projection(1.f);
-static glm::mat4x4 view(1.f);
-
 void OpenGLRenderer::enableTransform() {
 	
-	if(currentTransform == GL_ModelViewProjectionTransform) {
+	if(m_currentTransform == GL_ModelViewProjectionTransform) {
 		return;
 	}
 	
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(glm::value_ptr(view));
+	glLoadMatrixf(glm::value_ptr(m_view));
 		
 	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(glm::value_ptr(projection));
+	glLoadMatrixf(glm::value_ptr(m_projection));
 	
 	if(hasVertexFogCoordinate()) {
 		glFogi(GL_FOG_COORDINATE_SOURCE, GL_FRAGMENT_DEPTH);
 	}
 	
-	currentTransform = GL_ModelViewProjectionTransform;
+	m_currentTransform = GL_ModelViewProjectionTransform;
 }
 
 void OpenGLRenderer::disableTransform() {
 	
-	if(currentTransform == GL_NoTransform) {
+	if(m_currentTransform == GL_NoTransform) {
 		return;
 	}
 	
@@ -522,33 +514,33 @@ void OpenGLRenderer::disableTransform() {
 		glFogi(GL_FOG_COORDINATE_SOURCE, GL_FOG_COORDINATE);
 	}
 	
-	currentTransform = GL_NoTransform;
+	m_currentTransform = GL_NoTransform;
 }
 
 void OpenGLRenderer::SetViewMatrix(const glm::mat4x4 & matView) {
 	
-	if(!memcmp(&view, &matView, sizeof(glm::mat4x4))) {
+	if(!memcmp(&m_view, &matView, sizeof(glm::mat4x4))) {
 		return;
 	}
 	
-	if(currentTransform == GL_ModelViewProjectionTransform) {
-		currentTransform = GL_UnsetTransform;
+	if(m_currentTransform == GL_ModelViewProjectionTransform) {
+		m_currentTransform = GL_UnsetTransform;
 	}
 
-	view = matView;
+	m_view = matView;
 }
 
 void OpenGLRenderer::SetProjectionMatrix(const glm::mat4x4 & matProj) {
 	
-	if(!memcmp(&projection, &matProj, sizeof(glm::mat4x4))) {
+	if(!memcmp(&m_projection, &matProj, sizeof(glm::mat4x4))) {
 		return;
 	}
 	
-	if(currentTransform == GL_ModelViewProjectionTransform) {
-		currentTransform = GL_UnsetTransform;
+	if(m_currentTransform == GL_ModelViewProjectionTransform) {
+		m_currentTransform = GL_UnsetTransform;
 	}
 	
-	projection = matProj;
+	m_projection = matProj;
 }
 
 void OpenGLRenderer::ReleaseAllTextures() {
@@ -591,8 +583,8 @@ void OpenGLRenderer::SetViewport(const Rect & _viewport) {
 	
 	glViewport(viewport.left, height - viewport.bottom, viewport.width(), viewport.height());
 	
-	if(currentTransform == GL_NoTransform) {
-		currentTransform = GL_UnsetTransform;
+	if(m_currentTransform == GL_NoTransform) {
+		m_currentTransform = GL_UnsetTransform;
 	}
 }
 
