@@ -49,8 +49,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <string>
 
+#include <boost/foreach.hpp>
+
 #include "animation/Animation.h"
 #include "animation/AnimationRender.h"
+
+#include "audio/Audio.h"
 
 #include "core/Application.h"
 #include "core/ArxGame.h"
@@ -185,7 +189,8 @@ void ARXMenu_Options_Audio_SetDevice(const std::string & device) {
 	
 	std::vector< std::pair<res::path, size_t> > animationSamples = ARX_SOUND_PushAnimSamples();
 	
-	std::string playlist = ARX_SOUND_AmbianceSavePlayList();
+	std::vector<audio::AmbianceInfo> playlist;
+	audio::getAmbianceInfos(playlist);
 	
 	ARX_SOUND_Release();
 	ARX_SOUND_Init();
@@ -193,14 +198,28 @@ void ARXMenu_Options_Audio_SetDevice(const std::string & device) {
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
 	
-	ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
-	
 	ARXMenu_Options_Audio_SetMasterVolume(config.audio.volume);
 	ARXMenu_Options_Audio_SetSfxVolume(config.audio.sfxVolume);
 	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
 	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
 	
-	ARX_SOUND_AmbianceRestorePlayList(playlist.data(), playlist.size());
+	BOOST_FOREACH(const audio::AmbianceInfo & info, playlist) {
+		SoundLoopMode loop = info.isLooped ? ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
+		switch(info.type) {
+			case audio::PLAYING_AMBIANCE_MENU: {
+				ARX_SOUND_PlayMenuAmbiance(info.name);
+				break;
+			}
+			case audio::PLAYING_AMBIANCE_SCRIPT: {
+				ARX_SOUND_PlayScriptAmbiance(info.name, loop, info.volume);
+				break;
+			}
+			case audio::PLAYING_AMBIANCE_ZONE: {
+				ARX_SOUND_PlayZoneAmbiance(info.name, loop, info.volume);
+				break;
+			}
+		}
+	}
 	
 	ARX_SOUND_PopAnimSamples(animationSamples);
 }

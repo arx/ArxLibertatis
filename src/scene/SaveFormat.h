@@ -172,6 +172,13 @@ struct ARX_CHANGELEVEL_SAVE_GLOBALS {
 	s32 padding[256];
 };
 
+struct SavedPlayingAmbiance {
+	char name[256];
+	f32 volume;
+	s32 loop;
+	s32 type;
+};
+
 struct SavedMapMarkerData {
 	
 	static const size_t STRING_SIZE = 64;

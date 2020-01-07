@@ -246,8 +246,6 @@ bool ARX_SOUND_PlayZoneAmbiance(const res::path & ambiance_name, SoundLoopMode l
                                 float volume = 1.f);
 audio::AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name);
 void ARX_SOUND_KillAmbiances();
-std::string ARX_SOUND_AmbianceSavePlayList();
-void ARX_SOUND_AmbianceRestorePlayList(const char * playlist, size_t size);
 
 void ARX_SOUND_MixerSetVolume(audio::MixerId mixer_id, float volume);
 void ARX_SOUND_MixerStop(audio::MixerId mixer_id);
