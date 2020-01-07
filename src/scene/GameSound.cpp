@@ -94,14 +94,6 @@ using audio::FLAG_AUTOFREE;
 
 extern bool EXTERNALVIEW;
 
-// TODO used for saving
-struct PlayingAmbiance {
-	char name[256];
-	f32 volume;
-	s32 loop;
-	s32 type;
-};
-
 static const unsigned long MAX_VARIANTS = 5;
 static const PlatformDuration AMBIANCE_FADE_TIME = PlatformDurationMs(2000);
 static const float ARX_SOUND_DEFAULT_FALLSTART = 200.f;
@@ -790,67 +782,6 @@ AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 	audio::ambiancePlay(g_menuAmbiance, channel, true);
 	
 	return g_menuAmbiance;
-}
-
-std::string ARX_SOUND_AmbianceSavePlayList() {
-	
-	std::string result;
-	
-	std::vector<audio::AmbianceInfo> infos;
-	audio::getAmbianceInfos(infos);
-	
-	BOOST_FOREACH(const audio::AmbianceInfo & info, infos) {
-		
-		if(info.type != audio::PLAYING_AMBIANCE_SCRIPT && info.type != audio::PLAYING_AMBIANCE_ZONE) {
-			continue;
-		}
-		
-		result.resize(result.size() + sizeof(PlayingAmbiance));
-		
-		char * data = &result[result.size() - sizeof(PlayingAmbiance)];
-		PlayingAmbiance * playing = reinterpret_cast<PlayingAmbiance *>(data);
-		
-		std::memset(playing->name, 0, sizeof(playing->name));
-		arx_assert(info.name.string().length() + 1 < size_t(boost::size(playing->name)));
-		util::storeString(playing->name, info.name.string());
-		
-		playing->volume = info.volume;
-		
-		playing->loop = info.isLooped ?  ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
-		
-		playing->type = (info.type == audio::PLAYING_AMBIANCE_SCRIPT ? 1 : 2);
-		
-	}
-	
-	return result;
-}
-
-void ARX_SOUND_AmbianceRestorePlayList(const char * playlist, size_t size) {
-	
-	size_t count = size / sizeof(PlayingAmbiance);
-	const PlayingAmbiance * play_list = reinterpret_cast<const PlayingAmbiance *>(playlist);
-	
-	for(size_t i = 0; i < count; i++) {
-		
-		const PlayingAmbiance * playing = &play_list[i];
-		
-		res::path name = res::path::load(util::loadString(playing->name));
-		
-		switch(playing->type) {
-			
-			case 1:
-				ARX_SOUND_PlayScriptAmbiance(name, SoundLoopMode(playing->loop), playing->volume);
-				break;
-			
-			case 2:
-				ARX_SOUND_PlayZoneAmbiance(name, SoundLoopMode(playing->loop), playing->volume);
-				break;
-			
-			default:
-				LogWarning << "Unknown ambiance type " << playing->type << " for " << name;
-			
-		}
-	}
 }
 
 static void ARX_SOUND_CreateEnvironments() {

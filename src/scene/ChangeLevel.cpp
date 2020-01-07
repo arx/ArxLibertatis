@@ -60,6 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/Paths.h"
 
+#include "audio/Audio.h"
+
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -448,18 +450,23 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		}
 	}
 	
+	std::vector<audio::AmbianceInfo> playlist;
+	audio::getAmbianceInfos(playlist);
+	BOOST_FOREACH(const audio::AmbianceInfo & info, playlist) {
+		if(info.type == audio::PLAYING_AMBIANCE_SCRIPT || info.type == audio::PLAYING_AMBIANCE_ZONE) {
+			asi.ambiances_data_size += sizeof(SavedPlayingAmbiance);
+		}
+	}
+	
 	size_t allocsize = sizeof(ARX_CHANGELEVEL_INDEX)
 	                   + sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi.nb_inter
 	                   + sizeof(ARX_CHANGELEVEL_PATH) * asi.nb_paths
-	                   + sizeof(ARX_CHANGELEVEL_LIGHT) * asi.nb_lights;
-	
-	std::string playlist = ARX_SOUND_AmbianceSavePlayList();
-	allocsize += playlist.size();
+	                   + sizeof(ARX_CHANGELEVEL_LIGHT) * asi.nb_lights
+	                   + asi.ambiances_data_size;
 	
 	std::vector<char> buffer(allocsize);
 	char * dat = &buffer[0];
 	
-	asi.ambiances_data_size = playlist.size();
 	memcpy(dat, &asi, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 	
@@ -491,8 +498,18 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		pos += sizeof(ARX_CHANGELEVEL_PATH);
 	}
 	
-	memcpy(dat + pos, playlist.data(), playlist.size());
-	pos += playlist.size();
+	BOOST_FOREACH(const audio::AmbianceInfo & info, playlist) {
+		if(info.type == audio::PLAYING_AMBIANCE_SCRIPT || info.type == audio::PLAYING_AMBIANCE_ZONE) {
+			SavedPlayingAmbiance * playing = reinterpret_cast<SavedPlayingAmbiance *>(dat + pos);
+			std::memset(playing, 0, sizeof(SavedPlayingAmbiance));
+			arx_assert(info.name.string().length() + 1 < size_t(boost::size(playing->name)));
+			util::storeString(playing->name, info.name.string());
+			playing->volume = info.volume;
+			playing->loop = info.isLooped ? 0 : 1;
+			playing->type = (info.type == audio::PLAYING_AMBIANCE_SCRIPT ? 1 : 2);
+			pos += sizeof(SavedPlayingAmbiance);
+		}
+	}
 	
 	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		EERIE_LIGHT * el = g_staticLights[i];
@@ -1334,9 +1351,28 @@ static const ARX_CHANGELEVEL_INDEX * ARX_CHANGELEVEL_Pop_Index(const std::string
 	pos += sizeof(ARX_CHANGELEVEL_PATH) * asi->nb_paths;
 	
 	// Restore Ambiances
-	if(asi->ambiances_data_size) {
-		ARX_SOUND_AmbianceRestorePlayList(dat + pos, size_t(asi->ambiances_data_size));
-		pos += size_t(asi->ambiances_data_size);
+	size_t ambiances = asi->ambiances_data_size;
+	while(ambiances >= sizeof(SavedPlayingAmbiance)) {
+		const SavedPlayingAmbiance * playing = reinterpret_cast<const SavedPlayingAmbiance *>(dat + pos);
+		SoundLoopMode loop = (playing->loop == 0) ? ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
+		res::path name = res::path::load(util::loadString(playing->name));
+		switch(playing->type) {
+			case 1: {
+				ARX_SOUND_PlayScriptAmbiance(name, loop, playing->volume);
+				break;
+			}
+			case 2: {
+				ARX_SOUND_PlayZoneAmbiance(name, loop, playing->volume);
+				break;
+			}
+			default: LogWarning << "Unknown ambiance type " << playing->type << " for " << name;
+		}
+		ambiances -= sizeof(SavedPlayingAmbiance);
+		pos += sizeof(SavedPlayingAmbiance);
+	}
+	if(ambiances) {
+		LogWarning << "Unexpected ambiance data";
+		pos += ambiances;
 	}
 	
 	ARX_UNUSED(pos);
