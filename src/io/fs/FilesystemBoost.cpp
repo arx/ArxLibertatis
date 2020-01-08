@@ -22,6 +22,7 @@
 #include "Configure.h"
 
 #include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include "io/fs/FilePath.h"
 

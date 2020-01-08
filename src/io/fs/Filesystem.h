@@ -34,9 +34,11 @@
 #elif ARX_HAVE_WIN32_FILESYSTEM
 #include <windows.h>
 #else
-#include <boost/filesystem/operations.hpp>
-#if BOOST_VERSION >= 17200
+#include <boost/version.hpp>
+#if BOOST_VERSION >= 107200
 #include <boost/filesystem/directory.hpp>
+#else
+#include <boost/filesystem/operations.hpp>
 #endif
 #endif
 
