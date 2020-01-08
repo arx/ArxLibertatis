@@ -17,7 +17,6 @@
 
 from ctypes import (
     LittleEndianStructure,
-    Union,
     c_char,
     c_uint32,
     c_int16,
