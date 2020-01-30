@@ -149,17 +149,16 @@ void CharacterCreation::render() {
 		if(!eeMousePressed1() && eeMouseUp1()) {
 			
 			m_cheatQuickGenButtonClickCount++;
-			int iSkin = player.skin;
 			ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 			
+			char skin = player.skin;
 			if(bQuickGenFirstClick) {
 				ARX_PLAYER_MakeAverageHero();
 				bQuickGenFirstClick = false;
 			} else {
 				ARX_PLAYER_QuickGeneration();
 			}
-			
-			player.skin = checked_range_cast<char>(iSkin);
+			player.skin = skin;
 			
 		}
 		
