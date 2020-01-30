@@ -134,19 +134,17 @@
 #elif ARX_HAVE_BUILTIN_ASSUME_ALIGNED && ARX_HAVE_GCC_TYPEOF
 	#define arx_assume_aligned(Pointer, Alignment) \
 		static_cast<__typeof__(Pointer)>(__builtin_assume_aligned((Pointer), (Alignment)))
-#elif defined(arx_assume_impl) || defined(arx_return_aligned_impl)
+#else
 	// TODO Use lambda
 	template <size_t Alignment, typename T>
 	arx_return_aligned(Alignment)
 	arx_force_inline
 	T * assumeAlignment(T * pointer) {
-		arx_assume_impl(arx_is_aligned(pointer, Alignment));
+		arx_assume(arx_is_aligned(pointer, Alignment));
 		return pointer;
 	}
 	#define arx_assume_aligned(Pointer, Alignment) \
 		assumeAlignment<(Alignment)>((Pointer))
-#else
-	#define arx_assume_aligned(Pointer, Alignment) (Pointer)
 #endif
 
 /*!
