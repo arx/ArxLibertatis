@@ -775,7 +775,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->Skill_Projectile = player.m_skill.projectile;
 	asp->Skill_Close_Combat = player.m_skill.closeCombat;
 	asp->Skill_Defense = player.m_skill.defense;
-	asp->skin = player.skin;
+	asp->skin = s32(player.skin);
 	
 	asp->xp = player.xp;
 	asp->nb_PlayerQuest = g_playerQuestLogEntries.size();
