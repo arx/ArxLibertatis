@@ -639,7 +639,7 @@ void SDL2Window::changeMode(DisplayMode mode, bool fullscreen) {
 		updateSize();
 	}
 	
-	tick();
+	processEvents(false);
 }
 
 void SDL2Window::updateSize(bool force) {
@@ -690,10 +690,11 @@ int SDLCALL SDL2Window::eventFilter(void * userdata, SDL_Event * event) {
 	return 1;
 }
 
-void SDL2Window::tick() {
+void SDL2Window::processEvents(bool waitForEvent) {
 	
 	SDL_Event event;
-	while(SDL_PollEvent(&event)) {
+	int ret = waitForEvent ? SDL_WaitEvent(&event) : SDL_PollEvent(&event);
+	while(ret) {
 		
 		switch(event.type) {
 			
@@ -760,6 +761,7 @@ void SDL2Window::tick() {
 			m_input->onEvent(event);
 		}
 		
+		ret = SDL_PollEvent(&event);
 	}
 	
 	if(!m_renderer->isInitialized()) {

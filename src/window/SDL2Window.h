@@ -41,7 +41,7 @@ public:
 	void setWindowSize(const Vec2i & size);
 	bool setGamma(float gamma = 1.f);
 	bool initialize();
-	void tick();
+	void processEvents(bool waitForEvent);
 	
 	void showFrame();
 	

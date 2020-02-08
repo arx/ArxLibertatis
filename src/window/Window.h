@@ -60,7 +60,7 @@ public:
 	
 	virtual bool initialize() = 0;
 	
-	virtual void tick() = 0;
+	virtual void processEvents(bool waitForEvent) = 0;
 	
 	virtual void hide() = 0;
 	
