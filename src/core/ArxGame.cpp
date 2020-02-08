@@ -1161,14 +1161,13 @@ void ArxGame::run() {
 		
 		platform::reapZombies();
 		
-		m_MainWindow->tick();
-		if(!m_RunLoop) {
-			break;
-		}
-		
 		if(m_MainWindow->isVisible() && !m_MainWindow->isMinimized() && m_bReady) {
 			doFrame();
+			m_MainWindow->processEvents(/*waitForEvent = */false);
+		} else {
+			m_MainWindow->processEvents(/*waitForEvent = */true);
 		}
+		
 	}
 	
 	benchmark::begin(benchmark::Shutdown);
