@@ -19,7 +19,8 @@ from ctypes import (
     LittleEndianStructure,
     c_char,
     c_int32,
-    c_float
+    c_float,
+    c_ubyte
 )
 
 from .dataCommon import (
@@ -64,14 +65,30 @@ class DANAE_LS_LIGHT(LittleEndianStructure):
         ("lpadd",        c_int32 * 31)
     ]
 
+class DANAE_LS_LIGHTINGHEADER(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("nb_values", c_int32),
+        ("ViewMode",  c_int32),
+        ("ModeLight", c_int32),
+        ("pad",       c_int32)
+    ]
 
+class SavedColorBGRA(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("b", c_ubyte),
+        ("g", c_ubyte),
+        ("r", c_ubyte),
+        ("a", c_ubyte)
+    ]
 
 import logging
 from ctypes import sizeof
 
 from collections import namedtuple
 
-LlfData = namedtuple('LlfData', ['lights'])
+LlfData = namedtuple('LlfData', ['lights', 'levelLighting'])
 
 class LlfSerializer(object):
     def __init__(self, ioLib):
@@ -95,6 +112,17 @@ class LlfSerializer(object):
         lights = LightsList.from_buffer_copy(data, pos)
         pos += sizeof(LightsList)
 
+        lightingHeader = DANAE_LS_LIGHTINGHEADER.from_buffer_copy(data, pos)
+        pos += sizeof(DANAE_LS_LIGHTINGHEADER)
+
+        VertexColors = SavedColorBGRA * lightingHeader.nb_values
+        levelLighting = VertexColors.from_buffer_copy(data, pos)
+        pos += sizeof(VertexColors)
+
+        if len(data) - pos != 0:
+            self.log.info("Unexected data at end of file")
+
         return LlfData(
-            lights=lights
+            lights=lights,
+            levelLighting=levelLighting
         )

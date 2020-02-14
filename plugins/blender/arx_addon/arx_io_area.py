@@ -72,7 +72,7 @@ class ArxSceneManager(object):
             idx += 1
 
         # Create mesh
-        bm = self.AddSceneBackground(ftsData.cells, mappedMaterials)
+        bm = self.AddSceneBackground(ftsData.cells, llfData.levelLighting, mappedMaterials)
         mesh = bpy.data.meshes.new(scene.name + "-mesh")
         bm.to_mesh(mesh)
         bm.free()
@@ -93,10 +93,15 @@ class ArxSceneManager(object):
         self.AddSceneObjects(scene, dlfData, ftsData.sceneOffset)
         self.add_scene_map_camera(scene)
 
-    def AddSceneBackground(self, cells, mappedMaterials):
+    def AddSceneBackground(self, cells, levelLighting, mappedMaterials):
         bm = bmesh.new()
         uvLayer = bm.loops.layers.uv.verify()
+        colorLayer = bm.loops.layers.color.new("light-color")
 
+        
+
+
+        vertexIndex = 0
         for z in cells:
             for cell in z:
 
@@ -112,8 +117,12 @@ class ArxSceneManager(object):
 
                     tempVerts = []
                     for i in range(to):
-                        tempVerts.append(
-                            ([face.v[i].ssx, face.v[i].sy, face.v[i].ssz], [face.v[i].stu, 1 - face.v[i].stv]))
+                        pos = [face.v[i].ssx, face.v[i].sy, face.v[i].ssz]
+                        uv = [face.v[i].stu, 1 - face.v[i].stv]
+                        intCol = levelLighting[vertexIndex]
+                        floatCol = (intCol.r / 255.0, intCol.g / 255.0, intCol.b / 255.0, intCol.a / 255.0)
+                        tempVerts.append((pos, uv, floatCol))
+                        vertexIndex += 1
 
                     # Switch the vertex order
                     if face.type.POLY_QUAD:
@@ -135,6 +144,7 @@ class ArxSceneManager(object):
 
                     for i, loop in enumerate(bmFace.loops):
                         loop[uvLayer].uv = tempVerts[i][1]
+                        loop[colorLayer] = tempVerts[i][2]
 
         bm.verts.index_update()
         bm.edges.index_update()
