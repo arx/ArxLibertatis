@@ -166,6 +166,17 @@ def arx_get_material_node_group():
     n_geometry.name = 'n_geometry'
     n_geometry.location = Vector((-760.0, 420.0))
 
+    n_colMix = group.nodes.new('ShaderNodeMixRGB')
+    n_colMix.name = 'n_colMix'
+    n_colMix.blend_type = 'MULTIPLY'
+    n_colMix.inputs['Fac'].default_value = 1.0
+    n_colMix.location = Vector((-730.0, -238.0))
+
+    n_vertexColor = group.nodes.new('ShaderNodeVertexColor')
+    n_vertexColor.name = 'n_vertexColor'
+    n_vertexColor.layer_name = 'light-color'
+    n_vertexColor.location = Vector((-970.0, -91.0))
+
     n_in = group.nodes.new('NodeGroupInput')
     n_in.name = 'n_in'
     n_in.location = Vector((-1300.0, 0.0))
@@ -178,6 +189,8 @@ def arx_get_material_node_group():
 
     group.links.new(n_geometry.outputs['Backfacing'], n_math1.inputs['Value'])
 
-    group.links.new(n_in.outputs['Color'], n_diffuse.inputs['Color'])
+    group.links.new(n_colMix.outputs['Color'], n_diffuse.inputs['Color'])
+    group.links.new(n_in.outputs['Color'], n_colMix.inputs['Color1'])
+    group.links.new(n_vertexColor.outputs['Color'], n_colMix.inputs['Color2'])
 
     return group
