@@ -61,20 +61,6 @@
 
 // Avoid including SDL_syswm.h without SDL_PROTOTYPES_ONLY on non-Windows systems
 // it includes X11 stuff which pullutes the namespace global namespace.
-typedef enum {
-	ARX_SDL_SYSWM_UNKNOWN,
-	ARX_SDL_SYSWM_WINDOWS,
-	ARX_SDL_SYSWM_X11,
-	ARX_SDL_SYSWM_DIRECTFB,
-	ARX_SDL_SYSWM_COCOA,
-	ARX_SDL_SYSWM_UIKIT,
-	ARX_SDL_SYSWM_WAYLAND,
-	ARX_SDL_SYSWM_MIR,
-	ARX_SDL_SYSWM_WINRT,
-	ARX_SDL_SYSWM_ANDROID,
-	ARX_SDL_SYSWM_VIVANTE,
-	ARX_SDL_SYSWM_OS2,
-} ARX_SDL_SYSWM_TYPE;
 struct ARX_SDL_SysWMinfo {
 	SDL_version version;
 	ARX_SDL_SYSWM_TYPE subsystem;
@@ -91,6 +77,8 @@ SDL2Window::SDL2Window()
 	, m_allowScreensaver(AlwaysDisabled)
 	, m_gamma(1.f)
 	, m_gammaOverridden(false)
+	, m_sdlVersion(0)
+	, m_sdlSubsystem(ARX_SDL_SYSWM_UNKNOWN)
 {
 	m_renderer = new OpenGLRenderer;
 }
@@ -178,6 +166,7 @@ bool SDL2Window::initializeFramework() {
 	LogInfo << "Using SDL " << runtimeVersion.str();
 	CrashHandler::setVariable("SDL version (runtime)", runtimeVersion.str());
 	credits::setLibraryCredits("windowing", "SDL " + runtimeVersion.str());
+	m_sdlVersion = SDL_VERSIONNUM(ver.major, ver.minor, ver.patch);
 	
 	#ifdef ARX_DEBUG
 	// No SDL, this is more annoying than helpful!
@@ -399,6 +388,7 @@ bool SDL2Window::initialize() {
 			info.version.minor = 0;
 			info.version.patch = 6;
 			if(SDL_GetWindowWMInfo(m_window, reinterpret_cast<SDL_SysWMinfo *>(&info))) {
+				m_sdlSubsystem = info.subsystem;
 				switch(info.subsystem) {
 					case ARX_SDL_SYSWM_UNKNOWN:   break;
 					case ARX_SDL_SYSWM_WINDOWS:   windowSystem = "Windows"; break;
@@ -422,9 +412,7 @@ bool SDL2Window::initialize() {
 				#endif
 				switch(info.subsystem) {
 					case ARX_SDL_SYSWM_X11: {
-						SDL_version ver;
-						SDL_GetVersion(&ver);
-						if(ver.major == 2 && ver.minor == 0 && ver.patch < 9) {
+						if(m_sdlVersion < SDL_VERSIONNUM(2, 0, 9)) {
 							// Work around a bug causing dbus-daemon memory usage to continually rise while AL is running
 							// if the org.gnome.ScreenSaver service does not exist.
 							if(m_allowScreensaver != AlwaysDisabled && m_allowScreensaver != AlwaysEnabled) {
@@ -701,7 +689,19 @@ void SDL2Window::processEvents(bool waitForEvent) {
 			case SDL_WINDOWEVENT: {
 				switch(event.window.event) {
 					
-					case SDL_WINDOWEVENT_SHOWN:        onShow(true);   break;
+					case SDL_WINDOWEVENT_SHOWN:{
+						onShow(true);
+						#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
+						if(m_sdlVersion == SDL_VERSIONNUM(2, 0, 10) && m_sdlSubsystem == ARX_SDL_SYSWM_X11
+						   && m_minimized && !(SDL_GetWindowFlags(m_window) & SDL_WINDOW_MINIMIZED)) {
+							// SDL 2.0.10 does not send SDL_WINDOWEVENT_RESTORED when unminimizing an X11 window
+							// https://bugzilla.libsdl.org/show_bug.cgi?id=4821
+							onRestore();
+						}
+						#endif
+						break;
+					}
+					
 					case SDL_WINDOWEVENT_HIDDEN:       onShow(false);  break;
 					case SDL_WINDOWEVENT_EXPOSED:      onPaint();      break;
 					case SDL_WINDOWEVENT_MINIMIZED:    onMinimize();   break;
