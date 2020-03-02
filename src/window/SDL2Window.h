@@ -27,6 +27,21 @@
 
 class SDL2InputBackend;
 
+typedef enum {
+	ARX_SDL_SYSWM_UNKNOWN,
+	ARX_SDL_SYSWM_WINDOWS,
+	ARX_SDL_SYSWM_X11,
+	ARX_SDL_SYSWM_DIRECTFB,
+	ARX_SDL_SYSWM_COCOA,
+	ARX_SDL_SYSWM_UIKIT,
+	ARX_SDL_SYSWM_WAYLAND,
+	ARX_SDL_SYSWM_MIR,
+	ARX_SDL_SYSWM_WINRT,
+	ARX_SDL_SYSWM_ANDROID,
+	ARX_SDL_SYSWM_VIVANTE,
+	ARX_SDL_SYSWM_OS2,
+} ARX_SDL_SYSWM_TYPE;
+
 class SDL2Window arx_final : public RenderWindow {
 	
 public:
@@ -81,6 +96,9 @@ private:
 	u16 m_gammaRed[256];
 	u16 m_gammaGreen[256];
 	u16 m_gammaBlue[256];
+	
+	u32 m_sdlVersion;
+	ARX_SDL_SYSWM_TYPE m_sdlSubsystem;
 	
 	static SDL2Window * s_mainWindow;
 	
