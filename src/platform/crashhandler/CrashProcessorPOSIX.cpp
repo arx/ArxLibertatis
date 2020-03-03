@@ -30,6 +30,14 @@
 
 #include "Configure.h"
 
+#if ARX_HAVE_WAITPID
+#include <sys/wait.h>
+#endif
+
+#if ARX_HAVE_NANOSLEEP
+#include <time.h>
+#endif
+
 #if ARX_HAVE_GETRUSAGE
 #include <sys/resource.h>
 #include <sys/time.h>
@@ -110,15 +118,40 @@ void CrashHandlerPOSIX::processCrashInfo() {
 		return;
 	}
 	
-	pid_t child = fork();
-	if(!child) {
-		while(true) {
-			// wait
+	pid_t processor = getpid();
+	if(processor == m_pCrashInfo->processId) {
+		
+		// Spawn a new child to get the current tick count
+		pid_t child = fork();
+		if(child == 0) {
+			while(true) {
+				#if ARX_HAVE_WAITPID
+				if(waitpid(processor, NULL, WNOHANG) != 0) {
+					break;
+				}
+				#endif
+				#if ARX_HAVE_NANOSLEEP
+				timespec t;
+				t.tv_sec = 0;
+				t.tv_nsec = 100 * 1000;
+				nanosleep(&t, NULL);
+				#endif
+			}
+			// Exit if the crash processor failed
+			kill(getpid(), SIGKILL);
+			std::abort();
 		}
+		
+		if(child > 0) {
+			getProcessSatus(child, dummy, endTicks);
+			kill(child, SIGTERM);
+		} else {
+			endTicks = 0;
+		}
+		
+	} else {
+		getProcessSatus(processor, dummy, endTicks);
 	}
-	
-	getProcessSatus(child, dummy, endTicks);
-	kill(child, SIGTERM);
 	
 	if(startTicks != 0 && endTicks != 0) {
 		u64 ticksPerSecond = sysconf(_SC_CLK_TCK);
