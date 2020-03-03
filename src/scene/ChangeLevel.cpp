@@ -775,7 +775,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->Skill_Projectile = player.m_skill.projectile;
 	asp->Skill_Close_Combat = player.m_skill.closeCombat;
 	asp->Skill_Defense = player.m_skill.defense;
-	asp->skin = s32(s8(player.skin));
+	asp->skin = s32(player.skin);
 	
 	asp->xp = player.xp;
 	asp->nb_PlayerQuest = g_playerQuestLogEntries.size();
@@ -1618,7 +1618,7 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 	player.m_skill.closeCombat = asp->Skill_Close_Combat;
 	player.m_skill.defense = asp->Skill_Defense;
 	
-	player.skin = checked_range_cast<char>(asp->skin);
+	player.skin = checked_range_cast<unsigned char>(asp->skin);
 	
 	player.xp = asp->xp;
 	GLOBAL_MAGIC_MODE = (asp->Global_Magic_Mode != 0);
