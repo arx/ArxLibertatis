@@ -689,7 +689,7 @@ void SDL2Window::processEvents(bool waitForEvent) {
 			case SDL_WINDOWEVENT: {
 				switch(event.window.event) {
 					
-					case SDL_WINDOWEVENT_SHOWN:{
+					case SDL_WINDOWEVENT_SHOWN: {
 						onShow(true);
 						#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
 						if(m_sdlVersion == SDL_VERSIONNUM(2, 0, 10) && m_sdlSubsystem == ARX_SDL_SYSWM_X11
