@@ -231,6 +231,7 @@ else(MSVC)
 		add_cxxflag("-Wbool-conversion") # part of -Wconversion
 		add_cxxflag("-Wfloat-conversion") # part of -Wconversion
 		add_cxxflag("-Wstring-conversion") # part of -Wconversion
+		add_cxxflag("-Wenum-conversion") # part of -Wconversion
 		
 		if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
 			add_cxxflag("-Wsign-promo")
