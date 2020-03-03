@@ -548,7 +548,7 @@ void SecondaryInventoryHud::updateFader() {
 				m_fadePosition -= frameDelay * m_scale;
 		} else {
 			if(m_fadePosition < 0)
-				m_fadePosition += m_fadeDirection * frameDelay * m_scale;
+				m_fadePosition += float(m_fadeDirection) * frameDelay * m_scale;
 		}
 		
 		if(m_fadePosition <= -160) {
