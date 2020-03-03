@@ -315,7 +315,7 @@ struct ARXCHARACTER {
 	short level;
 	
 	long xp;
-	char skin;
+	unsigned char skin;
 	
 	RuneFlags rune_flags;
 	bool hasRune(Rune rune) const {

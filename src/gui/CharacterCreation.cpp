@@ -151,7 +151,7 @@ void CharacterCreation::render() {
 			m_cheatQuickGenButtonClickCount++;
 			ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 			
-			char skin = player.skin;
+			unsigned char skin = player.skin;
 			if(bQuickGenFirstClick) {
 				ARX_PLAYER_MakeAverageHero();
 				bQuickGenFirstClick = false;

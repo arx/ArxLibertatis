@@ -824,7 +824,7 @@ void ARX_PLAYER_MakeAverageHero() {
  */
 void ARX_PLAYER_QuickGeneration() {
 	
-	char old_skin = player.skin;
+	unsigned char old_skin = player.skin;
 	ARX_PLAYER_MakeFreshHero();
 	player.skin = old_skin;
 
