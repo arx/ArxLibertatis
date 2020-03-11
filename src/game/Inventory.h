@@ -249,7 +249,7 @@ InventoryPos removeFromInventories(Entity * item);
  */
 bool putInInventory(Entity * item, const InventoryPos & pos);
 
-void ARX_INVENTORY_Declare_InventoryIn(Entity * io);
+void ARX_INVENTORY_Declare_InventoryIn(Entity * io, EntityHandle container = EntityHandle());
 
 void PutInFrontOfPlayer(Entity * io);
 
