@@ -104,7 +104,7 @@ Vec2s sInventoryPos = Vec2s(-1, -1);
  * Declares an IO as entering into player Inventory
  * Sends appropriate INVENTORYIN Event to player AND concerned io.
  */
-void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
+void ARX_INVENTORY_Declare_InventoryIn(Entity * io, EntityHandle container) {
 	if(!io)
 		return;
 	
@@ -120,8 +120,11 @@ void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
 		io->ignition = 0;
 	}
 	
-	SendIOScriptEvent(io, entities.player(), SM_INVENTORYIN);
-	SendIOScriptEvent(entities.player(), io, SM_INVENTORYIN);
+	SendIOScriptEvent(io, entities.get(container), SM_INVENTORYIN);
+	if(container == EntityHandle_Player) {
+		// Items only receive the event when they are put in the player inventory because scripts expect that
+		SendIOScriptEvent(entities.player(), io, SM_INVENTORYIN);
+	}
 	
 }
 
@@ -479,7 +482,7 @@ public:
 	bool insert(Entity * item) {
 		if(item && (item->ioflags & IO_ITEM)) {
 			if(Pos pos = insertImpl(item)) {
-				ARX_INVENTORY_Declare_InventoryIn(get(pos));
+				ARX_INVENTORY_Declare_InventoryIn(get(pos), io);
 				return true;
 			}
 		}
@@ -501,7 +504,7 @@ public:
 	bool insert(Entity * item, const Pos & pos) {
 		if(item && (item->ioflags & IO_ITEM)) {
 			if(Pos newPos = insertImpl(item, pos)) {
-				ARX_INVENTORY_Declare_InventoryIn(get(newPos));
+				ARX_INVENTORY_Declare_InventoryIn(get(newPos), io);
 				return true;
 			}
 		}
