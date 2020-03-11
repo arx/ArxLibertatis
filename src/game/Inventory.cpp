@@ -723,7 +723,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 	
 	const Vec2s s = io->m_inventorySize;
 	
-	// on essaie de le remettre à son ancienne place
+	// Try to put the item at its old position
 	if(   sInventory == 2
 	   && sInventoryPos.x >= 0
 	   && sInventoryPos.x <= id->m_size.x - s.x
@@ -743,18 +743,22 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 		) {
 			if(io->ioflags & IO_GOLD){
 				ioo->_itemdata->price += io->_itemdata->price;
+				io->destroy();
+				sInventory = -1;
+				return true;
 			} else {
 				ioo->_itemdata->count += io->_itemdata->count;
 				ioo->scale = 1.f;
+				if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
+					io->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
+					ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
+				} else {
+					io->destroy();
+					sInventory = -1;
+					return true;
+				}
 			}
-			
-			io->destroy();
-			
-			sInventory = -1;
-			return true;
 		}
-		
-		ioo = id->slot[pos.x][pos.y].io;
 		
 		if(!ioo) {
 			long valid = 1;
@@ -799,6 +803,11 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 			} else {
 				ioo->_itemdata->count += io->_itemdata->count;
 				ioo->scale = 1.f;
+				if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
+					io->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
+					ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
+					continue;
+				}
 			}
 			
 			io->destroy();
