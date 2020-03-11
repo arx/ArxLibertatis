@@ -357,16 +357,22 @@ private:
 		
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		
+		index_type maxi = width + 1 - size_type(item->m_inventorySize.x);
+		index_type maxj = height + 1 - size_type(item->m_inventorySize.y);
+		if(MaxHeight >= MaxWidth) {
+			std::swap(maxi, maxj);
+		}
+		
 		for(index_type bag = 0; bag < bags; bag++) {
-			for(index_type i = 0; i < width + 1 - item->m_inventorySize.x; i++) {
-				for(index_type j = 0; j < height + 1 - item->m_inventorySize.y; j++) {
+			for(index_type i = 0; i < maxi; i++) {
+				for(index_type j = 0; j < maxj; j++) {
+					Pos pos = (MaxHeight < MaxWidth) ? Pos(io, bag, i, j) : Pos(io, bag, j, i);
 					
 					// Ignore already used inventory slots
-					if(index(bag, i, j).io != NULL) {
+					if(index(pos).io != NULL) {
 						continue;
 					}
 					
-					Pos pos(io, bag, i, j);
 					if(insertIntoNewSlotAt(item, pos)) {
 						return pos;
 					}
@@ -427,11 +433,17 @@ private:
 		
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		
+		index_type maxi = width + 1 - size_type(item->m_inventorySize.x);
+		index_type maxj = height + 1 - size_type(item->m_inventorySize.y);
+		if(MaxHeight >= MaxWidth) {
+			std::swap(maxi, maxj);
+		}
+		
 		// Try to add the items to an existing stack
 		for(index_type bag = 0; bag < bags; bag++) {
-			for(index_type i = 0; i < width + 1 - size_type(item->m_inventorySize.x); i++) {
-				for(index_type j = 0; j < height + 1 - size_type(item->m_inventorySize.y); j++) {
-					Pos pos(io, bag, i, j);
+			for(index_type i = 0; i < maxi; i++) {
+				for(index_type j = 0; j < maxj; j++) {
+					Pos pos = (MaxHeight < MaxWidth) ? Pos(io, bag, i, j) : Pos(io, bag, j, i);
 					if(insertIntoStackAt(item, pos)) {
 						return pos;
 					}
