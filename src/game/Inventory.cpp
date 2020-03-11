@@ -253,7 +253,7 @@ public:
 	
 private:
 	
-	long io;
+	EntityHandle io;
 	array_type & data;
 	size_type bags;
 	size_type width;
@@ -462,7 +462,7 @@ private:
 	
 public:
 	
-	Inventory(long io_, array_type & data_, size_type bags_, size_type width_, size_type height_)
+	Inventory(EntityHandle io_, array_type & data_, size_type bags_, size_type width_, size_type height_)
 		: io(io_), data(data_), bags(bags_), width(width_), height(height_) { }
 	
 	/*!
@@ -606,14 +606,14 @@ public:
 };
 
 Inventory<INVENTORY_BAGS, INVENTORY_X, INVENTORY_Y> getPlayerInventory() {
-	return Inventory<INVENTORY_BAGS, INVENTORY_X, INVENTORY_Y>(0, g_inventory, player.m_bags,
+	return Inventory<INVENTORY_BAGS, INVENTORY_X, INVENTORY_Y>(EntityHandle_Player, g_inventory, player.m_bags,
 	                                              INVENTORY_X, INVENTORY_Y);
 }
 
 Inventory<1, 20, 20> getIoInventory(Entity * io) {
 	arx_assert(io != NULL && io->inventory != NULL);
 	INVENTORY_DATA * inv = io->inventory;
-	return Inventory<1, 20, 20>(io->index().handleData(), inv->slot, 1, inv->m_size.x, inv->m_size.y);
+	return Inventory<1, 20, 20>(io->index(), inv->slot, 1, inv->m_size.x, inv->m_size.y);
 }
 
 } // anonymous namespace
@@ -743,7 +743,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 	
 	InventoryPos pos;
 	if(sInventory == 2) {
-		pos = InventoryPos(id->io->index().handleData(), 0, sInventoryPos.x, sInventoryPos.y);
+		pos = InventoryPos(id->io->index(), 0, sInventoryPos.x, sInventoryPos.y);
 	}
 	
 	if(getIoInventory(id->io).insert(io, pos)) {
