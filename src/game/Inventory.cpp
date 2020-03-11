@@ -739,130 +739,16 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 	if(io->ioflags & IO_MOVABLE)
 		return false;
 	
-	const Vec2s s = io->m_inventorySize;
+	arx_assert(id->io && id->io->inventory == id);
 	
-	// Try to put the item at its old position
-	if(   sInventory == 2
-	   && sInventoryPos.x >= 0
-	   && sInventoryPos.x <= id->m_size.x - s.x
-	   && sInventoryPos.y >= 0
-	   && sInventoryPos.y <= id->m_size.y - s.y
-	) {
-		Vec2s pos = sInventoryPos;
-		// first try to stack
-		
-		Entity * ioo = id->slot[pos.x][pos.y].io;
-		
-		if(   ioo
-		   && ioo->_itemdata->playerstacksize > 1
-		   && IsSameObject(io, ioo)
-		   && ioo->_itemdata->count < ioo->_itemdata->playerstacksize
-		   && ioo->durability == io->durability
-		) {
-			if(io->ioflags & IO_GOLD){
-				ioo->_itemdata->price += io->_itemdata->price;
-				io->destroy();
-				sInventory = -1;
-				return true;
-			} else {
-				ioo->_itemdata->count += io->_itemdata->count;
-				ioo->scale = 1.f;
-				if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
-					io->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
-					ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-				} else {
-					io->destroy();
-					sInventory = -1;
-					return true;
-				}
-			}
-		}
-		
-		if(!ioo) {
-			long valid = 1;
-			
-			if(s.x == 0 || s.y == 0)
-				valid = 0;
-			
-			for(long y2 = pos.y; y2 < pos.y + s.y; y2++)
-			for(long x2 = pos.x; x2 < pos.x + s.x; x2++) {
-				if(id->slot[x2][y2].io != NULL) {
-					valid = 0;
-					break;
-				}
-			}
-			
-			if(valid) {
-				for(long y2 = pos.y; y2 < pos.y + s.y; y2++)
-				for(long x2 = pos.x; x2 < pos.x + s.x; x2++) {
-					id->slot[x2][y2].io = io;
-					id->slot[x2][y2].show = false;
-				}
-				
-				id->slot[pos.x][pos.y].show = true;
-				sInventory = -1;
-				return true;
-			}
-		}
+	InventoryPos pos;
+	if(sInventory == 2) {
+		pos = InventoryPos(id->io->index().handleData(), 0, sInventoryPos.x, sInventoryPos.y);
 	}
 	
-	for(long y = 0; y <= id->m_size.y - s.y; y++)
-	for(long x = 0; x <= id->m_size.x - s.x; x++) {
-		Entity * ioo = id->slot[x][y].io;
-		
-		if(   ioo
-		   && ioo->_itemdata->playerstacksize > 1
-		   && IsSameObject(io, ioo)
-		   && ioo->_itemdata->count < ioo->_itemdata->playerstacksize
-		   && ioo->durability == io->durability
-		) {
-			if (io->ioflags & IO_GOLD) {
-				ioo->_itemdata->price += io->_itemdata->price;
-			} else {
-				ioo->_itemdata->count += io->_itemdata->count;
-				ioo->scale = 1.f;
-				if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
-					io->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
-					ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-					continue;
-				}
-			}
-			
-			io->destroy();
-			
-			return true;
-		}
-	}
-	
-	for(long y = 0; y <= id->m_size.y - s.y; y++)
-	for(long x = 0; x <= id->m_size.x - s.x; x++) {
-		Entity * ioo = id->slot[x][y].io;
-		
-		if(!ioo) {
-			long valid = 1;
-			
-			if(s.x == 0 || s.y == 0)
-				valid = 0;
-			
-			for(long y2 = y; y2 < y + s.y; y2++)
-			for(long x2 = x; x2 < x + s.x; x2++) {
-				if (id->slot[x2][y2].io != NULL) {
-					valid = 0;
-					break;
-				}
-			}
-			
-			if(valid) {
-				for(long y2 = y; y2 < y + s.y; y2++)
-				for(long x2 = x; x2 < x + s.x; x2++) {
-					id->slot[x2][y2].io = io;
-					id->slot[x2][y2].show = false;
-				}
-				
-				id->slot[x][y].show = true;
-				return true;
-			}
-		}
+	if(getIoInventory(id->io).insert(io, pos)) {
+		sInventory = -1;
+		return true;
 	}
 	
 	return false;
