@@ -407,6 +407,12 @@ private:
 			return false;
 		}
 		
+		if((oldItem->ioflags & IO_GOLD) && (item->ioflags & IO_GOLD)) {
+			oldItem->_itemdata->price += item->_itemdata->price;
+			item->destroy();
+			return true;
+		}
+		
 		// Get the number of items to add to the stack
 		short int remainingSpace = oldItem->_itemdata->playerstacksize - oldItem->_itemdata->count;
 		short int count = std::min(item->_itemdata->count, remainingSpace);
