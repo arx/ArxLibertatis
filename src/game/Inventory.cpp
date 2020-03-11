@@ -105,8 +105,8 @@ Vec2s sInventoryPos = Vec2s(-1, -1);
  * Sends appropriate INVENTORYIN Event to player AND concerned io.
  */
 void ARX_INVENTORY_Declare_InventoryIn(Entity * io, EntityHandle container) {
-	if(!io)
-		return;
+	
+	arx_assert(io);
 	
 	io->show = SHOW_FLAG_IN_INVENTORY;
 	
