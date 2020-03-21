@@ -279,15 +279,7 @@ private:
 		return index(pos.bag, pos.x, pos.y);
 	}
 	
-	Pos insertImpl(Entity * item) {
-		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-		if(Pos pos = insertIntoStack(item)) {
-			return pos;
-		}
-		return insertIntoNewSlot(item);
-	}
-	
-	Pos insertImpl(Entity * item, const Pos & pos) {
+	Pos insertImpl(Entity * item, const Pos & pos = Pos()) {
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		if(insertIntoStackAt(item, pos)) {
 			return pos;
@@ -478,27 +470,6 @@ public:
 	/*!
 	 * Insert an item into the inventory
 	 * The item will be added to existing stacks if possible.
-	 * Otherwise the first empty slot will be used.
-	 *
-	 * Does not check if the item is already in the inventory!
-	 *
-	 * \param item the item to insert
-	 *
-	 * \return true if the item was inserted, false otherwise
-	 */
-	bool insert(Entity * item) {
-		if(item && (item->ioflags & IO_ITEM)) {
-			if(Pos pos = insertImpl(item)) {
-				ARX_INVENTORY_Declare_InventoryIn(get(pos), io);
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/*!
-	 * Insert an item into the inventory
-	 * The item will be added to existing stacks if possible.
 	 * Otherwise, the item will be inserted at the specified position.
 	 * If that fails, the first empty slot will be used.
 	 *
@@ -508,7 +479,7 @@ public:
 	 *
 	 * \return true if the item was inserted, false otherwise
 	 */
-	bool insert(Entity * item, const Pos & pos) {
+	bool insert(Entity * item, const Pos & pos = Pos()) {
 		if(item && (item->ioflags & IO_ITEM)) {
 			if(Pos newPos = insertImpl(item, pos)) {
 				ARX_INVENTORY_Declare_InventoryIn(get(newPos), io);
