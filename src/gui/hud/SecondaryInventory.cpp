@@ -327,16 +327,18 @@ Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 	return NULL;
 }
 
+// TODO global sInventory
+extern short sInventory;
+extern Vec2s sInventoryPos;
+
 void SecondaryInventoryHud::dropEntity() {
 	
 	if(!SecondaryInventory || !g_secondaryInventoryHud.containsPos(DANAEMouse)) {
 		return;
 	}
 	
-	// First Look for Identical Item...
 	Entity * io = SecondaryInventory->io;
 	
-	// SHOP
 	if(io->ioflags & IO_SHOP) {
 		
 		if(!io->shop_category.empty() && DRAGINTER->groups.find(io->shop_category) == DRAGINTER->groups.end()) {
@@ -353,82 +355,28 @@ void SecondaryInventoryHud::dropEntity() {
 			ARX_PLAYER_AddGold(price);
 			ARX_SOUND_PlayInterface(g_snd.GOLD);
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
+			Set_DragInter(NULL);
 		}
 		
 		return;
 	}
 	
-	Vec2s t(0);
-	t.x = s16(DANAEMouse.x + static_cast<short>(m_fadePosition) - (2 * m_scale));
-	t.y = s16(DANAEMouse.y - (13 * m_scale));
-	t.x = s16(t.x / (32 * m_scale));
-	t.y = s16(t.y / (32 * m_scale));
+	InventoryPos previous;
+	if(sInventory == 1) {
+		previous = InventoryPos(EntityHandle_Player, 0, sInventoryPos.x, sInventoryPos.y);
+	} else if(sInventory == 2) {
+		previous = InventoryPos(io->index(), 0, sInventoryPos.x, sInventoryPos.y);
+	}
 	
-	Vec2s s = DRAGINTER->m_inventorySize;
+	s16 itemPitch = s16(32.f * m_scale);
+	Vec2f pos = Vec2f(DANAEMouse - Vec2s(2 * m_scale - m_fadePosition, 13 * m_scale)) / float(itemPitch);
 	
-	if(t.x <= SecondaryInventory->m_size.x - s.x && t.y <= SecondaryInventory->m_size.y - s.y) {
-		
-		long price = ARX_INTERACTIVE_GetSellValue(DRAGINTER, io, DRAGINTER->_itemdata->count);
-		
-		for(long j = 0; j < s.y; j++) {
-		for(long i = 0; i < s.x; i++) {
-			Entity * ioo = SecondaryInventory->slot[t.x + i][t.y + j].io;
-			
-			if(!ioo)
-				continue;
-			
-			DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
-			
-			if(   ioo->_itemdata->playerstacksize > 1
-			   && IsSameObject(DRAGINTER, ioo)
-			   && ioo->_itemdata->count < ioo->_itemdata->playerstacksize
-			) {
-				ioo->_itemdata->count += DRAGINTER->_itemdata->count;
-				
-				if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
-					DRAGINTER->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
-					ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-				} else {
-					DRAGINTER->_itemdata->count = 0;
-				}
-			}
-			
-			if(DRAGINTER->_itemdata->count) {
-				if(!CanBePutInSecondaryInventory(SecondaryInventory, DRAGINTER)) {
-					return;
-				}
-			}
-			
-			ARX_SOUND_PlayInterface(g_snd.INVSTD);
-			Set_DragInter(NULL);
-			return;
-		}
-		}
-		
-		if(DRAGINTER->ioflags & IO_GOLD) {
-			ARX_PLAYER_AddGold(DRAGINTER);
-			Set_DragInter(NULL);
-			return;
-		}
-		for(long j = 0; j < s.y; j++) {
-		for(long i = 0; i < s.x; i++) {
-			SecondaryInventory->slot[t.x + i][t.y + j].io = DRAGINTER;
-			SecondaryInventory->slot[t.x + i][t.y + j].show = false;
-		}
-		}
-		
-		SecondaryInventory->slot[t.x][t.y].show = true;
-		DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
+	if(insertIntoInventoryAt(DRAGINTER, io, 0, pos, previous)) {
 		ARX_SOUND_PlayInterface(g_snd.INVSTD);
 		Set_DragInter(NULL);
-		
 	}
 	
 }
-
-// TODO global sInventory
-extern short sInventory;
-extern Vec2s sInventoryPos;
 
 bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 	
