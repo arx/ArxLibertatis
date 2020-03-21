@@ -425,7 +425,11 @@ private:
 		         << oldItem->_itemdata->playerstacksize << "] += "
 		         << item->idString() << " x" << count << '/' << item->_itemdata->count);
 		
+		oldItem->scale = oldItem->scale * oldItem->_itemdata->count + item->scale * count;
+		
 		oldItem->_itemdata->count += count, item->_itemdata->count -= count;
+		
+		oldItem->scale /= oldItem->_itemdata->count;
 		
 		if(item->_itemdata->count != 0) {
 			// We inserted some of the items into the stack, but there was not enough
