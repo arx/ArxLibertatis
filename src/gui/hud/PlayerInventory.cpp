@@ -23,6 +23,7 @@
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "game/EntityManager.h"
 #include "game/Inventory.h"
 #include "game/Item.h"
 #include "game/Player.h"
@@ -467,10 +468,15 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 	return NULL;
 }
 
+// TODO global sInventory
+extern short sInventory;
+extern Vec2s sInventoryPos;
 
 void PlayerInventoryHud::dropEntity() {
-	if(!(player.Interface & INTER_INVENTORY) && !(player.Interface & INTER_INVENTORYALL))
+	
+	if(!(player.Interface & INTER_INVENTORY) && !(player.Interface & INTER_INVENTORYALL)) {
 		return;
+	}
 	
 	if(m_inventoryY != 0)
 		return;
@@ -483,120 +489,37 @@ void PlayerInventoryHud::dropEntity() {
 		return;
 	}
 	
-	Vec2s itemSize = DRAGINTER->m_inventorySize;
-	
-	int bag = 0;
-	
-	Vec2f anchorPos = g_playerInventoryHud.anchorPosition();
-	Vec2s iPos = Vec2s(anchorPos);
-	
-	Vec2s t(0);
-	
-	if(player.Interface & INTER_INVENTORY) {
-		t.x = DANAEMouse.x - iPos.x;
-		t.y = DANAEMouse.y - iPos.y;
-		t.x = s16(t.x / (32 * m_scale));
-		t.y = s16(t.y / (32 * m_scale));
-		
-		if((t.x >= 0) && (t.x <= 16 - itemSize.x) && (t.y >= 0) && (t.y <= 3 - itemSize.y)) {
-			bag = m_currentBag;
-		} else {
-			return;
-		}
-	} else {
-		bool bOk = false;
-		
-		float fBag = (player.m_bags - 1) * (-121 * m_scale);
-		
-		short iY = checked_range_cast<short>(fBag);
-		
-		// We must enter the for-loop to initialyze tx/ty
-		arx_assert(0 < player.m_bags);
-		
-		for(int i = 0; i < player.m_bags; i++) {
-			t.x = DANAEMouse.x - iPos.x;
-			t.y = DANAEMouse.y - iPos.y - iY;
-			
-			if((t.x >= 0) && (t.y >= 0)) {
-				t.x = s16(t.x / (32 * m_scale));
-				t.y = s16(t.y / (32 * m_scale));
-				
-				if((t.x >= 0) && (t.x <= 16 - itemSize.x) && (t.y >= 0) && (t.y <= 3 - itemSize.y)) {
-					bOk = true;
-					bag = i;
-					break;
-				}
-			}
-			
-			float fRatio = (121 * m_scale);
-			
-			iY += checked_range_cast<short>(fRatio);
-		}
-		
-		if(!bOk)
-			return;
-	}
-	
 	if(DRAGINTER->ioflags & IO_GOLD) {
 		ARX_PLAYER_AddGold(DRAGINTER);
 		Set_DragInter(NULL);
 		return;
 	}
 	
-	for(long y = 0; y < itemSize.y; y++)
-	for(long x = 0; x < itemSize.x; x++) {
-		Entity * ioo = g_inventory[bag][t.x + x][t.y + y].io;
-		
-		if(!ioo)
-			continue;
-		
-		ARX_INVENTORY_IdentifyIO(ioo);
-		
-		if(   ioo->_itemdata->playerstacksize > 1
-		&& IsSameObject(DRAGINTER, ioo)
-		&& ioo->_itemdata->count < ioo->_itemdata->playerstacksize
-		) {
-			ioo->_itemdata->count += DRAGINTER->_itemdata->count;
-			
-			if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
-				DRAGINTER->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
-				ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-			} else {
-				DRAGINTER->_itemdata->count = 0;
-			}
-			
-			ioo->scale = 1.f;
-			ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
-			
-			if(!DRAGINTER->_itemdata->count) {
-				DRAGINTER->destroy();
-			}
-			
-			ARX_SOUND_PlayInterface(g_snd.INVSTD);
-			return;
-		}
-		
-		return;
+	InventoryPos previous;
+	if(sInventory == 1) {
+		previous = InventoryPos(EntityHandle_Player, m_currentBag, sInventoryPos.x, sInventoryPos.y);
+	} else if(sInventory == 2) {
+		previous = InventoryPos(EntityHandle(), 0, sInventoryPos.x, sInventoryPos.y);
 	}
 	
-	for(long y = 0; y < itemSize.y; y++) {
-	for(long x = 0; x < itemSize.x; x++) {
-		g_inventory[bag][t.x + x][t.y + y].io = DRAGINTER;
-		g_inventory[bag][t.x + x][t.y + y].show = false;
-	}
+	Vec2s anchor = Vec2s(g_playerInventoryHud.anchorPosition());
+	s16 itemPitch = s16(32.f * m_scale);
+	
+	int bag = m_currentBag;
+	Vec2f pos = Vec2f(DANAEMouse - anchor) / float(itemPitch);
+	if(player.Interface & INTER_INVENTORYALL) {
+		s16 bagPitch = s16(121.f * m_scale);
+		s16 topAnchor = anchor.y - (player.m_bags - 1) * bagPitch - DRAGINTER->m_inventorySize.y * itemPitch / 2;
+		bag = glm::clamp((DANAEMouse.y - topAnchor) / bagPitch, 0, player.m_bags - 1);
+		pos = Vec2f(DANAEMouse - (anchor - Vec2s(0, (player.m_bags - 1 - bag) * bagPitch))) / float(itemPitch);
 	}
 	
-	g_inventory[bag][t.x][t.y].show = true;
+	if(insertIntoInventoryAt(DRAGINTER, entities.player(), bag, pos, previous)) {
+		ARX_SOUND_PlayInterface(g_snd.INVSTD);
+		Set_DragInter(NULL);
+	}
 	
-	ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
-	ARX_SOUND_PlayInterface(g_snd.INVSTD);
-	DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
-	Set_DragInter(NULL);
 }
-
-// TODO global sInventory
-extern short sInventory;
-extern Vec2s sInventoryPos;
 
 void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 	
