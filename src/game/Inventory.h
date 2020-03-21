@@ -236,6 +236,22 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos);
 bool insertIntoInventory(Entity * item, Entity * container);
 
 /*!
+ * Insert an item into the inventory at a specified position
+ * The item will be inserted near the specified position if possible.
+ * Otherwise, the item will be added to existing stacks if possible.
+ * Otherwise, the item will be inserted at the specified previous position.
+ * If that fails, the first empty slot will be used.
+ *
+ * Does not check if the item is already in the inventory!
+ *
+ * \param item the item to insert
+ *
+ * \return true if the item was inserted, false otherwise
+ */
+bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::index_type bag, Vec2f pos,
+                           const InventoryPos & previous = InventoryPos());
+
+/*!
  * Get the position of an item in the inventory.
  *
  * \return the position of the item

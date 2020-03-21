@@ -293,6 +293,52 @@ private:
 		return insertIntoNewSlot(item);
 	}
 	
+	// Move via diagonal lines thorough the rect made by start and end
+	static void advance(Pos & p, Vec2i start, Vec2i end) {
+		p.x++;
+		p.y--;
+		if(p.y < start.y || p.x >= end.x) {
+			p.y = p.y + (p.x - start.x) + 1;
+			p.x = start.x;
+		}
+	}
+	
+	Pos insertAtImpl(Entity * item, index_type bag, Vec2f pos, const Pos & fallback) {
+		
+		Vec2s start(pos + Vec2f(1.f / 3));
+		Vec2s size = item->m_inventorySize;
+		if(pos.x - start.x > 1.f / 3) {
+			size.x++;
+		}
+		if(pos.y - start.y > 1.f / 3) {
+			size.y++;
+		}
+		if(start.x < 0) {
+			size.x += start.x;
+			start.x = 0;
+		}
+		if(start.y < 0) {
+			size.y += start.y;
+			start.y = 0;
+		}
+		start = glm::min(start, Vec2s(width - 1, height - 1));
+		Vec2s end = start + glm::clamp(size, Vec2s(1), Vec2s(width, height) - start);
+		
+		for(Pos p(io, bag, start.x, start.y); p.y < end.y; advance(p, start, end)) {
+			if(insertIntoStackAt(item, p, true)) {
+				return p;
+			}
+		}
+		
+		for(Pos p(io, bag, start.x, start.y); p.y < end.y; advance(p, start, end)) {
+			if(insertIntoNewSlotAt(item, p)) {
+				return p;
+			}
+		}
+		
+		return insertImpl(item, fallback);
+	}
+	
 	void removeAt(const Entity * item, const Pos & pos) {
 		
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
@@ -381,7 +427,7 @@ private:
 		return Pos();
 	}
 	
-	bool insertIntoStackAt(Entity * item, const Pos & pos) {
+	bool insertIntoStackAt(Entity * item, const Pos & pos, bool identify = false) {
 		
 		if(!pos || pos.bag >= bags) {
 			return false;
@@ -394,6 +440,10 @@ private:
 		}
 		
 		Entity * oldItem = index(pos).io;
+		
+		if(oldItem && identify) {
+			ARX_INVENTORY_IdentifyIO(oldItem);
+		}
 		
 		// Ignore empty slots and different or non-stackeable items
 		if(!oldItem || oldItem->_itemdata->playerstacksize <= 1 || !IsSameObject(item, oldItem)) {
@@ -482,6 +532,30 @@ public:
 	bool insert(Entity * item, const Pos & pos = Pos()) {
 		if(item && (item->ioflags & IO_ITEM)) {
 			if(Pos newPos = insertImpl(item, pos)) {
+				ARX_INVENTORY_Declare_InventoryIn(get(newPos), io);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/*!
+	 * Insert an item into the inventory at a specified position
+	 * The item will be inserted near the specified position if possible.
+	 * Otherwise, the item will be added to existing stacks if possible.
+	 * Otherwise, the item will be inserted at the specified fallback position.
+	 * If that fails, the first empty slot will be used.
+	 *
+	 * Does not check if the item is already in the inventory!
+	 *
+	 * \param item the item to insert
+	 * \param pos position where to insert the item
+	 *
+	 * \return true if the item was inserted, false otherwise
+	 */
+	bool insertAt(Entity * item, index_type bag, Vec2f pos, const Pos & fallback = Pos()) {
+		if(item && (item->ioflags & IO_ITEM)) {
+			if(Pos newPos = insertAtImpl(item, bag, pos, fallback)) {
 				ARX_INVENTORY_Declare_InventoryIn(get(newPos), io);
 				return true;
 			}
@@ -716,6 +790,21 @@ bool insertIntoInventory(Entity * item, Entity * container) {
 	}
 	
 	return getIoInventory(container).insert(item);
+}
+
+bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::index_type bag, Vec2f pos,
+                           const InventoryPos & previous) {
+	
+	InventoryPos fallback;
+	if(previous.io == container->index()) {
+		fallback = previous;
+	}
+	
+	if(container == entities.player()) {
+		return getPlayerInventory().insertAt(item, bag, pos, fallback);
+	}
+	
+	return getIoInventory(container).insertAt(item, bag, pos, fallback);
 }
 
 /*!
