@@ -339,33 +339,23 @@ void SecondaryInventoryHud::dropEntity() {
 	// SHOP
 	if(io->ioflags & IO_SHOP) {
 		
-		if(!io->shop_category.empty() && DRAGINTER->groups.find(io->shop_category) == DRAGINTER->groups.end())
+		if(!io->shop_category.empty() && DRAGINTER->groups.find(io->shop_category) == DRAGINTER->groups.end()) {
+			// Item not allowed by shop category
 			return;
+		}
 		
 		long price = ARX_INTERACTIVE_GetSellValue(DRAGINTER, io, DRAGINTER->_itemdata->count);
 		if(price <= 0) {
 			return;
 		}
 		
-		// Check shop group
-		for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
-		for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
-			Entity * ioo = SecondaryInventory->slot[i][j].io;
-			
-			if(!ioo || !IsSameObject(DRAGINTER, ioo))
-				continue;
-			
-			ioo->_itemdata->count += DRAGINTER->_itemdata->count;
-			ioo->scale = 1.f;
-			
-			DRAGINTER->destroy();
-			
+		if(insertIntoInventory(DRAGINTER, io)) {
 			ARX_PLAYER_AddGold(price);
 			ARX_SOUND_PlayInterface(g_snd.GOLD);
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
-			return;
 		}
-		}
+		
+		return;
 	}
 	
 	Vec2s t(0);
@@ -404,13 +394,7 @@ void SecondaryInventoryHud::dropEntity() {
 			}
 			
 			if(DRAGINTER->_itemdata->count) {
-				if(CanBePutInSecondaryInventory(SecondaryInventory, DRAGINTER)) {
-					// SHOP
-					if(io->ioflags & IO_SHOP) {
-						ARX_PLAYER_AddGold(price);
-						ARX_SOUND_PlayInterface(g_snd.GOLD);
-					}
-				} else {
+				if(!CanBePutInSecondaryInventory(SecondaryInventory, DRAGINTER)) {
 					return;
 				}
 			}
@@ -433,11 +417,6 @@ void SecondaryInventoryHud::dropEntity() {
 		}
 		}
 		
-		// SHOP
-		if(io->ioflags & IO_SHOP) {
-			ARX_PLAYER_AddGold(price);
-			ARX_SOUND_PlayInterface(g_snd.GOLD);
-		}
 		SecondaryInventory->slot[t.x][t.y].show = true;
 		DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
 		ARX_SOUND_PlayInterface(g_snd.INVSTD);
