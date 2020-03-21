@@ -237,6 +237,9 @@ struct ItemSizeComaparator {
 		if(name != 0) {
 			return (name < 0);
 		}
+		if(a->_itemdata->count != b->_itemdata->count) {
+			return (a->_itemdata->count > b->_itemdata->count);
+		}
 		return (a < b);
 	}
 };
