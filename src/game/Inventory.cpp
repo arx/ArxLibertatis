@@ -735,6 +735,15 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 	return false;
 }
 
+bool insertIntoInventory(Entity * item, Entity * container) {
+	
+	if(container == entities.player()) {
+		return giveToPlayer(item);
+	}
+	
+	return getIoInventory(container).insert(item);
+}
+
 /*!
  * \brief Tries to put an object in secondary inventory
  */
