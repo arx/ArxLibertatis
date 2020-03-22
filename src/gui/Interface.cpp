@@ -1819,13 +1819,9 @@ void ArxGame::manageEditorControls() {
 			
 			if(!playerInventory.insert(FlyingOverIO)) {
 				if(TSecondaryInventory && bSecondary) {
-					// TODO global sInventory
-					extern short sInventory;
-					extern Vec2s sInventoryPos;
-					sInventory = 2;
-					sInventoryPos = s;
-					
-					CanBePutInSecondaryInventory(TSecondaryInventory, FlyingOverIO);
+					InventoryPos oldPos(TSecondaryInventory->io->index(), 0, s.x, s.y);
+					bool inserted = insertIntoInventory(FlyingOverIO, oldPos);
+					arx_assert(inserted), ARX_UNUSED(inserted);
 				}
 				
 				if(!bSecondary)
