@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/range/size.hpp>
 
+#include "game/Inventory.h"
 #include "game/Spells.h"
 #include "math/Types.h"
 
