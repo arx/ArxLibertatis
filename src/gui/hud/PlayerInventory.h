@@ -20,6 +20,7 @@
 #ifndef ARX_GUI_HUD_PLAYERINVENTORY_H
 #define ARX_GUI_HUD_PLAYERINVENTORY_H
 
+#include "game/Inventory.h"
 #include "gui/hud/HudCommon.h"
 #include "math/Vector.h"
 
@@ -78,7 +79,7 @@ public:
 	Entity * getObj(const Vec2s & pos);
 	
 	void dropEntity();
-	void dragEntity(Entity * io, const Vec2s & pos);
+	void dragEntity(Entity * io, const InventoryPos & pos);
 	
 	void close();
 	bool isClosing() const;

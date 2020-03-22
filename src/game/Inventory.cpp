@@ -96,9 +96,7 @@ INVENTORY_DATA * SecondaryInventory = NULL;
 Entity * DRAGINTER = NULL;
 Entity * ioSteal = NULL;
 
-// 1 player 2 secondary
-short sInventory = -1;
-Vec2s sInventoryPos = Vec2s(-1, -1);
+InventoryPos g_draggedItemPreviousPosition;
 
 /*!
  * Declares an IO as entering into player Inventory
@@ -1040,10 +1038,10 @@ bool TakeFromInventory(const Vec2s & pos) {
 	
 	switch(result.second) {
 		case 1:
-			g_playerInventoryHud.dragEntity(result.first, pos);
+			g_playerInventoryHud.dragEntity(result.first, getPlayerInventory().locate(result.first));
 			break;
 		case 2:
-			g_secondaryInventoryHud.dragEntity(result.first, pos);
+			g_secondaryInventoryHud.dragEntity(result.first, getIoInventory(SecondaryInventory->io).locate(result.first));
 			break;
 		default:
 			arx_unreachable();
