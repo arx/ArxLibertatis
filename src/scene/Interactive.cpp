@@ -125,16 +125,19 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance =
 static Entity * AddMarker(const res::path & classPath, EntityInstance instance = -1);
 
 float STARTED_ANGLE = 0;
-void Set_DragInter(Entity * io)
-{
-	if(io != DRAGINTER)
+void Set_DragInter(Entity * io, const InventoryPos & previousPosition) {
+	
+	if(io != DRAGINTER) {
 		STARTED_ANGLE = player.angle.getYaw();
-
+	}
+	
 	DRAGINTER = io;
-
+	g_draggedItemPreviousPosition = previousPosition;
+	
 	if(io && io->obj && io->obj->pbox) {
 		io->obj->pbox->active = 0;
 	}
+	
 }
 
 // Checks if an IO index number is valid

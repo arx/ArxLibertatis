@@ -24,7 +24,6 @@
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/EntityManager.h"
-#include "game/Inventory.h"
 #include "game/Item.h"
 #include "game/Player.h"
 #include "graphics/Draw.h"
@@ -468,10 +467,6 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 	return NULL;
 }
 
-// TODO global sInventory
-extern short sInventory;
-extern Vec2s sInventoryPos;
-
 void PlayerInventoryHud::dropEntity() {
 	
 	if(!(player.Interface & INTER_INVENTORY) && !(player.Interface & INTER_INVENTORYALL)) {
@@ -495,13 +490,6 @@ void PlayerInventoryHud::dropEntity() {
 		return;
 	}
 	
-	InventoryPos previous;
-	if(sInventory == 1) {
-		previous = InventoryPos(EntityHandle_Player, m_currentBag, sInventoryPos.x, sInventoryPos.y);
-	} else if(sInventory == 2) {
-		previous = InventoryPos(EntityHandle(), 0, sInventoryPos.x, sInventoryPos.y);
-	}
-	
 	Vec2s anchor = Vec2s(g_playerInventoryHud.anchorPosition());
 	s16 itemPitch = s16(32.f * m_scale);
 	
@@ -514,61 +502,35 @@ void PlayerInventoryHud::dropEntity() {
 		pos = Vec2f(DANAEMouse - (anchor - Vec2s(0, (player.m_bags - 1 - bag) * bagPitch))) / float(itemPitch);
 	}
 	
-	if(insertIntoInventoryAt(DRAGINTER, entities.player(), bag, pos, previous)) {
+	if(insertIntoInventoryAt(DRAGINTER, entities.player(), bag, pos, g_draggedItemPreviousPosition)) {
 		ARX_SOUND_PlayInterface(g_snd.INVSTD);
 		Set_DragInter(NULL);
 	}
 	
 }
 
-void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
+void PlayerInventoryHud::dragEntity(Entity * io, const InventoryPos & pos) {
 	
-	Vec2s iPos = Vec2s(g_playerInventoryHud.anchorPosition());
+	arx_assert(pos.io == EntityHandle_Player);
+	arx_assert(io->ioflags & IO_ITEM);
 	
-	if(g_playerInventoryHud.containsPos(pos)) {
-		if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
-			if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
-				if(io->_itemdata->count - 1 > 0) {
-					
-					Entity * ioo = AddItem(io->classPath());
-					ioo->show = SHOW_FLAG_NOT_DRAWN;
-					ioo->_itemdata->count = 1;
-					io->_itemdata->count--;
-					ioo->scriptload = 1;
-					ARX_SOUND_PlayInterface(g_snd.INVSTD);
-					Set_DragInter(ioo);
-					RemoveFromAllInventories(ioo);
-					sInventory = 1;
-					sInventoryPos = (pos - iPos) / s16(32.f * m_scale);
-					
-					SendInitScriptEvent(ioo);
-					ARX_INVENTORY_IdentifyIO(ioo);
-					return;
-				}
-			}
-		}
+	// Take only one item from stacks unless requested otherwise
+	if(io->_itemdata->count > 1 && !GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
+		Entity * unstackedEntity = CloneIOItem(io);
+		unstackedEntity->show = SHOW_FLAG_NOT_DRAWN;
+		unstackedEntity->scriptload = 1;
+		unstackedEntity->_itemdata->count = 1;
+		io->_itemdata->count--;
+		ARX_SOUND_PlayInterface(g_snd.INVSTD);
+		Set_DragInter(unstackedEntity, pos);
+		ARX_INVENTORY_IdentifyIO(unstackedEntity);
+		return;
 	}
 	
-	arx_assert(player.m_bags >= 0);
-	arx_assert(player.m_bags <= 3);
-	
-	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-		
-		if(slot.io == io) {
-			slot.io = NULL;
-			slot.show = true;
-			sInventory = 1;
-			sInventoryPos = (pos - iPos) / s16(32.f * m_scale);
-		}
-	}
-	
-	Set_DragInter(io);
-	
+	Set_DragInter(io, pos);
 	RemoveFromAllInventories(io);
 	ARX_INVENTORY_IdentifyIO(io);
+	
 }
 
 void PlayerInventoryHud::close() {

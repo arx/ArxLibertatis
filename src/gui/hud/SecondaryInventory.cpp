@@ -24,7 +24,6 @@
 #include "core/Core.h"
 #include "game/EntityManager.h"
 #include "core/GameTime.h"
-#include "game/Inventory.h"
 #include "game/Item.h"
 #include "game/Player.h"
 #include "graphics/Color.h"
@@ -327,10 +326,6 @@ Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 	return NULL;
 }
 
-// TODO global sInventory
-extern short sInventory;
-extern Vec2s sInventoryPos;
-
 void SecondaryInventoryHud::dropEntity() {
 	
 	if(!SecondaryInventory || !g_secondaryInventoryHud.containsPos(DANAEMouse)) {
@@ -361,91 +356,55 @@ void SecondaryInventoryHud::dropEntity() {
 		return;
 	}
 	
-	InventoryPos previous;
-	if(sInventory == 1) {
-		previous = InventoryPos(EntityHandle_Player, 0, sInventoryPos.x, sInventoryPos.y);
-	} else if(sInventory == 2) {
-		previous = InventoryPos(io->index(), 0, sInventoryPos.x, sInventoryPos.y);
-	}
-	
 	s16 itemPitch = s16(32.f * m_scale);
 	Vec2f pos = Vec2f(DANAEMouse - Vec2s(2 * m_scale - m_fadePosition, 13 * m_scale)) / float(itemPitch);
 	
-	if(insertIntoInventoryAt(DRAGINTER, io, 0, pos, previous)) {
+	if(insertIntoInventoryAt(DRAGINTER, io, 0, pos, g_draggedItemPreviousPosition)) {
 		ARX_SOUND_PlayInterface(g_snd.INVSTD);
 		Set_DragInter(NULL);
 	}
 	
 }
 
-bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
+void SecondaryInventoryHud::dragEntity(Entity * io, const InventoryPos & pos) {
 	
-	Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
-	          / s16(32 * m_scale);
+	arx_assert(SecondaryInventory);
+	arx_assert(pos.io == SecondaryInventory->io->index());
+	arx_assert(io->ioflags & IO_ITEM);
 	
-	if(SecondaryInventory != NULL) {
+	// For shops, check if the player can afford the item and deduct the cost
+	Entity * ioo = SecondaryInventory->io;
+	if(ioo->ioflags & IO_SHOP) {
 		
-		if(g_secondaryInventoryHud.containsPos(pos) && (io->ioflags & IO_ITEM)) {
-			Entity * ioo = SecondaryInventory->io;
-			
-			if(ioo->ioflags & IO_SHOP) {
-				long cos = ARX_INTERACTIVE_GetPrice(io, ioo);
-				
-				float fcos = cos - cos * player.m_skillFull.intuition * 0.005f;
-				cos = checked_range_cast<long>(fcos);
-				
-				if(player.gold < cos) {
-					return false;
-				}
-				
-				ARX_SOUND_PlayInterface(g_snd.GOLD);
-				player.gold -= cos;
-				
-				if(io->_itemdata->count > 1) {
-					Entity * unstackedEntity = CloneIOItem(io);
-					unstackedEntity->show = SHOW_FLAG_NOT_DRAWN;
-					unstackedEntity->scriptload = 1;
-					unstackedEntity->_itemdata->count = 1;
-					io->_itemdata->count--;
-					ARX_SOUND_PlayInterface(g_snd.INVSTD);
-					Set_DragInter(unstackedEntity);
-					return true;
-				}
-			} else if(io->_itemdata->count > 1) {
-				
-				if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
-					Entity * unstackedEntity = CloneIOItem(io);
-					unstackedEntity->show = SHOW_FLAG_NOT_DRAWN;
-					unstackedEntity->scriptload = 1;
-					unstackedEntity->_itemdata->count = 1;
-					io->_itemdata->count--;
-					ARX_SOUND_PlayInterface(g_snd.INVSTD);
-					Set_DragInter(unstackedEntity);
-					sInventory = 2;
-					sInventoryPos = t;
-					ARX_INVENTORY_IdentifyIO(unstackedEntity);
-					return true;
-				}
-			}
+		long price = ARX_INTERACTIVE_GetPrice(io, ioo);
+		price = checked_range_cast<long>(price - price * player.m_skillFull.intuition * 0.005f);
+		if(player.gold < price) {
+			return;
 		}
 		
-		for(long j = 0; j < SecondaryInventory->m_size.y; j++)
-		for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
-			INVENTORY_SLOT & slot = SecondaryInventory->slot[i][j];
-			if(slot.io == io) {
-				slot.io = NULL;
-				slot.show = true;
-				sInventory = 2;
-				sInventoryPos = t;
-			}
-		}
+		ARX_SOUND_PlayInterface(g_snd.GOLD);
+		player.gold -= price;
 		
 	}
 	
-	Set_DragInter(io);
+	// Take only one item from stacks unless requested otherwise
+	if(io->_itemdata->count > 1
+	   && ((ioo->ioflags & IO_SHOP) || !GInput->actionPressed(CONTROLS_CUST_STEALTHMODE))) {
+		Entity * unstackedEntity = CloneIOItem(io);
+		unstackedEntity->show = SHOW_FLAG_NOT_DRAWN;
+		unstackedEntity->scriptload = 1;
+		unstackedEntity->_itemdata->count = 1;
+		io->_itemdata->count--;
+		ARX_SOUND_PlayInterface(g_snd.INVSTD);
+		Set_DragInter(unstackedEntity, pos);
+		ARX_INVENTORY_IdentifyIO(unstackedEntity);
+		return;
+	}
+	
+	Set_DragInter(io, pos);
 	RemoveFromAllInventories(io);
 	ARX_INVENTORY_IdentifyIO(io);
-	return true;
+	
 }
 
 void SecondaryInventoryHud::close() {

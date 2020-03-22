@@ -121,6 +121,8 @@ struct InventoryPos {
 	
 };
 
+extern InventoryPos g_draggedItemPreviousPosition;
+
 std::ostream & operator<<(std::ostream & strm, const InventoryPos & pos);
 
 class PlayerInventory {
