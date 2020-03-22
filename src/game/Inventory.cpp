@@ -807,32 +807,6 @@ bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::inde
 	return getIoInventory(container).insertAt(item, bag, pos, fallback);
 }
 
-/*!
- * \brief Tries to put an object in secondary inventory
- */
-bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
-{
-	if(!id || !io)
-		return false;
-	
-	if(io->ioflags & IO_MOVABLE)
-		return false;
-	
-	arx_assert(id->io && id->io->inventory == id);
-	
-	InventoryPos pos;
-	if(sInventory == 2) {
-		pos = InventoryPos(id->io->index(), 0, sInventoryPos.x, sInventoryPos.y);
-	}
-	
-	if(getIoInventory(id->io).insert(io, pos)) {
-		sInventory = -1;
-		return true;
-	}
-	
-	return false;
-}
-
 //! Try to put DRAGINTER object in an inventory
 void PutInInventory() {
 	// Check Validity
@@ -1039,10 +1013,9 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 		for(long j = 0; j < id->m_size.y; j++) {
 		for(long k = 0; k < id->m_size.x; k++) {
 			if(id->slot[k][j].io == old) {
-				if(CanBePutInSecondaryInventory(id, io)) {
-					return;
+				if(!getIoInventory(e).insert(io)) {
+					PutInFrontOfPlayer(io);
 				}
-				PutInFrontOfPlayer(io);
 				return;
 			}
 		}
@@ -1291,10 +1264,9 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 			if(playerInventory.insert(io)) {
 				bSound = true;
 			} else {
-				sInventory = 2;
-				sInventoryPos = Vec2s(i, j);
-				
-				CanBePutInSecondaryInventory(TSecondaryInventory, io);
+				InventoryPos pos(TSecondaryInventory->io->index(), 0, i, j);
+				bool inserted = getIoInventory(TSecondaryInventory->io).insert(io, pos);
+				arx_assert(inserted), ARX_UNUSED(inserted);
 			}
 		}
 	}
@@ -1321,16 +1293,9 @@ void ARX_INVENTORY_ReOrder() {
 		Entity * io = slot.io;
 		
 		RemoveFromAllInventories(io);
-		sInventory = 2;
-		sInventoryPos = Vec2s(0);
 		
-		if(CanBePutInSecondaryInventory(TSecondaryInventory, io)) {
-		} else{
-			sInventory = 2;
-			
-			sInventoryPos = Vec2s(i, j);
-			
-			CanBePutInSecondaryInventory(TSecondaryInventory, io);
-		}
+		InventoryPos pos(TSecondaryInventory->io->index(), 0, 0, 0);
+		bool inserted = getIoInventory(TSecondaryInventory->io).insert(io, pos);
+		arx_assert(inserted), ARX_UNUSED(inserted);
 	}
 }
