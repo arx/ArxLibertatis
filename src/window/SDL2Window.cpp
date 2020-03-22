@@ -115,6 +115,9 @@ SDL2Window::~SDL2Window() {
 #ifndef SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH // SDL 2.0.5+
 #define SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH "SDL_MOUSE_FOCUS_CLICKTHROUGH"
 #endif
+#ifndef SDL_HINT_VIDEO_X11_FORCE_EGL // SDL 2.0.12+
+#define SDL_HINT_VIDEO_X11_FORCE_EGL "SDL_VIDEO_X11_FORCE_EGL"
+#endif
 
 static Window::MinimizeSetting getInitialSDLSetting(const char * hint, Window::MinimizeSetting def) {
 	const char * setting = SDL_GetHint(hint);
@@ -131,6 +134,22 @@ bool SDL2Window::initializeFramework() {
 	#endif
 	
 	SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
+	
+	#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
+	#if ARX_HAVE_GL_STATIC || !ARX_HAVE_DLSYM || !defined(RTLD_DEFAULT)
+	const bool haveGLX = ARX_HAVE_GLX;
+	const bool haveEGL = ARX_HAVE_EGL;
+	#elif ARX_HAVE_EPOXY
+	const bool haveGLX = (dlsym(RTLD_DEFAULT, "epoxy_has_glx") != NULL);
+	const bool haveEGL = (dlsym(RTLD_DEFAULT, "epoxy_has_egl") != NULL);
+	#else
+	const bool haveGLX = (dlsym(RTLD_DEFAULT, "glxewInit") != NULL);
+	const bool haveEGL = (dlsym(RTLD_DEFAULT, "eglewInit") != NULL);
+	#endif
+	if(!haveGLX && haveEGL) {
+		SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "1");
+	}
+	#endif
 	
 	m_minimizeOnFocusLost = getInitialSDLSetting(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, Enabled);
 	m_allowScreensaver = getInitialSDLSetting(SDL_HINT_VIDEO_ALLOW_SCREENSAVER, Disabled);
