@@ -377,7 +377,7 @@ void SecondaryInventoryHud::dragEntity(Entity * io, const InventoryPos & pos) {
 	if(ioo->ioflags & IO_SHOP) {
 		
 		long price = ARX_INTERACTIVE_GetPrice(io, ioo);
-		price = checked_range_cast<long>(price - price * player.m_skillFull.intuition * 0.005f);
+		price = checked_range_cast<long>(float(price) - float(price) * player.m_skillFull.intuition * 0.005f);
 		if(player.gold < price) {
 			return;
 		}
