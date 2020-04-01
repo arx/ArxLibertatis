@@ -208,7 +208,6 @@ else(MSVC)
 		add_cxxflag("-Wextra-semi")
 		add_cxxflag("-Wformat=2")
 		add_cxxflag("-Wheader-guard")
-		add_cxxflag("-Wheader-hygiene")
 		add_cxxflag("-Winit-self")
 		add_cxxflag("-Wkeyword-macro")
 		add_cxxflag("-Wlogical-op")
@@ -233,6 +232,10 @@ else(MSVC)
 		add_cxxflag("-Wfloat-conversion") # part of -Wconversion
 		add_cxxflag("-Wstring-conversion") # part of -Wconversion
 		add_cxxflag("-Wenum-conversion") # part of -Wconversion
+		
+		if(NOT UNITY_BUILD)
+			add_cxxflag("-Wheader-hygiene")
+		endif()
 		
 		if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
 			add_cxxflag("-Wsign-promo")
