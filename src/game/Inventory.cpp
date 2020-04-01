@@ -292,7 +292,7 @@ private:
 	}
 	
 	// Move via diagonal lines thorough the rect made by start and end
-	static void advance(Pos & p, Vec2i start, Vec2i end) {
+	static void advance(Pos & p, Vec2s start, Vec2s end) {
 		p.x++;
 		p.y--;
 		if(p.y < start.y || p.x >= end.x) {
