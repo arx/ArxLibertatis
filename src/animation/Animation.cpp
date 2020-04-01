@@ -83,7 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 
 const size_t MAX_ANIMATIONS = 900;
-std::vector<ANIM_HANDLE> animations(MAX_ANIMATIONS);
+std::vector<ANIM_HANDLE> g_animations(MAX_ANIMATIONS);
 
 static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 
@@ -190,7 +190,7 @@ static void EERIE_ANIMMANAGER_Clear(ANIM_HANDLE & slot) {
 
 void EERIE_ANIMMANAGER_PurgeUnused() {
 	
-	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+	BOOST_FOREACH(ANIM_HANDLE & slot, g_animations) {
 		if(!slot.path.empty() && slot.locks == 0) {
 			EERIE_ANIMMANAGER_Clear(slot);
 		}
@@ -211,7 +211,7 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim) {
 
 static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const res::path & path) {
 	
-	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+	BOOST_FOREACH(ANIM_HANDLE & slot, g_animations) {
 		if(slot.path == path) {
 			return &slot;
 		}
@@ -503,7 +503,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 		return handle;
 	}
 	
-	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+	BOOST_FOREACH(ANIM_HANDLE & slot, g_animations) {
 		
 		if(!slot.path.empty()) {
 			continue;
@@ -674,7 +674,7 @@ void ResetAnim(AnimLayer & layer) {
 
 void EERIE_ANIMMANAGER_ClearAll() {
 	
-	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+	BOOST_FOREACH(ANIM_HANDLE & slot, g_animations) {
 		if(!slot.path.empty()) {
 			EERIE_ANIMMANAGER_Clear(slot);
 		}
@@ -718,7 +718,7 @@ std::vector< std::pair<res::path, size_t> > ARX_SOUND_PushAnimSamples() {
 	
 	size_t number = 0;
 	
-	BOOST_FOREACH(const ANIM_HANDLE & slot, animations) {
+	BOOST_FOREACH(const ANIM_HANDLE & slot, g_animations) {
 		if(slot.path.empty()) {
 			continue;
 		}
@@ -749,7 +749,7 @@ void ARX_SOUND_PopAnimSamples(const std::vector< std::pair<res::path, size_t> > 
 	
 	size_t number = 0;
 	
-	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
+	BOOST_FOREACH(ANIM_HANDLE & slot, g_animations) {
 		if(slot.path.empty()) {
 			continue;
 		}
