@@ -23,9 +23,9 @@
 #include <iomanip>
 #include <vector>
 
-#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/bind/bind.hpp>
 
 #include "audio/Audio.h"
 
@@ -75,6 +75,11 @@
 #include "util/Unicode.h"
 
 #include "window/RenderWindow.h"
+
+#if BOOST_VERSION >= 106000
+using boost::placeholders::_1;
+using boost::placeholders::_2;
+#endif
 
 class NewQuestMenuPage arx_final : public MenuPage {
 	
