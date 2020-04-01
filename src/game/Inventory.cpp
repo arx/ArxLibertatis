@@ -305,10 +305,10 @@ private:
 		
 		Vec2s start(pos + Vec2f(1.f / 3));
 		Vec2s size = item->m_inventorySize;
-		if(pos.x - start.x > 1.f / 3) {
+		if(pos.x - float(start.x) > 1.f / 3) {
 			size.x++;
 		}
-		if(pos.y - start.y > 1.f / 3) {
+		if(pos.y - float(start.y) > 1.f / 3) {
 			size.y++;
 		}
 		if(start.x < 0) {
@@ -468,11 +468,11 @@ private:
 		         << oldItem->_itemdata->playerstacksize << "] += "
 		         << item->idString() << " x" << count << '/' << item->_itemdata->count);
 		
-		oldItem->scale = oldItem->scale * oldItem->_itemdata->count + item->scale * count;
+		oldItem->scale = oldItem->scale * float(oldItem->_itemdata->count) + item->scale * float(count);
 		
 		oldItem->_itemdata->count += count, item->_itemdata->count -= count;
 		
-		oldItem->scale /= oldItem->_itemdata->count;
+		oldItem->scale /= float(oldItem->_itemdata->count);
 		
 		if(item->_itemdata->count != 0) {
 			// We inserted some of the items into the stack, but there was not enough
