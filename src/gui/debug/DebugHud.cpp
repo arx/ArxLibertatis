@@ -238,15 +238,16 @@ void ShowInfoText() {
 	
 	{
 	struct ScriptDebugReport {
+		
 		std::string entityName;
 		long events;
 		long sends;
 		
 		ScriptDebugReport()
-			: entityName("")
-			, events(0)
+			: events(0)
 			, sends(0)
-		{}
+		{ }
+		
 	};
 	
 	ScriptDebugReport maxEvents;
