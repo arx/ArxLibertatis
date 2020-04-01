@@ -44,15 +44,15 @@ namespace util { namespace cmdline {
 template <typename FnSign>
 class lexical_call_t;
 
-template <typename _Result, typename _Args>
-class lexical_call_t<_Result(_Args)> {
+template <typename Result, typename Args>
+class lexical_call_t<Result(Args)> {
 	
-	typedef lexical_call_t<_Result(_Args)> self_t;
+	typedef lexical_call_t<Result(Args)> self_t;
 	
 public:
 	
-	typedef _Args argument_type;
-	typedef _Result result_type;
+	typedef Args argument_type;
+	typedef Result result_type;
 	
 	template <typename FnSign, typename Function>
 	static self_t construct(const Function & fn) {
@@ -116,16 +116,16 @@ private:
 		function = proxy_function<Function>(fn);
 	}
 	
-	typedef boost::function<_Result(_Args)> function_t;
+	typedef boost::function<Result(Args)> function_t;
 	
 	function_t function;
 	
 };
 
-template <typename _Result, typename _ValueType, typename _TypeCast>
-class lexical_call_t<_Result(_ValueType, _ValueType, _TypeCast)> {
+template <typename Result, typename ValueType, typename TypeCast>
+class lexical_call_t<Result(ValueType, ValueType, TypeCast)> {
 	
-	typedef _TypeCast type_cast_t;
+	typedef TypeCast type_cast_t;
 	
 	struct Args : boost::noncopyable {
 		
@@ -138,7 +138,7 @@ class lexical_call_t<_Result(_ValueType, _ValueType, _TypeCast)> {
 			return m_cast.template cast<R>(v_front());
 		}
 		
-		virtual _ValueType v_front() const = 0;
+		virtual ValueType v_front() const = 0;
 		virtual void pop() {}
 		virtual bool empty() const = 0;
 		virtual bool opt_empty() const = 0;
@@ -163,7 +163,7 @@ class lexical_call_t<_Result(_ValueType, _ValueType, _TypeCast)> {
 			, m_is_optend(begin == optend)
 		{ }
 		
-		virtual _ValueType v_front() const {
+		virtual ValueType v_front() const {
 			return *m_begin;
 		}
 		
@@ -182,7 +182,7 @@ class lexical_call_t<_Result(_ValueType, _ValueType, _TypeCast)> {
 		
 	};
 	
-	typedef lexical_call_t<_Result(Args &)> impl_t;
+	typedef lexical_call_t<Result(Args &)> impl_t;
 	typedef lexical_call_t self_t;
 	impl_t  m_impl;
 	
@@ -208,24 +208,24 @@ public:
 	}
 	
 	template <typename Iterator>
-	_Result operator()(Iterator & begin, Iterator optend, Iterator end, _TypeCast & cast) {
+	Result operator()(Iterator & begin, Iterator optend, Iterator end, TypeCast & cast) {
 		VArgs<Iterator> args(cast, begin, optend, end);
 		return m_impl(args);
 	}
 	
 	template <typename Iterator>
-	_Result operator()(Iterator & begin, Iterator optend, Iterator end, _TypeCast & cast) const {
+	Result operator()(Iterator & begin, Iterator optend, Iterator end, TypeCast & cast) const {
 		VArgs<Iterator> args(cast, begin, optend, end);
 		return m_impl(args);
 	}
 	
 	template <typename Iterator>
-	_Result operator()(Iterator & begin, Iterator end, _TypeCast & cast) {
+	Result operator()(Iterator & begin, Iterator end, TypeCast & cast) {
 		return operator()(begin, end, end, cast);
 	}
 	
 	template <typename Iterator>
-	_Result operator()(Iterator & begin, Iterator end, _TypeCast & cast) const {
+	Result operator()(Iterator & begin, Iterator end, TypeCast & cast) const {
 		return operator()(begin, end, end, cast);
 	}
 	
