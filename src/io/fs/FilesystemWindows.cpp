@@ -338,7 +338,7 @@ directory_iterator & directory_iterator::operator++() {
 }
 
 bool directory_iterator::end() {
-	return m_handle != INVALID_HANDLE_VALUE;
+	return m_handle == INVALID_HANDLE_VALUE;
 }
 
 std::string directory_iterator::name() {
