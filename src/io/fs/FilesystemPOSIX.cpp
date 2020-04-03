@@ -97,7 +97,17 @@ bool remove(const path & p) {
 }
 
 bool remove_directory(const path & p) {
-	return !rmdir(p.string().c_str()) || errno == ENOENT || errno == ENOTDIR;
+	
+	if(!rmdir(p.string().c_str()) || errno == ENOENT) {
+		return true;
+	}
+	
+	if(errno == ENOTDIR) {
+		// p is either a file or p does not exist and a parent of p is a file
+		return !exists(p);
+	}
+	
+	return false;
 }
 
 bool create_directory(const path & p) {
