@@ -30,7 +30,6 @@ int main(int argc, char *argv[]) {
 	
 	CppUnit::TextTestRunner runner;
 	
-	runner.setOutputter(new CppUnit::CompilerOutputter(&runner.result(), std::cout, "%f:%l "));
 	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 	
 	runner.run("");
