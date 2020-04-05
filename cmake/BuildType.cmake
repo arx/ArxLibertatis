@@ -16,6 +16,7 @@ option(SET_OPTIMIZATION_FLAGS "Adjust compiler optimization flags" ON)
 
 set(conservative_warnings)
 set(enable_rtti)
+set(disable_libstdcxx_debug)
 
 if(MSVC)
 	
@@ -354,6 +355,7 @@ else(MSVC)
 			# libc++'s debug checks fail with -fsanitize=undefined
 		else()
 			add_definitions(-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC) # libstdc++
+			set(disable_libstdcxx_debug "-U_GLIBCXX_DEBUG -U_GLIBCXX_DEBUG_PEDANTIC")
 			add_cxxflag("-fsanitize=undefined")
 		endif()
 	endif(DEBUG_EXTRA)
