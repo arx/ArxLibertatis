@@ -1792,6 +1792,7 @@ if(INSTALL_BLENDER_PLUGIN)
 endif()
 
 if(BUILD_TESTS)
+	enable_testing()
 	include(tests/CMakeLists.txt)
 endif()
 
@@ -1822,6 +1823,10 @@ if(BUILD_TESTS)
 	if(CMAKE_VERSION VERSION_LESS 2.8.12)
 		get_property(arxtest_binary TARGET arxtest PROPERTY LOCATION_${CMAKE_BUILD_TYPE})
 	endif()
+	
+	add_test(NAME arxtest
+		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_BINARY_DIR}" ${RUN_TARGET} "${arxtest_binary}"
+	)
 	
 	add_custom_target(check ${run_tests}
 		COMMAND ${RUN_TARGET} "${arxtest_binary}"
