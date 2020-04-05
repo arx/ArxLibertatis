@@ -34,8 +34,8 @@ set(arxtest_TESTCASES
 	
 )
 
-# CppUnit requires RTTI
-add_source_flags("${arxtest_TESTCASES}" "${enable_rtti}")
+# CppUnit requires RTTI and does not work with libstdc++'s debug mode
+add_source_flags("${arxtest_TESTCASES}" "${enable_rtti} ${disable_libstdcxx_debug}")
 
 set(arxtest_SOURCES
 	
