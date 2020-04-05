@@ -492,9 +492,9 @@ bool SDL2Window::initialize() {
 	}
 	
 	// Use the executable icon for the window
-	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	u64 nativeWindow = 0;
-	{
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	if(!nativeWindow) {
 		SDL_SysWMinfo info;
 		SDL_VERSION(&info.version);
 		if(SDL_GetWindowWMInfo(m_window, &info) && info.subsystem == SDL_SYSWM_WINDOWS) {
@@ -520,10 +520,11 @@ bool SDL2Window::initialize() {
 			}
 		}
 	}
-	#elif ARX_PLATFORM != ARX_PLATFORM_MACOS
-	u64 nativeWindow = SDL2X11_getNativeWindowHandle(m_window);
-	#else
-	u64 nativeWindow = 0;
+	#endif
+	#if ARX_HAVE_SDL2_X11
+	if(!nativeWindow) {
+		nativeWindow = SDL2X11_getNativeWindowHandle(m_window);
+	}
 	#endif
 	CrashHandler::setWindow(nativeWindow);
 	

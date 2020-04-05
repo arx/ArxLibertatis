@@ -75,6 +75,7 @@
 // Input backend
 #cmakedefine01 ARX_HAVE_SDL1
 #cmakedefine01 ARX_HAVE_SDL2
+#cmakedefine01 ARX_HAVE_SDL2_X11
 
 // Crash handler
 #cmakedefine01 ARX_HAVE_CRASHHANDLER_POSIX

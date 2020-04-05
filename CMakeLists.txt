@@ -1269,8 +1269,9 @@ set(WINDOW_SOURCES
 )
 set(WINDOW_SDL1_SOURCES src/window/SDL1Window.cpp)
 set(WINDOW_SDL2_SOURCES src/window/SDL2Window.cpp)
-if(NOT WIN32 AND NOT MACOS)
+if(USE_X11 AND SDL_HAVE_VIDEO_X11)
 	list(APPEND WINDOW_SDL2_SOURCES src/window/SDL2X11Util.c)
+	set(ARX_HAVE_SDL2_X11 1)
 endif()
 
 # TODO manually specify theese like we do for the tools
