@@ -49,7 +49,7 @@ class FilesystemTest : public CppUnit::TestFixture {
 			, mtime(0)
 		{ }
 		
-		Entry(fs::FileType type_, const std::string & contents_ = std::string(), std::time_t mtime_ = 0)
+		explicit Entry(fs::FileType type_, const std::string & contents_ = std::string(), std::time_t mtime_ = 0)
 			: type(type_)
 			, contents(contents_)
 			, mtime(mtime_)
