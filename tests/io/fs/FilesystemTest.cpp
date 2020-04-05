@@ -55,7 +55,9 @@ void FilesystemTest::iterate(const fs::path & path, const std::string & prefix, 
 		CPPUNIT_ASSERT(result.find(name) == result.end());
 		fs::FileType type = it.type();
 		if(type == fs::RegularFile) {
-			result[name] = Entry(type, std::string('\0', it.file_size()), it.last_write_time());
+			std::string contents;
+			contents.resize(it.file_size());
+			result[name] = Entry(type, contents, it.last_write_time());
 		} else {
 			result[name] = Entry(type);
 		}
