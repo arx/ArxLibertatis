@@ -23,6 +23,7 @@
 #include <iomanip>
 #include <vector>
 
+#include <boost/version.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/bind/bind.hpp>
@@ -76,9 +77,14 @@
 
 #include "window/RenderWindow.h"
 
+
 #if BOOST_VERSION >= 106000
-using boost::placeholders::_1;
-using boost::placeholders::_2;
+namespace arg = boost::placeholders;
+#else
+namespace arg {
+using ::_1;
+using ::_2;
+}
 #endif
 
 class NewQuestMenuPage arx_final : public MenuPage {
@@ -151,7 +157,7 @@ public:
 			std::string text = getLocalised("system_menu_editquest_newsavegame");
 			TextInputWidget * txt = new TextInputWidget(hFontMenu, text, m_rect);
 			txt->setMaxLength(255); // Don't allow the user to enter names that cannot be stored in save files
-			txt->unfocused = boost::bind(&SaveConfirmMenuPage::onUnfocusedText, this, _1);
+			txt->unfocused = boost::bind(&SaveConfirmMenuPage::onUnfocusedText, this, arg::_1);
 			addCenter(txt);
 			m_textbox = txt;
 		}
@@ -159,7 +165,7 @@ public:
 		// Delete button
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_delete"));
-			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveDelete, this, _1);
+			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveDelete, this, arg::_1);
 			txt->setTargetPage(Page_Save);
 			txt->setEnabled(m_savegame != SavegameHandle());
 			addCorner(txt, TopRight);
@@ -168,7 +174,7 @@ public:
 		// Save button
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_save"));
-			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveConfirm, this, _1);
+			txt->clicked = boost::bind(&SaveConfirmMenuPage::onClickedSaveConfirm, this, arg::_1);
 			txt->setTargetPage(Page_None);
 			addCorner(txt, BottomRight);
 		}
@@ -262,8 +268,8 @@ public:
 		BOOST_FOREACH(SavegameHandle save, savegames) {
 			if(savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, ++quicksaveNum, hFontControls, m_rect);
-				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
-				txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
+				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, arg::_1);
+				txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, arg::_1);
 				addCenter(txt);
 			}
 		}
@@ -272,8 +278,8 @@ public:
 		BOOST_FOREACH(SavegameHandle save, savegames) {
 			if(!savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, 0, hFontControls, m_rect);
-				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, _1);
-				txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, _1);
+				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, arg::_1);
+				txt->doubleClicked = boost::bind(&LoadMenuPage::onDoubleClickQuestLoad, this, arg::_1);
 				addCenter(txt);
 			}
 		}
@@ -394,7 +400,7 @@ public:
 		BOOST_FOREACH(SavegameHandle save, savegames) {
 			if(savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, ++quicksaveNum, hFontControls, m_rect);
-				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
+				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, arg::_1);
 				txt->setTargetPage(Page_SaveConfirm);
 				txt->setEnabled(false);
 				addCenter(txt);
@@ -405,7 +411,7 @@ public:
 		BOOST_FOREACH(SavegameHandle save, savegames) {
 			if(!savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, 0, hFontControls, m_rect);
-				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
+				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, arg::_1);
 				txt->setTargetPage(Page_SaveConfirm);
 				addCenter(txt);
 			}
@@ -413,7 +419,7 @@ public:
 		
 		for(size_t i = savegames.size(); i <= 15; i++) {
 			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(), i, hFontControls, m_rect);
-			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, _1);
+			txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, arg::_1);
 			txt->setTargetPage(Page_SaveConfirm);
 			addCenter(txt);
 		}
@@ -572,7 +578,7 @@ public:
 			std::string label = getLocalised("system_menus_options_videos_full_screen");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.fullscreen);
-			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedFullscreen, this, _1);
+			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedFullscreen, this, arg::_1);
 			addCenter(cb);
 			m_fullscreenCheckbox = cb;
 		}
@@ -580,7 +586,8 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_resolution");
 			m_resolutionSlider = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
-			m_resolutionSlider->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedResolution, this, _1, _2);
+			m_resolutionSlider->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedResolution, this,
+			                                               arg::_1, arg::_2);
 			
 			m_resolutionSlider->setEnabled(config.video.fullscreen);
 			
@@ -623,7 +630,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_gamma");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedGamma, this, _1);
+			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedGamma, this, arg::_1);
 			addCenter(sld);
 			m_gammaSlider = sld;
 			updateGammaSlider();
@@ -632,7 +639,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_videos_minimize_on_focus_lost");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
-			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedMinimizeOnFocusLost, this, _1);
+			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedMinimizeOnFocusLost, this, arg::_1);
 			addCenter(cb);
 			m_minimizeOnFocusLostCheckbox = cb;
 			updateMinimizeOnFocusLostStateCheckbox();
@@ -643,7 +650,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_vsync");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedVSync, this, _1, _2);
+			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedVSync, this, arg::_1, arg::_2);
 			cb->addEntry(getLocalised("system_menus_options_video_vsync_off"));
 			if(benchmark::isEnabled()) {
 				cb->setValue(0);
@@ -659,7 +666,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_fps_limit");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFPSLimit, this, _1, _2);
+			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFPSLimit, this, arg::_1, arg::_2);
 			cb->addEntry(getLocalised("system_menus_options_video_fps_limit_off"));
 			cb->setValue(0);
 			if(benchmark::isEnabled()) {
@@ -707,14 +714,14 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_fov");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFov, this, _1);
+			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFov, this, arg::_1);
 			sld->setValue(glm::clamp(int((config.video.fov - 75.f) / 5.f), 0, 10));
 			addCenter(sld);
 		}
 		
 		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_video_apply"));
-			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this, _1);
+			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this, arg::_1);
 			txt->setEnabled(false);
 			addCorner(txt, BottomRight);
 			m_applyButton = txt;
@@ -868,7 +875,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_renderer");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			slider->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedRenderer, this, _1, _2);
+			slider->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedRenderer, this, arg::_1, arg::_2);
 			slider->addEntry("Auto-Select");
 			slider->selectLast();
 			slider->addEntry("OpenGL");
@@ -883,7 +890,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_detail");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedQuality, this, _1, _2);
+			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedQuality, this, arg::_1, arg::_2);
 			cb->addEntry(getLocalised("system_menus_options_video_texture_low"));
 			cb->addEntry(getLocalised("system_menus_options_video_texture_med"));
 			cb->addEntry(getLocalised("system_menus_options_video_texture_high"));
@@ -894,7 +901,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_brouillard");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedFogDistance, this, _1);
+			sld->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedFogDistance, this, arg::_1);
 			sld->setValue(int(config.video.fogDistance));
 			addCenter(sld);
 		}
@@ -903,7 +910,7 @@ public:
 			std::string label = getLocalised("system_menus_options_video_antialiasing");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.antialiasing);
-			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedAntialiasing, this, _1);
+			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedAntialiasing, this, arg::_1);
 			addCenter(cb);
 		}
 		
@@ -911,14 +918,15 @@ public:
 			std::string label = getLocalised("system_menus_options_video_colorkey_antialiasing");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.colorkeyAntialiasing);
-			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedColorkeyAntialiasing, this, _1);
+			cb->stateChanged = boost::bind(&RenderOptionsMenuPage::onChangedColorkeyAntialiasing, this, arg::_1);
 			addCenter(cb);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_options_video_alpha_cutout_antialising");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedAlphaCutoutAntialiasing, this, _1, _2);
+			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedAlphaCutoutAntialiasing, this,
+			                               arg::_1, arg::_2);
 			cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_off"));
 			Renderer::AlphaCutoutAntialising maxAA = GRenderer->getMaxSupportedAlphaCutoutAntialiasing();
 			if(maxAA >= Renderer::FuzzyAlphaCutoutAA) {
@@ -935,7 +943,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_texture_filter_anisotropic");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedMaxAnisotropy, this, _1, _2);
+			cb->valueChanged = boost::bind(&RenderOptionsMenuPage::onChangedMaxAnisotropy, this, arg::_1, arg::_2);
 			cb->addEntry(getLocalised("system_menus_options_video_filter_anisotropic_off"));
 			int maxAnisotropy = int(GRenderer->getMaxSupportedAnisotropy());
 			int selected = 0;
@@ -1073,7 +1081,7 @@ public:
 			label = getLocalised("system_menus_options_interface_crosshair", label);
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.showCrosshair);
-			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCrosshair, this, _1);
+			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCrosshair, this, arg::_1);
 			addCenter(cb);
 		}
 		
@@ -1081,14 +1089,14 @@ public:
 			std::string label = getLocalised("system_menus_options_interface_limit_speech_width");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.limitSpeechWidth);
-			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedSpeechWidth, this, _1);
+			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedSpeechWidth, this, arg::_1);
 			addCenter(cb);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_options_interface_cinematic_widescreen_mode");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
-			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCinematicMode, this, _1, _2);
+			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCinematicMode, this, arg::_1, arg::_2);
 			cb->addEntry(getLocalised("system_menus_options_interface_letterbox"));
 			cb->addEntry(getLocalised("system_menus_options_interface_hard_edges"));
 			cb->addEntry(getLocalised("system_menus_options_interface_fade_edges"));
@@ -1101,7 +1109,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_interface_hud_scale");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScale, this, _1);
+			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScale, this, arg::_1);
 			sld->setValue(int(config.interface.hudScale * 10.f));
 			addCenter(sld);
 		}
@@ -1110,14 +1118,14 @@ public:
 			std::string label = getLocalised("system_menus_options_interface_hud_scale_integer");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.hudScaleInteger);
-			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScaleInteger, this, _1);
+			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScaleInteger, this, arg::_1);
 			addCenter(cb);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_options_interface_book_scale");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedBookScale, this, _1);
+			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedBookScale, this, arg::_1);
 			sld->setValue(int(config.interface.bookScale * 10.f));
 			addCenter(sld);
 		}
@@ -1126,14 +1134,14 @@ public:
 			std::string label = getLocalised("system_menus_options_interface_book_scale_integer");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.bookScaleInteger);
-			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedBookScaleInteger, this, _1);
+			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedBookScaleInteger, this, arg::_1);
 			addCenter(cb);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_options_interface_cursor_scale");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCursorScale, this, _1);
+			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCursorScale, this, arg::_1);
 			sld->setValue(int(config.interface.cursorScale * 10.f));
 			addCenter(sld);
 		}
@@ -1142,14 +1150,14 @@ public:
 			std::string label = getLocalised("system_menus_options_interface_cursor_scale_integer");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.cursorScaleInteger);
-			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCursorScaleInteger, this, _1);
+			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCursorScaleInteger, this, arg::_1);
 			addCenter(cb);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_options_interface_scale_filter");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedScaleFilter, this, _1, _2);
+			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedScaleFilter, this, arg::_1, arg::_2);
 			cb->addEntry(getLocalised("system_menus_options_video_filter_nearest"));
 			cb->addEntry(getLocalised("system_menus_options_video_filter_bilinear"));
 			cb->setValue(config.interface.scaleFilter);
@@ -1159,7 +1167,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_interface_font_size");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedFontSize, this, _1);
+			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedFontSize, this, arg::_1);
 			sld->setValue(int(glm::clamp((config.interface.fontSize - 0.75f) * 20.f + 0.5f, 0.f, 10.f)));
 			addCenter(sld);
 		}
@@ -1167,7 +1175,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_interface_font_weight");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedFontWeight, this, _1, _2);
+			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedFontWeight, this, arg::_1, arg::_2);
 			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_0"));
 			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_1"));
 			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_2"));
@@ -1261,7 +1269,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_audio_device");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
-			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedDevice, this, _1, _2);
+			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedDevice, this, arg::_1, arg::_2);
 			slider->addEntry("Default");
 			slider->selectLast();
 			BOOST_FOREACH(const std::string & device, audio::getDevices()) {
@@ -1278,7 +1286,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_audio_master_volume");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedMasterVolume, this, _1);
+			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedMasterVolume, this, arg::_1);
 			sld->setValue(int(config.audio.volume)); // TODO use float sliders
 			addCenter(sld);
 		}
@@ -1286,7 +1294,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_audio_effects_volume");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedEffectsVolume, this, _1);
+			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedEffectsVolume, this, arg::_1);
 			sld->setValue(int(config.audio.sfxVolume));
 			addCenter(sld);
 		}
@@ -1294,7 +1302,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_audio_speech_volume");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedSpeechVolume, this, _1);
+			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedSpeechVolume, this, arg::_1);
 			sld->setValue(int(config.audio.speechVolume));
 			addCenter(sld);
 		}
@@ -1302,7 +1310,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_audio_ambiance_volume");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedAmbianceVolume, this, _1);
+			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedAmbianceVolume, this, arg::_1);
 			sld->setValue(int(config.audio.ambianceVolume));
 			addCenter(sld);
 		}
@@ -1311,7 +1319,7 @@ public:
 			std::string label = getLocalised("system_menus_options_audio_mute_on_focus_lost");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.audio.muteOnFocusLost);
-			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedMuteOnFocusLost, this, _1);
+			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedMuteOnFocusLost, this, arg::_1);
 			addCenter(cb);
 		}
 		
@@ -1325,7 +1333,7 @@ public:
 			} else {
 				cb->setEnabled(false);
 			}
-			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedEax, this, _1);
+			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedEax, this, arg::_1);
 			addCenter(cb);
 		}
 		
@@ -1333,7 +1341,7 @@ public:
 		if(hrtf != audio::HRTFUnavailable) {
 			std::string label = getLocalised("system_menus_options_audio_hrtf");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedHRTF, this, _1, _2);
+			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedHRTF, this, arg::_1, arg::_2);
 			slider->addEntry("Disabled");
 			if(config.audio.hrtf == audio::HRTFDisable || hrtf == audio::HRTFForbidden) {
 				slider->selectLast();
@@ -1434,14 +1442,14 @@ public:
 			std::string label = getLocalised("system_menus_options_input_invert_mouse");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.invertMouse);
-			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedInvertMouse, this, _1);
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedInvertMouse, this, arg::_1);
 			addCenter(cb);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_options_auto_ready_weapon");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoReadyWeapon, this, _1, _2);
+			cb->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoReadyWeapon, this, arg::_1, arg::_2);
 			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_off"));
 			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_enemies"));
 			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_always"));
@@ -1453,14 +1461,14 @@ public:
 			std::string label = getLocalised("system_menus_options_input_mouse_look_toggle");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.mouseLookToggle);
-			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedToggleMouselook, this, _1);
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedToggleMouselook, this, arg::_1);
 			addCenter(cb);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_options_input_mouse_sensitivity");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseSensitivity, this, _1);
+			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseSensitivity, this, arg::_1);
 			sld->setValue(config.input.mouseSensitivity);
 			addCenter(sld);
 		}
@@ -1468,7 +1476,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_input_mouse_acceleration");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
-			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseAcceleration, this, _1);
+			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseAcceleration, this, arg::_1);
 			sld->setValue(config.input.mouseAcceleration);
 			addCenter(sld);
 		}
@@ -1477,7 +1485,7 @@ public:
 			std::string label = getLocalised("system_menus_options_raw_mouse_input");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.rawMouseInput);
-			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedRawMouseInput, this, _1);
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedRawMouseInput, this, arg::_1);
 			addCenter(cb);
 		}
 		
@@ -1485,7 +1493,7 @@ public:
 			std::string label = getLocalised("system_menus_autodescription");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.autoDescription);
-			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoDescription, this, _1);
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoDescription, this, arg::_1);
 			addCenter(cb);
 		}
 		
@@ -1493,7 +1501,7 @@ public:
 			std::string label = getLocalised("system_menus_options_misc_quicksave_slots");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->setMinimum(1);
-			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedQuicksaveSlots, this, _1);
+			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedQuicksaveSlots, this, arg::_1);
 			sld->setValue(config.misc.quicksaveSlots);
 			addCenter(sld);
 		}
@@ -1502,7 +1510,7 @@ public:
 			std::string label = getLocalised("system_menus_border_turning");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.borderTurning);
-			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedBorderTurning, this, _1);
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedBorderTurning, this, arg::_1);
 			addCenter(cb);
 		}
 		
@@ -1510,14 +1518,14 @@ public:
 			std::string label = getLocalised("system_menus_alt_rune_recognition");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.useAltRuneRecognition);
-			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAltRuneRecognition, this, _1);
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAltRuneRecognition, this, arg::_1);
 			addCenter(cb);
 		}
 		
 		{
 			std::string label = getLocalised("system_menus_quick_level_transition");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedQuickLevelTransition, this, _1, _2);
+			cb->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedQuickLevelTransition, this, arg::_1, arg::_2);
 			cb->addEntry(getLocalised("system_menus_quick_level_transition_off"));
 			cb->addEntry(getLocalised("system_menus_quick_level_transition_jump"));
 			cb->addEntry(getLocalised("system_menus_quick_level_transition_immediate"));
@@ -1612,7 +1620,7 @@ protected:
 		
 		for(size_t i = 0; i < 2; i++) {
 			KeybindWidget * keybind = new KeybindWidget(controlAction, i, hFontControls);
-			keybind->keyChanged = boost::bind(&ControlOptionsPage::onKeyChanged, this, _1);
+			keybind->keyChanged = boost::bind(&ControlOptionsPage::onKeyChanged, this, arg::_1);
 			keybind->setPosition(RATIO_2(Vec2f(150.f + 95.f * float(i), 0.f)));
 			panel->add(keybind);
 		}
@@ -1705,7 +1713,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_input_customize_default");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
-			txt->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedDefault, this, _1);
+			txt->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedDefault, this, arg::_1);
 			addCorner(txt, BottomCenter);
 		}
 		
@@ -1777,7 +1785,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_input_customize_default");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
-			txt->clicked = boost::bind(&ControlOptionsMenuPage2::onClickedDefault, this, _1);
+			txt->clicked = boost::bind(&ControlOptionsMenuPage2::onClickedDefault, this, arg::_1);
 			addCorner(txt, BottomCenter);
 		}
 		
@@ -1821,7 +1829,7 @@ public:
 		
 		{
 			TextWidget * yes = new TextWidget(hFontMenu, getLocalised("system_yes"));
-			yes->clicked = boost::bind(&QuitConfirmMenuPage::onClickedYes, this, _1);
+			yes->clicked = boost::bind(&QuitConfirmMenuPage::onClickedYes, this, arg::_1);
 			addCorner(yes, BottomRight);
 		}
 		
@@ -1895,7 +1903,7 @@ void MainMenu::init()
 	
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_resumegame"));
-	txt->clicked = boost::bind(&MainMenu::onClickedResumeGame, this, _1);
+	txt->clicked = boost::bind(&MainMenu::onClickedResumeGame, this, arg::_1);
 	txt->setPosition(pos);
 	m_widgets->add(txt);
 	m_resumeGame = txt;
@@ -1903,7 +1911,7 @@ void MainMenu::init()
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_newquest"));
-	txt->clicked = boost::bind(&MainMenu::onClickedNewQuest, this, _1);
+	txt->clicked = boost::bind(&MainMenu::onClickedNewQuest, this, arg::_1);
 	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
@@ -1924,7 +1932,7 @@ void MainMenu::init()
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_credits"));
-	txt->clicked = boost::bind(&MainMenu::onClickedCredits, this, _1);
+	txt->clicked = boost::bind(&MainMenu::onClickedCredits, this, arg::_1);
 	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
