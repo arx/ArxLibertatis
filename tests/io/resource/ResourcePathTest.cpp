@@ -17,13 +17,13 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tests/io/resource/ResourcePathTest.h"
+#include "io/resource/ResourcePathTest.h"
 
 #include <string>
 
 #include "io/resource/ResourcePath.h"
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ResourcePathTest);
+CppUnit::AutoRegisterSuite<ResourcePathTest> g_registerResourcePathTest;
 
 void ResourcePathTest::testLoad(const char * input, const char * expected) {
 	res::path path = res::path::load(input);

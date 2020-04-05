@@ -17,12 +17,12 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "StringTest.h"
+#include "util/StringTest.h"
 
 #include "platform/Platform.h"
 #include "util/String.h"
 
-CPPUNIT_TEST_SUITE_REGISTRATION(StringTest);
+CppUnit::AutoRegisterSuite<StringTest> g_registerStringTest;
 
 struct OverflowTestStruct {
 	char data[4];
