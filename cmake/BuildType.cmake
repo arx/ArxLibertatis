@@ -350,13 +350,13 @@ else(MSVC)
 		add_cxxflag("-fsanitize=address")
 		# add_cxxflag("-fsanitize=thread") does not work together with -fsanitize=address
 		add_cxxflag("-fsanitize=leak")
+		add_cxxflag("-fsanitize=undefined")
 		if(IS_LIBCXX)
 			add_definitions(-D_LIBCPP_DEBUG=1) # libc++
 			# libc++'s debug checks fail with -fsanitize=undefined
 		else()
 			add_definitions(-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC) # libstdc++
 			set(disable_libstdcxx_debug "-U_GLIBCXX_DEBUG -U_GLIBCXX_DEBUG_PEDANTIC")
-			add_cxxflag("-fsanitize=undefined")
 		endif()
 	endif(DEBUG_EXTRA)
 	
