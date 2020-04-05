@@ -58,3 +58,4 @@ set(arxtest_INCLUDES
 set(arxtest_LIBRARIES ${BASE_LIBRARIES} ${CppUnit_LIBRARIES})
 
 add_executable_shared(arxtest "${arxtest_SOURCES}" "${arxtest_LIBRARIES}")
+add_binary_includes(arxtest ${arxtest_INCLUDES})
