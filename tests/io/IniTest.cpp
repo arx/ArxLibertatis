@@ -32,6 +32,14 @@ void IniTest::intTest() {
 	
 	CPPUNIT_ASSERT_EQUAL( 1, IniKey("b", "1.4").getValue(INVALID));
 	CPPUNIT_ASSERT_EQUAL( 1, IniKey("b", "1,5").getValue(INVALID));
+	
+	CPPUNIT_ASSERT_EQUAL(1, IniKey("a", "true" ).getValue(INVALID));
+	CPPUNIT_ASSERT_EQUAL(0, IniKey("b", "false").getValue(INVALID));
+	
+	CPPUNIT_ASSERT_EQUAL(INVALID, IniKey("a", "True" ).getValue(INVALID));
+	CPPUNIT_ASSERT_EQUAL(INVALID, IniKey("b", "False").getValue(INVALID));
+	CPPUNIT_ASSERT_EQUAL(INVALID, IniKey("a", "TRUE" ).getValue(INVALID));
+	CPPUNIT_ASSERT_EQUAL(INVALID, IniKey("b", "FALSE").getValue(INVALID));
 }
 
 void IniTest::floatTest() {
