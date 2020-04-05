@@ -1806,7 +1806,12 @@ endif()
 
 if(BUILD_TESTS)
 	
-	target_include_directories(arxtest PRIVATE tests)
+	if(CMAKE_VERSION VERSION_LESS 2.8.11)
+		# Cannot set per-target includes
+		include_directories(tests)
+	else()
+		target_include_directories(arxtest PRIVATE tests)
+	endif()
 	
 	set(run_tests)
 	if(RUN_TESTS)
