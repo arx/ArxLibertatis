@@ -141,6 +141,16 @@ else()
 	set(OPTIONAL_DEPENDENCY)
 endif()
 
+# Test configuration
+suboption(CppUnit_USE_STATIC_LIBS "Statically link CppUnit" BOOL ${USE_STATIC_LIBS})
+set(RUN_TARGET CACHE STRING "Wrapper to run built targets")
+mark_as_advanced(RUN_TARGET)
+set(default_RUN_TESTS OFF)
+if(DEVELOPER AND (NOT CMAKE_CROSSCOMPILING OR NOT RUN_TARGET STREQUAL ""))
+	set(default_RUN_TESTS ON)
+endif()
+suboption(RUN_TESTS "Run tests as part of the default build target" BOOL ${default_RUN_TESTS})
+
 # Install destinations
 if(CMAKE_VERSION VERSION_LESS 2.8.5)
 	set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE
@@ -1775,6 +1785,10 @@ if(INSTALL_BLENDER_PLUGIN)
 	install(DIRECTORY plugins/blender/arx_addon/ DESTINATION "${INSTALL_BLENDER_PLUGINDIR}")
 endif()
 
+if(BUILD_TESTS)
+	include(tests/CMakeLists.txt)
+endif()
+
 
 # Build and link executables
 
@@ -1782,6 +1796,29 @@ if(UNITY_BUILD)
 	unity_build()
 else()
 	shared_build()
+endif()
+
+if(BUILD_TESTS)
+	
+	target_include_directories(arxtest PRIVATE tests)
+	
+	set(run_tests)
+	if(RUN_TESTS)
+		set(run_tests ALL)
+	endif()
+	
+	set(arxtest_binary "$<TARGET_FILE:arxtest>")
+	if(CMAKE_VERSION VERSION_LESS 2.8.12)
+		get_property(arxtest_binary TARGET arxtest PROPERTY LOCATION_${CMAKE_BUILD_TYPE})
+	endif()
+	
+	add_custom_target(check ${run_tests}
+		COMMAND ${RUN_TARGET} "${arxtest_binary}"
+		DEPENDS arxtest
+		WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+		COMMENT "Running tests" VERBATIM
+	)
+	
 endif()
 
 
@@ -1823,10 +1860,6 @@ list(REMOVE_ITEM STYLE_CHECKED_SOURCES
 )
 
 add_style_check_target(style "${STYLE_CHECKED_SOURCES}" ARX)
-
-if(BUILD_TESTS)
-	add_subdirectory(tests "${PROJECT_BINARY_DIR}/test")
-endif()
 
 
 # Install Arx Libertatis data files

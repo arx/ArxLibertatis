@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "LegacyMathTest.h"
+#include "math/LegacyMathTest.h"
 
 #include <sstream>
 
@@ -25,10 +25,10 @@
 #include "graphics/Math.h"
 #include "math/GtxFunctions.h"
 
-#include "AssertionTraits.h"
-#include "LegacyMath.h"
+#include "math/AssertionTraits.h"
+#include "math/LegacyMath.h"
 
-CPPUNIT_TEST_SUITE_REGISTRATION(LegacyMathTest);
+CppUnit::AutoRegisterSuite<LegacyMathTest> g_registerLegacyMathTest;
 
 struct TestRotation {
 	glm::quat quat;

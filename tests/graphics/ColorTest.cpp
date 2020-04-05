@@ -17,13 +17,15 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ColorTest.h"
+#include "graphics/ColorTest.h"
 
 #include <cppunit/TestAssert.h>
 
-#include "tests/math/AssertionTraits.h"
+#include "math/AssertionTraits.h"
 
 #include "graphics/Color.h"
+
+CppUnit::AutoRegisterSuite<ColorTest> g_registerColorTest;
 
 namespace CppUnit {
 	template <typename TAG>

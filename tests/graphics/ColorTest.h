@@ -34,6 +34,4 @@ public:
 	void ColorTypeConversionTests();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ColorTest);
-
 #endif

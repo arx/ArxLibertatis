@@ -17,11 +17,11 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tests/io/IniTest.h"
+#include "io/IniTest.h"
 
 #include "io/IniSection.h"
 
-CPPUNIT_TEST_SUITE_REGISTRATION(IniTest);
+CppUnit::AutoRegisterSuite<IniTest> g_registerIniTest;
 
 void IniTest::intTest() {
 	static const int INVALID = 999999;
@@ -59,5 +59,3 @@ void IniTest::boolTest() {
 	CPPUNIT_ASSERT_EQUAL(false, IniKey("a", "TRUE" ).getValue(false));
 	CPPUNIT_ASSERT_EQUAL(true,  IniKey("b", "FALSE").getValue(true));
 }
-
-

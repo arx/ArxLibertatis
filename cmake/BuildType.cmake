@@ -15,6 +15,7 @@ option(SET_NOISY_WARNING_FLAGS "Enable noisy compiler warnings" OFF)
 option(SET_OPTIMIZATION_FLAGS "Adjust compiler optimization flags" ON)
 
 set(conservative_warnings)
+set(enable_rtti)
 
 if(MSVC)
 	
@@ -107,6 +108,7 @@ if(MSVC)
 			string(REGEX REPLACE "/GR( |$)" "" ${flag_var} "${${flag_var}}")
 			set(${flag_var} "${${flag_var}} /GR-")
 		endforeach(flag_var)
+		list(APPEND enable_rtti /GR)
 		
 	endif()
 	
@@ -363,6 +365,9 @@ else(MSVC)
 	if(SET_OPTIMIZATION_FLAGS)
 		
 		add_cxxflag("-fno-rtti")
+		if(FLAG_FOUND)
+			list(APPEND enable_rtti "-frtti")
+		endif()
 		
 		if(MACOS)
 			# TODO For some reason this check succeeds on macOS, but then

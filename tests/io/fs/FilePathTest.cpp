@@ -17,14 +17,14 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tests/io/fs/FilePathTest.h"
+#include "io/fs/FilePathTest.h"
 
 #include <algorithm>
 #include <string>
 
 #include "io/fs/FilePath.h"
 
-CPPUNIT_TEST_SUITE_REGISTRATION(FilePathTest);
+CppUnit::AutoRegisterSuite<FilePathTest> g_registerFilePathTest;
 
 void FilePathTest::testPath(const char * input, const char * expected) {
 	
