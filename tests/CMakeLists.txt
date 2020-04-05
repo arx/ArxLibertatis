@@ -16,6 +16,9 @@ set(arxtest_TESTCASES
 	tests/io/fs/FilePathTest.h
 	tests/io/fs/FilePathTest.cpp
 	
+	tests/io/fs/FilesystemTest.h
+	tests/io/fs/FilesystemTest.cpp
+	
 	tests/io/resource/ResourcePathTest.h
 	tests/io/resource/ResourcePathTest.cpp
 	
