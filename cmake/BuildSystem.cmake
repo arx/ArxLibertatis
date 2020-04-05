@@ -237,7 +237,9 @@ endfunction()
 #  DIR  Where to install the binary.
 function(set_binary_installdir BIN DIR)
 	set(build_type "${SHARED_BUILD_${BIN}_TYPE}")
-	if(build_type STREQUAL "SHARED")
+	if(DIR STREQUAL "")
+		set(install)
+	elseif(build_type STREQUAL "SHARED")
 		set(install
 			LIBRARY DESTINATION "${DIR}"
 			ARCHIVE DESTINATION "${DIR}"
@@ -561,7 +563,9 @@ function(_shared_build_add_binary bin)
 		endif()
 	endif()
 	
-	install(TARGETS ${bin} ${SHARED_BUILD_${bin}_INSTALL})
+	if(NOT SHARED_BUILD_${bin}_INSTALL STREQUAL "")
+		install(TARGETS ${bin} ${SHARED_BUILD_${bin}_INSTALL})
+	endif()
 	
 	if(MACOS)
 		# For macOS, CMake maps VERSION to the -current_version linker propery
