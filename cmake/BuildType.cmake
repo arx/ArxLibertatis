@@ -348,7 +348,7 @@ else(MSVC)
 		add_cxxflag("-fcatch-undefined-behavior")
 		add_cxxflag("-fstack-protector-all")
 		add_cxxflag("-fsanitize=address")
-		add_cxxflag("-fsanitize=thread")
+		# add_cxxflag("-fsanitize=thread") does not work together with -fsanitize=address
 		add_cxxflag("-fsanitize=leak")
 		if(IS_LIBCXX)
 			add_definitions(-D_LIBCPP_DEBUG=1) # libc++
