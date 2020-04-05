@@ -265,7 +265,12 @@ else(MSVC)
 			add_cxxflag("-Wduplicated-branches")
 		endif()
 		
-		add_ldflag("-Wl,--no-undefined")
+		if(DEBUG_EXTRA)
+			# Address sanitizer cannot be linked into shared libraries so there will be undefined symbols
+			# This is by design as asan needs to be preloaded for shared libraries
+		else()
+			add_ldflag("-Wl,--no-undefined")
+		endif()
 		
 		if(SET_NOISY_WARNING_FLAGS)
 			
