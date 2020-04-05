@@ -92,13 +92,23 @@ u64 file_size(const path & p) {
 }
 
 bool remove(const path & p) {
+	FileType type = get_type(p);
+	if(type == DoesNotExist || type == Directory) {
+		return type == DoesNotExist;
+	}
 	boost::system::error_code ec;
 	fs_boost::remove(p.string(), ec);
 	return !ec || ec == boost::system::errc::no_such_file_or_directory || ec == boost::system::errc::not_a_directory;
 }
 
 bool remove_directory(const path & p) {
-	return remove(p);
+	FileType type = get_type(p);
+	if(type == DoesNotExist || type != Directory) {
+		return type == DoesNotExist;
+	}
+	boost::system::error_code ec;
+	fs_boost::remove(p.string(), ec);
+	return !ec || ec == boost::system::errc::no_such_file_or_directory || ec == boost::system::errc::not_a_directory;
 }
 
 bool create_directory(const path & p) {
