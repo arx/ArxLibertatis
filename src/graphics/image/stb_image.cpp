@@ -2982,6 +2982,12 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    /* int tga_alpha_bits = tga_inverted & 15; */
    tga_inverted = 1 - ((tga_inverted >> 5) & 1);
 
+   //   If I'm paletted, then I'll use the number of bits from the palette
+   if ( tga_indexed )
+   {
+      tga_bits_per_pixel = tga_palette_bits;
+   }
+
    //   error check
    if ( //(tga_indexed) ||
       (tga_width < 1) || (tga_height < 1) ||
@@ -2991,12 +2997,6 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       )
    {
       return NULL; // we don't report this as a bad TGA because we don't even know if it's TGA
-   }
-
-   //   If I'm paletted, then I'll use the number of bits from the palette
-   if ( tga_indexed )
-   {
-      tga_bits_per_pixel = tga_palette_bits;
    }
 
    //   tga info
