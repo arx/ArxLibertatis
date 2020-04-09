@@ -1828,11 +1828,17 @@ if(BUILD_TESTS)
 		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_BINARY_DIR}" ${RUN_TARGET} "${arxtest_binary}"
 	)
 	
-	add_custom_target(check ${run_tests}
+	add_custom_command(
+		OUTPUT "${PROJECT_BINARY_DIR}/arxtest.check"
 		COMMAND ${RUN_TARGET} "${arxtest_binary}"
-		DEPENDS arxtest
+		COMMAND ${CMAKE_COMMAND} -E touch "${PROJECT_BINARY_DIR}/arxtest.check"
+		MAIN_DEPENDENCY arxtest
 		WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
 		COMMENT "Running tests" VERBATIM
+	)
+	
+	add_custom_target(check ${run_tests}
+		DEPENDS "${PROJECT_BINARY_DIR}/arxtest.check"
 	)
 	
 endif()
