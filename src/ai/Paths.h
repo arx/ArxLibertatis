@@ -142,7 +142,7 @@ DECLARE_FLAGS_OPERATORS(UsePathFlags)
 
 struct ARX_USE_PATH {
 	
-	Path * path;
+	const Path * path;
 	GameInstant _starttime;
 	GameInstant _curtime;
 	UsePathFlags aupflags;
@@ -166,7 +166,7 @@ long ARX_PATH_IsPosInZone(const Zone * ap, Vec3f pos);
 void ARX_PATH_ClearAllUsePath();
 void ARX_PATH_ReleaseAllPath();
 Zone * getZoneByName(const std::string & name);
-Path * getPathByName(const std::string & name);
+const Path * getPathByName(const std::string & name);
 void ARX_PATH_ClearAllControled();
 void ARX_PATH_ComputeAllBoundingBoxes();
 

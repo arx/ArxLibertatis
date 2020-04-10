@@ -466,7 +466,7 @@ public:
 			io->usepath = NULL;
 		} else {
 			
-			Path * ap = getPathByName(name);
+			const Path * ap = getPathByName(name);
 			if(!ap) {
 				ScriptWarning << "unknown path: " << name;
 				return Failed;

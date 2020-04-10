@@ -344,13 +344,13 @@ Zone * getZoneByName(const std::string & name) {
 	return NULL;
 }
 
-Path * getPathByName(const std::string & name) {
+const Path * getPathByName(const std::string & name) {
 	
 	if(name.empty()) {
 		return NULL;
 	}
 	
-	BOOST_FOREACH(Path & path, g_paths) {
+	BOOST_FOREACH(const Path & path, g_paths) {
 		if(path.name == name) {
 			return &path;
 		}
@@ -375,7 +375,7 @@ Vec3f Path::interpolateCurve(size_t i, float step) const {
 
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	
-	Path * ap = aup->path;
+	const Path * ap = aup->path;
 	
 	// compute Delta Time
 	GameDuration tim = aup->_curtime - aup->_starttime;
@@ -394,10 +394,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	size_t targetwaypoint = 1;
 	aup->aupflags &= ~ARX_USEPATH_FLAG_FINISHED;
 
-	if(!ap->pathways.empty()) {
-		ap->pathways[0]._time = 0;
-		ap->pathways[0].rpos = Vec3f(0.f);
-	} else {
+	if(ap->pathways.empty()) {
 		return -1;
 	}
 	

@@ -444,6 +444,10 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 				path.pathways[j].rpos = dlpw->rpos.toVec3();
 				path.pathways[j]._time = GameDurationMs(dlpw->time); // TODO save/load time
 			}
+			if(!path.pathways.empty()) {
+				path.pathways[0].rpos = Vec3f(0.f);
+				path.pathways[0]._time = 0;
+			}
 			
 		}
 		
