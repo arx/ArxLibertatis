@@ -399,14 +399,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	}
 	
 	// While we have time left, iterate
-	while(tim > 0) {
-		
-		// Path Ended
-		if(targetwaypoint >= ap->pathways.size()) {
-			*pos = ap->pos + ap->pathways[ap->pathways.size() - 1].rpos;
-			aup->aupflags |= ARX_USEPATH_FLAG_FINISHED;
-			return -2;
-		}
+	while(targetwaypoint < ap->pathways.size()) {
 		
 		bool bezier = (ap->pathways[targetwaypoint - 1].flag == PATHWAY_BEZIER
 		               && targetwaypoint + 1 < ap->pathways.size());
@@ -417,7 +410,6 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 		GameDuration delta = tim - ap->pathways[targetwaypoint]._time;
 		if(delta >= 0) {
 			tim = delta;
-			*pos = ap->pathways[targetwaypoint].rpos;
 			targetwaypoint++;
 			continue;
 		}
@@ -433,7 +425,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 		return targetwaypoint - 1;
 	}
 	
-	*pos += ap->pos;
-	
-	return targetwaypoint;
+	*pos = ap->pos + ap->pathways[ap->pathways.size() - 1].rpos;
+	aup->aupflags |= ARX_USEPATH_FLAG_FINISHED;
+	return -2;
 }
