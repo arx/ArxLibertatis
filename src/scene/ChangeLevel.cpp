@@ -145,7 +145,6 @@ struct Playthrough {
 	
 };
 
-long DONT_WANT_PLAYER_INZONE = 0;
 static SaveBlock * g_currentSavedGame = NULL;
 static Playthrough g_currentPlathrough;
 
@@ -358,7 +357,8 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	
 	ARX_CHANGELEVEL_PopLevel(num, true, target, angle);
 	
-	DONT_WANT_PLAYER_INZONE = 1;
+	entities.player()->inzone = NULL;
+	
 	ARX_PLAYER_RectifyPosition();
 	GMOD_RESET = true;
 	
