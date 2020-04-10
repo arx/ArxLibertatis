@@ -394,77 +394,36 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 		
 		// Path Ended
 		if(targetwaypoint >= ap->pathways.size()) {
-			*pos += ap->pos;
+			*pos = ap->pos + ap->pathways[ap->pathways.size() - 1].rpos;
 			aup->aupflags |= ARX_USEPATH_FLAG_FINISHED;
 			return -2;
 		}
 		
-		// Manages a Bezier block
-		if(ap->pathways[targetwaypoint - 1].flag == PATHWAY_BEZIER) {
-			
-			targetwaypoint += 1;
-			GameDuration delta = tim - ap->pathways[targetwaypoint]._time;
-			
-			if(delta >= 0) {
-				
-				tim = delta;
-				
-				if(targetwaypoint < ap->pathways.size()) {
-					*pos = ap->pathways[targetwaypoint].rpos;
-				}
-				
-				targetwaypoint += 1;
-				
-			} else {
-				
-				if(targetwaypoint < ap->pathways.size()) {
-					
-					if(ap->pathways[targetwaypoint]._time == 0) {
-						return targetwaypoint - 1;
-					}
-					
-					float rel = tim / ap->pathways[targetwaypoint]._time;
-					*pos = ap->interpolateCurve(targetwaypoint - 2, rel);
-				}
-				
-				return targetwaypoint - 1;
-			}
-			
-		} else {
-			
-			// Manages a non-Bezier block
-			GameDuration delta = tim - ap->pathways[targetwaypoint]._time;
-			
-			if(delta >= 0) {
-				
-				tim = delta;
-				
-				if(targetwaypoint < ap->pathways.size()) {
-					*pos = ap->pathways[targetwaypoint].rpos;
-				}
-				
-				targetwaypoint++;
-				
-			} else {
-				
-				if(targetwaypoint < ap->pathways.size()) {
-					
-					if(ap->pathways[targetwaypoint]._time == 0) {
-						return targetwaypoint - 1;
-					}
-					
-					float rel = tim / ap->pathways[targetwaypoint]._time;
-					
-					*pos += (ap->pathways[targetwaypoint].rpos - *pos) * rel;
-				}
-				
-				*pos += ap->pos;
-				
-				return targetwaypoint - 1;
-			}
+		bool bezier = (ap->pathways[targetwaypoint - 1].flag == PATHWAY_BEZIER
+		               && targetwaypoint + 1 < ap->pathways.size());
+		if(bezier) {
+			targetwaypoint++;
 		}
+		
+		GameDuration delta = tim - ap->pathways[targetwaypoint]._time;
+		if(delta >= 0) {
+			tim = delta;
+			*pos = ap->pathways[targetwaypoint].rpos;
+			targetwaypoint++;
+			continue;
+		}
+		
+		float rel = tim / ap->pathways[targetwaypoint]._time;
+		
+		if(bezier) {
+			*pos = ap->interpolateCurve(targetwaypoint - 2, rel);
+		} else {
+			*pos = ap->pos + glm::mix(ap->pathways[targetwaypoint - 1].rpos, ap->pathways[targetwaypoint].rpos, rel);
+		}
+		
+		return targetwaypoint - 1;
 	}
-
+	
 	*pos += ap->pos;
 	
 	return targetwaypoint;
