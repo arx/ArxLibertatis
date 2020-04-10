@@ -423,7 +423,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	memset(&asi, 0, sizeof(asi));
 	asi.version       = ARX_GAMESAVE_VERSION;
 	asi.nb_inter      = 0;
-	asi.nb_paths      = s32(g_paths.size());
+	asi.nb_paths      = s32(g_zones.size());
 	asi.time          = toMsi(g_gameTime.now()); // TODO save/load time
 	asi.nb_lights     = 0;
 	asi.gmods_stacked = GLOBAL_MODS();
@@ -490,11 +490,11 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		}
 	}
 	
-	BOOST_FOREACH(const ARX_PATH * path, g_paths) {
+	BOOST_FOREACH(const Zone & zone, g_zones) {
 		ARX_CHANGELEVEL_PATH * acp = reinterpret_cast<ARX_CHANGELEVEL_PATH *>(dat + pos);
 		memset(acp, 0, sizeof(ARX_CHANGELEVEL_PATH));
-		util::storeString(acp->name, path->name);
-		util::storeString(acp->controled, path->controled);
+		util::storeString(acp->name, zone.name);
+		util::storeString(acp->controled, zone.controled);
 		pos += sizeof(ARX_CHANGELEVEL_PATH);
 	}
 	
@@ -1397,7 +1397,7 @@ static void ARX_CHANGELEVEL_Pop_Zones_n_Lights(const std::string & buffer) {
 		const ARX_CHANGELEVEL_PATH * acp = reinterpret_cast<const ARX_CHANGELEVEL_PATH *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_PATH);
 		
-		ARX_PATH * ap = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(acp->name)));
+		Zone * ap = getZoneByName(boost::to_lower_copy(util::loadString(acp->name)));
 		
 		if(ap) {
 			ap->controled = boost::to_lower_copy(util::loadString(acp->controled));
@@ -1552,7 +1552,7 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 	player.falling = (asp->falling != 0);
 	player.gold = asp->gold;
 	entities.player()->invisibility = asp->invisibility;
-	player.inzone = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(asp->inzone)));
+	player.inzone = getZoneByName(boost::to_lower_copy(util::loadString(asp->inzone)));
 	player.jumpphase = JumpPhase(asp->jumpphase); // TODO save/load enum
 	PlatformInstant jumpstart = g_platformTime.frameStart()
 	                            + PlatformDurationUs(toUs(GameInstantMs(asp->jumpstarttime) - g_gameTime.now()));
@@ -1885,7 +1885,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			aup->_curtime = GameInstantMs(ais->usepath_curtime); // TODO save/load time
 			aup->lastWP = ais->usepath_lastWP;
 			aup->_starttime = GameInstantMs(ais->usepath_starttime); // TODO save/load time
-			aup->path = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(ais->usepath_name)));
+			aup->path = getPathByName(boost::to_lower_copy(util::loadString(ais->usepath_name)));
 		}
 		
 		io->shop_category = boost::to_lower_copy(util::loadString(ais->shop_category));

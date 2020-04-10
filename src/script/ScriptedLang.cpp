@@ -344,7 +344,7 @@ public:
 			
 		} else if(zone) { // SEND EVENT TO ALL OBJECTS IN A ZONE
 			
-			ARX_PATH * ap = ARX_PATH_GetAddressByName(zonename);
+			Zone * ap = getZoneByName(zonename);
 			if(!ap) {
 				ScriptWarning << "unknown zone: " << zonename;
 				return Failed;

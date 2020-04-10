@@ -386,42 +386,66 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	LogDebug("Loading Paths");
 	ARX_PATH_ReleaseAllPath();
 	
-	g_paths.resize(dlh.nb_paths);
+	g_zones.clear();
+	g_paths.clear();
 	
 	for(long i = 0; i < dlh.nb_paths; i++) {
 		
 		const DANAE_LS_PATH * dlp = reinterpret_cast<const DANAE_LS_PATH *>(dat + pos);
 		pos += sizeof(DANAE_LS_PATH);
 		
-		Vec3f ppos = dlp->initpos.toVec3() + trans;
-		ARX_PATH * ap = new ARX_PATH(boost::to_lower_copy(util::loadString(dlp->name)), ppos);
+		Vec3f ppos = dlp->pos.toVec3() + trans;
 		
-		ap->flags = PathFlags::load(dlp->flags); // TODO save/load flags
-		ap->pos = dlp->pos.toVec3() + trans;
-		ap->height = dlp->height;
-		ap->ambiance = res::path::load(util::loadString(dlp->ambiance));
+		std::string name(boost::to_lower_copy(util::loadString(dlp->name)));
 		
-		ap->amb_max_vol = dlp->amb_max_vol;
-		if(ap->amb_max_vol <= 1.f) {
-			ap->amb_max_vol = 100.f;
+		s32 height = dlp->height;
+		if(height == 0 && name == "level11_sewer1") {
+			// TODO patch assets instead
+			height = -1;
 		}
 		
-		ap->farclip = dlp->farclip;
-		ap->reverb = dlp->reverb;
-		ap->rgb = dlp->rgb;
-		
-		ap->pathways.resize(dlp->nb_pathways);
-		for(long j = 0; j < dlp->nb_pathways; j++) {
+		if(height != 0) {
 			
-			const DANAE_LS_PATHWAYS * dlpw = reinterpret_cast<const DANAE_LS_PATHWAYS *>(dat + pos);
-			pos += sizeof(DANAE_LS_PATHWAYS);
+			// Zone
+			g_zones.push_back(Zone(name, ppos));
+			Zone & zone = g_zones.back();
 			
-			ap->pathways[j].flag = PathwayType(dlpw->flag); // TODO save/load enum
-			ap->pathways[j].rpos = dlpw->rpos.toVec3();
-			ap->pathways[j]._time = GameDurationMs(dlpw->time); // TODO save/load time
+			zone.flags = ZoneFlags::load(dlp->flags); // TODO save/load flags
+			zone.height = height;
+			if(zone.flags & PATH_AMBIANCE) {
+				zone.ambiance = res::path::load(util::loadString(dlp->ambiance));
+				zone.amb_max_vol = (dlp->amb_max_vol <= 1.f ? 100.f : dlp->amb_max_vol);
+			}
+			if(zone.flags & PATH_FARCLIP) {
+				zone.farclip = dlp->farclip;
+			}
+			if(zone.flags & PATH_RGB) {
+				zone.rgb = dlp->rgb;
+			}
+			
+			zone.pathways.resize(dlp->nb_pathways);
+			for(long j = 0; j < dlp->nb_pathways; j++) {
+				const DANAE_LS_PATHWAYS * dlpw = reinterpret_cast<const DANAE_LS_PATHWAYS *>(dat + pos);
+				pos += sizeof(DANAE_LS_PATHWAYS);
+				zone.pathways[j] = dlpw->rpos.toVec3();
+			}
+			
+		} else {
+			
+			// Path
+			g_paths.push_back(Path(name, ppos));
+			Path & path = g_paths.back();
+			
+			path.pathways.resize(dlp->nb_pathways);
+			for(long j = 0; j < dlp->nb_pathways; j++) {
+				const DANAE_LS_PATHWAYS * dlpw = reinterpret_cast<const DANAE_LS_PATHWAYS *>(dat + pos);
+				pos += sizeof(DANAE_LS_PATHWAYS);
+				path.pathways[j].flag = PathwayType(dlpw->flag); // TODO save/load enum
+				path.pathways[j].rpos = dlpw->rpos.toVec3();
+				path.pathways[j]._time = GameDurationMs(dlpw->time); // TODO save/load time
+			}
+			
 		}
-		
-		g_paths[i] = ap;
 		
 	}
 	

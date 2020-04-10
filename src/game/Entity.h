@@ -67,7 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 struct ANIM_HANDLE;
-struct ARX_PATH;
+struct Zone;
 struct ARX_USE_PATH;
 struct EERIE_3DOBJ;
 struct INVENTORY_DATA;
@@ -322,7 +322,7 @@ public:
 	SYMBOL_DRAW * symboldraw;
 	LightHandle dynlight;
 	short lastspeechflag;
-	ARX_PATH * inzone;
+	Zone * inzone;
 	IO_HALO halo;
 	IO_HALO halo_native;
 	

@@ -736,7 +736,7 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			
 			if(boost::starts_with(name, "^inzone_")) {
 				const char * zone = name.c_str() + 8;
-				ARX_PATH * ap = ARX_PATH_GetAddressByName(zone);
+				Zone * ap = getZoneByName(zone);
 				*lcontent = 0;
 				if(context.getEntity() && ap) {
 					if(ARX_PATH_IsPosInZone(ap, context.getEntity()->pos)) {

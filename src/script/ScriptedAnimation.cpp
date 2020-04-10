@@ -428,7 +428,7 @@ public:
 		
 		DebugScript(' ' << zone);
 		
-		ARX_PATH * ap = ARX_PATH_GetAddressByName(zone);
+		Zone * ap = getZoneByName(zone);
 		if(!ap) {
 			ScriptWarning << "unknown zone: " << zone;
 			return Failed;
@@ -466,7 +466,7 @@ public:
 			io->usepath = NULL;
 		} else {
 			
-			ARX_PATH * ap = ARX_PATH_GetAddressByName(name);
+			Path * ap = getPathByName(name);
 			if(!ap) {
 				ScriptWarning << "unknown path: " << name;
 				return Failed;
@@ -506,7 +506,7 @@ public:
 		
 		DebugScript(' ' << name);
 		
-		ARX_PATH * ap = ARX_PATH_GetAddressByName(name);
+		Zone * ap = getZoneByName(name);
 		if(!ap) {
 			ScriptWarning << "unknown zone: " << name;
 			return Failed;

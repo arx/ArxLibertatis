@@ -238,6 +238,8 @@ struct PlayerMisc {
 
 struct ARXCHARACTER {
 	
+	// TODO a lot of these fields are duplicated from the player Entity
+	
 	Vec3f pos;
 	Anglef angle;
 	IO_PHYSICS physics;
@@ -263,7 +265,7 @@ struct ARXCHARACTER {
 	
 	Anglef desiredangle;
 	Vec3f size;
-	ARX_PATH * inzone;
+	Zone * inzone;
 	
 	bool falling;
 	short doingmagic;
