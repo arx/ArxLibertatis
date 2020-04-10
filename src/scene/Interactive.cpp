@@ -2026,28 +2026,19 @@ void UpdateCameras() {
 					SendIOScriptEvent(NULL, io, SM_WAYPOINT, waypoint);
 					SendIOScriptEvent(NULL, io, ScriptEventName("waypoint" + waypoint));
 					SendIOScriptEvent(NULL, io, SM_PATHEND);
-					aup->lastWP = last;
 				} else {
-					long _from = aup->lastWP;
-					long _to = last - 1;
-
-					if(_from > _to)
-						_from = -1;
-
-					if(_from < 0)
-						_from = -1;
-
-					long ii = _from + 1;
-
+					long ii = aup->lastWP + 1;
+					if(ii < 0 || ii > last) {
+						ii = 0;
+					}
 					std::string waypoint = boost::lexical_cast<std::string>(ii);
 					SendIOScriptEvent(NULL, io, SM_WAYPOINT, waypoint);
 					SendIOScriptEvent(NULL, io, ScriptEventName("waypoint" + waypoint));
 					if(size_t(ii) == aup->path->pathways.size()) {
 						SendIOScriptEvent(NULL, io, SM_PATHEND);
 					}
-					
-					aup->lastWP = last;
 				}
+				aup->lastWP = last;
 			}
 
 			if(io->damager_damages > 0 && io->show == SHOW_FLAG_IN_SCENE) {
