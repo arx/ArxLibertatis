@@ -20,9 +20,10 @@
 #include "platform/crashhandler/CrashHandlerImpl.h"
 
 #include <algorithm>
-#include <sstream>
 #include <cstring>
 #include <ctime>
+#include <map>
+#include <sstream>
 
 #include <boost/range/size.hpp>
 
