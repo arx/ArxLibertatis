@@ -302,7 +302,6 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos)
 	: name(_name)
 	, flags(0)
-	, initpos(_pos)
 	, pos(_pos)
 	, height(0)
 	, rgb(Color3f::black)

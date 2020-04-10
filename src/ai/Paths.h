@@ -98,7 +98,6 @@ struct ARX_PATH {
 	
 	std::string name;
 	PathFlags flags;
-	Vec3f initpos;
 	Vec3f pos;
 	std::vector<ARX_PATHWAY> pathways;
 	
