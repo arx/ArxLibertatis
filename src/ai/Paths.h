@@ -149,16 +149,6 @@ struct ARX_USE_PATH {
 	
 };
 
-enum PathMod {
-	ARX_PATH_MOD_POSITION  = 1 << 0,
-	ARX_PATH_MOD_FLAGS     = 1 << 1,
-	ARX_PATH_MOD_TIME      = 1 << 2,
-	ARX_PATH_MOD_TRANSLATE = 1 << 3,
-	ARX_PATH_HIERARCHY     = 1 << 4
-};
-DECLARE_FLAGS(PathMod, PathMods)
-DECLARE_FLAGS_OPERATORS(PathMods)
-
 extern std::vector<ARX_PATH *> g_paths;
 
 void ARX_PATH_UpdateAllZoneInOutInside();
