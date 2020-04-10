@@ -991,7 +991,6 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		ARX_USE_PATH * aup = io->usepath;
 		ais.usepath_aupflags = aup->aupflags;
 		ais.usepath_curtime = checked_range_cast<u32>(toMsi(aup->_curtime)); // TODO save/load time
-		ais.usepath_initpos = aup->initpos;
 		ais.usepath_lastWP = aup->lastWP;
 		ais.usepath_starttime = checked_range_cast<u32>(toMsi(aup->_starttime)); // TODO save/load time
 		util::storeString(ais.usepath_name, aup->path->name);
@@ -1884,7 +1883,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			ARX_USE_PATH * aup = io->usepath = new ARX_USE_PATH;
 			aup->aupflags = UsePathFlags::load(ais->usepath_aupflags); // TODO save/load flags
 			aup->_curtime = GameInstantMs(ais->usepath_curtime); // TODO save/load time
-			aup->initpos = ais->usepath_initpos.toVec3();
 			aup->lastWP = ais->usepath_lastWP;
 			aup->_starttime = GameInstantMs(ais->usepath_starttime); // TODO save/load time
 			aup->path = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(ais->usepath_name)));

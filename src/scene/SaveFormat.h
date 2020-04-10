@@ -682,7 +682,7 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	u32 usepath_starttime;
 	u32 usepath_curtime;
 	s32 usepath_aupflags;
-	SavedVec3 usepath_initpos;
+	SavedVec3 usepath_initpos; // unused
 	s32 usepath_lastWP;
 	s32 padddd[64]; // new...
 	

@@ -137,7 +137,6 @@ struct ARX_USE_PATH {
 	GameInstant _starttime;
 	GameInstant _curtime;
 	UsePathFlags aupflags;
-	Vec3f initpos;
 	long lastWP;
 	
 	ARX_USE_PATH()
@@ -145,7 +144,6 @@ struct ARX_USE_PATH {
 		, _starttime(0)
 		, _curtime(0)
 		, aupflags(0)
-		, initpos(0.f)
 		, lastWP(0)
 	{ }
 	
