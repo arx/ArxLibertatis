@@ -235,7 +235,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 	// player check*************************************************
 	{
 		Zone * current = ARX_PATH_CheckPlayerInZone();
-		Zone * last = player.inzone;
+		Zone * last = entities.player()->inzone;
 
 		if(current != last) {
 			
@@ -292,7 +292,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			
 		}
 		
-		player.inzone = current;
+		entities.player()->inzone = current;
 	}
 	
 }

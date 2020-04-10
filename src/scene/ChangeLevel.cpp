@@ -1552,7 +1552,7 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 	player.falling = (asp->falling != 0);
 	player.gold = asp->gold;
 	entities.player()->invisibility = asp->invisibility;
-	player.inzone = getZoneByName(boost::to_lower_copy(util::loadString(asp->inzone)));
+	entities.player()->inzone = getZoneByName(boost::to_lower_copy(util::loadString(asp->inzone)));
 	player.jumpphase = JumpPhase(asp->jumpphase); // TODO save/load enum
 	PlatformInstant jumpstart = g_platformTime.frameStart()
 	                            + PlatformDurationUs(toUs(GameInstantMs(asp->jumpstarttime) - g_gameTime.now()));

@@ -2589,7 +2589,7 @@ void ARX_GAME_Reset() {
 	player.jumplastposition = 0;
 	player.jumpstarttime = 0;
 	player.jumpphase = NotJumping;
-	player.inzone = NULL;
+	entities.player()->inzone = NULL;
 
 	RemoveQuakeFX();
 	player.m_improve = false;

@@ -265,7 +265,6 @@ struct ARXCHARACTER {
 	
 	Anglef desiredangle;
 	Vec3f size;
-	Zone * inzone;
 	
 	bool falling;
 	short doingmagic;
@@ -357,7 +356,6 @@ struct ARXCHARACTER {
 		, m_telekinesis(false)
 		, m_improve(false)
 		, size(0.f)
-		, inzone(NULL)
 		, falling(false)
 		, doingmagic(0)
 		, onfirmground(false)

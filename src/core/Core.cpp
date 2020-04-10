@@ -420,7 +420,7 @@ void levelInit() {
 	LoadLevelScreen();
 	
 	if(DONT_WANT_PLAYER_INZONE) {
-		player.inzone = NULL;
+		entities.player()->inzone = NULL;
 		DONT_WANT_PLAYER_INZONE = 0;
 	}
 	
