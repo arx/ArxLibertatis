@@ -2028,9 +2028,8 @@ void UpdateCameras() {
 					SendIOScriptEvent(NULL, io, SM_PATHEND);
 					aup->lastWP = last;
 				} else {
-					last--;
 					long _from = aup->lastWP;
-					long _to = last;
+					long _to = last - 1;
 
 					if(_from > _to)
 						_from = -1;
@@ -2047,7 +2046,7 @@ void UpdateCameras() {
 						SendIOScriptEvent(NULL, io, SM_PATHEND);
 					}
 					
-					aup->lastWP = last + 1;
+					aup->lastWP = last;
 				}
 			}
 
