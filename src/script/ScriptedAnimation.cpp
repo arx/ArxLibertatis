@@ -484,7 +484,6 @@ public:
 			if(followdir) {
 				aup->aupflags |= ARX_USEPATH_FOLLOW_DIRECTION;
 			}
-			aup->initpos = io->initpos;
 			aup->lastWP = -1;
 			aup->path = ap;
 			io->usepath = aup;
