@@ -165,8 +165,6 @@ class TextManager;
 
 Image savegame_thumbnail;
 
-extern long DONT_WANT_PLAYER_INZONE;
-
 //-----------------------------------------------------------------------------
 
 TextureContainer * GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
@@ -416,15 +414,7 @@ void levelInit() {
 	
 	PrepareIOTreatZone(1);
 	
-	progressBarAdvance();
-	LoadLevelScreen();
-	
-	if(DONT_WANT_PLAYER_INZONE) {
-		entities.player()->inzone = NULL;
-		DONT_WANT_PLAYER_INZONE = 0;
-	}
-	
-	progressBarAdvance();
+	progressBarAdvance(2.f);
 	LoadLevelScreen();
 
 	player.desiredangle.setPitch(0.f);
