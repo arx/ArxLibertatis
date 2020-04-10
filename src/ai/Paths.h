@@ -61,6 +61,41 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class Entity;
 
+// Zone@flags values
+enum ZoneFlag {
+	PATH_AMBIANCE = 1 << 1,
+	PATH_RGB      = 1 << 2,
+	PATH_FARCLIP  = 1 << 3
+};
+DECLARE_FLAGS(ZoneFlag, ZoneFlags)
+DECLARE_FLAGS_OPERATORS(ZoneFlags)
+
+struct Zone {
+	
+	Zone(const std::string & _name, const Vec3f & _pos);
+	
+	std::string name;
+	ZoneFlags flags;
+	Vec3f pos;
+	std::vector<Vec3f> pathways;
+	
+	long height;
+	
+	//! name of IO to be notified of other IOs interacting with the path
+	std::string controled; // TODO why store the name and not a pointer?
+	
+	res::path ambiance;
+	
+	Color3f rgb;
+	float farclip;
+	float amb_max_vol;
+	Vec3f bbmin;
+	Vec3f bbmax;
+	
+	Vec3f interpolateCurve(size_t i, float step) const;
+	
+};
+
 enum PathwayType {
 	PATHWAY_STANDARD = 0,
 	PATHWAY_BEZIER = 1,
@@ -81,39 +116,13 @@ struct ARX_PATHWAY {
 	
 };
 
-// ARX_PATH@flags values
-enum PathFlag {
-	PATH_LOOP     = 1 << 0,
-	PATH_AMBIANCE = 1 << 1,
-	PATH_RGB      = 1 << 2,
-	PATH_FARCLIP  = 1 << 3
-};
-DECLARE_FLAGS(PathFlag, PathFlags)
-DECLARE_FLAGS_OPERATORS(PathFlags)
-
-// TODO this struct is used both for paths followed by NPCs and for zones
-struct ARX_PATH {
+struct Path {
 	
-	ARX_PATH(const std::string & _name, const Vec3f & _pos);
+	Path(const std::string & _name, const Vec3f & _pos);
 	
 	std::string name;
-	PathFlags flags;
 	Vec3f pos;
 	std::vector<ARX_PATHWAY> pathways;
-	
-	long height; // 0 NOT A ZONE
-	
-	//! name of IO to be notified of other IOs interacting with the path
-	std::string controled; // TODO why store the name and not a pointer?
-	
-	res::path ambiance;
-	
-	Color3f rgb;
-	float farclip;
-	float reverb; // TODO unused
-	float amb_max_vol;
-	Vec3f bbmin;
-	Vec3f bbmax;
 	
 	Vec3f interpolateCurve(size_t i, float step) const;
 	
@@ -133,7 +142,7 @@ DECLARE_FLAGS_OPERATORS(UsePathFlags)
 
 struct ARX_USE_PATH {
 	
-	ARX_PATH * path;
+	Path * path;
 	GameInstant _starttime;
 	GameInstant _curtime;
 	UsePathFlags aupflags;
@@ -149,17 +158,18 @@ struct ARX_USE_PATH {
 	
 };
 
-extern std::vector<ARX_PATH *> g_paths;
+extern std::vector<Zone> g_zones;
+extern std::vector<Path> g_paths;
 
 void ARX_PATH_UpdateAllZoneInOutInside();
-long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos);
+long ARX_PATH_IsPosInZone(const Zone * ap, Vec3f pos);
 void ARX_PATH_ClearAllUsePath();
 void ARX_PATH_ReleaseAllPath();
-ARX_PATH * ARX_PATH_GetAddressByName(const std::string & name);
+Zone * getZoneByName(const std::string & name);
+Path * getPathByName(const std::string & name);
 void ARX_PATH_ClearAllControled();
 void ARX_PATH_ComputeAllBoundingBoxes();
 
-void ARX_PATHS_Delete(ARX_PATH * ap);
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos);
 
 #endif // ARX_AI_PATHS_H

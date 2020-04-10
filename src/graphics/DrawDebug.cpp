@@ -90,6 +90,7 @@ void drawDebugRelease() {
 enum DebugViewType {
 	DebugView_None,
 	DebugView_Entities,
+	DebugView_Zones,
 	DebugView_Paths,
 	DebugView_PathFind,
 	DebugView_Lights,
@@ -184,92 +185,88 @@ static void drawDebugPortals() {
 	
 }
 
-static void drawDebugPaths() {
+static void drawDebugZones() {
 	
-	BOOST_FOREACH(const ARX_PATH * path, g_paths) {
-		
-		if(!path) {
-			continue;
-		}
+	BOOST_FOREACH(const Zone & zone, g_zones) {
 		
 		Vec3f center(0.f);
-		int n = 0;
-		
 		std::vector<Vec3f> points;
-		for(size_t i = 0; i < path->pathways.size(); i++) {
-			const ARX_PATHWAY & node = path->pathways[i];
-			Vec3f pos = path->pos + node.rpos;
+		BOOST_FOREACH(const Vec3f & p, zone.pathways) {
+			Vec3f pos = zone.pos + p;
+			if(zone.height > 0) {
+				// Zones only check the bounding box for the y coordinate - adjust display for that
+				pos.y = zone.bbmin.y;
+			}
 			points.push_back(pos);
-			center += pos, n++;
-			if(node.flag == PATHWAY_BEZIER) {
-				// Interpolate bezier curve by creating linear segments
-				if(i + 2 >= path->pathways.size()) {
-					break;
-				}
-				const size_t nsegments = 20;
-				for(size_t j = 0; j < nsegments; j++) {
-					points.push_back(path->interpolateCurve(i, float(j) / nsegments));
-				}
-				i++; // Skip the control point
-			}
+			center += pos;
 		}
 		
-		// Zones only check the bounding box for the y coordinate - adjust display for that
-		if(path->height > 0) {
+		Color color = Color::green;
+		
+		for(size_t i = 0; i < points.size(); i++) {
+			drawLine(points[i], points[(i + 1) % points.size()], color);
+		}
+		
+		if(zone.height > 0) {
+			Vec3f offset(0.f, (zone.bbmax.y - zone.bbmin.y), 0.f);
 			for(size_t i = 0; i < points.size(); i++) {
-				points[i].y = path->bbmin.y;
-			}
-		}
-		
-		if(path->height != 0 || ((path->flags & PATH_LOOP) && !points.empty())) {
-			points.push_back(points[0]);
-		}
-		
-		Color color = (path->height != 0) ? Color::green : Color::red;
-		
-		for(size_t i = 0; i + 1 < points.size(); i++) {
-			drawLine(points[i], points[i + 1], color);
-		}
-		
-		if(path->height > 0) {
-			Vec3f offset(0.f, (path->bbmax.y - path->bbmin.y), 0.f);
-			for(size_t i = 0; i + 1 < points.size(); i++) {
-				drawLine(points[i] + offset, points[i + 1] + offset, color);
-			}
-			for(size_t i = 0; i < points.size(); i++) {
+				drawLine(points[i] + offset, points[(i + 1) % points.size()] + offset, color);
 				drawLine(points[i], points[i] + offset, color);
 			}
 		}
 		
 		// Display the name and controlling entity for close zones
-		if(!path->name.empty() || !path->controled.empty()) {
-			if(path->height > 0) {
-				center = (path->bbmin + path->bbmax) / 2.f;
-			} else if(n != 0) {
-				center /= float(n);
-			} else {
-				center = path->pos;
+		if(zone.height > 0) {
+			center = (zone.bbmin + zone.bbmax) / 2.f;
+		} else if(!points.empty()) {
+			center /= float(points.size());
+		} else {
+			center = zone.pos;
+		}
+		
+		if(closerThan(center, player.pos, DebugTextMaxDistance)) {
+			drawTextAt(hFontDebug, center, zone.name, color * 0.5f + Color::gray(0.5f));
+			float offset = 0;
+			if(zone.flags & PATH_AMBIANCE) {
+				offset += float(hFontDebug->getLineHeight()) + 2.f;
+				drawTextAt(hFontDebug, center, "On enter play ambiance: " + zone.ambiance.string(),
+				           Color::yellow, offset);
 			}
-			if(closerThan(center, player.pos, DebugTextMaxDistance)) {
-				drawTextAt(hFontDebug, center, path->name, color * 0.5f + Color::gray(0.5f));
-				float offset = 0;
-				if(path->flags & PATH_AMBIANCE) {
-					offset += float(hFontDebug->getLineHeight()) + 2.f;
-					drawTextAt(hFontDebug, center, "On enter play ambiance: " + path->ambiance.string(),
-					           Color::yellow, offset);
-				}
-				if(path->flags & PATH_RGB) {
-					std::ostringstream oss;
-					oss << "On enter change fog color to: rgb(" << path->rgb.r << ", " << path->rgb.g
-					    << ", " << path->rgb.b << ")";
-					offset += float(hFontDebug->getLineHeight()) + 2.f;
-					drawTextAt(hFontDebug, center, oss.str(), Color::cyan, offset);
-				}
-				if(!path->controled.empty()) {
-					offset += float(hFontDebug->getLineHeight()) + 2.f;
-					drawTextAt(hFontDebug, center, "Controlled by: " + path->controled, Color::white, offset);
-				}
+			if(zone.flags & PATH_RGB) {
+				std::ostringstream oss;
+				oss << "On enter change fog color to: rgb(" << zone.rgb.r << ", " << zone.rgb.g
+				    << ", " << zone.rgb.b << ")";
+				offset += float(hFontDebug->getLineHeight()) + 2.f;
+				drawTextAt(hFontDebug, center, oss.str(), Color::cyan, offset);
 			}
+			if(!zone.controled.empty()) {
+				offset += float(hFontDebug->getLineHeight()) + 2.f;
+				drawTextAt(hFontDebug, center, "Controlled by: " + zone.controled, Color::white, offset);
+			}
+		}
+		
+	}
+	
+}
+
+static void drawDebugPaths() {
+	
+	BOOST_FOREACH(const Path & path, g_paths) {
+		
+		Color color = Color::red;
+		
+		for(size_t i = 0; i + 1 < path.pathways.size(); i++) {
+			drawLine(path.pos + path.pathways[i].rpos, path.pos + path.pathways[i + 1].rpos, color);
+		}
+		
+		Vec3f center = path.pos;
+		if(!path.pathways.empty()) {
+			center += path.pathways[0].rpos;
+		}
+		
+		// Display the name for close paths
+		if(closerThan(center, player.pos, DebugTextMaxDistance)) {
+			drawTextAt(hFontDebug, center, path.name, color * 0.5f + Color::gray(0.5f));
 		}
 		
 	}
@@ -937,8 +934,13 @@ void drawDebugRender() {
 			drawDebugEntities();
 			break;
 		}
+		case DebugView_Zones: {
+			ss << "Zones";
+			drawDebugZones();
+			break;
+		}
 		case DebugView_Paths: {
-			ss << "Paths and Zones";
+			ss << "Paths";
 			drawDebugPaths();
 			break;
 		}

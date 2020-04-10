@@ -183,7 +183,7 @@ long ARX_INTERACTIVE_GetSellValue(Entity * item, Entity * shop, long count) {
 
 static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io) {
 	
-	ARX_PATH * op = io->inzone;
+	Zone * op = io->inzone;
 	if(!op || op->controled.empty()) {
 		return;
 	}
