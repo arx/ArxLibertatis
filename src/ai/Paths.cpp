@@ -239,55 +239,24 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 
 		if(current != last) {
 			
-			if(last && !current) {
-				
-				// TODO why is this not sent when changing directly between zones
-				
-				SendIOScriptEvent(NULL, entities.player(), SM_LEAVEZONE, last->name);
+			if(last) {
 				CHANGE_LEVEL_ICON = NoChangeLevel;
-				
+				EntityLeavingLastZone(entities.player(), last);
 			}
 			
-			if(!last && current) {
-				
-				// TODO why is this not sent when changing directly between zones
-				
-				SendIOScriptEvent(NULL, entities.player(), SM_ENTERZONE, current->name);
-				
+			if(current) {
 				if(!current->ambiance.empty()) {
 					ARX_SOUND_PlayZoneAmbiance(current->ambiance, ARX_SOUND_PLAY_LOOPED, current->amb_max_vol * 0.01f);
 				}
-				
 				if(current->flags & PATH_FARCLIP) {
 					g_desiredFogParameters.flags |= GMOD_ZCLIP;
 					g_desiredFogParameters.zclip = current->farclip;
 				}
-				
 				if(current->flags & PATH_RGB) {
 					g_desiredFogParameters.flags |= GMOD_DCOLOR;
 					g_desiredFogParameters.depthcolor = current->rgb;
 				}
-				
-			}
-			
-			if(last && !last->controled.empty()) {
-				EntityHandle t = entities.getById(last->controled);
-				if(t != EntityHandle()) {
-					ScriptParameters parameters;
-					parameters.push_back("player");
-					parameters.push_back(last->name);
-					SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, parameters);
-				}
-			}
-			
-			if(current && !current->controled.empty()) {
-				EntityHandle t = entities.getById(current->controled);
-				if(t != EntityHandle()) {
-					ScriptParameters parameters;
-					parameters.push_back("player");
-					parameters.push_back(current->name);
-					SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_ENTER, parameters);
-				}
+				EntityEnteringCurrentZone(entities.player(), current);
 			}
 			
 		}
