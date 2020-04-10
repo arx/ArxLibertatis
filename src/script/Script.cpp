@@ -981,7 +981,8 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			}
 			
 			if(boost::starts_with(name, "^player_zone")) {
-				txtcontent = (player.inzone) ? player.inzone->name : "none";
+				Zone * zone = entities.player()->inzone;
+				txtcontent = (zone ? zone->name : "none");
 				return TYPE_TEXT;
 			}
 			
