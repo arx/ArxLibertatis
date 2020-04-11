@@ -260,8 +260,12 @@ Entity * FlyingOverObject(const Vec2s & pos) {
 		return player.torch;
 	}
 	
-	if(g_secondaryInventoryHud.containsPos(pos) || g_playerInventoryHud.containsPos(pos)) {
-		return GetFromInventory(pos);
+	if(g_secondaryInventoryHud.containsPos(pos)) {
+		return g_secondaryInventoryHud.getObj(pos);
+	}
+	
+	if(g_playerInventoryHud.containsPos(pos)) {
+		return g_playerInventoryHud.getObj(pos);
 	}
 	
 	if(Entity * entity = InterClick(pos)) {

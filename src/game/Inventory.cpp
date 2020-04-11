@@ -789,28 +789,6 @@ bool insertIntoInventoryAtNoEvent(Entity * item, const InventoryPos & pos) {
 }
 
 /*!
- * \brief Returns IO under position xx,yy in any INVENTORY or NULL if no IO was found
- */
-Entity * GetFromInventory(const Vec2s & pos) {
-	
-	if(g_secondaryInventoryHud.containsPos(pos)) {
-		Entity * result = g_secondaryInventoryHud.getObj(pos);
-		if(result) {
-			return result;
-		}
-	}
-	
-	if(g_playerInventoryHud.containsPos(pos)) {
-		Entity * result = g_playerInventoryHud.getObj(pos);
-		if(result) {
-			return result;
-		}
-	}
-	
-	return NULL;
-}
-
-/*!
  * \brief Gets real world position for an IO (can be used for non items)
  * (even in an inventory or being dragged)
  *
@@ -888,22 +866,23 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
  */
 bool TakeFromInventory(const Vec2s & pos) {
 	
-	Entity * item = GetFromInventory(pos);
-	if(!item) {
-		return false;
+	if(g_secondaryInventoryHud.containsPos(pos)) {
+		Entity * item = g_secondaryInventoryHud.getObj(pos);
+		if(item) {
+			g_secondaryInventoryHud.dragEntity(item);
+		}
+		return item != NULL;
 	}
 	
-	arx_assert(item->ioflags & IO_ITEM);
-	InventoryPos p = locateInInventories(item);
-	if(p.io == EntityHandle_Player) {
-		g_playerInventoryHud.dragEntity(item);
-	} else {
-		arx_assert(SecondaryInventory);
-		arx_assert(SecondaryInventory->io->index() == p.io);
-		g_secondaryInventoryHud.dragEntity(item);
+	if(g_playerInventoryHud.containsPos(pos)) {
+		Entity * item = g_playerInventoryHud.getObj(pos);
+		if(item) {
+			g_playerInventoryHud.dragEntity(item);
+		}
+		return item != NULL;
 	}
 	
-	return true;
+	return false;
 }
 
 bool IsInPlayerInventory(Entity * io) {
