@@ -81,8 +81,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Cursor.h"
 #include "gui/Speech.h"
 #include "gui/Interface.h"
-#include "gui/hud/PlayerInventory.h"
-#include "gui/hud/SecondaryInventory.h"
 #include "gui/book/Book.h"
 
 #include "graphics/Draw.h"
@@ -1908,10 +1906,6 @@ bool IsEquipedByPlayer(const Entity * io)
 
 extern long LOOKING_FOR_SPELL_TARGET;
 Entity * InterClick(const Vec2s & pos) {
-	
-	if(g_secondaryInventoryHud.containsPos(pos) || g_playerInventoryHud.containsPos(pos)) {
-		return NULL;
-	}
 	
 	float dist_Threshold;
 
