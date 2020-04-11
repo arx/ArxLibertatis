@@ -168,33 +168,112 @@ std::ostream & operator<<(std::ostream & strm, const InventoryPos & p) {
 namespace {
 
 // Glue code to access both player and IO inventories in a uniform way.
-template <size_t MaxBags, size_t MaxWidth, size_t MaxHeight>
-struct InventoryArray {
-	typedef INVENTORY_SLOT type[MaxBags][MaxWidth][MaxHeight];
+struct PlayerInventoryAccess {
+	
 	typedef InventoryPos::index_type index_type;
-	static INVENTORY_SLOT & index(type & data, index_type bag,
-	                       index_type x, index_type y) {
-		return data[bag][x][y];
+	
+	const index_type m_bags;
+	
+	PlayerInventoryAccess(Entity * entity)
+		: m_bags(player.m_bags)
+	{
+		ARX_UNUSED(entity);
 	}
-	static const INVENTORY_SLOT & index(const type & data, index_type bag,
-	                             index_type x, index_type y) {
-		return data[bag][x][y];
+	
+	INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) {
+		return g_inventory[bag][x][y];
 	}
+	
+	const INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) const {
+		return g_inventory[bag][x][y];
+	}
+	
+	index_type bags() {
+		arx_assume(m_bags <= INVENTORY_BAGS);
+		return m_bags;
+	}
+	
+	index_type width() {
+		return INVENTORY_X;
+	}
+	
+	index_type height() {
+		return INVENTORY_Y;
+	}
+	
+	EntityHandle handle() {
+		return EntityHandle_Player;
+	}
+	
+	bool swap() {
+		return false;
+	}
+	
+	bool insertGold(Entity * item) {
+		
+		if(item != NULL && (item->ioflags & IO_GOLD)) {
+			ARX_PLAYER_AddGold(item);
+			return true;
+		}
+		
+		return false;
+	}
+	
 };
-template <size_t MaxWidth, size_t MaxHeight>
-struct InventoryArray<1, MaxWidth, MaxHeight> {
-	typedef INVENTORY_SLOT type[MaxWidth][MaxHeight];
+
+struct EntityInventoryAccess {
+	
 	typedef InventoryPos::index_type index_type;
-	static INVENTORY_SLOT & index(type & data, index_type bag,
-	                       index_type x, index_type y) {
+	
+	INVENTORY_DATA * const m_data;
+	const EntityHandle m_entity;
+	const Vec2s m_size;
+	
+	EntityInventoryAccess(Entity * entity)
+		: m_data(entity->inventory)
+		, m_entity(entity->index())
+		, m_size(entity->inventory->m_size)
+	{ }
+	
+	INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) {
 		ARX_UNUSED(bag);
-		return data[x][y];
+		return m_data->slot[x][y];
 	}
-	static const INVENTORY_SLOT & index(const type & data, index_type bag,
-	                             index_type x, index_type y) {
+	
+	const INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) const {
 		ARX_UNUSED(bag);
-		return data[x][y];
+		return  m_data->slot[x][y];
 	}
+	
+	index_type bags() {
+		return 1;
+	}
+	
+	index_type width() {
+		arx_assume(m_size.x > 0);
+		arx_assume(m_size.x <= 20);
+		return index_type(m_size.x);
+	}
+	
+	index_type height() {
+		arx_assume(m_size.y > 0);
+		arx_assume(m_size.y <= 20);
+		return index_type(m_size.y);
+	}
+	
+	EntityHandle handle() {
+		return m_entity;
+	}
+	
+	bool swap() {
+		return true;
+	}
+	
+	bool insertGold(Entity * item) {
+		ARX_UNUSED(item);
+		return false;
+	}
+	
 };
 
 //! Compare items by their size and name
@@ -220,49 +299,56 @@ struct ItemSizeComaparator {
 	}
 };
 
-// TODO this class should probably be used directly in player and IO objects
-template <size_t MaxBags, size_t MaxWidth, size_t MaxHeight>
-class Inventory {
+template <typename InventoryAccess>
+class Inventory : private InventoryAccess {
 	
 	typedef InventoryPos Pos;
 	
 public:
 	
-	typedef InventoryArray<MaxBags, MaxWidth, MaxHeight> Array;
-	typedef typename Array::type array_type;
 	typedef unsigned short size_type;
 	typedef InventoryPos::index_type index_type;
 	
 private:
 	
-	EntityHandle io;
-	array_type & data;
-	size_type bags;
-	size_type width;
-	size_type height;
-	
 	INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) {
-		return Array::index(data, bag, x, y);
+		return InventoryAccess::index(bag, x, y);
 	}
+	
 	const INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) const {
-		return Array::index(data, bag, x, y);
+		return InventoryAccess::index(bag, x, y);
 	}
 	
 	INVENTORY_SLOT & index(const InventoryPos & pos) {
-		return index(pos.bag, pos.x, pos.y);
+		return InventoryAccess::index(pos.bag, pos.x, pos.y);
 	}
+	
 	const INVENTORY_SLOT & index(const InventoryPos & pos) const {
-		return index(pos.bag, pos.x, pos.y);
+		return InventoryAccess::index(pos.bag, pos.x, pos.y);
+	}
+	
+	index_type bags() {
+		return InventoryAccess::bags();
+	}
+	
+	index_type width() {
+		return InventoryAccess::width();
+	}
+	
+	index_type height() {
+		return InventoryAccess::height();
+	}
+	
+	EntityHandle handle() {
+		return InventoryAccess::handle();
+	}
+	
+	bool swap() {
+		return InventoryAccess::swap();
 	}
 	
 	bool insertGold(Entity * item) {
-		
-		if(io == EntityHandle_Player && item != NULL && (item->ioflags & IO_GOLD)) {
-			ARX_PLAYER_AddGold(item);
-			return true;
-		}
-		
-		return false;
+		return InventoryAccess::insertGold(item);
 	}
 	
 	Pos insertImpl(Entity * item, const Pos & pos = Pos()) {
@@ -307,16 +393,16 @@ private:
 			size.y += start.y;
 			start.y = 0;
 		}
-		start = glm::min(start, Vec2s(width - 1, height - 1));
-		Vec2s end = start + glm::clamp(size, Vec2s(1), Vec2s(width, height) - start);
+		start = glm::min(start, Vec2s(width() - 1, height() - 1));
+		Vec2s end = start + glm::clamp(size, Vec2s(1), Vec2s(width(), height()) - start);
 		
-		for(Pos p(io, bag, start.x, start.y); p.y < end.y; advance(p, start, end)) {
+		for(Pos p(handle(), bag, start.x, start.y); p.y < end.y; advance(p, start, end)) {
 			if(insertIntoStackAt(item, p, true)) {
 				return p;
 			}
 		}
 		
-		for(Pos p(io, bag, start.x, start.y); p.y < end.y; advance(p, start, end)) {
+		for(Pos p(handle(), bag, start.x, start.y); p.y < end.y; advance(p, start, end)) {
 			if(insertIntoNewSlotAt(item, p)) {
 				return p;
 			}
@@ -327,15 +413,15 @@ private:
 	
 	bool insertIntoNewSlotAt(Entity * item, const Pos & pos) {
 		
-		if(!pos || pos.bag >= bags) {
+		if(!pos || pos.bag >= bags()) {
 			return false;
 		}
 		
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		
-		arx_assert(pos.io == io);
+		arx_assert(pos.io == handle());
 		
-		if(pos.x + item->m_inventorySize.x > width || pos.y + item->m_inventorySize.y > height) {
+		if(pos.x + item->m_inventorySize.x > width() || pos.y + item->m_inventorySize.y > height()) {
 			return false;
 		}
 		
@@ -377,16 +463,20 @@ private:
 		
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		
-		index_type maxi = width + 1 - size_type(item->m_inventorySize.x);
-		index_type maxj = height + 1 - size_type(item->m_inventorySize.y);
-		if(MaxHeight >= MaxWidth) {
+		if(size_type(item->m_inventorySize.x) > width() || size_type(item->m_inventorySize.y) > height()) {
+			return Pos();
+		}
+		
+		index_type maxi = width() + 1 - size_type(item->m_inventorySize.x);
+		index_type maxj = height() + 1 - size_type(item->m_inventorySize.y);
+		if(swap()) {
 			std::swap(maxi, maxj);
 		}
 		
-		for(index_type bag = 0; bag < bags; bag++) {
+		for(index_type bag = 0; bag < bags(); bag++) {
 			for(index_type i = 0; i < maxi; i++) {
 				for(index_type j = 0; j < maxj; j++) {
-					Pos pos = (MaxHeight < MaxWidth) ? Pos(io, bag, i, j) : Pos(io, bag, j, i);
+					Pos pos = swap() ? Pos(handle(), bag, j, i) : Pos(handle(), bag, i, j);
 					
 					// Ignore already used inventory slots
 					if(index(pos).io != NULL) {
@@ -405,13 +495,13 @@ private:
 	
 	bool insertIntoStackAt(Entity * item, const Pos & pos, bool identify = false) {
 		
-		if(!pos || pos.bag >= bags) {
+		if(!pos || pos.bag >= bags()) {
 			return false;
 		}
 		
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		
-		if(pos.x + item->m_inventorySize.x > width || pos.y + item->m_inventorySize.y > height) {
+		if(pos.x + item->m_inventorySize.x > width() || pos.y + item->m_inventorySize.y > height()) {
 			return false;
 		}
 		
@@ -471,17 +561,21 @@ private:
 		
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		
-		index_type maxi = width + 1 - size_type(item->m_inventorySize.x);
-		index_type maxj = height + 1 - size_type(item->m_inventorySize.y);
-		if(MaxHeight >= MaxWidth) {
+		if(size_type(item->m_inventorySize.x) > width() || size_type(item->m_inventorySize.y) > height()) {
+			return Pos();
+		}
+		
+		index_type maxi = width() + 1 - size_type(item->m_inventorySize.x);
+		index_type maxj = height() + 1 - size_type(item->m_inventorySize.y);
+		if(swap()) {
 			std::swap(maxi, maxj);
 		}
 		
 		// Try to add the items to an existing stack
-		for(index_type bag = 0; bag < bags; bag++) {
+		for(index_type bag = 0; bag < bags(); bag++) {
 			for(index_type i = 0; i < maxi; i++) {
 				for(index_type j = 0; j < maxj; j++) {
-					Pos pos = (MaxHeight < MaxWidth) ? Pos(io, bag, i, j) : Pos(io, bag, j, i);
+					Pos pos = swap() ? Pos(handle(), bag, j, i) : Pos(handle(), bag, i, j);
 					if(insertIntoStackAt(item, pos)) {
 						return pos;
 					}
@@ -494,8 +588,8 @@ private:
 	
 public:
 	
-	Inventory(EntityHandle io_, array_type & data_, size_type bags_, size_type width_, size_type height_)
-		: io(io_), data(data_), bags(bags_), width(width_), height(height_) { }
+	Inventory(Entity * entity)
+		: InventoryAccess(entity) { }
 	
 	/*!
 	 * Insert an item into the inventory
@@ -517,7 +611,7 @@ public:
 		
 		if(item && (item->ioflags & IO_ITEM)) {
 			if(Pos newPos = insertImpl(item, pos)) {
-				ARX_INVENTORY_Declare_InventoryIn(get(newPos), io);
+				ARX_INVENTORY_Declare_InventoryIn(get(newPos), handle());
 				return true;
 			}
 		}
@@ -548,7 +642,7 @@ public:
 		if(item && (item->ioflags & IO_ITEM)) {
 			if(Pos newPos = insertAtImpl(item, bag, pos, fallback)) {
 				ARX_SOUND_PlayInterface(g_snd.INVSTD);
-				ARX_INVENTORY_Declare_InventoryIn(get(newPos), io);
+				ARX_INVENTORY_Declare_InventoryIn(get(newPos), handle());
 				return true;
 			}
 		}
@@ -581,13 +675,13 @@ public:
 		// Collect all inventory items
 		std::vector<Entity *> items;
 		std::vector<Pos> positions;
-		for(size_t bag = 0; bag < bags; bag++) {
-			for(size_t j = 0 ; j < height; j++) {
-				for(size_t i = 0 ; i < width; i++) {
+		for(size_t bag = 0; bag < bags(); bag++) {
+			for(size_t j = 0 ; j < height(); j++) {
+				for(size_t i = 0 ; i < width(); i++) {
 					INVENTORY_SLOT & slot = index(bag, i, j);
 					if(slot.io && slot.show) {
 						items.push_back(slot.io);
-						positions.push_back(Pos(io, bag, i, j));
+						positions.push_back(Pos(handle(), bag, i, j));
 						remove(slot.io);
 					}
 					arx_assert(!slot.io && !slot.show);
@@ -619,11 +713,11 @@ public:
 		// If we failed to insert any items, put all items back at their original positions
 		// Note that some items might have already been merged
 		if(!remaining.empty()) {
-			LogWarning << "Failed to optimize " << entities.get(io)->idString() << " inventory";
+			LogWarning << "Failed to optimize " << entities.get(handle())->idString() << " inventory";
 			
-			for(size_t bag = 0; bag < bags; bag++) {
-				for(size_t j = 0 ; j < height; j++) {
-					for(size_t i = 0 ; i < width; i++) {
+			for(size_t bag = 0; bag < bags(); bag++) {
+				for(size_t j = 0 ; j < height(); j++) {
+					for(size_t i = 0 ; i < width(); i++) {
 						INVENTORY_SLOT & slot = index(bag, i, j);
 						if(slot.io && slot.show) {
 							remaining.push_back(slot.io);
@@ -644,7 +738,7 @@ public:
 				}
 				if(!insertImpl(item, pos)) {
 					LogWarning << "Could not restory original position of " << item->idString() << " in "
-					           << entities.get(io)->idString() << " inventory";
+					           << entities.get(handle())->idString() << " inventory";
 					PutInFrontOfPlayer(item);
 				}
 			}
@@ -658,9 +752,9 @@ public:
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		
 		InventoryPos pos = locateInInventories(item);
-		arx_assert(pos.io == io);
-		arx_assert(pos.x + item->m_inventorySize.x <= width);
-		arx_assert(pos.y + item->m_inventorySize.y <= height);
+		arx_assert(pos.io == handle());
+		arx_assert(pos.x + item->m_inventorySize.x <= width());
+		arx_assert(pos.y + item->m_inventorySize.y <= height());
 		arx_assert(index(pos).show == true);
 		arx_assert(item->show == SHOW_FLAG_IN_INVENTORY);
 		
@@ -687,18 +781,16 @@ public:
 	
 };
 
-Inventory<INVENTORY_BAGS, INVENTORY_X, INVENTORY_Y> getPlayerInventory() {
-	return Inventory<INVENTORY_BAGS, INVENTORY_X, INVENTORY_Y>(EntityHandle_Player, g_inventory, player.m_bags,
-	                                              INVENTORY_X, INVENTORY_Y);
+Inventory<PlayerInventoryAccess> getPlayerInventory() {
+	return Inventory<PlayerInventoryAccess>(NULL);
 }
 
-Inventory<1, 20, 20> getIoInventory(Entity * io) {
-	arx_assert(io != NULL && io->inventory != NULL);
-	INVENTORY_DATA * inv = io->inventory;
-	return Inventory<1, 20, 20>(io->index(), inv->slot, 1, inv->m_size.x, inv->m_size.y);
+Inventory<EntityInventoryAccess> getIoInventory(Entity * entity) {
+	arx_assert(entity != NULL && entity->inventory != NULL);
+	return Inventory<EntityInventoryAccess>(entity);
 }
 
-Inventory<1, 20, 20> getIoInventory(EntityHandle id) {
+Inventory<EntityInventoryAccess> getIoInventory(EntityHandle id) {
 	return getIoInventory(entities.get(id));
 }
 
