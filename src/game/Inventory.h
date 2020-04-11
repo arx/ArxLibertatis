@@ -299,7 +299,6 @@ std::pair<Entity *, int> GetFromInventory(const Vec2s & pos);
 bool IsInPlayerInventory(Entity * io);
 bool IsInSecondaryInventory(Entity * io);
 bool InInventoryPos(const Vec2s & pos);
-void RemoveFromAllInventories(const Entity * io);
 Entity * ARX_INVENTORY_GetTorchLowestDurability();
 long Player_Arrow_Count();
 Entity * Player_Arrow_Count_Decrease();

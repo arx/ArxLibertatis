@@ -278,7 +278,7 @@ void Entity::cleanReferences() {
 	
 	ARX_INTERACTIVE_DestroyDynamicInfo(this);
 	
-	RemoveFromAllInventories(this);
+	removeFromInventories(this);
 	
 	ARX_SCRIPT_Timer_Clear_For_IO(this);
 	
