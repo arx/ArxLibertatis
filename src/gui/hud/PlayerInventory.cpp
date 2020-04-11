@@ -509,9 +509,8 @@ void PlayerInventoryHud::dropEntity() {
 	
 }
 
-void PlayerInventoryHud::dragEntity(Entity * io, const InventoryPos & pos) {
+void PlayerInventoryHud::dragEntity(Entity * io) {
 	
-	arx_assert(pos.io == EntityHandle_Player);
 	arx_assert(io->ioflags & IO_ITEM);
 	arx_assert(locateInInventories(io).io == EntityHandle_Player);
 	
