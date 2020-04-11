@@ -963,38 +963,6 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
 }
 
 /*!
- * \brief Seeks an IO in all Inventories to remove it
- */
-void RemoveFromAllInventories(const Entity * io) {
-	
-	if(!io) {
-		return;
-	}
-	
-	// Seek IO in Player Inventory/ies
-	playerInventory.remove(io);
-	
-	// Seek IO in Other IO's Inventories
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(!e || !e->inventory)
-			continue;
-		
-		INVENTORY_DATA * id = e->inventory;
-		for(long j = 0; j < id->m_size.y; j++) {
-		for(long k = 0; k < id->m_size.x; k++) {
-			if(id->slot[k][j].io == io) {
-				id->slot[k][j].io = NULL;
-				id->slot[k][j].show = true;
-			}
-		}
-		}
-	}
-}
-
-/*!
  * \brief Seeks an IO in all Inventories to replace it by another IO
  */
 void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
@@ -1257,7 +1225,7 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 			Entity * io = slot.io;
 			
 			if(!(io->ioflags & IO_GOLD))
-				RemoveFromAllInventories(io);
+				removeFromInventories(io);
 			
 			if(playerInventory.insert(io)) {
 				bSound = true;
@@ -1290,7 +1258,7 @@ void ARX_INVENTORY_ReOrder() {
 		
 		Entity * io = slot.io;
 		
-		RemoveFromAllInventories(io);
+		getIoInventory(TSecondaryInventory->io).remove(io);
 		
 		InventoryPos pos(TSecondaryInventory->io->index(), 0, 0, 0);
 		bool inserted = getIoInventory(TSecondaryInventory->io).insert(io, pos);

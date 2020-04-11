@@ -1304,7 +1304,7 @@ void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach) {
 	if(!io || !io2)
 		return;
 	
-	RemoveFromAllInventories(io2);
+	removeFromInventories(io2);
 	io2->show = SHOW_FLAG_LINKED;
 	EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, io2->obj, attach, attach, io2);
 }

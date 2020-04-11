@@ -402,7 +402,7 @@ void SecondaryInventoryHud::dragEntity(Entity * io, const InventoryPos & pos) {
 	}
 	
 	Set_DragInter(io, pos);
-	RemoveFromAllInventories(io);
+	removeFromInventories(io);
 	ARX_INVENTORY_IdentifyIO(io);
 	
 }

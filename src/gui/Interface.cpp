@@ -1813,11 +1813,12 @@ void ArxGame::manageEditorControls() {
 				bSecondary = true;
 			}
 			
-			RemoveFromAllInventories(FlyingOverIO);
+                       removeFromInventories(FlyingOverIO);
 			FlyingOverIO->show = SHOW_FLAG_IN_INVENTORY;
 			
-			if(FlyingOverIO->ioflags & IO_GOLD)
+			if(FlyingOverIO->ioflags & IO_GOLD) {
 				ARX_SOUND_PlayInterface(g_snd.GOLD);
+			}
 			
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
 			
@@ -2012,17 +2013,17 @@ void ArxGame::manageEditorControls() {
 				
 				if(bOk) {
 					
+					if(io && io->show == SHOW_FLAG_ON_PLAYER) {
+						ARX_EQUIPMENT_UnEquip(entities.player(), io);
+						removeFromInventories(io);
+						io->bbox2D.max.x = -1;
+					}
+					
 					Set_DragInter(io);
 					
 					if(io) {
 						
 						ARX_PLAYER_Remove_Invisibility();
-						
-						if(DRAGINTER->show == SHOW_FLAG_ON_PLAYER) {
-							ARX_EQUIPMENT_UnEquip(entities.player(), DRAGINTER);
-							RemoveFromAllInventories(DRAGINTER);
-							DRAGINTER->bbox2D.max.x = -1;
-						}
 						
 						if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
 							Set_DragInter(NULL);
