@@ -126,6 +126,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/TextManager.h"
 #include "gui/debug/DebugHud.h"
 #include "gui/debug/DebugHudAudio.h"
+#include "gui/hud/PlayerInventory.h"
 
 #include "input/Input.h"
 #include "input/Keyboard.h"
@@ -781,6 +782,7 @@ bool ArxGame::initGame()
 	ARX_PLAYER_InitPlayer();
 	
 	CleanInventory();
+	g_playerInventoryHud.setCurrentBag(0);
 	
 	ARX_SPEECH_FirstInit();
 	notification_init();

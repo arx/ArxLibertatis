@@ -811,7 +811,6 @@ void CleanInventory() {
 		arx_assert(!slot.io && !slot.show);
 	}
 	
-	g_playerInventoryHud.setCurrentBag(0);
 }
 
 void optimizeInventory(Entity * container) {
