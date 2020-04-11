@@ -592,8 +592,7 @@ public:
 						items.push_back(slot.io);
 						removeAt(slot.io, Pos(io, bag, i, j));
 					}
-					slot.io = NULL;
-					slot.show = false;
+					arx_assert(!slot.io && !slot.show);
 				}
 			}
 		}
