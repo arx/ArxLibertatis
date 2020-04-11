@@ -532,7 +532,6 @@ void CurrentTorchIconGui::updateInput() {
 			
 			if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
 				Entity * io = player.torch;
-				player.torch->show = SHOW_FLAG_IN_SCENE;
 				
 				ARX_SOUND_PlaySFX(g_snd.TORCH_END);
 				ARX_SOUND_Stop(player.torch_loop);
