@@ -246,8 +246,6 @@ void PutInFrontOfPlayer(Entity * io);
 Vec3f GetItemWorldPosition(const Entity * io);
 Vec3f GetItemWorldPositionSound(const Entity * io);
 
-Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos);
-
 void CleanInventory();
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand);
 void PutInInventory();

@@ -1449,8 +1449,6 @@ void ArxGame::manageKeyMouse() {
 	// Player/Eyeball Freelook Management
 	if(!BLOCK_PLAYER_CONTROLS) {
 		
-		GetInventoryObj_INVENTORYUSE(DANAEMouse);
-		
 		bool bKeySpecialMove = false;
 		
 		struct PushTime {
