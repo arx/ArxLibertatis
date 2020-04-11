@@ -1062,7 +1062,7 @@ void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lC
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		const INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 		
-		if(!slot.io || !slot.io->obj)
+		if(!slot.io || !slot.show || !slot.io->obj)
 			continue;
 		
 		for(size_t lTex = 0; lTex < slot.io->obj->texturecontainer.size(); lTex++) {
@@ -1091,7 +1091,7 @@ Entity * ARX_INVENTORY_GetTorchLowestDurability() {
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		const INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 		
-		if(!slot.io || slot.io->locname != "description_torch")
+		if(!slot.io || !slot.show || slot.io->locname != "description_torch")
 			continue;
 		
 		if(!io || slot.io->durability < io->durability) {
@@ -1114,7 +1114,7 @@ long Player_Arrow_Count() {
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 		
-		if(slot.io && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
+		if(slot.io && slot.show && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
 			count += checked_range_cast<long>(slot.io->durability);
 		}
 	}
@@ -1131,7 +1131,7 @@ Entity * Player_Arrow_Count_Decrease() {
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
 		
-		if(slot.io && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
+		if(slot.io && slot.show && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
 			if(!io || io->durability > slot.io->durability)
 				io = slot.io;
 		}
@@ -1157,9 +1157,10 @@ void ARX_INVENTORY_IdentifyAll() {
 	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		Entity * io = g_inventory[bag][x][y].io;
-		
-		ARX_INVENTORY_IdentifyIO(io);
+		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
+		if(slot.io && slot.show) {
+			ARX_INVENTORY_IdentifyIO(slot.io);
+		}
 	}
 }
 
