@@ -375,8 +375,8 @@ class InventoryCommand : public Command {
 			
 			DebugScript("");
 			
-			if(SecondaryInventory != context.getEntity()->inventory) {
-				SecondaryInventory = context.getEntity()->inventory;
+			if(!g_secondaryInventoryHud.isOpen(context.getEntity())) {
+				g_secondaryInventoryHud.open(context.getEntity());
 				ARX_SOUND_PlayInterface(g_snd.BACKPACK);
 			}
 			
@@ -395,8 +395,8 @@ class InventoryCommand : public Command {
 			
 			DebugScript("");
 			
-			if(context.getEntity()->inventory != NULL) {
-				SecondaryInventory = NULL;
+			if(g_secondaryInventoryHud.isOpen()) {
+				g_secondaryInventoryHud.close();
 				ARX_SOUND_PlayInterface(g_snd.BACKPACK);
 			}
 			
