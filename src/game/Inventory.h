@@ -127,22 +127,8 @@ extern InventoryPos g_draggedItemPreviousPosition;
 
 std::ostream & operator<<(std::ostream & strm, const InventoryPos & pos);
 
-class PlayerInventory {
-	
-	typedef InventoryPos Pos;
-	
-public:
-	
-	//! Sort the inventory and stack duplicate items
-	static void optimize();
-	
-	static Entity * get(const Pos & pos) {
-		return pos ? g_inventory[pos.bag][pos.x][pos.y].io : NULL;
-	}
-	
-};
-
-extern PlayerInventory playerInventory;
+//! Sort the inventory and stack duplicate items
+void optimizePlayerInventory();
 
 /*!
  * Insert an item into the player inventory
