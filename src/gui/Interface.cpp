@@ -1788,32 +1788,6 @@ void ArxGame::manageEditorControls() {
 		   && !g_playerInventoryHud.containsPos(DANAEMouse)
 		   && !ARX_INTERFACE_MouseInBook()
 		) {
-			Vec2s s(0);
-			bool bSecondary = false;
-			
-			if(TSecondaryInventory && IsInSecondaryInventory(FlyingOverIO)) {
-				if(SecondaryInventory) {
-					bool bfound = true;
-					
-					for(long y = 0; y < SecondaryInventory->m_size.y && bfound; y++)
-					for(long x = 0; x < SecondaryInventory->m_size.x && bfound; x++) {
-						const INVENTORY_SLOT & slot = SecondaryInventory->slot[x][y];
-						
-						if(slot.io == FlyingOverIO) {
-							s = Vec2s(x, y);
-							bfound = false;
-						}
-					}
-					
-					if(bfound)
-						arx_unreachable();
-				}
-				
-				bSecondary = true;
-			}
-			
-                       removeFromInventories(FlyingOverIO);
-			FlyingOverIO->show = SHOW_FLAG_IN_INVENTORY;
 			
 			if(FlyingOverIO->ioflags & IO_GOLD) {
 				ARX_SOUND_PlayInterface(g_snd.GOLD);
@@ -1822,14 +1796,7 @@ void ArxGame::manageEditorControls() {
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
 			
 			if(!playerInventory.insert(FlyingOverIO)) {
-				if(TSecondaryInventory && bSecondary) {
-					InventoryPos oldPos(TSecondaryInventory->io->index(), 0, s.x, s.y);
-					bool inserted = insertIntoInventory(FlyingOverIO, oldPos);
-					arx_assert(inserted), ARX_UNUSED(inserted);
-				}
-				
-				if(!bSecondary)
-					FlyingOverIO->show = SHOW_FLAG_IN_SCENE;
+				// If there is no space, leave the item where it is
 			}
 			
 			if(DRAGINTER == FlyingOverIO)
