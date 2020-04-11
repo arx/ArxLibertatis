@@ -1334,14 +1334,12 @@ void ArxGame::manageKeyMouse() {
 					COMBINE = NULL;
 
 					if(DRAGINTER == NULL) {
+						
 						bool bOk = true;
-
-						if(SecondaryInventory != NULL) {
-							Entity * temp = SecondaryInventory->io;
-
-							if(IsInSecondaryInventory(FlyingOverIO))
-								if(temp->ioflags & IO_SHOP)
-									bOk = false;
+						Entity * container = entities.get(locateInInventories(FlyingOverIO).io);
+						if(container && (container->ioflags & IO_SHOP)) {
+							// Canot use items in shop inventories
+							bOk = false;
 						}
 						
 						Entity * io = entities.player();
@@ -1772,13 +1770,14 @@ void ArxGame::manageEditorControls() {
 	   && FlyingOverIO
 	   && !DRAGINTER
 	) {
-		SendIOScriptEvent(entities.player(), FlyingOverIO, SM_CLICKED);
-		bool bOk = true;
 		
-		if(SecondaryInventory) {
-			if(IsInSecondaryInventory(FlyingOverIO) && (SecondaryInventory->io->ioflags & IO_SHOP)) {
-				bOk = false;
-			}
+		SendIOScriptEvent(entities.player(), FlyingOverIO, SM_CLICKED);
+		
+		bool bOk = true;
+		Entity * container = entities.get(locateInInventories(FlyingOverIO).io);
+		if(container && (container->ioflags & IO_SHOP)) {
+			// Canot shift click items in shop inventories
+			bOk = false;
 		}
 		
 		if(   !(FlyingOverIO->ioflags & IO_MOVABLE)
