@@ -539,13 +539,17 @@ static void updateCombineFlags(Entity * source) {
 	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
-		updateCombineFlagForEntity(source, g_inventory[bag][x][y].io);
+		if(g_inventory[bag][x][y].show) {
+			updateCombineFlagForEntity(source, g_inventory[bag][x][y].io);
+		}
 	}
 	
 	if(SecondaryInventory) {
 		for(long y = 0; y < SecondaryInventory->m_size.y; y++)
 		for(long x = 0; x < SecondaryInventory->m_size.x; x++) {
-			updateCombineFlagForEntity(source, SecondaryInventory->slot[x][y].io);
+			if(SecondaryInventory->slot[x][y].show) {
+				updateCombineFlagForEntity(source, SecondaryInventory->slot[x][y].io);
+			}
 		}
 	}
 	
