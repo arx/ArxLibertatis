@@ -101,7 +101,9 @@ public:
 		ioo->pos = io->pos;
 		ioo->angle = io->angle;
 		ioo->move = io->move;
-		ioo->show = io->show;
+		if(ioo->show != SHOW_FLAG_IN_INVENTORY) {
+			ioo->show = (io->show == SHOW_FLAG_IN_INVENTORY ? SHOW_FLAG_IN_SCENE : io->show);
+		}
 		
 		if(io == DRAGINTER) {
 			Set_DragInter(ioo);
@@ -114,11 +116,11 @@ public:
 			io->_itemdata->count--;
 			SendInitScriptEvent(ioo);
 			
-			if(playerInventory.locate(io)) {
-				giveToPlayer(ioo);
-			} else {
-				CheckForInventoryReplaceMe(ioo, io);
+			InventoryPos oldPos = locateInInventories(io);
+			if(oldPos) {
+				insertIntoInventory(ioo, oldPos);
 			}
+			
 		} else {
 			spells.replaceCaster(oldd, neww);
 			

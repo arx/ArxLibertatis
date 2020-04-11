@@ -920,34 +920,6 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
 }
 
 /*!
- * \brief Seeks an IO in all Inventories to replace it by another IO
- */
-void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
-	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(!e || !e->inventory)
-			continue;
-		
-		INVENTORY_DATA * id = e->inventory;
-		
-		for(long j = 0; j < id->m_size.y; j++) {
-		for(long k = 0; k < id->m_size.x; k++) {
-			if(id->slot[k][j].io == old) {
-				if(!getIoInventory(e).insert(io)) {
-					PutInFrontOfPlayer(io);
-				}
-				return;
-			}
-		}
-		}
-	}
-}
-
-
-/*!
  * \brief Takes an object from an inventory (be it player's or secondary inventory)
  * at screen position "xx,yy" and Puts that object in player's "hand" (cursor)
  *
