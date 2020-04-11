@@ -293,7 +293,7 @@ void CleanInventory();
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand);
 void PutInInventory();
 bool TakeFromInventory(const Vec2s & pos);
-std::pair<Entity *, int> GetFromInventory(const Vec2s & pos);
+Entity * GetFromInventory(const Vec2s & pos);
 bool IsInPlayerInventory(Entity * io);
 bool IsInSecondaryInventory(Entity * io);
 bool InInventoryPos(const Vec2s & pos);

@@ -137,20 +137,22 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io, EntityHandle containe
 
 Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos) {
 	
-	std::pair<Entity *, int> result = GetFromInventory(pos);
-	
-	if(result.first) {
-		if(result.second == 2 && SecondaryInventory) {
+	Entity * item = GetFromInventory(pos);
+	if(item) {
+		arx_assert(item->ioflags & IO_ITEM);
+		InventoryPos p = locateInInventories(item);
+		if(SecondaryInventory && SecondaryInventory->io->index() == p.io) {
 			Entity * temp = SecondaryInventory->io;
 			if(temp->ioflags & IO_SHOP) {
 				return NULL;
 			}
 		}
-		return result.first;
+		return item;
 	}
-
-	if(InInventoryPos(pos))
+	
+	if(InInventoryPos(pos)) {
 		return NULL;
+	}
 	
 	return InterClick(pos);
 }
@@ -814,23 +816,23 @@ bool InInventoryPos(const Vec2s & pos) {
 /*!
  * \brief Returns IO under position xx,yy in any INVENTORY or NULL if no IO was found
  */
-std::pair<Entity *, int> GetFromInventory(const Vec2s & pos) {
+Entity * GetFromInventory(const Vec2s & pos) {
 	
 	if(!InInventoryPos(pos)) {
-		return std::pair<Entity *, int>(NULL, 0);
+		return NULL;
 	}
 	
 	Entity * result = g_secondaryInventoryHud.getObj(pos);
 	if(result) {
-		return std::pair<Entity *, int>(result, 2);
+		return result;
 	}
 	
 	result = g_playerInventoryHud.getObj(pos);
 	if(result) {
-		return std::pair<Entity *, int>(result, 1);
+		return result;
 	}
 	
-	return std::pair<Entity *, int>(NULL, 0);
+	return NULL;
 }
 
 /*!
@@ -911,21 +913,19 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
  */
 bool TakeFromInventory(const Vec2s & pos) {
 	
-	std::pair<Entity *, int> result = GetFromInventory(pos);
-	
-	if(result.first == NULL) {
+	Entity * item = GetFromInventory(pos);
+	if(!item) {
 		return false;
 	}
 	
-	switch(result.second) {
-		case 1:
-			g_playerInventoryHud.dragEntity(result.first);
-			break;
-		case 2:
-			g_secondaryInventoryHud.dragEntity(result.first);
-			break;
-		default:
-			arx_unreachable();
+	arx_assert(item->ioflags & IO_ITEM);
+	InventoryPos p = locateInInventories(item);
+	if(p.io == EntityHandle_Player) {
+		g_playerInventoryHud.dragEntity(item);
+	} else {
+		arx_assert(SecondaryInventory);
+		arx_assert(SecondaryInventory->io->index() == p.io);
+		g_secondaryInventoryHud.dragEntity(item);
 	}
 	
 	return true;

@@ -258,7 +258,7 @@ Entity * FlyingOverObject(const Vec2s & pos) {
 		return player.torch;
 	}
 	
-	if(Entity * entity = GetFromInventory(pos).first) {
+	if(Entity * entity = GetFromInventory(pos)) {
 		return entity;
 	}
 	
