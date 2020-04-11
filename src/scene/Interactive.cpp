@@ -793,10 +793,11 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 		
 		for(long nj = 0; nj < id->m_size.y; nj++) {
 			for(long ni = 0; ni < id->m_size.x; ni++) {
-				if(id->slot[ni][nj].io != NULL) {
+				if(id->slot[ni][nj].io) {
 					id->slot[ni][nj].io->destroy();
-					id->slot[ni][nj].io = NULL;
 				}
+				arx_assert(id->slot[ni][nj].io == NULL);
+				arx_assert(id->slot[ni][nj].show == false);
 			}
 		}
  		
