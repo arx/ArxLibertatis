@@ -98,6 +98,17 @@ Entity * ioSteal = NULL;
 
 InventoryPos g_draggedItemPreviousPosition;
 
+INVENTORY_DATA::~INVENTORY_DATA() {
+	
+	for(long nj = 0; nj < m_size.y; nj++) {
+		for(long ni = 0; ni < m_size.x; ni++) {
+			arx_assert(slot[ni][nj].io == NULL);
+			arx_assert(slot[ni][nj].show == false);
+		}
+	}
+	
+}
+
 /*!
  * Declares an IO as entering into player Inventory
  * Sends appropriate INVENTORYIN Event to player AND concerned io.

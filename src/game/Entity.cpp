@@ -235,7 +235,19 @@ Entity::~Entity() {
 		TSecondaryInventory = NULL;
 	}
 	
-	delete inventory;
+	if(inventory) {
+		for(long nj = 0; nj < inventory->m_size.y; nj++) {
+			for(long ni = 0; ni < inventory->m_size.x; ni++) {
+				if(inventory->slot[ni][nj].io) {
+					inventory->slot[ni][nj].io->pos = GetItemWorldPosition(inventory->slot[ni][nj].io);
+					removeFromInventories(inventory->slot[ni][nj].io);
+				}
+				arx_assert(inventory->slot[ni][nj].io == NULL);
+				arx_assert(inventory->slot[ni][nj].show == false);
+			}
+		}
+		delete inventory;
+	}
 	
 	if(m_index != size_t(-1)) {
 		entities.remove(m_index);
@@ -314,6 +326,9 @@ void Entity::destroy() {
 			}
 		}
 	}
+	
+	// TODO should we also destroy inventory items
+	// currently they remain orphaned with state SHOW_FLAG_IN_INVENTORY
 	
 	delete this;
 	

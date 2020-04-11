@@ -78,6 +78,8 @@ struct INVENTORY_DATA {
 		, m_size(Vec2s(0, 0))
 	{}
 	
+	~INVENTORY_DATA();
+	
 };
 
 const size_t INVENTORY_BAGS = 3;
