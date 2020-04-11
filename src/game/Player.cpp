@@ -88,7 +88,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 #include "gui/MiniMap.h"
 #include "gui/hud/PlayerInventory.h"
-#include "gui/hud/SecondaryInventory.h"
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
@@ -2393,8 +2392,6 @@ void ARX_PLAYER_Start_New_Quest() {
 	ARX_PLAYER_MakeFreshHero();
 	player.torch = NULL;
 	entities.clear();
-	SecondaryInventory = NULL;
-	TSecondaryInventory = NULL;
 	ARX_EQUIPMENT_UnEquipAllPlayer();
 	
 	ARX_CHANGELEVEL_StartNew();
@@ -2617,8 +2614,6 @@ void ARX_GAME_Reset() {
 	ARX_INTERFACE_Reset();
 	ARX_INTERFACE_NoteClear();
 	Set_DragInter(NULL);
-	SecondaryInventory = NULL;
-	TSecondaryInventory = NULL;
 	g_cameraEntity = NULL;
 	CHANGE_LEVEL_ICON = NoChangeLevel;
 	

@@ -82,6 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Speech.h"
 #include "gui/Interface.h"
 #include "gui/book/Book.h"
+#include "gui/hud/SecondaryInventory.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -788,6 +789,8 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 	delete io->tweakerinfo;
 	io->tweakerinfo = NULL;
 	
+	g_secondaryInventoryHud.clear(io);
+	
 	if(io->inventory != NULL) {
 		INVENTORY_DATA * id = io->inventory;
 		
@@ -799,14 +802,6 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 				arx_assert(id->slot[ni][nj].io == NULL);
 				arx_assert(id->slot[ni][nj].show == false);
 			}
-		}
- 		
-		if(SecondaryInventory && SecondaryInventory->io == io) {
-			SecondaryInventory = NULL;
-		}
-		
-		if(TSecondaryInventory && TSecondaryInventory->io == io) {
-			TSecondaryInventory = NULL;
 		}
 		
 		delete io->inventory;

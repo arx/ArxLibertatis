@@ -97,6 +97,12 @@ public:
 	void open(Entity * container);
 	void close();
 	
+	bool isVisible();
+	bool isOpen();
+	bool isOpen(Entity * container);
+	
+	void clear(Entity * container);
+	
 	void updateFader();
 	
 	void takeAllItems();
