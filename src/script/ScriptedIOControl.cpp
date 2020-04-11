@@ -585,6 +585,7 @@ public:
 			}
 			
 			if(!(io->ioflags & IO_NPC) || io->_npcdata->lifePool.current > 0) {
+				removeFromInventories(io);
 				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
 					io->show = SHOW_FLAG_IN_SCENE;
 				}
@@ -602,6 +603,7 @@ public:
 				Vec3f pos = GetItemWorldPosition(io);
 				ARX_INTERACTIVE_Teleport(entities.player(), pos);
 			} else if(!(io->ioflags & IO_NPC) || io->_npcdata->lifePool.current > 0) {
+				removeFromInventories(io);
 				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
 					io->show = SHOW_FLAG_IN_SCENE;
 				}
