@@ -257,8 +257,7 @@ bool IsInPlayerInventory(Entity * io);
 bool IsInSecondaryInventory(Entity * io);
 bool InInventoryPos(const Vec2s & pos);
 Entity * ARX_INVENTORY_GetTorchLowestDurability();
-long Player_Arrow_Count();
-Entity * Player_Arrow_Count_Decrease();
+Entity * getInventoryItemWithLowestDurability(const std::string & className, float minDurability = 0.f);
 
 void ARX_INVENTORY_IdentifyAll();
 void ARX_INVENTORY_OpenClose(Entity * io);
