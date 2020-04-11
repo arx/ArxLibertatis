@@ -166,6 +166,7 @@ void PutInFrontOfPlayer(Entity * io)
 	io->pos += Vec3f(0.f, 20.f, 0.f);
 	
 	io->angle = Anglef();
+	removeFromInventories(io);
 	io->show = SHOW_FLAG_IN_SCENE;
 
 	if(io->obj && io->obj->pbox) {
@@ -373,6 +374,8 @@ private:
 			}
 		}
 		
+		removeFromInventories(item);
+		
 		LogDebug(" - " << pos << " := " << item->idString()
 		         << " [" << item->_itemdata->count << '/'
 		         << item->_itemdata->playerstacksize << "]: "
@@ -437,6 +440,10 @@ private:
 		
 		if(oldItem && identify) {
 			ARX_INVENTORY_IdentifyIO(oldItem);
+		}
+		
+		if(item == oldItem) {
+			return true;
 		}
 		
 		// Ignore empty slots and different or non-stackeable items
@@ -1171,15 +1178,8 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 			
 			Entity * io = slot.io;
 			
-			if(!(io->ioflags & IO_GOLD))
-				removeFromInventories(io);
-			
 			if(playerInventory.insert(io)) {
 				bSound = true;
-			} else {
-				InventoryPos pos(TSecondaryInventory->io->index(), 0, i, j);
-				bool inserted = getIoInventory(TSecondaryInventory->io).insert(io, pos);
-				arx_assert(inserted), ARX_UNUSED(inserted);
 			}
 		}
 	}
