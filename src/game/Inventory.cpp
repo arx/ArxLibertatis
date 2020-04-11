@@ -856,9 +856,9 @@ std::pair<Entity *, int> GetFromInventory(const Vec2s & pos) {
  * or false if object is invalid, or position not defined.
  */
 Vec3f GetItemWorldPosition(const Entity * io) {
+	
 	arx_assert(io);
 	
-	// Is this object being Dragged by player ?
 	if(DRAGINTER == io) {
 		// Set position to approximate center of player.
 		return player.pos + Vec3f(0.f, 80.f, 0.f);
@@ -866,46 +866,23 @@ Vec3f GetItemWorldPosition(const Entity * io) {
 
 	// Not in scene ?
 	if(io->show != SHOW_FLAG_IN_SCENE) {
-		// Is it equiped ?
+		
 		if(IsEquipedByPlayer(io)) {
-			// in player inventory
 			return player.pos + Vec3f(0.f, 80.f, 0.f);
 		}
 		
-		arx_assert(player.m_bags >= 0);
-		arx_assert(player.m_bags <= 3);
-		
-		// Is it in any player inventory ?
-		for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
-		for(size_t y = 0; y < INVENTORY_Y; y++)
-		for(size_t x = 0; x < INVENTORY_X; x++) {
-			const INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-			
-			if(slot.io == io) {
+		InventoryPos pos = locateInInventories(io);
+		if(pos) {
+			if(pos.io == EntityHandle_Player) {
 				return player.pos + Vec3f(0.f, 80.f, 0.f);
+			} else {
+				arx_assert(entities.get(pos.io) != NULL);
+				return entities.get(pos.io)->pos;
 			}
 		}
-
-		// Is it in any other IO inventory ?
-		for(size_t i = 0; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * ioo = entities[handle];
-			
-			if(!ioo || !ioo->inventory)
-				continue;
-			
-			INVENTORY_DATA * id = ioo->inventory;
-			for(long j = 0; j < id->m_size.y; j++) {
-			for(long k = 0; k < id->m_size.x; k++) {
-				if(id->slot[k][j].io == io) {
-					return ioo->pos;
-				}
-			}
-			}
-		}
+		
 	}
-
-	// Default position.
+	
 	return io->pos;
 }
 
@@ -923,40 +900,19 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
 	if(io->show != SHOW_FLAG_IN_SCENE) {
 		
 		if(IsEquipedByPlayer(io)) {
-			// in player inventory
 			return ARX_PLAYER_FrontPos();
 		}
 		
-		arx_assert(player.m_bags >= 0);
-		arx_assert(player.m_bags <= 3);
-		
-		for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
-		for(size_t y = 0; y < INVENTORY_Y; y++)
-		for(size_t x = 0; x < INVENTORY_X; x++) {
-			const INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-			
-			if(slot.io == io) {
-				// in player inventory
+		InventoryPos pos = locateInInventories(io);
+		if(pos) {
+			if(pos.io == EntityHandle_Player) {
 				return ARX_PLAYER_FrontPos();
+			} else {
+				arx_assert(entities.get(pos.io) != NULL);
+				return entities.get(pos.io)->pos;
 			}
 		}
 		
-		for(size_t i = 0; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * ioo = entities[handle];
-			
-			if(!ioo || !ioo->inventory)
-				continue;
-			
-			INVENTORY_DATA * id = ioo->inventory;
-			for(long j = 0; j < id->m_size.y; j++) {
-			for(long k = 0; k < id->m_size.x; k++) {
-				if(id->slot[k][j].io == io) {
-					return ioo->pos;
-				}
-			}
-			}
-		}
 	}
 	
 	return io->pos;
