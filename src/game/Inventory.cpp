@@ -858,33 +858,6 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
 	return io->pos;
 }
 
-/*!
- * \brief Takes an object from an inventory (be it player's or secondary inventory)
- * at screen position "xx,yy" and Puts that object in player's "hand" (cursor)
- *
- * \return true if an object was taken
- */
-bool TakeFromInventory(const Vec2s & pos) {
-	
-	if(g_secondaryInventoryHud.containsPos(pos)) {
-		Entity * item = g_secondaryInventoryHud.getObj(pos);
-		if(item) {
-			g_secondaryInventoryHud.dragEntity(item);
-		}
-		return item != NULL;
-	}
-	
-	if(g_playerInventoryHud.containsPos(pos)) {
-		Entity * item = g_playerInventoryHud.getObj(pos);
-		if(item) {
-			g_playerInventoryHud.dragEntity(item);
-		}
-		return item != NULL;
-	}
-	
-	return false;
-}
-
 bool IsInPlayerInventory(Entity * io) {
 	return locateInInventories(io).io == EntityHandle_Player;
 }
