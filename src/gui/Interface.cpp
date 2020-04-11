@@ -965,7 +965,7 @@ void ArxGame::managePlayerControls() {
 		if(player.torch) {
 			ARX_PLAYER_KillTorch();
 		} else {
-			Entity * io = ARX_INVENTORY_GetTorchLowestDurability();
+			Entity * io = getInventoryItemWithLowestDurability("torch");
 
 			if(io) {
 				Entity * ioo = io;

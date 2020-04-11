@@ -256,7 +256,6 @@ Entity * GetFromInventory(const Vec2s & pos);
 bool IsInPlayerInventory(Entity * io);
 bool IsInSecondaryInventory(Entity * io);
 bool InInventoryPos(const Vec2s & pos);
-Entity * ARX_INVENTORY_GetTorchLowestDurability();
 Entity * getInventoryItemWithLowestDurability(const std::string & className, float minDurability = 0.f);
 
 void ARX_INVENTORY_IdentifyAll();

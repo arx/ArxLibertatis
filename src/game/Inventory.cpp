@@ -985,29 +985,6 @@ void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lC
 	}
 }
 
-Entity * ARX_INVENTORY_GetTorchLowestDurability() {
-	
-	Entity * io = NULL;
-	
-	arx_assert(player.m_bags >= 0);
-	arx_assert(player.m_bags <= 3);
-	
-	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		const INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-		
-		if(!slot.io || !slot.show || slot.io->locname != "description_torch")
-			continue;
-		
-		if(!io || slot.io->durability < io->durability) {
-			io = slot.io;
-		}
-	}
-	
-	return io;
-}
-
 Entity * getInventoryItemWithLowestDurability(const std::string & className, float minDurability) {
 	
 	Entity * io = NULL;
