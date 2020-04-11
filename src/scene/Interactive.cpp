@@ -937,6 +937,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->physics.cyl.radius = io->original_radius;
 		io->physics.cyl.height = io->original_height;
 		io->fall = 0;
+		removeFromInventories(io);
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->targetinfo = EntityHandle(TARGET_NONE);
 		io->spellcast_data.castingspell = SPELL_NONE;
