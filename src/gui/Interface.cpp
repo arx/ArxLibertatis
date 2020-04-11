@@ -1808,7 +1808,8 @@ void ArxGame::manageEditorControls() {
 		// Dropping an Interactive Object that has been dragged
 		if(eeMouseUp1() && DRAGINTER) {
 			if(InInventoryPos(DANAEMouse)) {// Attempts to put it in inventory
-				PutInInventory();
+				g_secondaryInventoryHud.dropEntity();
+				g_playerInventoryHud.dropEntity();
 			} else if(ARX_INTERFACE_MouseInBook()) {
 				if(g_playerBook.currentPage() == BOOKMODE_STATS) {
 					SendIOScriptEvent(entities.player(), DRAGINTER, SM_INVENTORYUSE);

@@ -228,19 +228,6 @@ InventoryPos locateInInventories(const Entity * item);
  */
 InventoryPos removeFromInventories(Entity * item);
 
-/*!
- * Insert an item into an NPC's inventory
- * The item will be added to existing stacks if possible.
- * Otherwise, the item will be inserted at the specified position.
- * If that fails, a the first empty slot will be used.
- * If no slot was available, the item is dropped in front of the player
- *
- * \param item the item to insert
- *
- * \return true if the item was added to the inventory, false if it was dropped
- */
-bool putInInventory(Entity * item, const InventoryPos & pos);
-
 void PutInFrontOfPlayer(Entity * io);
 
 Vec3f GetItemWorldPosition(const Entity * io);
@@ -248,7 +235,6 @@ Vec3f GetItemWorldPositionSound(const Entity * io);
 
 void CleanInventory();
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand);
-void PutInInventory();
 bool TakeFromInventory(const Vec2s & pos);
 Entity * GetFromInventory(const Vec2s & pos);
 bool IsInPlayerInventory(Entity * io);
