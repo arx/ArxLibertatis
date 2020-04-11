@@ -47,8 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Inventory.h"
 
 #include <algorithm>
-#include <set>
 #include <vector>
+#include <utility>
 
 #include <boost/foreach.hpp>
 
@@ -582,12 +582,14 @@ public:
 		
 		// Collect all inventory items
 		std::vector<Entity *> items;
+		std::vector<Pos> positions;
 		for(size_t bag = 0; bag < bags; bag++) {
 			for(size_t j = 0 ; j < height; j++) {
 				for(size_t i = 0 ; i < width; i++) {
 					INVENTORY_SLOT & slot = index(bag, i, j);
 					if(slot.io && slot.show) {
 						items.push_back(slot.io);
+						positions.push_back(Pos(io, bag, i, j));
 						remove(slot.io);
 					}
 					arx_assert(!slot.io && !slot.show);
@@ -609,15 +611,48 @@ public:
 		LogDebug("putting back items");
 		
 		// Now put the items back into the inventory
+		std::vector<Entity *> remaining;
 		BOOST_FOREACH(Entity * item, items) {
-			if(!insertImpl(item)) {
-				// TODO: oops - there was no space for the item
-				// ideally this should not happen, but the current sorting algorithm does not
-				// guarantee that the resulting order is at least as good as the existing one
-				LogDebug("could not insert " << item->idString() << " after sorting inventory");
-				PutInFrontOfPlayer(item);
+			if(!remaining.empty() || !insertImpl(item)) {
+				remaining.push_back(item);
 			}
 		}
+		
+		// If we failed to insert any items, put all items back at their original positions
+		// Note that some items might have already been merged
+		if(!remaining.empty()) {
+			LogWarning << "Failed to optimize " << entities.get(io)->idString() << " inventory";
+			
+			for(size_t bag = 0; bag < bags; bag++) {
+				for(size_t j = 0 ; j < height; j++) {
+					for(size_t i = 0 ; i < width; i++) {
+						INVENTORY_SLOT & slot = index(bag, i, j);
+						if(slot.io && slot.show) {
+							remaining.push_back(slot.io);
+							remove(slot.io);
+						}
+						arx_assert(!slot.io && !slot.show);
+					}
+				}
+			}
+			
+			BOOST_FOREACH(Entity * item, remaining) {
+				Pos pos;
+				for(size_t i = 0; i < items.size(); i++) {
+					if(items[i] == item) {
+						pos = positions[i];
+						break;
+					}
+				}
+				if(!insertImpl(item, pos)) {
+					LogWarning << "Could not restory original position of " << item->idString() << " in "
+					           << entities.get(io)->idString() << " inventory";
+					PutInFrontOfPlayer(item);
+				}
+			}
+			
+		}
+		
 	}
 	
 	void remove(Entity * item) {
