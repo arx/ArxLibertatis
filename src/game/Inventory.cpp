@@ -654,6 +654,10 @@ Inventory<1, 20, 20> getIoInventory(Entity * io) {
 	return Inventory<1, 20, 20>(io->index(), inv->slot, 1, inv->m_size.x, inv->m_size.y);
 }
 
+Inventory<1, 20, 20> getIoInventory(EntityHandle id) {
+	return getIoInventory(entities.get(id));
+}
+
 } // anonymous namespace
 
 /*!
@@ -775,7 +779,7 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 	}
 	
 	if(ValidIONum(pos.io) && entities[pos.io]->inventory) {
-		if(getIoInventory(entities[pos.io]).insert(item, pos)) {
+		if(getIoInventory(pos.io).insert(item, pos)) {
 			return true;
 		}
 	}
