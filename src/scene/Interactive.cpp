@@ -258,6 +258,7 @@ void ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target,
 		return;
 	}
 	
+	removeFromInventories(source);
 	source->show = SHOW_FLAG_LINKED;
 	EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, source->obj);
 	EERIE_LINKEDOBJ_LinkObjectToObject(target->obj,
@@ -272,6 +273,7 @@ void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target)
 	if(!source || !target)
 		return;
 
+	removeFromInventories(source);
 	source->show = SHOW_FLAG_IN_SCENE;
 	EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, source->obj);
 }
@@ -403,6 +405,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		linked->soundtime = 0;
 		linked->soundcount = 0;
 		linked->gameFlags |= GFLAG_NO_PHYS_IO_COL;
+		removeFromInventories(io);
 		linked->show = SHOW_FLAG_IN_SCENE;
 		linked->no_collide = io->index();
 		
