@@ -289,7 +289,6 @@ class InventoryCommand : public Command {
 			}
 			
 			t->scriptload = 0;
-			t->show = SHOW_FLAG_IN_INVENTORY;
 			
 			if(!insertIntoInventory(t, context.getEntity())) {
 				PutInFrontOfPlayer(t);
@@ -348,7 +347,6 @@ class InventoryCommand : public Command {
 			LASTSPAWNED = ioo;
 			ioo->scriptload = 1;
 			SendInitScriptEvent(ioo);
-			ioo->show = SHOW_FLAG_IN_INVENTORY;
 			
 			if(multi) {
 				if(ioo->ioflags & IO_GOLD) {
