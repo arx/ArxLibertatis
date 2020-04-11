@@ -110,7 +110,8 @@ class InventoryCommand : public Command {
 			for(long y = 0; y < id->m_size.y; y++) {
 				for(long x = 0; x < id->m_size.x; x++) {
 					Entity * item = id->slot[x][y].io;
-					if(item && id->slot[x][y].show) {
+					if(item) {
+						removeFromInventories(item);
 						// Delay destruction of the object to avoid invalid references
 						if(item->ioflags & IO_ITEM) {
 							item->_itemdata->count = 1;
@@ -120,7 +121,7 @@ class InventoryCommand : public Command {
 						item->show = SHOW_FLAG_MEGAHIDE;
 						item->ioflags |= IO_FREEZESCRIPT;
 					}
-					id->slot[x][y].io = NULL;
+					arx_assert(id->slot[x][y].io == NULL);
 				}
 			}
 			
