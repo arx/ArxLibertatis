@@ -1795,7 +1795,7 @@ void ArxGame::manageEditorControls() {
 			
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
 			
-			if(!playerInventory.insert(FlyingOverIO)) {
+			if(!insertIntoInventory(FlyingOverIO, entities.player())) {
 				// If there is no space, leave the item where it is
 			}
 			

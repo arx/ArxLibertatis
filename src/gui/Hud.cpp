@@ -277,7 +277,7 @@ void BackpackIconGui::updateInput() {
 	
 	// Check for backpack Icon
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
-		if(eeMouseUp1() && playerInventory.insert(DRAGINTER)) {
+		if(eeMouseUp1() && insertIntoInventory(DRAGINTER, entities.player())) {
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
 		}
 	}

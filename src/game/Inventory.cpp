@@ -713,20 +713,12 @@ void CleanInventory() {
 
 PlayerInventory playerInventory;
 
-bool PlayerInventory::insert(Entity * item) {
-	return getPlayerInventory().insert(item);
-}
-
-bool PlayerInventory::insert(Entity * item, const Pos & pos) {
-	return getPlayerInventory().insert(item, pos);
-}
-
 void PlayerInventory::optimize() {
 	getPlayerInventory().optimize();
 }
 
 bool giveToPlayer(Entity * item) {
-	if(playerInventory.insert(item)) {
+	if(getPlayerInventory().insert(item)) {
 		return true;
 	} else {
 		PutInFrontOfPlayer(item);
@@ -735,7 +727,7 @@ bool giveToPlayer(Entity * item) {
 }
 
 bool giveToPlayer(Entity * item, const InventoryPos & pos) {
-	if(playerInventory.insert(item, pos)) {
+	if(getPlayerInventory().insert(item, pos)) {
 		return true;
 	} else {
 		PutInFrontOfPlayer(item);
@@ -775,7 +767,7 @@ InventoryPos locateInInventories(const Entity * item) {
 bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 	
 	if(pos.io == EntityHandle_Player) {
-		return playerInventory.insert(item, pos);
+		return getPlayerInventory().insert(item, pos);
 	}
 	
 	if(ValidIONum(pos.io) && entities[pos.io]->inventory) {
@@ -790,7 +782,7 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 bool insertIntoInventory(Entity * item, Entity * container) {
 	
 	if(container == entities.player()) {
-		return playerInventory.insert(item);
+		return getPlayerInventory().insert(item);
 	}
 	
 	return getIoInventory(container).insert(item);
@@ -1141,7 +1133,7 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 			
 			Entity * io = slot.io;
 			
-			if(playerInventory.insert(io)) {
+			if(getPlayerInventory().insert(io)) {
 				bSound = true;
 			}
 		}

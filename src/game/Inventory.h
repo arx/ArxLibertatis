@@ -133,33 +133,6 @@ class PlayerInventory {
 	
 public:
 	
-	/*!
-	 * Insert an item into the player inventory
-	 * The item will be added to existing stacks if possible.
-	 * Otherwise the first empty slot will be used.
-	 *
-	 * Does not check if the item is already in the inventory!
-	 *
-	 * \param item the item to insert
-	 *
-	 * \return true if the item was inserted, false otherwise
-	 */
-	static bool insert(Entity * item);
-	
-	/*!
-	 * Insert an item into the player inventory
-	 * The item will be added to existing stacks if possible.
-	 * Otherwise, the item will be inserted at the specified position.
-	 * If that fails, the first empty slot will be used.
-	 *
-	 * Does not check if the item is already in the inventory!
-	 *
-	 * \param item the item to insert
-	 *
-	 * \return true if the item was inserted, false otherwise
-	 */
-	static bool insert(Entity * item, const Pos & pos);
-	
 	//! Sort the inventory and stack duplicate items
 	static void optimize();
 	
