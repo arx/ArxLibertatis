@@ -2387,6 +2387,7 @@ void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t)
 		io->obj->pbox->active = 1;
 		io->obj->pbox->stopcount = 0;
 		Vec3f fallvector = Vec3f(0.0f, 0.000001f, 0.f);
+		removeFromInventories(io);
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->soundtime = 0;
 		io->soundcount = 0;
