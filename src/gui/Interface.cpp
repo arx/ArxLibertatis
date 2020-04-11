@@ -1963,52 +1963,46 @@ void ArxGame::manageEditorControls() {
 		   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 		   && !DRAGINTER
 		) {
-			if(!TakeFromInventory(g_dragStartPos)) {
-				
-				bool bOk = false;
+			if(g_secondaryInventoryHud.containsPos(g_dragStartPos)) {
+				Entity * item = g_secondaryInventoryHud.getObj(g_dragStartPos);
+				if(item) {
+					g_secondaryInventoryHud.dragEntity(item);
+					ARX_PLAYER_Remove_Invisibility();
+				}
+			} else if(g_playerInventoryHud.containsPos(g_dragStartPos)) {
+				Entity * item = g_playerInventoryHud.getObj(g_dragStartPos);
+				if(item) {
+					g_playerInventoryHud.dragEntity(item);
+					ARX_PLAYER_Remove_Invisibility();
+				}
+			} else if(!BLOCK_PLAYER_CONTROLS) {
 				
 				Entity * io = InterClick(g_dragStartPos);
-				if(io && !BLOCK_PLAYER_CONTROLS) {
-					if(g_cursorOverBook) {
-						if(io->show == SHOW_FLAG_ON_PLAYER)
-							bOk = true;
-					} else {
-						bOk = true;
-					}
-				}
-				
-				if(bOk) {
+				if(io && (!g_cursorOverBook || io->show == SHOW_FLAG_ON_PLAYER)) {
 					
-					if(io && io->show == SHOW_FLAG_ON_PLAYER) {
+					if(io->show == SHOW_FLAG_ON_PLAYER) {
 						ARX_EQUIPMENT_UnEquip(entities.player(), io);
 						io->bbox2D.max.x = -1;
 					}
 					
 					Set_DragInter(io);
 					
-					if(io) {
-						
-						ARX_PLAYER_Remove_Invisibility();
-						
-						if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
-							Set_DragInter(NULL);
-						} else {
-							if(io->ioflags & IO_UNDERWATER) {
-								io->ioflags &= ~IO_UNDERWATER;
-								ARX_SOUND_PlayInterface(g_snd.PLOUF, Random::getf(0.8f, 1.2f));
-							}
-							arx_assert(!locateInInventories(DRAGINTER));
-							DRAGINTER->show = SHOW_FLAG_NOT_DRAWN;
-							ARX_SOUND_PlayInterface(g_snd.INVSTD);
+					ARX_PLAYER_Remove_Invisibility();
+					
+					if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
+						Set_DragInter(NULL);
+					} else {
+						if(io->ioflags & IO_UNDERWATER) {
+							io->ioflags &= ~IO_UNDERWATER;
+							ARX_SOUND_PlayInterface(g_snd.PLOUF, Random::getf(0.8f, 1.2f));
 						}
-						
+						arx_assert(!locateInInventories(DRAGINTER));
+						DRAGINTER->show = SHOW_FLAG_NOT_DRAWN;
+						ARX_SOUND_PlayInterface(g_snd.INVSTD);
 					}
 					
-				} else {
-					Set_DragInter(NULL);
 				}
-			} else {
-				ARX_PLAYER_Remove_Invisibility();
+				
 			}
 		}
 	
