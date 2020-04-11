@@ -279,6 +279,22 @@ void SecondaryInventoryHud::draw() {
 	}
 }
 
+void SecondaryInventoryHud::updateCombineFlags(Entity * source) {
+	
+	if(!isOpen()) {
+		return;
+	}
+	
+	for(long y = 0; y < SecondaryInventory->m_size.y; y++) {
+		for(long x = 0; x < SecondaryInventory->m_size.x; x++) {
+			if(SecondaryInventory->slot[x][y].show) {
+				updateCombineFlagForEntity(source, SecondaryInventory->slot[x][y].io);
+			}
+		}
+	}
+	
+}
+
 void SecondaryInventoryHud::updateInputButtons() {
 	
 	if(TSecondaryInventory) {
