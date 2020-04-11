@@ -1884,6 +1884,7 @@ void ArxGame::manageEditorControls() {
 						EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);
 						ARX_SOUND_PlaySFX(g_snd.WHOOSH, &io->pos);
 						
+						arx_assert(!locateInInventories(io));
 						io->show = SHOW_FLAG_IN_SCENE;
 						Set_DragInter(NULL);
 					}
@@ -2015,7 +2016,6 @@ void ArxGame::manageEditorControls() {
 					
 					if(io && io->show == SHOW_FLAG_ON_PLAYER) {
 						ARX_EQUIPMENT_UnEquip(entities.player(), io);
-						removeFromInventories(io);
 						io->bbox2D.max.x = -1;
 					}
 					
@@ -2032,6 +2032,7 @@ void ArxGame::manageEditorControls() {
 								io->ioflags &= ~IO_UNDERWATER;
 								ARX_SOUND_PlayInterface(g_snd.PLOUF, Random::getf(0.8f, 1.2f));
 							}
+							arx_assert(!locateInInventories(DRAGINTER));
 							DRAGINTER->show = SHOW_FLAG_NOT_DRAWN;
 							ARX_SOUND_PlayInterface(g_snd.INVSTD);
 						}

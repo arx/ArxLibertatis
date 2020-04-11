@@ -125,14 +125,20 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance =
 static Entity * AddMarker(const res::path & classPath, EntityInstance instance = -1);
 
 float STARTED_ANGLE = 0;
-void Set_DragInter(Entity * io, const InventoryPos & previousPosition) {
+void Set_DragInter(Entity * io) {
 	
 	if(io != DRAGINTER) {
 		STARTED_ANGLE = player.angle.getYaw();
 	}
 	
+	if(io) {
+		g_draggedItemPreviousPosition = removeFromInventories(io);
+		io->show = SHOW_FLAG_IN_SCENE;
+	} else {
+		g_draggedItemPreviousPosition = InventoryPos();
+	}
+	
 	DRAGINTER = io;
-	g_draggedItemPreviousPosition = previousPosition;
 	
 	if(io && io->obj && io->obj->pbox) {
 		io->obj->pbox->active = 0;
