@@ -239,7 +239,6 @@ bool TakeFromInventory(const Vec2s & pos);
 Entity * GetFromInventory(const Vec2s & pos);
 bool IsInPlayerInventory(Entity * io);
 bool IsInSecondaryInventory(Entity * io);
-bool InInventoryPos(const Vec2s & pos);
 Entity * getInventoryItemWithLowestDurability(const std::string & className, float minDurability = 0.f);
 
 void ARX_INVENTORY_IdentifyAll();
