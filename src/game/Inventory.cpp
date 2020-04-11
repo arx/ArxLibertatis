@@ -711,9 +711,7 @@ void CleanInventory() {
 	g_playerInventoryHud.setCurrentBag(0);
 }
 
-PlayerInventory playerInventory;
-
-void PlayerInventory::optimize() {
+void optimizePlayerInventory() {
 	getPlayerInventory().optimize();
 }
 
