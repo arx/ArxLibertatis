@@ -646,7 +646,9 @@ void CleanScriptLoadedIO() {
 		if(io) {
 			if(io->scriptload) {
 				delete io;
-			} else {
+			} else if(io->show != SHOW_FLAG_IN_INVENTORY
+			          && io->show != SHOW_FLAG_ON_PLAYER
+			          && io->show != SHOW_FLAG_LINKED) {
 				// TODO why not jus leave it as is?
 				io->show = SHOW_FLAG_IN_SCENE;
 			}
