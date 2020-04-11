@@ -788,17 +788,6 @@ bool insertIntoInventoryAtNoEvent(Entity * item, const InventoryPos & pos) {
 	return getIoInventory(pos.io).insertAtNoEvent(item, pos);
 }
 
-//! Try to put DRAGINTER object in an inventory
-void PutInInventory() {
-	// Check Validity
-	if(!DRAGINTER || (DRAGINTER->ioflags & IO_MOVABLE))
-		return;
-	
-	g_secondaryInventoryHud.dropEntity();
-	
-	g_playerInventoryHud.dropEntity();
-}
-
 /*!
  * \brief Returns true if "pos" is a position in player inventory or in SECONDARY inventory
  */
