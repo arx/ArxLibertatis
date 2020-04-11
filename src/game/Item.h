@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GAME_ITEM_H
 
 #include "game/Entity.h"
+#include "game/Inventory.h"
 
 enum EquipmentModifierType {
 	// Attributes
@@ -122,6 +123,7 @@ struct IO_ITEMDATA {
 	char stealvalue;
 	short playerstacksize;
 	short LightValue;
+	InventoryPos m_inventoryPos;
 	
 	IO_ITEMDATA()
 		: equipitem(0)
