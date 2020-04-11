@@ -128,7 +128,7 @@ extern InventoryPos g_draggedItemPreviousPosition;
 std::ostream & operator<<(std::ostream & strm, const InventoryPos & pos);
 
 //! Sort the inventory and stack duplicate items
-void optimizePlayerInventory();
+void optimizeInventory(Entity * container);
 
 /*!
  * Insert an item into the player inventory
