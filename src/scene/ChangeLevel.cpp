@@ -1644,8 +1644,14 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 	for(size_t bag = 0; bag < SAVED_INVENTORY_BAGS; bag++)
 	for(size_t y = 0; y < SAVED_INVENTORY_Y; y++)
 	for(size_t x = 0; x < SAVED_INVENTORY_X; x++) {
-		g_inventory[bag][x][y].io = ConvertToValidIO(asp->id_inventory[bag][x][y]);
-		g_inventory[bag][x][y].show = asp->inventory_show[bag][x][y] != 0;
+		Entity * item = ConvertToValidIO(asp->id_inventory[bag][x][y]);
+		if(!item || locateInInventories(item).io == EntityHandle_Player) {
+			continue;
+		}
+		if(!insertIntoInventoryAtNoEvent(item, InventoryPos(EntityHandle_Player, bag, x, y))) {
+			LogWarning << "Could not load item " << item->idString() << " into player inventory";
+			PutInFrontOfPlayer(item);
+		}
 	}
 	
 	if(buffer.size() < pos + (asp->nb_PlayerQuest * SAVED_QUEST_SLOT_SIZE)) {
@@ -2170,20 +2176,19 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			io->inventory = new INVENTORY_DATA();
 			
 			INVENTORY_DATA * inv = io->inventory;
-			inv->io = ConvertToValidIO(aids->io);
+			inv->io = io;
 			
 			inv->m_size = Vec2s(3, 11);
-			if(aids->sizex != 3 || aids->sizey != 11) {
-				for(long x = 0; x < inv->m_size.x; x++)
-				for(long y = 0; y < inv->m_size.y; y++) {
-					inv->slot[x][y].io = NULL;
-					inv->slot[x][y].show = false;
+			
+			for(long x = 0; x < aids->sizex; x++)
+			for(long y = 0; y < aids->sizey; y++) {
+				Entity * item = ConvertToValidIO(aids->slot_io[x][y]);
+				if(!item || locateInInventories(item).io == io->index()) {
+					continue;
 				}
-			} else {
-				for(long x = 0; x < inv->m_size.x; x++)
-				for(long y = 0; y < inv->m_size.y; y++) {
-					inv->slot[x][y].io = ConvertToValidIO(aids->slot_io[x][y]);
-					inv->slot[x][y].show = aids->slot_show[x][y] != 0;
+				if(!insertIntoInventoryAtNoEvent(item, InventoryPos(io->index(), 0, x, y))) {
+					LogWarning << "Could not load item " << item->idString() << " into inventory of " << io->idString();
+					PutInFrontOfPlayer(item);
 				}
 			}
 			
