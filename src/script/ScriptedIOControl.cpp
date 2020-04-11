@@ -475,6 +475,7 @@ public:
 		
 		t->gameFlags &= ~GFLAG_MEGAHIDE;
 		if(hide) {
+			removeFromInventories(t);
 			if(megahide) {
 				t->gameFlags |= GFLAG_MEGAHIDE;
 				t->show = SHOW_FLAG_MEGAHIDE;
@@ -482,6 +483,7 @@ public:
 				t->show = SHOW_FLAG_HIDDEN;
 			}
 		} else if(t->show == SHOW_FLAG_MEGAHIDE || t->show == SHOW_FLAG_HIDDEN) {
+			arx_assert(!locateInInventories(t));
 			t->show = SHOW_FLAG_IN_SCENE;
 			if((t->ioflags & IO_NPC) && t->_npcdata->lifePool.current <= 0.f) {
 				t->animlayer[0].cur_anim = t->anims[ANIM_DIE];
