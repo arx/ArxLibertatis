@@ -862,10 +862,6 @@ bool IsInPlayerInventory(Entity * io) {
 	return locateInInventories(io).io == EntityHandle_Player;
 }
 
-bool IsInSecondaryInventory(Entity * io) {
-	return SecondaryInventory && locateInInventories(io).io == SecondaryInventory->io->index();
-}
-
 // TODO don't use texture name to find entity
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand) {
 	

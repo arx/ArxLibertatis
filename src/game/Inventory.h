@@ -236,7 +236,6 @@ Vec3f GetItemWorldPositionSound(const Entity * io);
 void CleanInventory();
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand);
 bool IsInPlayerInventory(Entity * io);
-bool IsInSecondaryInventory(Entity * io);
 Entity * getInventoryItemWithLowestDurability(const std::string & className, float minDurability = 0.f);
 
 void ARX_INVENTORY_IdentifyAll();
