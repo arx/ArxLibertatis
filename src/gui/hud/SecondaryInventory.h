@@ -98,6 +98,8 @@ public:
 	
 	void updateFader();
 	
+	void takeAllItems();
+	
 	enum Fade {
 		Fade_left = -1,
 		Fade_stable = 0,

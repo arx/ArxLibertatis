@@ -65,7 +65,7 @@ void SecondaryInventoryPickAllHudIcon::updateInput() {
 		
 		if(eeMouseDown1()) {
 			// play un son que si un item est pris
-			ARX_INVENTORY_TakeAllFromSecondaryInventory();
+			g_secondaryInventoryHud.takeAllItems();
 		}
 		
 		if(DRAGINTER == NULL)
@@ -450,4 +450,24 @@ void SecondaryInventoryHud::updateFader() {
 			m_fadeDirection = Fade_stable;
 		}
 	}
+}
+
+void SecondaryInventoryHud::takeAllItems() {
+	
+	if(!TSecondaryInventory) {
+		return;
+	}
+	
+	bool success = false;
+	for(long y = 0; y < TSecondaryInventory->m_size.y; y++) {
+		for(long x = 0; x < TSecondaryInventory->m_size.x; x++) {
+			INVENTORY_SLOT & slot = TSecondaryInventory->slot[x][y];
+			if(slot.show && insertIntoInventory(slot.io, entities.player())) {
+				success = true;
+			}
+		}
+	}
+	
+	ARX_SOUND_PlayInterface(g_snd.INVSTD, success ? 1.f : 0.1f);
+	
 }
