@@ -287,7 +287,6 @@ Vec3f GetItemWorldPosition(const Entity * io);
 Vec3f GetItemWorldPositionSound(const Entity * io);
 
 Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos);
-void CheckForInventoryReplaceMe(Entity * io, Entity * old);
 
 void CleanInventory();
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand);
