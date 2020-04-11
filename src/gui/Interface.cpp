@@ -690,7 +690,7 @@ void ArxGame::managePlayerControls() {
 								player.Interface &= ~INTER_STEAL;
 							}
 							
-							ARX_INVENTORY_OpenClose(t);
+							g_secondaryInventoryHud.open(t);
 							
 							if(player.Interface & INTER_INVENTORYALL) {
 								ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
@@ -717,7 +717,7 @@ void ArxGame::managePlayerControls() {
 						}
 					}
 					
-					ARX_INVENTORY_OpenClose(t);
+					g_secondaryInventoryHud.open(t);
 					
 					if(player.Interface & INTER_INVENTORYALL) {
 						ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));

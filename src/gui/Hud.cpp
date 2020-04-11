@@ -312,7 +312,7 @@ void BackpackIconGui::updateInput() {
 			}
 		} else if(eeMouseDown2()) {
 			g_playerBook.close();
-			ARX_INVENTORY_OpenClose(NULL);
+			g_secondaryInventoryHud.open(NULL);
 			
 			if(player.Interface & INTER_INVENTORYALL) {
 				ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
@@ -372,7 +372,7 @@ void StealIconGui::updateInput() {
 			cursorSetInteraction();
 			
 			if(eeMouseDown1()) {
-				ARX_INVENTORY_OpenClose(ioSteal);
+				g_secondaryInventoryHud.open(ioSteal);
 				
 				if(player.Interface & INTER_INVENTORYALL) {
 					ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));

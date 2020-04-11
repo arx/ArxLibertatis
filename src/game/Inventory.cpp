@@ -61,9 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Item.h"
 #include "game/Player.h"
 
-#include "gui/Hud.h"
 #include "gui/Interface.h"
-#include "gui/hud/SecondaryInventory.h"
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
@@ -1036,50 +1034,4 @@ void ARX_INVENTORY_IdentifyAll() {
 			ARX_INVENTORY_IdentifyIO(slot.io);
 		}
 	}
-}
-
-//-----------------------------------------------------------------------------
-void ARX_INVENTORY_OpenClose(Entity * _io)
-{
-	// CLOSING
-	if(!_io || SecondaryInventory == _io->inventory) {
-		if(SecondaryInventory && SecondaryInventory->io)
-			SendIOScriptEvent(entities.player(), SecondaryInventory->io, SM_INVENTORY2_CLOSE);
-
-		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
-		TSecondaryInventory = SecondaryInventory;
-		SecondaryInventory = NULL;
-		DRAGGING = false;
-	} else {
-		if(TSecondaryInventory && TSecondaryInventory->io)
-			SendIOScriptEvent(entities.player(), TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
-
-		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_right;
-		TSecondaryInventory = SecondaryInventory = _io->inventory;
-
-		if(SecondaryInventory && SecondaryInventory->io != NULL) {
-			if(SendIOScriptEvent(entities.player(), SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE) {
-				g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
-				TSecondaryInventory = SecondaryInventory = NULL;
-				return;
-			}
-		}
-
-		if(player.Interface & INTER_COMBATMODE) {
-			ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
-		}
-
-		if(config.input.autoReadyWeapon != AlwaysAutoReadyWeapon) {
-			TRUE_PLAYER_MOUSELOOK_ON = false;
-		}
-
-		if(SecondaryInventory && SecondaryInventory->io && (SecondaryInventory->io->ioflags & IO_SHOP)) {
-			if(TSecondaryInventory) {
-				optimizeInventory(TSecondaryInventory->io);
-			}
-		}
-		
-		DRAGGING = false;
-	}
-	
 }
