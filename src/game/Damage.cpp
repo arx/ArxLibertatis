@@ -618,6 +618,7 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 		if(io_dead._npcdata->weapon) {
 			Entity * ioo = io_dead._npcdata->weapon;
 			if(ValidIOAddress(ioo)) {
+				removeFromInventories(ioo);
 				ioo->show = SHOW_FLAG_IN_SCENE;
 				ioo->ioflags |= IO_NO_NPC_COLLIDE;
 				ioo->pos = ioo->obj->vertexWorldPositions[ioo->obj->origin].v;
