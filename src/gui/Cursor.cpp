@@ -145,6 +145,7 @@ void cursorTexturesInit() {
 bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
 	
 	arx_assert(io);
+	arx_assert(!locateInInventories(io));
 	
 	if(simulate && draginter) {
 		io->show = SHOW_FLAG_ON_PLAYER;

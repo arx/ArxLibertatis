@@ -371,6 +371,7 @@ void SecondaryInventoryHud::dragEntity(Entity * io, const InventoryPos & pos) {
 	arx_assert(SecondaryInventory);
 	arx_assert(pos.io == SecondaryInventory->io->index());
 	arx_assert(io->ioflags & IO_ITEM);
+	arx_assert(locateInInventories(io).io == SecondaryInventory->io->index());
 	
 	// For shops, check if the player can afford the item and deduct the cost
 	Entity * ioo = SecondaryInventory->io;
@@ -391,18 +392,17 @@ void SecondaryInventoryHud::dragEntity(Entity * io, const InventoryPos & pos) {
 	if(io->_itemdata->count > 1
 	   && ((ioo->ioflags & IO_SHOP) || !GInput->actionPressed(CONTROLS_CUST_STEALTHMODE))) {
 		Entity * unstackedEntity = CloneIOItem(io);
-		unstackedEntity->show = SHOW_FLAG_NOT_DRAWN;
 		unstackedEntity->scriptload = 1;
 		unstackedEntity->_itemdata->count = 1;
 		io->_itemdata->count--;
 		ARX_SOUND_PlayInterface(g_snd.INVSTD);
-		Set_DragInter(unstackedEntity, pos);
+		Set_DragInter(unstackedEntity);
+		g_draggedItemPreviousPosition = locateInInventories(io);
 		ARX_INVENTORY_IdentifyIO(unstackedEntity);
 		return;
 	}
 	
-	Set_DragInter(io, pos);
-	removeFromInventories(io);
+	Set_DragInter(io);
 	ARX_INVENTORY_IdentifyIO(io);
 	
 }
