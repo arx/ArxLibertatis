@@ -124,22 +124,6 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io, EntityHandle containe
 	
 }
 
-/*!
- * \brief Cleans Player inventory
- */
-void CleanInventory() {
-	
-	for(size_t bag = 0; bag < INVENTORY_BAGS; bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-		slot.io = NULL;
-		slot.show = true;
-	}
-	
-	g_playerInventoryHud.setCurrentBag(0);
-}
-
 Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos) {
 	
 	std::pair<Entity *, int> result = GetFromInventory(pos);
@@ -671,6 +655,24 @@ Inventory<1, 20, 20> getIoInventory(Entity * io) {
 }
 
 } // anonymous namespace
+
+/*!
+ * \brief Cleans Player inventory
+ */
+void CleanInventory() {
+	
+	for(size_t bag = 0; bag < INVENTORY_BAGS; bag++)
+	for(size_t y = 0; y < INVENTORY_Y; y++)
+	for(size_t x = 0; x < INVENTORY_X; x++) {
+		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
+		if(slot.io) {
+			getPlayerInventory().remove(slot.io);
+		}
+		arx_assert(!slot.io && !slot.show);
+	}
+	
+	g_playerInventoryHud.setCurrentBag(0);
+}
 
 PlayerInventory playerInventory;
 
