@@ -92,7 +92,7 @@ public:
 	Entity * getObj(const Vec2s & pos);
 	
 	void dropEntity();
-	void dragEntity(Entity * io, const InventoryPos & pos);
+	void dragEntity(Entity * io);
 	
 	void close();
 	

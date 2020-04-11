@@ -366,10 +366,9 @@ void SecondaryInventoryHud::dropEntity() {
 	
 }
 
-void SecondaryInventoryHud::dragEntity(Entity * io, const InventoryPos & pos) {
+void SecondaryInventoryHud::dragEntity(Entity * io) {
 	
 	arx_assert(SecondaryInventory);
-	arx_assert(pos.io == SecondaryInventory->io->index());
 	arx_assert(io->ioflags & IO_ITEM);
 	arx_assert(locateInInventories(io).io == SecondaryInventory->io->index());
 	
