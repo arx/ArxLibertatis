@@ -1009,7 +1009,7 @@ bool TakeFromInventory(const Vec2s & pos) {
 			g_playerInventoryHud.dragEntity(result.first);
 			break;
 		case 2:
-			g_secondaryInventoryHud.dragEntity(result.first, getIoInventory(SecondaryInventory->io).locate(result.first));
+			g_secondaryInventoryHud.dragEntity(result.first);
 			break;
 		default:
 			arx_unreachable();
