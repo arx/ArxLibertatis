@@ -200,8 +200,6 @@ class InventoryCommand : public Command {
 				return Failed;
 			}
 			
-			removeFromInventories(t);
-			
 			giveToPlayer(t);
 			
 			return Success;
@@ -284,8 +282,6 @@ class InventoryCommand : public Command {
 			
 			if(ARX_EQUIPMENT_IsPlayerEquip(t)) {
 				ARX_EQUIPMENT_UnEquip(entities.player(), t, 1);
-			} else {
-				removeFromInventories(t);
 			}
 			
 			t->scriptload = 0;
