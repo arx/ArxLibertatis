@@ -746,7 +746,7 @@ InventoryPos locateInInventories(const Entity * item) {
 bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 	
 	if(pos.io == EntityHandle_Player) {
-		return giveToPlayer(item, pos);
+		return playerInventory.insert(item, pos);
 	}
 	
 	if(ValidIONum(pos.io) && entities[pos.io]->inventory) {
@@ -755,14 +755,13 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 		}
 	}
 	
-	PutInFrontOfPlayer(item);
 	return false;
 }
 
 bool insertIntoInventory(Entity * item, Entity * container) {
 	
 	if(container == entities.player()) {
-		return giveToPlayer(item);
+		return playerInventory.insert(item);
 	}
 	
 	return getIoInventory(container).insert(item);

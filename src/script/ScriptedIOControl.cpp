@@ -118,7 +118,9 @@ public:
 			
 			InventoryPos oldPos = locateInInventories(io);
 			if(oldPos) {
-				insertIntoInventory(ioo, oldPos);
+				if(!insertIntoInventory(ioo, oldPos)) {
+					PutInFrontOfPlayer(ioo);
+				}
 			}
 			
 		} else {
@@ -148,7 +150,9 @@ public:
 			
 			if(reInsert) {
 				if(oldPos) {
-					insertIntoInventory(ioo, oldPos);
+					if(!insertIntoInventory(ioo, oldPos)) {
+						PutInFrontOfPlayer(ioo);
+					}
 				} else {
 					for(size_t i = 0; i < MAX_EQUIPED; i++) {
 						if(ValidIONum(player.equiped[i])) {
