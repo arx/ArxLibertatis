@@ -799,6 +799,10 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 				}
 			}
 		}
+ 		
+		if(SecondaryInventory && SecondaryInventory->io == io) {
+			SecondaryInventory = NULL;
+		}
 		
 		if(TSecondaryInventory && TSecondaryInventory->io == io) {
 			TSecondaryInventory = NULL;
