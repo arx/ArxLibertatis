@@ -82,6 +82,7 @@ public:
 	void update();
 	void updateRect();
 	void draw();
+	void drawItemPrice(float scale);
 	
 	void updateInputButtons();
 	

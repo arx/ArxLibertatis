@@ -67,44 +67,6 @@ extern bool WILLRETURNTOFREELOOK;
 static const int indicatorVertSpacing = 30;
 static const int indicatorHorizSpacing = 20;
 
-static void DrawItemPrice(float scale) {
-	
-	if(!SecondaryInventory) {
-		return;
-	}
-	
-	Entity * temp = SecondaryInventory->io;
-	if(temp->ioflags & IO_SHOP) {
-		Vec2f pos = Vec2f(DANAEMouse);
-		pos += Vec2f(60, -10) * scale;
-		
-		if(g_secondaryInventoryHud.containsPos(DANAEMouse)) {
-			
-			long amount = ARX_INTERACTIVE_GetPrice(FlyingOverIO, temp);
-			// achat
-			float famount = amount - amount * player.m_skillFull.intuition * 0.005f;
-			// check should always be OK because amount is supposed positive
-			amount = checked_range_cast<long>(famount);
-
-			Color color = (amount <= player.gold) ? Color::green : Color::red;
-			
-			ARX_INTERFACE_DrawNumber(pos, amount, color, scale);
-		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
-			long amount = ARX_INTERACTIVE_GetSellValue(FlyingOverIO, temp);
-			if(amount) {
-				Color color = Color::red;
-				
-				if(temp->shop_category.empty() ||
-				   FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end()) {
-
-					color = Color::green;
-				}
-				ARX_INTERFACE_DrawNumber(pos, amount, color, scale);
-			}
-		}
-	}
-}
-
 HitStrengthGauge::HitStrengthGauge()
 	: m_emptyTex(NULL)
 	, m_fullTex(NULL)
@@ -1497,7 +1459,7 @@ void HudRoot::draw() {
 	   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 	   && (!PLAYER_MOUSELOOK_ON || config.input.autoReadyWeapon != AlwaysAutoReadyWeapon)) {
 		if((FlyingOverIO->ioflags & IO_ITEM) && !DRAGINTER) {
-			DrawItemPrice(m_scale);
+			g_secondaryInventoryHud.drawItemPrice(m_scale);
 		}
 		cursorSetInteraction();
 	}
