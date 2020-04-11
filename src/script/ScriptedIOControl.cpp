@@ -109,72 +109,54 @@ public:
 			Set_DragInter(ioo);
 		}
 		
-		EntityHandle neww = ioo->index();
-		EntityHandle oldd = io->index();
+		InventoryPos oldPos = locateInInventories(io);
 		
-		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
-			io->_itemdata->count--;
-			SendInitScriptEvent(ioo);
+		// Delay destruction of the object to avoid invalid references
+		bool removed = false;
+		if(ARX_INTERACTIVE_DestroyIOdelayed(io)) {
 			
-			InventoryPos oldPos = locateInInventories(io);
-			if(oldPos) {
-				if(!insertIntoInventory(ioo, oldPos)) {
-					PutInFrontOfPlayer(ioo);
-				}
-			}
-			
-		} else {
-			spells.replaceCaster(oldd, neww);
-			
-			InventoryPos oldPos = removeFromInventories(io);
-			
-			SendInitScriptEvent(ioo);
-			ioo->angle = last_angle;
-			TREATZONE_AddIO(ioo);
-			
-			// check that the init script didn't put the item anywhere
-			// if we ignore this we might create duplucate references
-			bool reInsert = true; // should the new item be inserted at the old items position?
-			if(locateInInventories(ioo)) {
-				// the init script already inserted the item into an inventory
-				reInsert = false;
-			}
-			for(size_t i = 0; i < MAX_EQUIPED; i++) {
-				if(ValidIONum(player.equiped[i])) {
-					if(entities[player.equiped[i]] == ioo) {
-						// the init script was sneaky and equiped the item
-						reInsert = false;
-					}
-				}
-			}
-			
-			if(reInsert) {
-				if(oldPos) {
-					if(!insertIntoInventory(ioo, oldPos)) {
-						PutInFrontOfPlayer(ioo);
-					}
-				} else {
-					for(size_t i = 0; i < MAX_EQUIPED; i++) {
-						if(ValidIONum(player.equiped[i])) {
-							if(entities[player.equiped[i]] == io) {
-								ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
-								ARX_EQUIPMENT_Equip(entities.player(), ioo);
-							}
-						}
-					}
-				}
-			}
-			
-			// Delay destruction of the object to avoid invalid references
-			ARX_INTERACTIVE_DestroyIOdelayed(io);
+			spells.replaceCaster(io->index(), ioo->index());
+			removeFromInventories(io);
 			
 			// Prevent further script events as the object has been destroyed!
 			io->show = SHOW_FLAG_MEGAHIDE;
 			io->ioflags |= IO_FREEZESCRIPT;
-			return AbortRefuse;
+			
+			removed = true;
 		}
 		
-		return Success;
+		SendInitScriptEvent(ioo);
+		ioo->angle = last_angle;
+		TREATZONE_AddIO(ioo);
+		
+		// Check that the init script didn't put the item anywhere
+		bool reInsert = !locateInInventories(ioo);
+		for(size_t i = 0; i < MAX_EQUIPED; i++) {
+			if(ValidIONum(player.equiped[i])) {
+				if(entities[player.equiped[i]] == ioo) {
+					reInsert = false;
+				}
+			}
+		}
+		
+		if(reInsert) {
+			if(oldPos) {
+				if(!insertIntoInventory(ioo, oldPos)) {
+					PutInFrontOfPlayer(ioo);
+				}
+			} else {
+				for(size_t i = 0; i < MAX_EQUIPED; i++) {
+					if(ValidIONum(player.equiped[i])) {
+						if(entities[player.equiped[i]] == io) {
+							ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
+							ARX_EQUIPMENT_Equip(entities.player(), ioo);
+						}
+					}
+				}
+			}
+		}
+		
+		return removed ? AbortRefuse : Success;
 	}
 	
 };
