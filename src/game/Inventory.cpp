@@ -1006,7 +1006,7 @@ bool TakeFromInventory(const Vec2s & pos) {
 	
 	switch(result.second) {
 		case 1:
-			g_playerInventoryHud.dragEntity(result.first, getPlayerInventory().locate(result.first));
+			g_playerInventoryHud.dragEntity(result.first);
 			break;
 		case 2:
 			g_secondaryInventoryHud.dragEntity(result.first, getIoInventory(SecondaryInventory->io).locate(result.first));
