@@ -135,28 +135,6 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io, EntityHandle containe
 	
 }
 
-Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos) {
-	
-	Entity * item = GetFromInventory(pos);
-	if(item) {
-		arx_assert(item->ioflags & IO_ITEM);
-		InventoryPos p = locateInInventories(item);
-		if(SecondaryInventory && SecondaryInventory->io->index() == p.io) {
-			Entity * temp = SecondaryInventory->io;
-			if(temp->ioflags & IO_SHOP) {
-				return NULL;
-			}
-		}
-		return item;
-	}
-	
-	if(InInventoryPos(pos)) {
-		return NULL;
-	}
-	
-	return InterClick(pos);
-}
-
 //! Puts an IO in front of the player
 void PutInFrontOfPlayer(Entity * io)
 {
