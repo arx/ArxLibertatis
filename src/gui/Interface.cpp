@@ -671,6 +671,7 @@ void ArxGame::managePlayerControls() {
 	ARX_PROFILE_FUNC();
 	
 	if(eeMouseDoubleClick1() && !(player.Interface & INTER_COMBATMODE) && !player.doingmagic
+	   && !g_secondaryInventoryHud.containsPos(DANAEMouse) && !g_playerInventoryHud.containsPos(DANAEMouse)
 	   && !g_cursorOverBook && eMouseState != MOUSE_IN_NOTE) {
 		
 		Entity * t = InterClick(DANAEMouse);
