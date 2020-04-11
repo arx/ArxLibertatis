@@ -69,6 +69,7 @@ public:
 	void update();
 	void updateRect();
 	bool updateInput();
+	void updateCombineFlags(Entity * source);
 	void draw();
 	
 	void nextBag();

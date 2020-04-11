@@ -81,6 +81,7 @@ public:
 	void init();
 	void update();
 	void updateRect();
+	void updateCombineFlags(Entity * source);
 	void draw();
 	void drawItemPrice(float scale);
 	
