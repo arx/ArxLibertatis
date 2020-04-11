@@ -106,8 +106,6 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io, EntityHandle containe
 	
 	arx_assert(io);
 	
-	io->show = SHOW_FLAG_IN_INVENTORY;
-	
 	if(io->ignition > 0) {
 		
 		lightHandleDestroy(io->ignit_light);
@@ -365,6 +363,8 @@ private:
 		
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		
+		arx_assert(pos.io == io);
+		
 		if(pos.x + item->m_inventorySize.x > width || pos.y + item->m_inventorySize.y > height) {
 			return false;
 		}
@@ -391,6 +391,7 @@ private:
 			}
 		}
 		index(pos).show = true;
+		item->show = SHOW_FLAG_IN_INVENTORY;
 		
 		return true;
 	}
