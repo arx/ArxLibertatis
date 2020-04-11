@@ -966,20 +966,7 @@ void ArxGame::managePlayerControls() {
 		if(player.torch) {
 			ARX_PLAYER_KillTorch();
 		} else {
-			Entity * io = getInventoryItemWithLowestDurability("torch");
-
-			if(io) {
-				Entity * ioo = io;
-				
-				if(io->_itemdata->count > 1) {
-					ioo = CloneIOItem(io);
-					ioo->scriptload = 1;
-					ioo->_itemdata->count = 1;
-					io->_itemdata->count--;
-				}
-				
-				ARX_PLAYER_ClickedOnTorch(ioo);
-			}
+			useInventoryItemWithLowestDurability("torch");
 		}
 	}
 
