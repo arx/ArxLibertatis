@@ -87,6 +87,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Speech.h"
 #include "gui/Interface.h"
 #include "gui/MiniMap.h"
+#include "gui/hud/PlayerInventory.h"
 #include "gui/hud/SecondaryInventory.h"
 
 #include "graphics/BaseGraphicsTypes.h"
@@ -2579,6 +2580,7 @@ void ARX_GAME_Reset() {
 
 		// Player Inventory
 		CleanInventory();
+		g_playerInventoryHud.setCurrentBag(0);
 	}
 
 	// Misc Player Vars.

@@ -358,6 +358,7 @@ void levelInit() {
 	
 	if(LOAD_N_ERASE) {
 		CleanInventory();
+		g_playerInventoryHud.setCurrentBag(0);
 		ARX_SCRIPT_Timer_ClearAll();
 		UnlinkAllLinkedObjects();
 		ARX_SCRIPT_ResetAll(false);
