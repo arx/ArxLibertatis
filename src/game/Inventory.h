@@ -234,9 +234,9 @@ Vec3f GetItemWorldPosition(const Entity * io);
 Vec3f GetItemWorldPositionSound(const Entity * io);
 
 void CleanInventory();
-void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand);
 bool IsInPlayerInventory(Entity * io);
 Entity * getInventoryItemWithLowestDurability(const std::string & className, float minDurability = 0.f);
+void useInventoryItemWithLowestDurability(const std::string & className, float minDurability = 0.f);
 
 void ARX_INVENTORY_IdentifyAll();
 void ARX_INVENTORY_OpenClose(Entity * io);

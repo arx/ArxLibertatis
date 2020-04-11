@@ -68,8 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
-#include "graphics/data/Mesh.h"
-#include "graphics/data/TextureContainer.h"
 
 #include "input/Input.h"
 
@@ -990,34 +988,6 @@ bool IsInPlayerInventory(Entity * io) {
 	return locateInInventories(io).io == EntityHandle_Player;
 }
 
-// TODO don't use texture name to find entity
-void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand) {
-	
-	arx_assert(player.m_bags >= 0);
-	arx_assert(player.m_bags <= 3);
-	
-	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		const INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-		
-		if(!slot.io || !slot.show || !slot.io->obj)
-			continue;
-		
-		for(size_t lTex = 0; lTex < slot.io->obj->texturecontainer.size(); lTex++) {
-			if(   !slot.io->obj->texturecontainer.empty()
-			   && slot.io->obj->texturecontainer[lTex]
-			   && slot.io->obj->texturecontainer[lTex]->m_texName == _lpszText
-			) {
-				if(slot.io->gameFlags & GFLAG_INTERACTIVITY) {
-					SendIOScriptEvent(entities.player(), slot.io, _lCommand);
-				}
-				return;
-			}
-		}
-	}
-}
-
 Entity * getInventoryItemWithLowestDurability(const std::string & className, float minDurability) {
 	
 	Entity * io = NULL;
@@ -1034,6 +1004,15 @@ Entity * getInventoryItemWithLowestDurability(const std::string & className, flo
 	}
 	
 	return io;
+}
+
+void useInventoryItemWithLowestDurability(const std::string & className, float minDurability) {
+	
+	Entity * item = getInventoryItemWithLowestDurability(className, minDurability);
+	if(item && (item->gameFlags & GFLAG_INTERACTIVITY)) {
+		SendIOScriptEvent(entities.player(), item, SM_INVENTORYUSE);
+	}
+	
 }
 
 void ARX_INVENTORY_IdentifyIO(Entity * _pIO) {
