@@ -163,21 +163,6 @@ public:
 	//! Sort the inventory and stack duplicate items
 	static void optimize();
 	
-	/*!
-	 * Get the position of an item in the inventory.
-	 *
-	 * \return the position of the item
-	 */
-	static Pos locate(const Entity * item);
-	
-	/*!
-	 * Remove an item from the inventory.
-	 * The item is not deleted.
-	 *
-	 * \return the old position of the item
-	 */
-	static Pos remove(const Entity * item);
-	
 	static Entity * get(const Pos & pos) {
 		return pos ? g_inventory[pos.bag][pos.x][pos.y].io : NULL;
 	}

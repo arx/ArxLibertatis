@@ -331,26 +331,6 @@ private:
 		return insertImpl(item, fallback);
 	}
 	
-	void removeAt(const Entity * item, const Pos & pos) {
-		
-		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-		arx_assert(pos.x + item->m_inventorySize.x <= width);
-		arx_assert(pos.y + item->m_inventorySize.y <= height);
-		arx_assert(index(pos).io == item);
-		
-		LogDebug(" - " << pos << " remove " << item->idString()
-		         << " [" << item->_itemdata->count << '/'
-		         << item->_itemdata->playerstacksize << "]: "
-		         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
-		
-		for(index_type j = pos.y; j < (pos.y + size_type(item->m_inventorySize.y)); j++) {
-			for(index_type i = pos.x; i < (pos.x + size_type(item->m_inventorySize.x)); i++) {
-				index(pos.bag, i, j).io = NULL;
-				index(pos.bag, i, j).show = false;
-			}
-		}
-	}
-	
 	bool insertIntoNewSlotAt(Entity * item, const Pos & pos) {
 		
 		if(!pos || pos.bag >= bags) {
@@ -389,6 +369,7 @@ private:
 			}
 		}
 		index(pos).show = true;
+		item->_itemdata->m_inventoryPos = pos;
 		item->show = SHOW_FLAG_IN_INVENTORY;
 		
 		return true;
@@ -590,7 +571,7 @@ public:
 					INVENTORY_SLOT & slot = index(bag, i, j);
 					if(slot.io && slot.show) {
 						items.push_back(slot.io);
-						removeAt(slot.io, Pos(io, bag, i, j));
+						remove(slot.io);
 					}
 					arx_assert(!slot.io && !slot.show);
 				}
@@ -622,49 +603,32 @@ public:
 		}
 	}
 	
-	/*!
-	 * Get the position of an item in the inventory.
-	 *
-	 * \return the position of the item
-	 */
-	Pos locate(const Entity * item) const {
-		for(size_t bag = 0; bag < bags; bag++) {
-			for(size_t i = 0; i < width; i++) {
-				for(size_t j = 0; j < height; j++) {
-					if(index(bag, i, j).io == item) {
-						return Pos(io, bag, i, j);
-					}
-				}
+	void remove(Entity * item) {
+		
+		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		
+		InventoryPos pos = locateInInventories(item);
+		arx_assert(pos.io == io);
+		arx_assert(pos.x + item->m_inventorySize.x <= width);
+		arx_assert(pos.y + item->m_inventorySize.y <= height);
+		arx_assert(index(pos).show == true);
+		arx_assert(item->show == SHOW_FLAG_IN_INVENTORY);
+		
+		LogDebug(" - " << pos << " remove " << item->idString()
+		         << " [" << item->_itemdata->count << '/'
+		         << item->_itemdata->playerstacksize << "]: "
+		         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
+		
+		index(pos).show = false;
+		for(index_type j = pos.y; j < (pos.y + size_type(item->m_inventorySize.y)); j++) {
+			for(index_type i = pos.x; i < (pos.x + size_type(item->m_inventorySize.x)); i++) {
+				arx_assert(index(pos.bag, i, j).io == item);
+				arx_assert(index(pos.bag, i, j).show == false);
+				index(pos.bag, i, j).io = NULL;
 			}
 		}
-		return Pos();
-	}
-	
-	/*!
-	 * Remove an item from the inventory.
-	 * The item is not deleted.
-	 *
-	 * \return the old position of the item
-	 */
-	Pos remove(const Entity * item) {
-		Pos pos = locate(item);
-		if(pos) {
-			/* TODO There was a bug cauing corrupted inventories where an item
-			 * takes up more slots than specified by its size. Ideally, this should
-			 * be fixed while loading old save games, but until then we just fix it
-			 * here when removing items.
-			removeAt(item, pos);
-			 */
-			for(size_t j = 0; j < height; j++) {
-				for(size_t i = 0; i < width; i++) {
-					if(index(pos.bag, i, j).io == item) {
-						index(pos.bag, i, j).io = NULL;
-						index(pos.bag, i, j).show = false;
-					}
-				}
-			}
-		}
-		return pos;
+		
+		item->_itemdata->m_inventoryPos = InventoryPos();
 	}
 	
 	Entity * get(const Pos & pos) const {
@@ -710,14 +674,6 @@ void CleanInventory() {
 
 PlayerInventory playerInventory;
 
-PlayerInventory::Pos PlayerInventory::locate(const Entity * item) {
-	return getPlayerInventory().locate(item);
-}
-
-PlayerInventory::Pos PlayerInventory::remove(const Entity * item) {
-	return getPlayerInventory().remove(item);
-}
-
 bool PlayerInventory::insert(Entity * item) {
 	if(item && (item->ioflags & IO_GOLD)) {
 		ARX_PLAYER_AddGold(item);
@@ -758,48 +714,31 @@ bool giveToPlayer(Entity * item, const InventoryPos & pos) {
 
 InventoryPos removeFromInventories(Entity * item) {
 	
-	// TODO the item should know the inventory it is in and position
-	
-	InventoryPos oldPos = playerInventory.remove(item);
-	if(oldPos) {
-		return oldPos;
+	if(!item || !(item->ioflags & IO_ITEM)) {
+		return InventoryPos();
 	}
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e && e->inventory) {
-			oldPos = getIoInventory(e).remove(item);
-			if(oldPos) {
-				return oldPos;
-			}
-		}
+	InventoryPos pos = locateInInventories(item);
+	if(!pos) {
+		return InventoryPos();
 	}
 	
-	return InventoryPos();
+	if(pos.io == EntityHandle_Player) {
+		getPlayerInventory().remove(item);
+	} else {
+		getIoInventory(pos.io).remove(item);
+	}
+	
+	return pos;
 }
 
 InventoryPos locateInInventories(const Entity * item) {
 	
-	InventoryPos pos = playerInventory.locate(item);
-	if(pos) {
-		return pos;
+	if(!item || !(item->ioflags & IO_ITEM)) {
+		return InventoryPos();
 	}
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e && e->inventory) {
-			pos = getIoInventory(e).locate(item);
-			if(pos) {
-				return pos;
-			}
-		}
-	}
-	
-	return InventoryPos();
+	return item->_itemdata->m_inventoryPos;
 }
 
 bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
