@@ -364,8 +364,6 @@ void levelInit() {
 		ARX_SCRIPT_ResetAll(false);
 	}
 	
-	SecondaryInventory = NULL;
-	TSecondaryInventory = NULL;
 	ARX_FOGS_Render();
 	
 	if(LOAD_N_ERASE) {

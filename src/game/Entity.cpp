@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 
 #include "gui/Interface.h"
+#include "gui/hud/SecondaryInventory.h"
 
 #include "io/log/Logger.h"
 
@@ -227,13 +228,7 @@ Entity::~Entity() {
 		delete _camdata;
 	}
 	
-	if(SecondaryInventory && SecondaryInventory->io == this) {
-		SecondaryInventory = NULL;
-	}
-	
-	if(TSecondaryInventory && TSecondaryInventory->io == this) {
-		TSecondaryInventory = NULL;
-	}
+	g_secondaryInventoryHud.clear(this);
 	
 	if(inventory) {
 		for(long nj = 0; nj < inventory->m_size.y; nj++) {

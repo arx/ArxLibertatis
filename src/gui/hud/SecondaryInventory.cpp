@@ -465,6 +465,31 @@ void SecondaryInventoryHud::close() {
 	}
 }
 
+bool SecondaryInventoryHud::isVisible() {
+	return TSecondaryInventory != NULL;
+}
+
+bool SecondaryInventoryHud::isOpen() {
+	return SecondaryInventory != NULL;
+}
+
+
+bool SecondaryInventoryHud::isOpen(Entity * container) {
+	return (isOpen() && SecondaryInventory == container->inventory);
+}
+
+void SecondaryInventoryHud::clear(Entity * container) {
+	
+	if(SecondaryInventory == container->inventory) {
+		SecondaryInventory = NULL;
+	}
+	
+	if(TSecondaryInventory == container->inventory) {
+		TSecondaryInventory = NULL;
+	}
+	
+}
+
 void SecondaryInventoryHud::updateFader() {
 	
 	if(m_fadeDirection != Fade_stable) {

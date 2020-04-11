@@ -699,7 +699,7 @@ void ArxGame::managePlayerControls() {
 								ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
 							}
 							
-							if(SecondaryInventory) {
+							if(g_secondaryInventoryHud.isOpen()) {
 								bForceEscapeFreeLook = true;
 								lOldTruePlayerMouseLook = !TRUE_PLAYER_MOUSELOOK_ON;
 							}
@@ -724,7 +724,7 @@ void ArxGame::managePlayerControls() {
 						g_playerInventoryHud.close();
 					}
 					
-					if(SecondaryInventory) {
+					if(g_secondaryInventoryHud.isOpen()) {
 						bForceEscapeFreeLook = true;
 						lOldTruePlayerMouseLook = !TRUE_PLAYER_MOUSELOOK_ON;
 					}
@@ -1934,22 +1934,20 @@ void ArxGame::manageEditorControls() {
 		}
 
 		// Double Clicked and not already combining.
-		if(eeMouseDoubleClick1() && !COMBINE) {
+		if(eeMouseDoubleClick1() && !COMBINE && FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)) {
+			
 			bool accept_combine = true;
-			
-			if(SecondaryInventory && g_secondaryInventoryHud.containsPos(DANAEMouse)) {
-				Entity * io = SecondaryInventory->io;
-				
-				if(io->ioflags & IO_SHOP)
-					accept_combine = false;
+			Entity * container = entities.get(locateInInventories(FlyingOverIO).io);
+			if(container && (container->ioflags & IO_SHOP)) {
+				// Canot combine items in shop inventories
+				accept_combine = false;
 			}
 			
-			if(accept_combine) {
-				if(FlyingOverIO && ((FlyingOverIO->ioflags & IO_ITEM) && !(FlyingOverIO->ioflags & IO_MOVABLE))) {
-					COMBINE = FlyingOverIO;
-					updateCombineFlags(COMBINE);
-				}
+			if(accept_combine && !(FlyingOverIO->ioflags & IO_MOVABLE)) {
+				COMBINE = FlyingOverIO;
+				updateCombineFlags(COMBINE);
 			}
+			
 		}
 		
 		// Checks for Object Dragging

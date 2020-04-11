@@ -69,6 +69,10 @@ static const int indicatorHorizSpacing = 20;
 
 static void DrawItemPrice(float scale) {
 	
+	if(!SecondaryInventory) {
+		return;
+	}
+	
 	Entity * temp = SecondaryInventory->io;
 	if(temp->ioflags & IO_SHOP) {
 		Vec2f pos = Vec2f(DANAEMouse);
@@ -312,7 +316,7 @@ void BackpackIconGui::updateInput() {
 			}
 		} else if(eeMouseDown2()) {
 			g_playerBook.close();
-			g_secondaryInventoryHud.open(NULL);
+			g_secondaryInventoryHud.close();
 			
 			if(player.Interface & INTER_INVENTORYALL) {
 				ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
@@ -381,7 +385,7 @@ void StealIconGui::updateInput() {
 					ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
 				}
 				
-				if(SecondaryInventory) {
+				if(g_secondaryInventoryHud.isOpen(ioSteal)) {
 					SendIOScriptEvent(entities.player(), ioSteal, SM_STEAL);
 					bForceEscapeFreeLook = true;
 					lOldTruePlayerMouseLook = !TRUE_PLAYER_MOUSELOOK_ON;
@@ -563,7 +567,7 @@ void CurrentTorchIconGui::update() {
 	if(!isVisible())
 		return;
 	
-	if(g_note.isOpen() && TSecondaryInventory != NULL
+	if(g_note.isOpen() && g_secondaryInventoryHud.isVisible()
 	   && (g_note.type() == Note::BigNote || g_note.type() == Note::Book)) {
 		m_isActive = false;
 		return;
@@ -1492,7 +1496,7 @@ void HudRoot::draw() {
 	if(FlyingOverIO  && !(player.Interface & INTER_COMBATMODE)
 	   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 	   && (!PLAYER_MOUSELOOK_ON || config.input.autoReadyWeapon != AlwaysAutoReadyWeapon)) {
-		if((FlyingOverIO->ioflags & IO_ITEM) && !DRAGINTER && SecondaryInventory) {
+		if((FlyingOverIO->ioflags & IO_ITEM) && !DRAGINTER) {
 			DrawItemPrice(m_scale);
 		}
 		cursorSetInteraction();
