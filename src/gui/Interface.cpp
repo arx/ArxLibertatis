@@ -972,7 +972,6 @@ void ArxGame::managePlayerControls() {
 				
 				if(io->_itemdata->count > 1) {
 					ioo = CloneIOItem(io);
-					ioo->show = SHOW_FLAG_NOT_DRAWN;
 					ioo->scriptload = 1;
 					ioo->_itemdata->count = 1;
 					io->_itemdata->count--;
