@@ -564,6 +564,19 @@ public:
 		return false;
 	}
 	
+	bool insertAtNoEvent(Entity * item, const Pos & pos) {
+		
+		if(!item || !(item->ioflags & IO_ITEM)) {
+			return false;
+		}
+		
+		if(insertIntoNewSlotAt(item, pos)) {
+			return true;
+		}
+		
+		return insertImpl(item, pos);
+	}
+	
 	//! Sort the inventory and stack duplicate items
 	void optimize() {
 		
@@ -828,6 +841,15 @@ bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::inde
 	}
 	
 	return getIoInventory(container).insertAt(item, bag, pos, fallback);
+}
+
+bool insertIntoInventoryAtNoEvent(Entity * item, const InventoryPos & pos) {
+	
+	if(pos.io == EntityHandle_Player) {
+		return getPlayerInventory().insertAtNoEvent(item, pos);
+	}
+	
+	return getIoInventory(pos.io).insertAtNoEvent(item, pos);
 }
 
 //! Try to put DRAGINTER object in an inventory
@@ -1208,7 +1230,7 @@ void ARX_INVENTORY_ReOrder() {
 		getIoInventory(TSecondaryInventory->io).remove(io);
 		
 		InventoryPos pos(TSecondaryInventory->io->index(), 0, 0, 0);
-		bool inserted = getIoInventory(TSecondaryInventory->io).insert(io, pos);
+		bool inserted = getIoInventory(TSecondaryInventory->io).insertAtNoEvent(io, pos);
 		arx_assert(inserted), ARX_UNUSED(inserted);
 	}
 }
