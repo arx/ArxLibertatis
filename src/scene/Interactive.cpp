@@ -1305,6 +1305,7 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 		
 		SendInitScriptEvent(ioo);
 		io->_npcdata->weapontype = ioo->type_flags;
+		removeFromInventories(ioo);
 		ioo->show = SHOW_FLAG_LINKED;
 		ioo->scriptload = 2;
 		
