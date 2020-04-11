@@ -951,15 +951,15 @@ void ArxGame::managePlayerControls() {
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONLIFE)) {
-		SendInventoryObjectCommand("graph/obj3d/textures/item_potion_life", SM_INVENTORYUSE);
+		useInventoryItemWithLowestDurability("potion_life");
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONMANA)) {
-		SendInventoryObjectCommand("graph/obj3d/textures/item_potion_mana", SM_INVENTORYUSE);
+		useInventoryItemWithLowestDurability("potion_mana");
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONCURE)) {
-		SendInventoryObjectCommand("graph/obj3d/textures/item_potion_purple", SM_INVENTORYUSE);
+		useInventoryItemWithLowestDurability("potion_purple");
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TORCH)) {
