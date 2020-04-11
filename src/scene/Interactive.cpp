@@ -1111,6 +1111,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io) {
 	timer.start = g_gameTime.now();
 	timer.count = 1;
 	
+	removeFromInventories(io);
 	io->show = SHOW_FLAG_TELEPORTING;
 	AddRandomSmoke(*io, 10);
 	ARX_PARTICLES_Add_Smoke(io->pos, 3, 20);
