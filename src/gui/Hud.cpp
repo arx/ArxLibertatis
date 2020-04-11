@@ -279,7 +279,6 @@ void BackpackIconGui::updateInput() {
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
 		if(eeMouseUp1() && playerInventory.insert(DRAGINTER)) {
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
-			Set_DragInter(NULL);
 		}
 	}
 	

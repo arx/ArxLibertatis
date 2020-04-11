@@ -1818,8 +1818,7 @@ void ArxGame::manageEditorControls() {
 				}
 			} else if(DRAGINTER->ioflags & IO_GOLD) {
 				ARX_PLAYER_AddGold(DRAGINTER);
-				Set_DragInter(NULL);
-			} else if(DRAGINTER) {
+			} else {
 				
 				if(   !((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count > 1)
 				   && DRAGINTER->obj

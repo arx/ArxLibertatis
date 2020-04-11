@@ -496,9 +496,7 @@ void PlayerInventoryHud::dropEntity() {
 		pos = Vec2f(DANAEMouse - (anchor - Vec2s(0, (player.m_bags - 1 - bag) * bagPitch))) / float(itemPitch);
 	}
 	
-	if(insertIntoInventoryAt(DRAGINTER, entities.player(), bag, pos, g_draggedItemPreviousPosition)) {
-		Set_DragInter(NULL);
-	}
+	insertIntoInventoryAt(DRAGINTER, entities.player(), bag, pos, g_draggedItemPreviousPosition);
 	
 }
 

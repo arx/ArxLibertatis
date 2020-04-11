@@ -350,7 +350,6 @@ void SecondaryInventoryHud::dropEntity() {
 			ARX_PLAYER_AddGold(price);
 			ARX_SOUND_PlayInterface(g_snd.GOLD);
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
-			Set_DragInter(NULL);
 		}
 		
 		return;
@@ -359,9 +358,7 @@ void SecondaryInventoryHud::dropEntity() {
 	s16 itemPitch = s16(32.f * m_scale);
 	Vec2f pos = Vec2f(DANAEMouse - Vec2s(2 * m_scale - m_fadePosition, 13 * m_scale)) / float(itemPitch);
 	
-	if(insertIntoInventoryAt(DRAGINTER, io, 0, pos, g_draggedItemPreviousPosition)) {
-		Set_DragInter(NULL);
-	}
+	insertIntoInventoryAt(DRAGINTER, io, 0, pos, g_draggedItemPreviousPosition);
 	
 }
 
