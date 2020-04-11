@@ -932,36 +932,11 @@ bool TakeFromInventory(const Vec2s & pos) {
 }
 
 bool IsInPlayerInventory(Entity * io) {
-	
-	arx_assert(player.m_bags >= 0);
-	arx_assert(player.m_bags <= 3);
-	
-	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		const INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-		
-		if(slot.io == io) {
-			return true;
-		}
-	}
-	
-	return false;
+	return locateInInventories(io).io == EntityHandle_Player;
 }
 
 bool IsInSecondaryInventory(Entity * io) {
-	
-	if(!SecondaryInventory)
-		return false;
-	
-	for(long y = 0; y < SecondaryInventory->m_size.y; y++)
-	for(long x = 0; x < SecondaryInventory->m_size.x; x++) {
-		if(SecondaryInventory->slot[x][y].io == io) {
-			return true;
-		}
-	}
-	
-	return false;
+	return SecondaryInventory && locateInInventories(io).io == SecondaryInventory->io->index();
 }
 
 // TODO don't use texture name to find entity
