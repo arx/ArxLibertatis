@@ -256,6 +256,20 @@ bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::inde
                            const InventoryPos & previous = InventoryPos());
 
 /*!
+ * Insert an item into the inventory at a specified position without firing script events
+ * The item will be inserted at the specified previous position.
+ * Otherwise, the item will be added to existing stacks if possible.
+ * If that fails, the first empty slot will be used.
+ *
+ * Does not check if the item is already in the inventory!
+ *
+ * \param item the item to insert
+ *
+ * \return true if the item was inserted, false otherwise
+ */
+bool insertIntoInventoryAtNoEvent(Entity * item, const InventoryPos & pos);
+
+/*!
  * Get the position of an item in the inventory.
  *
  * \return the position of the item
