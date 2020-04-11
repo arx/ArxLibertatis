@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
+#include "gui/hud/SecondaryInventory.h"
 #include "io/resource/ResourcePath.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
@@ -106,6 +107,8 @@ class InventoryCommand : public Command {
 			if(!id) {
 				return;
 			}
+			
+			g_secondaryInventoryHud.clear(io);
 			
 			for(long y = 0; y < id->m_size.y; y++) {
 				for(long x = 0; x < id->m_size.x; x++) {
