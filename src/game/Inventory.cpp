@@ -168,7 +168,13 @@ void PutInFrontOfPlayer(Entity * io)
 	io->pos += Vec3f(0.f, 20.f, 0.f);
 	
 	io->angle = Anglef();
+	
+	if(DRAGINTER == io) {
+		Set_DragInter(NULL);
+	}
+	
 	removeFromInventories(io);
+	
 	io->show = SHOW_FLAG_IN_SCENE;
 
 	if(io->obj && io->obj->pbox) {
@@ -364,6 +370,10 @@ private:
 					return false;
 				}
 			}
+		}
+	
+		if(DRAGINTER == item) {
+			Set_DragInter(NULL);
 		}
 		
 		removeFromInventories(item);
