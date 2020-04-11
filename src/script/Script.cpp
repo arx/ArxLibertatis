@@ -1580,6 +1580,7 @@ static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 		ARX_PARTICLES_Add_Smoke(pos, 3, 20);
 		AddRandomSmoke(*io, 20);
 		MakeCoolFx(io->pos);
+		removeFromInventories(io);
 		io->show = SHOW_FLAG_IN_SCENE;
 		
 		for(long kl = 0; kl < 10; kl++) {
