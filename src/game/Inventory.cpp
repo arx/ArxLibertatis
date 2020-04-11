@@ -102,7 +102,7 @@ InventoryPos g_draggedItemPreviousPosition;
  * Declares an IO as entering into player Inventory
  * Sends appropriate INVENTORYIN Event to player AND concerned io.
  */
-void ARX_INVENTORY_Declare_InventoryIn(Entity * io, EntityHandle container) {
+static void ARX_INVENTORY_Declare_InventoryIn(Entity * io, EntityHandle container) {
 	
 	arx_assert(io);
 	
