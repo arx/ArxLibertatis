@@ -789,32 +789,22 @@ bool insertIntoInventoryAtNoEvent(Entity * item, const InventoryPos & pos) {
 }
 
 /*!
- * \brief Returns true if "pos" is a position in player inventory or in SECONDARY inventory
- */
-bool InInventoryPos(const Vec2s & pos) {
-	if(g_secondaryInventoryHud.containsPos(pos))
-		return true;
-
-	return g_playerInventoryHud.containsPos(pos);
-}
-
-/*!
  * \brief Returns IO under position xx,yy in any INVENTORY or NULL if no IO was found
  */
 Entity * GetFromInventory(const Vec2s & pos) {
 	
-	if(!InInventoryPos(pos)) {
-		return NULL;
+	if(g_secondaryInventoryHud.containsPos(pos)) {
+		Entity * result = g_secondaryInventoryHud.getObj(pos);
+		if(result) {
+			return result;
+		}
 	}
 	
-	Entity * result = g_secondaryInventoryHud.getObj(pos);
-	if(result) {
-		return result;
-	}
-	
-	result = g_playerInventoryHud.getObj(pos);
-	if(result) {
-		return result;
+	if(g_playerInventoryHud.containsPos(pos)) {
+		Entity * result = g_playerInventoryHud.getObj(pos);
+		if(result) {
+			return result;
+		}
 	}
 	
 	return NULL;

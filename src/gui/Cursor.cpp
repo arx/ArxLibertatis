@@ -57,6 +57,7 @@
 #include "gui/Interface.h"
 #include "gui/Text.h"
 #include "gui/Menu.h"
+#include "gui/hud/PlayerInventory.h"
 #include "gui/hud/SecondaryInventory.h"
 
 enum ARX_INTERFACE_CURSOR_MODE
@@ -509,7 +510,8 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 			ag = ag - 360;
 		
 		float drop_miny = float(g_size.center().y) - float(g_size.center().y) * ag * (1.f / 70);
-		if(DANAEMouse.y > drop_miny && DRAGINTER && !InInventoryPos(DANAEMouse) && !g_cursorOverBook) {
+		if(DANAEMouse.y > drop_miny && DRAGINTER && !g_secondaryInventoryHud.containsPos(DANAEMouse)
+		   && !g_playerInventoryHud.containsPos(DANAEMouse) && !g_cursorOverBook) {
 			
 			if(!Manage3DCursor(DRAGINTER, true, draginter)) {
 				CANNOT_PUT_IT_HERE = EntityMoveCursor_Throw;
@@ -701,7 +703,9 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 								ARX_INTERFACE_DrawNumber(rect.topRight(), DRAGINTER->_itemdata->count, Color::white, iconScale);
 							}
 						} else {
-							if((InInventoryPos(DANAEMouse) || g_secondaryInventoryHud.containsPos(DANAEMouse)) || CANNOT_PUT_IT_HERE != EntityMoveCursor_Throw) {
+							if(g_secondaryInventoryHud.containsPos(DANAEMouse)
+							   || g_playerInventoryHud.containsPos(DANAEMouse)
+							   || CANNOT_PUT_IT_HERE != EntityMoveCursor_Throw) {
 								EERIEDrawBitmap(rect, .00001f, tc, color);
 							}
 						}
@@ -711,8 +715,8 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 					// Cross not over inventory icon
 					if(   CANNOT_PUT_IT_HERE != EntityMoveCursor_Ok
 					   && (eMouseState != MOUSE_IN_INVENTORY_ICON)
-					   && !InInventoryPos(DANAEMouse)
 					   && !g_secondaryInventoryHud.containsPos(DANAEMouse)
+					   && !g_playerInventoryHud.containsPos(DANAEMouse)
 					   && !ARX_INTERFACE_MouseInBook()) {
 						TextureContainer * tcc = cursorMovable;
 						

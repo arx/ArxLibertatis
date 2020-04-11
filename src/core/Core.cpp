@@ -125,6 +125,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Text.h"
 #include "gui/TextManager.h"
 #include "gui/debug/DebugKeys.h"
+#include "gui/hud/PlayerInventory.h"
+#include "gui/hud/SecondaryInventory.h"
 
 #include "input/Input.h"
 #include "input/Keyboard.h"
@@ -258,12 +260,8 @@ Entity * FlyingOverObject(const Vec2s & pos) {
 		return player.torch;
 	}
 	
-	if(Entity * entity = GetFromInventory(pos)) {
-		return entity;
-	}
-	
-	if(InInventoryPos(pos)) {
-		return NULL;
+	if(g_secondaryInventoryHud.containsPos(pos) || g_playerInventoryHud.containsPos(pos)) {
+		return GetFromInventory(pos);
 	}
 	
 	if(Entity * entity = InterClick(pos)) {

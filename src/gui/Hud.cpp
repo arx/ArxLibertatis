@@ -1375,7 +1375,9 @@ void PlayerInterfaceFader::update() {
 		bool bOk = true;
 		
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
-			if(!(player.Interface & INTER_COMBATMODE) && player.doingmagic != 2 && !InInventoryPos(DANAEMouse)) {
+			if(!(player.Interface & INTER_COMBATMODE) && player.doingmagic != 2
+			   && !g_secondaryInventoryHud.containsPos(DANAEMouse)
+			   && !g_playerInventoryHud.containsPos(DANAEMouse)) {
 				bOk = false;
 				
 				PlatformInstant t = g_platformTime.frameStart();

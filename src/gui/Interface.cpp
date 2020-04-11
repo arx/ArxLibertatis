@@ -1160,7 +1160,8 @@ void ArxGame::managePlayerControls() {
 	   && !cursorIsSpecial()
 	   && PLAYER_MOUSELOOK_ON
 	   && !DRAGINTER
-	   && !InInventoryPos(DANAEMouse)
+	   && !g_secondaryInventoryHud.containsPos(DANAEMouse)
+	   && !g_playerInventoryHud.containsPos(DANAEMouse)
 	   && (config.input.autoReadyWeapon == AlwaysAutoReadyWeapon
 	       || (config.input.autoReadyWeapon == AutoReadyWeaponNearEnemies && isPlayerLookingAtEnemy()))) {
 		if(eeMouseDown1()) {
@@ -1807,8 +1808,9 @@ void ArxGame::manageEditorControls() {
 	if(!(player.Interface & INTER_COMBATMODE)) {
 		// Dropping an Interactive Object that has been dragged
 		if(eeMouseUp1() && DRAGINTER) {
-			if(InInventoryPos(DANAEMouse)) {// Attempts to put it in inventory
+			if(g_secondaryInventoryHud.containsPos(DANAEMouse)) {
 				g_secondaryInventoryHud.dropEntity();
+			} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
 				g_playerInventoryHud.dropEntity();
 			} else if(ARX_INTERFACE_MouseInBook()) {
 				if(g_playerBook.currentPage() == BOOKMODE_STATS) {
@@ -1822,7 +1824,6 @@ void ArxGame::manageEditorControls() {
 				if(   !((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count > 1)
 				   && DRAGINTER->obj
 				   && DRAGINTER->obj->pbox
-				   && !InInventoryPos(DANAEMouse)
 				   && !g_cursorOverBook
 				) {
 					// Put object in fromt of player
