@@ -315,6 +315,7 @@ void BackpackIconGui::updateInput() {
 			ARX_INVENTORY_OpenClose(NULL);
 			
 			if(player.Interface & INTER_INVENTORYALL) {
+				ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
 				g_playerInventoryHud.close();
 			} else {
 				if(player.Interface & INTER_INVENTORY) {
@@ -373,7 +374,10 @@ void StealIconGui::updateInput() {
 			if(eeMouseDown1()) {
 				ARX_INVENTORY_OpenClose(ioSteal);
 				
-				if(player.Interface & (INTER_INVENTORY | INTER_INVENTORYALL)) {
+				if(player.Interface & INTER_INVENTORYALL) {
+					ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
+					g_playerInventoryHud.close();
+				} else if(player.Interface & INTER_INVENTORY) {
 					ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
 				}
 				
