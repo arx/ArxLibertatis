@@ -290,7 +290,7 @@ void BackpackIconGui::updateInput() {
 		if(eeMouseDoubleClick1()) {
 			ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
 			
-			optimizePlayerInventory();
+			optimizeInventory(entities.player());
 			
 			flDelay = 0;
 		} else if(eeMouseDown1() || flDelay != 0) {

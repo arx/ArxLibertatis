@@ -89,8 +89,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/Script.h"
 
 
-void ARX_INVENTORY_ReOrder();
-
 INVENTORY_SLOT g_inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 INVENTORY_DATA * SecondaryInventory = NULL;
 Entity * DRAGINTER = NULL;
@@ -724,8 +722,12 @@ void CleanInventory() {
 	g_playerInventoryHud.setCurrentBag(0);
 }
 
-void optimizePlayerInventory() {
-	getPlayerInventory().optimize();
+void optimizeInventory(Entity * container) {
+	if(container == entities.player()) {
+		getPlayerInventory().optimize();
+	} else {
+		getIoInventory(container).optimize();
+	}
 }
 
 bool giveToPlayer(Entity * item) {
@@ -1002,8 +1004,11 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
 
-		if(SecondaryInventory && SecondaryInventory->io && (SecondaryInventory->io->ioflags & IO_SHOP))
-			ARX_INVENTORY_ReOrder();
+		if(SecondaryInventory && SecondaryInventory->io && (SecondaryInventory->io->ioflags & IO_SHOP)) {
+			if(TSecondaryInventory) {
+				optimizeInventory(TSecondaryInventory->io);
+			}
+		}
 		
 		DRAGGING = false;
 	}
@@ -1011,28 +1016,5 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 	if(player.Interface & INTER_INVENTORYALL) {
 		ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
 		g_playerInventoryHud.close();
-	}
-}
-
-//-----------------------------------------------------------------------------
-void ARX_INVENTORY_ReOrder() {
-	
-	if(!TSecondaryInventory)
-		return;
-	
-	for(long j = 0; j < TSecondaryInventory->m_size.y; j++)
-	for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
-		INVENTORY_SLOT & slot = TSecondaryInventory->slot[i][j];
-		
-		if(!slot.io || !slot.show)
-			continue;
-		
-		Entity * io = slot.io;
-		
-		getIoInventory(TSecondaryInventory->io).remove(io);
-		
-		InventoryPos pos(TSecondaryInventory->io->index(), 0, 0, 0);
-		bool inserted = getIoInventory(TSecondaryInventory->io).insertAtNoEvent(io, pos);
-		arx_assert(inserted), ARX_UNUSED(inserted);
 	}
 }
