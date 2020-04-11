@@ -770,7 +770,7 @@ void ManageCombatModeAnimations() {
 			if(layer1.cur_anim == alist[ANIM_MISSILE_WAIT]) {
 				player.m_aimTime = PlatformDuration::ofRaw(1);
 				
-				if(eeMousePressed1() && Player_Arrow_Count() > 0) {
+				if(eeMousePressed1() && getInventoryItemWithLowestDurability("arrows", 1.f) != NULL) {
 					changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
 					io->isHit = false;
 				}
@@ -792,7 +792,7 @@ void ManageCombatModeAnimations() {
 				SendIOScriptEvent(NULL, io, SM_STRIKE, "bow");
 				StrikeAimtime();
 				player.m_strikeAimRatio = player.m_bowAimRatio;
-				Entity * quiver = Player_Arrow_Count_Decrease();
+				Entity * quiver = getInventoryItemWithLowestDurability("arrows", 1.f);
 				float poisonous = 0.f;
 				
 				if(quiver) {
@@ -995,7 +995,7 @@ void ManageCombatModeAnimationsEND() {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 						changeAnimation(io, 1, alist[ANIM_MISSILE_READY_PART_2]);
 					} else if(layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_2]) {
-						if(Player_Arrow_Count() > 0) {
+						if(getInventoryItemWithLowestDurability("arrows", 1.f) != NULL) {
 							if(player.Interface & INTER_NO_STRIKE) {
 								player.Interface &= ~INTER_NO_STRIKE;
 								changeAnimation(io, 1, alist[ANIM_MISSILE_WAIT], EA_LOOP);

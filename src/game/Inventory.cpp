@@ -1008,27 +1008,7 @@ Entity * ARX_INVENTORY_GetTorchLowestDurability() {
 	return io;
 }
 
-long Player_Arrow_Count() {
-	
-	long count = 0;
-	
-	arx_assert(player.m_bags >= 0);
-	arx_assert(player.m_bags <= 3);
-	
-	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-		
-		if(slot.io && slot.show && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
-			count += checked_range_cast<long>(slot.io->durability);
-		}
-	}
-	
-	return count;
-}
-
-Entity * Player_Arrow_Count_Decrease() {
+Entity * getInventoryItemWithLowestDurability(const std::string & className, float minDurability) {
 	
 	Entity * io = NULL;
 	
@@ -1036,10 +1016,10 @@ Entity * Player_Arrow_Count_Decrease() {
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-		
-		if(slot.io && slot.show && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
-			if(!io || io->durability > slot.io->durability)
+		if(slot.io && slot.show && slot.io->className() == className && slot.io->durability >= minDurability) {
+			if(!io || slot.io->durability < io->durability) {
 				io = slot.io;
+			}
 		}
 	}
 	
