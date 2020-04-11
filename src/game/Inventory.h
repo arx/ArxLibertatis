@@ -239,8 +239,6 @@ Entity * getInventoryItemWithLowestDurability(const std::string & className, flo
 void useInventoryItemWithLowestDurability(const std::string & className, float minDurability = 0.f);
 
 void ARX_INVENTORY_IdentifyAll();
-void ARX_INVENTORY_OpenClose(Entity * io);
-
 void ARX_INVENTORY_IdentifyIO(Entity * _pIO);
 
 #endif // ARX_GAME_INVENTORY_H

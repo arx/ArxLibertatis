@@ -402,6 +402,52 @@ void SecondaryInventoryHud::dragEntity(Entity * io) {
 	
 }
 
+void SecondaryInventoryHud::open(Entity * container) {
+	
+	arx_assert(!container || container->inventory);
+	
+	if(!container || SecondaryInventory == container->inventory) {
+		if(SecondaryInventory && SecondaryInventory->io)
+			SendIOScriptEvent(entities.player(), SecondaryInventory->io, SM_INVENTORY2_CLOSE);
+
+		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
+		TSecondaryInventory = SecondaryInventory;
+		SecondaryInventory = NULL;
+		DRAGGING = false;
+	} else {
+		if(TSecondaryInventory && TSecondaryInventory->io)
+			SendIOScriptEvent(entities.player(), TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
+
+		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_right;
+		TSecondaryInventory = SecondaryInventory = container->inventory;
+
+		if(SecondaryInventory && SecondaryInventory->io != NULL) {
+			if(SendIOScriptEvent(entities.player(), SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE) {
+				g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
+				TSecondaryInventory = SecondaryInventory = NULL;
+				return;
+			}
+		}
+
+		if(player.Interface & INTER_COMBATMODE) {
+			ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
+		}
+
+		if(config.input.autoReadyWeapon != AlwaysAutoReadyWeapon) {
+			TRUE_PLAYER_MOUSELOOK_ON = false;
+		}
+
+		if(SecondaryInventory && SecondaryInventory->io && (SecondaryInventory->io->ioflags & IO_SHOP)) {
+			if(TSecondaryInventory) {
+				optimizeInventory(TSecondaryInventory->io);
+			}
+		}
+		
+		DRAGGING = false;
+	}
+	
+}
+
 void SecondaryInventoryHud::close() {
 	
 	Entity * io = NULL;

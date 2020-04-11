@@ -94,6 +94,7 @@ public:
 	void dropEntity();
 	void dragEntity(Entity * io);
 	
+	void open(Entity * container);
 	void close();
 	
 	void updateFader();
