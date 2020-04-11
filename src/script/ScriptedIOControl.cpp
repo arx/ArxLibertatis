@@ -656,6 +656,7 @@ public:
 		
 		// Prevent further script events as the object has been destroyed!
 		if(destroyed) {
+			removeFromInventories(entity);
 			entity->show = SHOW_FLAG_MEGAHIDE;
 			entity->ioflags |= IO_FREEZESCRIPT;
 			if(entity == context.getEntity()) {
