@@ -980,32 +980,6 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
-	bool bSound = false;
-
-	if(TSecondaryInventory) {
-		for(long j = 0; j < TSecondaryInventory->m_size.y; j++)
-		for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
-			INVENTORY_SLOT & slot = TSecondaryInventory->slot[i][j];
-			
-			if(!slot.io || !slot.show)
-				continue;
-			
-			Entity * io = slot.io;
-			
-			if(getPlayerInventory().insert(io)) {
-				bSound = true;
-			}
-		}
-	}
-
-	if(bSound)
-		ARX_SOUND_PlayInterface(g_snd.INVSTD);
-	else
-		ARX_SOUND_PlayInterface(g_snd.INVSTD, 0.1f);
-}
-
-//-----------------------------------------------------------------------------
 void ARX_INVENTORY_ReOrder() {
 	
 	if(!TSecondaryInventory)
