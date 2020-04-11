@@ -273,6 +273,16 @@ private:
 		return index(pos.bag, pos.x, pos.y);
 	}
 	
+	bool insertGold(Entity * item) {
+		
+		if(io == EntityHandle_Player && item != NULL && (item->ioflags & IO_GOLD)) {
+			ARX_PLAYER_AddGold(item);
+			return true;
+		}
+		
+		return false;
+	}
+	
 	Pos insertImpl(Entity * item, const Pos & pos = Pos()) {
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		if(insertIntoStackAt(item, pos)) {
@@ -514,12 +524,18 @@ public:
 	 * \return true if the item was inserted, false otherwise
 	 */
 	bool insert(Entity * item, const Pos & pos = Pos()) {
+		
+		if(insertGold(item)) {
+			return true;
+		}
+		
 		if(item && (item->ioflags & IO_ITEM)) {
 			if(Pos newPos = insertImpl(item, pos)) {
 				ARX_INVENTORY_Declare_InventoryIn(get(newPos), io);
 				return true;
 			}
 		}
+		
 		return false;
 	}
 	
@@ -538,16 +554,27 @@ public:
 	 * \return true if the item was inserted, false otherwise
 	 */
 	bool insertAt(Entity * item, index_type bag, Vec2f pos, const Pos & fallback = Pos()) {
+		
+		if(insertGold(item)) {
+			return true;
+		}
+		
 		if(item && (item->ioflags & IO_ITEM)) {
 			if(Pos newPos = insertAtImpl(item, bag, pos, fallback)) {
+				ARX_SOUND_PlayInterface(g_snd.INVSTD);
 				ARX_INVENTORY_Declare_InventoryIn(get(newPos), io);
 				return true;
 			}
 		}
+		
 		return false;
 	}
 	
 	bool insertAtNoEvent(Entity * item, const Pos & pos) {
+		
+		if(insertGold(item)) {
+			return true;
+		}
 		
 		if(!item || !(item->ioflags & IO_ITEM)) {
 			return false;
@@ -677,18 +704,10 @@ void CleanInventory() {
 PlayerInventory playerInventory;
 
 bool PlayerInventory::insert(Entity * item) {
-	if(item && (item->ioflags & IO_GOLD)) {
-		ARX_PLAYER_AddGold(item);
-		return true;
-	}
 	return getPlayerInventory().insert(item);
 }
 
 bool PlayerInventory::insert(Entity * item, const Pos & pos) {
-	if(item && (item->ioflags & IO_GOLD)) {
-		ARX_PLAYER_AddGold(item);
-		return true;
-	}
 	return getPlayerInventory().insert(item, pos);
 }
 

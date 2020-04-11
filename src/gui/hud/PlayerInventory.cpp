@@ -484,12 +484,6 @@ void PlayerInventoryHud::dropEntity() {
 		return;
 	}
 	
-	if(DRAGINTER->ioflags & IO_GOLD) {
-		ARX_PLAYER_AddGold(DRAGINTER);
-		Set_DragInter(NULL);
-		return;
-	}
-	
 	Vec2s anchor = Vec2s(g_playerInventoryHud.anchorPosition());
 	s16 itemPitch = s16(32.f * m_scale);
 	
@@ -503,7 +497,6 @@ void PlayerInventoryHud::dropEntity() {
 	}
 	
 	if(insertIntoInventoryAt(DRAGINTER, entities.player(), bag, pos, g_draggedItemPreviousPosition)) {
-		ARX_SOUND_PlayInterface(g_snd.INVSTD);
 		Set_DragInter(NULL);
 	}
 	

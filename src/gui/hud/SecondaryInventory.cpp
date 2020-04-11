@@ -360,7 +360,6 @@ void SecondaryInventoryHud::dropEntity() {
 	Vec2f pos = Vec2f(DANAEMouse - Vec2s(2 * m_scale - m_fadePosition, 13 * m_scale)) / float(itemPitch);
 	
 	if(insertIntoInventoryAt(DRAGINTER, io, 0, pos, g_draggedItemPreviousPosition)) {
-		ARX_SOUND_PlayInterface(g_snd.INVSTD);
 		Set_DragInter(NULL);
 	}
 	
