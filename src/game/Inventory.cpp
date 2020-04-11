@@ -63,7 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Hud.h"
 #include "gui/Interface.h"
-#include "gui/hud/PlayerInventory.h"
 #include "gui/hud/SecondaryInventory.h"
 
 #include "graphics/GraphicsTypes.h"
@@ -1082,9 +1081,5 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 		
 		DRAGGING = false;
 	}
-
-	if(player.Interface & INTER_INVENTORYALL) {
-		ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
-		g_playerInventoryHud.close();
-	}
+	
 }

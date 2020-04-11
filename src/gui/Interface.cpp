@@ -692,7 +692,10 @@ void ArxGame::managePlayerControls() {
 							
 							ARX_INVENTORY_OpenClose(t);
 							
-							if(player.Interface & (INTER_INVENTORY | INTER_INVENTORYALL)) {
+							if(player.Interface & INTER_INVENTORYALL) {
+								ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
+								g_playerInventoryHud.close();
+							} else if(player.Interface & INTER_INVENTORY) {
 								ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
 							}
 							
@@ -715,6 +718,11 @@ void ArxGame::managePlayerControls() {
 					}
 					
 					ARX_INVENTORY_OpenClose(t);
+					
+					if(player.Interface & INTER_INVENTORYALL) {
+						ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
+						g_playerInventoryHud.close();
+					}
 					
 					if(SecondaryInventory) {
 						bForceEscapeFreeLook = true;
