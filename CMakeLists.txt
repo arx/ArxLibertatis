@@ -150,7 +150,7 @@ suboption(CppUnit_USE_STATIC_LIBS "Statically link CppUnit" BOOL ${USE_STATIC_LI
 set(RUN_TARGET CACHE STRING "Wrapper to run built targets")
 mark_as_advanced(RUN_TARGET)
 set(default_RUN_TESTS OFF)
-if(DEVELOPER AND (NOT CMAKE_CROSSCOMPILING OR NOT RUN_TARGET STREQUAL ""))
+if((DEVELOPER OR CONTINUOUS_INTEGRATION) AND (NOT CMAKE_CROSSCOMPILING OR NOT RUN_TARGET STREQUAL ""))
 	set(default_RUN_TESTS ON)
 endif()
 suboption(RUN_TESTS "Run tests as part of the default build target" BOOL ${default_RUN_TESTS})

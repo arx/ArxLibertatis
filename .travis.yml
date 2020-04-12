@@ -34,7 +34,6 @@ script:
   - cmake --version
   - cmake .. -Werror=dev -Werror=deprecated -DCONTINUOUS_INTEGRATION=1 -DICON_TYPE=none
   - make -j1
-  - make check
 branches:
   only:
     - master
