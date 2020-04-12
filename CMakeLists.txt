@@ -1832,7 +1832,7 @@ if(BUILD_TESTS)
 		OUTPUT "${PROJECT_BINARY_DIR}/arxtest.check"
 		COMMAND ${RUN_TARGET} "${arxtest_binary}"
 		COMMAND ${CMAKE_COMMAND} -E touch "${PROJECT_BINARY_DIR}/arxtest.check"
-		MAIN_DEPENDENCY arxtest
+		DEPENDS arxtest
 		WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
 		COMMENT "Running tests" VERBATIM
 	)
