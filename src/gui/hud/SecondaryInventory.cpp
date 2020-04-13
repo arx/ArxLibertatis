@@ -97,23 +97,9 @@ void SecondaryInventoryCloseHudIcon::updateInput() {
 	
 	cursorSetInteraction();
 	
-	if(eeMouseDown1()) {
-		
-		Entity * io = NULL;
-		if(SecondaryInventory) {
-			io = SecondaryInventory->io;
-		} else if(player.Interface & INTER_STEAL) {
-			io = ioSteal;
-		}
-		
-		if(io) {
-			ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
-			g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
-			SendIOScriptEvent(entities.player(), io, SM_INVENTORY2_CLOSE);
-			TSecondaryInventory = SecondaryInventory;
-			SecondaryInventory = NULL;
-		}
-		
+	if(eeMouseDown1() && g_secondaryInventoryHud.isOpen()) {
+		ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
+		g_secondaryInventoryHud.close();
 	}
 	
 }
