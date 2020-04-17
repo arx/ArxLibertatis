@@ -361,7 +361,7 @@ bool Context::returnToCaller() {
 	return true;
 }
 
-void Context::skipStatement() {
+void Context::skipBlock() {
 	
 	std::string word = getCommand();
 	if(m_pos == m_script->data.size()) {
