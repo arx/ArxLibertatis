@@ -498,7 +498,7 @@ class SetControlledZoneCommand : public Command {
 	
 public:
 	
-	SetControlledZoneCommand() : Command("setcontrolledzone") { }
+	SetControlledZoneCommand() : Command("setcontrolledzone", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
