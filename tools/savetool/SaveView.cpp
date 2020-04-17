@@ -379,7 +379,6 @@ static std::ostream & print_item_type(std::ostream & strm, s32 type) {
 	if(type & OBJECT_TYPE_2H) strm << " 2h";
 	if(type & OBJECT_TYPE_BOW) strm << " bow";
 	if(type & OBJECT_TYPE_SHIELD) strm << " shield";
-	if(type & OBJECT_TYPE_GOLD) strm << " gold";
 	if(type & OBJECT_TYPE_ARMOR) strm << " armor";
 	if(type & OBJECT_TYPE_HELMET) strm << " helmet";
 	if(type & OBJECT_TYPE_RING) strm << " ring";
