@@ -112,7 +112,6 @@ enum ItemTypeFlag {
 	OBJECT_TYPE_2H       = 1 << 3,
 	OBJECT_TYPE_BOW      = 1 << 4,
 	OBJECT_TYPE_SHIELD   = 1 << 5,
-	OBJECT_TYPE_GOLD     = 1 << 7,
 	OBJECT_TYPE_ARMOR    = 1 << 8,
 	OBJECT_TYPE_HELMET   = 1 << 9,
 	OBJECT_TYPE_RING     = 1 << 10,
