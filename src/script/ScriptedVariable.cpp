@@ -200,22 +200,16 @@ public:
 class UnsetCommand : public Command {
 	
 	// TODO move to variable context
-	static bool UNSETVar(SCRIPT_VARIABLES & svf, const std::string & name) {
+	static void UNSETVar(SCRIPT_VARIABLES & svf, const std::string & name) {
 		
 		SCRIPT_VARIABLES::iterator it;
 		for(it = svf.begin(); it != svf.end(); ++it) {
 			if(name == it->name) {
+				svf.erase(it);
 				break;
 			}
 		}
 		
-		if(it == svf.end()) {
-			return false;
-		}
-		
-		svf.erase(it);
-		
-		return true;
 	}
 	
 public:
