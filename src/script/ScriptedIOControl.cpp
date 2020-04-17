@@ -391,7 +391,7 @@ public:
 		EntityHandle t = entities.getById(target);
 		
 		if(t == EntityHandle()) {
-			context.skipStatement();
+			context.skipBlock();
 		}
 		
 		return Success;
@@ -427,7 +427,7 @@ public:
 		EntityHandle t = entities.getById(target);
 		
 		if(!ValidIONum(t) || !hasVisibility(context.getEntity(), entities[t])) {
-			context.skipStatement();
+			context.skipBlock();
 		}
 		
 		return Success;

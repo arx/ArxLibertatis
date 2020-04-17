@@ -122,7 +122,7 @@ public:
 	 */
 	size_t skipCommand();
 	
-	void skipStatement();
+	void skipBlock();
 	
 	bool jumpToLabel(const std::string & target, bool substack = false);
 	bool returnToCaller();

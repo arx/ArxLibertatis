@@ -146,7 +146,7 @@ public:
 		
 		float t = Random::getf(0.f, 100.f);
 		if(chance < t) {
-			context.skipStatement();
+			context.skipBlock();
 		}
 		
 		return Success;
@@ -794,7 +794,7 @@ public:
 		
 		if(t1 != t2) {
 			ScriptWarning << "incompatible types: \"" << left << "\" (" << (t1 == TYPE_TEXT ? "text" : "number") << ") and \"" << right << "\" (" << (t2 == TYPE_TEXT ? "text" : "number") << ')';
-			context.skipStatement();
+			context.skipBlock();
 			return Failed;
 		}
 		
@@ -808,7 +808,7 @@ public:
 		}
 		
 		if(!condition) {
-			context.skipStatement();
+			context.skipBlock();
 		}
 		
 		return Success;
@@ -828,7 +828,7 @@ public:
 		
 		DebugScript("");
 		
-		context.skipStatement();
+		context.skipBlock();
 		
 		return Success;
 	}
