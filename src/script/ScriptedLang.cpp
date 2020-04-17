@@ -415,7 +415,7 @@ class SetEventCommand : public Command {
 	
 public:
 	
-	SetEventCommand() : Command("setevent") { }
+	SetEventCommand() : Command("setevent", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
