@@ -130,7 +130,6 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string & temp) {
 		case '2': return OBJECT_TYPE_2H;
 		case 'b': return OBJECT_TYPE_BOW;
 		case 's': return OBJECT_TYPE_SHIELD;
-		case 'f': return OBJECT_TYPE_FOOD;
 		case 'g': return OBJECT_TYPE_GOLD;
 		case 'r': return OBJECT_TYPE_RING;
 		case 'a': return OBJECT_TYPE_ARMOR;
