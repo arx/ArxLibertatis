@@ -612,7 +612,7 @@ public:
 		
 		DebugScript("");
 		
-		context.getEntity()->targetinfo = EntityHandle(TARGET_PLAYER);
+		context.getEntity()->targetinfo = EntityHandle_Player;
 		GetTargetPos(context.getEntity());
 		
 		return Success;
