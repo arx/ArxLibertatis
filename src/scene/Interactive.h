@@ -64,7 +64,6 @@ namespace res { class path; }
 enum TargetInfo {
 	TARGET_PATH = -3,
 	TARGET_NONE = -2,
-	TARGET_PLAYER = 0,
 };
 
 enum AddInteractiveFlag {

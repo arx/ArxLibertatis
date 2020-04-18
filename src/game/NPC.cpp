@@ -2907,7 +2907,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		return;
 	}
 	
-	if(io->targetinfo == EntityHandle(TARGET_PLAYER) || io->targetinfo == EntityHandle()) {
+	if(io->targetinfo == EntityHandle_Player || io->targetinfo == EntityHandle()) {
 		io->target = player.pos + Vec3f(0.f, player.size.y, 0.f);
 		return;
 	} else if(ValidIONum(io->targetinfo)) {

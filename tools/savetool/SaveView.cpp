@@ -1616,7 +1616,7 @@ static void print_io_npc(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ais,
 		std::cout << "  True target: ";
 		switch(as->pathfind.truetarget) {
 			case TARGET_PATH: std::cout << "path"; break;
-			case TARGET_PLAYER: std::cout << "player"; break;
+			case 0: std::cout << "player"; break;
 			default: std::cout << "(unknown)";
 		}
 		std::cout << '\n';

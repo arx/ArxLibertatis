@@ -340,7 +340,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 					Entity * ioo = entities[handle];
 					
 					if(ioo && (ioo->ioflags & IO_NPC)) {
-						if(ioo->targetinfo == EntityHandle(TARGET_PLAYER)) {
+						if(ioo->targetinfo == EntityHandle_Player) {
 							std::string killer;
 							if(source == EntityHandle_Player) {
 								killer = "player";
