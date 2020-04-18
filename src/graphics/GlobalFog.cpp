@@ -80,7 +80,7 @@ static float Approach(float current, float desired, float increment) {
 	if(desired > current) {
 		current = std::min(current + increment, desired);
 	} else if(desired < current) {
-		current = std::min(current - increment, desired);
+		current = std::max(current - increment, desired);
 	}
 	
 	return current;
