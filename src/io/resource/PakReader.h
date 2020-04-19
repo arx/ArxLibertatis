@@ -103,7 +103,7 @@ private:
 	std::vector<std::istream *> paks;
 	
 	bool addFiles(PakDirectory * dir, const fs::path & path);
-	bool addFile(PakDirectory * dir, const fs::path & path, const std::string & name, u64 size);
+	bool addFile(PakDirectory * dir, const fs::path & path, const std::string & name);
 	
 };
 
