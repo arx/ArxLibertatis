@@ -215,7 +215,7 @@ bool initLocalisation() {
 		return false;
 	}
 	
-	LogDebug("Loaded localisation file of size " << file->size());
+	LogDebug("Loaded localisation file of size " << buffer.size());
 	buffer = util::convert<util::UTF16LE, util::UTF8>(buffer);
 	LogDebug("Converted to UTF8 string of length " << buffer.size());
 	
