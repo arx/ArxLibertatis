@@ -51,8 +51,7 @@ public:
 	size_t size() const { return _size; }
 	PakFile * alternative() const { return _alternative; }
 	
-	virtual void read(void * buf) const = 0;
-	std::string read() const;
+	virtual std::string read() const = 0;
 	
 	virtual PakFileHandle * open() const = 0;
 	

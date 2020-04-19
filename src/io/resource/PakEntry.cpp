@@ -30,16 +30,6 @@ PakFile::~PakFile() {
 	delete _alternative;
 }
 
-std::string PakFile::read() const {
-	
-	std::string buffer;
-	buffer.resize(size());
-	
-	read(&buffer[0]);
-	
-	return buffer;
-}
-
 PakDirectory::PakDirectory() { }
 
 PakDirectory::~PakDirectory() {
