@@ -84,7 +84,7 @@ public:
 	explicit UncompressedFile(std::istream * archive, size_t offset, size_t size)
 		: PakFile(size), m_archive(*archive), m_offset(offset) { }
 	
-	void read(void * buf) const;
+	std::string read() const;
 	
 	PakFileHandle * open() const;
 	
@@ -112,16 +112,22 @@ public:
 	
 };
 
-void UncompressedFile::read(void * buf) const {
+std::string UncompressedFile::read() const {
 	
 	m_archive.seekg(m_offset);
 	
-	fs::read(m_archive, buf, size());
+	std::string buffer;
 	
-	arx_assert(!m_archive.fail());
-	arx_assert(size_t(m_archive.gcount()) == size());
+	buffer.resize(size());
+	fs::read(m_archive, &buffer[0], size());
+	if(m_archive.fail()) {
+		LogError << "Error reading from PAK archive";
+		buffer.clear();
+	}
 	
 	m_archive.clear();
+	
+	return buffer;
 }
 
 PakFileHandle * UncompressedFile::open() const {
@@ -185,7 +191,7 @@ public:
 	explicit CompressedFile(fs::ifstream * archive, size_t offset, size_t size, size_t storedSize)
 		: PakFile(size), m_archive(*archive), m_offset(offset), m_storedSize(storedSize) { }
 	
-	void read(void * buf) const;
+	std::string read() const;
 	
 	PakFileHandle * open() const;
 	
@@ -237,27 +243,26 @@ size_t blastInFile(void * Param, const unsigned char ** buf) {
 	return fs::read(p->file, p->readbuf, count).gcount();
 }
 
-void CompressedFile::read(void * buf) const {
+std::string CompressedFile::read() const {
 	
 	m_archive.seekg(m_offset);
 	
 	std::string buffer;
+	
 	buffer.resize(m_storedSize);
 	fs::read(m_archive, &buffer[0], m_storedSize);
-	
-	BlastMemInBuffer in(buffer.data(), buffer.size());
-	BlastMemOutBuffer out(reinterpret_cast<char *>(buf), size());
-	
-	int r = blast(blastInMem, &in, blastOutMem, &out);
-	if(r) {
-		LogError << "Blast error " << r << " outSize=" << size();
+	if(m_archive.fail()) {
+		LogError << "Error reading from PAK archive";
+		buffer.clear();
 	}
 	
-	arx_assert(!m_archive.fail());
-	arx_assert(in.size == 0);
-	arx_assert(out.size == 0);
-	
 	m_archive.clear();
+	
+	if(buffer.empty()) {
+		return buffer;
+	}
+	
+	return blast(buffer, size());
 }
 
 PakFileHandle * CompressedFile::open() const {
@@ -378,7 +383,7 @@ public:
 	
 	PlainFile(const fs::path & path, size_t size) : PakFile(size), m_path(path) { }
 	
-	void read(void * buf) const;
+	std::string read() const;
 	
 	PakFileHandle * open() const;
 	
@@ -405,15 +410,8 @@ public:
 	
 };
 
-void PlainFile::read(void * buf) const {
-	
-	fs::ifstream ifs(m_path, fs::fstream::in | fs::fstream::binary);
-	arx_assert(ifs.is_open());
-	
-	fs::read(ifs, buf, size());
-	
-	arx_assert(!ifs.fail());
-	arx_assert(size_t(ifs.gcount()) == size());
+std::string PlainFile::read() const {
+	return fs::read(m_path);
 }
 
 PakFileHandle * PlainFile::open() const {
