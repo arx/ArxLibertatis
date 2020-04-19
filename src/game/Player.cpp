@@ -2392,6 +2392,7 @@ void ARX_PLAYER_Start_New_Quest() {
 	ARX_PLAYER_MakeFreshHero();
 	player.torch = NULL;
 	entities.clear();
+	svar.clear();
 	ARX_EQUIPMENT_UnEquipAllPlayer();
 	
 	ARX_CHANGELEVEL_StartNew();
