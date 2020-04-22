@@ -28,33 +28,35 @@
 #include "graphics/Color.h"
 
 class Trail {
-
+	
 public:
-	Trail(long duration, Color4f startColor, Color4f endColor, float startSize, float endSize);
-
-	void SetNextPosition(Vec3f & nextPosition);
-
+	
+	Trail(long duration, Color3f startColor, Color3f endColor, float startSize, float endSize);
+	
+	void SetNextPosition(const Vec3f & nextPosition);
+	
 	void Update(GameDuration timeDelta);
 	void Render();
-
+	
+	bool emtpy() const {
+		return m_totalDuration == GameDuration(0);
+	}
+	
 private:
-	struct TrailSegment {
-
-		TrailSegment(Color color, float size)
-			: m_color(color)
-			, m_size(size)
-		{}
-
-		Color m_color;
-		float m_size;
-	};
-
+	
+	
 	GameDuration m_timePerSegment;
 	GameDuration m_lastSegmentDuration;
-	std::vector<TrailSegment> m_segments;
-
+	GameDuration m_totalDuration;
+	
 	Vec3f m_nextPosition;
 	boost::circular_buffer<Vec3f> m_positions;
+	
+	Color4f m_startColor;
+	Color4f m_endColor;
+	float m_startSize;
+	float m_endSize;
+	
 };
 
 class ArrowTrail : public Trail {
