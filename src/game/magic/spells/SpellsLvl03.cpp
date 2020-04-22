@@ -82,13 +82,13 @@ void SpeedSpell::Launch() {
 			continue;
 		}
 		
-		float col = Random::getf(0.05f, 0.1f);
+		float col = Random::getf(0.1f, 0.2f);
 		float size = Random::getf(1.f, 1.5f);
 		int taille = Random::get(130, 260);
 		
 		SpeedTrail trail;
 		trail.vertexIndex = itr->origin;
-		trail.trail = new Trail(taille, Color4f::gray(col), Color4f::black, size, 0.f);
+		trail.trail = new Trail(taille, Color3f::gray(col), Color3f::black, size, 0.f);
 		
 		m_trails.push_back(trail);
 	}
