@@ -397,7 +397,6 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	
 	// We reset all data to create a fresh object
 	work->cub = obj1->cub;
-	work->quat = obj1->quat;
 	
 	// Linked objects are linked to this object.
 	if(obj1->linked.size() > obj2->linked.size()) {

@@ -232,7 +232,6 @@ struct EERIE_3DOBJ {
 		: pos(0.f)
 		, point0(0.f)
 		, origin(0)
-		, quat(quat_identity())
 		, pbox(NULL)
 		, sdata(false)
 		, m_skeleton(NULL)
@@ -271,7 +270,6 @@ struct EERIE_3DOBJ {
 
 	std::vector<res::path> originaltextures;
 	CUB3D cub;
-	glm::quat quat;
 	std::vector<EERIE_LINKED> linked;
 	
 	PHYSICS_BOX_DATA * pbox;

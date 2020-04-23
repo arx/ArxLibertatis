@@ -208,7 +208,6 @@ void EERIE_3DOBJ::clear() {
 
 		originaltextures.clear();
 		
-		quat = quat_identity();
 		linked.clear();
 
 		pbox = 0;
@@ -257,7 +256,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 
 	nouvo->origin = obj->origin;
 	nouvo->point0 = obj->point0;
-	nouvo->quat = obj->quat;
 	
 	nouvo->facelist = obj->facelist;
 	nouvo->grouplist = obj->grouplist;
