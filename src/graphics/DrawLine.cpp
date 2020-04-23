@@ -125,9 +125,11 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 
 void drawLineCylinder(const Cylinder & cyl, Color col) {
 	
-	const int STEPCYL = 16;
+	const int STEPCYL = 15;
 	
-	for(long i = 0; i < 360 - STEPCYL; i += STEPCYL) {
+	arx_assert(360 % STEPCYL == 0);
+	
+	for(long i = 0; i < 360; i += STEPCYL) {
 		
 		Vec3f current = angleToVectorXZ(i) * cyl.radius;
 		Vec3f next = angleToVectorXZ(i + STEPCYL) * cyl.radius;
