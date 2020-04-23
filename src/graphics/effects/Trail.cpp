@@ -76,6 +76,8 @@ void Trail::Render()
 	RenderMaterial mat;
 	mat.setCulling(CullNone);
 	mat.setBlendType(RenderMaterial::Additive);
+	mat.setDepthTest(true);
+	mat.setDepthBias(8);
 	
 	for(size_t i = 0; i + 1 < m_positions.size() && i + 1 < m_segments.size(); i++) {
 		Draw3DLineTexNew(mat, m_positions[i], m_positions[i + 1],
