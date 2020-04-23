@@ -96,16 +96,6 @@ BlastResult blast(blast_in infun, void * inhow, blast_out outfun, void * outhow)
 
 // Convenience implementations.
 
-struct BlastMemOutBuffer {
-	
-	char * buf;
-	
-	size_t size;
-	
-	BlastMemOutBuffer(char * b, size_t s) : buf(b), size(s) { }
-	
-};
-
 struct BlastMemInBuffer {
 	
 	const char * buf;
@@ -123,12 +113,6 @@ struct BlastMemOutString {
 	explicit BlastMemOutString(std::string & destination) : buffer(destination) { }
 	
 };
-
-/*!
- * Writes data to a BlastMemOutBuffer.
- * Advances the buf pointer and decreases size.
- */
-int blastOutMem(void * param, unsigned char * buf, size_t len);
 
 /*!
  * Reads data from a BlastMemInBuffer.

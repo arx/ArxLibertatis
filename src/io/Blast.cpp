@@ -440,21 +440,6 @@ BlastResult blast(blast_in infun, void * inhow, blast_out outfun, void * outhow)
 
 // Additional functions.
 
-int blastOutMem(void * param, unsigned char * buf, size_t len) {
-	
-	BlastMemOutBuffer * p = static_cast<BlastMemOutBuffer *>(param);
-	
-	if(len > p->size) {
-		return 1;
-	}
-	
-	memcpy(p->buf, buf, len);
-	p->buf += len;
-	p->size -= len;
-	
-	return 0;
-}
-
 size_t blastInMem(void * param, const unsigned char ** buf) {
 	
 	BlastMemInBuffer * p = static_cast<BlastMemInBuffer *>(param);
