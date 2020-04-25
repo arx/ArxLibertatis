@@ -63,8 +63,7 @@
 enum ARX_INTERFACE_CURSOR_MODE
 {
 	CURSOR_UNDEFINED,
-	CURSOR_FIREBALLAIM,
-	CURSOR_INTERACTION_ON,
+ 	CURSOR_INTERACTION_ON,
 	CURSOR_REDIST,
 	CURSOR_COMBINEON,
 	CURSOR_COMBINEOFF,
@@ -595,13 +594,6 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 				mousePos.x -= 16.f;
 				mousePos.y -= 16.f;
 				break;
-			case CURSOR_FIREBALLAIM: {
-				surf = cursorTargetOn;
-				arx_assert(surf);
-				
-				mousePos = Vec2f(320.f, 280.f) - Vec2f(surf->m_size) * 0.5f;
-				break;
-			}
 			case CURSOR_INTERACTION_ON: {
 				cursorAnimatedHand.update1();
 				surf = cursorAnimatedHand.getCurrentTexture();
