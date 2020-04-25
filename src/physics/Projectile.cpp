@@ -78,7 +78,7 @@ static bool IsPointInField(const Vec3f & pos) {
 
 static void ARX_THROWN_OBJECT_Kill(size_t num) {
 	if(num < MAX_THROWN_OBJECTS) {
-		g_projectiles[num].flags = 0;
+		g_projectiles[num].obj = NULL;
 		delete g_projectiles[num].m_trail;
 		g_projectiles[num].m_trail = NULL;
 	}
@@ -93,25 +93,21 @@ void ARX_THROWN_OBJECT_KillAll() {
 static long ARX_THROWN_OBJECT_GetFree() {
 	
 	GameInstant latest_time = g_gameTime.now();
-	long latest_obj = -1;
-
+	size_t oldest = 0;
+	
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
-		if(g_projectiles[i].flags & ATO_EXIST) {
-			if(g_projectiles[i].creation_time < latest_time) {
-				latest_obj = i;
-				latest_time = g_projectiles[i].creation_time;
-			}
-		} else {
+		if(!g_projectiles[i].obj) {
 			return i;
 		}
+		if(g_projectiles[i].creation_time < latest_time) {
+			         oldest = i;
+			latest_time = g_projectiles[i].creation_time;
+		}
 	}
-
-	if(latest_obj >= 0) {
-		ARX_THROWN_OBJECT_Kill(size_t(latest_obj));
-		return latest_obj;
-	}
-
-	return -1;
+	
+	ARX_THROWN_OBJECT_Kill(oldest);
+	
+	return oldest;
 }
 
 extern EERIE_3DOBJ * arrowobj;
@@ -142,7 +138,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	projectile.m_trail->Update(g_gameTime.lastFrameDuration());
 	
 	projectile.creation_time = g_gameTime.now();
-	projectile.flags |= ATO_EXIST | ATO_MOVING;
+	projectile.flags = ATO_MOVING;
 	
 	if(source == EntityHandle_Player) {
 		Entity * tio = entities.get(player.equiped[EQUIP_SLOT_WEAPON]);
@@ -301,19 +297,23 @@ void ARX_THROWN_OBJECT_Render() {
 	
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
 		Projectile & projectile = g_projectiles[i];
-		if(!(projectile.flags & ATO_EXIST))
+		
+		if(!projectile.obj) {
 			continue;
-
+		}
+		
 		TransformInfo t(projectile.position, projectile.quat);
 		// Object has to be retransformed because arrows share the same object
 		DrawEERIEInter_ModelTransform(projectile.obj, t);
 		DrawEERIEInter_ViewProjectTransform(projectile.obj);
 		DrawEERIEInter_Render(projectile.obj, t, NULL);
-
+		
 		if(projectile.m_trail) {
 			projectile.m_trail->Render();
 		}
+		
 	}
+	
 }
 
 static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta) {
@@ -321,7 +321,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 	float timeDeltaMs = toMsf(timeDelta);
 	
 	Projectile & projectile = g_projectiles[i];
-	if(!(projectile.flags & ATO_EXIST)) {
+	if(!projectile.obj) {
 		return;
 	}
 	
@@ -330,11 +330,6 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 	if(!ACTIVEBKG->isInActiveTile(projectile.position)) {
 		// Projectile got outside of the world
 		ARX_THROWN_OBJECT_Kill(i);
-		return;
-	}
-	
-		// Now render object !
-	if(!projectile.obj) {
 		return;
 	}
 	

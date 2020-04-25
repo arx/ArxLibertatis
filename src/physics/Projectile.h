@@ -27,7 +27,6 @@
 class Trail;
 
 enum ProjectileFlag {
-	ATO_EXIST      = 1 << 0,
 	ATO_MOVING     = 1 << 1,
 	ATO_UNDERWATER = 1 << 2,
 	ATO_FIERY      = 1 << 3
