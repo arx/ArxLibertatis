@@ -1012,9 +1012,14 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 	}
 	
 	if(tc) {
+		InventoryPos pos = removeFromInventories(io);
 		io->m_inventorySize = inventorySizeFromTextureSize(tc->size());
 		io->m_icon = tc;
+		if(pos) {
+			insertIntoInventoryAtNoEvent(io, pos);
+		}
 	}
+	
 }
 
 // Be careful with this func...
@@ -1027,7 +1032,11 @@ Entity * CloneIOItem(Entity * src) {
 	
 	SendInitScriptEvent(dest);
 	dest->m_icon = src->m_icon;
+	InventoryPos pos = removeFromInventories(dest);
 	dest->m_inventorySize = src->m_inventorySize;
+	if(pos) {
+		insertIntoInventoryAtNoEvent(dest, pos);
+	}
 	delete dest->obj;
 	dest->obj = Eerie_Copy(src->obj);
 	CloneLocalVars(dest, src);
