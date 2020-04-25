@@ -138,7 +138,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	projectile.m_trail->Update(g_gameTime.lastFrameDuration());
 	
 	projectile.creation_time = g_gameTime.now();
-	projectile.flags = ATO_MOVING;
+	projectile.flags = 0;
 	
 	if(source == EntityHandle_Player) {
 		Entity * tio = entities.get(player.equiped[EQUIP_SLOT_WEAPON]);
@@ -333,7 +333,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		return;
 	}
 	
-	if(!(projectile.flags & ATO_MOVING)) {
+	if(projectile.velocity == 0.f) {
 		if(projectile.m_trail) {
 			projectile.m_trail->Update(timeDelta);
 			if(projectile.m_trail->emtpy()) {
@@ -419,9 +419,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 				ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
 			}
 			
-			projectile.flags &= ~ATO_MOVING;
 			projectile.velocity = 0.f;
-			
 			
 			if(ValidIONum(projectile.source)) {
 				std::string bkg_material = "earth";
@@ -526,8 +524,6 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 					
 				}
 				
-				// Need to deal damages !
-				projectile.flags &= ~ATO_MOVING;
 				projectile.velocity = 0.f;
 				
 				need_kill = true;
