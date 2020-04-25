@@ -404,9 +404,9 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		Vec3f dest = original_pos + projectile.vector * 95.f;
 		Vec3f orgn = original_pos - projectile.vector * 25.f;
 		EERIEPOLY * ep = CheckArrowPolyCollision(orgn, dest);
-		if(ep) {
+		if(ep || IsPointInField(v0)) {
 			
-			ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
+			ParticleSparkSpawn(v0, ep ? 14 : 24, SpawnSparkType_Default);
 			CheckExp(projectile);
 			
 			if(ValidIONum(projectile.source)) {
@@ -427,28 +427,10 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			
 			projectile.position = original_pos;
 			
-			return;
-		}
-		
-		if(IsPointInField(v0)) {
-			
-			ParticleSparkSpawn(v0, 24, SpawnSparkType_Default);
-			CheckExp(projectile);
-			
-			if(ValidIONum(projectile.source)) {
-				ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
+			if(!ep) {
+				ARX_THROWN_OBJECT_Kill(i);
 			}
 			
-			projectile.flags &= ~ATO_MOVING;
-			projectile.velocity = 0.f;
-			
-			if(ValidIONum(projectile.source)) {
-				ARX_SOUND_PlayCollision("dagger", "earth", 1.f, 1.f, v0, entities[projectile.source]);
-			}
-			
-			projectile.position = original_pos;
-			
-			ARX_THROWN_OBJECT_Kill(i);
 			return;
 		}
 		
