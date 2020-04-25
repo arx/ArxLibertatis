@@ -333,11 +333,17 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		return;
 	}
 	
+	if(!(projectile.flags & ATO_MOVING)) {
+		if(projectile.m_trail) {
+			projectile.m_trail->Update(timeDelta);
+		}
+		return;
+	}
+	
 	TransformInfo t(projectile.position, projectile.quat);
 	DrawEERIEInter_ModelTransform(projectile.obj, t);
 	
-	if((projectile.flags & ATO_FIERY) && (projectile.flags & ATO_MOVING)
-	   && !(projectile.flags & ATO_UNDERWATER)) {
+	if((projectile.flags & ATO_FIERY) && !(projectile.flags & ATO_UNDERWATER)) {
 		EERIE_LIGHT * light = dynLightCreate();
 		if(light && g_gameTime.lastFrameDuration() > 0) {
 			light->intensity = 1.f;
@@ -355,10 +361,6 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 	if(projectile.m_trail) {
 		projectile.m_trail->SetNextPosition(projectile.position);
 		projectile.m_trail->Update(timeDelta);
-	}
-	
-	if(!(projectile.flags & ATO_MOVING)) {
-		return;
 	}
 	
 	float mod = timeDeltaMs * projectile.velocity;
