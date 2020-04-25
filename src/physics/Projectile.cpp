@@ -52,7 +52,7 @@
 
 const size_t MAX_THROWN_OBJECTS = 100;
 
-Projectile g_projectiles[MAX_THROWN_OBJECTS];
+static Projectile g_projectiles[MAX_THROWN_OBJECTS];
 
 static bool IsPointInField(const Vec3f & pos) {
 
