@@ -336,6 +336,10 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 	if(!(projectile.flags & ATO_MOVING)) {
 		if(projectile.m_trail) {
 			projectile.m_trail->Update(timeDelta);
+			if(projectile.m_trail->emtpy()) {
+				delete projectile.m_trail;
+				projectile.m_trail = NULL;
+			}
 		}
 		return;
 	}
