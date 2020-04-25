@@ -544,16 +544,9 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ * eobj, const TransformInfo & t) 
 	arx_assert(eobj->vertexWorldPositions.size() == eobj->vertexlist.size());
 	
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
-
-		Vec3f temp = eobj->vertexlist[i].v;
-
-		temp -= t.offset;
-		temp *= t.scale;
-		temp = t.rotation * temp;
-		temp += t.pos;
-
-		eobj->vertexWorldPositions[i].v = temp;
+		eobj->vertexWorldPositions[i].v = t(eobj->vertexlist[i].v);
 	}
+	
 }
 
 void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ * eobj) {
@@ -1139,11 +1132,10 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 			continue;
 		}
 		
-		TransformInfo t(
-			actionPointPosition(eobj, link.lidx),
-			eobj->m_skeleton->bones[link.lgroup.handleData()].anim.quat,
-			link.io ? link.io->scale : 1.f,
-			link.obj->vertexlist[link.lidx2.handleData()].v - link.obj->vertexlist[link.obj->origin].v);
+		TransformInfo t(actionPointPosition(eobj, link.lidx),
+		                eobj->m_skeleton->bones[link.lgroup.handleData()].anim.quat,
+		                link.io ? link.io->scale : 1.f);
+		t.pos = t(link.obj->vertexlist[link.obj->origin].v - link.obj->vertexlist[link.lidx2.handleData()].v);
 		
 		DrawEERIEInter(link.obj, t, link.io, true, invisibility);
 	}
@@ -1318,37 +1310,39 @@ static void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBle
  * Apply transformations on all bones
  */
 static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
-
+	
 	for(size_t i = 0; i != rig.bones.size(); i++) {
 		Bone & bone = rig.bones[i];
-
-		if(bone.father >= 0) { // Child Bones
+		
+		if(bone.father >= 0) { // Child bones
+			
 			size_t parentIndex = size_t(bone.father);
 			Bone & parent = rig.bones[parentIndex];
 			// Rotation
 			bone.anim.quat = parent.anim.quat * bone.init.quat;
-
+			
 			// Translation
 			bone.anim.trans = bone.init.trans * parent.anim.scale;
 			bone.anim.trans = parent.anim.quat * bone.anim.trans;
 			bone.anim.trans = parent.anim.trans + bone.anim.trans;
-
+			
 			// Scale
 			bone.anim.scale = (bone.init.scale + Vec3f(1.f)) * parent.anim.scale;
-		} else { // Root Bone
+			
+		} else { // Root bone
+			
 			// Rotation
 			bone.anim.quat = t.rotation * bone.init.quat;
-
+			
 			// Translation
-			Vec3f vt1 = bone.init.trans + t.offset;
-			bone.anim.trans = t.rotation * vt1;
-			bone.anim.trans *= t.scale;
-			bone.anim.trans += t.pos;
-
+			bone.anim.trans = t(bone.init.trans);
+			
 			// Compute Global Object Scale AND Global Animation Scale
 			bone.anim.scale = (bone.init.scale + Vec3f(1.f)) * t.scale;
+			
 		}
 	}
+	
 }
 
 /*!
@@ -1509,7 +1503,8 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 	}
 	
 	// Build skeleton in Object Space
-	TransformInfo t(pos, rotation, scale, ftr);
+	TransformInfo t(pos, rotation, scale);
+	t.pos = t(ftr);
 	Cedric_ConcatenateTM(skeleton, t);
 
 	Cedric_TransformVerts(eobj);

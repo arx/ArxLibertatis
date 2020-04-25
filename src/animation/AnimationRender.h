@@ -72,21 +72,22 @@ struct TransformInfo {
 	Vec3f pos;
 	glm::quat rotation;
 	float scale;
-	Vec3f offset;
 	
 	TransformInfo()
 		: pos(0.f)
 		, rotation(quat_identity())
 		, scale(1.f)
-		, offset(0.f)
 	{ }
 	
-	TransformInfo(Vec3f pos_, glm::quat rotation_, float scale_ = 1.f, Vec3f offset_ = Vec3f(0.f))
+	TransformInfo(Vec3f pos_, glm::quat rotation_, float scale_ = 1.f)
 		: pos(pos_)
 		, rotation(rotation_)
 		, scale(scale_)
-		, offset(offset_)
 	{ }
+	
+	Vec3f operator()(const Vec3f & vec) const {
+		return pos + ( rotation * vec ) * scale;
+	}
 	
 };
 
