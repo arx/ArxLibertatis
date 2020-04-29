@@ -283,7 +283,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	
 	LogDebug("ARX_FTL_Load: loaded object " << filename);
 	
-	arx_assert(obj->pos == Vec3f(0.f));
 	arx_assert(obj->point0 == Vec3f(0.f));
 	
 	return obj;
