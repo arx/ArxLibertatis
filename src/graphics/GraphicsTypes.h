@@ -171,11 +171,9 @@ struct EERIE_ACTIONLIST {
 	
 	std::string name;
 	ActionPoint idx;
-	long act;
 	
 	EERIE_ACTIONLIST()
 		: idx(0)
-		, act(0)
 	{ }
 	
 };
