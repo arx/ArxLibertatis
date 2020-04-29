@@ -209,7 +209,7 @@ static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	}
 }
 
-static s32 GetIOAnimIdx2(const Entity * io, ANIM_HANDLE * anim) {
+static s32 GetIOAnimIdx2(const Entity * io, const ANIM_HANDLE * anim) {
 	
 	if(!io || !anim) {
 		return -1;
