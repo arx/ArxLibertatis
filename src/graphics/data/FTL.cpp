@@ -185,8 +185,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 				face.vid[kk] = eff->vid[kk];
 				face.u[kk] = eff->u[kk];
 				face.v[kk] = eff->v[kk];
-				face.ou[kk] = eff->ou[kk];
-				face.ov[kk] = eff->ov[kk];
 			}
 		}
 	}

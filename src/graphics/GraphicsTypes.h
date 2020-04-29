@@ -169,8 +169,6 @@ struct EERIE_FACE {
 	Vec3f nrmls[IOPOLYVERT];
 	float temp;
 	
-	short ou[IOPOLYVERT];
-	short ov[IOPOLYVERT];
 };
 
 struct EERIE_ACTIONLIST {
