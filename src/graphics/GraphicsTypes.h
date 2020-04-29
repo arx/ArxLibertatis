@@ -246,7 +246,6 @@ struct EERIE_3DOBJ {
 	
 	~EERIE_3DOBJ();
 	
-	std::string name;
 	res::path file;
 	size_t origin;
 	std::vector<Vec3f> vertexlocal;
