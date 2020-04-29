@@ -212,9 +212,7 @@ void EERIE_3DOBJ::clear() {
 		fastaccess = EERIE_FASTACCESS();
 		
 		m_skeleton = 0;
-		
-	cub.xmin = cub.ymin = cub.zmin = std::numeric_limits<float>::max();
-	cub.xmax = cub.ymax = cub.zmax = std::numeric_limits<float>::min();
+	
 }
 
 // TODO move to destructor?
@@ -234,13 +232,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	
 	nouvo->pbox = NULL;
 	nouvo->m_skeleton = NULL;
-	
-	nouvo->cub.xmax = obj->cub.xmax;
-	nouvo->cub.xmin = obj->cub.xmin;
-	nouvo->cub.ymax = obj->cub.ymax;
-	nouvo->cub.ymin = obj->cub.ymin;
-	nouvo->cub.zmax = obj->cub.zmax;
-	nouvo->cub.zmin = obj->cub.zmin;
 	
 	nouvo->file = obj->file;
 	

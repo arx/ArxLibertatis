@@ -393,9 +393,6 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Work will contain the Tweaked object
 	EERIE_3DOBJ * work = new EERIE_3DOBJ;
 	
-	// We reset all data to create a fresh object
-	work->cub = obj1->cub;
-	
 	// Linked objects are linked to this object.
 	if(obj1->linked.size() > obj2->linked.size()) {
 		work->linked = obj1->linked;
