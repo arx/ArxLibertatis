@@ -141,7 +141,6 @@ struct EERIE_ACTIONLIST_FTL {
 		a.name = boost::to_lower_copy(util::loadString(name));
 		a.idx = ActionPoint(idx);
 		a.act = action;
-		a.sfx = sfx;
 		return a;
 	}
 	
