@@ -193,8 +193,6 @@ void MakeUserFlag(TextureContainer * tc) {
 // Warning Clear3DObj don't release Any pointer Just Clears Structures
 void EERIE_3DOBJ::clear() {
 	
-		point0 = Vec3f(0.f);
-
 		origin = 0;
 
 		vertexlocal.clear();
@@ -252,7 +250,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 		nouvo->name = obj->name;
 
 	nouvo->origin = obj->origin;
-	nouvo->point0 = obj->point0;
 	
 	nouvo->facelist = obj->facelist;
 	nouvo->grouplist = obj->grouplist;
@@ -437,5 +434,4 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 		ret->vertexlist[i].v -= offset;
 	}
 	
-	ret->point0 -= offset;
 }

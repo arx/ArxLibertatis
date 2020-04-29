@@ -157,9 +157,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			
 		}
 		
-		// Set the origin point of the mesh
-		obj->point0 = obj->vertexlist[obj->origin].v;
-		
 		obj->vertexWorldPositions.resize(obj->vertexlist.size());
 		obj->vertexClipPositions.resize(obj->vertexlist.size());
 		obj->vertexColors.resize(obj->vertexlist.size());
@@ -282,8 +279,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	EERIE_Object_Precompute_Fast_Access(obj);
 	
 	LogDebug("ARX_FTL_Load: loaded object " << filename);
-	
-	arx_assert(obj->point0 == Vec3f(0.f));
 	
 	return obj;
 }
