@@ -208,7 +208,6 @@ void EERIE_3DOBJ::clear() {
 		linked.clear();
 
 		pbox = 0;
-		sdata = false;
 		
 		fastaccess = EERIE_FASTACCESS();
 		

@@ -231,7 +231,6 @@ struct EERIE_3DOBJ {
 	EERIE_3DOBJ()
 		: origin(0)
 		, pbox(NULL)
-		, sdata(false)
 		, m_skeleton(NULL)
 	{
 		// TODO Make default constructor possible
@@ -267,7 +266,6 @@ struct EERIE_3DOBJ {
 	std::vector<EERIE_LINKED> linked;
 	
 	PHYSICS_BOX_DATA * pbox;
-	bool sdata;
 	EERIE_FASTACCESS fastaccess;
 	Skeleton * m_skeleton;
 	
