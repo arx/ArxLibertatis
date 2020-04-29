@@ -194,7 +194,6 @@ void MakeUserFlag(TextureContainer * tc) {
 void EERIE_3DOBJ::clear() {
 	
 		point0 = pos = Vec3f(0.f);
-		angle = Anglef();
 
 		origin = 0;
 
@@ -239,7 +238,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->pbox = NULL;
 	nouvo->m_skeleton = NULL;
 	
-	nouvo->angle = obj->angle;
 	nouvo->pos = obj->pos;
 	nouvo->cub.xmax = obj->cub.xmax;
 	nouvo->cub.xmin = obj->cub.xmin;

@@ -393,7 +393,6 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Work will contain the Tweaked object
 	EERIE_3DOBJ * work = new EERIE_3DOBJ;
 	work->pos = obj1->pos;
-	work->angle = obj1->angle;
 	
 	// We reset all data to create a fresh object
 	work->cub = obj1->cub;
