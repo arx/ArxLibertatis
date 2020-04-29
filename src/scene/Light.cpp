@@ -607,12 +607,10 @@ float GetColorz(const Vec3f & pos) {
 	return (std::min(ff.r, 255.f) + std::min(ff.g, 255.f) + std::min(ff.b, 255.f)) * (1.f / 3);
 }
 
-ColorRGBA ApplyLight(ShaderLight lights[], size_t lightsCount, const glm::quat & quat, const Vec3f & position,
+ColorRGBA ApplyLight(ShaderLight lights[], size_t lightsCount, const Vec3f & position,
                      const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse) {
 	
 	Color3f tempColor = colorMod.ambientColor;
-	
-	glm::quat inv = glm::inverse(quat);
 	
 	// Dynamic lights
 	for(size_t l = 0; l != lightsCount; l++) {
@@ -620,9 +618,7 @@ ColorRGBA ApplyLight(ShaderLight lights[], size_t lightsCount, const glm::quat &
 		
 		Vec3f vLight = glm::normalize(light.pos - position);
 		
-		Vec3f Cur_vLights = inv * vLight;
-		
-		float cosangle = glm::dot(normal, Cur_vLights);
+		float cosangle = glm::dot(normal, vLight);
 		
 		// If light visible
 		if(cosangle > 0.f) {
