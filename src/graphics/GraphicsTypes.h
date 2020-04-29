@@ -229,13 +229,11 @@ struct EERIE_FASTACCESS {
 struct EERIE_3DOBJ {
 	
 	EERIE_3DOBJ()
-		: pos(0.f)
-		, point0(0.f)
+		: point0(0.f)
 		, origin(0)
 		, pbox(NULL)
 		, sdata(false)
 		, m_skeleton(NULL)
-		
 	{
 		// TODO Make default constructor possible
 		cub.xmin = 0;
@@ -252,7 +250,6 @@ struct EERIE_3DOBJ {
 	
 	std::string name;
 	res::path file;
-	Vec3f pos;
 	Vec3f point0;
 	size_t origin;
 	std::vector<Vec3f> vertexlocal;

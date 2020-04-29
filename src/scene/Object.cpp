@@ -193,7 +193,7 @@ void MakeUserFlag(TextureContainer * tc) {
 // Warning Clear3DObj don't release Any pointer Just Clears Structures
 void EERIE_3DOBJ::clear() {
 	
-		point0 = pos = Vec3f(0.f);
+		point0 = Vec3f(0.f);
 
 		origin = 0;
 
@@ -238,7 +238,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->pbox = NULL;
 	nouvo->m_skeleton = NULL;
 	
-	nouvo->pos = obj->pos;
 	nouvo->cub.xmax = obj->cub.xmax;
 	nouvo->cub.xmin = obj->cub.xmin;
 	nouvo->cub.ymax = obj->cub.ymax;
