@@ -936,7 +936,6 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->targetinfo = EntityHandle(TARGET_NONE);
 		io->spellcast_data.castingspell = SPELL_NONE;
-		io->summoner = EntityHandle();
 		io->spark_n_blood = 0;
 
 		if(io->ioflags & IO_NPC) {
@@ -977,6 +976,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->_npcdata->npcflags = 0;
 			io->_npcdata->backstab_skill = 0;
 			io->_npcdata->fDetect = -1;
+			io->_npcdata->summoner = EntityHandle();
 		}
 		
 		if(io->ioflags & IO_ITEM) {

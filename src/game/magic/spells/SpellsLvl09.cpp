@@ -211,7 +211,7 @@ void SummonCreatureSpell::Update() {
 			if(io) {
 				RestoreInitialIOStatusOfIO(io);
 				
-				io->summoner = m_caster;
+				io->_npcdata->summoner = m_caster;
 				
 				io->scriptload = 1;
 				
