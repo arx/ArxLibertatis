@@ -167,7 +167,6 @@ struct EERIE_FACE {
 	float transval;
 	Vec3f norm;
 	Vec3f nrmls[IOPOLYVERT];
-	float temp;
 	
 };
 
