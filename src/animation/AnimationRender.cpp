@@ -1147,7 +1147,7 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 		return Vec3f(0.f);
 	}
 	
-	EERIE_ANIM * eanim = layer.currentAltAnim();
+	const EERIE_ANIM * eanim = layer.currentAltAnim();
 	if(!eanim) {
 		return Vec3f(0.f);
 	}
@@ -1229,7 +1229,7 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer) {
 			continue;
 		}
 		
-		EERIE_ANIM * eanim = layer.currentAltAnim();
+		const EERIE_ANIM * eanim = layer.currentAltAnim();
 		if(!eanim) {
 			continue;
 		}
@@ -1352,11 +1352,11 @@ static void Cedric_TransformVerts(EERIE_3DOBJ * eobj) {
 	
 	arx_assert(eobj->vertexWorldPositions.size() == eobj->vertexlist.size());
 	
-	Skeleton & rig = *eobj->m_skeleton;
+	const Skeleton & rig = *eobj->m_skeleton;
 
 	// Transform & project all vertices
 	for(size_t i = 0; i != rig.bones.size(); i++) {
-		Bone & bone = rig.bones[i];
+		const Bone & bone = rig.bones[i];
 
 		glm::mat4x4 matrix = glm::mat4_cast(bone.anim.quat);
 		
