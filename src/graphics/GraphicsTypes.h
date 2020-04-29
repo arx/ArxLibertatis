@@ -254,7 +254,6 @@ struct EERIE_3DOBJ {
 	res::path file;
 	Vec3f pos;
 	Vec3f point0;
-	Anglef angle;
 	size_t origin;
 	std::vector<Vec3f> vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;

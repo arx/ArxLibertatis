@@ -27,6 +27,7 @@ namespace gui {
 
 struct ARX_NECKLACE {
 	EERIE_3DOBJ * lacet;
+	Anglef runeAngles[RUNE_COUNT];
 	EERIE_3DOBJ * runes[RUNE_COUNT];
 	TextureContainer * pTexTab[RUNE_COUNT];
 };

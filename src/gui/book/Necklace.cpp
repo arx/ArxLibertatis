@@ -41,7 +41,8 @@ ARX_NECKLACE necklace;
 
 void NecklaceInit() {
 	
-	memset(&necklace, 0, sizeof(ARX_NECKLACE));
+	necklace = ARX_NECKLACE();
+	
 	necklace.lacet = loadObject("graph/interface/book/runes/lacet.teo");
 	
 	necklace.runes[RUNE_AAM] =         loadObject("graph/interface/book/runes/runes_aam.teo");
@@ -164,17 +165,17 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 		PrepareCamera(&bookcam, Rect(rect), projectionCenter);
 		
 			Anglef angle;
-			if(rune->angle.getYaw() != 0.f) {
-				if(rune->angle.getYaw() > 300.f) {
-					rune->angle.setYaw(300.f);
+			if(gui::necklace.runeAngles[i].getYaw() != 0.f) {
+				if(gui::necklace.runeAngles[i].getYaw() > 300.f) {
+					gui::necklace.runeAngles[i].setYaw(300.f);
 				}
-				angle.setYaw(wave * rune->angle.getYaw() * (1.0f / 40));
+				angle.setYaw(wave * gui::necklace.runeAngles[i].getYaw() * (1.0f / 40));
 			}
 			
-			rune->angle.setYaw(rune->angle.getYaw() - ptDelta * 0.2f);
+			gui::necklace.runeAngles[i].setYaw(gui::necklace.runeAngles[i].getYaw() - ptDelta * 0.2f);
 			
-			if(rune->angle.getYaw() < 0.f)
-				rune->angle.setYaw(0.f);
+			if(gui::necklace.runeAngles[i].getYaw() < 0.f)
+				gui::necklace.runeAngles[i].setYaw(0.f);
 			
 			// Now draw the rune
 			TransformInfo t2(pos, glm::quat_cast(toRotationMatrix(angle)));
@@ -211,7 +212,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 					TransformInfo t(pos, glm::quat_cast(toRotationMatrix(angle)));
 					DrawEERIEInter(rune, t, NULL, false, 0.f);
 					
-					rune->angle.setYaw(rune->angle.getYaw() + ptDelta * 2.f);
+					gui::necklace.runeAngles[i].setYaw(gui::necklace.runeAngles[i].getYaw() + ptDelta * 2.f);
 					
 					PopAllTriangleListOpaque(baseState.blendAdditive());
 					
