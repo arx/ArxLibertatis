@@ -848,8 +848,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				}
 				ep2->v[0].w = dist;
 				
-				
-				ep2->misc = 0;
 				for(int l = 0; l < 4; l++) {
 					ep2->uslInd[l] = 0;
 				}

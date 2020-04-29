@@ -133,7 +133,6 @@ struct EERIEPOLY {
 	float transval;
 	float area;
 	short room;
-	short misc;
 	unsigned short uslInd[4];
 	
 	EERIEPOLY()
@@ -147,7 +146,6 @@ struct EERIEPOLY {
 		, transval(0)
 		, area(0)
 		, room(0)
-		, misc(0)
 	{
 		nrml[0] = nrml[1] = nrml[2] = nrml[3] = Vec3f(0.f);
 		uslInd[0] = uslInd[1] = uslInd[2] = uslInd[3] = 0;
