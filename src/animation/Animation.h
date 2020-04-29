@@ -153,7 +153,7 @@ struct AnimLayer {
 		, currentFrame(0)
 	{}
 	
-	ANIM_HANDLE * cur_anim;
+	const ANIM_HANDLE * cur_anim;
 	u16 altidx_cur; // idx to alternate anims...
 	AnimationDuration ctime;
 	AnimUseType flags;
@@ -161,9 +161,10 @@ struct AnimLayer {
 	float currentInterpolation;
 	long currentFrame;
 	
-	EERIE_ANIM * currentAltAnim() const {
+	const EERIE_ANIM * currentAltAnim() const {
 		return cur_anim->anims[altidx_cur];
 	}
+	
 };
 
 /*!
@@ -211,7 +212,7 @@ void stopAnimation(Entity * entity, size_t layer = 0);
 u16 ANIM_GetAltIdx(const ANIM_HANDLE & ah, u16 old);
 void ANIM_Set(AnimLayer & layer, ANIM_HANDLE * anim);
 
-Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, size_t alt_idx);
+Vec3f GetAnimTotalTranslate(const ANIM_HANDLE * eanim, size_t alt_idx);
 
 void EERIE_ANIMMANAGER_ClearAll();
 void EERIE_ANIMMANAGER_PurgeUnused();
@@ -223,7 +224,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io);
 void ResetAnim(AnimLayer & layer);
 
 void AcquireLastAnim(Entity * io);
-void FinishAnim(Entity * io, ANIM_HANDLE * eanim);
+void FinishAnim(Entity * io, const ANIM_HANDLE * eanim);
 
 std::vector< std::pair<res::path, size_t> > ARX_SOUND_PushAnimSamples();
 void ARX_SOUND_PopAnimSamples(const std::vector< std::pair<res::path, size_t> > & samples);
