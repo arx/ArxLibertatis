@@ -175,7 +175,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			face.facetype = PolyType::load(eff->facetype);
 			face.texid = eff->texid;
 			face.transval = eff->transval;
-			face.temp = eff->temp;
 			face.norm = eff->norm.toVec3();
 			
 			// Copy in all the texture and normals data
