@@ -269,10 +269,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	
 	obj->pbox = NULL; // Reset physics
 	
-	if(afsh->offset_collision_spheres != -1) {
-		obj->sdata = true;
-	}
-	
 	EERIE_OBJECT_CenterObjectCoordinates(obj);
 	EERIE_CreateCedricData(obj);
 	// Now we can release our cool FTL file
