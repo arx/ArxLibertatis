@@ -224,7 +224,7 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 }
 
 static void ObjectAddAction(EERIE_3DOBJ * obj, const std::string & name, long act,
-                            long sfx, const EERIE_VERTEX * vert) {
+                            const EERIE_VERTEX * vert) {
 	
 	size_t newvert = ObjectAddVertex(obj, vert);
 	
@@ -241,7 +241,6 @@ static void ObjectAddAction(EERIE_3DOBJ * obj, const std::string & name, long ac
 	
 	action.name = name;
 	action.act = act;
-	action.sfx = sfx;
 	action.idx = ActionPoint(newvert);
 }
 
@@ -416,7 +415,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		   || action.name == "head2chest"
 		   || action.name == "chest2leggings"
 		) {
-			ObjectAddAction(work, action.name, action.act, action.sfx, &obj1vertexlist2[action.idx.handleData()]);
+			ObjectAddAction(work, action.name, action.act, &obj1vertexlist2[action.idx.handleData()]);
 		}
 	}
 
@@ -428,7 +427,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		   || action.name == "head2chest"
 		   || action.name == "chest2leggings"
 		) {
-			ObjectAddAction(work, action.name, action.act, action.sfx, &obj2vertexlist2[action.idx.handleData()]);
+			ObjectAddAction(work, action.name, action.act, &obj2vertexlist2[action.idx.handleData()]);
 		}
 	}
 
