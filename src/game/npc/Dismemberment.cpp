@@ -157,13 +157,11 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	}
 	
 	nouvo->origin = nummm;
-	nouvo->point0 = nouvo->vertexlist[nouvo->origin].v;
 	
+	Vec3f point0 = nouvo->vertexlist[nouvo->origin].v;
 	for(size_t k = 0; k < nouvo->vertexlist.size(); k++) {
-		nouvo->vertexlist[k].v -= nouvo->point0;
+		nouvo->vertexlist[k].v -= point0;
 	}
-	
-	nouvo->point0 = Vec3f(0.f);
 	
 	nouvo->pbox = NULL;
 	

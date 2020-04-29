@@ -405,10 +405,8 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	
 	// Is the origin of object in obj1 or obj2 ? Retreives it for work object
 	if(IsInSelection(obj1, obj1->origin, tw1)) {
-		work->point0 = obj2->point0;
 		work->origin = ObjectAddVertex(work, &obj2vertexlist2[obj2->origin]);
 	} else {
-		work->point0 = obj1->point0;
 		work->origin = ObjectAddVertex(work, &obj1vertexlist2[obj1->origin]);
 	}
 
