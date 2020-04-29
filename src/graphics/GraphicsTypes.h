@@ -272,7 +272,6 @@ struct EERIE_PORTALS {
 	size_t room_1; // facing normal
 	size_t room_2;
 	short useportal;
-	short paddy;
 };
 
 struct EP_DATA {

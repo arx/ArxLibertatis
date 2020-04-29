@@ -907,7 +907,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.room_1 = epo->room_1;
 		portal.room_2 = epo->room_2;
 		portal.useportal = epo->useportal;
-		portal.paddy = epo->paddy;
 		portal.poly.center = epo->poly.center.toVec3();
 		portal.poly.max = epo->poly.max.toVec3();
 		portal.poly.min = epo->poly.min.toVec3();
