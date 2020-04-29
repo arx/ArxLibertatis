@@ -764,7 +764,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		io->ouch_time = g_gameTime.now();
 		
 		ScriptParameters parameters = getOuchEventParameter(io);
-		if(sender && sender->summoner == EntityHandle_Player) {
+		if(sender && (sender->ioflags & IO_NPC) && sender->_npcdata->summoner == EntityHandle_Player) {
 			sender = entities.player();
 			parameters.push_back("summoned");
 		}
@@ -840,7 +840,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 				}
 				
 				Entity * sender = ValidIONum(source) ? entities[source] : NULL;
-				if(sender && sender->summoner == EntityHandle_Player) {
+				if(sender && (sender->ioflags & IO_NPC) && sender->_npcdata->summoner == EntityHandle_Player) {
 					sender = entities.player();
 					parameters.push_back("summoned");
 				}
@@ -873,7 +873,9 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 			if(ValidIONum(source)) {
 				long xp = io->_npcdata->xpvalue;
 				ARX_DAMAGES_ForceDeath(*io, entities[source]);
-				if(source == EntityHandle_Player || entities[source]->summoner == EntityHandle_Player) {
+				if(source == EntityHandle_Player
+				   || ((entities[source]->ioflags & IO_NPC)
+				       && entities[source]->_npcdata->summoner == EntityHandle_Player)) {
 					ARX_PLAYER_Modify_XP(xp);
 				}
 			} else {

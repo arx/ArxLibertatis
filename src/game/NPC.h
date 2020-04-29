@@ -224,6 +224,8 @@ struct IO_NPCDATA {
 	float fDetect;
 	DismembermentFlags cuts;
 	
+	EntityHandle summoner;
+	
 };
 
 const float ARX_NPC_AUDIBLE_VOLUME_MIN = 0.94f;

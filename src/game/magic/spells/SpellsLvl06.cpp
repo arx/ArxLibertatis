@@ -183,7 +183,7 @@ void RiseDeadSpell::Update() {
 				ARX_INTERACTIVE_HideGore(io);
 				RestoreInitialIOStatusOfIO(io);
 				
-				io->summoner = m_caster;
+				io->_npcdata->summoner = m_caster;
 				
 				io->ioflags |= IO_NOSAVE;
 				m_entity = io->index();

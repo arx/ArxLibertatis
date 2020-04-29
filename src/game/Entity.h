@@ -379,7 +379,6 @@ public:
 	res::path inventory_skin;
 	long isHit;
 	EntityVisilibity inzone_show;
-	EntityHandle summoner;
 	long spark_n_blood;
 
 	Color3f special_color;
