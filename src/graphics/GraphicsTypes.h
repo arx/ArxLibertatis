@@ -188,15 +188,6 @@ struct EERIE_ACTIONLIST {
 	
 };
 
-struct CUB3D {
-	float xmin;
-	float xmax;
-	float ymin;
-	float ymax;
-	float zmin;
-	float zmax;
-};
-
 struct EERIE_LINKED {
 	ObjVertGroup lgroup;
 	ActionPoint lidx;
@@ -232,15 +223,7 @@ struct EERIE_3DOBJ {
 		: origin(0)
 		, pbox(NULL)
 		, m_skeleton(NULL)
-	{
-		// TODO Make default constructor possible
-		cub.xmin = 0;
-		cub.xmax = 0;
-		cub.ymin = 0;
-		cub.ymax = 0;
-		cub.zmin = 0;
-		cub.zmax = 0;
-	}
+	{ }
 	
 	void clear();
 	
@@ -261,7 +244,6 @@ struct EERIE_3DOBJ {
 	std::vector<TextureContainer *> texturecontainer;
 
 	std::vector<res::path> originaltextures;
-	CUB3D cub;
 	std::vector<EERIE_LINKED> linked;
 	
 	PHYSICS_BOX_DATA * pbox;
