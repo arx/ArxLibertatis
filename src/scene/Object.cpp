@@ -242,12 +242,8 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->cub.zmax = obj->cub.zmax;
 	nouvo->cub.zmin = obj->cub.zmin;
 	
-	if(!obj->file.empty())
-		nouvo->file = obj->file;
+	nouvo->file = obj->file;
 	
-	if(!obj->name.empty())
-		nouvo->name = obj->name;
-
 	nouvo->origin = obj->origin;
 	
 	nouvo->facelist = obj->facelist;
