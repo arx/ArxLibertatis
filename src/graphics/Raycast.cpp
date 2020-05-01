@@ -27,9 +27,6 @@
 #include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
 
-static RaycastResult RaycastMiss() { return RaycastResult(false, Vec3f(0.f)); }
-static RaycastResult RaycastHit(Vec3f hit) { return RaycastResult(true, hit); }
-
 void dbg_addRay(Vec3f start, Vec3f end);
 void dbg_addTile(Vec2i tile);
 void dbg_addPoly(EERIEPOLY * poly, Vec3f hit, Color c);
@@ -190,15 +187,13 @@ struct AnyHitRaycast {
 struct ClosestHitRaycast {
 	
 	float closestHit;
-	#ifdef RAYCAST_DEBUG
 	EERIEPOLY * hitPoly;
-	#endif
+	const PolyType ignoredTypes;
 	
-	ClosestHitRaycast()
+	ClosestHitRaycast(PolyType ignored)
 		: closestHit(std::numeric_limits<float>::max())
-		#ifdef RAYCAST_DEBUG
 		, hitPoly(NULL)
-		#endif
+		, ignoredTypes(ignored)
 	{ }
 	
 	bool operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
@@ -210,16 +205,14 @@ struct ClosestHitRaycast {
 		const BackgroundTileData & eg = ACTIVEBKG->m_tileData[tile.x][tile.y];
 		BOOST_FOREACH(EERIEPOLY * ep, eg.polyin) {
 			
-			if(ep->type & POLY_TRANS) {
+			if(ep->type & ignoredTypes) {
 				continue;
 			}
 			
 			float relDist = linePolyIntersection(start, dir, *ep);
 			if(relDist < closestHit) {
 				closestHit = relDist;
-				#ifdef RAYCAST_DEBUG
 				hitPoly = ep;
-				#endif
 			}
 			
 		}
@@ -266,9 +259,9 @@ bool RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
 }
 
 
-RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end) {
+RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end, PolyType ignored) {
 	dbg_addRay(start, end);
-	ClosestHitRaycast raycast;
+	ClosestHitRaycast raycast(ignored);
 	// TODO With C++11 we can change argument to F && instead of
 	// explicitly specifying the reference type
 	WalkTiles<ClosestHitRaycast &>(start, end, raycast);
@@ -277,9 +270,9 @@ RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end) {
 		#ifdef RAYCAST_DEBUG
 		dbg_addPoly(raycast.hitPoly, hitPos, Color::green);
 		#endif
-		return RaycastHit(hitPos);
+		return RaycastResult(raycast.hitPoly, hitPos);
 	}
-	return RaycastMiss();
+	return RaycastResult();
 }
 
 
