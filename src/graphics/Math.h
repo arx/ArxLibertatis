@@ -166,7 +166,30 @@ Vec3f angleToVectorXZ(float angleDegrees);
 // Rotates counterclockwise zero at (0, 0, -1);
 Vec3f angleToVectorXZ_180offset(float angleDegrees);
 
+/*
+ * Calculate the direction vector corresponding to an angle, ignoring roll
+ *
+ * The length of the returned vector is always 1.
+ */
 Vec3f angleToVector(const Anglef & angle);
+
+/*
+ * Calculate an angle corresponding to a direction vector with length 1
+ *
+ * The x and z components of the vector must not both be 0 or the yaw will be undefined.
+ *
+ * The roll of the resulting angle will always be 0.
+ */
+Anglef unitVectorToAngle(const Vec3f & vector);
+
+/*
+ * Calculate an angle corresponding to a non-zero direction vector
+ *
+ * The x and z components of the vector must not both be 0 or the yaw will be undefined.
+ *
+ * The roll of the resulting angle will always be 0.
+ */
+Anglef vectorToAngle(const Vec3f & vector);
 
 Vec3f CalcFaceNormal(const Vec3f * v);
 bool Triangles_Intersect(const EERIE_TRI & v, const EERIE_TRI & u);
