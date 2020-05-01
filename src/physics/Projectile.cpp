@@ -38,6 +38,7 @@
 
 #include "animation/AnimationRender.h"
 
+#include "graphics/Raycast.h"
 #include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -218,56 +219,6 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 	return dmgs;
 }
 
-static EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & end) {
-	
-	EERIE_TRI pol;
-	pol.v[0] = start;
-	pol.v[2] = end - Vec3f(2.f, 15.f, 2.f);
-	pol.v[1] = end;
-
-	// TODO copy-paste background tiles
-	int tilex = int(end.x * ACTIVEBKG->m_mul.x);
-	int tilez = int(end.z * ACTIVEBKG->m_mul.y);
-	int radius = 2;
-	
-	int minx = std::max(tilex - radius, 0);
-	int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
-	int minz = std::max(tilez - radius, 0);
-	int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
-	
-	for(int z = minz; z <= maxz; z++)
-	for(int x = minx; x <= maxx; x++) {
-		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
-		BOOST_FOREACH(EERIEPOLY * ep, feg.polyin) {
-			
-			if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
-				continue;
-			}
-			
-			EERIE_TRI pol2;
-			pol2.v[0] = ep->v[0].p;
-			pol2.v[1] = ep->v[1].p;
-			pol2.v[2] = ep->v[2].p;
-
-			if(Triangles_Intersect(pol2, pol)) {
-				return ep;
-			}
-
-			if(ep->type & POLY_QUAD) {
-				pol2.v[0] = ep->v[1].p;
-				pol2.v[1] = ep->v[3].p;
-				pol2.v[2] = ep->v[2].p;
-				if(Triangles_Intersect(pol2, pol)) {
-					return ep;
-				}
-			}
-			
-		}
-	}
-
-	return NULL;
-}
-
 static void CheckExp(const Projectile & projectile) {
 	
 	if((projectile.flags & ATO_FIERY) && !(projectile.flags & ATO_UNDERWATER)) {
@@ -407,12 +358,12 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		
 		const Vec3f v0 = actionPointPosition(projectile.obj, projectile.obj->actionlist[j].idx);
 		
-		Vec3f dest = original_pos + projectile.vector * 95.f;
-		Vec3f orgn = original_pos - projectile.vector * 25.f;
-		EERIEPOLY * ep = CheckArrowPolyCollision(orgn, dest);
-		if(ep || IsPointInField(v0)) {
+		Vec3f dest = original_pos + projectile.vector * 90.f;
+		Vec3f orgn = original_pos - projectile.vector * 20.f;
+		RaycastResult result = RaycastLine(orgn, dest, POLY_WATER | POLY_TRANS | POLY_NOCOL);
+		if(result || IsPointInField(v0)) {
 			
-			ParticleSparkSpawn(v0, ep ? 14 : 24, SpawnSparkType_Default);
+			ParticleSparkSpawn(v0, result ? 14 : 24, SpawnSparkType_Default);
 			CheckExp(projectile);
 			
 			if(ValidIONum(projectile.source)) {
@@ -423,15 +374,15 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			
 			if(ValidIONum(projectile.source)) {
 				std::string bkg_material = "earth";
-				if(ep && ep->tex && !ep->tex->m_texName.empty()) {
-					bkg_material = GetMaterialString(ep->tex->m_texName);
+				if(result.hit && result.hit->tex && !result.hit->tex->m_texName.empty()) {
+					bkg_material = GetMaterialString(result.hit->tex->m_texName);
 				}
 				ARX_SOUND_PlayCollision("dagger", bkg_material, 1.f, 1.f, v0, entities[projectile.source]);
 			}
 			
 			projectile.position = original_pos;
 			
-			if(!ep) {
+			if(!result) {
 				ARX_THROWN_OBJECT_Kill(i);
 			}
 			
