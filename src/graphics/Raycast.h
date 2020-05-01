@@ -19,22 +19,32 @@
 #ifndef ARX_GRAPHICS_RAYCAST_H
 #define ARX_GRAPHICS_RAYCAST_H
 
+#include "graphics/GraphicsTypes.h"
 #include "math/Types.h"
 
 struct RaycastResult {
 	
-	int hit;
+	EERIEPOLY * hit;
 	Vec3f pos;
 	
-	RaycastResult(int hit_, Vec3f pos_)
+	RaycastResult()
+		: hit(NULL)
+		, pos(0.f)
+	{ }
+	
+	RaycastResult(EERIEPOLY * hit_, Vec3f pos_)
 		: hit(hit_)
 		, pos(pos_)
 	{ }
 	
+	explicit operator bool() const {
+		return hit != NULL;
+	}
+	
 };
 
 bool RaycastLightFlare(const Vec3f & start, const Vec3f & end);
-RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end);
+RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end, PolyType ignored = POLY_TRANS);
 
 
 void RaycastDebugClear();
