@@ -528,6 +528,25 @@ Vec3f angleToVector(const Anglef & angle) {
 	return cam_vector;
 }
 
+Anglef unitVectorToAngle(const Vec3f & vector) {
+	
+	// y = sin(pitch) * length(vector)
+	// → pitch = sin⁻¹(y / length(vector))
+	float pitch = std::asin(vector.y); // assumes length(vector) == 1
+	
+	// x = -sin(yaw) * cos(pitch) * length(vector)
+	// z = cos(yaw) * cos(pitch) * length(vector)
+	// → -x / z = sin(yaw) / cos(yaw) = tan(yaw)
+	// → yaw = tan⁻¹(-x / z)
+	float yaw = std::atan2(-vector.x, vector.z);
+	
+	return Anglef(glm::degrees(pitch), glm::degrees(yaw), 0.f);
+}
+
+Anglef vectorToAngle(const Vec3f & vector) {
+	return unitVectorToAngle(glm::normalize(vector));
+}
+
 Vec3f CalcFaceNormal(const Vec3f * v) {
 	Vec3f A = v[1] - v[0];
 	Vec3f B = v[2] - v[0];
