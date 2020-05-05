@@ -812,7 +812,7 @@ function(_add_icon_size var size)
 		add_custom_command(
 			OUTPUT "${source_file}"
 			COMMAND "${CMAKE_COMMAND}" -E make_directory "${ICON_BINARY_DIR}"
-			COMMAND "${Inkscape_EXECUTABLE}" "--without-gui" ${Inkscape_OPTIONS}
+			COMMAND "${Inkscape_EXECUTABLE}" ${Inkscape_GUI} ${Inkscape_OPTIONS}
 				"${source_svg}" "--export-width=${render_w}" "--export-height=${render_h}"
 				"${Inkscape_EXPORT}=${source_file}"
 			MAIN_DEPENDENCY "${source_svg}"
