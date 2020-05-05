@@ -5,6 +5,7 @@
 # Inkscape_FOUND
 # Inkscape_EXECUTABLE   Where to find Inkscape
 # Inkscape_EXPORT       Option to specify the destination file
+# Inkscape_GUI          Option to disable the GUI if needed
 
 find_program(
 	Inkscape_EXECUTABLE
@@ -12,8 +13,13 @@ find_program(
 	DOC "Inkscape command-line SVG rasterizer"
 )
 
+execute_process(COMMAND ${Inkscape_EXECUTABLE} "--help" OUTPUT_VARIABLE _Inkscape_HELP ERROR_QUIET)
+
+if(_Inkscape_HELP MATCHES "--without-gui")
+	set(Inkscape_GUI "--without-gui" CACHE STRING "Inkscape option to disable the GUI if needed")
+endif()
+
 if(NOT DEFINED Inkscape_EXPORT)
-	execute_process(COMMAND ${Inkscape_EXECUTABLE} "--help" OUTPUT_VARIABLE _Inkscape_HELP ERROR_QUIET)
 	foreach(option IN ITEMS "--export-file" "--export-filename" "--export-png")
 		if(_Inkscape_HELP MATCHES "${option}=")
 			set(Inkscape_EXPORT "${option}" CACHE STRING "Inkscape option to specify the export filename")
