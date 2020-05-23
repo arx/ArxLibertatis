@@ -977,6 +977,11 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 				return TYPE_FLOAT;
 			}
 			
+			if(name == "^dragged") {
+				txtcontent = DRAGINTER ? DRAGINTER->idString() : "none";
+				return TYPE_TEXT;
+			}
+			
 			break;
 		}
 		
