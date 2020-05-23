@@ -117,8 +117,7 @@ void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
 void CMagicMissile::SetTTL(GameDuration aulTTL)
 {
 	GameDuration t = m_elapsed;
-	m_duration = std::min(m_elapsed + aulTTL, m_duration);
-	SetDuration(m_duration);
+	SetDuration(std::min(m_elapsed + aulTTL, m_duration));
 	m_elapsed = t;
 }
 
