@@ -169,7 +169,7 @@ struct PlayerInventoryAccess {
 	
 	const index_type m_bags;
 	
-	PlayerInventoryAccess(Entity * entity)
+	explicit PlayerInventoryAccess(Entity * entity)
 		: m_bags(player.m_bags)
 	{
 		ARX_UNUSED(entity);
@@ -224,7 +224,7 @@ struct EntityInventoryAccess {
 	const EntityHandle m_entity;
 	const Vec2s m_size;
 	
-	EntityInventoryAccess(Entity * entity)
+	explicit EntityInventoryAccess(Entity * entity)
 		: m_data(entity->inventory)
 		, m_entity(entity->index())
 		, m_size(entity->inventory->m_size)
@@ -583,7 +583,7 @@ private:
 	
 public:
 	
-	Inventory(Entity * entity)
+	explicit Inventory(Entity * entity)
 		: InventoryAccess(entity) { }
 	
 	/*!
