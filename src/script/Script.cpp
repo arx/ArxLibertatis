@@ -398,6 +398,15 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	
 }
 
+static Entity * getEntityParam(const std::string variable, size_t offset, const script::Context & context) {
+	
+	if(variable.length() >= offset) {
+		return entities.getById(variable.c_str() + offset, context.getEntity());
+	}
+	
+	return context.getEntity();
+}
+
 ValueType getSystemVar(const script::Context & context, const std::string & name,
                        std::string & txtcontent, float * fcontent, long * lcontent) {
 	
@@ -607,6 +616,33 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 					*lcontent = 60;
 				}
 				return TYPE_LONG;
+			}
+			
+			if(name == "^angle" || boost::starts_with(name, "^angle_")) {
+				Entity * entity = getEntityParam(name, 7, context);
+				*fcontent = entity ? (entity == entities.player() ? player.angle : entity->angle).getYaw() : 0;
+				*fcontent = MAKEANGLE(*fcontent);
+				return TYPE_FLOAT;
+			}
+			
+			if(boost::starts_with(name, "^anglex_")) {
+				*fcontent = 0.f;
+				Entity * entity = getEntityParam(name, 8, context);
+				if(entity) {
+					float yaw = (entity == entities.player() ? player.angle : entity->angle).getYaw();
+					*fcontent = angleToVectorXZ(yaw).x;
+				}
+				return TYPE_FLOAT;
+			}
+			
+			if(boost::starts_with(name, "^anglez_")) {
+				*fcontent = 0.f;
+				Entity * entity = getEntityParam(name, 8, context);
+				if(entity) {
+					float yaw = (entity == entities.player() ? player.angle : entity->angle).getYaw();
+					*fcontent = angleToVectorXZ(yaw).z;
+				}
+				return TYPE_FLOAT;
 			}
 			
 			break;
@@ -1196,6 +1232,29 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 					txtcontent = entities[context.getEntity()->targetinfo]->idString();
 				}
 				return TYPE_TEXT;
+			}
+			
+			break;
+		}
+		
+		case 'v': {
+			
+			if(name == "^viewx" || boost::starts_with(name, "^viewx_")) {
+				Entity * entity = getEntityParam(name, 7, context);
+				*fcontent = entity ? angleToVector(entity == entities.player() ? player.angle : entity->angle).x : 0;
+				return TYPE_FLOAT;
+			}
+			
+			if(name == "^viewy" || boost::starts_with(name, "^viewy_")) {
+				Entity * entity = getEntityParam(name, 7, context);
+				*fcontent = entity ? angleToVector(entity == entities.player() ? player.angle : entity->angle).y : 0;
+				return TYPE_FLOAT;
+			}
+			
+			if(name == "^viewz" || boost::starts_with(name, "^viewz_")) {
+				Entity * entity = getEntityParam(name, 7, context);
+				*fcontent = entity ? angleToVector(entity == entities.player() ? player.angle : entity->angle).z : 0;
+				return TYPE_FLOAT;
 			}
 			
 			break;
