@@ -793,10 +793,7 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			}
 			
 			if(boost::starts_with(name, "^inplayerinventory")) {
-				*lcontent = 0;
-				if(context.getEntity() && (context.getEntity()->ioflags & IO_ITEM) && IsInPlayerInventory(context.getEntity())) {
-					*lcontent = 1;
-				}
+				*lcontent = IsInPlayerInventory(context.getEntity()) ? 1 : 0;
 				return TYPE_LONG;
 			}
 			
