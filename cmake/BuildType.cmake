@@ -224,7 +224,7 @@ else(MSVC)
 		add_cxxflag("-Wreserved-id-macro")
 		add_cxxflag("-Wshift-overflow")
 		add_cxxflag("-Wstrict-null-sentinel")
-		add_cxxflag("-Wstringop-overflow=4")
+		add_cxxflag("-Wstringop-overflow=2")
 		add_cxxflag("-Wundef")
 		add_cxxflag("-Wunused-const-variable=1")
 		add_cxxflag("-Wunused-macros")
@@ -289,6 +289,9 @@ else(MSVC)
 			add_cxxflag("-Wdisabled-optimization")
 			add_cxxflag("-Wpadded")
 			add_cxxflag("-Wunsafe-loop-optimizations")
+			
+			# Levels 3 and above may result in warnings for safe code
+			add_cxxflag("-Wstringop-overflow=4")
 			
 			if(NOT DEBUG_EXTRA OR NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 				add_ldflag("-Wl,--detect-odr-violations")
