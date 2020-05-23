@@ -54,6 +54,10 @@ struct BoneTransform {
 		, scale(0.f) // TODO should this be 1.f?
 	{ }
 	
+	Vec3f operator()(const Vec3f & vec) const {
+		return trans + ( quat * vec ) * scale;
+	}
+	
 };
 
 struct Bone {
@@ -75,7 +79,9 @@ struct Bone {
 };
 
 struct Skeleton {
+	
 	std::vector<Bone> bones;
+	
 };
 
 #endif // ARX_ANIMATION_SKELETON_H
