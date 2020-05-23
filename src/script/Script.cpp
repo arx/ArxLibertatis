@@ -910,6 +910,16 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			break;
 		}
 		
+		case 'c': {
+			
+			if(name == "^camera") {
+				txtcontent = g_cameraEntity ? g_cameraEntity->idString() : "none";
+				return TYPE_TEXT;
+			}
+			
+			break;
+		}
+		
 		case 'l': {
 			
 			if(boost::starts_with(name, "^life")) {
