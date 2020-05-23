@@ -98,11 +98,18 @@ struct PreparedCamera {
 	glm::mat4x4 m_viewToScreen;
 	glm::mat4x4 m_worldToScreen;
 	
+	glm::mat4x4 m_viewToWorld;
+	Vec2f m_center;
+	Vec2f m_screenToView;
+	
 	PreparedCamera()
 		: m_worldToView(1.f)
 		, m_viewToClip(1.f)
 		, m_viewToScreen(1.f)
 		, m_worldToScreen(1.f)
+		, m_viewToWorld(1.f)
+		, m_center(0.f)
+		, m_screenToView(0.f)
 	{ }
 	
 	ARX_USE_ALIGNED_NEW(PreparedCamera) // for matrices
@@ -120,6 +127,8 @@ inline void PrepareCamera(Camera * cam, const Rect & viewport) {
 }
 
 void SetActiveCamera(Camera * cam);
+
+Vec3f screenToWorldSpace(Vec2f pos, float depth = 1.f);
 
 ARX_USE_ALIGNED_ALLOCATOR(PreparedCamera) // for matrices
 

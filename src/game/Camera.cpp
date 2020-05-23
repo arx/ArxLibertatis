@@ -78,7 +78,8 @@ void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projection
 	
 	SetActiveCamera(cam);
 	
-	g_preparedCamera.m_worldToView = glm::translate(toRotationMatrix(cam->angle), -cam->m_pos);
+	glm::mat4x4 rotation = toRotationMatrix(cam->angle);
+	g_preparedCamera.m_worldToView = glm::translate(rotation, -cam->m_pos);
 	GRenderer->SetViewMatrix(g_preparedCamera.m_worldToView);
 	
 	const Vec2f center = Vec2f(projectionCenter - viewport.topLeft());
@@ -86,7 +87,7 @@ void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projection
 	GRenderer->SetProjectionMatrix(g_preparedCamera.m_viewToClip);
 	
 	// Change coordinate system from [-1, 1] x [-1, 1] to [0, width] x [0, height] and flip the y axis
-	glm::mat4x4 ndcToScreen(1);
+	glm::mat4x4 ndcToScreen(1.f);
 	ndcToScreen = glm::scale(ndcToScreen, Vec3f(Vec2f(viewport.size()) / 2.f, 1.f));
 	ndcToScreen = glm::translate(ndcToScreen, Vec3f(1.f, 1.f, 0.f));
 	ndcToScreen = glm::scale(ndcToScreen, Vec3f(1.f, -1.f, 1.f));
@@ -96,8 +97,34 @@ void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projection
 	
 	GRenderer->SetViewport(viewport);
 	
+	// Equivalent to glm::inverse(g_preparedCamera.m_worldToView) but more stable and efficient
+	g_preparedCamera.m_viewToWorld = glm::translate(glm::mat4x4(1.f), cam->m_pos) * glm::transpose(rotation);
+	
+	// Equivalent to glm::inverse(g_preparedCamera.m_viewToScreen)
+	g_preparedCamera.m_center = Vec2f(projectionCenter);
+	Vec2f defov = Vec2f(g_preparedCamera.m_viewToClip[0][0], -g_preparedCamera.m_viewToClip[1][1]);
+	g_preparedCamera.m_screenToView = 2.f / (Vec2f(viewport.size()) * defov);
+	
 }
 
 void SetActiveCamera(Camera * cam) {
 	g_camera = cam;
+}
+
+Vec3f screenToWorldSpace(Vec2f pos, float depth) {
+	/*
+	 * Convert from screen to view-space coordinates. Equivalent to:
+	 * Vec4f d = g_preparedCamera.m_viewToScreen * Vec4f(0.f, 0.f, depth, 1.f);
+	 * view = glm::inverse(g_preparedCamera.m_viewToScreen) * Vec4f(pos * d.w, d.z, d.w))
+	 */
+	Vec4f view(
+		(pos - g_preparedCamera.m_center) * g_preparedCamera.m_screenToView * depth,
+		depth,
+		1.f
+	);
+	/*
+	 * Convert from view to world-space coordinates. Equivalent to:
+	 * return Vec3f(glm::inverse(g_preparedCamera.m_worldToView) * view);
+	 */
+	return Vec3f(g_preparedCamera.m_viewToWorld * view);
 }
