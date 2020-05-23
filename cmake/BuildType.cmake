@@ -297,6 +297,10 @@ else(MSVC)
 				add_ldflag("-Wl,--detect-odr-violations")
 			endif()
 			
+			if(UNITY_BUILD)
+				add_cxxflag("-Wunused-const-variable=2")
+			endif()
+			
 		else()
 			
 			# icc
