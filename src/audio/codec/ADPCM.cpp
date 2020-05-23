@@ -254,8 +254,8 @@ aalError CodecADPCM::getNextBlock() {
 		if(predictor[i] >= m_header->coefficientCount) {
 			return AAL_ERROR_FORMAT;
 		}
-		coef1[i] = m_header->coefficients[size_t(predictor[i])].coef1;
-		coef2[i] = m_header->coefficients[size_t(predictor[i])].coef2;
+		coef1[i] = m_header->coefficients[predictor[i]].coef1;
+		coef2[i] = m_header->coefficients[predictor[i]].coef2;
 		cache_l[i] = samp2[i];
 	}
 	
