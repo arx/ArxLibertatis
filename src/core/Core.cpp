@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/version.hpp>
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "Configure.h"
 
@@ -273,25 +274,6 @@ Entity * FlyingOverObject(const Vec2s & pos) {
 	}
 	
 	return NULL;
-}
-
-static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f & pos, const Anglef & angle) {
-	
-	Vec3f vect = angleToVector(angle);
-	Vec3f position = pos;
-	float velocity = aimratio + 0.3f;
-
-	if(velocity < 0.9f)
-		velocity = 0.9f;
-	
-	glm::quat quat = angleToQuatForArrow(angle);
-
-	float wd = getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_Damages);
-	// TODO Why ignore relative modifiers? Why not just use player.Full_damages?
-	
-	float damages = wd * (1.f + (player.m_skillFull.projectile + player.m_attributeFull.dexterity) * 0.02f);
-
-	ARX_THROWN_OBJECT_Throw(EntityHandle_Player, position, vect, arrowobj, quat, velocity, damages, poisonous);
 }
 
 void SetEditMode() {
@@ -788,6 +770,44 @@ void ManageCombatModeAnimations() {
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_CYCLE], EA_LOOP);
 				player.m_aimTime = PlatformDuration::ofRaw(1);
 			} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE] && !eeMousePressed1()) {
+				
+				ActionPoint attach = GetActionPointIdx(arrowobj, "attach");
+				if(attach == ActionPoint()) {
+					attach = ActionPoint(arrowobj->origin);
+				}
+				
+				ActionPoint hit;
+				{
+					float maxdist = 0.f;
+					BOOST_FOREACH(const EERIE_ACTIONLIST & action, arrowobj->actionlist) {
+						if(!boost::starts_with(action.name, "hit_")) {
+							continue;
+						}
+						float dist = arx::distance2(arrowobj->vertexlist[attach.handleData()].v,
+						                            arrowobj->vertexlist[action.idx.handleData()].v);
+						if(dist > maxdist) {
+							hit = action.idx;
+							maxdist = dist;
+						}
+					}
+				}
+				if(hit == ActionPoint()) {
+					hit = attach;
+					float maxdist = 0.f;
+					for(size_t i = 1; i < arrowobj->vertexlist.size(); i++) {
+						float dist = arx::distance2(arrowobj->vertexlist[attach.handleData()].v,
+						                            arrowobj->vertexlist[i].v);
+						if(dist > maxdist) {
+							hit = ActionPoint(i);
+							maxdist = dist;
+						}
+					}
+				}
+				
+				// Start arrow at the center of the player and shoot it directly forwards
+				Vec3f pos = player.pos + Vec3f(0.f, 40.f, 0.f); // Start position for the arrow
+				Vec3f dir = angleToVector(player.angle); // Unit vector describing the arrow direction
+				
 				EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE]);
 				SendIOScriptEvent(NULL, io, SM_STRIKE, "bow");
@@ -818,33 +838,33 @@ void ManageCombatModeAnimations() {
 				if(sp_max && poisonous < 3.f)
 					poisonous = 3.f;
 				
-				Vec3f orgPos = player.pos + Vec3f(0.f, 40.f, 0.f);
-				
-				if(io->obj->fastaccess.left_attach != ActionPoint()) {
-					orgPos = actionPointPosition(io->obj, io->obj->fastaccess.left_attach);
+				if(!arrowobj || arrowobj->vertexlist.size() < 2) {
+					break;
 				}
 				
-				Anglef orgAngle = player.angle;
+				// Orient arrow so that the hit_15 action point points forward
+				Vec3f pos0 = arrowobj->vertexlist[attach.handleData()].v;
+				Vec3f orientation = arrowobj->vertexlist[hit.handleData()].v - pos0;
+				glm::quat quat = glm::inverse(getProjectileQuatFromVector(orientation));
 				
-				PlayerLaunchArrow_Test(aimratio, poisonous, orgPos, orgAngle);
+				float velocity = std::max(aimratio + 0.3f, 0.9f);
+				
+				float wd = getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_Damages);
+				// TODO Why ignore relative modifiers? Why not just use player.Full_damages?
+				
+				float damages = wd * (1.f + (player.m_skillFull.projectile + player.m_attributeFull.dexterity) * 0.02f);
+				
+				ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, dir, arrowobj, quat,
+				                        velocity, damages, poisonous);
 				
 				if(sp_max) {
-					Anglef angle;
-					Vec3f pos = player.pos + Vec3f(0.f, 40.f, 0.f);
-					
-					angle.setPitch(player.angle.getPitch());
-					angle.setYaw(player.angle.getYaw() + 8);
-					angle.setRoll(player.angle.getRoll());
-					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
-					angle.setPitch(player.angle.getPitch());
-					angle.setYaw(player.angle.getYaw() - 8);
-					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
-					angle.setPitch(player.angle.getPitch());
-					angle.setYaw(player.angle.getYaw() + 4.f);
-					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
-					angle.setPitch(player.angle.getPitch());
-					angle.setYaw(player.angle.getYaw() - 4.f);
-					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
+					for(int i = -2; i <= 2; i++) {
+						if(i != 0) {
+							Vec3f vect2 = VRotateY(dir, 4.f * float(i));
+							ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect2, arrowobj, quat,
+							                        velocity, damages, poisonous);
+						}
+					}
 				}
 				
 				player.m_aimTime = 0;
