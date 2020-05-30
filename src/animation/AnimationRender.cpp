@@ -708,7 +708,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 			
 			const Vec3f & position = eobj->vertexWorldPositions[face.vid[n]].v;
 			Vec3f normal = t.rotation * (useFaceNormal ? face.norm : eobj->vertexlist[face.vid[n]].norm);
-			float diffuse = useFaceNormal? 0.5f : 1.f;
+			float diffuse = useFaceNormal ? 0.5f : 1.f;
 			
 			eobj->vertexColors[face.vid[n]] = ApplyLight(lights, lightsCount, position, normal, colorMod, diffuse);
 			
