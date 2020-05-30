@@ -148,8 +148,6 @@ glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio);
 glm::quat QuatFromAngles(const Anglef & angle);
 glm::mat4 toRotationMatrix(const Anglef & angle);
 
-glm::quat angleToQuatForArrow(const Anglef & angle);
-
 glm::quat angleToQuatForExtraRotation(const Anglef & angle);
 
 std::pair<Vec3f, Vec3f> angleToFrontUpVec(const Anglef & angle);
