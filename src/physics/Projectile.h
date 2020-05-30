@@ -64,7 +64,9 @@ struct Projectile {
 	
 };
 
-void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect, const glm::quat & quat, float velocity, float damages, float poisonous);
+void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect,
+                             EERIE_3DOBJ * obj, const glm::quat & quat,
+                             float velocity, float damages, float poisonous);
 
 void ARX_THROWN_OBJECT_KillAll();
 void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta);

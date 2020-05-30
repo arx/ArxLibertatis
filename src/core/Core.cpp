@@ -291,7 +291,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f 
 	
 	float damages = wd * (1.f + (player.m_skillFull.projectile + player.m_attributeFull.dexterity) * 0.02f);
 
-	ARX_THROWN_OBJECT_Throw(EntityHandle_Player, position, vect, quat, velocity, damages, poisonous);
+	ARX_THROWN_OBJECT_Throw(EntityHandle_Player, position, vect, arrowobj, quat, velocity, damages, poisonous);
 }
 
 void SetEditMode() {
