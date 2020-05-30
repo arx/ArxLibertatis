@@ -83,6 +83,7 @@ const int
 const bool
 	fullscreen = true,
 	viewBobbing = true,
+	screenShake = true,
 	showCrosshair = true,
 	antialiasing = true,
 	colorkeyAntialiasing = true,
@@ -201,6 +202,7 @@ const std::string
 	fpsLimit = "fps_limit",
 	fov = "fov",
 	viewBobbing = "view_bobbing",
+	screenShake = "screen_shake",
 	antialiasing = "antialiasing",
 	maxAnisotropicFiltering = "max_anisotropic_filtering",
 	colorkeyAntialiasing = "colorkey_antialiasing",
@@ -455,6 +457,7 @@ bool Config::save() {
 	writer.writeKey(Key::fpsLimit, video.fpsLimit);
 	writer.writeKey(Key::fov, video.fov);
 	writer.writeKey(Key::viewBobbing, video.viewBobbing);
+	writer.writeKey(Key::screenShake, video.screenShake);
 	writer.writeKey(Key::antialiasing, video.antialiasing);
 	writer.writeKey(Key::maxAnisotropicFiltering, video.maxAnisotropicFiltering);
 	writer.writeKey(Key::colorkeyAntialiasing, video.colorkeyAntialiasing);
@@ -602,6 +605,7 @@ bool Config::init(const fs::path & file) {
 	float fov = reader.getKey(Section::Video, Key::fov, Default::fov);
 	video.fov = std::max(fov, 60.f);
 	video.viewBobbing = reader.getKey(Section::Video, Key::viewBobbing, Default::viewBobbing);
+	video.screenShake = reader.getKey(Section::Video, Key::screenShake, Default::screenShake);
 	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
 	int anisoFiltering = reader.getKey(Section::Video, Key::maxAnisotropicFiltering, Default::maxAnisotropicFiltering);
 	video.maxAnisotropicFiltering = std::max(anisoFiltering, 1);
