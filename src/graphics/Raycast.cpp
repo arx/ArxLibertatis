@@ -190,7 +190,7 @@ struct ClosestHitRaycast {
 	EERIEPOLY * hitPoly;
 	const PolyType ignoredTypes;
 	
-	ClosestHitRaycast(PolyType ignored)
+	explicit ClosestHitRaycast(PolyType ignored)
 		: closestHit(std::numeric_limits<float>::max())
 		, hitPoly(NULL)
 		, ignoredTypes(ignored)
