@@ -22,6 +22,8 @@
 #include "graphics/GraphicsTypes.h"
 #include "math/Types.h"
 
+class Entity;
+
 struct RaycastResult {
 	
 	EERIEPOLY * hit;
@@ -46,6 +48,31 @@ struct RaycastResult {
 bool RaycastLightFlare(const Vec3f & start, const Vec3f & end);
 RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end, PolyType ignored = POLY_TRANS);
 
+struct EntityRaycastResult {
+	
+	Entity * entity;
+	EERIE_FACE * face;
+	Vec3f pos;
+	
+	EntityRaycastResult()
+		: entity(NULL)
+		, face(NULL)
+		, pos(0.f)
+	{ }
+	
+	EntityRaycastResult(Entity * entity_, EERIE_FACE * face_, Vec3f pos_)
+		: entity(entity_)
+		, face(face_)
+		, pos(pos_)
+	{ }
+	
+	operator bool() const {
+		return entity != NULL;
+	}
+	
+};
+
+EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end, bool ignorePlayer = true, PolyType ignored = POLY_TRANS);
 
 void RaycastDebugClear();
 void RaycastDebugDraw();
