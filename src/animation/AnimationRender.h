@@ -116,4 +116,6 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ * eobj, const Vec3f & pos, Entity * io,
 
 void AnimatedEntityRender(Entity * entity, float invisibility);
 
+void animateSkeleton(Entity * entity, AnimLayer * animlayer, Skeleton & skeleton);
+
 #endif // ARX_ANIMATION_ANIMATIONRENDER_H
