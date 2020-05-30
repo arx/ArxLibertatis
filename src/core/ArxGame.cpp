@@ -1304,7 +1304,7 @@ void ArxGame::doFrame() {
 }
 
 void ArxGame::updateFirstPersonCamera() {
-
+	
 	arx_assert(entities.player());
 	
 	Entity * io = entities.player();
@@ -1350,10 +1350,28 @@ void ArxGame::updateFirstPersonCamera() {
 		
 		g_playerCamera.angle = player.angle;
 		
-		ActionPoint id = entities.player()->obj->fastaccess.view_attach;
+		ActionPoint id = io->obj->fastaccess.view_attach;
 		if(id != ActionPoint()) {
 			
-			g_playerCamera.m_pos = actionPointPosition(entities.player()->obj, id);
+			g_playerCamera.m_pos = actionPointPosition(io->obj, id);
+			
+			ObjVertGroup viewGroup = GetActionPointGroup(io->obj, id);
+			if(!config.video.viewBobbing && viewGroup != ObjVertGroup()) {
+				AnimLayer animlayer[MAX_ANIM_LAYERS];
+				for(size_t i = 0; i < MAX_ANIM_LAYERS; i++) {
+					animlayer[i] = io->animlayer[i];
+					if(animlayer[i].flags & EA_LOOP) {
+						animlayer[i].ctime = AnimationDuration(0);
+						animlayer[i].lastframe = -1;
+						animlayer[i].currentInterpolation = 0.f;
+						animlayer[i].currentFrame = 0;
+						animlayer[i].flags |= EA_PAUSED;
+					}
+				}
+				Skeleton skeleton = *io->obj->m_skeleton;
+				animateSkeleton(io, animlayer, skeleton);
+				g_playerCamera.m_pos = skeleton.bones[viewGroup.handleData()].anim(io->obj->vertexlocal[id.handleData()]);
+			}
 			
 			Vec3f vect(g_playerCamera.m_pos.x - player.pos.x, 0.f, g_playerCamera.m_pos.z - player.pos.z);
 			float len = ffsqrt(arx::length2(vect));
