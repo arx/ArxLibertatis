@@ -40,7 +40,6 @@ struct Projectile {
 	Vec3f vector;
 	glm::quat quat;
 	Vec3f initial_position;
-	float velocity;
 	Vec3f position;
 	float damages;
 	EERIE_3DOBJ * obj;
@@ -55,7 +54,6 @@ struct Projectile {
 		, vector(0.f)
 		, quat(quat_identity())
 		, initial_position(0.f)
-		, velocity(0.f)
 		, position(0.f)
 		, damages(0)
 		, obj(NULL)
@@ -70,7 +68,7 @@ glm::quat getProjectileQuatFromVector(Vec3f vector);
 
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect,
                              EERIE_3DOBJ * obj, ActionPoint attach, const glm::quat & rotation,
-                             float velocity, float damages, float poisonous);
+                             float damages, float poisonous);
 
 void ARX_THROWN_OBJECT_KillAll();
 void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta);

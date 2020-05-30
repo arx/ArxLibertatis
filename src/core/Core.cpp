@@ -849,20 +849,25 @@ void ManageCombatModeAnimations() {
 				
 				float velocity = std::max(aimratio + 0.3f, 0.9f);
 				
+				Vec3f vect = dir * velocity;
+				
+				// Aim arrow downwards if not fully charged
+				vect.y += glm::clamp(1.f - velocity, 0.f, 1.f);
+				
 				float wd = getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_Damages);
 				// TODO Why ignore relative modifiers? Why not just use player.Full_damages?
 				
 				float damages = wd * (1.f + (player.m_skillFull.projectile + player.m_attributeFull.dexterity) * 0.02f);
 				
-				ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, dir, arrowobj, attach, quat,
-				                        velocity, damages, poisonous);
+				ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect, arrowobj, attach, quat,
+				                        damages, poisonous);
 				
 				if(sp_max) {
 					for(int i = -2; i <= 2; i++) {
 						if(i != 0) {
-							Vec3f vect2 = VRotateY(dir, 4.f * float(i));
+							Vec3f vect2 = VRotateY(vect, 4.f * float(i));
 							ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect2, arrowobj, attach, quat,
-							                        velocity, damages, poisonous);
+							                        damages, poisonous);
 						}
 					}
 				}
