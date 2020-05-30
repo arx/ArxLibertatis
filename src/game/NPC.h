@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/Flags.h"
 
 static const size_t MAX_STACKED_BEHAVIOR = 5;
-static const size_t MAX_EXTRA_ROTATE = 4;
+static const size_t MAX_EXTRA_ROTATE = 6;
 
 enum MoveMode {
 	WALKMODE = 0,
