@@ -114,9 +114,10 @@ static long ARX_THROWN_OBJECT_GetFree() {
 extern EERIE_3DOBJ * arrowobj;
 
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect,
-                             const glm::quat & quat, float velocity, float damages, float poison) {
+                             EERIE_3DOBJ * obj, const glm::quat & quat,
+                             float velocity, float damages, float poisonous) {
 	
-	arx_assert(arrowobj);
+	arx_assert(obj);
 	
 	long num = ARX_THROWN_OBJECT_GetFree();
 	if(num < 0)
@@ -130,9 +131,9 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	projectile.vector = vect;
 	projectile.quat = quat;
 	projectile.source = source;
-	projectile.obj = arrowobj;
+	projectile.obj = obj;
 	projectile.velocity = velocity;
-	projectile.poisonous = poison;
+	projectile.poisonous = poisonous;
 	
 	projectile.m_trail = new ArrowTrail();
 	projectile.m_trail->SetNextPosition(projectile.position);
