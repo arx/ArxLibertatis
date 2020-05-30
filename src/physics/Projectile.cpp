@@ -116,7 +116,7 @@ glm::quat getProjectileQuatFromVector(Vec3f vector) {
 	return glm::quat(glm::vec3(glm::radians(-angle.getPitch()), glm::radians(-angle.getYaw()), 0.f));
 }
 
-void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect,
+void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect, float gravity,
                              EERIE_3DOBJ * obj, ActionPoint attach, const glm::quat & rotation,
                              float damages, float poisonous) {
 	
@@ -133,8 +133,10 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	projectile.initial_position = position;
 	projectile.vector = vect;
 	projectile.quat = getProjectileQuatFromVector(vect) * rotation;
+	projectile.gravity = gravity;
 	projectile.source = source;
 	projectile.obj = obj;
+	projectile.rotation = rotation;
 	projectile.attach = attach;
 	projectile.poisonous = poisonous;
 	
@@ -323,6 +325,11 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 	
 	Vec3f original_pos = projectile.position;
 	projectile.position += projectile.vector * timeDeltaMs;
+	
+	if(projectile.gravity != 0.f) {
+		projectile.vector.y += projectile.gravity * timeDeltaMs;
+		projectile.quat = getProjectileQuatFromVector(projectile.vector) * projectile.rotation;
+	}
 	
 	CheckForIgnition(Sphere(original_pos, 10.f), false, 2);
 	
