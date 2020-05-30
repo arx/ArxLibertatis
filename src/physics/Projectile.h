@@ -23,6 +23,7 @@
 #include "core/TimeTypes.h"
 #include "game/GameTypes.h"
 #include "graphics/GraphicsTypes.h"
+#include "scene/Object.h"
 
 class Trail;
 
@@ -43,6 +44,7 @@ struct Projectile {
 	Vec3f position;
 	float damages;
 	EERIE_3DOBJ * obj;
+	ActionPoint attach;
 	EntityHandle source;
 	GameInstant creation_time;
 	float poisonous;
@@ -67,7 +69,7 @@ struct Projectile {
 glm::quat getProjectileQuatFromVector(Vec3f vector);
 
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect,
-                             EERIE_3DOBJ * obj, const glm::quat & rotation,
+                             EERIE_3DOBJ * obj, ActionPoint attach, const glm::quat & rotation,
                              float velocity, float damages, float poisonous);
 
 void ARX_THROWN_OBJECT_KillAll();

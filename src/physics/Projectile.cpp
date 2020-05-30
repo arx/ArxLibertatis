@@ -117,7 +117,7 @@ glm::quat getProjectileQuatFromVector(Vec3f vector) {
 }
 
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect,
-                             EERIE_3DOBJ * obj, const glm::quat & rotation,
+                             EERIE_3DOBJ * obj, ActionPoint attach, const glm::quat & rotation,
                              float velocity, float damages, float poisonous) {
 	
 	arx_assert(obj);
@@ -135,6 +135,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	projectile.quat = getProjectileQuatFromVector(vect) * rotation;
 	projectile.source = source;
 	projectile.obj = obj;
+	projectile.attach = attach;
 	projectile.velocity = velocity;
 	projectile.poisonous = poisonous;
 	
@@ -258,6 +259,8 @@ void ARX_THROWN_OBJECT_Render() {
 		}
 		
 		TransformInfo t(projectile.position, projectile.quat);
+		t.pos = t(projectile.obj->vertexlist[projectile.obj->origin].v
+		          - projectile.obj->vertexlist[projectile.attach.handleData()].v);
 		// Object has to be retransformed because arrows share the same object
 		DrawEERIEInter_ModelTransform(projectile.obj, t);
 		DrawEERIEInter_ViewProjectTransform(projectile.obj);
@@ -300,6 +303,8 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 	}
 	
 	TransformInfo t(projectile.position, projectile.quat);
+	t.pos = t(projectile.obj->vertexlist[projectile.obj->origin].v
+	          - projectile.obj->vertexlist[projectile.attach.handleData()].v);
 	DrawEERIEInter_ModelTransform(projectile.obj, t);
 	
 	if((projectile.flags & ATO_FIERY) && !(projectile.flags & ATO_UNDERWATER)) {

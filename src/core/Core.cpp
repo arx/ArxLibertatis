@@ -854,14 +854,14 @@ void ManageCombatModeAnimations() {
 				
 				float damages = wd * (1.f + (player.m_skillFull.projectile + player.m_attributeFull.dexterity) * 0.02f);
 				
-				ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, dir, arrowobj, quat,
+				ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, dir, arrowobj, attach, quat,
 				                        velocity, damages, poisonous);
 				
 				if(sp_max) {
 					for(int i = -2; i <= 2; i++) {
 						if(i != 0) {
 							Vec3f vect2 = VRotateY(dir, 4.f * float(i));
-							ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect2, arrowobj, quat,
+							ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect2, arrowobj, attach, quat,
 							                        velocity, damages, poisonous);
 						}
 					}
