@@ -720,6 +720,15 @@ public:
 		}
 		
 		{
+			std::string label = getLocalised("system_menus_options_videos_view_bobbing");
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			cb->setChecked(config.video.viewBobbing);
+			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedViewBobbing, this, arg::_1);
+			addCenter(cb);
+			m_fullscreenCheckbox = cb;
+		}
+		
+		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_video_apply"));
 			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this, arg::_1);
 			txt->setEnabled(false);
@@ -827,6 +836,10 @@ private:
 	
 	void onChangedFov(int state) {
 		config.video.fov = 75.f + float(state) * 5.f;
+	}
+	
+	void onChangedViewBobbing(bool checked) {
+		config.video.viewBobbing = checked;
 	}
 	
 	void onClickedApply(Widget * /* widget */) {
