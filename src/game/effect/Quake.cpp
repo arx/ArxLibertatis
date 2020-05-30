@@ -19,6 +19,7 @@
 
 #include "game/effect/Quake.h"
 
+#include "core/Config.h"
 #include "core/GameTime.h"
 #include "game/Camera.h"
 #include "math/RandomVector.h"
@@ -74,7 +75,11 @@ void ManageQuakeFX(Camera * cam) {
 			QuakeFx.intensity = 0.f;
 			return;
 		}
-
+		
+		if(!config.video.screenShake) {
+			return;
+		}
+		
 		float itmod = 1.f - (tim / QuakeFx.duration);
 		
 		float periodicity = 0;
