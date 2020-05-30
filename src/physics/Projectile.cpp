@@ -317,10 +317,6 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		createObjFireParticles(projectile.obj, 6, 2, 180);
 	}
 	
-	if(projectile.m_trail) {
-		projectile.m_trail->SetNextPosition(projectile.position);
-		projectile.m_trail->Update(timeDelta);
-	}
 	
 	float mod = timeDeltaMs * projectile.velocity;
 	Vec3f original_pos = projectile.position;
@@ -374,8 +370,6 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 				ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
 			}
 			
-			projectile.velocity = 0.f;
-			
 			if(ValidIONum(projectile.source)) {
 				std::string bkg_material = "earth";
 				if(result.hit && result.hit->tex && !result.hit->tex->m_texName.empty()) {
@@ -384,13 +378,15 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 				ARX_SOUND_PlayCollision("dagger", bkg_material, 1.f, 1.f, v0, entities[projectile.source]);
 			}
 			
-			projectile.position = original_pos;
-			
-			if(!result) {
+			if(result) {
+				// TODO better offset calculation
+				projectile.position = original_pos + result.pos - v0;
+				projectile.velocity = 0.f;
+			} else {
 				ARX_THROWN_OBJECT_Kill(i);
 			}
 			
-			return;
+			break;
 		}
 		
 		for(size_t k = 1; k <= 12; k++) {
@@ -492,6 +488,11 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			
 		}
 		
+	}
+	
+	if(projectile.m_trail) {
+		projectile.m_trail->SetNextPosition(projectile.position);
+		projectile.m_trail->Update(timeDelta);
 	}
 	
 }
