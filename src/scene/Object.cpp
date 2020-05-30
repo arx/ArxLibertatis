@@ -319,12 +319,14 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// If no groups were specified
 		
 		eobj->m_skeleton->bones.resize(1);
+		eobj->m_boneVertices.resize(eobj->m_skeleton->bones.size());
 		
 		Bone & bone = eobj->m_skeleton->bones[0];
+		std::vector<u32> & vertices = eobj->m_boneVertices[0];
 		
 		// Add all vertices to the bone
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			bone.idxvertices.push_back(i);
+			vertices.push_back(i);
 		}
 		
 		bone.father = -1;
@@ -334,17 +336,19 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Groups were specified
 		
 		eobj->m_skeleton->bones.resize(eobj->grouplist.size());
+		eobj->m_boneVertices.resize(eobj->m_skeleton->bones.size());
 		
 		// Create one bone for each vertex group and assign vertices to the inner-most group
 		std::vector<bool> vertexAssigned(eobj->vertexlist.size(), false);
 		for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 			VertexGroup & group = eobj->grouplist[i];
 			Bone & bone = eobj->m_skeleton->bones[i];
+			std::vector<u32> & vertices = eobj->m_boneVertices[i];
 			
 			for(size_t j = 0; j < group.indexes.size(); j++) {
 				if(!vertexAssigned[group.indexes[j]]) {
 					vertexAssigned[group.indexes[j]] = true;
-					bone.idxvertices.push_back(group.indexes[j]);
+					vertices.push_back(group.indexes[j]);
 				}
 			}
 			
@@ -369,7 +373,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				}
 			}
 			if(!found) {
-				eobj->m_skeleton->bones[0].idxvertices.push_back(i);
+				eobj->m_boneVertices[0].push_back(i);
 			}
 		}
 		
@@ -387,8 +391,10 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	
 	// Calculate relative vertex positions
 	eobj->vertexlocal.resize(eobj->vertexlist.size());
-	BOOST_FOREACH(const Bone & bone, eobj->m_skeleton->bones) {
-		BOOST_FOREACH(u32 index, bone.idxvertices) {
+	for(size_t i = 0; i < eobj->m_skeleton->bones.size(); i++) {
+		const Bone & bone = eobj->m_skeleton->bones[i];
+		const std::vector<u32> & vertices = eobj->m_boneVertices[i];
+		BOOST_FOREACH(u32 index, vertices) {
 			eobj->vertexlocal[index] = eobj->vertexlist[index].v - bone.anim.trans;
 		}
 	}

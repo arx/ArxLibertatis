@@ -62,7 +62,6 @@ struct BoneTransform {
 
 struct Bone {
 	
-	std::vector<u32> idxvertices; // TODO use u16 here ?
 	long father;
 	
 	BoneTransform anim;
