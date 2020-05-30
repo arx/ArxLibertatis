@@ -118,7 +118,7 @@ glm::quat getProjectileQuatFromVector(Vec3f vector) {
 
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect,
                              EERIE_3DOBJ * obj, ActionPoint attach, const glm::quat & rotation,
-                             float velocity, float damages, float poisonous) {
+                             float damages, float poisonous) {
 	
 	arx_assert(obj);
 	
@@ -136,7 +136,6 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	projectile.source = source;
 	projectile.obj = obj;
 	projectile.attach = attach;
-	projectile.velocity = velocity;
 	projectile.poisonous = poisonous;
 	
 	projectile.m_trail = new ArrowTrail();
@@ -291,7 +290,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		return;
 	}
 	
-	if(projectile.velocity == 0.f) {
+	if(projectile.vector == Vec3f(0.f)) {
 		if(projectile.m_trail) {
 			projectile.m_trail->Update(timeDelta);
 			if(projectile.m_trail->emtpy()) {
@@ -322,16 +321,8 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		createObjFireParticles(projectile.obj, 6, 2, 180);
 	}
 	
-	
-	float mod = timeDeltaMs * projectile.velocity;
 	Vec3f original_pos = projectile.position;
-	projectile.position.x += projectile.vector.x * mod;
-	float gmod = 1.f - projectile.velocity;
-	
-	gmod = glm::clamp(gmod, 0.f, 1.f);
-	
-	projectile.position.y += projectile.vector.y * mod + (timeDeltaMs * gmod);
-	projectile.position.z += projectile.vector.z * mod;
+	projectile.position += projectile.vector * timeDeltaMs;
 	
 	CheckForIgnition(Sphere(original_pos, 10.f), false, 2);
 	
@@ -384,7 +375,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			if(result) {
 				// TODO better offset calculation
 				projectile.position = original_pos + result.pos - v0;
-				projectile.velocity = 0.f;
+				projectile.vector = Vec3f(0.f);
 			} else {
 				ARX_THROWN_OBJECT_Kill(i);
 			}
@@ -478,7 +469,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 					
 				}
 				
-				projectile.velocity = 0.f;
+				projectile.vector = Vec3f(0.f);
 				
 				need_kill = true;
 				
