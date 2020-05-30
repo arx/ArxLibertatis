@@ -35,6 +35,7 @@
 
 #include "font/Font.h"
 
+#include "game/Camera.h"
 #include "game/Entity.h"
 #include "game/EntityManager.h"
 #include "game/Inventory.h"
@@ -44,6 +45,7 @@
 #include "graphics/Draw.h"
 #include "graphics/DrawLine.h"
 #include "graphics/Math.h"
+#include "graphics/Raycast.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -562,35 +564,6 @@ static void drawDebugEntities() {
 	
 }
 
-/*!
- * Check if \ref p is in the 2D-triangle defined by the x an y components of
- * \ref a, \ref b and \ref c - and if so, interpolate the z components for
- * p's position in the triangle.
- * \return the interpolated z position, or \c -1 if p is not in the triangle.
- */
-static float pointInTriangle(Vec2f p, Vec3f a, Vec3f b, Vec3f c) {
-	
-	Vec3f d0 = c - a, d1 = b - a;
-	Vec2f v0 = Vec2f(d0.x, d0.y), v1 = Vec2f(d1.x, d1.y);
-	Vec2f v2 = p - Vec2f(a.x, a.y);
-	
-	float dot00 = glm::dot(v0, v0);
-	float dot01 = glm::dot(v0, v1);
-	float dot02 = glm::dot(v0, v2);
-	float dot11 = glm::dot(v1, v1);
-	float dot12 = glm::dot(v1, v2);
-	
-	float scale = 1 / (dot00 * dot11 - dot01 * dot01);
-	float u = (dot11 * dot02 - dot01 * dot12) * scale;
-	float v = (dot00 * dot12 - dot01 * dot02) * scale;
-	
-	if(u >= 0 && v >= 0 && u + v < 1) {
-		return a.z + d0.z * u + d1.z * v;
-	} else {
-		return -1.f;
-	}
-}
-
 static void drawDebugMaterialTexture(Vec2f & textpos, const std::string & type,
                                      const Texture & t, Color color) {
 	
@@ -644,153 +617,52 @@ static void drawDebugMaterials() {
 		skip |= POLY_TRANS | POLY_WATER;
 	}
 	
-	Vec2f point(DANAEMouse);
+	Vec3f start = g_camera->m_pos;
+	Vec3f dest = screenToWorldSpace(Vec2f(DANAEMouse), g_camera->cdepth);
 	
-	Entity * owner = GetFirstInterAtPos(Vec2s(point));
 	TextureContainer * material = NULL;
 	size_t count = 0;
-	Vec2f pp[4];
+	Vec3f v[4];
 	Vec2f puv[4];
 	PolyType flags;
 	
-	float minz = std::numeric_limits<float>::max();
-	
-	for(size_t k = 1; k < entities.size(); k++) {
-		
-		EntityHandle h = EntityHandle(k);
-		if(!entities[h] || !entities[h]->obj) {
-			continue;
+	RaycastResult sceneHit = RaycastLine(start, dest, skip);
+	if(sceneHit) {
+		const EERIEPOLY & poly = *sceneHit.hit;
+		count = ((poly.type & POLY_QUAD) ? 4 : 3);
+		for(size_t i = 0; i < count; i++) {
+			v[i] = poly.v[i].p;
+			puv[i] = poly.v[i].uv;
 		}
-		Entity * entity = entities[h];
-		
-		if((entity->ioflags & IO_CAMERA) || (entity->ioflags & IO_MARKER))
-			continue;
-		
-		if(!(entity->gameFlags & GFLAG_ISINTREATZONE))
-			continue;
-		if((entity->gameFlags & GFLAG_INVISIBILITY))
-			continue;
-		if((entity->gameFlags & GFLAG_MEGAHIDE))
-			continue;
-		
-		switch(entity->show) {
-			case SHOW_FLAG_DESTROYED:    continue;
-			case SHOW_FLAG_IN_INVENTORY: continue;
-			case SHOW_FLAG_ON_PLAYER:    continue;
-			case SHOW_FLAG_LINKED:       break;
-			case SHOW_FLAG_NOT_DRAWN:    continue;
-			case SHOW_FLAG_HIDDEN:       continue;
-			case SHOW_FLAG_MEGAHIDE:     continue;
-			case SHOW_FLAG_KILLED:       continue;
-			case SHOW_FLAG_IN_SCENE:     break;
-			case SHOW_FLAG_TELEPORTING:  break;
-		}
-		
-		if(!entity->bbox2D.valid()) {
-			continue;
-		}
-		
-		for(size_t j = 0; j < entity->obj->facelist.size(); j++) {
-			const EERIE_FACE & face = entity->obj->facelist[j];
-			
-			if(face.facetype & skip) {
-				continue;
-			}
-			
-			bool valid = true;
-			bool bvalid = false;
-			Vec3f p[3];
-			Vec2f uv[3];
-			for(size_t i = 0; i < 3; i++) {
-				unsigned short v = face.vid[i];
-				valid = valid && v < entity->obj->vertexClipPositions.size();
-				valid = valid && entity->obj->vertexClipPositions[v].w > 0.f;
-				if(valid) {
-					p[i] = Vec3f(entity->obj->vertexClipPositions[v]) / entity->obj->vertexClipPositions[v].w;
-					uv[i] = Vec2f(face.u[i], face.v[i]);
-					valid = valid && (p[i].z > 0.000001f);
-					bvalid = bvalid || (p[i].x >= g_size.left && p[i].x < g_size.right
-					                 && p[i].y >= g_size.top && p[i].y < g_size.bottom);
-				}
-			}
-			
-			if(!valid || !bvalid) {
-				continue;
-			}
-			
-			float z = pointInTriangle(point, p[0], p[1], p[2]);
-			
-			if(z > 0 && z <= minz) {
-				count = 3;
-				for(size_t i = 0; i < count; i++) {
-					pp[i] = Vec2f(p[i].x, p[i].y);
-					puv[i] = uv[i];
-				}
-				if(face.texid >= 0 && size_t(face.texid) < entity->obj->texturecontainer.size()) {
-					material = entity->obj->texturecontainer[face.texid];
-				} else {
-					material = NULL;
-				}
-				owner = entity;
-				minz = z;
-				flags = face.facetype & ~(POLY_WATER | POLY_LAVA);
-			}
-			
-		}
+		material = poly.tex;
+		flags = poly.type;
+		dest = sceneHit.pos;
 	}
 	
-	for(short y = 0; y < ACTIVEBKG->m_size.y; y++)
-	for(short x = 0; x < ACTIVEBKG->m_size.x; x++) {
-		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][y];
-		
-		if(!ACTIVEBKG->isTileActive(Vec2s(x, y))) {
-			continue;
+	EntityRaycastResult entityHit = raycastEntities(start, dest, !EXTERNALVIEW, skip);
+	if(entityHit) {
+		const EERIE_3DOBJ & obj = *entityHit.entity->obj;
+		const EERIE_FACE & face = *entityHit.face;
+		count = 3;
+		for(size_t i = 0; i < count; i++) {
+			v[i] = obj.vertexWorldPositions[face.vid[i]].v;
+			puv[i] = Vec2f(face.u[i], face.v[i]);
 		}
-		
-		BOOST_FOREACH(EERIEPOLY * ep, feg.polyin) {
-			
-			if(!ep || (ep->type & skip)) {
-				continue;
-			}
-			
-			bool bvalid = false;
-			Vec3f p[4];
-			for(size_t i = 0; i < ((ep->type & POLY_QUAD) ? 4u : 3u); i++) {
-				Vec4f pos = worldToClipSpace(ep->v[i].p);
-				if(pos.w <= 0.f) {
-					bvalid = false;
-					break;
-				}
-				p[i] = Vec3f(pos) / pos.w;
-				bvalid = bvalid || (p[i].x >= g_size.left && p[i].x < g_size.right
-				                 && p[i].y >= g_size.top && p[i].y < g_size.bottom);
-			}
-			
-			if(!bvalid) {
-				continue;
-			}
-			
-			float z = pointInTriangle(point, p[0], p[1], p[2]);
-			if(z <= 0 && (ep->type & POLY_QUAD)) {
-				z = pointInTriangle(point, p[1], p[3], p[2]);
-			}
-			
-			if(z > 0 && z <= minz) {
-				count = ((ep->type & POLY_QUAD) ? 4 : 3);
-				for(size_t i = 0; i < count; i++) {
-					pp[i] = Vec2f(p[i].x, p[i].y);
-					puv[i] = ep->v[i].uv;
-				}
-				material = ep->tex;
-				owner = NULL;
-				minz = z;
-				flags = ep->type;
-			}
-			
+		if(face.texid >= 0 && size_t(face.texid) < obj.texturecontainer.size()) {
+			material = obj.texturecontainer[face.texid];
+		} else {
+			material = NULL;
 		}
+		flags = face.facetype & ~(POLY_WATER | POLY_LAVA);
 	}
 	
 	if(count) {
+		
+		Vec2f pp[4];
+		for(size_t i = 0; i < count; i++) {
+			Vec4f clip = worldToClipSpace(v[i]);
+			pp[i] = Vec2f(clip) / clip.w;
+		}
 		
 		drawLine(pp[0], pp[1], 0.1f, Color::magenta);
 		drawLine(pp[2], pp[0], 0.1f, Color::magenta);
@@ -815,7 +687,7 @@ static void drawDebugMaterials() {
 		
 		std::ostringstream oss;
 		
-		if(owner) {
+		if(entityHit) {
 			textpos.y -= hFontDebug->getLineHeight();
 		}
 		if(material && material->m_pTexture) {
@@ -829,8 +701,8 @@ static void drawDebugMaterials() {
 		}
 		
 		
-		if(owner) {
-			drawTextCentered(hFontDebug, textpos, owner->idString(), Color::cyan);
+		if(entityHit) {
+			drawTextCentered(hFontDebug, textpos, entityHit.entity->idString(), Color::cyan);
 			textpos.y += hFontDebug->getLineHeight();
 		}
 		if(material && material->m_pTexture) {
