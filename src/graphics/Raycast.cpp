@@ -23,6 +23,8 @@
 
 #include <boost/foreach.hpp>
 
+#include "game/Entity.h"
+#include "game/EntityManager.h"
 #include "graphics/data/Mesh.h"
 #include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
@@ -275,6 +277,82 @@ RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end, PolyType ignor
 	return RaycastResult();
 }
 
+EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end, bool ignorePlayer,
+                                    PolyType ignored) {
+	
+	Vec3f dir = end - start;
+	Vec3f invdir = 1.f / dir;
+	
+	Entity * hitEntity = NULL;
+	EERIE_FACE * hitFace = NULL;
+	float t = std::numeric_limits<float>::max();
+	
+	for(size_t i = ignorePlayer ? 1 : 0; i < entities.size(); i++) {
+		const EntityHandle handle = EntityHandle(i);
+		Entity * entity = entities[handle];
+		
+		if(!entity
+		   || !entity->obj
+		   || !(entity->gameFlags & GFLAG_ISINTREATZONE)
+		   || (entity->gameFlags & (GFLAG_INVISIBILITY | GFLAG_MEGAHIDE))
+		   || (entity->ioflags & (IO_CAMERA | IO_MARKER))) {
+			continue;
+		}
+		
+		switch(entity->show) {
+			case SHOW_FLAG_LINKED:       break;
+			case SHOW_FLAG_IN_SCENE:     break;
+			case SHOW_FLAG_TELEPORTING:  break;
+			default: continue;
+		}
+		
+		const EERIE_3D_BBOX & box = entity->bbox3D;
+		
+		Vec3f min = (box.min - start) * invdir;
+		Vec3f max = (box.max - start) * invdir;
+		
+		Vec3f zmax = glm::max(min, max);
+		float tmax = glm::min(glm::min(zmax.x, zmax.y), zmax.z);
+		if(tmax < 0) {
+			continue;
+		}
+		
+		Vec3f zmin = glm::min(min, max);
+		float tmin = glm::max(glm::max(zmin.x, zmin.y), zmin.z);
+		if(tmin > tmax || tmin > t) {
+			continue;
+		}
+		
+		BOOST_FOREACH(EERIE_FACE & face, entity->obj->facelist) {
+			
+			if(face.facetype & ignored) {
+				continue;
+			}
+			
+			Vec3f v0 = entity->obj->vertexWorldPositions[face.vid[0]].v;
+			Vec3f v1 = entity->obj->vertexWorldPositions[face.vid[1]].v;
+			Vec3f v2 = entity->obj->vertexWorldPositions[face.vid[2]].v;
+			
+			Vec3f hit;
+			if(arx::intersectLineTriangle(start, dir, v0, v1, v2, hit)) {
+				if(hit.x >= 0.f && hit.x <= 1.f && hit.x < t) {
+					hitEntity  = entity;
+					hitFace = &face;
+					t = hit.x;
+				}
+			}
+			
+		}
+		
+	}
+	
+	if(t <= 1.f) {
+		Vec3f hitPos = start + t * dir;
+		return EntityRaycastResult(hitEntity, hitFace, hitPos);
+	}
+	
+	return EntityRaycastResult();
+}
 
 #ifndef RAYCAST_DEBUG
 
