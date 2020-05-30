@@ -101,6 +101,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GlobalFog.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Raycast.h"
 #include "graphics/Renderer.h"
 #include "graphics/Vertex.h"
 #include "graphics/data/TextureContainer.h"
@@ -747,6 +748,8 @@ void ManageCombatModeAnimations() {
 				
 				if(player.m_bowAimRatio > 1.f)
 					player.m_bowAimRatio = 1.f;
+			} else {
+				player.m_bowAimRotation = Anglef();
 			}
 			
 			// Waiting and Receiving Strike Impulse
@@ -769,7 +772,7 @@ void ManageCombatModeAnimations() {
 			if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_PART_2] && (layer1.flags & EA_ANIMEND)) {
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_CYCLE], EA_LOOP);
 				player.m_aimTime = PlatformDuration::ofRaw(1);
-			} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE] && !eeMousePressed1()) {
+			} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE]) {
 				
 				ActionPoint attach = GetActionPointIdx(arrowobj, "attach");
 				if(attach == ActionPoint()) {
@@ -808,6 +811,50 @@ void ManageCombatModeAnimations() {
 				Vec3f pos = player.pos + Vec3f(0.f, 40.f, 0.f); // Start position for the arrow
 				Vec3f dir = angleToVector(player.angle); // Unit vector describing the arrow direction
 				
+				if(config.input.improvedBowAim) {
+					
+					// Use position and direction of the arrow object attached to the player while drawing the bow
+					// We need to manually transform the vertices here or we will be one frame behind
+					
+					ObjVertGroup leftAttach = GetActionPointGroup(io->obj, io->obj->fastaccess.left_attach);
+					arx_assert(leftAttach != ObjVertGroup());
+					
+					const Bone & bone2 = io->obj->m_skeleton->bones[leftAttach.handleData()];
+					TransformInfo t2(actionPointPosition(io->obj, io->obj->fastaccess.left_attach), bone2.anim.quat);
+					t2.pos = t2(arrowobj->vertexlist[arrowobj->origin].v - arrowobj->vertexlist[attach.handleData()].v);
+					
+					pos = t2(arrowobj->vertexlist[attach.handleData()].v);
+					dir = glm::normalize(t2(arrowobj->vertexlist[hit.handleData()].v) - pos);
+					
+					// Rotate the bow towards whatever the player is aiming at
+					
+					PolyType ignored = POLY_HIDE | POLY_TRANS | POLY_NODRAW | POLY_NOCOL;
+					Vec3f dest = g_playerCamera.m_pos + angleToVector(player.angle) * 100000.f;
+					if(RaycastResult result = RaycastLine(g_playerCamera.m_pos, dest, ignored)) {
+						dest = result.pos;
+					}
+					if(EntityRaycastResult result = raycastEntities(g_playerCamera.m_pos, dest, true, ignored)) {
+						dest = result.pos;
+					}
+					
+					Anglef desired = vectorToAngle(dest - pos);
+					Anglef actual = unitVectorToAngle(dir);
+					
+					float t = g_platformTime.lastFrameDuration() / PlatformDurationMs(100) * player.m_bowAimRatio;
+					float dpitch = AngleDifference(actual.getPitch(), desired.getPitch()) * t;
+					float dyaw = AngleDifference(desired.getYaw(), actual.getYaw()) * t;
+					player.m_bowAimRotation.setPitch(glm::clamp(player.m_bowAimRotation.getPitch() + dpitch, -90.f, 90.f));
+					player.m_bowAimRotation.setYaw(glm::clamp(player.m_bowAimRotation.getYaw() + dyaw, -90.f, 90.f));
+					player.m_bowAimRotation.setRoll(0);
+					
+				}
+				
+				if(eeMousePressed1()) {
+					break;
+				}
+				
+				// Launch the arrow
+				
 				EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE]);
 				SendIOScriptEvent(NULL, io, SM_STRIKE, "bow");
@@ -842,10 +889,20 @@ void ManageCombatModeAnimations() {
 					break;
 				}
 				
-				// Orient arrow so that the hit_15 action point points forward
-				Vec3f pos0 = arrowobj->vertexlist[attach.handleData()].v;
-				Vec3f orientation = arrowobj->vertexlist[hit.handleData()].v - pos0;
-				glm::quat quat = glm::inverse(getProjectileQuatFromVector(orientation));
+				glm::quat quat; // Arrow object orientation relative to the arrow projectile direction
+				
+				ObjVertGroup group = GetActionPointGroup(io->obj, io->obj->fastaccess.left_attach);
+				if(config.input.improvedBowAim && group != ObjVertGroup()) {
+					// Maintain arrow object orientation
+					// In practice this is the same as the alternative below except for additional roll around dir
+					quat = io->obj->m_skeleton->bones[group.handleData()].anim.quat;
+					quat = glm::inverse(getProjectileQuatFromVector(dir)) * quat;
+				} else {
+					// Orient arrow so that the hit_15 action point points forward
+					Vec3f pos0 = arrowobj->vertexlist[attach.handleData()].v;
+					Vec3f orientation = arrowobj->vertexlist[hit.handleData()].v - pos0;
+					quat = glm::inverse(getProjectileQuatFromVector(orientation));
+				}
 				
 				float velocity = std::max(aimratio + 0.3f, 0.9f);
 				
