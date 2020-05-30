@@ -740,21 +740,24 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 			return;
 		}
 		
+		float alpha = 0.5f;
+		if(player.Interface & INTER_COMBATMODE) {
+			alpha *= std::max(player.m_bowAimRatio - 0.75f, 0.f) / 0.25f;
+		}
+		
 		if(TRUE_PLAYER_MOUSELOOK_ON && config.interface.showCrosshair
-		   && !(player.Interface & (INTER_COMBATMODE | INTER_PLAYERBOOK)) && !g_note.isOpen()) {
+		   && !(player.Interface & (INTER_PLAYERBOOK)) && !g_note.isOpen() && alpha > 0.f) {
 			
 			cursorAnimatedHand.reset();
 			
 			TextureContainer * surf = cursorCrossHair;
 			arx_assert(surf);
 			
-			
 			UseRenderState additeState(render2D().blendAdditive());
 			
-			Vec2f pos = Vec2f(g_size.center()) - Vec2f(surf->m_size) * .5f;
-			
+			Vec2f pos = Vec2f(g_size.center());
 			Vec2f size = Vec2f(surf->m_size) * cursorScale;
-			EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.f, surf, Color::gray(0.5f));
+			EERIEDrawBitmap(Rectf(pos - size * 0.5f, size.x, size.y), 0.f, surf, Color::gray(alpha));
 			
 		}
 		
