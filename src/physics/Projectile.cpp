@@ -111,10 +111,13 @@ static long ARX_THROWN_OBJECT_GetFree() {
 	return oldest;
 }
 
-extern EERIE_3DOBJ * arrowobj;
+glm::quat getProjectileQuatFromVector(Vec3f vector) {
+	Anglef angle = vectorToAngle(vector);
+	return glm::quat(glm::vec3(glm::radians(-angle.getPitch()), glm::radians(-angle.getYaw()), 0.f));
+}
 
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect,
-                             EERIE_3DOBJ * obj, const glm::quat & quat,
+                             EERIE_3DOBJ * obj, const glm::quat & rotation,
                              float velocity, float damages, float poisonous) {
 	
 	arx_assert(obj);
@@ -129,7 +132,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	projectile.position = position;
 	projectile.initial_position = position;
 	projectile.vector = vect;
-	projectile.quat = quat;
+	projectile.quat = getProjectileQuatFromVector(vect) * rotation;
 	projectile.source = source;
 	projectile.obj = obj;
 	projectile.velocity = velocity;

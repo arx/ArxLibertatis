@@ -64,8 +64,10 @@ struct Projectile {
 	
 };
 
+glm::quat getProjectileQuatFromVector(Vec3f vector);
+
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect,
-                             EERIE_3DOBJ * obj, const glm::quat & quat,
+                             EERIE_3DOBJ * obj, const glm::quat & rotation,
                              float velocity, float damages, float poisonous);
 
 void ARX_THROWN_OBJECT_KillAll();
