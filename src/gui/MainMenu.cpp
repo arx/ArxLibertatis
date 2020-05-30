@@ -1523,6 +1523,14 @@ public:
 		}
 		
 		{
+			std::string label = getLocalised("system_menus_alt_bow_aim");
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			cb->setChecked(config.input.improvedBowAim);
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAltBowAim, this, arg::_1);
+			addCenter(cb);
+		}
+		
+		{
 			std::string label = getLocalised("system_menus_quick_level_transition");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedQuickLevelTransition, this, arg::_1, arg::_2);
@@ -1582,6 +1590,10 @@ private:
 	
 	void onChangedAltRuneRecognition(bool checked) {
 		config.input.useAltRuneRecognition = checked;
+	}
+	
+	void onChangedAltBowAim(bool checked) {
+		config.input.improvedBowAim = checked;
 	}
 	
 	void onChangedQuickLevelTransition(int pos, const std::string & str) {
