@@ -1699,8 +1699,9 @@ void ARX_PLAYER_Frame_Update()
 				extraRotation->group_rotate[1] = Anglef(); // Neck
 				extraRotation->group_rotate[2] = Anglef(); // Chest
 				extraRotation->group_rotate[3] = Anglef(v, 0.f, 0.f); // Belt
-				extraRotation->group_rotate[4] = Anglef(); // Left shoulder
-				extraRotation->group_rotate[5] = Anglef(); // Right shoulder
+				// Apply fine aim with the shoulders so that we don't affect the view position
+				extraRotation->group_rotate[4] = player.m_bowAimRotation; // Left shoulder
+				extraRotation->group_rotate[5] = player.m_bowAimRotation; // Right shoulder
 				
 			} else {
 				extraRotation->group_rotate[0] = Anglef(v * 0.1f, 0.f, 0.f); // Head

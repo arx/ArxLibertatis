@@ -290,6 +290,7 @@ struct ARXCHARACTER {
 	PlayerMisc m_miscFull;
 	
 	float m_bowAimRatio;
+	Anglef m_bowAimRotation;
 	
 	float m_strikeAimRatio;
 	PlatformDuration Full_AimTime;
