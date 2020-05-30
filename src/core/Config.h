@@ -213,6 +213,7 @@ public:
 		bool rawMouseInput;
 		bool borderTurning;
 		bool useAltRuneRecognition;
+		bool improvedBowAim;
 		QuickLevelTransition quickLevelTransition;
 		bool allowConsole;
 		
