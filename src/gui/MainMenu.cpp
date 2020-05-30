@@ -729,6 +729,15 @@ public:
 		}
 		
 		{
+			std::string label = getLocalised("system_menus_options_videos_screen_shake");
+			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			cb->setChecked(config.video.screenShake);
+			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedScreenShake, this, arg::_1);
+			addCenter(cb);
+			m_fullscreenCheckbox = cb;
+		}
+		
+		{
 			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_video_apply"));
 			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this, arg::_1);
 			txt->setEnabled(false);
@@ -840,6 +849,10 @@ private:
 	
 	void onChangedViewBobbing(bool checked) {
 		config.video.viewBobbing = checked;
+	}
+	
+	void onChangedScreenShake(bool checked) {
+		config.video.screenShake = checked;
 	}
 	
 	void onClickedApply(Widget * /* widget */) {
