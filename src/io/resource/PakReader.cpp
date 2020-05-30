@@ -383,7 +383,7 @@ class PlainFile : public PakFile {
 	
 public:
 	
-	PlainFile(const fs::path & path) : m_path(path) { }
+	explicit PlainFile(const fs::path & path) : m_path(path) { }
 	
 	std::string read() const;
 	
