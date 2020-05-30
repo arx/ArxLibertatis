@@ -28,6 +28,7 @@
 #include "ai/Paths.h"
 
 #include "animation/AnimationRender.h"
+#include "animation/Skeleton.h"
 
 #include "core/Core.h"
 #include "core/ArxGame.h"
@@ -92,6 +93,7 @@ void drawDebugRelease() {
 enum DebugViewType {
 	DebugView_None,
 	DebugView_Entities,
+	DebugView_Skeletons,
 	DebugView_Zones,
 	DebugView_Paths,
 	DebugView_PathFind,
@@ -508,9 +510,9 @@ static void drawDebugEntityPhysicsCylinders() {
 	}
 }
 
-static void drawDebugEntities() {
+static void drawDebugEntities(bool drawSkeletons) {
 	
-	for(size_t i = 1; i < entities.size(); i++) {
+	for(size_t i = EXTERNALVIEW ? 0 : 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * entity = entities[handle];
 		
@@ -556,6 +558,32 @@ static void drawDebugEntities() {
 					Entity * other = entity->obj->linked[j].io;
 					drawTextAt(hFontDebug, pos, other->idString(), Color::cyan);
 				}
+			}
+			
+		}
+		
+		if(drawSkeletons && entity->obj && entity->obj->m_skeleton) {
+			
+			const Skeleton & skeleton = *entity->obj->m_skeleton;
+			
+			BOOST_FOREACH(const Bone & bone, skeleton.bones) {
+				
+				if(bone.father < 0) {
+					continue;
+				}
+				
+				const Bone & parent = skeleton.bones[bone.father];
+				
+				drawLine(parent.anim.trans, bone.anim.trans, Color::red);
+				
+			}
+			
+			BOOST_FOREACH(const VertexGroup & group, entity->obj->grouplist) {
+				drawTextAt(hFontDebug, entity->obj->vertexWorldPositions[group.origin].v, group.name);
+			}
+			
+			BOOST_FOREACH(const EERIE_ACTIONLIST & ap, entity->obj->actionlist) {
+				drawTextAt(hFontDebug, entity->obj->vertexWorldPositions[ap.idx.handleData()].v, ap.name, Color::green);
 			}
 			
 		}
@@ -803,7 +831,12 @@ void drawDebugRender() {
 	switch(g_debugView) {
 		case DebugView_Entities: {
 			ss << "Entities";
-			drawDebugEntities();
+			drawDebugEntities(false);
+			break;
+		}
+		case DebugView_Skeletons: {
+			ss << "Skeletons";
+			drawDebugEntities(true);
 			break;
 		}
 		case DebugView_Zones: {
