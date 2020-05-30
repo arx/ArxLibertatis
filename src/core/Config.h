@@ -139,6 +139,7 @@ public:
 		int fpsLimit;
 		
 		float fov;
+		bool viewBobbing;
 		
 		int levelOfDetail;
 		float fogDistance;
