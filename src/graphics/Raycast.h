@@ -37,7 +37,7 @@ struct RaycastResult {
 		, pos(pos_)
 	{ }
 	
-	explicit operator bool() const {
+	operator bool() const {
 		return hit != NULL;
 	}
 	
