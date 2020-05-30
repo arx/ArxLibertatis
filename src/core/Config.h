@@ -140,6 +140,7 @@ public:
 		
 		float fov;
 		bool viewBobbing;
+		bool screenShake;
 		
 		int levelOfDetail;
 		float fogDistance;
