@@ -764,7 +764,7 @@ struct SavedExtraRotate {
 	
 	operator EERIE_EXTRA_ROTATE() const {
 		EERIE_EXTRA_ROTATE a;
-		ARX_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE, "array size mismatch");
+		ARX_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE <= MAX_EXTRA_ROTATE, "array size mismatch");
 		std::transform(group_number, group_number + SAVED_MAX_EXTRA_ROTATE, a.group_number, saved_toObjGroup);
 		std::copy(group_rotate, group_rotate + SAVED_MAX_EXTRA_ROTATE, a.group_rotate);
 		return a;
@@ -772,9 +772,15 @@ struct SavedExtraRotate {
 	
 	SavedExtraRotate & operator=(const EERIE_EXTRA_ROTATE & b) {
 		flags = 0;
-		ARX_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE, "array size mismatch");
+		ARX_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE <= MAX_EXTRA_ROTATE, "array size mismatch");
 		std::transform(b.group_number, b.group_number + SAVED_MAX_EXTRA_ROTATE, group_number, saved_fromObjGroup);
 		std::copy(b.group_rotate, b.group_rotate + SAVED_MAX_EXTRA_ROTATE, group_rotate);
+		#ifdef ARX_DEBUG
+		for(size_t i = SAVED_MAX_EXTRA_ROTATE; i < MAX_EXTRA_ROTATE; i++) {
+			arx_assert(b.group_number[i] == ObjVertGroup());
+			arx_assert(b.group_rotate[i] == Anglef());
+		}
+		#endif
 		return *this;
 	}
 	
