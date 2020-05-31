@@ -168,7 +168,7 @@ void loadLocalisations() {
 		
 		loadLocalisation(dir, fallbackPrefix + i.first);
 		
-		if(i.second) {
+		if(i.second && localizedPrefix != fallbackPrefix) {
 			loadLocalisation(dir, localizedPrefix + i.first);
 		}
 	}
