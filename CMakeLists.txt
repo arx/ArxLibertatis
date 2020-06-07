@@ -1656,6 +1656,7 @@ if(ARX_HAVE_PROFILER)
 	)
 	
 	set(arxprofiler_SOURCES
+		src/math/Random.cpp
 		src/platform/profiler/ProfilerDataFormat.h
 		${BASE_SOURCES}
 	)
