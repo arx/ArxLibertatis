@@ -52,6 +52,7 @@
 
 #include <boost/crc.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/range/size.hpp>
 
@@ -428,7 +429,7 @@ void CrashHandlerPOSIX::processCrashTrace() {
 			FrameType status = Handler;
 			while(iss.good()) {
 				std::getline(iss, line);
-				if(status == Handler && line.find("<signal handler called>") != std::string::npos) {
+				if(status == Handler && boost::contains(line, "<signal handler called>")) {
 					status = Fault;
 				} else if(status == Fault) {
 					size_t start = line.find('#');
