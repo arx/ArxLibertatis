@@ -41,6 +41,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsItemGroup>
 
+#include "math/Random.h"
 #include "platform/profiler/ProfilerDataFormat.h"
 #include "util/String.h"
 
@@ -297,11 +298,11 @@ void ProfilerView::setData(ThreadsData * threadsData) {
 			profilePoint->setText(text);
 			profilePoint->setToolTip(text);
 			
-			qsrand(qHash(it->tag));
+			Random::seed(qHash(it->tag));
 			QColor tagColor;
-			tagColor.setRed(100 + qrand() % 155);
-			tagColor.setGreen(100 + qrand() % 155);
-			tagColor.setBlue(100 + qrand() % 155);
+			tagColor.setRed(100 + Random::get(0, 155));
+			tagColor.setGreen(100 + Random::get(0, 155));
+			tagColor.setBlue(100 + Random::get(0, 155));
 			profilePoint->setBrush(QBrush(tagColor));
 
 			profilePoint->setPen(profilePointPen);
@@ -315,7 +316,7 @@ void ProfilerView::setData(ThreadsData * threadsData) {
 	
 	setSceneRect(0, 0, timeDiff, nextPos);
 	
-	resetMatrix();
+	resetTransform();
 	scale(size().width() / timeDiff, 1.0);
 	
 	setDragMode(ScrollHandDrag);
@@ -366,7 +367,14 @@ void ProfilerView::zoomEvent(QPoint mousePos, bool zoomIn) {
 }
 
 void ProfilerView::wheelEvent(QWheelEvent * event) {
-	zoomEvent(event->pos(), event->delta() > 0);
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+	QPoint mousePos = event->position().toPoint();
+	bool zoomIn = (event->angleDelta().y() > 0);
+	#else
+	QPoint mousePos = event->pos();
+	bool zoomIn = (event->delta() > 0);
+	#endif
+	zoomEvent(mousePos, zoomIn);
 }
 
 void ProfilerView::keyPressEvent(QKeyEvent * event) {
