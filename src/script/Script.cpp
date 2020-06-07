@@ -398,7 +398,7 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	
 }
 
-static Entity * getEntityParam(const std::string variable, size_t offset, const script::Context & context) {
+static Entity * getEntityParam(const std::string & variable, size_t offset, const script::Context & context) {
 	
 	if(variable.length() >= offset) {
 		return entities.getById(variable.c_str() + offset, context.getEntity());
