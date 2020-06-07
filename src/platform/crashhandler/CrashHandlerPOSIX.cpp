@@ -64,6 +64,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/range/size.hpp>
 
@@ -151,7 +152,7 @@ static fs::path getCoreDumpFile() {
 	}
 	
 	if(pattern[0] == '|') {
-		if(pattern.find("/apport ") != std::string::npos) {
+		if(boost::contains(pattern, "/apport ")) {
 			// Ubuntu …
 			std::ostringstream oss;
 			oss << "/var/crash/";
