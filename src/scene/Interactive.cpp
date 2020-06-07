@@ -317,7 +317,8 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io)
 	long gorenum = -1;
 
 	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
-		if(io->obj->texturecontainer[nn] && io->obj->texturecontainer[nn]->m_texName.string().find("gore") != std::string::npos) {
+		if(io->obj->texturecontainer[nn]
+		   && boost::contains(io->obj->texturecontainer[nn]->m_texName.string(), "gore")) {
 			gorenum = nn;
 			break;
 		}
@@ -346,7 +347,8 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 	long gorenum = -1;
 
 	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
-		if(io->obj->texturecontainer[nn] && io->obj->texturecontainer[nn]->m_texName.string().find("gore") != std::string::npos) {
+		if(io->obj->texturecontainer[nn]
+		   && boost::contains(io->obj->texturecontainer[nn]->m_texName.string(), "gore")) {
 			gorenum = nn;
 			break;
 		}
