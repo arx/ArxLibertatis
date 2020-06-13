@@ -190,6 +190,4 @@ void UpdateGoldObject(Entity * io);
 
 extern long HERO_SHOW_1ST;
 
-void Set_DragInter(Entity * io);
-
 #endif // ARX_SCENE_INTERACTIVE_H

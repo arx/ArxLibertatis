@@ -47,6 +47,7 @@
 #include "graphics/data/TextureContainer.h"
 
 #include "gui/Cursor.h"
+#include "gui/Dragging.h"
 #include "gui/Interface.h"
 #include "gui/Notification.h"
 #include "gui/Speech.h"
@@ -243,7 +244,7 @@ void BackpackIconGui::updateInput() {
 	
 	// Check for backpack Icon
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
-		if(eeMouseUp1() && insertIntoInventory(DRAGINTER, entities.player())) {
+		if(eeMouseUp1() && insertIntoInventory(g_draggedEntity, entities.player())) {
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
 		}
 	}
@@ -305,9 +306,8 @@ void BackpackIconGui::updateInput() {
 			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
 		
-		if(DRAGINTER == NULL)
-			return;
 	}
+	
 }
 
 void BackpackIconGui::draw() {
@@ -352,10 +352,6 @@ void StealIconGui::updateInput() {
 					bForceEscapeFreeLook = true;
 					lOldTruePlayerMouseLook = !TRUE_PLAYER_MOUSELOOK_ON;
 				}
-			}
-			
-			if(DRAGINTER == NULL) {
-				return;
 			}
 			
 		}
@@ -454,8 +450,6 @@ void PurseIconGui::updateInput() {
 				COMBINEGOLD = true;
 			}
 			
-			if(!DRAGINTER)
-				return;
 		}
 	}
 }
@@ -499,7 +493,7 @@ void CurrentTorchIconGui::updateInput() {
 			eMouseState = MOUSE_IN_TORCH_ICON;
 			cursorSetInteraction();
 			
-			if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
+			if(!g_draggedEntity && !PLAYER_MOUSELOOK_ON && DRAGGING) {
 				Entity * io = player.torch;
 				
 				ARX_SOUND_PlaySFX(g_snd.TORCH_END);
@@ -509,7 +503,7 @@ void CurrentTorchIconGui::updateInput() {
 				player.torch = NULL;
 				lightHandleGet(torchLightHandle)->m_exists = false;
 				io->ignition = 1;
-				Set_DragInter(io);
+				setDraggedEntity(io);
 			} else {
 				if(eeMouseDoubleClick1() && !COMBINE) {
 					COMBINE = player.torch;
@@ -1458,7 +1452,7 @@ void HudRoot::draw() {
 	if(FlyingOverIO  && !(player.Interface & INTER_COMBATMODE)
 	   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 	   && (!PLAYER_MOUSELOOK_ON || config.input.autoReadyWeapon != AlwaysAutoReadyWeapon)) {
-		if((FlyingOverIO->ioflags & IO_ITEM) && !DRAGINTER) {
+		if((FlyingOverIO->ioflags & IO_ITEM) && !g_draggedEntity) {
 			g_secondaryInventoryHud.drawItemPrice(m_scale);
 		}
 		cursorSetInteraction();

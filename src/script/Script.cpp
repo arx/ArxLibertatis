@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Player.h"
 
+#include "gui/Dragging.h"
 #include "gui/Speech.h"
 
 #include "graphics/particle/ParticleEffects.h"
@@ -1011,7 +1012,7 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			}
 			
 			if(name == "^dragged") {
-				txtcontent = DRAGINTER ? DRAGINTER->idString() : "none";
+				txtcontent = g_draggedEntity ? g_draggedEntity->idString() : "none";
 				return TYPE_TEXT;
 			}
 			

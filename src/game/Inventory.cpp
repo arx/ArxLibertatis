@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Item.h"
 #include "game/Player.h"
 
+#include "gui/Dragging.h"
 #include "gui/Interface.h"
 
 #include "graphics/GraphicsTypes.h"
@@ -86,10 +87,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 INVENTORY_SLOT g_inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 INVENTORY_DATA * SecondaryInventory = NULL;
-Entity * DRAGINTER = NULL;
 Entity * ioSteal = NULL;
-
-InventoryPos g_draggedItemPreviousPosition;
 
 INVENTORY_DATA::~INVENTORY_DATA() {
 	
@@ -140,8 +138,8 @@ void PutInFrontOfPlayer(Entity * io)
 	
 	io->angle = Anglef();
 	
-	if(DRAGINTER == io) {
-		Set_DragInter(NULL);
+	if(g_draggedEntity == io) {
+		setDraggedEntity(NULL);
 	}
 	
 	removeFromInventories(io);
@@ -428,9 +426,9 @@ private:
 				}
 			}
 		}
-	
-		if(DRAGINTER == item) {
-			Set_DragInter(NULL);
+		
+		if(g_draggedEntity == item) {
+			setDraggedEntity(NULL);
 		}
 		
 		removeFromInventories(item);
@@ -922,7 +920,7 @@ Vec3f GetItemWorldPosition(const Entity * io) {
 	
 	arx_assert(io);
 	
-	if(DRAGINTER == io) {
+	if(g_draggedEntity == io && io->show == SHOW_FLAG_ON_PLAYER) {
 		// Set position to approximate center of player.
 		return player.pos + Vec3f(0.f, 80.f, 0.f);
 	}
@@ -956,7 +954,7 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
 	
 	arx_assert(io);
 	
-	if(DRAGINTER == io) {
+	if(g_draggedEntity == io) {
 		return ARX_PLAYER_FrontPos();
 	}
 	

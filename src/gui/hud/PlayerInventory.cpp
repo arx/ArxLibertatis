@@ -29,6 +29,7 @@
 #include "graphics/Draw.h"
 #include "graphics/data/TextureContainer.h"
 #include "gui/Cursor.h"
+#include "gui/Dragging.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
 #include "input/Input.h"
@@ -495,7 +496,7 @@ void PlayerInventoryHud::dropEntity() {
 		return;
 	
 	// If inventories overlap entity might have been dropped alreadry
-	if(!DRAGINTER) {
+	if(!g_draggedEntity) {
 		return;
 	}
 	
@@ -506,12 +507,12 @@ void PlayerInventoryHud::dropEntity() {
 	Vec2f pos = Vec2f(DANAEMouse - anchor) / float(itemPitch);
 	if(player.Interface & INTER_INVENTORYALL) {
 		s16 bagPitch = s16(121.f * m_scale);
-		s16 topAnchor = anchor.y - (player.m_bags - 1) * bagPitch - DRAGINTER->m_inventorySize.y * itemPitch / 2;
+		s16 topAnchor = anchor.y - (player.m_bags - 1) * bagPitch - g_draggedEntity->m_inventorySize.y * itemPitch / 2;
 		bag = glm::clamp((DANAEMouse.y - topAnchor) / bagPitch, 0, player.m_bags - 1);
 		pos = Vec2f(DANAEMouse - (anchor - Vec2s(0, (player.m_bags - 1 - bag) * bagPitch))) / float(itemPitch);
 	}
 	
-	insertIntoInventoryAt(DRAGINTER, entities.player(), bag, pos, g_draggedItemPreviousPosition);
+	insertIntoInventoryAt(g_draggedEntity, entities.player(), bag, pos, g_draggedItemPreviousPosition);
 	
 }
 
@@ -527,13 +528,13 @@ void PlayerInventoryHud::dragEntity(Entity * io) {
 		unstackedEntity->_itemdata->count = 1;
 		io->_itemdata->count--;
 		ARX_SOUND_PlayInterface(g_snd.INVSTD);
-		Set_DragInter(unstackedEntity);
+		setDraggedEntity(unstackedEntity);
 		g_draggedItemPreviousPosition = locateInInventories(io);
 		ARX_INVENTORY_IdentifyIO(unstackedEntity);
 		return;
 	}
 	
-	Set_DragInter(io);
+	setDraggedEntity(io);
 	ARX_INVENTORY_IdentifyIO(io);
 	
 }

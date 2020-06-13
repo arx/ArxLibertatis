@@ -80,6 +80,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/effect/Quake.h"
 
 #include "gui/CharacterCreation.h"
+#include "gui/Dragging.h"
 #include "gui/Hud.h"
 #include "gui/Menu.h"
 #include "gui/Text.h"
@@ -248,8 +249,8 @@ void ARX_PLAYER_KillTorch() {
 	lightHandleGet(torchLightHandle)->m_exists = false;
 }
 
-void ARX_PLAYER_ClickedOnTorch(Entity * io)
-{
+void ARX_PLAYER_ClickedOnTorch(Entity * io) {
+	
 	if(!io)
 		return;
 
@@ -277,10 +278,13 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 		removeFromInventories(io);
 		io->show = SHOW_FLAG_ON_PLAYER;
 		player.torch = io;
-
-		if(DRAGINTER == io)
-			DRAGINTER = NULL;
+		
+		if(g_draggedEntity == io) {
+			setDraggedEntity(NULL);
+		}
+		
 	}
+	
 }
 
 static void ARX_PLAYER_ManageTorch() {
@@ -2622,7 +2626,7 @@ void ARX_GAME_Reset() {
 	// Interface
 	ARX_INTERFACE_Reset();
 	ARX_INTERFACE_NoteClear();
-	Set_DragInter(NULL);
+	setDraggedEntity(NULL);
 	g_cameraEntity = NULL;
 	CHANGE_LEVEL_ICON = NoChangeLevel;
 	

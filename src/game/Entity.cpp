@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/data/Mesh.h"
 
+#include "gui/Dragging.h"
 #include "gui/Interface.h"
 #include "gui/hud/SecondaryInventory.h"
 
@@ -258,8 +259,8 @@ void Entity::cleanReferences() {
 	
 	ARX_INTERACTIVE_DestroyIOdelayedRemove(this);
 	
-	if(DRAGINTER == this) {
-		Set_DragInter(NULL);
+	if(g_draggedEntity == this) {
+		setDraggedEntity(NULL);
 	}
 	
 	if(FlyingOverIO == this) {

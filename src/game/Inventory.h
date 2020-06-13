@@ -91,7 +91,6 @@ extern INVENTORY_SLOT g_inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 
 extern INVENTORY_DATA * SecondaryInventory;
 extern INVENTORY_DATA * TSecondaryInventory;
-extern Entity * DRAGINTER;
 extern Entity * ioSteal;
 
 inline Vec2s inventorySizeFromTextureSize(Vec2i size) {
@@ -122,8 +121,6 @@ struct InventoryPos {
 	}
 	
 };
-
-extern InventoryPos g_draggedItemPreviousPosition;
 
 std::ostream & operator<<(std::ostream & strm, const InventoryPos & pos);
 
