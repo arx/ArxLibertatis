@@ -420,4 +420,6 @@ public:
 
 extern HudRoot g_hudRoot;
 
+extern bool PLAYER_INTERFACE_SHOW;
+
 #endif // ARX_GUI_HUD_H

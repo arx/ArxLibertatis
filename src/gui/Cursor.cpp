@@ -44,21 +44,14 @@
 #include "graphics/texture/TextureStage.h"
 #include "graphics/Renderer.h"
 
-#include "animation/AnimationRender.h"
-
-#include "physics/Collisions.h"
-#include "physics/Physics.h"
-
-#include "platform/profiler/Profiler.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 
+#include "gui/Dragging.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
 #include "gui/Text.h"
 #include "gui/Menu.h"
-#include "gui/hud/PlayerInventory.h"
-#include "gui/hud/SecondaryInventory.h"
 
 enum ARX_INTERFACE_CURSOR_MODE
 {
@@ -87,11 +80,6 @@ void cursorSetRedistribute(long value) {
 	SpecialCursor = CURSOR_REDIST;
 	lCursorRedistValue = value;
 }
-
-
-extern float STARTED_ANGLE;
-
-EntityMoveCursor CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
 
 static TextureContainer * cursorTargetOn = NULL;
 static TextureContainer * cursorTargetOff = NULL;
@@ -141,204 +129,8 @@ void cursorTexturesInit() {
 	TextureContainer::LoadUI("graph/interface/cursors/drop");
 }
 
-
-bool Manage3DCursor(Entity * io, bool simulate, bool draginter) {
-	
-	arx_assert(io);
-	arx_assert(!locateInInventories(io));
-	
-	if(simulate && draginter) {
-		io->show = SHOW_FLAG_ON_PLAYER;
-	}
-	
-	if(BLOCK_PLAYER_CONTROLS) {
-		return false;
-	}
-	
-	float ag = player.angle.getPitch();
-	if(ag > 180.f) {
-		ag = ag - 360.f;
-	}
-	
-	float drop_miny = float(g_size.center().y) - float(g_size.center().y) * ag * (1.f / 70);
-	if(DANAEMouse.y < drop_miny) {
-		return false;
-	}
-	
-	Anglef angle = io->angle;
-	
-	float deltaYaw = player.angle.getYaw() - STARTED_ANGLE;
-	angle.setPitch(MAKEANGLE(angle.getPitch() + std::sin(glm::radians(angle.getRoll())) * deltaYaw));
-	angle.setYaw(MAKEANGLE(angle.getYaw() + std::cos(glm::radians(angle.getRoll())) * deltaYaw));
-	
-	io->angle = angle;
-	STARTED_ANGLE = player.angle.getYaw();
-	
-	EERIE_3D_BBOX bbox;
-	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
-		bbox.add(io->obj->vertexlist[i].v);
-	}
-	
-	Vec3f mvectx = angleToVectorXZ(player.angle.getYaw() - 90.f);
-	
-	Vec2f mod = Vec2f(Vec2i(DANAEMouse) - g_size.center()) / Vec2f(g_size.center()) * Vec2f(160.f, 220.f);
-	mvectx *= mod.x;
-	Vec3f mvecty(0, mod.y, 0);
-
-	Vec3f orgn = player.pos;
-	orgn += angleToVector(player.angle) * 50.f;
-	orgn += mvectx;
-	orgn.y += mvecty.y;
-
-	Vec3f dest = player.pos;
-	dest += angleToVector(player.angle) * 10000.f;
-	dest += mvectx;
-	dest.y += mvecty.y * 5.f;
-	
-	Vec3f pos = orgn;
-
-	Vec3f movev = glm::normalize(dest - orgn);
-
-	float lastanything = 0.f;
-	float height = -(bbox.max.y - bbox.min.y);
-
-	if(height > -30.f)
-		height = -30.f;
-	
-	Vec3f objcenter = bbox.min + (bbox.max - bbox.min) * Vec3f(0.5f);
-	
-	Vec3f collidpos(0.f);
-	bool collidpos_ok = false;
-	
-	{
-	float maxdist = 0.f;
-	
-	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
-		const EERIE_VERTEX & vert = io->obj->vertexlist[i];
-		
-		float dist = glm::distance(Vec2f(objcenter.x, objcenter.z), Vec2f(vert.v.x, vert.v.z)) - 4.f;
-		maxdist = std::max(maxdist, dist);
-	}
-
-	if(io->obj->pbox) {
-		Vec2f tmpVert(io->obj->pbox->vert[0].initpos.x, io->obj->pbox->vert[0].initpos.z);
-		
-		for(size_t i = 1; i < io->obj->pbox->vert.size(); i++) {
-			const PhysicsParticle & physVert = io->obj->pbox->vert[i];
-			
-			float dist = glm::distance(tmpVert, Vec2f(physVert.initpos.x, physVert.initpos.z)) + 14.f;
-			maxdist = std::max(maxdist, dist);
-		}
-	}
-	
-	Cylinder cyl2 = Cylinder(Vec3f(0.f), glm::clamp(maxdist, 20.f, 150.f), std::min(-30.f, height));
-	
-	const float inc = 10.f;
-	long iterating = 40;
-	
-	while(iterating > 0) {
-		cyl2.origin = pos + movev * inc + Vec3f(0.f, bbox.max.y, 0.f);
-
-		float anything = CheckAnythingInCylinder(cyl2, io, CFLAG_JUST_TEST | CFLAG_COLLIDE_NOCOL | CFLAG_NO_NPC_COLLIDE);
-
-		if(anything < 0.f) {
-			if(iterating == 40) {
-				CANNOT_PUT_IT_HERE = EntityMoveCursor_Invalid;
-				// TODO is this correct ?
-				return true;
-			}
-
-			iterating = 0;
-
-			collidpos = cyl2.origin;
-
-			if(lastanything < 0.f) {
-				pos.y += lastanything;
-				collidpos.y += lastanything;
-			}
-		} else {
-			pos = cyl2.origin;
-			lastanything = anything;
-		}
-
-		iterating--;
-	}
-	collidpos_ok = iterating == -1;
-	
-	}
-	
-	angle.setYaw(MAKEANGLE(270.f - angle.getYaw()));
-	objcenter = VRotateY(objcenter, angle.getYaw());
-	objcenter = VRotateX(objcenter, -angle.getPitch());
-	objcenter = VRotateZ(objcenter, angle.getRoll());
-	
-	collidpos.x -= objcenter.x;
-	collidpos.z -= objcenter.z;
-
-	pos.x -= objcenter.x;
-	pos.z -= objcenter.z;
-
-	if(!collidpos_ok) {
-		CANNOT_PUT_IT_HERE = EntityMoveCursor_Invalid;
-		return false;
-	}
-
-	if(collidpos_ok && closerThan(player.pos, pos, 300.f)) {
-		if(simulate) {
-			ARX_INTERACTIVE_Teleport(io, pos, true);
-			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
-			glm::quat rotation = glm::quat_cast(toRotationMatrix(angle));
-			if(draginter) {
-				if(glm::abs(lastanything) > glm::abs(height)) {
-					io->show = SHOW_FLAG_TELEPORTING;
-					TransformInfo t(collidpos, rotation, io->scale);
-					static const float invisibility = 0.5f;
-					DrawEERIEInter(io->obj, t, io, false, invisibility);
-				} else {
-					io->show = SHOW_FLAG_IN_SCENE;
-					// Entity will be rendered with the rest of the in-scene entities
-				}
-			}
-		} else {
-			if(glm::abs(lastanything) > std::min(glm::abs(height), 12.0f)) {
-				ARX_PLAYER_Remove_Invisibility();
-				io->obj->pbox->active = 1;
-				io->obj->pbox->stopcount = 0;
-				io->pos = collidpos;
-
-				movev.x *= 0.0001f;
-				movev.y = 0.1f;
-				movev.z *= 0.0001f;
-				Vec3f viewvector = movev;
-
-				io->soundtime = 0;
-				io->soundcount = 0;
-				EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);
-				ARX_SOUND_PlaySFX(g_snd.WHOOSH, &pos);
-				io->show = SHOW_FLAG_IN_SCENE;
-				Set_DragInter(NULL);
-			} else {
-				ARX_PLAYER_Remove_Invisibility();
-				ARX_SOUND_PlayInterface(g_snd.INVSTD);
-				ARX_INTERACTIVE_Teleport(io, pos, true);
-				
-				io->show = SHOW_FLAG_IN_SCENE;
-				io->obj->pbox->active = 0;
-				Set_DragInter(NULL);
-			}
-		}
-
-		return true;
-	} else {
-		CANNOT_PUT_IT_HERE = EntityMoveCursor_Throw;
-	}
-
-	return false;
-}
-
 extern long LOOKING_FOR_SPELL_TARGET;
 extern GameInstant LOOKING_FOR_SPELL_TARGET_TIME;
-extern bool PLAYER_INTERFACE_SHOW;
 
 int iHighLight = 0;
 float fHighLightAng = 0.f;
@@ -451,14 +243,12 @@ public:
 
 CursorAnimatedHand cursorAnimatedHand = CursorAnimatedHand();
 
-void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
-	
-	ARX_PROFILE_FUNC();
+void ARX_INTERFACE_RenderCursor(bool flag) {
 	
 	UseRenderState state(render2D());
 	UseTextureState textureState(getInterfaceTextureFilter(), TextureStage::WrapClamp);
 	
-	if(!draginter && SelectSpellTargetCursorRender()) {
+	if(SelectSpellTargetCursorRender()) {
 		return;
 	}
 	
@@ -477,20 +267,18 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 		SpecialCursor = CURSOR_READY_WEAPON;
 	}
 	
-	if(!draginter) {
-		if(FlyingOverIO || DRAGINTER) {
-			fHighLightAng += toMs(g_platformTime.lastFrameDuration()) * 0.5f;
-			
-			if(fHighLightAng > 90.f)
-				fHighLightAng = 90.f;
-			
-			float fHLight = 100.f * glm::sin(glm::radians(fHighLightAng));
-			
-			iHighLight = checked_range_cast<int>(fHLight);
-		} else {
-			fHighLightAng = 0.f;
-			iHighLight = 0;
-		}
+	if(FlyingOverIO || DRAGINTER) {
+		fHighLightAng += toMs(g_platformTime.lastFrameDuration()) * 0.5f;
+		
+		if(fHighLightAng > 90.f)
+			fHighLightAng = 90.f;
+		
+		float fHLight = 100.f * glm::sin(glm::radians(fHighLightAng));
+		
+		iHighLight = checked_range_cast<int>(fHLight);
+	} else {
+		fHighLightAng = 0.f;
+		iHighLight = 0;
 	}
 	
 	float iconScale = g_hudRoot.getScale();
@@ -501,33 +289,6 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 	       && (FlyingOverIO->ioflags & IO_ITEM) && (FlyingOverIO->gameFlags & GFLAG_INTERACTIVITY)
 	       && config.input.autoReadyWeapon != AlwaysAutoReadyWeapon)
 	   || (MAGICMODE && PLAYER_MOUSELOOK_ON)) {
-		
-		CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
-		
-		float ag = player.angle.getPitch();
-		if(ag > 180)
-			ag = ag - 360;
-		
-		float drop_miny = float(g_size.center().y) - float(g_size.center().y) * ag * (1.f / 70);
-		if(DANAEMouse.y > drop_miny && DRAGINTER && !g_secondaryInventoryHud.containsPos(DANAEMouse)
-		   && !g_playerInventoryHud.containsPos(DANAEMouse) && !g_cursorOverBook) {
-			
-			if(!Manage3DCursor(DRAGINTER, true, draginter)) {
-				CANNOT_PUT_IT_HERE = EntityMoveCursor_Throw;
-			}
-			
-			if(draginter) {
-				CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
-				return;
-			}
-			
-		} else {
-			CANNOT_PUT_IT_HERE = EntityMoveCursor_Throw;
-		}
-		
-		if(draginter) {
-			return;
-		}
 		
 		Vec2f mousePos = Vec2f(DANAEMouse);
 		
@@ -695,9 +456,7 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 								ARX_INTERFACE_DrawNumber(rect.topRight(), DRAGINTER->_itemdata->count, Color::white, iconScale);
 							}
 						} else {
-							if(g_secondaryInventoryHud.containsPos(DANAEMouse)
-							   || g_playerInventoryHud.containsPos(DANAEMouse)
-							   || CANNOT_PUT_IT_HERE != EntityMoveCursor_Throw) {
+							if(g_dragStatus != EntityDragStatus_Throw) {
 								EERIEDrawBitmap(rect, .00001f, tc, color);
 							}
 						}
@@ -705,14 +464,10 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 					}
 					
 					// Cross not over inventory icon
-					if(   CANNOT_PUT_IT_HERE != EntityMoveCursor_Ok
-					   && (eMouseState != MOUSE_IN_INVENTORY_ICON)
-					   && !g_secondaryInventoryHud.containsPos(DANAEMouse)
-					   && !g_playerInventoryHud.containsPos(DANAEMouse)
-					   && !ARX_INTERFACE_MouseInBook()) {
-						TextureContainer * tcc = cursorMovable;
+					if(g_dragStatus == EntityDragStatus_Throw || g_dragStatus == EntityDragStatus_Invalid) {
+						TextureContainer * tcc =  cursorMovable;
 						
-						if(CANNOT_PUT_IT_HERE == EntityMoveCursor_Throw)
+						if(g_dragStatus == EntityDragStatus_Throw)
 							tcc = cursorThrowObject;
 						
 						if(tcc && tcc != tc) { // to avoid movable double red cross...
@@ -736,10 +491,6 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 		
 		// System shock mode
 		
-		if(draginter) {
-			return;
-		}
-		
 		float alpha = 0.5f;
 		if(player.Interface & INTER_COMBATMODE) {
 			alpha *= std::max(player.m_bowAimRatio - 0.75f, 0.f) / 0.25f;
@@ -762,4 +513,5 @@ void ARX_INTERFACE_RenderCursor(bool flag, bool draginter) {
 		}
 		
 	}
+	
 }

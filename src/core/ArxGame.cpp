@@ -1998,17 +1998,9 @@ void ArxGame::renderLevel() {
 		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
 			g_miniMap.showPlayerMiniMap(SHOWLEVEL);
 	}
-
-	// CURSOR Rendering
-
-	if(DRAGINTER) {
-		ARX_INTERFACE_RenderCursor(false);
-		PopAllTriangleListOpaque();
-		PopAllTriangleListTransparency();
-	} else {
-		ARX_INTERFACE_RenderCursor(false);
-	}
-
+	
+	ARX_INTERFACE_RenderCursor(false);
+	
 	CheatDrawText();
 
 	if(FADEDIR)
@@ -2046,16 +2038,14 @@ void ArxGame::render() {
 		if((player.Interface & INTER_COMBATMODE) || PLAYER_MOUSELOOK_ON) {
 			FlyingOverIO = NULL; // Avoid to check with those modes
 		} else {
-			if(!DRAGINTER) {
-				if(!BLOCK_PLAYER_CONTROLS
-					&& !TRUE_PLAYER_MOUSELOOK_ON
-					&& !g_cursorOverBook
-					&& eMouseState != MOUSE_IN_NOTE
-				) {
-					FlyingOverIO = FlyingOverObject(DANAEMouse);
-				} else {
-					FlyingOverIO = NULL;
-				}
+			if(!BLOCK_PLAYER_CONTROLS
+				&& !TRUE_PLAYER_MOUSELOOK_ON
+				&& !g_cursorOverBook
+				&& eMouseState != MOUSE_IN_NOTE
+			) {
+				FlyingOverIO = FlyingOverObject(DANAEMouse);
+			} else {
+				FlyingOverIO = NULL;
 			}
 		}
 		

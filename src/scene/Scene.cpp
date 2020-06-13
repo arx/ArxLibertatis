@@ -69,8 +69,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/spell/Cheat.h"
 #include "game/spell/FlyingEye.h"
 
-#include "gui/Interface.h"
 #include "gui/Cursor.h"
+#include "gui/Dragging.h"
+#include "gui/Interface.h"
 
 #include "graphics/Draw.h"
 #include "graphics/DrawLine.h"
@@ -1393,6 +1394,8 @@ void ARX_SCENE_Update() {
 	
 	ARX_THROWN_OBJECT_Manage(g_gameTime.lastFrameDuration());
 	
+	updateDraggedEntity();
+	
 	UpdateInter();
 }
 
@@ -1418,11 +1421,6 @@ void ARX_SCENE_Render() {
 	RenderInter();
 	
 	GRenderer->GetTextureStage(0)->setMipMapLODBias(-0.3f);
-	
-	// To render Dragged objs
-	if(DRAGINTER) {
-		ARX_INTERFACE_RenderCursor(false, true);
-	}
 	
 	PopAllTriangleListOpaque();
 	

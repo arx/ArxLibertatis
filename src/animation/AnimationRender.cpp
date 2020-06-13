@@ -78,6 +78,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/PolyBoom.h"
 #include "graphics/effects/Halo.h"
 
+#include "gui/Dragging.h"
+
 #include "math/Angle.h"
 #include "math/RandomVector.h"
 #include "math/Vector.h"
@@ -234,6 +236,10 @@ float Cedric_GetInvisibility(Entity * io) {
 				invisibility = glm::clamp(invisibility, 0.1f, 1.f);
 			}
 		}
+	}
+	
+	if(io == DRAGINTER && g_dragStatus != EntityDragStatus_OnGround) {
+		invisibility = glm::clamp(invisibility + 0.5f, 0.1f, 1.f);
 	}
 	
 	return invisibility;
