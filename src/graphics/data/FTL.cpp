@@ -221,7 +221,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			obj->grouplist[i].name = boost::to_lower_copy(util::loadString(group->name));
 			obj->grouplist[i].origin = group->origin;
 			obj->grouplist[i].indexes.resize(group->nb_index);
-			obj->grouplist[i].siz = group->siz;
+			obj->grouplist[i].m_blobShadowSize = group->siz;
 			
 		}
 		

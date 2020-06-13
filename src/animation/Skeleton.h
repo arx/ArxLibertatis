@@ -33,11 +33,11 @@ struct VertexGroup {
 	std::string       name;
 	size_t            origin;
 	std::vector<u32> indexes; // TODO use u16 here ?
-	float             siz;
+	float m_blobShadowSize;
 	
 	VertexGroup()
 		: origin(0)
-		, siz(0.0f)
+		, m_blobShadowSize(0.0f)
 	{ }
 	
 };

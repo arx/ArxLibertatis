@@ -496,7 +496,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		long v = GetEquivalentVertex(work, &obj1vertexlist2[grp.origin]);
 
 		if(v >= 0) {
-			work->grouplist[k].siz = grp.siz;
+			work->grouplist[k].m_blobShadowSize = grp.m_blobShadowSize;
 
 			if(IsInSelection(obj1, grp.origin, iw1)
 			        || IsInSelection(obj1, grp.origin, jw1))
@@ -512,7 +512,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		long v = GetEquivalentVertex(work, &obj2vertexlist2[obj2->grouplist[k].origin]);
 
 		if(v >= 0) {
-			work->grouplist[k].siz = obj2->grouplist[k].siz;
+			work->grouplist[k].m_blobShadowSize = obj2->grouplist[k].m_blobShadowSize;
 
 			if(IsInSelection(obj2, obj2->grouplist[k].origin, tw2))
 				work->grouplist[k].origin = v;
