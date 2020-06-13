@@ -1782,56 +1782,6 @@ void ArxGame::manageEditorControls() {
 	}
 	
 	if(!(player.Interface & INTER_COMBATMODE)) {
-		// Dropping an Interactive Object that has been dragged
-		if(eeMouseUp1() && DRAGINTER) {
-			if(g_secondaryInventoryHud.containsPos(DANAEMouse)) {
-				g_secondaryInventoryHud.dropEntity();
-			} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
-				g_playerInventoryHud.dropEntity();
-			} else if(ARX_INTERFACE_MouseInBook()) {
-				if(g_playerBook.currentPage() == BOOKMODE_STATS) {
-					SendIOScriptEvent(entities.player(), DRAGINTER, SM_INVENTORYUSE);
-					COMBINE = NULL;
-				}
-			} else if(DRAGINTER->ioflags & IO_GOLD) {
-				ARX_PLAYER_AddGold(DRAGINTER);
-			} else {
-				
-				if(   !((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count > 1)
-				   && DRAGINTER->obj
-				   && DRAGINTER->obj->pbox
-				   && !g_cursorOverBook
-				) {
-					// Put object in fromt of player
-					
-					bool res = Manage3DCursor(DRAGINTER, false);
-					// Throw Object
-					if(!res) {
-						Entity * io = DRAGINTER;
-						ARX_PLAYER_Remove_Invisibility();
-						io->obj->pbox->active = 1;
-						io->obj->pbox->stopcount = 0;
-						io->pos = player.pos + Vec3f(0.f, 80.f, 0.f);
-						
-						Vec2f centerOffset = Vec2f(DANAEMouse) - Vec2f(g_size.center());
-						Vec2f ratio(-centerOffset.x / g_size.center().x, centerOffset.y / g_size.height() * 2);
-						
-						Vec3f viewvector = angleToVector(player.angle + Anglef(0.f, ratio.x * 30.f, 0.f));
-						viewvector.y += ratio.y;
-						
-						io->soundtime = 0;
-						io->soundcount = 0;
-						
-						EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);
-						ARX_SOUND_PlaySFX(g_snd.WHOOSH, &io->pos);
-						
-						arx_assert(!locateInInventories(io));
-						io->show = SHOW_FLAG_IN_SCENE;
-						Set_DragInter(NULL);
-					}
-				}
-			}
-		}
 		
 		if(COMBINE && COMBINE != player.torch) {
 			Vec3f pos = GetItemWorldPosition(COMBINE);

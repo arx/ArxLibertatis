@@ -78,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 
 #include "gui/Cursor.h"
+#include "gui/Dragging.h"
 #include "gui/Interface.h"
 #include "gui/Speech.h"
 #include "gui/hud/SecondaryInventory.h"
@@ -2748,7 +2749,7 @@ void ManageIgnition(Entity & io) {
 		return;
 	}
 	
-	bool addParticles = !(&io == DRAGINTER && CANNOT_PUT_IT_HERE != EntityMoveCursor_Ok);
+	bool addParticles = !(&io == DRAGINTER && g_dragStatus != EntityDragStatus_OnGround);
 	
 	// Torch Management
 	Entity * plw = NULL;

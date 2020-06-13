@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2013-2020 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -17,20 +17,19 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GUI_CURSOR_H
-#define ARX_GUI_CURSOR_H
+#ifndef ARX_GUI_DRAGGING_H
+#define ARX_GUI_DRAGGING_H
 
-class Entity;
-class TextureContainer;
+enum EntityDragStatus {
+	EntityDragStatus_OverHud,
+	EntityDragStatus_OnGround,
+	EntityDragStatus_Drop,
+	EntityDragStatus_Throw,
+	EntityDragStatus_Invalid
+};
 
-bool cursorIsSpecial();
-void cursorSetInteraction();
-void cursorSetRedistribute(long value);
+extern EntityDragStatus g_dragStatus;
 
-extern TextureContainer * cursorMovable;
+void updateDraggedEntity();
 
-void cursorTexturesInit();
-
-void ARX_INTERFACE_RenderCursor(bool flag);
-
-#endif // ARX_GUI_CURSOR_H
+#endif // ARX_GUI_DRAGGING_H
