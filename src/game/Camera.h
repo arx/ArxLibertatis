@@ -120,6 +120,7 @@ extern Entity * g_cameraEntity;
 extern PreparedCamera g_preparedCamera;
 extern Camera * g_camera;
 extern Camera g_playerCamera;
+extern Vec3f g_playerCameraStablePos;
 
 void PrepareCamera(Camera * cam, const Rect & viewport, const Vec2i & projectionCenter);
 inline void PrepareCamera(Camera * cam, const Rect & viewport) {
