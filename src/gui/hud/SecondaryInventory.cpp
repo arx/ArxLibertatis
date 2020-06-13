@@ -330,7 +330,9 @@ Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 
 void SecondaryInventoryHud::dropEntity() {
 	
-	if(!SecondaryInventory || !g_secondaryInventoryHud.containsPos(DANAEMouse)) {
+	Vec2s mouse = DANAEMouse + Vec2s(g_draggedIconOffset);
+	
+	if(!SecondaryInventory || !g_secondaryInventoryHud.containsPos(mouse)) {
 		return;
 	}
 	
@@ -359,7 +361,7 @@ void SecondaryInventoryHud::dropEntity() {
 	}
 	
 	s16 itemPitch = s16(32.f * m_scale);
-	Vec2f pos = Vec2f(DANAEMouse - Vec2s(2 * m_scale - m_fadePosition, 13 * m_scale)) / float(itemPitch);
+	Vec2f pos = Vec2f(mouse - Vec2s(2 * m_scale - m_fadePosition, 13 * m_scale)) / float(itemPitch);
 	
 	insertIntoInventoryAt(g_draggedEntity, io, 0, pos, g_draggedItemPreviousPosition);
 	
@@ -369,7 +371,12 @@ void SecondaryInventoryHud::dragEntity(Entity * io) {
 	
 	arx_assert(SecondaryInventory);
 	arx_assert(io->ioflags & IO_ITEM);
-	arx_assert(locateInInventories(io).io == SecondaryInventory->io->index());
+	
+	InventoryPos pos = locateInInventories(io);
+	arx_assert(pos.io == SecondaryInventory->io->index());
+	Vec2s anchor = Vec2s(2 * m_scale - m_fadePosition, 13 * m_scale);
+	s16 itemPitch = s16(32.f * m_scale);
+	Vec2f offset(anchor + Vec2s(pos.x, pos.y) * itemPitch - DANAEMouse);
 	
 	// For shops, check if the player can afford the item and deduct the cost
 	Entity * ioo = SecondaryInventory->io;
@@ -396,11 +403,13 @@ void SecondaryInventoryHud::dragEntity(Entity * io) {
 		ARX_SOUND_PlayInterface(g_snd.INVSTD);
 		setDraggedEntity(unstackedEntity);
 		g_draggedItemPreviousPosition = locateInInventories(io);
+		g_draggedIconOffset = offset;
 		ARX_INVENTORY_IdentifyIO(unstackedEntity);
 		return;
 	}
 	
 	setDraggedEntity(io);
+	g_draggedIconOffset = offset;
 	ARX_INVENTORY_IdentifyIO(io);
 	
 }

@@ -504,6 +504,7 @@ void CurrentTorchIconGui::updateInput() {
 				lightHandleGet(torchLightHandle)->m_exists = false;
 				io->ignition = 1;
 				setDraggedEntity(io);
+				g_draggedIconOffset = m_rect.topLeft() - Vec2f(DANAEMouse);
 			} else {
 				if(eeMouseDoubleClick1() && !COMBINE) {
 					COMBINE = player.torch;
