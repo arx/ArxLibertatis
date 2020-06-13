@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/effect/Quake.h"
 #include "game/npc/Dismemberment.h"
 
+#include "gui/Dragging.h"
 #include "gui/Speech.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
@@ -533,8 +534,8 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 		return;
 	}
 	
-	if(&io_dead == DRAGINTER) {
-		Set_DragInter(NULL);
+	if(&io_dead == g_draggedEntity) {
+		setDraggedEntity(NULL);
 	}
 	
 	if(&io_dead == FlyingOverIO) {

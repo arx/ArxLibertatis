@@ -79,6 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 
 #include "gui/Cursor.h"
+#include "gui/Dragging.h"
 #include "gui/Speech.h"
 #include "gui/Interface.h"
 #include "gui/book/Book.h"
@@ -124,28 +125,6 @@ long HERO_SHOW_1ST = 1;
 static bool IsCollidingInter(Entity * io, const Vec3f & pos);
 static Entity * AddCamera(const res::path & classPath, EntityInstance instance = -1);
 static Entity * AddMarker(const res::path & classPath, EntityInstance instance = -1);
-
-float STARTED_ANGLE = 0;
-void Set_DragInter(Entity * io) {
-	
-	if(io != DRAGINTER) {
-		STARTED_ANGLE = player.angle.getYaw();
-	}
-	
-	if(io) {
-		g_draggedItemPreviousPosition = removeFromInventories(io);
-		io->show = SHOW_FLAG_IN_SCENE;
-	} else {
-		g_draggedItemPreviousPosition = InventoryPos();
-	}
-	
-	DRAGINTER = io;
-	
-	if(io && io->obj && io->obj->pbox) {
-		io->obj->pbox->active = 0;
-	}
-	
-}
 
 // Checks if an IO index number is valid
 bool ValidIONum(EntityHandle num) {
@@ -515,9 +494,10 @@ void PrepareIOTreatZone(long flag) {
 			toequip->requestRoomUpdate = false;
 		}
 	}
-
-	if(DRAGINTER)
-		TREATZONE_AddIO(DRAGINTER);
+	
+	if(g_draggedEntity) {
+		TREATZONE_AddIO(g_draggedEntity);
+	}
 	
 	float TREATZONE_LIMIT = 3200;
 	if(!g_roomDistance.empty()) {
@@ -575,9 +555,8 @@ void PrepareIOTreatZone(long flag) {
 				treat = (dists < square(TREATZONE_LIMIT));
 			}
 
-			if(!treat) {
-				if(io == DRAGINTER)
-					treat = true;
+			if(io == g_draggedEntity) {
+				treat = true;
 			}
 			
 			if(io->gameFlags & GFLAG_ISINTREATZONE) {
@@ -1204,8 +1183,8 @@ void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 	}
 	
 	// In case it is being dragged... (except for drag teleport update)
-	if(!flag && io == DRAGINTER) {
-		Set_DragInter(NULL);
+	if(!flag && io == g_draggedEntity) {
+		setDraggedEntity(NULL);
 	}
 	
 	if(io->ioflags & IO_NPC) {
@@ -2163,8 +2142,7 @@ void UpdateInter() {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
 
-		if(   !io
-		   || io == DRAGINTER
+		if(!io || io == g_draggedEntity
 		   || !(io->gameFlags & GFLAG_ISINTREATZONE)
 		   || io->show != SHOW_FLAG_IN_SCENE
 		   || (io->ioflags & IO_CAMERA)
@@ -2372,14 +2350,15 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 	return ac;
 }
 
-void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t)
-{
+void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t) {
+	
 	Entity * io = entities.get(t);
 	if(io) {
 		
-		if(io == DRAGINTER || (io->show != SHOW_FLAG_IN_SCENE))
+		if(io == g_draggedEntity || io->show != SHOW_FLAG_IN_SCENE) {
 			return;
-
+		}
+		
 		float yy;
 		EERIEPOLY * ep = CheckInPoly(io->pos, &yy);
 

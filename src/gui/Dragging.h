@@ -20,6 +20,9 @@
 #ifndef ARX_GUI_DRAGGING_H
 #define ARX_GUI_DRAGGING_H
 
+class Entity;
+struct InventoryPos;
+
 enum EntityDragStatus {
 	EntityDragStatus_OverHud,
 	EntityDragStatus_OnGround,
@@ -29,6 +32,10 @@ enum EntityDragStatus {
 };
 
 extern EntityDragStatus g_dragStatus;
+extern Entity * g_draggedEntity;
+extern InventoryPos g_draggedItemPreviousPosition;
+
+void setDraggedEntity(Entity * entity);
 
 void updateDraggedEntity();
 

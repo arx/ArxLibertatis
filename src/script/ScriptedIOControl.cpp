@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
+#include "gui/Dragging.h"
 #include "gui/Interface.h"
 #include "io/resource/ResourcePath.h"
 #include "physics/Collisions.h"
@@ -105,8 +106,8 @@ public:
 			ioo->show = (io->show == SHOW_FLAG_IN_INVENTORY ? SHOW_FLAG_IN_SCENE : io->show);
 		}
 		
-		if(io == DRAGINTER) {
-			Set_DragInter(ioo);
+		if(io == g_draggedEntity) {
+			setDraggedEntity(ioo);
 		}
 		
 		InventoryPos oldPos = locateInInventories(io);

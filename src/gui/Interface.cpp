@@ -97,6 +97,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/Texture.h"
 
 #include "gui/Cursor.h"
+#include "gui/Dragging.h"
 #include "gui/Hud.h"
 #include "gui/Menu.h"
 #include "gui/Speech.h"
@@ -1136,7 +1137,7 @@ void ArxGame::managePlayerControls() {
 	   && !g_cursorOverBook
 	   && !cursorIsSpecial()
 	   && PLAYER_MOUSELOOK_ON
-	   && !DRAGINTER
+	   && !g_draggedEntity
 	   && !g_secondaryInventoryHud.containsPos(DANAEMouse)
 	   && !g_playerInventoryHud.containsPos(DANAEMouse)
 	   && (config.input.autoReadyWeapon == AlwaysAutoReadyWeapon
@@ -1309,7 +1310,7 @@ void ArxGame::manageKeyMouse() {
 					FlyingOverIO = pIO;
 					COMBINE = NULL;
 
-					if(DRAGINTER == NULL) {
+					if(!g_draggedEntity) {
 						
 						bool bOk = true;
 						Entity * container = entities.get(locateInInventories(FlyingOverIO).io);
@@ -1622,7 +1623,7 @@ void ArxGame::manageEntityDescription() {
 	
 	if(   !BLOCK_PLAYER_CONTROLS
 	   && !(player.Interface & INTER_COMBATMODE)
-	   && !DRAGINTER
+	   && !g_draggedEntity
 	   && (config.input.autoDescription || (eeMouseUp1() && !eeMouseDoubleClick1() && !(LastMouseClick & 4)))
 	   && FlyingOverIO
 	   && !FlyingOverIO->locname.empty()
@@ -1744,7 +1745,7 @@ void ArxGame::manageEditorControls() {
 	// Single Click On Object
 	if(   eeMouseUp1()
 	   && FlyingOverIO
-	   && !DRAGINTER
+	   && !g_draggedEntity
 	) {
 		
 		SendIOScriptEvent(entities.player(), FlyingOverIO, SM_CLICKED);
@@ -1774,8 +1775,9 @@ void ArxGame::manageEditorControls() {
 				// If there is no space, leave the item where it is
 			}
 			
-			if(DRAGINTER == FlyingOverIO)
-				DRAGINTER = NULL;
+			if(g_draggedEntity == FlyingOverIO) {
+				setDraggedEntity(NULL);
+			}
 			
 			FlyingOverIO = NULL;
 		}
@@ -1885,7 +1887,7 @@ void ArxGame::manageEditorControls() {
 		if(   DRAGGING
 		   && (!PLAYER_MOUSELOOK_ON || config.input.autoReadyWeapon != AlwaysAutoReadyWeapon)
 		   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
-		   && !DRAGINTER
+		   && !g_draggedEntity
 		) {
 			if(g_secondaryInventoryHud.containsPos(g_dragStartPos)) {
 				Entity * item = g_secondaryInventoryHud.getObj(g_dragStartPos);
@@ -1909,19 +1911,17 @@ void ArxGame::manageEditorControls() {
 						io->bbox2D.max.x = -1;
 					}
 					
-					Set_DragInter(io);
+					setDraggedEntity(io);
 					
 					ARX_PLAYER_Remove_Invisibility();
 					
 					if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
-						Set_DragInter(NULL);
+						setDraggedEntity(NULL);
 					} else {
 						if(io->ioflags & IO_UNDERWATER) {
 							io->ioflags &= ~IO_UNDERWATER;
 							ARX_SOUND_PlayInterface(g_snd.PLOUF, Random::getf(0.8f, 1.2f));
 						}
-						arx_assert(!locateInInventories(DRAGINTER));
-						DRAGINTER->show = SHOW_FLAG_NOT_DRAWN;
 						ARX_SOUND_PlayInterface(g_snd.INVSTD);
 					}
 					

@@ -117,6 +117,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/TextureStage.h"
 
 #include "gui/Cursor.h"
+#include "gui/Dragging.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
 #include "gui/LoadLevelScreen.h"
@@ -257,8 +258,8 @@ void runGame() {
 
 Entity * FlyingOverObject(const Vec2s & pos) {
 	
-	if(DRAGINTER) {
-		return DRAGINTER;
+	if(g_draggedEntity) {
+		return g_draggedEntity;
 	}
 	
 	// TODO do this properly!
@@ -334,7 +335,7 @@ void levelInit() {
 	if(LOAD_N_ERASE) {
 		CleanScriptLoadedIO();
 		RestoreInitialIOStatus();
-		DRAGINTER = NULL;
+		setDraggedEntity(NULL);
 	}
 	
 	ARX_SPELLS_ResetRecognition();

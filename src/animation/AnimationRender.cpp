@@ -238,7 +238,7 @@ float Cedric_GetInvisibility(Entity * io) {
 		}
 	}
 	
-	if(io == DRAGINTER && g_dragStatus != EntityDragStatus_OnGround) {
+	if(io == g_draggedEntity && g_dragStatus != EntityDragStatus_OnGround) {
 		invisibility = glm::clamp(invisibility + 0.5f, 0.1f, 1.f);
 	}
 	

@@ -267,7 +267,7 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 		SpecialCursor = CURSOR_READY_WEAPON;
 	}
 	
-	if(FlyingOverIO || DRAGINTER) {
+	if(FlyingOverIO || g_draggedEntity) {
 		fHighLightAng += toMs(g_platformTime.lastFrameDuration()) * 0.5f;
 		
 		if(fHighLightAng > 90.f)
@@ -284,7 +284,7 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 	float iconScale = g_hudRoot.getScale();
 	float cursorScale = getInterfaceScale(config.interface.cursorScale, config.interface.cursorScaleInteger);
 	
-	if(SpecialCursor || !PLAYER_MOUSELOOK_ON || DRAGINTER
+	if(SpecialCursor || !PLAYER_MOUSELOOK_ON || g_draggedEntity
 	   || (FlyingOverIO && PLAYER_MOUSELOOK_ON && !g_cursorOverBook && eMouseState != MOUSE_IN_NOTE
 	       && (FlyingOverIO->ioflags & IO_ITEM) && (FlyingOverIO->gameFlags & GFLAG_INTERACTIVITY)
 	       && config.input.autoReadyWeapon != AlwaysAutoReadyWeapon)
@@ -292,7 +292,7 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 		
 		Vec2f mousePos = Vec2f(DANAEMouse);
 		
-		if(SpecialCursor && !DRAGINTER) {
+		if(SpecialCursor && !g_draggedEntity) {
 			if((COMBINE && COMBINE->m_icon) || COMBINEGOLD) {
 				if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon == AlwaysAutoReadyWeapon) {
 					mousePos = MemoMouse;
@@ -425,15 +425,15 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 					MAGICMODE = false;
 				}
 				
-				if(DRAGINTER && DRAGINTER->m_icon) {
-					TextureContainer * tc = DRAGINTER->m_icon;
-					TextureContainer * haloTc = NULL;
+				if(g_draggedEntity && g_draggedEntity->m_icon) {
 					
-					if(NeedHalo(DRAGINTER)) {
-						haloTc = DRAGINTER->m_icon->getHalo();
+					TextureContainer * tc = g_draggedEntity->m_icon;
+					TextureContainer * haloTc = NULL;
+					if(NeedHalo(g_draggedEntity)) {
+						haloTc = g_draggedEntity->m_icon->getHalo();
 					}
 					
-					Color color = (DRAGINTER->poisonous && DRAGINTER->poisonous_count != 0) ? Color::green : Color::white;
+					Color color = (g_draggedEntity->poisonous && g_draggedEntity->poisonous_count != 0) ? Color::green : Color::white;
 					
 					Vec2f pos = mousePos;
 					
@@ -446,14 +446,16 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 						Rectf rect(pos, size.x, size.y);
 						
 						if(haloTc) {
-							ARX_INTERFACE_HALO_Render(DRAGINTER->halo.color, DRAGINTER->halo.flags, haloTc, pos, Vec2f(iconScale));
+							ARX_INTERFACE_HALO_Render(g_draggedEntity->halo.color, g_draggedEntity->halo.flags, haloTc,
+							                          pos, Vec2f(iconScale));
 						}
 						
-						if(!(DRAGINTER->ioflags & IO_MOVABLE)) {
+						if(!(g_draggedEntity->ioflags & IO_MOVABLE)) {
 							EERIEDrawBitmap(rect, .00001f, tc, color);
 							
-							if((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count != 1) {
-								ARX_INTERFACE_DrawNumber(rect.topRight(), DRAGINTER->_itemdata->count, Color::white, iconScale);
+							if((g_draggedEntity->ioflags & IO_ITEM) && g_draggedEntity->_itemdata->count != 1) {
+								ARX_INTERFACE_DrawNumber(rect.topRight(), g_draggedEntity->_itemdata->count, Color::white,
+								                         iconScale);
 							}
 						} else {
 							if(g_dragStatus != EntityDragStatus_Throw) {

@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Spells.h"
 
+#include "gui/Dragging.h"
 #include "gui/Interface.h"
 
 #include "graphics/BaseGraphicsTypes.h"
@@ -326,9 +327,9 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 			target->bbox2D.max.x = -9999;
 			
 			if(!flags) {
-				if(!DRAGINTER) {
+				if(!g_draggedEntity) {
 					ARX_SOUND_PlayInterface(g_snd.INVSTD);
-					Set_DragInter(tounequip);
+					setDraggedEntity(tounequip);
 				} else {
 					giveToPlayer(tounequip);
 				}
@@ -901,19 +902,18 @@ void ARX_EQUIPMENT_LaunchPlayerReadyWeapon() {
 	changeAnimation(io, 1, anim);
 }
 
-void ARX_EQUIPMENT_UnEquipPlayerWeapon()
-{
+void ARX_EQUIPMENT_UnEquipPlayerWeapon() {
+	
 	if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
-		Entity * pioOldDragInter = DRAGINTER;
-		DRAGINTER = entities[player.equiped[EQUIP_SLOT_WEAPON]];
-
-		if(DRAGINTER)
+		Entity * pioOldDragInter = g_draggedEntity;
+		g_draggedEntity = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+		if(g_draggedEntity) {
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
-
+		}
 		ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[EQUIP_SLOT_WEAPON]]);
-		DRAGINTER = pioOldDragInter;
+		g_draggedEntity = pioOldDragInter;
 	}
-
+	
 	player.equiped[EQUIP_SLOT_WEAPON] = EntityHandle();
 }
 
@@ -928,9 +928,10 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 
 	removeFromInventories(toequip);
 	toequip->show = SHOW_FLAG_ON_PLAYER; // on player
-
-	if(toequip == DRAGINTER)
-		Set_DragInter(NULL);
+	
+	if(toequip == g_draggedEntity) {
+		setDraggedEntity(NULL);
+	}
 	
 	if(toequip->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
 		

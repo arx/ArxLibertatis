@@ -23,6 +23,7 @@
 #include "game/Camera.h"
 #include "game/Entity.h"
 #include "game/EntityManager.h"
+#include "game/Inventory.h"
 #include "game/Player.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
@@ -41,8 +42,30 @@
 #include "scene/Interactive.h"
 
 EntityDragStatus g_dragStatus = EntityDragStatus_Invalid;
+Entity * g_draggedEntity = NULL;
+InventoryPos g_draggedItemPreviousPosition;
+float g_dragStartAngle = 0;
 
-extern float STARTED_ANGLE;
+void setDraggedEntity(Entity * entity) {
+	
+	if(entity != g_draggedEntity) {
+		g_dragStartAngle = g_camera->angle.getYaw();
+	}
+	
+	if(entity) {
+		g_draggedItemPreviousPosition = removeFromInventories(entity);
+		entity->show = g_draggedItemPreviousPosition ? SHOW_FLAG_ON_PLAYER : SHOW_FLAG_IN_SCENE;
+	} else {
+		g_draggedItemPreviousPosition = InventoryPos();
+	}
+	
+	g_draggedEntity = entity;
+	
+	if(entity && entity->obj && entity->obj->pbox) {
+		entity->obj->pbox->active = 0;
+	}
+	
+}
 
 struct EntityDragResult {
 	
@@ -151,7 +174,7 @@ static EntityDragResult findSpotForDraggedEntity(Vec3f origin, Vec3f dir, Entity
 
 void updateDraggedEntity() {
 	
-	Entity * entity = DRAGINTER;
+	Entity * entity = g_draggedEntity;
 	
 	if(!entity || BLOCK_PLAYER_CONTROLS || !PLAYER_INTERFACE_SHOW) {
 		return;
@@ -189,11 +212,11 @@ void updateDraggedEntity() {
 	
 	{
 		Anglef angle = entity->angle;
-		float deltaYaw = player.angle.getYaw() - STARTED_ANGLE;
+		float deltaYaw = g_camera->angle.getYaw() - g_dragStartAngle;
 		angle.setPitch(MAKEANGLE(angle.getPitch() + std::sin(glm::radians(angle.getRoll())) * deltaYaw));
 		angle.setYaw(MAKEANGLE(angle.getYaw() + std::cos(glm::radians(angle.getRoll())) * deltaYaw));
 		entity->angle = angle;
-		STARTED_ANGLE = player.angle.getYaw();
+		g_dragStartAngle = g_camera->angle.getYaw();
 	}
 	
 	
@@ -251,7 +274,7 @@ void updateDraggedEntity() {
 	entity->show = SHOW_FLAG_IN_SCENE;
 	entity->obj->pbox->active = 0;
 	entity->gameFlags &= ~GFLAG_NOCOMPUTATION;
-	Set_DragInter(NULL);
+	setDraggedEntity(NULL);
 	
 	if(g_dragStatus == EntityDragStatus_Throw) {
 		
