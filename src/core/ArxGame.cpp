@@ -1353,10 +1353,10 @@ void ArxGame::updateFirstPersonCamera() {
 		ActionPoint id = io->obj->fastaccess.view_attach;
 		if(id != ActionPoint()) {
 			
-			g_playerCamera.m_pos = actionPointPosition(io->obj, id);
+			g_playerCameraStablePos = g_playerCamera.m_pos = actionPointPosition(io->obj, id);
 			
 			ObjVertGroup viewGroup = GetActionPointGroup(io->obj, id);
-			if(!config.video.viewBobbing && viewGroup != ObjVertGroup()) {
+			if(viewGroup != ObjVertGroup()) {
 				AnimLayer animlayer[MAX_ANIM_LAYERS];
 				for(size_t i = 0; i < MAX_ANIM_LAYERS; i++) {
 					animlayer[i] = io->animlayer[i];
@@ -1370,7 +1370,12 @@ void ArxGame::updateFirstPersonCamera() {
 				}
 				Skeleton skeleton = *io->obj->m_skeleton;
 				animateSkeleton(io, animlayer, skeleton);
-				g_playerCamera.m_pos = skeleton.bones[viewGroup.handleData()].anim(io->obj->vertexlocal[id.handleData()]);
+				const Bone & viewBone = skeleton.bones[viewGroup.handleData()];
+				g_playerCameraStablePos = viewBone.anim(io->obj->vertexlocal[id.handleData()]);
+			}
+			
+			if(!config.video.viewBobbing) {
+				g_playerCamera.m_pos = g_playerCameraStablePos;
 			}
 			
 			Vec3f vect(g_playerCamera.m_pos.x - player.pos.x, 0.f, g_playerCamera.m_pos.z - player.pos.z);
@@ -1382,13 +1387,13 @@ void ArxGame::updateFirstPersonCamera() {
 			}
 			
 		} else {
-			g_playerCamera.m_pos = player.basePosition();
+			g_playerCameraStablePos = g_playerCamera.m_pos = player.basePosition();
 		}
 		
 	}
 	
 	if(EXTERNALVIEW) {
-		g_playerCamera.m_pos = (g_playerCamera.m_pos + targetPos) * 0.5f;
+		g_playerCameraStablePos = g_playerCamera.m_pos = (g_playerCamera.m_pos + targetPos) * 0.5f;
 		g_playerCamera.angle = interpolate(g_playerCamera.angle, targetAngle, 0.1f);
 	}
 	

@@ -29,6 +29,7 @@ Entity * g_cameraEntity;
 PreparedCamera g_preparedCamera;
 Camera * g_camera = NULL;
 Camera g_playerCamera;
+Vec3f g_playerCameraStablePos;
 
 Anglef Camera::getLookAtAngle(const Vec3f & origin, const Vec3f & target) {
 	
