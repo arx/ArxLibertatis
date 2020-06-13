@@ -129,13 +129,13 @@ void ARXDRAW_DrawInterShadows() {
 				Vec3f in;
 				in.y = ep->min.y - 3.f;
 				float r = 0.8f - glm::abs(pos.y - in.y) * 0.002f;
-				r *= io->obj->grouplist[k].siz;
+				r *= io->obj->grouplist[k].m_blobShadowSize;
 				r -= io->invisibility;
 				if(r <= 0.f) {
 					continue;
 				}
 				
-				float s1 = io->obj->grouplist[k].siz * 44.f;
+				float s1 = io->obj->grouplist[k].m_blobShadowSize * 44.f;
 				float s2 = s1 * 0.5f;
 				in.x = pos.x - s2;
 				in.z = pos.z - s2;
