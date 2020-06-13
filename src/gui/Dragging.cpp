@@ -44,6 +44,8 @@
 EntityDragStatus g_dragStatus = EntityDragStatus_Invalid;
 Entity * g_draggedEntity = NULL;
 InventoryPos g_draggedItemPreviousPosition;
+Vec2f g_draggedIconOffset;
+Vec2f g_draggedObjectOffset;
 float g_dragStartAngle = 0;
 
 void setDraggedEntity(Entity * entity) {
@@ -54,9 +56,33 @@ void setDraggedEntity(Entity * entity) {
 	
 	if(entity) {
 		g_draggedItemPreviousPosition = removeFromInventories(entity);
+		if(entity->obj && entity->show == SHOW_FLAG_IN_SCENE && (entity->gameFlags & GFLAG_ISINTREATZONE)
+		   && !(entity->gameFlags & (GFLAG_INVISIBILITY | GFLAG_MEGAHIDE))) {
+			EERIE_3D_BBOX bbox;
+			for(size_t i = 0; i < entity->obj->vertexlist.size(); i++) {
+				bbox.add(entity->obj->vertexlist[i].v);
+			}
+			Vec3f center = bbox.min + (bbox.max - bbox.min) * Vec3f(0.5f);
+			Anglef angle = entity->angle;
+			angle.setYaw(MAKEANGLE(270.f - angle.getYaw()));
+			center = VRotateY(center, angle.getYaw());
+			center = VRotateX(center, -angle.getPitch());
+			center = VRotateZ(center, angle.getRoll());
+			center.y = 0.f;
+			Vec4f p = worldToClipSpace(entity->pos + center);
+			if(p.w > 0.f) {
+				Vec2f pos = Vec2f(p) / p.w;
+				if(g_size.contains(pos)) {
+					g_draggedIconOffset = Vec2f(0.f);
+					g_draggedObjectOffset = pos - Vec2f(DANAEMouse);
+				}
+			}
+		}
 		entity->show = g_draggedItemPreviousPosition ? SHOW_FLAG_ON_PLAYER : SHOW_FLAG_IN_SCENE;
 	} else {
 		g_draggedItemPreviousPosition = InventoryPos();
+		g_draggedIconOffset = Vec2f(0.f);
+		g_draggedObjectOffset = Vec2f(0.f);
 	}
 	
 	g_draggedEntity = entity;
@@ -186,15 +212,17 @@ void updateDraggedEntity() {
 	
 	bool drop = eeMouseUp1();
 	
+	Vec2f mouse = Vec2f(DANAEMouse) + g_draggedIconOffset;
+	
 	g_dragStatus = EntityDragStatus_OverHud;
 	entity->show = SHOW_FLAG_ON_PLAYER;
 	
-	if(g_secondaryInventoryHud.containsPos(DANAEMouse)) {
+	if(g_secondaryInventoryHud.containsPos(Vec2f(mouse))) {
 		if(drop) {
 			g_secondaryInventoryHud.dropEntity();
 		}
 		return;
-	} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
+	} else if(g_playerInventoryHud.containsPos(Vec2f(mouse))) {
 		if(drop) {
 			g_playerInventoryHud.dropEntity();
 		}
@@ -219,9 +247,8 @@ void updateDraggedEntity() {
 		g_dragStartAngle = g_camera->angle.getYaw();
 	}
 	
-	
 	Vec3f origin = g_camera->m_pos;
-	Vec3f dest = screenToWorldSpace(Vec2f(DANAEMouse), 1000.f);
+	Vec3f dest = screenToWorldSpace(mouse + g_draggedObjectOffset, 1000.f);
 	
 	if(g_camera == &g_playerCamera) {
 		// Use stable camera position so the dragged entity does not move around with the player head animation

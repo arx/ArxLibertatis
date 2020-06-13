@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_DRAGGING_H
 #define ARX_GUI_DRAGGING_H
 
+#include "math/Types.h"
+
 class Entity;
 struct InventoryPos;
 
@@ -34,6 +36,7 @@ enum EntityDragStatus {
 extern EntityDragStatus g_dragStatus;
 extern Entity * g_draggedEntity;
 extern InventoryPos g_draggedItemPreviousPosition;
+extern Vec2f g_draggedIconOffset;
 
 void setDraggedEntity(Entity * entity);
 
