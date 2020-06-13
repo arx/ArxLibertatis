@@ -257,6 +257,10 @@ void runGame() {
 
 Entity * FlyingOverObject(const Vec2s & pos) {
 	
+	if(DRAGINTER) {
+		return DRAGINTER;
+	}
+	
 	// TODO do this properly!
 	if(player.torch && eMouseState == MOUSE_IN_TORCH_ICON) {
 		return player.torch;
