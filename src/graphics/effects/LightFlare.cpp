@@ -67,8 +67,8 @@ void updateLightFlares() {
 		el->m_flareFader -= temp_increase;
 		
 		if(p.w > 0.f && pos2d.x > 0.f && pos2d.x < g_size.width()
-				&& pos2d.y > (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y)
-				&& pos2d.y < (g_size.height() - (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y))) {
+		   && pos2d.y > (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y)
+		   && pos2d.y < (g_size.height() - (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y))) {
 			
 			Vec3f lightpos = el->pos + glm::normalize(g_camera->m_pos - el->pos) * 20.f;
 			PolyType ignored = POLY_HIDE | POLY_TRANS | POLY_NODRAW;
