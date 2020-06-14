@@ -518,6 +518,7 @@ long FAST_RELEASE = 0;
 
 void DanaeClearLevel() {
 	
+	g_playerBook.forcePage(BOOKMODE_STATS);
 	g_miniMap.reset();
 	
 	fadeReset();
