@@ -171,7 +171,7 @@ struct ClosestHitRaycast {
 		: closestHit(std::numeric_limits<float>::max())
 		, hitPoly(NULL)
 		, ignoredTypes(ignored)
-		, anyHit(flags & RaycastAnyHit)
+		, anyHit(flags.has(RaycastAnyHit))
 	{ }
 	
 	bool operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
