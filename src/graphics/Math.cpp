@@ -443,6 +443,17 @@ glm::mat4 toRotationMatrix(const Anglef & angle) {
 	return rotateZ * rotateX * rotateY;
 }
 
+glm::quat toQuaternion(const Anglef & angle) {
+	glm::quat rotation = glm::quat(glm::vec3(0.f, glm::radians(angle.getYaw()), 0.f));
+	rotation = glm::quat(glm::vec3(glm::radians(angle.getPitch()), 0.f, 0.f)) * rotation;
+	return glm::quat(glm::vec3(0.f, 0.f, glm::radians(-angle.getRoll()))) * rotation;
+}
+
+Anglef toAngle(const glm::quat & quat) {
+	glm::quat q = quat * glm::quat(glm::vec3(0.f, 0.f, glm::radians(90.f)));
+	return Anglef(-glm::degrees(glm::yaw(q)), glm::degrees(glm::pitch(q)), 90.f - glm::degrees(glm::roll(q)));
+}
+
 glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
 	Anglef vt1;
 	vt1.setPitch(angle.getRoll());

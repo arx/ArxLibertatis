@@ -178,7 +178,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 				gui::necklace.runeAngles[i].setYaw(0.f);
 			
 			// Now draw the rune
-			TransformInfo t2(pos, glm::quat_cast(toRotationMatrix(angle)));
+			TransformInfo t2(pos, toQuaternion(angle));
 			DrawEERIEInter(rune, t2, NULL, false, 0.f);
 			
 			Rectf runeBox = UpdateBbox2d(*rune).toRect();
@@ -209,7 +209,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 				
 				if(r) {
 					
-					TransformInfo t(pos, glm::quat_cast(toRotationMatrix(angle)));
+					TransformInfo t(pos, toQuaternion(angle));
 					DrawEERIEInter(rune, t, NULL, false, 0.f);
 					
 					gui::necklace.runeAngles[i].setYaw(gui::necklace.runeAngles[i].getYaw() + ptDelta * 2.f);

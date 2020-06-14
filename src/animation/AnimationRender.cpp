@@ -1397,7 +1397,7 @@ static void animateSkeleton(EERIE_3DOBJ * eobj, AnimLayer * animlayer,
 	bool isNpc = io && (io->ioflags & IO_NPC);
 	if(!isNpc) {
 		// To correct invalid angle in Animated FIX/ITEMS
-		rotation = glm::quat_cast(toRotationMatrix(angle));
+		rotation = toQuaternion(angle);
 	} else {
 		rotation = QuatFromAngles(angle);
 	}

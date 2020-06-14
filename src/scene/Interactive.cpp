@@ -2230,7 +2230,7 @@ void RenderInter() {
 			if(!(io->ioflags & IO_NPC) && io->obj) {
 				Anglef angle = io->angle;
 				angle.setYaw(MAKEANGLE(270.f - angle.getYaw()));
-				glm::quat rotation = glm::quat_cast(toRotationMatrix(angle));
+				glm::quat rotation = toQuaternion(angle);
 				TransformInfo t(io->pos, rotation, io->scale);
 				DrawEERIEInter(io->obj, t, io, false, invisibility);
 			}

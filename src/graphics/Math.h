@@ -147,6 +147,8 @@ glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio);
 
 glm::quat QuatFromAngles(const Anglef & angle);
 glm::mat4 toRotationMatrix(const Anglef & angle);
+glm::quat toQuaternion(const Anglef & angle);
+Anglef toAngle(const glm::quat & quat);
 
 glm::quat angleToQuatForExtraRotation(const Anglef & angle);
 
