@@ -834,11 +834,12 @@ void ManageCombatModeAnimations() {
 					// Rotate the bow towards whatever the player is aiming at
 					
 					PolyType ignored = POLY_HIDE | POLY_TRANS | POLY_NODRAW | POLY_NOCOL;
+					RaycastFlags flags = RaycastIgnorePlayer;
 					Vec3f dest = g_playerCamera.m_pos + angleToVector(player.angle) * 100000.f;
-					if(RaycastResult result = RaycastLine(g_playerCamera.m_pos, dest, ignored)) {
+					if(RaycastResult result = raycastScene(g_playerCamera.m_pos, dest, ignored, flags)) {
 						dest = result.pos;
 					}
-					if(EntityRaycastResult result = raycastEntities(g_playerCamera.m_pos, dest, true, ignored)) {
+					if(EntityRaycastResult result = raycastEntities(g_playerCamera.m_pos, dest, ignored, flags)) {
 						dest = result.pos;
 					}
 					

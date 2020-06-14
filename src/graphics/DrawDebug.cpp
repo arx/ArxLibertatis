@@ -654,7 +654,7 @@ static void drawDebugMaterials() {
 	Vec2f puv[4];
 	PolyType flags;
 	
-	RaycastResult sceneHit = RaycastLine(start, dest, skip);
+	RaycastResult sceneHit = raycastScene(start, dest, skip);
 	if(sceneHit) {
 		const EERIEPOLY & poly = *sceneHit.hit;
 		count = ((poly.type & POLY_QUAD) ? 4 : 3);
@@ -667,7 +667,7 @@ static void drawDebugMaterials() {
 		dest = sceneHit.pos;
 	}
 	
-	EntityRaycastResult entityHit = raycastEntities(start, dest, !EXTERNALVIEW, skip);
+	EntityRaycastResult entityHit = raycastEntities(start, dest, skip);
 	if(entityHit) {
 		const EERIE_3DOBJ & obj = *entityHit.entity->obj;
 		const EERIE_FACE & face = *entityHit.face;

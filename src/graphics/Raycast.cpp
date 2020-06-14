@@ -28,6 +28,7 @@
 #include "graphics/data/Mesh.h"
 #include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
+#include "scene/Interactive.h"
 
 void dbg_addRay(Vec3f start, Vec3f end);
 void dbg_addTile(Vec2i tile);
@@ -191,11 +192,13 @@ struct ClosestHitRaycast {
 	float closestHit;
 	EERIEPOLY * hitPoly;
 	const PolyType ignoredTypes;
+	const bool anyHit;
 	
-	explicit ClosestHitRaycast(PolyType ignored)
+	explicit ClosestHitRaycast(PolyType ignored, RaycastFlags flags)
 		: closestHit(std::numeric_limits<float>::max())
 		, hitPoly(NULL)
 		, ignoredTypes(ignored)
+		, anyHit(flags & RaycastAnyHit)
 	{ }
 	
 	bool operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
@@ -227,6 +230,10 @@ struct ClosestHitRaycast {
 			return false;
 		}
 		
+		if(anyHit) {
+			return true;
+		}
+		
 		// Determine hit grid cell coordinates
 		const Vec2f cellSide = g_backgroundTileSize;
 		Vec3f hitPos = start + closestHit * dir;
@@ -239,7 +246,6 @@ struct ClosestHitRaycast {
 	}
 	
 };
-
 
 } // anonymous namespace
 
@@ -261,9 +267,9 @@ bool RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
 }
 
 
-RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end, PolyType ignored) {
+RaycastResult raycastScene(const Vec3f & start, const Vec3f & end, PolyType ignored, RaycastFlags flags) {
 	dbg_addRay(start, end);
-	ClosestHitRaycast raycast(ignored);
+	ClosestHitRaycast raycast(ignored, flags);
 	// TODO With C++11 we can change argument to F && instead of
 	// explicitly specifying the reference type
 	WalkTiles<ClosestHitRaycast &>(start, end, raycast);
@@ -277,8 +283,8 @@ RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end, PolyType ignor
 	return RaycastResult();
 }
 
-EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end, bool ignorePlayer,
-                                    PolyType ignored) {
+EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end,
+                                    PolyType ignored, RaycastFlags flags) {
 	
 	Vec3f dir = end - start;
 	Vec3f invdir = 1.f / dir;
@@ -287,7 +293,7 @@ EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end, bool
 	EERIE_FACE * hitFace = NULL;
 	float t = std::numeric_limits<float>::max();
 	
-	for(size_t i = ignorePlayer ? 1 : 0; i < entities.size(); i++) {
+	for(size_t i = (flags & RaycastIgnorePlayer) ? 1 : 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * entity = entities[handle];
 		
@@ -303,6 +309,13 @@ EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end, bool
 			case SHOW_FLAG_LINKED:       break;
 			case SHOW_FLAG_IN_SCENE:     break;
 			case SHOW_FLAG_TELEPORTING:  break;
+			case SHOW_FLAG_ON_PLAYER: {
+				if(!(flags & RaycastIgnorePlayer) && IsEquipedByPlayer(entity)) {
+					break;
+				} else {
+					continue;
+				}
+			}
 			default: continue;
 		}
 		
@@ -339,6 +352,10 @@ EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end, bool
 					hitEntity  = entity;
 					hitFace = &face;
 					t = hit.x;
+					if(flags & RaycastAnyHit) {
+						Vec3f hitPos = start + t * dir;
+						return EntityRaycastResult(hitEntity, hitFace, hitPos);
+					}
 				}
 			}
 			

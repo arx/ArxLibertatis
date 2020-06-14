@@ -361,7 +361,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		
 		const Vec3f v0 = actionPointPosition(projectile.obj, projectile.obj->actionlist[j].idx);
 		
-		RaycastResult result = RaycastLine(original_pos, v0, POLY_WATER | POLY_TRANS | POLY_NOCOL);
+		RaycastResult result = raycastScene(original_pos, v0, POLY_WATER | POLY_TRANS | POLY_NOCOL);
 		if(result || IsPointInField(v0)) {
 			
 			ParticleSparkSpawn(v0, result ? 14 : 24, SpawnSparkType_Default);

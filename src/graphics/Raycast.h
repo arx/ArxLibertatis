@@ -21,8 +21,16 @@
 
 #include "graphics/GraphicsTypes.h"
 #include "math/Types.h"
+#include "util/Flags.h"
 
 class Entity;
+
+enum RaycastFlag {
+	RaycastAnyHit,
+	RaycastIgnorePlayer,
+};
+DECLARE_FLAGS(RaycastFlag, RaycastFlags)
+DECLARE_FLAGS_OPERATORS(RaycastFlags)
 
 struct RaycastResult {
 	
@@ -46,7 +54,8 @@ struct RaycastResult {
 };
 
 bool RaycastLightFlare(const Vec3f & start, const Vec3f & end);
-RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end, PolyType ignored = POLY_TRANS);
+RaycastResult raycastScene(const Vec3f & start, const Vec3f & end, PolyType ignored = POLY_TRANS,
+                           RaycastFlags flags = 0);
 
 struct EntityRaycastResult {
 	
@@ -72,7 +81,8 @@ struct EntityRaycastResult {
 	
 };
 
-EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end, bool ignorePlayer = true, PolyType ignored = POLY_TRANS);
+EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end, PolyType ignored = POLY_TRANS,
+                                    RaycastFlags flags = 0);
 
 void RaycastDebugClear();
 void RaycastDebugDraw();
