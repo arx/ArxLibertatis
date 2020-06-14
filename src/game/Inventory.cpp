@@ -401,6 +401,22 @@ private:
 			}
 		}
 		
+		Vec2f diff(glm::clamp(pos, Vec2f(0.f), Vec2f(width() - 1, height() - 1)) - Vec2f(start));
+		Vec2s neighbor(diff.x < 0 ? start.x - 1 : start.x + 1, diff.y < 0 ? start.y - 1 : start.y + 1);
+		neighbor = glm::clamp(neighbor, Vec2s(0), Vec2s(width() - 1, height() - 1));
+		for(int i = 0; i < 3; i++) {
+			bool xfirst = glm::abs(diff.x) > glm::abs(diff.y);
+			Pos::index_type x = (xfirst ? (i == 1) : (i == 0)) ? start.x : neighbor.x;
+			Pos::index_type y = (xfirst ? (i == 0) : (i == 1)) ? start.y : neighbor.y;
+			Pos p(handle(), bag, x, y);
+			if(insertIntoStackAt(item, p, true)) {
+				return p;
+			}
+			if(insertIntoNewSlotAt(item, p)) {
+				return p;
+			}
+		}
+		
 		return insertImpl(item, fallback);
 	}
 	
