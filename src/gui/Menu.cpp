@@ -123,6 +123,8 @@ void ARX_MENU_Clicked_NEWQUEST() {
 	
 	g_canResumeGame = false;
 	
+	g_characterCreation.loadData();
+	
 	ARX_PLAYER_Start_New_Quest();
 	g_playerBook.forcePage(BOOKMODE_STATS);
 	player.skin = 0;
@@ -150,9 +152,6 @@ void ARX_MENU_Launch(bool allowResume) {
 	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 
 	ARXmenu.requestMode(Mode_MainMenu);
-	
-	g_playerBook.stats.loadStrings();
-	g_characterCreation.loadData();
 	
 	if(pMenuCursor) {
 		pMenuCursor->reset();
