@@ -178,7 +178,7 @@ GLM_FUNC_QUALIFIER bool intersectLineTriangle
 template <typename genType>
 GLM_FUNC_QUALIFIER bool intersectRaySphere
 (
-	genType const & rayStarting, genType const& rayNormalizedDirection,
+	genType const & rayStarting, genType const & rayNormalizedDirection,
 	genType const & sphereCenter, const typename genType::value_type sphereRadiusSquered,
 	typename genType::value_type & intersectionDistance
 )
@@ -223,11 +223,11 @@ GLM_FUNC_QUALIFIER float orientedAngle
 // Broken in GLM 0.9.8.5
 GLM_FUNC_QUALIFIER float pitch(glm::quat const & q)
 {
-	//return T(atan(T(2) * (q.y * q.z + q.w * q.x), q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z));
+	// return T(atan(T(2) * (q.y * q.z + q.w * q.x), q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z));
 	float const y = 2.f * (q.y * q.z + q.w * q.x);
 	float const x = q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z;
 
-	if(glm::all(glm::epsilonEqual(glm::vec2(x, y), glm::vec2(0), glm::epsilon<float>()))) //avoid atan2(0,0) - handle singularity - Matiis
+	if(glm::all(glm::epsilonEqual(glm::vec2(x, y), glm::vec2(0), glm::epsilon<float>()))) // avoid atan2(0,0) - handle singularity - Matiis
 		return static_cast<float>(2.f * glm::atan(q.x, q.w));
 
 	return static_cast<float>(glm::atan(y, x));
