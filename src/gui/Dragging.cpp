@@ -25,6 +25,7 @@
 #include "game/EntityManager.h"
 #include "game/Inventory.h"
 #include "game/Player.h"
+#include "graphics/Math.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
 #include "gui/book/Book.h"
@@ -45,12 +46,14 @@ EntityDragStatus g_dragStatus = EntityDragStatus_Invalid;
 Entity * g_draggedEntity = NULL;
 InventoryPos g_draggedItemPreviousPosition;
 Vec2f g_draggedIconOffset;
-Vec2f g_draggedObjectOffset;
-float g_dragStartAngle = 0;
+static Vec2f g_draggedObjectOffset;
+static float g_dragStartAngle = 0;
+static Camera * g_dragStartCamera = NULL;
 
 void setDraggedEntity(Entity * entity) {
 	
 	if(entity != g_draggedEntity) {
+		g_dragStartCamera = g_camera;
 		g_dragStartAngle = g_camera->angle.getYaw();
 	}
 	
@@ -64,10 +67,8 @@ void setDraggedEntity(Entity * entity) {
 			}
 			Vec3f center = bbox.min + (bbox.max - bbox.min) * Vec3f(0.5f);
 			Anglef angle = entity->angle;
-			angle.setYaw(MAKEANGLE(270.f - angle.getYaw()));
-			center = VRotateY(center, angle.getYaw());
-			center = VRotateX(center, -angle.getPitch());
-			center = VRotateZ(center, angle.getRoll());
+			angle.setYaw(270.f - angle.getYaw());
+			center = toQuaternion(angle) * center;
 			center.y = 0.f;
 			Vec4f p = worldToClipSpace(entity->pos + center);
 			if(p.w > 0.f) {
@@ -190,10 +191,8 @@ static EntityDragResult findSpotForDraggedEntity(Vec3f origin, Vec3f dir, Entity
 	}
 	
 	Anglef angle = entity->angle;
-	angle.setYaw(MAKEANGLE(270.f - angle.getYaw()));
-	result.offset = VRotateY(result.offset, angle.getYaw());
-	result.offset = VRotateX(result.offset, -angle.getPitch());
-	result.offset = VRotateZ(result.offset, angle.getRoll());
+	angle.setYaw(270.f - angle.getYaw());
+	result.offset = toQuaternion(angle) * result.offset;
 	
 	return result;
 }
@@ -238,14 +237,16 @@ void updateDraggedEntity() {
 		return;
 	}
 	
-	{
-		Anglef angle = entity->angle;
+	if(g_camera == g_dragStartCamera && g_camera->angle.getYaw() != g_dragStartAngle) {
 		float deltaYaw = g_camera->angle.getYaw() - g_dragStartAngle;
-		angle.setPitch(MAKEANGLE(angle.getPitch() + std::sin(glm::radians(angle.getRoll())) * deltaYaw));
-		angle.setYaw(MAKEANGLE(angle.getYaw() + std::cos(glm::radians(angle.getRoll())) * deltaYaw));
+		Anglef angle = entity->angle;
+		angle.setYaw(270.f - angle.getYaw());
+		angle = toAngle(glm::quat(glm::vec3(0.f, glm::radians(-deltaYaw), 0.f)) * toQuaternion(angle));
+		angle.setYaw(270.f - angle.getYaw());
 		entity->angle = angle;
-		g_dragStartAngle = g_camera->angle.getYaw();
 	}
+	g_dragStartCamera = g_camera;
+	g_dragStartAngle = g_camera->angle.getYaw();
 	
 	Vec3f origin = g_camera->m_pos;
 	Vec3f dest = screenToWorldSpace(mouse + g_draggedObjectOffset, 1000.f);
