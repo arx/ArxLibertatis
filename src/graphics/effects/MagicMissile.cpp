@@ -164,7 +164,7 @@ void CMagicMissile::Render() {
 
 			if(!((fTrail - (i * iBezierPrecision + toto)) > iLength)) {
 				
-				float fsize = 1.f - (fTrail - i * iBezierPrecision + toto) / std::min(fTrail, float(iLength));
+				float fsize = 1.f - (fTrail - i * iBezierPrecision - toto) / std::min(fTrail, float(iLength));
 				float alpha = std::max(fsize - 0.2f, 0.2f);
 				Color color(m_trailColor * (glm::clamp(fsize + Random::getf(-0.1f, 0.1f), 0.f, 1.f) * alpha));
 				

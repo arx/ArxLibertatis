@@ -68,7 +68,7 @@ void CSpellFx::SetDuration(GameDuration duration) {
 
 void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize) {
 	
-	float fBeta = MAKEANGLE(player.angle.getYaw());
+	float fBeta = MAKEANGLE(g_camera->angle.getYaw());
 	float xxs = startSize * glm::cos(glm::radians(fBeta));
 	float xxe = endSize * glm::cos(glm::radians(fBeta));
 	float zzs = startSize;
