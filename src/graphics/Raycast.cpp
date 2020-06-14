@@ -160,33 +160,6 @@ static float linePolyIntersection(const Vec3f & start, const Vec3f & dir, const 
 
 namespace {
 
-struct AnyHitRaycast {
-	
-	bool operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
-		
-		Vec3f dir = end - start;
-		
-		const BackgroundTileData & eg = ACTIVEBKG->m_tileData[tile.x][tile.y];
-		BOOST_FOREACH(EERIEPOLY * ep, eg.polyin) {
-			
-			if(ep->type & POLY_TRANS) {
-				continue;
-			}
-			
-			float relDist = linePolyIntersection(start, dir, *ep);
-			if(relDist <= 1.f) {
-				Vec3f hitPos = start + relDist * dir;
-				dbg_addPoly(ep, hitPos, Color::green);
-				return true;
-			}
-			
-		}
-		
-		return false;
-	}
-	
-};
-
 struct ClosestHitRaycast {
 	
 	float closestHit;
@@ -248,24 +221,6 @@ struct ClosestHitRaycast {
 };
 
 } // anonymous namespace
-
-
-bool RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
-	
-	ARX_PROFILE_FUNC();
-	
-	// Ignore hits too close to target.
-	// Lights are often inside geometry
-	Vec3f dir = end - start;
-	float length = glm::length(dir);
-	if(length <= 20.f) {
-		return false;
-	}
-	dir *= (length - 20.f) / length;
-	
-	return WalkTiles(start, start + dir, AnyHitRaycast());
-}
-
 
 RaycastResult raycastScene(const Vec3f & start, const Vec3f & end, PolyType ignored, RaycastFlags flags) {
 	dbg_addRay(start, end);

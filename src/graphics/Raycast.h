@@ -53,7 +53,6 @@ struct RaycastResult {
 	
 };
 
-bool RaycastLightFlare(const Vec3f & start, const Vec3f & end);
 RaycastResult raycastScene(const Vec3f & start, const Vec3f & end, PolyType ignored = POLY_TRANS,
                            RaycastFlags flags = 0);
 
