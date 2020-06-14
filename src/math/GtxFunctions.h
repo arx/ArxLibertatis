@@ -184,13 +184,13 @@ GLM_FUNC_QUALIFIER bool intersectRaySphere
 {
 	typename genType::value_type Epsilon = std::numeric_limits<typename genType::value_type>::epsilon();
 	genType diff = sphereCenter - rayStarting;
-	typename genType::value_type t0 = dot(diff, rayNormalizedDirection);
-	typename genType::value_type dSquared = dot(diff, diff) - t0 * t0;
+	typename genType::value_type t0 = glm::dot(diff, rayNormalizedDirection);
+	typename genType::value_type dSquared = glm::dot(diff, diff) - t0 * t0;
 	if( dSquared > sphereRadiusSquered )
 	{
 		return false;
 	}
-	typename genType::value_type t1 = sqrt( sphereRadiusSquered - dSquared );
+	typename genType::value_type t1 = glm::sqrt( sphereRadiusSquered - dSquared );
 	intersectionDistance = t0 > t1 + Epsilon ? t0 - t1 : t0 + t1;
 	return intersectionDistance > Epsilon;
 }
