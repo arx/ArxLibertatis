@@ -267,9 +267,8 @@ EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end,
 			case SHOW_FLAG_ON_PLAYER: {
 				if(!(flags & RaycastIgnorePlayer) && IsEquipedByPlayer(entity)) {
 					break;
-				} else {
-					continue;
 				}
+				continue;
 			}
 			default: continue;
 		}
