@@ -221,18 +221,21 @@ void updateDraggedEntity() {
 			g_secondaryInventoryHud.dropEntity();
 		}
 		return;
-	} else if(g_playerInventoryHud.containsPos(Vec2s(mouse))) {
+	}
+	if(g_playerInventoryHud.containsPos(Vec2s(mouse))) {
 		if(drop) {
 			g_playerInventoryHud.dropEntity();
 		}
 		return;
-	} else if(ARX_INTERFACE_MouseInBook()) {
+	}
+	if(ARX_INTERFACE_MouseInBook()) {
 		if(drop && g_playerBook.currentPage() == BOOKMODE_STATS) {
 			SendIOScriptEvent(entities.player(), entity, SM_INVENTORYUSE);
 			COMBINE = NULL;
 		}
 		return;
-	} else if(drop && (entity->ioflags & IO_GOLD)) {
+	}
+	if(drop && (entity->ioflags & IO_GOLD)) {
 		ARX_PLAYER_AddGold(entity);
 		return;
 	}
