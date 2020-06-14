@@ -219,7 +219,15 @@ void LegacyMathTest::angleConversionTest()
 		
 		glm::quat q2 = glm::quat_cast(toRotationMatrix(it->angle));
 		
+		glm::quat q3 = toQuaternion(it->angle);
+		
+		glm::quat q4 = toQuaternion(toAngle(q3));
+		
 		CPPUNIT_ASSERT_EQUAL(q, q2);
+		
+		CPPUNIT_ASSERT_EQUAL(q, q3);
+		
+		CPPUNIT_ASSERT_EQUAL(q3, q4);
 	}
 }
 
