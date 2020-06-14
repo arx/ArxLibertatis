@@ -44,15 +44,8 @@ void updateLightFlares() {
 	
 	ARX_PROFILE_FUNC();
 	
-	Entity * pTableIO[256];
-	size_t nNbInTableIO = 0;
-	
 	float temp_increase = toMs(g_platformTime.lastFrameDuration()) * 0.004f;
 	
-	const Vec3f camPos = g_camera->m_pos;
-	
-	bool bComputeIO = false;
-
 	Vec4f zFar = g_preparedCamera.m_viewToScreen * Vec4f(0.f, 0.f, g_camera->cdepth * fZFogEnd, 1.f);
 	float fZFar = zFar.z / zFar.w;
 
@@ -64,41 +57,35 @@ void updateLightFlares() {
 			continue;
 		}
 		
-		if(el->extras & EXTRAS_FLARE) {
-			Vec3f lv = el->pos;
-			
-			Vec4f p = worldToClipSpace(lv);
-			Vec3f pos2d = Vec3f(p) / p.w;
-			
-			el->m_flareFader -= temp_increase;
-
-			if(p.w > 0.f && pos2d.x > 0.f && pos2d.x < g_size.width()
-			   && pos2d.y > (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y)
-				 && pos2d.y < (g_size.height() - (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y))) {
-				
-				Vec3f vector = lv - camPos;
-				lv -= vector * (50.f / glm::length(vector));
-				
-				Vec3f ee3dlv = lv;
-				Vec2s ees2dlv(checked_range_cast<short>(pos2d.x), checked_range_cast<short>(pos2d.y));
-				if(!bComputeIO) {
-					GetFirstInterAtPos(ees2dlv, 2, &ee3dlv, pTableIO, &nNbInTableIO);
-					bComputeIO = true;
-				}
-				
-				if(   pos2d.z > fZFar
-				   || RaycastLightFlare(camPos, el->pos)
-				   || GetFirstInterAtPos(ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO)
-				) {
-					el->m_flareFader -= temp_increase * 2.f;
-				} else {
-					el->m_flareFader += temp_increase * 2.f;
-				}
-			}
-
-			el->m_flareFader = glm::clamp(el->m_flareFader, 0.f, .8f);
+		if(!(el->extras & EXTRAS_FLARE)) {
+			continue;
 		}
+		
+		Vec4f p = worldToClipSpace(el->pos);
+		Vec3f pos2d = Vec3f(p) / p.w;
+		
+		el->m_flareFader -= temp_increase;
+		
+		if(p.w > 0.f && pos2d.x > 0.f && pos2d.x < g_size.width()
+				&& pos2d.y > (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y)
+				&& pos2d.y < (g_size.height() - (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y))) {
+			
+			Vec3f lightpos = el->pos + glm::normalize(g_camera->m_pos - el->pos) * 20.f;
+			PolyType ignored = POLY_HIDE | POLY_TRANS | POLY_NODRAW;
+			RaycastFlags flags = RaycastAnyHit;
+			if(pos2d.z > fZFar
+			   || raycastScene(g_camera->m_pos, lightpos, ignored, flags)
+			   || raycastEntities(g_camera->m_pos, lightpos, ignored, flags)) {
+				el->m_flareFader -= temp_increase * 2.f;
+			} else {
+				el->m_flareFader += temp_increase * 2.f;
+			}
+		}
+		
+		el->m_flareFader = glm::clamp(el->m_flareFader, 0.f, .8f);
+		
 	}
+	
 }
 
 void renderLightFlares() {
