@@ -534,13 +534,14 @@ void PlayerInventoryHud::dragEntity(Entity * io) {
 	}
 	Vec2f offset(anchor + Vec2s(pos.x, pos.y) * itemPitch - DANAEMouse);
 	
+	ARX_SOUND_PlayInterface(g_snd.INVSTD);
+	
 	// Take only one item from stacks unless requested otherwise
 	if(io->_itemdata->count > 1 && !GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
 		Entity * unstackedEntity = CloneIOItem(io);
 		unstackedEntity->scriptload = 1;
 		unstackedEntity->_itemdata->count = 1;
 		io->_itemdata->count--;
-		ARX_SOUND_PlayInterface(g_snd.INVSTD);
 		setDraggedEntity(unstackedEntity);
 		g_draggedItemPreviousPosition = locateInInventories(io);
 		g_draggedIconOffset = offset;
