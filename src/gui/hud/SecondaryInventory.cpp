@@ -393,6 +393,8 @@ void SecondaryInventoryHud::dragEntity(Entity * io) {
 		
 	}
 	
+	ARX_SOUND_PlayInterface(g_snd.INVSTD);
+	
 	// Take only one item from stacks unless requested otherwise
 	if(io->_itemdata->count > 1
 	   && ((ioo->ioflags & IO_SHOP) || !GInput->actionPressed(CONTROLS_CUST_STEALTHMODE))) {
@@ -400,7 +402,6 @@ void SecondaryInventoryHud::dragEntity(Entity * io) {
 		unstackedEntity->scriptload = 1;
 		unstackedEntity->_itemdata->count = 1;
 		io->_itemdata->count--;
-		ARX_SOUND_PlayInterface(g_snd.INVSTD);
 		setDraggedEntity(unstackedEntity);
 		g_draggedItemPreviousPosition = locateInInventories(io);
 		g_draggedIconOffset = offset;
