@@ -418,7 +418,7 @@ void IceProjectileSpell::Launch() {
 	Vec3f s = target + Vec3f(0.f, -100.f, 0.f);
 	Vec3f e = s + angleToVectorXZ(angleb) * fspelldist;
 	
-	RaycastResult ray = RaycastLine(s, e);
+	RaycastResult ray = raycastScene(s, e);
 	if(ray.hit) {
 		e = ray.pos + angleToVectorXZ(angleb) * 20.f;
 	}

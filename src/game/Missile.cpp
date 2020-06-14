@@ -225,7 +225,7 @@ void ARX_MISSILES_Update() {
 				if(closerThan(player.pos, dest, 200.f) || (ep && ep->center.y < dest.y) || (epp && epp->center.y > dest.y)) {
 					hit = true;
 				} else {
-					RaycastResult ray = RaycastLine(orgn, dest);
+					RaycastResult ray = raycastScene(orgn, dest);
 					if(ray.hit) {
 						dest = ray.pos;
 						hit = true;

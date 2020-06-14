@@ -101,7 +101,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	
 	Vec3f rayEnd = eSrc + eMove * 500.f;
 	
-	RaycastResult ray = RaycastLine(eSrc, rayEnd);
+	RaycastResult ray = raycastScene(eSrc, rayEnd);
 	Vec3f dest = ray.hit ? ray.pos : rayEnd;
 	
 	pathways[0] = eSrc;
