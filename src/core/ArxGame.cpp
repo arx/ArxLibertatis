@@ -903,6 +903,8 @@ bool ArxGame::initGame()
 	
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
 	
+	g_playerBook.stats.loadStrings();
+	
 	m_gameInitialized = true;
 	
 	return true;
