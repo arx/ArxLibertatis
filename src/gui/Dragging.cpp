@@ -73,7 +73,7 @@ void setDraggedEntity(Entity * entity) {
 			Vec4f p = worldToClipSpace(entity->pos + center);
 			if(p.w > 0.f) {
 				Vec2f pos = Vec2f(p) / p.w;
-				if(g_size.contains(pos)) {
+				if(g_size.contains(Rect::Vec2(pos))) {
 					g_draggedIconOffset = Vec2f(0.f);
 					g_draggedObjectOffset = pos - Vec2f(DANAEMouse);
 				}
@@ -216,12 +216,12 @@ void updateDraggedEntity() {
 	g_dragStatus = EntityDragStatus_OverHud;
 	entity->show = SHOW_FLAG_ON_PLAYER;
 	
-	if(g_secondaryInventoryHud.containsPos(Vec2f(mouse))) {
+	if(g_secondaryInventoryHud.containsPos(Vec2s(mouse))) {
 		if(drop) {
 			g_secondaryInventoryHud.dropEntity();
 		}
 		return;
-	} else if(g_playerInventoryHud.containsPos(Vec2f(mouse))) {
+	} else if(g_playerInventoryHud.containsPos(Vec2s(mouse))) {
 		if(drop) {
 			g_playerInventoryHud.dropEntity();
 		}
