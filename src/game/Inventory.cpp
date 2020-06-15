@@ -936,8 +936,10 @@ Vec3f GetItemWorldPosition(const Entity * io) {
 	
 	arx_assert(io);
 	
-	if(g_draggedEntity == io && io->show == SHOW_FLAG_ON_PLAYER) {
+	if(g_draggedEntity == io) {
 		// Set position to approximate center of player.
+		// This is done even if the entity is being dragged in the world in order to avoid triggering
+		// any events until the entity is dropped.
 		return player.pos + Vec3f(0.f, 80.f, 0.f);
 	}
 
