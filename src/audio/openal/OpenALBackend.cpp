@@ -32,6 +32,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
+#include <boost/range/size.hpp>
 
 #include "audio/openal/OpenALSource.h"
 #include "audio/openal/OpenALUtils.h"
@@ -202,6 +203,8 @@ void OpenALBackend::fillDeviceAttributes(ALCint (&attrs)[3]) {
 	#endif
 	
 	attrs[i++] = 0;
+	
+	arx_assert(i <= boost::size(attrs));
 	
 }
 
@@ -684,6 +687,10 @@ aalError OpenALBackend::setHRTFEnabled(HRTFAttribute enable) {
 		return AAL_OK;
 	}
 	m_HRTFAttribute = enable;
+	
+	if(!device) {
+		return AAL_OK;
+	}
 	
 	OpenALEnvironmentOverrides overrides;
 	platform::EnvironmentLock lock(overrides.m_overrides);
