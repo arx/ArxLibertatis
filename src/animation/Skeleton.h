@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include "glm/gtc/quaternion.hpp"
+#include <glm/gtc/quaternion.hpp>
 
 #include "math/Types.h"
 #include "math/Angle.h"
