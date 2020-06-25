@@ -245,6 +245,12 @@ GLM_FUNC_QUALIFIER float pitch(glm::quat const & q)
 	return static_cast<float>(glm::atan(y, x));
 }
 
+// Older GLM versions don't have the clamp
+GLM_FUNC_QUALIFIER float yaw(glm::quat const & q)
+{
+	return glm::asin(glm::clamp(-2.f * (q.x * q.z - q.w * q.y), -1.f, 1.f));
+}
+
 } // namespace arx
 
 #endif // ARX_MATH_GTXFUNCTIONS_H
