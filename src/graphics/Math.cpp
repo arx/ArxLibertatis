@@ -451,7 +451,7 @@ glm::quat toQuaternion(const Anglef & angle) {
 
 Anglef toAngle(const glm::quat & quat) {
 	glm::quat q = quat * glm::quat(glm::vec3(0.f, 0.f, glm::radians(90.f)));
-	return Anglef(-glm::degrees(glm::yaw(q)), glm::degrees(arx::pitch(q)), 90.f - glm::degrees(arx::roll(q)));
+	return Anglef(-glm::degrees(arx::yaw(q)), glm::degrees(arx::pitch(q)), 90.f - glm::degrees(arx::roll(q)));
 }
 
 glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
