@@ -298,6 +298,11 @@ static bool getFontFile(res::path & result) {
 		return true;
 	}
 	
+	result = "misc/arx_base.ttf";
+	if(g_resources->hasFile(result)) {
+		return true;
+	}
+	
 	if(!config.language.empty()) {
 		LogCritical << "Missing font file: need either misc/arx_" << config.language
 		            << ".ttf, misc/arx_default.ttf or misc/arx.ttf.";
