@@ -281,8 +281,8 @@ static int g_currentFontWeight = 0;
 
 static bool getFontFile(res::path & result) {
 	
-	if(!config.language.empty()) {
-		result = "misc/arx_" + config.language + ".ttf";
+	if(!config.interface.language.empty()) {
+		result = "misc/arx_" + config.interface.language + ".ttf";
 		if(g_resources->hasFile(result)) {
 			return true;
 		}
@@ -303,11 +303,11 @@ static bool getFontFile(res::path & result) {
 		return true;
 	}
 	
-	if(!config.language.empty()) {
-		LogCritical << "Missing font file: need either misc/arx_" << config.language
-		            << ".ttf, misc/arx_default.ttf or misc/arx.ttf.";
+	if(!config.interface.language.empty()) {
+		LogCritical << "Missing font file: need either misc/arx_" << config.interface.language
+		            << ".ttf, misc/arx_base.ttf, misc/arx_default.ttf or misc/arx.ttf.";
 	} else {
-		LogCritical << "Missing font file: need either misc/arx_default.ttf or misc/arx.ttf.";
+		LogCritical << "Missing font file: need either misc/arx_base.ttf, misc/arx_default.ttf or misc/arx.ttf.";
 	}
 	return false;
 }

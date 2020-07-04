@@ -33,6 +33,7 @@ struct Language {
 typedef std::map<std::string, Language> Languages;
 
 Languages getAvailableTextLanguages();
+Languages getAvailableAudioLanguages();
 
 /*!
  * Initializes the localisation hashmap based on the current chosen locale

@@ -161,7 +161,7 @@ bool Credits::load() {
 	
 	LogDebug("Loading credits");
 	
-	std::string creditsFile = "localisation/ucredits_" +  config.language + ".txt";
+	std::string creditsFile = "localisation/ucredits_" +  config.interface.language + ".txt";
 	
 	std::string credits = g_resources->read(creditsFile);
 	

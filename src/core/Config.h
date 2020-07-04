@@ -123,9 +123,6 @@ class Config {
 	
 public:
 	
-	// section 'language'
-	std::string language;
-	
 	// section 'video'
 	struct {
 		
@@ -156,6 +153,8 @@ public:
 	
 	// section 'interface'
 	struct {
+		
+		std::string language;
 		
 		bool showCrosshair;
 		
@@ -188,6 +187,8 @@ public:
 	
 	// section 'audio'
 	struct {
+		
+		std::string language;
 		
 		std::string backend;
 		std::string device;

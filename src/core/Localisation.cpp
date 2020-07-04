@@ -93,7 +93,7 @@ std::string selectDefaultLanguage(const Languages & languages) {
 			if(ifs.is_open()) {
 				IniReader cfg;
 				cfg.read(ifs);
-				std::string language = cfg.getKey("language", "string", config.language);
+				std::string language = cfg.getKey("language", "string", std::string());
 				boost::to_lower(language);
 				Languages::const_iterator it = languages.find(language);
 				if(it != languages.end()) {
@@ -111,13 +111,13 @@ void autodetectTextLanguage() {
 	Languages languages = getAvailableTextLanguages();
 	if(languages.empty()) {
 		LogCritical << "Could not find any localisation file. (localisation/utext_*.ini)";
-		config.language = std::string();
+		config.interface.language = std::string();
 		return;
 	}
 	
 	if(languages.size() == 1) {
 		// Only one language available so just use that
-		config.language = languages.begin()->first;
+		config.interface.language = languages.begin()->first;
 		return;
 	}
 	
@@ -130,39 +130,91 @@ void autodetectTextLanguage() {
 	}
 	LogInfo << "Multiple text languages available: " << list.str();
 	
-	config.language = selectPreferredLanguage(languages);
-	if(!config.language.empty()) {
+	config.interface.language = selectPreferredLanguage(languages);
+	if(!config.interface.language.empty()) {
 		return;
 	}
 	
-	config.language = selectDefaultLanguage(languages);
-	if(!config.language.empty()) {
+	config.interface.language = selectDefaultLanguage(languages);
+	if(!config.interface.language.empty()) {
 		return;
 	}
 	
 	// Otherwise, prefer english if english audio is available
 	Languages::iterator english = languages.find("english");
 	if(english != languages.end() && g_resources->getDirectory(res::path("speech") / english->first)) {
-		config.language = english->first;
+		config.interface.language = english->first;
 		return;
 	}
 	
 	// Otherwise, prefer the first language with audio available
 	BOOST_FOREACH(const Languages::value_type & language, languages) {
 		if(g_resources->getDirectory(res::path("speech") / language.first)) {
-			config.language = language.first;
+			config.interface.language = language.first;
 			return;
 		}
 	}
 	
 	// Otherwise, prefer english
 	if(english != languages.end()) {
-		config.language = english->first;
+		config.interface.language = english->first;
 		return;
 	}
 	
 	// Finally just select the first available language
-	config.language = languages.begin()->first;
+	config.interface.language = languages.begin()->first;
+}
+
+void autodetectAudioLanguage() {
+	
+	Languages languages = getAvailableAudioLanguages();
+	if(languages.empty()) {
+		LogCritical << "Could not find any localisation dir. (speech/*/)";
+		config.audio.language = std::string();
+		return;
+	}
+	
+	if(languages.size() == 1) {
+		// Only one language available so just use that
+		config.audio.language = languages.begin()->first;
+		return;
+	}
+	
+	std::ostringstream list;
+	BOOST_FOREACH(const Languages::value_type & language, languages) {
+		if(list.tellp()) {
+			list << ", ";
+		}
+		list << language.first;
+	}
+	LogInfo << "Multiple audio languages available: " << list.str();
+	
+	config.audio.language = selectPreferredLanguage(languages);
+	if(!config.audio.language.empty()) {
+		return;
+	}
+	
+	config.audio.language = selectDefaultLanguage(languages);
+	if(!config.audio.language.empty()) {
+		return;
+	}
+	
+	// Use text language for audio if that exists
+	Languages::iterator text = languages.find(config.interface.language);
+	if(text != languages.end()) {
+		config.audio.language = text->first;
+		return;
+	}
+	
+	// Otherwise, prefer english
+	Languages::iterator english = languages.find("english");
+	if(english != languages.end()) {
+		config.audio.language = english->first;
+		return;
+	}
+	
+	// Finally just select the first available language
+	config.audio.language = languages.begin()->first;
 }
 
 void loadLocalisation(PakDirectory * dir, const std::string & name) {
@@ -194,7 +246,7 @@ void loadLocalisations() {
 	
 	const std::string suffix = ".ini";
 	const std::string fallbackPrefix = "xtext_english_";
-	const std::string localizedPrefix = "xtext_" + config.language + "_";
+	const std::string localizedPrefix = "xtext_" + config.interface.language + "_";
 	
 	PakDirectory * dir = g_resources->getDirectory("localisation");
 	if(!dir) {
@@ -273,6 +325,29 @@ Languages getAvailableTextLanguages() {
 	return result;
 }
 
+Languages getAvailableAudioLanguages() {
+	
+	Languages result;
+	
+	PakDirectory * localisation = g_resources->getDirectory("speech");
+	if(!localisation) {
+		LogCritical << "Missing 'speech' directory. Is 'speech.pak' present?";
+		return result;
+	}
+	PakDirectory::dirs_iterator file = localisation->dirs_begin();
+	for(; file != localisation->dirs_end(); ++file) {
+		
+		if(file->first.find_first_not_of("abcdefghijklmnopqrstuvwxyz_") != std::string::npos) {
+			LogWarning << "Ignoring speech/" << file->first << "/";
+			continue;
+		}
+		
+		result.insert(Languages::value_type(file->first, getLanguageInfo(file->first)));
+	}
+	
+	return result;
+}
+
 bool initLocalisation() {
 	
 	LogDebug("Starting localization");
@@ -280,9 +355,9 @@ bool initLocalisation() {
 	g_localisation.clear();
 	
 	PakFile * file = NULL;
-	if(!config.language.empty()) {
-		LogInfo << "Using text language from config: " << config.language;
-		std::string filename = "localisation/utext_" + config.language + ".ini";
+	if(!config.interface.language.empty()) {
+		LogInfo << "Using text language from config: " << config.interface.language;
+		std::string filename = "localisation/utext_" + config.interface.language + ".ini";
 		file = g_resources->getFile(filename);
 		if(!file) {
 			LogWarning << "Localisation file " << filename << " not found";
@@ -290,9 +365,25 @@ bool initLocalisation() {
 	}
 	if(!file) {
 		autodetectTextLanguage();
-		if(!config.language.empty()) {
-			LogInfo << "Autodetected text language: " << config.language;
-			file = g_resources->getFile("localisation/utext_" + config.language + ".ini");
+		if(!config.interface.language.empty()) {
+			LogInfo << "Autodetected text language: " << config.interface.language;
+			file = g_resources->getFile("localisation/utext_" + config.interface.language + ".ini");
+		}
+	}
+	
+	PakDirectory * dir = NULL;
+	if(!config.audio.language.empty()) {
+		LogInfo << "Using audio language from config: " << config.audio.language;
+		std::string dirname = "speech/" + config.audio.language;
+		dir = g_resources->getDirectory(dirname);
+		if(!dir) {
+			LogWarning << "Localisation dir " << dirname << "/ not found";
+		}
+	}
+	if(!dir) {
+		autodetectAudioLanguage();
+		if(!config.audio.language.empty()) {
+			LogInfo << "Autodetected audio language: " << config.audio.language;
 		}
 	}
 	
@@ -300,7 +391,7 @@ bool initLocalisation() {
 		return false;
 	}
 	
-	arx_assert(!config.language.empty());
+	arx_assert(!config.interface.language.empty());
 	
 	std::string buffer = file->read();
 	if(buffer.empty()) {
@@ -316,7 +407,7 @@ bool initLocalisation() {
 		std::istringstream iss(buffer);
 		if(!g_localisation.read(iss)) {
 			LogWarning << "Error parsing localisation file localisation/utext_"
-			           << config.language << ".ini";
+			           << config.interface.language << ".ini";
 		}
 	}
 	
