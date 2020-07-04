@@ -172,6 +172,9 @@ public:
 	
 };
 
+// Return the user's preferred languages in RFC 4646 format
+std::vector<std::string> getPreferredLocales();
+
 } // namespace platform
 
 #endif // ARX_PLATFORM_ENVIRONMENT_H
