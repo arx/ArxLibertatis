@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <sstream>
 
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
 #include "input/Input.h"
@@ -584,6 +585,7 @@ bool Config::init(const fs::path & file) {
 	
 	// Get locale language
 	language = reader.getKey(Section::Language, Key::language, Default::language);
+	boost::to_lower(language);
 	
 	// Get video settings
 	video.renderer = reader.getKey(Section::Video, Key::renderer, Default::renderer);
