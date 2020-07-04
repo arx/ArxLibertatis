@@ -20,7 +20,19 @@
 #ifndef ARX_CORE_LOCALISATION_H
 #define ARX_CORE_LOCALISATION_H
 
+#include <map>
 #include <string>
+
+struct Language {
+	
+	std::string name;
+	std::string locale;
+	
+};
+
+typedef std::map<std::string, Language> Languages;
+
+Languages getAvailableTextLanguages();
 
 /*!
  * Initializes the localisation hashmap based on the current chosen locale
