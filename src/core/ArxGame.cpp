@@ -341,11 +341,8 @@ bool ArxGame::initConfig() {
 	LogInfo << "Using config file " << configFile;
 	if(!config.init(configFile)) {
 		
-		fs::path file = fs::findDataFile("cfg_default.ini");
-		if(!config.init(file)) {
-			LogWarning << "Could not read config files cfg.ini and cfg_default.ini,"
-			           << " using defaults";
-		}
+		LogWarning << "Could not read config files cfg.ini and cfg_default.ini,"
+		           << " using defaults";
 		
 		// Save a default config file so users have a chance to edit it even if we crash.
 		config.save();
