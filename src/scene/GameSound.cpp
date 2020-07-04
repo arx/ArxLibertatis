@@ -387,7 +387,7 @@ static Vec3f ARX_SOUND_IOFrontPos(const Entity * io) {
 }
 
 static res::path speechFileName(const res::path & name) {
-	return res::path("speech") / config.language / name;
+	return res::path("speech") / config.audio.language / name;
 }
 
 audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar, const Entity * io) {

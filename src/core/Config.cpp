@@ -50,6 +50,7 @@ namespace Default {
 
 const std::string
 	language = std::string(),
+	audio = std::string(),
 	renderer = "auto",
 	resolution = "auto",
 	audioBackend = "auto",
@@ -188,7 +189,9 @@ const std::string
 namespace Key {
 
 // Language options
-const std::string language = "string";
+const std::string
+	language = "string",
+	audio = "audio";
 
 // Video options
 const std::string
@@ -437,7 +440,8 @@ bool Config::save() {
 	
 	// language
 	writer.beginSection(Section::Language);
-	writer.writeKey(Key::language, language);
+	writer.writeKey(Key::language, interface.language);
+	writer.writeKey(Key::audio, audio.language);
 	
 	// video
 	writer.beginSection(Section::Video);
@@ -584,8 +588,10 @@ bool Config::init(const fs::path & file) {
 	}
 	
 	// Get locale language
-	language = reader.getKey(Section::Language, Key::language, Default::language);
-	boost::to_lower(language);
+	interface.language = reader.getKey(Section::Language, Key::language, Default::language);
+	boost::to_lower(interface.language);
+	audio.language = reader.getKey(Section::Language, Key::audio, Default::audio);
+	boost::to_lower(audio.language);
 	
 	// Get video settings
 	video.renderer = reader.getKey(Section::Video, Key::renderer, Default::renderer);
