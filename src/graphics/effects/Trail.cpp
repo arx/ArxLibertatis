@@ -109,12 +109,19 @@ void Trail::Render() {
 	 *    t              lastPos
 	 */
 	
+	arx_assert(m_positions.size() >= 2);
+	
 	float t = m_lastSegmentDuration / m_timePerSegment;
 	arx_assume(t >= 0.f && t <= 1.f);
 	float n = (m_totalDuration - m_lastSegmentDuration) / m_timePerSegment;
 	arx_assume(n >= 0.f);
 	
+	// For some users the assert fails with unmodified n, presumably due to floating point errors in the
+	// above calculation. Manually limit n to # of positions - 2.
+	// https://bugs.arx-libertatis.org/arx/issues/1468
+	n = std::min(n, float(m_positions.size() - 2));
 	arx_assert(m_positions.size() >= size_t(std::ceil(n)) + 2);
+	
 	Vec3f lastPos = m_positions[size_t(n) + 1];
 	if(size_t(n) + 2 < m_positions.size()) {
 		lastPos = glm::mix(m_positions[size_t(n) + 1], m_positions[size_t(n) + 2], glm::fract(n));
