@@ -21,10 +21,14 @@
 
 #include <sstream>
 #include <algorithm>
+#include <cctype>
 
 #include <stdlib.h> // needed for realpath and more
 
+#include <boost/foreach.hpp>
 #include <boost/scoped_array.hpp>
+#include <boost/tokenizer.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include "Configure.h"
 
@@ -612,6 +616,116 @@ void EnvironmentLock::unlock() {
 		}
 	}
 	g_environmentLock.unlock();
+}
+
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+#ifndef LOCALE_SNAME
+#define LOCALE_SNAME 0x0000005c
+#endif
+#ifndef LOCALE_SPARENT
+#define LOCALE_SPARENT 0x0000006d
+#endif
+#endif
+
+std::vector<std::string> getPreferredLocales() {
+	
+	std::vector<std::string> result;
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	
+	WideString buffer;
+	
+	LCID locales[] = { GetThreadLocale(), LOCALE_USER_DEFAULT, LOCALE_SYSTEM_DEFAULT };
+	LCTYPE types[] = { LOCALE_SNAME, LOCALE_SPARENT, LOCALE_SISO639LANGNAME };
+	BOOST_FOREACH(LCID locale, locales) {
+		BOOST_FOREACH(LCTYPE type, types) {
+			buffer.allocate(LOCALE_NAME_MAX_LENGTH);
+			if(GetLocaleInfoW(locale, type, buffer.data(), buffer.size())) {
+				buffer.compact();
+				std::string name = buffer.toUTF8();
+				boost::to_lower(name);
+				if(name.size() > 0 && std::find(result.begin(), result.end(), name) == result.end()) {
+					result.push_back(name);
+					for(size_t j = 0; j < name.size(); j++) {
+						if(!std::isalnum(static_cast<unsigned char>(name[j]))) {
+							std::string locale = name.substr(0, j);
+							if(std::find(result.begin(), result.end(), locale) == result.end()) {
+								result.push_back(locale);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	#else
+	
+	// LANGUAGE is a colon-separated list of preferred languages and overwrites LC_* and LANG
+	const char * languages = std::getenv("LANGUAGE");
+	if(languages) {
+		std::string decoded = languages;
+		typedef boost::tokenizer< boost::char_separator<char> >  tokenizer;
+		boost::char_separator<char> sep(platform::env_list_seperators);
+		tokenizer tokens(decoded, sep);
+		std::copy(tokens.begin(), tokens.end(), std::back_inserter(result));
+		BOOST_FOREACH(std::string & locale, result) {
+			boost::to_lower(locale);
+			std::replace(locale.begin(), locale.end(), '_', '-');
+		}
+		size_t end = result.size();
+		for(size_t i = 0; i < end; i++) {
+			for(size_t j = 0; j < result[i].size(); j++) {
+				if(!std::isalnum(static_cast<unsigned char>(result[i][j]))) {
+					std::string locale = result[i].substr(0, j);
+					if(std::find(result.begin(), result.end(), locale) == result.end()) {
+						result.push_back(locale);
+					}
+				}
+			}
+		}
+	}
+	
+	const char * variables[] = { "LC_ALL", "LC_MESSAGES", "LANG" };
+	BOOST_FOREACH(const char * variable, variables) {
+		const char * value = std::getenv(variable);
+		if(value) {
+			std::string buffer = value;
+			boost::to_lower(buffer);
+			size_t separator = std::string::npos;
+			for(size_t i = 0; i < buffer.length(); i++) {
+				if(std::isalnum(static_cast<unsigned char>(buffer[i]))) {
+					// Normal character
+				} else if(separator == std::string::npos && (buffer[i] == '_' || buffer[i] == '-')) {
+					buffer[i] = '-';
+					separator = i;
+				} else {
+					buffer.resize(i);
+					break;
+				}
+			}
+			if(buffer.empty() || buffer == "c" || buffer == "posix" || separator == 0) {
+				continue;
+			}
+			if(separator != std::string::npos && separator + 1 == buffer.size()) {
+				buffer.resize(separator);
+				separator = std::string::npos;
+			}
+			if(std::find(result.begin(), result.end(), buffer) == result.end()) {
+				result.push_back(buffer);
+				if(separator != std::string::npos) {
+					buffer.resize(separator);
+					if(std::find(result.begin(), result.end(), buffer) == result.end()) {
+						result.push_back(buffer);
+					}
+				}
+			}
+		}
+	}
+	
+	#endif
+	
+	return result;
 }
 
 } // namespace platform
