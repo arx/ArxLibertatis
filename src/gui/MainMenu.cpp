@@ -544,7 +544,7 @@ public:
 			addCenter(txt);
 		}
 		
-		addBackButton(Page_Options);
+		addBackButton(Page_None);
 		
 	}
 	
