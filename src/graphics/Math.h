@@ -246,6 +246,9 @@ inline long PointInUnderCylinder(const Cylinder & cyl, const Vec3f & pt) {
 
 template <typename T>
 T positive_modulo(T a, T b) {
+	if(b == 1) {
+		return 0;
+	}
 	return (a % b) + T(a < 0) * b;
 }
 
