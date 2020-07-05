@@ -79,12 +79,38 @@ struct checksum {
 		std::fill_n(data, N, '\0');
 	}
 	
+	explicit checksum(const char * str) {
+		for(size_t i = 0; i < N * 2; i++) {
+			u8 value = 0;
+			u8 c = u8(str[i]);
+			if(c >= u8('0') && c <= u8('9')) {
+				value = c - u8('0');
+			} else if(c >= u8('a') && c <= u8('f')) {
+				value = c - u8('a') + u8(0xa);
+			} else if(c >= u8('A') && c <= u8('F')) {
+				value = c - u8('A') + u8(0xa);
+			} else {
+				arx_assert_msg(false, "bad char: %c", str[i]);
+			}
+			if(i % 2 == 0) {
+				data[i / 2] = u8(value * 0x10);
+			} else {
+				data[i / 2] = u8(u8(data[i / 2]) | value);
+			}
+		}
+		arx_assert(str[N * 2] == '\0');
+	}
+	
 	bool operator==(const checksum & other) const {
-		return std::memcmp(data, other.data, sizeof(data)) == 0;
+		return std::memcmp(data, other.data, N) == 0;
 	}
 	
 	bool operator!=(const checksum & other) const {
 		return !(*this == other);
+	}
+	
+	bool operator<(const checksum & other) const {
+		return std::memcmp(data, other.data, N) < 0;
 	}
 	
 };
