@@ -64,6 +64,7 @@ extern Font * hFontInBook;
 extern Font * hFontInGame;
 extern Font * hFontInGameNote;
 extern Font * hFontDebug;
+extern Font * g_iconFont;
 
 void UNICODE_ARXDrawTextCenter(Font * font, const Vec2f & pos, const std::string & str, Color col);
  
@@ -77,7 +78,7 @@ long ARX_UNICODE_ForceFormattingInRect(Font * font, std::string::const_iterator 
                                        bool noOneLineParagraphs = false);
 long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, const std::string & text, Color col, const Rect * pClipRect = NULL);
 
-bool ARX_Text_Init();
+bool ARX_Text_Init(bool force = false);
 void ARX_Text_scaleBookFont(float scale, int weight);
 void ARX_Text_scaleNoteFont(float scale, int weight);
 void ARX_Text_Close();

@@ -76,6 +76,7 @@ Font * hFontCredits = NULL;
 Font * hFontInGame = NULL;
 Font * hFontInGameNote = NULL;
 Font * hFontDebug = NULL;
+Font * g_iconFont = NULL;
 
 static void ARX_UNICODE_FormattingInRect(Font * font, std::string::const_iterator txtbegin, std::string::const_iterator txtend,
                                          const Rect & rect, Color col,
@@ -348,7 +349,7 @@ void ARX_Text_scaleNoteFont(float scale, int weight) {
 	
 }
 
-bool ARX_Text_Init() {
+bool ARX_Text_Init(bool force) {
 	
 	res::path file;
 	if(!getFontFile(file)) {
@@ -356,7 +357,7 @@ bool ARX_Text_Init() {
 	}
 	
 	float scale = std::max(std::min(g_sizeRatio.y, g_sizeRatio.x), .001f);
-	if(scale == g_currentFontScale
+	if(!force && scale == g_currentFontScale
 	   && config.interface.fontSize == g_currentFontSize && config.interface.fontWeight == g_currentFontWeight) {
 		return true;
 	}
@@ -394,6 +395,16 @@ bool ARX_Text_Init() {
 	}
 	Font * nFontDebug = FontCache::getFont(debugFontFile, unsigned(14.f * debugFontScale));
 	
+	res::path iconFontFile = "misc/icons.ttf";
+	if(!g_resources->hasFile(iconFontFile)) {
+		LogWarning << "Missing icon font " << iconFontFile;
+		iconFontFile = file;
+	}
+	Font * iconFont = FontCache::getFont(iconFontFile, unsigned(40.f * scale), 0, false);
+	if(!iconFont) {
+		LogError << "Could not load font " << iconFontFile;
+	}
+	
 	// Only release old fonts after creating new ones to allow same fonts to be cached.
 	FontCache::releaseFont(hFontMainMenu);
 	FontCache::releaseFont(hFontMenu);
@@ -403,6 +414,7 @@ bool ARX_Text_Init() {
 	FontCache::releaseFont(hFontInGameNote);
 	FontCache::releaseFont(hFontInBook);
 	FontCache::releaseFont(hFontDebug);
+	FontCache::releaseFont(g_iconFont);
 	
 	hFontMainMenu = nFontMainMenu;
 	hFontMenu = nFontMenu;
@@ -412,6 +424,7 @@ bool ARX_Text_Init() {
 	hFontInGameNote = nFontInGameNote;
 	hFontInBook = nFontInBook;
 	hFontDebug = nFontDebug;
+	g_iconFont = iconFont;
 	
 	if(!hFontMainMenu
 	   || !hFontMenu
@@ -472,6 +485,9 @@ void ARX_Text_Close() {
 
 	FontCache::releaseFont(hFontDebug);
 	hFontDebug = NULL;
+
+	FontCache::releaseFont(g_iconFont);
+	g_iconFont = NULL;
 	
 	FontCache::shutdown();
 }
