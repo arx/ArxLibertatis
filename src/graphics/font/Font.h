@@ -202,7 +202,7 @@ public:
 private:
 	
 	// Construction/destruction handled by FontCache only
-	Font(const res::path & file, unsigned size, unsigned weight, struct FT_FaceRec_ * face);
+	Font(const res::path & file, unsigned size, unsigned weight, struct FT_FaceRec_ * face, bool preload);
 	~Font();
 	
 	//! Maps the given character to a placeholder glyph

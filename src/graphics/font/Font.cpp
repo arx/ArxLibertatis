@@ -45,7 +45,7 @@
 //! Pre-load all visible characters below this one when creating a font object
 static const Font::Char FONT_PRELOAD_LIMIT = 127;
 
-Font::Font(const res::path & file, unsigned size, unsigned weight, FT_Face face)
+Font::Font(const res::path & file, unsigned size, unsigned weight, FT_Face face, bool preload)
 	: m_info(file, size, weight)
 	, m_referenceCount(0)
 	, m_size(NULL)
@@ -70,9 +70,11 @@ Font::Font(const res::path & file, unsigned size, unsigned weight, FT_Face face)
 	insertGlyph(util::REPLACEMENT_CHAR);
 	
 	// Pre-load glyphs for displayable ASCII characters
-	for(Char chr = 32; chr < FONT_PRELOAD_LIMIT; ++chr) {
-		if(chr != '?') {
-			insertGlyph(chr);
+	if(preload) {
+		for(Char chr = 32; chr < FONT_PRELOAD_LIMIT; ++chr) {
+			if(chr != '?') {
+				insertGlyph(chr);
+			}
 		}
 	}
 	

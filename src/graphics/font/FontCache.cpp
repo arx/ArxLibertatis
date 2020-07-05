@@ -74,7 +74,7 @@ class FontCache::Impl : private boost::noncopyable {
 		
 		~FontFile();
 		
-		Font * getSize(unsigned size, unsigned weight);
+		Font * getSize(unsigned size, unsigned weight, bool preload);
 		
 		void releaseSize(Font * font);
 		
@@ -91,7 +91,7 @@ class FontCache::Impl : private boost::noncopyable {
 	
 	~Impl();
 	
-	Font * getFont(const res::path & file, unsigned size, unsigned weight);
+	Font * getFont(const res::path & file, unsigned size, unsigned weight, bool preload);
 	
 	void releaseFont(Font * font);
 	
@@ -150,7 +150,7 @@ FontCache::Impl::FontFile::~FontFile() {
 	
 }
 
-Font * FontCache::Impl::FontFile::getSize(unsigned size, unsigned weight) {
+Font * FontCache::Impl::FontFile::getSize(unsigned size, unsigned weight, bool preload) {
 	
 	u32 key = sizeKey(size, weight);
 	
@@ -169,7 +169,7 @@ Font * FontCache::Impl::FontFile::getSize(unsigned size, unsigned weight) {
 		return NULL;
 	}
 	
-	Font * font = new Font(m_file, size, weight, m_face);
+	Font * font = new Font(m_file, size, weight, m_face, preload);
 	
 	m_sizes.insert(FontMap::value_type(key, font));
 	
@@ -204,7 +204,7 @@ FontCache::Impl::~Impl() {
 	
 }
 
-Font * FontCache::Impl::getFont(const res::path & file, unsigned size, unsigned weight) {
+Font * FontCache::Impl::getFont(const res::path & file, unsigned size, unsigned weight, bool preload) {
 	
 	FontFiles::iterator it = m_files.find(file);
 	if(it == m_files.end()) {
@@ -215,7 +215,7 @@ Font * FontCache::Impl::getFont(const res::path & file, unsigned size, unsigned 
 		#endif
 	}
 	
-	Font * font = it->second.getSize(size, weight);
+	Font * font = it->second.getSize(size, weight, preload);
 	
 	if(font) {
 		font->m_referenceCount++;
@@ -261,8 +261,8 @@ void FontCache::shutdown() {
 	instance = NULL;
 }
 
-Font * FontCache::getFont(const res::path & file, unsigned size, unsigned weight) {
-	return instance->getFont(file, size, weight);
+Font * FontCache::getFont(const res::path & file, unsigned size, unsigned weight, bool preload) {
+	return instance->getFont(file, size, weight, preload);
 }
 
 void FontCache::releaseFont(Font * font) {
