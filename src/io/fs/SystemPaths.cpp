@@ -274,17 +274,6 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 		return result;
 	}
 	
-	// Check system settings (windows registry)
-	std::string temp;
-	if(platform::getSystemConfiguration("DataDir", temp)) {
-		path dir = canonical(temp);
-		if(addSearchRoot(result, dir, filter)) {
-			LogDebug("got data dir from registry: \"" << temp << "\" = " << dir);
-		} else {
-			LogDebug("ignoring data dir from registry: \"" << temp << "\" = " << dir);
-		}
-	}
-	
 	// Check paths specified in environment variables
 	path exepath = platform::getExecutablePath();
 	if(!exepath.empty()) {
@@ -321,6 +310,17 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 			} else {
 				LogDebug("ignoring data dir from exe: " << exepath << " + " << p << " -> " << dir);
 			}
+		}
+	}
+	
+	// Check system settings (windows registry)
+	std::string temp;
+	if(platform::getSystemConfiguration("DataDir", temp)) {
+		path dir = canonical(temp);
+		if(addSearchRoot(result, dir, filter)) {
+			LogDebug("got data dir from registry: \"" << temp << "\" = " << dir);
+		} else {
+			LogDebug("ignoring data dir from registry: \"" << temp << "\" = " << dir);
 		}
 	}
 	
