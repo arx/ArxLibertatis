@@ -142,6 +142,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/fs/Filesystem.h"
 #include "io/fs/SystemPaths.h"
 #include "io/resource/PakReader.h"
+#include "io/resource/ResourceSetup.h"
 #include "io/Screenshot.h"
 #include "io/log/CriticalLogger.h"
 #include "io/log/Logger.h"
@@ -907,14 +908,6 @@ bool ArxGame::initGame()
 	return true;
 }
 
-static const char * default_paks[][2] = {
-	{ "data.pak", NULL },
-	{ "loc.pak", "loc_default.pak" },
-	{ "data2.pak", NULL },
-	{ "sfx.pak", NULL },
-	{ "speech.pak", "speech_default.pak" },
-};
-
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 static void runDataFilesInstaller() {
 	static const char * const command[] = { "arx-install-data", "--gui", NULL };
@@ -932,25 +925,7 @@ bool ArxGame::addPaks() {
 	
 	g_resources = new PakReader;
 	
-	// Load required pak files
-	bool missing = false;
-	for(size_t i = 0; i < size_t(boost::size(default_paks)); i++) {
-		if(g_resources->addArchive(fs::findDataFile(default_paks[i][0]))) {
-			continue;
-		}
-		if(default_paks[i][1] && g_resources->addArchive(fs::findDataFile(default_paks[i][1]))) {
-			continue;
-		}
-		std::ostringstream oss;
-		oss << "Missing required data file: \"" << default_paks[i][0] << "\"";
-		if(default_paks[i][1]) {
-			oss << " (or \"" << default_paks[i][1] << "\")";
-		}
-		LogError << oss.str();
-		missing = true;
-	}
-	
-	if(missing) {
+	if(!addDefaultResources(g_resources)) {
 		
 		// Print the search path to the log
 		std::ostringstream oss;
@@ -975,17 +950,6 @@ bool ArxGame::addPaks() {
 		LogCritical << oss.str();
 		
 		return false;
-	}
-	
-	// Load optional patch files
-	BOOST_REVERSE_FOREACH(const fs::path & base, fs::getDataDirs()) {
-		g_resources->addFiles(base / "editor", "editor");
-		g_resources->addFiles(base / "game", "game");
-		g_resources->addFiles(base / "graph", "graph");
-		g_resources->addFiles(base / "localisation", "localisation");
-		g_resources->addFiles(base / "misc", "misc");
-		g_resources->addFiles(base / "sfx", "sfx");
-		g_resources->addFiles(base / "speech", "speech");
 	}
 	
 	return true;

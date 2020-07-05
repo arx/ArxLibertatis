@@ -35,6 +35,7 @@
 #include "io/resource/PakReader.h"
 #include "io/resource/PakEntry.h"
 #include "io/resource/ResourcePath.h"
+#include "io/resource/ResourceSetup.h"
 #include "io/log/Logger.h"
 
 #include "platform/ProgramOptions.h"
@@ -260,31 +261,7 @@ int utf8_main(int argc, char ** argv) {
 	PakReader resources;
 	
 	if(status == RunProgram && g_addDefaultArchives) {
-		// TODO share this list with the game code
-		static const char * const default_paks[][2] = {
-			{ "data.pak", NULL },
-			{ "loc.pak", "loc_default.pak" },
-			{ "data2.pak", NULL },
-			{ "sfx.pak", NULL },
-			{ "speech.pak", "speech_default.pak" },
-		};
-		BOOST_FOREACH(const char * const * const filenames, default_paks) {
-			if(resources.addArchive(fs::findDataFile(filenames[0]))) {
-				continue;
-			}
-			if(filenames[1] && resources.addArchive(fs::findDataFile(filenames[1]))) {
-				continue;
-			}
-			std::ostringstream oss;
-			oss << "Missing required data file: \"" << filenames[0] << "\"";
-			if(filenames[1]) {
-				oss << " (or \"" << filenames[1] << "\")";
-			}
-			LogError << oss.str();
-		}
-		BOOST_REVERSE_FOREACH(const fs::path & base, fs::getDataDirs()) {
-			addResourceDir(resources, base);
-		}
+		addDefaultResources(&resources);
 	}
 	
 	if(status == RunProgram) {

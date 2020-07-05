@@ -1148,6 +1148,7 @@ set(IO_RESOURCE_SOURCES
 	src/io/resource/PakEntry.cpp
 	src/io/resource/PakReader.cpp
 	src/io/resource/ResourcePath.cpp
+	src/io/resource/ResourceSetup.cpp
 )
 set(IO_LOGGER_POSIX_SOURCES src/io/log/ColorLogger.cpp)
 set(IO_LOGGER_WINDOWS_SOURCES src/io/log/MsvcLogger.cpp)
