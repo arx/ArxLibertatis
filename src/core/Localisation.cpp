@@ -245,7 +245,7 @@ void loadLocalisation(PakDirectory * dir, const std::string & name) {
 void loadLocalisations() {
 	
 	const std::string suffix = ".ini";
-	const std::string fallbackPrefix = "xtext_english_";
+	const std::string fallbackPrefix = "xtext_default_";
 	const std::string localizedPrefix = "xtext_" + config.interface.language + "_";
 	
 	PakDirectory * dir = g_resources->getDirectory("localisation");
