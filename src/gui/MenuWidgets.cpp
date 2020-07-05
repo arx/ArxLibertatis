@@ -182,6 +182,9 @@ void MainMenuDoFrame() {
 	pMenuCursor->update();
 	
 	g_mainMenu->update();
+	if(g_mainMenu->bReInitAll) {
+		return;
+	}
 	
 	g_mainMenu->render();
 	
