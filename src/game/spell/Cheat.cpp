@@ -348,8 +348,7 @@ static void ApplySPMax() {
 		ARX_EQUIPMENT_RecreatePlayerMesh();
 		
 		ARX_PLAYER_Rune_Add_All();
-		std::string text = "!!!!!!! FanTomAciE !!!!!!!";
-		notification_add(text);
+		notification_add("!!!!!!! FanTomAciE !!!!!!!");
 		player.Attribute_Redistribute += 10;
 		player.Skill_Redistribute += 50;
 		player.level = std::max(player.level, short(10));

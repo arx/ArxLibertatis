@@ -198,7 +198,7 @@ public:
 		DebugScript(' ' << options << " \"" << text << '"');
 		
 		if(!text.empty() && text[0] == '[') {
-			text = getLocalised(loadUnlocalized(text));
+			text = loadUnlocalized(text);
 		}
 		
 		notification_add(text);

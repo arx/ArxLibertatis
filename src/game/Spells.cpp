@@ -1049,7 +1049,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	
 	if(!CanPayMana(spell, ARX_SPELLS_GetManaCost(typ, spell->m_level))) {
 		if(spell->m_caster == EntityHandle_Player) {
-			notification_add(getLocalised("player_cantcast"));
+			notification_add("player_cantcast");
 			ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
 		}
 		ARX_SPELLS_Fizzle(spell);

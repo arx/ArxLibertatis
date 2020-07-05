@@ -21,6 +21,7 @@
 
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "core/Localisation.h"
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 #include "graphics/font/Font.h"
@@ -44,7 +45,7 @@ struct Notification {
 };
 
 static const size_t MAX_SPEECH = 9;
-Notification g_notification[MAX_SPEECH];
+static Notification g_notification[MAX_SPEECH];
 
 extern TextureContainer * arx_logo_tc;
 
@@ -148,7 +149,7 @@ static void ARX_SPEECH_Render() {
 		EERIEDrawBitmap(rect, .00001f, arx_logo_tc, Color::white);
 		
 		igrec += ARX_UNICODE_DrawTextInRect(hFontInGame, Vec2f(120.f * g_sizeRatio.x, igrec), 500 * g_sizeRatio.x,
-		                           ' ' + g_notification[i].text, Color::white, NULL);
+		                           ' ' + getLocalised(g_notification[i].text), Color::white, NULL);
 		
 		if(igrec > iEnd && !isLastSpeech(i)) {
 			ARX_SPEECH_MoveUp();
