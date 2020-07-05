@@ -28,6 +28,7 @@
 // Taken from Crypto++ and modified to fit the project.
 
 #include <cstring>
+#include <algorithm>
 #include <string>
 #include <ostream>
 #include <iomanip>
@@ -71,7 +72,21 @@ T safe_right_shift(T value) {
 
 template <size_t N>
 struct checksum {
+	
 	char data[N];
+	
+	checksum() {
+		std::fill_n(data, N, '\0');
+	}
+	
+	bool operator==(const checksum & other) const {
+		return std::memcmp(data, other.data, sizeof(data)) == 0;
+	}
+	
+	bool operator!=(const checksum & other) const {
+		return !(*this == other);
+	}
+	
 };
 
 template <class T>

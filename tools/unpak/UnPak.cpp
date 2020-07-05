@@ -163,6 +163,9 @@ static void processResources(PakReader & resources, const fs::path & prefix, Unp
 		std::cout << "external";
 	}
 	std::cout << "\n";
+	if(resources.getChecksum() != util::md5::checksum()) {
+		std::cout << "Id: " << resources.getChecksum() << "\n";
+	}
 	
 	processDirectory(resources, prefix, res::path(), action);
 }

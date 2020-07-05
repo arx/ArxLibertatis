@@ -28,6 +28,7 @@
 #include "io/resource/PakEntry.h"
 #include "io/resource/ResourcePath.h"
 #include "util/Flags.h"
+#include "util/MD5.h"
 
 namespace fs { class path; }
 
@@ -97,8 +98,11 @@ public:
 	
 	ReleaseFlags getReleaseType() { return release; }
 	
+	const util::md5::checksum & getChecksum() { return m_checksum; }
+	
 private:
 	
+	util::md5::checksum m_checksum;
 	ReleaseFlags release;
 	std::vector<std::istream *> paks;
 	

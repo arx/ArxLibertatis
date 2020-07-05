@@ -495,6 +495,13 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 	}
 	release |= key;
 	
+	util::md5::checksum checksum = util::md5::compute(&fat[0], fat_size);
+	if(has_dirs() || has_files()) {
+		m_checksum = util::md5::checksum();
+	} else {
+		m_checksum = checksum;
+	}
+	
 	char * pos = &fat[0];
 	
 	paks.push_back(ifs);
@@ -588,6 +595,8 @@ PakFileHandle * PakReader::open(const res::path & name) {
 }
 
 bool PakReader::addFiles(const fs::path & path, const res::path & mount) {
+	
+	m_checksum = util::md5::checksum();
 	
 	fs::FileType type = fs::get_type(path);
 	
