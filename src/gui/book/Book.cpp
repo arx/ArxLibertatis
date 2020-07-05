@@ -1417,14 +1417,14 @@ void SpellsPage::drawSpells() const {
 			flyingover = 1;
 			
 			cursorSetInteraction();
-			DrawBookTextCenter(hFontInBook, bookPos + Vec2f(111, 26) * scale, spellInfo.name, Color::none);
+			DrawBookTextCenter(hFontInBook, bookPos + Vec2f(111, 26) * scale, getLocalised(spellInfo.name), Color::none);
 			
 			pTextManage->Clear();
 			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
 				float(g_size.center().x),
 				12,
 				float(g_size.center().x) * 0.82f,
-				spellInfo.description,
+				getLocalised(spellInfo.description),
 				Color(232, 204, 143),
 				PlatformDurationMs(1000),
 				0.01f,
