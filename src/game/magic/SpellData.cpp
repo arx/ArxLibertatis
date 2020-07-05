@@ -31,8 +31,8 @@ void spellDataInit() {
 	
 	{ // Magic_Sight Level 1
 		SPELL_ICON & s = spellicons[SPELL_MAGIC_SIGHT];
-		s.name = getLocalised("system_spell_name_magic_sight");
-		s.description = getLocalised("system_spell_description_magic_sight");
+		s.name = "system_spell_name_magic_sight";
+		s.description = "system_spell_description_magic_sight";
 		s.level = 1;
 		s.spellid = SPELL_MAGIC_SIGHT;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_magic_sight");
@@ -42,8 +42,8 @@ void spellDataInit() {
 	
 	{ // Magic_Missile Level 1
 		SPELL_ICON & s = spellicons[SPELL_MAGIC_MISSILE];
-		s.name = getLocalised("system_spell_name_magic_projectile");
-		s.description = getLocalised("system_spell_description_magic_projectile");
+		s.name = "system_spell_name_magic_projectile";
+		s.description = "system_spell_description_magic_projectile";
 		s.level = 1;
 		s.spellid = SPELL_MAGIC_MISSILE;
 		s.m_hasDuration = false;
@@ -55,8 +55,8 @@ void spellDataInit() {
 	
 	{ // Ignit Level 1
 		SPELL_ICON & s = spellicons[SPELL_IGNIT];
-		s.name = getLocalised("system_spell_name_ignit");
-		s.description = getLocalised("system_spell_description_ignit");
+		s.name = "system_spell_name_ignit";
+		s.description = "system_spell_description_ignit";
 		s.level = 1;
 		s.spellid = SPELL_IGNIT;
 		s.m_hasDuration = false;
@@ -67,8 +67,8 @@ void spellDataInit() {
 	
 	{ // Douse Level 1
 		SPELL_ICON & s = spellicons[SPELL_DOUSE];
-		s.name = getLocalised("system_spell_name_douse");
-		s.description = getLocalised("system_spell_description_douse");
+		s.name = "system_spell_name_douse";
+		s.description = "system_spell_description_douse";
 		s.level = 1;
 		s.spellid = SPELL_DOUSE;
 		s.m_hasDuration = false;
@@ -79,8 +79,8 @@ void spellDataInit() {
 	
 	{ // Activate_Portal Level 1
 		SPELL_ICON & s = spellicons[SPELL_ACTIVATE_PORTAL];
-		s.name = getLocalised("system_spell_name_activate_portal");
-		s.description = getLocalised("system_spell_description_activate_portal");
+		s.name = "system_spell_name_activate_portal";
+		s.description = "system_spell_description_activate_portal";
 		s.level = 1;
 		s.spellid = SPELL_ACTIVATE_PORTAL;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_activate_portal");
@@ -91,8 +91,8 @@ void spellDataInit() {
 	
 	{ // Heal Level 2
 		SPELL_ICON & s = spellicons[SPELL_HEAL];
-		s.name = getLocalised("system_spell_name_heal");
-		s.description = getLocalised("system_spell_description_heal");
+		s.name = "system_spell_name_heal";
+		s.description = "system_spell_description_heal";
 		s.level = 2;
 		s.spellid = SPELL_HEAL;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_heal");
@@ -102,8 +102,8 @@ void spellDataInit() {
 	
 	{ // Detect_trap Level 2
 		SPELL_ICON & s = spellicons[SPELL_DETECT_TRAP];
-		s.name = getLocalised("system_spell_name_detect_trap");
-		s.description = getLocalised("system_spell_description_detect_trap");
+		s.name = "system_spell_name_detect_trap";
+		s.description = "system_spell_description_detect_trap";
 		s.level = 2;
 		s.spellid = SPELL_DETECT_TRAP;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_detect_trap");
@@ -114,8 +114,8 @@ void spellDataInit() {
 	
 	{ // Armor Level 2
 		SPELL_ICON & s = spellicons[SPELL_ARMOR];
-		s.name = getLocalised("system_spell_name_armor");
-		s.description = getLocalised("system_spell_description_armor");
+		s.name = "system_spell_name_armor";
+		s.description = "system_spell_description_armor";
 		s.level = 2;
 		s.spellid = SPELL_ARMOR;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_armor");
@@ -125,8 +125,8 @@ void spellDataInit() {
 	
 	{ // Lower Armor Level 2
 		SPELL_ICON & s = spellicons[SPELL_LOWER_ARMOR];
-		s.name = getLocalised("system_spell_name_lower_armor");
-		s.description = getLocalised("system_spell_description_lower_armor");
+		s.name = "system_spell_name_lower_armor";
+		s.description = "system_spell_description_lower_armor";
 		s.level = 2;
 		s.spellid = SPELL_LOWER_ARMOR;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_lower_armor");
@@ -136,8 +136,8 @@ void spellDataInit() {
 	
 	{ // Harm Level 2
 		SPELL_ICON & s = spellicons[SPELL_HARM];
-		s.name = getLocalised("system_spell_name_harm");
-		s.description = getLocalised("system_spell_description_harm");
+		s.name = "system_spell_name_harm";
+		s.description = "system_spell_description_harm";
 		s.level = 2;
 		s.spellid = SPELL_HARM;
 		s.bAudibleAtStart = true;
@@ -149,8 +149,8 @@ void spellDataInit() {
 	
 	{ // Speed Level 3
 		SPELL_ICON & s = spellicons[SPELL_SPEED];
-		s.name = getLocalised("system_spell_name_speed");
-		s.description = getLocalised("system_spell_description_speed");
+		s.name = "system_spell_name_speed";
+		s.description = "system_spell_description_speed";
 		s.level = 3;
 		s.spellid = SPELL_SPEED;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_speed");
@@ -160,8 +160,8 @@ void spellDataInit() {
 	
 	{ // Reveal Level 3
 		SPELL_ICON & s = spellicons[SPELL_DISPELL_ILLUSION];
-		s.name = getLocalised("system_spell_name_reveal");
-		s.description = getLocalised("system_spell_description_reveal");
+		s.name = "system_spell_name_reveal";
+		s.description = "system_spell_description_reveal";
 		s.level = 3;
 		s.spellid = SPELL_DISPELL_ILLUSION;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_reveal");
@@ -172,8 +172,8 @@ void spellDataInit() {
 	
 	{ // Fireball Level 3
 		SPELL_ICON & s = spellicons[SPELL_FIREBALL];
-		s.name = getLocalised("system_spell_name_fireball");
-		s.description = getLocalised("system_spell_description_fireball");
+		s.name = "system_spell_name_fireball";
+		s.description = "system_spell_description_fireball";
 		s.level = 3;
 		s.spellid = SPELL_FIREBALL;
 		s.m_hasDuration = false;
@@ -186,8 +186,8 @@ void spellDataInit() {
 	
 	{ // Create Food Level 3
 		SPELL_ICON & s = spellicons[SPELL_CREATE_FOOD];
-		s.name = getLocalised("system_spell_name_create_food");
-		s.description = getLocalised("system_spell_description_create_food");
+		s.name = "system_spell_name_create_food";
+		s.description = "system_spell_description_create_food";
 		s.level = 3;
 		s.spellid = SPELL_CREATE_FOOD;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_create_food");
@@ -198,8 +198,8 @@ void spellDataInit() {
 	
 	{ // Ice Projectile Level 3
 		SPELL_ICON & s = spellicons[SPELL_ICE_PROJECTILE];
-		s.name = getLocalised("system_spell_name_ice_projectile");
-		s.description = getLocalised("system_spell_description_ice_projectile");
+		s.name = "system_spell_name_ice_projectile";
+		s.description = "system_spell_description_ice_projectile";
 		s.level = 3;
 		s.spellid = SPELL_ICE_PROJECTILE;
 		s.m_hasDuration = false;
@@ -213,8 +213,8 @@ void spellDataInit() {
 	
 	{ // Bless Level 4
 		SPELL_ICON & s = spellicons[SPELL_BLESS];
-		s.name = getLocalised("system_spell_name_sanctify");
-		s.description = getLocalised("system_spell_description_sanctify");
+		s.name = "system_spell_name_sanctify";
+		s.description = "system_spell_description_sanctify";
 		s.level = 4;
 		s.spellid = SPELL_BLESS;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_bless");
@@ -225,8 +225,8 @@ void spellDataInit() {
 	
 	{ // Dispel_Field Level 4
 		SPELL_ICON & s = spellicons[SPELL_DISPELL_FIELD];
-		s.name = getLocalised("system_spell_name_dispell_field");
-		s.description = getLocalised("system_spell_description_dispell_field");
+		s.name = "system_spell_name_dispell_field";
+		s.description = "system_spell_description_dispell_field";
 		s.level = 4;
 		s.spellid = SPELL_DISPELL_FIELD;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_dispell_field");
@@ -236,8 +236,8 @@ void spellDataInit() {
 	
 	{ // Cold Protection Level 4
 		SPELL_ICON & s = spellicons[SPELL_COLD_PROTECTION];
-		s.name = getLocalised("system_spell_name_cold_protection");
-		s.description = getLocalised("system_spell_description_cold_protection");
+		s.name = "system_spell_name_cold_protection";
+		s.description = "system_spell_description_cold_protection";
 		s.level = 4;
 		s.spellid = SPELL_COLD_PROTECTION;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_protection_cold");
@@ -248,8 +248,8 @@ void spellDataInit() {
 	
 	{ // Fire Protection Level 4
 		SPELL_ICON & s = spellicons[SPELL_FIRE_PROTECTION];
-		s.name = getLocalised("system_spell_name_fire_protection");
-		s.description = getLocalised("system_spell_description_fire_protection");
+		s.name = "system_spell_name_fire_protection";
+		s.description = "system_spell_description_fire_protection";
 		s.level = 4;
 		s.spellid = SPELL_FIRE_PROTECTION;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_protection_fire");
@@ -259,8 +259,8 @@ void spellDataInit() {
 	
 	{ // Telekinesis Level 4
 		SPELL_ICON & s = spellicons[SPELL_TELEKINESIS];
-		s.name = getLocalised("system_spell_name_telekinesis");
-		s.description = getLocalised("system_spell_description_telekinesis");
+		s.name = "system_spell_name_telekinesis";
+		s.description = "system_spell_description_telekinesis";
 		s.level = 4;
 		s.spellid = SPELL_TELEKINESIS;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_telekinesis");
@@ -270,8 +270,8 @@ void spellDataInit() {
 	
 	{ // Curse Level 4
 		SPELL_ICON & s = spellicons[SPELL_CURSE];
-		s.name = getLocalised("system_spell_name_curse");
-		s.description = getLocalised("system_spell_description_curse");
+		s.name = "system_spell_name_curse";
+		s.description = "system_spell_description_curse";
 		s.level = 4;
 		s.spellid = SPELL_CURSE;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_curse");
@@ -283,8 +283,8 @@ void spellDataInit() {
 	
 	{ // Rune of Guarding Level 5
 		SPELL_ICON & s = spellicons[SPELL_RUNE_OF_GUARDING];
-		s.name = getLocalised("system_spell_name_rune_guarding");
-		s.description = getLocalised("system_spell_description_rune_guarding");
+		s.name = "system_spell_name_rune_guarding";
+		s.description = "system_spell_description_rune_guarding";
 		s.level = 5;
 		s.spellid = SPELL_RUNE_OF_GUARDING;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_rune_guarding");
@@ -295,8 +295,8 @@ void spellDataInit() {
 	
 	{ // Levitate Level 5
 		SPELL_ICON & s = spellicons[SPELL_LEVITATE];
-		s.name = getLocalised("system_spell_name_levitate");
-		s.description = getLocalised("system_spell_description_levitate");
+		s.name = "system_spell_name_levitate";
+		s.description = "system_spell_description_levitate";
 		s.level = 5;
 		s.spellid = SPELL_LEVITATE;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_levitate");
@@ -307,8 +307,8 @@ void spellDataInit() {
 	
 	{ // Cure Poison Level 5
 		SPELL_ICON & s = spellicons[SPELL_CURE_POISON];
-		s.name = getLocalised("system_spell_name_cure_poison");
-		s.description = getLocalised("system_spell_description_cure_poison");
+		s.name = "system_spell_name_cure_poison";
+		s.description = "system_spell_description_cure_poison";
 		s.level = 5;
 		s.spellid = SPELL_CURE_POISON;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_cure_poison");
@@ -318,8 +318,8 @@ void spellDataInit() {
 	
 	{ // Repel Undead Level 5
 		SPELL_ICON & s = spellicons[SPELL_REPEL_UNDEAD];
-		s.name = getLocalised("system_spell_name_repel_undead");
-		s.description = getLocalised("system_spell_description_repel_undead");
+		s.name = "system_spell_name_repel_undead";
+		s.description = "system_spell_description_repel_undead";
 		s.level = 5;
 		s.spellid = SPELL_REPEL_UNDEAD;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_repel_undead");
@@ -329,8 +329,8 @@ void spellDataInit() {
 	
 	{ // Poison Projection Level 5
 		SPELL_ICON & s = spellicons[SPELL_POISON_PROJECTILE];
-		s.name = getLocalised("system_spell_name_poison_projection");
-		s.description = getLocalised("system_spell_description_poison_projection");
+		s.name = "system_spell_name_poison_projection";
+		s.description = "system_spell_description_poison_projection";
 		s.level = 5;
 		s.spellid = SPELL_POISON_PROJECTILE;
 		s.m_hasDuration = false;
@@ -343,8 +343,8 @@ void spellDataInit() {
 	
 	{ // Raise Dead Level 6
 		SPELL_ICON & s = spellicons[SPELL_RISE_DEAD];
-		s.name = getLocalised("system_spell_name_raise_dead");
-		s.description = getLocalised("system_spell_description_raise_dead");
+		s.name = "system_spell_name_raise_dead";
+		s.description = "system_spell_description_raise_dead";
 		s.level = 6;
 		s.spellid = SPELL_RISE_DEAD;
 		s.bAudibleAtStart = true;
@@ -356,8 +356,8 @@ void spellDataInit() {
 	
 	{ // Paralyse Dead Level 6
 		SPELL_ICON & s = spellicons[SPELL_PARALYSE];
-		s.name = getLocalised("system_spell_name_paralyse");
-		s.description = getLocalised("system_spell_description_paralyse");
+		s.name = "system_spell_name_paralyse";
+		s.description = "system_spell_description_paralyse";
 		s.level = 6;
 		s.spellid = SPELL_PARALYSE;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_paralyse");
@@ -367,8 +367,8 @@ void spellDataInit() {
 	
 	{ // Create Field Dead Level 6
 		SPELL_ICON & s = spellicons[SPELL_CREATE_FIELD];
-		s.name = getLocalised("system_spell_name_create_field");
-		s.description = getLocalised("system_spell_description_create_field");
+		s.name = "system_spell_name_create_field";
+		s.description = "system_spell_description_create_field";
 		s.level = 6;
 		s.spellid = SPELL_CREATE_FIELD;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_create_field");
@@ -379,8 +379,8 @@ void spellDataInit() {
 	
 	{ // Disarm Trap Level 6
 		SPELL_ICON & s = spellicons[SPELL_DISARM_TRAP];
-		s.name = getLocalised("system_spell_name_disarm_trap");
-		s.description = getLocalised("system_spell_description_disarm_trap");
+		s.name = "system_spell_name_disarm_trap";
+		s.description = "system_spell_description_disarm_trap";
 		s.level = 6;
 		s.spellid = SPELL_DISARM_TRAP;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_disarm_trap");
@@ -391,8 +391,8 @@ void spellDataInit() {
 	
 	{ // Slow_Down Level 6 // SECRET SPELL
 		SPELL_ICON & s = spellicons[SPELL_SLOW_DOWN];
-		s.name = getLocalised("system_spell_name_slowdown");
-		s.description = getLocalised("system_spell_description_slowdown");
+		s.name = "system_spell_name_slowdown";
+		s.description = "system_spell_description_slowdown";
 		s.level = 6;
 		s.spellid = SPELL_SLOW_DOWN;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_slow_down");
@@ -403,8 +403,8 @@ void spellDataInit() {
 	
 	{ // Flying Eye Level 7
 		SPELL_ICON & s = spellicons[SPELL_FLYING_EYE];
-		s.name = getLocalised("system_spell_name_flying_eye");
-		s.description = getLocalised("system_spell_description_flying_eye");
+		s.name = "system_spell_name_flying_eye";
+		s.description = "system_spell_description_flying_eye";
 		s.level = 7;
 		s.spellid = SPELL_FLYING_EYE;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_flying_eye");
@@ -414,8 +414,8 @@ void spellDataInit() {
 	
 	{ // Fire Field Eye Level 7
 		SPELL_ICON & s = spellicons[SPELL_FIRE_FIELD];
-		s.name = getLocalised("system_spell_name_fire_field");
-		s.description = getLocalised("system_spell_description_fire_field");
+		s.name = "system_spell_name_fire_field";
+		s.description = "system_spell_description_fire_field";
 		s.level = 7;
 		s.spellid = SPELL_FIRE_FIELD;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_create_fire_field");
@@ -426,8 +426,8 @@ void spellDataInit() {
 	
 	{ // Ice Field Level 7
 		SPELL_ICON & s = spellicons[SPELL_ICE_FIELD];
-		s.name = getLocalised("system_spell_name_ice_field");
-		s.description = getLocalised("system_spell_description_ice_field");
+		s.name = "system_spell_name_ice_field";
+		s.description = "system_spell_description_ice_field";
 		s.level = 7;
 		s.spellid = SPELL_ICE_FIELD;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_create_cold_field");
@@ -439,8 +439,8 @@ void spellDataInit() {
 	
 	{ // Lightning Strike Level 7
 		SPELL_ICON & s = spellicons[SPELL_LIGHTNING_STRIKE];
-		s.name = getLocalised("system_spell_name_lightning_strike");
-		s.description = getLocalised("system_spell_description_lightning_strike");
+		s.name = "system_spell_name_lightning_strike";
+		s.description = "system_spell_description_lightning_strike";
 		s.level = 7;
 		s.spellid = SPELL_LIGHTNING_STRIKE;
 		s.m_hasDuration = false;
@@ -453,8 +453,8 @@ void spellDataInit() {
 	
 	{ // Confusion Level 7
 		SPELL_ICON & s = spellicons[SPELL_CONFUSE];
-		s.name = getLocalised("system_spell_name_confuse");
-		s.description = getLocalised("system_spell_description_confuse");
+		s.name = "system_spell_name_confuse";
+		s.description = "system_spell_description_confuse";
 		s.level = 7;
 		s.spellid = SPELL_CONFUSE;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_confuse");
@@ -464,8 +464,8 @@ void spellDataInit() {
 	
 	{ // Invisibility Level 8
 		SPELL_ICON & s = spellicons[SPELL_INVISIBILITY];
-		s.name = getLocalised("system_spell_name_invisibility");
-		s.description = getLocalised("system_spell_description_invisibility");
+		s.name = "system_spell_name_invisibility";
+		s.description = "system_spell_description_invisibility";
 		s.level = 8;
 		s.spellid = SPELL_INVISIBILITY;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_invisibility");
@@ -475,8 +475,8 @@ void spellDataInit() {
 	
 	{ // Mana Drain Level 8
 		SPELL_ICON & s = spellicons[SPELL_MANA_DRAIN];
-		s.name = getLocalised("system_spell_name_mana_drain");
-		s.description = getLocalised("system_spell_description_mana_drain");
+		s.name = "system_spell_name_mana_drain";
+		s.description = "system_spell_description_mana_drain";
 		s.level = 8;
 		s.spellid = SPELL_MANA_DRAIN;
 		s.bAudibleAtStart = true;
@@ -487,8 +487,8 @@ void spellDataInit() {
 	
 	{ // Explosion Level 8
 		SPELL_ICON & s = spellicons[SPELL_EXPLOSION];
-		s.name = getLocalised("system_spell_name_explosion");
-		s.description = getLocalised("system_spell_description_explosion");
+		s.name = "system_spell_name_explosion";
+		s.description = "system_spell_description_explosion";
 		s.level = 8;
 		s.spellid = SPELL_EXPLOSION;
 		s.m_hasDuration = false;
@@ -501,8 +501,8 @@ void spellDataInit() {
 	
 	{ // Enchant Weapon Level 8
 		SPELL_ICON & s = spellicons[SPELL_ENCHANT_WEAPON];
-		s.name = getLocalised("system_spell_name_enchant_weapon");
-		s.description = getLocalised("system_spell_description_enchant_weapon");
+		s.name = "system_spell_name_enchant_weapon";
+		s.description = "system_spell_description_enchant_weapon";
 		s.level = 8;
 		s.spellid = SPELL_ENCHANT_WEAPON;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_enchant_weapon");
@@ -513,8 +513,8 @@ void spellDataInit() {
 	
 	{ // Life Drain Level 8 // SECRET SPELL
 		SPELL_ICON & s = spellicons[SPELL_LIFE_DRAIN];
-		s.name = getLocalised("system_spell_name_life_drain");
-		s.description = getLocalised("system_spell_description_life_drain");
+		s.name = "system_spell_name_life_drain";
+		s.description = "system_spell_description_life_drain";
 		s.level = 8;
 		s.spellid = SPELL_LIFE_DRAIN;
 		s.bAudibleAtStart = true;
@@ -526,8 +526,8 @@ void spellDataInit() {
 	
 	{ // Summon Creature Level 9
 		SPELL_ICON & s = spellicons[SPELL_SUMMON_CREATURE];
-		s.name = getLocalised("system_spell_name_summon_creature");
-		s.description = getLocalised("system_spell_description_summon_creature");
+		s.name = "system_spell_name_summon_creature";
+		s.description = "system_spell_description_summon_creature";
 		s.level = 9;
 		s.spellid = SPELL_SUMMON_CREATURE;
 		s.bAudibleAtStart = true;
@@ -539,8 +539,8 @@ void spellDataInit() {
 	
 	{ // FAKE Summon Creature Level 9
 		SPELL_ICON & s = spellicons[SPELL_FAKE_SUMMON];
-		s.name = getLocalised("system_spell_name_summon_creature");
-		s.description = getLocalised("system_spell_description_summon_creature");
+		s.name = "system_spell_name_summon_creature";
+		s.description = "system_spell_description_summon_creature";
 		s.level = 9;
 		s.spellid = SPELL_FAKE_SUMMON;
 		s.bAudibleAtStart = true;
@@ -553,8 +553,8 @@ void spellDataInit() {
 	
 	{ // Negate Magic Level 9
 		SPELL_ICON & s = spellicons[SPELL_NEGATE_MAGIC];
-		s.name = getLocalised("system_spell_name_negate_magic");
-		s.description = getLocalised("system_spell_description_negate_magic");
+		s.name = "system_spell_name_negate_magic";
+		s.description = "system_spell_description_negate_magic";
 		s.level = 9;
 		s.spellid = SPELL_NEGATE_MAGIC;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_negate_magic");
@@ -565,8 +565,8 @@ void spellDataInit() {
 	
 	{ // Incinerate Level 9
 		SPELL_ICON & s = spellicons[SPELL_INCINERATE];
-		s.name = getLocalised("system_spell_name_incinerate");
-		s.description = getLocalised("system_spell_description_incinerate");
+		s.name = "system_spell_name_incinerate";
+		s.description = "system_spell_description_incinerate";
 		s.level = 9;
 		s.spellid = SPELL_INCINERATE;
 		s.m_hasDuration = false;
@@ -579,8 +579,8 @@ void spellDataInit() {
 	
 	{ // Mass paralyse Creature Level 9
 		SPELL_ICON & s = spellicons[SPELL_MASS_PARALYSE];
-		s.name = getLocalised("system_spell_name_mass_paralyse");
-		s.description = getLocalised("system_spell_description_mass_paralyse");
+		s.name = "system_spell_name_mass_paralyse";
+		s.description = "system_spell_description_mass_paralyse";
 		s.level = 9;
 		s.spellid = SPELL_MASS_PARALYSE;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_mass_paralyse");
@@ -591,8 +591,8 @@ void spellDataInit() {
 	
 	{ // Mass Lightning Strike Level 10
 		SPELL_ICON & s = spellicons[SPELL_MASS_LIGHTNING_STRIKE];
-		s.name = getLocalised("system_spell_name_mass_lightning_strike");
-		s.description = getLocalised("system_spell_description_mass_lightning_strike");
+		s.name = "system_spell_name_mass_lightning_strike";
+		s.description = "system_spell_description_mass_lightning_strike";
 		s.level = 10;
 		s.spellid = SPELL_MASS_LIGHTNING_STRIKE;
 		s.m_hasDuration = false;
@@ -605,8 +605,8 @@ void spellDataInit() {
 	
 	{ // Control Target Level 10
 		SPELL_ICON & s = spellicons[SPELL_CONTROL_TARGET];
-		s.name = getLocalised("system_spell_name_control_target");
-		s.description = getLocalised("system_spell_description_control_target");
+		s.name = "system_spell_name_control_target";
+		s.description = "system_spell_description_control_target";
 		s.level = 10;
 		s.spellid = SPELL_CONTROL_TARGET;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_control_target");
@@ -616,8 +616,8 @@ void spellDataInit() {
 	
 	{ // Freeze time Level 10
 		SPELL_ICON & s = spellicons[SPELL_FREEZE_TIME];
-		s.name = getLocalised("system_spell_name_freeze_time");
-		s.description = getLocalised("system_spell_description_freeze_time");
+		s.name = "system_spell_name_freeze_time";
+		s.description = "system_spell_description_freeze_time";
 		s.level = 10;
 		s.spellid = SPELL_FREEZE_TIME;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_freeze_time");
@@ -627,8 +627,8 @@ void spellDataInit() {
 	
 	{ // Mass incinerate Level 10
 		SPELL_ICON & s = spellicons[SPELL_MASS_INCINERATE];
-		s.name = getLocalised("system_spell_name_mass_incinerate");
-		s.description = getLocalised("system_spell_description_mass_incinerate");
+		s.name = "system_spell_name_mass_incinerate";
+		s.description = "system_spell_description_mass_incinerate";
 		s.level = 10;
 		s.spellid = SPELL_MASS_INCINERATE;
 		s.m_hasDuration = false;
