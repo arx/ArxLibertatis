@@ -125,9 +125,6 @@ public:
 	TextureContainer * accessibleTab[10];
 	TextureContainer * currentTab[10];
 	
-	std::string        Level;
-	std::string        Xp;
-	
 };
 
 enum E_ARX_STATE_MOUSE
