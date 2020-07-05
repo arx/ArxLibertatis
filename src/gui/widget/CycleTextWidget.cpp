@@ -33,7 +33,7 @@
 #include "input/Input.h"
 
 CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, const std::string & label, Font * entryFont)
-	: m_label(new TextWidget(font, label))
+	: m_label(label.empty() ? NULL : new TextWidget(font, label))
 	, m_left(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_left"))
 	, m_right(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_right"))
 	, m_font(entryFont ? entryFont : font)
@@ -41,10 +41,16 @@ CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, const std::str
 	, m_value(0)
 {
 	
-	m_label->forceDisplay(TextWidget::Dynamic);
+	if(m_label) {
+		m_label->forceDisplay(TextWidget::Dynamic);
+	}
 	
 	float minWidth = m_left->m_rect.width() + m_content.width() + m_right->m_rect.width();
-	m_rect = Rectf(std::max(minWidth, size.x), std::max(m_content.height(), m_label->m_rect.height()));
+	float height = m_content.height();
+	if(m_label) {
+		height = std::max(height, m_label->m_rect.height());
+	}
+	m_rect = Rectf(std::max(minWidth, m_label ? size.x : 0.f), height);
 	
 	m_right->setPosition(Vec2f(m_rect.right - m_right->m_rect.width(),
 	                           m_rect.center().y - m_right->m_rect.height() / 2));
@@ -80,16 +86,22 @@ void CycleTextWidget::addEntry(const std::string & label) {
 	
 	m_entries.push_back(widget);
 	
-	float maxWidth = m_rect.width() - m_left->m_rect.width() - m_right->m_rect.width()
-	                  - m_label->m_rect.width() - m_label->m_rect.height();
-	maxWidth = std::max(maxWidth, m_content.width());
-	if(widget->m_rect.width() > maxWidth) {
-		widget->m_rect.right = widget->m_rect.left + maxWidth;
+	if(m_label) {
+		float maxWidth = m_rect.width() - m_left->m_rect.width() - m_right->m_rect.width()
+		                 - m_label->m_rect.width() - m_label->m_rect.height();
+		maxWidth = std::max(maxWidth, m_content.width());
+		if(widget->m_rect.width() > maxWidth) {
+			widget->m_rect.right = widget->m_rect.left + maxWidth;
+		}
 	}
 	m_rect.bottom = m_rect.top + std::max(m_rect.height(), widget->m_rect.height());
 	
 	m_content.left = m_content.right - std::max(m_content.width(), widget->m_rect.width());
 	m_content.bottom = m_content.top + m_rect.height();
+	
+	if(!m_label) {
+		m_rect.right = m_left->m_rect.width() + m_content.width() + m_right->m_rect.width();
+	}
 	
 	m_right->setPosition(Vec2f(m_rect.right - m_right->m_rect.width(),
 	                           m_rect.center().y - m_right->m_rect.height() / 2));
@@ -98,7 +110,9 @@ void CycleTextWidget::addEntry(const std::string & label) {
 	m_left->setPosition(Vec2f(m_content.left - m_left->m_rect.width(),
 	                          m_rect.center().y - m_left->m_rect.height() / 2));
 	
-	m_label->setPosition(Vec2f(m_rect.left, m_rect.center().y - m_label->m_rect.height() / 2));
+	if(m_label) {
+		m_label->setPosition(Vec2f(m_rect.left, m_rect.center().y - m_label->m_rect.height() / 2));
+	}
 	
 	BOOST_FOREACH(Widget * entry, m_entries) {
 		entry->setPosition(m_content.center() - entry->m_rect.size() / 2.f);
@@ -110,7 +124,9 @@ void CycleTextWidget::move(const Vec2f & offset) {
 	
 	Widget::move(offset);
 	
-	m_label->move(offset);
+	if(m_label) {
+		m_label->move(offset);
+	}
 	m_left->move(offset);
 	m_content.move(offset);
 	m_right->move(offset);
@@ -167,7 +183,9 @@ void CycleTextWidget::setEnabled(bool enable) {
 
 void CycleTextWidget::render(bool mouseOver) {
 	
-	m_label->render(mouseOver);
+	if(m_label) {
+		m_label->render(mouseOver);
+	}
 	
 	Vec2f cursor = Vec2f(GInput->getMousePosition());
 	
