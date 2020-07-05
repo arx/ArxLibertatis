@@ -22,6 +22,8 @@
 
 #include <vector>
 #include <istream>
+#include <string>
+#include <map>
 
 #include <boost/noncopyable.hpp>
 
@@ -51,6 +53,8 @@ public:
 	virtual ~PakFileHandle() { }
 	
 };
+
+typedef std::map<util::md5::checksum, std::vector<std::string> > PakFilter;
 
 class PakReader : public PakDirectory {
 	
@@ -89,7 +93,7 @@ public:
 	 */
 	bool addFiles(const fs::path & path, const res::path & mount = res::path());
 	
-	bool addArchive(const fs::path & pakfile);
+	bool addArchive(const fs::path & pakfile, const PakFilter * filter = NULL);
 	void clear();
 	
 	std::string read(const res::path & name);
