@@ -536,30 +536,30 @@ enum ARX_INTERFACE_BOOK_ITEM
 
 void StatsPage::loadStrings() {
 	
-	flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
-	flyover[BOOK_MIND] = getLocalised("system_charsheet_intel");
-	flyover[BOOK_DEXTERITY] = getLocalised("system_charsheet_dex");
-	flyover[BOOK_CONSTITUTION] = getLocalised("system_charsheet_consti");
-	flyover[BOOK_STEALTH] = getLocalised("system_charsheet_stealth");
-	flyover[BOOK_MECANISM] = getLocalised("system_charsheet_mecanism");
-	flyover[BOOK_INTUITION] = getLocalised("system_charsheet_intuition");
-	flyover[BOOK_ETHERAL_LINK] = getLocalised("system_charsheet_etheral_link");
-	flyover[BOOK_OBJECT_KNOWLEDGE] = getLocalised("system_charsheet_objknoledge");
-	flyover[BOOK_CASTING] = getLocalised("system_charsheet_casting");
-	flyover[BOOK_PROJECTILE] = getLocalised("system_charsheet_projectile");
-	flyover[BOOK_CLOSE_COMBAT] = getLocalised("system_charsheet_closecombat");
-	flyover[BOOK_DEFENSE] = getLocalised("system_charsheet_defense");
-	flyover[WND_ATTRIBUTES] = getLocalised("system_charsheet_atributes");
-	flyover[WND_SKILLS] = getLocalised("system_charsheet_skills");
-	flyover[WND_STATUS] = getLocalised("system_charsheet_status");
-	flyover[WND_LEVEL] = getLocalised("system_charsheet_level");
-	flyover[WND_XP] = getLocalised("system_charsheet_xpoints");
-	flyover[WND_HP] = getLocalised("system_charsheet_hp");
-	flyover[WND_MANA] = getLocalised("system_charsheet_mana");
-	flyover[WND_AC] = getLocalised("system_charsheet_ac");
-	flyover[WND_RESIST_MAGIC] = getLocalised("system_charsheet_res_magic");
-	flyover[WND_RESIST_POISON] = getLocalised("system_charsheet_res_poison");
-	flyover[WND_DAMAGE] = getLocalised("system_charsheet_damage");
+	flyover[BOOK_STRENGTH] = "system_charsheet_strength";
+	flyover[BOOK_MIND] = "system_charsheet_intel";
+	flyover[BOOK_DEXTERITY] = "system_charsheet_dex";
+	flyover[BOOK_CONSTITUTION] = "system_charsheet_consti";
+	flyover[BOOK_STEALTH] = "system_charsheet_stealth";
+	flyover[BOOK_MECANISM] = "system_charsheet_mecanism";
+	flyover[BOOK_INTUITION] = "system_charsheet_intuition";
+	flyover[BOOK_ETHERAL_LINK] = "system_charsheet_etheral_link";
+	flyover[BOOK_OBJECT_KNOWLEDGE] = "system_charsheet_objknoledge";
+	flyover[BOOK_CASTING] = "system_charsheet_casting";
+	flyover[BOOK_PROJECTILE] = "system_charsheet_projectile";
+	flyover[BOOK_CLOSE_COMBAT] = "system_charsheet_closecombat";
+	flyover[BOOK_DEFENSE] = "system_charsheet_defense";
+	flyover[WND_ATTRIBUTES] = "system_charsheet_atributes";
+	flyover[WND_SKILLS] = "system_charsheet_skills";
+	flyover[WND_STATUS] = "system_charsheet_status";
+	flyover[WND_LEVEL] = "system_charsheet_level";
+	flyover[WND_XP] = "system_charsheet_xpoints";
+	flyover[WND_HP] = "system_charsheet_hp";
+	flyover[WND_MANA] = "system_charsheet_mana";
+	flyover[WND_AC] = "system_charsheet_ac";
+	flyover[WND_RESIST_MAGIC] = "system_charsheet_res_magic";
+	flyover[WND_RESIST_POISON] = "system_charsheet_res_poison";
+	flyover[WND_DAMAGE] = "system_charsheet_damage";
 }
 
 void StatsPage::manage() {
@@ -590,13 +590,13 @@ void StatsPage::manageStats()
 	
 	{
 		std::stringstream ss;
-		ss << g_bookResouces.Level << " " << std::setw(3) << player.level;
+		ss << getLocalised("system_charsheet_player_lvl") << " " << std::setw(3) << player.level;
 		DrawBookTextCenter(hFontInBook, bookPos + Vec2f(301, 10) * scale, ss.str(), Color::black);
 	}
 	
 	{
 		std::stringstream ss;
-		ss << g_bookResouces.Xp << " " << std::setw(8) << player.xp;
+		ss << getLocalised("system_charsheet_player_xp") << " " << std::setw(8) << player.xp;
 		DrawBookTextCenter(hFontInBook, bookPos + Vec2f(413, 10) * scale, ss.str(), Color::black);
 	}
 	
@@ -736,10 +736,10 @@ void StatsPage::manageStats()
 		std::string toDisplay;
 		if(FLYING_OVER == WND_XP) {
 			std::stringstream ss;
-			ss << flyover[WND_XP] << " " << std::setw(8) << GetXPforLevel(player.level + 1) - player.xp;
+			ss << getLocalised(flyover[WND_XP]) << " " << std::setw(8) << GetXPforLevel(player.level + 1) - player.xp;
 			toDisplay = ss.str();
 		} else {
-			toDisplay = flyover[FLYING_OVER];
+			toDisplay = getLocalised(flyover[FLYING_OVER]);
 		}
 		
 		UNICODE_ARXDrawTextCenteredScroll(hFontInGame,

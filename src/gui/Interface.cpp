@@ -323,8 +323,6 @@ void INTERFACE_TC::init() {
 	arx_assert(currentTab[8]);
 	arx_assert(currentTab[9]);
 	
-	g_bookResouces.Level = getLocalised("system_charsheet_player_lvl");
-	g_bookResouces.Xp = getLocalised("system_charsheet_player_xp");
 }
 
 
