@@ -327,7 +327,7 @@ directory_iterator & directory_iterator::operator++() {
 	do {
 		
 		if(!FindNextFileW(m_handle, &m_data)) {
-			CloseHandle(m_handle);
+			FindClose(m_handle);
 			m_handle = INVALID_HANDLE_VALUE;
 			break;
 		}
