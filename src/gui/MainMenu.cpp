@@ -659,10 +659,6 @@ private:
 		config.save();
 	}
 	
-	void onClickedApply(Widget * /* widget */) {
-		// TODO
-	}
-	
 };
 
 class VideoOptionsMenuPage arx_final : public MenuPage {
