@@ -421,15 +421,9 @@ long getLocalisedKeyCount(const std::string & sectionname) {
 }
 
 std::string getLocalised(const std::string & name) {
-	
-	arx_assert(name.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ[]") == std::string::npos);
-	
 	return g_localisation.getKey(name, std::string(), name);
 }
 
 std::string getLocalised(const std::string & name, const std::string & default_value) {
-	
-	arx_assert(name.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ[]") == std::string::npos);
-	
 	return g_localisation.getKey(name, std::string(), default_value);
 }
