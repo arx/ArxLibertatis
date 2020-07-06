@@ -396,10 +396,6 @@ bool ARX_Text_Init(bool force) {
 	Font * nFontDebug = FontCache::getFont(debugFontFile, unsigned(14.f * debugFontScale));
 	
 	res::path iconFontFile = "misc/icons.ttf";
-	if(!g_resources->hasFile(iconFontFile)) {
-		LogWarning << "Missing icon font " << iconFontFile;
-		iconFontFile = file;
-	}
 	Font * iconFont = FontCache::getFont(iconFontFile, unsigned(40.f * scale), 0, false);
 	if(!iconFont) {
 		LogError << "Could not load font " << iconFontFile;
