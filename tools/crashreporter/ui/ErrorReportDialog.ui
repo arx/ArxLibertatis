@@ -402,7 +402,7 @@
        <item>
         <widget class="QLabel" name="lblReproSteps">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt; font-weight:600;&quot;&gt;Reproduction Steps&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Describe in a few words what you did right before the error occurred.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: red;&quot;&gt;&lt;b&gt;This is often the most important part, so provide as much information as possible.&lt;/b&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt; font-weight:600;&quot;&gt;Reproduction Steps&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Describe in a few words what you did right before the error occurred.&lt;/p&gt;&lt;p&gt;&lt;b&gt;This is often the most important part, so provide as much information as possible.&lt;/b&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -440,7 +440,7 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QLabel" name="lblLoginInfo">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can enter your &lt;a href=&quot;https://bugs.arx-libertatis.org/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;bugs.arx-libertatis.org&lt;/span&gt;&lt;/a&gt; login information in order to have this crash report associated with your username. If you do not have an account yet, you can freely &lt;a href=&quot;https://bugs.arx-libertatis.org/login&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;create one here&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;You can leave these fields empty if you prefer. In this case, the issue will be assigned to a default user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can enter your &lt;a href=&quot;https://bugs.arx-libertatis.org/&quot;&gt;bugs.arx-libertatis.org&lt;/a&gt; login information in order to have this crash report associated with your username. If you do not have an account yet, you can freely &lt;a href=&quot;https://bugs.arx-libertatis.org/login&quot;&gt;create one here&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;You can leave these fields empty if you prefer. In this case, the issue will be assigned to a default user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="scaledContents">
           <bool>false</bool>
