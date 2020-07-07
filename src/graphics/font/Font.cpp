@@ -76,9 +76,8 @@ Font::Font(const res::path & file, unsigned size, unsigned weight, FT_Face face,
 				insertGlyph(chr);
 			}
 		}
+		m_textures->upload();
 	}
-	
-	m_textures->upload();
 	
 }
 
