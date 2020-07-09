@@ -648,9 +648,9 @@ std::vector<std::string> getPreferredLocales() {
 					result.push_back(name);
 					for(size_t j = 0; j < name.size(); j++) {
 						if(!std::isalnum(static_cast<unsigned char>(name[j]))) {
-							std::string locale = name.substr(0, j);
-							if(std::find(result.begin(), result.end(), locale) == result.end()) {
-								result.push_back(locale);
+							std::string localename = name.substr(0, j);
+							if(std::find(result.begin(), result.end(), localename) == result.end()) {
+								result.push_back(localename);
 							}
 						}
 					}
