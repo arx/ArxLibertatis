@@ -275,6 +275,7 @@ void CrashHandlerWindows::processCrashTrace() {
 		DWORD dLine = 0;
 		BOOL hasLine = SymGetLineFromAddr64(process, address, &dLine, &line);
 		BOOL hasModule = SymGetModuleInfo64(process, address, &module);
+		bool includeInCrashId = true;
 		
 		std::ostringstream frame;
 		if(hasModule == TRUE) {
@@ -283,14 +284,20 @@ void CrashHandlerWindows::processCrashTrace() {
 				hasSymbol = FALSE;
 			}
 			frame << image;
-			checksum.process_bytes(image.data(), image.length());
+			if(boost::iequals(image, "kernel32.dll") || boost::iequals(image, "ntdll.dll")) {
+				includeInCrashId = false;
+			} else {
+				checksum.process_bytes(image.data(), image.length());
+			}
 			address -= module.BaseOfImage;
 		} else {
 			frame << "??";
 		}
 		
 		frame << '!';
-		checksum.process_bytes(&address, sizeof(address));
+		if(includeInCrashId) {
+			checksum.process_bytes(&address, sizeof(address));
+		}
 		if(hasSymbol == TRUE) {
 			frame << function << "()";
 		} else {
