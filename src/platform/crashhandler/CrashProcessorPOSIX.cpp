@@ -368,11 +368,16 @@ void CrashHandlerPOSIX::processCrashTrace() {
 			std::ostringstream line;
 			intptr_t value = intptr_t(m_pCrashInfo->backtrace[i]);
 			// Map the frame address to a mapped executable / library
+			bool includeInCrashId = true;
 			if(!regions.empty()) {
 				std::map<intptr_t, MemoryRegion>::const_iterator it = regions.lower_bound(value);
 				if(it != regions.end() && value >= it->second.begin) {
 					line << it->second.file;
-					checksum.process_bytes(it->second.file.data(), it->second.file.length());
+					if(boost::starts_with(it->second.file, "libc") || boost::starts_with(it->second.file, "libpthread")) {
+						includeInCrashId = false;
+					} else {
+						checksum.process_bytes(it->second.file.data(), it->second.file.length());
+					}
 					value = it->second.offset + (value - it->second.begin);
 					if(status == Handler && it->second.file != exe) {
 						status = System;
@@ -382,7 +387,9 @@ void CrashHandlerPOSIX::processCrashTrace() {
 				}
 				line << '!';
 			}
-			checksum.process_bytes(&value, sizeof(value));
+			if(includeInCrashId) {
+				checksum.process_bytes(&value, sizeof(value));
+			}
 			line << "0x" << std::hex << intptr_t(m_pCrashInfo->backtrace[i]);
 			description << ' ' << line.str() << '\n';
 			// Guess fault frame based on the offset to the fault address
