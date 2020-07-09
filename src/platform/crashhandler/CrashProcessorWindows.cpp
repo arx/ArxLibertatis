@@ -27,12 +27,14 @@
 #include <dbghelp.h>
 
 #include <boost/crc.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/size.hpp>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 
 #include "platform/Architecture.h"
+#include "platform/Environment.h"
 #include "platform/WindowsUtils.h"
 
 #include "util/String.h"
@@ -249,7 +251,9 @@ void CrashHandlerWindows::processCrashTrace() {
 	}
 	
 	boost::crc_32_type checksum;
-
+	
+	std::string mainimage = platform::getExecutablePath().filename();
+	
 	for(int i = 0; i < CrashInfo::MaxCallstackDepth; ++i) {
 		
 		BOOL ret = StackWalk64(imageType, process, thread, &stackFrame, context, NULL,
@@ -275,6 +279,9 @@ void CrashHandlerWindows::processCrashTrace() {
 		std::ostringstream frame;
 		if(hasModule == TRUE) {
 			std::string image = fs::path(module.ImageName).filename();
+			if(boost::iequals(image.c_str(), mainimage.c_str())) {
+				hasSymbol = FALSE;
+			}
 			frame << image;
 			checksum.process_bytes(image.data(), image.length());
 			address -= module.BaseOfImage;
