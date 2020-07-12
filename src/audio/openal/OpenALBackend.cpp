@@ -204,7 +204,7 @@ void OpenALBackend::fillDeviceAttributes(ALCint (&attrs)[3]) {
 	
 	attrs[i++] = 0;
 	
-	arx_assert(i <= boost::size(attrs));
+	arx_assert(i <= size_t(boost::size(attrs)));
 	
 }
 
