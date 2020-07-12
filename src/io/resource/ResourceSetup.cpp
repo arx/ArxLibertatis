@@ -128,7 +128,7 @@ bool addDefaultResources(PakReader * reader) {
 			}
 			if(it.is_regular_file() && boost::ends_with(name, ".pak")) {
 				name.resize(name.length() - 4);
-				for(size_t archive = 0; archive < boost::size(archives); archive++) {
+				for(size_t archive = 0; archive < size_t(boost::size(archives)); archive++) {
 					size_t length = std::strlen(archives[archive].name);
 					if(name.length() >= length && name.compare(0, length, archives[archive].name, length) == 0
 					   && (name.length() == length || name[length] == '_')) {
@@ -161,7 +161,7 @@ bool addDefaultResources(PakReader * reader) {
 	}
 	
 	bool result = true;
-	for(size_t archive = 0; archive < boost::size(archives); archive++) {
+	for(size_t archive = 0; archive < size_t(boost::size(archives)); archive++) {
 		if(!ok[archive]) {
 			LogError << "Missing required data file: \"" << archives[archive].name << "*.pak\"";
 			result = false;
