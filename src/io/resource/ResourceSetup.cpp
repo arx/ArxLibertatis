@@ -74,6 +74,13 @@ struct ResourceEntry {
 	
 };
 
+struct RequiredArchive {
+	
+	const char * name;
+	PakFilter * filter;
+	
+};
+
 } // anonymous namespace
 
 bool addDefaultResources(PakReader * reader) {
@@ -104,10 +111,7 @@ bool addDefaultResources(PakReader * reader) {
 	}
 	
 	const char * const directories[] = { "editor", "game", "graph", "localisation", "misc", "sfx", "speech" };
-	struct {
-		const char * name;
-		PakFilter * filter;
-	} const archives[] = {
+	const RequiredArchive archives[] = {
 		{ "data", NULL }, { "loc", NULL }, { "data2", NULL }, { "sfx", NULL }, { "speech", &speechFilter }
 	};
 	
