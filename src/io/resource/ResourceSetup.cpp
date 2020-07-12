@@ -152,7 +152,7 @@ bool addDefaultResources(PakReader * reader) {
 	bool ok[ARRAY_SIZE(archives)] = { false };
 	BOOST_FOREACH(const ResourceEntry & entry, resources) {
 		if(entry.archive == std::numeric_limits<int>::max()) {
-			reader->addFiles(entry.path, entry.name); 
+			reader->addFiles(entry.path, entry.name);
 		} else {
 			if(reader->addArchive(entry.path, archives[entry.archive].filter)) {
 				ok[entry.archive] = true;
