@@ -47,7 +47,7 @@ namespace {
 
 IniReader g_localisation;
 
-static Language getLanguageInfo(const std::string & id) {
+Language getLanguageInfo(const std::string & id) {
 	
 	std::istringstream iss(g_resources->read("localisation/languages/" + id + ".ini"));
 	IniReader reader;
