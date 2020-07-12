@@ -416,7 +416,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 			mode = *i;
 		}
 		if(config.video.mode != mode) {
-			if(config.video.mode.resolution != config.video.mode.resolution || config.video.mode.refresh != 0) {
+			if(config.video.mode.resolution != mode.resolution || config.video.mode.refresh != 0) {
 				LogWarning << "Fullscreen mode " << config.video.mode << " not supported, using " << mode << " instead";
 			}
 			config.video.mode = mode;
