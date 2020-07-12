@@ -227,9 +227,9 @@ GLM_FUNC_QUALIFIER float roll(glm::quat const & q)
 	float const x = q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z;
 	
 	if(glm::all(glm::epsilonEqual(glm::vec2(x, y), glm::vec2(0), 4.f * glm::epsilon<float>()))) // avoid atan2(0,0) - handle singularity
-		return static_cast<float>(0.f);
+		return 0.f;
 	
-	return static_cast<float>(glm::atan(y, x));
+	return glm::atan(y, x);
 }
 
 // Broken in GLM 0.9.8.5
@@ -240,9 +240,9 @@ GLM_FUNC_QUALIFIER float pitch(glm::quat const & q)
 	float const x = q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z;
 	
 	if(glm::all(glm::epsilonEqual(glm::vec2(x, y), glm::vec2(0), 4.f * glm::epsilon<float>()))) // avoid atan2(0,0) - handle singularity - Matiis
-		return static_cast<float>(2.f * glm::atan(q.x, q.w));
+		return 2.f * glm::atan(q.x, q.w);
 	
-	return static_cast<float>(glm::atan(y, x));
+	return glm::atan(y, x);
 }
 
 // Older GLM versions don't have the clamp
