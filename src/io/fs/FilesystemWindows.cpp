@@ -128,15 +128,27 @@ u64 file_size(const path & p) {
 
 bool remove(const path & p) {
 	
+	platform::WinPath path(p);
+	
 	for(int tries = 1;; tries++) {
 		
-		if(DeleteFileW(platform::WinPath(p))) {
+		if(DeleteFileW(path)) {
 			return true;
 		}
 		
 		DWORD error = GetLastError();
 		if(error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND) {
 			return true;
+		}
+		if(error == ERROR_ACCESS_DENIED) {
+			DWORD attributes = GetFileAttributesW(path);
+			if(attributes == INVALID_FILE_ATTRIBUTES) {
+				// Happens if a parent of path is a file
+				return true;
+			} else if(attributes & FILE_ATTRIBUTE_DIRECTORY) {
+				// Avoid retry
+				return false;
+			}
 		}
 		
 		LogWarning << "Failed to remove file " << p << ": " << error << " = "
@@ -155,9 +167,11 @@ bool remove(const path & p) {
 
 bool remove_directory(const path & p) {
 	
+	platform::WinPath path(p);
+	
 	for(int tries = 1;; tries++) {
 		
-		if(RemoveDirectoryW(platform::WinPath(p))) {
+		if(RemoveDirectoryW(path)) {
 			return true;
 		}
 		
@@ -165,8 +179,12 @@ bool remove_directory(const path & p) {
 		if(error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND) {
 			return true;
 		}
-		if(error == ERROR_DIR_NOT_EMPTY) {
+		if(error == ERROR_DIR_NOT_EMPTY || error == ERROR_DIRECTORY) {
 			return false;
+		}
+		if(error == ERROR_ACCESS_DENIED && GetFileAttributesW(path) == INVALID_FILE_ATTRIBUTES) {
+			// Happens if a parent of path is a file
+			return true;
 		}
 		
 		LogWarning << "Failed to remove directory " << p << ": " << error << " = "
@@ -220,9 +238,12 @@ static void update_last_write_time(const path & p) {
 
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	
+	platform::WinPath from(from_p);
+	platform::WinPath to(to_p);
+	
 	for(int tries = 1;; tries++) {
 		
-		if(CopyFileW(platform::WinPath(from_p), platform::WinPath(to_p), !overwrite)) {
+		if(CopyFileW(from, to, !overwrite)) {
 			update_last_write_time(to_p);
 			return true;
 		}
@@ -248,10 +269,13 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 
 bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	
+	platform::WinPath from(old_p);
+	platform::WinPath to(new_p);
 	DWORD flags = MOVEFILE_COPY_ALLOWED | (overwrite ? MOVEFILE_REPLACE_EXISTING : 0);
+	
 	for(int tries = 1;; tries++) {
 		
-		if(MoveFileExW(platform::WinPath(old_p), platform::WinPath(new_p), flags)) {
+		if(MoveFileExW(from, to, flags)) {
 			return true;
 		}
 		
