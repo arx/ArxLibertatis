@@ -25,11 +25,6 @@
 
 #include <stdlib.h> // needed for realpath and more
 
-#include <boost/foreach.hpp>
-#include <boost/scoped_array.hpp>
-#include <boost/tokenizer.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
-
 #include "Configure.h"
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
@@ -60,8 +55,8 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 #include <sys/sysctl.h>
 #endif
 
-#include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
+#include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/size.hpp>
 
