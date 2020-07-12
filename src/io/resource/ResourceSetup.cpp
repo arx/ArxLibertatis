@@ -145,7 +145,7 @@ bool addDefaultResources(PakReader * reader) {
 								subtype = -1;
 							}
 						}
-						resources.insert(ResourceEntry(dirindex, archive, subtype, name, dir / file));
+						resources.insert(ResourceEntry(dirindex, int(archive), subtype, name, dir / file));
 					}
 				}
 			}
