@@ -417,7 +417,9 @@ void SecondaryInventoryHud::dragEntity(Entity * io) {
 
 void SecondaryInventoryHud::open(Entity * container) {
 	
-	arx_assert(!container || container->inventory);
+	if(container && !container->inventory) {
+		container = NULL;
+	}
 	
 	if(!container || SecondaryInventory == container->inventory) {
 		if(SecondaryInventory && SecondaryInventory->io)
