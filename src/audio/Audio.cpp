@@ -537,9 +537,7 @@ bool isSamplePlaying(SourcedSample sourceId) {
 		return false;
 	}
 	
-	bool ret = source->isPlaying();
-	
-	return ret;
+	return source->isPlaying();
 }
 
 // Sample control
