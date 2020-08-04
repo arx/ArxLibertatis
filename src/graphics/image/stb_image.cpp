@@ -2476,6 +2476,7 @@ static int parse_png_file(png *z, int scan, int req_comp)
                   palette[i*4+3] = get8u(s);
             } else {
                if(!(s->img_n & 1)) return stbi_error("tRNS with alpha", "Corrupt PNG");
+               arx_assume(s->img_n <= 3);
                if(c.length != (uint32)s->img_n*2) return stbi_error("bad tRNS len", "Corrupt PNG");
                has_trans = 1;
                for (k=0; k < s->img_n; ++k)
