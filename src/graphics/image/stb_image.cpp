@@ -3002,16 +3002,17 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    //   tga info
    *x = tga_width;
    *y = tga_height;
+   int tga_comp = tga_bits_per_pixel / 8;
    if ( (req_comp < 1) || (req_comp > 4) )
    {
       //   just use whatever the file was
-      req_comp = tga_bits_per_pixel / 8;
+      req_comp = tga_comp;
       *comp = req_comp;
    }
    else
    {
       //   force a new number of components
-      *comp = tga_bits_per_pixel/8;
+      *comp = tga_comp;
    }
    tga_data = (unsigned char*)malloc( tga_width * tga_height * req_comp );
    if (!tga_data) return stbi_error_puc("outofmem", "Out of memory");
@@ -3069,8 +3070,8 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
                //   invalid index
                pal_idx = 0;
             }
-            pal_idx *= tga_bits_per_pixel / 8;
-            for (j = 0; j*8 < tga_bits_per_pixel; ++j)
+            pal_idx *= tga_comp;
+            for (j = 0; j < tga_comp; ++j)
             {
                raw_data[j] = tga_palette[pal_idx+j];
             }
@@ -3078,25 +3079,23 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
          else
          {
             //   read in the data raw
-            for (j = 0; j*8 < tga_bits_per_pixel; ++j)
+            for (j = 0; j < tga_comp; ++j)
             {
                raw_data[j] = get8u(s);
             }
          }
          //   convert raw to the intermediate format
-         switch (tga_bits_per_pixel)
+         switch (tga_comp)
          {
-         case 8:
+         case 1:
             //   Luminous => RGBA
             trans_data[0] = raw_data[0];
             trans_data[1] = raw_data[0];
             trans_data[2] = raw_data[0];
             trans_data[3] = 255;
             break;
-         case 16: //   B5G5R5A1 => RGBA
+         case 2: //   B5G5R5A1 => RGBA
             trans_data[3] = 255 * ((raw_data[1] & 0x80) >> 7);
-            /* fall-through */
-         case 15: //   B5G5R5 => RGBA
             trans_data[0] = (raw_data[1] >> 2) & 0x1F;
             trans_data[1] = ((raw_data[1] << 3) & 0x1C) | ((raw_data[0] >> 5) & 0x07);
             trans_data[2] = (raw_data[0] & 0x1F);
@@ -3110,14 +3109,14 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
             trans_data[1] = (trans_data[1] << 3) | (trans_data[1] >> 2);
             trans_data[2] = (trans_data[2] << 3) | (trans_data[2] >> 2);
             break;
-         case 24:
+         case 3:
             //   BGR => RGBA
             trans_data[0] = raw_data[2];
             trans_data[1] = raw_data[1];
             trans_data[2] = raw_data[0];
             trans_data[3] = 255;
             break;
-         case 32:
+         case 4:
             //   BGRA => RGBA
             trans_data[0] = raw_data[2];
             trans_data[1] = raw_data[1];
