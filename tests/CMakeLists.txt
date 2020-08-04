@@ -1,11 +1,6 @@
 
 find_package(CppUnit REQUIRED)
 
-include_directories(
-	${PROJECT_SOURCE_DIR}/src
-	${PROJECT_SOURCE_DIR}
-)
-
 set(arxtest_TESTCASES
 	
 	tests/TestMain.cpp
