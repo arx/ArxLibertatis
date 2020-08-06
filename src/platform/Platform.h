@@ -452,4 +452,17 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 #define arx_final
 #endif
 
+/*!
+ * Helper to cast a void * that is really a function pointer back to a function pointer
+ */
+class FunctionPointer {
+	void * m_func;
+public:
+	explicit FunctionPointer(void * func) : m_func(func) { }
+	template <typename FunctionType>
+	operator FunctionType() {
+		return reinterpret_cast<FunctionType>(reinterpret_cast<void(*)()>(m_func));
+	}
+};
+
 #endif // ARX_PLATFORM_PLATFORM_H

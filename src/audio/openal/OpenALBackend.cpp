@@ -101,28 +101,6 @@ OpenALBackend::~OpenALBackend() {
 	}
 }
 
-#if ARX_HAVE_OPENAL_EFX
-namespace {
-class al_function_ptr {
-	void * m_func;
-public:
-	explicit al_function_ptr(void * func) : m_func(func) { }
-	template <typename T>
-	operator T() {
-		#if __cplusplus < 201402L && defined(__GNUC__)
-		// ignore warning: ISO C++ forbids casting between pointer-to-function and pointer-to-object
-		T funcptr;
-		BOOST_STATIC_ASSERT(sizeof(funcptr) == sizeof(m_func));
-		std::memcpy(&funcptr, &m_func, sizeof(funcptr));
-		return funcptr;
-		#else
-		return reinterpret_cast<T>(m_func);
-		#endif
-	}
-};
-} // anonymous namespace
-#endif
-
 static const char * const deviceNamePrefixOpenALSoft = "OpenAL Soft on ";
 
 class OpenALEnvironmentOverrides {
@@ -253,7 +231,7 @@ aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrt
 	m_hasHRTF = (alcIsExtensionPresent(device, "ALC_SOFT_HRTF") != ALC_FALSE);
 	if(m_hasHRTF) {
 		#define ARX_AL_LOAD_FUNC(Name) \
-			Name = al_function_ptr(alGetProcAddress(ARX_STR(Name))); \
+			Name = FunctionPointer(alGetProcAddress(ARX_STR(Name))); \
 			hasEFX = hasEFX && Name != NULL
 		ARX_AL_LOAD_FUNC(alcResetDeviceSOFT);
 		#undef ARX_AL_LOAD_FUNC
@@ -277,7 +255,7 @@ aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrt
 	hasEFX = (alcIsExtensionPresent(device, "ALC_EXT_EFX") != ALC_FALSE);
 	if(hasEFX) {
 		#define ARX_AL_LOAD_FUNC(Name) \
-			Name = al_function_ptr(alGetProcAddress(ARX_STR(Name))); \
+			Name = FunctionPointer(alGetProcAddress(ARX_STR(Name))); \
 			hasEFX = hasEFX && Name != NULL
 		ARX_AL_LOAD_FUNC(alGenEffects);
 		ARX_AL_LOAD_FUNC(alDeleteEffects);

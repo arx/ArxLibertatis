@@ -306,21 +306,23 @@ int SDL2Window::createWindowAndGLContext(const char * profile) {
 		}
 		
 		// Verify that we actually got an accelerated context
+		GLint texunits = 0;
 		// TODO libepoxy does not support unloading the GL so do things manually here
 		typedef GLenum GLAPIENTRY (*glGetError_t)();
-		glGetError_t glGetError_p;
-		glGetError_p = reinterpret_cast<glGetError_t>(SDL_GL_GetProcAddress("glGetError"));
+		glGetError_t glGetError_p = FunctionPointer(SDL_GL_GetProcAddress("glGetError"));
 		typedef void GLAPIENTRY (*glGetIntegerv_t)(GLenum pname, GLint * params);
-		glGetIntegerv_t glGetIntegerv_p;
-		glGetIntegerv_p = reinterpret_cast<glGetIntegerv_t>(SDL_GL_GetProcAddress("glGetIntegerv"));
-		(void)glGetError_p(); // clear error flags
-		GLint texunits = 0;
-		glGetIntegerv_p(GL_MAX_TEXTURE_UNITS, &texunits);
-		if(glGetError_p() != GL_NO_ERROR || texunits < m_minTextureUnits) {
+		glGetIntegerv_t glGetIntegerv_p = FunctionPointer(SDL_GL_GetProcAddress("glGetIntegerv"));
+		if(glGetError_p && glGetIntegerv_p) {
+			(void)glGetError_p(); // clear error flags
+			glGetIntegerv_p(GL_MAX_TEXTURE_UNITS, &texunits);
+			if(glGetError_p() != GL_NO_ERROR) {
+				texunits = 0;
+			}
+		}
+		if(texunits < m_minTextureUnits) {
 			if(lastTry) {
 				typedef const GLubyte * GLAPIENTRY (*glGetString_t)(GLenum name);
-				glGetString_t glGetString_p;
-				glGetString_p = reinterpret_cast<glGetString_t>(SDL_GL_GetProcAddress("glGetString"));
+				glGetString_t glGetString_p = FunctionPointer(SDL_GL_GetProcAddress("glGetString"));
 				const char * glVendor = NULL;
 				const char * glRenderer = NULL;
 				const char * glVersion = reinterpret_cast<const char *>(glGetString(GL_VERSION));
