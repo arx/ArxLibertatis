@@ -29,6 +29,8 @@
 #include <signal.h>
 #endif
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "platform/Platform.h"
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
@@ -304,14 +306,46 @@ int SDL2Window::createWindowAndGLContext(const char * profile) {
 		}
 		
 		// Verify that we actually got an accelerated context
-		(void)glGetError(); // clear error flags
+		// TODO libepoxy does not support unloading the GL so do things manually here
+		typedef GLenum GLAPIENTRY (*glGetError_t)();
+		glGetError_t glGetError_p;
+		glGetError_p = reinterpret_cast<glGetError_t>(SDL_GL_GetProcAddress("glGetError"));
+		typedef void GLAPIENTRY (*glGetIntegerv_t)(GLenum pname, GLint * params);
+		glGetIntegerv_t glGetIntegerv_p;
+		glGetIntegerv_p = reinterpret_cast<glGetIntegerv_t>(SDL_GL_GetProcAddress("glGetIntegerv"));
+		(void)glGetError_p(); // clear error flags
 		GLint texunits = 0;
-		glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texunits);
-		if(glGetError() != GL_NO_ERROR || texunits < m_minTextureUnits) {
+		glGetIntegerv_p(GL_MAX_TEXTURE_UNITS, &texunits);
+		if(glGetError_p() != GL_NO_ERROR || texunits < m_minTextureUnits) {
 			if(lastTry) {
-				m_renderer->initialize(); // Log hardware information
-				LogError << "Not enough " << profile << " texture units available: have " << texunits
+				typedef const GLubyte * GLAPIENTRY (*glGetString_t)(GLenum name);
+				glGetString_t glGetString_p;
+				glGetString_p = reinterpret_cast<glGetString_t>(SDL_GL_GetProcAddress("glGetString"));
+				const char * glVendor = NULL;
+				const char * glRenderer = NULL;
+				const char * glVersion = reinterpret_cast<const char *>(glGetString(GL_VERSION));
+				if(glGetString_p) {
+					glVendor = reinterpret_cast<const char *>(glGetString_p(GL_VENDOR));
+					glRenderer = reinterpret_cast<const char *>(glGetString_p(GL_RENDERER));
+					glVersion = reinterpret_cast<const char *>(glGetString_p(GL_VERSION));
+				}
+				if(!glVendor) {
+					glVendor = "(unknown)";
+				}
+				if(!glRenderer) {
+					glRenderer = "(unknown)";
+				}
+				const char * prefix = "OpenGL ";
+				if(!glVersion) {
+					glVersion = "(unknown)";
+				} else if(boost::starts_with(glVersion, prefix)) {
+					glVersion += std::strlen(prefix);
+				}
+				LogError << "Ignoring " << profile << " context version " << glVersion
+				         << " - not enough texture units available: have " << texunits
 				         << ", need at least " << m_minTextureUnits;
+				LogError << " ├─ Vendor: " << glVendor;
+				LogError << " └─ Device: " << glRenderer;
 				return 0;
 			}
 			continue;
