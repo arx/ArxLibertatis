@@ -380,16 +380,17 @@ bool SDL2Window::initialize() {
 		
 		bool matched = false;
 		
-		for(int type = 0; type < (gldebug::isEnabled() ? 1 : 2) && samples == 0; type++) {
+		if(samples == 0 && first == (autoRenderer || config.video.renderer == "OpenGL")) {
+			matched = true;
 			
-			int flags = 0;
-			if(gldebug::isEnabled() && type == 0) {
-				flags |= SDL_GL_CONTEXT_DEBUG_FLAG;
-			}
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, flags);
-			
-			if(samples == 0 && first == (autoRenderer || config.video.renderer == "OpenGL")) {
-				matched = true;
+			for(int type = 0; type < (gldebug::isEnabled() ? 2 : 1) && samples == 0; type++) {
+				
+				int flags = 0;
+				if(gldebug::isEnabled() && type == 0) {
+					flags |= SDL_GL_CONTEXT_DEBUG_FLAG;
+				}
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, flags);
+				
 				// TODO core profile are not supported yet
 				#if SDL_VERSION_ATLEAST(2, 0, 6)
 				if(!gldebug::isEnabled()) {
@@ -411,21 +412,34 @@ bool SDL2Window::initialize() {
 					#endif
 					samples = createWindowAndGLContext("Desktop OpenGL");
 				}
+				
 			}
 			
-			#if ARX_HAVE_EPOXY
-			if(samples == 0 && first == (autoRenderer || config.video.renderer == "OpenGL ES")) {
-				matched = true;
+		}
+		
+		#if ARX_HAVE_EPOXY
+		if(samples == 0 && first == (autoRenderer || config.video.renderer == "OpenGL ES")) {
+			matched = true;
+			
+			for(int type = 0; type < (gldebug::isEnabled() ? 2 : 1) && samples == 0; type++) {
+				
+				int flags = 0;
+				if(gldebug::isEnabled() && type == 0) {
+					flags |= SDL_GL_CONTEXT_DEBUG_FLAG;
+				}
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, flags);
+			
 				// TODO OpenGL ES 2.0+ is not supported yet
 				SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 				SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
 				SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 				// SDL_GL_CONTEXT_NO_ERROR requires OpenGL ES 2.0
 				samples = createWindowAndGLContext("OpenGL ES");
+				
 			}
-			#endif
 			
 		}
+		#endif
 		
 		if(first && !matched) {
 			LogError << "Unknown renderer: " << config.video.renderer;
