@@ -325,7 +325,7 @@ int SDL2Window::createWindowAndGLContext(const char * profile) {
 				glGetString_t glGetString_p = FunctionPointer(SDL_GL_GetProcAddress("glGetString"));
 				const char * glVendor = NULL;
 				const char * glRenderer = NULL;
-				const char * glVersion = reinterpret_cast<const char *>(glGetString(GL_VERSION));
+				const char * glVersion = NULL;
 				if(glGetString_p) {
 					glVendor = reinterpret_cast<const char *>(glGetString_p(GL_VENDOR));
 					glRenderer = reinterpret_cast<const char *>(glGetString_p(GL_RENDERER));
