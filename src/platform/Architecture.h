@@ -33,6 +33,7 @@ namespace platform {
 #define ARX_ARCH_POWERPC          8
 #define ARX_ARCH_SPARC            9
 #define ARX_ARCH_ARM64            10
+#define ARX_ARCH_RISCV            11
 
 #define ARX_ARCH_NAME_UNKNOWN     ""
 #define ARX_ARCH_NAME_X86_64      "x86_64"
@@ -45,6 +46,7 @@ namespace platform {
 #define ARX_ARCH_NAME_POWERPC     "powerpc"
 #define ARX_ARCH_NAME_SPARC       "sparc"
 #define ARX_ARCH_NAME_ARM64       "aarch64"
+#define ARX_ARCH_NAME_RISCV       "riscv"
 
 // Checks are shamelessly copied from
 // https://sourceforge.net/apps/mediawiki/predef/index.php?title=Architectures
@@ -64,6 +66,10 @@ namespace platform {
       || defined(__THW_INTEL__) || defined(__I86__) || defined(__INTEL__)
 #define ARX_ARCH ARX_ARCH_X86
 #define ARX_ARCH_NAME ARX_ARCH_NAME_X86
+
+#elif defined(__riscv) || defined(__riscv__)
+#define ARX_ARCH ARX_ARCH_RISCV
+#define ARX_ARCH_NAME ARX_ARCH_NAME_RISCV
 
 #elif defined(__aarch64__) || defined(_M_ARM64)
 #define ARX_ARCH ARX_ARCH_ARM
@@ -113,6 +119,7 @@ inline const char * getArchitectureName(unsigned arch) {
 		case ARX_ARCH_POWERPC: return ARX_ARCH_NAME_POWERPC;
 		case ARX_ARCH_SPARC:   return ARX_ARCH_NAME_SPARC;
 		case ARX_ARCH_ARM64:   return ARX_ARCH_NAME_ARM64;
+		case ARX_ARCH_RISCV:   return ARX_ARCH_NAME_RISCV;
 		default: return ARX_ARCH_NAME_UNKNOWN;
 	}
 }
