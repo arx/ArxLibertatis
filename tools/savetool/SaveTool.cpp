@@ -38,7 +38,7 @@
 #include "util/cmdline/CommandLine.h"
 
 static void print_help() {
-	std::cout << "usage: savetool <command> <savefile> [<options>...]\n"
+	std::cout << "Usage: arxsavetool <command> <savefile> [<options>...]\n"
 	             "commands are:\n"
 	             " - extract <savefile>\n"
 	             " - add <savefile> [<files>...]\n"
