@@ -221,6 +221,45 @@ std::string getOSName() {
 
 std::string getOSArchitecture() {
 	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	
+	HANDLE process = GetCurrentProcess();
+	
+	// IsWow64Process2 is only available starting with Windows 10, version 1511
+	if(HMODULE handle = GetModuleHandleW(L"kernel32")) {
+		typedef BOOL (WINAPI * IsWow64Process2_t)(HANDLE, USHORT *, USHORT *);
+		IsWow64Process2_t IsWow64Process2_p = getProcAddress<IsWow64Process2_t>(handle, "IsWow64Process2");
+		USHORT processArch;
+		USHORT systemArch;
+		if(IsWow64Process2_p && IsWow64Process2_p(process, &processArch, &systemArch)) {
+			switch(systemArch) {
+				case 0x014c: return ARX_ARCH_NAME_X86;
+				case 0x01c0: return ARX_ARCH_NAME_ARM;
+				case 0x01c2: return ARX_ARCH_NAME_ARM; // Thumb
+				case 0x01c4: return ARX_ARCH_NAME_ARM; // Thumb-2
+				case 0x0200: return ARX_ARCH_NAME_IA64;
+				case 0x8664: return ARX_ARCH_NAME_X86_64;
+				case 0xAA64: return ARX_ARCH_NAME_ARM64;
+			}
+		}
+	}
+	
+	#if ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_ARM
+	if(platform::isWoW64Process(process)) {
+		#if ARX_ARCH == ARX_ARCH_X86
+		// Could actually be running on ARM64 using emulation built into Windows
+		// But that should be caught with IsWow64Process2
+		return ARX_ARCH_NAME_X86_64;
+		#else
+		return ARX_ARCH_NAME_ARM64;
+		#endif
+	}
+	#endif
+	
+	return ARX_ARCH_NAME;
+	
+	#else
+	
 	#if ARX_HAVE_UNAME
 	struct utsname uname_buf;
 	if(uname(&uname_buf) == 0) {
@@ -228,19 +267,10 @@ std::string getOSArchitecture() {
 	}
 	#endif
 	
-	// Determine if Windows is 64-bit.
-	#if defined(_WIN64)
-	return ARX_ARCH_NAME_X86_64; // 64-bit programs run only on Win64
-	#elif defined(_WIN32)
-	// 32-bit programs run on both 32-bit and 64-bit Windows
-	if(platform::isWoW64Process(GetCurrentProcess())) {
-		return ARX_ARCH_NAME_X86_64;
-	} else {
-		return ARX_ARCH_NAME_X86;
-	}
-	#else
 	return std::string();
+	
 	#endif
+	
 }
 
 
