@@ -369,15 +369,17 @@ void Thread::disableFloatDenormals() {
 	#pragma message ( "Disabling SSE float denormals is not supported for this compiler!" )
 	#endif
 	
-	#elif ARX_ARCH == ARX_ARCH_ARM && ARX_HAVE_VFP
+	#elif ARX_ARCH == ARX_ARCH_ARM || ARX_ARCH == ARX_ARCH_ARM64
 	
 	// Denormals are always disabled for NEON, disable them for VFP instructions as well
+	#ifdef __VFP_FP__
 	// Set bit 24 (flush-to-zero) in the floating-point status and control register
 	asm volatile(
 		"vmrs r0, FPSCR \n"
 		"orr r0, r0, #0x1000000 \n"
 		"vmsr FPSCR, r0 \n"
 	);
+	#endif
 	
 	#else
 	

@@ -32,6 +32,7 @@ namespace platform {
 #define ARX_ARCH_MIPS             7
 #define ARX_ARCH_POWERPC          8
 #define ARX_ARCH_SPARC            9
+#define ARX_ARCH_ARM64            10
 
 #define ARX_ARCH_NAME_UNKNOWN     ""
 #define ARX_ARCH_NAME_X86_64      "x86_64"
@@ -43,6 +44,7 @@ namespace platform {
 #define ARX_ARCH_NAME_MIPS        "mips"
 #define ARX_ARCH_NAME_POWERPC     "powerpc"
 #define ARX_ARCH_NAME_SPARC       "sparc"
+#define ARX_ARCH_NAME_ARM64       "aarch64"
 
 // Checks are shamelessly copied from
 // https://sourceforge.net/apps/mediawiki/predef/index.php?title=Architectures
@@ -63,9 +65,13 @@ namespace platform {
 #define ARX_ARCH ARX_ARCH_X86
 #define ARX_ARCH_NAME ARX_ARCH_NAME_X86
 
-#elif defined(__arm__) || defined(__thumb__) || defined(__TARGET_ARCH_ARM) \
-      || defined(__TARGET_ARCH_THUMB) || defined(_ARM)
+#elif defined(__aarch64__) || defined(_M_ARM64)
 #define ARX_ARCH ARX_ARCH_ARM
+#define ARX_ARCH_NAME ARX_ARCH_NAME_ARM64
+
+#elif defined(__arm__) || defined(__thumb__) || defined(__TARGET_ARCH_ARM) \
+      || defined(__TARGET_ARCH_THUMB) || defined(_ARM) || defined(_M_ARM)
+#define ARX_ARCH ARX_ARCH_NAME_ARM
 #define ARX_ARCH_NAME ARX_ARCH_NAME_ARM
 
 #elif defined(__alpha__) || defined(__alpha) || defined(_M_ALPHA)
@@ -106,6 +112,7 @@ inline const char * getArchitectureName(unsigned arch) {
 		case ARX_ARCH_MIPS:    return ARX_ARCH_NAME_MIPS;
 		case ARX_ARCH_POWERPC: return ARX_ARCH_NAME_POWERPC;
 		case ARX_ARCH_SPARC:   return ARX_ARCH_NAME_SPARC;
+		case ARX_ARCH_ARM64:   return ARX_ARCH_NAME_ARM64;
 		default: return ARX_ARCH_NAME_UNKNOWN;
 	}
 }
@@ -138,18 +145,6 @@ inline const char * getArchitectureName(unsigned arch) {
 #define ARX_HAVE_SSE3 1
 #else
 #define ARX_HAVE_SSE3 0
-#endif
-#endif
-
-/*!
- * \def ARX_HAVE_VFP
- * \brief ARM-only: 1 if targeting CPUs with VFP support, 0 otherwise
- */
-#if ARX_ARCH == ARX_ARCH_ARM
-#if defined(__VFP_FP__)
-#define ARX_HAVE_VFP 1
-#else
-#define ARX_HAVE_VFP 0
 #endif
 #endif
 
