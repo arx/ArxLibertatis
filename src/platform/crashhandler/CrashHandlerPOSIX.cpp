@@ -459,6 +459,11 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 		m_pCrashInfo->hasStack = true;
 		m_pCrashInfo->frame = ctx->uc_mcontext.arm_fp;
 		m_pCrashInfo->hasFrame = true;
+		#elif ARX_ARCH == ARX_ARCH_ARM64
+		m_pCrashInfo->address =  ctx->uc_mcontext.pc;
+		m_pCrashInfo->hasAddress = true;
+		m_pCrashInfo->stack =  ctx->uc_mcontext.sp;
+		m_pCrashInfo->hasStack = true;
 		#else
 		ARX_UNUSED(ctx);
 		#endif
