@@ -202,7 +202,7 @@ static void handleQuietOption() {
 	g_quiet = true;
 }
 
-static void handlePositionalArgument(const std::string & file) {
+static void handleArchive(const std::string & file) {
 	g_archives.push_back(file);
 }
 
@@ -231,7 +231,7 @@ int arxunpak_main(int argc, char ** argv) {
 	ARX_PROGRAM_OPTION_ARG("output-dir", "o", "Directory to extract files to", &handleOutputDirOption, "DIR")
 	ARX_PROGRAM_OPTION("all", "a", "Process all pak files loaded by the game", &handleAllOption)
 	ARX_PROGRAM_OPTION("quiet", "q", "Don't print log output", &handleQuietOption)
-	ARX_PROGRAM_OPTION_ARG("", "", "PAK archives to process", &handlePositionalArgument, "DIRS")
+	ARX_PROGRAM_OPTION_ARG("", "", "PAK archives to process", &handleArchive, "DIRS")
 	
 	ARX_UNUSED(g_resources);
 	
