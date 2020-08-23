@@ -237,19 +237,7 @@ endfunction()
 #  DIR  Where to install the binary.
 function(set_binary_installdir BIN DIR)
 	set(build_type "${SHARED_BUILD_${BIN}_TYPE}")
-	if(DIR STREQUAL "")
-		set(install)
-	elseif(build_type STREQUAL "SHARED")
-		set(install
-			LIBRARY DESTINATION "${DIR}"
-			ARCHIVE DESTINATION "${DIR}"
-			RUNTIME DESTINATION "${DIR}"
-			PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-		)
-	else()
-		set(install RUNTIME DESTINATION "${DIR}")
-	endif()
-	set(SHARED_BUILD_${BIN}_INSTALL "${install}" CACHE INTERNAL "")
+	set(SHARED_BUILD_${BIN}_INSTALL "${DIR}" CACHE INTERNAL "")
 endfunction()
 
 function(set_binary_public_headers BIN HEADERS)
@@ -272,6 +260,12 @@ function(set_binary_version BIN VERSION)
 	endif()
 endfunction()
 
+function(add_binary_symlinks BIN)
+	set(symlinks ${SHARED_BUILD_${BIN}_SYMLINKS})
+	list(APPEND symlinks ${ARGN})
+	set(SHARED_BUILD_${BIN}_SYMLINKS "${symlinks}" CACHE INTERNAL "")
+endfunction()
+
 function(_add_binary_shared BIN TYPE SRC LIBS EXTRA INSTALLDIR)
 	list(REMOVE_DUPLICATES SRC)
 	list(REMOVE_DUPLICATES LIBS)
@@ -287,6 +281,7 @@ function(_add_binary_shared BIN TYPE SRC LIBS EXTRA INSTALLDIR)
 	set(SHARED_BUILD_${BIN}_INCLUDES "" CACHE INTERNAL "")
 	set(SHARED_BUILD_${BIN}_VERSION "" CACHE INTERNAL "")
 	set(SHARED_BUILD_${BIN}_SOVERSION "" CACHE INTERNAL "")
+	set(SHARED_BUILD_${BIN}_SYMLINKS "" CACHE INTERNAL "")
 	set_binary_installdir("${BIN}" "${INSTALLDIR}")
 	set(SHARED_BUILD_BINARIES ${SHARED_BUILD_BINARIES} ${BIN} CACHE INTERNAL "")
 endfunction()
@@ -564,7 +559,20 @@ function(_shared_build_add_binary bin)
 	endif()
 	
 	if(NOT SHARED_BUILD_${bin}_INSTALL STREQUAL "")
-		install(TARGETS ${bin} ${SHARED_BUILD_${bin}_INSTALL})
+		set(install ${SHARED_BUILD_${bin}_INSTALL})
+		if(NOT install STREQUAL "")
+			if(build_type STREQUAL "SHARED")
+				set(install
+					LIBRARY DESTINATION "${install}"
+					ARCHIVE DESTINATION "${install}"
+					RUNTIME DESTINATION "${install}"
+					PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+				)
+			else()
+				set(install RUNTIME DESTINATION "${install}")
+			endif()
+		endif()
+		install(TARGETS ${bin} ${install})
 	endif()
 	
 	if(MACOS)
@@ -591,6 +599,52 @@ function(_shared_build_add_binary bin)
 		endif()
 		set_target_properties(${bin} PROPERTIES SOVERSION "${soversion}")
 	endif()
+	
+	set(bindir "$<TARGET_FILE_DIR:${bin}>")
+	set(binfile "$<TARGET_FILE_NAME:${bin}>")
+	if(CMAKE_VERSION VERSION_LESS 2.8.12)
+		get_property(location TARGET ${bin} PROPERTY LOCATION_${CMAKE_BUILD_TYPE})
+		get_filename_component(bindir ${location} PATH)
+		get_filename_component(binfile ${location} NAME)
+	endif()
+	
+	foreach(symlink IN LISTS SHARED_BUILD_${bin}_SYMLINKS)
+		if(build_type STREQUAL "SHARED")
+			set(name "${CMAKE_SHARED_LIBRARY_PREFIX}${symlink}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+		else()
+			set(name "${symlink}${CMAKE_EXECUTABLE_SUFFIX}")
+		endif()
+		add_custom_command(
+			TARGET ${bin} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E remove "${bindir}/${name}"
+			COMMAND ${CMAKE_COMMAND} -E create_symlink "${binfile}" "${bindir}/${name}"
+			COMMENT ""
+			VERBATIM
+		)
+		if(NOT SHARED_BUILD_${bin}_INSTALL STREQUAL "")
+			set(installdir bin)
+			if(DEFINED CMAKE_INSTALL_BINDIR)
+				set(installdir "${CMAKE_INSTALL_BINDIR}")
+			endif()
+			set(absinstalldir "${installdir}")
+			if(NOT IS_ABSOLUTE absinstalldir)
+				set(absinstalldir "${CMAKE_INSTALL_PREFIX}/${absinstalldir}")
+			endif()
+			set(absbinpath "${SHARED_BUILD_${bin}_INSTALL}/${binfile}")
+			if(NOT IS_ABSOLUTE absbinpath)
+				set(absbinpath "${CMAKE_INSTALL_PREFIX}/${absbinpath}")
+			endif()
+			file(RELATIVE_PATH relbinpath "${absinstalldir}" "${absbinpath}")
+			add_custom_command(
+				TARGET ${bin} POST_BUILD
+				COMMAND ${CMAKE_COMMAND} -E remove "${bindir}/installed_${name}"
+				COMMAND ${CMAKE_COMMAND} -E create_symlink "${relbinpath}" "${bindir}/installed_${name}"
+				COMMENT ""
+				VERBATIM
+			)
+			install(PROGRAMS "${bindir}/installed_${name}" DESTINATION "${installdir}" RENAME "${name}")
+		endif()
+	endforeach()
 	
 endfunction()
 

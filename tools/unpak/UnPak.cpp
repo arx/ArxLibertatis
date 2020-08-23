@@ -17,6 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "unpak/UnPak.h"
+
 #include <vector>
 #include <string>
 #include <cstdlib>
@@ -39,7 +41,6 @@
 #include "io/log/Logger.h"
 
 #include "platform/ProgramOptions.h"
-#include "platform/WindowsMain.h"
 
 #include "util/MD5.h"
 #include "util/Unicode.h"
@@ -205,20 +206,6 @@ static void handlePositionalArgument(const std::string & file) {
 	g_archives.push_back(file);
 }
 
-ARX_PROGRAM_OPTION("extract", "e", "Extract archive contents", &handleExtractOption)
-
-ARX_PROGRAM_OPTION("manifest", "m", "Print archive manifest", &handleManifestOption)
-
-ARX_PROGRAM_OPTION("list", "", "List archive contents", &handleListOption)
-
-ARX_PROGRAM_OPTION_ARG("output-dir", "o", "Directory to extract files to", &handleOutputDirOption, "DIR")
-
-ARX_PROGRAM_OPTION("all", "a", "Process all pak files loaded by the game", &handleAllOption)
-
-ARX_PROGRAM_OPTION("quiet", "q", "Don't print log output", &handleQuietOption)
-
-ARX_PROGRAM_OPTION_ARG("", "", "PAK archives to process", &handlePositionalArgument, "DIRS")
-
 static void addResourceDir(PakReader & resources, const fs::path & base) {
 	
 	// TODO share this list with the game code
@@ -232,7 +219,19 @@ static void addResourceDir(PakReader & resources, const fs::path & base) {
 	
 }
 
-int utf8_main(int argc, char ** argv) {
+#ifndef ARXTOOL
+#define arxunpak_main utf8_main
+#endif
+
+int arxunpak_main(int argc, char ** argv) {
+	
+	ARX_PROGRAM_OPTION("extract", "e", "Extract archive contents", &handleExtractOption)
+	ARX_PROGRAM_OPTION("manifest", "m", "Print archive manifest", &handleManifestOption)
+	ARX_PROGRAM_OPTION("list", "", "List archive contents", &handleListOption)
+	ARX_PROGRAM_OPTION_ARG("output-dir", "o", "Directory to extract files to", &handleOutputDirOption, "DIR")
+	ARX_PROGRAM_OPTION("all", "a", "Process all pak files loaded by the game", &handleAllOption)
+	ARX_PROGRAM_OPTION("quiet", "q", "Don't print log output", &handleQuietOption)
+	ARX_PROGRAM_OPTION_ARG("", "", "PAK archives to process", &handlePositionalArgument, "DIRS")
 	
 	ARX_UNUSED(g_resources);
 	

@@ -100,6 +100,7 @@ Getting all the dependencies set up for Windows is more tricky. Pre-built depend
 ### Build options:
 
 * `BUILD_TOOLS` (default: `ON`): Build tools
+* `BUILD_TOOLS_MERGED` (default: `ON`): Merge tools into a single binary
 * `BUILD_IO_LIBRARY` (default: `ON`): Build helper library for the Blender plugin
 * `BUILD_CRASHHANDLER` (default: `ON`): Enable the built-in crash handler (default OFF for macOS)
 * `BUILD_CRASHREPORTER` (default: `ON`): Build the Qt crash reporter gui - requires `BUILD_CRASHHANDLER` (default OFF for macOS)
