@@ -574,8 +574,8 @@ endmacro()
 #  name  Icon filename
 function(_find_icon var name)
 	
-	if(IS_ABSOLUTE name)
-		if(EXISTS name)
+	if(IS_ABSOLUTE ${name})
+		if(EXISTS ${name})
 			set(${var} "${name}" PARENT_SCOPE)
 		else()
 			set(${var} PARENT_SCOPE)
