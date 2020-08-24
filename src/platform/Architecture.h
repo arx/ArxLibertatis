@@ -72,12 +72,12 @@ namespace platform {
 #define ARX_ARCH_NAME ARX_ARCH_NAME_RISCV
 
 #elif defined(__aarch64__) || defined(_M_ARM64)
-#define ARX_ARCH ARX_ARCH_ARM
+#define ARX_ARCH ARX_ARCH_ARM64
 #define ARX_ARCH_NAME ARX_ARCH_NAME_ARM64
 
 #elif defined(__arm__) || defined(__thumb__) || defined(__TARGET_ARCH_ARM) \
       || defined(__TARGET_ARCH_THUMB) || defined(_ARM) || defined(_M_ARM)
-#define ARX_ARCH ARX_ARCH_NAME_ARM
+#define ARX_ARCH ARX_ARCH_ARM
 #define ARX_ARCH_NAME ARX_ARCH_NAME_ARM
 
 #elif defined(__alpha__) || defined(__alpha) || defined(_M_ALPHA)
