@@ -22,9 +22,11 @@
 
 #include <stddef.h>
 #include <cstdlib>
+#include <cstring>
 
 #include "platform/PlatformConfig.h"
 
+#include <boost/static_assert.hpp>
 #include <boost/preprocessor/cat.hpp>
 
 /* ---------------------------------------------------------
@@ -461,7 +463,15 @@ public:
 	explicit FunctionPointer(void * func) : m_func(func) { }
 	template <typename FunctionType>
 	operator FunctionType() {
+		#if __cplusplus < 201402L && defined(__GNUC__)
+		// ignore warning: ISO C++ forbids casting between pointer-to-function and pointer-to-object
+		FunctionType funcptr;
+		BOOST_STATIC_ASSERT(sizeof(funcptr) == sizeof(m_func));
+		std::memcpy(&funcptr, &m_func, sizeof(funcptr));
+		return funcptr;
+		#else
 		return reinterpret_cast<FunctionType>(reinterpret_cast<void(*)()>(m_func));
+		#endif
 	}
 };
 
