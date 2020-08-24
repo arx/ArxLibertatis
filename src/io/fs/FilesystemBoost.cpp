@@ -118,13 +118,18 @@ bool create_directory(const path & p) {
 }
 
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
-	boost::system::error_code ec;
-	BOOST_SCOPED_ENUM(fs_boost::copy_option) o;
+	#if BOOST_VERSION >= 107200
+	BOOST_SCOPED_ENUM(fs_boost::copy_options) o = fs_boost::copy_options::none;
+	if(overwrite) {
+		o = fs_boost::copy_options::overwrite_existing;
+	}
+	#else
+	BOOST_SCOPED_ENUM(fs_boost::copy_option) o = fs_boost::copy_option::fail_if_exists;
 	if(overwrite) {
 		o = fs_boost::copy_option::overwrite_if_exists;
-	} else {
-		o = fs_boost::copy_option::fail_if_exists;
 	}
+	#endif
+	boost::system::error_code ec;
 	fs_boost::copy_file(from_p.string(), to_p.string(), o, ec);
 	return !ec;
 }
