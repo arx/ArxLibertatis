@@ -118,7 +118,7 @@ bool create_directory(const path & p) {
 }
 
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
-	#if BOOST_VERSION >= 107200
+	#if BOOST_VERSION >= 107400
 	BOOST_SCOPED_ENUM(fs_boost::copy_options) o = fs_boost::copy_options::none;
 	if(overwrite) {
 		o = fs_boost::copy_options::overwrite_existing;
