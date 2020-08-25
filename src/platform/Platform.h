@@ -26,7 +26,6 @@
 
 #include "platform/PlatformConfig.h"
 
-#include <boost/static_assert.hpp>
 #include <boost/preprocessor/cat.hpp>
 
 /* ---------------------------------------------------------
@@ -466,7 +465,7 @@ public:
 		#if __cplusplus < 201402L && defined(__GNUC__)
 		// ignore warning: ISO C++ forbids casting between pointer-to-function and pointer-to-object
 		FunctionType funcptr;
-		BOOST_STATIC_ASSERT(sizeof(funcptr) == sizeof(m_func));
+		ARX_STATIC_ASSERT(sizeof(funcptr) == sizeof(m_func), "pointer size mismatch");
 		std::memcpy(&funcptr, &m_func, sizeof(funcptr));
 		return funcptr;
 		#else
