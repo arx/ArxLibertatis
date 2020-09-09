@@ -30,6 +30,7 @@
 #include <boost/noncopyable.hpp>
 
 #include "platform/Architecture.h"
+#include "platform/ProgramOptions.h"
 #include "platform/WindowsUtils.h"
 
 class WindowsMain : private boost::noncopyable {
@@ -99,5 +100,14 @@ extern "C" {
 	void _cdecl __vcrt_uninitialize_telemetry_provider() { }
 };
 #endif
+
+void handleHideConsole() {
+	HWND console = GetConsoleWindow();
+	if(console) {
+		ShowWindow(console, SW_HIDE);
+	}
+}
+
+ARX_PROGRAM_OPTION("hide-console", "", "Hide the parent console window", &handleHideConsole)
 
 #endif // ARX_PLATFORM_WINDOWSMAINCOMMON_H

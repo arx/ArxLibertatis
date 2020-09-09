@@ -45,5 +45,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	
 	WindowsMain init;
 	
+	AttachConsole(ATTACH_PARENT_PROCESS);
+	
 	return utf8_main(init.argc, init.argv);
 }
