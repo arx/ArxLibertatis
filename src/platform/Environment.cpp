@@ -387,7 +387,7 @@ fs::path getExecutablePath() {
 		}
 		buffer.allocate(buffer.size() * 2);
 	}
-
+	
 #else
 	
 	// FreeBSD
