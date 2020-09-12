@@ -22,11 +22,18 @@
 
 namespace gldebug {
 
+enum Mode {
+	Enabled, //!< Check and log errors
+	Ignored, //!< Check errors but don't log (OpenGL default)
+	NoError, //!< Treat errors as undefined behavior (falls back to Ignored if not supported)
+	Default  //!< Select mode according to build type and enabled features
+};
+
 //! Initialize OpenGL debug output.
 void initialize();
 
 //! Check if debug output should be enabled.
-bool isEnabled();
+Mode mode();
 
 //! Must be called at the end of each frame
 void endFrame();

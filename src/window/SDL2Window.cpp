@@ -376,6 +376,8 @@ bool SDL2Window::initialize() {
 	
 	bool autoRenderer = (config.video.renderer == "auto");
 	
+	gldebug::Mode debugMode = gldebug::mode();
+	
 	int samples = 0;
 	for(int api = 0; api < 2 && samples == 0; api++) {
 		bool first = (api == 0);
@@ -385,17 +387,17 @@ bool SDL2Window::initialize() {
 		if(samples == 0 && first == (autoRenderer || config.video.renderer == "OpenGL")) {
 			matched = true;
 			
-			for(int type = 0; type < (gldebug::isEnabled() ? 2 : 1) && samples == 0; type++) {
+			for(int type = 0; type < ((debugMode == gldebug::Enabled) ? 2 : 1) && samples == 0; type++) {
 				
 				int flags = 0;
-				if(gldebug::isEnabled() && type == 0) {
+				if(debugMode == gldebug::Enabled && type == 0) {
 					flags |= SDL_GL_CONTEXT_DEBUG_FLAG;
 				}
 				SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, flags);
 				
 				// TODO core profile are not supported yet
 				#if SDL_VERSION_ATLEAST(2, 0, 6)
-				if(!gldebug::isEnabled()) {
+				if(debugMode == gldebug::NoError) {
 					// Set SDL_GL_CONTEXT_PROFILE_MASK to != 0 so SDL won't ignore SDL_GL_CONTEXT_NO_ERROR
 					SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 					SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -423,10 +425,10 @@ bool SDL2Window::initialize() {
 		if(samples == 0 && first == (autoRenderer || config.video.renderer == "OpenGL ES")) {
 			matched = true;
 			
-			for(int type = 0; type < (gldebug::isEnabled() ? 2 : 1) && samples == 0; type++) {
+			for(int type = 0; type < ((debugMode == gldebug::Enabled) ? 2 : 1) && samples == 0; type++) {
 				
 				int flags = 0;
-				if(gldebug::isEnabled() && type == 0) {
+				if(debugMode == gldebug::Enabled && type == 0) {
 					flags |= SDL_GL_CONTEXT_DEBUG_FLAG;
 				}
 				SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, flags);

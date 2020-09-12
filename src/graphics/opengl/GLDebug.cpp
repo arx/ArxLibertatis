@@ -102,7 +102,7 @@ static void ARX_GLAPIENTRY callback(GLenum source, GLenum type, GLuint id,
 
 void initialize() {
 	
-	if(!isEnabled()) {
+	if(mode() != Enabled) {
 		return;
 	}
 	
@@ -165,21 +165,36 @@ void initialize() {
 
 #endif
 
-#if ARX_DEBUG_GL
-static bool g_enable = true;
-#else
-static bool g_enable = false;
-#endif
-
-bool isEnabled() {
-	return g_enable && !benchmark::isEnabled();
+inline Mode defaultMode() {
+	#if ARX_DEBUG_GL
+	return benchmark::isEnabled() ? NoError : Enabled;
+	#else
+	return NoError;
+	#endif
 }
 
-static void enable() {
-	g_enable = true;
+static Mode g_mode = Default;
+
+Mode mode() {
+	return (g_mode == Default) ? defaultMode() : g_mode;
 }
 
-ARX_PROGRAM_OPTION("debug-gl", NULL, "Enable OpenGL debug output", &enable)
+static void setMode(util::cmdline::optional<std::string> mode) {
+	if(!mode || mode->empty() || *mode == "enabled") {
+		g_mode = Enabled;
+	} else if(*mode == "ignored") {
+		g_mode = Ignored;
+	} else if(*mode == "noerror") {
+		g_mode = NoError;
+	} else if(*mode == "default") {
+		g_mode = Default;
+	} else {
+		throw util::cmdline::error(util::cmdline::error::invalid_value,
+		                           "inavlid mode \"" + *mode + "\"");
+	}
+}
+
+ARX_PROGRAM_OPTION_ARG("debug-gl", NULL, "Enable OpenGL debug output", &setMode, "MODE")
 
 static const char * getGLErrorString(GLenum error) {
 	
@@ -197,8 +212,9 @@ static const char * getGLErrorString(GLenum error) {
 
 void endFrame() {
 	
-	if(!isEnabled())
+	if(mode() != Enabled) {
 		return;
+	}
 	
 	if(GLenum error = glGetError()) {
 		LogError << "GL error: " << error << " = " << getGLErrorString(error);
