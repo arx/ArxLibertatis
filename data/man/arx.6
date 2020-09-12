@@ -21,7 +21,7 @@ Here is a short summary of the options available in arx. Please refer to the det
  \-h \-\-help               Show supported options
  \-g \-\-debug \fILEVELS\fP       Set debug output levels
  \-\-benchmark\fI[=TIMELIMIT]\fP Log loading times and framerates
- \-\-debug\-gl              Enable OpenGL debug output
+ \-\-debug\-gl\fI[=MODE]\fP       Enable OpenGL debug output
 .fi
 .TP
 .B Search path options:
@@ -41,7 +41,7 @@ Here is a short summary of the options available in arx. Please refer to the det
 .fi
 .SH OPTIONS
 .TP
-\fB\-\-benchmark\fP[=TIMELIMIT]\fP
+\fB\-\-benchmark\fP[=\fITIMELIMIT\fP]
 Log time taken for startup, loading levels and shutdown, and the minimum, maximum and average framerate.
 
 If a \fITIMELIMIT\fP argument is given, the game will exit after the specified amout of time has been spent rendering normal frames. This time does not include the startup or loading time. Valid values are a number, optionally followed by a unit. Valid units are "\fIms\fP" (milliseconds), "\fIs\fP" (seconds), "\fIm\fP" (minutes) and "\fIh\fP" (hours). The default unit is milliseconds.
@@ -66,8 +66,26 @@ Use \fBarx\-install\-data\fP(1) to extract and install the required data files f
 \fB\-g\fP, \fB\-\-debug\fP=\fILEVELS\fP
 This option can be used to enable debug output for debug builds of Arx Libertatis. For non-debug build, this option is not very useful but recognized for convenience.
 .TP
-\fB\-\-debug\-gl\fP
-Create and OpenGL debug context and, if available, enable enable debug output from the OpenGL driver.
+\fB\-\-debug\-gl\fP[=\fIMODE\fP]
+Control OpenGL context type and debug output from the OpenGL driver.
+
+The following modes are possible:
+
+.RS
+.HP
+"\fBenabled\fP"
+Enable additional error checks in the OpenGL driver and log all reported errors. This is the default when no \fIMODE\fP is given.
+.HP
+"\fBignored\fP"
+Enable only the standard OpenGL error checks required by the standard an ignore all errors.
+.HP
+"\fBnoerror\fP"
+Tell the OpenGL driver to assume that there will be no errors. Will fall back to "\fBignored\fP" if not supported.
+.HP
+"\fBdefault\fP"
+Select one of the above modes depending on the build type and enabled features. This is the default when \fB\-\-debug\-gl\fP is not used.
+.RE
+.IP
 .TP
 \fB\-h\fP, \fB\-\-help\fP
 Show a list of the supported options.
