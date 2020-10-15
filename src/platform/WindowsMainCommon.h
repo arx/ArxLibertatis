@@ -101,7 +101,7 @@ extern "C" {
 };
 #endif
 
-void handleHideConsole() {
+static void handleHideConsole() {
 	HWND console = GetConsoleWindow();
 	if(console) {
 		ShowWindow(console, SW_HIDE);
