@@ -266,12 +266,15 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 		
 	} else {
 		
-		std::string _output = getLocalised(data);
-		
 		io->lastspeechflag = 0;
 		g_aspeech[num].text.clear();
-		g_aspeech[num].text = _output;
-		g_aspeech[num].duration = std::max(g_aspeech[num].duration, GameDurationMs(s64(_output.length() + 1) * 100));
+		g_aspeech[num].text = getLocalised(data, "\x01");
+		if(g_aspeech[num].text == "\x01") {
+			g_aspeech[num].text.clear();
+			LogWarning << "Speech requested with text but localisation is missing: " << data;
+		}
+		g_aspeech[num].duration = std::max(g_aspeech[num].duration,
+		                                   GameDurationMs(s64(g_aspeech[num].text.length() + 1) * 100));
 		
 		sample = data;
 	}
