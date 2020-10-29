@@ -100,7 +100,7 @@ void notification_add(const std::string & text) {
 		
 		// Sets creation time
 		g_notification[i].timecreation = now;
-		g_notification[i].duration = GameDurationMs(2000 + text.length() * 60);
+		g_notification[i].duration = GameDurationMs(2000 + getLocalised(text).length() * 60);
 		g_notification[i].text = text;
 		return;
 	}
