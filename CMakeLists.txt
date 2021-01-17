@@ -1735,6 +1735,7 @@ if(BUILD_TOOLS)
 		${PLATFORM_CONSOLE_SOURCES}
 		${IO_RESOURCE_SOURCES}
 		${UTIL_CMDLINE_SOURCES}
+		${MATH_SOURCES}
 		src/core/Localisation.cpp
 		src/io/SaveBlock.cpp
 		src/io/IniReader.cpp
