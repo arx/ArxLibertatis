@@ -35,6 +35,7 @@ add_source_flags("${arxtest_TESTCASES}" "${enable_rtti} ${disable_libstdcxx_debu
 set(arxtest_SOURCES
 	
 	${BASE_SOURCES}
+	${MATH_SOURCES}
 	
 	src/game/Camera.cpp
 	src/graphics/Math.cpp
