@@ -453,7 +453,7 @@ bool Config::save() {
 		oss << video.mode.resolution.x << 'x' << video.mode.resolution.y;
 		writer.writeKey(Key::resolution, oss.str());
 	}
-	writer.writeKey(Key::refreshRate, video.mode.refresh);
+	writer.writeKey(Key::refreshRate, int(video.mode.refresh));
 	writer.writeKey(Key::fullscreen, video.fullscreen);
 	writer.writeKey(Key::levelOfDetail, video.levelOfDetail);
 	writer.writeKey(Key::fogDistance, video.fogDistance);
