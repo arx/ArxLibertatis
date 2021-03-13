@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -299,7 +299,7 @@ void Thread::disableFloatDenormals() {
 	// We would need to drop support for x86 CPUs without SSE(2) and
 	// compile with -msse(2) -mfpmath=sse for this to have an effect
 	
-	#elif ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64
+	#elif ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64 || ARX_ARCH == ARX_ARCH_E2K
 	
 	BOOST_STATIC_ASSERT(ARX_HAVE_SSE);
 	

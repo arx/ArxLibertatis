@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2017 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -34,6 +34,7 @@ namespace platform {
 #define ARX_ARCH_SPARC            9
 #define ARX_ARCH_ARM64            10
 #define ARX_ARCH_RISCV            11
+#define ARX_ARCH_E2K              12
 
 #define ARX_ARCH_NAME_UNKNOWN     ""
 #define ARX_ARCH_NAME_X86_64      "x86_64"
@@ -47,6 +48,7 @@ namespace platform {
 #define ARX_ARCH_NAME_SPARC       "sparc"
 #define ARX_ARCH_NAME_ARM64       "aarch64"
 #define ARX_ARCH_NAME_RISCV       "riscv"
+#define ARX_ARCH_NAME_E2K         "e2k"
 
 // Checks are shamelessly copied from
 // https://sourceforge.net/apps/mediawiki/predef/index.php?title=Architectures
@@ -101,6 +103,10 @@ namespace platform {
 #define ARX_ARCH ARX_ARCH_SPARC
 #define ARX_ARCH_NAME ARX_ARCH_NAME_SPARC
 
+#elif defined(__e2k__)
+#define ARX_ARCH ARX_ARCH_E2K
+#define ARX_ARCH_NAME ARX_ARCH_NAME_E2K
+
 #else
 #define ARX_ARCH ARX_ARCH_UNKNOWN
 #define ARX_ARCH_NAME ARX_ARCH_NAME_UNKNOWN
@@ -120,22 +126,27 @@ inline const char * getArchitectureName(unsigned arch) {
 		case ARX_ARCH_SPARC:   return ARX_ARCH_NAME_SPARC;
 		case ARX_ARCH_ARM64:   return ARX_ARCH_NAME_ARM64;
 		case ARX_ARCH_RISCV:   return ARX_ARCH_NAME_RISCV;
+		case ARX_ARCH_E2K:     return ARX_ARCH_NAME_E2K;
 		default: return ARX_ARCH_NAME_UNKNOWN;
 	}
 }
 
 /*!
  * \def ARX_HAVE_SSE
- * \brief x86-only: 1 if targeting CPUs with SSE support, 0 otherwise
+ * \brief x86/e2k-only: 1 if targeting CPUs with SSE support, 0 otherwise
  */
 /*!
  * \def ARX_HAVE_SSE2
- * \brief x86-only: 1 if targeting CPUs with SSE2 support, 0 otherwise
+ * \brief x86/e2k-only: 1 if targeting CPUs with SSE2 support, 0 otherwise
+ */
+ /*!
+ * \def ARX_HAVE_SSE3
+ * \brief x86/e2k-only: 1 if targeting CPUs with SSE3 support, 0 otherwise
  */
 #if ARX_ARCH == ARX_ARCH_X86_64
 #define ARX_HAVE_SSE 1
 #define ARX_HAVE_SSE2 1
-#elif ARX_ARCH == ARX_ARCH_X86
+#elif ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_E2K
 #if defined(__SSE__) || (defined(_M_IX86_FP) && _M_IX86_FP >= 1)
 #define ARX_HAVE_SSE 1
 #else
@@ -147,7 +158,7 @@ inline const char * getArchitectureName(unsigned arch) {
 #define ARX_HAVE_SSE2 0
 #endif
 #endif
-#if ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64
+#if ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64 || ARX_ARCH == ARX_ARCH_E2K
 #if defined(__SSE3__)
 #define ARX_HAVE_SSE3 1
 #else
