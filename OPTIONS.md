@@ -61,11 +61,11 @@ Arx Libertatis adjust the compiler flags to provide an optimal configuration for
 ### Static linking
 
 * `USE_STATIC_LIBS` (default: `ON` on Windows, `OFF` elsewhere): Turns on static linking for all libraries, including `-static-libgcc` and `-static-libstdc++`. You can also use the individual options below:
-* `epoxy_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link libepoxy.
-* `GLEW_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link GLEW.
-* `Boost_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link Boost. See also `FindBoost.cmake` in your CMake installation.
-* `Freetype_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link FreeType.
-* `ZLIB_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link ZLIB.
+* `epoxy_USE_STATIC_LIBS` (default: `ON` if `USE_STATIC_LIBS` is enabled): Statically link libepoxy.
+* `GLEW_USE_STATIC_LIBS` (default: `ON` if `USE_STATIC_LIBS` is enabled): Statically link GLEW.
+* `Boost_USE_STATIC_LIBS` (default: `ON` if `USE_STATIC_LIBS` is enabled): Statically link Boost. See also `FindBoost.cmake` in your CMake installation.
+* `Freetype_USE_STATIC_LIBS` (default: `ON` if `USE_STATIC_LIBS` is enabled): Statically link FreeType.
+* `ZLIB_USE_STATIC_LIBS` (default: `ON` if `USE_STATIC_LIBS` is enabled): Statically link ZLIB.
 
 ### Install options
 
@@ -99,7 +99,7 @@ By default, optional components will be automatically disabled if their dependen
 * `USE_OPENAL` (default: ON): Build the OpenAL audio backend²
 * `WITH_OPENGL` (default: *not set*): Select the OpenGL wrangler to use: `epoxy` or `glew`. If not set, we will try to use either, preferring SDL `epoxy`. ³
 * `WITH_SDL` (default: *not set*): Select the SDL version to use: 1 or 2. If not set, we will try to use either version, preferring SDL 2. ³
-* `USE_X11` (default: OFF on Windows and macOS, ON otherwise): Check for X11 support in used libraries and buld X11-specific code
+* `USE_X11` (default: OFF on Windows and macOS, ON otherwise): Check for X11 support in used libraries and build X11-specific code
 * `USE_WAYLAND` (default: OFF): Check for Wayland support in used libraries
 * `WITH_QT` (default: *not set*): Select the Qt version to use: 4 or 5. If not set, we will try to use either version, preferring Qt 5. Ignored if `BUILD_CRASHREPORTER` is disabled. ³
 * `USE_WINHTTP` (default: ON): Use the native WinHTTP API instead of CURL on Windows.

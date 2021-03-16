@@ -22,8 +22,8 @@ function(add_source_flags SOURCES FLAG)
 endfunction()
 
 # Add compile definitions for specific source files
-#  SOURCES Source(s) to add definitjons to
-#  ...     Compile definitons to add
+#  SOURCES Source(s) to add definitions to
+#  ...     Compile definitions to add
 function(add_source_definitions SOURCES)
 	foreach(def IN LISTS ARGN)
 		if(def MATCHES "^([/-]D)?([a-zA-Z0-9_]+(=.*)?)$")
@@ -151,7 +151,7 @@ function(process_resource_files BINARY SOURCE_VARIABLE_NAME)
 	set(rc_files)
 	set(generated_rc_files)
 	
-	# Older CMake versions and MingGW do not support manifest files - manually create the resource file
+	# Older CMake versions and MinGW do not support manifest files - manually create the resource file
 	foreach(source_file IN LISTS ${SOURCE_VARIABLE_NAME})
 		
 		if(source_file MATCHES "\\.manifest" AND (NOT MSVC OR CMAKE_VERSION VERSION_LESS 3.4))
@@ -576,7 +576,7 @@ function(_shared_build_add_binary bin)
 	endif()
 	
 	if(MACOS)
-		# For macOS, CMake maps VERSION to the -current_version linker propery
+		# For macOS, CMake maps VERSION to the -current_version linker property
 		# and SOVERSION to *both* the ABI version in the file name and to the 
 		# -compatibility_version linker property.
 		# The -current_version and -compatibility_version have restrictions

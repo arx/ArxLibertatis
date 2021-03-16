@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -30,17 +30,17 @@
 #include "crashreporter/qhexedit/XByteArray.h"
 
 /*!
- * CharCommand is a class to prived undo/redo functionality in QHexEdit.
+ * CharCommand is a class to provide undo/redo functionality in QHexEdit.
  * A QUndoCommand represents a single editing action on a document. CharCommand
- * is responsable for manipulations on single chars. It can insert. replace and
- * remove characters. A manipulation stores allways to actions
+ * is responsible for manipulations on single chars. It can insert, replace and
+ * remove characters. A manipulation stores always to actions
  * 1. redo (or do) action
  * 2. undo action.
  *
- * CharCommand also supports command compression via mergeWidht(). This allows
+ * CharCommand also supports command compression via mergeWith(). This allows
  * the user to execute a undo command contation e.g. 3 steps in a single command.
- * If you for example insert a new byt "34" this means for the editor doing 3
- * steps: insert a "00", replace it with "03" and the replace it with "34". These
+ * If you for example insert a new byte "34" this means for the editor doing 3
+ * steps: insert a "00", replace it with "03" and then replace it with "34". These
  * 3 steps are combined into a single step, insert a "34".
  */
 class CharCommand : public QUndoCommand {
@@ -71,7 +71,7 @@ private:
 
 /*!
  * ArrayCommand provides undo/redo functionality for handling binary strings. It
- * can undo/redo insert, replace and remove binary strins (QByteArrays).
+ * can undo/redo insert, replace and remove binary strings (QByteArrays).
  */
 class ArrayCommand : public QUndoCommand {
 	

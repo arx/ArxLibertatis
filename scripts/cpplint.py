@@ -8,7 +8,7 @@
 #  - No space after if et al.
 #  - Warn if a tab follows a non-tab character.
 #  - Don't require two spaces between code and comments
-#  - Warn if spaces are used for identation.
+#  - Warn if spaces are used for indentation.
 #  - Allow //! and //!< comments
 #  - Allow struct name { typedef a type; }; one-liners
 #  - Allow #ifdef BOOST_PP_IS_ITERATING + #endif in place of header guards
@@ -230,7 +230,7 @@ _ERROR_CATEGORIES = [
   'whitespace/todo'
   ]
 
-# The default state of the category filter. This is overrided by the --filter=
+# The default state of the category filter. This is overridden by the --filter=
 # flag. By default all errors are on, so only add here categories that should be
 # off by default (i.e., categories that must be enabled by the --filter= flags).
 # All entries here should start with a '-' or '+', as in the --filter= flag.
@@ -364,7 +364,7 @@ def IsErrorSuppressedByNolint(category, linenum):
     category: str, the category of the error.
     linenum: int, the current line number.
   Returns:
-    bool, True iff the error should be suppressed due to a NOLINT comment.
+    bool, True if the error should be suppressed due to a NOLINT comment.
   """
   return (linenum in _error_suppressions.get(category, set()) or
           linenum in _error_suppressions.get(None, set()))
@@ -1868,7 +1868,7 @@ def CheckSpacing(filename, clean_lines, linenum, error):
 
   if Search(r'template\<', line):
     error(filename, linenum, 'whitespace/templates', 4,
-          'Missing space beteen template and <')
+          'Missing space between template and <')
 
   # We allow no-spaces around = within an if: "if ( (a=Foo()) == 0 )".
   # Otherwise not.  Note we only check for non-spaces on *both* sides;
@@ -2384,7 +2384,7 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, class_state,
         break
       if lasttabs > 0 and char != '\t':
         error(filename, linenum, 'whitespace/ident_space', 4,
-                'Space used for identation, use tabs instead.')
+                'Space used for indentation, use tabs instead.')
         break
       lasttabs -= 1
 
@@ -3186,7 +3186,7 @@ def UpdateIncludeState(filename, include_state, io=codecs):
     io: The io factory to use to read the file. Provided for testability.
 
   Returns:
-    True if a header was succesfully added. False otherwise.
+    True if a header was successfully added. False otherwise.
   """
   headerfile = None
   try:
@@ -3258,7 +3258,7 @@ def CheckForIncludeWhatYouUse(filename, clean_lines, include_state, error,
   # Let's copy the include_state so it is only messed up within this function.
   include_state = include_state.copy()
 
-  # Did we find the header for this file (if any) and succesfully load it?
+  # Did we find the header for this file (if any) and successfully load it?
   header_found = False
 
   # Use the absolute path so that matching works properly.

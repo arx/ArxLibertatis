@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -81,7 +81,7 @@ http::Response * Server::wait(const QFuture<http::Response *> & future) {
 	
 	QEventLoop loop;
 	
-	// Interrrupt the event loop when the result is available
+	// Interrupt the event loop when the result is available.
 	QFutureWatcher<http::Response *> watcher;
 	watcher.setFuture(future);
 	loop.connect(&watcher, SIGNAL(finished()), SLOT(quit()));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2012-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -89,7 +89,7 @@ struct SystemPaths {
 	/*!
 	 * \brief Get a list of all data search paths
 	 *
-	 * \param filterMissing exclude non-existant search directories.
+	 * \param filterMissing exclude non-existent search directories.
 	 */
 	std::vector<path> getSearchPaths(bool filterMissing) const;
 	
@@ -188,7 +188,7 @@ path findUserPath(const char * name, const path & force,
 		}
 	}
 	
-	// Create a new standard diretcory
+	// Create a new standard directory
 	if(!to_create.empty()) {
 		if(!create) {
 			return to_create;
@@ -256,12 +256,12 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	
 	std::vector<path> result;
 	
-	// Use the user diretcory as the highest-priority data directory
+	// Use the user directory as the highest-priority data directory
 	if(!m_userDir.empty() && addSearchRoot(result, m_userDir, filter)) {
 		LogDebug("got data dir from user dir: " << m_userDir);
 	}
 	
-	// Use paths specifed on the command-line
+	// Use paths specified on the command-line
 	BOOST_FOREACH(const path & dir, m_additionalDataDirs) {
 		path tmp = canonical(dir);
 		if(addSearchPath(result, tmp, filter)) {
@@ -472,7 +472,7 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 		os << forceData;
 	}
 	std::string exevar = getSearchPathVar(platform::getExecutablePath());
-	os << " - Paths specifed in \"" << exevar << "\"\n";
+	os << " - Paths specified in \"" << exevar << "\"\n";
 	os << " - The directory containing the game executable\n";
 	listDirectoriesFor(os, "DataDir", platform::NoPath, data_dir_prefixes, data_dir);
 	os << "For all of these (except those specified via --data-dir),\n";

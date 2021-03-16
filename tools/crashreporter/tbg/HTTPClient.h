@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2015-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -53,7 +53,7 @@ public:
 	 * Redirects will be followed by default and the response for the final request
 	 * returned.
 	 *
-	 * Set to \c false to retrieve the initial respnse.
+	 * Set to \c false to retrieve the initial response.
 	 */
 	void setFollowRedirects(bool follow) {
 		m_followRedirects = follow;

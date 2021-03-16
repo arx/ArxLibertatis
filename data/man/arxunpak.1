@@ -14,7 +14,7 @@ This is not required to run \fBArx Libertatis\fP but can be useful for developme
 
 All no-option arguments are interpreted as files to extract.
 
-If no .pak files are specified on the command-line, the \fB\-\-all\fP option is enabled by default. In this case all files are extracted to the "\fIunpacked\fP" subdirectory of the user directoy. Otherwise, output files are written to the current working directory.
+If no .pak files are specified on the command-line, the \fB\-\-all\fP option is enabled by default. In this case all files are extracted to the "\fIunpacked\fP" subdirectory of the user directory. Otherwise, output files are written to the current working directory.
 .SH OPTIONS SUMMARY
 .PP
 Here is a short summary of the options available in arxunpak. Please refer to the detailed  documentation below for a complete description.
@@ -50,7 +50,7 @@ Treat all arguments after this one as files, even if they begin with a dash.
 \fB\-a\fP, \fB\-\-all\fP
 Extract or list all resources seen by the game.
 
-If no .pak files are specified on the command-line, this option is enabled by default. In this case all files are extracted to the "\fIunpacked\fP" subdirectory of the user directoy instead of the current directory, unless the \fB\-\-output\-dir\fP option is used to override the output directory.
+If no .pak files are specified on the command-line, this option is enabled by default. In this case all files are extracted to the "\fIunpacked\fP" subdirectory of the user directory instead of the current directory, unless the \fB\-\-output\-dir\fP option is used to override the output directory.
 .TP
 \fB\-c\fP, \fB\-\-config\-dir\fP=\fIDIR\fP
 By default arx will store configuration files in directories specified by the \fBXDG Base Directory Specification\fP.
@@ -89,7 +89,7 @@ Show the data, user and config search directories and how they were determined. 
 \fB\-m\fP, \fB\-\-manifest\fP
 Print checksums of files and list directories in the processed archives.
 
-Each file or directory is printed on a separate line. Directories are indicated using a trailing slash and are preceeded by 34 spaces. Files are preceeded by a 32-character MD5 checksum, one space and one asterisk ("*"). This format is compatible with the \fB\-\-check\fP option of \fBmd5sum\fP(1), which will simply ignore directory lines.
+Each file or directory is printed on a separate line. Directories are indicated using a trailing slash and are preceded by 34 spaces. Files are preceded by a 32-character MD5 checksum, one space and one asterisk ("*"). This format is compatible with the \fB\-\-check\fP option of \fBmd5sum\fP(1), which will simply ignore directory lines.
 .TP
 \fB\-n\fP, \fB\-\-no\-data\-dir\fP
 Disables looking for default data directories. Default user and config directories and data directories provided using the \fB\-\-data\-dir\fP option are still searched.

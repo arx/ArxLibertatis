@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -320,7 +320,7 @@ size_t CompressedFileHandle::read(void * buf, size_t size) {
 	}
 	
 	if(size < m_file.m_uncompressedSize || m_offset != 0) {
-		LogWarning << "Partially reading a compressed file - inefficent: size=" << size
+		LogWarning << "Partially reading a compressed file - inefficient: size=" << size
 		           << " offset=" << m_offset << " total=" << m_file.m_uncompressedSize;
 	}
 	

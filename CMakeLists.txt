@@ -1282,7 +1282,7 @@ if(USE_X11 AND SDL_HAVE_VIDEO_X11)
 	set(ARX_HAVE_SDL2_X11 1)
 endif()
 
-# TODO manually specify theese like we do for the tools
+# TODO manually specify these like we do for the tools
 file(GLOB_RECURSE ALL_INCLUDES RELATIVE ${PROJECT_SOURCE_DIR} src/*.h)
 
 set_property(SOURCE src/graphics/image/stb_image.cpp APPEND PROPERTY COMPILE_FLAGS ${conservative_warnings})

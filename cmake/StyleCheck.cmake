@@ -3,7 +3,7 @@ find_package(PythonInterp)
 
 set(STYLE_FILTER)
 
-# Insists on including evrything in the .cpp file even if it is included in the header.
+# Insists on including everything in the .cpp file even if it is included in the header.
 # This behaviour conflicts with other tools.
 set(STYLE_FILTER ${STYLE_FILTER},-build/include_what_you_use)
 
