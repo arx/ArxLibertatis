@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -254,7 +254,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier * pProgressNotifier)
 		bool bCommentAdded = server.addComment(issue_id, m_ReproSteps);
 		pProgressNotifier->taskStepEnded();
 		if(!bCommentAdded) {
-			pProgressNotifier->setError("Failure occured when trying to add information to an existing issue");
+			pProgressNotifier->setError("Failure occurred when trying to add information to an existing issue");
 			pProgressNotifier->setDetailedError(server.getErrorString());
 			return false;
 		}

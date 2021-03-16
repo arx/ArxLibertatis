@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -40,12 +40,12 @@
  * (0..9, a..f) you will change the data. Changed data is highlighted and can be
  * accessed via data().
  *
- * Normaly QHexEdit works in the overwrite Mode. You can set overwriteMode(false)
+ * Normally QHexEdit works in the overwrite Mode. You can set overwriteMode(false)
  * and insert data. In this case the size of data() increases. It is also possible
  * to delete bytes (del or backspace), here the size of data decreases.
  *
  * You can select data with keyboard hits or mouse movements. The copy-key will
- * copy the selected data into the clipboard. The cut-key copies also but delets
+ * copy the selected data into the clipboard. The cut-key copies also but deletes
  * it afterwards. In overwrite mode, the paste function overwrites the content of
  * the (does not change the length) data. In insert mode, clipboard data will be
  * inserted. The clipboard content is expected in ASCII Hex notation. Unknown
@@ -57,7 +57,7 @@
  * content for the editor.
  *
  * This widget can only handle small amounts of data. The size has to be below 10
- * megabytes, otherwise the scroll sliders ard not shown and you can't scroll any
+ * megabytes, otherwise the scroll sliders are not shown and you can't scroll any
  * more.
  */
 class QHexEdit : public QScrollArea {
@@ -72,7 +72,7 @@ class QHexEdit : public QScrollArea {
 	
 	/*!
 	 * Property addressOffset is added to the Numbers of the Address Area.
-	 * A offset in the address area (left side) is sometimes usefull, whe you show
+	 * A offset in the address area (left side) is sometimes useful, when you show
 	 * only a segment of a complete memory picture. With setAddressOffset() you set
 	 * this property - with addressOffset() you get the actual value.
 	 */
@@ -80,7 +80,7 @@ class QHexEdit : public QScrollArea {
 	
 	/*!
 	 * Property address area color sets (setAddressAreaColor()) the backgorund
-	 * color of address areas. You can also read the color (addressaAreaColor()).
+	 * color of address areas. You can also read the color (addressAreaColor()).
 	 */
 	Q_PROPERTY(QColor addressAreaColor READ addressAreaColor WRITE setAddressAreaColor)
 	
@@ -99,7 +99,7 @@ class QHexEdit : public QScrollArea {
 	Q_PROPERTY(QColor selectionColor READ selectionColor WRITE setSelectionColor)
 	
 	/*!
-	 * Porperty overwrite mode sets (setOverwriteMode()) or gets (overwriteMode()) the mode
+	 * Property overwrite mode sets (setOverwriteMode()) or gets (overwriteMode()) the mode
 	 * in which the editor works. In overwrite mode the user will overwrite existing data. The
 	 * size of data will be constant. In insert mode the size will grow, when inserting
 	 * new data.
@@ -107,7 +107,7 @@ class QHexEdit : public QScrollArea {
 	Q_PROPERTY(bool overwriteMode READ overwriteMode WRITE setOverwriteMode)
 	
 	/*!
-	 * Porperty readOnly sets (setReadOnly()) or gets (isReadOnly) the mode
+	 * Property readOnly sets (setReadOnly()) or gets (isReadOnly) the mode
 	 * in which the editor works. In readonly mode the the user can only navigate
 	 * through the data and select data; modifying is not possible. This
 	 * property's default is false.
@@ -130,7 +130,7 @@ public:
 	 * \param i Index position, where to insert
 	 * \param ba byte array, which is to insert
 	 * In overwrite mode, the existing data will be overwritten, in insertmode ba will be
-	 * insertet and size of data grows.
+	 * inserted and size of data grows.
 	 */
 	void insert(int i, const QByteArray & ba);
 	
@@ -139,7 +139,7 @@ public:
 	 * \param i Index position, where to insert
 	 * \param ch Char, which is to insert
 	 * In overwrite mode, the existing data will be overwritten, in insertmode ba will be
-	 * insertet and size of data grows.
+	 * inserted and size of data grows.
 	 */
 	void insert(int i, char ch);
 	
@@ -147,7 +147,7 @@ public:
 	 * Removes len bytes from the content.
 	 * \param pos Index position, where to remove
 	 * \param len Amount of bytes to remove
-	 * In overwrite mode, the existing bytes will be overwriten with 0x00.
+	 * In overwrite mode, the existing bytes will be overwritten with 0x00.
 	 */
 	void remove(int pos, int len = 1);
 	
@@ -220,10 +220,10 @@ signals:
 	//! Contains the size of the data to edit.
 	void currentSizeChanged(int size);
 	
-	//! The signal is emited every time, the data is changed.
+	//! The signal is emitted every time, the data is changed.
 	void dataChanged();
 	
-	//! The signal is emited every time, the overwrite mode is changed.
+	//! The signal is emitted every time, the overwrite mode is changed.
 	void overwriteModeChanged(bool state);
 	
 private:

@@ -71,7 +71,7 @@ if(NOT GIT_DIR STREQUAL "")
 		
 	endif()
 	
-	# Create variables for all prefixes of the git comit ID.
+	# Create variables for all prefixes of the git commit ID.
 	string(REGEX MATCH "[0-9A-Za-z]+" git_commit "${git_head}")
 	string(LENGTH "${git_commit}" git_commit_length)
 	if(NOT git_commit_length LESS 40)

@@ -1,4 +1,4 @@
-# Copyright 2014-2020 Arx Libertatis Team (see the AUTHORS file)
+# Copyright 2014-2021 Arx Libertatis Team (see the AUTHORS file)
 #
 # This file is part of Arx Libertatis.
 #
@@ -120,7 +120,7 @@ class LlfSerializer(object):
         pos += sizeof(VertexColors)
 
         if len(data) - pos != 0:
-            self.log.info("Unexected data at end of file")
+            self.log.info("Unexpected data at end of file")
 
         return LlfData(
             lights=lights,

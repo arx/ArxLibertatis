@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -79,7 +79,7 @@ void XByteArray::setDataChanged(int i, const QByteArray & state) {
 int XByteArray::realAddressNumbers() {
 	
 	if(_oldSize != _data.size()) {
-		// Is addressNumbers wide enought?
+		// Is addressNumbers wide enough?
 		QString test = QString("%1").arg(_data.size() + _addressOffset, _addressNumbers, 16, QChar('0'));
 		_realAddressNumbers = test.size();
 	}

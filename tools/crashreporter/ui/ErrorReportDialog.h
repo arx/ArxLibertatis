@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -49,7 +49,7 @@ public:
 	
 	/*!
 	 * Get the error string (available in case of a failure)
-	 * \return A string detailling the error that occured in case of a failure.
+	 * \return A string detailing the error that occurred in case of a failure.
 	 * @sa succeeded()
 	 */
 	const QString & getErrorString() const { return m_strErrorDescription; }

@@ -162,7 +162,7 @@ puts() {
 
 disabled_commands=' ' # List of commands that should not be used, even if they exist
 
-# Make `have` return false for a comand
+# Make `have` return false for a command
 # Usage: disable_command <command>
 disable_command() {
 	disabled_commands="$disabled_commands$1 "
@@ -268,19 +268,19 @@ Also attach the contents of
 	quit 1 "$_die_message"
 }
 
-# Escape a string from stdin for use in a whitespace-seperated list.
+# Escape a string from stdin for use in a whitespace-separated list.
 # Usage: print <string> | escape_pipe
 escape_pipe() {
 	sed "s:[^a-zA-Z0-9/_.$1]:\\\\&:g"
 }
 
-# Escape a string for use in a whitespace-seperated list.
+# Escape a string for use in a whitespace-separated list.
 # Usage: escape <string>
 escape() {
 	print "$1" | escape_pipe "$2"
 }
 
-# Convert a colon-seperated list into an escaped whitespace-seperated list.
+# Convert a colon-separated list into an escaped whitespace-separated list.
 # Usage: to_list <colon-list>
 to_list() {
 	escape "$1" | sed 's/\\:/ /g'
@@ -304,7 +304,7 @@ list_contains() {
 
 # Append a string to a whitespace separated list.
 # Usage: list_append <list-var> <string> [comment]
-# Whitespace seperated lists can be loaded into the argument list using:
+# Whitespace separated lists can be loaded into the argument list using:
 #  eval "set -- $var"
 list_append() {
 	_list_entry="$(escape "$2")"
@@ -446,7 +446,7 @@ patch=1           # Install patch files if needed
 probe_patch=1     # Look for patch files in standard locations and download if needed
 redirect_log=1    # Redirect standard output/error output to a log file in GUI mode
 
-# Enable compatiblity with old install-* scripts.
+# Enable compatibility with old install-* scripts.
 # Usage: enable_compat_mode <help-flag> <sourcefile> <patchfile> <datadir>
 enable_compat_mode() {
 	print \
@@ -459,7 +459,7 @@ Rename this script to something else (like ${dim_pink}arx-install-data${dim_yell
 	probe_patch=0
 	if [ -z "$1" ] || [ "$1" = '--help' ] || [ "$1" = '-h' ] ; then
 		printf '%s\n\n%s\n' "$5" \
-			"${yellow}More options are available in the non-compatiblity mode.${reset}"
+			"${yellow}More options are available in the non-compatibility mode.${reset}"
 		exit $false
 	fi
 	if [ -z "$2" ] ; then install=0           ; else sourcefile="$2" ; fi
@@ -726,7 +726,7 @@ while [ $# -gt 0 ] ; do
 		--disable-*)              disable_command "${1#--disable-}" ;;
 		--disable)        shift ; disable_command "${1#--disable-}" ;;
 		-h|--help)        print_help                     ;;
-		-*)               print_help "Uknown option: $1" ;;
+		-*)               print_help "Unknown option: $1" ;;
 		*)
 			if [ -z "${sourcefile-}" ] && [ $install = 1 ] ; then sourcefile="$1"
 			elif [ -z "${datadir-}"    ] ; then datadir="$1"
@@ -863,7 +863,7 @@ fi
 pipe_file=''
 pipe_pid=0
 
-# Run a command in the background and open a pipe to pass commmands to it
+# Run a command in the background and open a pipe to pass commands to it
 # Usage: pipe_create <command> [<args>...]
 pipe_create() {
 	
@@ -984,7 +984,7 @@ dialog_set_text() {
 	pipe_write "#$1"
 }
 
-# Set if the progress bar should continously animate instead of showing the value.
+# Set if the progress bar should continuously animate instead of showing the value.
 # Usage: dialog_set_pulsate <enable>
 dialog_set_pulsate() {
 	if [ $1 = 1 ]
@@ -1120,7 +1120,7 @@ dialog_set_text() {
 	kdialog_qdbus setLabelText "$1" || kdialog_dcop setLabel "$1"
 }
 
-# Set if the progress bar should continously animate instead of showing the value.
+# Set if the progress bar should continuously animate instead of showing the value.
 # Usage: dialog_set_pulsate <enable>
 dialog_set_pulsate() {
 	_kdialog_max=100
@@ -1244,7 +1244,7 @@ dialog_set_text() {
 	pipe_write 'XXX'
 }
 
-# Set if the progress bar should continously animate instead of showing the value.
+# Set if the progress bar should continuously animate instead of showing the value.
 # Usage: dialog_set_pulsate <enable>
 dialog_set_pulsate() {
 	true # Pulsate is not supported by Xdialog
@@ -1348,7 +1348,7 @@ dialog_set_text() {
 	true
 }
 
-# Set if the progress bar should continously animate instead of showing the value.
+# Set if the progress bar should continuously animate instead of showing the value.
 # Usage: dialog_set_pulsate <enable>
 dialog_set_pulsate() {
 	true
@@ -1555,7 +1555,7 @@ user_select_entry() {
 	&& [ ! $_user_select_entry_t = --any ] \
 	&& [ ! $dialog_select_path_any = 1 ] ; then
 		
-		# No entries detected - direclty promt the user
+		# No entries detected - directly prompt the user
 		_user_select_entry_num=1
 		_user_select_entry_nolist=1
 		
@@ -1582,7 +1582,7 @@ user_select_entry() {
 			list_append _user_select_entry_tlist $_user_select_entry_i
 			list_append _user_select_entry_tlist "$_user_select_entry_label"
 			
-			# Remeber the file for the tag
+			# Remember the file for the tag
 			eval "_user_select_entry_$_user_select_entry_i=\"\$_user_select_entry\""
 			
 			_user_select_entry_i=$((_user_select_entry_i + 1))
@@ -1711,7 +1711,7 @@ ui_cleanup() {
 }
 on_exit ui_cleanup
 
-# Initilize the UI
+# Initialize the UI
 dialog_create || die "
 Could not create main window.
 
@@ -1896,7 +1896,7 @@ probe_wine_registry() {
 	_wine_pattern="$_wine_pattern$(print "$1" | sed 's/\\/\\\\/g' | escape_pipe '()|')"
 	_wine_paths="$(
 		# The --after is just an arbitrary limit
-		# We verify the paths by checking for arx.exe, but for effiency we still want
+		# We verify the paths by checking for arx.exe, but for efficiency we still want
 		# to avoid false positives.
 		cat "$_wine_prefix"/*.reg \
 			| grep -iPA 20 "^\\[$_wine_pattern\\]" 2> /dev/null \
@@ -1937,7 +1937,7 @@ probe_wineprefix() {
 	# GOG version
 	probe_wine_registry 'GOG.com\GOGARXFATALIS' 'PATH' && return $true
 	
-	# Probe uninstall entries - combined for effiency
+	# Probe uninstall entries - combined for efficiency
 	_wine_uninstall='Microsoft\Windows\CurrentVersion\Uninstall\'
 	# Steam
 	_wine_steam="Steam App $steam_appid"
@@ -2563,7 +2563,7 @@ cleanup_workdir() {
 	[ -n "$workdir" ] && [ -e "$workdir" ] && rm -rf "$workdir"
 }
 # Create the work directory if it doesn't exist.
-# Also regiter a cleanup function to remove the work directory on exit.
+# Also register a cleanup function to remove the work directory on exit.
 # Usage: create_workdir
 create_workdir() {
 	[ -z "$workdir" ] || return $true
@@ -2704,7 +2704,7 @@ find_file_impl() {
 	_file="$(escape "$(basename "$2")")"
 	_file_d="$(print "$_file" | sed 's/^\(.*\)\(\.[^.]*\)$/\1_default\2/')"
 	
-	# Prefer files from the patch - if availbale, they are most likely the correct ones
+	# Prefer files from the patch - if available, they are most likely the correct ones
 	[ "$_patchable" = 1 ] && [ -n "$patchdir" ]  \
 		&& find "$patchdir" \( -name "$_file" -o -name "$_file_d" \)  -print
 	
@@ -2712,7 +2712,7 @@ find_file_impl() {
 	[ -n "$sourcedir" ] && find "$sourcedir" -iname "$_file" -print
 	[ -d "$sourcefile" ]  && find "$sourcefile" -iname "$_file" -print
 	# Find the _default.pak variant only after the .pak variant
-	# This is required to detect the correct language fro Steam installs
+	# This is required to detect the correct language from Steam installs
 	# as the english version is always present as speech_default.pak and loc_default.pak
 	[ -n "$sourcedir" ] && find "$sourcedir" -iname "$_file_d" -print
 	[ -d "$sourcefile" ]  && find "$sourcefile" -iname "$_file_d" -print

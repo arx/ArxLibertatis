@@ -20,12 +20,12 @@ set(VERSION_STRING_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/VersionScript.cmake")
 #    - ${var}_${i}_LINE: Everything except the first component of the line
 #    - ${var}_${i}_NAME: Everything except the last component of the line
 #    - ${var}_${i}_STRING: The last component (excluding optional suffix) of the line
-#    - ${var}_${i}_SUFFIX: Suffix (seperated by " + ") of the line
+#    - ${var}_${i}_SUFFIX: Suffix (separated by " + ") of the line
 #    - ${var}_${i}_MAJOR: First version component in ${var}_${i}_STRING
 #    - ${var}_${i}_MINOR: Second version component in ${var}_${i}_STRING
 #    - ${var}_${i}_PATCH: Third version component in ${var}_${i}_STRING
 #    - ${var}_${i}_BUILD: Fourth version component in ${var}_${i}_STRING
-#    - ${var}_${i}_NUMBER: Reassembled verion components
+#    - ${var}_${i}_NUMBER: Reassembled version components
 #    - ${var}_${i}_PRERELEASE: If the version indicates a prerelease build
 #    - ${var}_${i}_PRIVATE: If the version indicates a private build
 # - ${var}_HEAD: The first paragraph of the associated file

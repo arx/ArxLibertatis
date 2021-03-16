@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -250,7 +250,7 @@ public:
 	/*!
 	 * \brief Start iterating over a directory
 	 *
-	 * If there was an error or the directoy contains no entries, \ref end() will return \c false.
+	 * If there was an error or the directory contains no entries, \ref end() will return \c false.
 	 * Otherwise, \ref end() will return \c true and information about the first directory entry
 	 * can be queried using \ref name(), \ref is_directory() and \ref is_regular_file().
 	 */
@@ -268,7 +268,7 @@ public:
 	 * \ref end() == \c false
 	 *
 	 * \remarks
-	 * It is not safe to advace a single \ref directory_iterator may not be advanced from multiple
+	 * It is not safe to advance a single \ref directory_iterator may not be advanced from multiple
 	 * threads or access it while another thread is advancing it.
 	 */
 	directory_iterator & operator++();
