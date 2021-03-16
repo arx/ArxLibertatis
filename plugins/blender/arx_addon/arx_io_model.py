@@ -1,4 +1,4 @@
-# Copyright 2019-2020 Arx Libertatis Team (see the AUTHORS file)
+# Copyright 2019-2021 Arx Libertatis Team (see the AUTHORS file)
 #
 # This file is part of Arx Libertatis.
 #
@@ -58,7 +58,7 @@ class ArxObjectManager(object):
 
     def validateObjectName(self, name):
         if len(name.encode('utf-8')) > 63:
-            raise ArxException("Name ["+name+"] too long to be usesd as blender object name")
+            raise ArxException("Name ["+name+"] too long to be used as blender object name")
 
     def analyzeFaceData(self, faceData):
         # find weird face data
@@ -146,7 +146,7 @@ class ArxObjectManager(object):
             bpy.ops.object.mode_set(mode='OBJECT')
 
         obj = bpy.data.objects.new(name=mesh.name, object_data=mesh)
-        #armatureObj.parent = obj # this created a dependecy recursion, so i commented it
+        #armatureObj.parent = obj # this created a dependency recursion, so i commented it
 
         obj['arx.ftl.name'] = data.metadata.name
         obj['arx.ftl.org'] = data.metadata.org

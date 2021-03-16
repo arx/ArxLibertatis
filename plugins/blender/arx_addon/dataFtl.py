@@ -1,4 +1,4 @@
-# Copyright 2014-2020 Arx Libertatis Team (see the AUTHORS file)
+# Copyright 2014-2021 Arx Libertatis Team (see the AUTHORS file)
 #
 # This file is part of Arx Libertatis.
 #
@@ -281,7 +281,7 @@ class FtlSerializer(object):
             assert (face.nrmls[0].z == 0 and face.nrmls[1].z == 0 and face.nrmls[2].z == 0)
 
             if face.texid < 0:
-                self.log.debug("Face negaive texture id %i" % i)
+                self.log.debug("Face negative texture id %i" % i)
 
             oface = FtlFace((face.vid[0], face.vid[1], face.vid[2]),
                             list(zip(face.u, face.v)),

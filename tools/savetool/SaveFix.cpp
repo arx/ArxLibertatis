@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -213,7 +213,7 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 	Idents::iterator it = idents.find(name);
 	if(it != idents.end()) {
 		std::cout << "duplicate ident " << name << " detected: in " << it->second << " and " << where << '\n';
-		// we already fixed this!
+		// We already fixed this!
 		long newIdent = copy_io(save, name, idents, where, dat, buffer.size());
 		std::cout << " -> copied " << name << " as " << newIdent << " for " << where << '\n';
 		remap[name] = newIdent;

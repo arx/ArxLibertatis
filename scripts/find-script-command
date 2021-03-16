@@ -6,10 +6,10 @@ Usage: find-script-command command [grep-options...]
 
 Finds a script command in arx script files.
 
-For optimum perfomance cd to graph/obj3d/interactive and then run e.g.
+For optimum performance cd to graph/obj3d/interactive and then run e.g.
  find-script-command teleport
 
-This script will automatically searcg for all different encodings of the
+This script will automatically search for all different encodings of the
 command, ignoring case and adding as many underscores as needed.
 The provided command should *not* already contain any underscores.
 

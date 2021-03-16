@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -28,10 +28,10 @@
 #include <QtCore>
 
 /*!
- * XByteArray represents the content of QHexEcit.
- * XByteArray comprehend the data itself and informations to store if it was
- * changed. The QHexEdit component uses these informations to perform nice
- * rendering of the data
+ * XByteArray represents the content of QHexEdit.
+ * XByteArray comprehend the data itself and information to store if it was
+ * changed. The QHexEdit component uses these information to perform nice
+ * rendering of the data.
  *
  * XByteArray also provides some functionality to insert, replace and remove
  * single chars and QByteArras. Additionally some functions support rendering
@@ -82,7 +82,7 @@ private:
 	QByteArray _changedData;
 	
 	int _addressNumbers;     //!< wanted width of address area
-	int _addressOffset;      //!< will be added to the real addres inside bytearray
+	int _addressOffset;      //!< will be added to the real address inside bytearray
 	int _realAddressNumbers; //!< real width of address area (can be greater then wanted width)
 	int _oldSize;            //!< size of data
 	

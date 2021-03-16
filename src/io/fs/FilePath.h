@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -108,13 +108,13 @@ public:
 	}
 	
 	/*!
-	 * If filename() constains a dot, return everything in filename() preceeding the dot.
+	 * If filename() contains a dot, return everything in filename() preceding the dot.
 	 * Otherwise, return filename().
 	 */
 	std::string basename() const;
 	
 	/*!
-	 * If filename() constains a dot, return dot and everything folowing it.
+	 * If filename() contains a dot, return dot and everything following it.
 	 * Otherwise, return std::string().
 	 */
 	std::string ext() const;
@@ -160,7 +160,7 @@ public:
 	path & set_ext(const std::string & ext);
 	
 	/*!
-	 * If pathstr constains a dot after the last slash, return everything preceeding the last dot
+	 * If pathstr contains a dot after the last slash, return everything preceding the last dot.
 	 * \return *this
 	 */
 	path & remove_ext();

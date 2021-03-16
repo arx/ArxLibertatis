@@ -153,7 +153,7 @@ if(MSVC)
 	# /Za is not compatible with /fp:fast, leave it off
 	if(NOT MSVC_VERSION LESS 1910)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
-		# /permissive- enables /Zc:twoPhase wich would be good if two phase lookup wasn't still broken in VS 2017
+		# /permissive- enables /Zc:twoPhase which would be good if two phase lookup wasn't still broken in VS 2017
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:twoPhase-")
 	endif()
 	if(NOT MSVC_VERSION LESS 1900)

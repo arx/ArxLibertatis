@@ -30,7 +30,7 @@ set(iconutil_OPTIONS)
 # source.svg          The .svg file to generate the icon from.
 #                     Multiple .svg files with their own size_specs can be added.
 # source_size_spec    The icon size to use the preceding .svg for
-# source_render_size  The resulution to rasterize the .svg at
+# source_render_size  The resolution to rasterize the .svg at
 #                     If this differs from the source_size_spec the result will be scaled.
 #
 # ICO                 Generate a Windows .ico file containing the following sizes
