@@ -61,7 +61,7 @@ public:
 	virtual aalError setHeader(void * header) = 0;
 	virtual void setStream(PakFileHandle * stream) = 0;
 	
-	//! The stream cursor must be at the begining of waveform data
+	//! The stream cursor must be at the beginning of waveform data
 	virtual aalError setPosition(size_t position) = 0;
 	
 	virtual aalError read(void * buffer, size_t to_read, size_t & read) = 0;

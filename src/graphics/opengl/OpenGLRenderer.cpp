@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -166,7 +166,7 @@ void OpenGLRenderer::initialize() {
 		#endif
 		/*
 		 * There is also GLX_MESA_query_renderer but being a GLX extension it's too
-		 * anoying to use here.
+		 * annoying to use here.
 		 */
 	}
 	{

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -50,10 +50,10 @@ enum DialogType {
  *
  *  * Lines starting with "-> " are made italic.
  *
- * This function does not retun until the user closes the dialog.
+ * This function does not return until the user closes the dialog.
  *
- * \note this may not be supported on all platforms. If dialogs are not supported, the
- *       message is printed to stdout and the function retuns immediately.
+ * \note This may not be supported on all platforms. If dialogs are not supported, the
+ *       message is printed to stdout and the function returns immediately.
  */
 void showInfoDialog(const std::string & message, const std::string & title = "Information");
 
@@ -66,10 +66,10 @@ void showInfoDialog(const std::string & message, const std::string & title = "In
  * A simple markup syntax is supported on some systems. On other systems, the message is
  * displayed as-is. See \ref showInfoDialog for the markup syntax.
  *
- * This function does not retun until the user closes the dialog.
+ * This function does not return until the user closes the dialog.
  *
- * \note this may not be supported on all platforms. If dialogs are not supported, the
- *       message is printed to stdout and the function retuns immediately.
+ * \note This may not be supported on all platforms. If dialogs are not supported, the
+ *       message is printed to stdout and the function returns immediately.
  */
 void showWarningDialog(const std::string & message, const std::string & title = "Warning");
 
@@ -83,10 +83,10 @@ void showWarningDialog(const std::string & message, const std::string & title = 
  * A simple markup syntax is supported on some systems. On other systems, the message is
  * displayed as-is. See \ref showInfoDialog for the markup syntax.
  *
- * This function does not retun until the user closes the dialog.
+ * This function does not return until the user closes the dialog.
  *
- * \note this may not be supported on all platforms. If dialogs are not supported, the
- *       message is printed to stdout and the function retuns immediately.
+ * \note This may not be supported on all platforms. If dialogs are not supported, the
+ *       message is printed to stdout and the function returns immediately.
  */
 void showErrorDialog(const std::string & message, const std::string & title = "Error");
 

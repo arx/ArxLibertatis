@@ -23,7 +23,7 @@
 namespace math {
 
 /*!
- * Class to quantitize (time) values without loosing precison.
+ * Class to quantitize (time) values without loosing precision.
  */
 class Quantizer {
 	

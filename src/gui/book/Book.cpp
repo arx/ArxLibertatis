@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2015-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -349,7 +349,7 @@ void PlayerBook::manageTopTabs() {
 		TextureContainer * tcBookmarkChar = g_bookResouces.bookmark_char;
 		DrawBookInterfaceItem(tcBookmarkChar, pos, Color::white, 0.000001f);
 		
-		// Check for cursor on charcter sheet bookmark
+		// Check for cursor on character sheet bookmark
 		if(MouseInBookRect(pos, Vec2f(tcBookmarkChar->m_size) * scale)) {
 			
 			// Draw highlighted Character sheet icon

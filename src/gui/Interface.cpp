@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -1313,7 +1313,7 @@ void ArxGame::manageKeyMouse() {
 						bool bOk = true;
 						Entity * container = entities.get(locateInInventories(FlyingOverIO).io);
 						if(container && (container->ioflags & IO_SHOP)) {
-							// Canot use items in shop inventories
+							// Cannot use items in shop inventories
 							bOk = false;
 						}
 						
@@ -1493,7 +1493,7 @@ void ArxGame::manageKeyMouse() {
 			
 		} else if(config.input.borderTurning) {
 			
-			// Turn the player if the curser is close to the edges
+			// Turn the player if the cursor is close to the edges
 			
 			bool dragging = GInput->getMouseButtonRepeat(Mouse::Button_0);
 			
@@ -1751,7 +1751,7 @@ void ArxGame::manageEditorControls() {
 		bool bOk = true;
 		Entity * container = entities.get(locateInInventories(FlyingOverIO).io);
 		if(container && (container->ioflags & IO_SHOP)) {
-			// Canot shift click items in shop inventories
+			// Cannot shift click items in shop inventories
 			bOk = false;
 		}
 		
@@ -1870,7 +1870,7 @@ void ArxGame::manageEditorControls() {
 			bool accept_combine = true;
 			Entity * container = entities.get(locateInInventories(FlyingOverIO).io);
 			if(container && (container->ioflags & IO_SHOP)) {
-				// Canot combine items in shop inventories
+				// Cannot combine items in shop inventories
 				accept_combine = false;
 			}
 			

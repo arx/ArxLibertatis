@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -75,7 +75,7 @@ EERIEPOLY * EEIsUnderWater(const Vec3f & pos);
 /*!
  * Get the height a polygon as at a specific position
  *
- * \param pos the (x, z) postion where to query the height. The y component is ignored.
+ * \param pos the (x, z) position where to query the height. The y component is ignored.
  *
  * \return false if no height could be calculated because the the polygon's normal lies
  *         on the xz plane, true otherwise.

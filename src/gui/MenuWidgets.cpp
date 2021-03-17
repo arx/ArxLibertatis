@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -253,7 +253,7 @@ void MenuWindow::render() {
 		return;
 	}
 	
-	// Draw backgound and border
+	// Draw background and border
 	{
 		UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
 		EERIEDrawBitmap(Rectf(m_pos, RATIO_X(m_background->m_size.x), RATIO_Y(m_background->m_size.y)),

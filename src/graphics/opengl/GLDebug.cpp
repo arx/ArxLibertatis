@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2013-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -190,7 +190,7 @@ static void setMode(util::cmdline::optional<std::string> mode) {
 		g_mode = Default;
 	} else {
 		throw util::cmdline::error(util::cmdline::error::invalid_value,
-		                           "inavlid mode \"" + *mode + "\"");
+		                           "invalid mode \"" + *mode + "\"");
 	}
 }
 

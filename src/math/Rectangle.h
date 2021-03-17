@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -149,7 +149,7 @@ public:
 	}
 	
 	/*!
-	 * Calculate a rectangle contained in both this rectangle and the other rectange.
+	 * Calculate a rectangle contained in both this rectangle and the other rectangle.
 	 * Assumes that both rectangles are valid.
 	 */
 	Rectangle_ operator&(const Rectangle_ & other) const {

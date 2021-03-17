@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2014-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -666,7 +666,7 @@ void ARX_SPELLS_Analyse() {
 			float b = std::abs(d.y);
 			
 			if(b != 0.f && a / b > 0.4f && a / b < 2.5f) {
-				// Diagonal movemement.
+				// Diagonal movement.
 				
 				if(d.x < 0 && d.y < 0) {
 					if(lastdir != ADOWNRIGHT) {

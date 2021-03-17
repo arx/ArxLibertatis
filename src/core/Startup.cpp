@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -126,7 +126,7 @@ int utf8_main(int argc, char ** argv) {
 		credits::setLibraryCredits("image", "stb_image");
 	}
 	
-	// Also intialize the logging system early as we might need it
+	// Also initalize the logging system early as we might need it
 	Logger::initialize();
 	CrashHandler::registerCrashCallback(Logger::quickShutdown);
 	Logger::add(new logger::CriticalErrorDialog);
