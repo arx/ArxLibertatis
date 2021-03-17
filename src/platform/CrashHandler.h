@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -33,7 +33,7 @@ namespace fs { class path; }
  * This class relies on a crash reporter, which is second process that gets started
  * when a crash occurs. The crash reporter has two purpose:
  *    * Collect information on the crashed process in a safer environment.
- *    * Report the crash to the user or developpers (console, network, db, etc.)
+ *    * Report the crash to the user or developers (console, network, db, etc.)
  *
  * You can attach files to the crash report using addAttachedFile(). Those will be
  * included in the crash report. Note that some of these files might still be
@@ -186,7 +186,7 @@ public:
 	static void registerCrashCallback(CrashCallback crashCallback);
 
 	/*!
-	 * \brief Unregister a previously registed crash callback
+	 * \brief Unregister a previously registered crash callback
 	 */
 	static void unregisterCrashCallback(CrashCallback crashCallback);
 	

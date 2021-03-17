@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -474,7 +474,7 @@ public:
 	/*!
 	 * Sets if execution should abort as soon as a command is reached that would modify any state.
 	 *
-	 * Speech commands are not considered to modify state for this purpose unless they are chanined with
+	 * Speech commands are not considered to modify state for this purpose unless they are chained with
 	 * other commands.
 	 *
 	 * If such a command is reached the script result will be \ref DESTRUCTIVE.
@@ -543,7 +543,7 @@ void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEvent
                              const ScriptParameters & parameters = ScriptParameters());
 
 /*!
- * Finds the first occurence of str in the script that is followed
+ * Finds the first occurrence of str in the script that is followed
  * by a separator (a character of value less then or equal 32)
  * 
  * \return The position of str in the script or -1 if str was not found.

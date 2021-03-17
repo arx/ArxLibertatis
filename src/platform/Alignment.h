@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2015-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -182,7 +182,7 @@ enum AlignmentInfo_ {
 #endif
 
 /*!
- * Allocate a buffer with a specific allignment.
+ * Allocate a buffer with a specific alignment.
  *
  * This is only needed if the required alignment is greater than \c GuaranteedAlignment.
  *
@@ -369,7 +369,7 @@ bool is_aligned(const void * p) {
 
 /*!
  * \def ARX_USE_ALIGNED_NEW_N(Alignment)
- * Overrride the new, new[], delete and delete[] operators to use a specific alignment.
+ * Override the new, new[], delete and delete[] operators to use a specific alignment.
  * 
  * This should go in the body of a class to only override the operators for that class.
  * 
@@ -392,7 +392,7 @@ bool is_aligned(const void * p) {
 
 /*!
  * \def ARX_USE_ALIGNED_NEW(Class)
- * Overrride the new, new[], delete and delete[] operators to use the alignment requred
+ * Override the new, new[], delete and delete[] operators to use the alignment required
  * by a class.
  * 
  * This should only be used in the global namespace.
@@ -417,11 +417,11 @@ bool is_aligned(const void * p) {
 
 /*!
  * \def ARX_USE_ALIGNED_ALLOCATOR_N(Class, Alignment)
- * Overrride the default std::allocator for a class to use a specific alignment.
+ * Override the default std::allocator for a class to use a specific alignment.
  * 
  * This should only be used in the global namespace.
  * 
- * \param Class     The user-defined class to overrride std::allocator for.
+ * \param Class     The user-defined class to override std::allocator for.
  * \param Alignment The alignment to use. This must be a power of two and a multiple of
  *                  sizeof(void *).
  */
@@ -432,11 +432,11 @@ bool is_aligned(const void * p) {
 
 /*!
  * \def ARX_USE_ALIGNED_ALLOCATOR_N(Class, Alignment)
- * Overrride the default std::allocator for a class to use the required alignment.
+ * Override the default std::allocator for a class to use the required alignment.
  * 
  * This should only be used in the global namespace.
  * 
- * \param Class     The user-defined class to overrride std::allocator for.
+ * \param Class     The user-defined class to override std::allocator for.
  */
 #define ARX_USE_ALIGNED_ALLOCATOR(Class) \
 	ARX_USE_ALIGNED_ALLOCATOR_N(Class, ARX_ALIGNOF(Class))

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -162,7 +162,7 @@ void CrashHandlerImpl::processCrash() {
 			const char * arch = platform::getArchitectureName(m_pCrashInfo->architecture);
 			ofs << "- architecture: " << arch << '\n';
 			if(m_pCrashInfo->runningTime > 0.0) {
-				ofs << "- runnig time: " << m_pCrashInfo->runningTime << " seconds" << '\n';
+				ofs << "- running time: " << m_pCrashInfo->runningTime << " seconds" << '\n';
 			}
 			std::tm * time = std::gmtime(&timestamp);
 			ofs << "- crash time: " << (time->tm_year + 1900) << '-'

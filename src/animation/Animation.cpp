@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -553,7 +553,7 @@ Vec3f GetAnimTotalTranslate(const ANIM_HANDLE * eanim, size_t alt_idx) {
  * \brief Main Procedure to draw an animated object
  *
  * \param time Time increment to current animation in Ms
- * \param io Referrence to Interactive Object (NULL if no IO)
+ * \param io Reference to Interactive Object (NULL if no IO)
  */
 void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 	
@@ -698,7 +698,7 @@ void AcquireLastAnim(Entity * io) {
 }
 
 // Declares an Animation as finished.
-// Usefull to update object true position with object virtual pos.
+// Useful to update object true position with object virtual pos.
 void FinishAnim(Entity * io, const ANIM_HANDLE * eanim) {
 	
 	if(!io || !eanim) {

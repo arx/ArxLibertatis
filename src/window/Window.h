@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -66,7 +66,7 @@ public:
 	
 	/*!
 	 * Minimize the fullscreen windows if they lose focus.
-	 * This setting may be overrriden by the environment,
+	 * This setting may be overriden by the environment,
 	 * see \ref willMinimizeOnFocusLost().
 	 */
 	virtual void setMinimizeOnFocusLost(bool enabled) = 0;

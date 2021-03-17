@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2017 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -33,7 +33,7 @@
  * Guarantees:
  * - Previously "covered" pixels will receive a value > 127.
  * - Previously "transparent" pixels will receive a value <= 127.
- * - Pixels whose "covered" state is the same as all their neigboring pixels are unchanged.
+ * - Pixels whose "covered" state is the same as all their neighboring pixels are unchanged.
  * - Hard corners are preserved.
  * - If initially all pixels next to pixels with value > 0 have a valid color (the value
  *   of the remaining channels), the algorithm will ensure that remains true.
@@ -367,7 +367,7 @@ void Image::applyColorKeyToAlpha(Color key, bool antialias) {
 		BlackWhiteAntialiaser<4, 3 /* alpha */>::process(dataTemp, getWidth(), getHeight());
 	}
 	
-	// Swap data with temp data and ajust internal state
+	// Swap data with temp data and adjust internal state
 	delete[] m_data;
 	m_data = dataTemp;
 	m_format = (getFormat() == Format_R8G8B8) ? Format_R8G8B8A8 : Format_B8G8R8A8;

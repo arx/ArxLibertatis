@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2015-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -62,7 +62,7 @@ void CrashHandlerWindows::processCrashInfo() {
 		m_pCrashInfo->memoryUsage = meminfo.WorkingSetSize;
 	}
 	
-	// Determine how long thre process was running
+	// Determine how long the process was running
 	FILETIME creation, exit, kernel, user, now;
 	if(GetProcessTimes(process, &creation, &exit, &kernel, &user)) {
 		SYSTEMTIME time;

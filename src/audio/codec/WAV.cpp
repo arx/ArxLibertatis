@@ -255,7 +255,7 @@ aalError StreamWAV::setPosition(size_t position) {
 	
 	cursor = position;
 	
-	// Reset stream position at the begining of data chunk
+	// Reset stream position at the beginning of data chunk
 	if(m_stream->seek(SeekSet, offset) == -1) {
 		return AAL_ERROR_FILEIO;
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -56,12 +56,12 @@ class IniSection {
 	
 	/*!
 	 * Add a key in the ini format (name=value or name="value")
-	 * All preceding space and trailing space / commens must already be removed.
+	 * All preceding space and trailing space / comments must already be removed.
 	 */
 	void addKey(const std::string & key, const std::string & value);
 	/*!
 	 * Set a key in the ini format (name=value or name="value")
-	 * All preceding space and trailing space / commens must already be removed.
+	 * All preceding space and trailing space / comments must already be removed.
 	 */
 	void setKey(const std::string & key, const std::string & value);
 	
