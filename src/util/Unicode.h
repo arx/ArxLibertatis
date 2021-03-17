@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -92,7 +92,7 @@ struct UTF8 {
 	/*!
 	* Encode one character to an UTF8 string
 	* \tparam Out  An OutputIterator type for the input string
-	* \param  it  Output iterator to write the encoded caracter to
+	* \param  it  Output iterator to write the encoded character to
 	* \param  chr Character to write
 	* \return new output iterator after the written bytes
 	*/
@@ -238,7 +238,7 @@ std::string convert(const std::string & str) {
  * This is a small convenience wrapper around \ref OutEnc::write()
  * \tparam OutEnc    The encoding to use
  * \param  character The Unicode code point to encode
- * \return an \ref std::string containing the encoded caracter
+ * \return an \ref std::string containing the encoded character
  */
 template <typename OutEnc>
 std::string encode(Unicode character) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -288,7 +288,7 @@ bool Credits::init() {
 			      && (last + 1)->sourceLineNumber == anchorLine) {
 				++last;
 			}
-			// Restore the scroll positon using the offset to our anchor line
+			// Restore the scroll position using the offset to our anchor line
 			float pos = (first->sPos.y + last->sPos.y) * 0.5f;
 			m_scrollPosition = offset * float(m_lineHeight) - pos;
 		}
@@ -302,7 +302,7 @@ void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumbe
 	CreditsLine infomations;
 	infomations.sourceLineNumber = sourceLineNumber;
 	
-	// Determnine the type of the line
+	// Determine the type of the line
 	bool isSimpleLine = false;
 	if(!phrase.empty() && phrase[0] == '~') {
 		// Heading
@@ -451,7 +451,7 @@ void Credits::layout() {
 
 void Credits::render() {
 	
-	// Initialze the data on demand
+	// Initialize the data on demand
 	if(!init()) {
 		LogError << "Could not initialize credits";
 		reset();

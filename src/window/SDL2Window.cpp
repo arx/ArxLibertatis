@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -62,7 +62,7 @@
 #include "window/SDL2X11Util.h"
 
 // Avoid including SDL_syswm.h without SDL_PROTOTYPES_ONLY on non-Windows systems
-// it includes X11 stuff which pullutes the namespace global namespace.
+// it includes X11 stuff which pollutes the global namespace.
 struct ARX_SDL_SysWMinfo {
 	SDL_version version;
 	ARX_SDL_SYSWM_TYPE subsystem;

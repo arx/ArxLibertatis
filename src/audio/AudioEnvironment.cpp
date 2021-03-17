@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -53,7 +53,7 @@ Environment::Environment(const res::path & _name)
 	: name(_name)
 	, size(7.5f)
 	, diffusion(1.f)       // High density echoes
-	, absorption(0.05f)    // Air-like absorbtion
+	, absorption(0.05f)    // Air-like absorption
 	, reflect_volume(0.8f)
 	, reflect_delay(7.f)
 	, reverb_volume(1.f)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -323,7 +323,7 @@ static void updateFadeOut(Cinematic * c, CinematicKeyframe * current, float a,
 
 #if defined(_MSC_VER) && _MSC_VER >= 1800 && _MSC_VER < 1900
 /*
- * MSVC 2013 generates a MOVAPS instruction here with an argument that is not 16-byte alligned,
+ * MSVC 2013 generates a MOVAPS instruction here with an argument that is not 16-byte aligned,
  * resulting in a crash.
  *  https://bugs.arx-libertatis.org/arx/issues/1097
  *

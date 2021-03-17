@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -78,7 +78,7 @@ public:
 	/*!
 	 * Set a heuristic for selecting the best next node.
 	 * For 0.0f only the distance to the target will be considered.
-	 * For 0.5f the distance to target is weigted equaly to the already traversed distance + light costs.
+	 * For 0.5f the distance to target is weighted equally to the already traversed distance + light costs.
 	 * This is not used for flee().
 	 * The default value is HEURISTIC_DEFAULT.
 	 */

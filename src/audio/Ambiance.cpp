@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -173,7 +173,7 @@ struct TrackKey {
 	KeySetting volume; // Volume settings
 	KeySetting pitch; // Pitch settings
 	KeySetting pan; // Pan settings
-	KeySetting x, y, z; // Positon settings
+	KeySetting x, y, z; // Position settings
 	
 	TrackKey()
 		: start(0)
