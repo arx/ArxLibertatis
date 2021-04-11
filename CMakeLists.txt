@@ -510,6 +510,7 @@ endif()
 find_package(Boost 1.48 REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 add_definitions(-DBOOST_ALL_NO_LIB)
+add_definitions(-DBOOST_LEXICAL_CAST_ASSUME_C_LOCALE)
 if(WIN32)
 	# Newer MSVC 2019 versions don't like Boost's redeclaration of Winapi functions in a private namespace
 	add_definitions(-DBOOST_USE_WINDOWS_H)
