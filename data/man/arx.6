@@ -74,10 +74,10 @@ The following modes are possible:
 .RS
 .HP
 "\fBenabled\fP"
-Enable additional error checks in the OpenGL driver and log all reported errors. This is the default when no \fIMODE\fP is given.
+Enable additional error checks in the OpenGL driver and log all reported errors. This is the mode used when \fB\-\-debug\-gl\fP is specified with no \fIMODE\fP argument.
 .HP
 "\fBignored\fP"
-Enable only the standard OpenGL error checks required by the standard an ignore all errors.
+Enable only the standard OpenGL error checks required by the standard and ignore all errors.
 .HP
 "\fBnoerror\fP"
 Tell the OpenGL driver to assume that there will be no errors. Will fall back to "\fBignored\fP" if not supported.
