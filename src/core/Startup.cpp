@@ -126,7 +126,7 @@ int utf8_main(int argc, char ** argv) {
 		credits::setLibraryCredits("image", "stb_image");
 	}
 	
-	// Also initalize the logging system early as we might need it
+	// Also initialize the logging system early as we might need it
 	Logger::initialize();
 	CrashHandler::registerCrashCallback(Logger::quickShutdown);
 	Logger::add(new logger::CriticalErrorDialog);
