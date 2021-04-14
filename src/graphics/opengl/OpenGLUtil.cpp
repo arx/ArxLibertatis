@@ -22,6 +22,12 @@
 #include <cstring>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>
+
+#include "core/Config.h"
+#include "io/log/Logger.h"
 
 
 OpenGLInfo::OpenGLInfo()
@@ -30,6 +36,7 @@ OpenGLInfo::OpenGLInfo()
 	, m_renderer("")
 	, m_isES(false)
 	, m_version(0)
+	, m_versionOverride(std::numeric_limits<s32>::max())
 {
 	#if ARX_HAVE_EPOXY
 	m_isES = !epoxy_is_desktop_gl();
@@ -70,6 +77,48 @@ OpenGLInfo::OpenGLInfo()
 	m_vendor = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
 	m_renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
 	
+	parseOverrideConfig(config.video.extensionOverride);
+	
+}
+
+void OpenGLInfo::parseOverrideConfig(const std::string & string) {
+	boost::char_separator<char> separator(" \t\r\n,;:");
+	boost::tokenizer< boost::char_separator<char> > tokens(string, separator);
+	bool first = true;
+	BOOST_FOREACH(const std::string & token, tokens) {
+		if(boost::starts_with(token, "+GL_") || boost::starts_with(token, "-GL_")) {
+			m_extensionOverrides.push_back(token);
+			first = false;
+		} else {
+			try {
+				size_t offset = boost::starts_with(token, "GL") ? 2 : 0;
+				size_t dot = token.find('.', offset);
+				if(token == "+*" || token == "+") {
+					m_versionOverride = m_version;
+				} else if(token == "-*" || token == "-") {
+					m_versionOverride = m_version;
+				} else if(dot != std::string::npos) {
+					u32 major = boost::lexical_cast<u32>(token.substr(offset, dot - offset));
+					u32 minor = boost::lexical_cast<u32>(token.substr(dot + 1));
+					if(minor > 10) {
+						throw 42;
+					}
+					m_versionOverride = major * 10 + minor;
+				} else if(token.length() - offset > 1) {
+					m_versionOverride = boost::lexical_cast<u32>(token.substr(offset));
+				} else {
+					m_versionOverride = boost::lexical_cast<u32>(token.substr(offset)) * 10;
+				}
+				if(!first) {
+					LogWarning << "Ignoring OpenGL feature overrides before '" << token << "'";
+				}
+				m_extensionOverrides.clear();
+				first = false;
+			} catch(...) {
+				LogWarning << "Invalid OpenGL feature override '" << token << "'";
+			}
+		}
+	}
 }
 
 bool OpenGLInfo::has(const char * extension, u32 version) const {
@@ -85,5 +134,23 @@ bool OpenGLInfo::has(const char * extension, u32 version) const {
 		}
 	}
 	
-	return true;
+	BOOST_REVERSE_FOREACH(const std::string & override, m_extensionOverrides) {
+		arx_assert(!override.empty());
+		if(override.compare(1, override.size() - 1, extension) == 0) {
+			if(override[0] == '+') {
+				return true;
+			} else {
+				LogInfo << "Ignoring OpenGL extension " << extension;
+				return false;
+			}
+		}
+	}
+	
+	if(m_versionOverride >= version) {
+		return true;
+	} else {
+		LogInfo << "Ignoring OpenGL extension " << extension;
+		return false;
+	}
+	
 }

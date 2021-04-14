@@ -20,7 +20,10 @@
 #ifndef ARX_GRAPHICS_OPENGL_OPENGLUTIL_H
 #define ARX_GRAPHICS_OPENGL_OPENGLUTIL_H
 
+#include <algorithm>
 #include <limits>
+#include <string>
+#include <vector>
 
 #include "platform/Platform.h"
 #include "Configure.h"
@@ -45,8 +48,31 @@ class OpenGLInfo {
 	const char * m_renderer;
 	bool m_isES;
 	u32 m_version;
+	u32 m_versionOverride;
+	std::vector<std::string> m_extensionOverrides;
 	
 	bool has(const char * extension, u32 version) const;
+	
+	/*!
+	 * \brief Override OpenGL version and extension support
+	 *
+	 * \param string List of override tokens separated by whitespace, commas, semicolons or colons
+	 *
+	 * Supported string tokens are
+	 *  "-GL_ext"        Disable OpenGL extension GL_ext
+	 *  "+GL_ext"        Re-enable OpenGL extension GL_ext if it was disabled by a previous token
+	 *  "GLx.y" or "x.y" Re-enable extensions part of OpenGL version x.y and disabling all others
+	 *  "GLxy" or "xy"   Re-enable extensions part of OpenGL version x.y and disabling all others
+	 *  "GLx" or "x"     Re-enable extensions part of OpenGL version x.0 and disabling all others
+	 *  "+*" or "+"      Re-enable all non-core OpenGL extensions
+	 *  "-*" or "-"      Disable all non-core OpenGL extensions
+	 *
+	 * Later tokens override previous ones.
+	 * This means that extension tokens before version tokens are ignored.
+	 *
+	 * Can be called multiple times to merge overrides from multiple sources.
+	 */
+	void parseOverrideConfig(const std::string & string);
 	
 public:
 	
@@ -67,7 +93,7 @@ public:
 	//! \return ture if the context version is at least major.minor
 	bool is(u32 major, u32 minor) const {
 		arx_assert(minor < 10);
-		return m_version >= (major * 10 + minor);
+		return std::min(m_version, m_versionOverride) >= (major * 10 + minor);
 	}
 	
 	/*!
