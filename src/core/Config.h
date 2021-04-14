@@ -148,6 +148,7 @@ public:
 		
 		int bufferSize;
 		std::string bufferUpload;
+		std::string extensionOverride;
 		
 	} video;
 	

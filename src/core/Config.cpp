@@ -59,7 +59,7 @@ const std::string
 	             BOOST_PP_STRINGIZE(ARX_DEFAULT_HEIGHT),
 	debugLevels,
 	bufferUpload,
-	
+	extensionOverride,
 	thumbnailSize = BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_WIDTH) "x"
 	                BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_HEIGHT);
 
@@ -212,7 +212,8 @@ const std::string
 	colorkeyAntialiasing = "colorkey_antialiasing",
 	alphaCutoutAntialiasing = "alpha_cutout_antialiasing",
 	bufferSize = "buffer_size",
-	bufferUpload = "buffer_upload";
+	bufferUpload = "buffer_upload",
+	extensionOverride = "extension_override";
 
 // Interface options
 const std::string
@@ -469,6 +470,7 @@ bool Config::save() {
 	writer.writeKey(Key::alphaCutoutAntialiasing, video.alphaCutoutAntialiasing);
 	writer.writeKey(Key::bufferSize, video.bufferSize);
 	writer.writeKey(Key::bufferUpload, video.bufferUpload);
+	writer.writeKey(Key::extensionOverride, video.extensionOverride);
 	
 	// interface
 	writer.beginSection(Section::Interface);
@@ -622,6 +624,7 @@ bool Config::init(const fs::path & file) {
 	video.alphaCutoutAntialiasing = glm::clamp(alphaCutoutAA, 0, 2);
 	video.bufferSize = std::max(reader.getKey(Section::Video, Key::bufferSize, Default::bufferSize), 0);
 	video.bufferUpload = reader.getKey(Section::Video, Key::bufferUpload, Default::bufferUpload);
+	video.extensionOverride = reader.getKey(Section::Video, Key::extensionOverride, Default::extensionOverride);
 	
 	// Get interface settings
 	bool oldCrosshair = reader.getKey(Section::Video, Key::showCrosshair, Default::showCrosshair);
