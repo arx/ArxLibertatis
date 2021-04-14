@@ -20,6 +20,8 @@
 #ifndef ARX_GRAPHICS_OPENGL_GLDEBUG_H
 #define ARX_GRAPHICS_OPENGL_GLDEBUG_H
 
+#include "graphics/opengl/OpenGLUtil.h"
+
 namespace gldebug {
 
 enum Mode {
@@ -30,7 +32,7 @@ enum Mode {
 };
 
 //! Initialize OpenGL debug output.
-void initialize();
+void initialize(const OpenGLInfo & gl);
 
 //! Check if debug output should be enabled.
 Mode mode();

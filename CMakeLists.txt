@@ -1078,6 +1078,7 @@ set(GRAPHICS_OPENGL_SOURCES
 	src/graphics/opengl/GLTextureStage.cpp
 	src/graphics/opengl/GLVertexBuffer.cpp
 	src/graphics/opengl/OpenGLRenderer.cpp
+	src/graphics/opengl/OpenGLUtil.cpp
 )
 
 set(GUI_SOURCES

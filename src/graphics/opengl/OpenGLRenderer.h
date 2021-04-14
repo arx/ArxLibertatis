@@ -154,6 +154,8 @@ private:
 	bool m_hasClearDepthf;
 	bool m_hasVertexFogCoordinate;
 	bool m_hasSampleShading;
+	bool m_hasFogx;
+	bool m_hasFogDistanceMode;
 	
 	enum GLTransformMode {
 		GL_UnsetTransform,
