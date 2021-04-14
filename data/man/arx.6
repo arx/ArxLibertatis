@@ -22,6 +22,7 @@ Here is a short summary of the options available in arx. Please refer to the det
  \-g \-\-debug \fILEVELS\fP       Set debug output levels
  \-\-benchmark\fI[=TIMELIMIT]\fP Log loading times and framerates
  \-\-debug\-gl\fI[=MODE]\fP       Enable OpenGL debug output
+ \-\-override\-gl \fIOVERRIDES\fP Override OpenGL extensions
 .fi
 .TP
 .B Search path options:
@@ -34,9 +35,9 @@ Here is a short summary of the options available in arx. Please refer to the det
 .fi
 .TP
 .B Startup options:
-    \-\-loadlevel LEVELID  Load a specific level
-    \-\-loadsave SAVEFILE  Load a specific savegame file
-    \-\-loadslot SAVESLOT  Load a specific savegame slot
+    \-\-loadlevel \fILEVELID\fP  Load a specific level
+    \-\-loadsave \fISAVEFILE\fP  Load a specific savegame file
+    \-\-loadslot \fISAVESLOT\fP  Load a specific savegame slot
     \-\-skiplogo           Skip logos at startup
 .fi
 .SH OPTIONS
@@ -106,6 +107,37 @@ Load a save file immediately after startup, without displaying logos or the main
 Disables looking for default data directories. Default user and config directories and data directories provided using the \fB\-\-data\-dir\fP option are still searched. This option can be used for portable setups where user, config and data files are all in the current directory:
 
 .B arx \-\-no-data\-dir \-\-user\-dir=. \-\-config-dir=.
+.TP
+\fB\-\-override\-gl\fP=\fIOVERRIDES\fP
+Overrides the used OpenGL extensions and features. By default, Arx Libertatis will use all extensions that the driver claims to support except for some that are known to cause issues with certain drivers. This options allows the user to disable additional extensions or re-enable extensions that are by default disabled. It will not make Arx Libertatis attempt to use extensions that the driver does not claim to support.
+
+The overrides passed to this option are parsed after, and thus overrride, those in the \fIextension_override\fP setting in the \fI[video]\fP section of \fIcfg.ini\fP which is in turn applied after the built-in driver quirk overrides.
+
+All disabled extensions - either by built-in rules or user-supplied overrides are logged.
+
+The override string is made up of a series of override tokens separated by whitespace. Supported overrides are:
+.RS
+.HP
+"\fB-GL_ext\fP":
+Disable OpenGL extension GL_ext.
+.HP
+"\fB+GL_ext\fP":
+Re-enable OpenGL extension GL_ext if it was disabled by a previous token (including built-in driver quirk rules).
+.HP
+"\fBGLx.y\fP", "\fBx.y\fP", "\fBGLxy\fP" or "\fBxy\fP":
+Re-enable extensions part of OpenGL version x.y and disabling all others
+.HP
+"\fBGLx\fP" or "\fBx\fP":
+Re-enable extensions part of OpenGL version x.0 and disabling all others
+.HP
+"\fB+*\fP" or "\fB+\fP":
+Re-enable all non-core OpenGL extensions
+.HP
+"\fB-*\fP" or "\fB-\fP"
+Re-enable extensions part of any known OpenGL version and disabling all others
+.RE
+.IP
+Note that the version overrrides (i.e. all except "\fB-GL_ext\fP" and "\fB+GL_ext\fP") fully override the set of allowed extensions and thus make all previous tokens meaningless. In particular, \fB\-\-override\-gl="+"\fP will disable both the built-in driver quirk overrides and the \fIextension_override\fP setting while \fB\-\-override\-gl="1.5"\fP will disable the use of all optional extensions.
 .TP
 \fB\-\-skiplogo\fP
 Don't display Logo images at startup. Currently this will not skip the intro cutscene.
