@@ -28,7 +28,16 @@
 
 #include "core/Config.h"
 #include "io/log/Logger.h"
+#include "platform/ProgramOptions.h"
 
+
+static std::string g_glExtensionOverride;
+
+static void setGlOverride(const std::string & string) {
+	g_glExtensionOverride = string;
+}
+
+ARX_PROGRAM_OPTION_ARG("override-gl", NULL, "Override OpenGL version and extensions", &setGlOverride, "OVERRIDES")
 
 OpenGLInfo::OpenGLInfo()
 	: m_versionString("")
@@ -87,6 +96,8 @@ OpenGLInfo::OpenGLInfo()
 	}
 	
 	parseOverrideConfig(config.video.extensionOverride);
+	
+	parseOverrideConfig(g_glExtensionOverride);
 	
 }
 
