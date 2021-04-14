@@ -237,13 +237,6 @@ void OpenGLRenderer::initialize() {
 		m_hasTextureNPOT = gl.has("GL_ARB_texture_non_power_of_two", 2, 0);
 		if(!m_hasTextureNPOT) {
 			LogWarning << "Missing OpenGL extension GL_ARB_texture_non_power_of_two";
-		} else if(!gl.is(3, 0)) {
-			GLint max = 0;
-			glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
-			if(max < 8192) {
-				LogWarning << "Old hardware detected, ignoring OpenGL extension ARB_texture_non_power_of_two.";
-				m_hasTextureNPOT = false;
-			}
 		}
 		m_hasSizedTextureFormats = true;
 		m_hasIntensityTextures = true;
