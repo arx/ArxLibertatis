@@ -77,6 +77,15 @@ OpenGLInfo::OpenGLInfo()
 	m_vendor = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
 	m_renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
 	
+	// Some older OpenGL implementations incorrectly claim support for GL_ARB_texture_non_power_of_two
+	if(!isES() && !is(3, 0)) {
+		GLint max = 0;
+		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
+		if(max < 8192) {
+			m_extensionOverrides.push_back("-GL_ARB_texture_non_power_of_two");
+		}
+	}
+	
 	parseOverrideConfig(config.video.extensionOverride);
 	
 }
