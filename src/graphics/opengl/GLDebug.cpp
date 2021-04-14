@@ -22,7 +22,6 @@
 #include <cstring>
 
 #include "core/Benchmark.h"
-#include "graphics/opengl/OpenGLUtil.h"
 #include "io/log/Logger.h"
 #include "platform/ProgramOptions.h"
 #include "util/cmdline/Optional.h"
@@ -100,15 +99,15 @@ static void ARX_GLAPIENTRY callback(GLenum source, GLenum type, GLuint id,
 	}
 }
 
-void initialize() {
+void initialize(const OpenGLInfo & gl) {
 	
 	if(mode() != Enabled) {
 		return;
 	}
 	
-	bool have_debug = ARX_HAVE_GL_VER(4, 3) || ARX_HAVE_GL_EXT(KHR_debug);
+	bool have_debug = gl.isES() ? gl.has("GL_KHR_debug") : gl.has("GL_KHR_debug", 4, 3);
 	#if ARX_HAVE_EPOXY
-	have_debug = have_debug || (epoxy_is_desktop_gl() && ARX_HAVE_GL_EXT(ARB_debug_output));
+	have_debug = have_debug || (!gl.isES() && gl.has("GL_ARB_debug_output"));
 	#endif
 	if(!have_debug) {
 		LogWarning << "OpenGL debug output not available";

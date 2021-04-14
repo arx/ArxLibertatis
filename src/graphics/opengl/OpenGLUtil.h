@@ -20,6 +20,8 @@
 #ifndef ARX_GRAPHICS_OPENGL_OPENGLUTIL_H
 #define ARX_GRAPHICS_OPENGL_OPENGLUTIL_H
 
+#include <limits>
+
 #include "platform/Platform.h"
 #include "Configure.h"
 
@@ -29,25 +31,68 @@
 #endif
 
 #if ARX_HAVE_EPOXY
-
 #include <epoxy/gl.h>
-
-#define ARX_HAVE_GL_VER(x, y) (epoxy_gl_version() >= x##y)
-#define ARX_HAVE_GL_EXT(name) epoxy_has_gl_extension("GL_" #name)
-#define ARX_HAVE_GLES_VER(x, y) ARX_HAVE_GL_VER(x, y)
-#define ARX_HAVE_GLES_EXT(name) ARX_HAVE_GL_EXT(name)
-
 #elif ARX_HAVE_GLEW
-
 #include <GL/glew.h>
-
-#define ARX_HAVE_GL_VER(x, y) (glewIsSupported("GL_VERSION_" #x "_" #y) != 0)
-#define ARX_HAVE_GL_EXT(name) (glewIsSupported("GL_" #name) != 0)
-#define ARX_HAVE_GLES_VER(x, y) (false)
-#define ARX_HAVE_GLES_EXT(name) (false)
-
 #else
 #error "OpenGL renderer not supported: need ARX_HAVE_EPOXY or ARX_HAVE_GLEW"
 #endif
+
+class OpenGLInfo {
+	
+	const char * m_versionString;
+	const char * m_vendor;
+	const char * m_renderer;
+	bool m_isES;
+	u32 m_version;
+	
+	bool has(const char * extension, u32 version) const;
+	
+public:
+	
+	OpenGLInfo();
+	
+	//! \return the OpenGL version string with any "OpenGL ES*" prefix removed"
+	const char * versionString() { return m_versionString; }
+	
+	//! \return the OpenGL vendor string
+	const char * vendor() { return m_vendor; }
+	
+	//! \return the OpenGL renderer string
+	const char * renderer() { return m_renderer; }
+	
+	//! \return true if the corrent context type is OpenGL ES
+	bool isES() const { return m_isES; }
+	
+	//! \return ture if the context version is at least major.minor
+	bool is(u32 major, u32 minor) const {
+		arx_assert(minor < 10);
+		return m_version >= (major * 10 + minor);
+	}
+	
+	/*!
+	 * \brief Check support for a non-core OpenGL extension
+	 *
+	 * \param extension Name of the extension to check support for
+	 *
+	 * \return true if the extension can be used.
+	 */
+	bool has(const char * extension) const { return has(extension, std::numeric_limits<s32>::max()); }
+	
+	/*!
+	 * \brief Check support for a core OpenGL extension
+	 *
+	 * \param extension Name of the extension to check support for
+	 * \param major     Minimum major OpenGL version that implies support for this extension
+	 * \param minor     Minimum minor OpenGL version that implies support for this extension
+	 *
+	 * \return true if the extension can be used.
+	 */
+	bool has(const char * extension, u32 major, u32 minor) const {
+		arx_assert(minor < 10);
+		return has(extension, major * 10 + minor);
+	}
+	
+};
 
 #endif // ARX_GRAPHICS_OPENGL_OPENGLUTIL_H

@@ -67,6 +67,8 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasClearDepthf(false)
 	, m_hasVertexFogCoordinate(false)
 	, m_hasSampleShading(false)
+	, m_hasFogx(false)
+	, m_hasFogDistanceMode(false)
 	, m_currentTransform(GL_UnsetTransform)
 	, m_projection(1.f)
 	, m_view(1.f)
@@ -103,27 +105,19 @@ void OpenGLRenderer::initialize() {
 	
 	#endif
 	
-	const char * glVersion = reinterpret_cast<const char *>(glGetString(GL_VERSION));
-	if(boost::starts_with(glVersion, "OpenGL ES-CL ")) {
-		LogError << "OpenGL ES common lite profile detected but arx requires floating point functionality";
-	}
-	const char * prefix = "OpenGL ";
-	if(boost::starts_with(glVersion, prefix)) {
-		glVersion += std::strlen(prefix);
-	}
-	LogInfo << "Using OpenGL " << glVersion;
-	CrashHandler::setVariable("OpenGL version", glVersion);
+	OpenGLInfo gl;
 	
-	const GLubyte * glVendor = glGetString(GL_VENDOR);
-	LogInfo << " ├─ Vendor: " << glVendor;
-	CrashHandler::setVariable("OpenGL vendor", glVendor);
+	LogInfo << "Using OpenGL " << gl.versionString();
+	CrashHandler::setVariable("OpenGL version", gl.versionString());
 	
-	const GLubyte * glRenderer = glGetString(GL_RENDERER);
-	LogInfo << " ├─ Device: " << glRenderer;
-	CrashHandler::setVariable("OpenGL device", glRenderer);
+	LogInfo << " ├─ Vendor: " << gl.vendor();
+	CrashHandler::setVariable("OpenGL vendor", gl.vendor());
+	
+	LogInfo << " ├─ Device: " << gl.renderer();
+	CrashHandler::setVariable("OpenGL device", gl.renderer());
 	
 	#if defined(GL_CONTEXT_FLAG_DEBUG_BIT) || defined(GL_CONTEXT_FLAG_NO_ERROR_BIT)
-	if(ARX_HAVE_GL_VER(3, 0)) {
+	if(!gl.isES() && gl.is(3, 0)) {
 		GLint flags = 0;
 		glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
 		#ifdef GL_CONTEXT_FLAG_DEBUG_BIT
@@ -142,7 +136,7 @@ void OpenGLRenderer::initialize() {
 	u64 totalVRAM = 0, freeVRAM = 0;
 	{
 		#ifdef GL_NVX_gpu_memory_info
-		if(ARX_HAVE_GL_EXT(NVX_gpu_memory_info)) {
+		if(gl.has("GL_NVX_gpu_memory_info")) {
 			// Implemented by the NVIDIA blob and radeon drivers in newer Mesa
 			GLint tmp = 0;
 			glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &tmp);
@@ -155,7 +149,7 @@ void OpenGLRenderer::initialize() {
 		else
 		#endif
 		#ifdef GL_ATI_meminfo
-		if(ARX_HAVE_GL_EXT(ATI_meminfo)) {
+		if(gl.has("GL_ATI_meminfo")) {
 			// Implemented by the AMD blob and radeon drivers in newer Mesa
 			GLint info[4];
 			glGetIntegerv(GL_VBO_FREE_MEMORY_ATI, info);
@@ -189,6 +183,10 @@ void OpenGLRenderer::initialize() {
 		LogInfo << " └─ VRAM: " << oss.str();
 	}
 	
+	if(boost::starts_with(gl.versionString(), "ES-CL ")) {
+		LogError << "OpenGL ES common lite profile detected but arx requires floating point functionality";
+	}
+	
 	{
 		std::ostringstream oss;
 		#if ARX_HAVE_EPOXY
@@ -196,7 +194,7 @@ void OpenGLRenderer::initialize() {
 		#elif ARX_HAVE_GLEW
 		oss << "GLEW " << glewVersion << '\n';
 		#endif
-		const char * start = glVersion;
+		const char * start = gl.versionString();
 		while(*start == ' ') {
 			start++;
 		}
@@ -209,7 +207,130 @@ void OpenGLRenderer::initialize() {
 		credits::setLibraryCredits("graphics", oss.str());
 	}
 	
-	gldebug::initialize();
+	gldebug::initialize(gl);
+	
+	if(gl.isES()) {
+		if(!gl.is(1, 0)) {
+			LogError << "OpenGL ES version 1.0 or newer required";
+		}
+	} else {
+		#if ARX_HAVE_EPOXY
+		if(!gl.is(1, 4) || !gl.has("GL_ARB_vertex_buffer_object", 1, 5)) {
+			LogError << "OpenGL version 1.5 or newer or 1.4 + GL_ARB_vertex_buffer_object required";
+		}
+		#else
+		if(!gl.is(1, 5)) {
+			LogError << "OpenGL version 1.5 or newer required";
+		}
+		#endif
+	}
+	
+	if(gl.isES()) {
+		m_hasTextureNPOT = gl.has("GL_OES_texture_npot", 2, 0);
+		if(!m_hasTextureNPOT) {
+			LogWarning << "Missing OpenGL extension GL_OES_texture_npot";
+		}
+		m_hasSizedTextureFormats = gl.has("GL_OES_required_internalformat", 3, 0);
+		m_hasIntensityTextures = false;
+		m_hasBGRTextureTransfer = false;
+	} else {
+		m_hasTextureNPOT = gl.has("GL_ARB_texture_non_power_of_two", 2, 0);
+		if(!m_hasTextureNPOT) {
+			LogWarning << "Missing OpenGL extension GL_ARB_texture_non_power_of_two";
+		} else if(!gl.is(3, 0)) {
+			GLint max = 0;
+			glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
+			if(max < 8192) {
+				LogWarning << "Old hardware detected, ignoring OpenGL extension ARB_texture_non_power_of_two.";
+				m_hasTextureNPOT = false;
+			}
+		}
+		m_hasSizedTextureFormats = true;
+		m_hasIntensityTextures = true;
+		m_hasBGRTextureTransfer = true;
+	}
+	
+	// GL_EXT_texture_filter_anisotropic is available for both OpenGL ES and desktop OpenGL
+	if(gl.has("GL_ARB_texture_filter_anisotropic", 4, 6) || gl.has("GL_EXT_texture_filter_anisotropic")) {
+		GLfloat limit;
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &limit);
+		m_maximumSupportedAnisotropy = limit;
+		setMaxAnisotropy(float(config.video.maxAnisotropicFiltering));
+	} else {
+		m_maximumSupportedAnisotropy = 1.f;
+	}
+	
+	if(gl.isES()) {
+		// OES_draw_elements_base_vertex requires OpenGL ES 2.0
+		// EXT_draw_elements_base_vertex requires OpenGL ES 2.0
+		m_hasDrawElementsBaseVertex = gl.has("GL_OES_draw_elements_base_vertex",3, 2)
+		                              || gl.has("GL_EXT_draw_elements_base_vertex");
+		m_hasDrawRangeElements = gl.is(3, 0);
+	} else {
+		m_hasDrawElementsBaseVertex = gl.has("GL_ARB_draw_elements_base_vertex", 3, 2);
+		if(!m_hasDrawElementsBaseVertex) {
+			LogWarning << "Missing OpenGL extension GL_ARB_draw_elements_base_vertex";
+		}
+		m_hasDrawRangeElements = true; // Introduced in OpenGL 1.2
+	}
+	
+	if(gl.isES()) {
+		// EXT_map_buffer_range requires OpenGL ES 1.1
+		m_hasMapBufferRange = gl.is(3, 0) || gl.has("GL_EXT_map_buffer_range");
+		if(!m_hasMapBufferRange) {
+			LogWarning << "Missing OpenGL extension GL_EXT_map_buffer_range";
+		}
+		// OES_mapbuffer requires OpenGL ES 1.1
+		m_hasMapBuffer = gl.has("GL_OES_mapbuffer");
+		if(!m_hasMapBuffer) {
+			LogWarning << "Missing OpenGL extension GL_OES_mapbuffer";
+		}
+	} else {
+		// ARB_map_buffer_range requires OpenGL 2.1
+		m_hasMapBufferRange = gl.has("GL_ARB_map_buffer_range", 3, 0);
+		if(!m_hasMapBufferRange) {
+			LogWarning << "Missing OpenGL extension GL_ARB_map_buffer_range";
+		}
+		m_hasMapBuffer = true; // Introduced in OpenGL 1.5
+	}
+	
+	if(gl.isES()) {
+		// EXT_buffer_storage requires OpenGL ES 3.1
+		m_hasBufferStorage = gl.has("GL_EXT_buffer_storage");
+		m_hasBufferUsageStream = gl.is(2, 0);
+	} else {
+		m_hasBufferStorage = gl.has("GL_ARB_buffer_storage", 4, 4);
+		m_hasBufferUsageStream = true; // Introduced in OpenGL 1.5
+	}
+	
+	if(gl.isES()) {
+		m_hasClearDepthf = true;
+	} else {
+		m_hasClearDepthf = gl.has("GL_ARB_ES2_compatibility", 4, 1) || gl.has("GL_OES_single_precision");
+	}
+	
+	// Introduced in OpenGL 1.4, no extension available for OpenGL ES
+	m_hasVertexFogCoordinate = !gl.isES();
+	
+	if(gl.isES()) {
+		m_hasSampleShading = gl.has("GL_OES_sample_shading", 3, 2);
+	} else {
+		#if ARX_HAVE_GLEW
+		// The extension and core version have different entry points
+		m_hasSampleShading = gl.has("GL_ARB_sample_shading");
+		#else
+		m_hasSampleShading = gl.has("GL_ARB_sample_shading", 4, 0);
+		#endif
+	}
+	
+	if(gl.isES()) {
+		m_hasFogx = true;
+		m_hasFogDistanceMode = false;
+	} else {
+		m_hasFogx = false;
+		m_hasFogDistanceMode = gl.has("GL_NV_fog_distance");
+	}
+	
 }
 
 void OpenGLRenderer::beforeResize(bool wasOrIsFullscreen) {
@@ -248,128 +369,6 @@ void OpenGLRenderer::reinit() {
 	
 	arx_assert(!isInitialized());
 	
-	#if ARX_HAVE_EPOXY
-	const bool isES = !epoxy_is_desktop_gl();
-	#else
-	const bool isES = false;
-	#endif
-	
-	if(isES) {
-		if(!ARX_HAVE_GLES_VER(1, 0)) {
-			LogError << "OpenGL ES version 1.0 or newer required";
-		}
-	} else {
-		#if ARX_HAVE_EPOXY
-		if(!ARX_HAVE_GL_VER(1, 5) && (!ARX_HAVE_GL_VER(1, 4) || !ARX_HAVE_GL_EXT(ARB_vertex_buffer_object))) {
-			LogError << "OpenGL version 1.5 or newer or 1.4 + GL_ARB_vertex_buffer_object required";
-		}
-		#else
-		if(!ARX_HAVE_GL_VER(1, 5)) {
-			LogError << "OpenGL version 1.5 or newer required";
-		}
-		#endif
-	}
-	
-	if(isES) {
-		m_hasTextureNPOT = ARX_HAVE_GLES_VER(2, 0) || ARX_HAVE_GLES_EXT(OES_texture_npot);
-		if(!m_hasTextureNPOT) {
-			LogWarning << "Missing OpenGL extension OES_texture_npot.";
-		}
-		m_hasSizedTextureFormats = ARX_HAVE_GLES_VER(3, 0) || ARX_HAVE_GLES_EXT(OES_required_internalformat);
-		m_hasIntensityTextures = false;
-		m_hasBGRTextureTransfer = false;
-	} else {
-		m_hasTextureNPOT = ARX_HAVE_GL_VER(2, 0) || ARX_HAVE_GL_EXT(ARB_texture_non_power_of_two);
-		if(!m_hasTextureNPOT) {
-			LogWarning << "Missing OpenGL extension ARB_texture_non_power_of_two.";
-		} else if(!ARX_HAVE_GL_VER(3, 0)) {
-			GLint max = 0;
-			glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
-			if(max < 8192) {
-				LogWarning << "Old hardware detected, ignoring OpenGL extension ARB_texture_non_power_of_two.";
-				m_hasTextureNPOT = false;
-			}
-		}
-		m_hasSizedTextureFormats = true;
-		m_hasIntensityTextures = true;
-		m_hasBGRTextureTransfer = true;
-	}
-	
-	// EXT_texture_filter_anisotropic is available for both OpenGL ES and desktop OpenGL
-	if(ARX_HAVE_GL_EXT(EXT_texture_filter_anisotropic) || ARX_HAVE_GL_EXT(ARB_texture_filter_anisotropic)) {
-		GLfloat limit;
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &limit);
-		m_maximumSupportedAnisotropy = limit;
-		setMaxAnisotropy(float(config.video.maxAnisotropicFiltering));
-	} else {
-		m_maximumSupportedAnisotropy = 1.f;
-	}
-	
-	if(isES) {
-		// OES_draw_elements_base_vertex requires OpenGL ES 2.0
-		// EXT_draw_elements_base_vertex requires OpenGL ES 2.0
-		m_hasDrawElementsBaseVertex = ARX_HAVE_GLES_VER(3, 2)
-		                              || ARX_HAVE_GLES_EXT(OES_draw_elements_base_vertex)
-		                              || ARX_HAVE_GLES_EXT(EXT_draw_elements_base_vertex);
-		m_hasDrawRangeElements = ARX_HAVE_GLES_VER(3, 0);
-	} else {
-		m_hasDrawElementsBaseVertex = ARX_HAVE_GL_VER(3, 2) || ARX_HAVE_GL_EXT(ARB_draw_elements_base_vertex);
-		if(!m_hasDrawElementsBaseVertex) {
-			LogWarning << "Missing OpenGL extension ARB_draw_elements_base_vertex.";
-		}
-		m_hasDrawRangeElements = true; // Introduced in OpenGL 1.2
-	}
-	
-	if(isES) {
-		// EXT_map_buffer_range requires OpenGL ES 1.1
-		m_hasMapBufferRange = ARX_HAVE_GLES_VER(3, 0) || ARX_HAVE_GLES_EXT(EXT_map_buffer_range);
-		if(!m_hasMapBufferRange) {
-			LogWarning << "Missing OpenGL extension EXT_map_buffer_range.";
-		}
-		// OES_mapbuffer requires OpenGL ES 1.1
-		m_hasMapBuffer = ARX_HAVE_GLES_EXT(OES_mapbuffer);
-		if(!m_hasMapBuffer) {
-			LogWarning << "Missing OpenGL extension OES_mapbuffer.";
-		}
-	} else {
-		// ARB_map_buffer_range requires OpenGL 2.1
-		m_hasMapBufferRange = ARX_HAVE_GL_VER(3, 0) || ARX_HAVE_GL_EXT(ARB_map_buffer_range);
-		if(!m_hasMapBufferRange) {
-			LogWarning << "Missing OpenGL extension ARB_map_buffer_range.";
-		}
-		m_hasMapBuffer = true; // Introduced in OpenGL 1.5
-	}
-	
-	if(isES) {
-		// EXT_buffer_storage requires OpenGL ES 3.1
-		m_hasBufferStorage = ARX_HAVE_GLES_EXT(EXT_buffer_storage);
-		m_hasBufferUsageStream = ARX_HAVE_GLES_VER(2, 0);
-	} else {
-		m_hasBufferStorage = ARX_HAVE_GL_VER(4, 4) || ARX_HAVE_GL_EXT(ARB_buffer_storage);
-		m_hasBufferUsageStream = true; // Introduced in OpenGL 1.5
-	}
-	
-	if(isES) {
-		m_hasClearDepthf = true;
-	} else {
-		m_hasClearDepthf = ARX_HAVE_GL_VER(4, 1) || ARX_HAVE_GL_EXT(ARB_ES2_compatibility)
-		                   || ARX_HAVE_GL_EXT(OES_single_precision);
-	}
-	
-	// Introduced in OpenGL 1.4, no extension available for OpenGL ES
-	m_hasVertexFogCoordinate = !isES;
-	
-	if(isES) {
-		m_hasSampleShading = ARX_HAVE_GLES_VER(3, 2) || ARX_HAVE_GLES_EXT(OES_sample_shading);
-	} else {
-		#if ARX_HAVE_GLEW
-		// The extension and core version have different entry points
-		m_hasSampleShading = ARX_HAVE_GL_EXT(ARB_sample_shading);
-		#else
-		m_hasSampleShading = ARX_HAVE_GL_VER(4, 0) || ARX_HAVE_GL_EXT(ARB_sample_shading);
-		#endif
-	}
-	
 	// Synchronize GL state cache
 	
 	m_MSAALevel = 0;
@@ -390,13 +389,13 @@ void OpenGLRenderer::reinit() {
 	m_glcull = GL_BACK;
 	m_glstate.setCull(CullNone);
 	
-	if(isES) {
+	if(m_hasFogx) {
 		#if ARX_HAVE_EPOXY
 		glFogx(GL_FOG_MODE, GL_LINEAR);
 		#endif
 	} else {
 		glFogi(GL_FOG_MODE, GL_LINEAR);
-		if(ARX_HAVE_GL_EXT(NV_fog_distance)) {
+		if(m_hasFogDistanceMode) {
 			// TODO Support radial fogs once all vertices are provided in view-space coordinates
 			glFogi(GL_FOG_DISTANCE_MODE_NV, GL_EYE_PLANE);
 		}
