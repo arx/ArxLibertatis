@@ -95,6 +95,25 @@ OpenGLInfo::OpenGLInfo()
 		}
 	}
 	
+	// Some versions of Intel's ig7icd32.dll/ig7icd64.dll Windows drivers crash when using per-sample shading
+	// See bug https://arx.vg/1152 and duplicates (2018-2021)
+	// Confirmed by users in http://arx.vg/1250 and https://arx.vg/1532 to be triggered by Crisp Alpha Cutout AA
+	// with device "Intel(R) HD Graphics 4000" and versions "4.0.0 - Build 10.18.10.4276" and …".4252".
+	// Other build numbers in similar-looking but unconfirmed crashes are 4358, 4653, 4885, 5059, 5069, 5129
+	// and 5146 and for some of them the renderer does not have the " 4000" suffix.
+	//
+	// Note that there are also (other) crashes (most on shutdown) with matching driver versions seen in
+	// http://arx.vg/645 and duplicates, before Crisp Alpha Cutout AA was added so other functionality may
+	// also be buggy with this driver.
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	if(!isES() && boost::equals(vendor(), "Intel")
+	   && (boost::equals(renderer(), "Intel(R) HD Graphics")
+	       || boost::equals(renderer(), "Intel(R) HD Graphics 4000"))
+	   && boost::contains(versionString(), "Build 10.18.10.")) {
+		m_extensionOverrides.push_back("-GL_ARB_sample_shading");
+	}
+	#endif
+	
 	parseOverrideConfig(config.video.extensionOverride);
 	
 	parseOverrideConfig(g_glExtensionOverride);
