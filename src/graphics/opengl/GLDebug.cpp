@@ -105,7 +105,7 @@ void initialize(const OpenGLInfo & gl) {
 		return;
 	}
 	
-	bool have_debug = gl.isES() ? gl.has("GL_KHR_debug") : gl.has("GL_KHR_debug", 4, 3);
+	bool have_debug = gl.isES() ? gl.has("GL_KHR_debug", 3, 2) : gl.has("GL_KHR_debug", 4, 3);
 	#if ARX_HAVE_EPOXY
 	have_debug = have_debug || (!gl.isES() && gl.has("GL_ARB_debug_output"));
 	#endif
