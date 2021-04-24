@@ -133,7 +133,7 @@ void OpenGLInfo::parseOverrideConfig(const std::string & string) {
 				size_t offset = boost::starts_with(token, "GL") ? 2 : 0;
 				size_t dot = token.find('.', offset);
 				if(token == "+*" || token == "+") {
-					m_versionOverride = m_version;
+					m_versionOverride = std::numeric_limits<s32>::max();
 				} else if(token == "-*" || token == "-") {
 					m_versionOverride = m_version;
 				} else if(dot != std::string::npos) {
