@@ -117,7 +117,7 @@ void OpenGLRenderer::initialize() {
 	CrashHandler::setVariable("OpenGL device", gl.renderer());
 	
 	#if defined(GL_CONTEXT_FLAG_DEBUG_BIT) || defined(GL_CONTEXT_FLAG_NO_ERROR_BIT)
-	if(!gl.isES() && gl.is(3, 0)) {
+	if(gl.isES() ? gl.is(3, 2) : gl.is(3, 0)) {
 		GLint flags = 0;
 		glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
 		#ifdef GL_CONTEXT_FLAG_DEBUG_BIT
