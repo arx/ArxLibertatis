@@ -256,7 +256,7 @@ void OpenGLRenderer::initialize() {
 	if(gl.isES()) {
 		// OES_draw_elements_base_vertex requires OpenGL ES 2.0
 		// EXT_draw_elements_base_vertex requires OpenGL ES 2.0
-		m_hasDrawElementsBaseVertex = gl.has("GL_OES_draw_elements_base_vertex",3, 2)
+		m_hasDrawElementsBaseVertex = gl.has("GL_OES_draw_elements_base_vertex", 3, 2)
 		                              || gl.has("GL_EXT_draw_elements_base_vertex");
 		m_hasDrawRangeElements = gl.is(3, 0);
 	} else {
