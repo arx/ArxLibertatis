@@ -99,11 +99,15 @@ static void ARX_GLAPIENTRY callback(GLenum source, GLenum type, GLuint id,
 	}
 }
 
+#endif
+
 void initialize(const OpenGLInfo & gl) {
 	
 	if(mode() != Enabled) {
 		return;
 	}
+	
+	#ifdef GL_KHR_debug
 	
 	bool have_debug = gl.isES() ? gl.has("GL_KHR_debug", 3, 2) : gl.has("GL_KHR_debug", 4, 3);
 	#if ARX_HAVE_EPOXY
@@ -154,15 +158,15 @@ void initialize(const OpenGLInfo & gl) {
 	                     1,
 	                     GL_DEBUG_SEVERITY_LOW,
 	                     GLsizei(strInitialized.size()), strInitialized.c_str());
-}
-
-#else // GL_KHR_debug
-
-void initialize() {
+	
+	#else
+	
+	ARX_UNUSED(gl)
 	LogWarning << "OpenGL debug output not supported in this build";
+	
+	#endif
+	
 }
-
-#endif
 
 inline Mode defaultMode() {
 	#if ARX_DEBUG_GL
