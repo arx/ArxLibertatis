@@ -308,9 +308,9 @@ void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumbe
 	if(!phrase.empty() && phrase[0] == '~') {
 		// Heading
 		drawpos += m_lineHeight * 0.6f;
-		phrase[0] = ' ';
+		phrase = phrase.substr(1);
 		infomations.fColors = Color::white;
-	} else if(phrase[0] == '&') {
+	} else if(!phrase.empty() && phrase[0] == '&') {
 		// Heading continued
 		infomations.fColors = Color::white;
 	} else {
@@ -330,13 +330,13 @@ void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumbe
 		
 		// Split long lines
 		long n = ARX_UNICODE_ForceFormattingInRect(hFontCredits, phrase.begin(), phrase.end(), linerect);
-		arx_assert(n >= 0 && size_t(n) < phrase.length());
+		arx_assert(n >= 0 && size_t(n) <= phrase.length());
 		
 		// Long lines are not simple
-		isSimpleLine = isSimpleLine && size_t(n + 1) == phrase.length();
+		isSimpleLine = isSimpleLine && size_t(n) == phrase.length();
 		
-		infomations.sText = phrase.substr(0, size_t(n + 1) == phrase.length() ? n + 1 : n);
-		phrase = phrase.substr(n + 1);
+		infomations.sText = phrase.substr(0, n);
+		phrase = phrase.substr(n);
 		
 		// Center the text on the screen
 		int linesize = hFontCredits->getTextSize(infomations.sText).width();

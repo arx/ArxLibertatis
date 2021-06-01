@@ -160,10 +160,14 @@ static void ARX_UNICODE_FormattingInRect(Font * font, std::string::const_iterato
 		// This is the last character of the string
 		if(isLineBreak || next == txtend) {
 			
+			if(!isLineBreak) {
+				it = next;
+			}
+			
 			// Draw the line
 			if(!computeOnly) {
 				std::string::const_iterator itTextStart = itLastLineBreak;
-				std::string::const_iterator itTextEnd = isLineBreak ? it : next;
+				std::string::const_iterator itTextEnd = it;
 				font->draw(rect.left, penY, itTextStart, itTextEnd, col);
 			}
 			
