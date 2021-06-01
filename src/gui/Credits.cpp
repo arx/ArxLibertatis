@@ -182,7 +182,8 @@ bool Credits::load() {
 		return false;
 	}
 	
-	LogDebug("Loaded credits file: " << creditsFile << " of size " << credits.size());
+	LogDebug("Loaded credits file: " << (englishCreditsFile.empty() ? creditsFile : englishCreditsFile)
+	         << " of size " << credits.size());
 	
 	m_text = arx_credits;
 	
