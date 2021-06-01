@@ -267,6 +267,22 @@ SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
 	return NULL;
 }
 
+float SpellManager::getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type) {
+	
+	float level = 0.f;
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = m_spells[i];
+		if(!spell || spell->m_type != type) {
+			continue;
+		}
+		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), target) != spell->m_targets.end()) {
+			level += spell->m_level;
+		}
+	}
+	
+	return level;
+}
+
 void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster) {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
