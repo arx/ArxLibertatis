@@ -1711,22 +1711,12 @@ void ArxGame::updateLevel() {
 		if(entity == entities.player()) {
 			if(cur_mr == 3)
 				speedModifier += 0.5f;
-
 			if(cur_rf == 3)
 				speedModifier += 1.5f;
 		}
-
-		SpellBase * spell;
 		
-		spell = spells.getSpellOnTarget(entity->index(), SPELL_SPEED);
-		if(spell) {
-			speedModifier += spell->m_level * 0.1f;
-		}
-		
-		spell = spells.getSpellOnTarget(entity->index(), SPELL_SLOW_DOWN);
-		if(spell) {
-			speedModifier -= spell->m_level * 0.05f;
-		}
+		speedModifier += spells.getTotalSpellCasterLevelOnTarget(entity->index(), SPELL_SPEED) * 0.1f;
+		speedModifier -= spells.getTotalSpellCasterLevelOnTarget(entity->index(), SPELL_SLOW_DOWN) * 0.05f;
 		
 		entity->speed_modif = speedModifier;
 	}
