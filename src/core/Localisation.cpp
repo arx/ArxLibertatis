@@ -19,7 +19,7 @@
 
 #include "core/Localisation.h"
 
-#include <map>
+#include <set>
 #include <stddef.h>
 #include <sstream>
 #include <cstdlib>
@@ -220,7 +220,9 @@ void autodetectAudioLanguage() {
 void loadLocalisation(PakDirectory * dir, const std::string & name) {
 	
 	PakFile * file = dir->getFile(name);
-	arx_assert(file);
+	if(!file) {
+		return;
+	}
 	
 	std::string buffer = file->read();
 	if(buffer.empty()) {
@@ -253,7 +255,7 @@ void loadLocalisations() {
 		return;
 	}
 	
-	typedef std::map<std::string, bool> LocalizationFiles;
+	typedef std::set<std::string> LocalizationFiles;
 	
 	LocalizationFiles localizationFiles;
 	
@@ -263,23 +265,17 @@ void loadLocalisations() {
 		const std::string & name = fileIter->first;
 		
 		if(boost::ends_with(name, suffix)) {
-			if(boost::starts_with(name, fallbackPrefix)) {
-				localizationFiles[name.substr(fallbackPrefix.length())];
-			}
-			if(boost::starts_with(name, localizedPrefix)) {
-				localizationFiles[name.substr(localizedPrefix.length())] = true;
+			if(boost::starts_with(name, fallbackPrefix) || boost::starts_with(name, localizedPrefix)) {
+				localizationFiles.insert(name.substr(fallbackPrefix.length()));
 			}
 		}
 	}
 	
-	BOOST_FOREACH(const LocalizationFiles::value_type & i, localizationFiles) {
-		
-		loadLocalisation(dir, fallbackPrefix + i.first);
-		
-		if(i.second && localizedPrefix != fallbackPrefix) {
-			loadLocalisation(dir, localizedPrefix + i.first);
-		}
+	BOOST_FOREACH(const LocalizationFiles::value_type & name, localizationFiles) {
+		loadLocalisation(dir, fallbackPrefix + name);
+		loadLocalisation(dir, localizedPrefix + name);
 	}
+	
 }
 
 } // anonymous namespace
