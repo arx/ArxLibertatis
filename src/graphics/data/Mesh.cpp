@@ -194,16 +194,16 @@ long MakeTopObjString(Entity * io, std::string & dest) {
 }
 
 
-EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
-{
-	long px = long(poss.x * ACTIVEBKG->m_mul.x);
-	long pz = long(poss.z * ACTIVEBKG->m_mul.y);
+EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY) {
 	
-	if(pz <= 0 || pz >= ACTIVEBKG->m_size.y - 1 || px <= 0 || px >= ACTIVEBKG->m_size.x - 1)
+	Vec2s tile = ACTIVEBKG->getTile(poss);
+	
+	if(tile.y <= 0 || tile.y >= ACTIVEBKG->m_size.y - 1 || tile.x <= 0 || tile.x >= ACTIVEBKG->m_size.x - 1) {
 		return NULL;
+	}
 	
-	float rx = poss.x - float(px) * g_backgroundTileSize.x;
-	float rz = poss.z - float(pz) * g_backgroundTileSize.y;
+	float rx = poss.x - float(tile.x) * g_backgroundTileSize.x;
+	float rz = poss.z - float(tile.y) * g_backgroundTileSize.y;
 	
 	
 	short minx;
@@ -211,40 +211,38 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 	short maxx;
 	short maxz;
 	
-	(void)checked_range_cast<short>(pz - 1);
-	(void)checked_range_cast<short>(pz + 1);
-	short sPz = static_cast<short>(pz);
+	(void)checked_range_cast<short>(tile.y - 1);
+	(void)checked_range_cast<short>(tile.y + 1);
 	
 	if(rz < -40.f) {
-		minz = sPz - 1;
-		maxz = sPz - 1;
+		minz = tile.y - 1;
+		maxz = tile.y - 1;
 	} else if(rz < 40.f) {
-		minz = sPz - 1;
-		maxz = sPz;
+		minz = tile.y - 1;
+		maxz = tile.y;
 	} else if(rz > 60.f) {
-		minz = sPz;
-		maxz = sPz + 1;
+		minz = tile.y;
+		maxz = tile.y + 1;
 	} else {
-		minz = sPz;
-		maxz = sPz;
+		minz = tile.y;
+		maxz = tile.y;
 	}
 	
-	(void)checked_range_cast<short>(px + 1);
-	(void)checked_range_cast<short>(px - 1);
-	short sPx = static_cast<short>(px);
+	(void)checked_range_cast<short>(tile.x + 1);
+	(void)checked_range_cast<short>(tile.x - 1);
 	
 	if(rx < -40.f) {
-		minx = sPx - 1;
-		maxx = sPx - 1;
+		minx = tile.x - 1;
+		maxx = tile.x - 1;
 	} else if(rx < 40.f) {
-		minx = sPx - 1;
-		maxx = sPx;
+		minx = tile.x - 1;
+		maxx = tile.x;
 	} else if(rx > 60.f) {
-		minx = sPx;
-		maxx = sPx + 1;
+		minx = tile.x;
+		maxx = tile.x + 1;
 	} else {
-		minx = sPx;
-		maxx = sPx;
+		minx = tile.x;
+		maxx = tile.x;
 	}
 	
 	EERIEPOLY * found = NULL;
