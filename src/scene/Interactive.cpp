@@ -2300,9 +2300,7 @@ bool HaveCommonGroup(Entity * io, Entity * ioo) {
 
 float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC)) {
-		return -1;
-	}
+	arx_assert(io && (io->ioflags & IO_NPC));
 	
 	float ac = io->_npcdata->armor_class;
 	
