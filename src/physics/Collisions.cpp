@@ -671,14 +671,13 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	float anything = 999999.f;
 	
 	// TODO copy-paste background tiles
-	int tilex = int(cyl.origin.x * ACTIVEBKG->m_mul.x);
-	int tilez = int(cyl.origin.z * ACTIVEBKG->m_mul.y);
+	Vec2s tile = ACTIVEBKG->getTile(cyl.origin);
 	int radius = int((cyl.radius + 100) * ACTIVEBKG->m_mul.x);
 	
-	int minx = std::max(tilex - radius, 0);
-	int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
-	int minz = std::max(tilez - radius, 0);
-	int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
+	int minx = std::max(tile.x - radius, 0);
+	int maxx = std::min(tile.x + radius, ACTIVEBKG->m_size.x - 1);
+	int minz = std::max(tile.y - radius, 0);
+	int maxz = std::min(tile.y + radius, ACTIVEBKG->m_size.y - 1);
 	
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
@@ -887,14 +886,13 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	
 	ARX_PROFILE_FUNC();
 	
-	int tilex = int(sphere.origin.x * ACTIVEBKG->m_mul.x);
-	int tilez = int(sphere.origin.z * ACTIVEBKG->m_mul.y);
+	Vec2s tile = ACTIVEBKG->getTile(sphere.origin);
 	int radius = int(sphere.radius * ACTIVEBKG->m_mul.x) + 2;
 
-	int minx = std::max(tilex - radius, 0);
-	int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
-	int minz = std::max(tilez - radius, 0);
-	int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
+	int minx = std::max(tile.x - radius, 0);
+	int maxx = std::min(tile.x + radius, ACTIVEBKG->m_size.x - 1);
+	int minz = std::max(tile.y - radius, 0);
+	int maxz = std::min(tile.y + radius, ACTIVEBKG->m_size.y - 1);
 
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
@@ -1494,14 +1492,13 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 				}
 			}
 		}
-
-		long px = long(tmpPos.x * ACTIVEBKG->m_mul.x);
-		long pz = long(tmpPos.z * ACTIVEBKG->m_mul.y);
-
-		if(px < 0 || px >= ACTIVEBKG->m_size.x || pz < 0 || pz >= ACTIVEBKG->m_size.y)
+		
+		Vec2s tile = ACTIVEBKG->getTile(tmpPos);
+		if(!ACTIVEBKG->isTileValid(tile)) {
 			break;
-
-		BackgroundTileData & eg = ACTIVEBKG->m_tileData[px][pz];
+		}
+		
+		BackgroundTileData & eg = ACTIVEBKG->m_tileData[tile.x][tile.y];
 		BOOST_FOREACH(EERIEPOLY * ep, eg.polyin) {
 			if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
 			if((ep->min.y - pas < tmpPos.y) && (ep->max.y + pas > tmpPos.y))
