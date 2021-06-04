@@ -570,21 +570,23 @@ float GetColorz(const Vec3f & pos) {
 			ff.b = std::max(ff.b, light.rgb.b * dc);
 		}
 	}
-
-
-	EERIEPOLY * ep;
+	
 	float needy;
-	ep = CheckInPoly(pos, &needy);
-
+	EERIEPOLY * ep = CheckInPoly(pos, &needy);
 	if(ep != NULL) {
 		Color3f _ff = Color3f(0.f, 0.f, 0.f);
 		
 		long to = (ep->type & POLY_QUAD) ? 4 : 3;
 		float div = (1.0f / to);
-
-		EP_DATA & epdata = portals->rooms[ep->room].epdata[0];
-		ApplyTileLights(ep, epdata.tile);
-
+		
+		Vec2s tile = ACTIVEBKG->getTile(ep->center);
+		if(ACTIVEBKG->isTileValid(tile)) {
+			if(!ACTIVEBKG->isTileActive(tile)) {
+				ComputeTileLights(tile.x, tile.y);
+			}
+			ApplyTileLights(ep, tile);
+		}
+		
 		for(long i = 0; i < to; i++) {
 			Color col = Color::fromRGBA(ep->color[i]);
 			_ff.r += float(col.r);
