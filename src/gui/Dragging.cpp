@@ -24,6 +24,7 @@
 #include "game/Entity.h"
 #include "game/EntityManager.h"
 #include "game/Inventory.h"
+#include "game/Item.h"
 #include "game/Player.h"
 #include "graphics/Math.h"
 #include "gui/Hud.h"
@@ -34,6 +35,7 @@
 #include "input/Input.h"
 #include "math/Angle.h"
 #include "math/GtxFunctions.h"
+#include "math/RandomVector.h"
 #include "math/Vector.h"
 #include "physics/Collisions.h"
 #include "physics/Physics.h"
@@ -306,6 +308,34 @@ void updateDraggedEntity() {
 	entity->obj->pbox->active = 0;
 	entity->gameFlags &= ~GFLAG_NOCOMPUTATION;
 	setDraggedEntity(NULL);
+	
+	if((entity->ioflags & IO_ITEM) && entity->_itemdata->count > 1) {
+		
+		EERIE_3D_BBOX bbox;
+		for(size_t i = 0; i < entity->obj->vertexlist.size(); i++) {
+			bbox.add(entity->obj->vertexlist[i].v);
+		}
+		Vec3f delta = (bbox.max - bbox.min) * std::pow(float(entity->_itemdata->count), 1.f / 3.f);
+		
+		while(entity->_itemdata->count > 1) {
+			Entity * unstackedEntity = CloneIOItem(entity);
+			unstackedEntity->scriptload = 1;
+			unstackedEntity->_itemdata->count = 1;
+			unstackedEntity->pos = entity->pos;
+			unstackedEntity->angle = entity->angle;
+			unstackedEntity->show = SHOW_FLAG_IN_SCENE;
+			if(g_dragStatus == EntityDragStatus_Throw) {
+				Vec3f start = player.pos + Vec3f(0.f, 80.f, 0.f) - Vec3f(result.offset.x, 0.f, result.offset.z);
+				Vec3f direction = glm::normalize(unstackedEntity->pos - start + arx::randomVec(-1.f, 1.f) * delta);
+				unstackedEntity->pos = start;
+				EERIE_PHYSICS_BOX_Launch(unstackedEntity->obj, unstackedEntity->pos, unstackedEntity->angle, direction);
+			} else if(glm::abs(result.offsetY) > threshold) {
+				EERIE_PHYSICS_BOX_Launch(unstackedEntity->obj, unstackedEntity->pos, unstackedEntity->angle, Vec3f(0.f, 0.1f, 0.f));
+			}
+			entity->_itemdata->count--;
+		}
+		
+	}
 	
 	if(g_dragStatus == EntityDragStatus_Throw) {
 		
