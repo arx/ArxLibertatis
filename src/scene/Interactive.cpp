@@ -2299,28 +2299,17 @@ bool HaveCommonGroup(Entity * io, Entity * ioo) {
 }
 
 float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
-
-	if(!io || !(io->ioflags & IO_NPC))
+	
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return -1;
-
+	}
+	
 	float ac = io->_npcdata->armor_class;
-
-	SpellBase * spell;
 	
-	spell = spells.getSpellOnTarget(io->index(), SPELL_LOWER_ARMOR);
-	if(spell) {
-		ac += spell->m_level;
-	}
+	ac += spells.getTotalSpellCasterLevelOnTarget(io->index(), SPELL_ARMOR);
+	ac -= spells.getTotalSpellCasterLevelOnTarget(io->index(), SPELL_LOWER_ARMOR);
 	
-	spell = spells.getSpellOnTarget(io->index(), SPELL_LOWER_ARMOR);
-	if(spell) {
-		ac -= spell->m_level;
-	}
-	
-	if(ac < 0)
-		ac = 0;
-
-	return ac;
+	return std::max(ac, 0.f);
 }
 
 void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t) {
