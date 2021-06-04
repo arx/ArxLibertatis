@@ -108,14 +108,13 @@ void PolyBoomClear() {
 void PolyBoomAddScorch(const Vec3f & poss) {
 	
 	// TODO copy-paste background tiles
-	int tilex = int(poss.x * ACTIVEBKG->m_mul.x);
-	int tilez = int(poss.z * ACTIVEBKG->m_mul.y);
+	Vec2s tile = ACTIVEBKG->getTile(poss);
 	int radius = 3;
 	
-	int minx = std::max(tilex - radius, 0);
-	int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
-	int minz = std::max(tilez - radius, 0);
-	int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
+	int minx = std::max(tile.x - radius, 0);
+	int maxx = std::min(tile.x + radius, ACTIVEBKG->m_size.x - 1);
+	int minz = std::max(tile.y - radius, 0);
+	int maxz = std::min(tile.y + radius, ACTIVEBKG->m_size.y - 1);
 	
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
@@ -258,14 +257,13 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	}
 	
 	// TODO copy-paste background tiles
-	int tilex = int(poss.x * ACTIVEBKG->m_mul.x);
-	int tilez = int(poss.z * ACTIVEBKG->m_mul.y);
+	Vec2s tile = ACTIVEBKG->getTile(poss);
 	int radius = 3;
 	
-	int minx = std::max(tilex - radius, 0);
-	int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
-	int minz = std::max(tilez - radius, 0);
-	int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
+	int minx = std::max(tile.x - radius, 0);
+	int maxx = std::min(tile.x + radius, ACTIVEBKG->m_size.x - 1);
+	int minz = std::max(tile.y - radius, 0);
+	int maxz = std::min(tile.y + radius, ACTIVEBKG->m_size.y - 1);
 	
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
