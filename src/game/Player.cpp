@@ -453,34 +453,17 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	// Calculate for modifiers from spells
 	{
-		SpellBase * spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_ARMOR);
-		if(spell) {
-			player.m_miscMod.armorClass += spell->m_level;
-		}
+		float armor = spells.getTotalSpellCasterLevelOnTarget(EntityHandle_Player, SPELL_ARMOR)
+		              - spells.getTotalSpellCasterLevelOnTarget(EntityHandle_Player, SPELL_LOWER_ARMOR);
+		player.m_miscMod.armorClass += armor;
 	}
 	{
-		SpellBase * spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_LOWER_ARMOR);
-		if(spell) {
-			player.m_miscMod.armorClass -= spell->m_level;
-		}
-	}
-	{
-		SpellBase * spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_CURSE);
-		if(spell) {
-			player.m_attributeMod.strength -= spell->m_level;
-			player.m_attributeMod.constitution -= spell->m_level;
-			player.m_attributeMod.dexterity -= spell->m_level;
-			player.m_attributeMod.mind -= spell->m_level;
-		}
-	}
-	{
-		SpellBase * spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_BLESS);
-		if(spell) {
-			player.m_attributeMod.strength += spell->m_level;
-			player.m_attributeMod.dexterity += spell->m_level;
-			player.m_attributeMod.constitution += spell->m_level;
-			player.m_attributeMod.mind += spell->m_level;
-		}
+		float bless = spells.getTotalSpellCasterLevelOnTarget(EntityHandle_Player, SPELL_BLESS)
+		              - spells.getTotalSpellCasterLevelOnTarget(EntityHandle_Player, SPELL_CURSE);
+		player.m_attributeMod.strength += bless;
+		player.m_attributeMod.constitution += bless;
+		player.m_attributeMod.dexterity += bless;
+		player.m_attributeMod.mind += bless;
 	}
 	
 	// Calculate for modifiers from cheats
