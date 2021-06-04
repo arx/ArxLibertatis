@@ -69,9 +69,17 @@ public:
 		m_activeTiles.reset();
 	}
 	
+	Vec2s getTile(const Vec3f & pos) {
+		return Vec2s(s16(pos.x * m_mul.x), s16(pos.z * m_mul.y));
+	}
+	
+	bool isTileValid(Vec2s tile) {
+		return tile.x >= 0 && tile.x < m_size.x && tile.y >= 0 && tile.y < m_size.y;
+	}
+	
 	bool isInActiveTile(const Vec3f & pos) {
-		Vec2s tile(s16(pos.x * m_mul.x), s16(pos.z * m_mul.y));
-		return tile.x >= 0 && tile.x < m_size.x && tile.y >= 0 && tile.y < m_size.y && isTileActive(tile);
+		Vec2s tile = getTile(pos);
+		return isTileValid(tile) && isTileActive(tile);
 	}
 	
 	BackgroundData()
