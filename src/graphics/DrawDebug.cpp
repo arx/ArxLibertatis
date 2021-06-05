@@ -790,7 +790,7 @@ struct DebugRay {
 static std::vector<DebugRay> debugRays;
 
 void debug::drawRay(Vec3f start, Vec3f dir, Color color, PlatformDuration duration) {
-	DebugRay ray = DebugRay(start, dir, color, g_platformTime.frameStart() + duration * 1000);
+	DebugRay ray = DebugRay(start, dir, color, g_platformTime.frameStart() + duration);
 	debugRays.push_back(ray);
 }
 
