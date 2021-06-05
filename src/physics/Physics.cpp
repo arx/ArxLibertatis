@@ -50,8 +50,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/foreach.hpp>
 
+#include "graphics/DrawDebug.h"
+#include "graphics/Raycast.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
+
 #include "math/Vector.h"
 
 #include "core/GameTime.h"
@@ -404,148 +407,6 @@ static bool IsObjectInField(const PHYSICS_BOX_DATA & pbox) {
 	return false;
 }
 
-
-// Checks is a triangle of a physical object is colliding a triangle
-static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f * verts)
-{
-	EERIE_TRI t1, t2;
-	bool ret = false;
-	std::copy(verts, verts + 2, t2.v);
-
-	const boost::array<PhysicsParticle, 15> & vert = pbox.vert;
-
-	Vec3f center = (verts[0] + verts[1] + verts[2]) * (1.0f / 3);
-	float rad = fdist(center, verts[0]);
-
-	{
-		size_t nn = 0;
-
-		for (; nn < pbox.vert.size(); nn++)
-		{
-			if(!fartherThan(center, vert[nn].pos, std::max(60.0f, rad + 25))) {
-				nn = 1000;
-			}
-		}
-
-		if (nn < 1000)
-			return false;
-	}
-	
-	// top
-	t1.v[0] = vert[1].pos;
-	t1.v[1] = vert[2].pos;
-	t1.v[2] = vert[3].pos;
-	
-	if(Triangles_Intersect(t1, t2)) {
-		return true;
-	}
-	
-	// bottom
-	t1.v[0] = vert[10].pos;
-	t1.v[1] = vert[9].pos;
-	t1.v[2] = vert[11].pos;
-	
-	if(Triangles_Intersect(t1, t2)) {
-		return true;
-	}
-	
-	// up / front
-	t1.v[0] = vert[1].pos;
-	t1.v[1] = vert[4].pos;
-	t1.v[2] = vert[5].pos;
-	
-	if(Triangles_Intersect(t1, t2)) {
-		return true;
-	}
-	
-	// down / front
-	t1.v[0] = vert[5].pos;
-	t1.v[1] = vert[8].pos;
-	t1.v[2] = vert[9].pos;
-	
-	if(Triangles_Intersect(t1, t2)) {
-		return true;
-	}
-	
-	// up / back
-	t1.v[0] = vert[3].pos;
-	t1.v[1] = vert[2].pos;
-	t1.v[2] = vert[7].pos;
-	
-	if(Triangles_Intersect(t1, t2)) {
-		return true;
-	}
-	
-	// down / back
-	t1.v[0] = vert[7].pos;
-	t1.v[1] = vert[6].pos;
-	t1.v[2] = vert[11].pos;
-	
-	if(Triangles_Intersect(t1, t2)) {
-		return true;
-	}
-
-	// up / left
-	t1.v[0] = vert[6].pos;
-	t1.v[1] = vert[2].pos;
-	t1.v[2] = vert[1].pos;
-
-	if(Triangles_Intersect(t1, t2)) {
-		return true;
-	}
-
-	// down / left
-	t1.v[0] = vert[10].pos;
-	t1.v[1] = vert[6].pos;
-	t1.v[2] = vert[5].pos;
-
-	if(Triangles_Intersect(t1, t2)) {
-		return true;
-	}
-
-	// up / right
-	t1.v[0] = vert[4].pos;
-	t1.v[1] = vert[3].pos;
-	t1.v[2] = vert[7].pos;
-
-	if(Triangles_Intersect(t1, t2)) {
-		return true;
-	}
-
-	// down / right
-	t1.v[0] = vert[8].pos;
-	t1.v[1] = vert[7].pos;
-	t1.v[2] = vert[11].pos;
-
-	if(Triangles_Intersect(t1, t2)) {
-		return true;
-	}
-
-	return ret;
-}
-
-static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, const EERIEPOLY & ep) {
-	
-	Vec3f pol[3];
-	pol[0] = ep.v[0].p;
-	pol[1] = ep.v[1].p;
-	pol[2] = ep.v[2].p;
-	
-	if(ep.type & POLY_QUAD) {
-		
-		if(IsObjectVertexCollidingTriangle(pbox, pol)) {
-			return true;
-		}
-		
-		pol[1] = ep.v[2].p;
-		pol[2] = ep.v[3].p;
-		
-		return IsObjectVertexCollidingTriangle(pbox, pol);
-	}
-	
-	return IsObjectVertexCollidingTriangle(pbox, pol);
-}
-
 static Material polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
 	if(ep.type & POLY_METAL) {
 		return MATERIAL_METAL;
@@ -566,79 +427,6 @@ static Material polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
 		return MATERIAL_EARTH;
 	}
 	return MATERIAL_STONE;
-}
-
-static bool IsFULLObjectVertexInValidPosition(const PHYSICS_BOX_DATA & pbox, EERIEPOLY * & collisionPoly) {
-
-	float rad = pbox.radius;
-	
-	// TODO copy-paste background tiles
-	Vec2s tile = ACTIVEBKG->getTile(pbox.vert[0].pos);
-	int radius = std::min(1, short(rad * 0.01f) + 1);
-	
-	int minx = std::max(tile.x - radius, 0);
-	int maxx = std::min(tile.x + radius, ACTIVEBKG->m_size.x - 1);
-	int minz = std::max(tile.y - radius, 0);
-	int maxz = std::min(tile.y + radius, ACTIVEBKG->m_size.y - 1);
-	
-	for(int z = minz; z <= maxz; z++)
-	for(int x = minx; x <= maxx; x++) {
-		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
-		BOOST_FOREACH(EERIEPOLY & ep, eg.polydata) {
-			
-			if(ep.area > 190.f
-			   && !(ep.type & POLY_WATER)
-			   && !(ep.type & POLY_TRANS)
-			   && !(ep.type & POLY_NOCOL)
-			) {
-				if(fartherThan(ep.center, pbox.vert[0].pos, rad + 75.f))
-					continue;
-				
-				for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
-					float radd = 4.f;
-
-					if(!fartherThan(pbox.vert[kk].pos, ep.center, radd)
-					   || !fartherThan(pbox.vert[kk].pos, ep.v[0].p, radd)
-					   || !fartherThan(pbox.vert[kk].pos, ep.v[1].p, radd)
-					   || !fartherThan(pbox.vert[kk].pos, ep.v[2].p, radd)
-					   || !fartherThan(pbox.vert[kk].pos, (ep.v[0].p + ep.v[1].p) * .5f, radd)
-					   || !fartherThan(pbox.vert[kk].pos, (ep.v[2].p + ep.v[1].p) * .5f, radd)
-					   || !fartherThan(pbox.vert[kk].pos, (ep.v[0].p + ep.v[2].p) * .5f, radd)
-					) {
-						collisionPoly = &ep;
-						return false;
-					}
-					
-					// Last addon
-					for(size_t kl = 1; kl < pbox.vert.size(); kl++) {
-						if(kl != kk) {
-							Vec3f pos = (pbox.vert[kk].pos + pbox.vert[kl].pos) * .5f;
-							
-							if(!fartherThan(pos, ep.center, radd)
-							   || !fartherThan(pos, ep.v[0].p, radd)
-							   || !fartherThan(pos, ep.v[1].p, radd)
-							   || !fartherThan(pos, ep.v[2].p, radd)
-							   || !fartherThan(pos, (ep.v[0].p + ep.v[1].p) * .5f, radd)
-							   || !fartherThan(pos, (ep.v[2].p + ep.v[1].p) * .5f, radd)
-							   || !fartherThan(pos, (ep.v[0].p + ep.v[2].p) * .5f, radd)
-							) {
-								collisionPoly = &ep;
-								return false;
-							}
-						}
-					}
-				}
-				
-				if(IsObjectVertexCollidingPoly(pbox, ep)) {
-					collisionPoly = &ep;
-					return false;
-				}
-			}
-			
-		}
-	}
-
-	return true;
 }
 
 static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, Entity & source) {
@@ -825,19 +613,19 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA & pbox, float framedi
 	
 	EERIEPOLY * collisionPoly = NULL;
 	
-	bool invalidPosition = false;
-	for(size_t i = 0; i < pbox.vert.size(); i += 2) {
-		if(!EERIE_PHYSICS_BOX_IsValidPosition(pbox.vert[i].pos - Vec3f(0.f, 10.f, 0.f))) {
-			// This indicaties that entity-world collisions are broken
-			LogWarning << "Entity " << source.idString() << " escaped the world";
-			invalidPosition = true;
+	for(size_t i = 0; i < pbox.vert.size(); i += 1) {
+		const Vec3f start = oldpos[i];
+		const Vec3f end = pbox.vert[i].pos;
+		RaycastResult ray = raycastScene(start, end, POLY_NOCOL | POLY_WATER | POLY_TRANS);
+		if(ray.hit) {
+			collisionPoly = ray.hit;
+			//debug::drawRay(start, end, Color::white, PlatformDurationMs(1000));
 			break;
 		}
 	}
 	
-	if(   !IsFULLObjectVertexInValidPosition(pbox, collisionPoly)
+	if( collisionPoly
 	   || ARX_INTERACTIVE_CheckFULLCollision(pbox, source)
-	   || invalidPosition
 	   || IsObjectInField(pbox)
 	) {
 		
