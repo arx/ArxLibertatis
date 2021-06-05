@@ -168,6 +168,7 @@ const ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_R, Keyboard::Key_M), // MINIMAP
 	ActionKey((Keyboard::Key_LeftAlt << 16) | Keyboard::Key_Enter, (Keyboard::Key_RightAlt << 16) | Keyboard::Key_Enter), // TOGGLE_FULLSCREEN
 	ActionKey(Keyboard::Key_Grave), // CONSOLE
+	ActionKey(Keyboard::Key_ScrollLock, Keyboard::Key_Backslash), // DEBUG
 };
 
 } // namespace Default
@@ -307,7 +308,8 @@ const std::string actions[NUM_ACTION_KEY] = {
 	"cancel_current_spell",
 	"minimap",
 	"toggle_fullscreen",
-	"console"
+	"console",
+	"debug",
 };
 
 // Misc options

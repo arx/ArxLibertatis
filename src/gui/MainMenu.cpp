@@ -1865,6 +1865,10 @@ public:
 		
 		addControlRow(CONTROLS_CUST_MINIMAP,      "system_menus_options_input_customize_controls_minimap");
 		
+		if(config.input.allowConsole) {
+			addControlRow(CONTROLS_CUST_CONSOLE, "system_menus_options_input_customize_controls_console");
+		}
+		
 		addBackButton(Page_OptionsInput);
 		
 		{
@@ -1933,9 +1937,7 @@ public:
 		
 		addControlRow(CONTROLS_CUST_TOGGLE_FULLSCREEN, "system_menus_options_input_customize_controls_toggle_fullscreen");
 		
-		if(config.input.allowConsole) {
-			addControlRow(CONTROLS_CUST_CONSOLE, "system_menus_options_input_customize_controls_console");
-		}
+		addControlRow(CONTROLS_CUST_DEBUG,             "system_menus_options_input_customize_controls_debug");
 		
 		addBackButton(Page_OptionsInputCustomizeKeys1);
 		

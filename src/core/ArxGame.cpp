@@ -1644,7 +1644,7 @@ void ArxGame::updateInput() {
 		GetSnapShot();
 	}
 
-	if(GInput->isKeyPressedNowPressed(Keyboard::Key_ScrollLock)) {
+	if(GInput->actionNowPressed(CONTROLS_CUST_DEBUG)) {
 		drawDebugCycleViews();
 	}
 	
