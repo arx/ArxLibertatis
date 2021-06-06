@@ -161,7 +161,7 @@ void initialize(const OpenGLInfo & gl) {
 	
 	#else
 	
-	ARX_UNUSED(gl)
+	ARX_UNUSED(gl);
 	LogWarning << "OpenGL debug output not supported in this build";
 	
 	#endif
