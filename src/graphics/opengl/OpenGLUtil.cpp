@@ -139,8 +139,8 @@ void OpenGLInfo::parseOverrideConfig(const std::string & string) {
 				} else if(dot != std::string::npos) {
 					u32 major = boost::lexical_cast<u32>(token.substr(offset, dot - offset));
 					u32 minor = boost::lexical_cast<u32>(token.substr(dot + 1));
-					if(minor > 10) {
-						throw 42;
+					if(minor > 10 || major > std::numeric_limits<u32>::max() / 10) {
+						throw std::exception();
 					}
 					m_versionOverride = major * 10 + minor;
 				} else if(token.length() - offset > 1) {
