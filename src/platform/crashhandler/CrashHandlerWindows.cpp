@@ -23,6 +23,7 @@
 #include <intrin.h>  // _ReturnAddress()
 #include <wchar.h>
 #include <csignal>
+#include <map>
 
 #include <dbghelp.h>
 
