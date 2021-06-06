@@ -264,10 +264,9 @@ void loadLocalisations() {
 	for(; fileIter != dir->files_end(); ++fileIter) {
 		const std::string & name = fileIter->first;
 		
-		if(boost::ends_with(name, suffix)) {
-			if(boost::starts_with(name, fallbackPrefix) || boost::starts_with(name, localizedPrefix)) {
-				localizationFiles.insert(name.substr(fallbackPrefix.length()));
-			}
+		if(boost::ends_with(name, suffix)
+		   && (boost::starts_with(name, fallbackPrefix) || boost::starts_with(name, localizedPrefix))) {
+			localizationFiles.insert(name.substr(fallbackPrefix.length()));
 		}
 	}
 	
