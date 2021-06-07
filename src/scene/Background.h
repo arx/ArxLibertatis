@@ -57,7 +57,7 @@ public:
 	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
 	std::vector<ANCHOR_DATA> m_anchors;
 	
-	bool isTileActive(Vec2s tile) {
+	bool isTileActive(Vec2s tile) const {
 		return m_activeTiles.test(size_t(tile.x) * size_t(MAX_BKGZ) + size_t(tile.y));
 	}
 	
@@ -69,15 +69,15 @@ public:
 		m_activeTiles.reset();
 	}
 	
-	Vec2s getTile(const Vec3f & pos) {
+	Vec2s getTile(const Vec3f & pos) const {
 		return Vec2s(s16(pos.x * m_mul.x), s16(pos.z * m_mul.y));
 	}
 	
-	bool isTileValid(Vec2s tile) {
+	bool isTileValid(Vec2s tile) const {
 		return tile.x >= 0 && tile.x < m_size.x && tile.y >= 0 && tile.y < m_size.y;
 	}
 	
-	bool isInActiveTile(const Vec3f & pos) {
+	bool isInActiveTile(const Vec3f & pos) const {
 		Vec2s tile = getTile(pos);
 		return isTileValid(tile) && isTileActive(tile);
 	}
