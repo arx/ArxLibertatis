@@ -78,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Inventory.h"
 #include "game/spell/Cheat.h"
 
+#include "gui/Dragging.h"
 #include "gui/LoadLevelScreen.h"
 #include "gui/MiniMap.h"
 #include "gui/Hud.h"
@@ -130,7 +131,7 @@ static void ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player(long level);
 static long ARX_CHANGELEVEL_Push_AllIO(long level);
 static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level);
-static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInstance instance);
+static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInstance instance, long level = -1);
 
 static fs::path CURRENT_GAME_FILE;
 
@@ -654,7 +655,7 @@ static void storeIdString(char (&tofill)[N], const Entity * io) {
 static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
 	ARX_CHANGELEVEL_PLAYER * asp;
-
+	
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + 48000;
 	allocsize += g_playerKeyring.size() * SAVED_KEYRING_SLOT_SIZE;
 	allocsize += SAVED_QUEST_SLOT_SIZE * g_playerQuestLogEntries.size();
@@ -710,6 +711,11 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		storeIdString(asp->id_inventory[bag][x][y], g_inventory[bag][x][y].io);
 		asp->inventory_show[bag][x][y] = g_inventory[bag][x][y].show;
+	}
+	
+	if(g_draggedEntity) {
+		g_draggedEntity->show = SHOW_FLAG_IN_SCENE; // Fallback for loading save in older versions
+		storeIdString(asp->draggedEntity, g_draggedEntity);
 	}
 	
 	g_miniMap.save(asp->minimap, SAVED_MAX_MINIMAPS);
@@ -832,8 +838,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
-		
-		if(locateInInventories(e).io == EntityHandle_Player || IsPlayerEquipedWith(e)) {
+		if(e == g_draggedEntity || locateInInventories(e).io == EntityHandle_Player || IsPlayerEquipedWith(e)) {
 			ARX_CHANGELEVEL_Push_IO(e, level);
 		}
 	}
@@ -846,7 +851,8 @@ static long ARX_CHANGELEVEL_Push_AllIO(long level) {
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
-		if(e && !(e->ioflags & IO_NOSAVE) && locateInInventories(e).io != EntityHandle_Player
+		if(e && !(e->ioflags & IO_NOSAVE)
+		   && e != g_draggedEntity && locateInInventories(e).io != EntityHandle_Player
 		   && !IsPlayerEquipedWith(e)) {
 			ARX_CHANGELEVEL_Push_IO(e, level);
 		}
@@ -1647,6 +1653,8 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 	assert(SAVED_INVENTORY_Y == INVENTORY_Y);
 	assert(SAVED_INVENTORY_X == INVENTORY_X);
 	
+	g_draggedEntity = ConvertToValidIO(asp->draggedEntity);
+	
 	for(size_t bag = 0; bag < SAVED_INVENTORY_BAGS; bag++)
 	for(size_t y = 0; y < SAVED_INVENTORY_Y; y++)
 	for(size_t x = 0; x < SAVED_INVENTORY_X; x++) {
@@ -1760,7 +1768,7 @@ static bool loadScriptVariables(SCRIPT_VARIABLES & var, const char * dat, size_t
 	return true;
 }
 
-static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInstance instance) {
+static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInstance instance, long level) {
 	
 	LogDebug("--> loading interactive object " << idString);
 	
@@ -1791,6 +1799,11 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	if(ais->show == SHOW_FLAG_DESTROYED || ais->show == SHOW_FLAG_KILLED) {
 		// Not supposed to happen anymore, but older saves have these (this is harmless bloat)
 		LogWarning << "Found destroyed entity " << idString << " in save file";
+		return NULL;
+	}
+	
+	if(level >= 0 && ais->level != level) {
+		// Entity has been moved to a different level
 		return NULL;
 	}
 	
@@ -2275,7 +2288,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	return io;
 }
 
-static void ARX_CHANGELEVEL_PopAllIO(const std::string & buffer) {
+static void ARX_CHANGELEVEL_PopAllIO(const std::string & buffer, long level) {
 	
 	const char * dat = buffer.data();
 	size_t pos = 0;
@@ -2306,7 +2319,7 @@ static void ARX_CHANGELEVEL_PopAllIO(const std::string & buffer) {
 		oss << res::path::load(util::loadString(idx_io[i].filename)).basename() << '_'
 		    << std::setfill('0') << std::setw(4) << idx_io[i].ident;
 		if(entities.getById(oss.str()).handleData() < 0) {
-			ARX_CHANGELEVEL_Pop_IO(oss.str(), idx_io[i].ident);
+			ARX_CHANGELEVEL_Pop_IO(oss.str(), idx_io[i].ident, level);
 		}
 		
 	}
@@ -2322,6 +2335,10 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 		Entity * entity = entities[handle];
 		
 		if(!entity || !entity->obj || entity->show != SHOW_FLAG_IN_SCENE || entity->pos == entity->initpos) {
+			continue;
+		}
+		
+		if(entity == g_draggedEntity) {
 			continue;
 		}
 		
@@ -2492,7 +2509,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::
 			}
 		}
 	} else {
-		ARX_CHANGELEVEL_PopAllIO(levelSave);
+		ARX_CHANGELEVEL_PopAllIO(levelSave, instance);
 	}
 	
 	progressBarAdvance(20.f);

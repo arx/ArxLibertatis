@@ -423,7 +423,8 @@ struct ARX_CHANGELEVEL_PLAYER {
 	s32 Global_Magic_Mode;
 	s32 Nb_Mapmarkers;
 	SavedVec3 LAST_VALID_POS;
-	s32 padding[253];
+	char draggedEntity[SIZE_ID];
+	s32 padding[237];
 	
 };
 
