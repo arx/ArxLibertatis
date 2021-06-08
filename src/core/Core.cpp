@@ -322,6 +322,7 @@ void levelInit() {
 	
 	g_dragStartPos = Vec2s(0);
 	DANAEMouse = Vec2s(0);
+	LastMouseClick = 0;
 	
 	PolyBoomClear();
 	ARX_DAMAGES_Reset();
