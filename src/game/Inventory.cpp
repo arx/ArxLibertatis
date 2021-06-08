@@ -534,6 +534,12 @@ private:
 			return false;
 		}
 		
+		// Don't allow stacking non-interactive items
+		// While non-interactive items can't be picked up, they can be made non-interactive while being dragged.
+		if(!(item->gameFlags & GFLAG_INTERACTIVITY) || !(oldItem->gameFlags & GFLAG_INTERACTIVITY)) {
+			return false;
+		}
+		
 		if((oldItem->ioflags & IO_GOLD) && (item->ioflags & IO_GOLD)) {
 			oldItem->_itemdata->price += item->_itemdata->price;
 			item->destroy();
