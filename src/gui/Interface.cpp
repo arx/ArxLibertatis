@@ -1769,13 +1769,10 @@ void ArxGame::manageEditorControls() {
 			
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
 			
-			if(!insertIntoInventory(FlyingOverIO, entities.player())) {
-				// If there is no space, leave the item where it is
+			while(FlyingOverIO && insertIntoInventory(FlyingOverIO, entities.player())) {
+				FlyingOverIO = InterClick(DANAEMouse);
 			}
-			
-			if(g_draggedEntity == FlyingOverIO) {
-				setDraggedEntity(NULL);
-			}
+			// If there is no space, leave the item where it is
 			
 			FlyingOverIO = NULL;
 		}
@@ -1910,6 +1907,27 @@ void ArxGame::manageEditorControls() {
 					}
 					
 					setDraggedEntity(io);
+					
+					if(!g_cursorOverBook && (io->ioflags & IO_ITEM) && GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
+						EntityVisilibity show = io->show;
+						io->show = SHOW_FLAG_MEGAHIDE;
+						while(io->_itemdata->count < io->_itemdata->playerstacksize) {
+							Entity * other = InterClick(g_dragStartPos);
+							if(!other || other == io || !(other->ioflags & IO_ITEM) || !IsSameObject(other, io)) {
+								// Ignore different or non-stackeable items
+								break;
+							}
+							short int remainingSpace = io->_itemdata->playerstacksize - io->_itemdata->count;
+							short int count = std::min(other->_itemdata->count, remainingSpace);
+							io->scale = io->scale * float(io->_itemdata->count) + other->scale * float(count);
+							io->_itemdata->count += count, other->_itemdata->count -= count;
+							io->scale /= float(io->_itemdata->count);
+							if(other->_itemdata->count == 0) {
+								other->destroy();
+							}
+						}
+						io->show = show;
+					}
 					
 					ARX_PLAYER_Remove_Invisibility();
 					
