@@ -624,7 +624,7 @@ public:
 			return true;
 		}
 		
-		if(item && (item->ioflags & IO_ITEM)) {
+		if(item && (item->ioflags & IO_ITEM) && !(item->ioflags & IO_MOVABLE)) {
 			if(Pos newPos = insertImpl(item, pos)) {
 				ARX_INVENTORY_Declare_InventoryIn(get(newPos), handle());
 				return true;
@@ -654,7 +654,7 @@ public:
 			return true;
 		}
 		
-		if(item && (item->ioflags & IO_ITEM)) {
+		if(item && (item->ioflags & IO_ITEM) && !(item->ioflags & IO_MOVABLE)) {
 			if(Pos newPos = insertAtImpl(item, bag, pos, fallback)) {
 				ARX_SOUND_PlayInterface(g_snd.INVSTD);
 				ARX_INVENTORY_Declare_InventoryIn(get(newPos), handle());
@@ -671,7 +671,7 @@ public:
 			return true;
 		}
 		
-		if(!item || !(item->ioflags & IO_ITEM)) {
+		if(!item || !(item->ioflags & IO_ITEM) || (item->ioflags & IO_MOVABLE)) {
 			return false;
 		}
 		
