@@ -442,7 +442,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		
 		if(e != NULL
 		   && !(e->ioflags & IO_NOSAVE)
-		   && !IsInPlayerInventory(e)
+		   && locateInInventories(e).io != EntityHandle_Player
 		   && !IsPlayerEquipedWith(e)) {
 			asi.nb_inter++;
 		}
@@ -481,7 +481,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		
 		if(e != NULL
 		   && !(e->ioflags & IO_NOSAVE)
-		   && !IsInPlayerInventory(e)
+		   && locateInInventories(e).io != EntityHandle_Player
 		   && !IsPlayerEquipedWith(e)) {
 			ARX_CHANGELEVEL_IO_INDEX aii;
 			memset(&aii, 0, sizeof(aii));
@@ -833,7 +833,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
 		
-		if(IsInPlayerInventory(e) || IsPlayerEquipedWith(e)) {
+		if(locateInInventories(e).io == EntityHandle_Player || IsPlayerEquipedWith(e)) {
 			ARX_CHANGELEVEL_Push_IO(e, level);
 		}
 	}
@@ -846,7 +846,8 @@ static long ARX_CHANGELEVEL_Push_AllIO(long level) {
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
-		if(e && !(e->ioflags & IO_NOSAVE) && !IsInPlayerInventory(e) && !IsPlayerEquipedWith(e)) {
+		if(e && !(e->ioflags & IO_NOSAVE) && locateInInventories(e).io != EntityHandle_Player
+		   && !IsPlayerEquipedWith(e)) {
 			ARX_CHANGELEVEL_Push_IO(e, level);
 		}
 	}

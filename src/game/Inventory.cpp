@@ -998,7 +998,11 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
 }
 
 bool IsInPlayerInventory(Entity * io) {
-	return locateInInventories(io).io == EntityHandle_Player;
+	// Dragged stacks are still considered to be in the player inventory because cooking scripts
+	// are not designed to handle them in the scene.
+	// Maybe this should also be the case for individual items being dragged but AF 1.21 did not do that.
+	return locateInInventories(io).io == EntityHandle_Player
+	       || (io && g_draggedEntity == io && (io->ioflags & IO_ITEM) && io->_itemdata->count > 1);
 }
 
 Entity * getInventoryItemWithLowestDurability(const std::string & className, float minDurability) {
