@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Physics.h"
 
 #include <stddef.h>
+#include <algorithm>
+#include <limits>
 
 #include "graphics/Raycast.h"
 #include "graphics/GraphicsTypes.h"
@@ -62,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Collisions.h"
 
+#include "scene/Background.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
