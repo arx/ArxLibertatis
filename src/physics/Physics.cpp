@@ -48,9 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
-#include <boost/foreach.hpp>
-
-#include "graphics/DrawDebug.h"
 #include "graphics/Raycast.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
@@ -62,8 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/EntityManager.h"
 #include "game/magic/spells/SpellsLvl06.h"
-
-#include "io/log/Logger.h"
 
 #include "physics/Collisions.h"
 
