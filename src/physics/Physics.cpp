@@ -619,7 +619,6 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA & pbox, float framedi
 		RaycastResult ray = raycastScene(start, end, POLY_NOCOL | POLY_WATER | POLY_TRANS);
 		if(ray.hit) {
 			collisionPoly = ray.hit;
-			//debug::drawRay(start, end, Color::white, PlatformDurationMs(1000));
 			break;
 		}
 	}
