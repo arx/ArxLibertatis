@@ -1913,17 +1913,11 @@ void ArxGame::manageEditorControls() {
 						io->show = SHOW_FLAG_MEGAHIDE;
 						while(io->_itemdata->count < io->_itemdata->playerstacksize) {
 							Entity * other = InterClick(g_dragStartPos);
-							if(!other || other == io || !(other->ioflags & IO_ITEM) || !IsSameObject(other, io)) {
-								// Ignore different or non-stackeable items
+							if(!other || other == io || !(other->ioflags & IO_ITEM)) {
 								break;
 							}
-							short int remainingSpace = io->_itemdata->playerstacksize - io->_itemdata->count;
-							short int count = std::min(other->_itemdata->count, remainingSpace);
-							io->scale = io->scale * float(io->_itemdata->count) + other->scale * float(count);
-							io->_itemdata->count += count, other->_itemdata->count -= count;
-							io->scale /= float(io->_itemdata->count);
-							if(other->_itemdata->count == 0) {
-								other->destroy();
+							if(!combineItemStacks(io, other)) {
+								break;
 							}
 						}
 						io->show = show;

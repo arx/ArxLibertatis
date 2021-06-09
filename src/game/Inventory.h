@@ -238,4 +238,12 @@ void useInventoryItemWithLowestDurability(const std::string & className, float m
 void ARX_INVENTORY_IdentifyAll();
 void ARX_INVENTORY_IdentifyIO(Entity * _pIO);
 
+/*!
+ * Tries to move as much of the stack in source to the stack in target.
+ * Combining stacks is only possible if the stacks have the same item type.
+ *
+ * \return true iff the source stack has been completely merged and the entity was destroyed
+ */
+bool combineItemStacks(Entity * target, Entity * source);
+
 #endif // ARX_GAME_INVENTORY_H

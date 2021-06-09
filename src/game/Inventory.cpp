@@ -515,23 +515,16 @@ private:
 		}
 		
 		Entity * oldItem = index(pos).io;
+		if(!oldItem) {
+			return false;
+		}
 		
-		if(oldItem && identify) {
+		if(identify) {
 			ARX_INVENTORY_IdentifyIO(oldItem);
 		}
 		
 		if(item == oldItem) {
 			return true;
-		}
-		
-		// Ignore empty slots and different or non-stackeable items
-		if(!oldItem || oldItem->_itemdata->playerstacksize <= 1 || !IsSameObject(item, oldItem)) {
-			return false;
-		}
-		
-		// Ignore full stacks
-		if(oldItem->_itemdata->count >= oldItem->_itemdata->playerstacksize) {
-			return false;
 		}
 		
 		// Don't allow stacking non-interactive items
@@ -540,36 +533,7 @@ private:
 			return false;
 		}
 		
-		if((oldItem->ioflags & IO_GOLD) && (item->ioflags & IO_GOLD)) {
-			oldItem->_itemdata->price += item->_itemdata->price;
-			item->destroy();
-			return true;
-		}
-		
-		// Get the number of items to add to the stack
-		short int remainingSpace = oldItem->_itemdata->playerstacksize - oldItem->_itemdata->count;
-		short int count = std::min(item->_itemdata->count, remainingSpace);
-		
-		LogDebug(" - " << pos << " " << oldItem->idString()
-		         << " [" << oldItem->_itemdata->count << '/'
-		         << oldItem->_itemdata->playerstacksize << "] += "
-		         << item->idString() << " x" << count << '/' << item->_itemdata->count);
-		
-		oldItem->scale = oldItem->scale * float(oldItem->_itemdata->count) + item->scale * float(count);
-		
-		oldItem->_itemdata->count += count, item->_itemdata->count -= count;
-		
-		oldItem->scale /= float(oldItem->_itemdata->count);
-		
-		if(item->_itemdata->count != 0) {
-			// We inserted some of the items into the stack, but there was not enough
-			// space for all of them.
-			return false;
-		}
-		
-		// Delete the old item
-		item->destroy();
-		return true;
+		return combineItemStacks(oldItem, item);
 	}
 	
 	Pos insertIntoStack(Entity * item) {
@@ -1060,4 +1024,52 @@ void ARX_INVENTORY_IdentifyAll() {
 			ARX_INVENTORY_IdentifyIO(slot.io);
 		}
 	}
+}
+
+bool combineItemStacks(Entity * target, Entity * source) {
+	
+	arx_assert(target && (target->ioflags & IO_ITEM) && (target->gameFlags & GFLAG_INTERACTIVITY));
+	arx_assert(source && (source->ioflags & IO_ITEM) && (source->gameFlags & GFLAG_INTERACTIVITY));
+	arx_assert(source != target);
+	
+	// Cannot merge into full stacks
+	if(target->_itemdata->count >= target->_itemdata->playerstacksize) {
+		return false;
+	}
+	
+	// Cannot merge stacks of different items or non-stackeable items
+	if(target->_itemdata->playerstacksize <= 1 || !IsSameObject(source, target)) {
+		return false;
+	}
+	
+	// Gold stacks use price instead of count
+	if((target->ioflags & IO_GOLD) && (source->ioflags & IO_GOLD)) {
+		target->_itemdata->price += source->_itemdata->price;
+		source->destroy();
+		return true;
+	}
+	
+	// Get the number of items to add to the stack
+	short int remainingSpace = target->_itemdata->playerstacksize - target->_itemdata->count;
+	short int count = std::min(source->_itemdata->count, remainingSpace);
+	
+	LogDebug(target->idString() << " [" << target->_itemdata->count << '/'
+	         << target->_itemdata->playerstacksize << "] += "
+	         << source->idString() << " x" << count << '/' << source->_itemdata->count);
+	
+	target->scale = target->scale * float(target->_itemdata->count) + source->scale * float(count);
+	
+	target->_itemdata->count += count, source->_itemdata->count -= count;
+	
+	target->scale /= float(target->_itemdata->count);
+	
+	if(source->_itemdata->count != 0) {
+		// We inserted some of the items into the stack, but there was not enough
+		// space for all of them.
+		return false;
+	}
+	
+	// Delete the old item
+	source->destroy();
+	return true;
 }
