@@ -56,6 +56,7 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 #endif
 
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/size.hpp>
@@ -628,11 +629,24 @@ std::vector<std::string> getPreferredLocales() {
 	
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
+	LCID installerLanguage = 0;
+	try {
+		std::string value;
+		if(getSystemConfiguration("InstallerLanguage", value)) {
+			installerLanguage = boost::lexical_cast<LCID>(value);
+		}
+	} catch(...) {
+		// Ignore
+	}
+	
 	WideString buffer;
 	
-	LCID locales[] = { GetThreadLocale(), LOCALE_USER_DEFAULT, LOCALE_SYSTEM_DEFAULT };
+	LCID locales[] = { installerLanguage, GetThreadLocale(), LOCALE_USER_DEFAULT, LOCALE_SYSTEM_DEFAULT };
 	LCTYPE types[] = { LOCALE_SNAME, LOCALE_SPARENT, LOCALE_SISO639LANGNAME };
 	BOOST_FOREACH(LCID locale, locales) {
+		if(!locale) {
+			continue;
+		}
 		BOOST_FOREACH(LCTYPE type, types) {
 			buffer.allocate(LOCALE_NAME_MAX_LENGTH);
 			if(GetLocaleInfoW(locale, type, buffer.data(), buffer.size())) {
