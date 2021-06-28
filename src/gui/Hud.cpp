@@ -729,7 +729,7 @@ void HealthGauge::updateRect(const Rectf & parent) {
 
 void HealthGauge::update() {
 	
-	m_amount = player.lifePool.current / player.Full_maxlife;
+	m_amount = player.lifePool.current / player.lifePool.max;
 	
 	if(player.poison > 0.f) {
 		float val = std::min(player.poison, 0.2f) * 5.f;
@@ -776,7 +776,7 @@ void ManaGauge::update(const Rectf & parent) {
 	
 	m_rect = createChild(parent, Anchor_BottomRight, m_size * m_scale, Anchor_BottomRight);
 	
-	m_amount = player.manaPool.current / player.Full_maxmana;
+	m_amount = player.manaPool.current / player.manaPool.max;
 }
 
 void ManaGauge::updateInput(const Vec2f & mousePos) {

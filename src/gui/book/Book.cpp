@@ -964,15 +964,15 @@ void StatsPage::manageStats()
 	// Secondary Attributes
 	{
 		Vec2f pos = bookPos + Vec2f(227, 90) * scale;
-		std::string value = std::to_string(long(std::ceil(player.Full_maxlife)));
-		Color color = attributeModToColor(player.Full_maxlife, player.lifePool.max);
+		std::string value = std::to_string(long(std::ceil(player.lifePool.max)));
+		Color color = attributeModToColor(player.lifePool.max, player.lifePool.max);
 		UNICODE_ARXDrawTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	{
 		Vec2f pos = bookPos + Vec2f(227, 150) * scale;
-		std::string value = std::to_string(long(std::ceil(player.Full_maxmana)));
-		Color color = attributeModToColor(player.Full_maxmana, player.manaPool.max);
+		std::string value = std::to_string(long(std::ceil(player.manaPool.max)));
+		Color color = attributeModToColor(player.manaPool.max, player.manaPool.max);
 		UNICODE_ARXDrawTextCenter(hFontInBook, pos, value, color);
 	}
 	

@@ -380,8 +380,8 @@ static void ARX_DAMAGES_HealPlayer(float dmg) {
 		if(!BLOCK_PLAYER_CONTROLS)
 			player.lifePool.current += dmg;
 
-		if(player.lifePool.current > player.Full_maxlife)
-			player.lifePool.current = player.Full_maxlife;
+		if(player.lifePool.current > player.lifePool.max)
+			player.lifePool.current = player.lifePool.max;
 	}
 }
 
@@ -412,8 +412,8 @@ static void ARX_DAMAGES_HealManaPlayer(float dmg) {
 	if(dmg > 0.f) {
 		player.manaPool.current += dmg;
 
-		if(player.manaPool.current > player.Full_maxmana)
-			player.manaPool.current = player.Full_maxmana;
+		if(player.manaPool.current > player.manaPool.max)
+			player.manaPool.current = player.manaPool.max;
 	}
 }
 
@@ -1066,7 +1066,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 						}
 						
 						if (damage.params.source == EntityHandle_Player) {
-							player.manaPool.current = std::min(player.manaPool.current + manadrained, player.Full_maxmana);
+							player.manaPool.current = std::min(player.manaPool.current + manadrained, player.manaPool.max);
 						} else {
 							if(ValidIONum(damage.params.source) && (entities[damage.params.source]->_npcdata)) {
 								entities[damage.params.source]->_npcdata->manaPool.current = std::min(entities[damage.params.source]->_npcdata->manaPool.current + manadrained, entities[damage.params.source]->_npcdata->manaPool.max);

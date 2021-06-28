@@ -416,7 +416,7 @@ public:
 			if(!BLOCK_PLAYER_CONTROLS) {
 				player.lifePool.current += val;
 			}
-			player.lifePool.current = glm::clamp(player.lifePool.current, 0.f, player.Full_maxlife);
+			player.lifePool.current = glm::clamp(player.lifePool.current, 0.f, player.lifePool.max);
 			
 		} else if(type == "mana") {
 			
@@ -424,7 +424,7 @@ public:
 			
 			DebugScript(" mana " << val);
 			
-			player.manaPool.current = glm::clamp(player.manaPool.current + val, 0.f, player.Full_maxmana);
+			player.manaPool.current = glm::clamp(player.manaPool.current + val, 0.f, player.manaPool.max);
 			
 		} else if(type == "newspell") {
 			

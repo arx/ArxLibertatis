@@ -1032,7 +1032,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 			
 			if(boost::starts_with(name, "^player_life")) {
-				*fcontent = player.Full_life; // TODO why not player.life like everywhere else?
+				*fcontent = player.lifePool.current;
 				return TYPE_FLOAT;
 			}
 			
@@ -1073,7 +1073,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 			
 			if(boost::starts_with(name, "^player_maxlife")) {
-				*fcontent = player.Full_maxlife;
+				*fcontent = player.lifePool.max;
 				return TYPE_FLOAT;
 			}
 			
