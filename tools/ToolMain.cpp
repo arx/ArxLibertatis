@@ -19,6 +19,12 @@
 
 #include <iostream>
 
+#include "platform/Platform.h"
+
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+#include <windows.h>
+#endif
+
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -35,6 +41,13 @@ static int run_main(const char * tool, int argc, char ** argv) {
 	} else if(boost::equals(tool, "unpak")) {
 		return arxunpak_main(argc, argv);
 	}
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	if(boost::equals(tool, "hideconsole")) {
+		HWND console = GetConsoleWindow();
+		return (console != NULL && ShowWindow(console, SW_HIDE) != 0) ? 0 : 1;
+	}
+	#endif
 	
 	return -1;
 }
