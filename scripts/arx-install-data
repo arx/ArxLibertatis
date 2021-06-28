@@ -3160,15 +3160,12 @@ if [ -n "$loc_checksum" ] ; then
 	f 1 'loc.pak' "$loc_checksum"
 fi
 
-# misc/arx.ttf is the same for everything except japanese
+# misc/arx.ttf is the same for everything except Japanese (and Russian for version 1.22)
 # there are also separate misc/arx_russian.ttf and misc/arx_taiwanese.ttf handled later
-case "$data_lang" in
-	japanese*)    font_checksum='58eab00842d8adea8d553ae1f66b0c9b' ;;
-	*)            font_checksum='9a95ff96795c034524ba1c2e94ea12c7' ;;
-esac
-if [ -n "$font_checksum" ] ; then
-	f 1 'misc/arx.ttf' "$font_checksum"
-fi
+font_checksum_default='9a95ff96795c034524ba1c2e94ea12c7'
+font_checksum_japanese='58eab00842d8adea8d553ae1f66b0c9b'
+font_checksum_russian='921561e83786efcd25f92147b60a13db'
+f 1 'misc/arx.ttf' "$font_checksum_default $font_checksum_japanese $font_checksum_russian"
 
 case "$data_lang" in
 	
@@ -3230,8 +3227,6 @@ case "$data_lang" in
 	f 1 'graph/obj3d/textures/npc_worm_body_part1.jpg'     0b220bffaedc89fa663f08d12630c342
 	f 1 'graph/obj3d/textures/npc_worm_body_part2.bmp'     20797cb78f6393a0fb5405969ba9f805
 	f 1 'graph/obj3d/textures/[wood]_light_door.jpg'       00d0b018e995e7d013d6e52e92126901
-	f 1 'misc/arx_russian.ttf'                             921561e83786efcd25f92147b60a13db
-	f 1 'misc/arx_taiwanese.ttf'                           da59198061cef0761c6b2fca113f76f6
 	f 1 'misc/logo.avi'                                    63ed31a4eb3d226c23e58cfaa974d484
 	f 1 'misc/logo.bmp'                                    afff1099c01ffeb03b9a351f7b5966b6
 	f 1 'data2.pak'                                        f7e0ce700bf963429ac535ca86f8a7b4
@@ -3259,6 +3254,27 @@ esac
 optional_file 'manual.pdf'
 optional_file 'map.pdf'
 optional_file 'arx_handbuch.pdf'
+
+# Not in version 1.22 (except for Russian for arx_russian.ttf and arx_taiwanese.ttf)
+optional_file "misc/arx_default.ttf"
+optional_file "misc/arx_russian.ttf"
+optional_file "misc/arx_taiwanese.ttf"
+
+# Only in version 1.22
+optional_file "misc/arx_base.ttf"
+optional_file "localisation\presence.ini"
+optional_file "localisation\snd_armor.ini"
+optional_file "localisation\snd_material.ini"
+optional_file "localisation\snd_other.ini"
+optional_file "localisation\snd_step.ini"
+optional_file "localisation\snd_weapon.ini"
+optional_file "localisation\ucredits_chinese.txt"
+optional_file "localisation\ucredits_deutsch.txt"
+optional_file "localisation\ucredits_english.txt"
+optional_file "localisation\ucredits_francais.txt"
+optional_file "localisation\ucredits_italiano.txt"
+optional_file "localisation\ucredits_russian.txt"
+optional_file "localisation\utext_francais.ini"
 
 print
 
