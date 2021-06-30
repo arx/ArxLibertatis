@@ -114,7 +114,12 @@ public:
 		
 		// Delay destruction of the object to avoid invalid references
 		bool removed = false;
-		if(ARX_INTERACTIVE_DestroyIOdelayed(io)) {
+		if(io->id().className() == "spider_web" && io->id().instance() == 13) {
+			
+			// TODO(patch-scripts) Workaround for http://arx.vg/963
+			io->show = SHOW_FLAG_MEGAHIDE;
+			
+		} else if(ARX_INTERACTIVE_DestroyIOdelayed(io)) {
 			
 			spells.replaceCaster(io->index(), ioo->index());
 			removeFromInventories(io);
