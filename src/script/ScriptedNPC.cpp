@@ -213,6 +213,9 @@ public:
 			if(flg & flag('z')) {
 				spflags |= SPELLCAST_FLAG_RESTORE;
 			}
+			if(flg & flag('o')) {
+				spflags |= SPELLCAST_FLAG_ORPHAN;
+			}
 		}
 		
 		long level = glm::clamp(static_cast<long>(context.getFloat()), 1l, 10l);

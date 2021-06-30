@@ -1029,7 +1029,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		ARX_NPC_SpawnAudibleSound(entities[source]->pos, entities[source]);
 	}
 	
-	spell->m_caster = source; // Caster...
+	spell->m_caster = source;
 	spell->m_target = target;
 	
 	if(target == EntityHandle())
@@ -1093,6 +1093,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		SPELLCAST_NotifyOnlyTarget(*spell);
 	} else {
 		SPELLCAST_Notify(*spell);
+	}
+	
+	if(flags & SPELLCAST_FLAG_ORPHAN) {
+		spell->m_caster = EntityHandle();
 	}
 	
 	return true;
