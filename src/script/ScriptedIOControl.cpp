@@ -638,6 +638,11 @@ public:
 			return Success;
 		}
 		
+		if(entity->id().className() == "jail_wood_grid" && entity->id().instance() == 1) {
+			// TODO(patch-scripts) Workaround for http://arx.vg/834
+			return Success;
+		}
+		
 		// Delay destruction of the object to avoid invalid references
 		bool destroyed = ARX_INTERACTIVE_DestroyIOdelayed(entity);
 		
