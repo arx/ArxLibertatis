@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedNPC.h"
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "game/Camera.h"
 #include "game/EntityManager.h"
 #include "game/NPC.h"
@@ -172,6 +174,12 @@ public:
 		SpellcastFlags spflags = 0;
 		long duration = -1;
 		bool haveDuration = false;
+		
+		if((context.getEntity()->ioflags & IO_ITEM)
+		   && boost::starts_with(context.getEntity()->id().className(), "potion_")) {
+			// TODO(patch-scripts) Workaround for http://arx.vg/1048
+			spflags |= SPELLCAST_FLAG_ORPHAN;
+		}
 		
 		HandleFlags("kdxmsfz") {
 			
