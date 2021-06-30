@@ -570,20 +570,22 @@ void LightningStrikeSpell::Update() {
 	float fBeta = 0.f;
 	float falpha = 0.f;
 	
-	Entity * caster = entities[m_caster];
-	ObjVertHandle idx = GetGroupOriginByName(caster->obj, "chest");
-	if(idx != ObjVertHandle()) {
-		m_caster_pos = caster->obj->vertexWorldPositions[idx.handleData()].v;
-	} else {
-		m_caster_pos = caster->pos;
+	Entity * caster = entities.get(m_caster);
+	if(caster) {
+		ObjVertHandle idx = GetGroupOriginByName(caster->obj, "chest");
+		if(idx != ObjVertHandle()) {
+			m_caster_pos = caster->obj->vertexWorldPositions[idx.handleData()].v;
+		} else {
+			m_caster_pos = caster->pos;
+		}
 	}
 	
 	if(m_caster == EntityHandle_Player) {
 		falpha = -player.angle.getPitch();
 		fBeta = player.angle.getYaw();
 	} else {
-		fBeta = caster->angle.getYaw();
-		if(ValidIONum(caster->targetinfo) && caster->targetinfo != m_caster) {
+		fBeta = caster ? caster->angle.getYaw() : 0.f;
+		if(caster && ValidIONum(caster->targetinfo) && caster->targetinfo != m_caster) {
 			const Vec3f & p1 = m_caster_pos;
 			Vec3f p2 = GetChestPos(caster->targetinfo);
 			falpha = MAKEANGLE(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z)))));
@@ -604,7 +606,9 @@ void LightningStrikeSpell::Update() {
 	m_lightning.Update(g_gameTime.lastFrameDuration());
 	m_lightning.Render();
 	
-	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
+	if(caster) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, caster->pos);
+	}
 }
 
 ConfuseSpell::ConfuseSpell()

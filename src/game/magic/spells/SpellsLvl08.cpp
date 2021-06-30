@@ -134,15 +134,15 @@ void ManaDrainSpell::End() {
 
 void ManaDrainSpell::Update() {
 	
-	float scaley;
-	float offset;
-	Vec3f casterPos;
+	float scaley = 90.f;
+	float offset = -90.f;
+	Vec3f casterPos = m_caster_pos;
 	
 	if(m_caster == EntityHandle_Player) {
 		scaley = 90.f;
 		offset = 60.0f;
 		casterPos = player.pos;
-	} else {
+	} else if(m_caster != EntityHandle()) {
 		scaley = glm::abs(entities[m_caster]->physics.cyl.height * (1.0f / 2)) + 30.f;
 		offset = -scaley;
 		casterPos = entities[m_caster]->pos;
@@ -296,15 +296,15 @@ void LifeDrainSpell::End() {
 
 void LifeDrainSpell::Update() {
 	
-	float scaley;
-	float offset;
-	Vec3f casterPos;
+	float scaley = 90.f;
+	float offset = -90.f;
+	Vec3f casterPos = m_caster_pos;
 	
 	if(m_caster == EntityHandle_Player) {
 		scaley = 90.f;
 		offset = 60.0f;
 		casterPos = player.pos;
-	} else {
+	} else if(m_caster != EntityHandle()) {
 		scaley = glm::abs(entities[m_caster]->physics.cyl.height * (1.0f / 2)) + 30.f;
 		offset = -scaley;
 		casterPos = entities[m_caster]->pos;

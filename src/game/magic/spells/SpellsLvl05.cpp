@@ -214,12 +214,12 @@ void LevitateSpell::End() {
 
 void LevitateSpell::Update() {
 	
-	Vec3f target;
+	Vec3f target = m_caster_pos;
 
 	if(m_target == EntityHandle_Player) {
 		target = player.pos + Vec3f(0.f, 150.f, 0.f);
 		player.levitate = true;
-	} else {
+	} else if(m_caster != EntityHandle()) {
 		target = entities[m_caster]->pos;
 	}
 	

@@ -67,22 +67,24 @@ void SpellBase::updateCasterHand() {
 	// Create hand position if a hand is defined
 	if(m_caster == EntityHandle_Player) {
 		m_hand_group = entities[m_caster]->obj->fastaccess.primary_attach;
-	} else {
+	} else if(m_caster != EntityHandle()) {
 		m_hand_group = entities[m_caster]->obj->fastaccess.left_attach;
 	}
 	
-	if(m_hand_group != ActionPoint()) {
+	if(m_hand_group != ActionPoint() && m_caster != EntityHandle()) {
 		m_hand_pos = actionPointPosition(entities[m_caster]->obj, m_hand_group);
 	}
+	
 }
 
 void SpellBase::updateCasterPosition() {
 	
 	if(m_caster == EntityHandle_Player) {
 		m_caster_pos = player.pos;
-	} else {
+	} else if(m_caster != EntityHandle()) {
 		m_caster_pos = entities[m_caster]->pos;
 	}
+	
 }
 
 Vec3f SpellBase::getTargetPos(EntityHandle source, EntityHandle target) {

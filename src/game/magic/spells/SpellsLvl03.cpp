@@ -258,7 +258,9 @@ void FireballSpell::Update() {
 			}
 			
 			eCurPos += angleToVectorXZ(afBeta) * 60.f;
-		} else {
+			
+		} else if(m_caster != EntityHandle()) {
+			
 			afBeta = entities[m_caster]->angle.getYaw();
 			
 			eCurPos = entities[m_caster]->pos;
@@ -316,7 +318,7 @@ void FireballSpell::Update() {
 		
 		DoSphericDamage(Sphere(eCurPos, 30.f * m_level), 3.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &sphere.origin);
-		ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
+		ARX_NPC_SpawnAudibleSound(sphere.origin, entities.get(m_caster));
 		requestEnd();
 	}
 	

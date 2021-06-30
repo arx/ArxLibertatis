@@ -397,7 +397,12 @@ void HarmSpell::Update() {
 	m_cabal.setYScale(scaley);
 	m_cabal.setOffset(offset);
 	
-	Vec3f casterPos = (m_caster == EntityHandle_Player) ? player.pos : entities[m_caster]->pos;
+	Vec3f casterPos = m_caster_pos;
+	if(m_caster == EntityHandle_Player) {
+		casterPos = player.pos;
+	} else if(m_caster != EntityHandle()) {
+		casterPos = entities[m_caster]->pos;
+	}
 	Vec3f cabalPos = m_cabal.update(casterPos);
 	ARX_SOUND_RefreshPosition(m_snd_loop, cabalPos);
 }
