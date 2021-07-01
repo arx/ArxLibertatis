@@ -1771,6 +1771,7 @@ void ArxGame::manageEditorControls() {
 			
 			while(FlyingOverIO && insertIntoInventory(FlyingOverIO, entities.player())) {
 				FlyingOverIO = InterClick(DANAEMouse);
+				ARX_INVENTORY_IdentifyIO(FlyingOverIO);
 			}
 			// If there is no space, leave the item where it is
 			
@@ -1913,6 +1914,7 @@ void ArxGame::manageEditorControls() {
 						io->show = SHOW_FLAG_MEGAHIDE;
 						while(io->_itemdata->count < io->_itemdata->playerstacksize) {
 							Entity * other = InterClick(g_dragStartPos);
+							ARX_INVENTORY_IdentifyIO(other);
 							if(!other || other == io || !(other->ioflags & IO_ITEM)) {
 								break;
 							}
