@@ -20,6 +20,7 @@
 #ifndef ARX_GUI_DRAGGING_H
 #define ARX_GUI_DRAGGING_H
 
+#include "graphics/BaseGraphicsTypes.h"
 #include "math/Types.h"
 
 class Entity;
@@ -41,5 +42,20 @@ extern Vec2f g_draggedIconOffset;
 void setDraggedEntity(Entity * entity);
 
 void updateDraggedEntity();
+
+struct EntityDragResult {
+	
+	Vec3f offset;
+	float height;
+	
+	bool foundSpot;
+	Vec3f pos;
+	float offsetY;
+	
+	bool foundCollision;
+	
+};
+
+EntityDragResult findSpotForDraggedEntity(Vec3f origin, Vec3f dir, Entity * entity, Sphere limit);
 
 #endif // ARX_GUI_DRAGGING_H

@@ -127,14 +127,11 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io, EntityHandle containe
 }
 
 //! Puts an IO in front of the player
-void PutInFrontOfPlayer(Entity * io)
-{
-	if(!io)
-		return;
+void PutInFrontOfPlayer(Entity * io) {
 	
-	io->pos = player.pos;
-	io->pos += angleToVectorXZ(player.angle.getYaw()) * 80.f;
-	io->pos += Vec3f(0.f, 20.f, 0.f);
+	if(!io) {
+		return;
+	}
 	
 	io->angle = Anglef();
 	
@@ -142,16 +139,28 @@ void PutInFrontOfPlayer(Entity * io)
 		setDraggedEntity(NULL);
 	}
 	
+	io->show = SHOW_FLAG_IN_SCENE;
+	
 	removeFromInventories(io);
 	
-	io->show = SHOW_FLAG_IN_SCENE;
-
+	Sphere limit(player.pos + Vec3f(0.f, 20.f, 0.f), 80);
+	Vec3f dir = angleToVectorXZ(player.angle.getYaw());
+	EntityDragResult result = findSpotForDraggedEntity(limit.origin, dir, io, limit);
+	
+	if(!result.foundSpot) {
+		ARX_INTERACTIVE_Teleport(io, player.pos, true);
+		return;
+	}
+	
+	ARX_INTERACTIVE_Teleport(io, result.pos - Vec3f(result.offset.x, 0.f, result.offset.z), true);
+	
 	if(io->obj && io->obj->pbox) {
 		Vec3f vector = Vec3f(0.f, 100.f, 0.f);
 		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, vector);
 	}
+	
 }
 
 std::ostream & operator<<(std::ostream & strm, const InventoryPos & p) {

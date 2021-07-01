@@ -96,20 +96,7 @@ void setDraggedEntity(Entity * entity) {
 	
 }
 
-struct EntityDragResult {
-	
-	Vec3f offset;
-	float height;
-	
-	bool foundSpot;
-	Vec3f pos;
-	float offsetY;
-	
-	bool foundCollision;
-	
-};
-
-static EntityDragResult findSpotForDraggedEntity(Vec3f origin, Vec3f dir, Entity * entity, Sphere limit) {
+EntityDragResult findSpotForDraggedEntity(Vec3f origin, Vec3f dir, Entity * entity, Sphere limit) {
 	
 	EntityDragResult result;
 	result.foundSpot = false;
