@@ -133,6 +133,18 @@ void PutInFrontOfPlayer(Entity * io) {
 		return;
 	}
 	
+	if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
+		while(io->_itemdata->count > 1) {
+			Entity * unstackedEntity = CloneIOItem(io);
+			unstackedEntity->scriptload = 1;
+			unstackedEntity->_itemdata->count = 1;
+			unstackedEntity->pos = io->pos;
+			unstackedEntity->angle = io->angle;
+			PutInFrontOfPlayer(unstackedEntity);
+			io->_itemdata->count--;
+		}
+	}
+	
 	io->angle = Anglef();
 	
 	if(g_draggedEntity == io) {
