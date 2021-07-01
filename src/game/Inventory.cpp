@@ -822,6 +822,7 @@ void optimizeInventory(Entity * container) {
 }
 
 bool giveToPlayer(Entity * item) {
+	ARX_INVENTORY_IdentifyIO(item);
 	if(getPlayerInventory().insert(item)) {
 		return true;
 	} else {
@@ -831,6 +832,7 @@ bool giveToPlayer(Entity * item) {
 }
 
 bool giveToPlayer(Entity * item, const InventoryPos & pos) {
+	ARX_INVENTORY_IdentifyIO(item);
 	if(getPlayerInventory().insert(item, pos)) {
 		return true;
 	} else {
