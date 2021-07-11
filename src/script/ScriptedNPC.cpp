@@ -181,7 +181,7 @@ public:
 			spflags |= SPELLCAST_FLAG_ORPHAN;
 		}
 		
-		HandleFlags("kdxmsfz") {
+		HandleFlags("kdxmsfzo") {
 			
 			if(flg & flag('k')) {
 				
