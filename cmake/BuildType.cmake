@@ -403,11 +403,12 @@ else(MSVC)
 		endif()
 		
 		foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE)
-		
+			
 			if(DEBUG)
 				string(REGEX REPLACE "(^| )-DNDEBUG( |$)" "\\1" ${flag_var} "${${flag_var}}")
+				set(${flag_var} "${${flag_var}} -D_GLIBCXX_ASSERTIONS=1")
 			else()
-				set(${flag_var} "${${flag_var}} -DNDEBUG")
+				set(${flag_var} "${${flag_var}} -DNDEBUG -U_GLIBCXX_ASSERTIONS")
 			endif()
 			
 		endforeach(flag_var)
