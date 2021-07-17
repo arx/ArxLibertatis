@@ -122,10 +122,10 @@ public:
 	void remove(Handle handle);
 	void clear();
 	
-	iterator begin() { return &m_list[0]; }
-	iterator end() { return &m_list[0] + m_list.size(); }
-	const_iterator begin() const { return &m_list[0]; }
-	const_iterator end() const { return &m_list[0] + m_list.size(); }
+	iterator begin() { return m_list.data(); }
+	iterator end() { return m_list.data() + m_list.size(); }
+	const_iterator begin() const { return m_list.data(); }
+	const_iterator end() const { return m_list.data() + m_list.size(); }
 	
 	iterator remove(iterator i);
 	
