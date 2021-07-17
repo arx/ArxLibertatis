@@ -1,7 +1,7 @@
 
 Contributions of all kinds are welcome as [GitHub pull requests](https://github.com/arx/ArxLibertatis/pulls) or [bug reports](https://bugs.arx-libertatis.org/).
 
-The main communication channel for Arx Libertatis development is the [#arxfatalis IRC channel on freenode.net](https://wiki.arx-libertatis.org/IRC_channel). If you don't have an IRC client, you can use the [web chat](https://webchat.freenode.net/#arxfatalis).
+The main communication channel for Arx Libertatis development is the [#arx IRC channel on Libera.Chat](https://arx-libertatis.org/contact).
 
 If you are planning to fix a tricky bug or implement a larger feature and intend to get it merged, please [contact us](https://arx-libertatis.org/contact) **first** via IRC or on the [bug tracker](https://bugs.arx-libertatis.org/) to discuss and coordinate the planned changes in order to avoid duplicating work or having to re-do the changes in a way that fits with the project.
 
