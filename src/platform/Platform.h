@@ -364,22 +364,6 @@ void assertionFailed(const char * expression, const char * file, unsigned line, 
 #endif
 
 /*!
- * \def arx_nodiscard
- * \brief Annotate a function return attribute to warn if it is not checked by callers
- *
- * Should go before the return type and static specifier of a function declaration.
- */
-#if ARX_HAVE_CXX17_NODISCARD
-#define arx_nodiscard [[nodiscard]]
-#elif ARX_HAVE_ATTRIBUTE_WARN_UNUSED_RESULT
-#define arx_nodiscard __attribute__((warn_unused_result))
-#elif ARX_COMPILER_MSVC && _MSC_VER >= 1700
-#define arx_nodiscard _Check_return_
-#else
-#define arx_nodiscard
-#endif
-
-/*!
  * \def arx_return_noalias
  * \brief Annotate a function that returns a pointer that doesn't alias with anything and
  *        points to uninitialized or zeroed memory
@@ -409,7 +393,7 @@ void assertionFailed(const char * expression, const char * file, unsigned line, 
  *        points to uninitialized or zeroed memory of size given by the function
  *        parameter with index SizeArg
  */
-#define arx_alloc(SizeArg) arx_nodiscard arx_return_noalias arx_alloc_size(SizeArg)
+#define arx_alloc(SizeArg) [[nodiscard]] arx_return_noalias arx_alloc_size(SizeArg)
 
 /*!
  * Helper to cast a void * that is really a function pointer back to a function pointer
