@@ -236,8 +236,6 @@ struct aligned_allocator {
 		AlignedAllocator<Alignment>::free_array(p);
 	}
 	
-	#if ARX_HAVE_CXX11_VARIADIC_TEMPLATES
-	
 	template <class U, class... Args>
 	void construct(U * p, Args &&... args) {
 		::new(static_cast<void *>(p)) U(std::forward<Args>(args)...);
@@ -247,34 +245,6 @@ struct aligned_allocator {
 	void destroy(U * p) {
 		p->~U();
 	}
-	
-	#else
-	
-	#if ARX_COMPILER_MSVC
-	/*
-	 * MSVC's default allocator has partial support for variadic construction even for
-	 * compilers that don't support variadic templates yet. Other parts of the stdlib
-	 * depend on this.
-	 */
-	template <class U>
-	void construct(U * p) {
-		::new(static_cast<void *>(p)) U();
-	}
-	template <class U, class V0>
-	void construct(U * p, V0 && v0) {
-		::new(static_cast<void *>(p)) U(v0);
-	}
-	#endif
-	
-	void construct(pointer p, const_reference val) {
-		::new(static_cast<void *>(p)) value_type(val);
-	}
-	
-	void destroy(pointer p) {
-		p->~value_type();
-	}
-	
-	#endif
 	
 	friend bool operator!=(const aligned_allocator & a, const aligned_allocator & b) {
 		ARX_UNUSED(a), ARX_UNUSED(b);

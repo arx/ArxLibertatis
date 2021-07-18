@@ -10,8 +10,6 @@
  */
 
 // C++11 features
-// variadic templates
-#cmakedefine01 ARX_HAVE_CXX11_VARIADIC_TEMPLATES
 // thread_local
 #cmakedefine01 ARX_HAVE_CXX11_THREADLOCAL
 // = default

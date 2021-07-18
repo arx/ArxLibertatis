@@ -632,7 +632,6 @@ endif()
 
 if(NOT CXX_STD_VERSION LESS 2011)
 	enable_cxx_version(${CXX_STD_VERSION})
-	check_cxx11("variadic templates"     ARX_HAVE_CXX11_VARIADIC_TEMPLATES 1800)
 	check_cxx11("thread_local"           ARX_HAVE_CXX11_THREADLOCAL        1900)
 	check_cxx11("default"                ARX_HAVE_CXX11_DEFAULT            1800)
 	check_cxx11("final"                  ARX_HAVE_CXX11_FINAL              1700)
