@@ -342,10 +342,10 @@ void initializeEnvironment(const char * argv0) {
 #if ARX_HAVE_READLINK && ARX_PLATFORM != ARX_PLATFORM_MACOS
 static bool try_readlink(std::vector<char> & buffer, const char * path) {
 	
-	int ret = readlink(path, &buffer.front(), buffer.size());
+	int ret = readlink(path, buffer.data(), buffer.size());
 	while(ret >= 0 && std::size_t(ret) == buffer.size()) {
 		buffer.resize(buffer.size() * 2);
-		ret = readlink(path, &buffer.front(), buffer.size());
+		ret = readlink(path, buffer.data(), buffer.size());
 	}
 	
 	if(ret < 0) {
@@ -368,9 +368,9 @@ fs::path getExecutablePath() {
 	
 	std::vector<char> exepath(bufsize);
 	
-	if(_NSGetExecutablePath(&exepath.front(), &bufsize) == 0) {
+	if(_NSGetExecutablePath(exepath.data(), &bufsize) == 0) {
 		char exerealpath[MAXPATHLEN];
-		if(realpath(&exepath.front(), exerealpath)) {
+		if(realpath(exepath.data(), exerealpath)) {
 			return exerealpath;
 		}
 	}
@@ -421,19 +421,19 @@ fs::path getExecutablePath() {
 	std::vector<char> buffer(1024);
 	// Linux
 	if(try_readlink(buffer, "/proc/self/exe")) {
-		return fs::path(&*buffer.begin(), &*buffer.end());
+		return fs::path(buffer.data(), buffer.data() + buffer.size());
 	}
 	// FreeBSD, DragonFly BSD
 	if(try_readlink(buffer, "/proc/curproc/file")) {
-		return fs::path(&*buffer.begin(), &*buffer.end());
+		return fs::path(buffer.data(), buffer.data() + buffer.size());
 	}
 	// NetBSD
 	if(try_readlink(buffer, "/proc/curproc/exe")) {
-		return fs::path(&*buffer.begin(), &*buffer.end());
+		return fs::path(buffer.data(), buffer.data() + buffer.size());
 	}
 	// Solaris
 	if(try_readlink(buffer, "/proc/self/path/a.out")) {
-		return fs::path(&*buffer.begin(), &*buffer.end());
+		return fs::path(buffer.data(), buffer.data() + buffer.size());
 	}
 	#endif
 	
