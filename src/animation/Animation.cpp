@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 
 #include <boost/lexical_cast.hpp>
-#include <boost/range/size.hpp>
 
 #include "util/String.h"
 
@@ -94,7 +93,7 @@ u16 ANIM_GetAltIdx(const ANIM_HANDLE & ah, u16 old) {
 	
 	long total = anim_power[0];
 	for(size_t i = 1; i < ah.anims.size(); i++) {
-		total += anim_power[std::min(i, size_t(boost::size(anim_power) - 1))];
+		total += anim_power[std::min(i, std::size(anim_power) - size_t(1))];
 	}
 	
 	while(true) {
@@ -103,7 +102,7 @@ u16 ANIM_GetAltIdx(const ANIM_HANDLE & ah, u16 old) {
 				continue;
 			}
 			long r = Random::get(0l, total);
-			if(r < anim_power[std::min(i, size_t(boost::size(anim_power) - 1))]) {
+			if(r < anim_power[std::min(i, std::size(anim_power) - size_t(1))]) {
 				return u16(i);
 			}
 		}

@@ -25,8 +25,6 @@
 #include <map>
 #include <sstream>
 
-#include <boost/range/size.hpp>
-
 #include "core/Version.h"
 
 #include "io/fs/Filesystem.h"
@@ -235,7 +233,7 @@ bool CrashHandlerImpl::addText(const char * text) {
 	}
 	
 	size_t length = std::strlen(text);
-	size_t remaining = boost::size(m_pCrashInfo->description) - m_textLength - 1;
+	size_t remaining = std::size(m_pCrashInfo->description) - m_textLength - 1;
 	
 	size_t n = std::min(length, remaining);
 	std::memcpy(&m_pCrashInfo->description[m_textLength], text, n);

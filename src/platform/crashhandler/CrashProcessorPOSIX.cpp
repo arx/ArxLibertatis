@@ -54,7 +54,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/range/size.hpp>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
@@ -361,7 +360,7 @@ void CrashHandlerPOSIX::processCrashTrace() {
 		std::string exe = fs::path(util::loadString(m_pCrashInfo->executablePath)).filename();
 		FrameType status = Handler;
 		u64 minOffset = std::numeric_limits<u64>::max();
-		for(size_t i = 0; i < size_t(boost::size(m_pCrashInfo->backtrace)); i++) {
+		for(size_t i = 0; i < std::size(m_pCrashInfo->backtrace); i++) {
 			if(m_pCrashInfo->backtrace[i] == 0) {
 				break;
 			}

@@ -36,7 +36,6 @@ typedef QUrl QUrlQuery;
 #endif
 
 #include <boost/scoped_ptr.hpp>
-#include <boost/range/size.hpp>
 
 #include "crashreporter/tbg/HTTPClient.h"
 
@@ -287,7 +286,7 @@ QString Server::findIssue(const QString & text, int & issue_id) {
 		// Read next element
 		QXmlStreamReader::TokenType token = xml.readNext();
 		
-		if(currentItem == size_t(boost::size(XML_PATH))) {
+		if(currentItem == std::size(XML_PATH)) {
 			QString issue = xml.text().toString();
 			if(getIssueIdFromUrl(toUTF8(issue), issue_id)) {
 				return issue;

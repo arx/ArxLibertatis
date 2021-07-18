@@ -58,7 +58,6 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/range/size.hpp>
 
 #include "io/fs/PathConstants.h"
 #include "io/fs/FilePath.h"
@@ -516,7 +515,7 @@ bool isFileDescriptorDisabled(int fd) {
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
 	DWORD names[] = { STD_INPUT_HANDLE, STD_OUTPUT_HANDLE, STD_ERROR_HANDLE };
-	if(fd < 0 || fd >= int(boost::size(names))) {
+	if(fd < 0 || fd >= int(std::size(names))) {
 		return false;
 	}
 	
@@ -550,8 +549,8 @@ bool isFileDescriptorDisabled(int fd) {
 	#elif ARX_HAVE_READLINK
 	// Linux
 	const char * names[] = { "/proc/self/fd/0", "/proc/self/fd/1", "/proc/self/fd/2" };
-	if(fd >= 0 && fd < int(boost::size(names))) {
-		valid = (readlink(names[fd], path, boost::size(path)) == 9);
+	if(fd >= 0 && fd < int(std::size(names))) {
+		valid = (readlink(names[fd], path, std::size(path)) == 9);
 	}
 	#endif
 	

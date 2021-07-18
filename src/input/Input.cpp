@@ -51,7 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 
 #include <boost/lexical_cast.hpp>
-#include <boost/range/size.hpp>
 
 #include "core/Application.h"
 #include "core/Config.h"
@@ -714,7 +713,7 @@ InputKeyId Input::getKeyId(const std::string & name) {
 	
 	if(keyNames.empty()) {
 		// Initialize the key name -> id map.
-		for(size_t i = 0; i < size_t(boost::size(keysDescriptions)); i++) {
+		for(size_t i = 0; i < std::size(keysDescriptions); i++) {
 			keyNames[keysDescriptions[i].name] = keysDescriptions[i].id;
 		}
 		keyNames["WheelUp"] = InputKeyId(Mouse::Wheel_Up);
@@ -827,7 +826,7 @@ int Input::getMouseButtonClicked() const {
 
 bool Input::actionNowPressed(ControlAction actionId) const {
 	
-	for(size_t j = 0; j < size_t(boost::size(config.actions[actionId].key)); j++) {
+	for(size_t j = 0; j < std::size(config.actions[actionId].key); j++) {
 		
 		InputKeyId key = config.actions[actionId].key[j];
 		if(key == -1) {
@@ -873,7 +872,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 		return false;
 	}
 	
-	for(size_t j = 0; j < size_t(boost::size(config.actions[actionId].key)); j++) {
+	for(size_t j = 0; j < std::size(config.actions[actionId].key); j++) {
 		
 		InputKeyId key = config.actions[actionId].key[j];
 		if(key == -1) {
@@ -968,7 +967,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 
 bool Input::actionNowReleased(ControlAction actionId) const {
 	
-	for(size_t j = 0; j < size_t(boost::size(config.actions[actionId].key)); j++) {
+	for(size_t j = 0; j < std::size(config.actions[actionId].key); j++) {
 		
 		InputKeyId key = config.actions[actionId].key[j];
 		if(key == -1) {

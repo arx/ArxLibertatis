@@ -31,7 +31,6 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
-#include <boost/range/size.hpp>
 
 #include "audio/openal/OpenALSource.h"
 #include "audio/openal/OpenALUtils.h"
@@ -181,7 +180,7 @@ void OpenALBackend::fillDeviceAttributes(ALCint (&attrs)[3]) {
 	
 	attrs[i++] = 0;
 	
-	arx_assert(i <= size_t(boost::size(attrs)));
+	arx_assert(i <= std::size(attrs));
 	
 }
 

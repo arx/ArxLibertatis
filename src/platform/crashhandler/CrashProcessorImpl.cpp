@@ -27,7 +27,6 @@
 #include <sstream>
 
 #include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/range/size.hpp>
 
 #include "core/URLConstants.h"
 #include "core/Version.h"
@@ -63,7 +62,7 @@ void CrashHandlerImpl::processCrash(const std::string & sharedMemoryName) {
 		m_pCrashInfo = reinterpret_cast<CrashInfo *>(m_MemoryMappedRegion.get_address());
 		if(m_pCrashInfo) {
 			m_textLength = std::find(m_pCrashInfo->description, m_pCrashInfo->description
-			                         + boost::size(m_pCrashInfo->description), '\0')
+			                         + std::size(m_pCrashInfo->description), '\0')
 			               - m_pCrashInfo->description;
 		}
 		

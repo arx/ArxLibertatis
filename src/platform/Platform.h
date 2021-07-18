@@ -235,7 +235,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  * \def ARRAY_SIZE(a)
  * \brief Get the number of items in a static array
  * This should only be used if the array size needs to be known as a compile-time
- * constant. For other uses, prefer \ref boost::size()!
+ * constant. For other uses, prefer \ref std::size()!
  * TODO add ARX_ prefix
  */
 #define ARRAY_SIZE(a) \

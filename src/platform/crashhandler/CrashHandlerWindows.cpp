@@ -27,8 +27,6 @@
 
 #include <dbghelp.h>
 
-#include <boost/range/size.hpp>
-
 #include "io/log/Logger.h"
 
 #include "platform/Architecture.h"
@@ -228,7 +226,7 @@ void CrashHandlerWindows::unregisterThreadCrashHandlers() {
 void CrashHandlerWindows::writeCrashDump(PEXCEPTION_POINTERS pointers) {
 	
 	WCHAR tick[24];
-	if(!GetTempPath(boost::size(m_pCrashInfo->miniDumpTmpFile), m_pCrashInfo->miniDumpTmpFile)
+	if(!GetTempPath(std::size(m_pCrashInfo->miniDumpTmpFile), m_pCrashInfo->miniDumpTmpFile)
 		 || _ultow_s(GetTickCount(), tick, 10) || wcscat_s(m_pCrashInfo->miniDumpTmpFile, tick)
 		 || wcscat_s(m_pCrashInfo->miniDumpTmpFile, L"-arx-crash.dmp")) {
 		return;

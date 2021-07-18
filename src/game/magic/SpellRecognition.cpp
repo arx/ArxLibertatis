@@ -23,7 +23,6 @@
 #include <string>
 
 #include <boost/lexical_cast.hpp>
-#include <boost/range/size.hpp>
 
 #include "core/Config.h"
 #include "game/Equipment.h"
@@ -563,7 +562,7 @@ static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], SpellType spell, con
 
 void spellRecognitionInit() {
 	
-	for(size_t i = 0; i < size_t(boost::size(allSpells)); i++) {
+	for(size_t i = 0; i < std::size(allSpells); i++) {
 		addSpell(allSpells[i].symbols, allSpells[i].spell, allSpells[i].name);
 	}
 

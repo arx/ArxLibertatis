@@ -28,7 +28,6 @@
 
 #include <boost/crc.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/range/size.hpp>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
@@ -328,7 +327,7 @@ void CrashHandlerWindows::processCrashDump() {
 		return;
 	}
 	
-	m_pCrashInfo->miniDumpTmpFile[boost::size(m_pCrashInfo->miniDumpTmpFile) - 1] = L'\0';
+	m_pCrashInfo->miniDumpTmpFile[std::size(m_pCrashInfo->miniDumpTmpFile) - 1] = L'\0';
 	fs::path tempfile = platform::WideString::toUTF8(m_pCrashInfo->miniDumpTmpFile);
 	if(!fs::is_regular_file(tempfile)) {
 		return;

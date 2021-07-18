@@ -66,7 +66,6 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/range/size.hpp>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
@@ -308,7 +307,7 @@ bool CrashHandlerPOSIX::initialize() {
 	
 	m_pCrashInfo->coreDumpFile[0] = '\0';
 	fs::path core = getCoreDumpFile();
-	if(!core.empty() && core.string().length() < size_t(boost::size(m_pCrashInfo->coreDumpFile))) {
+	if(!core.empty() && core.string().length() < std::size(m_pCrashInfo->coreDumpFile)) {
 		util::storeStringTerminated(m_pCrashInfo->coreDumpFile, core.string());
 		#if ARX_HAVE_SETRLIMIT
 		struct rlimit core_limit;
@@ -474,7 +473,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 	
 	// Store the backtrace in the shared crash info
 	#if ARX_HAVE_BACKTRACE
-	backtrace(m_pCrashInfo->backtrace, boost::size(m_pCrashInfo->backtrace));
+	backtrace(m_pCrashInfo->backtrace, std::size(m_pCrashInfo->backtrace));
 	#endif
 	
 	// Change directory core dumps are written to

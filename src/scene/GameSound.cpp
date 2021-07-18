@@ -51,7 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/range/size.hpp>
 
 #include "animation/Animation.h"
 
@@ -979,7 +978,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 	
 	collisionMaps.clear();
 	
-	for(size_t i = 0; i < size_t(boost::size(ARX_SOUND_COLLISION_MAP_NAMES)); i++) {
+	for(size_t i = 0; i < std::size(ARX_SOUND_COLLISION_MAP_NAMES); i++) {
 		
 		res::path file = ARX_SOUND_PATH_INI / ARX_SOUND_COLLISION_MAP_NAMES[i];
 		file.set_ext(ARX_SOUND_FILE_EXTENSION_INI);

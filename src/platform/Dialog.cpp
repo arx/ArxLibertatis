@@ -37,8 +37,6 @@
 #include <SDL.h>
 #endif
 
-#include <boost/range/size.hpp>
-
 #include "core/Version.h"
 #include "platform/Process.h"
 #include "platform/WindowsUtils.h"
@@ -380,18 +378,18 @@ static int sdlDialogCommand(DialogType type, const std::string & message,
 		case DialogWarning:
 		case DialogError: {
 			box.buttons = buttonsOK,
-			box.numbuttons = boost::size(buttonsOK);
+			box.numbuttons = std::size(buttonsOK);
 			break;
 		}
 		case DialogYesNo:
 		case DialogWarnYesNo: {
 			box.buttons = buttonsYesNo,
-			box.numbuttons = boost::size(buttonsYesNo);
+			box.numbuttons = std::size(buttonsYesNo);
 			break;
 		}
 		case DialogOkCancel: {
 			box.buttons = buttonsOKCancel,
-			box.numbuttons = boost::size(buttonsOKCancel);
+			box.numbuttons = std::size(buttonsOKCancel);
 			break;
 		}
 	}

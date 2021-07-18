@@ -52,7 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include <boost/array.hpp>
-#include <boost/range/size.hpp>
 
 #include "game/Entity.h"
 #include "game/Spells.h"
@@ -75,7 +74,7 @@ struct ARX_INTERFACE_MEMORIZE_SPELL {
 		: bSpell(false)
 		, lTimeCreation(0)
 	{
-		for(size_t i = 0; i < size_t(boost::size(iSpellSymbols)); i++) {
+		for(size_t i = 0; i < std::size(iSpellSymbols); i++) {
 			iSpellSymbols[i] = RUNE_NONE;
 		}
 	}

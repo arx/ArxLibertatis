@@ -897,7 +897,7 @@ long GetXPforLevel(short level)
 	};
 
 	long xpNeeded;
-	if(level < short(boost::size(XP_FOR_LEVEL)))
+	if(level < short(std::size(XP_FOR_LEVEL)))
 		xpNeeded = XP_FOR_LEVEL[level];
 	else
 		xpNeeded = level * 60000;

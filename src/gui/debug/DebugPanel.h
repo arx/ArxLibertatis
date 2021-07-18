@@ -24,8 +24,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/mpl/size.hpp>
-
 #include "audio/AudioTypes.h"
 #include "game/GameTypes.h"
 #include "gui/hud/HudCommon.h"

@@ -26,7 +26,6 @@
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/io/ios_state.hpp>
-#include <boost/range/size.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 
 #include "Configure.h"
@@ -429,7 +428,7 @@ static std::ostream & print_movemode(std::ostream & strm, s32 movemode) {
 
 static void print_spell(s32 spell) {
 	
-	if(size_t(spell) < size_t(boost::size(spellNames))) {
+	if(size_t(spell) < std::size(spellNames)) {
 		std::cout << spellNames[spell];
 	} else {
 		std::cout << "(unknown)";
@@ -498,7 +497,7 @@ static void print_animations(const char (&anims)[SAVED_MAX_ANIMS][256]) {
 		hasAnims = true;
 		std::cout << '\n';
 		
-		if(i < size_t(boost::size(animationNames))) {
+		if(i < std::size(animationNames)) {
 			std::cout << "  - " << animationNames[i] << ": " << anim;
 		} else {
 			std::cout << "  - animation #" << i << ": " << anim;
@@ -523,7 +522,7 @@ static void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS
 		std::cout << '\n' << pf << "Animation layer #" << i << ":\n";
 		
 		if(layer.next_anim != ANIM_NONE) {
-			if(size_t(layer.next_anim) < size_t(boost::size(animationNames))) {
+			if(size_t(layer.next_anim) < std::size(animationNames)) {
 				std::cout << pf << "  Next animation: " << animationNames[layer.next_anim] << '\n';
 			} else {
 				std::cout << pf << "  Next animation: animation #" << layer.next_anim << '\n';
@@ -531,7 +530,7 @@ static void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS
 		}
 		
 		if(layer.cur_anim != ANIM_NONE) {
-			if(size_t(layer.cur_anim) < size_t(boost::size(animationNames))) {
+			if(size_t(layer.cur_anim) < std::size(animationNames)) {
 				std::cout << pf << "  Current animation: " << animationNames[layer.cur_anim] << '\n';
 			} else {
 				std::cout << pf << "  Current animation: animation #" << layer.cur_anim << '\n';
@@ -1328,7 +1327,7 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 		for(size_t i = 0; i < 4; i++) {
 			if(ais.spellcast_data.symb[i] == RUNE_NONE) {
 				std::cout << " (none)";
-			} else if(size_t(ais.spellcast_data.symb[i]) < size_t(boost::size(runeNames))) {
+			} else if(size_t(ais.spellcast_data.symb[i]) < std::size(runeNames)) {
 				std::cout << ' ' << runeNames[i];
 			} else {
 				std::cout << " (unknown)";
@@ -1669,7 +1668,7 @@ static void print_io_item(const ARX_CHANGELEVEL_IO_SAVE & ais,
 				continue;
 			}
 			
-			if(i < size_t(boost::size(equipitemNames))) {
+			if(i < std::size(equipitemNames)) {
 				std::cout << "\n  " << equipitemNames[i] << " modifier:";
 			} else {
 				std::cout << "\n  EquipItem #" << i << ':';

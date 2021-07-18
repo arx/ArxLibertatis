@@ -48,8 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <map>
 
-#include <boost/range/size.hpp>
-
 #include "game/Inventory.h"
 #include "game/Spells.h"
 #include "math/Types.h"
@@ -94,8 +92,8 @@ public:
 		, bookmark_map(nullptr)
 		, bookmark_quest(nullptr)
 	{
-		std::fill_n(accessibleTab, boost::size(accessibleTab), static_cast<TextureContainer *>(nullptr));
-		std::fill_n(currentTab, boost::size(currentTab), static_cast<TextureContainer *>(nullptr));
+		std::fill_n(accessibleTab, std::size(accessibleTab), static_cast<TextureContainer *>(nullptr));
+		std::fill_n(currentTab, std::size(currentTab), static_cast<TextureContainer *>(nullptr));
 	}
 	
 	void init();

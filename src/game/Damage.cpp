@@ -890,7 +890,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 }
 
 void ARX_DAMAGES_Reset() {
-	std::fill_n(g_damages, boost::size(g_damages), DAMAGE_INFO());
+	std::fill_n(g_damages, std::size(g_damages), DAMAGE_INFO());
 }
 
 extern TextureContainer * TC_fire2;

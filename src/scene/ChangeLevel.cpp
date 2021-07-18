@@ -507,7 +507,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		if(info.type == audio::PLAYING_AMBIANCE_SCRIPT || info.type == audio::PLAYING_AMBIANCE_ZONE) {
 			SavedPlayingAmbiance * playing = reinterpret_cast<SavedPlayingAmbiance *>(dat + pos);
 			std::memset(playing, 0, sizeof(SavedPlayingAmbiance));
-			arx_assert(info.name.string().length() + 1 < size_t(boost::size(playing->name)));
+			arx_assert(info.name.string().length() + 1 < std::size(playing->name));
 			util::storeString(playing->name, info.name.string());
 			playing->volume = info.volume;
 			playing->loop = info.isLooped ? 0 : 1;

@@ -33,8 +33,6 @@
 #include <ostream>
 #include <iomanip>
 
-#include <boost/range/size.hpp>
-
 #include "platform/Alignment.h"
 #include "platform/Platform.h"
 
@@ -225,7 +223,7 @@ size_t iterated_hash<T>::hash(const char * input, size_t length) {
 		do {
 			
 			hash_word buffer[block_size / sizeof(hash_word)];
-			byte_order::load(input, buffer, size_t(boost::size(buffer)));
+			byte_order::load(input, buffer, std::size(buffer));
 			
 			transform::transform(state, buffer);
 			
