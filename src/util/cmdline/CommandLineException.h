@@ -38,7 +38,7 @@
 
 #include "platform/Platform.h"
 
-namespace util { namespace cmdline {
+namespace util::cmdline {
 
 class error : public virtual std::runtime_error {
 	
@@ -79,6 +79,6 @@ private:
 	
 };
 
-} } // namespace util::cmdline
+} // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_COMMANDLINEEXCEPTION_H

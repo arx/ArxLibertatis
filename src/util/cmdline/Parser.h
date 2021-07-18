@@ -35,7 +35,7 @@
 
 #include "util/cmdline/Interpreter.h"
 
-namespace util { namespace cmdline {
+namespace util::cmdline {
 
 /*!
  * Parse the command-line arguments in argv into the options specified by the
@@ -89,6 +89,6 @@ namespace util { namespace cmdline {
  */
 void parse(interpreter<std::string> & cli, int argc, char ** argv);
 
-} } // namespace util::cmdline
+} // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_PARSER_H

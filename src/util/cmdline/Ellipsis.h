@@ -36,7 +36,7 @@
 
 #include <vector>
 
-namespace util { namespace cmdline {
+namespace util::cmdline {
 
 /*!
  * This class is a kind of sequence container.
@@ -120,6 +120,6 @@ public:
 	
 };
 
-} } // namespace util::cmdline
+} // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_ELLIPSIS_H

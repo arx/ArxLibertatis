@@ -43,7 +43,7 @@
 #include "platform/Platform.h"
 #include "util/cmdline/detail/Construct.h"
 
-namespace util { namespace cmdline { namespace detail {
+namespace util::cmdline::detail {
 
 template <typename FS>
 struct args_adapter_impl;
@@ -88,6 +88,6 @@ struct arg_impl;
 #undef BOOST_COMMAND_LINE_MAX_FUNCTION_ARGS
 #undef BOOST_PP_ITERATION_LIMITS
 
-} } } // namespace util::cmdline::detail
+} // namespace util::cmdline::detail
 
 #endif // ARX_UTIL_CMDLINE_DETAIL_ARGSADAPTER_H

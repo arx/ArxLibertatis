@@ -39,7 +39,7 @@
 #include "util/cmdline/detail/ArgsAdapter.h"
 #include "util/cmdline/detail/LFunction.h"
 
-namespace util { namespace cmdline {
+namespace util::cmdline {
 
 template <typename FnSign>
 class lexical_call_t;
@@ -231,6 +231,6 @@ public:
 	
 };
 
-} } // namespace util::cmdline
+} // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_DETAIL_LEXICALCALL_H

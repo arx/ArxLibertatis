@@ -36,7 +36,7 @@
 
 #include <vector>
 
-namespace util { namespace cmdline {
+namespace util::cmdline {
 
 /*!
  * Default option informations storage.
@@ -128,6 +128,6 @@ private:
 	
 };
 
-} } // namespace util::cmdline
+} // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_KEYS_H

@@ -36,7 +36,7 @@
 
 #include "util/cmdline/CommandLineException.h"
 
-namespace util { namespace cmdline {
+namespace util::cmdline {
 
 template <typename T, typename Alloc>
 class ellipsis;
@@ -79,6 +79,6 @@ optional<T> construct(SourceType & arg, const optional<T> * /* unused */ = 0) {
 	return ret;
 }
 
-} } // namespace util::cmdline
+} // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_DETAIL_CONSTRUCT_H

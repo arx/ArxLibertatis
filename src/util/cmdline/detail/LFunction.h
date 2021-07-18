@@ -43,7 +43,7 @@
 
 #include "platform/Platform.h"
 
-namespace util { namespace cmdline {
+namespace util::cmdline {
 
 namespace detail {
 	template <typename FnSign>
@@ -81,6 +81,6 @@ lfunction<FnSign, Function> make_lfunction(const Function & fn) {
 #undef BOOST_COMMAND_LINE_MAX_FUNCTION_ARGS
 #undef BOOST_PP_ITERATION_LIMITS
 
-} } // namespace util::cmdline
+} // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_DETAIL_LFUNCTION_H

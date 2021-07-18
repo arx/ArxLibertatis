@@ -36,7 +36,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-namespace util { namespace cmdline {
+namespace util::cmdline {
 
 //! default strategy for types convertation
 struct type_cast {
@@ -49,6 +49,6 @@ struct type_cast {
 	
 };
 
-} } // namespace util::cmdline
+} // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_TYPECAST_H

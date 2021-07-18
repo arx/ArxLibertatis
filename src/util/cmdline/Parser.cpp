@@ -36,7 +36,7 @@
 
 #include "util/String.h"
 
-namespace util { namespace cmdline {
+namespace util::cmdline {
 
 namespace {
 
@@ -184,4 +184,4 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 	
 }
 
-} } // namespace util::cmdline
+} // namespace util::cmdline

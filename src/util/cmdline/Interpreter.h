@@ -42,7 +42,7 @@
 #include "util/cmdline/Keys.h"
 #include "util/cmdline/TypeCast.h"
 
-namespace util { namespace cmdline {
+namespace util::cmdline {
 
 // default strategy for types conversion
 struct type_cast;
@@ -309,6 +309,6 @@ std::basic_ostream<CharType> & operator<<(std::basic_ostream<CharType> & os,
 	return detail::print_op(os, l), os;
 }
 
-} } // namespace util::cmdline
+} // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_INTERPRETER_H

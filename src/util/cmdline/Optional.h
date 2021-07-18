@@ -34,7 +34,7 @@
 #ifndef ARX_UTIL_CMDLINE_OPTIONAL_H
 #define ARX_UTIL_CMDLINE_OPTIONAL_H
 
-namespace util { namespace cmdline {
+namespace util::cmdline {
 
 /*!
  * This class is a kind of pointer storage.
@@ -120,6 +120,6 @@ bool operator==(optional<T> const & lh , bool rh) {
 	return rh == lh;
 }
 
-} } // namespace util::cmdline
+} // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_OPTIONAL_H
