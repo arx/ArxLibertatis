@@ -263,7 +263,7 @@ struct aligned_allocator {
 		AlignedAllocator<Alignment>::free_array(p);
 	}
 	
-	#if ARX_HAVE_CXX11_VARIADIC_TEMPLATES && ARX_HAVE_CXX11_FORWARD
+	#if ARX_HAVE_CXX11_VARIADIC_TEMPLATES
 	
 	template <class U, class... Args>
 	void construct(U * p, Args &&... args) {

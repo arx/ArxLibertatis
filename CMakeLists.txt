@@ -633,7 +633,6 @@ endif()
 if(NOT CXX_STD_VERSION LESS 2011)
 	enable_cxx_version(${CXX_STD_VERSION})
 	set(ARX_HAVE_CXX11_LONG_LONG 1) # everyone has had this for ages
-	check_cxx11("std::forward"           ARX_HAVE_CXX11_FORWARD            1800)
 	check_cxx11("std::integral_constant" ARX_HAVE_CXX11_INTEGRAL_CONSTANT  1500)
 	check_cxx11("std::max_align_t"       ARX_HAVE_CXX11_MAX_ALIGN_T        1700)
 	check_cxx11("noexcept"               ARX_HAVE_CXX11_NOEXCEPT           1900)
