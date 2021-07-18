@@ -479,7 +479,7 @@ bool PakReader::addArchive(const fs::path & pakfile, const PakFilter * filter) {
 	
 	// Read the whole FAT.
 	std::vector<char> fat(fat_size);
-	if(ifs->read(&fat[0], fat_size).fail()) {
+	if(ifs->read(fat.data(), fat_size).fail()) {
 		LogError << pakfile << ": error reading FAT at " << fat_offset
 		         << " with size " << fat_size;
 		delete ifs;
@@ -487,16 +487,16 @@ bool PakReader::addArchive(const fs::path & pakfile, const PakFilter * filter) {
 	}
 	
 	// Decrypt the FAT.
-	ReleaseType key = guessReleaseType(*reinterpret_cast<const u32 *>(&fat[0]));
+	ReleaseType key = guessReleaseType(*reinterpret_cast<const u32 *>(fat.data()));
 	if(key != Unknown) {
-		pakDecrypt(&fat[0], fat_size, key);
+		pakDecrypt(fat.data(), fat_size, key);
 	} else {
 		LogWarning << pakfile << ": unknown PAK key ID 0x" << std::hex << std::setfill('0')
-		           << std::setw(8) << *reinterpret_cast<u32 *>(&fat[0]) << ", assuming no key";
+		           << std::setw(8) << *reinterpret_cast<u32 *>(fat.data()) << ", assuming no key";
 	}
 	release |= key;
 	
-	util::md5::checksum checksum = util::md5::compute(&fat[0], fat_size);
+	util::md5::checksum checksum = util::md5::compute(fat.data(), fat_size);
 	if(has_dirs() || has_files()) {
 		m_checksum = util::md5::checksum();
 	} else {
@@ -511,7 +511,7 @@ bool PakReader::addArchive(const fs::path & pakfile, const PakFilter * filter) {
 		}
 	}
 	
-	char * pos = &fat[0];
+	char * pos = fat.data();
 	
 	paks.push_back(ifs);
 	
