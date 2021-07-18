@@ -77,7 +77,7 @@ public:
 	
 	~WideString() { if(dynamic()) { str().~DynamicType(); } }
 	
-	WCHAR * data() { return dynamic() ? &*str().begin() : m_static; }
+	WCHAR * data() { return dynamic() ? str().data() : m_static; }
 	const WCHAR * data() const { return dynamic() ? str().data() : m_static; }
 	
 	const WCHAR * c_str() const { return dynamic() ? str().c_str() : m_static; }
