@@ -123,7 +123,7 @@ static void PopOneTriangleList(RenderState baseState, TextureContainer * materia
 		GRenderer->GetTextureStage(0)->setMipMapLODBias(GLOBAL_NPC_MIPMAP_BIAS);
 	}
 	
-	EERIEDRAWPRIM(Renderer::TriangleList, &bucket[0], bucket.size());
+	EERIEDRAWPRIM(Renderer::TriangleList, bucket.data(), bucket.size());
 	
 	if(clear) {
 		bucket.clear();
