@@ -208,7 +208,7 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 		return 0;
 	}
 	
-	char * dat = &buffer[0];
+	char * dat = buffer.data();
 	
 	Idents::iterator it = idents.find(name);
 	if(it != idents.end()) {
@@ -310,7 +310,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 		return;
 	}
 	
-	char * dat = &buffer[0];
+	char * dat = buffer.data();
 	
 	bool changed = false;
 	
@@ -362,7 +362,7 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 		return;
 	}
 	
-	char * dat = &buffer[0];
+	char * dat = buffer.data();
 	
 	std::cout << "level " << num << '\n';
 	
