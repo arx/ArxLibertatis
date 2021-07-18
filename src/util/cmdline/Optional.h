@@ -94,19 +94,14 @@ struct optional {
 		return &**this;
 	}
 	
-private:
-	
-	struct dummy { void nonnull() {} };
-	typedef void (dummy::*safe_bool)();
-	
 public:
 	
 	bool operator!() const {
 		return m_ptr == 0;
 	}
 	
-	operator safe_bool() const {
-		return (!*this) ? 0 : &dummy::nonnull;
+	explicit operator bool() const {
+		return m_ptr != 0;
 	}
 	
 private:
