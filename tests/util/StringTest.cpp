@@ -122,7 +122,7 @@ void StringTest::safeGetExactTest() {
 	
 	u8 data[] = {0xAA, 0xAA, 0xAA, 0xAA};
 	u32 remaining = sizeof(data);
-	u8 * dataPtr = &data[0];
+	u8 * dataPtr = data;
 	
 	s32 resultValue;
 	bool resultOk = util::safeGet(resultValue, dataPtr, remaining);
@@ -136,7 +136,7 @@ void StringTest::safeGetTooSmallTest() {
 	
 	u8 data[] = {0xAA, 0xAA, 0xAA};
 	u32 remaining = sizeof(data);
-	u8 * dataPtr = &data[0];
+	u8 * dataPtr = data;
 	
 	s32 resultValue = -1;
 	bool resultOk = util::safeGet(resultValue, dataPtr, remaining);
