@@ -256,7 +256,7 @@ void CrashHandlerWindows::writeCrashDump(PEXCEPTION_POINTERS pointers) {
 	
 }
 
-arx_noreturn void CrashHandlerWindows::handleCrash(int crashType, void * crashExtraInfo, int fpeCode) {
+[[noreturn]] void CrashHandlerWindows::handleCrash(int crashType, void * crashExtraInfo, int fpeCode) {
 	
 	Autolock autoLock(&m_Lock);
 	

@@ -9,10 +9,6 @@
  * libraries and their features belongs in src/Configure.h.in
  */
 
-// C++11 features
-// [[noreturn]]
-#cmakedefine01 ARX_HAVE_CXX11_NORETURN
-
 // C++17 features
 // [[nodiscard]]
 #cmakedefine01 ARX_HAVE_CXX17_NODISCARD
