@@ -33,7 +33,7 @@
 #include "input/Input.h"
 
 CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, const std::string & label, Font * entryFont)
-	: m_label(label.empty() ? NULL : new TextWidget(font, label))
+	: m_label(label.empty() ? nullptr : new TextWidget(font, label))
 	, m_left(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_left"))
 	, m_right(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_right"))
 	, m_font(entryFont ? entryFont : font)

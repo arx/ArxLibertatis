@@ -26,7 +26,7 @@
 
 
 HudIconBase::HudIconBase()
-	: m_tex(NULL)
+	: m_tex(nullptr)
 	, m_isSelected(false)
 	, m_haloActive(false)
 	, m_haloColor(Color3f::white)

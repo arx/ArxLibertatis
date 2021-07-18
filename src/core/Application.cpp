@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 Application * mainApp = 0;
 
-Application::Application() : m_MainWindow(NULL) {
+Application::Application() : m_MainWindow(nullptr) {
 	m_bReady = true;
 	m_RunLoop = true;
 }
@@ -64,7 +64,7 @@ Application::~Application() {
 }
 
 void Application::shutdown() {
-	delete m_MainWindow, m_MainWindow = NULL;
+	delete m_MainWindow, m_MainWindow = nullptr;
 }
 
 void Application::quit() {

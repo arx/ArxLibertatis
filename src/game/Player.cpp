@@ -147,7 +147,7 @@ extern long COLLIDED_CLIMB_POLY;
 static const float ARX_PLAYER_SKILL_STEALTH_MAX = 100.f;
 
 ARXCHARACTER player;
-EERIE_3DOBJ * hero = NULL;
+EERIE_3DOBJ * hero = nullptr;
 float currentdistance = 0.f;
 float CURRENT_PLAYER_COLOR = 0;
 AnimationDuration PLAYER_ROTATION = 0;
@@ -160,8 +160,8 @@ static GameInstant LastHungerSample = 0;
 static GameInstant ROTATE_START = 0;
 
 // Player Anims FLAGS/Vars
-ANIM_HANDLE * herowaitbook = NULL;
-ANIM_HANDLE * herowait_2h = NULL;
+ANIM_HANDLE * herowaitbook = nullptr;
+ANIM_HANDLE * herowait_2h = nullptr;
 
 std::vector<std::string> g_playerKeyring;
 
@@ -245,7 +245,7 @@ void ARX_PLAYER_KillTorch() {
 	
 	giveToPlayer(player.torch);
 	
-	player.torch = NULL;
+	player.torch = nullptr;
 	lightHandleGet(torchLightHandle)->m_exists = false;
 }
 
@@ -273,14 +273,14 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io) {
 		}
 
 		ARX_SOUND_PlaySFX(g_snd.TORCH_START);
-		player.torch_loop = ARX_SOUND_PlaySFX_loop(g_snd.TORCH_LOOP, NULL, 1.f);
+		player.torch_loop = ARX_SOUND_PlaySFX_loop(g_snd.TORCH_LOOP, nullptr, 1.f);
 		
 		removeFromInventories(io);
 		io->show = SHOW_FLAG_ON_PLAYER;
 		player.torch = io;
 		
 		if(g_draggedEntity == io) {
-			setDraggedEntity(NULL);
+			setDraggedEntity(nullptr);
 		}
 		
 	}
@@ -300,7 +300,7 @@ static void ARX_PLAYER_ManageTorch() {
 			player.torch_loop = audio::SourcedSample();
 			
 			player.torch->destroy();
-			player.torch = NULL;
+			player.torch = nullptr;
 			lightHandleGet(torchLightHandle)->m_exists = false;
 		}
 		
@@ -916,7 +916,7 @@ static void ARX_PLAYER_LEVEL_UP() {
 	player.lifePool.current = player.lifePool.max;
 	player.manaPool.current = player.manaPool.max;
 	player.m_skillOld = player.m_skill;
-	SendIOScriptEvent(NULL, entities.player(), "level_up");
+	SendIOScriptEvent(nullptr, entities.player(), "level_up");
 }
 
 /*!
@@ -1024,7 +1024,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 			player.poison = 0.f;
 	}
 }
-TextureContainer * PLAYER_SKIN_TC = NULL;
+TextureContainer * PLAYER_SKIN_TC = nullptr;
 
 void ARX_PLAYER_Restore_Skin() {
 	
@@ -1326,8 +1326,8 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 	}
 	
-	ANIM_HANDLE * request0_anim = NULL;
-	ANIM_HANDLE * request3_anim = NULL;
+	ANIM_HANDLE * request0_anim = nullptr;
+	ANIM_HANDLE * request3_anim = nullptr;
 	bool request0_loop = true;
 	
 	if(io->ioflags & IO_FREEZESCRIPT) {
@@ -1337,7 +1337,7 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	if(player.lifePool.current <= 0) {
 		HERO_SHOW_1ST = -1;
-		io->animlayer[1].cur_anim = NULL;
+		io->animlayer[1].cur_anim = nullptr;
 		ARX_PLAYER_Manage_Visual_End(alist[ANIM_DIE], request3_anim, false, true);
 		return;
 	}
@@ -1462,7 +1462,7 @@ void ARX_PLAYER_Manage_Visual() {
 	}
 	
 	// Finally update anim
-	if(layer1.cur_anim == NULL
+	if(layer1.cur_anim == nullptr
 	   && (layer0.cur_anim == alist[ANIM_WAIT] || layer0.cur_anim == alist[ANIM_WAIT_SHORT])
 	   && !(player.m_currentMovement & PLAYER_CROUCH)
 	) {
@@ -1476,12 +1476,12 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 	}
 	
-	if(request3_anim == NULL
+	if(request3_anim == nullptr
 	   && layer3.cur_anim
 	   && (layer3.cur_anim == alist[ANIM_LEAN_RIGHT] || layer3.cur_anim == alist[ANIM_LEAN_LEFT])
 	) {
 		AcquireLastAnim(io);
-		layer3.cur_anim = NULL;
+		layer3.cur_anim = nullptr;
 	}
 	
 	if((player.m_currentMovement & PLAYER_CROUCH) && !(player.m_lastMovement & PLAYER_CROUCH)
@@ -1617,7 +1617,7 @@ void ARX_PLAYER_InitPlayer() {
 	player.lifePool.current = player.lifePool.max = player.Full_maxlife = 100.f;
 	player.manaPool.current = player.manaPool.max = player.Full_maxmana = 100.f;
 	player.falling = false;
-	player.torch = NULL;
+	player.torch = nullptr;
 	player.gold = 0;
 	player.m_bags = 1;
 	player.doingmagic = 0;
@@ -2104,7 +2104,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 		
 		float posy;
 		EERIEPOLY * ep = CheckInPoly(player.pos, &posy);
-		if(ep == NULL) {
+		if(ep == nullptr) {
 			player.physics.velocity.y = 0;
 		} else if(!player.climbing && player.pos.y >= posy) {
 			player.physics.velocity.y = 0;
@@ -2316,7 +2316,7 @@ void ARX_PLAYER_Manage_Death() {
 	}
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
-	EERIEDrawBitmap(Rectf(g_size), 0.000091f, NULL, Color::gray(ratio));
+	EERIEDrawBitmap(Rectf(g_size), 0.000091f, nullptr, Color::gray(ratio));
 }
 
 /*!
@@ -2385,7 +2385,7 @@ void ARX_PLAYER_Start_New_Quest() {
 	EERIE_PATHFINDER_Clear();
 	EERIE_PATHFINDER_Release();
 	ARX_PLAYER_MakeFreshHero();
-	player.torch = NULL;
+	player.torch = nullptr;
 	entities.clear();
 	svar.clear();
 	ARX_EQUIPMENT_UnEquipAllPlayer();
@@ -2449,7 +2449,7 @@ void ARX_GAME_Reset() {
 	entities.player()->speed_modif = 0;
 	
 	LAST_JUMP_ENDTIME = 0;
-	FlyingOverIO = NULL;
+	FlyingOverIO = nullptr;
 	g_miniMap.mapMarkerInit();
 	ClearDynLights();
 
@@ -2471,7 +2471,7 @@ void ARX_GAME_Reset() {
 
 	lastposy = -99999999999.f;
 
-	ioSteal = NULL;
+	ioSteal = nullptr;
 
 	g_gameTime.setSpeed(1.f);
 
@@ -2546,7 +2546,7 @@ void ARX_GAME_Reset() {
 	ARX_PATH_ClearAllUsePath();
 
 	// Player Torch
-	player.torch = NULL;
+	player.torch = nullptr;
 
 	// Player Quests
 	ARX_PLAYER_Quest_Init();
@@ -2584,7 +2584,7 @@ void ARX_GAME_Reset() {
 	player.jumplastposition = 0;
 	player.jumpstarttime = 0;
 	player.jumpphase = NotJumping;
-	entities.player()->inzone = NULL;
+	entities.player()->inzone = nullptr;
 
 	RemoveQuakeFX();
 	player.m_improve = false;
@@ -2609,8 +2609,8 @@ void ARX_GAME_Reset() {
 	// Interface
 	ARX_INTERFACE_Reset();
 	ARX_INTERFACE_NoteClear();
-	setDraggedEntity(NULL);
-	g_cameraEntity = NULL;
+	setDraggedEntity(nullptr);
+	g_cameraEntity = nullptr;
 	CHANGE_LEVEL_ICON = NoChangeLevel;
 	
 	// Kill Script Loaded IO

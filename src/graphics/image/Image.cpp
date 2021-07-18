@@ -37,7 +37,7 @@ Image::Image() : m_data(0) {
 	reset();
 }
 
-Image::Image(const Image & other) : m_data(NULL) {
+Image::Image(const Image & other) : m_data(nullptr) {
 	*this = other;
 }
 
@@ -46,7 +46,7 @@ Image::~Image() {
 }
 
 void Image::reset() {
-	delete[] m_data, m_data = NULL;
+	delete[] m_data, m_data = nullptr;
 	m_width = 0;
 	m_height = 0;
 	m_format = Format_Unknown;
@@ -157,7 +157,7 @@ void Image::create(size_t width, size_t height, Format format) {
 	size_t oldSize = getSize();
 	size_t newSize = getSize(format, width, height);
 	if(m_data && newSize != oldSize) {
-		delete[] m_data, m_data = NULL;
+		delete[] m_data, m_data = nullptr;
 	}
 	if(!m_data) {
 		m_data = new unsigned char[newSize];

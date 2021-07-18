@@ -156,7 +156,7 @@ public:
 	 * This is semantically equivalent to, but hopefully faster than:
 	 * <pre>
 	 *  SaveBlock block(savefile);
-	 *  return block.open(false) ? block.load(name, size) : NULL
+	 *  return block.open(false) ? block.load(name, size) : nullptr
 	 * </pre>
 	 * 
 	 * This is optimized for loading the file named in flush().

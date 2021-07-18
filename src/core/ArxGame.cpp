@@ -391,12 +391,12 @@ void ArxGame::setWindowSize(bool fullscreen) {
 
 bool ArxGame::initWindow(RenderWindow * window) {
 	
-	arx_assert(m_MainWindow == NULL);
+	arx_assert(m_MainWindow == nullptr);
 	
 	m_MainWindow = window;
 	
 	if(!m_MainWindow->initializeFramework()) {
-		m_MainWindow = NULL;
+		m_MainWindow = nullptr;
 		return false;
 	}
 	
@@ -432,13 +432,13 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	setWindowSize(config.video.fullscreen);
 	
 	if(!m_MainWindow->initialize()) {
-		m_MainWindow = NULL;
+		m_MainWindow = nullptr;
 		return false;
 	}
 	
-	if(GRenderer == NULL) {
+	if(GRenderer == nullptr) {
 		// We could not initialize all resources in onRendererInit().
-		m_MainWindow = NULL;
+		m_MainWindow = nullptr;
 		return false;
 	}
 	
@@ -447,7 +447,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 
 bool ArxGame::initWindow() {
 	
-	arx_assert(m_MainWindow == NULL);
+	arx_assert(m_MainWindow == nullptr);
 	
 	#if ARX_HAVE_SDL2
 	if(!m_MainWindow) {
@@ -510,13 +510,13 @@ bool ArxGame::initGameData() {
 	return init;
 }
 
-TextureContainer * enviro = NULL;
-TextureContainer * ombrignon = NULL;
-TextureContainer * TC_fire = NULL;
-TextureContainer * TC_fire2 = NULL;
-TextureContainer * TC_smoke = NULL;
-TextureContainer * Boom = NULL;
-TextureContainer * arx_logo_tc = NULL;
+TextureContainer * enviro = nullptr;
+TextureContainer * ombrignon = nullptr;
+TextureContainer * TC_fire = nullptr;
+TextureContainer * TC_fire2 = nullptr;
+TextureContainer * TC_smoke = nullptr;
+TextureContainer * Boom = nullptr;
+TextureContainer * arx_logo_tc = nullptr;
 
 
 static void LoadSysTextures() {
@@ -751,8 +751,8 @@ bool ArxGame::initGame()
 	LogDebug("Spell Init");
 	
 	for(size_t t = 0; t < MAX_GOLD_COINS_VISUALS; t++) {
-		GoldCoinsObj[t] = NULL;
-		GoldCoinsTC[t] = NULL;
+		GoldCoinsObj[t] = nullptr;
+		GoldCoinsTC[t] = nullptr;
 	}
 	
 	LogDebug("LSV Init");
@@ -912,7 +912,7 @@ bool ArxGame::initGame()
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 static void runDataFilesInstaller() {
-	static const char * const command[] = { "arx-install-data", "--gui", NULL };
+	static const char * const command[] = { "arx-install-data", "--gui", nullptr };
 	if(platform::runHelper(command, true) < 0) {
 		std::ostringstream error;
 		error << "Could not run `" << command[0] << "`.";
@@ -959,25 +959,25 @@ bool ArxGame::addPaks() {
 
 static void ReleaseSystemObjects() {
 	
-	delete hero, hero = NULL;
+	delete hero, hero = nullptr;
 	
-	if(entities.size() > 0 && entities.player() != NULL) {
-		entities.player()->obj = NULL; // already deleted above (hero)
+	if(entities.size() > 0 && entities.player() != nullptr) {
+		entities.player()->obj = nullptr; // already deleted above (hero)
 		delete entities.player();
-		arx_assert(entities.size() > 0 && entities.player() == NULL);
+		arx_assert(entities.size() > 0 && entities.player() == nullptr);
 	}
 	
 	FlyingEye_Release();
 	ReleaseSpellModels();
 	
-	delete cameraobj, cameraobj = NULL;
-	delete markerobj, markerobj = NULL;
-	delete arrowobj, arrowobj = NULL;
+	delete cameraobj, cameraobj = nullptr;
+	delete markerobj, markerobj = nullptr;
+	delete arrowobj, arrowobj = nullptr;
 	
 	drawDebugRelease();
 
 	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
-		delete obj, obj = NULL;
+		delete obj, obj = nullptr;
 	}
 }
 
@@ -1536,7 +1536,7 @@ void ArxGame::updateActiveCamera() {
 	
 	ARX_PROFILE_FUNC();
 	
-	Camera * cam = NULL;
+	Camera * cam = nullptr;
 	if(g_cameraEntity) {
 		cam = &g_cameraEntity->_camdata->cam;
 		if(cam->focal < 100.f) {
@@ -1893,7 +1893,7 @@ void ArxGame::renderLevel() {
 
 	if(player.m_paralysed) {
 		UseRenderState state(render2D().blendAdditive());
-		EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color::rgb(0.28f, 0.28f, 1.f));
+		EERIEDrawBitmap(Rectf(g_size), 0.0001f, nullptr, Color::rgb(0.28f, 0.28f, 1.f));
 	}
 
 	// Red screen fade for damages.
@@ -1991,7 +1991,7 @@ void ArxGame::render() {
 		}
 		
 		if((player.Interface & INTER_COMBATMODE) || PLAYER_MOUSELOOK_ON) {
-			FlyingOverIO = NULL; // Avoid to check with those modes
+			FlyingOverIO = nullptr; // Avoid to check with those modes
 		} else {
 			if(!BLOCK_PLAYER_CONTROLS
 				&& !TRUE_PLAYER_MOUSELOOK_ON
@@ -2000,7 +2000,7 @@ void ArxGame::render() {
 			) {
 				FlyingOverIO = FlyingOverObject(DANAEMouse);
 			} else {
-				FlyingOverIO = NULL;
+				FlyingOverIO = nullptr;
 			}
 		}
 		
@@ -2086,7 +2086,7 @@ void ArxGame::render() {
 
 void ArxGame::onRendererInit(Renderer & renderer) {
 	
-	arx_assert(GRenderer == NULL);
+	arx_assert(GRenderer == nullptr);
 	
 	GRenderer = &renderer;
 	
@@ -2132,10 +2132,10 @@ void ArxGame::onRendererShutdown(Renderer & renderer) {
 	
 	GRenderer->ReleaseAllTextures();
 
-	delete pDynamicVertexBuffer_TLVERTEX, pDynamicVertexBuffer_TLVERTEX = NULL;
-	delete pDynamicVertexBuffer, pDynamicVertexBuffer = NULL;
+	delete pDynamicVertexBuffer_TLVERTEX, pDynamicVertexBuffer_TLVERTEX = nullptr;
+	delete pDynamicVertexBuffer, pDynamicVertexBuffer = nullptr;
 	
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 	
-	GRenderer = NULL;
+	GRenderer = nullptr;
 }

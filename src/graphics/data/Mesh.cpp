@@ -199,7 +199,7 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY) {
 	Vec2s tile = ACTIVEBKG->getTile(poss);
 	
 	if(tile.y <= 0 || tile.y >= ACTIVEBKG->m_size.y - 1 || tile.x <= 0 || tile.x >= ACTIVEBKG->m_size.x - 1) {
-		return NULL;
+		return nullptr;
 	}
 	
 	float rx = poss.x - float(tile.x) * g_backgroundTileSize.x;
@@ -245,7 +245,7 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY) {
 		maxx = tile.x;
 	}
 	
-	EERIEPOLY * found = NULL;
+	EERIEPOLY * found = nullptr;
 	float foundY = 0.f;
 	
 	for(short z = minz; z <= maxz; z++)
@@ -277,10 +277,10 @@ EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
 	
 	BackgroundTileData * feg = getFastBackgroundData(pos.x, pos.z);
 	if(!feg) {
-		return NULL;
+		return nullptr;
 	}
 	
-	EERIEPOLY * found = NULL;
+	EERIEPOLY * found = nullptr;
 	
 	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
 		
@@ -294,8 +294,8 @@ EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
 				continue;
 			}
 			
-			if(ep->tex != NULL) {
-				if(found == NULL || ep->min.y > found->min.y) {
+			if(ep->tex != nullptr) {
+				if(found == nullptr || ep->min.y > found->min.y) {
 					found = ep;
 				}
 			}
@@ -326,10 +326,10 @@ EERIEPOLY * GetMinPoly(const Vec3f & pos) {
 	
 	BackgroundTileData * feg = getFastBackgroundData(pos.x, pos.z);
 	if(!feg) {
-		return NULL;
+		return nullptr;
 	}
 	
-	EERIEPOLY * found = NULL;
+	EERIEPOLY * found = nullptr;
 	float foundy = 0.0f;
 	
 	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
@@ -354,10 +354,10 @@ EERIEPOLY * GetMaxPoly(const Vec3f & pos) {
 	
 	BackgroundTileData * feg = getFastBackgroundData(pos.x, pos.z);
 	if(!feg) {
-		return NULL;
+		return nullptr;
 	}
 	
-	EERIEPOLY * found = NULL;
+	EERIEPOLY * found = nullptr;
 	float foundy = 0.0f;
 	
 	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
@@ -382,10 +382,10 @@ EERIEPOLY * EEIsUnderWater(const Vec3f & pos) {
 	
 	BackgroundTileData * feg = getFastBackgroundData(pos.x, pos.z);
 	if(!feg) {
-		return NULL;
+		return nullptr;
 	}
 	
-	EERIEPOLY * found = NULL;
+	EERIEPOLY * found = nullptr;
 	
 	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
 		if(ep->type & POLY_WATER) {
@@ -431,7 +431,7 @@ bool GetTruePolyY(const PortalPoly * ep, const Vec3f & pos, float * ret) {
 	return true;
 }
 
-BackgroundData * ACTIVEBKG = NULL;
+BackgroundData * ACTIVEBKG = nullptr;
 
 Vec3f EE_RT(const Vec3f & in) {
 	return Vec3f(g_preparedCamera.m_worldToView * Vec4f(in, 1.0f));
@@ -602,7 +602,7 @@ void EERIE_PORTAL_Release() {
 	}
 	
 	delete portals;
-	portals = NULL;
+	portals = nullptr;
 	
 }
 
@@ -643,7 +643,7 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos,
 		vert_list[2].uv.y = face.v[2];
 		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll.toRGBA();
 
-		if(face.facetype == 0 || eobj->texturecontainer[face.texid] == NULL)
+		if(face.facetype == 0 || eobj->texturecontainer[face.texid] == nullptr)
 			mat.resetTexture();
 		else
 			mat.setTexture(eobj->texturecontainer[face.texid]);
@@ -806,9 +806,9 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				
 				if(ep->tex != 0) {
 					TextureContainerMap::const_iterator cit = textures.find(ep->tex);
-					ep2->tex = (cit != textures.end()) ? cit->second : NULL;
+					ep2->tex = (cit != textures.end()) ? cit->second : nullptr;
 				} else {
-					ep2->tex = NULL;
+					ep2->tex = nullptr;
 				}
 				
 				ep2->transval = ep->transval;
@@ -1005,7 +1005,7 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
 	
 	for(size_t i = 0; i < portals->rooms.size(); i++) {
 		delete portals->rooms[i].pVertexBuffer;
-		portals->rooms[i].pVertexBuffer = NULL;
+		portals->rooms[i].pVertexBuffer = nullptr;
 		portals->rooms[i].indexBuffer.clear();
 		portals->rooms[i].ppTextureContainer.clear();
 	}

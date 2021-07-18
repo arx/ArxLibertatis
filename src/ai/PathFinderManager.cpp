@@ -209,7 +209,7 @@ void PathFinderThread::run() {
 	
 }
 
-static PathFinderThread * g_pathFinderThread = NULL;
+static PathFinderThread * g_pathFinderThread = nullptr;
 
 // Adds a Pathfinder Search Element to the pathfinder queue.
 bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & request) {
@@ -259,7 +259,7 @@ void EERIE_PATHFINDER_Release() {
 	g_pathFinderThread->clearQueue();
 	g_pathFinderThread->stop();
 	
-	delete g_pathFinderThread, g_pathFinderThread = NULL;
+	delete g_pathFinderThread, g_pathFinderThread = nullptr;
 }
 
 void EERIE_PATHFINDER_Create() {

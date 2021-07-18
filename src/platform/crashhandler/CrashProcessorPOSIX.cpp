@@ -127,7 +127,7 @@ void CrashHandlerPOSIX::processCrashInfo() {
 		if(child == 0) {
 			while(true) {
 				#if ARX_HAVE_WAITPID
-				if(waitpid(processor, NULL, WNOHANG) != 0) {
+				if(waitpid(processor, nullptr, WNOHANG) != 0) {
 					break;
 				}
 				#endif
@@ -135,7 +135,7 @@ void CrashHandlerPOSIX::processCrashInfo() {
 				timespec t;
 				t.tv_sec = 0;
 				t.tv_nsec = 100 * 1000;
-				nanosleep(&t, NULL);
+				nanosleep(&t, nullptr);
 				#endif
 			}
 			// Exit if the crash processor failed
@@ -426,7 +426,7 @@ void CrashHandlerPOSIX::processCrashTrace() {
 			"-ex", "set print static-members off",
 			"-ex", "info threads",
 			"-ex", "thread apply all bt full",
-			"--pid", pid.c_str(), NULL
+			"--pid", pid.c_str(), nullptr
 		};
 		std::string gdbstdout = platform::getOutputOf(args, /*unlocalized=*/ true);
 		if(!gdbstdout.empty()) {
@@ -512,7 +512,7 @@ void CrashHandlerPOSIX::processCrashDump() {
 	#endif
 	if(platform::isProcessRunning(m_pCrashInfo->processId)) {
 		std::string pid = boost::lexical_cast<std::string>(m_pCrashInfo->processId);
-		const char * command[] = { "gcore", "-o", "arx-crash-core-dump", pid.c_str(), NULL };
+		const char * command[] = { "gcore", "-o", "arx-crash-core-dump", pid.c_str(), nullptr };
 		(void)platform::runHelper(command, true);
 		if(fs::exists("arx-crash-core-dump")) {
 			fs::rename("arx-crash-core-dump", coredump);

@@ -54,7 +54,7 @@ void Note::clear() {
 void Note::deallocate() {
 	
 	// Don't bother actually deleting the textures, we'll just need them again!
-	m_background = NULL, m_prevPage = NULL, m_nextPage = NULL;
+	m_background = nullptr, m_prevPage = nullptr, m_nextPage = nullptr;
 	
 	m_currentRatio = Vec2f(0.f);
 	
@@ -233,7 +233,7 @@ bool Note::allocate() {
 	
 	if(m_currentRatio == g_sizeRatio && m_currentScale == bookScale
 	   && m_currentFontSize == config.interface.fontSize && m_currentFontWeight == config.interface.fontWeight) {
-		return m_background != NULL;
+		return m_background != nullptr;
 	}
 	m_currentRatio = g_sizeRatio;
 	m_currentScale = bookScale;
@@ -292,14 +292,14 @@ void Note::render() {
 	// Draw the "previous page" button
 	Rectf prevRect = prevPageButton();
 	if(!prevRect.empty()) {
-		arx_assert(m_prevPage != NULL);
+		arx_assert(m_prevPage != nullptr);
 		EERIEDrawBitmap(prevRect, z, m_prevPage, Color::white);
 	}
 	
 	// Draw the "next page" button
 	Rectf nextRect = nextPageButton();
 	if(!nextRect.empty()) {
-		arx_assert(m_nextPage != NULL);
+		arx_assert(m_nextPage != nullptr);
 		EERIEDrawBitmap(nextRect, z, m_nextPage, Color::white);
 	}
 	

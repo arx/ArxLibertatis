@@ -73,8 +73,8 @@ const IniKey * IniSection::getKey(const std::string & name) const {
 		}
 	}
 	
-	// If the key was not found, return NULL
-	return NULL;
+	// If the key was not found, return nullptr
+	return nullptr;
 }
 
 void IniSection::addKey(const std::string & key, const std::string & value) {

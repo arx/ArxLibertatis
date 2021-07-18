@@ -36,7 +36,7 @@ static Keyboard::Key sdlToArxKey[SDLK_LAST];
 
 static Mouse::Button sdlToArxButton[10];
 
-SDL1InputBackend::SDL1InputBackend() : m_textHandler(NULL) {
+SDL1InputBackend::SDL1InputBackend() : m_textHandler(nullptr) {
 	
 	cursorInWindow = false;
 	
@@ -261,7 +261,7 @@ void SDL1InputBackend::stopTextInput() {
 	if(m_textHandler) {
 		SDL_EnableUNICODE(0);
 	}
-	m_textHandler = NULL;
+	m_textHandler = nullptr;
 }
 
 std::string SDL1InputBackend::getKeyName(Keyboard::Key key) const {

@@ -57,7 +57,7 @@ public:
 	Entity * get(EntityHandle handle) const {
 		
 		if(handle.handleData() < 0 || handle.handleData() >= long(size())) {
-			return NULL;
+			return nullptr;
 		}
 		
 		return entries[handle.handleData()];

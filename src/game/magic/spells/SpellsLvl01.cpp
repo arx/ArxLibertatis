@@ -212,7 +212,7 @@ void MagicMissileSpell::Launch() {
 	
 	for(size_t i = 0; i < number; i++) {
 		
-		CMagicMissile * missile = NULL;
+		CMagicMissile * missile = nullptr;
 		if(!m_mrCheat) {
 			missile = new CMagicMissile();
 		} else {

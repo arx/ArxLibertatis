@@ -27,7 +27,7 @@
 
 Entity * g_cameraEntity;
 PreparedCamera g_preparedCamera;
-Camera * g_camera = NULL;
+Camera * g_camera = nullptr;
 Camera g_playerCamera;
 Vec3f g_playerCameraStablePos;
 

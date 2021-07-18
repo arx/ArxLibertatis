@@ -78,13 +78,13 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	// Checks for FTL file existence
 	PakFile * pf = g_resources->getFile(filename);
 	if(!pf) {
-		return NULL;
+		return nullptr;
 	}
 	
 	std::string buffer = pf->read();
 	if(buffer.size() < 3) {
 		LogError << "Error loading FTL file: " << filename;
-		return NULL;
+		return nullptr;
 	}
 	
 	// Check if we have an uncompressed FTL file
@@ -92,7 +92,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		buffer = blast(buffer);
 		if(buffer.size() < 3) {
 			LogError << "Error decompressing FTL file: " << filename;
-			return NULL;
+			return nullptr;
 		}
 	}
 	
@@ -106,14 +106,14 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	// Verify FTL file signature
 	if(afph->ident[0] != 'F' || afph->ident[1] != 'T' || afph->ident[2] != 'L') {
 		LogError << "Invalid FTL file: " << filename;
-		return NULL;
+		return nullptr;
 	}
 	
 	// Verify FTL file version
 	if(afph->version != CURRENT_FTL_VERSION) {
 		LogError << "Unexpected ftl version " << afph->version << ", expected "
 		         << CURRENT_FTL_VERSION << " in " << filename;
-		return NULL;
+		return nullptr;
 	}
 	
 	// Increases offset by checksum size
@@ -124,7 +124,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	afsh = reinterpret_cast<const ARX_FTL_SECONDARY_HEADER *>(dat + pos);
 	if(afsh->offset_3Ddata == -1) {
 		LogError << "ARX_FTL_Load: error loading data from " << filename;
-		return NULL;
+		return nullptr;
 	}
 	pos = afsh->offset_3Ddata;
 	
@@ -200,7 +200,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			if(tex->name[0] == '\0') {
 				// Some object files contain textures with empty names
 				// Don't bother trying to load them as that will just generate an error message
-				obj->texturecontainer[i] = NULL;
+				obj->texturecontainer[i] = nullptr;
 			} else {
 				// Create the texture and put it in the container list
 				res::path name = res::path::load(util::loadString(tex->name)).remove_ext();
@@ -263,7 +263,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	ARX_UNUSED(pos);
 	arx_assert(pos <= buffer.size());
 	
-	obj->pbox = NULL; // Reset physics
+	obj->pbox = nullptr; // Reset physics
 	
 	EERIE_OBJECT_CenterObjectCoordinates(obj);
 	EERIE_CreateCedricData(obj);

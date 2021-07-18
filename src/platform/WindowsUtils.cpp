@@ -40,7 +40,7 @@ void WideString::assign(const char * utf8, size_t utf8_length, size_t offset) {
 			return;
 		}
 	}
-	INT length = MultiByteToWideChar(CP_UTF8, 0, utf8, utf8_length, NULL, 0);
+	INT length = MultiByteToWideChar(CP_UTF8, 0, utf8, utf8_length, nullptr, 0);
 	allocate(offset + length);
 	MultiByteToWideChar(CP_UTF8, 0, utf8, utf8_length, data() + offset, length);
 }
@@ -145,9 +145,9 @@ std::string getErrorString(DWORD error, HMODULE module) {
 		flags |= FORMAT_MESSAGE_FROM_SYSTEM;
 	}
 	
-	LPWSTR buffer = NULL;
+	LPWSTR buffer = nullptr;
 	DWORD n = FormatMessageW(flags, module, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-	                         reinterpret_cast<LPWSTR>(&buffer), 0, NULL);
+	                         reinterpret_cast<LPWSTR>(&buffer), 0, nullptr);
 	if(n != 0) {
 		std::string message = WideString::toUTF8(buffer, n);
 		boost::trim(message);

@@ -149,8 +149,8 @@ E_ARX_STATE_MOUSE eMouseState;
 Vec2s MemoMouse;
 
 INVENTORY_DATA * TSecondaryInventory;
-Entity * FlyingOverIO = NULL;
-Entity * STARTED_ACTION_ON_IO = NULL;
+Entity * FlyingOverIO = nullptr;
+Entity * STARTED_ACTION_ON_IO = nullptr;
 
 INTERFACE_TC g_bookResouces = INTERFACE_TC();
 
@@ -178,11 +178,11 @@ bool bForceEscapeFreeLook = false;
 bool bRenderInCursorMode = true;
 
 long lChangeWeapon = 0;
-Entity * pIOChangeWeapon = NULL;
+Entity * pIOChangeWeapon = nullptr;
 
 PlayerInterfaceFlags lOldInterface;
 
-static TextureContainer * inventory_font = NULL;
+static TextureContainer * inventory_font = nullptr;
 
 void ARX_INTERFACE_DrawNumberInit() {
 	inventory_font = TextureContainer::LoadUI("graph/interface/font/font10x10_inventory");
@@ -494,7 +494,7 @@ void ResetPlayerInterface() {
 
 static ScriptResult combineEntities(Entity * source, Entity * target, bool peekOnly = false) {
 	
-	arx_assert(source != NULL);
+	arx_assert(source != nullptr);
 	
 	ScriptParameters parameters(source->idString());
 	
@@ -548,7 +548,7 @@ static bool isPlayerLookingAtEnemy() {
 	const float maxNearByDistance = 300.f;
 	
 	float closestNPCInFrontDistance = std::numeric_limits<float>::infinity();
-	Entity * closestNPCInFront = NULL;
+	Entity * closestNPCInFront = nullptr;
 	bool isEnemyNearBy = false;
 	
 	for(size_t i = 1; i < entities.size(); i++) {
@@ -770,7 +770,7 @@ void ArxGame::managePlayerControls() {
 
 			Cylinder test = phys.cyl;
 			
-			bool npc = AttemptValidCylinderPos(test, NULL, CFLAG_JUST_TEST | CFLAG_NPC);
+			bool npc = AttemptValidCylinderPos(test, nullptr, CFLAG_JUST_TEST | CFLAG_NPC);
 			float val = CheckAnythingInCylinder(phys.cyl, entities.player(), CFLAG_NO_NPC_COLLIDE | CFLAG_JUST_TEST);
 			
 			if(val > -40.f) {
@@ -928,7 +928,7 @@ void ArxGame::managePlayerControls() {
 	if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) {
 		if(!(player.m_currentMovement & PLAYER_CROUCH) && !BLOCK_PLAYER_CONTROLS && ARXmenu.mode() == Mode_InGame) {
 			if(!ARX_SOUND_IsPlaying(player.magic_ambient)) {
-				player.magic_ambient = ARX_SOUND_PlaySFX_loop(g_snd.MAGIC_AMBIENT_LOOP, NULL, 1.f);
+				player.magic_ambient = ARX_SOUND_PlaySFX_loop(g_snd.MAGIC_AMBIENT_LOOP, nullptr, 1.f);
 			}
 		}
 	} else {
@@ -1047,7 +1047,7 @@ void ArxGame::managePlayerControls() {
 					lChangeWeapon--;
 					if(pIOChangeWeapon) {
 						SendIOScriptEvent(entities.player(), pIOChangeWeapon, SM_INVENTORYUSE);
-						pIOChangeWeapon = NULL;
+						pIOChangeWeapon = nullptr;
 					}
 				} else {
 					bGo = false;
@@ -1154,13 +1154,13 @@ void ArxGame::managePlayerControls() {
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
 			if(!CSEND) {
 				CSEND = 1;
-				SendIOScriptEvent(NULL, entities.player(), SM_EXPLORATIONMODE);
+				SendIOScriptEvent(nullptr, entities.player(), SM_EXPLORATIONMODE);
 			}
 		}
 	} else {
 		if(CSEND) {
 			CSEND = 0;
-			SendIOScriptEvent(NULL, entities.player(), SM_CURSORMODE);
+			SendIOScriptEvent(nullptr, entities.player(), SM_CURSORMODE);
 		}
 	}
 	
@@ -1261,7 +1261,7 @@ void ArxGame::manageKeyMouse() {
 	arx_assert(entities.player());
 	
 	if(ARXmenu.mode() == Mode_InGame) {
-		Entity * pIO = NULL;
+		Entity * pIO = nullptr;
 
 		if(!BLOCK_PLAYER_CONTROLS) {
 			if(TRUE_PLAYER_MOUSELOOK_ON
@@ -1306,7 +1306,7 @@ void ArxGame::manageKeyMouse() {
 			) {
 				if(pIO->ioflags & IO_ITEM) {
 					FlyingOverIO = pIO;
-					COMBINE = NULL;
+					COMBINE = nullptr;
 
 					if(!g_draggedEntity) {
 						
@@ -1775,7 +1775,7 @@ void ArxGame::manageEditorControls() {
 			}
 			// If there is no space, leave the item where it is
 			
-			FlyingOverIO = NULL;
+			FlyingOverIO = nullptr;
 		}
 	}
 	
@@ -1785,18 +1785,18 @@ void ArxGame::manageEditorControls() {
 			Vec3f pos = GetItemWorldPosition(COMBINE);
 			
 			if(fartherThan(pos, player.pos, 300.f))
-				COMBINE = NULL;
+				COMBINE = nullptr;
 		}
 		
 		if(eeMouseDown1() && (COMBINE || COMBINEGOLD)) {
 			
-			updateCombineFlags(NULL);
+			updateCombineFlags(nullptr);
 			
 			Entity * io = FlyingOverIO;
 			
 			if(io) {
 				if(COMBINEGOLD) {
-					SendIOScriptEvent(NULL, io, SM_COMBINE, "gold_coin");
+					SendIOScriptEvent(nullptr, io, SM_COMBINE, "gold_coin");
 				} else if(io != COMBINE) {
 					combineEntities(COMBINE, io);
 				}
@@ -1824,7 +1824,7 @@ void ArxGame::manageEditorControls() {
 							if(light->m_ignitionStatus) {
 								light->m_ignitionStatus = false;
 								ARX_SOUND_PlaySFX(g_snd.TORCH_END, &light->pos);
-								SendIOScriptEvent(NULL, COMBINE, SM_CUSTOM, "douse");
+								SendIOScriptEvent(nullptr, COMBINE, SM_CUSTOM, "douse");
 							}
 						}
 					}
@@ -1841,7 +1841,7 @@ void ArxGame::manageEditorControls() {
 			}
 			
 			if(bQuitCombine) {
-				COMBINE = NULL;
+				COMBINE = nullptr;
 			}
 		}
 		
@@ -1928,7 +1928,7 @@ void ArxGame::manageEditorControls() {
 					ARX_PLAYER_Remove_Invisibility();
 					
 					if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
-						setDraggedEntity(NULL);
+						setDraggedEntity(nullptr);
 					} else {
 						if(io->ioflags & IO_UNDERWATER) {
 							io->ioflags &= ~IO_UNDERWATER;

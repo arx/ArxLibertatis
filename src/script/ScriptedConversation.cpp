@@ -129,7 +129,7 @@ public:
 			bool tooFar = false;
 			// TODO(broken-scripts) should be a flag instead of depending on the event
 			if(no_pos || SM_INVENTORYUSE == context.getMessage()) {
-				num = ARX_SOUND_PlayScript(sample, tooFar, NULL, pitch, loop);
+				num = ARX_SOUND_PlayScript(sample, tooFar, nullptr, pitch, loop);
 			} else {
 				num = ARX_SOUND_PlayScript(sample, tooFar, io, pitch, loop);
 			}
@@ -166,7 +166,7 @@ public:
 		
 		// TODO check if we actually need to succeed if tooFar becomes true
 		bool tooFar = false;
-		audio::SourcedSample num = ARX_SOUND_PlaySpeech(sample, &tooFar, io && io->show == 1 ? io : NULL);
+		audio::SourcedSample num = ARX_SOUND_PlaySpeech(sample, &tooFar, io && io->show == 1 ? io : nullptr);
 		
 		if(!tooFar && num == audio::SourcedSample()) {
 			ScriptWarning << "unable to load sound file " << sample;
@@ -274,7 +274,7 @@ class SpeakCommand : public Command {
 		std::string target = context.getWord();
 		Entity * t = entities.getById(target, context.getEntity());
 		
-		acs.ionum = (t == NULL) ? EntityHandle() : t->index();
+		acs.ionum = (t == nullptr) ? EntityHandle() : t->index();
 		acs.startpos = context.getFloat();
 		acs.endpos = context.getFloat();
 		

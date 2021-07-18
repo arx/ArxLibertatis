@@ -124,12 +124,12 @@ class InventoryCommand : public Command {
 						item->show = SHOW_FLAG_MEGAHIDE;
 						item->ioflags |= IO_FREEZESCRIPT;
 					}
-					arx_assert(id->slot[x][y].io == NULL);
+					arx_assert(id->slot[x][y].io == nullptr);
 				}
 			}
 			
 			delete io->inventory;
-			io->inventory = NULL;
+			io->inventory = nullptr;
 		}
 		
 		DestroyCommand() : SubCommand("destroy") { }
@@ -500,14 +500,14 @@ public:
 			if(io->_npcdata->weaponinhand == 0) {
 				AcquireLastAnim(io);
 				FinishAnim(io, io->animlayer[1].cur_anim);
-				io->animlayer[1].cur_anim = NULL;
+				io->animlayer[1].cur_anim = nullptr;
 				io->_npcdata->weaponinhand = -1;
 			}
 		} else {
 			if(io->_npcdata->weaponinhand == 1) {
 				AcquireLastAnim(io);
 				FinishAnim(io, io->animlayer[1].cur_anim);
-				io->animlayer[1].cur_anim = NULL;
+				io->animlayer[1].cur_anim = nullptr;
 				io->_npcdata->weaponinhand = 2;
 			}
 		}

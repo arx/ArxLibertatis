@@ -114,7 +114,7 @@ void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & text, Entity * io_sou
 	if(speechnum >= 0) {
 		
 		g_aspeech[speechnum].scrpos = size_t(-1);
-		g_aspeech[speechnum].es = NULL;
+		g_aspeech[speechnum].es = nullptr;
 		g_aspeech[speechnum].ioscript = io_source;
 		g_aspeech[speechnum].flags = 0;
 		
@@ -163,7 +163,7 @@ static void ARX_SPEECH_Release(long i) {
 		
 		if(ValidIOAddress(g_aspeech[i].io) && g_aspeech[i].io->animlayer[2].cur_anim) {
 			AcquireLastAnim(g_aspeech[i].io);
-			g_aspeech[i].io->animlayer[2].cur_anim = NULL;
+			g_aspeech[i].io->animlayer[2].cur_anim = nullptr;
 		}
 		
 		g_aspeech[i].clear();
@@ -225,7 +225,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	
 	g_aspeech[num].exist = 1;
 	g_aspeech[num].time_creation = g_gameTime.now();
-	g_aspeech[num].io = io; // can be NULL
+	g_aspeech[num].io = io; // can be nullptr
 	g_aspeech[num].duration = GameDurationMs(2000); // Minimum value
 	g_aspeech[num].flags = flags;
 	g_aspeech[num].sample = audio::SourcedSample();
@@ -279,8 +279,8 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 		sample = data;
 	}
 	
-	Entity * source = (g_aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? NULL : io;
-	g_aspeech[num].sample = ARX_SOUND_PlaySpeech(sample, NULL, source);
+	Entity * source = (g_aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? nullptr : io;
+	g_aspeech[num].sample = ARX_SOUND_PlaySpeech(sample, nullptr, source);
 	
 	// TODO Next lines must be removed (use callback instead)
 	g_aspeech[num].duration = ARX_SOUND_GetDuration(g_aspeech[num].sample.getSampleId());

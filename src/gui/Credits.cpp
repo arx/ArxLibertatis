@@ -102,7 +102,7 @@ class Credits {
 public:
 	
 	Credits()
-		: m_background(NULL)
+		: m_background(nullptr)
 		, m_scrollPosition(0.f)
 		, m_lastUpdateTime(0)
 		, m_firstVisibleLine(0)
@@ -572,7 +572,7 @@ void Credits::reset() {
 	m_lineHeight = -1;
 	m_windowSize = Vec2i(0);
 	m_lines.clear();
-	delete m_background, m_background = NULL;
+	delete m_background, m_background = nullptr;
 	m_text.clear();
 	m_message.clear();
 }

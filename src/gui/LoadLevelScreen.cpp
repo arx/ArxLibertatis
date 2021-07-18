@@ -36,8 +36,8 @@ static float PROGRESS_BAR_COUNT = 0;
 static float OLD_PROGRESS_BAR_COUNT = 0;
 
 static long lastloadednum = -1;
-static TextureContainer * g_loadingScreenImage = NULL;
-static TextureContainer * pbar = NULL;
+static TextureContainer * g_loadingScreenImage = nullptr;
+static TextureContainer * pbar = nullptr;
 static long lastnum = -1;
 
 void progressBarReset() {
@@ -56,7 +56,7 @@ void LoadLevelScreen(long num) {
 	
 	// resets status
 	if(num < -1) {
-		delete g_loadingScreenImage, g_loadingScreenImage = NULL;
+		delete g_loadingScreenImage, g_loadingScreenImage = nullptr;
 		lastloadednum = -1;
 		lastnum = -1;
 		PROGRESS_BAR_TOTAL = 0;
@@ -96,7 +96,7 @@ void LoadLevelScreen(long num) {
 		}
 		
 		if(num != lastloadednum) {
-			delete g_loadingScreenImage, g_loadingScreenImage = NULL;
+			delete g_loadingScreenImage, g_loadingScreenImage = nullptr;
 			lastloadednum = num;
 			std::string tx = GetLevelNameByNum(num);
 			res::path image = "graph/levels/level" + tx + "/loading";

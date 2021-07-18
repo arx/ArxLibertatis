@@ -32,7 +32,7 @@
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 
-static TextureContainer * tflare = NULL;
+static TextureContainer * tflare = nullptr;
 
 void initLightFlares() {
 	tflare = TextureContainer::LoadUI("graph/particles/flare");

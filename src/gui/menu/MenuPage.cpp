@@ -60,8 +60,8 @@ MenuPage::MenuPage(MENUSTATE id)
 	: m_rowSpacing(10)
 	, m_id(id)
 	, m_initialized(false)
-	, m_selected(NULL)
-	, m_focused(NULL)
+	, m_selected(nullptr)
+	, m_focused(nullptr)
 	, m_disableShortcuts(false)
 { }
 
@@ -170,7 +170,7 @@ void MenuPage::update(Vec2f pos) {
 	
 	if(m_focused && !m_focused->wantFocus()) {
 		m_focused->unfocus();
-		m_focused = NULL;
+		m_focused = nullptr;
 		m_disableShortcuts = true;
 	}
 	
@@ -217,7 +217,7 @@ void MenuPage::update(Vec2f pos) {
 	
 	if(m_focused && m_selected != m_focused && GInput->getMouseButton(Mouse::Button_0)) {
 		m_focused->unfocus();
-		m_focused = NULL;
+		m_focused = nullptr;
 	}
 	
 	if(m_selected && (!m_focused || m_focused == m_selected)) {
@@ -292,7 +292,7 @@ void MenuPage::unfocus() {
 	
 	if(m_focused) {
 		m_focused->unfocus();
-		m_focused = NULL;
+		m_focused = nullptr;
 	}
 	
 }

@@ -77,7 +77,7 @@ inline CTYPE * safeGetString(CTYPE * & pos, STYPE & size) {
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 template <class T, class CTYPE, class STYPE>

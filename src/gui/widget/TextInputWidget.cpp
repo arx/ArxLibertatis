@@ -171,7 +171,7 @@ void TextInputWidget::render(bool mouseOver) {
 		box.right = std::min(float(pos.x + width), box.right);
 		Color selection = Color::yellow;
 		selection.a = 30;
-		EERIEDrawBitmap(box, 0.f, NULL, selection);
+		EERIEDrawBitmap(box, 0.f, nullptr, selection);
 	}
 	
 	// Highlight edit area
@@ -182,7 +182,7 @@ void TextInputWidget::render(bool mouseOver) {
 		Rectf box = Rectf(Rect(pos + Vec2i(left, 0), right - left, height));
 		Color selection = Color::yellow;
 		selection.a = 40;
-		EERIEDrawBitmap(box, 0.f, NULL, selection);
+		EERIEDrawBitmap(box, 0.f, nullptr, selection);
 	}
 	
 	// Draw text

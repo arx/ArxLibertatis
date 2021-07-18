@@ -127,7 +127,7 @@ public:
 	 * Searches the internal list of textures for a texture specified by
 	 * its name. Returns the structure associated with that texture.
 	 * \param strTextureName Name of the texture to find.
-	 * \return a pointer to a TextureContainer if this texture was already loaded, NULL otherwise.
+	 * \return a pointer to a TextureContainer if this texture was already loaded, nullptr otherwise.
 	 */
 	static TextureContainer * Find(const res::path & strTextureName);
 	
@@ -141,7 +141,7 @@ public:
 
 	static const size_t HALO_RADIUS = 5;
 	TextureContainer * getHalo() {
-		return (TextureHalo ? TextureHalo : (CreateHalo() ? TextureHalo : NULL));
+		return (TextureHalo ? TextureHalo : (CreateHalo() ? TextureHalo : nullptr));
 	}
 
 private:

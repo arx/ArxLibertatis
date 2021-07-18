@@ -147,7 +147,7 @@ void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f &
 
 	if (i == -1) return;
 
-	missiles[i].owner = (io == NULL) ? EntityHandle() : io->index();
+	missiles[i].owner = (io == nullptr) ? EntityHandle() : io->index();
 	missiles[i].type = type;
 	missiles[i].lastpos = missiles[i].startpos = startpos;
 

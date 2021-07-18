@@ -62,7 +62,7 @@ static bool showDialog(DialogType type, const std::string & message,
 		case DialogOkCancel:  flags = MB_ICONQUESTION | MB_OKCANCEL; break;
 	}
 	
-	int ret = MessageBoxW(NULL, platform::WideString(message), platform::WideString(title),
+	int ret = MessageBoxW(nullptr, platform::WideString(message), platform::WideString(title),
 	                      flags | MB_SETFOREGROUND | MB_TOPMOST);
 	
 	switch(ret) {
@@ -237,7 +237,7 @@ static int zenityCommand(DialogType type, const std::string & message,
 	command.push_back(messageArg.c_str());
 	std::string titleArg = "--text=" + title;
 	command.push_back(messageArg.c_str());
-	command.push_back(NULL);
+	command.push_back(nullptr);
 	
 	return platform::run(command.data());
 }
@@ -261,7 +261,7 @@ static int kdialogCommand(DialogType type, const std::string & message,
 	command.push_back(title.c_str());
 	command.push_back("--icon");
 	command.push_back(arx_icon_name.c_str());
-	command.push_back(NULL);
+	command.push_back(nullptr);
 	
 	return platform::run(command.data());
 }
@@ -290,7 +290,7 @@ static int gxmessageCommand(DialogType type, const std::string & message,
 	command.push_back("-title");
 	command.push_back(title.c_str());
 	command.push_back(message.c_str());
-	command.push_back(NULL);
+	command.push_back(nullptr);
 	
 	return platform::run(command.data());
 }
@@ -317,7 +317,7 @@ static int xdialogCommand(DialogType type, const std::string & message,
 	command.push_back(message.c_str());
 	command.push_back("0");
 	command.push_back("0");
-	command.push_back(NULL);
+	command.push_back(nullptr);
 	
 	return platform::run(command.data());
 }
@@ -331,7 +331,7 @@ static int xmessageCommand(DialogType type, const std::string & message,
 	command.push_back("xmessage");
 	xmessageButtons(command, type);
 	command.push_back(message.c_str());
-	command.push_back(NULL);
+	command.push_back(nullptr);
 	
 	return platform::run(command.data());
 }
@@ -349,11 +349,11 @@ static int sdlDialogCommand(DialogType type, const std::string & message,
 	
 	SDL_MessageBoxData box = {
 		SDL_MESSAGEBOX_INFORMATION,
-		NULL,
+		nullptr,
 		title.c_str(),
 		message.c_str(),
-		0, NULL,
-		NULL
+		0, nullptr,
+		nullptr
 	};
 	
 	switch(type) {
@@ -418,10 +418,10 @@ static bool showDialog(DialogType type, const std::string & message,
 	
 	// This may not be the best way
 	const char * session = getenv("DESKTOP_SESSION");
-	bool usingKDE = (session != NULL) && !strcasecmp(session, "kde");
-	usingKDE = usingKDE || (getenv("KDE_FULL_SESSION") != NULL);
-	usingKDE = usingKDE || (getenv("KDE_SESSION_UID") != NULL);
-	usingKDE = usingKDE || (getenv("KDE_SESSION_VERSION") != NULL);
+	bool usingKDE = (session != nullptr) && !strcasecmp(session, "kde");
+	usingKDE = usingKDE || (getenv("KDE_FULL_SESSION") != nullptr);
+	usingKDE = usingKDE || (getenv("KDE_SESSION_UID") != nullptr);
+	usingKDE = usingKDE || (getenv("KDE_SESSION_VERSION") != nullptr);
 	
 	dialogCommand_t commands[] = {
 		usingKDE ? &kdialogCommand : &zenityCommand,
@@ -454,7 +454,7 @@ static bool showDialog(DialogType type, const std::string & message,
 		case DialogWarnYesNo:  flags = SDL_MESSAGEBOX_WARNING;     break;
 		default: /* unsupported */ break;
 	}
-	if(flags && !SDL_ShowSimpleMessageBox(flags, title.c_str(), message.c_str(), NULL)) {
+	if(flags && !SDL_ShowSimpleMessageBox(flags, title.c_str(), message.c_str(), nullptr)) {
 		return true;
 	}
 	#endif

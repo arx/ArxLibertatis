@@ -107,7 +107,7 @@ void MassLightningStrikeSpell::Launch() {
 	
 	// Draws White Flash on Screen
 	UseRenderState state(render2D().blend(BlendOne, BlendOne));
-	EERIEDrawBitmap(Rectf(g_size), 0.00009f, NULL, Color::white);
+	EERIEDrawBitmap(Rectf(g_size), 0.00009f, nullptr, Color::white);
 }
 
 void MassLightningStrikeSpell::End() {
@@ -157,7 +157,7 @@ void MassLightningStrikeSpell::Update() {
 	
 	if(0 > m_duration - GameDurationMs(1800) && !m_soundEffectPlayed) {
 		m_soundEffectPlayed = true;
-		ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, NULL, Random::getf(0.8f, 1.2f));
+		ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, nullptr, Random::getf(0.8f, 1.2f));
 	}
 	
 	EERIE_LIGHT * light = lightHandleGet(m_light);
@@ -170,7 +170,7 @@ void MassLightningStrikeSpell::Update() {
 ControlTargetSpell::ControlTargetSpell()
 	: eSrc(0.f)
 	, eTarget(0.f)
-	, tex_mm(NULL)
+	, tex_mm(nullptr)
 	, fTrail(0)
 { }
 

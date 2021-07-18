@@ -31,7 +31,7 @@ const IniSection * IniReader::getSection(const std::string & sectionName) const 
 	if(iter != sections.end()) {
 		return &(iter->second);
 	} else {
-		return NULL;
+		return nullptr;
 	}
 	
 }
@@ -96,14 +96,14 @@ const IniKey * IniReader::getKey(const std::string & sectionName, const std::str
 	// Look for a section
 	const IniSection * section = getSection(sectionName);
 	
-	// If the section was not found, return NULL
+	// If the section was not found, return nullptr
 	if(!section) {
-		return NULL;
+		return nullptr;
 	}
 	
-	// If the section has no keys, return NULL
+	// If the section has no keys, return nullptr
 	if(section->empty()) {
-		return NULL;
+		return nullptr;
 	}
 	
 	// If the key is not specified, return the first ones value( to avoid breakage with legacy assets )
@@ -120,7 +120,7 @@ static const std::string ALPHANUM = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQ
 bool IniReader::read(std::istream & is, bool overrideValues) {
 	
 	// The current section
-	IniSection * section = NULL;
+	IniSection * section = nullptr;
 	
 	bool ok = true;
 	

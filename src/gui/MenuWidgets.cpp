@@ -162,7 +162,7 @@ void MainMenuDoFrame() {
 			if(g_mainMenu->m_window) {
 				scroll = g_mainMenu->m_window->scroll();
 			}
-			delete g_mainMenu, g_mainMenu = NULL;
+			delete g_mainMenu, g_mainMenu = nullptr;
 		}
 		
 		g_mainMenu = new MainMenu();
@@ -176,7 +176,7 @@ void MainMenuDoFrame() {
 		
 	}
 	
-	if(pMenuCursor == NULL) {
+	if(pMenuCursor == nullptr) {
 		pMenuCursor = new MenuCursor();
 	}
 	pMenuCursor->update();
@@ -219,7 +219,7 @@ MenuWindow::MenuWindow()
 	, m_initalOffsetX(-m_size.x)
 	, m_fadeDistance(m_size.x + m_pos.x)
 	, fAngle(0.f)
-	, m_currentPage(NULL)
+	, m_currentPage(nullptr)
 	, m_background(TextureContainer::LoadUI("graph/interface/menus/menu_console_background"))
 	, m_border(TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border"))
 { }
@@ -297,13 +297,13 @@ MenuPage * MenuWindow::getPage(MENUSTATE id) const {
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void Menu2_Close() {
 	
-	delete g_mainMenu, g_mainMenu = NULL;
-	delete pMenuCursor, pMenuCursor = NULL;
+	delete g_mainMenu, g_mainMenu = nullptr;
+	delete pMenuCursor, pMenuCursor = nullptr;
 }
 
 void MenuReInitAll() {

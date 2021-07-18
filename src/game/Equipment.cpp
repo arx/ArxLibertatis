@@ -159,7 +159,7 @@ void ARX_EQUIPMENT_ReleaseAll(Entity * io) {
 	}
 	
 	delete io->_itemdata->equipitem;
-	io->_itemdata->equipitem = NULL;
+	io->_itemdata->equipitem = nullptr;
 	
 }
 
@@ -174,7 +174,7 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const std::string & se
 	
 	Entity * io = entities.player();
 	
-	arx_assert(entities[player.equiped[equip]]->tweakerinfo != NULL);
+	arx_assert(entities[player.equiped[equip]]->tweakerinfo != nullptr);
 	
 	const IO_TWEAKER_INFO & tweak = *entities[player.equiped[equip]]->tweakerinfo;
 	
@@ -831,7 +831,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							
 							if(target->material != MATERIAL_NONE) {
 								const char * matStr = ARX_MATERIAL_GetNameById(target->material);
-								ARX_SOUND_PlayCollision(*weapon_material, matStr, 1.f, 1.f, sphere.origin, NULL);
+								ARX_SOUND_PlayCollision(*weapon_material, matStr, 1.f, 1.f, sphere.origin, nullptr);
 							}
 						}
 					}
@@ -875,7 +875,7 @@ void ARX_EQUIPMENT_LaunchPlayerReadyWeapon() {
 	Entity * io = entities.player();
 	
 	WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
-	ANIM_HANDLE * anim = NULL;
+	ANIM_HANDLE * anim = nullptr;
 
 	switch(type) {
 		case WEAPON_DAGGER:
@@ -930,7 +930,7 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 	toequip->show = SHOW_FLAG_ON_PLAYER; // on player
 	
 	if(toequip == g_draggedEntity) {
-		setDraggedEntity(NULL);
+		setDraggedEntity(nullptr);
 	}
 	
 	if(toequip->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
@@ -1106,7 +1106,7 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
                             const std::string & modifierName, float val,
                             EquipmentModifierFlags flags) {
 	
-	if(io == NULL) {
+	if(io == nullptr) {
 		return;
 	}
 

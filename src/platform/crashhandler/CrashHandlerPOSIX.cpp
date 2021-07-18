@@ -96,13 +96,13 @@ static void registerSignalHandler(int s, signal_handler & old_handler) {
 }
 
 static void unregisterSignalHandler(int s, signal_handler & old_handler) {
-	sigaction(s, &old_handler, NULL);
+	sigaction(s, &old_handler, nullptr);
 }
 
 #else
 
 static void signalHandler(int signal) {
-	CrashHandlerPOSIX::getInstance().handleCrash(signal, NULL, NULL);
+	CrashHandlerPOSIX::getInstance().handleCrash(signal, nullptr, nullptr);
 }
 
 typedef void (*signal_handler)(int signal);
@@ -129,7 +129,7 @@ struct PlatformCrashHandlers {
 
 CrashHandlerPOSIX * CrashHandlerPOSIX::m_sInstance = 0;
 
-CrashHandlerPOSIX::CrashHandlerPOSIX() : m_pPreviousCrashHandlers(NULL) {
+CrashHandlerPOSIX::CrashHandlerPOSIX() : m_pPreviousCrashHandlers(nullptr) {
 	m_sInstance = this;
 }
 
@@ -232,7 +232,7 @@ static fs::path getCoreDumpFile() {
 	#if ARX_HAVE_SYSCTLBYNAME && defined(PATH_MAX)
 	char pathname[PATH_MAX];
 	size_t size = sizeof(pathname);
-	int error = sysctlbyname("kern.corefile", pathname, &size, NULL, 0);
+	int error = sysctlbyname("kern.corefile", pathname, &size, nullptr, 0);
 	if(error != -1 || size > 0 || size <= sizeof(pathname)) {
 		pattern = util::loadString(pathname, size);
 	} else {
@@ -495,7 +495,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 				break;
 			}
 			#if ARX_HAVE_WAITPID
-			if(waitpid(processor, NULL, WNOHANG) != 0) {
+			if(waitpid(processor, nullptr, WNOHANG) != 0) {
 				break;
 			}
 			#endif
@@ -503,7 +503,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 			timespec t;
 			t.tv_sec = 0;
 			t.tv_nsec = 100 * 1000;
-			nanosleep(&t, NULL);
+			nanosleep(&t, nullptr);
 			#endif
 		}
 		// Exit if the crash reporter failed
@@ -511,7 +511,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 		std::abort();
 	}
 	#ifdef ARX_HAVE_EXECVP
-	const char * args[] = { m_executable.string().c_str(), m_arg.c_str(), NULL };
+	const char * args[] = { m_executable.string().c_str(), m_arg.c_str(), nullptr };
 	execvp(m_executable.string().c_str(), const_cast<char **>(args));
 	#endif
 	

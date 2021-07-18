@@ -83,7 +83,7 @@ static CinematicSound * GetFreeSound() {
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 static bool DeleteFreeSound(size_t num) {

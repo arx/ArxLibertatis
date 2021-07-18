@@ -94,7 +94,7 @@ public:
 	//! Resize the buffer and fill any new characters with \c L'\0'
 	void resize(size_t size);
 	
-	//! Resize the buffer to the first NULL byte
+	//! Resize the buffer to the first NUL byte
 	void compact();
 	
 	void assign(const char * utf8, size_t length, size_t offset = 0);
@@ -153,7 +153,7 @@ public:
 	
 };
 
-std::string getErrorString(DWORD error = GetLastError(), HMODULE module = NULL);
+std::string getErrorString(DWORD error = GetLastError(), HMODULE module = nullptr);
 
 template <typename FunctionType>
 FunctionType getProcAddress(HMODULE module, const char * symbol) {

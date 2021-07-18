@@ -89,14 +89,14 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	, requestRoomUpdate(true)
 	, original_height(0.f)
 	, original_radius(0.f)
-	, m_icon(NULL)
-	, obj(NULL)
-	, tweaky(NULL)
+	, m_icon(nullptr)
+	, obj(nullptr)
+	, tweaky(nullptr)
 	, type_flags(0)
 	, scriptload(0)
 	, target(0.f)
 	, targetinfo(TARGET_NONE)
-	, inventory(NULL)
+	, inventory(nullptr)
 	, show(SHOW_FLAG_IN_SCENE)
 	, collision(0)
 	, mainevent(SM_MAIN)
@@ -106,14 +106,14 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	, fall(0.f)
 	, initpos(0.f)
 	, scale(1.f)
-	, usepath(NULL)
-	, symboldraw(NULL)
+	, usepath(nullptr)
+	, symboldraw(nullptr)
 	, lastspeechflag(2)
-	, inzone(NULL)
+	, inzone(nullptr)
 	, m_disabledEvents(0)
 	, stat_count(0)
 	, stat_sent(0)
-	, tweakerinfo(NULL)
+	, tweakerinfo(nullptr)
 	, material(MATERIAL_NONE)
 	, m_inventorySize(1)
 	, soundtime(0)
@@ -150,7 +150,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	
 	m_index = entities.add(this);
 	
-	std::fill_n(anims, MAX_ANIMS, static_cast<ANIM_HANDLE *>(NULL));
+	std::fill_n(anims, MAX_ANIMS, static_cast<ANIM_HANDLE *>(nullptr));
 	
 	for(size_t l = 0; l < MAX_ANIM_LAYERS; l++) {
 		animlayer[l] = AnimLayer();
@@ -164,10 +164,10 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	bbox2D.min = Vec2f(-1.f, -1.f);
 	bbox2D.max = Vec2f(-1.f, -1.f);
 	
-	_itemdata = NULL;
-	_fixdata = NULL;
-	_npcdata = NULL;
-	_camdata = NULL;
+	_itemdata = nullptr;
+	_fixdata = nullptr;
+	_npcdata = nullptr;
+	_camdata = nullptr;
 	
 	halo_native.color = Color3f(0.2f, 0.5f, 1.f);
 	halo_native.radius = 45.f;
@@ -185,20 +185,20 @@ Entity::~Entity() {
 	cleanReferences();
 	
 	if(g_cameraEntity == this) {
-		g_cameraEntity = NULL;
+		g_cameraEntity = nullptr;
 	}
 	
 	// Releases ToBeDrawn Transparent Polys linked to this object !
 	tweaks.clear();
 	
 	if(obj && !(ioflags & IO_CAMERA) && !(ioflags & IO_MARKER) && !(ioflags & IO_GOLD)) {
-		delete obj, obj = NULL;
+		delete obj, obj = nullptr;
 	}
 	
 	spells.removeTarget(this);
 	
 	delete tweakerinfo;
-	delete tweaky, tweaky = NULL;
+	delete tweaky, tweaky = nullptr;
 	
 	ReleaseScript(&script);
 	ReleaseScript(&over_script);
@@ -206,7 +206,7 @@ Entity::~Entity() {
 	for(size_t n = 0; n < MAX_ANIMS; n++) {
 		if(anims[n]) {
 			EERIE_ANIMMANAGER_ReleaseHandle(anims[n]);
-			anims[n] = NULL;
+			anims[n] = nullptr;
 		}
 	}
 	
@@ -215,7 +215,7 @@ Entity::~Entity() {
 	delete usepath;
 	
 	delete symboldraw;
-	symboldraw = NULL;
+	symboldraw = nullptr;
 	
 	if(ioflags & IO_NPC) {
 		delete _npcdata;
@@ -240,7 +240,7 @@ Entity::~Entity() {
 					inventory->slot[ni][nj].io->pos = GetItemWorldPosition(inventory->slot[ni][nj].io);
 					removeFromInventories(inventory->slot[ni][nj].io);
 				}
-				arx_assert(inventory->slot[ni][nj].io == NULL);
+				arx_assert(inventory->slot[ni][nj].io == nullptr);
 				arx_assert(inventory->slot[ni][nj].show == false);
 			}
 		}
@@ -262,23 +262,23 @@ void Entity::cleanReferences() {
 	ARX_INTERACTIVE_DestroyIOdelayedRemove(this);
 	
 	if(g_draggedEntity == this) {
-		setDraggedEntity(NULL);
+		setDraggedEntity(nullptr);
 	}
 	
 	if(FlyingOverIO == this) {
-		FlyingOverIO = NULL;
+		FlyingOverIO = nullptr;
 	}
 	
 	if(COMBINE == this) {
-		COMBINE = NULL;
+		COMBINE = nullptr;
 	}
 	
 	if(pIOChangeWeapon == this) {
-		pIOChangeWeapon = NULL; // TODO we really need a proper weak_ptr
+		pIOChangeWeapon = nullptr; // TODO we really need a proper weak_ptr
 	}
 	
 	if(ioSteal == this) {
-		ioSteal = NULL;
+		ioSteal = nullptr;
 	}
 	
 	if(!FAST_RELEASE) {
@@ -303,7 +303,7 @@ void Entity::cleanReferences() {
 		if(parent) {
 			EERIE_LINKEDOBJ_UnLinkObjectFromObject(parent->obj, obj);
 			if((parent->ioflags & IO_NPC) && parent->_npcdata->weapon == this) {
-				parent->_npcdata->weapon = NULL;
+				parent->_npcdata->weapon = nullptr;
 			}
 		}
 	}

@@ -48,6 +48,6 @@ void TextWidget::render(bool mouseOver) {
 		color = Color::white;
 	}
 	
-	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, color, NULL);
+	ARX_UNICODE_DrawTextInRect(m_font, m_rect.topLeft(), m_rect.right, m_text, color, nullptr);
 	
 }

@@ -144,7 +144,7 @@ DECLARE_FLAGS_OPERATORS(AnimUseType)
 struct AnimLayer {
 	
 	AnimLayer()
-		: cur_anim(NULL)
+		: cur_anim(nullptr)
 		, altidx_cur(0)
 		, ctime(0)
 		, flags(0)

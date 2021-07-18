@@ -232,14 +232,14 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				io->dynlight = LightHandle();
 				
 				delete io->symboldraw;
-				io->symboldraw = NULL;
+				io->symboldraw = nullptr;
 				continue;
 			}
 			
 			const size_t nbcomponents = sd->sequence.length();
 			if(nbcomponents == 0) {
 				delete io->symboldraw;
-				io->symboldraw = NULL;
+				io->symboldraw = nullptr;
 				continue;
 			}
 			
@@ -303,7 +303,7 @@ void ARX_SPELLS_ClearAllSymbolDraw() {
 	BOOST_FOREACH(Entity * e, entities) {
 		if(e && e->symboldraw) {
 			delete e->symboldraw;
-			e->symboldraw = NULL;
+			e->symboldraw = nullptr;
 		}
 	}
 }

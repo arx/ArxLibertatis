@@ -78,8 +78,8 @@ public:
 		, color(Color3f::white * 255.f)
 		, intensity(1.f)
 		, intensiternd(0.2f)
-		, prev(NULL)
-		, next(NULL)
+		, prev(nullptr)
+		, next(nullptr)
 	{}
 };
 

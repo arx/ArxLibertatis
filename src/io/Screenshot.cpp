@@ -105,5 +105,5 @@ void GetSnapShot() {
 }
 
 void FreeSnapShot() {
-	delete pSnapShot, pSnapShot = NULL;
+	delete pSnapShot, pSnapShot = nullptr;
 }

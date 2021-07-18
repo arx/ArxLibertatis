@@ -712,7 +712,7 @@ void Ambiance::play(const Channel & channel, bool loop, PlatformDuration fadeInt
 			key->z.reset();
 		}
 		
-		arx_assert(backend->getSource(track->s_id) == NULL
+		arx_assert(backend->getSource(track->s_id) == nullptr
 		           || backend->getSource(track->s_id)->isIdle());
 		
 		track->key_i = track->keys.begin();

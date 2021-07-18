@@ -49,9 +49,9 @@ struct Note {
 		, m_page(0)
 		, m_pageSpacing(20)
 		, m_maxPages(1)
-		, m_background(NULL)
-		, m_prevPage(NULL)
-		, m_nextPage(NULL)
+		, m_background(nullptr)
+		, m_prevPage(nullptr)
+		, m_nextPage(nullptr)
 	{}
 	
 	void setData(Type type, const std::string & text);

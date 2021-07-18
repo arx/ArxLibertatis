@@ -48,12 +48,12 @@ public:
 		argv = new char *[argc + 1];
 		
 		for(int i = 0; i < argc; i++) {
-			int n = WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, NULL, 0,  NULL, NULL);
+			int n = WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, nullptr, 0,  nullptr, nullptr);
 			argv[i] = new char[n];
-			WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, argv[i], n, NULL, NULL);
+			WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, argv[i], n, nullptr, nullptr);
 		}
 		
-		argv[argc] = NULL;
+		argv[argc] = nullptr;
 		
 		// Work around a bug in Visual Studio 2013's math library
 		// https://support.microsoft.com/en-us/help/3174417/fix-programs-that-are-built-in-visual-c-2013-crash-with-illegal-instru

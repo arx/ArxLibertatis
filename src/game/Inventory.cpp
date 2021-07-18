@@ -86,14 +86,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 INVENTORY_SLOT g_inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
-INVENTORY_DATA * SecondaryInventory = NULL;
-Entity * ioSteal = NULL;
+INVENTORY_DATA * SecondaryInventory = nullptr;
+Entity * ioSteal = nullptr;
 
 INVENTORY_DATA::~INVENTORY_DATA() {
 	
 	for(long nj = 0; nj < m_size.y; nj++) {
 		for(long ni = 0; ni < m_size.x; ni++) {
-			arx_assert(slot[ni][nj].io == NULL);
+			arx_assert(slot[ni][nj].io == nullptr);
 			arx_assert(slot[ni][nj].show == false);
 		}
 	}
@@ -148,7 +148,7 @@ void PutInFrontOfPlayer(Entity * io) {
 	io->angle = Anglef();
 	
 	if(g_draggedEntity == io) {
-		setDraggedEntity(NULL);
+		setDraggedEntity(nullptr);
 	}
 	
 	io->show = SHOW_FLAG_IN_SCENE;
@@ -225,7 +225,7 @@ struct PlayerInventoryAccess {
 	
 	bool insertGold(Entity * item) {
 		
-		if(item != NULL && (item->ioflags & IO_GOLD)) {
+		if(item != nullptr && (item->ioflags & IO_GOLD)) {
 			ARX_PLAYER_AddGold(item);
 			return true;
 		}
@@ -366,7 +366,7 @@ private:
 	}
 	
 	Pos insertImpl(Entity * item, const Pos & pos = Pos()) {
-		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
 		if(insertIntoStackAt(item, pos)) {
 			return pos;
 		}
@@ -447,7 +447,7 @@ private:
 			return false;
 		}
 		
-		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
 		
 		arx_assert(pos.io == handle());
 		
@@ -458,14 +458,14 @@ private:
 		// Check if the whole area required by this item is empty
 		for(index_type j = pos.y; j < pos.y + item->m_inventorySize.y; j++) {
 			for(index_type i = pos.x; i < pos.x + item->m_inventorySize.x; i++) {
-				if(index(pos.bag, i, j).io != NULL) {
+				if(index(pos.bag, i, j).io != nullptr) {
 					return false;
 				}
 			}
 		}
 		
 		if(g_draggedEntity == item) {
-			setDraggedEntity(NULL);
+			setDraggedEntity(nullptr);
 		}
 		
 		removeFromInventories(item);
@@ -491,7 +491,7 @@ private:
 	
 	Pos insertIntoNewSlot(Entity * item) {
 		
-		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
 		
 		if(size_type(item->m_inventorySize.x) > width() || size_type(item->m_inventorySize.y) > height()) {
 			return Pos();
@@ -509,7 +509,7 @@ private:
 					Pos pos = swap() ? Pos(handle(), bag, j, i) : Pos(handle(), bag, i, j);
 					
 					// Ignore already used inventory slots
-					if(index(pos).io != NULL) {
+					if(index(pos).io != nullptr) {
 						continue;
 					}
 					
@@ -529,7 +529,7 @@ private:
 			return false;
 		}
 		
-		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
 		
 		if(pos.x + item->m_inventorySize.x > width() || pos.y + item->m_inventorySize.y > height()) {
 			return false;
@@ -559,7 +559,7 @@ private:
 	
 	Pos insertIntoStack(Entity * item) {
 		
-		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
 		
 		if(size_type(item->m_inventorySize.x) > width() || size_type(item->m_inventorySize.y) > height()) {
 			return Pos();
@@ -749,7 +749,7 @@ public:
 	
 	void remove(Entity * item) {
 		
-		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
 		
 		InventoryPos pos = locateInInventories(item);
 		arx_assert(pos.io == handle());
@@ -768,7 +768,7 @@ public:
 			for(index_type i = pos.x; i < (pos.x + size_type(item->m_inventorySize.x)); i++) {
 				arx_assert(index(pos.bag, i, j).io == item);
 				arx_assert(index(pos.bag, i, j).show == false);
-				index(pos.bag, i, j).io = NULL;
+				index(pos.bag, i, j).io = nullptr;
 			}
 		}
 		
@@ -776,17 +776,17 @@ public:
 	}
 	
 	Entity * get(const Pos & pos) const {
-		return pos ? index(pos).io : NULL;
+		return pos ? index(pos).io : nullptr;
 	}
 	
 };
 
 Inventory<PlayerInventoryAccess> getPlayerInventory() {
-	return Inventory<PlayerInventoryAccess>(NULL);
+	return Inventory<PlayerInventoryAccess>(nullptr);
 }
 
 Inventory<EntityInventoryAccess> getIoInventory(Entity * entity) {
-	arx_assert(entity != NULL && entity->inventory != NULL);
+	arx_assert(entity != nullptr && entity->inventory != nullptr);
 	return Inventory<EntityInventoryAccess>(entity);
 }
 
@@ -948,7 +948,7 @@ Vec3f GetItemWorldPosition(const Entity * io) {
 			if(pos.io == EntityHandle_Player) {
 				return player.pos + Vec3f(0.f, 80.f, 0.f);
 			} else {
-				arx_assert(entities.get(pos.io) != NULL);
+				arx_assert(entities.get(pos.io) != nullptr);
 				return entities.get(pos.io)->pos;
 			}
 		}
@@ -980,7 +980,7 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
 			if(pos.io == EntityHandle_Player) {
 				return ARX_PLAYER_FrontPos();
 			} else {
-				arx_assert(entities.get(pos.io) != NULL);
+				arx_assert(entities.get(pos.io) != nullptr);
 				return entities.get(pos.io)->pos;
 			}
 		}
@@ -1000,7 +1000,7 @@ bool IsInPlayerInventory(Entity * io) {
 
 Entity * getInventoryItemWithLowestDurability(const std::string & className, float minDurability) {
 	
-	Entity * io = NULL;
+	Entity * io = nullptr;
 	
 	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)

@@ -57,24 +57,24 @@ class Sample;
 #define ALError LogError
 
 OpenALBackend::OpenALBackend()
-	: device(NULL)
-	, context(NULL)
+	: device(nullptr)
+	, context(nullptr)
 	#if ARX_HAVE_OPENAL_EFX
 	, hasEFX(false)
-	, alGenEffects(NULL)
-	, alDeleteEffects(NULL)
-	, alEffecti(NULL)
-	, alEffectf(NULL)
-	, alGenAuxiliaryEffectSlots(NULL)
-	, alDeleteAuxiliaryEffectSlots(NULL)
-	, alAuxiliaryEffectSloti(NULL)
+	, alGenEffects(nullptr)
+	, alDeleteEffects(nullptr)
+	, alEffecti(nullptr)
+	, alEffectf(nullptr)
+	, alGenAuxiliaryEffectSlots(nullptr)
+	, alDeleteAuxiliaryEffectSlots(nullptr)
+	, alAuxiliaryEffectSloti(nullptr)
 	, effectEnabled(false)
 	, effect(AL_EFFECT_NULL)
 	, effectSlot(AL_EFFECTSLOT_NULL)
 	#endif
 	#if ARX_HAVE_OPENAL_HRTF
 	, m_hasHRTF(false)
-	, alcResetDeviceSOFT(NULL)
+	, alcResetDeviceSOFT(nullptr)
 	, m_HRTFAttribute(HRTFDefault)
 	#endif
 	, rolloffFactor(1.f)
@@ -146,8 +146,8 @@ public:
 		arx_assert(i <= s_count);
 		
 		for(; i < s_count; i++) {
-			m_overrides[i].name = NULL;
-			m_overrides[i].value = NULL;
+			m_overrides[i].name = nullptr;
+			m_overrides[i].value = nullptr;
 		}
 		
 	}
@@ -220,7 +220,7 @@ aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrt
 		device = alcOpenDevice(fullDeviceName.c_str());
 	}
 	if(!device) {
-		ALenum error = alcGetError(NULL);
+		ALenum error = alcGetError(nullptr);
 		if(error != ALC_INVALID_VALUE) {
 			LogError << "Error opening device: " << error << " = " << getAlcErrorString(error);
 		}
@@ -232,7 +232,7 @@ aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrt
 	if(m_hasHRTF) {
 		#define ARX_AL_LOAD_FUNC(Name) \
 			Name = FunctionPointer(alGetProcAddress(ARX_STR(Name))); \
-			hasEFX = hasEFX && Name != NULL
+			hasEFX = hasEFX && Name != nullptr
 		ARX_AL_LOAD_FUNC(alcResetDeviceSOFT);
 		#undef ARX_AL_LOAD_FUNC
 	}
@@ -256,7 +256,7 @@ aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrt
 	if(hasEFX) {
 		#define ARX_AL_LOAD_FUNC(Name) \
 			Name = FunctionPointer(alGetProcAddress(ARX_STR(Name))); \
-			hasEFX = hasEFX && Name != NULL
+			hasEFX = hasEFX && Name != nullptr
 		ARX_AL_LOAD_FUNC(alGenEffects);
 		ARX_AL_LOAD_FUNC(alDeleteEffects);
 		ARX_AL_LOAD_FUNC(alEffecti);
@@ -362,17 +362,17 @@ std::vector<std::string> OpenALBackend::getDevices() {
 	
 	std::vector<std::string> result;
 	
-	const char * devices = NULL;
+	const char * devices = nullptr;
 	
 	#ifdef ALC_ENUMERATE_ALL_EXT
 	ALCboolean hasDetailedDevices = alcIsExtensionPresent(device, "ALC_ENUMERATE_ALL_EXT");
 	if(hasDetailedDevices != ALC_FALSE) {
-		devices = alcGetString(NULL, ALC_ALL_DEVICES_SPECIFIER);
+		devices = alcGetString(nullptr, ALC_ALL_DEVICES_SPECIFIER);
 	}
 	#endif
 	
 	if(!devices) {
-		devices = alcGetString(NULL, ALC_DEVICE_SPECIFIER);
+		devices = alcGetString(nullptr, ALC_DEVICE_SPECIFIER);
 	}
 	
 	while(devices && *devices) {
@@ -387,12 +387,12 @@ std::vector<std::string> OpenALBackend::getDevices() {
 Source * OpenALBackend::createSource(SampleHandle sampleId, const Channel & channel) {
 	
 	if(!g_samples.isValid(sampleId)) {
-		return NULL;
+		return nullptr;
 	}
 	
 	Sample * sample = g_samples[sampleId];
 	
-	OpenALSource * orig = NULL;
+	OpenALSource * orig = nullptr;
 	
 	for(SourceList::iterator it = sources.begin(); it != sources.end(); ++it) {
 		if((*it) && (*it)->getSample() == sample) {
@@ -408,7 +408,7 @@ Source * OpenALBackend::createSource(SampleHandle sampleId, const Channel & chan
 	SourcedSample id = SourcedSample(index, sampleId);
 	if(source->init(id, orig, channel)) {
 		sources.remove(index);
-		return NULL;
+		return nullptr;
 	}
 	
 	source->setRolloffFactor(rolloffFactor);
@@ -426,14 +426,14 @@ Source * OpenALBackend::getSource(SourcedSample sourceId) {
 	
 	SourceHandle index = sourceId.source();
 	if(!sources.isValid(index)) {
-		return NULL;
+		return nullptr;
 	}
 	
 	Source * source = sources[index];
 	
 	SampleHandle sample = sourceId.getSampleId();
 	if(!g_samples.isValid(sample) || source->getSample() != g_samples[sample]) {
-		return NULL;
+		return nullptr;
 	}
 	
 	arx_assert(source->getId() == sourceId);

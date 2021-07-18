@@ -38,7 +38,7 @@ struct RaycastResult {
 	Vec3f pos;
 	
 	RaycastResult()
-		: hit(NULL)
+		: hit(nullptr)
 		, pos(0.f)
 	{ }
 	
@@ -48,7 +48,7 @@ struct RaycastResult {
 	{ }
 	
 	operator bool() const {
-		return hit != NULL;
+		return hit != nullptr;
 	}
 	
 };
@@ -63,8 +63,8 @@ struct EntityRaycastResult {
 	Vec3f pos;
 	
 	EntityRaycastResult()
-		: entity(NULL)
-		, face(NULL)
+		: entity(nullptr)
+		, face(nullptr)
 		, pos(0.f)
 	{ }
 	
@@ -75,7 +75,7 @@ struct EntityRaycastResult {
 	{ }
 	
 	operator bool() const {
-		return entity != NULL;
+		return entity != nullptr;
 	}
 	
 };

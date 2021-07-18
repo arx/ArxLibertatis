@@ -75,7 +75,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 			
 		}
 		
-		std::time_t now = std::time(NULL);
+		std::time_t now = std::time(nullptr);
 		std::tm n = *std::localtime(&now);
 		std::tm t = *std::localtime(&save.stime);
 		

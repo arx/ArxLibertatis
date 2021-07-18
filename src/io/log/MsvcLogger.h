@@ -40,7 +40,7 @@ public:
 	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str);
 	
 	/*!
-	 * Returns a MsvcDebugger instance if a debugger is attached or NULL otherwise.
+	 * Returns a MsvcDebugger instance if a debugger is attached or nullptr otherwise.
 	 */
 	static MsvcDebugger * get();
 	

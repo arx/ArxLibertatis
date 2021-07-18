@@ -255,7 +255,7 @@ void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj) {
 	}
 	
 	delete obj->pbox;
-	obj->pbox = NULL;
+	obj->pbox = nullptr;
 }
 
 // Used to launch an object into the physical world...
@@ -609,7 +609,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA & pbox, float framedi
 
 	RK4Integrate(pbox.vert, framediff);
 	
-	EERIEPOLY * collisionPoly = NULL;
+	EERIEPOLY * collisionPoly = nullptr;
 	
 	for(size_t i = 0; i < pbox.vert.size(); i += 1) {
 		const Vec3f start = oldpos[i];

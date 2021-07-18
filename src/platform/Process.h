@@ -47,7 +47,7 @@ typedef pid_t process_handle;
  *
  * \param exe  the program to run, either an absolute path or a program name in the PATH.
  * \param args program arguments. The first argument should be the program name/path and
- *             the last argument must be NULL.
+ *             the last argument must be nullptr.
  * \param detach Detach the child process from the parent
  *
  * \return the programs exit code or a negative value on error.
@@ -60,7 +60,7 @@ int run(const char * exe, const char * const args[], bool detach = false);
  * The executable's standard output/error is discarded.
  *
  * \param args program arguments. The first argument is the program to run, either an
- *             absolute path or a program name in the PATH. The last argument must be NULL.
+ *             absolute path or a program name in the PATH. The last argument must be nullptr.
  * \param detach Detach the child process from the parent
  *
  * \return the programs exit code or a negative value on error.
@@ -76,7 +76,7 @@ inline int run(const char * const args[], bool detach = false) {
  *
  * \param exe  the program to run, either an absolute path or a program name in the PATH.
  * \param args program arguments. The first argument should be the program name/path and
- *             the last argument must be NULL.
+ *             the last argument must be nullptr.
  * \param detach Detach the child process from the parent
  *
  * \return the programs exit code or a negative value on error.
@@ -92,7 +92,7 @@ inline int run(const std::string & exe, const char * const args[], bool detach =
  *
  * \param exe  the program to run, either an absolute path or a program name in the PATH.
  * \param args program arguments. The first argument should be the program name/path and
- *             the last argument must be NULL.
+ *             the last argument must be nullptr.
  * \param detach Detach the child process from the parent
  *
  * \return a process handle that should be closed with \ref closeProcessHandle
@@ -106,7 +106,7 @@ process_handle runAsync(const char * exe, const char * const args[], bool detach
  * The program's standard output/error is discarded.
  *
  * \param args program arguments. The first argument is the program to run, either an
- *             absolute path or a program name in the PATH. The last argument must be NULL.
+ *             absolute path or a program name in the PATH. The last argument must be nullptr.
  * \param detach Detach the child process from the parent
  *
  * \return a process handle that should be closed with \ref closeProcessHandle
@@ -123,7 +123,7 @@ inline process_handle runAsync(const char * const args[], bool detach = false) {
  *
  * \param exe  the program to run, either an absolute path or a program name in the PATH.
  * \param args program arguments. The first argument should be the program name/path and
- *             the last argument must be NULL.
+ *             the last argument must be nullptr.
  * \param detach Detach the child process from the parent
  *
  * \return a process handle that should be closed with \ref closeProcessHandle
@@ -181,7 +181,7 @@ void reapZombies();
  * \brief Run a helper executable
  *
  * \param args program arguments. The first argument should be the program name/path and
- *             the last argument must be NULL.
+ *             the last argument must be nullptr.
  * \param wait true if the helper should be run synchronously
  * \param detach Detach the child process from the parent
  *
@@ -207,7 +207,7 @@ bool isWoW64Process(process_handle process);
  *
  * \param exe  the program to run, either an absolute path or a program name in the PATH.
  * \param args program arguments. The first argument should be the program name/path and
- *             the last argument must be NULL.
+ *             the last argument must be nullptr.
  * \param unlocalized true if localization environment varuables should be reset.
  *
  * \return the program's standard output, or an empty string if there was an error.
@@ -221,7 +221,7 @@ std::string getOutputOf(const char * exe, const char * const args[],
  * The program's standard standard error is discarded.
  *
  * \param args program arguments. The first argument is the program to run, either an
- *             absolute path or a program name in the PATH. The last argument must be NULL.
+ *             absolute path or a program name in the PATH. The last argument must be nullptr.
  * \param unlocalized true if localization environment varuables should be reset.
  *
  * \return the program's standard output, or an empty string if there was an error.
@@ -237,7 +237,7 @@ inline std::string getOutputOf(const char * const args[], bool unlocalized = fal
  *
  * \param exe  the program to run, either an absolute path or a program name in the PATH.
  * \param args program arguments. The first argument should be the program name/path and
- *             the last argument must be NULL.
+ *             the last argument must be nullptr.
  * \param unlocalized true if localization environment varuables should be reset.
  *
  * \return the program's standard output, or an empty string if there was an error.

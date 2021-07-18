@@ -48,7 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-CodecRAW::CodecRAW() : m_stream(NULL) { }
+CodecRAW::CodecRAW() : m_stream(nullptr) { }
 
 aalError CodecRAW::setHeader(void * header) {
 	ARX_UNUSED(header);

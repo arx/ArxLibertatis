@@ -73,22 +73,22 @@ long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 // Local list of textures
 //-----------------------------------------------------------------------------
 
-static TextureContainer * g_ptcTextureList = NULL;
+static TextureContainer * g_ptcTextureList = nullptr;
 
 TextureContainer * GetTextureList() {
 	return g_ptcTextureList;
 }
 
 TextureContainer::TextureContainer(const res::path & strName, TCFlags flags)
-	: TextureHalo(NULL)
+	: TextureHalo(nullptr)
 	, m_texName(strName)
 	, m_size(0)
 	, m_dwFlags(flags)
 	, userflags(0)
-	, m_pTexture(NULL)
+	, m_pTexture(nullptr)
 	, uv(0.f)
 	, hd(0.f)
-	, m_pNext(NULL)
+	, m_pNext(nullptr)
 	, systemflags(0)
 {
 	
@@ -124,7 +124,7 @@ TextureContainer::~TextureContainer() {
 bool TextureContainer::LoadFile(const res::path & strPathname) {
 	
 	res::path tempPath = strPathname;
-	bool foundPath = g_resources->getFile(tempPath.append(".png")) != NULL;
+	bool foundPath = g_resources->getFile(tempPath.append(".png")) != nullptr;
 	foundPath = foundPath || g_resources->getFile(tempPath.set_ext("jpg"));
 	foundPath = foundPath || g_resources->getFile(tempPath.set_ext("jpeg"));
 	foundPath = foundPath || g_resources->getFile(tempPath.set_ext("bmp"));
@@ -135,7 +135,7 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 		return false;
 	}
 	
-	delete m_pTexture, m_pTexture = NULL;
+	delete m_pTexture, m_pTexture = nullptr;
 	m_pTexture = GRenderer->createTexture();
 	if(!m_pTexture) {
 		return false;
@@ -181,7 +181,7 @@ TextureContainer * TextureContainer::Load(const res::path & name, TCFlags flags)
 	// Allocate and add the texture to the linked list of textures;
 	newTexture = new TextureContainer(name, flags);
 	if(!newTexture) {
-		return NULL;
+		return nullptr;
 	}
 	
 	newTexture->systemflags = flags;
@@ -193,7 +193,7 @@ TextureContainer * TextureContainer::Load(const res::path & name, TCFlags flags)
 	// Create a bitmap and load the texture file into it,
 	if(!newTexture->LoadFile(name)) {
 		delete newTexture;
-		return NULL;
+		return nullptr;
 	}
 	
 	MakeUserFlag(newTexture);
@@ -266,13 +266,13 @@ TextureContainer * TextureContainer::Find(const res::path & strTextureName) {
 		ptcTexture = ptcTexture->m_pNext;
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void TextureContainer::DeleteAll(TCFlags flag)
 {
 	TextureContainer * pCurrentTexture = g_ptcTextureList;
-	TextureContainer * pNextTexture = NULL;
+	TextureContainer * pNextTexture = nullptr;
 
 	while (pCurrentTexture)
 	{

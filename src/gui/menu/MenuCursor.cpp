@@ -223,7 +223,7 @@ void MenuCursor::DrawCursor() {
 	
 }
 
-MenuCursor * pMenuCursor = NULL;
+MenuCursor * pMenuCursor = nullptr;
 
 
 ThumbnailCursor g_thumbnailCursor;
@@ -245,10 +245,10 @@ void ThumbnailCursor::render() {
 		EERIEDrawBitmap(rect, 0.001f, m_loadTexture, Color::white);
 		drawLineRectangle(rect, 0.01f, Color::white);
 
-		m_renderTexture = NULL;
+		m_renderTexture = nullptr;
 	}
 }
 
 void ThumbnailCursor::clear() {
-	m_renderTexture = NULL;
+	m_renderTexture = nullptr;
 }

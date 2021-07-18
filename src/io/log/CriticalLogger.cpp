@@ -29,8 +29,8 @@
 
 namespace logger {
 
-static const char * g_exitQuestion = NULL;
-static CriticalErrorDialog::ExitCommand g_exitCommand = NULL;
+static const char * g_exitQuestion = nullptr;
+static CriticalErrorDialog::ExitCommand g_exitCommand = nullptr;
 
 CriticalErrorDialog::~CriticalErrorDialog() {
 	

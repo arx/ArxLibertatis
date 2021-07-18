@@ -73,7 +73,7 @@ ParticleSystem::ParticleSystem()
 {
 	
 	for(size_t i = 0; i < 20; i++) {
-		tex_tab[i] = NULL;
+		tex_tab[i] = nullptr;
 	}
 	
 	m_parameters.m_nbMax = 50;

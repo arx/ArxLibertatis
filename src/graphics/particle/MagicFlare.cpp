@@ -91,7 +91,7 @@ static short shinum = 1;
 void MagicFlareReleaseEntity(Entity * io) {
 	for(size_t i = 0; i < g_magicFlaresMax; i++) {
 		if(g_magicFlares[i].exist && g_magicFlares[i].io == io)
-			g_magicFlares[i].io = NULL;
+			g_magicFlares[i].io = nullptr;
 	}
 }
 
@@ -413,7 +413,7 @@ void ARX_MAGICAL_FLARES_Update() {
 				el->rgb = color;
 			}
 
-			mat.setDepthTest(flare.io != NULL);
+			mat.setDepthTest(flare.io != nullptr);
 			
 			if(flare.bDrawBitmap) {
 				Vec3f pos = Vec3f(flare.p.x - size / 2.0f, flare.p.y - size / 2.0f, flare.p.z);

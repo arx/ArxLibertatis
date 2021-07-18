@@ -425,7 +425,7 @@ void OpenGLRenderer::reinit() {
 	// number of conventional fixed-function texture units
 	GLint texunits = 0;
 	glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texunits);
-	m_TextureStages.resize(texunits, NULL);
+	m_TextureStages.resize(texunits, nullptr);
 	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
 		m_TextureStages[i] = new GLTextureStage(this, i);
 	}

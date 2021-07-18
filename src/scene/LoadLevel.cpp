@@ -107,7 +107,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	
 	Entity * io = AddInteractive(classPath, instance, NO_MESH | NO_ON_LOAD);
 	if(!io) {
-		return NULL;
+		return nullptr;
 	}
 	
 	RestoreInitialIOStatusOfIO(io);
@@ -121,7 +121,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 		loadScript(io->over_script, dir->getFile(io->className() + ".asl"));
 	}
 	
-	if(SendIOScriptEvent(NULL, io, SM_LOAD) == ACCEPT && io->obj == NULL) {
+	if(SendIOScriptEvent(nullptr, io, SM_LOAD) == ACCEPT && io->obj == nullptr) {
 		bool pbox = (io->ioflags & IO_ITEM) == IO_ITEM;
 		io->obj = loadObject(io->classPath() + ".teo", pbox);
 		if(io->ioflags & IO_NPC) {
@@ -331,7 +331,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	}
 	
 	if(dlh.lighting) {
-		loadLighting(dat, pos, dlh.version > 1.001f, lightingFile != NULL);
+		loadLighting(dat, pos, dlh.version > 1.001f, lightingFile != nullptr);
 	}
 	
 	progressBarAdvance();
@@ -525,7 +525,7 @@ void DanaeClearLevel() {
 	LAST_JUMP_ENDTIME = 0;
 	FAST_RELEASE = 1;
 	ARX_GAME_Reset();
-	FlyingOverIO = NULL;
+	FlyingOverIO = nullptr;
 
 	EERIE_PATHFINDER_Release();
 

@@ -66,7 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-static Lock * mutex = NULL;
+static Lock * mutex = nullptr;
 
 aalError init(const std::string & backendName, const std::string & deviceName, HRTFAttribute hrtf) {
 	
@@ -96,7 +96,7 @@ aalError init(const std::string & backendName, const std::string & deviceName, H
 				}
 			}
 			if(error) {
-				error = _backend->init(NULL, hrtf);
+				error = _backend->init(nullptr, hrtf);
 			}
 			if(!error) {
 				backend = _backend;
@@ -140,12 +140,12 @@ void clean() {
 	g_mixers.clear();
 	g_environments.clear();
 	
-	delete backend, backend = NULL;
+	delete backend, backend = nullptr;
 	
 	ambiance_path.clear();
 	environment_path.clear();
 	
-	delete mutex, mutex = NULL;
+	delete mutex, mutex = nullptr;
 }
 
 #define AAL_ENTRY \
@@ -221,7 +221,7 @@ MixerId createMixer() {
 	
 	AAL_ENTRY_V(MixerId())
 	
-	Mixer * mixer = new Mixer(NULL);
+	Mixer * mixer = new Mixer(nullptr);
 	MixerId mixerHandle = g_mixers.add(mixer);
 	
 	arx_assert(mixerHandle != MixerId());
@@ -735,7 +735,7 @@ void SoundUpdateThread::update() {
 }
 
 
-static SoundUpdateThread * updateThread = NULL;
+static SoundUpdateThread * updateThread = nullptr;
 
 void threadStart() {
 	
@@ -753,7 +753,7 @@ void threadStop() {
 	}
 	
 	updateThread->stop();
-	delete updateThread, updateThread = NULL;
+	delete updateThread, updateThread = nullptr;
 }
 
 } // namespace audio

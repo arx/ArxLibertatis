@@ -120,7 +120,7 @@ Thread::~Thread() { }
 
 void Thread::waitForCompletion() const {
 	if(m_started) {
-		pthread_join(m_thread, NULL);
+		pthread_join(m_thread, nullptr);
 	}
 }
 
@@ -158,11 +158,11 @@ void * Thread::entryPoint(void * param) {
 	CrashHandler::unregisterThreadCrashHandlers();
 	Random::shutdown();
 	
-	return NULL;
+	return nullptr;
 }
 
 void Thread::exit() {
-	pthread_exit(NULL);
+	pthread_exit(nullptr);
 }
 
 thread_id_type Thread::getCurrentThreadId() {
@@ -172,7 +172,7 @@ thread_id_type Thread::getCurrentThreadId() {
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 Thread::Thread() {
-	m_thread = CreateThread(NULL, 0, entryPoint, this, CREATE_SUSPENDED, NULL);
+	m_thread = CreateThread(nullptr, 0, entryPoint, this, CREATE_SUSPENDED, nullptr);
 	arx_assert(m_thread);
 	setPriority(Normal);
 }
@@ -399,7 +399,7 @@ void Thread::sleep(PlatformDuration time) {
 	t.tv_sec = time_t(toUs(time) / 1000000);
 	t.tv_nsec = long(toUs(time) % 1000000) * 1000l;
 	
-	nanosleep(&t, NULL);
+	nanosleep(&t, nullptr);
 }
 
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32

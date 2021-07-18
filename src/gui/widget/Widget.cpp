@@ -78,7 +78,7 @@ void Widget::move(const Vec2f & offset) {
 }
 
 Widget * Widget::getWidgetAt(const Vec2f & mousePos) {
-	return m_rect.contains(mousePos) ? this : NULL;
+	return m_rect.contains(mousePos) ? this : nullptr;
 }
 
 void Widget::setShortcut(int key) {

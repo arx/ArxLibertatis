@@ -115,10 +115,10 @@ struct PARTICLE_DEF {
 		, timcreation(0)
 		, tolive(0)
 		, delay(0)
-		, tc(NULL)
+		, tc(nullptr)
 		, rgb(Color3f::black)
 		, m_flags(0)
-		, source(NULL)
+		, source(nullptr)
 		, m_rotation(0.f)
 		, cval1(0)
 		, cval2(0)
@@ -150,7 +150,7 @@ void ARX_PARTICLES_ClearAll();
 void ARX_PARTICLES_Update();
 void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle source);
 void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io);
-void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f pos, Entity * io = NULL);
+void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f pos, Entity * io = nullptr);
 void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, const Color3f & rgb = Color3f(0.3f, 0.3f, 0.34f)); // flag 1 = randomize pos
 
 void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);
@@ -160,7 +160,7 @@ void createFireParticles(Vec3f & pos, int perPos, int delay);
 
 void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int perPos, int delay);
 
-void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction = NULL, Color3f * rgb = NULL);
+void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction = nullptr, Color3f * rgb = nullptr);
 void spawnFireHitParticle(const Vec3f & poss, long type);
 void spawn2DFireParticle(const Vec2f & pos, float scale);
 

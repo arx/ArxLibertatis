@@ -41,8 +41,8 @@ BlessSpell::BlessSpell()
 	: m_pos(0.f)
 	, m_yaw(0)
 	, m_scale(0)
-	, tex_p1(NULL)
-	, tex_sol(NULL)
+	, tex_p1(nullptr)
+	, tex_sol(nullptr)
 	, fRot(0)
 { }
 
@@ -392,7 +392,7 @@ void TelekinesisSpell::End() {
 
 CurseSpell::CurseSpell()
 	: m_pos(0.f)
-	, tex_p1(NULL)
+	, tex_p1(nullptr)
 	, fRot(0.f)
 { }
 

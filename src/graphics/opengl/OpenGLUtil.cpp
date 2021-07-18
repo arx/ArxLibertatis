@@ -37,7 +37,7 @@ static void setGlOverride(const std::string & string) {
 	g_glExtensionOverride = string;
 }
 
-ARX_PROGRAM_OPTION_ARG("override-gl", NULL, "Override OpenGL version and extensions", &setGlOverride, "OVERRIDES")
+ARX_PROGRAM_OPTION_ARG("override-gl", nullptr, "Override OpenGL version and extensions", &setGlOverride, "OVERRIDES")
 
 OpenGLInfo::OpenGLInfo()
 	: m_versionString("")

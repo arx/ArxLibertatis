@@ -70,9 +70,9 @@
 
 extern bool EXTERNALVIEW; // *sigh*
 
-static TextureContainer * g_lightSourceTexture = NULL;
-static EERIE_3DOBJ * g_fogObject = NULL;
-static EERIE_3DOBJ * g_nodeObject = NULL;
+static TextureContainer * g_lightSourceTexture = nullptr;
+static EERIE_3DOBJ * g_fogObject = nullptr;
+static EERIE_3DOBJ * g_nodeObject = nullptr;
 
 const float DebugTextMaxDistance = 1000.f;
 const float DebugPhysicsMaxDistance = 2000.f;
@@ -85,9 +85,9 @@ void drawDebugInitialize() {
 
 void drawDebugRelease() {
 	delete g_fogObject;
-	g_fogObject = NULL;
+	g_fogObject = nullptr;
 	delete g_nodeObject;
-	g_nodeObject = NULL;
+	g_nodeObject = nullptr;
 }
 
 enum DebugViewType {
@@ -648,7 +648,7 @@ static void drawDebugMaterials() {
 	Vec3f start = g_camera->m_pos;
 	Vec3f dest = screenToWorldSpace(Vec2f(DANAEMouse), g_camera->cdepth);
 	
-	TextureContainer * material = NULL;
+	TextureContainer * material = nullptr;
 	size_t count = 0;
 	Vec3f v[4];
 	Vec2f puv[4];
@@ -679,7 +679,7 @@ static void drawDebugMaterials() {
 		if(face.texid >= 0 && size_t(face.texid) < obj.texturecontainer.size()) {
 			material = obj.texturecontainer[face.texid];
 		} else {
-			material = NULL;
+			material = nullptr;
 		}
 		flags = face.facetype & ~(POLY_WATER | POLY_LAVA);
 	}

@@ -141,7 +141,7 @@ struct EERIEPOLY {
 		, max(0.f)
 		, norm(0.f)
 		, norm2(0.f)
-		, tex(NULL)
+		, tex(nullptr)
 		, center(0.f)
 		, transval(0)
 		, area(0)
@@ -211,8 +211,8 @@ struct EERIE_3DOBJ {
 	
 	EERIE_3DOBJ()
 		: origin(0)
-		, pbox(NULL)
-		, m_skeleton(NULL)
+		, pbox(nullptr)
+		, m_skeleton(nullptr)
 	{ }
 	
 	void clear();
@@ -293,7 +293,7 @@ struct EERIE_ROOM_DATA {
 	std::vector<TextureContainer *> ppTextureContainer;
 
 	EERIE_ROOM_DATA()
-		: pVertexBuffer(NULL)
+		: pVertexBuffer(nullptr)
 	{ }
 	
 };

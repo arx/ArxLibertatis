@@ -229,7 +229,7 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 		}
 		
 		TextureContainer * tc = io->m_icon;
-		TextureContainer * tc2 = NULL;
+		TextureContainer * tc2 = nullptr;
 		
 		if(NeedHalo(io)) {
 			tc2 = io->m_icon->getHalo();
@@ -451,7 +451,7 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 					return result;
 				}
 			}
-			return NULL;
+			return nullptr;
 		}
 		
 	} else if(player.Interface & INTER_INVENTORYALL) {
@@ -472,7 +472,7 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
 					return result;
 				}
-				return NULL;
+				return nullptr;
 			}
 			
 			iY += checked_range_cast<int>((121 * m_scale));
@@ -480,7 +480,7 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void PlayerInventoryHud::dropEntity() {

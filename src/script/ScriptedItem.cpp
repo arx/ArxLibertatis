@@ -74,7 +74,7 @@ public:
 		
 		float val = glm::clamp(context.getFloat(), 0.f, 100.f);
 		
-		if(t != NULL) {
+		if(t != nullptr) {
 			ARX_DAMAGES_DurabilityRestore(t, val);
 		}
 		

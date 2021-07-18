@@ -138,7 +138,7 @@ void stopAnimation(Entity * entity, size_t layer) {
 	AnimLayer  & animlayer = entity->animlayer[layer];
 	AcquireLastAnim(entity);
 	FinishAnim(entity, animlayer.cur_anim);
-	animlayer.cur_anim = NULL;
+	animlayer.cur_anim = nullptr;
 }
 
 void changeAnimation(Entity * entity, size_t layer, ANIM_HANDLE * animation,
@@ -217,7 +217,7 @@ static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const res::path & path) {
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 static float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2) {
@@ -247,7 +247,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	const THEA_HEADER * th = reinterpret_cast<const THEA_HEADER *>(adr + pos);
 	if(th->version < 2014) {
 		LogError << "Invalid TEA Version " << th->version << " in " << file;
-		return NULL;
+		return nullptr;
 	}
 	pos += sizeof(THEA_HEADER);
 	
@@ -511,12 +511,12 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 		
 		std::string buffer = g_resources->read(path);
 		if(buffer.empty()) {
-			return NULL;
+			return nullptr;
 		}
 		
 		EERIE_ANIM * anim = TheaToEerie(buffer.data(), buffer.size(), path);
 		if(!anim) {
-			return NULL;
+			return nullptr;
 		}
 		
 		slot.anims.push_back(anim);
@@ -533,7 +533,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 		return &slot;
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 /*!
@@ -553,7 +553,7 @@ Vec3f GetAnimTotalTranslate(const ANIM_HANDLE * eanim, size_t alt_idx) {
  * \brief Main Procedure to draw an animated object
  *
  * \param time Time increment to current animation in Ms
- * \param io Reference to Interactive Object (NULL if no IO)
+ * \param io Reference to Interactive Object (nullptr if no IO)
  */
 void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 	
@@ -628,7 +628,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 			
 				// Frame Sound Management
 				if(anim.frames[fr].sample != audio::SampleHandle()) {
-					Vec3f * position = io ? &io->pos : NULL;
+					Vec3f * position = io ? &io->pos : nullptr;
 					
 					if(layer.lastframe < long(fr) && layer.lastframe != -1) {
 						for(size_t n = size_t(layer.lastframe) + 1; n <= fr; n++) {
@@ -773,10 +773,10 @@ void ReleaseAnimFromIO(Entity * io, long num) {
 		
 		if(layer.cur_anim == io->anims[num]) {
 			layer = AnimLayer();
-			layer.cur_anim = NULL;
+			layer.cur_anim = nullptr;
 		}
 	}
 
 	EERIE_ANIMMANAGER_ReleaseHandle(io->anims[num]);
-	io->anims[num] = NULL;
+	io->anims[num] = nullptr;
 }

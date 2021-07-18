@@ -504,7 +504,7 @@ void ARX_PARTICLES_ClearAll() {
 PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 	
 	if(!allocateWhilePaused && g_gameTime.isPaused()) {
-		return NULL;
+		return nullptr;
 	}
 	
 	for(size_t i = 0; i < MAX_PARTICLES; i++) {
@@ -521,9 +521,9 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		
 		pd->is2D = false;
 		pd->rgb = Color3f::white;
-		pd->tc = NULL;
+		pd->tc = nullptr;
 		pd->m_flags = 0;
-		pd->source = NULL;
+		pd->source = nullptr;
 		pd->delay = 0;
 		pd->zdec = false;
 		pd->move = Vec3f(0.f);
@@ -532,7 +532,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		return pd;
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void MagFX(const Vec3f & pos, float size) {
@@ -647,7 +647,7 @@ void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction, Colo
 	
 	level *= 1.6f;
 	
-	if(g_particleTextures.explo[0] == NULL) {
+	if(g_particleTextures.explo[0] == nullptr) {
 		return;
 	}
 	

@@ -78,7 +78,7 @@ void AllocTrack(int ef, float fps) {
 
 void DeleteTrack() {
 	delete CKTrack;
-	CKTrack = NULL;
+	CKTrack = nullptr;
 }
  
 static void UpDateKeyLight(CinematicKeyframe * kbase) {
@@ -202,14 +202,14 @@ void AddKeyLoad(const CinematicKeyframe & key) {
 static CinematicKeyframe * GetKey(int frame) {
 	
 	if(!CKTrack || CKTrack->key.empty()) {
-		return NULL;
+		return nullptr;
 	}
 	
 	std::vector<CinematicKeyframe>::iterator i;
 	i = std::find_if(CKTrack->key.begin(), CKTrack->key.end(), AfterFrame(frame));
 	
 	if(i == CKTrack->key.begin()) {
-		return NULL;
+		return nullptr;
 	}
 	
 	return &*(i - 1);
@@ -499,7 +499,7 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 	
 	if(CKTrack->currframe > float(CKTrack->endframe)) {
 		CKTrack->currframe = 0;
-		c->m_key = NULL;
+		c->m_key = nullptr;
 		c->flTime = 0;
 	}
 	}

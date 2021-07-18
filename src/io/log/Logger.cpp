@@ -125,7 +125,7 @@ void Logger::add(logger::Backend * backend) {
 	
 	Autolock lock(LogManager::lock);
 	
-	if(backend != NULL) {
+	if(backend != nullptr) {
 		LogManager::backends.push_back(backend);
 	}
 }

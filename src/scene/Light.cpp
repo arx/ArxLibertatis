@@ -126,7 +126,7 @@ void EERIE_LIGHT_GlobalInit() {
 				dynLight->m_exists = false;
 			}
 			delete g_staticLights[i];
-			g_staticLights[i] = NULL;
+			g_staticLights[i] = nullptr;
 		}
 	}
 	
@@ -193,7 +193,7 @@ void TreatBackgroundDynlights() {
 						if(e && (e->ioflags & IO_MARKER)) {
 							Vec3f _pos2 = GetItemWorldPosition(e);
 							if(!fartherThan(light->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(NULL, e, SM_CUSTOM, "douse");
+								SendIOScriptEvent(nullptr, e, SM_CUSTOM, "douse");
 							}
 						}
 					}
@@ -209,7 +209,7 @@ void TreatBackgroundDynlights() {
 						if(e && (e->ioflags & IO_MARKER)) {
 							Vec3f _pos2 = GetItemWorldPosition(e);
 							if(!fartherThan(light->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(NULL, e, SM_CUSTOM, "fire");
+								SendIOScriptEvent(nullptr, e, SM_CUSTOM, "fire");
 							}
 						}
 					}
@@ -323,7 +323,7 @@ EERIE_LIGHT * lightHandleGet(LightHandle lightHandle) {
 	if(lightHandleIsValid(lightHandle) || lightHandle == torchLightHandle) {
 		return &g_dynamicLights[lightHandle.handleData()];
 	} else {
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -465,7 +465,7 @@ void UpdateLlights(ShaderLight lights[], size_t & lightsCount, const Vec3f pos, 
 	ARX_PROFILE_FUNC();
 	
 	boost::array<EERIE_LIGHT *, llightsSize> llights;
-	llights.fill(NULL);
+	llights.fill(nullptr);
 	boost::array<float, llightsSize> values;
 	values.fill(999999999.f);
 	
@@ -573,7 +573,7 @@ float GetColorz(const Vec3f & pos) {
 	
 	float needy;
 	EERIEPOLY * ep = CheckInPoly(pos, &needy);
-	if(ep != NULL) {
+	if(ep != nullptr) {
 		Color3f _ff = Color3f(0.f, 0.f, 0.f);
 		
 		long to = (ep->type & POLY_QUAD) ? 4 : 3;

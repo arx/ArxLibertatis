@@ -75,7 +75,7 @@ public:
 		
 		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getEntity()->m_variables : svar;
 		
-		SCRIPT_VAR * sv = NULL;
+		SCRIPT_VAR * sv = nullptr;
 		switch(var[0]) {
 			
 			case '$':      // global text
@@ -157,7 +157,7 @@ public:
 		
 		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getEntity()->m_variables : svar;
 		
-		SCRIPT_VAR * sv = NULL;
+		SCRIPT_VAR * sv = nullptr;
 		switch(var[0]) {
 			
 			case '$':      // global text
@@ -257,7 +257,7 @@ public:
 		
 		SCRIPT_VARIABLES & variables = isLocalVariable(var) ? context.getEntity()->m_variables : svar;
 		
-		SCRIPT_VAR * sv = NULL;
+		SCRIPT_VAR * sv = nullptr;
 		switch(var[0]) {
 			
 			case '$':

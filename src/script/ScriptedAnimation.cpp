@@ -234,7 +234,7 @@ public:
 		AnimLayer & layer = iot->animlayer[layerIndex];
 		
 		if(anim == "none") {
-			layer.cur_anim = NULL;
+			layer.cur_anim = nullptr;
 			return Success;
 		}
 		
@@ -332,7 +332,7 @@ public:
 		}
 		
 		if(file == "none") {
-			iot->anims[num] = NULL;
+			iot->anims[num] = nullptr;
 			return Success;
 		}
 		
@@ -463,7 +463,7 @@ public:
 		Entity * io = context.getEntity();
 		if(name == "none") {
 			delete io->usepath;
-			io->usepath = NULL;
+			io->usepath = nullptr;
 		} else {
 			
 			const Path * ap = getPathByName(name);
@@ -473,7 +473,7 @@ public:
 			}
 			
 			delete io->usepath;
-			io->usepath = NULL;
+			io->usepath = nullptr;
 			
 			ARX_USE_PATH * aup = new ARX_USE_PATH;
 			aup->_starttime = aup->_curtime = g_gameTime.now();

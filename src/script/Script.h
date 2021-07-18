@@ -213,16 +213,16 @@ struct SCR_TIMER {
 	Entity * io;
 	const EERIE_SCRIPT * es;
 	
-	explicit SCR_TIMER(Entity * entity = NULL, const std::string & timerName = std::string())
+	explicit SCR_TIMER(Entity * entity = nullptr, const std::string & timerName = std::string())
 		: name(timerName)
-		, exist(entity != NULL)
+		, exist(entity != nullptr)
 		, idle(false)
 		, count(0)
 		, interval(0)
 		, pos(0)
 		, start(0)
 		, io(entity)
-		, es(NULL)
+		, es(nullptr)
 	{ }
 	
 };

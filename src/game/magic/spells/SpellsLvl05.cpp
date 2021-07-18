@@ -41,7 +41,7 @@
 
 RuneOfGuardingSpell::RuneOfGuardingSpell()
 	: m_pos(0.f)
-	, tex_p2(NULL)
+	, tex_p2(nullptr)
 { }
 
 void RuneOfGuardingSpell::Launch() {
@@ -364,7 +364,7 @@ void CurePoisonSpell::Update() {
 RepelUndeadSpell::RepelUndeadSpell()
 	: m_pos(0.f)
 	, m_yaw(0.f)
-	, tex_p2(NULL)
+	, tex_p2(nullptr)
 { }
 
 void RepelUndeadSpell::Launch() {

@@ -91,7 +91,7 @@ Cinematic::Cinematic(Vec2i size)
 	, fx(-1)
 	, m_nextFx(0)
 	, changekey(true)
-	, m_key(NULL)
+	, m_key(nullptr)
 	, projectload(false)
 	, ti(INTERP_BEZIER)
 	, force(0)
@@ -123,7 +123,7 @@ void Cinematic::OneTimeSceneReInit() {
 	fx = -1;
 	changekey = true;
 	idsound = -1;
-	m_key = NULL;
+	m_key = nullptr;
 	
 	projectload = false;
 	
@@ -360,7 +360,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	
 	{
 		
-		CinematicLight * l = NULL;
+		CinematicLight * l = nullptr;
 		CinematicLight lightt;
 		if(m_light.intensity >= 0.f && m_lightd.intensity >= 0.f) {
 			lightt = m_light;
@@ -404,7 +404,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		alpha = 255 - alpha;
 		col.a = alpha;
 		
-		CinematicLight * l = NULL;
+		CinematicLight * l = nullptr;
 		CinematicLight lightt;
 		
 		if(m_light.intensity >= 0.f && m_lightd.intensity >= 0.f) {

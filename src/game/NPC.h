@@ -122,7 +122,7 @@ struct IO_PATHFIND {
 	IO_PATHFIND()
 		: flags(0)
 		, listnb(0)
-		, list(NULL)
+		, list(nullptr)
 		, listpos(0)
 		, pathwait(0)
 		, truetarget(0) // TODO is this correct ? use EntityHandle() ?

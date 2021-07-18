@@ -212,7 +212,7 @@ void ScreenFxBloodSplash::render() {
 			color = Color::rgb(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f);
 		
 		UseRenderState state(render2D().blend(BlendZero, BlendSrcColor));
-		EERIEDrawBitmap(Rectf(g_size), 0.00009f, NULL, color);
+		EERIEDrawBitmap(Rectf(g_size), 0.00009f, nullptr, color);
 	} else if(Blood_Pos > 0.f) {
 		
 		if(player.poison > 1.f)
@@ -221,7 +221,7 @@ void ScreenFxBloodSplash::render() {
 			color = Color::rgb(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos);
 		
 		UseRenderState state(render2D().blend(BlendZero, BlendSrcColor));
-		EERIEDrawBitmap(Rectf(g_size), 0.00009f, NULL, color);
+		EERIEDrawBitmap(Rectf(g_size), 0.00009f, nullptr, color);
 	}
 	
 	if(Blood_Pos > 0.f) {
@@ -278,7 +278,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 
 	entities.player()->dmg_sum += dmg;
 	
-	Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+	Entity * sender = ValidIONum(source) ? entities[source] : nullptr;
 	
 	GameDuration elapsed = g_gameTime.now() - entities.player()->ouch_time;
 	if(elapsed > GameDurationMs(500)) {
@@ -291,13 +291,13 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 
 	if(dmg > 0.f) {
 		if(ValidIONum(source)) {
-			Entity * pio = NULL;
+			Entity * pio = nullptr;
 
 			if(entities[source]->ioflags & IO_NPC) {
 				pio = entities[source]->_npcdata->weapon;
 
 				if(pio && (pio->poisonous == 0 || pio->poisonous_count == 0))
-					pio = NULL;
+					pio = nullptr;
 			}
 
 			if(!pio)
@@ -478,7 +478,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 
 	io->dmg_sum += dmg;
 	
-	Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+	Entity * sender = ValidIONum(source) ? entities[source] : nullptr;
 	
 	GameDuration elapsed = g_gameTime.now() - io->ouch_time;
 	if(elapsed > GameDurationMs(500)) {
@@ -535,15 +535,15 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 	}
 	
 	if(&io_dead == g_draggedEntity) {
-		setDraggedEntity(NULL);
+		setDraggedEntity(nullptr);
 	}
 	
 	if(&io_dead == FlyingOverIO) {
-		FlyingOverIO = NULL;
+		FlyingOverIO = nullptr;
 	}
 	
 	if(g_cameraEntity == &io_dead) {
-		g_cameraEntity = NULL;
+		g_cameraEntity = nullptr;
 	}
 	
 	lightHandleDestroy(io_dead.dynlight);
@@ -609,9 +609,9 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 		}
 	}
 
-	io_dead.animlayer[1].cur_anim = NULL;
-	io_dead.animlayer[2].cur_anim = NULL;
-	io_dead.animlayer[3].cur_anim = NULL;
+	io_dead.animlayer[1].cur_anim = nullptr;
+	io_dead.animlayer[2].cur_anim = nullptr;
+	io_dead.animlayer[3].cur_anim = nullptr;
 
 	if(io_dead.ioflags & IO_NPC) {
 		io_dead._npcdata->lifePool.current = 0;
@@ -760,7 +760,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 	
 	if(elapsed > GameDurationMs(500)) {
 		
-		Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+		Entity * sender = ValidIONum(source) ? entities[source] : nullptr;
 		
 		io->ouch_time = g_gameTime.now();
 		
@@ -779,21 +779,21 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 	
 	if(dmg >= 0.f) {
 		if(ValidIONum(source)) {
-			Entity * pio = NULL;
+			Entity * pio = nullptr;
 
 			if(source == EntityHandle_Player) {
 				if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 					pio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
 					if((pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) || isSpellHit) {
-						pio = NULL;
+						pio = nullptr;
 					}
 				}
 			} else {
 				if(entities[source]->ioflags & IO_NPC) {
 					pio = entities[source]->_npcdata->weapon;
 					if(pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) {
-						pio = NULL;
+						pio = nullptr;
 					}
 				}
 			}
@@ -840,7 +840,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 					}
 				}
 				
-				Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+				Entity * sender = ValidIONum(source) ? entities[source] : nullptr;
 				if(sender && (sender->ioflags & IO_NPC) && sender->_npcdata->summoner == EntityHandle_Player) {
 					sender = entities.player();
 					parameters.push_back("summoned");
@@ -880,7 +880,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 					ARX_PLAYER_Modify_XP(xp);
 				}
 			} else {
-				ARX_DAMAGES_ForceDeath(*io, NULL);
+				ARX_DAMAGES_ForceDeath(*io, nullptr);
 			}
 		}
 		
@@ -1019,7 +1019,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 								parameters = "fire";
 							}
 							
-							SendIOScriptEvent(NULL, io, SM_COLLIDE_FIELD, parameters);
+							SendIOScriptEvent(nullptr, io, SM_COLLIDE_FIELD, parameters);
 						}
 					}
 					
@@ -1202,7 +1202,7 @@ bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, Entit
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
 
-		if(io != NULL
+		if(io != nullptr
 		   && (entities[handle]->gameFlags & GFLAG_ISINTREATZONE)
 		   && io->show == SHOW_FLAG_IN_SCENE
 		   && source != handle
@@ -1244,7 +1244,7 @@ void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
 		for(size_t i = 0; i < g_staticLightsMax; i++) {
 			EERIE_LIGHT * el = g_staticLights[i];
 
-			if(el == NULL)
+			if(el == nullptr)
 				continue;
 
 			if((el->extras & EXTRAS_EXTINGUISHABLE) && (el->extras & (EXTRAS_SEMIDYNAMIC | EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)))
@@ -1481,7 +1481,7 @@ void ARX_DAMAGES_DurabilityLoss(Entity * io, float loss) {
 	io->durability -= loss;
 	
 	if(io->durability <= 0) {
-		SendIOScriptEvent(NULL, io, SM_BREAK);
+		SendIOScriptEvent(nullptr, io, SM_BREAK);
 	}
 	
 }

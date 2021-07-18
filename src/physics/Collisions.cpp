@@ -533,7 +533,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 						io->_npcdata->pathfind.listpos = 0;
 						io->_npcdata->pathfind.listnb = -1;
 						delete[] io->_npcdata->pathfind.list;
-						io->_npcdata->pathfind.list = NULL;
+						io->_npcdata->pathfind.list = nullptr;
 					}
 					if(!io->_npcdata->reachedtarget) {
 						SendIOScriptEvent(ioo, io, SM_REACHEDTARGET);
@@ -581,7 +581,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 
 							if(io->ioflags & IO_FIELD) {
 								io->collide_door_time = g_gameTime.now();
-								SendIOScriptEvent(NULL, ioo, SM_COLLIDE_FIELD);
+								SendIOScriptEvent(nullptr, ioo, SM_COLLIDE_FIELD);
 							}
 
 							if(!dealt && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
@@ -637,7 +637,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 								
 								if(io->ioflags & IO_FIELD) {
 									io->collide_door_time = g_gameTime.now();
-									SendIOScriptEvent(NULL, ioo, SM_COLLIDE_FIELD);
+									SendIOScriptEvent(nullptr, ioo, SM_COLLIDE_FIELD);
 								}
 								
 								if(!dealt && ioo && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
@@ -910,7 +910,7 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags, EntityHandle * num) {
@@ -1272,7 +1272,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 	DIRECT_PATH = true;
 	IO_PHYSICS test;
 
-	if(ip == NULL) {
+	if(ip == nullptr) {
 		MOVING_CYLINDER = 0;
 		return false;
 	}
@@ -1418,7 +1418,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 	float pas = 35.f;
 	
 	Vec3f found_hit(0.f);
-	EERIEPOLY * found_ep = NULL;
+	EERIEPOLY * found_ep = nullptr;
 	float iter;
 	
 	// Current ray position

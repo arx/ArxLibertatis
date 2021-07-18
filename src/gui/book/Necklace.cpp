@@ -96,11 +96,11 @@ void NecklaceInit() {
 
 void ReleaseNecklace() {
 	
-	delete necklace.lacet, necklace.lacet = NULL;
+	delete necklace.lacet, necklace.lacet = nullptr;
 	
 	for(long i = 0; i < RUNE_COUNT; i++) {
-		delete necklace.runes[i], necklace.runes[i] = NULL;
-		necklace.pTexTab[i] = NULL;
+		delete necklace.runes[i], necklace.runes[i] = nullptr;
+		necklace.pTexTab[i] = nullptr;
 	}
 }
 
@@ -179,7 +179,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 			
 			// Now draw the rune
 			TransformInfo t2(pos, toQuaternion(angle));
-			DrawEERIEInter(rune, t2, NULL, false, 0.f);
+			DrawEERIEInter(rune, t2, nullptr, false, 0.f);
 			
 			Rectf runeBox = UpdateBbox2d(*rune).toRect();
 			
@@ -210,7 +210,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 				if(r) {
 					
 					TransformInfo t(pos, toQuaternion(angle));
-					DrawEERIEInter(rune, t, NULL, false, 0.f);
+					DrawEERIEInter(rune, t, nullptr, false, 0.f);
 					
 					gui::necklace.runeAngles[i].setYaw(gui::necklace.runeAngles[i].getYaw() + ptDelta * 2.f);
 					
@@ -225,7 +225,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 			}
 			
 			TransformInfo t1(pos, quat_identity());
-			DrawEERIEInter(gui::necklace.lacet, t1, NULL, false, 0.f);
+			DrawEERIEInter(gui::necklace.lacet, t1, nullptr, false, 0.f);
 			
 			PopAllTriangleListOpaque(baseState);
 	}

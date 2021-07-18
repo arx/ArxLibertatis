@@ -88,7 +88,7 @@ arx_nodiscard void * alloc_aligned(std::size_t alignment, std::size_t size) {
 	
 	unsigned char * allocation = static_cast<unsigned char *>(std::malloc(size + alignment));
 	if(!allocation) {
-		return NULL;
+		return nullptr;
 	}
 	
 	size_t offset = alignment - (allocation - static_cast<unsigned char *>(0)) % alignment;

@@ -80,6 +80,6 @@ void ManageFade() {
 	
 	UseRenderState state(render2D());
 	
-	EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color(Color4f(FADECOLOR, Visibility)));
+	EERIEDrawBitmap(Rectf(g_size), 0.0001f, nullptr, Color(Color4f(FADECOLOR, Visibility)));
 	
 }

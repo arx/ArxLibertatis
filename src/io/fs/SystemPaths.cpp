@@ -380,8 +380,8 @@ SystemPaths::SystemPaths()
 
 void listDirectoriesFor(std::ostream & os, const std::string & regKey,
                                platform::SystemPathId systemPathId,
-                               const char * prefixVar = NULL,
-                               const char * suffixVar = NULL) {
+                               const char * prefixVar = nullptr,
+                               const char * suffixVar = nullptr) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	if(!regKey.empty()) {

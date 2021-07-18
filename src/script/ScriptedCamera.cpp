@@ -75,7 +75,7 @@ public:
 		DebugScript(' ' << target);
 		
 		if(target == "none") {
-			g_cameraEntity = NULL;
+			g_cameraEntity = nullptr;
 			return Success;
 		}
 		

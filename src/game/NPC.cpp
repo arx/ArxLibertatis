@@ -127,7 +127,7 @@ static const float RUN_WALK_RADIUS = 450.f;
 
 static bool isCurrentAnimation(Entity * entity, size_t layer, AnimationNumber anim) {
 	ANIM_HANDLE * animation = entity->anims[anim];
-	return animation != NULL && entity->animlayer[layer].cur_anim == animation;
+	return animation != nullptr && entity->animlayer[layer].cur_anim == animation;
 }
 
 
@@ -232,7 +232,7 @@ static void ARX_NPC_ReleasePathFindInfo(Entity * io) {
 	
 	// Releases data & resets vars
 	delete[] io->_npcdata->pathfind.list;
-	io->_npcdata->pathfind.list = NULL;
+	io->_npcdata->pathfind.list = nullptr;
 	io->_npcdata->pathfind.listnb = -1;
 	io->_npcdata->pathfind.listpos = 0;
 	io->_npcdata->pathfind.pathwait = 0;
@@ -523,7 +523,7 @@ static bool ARX_NPC_LaunchPathfind_Cleanup(Entity * io) {
 		return false; // TODO was BEHAVIOUR_NONE
 	}
 	
-	SendIOScriptEvent(NULL, io, SM_PATHFINDER_FAILURE);
+	SendIOScriptEvent(nullptr, io, SM_PATHFINDER_FAILURE);
 	
 	return false;
 }
@@ -578,7 +578,7 @@ static bool ARX_NPC_LaunchPathfind_End(Entity * io, EntityHandle target, const V
 			io->_npcdata->pathfind.pathwait = 1;
 
 			delete[] io->_npcdata->pathfind.list;
-			io->_npcdata->pathfind.list = NULL;
+			io->_npcdata->pathfind.list = nullptr;
 			
 			PATHFINDER_REQUEST tpr;
 			tpr.from = from;
@@ -621,7 +621,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		io->_npcdata->pathfind.pathwait = 0;
 		io->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
 		delete[] io->_npcdata->pathfind.list;
-		io->_npcdata->pathfind.list = NULL;
+		io->_npcdata->pathfind.list = nullptr;
 	}
 	
 	if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
@@ -784,7 +784,7 @@ static void ARX_NPC_ManagePoison(Entity & io) {
 		float dmg = cp * (1.f / 3);
 		if(io._npcdata->lifePool.current > 0 && io._npcdata->lifePool.current - dmg <= 0.f) {
 			long xp = io._npcdata->xpvalue;
-			ARX_DAMAGES_DamageNPC(&io, dmg, EntityHandle(), false, NULL);
+			ARX_DAMAGES_DamageNPC(&io, dmg, EntityHandle(), false, nullptr);
 			ARX_PLAYER_Modify_XP(xp);
 		} else {
 			io._npcdata->lifePool.current -= dmg;
@@ -898,7 +898,7 @@ void ARX_PHYSICS_Apply() {
 			if(io->ioflags & IO_NPC) {
 				const float LAVA_DAMAGE = 10.f;
 				float dmg = LAVA_DAMAGE * g_framedelay * 0.01f;
-				ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle(), false, NULL);
+				ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle(), false, nullptr);
 			}
 		}
 		
@@ -972,14 +972,14 @@ void ARX_PHYSICS_Apply() {
 			
 			if(io->_npcdata->pathfind.pathwait) { // Waiting For Pathfinder Answer
 				if(io->_npcdata->pathfind.listnb == 0) { // Not Found
-					SendIOScriptEvent(NULL, io, SM_PATHFINDER_FAILURE);
+					SendIOScriptEvent(nullptr, io, SM_PATHFINDER_FAILURE);
 					io->_npcdata->pathfind.pathwait = 0;
 					if(io->_npcdata->pathfind.list) {
 						ARX_NPC_ReleasePathFindInfo(io);
 					}
 					io->_npcdata->pathfind.listnb = -2;
 				} else if(io->_npcdata->pathfind.listnb > 0) { // Found
-					SendIOScriptEvent(NULL, io, SM_PATHFINDER_SUCCESS);
+					SendIOScriptEvent(nullptr, io, SM_PATHFINDER_SUCCESS);
 					io->_npcdata->pathfind.pathwait = 0;
 					io->_npcdata->pathfind.listpos += ARX_NPC_GetNextAttainableNodeIncrement(io);
 					if(io->_npcdata->pathfind.listpos >= io->_npcdata->pathfind.listnb) {
@@ -1055,7 +1055,7 @@ void FaceTarget2(Entity * io) {
 
 void StareAtTarget(Entity * io)
 {
-	if(io->_npcdata->ex_rotate == NULL) {
+	if(io->_npcdata->ex_rotate == nullptr) {
 		ARX_NPC_CreateExRotateData(io);
 	}
 
@@ -1228,11 +1228,11 @@ static void ARX_NPC_Manage_NON_Fight(Entity * io) {
 	
 	AnimLayer & layer1 = io->animlayer[1];
 
-	if((layer1.flags & EA_ANIMEND) && (layer1.cur_anim != NULL)) {
+	if((layer1.flags & EA_ANIMEND) && (layer1.cur_anim != nullptr)) {
 		if(!(layer1.flags & EA_FORCEPLAY)) {
 			AcquireLastAnim(io);
 			FinishAnim(io, layer1.cur_anim);
-			layer1.cur_anim = NULL;
+			layer1.cur_anim = nullptr;
 		}
 	}
 }
@@ -1274,7 +1274,7 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 		    && layer1.cur_anim != io->anims[ANIM_CAST]
 		    && layer1.cur_anim != io->anims[ANIM_CAST_END]
 		    && layer1.cur_anim != io->anims[ANIM_CAST_START])
-		   || layer1.cur_anim == NULL) {
+		   || layer1.cur_anim == nullptr) {
 			changeAnimation(io, 1, ANIM_BARE_WAIT, EA_LOOP);
 		}
 	} else if(io->_npcdata->weapontype & OBJECT_TYPE_DAGGER) {
@@ -1297,7 +1297,7 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 		    && layer1.cur_anim != io->anims[ANIM_CAST]
 		    && layer1.cur_anim != io->anims[ANIM_CAST_END]
 		    && layer1.cur_anim != io->anims[ANIM_CAST_START])
-		   || layer1.cur_anim == NULL) {
+		   || layer1.cur_anim == nullptr) {
 			changeAnimation(io, 1, ANIM_DAGGER_WAIT, EA_LOOP);
 		}
 	} else if(io->_npcdata->weapontype & OBJECT_TYPE_1H) {
@@ -1320,7 +1320,7 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 		    && layer1.cur_anim != io->anims[ANIM_CAST]
 		    && layer1.cur_anim != io->anims[ANIM_CAST_END]
 		    && layer1.cur_anim != io->anims[ANIM_CAST_START])
-		   || layer1.cur_anim == NULL) {
+		   || layer1.cur_anim == nullptr) {
 			changeAnimation(io, 1, ANIM_1H_WAIT, EA_LOOP);
 		}
 	} else if(io->_npcdata->weapontype & OBJECT_TYPE_2H) {
@@ -1343,7 +1343,7 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 		    && layer1.cur_anim != io->anims[ANIM_CAST]
 		    && layer1.cur_anim != io->anims[ANIM_CAST_END]
 		    && layer1.cur_anim != io->anims[ANIM_CAST_START])
-		   || layer1.cur_anim == NULL) {
+		   || layer1.cur_anim == nullptr) {
 			changeAnimation(io, 1, ANIM_2H_WAIT, EA_LOOP);
 		}
 	}
@@ -1535,7 +1535,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				if((elapsed > aimtime || (elapsed * 2 > aimtime && Random::getf() > 0.9f))
 				    && tdist < square(STRIKE_DISTANCE)) {
 					changeAnimation(io, 1, strike);
-					SendIOScriptEvent(NULL, io, SM_STRIKE, "bare");
+					SendIOScriptEvent(nullptr, io, SM_STRIKE, "bare");
 				}
 				
 			} else if(isCurrentAnimation(io, 1, strike)) {
@@ -1544,7 +1544,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					io->ioflags &= ~IO_HIT;
 					changeAnimation(io, 1, ANIM_BARE_WAIT);
 					if((io->ioflags & IO_NPC) && !io->_npcdata->reachedtarget) {
-						layer1.cur_anim = NULL;
+						layer1.cur_anim = nullptr;
 					}
 				} else if(!(io->ioflags & IO_HIT)) {
 					AnimationDuration ctime = layer1.ctime;
@@ -1635,13 +1635,13 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					   && tdist < square(STRIKE_DISTANCE)) {
 						changeAnimation(io, 1, strike);
 						if(io->_npcdata->weapontype & OBJECT_TYPE_1H) {
-							SendIOScriptEvent(NULL, io, SM_STRIKE, "1h");
+							SendIOScriptEvent(nullptr, io, SM_STRIKE, "1h");
 						}
 						if(io->_npcdata->weapontype & OBJECT_TYPE_2H) {
-							SendIOScriptEvent(NULL, io, SM_STRIKE, "2h");
+							SendIOScriptEvent(nullptr, io, SM_STRIKE, "2h");
 						}
 						if(io->_npcdata->weapontype & OBJECT_TYPE_DAGGER) {
-							SendIOScriptEvent(NULL, io, SM_STRIKE, "dagger");
+							SendIOScriptEvent(nullptr, io, SM_STRIKE, "dagger");
 						}
 					}
 					
@@ -1813,7 +1813,7 @@ static void ManageNPCMovement_End(Entity * io) {
 			if((layer0.cur_anim == alist[ANIM_WAIT] || layer0.cur_anim == alist[ANIM_WALK]
 			    || layer0.cur_anim == alist[ANIM_WALK_SNEAK] || layer0.cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]
 			    || layer0.cur_anim == alist[ANIM_RUN])
-			   || layer0.cur_anim != NULL /* TODO check this */) {
+			   || layer0.cur_anim != nullptr /* TODO check this */) {
 				
 				io->_npcdata->look_around_inc = 0.f;
 				
@@ -2015,7 +2015,7 @@ static void ManageNPCMovement_End(Entity * io) {
 	   || layer0.cur_anim == alist[ANIM_FIGHT_STRAFE_LEFT]
 	   || layer0.cur_anim == alist[ANIM_FIGHT_STRAFE_RIGHT]
 	   || layer0.cur_anim == alist[ANIM_FIGHT_WALK_BACKWARD]
-	   || layer0.cur_anim == NULL
+	   || layer0.cur_anim == nullptr
 	) {
 		CHANGE = 1;
 	}
@@ -2160,7 +2160,7 @@ static void ManageNPCMovement_End(Entity * io) {
 		if(_dist > TOLERANCE && dis > TOLERANCE2) {
 			
 			if(io->_npcdata->reachedtarget) {
-				Entity * target = ValidIONum(io->targetinfo) ? entities[io->targetinfo] : NULL;
+				Entity * target = ValidIONum(io->targetinfo) ? entities[io->targetinfo] : nullptr;
 				SendIOScriptEvent(target, io, SM_LOSTTARGET);
 				io->_npcdata->reachedtarget = 0;
 			}
@@ -2170,7 +2170,7 @@ static void ManageNPCMovement_End(Entity * io) {
 				|| (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 				|| (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
 			) {
-				ANIM_HANDLE * desiredanim = NULL;
+				ANIM_HANDLE * desiredanim = nullptr;
 
 				if(dis <= RUN_WALK_RADIUS
 				   && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
@@ -2224,7 +2224,7 @@ static void ManageNPCMovement_End(Entity * io) {
 				io->_npcdata->pathfind.pathwait = 0;
 
 				delete[] io->_npcdata->pathfind.list;
-				io->_npcdata->pathfind.list = NULL;
+				io->_npcdata->pathfind.list = nullptr;
 
 				if(layer0.cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]) {
 					layer0.flags &= ~EA_LOOP;
@@ -2241,10 +2241,10 @@ static void ManageNPCMovement_End(Entity * io) {
 				io->_npcdata->reachedtime = g_gameTime.now();
 
 				if(io->animlayer[1].flags & EA_ANIMEND)
-					io->animlayer[1].cur_anim = NULL;
+					io->animlayer[1].cur_anim = nullptr;
 				
 				if(io->targetinfo != io->index()) {
-					Entity * target = ValidIONum(io->targetinfo) ? entities[io->targetinfo] : NULL;
+					Entity * target = ValidIONum(io->targetinfo) ? entities[io->targetinfo] : nullptr;
 					SendIOScriptEvent(target, io, SM_REACHEDTARGET);
 				}
 				
@@ -2332,7 +2332,7 @@ static void ManageNPCMovement(Entity * io) {
 					io->_npcdata->reachedtarget = 1;
 					io->_npcdata->reachedtime = g_gameTime.now();
 					if(io->targetinfo != io->index()) {
-						SendIOScriptEvent(NULL, io, SM_REACHEDTARGET);
+						SendIOScriptEvent(nullptr, io, SM_REACHEDTARGET);
 					}
 				} else if(layer0.cur_anim == alist[ANIM_WAIT] && (layer0.flags & EA_ANIMEND)) {
 					io->_npcdata->pathfind.listnb = -1;
@@ -2380,10 +2380,10 @@ static void ManageNPCMovement_check_target_reached(Entity * io) {
 		io->_npcdata->pathfind.pathwait = 0;
 
 		delete[] io->_npcdata->pathfind.list;
-		io->_npcdata->pathfind.list = NULL;
+		io->_npcdata->pathfind.list = nullptr;
 		
 		if((io->_npcdata->behavior & BEHAVIOUR_FLEE) && !io->_npcdata->pathfind.pathwait) {
-			SendIOScriptEvent(NULL, io, "flee_end");
+			SendIOScriptEvent(nullptr, io, "flee_end");
 		}
 		
 		if((io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE)
@@ -2394,7 +2394,7 @@ static void ManageNPCMovement_check_target_reached(Entity * io) {
 				io->_npcdata->reachedtarget = 1;
 				io->_npcdata->reachedtime = g_gameTime.now();
 				if(io->targetinfo != num) {
-					SendIOScriptEvent(NULL, io, SM_REACHEDTARGET, "fake");
+					SendIOScriptEvent(nullptr, io, SM_REACHEDTARGET, "fake");
 					io->targetinfo = num;
 				}
 			}
@@ -2419,7 +2419,7 @@ static void ManageNPCMovement_REFACTOR_end(Entity * io, float TOLERANCE2) {
 	ANIM_HANDLE ** alist = io->anims;
 	
 	// Puts at least WAIT anim on NPC if he has no main animation...
-	if(layer0.cur_anim == NULL) {
+	if(layer0.cur_anim == nullptr) {
 		if(io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT)) {
 			// TODO why no AcquireLastAnim() like everywhere else?
 			FinishAnim(io, layer0.cur_anim);
@@ -2469,14 +2469,14 @@ static float AngularDifference(float a1, float a2) {
 Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 {
 	if(!ioo)
-		return NULL;
+		return nullptr;
 	
 	// Basic Clipping to avoid performance loss
 	if(fartherThan(g_camera->m_pos, ioo->pos, 2500)) {
-		return NULL;
+		return nullptr;
 	}
 	
-	Entity * found_io = NULL;
+	Entity * found_io = nullptr;
 	float found_dist = std::numeric_limits<float>::max();
 
 	for(size_t i = 0; i < entities.size(); i++) {
@@ -2568,9 +2568,9 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 void CheckNPC(Entity & io) {
 	
 	if(io.show == SHOW_FLAG_IN_SCENE && IsDeadNPC(io)) {
-		io.animlayer[1].cur_anim = NULL;
-		io.animlayer[2].cur_anim = NULL;
-		io.animlayer[3].cur_anim = NULL;
+		io.animlayer[1].cur_anim = nullptr;
+		io.animlayer[2].cur_anim = nullptr;
+		io.animlayer[3].cur_anim = nullptr;
 	}
 	
 }
@@ -2637,7 +2637,7 @@ void CheckNPCEx(Entity & io) {
 		
 		if(Visible && !io._npcdata->detect) {
 			// if visible but was NOT visible, sends an Detectplayer Event
-			SendIOScriptEvent(NULL, &io, SM_DETECTPLAYER);
+			SendIOScriptEvent(nullptr, &io, SM_DETECTPLAYER);
 			io._npcdata->detect = 1;
 		}
 		
@@ -2645,7 +2645,7 @@ void CheckNPCEx(Entity & io) {
 	
 	// if not visible but was visible, sends an Undetectplayer Event
 	if(!Visible && io._npcdata->detect) {
-		SendIOScriptEvent(NULL, &io, SM_UNDETECTPLAYER);
+		SendIOScriptEvent(nullptr, &io, SM_UNDETECTPLAYER);
 		io._npcdata->detect = 0;
 	}
 	
@@ -2752,7 +2752,7 @@ void ManageIgnition(Entity & io) {
 	bool addParticles = !(&io == g_draggedEntity && g_dragStatus != EntityDragStatus_OnGround);
 	
 	// Torch Management
-	Entity * plw = NULL;
+	Entity * plw = nullptr;
 
 	if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
 		plw = entities[player.equiped[EQUIP_SLOT_WEAPON]];

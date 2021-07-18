@@ -159,7 +159,7 @@ void ResourceList<T, Handle>::remove(Handle handle) {
 	
 	size_t i = get(handle);
 	T * entry = m_list[i];
-	m_list[i] = NULL;
+	m_list[i] = nullptr;
 	delete entry;
 	
 	for(size_t j = i + 1; j < m_list.size(); j++) {
@@ -177,7 +177,7 @@ void ResourceList<T, Handle>::clear() {
 	
 	for(size_t i = 0; i < m_list.size(); i++) {
 		T * entry = m_list[i];
-		m_list[i] = NULL;
+		m_list[i] = nullptr;
 		delete entry;
 	}
 	

@@ -52,7 +52,7 @@ public:
 	
 	/*!
 	 * Get the source for the given id.
-	 * \return the source for the given id or NULL if it doesn't exist.
+	 * \return the source for the given id or nullptr if it doesn't exist.
 	 */
 	virtual Source * getSource(SourcedSample sourceId) = 0;
 	

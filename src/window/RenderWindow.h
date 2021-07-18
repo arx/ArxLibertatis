@@ -36,7 +36,7 @@ public:
 		: m_minTextureUnits(1)
 		, m_maxMSAALevel(1)
 		, m_vsync(1)
-		, m_renderer(NULL)
+		, m_renderer(nullptr)
 		{ }
 	
 	virtual ~RenderWindow() { }

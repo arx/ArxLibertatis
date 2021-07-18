@@ -51,10 +51,10 @@ class PlayerInventoryHud : public HudItem {
 public:
 	
 	PlayerInventoryHud()
-		: m_heroInventory(NULL)
-		, m_heroInventoryLink(NULL)
-		, m_heroInventoryUp(NULL)
-		, m_heroInventoryDown(NULL)
+		: m_heroInventory(nullptr)
+		, m_heroInventoryLink(nullptr)
+		, m_heroInventoryUp(nullptr)
+		, m_heroInventoryDown(nullptr)
 		, m_arrowsAnchor(0.f)
 		, m_slotSize(0.f)
 		, m_slotSpacing(0.f)

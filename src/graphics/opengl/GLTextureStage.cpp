@@ -23,7 +23,7 @@
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "io/log/Logger.h"
 
-GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : TextureStage(stage), renderer(_renderer), tex(NULL), current(NULL) {
+GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : TextureStage(stage), renderer(_renderer), tex(nullptr), current(nullptr) {
 	
 	// Set default state
 	
@@ -51,13 +51,13 @@ Texture * GLTextureStage::getTexture() const {
 
 void GLTextureStage::setTexture(Texture * texture) {
 	
-	arx_assert(texture != NULL);
+	arx_assert(texture != nullptr);
 	
 	tex = reinterpret_cast<GLTexture *>(texture);
 }
 
 void GLTextureStage::resetTexture() {
-	tex = NULL;
+	tex = nullptr;
 }
 
 struct GLTexEnvParam {

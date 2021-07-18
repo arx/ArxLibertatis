@@ -219,7 +219,7 @@ const qreal THREAD_SPACING = 50;
 
 ProfilerView::ProfilerView(QWidget * parent)
 	: QGraphicsView(parent)
-	, m_data(NULL)
+	, m_data(nullptr)
 {
 	setBackgroundBrush(QBrush(QColor(160, 160, 160)));
 	setAlignment(Qt::AlignLeft | Qt::AlignTop);

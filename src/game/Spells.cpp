@@ -144,7 +144,7 @@ SpellManager spells;
 void SpellManager::init() {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		m_spells[i] = NULL;
+		m_spells[i] = nullptr;
 	}
 	
 	spellRecognitionInit();
@@ -156,7 +156,7 @@ void SpellManager::init() {
 void SpellManager::clearAll() {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		delete m_spells[i];
-		m_spells[i] = NULL;
+		m_spells[i] = nullptr;
 	}
 }
 
@@ -229,7 +229,7 @@ bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle cas
 SpellBase * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) {
 	
 	if(caster == EntityHandle())
-		return NULL;
+		return nullptr;
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
@@ -243,13 +243,13 @@ SpellBase * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) 
 			return spell;
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
 {
 	if(target == EntityHandle())
-		return NULL;
+		return nullptr;
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
@@ -264,7 +264,7 @@ SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 float SpellManager::getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type) {
@@ -334,7 +334,7 @@ void SpellManager::freeSlot(SpellBase * spell)
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		if(m_spells[i] == spell) {
 			delete m_spells[i];
-			m_spells[i] = NULL;
+			m_spells[i] = nullptr;
 			return;
 		}
 	}
@@ -404,7 +404,7 @@ static const char * MakeSpellName(SpellType num) {
 		case SPELL_FREEZE_TIME           : return "freeze_time";
 		case SPELL_MASS_INCINERATE       : return "mass_incinerate";
 		default :
-			return NULL;
+			return nullptr;
 	}
 }
 
@@ -416,14 +416,14 @@ static void SPELLCAST_Notify(const SpellBase & spell) {
 	if(!spellName)
 		return;
 	
-	Entity * sender = (source != EntityHandle()) ? entities[source] : NULL;
+	Entity * sender = (source != EntityHandle()) ? entities[source] : nullptr;
 	ScriptParameters parameters;
 	parameters.push_back(spellName);
 	parameters.push_back(long(spell.m_level));
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
-		if(entities[handle] != NULL) {
+		if(entities[handle] != nullptr) {
 			SendIOScriptEvent(sender, entities[handle], SM_SPELLCAST, parameters);
 		}
 	}
@@ -439,7 +439,7 @@ static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 	const char * spellName = MakeSpellName(spell.m_type);
 	
 	if(spellName) {
-		Entity * sender = (source != EntityHandle()) ? entities[source] : NULL;
+		Entity * sender = (source != EntityHandle()) ? entities[source] : nullptr;
 		ScriptParameters parameters;
 		parameters.push_back(spellName);
 		parameters.push_back(long(spell.m_level));
@@ -454,7 +454,7 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 
 	if(spell.m_type == SPELL_CONFUSE) {
 		if(ValidIONum(spell.m_target) && spellName) {
-			Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+			Entity * sender = ValidIONum(source) ? entities[source] : nullptr;
 			ScriptParameters parameters;
 			parameters.push_back(spellName);
 			parameters.push_back(long(spell.m_level));
@@ -468,7 +468,7 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 		return;
 	}
 	
-	Entity * sender = ValidIONum(source) ? entities[source] : NULL;
+	Entity * sender = ValidIONum(source) ? entities[source] : nullptr;
 	ScriptParameters parameters;
 	parameters.push_back(spellName);
 	parameters.push_back(long(spell.m_level));
@@ -579,7 +579,7 @@ void ARX_SPELLS_ManageMagic() {
 				ARX_FLARES_broken = 0;
 				
 				if(!ARX_SOUND_IsPlaying(player.magic_draw)) {
-					player.magic_draw = ARX_SOUND_PlaySFX_loop(g_snd.MAGIC_DRAW_LOOP, NULL, 1.f);
+					player.magic_draw = ARX_SOUND_PlaySFX_loop(g_snd.MAGIC_DRAW_LOOP, nullptr, 1.f);
 				}
 				
 			} else {
@@ -816,7 +816,7 @@ float ARX_SPELLS_GetManaCost(SpellType spell, float casterLevel) {
 
 static SpellBase * createSpellInstance(SpellType type) {
 	switch(type) {
-		case SPELL_NONE: return NULL;
+		case SPELL_NONE: return nullptr;
 		// LEVEL 1
 		case SPELL_MAGIC_SIGHT: return new MagicSightSpell();
 		case SPELL_MAGIC_MISSILE: return new MagicMissileSpell();
@@ -879,7 +879,7 @@ static SpellBase * createSpellInstance(SpellType type) {
 		case SPELL_MASS_INCINERATE: return new MassIncinerateSpell();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 

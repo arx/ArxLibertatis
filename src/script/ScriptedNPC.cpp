@@ -489,7 +489,7 @@ public:
 		}
 		
 		EntityHandle i = EntityHandle();
-		if(t != NULL) {
+		if(t != nullptr) {
 			i = io->targetinfo = t->index();
 			GetTargetPos(io);
 		}

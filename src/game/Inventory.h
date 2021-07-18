@@ -61,7 +61,7 @@ struct INVENTORY_SLOT {
 	bool show;
 	
 	INVENTORY_SLOT()
-		: io(NULL)
+		: io(nullptr)
 		, show(false)
 	{}
 	
@@ -74,7 +74,7 @@ struct INVENTORY_DATA {
 	INVENTORY_SLOT slot[20][20];
 	
 	INVENTORY_DATA()
-		: io(NULL)
+		: io(nullptr)
 		, m_size(Vec2s(0, 0))
 	{}
 	

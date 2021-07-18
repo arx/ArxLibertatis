@@ -135,7 +135,7 @@ void CrashHandler::shutdown() {
 	gCrashHandlerInitCount--;
 	if(gCrashHandlerInitCount == 0) {
 		#ifdef ARX_DEBUG
-		g_assertHandler = NULL;
+		g_assertHandler = nullptr;
 		#endif
 		gCrashHandlerImpl->shutdown();
 		delete gCrashHandlerImpl;

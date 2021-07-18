@@ -56,7 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct EntityManager::Impl {
 	
-	size_t m_minfree; // first unused index (value == NULL)
+	size_t m_minfree; // first unused index (value == nullptr)
 	
 	typedef boost::unordered_map<std::string, Entity *> Index;
 	Index m_index;
@@ -78,7 +78,7 @@ EntityManager::~EntityManager() {
 	
 #ifdef ARX_DEBUG
 	for(size_t i = 0; i < size(); i++) {
-		arx_assert_msg(entries[i] == NULL, "object %lu not cleared", static_cast<unsigned long>(i));
+		arx_assert_msg(entries[i] == nullptr, "object %lu not cleared", static_cast<unsigned long>(i));
 	}
 #endif
 	
@@ -89,7 +89,7 @@ EntityManager::~EntityManager() {
 void EntityManager::init() {
 	arx_assert(size() == 0);
 	entries.resize(1);
-	entries[0] = NULL;
+	entries[0] = nullptr;
 	m_impl->m_minfree = 0;
 }
 
@@ -98,7 +98,7 @@ void EntityManager::clear() {
 	// Free all entities, ignoring the player.
 	for(size_t i = 1; i < size(); i++) {
 		delete entries[i];
-		arx_assert(entries[i] == NULL);
+		arx_assert(entries[i] == nullptr);
 	}
 	
 	entries.resize(1);
@@ -141,7 +141,7 @@ Entity * EntityManager::getById(const std::string & idString, Entity * self) con
 	
 	EntityHandle handle = getById(idString);
 	if(handle == EntityHandle()) {
-		return NULL;
+		return nullptr;
 	}
 	if(handle == EntityHandle_Self) {
 		return self;
@@ -172,7 +172,7 @@ size_t EntityManager::add(Entity * entity) {
 	m_impl->m_index[entity->idString()] = entity;
 	
 	for(size_t i = m_impl->m_minfree; i < size(); i++) {
-		if(entries[i] == NULL) {
+		if(entries[i] == nullptr) {
 			entries[i] = entity;
 			m_impl->m_minfree = i + 1;
 			return i;
@@ -187,7 +187,7 @@ size_t EntityManager::add(Entity * entity) {
 
 void EntityManager::remove(size_t index) {
 	
-	arx_assert_msg(index < size() && entries[index] != NULL,
+	arx_assert_msg(index < size() && entries[index] != nullptr,
 	               "double free or memory corruption detected: index=%lu", static_cast<unsigned long>(index));
 	
 	m_impl->m_index.erase(entries[index]->idString());
@@ -196,5 +196,5 @@ void EntityManager::remove(size_t index) {
 		m_impl->m_minfree = index;
 	}
 	
-	entries[index] = NULL;
+	entries[index] = nullptr;
 }

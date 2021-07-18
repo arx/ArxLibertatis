@@ -79,9 +79,9 @@ static bool IsPointInField(const Vec3f & pos) {
 
 static void ARX_THROWN_OBJECT_Kill(size_t num) {
 	if(num < MAX_THROWN_OBJECTS) {
-		g_projectiles[num].obj = NULL;
+		g_projectiles[num].obj = nullptr;
 		delete g_projectiles[num].m_trail;
-		g_projectiles[num].m_trail = NULL;
+		g_projectiles[num].m_trail = nullptr;
 	}
 }
 
@@ -176,7 +176,7 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 	float critical = 1.f;
 	if(Random::getf(0.f, 100.f) <= (player.m_attributeFull.dexterity - 9.f) * 2.f
 	                               + player.m_skillFull.projectile * 0.2f) {
-		if(SendIOScriptEvent(NULL, entities.player(), SM_CRITICAL, "bow") != REFUSE) {
+		if(SendIOScriptEvent(nullptr, entities.player(), SM_CRITICAL, "bow") != REFUSE) {
 			critical = 1.5f;
 		}
 	}
@@ -184,7 +184,7 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 	float backstab = 1.f;
 	if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
 		if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth) {
-			if(SendIOScriptEvent(NULL, entities.player(), SM_BACKSTAB, "bow") != REFUSE) {
+			if(SendIOScriptEvent(nullptr, entities.player(), SM_BACKSTAB, "bow") != REFUSE) {
 				backstab = 1.5f;
 			}
 		}
@@ -265,7 +265,7 @@ void ARX_THROWN_OBJECT_Render() {
 		// Object has to be retransformed because arrows share the same object
 		DrawEERIEInter_ModelTransform(projectile.obj, t);
 		DrawEERIEInter_ViewProjectTransform(projectile.obj);
-		DrawEERIEInter_Render(projectile.obj, t, NULL);
+		DrawEERIEInter_Render(projectile.obj, t, nullptr);
 		
 		if(projectile.m_trail) {
 			projectile.m_trail->Render();
@@ -297,7 +297,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			projectile.m_trail->Update(timeDelta);
 			if(projectile.m_trail->emtpy()) {
 				delete projectile.m_trail;
-				projectile.m_trail = NULL;
+				projectile.m_trail = nullptr;
 			}
 		}
 		return;

@@ -32,7 +32,7 @@ public:
 	explicit MappedPld(SaveBlock & save)
 		: m_save(save)
 		, m_fileName("pld")
-		, m_pld(NULL)
+		, m_pld(nullptr)
 	{ }
 	
 	bool load() {

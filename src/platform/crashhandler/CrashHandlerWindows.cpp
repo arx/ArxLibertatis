@@ -235,7 +235,7 @@ void CrashHandlerWindows::writeCrashDump(PEXCEPTION_POINTERS pointers) {
 	}
 	
 	HANDLE file = CreateFileW(m_pCrashInfo->miniDumpTmpFile, GENERIC_READ | GENERIC_WRITE,
-	                          0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	                          0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 	if(file == INVALID_HANDLE_VALUE) {
 		return;
 	}
@@ -250,7 +250,7 @@ void CrashHandlerWindows::writeCrashDump(PEXCEPTION_POINTERS pointers) {
 
 	// Write the minidump
 	MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), file, miniDumpType,
-	                  &exceptionInfo, NULL, NULL);
+	                  &exceptionInfo, nullptr, nullptr);
 	
 	CloseHandle(file);
 	
@@ -315,8 +315,8 @@ arx_noreturn void CrashHandlerWindows::handleCrash(int crashType, void * crashEx
 	si.cb = sizeof(STARTUPINFO);
 	PROCESS_INFORMATION pi;
 	memset(&pi, 0, sizeof(PROCESS_INFORMATION));
-	BOOL created = CreateProcessW(m_exe, m_args.data(), NULL, NULL, FALSE,
-	                              0, NULL, NULL, &si, &pi);
+	BOOL created = CreateProcessW(m_exe, m_args.data(), nullptr, nullptr, FALSE,
+	                              0, nullptr, nullptr, &si, &pi);
 	if(created) {
 		while(true) {
 			if(m_pCrashInfo->exitLock.try_wait()) {

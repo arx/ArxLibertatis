@@ -169,7 +169,7 @@ struct ClosestHitRaycast {
 	
 	explicit ClosestHitRaycast(PolyType ignored, RaycastFlags flags)
 		: closestHit(std::numeric_limits<float>::max())
-		, hitPoly(NULL)
+		, hitPoly(nullptr)
 		, ignoredTypes(ignored)
 		, anyHit(flags.has(RaycastAnyHit))
 	{ }
@@ -244,8 +244,8 @@ EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end,
 	Vec3f dir = end - start;
 	Vec3f invdir = 1.f / dir;
 	
-	Entity * hitEntity = NULL;
-	EERIE_FACE * hitFace = NULL;
+	Entity * hitEntity = nullptr;
+	EERIE_FACE * hitFace = nullptr;
 	float t = std::numeric_limits<float>::max();
 	
 	for(size_t i = (flags & RaycastIgnorePlayer) ? 1 : 0; i < entities.size(); i++) {

@@ -127,7 +127,7 @@ static Entity * getSecondaryOrStealInvEntity() {
 	if(player.Interface & INTER_STEAL) {
 		return ioSteal;
 	}
-	return NULL;
+	return nullptr;
 }
 
 void SecondaryInventoryHud::update() {
@@ -143,7 +143,7 @@ void SecondaryInventoryHud::update() {
 				m_fadeDirection = Fade_left;
 				SendIOScriptEvent(entities.player(), io, SM_INVENTORY2_CLOSE);
 				TSecondaryInventory = SecondaryInventory;
-				SecondaryInventory = NULL;
+				SecondaryInventory = nullptr;
 			} else {
 				if(player.Interface & INTER_STEAL) {
 					player.Interface &= ~INTER_STEAL;
@@ -202,7 +202,7 @@ void SecondaryInventoryHud::draw() {
 			
 			bool bItemSteal = false;
 			TextureContainer * tc = io->m_icon;
-			TextureContainer * tc2 = NULL;
+			TextureContainer * tc2 = nullptr;
 			
 			if(NeedHalo(io))
 				tc2 = io->m_icon->getHalo();
@@ -211,7 +211,7 @@ void SecondaryInventoryHud::draw() {
 				if(!ARX_PLAYER_CanStealItem(io)) {
 					bItemSteal = true;
 					tc = m_canNotSteal;
-					tc2 = NULL;
+					tc2 = nullptr;
 				}
 			}
 			
@@ -297,7 +297,7 @@ void SecondaryInventoryHud::updateInputButtons() {
 
 bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 	
-	if(SecondaryInventory != NULL) {
+	if(SecondaryInventory != nullptr) {
 		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
 		          / s16(32 * m_scale);
 		if(t.x >= 0 && t.x < SecondaryInventory->m_size.x && t.y >= 0 && t.y < SecondaryInventory->m_size.y) {
@@ -310,22 +310,22 @@ bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 
 Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 	
-	if(SecondaryInventory != NULL) {
+	if(SecondaryInventory != nullptr) {
 		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
 		          / s16(32 * m_scale);
 		if(t.x >= 0 && t.x < SecondaryInventory->m_size.x && t.y >= 0 && t.y < SecondaryInventory->m_size.y) {
 			Entity * io = SecondaryInventory->slot[t.x][t.y].io;
 			if(!io || !(io->gameFlags & GFLAG_INTERACTIVITY)) {
-				return NULL;
+				return nullptr;
 			}
 			if((player.Interface & INTER_STEAL) && !ARX_PLAYER_CanStealItem(io)) {
-				return NULL;
+				return nullptr;
 			}
 			return io;
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void SecondaryInventoryHud::dropEntity() {
@@ -418,7 +418,7 @@ void SecondaryInventoryHud::dragEntity(Entity * io) {
 void SecondaryInventoryHud::open(Entity * container) {
 	
 	if(container && !container->inventory) {
-		container = NULL;
+		container = nullptr;
 	}
 	
 	if(!container || SecondaryInventory == container->inventory) {
@@ -427,7 +427,7 @@ void SecondaryInventoryHud::open(Entity * container) {
 
 		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
 		TSecondaryInventory = SecondaryInventory;
-		SecondaryInventory = NULL;
+		SecondaryInventory = nullptr;
 		DRAGGING = false;
 	} else {
 		if(TSecondaryInventory && TSecondaryInventory->io)
@@ -436,10 +436,10 @@ void SecondaryInventoryHud::open(Entity * container) {
 		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_right;
 		TSecondaryInventory = SecondaryInventory = container->inventory;
 
-		if(SecondaryInventory && SecondaryInventory->io != NULL) {
+		if(SecondaryInventory && SecondaryInventory->io != nullptr) {
 			if(SendIOScriptEvent(entities.player(), SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE) {
 				g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
-				TSecondaryInventory = SecondaryInventory = NULL;
+				TSecondaryInventory = SecondaryInventory = nullptr;
 				return;
 			}
 		}
@@ -465,7 +465,7 @@ void SecondaryInventoryHud::open(Entity * container) {
 
 void SecondaryInventoryHud::close() {
 	
-	Entity * io = NULL;
+	Entity * io = nullptr;
 	
 	if(SecondaryInventory)
 		io = SecondaryInventory->io;
@@ -476,16 +476,16 @@ void SecondaryInventoryHud::close() {
 		m_fadeDirection = Fade_left;
 		SendIOScriptEvent(entities.player(), io, SM_INVENTORY2_CLOSE);
 		TSecondaryInventory = SecondaryInventory;
-		SecondaryInventory = NULL;
+		SecondaryInventory = nullptr;
 	}
 }
 
 bool SecondaryInventoryHud::isVisible() {
-	return TSecondaryInventory != NULL;
+	return TSecondaryInventory != nullptr;
 }
 
 bool SecondaryInventoryHud::isOpen() {
-	return SecondaryInventory != NULL;
+	return SecondaryInventory != nullptr;
 }
 
 
@@ -496,11 +496,11 @@ bool SecondaryInventoryHud::isOpen(Entity * container) {
 void SecondaryInventoryHud::clear(Entity * container) {
 	
 	if(SecondaryInventory == container->inventory) {
-		SecondaryInventory = NULL;
+		SecondaryInventory = nullptr;
 	}
 	
 	if(TSecondaryInventory == container->inventory) {
-		TSecondaryInventory = NULL;
+		TSecondaryInventory = nullptr;
 	}
 	
 }
@@ -525,11 +525,11 @@ void SecondaryInventoryHud::updateFader() {
 			if(player.Interface & INTER_STEAL || ioSteal) {
 				SendIOScriptEvent(entities.player(), ioSteal, SM_STEAL, "off");
 				player.Interface &= ~INTER_STEAL;
-				ioSteal = NULL;
+				ioSteal = nullptr;
 			}
 			
-			SecondaryInventory = NULL;
-			TSecondaryInventory = NULL;
+			SecondaryInventory = nullptr;
+			TSecondaryInventory = nullptr;
 			m_fadeDirection = Fade_stable;
 		} else if(m_fadePosition >= 0) {
 			m_fadePosition = 0;

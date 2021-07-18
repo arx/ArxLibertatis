@@ -62,7 +62,7 @@ Widget * WidgetContainer::getWidgetAt(const Vec2f & mousePos) const {
 		
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void WidgetContainer::move(const Vec2f & offset) {

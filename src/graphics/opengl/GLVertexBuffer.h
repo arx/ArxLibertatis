@@ -145,7 +145,7 @@ public:
 		
 		bindBuffer(m_buffer);
 		
-		setVertexArray<Vertex>(m_renderer, NULL, this);
+		setVertexArray<Vertex>(m_renderer, nullptr, this);
 		
 		glDrawArrays(arxToGlPrimitiveType[primitive], m_offset + offset, count);
 		
@@ -156,7 +156,7 @@ public:
 		
 		arx_assert(offset < capacity());
 		arx_assert(offset + count <= capacity());
-		arx_assert(indices != NULL);
+		arx_assert(indices != nullptr);
 		
 		offset += m_offset;
 		
@@ -164,7 +164,7 @@ public:
 		
 		bindBuffer(m_buffer);
 		
-		setVertexArray<Vertex>(m_renderer, NULL, this);
+		setVertexArray<Vertex>(m_renderer, nullptr, this);
 		
 		GLenum mode = arxToGlPrimitiveType[primitive];
 		GLenum type = GL_UNSIGNED_SHORT;
@@ -272,7 +272,7 @@ public:
 	
 protected:
 	
-	void initialize(const Vertex * data = NULL) {
+	void initialize(const Vertex * data = nullptr) {
 		arx_assert(!m_initialized || m_usage != Renderer::Static);
 		arx_assert(data || m_usage != Renderer::Static);
 		#ifdef GL_ARB_buffer_storage
@@ -477,7 +477,7 @@ public:
 	                             size_t multiplier = 1)
 		: Base(renderer, size, usage)
 		, m_multiplier(multiplier)
-		, m_mapping(NULL)
+		, m_mapping(nullptr)
 	{
 		
 		bindBuffer(m_buffer);
@@ -501,7 +501,7 @@ protected:
 		if(m_usage == Renderer::Stream) {
 			flags |= GL_CLIENT_STORAGE_BIT;
 		}
-		glBufferStorage(GL_ARRAY_BUFFER, size(), NULL, flags);
+		glBufferStorage(GL_ARRAY_BUFFER, size(), nullptr, flags);
 		
 		return map(GL_MAP_UNSYNCHRONIZED_BIT);
 	}

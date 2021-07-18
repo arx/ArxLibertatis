@@ -608,7 +608,7 @@ audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpee
 		ARX_SOUND_SetListener(g_camera->m_pos, frontUp.first, frontUp.second);
 	}
 	
-	channel.position = ARX_SOUND_IOFrontPos(NULL);
+	channel.position = ARX_SOUND_IOFrontPos(nullptr);
 	
 	return audio::samplePlay(sample_id, channel);
 }

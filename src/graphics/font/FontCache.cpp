@@ -120,7 +120,7 @@ FontCache::Impl::FontFile::FontFile(FT_Library library, const res::path & file)
 	, m_library(library)
 	#endif
 	, m_data(g_resources->read(file))
-	, m_face(NULL)
+	, m_face(nullptr)
 {
 	
 	#if ARX_USE_MAP_EMPLACE
@@ -135,7 +135,7 @@ FontCache::Impl::FontFile::FontFile(FontFile && other) noexcept
 	, m_data(std::move(other.m_data))
 	, m_face(other.m_face)
 {
-	other.m_face = NULL;
+	other.m_face = nullptr;
 }
 #endif
 
@@ -166,7 +166,7 @@ Font * FontCache::Impl::FontFile::getSize(unsigned size, unsigned weight, bool p
 	#endif
 	
 	if(!m_face) {
-		return NULL;
+		return nullptr;
 	}
 	
 	Font * font = new Font(m_file, size, weight, m_face, preload);
@@ -181,7 +181,7 @@ void FontCache::Impl::FontFile::releaseSize(Font * font) {
 	delete font;
 }
 
-FontCache::Impl::Impl() : m_library(NULL) {
+FontCache::Impl::Impl() : m_library(nullptr) {
 	
 	FT_Init_FreeType(&m_library);
 	
@@ -248,7 +248,7 @@ void FontCache::Impl::releaseFont(Font * font) {
 	
 }
 
-FontCache::Impl * FontCache::instance = NULL;
+FontCache::Impl * FontCache::instance = nullptr;
 
 void FontCache::initialize() {
 	if(!instance) {
@@ -258,7 +258,7 @@ void FontCache::initialize() {
 
 void FontCache::shutdown() {
 	delete instance;
-	instance = NULL;
+	instance = nullptr;
 }
 
 Font * FontCache::getFont(const res::path & file, unsigned size, unsigned weight, bool preload) {

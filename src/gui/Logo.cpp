@@ -65,37 +65,37 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/RenderWindow.h"
 
-static TextureContainer * FISHTANK_img = NULL;
-static TextureContainer * ARKANE_img = NULL;
+static TextureContainer * FISHTANK_img = nullptr;
+static TextureContainer * ARKANE_img = nullptr;
 
 bool ARX_INTERFACE_InitFISHTANK() {
-	if(FISHTANK_img == NULL) {
+	if(FISHTANK_img == nullptr) {
 		FISHTANK_img = TextureContainer::LoadUI("misc/logo", TextureContainer::NoColorKey);
 	}
-	return FISHTANK_img != NULL;
+	return FISHTANK_img != nullptr;
 }
 
 bool ARX_INTERFACE_InitARKANE() {
-	if(ARKANE_img == NULL) {
+	if(ARKANE_img == nullptr) {
 		ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane",
 		                                      TextureContainer::NoColorKey);
 	}
-	return ARKANE_img != NULL;
+	return ARKANE_img != nullptr;
 }
 
 void ARX_INTERFACE_KillFISHTANK() {
 	delete FISHTANK_img;
-	FISHTANK_img = NULL;
+	FISHTANK_img = nullptr;
 }
 
 void ARX_INTERFACE_KillARKANE() {
 	delete ARKANE_img;
-	ARKANE_img = NULL;
+	ARKANE_img = nullptr;
 }
 
 static void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
 	
-	if(logo == NULL) {
+	if(logo == nullptr) {
 		return;
 	}
 	

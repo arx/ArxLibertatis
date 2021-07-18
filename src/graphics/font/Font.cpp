@@ -48,8 +48,8 @@ static const Font::Char FONT_PRELOAD_LIMIT = 127;
 Font::Font(const res::path & file, unsigned size, unsigned weight, FT_Face face, bool preload)
 	: m_info(file, size, weight)
 	, m_referenceCount(0)
-	, m_size(NULL)
-	, m_textures(NULL) {
+	, m_size(nullptr)
+	, m_textures(nullptr) {
 	
 	FT_New_Size(face, &m_size);
 	

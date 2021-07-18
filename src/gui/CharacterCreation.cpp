@@ -52,7 +52,7 @@ static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 }
 
 CharacterCreation::CharacterCreation()
-	: BookBackground(NULL)
+	: BookBackground(nullptr)
 	, m_cheatSkinButtonClickCount(0)
 	, m_cheatQuickGenButtonClickCount(0)
 { }
@@ -71,7 +71,7 @@ void CharacterCreation::loadData() {
 
 void CharacterCreation::freeData() {
 	delete BookBackground;
-	BookBackground = NULL;
+	BookBackground = nullptr;
 }
 
 void CharacterCreation::resetCheat() {

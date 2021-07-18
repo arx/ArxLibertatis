@@ -503,7 +503,7 @@ bool PakReader::addArchive(const fs::path & pakfile, const PakFilter * filter) {
 		m_checksum = checksum;
 	}
 	
-	const std::vector<std::string> * filters = NULL;
+	const std::vector<std::string> * filters = nullptr;
 	if(filter) {
 		PakFilter::const_iterator it = filter->find(checksum);
 		if(it != filter->end()) {
@@ -523,7 +523,7 @@ bool PakReader::addArchive(const fs::path & pakfile, const PakFilter * filter) {
 			return false;
 		}
 		
-		PakDirectory * dir = NULL;
+		PakDirectory * dir = nullptr;
 		res::path dirpath = res::path::load(dirname);
 		bool filtered = false;
 		if(filters) {
@@ -616,7 +616,7 @@ PakFileHandle * PakReader::open(const res::path & name) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
-		return NULL;
+		return nullptr;
 	}
 	
 	return f->open();

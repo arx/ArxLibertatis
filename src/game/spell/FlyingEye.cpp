@@ -33,8 +33,8 @@ EYEBALL_DEF eyeball;
 
 float MagicSightFader = 0.f;
 
-static TextureContainer * Flying_Eye = NULL;
-static EERIE_3DOBJ * eyeballobj = NULL; // EyeBall 3D Object
+static TextureContainer * Flying_Eye = nullptr;
+static EERIE_3DOBJ * eyeballobj = nullptr; // EyeBall 3D Object
 
 void FlyingEye_Init() {
 	Flying_Eye = TextureContainer::LoadUI("graph/particles/flying_eye_fx");
@@ -43,7 +43,7 @@ void FlyingEye_Init() {
 
 void FlyingEye_Release() {
 	delete eyeballobj;
-	eyeballobj = NULL;
+	eyeballobj = nullptr;
 }
 
 void DrawMagicSightInterface() {
@@ -69,7 +69,7 @@ void DrawMagicSightInterface() {
 	if(MagicSightFader > 0.f) {
 		col = MagicSightFader;
 
-		EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color::gray(col));
+		EERIEDrawBitmap(Rectf(g_size), 0.0001f, nullptr, Color::gray(col));
 
 		MagicSightFader -= g_platformTime.lastFrameDuration() / PlatformDurationMs(400);
 

@@ -265,7 +265,7 @@ struct SavedMiniMap {
 	
 	operator MiniMap::MiniMapData() const {
 		MiniMap::MiniMapData a;
-		a.m_texContainer = NULL;
+		a.m_texContainer = nullptr;
 		a.m_offset.x = offsetx;
 		a.m_offset.y = offsety;
 		a.m_ratio.x = xratio;
@@ -508,7 +508,7 @@ struct SavedAnimUse {
 	
 	operator AnimLayer() const {
 		AnimLayer a;
-		a.cur_anim = NULL;
+		a.cur_anim = nullptr;
 		a.altidx_cur = altidx_cur;
 		a.ctime = AnimationDurationMs(ctime);
 		a.flags = AnimUseType::load(flags);
@@ -734,7 +734,7 @@ struct SavedPathfindTarget {
 		IO_PATHFIND a;
 		a.flags = 0;
 		a.listnb = a.listpos = a.pathwait = 0;
-		a.list = NULL;
+		a.list = nullptr;
 		a.truetarget = EntityHandle(truetarget);
 		return a;
 	}

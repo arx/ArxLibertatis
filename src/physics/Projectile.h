@@ -59,11 +59,11 @@ struct Projectile {
 		, initial_position(0.f)
 		, position(0.f)
 		, damages(0)
-		, obj(NULL)
+		, obj(nullptr)
 		, rotation(quat_identity())
 		, creation_time(0)
 		, poisonous(0.f)
-		, m_trail(NULL)
+		, m_trail(nullptr)
 	{ }
 	
 };

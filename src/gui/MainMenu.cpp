@@ -137,8 +137,8 @@ public:
 	
 	SaveConfirmMenuPage()
 		: MenuPage(Page_SaveConfirm)
-		, m_textbox(NULL)
-		, pDeleteButton(NULL)
+		, m_textbox(nullptr)
+		, pDeleteButton(nullptr)
 	{ }
 	
 	~SaveConfirmMenuPage() { }
@@ -242,9 +242,9 @@ public:
 	
 	LoadMenuPage()
 		: MenuPage(Page_Load)
-		, m_selected(NULL)
-		, pLoadConfirm(NULL)
-		, pDeleteConfirm(NULL)
+		, m_selected(nullptr)
+		, pLoadConfirm(nullptr)
+		, pDeleteConfirm(nullptr)
 	{
 		m_rowSpacing = 5;
 	}
@@ -310,7 +310,7 @@ public:
 	void resetSelection() {
 		if(m_selected) {
 			m_selected->setSelected(false);
-			m_selected = NULL;
+			m_selected = nullptr;
 		}
 	}
 	
@@ -450,8 +450,8 @@ public:
 	
 	ChooseLoadOrSaveMenuPage()
 		: MenuPage(Page_LoadOrSave)
-		, m_loadButton(NULL)
-		, m_saveButton(NULL)
+		, m_loadButton(nullptr)
+		, m_saveButton(nullptr)
 	{ }
 	
 	~ChooseLoadOrSaveMenuPage() { }
@@ -675,11 +675,11 @@ public:
 	
 	VideoOptionsMenuPage()
 		: MenuPage(Page_OptionsVideo)
-		, m_fullscreenCheckbox(NULL)
-		, m_resolutionSlider(NULL)
-		, m_gammaSlider(NULL)
-		, m_minimizeOnFocusLostCheckbox(NULL)
-		, m_applyButton(NULL)
+		, m_fullscreenCheckbox(nullptr)
+		, m_resolutionSlider(nullptr)
+		, m_gammaSlider(nullptr)
+		, m_minimizeOnFocusLostCheckbox(nullptr)
+		, m_applyButton(nullptr)
 		, m_fullscreen(false)
 	{ }
 	
@@ -1005,7 +1005,7 @@ public:
 	
 	RenderOptionsMenuPage()
 		: MenuPage(Page_OptionsRender)
-		, m_alphaCutoutAntialiasingCycleText(NULL)
+		, m_alphaCutoutAntialiasingCycleText(nullptr)
 	{ }
 	
 	~RenderOptionsMenuPage() { }
@@ -2011,7 +2011,7 @@ private:
 
 void MainMenu::initWindowPages() {
 	
-	delete m_window, m_window = NULL;
+	delete m_window, m_window = nullptr;
 	
 	m_window = new MenuWindow();
 	
@@ -2040,12 +2040,12 @@ void MainMenu::initWindowPages() {
 
 MainMenu::MainMenu()
 	: bReInitAll(false)
-	, m_window(NULL)
+	, m_window(nullptr)
 	, m_requestedPage(Page_None)
-	, m_background(NULL)
+	, m_background(nullptr)
 	, m_widgets(new WidgetContainer())
-	, m_resumeGame(NULL)
-	, m_selected(NULL)
+	, m_resumeGame(nullptr)
+	, m_selected(nullptr)
 { }
 
 MainMenu::~MainMenu() {

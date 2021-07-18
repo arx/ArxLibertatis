@@ -123,7 +123,7 @@ float getEquipmentModifier(EquipmentModifierType modifier, float baseval);
 
 bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ratioaim, long flags, EntityHandle targ = EntityHandle());
 void ARX_EQUIPMENT_RecreatePlayerMesh();
-float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * pos = NULL);
+float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * pos = nullptr);
  
 void ARX_EQUIPMENT_IdentifyAll();
 

@@ -54,7 +54,7 @@ void assertionFailed(const char * expr, const char * file, unsigned int line,
 		}
 	} else {
 		if(g_assertHandler) {
-			g_assertHandler(expr, file, line, NULL);
+			g_assertHandler(expr, file, line, nullptr);
 		}
 	}
 	

@@ -78,7 +78,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 	
 	LogDebug("Tweak Skin " << s1 << " " << s2);
 	
-	if(obj == NULL || s1.empty() || s2.empty()) {
+	if(obj == nullptr || s1.empty() || s2.empty()) {
 		LogError << "Tweak Skin got NULL Pointer";
 		return;
 	}
@@ -244,7 +244,7 @@ static void ObjectAddAction(EERIE_3DOBJ * obj, const std::string & name, const E
 
 long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc) {
 	
-	if(tc == NULL)
+	if(tc == nullptr)
 		return -1;
 
 	for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
@@ -328,17 +328,17 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		}
 	}
 
-	if(sel_head1 == ObjSelection()) return NULL;
+	if(sel_head1 == ObjSelection()) return nullptr;
 
-	if(sel_head2 == ObjSelection()) return NULL;
+	if(sel_head2 == ObjSelection()) return nullptr;
 
-	if(sel_torso1 == ObjSelection()) return NULL;
+	if(sel_torso1 == ObjSelection()) return nullptr;
 
-	if(sel_torso2 == ObjSelection()) return NULL;
+	if(sel_torso2 == ObjSelection()) return nullptr;
 
-	if(sel_legs1 == ObjSelection()) return NULL;
+	if(sel_legs1 == ObjSelection()) return nullptr;
 
-	if(sel_legs2 == ObjSelection()) return NULL;
+	if(sel_legs2 == ObjSelection()) return nullptr;
 
 	if(tw == TWEAK_HEAD) {
 		tw1 = sel_head1;
@@ -362,25 +362,25 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	}
 
 	if(tw1 == ObjSelection() || tw2 == ObjSelection())
-		return NULL;
+		return nullptr;
 
 	// Now Retreives Tweak Action Points
 	{
 		ActionPoint idx_head1 = GetActionPoint(obj1, "head2chest");
 		if(idx_head1 == ActionPoint())
-			return NULL;
+			return nullptr;
 
 		ActionPoint idx_head2 = GetActionPoint(obj2, "head2chest");
 		if(idx_head2 == ActionPoint())
-			return NULL;
+			return nullptr;
 
 		ActionPoint idx_torso1 = GetActionPoint(obj1, "chest2leggings");
 		if(idx_torso1 == ActionPoint())
-			return NULL;
+			return nullptr;
 
 		ActionPoint idx_torso2 = GetActionPoint(obj2, "chest2leggings");
 		if(idx_torso2 == ActionPoint())
-			return NULL;
+			return nullptr;
 	}
 
 	// copy vertices
@@ -447,7 +447,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Look in Faces for forgotten Vertexes... AND
 	// Re-Create TextureContainers Infos
 	// We look for texturecontainers included in the future tweaked object
-	TextureContainer * tc = NULL;
+	TextureContainer * tc = nullptr;
 
 	for(size_t i = 0; i < obj1->facelist.size(); i++) {
 		const EERIE_FACE & face = obj1->facelist[i];
@@ -687,9 +687,9 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 
 	if ((!g_resources->getFile(ftl_file)) && (!g_resources->getFile(path))) return;
 
-	if (io == NULL) return;
+	if (io == nullptr) return;
 
-	if (io->obj == NULL) return;
+	if (io->obj == nullptr) return;
 
 	if(path.empty() && tw == TWEAK_REMOVE) {
 		
@@ -697,7 +697,7 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 			delete io->obj;
 			io->obj = io->tweaky;
 			EERIE_Object_Precompute_Fast_Access(io->obj);
-			io->tweaky = NULL;
+			io->tweaky = nullptr;
 		}
 		
 		return;
@@ -712,7 +712,7 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 		return;
 	}
 	
-	EERIE_3DOBJ * result = NULL;
+	EERIE_3DOBJ * result = nullptr;
 	if(tw == (TWEAK_HEAD | TWEAK_TORSO | TWEAK_LEGS)) {
 		result = tobj; // Replace the entire mesh
 	} else {

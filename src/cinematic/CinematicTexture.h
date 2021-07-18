@@ -68,7 +68,7 @@ struct C_INDEXED {
 		: bitmapdep(0)
 		, bitmap(0)
 		, nbvertexs(0)
-		, tex(NULL)
+		, tex(nullptr)
 		, startind(0)
 		, nbind(0)
 	{ }

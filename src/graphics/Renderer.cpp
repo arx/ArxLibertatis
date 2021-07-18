@@ -31,11 +31,11 @@
 Renderer * GRenderer;
 
 TextureStage * Renderer::GetTextureStage(size_t textureStage) {
-	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage] : NULL;
+	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage] : nullptr;
 }
 
 const TextureStage * Renderer::GetTextureStage(size_t textureStage) const {
-	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage] : NULL;
+	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage] : nullptr;
 }
 
 void Renderer::ResetTexture(unsigned int textureStage) {

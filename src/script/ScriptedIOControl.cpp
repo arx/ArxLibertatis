@@ -199,7 +199,7 @@ public:
 			}
 			
 			if(colliding) {
-				Stack_SendIOScriptEvent(NULL, io, SM_COLLISION_ERROR);
+				Stack_SendIOScriptEvent(nullptr, io, SM_COLLISION_ERROR);
 			}
 			
 		}
@@ -479,8 +479,8 @@ public:
 			t->show = SHOW_FLAG_IN_SCENE;
 			if((t->ioflags & IO_NPC) && t->_npcdata->lifePool.current <= 0.f) {
 				t->animlayer[0].cur_anim = t->anims[ANIM_DIE];
-				t->animlayer[1].cur_anim = NULL;
-				t->animlayer[2].cur_anim = NULL;
+				t->animlayer[1].cur_anim = nullptr;
+				t->animlayer[2].cur_anim = nullptr;
 				t->animlayer[0].ctime = AnimationDurationMs(9999999);
 			}
 		}
@@ -719,7 +719,7 @@ public:
 			return Failed;
 		}
 		
-		EntityHandle self = (context.getEntity() == NULL) ? EntityHandle() : context.getEntity()->index();
+		EntityHandle self = (context.getEntity() == nullptr) ? EntityHandle() : context.getEntity()->index();
 		ARX_DAMAGES_DealDamages(t->index(), damage, self, type, &t->pos);
 		
 		return Success;

@@ -32,12 +32,12 @@
 #include "platform/CrashHandler.h"
 #include "platform/Platform.h"
 
-SDL1Window * SDL1Window::s_mainWindow = NULL;
+SDL1Window * SDL1Window::s_mainWindow = nullptr;
 
 SDL1Window::SDL1Window()
 	: m_initialized(false)
 	, m_desktopMode(Vec2i(640, 480))
-	, m_input(NULL)
+	, m_input(nullptr)
 	, m_gamma(1.f)
 	, m_gammaOverridden(false)
 	{
@@ -51,19 +51,19 @@ SDL1Window::~SDL1Window() {
 	}
 	
 	if(m_renderer) {
-		delete m_renderer, m_renderer = NULL;
+		delete m_renderer, m_renderer = nullptr;
 	}
 	
 	if(s_mainWindow) {
 		restoreGamma();
-		SDL_Quit(), s_mainWindow = NULL;
+		SDL_Quit(), s_mainWindow = nullptr;
 	}
 	
 }
 
 bool SDL1Window::initializeFramework() {
 	
-	arx_assert_msg(s_mainWindow == NULL, "SDL only supports one window");
+	arx_assert_msg(s_mainWindow == nullptr, "SDL only supports one window");
 	arx_assert(m_displayModes.empty());
 	
 	const char * headerVersion = ARX_STR(SDL_MAJOR_VERSION) "." ARX_STR(SDL_MINOR_VERSION)
@@ -87,7 +87,7 @@ bool SDL1Window::initializeFramework() {
 	m_desktopMode.resolution.y = vid->current_h;
 	
 	u32 flags = SDL_FULLSCREEN | SDL_ANYFORMAT | SDL_OPENGL | SDL_HWSURFACE;
-	SDL_Rect ** modes = SDL_ListModes(NULL, flags);
+	SDL_Rect ** modes = SDL_ListModes(nullptr, flags);
 	if(modes == reinterpret_cast<SDL_Rect **>(-1)) {
 		
 		// Any mode is supported, add some standard modes.
@@ -304,7 +304,7 @@ bool SDL1Window::setMode(DisplayMode mode, bool fullscreen) {
 	
 	Uint32 flags = SDL_ANYFORMAT | SDL_OPENGL | SDL_HWSURFACE;
 	flags |= (fullscreen) ? SDL_FULLSCREEN : SDL_RESIZABLE;
-	if(SDL_SetVideoMode(mode.resolution.x, mode.resolution.y, 0, flags) == NULL) {
+	if(SDL_SetVideoMode(mode.resolution.x, mode.resolution.y, 0, flags) == nullptr) {
 		return false;
 	}
 	

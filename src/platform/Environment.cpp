@@ -148,7 +148,7 @@ std::string expandEnvironmentVariables(const std::string & in) {
 				continue;
 			}
 			
-			bool empty = (value == NULL);
+			bool empty = (value == nullptr);
 			if(i < in.size() && in[i] == ':') {
 				empty = empty || *value == '\0';
 				i++;
@@ -217,10 +217,10 @@ static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & 
 	// find size of value
 	DWORD type = 0;
 	DWORD length = buffer.size() * sizeof(WCHAR);
-	ret = RegQueryValueExW(handle, wname, NULL, &type, LPBYTE(buffer.data()), &length);
+	ret = RegQueryValueExW(handle, wname, nullptr, &type, LPBYTE(buffer.data()), &length);
 	if(ret == ERROR_MORE_DATA && length > 0) {
 		buffer.resize(length / sizeof(WCHAR) + 1);
-		ret = RegQueryValueExW(handle, wname, NULL, &type, LPBYTE(buffer.data()), &length);
+		ret = RegQueryValueExW(handle, wname, nullptr, &type, LPBYTE(buffer.data()), &length);
 	}
 	
 	RegCloseKey(handle);
@@ -289,16 +289,16 @@ std::vector<fs::path> getSystemPaths(SystemPathId id) {
 			0x4C5C32FF, 0xBB9D, 0x43b0, { 0xB5, 0xB4, 0x2D, 0x72, 0xE5, 0x4E, 0xAA, 0xA4 }
 		};
 		
-		CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+		CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 		
 		HMODULE dll = GetModuleHandleW(L"shell32.dll");
 		if(dll) {
 			
 			PSHGetKnownFolderPath GetKnownFolderPath = getProcAddress<PSHGetKnownFolderPath>(dll, "SHGetKnownFolderPath");
 			if(GetKnownFolderPath) {
-				LPWSTR savedgames = NULL;
+				LPWSTR savedgames = nullptr;
 				HRESULT hr = GetKnownFolderPath(folderIdSavedGames, kfFlagCreate | kfFlagNoAlias,
-				                                NULL, &savedgames);
+				                                nullptr, &savedgames);
 				if(SUCCEEDED(hr)) {
 					result.push_back(platform::WideString::toUTF8(savedgames));
 				}
@@ -314,7 +314,7 @@ std::vector<fs::path> getSystemPaths(SystemPathId id) {
 	// XP
 	{
 		WCHAR mydocuments[MAX_PATH];
-		HRESULT hr = SHGetFolderPathW(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL,
+		HRESULT hr = SHGetFolderPathW(nullptr, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, nullptr,
 		                              SHGFP_TYPE_CURRENT, mydocuments);
 		if(SUCCEEDED(hr)) {
 			result.push_back(fs::path(platform::WideString::toUTF8(mydocuments)) / "My Games");
@@ -333,7 +333,7 @@ std::vector<fs::path> getSystemPaths(SystemPathId id) {
 
 #endif
 
-static const char * executablePath = NULL;
+static const char * executablePath = nullptr;
 
 void initializeEnvironment(const char * argv0) {
 	executablePath = argv0;
@@ -364,7 +364,7 @@ fs::path getExecutablePath() {
 	uint32_t bufsize = 0;
 	
 	// Obtain required size
-	_NSGetExecutablePath(NULL, &bufsize);
+	_NSGetExecutablePath(nullptr, &bufsize);
 	
 	std::vector<char> exepath(bufsize);
 	
@@ -381,7 +381,7 @@ fs::path getExecutablePath() {
 	buffer.allocate(buffer.capacity());
 	
 	while(true) {
-		DWORD size = GetModuleFileNameW(NULL, buffer.data(), buffer.size());
+		DWORD size = GetModuleFileNameW(nullptr, buffer.data(), buffer.size());
 		if(size < buffer.size()) {
 			buffer.resize(size);
 			return buffer.toUTF8();
@@ -402,7 +402,7 @@ fs::path getExecutablePath() {
 	mib[3] = -1;
 	char pathname[PATH_MAX];
 	size_t size = sizeof(pathname);
-	int error = sysctl(mib, 4, pathname, &size, NULL, 0);
+	int error = sysctl(mib, 4, pathname, &size, nullptr, 0);
 	if(error != -1 && size > 0 && size < sizeof(pathname)) {
 		return util::loadString(pathname, size);
 	}
@@ -411,7 +411,7 @@ fs::path getExecutablePath() {
 	// Solaris
 	#if ARX_HAVE_GETEXECNAME
 	const char * execname = getexecname();
-	if(execname != NULL) {
+	if(execname != nullptr) {
 		return execname;
 	}
 	#endif
@@ -440,7 +440,7 @@ fs::path getExecutablePath() {
 #endif
 	
 	// Fall back to argv[0] if possible
-	if(executablePath != NULL) {
+	if(executablePath != nullptr) {
 		std::string path(executablePath);
 		if(path.find('/') != std::string::npos) {
 			return path;
@@ -522,7 +522,7 @@ bool isFileDescriptorDisabled(int fd) {
 	}
 	
 	HANDLE h = GetStdHandle(names[fd]);
-	if(h == INVALID_HANDLE_VALUE || h == NULL) {
+	if(h == INVALID_HANDLE_VALUE || h == nullptr) {
 		return true; // Not a valid handle
 	}
 	
@@ -567,9 +567,9 @@ static Lock g_environmentLock;
 
 bool hasEnvironmentVariable(const char * name) {
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	return GetEnvironmentVariable(platform::WideString(name), NULL, 0) != 0;
+	return GetEnvironmentVariable(platform::WideString(name), nullptr, 0) != 0;
 	#else
-	return std::getenv(name) != NULL;
+	return std::getenv(name) != nullptr;
 	#endif
 }
 
@@ -583,7 +583,7 @@ void setEnvironmentVariable(const char * name, const char * value) {
 
 void unsetEnvironmentVariable(const char * name) {
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	SetEnvironmentVariableW(platform::WideString(name), NULL);
+	SetEnvironmentVariableW(platform::WideString(name), nullptr);
 	#elif ARX_HAVE_UNSETENV
 	unsetenv(name);
 	#endif
@@ -595,7 +595,7 @@ void EnvironmentLock::lock() {
 		if(m_overrides[i].name) {
 			if(hasEnvironmentVariable(m_overrides[i].name)) {
 				// Don't override variables already set by the user
-				m_overrides[i].name = NULL;
+				m_overrides[i].name = nullptr;
 			} else if(m_overrides[i].value) {
 				setEnvironmentVariable(m_overrides[i].name, m_overrides[i].value);
 			} else {

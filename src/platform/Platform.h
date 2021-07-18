@@ -300,7 +300,7 @@ void assertionFailed(const char * expression, const char * file, unsigned line, 
  *
  * Does nothing in release builds.
  */
-#define arx_assert(Expression)          arx_assert_impl(Expression, #Expression, NULL)
+#define arx_assert(Expression)          arx_assert_impl(Expression, #Expression, nullptr)
 
 /*!
  * \def arx_assert_msg(Expression, Message, MessageArguments...)
@@ -372,7 +372,7 @@ void assertionFailed(const char * expression, const char * file, unsigned line, 
  * \endcode
  */
 #ifdef ARX_DEBUG
-	#define arx_unreachable() arx_assert_impl(false, "unreachable code", NULL)
+	#define arx_unreachable() arx_assert_impl(false, "unreachable code", nullptr)
 #elif ARX_HAVE_BUILTIN_UNREACHABLE
 	#define arx_unreachable() __builtin_unreachable()
 #elif ARX_HAVE_BUILTIN_ASSUME

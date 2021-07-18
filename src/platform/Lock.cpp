@@ -56,7 +56,7 @@ void Lock::unlock() {
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 Lock::Lock()
-	: mutex(CreateMutex(NULL, false, NULL))
+	: mutex(CreateMutex(nullptr, false, nullptr))
 { }
 
 Lock::~Lock() {

@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 namespace audio {
 
 // Audio device interface
-Backend * backend = NULL;
+Backend * backend = nullptr;
 
 // Global settings
 res::path ambiance_path;

@@ -63,7 +63,7 @@ public:
 	
 	explicit key_type(const value_type & v)
 		: m_argCount(0)
-		, m_argNames(NULL)
+		, m_argNames(nullptr)
 		, m_argOptional(false)
 	{
 		(*this)(v);
@@ -107,7 +107,7 @@ public:
 	}
 	
 	bool has_arg_names() const {
-		return m_argNames != NULL;
+		return m_argNames != nullptr;
 	}
 	
 	key_type & arg_optional(const bool argOptional) {

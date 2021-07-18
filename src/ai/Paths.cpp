@@ -135,7 +135,7 @@ static Zone * ARX_PATH_CheckInZone(const Vec3f & pos) {
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 static Zone * ARX_PATH_CheckInZone(Entity * io) {
@@ -151,7 +151,7 @@ static void EntityEnteringCurrentZone(Entity * io, Zone * current) {
 	
 	io->inzone_show = io->show;
 	
-	SendIOScriptEvent(NULL, io, SM_ENTERZONE, current->name);
+	SendIOScriptEvent(nullptr, io, SM_ENTERZONE, current->name);
 	
 	if(!current->controled.empty()) {
 		EntityHandle t = entities.getById(current->controled);
@@ -159,7 +159,7 @@ static void EntityEnteringCurrentZone(Entity * io, Zone * current) {
 			ScriptParameters parameters;
 			parameters.push_back(io->idString());
 			parameters.push_back(current->name);
-			SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_ENTER, parameters);
+			SendIOScriptEvent(nullptr, entities[t], SM_CONTROLLEDZONE_ENTER, parameters);
 		}
 	}
 	
@@ -167,7 +167,7 @@ static void EntityEnteringCurrentZone(Entity * io, Zone * current) {
 
 static void EntityLeavingLastZone(Entity * io, Zone * last) {
 	
-	SendIOScriptEvent(NULL, io, SM_LEAVEZONE, last->name);
+	SendIOScriptEvent(nullptr, io, SM_LEAVEZONE, last->name);
 	
 	if(!last->controled.empty()) {
 		EntityHandle t = entities.getById(last->controled);
@@ -175,7 +175,7 @@ static void EntityLeavingLastZone(Entity * io, Zone * last) {
 			ScriptParameters parameters;
 			parameters.push_back(io->idString());
 			parameters.push_back(last->name);
-			SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, parameters);
+			SendIOScriptEvent(nullptr, entities[t], SM_CONTROLLEDZONE_LEAVE, parameters);
 		}
 	}
 	
@@ -287,7 +287,7 @@ void ARX_PATH_ClearAllUsePath() {
 	BOOST_FOREACH(Entity * e, entities) {
 		if(e && e->usepath) {
 			delete e->usepath;
-			e->usepath = NULL;
+			e->usepath = nullptr;
 		}
 	}
 }
@@ -301,7 +301,7 @@ void ARX_PATH_ClearAllControled() {
 Zone * getZoneByName(const std::string & name) {
 	
 	if(name.empty()) {
-		return NULL;
+		return nullptr;
 	}
 	
 	BOOST_FOREACH(Zone & zone, g_zones) {
@@ -310,13 +310,13 @@ Zone * getZoneByName(const std::string & name) {
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 const Path * getPathByName(const std::string & name) {
 	
 	if(name.empty()) {
-		return NULL;
+		return nullptr;
 	}
 	
 	BOOST_FOREACH(const Path & path, g_paths) {
@@ -325,7 +325,7 @@ const Path * getPathByName(const std::string & name) {
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void ARX_PATH_ReleaseAllPath() {

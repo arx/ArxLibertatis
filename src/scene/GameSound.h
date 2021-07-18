@@ -214,21 +214,21 @@ void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Ve
 audio::SampleHandle ARX_SOUND_Load(const res::path & name);
 void ARX_SOUND_Free(const audio::SampleHandle & sample);
 
-void ARX_SOUND_PlaySFX(audio::SampleHandle sample_id, const Vec3f * position = NULL, float pitch = 1.f);
+void ARX_SOUND_PlaySFX(audio::SampleHandle sample_id, const Vec3f * position = nullptr, float pitch = 1.f);
 
-audio::SourcedSample ARX_SOUND_PlaySFX_loop(audio::SampleHandle sample_id, const Vec3f * position = NULL,
+audio::SourcedSample ARX_SOUND_PlaySFX_loop(audio::SampleHandle sample_id, const Vec3f * position = nullptr,
                                   float pitch = 1.f);
 
 void ARX_SOUND_PlayInterface(audio::SampleHandle sample_id, float pitch = 1.f);
 void ARX_SOUND_PlayMenu(audio::SampleHandle sample_id);
 
-audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar = NULL, const Entity * io = NULL);
+audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar = nullptr, const Entity * io = nullptr);
 void ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source);
 void ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source);
 
-audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar, const Entity * io = NULL,
+audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar, const Entity * io = nullptr,
                                           float pitch = 1.f, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
-void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position = NULL);
+void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position = nullptr);
 audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech);
 bool ARX_SOUND_IsPlaying(audio::SourcedSample & sample_id);
 GameDuration ARX_SOUND_GetDuration(audio::SampleHandle sample_id);
@@ -236,7 +236,7 @@ GameDuration ARX_SOUND_GetDuration(audio::SampleHandle sample_id);
 void ARX_SOUND_RefreshVolume(audio::SourcedSample & sample_id, float volume);
 void ARX_SOUND_RefreshPosition(audio::SourcedSample & sample_id, const Vec3f & position);
 void ARX_SOUND_RefreshPitch(audio::SourcedSample & sample_id, float pitch);
-void ARX_SOUND_RefreshSpeechPosition(audio::SourcedSample & sample_id, const Entity * io = NULL);
+void ARX_SOUND_RefreshSpeechPosition(audio::SourcedSample & sample_id, const Entity * io = nullptr);
 
 void ARX_SOUND_Stop(const audio::SourcedSample & sample_id);
 

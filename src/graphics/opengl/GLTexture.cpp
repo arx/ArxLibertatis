@@ -149,10 +149,10 @@ void GLTexture::destroy() {
 	for(size_t i = 0; i < renderer->getTextureStageCount(); i++) {
 		GLTextureStage * stage = renderer->GetTextureStage(i);
 		if(stage->tex == this) {
-			stage->tex = NULL;
+			stage->tex = nullptr;
 		}
 		if(stage->current == this) {
-			stage->current = NULL;
+			stage->current = nullptr;
 		}
 	}
 	
@@ -179,7 +179,7 @@ static const GLint arxToGlFilter[][2] = {
 
 void GLTexture::apply(GLTextureStage * stage) {
 	
-	arx_assert(stage != NULL);
+	arx_assert(stage != nullptr);
 	arx_assert(stage->tex == this);
 	
 	// TODO: Fix callers and change this into an assert/error/warning.

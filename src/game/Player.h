@@ -360,7 +360,7 @@ struct ARXCHARACTER {
 		, falling(false)
 		, doingmagic(0)
 		, onfirmground(false)
-		, torch(NULL)
+		, torch(nullptr)
 		, m_bowAimRatio(0.f)
 		, m_strikeAimRatio(0.f)
 		, Full_AimTime(0)
@@ -382,7 +382,7 @@ struct ARXCHARACTER {
 		, m_cheatPnuxActive(0)
 		, DeadTime(0)
 	{
-		heads.fill(NULL);
+		heads.fill(nullptr);
 	}
 	
 	static float baseRadius() { return 52.f; }

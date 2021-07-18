@@ -372,7 +372,7 @@ static void ApplyConsole() {
 	g_console.open();
 }
 
-static TextureContainer * Mr_tc = NULL;
+static TextureContainer * Mr_tc = nullptr;
 
 void CheckMr() {
 	

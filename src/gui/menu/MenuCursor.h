@@ -82,8 +82,8 @@ class ThumbnailCursor {
 public:
 	
 	ThumbnailCursor()
-		: m_renderTexture(NULL)
-		, m_loadTexture(NULL)
+		: m_renderTexture(nullptr)
+		, m_loadTexture(nullptr)
 	{ }
 	
 	void render();

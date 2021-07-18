@@ -117,7 +117,7 @@ public:
 	 * Add a backend to receive log messages.
 	 * The backend will be automatically freed on exit unless it is removed first.
 	 * Adding the same backend instance twice results in undefined behaviour.
-	 * A NULL parameter is ignored.
+	 * A nullptr parameter is ignored.
 	 */
 	static void add(logger::Backend * backend);
 	
@@ -171,8 +171,8 @@ public:
 	static void flush();
 	
 	/*!
-	* Helper class to pass a C string that might be NULL to the logger.
-	* If the pointer is NULL, the string "NULL" is logged.
+	* Helper class to pass a C string that might be nullptr to the logger.
+	* If the pointer is nullptr, the string "NULL" is logged.
 	* Otherwise the contents of the string are logged, surrounded by double quotes. 
 	*/
 	struct nullstr {

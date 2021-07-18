@@ -62,7 +62,7 @@ class ProfilerView : public QGraphicsView {
 
 public:
 	
-	explicit ProfilerView(QWidget * parent = NULL);
+	explicit ProfilerView(QWidget * parent = nullptr);
 	
 	void setData(ThreadsData * threadsData);
 	

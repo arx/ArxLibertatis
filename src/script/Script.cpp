@@ -93,7 +93,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern long lChangeWeapon;
 extern Entity * pIOChangeWeapon;
 
-Entity * LASTSPAWNED = NULL;
+Entity * LASTSPAWNED = nullptr;
 SCRIPT_VARIABLES svar;
 
 long FORBID_SCRIPT_IO_CREATION = 0;
@@ -301,7 +301,7 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	
 	if(entities[num] && entities[num]->script.valid) {
 		if(init) {
-			ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INIT);
+			ScriptEvent::send(&entities[num]->script, nullptr, entities[num], SM_INIT);
 		}
 		if(entities[num]) {
 			entities[num]->mainevent = SM_MAIN;
@@ -310,16 +310,16 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	
 	// Do the same for Local Script
 	if(entities[num] && entities[num]->over_script.valid && init) {
-		ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INIT);
+		ScriptEvent::send(&entities[num]->over_script, nullptr, entities[num], SM_INIT);
 	}
 	
 	// Sends InitEnd Event
 	if(init) {
 		if(entities[num] && entities[num]->script.valid) {
-			ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INITEND);
+			ScriptEvent::send(&entities[num]->script, nullptr, entities[num], SM_INITEND);
 		}
 		if(entities[num] && entities[num]->over_script.valid) {
-			ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INITEND);
+			ScriptEvent::send(&entities[num]->over_script, nullptr, entities[num], SM_INITEND);
 		}
 	}
 	
@@ -372,14 +372,14 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 			return;
 		}
 		
-		if(entities[i] == NULL || !(entities[i]->gameFlags & GFLAG_ISINTREATZONE)) {
+		if(entities[i] == nullptr || !(entities[i]->gameFlags & GFLAG_ISINTREATZONE)) {
 			continue;
 		}
 		
 		// Copy the even name to a local variable as it may change during execution
 		// and cause unexpected behavior in SendIOScriptEvent
 		ScriptEventName event = entities[i]->mainevent;
-		SendIOScriptEvent(NULL, entities[i], event);
+		SendIOScriptEvent(nullptr, entities[i], event);
 		
 	}
 	
@@ -1310,7 +1310,7 @@ static SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES & svf, const std::string & na
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, const std::string & name) {
@@ -1321,14 +1321,14 @@ const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, const std::string
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 long GETVarValueLong(const SCRIPT_VARIABLES & svf, const std::string & name) {
 	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 
-	if (tsv == NULL) return 0;
+	if (tsv == nullptr) return 0;
 
 	return tsv->ival;
 }
@@ -1337,7 +1337,7 @@ float GETVarValueFloat(const SCRIPT_VARIABLES & svf, const std::string & name) {
 	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 
-	if (tsv == NULL) return 0;
+	if (tsv == nullptr) return 0;
 
 	return tsv->fval;
 }
@@ -1360,7 +1360,7 @@ SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES & svf, const std::string & name, l
 		tsv = GetFreeVarSlot(svf);
 
 		if (!tsv)
-			return NULL;
+			return nullptr;
 
 		tsv->name = name;
 	}
@@ -1378,7 +1378,7 @@ SCRIPT_VAR * SETVarValueFloat(SCRIPT_VARIABLES & svf, const std::string & name, 
 		tsv = GetFreeVarSlot(svf);
 
 		if (!tsv)
-			return NULL;
+			return nullptr;
 
 		tsv->name = name;
 	}
@@ -1393,7 +1393,7 @@ SCRIPT_VAR * SETVarValueText(SCRIPT_VARIABLES & svf, const std::string & name, c
 	if(!tsv) {
 		tsv = GetFreeVarSlot(svf);
 		if(!tsv) {
-			return NULL;
+			return nullptr;
 		}
 		tsv->name = name;
 	}
@@ -1413,8 +1413,8 @@ struct QueuedEvent {
 	
 	void clear() {
 		exists = false;
-		sender = NULL;
-		entity = NULL;
+		sender = nullptr;
+		entity = nullptr;
 		event = ScriptEventName();
 		parameters.clear();
 	}
@@ -1459,7 +1459,7 @@ void ARX_SCRIPT_EventStackExecute(size_t limit) {
 		}
 		
 		if(ValidIOAddress(event.entity)) {
-			Entity * sender = ValidIOAddress(event.sender) ? event.sender : NULL;
+			Entity * sender = ValidIOAddress(event.sender) ? event.sender : nullptr;
 			LogDebug("running queued " << event.event << " for " << event.entity->idString());
 			SendIOScriptEvent(sender, event.entity, event.event, event.parameters);
 		} else {
@@ -1528,19 +1528,19 @@ ScriptResult SendInitScriptEvent(Entity * io) {
 	EntityHandle num = io->index();
 	
 	if(entities[num] && entities[num]->script.valid) {
-		ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INIT);
+		ScriptEvent::send(&entities[num]->script, nullptr, entities[num], SM_INIT);
 	}
 	
 	if(entities[num] && entities[num]->over_script.valid) {
-		ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INIT);
+		ScriptEvent::send(&entities[num]->over_script, nullptr, entities[num], SM_INIT);
 	}
 	
 	if(entities[num] && entities[num]->script.valid) {
-		ScriptEvent::send(&entities[num]->script, NULL, entities[num], SM_INITEND);
+		ScriptEvent::send(&entities[num]->script, nullptr, entities[num], SM_INITEND);
 	}
 	
 	if(entities[num] && entities[num]->over_script.valid) {
-		ScriptEvent::send(&entities[num]->over_script, NULL, entities[num], SM_INITEND);
+		ScriptEvent::send(&entities[num]->over_script, nullptr, entities[num], SM_INITEND);
 	}
 	
 	return ACCEPT;
@@ -1755,7 +1755,7 @@ void ARX_SCRIPT_Init_Event_Stats() {
 Entity * ARX_SCRIPT_Get_IO_Max_Events() {
 	
 	long max = -1;
-	Entity * result = NULL;
+	Entity * result = nullptr;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
@@ -1773,7 +1773,7 @@ Entity * ARX_SCRIPT_Get_IO_Max_Events() {
 Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent() {
 	
 	long max = -1;
-	Entity * result = NULL;
+	Entity * result = nullptr;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
@@ -1796,9 +1796,9 @@ void ManageCasseDArme(Entity * io) {
 	arx_assert(player.m_bags >= 0);
 	arx_assert(player.m_bags <= 3);
 	
-	Entity * pObjMin = NULL;
-	Entity * pObjMax = NULL;
-	Entity * pObjFIX = NULL;
+	Entity * pObjMin = nullptr;
+	Entity * pObjMax = nullptr;
+	Entity * pObjFIX = nullptr;
 	
 	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)

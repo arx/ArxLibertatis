@@ -133,7 +133,7 @@ public:
 		// TODO use a better datastructure
 		
 		if(nodes.empty()) {
-			return NULL;
+			return nullptr;
 		}
 		
 		NodeList::iterator best = nodes.begin();
@@ -205,7 +205,7 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 	}
 	
 	// Create start node and put it on open list
-	Node * node = new Node(from, NULL, 0.f, 0.f);
+	Node * node = new Node(from, nullptr, 0.f, 0.f);
 	
 	// A* main loop
 	OpenNodeList open;
@@ -266,7 +266,7 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDistance,
 	}
 	
 	// Create start node and put it on open list
-	Node * node = new Node(from, NULL, 0.f, 0.f);
+	Node * node = new Node(from, nullptr, 0.f, 0.f);
 	if(!node) {
 		return false;
 	}

@@ -114,9 +114,9 @@ HINTERNET WinHTTPSession::setup(const Request & request, LPCWSTR method) {
 	
 	LPCWSTR resource = url.dwUrlPathLength ? url.lpszUrlPath : L"/";
 	
-	LPCWSTR accept[] = { L"*/*", NULL };
+	LPCWSTR accept[] = { L"*/*", nullptr };
 	
-	HINTERNET wrequest = WinHttpOpenRequest(m_connection, method, resource, NULL,
+	HINTERNET wrequest = WinHttpOpenRequest(m_connection, method, resource, nullptr,
 	                                        WINHTTP_NO_REFERER, accept, flags);
 	if(!wrequest) {
 		throw new Response("Could not create request object: " + errorString());
@@ -137,7 +137,7 @@ Response * WinHTTPSession::receive(HINTERNET wrequest, const Request & request,
 	
 	
 	
-	if(!WinHttpReceiveResponse(wrequest, NULL)) {
+	if(!WinHttpReceiveResponse(wrequest, nullptr)) {
 		return new Response("Error receiving response: " + errorString());
 	}
 	

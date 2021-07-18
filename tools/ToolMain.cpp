@@ -45,7 +45,7 @@ static int run_main(const char * tool, int argc, char ** argv) {
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	if(boost::equals(tool, "hideconsole")) {
 		HWND console = GetConsoleWindow();
-		return (console != NULL && ShowWindow(console, SW_HIDE) != 0) ? 0 : 1;
+		return (console != nullptr && ShowWindow(console, SW_HIDE) != 0) ? 0 : 1;
 	}
 	#endif
 	

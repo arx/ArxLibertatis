@@ -66,17 +66,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/Unicode.h"
 
-TextManager * pTextManage = NULL;
+TextManager * pTextManage = nullptr;
 
-Font * hFontInBook = NULL;
-Font * hFontMainMenu = NULL;
-Font * hFontMenu = NULL;
-Font * hFontControls = NULL;
-Font * hFontCredits = NULL;
-Font * hFontInGame = NULL;
-Font * hFontInGameNote = NULL;
-Font * hFontDebug = NULL;
-Font * g_iconFont = NULL;
+Font * hFontInBook = nullptr;
+Font * hFontMainMenu = nullptr;
+Font * hFontMenu = nullptr;
+Font * hFontControls = nullptr;
+Font * hFontCredits = nullptr;
+Font * hFontInGame = nullptr;
+Font * hFontInGameNote = nullptr;
+Font * hFontDebug = nullptr;
+Font * g_iconFont = nullptr;
 
 static void ARX_UNICODE_FormattingInRect(Font * font, std::string::const_iterator txtbegin, std::string::const_iterator txtend,
                                          const Rect & rect, Color col,
@@ -460,34 +460,34 @@ void ARX_Text_Close() {
 	g_currentFontWeight = 0;
 	
 	delete pTextManage;
-	pTextManage = NULL;
+	pTextManage = nullptr;
 	
 	FontCache::releaseFont(hFontInBook);
-	hFontInBook = NULL;
+	hFontInBook = nullptr;
 	
 	FontCache::releaseFont(hFontMainMenu);
-	hFontMainMenu = NULL;
+	hFontMainMenu = nullptr;
 	
 	FontCache::releaseFont(hFontMenu);
-	hFontMenu = NULL;
+	hFontMenu = nullptr;
 	
 	FontCache::releaseFont(hFontControls);
-	hFontControls = NULL;
+	hFontControls = nullptr;
 	
 	FontCache::releaseFont(hFontCredits);
-	hFontCredits = NULL;
+	hFontCredits = nullptr;
 	
 	FontCache::releaseFont(hFontInGame);
-	hFontInGame = NULL;
+	hFontInGame = nullptr;
 	
 	FontCache::releaseFont(hFontInGameNote);
-	hFontInGameNote = NULL;
+	hFontInGameNote = nullptr;
 
 	FontCache::releaseFont(hFontDebug);
-	hFontDebug = NULL;
+	hFontDebug = nullptr;
 
 	FontCache::releaseFont(g_iconFont);
-	g_iconFont = NULL;
+	g_iconFont = nullptr;
 	
 	FontCache::shutdown();
 }

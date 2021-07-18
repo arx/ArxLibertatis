@@ -56,7 +56,7 @@ PackedTexture::TextureTree::TextureTree(size_t textureSize, Image::Format textur
 	if(!texture->create(textureSize, textureSize, textureFormat)) {
 		LogError << "Could not create texture for size " << textureSize
 		         << " and format " << textureFormat;
-		delete texture, texture = NULL;
+		delete texture, texture = nullptr;
 		dirty = false;
 		return;
 	}
@@ -72,7 +72,7 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::insertImage(const
 	
 	Node * node = root.insertImage(image);
 	
-	if(node != NULL) {
+	if(node != nullptr) {
 		texture->getImage().copy(image, size_t(node->rect.left), size_t(node->rect.top));
 		dirty = true;
 	}
@@ -88,7 +88,7 @@ bool PackedTexture::insertImage(const Image & image, size_t & textureIndex, Vec2
 	}
 	
 	// Copy to one of the existing textures
-	TextureTree::Node * node = NULL;
+	TextureTree::Node * node = nullptr;
 	size_t nodeTree = 0;
 	
 	for(size_t i = 0; i < m_textures.size(); i++) {
@@ -121,7 +121,7 @@ bool PackedTexture::insertImage(const Image & image, size_t & textureIndex, Vec2
 		textureIndex = nodeTree;
 	}
 	
-	return node != NULL;
+	return node != nullptr;
 }
 
 Texture & PackedTexture::getTexture(size_t index) {
@@ -131,8 +131,8 @@ Texture & PackedTexture::getTexture(size_t index) {
 }
 
 PackedTexture::TextureTree::Node::Node() {
-	children[0] = NULL;
-	children[1] = NULL;
+	children[0] = nullptr;
+	children[1] = nullptr;
 	used = false;
 }
 
@@ -145,7 +145,7 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::insertImage
 	
 	// We're in a full node/leaf, return immediately.
 	if(used) {
-		return NULL;
+		return nullptr;
 	}
 	
 	// If we're not a leaf, try inserting in childs
@@ -166,7 +166,7 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::insertImage
 	
 	// If we're too small, return.
 	if(diffW < 0 || diffH < 0) {
-		return NULL;
+		return nullptr;
 	}
 	
 	// Perfect match !

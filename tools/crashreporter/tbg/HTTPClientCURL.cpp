@@ -111,7 +111,7 @@ Response * CURLSession::perform(const Request & request) {
 	} else {
 		urlInfo = CURLINFO_REDIRECT_URL;
 	}
-	const char * url = NULL;
+	const char * url = nullptr;
 	if(curl_easy_getinfo(m_curl, urlInfo, &url) != CURLE_OK || !url) {
 		url = "";
 	}
@@ -130,7 +130,7 @@ Response * CURLSession::post(const POSTRequest & request) {
 	
 	setup(request);
 	
-	struct curl_slist * headers = NULL;
+	struct curl_slist * headers = nullptr;
 	BOOST_SCOPE_EXIT((headers)) {
 		if(headers) {
 			curl_slist_free_all(headers);

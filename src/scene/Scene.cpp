@@ -100,7 +100,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern bool EXTERNALVIEW; // *sigh*
 
-EERIE_PORTAL_DATA * portals = NULL;
+EERIE_PORTAL_DATA * portals = nullptr;
 
 float WATEREFFECT = 0.f;
 
@@ -122,7 +122,7 @@ public:
 	size_t offset;
 	
 	DynamicVertexBuffer()
-		: vertices(NULL)
+		: vertices(nullptr)
 		, start(0)
 		, nbindices(0)
 		, offset(0)
@@ -148,7 +148,7 @@ public:
 		arx_assert(vertices);
 		
 		if(pDynamicVertexBuffer->pos + nbvertices > pDynamicVertexBuffer->vb->capacity()) {
-			return NULL;
+			return nullptr;
 		}
 		
 		SMY_VERTEX3 * pos = vertices + offset;
@@ -160,7 +160,7 @@ public:
 	
 	void unlock() {
 		arx_assert(vertices);
-		pDynamicVertexBuffer->vb->unlock(), vertices = NULL;
+		pDynamicVertexBuffer->vb->unlock(), vertices = nullptr;
 	}
 	
 	void draw(Renderer::Primitive primitive) {
@@ -325,7 +325,7 @@ static bool FrustrumsClipBBox3D(const EERIE_FRUSTRUM_DATA & frustrums,
 }
 
 // USAGE/FUNCTION
-//   io can be NULL if io is valid io->bbox3D contains 3D world-bbox
+//   io can be nullptr if io is valid io->bbox3D contains 3D world-bbox
 //   bboxmin & bboxmax ARE in fact 2D-screen BBOXes using only (x,y).
 // RETURN:
 //   return true if IO cannot be seen, false if visible
@@ -452,7 +452,7 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long fl
 		
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 static EERIEPOLY * ARX_PORTALS_GetRoomNumForCamera(const Vec3f & pos, const Vec3f & direction) {
@@ -486,7 +486,7 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForCamera(const Vec3f & pos, const Vec3
 		dist += 5.f;
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 // flag==1 for player
@@ -598,7 +598,7 @@ static void ARX_PORTALS_InitDrawnRooms() {
 	vPolyLava.clear();
 
 	if(pDynamicVertexBuffer) {
-		pDynamicVertexBuffer->vb->setData(NULL, 0, 0, DiscardBuffer);
+		pDynamicVertexBuffer->vb->setData(nullptr, 0, 0, DiscardBuffer);
 		dynamicVertices.reset();
 	}
 }

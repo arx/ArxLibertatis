@@ -91,7 +91,7 @@ PakDirectory * PakDirectory::getDirectory(const res::path & path) {
 		
 		dirs_iterator entry = dir->dirs.find(name);
 		if(entry == dir->dirs.end()) {
-			return NULL;
+			return nullptr;
 		}
 		dir = &entry->second;
 		
@@ -109,7 +109,7 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 	               "bad pak path: \"%s\"", path.string().c_str());
 	
 	if(path.empty()) {
-		return NULL;
+		return nullptr;
 	} else if(path.is_up()) {
 		LogWarning << "Bad path: " << path;
 	}
@@ -122,12 +122,12 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 		
 		if(end == std::string::npos) {
 			files_iterator file = dir->files.find(path.string().substr(pos));
-			return (file == dir->files.end()) ? NULL : file->second;
+			return (file == dir->files.end()) ? nullptr : file->second;
 		}
 		
 		dirs_iterator entry = dir->dirs.find(path.string().substr(pos, end - pos));
 		if(entry == dir->dirs.end()) {
-			return NULL;
+			return nullptr;
 		}
 		dir = &entry->second;
 		

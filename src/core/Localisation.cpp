@@ -349,7 +349,7 @@ bool initLocalisation() {
 	
 	g_localisation.clear();
 	
-	PakFile * file = NULL;
+	PakFile * file = nullptr;
 	if(!config.interface.language.empty()) {
 		LogInfo << "Using text language from config: " << config.interface.language;
 		std::string filename = "localisation/utext_" + config.interface.language + ".ini";
@@ -366,7 +366,7 @@ bool initLocalisation() {
 		}
 	}
 	
-	PakDirectory * dir = NULL;
+	PakDirectory * dir = nullptr;
 	if(!config.audio.language.empty()) {
 		LogInfo << "Using audio language from config: " << config.audio.language;
 		std::string dirname = "speech/" + config.audio.language;

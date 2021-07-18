@@ -196,7 +196,7 @@ void CrashHandlerWindows::processCrashTrace() {
 	options &= ~SYMOPT_DEFERRED_LOADS;
 	options &= ~SYMOPT_UNDNAME;
 	SymSetOptions(options);
-	if(SymInitialize(process, NULL, FALSE) != TRUE) {
+	if(SymInitialize(process, nullptr, FALSE) != TRUE) {
 		description << "\nCould not load symbols: " << platform::getErrorString() << '\n';
 	}
 	
@@ -256,8 +256,8 @@ void CrashHandlerWindows::processCrashTrace() {
 	
 	for(int i = 0; i < CrashInfo::MaxCallstackDepth; ++i) {
 		
-		BOOL ret = StackWalk64(imageType, process, thread, &stackFrame, context, NULL,
-		                       SymFunctionTableAccess64, SymGetModuleBase64, NULL);
+		BOOL ret = StackWalk64(imageType, process, thread, &stackFrame, context, nullptr,
+		                       SymFunctionTableAccess64, SymGetModuleBase64, nullptr);
 		if(ret != TRUE || stackFrame.AddrPC.Offset == 0) {
 			break;
 		}

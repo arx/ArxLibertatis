@@ -69,12 +69,12 @@ struct ARX_SDL_SysWMinfo {
 	char padding[1024];
 };
 
-SDL2Window * SDL2Window::s_mainWindow = NULL;
+SDL2Window * SDL2Window::s_mainWindow = nullptr;
 
 SDL2Window::SDL2Window()
-	: m_window(NULL)
-	, m_glcontext(NULL)
-	, m_input(NULL)
+	: m_window(nullptr)
+	, m_glcontext(nullptr)
+	, m_input(nullptr)
 	, m_minimizeOnFocusLost(AlwaysEnabled)
 	, m_allowScreensaver(AlwaysDisabled)
 	, m_gamma(1.f)
@@ -90,7 +90,7 @@ SDL2Window::~SDL2Window() {
 	delete m_input;
 	
 	if(m_renderer) {
-		delete m_renderer, m_renderer = NULL;
+		delete m_renderer, m_renderer = nullptr;
 	}
 	
 	if(m_glcontext) {
@@ -103,7 +103,7 @@ SDL2Window::~SDL2Window() {
 	}
 	
 	if(s_mainWindow) {
-		SDL_Quit(), s_mainWindow = NULL;
+		SDL_Quit(), s_mainWindow = nullptr;
 	}
 	
 }
@@ -146,11 +146,11 @@ bool SDL2Window::initializeFramework() {
 	const bool haveGLX = ARX_HAVE_GLX;
 	const bool haveEGL = ARX_HAVE_EGL;
 	#elif ARX_HAVE_EPOXY
-	const bool haveGLX = (dlsym(RTLD_DEFAULT, "epoxy_has_glx") != NULL);
-	const bool haveEGL = (dlsym(RTLD_DEFAULT, "epoxy_has_egl") != NULL);
+	const bool haveGLX = (dlsym(RTLD_DEFAULT, "epoxy_has_glx") != nullptr);
+	const bool haveEGL = (dlsym(RTLD_DEFAULT, "epoxy_has_egl") != nullptr);
 	#else
-	const bool haveGLX = (dlsym(RTLD_DEFAULT, "glxewInit") != NULL);
-	const bool haveEGL = (dlsym(RTLD_DEFAULT, "eglewInit") != NULL);
+	const bool haveGLX = (dlsym(RTLD_DEFAULT, "glxewInit") != nullptr);
+	const bool haveEGL = (dlsym(RTLD_DEFAULT, "eglewInit") != nullptr);
 	#endif
 	if(!haveGLX && haveEGL) {
 		SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "1");
@@ -160,7 +160,7 @@ bool SDL2Window::initializeFramework() {
 	m_minimizeOnFocusLost = getInitialSDLSetting(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, Enabled);
 	m_allowScreensaver = getInitialSDLSetting(SDL_HINT_VIDEO_ALLOW_SCREENSAVER, Disabled);
 	
-	arx_assert_msg(s_mainWindow == NULL, "SDL only supports one window"); // TODO it supports multiple windows now!
+	arx_assert_msg(s_mainWindow == nullptr, "SDL only supports one window"); // TODO it supports multiple windows now!
 	arx_assert(m_displayModes.empty());
 	
 	const char * headerVersion = ARX_STR(SDL_MAJOR_VERSION) "." ARX_STR(SDL_MINOR_VERSION)
@@ -223,7 +223,7 @@ bool SDL2Window::initializeFramework() {
 	
 	s_mainWindow = this;
 	
-	SDL_SetEventFilter(eventFilter, NULL);
+	SDL_SetEventFilter(eventFilter, nullptr);
 	
 	SDL_EventState(SDL_WINDOWEVENT, SDL_ENABLE);
 	SDL_EventState(SDL_QUIT,        SDL_ENABLE);
@@ -261,11 +261,11 @@ int SDL2Window::createWindowAndGLContext(const char * profile) {
 		// Cleanup context and window from previous tries
 		if(m_glcontext) {
 			SDL_GL_DeleteContext(m_glcontext);
-			m_glcontext = NULL;
+			m_glcontext = nullptr;
 		}
 		if(m_window) {
 			SDL_DestroyWindow(m_window);
-			m_window = NULL;
+			m_window = nullptr;
 		}
 		
 		SDL_ClearError();
@@ -323,9 +323,9 @@ int SDL2Window::createWindowAndGLContext(const char * profile) {
 			if(lastTry) {
 				typedef const GLubyte * (GLAPIENTRY * glGetString_t)(GLenum name);
 				glGetString_t glGetString_p = FunctionPointer(SDL_GL_GetProcAddress("glGetString"));
-				const char * glVendor = NULL;
-				const char * glRenderer = NULL;
-				const char * glVersion = NULL;
+				const char * glVendor = nullptr;
+				const char * glRenderer = nullptr;
+				const char * glVersion = nullptr;
 				if(glGetString_p) {
 					glVendor = reinterpret_cast<const char *>(glGetString_p(GL_VENDOR));
 					glRenderer = reinterpret_cast<const char *>(glGetString_p(GL_RENDERER));
@@ -498,9 +498,9 @@ bool SDL2Window::initialize() {
 						#if ARX_HAVE_GL_STATIC || !ARX_HAVE_DLSYM || !defined(RTLD_DEFAULT)
 						const bool haveGLX = ARX_HAVE_GLX;
 						#elif ARX_HAVE_EPOXY
-						const bool haveGLX = (dlsym(RTLD_DEFAULT, "epoxy_has_glx") != NULL);
+						const bool haveGLX = (dlsym(RTLD_DEFAULT, "epoxy_has_glx") != nullptr);
 						#else
-						const bool haveGLX = (dlsym(RTLD_DEFAULT, "glxewInit") != NULL);
+						const bool haveGLX = (dlsym(RTLD_DEFAULT, "glxewInit") != nullptr);
 						#endif
 						if(!haveGLX) {
 							LogWarning << "SDL is using the X11 video backend but " << wrangler
@@ -514,9 +514,9 @@ bool SDL2Window::initialize() {
 						#if ARX_HAVE_GL_STATIC || !ARX_HAVE_DLSYM || !defined(RTLD_DEFAULT)
 						const bool haveEGL = ARX_HAVE_EGL;
 						#elif ARX_HAVE_EPOXY
-						const bool haveEGL = (dlsym(RTLD_DEFAULT, "epoxy_has_egl") != NULL);
+						const bool haveEGL = (dlsym(RTLD_DEFAULT, "epoxy_has_egl") != nullptr);
 						#else
-						const bool haveEGL = (dlsym(RTLD_DEFAULT, "eglewInit") != NULL);
+						const bool haveEGL = (dlsym(RTLD_DEFAULT, "eglewInit") != nullptr);
 						#endif
 						if(!haveEGL) {
 							LogWarning << "SDL is using the " << windowSystem << " video backend but " << wrangler
@@ -554,7 +554,7 @@ bool SDL2Window::initialize() {
 			platform::WideString filename;
 			filename.allocate(filename.capacity());
 			while(true) {
-				DWORD size = GetModuleFileNameW(NULL, filename.data(), filename.size());
+				DWORD size = GetModuleFileNameW(nullptr, filename.data(), filename.size());
 				if(size < filename.size()) {
 					filename.resize(size);
 					break;
@@ -661,7 +661,7 @@ void SDL2Window::changeMode(DisplayMode mode, bool fullscreen) {
 		if(mode.resolution != Vec2i(0)) {
 			SDL_DisplayMode sdlmode;
 			SDL_DisplayMode requested;
-			requested.driverdata = NULL;
+			requested.driverdata = nullptr;
 			requested.format = 0;
 			requested.refresh_rate = mode.refresh;
 			requested.w = mode.resolution.x;

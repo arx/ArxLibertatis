@@ -50,7 +50,7 @@ public:
 	OpenALBackend();
 	~OpenALBackend();
 	
-	aalError init(const char * requestedDeviceName = NULL, HRTFAttribute hrtf = HRTFDefault);
+	aalError init(const char * requestedDeviceName = nullptr, HRTFAttribute hrtf = HRTFDefault);
 	
 	std::vector<std::string> getDevices();
 	

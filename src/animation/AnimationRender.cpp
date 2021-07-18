@@ -809,7 +809,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 struct HaloRenderInfo {
 	
 	HaloRenderInfo()
-		: halo(NULL)
+		: halo(nullptr)
 	{ }
 	
 	explicit  HaloRenderInfo(IO_HALO * halo_, ObjSelection selection_ = ObjSelection())
@@ -889,7 +889,7 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
                                   float invisibility, EERIE_3DOBJ * eobj, Entity * io,
                                   TexturedVertex * tvList) {
 	
-	IO_HALO * curhalo = NULL;
+	IO_HALO * curhalo = nullptr;
 
 	for(size_t h = 0; h < haloInfo.size; h++) {
 		const HaloRenderInfo & entry = haloInfo.entries[h];
@@ -1401,7 +1401,7 @@ static void animateSkeleton(EERIE_3DOBJ * eobj, AnimLayer * animlayer,
 		rotation = QuatFromAngles(angle);
 	}
 	
-	EERIE_EXTRA_ROTATE * extraRotation = NULL;
+	EERIE_EXTRA_ROTATE * extraRotation = nullptr;
 	
 	if(io && (io->ioflags & IO_NPC) && io->_npcdata->ex_rotate) {
 		extraRotation = io->_npcdata->ex_rotate;
@@ -1515,7 +1515,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 	}
 	
 	arx_assert(eobj->m_skeleton);
-	animateSkeleton(eobj, animlayer, angle, pos, scale, ftr, io, *eobj->m_skeleton, io ? &io->animBlend : NULL);
+	animateSkeleton(eobj, animlayer, angle, pos, scale, ftr, io, *eobj->m_skeleton, io ? &io->animBlend : nullptr);
 	
 	Cedric_TransformVerts(eobj);
 	if(io) {

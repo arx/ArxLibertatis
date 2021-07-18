@@ -39,7 +39,7 @@ struct SPELL_ICON {
 	bool bAudibleAtStart;
 	
 	SPELL_ICON()
-		: tc(NULL)
+		: tc(nullptr)
 		, level(0)
 		, spellid(SPELL_NONE)
 		, bSecret(false)

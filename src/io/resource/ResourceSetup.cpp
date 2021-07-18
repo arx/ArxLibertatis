@@ -112,7 +112,7 @@ bool addDefaultResources(PakReader * reader) {
 	
 	const char * const directories[] = { "editor", "game", "graph", "localisation", "misc", "sfx", "speech" };
 	const RequiredArchive archives[] = {
-		{ "data", NULL }, { "loc", NULL }, { "data2", NULL }, { "sfx", NULL }, { "speech", &speechFilter }
+		{ "data", nullptr }, { "loc", nullptr }, { "data2", nullptr }, { "sfx", nullptr }, { "speech", &speechFilter }
 	};
 	
 	std::set<ResourceEntry> resources;

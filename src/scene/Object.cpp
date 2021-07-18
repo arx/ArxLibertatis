@@ -230,8 +230,8 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->vertexClipPositions.resize(nouvo->vertexlist.size());
 	nouvo->vertexColors.resize(nouvo->vertexlist.size());
 	
-	nouvo->pbox = NULL;
-	nouvo->m_skeleton = NULL;
+	nouvo->pbox = nullptr;
+	nouvo->m_skeleton = nullptr;
 	
 	nouvo->file = obj->file;
 	
@@ -306,7 +306,7 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj) {
 	if(!eobj || !eobj->m_skeleton)
 		return;
 	
-	delete eobj->m_skeleton, eobj->m_skeleton = NULL;
+	delete eobj->m_skeleton, eobj->m_skeleton = nullptr;
 	eobj->vertexlocal.clear();
 	
 }

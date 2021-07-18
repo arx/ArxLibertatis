@@ -82,7 +82,7 @@ static std::string getWindowsVersionName() {
 	HMODULE kernel32 = GetModuleHandleW(L"kernel32.dll");
 	
 	typedef LONG (WINAPI * RtlGetVersionPtr)(POSVERSIONINFOW);
-	RtlGetVersionPtr RtlGetVersion = NULL;
+	RtlGetVersionPtr RtlGetVersion = nullptr;
 	if(ntdll) {
 		RtlGetVersion = getProcAddress<RtlGetVersionPtr>(ntdll, "RtlGetVersion");
 	}
@@ -103,7 +103,7 @@ static std::string getWindowsVersionName() {
 	
 	// Call GetNativeSystemInfo if supported or GetSystemInfo otherwise.
 	typedef void (WINAPI * GetNativeSystemInfoPtr)(LPSYSTEM_INFO);
-	GetNativeSystemInfoPtr GetNativeSystemInfo = NULL;
+	GetNativeSystemInfoPtr GetNativeSystemInfo = nullptr;
 	if(kernel32) {
 		GetNativeSystemInfo = getProcAddress<GetNativeSystemInfoPtr>(kernel32, "GetNativeSystemInfo");
 	}
@@ -179,7 +179,7 @@ static std::string getWindowsVersionName() {
 	}
 	
 	typedef const char * (CDECL * wine_get_version_ptr)();
-	wine_get_version_ptr wine_get_version = NULL;
+	wine_get_version_ptr wine_get_version = nullptr;
 	if(ntdll) {
 		wine_get_version = getProcAddress<wine_get_version_ptr>(ntdll, "wine_get_version");
 	}
@@ -392,7 +392,7 @@ std::string getOSDistribution() {
 	// Don't parse /etc/lsb-release ourselves unless there is no other way
 	// because lsb_release may have distro-specific patches
 	{
-		const char * args[] = { "lsb_release", "-a", NULL };
+		const char * args[] = { "lsb_release", "-a", nullptr };
 		std::istringstream iss(getOutputOf(args));
 		const char * keys[] = { "Description", "Distributor ID", "Release", "(Codename" };
 		std::string distro = parseDistributionName(iss, ':', keys, boost::size(keys));
@@ -489,7 +489,7 @@ std::string getOSDistribution() {
 #if ARX_HAVE_CONFSTR && (defined(_CS_GNU_LIBC_VERSION) || defined(_CS_GNU_LIBPTHREAD_VERSION))
 static std::string getCLibraryConfigString(int name) {
 	
-	size_t len = confstr(name, NULL, 0);
+	size_t len = confstr(name, nullptr, 0);
 	if(len == 0) {
 		return std::string();
 	}
@@ -543,7 +543,7 @@ std::string getCPUName() {
 	int max = cpuinfo[0];
 	#elif ARX_HAVE_GET_CPUID_MAX
 	unsigned cpuinfo[4] = { 0 };
-	int max = __get_cpuid_max(0x80000000, NULL);
+	int max = __get_cpuid_max(0x80000000, nullptr);
 	#else
 	unsigned cpuinfo[4] = { 0 };
 	__get_cpuid(0x80000000, &cpuinfo[0], &cpuinfo[1], &cpuinfo[2], &cpuinfo[3]);

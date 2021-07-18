@@ -607,7 +607,7 @@ class IfCommand : public Command {
 			
 			Entity * t = entities.getById(obj, context.getEntity());
 			
-			return (t != NULL && t->groups.find(group) != t->groups.end());
+			return (t != nullptr && t->groups.find(group) != t->groups.end());
 		}
 		
 	};
@@ -622,7 +622,7 @@ class IfCommand : public Command {
 			
 			Entity * t = entities.getById(obj, context.getEntity());
 			
-			return (t != NULL && t->groups.find(group) == t->groups.end());
+			return (t != nullptr && t->groups.find(group) == t->groups.end());
 		}
 		
 	};
@@ -643,7 +643,7 @@ class IfCommand : public Command {
 				return false;
 			}
 			
-			return (t != NULL && (t->type_flags & flag));
+			return (t != nullptr && (t->type_flags & flag));
 		}
 		
 	};

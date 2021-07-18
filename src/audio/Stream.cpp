@@ -56,7 +56,7 @@ Stream * createStream(const res::path & name) {
 	PakFileHandle * file = g_resources->open(name);
 	
 	if(!file) {
-		return NULL;
+		return nullptr;
 	}
 	
 	file->seek(SeekSet, 0);
@@ -66,7 +66,7 @@ Stream * createStream(const res::path & name) {
 	if(stream->setStream(file)) {
 		delete stream;
 		delete file;
-		return NULL;
+		return nullptr;
 	}
 	
 	return stream;
@@ -76,7 +76,7 @@ void deleteStream(Stream * & stream) {
 	PakFileHandle * file = stream->getStream();
 	delete file;
 	delete stream;
-	stream = NULL;
+	stream = nullptr;
 }
 
 } // namespace audio

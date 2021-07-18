@@ -146,13 +146,13 @@ struct Playthrough {
 	
 };
 
-static SaveBlock * g_currentSavedGame = NULL;
+static SaveBlock * g_currentSavedGame = nullptr;
 static Playthrough g_currentPlathrough;
 
 static Entity * convertToValidIO(const std::string & idString) {
 	
 	if(idString.empty() || idString == "none") {
-		return NULL;
+		return nullptr;
 	}
 	
 	if(idString == "player_-001") {
@@ -176,11 +176,11 @@ static Entity * convertToValidIO(const std::string & idString) {
 	
 	size_t pos = idString.find_last_of('_');
 	if(pos == std::string::npos || pos == idString.length() - 1) {
-		return NULL;
+		return nullptr;
 	}
 	pos = idString.find_first_not_of('0', pos + 1);
 	if(pos == std::string::npos) {
-		return NULL;
+		return nullptr;
 	}
 	
 	EntityInstance instance = -1;
@@ -211,7 +211,7 @@ static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 		return EntityHandle_Player;
 	} else {
 		Entity * e = convertToValidIO(idString);
-		return (e == NULL) ? EntityHandle() : e->index();
+		return (e == nullptr) ? EntityHandle() : e->index();
 	}
 }
 
@@ -233,7 +233,7 @@ static s32 GetIOAnimIdx2(const Entity * io, const ANIM_HANDLE * anim) {
 bool ARX_Changelevel_CurGame_Clear() {
 	
 	if(g_currentSavedGame) {
-		delete g_currentSavedGame, g_currentSavedGame = NULL;
+		delete g_currentSavedGame, g_currentSavedGame = nullptr;
 	}
 	
 	if(CURRENT_GAME_FILE.empty()) {
@@ -270,7 +270,7 @@ static bool openCurrentSavedGameFile() {
 
 bool ARX_CHANGELEVEL_StartNew() {
 	
-	g_currentPlathrough.startTime = std::time(NULL);
+	g_currentPlathrough.startTime = std::time(nullptr);
 	g_currentPlathrough.uniqueId = Random::get(u64(1), std::numeric_limits<u64>::max());
 	g_currentPlathrough.oldestALVersion = arx_version_number;
 	g_currentPlathrough.newestALVersion = arx_version_number;
@@ -363,7 +363,7 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	
 	ARX_CHANGELEVEL_PopLevel(num, true, target, angle);
 	
-	entities.player()->inzone = NULL;
+	entities.player()->inzone = nullptr;
 	
 	ARX_PLAYER_RectifyPosition();
 	GMOD_RESET = true;
@@ -441,7 +441,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
 		
-		if(e != NULL
+		if(e != nullptr
 		   && !(e->ioflags & IO_NOSAVE)
 		   && locateInInventories(e).io != EntityHandle_Player
 		   && !IsPlayerEquipedWith(e)) {
@@ -480,7 +480,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
 		
-		if(e != NULL
+		if(e != nullptr
 		   && !(e->ioflags & IO_NOSAVE)
 		   && locateInInventories(e).io != EntityHandle_Player
 		   && !IsPlayerEquipedWith(e)) {
@@ -519,7 +519,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	
 	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		EERIE_LIGHT * el = g_staticLights[i];
-		if(el != NULL && !el->m_isIgnitionLight) {
+		if(el != nullptr && !el->m_isIgnitionLight) {
 			ARX_CHANGELEVEL_LIGHT * acl = reinterpret_cast<ARX_CHANGELEVEL_LIGHT *>(dat + pos);
 			memset(acl, 0, sizeof(ARX_CHANGELEVEL_LIGHT));
 			acl->status = el->m_ignitionStatus;
@@ -692,10 +692,10 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		case ChangeLevelNow:     asp->CHANGE_LEVEL_ICON = 200; break;
 	}
 	asp->bag = player.m_bags;
-	storeIdString(asp->equipsecondaryIO, NULL);
-	storeIdString(asp->equipshieldIO, NULL);
-	storeIdString(asp->leftIO, NULL);
-	storeIdString(asp->rightIO, NULL);
+	storeIdString(asp->equipsecondaryIO, nullptr);
+	storeIdString(asp->equipshieldIO, nullptr);
+	storeIdString(asp->leftIO, nullptr);
+	storeIdString(asp->rightIO, nullptr);
 	storeIdString(asp->curtorch, player.torch);
 	
 	for(size_t i = 0; i < SAVED_MAX_PRECAST; i++) {
@@ -798,7 +798,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
 	for(size_t i = 0; i < MAX_ANIMS; i++) {
 		memset(&asp->anims[i], 0, 256);
-		if(entities.player()->anims[i] != NULL) {
+		if(entities.player()->anims[i] != nullptr) {
 			util::storeString(asp->anims[i], entities.player()->anims[i]->path.string());
 		}
 	}
@@ -864,7 +864,7 @@ static long ARX_CHANGELEVEL_Push_AllIO(long level) {
 static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 	
 	if(!obj) {
-		return NULL;
+		return nullptr;
 	}
 	
 	for(size_t i = 0; i < entities.size(); i++) {
@@ -878,7 +878,7 @@ static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 template <size_t N>
@@ -1016,7 +1016,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	// Save Animations
 	for(size_t i = 0; i < MAX_ANIMS; i++) {
 		memset(&ais.anims[i], 0, 256);
-		if (io->anims[i] != NULL) {
+		if (io->anims[i] != nullptr) {
 			util::storeString(ais.anims[i], io->anims[i]->path.string());
 		}
 	}
@@ -1502,7 +1502,7 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 		player.angle = asp->angle;
 		player.pos = asp->pos.toVec3();
 	} else {
-		if(Entity * targetEntity = entities.getById(target, NULL)) {
+		if(Entity * targetEntity = entities.getById(target, nullptr)) {
 			player.pos = GetItemWorldPosition(targetEntity) + player.baseOffset();
 		}
 		player.desiredangle.setYaw(angle);
@@ -1636,7 +1636,7 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 	Entity & io = *entities.player();
 	assert(SAVED_MAX_ANIMS == MAX_ANIMS);
 	for(size_t i = 0; i < SAVED_MAX_ANIMS; i++) {
-		if(io.anims[i] != NULL) {
+		if(io.anims[i] != nullptr) {
 			ReleaseAnimFromIO(&io, i);
 		}
 		if(asp->anims[i][0]) {
@@ -1709,7 +1709,7 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 	assert(SAVED_MAX_EQUIPED == MAX_EQUIPED);
 	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
 		Entity * e = ConvertToValidIO(asp->equiped[i]);
-		player.equiped[i] = (e == NULL) ? EntityHandle() : e->index();
+		player.equiped[i] = (e == nullptr) ? EntityHandle() : e->index();
 		if(!ValidIONum(player.equiped[i])) {
 			player.equiped[i] = EntityHandle();
 		}
@@ -1770,7 +1770,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	std::string buffer = g_currentSavedGame->load(idString);
 	if(buffer.empty()) {
 		LogError << "Unable to read " << idString;
-		return NULL;
+		return nullptr;
 	}
 	
 	const char * dat = buffer.data();
@@ -1782,24 +1782,24 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	
 	if(ais->version != ARX_GAMESAVE_VERSION) {
 		LogError << "Invalid PopIO version " << ais->version;
-		return NULL;
+		return nullptr;
 	}
 	
 	if(ais->ioflags & IO_NOSAVE) {
 		// This item should not have been saved, yet here it is :(
 		LogWarning << "Tried to load entity that should never have been saved: " << idString;
-		return NULL;
+		return nullptr;
 	}
 	
 	if(ais->show == SHOW_FLAG_DESTROYED || ais->show == SHOW_FLAG_KILLED) {
 		// Not supposed to happen anymore, but older saves have these (this is harmless bloat)
 		LogWarning << "Found destroyed entity " << idString << " in save file";
-		return NULL;
+		return nullptr;
 	}
 	
 	if(level >= 0 && ais->level != level) {
 		// Entity has been moved to a different level
-		return NULL;
+		return nullptr;
 	}
 	
 	std::string path = util::loadString(ais->filename);
@@ -1921,7 +1921,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		
 		for(size_t i = 0; i < MAX_ANIMS; i++) {
 			
-			if(io->anims[i] != NULL) {
+			if(io->anims[i] != nullptr) {
 				ReleaseAnimFromIO(io, i);
 			}
 			
@@ -1965,7 +1965,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			
 			s32 nn = ais->animlayer[k].cur_anim;
 			if(nn == -1) {
-				layer.cur_anim = NULL;
+				layer.cur_anim = nullptr;
 			} else {
 				layer.cur_anim = io->anims[nn];
 				if(layer.cur_anim && layer.altidx_cur >= layer.cur_anim->anims.size()) {
@@ -1991,7 +1991,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			SCR_TIMER & timer = createScriptTimer(io, boost::to_lower_copy(util::loadString(ats->name)));
 			
 			if(timer.name == "_r_a_t_") {
-				timer.es = NULL;
+				timer.es = nullptr;
 			} else {
 				timer.es = ats->script ? &io->over_script : &io->script;
 			}
@@ -2122,7 +2122,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				io->_npcdata->pathfind.truetarget = EntityHandle(as->pathfind.truetarget);
 				
 				if(ais->saveflags & SAVEFLAGS_EXTRA_ROTATE) {
-					if(io->_npcdata->ex_rotate == NULL) {
+					if(io->_npcdata->ex_rotate == nullptr) {
 						io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 					}
 					*io->_npcdata->ex_rotate = as->ex_rotate;
@@ -2148,7 +2148,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				io->_itemdata->LightValue = ai->LightValue;
 				
 				delete io->_itemdata->equipitem;
-				io->_itemdata->equipitem = NULL;
+				io->_itemdata->equipitem = nullptr;
 				
 				if(ais->system_flags & SYSTEM_FLAG_EQUIPITEMDATA) {
 					io->_itemdata->equipitem = new IO_EQUIPITEM;
@@ -2180,7 +2180,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			}
 		}
 		
-		arx_assert(io->inventory == NULL);
+		arx_assert(io->inventory == nullptr);
 		if(ais->system_flags & SYSTEM_FLAG_INVENTORY) {
 			
 			const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE * aids
@@ -2252,7 +2252,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 					io->obj->linked[n].lidx2 = ActionPoint(ais->linked_data[n].lidx2);
 					Entity * iooo = ConvertToValidIO(ais->linked_data[n].linked_id);
 					io->obj->linked[n].io = iooo;
-					io->obj->linked[n].obj = iooo ? iooo->obj : NULL;
+					io->obj->linked[n].obj = iooo ? iooo->obj : nullptr;
 				}
 			}
 		}
@@ -2364,11 +2364,11 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			}
 			
 			if(e->script.valid) {
-				ScriptEvent::send(&e->script, NULL, e, SM_RELOAD, "change");
+				ScriptEvent::send(&e->script, nullptr, e, SM_RELOAD, "change");
 			}
 			
 			if(entities[handle] && e->over_script.valid) {
-				ScriptEvent::send(&e->over_script, NULL, e, SM_RELOAD, "change");
+				ScriptEvent::send(&e->over_script, nullptr, e, SM_RELOAD, "change");
 			}
 			
 			if(entities[handle] && (e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
@@ -2685,7 +2685,7 @@ void ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	player.Interface &= ~INTER_COMBATMODE;
 	ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 	
-	entities.player()->animlayer[1].cur_anim = NULL;
+	entities.player()->animlayer[1].cur_anim = nullptr;
 	
 }
 

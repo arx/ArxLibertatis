@@ -158,7 +158,7 @@ class EnvironmentLock : private boost::noncopyable {
 public:
 	
 	EnvironmentLock()
-		: m_overrides(NULL)
+		: m_overrides(nullptr)
 		, m_count(0)
 	{ lock(); }
 	

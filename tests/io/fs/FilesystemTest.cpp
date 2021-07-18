@@ -43,7 +43,7 @@ void FilesystemTest::tearDown() {
 std::time_t FilesystemTest::checkTime(const fs::path & root, const fs::path & path, std::time_t before) {
 	std::time_t time = fs::last_write_time(root / path);
 	CPPUNIT_ASSERT_MESSAGE(path.string(), time >= before);
-	CPPUNIT_ASSERT_MESSAGE(path.string(), time <= std::time(NULL));
+	CPPUNIT_ASSERT_MESSAGE(path.string(), time <= std::time(nullptr));
 	return time;
 }
 
@@ -172,13 +172,13 @@ void FilesystemTest::run(const fs::path & root) {
 	// Create a file from a string
 	std::string filea = "file a contents\n";
 	filea += '\0';
-	std::time_t before = std::time(NULL);
+	std::time_t before = std::time(nullptr);
 	CPPUNIT_ASSERT(fs::write(root / "filea.sav", filea));
 	m_expected["filea.sav"] = Entry(fs::RegularFile, filea, checkTime(root, "filea.sav", before));
 	checkState(root);
 	
 	// Create a file from a char array
-	before = std::time(NULL);
+	before = std::time(nullptr);
 	char fileb[] = { '\0', 'T', 'S', '\r', 'e', 'T' };
 	CPPUNIT_ASSERT(fs::write(root / "a/fileb.bmp", fileb, sizeof(fileb)));
 	m_expected["a/fileb.bmp"] = Entry(fs::RegularFile, std::string(fileb, sizeof(fileb)),
@@ -186,7 +186,7 @@ void FilesystemTest::run(const fs::path & root) {
 	checkState(root);
 	
 	// Create an empty file
-	before = std::time(NULL);
+	before = std::time(nullptr);
 	CPPUNIT_ASSERT(fs::write(root / "g/empty", std::string()));
 	m_expected["g/empty"] = Entry(fs::RegularFile, std::string(), checkTime(root, "g/empty", before));
 	checkState(root);
@@ -206,14 +206,14 @@ void FilesystemTest::run(const fs::path & root) {
 	checkState(root);
 	
 	// Copy file to new target
-	before = std::time(NULL);
+	before = std::time(nullptr);
 	CPPUNIT_ASSERT(fs::copy_file(root / "filea.sav", root / "filec.sav", false));
 	m_expected["filec.sav"] = m_expected["filea.sav"];
 	m_expected["filec.sav"].mtime = checkTime(root, "filec.sav", before);
 	checkState(root);
 	
 	// Copy file to new target
-	before = std::time(NULL);
+	before = std::time(nullptr);
 	CPPUNIT_ASSERT(fs::copy_file(root / "filea.sav", root / "filed.sav", true));
 	m_expected["filed.sav"] = m_expected["filea.sav"];
 	m_expected["filed.sav"].mtime = checkTime(root, "filed.sav", before);
@@ -224,7 +224,7 @@ void FilesystemTest::run(const fs::path & root) {
 	checkState(root);
 	
 	// Copy file to new existing target and overwrite
-	before = std::time(NULL);
+	before = std::time(nullptr);
 	CPPUNIT_ASSERT(fs::copy_file(root / "a/fileb.bmp", root / "filed.sav", true));
 	m_expected["filed.sav"] = m_expected["a/fileb.bmp"];
 	m_expected["filed.sav"].mtime = checkTime(root, "filed.sav", before);

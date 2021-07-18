@@ -122,9 +122,9 @@ void initialize(const OpenGLInfo & gl) {
 	
 	// GLEW versions before 1.11.0 define GLDEBUGPROC with a non-const user pointer
 	#if !ARX_HAVE_GLEW || defined(GLEW_VERSION_4_5)
-	glDebugMessageCallback(gldebug::callback, NULL);
+	glDebugMessageCallback(gldebug::callback, nullptr);
 	#else
-	glDebugMessageCallback((GLDEBUGPROC)gldebug::callback, NULL);
+	glDebugMessageCallback((GLDEBUGPROC)gldebug::callback, nullptr);
 	#endif
 	
 	// Forward messages with high severity level
@@ -132,7 +132,7 @@ void initialize(const OpenGLInfo & gl) {
 	                      GL_DONT_CARE,
 	                      GL_DEBUG_SEVERITY_HIGH,
 	                      0,
-	                      NULL,
+	                      nullptr,
 	                      GL_TRUE);
 	
 	// Forward messages with medium severity level
@@ -140,7 +140,7 @@ void initialize(const OpenGLInfo & gl) {
 	                      GL_DONT_CARE,
 	                      GL_DEBUG_SEVERITY_MEDIUM,
 	                      0,
-	                      NULL,
+	                      nullptr,
 	                      GL_TRUE);
 	
 	// Forward messages from the application
@@ -148,7 +148,7 @@ void initialize(const OpenGLInfo & gl) {
 	                      GL_DONT_CARE,
 	                      GL_DONT_CARE,
 	                      0,
-	                      NULL,
+	                      nullptr,
 	                      GL_TRUE);
 	
 	
@@ -197,7 +197,7 @@ static void setMode(util::cmdline::optional<std::string> mode) {
 	}
 }
 
-ARX_PROGRAM_OPTION_ARG("debug-gl", NULL, "Enable OpenGL debug output", &setMode, "MODE")
+ARX_PROGRAM_OPTION_ARG("debug-gl", nullptr, "Enable OpenGL debug output", &setMode, "MODE")
 
 static const char * getGLErrorString(GLenum error) {
 	

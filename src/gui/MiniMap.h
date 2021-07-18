@@ -86,7 +86,7 @@ public:
 		unsigned char m_revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
 		
 		MiniMapData()
-			: m_texContainer(NULL)
+			: m_texContainer(nullptr)
 			, m_offset(0.f)
 			, m_ratio(0.f)
 			, m_size(0.f)
@@ -110,11 +110,11 @@ public:
 	
 	MiniMap()
 		: m_currentLevel(0)
-		, m_entities(NULL)
-		, m_activeBkg(NULL)
-		, m_pTexDetect(NULL)
-		, m_mapMarkerTexCont(NULL)
-		, m_player(NULL)
+		, m_entities(nullptr)
+		, m_activeBkg(nullptr)
+		, m_pTexDetect(nullptr)
+		, m_mapMarkerTexCont(nullptr)
+		, m_player(nullptr)
 		, m_playerLastPosX(0.f)
 		, m_playerLastPosZ(0.f)
 		, m_mod(0.f)

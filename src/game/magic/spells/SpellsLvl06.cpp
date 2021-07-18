@@ -68,7 +68,7 @@ bool RiseDeadSpell::CanLaunch() {
 	
 	GetTargetAndBeta(target, beta);
 
-	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
+	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(nullptr, &target)) {
 		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
 		return false;
 	}
@@ -172,7 +172,7 @@ void RiseDeadSpell::Update() {
 		
 		Cylinder phys = Cylinder(m_targetPos, 50, -200);
 		
-		float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
+		float anything = CheckAnythingInCylinder(phys, nullptr, CFLAG_JUST_TEST);
 		
 		if(glm::abs(anything) < 30) {
 			

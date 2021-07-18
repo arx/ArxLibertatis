@@ -93,7 +93,7 @@ public:
 	 */
 	bool addFiles(const fs::path & path, const res::path & mount = res::path());
 	
-	bool addArchive(const fs::path & pakfile, const PakFilter * filter = NULL);
+	bool addArchive(const fs::path & pakfile, const PakFilter * filter = nullptr);
 	void clear();
 	
 	std::string read(const res::path & name);

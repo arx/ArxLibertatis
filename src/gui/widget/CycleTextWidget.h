@@ -37,7 +37,7 @@ class CycleTextWidget arx_final : public Widget {
 public:
 	
 	explicit CycleTextWidget(const Vec2f & size, Font * font, const std::string & label = std::string(),
-	                         Font * entryFont = NULL);
+	                         Font * entryFont = nullptr);
 	virtual ~CycleTextWidget();
 	
 	void setValue(int value) { m_value = value; }

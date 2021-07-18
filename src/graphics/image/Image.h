@@ -51,7 +51,7 @@ public:
 	Image & operator=(const Image & other);
 	
 	bool load(const res::path & filename);
-	bool load(const char * data, size_t size, const char * file = NULL);
+	bool load(const char * data, size_t size, const char * file = nullptr);
 	
 	void create(size_t width, size_t height, Format format);
 	
@@ -69,7 +69,7 @@ public:
 	size_t getSize() const { return getSize(getFormat(), getWidth(), getHeight()); }
 	size_t getNumChannels() const { return getNumChannels(getFormat()); }
 	
-	bool isValid() const { return m_data != NULL; }
+	bool isValid() const { return m_data != nullptr; }
 	
 	bool hasAlpha() const { return hasAlpha(getFormat()); }
 	

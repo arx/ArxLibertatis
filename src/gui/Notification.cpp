@@ -149,7 +149,7 @@ static void ARX_SPEECH_Render() {
 		EERIEDrawBitmap(rect, .00001f, arx_logo_tc, Color::white);
 		
 		igrec += ARX_UNICODE_DrawTextInRect(hFontInGame, Vec2f(120.f * g_sizeRatio.x, igrec), 500 * g_sizeRatio.x,
-		                           ' ' + getLocalised(g_notification[i].text), Color::white, NULL);
+		                           ' ' + getLocalised(g_notification[i].text), Color::white, nullptr);
 		
 		if(igrec > iEnd && !isLastSpeech(i)) {
 			ARX_SPEECH_MoveUp();

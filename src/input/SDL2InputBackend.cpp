@@ -33,7 +33,7 @@ static Mouse::Button sdlToArxButton[10];
 
 SDL2InputBackend::SDL2InputBackend(SDL2Window * window)
 	: m_window(window)
-	, m_textHandler(NULL)
+	, m_textHandler(nullptr)
 	, m_editCursorPos(0)
 	, m_editCursorLength(0)
 	, wheel(0)
@@ -44,7 +44,7 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window)
 	, currentWheel(0)
 {
 	
-	arx_assert(window != NULL);
+	arx_assert(window != nullptr);
 	
 	SDL_EventState(SDL_WINDOWEVENT, SDL_ENABLE);
 	SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
@@ -389,7 +389,7 @@ void SDL2InputBackend::stopTextInput() {
 		}
 		SDL_StopTextInput();
 	}
-	m_textHandler = NULL;
+	m_textHandler = nullptr;
 }
 
 std::string SDL2InputBackend::getKeyName(Keyboard::Key key) const {

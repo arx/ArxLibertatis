@@ -188,7 +188,7 @@ path current_path() {
 	while(true) {
 	
 		char * ptr = getcwd(&buffer.front(), buffer.size());
-		if(ptr != NULL) {
+		if(ptr != nullptr) {
 			return ptr;
 		} else if(errno != ERANGE) {
 			return path();
@@ -212,7 +212,7 @@ void directory_iterator::read_entry() {
 		dirent * result;
 		if(readdir_r(m_handle, m_entry, &result) || !result) {
 			delete[] reinterpret_cast<char *>(m_entry);
-			m_entry = NULL;
+			m_entry = nullptr;
 			return;
 		}
 		#endif
@@ -245,7 +245,7 @@ directory_iterator::directory_iterator(const path & p)
 	#if !ARX_HAVE_DIRFD || !ARX_HAVE_FSTATAT || !ARX_HAVE_AT_SYMLINK_NOFOLLOW
 	, m_path(p)
 	#endif
-	, m_entry(NULL)
+	, m_entry(nullptr)
 {
 	
 	if(!m_handle) {
@@ -298,7 +298,7 @@ directory_iterator::~directory_iterator() {
 
 directory_iterator & directory_iterator::operator++() {
 	
-	arx_assert(m_entry != NULL);
+	arx_assert(m_entry != nullptr);
 	
 	read_entry();
 	
@@ -311,14 +311,14 @@ bool directory_iterator::end() {
 
 std::string directory_iterator::name() {
 	
-	arx_assert(m_entry != NULL);
+	arx_assert(m_entry != nullptr);
 	
 	return m_entry->d_name;
 }
 
 FileType directory_iterator::type() {
 	
-	arx_assert(m_entry != NULL);
+	arx_assert(m_entry != nullptr);
 	
 	#if defined(DT_DIR)
 	if(m_entry->d_type == DT_DIR) {
@@ -345,7 +345,7 @@ FileType directory_iterator::type() {
 
 FileType directory_iterator::link_type() {
 	
-	arx_assert(m_entry != NULL);
+	arx_assert(m_entry != nullptr);
 	
 	#if defined(DT_DIR)
 	if(m_entry->d_type == DT_DIR) {
@@ -387,7 +387,7 @@ FileType directory_iterator::link_type() {
 
 std::time_t directory_iterator::last_write_time() {
 	
-	arx_assert(m_entry != NULL);
+	arx_assert(m_entry != nullptr);
 	
 	if(!read_info()) {
 		return 0;
@@ -398,7 +398,7 @@ std::time_t directory_iterator::last_write_time() {
 
 u64 directory_iterator::file_size() {
 	
-	arx_assert(m_entry != NULL);
+	arx_assert(m_entry != nullptr);
 	
 	if(!read_info()) {
 		return u64(-1);

@@ -40,7 +40,7 @@
 namespace benchmark {
 
 static const char * const g_names[] = {
-	NULL,
+	nullptr,
 	"startup",
 	"splash",
 	"menu",

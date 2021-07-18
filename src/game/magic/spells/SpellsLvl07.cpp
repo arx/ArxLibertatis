@@ -339,8 +339,8 @@ Vec3f FireFieldSpell::getPosition() const {
 
 IceFieldSpell::IceFieldSpell()
 	: m_pos(0.f)
-	, tex_p1(NULL)
-	, tex_p2(NULL)
+	, tex_p1(nullptr)
+	, tex_p2(nullptr)
 { }
 
 void IceFieldSpell::Launch() {
@@ -612,8 +612,8 @@ void LightningStrikeSpell::Update() {
 }
 
 ConfuseSpell::ConfuseSpell()
-	: tex_p1(NULL)
-	, tex_trail(NULL)
+	: tex_p1(nullptr)
+	, tex_trail(nullptr)
 	, eCurPos(0.f)
 { }
 
@@ -686,8 +686,8 @@ void ConfuseSpell::Update() {
 	
 	{
 		AnimationDuration delta = toAnimationDuration(g_gameTime.lastFrameDuration());
-		EERIEDrawAnimQuatUpdate(spapi, animlayer, stiteangle, eCurPos, delta, NULL, false);
-		EERIEDrawAnimQuatRender(spapi, eCurPos, NULL, 0.f);
+		EERIEDrawAnimQuatUpdate(spapi, animlayer, stiteangle, eCurPos, delta, nullptr, false);
+		EERIEDrawAnimQuatRender(spapi, eCurPos, nullptr, 0.f);
 	}
 	
 	for(int i = 0; i < 6; i++) {

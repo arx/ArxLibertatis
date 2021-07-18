@@ -121,7 +121,7 @@
 	template <typename T>
 	T * checkAlignment(T * pointer, size_t alignment, const char * file, unsigned line) {
 		if(!arx_is_aligned(pointer, alignment)) {
-			assertionFailed("unaligned pointer", file, line, NULL);
+			assertionFailed("unaligned pointer", file, line, nullptr);
 			arx_trap();
 		}
 		return pointer;

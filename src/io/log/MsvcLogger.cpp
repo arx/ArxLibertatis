@@ -39,7 +39,7 @@ void MsvcDebugger::log(const Source & file, int line, Logger::LogLevel level,
 }
 
 MsvcDebugger * MsvcDebugger::get() {
-	return IsDebuggerPresent() ? new MsvcDebugger : NULL;
+	return IsDebuggerPresent() ? new MsvcDebugger : nullptr;
 }
 
 } // namespace logger

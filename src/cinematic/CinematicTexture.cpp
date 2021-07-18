@@ -78,7 +78,7 @@ CinematicBitmap * CreateCinematicBitmap(const res::path & path, int scale) {
 	LogDebug("loading cinematic texture " << path);
 
 	res::path filename = path;
-	bool foundPath = g_resources->getFile(filename.set_ext(".bmp")) != NULL;
+	bool foundPath = g_resources->getFile(filename.set_ext(".bmp")) != nullptr;
 	foundPath = foundPath || g_resources->getFile(filename.set_ext("tga"));
 	if(!foundPath) {
 		LogError << path << " not found";

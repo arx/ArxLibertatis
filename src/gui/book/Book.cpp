@@ -188,13 +188,13 @@ void PlayerBook::toggle() {
 	
 	if(player.Interface & INTER_PLAYERBOOK) {
 		ARX_SOUND_PlayInterface(g_snd.BOOK_CLOSE, Random::getf(0.9f, 1.1f));
-		SendIOScriptEvent(NULL, entities.player(), SM_BOOK_CLOSE);
+		SendIOScriptEvent(nullptr, entities.player(), SM_BOOK_CLOSE);
 		player.Interface &= ~INTER_PLAYERBOOK;
 		g_miniMap.purgeTexContainer();
 		onClosePage();
 	} else {
 		ARX_SOUND_PlayInterface(g_snd.BOOK_OPEN, Random::getf(0.9f, 1.1f));
-		SendIOScriptEvent(NULL, entities.player(), SM_BOOK_OPEN);
+		SendIOScriptEvent(nullptr, entities.player(), SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_PLAYERBOOK;
 		map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0, 7));
@@ -1127,8 +1127,8 @@ void StatsPage::RenderBookPlayerCharacter() {
 		EERIE_3DOBJ * eobj = entities.player()->obj;
 		AnimationDuration time = toAnimationDuration(g_platformTime.lastFrameDuration());
 		
-		EERIEDrawAnimQuatUpdate(eobj, player.bookAnimation, ePlayerAngle, pos, time, NULL, true);
-		EERIEDrawAnimQuatRender(eobj, pos, NULL, invisibility);
+		EERIEDrawAnimQuatUpdate(eobj, player.bookAnimation, ePlayerAngle, pos, time, nullptr, true);
+		EERIEDrawAnimQuatRender(eobj, pos, nullptr, invisibility);
 	}
 	
 	IN_BOOK_DRAW = 0;
@@ -1193,7 +1193,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	if(Entity * todraw = entities.get(player.equiped[EQUIP_SLOT_RING_LEFT])) {
 		
 		TextureContainer * tc = todraw->m_icon;
-		TextureContainer * tc2 = NULL;
+		TextureContainer * tc2 = nullptr;
 		
 		if(NeedHalo(todraw))
 			tc2 = todraw->m_icon->getHalo();
@@ -1217,7 +1217,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	if(Entity * todraw = entities.get(player.equiped[EQUIP_SLOT_RING_RIGHT])) {
 		
 		TextureContainer * tc = todraw->m_icon;
-		TextureContainer * tc2 = NULL;
+		TextureContainer * tc2 = nullptr;
 		
 		if(NeedHalo(todraw))
 			tc2 = todraw->m_icon->getHalo();

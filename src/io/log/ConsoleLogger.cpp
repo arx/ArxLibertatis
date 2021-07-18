@@ -52,7 +52,7 @@ Backend * Console::get() {
 	bool hasStdout = platform::hasStdOut();
 	bool hasStdErr = platform::hasStdErr();
 	if(!hasStdout && !hasStdErr) {
-		return NULL;
+		return nullptr;
 	}
 	
 	#if ARX_HAVE_ISATTY

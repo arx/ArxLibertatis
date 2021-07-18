@@ -87,7 +87,7 @@
 // Basic usage (see HDR discussion below):
 //    int x,y,n;
 //    unsigned char *data = stbi_load(filename, &x, &y, &n, 0);
-//    // ... process data if not NULL ...
+//    // ... process data if not nullptr ...
 //    // ... x = width, y = height, n = # 8-bit components per pixel ...
 //    // ... replace '0' with '1'..'4' to force that many components per pixel
 //    // ... but 'n' will always be the number that it would have been if you said 0
@@ -118,7 +118,7 @@
 //       3           red, green, blue
 //       4           red, green, blue, alpha
 //
-// If image loading fails for any reason, the return value will be NULL,
+// If image loading fails for any reason, the return value will be nullptr,
 // and *x, *y, *comp will be unchanged. The function stbi_failure_reason()
 // can be queried for an extremely brief, end-user unfriendly explanation
 // of why the load failed. Define STBI_NO_FAILURE_STRINGS to avoid
@@ -459,7 +459,7 @@ extern void stbi_install_YCbCr_to_RGB(stbi_YCbCr_to_RGB_run func);
       0.57   fix bug: jpg last huffman symbol before marker was >9 bits but less than 16 available
       0.56   fix bug: zlib uncompressed mode len vs. nlen
       0.55   fix bug: restart_interval not initialized to 0
-      0.54   allow NULL for 'int *comp'
+      0.54   allow nullptr for 'int *comp'
       0.53   fix bug in png 3->4; speedup png decoding
       0.52   png handles req_comp=3,4 directly; minor cleanup; jpeg comments
       0.51   obey req_comp requests, 1-component jpegs return as 1-component,

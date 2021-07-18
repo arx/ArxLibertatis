@@ -156,7 +156,7 @@ void TextManager::Render() {
 		
 		ManagedText * pArxText = *itManage;
 		
-		Rect * pRectClip = NULL;
+		Rect * pRectClip = nullptr;
 		if(pArxText->rRectClipp.right != Rect::Limits::max() || pArxText->rRectClipp.bottom != Rect::Limits::max()) {
 			pRectClip = &pArxText->rRectClipp;
 		}

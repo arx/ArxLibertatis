@@ -80,7 +80,7 @@ MiniMap g_miniMap; // TODO: remove this
 
 void MiniMap::getData(int showLevel) {
 	
-	if(m_levels[showLevel].m_texContainer == NULL) {
+	if(m_levels[showLevel].m_texContainer == nullptr) {
 		
 		std::string name = GetLevelNameByNum(showLevel);
 		
@@ -125,11 +125,11 @@ void MiniMap::validatePos() {
 	
 	if((showLevel >= 0) && (showLevel < int(MAX_MINIMAP_LEVELS))) {
 		
-		if(m_levels[showLevel].m_texContainer == NULL) {
+		if(m_levels[showLevel].m_texContainer == nullptr) {
 			getData(showLevel);
 		}
 		
-		if(m_levels[m_currentLevel].m_texContainer == NULL) {
+		if(m_levels[m_currentLevel].m_texContainer == nullptr) {
 			getData(m_currentLevel);
 		}
 		
@@ -203,8 +203,8 @@ void MiniMap::reveal() {
 
 void MiniMap::firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * entityMng) {
 	
-	m_pTexDetect = NULL;
-	m_mapMarkerTexCont = NULL;
+	m_pTexDetect = nullptr;
+	m_mapMarkerTexCont = nullptr;
 	
 	m_player = pl;
 	m_playerLastPosX = -999999.f;
@@ -215,7 +215,7 @@ void MiniMap::firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * e
 	
 	m_currentLevel = 0;
 	m_entities = entityMng;
-	m_activeBkg = NULL;
+	m_activeBkg = nullptr;
 
     m_mapVertices.reserve(MINIMAP_MAX_X * MINIMAP_MAX_Z);
 
@@ -231,7 +231,7 @@ void MiniMap::firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * e
 void MiniMap::resetLevels() {
 	
 	for(size_t i = 0; i < MAX_MINIMAP_LEVELS; i++) {
-		m_levels[i].m_texContainer = NULL;
+		m_levels[i].m_texContainer = nullptr;
 		m_levels[i].m_offset = Vec2f(0.f);
 		m_levels[i].m_ratio = Vec2f(0.f);
 		m_levels[i].m_size = Vec2f(0.f);
@@ -250,7 +250,7 @@ void MiniMap::purgeTexContainer() {
 	
 	for(size_t i = 0; i < MAX_MINIMAP_LEVELS; i++) {
 		delete m_levels[i].m_texContainer;
-		m_levels[i].m_texContainer = NULL;
+		m_levels[i].m_texContainer = nullptr;
 	}
 }
 
@@ -270,7 +270,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 	const float playerSize = 4.f * scale; // red arrow size
 	
 	// First Load Minimap TC & DATA if needed
-	if(m_levels[showLevel].m_texContainer == NULL) {
+	if(m_levels[showLevel].m_texContainer == nullptr) {
 		getData(showLevel);
 	}
 	
@@ -300,7 +300,7 @@ void MiniMap::showBookMiniMap(int showLevel, Rect rect, float scale) {
 	UseRenderState state(render2D());
 	
 	// First Load Minimap TC & DATA if needed
-	if(m_levels[showLevel].m_texContainer == NULL) {
+	if(m_levels[showLevel].m_texContainer == nullptr) {
 		getData(showLevel);
 	}
 	
@@ -330,7 +330,7 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 	UseRenderState state(render2D());
 	
 	// First Load Minimap TC & DATA if needed
-	if(m_levels[showLevel].m_texContainer == NULL) {
+	if(m_levels[showLevel].m_texContainer == nullptr) {
 		getData(showLevel);
 	}
 	
@@ -413,7 +413,7 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 			}
 		}
 		
-		if(m_mapMarkerTexCont == NULL) {
+		if(m_mapMarkerTexCont == nullptr) {
 			m_mapMarkerTexCont = TextureContainer::Load("graph/interface/icons/mapmarker");
 		}
 		
@@ -740,7 +740,7 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 }
 
 void MiniMap::clearMarkerTexCont() {
-	m_mapMarkerTexCont = NULL;
+	m_mapMarkerTexCont = nullptr;
 }
 
 void MiniMap::load(const SavedMiniMap * saved, size_t size) {

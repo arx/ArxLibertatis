@@ -69,7 +69,7 @@ bool SummonCreatureSpell::CanLaunch() {
 	float beta;
 	GetTargetAndBeta(target, beta);
 	
-	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
+	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(nullptr, &target)) {
 		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
 		return false;
 	}
@@ -168,7 +168,7 @@ void SummonCreatureSpell::Update() {
 		
 		Cylinder phys = Cylinder(m_targetPos, 50, -200);
 		
-		float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
+		float anything = CheckAnythingInCylinder(phys, nullptr, CFLAG_JUST_TEST);
 		
 		if(glm::abs(anything) < 30) {
 			
@@ -308,8 +308,8 @@ void FakeSummonSpell::Update() {
 
 NegateMagicSpell::NegateMagicSpell()
 	: m_pos(0.f)
-	, tex_p2(NULL)
-	, tex_sol(NULL)
+	, tex_p2(nullptr)
+	, tex_sol(nullptr)
 { }
 
 void NegateMagicSpell::Launch() {

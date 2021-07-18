@@ -213,5 +213,5 @@ void CMagicMissile::Render() {
 MrMagicMissileFx::MrMagicMissileFx() {
 	m_trailColor = Color3f(0.9f, 0.2f, 0.5f);
 	m_projectileColor = Color3f(1.f, 0.f, 0.2f);
-	tex_mm = NULL;
+	tex_mm = nullptr;
 }

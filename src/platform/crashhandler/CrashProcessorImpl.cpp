@@ -69,7 +69,7 @@ void CrashHandlerImpl::processCrash(const std::string & sharedMemoryName) {
 		
 	} catch(...) {
 		// Unexpected error
-		m_pCrashInfo = NULL;
+		m_pCrashInfo = nullptr;
 	}
 	
 	processCrash();
@@ -88,13 +88,13 @@ void CrashHandlerImpl::processCrash() {
 	{
 		fs::path executable = platform::getHelperExecutable("arxcrashreporter");
 		std::string arg = "--crashinfo=" + m_SharedMemoryName;
-		const char * args[] = { executable.string().c_str(), arg.c_str(), NULL };
+		const char * args[] = { executable.string().c_str(), arg.c_str(), nullptr };
 		reporter = platform::runAsync(args);
 	}
 	
 	if(m_pCrashInfo) {
 		
-		std::time_t timestamp = std::time(NULL);
+		std::time_t timestamp = std::time(nullptr);
 		{
 			fs::path crashReportDir = util::loadString(m_pCrashInfo->crashReportFolder);
 			std::tm * time = std::gmtime(&timestamp);

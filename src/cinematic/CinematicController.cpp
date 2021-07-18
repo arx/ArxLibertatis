@@ -51,7 +51,7 @@ static bool CINE_PRELOAD = false;
 static std::string WILL_LAUNCH_CINE;
 static std::string LAST_LAUNCHED_CINE;
 
-Cinematic * ControlCinematique = NULL; // 2D Cinematic Controller
+Cinematic * ControlCinematique = nullptr; // 2D Cinematic Controller
 
 void cinematicInit() {
 	const Vec2i & size = mainApp->getWindow()->getSize();
@@ -59,7 +59,7 @@ void cinematicInit() {
 }
 
 void cinematicDestroy() {
-	delete ControlCinematique, ControlCinematique = NULL;
+	delete ControlCinematique, ControlCinematique = nullptr;
 }
 
 void cinematicPrepare(const std::string & name, bool preload) {
@@ -147,7 +147,7 @@ void cinematicEnd() {
 	}
 	
 	ARX_SPEECH_Reset();
-	SendMsgToAllIO(NULL, SM_CINE_END, LAST_LAUNCHED_CINE);
+	SendMsgToAllIO(nullptr, SM_CINE_END, LAST_LAUNCHED_CINE);
 	
 }
 

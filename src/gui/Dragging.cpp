@@ -45,12 +45,12 @@
 #include "scene/Interactive.h"
 
 EntityDragStatus g_dragStatus = EntityDragStatus_Invalid;
-Entity * g_draggedEntity = NULL;
+Entity * g_draggedEntity = nullptr;
 InventoryPos g_draggedItemPreviousPosition;
 Vec2f g_draggedIconOffset;
 static Vec2f g_draggedObjectOffset;
 static float g_dragStartAngle = 0;
-static Camera * g_dragStartCamera = NULL;
+static Camera * g_dragStartCamera = nullptr;
 
 void setDraggedEntity(Entity * entity) {
 	
@@ -220,7 +220,7 @@ void updateDraggedEntity() {
 	if(ARX_INTERFACE_MouseInBook()) {
 		if(drop && g_playerBook.currentPage() == BOOKMODE_STATS) {
 			SendIOScriptEvent(entities.player(), entity, SM_INVENTORYUSE);
-			COMBINE = NULL;
+			COMBINE = nullptr;
 		}
 		return;
 	}
@@ -294,7 +294,7 @@ void updateDraggedEntity() {
 	entity->show = SHOW_FLAG_IN_SCENE;
 	entity->obj->pbox->active = 0;
 	entity->gameFlags &= ~GFLAG_NOCOMPUTATION;
-	setDraggedEntity(NULL);
+	setDraggedEntity(nullptr);
 	
 	if((entity->ioflags & IO_ITEM) && entity->_itemdata->count > 1) {
 		

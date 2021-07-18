@@ -157,7 +157,7 @@ bool ChunkFile::restart() {
 namespace audio {
 
 StreamWAV::StreamWAV() :
-	m_stream(NULL), codec(NULL),
+	m_stream(nullptr), codec(nullptr),
 	size(0), outsize(0), offset(0), cursor(0) {
 }
 

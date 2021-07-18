@@ -225,7 +225,7 @@ void ExplosionSpell::Update() {
 			long lvl = Random::get(9, 13);
 			Vec3f pos = light->pos + arx::sphericalRand(260.f);
 			Color3f color = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f / 3, 1.f / 3, 0.2f);
-			LaunchFireballBoom(pos, static_cast<float>(lvl), NULL, &color);
+			LaunchFireballBoom(pos, static_cast<float>(lvl), nullptr, &color);
 		} else if(choice > .6f) {
 			Vec3f pos = light->pos + arx::sphericalRand(260.f);
 			MakeCoolFx(pos);

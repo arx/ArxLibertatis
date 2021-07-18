@@ -71,9 +71,9 @@ public:
 	
 	SecondaryInventoryHud()
 		: m_size(0.f)
-		, ingame_inventory(NULL)
-		, m_canNotSteal(NULL)
-		, m_defaultBackground(NULL)
+		, ingame_inventory(nullptr)
+		, m_canNotSteal(nullptr)
+		, m_defaultBackground(nullptr)
 		, m_fadeDirection(Fade_stable)
 		, m_fadePosition(0.f)
 	{ }

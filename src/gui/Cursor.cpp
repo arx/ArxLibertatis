@@ -81,16 +81,16 @@ void cursorSetRedistribute(long value) {
 	lCursorRedistValue = value;
 }
 
-static TextureContainer * cursorTargetOn = NULL;
-static TextureContainer * cursorTargetOff = NULL;
-static TextureContainer * cursorInteractionOn = NULL;
-static TextureContainer * cursorInteractionOff = NULL;
-static TextureContainer * cursorMagic = NULL;
-static TextureContainer * cursorThrowObject = NULL;
-static TextureContainer * cursorRedist = NULL;
-static TextureContainer * cursorCrossHair = NULL; // Animated Hand Cursor TC
-static TextureContainer * cursorReadyWeapon = NULL;
-TextureContainer * cursorMovable = NULL;   // TextureContainer for Movable Items (Red Cross)
+static TextureContainer * cursorTargetOn = nullptr;
+static TextureContainer * cursorTargetOff = nullptr;
+static TextureContainer * cursorInteractionOn = nullptr;
+static TextureContainer * cursorInteractionOff = nullptr;
+static TextureContainer * cursorMagic = nullptr;
+static TextureContainer * cursorThrowObject = nullptr;
+static TextureContainer * cursorRedist = nullptr;
+static TextureContainer * cursorCrossHair = nullptr; // Animated Hand Cursor TC
+static TextureContainer * cursorReadyWeapon = nullptr;
+TextureContainer * cursorMovable = nullptr;   // TextureContainer for Movable Items (Red Cross)
 
 TextureContainer * scursor[8]; // Animated Hand Cursor
 
@@ -308,7 +308,7 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 				Vec2f size(tc->m_size.x, tc->m_size.y);
 				size *= iconScale;
 				
-				TextureContainer * haloTc = NULL;
+				TextureContainer * haloTc = nullptr;
 				
 				if(COMBINE && NeedHalo(COMBINE))
 					haloTc = tc->getHalo();
@@ -428,7 +428,7 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 				if(g_draggedEntity && g_draggedEntity->m_icon) {
 					
 					TextureContainer * tc = g_draggedEntity->m_icon;
-					TextureContainer * haloTc = NULL;
+					TextureContainer * haloTc = nullptr;
 					if(NeedHalo(g_draggedEntity)) {
 						haloTc = g_draggedEntity->m_icon->getHalo();
 					}

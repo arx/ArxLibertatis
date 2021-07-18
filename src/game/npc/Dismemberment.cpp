@@ -163,7 +163,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		nouvo->vertexlist[k].v -= point0;
 	}
 	
-	nouvo->pbox = NULL;
+	nouvo->pbox = nullptr;
 	
 	size_t nfaces = 0;
 	for(size_t k = 0; k < from->facelist.size(); k++) {
@@ -234,7 +234,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	io->infracolor = Color3f::blue * 0.8f;
 	io->collision = COLLIDE_WITH_PLAYER;
-	io->m_icon = NULL;
+	io->m_icon = nullptr;
 	io->scriptload = 1;
 	io->obj = nouvo;
 	io->lastpos = io->initpos = io->pos = ioo->obj->vertexWorldPositions[inpos].v;

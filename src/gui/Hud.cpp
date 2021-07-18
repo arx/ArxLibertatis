@@ -69,9 +69,9 @@ static const int indicatorVertSpacing = 30;
 static const int indicatorHorizSpacing = 20;
 
 HitStrengthGauge::HitStrengthGauge()
-	: m_emptyTex(NULL)
-	, m_fullTex(NULL)
-	, m_hitTex(NULL)
+	: m_emptyTex(nullptr)
+	, m_fullTex(nullptr)
+	, m_hitTex(nullptr)
 	, m_size(122.f, 70.f)
 	, m_hitSize(172.f, 130.f)
 	, m_hitRect(Rectf::ZERO)
@@ -467,7 +467,7 @@ void PurseIconGui::draw() {
 
 CurrentTorchIconGui::CurrentTorchIconGui()
 	: m_isActive(false)
-	, m_tex(NULL)
+	, m_tex(nullptr)
 	, m_size(32.f, 64.f)
 { }
 
@@ -500,7 +500,7 @@ void CurrentTorchIconGui::updateInput() {
 				ARX_SOUND_Stop(player.torch_loop);
 				player.torch_loop = audio::SourcedSample();
 				
-				player.torch = NULL;
+				player.torch = nullptr;
 				lightHandleGet(torchLightHandle)->m_exists = false;
 				io->ignition = 1;
 				setDraggedEntity(io);
@@ -556,7 +556,7 @@ void CurrentTorchIconGui::draw() {
 }
 
 ChangeLevelIconGui::ChangeLevelIconGui()
-	: m_tex(NULL)
+	: m_tex(nullptr)
 	, m_size(32.f, 32.f)
 	, m_intensity(1.f)
 { }
@@ -709,8 +709,8 @@ void MemorizedRunesHud::draw() {
 
 HealthGauge::HealthGauge()
 	: m_size(33.f, 80.f)
-	, m_emptyTex(NULL)
-	, m_filledTex(NULL)
+	, m_emptyTex(nullptr)
+	, m_filledTex(nullptr)
 	, m_amount(0.f)
 {}
 
@@ -762,8 +762,8 @@ void HealthGauge::draw() {
 
 ManaGauge::ManaGauge()
 	: m_size(33.f, 80.f)
-	, m_emptyTex(NULL)
-	, m_filledTex(NULL)
+	, m_emptyTex(nullptr)
+	, m_filledTex(nullptr)
 	, m_amount(0.f)
 { }
 
@@ -802,7 +802,7 @@ void ManaGauge::draw() {
 
 MecanismIcon::MecanismIcon()
 	: m_iconSize(32.f, 32.f)
-	, m_tex(NULL)
+	, m_tex(nullptr)
 	, m_timeToDraw(0)
 	, m_nbToDraw(0)
 { }
@@ -848,7 +848,7 @@ void MecanismIcon::draw() {
 ScreenArrows::ScreenArrows()
 	: m_horizontalArrowSize(8, 16)
 	, m_verticalArrowSize(16, 8)
-	, m_arrowLeftTex(NULL)
+	, m_arrowLeftTex(nullptr)
 	, fArrowMove(0.f)
 { }
 
@@ -1028,7 +1028,7 @@ void ActiveSpellsGui::ActiveSpellIconSlot::draw() const {
 }
 
 ActiveSpellsGui::ActiveSpellsGui()
-	: m_texUnknown(NULL)
+	: m_texUnknown(nullptr)
 	, m_slotSize(24.f, 24.f)
 	, m_spacerSize(60.f, 50.f)
 	, m_slotSpacerSize(0.f, 9.f)
@@ -1152,11 +1152,11 @@ void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool f
 DamagedEquipmentGui::DamagedEquipmentGui()
 	: m_size(64.f, 64.f)
 {
-	iconequip[0] = NULL;
-	iconequip[1] = NULL;
-	iconequip[2] = NULL;
-	iconequip[3] = NULL;
-	iconequip[4] = NULL;
+	iconequip[0] = nullptr;
+	iconequip[1] = nullptr;
+	iconequip[2] = nullptr;
+	iconequip[3] = nullptr;
+	iconequip[4] = nullptr;
 }
 
 void DamagedEquipmentGui::init() {
@@ -1233,7 +1233,7 @@ void DamagedEquipmentGui::draw() {
 }
 
 StealthGauge::StealthGauge()
-	: m_texture(NULL)
+	: m_texture(nullptr)
 	, m_visible(false)
 	, m_color(Color::none)
 	, m_size(32.f, 32.f)

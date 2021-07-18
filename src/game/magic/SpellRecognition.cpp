@@ -456,7 +456,7 @@ struct SpellDefinition {
 	SpellType spell;
 	SpellDefinition() : spell(SPELL_NONE) {
 		for(size_t i = 0; i < RUNE_COUNT; i++) {
-			next[i] = NULL;
+			next[i] = nullptr;
 		}
 	}
 
@@ -550,7 +550,7 @@ static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], SpellType spell, con
 			break;
 		}
 		arx_assert(symbols[i] >= 0 && size_t(symbols[i]) < RUNE_COUNT);
-		if(def->next[symbols[i]] == NULL) {
+		if(def->next[symbols[i]] == nullptr) {
 			def->next[symbols[i]] = new SpellDefinition();
 		}
 		def = def->next[symbols[i]];
@@ -639,7 +639,7 @@ static SpellType getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
 			break;
 		}
 		arx_assert(symbols[i] >= 0 && size_t(symbols[i]) < RUNE_COUNT);
-		if(def->next[symbols[i]] == NULL) {
+		if(def->next[symbols[i]] == nullptr) {
 			return SPELL_NONE;
 		}
 		def = def->next[symbols[i]];

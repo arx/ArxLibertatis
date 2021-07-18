@@ -153,5 +153,5 @@ long CountBkgVertex() {
 
 BackgroundTileData * getFastBackgroundData(float x, float z) {
 	Vec2s tile = ACTIVEBKG->getTile(Vec3f(x, 0.f, z));
-	return ACTIVEBKG->isTileValid(tile) ? &ACTIVEBKG->m_tileData[tile.x][tile.y] : NULL;
+	return ACTIVEBKG->isTileValid(tile) ? &ACTIVEBKG->m_tileData[tile.x][tile.y] : nullptr;
 }

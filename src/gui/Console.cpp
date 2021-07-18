@@ -267,7 +267,7 @@ void ScriptConsole::parse(bool allowEmptyPrefix) {
 			std::string context = text().substr(m_contextBegin, cursorPos() - m_contextBegin);
 			entities.autocomplete(context, addContextSuggestion, this);
 		} else if(hasContext && cursorPos() > m_contextBegin) {
-			if(contextEntity() == NULL) {
+			if(contextEntity() == nullptr) {
 				m_error = Suggestion(m_contextBegin, "^ Unknown entity");
 			}
 		}
@@ -589,7 +589,7 @@ void ScriptConsole::draw() {
 	{
 		Rectf box = Rectf(g_size);
 		box.bottom = box.top + float((m_buffer.lines() + 1) * hFontDebug->getLineHeight()) + 4.f;
-		EERIEDrawBitmap(box, 0.f, NULL, background);
+		EERIEDrawBitmap(box, 0.f, nullptr, background);
 	}
 	
 	Vec2i pos(0);
@@ -621,7 +621,7 @@ void ScriptConsole::draw() {
 		int right = hFontDebug->getTextSize(begin, begin + cursorPos() + editText().size()).advance();
 		int height = hFontDebug->getLineHeight();
 		Rectf box = Rectf(Rect(pos + Vec2i(left, 0), right - left, height));
-		EERIEDrawBitmap(box, 0.f, NULL, selection);
+		EERIEDrawBitmap(box, 0.f, nullptr, selection);
 	}
 	
 	// Draw text
@@ -693,7 +693,7 @@ void ScriptConsole::draw() {
 				int width = hFontDebug->getTextSize(m_suggestions[i].second).width();
 				int height = hFontDebug->getLineHeight();
 				Rectf highlight = Rectf(Rect(suggestionPos - Vec2i(2, 1), width + 3, height + 2));
-				EERIEDrawBitmap(highlight, 0.f, NULL, selection);
+				EERIEDrawBitmap(highlight, 0.f, nullptr, selection);
 				drawLineRectangle(highlight, 0.f, background);
 			}
 			hFontDebug->draw(suggestionPos + Vec2i(1), m_suggestions[i].second, Color::black);

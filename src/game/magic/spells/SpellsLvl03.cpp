@@ -388,8 +388,8 @@ void CreateFoodSpell::Update() {
 
 IceProjectileSpell::IceProjectileSpell()
 	: iNumber(0)
-	, tex_p1(NULL)
-	, tex_p2(NULL)
+	, tex_p1(nullptr)
+	, tex_p2(nullptr)
 { }
 
 void IceProjectileSpell::Launch() {

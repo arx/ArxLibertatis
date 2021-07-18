@@ -37,7 +37,7 @@ private:
 	
 protected:
 	
-	explicit PakFile() : _alternative(NULL) { }
+	explicit PakFile() : _alternative(nullptr) { }
 	
 	virtual ~PakFile();
 	
@@ -85,7 +85,7 @@ public:
 	PakFile * getFile(const res::path & path);
 	
 	bool hasFile(const res::path & path) {
-		return getFile(path) != NULL;
+		return getFile(path) != nullptr;
 	}
 	
 	dirs_iterator dirs_begin() { return dirs.begin(); }

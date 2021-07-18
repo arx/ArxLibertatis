@@ -20,7 +20,7 @@
 #include "graphics/opengl/GLVertexBuffer.h"
 
 static GLArrayClientState glArrayClientState = GL_NoArray;
-static const void * glArrayClientStateRef = NULL;
+static const void * glArrayClientStateRef = nullptr;
 static int glArrayClientStateTexCount = 1;
 static GLuint glBoundBuffer = GL_NONE;
 
@@ -60,7 +60,7 @@ bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount) 
 
 void clearVertexArray(const void * ref) {
 	if(glArrayClientStateRef == ref) {
-		glArrayClientStateRef = NULL;
+		glArrayClientStateRef = nullptr;
 	}
 }
 

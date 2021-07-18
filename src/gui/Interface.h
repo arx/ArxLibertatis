@@ -72,30 +72,30 @@ class INTERFACE_TC {
 public:
 	
 	INTERFACE_TC()
-		: playerbook(NULL)
-		, ic_casting(NULL)
-		, ic_close_combat(NULL)
-		, ic_constitution(NULL)
-		, ic_defense(NULL)
-		, ic_dexterity(NULL)
-		, ic_etheral_link(NULL)
-		, ic_mind(NULL)
-		, ic_intuition(NULL)
-		, ic_mecanism(NULL)
-		, ic_object_knowledge(NULL)
-		, ic_projectile(NULL)
-		, ic_stealth(NULL)
-		, ic_strength(NULL)
+		: playerbook(nullptr)
+		, ic_casting(nullptr)
+		, ic_close_combat(nullptr)
+		, ic_constitution(nullptr)
+		, ic_defense(nullptr)
+		, ic_dexterity(nullptr)
+		, ic_etheral_link(nullptr)
+		, ic_mind(nullptr)
+		, ic_intuition(nullptr)
+		, ic_mecanism(nullptr)
+		, ic_object_knowledge(nullptr)
+		, ic_projectile(nullptr)
+		, ic_stealth(nullptr)
+		, ic_strength(nullptr)
 		
-		, questbook(NULL)
-		, ptexspellbook(NULL)
-		, bookmark_char(NULL)
-		, bookmark_magic(NULL)
-		, bookmark_map(NULL)
-		, bookmark_quest(NULL)
+		, questbook(nullptr)
+		, ptexspellbook(nullptr)
+		, bookmark_char(nullptr)
+		, bookmark_magic(nullptr)
+		, bookmark_map(nullptr)
+		, bookmark_quest(nullptr)
 	{
-		std::fill_n(accessibleTab, boost::size(accessibleTab), static_cast<TextureContainer *>(NULL));
-		std::fill_n(currentTab, boost::size(currentTab), static_cast<TextureContainer *>(NULL));
+		std::fill_n(accessibleTab, boost::size(accessibleTab), static_cast<TextureContainer *>(nullptr));
+		std::fill_n(currentTab, boost::size(currentTab), static_cast<TextureContainer *>(nullptr));
 	}
 	
 	void init();

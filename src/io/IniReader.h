@@ -88,7 +88,7 @@ public:
 	
 	/*!
 	 * Get the value at the specified key in the specified section.
-	 * \return the value string or NULL if no such value is set.
+	 * \return the value string or nullptr if no such value is set.
 	 */
 	const IniKey * getKey(const std::string & sectionName, const std::string & keyName) const;
 	

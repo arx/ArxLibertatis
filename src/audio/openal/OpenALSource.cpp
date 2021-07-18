@@ -99,10 +99,10 @@ aalError OpenALSource::sourcePause() {
 OpenALSource::OpenALSource(Sample * sample) :
 	Source(sample),
 	m_tooFar(false),
-	m_streaming(false), m_loadCount(0), m_written(0), m_stream(NULL),
+	m_streaming(false), m_loadCount(0), m_written(0), m_stream(nullptr),
 	m_read(0),
 	m_source(0),
-	m_refcount(NULL),
+	m_refcount(nullptr),
 	m_volume(1.f) {
 	for(size_t i = 0; i < NBUFFERS; i++) {
 		m_buffers[i] = 0;
@@ -142,7 +142,7 @@ OpenALSource::~OpenALSource() {
 		if(m_buffers[0]) {
 			arx_assert(!m_refcount || *m_refcount > 0);
 			if(!m_refcount || !--*m_refcount) {
-				delete m_refcount, m_refcount = NULL;
+				delete m_refcount, m_refcount = nullptr;
 				TraceAL("deleting buffer " << m_buffers[0]);
 				alDeleteBuffers(1, &m_buffers[0]);
 				nbbuffers--;
@@ -157,7 +157,7 @@ OpenALSource::~OpenALSource() {
 	}
 	
 	if(m_stream) {
-		deleteStream(m_stream), m_stream = NULL;
+		deleteStream(m_stream), m_stream = nullptr;
 	}
 	
 }
@@ -326,7 +326,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 		m_written = 0;
 		if(!markAsLoaded()) {
 			deleteStream(m_stream);
-			m_stream = NULL;
+			m_stream = nullptr;
 		} else {
 			m_stream->setPosition(0);
 			if(size > left) {

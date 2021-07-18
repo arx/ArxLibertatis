@@ -108,7 +108,7 @@ void ARX_Menu_Resources_Release() {
 	// Synchronize game mixers with menu mixers and switch between them
 	ARXMenu_Options_Audio_ApplyGameVolumes();
 	
-	delete g_thumbnailCursor.m_loadTexture, g_thumbnailCursor.m_loadTexture = NULL;
+	delete g_thumbnailCursor.m_loadTexture, g_thumbnailCursor.m_loadTexture = nullptr;
 }
 
 void ARX_MENU_Clicked_QUIT() {
@@ -170,7 +170,7 @@ void ARX_Menu_Manage() {
 				} else if(cinematicBorder.isActive()) {
 					// Disabling ESC capture while fading in or out.
 					if(!FADEDIR && cinematicBorder.elapsedTime() >= GameDurationMs(3000)) {
-						if(SendMsgToAllIO(NULL, SM_KEY_PRESSED) != REFUSE) {
+						if(SendMsgToAllIO(nullptr, SM_KEY_PRESSED) != REFUSE) {
 							REQUEST_SPEECH_SKIP = true;
 						}
 					}

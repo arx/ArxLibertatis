@@ -58,8 +58,8 @@ static const short gai_p4[] = {
 };
 
 CodecADPCM::CodecADPCM()
-	: m_stream(NULL)
-	, m_header(NULL)
+	: m_stream(nullptr)
+	, m_header(nullptr)
 	, padding(0)
 	, shift(0)
 	, sample_i(0xffffffff)

@@ -110,7 +110,7 @@ static process_handle run(const char * exe, const char * const args[], int outfd
 	if(outfd <= 0 && !unlocalized) {
 		
 		// Redirect standard input, output and error to /dev/null
-		static posix_spawn_file_actions_t * file_actionsp = NULL;
+		static posix_spawn_file_actions_t * file_actionsp = nullptr;
 		#if ARX_HAVE_OPEN
 		static posix_spawn_file_actions_t file_actions;
 		if(detach && dev_null > 0 && !posix_spawn_file_actions_init(&file_actions)) {
@@ -122,7 +122,7 @@ static process_handle run(const char * exe, const char * const args[], int outfd
 		#endif
 		
 		// Detach the child process from the parent
-		static posix_spawnattr_t * attrp = NULL;
+		static posix_spawnattr_t * attrp = nullptr;
 		static posix_spawnattr_t attr;
 		if(detach && !posix_spawnattr_init(&attr)) {
 			attrp = &attr;
@@ -207,7 +207,7 @@ process_handle runAsync(const char * exe, const char * const args[], bool detach
 	
 	// Format the command line arguments
 	std::ostringstream oss;
-	for(size_t i = 0; args[i] != NULL; i++) {
+	for(size_t i = 0; args[i] != nullptr; i++) {
 		if(i == 0) {
 			continue; // skip the program name
 		} else if(i != 1) {
@@ -366,7 +366,7 @@ void closeProcessHandle(process_handle process) {
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	CloseHandle(process);
 	#elif ARX_HAVE_WAITPID
-	if(waitpid(process, NULL, WNOHANG) == 0) {
+	if(waitpid(process, nullptr, WNOHANG) == 0) {
 		g_childProcesses.push_back(process);
 	}
 	#else
@@ -378,7 +378,7 @@ void reapZombies() {
 	#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_HAVE_WAITPID
 	std::vector<process_handle>::iterator it = g_childProcesses.begin();
 	while(it != g_childProcesses.end()) {
-		if(waitpid(*it, NULL, WNOHANG) != 0) {
+		if(waitpid(*it, nullptr, WNOHANG) != 0) {
 			it = g_childProcesses.erase(it);
 		} else {
 			++it;
@@ -477,20 +477,20 @@ void launchDefaultProgram(const std::string & uri) {
 	
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
-	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+	CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 	
-	(void)ShellExecuteW(NULL, L"open", platform::WideString(uri), NULL, NULL, SW_SHOWNORMAL);
+	(void)ShellExecuteW(nullptr, L"open", platform::WideString(uri), nullptr, nullptr, SW_SHOWNORMAL);
 	
 	CoUninitialize();
 	
 	#elif ARX_PLATFORM == ARX_PLATFORM_MACOS
 	
-	const char * command[] = { "open", uri.c_str(), NULL };
+	const char * command[] = { "open", uri.c_str(), nullptr };
 	runHelper(command);
 	
 	#else
 	
-	const char * command[] = { "xdg-open", uri.c_str(), NULL };
+	const char * command[] = { "xdg-open", uri.c_str(), nullptr };
 	runHelper(command);
 	
 	#endif

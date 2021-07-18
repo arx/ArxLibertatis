@@ -91,7 +91,7 @@ bool ErrorReport::Initialize() {
 		#endif
 		
 	} catch(...) {
-		m_pCrashInfo = NULL;
+		m_pCrashInfo = nullptr;
 		m_DetailedError = "We encountered an unexpected error while collecting crash information!";
 		return false;
 	}

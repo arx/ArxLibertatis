@@ -94,8 +94,8 @@ public:
 		, m_handler(handler), m_argNames(args) { }
 	
 	virtual void registerOption(util::cmdline::interpreter<std::string> & l) {
-		std::string shortName = (m_shortName == NULL || *m_shortName == 0) ? "" : std::string("-") + m_shortName;
-		std::string longName = (m_longName == NULL || *m_longName == 0) ? "" : std::string("--") + m_longName;
+		std::string shortName = (m_shortName == nullptr || *m_shortName == 0) ? "" : std::string("-") + m_shortName;
+		std::string longName = (m_longName == nullptr || *m_longName == 0) ? "" : std::string("--") + m_longName;
 		if(shortName.empty() && longName.empty()) {
 			longName = "--";
 		}
@@ -142,7 +142,7 @@ private:
 		);
 #endif
 #define ARX_PROGRAM_OPTION(longName, shortName, description, handler) \
-	ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, NULL)
+	ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, nullptr)
 
 #undef ARX_PROGRAM_OPTION_ARGS
 

@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 #include "window/RenderWindow.h"
 
-Input * GInput = NULL;
+Input * GInput = nullptr;
 
 long EERIEMouseButton = 0;
 long LastMouseClick = 0;
@@ -313,7 +313,7 @@ bool ARX_INPUT_Init(Window * window) {
 	bool ret = GInput->init(window);
 	if(!ret) {
 		delete GInput;
-		GInput = NULL;
+		GInput = nullptr;
 	}
 
 	return ret;
@@ -321,11 +321,11 @@ bool ARX_INPUT_Init(Window * window) {
 
 void ARX_INPUT_Release() {
 	delete GInput;
-	GInput = NULL;
+	GInput = nullptr;
 }
 
 Input::Input()
-	: backend(NULL)
+	: backend(nullptr)
 	, m_useRawMouseInput(true)
 	, m_mouseMode(Mouse::Absolute)
 	, m_mouseMovement(0.f)
@@ -343,10 +343,10 @@ Input::Input()
 }
 
 bool Input::init(Window * window) {
-	arx_assert(backend == NULL);
+	arx_assert(backend == nullptr);
 	
 	backend = window->getInputBackend();
-	if(backend == NULL) {
+	if(backend == nullptr) {
 		return false;
 	}
 	

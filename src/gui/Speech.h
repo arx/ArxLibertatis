@@ -148,10 +148,10 @@ struct ARX_SPEECH {
 		iTimeScroll = 0;
 		fPixelScroll = 0;
 		text.clear();
-		io = NULL;
-		ioscript = NULL;
+		io = nullptr;
+		ioscript = nullptr;
 		cine.clear();
-		es = NULL;
+		es = nullptr;
 		scrpos = 0;
 	}
 	

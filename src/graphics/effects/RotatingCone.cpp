@@ -29,7 +29,7 @@ RotatingCone::RotatingCone()
 	, m_currdurationang(0)
 	, m_ang(0.f)
 	, m_coneScale(0.f)
-	, m_tsouffle(NULL)
+	, m_tsouffle(nullptr)
 { }
 
 void RotatingCone::Init(float rbase, float rhaut, float hauteur) {

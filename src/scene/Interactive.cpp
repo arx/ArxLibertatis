@@ -179,7 +179,7 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io) {
 		ScriptParameters parameters;
 		parameters.push_back(io->idString());
 		parameters.push_back(op->name);
-		SendIOScriptEvent(NULL, entities[t], SM_CONTROLLEDZONE_LEAVE, parameters);
+		SendIOScriptEvent(nullptr, entities[t], SM_CONTROLLEDZONE_LEAVE, parameters);
 	}
 	
 }
@@ -418,7 +418,7 @@ void TREATZONE_Release() {
 void TREATZONE_RemoveIO(Entity * io) {
 	for(size_t i = 0; i < treatio.size(); i++) {
 		if(treatio[i].io == io) {
-			treatio[i].io = NULL;
+			treatio[i].io = nullptr;
 			treatio[i].ioflags = 0;
 			treatio[i].show = SHOW_FLAG_NOT_DRAWN;
 		}
@@ -582,7 +582,7 @@ void PrepareIOTreatZone(long flag) {
 			} else if(!(io->gameFlags & GFLAG_ISINTREATZONE) && (io->gameFlags & GFLAG_WASINTREATZONE)) {
 				// Going away
 				io->gameFlags |= GFLAG_ISINTREATZONE;
-				if(SendIOScriptEvent(NULL, io, SM_TREATOUT) != REFUSE) {
+				if(SendIOScriptEvent(nullptr, io, SM_TREATOUT) != REFUSE) {
 					if(io->ioflags & IO_NPC)
 						io->_npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
 					io->gameFlags &= ~GFLAG_ISINTREATZONE;
@@ -685,7 +685,7 @@ bool ARX_INTERACTIVE_USEMESH(Entity * io, const res::path & temp) {
 		return false;
 	}
 	
-	delete io->obj, io->obj = NULL;
+	delete io->obj, io->obj = nullptr;
 	
 	bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
 	io->obj = loadObject(io->usemesh, pbox);
@@ -724,7 +724,7 @@ static void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 	lightHandleDestroy(io->dynlight);
 	
 	delete io->symboldraw;
-	io->symboldraw = NULL;
+	io->symboldraw = nullptr;
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
 }
@@ -753,7 +753,7 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 	
 	for(size_t j = 0; j < MAX_ANIMS; j++) {
 		EERIE_ANIMMANAGER_ReleaseHandle(io->anims[j]);
-		io->anims[j] = NULL;
+		io->anims[j] = nullptr;
 	}
 	
 	spells.removeTarget(io);
@@ -768,11 +768,11 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 	}
 	
 	delete io->tweakerinfo;
-	io->tweakerinfo = NULL;
+	io->tweakerinfo = nullptr;
 	
 	g_secondaryInventoryHud.clear(io);
 	
-	if(io->inventory != NULL) {
+	if(io->inventory != nullptr) {
 		INVENTORY_DATA * id = io->inventory;
 		
 		for(long nj = 0; nj < id->m_size.y; nj++) {
@@ -780,22 +780,22 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 				if(id->slot[ni][nj].io) {
 					id->slot[ni][nj].io->destroy();
 				}
-				arx_assert(id->slot[ni][nj].io == NULL);
+				arx_assert(id->slot[ni][nj].io == nullptr);
 				arx_assert(id->slot[ni][nj].show == false);
 			}
 		}
 		
 		delete io->inventory;
-		io->inventory = NULL;
+		io->inventory = nullptr;
 	}
 	
-	io->inventory = NULL;
+	io->inventory = nullptr;
 	io->gameFlags |= GFLAG_INTERACTIVITY;
 	
 	if(io->tweaky) {
 		delete io->obj;
 		io->obj = io->tweaky;
-		io->tweaky = NULL;
+		io->tweaky = nullptr;
 	}
 }
 
@@ -856,7 +856,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		MagicFlareReleaseEntity(io);
 
 		io->flarecount = 0;
-		io->inzone = NULL;
+		io->inzone = nullptr;
 		io->speed_modif = 0.f;
 		io->basespeed = 1.f;
 		io->sfx_flag = 0;
@@ -931,7 +931,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->_npcdata->blood_color = Color::red;
 			io->_npcdata->stare_factor = 1.f;
 
-			io->_npcdata->weapon = NULL;
+			io->_npcdata->weapon = nullptr;
 			io->_npcdata->weaponinhand = 0;
 			io->_npcdata->weapontype = 0;
 			io->_npcdata->weaponinhand = 0;
@@ -1008,7 +1008,7 @@ Entity * CloneIOItem(Entity * src) {
 	
 	Entity * dest = AddItem(src->classPath());
 	if(!dest) {
-		return NULL;
+		return nullptr;
 	}
 	
 	SendInitScriptEvent(dest);
@@ -1036,7 +1036,7 @@ Entity * CloneIOItem(Entity * src) {
 	
 	dest->locname = src->locname;
 	
-	if(dest->obj->pbox == NULL && src->obj->pbox != NULL) {
+	if(dest->obj->pbox == nullptr && src->obj->pbox != nullptr) {
 		dest->obj->pbox = new PHYSICS_BOX_DATA();
 		*dest->obj->pbox = *src->obj->pbox;
 		
@@ -1184,7 +1184,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 	
 	// In case it is being dragged... (except for drag teleport update)
 	if(!flag && io == g_draggedEntity) {
-		setDraggedEntity(NULL);
+		setDraggedEntity(nullptr);
 	}
 	
 	if(io->ioflags & IO_NPC) {
@@ -1215,7 +1215,7 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance, Ad
 	
 	const std::string & ficc = classPath.string();
 	
-	Entity * io = NULL;
+	Entity * io = nullptr;
 	if(boost::contains(ficc, "items")) {
 		io = AddItem(classPath, instance, flags);
 	} else if(boost::contains(ficc, "npc")) {
@@ -1280,7 +1280,7 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 	if(io->_npcdata->weapon) {
 		Entity * ioo = io->_npcdata->weapon;
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
-		io->_npcdata->weapon = NULL;
+		io->_npcdata->weapon = nullptr;
 		delete ioo;
 	}
 	
@@ -1349,7 +1349,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	if(!g_resources->getFile(("game" / classPath) + ".ftl")
 	   && !g_resources->getFile(object) && !g_resources->getFile(script)) {
-		return NULL;
+		return nullptr;
 	}
 	
 	if(instance == -1) {
@@ -1366,7 +1366,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	loadScript(io->script, g_resources->getFile(script));
 	
 	if(!(flags & NO_ON_LOAD)) {
-		SendIOScriptEvent(NULL, io, SM_LOAD);
+		SendIOScriptEvent(nullptr, io, SM_LOAD);
 	}
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
@@ -1415,7 +1415,7 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	
 	if(!g_resources->getFile(("game" / classPath) + ".ftl")
 	   && !g_resources->getFile(object) && !g_resources->getFile(script)) {
-		return NULL;
+		return nullptr;
 	}
 	
 	if(instance == -1) {
@@ -1467,7 +1467,7 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	
 	if(!g_resources->getFile(("game" / classPath) + ".ftl")
 	   && !g_resources->getFile(object) && !g_resources->getFile(script)) {
-		return NULL;
+		return nullptr;
 	}
 	
 	if(instance == -1) {
@@ -1513,7 +1513,7 @@ IO_NPCDATA::IO_NPCDATA()
 	, manaPool(0.f)
 	, reachedtime(0)
 	, reachedtarget(0)
-	, weapon(NULL)
+	, weapon(nullptr)
 	, detect(0)
 	, movemode(WALKMODE)
 	, armor_class(0.f)
@@ -1567,7 +1567,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	if(!g_resources->getFile(("game" / classPath) + ".ftl")
 	   && !g_resources->getFile(object) && !g_resources->getFile(script)) {
-		return NULL;
+		return nullptr;
 	}
 	
 	if(instance == -1) {
@@ -1591,7 +1591,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	io->_npcdata->stare_factor = 1.f;
 	
 	if(!(flags & NO_ON_LOAD)) {
-		SendIOScriptEvent(NULL, io, SM_LOAD);
+		SendIOScriptEvent(nullptr, io, SM_LOAD);
 	}
 	
 	io->pos = player.pos;
@@ -1627,7 +1627,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	io->infracolor = Color3f(1.f, 0.f, 0.2f);
 	io->collision = COLLIDE_WITH_PLAYER;
-	io->m_icon = NULL;
+	io->m_icon = nullptr;
 	
 	ARX_INTERACTIVE_HideGore(io);
 	return io;
@@ -1654,11 +1654,11 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	
 	if(!g_resources->getFile(("game" / classPath) + ".ftl")
 	   && !g_resources->getFile(object) && !g_resources->getFile(script)) {
-		return NULL;
+		return nullptr;
 	}
 	
 	if(!g_resources->getFile(res::path(icon).set_ext("bmp"))) {
-		return NULL;
+		return nullptr;
 	}
 	
 	if(instance == -1) {
@@ -1685,7 +1685,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	loadScript(io->script, g_resources->getFile(script));
 	
 	if(!(flags & NO_ON_LOAD)) {
-		SendIOScriptEvent(NULL, io, SM_LOAD);
+		SendIOScriptEvent(nullptr, io, SM_LOAD);
 	}
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
@@ -1753,8 +1753,8 @@ Entity * GetFirstInterAtPos(const Vec2s & pos)
 	float _fdist = 9999999999.f;
 	float fdistBB = 9999999999.f;
 	float fMaxDist = 350;
-	Entity * foundBB = NULL;
-	Entity * foundPixel = NULL;
+	Entity * foundBB = nullptr;
+	Entity * foundPixel = nullptr;
 	bool bPlayerEquiped = false;
 
 	if(player.m_telekinesis) {
@@ -1886,7 +1886,7 @@ Entity * InterClick(const Vec2s & pos) {
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 // Need To upgrade to a more precise collision.
@@ -1996,19 +1996,19 @@ void UpdateCameras() {
 			if(aup->lastWP != last) {
 				if(last == -2) {
 					std::string waypoint = boost::lexical_cast<std::string>(aup->path->pathways.size() - 1);
-					SendIOScriptEvent(NULL, io, SM_WAYPOINT, waypoint);
-					SendIOScriptEvent(NULL, io, ScriptEventName("waypoint" + waypoint));
-					SendIOScriptEvent(NULL, io, SM_PATHEND);
+					SendIOScriptEvent(nullptr, io, SM_WAYPOINT, waypoint);
+					SendIOScriptEvent(nullptr, io, ScriptEventName("waypoint" + waypoint));
+					SendIOScriptEvent(nullptr, io, SM_PATHEND);
 				} else {
 					long ii = aup->lastWP + 1;
 					if(ii < 0 || ii > last) {
 						ii = 0;
 					}
 					std::string waypoint = boost::lexical_cast<std::string>(ii);
-					SendIOScriptEvent(NULL, io, SM_WAYPOINT, waypoint);
-					SendIOScriptEvent(NULL, io, ScriptEventName("waypoint" + waypoint));
+					SendIOScriptEvent(nullptr, io, SM_WAYPOINT, waypoint);
+					SendIOScriptEvent(nullptr, io, ScriptEventName("waypoint" + waypoint));
 					if(size_t(ii) == aup->path->pathways.size()) {
-						SendIOScriptEvent(NULL, io, SM_PATHEND);
+						SendIOScriptEvent(nullptr, io, SM_PATHEND);
 					}
 				}
 				aup->lastWP = last;
@@ -2232,7 +2232,7 @@ bool ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity) {
 }
 
 void ARX_INTERACTIVE_DestroyIOdelayedRemove(Entity * entity) {
-	Entity * null = NULL;
+	Entity * null = nullptr;
 	// Remove the entity from the list but don't invalidate iterators
 	std::replace(toDestroy.begin(), toDestroy.end(), entity, null);
 }

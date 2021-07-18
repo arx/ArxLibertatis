@@ -21,14 +21,14 @@
 
 #include <ctime>
 
-ARX_THREAD_LOCAL Random::Generator * Random::rng = NULL;
+ARX_THREAD_LOCAL Random::Generator * Random::rng = nullptr;
 
 void Random::seed() {
 	if(!rng) {
 		rng = new Generator;
 	}
 	
-	rng->seed(size_t(std::time(NULL)));
+	rng->seed(size_t(std::time(nullptr)));
 }
 
 void Random::seed(unsigned int seedVal) {
@@ -41,5 +41,5 @@ void Random::seed(unsigned int seedVal) {
 
 void Random::shutdown() {
 	delete rng;
-	rng = NULL;
+	rng = nullptr;
 }

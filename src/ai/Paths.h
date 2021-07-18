@@ -149,7 +149,7 @@ struct ARX_USE_PATH {
 	long lastWP;
 	
 	ARX_USE_PATH()
-		: path(NULL)
+		: path(nullptr)
 		, _starttime(0)
 		, _curtime(0)
 		, aupflags(0)
