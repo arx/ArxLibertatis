@@ -10,8 +10,6 @@
  */
 
 // C++11 features
-// noexcept
-#cmakedefine01 ARX_HAVE_CXX11_NOEXCEPT
 // variadic templates
 #cmakedefine01 ARX_HAVE_CXX11_VARIADIC_TEMPLATES
 // thread_local

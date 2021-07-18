@@ -242,16 +242,6 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 	((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
 
 /*!
- * \def ARX_NOEXCEPT
- * \brief Declare that a function never throws exceptions.
- */
-#if ARX_HAVE_CXX11_NOEXCEPT
-	#define ARX_NOEXCEPT noexcept
-#else
-	#define ARX_NOEXCEPT throw()
-#endif
-
-/*!
  * \def arx_force_inline
  * \brief Declare that a function never throws exceptions.
  */

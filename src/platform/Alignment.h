@@ -210,14 +210,14 @@ struct aligned_allocator {
 	typedef std::true_type propagate_on_container_move_assignment;
 	typedef std::true_type is_always_equal;
 	
-	aligned_allocator() ARX_NOEXCEPT { }
-	aligned_allocator(const aligned_allocator & o) ARX_NOEXCEPT { ARX_UNUSED(o); }
+	aligned_allocator() noexcept { }
+	aligned_allocator(const aligned_allocator & o) noexcept { ARX_UNUSED(o); }
 	template <typename U>
-	aligned_allocator(const aligned_allocator<U> & o) ARX_NOEXCEPT { ARX_UNUSED(o); }
-	~aligned_allocator() ARX_NOEXCEPT { }
+	aligned_allocator(const aligned_allocator<U> & o) noexcept { ARX_UNUSED(o); }
+	~aligned_allocator() noexcept { }
 	
-	pointer address(reference x) const ARX_NOEXCEPT { return &x; }
-	const_pointer address(const_reference x) const ARX_NOEXCEPT { return &x; }
+	pointer address(reference x) const noexcept { return &x; }
+	const_pointer address(const_reference x) const noexcept { return &x; }
 	
 	size_type max_size() const {
 		return std::numeric_limits<size_type>::max() / sizeof(value_type);
@@ -340,13 +340,13 @@ bool is_aligned(const void * p) {
 	namespace std { \
 	template <Template> \
 	struct allocator<Class> : public ::platform::aligned_allocator<Class, Alignment> { \
-		allocator() ARX_NOEXCEPT { } \
-		allocator(const allocator & o) ARX_NOEXCEPT \
+		allocator() noexcept { } \
+		allocator(const allocator & o) noexcept \
 			: ::platform::aligned_allocator<Class, Alignment>(o) { } \
 		template <typename U> \
-		allocator(const allocator<U> & o) ARX_NOEXCEPT \
+		allocator(const allocator<U> & o) noexcept \
 			: ::platform::aligned_allocator<Class, Alignment>(o) { } \
-		~allocator() ARX_NOEXCEPT { } \
+		~allocator() noexcept { } \
 	}; \
 	}
 
