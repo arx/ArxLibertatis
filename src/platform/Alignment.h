@@ -29,15 +29,12 @@
 #include <new>
 #include <memory>
 #include <limits>
+#include <type_traits>
 #include <utility>
 
 #include <boost/preprocessor/punctuation/comma.hpp>
 
 #include "platform/PlatformConfig.h"
-
-#if ARX_HAVE_CXX11_INTEGRAL_CONSTANT
-#include <type_traits>
-#endif
 
 #if !ARX_HAVE_CXX11_MAX_ALIGN_T
 #include <boost/integer/static_min_max.hpp>
@@ -232,10 +229,8 @@ struct aligned_allocator {
 	typedef std::ptrdiff_t difference_type;
 	template <class U> struct rebind { typedef std::allocator<U> other; };
 	
-	#if ARX_HAVE_CXX11_INTEGRAL_CONSTANT
 	typedef std::true_type propagate_on_container_move_assignment;
 	typedef std::true_type is_always_equal;
-	#endif
 	
 	aligned_allocator() ARX_NOEXCEPT { }
 	aligned_allocator(const aligned_allocator & o) ARX_NOEXCEPT { ARX_UNUSED(o); }

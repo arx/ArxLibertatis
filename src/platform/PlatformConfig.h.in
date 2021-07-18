@@ -10,8 +10,6 @@
  */
 
 // C++11 features
-// std::itegral_constant in <type_traits>
-#cmakedefine01 ARX_HAVE_CXX11_INTEGRAL_CONSTANT
 // long long
 #cmakedefine01 ARX_HAVE_CXX11_LONG_LONG
 // std::max_align_t <cstddef>
