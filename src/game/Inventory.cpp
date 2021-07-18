@@ -50,8 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <utility>
 
-#include <boost/foreach.hpp>
-
 #include "ai/Paths.h"
 
 #include "core/Application.h"
@@ -694,7 +692,7 @@ public:
 		
 		LogDebug("sorting");
 		#ifdef ARX_DEBUG
-		BOOST_FOREACH(const Entity * item, items) {
+		for(const Entity * item : items) {
 			LogDebug(" - " << item->idString() << ": "
 			         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
 		}
@@ -704,7 +702,7 @@ public:
 		
 		// Now put the items back into the inventory
 		std::vector<Entity *> remaining;
-		BOOST_FOREACH(Entity * item, items) {
+		for(Entity * item : items) {
 			if(!remaining.empty() || !insertImpl(item)) {
 				remaining.push_back(item);
 			}
@@ -728,7 +726,7 @@ public:
 				}
 			}
 			
-			BOOST_FOREACH(Entity * item, remaining) {
+			for(Entity * item : remaining) {
 				Pos pos;
 				for(size_t i = 0; i < items.size(); i++) {
 					if(items[i] == item) {

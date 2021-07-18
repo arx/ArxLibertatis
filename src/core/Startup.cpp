@@ -34,7 +34,6 @@
 #include <stdlib.h>
 #endif
 
-#include <boost/foreach.hpp>
 #include <boost/version.hpp>
 
 #include <glm/glm.hpp>

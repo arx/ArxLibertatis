@@ -28,8 +28,6 @@
 #include <iomanip>
 #include <map>
 
-#include <boost/foreach.hpp>
-
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
@@ -72,7 +70,7 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 			std::string name = util::convert<util::ISO_8859_1, util::UTF8>(i->first);
 			files[name] = i->second;
 		}
-		BOOST_FOREACH(const SortedFiles::value_type & entry, files) {
+		for(const SortedFiles::value_type & entry : files) {
 			res::path path = dirname / entry.first;
 			
 			if(action == UnpakExtract || action == UnpakManifest) {
@@ -116,7 +114,7 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 			std::string name = util::convert<util::ISO_8859_1, util::UTF8>(i->first);
 			subdirs[name] = &i->second;
 		}
-		BOOST_FOREACH(const SortedDirs::value_type & entry, subdirs) {
+		for(const SortedDirs::value_type & entry : subdirs) {
 			res::path path = dirname / entry.first;
 			if(action == UnpakManifest) {
 				std::cout << "                                  ";
@@ -213,7 +211,7 @@ static void addResourceDir(PakReader & resources, const fs::path & base) {
 		"editor", "game", "graph", "localisation", "misc", "sfx", "speech",
 	};
 	
-	BOOST_FOREACH(const char * dirname, resource_dirs) {
+	for(const char * dirname : resource_dirs) {
 		resources.addFiles(base / dirname, dirname);
 	}
 	
@@ -264,7 +262,7 @@ int arxunpak_main(int argc, char ** argv) {
 	}
 	
 	if(status == RunProgram) {
-		BOOST_FOREACH(const fs::path & archive, g_archives) {
+		for(const fs::path & archive : g_archives) {
 			fs::FileType type = fs::get_type(archive);
 			if(type == fs::RegularFile) {
 				if(!resources.addArchive(archive)) {

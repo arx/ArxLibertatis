@@ -19,27 +19,25 @@
 
 #include "gui/widget/WidgetContainer.h"
 
-#include <boost/foreach.hpp>
-
 #include "core/ArxGame.h"
 #include "graphics/DrawLine.h"
 
 WidgetContainer::WidgetContainer() { }
 
 WidgetContainer::~WidgetContainer() {
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	for(Widget * w : m_widgets) {
 		delete w;
 	}
 }
 
 void WidgetContainer::update() {
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	for(Widget * w : m_widgets) {
 		w->update();
 	}
 }
 
 void WidgetContainer::render(Widget * selected) {
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	for(Widget * w : m_widgets) {
 		w->render(w == selected);
 	}
 }
@@ -50,7 +48,7 @@ void WidgetContainer::add(Widget * widget) {
 
 Widget * WidgetContainer::getWidgetAt(const Vec2f & mousePos) const {
 	
-	BOOST_FOREACH(Widget * widget, m_widgets) {
+	for(Widget * widget : m_widgets) {
 		
 		if(!widget->isEnabled()) {
 			continue;
@@ -66,7 +64,7 @@ Widget * WidgetContainer::getWidgetAt(const Vec2f & mousePos) const {
 }
 
 void WidgetContainer::move(const Vec2f & offset) {
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	for(Widget * w : m_widgets) {
 		w->move(offset);
 	}
 }
@@ -77,7 +75,7 @@ void WidgetContainer::drawDebug() {
 		return;
 	}
 	
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	for(Widget * w : m_widgets) {
 		drawLineRectangle(w->m_rect, 0.f, Color::red);
 	}
 	

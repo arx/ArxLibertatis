@@ -21,8 +21,6 @@
 
 #include <limits>
 
-#include <boost/foreach.hpp>
-
 #include "game/Entity.h"
 #include "game/EntityManager.h"
 #include "graphics/data/Mesh.h"
@@ -181,7 +179,7 @@ struct ClosestHitRaycast {
 		bool previouslyHadHit = (closestHit <= 1.f);
 		
 		const BackgroundTileData & eg = ACTIVEBKG->m_tileData[tile.x][tile.y];
-		BOOST_FOREACH(EERIEPOLY * ep, eg.polyin) {
+		for(EERIEPOLY * ep : eg.polyin) {
 			
 			if(ep->type & ignoredTypes) {
 				continue;
@@ -290,7 +288,7 @@ EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end,
 			continue;
 		}
 		
-		BOOST_FOREACH(EERIE_FACE & face, entity->obj->facelist) {
+		for(EERIE_FACE & face : entity->obj->facelist) {
 			
 			if(face.facetype & ignored) {
 				continue;

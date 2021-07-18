@@ -46,8 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <cmath>
 
-#include <boost/foreach.hpp>
-
 #include "core/Core.h"
 #include "graphics/DrawLine.h"
 #include "graphics/font/Font.h"
@@ -119,7 +117,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
 	float height = widget->m_rect.height();
 	float whitespace = (widget->type() == WidgetType_Spacer) ? widget->m_rect.height() : 0.f;
-	BOOST_FOREACH(Widget * child, m_children.widgets()) {
+	for(Widget * child : m_children.widgets()) {
 		height += RATIO_Y(m_rowSpacing);
 		height += child->m_rect.height();
 		whitespace += RATIO_Y(m_rowSpacing);
@@ -137,7 +135,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
 	float y = std::floor(m_content.center().y - height / 2.f);
 	
-	BOOST_FOREACH(Widget * child, m_children.widgets()) {
+	for(Widget * child : m_children.widgets()) {
 		child->setPosition(Vec2f(child->m_rect.left, y));
 		y += child->m_rect.height() * ((child->type() == WidgetType_Spacer) ? squish : 1.f);
 		y += RATIO_Y(m_rowSpacing) * squish;
@@ -178,7 +176,7 @@ void MenuPage::update(Vec2f pos) {
 		
 		bool isShortcutPressed = false;
 		
-		BOOST_FOREACH(Widget * widget, m_children.widgets()) {
+		for(Widget * widget : m_children.widgets()) {
 			arx_assert(widget);
 			if(widget->shortcut() != ActionKey::UNUSED && GInput->isKeyPressed(widget->shortcut())) {
 				isShortcutPressed = true;
@@ -191,7 +189,7 @@ void MenuPage::update(Vec2f pos) {
 		
 	} else {
 		
-		BOOST_FOREACH(Widget * widget, m_children.widgets()) {
+		for(Widget * widget : m_children.widgets()) {
 			arx_assert(widget);
 			
 			if(m_focused && widget != m_focused) {

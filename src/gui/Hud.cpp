@@ -24,8 +24,6 @@
 #include <iomanip>
 #include <sstream>
 
-#include <boost/foreach.hpp>
-
 #include "core/Application.h"
 #include "core/ArxGame.h"
 #include "core/Config.h"
@@ -1064,7 +1062,7 @@ void ActiveSpellsGui::update(const Rectf & parent) {
 	Rectf spacer = createChild(parent, Anchor_TopRight, m_spacerSize * m_scale, Anchor_TopRight);
 	Rectf siblingRect = spacer;
 	
-	BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
+	for(ActiveSpellIconSlot & slot : m_slots) {
 		
 		Rectf slotRect = createChild(siblingRect, Anchor_BottomLeft, m_slotSize * m_scale, Anchor_TopLeft);
 		Rectf slotSpacer = createChild(slotRect, Anchor_BottomLeft, m_slotSpacerSize * m_scale, Anchor_TopLeft);
@@ -1076,7 +1074,7 @@ void ActiveSpellsGui::update(const Rectf & parent) {
 
 void ActiveSpellsGui::updateInput(const Vec2f & mousePos) {
 	
-	BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
+	for(ActiveSpellIconSlot & slot : m_slots) {
 		slot.updateInput(mousePos);
 	}
 }
@@ -1085,7 +1083,7 @@ void ActiveSpellsGui::draw() {
 	
 	UseRenderState state(render2D().blendAdditive());
 	
-	BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
+	for(ActiveSpellIconSlot & slot : m_slots) {
 		slot.draw();
 	}
 }

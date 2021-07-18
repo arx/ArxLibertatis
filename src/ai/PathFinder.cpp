@@ -46,7 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits>
 #include <algorithm>
 
-#include <boost/foreach.hpp>
 #include <boost/unordered_map.hpp>
 
 #include "ai/Anchors.h"
@@ -161,7 +160,7 @@ class PathFinder::ClosedNodeList {
 public:
 	
 	~ClosedNodeList() {
-		BOOST_FOREACH(NodeList::value_type & entry, nodes) {
+		for(NodeList::value_type & entry : nodes) {
 			delete entry.second;
 		}
 	}
@@ -224,7 +223,7 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 		}
 		
 		// Otherwise, generate child from current node.
-		BOOST_FOREACH(NodeId cid, map_d[nid].linked) {
+		for(NodeId cid : map_d[nid].linked) {
 			
 			if(map_d[cid].blocked || map_d[cid].height > m_height || map_d[cid].radius < m_radius) {
 				continue;
@@ -288,7 +287,7 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDistance,
 		}
 		
 		// Otherwise, generate child from current node.
-		BOOST_FOREACH(NodeId cid, map_d[nid].linked) {
+		for(NodeId cid : map_d[nid].linked) {
 			
 			if(map_d[cid].blocked || map_d[cid].height > m_height || map_d[cid].radius < m_radius) {
 				continue;

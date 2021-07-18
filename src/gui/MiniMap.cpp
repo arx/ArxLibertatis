@@ -50,8 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <limits>
 
-#include <boost/foreach.hpp>
-
 #include "core/Core.h"
 #include "core/Localisation.h"
 
@@ -99,7 +97,7 @@ void MiniMap::getData(int showLevel) {
 			for(int z = 0; z < m_activeBkg->m_size.y; z++) {
 				for(int x = 0; x < m_activeBkg->m_size.x; x++) {
 					const BackgroundTileData & eg = m_activeBkg->m_tileData[x][z];
-					BOOST_FOREACH(const EERIEPOLY & ep, eg.polydata) {
+					for(const EERIEPOLY & ep : eg.polydata) {
 						minX = std::min(minX, ep.min.x);
 						maxX = std::max(maxX, ep.max.x);
 						minY = std::min(minY, ep.min.z);

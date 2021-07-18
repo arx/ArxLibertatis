@@ -31,7 +31,6 @@
 #include <boost/array.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/container/flat_map.hpp>
-#include <boost/foreach.hpp>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"

@@ -22,8 +22,6 @@
 #include <algorithm>
 #include <sstream>
 
-#include "boost/foreach.hpp"
-
 #include "gui/Credits.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDL1InputBackend.h"
@@ -124,7 +122,7 @@ bool SDL1Window::initializeFramework() {
 			
 		};
 		
-		BOOST_FOREACH(Vec2i mode, standardModes) {
+		for(Vec2i mode : standardModes) {
 			if(m_desktopMode.resolution != mode) { \
 				m_displayModes.push_back(mode); \
 			}

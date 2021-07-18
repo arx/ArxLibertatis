@@ -21,8 +21,6 @@
 
 #include <algorithm>
 
-#include <boost/foreach.hpp>
-
 bool DisplayMode::operator<(const DisplayMode & o) const {
 	if(resolution.x != o.resolution.x) {
 		return (resolution.x < o.resolution.x);
@@ -79,7 +77,7 @@ void Window::removeListener(Listener * listener) {
 }
 
 bool Window::onClose() {
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		bool shouldClose = listener->onCloseWindow(*this);
 		if(!shouldClose) {
 			return false;
@@ -89,48 +87,48 @@ bool Window::onClose() {
 }
 
 void Window::onCreate() {
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		listener->onCreateWindow(*this);
 	}
 }
 
 void Window::onDestroy() {
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		listener->onDestroyWindow(*this);
 	}
 }
 
 void Window::onMove(s32 x, s32 y) {
 	m_position = Vec2i(x, y);
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		listener->onMoveWindow(*this);
 	}
 }
 
 void Window::onResize(const Vec2i & size) {
 	m_mode.resolution = size;
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		listener->onResizeWindow(*this);
 	}
 }
 
 void Window::onMinimize() {
 	m_minimized = true, m_maximized = false;
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		listener->onMinimizeWindow(*this);
 	}
 }
 	
 void Window::onMaximize() {
 	m_minimized = false, m_maximized = true;
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		listener->onMaximizeWindow(*this);
 	}
 }
 
 void Window::onRestore() {
 	m_minimized = false, m_maximized = false;
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		listener->onRestoreWindow(*this);
 	}
 }
@@ -141,7 +139,7 @@ void Window::onShow(bool isVisible) {
 	
 void Window::onToggleFullscreen(bool fullscreen) {
 	m_fullscreen = fullscreen;
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		listener->onToggleFullscreen(*this);
 	}
 }
@@ -149,24 +147,24 @@ void Window::onToggleFullscreen(bool fullscreen) {
 void Window::onFocus(bool hasFocus) {
 	m_focused = hasFocus;
 	if(hasFocus) {
-		BOOST_FOREACH(Listener * listener, m_listeners) {
+		for(Listener * listener : m_listeners) {
 			listener->onWindowGotFocus(*this);
 		}
 	} else {
-		BOOST_FOREACH(Listener * listener, m_listeners) {
+		for(Listener * listener : m_listeners) {
 			listener->onWindowLostFocus(*this);
 		}
 	}
 }
 
 void Window::onPaint() {
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		listener->onPaintWindow(*this);
 	}
 }
 
 void Window::onDroppedFile(const fs::path & path) {
-	BOOST_FOREACH(Listener * listener, m_listeners) {
+	for(Listener * listener : m_listeners) {
 		listener->onDroppedFile(*this, path);
 	}
 }

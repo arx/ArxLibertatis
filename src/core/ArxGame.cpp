@@ -50,7 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/foreach.hpp>
 #include <boost/range/size.hpp>
 
 #include "ai/PathFinderManager.h"
@@ -933,7 +932,7 @@ bool ArxGame::addPaks() {
 		std::ostringstream oss;
 		oss << "Searched in these locations:\n";
 		std::vector<fs::path> search = fs::getDataSearchPaths();
-		BOOST_FOREACH(const fs::path & dir, search) {
+		for(const fs::path & dir : search) {
 			oss << " * " << dir.string() << fs::path::dir_sep << "\n";
 		}
 		oss << "See " << url::help_install_data << " or `arx --list-dirs` for details.";
@@ -976,7 +975,7 @@ static void ReleaseSystemObjects() {
 	
 	drawDebugRelease();
 
-	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
+	for(EERIE_3DOBJ * & obj : GoldCoinsObj) {
 		delete obj, obj = nullptr;
 	}
 }

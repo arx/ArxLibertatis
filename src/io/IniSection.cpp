@@ -23,7 +23,6 @@
 #include <ios>
 
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "io/log/Logger.h"
@@ -91,7 +90,7 @@ void IniSection::setKey(const std::string & key, const std::string & value) {
 	IniKey k = IniKey(key, value);
 	boost::to_lower(k.name);
 	
-	BOOST_FOREACH(IniKey & old, keys) {
+	for(IniKey & old : keys) {
 		if(old.name == k.name) {
 			LogDebug("replaced key " << k.name << "=\"" << k.value << "\"" << " old: " << "\"" << old.value << "\"");
 			old = k;

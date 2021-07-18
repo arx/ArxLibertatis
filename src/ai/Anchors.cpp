@@ -48,12 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
-#include <boost/foreach.hpp>
-
 #include "ai/PathFinderManager.h"
-
 #include "game/Entity.h"
-
 #include "graphics/data/Mesh.h"
 
 void AnchorData_ClearAll(BackgroundData * eb) {
@@ -70,7 +66,7 @@ void ANCHOR_BLOCK_Clear() {
 		return;
 	}
 	
-	BOOST_FOREACH(ANCHOR_DATA & ad, eb->m_anchors) {
+	for(ANCHOR_DATA & ad : eb->m_anchors) {
 		ad.blocked = false;
 	}
 	
@@ -80,7 +76,7 @@ void ANCHOR_BLOCK_By_IO(Entity * io, bool blocked) {
 	
 	BackgroundData * eb = ACTIVEBKG;
 	
-	BOOST_FOREACH(ANCHOR_DATA & ad, eb->m_anchors) {
+	for(ANCHOR_DATA & ad : eb->m_anchors) {
 		
 		if(fartherThan(ad.pos, io->pos, 600.f))
 			continue;

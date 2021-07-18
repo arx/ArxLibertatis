@@ -46,8 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Collisions.h"
 
-#include <boost/foreach.hpp>
-
 #include "ai/Anchors.h"
 
 #include "core/GameTime.h"
@@ -705,7 +703,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 			continue;
 		
 		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
-		BOOST_FOREACH(const EERIEPOLY & ep, feg.polydata) {
+		for(const EERIEPOLY & ep : feg.polydata) {
 			
 			if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 				continue;
@@ -897,7 +895,7 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
 		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
-		BOOST_FOREACH(const EERIEPOLY & ep, feg.polydata) {
+		for(const EERIEPOLY & ep : feg.polydata) {
 			
 			if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 				continue;
@@ -1499,7 +1497,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 		}
 		
 		BackgroundTileData & eg = ACTIVEBKG->m_tileData[tile.x][tile.y];
-		BOOST_FOREACH(EERIEPOLY * ep, eg.polyin) {
+		for(EERIEPOLY * ep : eg.polyin) {
 			if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
 			if((ep->min.y - pas < tmpPos.y) && (ep->max.y + pas > tmpPos.y))
 			if((ep->min.x - pas < tmpPos.x) && (ep->max.x + pas > tmpPos.x))

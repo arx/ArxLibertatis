@@ -26,7 +26,6 @@
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/foreach.hpp>
 #include <boost/range/size.hpp>
 
 #include "io/log/Logger.h"
@@ -527,7 +526,7 @@ bool PakReader::addArchive(const fs::path & pakfile, const PakFilter * filter) {
 		res::path dirpath = res::path::load(dirname);
 		bool filtered = false;
 		if(filters) {
-			BOOST_FOREACH(const std::string & exclude, *filters) {
+			for(const std::string & exclude : *filters) {
 				if(boost::starts_with(dirpath.string(), exclude)
 				   && (dirpath.string().length() == exclude.length() || dirpath.string()[exclude.length()] == '/')) {
 					LogInfo << pakfile << ": ignoring " << dirpath;
@@ -597,7 +596,7 @@ void PakReader::clear() {
 	files.clear();
 	dirs.clear();
 	
-	BOOST_FOREACH(std::istream * is, paks) {
+	for(std::istream * is : paks) {
 		delete is;
 	}
 }

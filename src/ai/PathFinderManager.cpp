@@ -51,8 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <list>
 
-#include <boost/foreach.hpp>
-
 #include "ai/Anchors.h"
 #include "ai/PathFinder.h"
 #include "game/Entity.h"
@@ -114,7 +112,7 @@ void PathFinderThread::queueRequest(const PATHFINDER_REQUEST & request) {
 	// If this NPC is already requesting a Pathfinding then either
 	// try to Override it or add it to queue if it is currently being
 	// processed.
-	BOOST_FOREACH(PATHFINDER_REQUEST & oldRequest, m_queue) {
+	for(PATHFINDER_REQUEST & oldRequest : m_queue) {
 		if(oldRequest.entity == request.entity) {
 			oldRequest = request;
 			return;

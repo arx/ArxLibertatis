@@ -53,7 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <limits>
 
-#include <boost/foreach.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -1430,7 +1429,7 @@ void ARX_SCRIPT_EventStackInit() {
 
 void ARX_SCRIPT_EventStackClear(bool check_exist) {
 	LogDebug("clearing event queue");
-	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
+	for(QueuedEvent & event : g_eventQueue) {
 		if(!check_exist || event.exists) {
 			event.clear();
 		}
@@ -1438,7 +1437,7 @@ void ARX_SCRIPT_EventStackClear(bool check_exist) {
 }
 
 void ARX_SCRIPT_EventStackClearForIo(Entity * io) {
-	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
+	for(QueuedEvent & event : g_eventQueue) {
 		if(event.exists && event.entity == io) {
 			LogDebug("clearing queued " << event.event << " for " << io->idString());
 			event.clear();
@@ -1452,7 +1451,7 @@ void ARX_SCRIPT_EventStackExecute(size_t limit) {
 	
 	size_t count = 0;
 	
-	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
+	for(QueuedEvent & event : g_eventQueue) {
 		
 		if(!event.exists) {
 			continue;
@@ -1483,7 +1482,7 @@ void ARX_SCRIPT_EventStackExecuteAll() {
 
 void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEventName & event,
                              const ScriptParameters & parameters) {
-	BOOST_FOREACH(QueuedEvent & entry, g_eventQueue) {
+	for(QueuedEvent & entry : g_eventQueue) {
 		if(!entry.exists) {
 			entry.sender = sender;
 			entry.entity = entity;
@@ -1565,7 +1564,7 @@ SCR_TIMER & createScriptTimer(Entity * io, const std::string & name) {
 	g_activeScriptTimers++;
 	
 	if(g_activeScriptTimers != g_scriptTimers.size() + 1) {
-		BOOST_FOREACH(SCR_TIMER & timer, g_scriptTimers) {
+		for(SCR_TIMER & timer : g_scriptTimers) {
 			if(!timer.exist) {
 				timer = SCR_TIMER(io, name);
 				return timer;
@@ -1592,7 +1591,7 @@ static void clearTimer(SCR_TIMER & timer) {
 }
 
 void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity * io) {
-	BOOST_FOREACH(SCR_TIMER & timer, g_scriptTimers) {
+	for(SCR_TIMER & timer : g_scriptTimers) {
 		if(timer.exist && timer.io == io && timer.name == timername) {
 			clearTimer(timer);
 		}
@@ -1600,7 +1599,7 @@ void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity
 }
 
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io) {
-	BOOST_FOREACH(SCR_TIMER & timer, g_scriptTimers) {
+	for(SCR_TIMER & timer : g_scriptTimers) {
 		if(timer.exist && timer.io == io && timer.es == &io->over_script) {
 			clearTimer(timer);
 		}
@@ -1613,7 +1612,7 @@ void ARX_SCRIPT_Timer_ClearAll() {
 }
 
 void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io) {
-	BOOST_FOREACH(SCR_TIMER & timer, g_scriptTimers) {
+	for(SCR_TIMER & timer : g_scriptTimers) {
 		if(timer.exist && timer.io == io) {
 			clearTimer(timer);
 		}
@@ -1623,7 +1622,7 @@ void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io) {
 bool scriptTimerExists(Entity * io, const std::string & name) {
 	
 	if(g_activeScriptTimers != 0) {
-		BOOST_FOREACH(const SCR_TIMER & timer, g_scriptTimers) {
+		for(const SCR_TIMER & timer : g_scriptTimers) {
 			if(timer.exist && timer.io == io && timer.name == name) {
 				return true;
 			}
@@ -1681,7 +1680,7 @@ void ARX_SCRIPT_Timer_Check() {
 		return;
 	}
 	
-	BOOST_FOREACH(SCR_TIMER & timer, g_scriptTimers) {
+	for(SCR_TIMER & timer : g_scriptTimers) {
 		
 		if(!timer.exist) {
 			continue;

@@ -20,7 +20,6 @@
 #include "platform/ProgramOptions.h"
 
 #include <list>
-#include <boost/foreach.hpp>
 
 BaseOption::List & BaseOption::getOptionsList() {
 	// Local static to ensure initialization order is not causing us any issue.
@@ -29,7 +28,7 @@ BaseOption::List & BaseOption::getOptionsList() {
 }
 
 void BaseOption::registerAll(util::cmdline::interpreter<std::string> & l) {
-	BOOST_FOREACH(BaseOption & opt, getOptionsList()) {
+	for(BaseOption & opt : getOptionsList()) {
 		opt.registerOption(l);
 	}
 }

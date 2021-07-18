@@ -38,8 +38,6 @@
 #include <cstring>
 #include <iomanip>
 
-#include <boost/foreach.hpp>
-
 #include "util/cmdline/detail/Interpreter.h"
 #include "util/cmdline/Keys.h"
 #include "util/cmdline/TypeCast.h"

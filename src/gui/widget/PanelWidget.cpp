@@ -19,14 +19,12 @@
 
 #include "gui/widget/PanelWidget.h"
 
-#include <boost/foreach.hpp>
-
 #include "input/Input.h"
 
 PanelWidget::PanelWidget() { }
 
 PanelWidget::~PanelWidget() {
-	BOOST_FOREACH(Widget * w, m_children) {
+	for(Widget * w : m_children) {
 		delete w;
 	}
 }
@@ -35,7 +33,7 @@ void PanelWidget::move(const Vec2f & offset) {
 	
 	m_rect.move(offset.x, offset.y);
 	
-	BOOST_FOREACH(Widget * w, m_children) {
+	for(Widget * w : m_children) {
 		w->move(offset);
 	}
 	
@@ -60,7 +58,7 @@ void PanelWidget::update() {
 	m_rect.right = m_rect.left;
 	m_rect.bottom = m_rect.top;
 	
-	BOOST_FOREACH(Widget * w, m_children) {
+	for(Widget * w : m_children) {
 		w->update();
 		m_rect.right = std::max(m_rect.right, w->m_rect.right);
 		m_rect.bottom = std::max(m_rect.bottom, w->m_rect.bottom);
@@ -70,7 +68,7 @@ void PanelWidget::update() {
 
 void PanelWidget::render(bool /* mouseOver */) {
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
-	BOOST_FOREACH(Widget * w, m_children) {
+	for(Widget * w : m_children) {
 		w->render(w->m_rect.contains(cursor));
 	}
 }
@@ -78,7 +76,7 @@ void PanelWidget::render(bool /* mouseOver */) {
 Widget * PanelWidget::getWidgetAt(const Vec2f & mousePos) {
 	
 	if(m_rect.contains(mousePos)) {
-		BOOST_FOREACH(Widget * w, m_children) {
+		for(Widget * w : m_children) {
 			if(w->isEnabled() && w->m_rect.contains(mousePos)) {
 				return w;
 			}

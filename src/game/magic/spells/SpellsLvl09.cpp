@@ -19,8 +19,6 @@
 
 #include "game/magic/spells/SpellsLvl09.h"
 
-#include <boost/foreach.hpp>
-
 #include "core/Application.h"
 #include "core/Core.h"
 #include "core/Config.h"
@@ -493,7 +491,7 @@ void MassParalyseSpell::Launch() {
 
 void MassParalyseSpell::End() {
 	
-	BOOST_FOREACH(EntityHandle handle, m_targets) {
+	for(EntityHandle handle : m_targets) {
 		Entity * target = entities.get(handle);
 		if(target) {
 			target->ioflags &= ~IO_FREEZESCRIPT;

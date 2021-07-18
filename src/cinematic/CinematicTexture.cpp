@@ -47,8 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <cstdlib>
 
-#include <boost/foreach.hpp>
-
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
@@ -220,7 +218,7 @@ void CinematicGrid::FreeGrille() {
 	m_uvs.clear();
 	m_inds.clear();
 	
-	BOOST_FOREACH(C_INDEXED & mat, m_mats) {
+	for(C_INDEXED & mat : m_mats) {
 		delete mat.tex;
 	}
 	

@@ -19,8 +19,6 @@
 
 #include "game/magic/spells/SpellsLvl01.h"
 
-#include <boost/foreach.hpp>
-
 #include "core/Application.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -532,7 +530,7 @@ void DouseSpell::Launch() {
 
 void DouseSpell::End() {
 	
-	BOOST_FOREACH(size_t index, m_lights) {
+	for(size_t index : m_lights) {
 		EERIE_LIGHT * light = g_staticLights[index];
 		light->m_ignitionStatus = false;
 		ARX_SOUND_PlaySFX(g_snd.SPELL_DOUSE, &light->pos);

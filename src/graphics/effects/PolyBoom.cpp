@@ -46,8 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/PolyBoom.h"
 
-#include <boost/foreach.hpp>
-
 #include "animation/AnimationRender.h"
 
 #include "core/Application.h"
@@ -119,7 +117,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
 		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
-		BOOST_FOREACH(EERIEPOLY & ep, eg.polydata) {
+		for(EERIEPOLY & ep : eg.polydata) {
 			
 			if((ep.type & POLY_TRANS) && !(ep.type & POLY_WATER)) {
 				continue;
@@ -252,7 +250,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
 	GameInstant now = g_gameTime.now();
 	
-	BOOST_FOREACH(POLYBOOM & pb, polyboom) {
+	for(POLYBOOM & pb : polyboom) {
 		pb.fastdecay = true;
 	}
 	
@@ -269,7 +267,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	for(int x = minx; x <= maxx; x++) {
 		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
 		
-		BOOST_FOREACH(EERIEPOLY * ep, eg.polyin) {
+		for(EERIEPOLY * ep : eg.polyin) {
 			
 			if((flags & 2) && !(ep->type & POLY_WATER))
 				continue;

@@ -43,8 +43,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedInterface.h"
 
-#include <boost/foreach.hpp>
-
 #include "game/Inventory.h"
 #include "game/Entity.h"
 #include "game/Player.h"
@@ -157,7 +155,7 @@ struct PrintGlobalVariables { };
 
 std::ostream & operator<<(std::ostream & os, const PrintGlobalVariables & /* unused */) {
 	
-	BOOST_FOREACH(const SCRIPT_VAR & var, svar) {
+	for(const SCRIPT_VAR & var : svar) {
 		os << var << '\n';
 	}
 	
@@ -193,7 +191,7 @@ struct PrintLocalVariables {
 
 std::ostream & operator<<(std::ostream & os, const PrintLocalVariables & data) {
 	
-	BOOST_FOREACH(const SCRIPT_VAR & var, data.m_entity->m_variables) {
+	for(const SCRIPT_VAR & var : data.m_entity->m_variables) {
 		os << var << '\n';
 	}
 	

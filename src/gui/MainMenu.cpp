@@ -24,7 +24,6 @@
 #include <vector>
 
 #include <boost/version.hpp>
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/bind/bind.hpp>
 
@@ -266,7 +265,7 @@ public:
 		
 		// Show quicksaves.
 		size_t quicksaveNum = 0;
-		BOOST_FOREACH(SavegameHandle save, savegames) {
+		for(SavegameHandle save : savegames) {
 			if(savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, ++quicksaveNum, hFontControls, m_rect);
 				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, arg::_1);
@@ -276,7 +275,7 @@ public:
 		}
 		
 		// Show regular saves.
-		BOOST_FOREACH(SavegameHandle save, savegames) {
+		for(SavegameHandle save : savegames) {
 			if(!savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, 0, hFontControls, m_rect);
 				txt->clicked = boost::bind(&LoadMenuPage::onClickQuestLoad, this, arg::_1);
@@ -398,7 +397,7 @@ public:
 		
 		// Show quicksaves.
 		size_t quicksaveNum = 0;
-		BOOST_FOREACH(SavegameHandle save, savegames) {
+		for(SavegameHandle save : savegames) {
 			if(savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, ++quicksaveNum, hFontControls, m_rect);
 				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, arg::_1);
@@ -409,7 +408,7 @@ public:
 		}
 		
 		// Show regular saves.
-		BOOST_FOREACH(SavegameHandle save, savegames) {
+		for(SavegameHandle save : savegames) {
 			if(!savegames[save].quicksave) {
 				SaveSlotWidget * txt = new SaveSlotWidget(save, 0, hFontControls, m_rect);
 				txt->clicked = boost::bind(&SaveMenuPage::onClickQuestSaveConfirm, this, arg::_1);
@@ -588,7 +587,7 @@ public:
 			m_textLanguageSlider = new CycleTextWidget(sliderSize(), hFontMainMenu, "");
 			m_textLanguageSlider->valueChanged = boost::bind(&LocalizationMenuPage::onChangedTextLanguage, this, arg::_1, arg::_2);
 			Languages languages = getAvailableTextLanguages();
-			BOOST_FOREACH(const Languages::value_type & language, languages) {
+			for(const Languages::value_type & language : languages) {
 				m_textLanguageSlider->addEntry(language.second.name);
 				if(m_textLanguages.empty() || config.interface.language == language.first) {
 					m_textLanguageSlider->selectLast();
@@ -617,7 +616,7 @@ public:
 			m_audioLanguageSlider = new CycleTextWidget(sliderSize(), hFontMainMenu, "");
 			m_audioLanguageSlider->valueChanged = boost::bind(&LocalizationMenuPage::onChangedAudioLanguage, this, arg::_1, arg::_2);
 			Languages languages = getAvailableAudioLanguages();
-			BOOST_FOREACH(const Languages::value_type & language, languages) {
+			for(const Languages::value_type & language : languages) {
 				m_audioLanguageSlider->addEntry(language.second.name);
 				if(m_audioLanguages.empty() || config.audio.language == language.first) {
 					m_audioLanguageSlider->selectLast();
@@ -710,7 +709,7 @@ public:
 			
 			m_resolutionSlider->setEnabled(config.video.fullscreen);
 			
-			BOOST_FOREACH(const DisplayMode & mode, mainApp->getWindow()->getDisplayModes()) {
+			for(const DisplayMode & mode : mainApp->getWindow()->getDisplayModes()) {
 				
 				// Find the aspect ratio
 				unsigned a = mode.resolution.x;
@@ -801,7 +800,7 @@ public:
 				rates.push_back(144);
 				rates.push_back(150);
 				rates.push_back(200);
-				BOOST_FOREACH(const DisplayMode & mode, mainApp->getWindow()->getDisplayModes()) {
+				for(const DisplayMode & mode : mainApp->getWindow()->getDisplayModes()) {
 					if(mode.refresh) {
 						rates.push_back(mode.refresh);
 						if(mode.refresh >= 60) {
@@ -814,7 +813,7 @@ public:
 				}
 				std::sort(rates.begin(), rates.end());
 				rates.erase(std::unique(rates.begin(), rates.end()), rates.end());
-				BOOST_FOREACH(s32 refresh, rates) {
+				for(s32 refresh : rates) {
 					cb->addEntry(boost::lexical_cast<std::string>(refresh));
 					if(config.video.fpsLimit == refresh) {
 						cb->selectLast();
@@ -1417,7 +1416,7 @@ public:
 			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedDevice, this, arg::_1, arg::_2);
 			slider->addEntry("Default");
 			slider->selectLast();
-			BOOST_FOREACH(const std::string & device, audio::getDevices()) {
+			for(const std::string & device : audio::getDevices()) {
 				slider->addEntry(device);
 				if(config.audio.device == device) {
 					slider->selectLast();
@@ -1788,10 +1787,10 @@ protected:
 	
 	void reinitActionKeys() {
 		
-		BOOST_FOREACH(Widget * widget, m_children.widgets()) {
+		for(Widget * widget : m_children.widgets()) {
 			if(widget->type() == WidgetType_Panel) {
 				PanelWidget * panel = static_cast<PanelWidget *>(widget);
-				BOOST_FOREACH(Widget * child, panel->children()) {
+				for(Widget * child : panel->children()) {
 					if(child->type() == WidgetType_Keybind) {
 						KeybindWidget * keybind = static_cast<KeybindWidget *>(child);
 						keybind->setKey(config.actions[keybind->action()].key[keybind->index()]);

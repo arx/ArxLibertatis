@@ -43,8 +43,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/particle/ParticleManager.h"
 
-#include <boost/foreach.hpp>
-
 #include "graphics/particle/ParticleSystem.h"
 
 #include "platform/profiler/Profiler.h"
@@ -61,7 +59,7 @@ ParticleManager::~ParticleManager() {
 
 void ParticleManager::Clear() {
 	
-	BOOST_FOREACH(ParticleSystem * p, listParticleSystem) {
+	for(ParticleSystem * p : listParticleSystem) {
 		delete p;
 	}
 	

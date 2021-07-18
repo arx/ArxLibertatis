@@ -48,8 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <iomanip>
 
-#include <boost/foreach.hpp>
-
 #include "core/GameTime.h"
 
 #include "graphics/Draw.h"
@@ -107,7 +105,7 @@ ParticleSystem::ParticleSystem()
 
 ParticleSystem::~ParticleSystem() {
 	
-	BOOST_FOREACH(Particle * p, listParticle) {
+	for(Particle * p : listParticle) {
 		delete p;
 	}
 	

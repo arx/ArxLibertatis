@@ -19,8 +19,6 @@
 
 #include "io/fs/FilesystemTest.h"
 
-#include <boost/foreach.hpp>
-
 CppUnit::AutoRegisterSuite<FilesystemTest> g_registerFilesystemTest;
 
 void FilesystemTest::setUp() {
@@ -75,7 +73,7 @@ void FilesystemTest::checkState(const fs::path & root) {
 	// Check fs::directory_iterator
 	Entries iterated;
 	iterate(root, std::string(), iterated);
-	BOOST_FOREACH(const Entries::value_type & entry, m_expected) {
+	for(const Entries::value_type & entry : m_expected) {
 		Entries::iterator it = m_expected.find(entry.first);
 		CPPUNIT_ASSERT_MESSAGE(entry.first, it != m_expected.end());
 		CPPUNIT_ASSERT_EQUAL_MESSAGE(entry.first, entry.second.type, it->second.type);
@@ -86,7 +84,7 @@ void FilesystemTest::checkState(const fs::path & root) {
 	}
 	
 	// Check that there are no unexpected files
-	BOOST_FOREACH(const std::string & path, m_all) {
+	for(const std::string & path : m_all) {
 		if(m_expected.find(path) == m_expected.end()) {
 			CPPUNIT_ASSERT_MESSAGE(path, !fs::exists(root / path));
 			CPPUNIT_ASSERT_EQUAL_MESSAGE(path, fs::get_type(root / path), fs::DoesNotExist);
@@ -95,7 +93,7 @@ void FilesystemTest::checkState(const fs::path & root) {
 	}
 	
 	// Check all expected files
-	BOOST_FOREACH(const Entries::value_type & entry, m_expected) {
+	for(const Entries::value_type & entry : m_expected) {
 		CPPUNIT_ASSERT_MESSAGE(entry.first, m_all.find(entry.first) != m_all.end());
 		fs::path path = root / entry.first;
 		fs::FileType type = fs::get_type(path);

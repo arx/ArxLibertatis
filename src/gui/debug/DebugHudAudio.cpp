@@ -19,8 +19,6 @@
 
 #include "gui/debug/DebugHudAudio.h"
 
-#include <boost/foreach.hpp>
-
 #include "audio/Audio.h"
 #include "gui/debug/DebugPanel.h"
 
@@ -34,7 +32,7 @@ void debugHud_Audio() {
 	DebugBox srcInfos = DebugBox(Vec2i(10, 10), "Audio Sources");
 	srcInfos.add("src", "status", "smp", "sample path");
 	
-	BOOST_FOREACH(const audio::SourceInfo & si, infos) {
+	for(const audio::SourceInfo & si : infos) {
 		srcInfos.add(si.source, si.status, si.sample, si.sampleName);
 	}
 	

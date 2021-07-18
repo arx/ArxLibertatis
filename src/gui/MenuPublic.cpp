@@ -49,8 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <string>
 
-#include <boost/foreach.hpp>
-
 #include "animation/Animation.h"
 #include "animation/AnimationRender.h"
 
@@ -203,7 +201,7 @@ void ARXMenu_Options_Audio_SetDevice(const std::string & device) {
 	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
 	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
 	
-	BOOST_FOREACH(const audio::AmbianceInfo & info, playlist) {
+	for(const audio::AmbianceInfo & info : playlist) {
 		SoundLoopMode loop = info.isLooped ? ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
 		switch(info.type) {
 			case audio::PLAYING_AMBIANCE_MENU: {

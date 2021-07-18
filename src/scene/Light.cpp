@@ -45,7 +45,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 
 #include <boost/array.hpp>
-#include <boost/foreach.hpp>
 #include <boost/range/size.hpp>
 
 #include "core/Application.h"
@@ -274,7 +273,7 @@ void PrecalcDynamicLighting(const Vec3f & camPos, float camDepth) {
 	
 	g_culledDynamicLightsCount = 0;
 	
-	BOOST_FOREACH(EERIE_LIGHT & light, g_dynamicLights) {
+	for(EERIE_LIGHT & light : g_dynamicLights) {
 		if(light.m_exists && light.rgb != Color3f::black) {
 			light.m_isVisible = closerThan(light.pos, camPos, camDepth + light.fallend);
 			if(light.m_isVisible) {

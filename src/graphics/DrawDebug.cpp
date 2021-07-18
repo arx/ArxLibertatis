@@ -21,7 +21,6 @@
 
 #include <sstream>
 
-#include <boost/foreach.hpp>
 #include <boost/range/size.hpp>
 
 #include "ai/Anchors.h"
@@ -191,11 +190,11 @@ static void drawDebugPortals() {
 
 static void drawDebugZones() {
 	
-	BOOST_FOREACH(const Zone & zone, g_zones) {
+	for(const Zone & zone : g_zones) {
 		
 		Vec3f center(0.f);
 		std::vector<Vec3f> points;
-		BOOST_FOREACH(const Vec3f & p, zone.pathways) {
+		for(const Vec3f & p : zone.pathways) {
 			Vec3f pos = zone.pos + p;
 			if(zone.height > 0) {
 				// Zones only check the bounding box for the y coordinate - adjust display for that
@@ -255,7 +254,7 @@ static void drawDebugZones() {
 
 static void drawDebugPaths() {
 	
-	BOOST_FOREACH(const Path & path, g_paths) {
+	for(const Path & path : g_paths) {
 		
 		Color color = Color::red;
 		
@@ -292,7 +291,7 @@ static void drawDebugPathFinding() {
 		const ANCHOR_DATA & node = ACTIVEBKG->m_anchors[i];
 		
 		Color color1 = node.blocked ? Color::blue : Color::green;
-		BOOST_FOREACH(long k, node.linked) {
+		for(long k : node.linked) {
 			if(k >= 0 && size_t(k) < ACTIVEBKG->m_anchors.size() && i < size_t(k)) {
 				const ANCHOR_DATA & other = ACTIVEBKG->m_anchors[k];
 				Color color2 = other.blocked ? Color::blue : Color::green;
@@ -566,7 +565,7 @@ static void drawDebugEntities(bool drawSkeletons) {
 			
 			const Skeleton & skeleton = *entity->obj->m_skeleton;
 			
-			BOOST_FOREACH(const Bone & bone, skeleton.bones) {
+			for(const Bone & bone : skeleton.bones) {
 				
 				if(bone.father < 0) {
 					continue;
@@ -578,11 +577,11 @@ static void drawDebugEntities(bool drawSkeletons) {
 				
 			}
 			
-			BOOST_FOREACH(const VertexGroup & group, entity->obj->grouplist) {
+			for(const VertexGroup & group : entity->obj->grouplist) {
 				drawTextAt(hFontDebug, entity->obj->vertexWorldPositions[group.origin].v, group.name);
 			}
 			
-			BOOST_FOREACH(const EERIE_ACTIONLIST & ap, entity->obj->actionlist) {
+			for(const EERIE_ACTIONLIST & ap : entity->obj->actionlist) {
 				drawTextAt(hFontDebug, entity->obj->vertexWorldPositions[ap.idx.handleData()].v, ap.name, Color::green);
 			}
 			

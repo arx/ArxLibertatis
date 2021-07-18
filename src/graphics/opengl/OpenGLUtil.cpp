@@ -21,10 +21,10 @@
 
 #include <cstring>
 
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 
 #include "core/Config.h"
 #include "io/log/Logger.h"
@@ -124,7 +124,7 @@ void OpenGLInfo::parseOverrideConfig(const std::string & string) {
 	boost::char_separator<char> separator(" \t\r\n,;:");
 	boost::tokenizer< boost::char_separator<char> > tokens(string, separator);
 	bool first = true;
-	BOOST_FOREACH(const std::string & token, tokens) {
+	for(const std::string & token : tokens) {
 		if(boost::starts_with(token, "+GL_") || boost::starts_with(token, "-GL_")) {
 			m_extensionOverrides.push_back(token);
 			first = false;
@@ -173,7 +173,7 @@ bool OpenGLInfo::has(const char * extension, u32 version) const {
 		}
 	}
 	
-	BOOST_REVERSE_FOREACH(const std::string & override, m_extensionOverrides) {
+	for(const std::string & override : boost::adaptors::reverse(m_extensionOverrides)) {
 		arx_assert(!override.empty());
 		if(override.compare(1, override.size() - 1, extension) == 0) {
 			if(override[0] == '+') {

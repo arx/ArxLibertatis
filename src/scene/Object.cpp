@@ -51,7 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/foreach.hpp>
 
 #include "core/Config.h"
 #include "core/Core.h"
@@ -88,7 +87,7 @@ ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string &
 	if(!eobj)
 		return ObjVertHandle();
 	
-	BOOST_FOREACH(const VertexGroup & group, eobj->grouplist) {
+	for(const VertexGroup & group : eobj->grouplist) {
 		if(group.name == text) {
 			return ObjVertHandle(group.origin);
 		}
@@ -102,7 +101,7 @@ ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text
 	if(!eobj)
 		return ActionPoint();
 	
-	BOOST_FOREACH(const EERIE_ACTIONLIST & action, eobj->actionlist) {
+	for(const EERIE_ACTIONLIST & action : eobj->actionlist) {
 		if(action.name == text) {
 			return action.idx;
 		}
@@ -361,8 +360,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Assign vertices that are not in any group to the root bone
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 			bool found = false;
-			BOOST_FOREACH(const VertexGroup & group, eobj->grouplist) {
-				BOOST_FOREACH(u32 index, group.indexes) {
+			for(const VertexGroup & group : eobj->grouplist) {
+				for(u32 index : group.indexes) {
 					if(index == i) {
 						found = true;
 						break;
@@ -378,7 +377,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		}
 		
 		// Calculate relative bone positions
-		BOOST_FOREACH(Bone & bone, eobj->m_skeleton->bones) {
+		for(Bone & bone : eobj->m_skeleton->bones) {
 			if(bone.father >= 0) {
 				Bone & parent = eobj->m_skeleton->bones[size_t(bone.father)];
 				bone.transinit_global = bone.init.trans = bone.anim.trans - parent.anim.trans;
@@ -394,7 +393,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	for(size_t i = 0; i < eobj->m_skeleton->bones.size(); i++) {
 		const Bone & bone = eobj->m_skeleton->bones[i];
 		const std::vector<u32> & vertices = eobj->m_boneVertices[i];
-		BOOST_FOREACH(u32 index, vertices) {
+		for(u32 index : vertices) {
 			eobj->vertexlocal[index] = eobj->vertexlist[index].v - bone.anim.trans;
 		}
 	}

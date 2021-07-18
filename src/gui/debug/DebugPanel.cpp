@@ -23,7 +23,6 @@
 #include <iomanip>
 
 #include <boost/format.hpp>
-#include <boost/foreach.hpp>
 
 #include "graphics/font/Font.h"
 #include "gui/Text.h"
@@ -85,10 +84,10 @@ void DebugBox::calcSizes() {
 	colums.clear();
 	
 	bool first = true;
-	BOOST_FOREACH(const Row & row, m_elements) {
+	for(const Row & row : m_elements) {
 		colums.resize(std::max(colums.size(), row.fields.size()));
 		int i = 0;
-		BOOST_FOREACH(const std::string & field, row.fields){
+		for(const std::string & field : row.fields){
 			colums[i].width = std::max(colums[i].width, int(field.size()));
 			
 			if(!first) {
@@ -148,7 +147,7 @@ void DebugBox::printCommon() {
 	hFontDebug->draw(lineOffset, top.str(), Color::white);
 	lineOffset.y += lineHeight;
 	
-	BOOST_FOREACH(const Row & row, m_elements) {
+	for(const Row & row : m_elements) {
 		std::stringstream out;
 		out << "│ ";
 		for(size_t i = 0; i < row.fields.size(); ++i) {

@@ -24,10 +24,10 @@
 #include <string>
 #include <set>
 
-#include <boost/foreach.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/size.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 
 #include "io/fs/Filesystem.h"
 #include "io/fs/SystemPaths.h"
@@ -118,12 +118,12 @@ bool addDefaultResources(PakReader * reader) {
 	std::set<ResourceEntry> resources;
 	
 	int dirindex = 0;
-	BOOST_REVERSE_FOREACH(const fs::path & dir, fs::getDataDirs()) {
+	for(const fs::path & dir : boost::adaptors::reverse(fs::getDataDirs())) {
 		for(fs::directory_iterator it(dir); !it.end(); ++it) {
 			std::string file = it.name();
 			std::string name = boost::to_lower_copy(file);
 			if(it.is_directory()) {
-				BOOST_FOREACH(const char * dirname, directories) {
+				for(const char * dirname : directories) {
 					if(name == dirname) {
 						resources.insert(ResourceEntry(dirindex, std::numeric_limits<int>::max(), 0, name, dir / file));
 						break;
@@ -154,7 +154,7 @@ bool addDefaultResources(PakReader * reader) {
 	}
 	
 	bool ok[ARRAY_SIZE(archives)] = { false };
-	BOOST_FOREACH(const ResourceEntry & entry, resources) {
+	for(const ResourceEntry & entry : resources) {
 		if(entry.archive == std::numeric_limits<int>::max()) {
 			reader->addFiles(entry.path, entry.name);
 		} else {

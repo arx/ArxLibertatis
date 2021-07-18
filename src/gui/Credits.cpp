@@ -49,7 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <vector>
 
-#include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -203,7 +202,7 @@ bool Credits::load() {
 			m_text += '\n';
 		}
 		std::vector<std::string> libraries;
-		BOOST_FOREACH(const Libraries::value_type & library, m_libraries) {
+		for(const Libraries::value_type & library : m_libraries) {
 			if(library.first != "compiler" && library.first != "stdlib" && !library.second.empty()) {
 				boost::char_separator<char> sep("\n");
 				boost::tokenizer< boost::char_separator<char> > tokens(library.second, sep);
@@ -211,7 +210,7 @@ bool Credits::load() {
 			}
 		}
 		std::sort(libraries.begin(), libraries.end());
-		BOOST_FOREACH(const std::string & library, libraries) {
+		for(const std::string & library : libraries) {
 			m_text += library;
 			m_text += '\n';
 		}

@@ -21,8 +21,6 @@
 
 #include <algorithm>
 
-#include <boost/foreach.hpp>
-
 #include "core/Core.h"
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
@@ -67,7 +65,7 @@ CycleTextWidget::~CycleTextWidget() {
 	delete m_left;
 	delete m_right;
 	
-	BOOST_FOREACH(Widget * entry, m_entries) {
+	for(Widget * entry : m_entries) {
 		delete entry;
 	}
 	
@@ -114,7 +112,7 @@ void CycleTextWidget::addEntry(const std::string & label) {
 		m_label->setPosition(Vec2f(m_rect.left, m_rect.center().y - m_label->m_rect.height() / 2));
 	}
 	
-	BOOST_FOREACH(Widget * entry, m_entries) {
+	for(Widget * entry : m_entries) {
 		entry->setPosition(m_content.center() - entry->m_rect.size() / 2.f);
 	}
 	
@@ -131,7 +129,7 @@ void CycleTextWidget::move(const Vec2f & offset) {
 	m_content.move(offset);
 	m_right->move(offset);
 	
-	BOOST_FOREACH(Widget * entry, m_entries) {
+	for(Widget * entry : m_entries) {
 		entry->move(offset);
 	}
 	
@@ -175,7 +173,7 @@ void CycleTextWidget::setEnabled(bool enable) {
 	m_left->setEnabled(enable);
 	m_right->setEnabled(enable);
 	
-	BOOST_FOREACH(Widget * entry, m_entries) {
+	for(Widget * entry : m_entries) {
 		entry->setEnabled(enable);
 	}
 	

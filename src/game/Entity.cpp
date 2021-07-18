@@ -47,8 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <cstring>
 
-#include <boost/foreach.hpp>
-
 #include "animation/Animation.h"
 #include "ai/Paths.h"
 
@@ -299,7 +297,7 @@ void Entity::cleanReferences() {
 	ARX_SOUND_Stop(ignit_sound);
 	ignit_sound = audio::SourcedSample();
 	
-	BOOST_FOREACH(Entity * parent, entities) {
+	for(Entity * parent : entities) {
 		if(parent) {
 			EERIE_LINKEDOBJ_UnLinkObjectFromObject(parent->obj, obj);
 			if((parent->ioflags & IO_NPC) && parent->_npcdata->weapon == this) {

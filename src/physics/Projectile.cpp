@@ -21,8 +21,6 @@
 
 #include <string>
 
-#include <boost/foreach.hpp>
-
 #include "core/Core.h"
 #include "core/GameTime.h"
 

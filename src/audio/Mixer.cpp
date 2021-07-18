@@ -45,8 +45,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
-#include <boost/foreach.hpp>
-
 #include "audio/AudioGlobal.h"
 #include "audio/AudioBackend.h"
 #include "audio/AudioResource.h"
@@ -128,7 +126,7 @@ void Mixer::updateVolume() {
 	}
 	finalVolume = volume;
 	
-	BOOST_FOREACH(Mixer * mixer, g_mixers) {
+	for(Mixer * mixer : g_mixers) {
 		if(mixer && mixer->m_parent == this) {
 			mixer->updateVolume();
 		}
@@ -144,7 +142,7 @@ void Mixer::updateVolume() {
 
 void Mixer::stop() {
 	
-	BOOST_FOREACH(Mixer * mixer, g_mixers) {
+	for(Mixer * mixer : g_mixers) {
 		if(mixer && mixer->m_parent == this) {
 			mixer->stop();
 		}
@@ -157,13 +155,13 @@ void Mixer::stop() {
 
 void Mixer::pause() {
 	
-	BOOST_FOREACH(Mixer * mixer, g_mixers) {
+	for(Mixer * mixer : g_mixers) {
 		if(mixer && mixer->m_parent == this) {
 			mixer->pause();
 		}
 	}
 	
-	BOOST_FOREACH(Ambiance * ambiance, g_ambiances) {
+	for(Ambiance * ambiance : g_ambiances) {
 		if(ambiance && g_mixers[ambiance->getChannel().mixer] == this) {
 			ambiance->pause();
 		}
@@ -185,13 +183,13 @@ void Mixer::resume() {
 		return;
 	}
 	
-	BOOST_FOREACH(Mixer * mixer, g_mixers) {
+	for(Mixer * mixer : g_mixers) {
 		if(mixer && mixer->m_parent == this) {
 			mixer->resume();
 		}
 	}
 	
-	BOOST_FOREACH(Ambiance * ambiance, g_ambiances) {
+	for(Ambiance * ambiance : g_ambiances) {
 		if(ambiance && g_mixers[ambiance->getChannel().mixer] == this) {
 			ambiance->resume();
 		}

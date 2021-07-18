@@ -55,7 +55,6 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 #include <sys/sysctl.h>
 #endif
 
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
@@ -490,7 +489,7 @@ fs::path getHelperExecutable(const std::string & name) {
 		typedef boost::tokenizer< boost::char_separator<char> >  tokenizer;
 		boost::char_separator<char> sep(platform::env_list_seperators);
 		tokenizer tokens(decoded, sep);
-		BOOST_FOREACH(fs::path libexec_dir, tokens) {
+		for(fs::path libexec_dir : tokens) {
 			fs::path helper = libexec_dir / name;
 			if(helper.is_relative()) {
 				helper = exe / helper;
@@ -643,11 +642,11 @@ std::vector<std::string> getPreferredLocales() {
 	
 	LCID locales[] = { installerLanguage, GetThreadLocale(), LOCALE_USER_DEFAULT, LOCALE_SYSTEM_DEFAULT };
 	LCTYPE types[] = { LOCALE_SNAME, LOCALE_SPARENT, LOCALE_SISO639LANGNAME };
-	BOOST_FOREACH(LCID locale, locales) {
+	for(LCID locale : locales) {
 		if(!locale) {
 			continue;
 		}
-		BOOST_FOREACH(LCTYPE type, types) {
+		for(LCTYPE type : types) {
 			buffer.allocate(LOCALE_NAME_MAX_LENGTH);
 			if(GetLocaleInfoW(locale, type, buffer.data(), buffer.size())) {
 				buffer.compact();
@@ -678,7 +677,7 @@ std::vector<std::string> getPreferredLocales() {
 		boost::char_separator<char> sep(platform::env_list_seperators);
 		tokenizer tokens(decoded, sep);
 		std::copy(tokens.begin(), tokens.end(), std::back_inserter(result));
-		BOOST_FOREACH(std::string & locale, result) {
+		for(std::string & locale : result) {
 			boost::to_lower(locale);
 			std::replace(locale.begin(), locale.end(), '_', '-');
 		}
@@ -696,7 +695,7 @@ std::vector<std::string> getPreferredLocales() {
 	}
 	
 	const char * variables[] = { "LC_ALL", "LC_MESSAGES", "LANG" };
-	BOOST_FOREACH(const char * variable, variables) {
+	for(const char * variable : variables) {
 		const char * value = std::getenv(variable);
 		if(value) {
 			std::string buffer = value;

@@ -37,7 +37,6 @@
 #include <SDL.h>
 #endif
 
-#include <boost/foreach.hpp>
 #include <boost/range/size.hpp>
 
 #include "core/Version.h"
@@ -434,7 +433,7 @@ static bool showDialog(DialogType type, const std::string & message,
 		&xmessageCommand
 	};
 	
-	BOOST_FOREACH(dialogCommand_t command, commands) {
+	for(dialogCommand_t command : commands) {
 		int code = command(type, message, title);
 		if(code >= 0) {
 			return code == 0;

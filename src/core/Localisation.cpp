@@ -27,7 +27,6 @@
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/foreach.hpp>
 
 #include "core/Config.h"
 
@@ -66,13 +65,13 @@ std::string selectPreferredLanguage(const Languages & languages) {
 	std::vector<std::string> locales = platform::getPreferredLocales();
 	
 	// Select language based on system language
-	BOOST_FOREACH(std::string & locale, locales) {
-		BOOST_FOREACH(const Languages::value_type & language, languages) {
+	for(std::string & locale : locales) {
+		for(const Languages::value_type & language : languages) {
 			if(language.second.locale == locale) {
 				return language.first;
 			}
 		}
-		BOOST_FOREACH(const Languages::value_type & language, languages) {
+		for(const Languages::value_type & language : languages) {
 			if(boost::starts_with(language.second.locale, locale)) {
 				return language.first;
 			}
@@ -87,8 +86,8 @@ std::string selectDefaultLanguage(const Languages & languages) {
 	// Select language from AF config file
 	// For AF 1.22 this will match language selected by the user in the Steam / GOG / Bethesda launcher
 	const char * cfgFiles[] = { "cfg.ini", "cfg_default.ini" };
-	BOOST_FOREACH(const fs::path & datadir, fs::getDataDirs()) {
-		BOOST_FOREACH(const char * cfgFile, cfgFiles) {
+	for(const fs::path & datadir : fs::getDataDirs()) {
+		for(const char * cfgFile : cfgFiles) {
 			fs::ifstream ifs(datadir / cfgFile);
 			if(ifs.is_open()) {
 				IniReader cfg;
@@ -122,7 +121,7 @@ void autodetectTextLanguage() {
 	}
 	
 	std::ostringstream list;
-	BOOST_FOREACH(const Languages::value_type & language, languages) {
+	for(const Languages::value_type & language : languages) {
 		if(list.tellp()) {
 			list << ", ";
 		}
@@ -148,7 +147,7 @@ void autodetectTextLanguage() {
 	}
 	
 	// Otherwise, prefer the first language with audio available
-	BOOST_FOREACH(const Languages::value_type & language, languages) {
+	for(const Languages::value_type & language : languages) {
 		if(g_resources->getDirectory(res::path("speech") / language.first)) {
 			config.interface.language = language.first;
 			return;
@@ -181,7 +180,7 @@ void autodetectAudioLanguage() {
 	}
 	
 	std::ostringstream list;
-	BOOST_FOREACH(const Languages::value_type & language, languages) {
+	for(const Languages::value_type & language : languages) {
 		if(list.tellp()) {
 			list << ", ";
 		}
@@ -270,7 +269,7 @@ void loadLocalisations() {
 		}
 	}
 	
-	BOOST_FOREACH(const LocalizationFiles::value_type & name, localizationFiles) {
+	for(const LocalizationFiles::value_type & name : localizationFiles) {
 		loadLocalisation(dir, fallbackPrefix + name);
 		loadLocalisation(dir, localizedPrefix + name);
 	}

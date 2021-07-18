@@ -50,8 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <algorithm>
 
-#include <boost/foreach.hpp>
-
 #include "core/GameTime.h"
 #include "core/Core.h"
 
@@ -80,7 +78,7 @@ static void ARX_PATH_ComputeBB(Zone * ap) {
 	ap->bbmin = Vec3f(9999999999.f);
 	ap->bbmax = Vec3f(-9999999999.f);
 	
-	BOOST_FOREACH(const Vec3f & rpos, ap->pathways) {
+	for(const Vec3f & rpos : ap->pathways) {
 		ap->bbmin.x = std::min(ap->bbmin.x, ap->pos.x + rpos.x);
 		ap->bbmax.x = std::max(ap->bbmax.x, ap->pos.x + rpos.x);
 		ap->bbmin.z = std::min(ap->bbmin.z, ap->pos.z + rpos.z);
@@ -98,7 +96,7 @@ static void ARX_PATH_ComputeBB(Zone * ap) {
 }
 
 void ARX_PATH_ComputeAllBoundingBoxes() {
-	BOOST_FOREACH(Zone & zone, g_zones) {
+	for(Zone & zone : g_zones) {
 		ARX_PATH_ComputeBB(&zone);
 	}
 }
@@ -129,7 +127,7 @@ long ARX_PATH_IsPosInZone(const Zone * ap, Vec3f pos) {
 
 static Zone * ARX_PATH_CheckInZone(const Vec3f & pos) {
 	
-	BOOST_FOREACH(Zone & zone, g_zones) {
+	for(Zone & zone : g_zones) {
 		if(ARX_PATH_IsPosInZone(&zone, pos)) {
 			return &zone;
 		}
@@ -284,7 +282,7 @@ Path::Path(const std::string & _name, const Vec3f & _pos)
 { }
 
 void ARX_PATH_ClearAllUsePath() {
-	BOOST_FOREACH(Entity * e, entities) {
+	for(Entity * e : entities) {
 		if(e && e->usepath) {
 			delete e->usepath;
 			e->usepath = nullptr;
@@ -293,7 +291,7 @@ void ARX_PATH_ClearAllUsePath() {
 }
 
 void ARX_PATH_ClearAllControled() {
-	BOOST_FOREACH(Zone & zone, g_zones) {
+	for(Zone & zone : g_zones) {
 		zone.controled.clear();
 	}
 }
@@ -304,7 +302,7 @@ Zone * getZoneByName(const std::string & name) {
 		return nullptr;
 	}
 	
-	BOOST_FOREACH(Zone & zone, g_zones) {
+	for(Zone & zone : g_zones) {
 		if(zone.name == name) {
 			return &zone;
 		}
@@ -319,7 +317,7 @@ const Path * getPathByName(const std::string & name) {
 		return nullptr;
 	}
 	
-	BOOST_FOREACH(const Path & path, g_paths) {
+	for(const Path & path : g_paths) {
 		if(path.name == name) {
 			return &path;
 		}

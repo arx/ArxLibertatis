@@ -54,8 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <sstream>
 
-#include <boost/foreach.hpp>
-
 #include "core/Application.h"
 #include "core/ArxGame.h"
 #include "core/Benchmark.h"
@@ -291,7 +289,7 @@ void MenuWindow::setCurrentPage(MENUSTATE id) {
 
 MenuPage * MenuWindow::getPage(MENUSTATE id) const {
 	
-	BOOST_FOREACH(MenuPage * page, m_pages) {
+	for(MenuPage * page : m_pages) {
 		if(page->id() == id) {
 			return page;
 		}

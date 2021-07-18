@@ -24,7 +24,6 @@
 #include <vector>
 #include <algorithm>
 
-#include <boost/foreach.hpp>
 #include <boost/unordered_map.hpp>
 
 #include "io/log/ConsoleLogger.h"
@@ -189,7 +188,7 @@ void Logger::set(const std::string & component, Logger::LogLevel level) {
 		if(level > oldLevel && oldLevel < LogManager::defaultLevel) {
 			// minimum log level may have changed
 			LogManager::minimumLevel = LogManager::defaultLevel;
-			BOOST_FOREACH(const LogManager::Rules::value_type & i, LogManager::rules) {
+			for(const LogManager::Rules::value_type & i : LogManager::rules) {
 				LogManager::minimumLevel = std::min(LogManager::minimumLevel, i.second);
 			}
 		}
@@ -213,7 +212,7 @@ void Logger::reset(const std::string & component) {
 	if(i->second < LogManager::defaultLevel) {
 		// minimum log level may have changed
 		LogManager::minimumLevel = LogManager::defaultLevel;
-		BOOST_FOREACH(const LogManager::Rules::value_type & entry, LogManager::rules) {
+		for(const LogManager::Rules::value_type & entry : LogManager::rules) {
 			LogManager::minimumLevel = std::min(LogManager::minimumLevel, entry.second);
 		}
 	}

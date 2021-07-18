@@ -56,7 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include <boost/version.hpp>
-#include <boost/foreach.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "Configure.h"
@@ -788,7 +787,7 @@ void ManageCombatModeAnimations() {
 				ActionPoint hit;
 				{
 					float maxdist = 0.f;
-					BOOST_FOREACH(const EERIE_ACTIONLIST & action, arrowobj->actionlist) {
+					for(const EERIE_ACTIONLIST & action : arrowobj->actionlist) {
 						if(!boost::starts_with(action.name, "hit_")) {
 							continue;
 						}

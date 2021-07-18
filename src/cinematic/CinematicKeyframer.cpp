@@ -49,8 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <limits>
 
-#include <boost/foreach.hpp>
-
 #include "cinematic/Cinematic.h"
 #include "cinematic/CinematicTexture.h"
 #include "cinematic/CinematicFormat.h"
@@ -148,7 +146,7 @@ static void UpDateKeyLight(CinematicKeyframe * kbase) {
 }
 
 void UpDateAllKeyLight() {
-	BOOST_FOREACH(CinematicKeyframe & key, CKTrack->key) {
+	for(CinematicKeyframe & key : CKTrack->key) {
 		UpDateKeyLight(&key);
 	}
 }

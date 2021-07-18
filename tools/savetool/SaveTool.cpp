@@ -23,8 +23,6 @@
 #include <vector>
 #include <string>
 
-#include <boost/foreach.hpp>
-
 #include "io/SaveBlock.h"
 #include "io/fs/Filesystem.h"
 #include "io/fs/SystemPaths.h"
@@ -89,7 +87,7 @@ static int main_add(SaveBlock & save, const std::vector<std::string> & args) {
 		return 2;
 	}
 	
-	BOOST_FOREACH(fs::path file, args) {
+	for(fs::path file : args) {
 		
 		std::string data = fs::read(file);
 		if(data.empty()) {

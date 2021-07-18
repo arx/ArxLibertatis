@@ -52,7 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <map>
 #include <limits>
 
-#include <boost/foreach.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/unordered_map.hpp>
 
@@ -252,7 +251,7 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY) {
 	for(short x = minx; x <= maxx; x++) {
 		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
 		
-		BOOST_FOREACH(EERIEPOLY * ep, feg.polyin) {
+		for(EERIEPOLY * ep : feg.polyin) {
 			if(poss.x >= ep->min.x && poss.x <= ep->max.x
 			   && poss.z >= ep->min.z && poss.z <= ep->max.z
 			   && !(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
@@ -282,7 +281,7 @@ EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
 	
 	EERIEPOLY * found = nullptr;
 	
-	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
+	for(EERIEPOLY * ep : feg->polyin) {
 		
 		if((!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
 		   && (ep->min.y < pos.y)
@@ -313,7 +312,7 @@ bool IsAnyPolyThere(float x, float z) {
 		return false;
 	}
 	
-	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
+	for(EERIEPOLY * ep : feg->polyin) {
 		if(PointIn2DPolyXZ(ep, x, z)) {
 			return true;
 		}
@@ -332,7 +331,7 @@ EERIEPOLY * GetMinPoly(const Vec3f & pos) {
 	EERIEPOLY * found = nullptr;
 	float foundy = 0.0f;
 	
-	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
+	for(EERIEPOLY * ep : feg->polyin) {
 		if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 			continue;
 		}
@@ -360,7 +359,7 @@ EERIEPOLY * GetMaxPoly(const Vec3f & pos) {
 	EERIEPOLY * found = nullptr;
 	float foundy = 0.0f;
 	
-	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
+	for(EERIEPOLY * ep : feg->polyin) {
 		if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 			continue;
 		}
@@ -387,7 +386,7 @@ EERIEPOLY * EEIsUnderWater(const Vec3f & pos) {
 	
 	EERIEPOLY * found = nullptr;
 	
-	BOOST_FOREACH(EERIEPOLY * ep, feg->polyin) {
+	for(EERIEPOLY * ep : feg->polyin) {
 		if(ep->type & POLY_WATER) {
 			if(ep->max.y < pos.y && PointIn2DPolyXZ(ep, pos.x, pos.z)) {
 				if(!found || ep->max.y < found->max.y) {
@@ -1073,7 +1072,7 @@ void ComputePortalVertexBuffer() {
 		
 		// Count vertices / indices for each texture and blend types
 		int vertexCount = 0, indexCount = 0, ignored = 0, hidden = 0, notex = 0;
-		BOOST_FOREACH(const EP_DATA & epd, room->epdata) {
+		for(const EP_DATA & epd : room->epdata) {
 			BackgroundTileData & cell = ACTIVEBKG->m_tileData[epd.tile.x][epd.tile.y];
 			EERIEPOLY & poly = cell.polydata[epd.idx];
 			
@@ -1170,7 +1169,7 @@ void ComputePortalVertexBuffer() {
 			unsigned short index = 0;
 			
 			// Upload all vertices for this texture and remember the indices
-			BOOST_FOREACH(const EP_DATA & epd, room->epdata) {
+			for(const EP_DATA & epd : room->epdata) {
 				BackgroundTileData & tile = ACTIVEBKG->m_tileData[epd.tile.x][epd.tile.y];
 				EERIEPOLY & poly = tile.polydata[epd.idx];
 				

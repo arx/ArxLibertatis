@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cctype>
 #include <ctime>
 
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
@@ -458,7 +457,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	
 	std::vector<audio::AmbianceInfo> playlist;
 	audio::getAmbianceInfos(playlist);
-	BOOST_FOREACH(const audio::AmbianceInfo & info, playlist) {
+	for(const audio::AmbianceInfo & info : playlist) {
 		if(info.type == audio::PLAYING_AMBIANCE_SCRIPT || info.type == audio::PLAYING_AMBIANCE_ZONE) {
 			asi.ambiances_data_size += sizeof(SavedPlayingAmbiance);
 		}
@@ -496,7 +495,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		}
 	}
 	
-	BOOST_FOREACH(const Zone & zone, g_zones) {
+	for(const Zone & zone : g_zones) {
 		ARX_CHANGELEVEL_PATH * acp = reinterpret_cast<ARX_CHANGELEVEL_PATH *>(dat + pos);
 		memset(acp, 0, sizeof(ARX_CHANGELEVEL_PATH));
 		util::storeString(acp->name, zone.name);
@@ -504,7 +503,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		pos += sizeof(ARX_CHANGELEVEL_PATH);
 	}
 	
-	BOOST_FOREACH(const audio::AmbianceInfo & info, playlist) {
+	for(const audio::AmbianceInfo & info : playlist) {
 		if(info.type == audio::PLAYING_AMBIANCE_SCRIPT || info.type == audio::PLAYING_AMBIANCE_ZONE) {
 			SavedPlayingAmbiance * playing = reinterpret_cast<SavedPlayingAmbiance *>(dat + pos);
 			std::memset(playing, 0, sizeof(SavedPlayingAmbiance));
@@ -1090,7 +1089,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	
 	// Save Local Timers ?
 	ais.nbtimers = 0;
-	BOOST_FOREACH(const SCR_TIMER & timer, g_scriptTimers) {
+	for(const SCR_TIMER & timer : g_scriptTimers) {
 		if(timer.exist && timer.io == io) {
 			ais.nbtimers++;
 		}
@@ -1118,7 +1117,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 	
-	BOOST_FOREACH(const SCR_TIMER & timer, g_scriptTimers) {
+	for(const SCR_TIMER & timer : g_scriptTimers) {
 		if(timer.exist) {
 			if(timer.io == io) {
 				ARX_CHANGELEVEL_TIMERS_SAVE * ats = reinterpret_cast<ARX_CHANGELEVEL_TIMERS_SAVE *>(dat + pos);
@@ -2498,7 +2497,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::
 	LoadLevelScreen(instance);
 	
 	if(firstTime) {
-		BOOST_FOREACH(SCR_TIMER & timer, g_scriptTimers) {
+		for(SCR_TIMER & timer : g_scriptTimers) {
 			if(timer.exist) {
 				timer.start = g_gameTime.now();
 			}
