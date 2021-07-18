@@ -75,7 +75,7 @@ std::string read(const path & p) {
 	fs::ifstream ifs(p, fs::fstream::in | fs::fstream::binary | fs::fstream::ate);
 	if(ifs.is_open()) {
 		result.resize(ifs.tellg());
-		ifs.seekg(0).read(&result[0], result.size());
+		ifs.seekg(0).read(result.data(), result.size());
 	} else {
 		ifs.open(p, fs::fstream::in | fs::fstream::binary);
 		if(ifs.is_open()) {
