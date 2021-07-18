@@ -195,14 +195,14 @@ public:
 						glShortIndexBuffer[i] = GLushort(indices[i] + offset);
 					}
 					type = GL_UNSIGNED_SHORT;
-					data = &glShortIndexBuffer[0];
+					data = glShortIndexBuffer.data();
 				} else {
 					glIntIndexBuffer.resize(std::max(glIntIndexBuffer.size(), size_t(nbindices)));
 					for(size_t i = 0; i < nbindices; i++) {
 						glIntIndexBuffer[i] = GLuint(indices[i] + offset);
 					}
 					type = GL_UNSIGNED_INT;
-					data = &glIntIndexBuffer[0];
+					data = glIntIndexBuffer.data();
 				}
 			}
 			
@@ -318,7 +318,7 @@ public:
 		
 		if(m_usage == Renderer::Dynamic) {
 			m_shadow.resize(capacity());
-			std::memcpy(&m_shadow[0] + offset, vertices, count * sizeof(Vertex));
+			std::memcpy(m_shadow.data() + offset, vertices, count * sizeof(Vertex));
 		}
 		
 		Base::setData(vertices, count, offset, flags);
@@ -334,11 +334,11 @@ public:
 		m_lockedOffset = offset;
 		m_lockedCount = std::min(count, capacity() - offset);
 		
-		return &m_shadow[0] + offset;
+		return m_shadow.data() + offset;
 	}
 	
 	void unlock() {
-		Base::setData(&m_shadow[0] + m_lockedOffset, m_lockedCount, m_lockedOffset, m_lockedFlags);
+		Base::setData(m_shadow.data() + m_lockedOffset, m_lockedCount, m_lockedOffset, m_lockedFlags);
 	}
 	
 protected:
