@@ -121,26 +121,14 @@ private:
  * \def ARX_PROGRAM_OPTION(longName, shortName, description, handler, args)
  * \brief Register a program option
  */
-#if ARX_HAVE_CXX11_AUTO
-	template <typename Handler>
-	Option<Handler> makeProgramOption(ARX_PROGRAM_OPTION_ARGS) {
-		return Option<Handler>(longName, shortName, description, handler, args);
-	}
-	#define ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, args) \
-		static auto ARX_UNIQUE_SYMBOL(programOptionRegistrator) = makeProgramOption( \
-			longName, shortName, description, handler, args \
-		);
-#else
-	template <typename Handler>
-	Option<Handler> * makeProgramOption(ARX_PROGRAM_OPTION_ARGS, void ** unused) {
-		ARX_UNUSED(unused);
-		return new Option<Handler>(longName, shortName, description, handler, args);
-	}
-	#define ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, args) \
-		static void * ARX_UNIQUE_SYMBOL(programOptionRegistrator) = makeProgramOption( \
-			longName, shortName, description, handler, args, &ARX_UNIQUE_SYMBOL(programOptionRegistrator) \
-		);
-#endif
+template <typename Handler>
+Option<Handler> makeProgramOption(ARX_PROGRAM_OPTION_ARGS) {
+	return Option<Handler>(longName, shortName, description, handler, args);
+}
+#define ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, args) \
+	static auto ARX_UNIQUE_SYMBOL(programOptionRegistrator) = makeProgramOption( \
+		longName, shortName, description, handler, args \
+	);
 #define ARX_PROGRAM_OPTION(longName, shortName, description, handler) \
 	ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, nullptr)
 

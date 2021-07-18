@@ -10,8 +10,6 @@
  */
 
 // C++11 features
-// auto
-#cmakedefine01 ARX_HAVE_CXX11_AUTO
 // std::atomic
 #cmakedefine01 ARX_HAVE_CXX11_ATOMIC
 // decltype(…)

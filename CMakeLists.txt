@@ -633,7 +633,6 @@ endif()
 if(NOT CXX_STD_VERSION LESS 2011)
 	enable_cxx_version(${CXX_STD_VERSION})
 	set(ARX_HAVE_CXX11_LONG_LONG 1) # everyone has had this for ages
-	check_cxx11("auto"                   ARX_HAVE_CXX11_AUTO               1600)
 	check_cxx11("decltype"               ARX_HAVE_CXX11_DECLTYPE           1900)
 	check_cxx11("std::atomic"            ARX_HAVE_CXX11_ATOMIC             1700)
 	check_cxx11("std::forward"           ARX_HAVE_CXX11_FORWARD            1800)
