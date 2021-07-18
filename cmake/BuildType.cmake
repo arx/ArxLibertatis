@@ -408,10 +408,14 @@ else(MSVC)
 				string(REGEX REPLACE "(^| )-DNDEBUG( |$)" "\\1" ${flag_var} "${${flag_var}}")
 				set(${flag_var} "${${flag_var}} -D_GLIBCXX_ASSERTIONS=1")
 			else()
-				set(${flag_var} "${${flag_var}} -DNDEBUG -U_GLIBCXX_ASSERTIONS")
+				set(${flag_var} "${${flag_var}} -DNDEBUG")
 			endif()
 			
 		endforeach(flag_var)
+		
+		if(NOT DEBUG AND NOT IS_LIBCXX)
+			add_cxxflag("-Wp,-U_GLIBCXX_ASSERTIONS")
+		endif()
 		
 		if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 			
