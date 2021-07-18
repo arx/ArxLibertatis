@@ -43,7 +43,7 @@ namespace audio {
 
 class OpenALSource;
 
-class OpenALBackend arx_final : public Backend {
+class OpenALBackend final : public Backend {
 	
 public:
 	

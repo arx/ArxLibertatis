@@ -29,7 +29,7 @@
 
 class Font;
 
-class SaveSlotWidget arx_final : public Widget {
+class SaveSlotWidget final : public Widget {
 	
 	Font * m_font;
 	SavegameHandle m_savegame;

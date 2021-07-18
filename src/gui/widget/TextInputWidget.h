@@ -31,7 +31,7 @@
 
 class Font;
 
-class TextInputWidget arx_final : public Widget, public BasicTextInput {
+class TextInputWidget final : public Widget, public BasicTextInput {
 	
 	Font * m_font;
 	bool m_editing;

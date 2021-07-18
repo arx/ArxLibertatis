@@ -25,7 +25,7 @@
 #include "graphics/effects/Fissure.h"
 #include "platform/Platform.h"
 
-class SummonCreatureSpell arx_final : public SpellBase {
+class SummonCreatureSpell final : public SpellBase {
 	
 public:
 	
@@ -49,7 +49,7 @@ private:
 	
 };
 
-class FakeSummonSpell arx_final : public SpellBase {
+class FakeSummonSpell final : public SpellBase {
 	
 public:
 	
@@ -70,7 +70,7 @@ private:
 	
 };
 
-class NegateMagicSpell arx_final : public SpellBase {
+class NegateMagicSpell final : public SpellBase {
 	
 public:
 	
@@ -90,7 +90,7 @@ private:
 	
 };
 
-class IncinerateSpell arx_final : public SpellBase {
+class IncinerateSpell final : public SpellBase {
 	
 public:
 	
@@ -103,7 +103,7 @@ public:
 	
 };
 
-class MassParalyseSpell arx_final : public SpellBase {
+class MassParalyseSpell final : public SpellBase {
 	
 public:
 	

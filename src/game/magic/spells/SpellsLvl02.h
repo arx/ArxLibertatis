@@ -25,7 +25,7 @@
 #include "graphics/particle/ParticleSystem.h"
 #include "platform/Platform.h"
 
-class HealSpell arx_final : public SpellBase {
+class HealSpell final : public SpellBase {
 	
 public:
 	
@@ -44,7 +44,7 @@ private:
 	
 };
 
-class DetectTrapSpell arx_final : public SpellBase {
+class DetectTrapSpell final : public SpellBase {
 	
 public:
 	
@@ -54,7 +54,7 @@ public:
 	
 };
 
-class ArmorSpell arx_final : public SpellBase {
+class ArmorSpell final : public SpellBase {
 	
 public:
 	
@@ -66,7 +66,7 @@ public:
 	
 };
 
-class LowerArmorSpell arx_final : public SpellBase {
+class LowerArmorSpell final : public SpellBase {
 	
 public:
 	
@@ -84,7 +84,7 @@ private:
 	
 };
 
-class HarmSpell arx_final : public SpellBase {
+class HarmSpell final : public SpellBase {
 	
 public:
 	

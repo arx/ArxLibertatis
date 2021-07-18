@@ -36,7 +36,7 @@ namespace audio {
 class Sample;
 class Stream;
 
-class OpenALSource arx_final : public Source {
+class OpenALSource final : public Source {
 	
 public:
 	

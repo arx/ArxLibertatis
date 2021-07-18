@@ -80,7 +80,7 @@ private:
 	
 };
 
-class MrMagicMissileFx arx_final : public CMagicMissile {
+class MrMagicMissileFx final : public CMagicMissile {
 	
 public:
 	

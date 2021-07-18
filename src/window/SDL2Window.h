@@ -42,7 +42,7 @@ typedef enum {
 	ARX_SDL_SYSWM_OS2,
 } ARX_SDL_SYSWM_TYPE;
 
-class SDL2Window arx_final : public RenderWindow {
+class SDL2Window final : public RenderWindow {
 	
 public:
 	

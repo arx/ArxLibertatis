@@ -78,7 +78,7 @@ public:
 	
 };
 
-class ScriptConsole arx_final : protected BasicTextInput {
+class ScriptConsole final : protected BasicTextInput {
 	typedef BasicTextInput  Base;
 	
 	static const size_t MaxSuggestions = 1000;

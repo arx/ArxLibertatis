@@ -25,7 +25,7 @@
 #include "graphics/effects/Lightning.h"
 #include "platform/Platform.h"
 
-class MassLightningStrikeSpell arx_final : public SpellBase {
+class MassLightningStrikeSpell final : public SpellBase {
 	
 public:
 	
@@ -46,7 +46,7 @@ private:
 	
 };
 
-class ControlTargetSpell arx_final : public SpellBase {
+class ControlTargetSpell final : public SpellBase {
 	
 public:
 	
@@ -67,7 +67,7 @@ private:
 	
 };
 
-class FreezeTimeSpell arx_final : public SpellBase {
+class FreezeTimeSpell final : public SpellBase {
 	
 public:
 	
@@ -83,7 +83,7 @@ private:
 	
 };
 
-class MassIncinerateSpell arx_final : public SpellBase {
+class MassIncinerateSpell final : public SpellBase {
 	
 public:
 	

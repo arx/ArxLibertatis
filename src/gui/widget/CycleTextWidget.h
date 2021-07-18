@@ -32,7 +32,7 @@ class Font;
 class ButtonWidget;
 class TextWidget;
 
-class CycleTextWidget arx_final : public Widget {
+class CycleTextWidget final : public Widget {
 	
 public:
 	

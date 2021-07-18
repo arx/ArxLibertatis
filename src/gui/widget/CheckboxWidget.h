@@ -31,7 +31,7 @@ class Font;
 class TextWidget;
 class TextureContainer;
 
-class CheckboxWidget arx_final : public Widget {
+class CheckboxWidget final : public Widget {
 	
 public:
 	

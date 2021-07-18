@@ -25,7 +25,7 @@
 #include "gui/widget/Widget.h"
 #include "platform/Platform.h"
 
-class PanelWidget arx_final : public Widget {
+class PanelWidget final : public Widget {
 	
 public:
 	

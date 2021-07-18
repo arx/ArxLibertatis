@@ -29,7 +29,7 @@
 class OpenGLRenderer;
 class GLTexture;
 
-class GLTextureStage arx_final : public TextureStage {
+class GLTextureStage final : public TextureStage {
 	
 public:
 	

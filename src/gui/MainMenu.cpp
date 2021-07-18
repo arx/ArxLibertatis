@@ -87,7 +87,7 @@ using ::_2;
 }
 #endif
 
-class NewQuestMenuPage arx_final : public MenuPage {
+class NewQuestMenuPage final : public MenuPage {
 	
 public:
 	
@@ -130,7 +130,7 @@ public:
 	
 };
 
-class SaveConfirmMenuPage arx_final : public MenuPage {
+class SaveConfirmMenuPage final : public MenuPage {
 	
 public:
 	
@@ -235,7 +235,7 @@ private:
 	
 };
 
-class LoadMenuPage arx_final : public MenuPage {
+class LoadMenuPage final : public MenuPage {
 	
 public:
 	
@@ -373,7 +373,7 @@ private:
 	
 };
 
-class SaveMenuPage arx_final : public MenuPage {
+class SaveMenuPage final : public MenuPage {
 	
 public:
 	
@@ -440,7 +440,7 @@ private:
 	
 };
 
-class ChooseLoadOrSaveMenuPage arx_final : public MenuPage {
+class ChooseLoadOrSaveMenuPage final : public MenuPage {
 	
 	TextWidget * m_loadButton;
 	TextWidget * m_saveButton;
@@ -486,7 +486,7 @@ public:
 	
 };
 
-class OptionsMenuPage arx_final : public MenuPage {
+class OptionsMenuPage final : public MenuPage {
 	
 public:
 	
@@ -549,7 +549,7 @@ public:
 	
 };
 
-class LocalizationMenuPage arx_final : public MenuPage {
+class LocalizationMenuPage final : public MenuPage {
 	
 	std::vector<std::string> m_textLanguages;
 	std::vector<std::string> m_audioLanguages;
@@ -660,7 +660,7 @@ private:
 	
 };
 
-class VideoOptionsMenuPage arx_final : public MenuPage {
+class VideoOptionsMenuPage final : public MenuPage {
 	
 	CheckboxWidget * m_fullscreenCheckbox;
 	CycleTextWidget * m_resolutionSlider;
@@ -998,7 +998,7 @@ private:
 	
 };
 
-class RenderOptionsMenuPage arx_final : public MenuPage {
+class RenderOptionsMenuPage final : public MenuPage {
 	
 public:
 	
@@ -1206,7 +1206,7 @@ private:
 	
 };
 
-class InterfaceOptionsMenuPage arx_final : public MenuPage {
+class InterfaceOptionsMenuPage final : public MenuPage {
 	
 public:
 	
@@ -1395,7 +1395,7 @@ private:
 };
 
 
-class AudioOptionsMenuPage arx_final : public MenuPage {
+class AudioOptionsMenuPage final : public MenuPage {
 	
 public:
 	
@@ -1559,7 +1559,7 @@ private:
 	
 };
 
-class InputOptionsMenuPage arx_final : public MenuPage {
+class InputOptionsMenuPage final : public MenuPage {
 	
 public:
 	
@@ -1824,7 +1824,7 @@ protected:
 };
 
 
-class ControlOptionsMenuPage1 arx_final : public ControlOptionsPage {
+class ControlOptionsMenuPage1 final : public ControlOptionsPage {
 	
 public:
 	
@@ -1895,7 +1895,7 @@ private:
 	
 };
 
-class ControlOptionsMenuPage2 arx_final : public ControlOptionsPage {
+class ControlOptionsMenuPage2 final : public ControlOptionsPage {
 	
 public:
 	
@@ -1959,7 +1959,7 @@ private:
 	
 };
 
-class QuitConfirmMenuPage arx_final : public MenuPage {
+class QuitConfirmMenuPage final : public MenuPage {
 	
 public:
 	

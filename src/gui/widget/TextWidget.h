@@ -28,7 +28,7 @@
 
 class Font;
 
-class TextWidget arx_final : public Widget {
+class TextWidget final : public Widget {
 	
 public:
 	

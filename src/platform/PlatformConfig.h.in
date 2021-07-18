@@ -10,8 +10,6 @@
  */
 
 // C++11 features
-// final
-#cmakedefine01 ARX_HAVE_CXX11_FINAL
 // [[noreturn]]
 #cmakedefine01 ARX_HAVE_CXX11_NORETURN
 

@@ -28,7 +28,7 @@ class TextureContainer;
 
 namespace res { class path; }
 
-class ButtonWidget arx_final : public Widget {
+class ButtonWidget final : public Widget {
 	
 public:
 	

@@ -31,7 +31,7 @@
 #include "platform/Platform.h"
 #include "window/SDL1Window.h"
 
-class SDL1InputBackend arx_final : public InputBackend {
+class SDL1InputBackend final : public InputBackend {
 	
 public:
 	

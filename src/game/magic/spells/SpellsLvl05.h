@@ -25,7 +25,7 @@
 #include "graphics/spells/Spells05.h"
 #include "platform/Platform.h"
 
-class RuneOfGuardingSpell arx_final : public SpellBase {
+class RuneOfGuardingSpell final : public SpellBase {
 	
 public:
 	
@@ -46,7 +46,7 @@ private:
 	
 };
 
-class LevitateSpell arx_final : public SpellBase {
+class LevitateSpell final : public SpellBase {
 	
 public:
 	
@@ -68,7 +68,7 @@ private:
 	
 };
 
-class CurePoisonSpell arx_final : public SpellBase {
+class CurePoisonSpell final : public SpellBase {
 	
 public:
 	
@@ -86,7 +86,7 @@ private:
 	
 };
 
-class RepelUndeadSpell arx_final : public SpellBase {
+class RepelUndeadSpell final : public SpellBase {
 	
 public:
 	
@@ -105,7 +105,7 @@ private:
 	
 };
 
-class PoisonProjectileSpell arx_final : public SpellBase {
+class PoisonProjectileSpell final : public SpellBase {
 	
 public:
 	

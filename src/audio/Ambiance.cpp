@@ -225,7 +225,7 @@ namespace audio {
 
 static const PlatformDuration KEY_CONTINUE = PlatformDurationUs(std::numeric_limits<s64>::max());
 
-struct Ambiance::Track arx_final : public Source::Callback {
+struct Ambiance::Track final : public Source::Callback {
 	
 	enum Flag {
 		POSITION   = 0x00000001,

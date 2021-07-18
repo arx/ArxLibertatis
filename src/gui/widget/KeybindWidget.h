@@ -32,7 +32,7 @@
 
 class Font;
 
-class KeybindWidget arx_final : public Widget {
+class KeybindWidget final : public Widget {
 	
 	std::string m_text;
 	Font * m_font;

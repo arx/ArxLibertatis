@@ -30,7 +30,7 @@
 
 class GLTextureStage;
 
-class OpenGLRenderer arx_final : public Renderer {
+class OpenGLRenderer final : public Renderer {
 	
 public:
 	

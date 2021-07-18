@@ -33,7 +33,7 @@ class TextWidget;
 class TextureContainer;
 
 //! Slider with value in the range [0..10]
-class SliderWidget arx_final : public Widget {
+class SliderWidget final : public Widget {
 	
 public:
 	

@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Platform.h"
 
 // Done By : Didier Pedreno
-class CLightning arx_final : public CSpellFx {
+class CLightning final : public CSpellFx {
 	
 public:
 	

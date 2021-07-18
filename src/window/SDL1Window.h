@@ -27,7 +27,7 @@
 
 class SDL1InputBackend;
 
-class SDL1Window arx_final : public RenderWindow {
+class SDL1Window final : public RenderWindow {
 	
 public:
 	

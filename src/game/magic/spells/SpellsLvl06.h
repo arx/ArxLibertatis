@@ -26,7 +26,7 @@
 #include "graphics/effects/Field.h"
 #include "platform/Platform.h"
 
-class RiseDeadSpell arx_final : public SpellBase {
+class RiseDeadSpell final : public SpellBase {
 	
 public:
 	
@@ -49,7 +49,7 @@ private:
 	
 };
 
-class ParalyseSpell arx_final : public SpellBase {
+class ParalyseSpell final : public SpellBase {
 	
 public:
 	
@@ -60,7 +60,7 @@ public:
 	
 };
 
-class CreateFieldSpell arx_final : public SpellBase {
+class CreateFieldSpell final : public SpellBase {
 	
 public:
 	
@@ -81,7 +81,7 @@ private:
 	
 };
 
-class DisarmTrapSpell arx_final : public SpellBase {
+class DisarmTrapSpell final : public SpellBase {
 	
 public:
 	
@@ -89,7 +89,7 @@ public:
 	
 };
 
-class SlowDownSpell arx_final : public SpellBase {
+class SlowDownSpell final : public SpellBase {
 	
 public:
 	

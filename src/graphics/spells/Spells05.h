@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 // Done By : Didier Pédreno
-class CPoisonProjectile arx_final : public CSpellFx {
+class CPoisonProjectile final : public CSpellFx {
 	
 public:
 	

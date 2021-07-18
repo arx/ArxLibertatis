@@ -23,7 +23,7 @@
 #include "game/magic/Spell.h"
 #include "platform/Platform.h"
 
-class BlessSpell arx_final : public SpellBase {
+class BlessSpell final : public SpellBase {
 	
 public:
 	
@@ -48,7 +48,7 @@ private:
 	
 };
 
-class DispellFieldSpell arx_final : public SpellBase {
+class DispellFieldSpell final : public SpellBase {
 	
 public:
 	
@@ -56,19 +56,7 @@ public:
 	
 };
 
-class FireProtectionSpell arx_final : public SpellBase {
-	
-public:
-	
-	void Launch();
-	void End();
-	void Update();
-	
-	Vec3f getPosition() const;
-	
-};
-
-class ColdProtectionSpell arx_final : public SpellBase {
+class FireProtectionSpell final : public SpellBase {
 	
 public:
 	
@@ -80,7 +68,19 @@ public:
 	
 };
 
-class TelekinesisSpell arx_final : public SpellBase {
+class ColdProtectionSpell final : public SpellBase {
+	
+public:
+	
+	void Launch();
+	void End();
+	void Update();
+	
+	Vec3f getPosition() const;
+	
+};
+
+class TelekinesisSpell final : public SpellBase {
 	
 public:
 	
@@ -90,7 +90,7 @@ public:
 	
 };
 
-class CurseSpell arx_final : public SpellBase {
+class CurseSpell final : public SpellBase {
 	
 public:
 	
