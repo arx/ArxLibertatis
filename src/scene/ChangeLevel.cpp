@@ -471,7 +471,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	                   + asi.ambiances_data_size;
 	
 	std::vector<char> buffer(allocsize);
-	char * dat = &buffer[0];
+	char * dat = buffer.data();
 	
 	memcpy(dat, &asi, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -623,7 +623,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	size_t allocsize = sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + getScriptVariableSaveSize(svar);
 	
 	std::vector<char> buffer(allocsize);
-	char * dat = &buffer[0];
+	char * dat = buffer.data();
 	size_t pos = 0;
 	
 	memcpy(dat, &acsg, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
@@ -662,7 +662,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	allocsize += sizeof(SavedMapMarkerData) * g_miniMap.mapMarkerCount();
 	
 	std::vector<char> buffer(allocsize);
-	char * dat = &buffer[0];
+	char * dat = buffer.data();
 	
 	asp = reinterpret_cast<ARX_CHANGELEVEL_PLAYER *>(dat);
 	
@@ -1110,7 +1110,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 	// Allocate Main Save Buffer
 	std::vector<char> buffer(allocsize);
-	char * dat = &buffer[0];
+	char * dat = buffer.data();
 	size_t pos = 0;
 
 	ais.halo = io->halo_native;
