@@ -29,7 +29,7 @@ CppUnit::AutoRegisterSuite<ColorTest> g_registerColorTest;
 
 namespace CppUnit {
 	template <typename TAG>
-	struct assertion_traits<IntegerColorType<TAG,  u32> > {
+	struct assertion_traits<IntegerColorType<TAG,  u32>> {
 		static bool equal(const IntegerColorType<TAG,  u32> & v, const IntegerColorType<TAG,  u32> & other) {
 			return v.t == other.t;
 		}

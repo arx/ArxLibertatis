@@ -122,7 +122,7 @@ OpenGLInfo::OpenGLInfo()
 
 void OpenGLInfo::parseOverrideConfig(const std::string & string) {
 	boost::char_separator<char> separator(" \t\r\n,;:");
-	boost::tokenizer< boost::char_separator<char> > tokens(string, separator);
+	boost::tokenizer<boost::char_separator<char>> tokens(string, separator);
 	bool first = true;
 	for(const std::string & token : tokens) {
 		if(boost::starts_with(token, "+GL_") || boost::starts_with(token, "-GL_")) {

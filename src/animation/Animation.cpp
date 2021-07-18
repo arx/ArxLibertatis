@@ -711,9 +711,9 @@ void FinishAnim(Entity * io, const ANIM_HANDLE * eanim) {
 	
 }
 
-std::vector< std::pair<res::path, size_t> > ARX_SOUND_PushAnimSamples() {
+std::vector<std::pair<res::path, size_t>> ARX_SOUND_PushAnimSamples() {
 	
-	std::vector< std::pair<res::path, size_t> > samples;
+	std::vector<std::pair<res::path, size_t>> samples;
 	
 	size_t number = 0;
 	
@@ -738,13 +738,13 @@ std::vector< std::pair<res::path, size_t> > ARX_SOUND_PushAnimSamples() {
 	return samples;
 }
 
-void ARX_SOUND_PopAnimSamples(const std::vector< std::pair<res::path, size_t> > & samples) {
+void ARX_SOUND_PopAnimSamples(const std::vector<std::pair<res::path, size_t>> & samples) {
 	
 	if(samples.empty() || !ARX_SOUND_IsEnabled()) {
 		return;
 	}
 	
-	std::vector< std::pair<res::path, size_t> >::const_iterator p = samples.begin();
+	std::vector<std::pair<res::path, size_t>>::const_iterator p = samples.begin();
 	
 	size_t number = 0;
 	

@@ -129,7 +129,7 @@ private:
 	float m_maximumAnisotropy;
 	float m_maximumSupportedAnisotropy;
 	
-	typedef boost::intrusive::list<GLTexture, boost::intrusive::constant_time_size<false> > TextureList;
+	typedef boost::intrusive::list<GLTexture, boost::intrusive::constant_time_size<false>> TextureList;
 	TextureList textures;
 	
 	RenderState m_glstate;

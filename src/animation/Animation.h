@@ -226,8 +226,8 @@ void ResetAnim(AnimLayer & layer);
 void AcquireLastAnim(Entity * io);
 void FinishAnim(Entity * io, const ANIM_HANDLE * eanim);
 
-std::vector< std::pair<res::path, size_t> > ARX_SOUND_PushAnimSamples();
-void ARX_SOUND_PopAnimSamples(const std::vector< std::pair<res::path, size_t> > & samples);
+std::vector<std::pair<res::path, size_t>> ARX_SOUND_PushAnimSamples();
+void ARX_SOUND_PopAnimSamples(const std::vector<std::pair<res::path, size_t>> & samples);
 
 void ReleaseAnimFromIO(Entity * io, long num);
 

@@ -33,9 +33,7 @@
 
 template <typename TAG, typename T>
 struct DurationType
-	: boost::totally_ordered1<DurationType<TAG, T>
-	, boost::additive1<DurationType<TAG, T>
-	> >
+	: boost::totally_ordered1<DurationType<TAG, T>, boost::additive1<DurationType<TAG, T>>>
 {
 	
 	T t;
@@ -77,9 +75,7 @@ public:
 
 template <typename TAG, typename T>
 struct InstantType
-	: boost::totally_ordered1<InstantType<TAG, T>
-	, boost::additive2<InstantType<TAG, T>, DurationType<TAG, T>
-	> >
+	: boost::totally_ordered1<InstantType<TAG, T>, boost::additive2<InstantType<TAG, T>, DurationType<TAG, T>>>
 {
 	
 	T t;

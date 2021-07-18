@@ -313,7 +313,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 	FT_UInt prevGlyphIndex = 0;
 	FT_Pos prevRsbDelta = 0;
 	
-	std::vector< std::vector<TexturedVertex> > mapTextureVertices;
+	std::vector<std::vector<TexturedVertex>> mapTextureVertices;
 	
 	for(text_iterator it = start; it != end; ) {
 		

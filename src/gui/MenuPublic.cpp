@@ -185,7 +185,7 @@ void ARXMenu_Options_Audio_SetDevice(const std::string & device) {
 	 * should be able to switch backends internally.
 	 */
 	
-	std::vector< std::pair<res::path, size_t> > animationSamples = ARX_SOUND_PushAnimSamples();
+	std::vector<std::pair<res::path, size_t>> animationSamples = ARX_SOUND_PushAnimSamples();
 	
 	std::vector<audio::AmbianceInfo> playlist;
 	audio::getAmbianceInfos(playlist);

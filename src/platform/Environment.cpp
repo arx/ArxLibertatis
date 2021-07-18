@@ -486,7 +486,7 @@ fs::path getHelperExecutable(const std::string & name) {
 	
 	if(fs::libexec_dir) {
 		std::string decoded = platform::expandEnvironmentVariables(fs::libexec_dir);
-		typedef boost::tokenizer< boost::char_separator<char> >  tokenizer;
+		typedef boost::tokenizer<boost::char_separator<char>>  tokenizer;
 		boost::char_separator<char> sep(platform::env_list_seperators);
 		tokenizer tokens(decoded, sep);
 		for(fs::path libexec_dir : tokens) {
@@ -673,7 +673,7 @@ std::vector<std::string> getPreferredLocales() {
 	const char * languages = std::getenv("LANGUAGE");
 	if(languages) {
 		std::string decoded = languages;
-		typedef boost::tokenizer< boost::char_separator<char> >  tokenizer;
+		typedef boost::tokenizer<boost::char_separator<char>>  tokenizer;
 		boost::char_separator<char> sep(platform::env_list_seperators);
 		tokenizer tokens(decoded, sep);
 		std::copy(tokens.begin(), tokens.end(), std::back_inserter(result));

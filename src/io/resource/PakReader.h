@@ -54,7 +54,7 @@ public:
 	
 };
 
-typedef std::map<util::md5::checksum, std::vector<std::string> > PakFilter;
+typedef std::map<util::md5::checksum, std::vector<std::string>> PakFilter;
 
 class PakReader : public PakDirectory {
 	

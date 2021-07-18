@@ -347,7 +347,7 @@ struct DebugPoly {
 	{ }
 };
 
-static std::vector<std::pair<Vec3f, Vec3f> > dbg_rays;
+static std::vector<std::pair<Vec3f, Vec3f>> dbg_rays;
 static std::vector<Vec2i> dbg_tiles;
 static std::vector<DebugPoly> dbg_hits;
 
