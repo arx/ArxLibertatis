@@ -80,7 +80,7 @@ private:
 
 template <class IntType>
 IntType Random::get(IntType min, IntType max) {
-	ARX_STATIC_ASSERT(boost::is_integral<IntType>::value, "get must be called with ints");
+	static_assert(boost::is_integral<IntType>::value, "get must be called with ints");
 	
 	return typename boost::random::uniform_int_distribution<IntType>(min, max)(*rng);
 }
@@ -100,7 +100,7 @@ inline unsigned int Random::getu(unsigned int min, unsigned int max) {
 
 template <class RealType>
 RealType Random::getf(RealType min, RealType max) {
-	ARX_STATIC_ASSERT(boost::is_float<RealType>::value, "getf must be called with floats");
+	static_assert(boost::is_float<RealType>::value, "getf must be called with floats");
 	
 	return typename boost::random::uniform_real_distribution<RealType>(min, max)(*rng);
 }

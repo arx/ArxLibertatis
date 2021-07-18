@@ -38,7 +38,7 @@ typedef Rectangle_<float> Rectf;
 
 template <class T, int N> struct vec_traits {
 	typedef glm::vec<N, T, glm::highp> type;
-	ARX_STATIC_ASSERT(sizeof(type) == sizeof(T) * N, "vector has padding");
+	static_assert(sizeof(type) == sizeof(T) * N, "vector has padding");
 };
 
 #else
@@ -46,7 +46,7 @@ template <class T, int N> struct vec_traits {
 template <class T, template <class, glm::precision> class V, int N>
 struct vec_traits_base {
 	typedef V<T, glm::highp> type;
-	ARX_STATIC_ASSERT(sizeof(type) == sizeof(T) * N, "vector has padding");
+	static_assert(sizeof(type) == sizeof(T) * N, "vector has padding");
 };
 
 // In GLM version 0.9.6 the template vector and matrix types is exposed in 'glm' namespace

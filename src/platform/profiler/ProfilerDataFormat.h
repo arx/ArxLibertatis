@@ -31,7 +31,7 @@ struct SavedProfilerHeader {
 	char padding[4];
 };
 
-ARX_STATIC_ASSERT(sizeof(SavedProfilerHeader) == 16, "Header size mismatch");
+static_assert(sizeof(SavedProfilerHeader) == 16, "Header size mismatch");
 
 enum ArxProfilerChunkType {
 	ArxProfilerChunkType_None = 0,
@@ -46,7 +46,7 @@ struct SavedProfilerChunkHeader {
 	char padding[52];
 };
 
-ARX_STATIC_ASSERT(sizeof(SavedProfilerChunkHeader) == 64, "Header size mismatch");
+static_assert(sizeof(SavedProfilerChunkHeader) == 64, "Header size mismatch");
 
 struct SavedProfilerThread {
 	u32 stringIndex;

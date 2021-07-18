@@ -51,7 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 
 #include <boost/lexical_cast.hpp>
-#include <boost/static_assert.hpp>
 #include <boost/range/size.hpp>
 
 #include "core/Application.h"
@@ -618,7 +617,7 @@ std::string Input::getKeyName(InputKeyId key) {
 	} else if(key == InputKeyId(Mouse::Wheel_Down)) {
 		name = "WheelDown";
 	} else if(key >= InputKeyId(Keyboard::KeyBase) && key < InputKeyId(Keyboard::KeyMax)) {
-		BOOST_STATIC_ASSERT(ARRAY_SIZE(keysDescriptions) == size_t(Keyboard::KeyMax - Keyboard::KeyBase));
+		static_assert(ARRAY_SIZE(keysDescriptions) == size_t(Keyboard::KeyMax - Keyboard::KeyBase));
 		const KeyDescription & entity = keysDescriptions[key - InputKeyId(Keyboard::KeyBase)];
 		arx_assert(entity.id == key);
 		name = entity.name;
@@ -666,7 +665,7 @@ std::string Input::getKeyDisplayName(InputKeyId key) {
 	} else if(key >= InputKeyId(Keyboard::KeyBase) && key < InputKeyId(Keyboard::KeyMax)) {
 		name = backend->getKeyName(Keyboard::Key(key));
 		if(name.empty()) {
-			BOOST_STATIC_ASSERT(ARRAY_SIZE(keysDescriptions) == size_t(Keyboard::KeyMax - Keyboard::KeyBase));
+			static_assert(ARRAY_SIZE(keysDescriptions) == size_t(Keyboard::KeyMax - Keyboard::KeyBase));
 			const KeyDescription & entity = keysDescriptions[key - InputKeyId(Keyboard::KeyBase)];
 			arx_assert(entity.id == key);
 			name = entity.name;

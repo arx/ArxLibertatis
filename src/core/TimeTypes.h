@@ -121,7 +121,7 @@ inline DurationType<TAG, T> operator-(InstantType<TAG, T> a, InstantType<TAG, T>
 
 template <typename TAG, typename T, class IntType>
 inline DurationType<TAG, T> operator*(DurationType<TAG, T> a, IntType b) {
-	ARX_STATIC_ASSERT(boost::is_integral<IntType>::value, "factor must be int type");
+	static_assert(boost::is_integral<IntType>::value, "factor must be int type");
 	return DurationType<TAG, T>::ofRaw(a.t * T(b));
 }
 

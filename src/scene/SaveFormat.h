@@ -272,8 +272,8 @@ struct SavedMiniMap {
 		a.m_ratio.y = yratio;
 		a.m_size.x = width;
 		a.m_size.y = height;
-		ARX_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");
-		ARX_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z, "array size mismatch");
+		static_assert(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");
+		static_assert(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z, "array size mismatch");
 		std::copy(&revealed[0][0], &revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &a.m_revealed[0][0]);
 		return a;
 	}
@@ -286,8 +286,8 @@ struct SavedMiniMap {
 		yratio = b.m_ratio.y;
 		width = b.m_size.x;
 		height = b.m_size.y;
-		ARX_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");
-		ARX_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z, "array size mismatch");
+		static_assert(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");
+		static_assert(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z, "array size mismatch");
 		std::copy(&b.m_revealed[0][0], &b.m_revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &revealed[0][0]);
 		return *this;
 	}
@@ -546,7 +546,7 @@ struct SavedSpellcastData {
 	operator IO_SPELLCAST_DATA() const {
 		IO_SPELLCAST_DATA a;
 		a.castingspell = (castingspell < 0) ? SPELL_NONE : SpellType(castingspell); // TODO save/load enum
-		ARX_STATIC_ASSERT(ARRAY_SIZE(a.symb) == 4, "array size mismatch");
+		static_assert(ARRAY_SIZE(a.symb) == 4, "array size mismatch");
 		a.symb[0] = Rune(symb[0]); // TODO save/load enum
 		a.symb[1] = Rune(symb[1]);
 		a.symb[2] = Rune(symb[2]);
@@ -560,7 +560,7 @@ struct SavedSpellcastData {
 	
 	SavedSpellcastData & operator=(const IO_SPELLCAST_DATA & b) {
 		castingspell = (b.castingspell == SPELL_NONE) ? -1 : b.castingspell;
-		ARX_STATIC_ASSERT(ARRAY_SIZE(b.symb) == 4, "array size mismatch");
+		static_assert(ARRAY_SIZE(b.symb) == 4, "array size mismatch");
 		std::copy(b.symb, b.symb + 4, symb);
 		spell_flags = b.spell_flags;
 		spell_level = b.spell_level;
@@ -706,7 +706,7 @@ struct SavedBehaviour {
 		a.behavior_param = behavior_param;
 		a.target = EntityHandle(target);
 		a.movemode = MoveMode(movemode); // TODO save/load enum
-		ARX_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS, "array size mismatch");
+		static_assert(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS, "array size mismatch");
 		std::copy(animlayer, animlayer + SAVED_MAX_ANIM_LAYERS, a.animlayer);
 		return a;
 	}
@@ -718,7 +718,7 @@ struct SavedBehaviour {
 		tactics = 0;
 		target = b.target.handleData();
 		movemode = b.movemode;
-		ARX_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS, "array size mismatch");
+		static_assert(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS, "array size mismatch");
 		std::copy(b.animlayer, b.animlayer + SAVED_MAX_ANIM_LAYERS, animlayer);
 		return *this;
 	}
@@ -765,7 +765,7 @@ struct SavedExtraRotate {
 	
 	operator EERIE_EXTRA_ROTATE() const {
 		EERIE_EXTRA_ROTATE a;
-		ARX_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE <= MAX_EXTRA_ROTATE, "array size mismatch");
+		static_assert(SAVED_MAX_EXTRA_ROTATE <= MAX_EXTRA_ROTATE, "array size mismatch");
 		std::transform(group_number, group_number + SAVED_MAX_EXTRA_ROTATE, a.group_number, saved_toObjGroup);
 		std::copy(group_rotate, group_rotate + SAVED_MAX_EXTRA_ROTATE, a.group_rotate);
 		return a;
@@ -773,7 +773,7 @@ struct SavedExtraRotate {
 	
 	SavedExtraRotate & operator=(const EERIE_EXTRA_ROTATE & b) {
 		flags = 0;
-		ARX_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE <= MAX_EXTRA_ROTATE, "array size mismatch");
+		static_assert(SAVED_MAX_EXTRA_ROTATE <= MAX_EXTRA_ROTATE, "array size mismatch");
 		std::transform(b.group_number, b.group_number + SAVED_MAX_EXTRA_ROTATE, group_number, saved_fromObjGroup);
 		std::copy(b.group_rotate, b.group_rotate + SAVED_MAX_EXTRA_ROTATE, group_rotate);
 		#ifdef ARX_DEBUG
@@ -875,14 +875,14 @@ struct SavedEquipItem {
 	
 	operator IO_EQUIPITEM() const {
 		IO_EQUIPITEM a;
-		ARX_STATIC_ASSERT(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number,
+		static_assert(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number,
 		                  "array size mismatch");
 		std::copy(elements, elements + SAVED_IO_EQUIPITEM_ELEMENT_Number, a.elements);
 		return a;
 	}
 	
 	SavedEquipItem & operator=(const IO_EQUIPITEM & b) {
-		ARX_STATIC_ASSERT(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number,
+		static_assert(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number,
 		                  "array size mismatch");
 		std::copy(b.elements, b.elements + SAVED_IO_EQUIPITEM_ELEMENT_Number, elements);
 		return *this;

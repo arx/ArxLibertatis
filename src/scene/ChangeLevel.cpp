@@ -640,7 +640,7 @@ template <size_t N>
 static void storeIdString(char (&tofill)[N], const Entity * io) {
 	
 	if(!io || !ValidIOAddress(io)) {
-		ARX_STATIC_ASSERT(N >= 4, "id string too short");
+		static_assert(N >= 4, "id string too short");
 		util::storeString(tofill, "none");
 	} else {
 		
@@ -882,7 +882,7 @@ static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 
 template <size_t N>
 void FillTargetInfo(char (&info)[N], EntityHandle numtarget) {
-	ARX_STATIC_ASSERT(N >= 6, "id string too short");
+	static_assert(N >= 6, "id string too short");
 	if(numtarget == EntityHandle_Self) {
 		util::storeString(info, "self");
 	} else if(numtarget == EntityHandle()) {

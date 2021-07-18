@@ -30,8 +30,6 @@
 #cmakedefine01 ARX_HAVE_CXX11_MAX_ALIGN_T
 // noexcept
 #cmakedefine01 ARX_HAVE_CXX11_NOEXCEPT
-// static_assert(cond, msg)
-#cmakedefine01 ARX_HAVE_CXX11_STATIC_ASSERT
 // variadic templates
 #cmakedefine01 ARX_HAVE_CXX11_VARIADIC_TEMPLATES
 // thread_local

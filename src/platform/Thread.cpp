@@ -41,8 +41,6 @@
 #include ARX_INCLUDED_CPUID_H
 #endif
 
-#include <boost/static_assert.hpp>
-
 #include "math/Random.h"
 
 #include "platform/Alignment.h"
@@ -301,7 +299,7 @@ void Thread::disableFloatDenormals() {
 	
 	#elif ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64 || ARX_ARCH == ARX_ARCH_E2K
 	
-	BOOST_STATIC_ASSERT(ARX_HAVE_SSE);
+	static_assert(ARX_HAVE_SSE);
 	
 	#if ARX_HAVE_XMMINTRIN
 

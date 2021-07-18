@@ -201,7 +201,7 @@ void CrashHandlerWindows::processCrashTrace() {
 	}
 	
 	PCONTEXT context = reinterpret_cast<PCONTEXT>(m_pCrashInfo->contextRecord);
-	ARX_STATIC_ASSERT(sizeof(m_pCrashInfo->contextRecord) >= sizeof(*context),
+	static_assert(sizeof(m_pCrashInfo->contextRecord) >= sizeof(*context),
 	                  "buffer too small");
 	STACKFRAME64 stackFrame;
 	memset(&stackFrame, 0, sizeof(stackFrame));

@@ -178,7 +178,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			face.norm = eff->norm.toVec3();
 			
 			// Copy in all the texture and normals data
-			ARX_STATIC_ASSERT(IOPOLYVERT_FTL == IOPOLYVERT, "array size mismatch");
+			static_assert(IOPOLYVERT_FTL == IOPOLYVERT, "array size mismatch");
 			for(size_t kk = 0; kk < IOPOLYVERT_FTL; kk++) {
 				face.vid[kk] = eff->vid[kk];
 				face.u[kk] = eff->u[kk];

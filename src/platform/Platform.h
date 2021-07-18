@@ -263,17 +263,6 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 	#define arx_force_inline inline
 #endif
 
-/*!
- * \def ARX_STATIC_ASSERT
- * \brief Declare that a function never throws exceptions.
- */
-#if ARX_HAVE_CXX11_STATIC_ASSERT
-	#define ARX_STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
-#else
-	#include <boost/static_assert.hpp>
-	#define ARX_STATIC_ASSERT(Condition, Message) BOOST_STATIC_ASSERT_MSG(Condition, Message)
-#endif
-
 /* ---------------------------------------------------------
                           Assertions
 ------------------------------------------------------------*/
@@ -466,7 +455,7 @@ public:
 		#if __cplusplus < 201402L && defined(__GNUC__)
 		// ignore warning: ISO C++ forbids casting between pointer-to-function and pointer-to-object
 		FunctionType funcptr;
-		ARX_STATIC_ASSERT(sizeof(funcptr) == sizeof(m_func), "pointer size mismatch");
+		static_assert(sizeof(funcptr) == sizeof(m_func), "pointer size mismatch");
 		std::memcpy(&funcptr, &m_func, sizeof(funcptr));
 		return funcptr;
 		#else

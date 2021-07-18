@@ -95,7 +95,7 @@ public:
 	RenderState()
 		: m_state(0)
 	{
-		ARX_STATIC_ASSERT(sizeof(m_state) * 8 >= End, "fields do not fit into m_state");
+		static_assert(sizeof(m_state) * 8 >= End, "fields do not fit into m_state");
 		disableBlend();
 	}
 	

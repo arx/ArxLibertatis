@@ -29,7 +29,6 @@
 #include <stdlib.h>
 #endif
 
-#include <boost/static_assert.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/range/size.hpp>

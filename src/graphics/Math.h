@@ -89,7 +89,7 @@ bool SphereInCylinder(const Cylinder & cyl1, const Sphere & s);
 
 template <class T, class O>
 inline T reinterpret(O v) {
-	ARX_STATIC_ASSERT(sizeof(T) == sizeof(O), "can only reinterpret to type of same size");
+	static_assert(sizeof(T) == sizeof(O), "can only reinterpret to type of same size");
 	T t;
 	memcpy(&t, &v, sizeof(T));
 	return t;

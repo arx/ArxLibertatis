@@ -273,7 +273,7 @@ arx_noreturn void CrashHandlerWindows::handleCrash(int crashType, void * crashEx
 	
 	// Copy CONTEXT to crash info structure
 	PCONTEXT context = reinterpret_cast<PCONTEXT>(m_pCrashInfo->contextRecord);
-	ARX_STATIC_ASSERT(sizeof(m_pCrashInfo->contextRecord) >= sizeof(*context),
+	static_assert(sizeof(m_pCrashInfo->contextRecord) >= sizeof(*context),
 	                  "buffer too small");
 	memset(context, 0, sizeof(*context));
 	EXCEPTION_POINTERS fakePointers;

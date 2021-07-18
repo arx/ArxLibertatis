@@ -210,9 +210,9 @@ void free_aligned(void * ptr);
 template <size_t Alignment, bool NeedsManualAlignment = (Alignment > GuaranteedAlignment)>
 struct AlignedAllocator {
 	static const void * void_type;
-	ARX_STATIC_ASSERT(Alignment % sizeof(void_type) == 0,
+	static_assert(Alignment % sizeof(void_type) == 0,
 	                  "Alignment must be a multiple of sizeof(void *)");
-	ARX_STATIC_ASSERT((Alignment & (Alignment - 1)) == 0,
+	static_assert((Alignment & (Alignment - 1)) == 0,
 	                  "Alignment must be a power of two");
 	arx_alloc_align_static(1, Alignment)
 	static void * alloc_object(std::size_t size) {
