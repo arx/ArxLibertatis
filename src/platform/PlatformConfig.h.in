@@ -10,10 +10,6 @@
  */
 
 // C++11 features
-// long long
-#cmakedefine01 ARX_HAVE_CXX11_LONG_LONG
-// std::max_align_t <cstddef>
-#cmakedefine01 ARX_HAVE_CXX11_MAX_ALIGN_T
 // noexcept
 #cmakedefine01 ARX_HAVE_CXX11_NOEXCEPT
 // variadic templates

@@ -82,8 +82,8 @@ void free_aligned(void * ptr) {
 
 arx_nodiscard void * alloc_aligned(std::size_t alignment, std::size_t size) {
 	
-	if(alignment < GuaranteedAlignment) {
-		alignment = GuaranteedAlignment;
+	if(alignment < alignof(std::max_align_t)) {
+		alignment = alignof(std::max_align_t);
 	}
 	
 	unsigned char * allocation = static_cast<unsigned char *>(std::malloc(size + alignment));

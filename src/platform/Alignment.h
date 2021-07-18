@@ -36,10 +36,6 @@
 
 #include "platform/PlatformConfig.h"
 
-#if !ARX_HAVE_CXX11_MAX_ALIGN_T
-#include <boost/integer/static_min_max.hpp>
-#endif
-
 #include "platform/Platform.h"
 
 
@@ -122,28 +118,10 @@
 
 namespace platform {
 
-#if ARX_HAVE_CXX11_MAX_ALIGN_T
-enum AlignmentInfo_ { GuaranteedAlignment = alignof(std::max_align_t) };
-#else
-enum AlignmentInfo_ {
-	GuaranteedAlignment = boost::static_unsigned_max<
-		#if ARX_HAVE_CXX11_LONG_LONG
-		alignof(long long),
-		#else
-		alignof(long),
-		#endif
-		boost::static_unsigned_max<
-			alignof(double),
-			alignof(long double)
-		>::value
-	>::value
-};
-#endif
-
 /*!
  * Allocate a buffer with a specific alignment.
  *
- * This is only needed if the required alignment is greater than \c GuaranteedAlignment.
+ * This is only needed if the required alignment is greater than \c alignof(std::max_align_t).
  *
  * \param alignment The required alignment. This must be a power of two and
  *                  a multiple of \code sizeof( void *) \endcode.
@@ -166,7 +144,7 @@ void free_aligned(void * ptr);
  * \tparam Alignment The required alignment. This must be a power of two and
  *                   a multiple of \code sizeof( void *) \endcode.
  */
-template <size_t Alignment, bool NeedsManualAlignment = (Alignment > GuaranteedAlignment)>
+template <size_t Alignment, bool NeedsManualAlignment = (Alignment > alignof(std::max_align_t))>
 struct AlignedAllocator {
 	static const void * void_type;
 	static_assert(Alignment % sizeof(void_type) == 0,
@@ -195,14 +173,14 @@ struct AlignedAllocator {
 
 template <size_t Alignment>
 struct AlignedAllocator<Alignment, false> {
-	arx_alloc_align_static(1, GuaranteedAlignment)
+	arx_alloc_align_static(1, alignof(std::max_align_t))
 	static void * alloc_object(std::size_t size) {
 		return ::operator new(size);
 	}
 	static void free_object(void * ptr) {
 		::operator delete(ptr);
 	}
-	arx_alloc_align_static(1, GuaranteedAlignment)
+	arx_alloc_align_static(1, alignof(std::max_align_t))
 	static void * alloc_array(std::size_t size) {
 		return ::operator new[](size);
 	}
