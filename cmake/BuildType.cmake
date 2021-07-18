@@ -290,6 +290,9 @@ else(MSVC)
 			add_cxxflag("-Wstrict-aliasing=1") # has false positives
 			add_cxxflag("-Wuseless-cast") # has false positives
 			add_cxxflag("-Wsign-promo")
+			add_cxxflag("-Wsuggest-override")
+			add_cxxflag("-Wsuggest-final-types")
+			add_cxxflag("-Wsuggest-final-methods")
 			# add_cxxflag("-Wnull-dereference") not that useful without deduction path
 			
 			# Possible optimization opportunities
