@@ -412,6 +412,10 @@ else(MSVC)
 			
 		endforeach(flag_var)
 		
+		if(NOT DEBUG AND NOT IS_LIBCXX)
+			add_cxxflag("-Wp,-U_GLIBCXX_ASSERTIONS")
+		endif()
+		
 		if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 			
 			# set debug symbol level to -g3
