@@ -93,12 +93,9 @@
 	}
 	#define arx_assume_aligned(Pointer, Alignment) \
 		checkAlignment((Pointer), (Alignment), ARX_FILE, __LINE__)
-#elif ARX_HAVE_BUILTIN_ASSUME_ALIGNED && ARX_HAVE_CXX11_DECLTYPE
+#elif ARX_HAVE_BUILTIN_ASSUME_ALIGNED
 	#define arx_assume_aligned(Pointer, Alignment) \
 		static_cast<decltype(Pointer)>(__builtin_assume_aligned((Pointer), (Alignment)))
-#elif ARX_HAVE_BUILTIN_ASSUME_ALIGNED && ARX_HAVE_GCC_TYPEOF
-	#define arx_assume_aligned(Pointer, Alignment) \
-		static_cast<__typeof__(Pointer)>(__builtin_assume_aligned((Pointer), (Alignment)))
 #else
 	// TODO Use lambda
 	template <size_t Alignment, typename T>

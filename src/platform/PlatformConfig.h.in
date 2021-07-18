@@ -12,8 +12,6 @@
 // C++11 features
 // std::atomic
 #cmakedefine01 ARX_HAVE_CXX11_ATOMIC
-// decltype(…)
-#cmakedefine01 ARX_HAVE_CXX11_DECLTYPE
 // std::forward in <utility>
 #cmakedefine01 ARX_HAVE_CXX11_FORWARD
 // std::itegral_constant in <type_traits>
@@ -66,8 +64,6 @@
 #cmakedefine01 ARX_HAVE_BUILTIN_UNREACHABLE
 // __thread
 #cmakedefine01 ARX_HAVE_GCC_THREADLOCAL
-// __typeof__(e)
-#cmakedefine01 ARX_HAVE_GCC_TYPEOF
 
 // MSVC extensions
 // __assume(e)
