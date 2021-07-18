@@ -2016,8 +2016,12 @@ def CheckSpacing(filename, clean_lines, linenum, error):
           'Missing spaces around %s' % match.group(1))
   # We allow no-spaces around << and >> when used like this: 10<<20, but
   # not otherwise (particularly, not when used as streams)
-  match = Search(r'[^\s](<<|>>)[^\s]', line)
+  match = Search(r'[^\s](<<)[^\s]', line)
   if match:
+    error(filename, linenum, 'whitespace/operators', 3,
+          'Missing spaces around %s' % match.group(1))
+  match = Search(r'[^\s](>>)[^\s]', line)
+  if match and not Search(r'<[^<]*<', line):
     error(filename, linenum, 'whitespace/operators', 3,
           'Missing spaces around %s' % match.group(1))
 
