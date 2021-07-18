@@ -524,11 +524,11 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 	uLongf compressedSize = size - 1;
 	std::vector<char> compressed(compressedSize);
 	const char * p;
-	if(compress2(reinterpret_cast<Bytef *>(&compressed[0]), &compressedSize,
+	if(compress2(reinterpret_cast<Bytef *>(compressed.data()), &compressedSize,
 	             reinterpret_cast<const Bytef *>(data), size, 1) == Z_OK) {
 		file->comp = File::Deflate;
 		file->storedSize = compressedSize;
-		p = &compressed[0];
+		p = compressed.data();
 	} else {
 		file->comp = File::None;
 		file->storedSize = size;
