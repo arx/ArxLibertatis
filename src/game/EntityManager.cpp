@@ -45,8 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 #include <algorithm>
+#include <unordered_map>
 
-#include <boost/unordered_map.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -57,7 +57,7 @@ struct EntityManager::Impl {
 	
 	size_t m_minfree; // first unused index (value == nullptr)
 	
-	typedef boost::unordered_map<std::string, Entity *> Index;
+	typedef std::unordered_map<std::string, Entity *> Index;
 	Index m_index;
 	
 	Impl() : m_minfree(0) { }

@@ -43,10 +43,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/PathFinder.h"
 
-#include <limits>
 #include <algorithm>
-
-#include <boost/unordered_map.hpp>
+#include <limits>
+#include <unordered_map>
 
 #include "ai/Anchors.h"
 
@@ -154,7 +153,7 @@ public:
 
 class PathFinder::ClosedNodeList {
 	
-	typedef boost::unordered_map<NodeId, Node *> NodeList;
+	typedef std::unordered_map<NodeId, Node *> NodeList;
 	NodeList nodes;
 	
 public:

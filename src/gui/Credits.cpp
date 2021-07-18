@@ -47,10 +47,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <iterator>
 #include <sstream>
+#include <unordered_map>
 #include <vector>
 
 #include <boost/tokenizer.hpp>
-#include <boost/unordered_map.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
 #include "core/Core.h"
@@ -121,7 +121,7 @@ private:
 	
 	TextureContainer * m_background;
 	
-	typedef boost::unordered_map<std::string, std::string> Libraries;
+	typedef std::unordered_map<std::string, std::string> Libraries;
 	Libraries m_libraries;
 	
 	std::string m_message;

@@ -49,11 +49,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <cstdio>
 #include <exception>
-#include <map>
 #include <limits>
+#include <map>
+#include <unordered_map>
 
 #include <boost/scoped_array.hpp>
-#include <boost/unordered_map.hpp>
 
 #include "ai/Anchors.h"
 #include "ai/PathFinder.h"
@@ -1055,8 +1055,7 @@ void ComputePortalVertexBuffer() {
 		return;
 	}
 	
-	typedef boost::unordered_map<TextureContainer *,  SINFO_TEXTURE_VERTEX>
-		TextureMap;
+	typedef std::unordered_map<TextureContainer *,  SINFO_TEXTURE_VERTEX> TextureMap;
 	TextureMap infos;
 	
 	for(size_t i = 0; i < portals->rooms.size(); i++) {

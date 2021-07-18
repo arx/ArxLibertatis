@@ -46,9 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <unordered_map>
 #include <vector>
-
-#include <boost/unordered_map.hpp>
 
 #include "platform/Platform.h"
 #include "io/fs/FilePath.h"
@@ -97,7 +96,7 @@ private:
 		
 	};
 	
-	typedef boost::unordered_map<std::string, File> Files;
+	typedef std::unordered_map<std::string, File> Files;
 	
 	fs::path m_savefile;
 	fs::fstream m_handle;

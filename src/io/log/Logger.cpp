@@ -21,10 +21,9 @@
 
 #include <cstdlib>
 #include <cstring>
-#include <vector>
 #include <algorithm>
-
-#include <boost/unordered_map.hpp>
+#include <unordered_map>
+#include <vector>
 
 #include "io/log/ConsoleLogger.h"
 #include "io/log/LogBackend.h"
@@ -45,13 +44,13 @@ struct LogManager {
 	static Lock lock;
 	
 	//! note: using the pointer value of a string constant as a hash map index.
-	typedef boost::unordered_map<const char *, logger::Source> Sources;
+	typedef std::unordered_map<const char *, logger::Source> Sources;
 	static Sources sources;
 	
 	typedef std::vector<logger::Backend *> Backends;
 	static Backends backends;
 	
-	typedef boost::unordered_map<std::string, Logger::LogLevel> Rules;
+	typedef std::unordered_map<std::string, Logger::LogLevel> Rules;
 	static Rules rules;
 	
 	static logger::Source * getSource(const char * file);
