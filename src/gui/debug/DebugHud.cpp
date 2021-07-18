@@ -389,7 +389,7 @@ void ShowFrameDurationPlot() {
 		frameDurationPlotVertices[i].w = 1.0f;
 	}
 
-	EERIEDRAWPRIM(Renderer::LineStrip, &frameDurationPlotVertices[0], frameDurationPlotValues.size());
+	EERIEDRAWPRIM(Renderer::LineStrip, frameDurationPlotVertices.data(), frameDurationPlotValues.size());
 
 	Color avgColor = Color::blue * 0.5f + Color::white * 0.5f;
 	float avgPos = OFFSET_Y + (avg * SCALE_Y);
