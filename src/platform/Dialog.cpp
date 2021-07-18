@@ -239,7 +239,7 @@ static int zenityCommand(DialogType type, const std::string & message,
 	command.push_back(messageArg.c_str());
 	command.push_back(NULL);
 	
-	return platform::run(&command[0]);
+	return platform::run(command.data());
 }
 
 static int kdialogCommand(DialogType type, const std::string & message,
@@ -263,7 +263,7 @@ static int kdialogCommand(DialogType type, const std::string & message,
 	command.push_back(arx_icon_name.c_str());
 	command.push_back(NULL);
 	
-	return platform::run(&command[0]);
+	return platform::run(command.data());
 }
 
 static void xmessageButtons(std::vector<const char *> & command, DialogType type) {
@@ -292,7 +292,7 @@ static int gxmessageCommand(DialogType type, const std::string & message,
 	command.push_back(message.c_str());
 	command.push_back(NULL);
 	
-	return platform::run(&command[0]);
+	return platform::run(command.data());
 }
 
 static int xdialogCommand(DialogType type, const std::string & message,
@@ -319,7 +319,7 @@ static int xdialogCommand(DialogType type, const std::string & message,
 	command.push_back("0");
 	command.push_back(NULL);
 	
-	return platform::run(&command[0]);
+	return platform::run(command.data());
 }
 
 static int xmessageCommand(DialogType type, const std::string & message,
@@ -333,7 +333,7 @@ static int xmessageCommand(DialogType type, const std::string & message,
 	command.push_back(message.c_str());
 	command.push_back(NULL);
 	
-	return platform::run(&command[0]);
+	return platform::run(command.data());
 }
 
 #if ARX_HAVE_SDL2
