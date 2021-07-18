@@ -165,7 +165,8 @@ public:
 	
 	void draw(Renderer::Primitive primitive) {
 		arx_assert(!vertices);
-		pDynamicVertexBuffer->vb->drawIndexed(primitive, pDynamicVertexBuffer->pos - start, start, &indices[0], nbindices);
+		pDynamicVertexBuffer->vb->drawIndexed(primitive, pDynamicVertexBuffer->pos - start, start,
+		                                      indices.data(), nbindices);
 	}
 	
 	void done() {
@@ -820,7 +821,7 @@ static void RenderWater() {
 	GRenderer->SetTexture(1, enviro);
 	GRenderer->SetTexture(2, enviro);
 	
-	unsigned short * indices = &dynamicVertices.indices[0];
+	unsigned short * indices = dynamicVertices.indices.data();
 	
 	float time = toMsf(g_gameTime.now());
 
@@ -836,7 +837,7 @@ static void RenderWater() {
 			dynamicVertices.reset();
 			dynamicVertices.lock((iNb + 1) * 4);
 			iNbIndice = 0;
-			indices = &dynamicVertices.indices[0];
+			indices = dynamicVertices.indices.data();
 			pVertex = dynamicVertices.append(iNbVertex);
 		}
 		
@@ -926,7 +927,7 @@ static void RenderLava() {
 	GRenderer->SetTexture(1, enviro);
 	GRenderer->SetTexture(2, enviro);
 	
-	unsigned short * indices = &dynamicVertices.indices[0];
+	unsigned short * indices = dynamicVertices.indices.data();
 	
 	float time = toMsf(g_gameTime.now());
 
@@ -942,7 +943,7 @@ static void RenderLava() {
 			dynamicVertices.reset();
 			dynamicVertices.lock((iNb + 1) * 4);
 			iNbIndice = 0;
-			indices = &dynamicVertices.indices[0];
+			indices = dynamicVertices.indices.data();
 			pVertex = dynamicVertices.append(iNbVertex);
 		}
 		
@@ -997,7 +998,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	
 	SMY_VERTEX * pMyVertex = room.pVertexBuffer->lock(NoOverwrite);
 	
-	unsigned short * pIndices = &room.indexBuffer[0];
+	unsigned short * pIndices = room.indexBuffer.data();
 	
 	BOOST_FOREACH(const EP_DATA & epd, room.epdata) {
 		
