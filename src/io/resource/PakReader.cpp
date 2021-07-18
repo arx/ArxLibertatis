@@ -121,7 +121,7 @@ std::string UncompressedFile::read() const {
 	std::string buffer;
 	
 	buffer.resize(m_size);
-	fs::read(m_archive, &buffer[0], m_size);
+	fs::read(m_archive, buffer.data(), m_size);
 	if(m_archive.fail()) {
 		LogError << "Error reading from PAK archive";
 		buffer.clear();
@@ -253,7 +253,7 @@ std::string CompressedFile::read() const {
 	std::string buffer;
 	
 	buffer.resize(m_storedSize);
-	fs::read(m_archive, &buffer[0], m_storedSize);
+	fs::read(m_archive, buffer.data(), m_storedSize);
 	if(m_archive.fail()) {
 		LogError << "Error reading from PAK archive";
 		buffer.clear();
