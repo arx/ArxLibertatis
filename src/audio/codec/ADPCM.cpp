@@ -259,7 +259,7 @@ aalError CodecADPCM::getNextBlock() {
 		cache_l[i] = samp2[i];
 	}
 	
-	if(!m_stream->read(&nybble_l[0], nybble_l.size())) {
+	if(!m_stream->read(nybble_l.data(), nybble_l.size())) {
 		return AAL_ERROR_FILEIO;
 	}
 	
