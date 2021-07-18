@@ -336,7 +336,7 @@ void Thread::disableFloatDenormals() {
 	#if ARX_COMPILER_MSVC || ARX_HAVE_BUILTIN_IA32_FXSAVE
 	#define ARX_CPUID_EDX_FXSR (1 << 24)
 	else if(cpuinfo[3] & ARX_CPUID_EDX_FXSR) {
-		ARX_ALIGNAS(16) char buffer[512];
+		alignas(16) char buffer[512];
 		#if ARX_COMPILER_MSVC
 		_fxsave(buffer);
 		#else

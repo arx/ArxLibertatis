@@ -10,8 +10,6 @@
  */
 
 // C++11 features
-// alignas(n)
-#cmakedefine01 ARX_HAVE_CXX11_ALIGNAS
 // alignof(T)
 #cmakedefine01 ARX_HAVE_CXX11_ALIGNOF
 // auto
@@ -48,8 +46,6 @@
 #cmakedefine01 ARX_HAVE_CXX17_FSTREAM_WCHAR
 
 // GCC extensions
-// __attribute__((aligned(n)))
-#cmakedefine01 ARX_HAVE_ATTRIBUTE_ALIGNED
 // __attribute__((alloc_align(i)))
 #cmakedefine01 ARX_HAVE_ATTRIBUTE_ALLOC_ALIGN
 // __attribute__((alloc_size(i)))
@@ -82,8 +78,6 @@
 // MSVC extensions
 // __assume(e)
 #cmakedefine01 ARX_HAVE_ASSUME
-// __declspec(align(n))
-#cmakedefine01 ARX_HAVE_DECLSPEC_ALIGN
 // __alignof(T)
 #cmakedefine01 ARX_HAVE_MSVC_ALIGNOF
 // __declspec(thread)

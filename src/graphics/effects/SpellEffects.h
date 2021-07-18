@@ -59,7 +59,7 @@ struct RenderMaterial;
 
 const int BEZIERPrecision = 32;
 
-class ARX_ALIGNAS(16) CSpellFx {
+class alignas(16) CSpellFx {
 	
 public:
 	

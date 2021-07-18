@@ -61,27 +61,6 @@
 #endif
 
 /*!
- * \def ARX_ALIGNAS(N)
- * \brief Set the required alignment of a type or member variable.
- *
- * Usage:
- * \code struct ARX_ALIGNAS(128) Name { … } \endcode
- *
- * \note Because of __declspec(align) restrictions / incomplete alignas support in MSVC,
- *       N must be a number literal - it can *not* be an arbitrary constant expression
- *       like \ref ARX_ALIGNOF(T).
- */
-#if ARX_HAVE_CXX11_ALIGNAS
-	#define ARX_ALIGNAS(N) alignas(N)
-#elif ARX_HAVE_ATTRIBUTE_ALIGNED
-	#define ARX_ALIGNAS(N) __attribute__((aligned(N)))
-#elif ARX_HAVE_DECLSPEC_ALIGN
-	#define ARX_ALIGNAS(N) __declspec(align(N))
-#else
-	#error "No way to specify required alignment!"
-#endif
-
-/*!
  * \def arx_is_aligned(Pointer, aligned)
  * \brief Check if a pointer is aligned.
  */

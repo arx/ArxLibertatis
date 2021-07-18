@@ -633,7 +633,6 @@ endif()
 if(NOT CXX_STD_VERSION LESS 2011)
 	enable_cxx_version(${CXX_STD_VERSION})
 	set(ARX_HAVE_CXX11_LONG_LONG 1) # everyone has had this for ages
-	check_cxx11("alignas"                ARX_HAVE_CXX11_ALIGNAS            1900)
 	check_cxx11("alignof"                ARX_HAVE_CXX11_ALIGNOF            1900)
 	check_cxx11("auto"                   ARX_HAVE_CXX11_AUTO               1600)
 	check_cxx11("decltype"               ARX_HAVE_CXX11_DECLTYPE           1900)
@@ -657,7 +656,6 @@ if(MSVC)
 	
 	# Compiler builtins & language extensions
 	set(ARX_HAVE_ASSUME 1)
-	set(ARX_HAVE_DECLSPEC_ALIGN 1)
 	set(ARX_HAVE_MSVC_ALIGNOF 1)
 	set(ARX_HAVE_DECLSPEC_THREADLOCAL 1)
 	
@@ -701,9 +699,6 @@ else(MSVC)
 	
 	# Check compiler builtins & language extensions
 	# These are a symbols, so we can't use check_symbol_exists
-	if(NOT ARX_HAVE_CXX11_ALIGNAS)
-		check_builtin(ARX_HAVE_ATTRIBUTE_ALIGNED      "__attribute__((aligned(n)))")
-	endif()
 	check_builtin(ARX_HAVE_ATTRIBUTE_ALLOC_ALIGN    "__attribute__((alloc_align(i)))")
 	check_builtin(ARX_HAVE_ATTRIBUTE_ALLOC_SIZE     "__attribute__((alloc_size(i)))")
 	check_builtin(ARX_HAVE_ATTRIBUTE_ALWAYS_INLINE  "__attribute__((always_inline))")

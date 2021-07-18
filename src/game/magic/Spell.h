@@ -124,7 +124,7 @@ enum SpellcastFlag {
 DECLARE_FLAGS(SpellcastFlag, SpellcastFlags)
 DECLARE_FLAGS_OPERATORS(SpellcastFlags)
 
-class ARX_ALIGNAS(16) SpellBase : private boost::noncopyable {
+class alignas(16) SpellBase : private boost::noncopyable {
 	
 public:
 	
