@@ -174,7 +174,7 @@ aalError StreamWAV::setStream(PakFileHandle * stream) {
 	m_stream = stream;
 	
 	m_header.resize(sizeof(WaveHeader));
-	WaveHeader * header = reinterpret_cast<WaveHeader *>(&m_header[0]);
+	WaveHeader * header = reinterpret_cast<WaveHeader *>(m_header.data());
 	
 	ChunkFile wave(m_stream);
 	
@@ -198,9 +198,9 @@ aalError StreamWAV::setStream(PakFileHandle * stream) {
 		}
 		
 		m_header.resize(sizeof(WaveHeader) + header->size);
-		header = reinterpret_cast<WaveHeader *>(&m_header[0]);
+		header = reinterpret_cast<WaveHeader *>(m_header.data());
 		
-		wave.read(&m_header[0] + sizeof(WaveHeader), header->size);
+		wave.read(m_header.data() + sizeof(WaveHeader), header->size);
 		
 		// Get sample count from the 'fact' chunk
 		wave.find("fact");
@@ -269,7 +269,7 @@ PakFileHandle * StreamWAV::getStream() {
 
 aalError StreamWAV::getFormat(PCMFormat & format) {
 	
-	const WaveHeader * header = reinterpret_cast<const WaveHeader *>(&m_header[0]);
+	const WaveHeader * header = reinterpret_cast<const WaveHeader *>(m_header.data());
 	
 	format.frequency = header->samplesPerSec;
 	format.channels = header->channels;
