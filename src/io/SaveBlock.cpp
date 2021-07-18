@@ -182,7 +182,7 @@ std::string SaveBlock::File::loadData(std::istream & handle, const std::string &
 	
 	std::string buffer;
 	buffer.resize(storedSize);
-	char * p = &buffer[0];
+	char * p = buffer.data();
 	
 	for(File::ChunkList::const_iterator chunk = chunks.begin();
 	    chunk != chunks.end(); ++chunk) {
@@ -191,7 +191,7 @@ std::string SaveBlock::File::loadData(std::istream & handle, const std::string &
 		p += chunk->size;
 	}
 	
-	arx_assert(p == &buffer[0] + storedSize);
+	arx_assert(p == buffer.data() + storedSize);
 	
 	switch(comp) {
 		
@@ -217,7 +217,7 @@ std::string SaveBlock::File::loadData(std::istream & handle, const std::string &
 			std::string uncompressed;
 			uncompressed.resize(uncompressedSize);
 			uLongf outSize = uLongf(uncompressedSize);
-			Bytef * out = reinterpret_cast<Bytef *>(&uncompressed[0]);
+			Bytef * out = reinterpret_cast<Bytef *>(uncompressed.data());
 			const Bytef * in = reinterpret_cast<const Bytef *>(buffer.data());
 			int ret = uncompress(out, &outSize, in, uLongf(storedSize));
 			if(ret != Z_OK) {
