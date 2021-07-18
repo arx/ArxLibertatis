@@ -300,6 +300,9 @@ else(MSVC)
 			# Levels 3 and above may result in warnings for safe code
 			add_cxxflag("-Wstringop-overflow=4")
 			
+			# There are some cases we want 0 instead of nullptr (e.g. Flags)
+			add_cxxflag("-Wzero-as-null-pointer-constant")
+			
 			if(NOT DEBUG_EXTRA OR NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 				add_ldflag("-Wl,--detect-odr-violations")
 			endif()
