@@ -72,18 +72,14 @@ struct EntityId {
 	const std::string & className() const { return m_className; }
 	EntityInstance instance() const { return m_instance; }
 	
-private:
-	
-	typedef void(*unspecified_bool)();
-	
 public:
 	
 	/*!
 	 * \return true if this id is valid
 	 * \note Currently the player Entity always has instance -1 and is thus considered invalid by this function.
 	 */
-	operator unspecified_bool() const {
-		return unspecified_bool(m_instance >= 0);
+	explicit operator bool() const {
+		return (m_instance >= 0);
 	}
 	
 	//! Static instance of the "self" id
