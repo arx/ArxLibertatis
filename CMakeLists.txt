@@ -633,7 +633,6 @@ endif()
 if(NOT CXX_STD_VERSION LESS 2011)
 	enable_cxx_version(${CXX_STD_VERSION})
 	set(ARX_HAVE_CXX11_LONG_LONG 1) # everyone has had this for ages
-	check_cxx11("std::atomic"            ARX_HAVE_CXX11_ATOMIC             1700)
 	check_cxx11("std::forward"           ARX_HAVE_CXX11_FORWARD            1800)
 	check_cxx11("std::integral_constant" ARX_HAVE_CXX11_INTEGRAL_CONSTANT  1500)
 	check_cxx11("std::max_align_t"       ARX_HAVE_CXX11_MAX_ALIGN_T        1700)
@@ -1405,13 +1404,6 @@ list(APPEND ARX_LIBRARIES ${BASE_LIBRARIES})
 
 if(NOT MSVC)
 	check_link_library(Boost Boost_LIBRARIES)
-endif()
-
-if(BUILD_PROFILER_INSTRUMENT)
-	if(NOT ARX_HAVE_CXX11_ATOMIC)
-		message(WARNING "Missing c++11 atomic, profiler instrumentation disabled")
-		set(BUILD_PROFILER_INSTRUMENT 0)
-	endif()
 endif()
 
 set(ARX_SOURCES

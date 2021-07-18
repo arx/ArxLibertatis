@@ -10,8 +10,6 @@
  */
 
 // C++11 features
-// std::atomic
-#cmakedefine01 ARX_HAVE_CXX11_ATOMIC
 // std::forward in <utility>
 #cmakedefine01 ARX_HAVE_CXX11_FORWARD
 // std::itegral_constant in <type_traits>
