@@ -120,7 +120,7 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 	}
 
 	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM(Renderer::LineStrip, &vertices[0], vertices.size());
+	EERIEDRAWPRIM(Renderer::LineStrip, vertices.data(), vertices.size());
 }
 
 void drawLineCylinder(const Cylinder & cyl, Color col) {
