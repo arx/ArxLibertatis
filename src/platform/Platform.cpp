@@ -19,6 +19,8 @@
 
 #include "platform/Platform.h"
 
+#include <cassert>
+#include <cstring>
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -27,8 +29,6 @@
 #if ARX_PLATFORM == ARX_PLATFORM_UNKNOWN
 #warning "Unknown target platform"
 #endif
-
-#ifdef ARX_DEBUG
 
 typedef void(*AssertHandler)(const char * expr, const char * file, unsigned int line,
                              const char * msg);
@@ -60,7 +60,61 @@ void assertionFailed(const char * expr, const char * file, unsigned int line,
 	
 }
 
-#endif // ARX_DEBUG
+#if ARX_PLATFORM == ARX_PLATFORM_MACOS
+
+[[gnu::visibility("default")]]
+void __assert_rtn(const char * function, const char * file, unsigned int line, const char * assertion) {
+	assertionFailed(assertion, file, line, "in function %s", function);
+	arx_trap();
+}
+
+#endif
+
+#if defined(__GLIBC__)
+
+[[gnu::visibility("default")]]
+void __assert_fail(const char * assertion, const char * file, unsigned int line, const char * function) {
+	assertionFailed(assertion, file, line, "in function %s", function);
+	arx_trap();
+}
+
+[[gnu::visibility("default")]]
+void __assert_perror_fail(int errnum, const char * file, unsigned int line, const char * function) {
+	assertionFailed(std::strerror(errnum), file, line, "error %d in function %s", errnum, function);
+	arx_trap();
+}
+
+#endif
+
+#if defined(__OpenBSD__)
+
+[[gnu::visibility("default")]]
+void __assert2(const char * file, int line, const char * function, const char * assertion) {
+	assertionFailed(assertion, file, line, "in function %s", function);
+	arx_trap();
+}
+
+#endif
+
+#if defined(__OpenBSD__) || defined(__NetBSD__)
+
+[[gnu::visibility("default")]]
+void __assert(const char * file, int line, const char * assertion) {
+	assertionFailed(assertion, file, line, nullptr);
+	arx_trap();
+}
+
+#endif
+
+#if defined(__FreeBSD__) || defined(__DragonFly__) || defined(__GLIBC__)
+
+[[gnu::visibility("default")]]
+void __assert(const char * assertion, const char * file, int line) {
+	assertionFailed(assertion, file, line, nullptr);
+	arx_trap();
+}
+
+#endif
 
 // When building without exceptions, there's a chance the boost precompiled library are built with exception handling turned on... in that case
 // we would get an undefined symbol at link time.  In order to solve this, we define this symbol here:

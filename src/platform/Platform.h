@@ -278,14 +278,15 @@ namespace ARX_ANONYMOUS_NAMESPACE {
                           Assertions
 ------------------------------------------------------------*/
 
+/*!
+ * \brief Log that an assertion has failed
+ *
+ * This is a low-level implementation, use arx_assert() instead!
+ */
+arx_format_printf(4, 5)
+void assertionFailed(const char * expression, const char * file, unsigned line, const char * message, ...);
+
 #ifdef ARX_DEBUG
-	/*!
-	 * \brief Log that an assertion has failed
-	 *
-	 * This is a low-level implementation, use arx_assert() instead!
-	 */
-	arx_format_printf(4, 5)
-	void assertionFailed(const char * expression, const char * file, unsigned line, const char * message, ...);
 #define arx_assert_impl(Expression, ExpressionString, ...) \
 	((Expression) ? (void)0 : (assertionFailed(ExpressionString, ARX_FILE, __LINE__, __VA_ARGS__), arx_trap()))
 #else // ARX_DEBUG
