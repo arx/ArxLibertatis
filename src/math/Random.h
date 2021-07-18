@@ -28,7 +28,6 @@
 #include <boost/random/uniform_real_distribution.hpp>
 
 #include "platform/Platform.h"
-#include "platform/ThreadLocal.h"
 
 /*!
  * Random number generator.
@@ -73,7 +72,7 @@ private:
 	
 	typedef boost::random::mt19937 Generator;
 	
-	static ARX_THREAD_LOCAL Generator * rng;
+	static thread_local Generator * rng;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

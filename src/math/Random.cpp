@@ -21,7 +21,7 @@
 
 #include <ctime>
 
-ARX_THREAD_LOCAL Random::Generator * Random::rng = nullptr;
+thread_local Random::Generator * Random::rng = nullptr;
 
 void Random::seed() {
 	if(!rng) {

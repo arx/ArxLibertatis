@@ -10,8 +10,6 @@
  */
 
 // C++11 features
-// thread_local
-#cmakedefine01 ARX_HAVE_CXX11_THREADLOCAL
 // = default
 #cmakedefine01 ARX_HAVE_CXX11_DEFAULT
 // final
@@ -48,14 +46,10 @@
 #cmakedefine01 ARX_HAVE_BUILTIN_TRAP
 // __builtin_unreachable()
 #cmakedefine01 ARX_HAVE_BUILTIN_UNREACHABLE
-// __thread
-#cmakedefine01 ARX_HAVE_GCC_THREADLOCAL
 
 // MSVC extensions
 // __assume(e)
 #cmakedefine01 ARX_HAVE_ASSUME
-// __declspec(thread)
-#cmakedefine01 ARX_HAVE_DECLSPEC_THREADLOCAL
 
 // Code generation options
 #cmakedefine01 BUILD_PROFILER_INSTRUMENT

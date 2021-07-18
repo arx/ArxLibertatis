@@ -632,7 +632,6 @@ endif()
 
 if(NOT CXX_STD_VERSION LESS 2011)
 	enable_cxx_version(${CXX_STD_VERSION})
-	check_cxx11("thread_local"           ARX_HAVE_CXX11_THREADLOCAL        1900)
 	check_cxx11("default"                ARX_HAVE_CXX11_DEFAULT            1800)
 	check_cxx11("final"                  ARX_HAVE_CXX11_FINAL              1700)
 	check_cxx11("[[noreturn]]"           ARX_HAVE_CXX11_NORETURN           1900)
@@ -646,7 +645,6 @@ if(MSVC)
 	
 	# Compiler builtins & language extensions
 	set(ARX_HAVE_ASSUME 1)
-	set(ARX_HAVE_DECLSPEC_THREADLOCAL 1)
 	
 	# Standard library features
 	set(ARX_HAVE_ALIGNED_MALLOC 1)
@@ -704,9 +702,6 @@ else(MSVC)
 	check_builtin(ARX_HAVE_BUILTIN_ASSUME_ALIGNED   "__builtin_assume_aligned")
 	check_builtin(ARX_HAVE_BUILTIN_TRAP             "__builtin_trap")
 	check_builtin(ARX_HAVE_BUILTIN_UNREACHABLE      "__builtin_unreachable")
-	if(NOT ARX_HAVE_CXX11_THREADLOCAL)
-		check_builtin(ARX_HAVE_GCC_THREADLOCAL        "__thread")
-	endif()
 	
 	if(WIN32)
 		check_symbol_exists(_aligned_malloc "malloc.h" ARX_HAVE_ALIGNED_MALLOC)
