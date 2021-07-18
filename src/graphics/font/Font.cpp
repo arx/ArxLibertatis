@@ -376,7 +376,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 			const std::vector<TexturedVertex> & vertices = mapTextureVertices[texture];
 			if(!vertices.empty()) {
 				GRenderer->SetTexture(0, &m_textures->getTexture(texture));
-				EERIEDRAWPRIM(Renderer::TriangleList, &vertices[0], vertices.size());
+				EERIEDRAWPRIM(Renderer::TriangleList, vertices.data(), vertices.size());
 			}
 		}
 		
