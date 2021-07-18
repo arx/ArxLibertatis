@@ -628,7 +628,7 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 	}
 
 	if(!m_mapVertices.empty()) {
-		EERIEDRAWPRIM(Renderer::TriangleList, &m_mapVertices[0], m_mapVertices.size());
+		EERIEDRAWPRIM(Renderer::TriangleList, m_mapVertices.data(), m_mapVertices.size());
 	}
 	
 }
