@@ -47,20 +47,6 @@
 
 
 /*!
- * \def ARX_ALIGNOF(T)
- * \brief Get the required alignment of a type.
- */
-#if ARX_HAVE_CXX11_ALIGNOF
-	#define ARX_ALIGNOF(T) alignof(T)
-#elif ARX_HAVE_GCC_ALIGNOF
-	#define ARX_ALIGNOF(T) __alignof__(T)
-#elif ARX_HAVE_MSVC_ALIGNOF
-	#define ARX_ALIGNOF(T) __alignof(T)
-#else
-	#error "No way to determine required alignment!"
-#endif
-
-/*!
  * \def arx_is_aligned(Pointer, aligned)
  * \brief Check if a pointer is aligned.
  */
@@ -143,18 +129,18 @@
 namespace platform {
 
 #if ARX_HAVE_CXX11_MAX_ALIGN_T
-enum AlignmentInfo_ { GuaranteedAlignment = ARX_ALIGNOF(std::max_align_t) };
+enum AlignmentInfo_ { GuaranteedAlignment = alignof(std::max_align_t) };
 #else
 enum AlignmentInfo_ {
 	GuaranteedAlignment = boost::static_unsigned_max<
 		#if ARX_HAVE_CXX11_LONG_LONG
-		ARX_ALIGNOF(long long),
+		alignof(long long),
 		#else
-		ARX_ALIGNOF(long),
+		alignof(long),
 		#endif
 		boost::static_unsigned_max<
-			ARX_ALIGNOF(double),
-			ARX_ALIGNOF(long double)
+			alignof(double),
+			alignof(long double)
 		>::value
 	>::value
 };
@@ -237,7 +223,7 @@ struct AlignedAllocator<Alignment, false> {
  * \tparam T         The type to allocate.
  * \tparam Alignment The required alignment. Will use the alignment of T if not specified.
  */
-template <typename T, size_t Alignment = ARX_ALIGNOF(T)>
+template <typename T, size_t Alignment = alignof(T)>
 struct aligned_allocator {
 	
 	typedef T value_type;
@@ -340,7 +326,7 @@ inline bool is_aligned_on(const void * p, size_t alignment) {
 //! Check if a pointer is aligned for a specific type.
 template <class T>
 bool is_aligned(const void * p) {
-	return is_aligned_on(p, ARX_ALIGNOF(T));
+	return is_aligned_on(p, alignof(T));
 }
 
 } // namespace platform
@@ -378,7 +364,7 @@ bool is_aligned(const void * p) {
  * 
  * \param Class The class whose alignment requirements should be used.
  */
-#define ARX_USE_ALIGNED_NEW(Class) ARX_USE_ALIGNED_NEW_N(ARX_ALIGNOF(Class))
+#define ARX_USE_ALIGNED_NEW(Class) ARX_USE_ALIGNED_NEW_N(alignof(Class))
 
 #define ARX_USE_ALIGNED_ALLOCATOR_T(Template, Class, Alignment) \
 	namespace std { \
@@ -418,7 +404,7 @@ bool is_aligned(const void * p) {
  * \param Class     The user-defined class to override std::allocator for.
  */
 #define ARX_USE_ALIGNED_ALLOCATOR(Class) \
-	ARX_USE_ALIGNED_ALLOCATOR_N(Class, ARX_ALIGNOF(Class))
+	ARX_USE_ALIGNED_ALLOCATOR_N(Class, alignof(Class))
 
 
 #endif // ARX_PLATFORM_ALIGNMENT_H

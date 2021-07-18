@@ -128,8 +128,8 @@ class alignas(16) SpellBase : private boost::noncopyable {
 	
 public:
 	
-	// We can't use ARX_ALIGNOF(glm::mat4x4) directly because MSVC sucks
-	static_assert(ARX_ALIGNOF(glm::mat4x4) <= 16, "need to increase alignment");
+	// We can't use alignof(glm::mat4x4) directly because MSVC sucks
+	static_assert(alignof(glm::mat4x4) <= 16, "need to increase alignment");
 	
 	SpellBase();
 	virtual ~SpellBase() {}

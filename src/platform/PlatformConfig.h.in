@@ -10,8 +10,6 @@
  */
 
 // C++11 features
-// alignof(T)
-#cmakedefine01 ARX_HAVE_CXX11_ALIGNOF
 // auto
 #cmakedefine01 ARX_HAVE_CXX11_AUTO
 // std::atomic
@@ -68,8 +66,6 @@
 #cmakedefine01 ARX_HAVE_BUILTIN_TRAP
 // __builtin_unreachable()
 #cmakedefine01 ARX_HAVE_BUILTIN_UNREACHABLE
-// __alignof__(T)
-#cmakedefine01 ARX_HAVE_GCC_ALIGNOF
 // __thread
 #cmakedefine01 ARX_HAVE_GCC_THREADLOCAL
 // __typeof__(e)
@@ -78,8 +74,6 @@
 // MSVC extensions
 // __assume(e)
 #cmakedefine01 ARX_HAVE_ASSUME
-// __alignof(T)
-#cmakedefine01 ARX_HAVE_MSVC_ALIGNOF
 // __declspec(thread)
 #cmakedefine01 ARX_HAVE_DECLSPEC_THREADLOCAL
 

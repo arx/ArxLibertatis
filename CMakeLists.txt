@@ -633,7 +633,6 @@ endif()
 if(NOT CXX_STD_VERSION LESS 2011)
 	enable_cxx_version(${CXX_STD_VERSION})
 	set(ARX_HAVE_CXX11_LONG_LONG 1) # everyone has had this for ages
-	check_cxx11("alignof"                ARX_HAVE_CXX11_ALIGNOF            1900)
 	check_cxx11("auto"                   ARX_HAVE_CXX11_AUTO               1600)
 	check_cxx11("decltype"               ARX_HAVE_CXX11_DECLTYPE           1900)
 	check_cxx11("std::atomic"            ARX_HAVE_CXX11_ATOMIC             1700)
@@ -656,7 +655,6 @@ if(MSVC)
 	
 	# Compiler builtins & language extensions
 	set(ARX_HAVE_ASSUME 1)
-	set(ARX_HAVE_MSVC_ALIGNOF 1)
 	set(ARX_HAVE_DECLSPEC_THREADLOCAL 1)
 	
 	# Standard library features
@@ -715,9 +713,6 @@ else(MSVC)
 	check_builtin(ARX_HAVE_BUILTIN_ASSUME_ALIGNED   "__builtin_assume_aligned")
 	check_builtin(ARX_HAVE_BUILTIN_TRAP             "__builtin_trap")
 	check_builtin(ARX_HAVE_BUILTIN_UNREACHABLE      "__builtin_unreachable")
-	if(NOT ARX_HAVE_CXX11_ALIGNOF)
-		check_builtin(ARX_HAVE_GCC_ALIGNOF            "__alignof__")
-	endif()
 	if(NOT ARX_HAVE_CXX11_THREADLOCAL)
 		check_builtin(ARX_HAVE_GCC_THREADLOCAL        "__thread")
 	endif()
