@@ -20,11 +20,12 @@
 #ifndef ARX_CORE_TIMETYPES_H
 #define ARX_CORE_TIMETYPES_H
 
+#include <cmath>
 #include <algorithm>
+#include <type_traits>
 
 #include <boost/config.hpp>
 #include <boost/operators.hpp>
-#include <boost/type_traits.hpp>
 
 #include <glm/gtc/constants.hpp>
 
@@ -121,7 +122,7 @@ inline DurationType<TAG, T> operator-(InstantType<TAG, T> a, InstantType<TAG, T>
 
 template <typename TAG, typename T, class IntType>
 inline DurationType<TAG, T> operator*(DurationType<TAG, T> a, IntType b) {
-	static_assert(boost::is_integral<IntType>::value, "factor must be int type");
+	static_assert(std::is_integral<IntType>::value, "factor must be int type");
 	return DurationType<TAG, T>::ofRaw(a.t * T(b));
 }
 

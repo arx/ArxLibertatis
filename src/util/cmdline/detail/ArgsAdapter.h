@@ -34,6 +34,8 @@
 #ifndef ARX_UTIL_CMDLINE_DETAIL_ARGSADAPTER_H
 #define ARX_UTIL_CMDLINE_DETAIL_ARGSADAPTER_H
 
+#include <type_traits>
+
 #include <boost/config.hpp>
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/comma_if.hpp>

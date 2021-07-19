@@ -21,8 +21,8 @@
 #define ARX_MATH_RANDOM_H
 
 #include <limits>
+#include <type_traits>
 
-#include <boost/type_traits.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
@@ -79,7 +79,7 @@ private:
 
 template <class IntType>
 IntType Random::get(IntType min, IntType max) {
-	static_assert(boost::is_integral<IntType>::value, "get must be called with ints");
+	static_assert(std::is_integral<IntType>::value, "get must be called with ints");
 	
 	return typename boost::random::uniform_int_distribution<IntType>(min, max)(*rng);
 }
@@ -99,7 +99,7 @@ inline unsigned int Random::getu(unsigned int min, unsigned int max) {
 
 template <class RealType>
 RealType Random::getf(RealType min, RealType max) {
-	static_assert(boost::is_float<RealType>::value, "getf must be called with floats");
+	static_assert(std::is_floating_point<RealType>::value, "getf must be called with floats");
 	
 	return typename boost::random::uniform_real_distribution<RealType>(min, max)(*rng);
 }
