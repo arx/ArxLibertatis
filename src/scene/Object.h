@@ -47,14 +47,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCENE_OBJECT_H
 #define ARX_SCENE_OBJECT_H
 
+#include <string_view>
+
 #include "graphics/GraphicsTypes.h"
 
 void MakeUserFlag(TextureContainer * tc);
-ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname);
-ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string & selname);
+ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view groupname);
+ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, std::string_view selname);
 
-ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text);
-ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text);
+ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, std::string_view text);
+ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, std::string_view text);
 ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx);
 
 /*!

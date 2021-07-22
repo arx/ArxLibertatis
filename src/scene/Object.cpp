@@ -82,7 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
 
-ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text) {
+ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, std::string_view text) {
 	
 	if(!eobj)
 		return ObjVertHandle();
@@ -96,7 +96,7 @@ ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string &
 	return ObjVertHandle();
 }
 
-ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text) {
+ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, std::string_view text) {
 	
 	if(!eobj)
 		return ActionPoint();
@@ -157,7 +157,7 @@ void MakeUserFlag(TextureContainer * tc) {
 	if(!tc)
 		return;
 	
-	const std::string & tex = tc->m_texName.string();
+	std::string_view tex = tc->m_texName.string();
 	
 	if(boost::contains(tex, "npc_")) {
 		tc->userflags |= POLY_LATE_MIP;
@@ -259,7 +259,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	return nouvo;
 }
 
-ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string & selname) {
+ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, std::string_view selname) {
 	
 	if(!obj)
 		return ObjSelection();
@@ -273,7 +273,7 @@ ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::strin
 	return ObjSelection();
 }
 
-ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname) {
+ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view groupname) {
 	
 	if(!obj)
 		return ObjVertGroup();
