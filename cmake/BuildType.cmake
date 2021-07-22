@@ -373,6 +373,8 @@ else(MSVC)
 		add_cxxflag("-fcatch-undefined-behavior")
 		add_cxxflag("-fstack-protector-all")
 		add_cxxflag("-fsanitize=address")
+		add_cxxflag("-fsanitize-address-use-after-scope")
+		add_cxxflag("-fsanitize-address-use-after-return=always")
 		# add_cxxflag("-fsanitize=thread") does not work together with -fsanitize=address
 		add_cxxflag("-fsanitize=leak")
 		add_cxxflag("-fsanitize=undefined")
@@ -380,7 +382,7 @@ else(MSVC)
 			add_definitions(-D_LIBCPP_DEBUG=1) # libc++
 			# libc++'s debug checks fail with -fsanitize=undefined
 		else()
-			add_definitions(-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC) # libstdc++
+			add_definitions(-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -D_GLIBCXX_SANITIZE_VECTOR) # libstdc++
 			set(disable_libstdcxx_debug "-U_GLIBCXX_DEBUG -U_GLIBCXX_DEBUG_PEDANTIC")
 		endif()
 	endif(DEBUG_EXTRA)
