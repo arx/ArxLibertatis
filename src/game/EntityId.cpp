@@ -34,7 +34,7 @@ EntityId::EntityId(const res::path & classPath, EntityInstance instance)
 	, m_instance(instance)
 { }
 
-EntityId::EntityId(const std::string & id)
+EntityId::EntityId(std::string_view id)
 	: m_instance(-1)
 {
 	if(id.empty() || id == "none") {
@@ -46,9 +46,9 @@ EntityId::EntityId(const std::string & id)
 		size_t sep = id.find_last_of('_');
 		
 		m_instance = 0;
-		if(sep != std::string::npos) {
+		if(sep != std::string_view::npos) {
 			try {
-				m_instance = boost::lexical_cast<EntityInstance>(id.c_str() + sep + 1);
+				m_instance = boost::lexical_cast<EntityInstance>(id.substr(sep + 1));
 			} catch(...) {
 				m_className = id;
 				m_instance = -1;

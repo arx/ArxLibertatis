@@ -21,7 +21,9 @@
 #define ARX_GAME_ENTITYID_H
 
 #include <string>
+#include <string_view>
 #include <ostream>
+#include <utility>
 
 #include "platform/Platform.h"
 
@@ -38,8 +40,13 @@ struct EntityId {
 		: m_instance(-1)
 	{ }
 	
-	EntityId(const std::string & className, EntityInstance instance)
+	EntityId(std::string_view className, EntityInstance instance)
 		: m_className(className)
+		, m_instance(instance)
+	{ }
+	
+	EntityId(std::string className, EntityInstance instance)
+		: m_className(std::move(className))
 		, m_instance(instance)
 	{ }
 	
@@ -67,7 +74,7 @@ struct EntityId {
 	 * To convert a \ref EntityId back to such a string use the
 	 * \ref string() member or operator<< overload.
 	 */
-	explicit EntityId(const std::string & idString);
+	explicit EntityId(std::string_view idString);
 	
 	const std::string & className() const { return m_className; }
 	EntityInstance instance() const { return m_instance; }
