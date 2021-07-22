@@ -21,6 +21,7 @@
 
 #include <cstdlib>
 #include <algorithm>
+#include <utility>
 
 #include "io/log/Logger.h"
 #include "io/resource/ResourcePath.h"
@@ -82,11 +83,11 @@ PakDirectory * PakDirectory::getDirectory(const res::path & path) {
 		
 		size_t end = path.string().find(res::path::dir_sep, pos);
 		
-		std::string name;
+		std::string_view name;
 		if(end == std::string::npos) {
-			name = path.string().substr(pos);
+			name = std::string_view(path.string()).substr(pos);
 		} else {
-			name = path.string().substr(pos, end - pos);
+			name = std::string_view(path.string()).substr(pos, end - pos);
 		}
 		
 		dirs_iterator entry = dir->dirs.find(name);
@@ -121,11 +122,11 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 		size_t end = path.string().find(res::path::dir_sep, pos);
 		
 		if(end == std::string::npos) {
-			files_iterator file = dir->files.find(path.string().substr(pos));
+			files_iterator file = dir->files.find(std::string_view(path.string()).substr(pos));
 			return (file == dir->files.end()) ? nullptr : file->second;
 		}
 		
-		dirs_iterator entry = dir->dirs.find(path.string().substr(pos, end - pos));
+		dirs_iterator entry = dir->dirs.find(std::string_view(path.string()).substr(pos, end - pos));
 		if(entry == dir->dirs.end()) {
 			return nullptr;
 		}
@@ -136,21 +137,20 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 	
 }
 
-void PakDirectory::addFile(const std::string & name, PakFile * file) {
+void PakDirectory::addFile(std::string name, PakFile * file) {
 	
-	std::map<std::string, PakFile *>::iterator old = files.find(name);
+	auto result = files.emplace(std::move(name), file);
 	
-	if(old == files.end()) {
-		files[name] = file;
-	} else {
-		file->_alternative = old->second;
-		old->second = file;
+	if(!result.second) {
+		result.first->second->_alternative = result.first->second;
+		result.first->second = file;
 	}
+	
 }
 
-void PakDirectory::removeFile(const std::string & name) {
+void PakDirectory::removeFile(std::string_view name) {
 	
-	std::map<std::string, PakFile *>::iterator old = files.find(name);
+	auto old = files.find(name);
 	
 	if(old != files.end()) {
 		delete old->second;
@@ -158,9 +158,9 @@ void PakDirectory::removeFile(const std::string & name) {
 	}
 }
 
-bool PakDirectory::removeDirectory(const std::string & name) {
+bool PakDirectory::removeDirectory(std::string_view name) {
 	
-	dirs_iterator old = dirs.find(name);
+	auto old = dirs.find(name);
 	
 	if(old == dirs.end()) {
 		return true;

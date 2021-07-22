@@ -21,6 +21,7 @@
 #define ARX_IO_RESOURCE_PAKENTRY_H
 
 #include <string>
+#include <string_view>
 #include <map>
 
 #include <boost/noncopyable.hpp>
@@ -59,17 +60,17 @@ class PakDirectory {
 private:
 	
 	// TODO hash maps might be a better fit
-	std::map<std::string, PakFile *> files;
-	std::map<std::string, PakDirectory> dirs;
+	std::map<std::string, PakFile *, std::less<>> files;
+	std::map<std::string, PakDirectory, std::less<>> dirs;
 	
 	PakDirectory * addDirectory(const res::path & path);
 	
-	void addFile(const std::string & name, PakFile * file);
-	void removeFile(const std::string & name);
-	bool removeDirectory(const std::string & name);
+	void addFile(std::string name, PakFile * file);
+	void removeFile(std::string_view name);
+	bool removeDirectory(std::string_view name);
 	
 	friend class PakReader;
-	friend class std::map<std::string, PakDirectory>;
+	friend class std::map<std::string, PakDirectory, std::less<>>;
 	friend struct std::pair<const std::string, PakDirectory>;
 	
 public:
@@ -77,8 +78,8 @@ public:
 	PakDirectory();
 	~PakDirectory();
 	
-	typedef std::map<std::string, PakDirectory>::iterator dirs_iterator;
-	typedef std::map<std::string, PakFile *>::const_iterator files_iterator;
+	typedef std::map<std::string, PakDirectory, std::less<>>::iterator dirs_iterator;
+	typedef std::map<std::string, PakFile *, std::less<>>::const_iterator files_iterator;
 	
 	PakDirectory * getDirectory(const res::path & path);
 	
