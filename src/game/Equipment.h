@@ -48,7 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GAME_EQUIPMENT_H
 
 #include <stddef.h>
-#include <string>
+#include <string_view>
 
 #include "game/Item.h"
 #include "math/Types.h"
@@ -78,13 +78,13 @@ enum EquipmentSlot {
 void ARX_EQUIPMENT_Init();
 void ARX_EQUIPMENT_Remove_All_Special(Entity * io);
 void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
-                            const std::string & modifierName, float val,
+                            std::string_view modifierName, float val,
                             EquipmentModifierFlags flags);
 
 //! Sets/unsets an object type flag
-bool ARX_EQUIPMENT_SetObjectType(Entity & io, const std::string & temp, bool set);
+bool ARX_EQUIPMENT_SetObjectType(Entity & io, std::string_view temp, bool set);
 
-ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string & temp);
+ItemType ARX_EQUIPMENT_GetObjectTypeFlag(std::string_view temp);
 void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip);
 void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags = 0);
 void ARX_EQUIPMENT_ReleaseAll(Entity * io);
@@ -128,7 +128,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 void ARX_EQUIPMENT_IdentifyAll();
 
 void ARX_EQUIPMENT_UnEquipAllPlayer();
-float GetHitValue(const std::string & name);
+float GetHitValue(std::string_view name);
 void ARX_EQUIPMENT_UnEquipPlayerWeapon();
 bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO);
 

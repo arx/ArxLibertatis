@@ -113,7 +113,7 @@ extern EERIE_3DOBJ * arrowobj;
 EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 
 //! \brief Returns the object type flag corresponding to a string
-ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string & temp) {
+ItemType ARX_EQUIPMENT_GetObjectTypeFlag(std::string_view temp) {
 	
 	if(temp.empty()) {
 		return 0;
@@ -165,7 +165,7 @@ void ARX_EQUIPMENT_ReleaseAll(Entity * io) {
 extern long EXITING;
 
 //! \brief Recreates player mesh from scratch
-static void applyTweak(EquipmentSlot equip, TweakType tw, const std::string & selection) {
+static void applyTweak(EquipmentSlot equip, TweakType tw, std::string_view selection) {
 	
 	if(!ValidIONum(player.equiped[equip])) {
 		return;
@@ -471,11 +471,8 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	float attack, ac, damages;
 	float backstab = 1.f;
 
-	std::string _wmat = "bare";
-	const std::string * wmat = &_wmat;
-	
-	std::string _amat = "flesh";
-	const std::string * amat = &_amat;
+	std::string_view wmat = "bare";
+	std::string_view amat = "flesh";
 
 	bool critical = false;
 
@@ -484,7 +481,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 			Entity * io = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 			if(io && !io->weaponmaterial.empty()) {
-				wmat = &io->weaponmaterial;
+				wmat = io->weaponmaterial;
 			}
 		}
 		
@@ -512,13 +509,13 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		}
 		
 		if(!io_source->weaponmaterial.empty()) {
-			wmat = &io_source->weaponmaterial;
+			wmat = io_source->weaponmaterial;
 		}
 		
 		if(io_source->_npcdata->weapon) {
 			Entity * iow = io_source->_npcdata->weapon;
 			if(!iow->weaponmaterial.empty()) {
-				wmat = &iow->weaponmaterial;
+				wmat = iow->weaponmaterial;
 			}
 		}
 		
@@ -561,14 +558,14 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	}
 	
 	if(!io_target->armormaterial.empty()) {
-		amat = &io_target->armormaterial;
+		amat = io_target->armormaterial;
 	}
 	
 	if(io_target == entities.player()) {
 		if(ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
 			Entity * io = entities[player.equiped[EQUIP_SLOT_ARMOR]];
 			if(io && !io->armormaterial.empty()) {
-				amat = &io->armormaterial;
+				amat = io->armormaterial;
 			}
 		}
 	}
@@ -579,14 +576,14 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	Vec3f pos = io_target->pos;
 	float power = std::min(1.f, dmgs * 0.05f) * 0.1f + 0.9f;
 	
-	ARX_SOUND_PlayCollision(*amat, *wmat, power, 1.f, pos, io_source);
+	ARX_SOUND_PlayCollision(amat, wmat, power, 1.f, pos, io_source);
 	
 	float chance = 100.f - (ac - attack);
 	if(Random::getf(0.f, 100.f) > chance) {
 		return 0.f;
 	}
 	
-	ARX_SOUND_PlayCollision("flesh", *wmat, power, 1.f, pos, io_source);
+	ARX_SOUND_PlayCollision("flesh", wmat, power, 1.f, pos, io_source);
 	
 	if(dmgs > 0.f) {
 		
@@ -821,16 +818,14 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
 							io_source->isHit = true;
 							
-							std::string _weapon_material = "metal";
-							const std::string * weapon_material = &_weapon_material;
-							
+							std::string_view weapon_material = "metal";
 							if(!io_weapon->weaponmaterial.empty()) {
-								weapon_material = &io_weapon->weaponmaterial;
+								weapon_material = io_weapon->weaponmaterial;
 							}
 							
 							if(target->material != MATERIAL_NONE) {
 								const char * matStr = ARX_MATERIAL_GetNameById(target->material);
-								ARX_SOUND_PlayCollision(*weapon_material, matStr, 1.f, 1.f, sphere.origin, nullptr);
+								ARX_SOUND_PlayCollision(weapon_material, matStr, 1.f, 1.f, sphere.origin, nullptr);
 							}
 						}
 					}
@@ -845,18 +840,17 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
 					io_source->isHit = true;
 					
-					std::string _weapon_material = "metal";
-					const std::string * weapon_material = &_weapon_material;
+					std::string_view weapon_material = "metal";
 					if(!io_weapon->weaponmaterial.empty()) {
-						weapon_material = &io_weapon->weaponmaterial;
+						weapon_material = io_weapon->weaponmaterial;
 					}
 					
-					std::string bkg_material = "earth";
-					
-					if(ep && ep->tex && !ep->tex->m_texName.empty())
+					std::string_view bkg_material = "earth";
+					if(ep && ep->tex && !ep->tex->m_texName.empty()) {
 						bkg_material = GetMaterialString(ep->tex->m_texName);
+					}
 					
-					ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, sphere.origin, io_source);
+					ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, sphere.origin, io_source);
 				}
 			}
 
@@ -1011,7 +1005,7 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 	ARX_PLAYER_ComputePlayerFullStats();
 }
 
-bool ARX_EQUIPMENT_SetObjectType(Entity & io, const std::string & temp, bool set) {
+bool ARX_EQUIPMENT_SetObjectType(Entity & io, std::string_view temp, bool set) {
 	
 	ItemType flag = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
 	
@@ -1102,7 +1096,7 @@ float getEquipmentModifier(EquipmentModifierType modifier, float baseval) {
 }
 
 void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
-                            const std::string & modifierName, float val,
+                            std::string_view modifierName, float val,
                             EquipmentModifierFlags flags) {
 	
 	if(io == nullptr) {
@@ -1158,7 +1152,7 @@ void ARX_EQUIPMENT_IdentifyAll() {
 	}
 }
 
-float GetHitValue(const std::string & name) {
+float GetHitValue(std::string_view name) {
 	
 	if(boost::starts_with(name, "hit_")) {
 		// Get the number after the first 4 characters in the string
