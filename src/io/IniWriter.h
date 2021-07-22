@@ -21,7 +21,7 @@
 #define ARX_IO_INIWRITER_H
 
 #include <ostream>
-#include <string>
+#include <string_view>
 
 #include <boost/noncopyable.hpp>
 
@@ -52,12 +52,12 @@ public:
 	 * Write a section header to the output stream.
 	 * \param section The section to start.
 	 */
-	void beginSection(const std::string & section);
+	void beginSection(std::string_view section);
 	
-	void writeKey(const std::string & key, const std::string & value);
-	void writeKey(const std::string & key, int value);
-	void writeKey(const std::string & key, float value);
-	void writeKey(const std::string & key, bool value);
+	void writeKey(std::string_view key, std::string_view value);
+	void writeKey(std::string_view key, int value);
+	void writeKey(std::string_view key, float value);
+	void writeKey(std::string_view key, bool value);
 	
 };
 

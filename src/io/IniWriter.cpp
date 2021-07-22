@@ -21,22 +21,22 @@
 
 #include <ios>
 
-void IniWriter::beginSection(const std::string & section) {
+void IniWriter::beginSection(std::string_view section) {
 	output << '\n' << '[' << section << ']' << '\n';
 }
 
-void IniWriter::writeKey(const std::string & key, const std::string & value) {
+void IniWriter::writeKey(std::string_view key, std::string_view value) {
 	output << key << '=' << '"' << value << '"' << '\n';
 }
 
-void IniWriter::writeKey(const std::string & key, int value) {
+void IniWriter::writeKey(std::string_view key, int value) {
 	output << key << '=' << value << '\n';
 }
 
-void IniWriter::writeKey(const std::string & key, float value) {
+void IniWriter::writeKey(std::string_view key, float value) {
 	output << key << '=' << value << '\n';
 }
 
-void IniWriter::writeKey(const std::string & key, bool value) {
+void IniWriter::writeKey(std::string_view key, bool value) {
 	output << key << '=' << std::boolalpha << value << '\n';
 }
