@@ -34,6 +34,8 @@
 #cmakedefine01 ARX_HAVE_BUILTIN_TRAP
 // __builtin_unreachable()
 #cmakedefine01 ARX_HAVE_BUILTIN_UNREACHABLE
+// __builtin_expect(e, v)
+#cmakedefine01 ARX_HAVE_BUILTIN_EXPECT
 
 // MSVC extensions
 // __assume(e)

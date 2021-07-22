@@ -695,6 +695,7 @@ else(MSVC)
 	check_builtin(ARX_HAVE_BUILTIN_ASSUME_ALIGNED   "__builtin_assume_aligned")
 	check_builtin(ARX_HAVE_BUILTIN_TRAP             "__builtin_trap")
 	check_builtin(ARX_HAVE_BUILTIN_UNREACHABLE      "__builtin_unreachable")
+	check_builtin(ARX_HAVE_BUILTIN_EXPECT           "__builtin_expect")
 	
 	if(WIN32)
 		check_symbol_exists(_aligned_malloc "malloc.h" ARX_HAVE_ALIGNED_MALLOC)

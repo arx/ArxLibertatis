@@ -266,7 +266,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 	arx_format_printf(4, 5)
 	void assertionFailed(const char * expression, const char * file, unsigned line, const char * message, ...);
 #define arx_assert_impl(Expression, ExpressionString, ...) \
-	((Expression) ? (void)0 : (assertionFailed(ExpressionString, ARX_FILE, __LINE__, __VA_ARGS__), arx_trap()))
+	(arx_unlikely(Expression) ? (void)0 : (assertionFailed(ExpressionString, ARX_FILE, __LINE__, __VA_ARGS__), arx_trap()))
 #else // ARX_DEBUG
 	#define arx_assert_impl(Expression, ExpressionString, ...) \
 		ARX_DISCARD(Expression, ExpressionString, __VA_ARGS__)
@@ -294,6 +294,28 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 /* ---------------------------------------------------------
                   Assumptions (Optimizer Hints)
 ------------------------------------------------------------*/
+
+/*!
+ * \def arx_expect(Expression, Value)
+ * \brief Indicate the most likely value of an expression
+ */
+#if ARX_HAVE_BUILTIN_EXPECT
+	#define arx_expect(Expression, ExpectedValue) __builtin_expect((Expression), (ExpectedValue))
+#else
+	#define arx_expect(Expression, ExpectedValue) (ARX_UNUSED(ExpectedValue), (Expression))
+#endif
+
+/*!
+ * \def arx_likely(Condition)
+ * \brief Indicate that a condition is likely true
+ */
+#define arx_likely(Condition) arx_expect(!!(Condition), 1)
+
+/*!
+ * \def arx_unlikely(Condition)
+ * \brief Indicate that a condition is likely false
+ */
+#define arx_unlikely(Condition) arx_expect(!!(Condition), 0)
 
 /*!
  * \def arx_assume(Expression)
