@@ -21,8 +21,11 @@
 
 #include <stddef.h>
 #include <algorithm>
+// #include <exception>
 #include <sstream>
+#include <string_view>
 
+#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
@@ -48,9 +51,9 @@ namespace Default {
 #define THUMBNAIL_DEFAULT_WIDTH 320
 #define THUMBNAIL_DEFAULT_HEIGHT 200
 
-const std::string
-	language = std::string(),
-	audio = std::string(),
+constexpr const std::string_view
+	language,
+	audio,
 	renderer = "auto",
 	resolution = "auto",
 	audioBackend = "auto",
@@ -63,7 +66,7 @@ const std::string
 	thumbnailSize = BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_WIDTH) "x"
 	                BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_HEIGHT);
 
-const int
+constexpr const int
 	refreshRate = 0,
 	levelOfDetail = 2,
 	vsync = -1,
@@ -82,7 +85,7 @@ const int
 	bufferSize = 0,
 	quickLevelTransition = JumpToChangeLevel;
 
-const bool
+constexpr const bool
 	fullscreen = true,
 	viewBobbing = true,
 	screenShake = true,
@@ -111,7 +114,7 @@ const bool allowConsole = true;
 const bool allowConsole = false;
 #endif
 
-const float
+constexpr const float
 	fogDistance = 10.f,
 	gamma = 5.f,
 	fov = 75.f,
@@ -124,7 +127,7 @@ const float
 	speechVolume = 10.f,
 	ambianceVolume = 10.f;
 
-const ActionKey actions[NUM_ACTION_KEY] = {
+constexpr const ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP
 	ActionKey(Keyboard::Key_LeftCtrl, Keyboard::Key_RightCtrl), // MAGICMODE
 	ActionKey(Keyboard::Key_LeftShift, Keyboard::Key_RightShift), // STEALTHMODE
@@ -175,7 +178,7 @@ const ActionKey actions[NUM_ACTION_KEY] = {
 
 namespace Section {
 
-const std::string
+constexpr const std::string_view
 	Language = "language",
 	Video = "video",
 	Interface = "interface",
@@ -190,12 +193,12 @@ const std::string
 namespace Key {
 
 // Language options
-const std::string
+constexpr const std::string_view
 	language = "string",
 	audio = "audio";
 
 // Video options
-const std::string
+constexpr const std::string_view
 	renderer = "renderer",
 	resolution = "resolution",
 	refreshRate = "refresh_rate",
@@ -217,7 +220,7 @@ const std::string
 	extensionOverride = "extension_override";
 
 // Interface options
-const std::string
+constexpr const std::string_view
 	showCrosshair = "show_crosshair",
 	limitSpeechWidth = "limit_speech_width",
 	cinematicWidescreenMode = "cinematic_widescreen_mode",
@@ -233,12 +236,12 @@ const std::string
 	thumbnailSize = "save_thumbnail_size";
 
 // Window options
-const std::string
+constexpr const std::string_view
 	windowSize = "size",
 	minimizeOnFocusLost = "minimize_on_focus_lost";
 
 // Audio options
-const std::string
+constexpr const std::string_view
 	audioBackend = "backend",
 	audioDevice = "device",
 	volume = "master_volume",
@@ -250,7 +253,7 @@ const std::string
 	muteOnFocusLost = "mute_on_focus_lost";
 
 // Input options
-const std::string
+constexpr const std::string_view
 	invertMouse = "invert_mouse",
 	autoReadyWeapon = "auto_ready_weapon",
 	mouseLookToggle = "mouse_look_toggle",
@@ -265,7 +268,7 @@ const std::string
 	allowConsole = "allow_console";
 
 // Input key options
-const std::string actions[NUM_ACTION_KEY] = {
+constexpr const std::string_view actions[NUM_ACTION_KEY] = {
 	"jump",
 	"magic_mode",
 	"stealth_mode",
@@ -313,7 +316,7 @@ const std::string actions[NUM_ACTION_KEY] = {
 };
 
 // Misc options
-const std::string
+constexpr const std::string_view
 	forceToggle = "forcetoggle",
 	migration = "migration",
 	quicksaveSlots = "quicksave_slots",
@@ -325,9 +328,9 @@ class ConfigReader : public IniReader {
 	
 public:
 	
-	void getActionKey(const std::string & section, const std::string & key, InputKeyId & binding) const;
+	void getActionKey(std::string_view section, std::string_view key, InputKeyId & binding) const;
 	
-	ActionKey getActionKey(const std::string & section, ControlAction index) const;
+	ActionKey getActionKey(std::string_view section, ControlAction index) const;
 	
 };
 
@@ -344,13 +347,13 @@ public:
 void ConfigWriter::writeActionKey(ControlAction index, const ActionKey & value) {
 	
 	std::string v1 = Input::getKeyName(value.key[0]);
-	writeKey(Key::actions[index] + "_k0", v1);
+	writeKey(std::string(Key::actions[index]) += "_k0", v1);
 	
 	std::string v2 = Input::getKeyName(value.key[1]);
-	writeKey(Key::actions[index] + "_k1", v2);
+	writeKey(std::string(Key::actions[index]) += "_k1", v2);
 }
 
-void ConfigReader::getActionKey(const std::string & section, const std::string & key,
+void ConfigReader::getActionKey(std::string_view section, std::string_view key,
                                 InputKeyId & binding) const {
 	
 	const IniKey * setting = getKey(section, key);
@@ -369,13 +372,13 @@ void ConfigReader::getActionKey(const std::string & section, const std::string &
 	
 }
 
-ActionKey ConfigReader::getActionKey(const std::string & section, ControlAction index) const {
+ActionKey ConfigReader::getActionKey(std::string_view section, ControlAction index) const {
 	
-	const std::string & key = Key::actions[index];
+	std::string_view key = Key::actions[index];
 	ActionKey action_key = Default::actions[index];
 	
-	getActionKey(section, key + "_k0", action_key.key[0]);
-	getActionKey(section, key + "_k1", action_key.key[1]);
+	getActionKey(section, std::string(key) += "_k0", action_key.key[0]);
+	getActionKey(section, std::string(key) += "_k1", action_key.key[1]);
 	
 	LogDebug("[" << section << "] " << key << " = \"" << Input::getKeyName(action_key.key[0]) << "\", \"" << Input::getKeyName(action_key.key[1]) << "\"");
 	
@@ -545,38 +548,24 @@ bool Config::save() {
 	return writer.flush();
 }
 
-static Vec2i parseResolution(const std::string & resolution) {
+static Vec2i parseResolution(std::string_view resolution, Vec2i defaultResolution) {
 	
-	Vec2i res(0);
-	
-	std::istringstream iss(resolution);
-	iss >> res.x;
-	char x = '\0';
-	iss >> x;
-	iss >> res.y;
-	if(iss.fail() || x != 'x' || res.x <= 0 || res.y <= 0) {
+	try {
+		size_t pos = resolution.find('x');
+		if(pos == std::string_view::npos) {
+			throw std::exception();
+		}
+		Vec2i result(boost::lexical_cast<s32>(resolution.substr(0, pos)),
+		             boost::lexical_cast<s32>(resolution.substr(pos + 1)));
+		if(result.x <= 0 || result.y <= 0) {
+			throw std::exception();
+		}
+		return result;
+	} catch(...) {
 		LogWarning << "Bad resolution string: " << resolution;
-		return Vec2i(ARX_DEFAULT_WIDTH, ARX_DEFAULT_HEIGHT);
+		return defaultResolution;
 	}
 	
-	return res;
-}
-
-static Vec2i parseThumbnailSize(const std::string & thumbnailSize) {
-	
-	Vec2i res(0);
-	
-	std::istringstream iss(thumbnailSize);
-	iss >> res.x;
-	char x = '\0';
-	iss >> x;
-	iss >> res.y;
-	if (iss.fail() || x != 'x' || res.x <= 0 || res.y <= 0) {
-		LogWarning << "Bad thumbnail resolution string: " << thumbnailSize;
-		return Vec2i(THUMBNAIL_DEFAULT_WIDTH, THUMBNAIL_DEFAULT_HEIGHT);
-	}
-	
-	return res;
 }
 
 bool Config::init(const fs::path & file) {
@@ -599,11 +588,11 @@ bool Config::init(const fs::path & file) {
 	
 	// Get video settings
 	video.renderer = reader.getKey(Section::Video, Key::renderer, Default::renderer);
-	std::string resolution = reader.getKey(Section::Video, Key::resolution, Default::resolution);
+	std::string_view resolution = reader.getKey(Section::Video, Key::resolution, Default::resolution);
 	if(resolution == "auto") {
 		video.mode.resolution = Vec2i(0);
 	} else {
-		video.mode.resolution = parseResolution(resolution);
+		video.mode.resolution = parseResolution(resolution, Vec2i(ARX_DEFAULT_WIDTH, ARX_DEFAULT_HEIGHT));
 	}
 	video.mode.refresh = reader.getKey(Section::Video, Key::refreshRate, Default::refreshRate);
 	video.fullscreen = reader.getKey(Section::Video, Key::fullscreen, Default::fullscreen);
@@ -649,12 +638,12 @@ bool Config::init(const fs::path & file) {
 	interface.fontWeight = glm::clamp(fontWeight, 0, 5);
 	int hudScaleFilter = reader.getKey(Section::Interface, Key::hudScaleFilter, Default::hudScaleFilter);
 	interface.scaleFilter = UIScaleFilter(glm::clamp(hudScaleFilter, 0, 1));
-	std::string thumbnailSize = reader.getKey(Section::Interface, Key::thumbnailSize, Default::thumbnailSize);
-	interface.thumbnailSize = parseThumbnailSize(thumbnailSize);
+	std::string_view thumbnailSize = reader.getKey(Section::Interface, Key::thumbnailSize, Default::thumbnailSize);
+	interface.thumbnailSize = parseResolution(thumbnailSize, Vec2i(THUMBNAIL_DEFAULT_WIDTH, THUMBNAIL_DEFAULT_HEIGHT));
 	
 	// Get window settings
-	std::string windowSize = reader.getKey(Section::Window, Key::windowSize, Default::windowSize);
-	window.size = parseResolution(windowSize);
+	std::string_view windowSize = reader.getKey(Section::Window, Key::windowSize, Default::windowSize);
+	window.size = parseResolution(windowSize, Vec2i(ARX_DEFAULT_WIDTH, ARX_DEFAULT_HEIGHT));
 	window.minimizeOnFocusLost = reader.getKey(Section::Window, Key::minimizeOnFocusLost,
 	                                           Default::minimizeOnFocusLost);
 	
