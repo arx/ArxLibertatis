@@ -300,7 +300,7 @@ void SDL1InputBackend::onEvent(const SDL_Event & event) {
 				m_textHandler->newText(text);
 			}
 		}
-		// fall-through
+		[[fallthrough]];
 		case SDL_KEYUP: {
 			SDLKey key = event.key.keysym.sym;
 			if(size_t(key) < std::size(sdlToArxKey)

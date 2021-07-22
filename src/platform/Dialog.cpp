@@ -269,7 +269,7 @@ static void xmessageButtons(std::vector<const char *> & command, DialogType type
 	command.push_back("-buttons");
 	switch(type) {
 		default:             command.push_back("OK"); break;
-		case DialogWarnYesNo: /* fall-through */
+		case DialogWarnYesNo: [[fallthrough]];
 		case DialogYesNo:    command.push_back("Yes:0,No:1"); break;
 		case DialogOkCancel: command.push_back("OK:0,Cancel:1"); break;
 	}
@@ -302,7 +302,7 @@ static int xdialogCommand(DialogType type, const std::string & message,
 	command.push_back(title.c_str());
 	switch(type) {
 		default:             command.push_back("--msgbox"); break;
-		case DialogWarnYesNo: /* fall-through */
+		case DialogWarnYesNo: [[fallthrough]];
 		case DialogYesNo:    command.push_back("--yesno"); break;
 		case DialogOkCancel: {
 			command.push_back("--ok-label"), command.push_back("OK");

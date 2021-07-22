@@ -354,7 +354,7 @@ bool BasicTextInput::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 			if(mod.num) {
 				break;
 			}
-		} /* fall-through */
+		} [[fallthrough]];
 		case Keyboard::Key_LeftArrow: {
 			if(mod.shift) {
 				moveStart();
@@ -370,7 +370,7 @@ bool BasicTextInput::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 			if(mod.num) {
 				break;
 			}
-		} /* fall-through */
+		} [[fallthrough]];
 		case Keyboard::Key_RightArrow: {
 			if(mod.shift) {
 				moveEnd();
@@ -386,7 +386,7 @@ bool BasicTextInput::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 			if(mod.num) {
 				break;
 			}
-		} /* fall-through */
+		} [[fallthrough]];
 		case Keyboard::Key_Home: {
 			moveStart();
 			return true;
@@ -396,7 +396,7 @@ bool BasicTextInput::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 			if(mod.num) {
 				break;
 			}
-		} /* fall-through */
+		} [[fallthrough]];
 		case Keyboard::Key_End: {
 			moveEnd();
 			return true;
@@ -417,7 +417,7 @@ bool BasicTextInput::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 			if(mod.num) {
 				break;
 			}
-		} /* fall-through */
+		} [[fallthrough]];
 		case Keyboard::Key_Delete: {
 			if(mod.control && mod.shift) {
 				eraseEnd();

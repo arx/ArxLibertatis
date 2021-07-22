@@ -334,15 +334,15 @@ Out UTF8::write(Out it, Unicode chr) {
 		case 4: {
 			bytes[3] = static_cast<u8>((chr | 0x80) & 0xBF);
 			chr >>= 6;
-		} /* fall-through */
+		} [[fallthrough]];
 		case 3: {
 			bytes[2] = static_cast<u8>((chr | 0x80) & 0xBF);
 			chr >>= 6;
-		} /* fall-through */
+		} [[fallthrough]];
 		case 2: {
 			bytes[1] = static_cast<u8>((chr | 0x80) & 0xBF);
 			chr >>= 6;
-		} /* fall-through */
+		} [[fallthrough]];
 		case 1: {
 			bytes[0] = static_cast<u8>(chr | utf8FirstBytes[bytesToWrite]);
 			break;
@@ -353,9 +353,9 @@ Out UTF8::write(Out it, Unicode chr) {
 	// Add them to the output
 	const u8 * curByte = bytes;
 	switch(bytesToWrite) {
-		case 4 : *it++ = *curByte++; /* fall-through */
-		case 3 : *it++ = *curByte++; /* fall-through */
-		case 2 : *it++ = *curByte++; /* fall-through */
+		case 4 : *it++ = *curByte++; [[fallthrough]];
+		case 3 : *it++ = *curByte++; [[fallthrough]];
+		case 2 : *it++ = *curByte++; [[fallthrough]];
 		case 1 : *it++ = *curByte++; break;
 		default: arx_unreachable();
 	}
