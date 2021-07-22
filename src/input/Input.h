@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_INPUT_INPUT_H
 
 #include <stddef.h>
+#include <string_view>
 
 #include "core/Config.h"
 #include "core/TimeTypes.h"
@@ -96,7 +97,7 @@ class Input {
 	
 public:
 	
-	static const std::string KEY_NONE;
+	static constexpr const std::string_view KEY_NONE = "---";
 	
 	Input();
 	
@@ -106,7 +107,7 @@ public:
 	void update(float time);
 	
 	static std::string getKeyName(InputKeyId key);
-	static InputKeyId getKeyId(const std::string & keyName);
+	static InputKeyId getKeyId(std::string_view keyName);
 	
 	std::string getKeyDisplayName(InputKeyId key);
 	

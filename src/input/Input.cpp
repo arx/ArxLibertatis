@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "core/Application.h"
 #include "core/Config.h"
@@ -300,10 +301,9 @@ static const KeyDescription keysDescriptions[] = {
 	{ Keyboard::Key_ACBookmarks, "ACBookmarks" },
 };
 
-static const std::string PREFIX_KEY = "Key_";
-static const std::string PREFIX_BUTTON = "Button";
+static constexpr const std::string_view PREFIX_KEY = "Key_";
+static constexpr const std::string_view PREFIX_BUTTON = "Button";
 static const char SEPARATOR = '+';
-const std::string Input::KEY_NONE = "---";
 
 bool ARX_INPUT_Init(Window * window) {
 	GInput = new Input();
@@ -590,7 +590,7 @@ void Input::update(float time) {
 	
 }
 
-static std::map<std::string, InputKeyId> keyNames;
+static std::map<std::string, InputKeyId, std::less<>> keyNames;
 
 std::string Input::getKeyName(InputKeyId key) {
 	
@@ -681,7 +681,7 @@ std::string Input::getKeyDisplayName(InputKeyId key) {
 	
 }
 
-InputKeyId Input::getKeyId(const std::string & name) {
+InputKeyId Input::getKeyId(std::string_view name) {
 	
 	// If a noneset key, return -1
 	if(name.empty() || name == KEY_NONE) {
@@ -689,20 +689,20 @@ InputKeyId Input::getKeyId(const std::string & name) {
 	}
 	
 	size_t sep = name.find(SEPARATOR);
-	if(sep != std::string::npos) {
+	if(sep != std::string_view::npos) {
 		InputKeyId modifier = getKeyId(name.substr(0, sep));
 		InputKeyId key = getKeyId(name.substr(sep + 1));
 		return (modifier < 0) ? key : (modifier << 16 | key);
 	}
 	
-	if(!name.compare(0, PREFIX_KEY.length(), PREFIX_KEY)) {
+	if(boost::starts_with(name, PREFIX_KEY)) {
 		try {
 			int key = boost::lexical_cast<int>(name.substr(PREFIX_KEY.length()));
 			return key;
 		} catch(const boost::bad_lexical_cast &) { }
 	}
 	
-	if(!name.compare(0, PREFIX_BUTTON.length(), PREFIX_BUTTON)) {
+	if(boost::starts_with(name, PREFIX_BUTTON)) {
 		try {
 			int key = boost::lexical_cast<int>(name.substr(PREFIX_BUTTON.length()));
 			if(key >= 0 && key < Mouse::ButtonCount) {
