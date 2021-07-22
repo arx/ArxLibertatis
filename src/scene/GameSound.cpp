@@ -147,8 +147,8 @@ private:
 	
 };
 
-typedef std::map<std::string, SoundMaterial> CollisionMap;
-typedef std::map<std::string, CollisionMap> CollisionMaps;
+typedef std::map<std::string, SoundMaterial, std::less<>> CollisionMap;
+typedef std::map<std::string, CollisionMap, std::less<>> CollisionMaps;
 CollisionMaps collisionMaps;
 
 namespace Section {
@@ -469,7 +469,8 @@ void ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	audio::samplePlay(sample_id, channel);
 }
 
-void ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source) {
+void ARX_SOUND_PlayCollision(std::string_view name1, std::string_view name2, float volume, float power,
+                             const Vec3f & position, Entity * source) {
 	
 	if(!g_soundInitialized)
 		return;

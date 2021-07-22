@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_SCENE_GAMESOUND_H
 
 #include <string>
+#include <string_view>
 
 #include "core/TimeTypes.h"
 #include "audio/AudioTypes.h"
@@ -224,7 +225,7 @@ void ARX_SOUND_PlayMenu(audio::SampleHandle sample_id);
 
 audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar = nullptr, const Entity * io = nullptr);
 void ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source);
-void ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source);
+void ARX_SOUND_PlayCollision(std::string_view name1, std::string_view name2, float volume, float power, const Vec3f & position, Entity * source);
 
 audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar, const Entity * io = nullptr,
                                           float pitch = 1.f, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
