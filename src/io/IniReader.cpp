@@ -20,11 +20,12 @@
 #include "io/IniReader.h"
 
 #include <algorithm>
+#include <utility>
 
 #include "io/log/Logger.h"
 #include "platform/Platform.h"
 
-const IniSection * IniReader::getSection(const std::string & sectionName) const {
+const IniSection * IniReader::getSection(std::string_view sectionName) const {
 	
 	iterator iter = sections.find(sectionName);
 	
@@ -36,7 +37,7 @@ const IniSection * IniReader::getSection(const std::string & sectionName) const 
 	
 }
 
-size_t IniReader::getKeyCount(const std::string & sectionName) const {
+size_t IniReader::getKeyCount(std::string_view sectionName) const {
 	
 	const IniSection * section = getSection(sectionName);
 	if(section) {
@@ -46,7 +47,18 @@ size_t IniReader::getKeyCount(const std::string & sectionName) const {
 	return 0;
 }
 
-const std::string & IniReader::getKey(const std::string & sectionName, const std::string & keyName,
+std::string_view IniReader::getKey(std::string_view sectionName, std::string_view keyName,
+                                   std::string_view defaultValue) const {
+	
+	const IniKey * key = getKey(sectionName, keyName);
+	if(!key) {
+		return defaultValue;
+	}
+	
+	return key->getValue();
+}
+
+const std::string & IniReader::getKey(std::string_view sectionName, std::string_view keyName,
                                       const std::string & defaultValue) const {
 	
 	const IniKey * key = getKey(sectionName, keyName);
@@ -57,7 +69,7 @@ const std::string & IniReader::getKey(const std::string & sectionName, const std
 	return key->getValue();
 }
 
-int IniReader::getKey(const std::string & sectionName, const std::string & keyName,
+int IniReader::getKey(std::string_view sectionName, std::string_view keyName,
                       int defaultValue) const {
 	
 	const IniKey * key = getKey(sectionName, keyName);
@@ -68,7 +80,7 @@ int IniReader::getKey(const std::string & sectionName, const std::string & keyNa
 	return key->getValue(defaultValue);
 }
 
-float IniReader::getKey(const std::string & sectionName, const std::string & keyName,
+float IniReader::getKey(std::string_view sectionName, std::string_view keyName,
                         float defaultValue) const {
 	
 	const IniKey * key = getKey(sectionName, keyName);
@@ -80,7 +92,7 @@ float IniReader::getKey(const std::string & sectionName, const std::string & key
 }
 
 
-bool IniReader::getKey(const std::string & sectionName, const std::string & keyName,
+bool IniReader::getKey(std::string_view sectionName, std::string_view keyName,
                        bool defaultValue) const {
 	
 	const IniKey * key = getKey(sectionName, keyName);
@@ -91,7 +103,7 @@ bool IniReader::getKey(const std::string & sectionName, const std::string & keyN
 	return key->getValue(defaultValue);
 }
 
-const IniKey * IniReader::getKey(const std::string & sectionName, const std::string & keyName) const {
+const IniKey * IniReader::getKey(std::string_view sectionName, std::string_view keyName) const {
 	
 	// Look for a section
 	const IniSection * section = getSection(sectionName);
@@ -114,8 +126,8 @@ const IniKey * IniReader::getKey(const std::string & sectionName, const std::str
 	return section->getKey(keyName);
 }
 
-static const std::string WHITESPACE = " \t\r\n";
-static const std::string ALPHANUM = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";
+static constexpr const std::string_view WHITESPACE = " \t\r\n";
+static constexpr const std::string_view ALPHANUM = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";
 
 bool IniReader::read(std::istream & is, bool overrideValues) {
 	
@@ -167,7 +179,7 @@ bool IniReader::read(std::istream & is, bool overrideValues) {
 			transform(sectionName.begin(), sectionName.end(), sectionName.begin(), ::tolower);
 			
 			LogDebug("found section: \"" << sectionName << "\"");
-			section = &sections[sectionName];
+			section = &sections[std::move(sectionName)];
 			
 			// Ignoring rest of the line, not verifying that it's only whitespace / comment
 			
@@ -297,9 +309,9 @@ bool IniReader::read(std::istream & is, bool overrideValues) {
 		}
 		
 		if(overrideValues) {
-			section->setKey(key, value);
+			section->setKey(std::move(key), std::move(value));
 		} else {
-			section->addKey(key, value);
+			section->addKey(std::move(key), std::move(value));
 		}
 		
 		// Ignoring rest of the line, not verifying that it's only whitespace / comment

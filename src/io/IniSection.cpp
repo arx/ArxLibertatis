@@ -63,7 +63,7 @@ bool IniKey::getValue(bool defaultValue) const {
 		return defaultValue;
 }
 
-const IniKey * IniSection::getKey(const std::string & name) const {
+const IniKey * IniSection::getKey(std::string_view name) const {
 	
 	// Try to match the key to one in the section
 	for(iterator i = begin(); i != end(); ++i) {
@@ -76,29 +76,29 @@ const IniKey * IniSection::getKey(const std::string & name) const {
 	return nullptr;
 }
 
-void IniSection::addKey(const std::string & key, const std::string & value) {
+void IniSection::addKey(std::string key, std::string value) {
 	
-	IniKey k = IniKey(key, value);
+	IniKey k(std::move(key), std::move(value));
 	boost::to_lower(k.name);
 	
 	LogDebug("added key " << key << "=\"" << value << "\"");
-	keys.push_back(k);
+	keys.emplace_back(std::move(k));
 }
 
-void IniSection::setKey(const std::string & key, const std::string & value) {
+void IniSection::setKey(std::string key, std::string value) {
 	
-	IniKey k = IniKey(key, value);
+	IniKey k(std::move(key), std::move(value));
 	boost::to_lower(k.name);
 	
 	for(IniKey & old : keys) {
 		if(old.name == k.name) {
 			LogDebug("replaced key " << k.name << "=\"" << k.value << "\"" << " old: " << "\"" << old.value << "\"");
-			old = k;
+			old = std::move(k);
 			return;
 		}
 	}
 	
 	LogDebug("added key " << key << "=\"" << value << "\"");
-	keys.push_back(k);
+	keys.emplace_back(std::move(k));
 }
 

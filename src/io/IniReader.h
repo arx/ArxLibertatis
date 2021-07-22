@@ -23,6 +23,7 @@
 #include <istream>
 #include <map>
 #include <string>
+#include <string_view>
 
 #include "io/IniSection.h"
 
@@ -31,7 +32,7 @@
  */
 class IniReader {
 	
-	typedef std::map<std::string, IniSection> Sections;
+	typedef std::map<std::string, IniSection, std::less<>> Sections;
 	Sections sections;
 	
 public:
@@ -56,7 +57,17 @@ public:
 	 * \param defaultValue The default value to return if anything doesn't match
 	 * \return The value of the key found or the default value otherwise
 	 */
-	const std::string & getKey(const std::string & sectionName, const std::string & keyName,
+	std::string_view getKey(std::string_view sectionName, std::string_view keyName,
+	                        std::string_view defaultValue) const;
+	
+	/*!
+	 * Gets the specified configuration value from the map of ConfigSections
+	 * \param sectionName The section to search in
+	 * \param keyName The key to look for in the section. Retuns the value of the first key if this is empty.
+	 * \param defaultValue The default value to return if anything doesn't match
+	 * \return The value of the key found or the default value otherwise
+	 */
+	const std::string & getKey(std::string_view sectionName, std::string_view keyName,
 	                           const std::string & defaultValue) const;
 	
 	/*!
@@ -66,7 +77,7 @@ public:
 	 * \param keyName The key in the section to return
 	 * \param defaultValue The default value to return in the case of an empty string
 	 */
-	int getKey(const std::string & sectionName, const std::string & keyName, int defaultValue) const;
+	int getKey(std::string_view sectionName, std::string_view keyName, int defaultValue) const;
 	
 	/*!
 	 * Reads a float from the ini and returns its converted int value,
@@ -75,7 +86,7 @@ public:
 	 * \param keyName The key in the section to return
 	 * \param defaultValue The default value to return in the case of an empty string
 	 */
-	float getKey(const std::string & sectionName, const std::string & keyName, float defaultValue) const;
+	float getKey(std::string_view sectionName, std::string_view keyName, float defaultValue) const;
 	
 	/*!
 	 * Reads a bool from the ini and returns its converted bool value,
@@ -84,17 +95,17 @@ public:
 	 * \param keyName The key in the section to return
 	 * \param defaultValue The default value to return in the case of an empty string
 	 */
-	bool getKey(const std::string & sectionName, const std::string & keyName, bool defaultValue) const;
+	bool getKey(std::string_view sectionName, std::string_view keyName, bool defaultValue) const;
 	
 	/*!
 	 * Get the value at the specified key in the specified section.
 	 * \return the value string or nullptr if no such value is set.
 	 */
-	const IniKey * getKey(const std::string & sectionName, const std::string & keyName) const;
+	const IniKey * getKey(std::string_view sectionName, std::string_view keyName) const;
 	
-	const IniSection * getSection(const std::string & sectionName) const;
+	const IniSection * getSection(std::string_view sectionName) const;
 	
-	size_t getKeyCount(const std::string & sectionName) const;
+	size_t getKeyCount(std::string_view sectionName) const;
 	
 	iterator begin() const { return sections.begin(); }
 	iterator end() const { return sections.end(); }

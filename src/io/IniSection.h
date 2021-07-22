@@ -21,6 +21,8 @@
 #define ARX_IO_INISECTION_H
 
 #include <string>
+#include <string_view>
+#include <utility>
 #include <vector>
 
 class IniKey {
@@ -32,9 +34,9 @@ class IniKey {
 	
 public:
 	
-	IniKey(const std::string & _name, const std::string & _value)
-		: name(_name)
-		, value(_value)
+	IniKey(std::string _name, std::string _value)
+		: name(std::move(_name))
+		, value(std::move(_value))
 	{}
 	
 	const std::string & getName() const { return name; }
@@ -58,12 +60,12 @@ class IniSection {
 	 * Add a key in the ini format (name=value or name="value")
 	 * All preceding space and trailing space / comments must already be removed.
 	 */
-	void addKey(const std::string & key, const std::string & value);
+	void addKey(std::string key, std::string value);
 	/*!
 	 * Set a key in the ini format (name=value or name="value")
 	 * All preceding space and trailing space / comments must already be removed.
 	 */
-	void setKey(const std::string & key, const std::string & value);
+	void setKey(std::string key, std::string value);
 	
 	friend class IniReader;
 	
@@ -76,7 +78,7 @@ public:
 	bool empty() const { return keys.empty(); }
 	size_t size() const { return keys.size(); }
 	
-	const IniKey * getKey(const std::string & name) const;
+	const IniKey * getKey(std::string_view name) const;
 	
 };
 
