@@ -75,8 +75,8 @@ void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tou
 	}
 }
 
-void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, const std::string & actiontext,
-                                        const std::string & actiontext2, Entity * io) {
+void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, std::string_view actiontext,
+                                        std::string_view actiontext2, Entity * io) {
 	
 	if(!obj || !tolink) {
 		return;
