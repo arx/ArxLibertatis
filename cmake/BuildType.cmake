@@ -385,7 +385,13 @@ else(MSVC)
 			add_definitions(-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -D_GLIBCXX_SANITIZE_VECTOR) # libstdc++
 			set(disable_libstdcxx_debug "-U_GLIBCXX_DEBUG -U_GLIBCXX_DEBUG_PEDANTIC")
 		endif()
-	endif(DEBUG_EXTRA)
+	elseif(DEBUG)
+		if(IS_LIBCXX)
+			add_definitions(-D_LIBCPP_DEBUG=0) # 0 means light checks only, it does not mean no checks
+		else()
+			add_definitions(-D_GLIBCXX_ASSERTIONS=1)
+		endif()
+	endif()
 	
 	if(CMAKE_BUILD_TYPE STREQUAL "")
 		set(CMAKE_BUILD_TYPE "Release")
@@ -412,7 +418,7 @@ else(MSVC)
 			
 			if(DEBUG)
 				string(REGEX REPLACE "(^| )-DNDEBUG( |$)" "\\1" ${flag_var} "${${flag_var}}")
-				set(${flag_var} "${${flag_var}} -D_GLIBCXX_ASSERTIONS=1")
+				set(${flag_var} "${${flag_var}}")
 			else()
 				set(${flag_var} "${${flag_var}} -DNDEBUG")
 			endif()
