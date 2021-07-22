@@ -92,44 +92,43 @@ int ARX_LEVELS_GetRealNum(long num) {
 	
 }
 
-long GetLevelNumByName(const std::string & name) {
+long GetLevelNumByName(std::string_view name) {
 	
-	if ( !name.empty() )
-	{
-		if (boost::contains(name, "level10")) return 10;
-		if (boost::contains(name, "level11")) return 11;
-		if (boost::contains(name, "level12")) return 12;
-		if (boost::contains(name, "level13")) return 13;
-		if (boost::contains(name, "level14")) return 14;
-		if (boost::contains(name, "level15")) return 15;
-		if (boost::contains(name, "level16")) return 16;
-		if (boost::contains(name, "level17")) return 17;
-		if (boost::contains(name, "level18")) return 18;
-		if (boost::contains(name, "level19")) return 19;
-		if (boost::contains(name, "level20")) return 20;
-		if (boost::contains(name, "level21")) return 21;
-		if (boost::contains(name, "level22")) return 22;
-		if (boost::contains(name, "level23")) return 23;
-		if (boost::contains(name, "level24")) return 24;
-		if (boost::contains(name, "level25")) return 25;
-		if (boost::contains(name, "level26")) return 26;
-		if (boost::contains(name, "level27")) return 27;
-		if (boost::contains(name, "leveldemo2")) return 29;
-		if (boost::contains(name, "leveldemo3")) return 30;
-		if (boost::contains(name, "leveldemo4")) return 31;
-		if (boost::contains(name, "leveldemo")) return 28;
-		if (boost::contains(name, "level0")) return 0;
-		if (boost::contains(name, "level1")) return 1;
-		if (boost::contains(name, "level2")) return 2;
-		if (boost::contains(name, "level3")) return 3;
-		if (boost::contains(name, "level4")) return 4;
-		if (boost::contains(name, "level5")) return 5;
-		if (boost::contains(name, "level6")) return 6;
-		if (boost::contains(name, "level7")) return 7;
-		if (boost::contains(name, "level8")) return 8;
-		if (boost::contains(name, "level9")) return 9;
+	if(!name.empty()) {
+		if(boost::contains(name, "level10")) return 10;
+		if(boost::contains(name, "level11")) return 11;
+		if(boost::contains(name, "level12")) return 12;
+		if(boost::contains(name, "level13")) return 13;
+		if(boost::contains(name, "level14")) return 14;
+		if(boost::contains(name, "level15")) return 15;
+		if(boost::contains(name, "level16")) return 16;
+		if(boost::contains(name, "level17")) return 17;
+		if(boost::contains(name, "level18")) return 18;
+		if(boost::contains(name, "level19")) return 19;
+		if(boost::contains(name, "level20")) return 20;
+		if(boost::contains(name, "level21")) return 21;
+		if(boost::contains(name, "level22")) return 22;
+		if(boost::contains(name, "level23")) return 23;
+		if(boost::contains(name, "level24")) return 24;
+		if(boost::contains(name, "level25")) return 25;
+		if(boost::contains(name, "level26")) return 26;
+		if(boost::contains(name, "level27")) return 27;
+		if(boost::contains(name, "leveldemo2")) return 29;
+		if(boost::contains(name, "leveldemo3")) return 30;
+		if(boost::contains(name, "leveldemo4")) return 31;
+		if(boost::contains(name, "leveldemo")) return 28;
+		if(boost::contains(name, "level0")) return 0;
+		if(boost::contains(name, "level1")) return 1;
+		if(boost::contains(name, "level2")) return 2;
+		if(boost::contains(name, "level3")) return 3;
+		if(boost::contains(name, "level4")) return 4;
+		if(boost::contains(name, "level5")) return 5;
+		if(boost::contains(name, "level6")) return 6;
+		if(boost::contains(name, "level7")) return 7;
+		if(boost::contains(name, "level8")) return 8;
+		if(boost::contains(name, "level9")) return 9;
 	}
-
+	
 	return -1;
 }
 

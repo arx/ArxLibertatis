@@ -47,9 +47,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_LEVELS_H
 #define ARX_GAME_LEVELS_H
 
-#include <string>
+#include <string_view>
 
-long GetLevelNumByName(const std::string & name);
+long GetLevelNumByName(std::string_view name);
 const char * GetLevelNameByNum(long num);
 
 //! Get the physical level (depth) of a "subdivided" level
