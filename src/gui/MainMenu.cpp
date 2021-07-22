@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <iomanip>
+#include <numeric>
 #include <vector>
 
 #include <boost/version.hpp>
@@ -712,13 +713,7 @@ public:
 			for(const DisplayMode & mode : mainApp->getWindow()->getDisplayModes()) {
 				
 				// Find the aspect ratio
-				unsigned a = mode.resolution.x;
-				unsigned b = mode.resolution.y;
-				while(b != 0) {
-					unsigned t = a % b;
-					a = b, b = t;
-				}
-				Vec2i aspect = mode.resolution / Vec2i(a);
+				Vec2i aspect = mode.resolution / Vec2i(std::gcd(mode.resolution.x, mode.resolution.y));
 				
 				std::stringstream ss;
 				ss << mode;
