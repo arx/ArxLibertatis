@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_NPC_H
 #define ARX_GAME_NPC_H
 
-#include <string>
+#include <string_view>
 
 #include "game/Entity.h"
 #include "game/GameTypes.h"
@@ -239,7 +239,7 @@ const float ARX_NPC_AUDIBLE_FACTOR_RANGE = ARX_NPC_AUDIBLE_FACTOR_MAX - ARX_NPC_
 const float ARX_NPC_AUDIBLE_PRESENCE_DEFAULT = 1.f;
 
 void ARX_NPC_Revive(Entity * io, bool init);
-bool ARX_NPC_SetStat(Entity & io, const std::string & statname, float value);
+bool ARX_NPC_SetStat(Entity & io, std::string_view statname, float value);
 bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target);
 bool IsDeadNPC(const Entity & io);
 

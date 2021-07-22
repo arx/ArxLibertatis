@@ -685,7 +685,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	return ARX_NPC_LaunchPathfind_End(io, target, pos2);
 }
 
-bool ARX_NPC_SetStat(Entity & io, const std::string & statname, float value) {
+bool ARX_NPC_SetStat(Entity & io, std::string_view statname, float value) {
 	
 	arx_assert(io.ioflags & IO_NPC);
 	
@@ -2652,10 +2652,9 @@ void CheckNPCEx(Entity & io) {
 
 void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, const float power) {
 	
-	std::string _step_material = "foot_bare";
-	const std::string * step_material = &_step_material;
-	std::string floor_material = "earth";
-
+	std::string_view step_material = "foot_bare";
+	std::string_view floor_material = "earth";
+	
 	if(EEIsUnderWater(pos)) {
 		floor_material = "water";
 	} else {
@@ -2666,19 +2665,19 @@ void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, c
 	}
 	
 	if(io && !io->stepmaterial.empty()) {
-		step_material = &io->stepmaterial;
+		step_material = io->stepmaterial;
 	}
 	
 	if(io == entities.player()) {
 		if(ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
 			Entity * ioo = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
 			if(!ioo->stepmaterial.empty()) {
-				step_material = &ioo->stepmaterial;
+				step_material = ioo->stepmaterial;
 			}
 		}
 	}
 	
-	ARX_SOUND_PlayCollision(*step_material, floor_material, volume, power, pos, io);
+	ARX_SOUND_PlayCollision(step_material, floor_material, volume, power, pos, io);
 }
 
 /*!
