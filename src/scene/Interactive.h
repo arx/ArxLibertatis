@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "game/Entity.h"
@@ -157,7 +158,7 @@ void SetWeapon_On(Entity * io);
 void Prepare_SetWeapon(Entity * io, const res::path & temp);
 void ComputeVVPos(Entity * io);
 void SetYlsideDeath(Entity * io);
-std::string GetMaterialString(const res::path & texture);
+std::string_view GetMaterialString(const res::path & texture);
 Entity * CloneIOItem(Entity * src);
 
 float ARX_INTERACTIVE_GetArmorClass(Entity * io);

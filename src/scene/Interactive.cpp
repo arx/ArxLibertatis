@@ -2336,7 +2336,7 @@ void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t) {
 	}
 }
 
-std::string GetMaterialString(const res::path & texture) {
+std::string_view GetMaterialString(const res::path & texture) {
 	
 	const std::string & origin = texture.string();
 	
