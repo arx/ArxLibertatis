@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <ios>
+#include <utility>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -641,7 +642,7 @@ bool PakReader::addFiles(const fs::path & path, const res::path & mount) {
 		
 		PakDirectory * dir = addDirectory(mount.parent());
 		
-		return addFile(dir, path, mount.filename());
+		return addFile(dir, path, std::string(mount.filename()));
 		
 	}
 	
@@ -666,13 +667,13 @@ bool PakReader::removeDirectory(const res::path & name) {
 	}
 }
 
-bool PakReader::addFile(PakDirectory * dir, const fs::path & path, const std::string & name) {
+bool PakReader::addFile(PakDirectory * dir, const fs::path & path, std::string name) {
 	
 	if(name.empty()) {
 		return false;
 	}
 	
-	dir->addFile(name, new PlainFile(path));
+	dir->addFile(std::move(name), new PlainFile(path));
 	return true;
 }
 
@@ -696,9 +697,9 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 		fs::FileType type = it.type();
 		
 		if(type == fs::Directory) {
-			ret &= addFiles(dir->addDirectory(name), entry);
+			ret &= addFiles(dir->addDirectory(std::move(name)), entry);
 		} else if(type == fs::RegularFile) {
-			ret &= addFile(dir, entry, name);
+			ret &= addFile(dir, entry, std::move(name));
 		}
 		
 	}

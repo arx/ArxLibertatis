@@ -64,7 +64,7 @@ CinematicBitmap::~CinematicBitmap()
 
 CinematicBitmap * CreateCinematicBitmap(const res::path & path, int scale) {
 	
-	std::string name = path.basename();
+	std::string_view name = path.basename();
 	if(name.empty()) {
 		return 0;
 	}

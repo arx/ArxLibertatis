@@ -43,7 +43,7 @@
 typedef std::map<std::string, std::string> Idents; // ident -> where
 typedef std::map<std::string, long> Remap; // ident -> newIdent
 
-static std::string makeIdent(const std::string & file, long ident) {
+static std::string makeIdent(std::string_view file, long ident) {
 	std::stringstream name;
 	name << file << "_" << std::setw(4) << std::setfill('0') << ident;
 	return name.str();

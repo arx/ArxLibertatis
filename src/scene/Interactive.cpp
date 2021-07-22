@@ -1316,7 +1316,7 @@ void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach) {
  */
 static EntityInstance getFreeEntityInstance(const res::path & classPath) {
 	
-	std::string className = classPath.filename();
+	std::string_view className = classPath.filename();
 	res::path classDir = classPath.parent();
 	
 	for(EntityInstance instance = 1; ; instance++) {
