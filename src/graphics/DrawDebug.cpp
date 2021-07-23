@@ -410,7 +410,7 @@ static void drawColorChart() {
 	for(size_t i = 0; i < std::size(distinctDebugColors); i++) {
 		drawLine(p, p + Vec2f(40, 0), 1.f, distinctDebugColors[i]);
 		
-		drawTextCentered(hFontDebug, p + Vec2f(-5, 0), boost::lexical_cast<std::string>(i), Color::white);
+		drawTextCentered(hFontDebug, p + Vec2f(-5, 0), std::to_string(i), Color::white);
 		
 		p += Vec2i(0, 12);
 	}

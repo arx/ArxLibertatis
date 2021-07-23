@@ -51,7 +51,6 @@
 #endif
 
 #include <boost/crc.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
@@ -416,7 +415,7 @@ void CrashHandlerPOSIX::processCrashTrace() {
 	
 	// Get a stack trace via GDB
 	if(platform::isProcessRunning(m_pCrashInfo->processId)) {
-		std::string pid = boost::lexical_cast<std::string>(m_pCrashInfo->processId);
+		std::string pid = std::to_string(m_pCrashInfo->processId);
 		const char * args[] = {
 			"gdb", "--batch", "-n",
 			"-ex", "thread",
@@ -510,7 +509,7 @@ void CrashHandlerPOSIX::processCrashDump() {
 	else
 	#endif
 	if(platform::isProcessRunning(m_pCrashInfo->processId)) {
-		std::string pid = boost::lexical_cast<std::string>(m_pCrashInfo->processId);
+		std::string pid = std::to_string(m_pCrashInfo->processId);
 		const char * command[] = { "gcore", "-o", "arx-crash-core-dump", pid.c_str(), nullptr };
 		(void)platform::runHelper(command, true);
 		if(fs::exists("arx-crash-core-dump")) {

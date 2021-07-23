@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ostream>
 
 #include <limits>
-#include <boost/lexical_cast.hpp>
 #include <boost/utility/enable_if.hpp>
 
 #include "core/TimeTypes.h"
@@ -456,7 +455,7 @@ public:
 	/* implicit */ ScriptParameters(T parameter,
 	                                typename boost::enable_if_c<std::numeric_limits<T>::is_specialized, bool>::type
 	                                /* enable */ = true)
-		: std::vector<std::string>(1, boost::lexical_cast<std::string>(parameter))
+		: std::vector<std::string>(1, std::to_string(parameter))
 		, m_peekOnly(false)
 	{ }
 	
@@ -468,7 +467,7 @@ public:
 	
 	template <typename T>
 	typename boost::enable_if_c<std::numeric_limits<T>::is_specialized>::type push_back(T parameter) {
-		push_back(boost::lexical_cast<std::string>(parameter));
+		push_back(std::to_string(parameter));
 	}
 	
 	/*!

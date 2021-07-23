@@ -50,8 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <algorithm>
 
-#include <boost/lexical_cast.hpp>
-
 #include "animation/Animation.h"
 
 #include "core/Config.h"
@@ -259,7 +257,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 		LogDebug(" -> " << variant << " / " << count);
 		
 		if(variant > 1) {
-			sample = data + boost::lexical_cast<std::string>(variant);
+			sample = data + std::to_string(variant);
 		} else {
 			sample = data;
 		}

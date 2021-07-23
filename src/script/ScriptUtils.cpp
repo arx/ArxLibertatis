@@ -21,8 +21,6 @@
 
 #include <set>
 
-#include <boost/lexical_cast.hpp>
-
 #include "game/Entity.h"
 #include "graphics/data/Mesh.h"
 
@@ -62,17 +60,17 @@ std::string Context::getStringVar(const std::string & name) const {
 		std::string tv;
 		switch(getSystemVar(*this, name, tv, &fv, &lv)) {
 			case TYPE_TEXT: return tv;
-			case TYPE_LONG: return boost::lexical_cast<std::string>(lv);
-			default: return boost::lexical_cast<std::string>(fv);
+			case TYPE_LONG: return std::to_string(lv);
+			default: return std::to_string(fv);
 		}
 	} else if(name[0] == '#') {
-		return boost::lexical_cast<std::string>(GETVarValueLong(svar, name));
+		return std::to_string(GETVarValueLong(svar, name));
 	} else if(name[0] == '\xA7') {
-		return boost::lexical_cast<std::string>(GETVarValueLong(getEntity()->m_variables, name));
+		return std::to_string(GETVarValueLong(getEntity()->m_variables, name));
 	} else if(name[0] == '&') {
-		return boost::lexical_cast<std::string>(GETVarValueFloat(svar, name));
+		return std::to_string(GETVarValueFloat(svar, name));
 	} else if(name[0] == '@') {
-		return boost::lexical_cast<std::string>(GETVarValueFloat(getEntity()->m_variables, name));
+		return std::to_string(GETVarValueFloat(getEntity()->m_variables, name));
 	} else if(name[0] == '$') {
 		const SCRIPT_VAR * var = GetVarAddress(svar, name);
 		return var ? var->text : "void";

@@ -809,7 +809,7 @@ public:
 				std::sort(rates.begin(), rates.end());
 				rates.erase(std::unique(rates.begin(), rates.end()), rates.end());
 				for(s32 refresh : rates) {
-					cb->addEntry(boost::lexical_cast<std::string>(refresh));
+					cb->addEntry(std::to_string(refresh));
 					if(config.video.fpsLimit == refresh) {
 						cb->selectLast();
 					}

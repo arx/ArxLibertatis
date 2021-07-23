@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <sstream>
 
-#include <boost/lexical_cast.hpp>
-
 #include "util/String.h"
 
 #include "animation/AnimationFormat.h"
@@ -525,7 +523,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 		res::path altpath;
 		do {
 			altpath = res::path(path);
-			altpath.append_basename(boost::lexical_cast<std::string>(pathcount++));
+			altpath.append_basename(std::to_string(pathcount++));
 		} while(EERIE_ANIMMANAGER_AddAltAnim(slot, altpath));
 		
 		return &slot;

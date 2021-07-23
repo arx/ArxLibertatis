@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "ai/Anchors.h"
@@ -1995,7 +1994,7 @@ void UpdateCameras() {
 
 			if(aup->lastWP != last) {
 				if(last == -2) {
-					std::string waypoint = boost::lexical_cast<std::string>(aup->path->pathways.size() - 1);
+					std::string waypoint = std::to_string(aup->path->pathways.size() - 1);
 					SendIOScriptEvent(nullptr, io, SM_WAYPOINT, waypoint);
 					SendIOScriptEvent(nullptr, io, ScriptEventName("waypoint" + waypoint));
 					SendIOScriptEvent(nullptr, io, SM_PATHEND);
@@ -2004,7 +2003,7 @@ void UpdateCameras() {
 					if(ii < 0 || ii > last) {
 						ii = 0;
 					}
-					std::string waypoint = boost::lexical_cast<std::string>(ii);
+					std::string waypoint = std::to_string(ii);
 					SendIOScriptEvent(nullptr, io, SM_WAYPOINT, waypoint);
 					SendIOScriptEvent(nullptr, io, ScriptEventName("waypoint" + waypoint));
 					if(size_t(ii) == aup->path->pathways.size()) {

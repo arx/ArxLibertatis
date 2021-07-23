@@ -23,8 +23,6 @@
 #include <iomanip>
 #include <ctime>
 
-#include <boost/lexical_cast.hpp>
-
 #include "core/Core.h"
 #include "core/Localisation.h"
 #include "graphics/data/TextureContainer.h"
@@ -111,7 +109,7 @@ SaveSlotWidget::SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, c
 				case 11: m_date = getLocalised("system_december"); break;
 				default: arx_unreachable();
 			}
-			m_date += " " + boost::lexical_cast<std::string>(t.tm_mday);
+			m_date += " " + std::to_string(t.tm_mday);
 		} else {
 			std::ostringstream oss;
 			oss << std::setfill('0') << (t.tm_year + 1900) << "-"
