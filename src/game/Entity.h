@@ -393,7 +393,7 @@ public:
 	 * 
 	 * \return the entity's class name
 	 */
-	std::string className() const { return id().className(); }
+	const std::string & className() const { return id().className(); }
 	
 	/*!
 	 * Get the instance number of this entity
@@ -411,7 +411,7 @@ public:
 	 * in the form of "%s_%04ld"
 	 * \return The short name combined with a 4 digit ident, padded with 0
 	 */
-	std::string idString() const { return id().string(); }
+	const std::string & idString() const { return m_idString; }
 	
 	/*!
 	 *  Returns the full name for this entity where the
@@ -453,6 +453,7 @@ private:
 	size_t m_index; //!< index of this Entity in the EntityManager
 	
 	const EntityId m_id; //!< unique ID for this entity
+	const std::string m_idString;
 	const res::path m_classPath; //!< the full path to this entity's class
 	
 };

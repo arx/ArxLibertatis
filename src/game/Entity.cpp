@@ -143,6 +143,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	, highlightColor(Color3f::black)
 	, m_index(size_t(-1))
 	, m_id(classPath, instance)
+	, m_idString(m_id.string())
 	, m_classPath(classPath)
 {
 	
