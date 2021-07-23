@@ -61,6 +61,8 @@ if(MSVC)
 		add_definitions(/wd4201) # used in GLM
 		# warning C4324: 'xxx': structure was padded due to alignment specifier
 		add_definitions(/wd4324)
+		# warning C4701: potentially uninitialized local variable 'xxx' used
+		add_definitions(/wd4701)
 		
 	endif()
 	
