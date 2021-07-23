@@ -55,34 +55,12 @@ if(MSVC)
 		# warning C4459: declaration of 'xxx' hides global declaration
 		add_definitions(/wd4459) # TODO triggers on BOOST_SCOPE_EXIT, remove after moving to C++11
 		
-		if(MSVC_VERSION LESS 1910)
-			# warning C4100: 'xxx': unreferenced formal parameter
-			add_definitions(/wd4100) # has false positives
-		endif()
 		# warning C4127: conditional expression is constant
 		add_definitions(/wd4127)
 		# warning C4201: nonstandard extension used: nameless struct/union
 		add_definitions(/wd4201) # used in GLM
-		if(MSVC_VERSION LESS 1900)
-			# warning C4250: 'xxx': inherits 'std::basic_{i,o}stream::...' via dominance
-			add_definitions(/wd4250) # harasses you when inheriting from std::basic_{i,o}stream
-		endif()
 		# warning C4324: 'xxx': structure was padded due to alignment specifier
 		add_definitions(/wd4324)
-		if(MSVC_VERSION LESS 1900)
-			# warning C4503: 'xxx': decorated name length exceeded, name was truncated
-			add_definitions(/wd4503)
-			# warning C4512: 'xxx' : assignment operator could not be generated
-			add_definitions(/wd4512) # not all classes need an assignment operator...
-		endif()
-		# warning C4701: potentially uninitialized local variable 'xxx' used
-		add_definitions(/wd4701)
-		# warning C4703: potentially uninitialized local pointer variable 'xxx' used
-		add_definitions(/wd4703)
-		if(MSVC_VERSION LESS 1900)
-			# warning C4718: 'xxx' : recursive call has no side effects, deleting
-			add_definitions(/wd4718) # warns in Qt
-		endif()
 		
 	endif()
 	
@@ -143,21 +121,15 @@ if(MSVC)
 		
 	endforeach(flag_var)
 	
-	if(NOT MSVC_VERSION LESS 1900)
-		add_definitions(/utf-8)
-	endif()
+	add_definitions(/utf-8)
 	
 	# Turn on standards compliant mode
 	# /Za is not compatible with /fp:fast, leave it off
-	if(NOT MSVC_VERSION LESS 1910)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
-		# /permissive- enables /Zc:twoPhase which would be good if two phase lookup wasn't still broken in VS 2017
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:twoPhase-")
-	endif()
-	if(NOT MSVC_VERSION LESS 1900)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:inline")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:throwingNew")
-	endif()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
+	# /permissive- enables /Zc:twoPhase which would be good if two phase lookup wasn't still broken in VS 2017
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:twoPhase-")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:inline")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:throwingNew")
 	if(NOT MSVC_VERSION LESS 1914)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
 	endif()
