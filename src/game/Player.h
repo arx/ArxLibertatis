@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <array>
 #include <stddef.h>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "game/Entity.h"
@@ -425,7 +426,7 @@ void ARX_PLAYER_RectifyPosition();
 void ARX_PLAYER_Frame_Update();
 void ARX_PLAYER_Manage_Movement();
 void ARX_PLAYER_Manage_Death();
-void ARX_PLAYER_Quest_Add(const std::string & quest);
+void ARX_PLAYER_Quest_Add(std::string_view quest);
 void ARX_PLAYER_Quest_Init();
 Vec3f ARX_PLAYER_FrontPos();
 void ARX_PLAYER_ComputePlayerFullStats();
@@ -445,7 +446,7 @@ void ARX_PLAYER_AddBag();
 bool ARX_PLAYER_CanStealItem(Entity * item);
 
 void ARX_KEYRING_Init();
-void ARX_KEYRING_Add(const std::string & key);
+void ARX_KEYRING_Add(std::string_view key);
 
 void ARX_PLAYER_Reset_Fall();
 void ARX_PLAYER_KillTorch();

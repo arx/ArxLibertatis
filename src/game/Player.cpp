@@ -211,8 +211,8 @@ void ARX_KEYRING_Init() {
 }
 
 //! Add a key to Keyring
-void ARX_KEYRING_Add(const std::string & key) {
-	g_playerKeyring.push_back(key);
+void ARX_KEYRING_Add(std::string_view key) {
+	g_playerKeyring.emplace_back(key);
 }
 
 /*!
@@ -367,8 +367,8 @@ void ARX_Player_Rune_Remove(RuneFlag _ulRune)
 }
 
 //! Add quest "quest" to player Questbook
-void ARX_PLAYER_Quest_Add(const std::string & quest) {
-	g_playerQuestLogEntries.push_back(quest);
+void ARX_PLAYER_Quest_Add(std::string_view quest) {
+	g_playerQuestLogEntries.emplace_back(quest);
 	g_playerBook.clearJournal();
 }
 
