@@ -131,7 +131,7 @@ class ScriptConsole final : protected BasicTextInput {
 	//! Edit a suggestion into \ref m_originalText at \ref m_originalCursorPos and use it as the new text
 	void applySuggestion(const Suggestion & suggestion);
 	
-	static bool addContextSuggestion(void * self, const std::string & suggestion);
+	static bool addContextSuggestion(void * self, std::string_view suggestion);
 	static bool addCommandSuggestion(void * self, const std::string & suggestion);
 	
 public:

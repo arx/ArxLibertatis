@@ -422,9 +422,9 @@ void ScriptConsole::execute() {
 	
 }
 
-bool ScriptConsole::addContextSuggestion(void * self, const std::string & suggestion) {
+bool ScriptConsole::addContextSuggestion(void * self, std::string_view suggestion) {
 	ScriptConsole * console = static_cast<ScriptConsole *>(self);
-	console->m_suggestions.push_back(Suggestion(console->m_suggestionPos, suggestion + "."));
+	console->m_suggestions.emplace_back(console->m_suggestionPos, std::string(suggestion) + ".");
 	return (console->m_suggestions.size() <= MaxSuggestions);
 }
 

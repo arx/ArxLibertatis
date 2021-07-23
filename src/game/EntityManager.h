@@ -21,7 +21,7 @@
 #define ARX_GAME_ENTITYMANAGER_H
 
 #include <stddef.h>
-#include <string>
+#include <string_view>
 #include <vector>
 
 #include "game/EntityId.h"
@@ -45,10 +45,10 @@ public:
 	//! Free all entities except for the player
 	void clear();
 	
-	EntityHandle getById(const std::string & idString) const;
+	EntityHandle getById(std::string_view idString) const;
 	EntityHandle getById(const EntityId & id) const;
 	
-	Entity * getById(const std::string & idString, Entity * self) const;
+	Entity * getById(std::string_view idString, Entity * self) const;
 	
 	Entity * operator[](EntityHandle index) const {
 		return entries[index.handleData()];
@@ -84,8 +84,8 @@ public:
 	iterator begin() const { return entries.begin(); }
 	iterator end() const { return entries.end(); }
 	
-	typedef bool (*AutocompleteHandler)(void * context, const std::string & suggestion);
-	void autocomplete(const std::string & prefix, AutocompleteHandler handler, void * context);
+	typedef bool (*AutocompleteHandler)(void * context, std::string_view suggestion);
+	void autocomplete(std::string_view prefix, AutocompleteHandler handler, void * context);
 	
 private:
 	

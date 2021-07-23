@@ -57,12 +57,12 @@ struct EntityManager::Impl {
 	
 	size_t m_minfree; // first unused index (value == nullptr)
 	
-	typedef std::unordered_map<std::string, Entity *> Index;
+	typedef std::unordered_map<std::string_view, Entity *> Index;
 	Index m_index;
 	
 	Impl() : m_minfree(0) { }
 	
-	EntityHandle getById(const std::string & idString) const {
+	EntityHandle getById(std::string_view idString) const {
 		Impl::Index::const_iterator i = m_index.find(idString);
 		return (i != m_index.end()) ? i->second->index() : EntityHandle();
 	}
@@ -104,7 +104,7 @@ void EntityManager::clear() {
 	m_impl->m_minfree = 0;
 }
 
-EntityHandle EntityManager::getById(const std::string & idString) const {
+EntityHandle EntityManager::getById(std::string_view idString) const {
 	
 	if(idString.empty() || idString == "none") {
 		return EntityHandle();
@@ -136,7 +136,7 @@ EntityHandle EntityManager::getById(const EntityId & id) const {
 	return m_impl->getById(id.string());
 }
 
-Entity * EntityManager::getById(const std::string & idString, Entity * self) const {
+Entity * EntityManager::getById(std::string_view idString, Entity * self) const {
 	
 	EntityHandle handle = getById(idString);
 	if(handle == EntityHandle()) {
@@ -148,9 +148,10 @@ Entity * EntityManager::getById(const std::string & idString, Entity * self) con
 	return entries[handle.handleData()];
 }
 
-void EntityManager::autocomplete(const std::string & prefix, AutocompleteHandler handler, void * context) {
+void EntityManager::autocomplete(std::string_view prefix, AutocompleteHandler handler, void * context) {
 	
-	std::string check = boost::to_lower_copy(prefix);
+	std::string check(prefix);
+	boost::to_lower(check);
 	
 	// TODO we don't need to iterate over all entities if we have per-class indices
 	for(Entity * entity : entries) {
