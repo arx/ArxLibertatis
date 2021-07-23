@@ -63,6 +63,8 @@ if(MSVC)
 		add_definitions(/wd4324)
 		# warning C4701: potentially uninitialized local variable 'xxx' used
 		add_definitions(/wd4701)
+		# warning C4703: potentially uninitialized local pointer variable 'xxx' used
+		add_definitions(/wd4703)
 		
 	endif()
 	
