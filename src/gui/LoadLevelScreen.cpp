@@ -98,8 +98,7 @@ void LoadLevelScreen(long num) {
 		if(num != lastloadednum) {
 			delete g_loadingScreenImage, g_loadingScreenImage = nullptr;
 			lastloadednum = num;
-			std::string tx = GetLevelNameByNum(num);
-			res::path image = "graph/levels/level" + tx + "/loading";
+			res::path image = "graph/levels/level" + std::to_string(num) + "/loading";
 			g_loadingScreenImage = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
 		}
 		
