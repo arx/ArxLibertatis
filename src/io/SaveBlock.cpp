@@ -45,7 +45,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/adaptor/map.hpp>
 
 #include <zlib.h>
@@ -55,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Blast.h"
 
 #include "platform/Platform.h"
+
+#include "util/String.h"
 
 static const u32 SAV_VERSION_OLD = (1 << 16) | 0;
 static const u32 SAV_VERSION_RELEASE = (1 << 16) | 1;
@@ -306,7 +307,7 @@ bool SaveBlock::loadFileTable() {
 			return false;
 		}
 		if(version < SAV_VERSION_NOEXT) {
-			boost::to_lower(name);
+			util::makeLowercase(name);
 			if(name.size() > 4 && !name.compare(name.size() - 4, 4, ".sav", 4)) {
 				name.resize(name.size() - 4);
 			}
@@ -645,7 +646,7 @@ std::string SaveBlock::load(const fs::path & savefile, const std::string & name)
 			return std::string();
 		}
 		if(version < SAV_VERSION_NOEXT) {
-			boost::to_lower(filename);
+			util::makeLowercase(filename);
 			if(filename.size() > 4 && !filename.compare(filename.size() - 4, 4, ".sav", 4)) {
 				filename.resize(filename.size() - 4);
 			}
