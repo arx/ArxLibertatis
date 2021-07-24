@@ -24,6 +24,7 @@
 
 #include "io/log/Logger.h"
 #include "platform/Platform.h"
+#include "util/String.h"
 
 const IniSection * IniReader::getSection(std::string_view sectionName) const {
 	
@@ -175,9 +176,7 @@ bool IniReader::read(std::istream & is, bool overrideValues) {
 				}
 			}
 			
-			std::string sectionName = str.substr(start + 1, end - start - 1);
-			transform(sectionName.begin(), sectionName.end(), sectionName.begin(), ::tolower);
-			
+			std::string sectionName = util::toLowercase(str.substr(start + 1, end - start - 1));
 			LogDebug("found section: \"" << sectionName << "\"");
 			section = &sections[std::move(sectionName)];
 			
