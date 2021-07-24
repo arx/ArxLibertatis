@@ -43,7 +43,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "core/GameTime.h"
@@ -70,6 +69,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptedNPC.h"
 #include "script/ScriptedPlayer.h"
 #include "script/ScriptedVariable.h"
+
+#include "util/String.h"
 
 
 long ScriptEvent::totalCount = 0;
@@ -459,7 +460,7 @@ void ScriptEvent::shutdown() {
 
 void ScriptEvent::autocomplete(const std::string & prefix, AutocompleteHandler handler, void * context) {
 	
-	std::string cmd = boost::to_lower_copy(prefix);
+	std::string cmd = util::toLowercase(prefix);
 	cmd.resize(std::remove(cmd.begin(), cmd.end(), '_') - cmd.begin());
 	
 	if(boost::starts_with("timer", cmd)) {
