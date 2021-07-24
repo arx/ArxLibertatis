@@ -718,7 +718,7 @@ static int view_pld(const char * dat, size_t size) {
 		return 3;
 	}
 	
-	std::string name = util::loadString(pld.name);
+	std::string_view name = util::loadString(pld.name);
 	if(name == "ARX_QUICK_ARX" || name == "ARX_QUICK_ARX1") {
 		std::cout << "Type: quicksave\n";
 	} else {
@@ -764,7 +764,7 @@ static int view_pld(const char * dat, size_t size) {
 		}
 	}
 	
-	std::string engine = util::loadString(pld.lastEngineVersion);
+	std::string_view engine = util::loadString(pld.lastEngineVersion);
 	if(!engine.empty()) {
 		std::cout << "Saved by: " << engine << '\n';
 	}

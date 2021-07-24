@@ -28,12 +28,12 @@
 
 namespace util {
 
-std::string loadString(const char * data, size_t maxLength) {
-	return std::string(data, std::find(data, data + maxLength, '\0'));
+std::string_view loadString(const char * data, size_t maxLength) {
+	return std::string_view(data, std::find(data, data + maxLength, '\0') - data);
 }
 
-void storeString(char * dst, size_t maxLength, const std::string & src) {
-	std::memcpy(dst, src.c_str(), std::min(maxLength, src.length()));
+void storeString(char * dst, size_t maxLength, std::string_view src) {
+	std::memcpy(dst, src.data(), std::min(maxLength, src.length()));
 	if(maxLength > src.length()) {
 		std::memset(dst + src.length(), 0, maxLength - src.length());
 	}

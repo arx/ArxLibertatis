@@ -30,28 +30,28 @@
 namespace util {
 
 //! Avoid using this function directly, use the templated versions!
-std::string loadString(const char * data, size_t maxLength);
+[[nodiscard]] std::string_view loadString(const char * data, size_t maxLength);
 
 /*!
  * Load an std::string from a const char * that may not be null-terminated.
  */
 template <size_t N>
-std::string loadString(const char (&data)[N]) {
+[[nodiscard]] std::string_view loadString(const char (&data)[N]) {
 	return loadString(data, N);
 }
 
 //! Avoid using this function directly, use the templated versions!
-void storeString(char * dst, size_t maxLength, const std::string & src);
+void storeString(char * dst, size_t maxLength, std::string_view src);
 
 //! Copy an std::string into a char array, the array may not be null terminated
 template <size_t N>
-void storeString(char (&dst)[N], const std::string & src) {
+void storeString(char (&dst)[N], std::string_view src) {
 	storeString(dst, N, src);
 }
 
 //! Copy an std::string into a char array, the array will be null terminated
 template <size_t N>
-void storeStringTerminated(char (&dst)[N], const std::string & src) {
+void storeStringTerminated(char (&dst)[N], std::string_view src) {
 	storeString(dst, src);
 	dst[N - 1] = 0x00;
 }
@@ -86,7 +86,7 @@ void makeLowercase(std::string & string);
  * \param escapeChars String containing the characters you wish to escape
  * \return The escaped string
  */
-std::string escapeString(std::string text, std::string_view escapeChars = "\\\" '$!");
+[[nodiscard]] std::string escapeString(std::string text, std::string_view escapeChars = "\\\" '$!");
 
 template <class CTYPE, class STYPE>
 inline CTYPE * safeGetString(CTYPE * & pos, STYPE & size) {
@@ -118,7 +118,7 @@ inline bool safeGet(T & data, CTYPE * & pos, STYPE & size) {
 	return true;
 }
 
-std::string getDateTimeString();
+[[nodiscard]] std::string getDateTimeString();
 
 } // namespace util
 

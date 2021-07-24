@@ -108,7 +108,7 @@ bool ErrorReport::Initialize() {
 
 void ErrorReport::getCrashInfo() {
 	
-	m_ReportDescription = util::loadString(m_pCrashInfo->description).c_str();
+	m_ReportDescription = std::string(util::loadString(m_pCrashInfo->description)).c_str();
 	if(m_ReportDescription.isEmpty()) {
 		m_ReportDescription = "Could not collect crash information!";
 	}
@@ -117,7 +117,7 @@ void ErrorReport::getCrashInfo() {
 		m_ReportUniqueID = QString("[%1]").arg(QString::number(m_pCrashInfo->crashId, 16).toUpper());
 	}
 	
-	std::string title = util::loadString(m_pCrashInfo->title);
+	std::string title(util::loadString(m_pCrashInfo->title));
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, title.c_str());
 
 	m_ProcessArchitecture = m_pCrashInfo->architecture;
@@ -126,7 +126,7 @@ void ErrorReport::getCrashInfo() {
 	size_t nbFilesAttached = std::min(size_t(m_pCrashInfo->nbFilesAttached),
 	                                  size_t(CrashInfo::MaxNbFiles));
 	for(size_t i = 0; i < nbFilesAttached; i++) {
-		AddFile(util::loadString(m_pCrashInfo->attachedFiles[i]).c_str());
+		AddFile(std::string(util::loadString(m_pCrashInfo->attachedFiles[i])).c_str());
 	}
 	
 }

@@ -227,7 +227,7 @@ static fs::path getCoreDumpFile() {
 	
 	#elif ARX_PLATFORM == ARX_PLATFORM_BSD
 	
-	std::string pattern;
+	std::string_view pattern;
 	#if ARX_HAVE_SYSCTLBYNAME && defined(PATH_MAX)
 	char pathname[PATH_MAX];
 	size_t size = sizeof(pathname);
@@ -246,11 +246,11 @@ static fs::path getCoreDumpFile() {
 	while(start < pattern.length()) {
 		
 		size_t end = pattern.find('%');
-		if(end == std::string::npos) {
+		if(end == std::string_view::npos) {
 			end = pattern.length();
 		}
 		
-		oss.write(&pattern[start], end - start);
+		oss.write(pattern.data() + start, end - start);
 		
 		if(end + 1 >= pattern.length()) {
 			break;

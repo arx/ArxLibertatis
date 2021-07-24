@@ -62,7 +62,7 @@ public:
 		m_save.flush(m_fileName);
 	}
 	
-	std::string getName() {
+	std::string_view getName() {
 		return util::loadString(m_pld->name);
 	}
 	
@@ -99,7 +99,7 @@ int main_rename(SaveBlock & save, const std::vector<std::string> & args) {
 		return 3;
 	}
 	
-	std::string oldName = pld.getName();
+	std::string_view oldName = pld.getName();
 	const std::string & newName = args[0];
 	
 	std::cout << "Old Name: \"" << oldName << '"' << std::endl;
