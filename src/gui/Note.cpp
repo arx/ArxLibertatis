@@ -192,10 +192,10 @@ void Note::calculateLayout() {
 
 bool Note::splitTextToPages() {
 	
-	std::string::const_iterator txtbegin = m_text.begin();
-	std::string::const_iterator txtend = m_text.end();
+	size_t i = 0;
+	std::string_view text = m_text;
 	
-	while(txtbegin != txtend) {
+	while(i != text.length()) {
 		
 		// Change the note type if the text is too long.
 		if(m_pages.size() >= m_maxPages) {
@@ -208,21 +208,21 @@ bool Note::splitTextToPages() {
 			return false;
 		}
 		
-		long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, txtbegin, txtend, m_textArea, true);
+		long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, text.substr(i), m_textArea, true);
 		if(pageSize <= 0) {
 			LogWarning << "Error splitting note text into pages";
-			m_pages.push_back(std::string(txtbegin, txtend));
+			m_pages.push_back(std::string(text.substr(i)));
 			break;
 		}
 		
-		m_pages.push_back(std::string(txtbegin, txtbegin + pageSize));
+		m_pages.push_back(std::string(text.substr(i, pageSize)));
 		
 		// Skip whitespace at the start of pages.
-		while(pageSize < txtend - txtbegin && std::isspace(static_cast<unsigned char>(*(txtbegin + pageSize)))) {
+		while(i + size_t(pageSize) < text.length() && std::isspace(static_cast<unsigned char>(text[i + pageSize]))) {
 			pageSize++;
 		}
 		
-		txtbegin += pageSize;
+		i += pageSize;
 	}
 	return true;
 }

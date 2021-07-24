@@ -606,31 +606,31 @@ void ScriptConsole::draw() {
 	
 	pos.x += hFontDebug->draw(pos, "> ", Color::green).advance();
 	
-	std::string displayText = text();
+	std::string_view displayText = text();
+	std::string buffer;
 	if(!editText().empty()) {
-		displayText = displayText.substr(0, cursorPos()) + editText() + displayText.substr(cursorPos());
+		buffer = displayText;
+		buffer.insert(cursorPos(), editText());
+		displayText = buffer;
 	}
 	size_t displayCursorPos = cursorPos() + editCursorPos();
 	
-	std::string::const_iterator begin = displayText.begin();
-	std::string::const_iterator end = displayText.end();
-	
 	// Highlight edit area
 	if(!editText().empty()) {
-		int left = hFontDebug->getTextSize(begin, begin + cursorPos()).advance();
-		int right = hFontDebug->getTextSize(begin, begin + cursorPos() + editText().size()).advance();
+		int left = hFontDebug->getTextSize(displayText.substr(0, cursorPos())).advance();
+		int right = hFontDebug->getTextSize(displayText.substr(0, cursorPos() + editText().size())).advance();
 		int height = hFontDebug->getLineHeight();
 		Rectf box = Rectf(Rect(pos + Vec2i(left, 0), right - left, height));
 		EERIEDrawBitmap(box, 0.f, nullptr, selection);
 	}
 	
 	// Draw text
-	s32 x = hFontDebug->draw(pos.x, pos.y, begin, end, Color::white).next();
+	s32 x = hFontDebug->draw(pos.x, pos.y, displayText, Color::white).next();
 	
 	// Preview autocomplete
-	const std::string & completion = m_completion.second;
+	std::string_view completion = m_completion.second;
 	if(cursorPos() == text().size() && cursorPos() < completion.size()) {
-		hFontDebug->draw(x, pos.y, completion.begin() + cursorPos(), completion.end(), Color::gray(0.5f));
+		hFontDebug->draw(x, pos.y, completion.substr(cursorPos()), Color::gray(0.5f));
 	}
 	
 	// Draw cursor
@@ -641,11 +641,11 @@ void ScriptConsole::draw() {
 	if(blink) {
 		int cursor = x;
 		if(cursorPos() != displayText.size()) {
-			cursor = pos.x + hFontDebug->getTextSize(begin, begin + displayCursorPos).next();
+			cursor = pos.x + hFontDebug->getTextSize(displayText.substr(0, displayCursorPos)).next();
 		}
 		drawLine(Vec2f(cursor, pos.y), Vec2f(cursor, pos.y + hFontDebug->getLineHeight()), 0.f, line);
 		if(editCursorLength() > 0) {
-			int endX = pos.x + hFontDebug->getTextSize(begin, begin + displayCursorPos + editCursorLength()).next();
+			int endX = pos.x + hFontDebug->getTextSize(displayText.substr(0, displayCursorPos + editCursorLength())).next();
 			drawLine(Vec2f(endX, pos.y), Vec2f(endX, pos.y + hFontDebug->getLineHeight()), 0.f, line);
 		}
 	}
@@ -661,7 +661,7 @@ void ScriptConsole::draw() {
 	// Draw error message and suggestions
 	if(!m_error.second.empty()) {
 		Vec2i errorPos = pos;
-		errorPos.x += hFontDebug->getTextSize(text().begin(), text().begin() + m_error.first).advance();
+		errorPos.x += hFontDebug->getTextSize(std::string_view(text()).substr(0, m_error.first)).advance();
 		hFontDebug->draw(errorPos + Vec2i(1), m_error.second, Color::black);
 		hFontDebug->draw(errorPos, m_error.second, Color::red);
 	} else if(!m_suggestions.empty()) {
@@ -682,7 +682,7 @@ void ScriptConsole::draw() {
 			}
 			if(m_suggestions[i].first != position) {
 				position = m_suggestions[i].first;
-				suggestionPos.x = pos.x + hFontDebug->getTextSize(text().begin(), text().begin() + position).advance();
+				suggestionPos.x = pos.x + hFontDebug->getTextSize(std::string_view(text()).substr(0, position)).advance();
 			}
 			if(start != 0 && i == start) {
 				hFontDebug->draw(suggestionPos + Vec2i(1), "...", Color::black);

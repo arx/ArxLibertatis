@@ -21,6 +21,8 @@
 #define ARX_GRAPHICS_FONT_FONT_H
 
 #include <string>
+#include <string_view>
+
 #include <map>
 
 #include <boost/noncopyable.hpp>
@@ -167,34 +169,20 @@ public:
 	
 	typedef u32 Char;
 	
-	typedef std::string::const_iterator text_iterator;
-	
 	const Info & getInfo() const { return m_info; }
 	const res::path & getName() const { return m_info.name; }
 	unsigned getSize() const { return m_info.size; }
 	unsigned getWeight() const { return m_info.weight; }
 	
-	TextSize draw(const Vec2i & p, const std::string & str, const Color & color) {
-		return draw(p.x, p.y, str, color);
+	TextSize draw(const Vec2i & p, std::string_view text, const Color & color) {
+		return draw(p.x, p.y, text, color);
 	}
 	
-	TextSize draw(int x, int y, const std::string & str, Color color) {
-		return draw(x, y, str.begin(), str.end(), color);
-	}
+	TextSize draw(int x, int y, std::string_view text, Color color);
 	
-	TextSize draw(int x, int y, text_iterator start, text_iterator end, Color color);
+	TextSize getTextSize(std::string_view text);
 	
-	TextSize getTextSize(const std::string & str) {
-		return getTextSize(str.begin(), str.end());
-	}
-	
-	TextSize getTextSize(text_iterator start, text_iterator end);
-	
-	size_t getPosition(const std::string & str, int x) {
-		return getPosition(str.begin(), str.end(), x) - str.begin();
-	}
-	
-	text_iterator getPosition(text_iterator start, text_iterator end, int x);
+	size_t getPosition(std::string_view text, int x);
 	
 	int getLineHeight() const;
 	int getMaxAdvance() const;
@@ -220,10 +208,10 @@ private:
 	 * Inserts any missing glyphs for the characters in the UTF-8 string [begin, end)
 	 * \return true if the glyph textures were changed
 	 */
-	bool insertMissingGlyphs(text_iterator begin, text_iterator end);
+	bool insertMissingGlyphs(const char * begin, const char * end);
 	
 	template <bool Draw>
-	TextSize process(int pX, int pY, text_iterator start, text_iterator end, Color color);
+	TextSize process(int pX, int pY, std::string_view text, Color color);
 	
 	Info m_info;
 	unsigned int m_referenceCount;
@@ -237,7 +225,7 @@ private:
 	 * Inserts missing glyphs if possible.
 	 * \return a glyph iterator or m_Glyphs.end()
 	 */
-	glyph_iterator getNextGlyph(text_iterator & it, text_iterator end);
+	glyph_iterator getNextGlyph(const char * & it, const char * end);
 	
 	class PackedTexture * m_textures;
 	

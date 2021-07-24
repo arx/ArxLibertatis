@@ -93,9 +93,12 @@ bool TextInputWidget::click() {
 		return true;
 	}
 	
-	std::string displayText = text();
+	std::string_view displayText = text();
+	std::string buffer;
 	if(m_editing && !editText().empty()) {
-		displayText = displayText.substr(0, cursorPos()) + editText() + displayText.substr(cursorPos());
+		buffer = displayText;
+		buffer.insert(cursorPos(), editText());
+		displayText = buffer;
 	}
 	
 	int width = m_font->getTextSize(displayText).width();
@@ -104,7 +107,7 @@ bool TextInputWidget::click() {
 		if(!m_editing) {
 			posx = int(m_rect.left);
 		} else {
-			int cursor = m_font->getTextSize(displayText.begin(), displayText.begin() + cursorPos()).next();
+			int cursor = m_font->getTextSize(displayText.substr(0, cursorPos())).next();
 			posx = int(m_rect.right) - std::min(int(m_rect.width() / 4), width - cursor) - cursor;
 			posx = std::min(int(m_rect.left), posx);
 		}
@@ -143,14 +146,14 @@ void TextInputWidget::render(bool mouseOver) {
 		color = Color::white;
 	}
 	
-	std::string displayText = text();
+	std::string_view displayText = text();
+	std::string buffer;
 	if(m_editing && !editText().empty()) {
-		displayText = displayText.substr(0, cursorPos()) + editText() + displayText.substr(cursorPos());
+		buffer = displayText;
+		buffer.insert(cursorPos(), editText());
+		displayText = buffer;
 	}
 	size_t displayCursorPos = cursorPos() + editCursorPos();
-	
-	std::string::const_iterator begin = displayText.begin();
-	std::string::const_iterator end = displayText.end();
 	
 	int width = m_font->getTextSize(displayText).advance();
 	Vec2i pos = Vec2i(m_rect.topCenter() - Vec2f(width / 2, 0.f));
@@ -158,7 +161,7 @@ void TextInputWidget::render(bool mouseOver) {
 		if(!m_editing) {
 			pos.x = int(m_rect.left);
 		} else {
-			int cursor = m_font->getTextSize(begin, begin + cursorPos()).next();
+			int cursor = m_font->getTextSize(displayText.substr(0, cursorPos())).next();
 			pos.x = int(m_rect.right) - std::min(int(m_rect.width() / 4), width - cursor) - cursor;
 			pos.x = std::min(s32(m_rect.left), pos.x);
 		}
@@ -176,8 +179,8 @@ void TextInputWidget::render(bool mouseOver) {
 	
 	// Highlight edit area
 	if(m_editing && !editText().empty()) {
-		int left = m_font->getTextSize(begin, begin + cursorPos()).advance();
-		int right = m_font->getTextSize(begin, begin + cursorPos() + editText().size()).advance();
+		int left = m_font->getTextSize(displayText.substr(0, cursorPos())).advance();
+		int right = m_font->getTextSize(displayText.substr(0, cursorPos() + editText().size())).advance();
 		int height = m_font->getLineHeight();
 		Rectf box = Rectf(Rect(pos + Vec2i(left, 0), right - left, height));
 		Color selection = Color::yellow;
@@ -187,7 +190,7 @@ void TextInputWidget::render(bool mouseOver) {
 	
 	// Draw text
 	GRenderer->SetScissor(Rect(m_rect));
-	s32 x = m_font->draw(pos.x, pos.y, begin, end, color).next();
+	s32 x = m_font->draw(pos.x, pos.y, displayText, color).next();
 	GRenderer->SetScissor(Rect::ZERO);
 	
 	// Draw cursor
@@ -199,11 +202,11 @@ void TextInputWidget::render(bool mouseOver) {
 		if(blink) {
 			int cursor = x;
 			if(cursorPos() != displayText.size()) {
-				cursor = pos.x + m_font->getTextSize(begin, begin + displayCursorPos).next();
+				cursor = pos.x + m_font->getTextSize(displayText.substr(0, displayCursorPos)).next();
 			}
 			drawLine(Vec2f(cursor, pos.y), Vec2f(cursor, pos.y + m_font->getLineHeight()), 0.f, Color::white);
 			if(editCursorLength() > 0) {
-				int endX = pos.x + m_font->getTextSize(begin, begin + displayCursorPos + editCursorLength()).next();
+				int endX = pos.x + m_font->getTextSize(displayText.substr(0, displayCursorPos + editCursorLength())).next();
 				drawLine(Vec2f(endX, pos.y), Vec2f(endX, pos.y + m_font->getLineHeight()), 0.f, Color::white);
 			}
 		}

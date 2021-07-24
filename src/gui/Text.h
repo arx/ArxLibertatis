@@ -45,8 +45,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GUI_TEXT_H
 #define ARX_GUI_TEXT_H
 
-#include <string>
 #include <climits>
+#include <string>
+#include <string_view>
 
 #include "core/TimeTypes.h"
 #include "graphics/Color.h"
@@ -73,8 +74,7 @@ void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y,
                                        PlatformDuration iTimeScroll, float fSpeed,
                                        int iNbLigne, PlatformDuration iTimeOut = PlatformDurationMs(INT_MAX));
 
-long ARX_UNICODE_ForceFormattingInRect(Font * font, std::string::const_iterator txtbegin,
-                                       std::string::const_iterator txtend, const Rect & rect,
+long ARX_UNICODE_ForceFormattingInRect(Font * font, std::string_view text, const Rect & rect,
                                        bool noOneLineParagraphs = false);
 long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, const std::string & text, Color col, const Rect * pClipRect = nullptr);
 

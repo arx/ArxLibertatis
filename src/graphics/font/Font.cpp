@@ -207,12 +207,12 @@ bool Font::insertGlyph(Char character) {
 	return true;
 }
 
-bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
+bool Font::insertMissingGlyphs(const char * begin, const char * end) {
 	
 	Char chr;
 	bool changed = false;
 	
-	for(text_iterator it = begin; (chr = util::UTF8::read(it, end)) != util::INVALID_CHAR; ) {
+	for(const char * it = begin; (chr = util::UTF8::read(it, end)) != util::INVALID_CHAR; ) {
 		if(m_glyphs.find(chr) == m_glyphs.end()) {
 			if(chr >= FONT_PRELOAD_LIMIT && insertGlyph(chr)) {
 				changed = true;
@@ -223,7 +223,7 @@ bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
 	return changed;
 }
 
-Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
+Font::glyph_iterator Font::getNextGlyph(const char * & it, const char * end) {
 	
 	Char chr = util::UTF8::read(it, end);
 	if(chr == util::INVALID_CHAR) {
@@ -296,7 +296,7 @@ static void addGlyphVertices(std::vector<TexturedVertex> & vertices,
 }
 
 template <bool DoDraw>
-Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator end, Color color) {
+Font::TextSize Font::process(int x, int y, std::string_view text, Color color) {
 	
 	FT_Activate_Size(m_size);
 	
@@ -315,7 +315,8 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 	
 	std::vector<std::vector<TexturedVertex>> mapTextureVertices;
 	
-	for(text_iterator it = start; it != end; ) {
+	const char * end = text.data() + text.length();
+	for(const char * it = text.begin(); it != end; ) {
 		
 		// Get glyph in glyph map
 		glyph_iterator itGlyph = getNextGlyph(it, end);
@@ -388,32 +389,35 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 	return TextSize(Vec2i(x, y), startX, endX, s32(pen.x), getLineHeight());
 }
 
-Font::TextSize Font::draw(int x, int y, text_iterator start, text_iterator end, Color color) {
-	return process<true>(x, y, start, end, color);
+Font::TextSize Font::draw(int x, int y, std::string_view text, Color color) {
+	return process<true>(x, y, text, color);
 }
 
-Font::TextSize Font::getTextSize(text_iterator start, text_iterator end) {
-	return process<false>(0, 0, start, end, Color::none);
+Font::TextSize Font::getTextSize(std::string_view text) {
+	return process<false>(0, 0, text, Color::none);
 }
 
-Font::text_iterator Font::getPosition(text_iterator start, text_iterator end, int x) {
+size_t Font::getPosition(std::string_view text, int x) {
 	
-	if(start == end || x < 0) {
-		return start;
+	const char * begin = text.data();
+	const char * end = text.data() + text.length();
+	
+	if(begin == end || x < 0) {
+		return 0;
 	}
 	
 	int last = 0;
 	
-	for(text_iterator p = start; ; ++p) {
+	for(const char * p = begin; ; ++p) {
 		if(p + 1 != end && util::UTF8::isContinuationByte(*p)) {
 			continue;
 		}
-		int pos = getTextSize(start, p + 1).advance();
+		int pos = getTextSize(std::string_view(begin, p - begin + 1)).advance();
 		if(pos >= x || p + 1 == end) {
 			if(x - last <= pos - x) {
-				return p;
+				return p - begin;
 			} else {
-				return p + 1;
+				return p - begin + 1;
 			}
 		}
 	}

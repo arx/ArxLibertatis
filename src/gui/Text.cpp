@@ -79,15 +79,14 @@ Font * hFontInGameNote = nullptr;
 Font * hFontDebug = nullptr;
 Font * g_iconFont = nullptr;
 
-static void ARX_UNICODE_FormattingInRect(Font * font, std::string::const_iterator txtbegin, std::string::const_iterator txtend,
-                                         const Rect & rect, Color col,
+static void ARX_UNICODE_FormattingInRect(Font * font, std::string_view text, const Rect & rect, Color col,
                                          long * textHeight = 0, long * numChars = 0,
                                          bool computeOnly = false, bool noOneLineParagraphs = false) {
 	
-	std::string::const_iterator itLastParagraphBreak = txtbegin;
-	std::string::const_iterator itLastLineBreak = txtbegin;
-	std::string::const_iterator itLastWordBreak = txtbegin;
-	std::string::const_iterator it = txtbegin;
+	const char * itLastParagraphBreak = text.data();
+	const char * itLastLineBreak = text.data();
+	const char * itLastWordBreak = text.data();
+	const char * it = text.data();
 	
 	int maxLineWidth;
 	if(rect.right == Rect::Limits::max()) {
@@ -114,10 +113,10 @@ static void ARX_UNICODE_FormattingInRect(Font * font, std::string::const_iterato
 	size_t linesInParagraph = 0;
 	bool wasLineBreak = true;
 	
-	std::string::const_iterator next = it;
-	for(it = txtbegin; it != txtend; it = next) {
+	auto next = it;
+	for(it = text.data(); it != text.data() + text.size(); it = next) {
 		
-		next = util::UTF8::next(it, txtend);
+		next = util::UTF8::next(it, text.data() + text.size());
 		
 		// Line break ?
 		bool isLineBreak = false;
@@ -138,13 +137,13 @@ static void ARX_UNICODE_FormattingInRect(Font * font, std::string::const_iterato
 			}
 			
 			// Check length of string up to this point
-			Vec2i size = font->getTextSize(itLastLineBreak, next);
+			Vec2i size = font->getTextSize(std::string_view(itLastLineBreak, next - itLastLineBreak));
 			if(size.x > maxLineWidth) { // Too long ?
 				isLineBreak = true;
 				if(itLastWordBreak > itLastLineBreak) {
 					// Draw a line from the last line break up to the last word break
 					it = itLastWordBreak;
-					next = util::UTF8::next(it, txtend);
+					next = util::UTF8::next(it, text.data() + text.size());
 				} else if(it == itLastLineBreak) {
 					// Not enough space to render even one character!
 					break;
@@ -159,7 +158,7 @@ static void ARX_UNICODE_FormattingInRect(Font * font, std::string::const_iterato
 		// If we have to draw a line
 		//  OR
 		// This is the last character of the string
-		if(isLineBreak || next == txtend) {
+		if(isLineBreak || next == text.data() + text.size()) {
 			
 			if(!isLineBreak) {
 				it = next;
@@ -167,9 +166,7 @@ static void ARX_UNICODE_FormattingInRect(Font * font, std::string::const_iterato
 			
 			// Draw the line
 			if(!computeOnly) {
-				std::string::const_iterator itTextStart = itLastLineBreak;
-				std::string::const_iterator itTextEnd = it;
-				font->draw(rect.left, penY, itTextStart, itTextEnd, col);
+				font->draw(rect.left, penY, std::string_view(itLastLineBreak, it - itLastLineBreak), col);
 			}
 			
 			itLastLineBreak = next;
@@ -188,8 +185,8 @@ static void ARX_UNICODE_FormattingInRect(Font * font, std::string::const_iterato
 		
 	}
 	
-	if(noOneLineParagraphs && linesInParagraph == 1 && itLastParagraphBreak != txtbegin
-	   && !wasLineBreak && it != txtend) {
+	if(noOneLineParagraphs && linesInParagraph == 1 && itLastParagraphBreak != text.data()
+	   && !wasLineBreak && it != text.data() + text.size()) {
 		it = itLastParagraphBreak;
 		penY -= font->getLineHeight();
 	}
@@ -201,15 +198,15 @@ static void ARX_UNICODE_FormattingInRect(Font * font, std::string::const_iterato
 	
 	// Return num characters displayed
 	if(numChars) {
-		*numChars = it - txtbegin;
+		*numChars = it - text.data();
 	}
 	
 }
 
-long ARX_UNICODE_ForceFormattingInRect(Font * font, std::string::const_iterator txtbegin, std::string::const_iterator txtend,
+long ARX_UNICODE_ForceFormattingInRect(Font * font, std::string_view text,
                                        const Rect & rect, bool noOneLineParagraphs) {
 	long numChars;
-	ARX_UNICODE_FormattingInRect(font, txtbegin, txtend, rect, Color::none, 0, &numChars, true, noOneLineParagraphs);
+	ARX_UNICODE_FormattingInRect(font, text, rect, Color::none, 0, &numChars, true, noOneLineParagraphs);
 	return numChars;
 }
 
@@ -226,7 +223,7 @@ long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, cons
 	}
 
 	long height;
-	ARX_UNICODE_FormattingInRect(font, _text.begin(), _text.end(), rect, col, &height);
+	ARX_UNICODE_FormattingInRect(font, _text, rect, col, &height);
 
 	if(pClipRect) {
 		GRenderer->SetScissor(Rect::ZERO);
