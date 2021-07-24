@@ -44,7 +44,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
-#include <cctype>
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
@@ -98,6 +97,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
+#include "util/String.h"
+
 struct EQUIP_INFO {
 	const char * name;
 };
@@ -121,7 +122,7 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag(std::string_view temp) {
 	
 	char c = temp[0];
 	
-	arx_assert(std::tolower(c) == c);
+	arx_assert(util::toLowercase(c) == c);
 	
 	switch(c) {
 		case 'w': return OBJECT_TYPE_WEAPON;
