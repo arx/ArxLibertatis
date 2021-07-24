@@ -210,7 +210,7 @@ long ARX_UNICODE_ForceFormattingInRect(Font * font, std::string_view text,
 	return numChars;
 }
 
-long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, const std::string & _text,
+long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, std::string_view text,
                                 Color col, const Rect * pClipRect) {
 	
 	if(pClipRect) {
@@ -223,7 +223,7 @@ long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, cons
 	}
 
 	long height;
-	ARX_UNICODE_FormattingInRect(font, _text, rect, col, &height);
+	ARX_UNICODE_FormattingInRect(font, text, rect, col, &height);
 
 	if(pClipRect) {
 		GRenderer->SetScissor(Rect::ZERO);
@@ -232,8 +232,8 @@ long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, cons
 	return height;
 }
 
-void UNICODE_ARXDrawTextCenter(Font * font, const Vec2f & pos, const std::string & str, Color col) {
-	font->draw(Vec2i(pos) - Vec2i(font->getTextSize(str).advance() / 2, 0), str, col);
+void UNICODE_ARXDrawTextCenter(Font * font, const Vec2f & pos, std::string_view text, Color col) {
+	font->draw(Vec2i(pos) - Vec2i(font->getTextSize(text).advance() / 2, 0), text, col);
 }
 
 void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, std::string && text,
@@ -252,8 +252,7 @@ void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, 
 	
 }
 
-static Font * createFont(const res::path & fontFace,
-                         const std::string & configSizeKey, unsigned int fontSize,
+static Font * createFont(const res::path & fontFace, std::string_view configSizeKey, unsigned int fontSize,
                          float scaleFactor, int fontWeight = 0) {
 
 	arx_assert(fontSize > 0);
@@ -261,7 +260,7 @@ static Font * createFont(const res::path & fontFace,
 	arx_assert(scaleFactor < 1000.f); // TODO better maximum
 	
 	try {
-		std::string configSize = getLocalised(configSizeKey, std::string());
+		std::string configSize = getLocalised(configSizeKey, std::string_view());
 		if(!configSize.empty()) {
 			fontSize = boost::lexical_cast<unsigned int>(configSize);
 		}
@@ -491,13 +490,13 @@ void ARX_Text_Close() {
 	FontCache::shutdown();
 }
 
-void drawTextCentered(Font * font, Vec2f center, const std::string & text, Color color) {
+void drawTextCentered(Font * font, Vec2f center, std::string_view text, Color color) {
 	Vec2i size = font->getTextSize(text);
 	Vec2f corner = center - Vec2f(size) / 2.f;
 	font->draw(int(corner.x), int(corner.y), text, color);
 }
 
-void drawTextAt(Font * font, const Vec3f & pos, const std::string & text, Color color, float offset) {
+void drawTextAt(Font * font, const Vec3f & pos, std::string_view text, Color color, float offset) {
 	
 	// Project the 3d coordinates to get an on-screen position
 	Vec4f p = worldToClipSpace(pos);

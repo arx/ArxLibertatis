@@ -67,8 +67,8 @@ extern Font * hFontInGameNote;
 extern Font * hFontDebug;
 extern Font * g_iconFont;
 
-void UNICODE_ARXDrawTextCenter(Font * font, const Vec2f & pos, const std::string & str, Color col);
- 
+void UNICODE_ARXDrawTextCenter(Font * font, const Vec2f & pos, std::string_view text, Color col);
+
 void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y,
                                        float x2, std::string && text, Color col,
                                        PlatformDuration iTimeScroll, float fSpeed,
@@ -76,7 +76,8 @@ void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y,
 
 long ARX_UNICODE_ForceFormattingInRect(Font * font, std::string_view text, const Rect & rect,
                                        bool noOneLineParagraphs = false);
-long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, const std::string & text, Color col, const Rect * pClipRect = nullptr);
+long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, std::string_view text,
+                                Color col, const Rect * pClipRect = nullptr);
 
 bool ARX_Text_Init(bool force = false);
 void ARX_Text_scaleBookFont(float scale, int weight);
@@ -91,7 +92,7 @@ void ARX_Text_Close();
  * \param text   The text to draw
  * \param color  The text color to use
  */
-void drawTextCentered(Font * font, Vec2f center, const std::string & text,
+void drawTextCentered(Font * font, Vec2f center, std::string_view text,
                       Color color = Color::white);
 
 /*!
@@ -103,7 +104,7 @@ void drawTextCentered(Font * font, Vec2f center, const std::string & text,
  * \param color  The text color to use
  * \param offset Vertical offset for the rendered text
  */
-void drawTextAt(Font * font, const Vec3f & pos, const std::string & text,
+void drawTextAt(Font * font, const Vec3f & pos, std::string_view text,
                 Color color = Color::white, float offset = 0);
 
 #endif // ARX_GUI_TEXT_H
