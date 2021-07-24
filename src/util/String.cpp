@@ -39,6 +39,12 @@ void storeString(char * dst, size_t maxLength, const std::string & src) {
 	}
 }
 
+void makeLowercase(std::string & string) {
+	for(char & character : string) {
+		character = toLowercase(character);
+	}
+}
+
 struct character_escaper {
 	template <typename FinderT>
 	std::string operator()(const FinderT & match) const {

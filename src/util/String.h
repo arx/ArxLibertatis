@@ -20,6 +20,8 @@
 #ifndef ARX_UTIL_STRING_H
 #define ARX_UTIL_STRING_H
 
+#include "platform/Platform.h"
+
 #include <stddef.h>
 #include <cstring>
 #include <string>
@@ -52,6 +54,30 @@ template <size_t N>
 void storeStringTerminated(char (&dst)[N], const std::string & src) {
 	storeString(dst, src);
 	dst[N - 1] = 0x00;
+}
+
+//! Convert a character to lowercase (ASCII-only)
+[[nodiscard]] inline char toLowercase(char character) {
+	return u8(u8(character) - (u8(character) >= u8('A') && u8(character) <= u8('Z')) * (u8('A') - u8('a')));
+}
+
+//! Convert a string to lowercase in-place (ASCII-only)
+void makeLowercase(std::string & string);
+
+//! Convert a string to lowercase (ASCII-only)
+[[nodiscard]] inline std::string toLowercase(std::string string) {
+	makeLowercase(string);
+	return string;
+}
+
+//! Convert a string to lowercase (ASCII-only)
+[[nodiscard]] inline std::string toLowercase(std::string_view string) {
+	return toLowercase(std::string(string));
+}
+
+//! Convert a string to lowercase (ASCII-only)
+[[nodiscard]] inline std::string toLowercase(const char * string) {
+	return toLowercase(std::string(string));
 }
 
 /*!
