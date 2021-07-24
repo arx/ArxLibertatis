@@ -45,8 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GUI_INTERFACE_H
 #define ARX_GUI_INTERFACE_H
 
-#include <string>
 #include <map>
+#include <string_view>
 
 #include "game/Inventory.h"
 #include "game/Spells.h"
@@ -178,7 +178,7 @@ void ARX_INTERFACE_Reset();
 
 void ARX_INTERFACE_NoteManage();
 
-void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & tex);
+void ARX_INTERFACE_NoteOpen(Note::Type type, std::string_view tex);
 void ARX_INTERFACE_NoteClose();
 void ARX_INTERFACE_NoteClear();
 

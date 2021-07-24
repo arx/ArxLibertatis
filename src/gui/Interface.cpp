@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <iomanip>
 #include <sstream>
+#include <string>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -406,7 +407,7 @@ void ARX_INTERFACE_NoteClear() {
 	g_note.clear();
 }
 
-void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & text) {
+void ARX_INTERFACE_NoteOpen(Note::Type type, std::string_view text) {
 	
 	ARX_INTERFACE_NoteClose();
 	
@@ -1629,47 +1630,42 @@ void ArxGame::manageEntityDescription() {
 		
 		ARX_INVENTORY_IdentifyIO(temp);
 		
-		std::string description = getLocalised(temp->locname);
-		
-		if(temp->ioflags & IO_GOLD) {
-			std::stringstream ss;
-			ss << temp->_itemdata->price << " " << description;
-			description = ss.str();
+		if(!temp->obj || !temp->obj->pbox || temp->obj->pbox->active != 1) {
+			return;
 		}
 		
+		std::stringstream ss;
+		
+		if(temp->ioflags & IO_GOLD) {
+			ss << temp->_itemdata->price << " ";
+		}
+		
+		ss << getLocalised(temp->locname);
+		
 		if(temp->poisonous > 0 && temp->poisonous_count != 0) {
-			std::string Text = getLocalised("description_poisoned");
-			std::stringstream ss;
-			ss << " (" << Text << " " << temp->poisonous << ")";
-			description += ss.str();
+			ss << " (" << getLocalised("description_poisoned") << " " << temp->poisonous << ")";
 		}
 		
 		if((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
-			std::string Text = getLocalised("description_durability");
-			std::stringstream ss;
-			ss << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
-			description += ss.str();
+			ss << " " << getLocalised("description_durability") << " "
+			   << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
 		}
 		
-		bool bAddText = true;
-		if(temp->obj && temp->obj->pbox && temp->obj->pbox->active == 1) {
-			bAddText = false;
+		Rect::Num x = checked_range_cast<Rect::Num>(120 * g_sizeRatio.x);
+		Rect::Num y = checked_range_cast<Rect::Num>(14 * g_sizeRatio.y);
+		Rect::Num w = checked_range_cast<Rect::Num>((120 + 500) * g_sizeRatio.x);
+		Rect::Num h = checked_range_cast<Rect::Num>((14 + 200) * g_sizeRatio.y);
+		Rect rDraw(x, y, w, h);
+		
+		pTextManage->Clear();
+		std::string description = ss.str();
+		if(!config.input.autoDescription) {
+			PlatformDuration duration = PlatformDurationMs(2000 + description.length() * 60);
+			pTextManage->AddText(hFontInGame, description, rDraw, Color(232, 204, 143), duration);
+		} else {
+			pTextManage->AddText(hFontInGame, description, rDraw, Color(232, 204, 143));
 		}
 		
-		if(bAddText) {
-			Rect::Num x = checked_range_cast<Rect::Num>(120 * g_sizeRatio.x);
-			Rect::Num y = checked_range_cast<Rect::Num>(14 * g_sizeRatio.y);
-			Rect::Num w = checked_range_cast<Rect::Num>((120 + 500) * g_sizeRatio.x);
-			Rect::Num h = checked_range_cast<Rect::Num>((14 + 200) * g_sizeRatio.y);
-			Rect rDraw(x, y, w, h);
-			pTextManage->Clear();
-			if(!config.input.autoDescription) {
-				PlatformDuration duration = PlatformDurationMs(2000 + description.length() * 60);
-				pTextManage->AddText(hFontInGame, description, rDraw, Color(232, 204, 143), duration);
-			} else {
-				pTextManage->AddText(hFontInGame, description, rDraw, Color(232, 204, 143));
-			}
-		}
 	}
 }
 
