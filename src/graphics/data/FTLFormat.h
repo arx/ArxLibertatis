@@ -47,8 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstring>
 
-#include <boost/algorithm/string/case_conv.hpp>
-
 #include "graphics/GraphicsFormat.h"
 #include "platform/Platform.h"
 #include "util/String.h"
@@ -138,7 +136,7 @@ struct EERIE_ACTIONLIST_FTL {
 	
 	operator EERIE_ACTIONLIST() const {
 		EERIE_ACTIONLIST a;
-		a.name = boost::to_lower_copy(util::loadString(name));
+		a.name = util::toLowercase(util::loadString(name));
 		a.idx = ActionPoint(idx);
 		return a;
 	}

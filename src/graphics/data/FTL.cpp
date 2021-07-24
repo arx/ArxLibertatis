@@ -54,8 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <cstring>
 
-#include <boost/algorithm/string/case_conv.hpp>
-
 #include "graphics/data/FTLFormat.h"
 #include "graphics/data/TextureContainer.h"
 
@@ -218,7 +216,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			const EERIE_GROUPLIST_FTL * group = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
 			pos += sizeof(EERIE_GROUPLIST_FTL);
 			
-			obj->grouplist[i].name = boost::to_lower_copy(util::loadString(group->name));
+			obj->grouplist[i].name = util::toLowercase(util::loadString(group->name));
 			obj->grouplist[i].origin = group->origin;
 			obj->grouplist[i].indexes.resize(group->nb_index);
 			obj->grouplist[i].m_blobShadowSize = group->siz;
@@ -248,7 +246,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		const EERIE_SELECTIONS_FTL * selection = reinterpret_cast<const EERIE_SELECTIONS_FTL *>(dat + pos);
 		pos += sizeof(EERIE_SELECTIONS_FTL);
 		
-		obj->selections[i].name = boost::to_lower_copy(util::loadString(selection->name));
+		obj->selections[i].name = util::toLowercase(util::loadString(selection->name));
 		obj->selections[i].selected.resize(selection->nb_selected);
 	}
 	
