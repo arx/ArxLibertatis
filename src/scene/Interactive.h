@@ -85,7 +85,8 @@ DECLARE_FLAGS_OPERATORS(DeleteByIndexFlags)
 void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1);
 void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io);
 void ARX_INTERACTIVE_HideGore(Entity * io, long flag = 0);
-void ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target, const std::string & ap_source, const std::string & ap_target);
+void ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target,
+                            std::string_view ap_source, std::string_view ap_target);
 void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target);
 void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state);
 
@@ -101,7 +102,7 @@ bool IsEquipedByPlayer(const Entity * io);
 void CleanScriptLoadedIO();
 void PrepareIOTreatZone(long flag = 0);
 
-void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach);
+void LinkObjToMe(Entity * io, Entity * io2, std::string_view attach);
 
 /*!
  * Destroy an entity at the end of the current frame

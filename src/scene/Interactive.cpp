@@ -228,7 +228,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 
 
 void ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target,
-                            const std::string & ap_source, const std::string & ap_target) {
+                            std::string_view ap_source, std::string_view ap_target) {
 	
 	Entity * source = entities.get(n_source);
 	Entity * target = entities.get(n_target);
@@ -1212,7 +1212,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 
 Entity * AddInteractive(const res::path & classPath, EntityInstance instance, AddInteractiveFlags flags) {
 	
-	const std::string & ficc = classPath.string();
+	std::string_view ficc = classPath.string();
 	
 	Entity * io = nullptr;
 	if(boost::contains(ficc, "items")) {
@@ -1300,7 +1300,7 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 /*!
  * \brief Links an Interactive Object to another interactive object using an attach point
  */
-void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach) {
+void LinkObjToMe(Entity * io, Entity * io2, std::string_view attach) {
 	
 	if(!io || !io2)
 		return;
@@ -2337,7 +2337,7 @@ void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t) {
 
 std::string_view GetMaterialString(const res::path & texture) {
 	
-	const std::string & origin = texture.string();
+	std::string_view origin = texture.string();
 	
 	// need to be precomputed !!!
 	if(boost::contains(origin, "stone")) return "stone";
