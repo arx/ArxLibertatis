@@ -244,10 +244,11 @@ bool addSearchRoot(std::vector<path> & result, const path & dir, bool filter) {
 }
 
 std::string getSearchPathVar(const path & exepath) {
+	std::string basename(exepath.basename());
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	return "%" + boost::to_upper_copy(exepath.basename()) + "_PATH%";
+	return "%" + boost::to_upper_copy(basename) + "_PATH%";
 	#else
-	return "${" + exepath.basename() + "_PATH}";
+	return "${" + basename + "_PATH}";
 	#endif
 }
 

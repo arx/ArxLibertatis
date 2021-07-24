@@ -255,7 +255,7 @@ bool ArxGame::initialize()
 
 static bool migrateFilenames(fs::path path, bool is_dir) {
 	
-	std::string name = path.filename();
+	std::string_view name = path.filename();
 	std::string lowercase = util::toLowercase(name);
 	
 	bool migrated = true;

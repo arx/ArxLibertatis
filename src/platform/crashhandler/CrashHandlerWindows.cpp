@@ -80,7 +80,7 @@ bool CrashHandlerWindows::initialize() {
 	
 	// Cache WideString exe & arg so we don't need to do the conversion in the crash handler
 	m_exe = m_executable.string();
-	m_args = m_executable.filename() + " --crashinfo=" + m_SharedMemoryName;
+	m_args = std::string(m_executable.filename()) + " --crashinfo=" + m_SharedMemoryName;
 	
 	m_pCrashInfo->miniDumpTmpFile[0] = L'\0';
 	

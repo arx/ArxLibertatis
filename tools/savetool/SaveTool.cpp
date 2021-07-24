@@ -95,8 +95,8 @@ static int main_add(SaveBlock & save, const std::vector<std::string> & args) {
 			continue;
 		}
 		
-		std::string name = file.filename();
-		if(!save.save(name, data.data(), data.size())) {
+		std::string_view name = file.filename();
+		if(!save.save(std::string(name), data.data(), data.size())) { // TODO avoid copy
 			std::cerr << "error writing " << name << " to save";
 		}
 		

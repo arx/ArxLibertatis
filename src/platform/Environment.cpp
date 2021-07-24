@@ -419,19 +419,19 @@ fs::path getExecutablePath() {
 	std::vector<char> buffer(1024);
 	// Linux
 	if(try_readlink(buffer, "/proc/self/exe")) {
-		return fs::path(buffer.data(), buffer.data() + buffer.size());
+		return fs::path(std::string_view(buffer.data(), buffer.size()));
 	}
 	// FreeBSD, DragonFly BSD
 	if(try_readlink(buffer, "/proc/curproc/file")) {
-		return fs::path(buffer.data(), buffer.data() + buffer.size());
+		return fs::path(std::string_view(buffer.data(), buffer.size()));
 	}
 	// NetBSD
 	if(try_readlink(buffer, "/proc/curproc/exe")) {
-		return fs::path(buffer.data(), buffer.data() + buffer.size());
+		return fs::path(std::string_view(buffer.data(), buffer.size()));
 	}
 	// Solaris
 	if(try_readlink(buffer, "/proc/self/path/a.out")) {
-		return fs::path(buffer.data(), buffer.data() + buffer.size());
+		return fs::path(std::string_view(buffer.data(), buffer.size()));
 	}
 	#endif
 	
@@ -455,12 +455,12 @@ std::string getCommandName() {
 	fs::path path = executablePath ? fs::path(executablePath) : getExecutablePath();
 	
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	if(path.ext() == ".exe") {
-		return path.basename();
+	if(path.has_ext(".exe")) {
+		return std::string(path.basename());
 	}
 	#endif
 	
-	return path.filename();
+	return std::string(path.filename());
 }
 
 fs::path getHelperExecutable(const std::string & name) {
