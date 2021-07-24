@@ -50,8 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cstring>
 
-#include <boost/algorithm/string/case_conv.hpp>
-
 #include "animation/Animation.h"
 
 #include "audio/Audio.h"
@@ -73,11 +71,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 #include "platform/Thread.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/Interactive.h"
 
 #include "util/String.h"
-#include "platform/profiler/Profiler.h"
 
 
 using audio::AmbianceId;
@@ -1008,7 +1006,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 				for(size_t mi = 0; mi < MAX_VARIANTS; mi++) {
 					
 					std::ostringstream oss;
-					oss << boost::to_lower_copy(key.getValue());
+					oss << util::toLowercase(key.getValue());
 					if(mi) {
 						oss << mi;
 					}
@@ -1017,7 +1015,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 					
 					if(sample == audio::SampleHandle()) {
 						std::ostringstream oss2;
-						oss2 << boost::to_lower_copy(key.getValue()) << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
+						oss2 << util::toLowercase(key.getValue()) << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
 						sample = audio::createSample(sample_path / oss2.str());
 					}
 					
