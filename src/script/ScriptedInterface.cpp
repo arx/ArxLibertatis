@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedInterface.h"
 
+#include <utility>
+
 #include "game/Inventory.h"
 #include "game/Entity.h"
 #include "game/Player.h"
@@ -355,7 +357,7 @@ public:
 			
 			DebugScript(' ' << options << ' ' << x << ' ' << y << ' ' << level << ' ' << marker);
 			
-			g_miniMap.mapMarkerAdd(Vec2f(x, y), level, marker);
+			g_miniMap.mapMarkerAdd(Vec2f(x, y), level, std::move(marker));
 			
 		}
 		

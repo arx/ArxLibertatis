@@ -47,8 +47,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 
 #include <cstdio>
-#include <sstream>
 #include <limits>
+#include <sstream>
+#include <utility>
 
 #include "core/Core.h"
 #include "core/Localisation.h"
@@ -754,7 +755,7 @@ void MiniMap::mapMarkerInit(size_t reserveSize) {
 		m_mapMarkers.reserve(reserveSize);
 }
 
-int MiniMap::mapMarkerGetID(const std::string & name) {
+int MiniMap::mapMarkerGetID(std::string_view name) {
 	
 	for(size_t i = 0; i < m_mapMarkers.size(); i++) {
 		if(m_mapMarkers[i].m_name == name) {
@@ -765,7 +766,7 @@ int MiniMap::mapMarkerGetID(const std::string & name) {
 	return -1;
 }
 
-void MiniMap::mapMarkerAdd(const Vec2f & pos, int lvl, const std::string & name) {
+void MiniMap::mapMarkerAdd(const Vec2f & pos, int lvl, std::string && name) {
 	
 	int num = mapMarkerGetID(name);
 	
@@ -782,12 +783,12 @@ void MiniMap::mapMarkerAdd(const Vec2f & pos, int lvl, const std::string & name)
 	newMMD.m_lvl = lvl;
 	newMMD.m_pos.x = pos.x;
 	newMMD.m_pos.y = pos.y;
-	newMMD.m_name = name;
-	newMMD.m_text = getLocalised(name);
+	newMMD.m_name = std::move(name);
+	newMMD.m_text = getLocalised(newMMD.m_name);
 	m_mapMarkers.push_back(newMMD);
 }
 
-void MiniMap::mapMarkerRemove(const std::string & name) {
+void MiniMap::mapMarkerRemove(std::string_view name) {
 	
 	int num = mapMarkerGetID(name);
 	

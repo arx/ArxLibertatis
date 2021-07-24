@@ -48,7 +48,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GUI_MINIMAP_H
 
 #include <string>
+#include <string_view>
 #include <vector>
+
 #include "math/Types.h"
 #include "gui/Interface.h"
 #include "gui/Text.h"
@@ -120,8 +122,8 @@ public:
 		, m_mod(0.f)
 	{ }
 	
-	void mapMarkerRemove(const std::string & name);
-	void mapMarkerAdd(const Vec2f & pos, int lvl, const std::string & name);
+	void mapMarkerRemove(std::string_view name);
+	void mapMarkerAdd(const Vec2f & pos, int lvl, std::string && name);
 	void mapMarkerInit(size_t reserveSize = 0);
 	size_t mapMarkerCount();
 	MapMarkerData mapMarkerGet(size_t id);
@@ -189,7 +191,7 @@ private:
 	*
 	* \return MapMarker's id (int).
 	*/
-	int mapMarkerGetID(const std::string & name);
+	int mapMarkerGetID(std::string_view name);
 	
 	Vec2f computePlayerPos(float zoom, int showLevel);
 	void drawBackground(int showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder = 0.f, bool invColor = false, float alpha = 1.f);
