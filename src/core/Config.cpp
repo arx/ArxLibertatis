@@ -26,7 +26,6 @@
 #include <string_view>
 
 #include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
 #include "input/Input.h"
@@ -39,6 +38,7 @@
 #include "io/log/Logger.h"
 #include "math/Vector.h"
 #include "platform/CrashHandler.h"
+#include "util/String.h"
 
 // To avoid conflicts with potential other classes/namespaces
 namespace {
@@ -581,10 +581,8 @@ bool Config::init(const fs::path & file) {
 	}
 	
 	// Get locale language
-	interface.language = reader.getKey(Section::Language, Key::language, Default::language);
-	boost::to_lower(interface.language);
-	audio.language = reader.getKey(Section::Language, Key::audio, Default::audio);
-	boost::to_lower(audio.language);
+	interface.language = util::toLowercase(reader.getKey(Section::Language, Key::language, Default::language));
+	audio.language = util::toLowercase(reader.getKey(Section::Language, Key::audio, Default::audio));
 	
 	// Get video settings
 	video.renderer = reader.getKey(Section::Video, Key::renderer, Default::renderer);
