@@ -123,13 +123,13 @@ extern bool LOAD_N_ERASE;
 static bool ARX_CHANGELEVEL_Push_Index(long num);
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
 static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag = false,
-                                     const std::string & target = std::string(), float angle = 0.f);
+                                     std::string_view target = std::string_view(), float angle = 0.f);
 static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player(long level);
 static long ARX_CHANGELEVEL_Push_AllIO(long level);
 static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level);
-static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInstance instance, long level = -1);
+static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance instance, long level = -1);
 
 static fs::path CURRENT_GAME_FILE;
 
@@ -147,7 +147,7 @@ struct Playthrough {
 static SaveBlock * g_currentSavedGame = nullptr;
 static Playthrough g_currentPlathrough;
 
-static Entity * convertToValidIO(const std::string & idString) {
+static Entity * convertToValidIO(std::string_view idString) {
 	
 	if(idString.empty() || idString == "none") {
 		return nullptr;
@@ -159,8 +159,8 @@ static Entity * convertToValidIO(const std::string & idString) {
 	}
 	
 	arx_assert_msg(
-		idString.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789") == std::string::npos,
-		"bad interactive object id: \"%s\"", idString.c_str()
+		idString.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789") == std::string_view::npos,
+		"bad interactive object id: \"%s\"", std::string(idString).c_str()
 	);
 	
 	EntityHandle t = entities.getById(idString);
@@ -173,11 +173,11 @@ static Entity * convertToValidIO(const std::string & idString) {
 	LogDebug("Call to ConvertToValidIO(" << idString << ")");
 	
 	size_t pos = idString.find_last_of('_');
-	if(pos == std::string::npos || pos == idString.length() - 1) {
+	if(pos == std::string_view::npos || pos == idString.length() - 1) {
 		return nullptr;
 	}
 	pos = idString.find_first_not_of('0', pos + 1);
-	if(pos == std::string::npos) {
+	if(pos == std::string_view::npos) {
 		return nullptr;
 	}
 	
@@ -287,7 +287,7 @@ bool ARX_CHANGELEVEL_StartNew() {
 	return true;
 }
 
-bool currentSavedGameHasEntity(const std::string & idString) {
+bool currentSavedGameHasEntity(std::string_view idString) {
 	if(g_currentSavedGame) {
 		return g_currentSavedGame->hasFile(idString);
 	} else {
@@ -296,7 +296,7 @@ bool currentSavedGameHasEntity(const std::string & idString) {
 	}
 }
 
-void currentSavedGameStoreEntityDeletion(const std::string & idString) {
+void currentSavedGameStoreEntityDeletion(std::string_view idString) {
 	
 	if(!g_currentSavedGame) {
 		arx_assert(false);
@@ -314,13 +314,13 @@ void currentSavedGameStoreEntityDeletion(const std::string & idString) {
 	
 }
 
-void currentSavedGameRemoveEntity(const std::string & idString) {
+void currentSavedGameRemoveEntity(std::string_view idString) {
 	if(g_currentSavedGame) {
 		g_currentSavedGame->remove(idString);
 	}
 }
 
-void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, float angle) {
+void ARX_CHANGELEVEL_Change(std::string_view level, std::string_view target, float angle) {
 	
 	LogDebug("ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle);
 	
@@ -535,9 +535,9 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	return ret;
 }
 
-static VariableType getVariableType(const std::string & name) {
+static VariableType getVariableType(std::string_view name) {
 	
-	switch(name.c_str()[0]) {
+	switch(name.empty() ? '\0' : name[0]) {
 		case '$':    return TYPE_G_TEXT;
 		case '\xA3': return TYPE_L_TEXT;
 		case '#':    return TYPE_G_LONG;
@@ -643,11 +643,8 @@ static void storeIdString(char (&tofill)[N], const Entity * io) {
 		static_assert(N >= 4, "id string too short");
 		util::storeString(tofill, "none");
 	} else {
-		
-		std::string idString = io->idString();
-		
-		arx_assert(idString.length() <= N);
-		util::storeString(tofill, idString);
+		arx_assert(io->idString().length() <= N);
+		util::storeString(tofill, io->idString());
 	}
 }
 
@@ -806,7 +803,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		if(ValidIONum(player.equiped[k])) {
 			storeIdString(asp->equiped[k], entities[player.equiped[k]]);
 		} else {
-			util::storeString(asp->equiped[k], std::string());
+			util::storeString(asp->equiped[k], std::string_view());
 		}
 	}
 	
@@ -905,9 +902,6 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	
 	arx_assert(io->show != SHOW_FLAG_DESTROYED);
 	arx_assert(io->show != SHOW_FLAG_KILLED);
-	
-	// Sets Savefile Name
-	std::string savefile = io->idString();
 	
 	// Define Type & Affiliated Structure Size
 	SavedIOType type;
@@ -1324,26 +1318,26 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		pos += sizeof(SavedTweakerInfo);
 	}
 	
-	for(std::set<std::string>::const_iterator i = io->groups.begin(); i != io->groups.end(); ++i) {
+	for(std::string_view group : io->groups) {
 		SavedGroupData * sgd = reinterpret_cast<SavedGroupData *>(dat + pos);
 		pos += sizeof(SavedGroupData);
-		util::storeString(sgd->name, *i);
+		util::storeString(sgd->name, group);
 	}
 	
-	for(std::vector<TWEAK_INFO>::const_iterator i = io->tweaks.begin(); i != io->tweaks.end(); ++i) {
+	for(const TWEAK_INFO & tweak : io->tweaks) {
 		SavedTweakInfo * sti = reinterpret_cast<SavedTweakInfo *>(dat + pos);
 		pos += sizeof(SavedTweakInfo);
-		*sti = *i;
+		*sti = tweak;
 	}
 	
 	arx_assert(pos <= buffer.size());
 	
-	g_currentSavedGame->save(savefile, dat, pos);
+	g_currentSavedGame->save(io->idString(), dat, pos);
 	
 	return 1;
 }
 
-static const ARX_CHANGELEVEL_INDEX * ARX_CHANGELEVEL_Pop_Index(const std::string & buffer) {
+static const ARX_CHANGELEVEL_INDEX * ARX_CHANGELEVEL_Pop_Index(std::string_view buffer) {
 	
 	const char * dat = buffer.data();
 	size_t pos = 0;
@@ -1386,7 +1380,7 @@ static const ARX_CHANGELEVEL_INDEX * ARX_CHANGELEVEL_Pop_Index(const std::string
 	return asi;
 }
 
-static void ARX_CHANGELEVEL_Pop_Zones_n_Lights(const std::string & buffer) {
+static void ARX_CHANGELEVEL_Pop_Zones_n_Lights(std::string_view buffer) {
 	
 	const char * dat = buffer.data();
 	size_t pos = 0;
@@ -1477,7 +1471,7 @@ static long ARX_CHANGELEVEL_Pop_Level(long num, bool firstTime) {
 	return 1;
 }
 
-static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) {
+static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	std::string buffer = g_currentSavedGame->load("player");
 	if(buffer.empty()) {
@@ -1762,7 +1756,7 @@ static bool loadScriptVariables(SCRIPT_VARIABLES & var, const char * dat, size_t
 	return true;
 }
 
-static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInstance instance, long level) {
+static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance instance, long level) {
 	
 	LogDebug("--> loading interactive object " << idString);
 	
@@ -1804,7 +1798,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	std::string path(util::loadString(ais->filename));
 	if((!path.empty() && path[0] == '\\')
 	   || (path.length() >= 3 && std::isalpha(static_cast<unsigned char>(path[0])) && path[1] == ':'
-		     && path[2] == '\\')) {
+	       && path[2] == '\\')) {
 		// Old save files stored absolute paths,
 		// strip everything before 'graph' when loading.
 		util::makeLowercase(path);
@@ -2044,7 +2038,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		}
 		
 		if(over_ass->nblvar != 0) {
-			LogWarning << "Unexpected override script variables for entity " << idString;
+			LogWarning << "Unexpected override script variables for entity " << io->idString();
 			SCRIPT_VARIABLES variables;
 			variables.resize(over_ass->nblvar);
 			loadScriptVariables(variables, dat, pos);
@@ -2052,7 +2046,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		}
 		
 		if(!scriptLoaded) {
-			LogError << "Save file is corrupted, trying to fix " << idString;
+			LogError << "Save file is corrupted, trying to fix " << io->idString();
 			RestoreInitialIOStatusOfIO(io);
 			SendInitScriptEvent(io);
 			return io;
@@ -2282,7 +2276,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	return io;
 }
 
-static void ARX_CHANGELEVEL_PopAllIO(const std::string & buffer, long level) {
+static void ARX_CHANGELEVEL_PopAllIO(std::string_view buffer, long level) {
 	
 	const char * dat = buffer.data();
 	size_t pos = 0;
@@ -2446,7 +2440,7 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 	
 }
 
-static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::string & target, float angle) {
+static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, std::string_view target, float angle) {
 	
 	DanaeClearLevel();
 	
@@ -2560,7 +2554,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, const std::
 	return true;
 }
 
-bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
+bool ARX_CHANGELEVEL_Save(std::string_view name, const fs::path & savefile) {
 	
 	arx_assert(!savefile.empty() && fs::exists(savefile.parent()));
 	

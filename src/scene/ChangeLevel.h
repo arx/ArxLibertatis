@@ -48,10 +48,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_SCENE_CHANGELEVEL_H
 
 #include <string>
+#include <string_view>
 
 namespace fs { class path; }
 
-void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, float angle);
+void ARX_CHANGELEVEL_Change(std::string_view level, std::string_view target, float angle);
 
 long ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version, long & level);
 
@@ -62,7 +63,7 @@ bool ARX_CHANGELEVEL_StartNew();
  */
 void ARX_CHANGELEVEL_Load(const fs::path & savefile);
 
-bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile);
+bool ARX_CHANGELEVEL_Save(std::string_view name, const fs::path & savefile);
 
 bool ARX_Changelevel_CurGame_Clear();
 
@@ -70,19 +71,19 @@ bool ARX_Changelevel_CurGame_Clear();
  * Check if the current saved game state contains an entry for the entity with the
  * given ID string.
  */
-bool currentSavedGameHasEntity(const std::string & idString);
+bool currentSavedGameHasEntity(std::string_view idString);
 
 /*!
  * Mark the entity with ID string as deleted in the current save game state.
  * This needs to be done for entities referenced in level files or we will recreate
  * the entity the next time the level is loaded.
  */
-void currentSavedGameStoreEntityDeletion(const std::string & idString);
+void currentSavedGameStoreEntityDeletion(std::string_view idString);
 
 /*!
  * Completely remove an entity from the current save game state.
  * This should only be done when the entity isn't referenced anymore (destroyed).
  */
-void currentSavedGameRemoveEntity(const std::string & idString);
+void currentSavedGameRemoveEntity(std::string_view idString);
 
 #endif // ARX_SCENE_CHANGELEVEL_H
