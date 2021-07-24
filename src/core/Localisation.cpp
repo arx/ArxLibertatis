@@ -25,7 +25,6 @@
 #include <cstdlib>
 #include <iterator>
 
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "core/Config.h"
@@ -40,6 +39,7 @@
 #include "platform/Environment.h"
 #include "platform/Platform.h"
 
+#include "util/String.h"
 #include "util/Unicode.h"
 
 namespace {
@@ -54,8 +54,7 @@ Language getLanguageInfo(const std::string & id) {
 	
 	Language result;
 	result.name = reader.getKey("language", "name", id);
-	result.locale = reader.getKey("language", "locale", id);
-	boost::to_lower(result.locale);
+	result.locale = util::toLowercase(reader.getKey("language", "locale", id));
 	
 	return result;
 }
@@ -92,8 +91,7 @@ std::string selectDefaultLanguage(const Languages & languages) {
 			if(ifs.is_open()) {
 				IniReader cfg;
 				cfg.read(ifs);
-				std::string language = cfg.getKey("language", "string", std::string());
-				boost::to_lower(language);
+				std::string language = util::toLowercase(cfg.getKey("language", "string", std::string()));
 				Languages::const_iterator it = languages.find(language);
 				if(it != languages.end()) {
 					return it->first;
