@@ -153,11 +153,6 @@ void PlayerBookPage::manageLeftTabs(long tabNum, long & activeTab) {
 	}
 }
 
-static void DrawBookTextCenter(Font * font, const Vec2f & pos, const std::string & text, Color col) {
-
-	UNICODE_ARXDrawTextCenter(font, pos, text, col);
-}
-
 PlayerBook::PlayerBook()
 	: m_currentPage(BOOKMODE_STATS)
 	, lastRatio(0.f)
@@ -592,13 +587,13 @@ void StatsPage::manageStats()
 	{
 		std::stringstream ss;
 		ss << getLocalised("system_charsheet_player_lvl") << " " << std::setw(3) << player.level;
-		DrawBookTextCenter(hFontInBook, bookPos + Vec2f(301, 10) * scale, ss.str(), Color::black);
+		UNICODE_ARXDrawTextCenter(hFontInBook, bookPos + Vec2f(301, 10) * scale, ss.str(), Color::black);
 	}
 	
 	{
 		std::stringstream ss;
 		ss << getLocalised("system_charsheet_player_xp") << " " << std::setw(8) << player.xp;
-		DrawBookTextCenter(hFontInBook, bookPos + Vec2f(413, 10) * scale, ss.str(), Color::black);
+		UNICODE_ARXDrawTextCenter(hFontInBook, bookPos + Vec2f(413, 10) * scale, ss.str(), Color::black);
 	}
 	
 	if (MouseInBookRect(bookPos + Vec2f(366, 10) * scale, Vec2f(87, 20) * scale))
@@ -770,7 +765,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -786,7 +781,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -802,7 +797,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -818,7 +813,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	// Player Skills
@@ -835,7 +830,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -851,7 +846,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -867,7 +862,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -883,7 +878,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -899,7 +894,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -915,7 +910,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -931,7 +926,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 
 	{
@@ -947,7 +942,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -963,7 +958,7 @@ void StatsPage::manageStats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
+	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	// Secondary Attributes
@@ -971,42 +966,42 @@ void StatsPage::manageStats()
 		Vec2f pos = bookPos + Vec2f(227, 90) * scale;
 		std::string value = std::to_string(long(std::ceil(player.Full_maxlife)));
 		Color color = attributeModToColor(player.Full_maxlife, player.lifePool.max);
-		DrawBookTextCenter(hFontInBook, pos, value, color);
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	{
 		Vec2f pos = bookPos + Vec2f(227, 150) * scale;
 		std::string value = std::to_string(long(std::ceil(player.Full_maxmana)));
 		Color color = attributeModToColor(player.Full_maxmana, player.manaPool.max);
-		DrawBookTextCenter(hFontInBook, pos, value, color);
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	{
 		Vec2f pos = bookPos + Vec2f(227, 210) * scale;
 		std::string value = std::to_string(long(std::ceil(player.m_miscFull.damages)));
 		Color color = attributeModToColor(player.m_miscMod.damages);
-		DrawBookTextCenter(hFontInBook, pos, value, color);
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	{
 		Vec2f pos = bookPos + Vec2f(54, 90) * scale;
 		std::string value = std::to_string(long(std::ceil(player.m_miscFull.armorClass)));
 		Color color = attributeModToColor(player.m_miscMod.armorClass);
-		DrawBookTextCenter(hFontInBook, pos, value, color);
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	{
 		Vec2f pos = bookPos + Vec2f(54, 150) * scale;
 		std::string value = std::to_string(long(std::ceil(player.m_miscFull.resistMagic)));
 		Color color = attributeModToColor(player.m_miscMod.resistMagic);
-		DrawBookTextCenter(hFontInBook, pos, value, color);
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	{
 		Vec2f pos = bookPos + Vec2f(54, 210) * scale;
 		std::string value = std::to_string(long(std::ceil(player.m_miscFull.resistPoison)));
 		Color color = attributeModToColor(player.m_miscMod.resistPoison);
-		DrawBookTextCenter(hFontInBook, pos, value, color);
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, value, color);
 	}
 	
 	RenderBookPlayerCharacter();
@@ -1418,7 +1413,7 @@ void SpellsPage::drawSpells() const {
 			flyingover = 1;
 			
 			cursorSetInteraction();
-			DrawBookTextCenter(hFontInBook, bookPos + Vec2f(111, 26) * scale, getLocalised(spellInfo.name), Color::none);
+			UNICODE_ARXDrawTextCenter(hFontInBook, bookPos + Vec2f(111, 26) * scale, getLocalised(spellInfo.name), Color::none);
 			
 			pTextManage->Clear();
 			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
