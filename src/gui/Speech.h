@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GUI_SPEECH_H
 
 #include <string>
+#include <string_view>
 
 #include "core/TimeTypes.h"
 #include "game/GameTypes.h"
@@ -171,9 +172,9 @@ bool ARX_SPEECH_isEntitySpeaking(Entity * entity);
  * Add an entry to the conversation view.
  * \param data is a sample name / localised string id
  */
-long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood, SpeechFlags flags = 0);
+long ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, SpeechFlags flags = 0);
 void ARX_SPEECH_ReleaseIOSpeech(Entity * io);
 void ARX_SPEECH_ClearIOSpeech(Entity * entity);
-void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & text, Entity * io_source);
+void ARX_SPEECH_Launch_No_Unicode_Seek(std::string_view text, Entity * io_source);
 
 #endif // ARX_GUI_SPEECH_H

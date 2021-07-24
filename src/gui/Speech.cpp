@@ -105,7 +105,7 @@ bool ARX_SPEECH_isEntitySpeaking(Entity * entity) {
 }
 
 
-void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & text, Entity * io_source) {
+void ARX_SPEECH_Launch_No_Unicode_Seek(std::string_view text, Entity * io_source) {
 	
 	long mood = ANIM_TALK_NEUTRAL;
 	long speechnum = ARX_SPEECH_AddSpeech(io_source, text, mood, ARX_SPEECH_FLAG_NOTEXT);
@@ -207,8 +207,7 @@ void ARX_SPEECH_ClearIOSpeech(Entity * entity) {
 }
 
 
-long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
-                          SpeechFlags flags) {
+long ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, SpeechFlags flags) {
 	
 	if(data.empty()) {
 		return -1;
@@ -234,7 +233,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 
 	LogDebug("speech \"" << data << '"');
 	
-	res::path sample;
+	res::path sample = data;
 	
 	if(flags & ARX_SPEECH_FLAG_NOTEXT) {
 		
@@ -257,9 +256,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 		LogDebug(" -> " << variant << " / " << count);
 		
 		if(variant > 1) {
-			sample = data + std::to_string(variant);
-		} else {
-			sample = data;
+			sample.append(std::to_string(variant));
 		}
 		
 	} else {
@@ -273,8 +270,6 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 		}
 		g_aspeech[num].duration = std::max(g_aspeech[num].duration,
 		                                   GameDurationMs(s64(g_aspeech[num].text.length() + 1) * 100));
-		
-		sample = data;
 	}
 	
 	Entity * source = (g_aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? nullptr : io;
