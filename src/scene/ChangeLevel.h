@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace fs { class path; }
 
-void ARX_CHANGELEVEL_Change(std::string_view level, std::string_view target, float angle);
+void ARX_CHANGELEVEL_Change(long level, std::string_view target, float angle);
 
 long ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version, long & level);
 
