@@ -161,7 +161,7 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 			
 			if(option == "--") {
 				if(p != end) {
-					oss << " argument \"" << util::escapeString(*p, "\\\" '$!") << "\"";
+					oss << " argument \"" << util::escapeString(*p) << "\"";
 				}
 				oss << ": ";
 				if(e.code() == error::cmd_not_found) {
@@ -172,7 +172,7 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 			} else {
 				oss << " option " << option << ": " << e.what();
 				if(p != end && e.code() == error::invalid_arg_count) {
-					oss << ": \"" << util::escapeString(*p, "\\\" '$!") << "\"";
+					oss << ": \"" << util::escapeString(*p) << "\"";
 				}
 			}
 			

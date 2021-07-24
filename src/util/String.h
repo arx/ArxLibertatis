@@ -23,6 +23,7 @@
 #include <stddef.h>
 #include <cstring>
 #include <string>
+#include <string_view>
 
 namespace util {
 
@@ -59,7 +60,7 @@ void storeStringTerminated(char (&dst)[N], const std::string & src) {
  * \param escapeChars String containing the characters you wish to escape
  * \return The escaped string
  */
-std::string escapeString(const std::string & text, const char * escapeChars);
+std::string escapeString(std::string text, std::string_view escapeChars = "\\\" '$!");
 
 template <class CTYPE, class STYPE>
 inline CTYPE * safeGetString(CTYPE * & pos, STYPE & size) {

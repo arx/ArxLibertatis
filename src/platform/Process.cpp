@@ -211,7 +211,7 @@ process_handle runAsync(const char * exe, const char * const args[], bool detach
 		} else if(i != 1) {
 			oss << ' ';
 		}
-		oss << util::escapeString(args[i], "\\\" '$!");
+		oss << util::escapeString(args[i]);
 	}
 	
 	STARTUPINFO si;

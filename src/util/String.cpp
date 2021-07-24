@@ -20,6 +20,7 @@
 #include "util/String.h"
 
 #include <algorithm>
+#include <utility>
 
 #include <boost/date_time.hpp>
 #include <boost/format.hpp>
@@ -49,11 +50,9 @@ struct character_escaper {
 	}
 };
 
-std::string escapeString(const std::string & text, const char * escapeChars) {
-	std::string escapedStr(text);
-	boost::find_format_all(escapedStr,
-	                       boost::token_finder(boost::is_any_of(escapeChars)),
-	                                           character_escaper());
+std::string escapeString(std::string text, std::string_view escapeChars) {
+	std::string escapedStr = std::move(text);
+	boost::find_format_all(escapedStr, boost::token_finder(boost::is_any_of(escapeChars)), character_escaper());
 	return escapedStr;
 }
 
