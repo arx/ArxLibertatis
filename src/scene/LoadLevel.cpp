@@ -221,18 +221,17 @@ static void loadLighting(const char * dat, size_t & pos, bool compact, bool skip
 	
 }
 
-bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
+bool DanaeLoadLevel(long level, bool loadEntities) {
+	
+	CURRENTLEVEL = level;
+	
+	const std::string levelId = std::to_string(level);
+	const res::path file = "graph/levels/level" + levelId + "/level" + levelId + ".dlf";
 	
 	LogInfo << "Loading level " << file;
 	
-	std::string_view level = file.basename();
-	if(boost::starts_with(level, "level")) {
-		level.remove_prefix(5);
-	}
-	CURRENTLEVEL = GetLevelNumByName(level);
-	
 	res::path lightingFileName = res::path(file).set_ext("llf");
-
+	
 	LogDebug("fic2 " << lightingFileName);
 	LogDebug("fileDlf " << file);
 	

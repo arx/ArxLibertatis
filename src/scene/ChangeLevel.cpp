@@ -1431,15 +1431,7 @@ static void ARX_CHANGELEVEL_Pop_Zones_n_Lights(std::string_view buffer) {
 
 static long ARX_CHANGELEVEL_Pop_Level(long num, bool firstTime) {
 	
-	const char * levelId = GetLevelNameByNum(num);
-	std::string levelFile = std::string("graph/levels/level") + levelId + "/level" + levelId + ".dlf";
-	
 	LOAD_N_ERASE = false;
-	
-	if(!g_resources->getFile(levelFile)) {
-		LogError << "Unable To Find " << levelFile;
-		return 0;
-	}
 	
 	LoadLevelScreen(num);
 	SetEditMode();
@@ -1447,7 +1439,7 @@ static long ARX_CHANGELEVEL_Pop_Level(long num, bool firstTime) {
 	
 	ARX_CHANGELEVEL_Pop_Globals();
 	
-	DanaeLoadLevel(levelFile, firstTime);
+	DanaeLoadLevel(num, firstTime);
 	CleanScriptLoadedIO();
 	
 	if(firstTime) {

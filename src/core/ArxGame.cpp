@@ -707,14 +707,11 @@ static bool HandleGameFlowTransitions() {
 		
 		ARX_CHANGELEVEL_StartNew();
 		
-		std::ostringstream oss;
-		oss << "graph/levels/level" << int(LEVEL_TO_LOAD) << "/level" << int(LEVEL_TO_LOAD) << ".dlf";
-		
 		progressBarReset();
 		progressBarSetTotal(108);
 		LoadLevelScreen(LEVEL_TO_LOAD);
-
-		DanaeLoadLevel(oss.str());
+		
+		DanaeLoadLevel(LEVEL_TO_LOAD);
 		GameFlow::setTransition(GameFlow::InGame);
 		return false;
 	}
