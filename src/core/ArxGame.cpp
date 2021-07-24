@@ -49,8 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <sstream>
 
-#include <boost/algorithm/string/case_conv.hpp>
-
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -163,6 +161,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 
+#include "util/String.h"
+
 #include "Configure.h"
 
 #include "window/RenderWindow.h"
@@ -256,7 +256,7 @@ bool ArxGame::initialize()
 static bool migrateFilenames(fs::path path, bool is_dir) {
 	
 	std::string name = path.filename();
-	std::string lowercase = boost::to_lower_copy(name);
+	std::string lowercase = util::toLowercase(name);
 	
 	bool migrated = true;
 	
@@ -299,7 +299,7 @@ static bool migrateFilenames(const fs::path & configFile) {
 	
 	for(fs::directory_iterator it(fs::getUserDir()); !it.end(); ++it) {
 		std::string file = it.name();
-		if(fileset.find(boost::to_lower_copy(file)) != fileset.end()) {
+		if(fileset.find(util::toLowercase(file)) != fileset.end()) {
 			migrated &= migrateFilenames(fs::getUserDir() / file, it.is_directory());
 		}
 	}
