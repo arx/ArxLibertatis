@@ -55,7 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ctime>
 
 #include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
 
 #include "ai/Paths.h"
 
@@ -194,13 +193,13 @@ static Entity * convertToValidIO(const std::string & idString) {
 
 template <size_t N>
 static Entity * ConvertToValidIO(const char (&str)[N]) {
-	return convertToValidIO(boost::to_lower_copy(util::loadString(str)));
+	return convertToValidIO(util::toLowercase(util::loadString(str)));
 }
 
 template <size_t N>
 static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	
-	std::string idString = boost::to_lower_copy(util::loadString(str));
+	std::string idString = util::toLowercase(util::loadString(str));
 	
 	if(idString == "none") {
 		return EntityHandle();
@@ -212,6 +211,7 @@ static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 		Entity * e = convertToValidIO(idString);
 		return (e == nullptr) ? EntityHandle() : e->index();
 	}
+	
 }
 
 static s32 GetIOAnimIdx2(const Entity * io, const ANIM_HANDLE * anim) {
@@ -1403,10 +1403,10 @@ static void ARX_CHANGELEVEL_Pop_Zones_n_Lights(const std::string & buffer) {
 		const ARX_CHANGELEVEL_PATH * acp = reinterpret_cast<const ARX_CHANGELEVEL_PATH *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_PATH);
 		
-		Zone * ap = getZoneByName(boost::to_lower_copy(util::loadString(acp->name)));
+		Zone * ap = getZoneByName(util::toLowercase(util::loadString(acp->name)));
 		
 		if(ap) {
-			ap->controled = boost::to_lower_copy(util::loadString(acp->controled));
+			ap->controled = util::toLowercase(util::loadString(acp->controled));
 		}
 	}
 	
@@ -1521,13 +1521,13 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 	player.playerflags = PlayerFlags::load(asp->playerflags); // TODO save/load flags
 	
 	if(asp->TELEPORT_TO_LEVEL[0]) {
-		TELEPORT_TO_LEVEL = boost::to_lower_copy(util::loadString(asp->TELEPORT_TO_LEVEL));
+		TELEPORT_TO_LEVEL = util::toLowercase(util::loadString(asp->TELEPORT_TO_LEVEL));
 	} else {
 		TELEPORT_TO_LEVEL.clear();
 	}
 	
 	if(asp->TELEPORT_TO_POSITION[0]) {
-		TELEPORT_TO_POSITION = boost::to_lower_copy(util::loadString(asp->TELEPORT_TO_POSITION));
+		TELEPORT_TO_POSITION = util::toLowercase(util::loadString(asp->TELEPORT_TO_POSITION));
 	} else {
 		TELEPORT_TO_POSITION.clear();
 	}
@@ -1558,7 +1558,7 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 	player.falling = (asp->falling != 0);
 	player.gold = asp->gold;
 	entities.player()->invisibility = asp->invisibility;
-	entities.player()->inzone = getZoneByName(boost::to_lower_copy(util::loadString(asp->inzone)));
+	entities.player()->inzone = getZoneByName(util::toLowercase(util::loadString(asp->inzone)));
 	player.jumpphase = JumpPhase(asp->jumpphase); // TODO save/load enum
 	PlatformInstant jumpstart = g_platformTime.frameStart()
 	                            + PlatformDurationUs(toUs(GameInstantMs(asp->jumpstarttime) - g_gameTime.now()));
@@ -1668,7 +1668,7 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 	}
 	ARX_PLAYER_Quest_Init();
 	for(int i = 0; i < asp->nb_PlayerQuest; i++) {
-		ARX_PLAYER_Quest_Add(script::loadUnlocalized(boost::to_lower_copy(util::loadString(dat + pos, SAVED_QUEST_SLOT_SIZE))));
+		ARX_PLAYER_Quest_Add(script::loadUnlocalized(util::toLowercase(util::loadString(dat + pos, SAVED_QUEST_SLOT_SIZE))));
 		pos += SAVED_QUEST_SLOT_SIZE;
 	}
 	
@@ -1678,7 +1678,7 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 	}
 	ARX_KEYRING_Init();
 	for(int i = 0; i < asp->keyring_nb; i++) {
-		ARX_KEYRING_Add(boost::to_lower_copy(util::loadString(dat + pos, SAVED_KEYRING_SLOT_SIZE)));
+		ARX_KEYRING_Add(util::toLowercase(util::loadString(dat + pos, SAVED_KEYRING_SLOT_SIZE)));
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
@@ -1690,7 +1690,7 @@ static long ARX_CHANGELEVEL_Pop_Player(const std::string & target, float angle) 
 	for(int i = 0; i < asp->Nb_Mapmarkers; i++) {
 		const SavedMapMarkerData * acmd = reinterpret_cast<const SavedMapMarkerData *>(dat + pos);
 		pos += sizeof(SavedMapMarkerData);
-		g_miniMap.mapMarkerAdd(Vec2f(acmd->x, acmd->y), acmd->lvl, script::loadUnlocalized(boost::to_lower_copy(util::loadString(acmd->name))));
+		g_miniMap.mapMarkerAdd(Vec2f(acmd->x, acmd->y), acmd->lvl, script::loadUnlocalized(util::toLowercase(util::loadString(acmd->name))));
 	}
 	
 	ARX_PLAYER_Restore_Skin();
@@ -1728,7 +1728,7 @@ static bool loadScriptVariables(SCRIPT_VARIABLES & var, const char * dat, size_t
 		avs = reinterpret_cast<const ARX_CHANGELEVEL_VARIABLE_SAVE *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 		
-		var[i].name = boost::to_lower_copy(util::loadString(avs->name));
+		var[i].name = util::toLowercase(util::loadString(avs->name));
 		
 		VariableType type = getVariableType(var[i].name);
 		if(type == TYPE_UNKNOWN || type != VariableType(avs->type)) {
@@ -1746,7 +1746,7 @@ static bool loadScriptVariables(SCRIPT_VARIABLES & var, const char * dat, size_t
 		
 		if(type == TYPE_G_TEXT || type == TYPE_L_TEXT) {
 			if(var[i].ival) {
-				var[i].text = boost::to_lower_copy(util::loadString(dat + pos, long(avs->fval)));
+				var[i].text = util::toLowercase(util::loadString(dat + pos, long(avs->fval)));
 				pos += long(avs->fval);
 			}
 		}
@@ -1807,7 +1807,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		     && path[2] == '\\')) {
 		// Old save files stored absolute paths,
 		// strip everything before 'graph' when loading.
-		boost::to_lower(path);
+		util::makeLowercase(path);
 		size_t graphPos = path.find("graph");
 		if(graphPos != std::string::npos) {
 			path = path.substr(graphPos);
@@ -1865,7 +1865,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		io->angle = ais->angle;
 		io->scale = ais->scale;
 		io->weight = ais->weight;
-		io->locname = script::loadUnlocalized(boost::to_lower_copy(util::loadString(ais->locname)));
+		io->locname = script::loadUnlocalized(util::toLowercase(util::loadString(ais->locname)));
 		io->gameFlags = GameFlags::load(ais->gameFlags); // TODO save/load flags
 		io->material = Material(ais->material); // TODO save/load enum
 		
@@ -1873,7 +1873,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		io->scriptload = ais->scriptload;
 		io->show = EntityVisilibity(ais->show); // TODO save/load enum
 		io->collision = IOCollisionFlags::load(ais->collision); // TODO save/load flags
-		io->mainevent = ScriptEventName::parse(boost::to_lower_copy(util::loadString(ais->mainevent)));
+		io->mainevent = ScriptEventName::parse(util::toLowercase(util::loadString(ais->mainevent)));
 		if(io->mainevent == SM_NULL && io->mainevent.getName().empty()) {
 			io->mainevent = SM_MAIN;
 		}
@@ -1904,19 +1904,19 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			aup->_curtime = GameInstantMs(ais->usepath_curtime); // TODO save/load time
 			aup->lastWP = ais->usepath_lastWP;
 			aup->_starttime = GameInstantMs(ais->usepath_starttime); // TODO save/load time
-			aup->path = getPathByName(boost::to_lower_copy(util::loadString(ais->usepath_name)));
+			aup->path = getPathByName(util::toLowercase(util::loadString(ais->usepath_name)));
 		}
 		
-		io->shop_category = boost::to_lower_copy(util::loadString(ais->shop_category));
+		io->shop_category = util::toLowercase(util::loadString(ais->shop_category));
 		
 		io->halo_native = ais->halo;
 		ARX_HALO_SetToNative(io);
 		
 		io->inventory_skin = res::path::load(util::loadString(ais->inventory_skin));
-		io->stepmaterial = boost::to_lower_copy(util::loadString(ais->stepmaterial));
-		io->armormaterial = boost::to_lower_copy(util::loadString(ais->armormaterial));
-		io->weaponmaterial = boost::to_lower_copy(util::loadString(ais->weaponmaterial));
-		io->strikespeech = script::loadUnlocalized(boost::to_lower_copy(util::loadString(ais->strikespeech)));
+		io->stepmaterial = util::toLowercase(util::loadString(ais->stepmaterial));
+		io->armormaterial = util::toLowercase(util::loadString(ais->armormaterial));
+		io->weaponmaterial = util::toLowercase(util::loadString(ais->weaponmaterial));
+		io->strikespeech = script::loadUnlocalized(util::toLowercase(util::loadString(ais->strikespeech)));
 		
 		for(size_t i = 0; i < MAX_ANIMS; i++) {
 			
@@ -1987,7 +1987,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			ats = reinterpret_cast<const ARX_CHANGELEVEL_TIMERS_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_TIMERS_SAVE);
 			
-			SCR_TIMER & timer = createScriptTimer(io, boost::to_lower_copy(util::loadString(ats->name)));
+			SCR_TIMER & timer = createScriptTimer(io, util::toLowercase(util::loadString(ats->name)));
 			
 			if(timer.name == "_r_a_t_") {
 				timer.es = nullptr;
@@ -2217,7 +2217,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			pos += sizeof(SavedTweakerInfo);
 			
 			io->tweakerinfo->filename = res::path::load(util::loadString(sti->filename));
-			io->tweakerinfo->skintochange = boost::to_lower_copy(util::loadString(sti->skintochange));
+			io->tweakerinfo->skintochange = util::toLowercase(util::loadString(sti->skintochange));
 			io->tweakerinfo->skinchangeto = res::path::load(util::loadString(sti->skinchangeto));
 		}
 		
@@ -2225,7 +2225,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		for(size_t i = 0; i < nb_iogroups; i++) {
 			const SavedGroupData * sgd = reinterpret_cast<const SavedGroupData *>(dat + pos);
 			pos += sizeof(SavedGroupData);
-			io->groups.insert(boost::to_lower_copy(util::loadString(sgd->name)));
+			io->groups.insert(util::toLowercase(util::loadString(sgd->name)));
 		}
 		
 		io->tweaks.resize(ais->Tweak_nb);
