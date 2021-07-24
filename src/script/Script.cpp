@@ -53,7 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <limits>
 
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "ai/Paths.h"
@@ -87,6 +86,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
+
+#include "util/String.h"
 
 
 extern long lChangeWeapon;
@@ -1869,9 +1870,7 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 	
 	script.valid = true;
 	
-	script.data = file->read();
-	
-	boost::to_lower(script.data);
+	script.data = util::toLowercase(file->read());
 	
 	ARX_SCRIPT_ComputeShortcuts(script);
 	
