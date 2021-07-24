@@ -35,7 +35,7 @@
 #include "platform/Platform.h"
 #include "scene/GameSound.h"
 
-void Note::setData(Type type, const std::string & text) {
+void Note::setData(Type type, std::string_view text) {
 	
 	deallocate();
 	
@@ -211,11 +211,11 @@ bool Note::splitTextToPages() {
 		long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, text.substr(i), m_textArea, true);
 		if(pageSize <= 0) {
 			LogWarning << "Error splitting note text into pages";
-			m_pages.push_back(std::string(text.substr(i)));
+			m_pages.push_back(text.substr(i));
 			break;
 		}
 		
-		m_pages.push_back(std::string(text.substr(i, pageSize)));
+		m_pages.push_back(text.substr(i, pageSize));
 		
 		// Skip whitespace at the start of pages.
 		while(i + size_t(pageSize) < text.length() && std::isspace(static_cast<unsigned char>(text[i + pageSize]))) {

@@ -22,6 +22,7 @@
 
 #include <stddef.h>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "math/Vector.h"
@@ -54,7 +55,7 @@ struct Note {
 		, m_nextPage(nullptr)
 	{}
 	
-	void setData(Type type, const std::string & text);
+	void setData(Type type, std::string_view text);
 	void clear();
 	
 	bool isOpen() { return m_type != Undefined; }
@@ -91,7 +92,7 @@ private:
 	float m_currentFontSize;
 	int m_currentFontWeight;
 	
-	std::vector<std::string> m_pages;
+	std::vector<std::string_view> m_pages;
 	size_t m_page;
 	
 	Rectf m_area;
