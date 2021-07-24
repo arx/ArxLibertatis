@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <sstream>
 
+#include <boost/lexical_cast.hpp>
+
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -568,50 +570,21 @@ private:
 
 GameFlow::Transition GameFlow::s_currentTransition = GameFlow::FirstLogo;
 
-enum LevelNumber {
-	LEVEL0     = 0,
-	LEVEL1     = 1,
-	LEVEL2     = 2,
-	LEVEL3     = 3,
-	LEVEL4     = 4,
-	LEVEL5     = 5,
-	LEVEL6     = 6,
-	LEVEL7     = 7,
-	LEVEL8     = 8,
-	LEVEL9     = 9,
-	LEVEL10    = 10,
-	LEVEL11    = 11,
-	LEVEL12    = 12,
-	LEVEL13    = 13,
-	LEVEL14    = 14,
-	LEVEL15    = 15,
-	LEVEL16    = 16,
-	LEVEL17    = 17,
-	LEVEL18    = 18,
-	LEVEL19    = 19,
-	LEVEL20    = 20,
-	LEVEL21    = 21,
-	LEVEL22    = 22,
-	LEVEL23    = 23,
-	LEVEL24    = 24,
-	LEVEL25    = 25,
-	LEVEL26    = 26,
-	LEVEL27    = 27,
-	LEVELDEMO  = 28,
-	LEVELDEMO2 = 29,
-	LEVELDEMO3 = 30,
-	LEVELDEMO4 = 31,
-	NOLEVEL    = 32
-};
+static long LEVEL_TO_LOAD = 10;
 
-LevelNumber LEVEL_TO_LOAD = LEVEL10;
+static void skipLogo() {
+	if(GameFlow::getTransition() != GameFlow::LoadingScreen) {
+		GameFlow::setTransition(GameFlow::LoadingScreen);
+	}
+}
+ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo)
 
-static void loadLevel(u32 lvl) {
-	if(lvl < NOLEVEL) {
-		if(GameFlow::getTransition() != GameFlow::LoadingScreen) {
-			LEVEL_TO_LOAD = static_cast<LevelNumber>(lvl);
-			GameFlow::setTransition(GameFlow::LoadingScreen);
-		}
+static void loadLevel(const std::string & level) {
+	try {
+		LEVEL_TO_LOAD = boost::lexical_cast<long>(level);
+		skipLogo();
+	} catch(...) {
+		LogWarning << "Invalid level number: " << level;
 	}
 }
 ARX_PROGRAM_OPTION_ARG("loadlevel", "", "Load a specific level", &loadLevel, "LEVELID")
@@ -627,11 +600,6 @@ static void loadSave(const std::string & saveFile) {
 	GameFlow::setTransition(GameFlow::InGame);
 }
 ARX_PROGRAM_OPTION_ARG("loadsave", "", "Load a specific savegame file", &loadSave, "SAVEFILE")
-
-static void skipLogo() {
-	loadLevel(LEVEL10);
-}
-ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo)
 
 static bool HandleGameFlowTransitions() {
 	
