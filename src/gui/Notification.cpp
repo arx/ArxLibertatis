@@ -19,6 +19,8 @@
 
 #include "gui/Notification.h"
 
+#include <utility>
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
@@ -81,7 +83,7 @@ void notification_ClearAll()
 	}
 }
 
-void notification_add(const std::string & text) {
+void notification_add(std::string && text) {
 	
 	if(text.empty())
 		return;
@@ -101,7 +103,7 @@ void notification_add(const std::string & text) {
 		// Sets creation time
 		g_notification[i].timecreation = now;
 		g_notification[i].duration = GameDurationMs(2000 + getLocalised(text).length() * 60);
-		g_notification[i].text = text;
+		g_notification[i].text = std::move(text);
 		return;
 	}
 	

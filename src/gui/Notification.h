@@ -29,7 +29,7 @@ void notification_ClearAll();
  * Add a raw text message to the "system" log (top of the screen).
  * This message will be displayed as-is.
  */
-void notification_add(const std::string & text);
+void notification_add(std::string && text);
 
 void notification_check();
 

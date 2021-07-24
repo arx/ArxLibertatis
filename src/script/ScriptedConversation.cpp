@@ -201,7 +201,7 @@ public:
 			text = loadUnlocalized(text);
 		}
 		
-		notification_add(text);
+		notification_add(std::move(text));
 		
 		return Success;
 	}

@@ -906,7 +906,7 @@ void PrecastSpellsGui::PrecastSpellIconSlot::updateInput() {
 		
 		if(eeMouseUp1()) {
 			if(Precast[m_precastIndex.handleData()].typ >= 0) {
-				notification_add(spellicons[Precast[m_precastIndex.handleData()].typ].name);
+				notification_add(std::string(spellicons[Precast[m_precastIndex.handleData()].typ].name));
 			}
 		}
 		
@@ -1005,7 +1005,7 @@ void ActiveSpellsGui::ActiveSpellIconSlot::updateInput(const Vec2f & mousePos) {
 		
 		if(eeMouseUp1()) {
 			if(spells[spellIndex]->m_type >= 0) {
-				notification_add(spellicons[spells[spellIndex]->m_type].name);
+				notification_add(std::string(spellicons[spells[spellIndex]->m_type].name));
 			}
 		}
 		
