@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Text.h"
 
 #include <sstream>
+#include <utility>
 
 #include <boost/lexical_cast.hpp>
 
@@ -238,7 +239,7 @@ void UNICODE_ARXDrawTextCenter(Font * font, const Vec2f & pos, const std::string
 	font->draw(Vec2i(pos) - Vec2i(font->getTextSize(str).advance() / 2, 0), str, col);
 }
 
-void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, const std::string & str,
+void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, std::string && text,
                                        Color col, PlatformDuration iTimeScroll, float fSpeed,
                                        int iNbLigne, PlatformDuration iTimeOut) {
 	
@@ -249,7 +250,7 @@ void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, 
 	Rect rRect(_x, _y, w, Rect::Limits::max());
 	
 	if(pTextManage) {
-		pTextManage->AddText(font, str, rRect, col, iTimeOut, iTimeScroll, fSpeed, iNbLigne);
+		pTextManage->AddText(font, std::move(text), rRect, col, iTimeOut, iTimeScroll, fSpeed, iNbLigne);
 	}
 	
 }

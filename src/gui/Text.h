@@ -69,7 +69,7 @@ extern Font * g_iconFont;
 void UNICODE_ARXDrawTextCenter(Font * font, const Vec2f & pos, const std::string & str, Color col);
  
 void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y,
-                                       float x2, const std::string & str, Color col,
+                                       float x2, std::string && text, Color col,
                                        PlatformDuration iTimeScroll, float fSpeed,
                                        int iNbLigne, PlatformDuration iTimeOut = PlatformDurationMs(INT_MAX));
 

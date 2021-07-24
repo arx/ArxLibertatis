@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/TextManager.h"
 
+#include <utility>
+
 #include "gui/Text.h"
 #include "graphics/Math.h"
 #include "graphics/font/Font.h"
@@ -68,8 +70,7 @@ TextManager::~TextManager() {
 	Clear();
 }
 
-bool TextManager::AddText(Font * font, const std::string & text,
-                          const Rect & bbox, Color color,
+bool TextManager::AddText(Font * font, std::string && text, const Rect & bbox, Color color,
                           PlatformDuration displayTime, PlatformDuration scrollTime,
                           float scrollSpeed, int nLineClipp) {
 	
@@ -90,7 +91,7 @@ bool TextManager::AddText(Font * font, const std::string & text,
 	arx_assert(!bbox.empty());
 	
 	pArxText->pFont = font;
-	pArxText->lpszUText = text;
+	pArxText->lpszUText = std::move(text);
 	pArxText->rRect = bbox;
 	pArxText->lCol = color;
 	pArxText->lTimeScroll = scrollTime;
@@ -110,13 +111,13 @@ bool TextManager::AddText(Font * font, const std::string & text,
 	return true;
 }
 
-bool TextManager::AddText(Font * font, const std::string & text, Vec2i pos, Color color) {
+bool TextManager::AddText(Font * font, std::string && text, Vec2i pos, Color color) {
 	Rect bbox;
 	bbox.left = pos.x;
 	bbox.top = pos.y;
 	bbox.right = Rect::Limits::max();
 	bbox.bottom = Rect::Limits::max();
-	return AddText(font, text, bbox, color);
+	return AddText(font, std::move(text), bbox, color);
 }
 
 void TextManager::Update(PlatformDuration _iDiffFrame) {

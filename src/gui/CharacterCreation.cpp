@@ -19,6 +19,8 @@
 
 #include "gui/CharacterCreation.h"
 
+#include <utility>
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
@@ -79,7 +81,7 @@ void CharacterCreation::resetCheat() {
 	m_cheatQuickGenButtonClickCount = 0;
 }
 
-static void characterCreationAddDescription(const std::string & text) {
+static void characterCreationAddDescription(std::string_view text) {
 	
 	const int t = 0;
 	
@@ -88,7 +90,7 @@ static void characterCreationAddDescription(const std::string & text) {
 		float(g_size.width()) * 0.5f,
 		4,
 		float(g_size.center().x) * 0.82f,
-		text,
+		std::string(text),
 		Color(232 + t, 204 + t, 143 + t),
 		PlatformDurationMs(1000),
 		0.01f,

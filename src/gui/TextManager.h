@@ -44,8 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GUI_TEXTMANAGER_H
 #define ARX_GUI_TEXTMANAGER_H
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "core/TimeTypes.h"
 #include "graphics/Color.h"
@@ -60,11 +60,11 @@ public:
 	TextManager();
 	~TextManager();
 	
-	bool AddText(Font * font, const std::string & text, const Rect & bbox,
+	bool AddText(Font * font, std::string && text, const Rect & bbox,
 	             Color color = Color::white, PlatformDuration displayTime = 0,
 	             PlatformDuration scrollTime = 0, float scrollSpeed = 0.f, int nLineClipp = 0);
 	
-	bool AddText(Font * font, const std::string & text, Vec2i pos, Color color);
+	bool AddText(Font * font, std::string && text, Vec2i pos, Color color);
 	void Update(PlatformDuration _iDiffFrame);
 	void Render();
 	void Clear();
