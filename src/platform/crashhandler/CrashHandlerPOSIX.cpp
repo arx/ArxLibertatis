@@ -232,7 +232,7 @@ static fs::path getCoreDumpFile() {
 	char pathname[PATH_MAX];
 	size_t size = sizeof(pathname);
 	int error = sysctlbyname("kern.corefile", pathname, &size, nullptr, 0);
-	if(error != -1 || size > 0 || size <= sizeof(pathname)) {
+	if(error != -1 && size > 0 && size <= sizeof(pathname)) {
 		pattern = util::loadString(pathname, size);
 	} else {
 	#endif
