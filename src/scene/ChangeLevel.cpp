@@ -327,7 +327,7 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	progressBarSetTotal(238);
 	progressBarReset();
 	
-	long num = GetLevelNumByName("level" + level);
+	long num = GetLevelNumByName(level);
 
 	LoadLevelScreen(num);
 	

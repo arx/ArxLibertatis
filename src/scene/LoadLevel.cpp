@@ -51,6 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -223,7 +225,11 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	LogInfo << "Loading level " << file;
 	
-	CURRENTLEVEL = GetLevelNumByName(file.string());
+	std::string_view level = file.basename();
+	if(boost::starts_with(level, "level")) {
+		level.remove_prefix(5);
+	}
+	CURRENTLEVEL = GetLevelNumByName(level);
 	
 	res::path lightingFileName = res::path(file).set_ext("llf");
 
