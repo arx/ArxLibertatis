@@ -95,7 +95,8 @@ class DebugBox {
 	}
 	
 public:
-	DebugBox(const Vec2i & pos, const std::string & title);
+	
+	DebugBox(const Vec2i & pos, std::string && title);
 	
 	template <typename F1, typename F2>
 	void add(F1 f1, F2 f2) {

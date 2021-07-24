@@ -21,6 +21,8 @@
 
 #include <algorithm>
 #include <iomanip>
+#include <string_view>
+#include <utility>
 
 #include <boost/format.hpp>
 
@@ -72,11 +74,11 @@ std::ostream & operator<<(std::ostream & s, audio::SourceStatus val) {
 } // namespace debug
 } // namespace arx
 
-DebugBox::DebugBox(const Vec2i & pos, const std::string & title)
+DebugBox::DebugBox(const Vec2i & pos, std::string && title)
 	: m_pos(pos)
 	, m_chars(0)
 	, m_size(0)
-	, m_title(title)
+	, m_title(std::move(title))
 { }
 
 void DebugBox::calcSizes() {
@@ -87,7 +89,7 @@ void DebugBox::calcSizes() {
 	for(const Row & row : m_elements) {
 		colums.resize(std::max(colums.size(), row.fields.size()));
 		int i = 0;
-		for(const std::string & field : row.fields){
+		for(std::string_view field : row.fields){
 			colums[i].width = std::max(colums[i].width, int(field.size()));
 			
 			if(!first) {
@@ -163,7 +165,7 @@ void DebugBox::printCommon() {
 		lineOffset.y += lineHeight;
 	}
 	
-	hFontDebug->draw(lineOffset, std::string("╰─"), Color::white);
+	hFontDebug->draw(lineOffset, std::string_view("╰─"), Color::white);
 }
 
 Vec2i DebugBox::size() {
