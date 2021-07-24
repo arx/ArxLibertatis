@@ -39,12 +39,6 @@
 #include "platform/CrashHandler.h"
 
 
-#if __cplusplus >= 201103L && (!defined(__GLIBCXX__) || __GLIBCXX__ >= 20150623)
-#define ARX_USE_MAP_EMPLACE 1
-#else
-#define ARX_USE_MAP_EMPLACE 0
-#endif
-
 class FontCache::Impl : private boost::noncopyable {
 	
 	class FontFile {
@@ -52,9 +46,6 @@ class FontCache::Impl : private boost::noncopyable {
 		typedef std::map<u32, Font *> FontMap;
 		
 		res::path m_file;
-		#if !ARX_USE_MAP_EMPLACE
-		FT_Library m_library;
-		#endif
 		std::string m_data;
 		FontMap m_sizes;
 		FT_Face m_face;
@@ -67,10 +58,8 @@ class FontCache::Impl : private boost::noncopyable {
 		
 		explicit FontFile(FT_Library library, const res::path & file);
 		
-		#if ARX_USE_MAP_EMPLACE
 		FontFile(const FontFile & other) = delete;
 		FontFile(FontFile && other) noexcept;
-		#endif
 		
 		~FontFile();
 		
@@ -116,20 +105,12 @@ void FontCache::Impl::FontFile::create(FT_Library library) {
 
 FontCache::Impl::FontFile::FontFile(FT_Library library, const res::path & file)
 	: m_file(file)
-	#if !ARX_USE_MAP_EMPLACE
-	, m_library(library)
-	#endif
 	, m_data(g_resources->read(file))
 	, m_face(nullptr)
 {
-	
-	#if ARX_USE_MAP_EMPLACE
 	create(library);
-	#endif
-	
 }
 
-#if ARX_USE_MAP_EMPLACE
 FontCache::Impl::FontFile::FontFile(FontFile && other) noexcept
 	: m_file(std::move(other.m_file))
 	, m_data(std::move(other.m_data))
@@ -137,7 +118,6 @@ FontCache::Impl::FontFile::FontFile(FontFile && other) noexcept
 {
 	other.m_face = nullptr;
 }
-#endif
 
 FontCache::Impl::FontFile::~FontFile() {
 	
@@ -158,12 +138,6 @@ Font * FontCache::Impl::FontFile::getSize(unsigned size, unsigned weight, bool p
 	if(it != m_sizes.end()) {
 		return it->second;
 	}
-	
-	#if !ARX_USE_MAP_EMPLACE
-	if(!m_face) {
-		create(m_library);
-	}
-	#endif
 	
 	if(!m_face) {
 		return nullptr;
@@ -208,11 +182,7 @@ Font * FontCache::Impl::getFont(const res::path & file, unsigned size, unsigned 
 	
 	FontFiles::iterator it = m_files.find(file);
 	if(it == m_files.end()) {
-		#if ARX_USE_MAP_EMPLACE
 		it = m_files.emplace(file, FontFile(m_library, file)).first;
-		#else
-		it = m_files.insert(FontFiles::value_type(file, FontFile(m_library, file))).first;
-		#endif
 	}
 	
 	Font * font = it->second.getSize(size, weight, preload);
