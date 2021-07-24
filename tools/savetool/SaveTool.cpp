@@ -56,24 +56,24 @@ static int main_extract(SaveBlock & save, const std::vector<std::string> & args)
 		return 2;
 	}
 	
-	std::vector<std::string> files = save.getFiles();
+	std::vector<std::string_view> files = save.getFiles();
 	
-	for(std::vector<std::string>::iterator file = files.begin(); file != files.end(); ++file) {
+	for(std::string_view file : files) {
 		
-		std::string buffer = save.load(*file);
+		std::string buffer = save.load(file);
 		if(buffer.empty()) {
-			std::cerr << "error loading " << *file << " from save\n";
+			std::cerr << "error loading " << file << " from save\n";
 			continue;
 		}
 		
-		fs::ofstream h(*file, std::ios_base::out | std::ios_base::binary);
+		fs::ofstream h(file, std::ios_base::out | std::ios_base::binary);
 		if(!h.is_open()) {
-			std::cerr << "error opening " << *file << " for writing\n";
+			std::cerr << "error opening " << file << " for writing\n";
 			continue;
 		}
 		
 		if(h.write(buffer.data(), buffer.size()).fail()) {
-			std::cerr << "error writing to " << *file << '\n';
+			std::cerr << "error writing to " << file << '\n';
 		}
 		
 	}

@@ -45,8 +45,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_IO_SAVEBLOCK_H
 
 #include <stddef.h>
+#include <memory>
 #include <string>
-#include <unordered_map>
+#include <string_view>
+#include <map>
 #include <vector>
 
 #include "platform/Platform.h"
@@ -92,11 +94,11 @@ private:
 		
 		void writeEntry(std::ostream & handle, const std::string & name) const;
 		
-		std::string loadData(std::istream & handle, const std::string & name) const;
+		std::string loadData(std::istream & handle, std::string_view name) const;
 		
 	};
 	
-	typedef std::unordered_map<std::string, File> Files;
+	typedef std::map<std::string, File, std::less<>> Files; // TODO switch back to std::unordered_map with C++20
 	
 	fs::path m_savefile;
 	fs::fstream m_handle;
@@ -107,7 +109,7 @@ private:
 	
 	bool defragment();
 	bool loadFileTable();
-	void writeFileTable(const std::string & important);
+	void writeFileTable(std::string_view important);
 	
 public:
 	
@@ -129,7 +131,7 @@ public:
 	/*!
 	 * Finalize the save block: defragment if needed and write the file table.
 	 */
-	bool flush(const std::string & important);
+	bool flush(std::string_view important);
 	
 	/*!
 	 * Save a file to the save block.
@@ -137,17 +139,23 @@ public:
 	 * Also, it may destroy any previous on-disk file table.
 	 * flush() should be called before destructing this SaveBlock instance
 	 */
-	bool save(const std::string & name, const char * data, size_t size);
+	bool save(std::string && name, const char * data, size_t size);
+	bool save(std::string_view name, const char * data, size_t size) {
+		return save(std::string(name), data, size);
+	}
+	bool save(const char * name, const char * data, size_t size) {
+		return save(std::string(name), data, size);
+	}
 	
 	/*!
 	 * Remove a file from the save block.
 	 */
-	void remove(const std::string & name);
+	void remove(std::string_view name);
 	
-	std::string load(const std::string & name);
-	bool hasFile(const std::string & name) const;
+	std::string load(std::string_view name);
+	bool hasFile(std::string_view name) const;
 	
-	std::vector<std::string> getFiles() const;
+	std::vector<std::string_view> getFiles() const;
 	
 	/*!
 	 * Load a single file from the save block.
@@ -163,7 +171,7 @@ public:
 	 * \param savefile the save block to load from
 	 * \param name the file to load
 	 */
-	static std::string load(const fs::path & savefile, const std::string & name);
+	static std::string load(const fs::path & savefile, std::string_view name);
 	
 };
 
