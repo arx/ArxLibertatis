@@ -75,7 +75,7 @@ public:
 	
 	path & operator/=(const path & other);
 	
-	const std::string & string() const {
+	[[nodiscard]] const std::string & string() const {
 		return pathstr;
 	}
 	
@@ -83,7 +83,7 @@ public:
 	 * If pathstr contains a slash, return everything preceding it.
 	 * Otherwise, return path().
 	 */
-	path parent() const {
+	[[nodiscard]] path parent() const {
 		if(has_info()) {
 			size_t dirpos = pathstr.find_last_of(dir_sep);
 			return (dirpos == std::string::npos) ? path() : path(pathstr.substr(0, dirpos));
@@ -108,7 +108,7 @@ public:
 	 * If pathstr contains a slash, return everything following it.
 	 * Otherwise, return pathstr.
 	 */
-	std::string_view filename() const {
+	[[nodiscard]] std::string_view filename() const {
 		size_t dirpos = pathstr.find_last_of(dir_sep);
 		return (dirpos == std::string::npos) ? pathstr : std::string_view(pathstr).substr(dirpos + 1);
 	}
@@ -117,30 +117,30 @@ public:
 	 * If filename() contains a dot, return everything in filename() preceding the dot.
 	 * Otherwise, return filename().
 	 */
-	std::string_view basename() const;
+	[[nodiscard]] std::string_view basename() const;
 	
 	/*!
 	 * If filename() contains a dot, return dot and everything following it.
 	 * Otherwise, return std::string().
 	 */
-	std::string_view ext() const;
+	[[nodiscard]] std::string_view ext() const;
 	
-	bool empty() const {
+	[[nodiscard]] bool empty() const {
 		return pathstr.empty();
 	}
 	
 	//! \return pathstr == other.pathstr
-	bool operator==(const path & other) const {
+	[[nodiscard]] bool operator==(const path & other) const {
 		return (pathstr == other.pathstr);
 	}
 	
 	//! \return pathstr == str
-	bool operator==(std::string_view str) const {
+	[[nodiscard]] bool operator==(std::string_view str) const {
 		return (pathstr == str);
 	}
 	
 	//! \return pathstr == str
-	bool operator==(const std::string & str) const {
+	[[nodiscard]] bool operator==(const std::string & str) const {
 		return (pathstr == str);
 	}
 	
@@ -148,22 +148,22 @@ public:
 	 * \return pathstr == str
 	 * This overload is necessary so comparing with string constants isn't ambiguous.
 	 */
-	bool operator==(const char * str) const {
+	[[nodiscard]] bool operator==(const char * str) const {
 		return !pathstr.compare(0, pathstr.length(), str);
 	}
 	
 	//! \return pathstr != other.pathstr
-	bool operator!=(const path & other) const {
+	[[nodiscard]] bool operator!=(const path & other) const {
 		return (pathstr != other.pathstr);
 	}
 	
 	//! \return pathstr != str
-	bool operator!=(std::string_view str) const {
+	[[nodiscard]] bool operator!=(std::string_view str) const {
 		return (pathstr != str);
 	}
 	
 	//! \return pathstr != str
-	bool operator!=(const std::string & str) const {
+	[[nodiscard]] bool operator!=(const std::string & str) const {
 		return (pathstr != str);
 	}
 	
@@ -171,7 +171,7 @@ public:
 	 * \return pathstr != str
 	 * This overload is necessary so comparing with string constants isn't ambiguous.
 	 */
-	bool operator!=(const char * str) const {
+	[[nodiscard]] bool operator!=(const char * str) const {
 		return pathstr.compare(0, pathstr.length(), str) != 0;
 	}
 	
@@ -179,7 +179,7 @@ public:
 	 * To allow path being used in std::map, etc
 	 * \return pathstr < other.pathstr
 	 */
-	bool operator<(const path & other) const {
+	[[nodiscard]] bool operator<(const path & other) const {
 		return (pathstr < other.pathstr);
 	}
 	
@@ -208,20 +208,20 @@ public:
 	}
 	
 	//! return str.empty() ? !ext().empty() : ext() == str || ext.substr(1) == str();
-	bool has_ext(std::string_view str = std::string_view()) const;
+	[[nodiscard]] bool has_ext(std::string_view str = std::string_view()) const;
 	
-	bool is_up() const {
+	[[nodiscard]] bool is_up() const {
 		return (pathstr.length() == 2 && pathstr[0] == '.' && pathstr[1] == '.')
 		       || (pathstr.length() >= 3 && pathstr[0] == '.' && pathstr[1] == '.' && pathstr[2] == dir_sep);
 	}
 	
-	bool has_info() const {
+	[[nodiscard]] bool has_info() const {
 		return !pathstr.empty() && !(pathstr.length() == 2 && pathstr[0] == '.' && pathstr[1] == '.')
 		       && !(pathstr.length() >= 3 && pathstr[pathstr.length() - 1] == '.'
 		           && pathstr[pathstr.length() - 2] == '.' && pathstr[pathstr.length() - 3] == dir_sep);
 	}
 	
-	static path load(std::string_view str);
+	[[nodiscard]] static path load(std::string_view str);
 	
 	/*!
 	 * Append a string to the paths filename component
@@ -237,7 +237,7 @@ public:
 	}
 	
 	//! \return path(*this).append(str)
-	path operator+(std::string_view str) const {
+	[[nodiscard]] path operator+(std::string_view str) const {
 		return path(*this) += str;
 	}
 	
@@ -245,15 +245,15 @@ public:
 	
 };
 
-inline path operator/(std::string_view a, const path & b) {
+[[nodiscard]] inline path operator/(std::string_view a, const path & b) {
 	return path(a) / b;
 }
 
-inline path operator/(std::string a, const path & b) {
+[[nodiscard]] inline path operator/(std::string a, const path & b) {
 	return path(std::move(a)) / b;
 }
 
-inline path operator/(const char * a, const path & b) {
+[[nodiscard]] inline path operator/(const char * a, const path & b) {
 	return path(a) / b;
 }
 
