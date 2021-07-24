@@ -44,14 +44,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GUI_CREDITS_H
 #define ARX_GUI_CREDITS_H
 
-#include <string>
+#include <string_view>
 
 namespace credits {
 
 //! Set additional credits for used libraries
-void setLibraryCredits(const std::string & subsystem, const std::string & credits);
+void setLibraryCredits(std::string_view subsystem, std::string_view credits);
 
-void setMessage(const std::string & message);
+void setMessage(std::string_view message);
 
 /*!
  * Render the credits.

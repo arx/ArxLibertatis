@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <iterator>
 #include <sstream>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -109,9 +110,9 @@ public:
 		, m_windowSize(0)
 	{ }
 	
-	void setLibraryCredits(const std::string & subsystem, const std::string & credits);
+	void setLibraryCredits(std::string_view subsystem, std::string_view credits);
 	
-	void setMessage(const std::string & message) { m_message = message; }
+	void setMessage(std::string_view message) { m_message = message; }
 	
 	void render();
 	
@@ -151,9 +152,8 @@ private:
 
 Credits g_credits;
 
-void Credits::setLibraryCredits(const std::string & subsystem,
-                                const std::string & credits) {
-	m_libraries[subsystem] = credits;
+void Credits::setLibraryCredits(std::string_view subsystem, std::string_view credits) {
+	m_libraries[std::string(subsystem)] = std::string(credits);
 }
 
 bool Credits::load() {
@@ -164,7 +164,7 @@ bool Credits::load() {
 	
 	std::string credits = g_resources->read(creditsFile);
 	
-	std::string englishCreditsFile;
+	std::string_view englishCreditsFile;
 	if(credits.empty()) {
 		// Fallback if there is no localised credits file
 		englishCreditsFile = "localisation/ucredits_english.txt";
@@ -201,7 +201,7 @@ bool Credits::load() {
 			m_text += stdlib->second;
 			m_text += '\n';
 		}
-		std::vector<std::string> libraries;
+		std::vector<std::string_view> libraries;
 		for(const Libraries::value_type & library : m_libraries) {
 			if(library.first != "compiler" && library.first != "stdlib" && !library.second.empty()) {
 				boost::char_separator<char> sep("\n");
@@ -210,7 +210,7 @@ bool Credits::load() {
 			}
 		}
 		std::sort(libraries.begin(), libraries.end());
-		for(const std::string & library : libraries) {
+		for(std::string_view library : libraries) {
 			m_text += library;
 			m_text += '\n';
 		}
@@ -578,11 +578,11 @@ void Credits::reset() {
 
 } // anonymous namespace
 
-void setLibraryCredits(const std::string & subsystem, const std::string & credits) {
+void setLibraryCredits(std::string_view subsystem, std::string_view credits) {
 	g_credits.setLibraryCredits(subsystem, credits);
 }
 
-void setMessage(const std::string & message) {
+void setMessage(std::string_view message) {
 	g_credits.setMessage(message);
 }
 
