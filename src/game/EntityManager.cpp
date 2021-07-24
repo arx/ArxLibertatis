@@ -47,11 +47,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <unordered_map>
 
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "game/Entity.h"
 #include "platform/Platform.h"
+#include "util/String.h"
 
 struct EntityManager::Impl {
 	
@@ -150,8 +150,7 @@ Entity * EntityManager::getById(std::string_view idString, Entity * self) const 
 
 void EntityManager::autocomplete(std::string_view prefix, AutocompleteHandler handler, void * context) {
 	
-	std::string check(prefix);
-	boost::to_lower(check);
+	std::string check = util::toLowercase(prefix);
 	
 	// TODO we don't need to iterate over all entities if we have per-class indices
 	for(Entity * entity : entries) {
