@@ -137,7 +137,7 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 	
 }
 
-void PakDirectory::addFile(std::string name, PakFile * file) {
+void PakDirectory::addFile(std::string && name, PakFile * file) {
 	
 	auto result = files.emplace(std::move(name), file);
 	

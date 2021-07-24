@@ -663,7 +663,7 @@ bool PakReader::removeDirectory(const res::path & name) {
 	}
 }
 
-bool PakReader::addFile(PakDirectory * dir, const fs::path & path, std::string name) {
+bool PakReader::addFile(PakDirectory * dir, const fs::path & path, std::string && name) {
 	
 	if(name.empty()) {
 		return false;

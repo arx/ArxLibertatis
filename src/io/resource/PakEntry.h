@@ -65,7 +65,7 @@ private:
 	
 	PakDirectory * addDirectory(const res::path & path);
 	
-	void addFile(std::string name, PakFile * file);
+	void addFile(std::string && name, PakFile * file);
 	void removeFile(std::string_view name);
 	bool removeDirectory(std::string_view name);
 	
