@@ -123,10 +123,6 @@ long GetLevelNumByName(std::string_view name) {
 		if(name == "25") return 25;
 		if(name == "26") return 26;
 		if(name == "27") return 27;
-		if(name == "demo") return 28;
-		if(name == "demo2") return 29;
-		if(name == "demo3") return 30;
-		if(name == "demo4") return 31;
 	}
 	
 	return -1;
@@ -163,10 +159,6 @@ const char * GetLevelNameByNum(long num) {
 		case 25: return "25";
 		case 26: return "26";
 		case 27: return "27";
-		case 28: return "demo";
-		case 29: return "demo2";
-		case 30: return "demo3";
-		case 31: return "demo4";
 		default: return "none";
 	}
 }
