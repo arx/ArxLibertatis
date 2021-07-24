@@ -45,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GUI_MENUPUBLIC_H
 
 #include <stddef.h>
-#include <string>
+#include <string_view>
 
 #include "core/SaveGame.h"
 
@@ -57,7 +57,7 @@ void ARXMenu_Options_Video_SetGamma(float gamma);
 
 // Audio options
 
-void ARXMenu_Options_Audio_SetDevice(const std::string & device);
+void ARXMenu_Options_Audio_SetDevice(std::string_view device);
 void ARXMenu_Options_Audio_SetMasterVolume(float volume);
 void ARXMenu_Options_Audio_SetSfxVolume(float volume);
 void ARXMenu_Options_Audio_SetSpeechVolume(float volume);

@@ -175,7 +175,7 @@ void ARXMenu_Options_Audio_SetMuted(bool mute) {
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGame, volume);
 }
 
-void ARXMenu_Options_Audio_SetDevice(const std::string & device) {
+void ARXMenu_Options_Audio_SetDevice(std::string_view device) {
 	
 	config.audio.device = device;
 	
