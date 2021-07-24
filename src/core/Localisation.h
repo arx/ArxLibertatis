@@ -22,6 +22,7 @@
 
 #include <map>
 #include <string>
+#include <string_view>
 
 struct Language {
 	
@@ -45,15 +46,15 @@ bool initLocalisation();
  * \param name The string to be looked up
  * \return The localized string based on the currently loaded locale file
  */
-std::string getLocalised(const std::string & name);
+std::string getLocalised(std::string_view name);
 
 /*!
  * Returns the localized string for the given key name
  * \param name The string to be looked up
  * \return The localized string based on the currently loaded locale file
  */
-std::string getLocalised(const std::string & name, const std::string & default_value);
+std::string getLocalised(std::string_view name, std::string_view default_value);
 
-long getLocalisedKeyCount(const std::string & sectionname);
+long getLocalisedKeyCount(std::string_view sectionname);
 
 #endif // ARX_CORE_LOCALISATION_H

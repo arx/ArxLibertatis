@@ -46,9 +46,9 @@ namespace {
 
 IniReader g_localisation;
 
-Language getLanguageInfo(const std::string & id) {
+Language getLanguageInfo(std::string_view id) {
 	
-	std::istringstream iss(g_resources->read("localisation/languages/" + id + ".ini"));
+	std::istringstream iss(g_resources->read((std::string("localisation/languages/") += id) += ".ini"));
 	IniReader reader;
 	reader.read(iss);
 	
@@ -59,7 +59,7 @@ Language getLanguageInfo(const std::string & id) {
 	return result;
 }
 
-std::string selectPreferredLanguage(const Languages & languages) {
+std::string_view selectPreferredLanguage(const Languages & languages) {
 	
 	std::vector<std::string> locales = platform::getPreferredLocales();
 	
@@ -77,10 +77,10 @@ std::string selectPreferredLanguage(const Languages & languages) {
 		}
 	}
 	
-	return std::string();
+	return std::string_view();
 }
 
-std::string selectDefaultLanguage(const Languages & languages) {
+std::string_view selectDefaultLanguage(const Languages & languages) {
 	
 	// Select language from AF config file
 	// For AF 1.22 this will match language selected by the user in the Steam / GOG / Bethesda launcher
@@ -100,7 +100,7 @@ std::string selectDefaultLanguage(const Languages & languages) {
 		}
 	}
 	
-	return std::string();
+	return std::string_view();
 }
 
 void autodetectTextLanguage() {
@@ -108,7 +108,7 @@ void autodetectTextLanguage() {
 	Languages languages = getAvailableTextLanguages();
 	if(languages.empty()) {
 		LogCritical << "Could not find any localisation file. (localisation/utext_*.ini)";
-		config.interface.language = std::string();
+		config.interface.language.clear();
 		return;
 	}
 	
@@ -167,7 +167,7 @@ void autodetectAudioLanguage() {
 	Languages languages = getAvailableAudioLanguages();
 	if(languages.empty()) {
 		LogCritical << "Could not find any localisation dir. (speech/*/)";
-		config.audio.language = std::string();
+		config.audio.language.clear();
 		return;
 	}
 	
@@ -214,7 +214,7 @@ void autodetectAudioLanguage() {
 	config.audio.language = languages.begin()->first;
 }
 
-void loadLocalisation(PakDirectory * dir, const std::string & name) {
+void loadLocalisation(PakDirectory * dir, std::string_view name) {
 	
 	PakFile * file = dir->getFile(name);
 	if(!file) {
@@ -243,8 +243,8 @@ void loadLocalisation(PakDirectory * dir, const std::string & name) {
 
 void loadLocalisations() {
 	
-	const std::string suffix = ".ini";
-	const std::string fallbackPrefix = "xtext_default_";
+	const std::string_view suffix = ".ini";
+	const std::string_view fallbackPrefix = "xtext_default_";
 	const std::string localizedPrefix = "xtext_" + config.interface.language + "_";
 	
 	PakDirectory * dir = g_resources->getDirectory("localisation");
@@ -252,24 +252,21 @@ void loadLocalisations() {
 		return;
 	}
 	
-	typedef std::set<std::string> LocalizationFiles;
+	typedef std::set<std::string_view> LocalizationFiles;
 	
 	LocalizationFiles localizationFiles;
 	
-	PakDirectory::files_iterator fileIter = dir->files_begin();
-	
-	for(; fileIter != dir->files_end(); ++fileIter) {
-		const std::string & name = fileIter->first;
-		
+	for(auto it = dir->files_begin(); it != dir->files_end(); ++it) {
+		std::string_view name = it->first;
 		if(boost::ends_with(name, suffix)
 		   && (boost::starts_with(name, fallbackPrefix) || boost::starts_with(name, localizedPrefix))) {
 			localizationFiles.insert(name.substr(fallbackPrefix.length()));
 		}
 	}
 	
-	for(const LocalizationFiles::value_type & name : localizationFiles) {
-		loadLocalisation(dir, fallbackPrefix + name);
-		loadLocalisation(dir, localizedPrefix + name);
+	for(std::string_view name : localizationFiles) {
+		loadLocalisation(dir, std::string(fallbackPrefix) += name);
+		loadLocalisation(dir, std::string(localizedPrefix) += name);
 	}
 	
 }
@@ -288,10 +285,10 @@ Languages getAvailableTextLanguages() {
 	PakDirectory::files_iterator file = localisation->files_begin();
 	for(; file != localisation->files_end(); ++file) {
 		
-		const std::string & name = file->first;
+		const std::string_view name = file->first;
 		
-		const std::string prefix = "utext_";
-		const std::string suffix = ".ini";
+		const std::string_view prefix = "utext_";
+		const std::string_view suffix = ".ini";
 		if(!boost::starts_with(name, prefix) || !boost::ends_with(name, suffix)) {
 			// Not a localisation file.
 			continue;
@@ -304,9 +301,9 @@ Languages getAvailableTextLanguages() {
 		
 		// Extract the language name.
 		size_t length = name.length() - prefix.length() - suffix.length();
-		std::string id = name.substr(prefix.length(), length);
+		std::string_view id = name.substr(prefix.length(), length);
 		
-		if(id.find_first_not_of("abcdefghijklmnopqrstuvwxyz_") != std::string::npos) {
+		if(id.find_first_not_of("abcdefghijklmnopqrstuvwxyz_") != std::string_view::npos) {
 			LogWarning << "Ignoring localisation/" << name;
 			continue;
 		}
@@ -408,14 +405,14 @@ bool initLocalisation() {
 	return true;
 }
 
-long getLocalisedKeyCount(const std::string & sectionname) {
+long getLocalisedKeyCount(std::string_view sectionname) {
 	return g_localisation.getKeyCount(sectionname);
 }
 
-std::string getLocalised(const std::string & name) {
-	return g_localisation.getKey(name, std::string(), name);
+std::string getLocalised(std::string_view name) {
+	return std::string(g_localisation.getKey(name, std::string_view(), name));
 }
 
-std::string getLocalised(const std::string & name, const std::string & default_value) {
-	return g_localisation.getKey(name, std::string(), default_value);
+std::string getLocalised(std::string_view name, const std::string_view default_value) {
+	return std::string(g_localisation.getKey(name, std::string_view(), default_value));
 }
