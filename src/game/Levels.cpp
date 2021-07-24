@@ -92,42 +92,6 @@ int ARX_LEVELS_GetRealNum(long num) {
 	
 }
 
-long GetLevelNumByName(std::string_view name) {
-	
-	if(!name.empty()) {
-		if(name == "0") return 0;
-		if(name == "1") return 1;
-		if(name == "2") return 2;
-		if(name == "3") return 3;
-		if(name == "4") return 4;
-		if(name == "5") return 5;
-		if(name == "6") return 6;
-		if(name == "7") return 7;
-		if(name == "8") return 8;
-		if(name == "9") return 9;
-		if(name == "10") return 10;
-		if(name == "11") return 11;
-		if(name == "12") return 12;
-		if(name == "13") return 13;
-		if(name == "14") return 14;
-		if(name == "15") return 15;
-		if(name == "16") return 16;
-		if(name == "17") return 17;
-		if(name == "18") return 18;
-		if(name == "19") return 19;
-		if(name == "20") return 20;
-		if(name == "21") return 21;
-		if(name == "22") return 22;
-		if(name == "23") return 23;
-		if(name == "24") return 24;
-		if(name == "25") return 25;
-		if(name == "26") return 26;
-		if(name == "27") return 27;
-	}
-	
-	return -1;
-}
-
 const char * GetLevelNameByNum(long num) {
 	
 	switch(num) {

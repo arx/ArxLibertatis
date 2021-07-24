@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Equipment.h"
 #include "game/Inventory.h"
 #include "game/Item.h"
+#include "game/Levels.h"
 #include "game/Missile.h"
 #include "game/NPC.h"
 #include "game/Player.h"
@@ -520,10 +521,10 @@ public:
 			
 			if(flg & flag('l')) {
 				
-				std::string level = context.getWord();
+				float level = context.getFloat();
 				std::string target = context.getWord();
 				
-				TELEPORT_TO_LEVEL = level;
+				TELEPORT_TO_LEVEL = static_cast<long>(level);
 				TELEPORT_TO_POSITION = target;
 				
 				if(angle == -1) {

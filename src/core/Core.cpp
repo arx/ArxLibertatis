@@ -188,7 +188,7 @@ bool GMOD_RESET = true;
 Vec3f LastValidPlayerPos;
 
 // START - Information for Player Teleport between/in Levels-------------------------------------
-std::string TELEPORT_TO_LEVEL;
+long TELEPORT_TO_LEVEL = -1;
 std::string TELEPORT_TO_POSITION;
 long TELEPORT_TO_ANGLE;
 // END -   Information for Player Teleport between/in Levels---------------------------------------

@@ -49,7 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string_view>
 
-long GetLevelNumByName(std::string_view name);
 const char * GetLevelNameByNum(long num);
 
 //! Get the physical level (depth) of a "subdivided" level

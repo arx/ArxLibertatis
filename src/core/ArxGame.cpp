@@ -751,7 +751,7 @@ bool ArxGame::initGame()
 	}
 	
 	LogDebug("LSV Init");
-	TELEPORT_TO_LEVEL.clear();
+	TELEPORT_TO_LEVEL = -1;
 	TELEPORT_TO_POSITION.clear();
 	LogDebug("Mset");
 	
@@ -1197,7 +1197,7 @@ void ArxGame::doFrame() {
 	}
 
 	// Are we being teleported ?
-	if(!TELEPORT_TO_LEVEL.empty() && CHANGE_LEVEL_ICON != NoChangeLevel
+	if(TELEPORT_TO_LEVEL >= 0 && CHANGE_LEVEL_ICON != NoChangeLevel
 	   && (CHANGE_LEVEL_ICON == ChangeLevelNow
 	       || config.input.quickLevelTransition == ChangeLevelImmediately
 	       || (config.input.quickLevelTransition == JumpToChangeLevel
@@ -1206,8 +1206,8 @@ void ArxGame::doFrame() {
 		benchmark::begin(benchmark::LoadLevel);
 		LogDebug("teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " " << TELEPORT_TO_ANGLE);
 		CHANGE_LEVEL_ICON = NoChangeLevel;
-		ARX_CHANGELEVEL_Change(GetLevelNumByName(TELEPORT_TO_LEVEL), TELEPORT_TO_POSITION, float(TELEPORT_TO_ANGLE));
-		TELEPORT_TO_LEVEL.clear();
+		ARX_CHANGELEVEL_Change(TELEPORT_TO_LEVEL, TELEPORT_TO_POSITION, float(TELEPORT_TO_ANGLE));
+		TELEPORT_TO_LEVEL = -1;
 		TELEPORT_TO_POSITION.clear();
 	}
 
