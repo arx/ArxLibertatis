@@ -52,8 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <utility>
 
-#include <boost/algorithm/string/case_conv.hpp>
-
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 
