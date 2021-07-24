@@ -51,8 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 
-#include <boost/algorithm/string/case_conv.hpp>
-
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -317,7 +315,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		
 		if(loadEntities) {
 			
-			std::string pathstr = boost::to_lower_copy(util::loadString(dli->name));
+			std::string pathstr = util::toLowercase(util::loadString(dli->name));
 			
 			size_t graphPos = pathstr.find("graph");
 			if(graphPos != std::string::npos) {
@@ -395,7 +393,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		
 		Vec3f ppos = dlp->pos.toVec3() + trans;
 		
-		std::string name(boost::to_lower_copy(util::loadString(dlp->name)));
+		std::string name = util::toLowercase(util::loadString(dlp->name));
 		
 		s32 height = dlp->height;
 		if(height == 0 && name == "level11_sewer1") {
