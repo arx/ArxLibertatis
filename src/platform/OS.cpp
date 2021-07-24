@@ -305,13 +305,23 @@ static std::string parseDistributionName(std::istream & is, const char separator
 		
 		// Split key and value
 		size_t pos = line.find(separator);
-		if(pos == std::string::npos) {
+		if(pos == std::string::npos || pos == 0) {
 			// Ignore bad syntax
 			continue;
 		}
 		std::string key = line.substr(0, pos);
 		boost::trim(key);
-		std::string value = util::unescapeString(boost::trim_copy(line.substr(pos + 1)));
+		std::string value = line.substr(pos + 1);
+		boost::trim(value);
+		if(!value.empty() && value.front() == '"') {
+			value.erase(value.begin());
+			if(!value.empty() && value.back() == '"') {
+				value.pop_back();
+			}
+		}
+		if(!value.empty() && value.back() == '\\') {
+			value.pop_back();
+		}
 		
 		// Ignore empty values
 		if(key.empty() || value.empty() || value == "n/a") {

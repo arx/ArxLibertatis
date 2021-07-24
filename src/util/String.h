@@ -61,9 +61,6 @@ void storeStringTerminated(char (&dst)[N], const std::string & src) {
  */
 std::string escapeString(const std::string & text, const char * escapeChars);
 
-//! Remove surrounding quotes and replace escape code with their values.
-std::string unescapeString(const std::string & text);
-
 template <class CTYPE, class STYPE>
 inline CTYPE * safeGetString(CTYPE * & pos, STYPE & size) {
 	
