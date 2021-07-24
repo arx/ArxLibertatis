@@ -23,6 +23,7 @@
 #include <stddef.h>
 #include <vector>
 #include <string>
+#include <string_view>
 #include <ctime>
 
 #include <boost/iterator/counting_iterator.hpp>
@@ -82,7 +83,7 @@ public:
 	 * \param overwrite A savegame to overwrite with this save or SavegameHandle()
 	 * \return true if the game was successfully saved.
 	 */
-	bool save(const std::string & name, SavegameHandle overwrite = SavegameHandle(),
+	bool save(std::string_view name, SavegameHandle overwrite = SavegameHandle(),
 	          const Image & thumbnail = Image());
 	
 	//! Perform a quicksave: Maintain a number of quicksave slots and always overwrite the oldest one.

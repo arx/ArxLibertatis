@@ -36,7 +36,7 @@ namespace {
 
 const fs::path SAVEGAME_DIR = "save";
 const fs::path SAVEGAME_THUMBNAIL = "gsave.bmp";
-const std::string QUICKSAVE_ID = "ARX_QUICK_ARX";
+constexpr const std::string_view QUICKSAVE_ID = "ARX_QUICK_ARX";
 
 enum SaveGameChange {
 	SaveGameRemoved,
@@ -111,12 +111,12 @@ void SaveGameList::update(bool verbose) {
 		
 		SaveGame * save = &savelist[index];
 		
-		save->name = name;
+		save->name = std::move(name);
 		save->level = level;
 		save->stime = stime;
 		save->savefile = path;
 		
-		save->quicksave = (name == QUICKSAVE_ID || name == "ARX_QUICK_ARX1");
+		save->quicksave = (save->name == QUICKSAVE_ID || save->name == "ARX_QUICK_ARX1");
 		
 		fs::path thumbnail = path.parent() / SAVEGAME_THUMBNAIL;
 		if(fs::exists(thumbnail)) {
@@ -138,7 +138,7 @@ void SaveGameList::update(bool verbose) {
 			save->thumbnail.clear();
 		}
 		
-		size_t length = save->quicksave ? 9 : std::min(name.length(), size_t(50));
+		size_t length = save->quicksave ? 9 : std::min(save->name.length(), size_t(50));
 		max_name_length = std::max(length, max_name_length);
 		
 	}
@@ -212,7 +212,7 @@ void SaveGameList::remove(SavegameHandle handle) {
 	update();
 }
 
-bool SaveGameList::save(const std::string & name, SavegameHandle overwrite, const Image & thumbnail) {
+bool SaveGameList::save(std::string_view name, SavegameHandle overwrite, const Image & thumbnail) {
 	
 	fs::path savefile;
 	if(overwrite != SavegameHandle()) {
