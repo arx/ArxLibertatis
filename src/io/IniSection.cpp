@@ -22,10 +22,11 @@
 #include <sstream>
 #include <ios>
 
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "io/log/Logger.h"
+
+#include "util/String.h"
 
 int IniKey::getValue(int defaultValue) const {
 	
@@ -78,8 +79,7 @@ const IniKey * IniSection::getKey(std::string_view name) const {
 
 void IniSection::addKey(std::string key, std::string value) {
 	
-	IniKey k(std::move(key), std::move(value));
-	boost::to_lower(k.name);
+	IniKey k(util::toLowercase(std::move(key)), std::move(value));
 	
 	LogDebug("added key " << key << "=\"" << value << "\"");
 	keys.emplace_back(std::move(k));
@@ -87,8 +87,7 @@ void IniSection::addKey(std::string key, std::string value) {
 
 void IniSection::setKey(std::string key, std::string value) {
 	
-	IniKey k(std::move(key), std::move(value));
-	boost::to_lower(k.name);
+	IniKey k(util::toLowercase(std::move(key)), std::move(value));
 	
 	for(IniKey & old : keys) {
 		if(old.name == k.name) {
