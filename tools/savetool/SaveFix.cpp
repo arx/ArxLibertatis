@@ -25,7 +25,6 @@
 #include <map>
 #include <sstream>
 
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/io/ios_state.hpp>
 #include <boost/range/adaptor/reversed.hpp>
@@ -272,7 +271,7 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const std::string 
 	
 	std::cout << "fixing ident in " << where << ": " << name << " -> " << newIdent << '\n';
 	
-	std::string namestr = boost::to_lower_copy(util::loadString(name, SIZE_ID));
+	std::string namestr = util::toLowercase(util::loadString(name, SIZE_ID));
 	
 	size_t pos = namestr.find_last_of('_');
 	
@@ -283,7 +282,7 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const std::string 
 
 static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, const std::string & where, Remap & remap) {
 	
-	std::string lname = boost::to_lower_copy(util::loadString(name, SIZE_ID));
+	std::string lname = util::toLowercase(util::loadString(name, SIZE_ID));
 	
 	if(lname.empty() || lname == "none" || lname == "player" || lname == "self") {
 		return false;
