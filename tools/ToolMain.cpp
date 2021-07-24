@@ -25,11 +25,11 @@
 #include <windows.h>
 #endif
 
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "io/fs/FilePath.h"
 #include "platform/WindowsMain.h"
+#include "util/String.h"
 
 #include "savetool/SaveTool.h"
 #include "unpak/UnPak.h"
@@ -56,7 +56,7 @@ int utf8_main(int argc, char ** argv) {
 	
 	std::string tool;
 	if(argc > 0) {
-		tool = boost::to_lower_copy(fs::path(argv[0]).basename());
+		tool = util::toLowercase(fs::path(argv[0]).basename());
 		if(boost::starts_with(tool, "arx")) {
 			tool.erase(0, 3);
 		}
