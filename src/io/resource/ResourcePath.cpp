@@ -19,10 +19,10 @@
 
 #include "io/resource/ResourcePath.h"
 
-#include <cctype>
 #include <algorithm>
 
 #include "platform/Platform.h"
+#include "util/String.h"
 
 namespace res {
 
@@ -349,7 +349,7 @@ path path::load(std::string_view str) {
 		}
 		
 		for(size_t p = start; p < pos; p++) {
-			copy[ostart++] = std::tolower(str[p]);
+			copy[ostart++] = util::toLowercase(str[p]);
 		}
 		
 	}
