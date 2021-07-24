@@ -25,7 +25,6 @@
 #include <ios>
 #include <utility>
 
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "io/log/Logger.h"
@@ -553,9 +552,6 @@ bool PakReader::addArchive(const fs::path & pakfile, const PakFilter * filter) {
 				return false;
 			}
 			
-			size_t len = std::strlen(filename);
-			std::transform(filename, filename + len, filename, ::tolower);
-			
 			u32 offset;
 			u32 flags;
 			u32 uncompressedSize;
@@ -579,7 +575,7 @@ bool PakReader::addArchive(const fs::path & pakfile, const PakFilter * filter) {
 				file = new UncompressedFile(ifs, offset, size);
 			}
 			
-			dir->addFile(std::string(filename, len), file);
+			dir->addFile(util::toLowercase(filename), file);
 		}
 		
 	}
@@ -692,7 +688,7 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 		
 		fs::path entry = path / name;
 		
-		boost::to_lower(name);
+		util::makeLowercase(name);
 		
 		fs::FileType type = it.type();
 		
