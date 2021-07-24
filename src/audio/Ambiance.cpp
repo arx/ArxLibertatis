@@ -43,7 +43,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Ambiance.h"
 
-#include <cctype>
 #include <algorithm>
 #include <limits>
 #include <sstream>
@@ -68,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Platform.h"
 
 #include "util/Flags.h"
+#include "util/String.h"
 
 #include "Configure.h"
 
@@ -520,7 +520,7 @@ static aalError loadString(PakFileHandle * file, std::string & str) {
 	aalError ret = AAL_OK;
 	char c;
 	while(file->read(&c, 1) ? c : (ret = AAL_ERROR_FILEIO, false)) {
-		oss << char(std::tolower(c));
+		oss << util::toLowercase(c);
 	}
 	
 	str = oss.str();
