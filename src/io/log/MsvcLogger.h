@@ -37,7 +37,7 @@ public:
 	
 	~MsvcDebugger();
 	
-	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str);
+	void log(const Source & file, int line, Logger::LogLevel level, std::string_view str) override;
 	
 	/*!
 	 * Returns a MsvcDebugger instance if a debugger is attached or nullptr otherwise.

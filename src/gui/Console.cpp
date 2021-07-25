@@ -89,7 +89,7 @@ void ConsoleBuffer::append(std::string_view text) {
 	
 }
 
-void MemoryLogger::log(const logger::Source & file, int line, Logger::LogLevel level, const std::string & str) {
+void MemoryLogger::log(const logger::Source & file, int line, Logger::LogLevel level, std::string_view str) {
 	std::ostringstream oss;
 	if(level == Logger::Console) {
 		oss << str << '\n';

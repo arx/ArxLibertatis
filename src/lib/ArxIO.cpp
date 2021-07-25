@@ -33,17 +33,18 @@
 namespace {
 
 class MemoryLogger : public logger::Backend {
-
+	
 public:
-	void log(const logger::Source & file, int line, Logger::LogLevel level, const std::string & str) {
-
+	
+	void log(const logger::Source & file, int line, Logger::LogLevel level, std::string_view str) override {
+		
 		ARX_UNUSED(file);
 		ARX_UNUSED(line);
-
+		
 		if(level == Logger::Error) {
 			m_lastError = str;
 		}
-
+		
 		std::string levelName;
 		switch(level) {
 			case Logger::Debug:    levelName = "Debug"; break;
@@ -54,14 +55,13 @@ public:
 			case Logger::Critical: levelName = "Critical"; break;
 			case Logger::None: arx_unreachable();
 		}
-
-		m_Lines.push_back(levelName + ": " + str);
+		
+		m_Lines.push_back((levelName += ": ") += str);
 	}
-
-	void flush() {}
-
+	
 	std::string m_lastError;
 	std::deque<std::string> m_Lines;
+	
 };
 
 } // anonymous namespace

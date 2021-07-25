@@ -33,9 +33,9 @@ public:
 	
 	~Console();
 	
-	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str);
+	void log(const Source & file, int line, Logger::LogLevel level, std::string_view str) override;
 	
-	void flush();
+	void flush() override;
 	
 	/*!
 	 * \return a ColorLogger instance if colors are supported or a ConsoleLogger otherwise.

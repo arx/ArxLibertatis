@@ -49,7 +49,7 @@ public:
 	
 	~CriticalErrorDialog();
 	
-	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str);
+	void log(const Source & file, int line, Logger::LogLevel level, std::string_view str) override;
 };
 
 } // namespace logger

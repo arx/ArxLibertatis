@@ -25,7 +25,7 @@
 #include "platform/Platform.h"
 
 void logger::Backend::format(std::ostream & os, const Source & file,
-                             int line, Logger::LogLevel level, const std::string & str) {
+                             int line, Logger::LogLevel level, std::string_view str) {
 	
 	size_t length = 3;
 	switch(level) {

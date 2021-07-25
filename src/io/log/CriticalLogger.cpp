@@ -73,8 +73,7 @@ void CriticalErrorDialog::setExitQuestion(const char * question, ExitCommand com
 	}
 }
 
-void CriticalErrorDialog::log(const Source & file, int line, Logger::LogLevel level,
-                              const std::string & str) {
+void CriticalErrorDialog::log(const Source & file, int line, Logger::LogLevel level, std::string_view str) {
 	ARX_UNUSED(file), ARX_UNUSED(line);
 	
 	if(level == Logger::Critical && errorString.empty()) {

@@ -38,7 +38,7 @@ Console::~Console() {
 	// nothing to clean up
 }
 
-void Console::log(const Source & file, int line, Logger::LogLevel level, const std::string & str) {
+void Console::log(const Source & file, int line, Logger::LogLevel level, std::string_view str) {
 	std::ostream & os = (level == Logger::Warning || level == Logger::Error) ? std::cerr : std::cout;
 	format(os, file, line, level, str);
 }

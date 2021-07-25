@@ -38,13 +38,13 @@ public:
 	     std::ios_base::openmode mode = std::ios_base::out | std::ios_base::trunc)
 		: ofs(path, mode) { }
 	
-	void quickShutdown();
+	void quickShutdown() override;
 	
 	~File();
 	
-	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str);
+	void log(const Source & file, int line, Logger::LogLevel level, std::string_view str) override;
 	
-	void flush();
+	void flush() override;
 	
 };
 

@@ -22,6 +22,7 @@
 
 #include <stddef.h>
 #include <ostream>
+#include <string_view>
 
 #include "io/log/Logger.h"
 
@@ -45,7 +46,7 @@ public:
 	
 	virtual ~Backend() { }
 	
-	virtual void log(const Source & file, int line, Logger::LogLevel level, const std::string & str) = 0;
+	virtual void log(const Source & file, int line, Logger::LogLevel level, std::string_view str) = 0;
 	
 	virtual void flush() { }
 	
@@ -54,7 +55,7 @@ public:
 	/*!
 	 * Format a log entry for a text-based logging backend.
 	 */
-	void format(std::ostream & os, const Source & file, int line, Logger::LogLevel level, const std::string & str);
+	void format(std::ostream & os, const Source & file, int line, Logger::LogLevel level, std::string_view str);
 	
 };
 

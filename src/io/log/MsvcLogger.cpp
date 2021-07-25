@@ -31,8 +31,7 @@ MsvcDebugger::~MsvcDebugger() {
 	// nothing to clean up
 }
 
-void MsvcDebugger::log(const Source & file, int line, Logger::LogLevel level,
-                       const std::string & str) {
+void MsvcDebugger::log(const Source & file, int line, Logger::LogLevel level, std::string_view str) {
 	std::ostringstream oss;
 	format(oss, file, line, level, str);
 	OutputDebugStringW(platform::WideString(oss.str()));
