@@ -29,7 +29,7 @@
 
 #include <cstring>
 #include <algorithm>
-#include <string>
+#include <string_view>
 #include <ostream>
 #include <iomanip>
 
@@ -145,7 +145,7 @@ public:
 		return hasher.finalize();
 	}
 	
-	static checksum compute(const std::string & input) {
+	static checksum compute(std::string_view input) {
 		return compute(input.data(), input.length());
 	}
 	
