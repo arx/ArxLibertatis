@@ -316,7 +316,7 @@ Font::TextSize Font::process(int x, int y, std::string_view text, Color color) {
 	std::vector<std::vector<TexturedVertex>> mapTextureVertices;
 	
 	const char * end = text.data() + text.length();
-	for(const char * it = text.begin(); it != end; ) {
+	for(const char * it = text.data(); it != end; ) {
 		
 		// Get glyph in glyph map
 		glyph_iterator itGlyph = getNextGlyph(it, end);
