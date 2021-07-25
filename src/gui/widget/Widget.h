@@ -21,6 +21,7 @@
 #define ARX_GUI_WIDGET_WIDGET_H
 
 #include <functional>
+
 #include <boost/noncopyable.hpp>
 
 #include "core/SaveGame.h"

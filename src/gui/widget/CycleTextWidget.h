@@ -21,8 +21,8 @@
 #define ARX_GUI_WIDGET_CYCLETEXTWIDGET_H
 
 #include <functional>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "gui/widget/Widget.h"
 #include "platform/Platform.h"

@@ -34,8 +34,10 @@
 #ifndef ARX_UTIL_CMDLINE_DETAIL_LEXICALCALL_H
 #define ARX_UTIL_CMDLINE_DETAIL_LEXICALCALL_H
 
-#include <boost/function.hpp>
+#include <functional>
+
 #include <boost/noncopyable.hpp>
+
 #include "util/cmdline/detail/ArgsAdapter.h"
 #include "util/cmdline/detail/LFunction.h"
 
@@ -116,7 +118,7 @@ private:
 		function = proxy_function<Function>(fn);
 	}
 	
-	typedef boost::function<Result(Args)> function_t;
+	typedef std::function<Result(Args)> function_t;
 	
 	function_t function;
 	
