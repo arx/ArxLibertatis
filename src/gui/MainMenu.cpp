@@ -1868,7 +1868,9 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_input_customize_default");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
-			txt->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedDefault, this, arg::_1);
+			txt->clicked = [this](Widget * /* widget */) {
+				resetActionKeys();
+			};
 			addCorner(txt, BottomCenter);
 		}
 		
@@ -1881,13 +1883,7 @@ public:
 		reinitActionKeys();
 		
 	}
-	
-private:
-	
-	void onClickedDefault(Widget * /* widget */) {
-		resetActionKeys();
-	}
-	
+
 };
 
 class ControlOptionsMenuPage2 final : public ControlOptionsPage {
@@ -1938,18 +1934,14 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_input_customize_default");
 			TextWidget * txt = new TextWidget(hFontMenu, label);
-			txt->clicked = boost::bind(&ControlOptionsMenuPage2::onClickedDefault, this, arg::_1);
+			txt->clicked = [this](Widget * /* widget */) {
+				resetActionKeys();
+			};
 			addCorner(txt, BottomCenter);
 		}
 		
 		reinitActionKeys();
 		
-	}
-	
-private:
-	
-	void onClickedDefault(Widget * /* widget */) {
-		resetActionKeys();
 	}
 	
 };
@@ -1982,7 +1974,9 @@ public:
 		
 		{
 			TextWidget * yes = new TextWidget(hFontMenu, getLocalised("system_yes"));
-			yes->clicked = boost::bind(&QuitConfirmMenuPage::onClickedYes, this, arg::_1);
+			yes->clicked = [](Widget * /* widget */) {
+				MenuFader_start(Fade_In, Mode_InGame);
+			};
 			addCorner(yes, BottomRight);
 		}
 		
@@ -1993,12 +1987,6 @@ public:
 			addCorner(no, BottomLeft);
 		}
 		
-	}
-	
-private:
-	
-	void onClickedYes(Widget * /* widget */) {
-		MenuFader_start(Fade_In, Mode_InGame);
 	}
 	
 };
