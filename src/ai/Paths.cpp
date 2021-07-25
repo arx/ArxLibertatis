@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
+#include <utility>
 
 #include "core/GameTime.h"
 #include "core/Core.h"
@@ -264,8 +265,8 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 	
 }
 
-Zone::Zone(const std::string & _name, const Vec3f & _pos)
-	: name(_name)
+Zone::Zone(std::string && _name, const Vec3f & _pos)
+	: name(std::move(_name))
 	, flags(0)
 	, pos(_pos)
 	, height(0)
@@ -276,8 +277,8 @@ Zone::Zone(const std::string & _name, const Vec3f & _pos)
 	, bbmax(0.f)
 { }
 
-Path::Path(const std::string & _name, const Vec3f & _pos)
-	: name(_name)
+Path::Path(std::string && _name, const Vec3f & _pos)
+	: name(std::move(_name))
 	, pos(_pos)
 { }
 
@@ -296,7 +297,7 @@ void ARX_PATH_ClearAllControled() {
 	}
 }
 
-Zone * getZoneByName(const std::string & name) {
+Zone * getZoneByName(std::string_view name) {
 	
 	if(name.empty()) {
 		return nullptr;
@@ -311,7 +312,7 @@ Zone * getZoneByName(const std::string & name) {
 	return nullptr;
 }
 
-const Path * getPathByName(const std::string & name) {
+const Path * getPathByName(std::string_view name) {
 	
 	if(name.empty()) {
 		return nullptr;

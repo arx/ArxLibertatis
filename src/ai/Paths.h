@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "core/TimeTypes.h"
@@ -72,7 +73,7 @@ DECLARE_FLAGS_OPERATORS(ZoneFlags)
 
 struct Zone {
 	
-	Zone(const std::string & _name, const Vec3f & _pos);
+	Zone(std::string && _name, const Vec3f & _pos);
 	
 	std::string name;
 	ZoneFlags flags;
@@ -118,7 +119,7 @@ struct ARX_PATHWAY {
 
 struct Path {
 	
-	Path(const std::string & _name, const Vec3f & _pos);
+	Path(std::string && _name, const Vec3f & _pos);
 	
 	std::string name;
 	Vec3f pos;
@@ -165,8 +166,8 @@ void ARX_PATH_UpdateAllZoneInOutInside();
 long ARX_PATH_IsPosInZone(const Zone * ap, Vec3f pos);
 void ARX_PATH_ClearAllUsePath();
 void ARX_PATH_ReleaseAllPath();
-Zone * getZoneByName(const std::string & name);
-const Path * getPathByName(const std::string & name);
+Zone * getZoneByName(std::string_view name);
+const Path * getPathByName(std::string_view name);
 void ARX_PATH_ClearAllControled();
 void ARX_PATH_ComputeAllBoundingBoxes();
 

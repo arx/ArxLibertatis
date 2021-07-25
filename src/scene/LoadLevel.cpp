@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ctime>
 #include <iomanip>
 #include <sstream>
+#include <utility>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -409,7 +410,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 		if(height != 0) {
 			
 			// Zone
-			g_zones.push_back(Zone(name, ppos));
+			g_zones.emplace_back(std::move(name), ppos);
 			Zone & zone = g_zones.back();
 			
 			zone.flags = ZoneFlags::load(dlp->flags); // TODO save/load flags
@@ -435,7 +436,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 		} else {
 			
 			// Path
-			g_paths.push_back(Path(name, ppos));
+			g_paths.emplace_back(std::move(name), ppos);
 			Path & path = g_paths.back();
 			
 			path.pathways.resize(dlp->nb_pathways);
