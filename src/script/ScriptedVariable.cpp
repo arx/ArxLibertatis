@@ -44,6 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptedVariable.h"
 
 #include <cstring>
+#include <string>
+#include <string_view>
 
 #include "game/Entity.h"
 #include "graphics/data/Mesh.h"
@@ -141,7 +143,7 @@ private:
 	
 public:
 	
-	ArithmeticCommand(const std::string & name, Operator _op) : Command(name), op(_op) { }
+	ArithmeticCommand(std::string_view name, Operator _op) : Command(name), op(_op) { }
 	
 	Result execute(Context & context) {
 		
@@ -200,11 +202,11 @@ public:
 class UnsetCommand : public Command {
 	
 	// TODO move to variable context
-	static void UNSETVar(SCRIPT_VARIABLES & svf, const std::string & name) {
+	static void UNSETVar(SCRIPT_VARIABLES & svf, std::string_view name) {
 		
 		SCRIPT_VARIABLES::iterator it;
 		for(it = svf.begin(); it != svf.end(); ++it) {
-			if(name == it->name) {
+			if(it->name == name) {
 				svf.erase(it);
 				break;
 			}
@@ -242,7 +244,7 @@ class IncrementCommand : public Command {
 	
 public:
 	
-	IncrementCommand(const std::string & name, long diff) : Command(name), m_diff(diff) { }
+	IncrementCommand(std::string_view name, long diff) : Command(name), m_diff(diff) { }
 	
 	Result execute(Context & context) {
 		
