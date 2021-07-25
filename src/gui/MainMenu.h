@@ -20,8 +20,6 @@
 #ifndef ARX_GUI_MAINMENU_H
 #define ARX_GUI_MAINMENU_H
 
-#include <string>
-
 #include <boost/noncopyable.hpp>
 
 #include "gui/MenuWidgets.h"

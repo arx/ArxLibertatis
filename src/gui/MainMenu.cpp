@@ -23,6 +23,8 @@
 #include <functional>
 #include <iomanip>
 #include <numeric>
+#include <string>
+#include <string_view>
 #include <vector>
 
 #include <boost/lexical_cast.hpp>
@@ -1577,7 +1579,7 @@ public:
 	
 protected:
 	
-	void addControlRow(ControlAction controlAction, const std::string & text) {
+	void addControlRow(ControlAction controlAction, std::string_view text) {
 		
 		PanelWidget * panel = new PanelWidget;
 		
