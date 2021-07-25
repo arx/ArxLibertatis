@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedLang.h"
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "ai/Paths.h"
 #include "core/GameTime.h"
 #include "game/Entity.h"
@@ -294,7 +296,8 @@ public:
 			
 			// TODO(broken-scripts) work around broken scripts
 			for(size_t i = 0; i < SM_MAXCMD; i++) {
-				if(target == AS_EVENT[i].name.c_str() + 3) {
+				arx_assert(boost::starts_with(AS_EVENT[i].name, "on "));
+				if(target == AS_EVENT[i].name.substr(3)) {
 					std::swap(target, eventname);
 					break;
 				}

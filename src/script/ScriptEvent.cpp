@@ -75,7 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 long ScriptEvent::totalCount = 0;
 
-SCRIPT_EVENT AS_EVENT[] = {
+constexpr const SCRIPT_EVENT AS_EVENT[] = {
 	SCRIPT_EVENT("on null"),
 	SCRIPT_EVENT("on init"),
 	SCRIPT_EVENT("on inventoryin"),
@@ -216,7 +216,7 @@ private:
 	
 public:
 	
-	ObsoleteCommand(const std::string & command, size_t _nargs = 0) : Command(command), nargs(_nargs) { }
+	ObsoleteCommand(std::string_view command, size_t _nargs = 0) : Command(command), nargs(_nargs) { }
 	
 	Result execute(Context & context) {
 		
@@ -402,16 +402,8 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 }
 
 void ScriptEvent::registerCommand(script::Command * command) {
-	
-	typedef std::pair<Commands::iterator, bool> Res;
-	
-	Res res = commands.insert(std::make_pair(command->getName(), command));
-	
-	if(!res.second) {
-		LogError << "Duplicate script command name: " + command->getName();
-		delete command;
-	}
-	
+	[[maybe_unused]] auto res = commands.emplace(command->getName(), command);
+	arx_assert_msg(res.second, "Duplicate script command name: %s", command->getName().c_str());
 }
 
 void ScriptEvent::init() {
@@ -458,7 +450,7 @@ void ScriptEvent::shutdown() {
 	LogInfo << "Scripting system shutdown";
 }
 
-void ScriptEvent::autocomplete(const std::string & prefix, AutocompleteHandler handler, void * context) {
+void ScriptEvent::autocomplete(std::string_view prefix, AutocompleteHandler handler, void * context) {
 	
 	std::string cmd = util::toLowercase(prefix);
 	cmd.resize(std::remove(cmd.begin(), cmd.end(), '_') - cmd.begin());
@@ -471,7 +463,7 @@ void ScriptEvent::autocomplete(const std::string & prefix, AutocompleteHandler h
 	
 	for(const Commands::value_type & v : commands) {
 		if(boost::starts_with(v.first, cmd)) {
-			if(!handler(context, v.first + " ")) {
+			if(!handler(context, std::string(v.first) += " ")) {
 				return;
 			}
 		}
@@ -479,7 +471,7 @@ void ScriptEvent::autocomplete(const std::string & prefix, AutocompleteHandler h
 	
 }
 
-bool ScriptEvent::isCommand(const std::string & command) {
+bool ScriptEvent::isCommand(std::string_view command) {
 	
 	if(boost::starts_with(command, "timer")) {
 		return true;

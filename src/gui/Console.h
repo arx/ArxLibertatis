@@ -132,7 +132,7 @@ class ScriptConsole final : protected BasicTextInput {
 	void applySuggestion(const Suggestion & suggestion);
 	
 	static bool addContextSuggestion(void * self, std::string_view suggestion);
-	static bool addCommandSuggestion(void * self, const std::string & suggestion);
+	static bool addCommandSuggestion(void * self, std::string_view suggestion);
 	
 public:
 	

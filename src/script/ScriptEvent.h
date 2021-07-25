@@ -22,15 +22,16 @@
 
 #include <map>
 #include <string>
+#include <string_view>
 
 #include "script/Script.h"
 
 struct SCRIPT_EVENT {
-	explicit SCRIPT_EVENT(const std::string & str) : name(str) { }
-	std::string name;
+	explicit constexpr SCRIPT_EVENT(std::string_view str) : name(str) { }
+	std::string_view name;
 };
 
-extern SCRIPT_EVENT AS_EVENT[];
+extern const SCRIPT_EVENT AS_EVENT[];
 
 namespace script { class Command; }
 
@@ -56,14 +57,14 @@ public:
 	static void init();
 	static void shutdown();
 	
-	typedef bool (*AutocompleteHandler)(void * context, const std::string & suggestion);
-	static void autocomplete(const std::string & prefix, AutocompleteHandler handler, void * context);
+	typedef bool (*AutocompleteHandler)(void * context, std::string_view suggestion);
+	static void autocomplete(std::string_view prefix, AutocompleteHandler handler, void * context);
 	
-	static bool isCommand(const std::string & command);
+	static bool isCommand(std::string_view command);
 	
 private:
 	
-	typedef std::map<std::string, script::Command *> Commands;
+	typedef std::map<std::string_view, script::Command *> Commands;
 	static Commands commands;
 	
 };
