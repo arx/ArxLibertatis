@@ -120,13 +120,13 @@ OpenGLInfo::OpenGLInfo()
 	
 }
 
-void OpenGLInfo::parseOverrideConfig(const std::string & string) {
+void OpenGLInfo::parseOverrideConfig(std::string_view string) {
 	boost::char_separator<char> separator(" \t\r\n,;:");
 	boost::tokenizer<boost::char_separator<char>> tokens(string, separator);
 	bool first = true;
-	for(const std::string & token : tokens) {
+	for(std::string_view token : tokens) {
 		if(boost::starts_with(token, "+GL_") || boost::starts_with(token, "-GL_")) {
-			m_extensionOverrides.push_back(token);
+			m_extensionOverrides.emplace_back(token);
 			first = false;
 		} else {
 			try {
@@ -136,7 +136,7 @@ void OpenGLInfo::parseOverrideConfig(const std::string & string) {
 					m_versionOverride = std::numeric_limits<s32>::max();
 				} else if(token == "-*" || token == "-") {
 					m_versionOverride = m_version;
-				} else if(dot != std::string::npos) {
+				} else if(dot != std::string_view::npos) {
 					u32 major = boost::lexical_cast<u32>(token.substr(offset, dot - offset));
 					u32 minor = boost::lexical_cast<u32>(token.substr(dot + 1));
 					if(minor > 10 || major > std::numeric_limits<u32>::max() / 10) {
@@ -173,9 +173,9 @@ bool OpenGLInfo::has(const char * extension, u32 version) const {
 		}
 	}
 	
-	for(const std::string & override : boost::adaptors::reverse(m_extensionOverrides)) {
+	for(std::string_view override : boost::adaptors::reverse(m_extensionOverrides)) {
 		arx_assert(!override.empty());
-		if(override.compare(1, override.size() - 1, extension) == 0) {
+		if(override.substr(1) == extension) {
 			if(override[0] == '+') {
 				return true;
 			} else {

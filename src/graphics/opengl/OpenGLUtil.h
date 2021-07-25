@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <limits>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "platform/Platform.h"
@@ -72,7 +73,7 @@ class OpenGLInfo {
 	 *
 	 * Can be called multiple times to merge overrides from multiple sources.
 	 */
-	void parseOverrideConfig(const std::string & string);
+	void parseOverrideConfig(std::string_view string);
 	
 public:
 	
