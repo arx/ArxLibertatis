@@ -66,8 +66,7 @@ aalError Environment::load() {
 	
 	arx_assert(!environment_path.empty());
 	
-	PakFileHandle * file = g_resources->open(environment_path / name);
-	
+	std::unique_ptr<PakFileHandle> file = g_resources->open(environment_path / name);
 	if(!file) {
 		return AAL_ERROR_FILEIO;
 	}
@@ -81,11 +80,8 @@ aalError Environment::load() {
 	   || !file->read(&reverb_delay, 4)
 	   || !file->read(&reverb_decay, 4)
 	   || !file->read(&reverb_hf_decay, 4)) {
-		delete file;
 		return AAL_ERROR_FILEIO;
 	}
-	
-	delete file;
 	
 	return AAL_OK;
 }

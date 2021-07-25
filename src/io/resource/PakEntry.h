@@ -20,9 +20,10 @@
 #ifndef ARX_IO_RESOURCE_PAKENTRY_H
 #define ARX_IO_RESOURCE_PAKENTRY_H
 
+#include <map>
+#include <memory>
 #include <string>
 #include <string_view>
-#include <map>
 
 #include <boost/noncopyable.hpp>
 
@@ -49,9 +50,9 @@ public:
 	
 	PakFile * alternative() const { return _alternative; }
 	
-	virtual std::string read() const = 0;
+	[[nodiscard]] virtual std::string read() const = 0;
 	
-	virtual PakFileHandle * open() const = 0;
+	[[nodiscard]] virtual std::unique_ptr<PakFileHandle> open() const = 0;
 	
 };
 

@@ -55,8 +55,7 @@ namespace audio {
 
 Stream * createStream(const res::path & name) {
 	
-	PakFileHandle * file = g_resources->open(name);
-	
+	std::unique_ptr<PakFileHandle> file = g_resources->open(name);
 	if(!file) {
 		return nullptr;
 	}
@@ -65,7 +64,7 @@ Stream * createStream(const res::path & name) {
 	
 	Stream * stream = new StreamWAV;
 	
-	if(stream->setStream(std::unique_ptr<PakFileHandle>(file))) {
+	if(stream->setStream(std::move(file))) {
 		delete stream;
 		return nullptr;
 	}

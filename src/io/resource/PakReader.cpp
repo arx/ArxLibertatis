@@ -86,7 +86,7 @@ public:
 	
 	std::string read() const;
 	
-	PakFileHandle * open() const;
+	std::unique_ptr<PakFileHandle> open() const;
 	
 	friend class UncompressedFileHandle;
 	
@@ -130,8 +130,8 @@ std::string UncompressedFile::read() const {
 	return buffer;
 }
 
-PakFileHandle * UncompressedFile::open() const {
-	return new UncompressedFileHandle(this);
+std::unique_ptr<PakFileHandle> UncompressedFile::open() const {
+	return std::make_unique<UncompressedFileHandle>(this);
 }
 
 size_t UncompressedFileHandle::read(void * buf, size_t size) {
@@ -194,7 +194,7 @@ public:
 	
 	std::string read() const;
 	
-	PakFileHandle * open() const;
+	std::unique_ptr<PakFileHandle> open() const;
 	
 	friend class CompressedFileHandle;
 	
@@ -266,8 +266,8 @@ std::string CompressedFile::read() const {
 	return blast(buffer, m_uncompressedSize);
 }
 
-PakFileHandle * CompressedFile::open() const {
-	return new CompressedFileHandle(this);
+std::unique_ptr<PakFileHandle> CompressedFile::open() const {
+	return std::make_unique<CompressedFileHandle>(this);
 }
 
 struct BlastMemOutBufferOffset {
@@ -386,7 +386,7 @@ public:
 	
 	std::string read() const;
 	
-	PakFileHandle * open() const;
+	std::unique_ptr<PakFileHandle> open() const;
 	
 };
 
@@ -415,8 +415,8 @@ std::string PlainFile::read() const {
 	return fs::read(m_path);
 }
 
-PakFileHandle * PlainFile::open() const {
-	return new PlainFileHandle(m_path);
+std::unique_ptr<PakFileHandle> PlainFile::open() const {
+	return std::make_unique<PlainFileHandle>(m_path);
 }
 
 size_t PlainFileHandle::read(void * buf, size_t size) {
@@ -607,11 +607,11 @@ std::string PakReader::read(const res::path & name) {
 	return f->read();
 }
 
-PakFileHandle * PakReader::open(const res::path & name) {
+std::unique_ptr<PakFileHandle> PakReader::open(const res::path & name) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
-		return nullptr;
+		return { };
 	}
 	
 	return f->open();

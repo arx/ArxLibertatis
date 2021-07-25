@@ -47,8 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits>
 #include <sstream>
 
-#include <boost/smart_ptr/scoped_ptr.hpp>
-
 #include "audio/AudioBackend.h"
 #include "audio/AudioGlobal.h"
 #include "audio/AudioResource.h"
@@ -618,7 +616,7 @@ aalError Ambiance::load() {
 	
 	arx_assert(!ambiance_path.empty());
 	
-	boost::scoped_ptr<PakFileHandle> file(g_resources->open(ambiance_path / m_name));
+	std::unique_ptr<PakFileHandle> file = g_resources->open(ambiance_path / m_name);
 	if(!file) {
 		return AAL_ERROR_FILEIO;
 	}

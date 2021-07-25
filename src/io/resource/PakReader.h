@@ -20,10 +20,11 @@
 #ifndef ARX_IO_RESOURCE_PAKREADER_H
 #define ARX_IO_RESOURCE_PAKREADER_H
 
-#include <vector>
 #include <istream>
-#include <string>
 #include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include <boost/noncopyable.hpp>
 
@@ -96,9 +97,9 @@ public:
 	bool addArchive(const fs::path & pakfile, const PakFilter * filter = nullptr);
 	void clear();
 	
-	std::string read(const res::path & name);
+	[[nodiscard]] std::string read(const res::path & name);
 	
-	PakFileHandle * open(const res::path & name);
+	[[nodiscard]] std::unique_ptr<PakFileHandle> open(const res::path & name);
 	
 	ReleaseFlags getReleaseType() { return release; }
 	
