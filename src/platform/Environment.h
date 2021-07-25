@@ -21,6 +21,7 @@
 #define ARX_PLATFORM_ENVIRONMENT_H
 
 #include <string>
+#include <string_view>
 #include <vector>
 #include <stddef.h>
 
@@ -48,7 +49,7 @@ void initializeEnvironment(const char * argv0);
  *
  * \param in the string to expand.
  */
-std::string expandEnvironmentVariables(const std::string & in);
+std::string expandEnvironmentVariables(std::string_view in);
 
 enum SystemPathId {
 	NoPath,
@@ -75,7 +76,7 @@ std::vector<fs::path> getSystemPaths(SystemPathId id);
  *
  * \return \c true of the requested registry key exists, \c false otherwise.
  */
-bool getSystemConfiguration(const std::string & name, std::string & result);
+bool getSystemConfiguration(std::string_view name, std::string & result);
 
 /*!
  * \brief Get the path to the current running executable
@@ -101,7 +102,7 @@ std::string getCommandName();
  *
  * \return a path or name suitable for CreateProcess(), exec*p() or system() calls.
  */
-fs::path getHelperExecutable(const std::string & name);
+fs::path getHelperExecutable(std::string_view name);
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 static const char * const env_list_seperators = ":";

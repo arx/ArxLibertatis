@@ -71,7 +71,7 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 
 namespace platform {
 
-std::string expandEnvironmentVariables(const std::string & in) {
+std::string expandEnvironmentVariables(std::string_view in) {
 	
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
@@ -87,7 +87,7 @@ std::string expandEnvironmentVariables(const std::string & in) {
 	}
 	
 	if(length == 0 || length > out.size()) {
-		return in;
+		return std::string(in);
 	}
 	
 	out.resize(length - 1);
@@ -138,7 +138,7 @@ std::string expandEnvironmentVariables(const std::string & in) {
 				continue;
 			}
 			
-			const char * value = std::getenv(in.substr(start, i - start).c_str());
+			const char * value = std::getenv(std::string(in.substr(start, i - start)).c_str());
 			if(!nested) {
 				if(value) {
 					oss << value;
@@ -197,7 +197,7 @@ std::string expandEnvironmentVariables(const std::string & in) {
 }
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
-static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & result,
+static bool getRegistryValue(HKEY hkey, const platform::WideString & wname, std::string & result,
                              REGSAM flags = 0) {
 	
 	HKEY handle = 0;
@@ -206,8 +206,6 @@ static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & 
 	if(ret != ERROR_SUCCESS) {
 		return false;
 	}
-	
-	platform::WideString wname(name);
 	
 	platform::WideString buffer;
 	buffer.allocate(buffer.capacity());
@@ -234,7 +232,7 @@ static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & 
 }
 #endif
 
-bool getSystemConfiguration(const std::string & name, std::string & result) {
+bool getSystemConfiguration(std::string_view name, std::string & result) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
@@ -244,17 +242,19 @@ bool getSystemConfiguration(const std::string & name, std::string & result) {
 	REGSAM foreign_registry = KEY_WOW64_64KEY;
 	#endif
 	
-	if(getRegistryValue(HKEY_CURRENT_USER, name, result)) {
+	platform::WideString wname(name);
+	
+	if(getRegistryValue(HKEY_CURRENT_USER, wname, result)) {
 		return true;
 	}
-	if(getRegistryValue(HKEY_CURRENT_USER, name, result, foreign_registry)) {
+	if(getRegistryValue(HKEY_CURRENT_USER, wname, result, foreign_registry)) {
 		return true;
 	}
 	
-	if(getRegistryValue(HKEY_LOCAL_MACHINE, name, result)) {
+	if(getRegistryValue(HKEY_LOCAL_MACHINE, wname, result)) {
 		return true;
 	}
-	if(getRegistryValue(HKEY_LOCAL_MACHINE, name, result, foreign_registry)) {
+	if(getRegistryValue(HKEY_LOCAL_MACHINE, wname, result, foreign_registry)) {
 		return true;
 	}
 	
@@ -463,7 +463,7 @@ std::string getCommandName() {
 	return std::string(path.filename());
 }
 
-fs::path getHelperExecutable(const std::string & name) {
+fs::path getHelperExecutable(std::string_view name) {
 	
 	fs::path exe = getExecutablePath();
 	if(!exe.empty()) {
