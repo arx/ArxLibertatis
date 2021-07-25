@@ -28,7 +28,7 @@ namespace res {
 
 namespace {
 
-inline bool is_path_up(const std::string & str, size_t pos) {
+inline bool is_path_up(std::string_view str, size_t pos) {
 	return (str.length() == pos + 2 && str[pos] == '.' && str[pos + 1] == '.')
 	       || (str.length() >= pos + 3 && str[pos] == '.' && str[pos + 1] == '.'
 	           && str[pos + 2] == path::dir_sep);
