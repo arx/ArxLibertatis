@@ -31,7 +31,7 @@
 #include "scene/GameSound.h"
 #include "window/RenderWindow.h"
 
-TextInputWidget::TextInputWidget(Font * font, const std::string & text, const Rectf & rect)
+TextInputWidget::TextInputWidget(Font * font, std::string_view text, const Rectf & rect)
 	: m_font(font)
 	, m_editing(false)
 	, m_maxLength(std::numeric_limits<size_t>::max())

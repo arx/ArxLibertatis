@@ -22,6 +22,7 @@
 
 #include <functional>
 #include <limits>
+#include <string_view>
 
 #include "graphics/Color.h"
 #include "gui/widget/Widget.h"
@@ -43,7 +44,7 @@ public:
 	
 	std::function<void(TextInputWidget * /* widget */)> unfocused;
 	
-	TextInputWidget(Font * font, const std::string & text, const Rectf & rect);
+	TextInputWidget(Font * font, std::string_view text, const Rectf & rect);
 	
 	bool click();
 	
