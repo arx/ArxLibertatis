@@ -21,7 +21,7 @@
 #define ARX_GUI_WIDGET_SLIDERWIDGET_H
 
 #include <functional>
-#include <string>
+#include <string_view>
 
 #include "gui/widget/Widget.h"
 #include "platform/Platform.h"
@@ -36,7 +36,7 @@ class SliderWidget final : public Widget {
 	
 public:
 	
-	explicit SliderWidget(const Vec2f & size, Font * font, const std::string & label);
+	explicit SliderWidget(const Vec2f & size, Font * font, std::string_view label);
 	virtual ~SliderWidget();
 	
 	void setMinimum(int minimum);
