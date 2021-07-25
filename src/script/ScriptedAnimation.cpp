@@ -44,6 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptedAnimation.h"
 
 #include <cstring>
+#include <string>
+#include <string_view>
 
 #include "ai/Paths.h"
 #include "core/GameTime.h"
@@ -59,12 +61,12 @@ namespace script {
 
 namespace {
 
-typedef std::map<std::string, AnimationNumber> Animations;
+typedef std::map<std::string_view, AnimationNumber> Animations;
 Animations animations;
 
-AnimationNumber getAnimationNumber(const std::string & name) {
+AnimationNumber getAnimationNumber(std::string_view name) {
 	
-	Animations::const_iterator it = animations.find(name);
+	auto it = animations.find(name);
 	
 	return (it == animations.end()) ? ANIM_NONE : it->second;
 }
