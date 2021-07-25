@@ -24,14 +24,14 @@
 #include "graphics/font/Font.h"
 #include "gui/Text.h"
 
-TextWidget::TextWidget(Font * font, const std::string & text)
+TextWidget::TextWidget(Font * font, std::string_view text)
 	: m_font(font)
 	, m_display(Automatic)
 {
 	setText(text);
 }
 
-void TextWidget::setText(const std::string & text) {
+void TextWidget::setText(std::string_view text) {
 	m_text = text;
 	Vec2i textSize = m_font->getTextSize(m_text);
 	m_rect = Rectf(m_rect.topLeft(), float(textSize.x + 1), float(textSize.y + 1));

@@ -21,6 +21,7 @@
 #define ARX_GUI_WIDGET_TEXTWIDGET_H
 
 #include <string>
+#include <string_view>
 
 #include "gui/widget/Widget.h"
 #include "math/Vector.h"
@@ -48,11 +49,11 @@ private:
 	
 public:
 	
-	TextWidget(Font * font, const std::string & text);
+	TextWidget(Font * font, std::string_view text);
 	
 	void render(bool mouseOver = false);
 	
-	void setText(const std::string & text);
+	void setText(std::string_view text);
 	const std::string & text() const { return m_text; }
 	
 	Font * font() const { return m_font; }
