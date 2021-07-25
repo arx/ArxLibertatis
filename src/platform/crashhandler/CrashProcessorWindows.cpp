@@ -251,7 +251,7 @@ void CrashHandlerWindows::processCrashTrace() {
 	
 	boost::crc_32_type checksum;
 	
-	std::string mainimage = platform::getExecutablePath().filename();
+	std::string mainimage(platform::getExecutablePath().filename());
 	
 	for(int i = 0; i < CrashInfo::MaxCallstackDepth; ++i) {
 		
@@ -278,7 +278,7 @@ void CrashHandlerWindows::processCrashTrace() {
 		
 		std::ostringstream frame;
 		if(hasModule == TRUE) {
-			std::string image = fs::path(module.ImageName).filename();
+			std::string image(fs::path(module.ImageName).filename());
 			if(boost::iequals(image.c_str(), mainimage.c_str())) {
 				hasSymbol = FALSE;
 			}
