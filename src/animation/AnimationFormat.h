@@ -54,8 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #pragma pack(push, 1)
 
 
-const u32 CURRENT_THEA_VERSION = 2015;
-
 const size_t SIZE_NAME = 256;
 
 typedef s32 TBOOL;
