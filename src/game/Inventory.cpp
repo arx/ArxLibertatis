@@ -996,7 +996,7 @@ bool IsInPlayerInventory(Entity * io) {
 	       || (io && g_draggedEntity == io && (io->ioflags & IO_ITEM) && io->_itemdata->count > 1);
 }
 
-Entity * getInventoryItemWithLowestDurability(const std::string & className, float minDurability) {
+Entity * getInventoryItemWithLowestDurability(std::string_view className, float minDurability) {
 	
 	Entity * io = nullptr;
 	
@@ -1014,7 +1014,7 @@ Entity * getInventoryItemWithLowestDurability(const std::string & className, flo
 	return io;
 }
 
-void useInventoryItemWithLowestDurability(const std::string & className, float minDurability) {
+void useInventoryItemWithLowestDurability(std::string_view className, float minDurability) {
 	
 	Entity * item = getInventoryItemWithLowestDurability(className, minDurability);
 	if(item && (item->gameFlags & GFLAG_INTERACTIVITY)) {

@@ -45,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GAME_INVENTORY_H
 
 #include <stddef.h>
-#include <string>
+#include <string_view>
 #include <ostream>
 #include <utility>
 
@@ -232,8 +232,8 @@ Vec3f GetItemWorldPositionSound(const Entity * io);
 
 void CleanInventory();
 bool IsInPlayerInventory(Entity * io);
-Entity * getInventoryItemWithLowestDurability(const std::string & className, float minDurability = 0.f);
-void useInventoryItemWithLowestDurability(const std::string & className, float minDurability = 0.f);
+Entity * getInventoryItemWithLowestDurability(std::string_view className, float minDurability = 0.f);
+void useInventoryItemWithLowestDurability(std::string_view className, float minDurability = 0.f);
 
 void ARX_INVENTORY_IdentifyAll();
 void ARX_INVENTORY_IdentifyIO(Entity * _pIO);
