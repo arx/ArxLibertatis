@@ -30,7 +30,7 @@
 #include "gui/widget/TextWidget.h"
 #include "input/Input.h"
 
-CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, const std::string & label, Font * entryFont)
+CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, std::string_view label, Font * entryFont)
 	: m_label(label.empty() ? nullptr : new TextWidget(font, label))
 	, m_left(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_left"))
 	, m_right(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_right"))
@@ -75,7 +75,7 @@ void CycleTextWidget::selectLast() {
 	m_value = int(m_entries.size() - 1);
 }
 
-void CycleTextWidget::addEntry(const std::string & label) {
+void CycleTextWidget::addEntry(std::string_view label) {
 	
 	TextWidget * widget = new TextWidget(m_font, label);
 	

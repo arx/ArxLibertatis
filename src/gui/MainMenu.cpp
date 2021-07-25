@@ -546,7 +546,7 @@ public:
 		{
 			m_textLanguages.clear();
 			m_textLanguageSlider = new CycleTextWidget(sliderSize(), hFontMainMenu, "");
-			m_textLanguageSlider->valueChanged = [this](int pos, const std::string & /* string */) {
+			m_textLanguageSlider->valueChanged = [this](int pos, std::string_view /* string */) {
 				if(size_t(pos) >= m_textLanguages.size() || config.interface.language == m_textLanguages[size_t(pos)]) {
 					return;
 				}
@@ -585,7 +585,7 @@ public:
 		{
 			m_audioLanguages.clear();
 			m_audioLanguageSlider = new CycleTextWidget(sliderSize(), hFontMainMenu, "");
-			m_audioLanguageSlider->valueChanged = [this](int pos, const std::string & /* string */) {
+			m_audioLanguageSlider->valueChanged = [this](int pos, std::string_view /* string */) {
 				if(size_t(pos) >= m_audioLanguages.size() || config.audio.language == m_audioLanguages[size_t(pos)]) {
 					return;
 				}
@@ -662,7 +662,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_resolution");
 			m_resolutionSlider = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
-			m_resolutionSlider->valueChanged = [this](int pos, const std::string & /* string */) {
+			m_resolutionSlider->valueChanged = [this](int pos, std::string_view /* string */) {
 				const RenderWindow::DisplayModes & modes = mainApp->getWindow()->getDisplayModes();
 				if(size_t(pos) < modes.size()) {
 					m_mode = modes[size_t(pos)];
@@ -735,7 +735,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_vsync");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = [](int pos, const std::string & /* string */) {
+			cb->valueChanged = [](int pos, std::string_view /* string */) {
 				config.video.vsync = pos > 1 ? -1 : pos;
 				mainApp->getWindow()->setVSync(config.video.vsync);
 			};
@@ -754,7 +754,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_fps_limit");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = [](int pos, const std::string & string) {
+			cb->valueChanged = [](int pos, std::string_view string) {
 				if(pos == 0) {
 					config.video.fpsLimit = 0;
 				} else {
@@ -934,7 +934,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_renderer");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			slider->valueChanged = [](int pos, const std::string & /* string */) {
+			slider->valueChanged = [](int pos, std::string_view /* string */) {
 				switch(pos) {
 					case 0:  config.video.renderer = "auto"; break;
 					case 1:  config.video.renderer = "OpenGL";  break;
@@ -955,7 +955,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_detail");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = [](int pos, const std::string & /* string */) {
+			cb->valueChanged = [](int pos, std::string_view /* string */) {
 				ARXMenu_Options_Video_SetDetailsQuality(pos);
 			};
 			cb->addEntry(getLocalised("system_menus_options_video_texture_low"));
@@ -1000,7 +1000,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_alpha_cutout_antialising");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = [](int pos, const std::string & /* string */) noexcept {
+			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.video.alphaCutoutAntialiasing = pos;
 			};
 			cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_off"));
@@ -1019,12 +1019,15 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_video_texture_filter_anisotropic");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = [](int pos, const std::string & string) {
+			cb->valueChanged = [](int pos, std::string_view string) {
 				int anisotropy = 1;
 				if(pos > 0) {
 					if(!string.empty() && string[0] == 'x') {
-						std::stringstream ss(string.substr(1));
-						ss >> anisotropy;
+						try {
+							anisotropy = boost::lexical_cast<int>(string.substr(1));
+						} catch(...) {
+							anisotropy = 1;
+						}
 					} else {
 						anisotropy = 9001;
 					}
@@ -1136,7 +1139,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_interface_cinematic_widescreen_mode");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
-			cb->valueChanged = [](int pos, const std::string & /* string */) noexcept {
+			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.interface.cinematicWidescreenMode = CinematicWidescreenMode(pos);
 			};
 			cb->addEntry(getLocalised("system_menus_options_interface_letterbox"));
@@ -1213,7 +1216,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_interface_scale_filter");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = [](int pos, const std::string & /* string */) noexcept {
+			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.interface.scaleFilter = UIScaleFilter(pos);
 			};
 			cb->addEntry(getLocalised("system_menus_options_video_filter_nearest"));
@@ -1236,7 +1239,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_interface_font_weight");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = [](int pos, const std::string & /* string */) {
+			cb->valueChanged = [](int pos, std::string_view /* string */) {
 				config.interface.fontWeight = pos;
 				ARX_Text_Init();
 			};
@@ -1275,12 +1278,12 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_audio_device");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
-			slider->valueChanged = [](int pos, const std::string & string) {
+			slider->valueChanged = [](int pos, std::string_view string) {
 				ARXMenu_Options_Audio_SetDevice((pos == 0) ? "auto" : std::string_view(string));
 			};
 			slider->addEntry("Default");
 			slider->selectLast();
-			for(const std::string & device : audio::getDevices()) {
+			for(std::string_view device : audio::getDevices()) {
 				slider->addEntry(device);
 				if(config.audio.device == device) {
 					slider->selectLast();
@@ -1365,7 +1368,7 @@ public:
 		if(hrtf != audio::HRTFUnavailable) {
 			std::string label = getLocalised("system_menus_options_audio_hrtf");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			slider->valueChanged = [](int pos, const std::string & /* string */) {
+			slider->valueChanged = [](int pos, std::string_view /* string */) {
 				switch(pos) {
 					case 0: config.audio.hrtf = audio::HRTFDisable; break;
 					case 1: config.audio.hrtf = audio::HRTFDefault; break;
@@ -1434,7 +1437,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_options_auto_ready_weapon");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = [](int pos, const std::string & /* string */) noexcept {
+			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.input.autoReadyWeapon = AutoReadyWeapon(pos);
 			};
 			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_off"));
@@ -1541,7 +1544,7 @@ public:
 		{
 			std::string label = getLocalised("system_menus_quick_level_transition");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
-			cb->valueChanged = [](int pos, const std::string & /* string */) noexcept {
+			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.input.quickLevelTransition = QuickLevelTransition(pos);
 			};
 			cb->addEntry(getLocalised("system_menus_quick_level_transition_off"));

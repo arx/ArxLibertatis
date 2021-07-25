@@ -21,7 +21,7 @@
 #define ARX_GUI_WIDGET_CYCLETEXTWIDGET_H
 
 #include <functional>
-#include <string>
+#include <string_view>
 #include <vector>
 
 #include "gui/widget/Widget.h"
@@ -35,7 +35,7 @@ class CycleTextWidget final : public Widget {
 	
 public:
 	
-	explicit CycleTextWidget(const Vec2f & size, Font * font, const std::string & label = std::string(),
+	explicit CycleTextWidget(const Vec2f & size, Font * font, std::string_view label = std::string_view(),
 	                         Font * entryFont = nullptr);
 	virtual ~CycleTextWidget();
 	
@@ -44,7 +44,7 @@ public:
 	
 	void selectLast();
 	
-	void addEntry(const std::string & label);
+	void addEntry(std::string_view label);
 	
 	void move(const Vec2f & offset);
 	bool click();
@@ -52,7 +52,7 @@ public:
 	void hover();
 	virtual void setEnabled(bool enable);
 	
-	std::function<void(int, const std::string &)> valueChanged;
+	std::function<void(int, std::string_view)> valueChanged;
 	
 	virtual WidgetType type() const {
 		return WidgetType_CycleText;
