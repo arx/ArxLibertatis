@@ -44,6 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptedIOProperties.h"
 
 #include <cstring>
+#include <string>
+#include <string_view>
 
 #include "game/Entity.h"
 #include "graphics/Math.h"
@@ -99,7 +101,7 @@ class GameFlagCommand : public Command {
 	
 public:
 	
-	GameFlagCommand(const std::string & name, GameFlag _flag, bool _inv = false)
+	GameFlagCommand(std::string_view name, GameFlag _flag, bool _inv = false)
 		: Command(name, AnyEntity), flag(_flag), inv(_inv) { }
 	
 	Result execute(Context & context) {
@@ -128,7 +130,7 @@ class IOFlagCommand : public Command {
 	
 public:
 	
-	IOFlagCommand(const std::string & name, EntityFlag _flag, bool _inv = false)
+	IOFlagCommand(std::string_view name, EntityFlag _flag, bool _inv = false)
 		: Command(name, AnyEntity), flag(_flag), inv(_inv) { }
 	
 	Result execute(Context & context) {
@@ -198,7 +200,7 @@ public:
 
 class SetMaterialCommand : public Command {
 	
-	typedef std::map<std::string, Material> Materials;
+	typedef std::map<std::string_view, Material> Materials;
 	Materials materials;
 	
 public:
@@ -228,12 +230,11 @@ public:
 		
 		DebugScript(' ' << name);
 		
-		Materials::const_iterator it = materials.find(name);
-		if(it == materials.end()) {
+		if(auto it = materials.find(name); it != materials.end()) {
+			context.getEntity()->material = it->second;
+		} else {
 			ScriptWarning << "unknown material: " << name;
 			context.getEntity()->material = MATERIAL_NONE;
-		} else {
-			context.getEntity()->material = it->second;
 		}
 		
 		return Success;
@@ -342,7 +343,9 @@ class SetCollisionCommand : public Command {
 	
 public:
 	
-	SetCollisionCommand(const std::string & command, IOCollisionFlags::Enum _flag) : Command(command, AnyEntity), flag(_flag) { }
+	SetCollisionCommand(std::string_view command, IOCollisionFlags::Enum _flag)
+		: Command(command, AnyEntity), flag(_flag)
+	{ }
 	
 	Result execute(Context & context) {
 		
