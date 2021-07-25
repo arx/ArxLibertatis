@@ -43,10 +43,6 @@ public:
 	void init();
 	void initWindowPages();
 	
-	void onClickedResumeGame(Widget * widget);
-	void onClickedNewQuest(Widget * widget);
-	void onClickedCredits(Widget * widget);
-	
 	void update();
 	void render();
 	

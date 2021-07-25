@@ -2057,7 +2057,13 @@ void MainMenu::init()
 	
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_resumegame"));
-	txt->clicked = boost::bind(&MainMenu::onClickedResumeGame, this, arg::_1);
+	txt->clicked = [](Widget * /* widget */) {
+		if(g_canResumeGame) {
+			ARXMenu_ResumeGame();
+		} else {
+			ARX_QuickLoad();
+		}
+	};
 	txt->setPosition(pos);
 	m_widgets->add(txt);
 	m_resumeGame = txt;
@@ -2065,7 +2071,16 @@ void MainMenu::init()
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_newquest"));
-	txt->clicked = boost::bind(&MainMenu::onClickedNewQuest, this, arg::_1);
+	txt->clicked = [this](Widget * /* widget */) {
+		if(g_canResumeGame) {
+			requestPage(Page_NewQuestConfirm);
+			if(m_window) {
+				m_window->setScroll(0.f);
+			}
+		} else {
+			ARXMenu_NewQuest();
+		}
+	};
 	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
@@ -2086,7 +2101,9 @@ void MainMenu::init()
 	pos.y += yOffset;
 	{
 	TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_credits"));
-	txt->clicked = boost::bind(&MainMenu::onClickedCredits, this, arg::_1);
+	txt->clicked = [](Widget * /* widget */) {
+		MenuFader_start(Fade_In, Mode_Credits);
+	};
 	txt->setPosition(pos);
 	m_widgets->add(txt);
 	}
@@ -2126,29 +2143,6 @@ void MainMenu::init()
 	txt->setPosition(Vec2f(g_size.bottomRight() - txt->font()->getTextSize(txt->text()).size()) - Vec2f(minSizeRatio() * 25.f, 0.f));
 	m_widgets->add(txt);
 	}
-}
-
-void MainMenu::onClickedResumeGame(Widget * /* widget */) {
-	if(g_canResumeGame) {
-		ARXMenu_ResumeGame();
-	} else {
-		ARX_QuickLoad();
-	}
-}
-
-void MainMenu::onClickedNewQuest(Widget * /* widget */) {
-	if(g_canResumeGame) {
-		requestPage(Page_NewQuestConfirm);
-		if(m_window) {
-			m_window->setScroll(0.f);
-		}
-	} else {
-		ARXMenu_NewQuest();
-	}
-}
-
-void MainMenu::onClickedCredits(Widget * /* widget */) {
-	MenuFader_start(Fade_In, Mode_Credits);
 }
 
 void MainMenu::update() {
