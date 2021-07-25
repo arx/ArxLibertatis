@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <cstdlib>
 #include <iomanip>
+#include <string>
+#include <string_view>
 #include <utility>
 
 #include <boost/algorithm/string/predicate.hpp>
@@ -65,7 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
-static res::path fixTexturePath(const std::string & path) {
+static res::path fixTexturePath(std::string_view path) {
 	
 	std::string copy = util::toLowercase(path);
 	
@@ -78,7 +80,7 @@ static res::path fixTexturePath(const std::string & path) {
 	return res::path::load(copy);
 }
 
-static std::pair<res::path, bool> fixSoundPath(const std::string & str) {
+static std::pair<res::path, bool> fixSoundPath(std::string_view str) {
 	
 	std::string path = util::toLowercase(str);
 	
