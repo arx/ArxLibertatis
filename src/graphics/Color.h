@@ -51,10 +51,10 @@ typedef IntegerColorType<struct ColorRGB_TAG,  u32> ColorRGB;
 typedef IntegerColorType<struct ColorRGBA_TAG, u32> ColorRGBA;
 typedef IntegerColorType<struct ColorBGRA_TAG, u32> ColorBGRA;
 
-static_assert(sizeof(ColorBGR) == sizeof(u32), "");
-static_assert(sizeof(ColorRGB) == sizeof(u32), "");
-static_assert(sizeof(ColorRGBA) == sizeof(u32), "");
-static_assert(sizeof(ColorBGRA) == sizeof(u32), "");
+static_assert(sizeof(ColorBGR) == sizeof(u32));
+static_assert(sizeof(ColorRGB) == sizeof(u32));
+static_assert(sizeof(ColorRGBA) == sizeof(u32));
+static_assert(sizeof(ColorBGRA) == sizeof(u32));
 
 const ColorRGBA ColorRGBA_ZERO = ColorRGBA(0);
 
