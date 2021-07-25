@@ -20,6 +20,7 @@
 #ifndef ARX_TOOLS_CRASHREPORTER_TBG_TBG_H
 #define ARX_TOOLS_CRASHREPORTER_TBG_TBG_H
 
+#include <memory>
 #include <string>
 
 #include <QFuture>
@@ -70,9 +71,9 @@ public:
 	
 private:
 	
-	http::Response * wait(const QFuture<http::Response *> & future);
-	http::Response * get(const http::Request & request);
-	http::Response * post(const http::POSTRequest & request);
+	std::unique_ptr<http::Response> wait(const QFuture<http::Response *> & future);
+	std::unique_ptr<http::Response> get(const http::Request & request);
+	std::unique_ptr<http::Response> post(const http::POSTRequest & request);
 	
 	bool setFieldValue(const QString & fieldName, int issue_id, int value_id);
 	bool getIssueIdFromUrl(const std::string & url, int & issue_id);

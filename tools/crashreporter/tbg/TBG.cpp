@@ -35,8 +35,6 @@
 typedef QUrl QUrlQuery;
 #endif
 
-#include <boost/scoped_ptr.hpp>
-
 #include "crashreporter/tbg/HTTPClient.h"
 
 namespace TBG {
@@ -76,7 +74,7 @@ static std::string qUrlQueryToPostData(const QUrlQuery & query) {
 #endif
 }
 
-http::Response * Server::wait(const QFuture<http::Response *> & future) {
+std::unique_ptr<http::Response> Server::wait(const QFuture<http::Response *> & future) {
 	
 	QEventLoop loop;
 	
@@ -96,7 +94,7 @@ http::Response * Server::wait(const QFuture<http::Response *> & future) {
 		loop.exec();
 	}
 	
-	http::Response * response = future.result();
+	std::unique_ptr<http::Response> response(future.result());
 	
 	if(response->ok()) {
 		m_lastErrorString.clear();
@@ -111,11 +109,11 @@ http::Response * Server::wait(const QFuture<http::Response *> & future) {
 	return response;
 }
 
-http::Response * Server::get(const http::Request & request) {
+std::unique_ptr<http::Response> Server::get(const http::Request & request) {
 	return wait(QtConcurrent::run(m_session, &http::Session::get, request));
 }
 
-http::Response * Server::post(const http::POSTRequest & request) {
+std::unique_ptr<http::Response> Server::post(const http::POSTRequest & request) {
 	return wait(QtConcurrent::run(m_session, &http::Session::post, request));
 }
 
@@ -130,7 +128,7 @@ bool Server::login(const QString & username, const QString & password) {
 	request.setData(qUrlQueryToPostData(params));
 	request.setFollowRedirects(false);
 	
-	boost::scoped_ptr<http::Response> response(post(request));
+	std::unique_ptr<http::Response> response = post(request);
 	
 	return response->ok();
 }
@@ -158,7 +156,7 @@ QString Server::createCrashReport(const QString & title, const QString & descrip
 	request.setData(qUrlQueryToPostData(params));
 	request.setFollowRedirects(false);
 	
-	boost::scoped_ptr<http::Response> response(post(request));
+	std::unique_ptr<http::Response> response = post(request);
 	
 	if(response->ok() && getIssueIdFromUrl(response->url(), issue_id)) {
 		return toQString(response->url());
@@ -181,7 +179,7 @@ bool Server::addComment(int issue_id, const QString & comment) {
 	request.setData(qUrlQueryToPostData(params));
 	request.setFollowRedirects(false);
 	
-	boost::scoped_ptr<http::Response> response(post(request));
+	std::unique_ptr<http::Response> response(post(request));
 	
 	return response->ok();
 }
@@ -203,7 +201,7 @@ bool Server::setFieldValue(const QString & fieldName, int issue_id, int value_id
 	http::POSTRequest request(toUTF8(m_serverPrefix + url));
 	request.setFollowRedirects(false);
 	
-	boost::scoped_ptr<http::Response> response(post(request));
+	std::unique_ptr<http::Response> response = post(request);
 	
 	return response->ok();
 }
@@ -248,7 +246,7 @@ bool Server::attachFile(int issue_id, const QString & filePath,
 	request.setContentType(toStdString(contentType));
 	request.setFollowRedirects(false);
 	
-	boost::scoped_ptr<http::Response> response(post(request));
+	std::unique_ptr<http::Response> response = post(request);
 	
 	return response->ok();
 }
@@ -266,7 +264,7 @@ QString Server::findIssue(const QString & text, int & issue_id) {
 	
 	http::Request request(toUTF8(m_serverPrefix + url));
 	
-	boost::scoped_ptr<http::Response> response(get(request));
+	std::unique_ptr<http::Response> response = get(request);
 	
 	if(!response->ok()) {
 		return QString();
@@ -315,7 +313,7 @@ bool Server::getIssueIdFromUrl(const std::string & url, int & issue_id) {
 	
 	http::Request request(url + "?format=json");
 	
-	boost::scoped_ptr<http::Response> response(get(request));
+	std::unique_ptr<http::Response> response = get(request);
 	
 	if(!response->ok()) {
 		return false;
