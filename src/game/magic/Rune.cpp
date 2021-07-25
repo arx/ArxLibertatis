@@ -25,7 +25,7 @@
 #include "game/Entity.h"
 #include "math/Types.h"
 
-boost::array<RuneInfo, RUNE_COUNT> runeInfos;
+std::array<RuneInfo, RUNE_COUNT> runeInfos;
 
 void RuneInfosFill() {
 	runeInfos[RUNE_AAM] =         RuneInfo(RUNE_AAM,         "aam",         Vec2s(0, 2), "6666");

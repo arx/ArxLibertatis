@@ -20,10 +20,9 @@
 #ifndef ARX_GAME_MAGIC_RUNE_H
 #define ARX_GAME_MAGIC_RUNE_H
 
+#include <array>
 #include <string>
 #include <vector>
-
-#include <boost/array.hpp>
 
 #include "math/Types.h"
 
@@ -75,7 +74,7 @@ struct RuneInfo {
 	std::string sequence;
 };
 
-extern boost::array<RuneInfo, RUNE_COUNT> runeInfos;
+extern std::array<RuneInfo, RUNE_COUNT> runeInfos;
 
 void RuneInfosFill();
 

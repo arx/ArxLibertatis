@@ -42,9 +42,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 
-#include "scene/Light.h"
+#include <array>
 
-#include <boost/array.hpp>
+#include "scene/Light.h"
 
 #include "core/Application.h"
 #include "core/GameTime.h"
@@ -405,8 +405,8 @@ void ClearDynLights() {
 static size_t MAX_LLIGHTS = llightsSize;
 
 // Inserts Light in the List of Nearest Lights
-static void Insertllight(boost::array<EERIE_LIGHT *, llightsSize> & llights,
-                         boost::array<float, llightsSize> & values,
+static void Insertllight(std::array<EERIE_LIGHT *, llightsSize> & llights,
+                         std::array<float, llightsSize> & values,
                          EERIE_LIGHT * el,
                          const Vec3f & pos,
                          bool forPlayerColor
@@ -462,9 +462,9 @@ void UpdateLlights(ShaderLight lights[], size_t & lightsCount, const Vec3f pos, 
 	
 	ARX_PROFILE_FUNC();
 	
-	boost::array<EERIE_LIGHT *, llightsSize> llights;
+	std::array<EERIE_LIGHT *, llightsSize> llights;
 	llights.fill(nullptr);
-	boost::array<float, llightsSize> values;
+	std::array<float, llightsSize> values;
 	values.fill(999999999.f);
 	
 	for(size_t i = 0; i < g_culledStaticLightsCount; i++) {

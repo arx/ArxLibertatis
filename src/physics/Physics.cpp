@@ -291,7 +291,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 static const float VELOCITY_THRESHOLD = 400.f;
 
 template <size_t N>
-static void ComputeForces(boost::array<PhysicsParticle, N> & particles) {
+static void ComputeForces(std::array<PhysicsParticle, N> & particles) {
 	
 	const Vec3f PHYSICS_Gravity(0.f, 65.f, 0.f);
 	const float PHYSICS_Damping = 0.5f;
@@ -326,13 +326,13 @@ static void ComputeForces(boost::array<PhysicsParticle, N> & particles) {
 //! Calculate new Positions and Velocities given a deltatime
 //! \param DeltaTime that has passed since last iteration
 template <size_t N>
-static void RK4Integrate(boost::array<PhysicsParticle, N> & particles, float DeltaTime) {
+static void RK4Integrate(std::array<PhysicsParticle, N> & particles, float DeltaTime) {
 	
 	float halfDeltaT, sixthDeltaT;
 	halfDeltaT = DeltaTime * .5f; // some time values i will need
 	sixthDeltaT = (1.0f / 6);
 	
-	boost::array<boost::array<PhysicsParticle, N>, 5> m_TempSys;
+	std::array<std::array<PhysicsParticle, N>, 5> m_TempSys;
 	
 	for(size_t jj = 0; jj < 4; jj++) {
 

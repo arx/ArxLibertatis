@@ -21,6 +21,7 @@
 
 #if BUILD_PROFILER_INSTRUMENT
 
+#include <array>
 #include <atomic>
 #include <cstring>
 #include <map>
@@ -28,7 +29,6 @@
 #include <string.h>
 #include <vector>
 
-#include <boost/array.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/container/flat_map.hpp>
 
@@ -79,7 +79,7 @@ private:
 	
 	ThreadInfos        m_threads;
 	
-	boost::array<ProfilerSample, NB_SAMPLES> m_samples;
+	std::array<ProfilerSample, NB_SAMPLES> m_samples;
 	std::atomic<u32> m_writeIndex;
 	volatile bool    m_canWrite;
 	

@@ -47,11 +47,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_PLAYER_H
 #define ARX_GAME_PLAYER_H
 
+#include <array>
 #include <stddef.h>
 #include <string>
 #include <vector>
-
-#include <boost/array.hpp>
 
 #include "game/Entity.h"
 #include "game/Spells.h"
@@ -324,7 +323,7 @@ struct ARXCHARACTER {
 	}
 	
 	
-	boost::array<TextureContainer *, 5> heads;
+	std::array<TextureContainer *, 5> heads;
 	float poison;
 	float hunger;
 	PlayerFlags playerflags;

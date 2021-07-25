@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PHYSICS_PHYSICS_H
 #define ARX_PHYSICS_PHYSICS_H
 
+#include <array>
+
 #include "game/GameTypes.h"
 #include "graphics/GraphicsTypes.h"
 
@@ -73,7 +75,7 @@ struct PhysicsParticle {
 
 struct PHYSICS_BOX_DATA {
 	
-	boost::array<PhysicsParticle, 15> vert;
+	std::array<PhysicsParticle, 15> vert;
 	short active;
 	short stopcount;
 	float radius; //!< Radius around vert[0].pos for spherical collision

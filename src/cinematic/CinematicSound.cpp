@@ -43,9 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "cinematic/CinematicSound.h"
 
+#include <array>
 #include <iomanip>
-
-#include <boost/array.hpp>
 
 #include "audio/AudioTypes.h"
 #include "graphics/Math.h"
@@ -71,7 +70,7 @@ struct CinematicSound {
 	
 };
 
-boost::array<CinematicSound, 256> TabSound;
+std::array<CinematicSound, 256> TabSound;
 
 } // anonymous namespace
 
