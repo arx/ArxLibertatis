@@ -20,6 +20,8 @@
 #include "graphics/DrawDebug.h"
 
 #include <sstream>
+#include <string>
+#include <string_view>
 
 #include "ai/Anchors.h"
 #include "ai/Paths.h"
@@ -589,10 +591,9 @@ static void drawDebugEntities(bool drawSkeletons) {
 	
 }
 
-static void drawDebugMaterialTexture(Vec2f & textpos, const std::string & type,
-                                     const Texture & t, Color color) {
+static void drawDebugMaterialTexture(Vec2f & textpos, std::string_view type, const Texture & t, Color color) {
 	
-	const std::string & name = t.getFileName().string();
+	std::string_view name = t.getFileName().string();
 	
 	std::ostringstream oss;
 	oss << "(" << t.getFormat() << ", " << t.getSize().x << "×" << t.getSize().y;
