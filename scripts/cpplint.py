@@ -2253,7 +2253,7 @@ def CheckBraces(filename, clean_lines, linenum, error):
       break
   if (Search(r'{.*}\s*;', line) and
       line.count('{') == line.count('}') and
-      not Search(r'struct|class|enum|\s*=\s*{', line)):
+      not Search(r'struct|class|enum|\s*=\s*{|return|\[.*\]\(.*\).*{', line)):
     error(filename, linenum, 'readability/braces', 4,
           "You don't need a ; after a }")
 
