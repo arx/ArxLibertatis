@@ -48,15 +48,15 @@ static std::string toStdString(const QByteArray & string) {
 	return std::string(string.data(), string.length());
 }
 
-static QString toQString(const std::string & string) {
+static QString toQString(std::string_view string) {
 	return QString::fromUtf8(string.data(), string.length());
 }
 
-static QByteArray toQByteArray(const std::string & string) {
+static QByteArray toQByteArray(std::string_view string) {
 	return QByteArray(string.data(), string.length());
 }
 
-Server::Server(const QString & serverAddress, const std::string & userAgent)
+Server::Server(const QString & serverAddress, std::string_view userAgent)
 	: m_serverAddress(serverAddress)
 	, m_serverPrefix(serverAddress + "/arxcrashreporter/v1")
 	, m_session(http::createSession(userAgent))
@@ -302,7 +302,7 @@ QString Server::findIssue(const QString & text, int & issue_id) {
 	return QString();
 }
 
-bool Server::getIssueIdFromUrl(const std::string & url, int & issue_id) {
+bool Server::getIssueIdFromUrl(std::string_view url, int & issue_id) {
 	
 	issue_id = -1; // Not found
 	
@@ -311,7 +311,7 @@ bool Server::getIssueIdFromUrl(const std::string & url, int & issue_id) {
 		return false;
 	}
 	
-	http::Request request(url + "?format=json");
+	http::Request request(std::string(url) += "?format=json");
 	
 	std::unique_ptr<http::Response> response = get(request);
 	

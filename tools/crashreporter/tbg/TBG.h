@@ -22,6 +22,7 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 
 #include <QFuture>
 #include <QString>
@@ -54,7 +55,7 @@ public:
 		Arch_Other = -1
 	};
 	
-	explicit Server(const QString & serverAddress, const std::string & userAgent);
+	explicit Server(const QString & serverAddress, std::string_view userAgent);
 	~Server();
 	
 	bool login(const QString & username, const QString & password);
@@ -76,7 +77,7 @@ private:
 	std::unique_ptr<http::Response> post(const http::POSTRequest & request);
 	
 	bool setFieldValue(const QString & fieldName, int issue_id, int value_id);
-	bool getIssueIdFromUrl(const std::string & url, int & issue_id);
+	bool getIssueIdFromUrl(std::string_view url, int & issue_id);
 	
 	QString m_serverAddress;
 	QString m_serverPrefix;
