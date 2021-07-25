@@ -31,6 +31,9 @@
 
 namespace script {
 
+//! strip [] brackets
+std::string_view toLocalizationKey(std::string_view str);
+
 inline u64 flag(char c) {
 	if(c >= '0' && c <= '9') {
 		return (u64(1) << (c - '0'));
@@ -45,7 +48,7 @@ inline bool test_flag(u64 flg, char c) {
 	return (flg & flag(c)) != 0;
 }
 
-inline u64 flags(const std::string & flags) {
+inline u64 flags(std::string_view flags) {
 	
 	
 	size_t i = 0;
@@ -95,7 +98,7 @@ public:
 	explicit Context(const EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity,
 	                 ScriptMessage msg, const ScriptParameters & parameters);
 	
-	std::string getStringVar(const std::string & name) const;
+	std::string getStringVar(std::string_view name) const;
 	std::string getFlags();
 	std::string getWord();
 	void skipWord();
@@ -113,7 +116,7 @@ public:
 	
 	float getFloat();
 	
-	float getFloatVar(const std::string & name) const;
+	float getFloatVar(std::string_view name) const;
 	
 	/*!
 	 * Skip input until the end of the current line.
@@ -123,7 +126,7 @@ public:
 	
 	void skipBlock();
 	
-	bool jumpToLabel(const std::string & target, bool substack = false);
+	bool jumpToLabel(std::string_view target, bool substack = false);
 	bool returnToCaller();
 	
 	const EERIE_SCRIPT * getScript() const { return m_script; }
@@ -152,7 +155,7 @@ public:
 	
 	static const long AnyEntity = -1;
 	
-	explicit Command(const std::string & name, long entityFlags = 0)
+	explicit Command(std::string_view name, long entityFlags = 0)
 		: m_name(name), m_entityFlags(entityFlags) { }
 	
 	virtual Result execute(Context & context) = 0;
@@ -171,9 +174,9 @@ public:
 	
 };
 
-bool isSuppressed(const Context & context, const std::string & command);
+bool isSuppressed(const Context & context, std::string_view command);
 
-bool isBlockEndSuprressed(const Context & context, const std::string & command);
+bool isBlockEndSuprressed(const Context & context, std::string_view command);
 
 size_t initSuppressions();
 

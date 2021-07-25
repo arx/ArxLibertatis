@@ -109,6 +109,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 #include "script/ScriptEvent.h"
+#include "script/ScriptUtils.h"
 
 #include "util/String.h"
 
@@ -1658,7 +1659,7 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	}
 	ARX_PLAYER_Quest_Init();
 	for(int i = 0; i < asp->nb_PlayerQuest; i++) {
-		ARX_PLAYER_Quest_Add(script::loadUnlocalized(util::toLowercase(util::loadString(dat + pos, SAVED_QUEST_SLOT_SIZE))));
+		ARX_PLAYER_Quest_Add(util::toLowercase(script::toLocalizationKey(util::loadString(dat + pos, SAVED_QUEST_SLOT_SIZE))));
 		pos += SAVED_QUEST_SLOT_SIZE;
 	}
 	
@@ -1680,7 +1681,7 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	for(int i = 0; i < asp->Nb_Mapmarkers; i++) {
 		const SavedMapMarkerData * acmd = reinterpret_cast<const SavedMapMarkerData *>(dat + pos);
 		pos += sizeof(SavedMapMarkerData);
-		g_miniMap.mapMarkerAdd(Vec2f(acmd->x, acmd->y), acmd->lvl, script::loadUnlocalized(util::toLowercase(util::loadString(acmd->name))));
+		g_miniMap.mapMarkerAdd(Vec2f(acmd->x, acmd->y), acmd->lvl, util::toLowercase(script::toLocalizationKey(util::loadString(acmd->name))));
 	}
 	
 	ARX_PLAYER_Restore_Skin();
@@ -1855,7 +1856,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 		io->angle = ais->angle;
 		io->scale = ais->scale;
 		io->weight = ais->weight;
-		io->locname = script::loadUnlocalized(util::toLowercase(util::loadString(ais->locname)));
+		io->locname = util::toLowercase(script::toLocalizationKey(util::loadString(ais->locname)));
 		io->gameFlags = GameFlags::load(ais->gameFlags); // TODO save/load flags
 		io->material = Material(ais->material); // TODO save/load enum
 		
@@ -1906,7 +1907,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 		io->stepmaterial = util::toLowercase(util::loadString(ais->stepmaterial));
 		io->armormaterial = util::toLowercase(util::loadString(ais->armormaterial));
 		io->weaponmaterial = util::toLowercase(util::loadString(ais->weaponmaterial));
-		io->strikespeech = script::loadUnlocalized(util::toLowercase(util::loadString(ais->strikespeech)));
+		io->strikespeech = util::toLowercase(script::toLocalizationKey(util::loadString(ais->strikespeech)));
 		
 		for(size_t i = 0; i < MAX_ANIMS; i++) {
 			

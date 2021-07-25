@@ -142,11 +142,11 @@ public:
 			type = Note::SmallNote;
 		}
 		
-		std::string text = loadUnlocalized(context.getWord());
+		std::string text = context.getWord();
 		
 		DebugScript(' ' << tpname << ' ' << text);
 		
-		ARX_INTERFACE_NoteOpen(type, text);
+		ARX_INTERFACE_NoteOpen(type, toLocalizationKey(text));
 		
 		return Success;
 	}
@@ -341,11 +341,11 @@ public:
 		
 		if(remove) {
 			
-			std::string marker = loadUnlocalized(context.getWord());
+			std::string marker = context.getWord();
 			
 			DebugScript(' ' << options << ' ' << marker);
 			
-			g_miniMap.mapMarkerRemove(marker);
+			g_miniMap.mapMarkerRemove(toLocalizationKey(marker));
 			
 		} else {
 			
@@ -353,11 +353,11 @@ public:
 			float y = context.getFloat();
 			int level = int(context.getFloat());
 			
-			std::string marker = loadUnlocalized(context.getWord());
+			std::string marker = context.getWord();
 			
 			DebugScript(' ' << options << ' ' << x << ' ' << y << ' ' << level << ' ' << marker);
 			
-			g_miniMap.mapMarkerAdd(Vec2f(x, y), level, std::move(marker));
+			g_miniMap.mapMarkerAdd(Vec2f(x, y), level, std::string(toLocalizationKey(marker)));
 			
 		}
 		

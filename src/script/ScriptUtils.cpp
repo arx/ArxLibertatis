@@ -32,14 +32,15 @@ static bool isWhitespace(char c) {
 	return (static_cast<unsigned char>(c) <= 32 || c == '(' || c == ')');
 }
 
-std::string loadUnlocalized(const std::string & str) {
+std::string_view toLocalizationKey(std::string_view string) {
 	
 	// if the section name has the qualifying brackets "[]", cut them off
-	if(!str.empty() && str[0] == '[' && str[str.length() - 1] == ']') {
-		return str.substr(1, str.length() - 2);
+	if(!string.empty() && string.front() == '[' && string.back() == ']') {
+		string.remove_prefix(1);
+		string.remove_suffix(1);
 	}
 	
-	return str;
+	return string;
 }
 
 Context::Context(const EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity,
@@ -52,7 +53,7 @@ Context::Context(const EERIE_SCRIPT * script, size_t pos, Entity * sender, Entit
 	, m_parameters(parameters)
 { }
 
-std::string Context::getStringVar(const std::string & name) const {
+std::string Context::getStringVar(std::string_view name) const {
 	
 	if(name.empty()) {
 		return std::string();
@@ -81,14 +82,14 @@ std::string Context::getStringVar(const std::string & name) const {
 		return var ? var->text : "void";
 	}
 	
-	return name;
+	return std::string(name);
 }
 
 #define ScriptParserWarning ARX_LOG(isSuppressed(*this, "?") ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(*this) << ": "
 
 std::string Context::getCommand(bool skipNewlines) {
 	
-	const std::string & esdat = m_script->data;
+	std::string_view esdat = m_script->data;
 	
 	skipWhitespace(skipNewlines);
 	
@@ -123,7 +124,7 @@ std::string Context::getCommand(bool skipNewlines) {
 
 std::string Context::getWord() {
 	
-	const std::string & esdat = m_script->data;
+	std::string_view esdat = m_script->data;
 	
 	skipWhitespace(false, true);
 	
@@ -201,7 +202,7 @@ std::string Context::getWord() {
 
 void Context::skipWord() {
 	
-	const std::string & esdat = m_script->data;
+	std::string_view esdat = m_script->data;
 	
 	skipWhitespace(false, true);
 	
@@ -240,7 +241,7 @@ void Context::skipWord() {
 
 void Context::skipWhitespace(bool skipNewlines, bool warnNewlines) {
 	
-	const std::string & esdat = m_script->data;
+	std::string_view esdat = m_script->data;
 	
 	// First ignores spaces & unused chars
 	for(; m_pos != esdat.size() && isWhitespace(esdat[m_pos]); m_pos++) {
@@ -281,7 +282,7 @@ bool Context::getBool() {
 	return (word == "on" || word == "yes");
 }
 
-float Context::getFloatVar(const std::string & name) const {
+float Context::getFloatVar(std::string_view name) const {
 	
 	if(name.empty()) {
 		return 0.f;
@@ -307,14 +308,18 @@ float Context::getFloatVar(const std::string & name) const {
 		return GETVarValueFloat(getEntity()->m_variables, name);
 	}
 	
-	return float(atof(name.c_str()));
+	try {
+		return boost::lexical_cast<float>(name);
+	} catch(...) {
+		return 0.f;
+	}
 }
 
 size_t Context::skipCommand() {
 	
 	skipWhitespace();
 	
-	const std::string & esdat = m_script->data;
+	std::string_view esdat = m_script->data;
 	
 	if(m_pos == esdat.size() || esdat[m_pos] == '\n') {
 		return size_t(-1);
@@ -335,13 +340,13 @@ size_t Context::skipCommand() {
 	return oldpos;
 }
 
-bool Context::jumpToLabel(const std::string & target, bool substack) {
+bool Context::jumpToLabel(std::string_view target, bool substack) {
 	
 	if(substack) {
 		m_stack.push_back(m_pos);
 	}
 	
-	size_t targetpos = FindScriptPos(m_script, ">>" + target);
+	size_t targetpos = FindScriptPos(m_script, std::string(">>") += target);
 	if(targetpos == size_t(-1)) {
 		return false;
 	}
@@ -400,25 +405,25 @@ void Context::skipBlock() {
 
 namespace {
 
-typedef std::set<std::string> SuppressedCommands;
-typedef std::map<std::string, SuppressedCommands> SuppressionsForFile;
+typedef std::set<std::string_view> SuppressedCommands;
+typedef std::map<std::string_view, SuppressedCommands> SuppressionsForFile;
 typedef std::map<size_t, SuppressionsForFile> SuppressionsForPos;
 
 size_t suppressionCount = 0;
 SuppressionsForPos suppressions;
 SuppressionsForPos blockSuppressions;
 
-void suppress(const std::string & script, size_t pos, const std::string & command) {
+void suppress(std::string_view script, size_t pos, std::string_view command) {
 	suppressionCount++;
 	suppressions[pos][script].insert(command);
 }
 
-void suppressBlockEnd(const std::string & script, size_t pos, const std::string & command) {
+void suppressBlockEnd(std::string_view script, size_t pos, std::string_view command) {
 	suppressionCount++;
 	blockSuppressions[pos][script].insert(command);
 }
 
-bool contains(const SuppressionsForPos & list, const Context & context, const std::string & command) {
+bool contains(const SuppressionsForPos & list, const Context & context, std::string_view command) {
 	
 	SuppressionsForPos::const_iterator i0 = list.find(context.getPosition());
 	if(i0 == list.end()) {
@@ -789,7 +794,7 @@ size_t initSuppressions() {
 		
 	public:
 		
-		explicit FakeCommand(const std::string & name) : Command(name) { }
+		explicit FakeCommand(std::string_view name) : Command(name) { }
 		
 		Result execute(Context & context) {
 			ARX_UNUSED(context);
@@ -809,11 +814,11 @@ size_t initSuppressions() {
 	return suppressionCount;
 }
 
-bool isSuppressed(const Context & context, const std::string & command) {
+bool isSuppressed(const Context & context, std::string_view command) {
 	return contains(suppressions, context, command);
 }
 
-bool isBlockEndSuprressed(const Context & context, const std::string & command) {
+bool isBlockEndSuprressed(const Context & context, std::string_view command) {
 	return contains(blockSuppressions, context, command);
 }
 

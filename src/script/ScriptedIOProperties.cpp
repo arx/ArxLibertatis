@@ -249,7 +249,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		context.getEntity()->locname = loadUnlocalized(context.getWord());
+		context.getEntity()->locname = toLocalizationKey(context.getWord());
 		
 		DebugScript(' ' << context.getEntity()->locname);
 		

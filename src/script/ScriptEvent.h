@@ -32,14 +32,7 @@ struct SCRIPT_EVENT {
 
 extern SCRIPT_EVENT AS_EVENT[];
 
-namespace script {
-
-//! strip [] brackets
-std::string loadUnlocalized(const std::string & str);
-
-class Command;
-
-} // namespace script
+namespace script { class Command; }
 
 class ScriptEvent {
 	

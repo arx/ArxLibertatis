@@ -197,11 +197,7 @@ public:
 		
 		DebugScript(' ' << options << " \"" << text << '"');
 		
-		if(!text.empty() && text[0] == '[') {
-			text = loadUnlocalized(text);
-		}
-		
-		notification_add(std::move(text));
+		notification_add(std::string(toLocalizationKey(text)));
 		
 		return Success;
 	}
@@ -373,7 +369,7 @@ public:
 			return Success;
 		}
 		
-		std::string data = loadUnlocalized(context.getStringVar(text));
+		std::string data(toLocalizationKey(context.getStringVar(text)));
 		
 		DebugScript(' ' << options << ' ' << data); // TODO debug more
 		
@@ -424,7 +420,7 @@ public:
 			return Success;
 		}
 		
-		std::string data = loadUnlocalized(context.getStringVar(text));
+		std::string data(toLocalizationKey(context.getStringVar(text)));
 		
 		if(data.empty()) {
 			return Success;
@@ -451,7 +447,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		context.getEntity()->strikespeech = script::loadUnlocalized(context.getWord());
+		context.getEntity()->strikespeech = toLocalizationKey(context.getWord());
 		
 		DebugScript(' ' << context.getEntity()->strikespeech);
 		

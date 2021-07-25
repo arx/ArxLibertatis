@@ -229,7 +229,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		std::string name = loadUnlocalized(context.getWord());
+		std::string name(toLocalizationKey(context.getWord()));
 		
 		DebugScript(' ' << name);
 		
