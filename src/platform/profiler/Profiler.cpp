@@ -51,7 +51,7 @@ public:
 	void flush();
 	void reset();
 	
-	void registerThread(const std::string & threadName);
+	void registerThread(std::string_view threadName);
 	void unregisterThread();
 	
 	void addProfilePoint(const char * tag, thread_id_type threadId,
@@ -98,7 +98,7 @@ void Profiler::reset() {
 	m_canWrite = true;
 }
 
-void Profiler::registerThread(const std::string & threadName) {
+void Profiler::registerThread(std::string_view threadName) {
 	thread_id_type threadId = Thread::getCurrentThreadId();
 	ProfilerThread & thread = m_threads[threadId];
 	thread.threadName = threadName;
@@ -282,7 +282,7 @@ void profiler::flush() {
 	g_profiler.flush();
 }
 
-void profiler::registerThread(const std::string & threadName) {
+void profiler::registerThread(std::string_view threadName) {
 	g_profiler.registerThread(threadName);
 }
 
@@ -307,7 +307,7 @@ profiler::Scope::~Scope() {
 void profiler::initialize() {}
 void profiler::flush() {}
 
-void profiler::registerThread(const std::string & threadName) {
+void profiler::registerThread(std::string_view threadName) {
 	ARX_UNUSED(threadName);
 }
 

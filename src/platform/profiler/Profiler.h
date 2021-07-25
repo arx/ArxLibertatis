@@ -21,6 +21,7 @@
 #define ARX_PLATFORM_PROFILER_PROFILER_H
 
 #include <string>
+#include <string_view>
 
 #include "core/TimeTypes.h"
 #include "platform/Platform.h"
@@ -33,7 +34,7 @@ void initialize();
 //! Write the collected profile data to disk
 void flush();
 
-void registerThread(const std::string & threadName);
+void registerThread(std::string_view threadName);
 void unregisterThread();
 
 #if BUILD_PROFILER_INSTRUMENT
