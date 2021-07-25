@@ -19,9 +19,10 @@
 
 #include "graphics/opengl/OpenGLRenderer.h"
 
+#include <cstring>
 #include <algorithm>
 #include <sstream>
-#include <cstring>
+#include <string_view>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -741,7 +742,7 @@ template <typename Vertex>
 static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
                                                      size_t capacity,
                                                      Renderer::BufferUsage usage,
-                                                     const std::string & setting) {
+                                                     std::string_view setting) {
 	
 	bool matched = false;
 	
@@ -803,15 +804,14 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 		LogWarning << "Ignoring unsupported video.buffer_upload setting: " << setting;
 		warned = true;
 	}
-	return createVertexBufferImpl<Vertex>(renderer, capacity, usage, std::string());
+	return createVertexBufferImpl<Vertex>(renderer, capacity, usage, std::string_view());
 }
 
 template <typename Vertex>
 static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
                                                      size_t capacity,
                                                      Renderer::BufferUsage usage) {
-	const std::string & setting = config.video.bufferUpload;
-	return createVertexBufferImpl<Vertex>(renderer, capacity, usage, setting);
+	return createVertexBufferImpl<Vertex>(renderer, capacity, usage, config.video.bufferUpload);
 }
 
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
