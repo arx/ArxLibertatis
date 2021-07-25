@@ -373,7 +373,7 @@ void SDL2InputBackend::startTextInput(const Rect & box, TextInputHandler * handl
 	if(!m_textHandler) {
 		SDL_StartTextInput();
 	} else if(handler != m_textHandler && !m_editText.empty()) {
-		m_textHandler->editingText(std::string(), 0, 0);
+		m_textHandler->editingText({ }, 0, 0);
 		handler->editingText(m_editText, m_editCursorPos, m_editCursorLength);
 	}
 	m_textHandler = handler;
@@ -382,7 +382,7 @@ void SDL2InputBackend::startTextInput(const Rect & box, TextInputHandler * handl
 void SDL2InputBackend::stopTextInput() {
 	if(m_textHandler) {
 		if(!m_editText.empty()) {
-			m_textHandler->editingText(std::string(), 0, 0);
+			m_textHandler->editingText({ }, 0, 0);
 			m_editText.clear();
 		}
 		SDL_StopTextInput();

@@ -21,6 +21,7 @@
 #define ARX_INPUT_TEXTINPUT_H
 
 #include <string>
+#include <string_view>
 #include <stddef.h>
 
 #include "input/Keyboard.h"
@@ -40,7 +41,7 @@ public:
 	/*!
 	 * User has entered new (final) text
 	 */
-	virtual void newText(const std::string & text) = 0;
+	virtual void newText(std::string_view text) = 0;
 	
 	/*!
 	 * User is editing text input
@@ -49,7 +50,7 @@ public:
 	 * \param cursorStart  Cursor within the temporary text
 	 * \param cursorLength Length of the cursor in bytes
 	 */
-	virtual void editingText(const std::string & composition, size_t cursorStart, size_t cursorLength) = 0;
+	virtual void editingText(std::string_view composition, size_t cursorStart, size_t cursorLength) = 0;
 	
 	/*!
 	 * User has pressed a key
@@ -61,7 +62,7 @@ public:
 	/*!
 	 * User has dragged & dropped some text
 	 */
-	virtual void droppedText(const std::string & text) = 0;
+	virtual void droppedText(std::string_view text) = 0;
 	
 };
 
@@ -89,15 +90,15 @@ public:
 		, m_selected(false)
 	{ }
 	
-	void newText(const std::string & text);
-	void editingText(const std::string & composition, size_t cursorStart, size_t cursorLength);
+	void newText(std::string_view text);
+	void editingText(std::string_view composition, size_t cursorStart, size_t cursorLength);
 	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
-	void droppedText(const std::string & text);
+	void droppedText(std::string_view text);
 	
 	void clear();
-	void setText(const std::string & text, size_t cursorPos = size_t(-1));
+	void setText(std::string_view text, size_t cursorPos = size_t(-1));
 	void setCursorPos(size_t cursorPos = size_t(-1));
-	void insert(const std::string & text);
+	void insert(std::string_view text);
 	void moveLeft();
 	void moveRight();
 	void eraseLeft();
@@ -112,7 +113,7 @@ public:
 	void moveEnd();
 	void eraseStart();
 	void eraseEnd();
-	virtual void paste(const std::string & text);
+	virtual void paste(std::string_view text);
 	static bool isWordSeparator(char c);
 	
 	void selectAll();

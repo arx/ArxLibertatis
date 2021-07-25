@@ -103,9 +103,9 @@ bool TextInputHandler::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 	
 }
 
-void BasicTextInput::newText(const std::string & text) {
+void BasicTextInput::newText(std::string_view text) {
 	if(m_selected) {
-		setText(std::string());
+		setText({ });
 	}
 	if(!text.empty() || !m_editText.empty()) {
 		m_text.insert(m_cursorPos, text);
@@ -117,7 +117,7 @@ void BasicTextInput::newText(const std::string & text) {
 	}
 }
 
-void BasicTextInput::setText(const std::string & text, size_t cursorPos) {
+void BasicTextInput::setText(std::string_view text, size_t cursorPos) {
 	if(text != m_text) {
 		m_text = text;
 		m_cursorPos = std::min(cursorPos, m_text.length());
@@ -142,9 +142,9 @@ void BasicTextInput::setCursorPos(size_t cursorPos) {
 	}
 }
 
-void BasicTextInput::insert(const std::string & text) {
+void BasicTextInput::insert(std::string_view text) {
 	if(m_selected) {
-		setText(std::string());
+		setText({ });
 	}
 	if(!text.empty()) {
 		m_text.insert(m_cursorPos, text);
@@ -153,7 +153,7 @@ void BasicTextInput::insert(const std::string & text) {
 	}
 }
 
-void BasicTextInput::editingText(const std::string & composition, size_t cursorStart, size_t cursorLength) {
+void BasicTextInput::editingText(std::string_view composition, size_t cursorStart, size_t cursorLength) {
 	if(composition != m_editText || cursorStart != m_editCursorPos || cursorLength != m_editCursorLength) {
 		arx_assert(cursorStart <= composition.size());
 		arx_assert(cursorStart + cursorLength <= composition.size());
@@ -195,7 +195,7 @@ void BasicTextInput::moveRight() {
 
 void BasicTextInput::eraseLeft() {
 	if(m_selected) {
-		setText(std::string());
+		setText({ });
 	}
 	if(m_cursorPos > 0) {
 		size_t count = 1;
@@ -211,7 +211,7 @@ void BasicTextInput::eraseLeft() {
 
 void BasicTextInput::eraseRight() {
 	if(m_selected) {
-		setText(std::string());
+		setText({ });
 	}
 	if(m_cursorPos < m_text.size()) {
 		size_t end = m_cursorPos + 1;
@@ -281,7 +281,7 @@ void BasicTextInput::moveWordRight() {
 
 void BasicTextInput::eraseWordLeft() {
 	if(m_selected) {
-		setText(std::string());
+		setText({ });
 	}
 	if(m_cursorPos > 0) {
 		size_t start = findWordLeft();
@@ -293,7 +293,7 @@ void BasicTextInput::eraseWordLeft() {
 
 void BasicTextInput::eraseWordRight() {
 	if(m_selected) {
-		setText(std::string());
+		setText({ });
 	}
 	if(m_cursorPos < m_text.size()) {
 		size_t end = findWordRight();
@@ -320,7 +320,7 @@ void BasicTextInput::moveEnd() {
 
 void BasicTextInput::eraseStart() {
 	if(m_selected) {
-		setText(std::string());
+		setText({ });
 	}
 	if(m_cursorPos > 0) {
 		m_text.erase(0, m_cursorPos);
@@ -331,7 +331,7 @@ void BasicTextInput::eraseStart() {
 
 void BasicTextInput::eraseEnd() {
 	if(m_selected) {
-		setText(std::string());
+		setText({ });
 	}
 	if(m_cursorPos < m_text.size()) {
 		m_text.erase(m_cursorPos);
@@ -339,8 +339,8 @@ void BasicTextInput::eraseEnd() {
 	}
 }
 
-void BasicTextInput::paste(const std::string & text) {
-	std::string filtered = text;
+void BasicTextInput::paste(std::string_view text) {
+	std::string filtered(text);
 	std::replace(filtered.begin(), filtered.end(), '\n', ' ');
 	std::replace(filtered.begin(), filtered.end(), '\t', ' ');
 	insert(filtered);
@@ -507,7 +507,7 @@ bool BasicTextInput::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 	return TextInputHandler::keyPressed(key, mod);
 }
 
-void BasicTextInput::droppedText(const std::string & text) {
+void BasicTextInput::droppedText(std::string_view text) {
 	paste(text);
 }
 

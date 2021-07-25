@@ -342,13 +342,13 @@ void ScriptConsole::cursorUpdated() {
 	parse();
 }
 
-void ScriptConsole::paste(const std::string & text) {
+void ScriptConsole::paste(std::string_view text) {
 	
 	m_updateSuggestions = false;
 	size_t p = 0;
 	while(true) {
 		size_t newline = text.find('\n', p);
-		if(newline == std::string::npos) {
+		if(newline == std::string_view::npos) {
 			Base::paste(text.substr(p));
 			break;
 		}

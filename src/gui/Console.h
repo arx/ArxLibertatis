@@ -111,7 +111,7 @@ class ScriptConsole final : protected BasicTextInput {
 	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
 	void textUpdated();
 	void cursorUpdated();
-	void paste(const std::string & text);
+	void paste(std::string_view text) override;
 	
 	/*!
 	 * Parse the current command and update suggestions
