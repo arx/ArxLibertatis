@@ -19,7 +19,7 @@
 
 #include "game/npc/Dismemberment.h"
 
-#include <string>
+#include <string_view>
 #include <boost/algorithm/string.hpp>
 
 #include "core/GameTime.h"
@@ -267,7 +267,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 
 
 
-static DismembermentFlag GetCutFlag(const std::string & str) {
+static DismembermentFlag GetCutFlag(std::string_view str) {
 	
 	if(str == "cut_head") {
 		return FLAG_CUT_HEAD;
@@ -296,7 +296,7 @@ static ObjSelection GetCutSelection(Entity * io, DismembermentFlag flag) {
 	if(!io || !(io->ioflags & IO_NPC) || flag == 0)
 		return ObjSelection();
 
-	std::string tx;
+	std::string_view tx;
 	if(flag == FLAG_CUT_HEAD) {
 		tx =  "cut_head";
 	} else if(flag == FLAG_CUT_TORSO) {
