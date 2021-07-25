@@ -44,10 +44,10 @@ static void handleRuneDetection(Rune rune);
 typedef struct RunePattern{
 	Rune runeId;
 	CheatRune cheatId;
-	std::string dirs;
+	std::string_view dirs;
 } RunePattern;
 
-const RunePattern patternData[] = {
+static constexpr const RunePattern patternData[] = {
 	{RUNE_AAM,         CheatRune_AAM,         "6"},
 	{RUNE_CETRIUS,     CheatRune_None,        "386"},
 	{RUNE_COMUNICATUM, CheatRune_COMUNICATUM, "62426"},
@@ -467,17 +467,17 @@ struct SpellDefinition {
 };
 static SpellDefinition definedSpells;
 
-typedef std::map<std::string, SpellType> SpellNames;
+typedef std::map<std::string_view, SpellType> SpellNames;
 static SpellNames spellNames;
 
 struct RawSpellDefinition {
 	SpellType spell;
-	std::string name;
+	std::string_view name;
 	Rune symbols[MAX_SPELL_SYMBOLS];
 };
 
 // TODO move to external file
-static const RawSpellDefinition allSpells[] = {
+static constexpr const RawSpellDefinition allSpells[] = {
 	{SPELL_CURSE,                 "curse",                 {RUNE_RHAA,    RUNE_STREGUM,     RUNE_VITAE,   RUNE_NONE}}, // level 4
 	{SPELL_FREEZE_TIME,           "freeze_time",           {RUNE_RHAA,    RUNE_TEMPUS,      RUNE_NONE}}, // level 10
 	{SPELL_LOWER_ARMOR,           "lower_armor",           {RUNE_RHAA,    RUNE_KAOM,        RUNE_NONE}}, // level 2
@@ -530,13 +530,10 @@ static const RawSpellDefinition allSpells[] = {
 	{SPELL_FAKE_SUMMON,           "fake_summon",           {RUNE_NONE}}
 };
 
-static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], SpellType spell, const std::string & name) {
+static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], SpellType spell, std::string_view name) {
 	
-	typedef std::pair<SpellNames::const_iterator, bool> Res;
-	Res res = spellNames.insert(std::make_pair(name, spell));
-	if(!res.second) {
-		LogWarning << "Duplicate spell name: " + name;
-	}
+	auto res = spellNames.insert(std::make_pair(name, spell));
+	arx_assert_msg(res.second, "Duplicate spell name: %s", std::string(name).c_str());
 	
 	if(symbols[0] == RUNE_NONE) {
 		return;
@@ -606,7 +603,7 @@ void ARX_SPELLS_AddPoint(const Vec2s & pos) {
 
 
 
-SpellType GetSpellId(const std::string & spell) {
+SpellType GetSpellId(std::string_view spell) {
 	
 	SpellNames::const_iterator it = spellNames.find(spell);
 	
