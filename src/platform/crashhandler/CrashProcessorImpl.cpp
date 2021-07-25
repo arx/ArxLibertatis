@@ -45,7 +45,7 @@
 
 namespace bip = boost::interprocess;
 
-void CrashHandlerImpl::processCrash(const std::string & sharedMemoryName) {
+void CrashHandlerImpl::processCrash(std::string_view sharedMemoryName) {
 	
 	try {
 		
@@ -298,5 +298,5 @@ void CrashHandlerImpl::processCrashRegisters() {
 	}
 	description << std::dec;
 	
-	addText(description.str().c_str());
+	addText(description.str());
 }

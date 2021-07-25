@@ -21,6 +21,7 @@
 #define ARX_PLATFORM_CRASHHANDLER_H
 
 #include <string>
+#include <string_view>
 #include <sstream>
 
 #include "platform/Platform.h"
@@ -99,7 +100,7 @@ public:
 	 * \return True if the variable could be set, false otherwise.
 	 */
 	template <class T>
-	static bool setVariable(const std::string & name, const T & value) {
+	static bool setVariable(std::string_view name, const T & value) {
 		std::stringstream ss;
 		ss << value;
 		return setVariable(name, ss.str());
@@ -116,8 +117,23 @@ public:
 	 *
 	 * \return True if the variable could be set, false otherwise.
 	 */
-	static bool setVariable(const std::string & name, const char * value) {
-		return setVariable(name, std::string(value));
+	static bool setVariable(std::string_view name, const char * value) {
+		return setVariable(name, std::string_view(value));
+	}
+	
+	/*!
+	 * \brief Set a variable value, which will be included in the crash report
+	 *
+	 * You can set up to CrashInfo::MaxNbVariables variables.
+	 * If called multiple times with the same name, only the last value will be kept.
+	 *
+	 * \param name Name of the variable
+	 * \param value Value of the variable, which will be converted to string.
+	 *
+	 * \return True if the variable could be set, false otherwise.
+	 */
+	static bool setVariable(std::string_view name, const std::string & value) {
+		return setVariable(name, std::string_view(value));
 	}
 	
 	/*!
@@ -131,7 +147,7 @@ public:
 	 *
 	 * \return True if the variable could be set, false otherwise.
 	 */
-	static bool setVariable(const std::string & name, const std::string & value);
+	static bool setVariable(std::string_view name, std::string_view value);
 	
 	/*!
 	 * \brief Set window ID which should be hidden when the process crashes

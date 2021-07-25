@@ -165,7 +165,7 @@ void CrashHandlerWindows::processCrashSignal() {
 		}
 	}
 	
-	addText(description.str().c_str());
+	addText(description.str());
 }
 
 
@@ -318,7 +318,7 @@ void CrashHandlerWindows::processCrashTrace() {
 	CloseHandle(thread);
 	CloseHandle(process);
 	
-	addText(description.str().c_str());
+	addText(description.str());
 }
 
 void CrashHandlerWindows::processCrashDump() {

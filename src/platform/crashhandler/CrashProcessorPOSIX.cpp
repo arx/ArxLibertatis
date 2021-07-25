@@ -296,7 +296,7 @@ void CrashHandlerPOSIX::processCrashSignal() {
 	
 	description << "\n\n";
 	
-	addText(description.str().c_str());
+	addText(description.str());
 }
 
 struct MemoryRegion {
@@ -474,7 +474,7 @@ void CrashHandlerPOSIX::processCrashTrace() {
 		}
 	}
 	
-	addText(description.str().c_str());
+	addText(description.str());
 }
 
 void CrashHandlerPOSIX::processCrashDump() {

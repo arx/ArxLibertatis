@@ -20,8 +20,8 @@
 #ifndef ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERIMPL_H
 #define ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERIMPL_H
 
-// STL
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "platform/Platform.h"
@@ -54,10 +54,10 @@ public:
 	virtual void shutdown();
 
 	bool addAttachedFile(const fs::path & file);
-	bool setVariable(const std::string & name, const std::string & value);
+	bool setVariable(std::string_view name, std::string_view value);
 	void setWindow(u64 window);
 	
-	bool addText(const char * text);
+	bool addText(std::string_view text);
 
 	bool setReportLocation(const fs::path & location);
 	bool deleteOldReports(size_t nbReportsToKeep);
@@ -68,7 +68,7 @@ public:
 	virtual bool registerThreadCrashHandlers() = 0;
 	virtual void unregisterThreadCrashHandlers() = 0;
 	
-	void processCrash(const std::string & sharedMemoryName);
+	void processCrash(std::string_view sharedMemoryName);
 	
 private:
 	

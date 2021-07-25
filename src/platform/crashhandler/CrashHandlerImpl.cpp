@@ -184,37 +184,38 @@ bool CrashHandlerImpl::addAttachedFile(const fs::path & file) {
 	return true;
 }
 
-bool CrashHandlerImpl::setVariable(const std::string & name, const std::string & value) {
+bool CrashHandlerImpl::setVariable(std::string_view name, std::string_view value) {
+	
 	Autolock autoLock(&m_Lock);
-
+	
 	if(name.size() >= CrashInfo::MaxVariableNameLen) {
 		LogError << "Variable name is too long.";
 		return false;
 	}
-
+	
 	if(value.size() >= CrashInfo::MaxVariableValueLen) {
 		LogError << "Variable description is too long.";
 		return false;
 	}
-
+	
 	// Check if our array already contains this variable.
 	for(u32 i = 0; i < m_pCrashInfo->nbVariables; i++) {
-		if(strcmp(m_pCrashInfo->variables[i].name, name.c_str()) == 0) {
+		if(std::string_view(m_pCrashInfo->variables[i].name) == name) {
 			util::storeStringTerminated(m_pCrashInfo->variables[i].value, value);
 			return true;
 		}
 	}
-
+	
 	// Not found, must add a new one.
 	if(m_pCrashInfo->nbVariables == CrashInfo::MaxNbVariables) {
 		LogError << "Too much variables already added to the crash report (" << m_pCrashInfo->nbVariables << ").";
 		return false;
 	}
-
+	
 	util::storeStringTerminated(m_pCrashInfo->variables[m_pCrashInfo->nbVariables].name, name);
 	util::storeStringTerminated(m_pCrashInfo->variables[m_pCrashInfo->nbVariables].value, value);
 	m_pCrashInfo->nbVariables++;
-
+	
 	return true;
 }
 
@@ -224,7 +225,7 @@ void CrashHandlerImpl::setWindow(u64 window) {
 	m_pCrashInfo->window = window;
 }
 
-bool CrashHandlerImpl::addText(const char * text) {
+bool CrashHandlerImpl::addText(std::string_view text) {
 	
 	Autolock autoLock(&m_Lock);
 	
@@ -232,16 +233,15 @@ bool CrashHandlerImpl::addText(const char * text) {
 		return false;
 	}
 	
-	size_t length = std::strlen(text);
 	size_t remaining = std::size(m_pCrashInfo->description) - m_textLength - 1;
 	
-	size_t n = std::min(length, remaining);
-	std::memcpy(&m_pCrashInfo->description[m_textLength], text, n);
+	size_t n = std::min(text.length(), remaining);
+	std::memcpy(&m_pCrashInfo->description[m_textLength], text.data(), n);
 	m_textLength += n;
 	
 	m_pCrashInfo->description[m_textLength] = '\0';
 	
-	return n == length;
+	return n == text.length();
 }
 
 bool CrashHandlerImpl::setReportLocation(const fs::path & location) {

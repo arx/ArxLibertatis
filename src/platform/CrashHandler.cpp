@@ -97,10 +97,10 @@ bool CrashHandler::initialize(int argc, char ** argv) {
 		
 		#endif
 		
-		const char * arg = "--crashinfo=";
+		const std::string_view arg = "--crashinfo=";
 		if(argc >= 2 && boost::starts_with(argv[1], arg)) {
 			if(gCrashHandlerImpl) {
-				gCrashHandlerImpl->processCrash(argv[1] + std::strlen(arg));
+				gCrashHandlerImpl->processCrash(argv[1] + arg.length());
 			}
 			std::exit(0);
 		}
@@ -164,7 +164,7 @@ bool CrashHandler::addAttachedFile(const fs::path & file) {
 #endif
 }
 
-bool CrashHandler::setVariable(const std::string & name, const std::string & value) {
+bool CrashHandler::setVariable(std::string_view name, std::string_view value) {
 #if ARX_HAVE_CRASHHANDLER
 	if(!isInitialized()) {
 		return false;
