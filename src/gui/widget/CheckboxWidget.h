@@ -20,9 +20,8 @@
 #ifndef ARX_GUI_WIDGET_CHECKBOXWIDGET_H
 #define ARX_GUI_WIDGET_CHECKBOXWIDGET_H
 
+#include <functional>
 #include <string>
-
-#include <boost/function.hpp>
 
 #include "gui/widget/Widget.h"
 #include "platform/Platform.h"
@@ -46,7 +45,7 @@ public:
 	void setChecked(bool checked);
 	bool checked() const { return m_checked; }
 	
-	boost::function<void(bool /* checked */)> stateChanged;
+	std::function<void(bool /* checked */)> stateChanged;
 	
 	virtual WidgetType type() const {
 		return WidgetType_Checkbox;

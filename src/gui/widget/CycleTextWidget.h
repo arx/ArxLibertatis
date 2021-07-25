@@ -20,10 +20,9 @@
 #ifndef ARX_GUI_WIDGET_CYCLETEXTWIDGET_H
 #define ARX_GUI_WIDGET_CYCLETEXTWIDGET_H
 
+#include <functional>
 #include <vector>
 #include <string>
-
-#include <boost/function.hpp>
 
 #include "gui/widget/Widget.h"
 #include "platform/Platform.h"
@@ -53,7 +52,7 @@ public:
 	void hover();
 	virtual void setEnabled(bool enable);
 	
-	boost::function<void(int, const std::string &)> valueChanged;
+	std::function<void(int, const std::string &)> valueChanged;
 	
 	virtual WidgetType type() const {
 		return WidgetType_CycleText;

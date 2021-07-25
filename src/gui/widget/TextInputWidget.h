@@ -20,9 +20,8 @@
 #ifndef ARX_GUI_WIDGET_TEXTINPUTWIDGET_H
 #define ARX_GUI_WIDGET_TEXTINPUTWIDGET_H
 
+#include <functional>
 #include <limits>
-
-#include <boost/function.hpp>
 
 #include "graphics/Color.h"
 #include "gui/widget/Widget.h"
@@ -42,7 +41,7 @@ class TextInputWidget final : public Widget, public BasicTextInput {
 	
 public:
 	
-	boost::function<void(TextInputWidget * /* widget */)> unfocused;
+	std::function<void(TextInputWidget * /* widget */)> unfocused;
 	
 	TextInputWidget(Font * font, const std::string & text, const Rectf & rect);
 	

@@ -20,9 +20,8 @@
 #ifndef ARX_GUI_WIDGET_KEYBINDWIDGET_H
 #define ARX_GUI_WIDGET_KEYBINDWIDGET_H
 
+#include <functional>
 #include <string>
-
-#include <boost/function.hpp>
 
 #include "core/Config.h"
 #include "gui/widget/Widget.h"
@@ -44,7 +43,7 @@ class KeybindWidget final : public Widget {
 	
 public:
 	
-	boost::function<void(KeybindWidget * /* widget */)> keyChanged;
+	std::function<void(KeybindWidget * /* widget */)> keyChanged;
 	
 	KeybindWidget(ControlAction keybindAction, size_t keybindIndex, Font * font);
 	

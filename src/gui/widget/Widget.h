@@ -20,7 +20,7 @@
 #ifndef ARX_GUI_WIDGET_WIDGET_H
 #define ARX_GUI_WIDGET_WIDGET_H
 
-#include <boost/function.hpp>
+#include <functional>
 #include <boost/noncopyable.hpp>
 
 #include "core/SaveGame.h"
@@ -92,8 +92,8 @@ public:
 	
 	virtual WidgetType type() const = 0;
 	
-	boost::function<void(Widget * /* widget */)> clicked;
-	boost::function<void(Widget * /* widget */)> doubleClicked;
+	std::function<void(Widget * /* widget */)> clicked;
+	std::function<void(Widget * /* widget */)> doubleClicked;
 	
 	Rectf m_rect;
 	

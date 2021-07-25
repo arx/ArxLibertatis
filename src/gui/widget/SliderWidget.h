@@ -20,9 +20,8 @@
 #ifndef ARX_GUI_WIDGET_SLIDERWIDGET_H
 #define ARX_GUI_WIDGET_SLIDERWIDGET_H
 
+#include <functional>
 #include <string>
-
-#include <boost/function.hpp>
 
 #include "gui/widget/Widget.h"
 #include "platform/Platform.h"
@@ -51,7 +50,7 @@ public:
 	void render(bool mouseOver = false);
 	void hover();
 	
-	boost::function<void(int /* state */)> valueChanged;
+	std::function<void(int /* state */)> valueChanged;
 	
 	virtual WidgetType type() const {
 		return WidgetType_Slider;
