@@ -47,7 +47,7 @@ class CURLSession : public Session {
 	
 public:
 	
-	explicit CURLSession(const std::string & userAgent)
+	explicit CURLSession(std::string_view userAgent)
 		: m_userAgent(userAgent)
 		, m_curl(curl_easy_init())
 	{
@@ -116,7 +116,7 @@ Response * CURLSession::perform(const Request & request) {
 		url = "";
 	}
 	
-	return new Response(status, data, url);
+	return new Response(status, std::move(data), url);
 }
 
 Response * CURLSession::get(const Request & request) {
@@ -150,7 +150,7 @@ Response * CURLSession::post(const POSTRequest & request) {
 	return perform(request);
 }
 
-Session * createSession(const std::string & userAgent) {
+Session * createSession(std::string_view userAgent) {
 	return new CURLSession(userAgent);
 }
 

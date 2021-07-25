@@ -26,6 +26,8 @@
 #define ARX_TOOLS_CRASHREPORTER_TBG_HTTPCLIENT_H
 
 #include <string>
+#include <string_view>
+#include <utility>
 
 namespace http {
 
@@ -37,7 +39,7 @@ class Request {
 	
 public:
 	
-	/* implicit */ Request(const std::string & url)
+	/* implicit */ Request(std::string_view url)
 		: m_url(url)
 		, m_followRedirects(true)
 	{ }
@@ -81,7 +83,7 @@ class POSTRequest : public Request {
 	
 public:
 	
-	/* implicit */ POSTRequest(const std::string & url)
+	/* implicit */ POSTRequest(std::string_view url)
 		: Request(url)
 		, m_contentType(defaultContentType())
 	{ }
@@ -97,12 +99,12 @@ public:
 	{ }
 	
 	//! Set the POST data
-	void setData(const std::string & data) {
-		m_data = data;
+	void setData(std::string && data) {
+		m_data = std::move(data);
 	}
 	
 	//! Set the mime type of the post data
-	void setContentType(const std::string & type) {
+	void setContentType(std::string_view type) {
 		m_contentType = type;
 	}
 	
@@ -126,11 +128,10 @@ class Response {
 	
 public:
 	
-	explicit Response(const std::string & error) : m_status(0), m_error(error) { }
-	explicit Response(const char * error) : m_status(0), m_error(error) { }
-	Response(int status, const std::string & data, const std::string & url)
+	explicit Response(std::string && error) : m_status(0), m_error(std::move(error)) { }
+	Response(int status, std::string && data, std::string && url)
 		: m_status(status)
-		, m_data(data)
+		, m_data(std::move(data))
 		, m_url(url)
 	{ }
 	
@@ -195,7 +196,7 @@ public:
  * 
  * \return A \ref Session object that should be freed using delete.
  */
-Session * createSession(const std::string & userAgent);
+Session * createSession(std::string_view userAgent);
 
 } // namespace http
 

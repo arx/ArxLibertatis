@@ -41,12 +41,11 @@ class WinHTTPSession : public Session {
 	HINTERNET m_connection;
 	
 	HINTERNET setup(const Request & request, LPCWSTR method);
-	Response * receive(HINTERNET wrequest, const Request & request,
-	                   std::basic_string<WCHAR> & url);
+	Response * receive(HINTERNET wrequest, const Request & request, std::basic_string<WCHAR> & url);
 	
 public:
 	
-	explicit WinHTTPSession(const std::string & userAgent)
+	explicit WinHTTPSession(std::string_view userAgent)
 		: m_session(WinHttpOpen(platform::WideString(userAgent), WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
 		                        WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0))
 	{ }
@@ -198,7 +197,7 @@ Response * WinHTTPSession::receive(HINTERNET wrequest, const Request & request,
 		data.resize(oldsize + size);
 	}
 	
-	return new Response(status, data, url);
+	return new Response(status, std::move(data), std::move(url));
 }
 
 Response * WinHTTPSession::get(const Request & request) {
@@ -254,7 +253,7 @@ Response * WinHTTPSession::post(const POSTRequest & request) {
 	return receive(wrequest, request, redirect);
 }
 
-Session * createSession(const std::string & userAgent) {
+Session * createSession(std::string_view userAgent) {
 	return new WinHTTPSession(userAgent);
 }
 
