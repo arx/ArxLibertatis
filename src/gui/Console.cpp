@@ -46,10 +46,10 @@
 
 // TODO Share some of this with the save name entry field
 
-void ConsoleBuffer::append(const std::string & text) {
+void ConsoleBuffer::append(std::string_view text) {
 	
-	std::string::const_iterator i = text.begin();
-	std::string::const_iterator end = text.end();
+	auto i = text.begin();
+	auto end = text.end();
 	
 	while(i != end) {
 		
@@ -73,7 +73,7 @@ void ConsoleBuffer::append(const std::string & text) {
 		}
 		
 		// Find the next line break
-		std::string::const_iterator line_end = i;
+		auto line_end = i;
 		size_t length = 0;
 		while(line_end != end && *line_end != '\n'
 		      && length < m_width - m_pos) {
@@ -97,7 +97,7 @@ void MemoryLogger::log(const logger::Source & file, int line, Logger::LogLevel l
 		format(oss, file, line, level, str);
 	}
 	m_buffer->append(oss.str());
-	// TODO This might need additional locking as other threas may log while the main thread has the console open
+	// TODO This might need additional locking as other threads may log while the main thread has the console open
 }
 
 bool ScriptConsole::keyPressed(Keyboard::Key key, KeyModifiers mod) {
@@ -264,7 +264,7 @@ void ScriptConsole::parse(bool allowEmptyPrefix) {
 		
 		if(startPos > m_contextBegin && cursorPos() <= m_contextEnd) {
 			m_suggestionPos = m_contextBegin;
-			std::string context = text().substr(m_contextBegin, cursorPos() - m_contextBegin);
+			std::string_view context = std::string_view(text()).substr(m_contextBegin, cursorPos() - m_contextBegin);
 			entities.autocomplete(context, addContextSuggestion, this);
 		} else if(hasContext && cursorPos() > m_contextBegin) {
 			if(contextEntity() == nullptr) {
@@ -276,11 +276,11 @@ void ScriptConsole::parse(bool allowEmptyPrefix) {
 			// Error - no need provide suggestions
 		} else if(startPos > m_commandBegin && cursorPos() <= commandEnd) {
 			m_suggestionPos = m_commandBegin;
-			std::string command = text().substr(m_commandBegin, cursorPos() - m_commandBegin);
+			std::string_view command = std::string_view(text()).substr(m_commandBegin, cursorPos() - m_commandBegin);
 			ScriptEvent::autocomplete(command, addCommandSuggestion, this);
 		} else if(startPos > m_contextBegin && cursorPos() <= m_contextEnd) {
 			m_suggestionPos = m_contextBegin;
-			std::string command = text().substr(m_contextBegin, cursorPos() - m_contextBegin);
+			std::string_view command = std::string_view(text()).substr(m_contextBegin, cursorPos() - m_contextBegin);
 			ScriptEvent::autocomplete(command, addCommandSuggestion, this);
 		} else if(cursorPos() > m_commandBegin) {
 			if(!ScriptEvent::isCommand(text().substr(m_commandBegin, commandEnd - m_commandBegin))) {
@@ -319,10 +319,10 @@ void ScriptConsole::parse(bool allowEmptyPrefix) {
 		
 		if(cursorPos() <= m_contextEnd && ValidIONum(LastSelectedIONum)
 		   && LastSelectedIONum != EntityHandle_Player) {
-			std::string selected = entities[LastSelectedIONum]->idString();
+			std::string_view selected = entities[LastSelectedIONum]->idString();
 			if(cursorPos() < m_contextBegin
 			   || boost::starts_with(selected, text().substr(m_contextBegin, cursorPos() - m_contextBegin))) {
-				m_completion = Suggestion(0, selected + ".");
+				m_completion = Suggestion(0, std::string(selected) += ".");
 			}
 		}
 		
@@ -385,7 +385,7 @@ void ScriptConsole::close() {
 Entity * ScriptConsole::contextEntity() {
 	
 	Entity * entity = entities.player();
-	std::string id = context();
+	std::string_view id = context();
 	if(!id.empty()) {
 		entity = entities.getById(id, entity);
 	}
@@ -407,13 +407,13 @@ void ScriptConsole::execute() {
 	
 	Entity * entity = contextEntity();
 	if(!entity) {
-		LogError << "Unknown entity: " + context();
+		LogError << "Unknown entity: " << context();
 		return;
 	}
 	
 	EERIE_SCRIPT es;
 	es.valid = true;
-	es.data = command() + "\naccept\n";
+	es.data = std::string(command()) += "\naccept\n";
 	// TODO Some script commands (timers, etc.) store references to the script
 	
 	// TODO Allow the "context.command" syntax in scripts too
@@ -438,7 +438,7 @@ void ScriptConsole::select(int dir) {
 	
 	int selection = glm::clamp(m_selection + dir, -int(m_history.size()), int(m_suggestions.size()));
 	if(selection < 0) {
-		std::string prefix = m_originalText.substr(0, m_originalCursorPos);
+		std::string_view prefix = std::string_view(m_originalText).substr(0, m_originalCursorPos);
 		while(true) {
 			if(selection == 0) {
 				// Reached history start

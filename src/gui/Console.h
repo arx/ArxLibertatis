@@ -22,6 +22,7 @@
 
 #include <vector>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <deque>
 #include <stddef.h>
@@ -62,7 +63,7 @@ public:
 		return  m_lines[(m_line + 1 + index) % m_lines.size()];
 	}
 	
-	void append(const std::string & text);
+	void append(std::string_view text);
 	
 };
 
@@ -108,9 +109,9 @@ class ScriptConsole final : protected BasicTextInput {
 	size_t m_commandBegin; //!< Start of the command in \ref text()
 	size_t m_suggestionPos; //!< Start of the command in \ref text()
 	
-	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
-	void textUpdated();
-	void cursorUpdated();
+	bool keyPressed(Keyboard::Key key, KeyModifiers mod) override;
+	void textUpdated() override;
+	void cursorUpdated() override;
 	void paste(std::string_view text) override;
 	
 	/*!
@@ -157,10 +158,10 @@ public:
 	void close();
 	
 	//! ID of the current context entity or an empty string
-	std::string context() { return text().substr(m_contextBegin, m_contextEnd - m_contextBegin); }
+	std::string_view context() { return std::string_view(text()).substr(m_contextBegin, m_contextEnd - m_contextBegin); }
 	
 	//! Current command
-	std::string command() { return text().substr(m_commandBegin); }
+	std::string_view command() { return std::string_view(text()).substr(m_commandBegin); }
 	
 	//! Current context entity
 	Entity * contextEntity();
