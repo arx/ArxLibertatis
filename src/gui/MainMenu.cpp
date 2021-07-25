@@ -149,7 +149,7 @@ public:
 		}
 		
 		{
-			std::string text = getLocalised("system_menu_editquest_newsavegame");
+			std::string_view text = getLocalised("system_menu_editquest_newsavegame");
 			TextInputWidget * txt = new TextInputWidget(hFontMenu, text, m_rect);
 			txt->setMaxLength(255); // Don't allow the user to enter names that cannot be stored in save files
 			txt->unfocused = [this](TextInputWidget * /* widget */) {
@@ -647,7 +647,7 @@ public:
 		m_mode = config.video.mode;
 		
 		{
-			std::string label = getLocalised("system_menus_options_videos_full_screen");
+			std::string_view label = getLocalised("system_menus_options_videos_full_screen");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.fullscreen);
 			cb->stateChanged = [this](bool checked) {
@@ -662,7 +662,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_resolution");
+			std::string_view label = getLocalised("system_menus_options_video_resolution");
 			m_resolutionSlider = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
 			m_resolutionSlider->valueChanged = [this](int pos, std::string_view /* string */) {
 				const RenderWindow::DisplayModes & modes = mainApp->getWindow()->getDisplayModes();
@@ -706,7 +706,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_gamma");
+			std::string_view label = getLocalised("system_menus_options_video_gamma");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [this](int value) {
 				if(m_gammaSlider->isEnabled()) {
@@ -719,7 +719,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_videos_minimize_on_focus_lost");
+			std::string_view label = getLocalised("system_menus_options_videos_minimize_on_focus_lost");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->stateChanged = [this](bool checked) {
 				if(m_minimizeOnFocusLostCheckbox->isEnabled()) {
@@ -735,7 +735,7 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_vsync");
+			std::string_view label = getLocalised("system_menus_options_video_vsync");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) {
 				config.video.vsync = pos > 1 ? -1 : pos;
@@ -754,7 +754,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_fps_limit");
+			std::string_view label = getLocalised("system_menus_options_video_fps_limit");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view string) {
 				if(pos == 0) {
@@ -812,7 +812,7 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_fov");
+			std::string_view label = getLocalised("system_menus_options_video_fov");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) noexcept {
 				config.video.fov = 75.f + float(value) * 5.f;
@@ -822,7 +822,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_videos_view_bobbing");
+			std::string_view label = getLocalised("system_menus_options_videos_view_bobbing");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.viewBobbing);
 			cb->stateChanged = [](bool checked) noexcept {
@@ -833,7 +833,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_videos_screen_shake");
+			std::string_view label = getLocalised("system_menus_options_videos_screen_shake");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.screenShake);
 			cb->stateChanged = [](bool checked) noexcept {
@@ -934,7 +934,7 @@ public:
 		
 		// Renderer selection
 		{
-			std::string label = getLocalised("system_menus_options_video_renderer");
+			std::string_view label = getLocalised("system_menus_options_video_renderer");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			slider->valueChanged = [](int pos, std::string_view /* string */) {
 				switch(pos) {
@@ -955,7 +955,7 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			std::string label = getLocalised("system_menus_options_detail");
+			std::string_view label = getLocalised("system_menus_options_detail");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) {
 				ARXMenu_Options_Video_SetDetailsQuality(pos);
@@ -968,7 +968,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_brouillard");
+			std::string_view label = getLocalised("system_menus_options_video_brouillard");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				ARXMenu_Options_Video_SetFogDistance(value);
@@ -978,7 +978,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_antialiasing");
+			std::string_view label = getLocalised("system_menus_options_video_antialiasing");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.antialiasing);
 			cb->stateChanged = [this](bool checked) {
@@ -989,7 +989,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_colorkey_antialiasing");
+			std::string_view label = getLocalised("system_menus_options_video_colorkey_antialiasing");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.colorkeyAntialiasing);
 			cb->stateChanged = [](bool checked) {
@@ -1000,7 +1000,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_alpha_cutout_antialising");
+			std::string_view label = getLocalised("system_menus_options_video_alpha_cutout_antialising");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.video.alphaCutoutAntialiasing = pos;
@@ -1019,7 +1019,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_texture_filter_anisotropic");
+			std::string_view label = getLocalised("system_menus_options_video_texture_filter_anisotropic");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view string) {
 				int anisotropy = 1;
@@ -1118,7 +1118,7 @@ public:
 		reserveBottom();
 		
 		{
-			std::string label = getLocalised("system_menus_options_video_crosshair");
+			std::string_view label = getLocalised("system_menus_options_video_crosshair");
 			label = getLocalised("system_menus_options_interface_crosshair", label);
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.showCrosshair);
@@ -1129,7 +1129,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_limit_speech_width");
+			std::string_view label = getLocalised("system_menus_options_interface_limit_speech_width");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.limitSpeechWidth);
 			cb->stateChanged = [](bool checked) noexcept {
@@ -1139,7 +1139,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_cinematic_widescreen_mode");
+			std::string_view label = getLocalised("system_menus_options_interface_cinematic_widescreen_mode");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
 			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.interface.cinematicWidescreenMode = CinematicWidescreenMode(pos);
@@ -1154,7 +1154,7 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_hud_scale");
+			std::string_view label = getLocalised("system_menus_options_interface_hud_scale");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				config.interface.hudScale = float(value) * 0.1f;
@@ -1165,7 +1165,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_hud_scale_integer");
+			std::string_view label = getLocalised("system_menus_options_interface_hud_scale_integer");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.hudScaleInteger);
 			cb->stateChanged = [](bool checked ) {
@@ -1176,7 +1176,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_book_scale");
+			std::string_view label = getLocalised("system_menus_options_interface_book_scale");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) noexcept {
 				config.interface.bookScale = float(value) * 0.1f;
@@ -1186,7 +1186,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_book_scale_integer");
+			std::string_view label = getLocalised("system_menus_options_interface_book_scale_integer");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.bookScaleInteger);
 			cb->stateChanged = [](bool checked) noexcept {
@@ -1196,7 +1196,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_cursor_scale");
+			std::string_view label = getLocalised("system_menus_options_interface_cursor_scale");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) noexcept {
 				config.interface.cursorScale = float(value) * 0.1f;
@@ -1206,7 +1206,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_cursor_scale_integer");
+			std::string_view label = getLocalised("system_menus_options_interface_cursor_scale_integer");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.cursorScaleInteger);
 			cb->stateChanged = [](bool checked) noexcept {
@@ -1216,7 +1216,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_scale_filter");
+			std::string_view label = getLocalised("system_menus_options_interface_scale_filter");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.interface.scaleFilter = UIScaleFilter(pos);
@@ -1228,7 +1228,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_font_size");
+			std::string_view label = getLocalised("system_menus_options_interface_font_size");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				config.interface.fontSize = 0.75f + float(value) / 20.f;
@@ -1239,7 +1239,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface_font_weight");
+			std::string_view label = getLocalised("system_menus_options_interface_font_weight");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) {
 				config.interface.fontWeight = pos;
@@ -1278,7 +1278,7 @@ public:
 		
 		// Audio backend selection
 		{
-			std::string label = getLocalised("system_menus_options_audio_device");
+			std::string_view label = getLocalised("system_menus_options_audio_device");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
 			slider->valueChanged = [](int pos, std::string_view string) {
 				ARXMenu_Options_Audio_SetDevice((pos == 0) ? "auto" : std::string_view(string));
@@ -1297,7 +1297,7 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			std::string label = getLocalised("system_menus_options_audio_master_volume");
+			std::string_view label = getLocalised("system_menus_options_audio_master_volume");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				ARXMenu_Options_Audio_SetMasterVolume(value);
@@ -1307,7 +1307,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_audio_effects_volume");
+			std::string_view label = getLocalised("system_menus_options_audio_effects_volume");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				ARXMenu_Options_Audio_SetSfxVolume(value);
@@ -1317,7 +1317,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_audio_speech_volume");
+			std::string_view label = getLocalised("system_menus_options_audio_speech_volume");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				ARXMenu_Options_Audio_SetSpeechVolume(value);
@@ -1327,7 +1327,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_audio_ambiance_volume");
+			std::string_view label = getLocalised("system_menus_options_audio_ambiance_volume");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				ARXMenu_Options_Audio_SetAmbianceVolume(value);
@@ -1337,7 +1337,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_audio_mute_on_focus_lost");
+			std::string_view label = getLocalised("system_menus_options_audio_mute_on_focus_lost");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.audio.muteOnFocusLost);
 			cb->stateChanged = [](bool checked) {
@@ -1352,7 +1352,7 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			std::string label = getLocalised("system_menus_options_audio_eax");
+			std::string_view label = getLocalised("system_menus_options_audio_eax");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			if(audio::isReverbSupported()) {
 				cb->setChecked(config.audio.eax);
@@ -1368,7 +1368,7 @@ public:
 		
 		audio::HRTFStatus hrtf = audio::getHRTFStatus();
 		if(hrtf != audio::HRTFUnavailable) {
-			std::string label = getLocalised("system_menus_options_audio_hrtf");
+			std::string_view label = getLocalised("system_menus_options_audio_hrtf");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			slider->valueChanged = [](int pos, std::string_view /* string */) {
 				switch(pos) {
@@ -1426,7 +1426,7 @@ public:
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
 		
 		{
-			std::string label = getLocalised("system_menus_options_input_invert_mouse");
+			std::string_view label = getLocalised("system_menus_options_input_invert_mouse");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.invertMouse);
 			cb->stateChanged = [](bool checked) {
@@ -1437,7 +1437,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_auto_ready_weapon");
+			std::string_view label = getLocalised("system_menus_options_auto_ready_weapon");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.input.autoReadyWeapon = AutoReadyWeapon(pos);
@@ -1450,7 +1450,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_input_mouse_look_toggle");
+			std::string_view label = getLocalised("system_menus_options_input_mouse_look_toggle");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.mouseLookToggle);
 			cb->stateChanged = [](bool checked) noexcept {
@@ -1460,7 +1460,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_input_mouse_sensitivity");
+			std::string_view label = getLocalised("system_menus_options_input_mouse_sensitivity");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				config.input.mouseSensitivity = glm::clamp(value, 0, 10);
@@ -1471,7 +1471,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_input_mouse_acceleration");
+			std::string_view label = getLocalised("system_menus_options_input_mouse_acceleration");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				config.input.mouseAcceleration = glm::clamp(value, 0, 10);
@@ -1482,7 +1482,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_raw_mouse_input");
+			std::string_view label = getLocalised("system_menus_options_raw_mouse_input");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.rawMouseInput);
 			cb->stateChanged = [](bool checked) {
@@ -1493,7 +1493,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_autodescription");
+			std::string_view label = getLocalised("system_menus_autodescription");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.autoDescription);
 			cb->stateChanged = [](bool checked) noexcept {
@@ -1503,7 +1503,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_misc_quicksave_slots");
+			std::string_view label = getLocalised("system_menus_options_misc_quicksave_slots");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->setMinimum(1);
 			sld->valueChanged = [](int value) noexcept {
@@ -1514,7 +1514,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_border_turning");
+			std::string_view label = getLocalised("system_menus_border_turning");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.borderTurning);
 			cb->stateChanged = [](bool checked) noexcept {
@@ -1524,7 +1524,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_alt_rune_recognition");
+			std::string_view label = getLocalised("system_menus_alt_rune_recognition");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.useAltRuneRecognition);
 			cb->stateChanged = [](bool checked) noexcept {
@@ -1534,7 +1534,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_alt_bow_aim");
+			std::string_view label = getLocalised("system_menus_alt_bow_aim");
 			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.improvedBowAim);
 			cb->stateChanged = [](bool checked) noexcept {
@@ -1544,7 +1544,7 @@ public:
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_quick_level_transition");
+			std::string_view label = getLocalised("system_menus_quick_level_transition");
 			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.input.quickLevelTransition = QuickLevelTransition(pos);

@@ -46,14 +46,14 @@ bool initLocalisation();
  * \param name The string to be looked up
  * \return The localized string based on the currently loaded locale file
  */
-std::string getLocalised(std::string_view name);
+std::string_view getLocalised(std::string_view name);
 
 /*!
  * Returns the localized string for the given key name
  * \param name The string to be looked up
  * \return The localized string based on the currently loaded locale file
  */
-std::string getLocalised(std::string_view name, std::string_view default_value);
+std::string_view getLocalised(std::string_view name, std::string_view default_value);
 
 long getLocalisedKeyCount(std::string_view sectionname);
 

@@ -1416,16 +1416,10 @@ void SpellsPage::drawSpells() const {
 			UNICODE_ARXDrawTextCenter(hFontInBook, bookPos + Vec2f(111, 26) * scale, getLocalised(spellInfo.name), Color::none);
 			
 			pTextManage->Clear();
-			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-				float(g_size.center().x),
-				12,
-				float(g_size.center().x) * 0.82f,
-				getLocalised(spellInfo.description),
-				Color(232, 204, 143),
-				PlatformDurationMs(1000),
-				0.01f,
-				2,
-				0);
+			UNICODE_ARXDrawTextCenteredScroll(hFontInGame, float(g_size.center().x), 12,
+			                                  float(g_size.center().x) * 0.82f,
+			                                  std::string(getLocalised(spellInfo.description)),
+			                                  Color(232, 204, 143), PlatformDurationMs(1000), 0.01f, 2, 0);
 			
 			size_t count = 0;
 			
@@ -1530,7 +1524,7 @@ void QuestBookPage::manage() {
 	if(m_questBook.type() == Note::Undefined) {
 		std::string text;
 		for(size_t i = 0; i < g_playerQuestLogEntries.size(); ++i) {
-			std::string quest = getLocalised(g_playerQuestLogEntries[i]);
+			std::string_view quest = getLocalised(g_playerQuestLogEntries[i]);
 			if(!quest.empty()) {
 				text += quest;
 				text += "\n\n";

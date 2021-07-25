@@ -409,10 +409,10 @@ long getLocalisedKeyCount(std::string_view sectionname) {
 	return g_localisation.getKeyCount(sectionname);
 }
 
-std::string getLocalised(std::string_view name) {
-	return std::string(g_localisation.getKey(name, std::string_view(), name));
+std::string_view getLocalised(std::string_view name) {
+	return g_localisation.getKey(name, std::string_view(), name);
 }
 
-std::string getLocalised(std::string_view name, const std::string_view default_value) {
-	return std::string(g_localisation.getKey(name, std::string_view(), default_value));
+std::string_view getLocalised(std::string_view name, const std::string_view default_value) {
+	return g_localisation.getKey(name, std::string_view(), default_value);
 }

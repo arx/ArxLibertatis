@@ -626,7 +626,7 @@ static void print_ident(SaveBlock & save, std::string_view ident) {
 	
 	std::string locname = toLocalizationKey(util::loadString(ais.locname));
 	if(!locname.empty()) {
-		std::string name = getLocalised(locname);
+		std::string_view name = getLocalised(locname);
 		if(name.empty()) {
 			std::cout << " = " << locname;
 		} else {

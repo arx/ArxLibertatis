@@ -260,7 +260,7 @@ static Font * createFont(const res::path & fontFace, std::string_view configSize
 	arx_assert(scaleFactor < 1000.f); // TODO better maximum
 	
 	try {
-		std::string configSize = getLocalised(configSizeKey, std::string_view());
+		std::string_view configSize = getLocalised(configSizeKey, std::string_view());
 		if(!configSize.empty()) {
 			fontSize = boost::lexical_cast<unsigned int>(configSize);
 		}
