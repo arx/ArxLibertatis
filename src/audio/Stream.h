@@ -45,10 +45,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_AUDIO_STREAM_H
 
 #include <stddef.h>
+#include <memory>
 
 #include "audio/AudioTypes.h"
-
-class PakFileHandle;
+#include "io/resource/PakReader.h"
 
 namespace res { class path; }
 
@@ -60,10 +60,9 @@ public:
 	
 	virtual ~Stream() { }
 	
-	virtual aalError setStream(PakFileHandle * stream) = 0;
+	virtual aalError setStream(std::unique_ptr<PakFileHandle> stream) = 0;
 	virtual aalError setPosition(size_t position) = 0;
 	
-	virtual PakFileHandle * getStream() = 0;
 	virtual aalError getFormat(PCMFormat & format) = 0;
 	virtual size_t getLength() = 0;
 	

@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstring>
 #include <cstdlib>
+#include <utility>
 
 #include "audio/codec/ADPCM.h"
 #include "audio/codec/Codec.h"
@@ -165,18 +166,18 @@ StreamWAV::~StreamWAV() {
 	delete codec;
 }
 
-aalError StreamWAV::setStream(PakFileHandle * stream) {
+aalError StreamWAV::setStream(std::unique_ptr<PakFileHandle> stream) {
 	
 	if(!stream) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	m_stream = stream;
+	m_stream = std::move(stream);
 	
 	m_header.resize(sizeof(WaveHeader));
 	WaveHeader * header = reinterpret_cast<WaveHeader *>(m_header.data());
 	
-	ChunkFile wave(m_stream);
+	ChunkFile wave(m_stream.get());
 	
 	// Check for 'RIFF' chunk id and skip file size
 	if(!wave.check("RIFF") || !wave.skip(4) || !wave.check("WAVE") || !wave.find("fmt ")
@@ -238,7 +239,7 @@ aalError StreamWAV::setStream(PakFileHandle * stream) {
 	
 	offset = m_stream->tell();
 	
-	codec->setStream(m_stream);
+	codec->setStream(m_stream.get());
 	
 	if(aalError error = codec->setHeader(header)) {
 		return error;
@@ -261,10 +262,6 @@ aalError StreamWAV::setPosition(size_t position) {
 	}
 	
 	return codec->setPosition(cursor);
-}
-
-PakFileHandle * StreamWAV::getStream() {
-	return m_stream;
 }
 
 aalError StreamWAV::getFormat(PCMFormat & format) {

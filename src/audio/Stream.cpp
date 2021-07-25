@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Stream.h"
 
+#include <utility>
+
 #include "audio/AudioGlobal.h"
 #include "audio/AudioResource.h"
 #include "audio/codec/WAV.h"
@@ -63,9 +65,8 @@ Stream * createStream(const res::path & name) {
 	
 	Stream * stream = new StreamWAV;
 	
-	if(stream->setStream(file)) {
+	if(stream->setStream(std::unique_ptr<PakFileHandle>(file))) {
 		delete stream;
-		delete file;
 		return nullptr;
 	}
 	
@@ -73,8 +74,6 @@ Stream * createStream(const res::path & name) {
 }
 
 void deleteStream(Stream * & stream) {
-	PakFileHandle * file = stream->getStream();
-	delete file;
 	delete stream;
 	stream = nullptr;
 }
