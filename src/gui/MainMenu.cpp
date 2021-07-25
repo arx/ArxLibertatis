@@ -462,15 +462,13 @@ public:
 		reserveBottom();
 		
 		{
-			std::string label = getLocalised("system_menus_main_editquest_load");
-			m_loadButton = new TextWidget(hFontMenu, label);
+			m_loadButton = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_load"));
 			m_loadButton->setTargetPage(Page_Load);
 			addCenter(m_loadButton);
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_main_editquest_save");
-			m_saveButton = new TextWidget(hFontMenu, label);
+			m_saveButton = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_save"));
 			m_saveButton->setTargetPage(Page_Save);
 			addCenter(m_saveButton);
 		}
@@ -503,43 +501,37 @@ public:
 		reserveBottom();
 		
 		{
-			std::string label = getLocalised("system_menus_options_localization");
-			TextWidget * txt = new TextWidget(hFontMenu, label);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_localization"));
 			txt->setTargetPage(Page_Localization);
 			addCenter(txt);
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_video");
-			TextWidget * txt = new TextWidget(hFontMenu, label);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_video"));
 			txt->setTargetPage(Page_OptionsVideo);
 			addCenter(txt);
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_render");
-			TextWidget * txt = new TextWidget(hFontMenu, label);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_render"));
 			txt->setTargetPage(Page_OptionsRender);
 			addCenter(txt);
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_interface");
-			TextWidget * txt = new TextWidget(hFontMenu, label);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_interface"));
 			txt->setTargetPage(Page_OptionsInterface);
 			addCenter(txt);
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_audio");
-			TextWidget * txt = new TextWidget(hFontMenu, label);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_audio"));
 			txt->setTargetPage(Page_OptionsAudio);
 			addCenter(txt);
 		}
 		
 		{
-			std::string label = getLocalised("system_menus_options_input");
-			TextWidget * txt = new TextWidget(hFontMenu, label);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_input"));
 			txt->setTargetPage(Page_OptionsInput);
 			addCenter(txt);
 		}
@@ -1569,8 +1561,7 @@ public:
 		reserveBottom();
 		
 		{
-			std::string label = getLocalised("system_menus_options_input_customize_controls");
-			TextWidget * txt = new TextWidget(hFontMenu, label);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_input_customize_controls"));
 			txt->setTargetPage(Page_OptionsInputCustomizeKeys1);
 			addCenter(txt);
 		}
@@ -1866,8 +1857,7 @@ public:
 		addBackButton(Page_OptionsInput);
 		
 		{
-			std::string label = getLocalised("system_menus_options_input_customize_default");
-			TextWidget * txt = new TextWidget(hFontMenu, label);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_input_customize_default"));
 			txt->clicked = [this](Widget * /* widget */) {
 				resetActionKeys();
 			};
@@ -1932,8 +1922,7 @@ public:
 		addBackButton(Page_OptionsInputCustomizeKeys1);
 		
 		{
-			std::string label = getLocalised("system_menus_options_input_customize_default");
-			TextWidget * txt = new TextWidget(hFontMenu, label);
+			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_input_customize_default"));
 			txt->clicked = [this](Widget * /* widget */) {
 				resetActionKeys();
 			};
