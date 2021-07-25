@@ -47,8 +47,7 @@ std::string flagNames(const FlagName<T> (&names)[N], const T flags) {
 	return ss.str();
 }
 
-namespace arx {
-namespace debug {
+namespace arx::debug {
 
 std::ostream & operator<<(std::ostream & ss, Vec2i value);
 std::ostream & operator<<(std::ostream & ss, Vec3f value);
@@ -56,8 +55,7 @@ std::ostream & operator<<(std::ostream & ss, Anglef value);
 std::ostream & operator<<(std::ostream & ss, ResourcePool value);
 std::ostream & operator<<(std::ostream & s, audio::SourceStatus val);
 
-} // namespace debug
-} // namespace arx
+} // namespace arx::debug
 
 class DebugBox {
 	

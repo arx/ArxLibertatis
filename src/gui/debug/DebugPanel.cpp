@@ -31,8 +31,7 @@
 #include "math/Angle.h"
 
 
-namespace arx {
-namespace debug {
+namespace arx::debug {
 
 std::ostream & operator<<(std::ostream & ss, Vec2i value) {
 	ss << boost::format("(%d, %d)") % value.x % value.y;
@@ -71,8 +70,7 @@ std::ostream & operator<<(std::ostream & s, audio::SourceStatus val) {
 	return s;
 }
 
-} // namespace debug
-} // namespace arx
+} // namespace arx::debug
 
 DebugBox::DebugBox(const Vec2i & pos, std::string && title)
 	: m_pos(pos)
