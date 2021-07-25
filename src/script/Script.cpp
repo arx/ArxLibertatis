@@ -47,11 +47,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/Script.h"
 
 #include <stddef.h>
-
-#include <sstream>
 #include <cstdio>
 #include <algorithm>
+#include <exception>
 #include <limits>
+#include <sstream>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -419,18 +419,17 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 		
 		case '$': {
 			
-			if(name == "^$param1") {
-				txtcontent = context.getParameter(0);
-				return TYPE_TEXT;
-			}
-			
-			if(name == "^$param2") {
-				txtcontent = context.getParameter(1);
-				return TYPE_TEXT;
-			}
-			
-			if(name == "^$param3") {
-				txtcontent = context.getParameter(2);
+			if(boost::starts_with(name, "^$param")) {
+				try {
+					const ScriptParameters & params = context.getParameters();
+					size_t index = boost::lexical_cast<std::size_t>(name.substr(7));
+					if(index == 0 || index > params.size()) {
+						throw std::exception();
+					}
+					txtcontent = params[index - 1];
+				} catch(...) {
+					txtcontent.clear();
+				}
 				return TYPE_TEXT;
 			}
 			
@@ -447,18 +446,17 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 		
 		case '&': {
 			
-			if(name == "^&param1") {
-				*fcontent = float(atof(context.getParameter(0).c_str()));
-				return TYPE_FLOAT;
-			}
-			
-			if(name == "^&param2") {
-				*fcontent = float(atof(context.getParameter(1).c_str()));
-				return TYPE_FLOAT;
-			}
-			
-			if(name == "^&param3") {
-				*fcontent = float(atof(context.getParameter(2).c_str()));
+			if(boost::starts_with(name, "^&param")) {
+				try {
+					const ScriptParameters & params = context.getParameters();
+					size_t index = boost::lexical_cast<std::size_t>(name.substr(7));
+					if(index == 0 || index > params.size()) {
+						throw std::exception();
+					}
+					*fcontent = boost::lexical_cast<float>(params[index - 1]);
+				} catch(...) {
+					*fcontent = 0.f;
+				}
 				return TYPE_FLOAT;
 			}
 			
@@ -474,26 +472,25 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 		
 		case '#': {
 			
+			if(boost::starts_with(name, "^#param")) {
+				try {
+					const ScriptParameters & params = context.getParameters();
+					size_t index = boost::lexical_cast<std::size_t>(name.substr(7));
+					if(index == 0 || index > params.size()) {
+						throw std::exception();
+					}
+					*lcontent = boost::lexical_cast<long>(params[index - 1]);
+				} catch(...) {
+					*lcontent = 0;
+				}
+				return TYPE_LONG;
+			}
+			
 			if(name == "^#playerdist") {
 				if(context.getEntity()) {
 					*lcontent = long(fdist(player.pos, context.getEntity()->pos));
 					return TYPE_LONG;
 				}
-			}
-			
-			if(name == "^#param1") {
-				*lcontent = atol(context.getParameter(0).c_str());
-				return TYPE_LONG;
-			}
-			
-			if(name == "^#param2") {
-				*lcontent = atol(context.getParameter(1).c_str());
-				return TYPE_LONG;
-			}
-			
-			if(name == "^#param3") {
-				*lcontent = atol(context.getParameter(2).c_str());
-				return TYPE_LONG;
 			}
 			
 			if(name == "^#timer1") {

@@ -4,6 +4,7 @@
 Modding:
 
 * Added support for level numbers above 27
+* Added support for script event parameters above 3 (e.g. ^$param4)
 
 ################################################################################
 

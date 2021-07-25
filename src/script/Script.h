@@ -465,8 +465,6 @@ public:
 		: ScriptParameters(std::to_string(parameter))
 	{ }
 	
-	std::string get(size_t i) const { return i < size() ? operator[](i) : std::string(); }
-	
 	static ScriptParameters parse(std::string_view str);
 	
 	using std::vector<std::string>::push_back;
