@@ -49,14 +49,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <cstring>
+#include <limits>
 #include <ostream>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include <utility>
 #include <vector>
-
-#include <limits>
-#include <boost/utility/enable_if.hpp>
 
 #include "core/TimeTypes.h"
 #include "util/Flags.h"
@@ -460,7 +459,7 @@ public:
 	{ }
 	template <typename T>
 	/* implicit */ ScriptParameters(T parameter,
-	                                typename boost::enable_if_c<std::numeric_limits<T>::is_specialized, bool>::type
+	                                typename std::enable_if_t<std::numeric_limits<T>::is_specialized, bool>
 	                                /* enable */ = true)
 		: ScriptParameters(std::to_string(parameter))
 	{ }
@@ -470,7 +469,7 @@ public:
 	using std::vector<std::string>::push_back;
 	
 	template <typename T>
-	typename boost::enable_if_c<std::numeric_limits<T>::is_specialized>::type push_back(T parameter) {
+	typename std::enable_if_t<std::numeric_limits<T>::is_specialized> push_back(T parameter) {
 		push_back(std::to_string(parameter));
 	}
 	
