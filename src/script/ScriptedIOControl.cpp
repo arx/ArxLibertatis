@@ -43,6 +43,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedIOControl.h"
 
+#include <string>
+#include <string_view>
+
 #include "core/Core.h"
 #include "game/EntityManager.h"
 #include "game/Equipment.h"
@@ -671,7 +674,7 @@ class AbstractDamageCommand : public Command {
 	
 protected:
 	
-	AbstractDamageCommand(const std::string & name, long ioflags = 0) : Command(name, ioflags) { }
+	AbstractDamageCommand(std::string_view name, long ioflags = 0) : Command(name, ioflags) { }
 	
 	DamageType getDamageType(Context & context) {
 		
