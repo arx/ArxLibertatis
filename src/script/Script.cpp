@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <limits>
 
+#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "ai/Paths.h"
@@ -100,7 +101,7 @@ long FORBID_SCRIPT_IO_CREATION = 0;
 std::vector<SCR_TIMER> g_scriptTimers;
 static size_t g_activeScriptTimers = 0;
 
-bool isLocalVariable(const std::string & name) {
+bool isLocalVariable(std::string_view name) {
 	
 	arx_assert(!name.empty());
 	
@@ -149,7 +150,7 @@ std::ostream & operator<<(std::ostream & os, const SCRIPT_VAR & var) {
 	return os;
 }
 
-ScriptEventName ScriptEventName::parse(const std::string & name) {
+ScriptEventName ScriptEventName::parse(std::string_view name) {
 	
 	for(size_t i = 1; i < SM_MAXCMD; i++) {
 		const std::string & event = AS_EVENT[i].name;
@@ -161,7 +162,7 @@ ScriptEventName ScriptEventName::parse(const std::string & name) {
 	return ScriptEventName(name);
 }
 
-std::string ScriptEventName::toString() const {
+std::string_view ScriptEventName::toString() const {
 	
 	if(!getName().empty()) {
 		arx_assert(getId() == SM_NULL);
@@ -169,7 +170,7 @@ std::string ScriptEventName::toString() const {
 	}
 	
 	arx_assert(getId() < SM_MAXCMD && AS_EVENT[getId()].name.length() > 3);
-	return AS_EVENT[getId()].name.substr(3);
+	return std::string_view(AS_EVENT[getId()].name).substr(3);
 }
 
 DisabledEvents ScriptEventName::toDisabledEventsMask() const {
@@ -207,7 +208,7 @@ std::ostream & operator<<(std::ostream & os, const ScriptEventName & event) {
 	return os << AS_EVENT[event.getId()].name << " event";
 }
 
-ScriptParameters ScriptParameters::parse(const std::string & str) {
+ScriptParameters ScriptParameters::parse(std::string_view str) {
 	
 	ScriptParameters result;
 	
@@ -218,11 +219,11 @@ ScriptParameters ScriptParameters::parse(const std::string & str) {
 	for(size_t start = 0; start < str.length(); ) {
 		
 		size_t end = str.find(' ', start);
-		if(end == std::string::npos) {
+		if(end == std::string_view::npos) {
 			end = str.length();
 		}
 		
-		result.push_back(str.substr(start, end - start));
+		result.emplace_back(str.substr(start, end - start));
 		
 		start = end + 1;
 	}
@@ -244,7 +245,7 @@ std::ostream & operator<<(std::ostream & os, const ScriptParameters & parameters
 	return os;
 }
 
-size_t FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
+size_t FindScriptPos(const EERIE_SCRIPT * es, std::string_view str) {
 	
 	// TODO(script-parser) remove, respect quoted strings
 	
@@ -399,19 +400,19 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	
 }
 
-static Entity * getEntityParam(const std::string & variable, size_t offset, const script::Context & context) {
+static Entity * getEntityParam(std::string_view variable, size_t offset, const script::Context & context) {
 	
 	if(variable.length() >= offset) {
-		return entities.getById(variable.c_str() + offset, context.getEntity());
+		return entities.getById(variable.substr(offset), context.getEntity());
 	}
 	
 	return context.getEntity();
 }
 
-ValueType getSystemVar(const script::Context & context, const std::string & name,
+ValueType getSystemVar(const script::Context & context, std::string_view name,
                        std::string & txtcontent, float * fcontent, long * lcontent) {
 	
-	arx_assert_msg(!name.empty() && name[0] == '^', "bad system variable: \"%s\"", name.c_str());
+	arx_assert_msg(!name.empty() && name[0] == '^', "bad system variable: \"%s\"", std::string(name).c_str());
 	
 	char c = (name.length() < 2) ? '\0' : name[1];
 	switch(c) {
@@ -653,19 +654,16 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			
 			if(boost::starts_with(name, "^realdist_")) {
 				if(context.getEntity()) {
-					const char * obj = name.c_str() + 10;
 					
-					if(!strcmp(obj, "player")) {
+					EntityHandle t = entities.getById(name.substr(10));
+					if(t == EntityHandle_Player) {
 						if(context.getEntity()->requestRoomUpdate) {
 							UpdateIORoom(context.getEntity());
 						}
 						long Player_Room = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
 						*fcontent = SP_GetRoomDist(context.getEntity()->pos, player.pos, context.getEntity()->room, Player_Room);
 						return TYPE_FLOAT;
-					}
-					
-					EntityHandle t = entities.getById(obj);
-					if(ValidIONum(t)) {
+					} else if(ValidIONum(t)) {
 						if((context.getEntity()->show == SHOW_FLAG_IN_SCENE
 						    || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
 						   && (entities[t]->show == SHOW_FLAG_IN_SCENE
@@ -707,20 +705,23 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			}
 			
 			if(boost::starts_with(name, "^rnd_")) {
-				const char * max = name.c_str() + 5;
+				std::string_view max = name.substr(5);
 				// TODO should max be inclusive or exclusive?
 				// if inclusive, use proper integer random, otherwise fix rnd()?
-				if(max[0]) {
-					float t = float(atof(max));
-					*fcontent = Random::getf(0.f, t);
-					return TYPE_FLOAT;
+				if(!max.empty()) {
+					try {
+						*fcontent = Random::getf(0.f, boost::lexical_cast<float>(max));
+					} catch(...) {
+						*fcontent = 0;
+					}
+				} else {
+					*fcontent = 0;
 				}
-				*fcontent = 0;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^rune_")) {
-				std::string temp = name.substr(6);
+				std::string_view temp = name.substr(6);
 				*lcontent = 0;
 				if(temp == "aam") {
 					*lcontent = player.rune_flags & FLAG_AAM;
@@ -772,7 +773,7 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 		case 'i': {
 			
 			if(boost::starts_with(name, "^inzone_")) {
-				const char * zone = name.c_str() + 8;
+				std::string_view zone = name.substr(8);
 				Zone * ap = getZoneByName(zone);
 				*lcontent = 0;
 				if(context.getEntity() && ap) {
@@ -976,15 +977,12 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			
 			if(boost::starts_with(name, "^dist_")) {
 				if(context.getEntity()) {
-					const char * obj = name.c_str() + 6;
 					
-					if(!strcmp(obj, "player")) {
+					EntityHandle t = entities.getById(name.substr(6));
+					if(t == EntityHandle_Player) {
 						*fcontent = fdist(player.pos, context.getEntity()->pos);
 						return TYPE_FLOAT;
-					}
-					
-					EntityHandle t = entities.getById(obj);
-					if(ValidIONum(t)) {
+					} else if(ValidIONum(t)) {
 						if((context.getEntity()->show == SHOW_FLAG_IN_SCENE
 						    || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
 						   && (entities[t]->show == SHOW_FLAG_IN_SCENE
@@ -1178,7 +1176,7 @@ ValueType getSystemVar(const script::Context & context, const std::string & name
 			}
 			
 			if(boost::starts_with(name, "^playerspell_")) {
-				std::string temp = name.substr(13);
+				std::string_view temp = name.substr(13);
 				
 				SpellType id = GetSpellId(temp);
 				if(id != SPELL_NONE) {
@@ -1302,10 +1300,10 @@ static SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VARIABLES & _svff) {
 	return v;
 }
 
-static SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES & svf, const std::string & name) {
+static SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES & svf, std::string_view name) {
 	
 	for(SCRIPT_VARIABLES::iterator it = svf.begin(); it != svf.end(); ++it) {
-		if(name == it->name) {
+		if(it->name == name) {
 			return &(*it);
 		}
 	}
@@ -1313,10 +1311,10 @@ static SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES & svf, const std::string & na
 	return nullptr;
 }
 
-const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, const std::string & name) {
+const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, std::string_view name) {
 	
 	for(SCRIPT_VARIABLES::const_iterator it = svf.begin(); it != svf.end(); ++it) {
-		if(name == it->name) {
+		if(it->name == name) {
 			return &(*it);
 		}
 	}
@@ -1324,7 +1322,7 @@ const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, const std::string
 	return nullptr;
 }
 
-long GETVarValueLong(const SCRIPT_VARIABLES & svf, const std::string & name) {
+long GETVarValueLong(const SCRIPT_VARIABLES & svf, std::string_view name) {
 	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 
@@ -1333,7 +1331,7 @@ long GETVarValueLong(const SCRIPT_VARIABLES & svf, const std::string & name) {
 	return tsv->ival;
 }
 
-float GETVarValueFloat(const SCRIPT_VARIABLES & svf, const std::string & name) {
+float GETVarValueFloat(const SCRIPT_VARIABLES & svf, std::string_view name) {
 	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 
@@ -1342,7 +1340,7 @@ float GETVarValueFloat(const SCRIPT_VARIABLES & svf, const std::string & name) {
 	return tsv->fval;
 }
 
-std::string GETVarValueText(const SCRIPT_VARIABLES & svf, const std::string & name) {
+std::string GETVarValueText(const SCRIPT_VARIABLES & svf, std::string_view name) {
 	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 	
@@ -1351,7 +1349,7 @@ std::string GETVarValueText(const SCRIPT_VARIABLES & svf, const std::string & na
 	return tsv->text;
 }
 
-SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES & svf, const std::string & name, long val) {
+SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES & svf, std::string_view name, long val) {
 	
 	SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 	
@@ -1369,7 +1367,7 @@ SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES & svf, const std::string & name, l
 	return tsv;
 }
 
-SCRIPT_VAR * SETVarValueFloat(SCRIPT_VARIABLES & svf, const std::string & name, float val) {
+SCRIPT_VAR * SETVarValueFloat(SCRIPT_VARIABLES & svf, std::string_view name, float val) {
 	
 	SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 	
@@ -1387,7 +1385,7 @@ SCRIPT_VAR * SETVarValueFloat(SCRIPT_VARIABLES & svf, const std::string & name, 
 	return tsv;
 }
 
-SCRIPT_VAR * SETVarValueText(SCRIPT_VARIABLES & svf, const std::string & name, const std::string & val) {
+SCRIPT_VAR * SETVarValueText(SCRIPT_VARIABLES & svf, std::string_view name, std::string && val) {
 	
 	SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 	if(!tsv) {
@@ -1398,7 +1396,7 @@ SCRIPT_VAR * SETVarValueText(SCRIPT_VARIABLES & svf, const std::string & name, c
 		tsv->name = name;
 	}
 	
-	tsv->text = val;
+	tsv->text = std::move(val);
 	
 	return tsv;
 }
@@ -1546,7 +1544,7 @@ ScriptResult SendInitScriptEvent(Entity * io) {
 	return ACCEPT;
 }
 
-std::string getDefaultScriptTimerName(Entity * io, const std::string & prefix) {
+std::string getDefaultScriptTimerName(Entity * io, std::string_view prefix) {
 	
 	for(size_t i = 1; ; i++) {
 		std::ostringstream oss;
@@ -1558,7 +1556,7 @@ std::string getDefaultScriptTimerName(Entity * io, const std::string & prefix) {
 	
 }
 
-SCR_TIMER & createScriptTimer(Entity * io, const std::string & name) {
+SCR_TIMER & createScriptTimer(Entity * io, std::string && name) {
 	
 	arx_assert(g_activeScriptTimers <= g_scriptTimers.size());
 	
@@ -1567,13 +1565,13 @@ SCR_TIMER & createScriptTimer(Entity * io, const std::string & name) {
 	if(g_activeScriptTimers != g_scriptTimers.size() + 1) {
 		for(SCR_TIMER & timer : g_scriptTimers) {
 			if(!timer.exist) {
-				timer = SCR_TIMER(io, name);
+				timer = SCR_TIMER(io, std::move(name));
 				return timer;
 			}
 		}
 	}
 	
-	g_scriptTimers.push_back(SCR_TIMER(io, name));
+	g_scriptTimers.emplace_back(io, std::move(name));
 	
 	return g_scriptTimers.back();
 }
@@ -1591,7 +1589,7 @@ static void clearTimer(SCR_TIMER & timer) {
 	}
 }
 
-void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity * io) {
+void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(std::string_view timername, Entity * io) {
 	for(SCR_TIMER & timer : g_scriptTimers) {
 		if(timer.exist && timer.io == io && timer.name == timername) {
 			clearTimer(timer);
@@ -1620,7 +1618,7 @@ void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io) {
 	}
 }
 
-bool scriptTimerExists(Entity * io, const std::string & name) {
+bool scriptTimerExists(Entity * io, std::string_view name) {
 	
 	if(g_activeScriptTimers != 0) {
 		for(const SCR_TIMER & timer : g_scriptTimers) {

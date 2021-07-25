@@ -883,7 +883,7 @@ void timerCommand(const std::string & name, Context & context) {
 	
 	size_t pos = context.skipCommand();
 	
-	SCR_TIMER & timer = createScriptTimer(context.getEntity(), timername);
+	SCR_TIMER & timer = createScriptTimer(context.getEntity(), std::move(timername));
 	timer.es = context.getScript();
 	timer.interval = GameDurationMs(interval);
 	timer.pos = pos;

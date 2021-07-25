@@ -270,7 +270,7 @@ public:
 			
 			std::string timername = getDefaultScriptTimerName(context.getEntity(), "anim_timer");
 			
-			SCR_TIMER & timer = createScriptTimer(context.getEntity(), timername);
+			SCR_TIMER & timer = createScriptTimer(context.getEntity(), std::move(timername));
 			timer.es = context.getScript();
 			timer.interval = GameDurationMs(1000);
 			// Don't assume that we successfully set the animation - use the current animation
@@ -284,7 +284,7 @@ public:
 			timer.start = g_gameTime.now();
 			timer.count = 1;
 			
-			DebugScript(": scheduled timer " << timername << " in " << toMsi(timer.interval) << "ms");
+			DebugScript(": scheduled timer " << timer.name << " in " << toMsi(timer.interval) << "ms");
 			
 		}
 		

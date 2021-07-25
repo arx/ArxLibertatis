@@ -49,9 +49,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <cstring>
-#include <string>
-#include <vector>
 #include <ostream>
+#include <string>
+#include <string_view>
+#include <utility>
+#include <vector>
 
 #include <limits>
 #include <boost/utility/enable_if.hpp>
@@ -165,7 +167,7 @@ struct SCRIPT_VAR {
 	
 };
 
-bool isLocalVariable(const std::string & name);
+bool isLocalVariable(std::string_view name);
 
 std::ostream & operator<<(std::ostream & os, const SCRIPT_VAR & var);
 
@@ -212,8 +214,8 @@ struct SCR_TIMER {
 	Entity * io;
 	const EERIE_SCRIPT * es;
 	
-	explicit SCR_TIMER(Entity * entity = nullptr, const std::string & timerName = std::string())
-		: name(timerName)
+	explicit SCR_TIMER(Entity * entity = nullptr, std::string && timerName = std::string())
+		: name(std::move(timerName))
 		, exist(entity != nullptr)
 		, idle(false)
 		, count(0)
@@ -412,7 +414,7 @@ public:
 	
 	ScriptEventName() : m_id(SM_NULL) { }
 	/* implicit */ ScriptEventName(ScriptMessage id) : m_id(id) { }
-	explicit ScriptEventName(const std::string & name) : m_id(SM_NULL), m_name(name) { }
+	explicit ScriptEventName(std::string_view name) : m_id(SM_NULL), m_name(name) { }
 	/* implicit */ ScriptEventName(const char * name) : m_id(SM_NULL), m_name(name) { }
 	
 	bool operator==(ScriptMessage id) const {
@@ -423,12 +425,12 @@ public:
 		return m_id != id;
 	}
 	
-	static ScriptEventName parse(const std::string & name);
+	static ScriptEventName parse(std::string_view name);
 	
 	ScriptMessage getId() const { return m_id; }
 	const std::string & getName() const { return m_name; }
 	
-	std::string toString() const;
+	std::string_view toString() const;
 	
 	DisabledEvents toDisabledEventsMask() const;
 	
@@ -443,25 +445,29 @@ class ScriptParameters : public std::vector<std::string> {
 public:
 	
 	ScriptParameters() : m_peekOnly(false) { }
-	/* implicit */ ScriptParameters(const std::string & parameter)
-		: std::vector<std::string>(1, parameter)
-		, m_peekOnly(false)
-	{ }
+	/* implicit */ ScriptParameters(std::string_view parameter)
+		: m_peekOnly(false)
+	{
+		emplace_back(parameter);
+	}
+	/* implicit */ ScriptParameters(std::string parameter)
+		: m_peekOnly(false)
+	{
+		emplace_back(std::move(parameter));
+	}
 	/* implicit */ ScriptParameters(const char * parameter)
-		: std::vector<std::string>(1, parameter)
-		, m_peekOnly(false)
+		: ScriptParameters(std::string_view(parameter))
 	{ }
 	template <typename T>
 	/* implicit */ ScriptParameters(T parameter,
 	                                typename boost::enable_if_c<std::numeric_limits<T>::is_specialized, bool>::type
 	                                /* enable */ = true)
-		: std::vector<std::string>(1, std::to_string(parameter))
-		, m_peekOnly(false)
+		: ScriptParameters(std::to_string(parameter))
 	{ }
 	
 	std::string get(size_t i) const { return i < size() ? operator[](i) : std::string(); }
 	
-	static ScriptParameters parse(const std::string & str);
+	static ScriptParameters parse(std::string_view str);
 	
 	using std::vector<std::string>::push_back;
 	
@@ -492,7 +498,7 @@ extern long FORBID_SCRIPT_IO_CREATION;
 void ARX_SCRIPT_Timer_Check();
 void ARX_SCRIPT_Timer_ClearAll();
 void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io);
-SCR_TIMER & createScriptTimer(Entity * io, const std::string & name);
+SCR_TIMER & createScriptTimer(Entity * io, std::string && name);
  
 void ARX_SCRIPT_EventStackExecute(size_t limit = 20);
 void ARX_SCRIPT_EventStackExecuteAll();
@@ -500,7 +506,7 @@ void ARX_SCRIPT_EventStackInit();
 void ARX_SCRIPT_EventStackClear(bool check_exist = true);
 void ARX_SCRIPT_ResetObject(Entity * io, bool init);
 void ARX_SCRIPT_Reset(Entity * io, bool init);
-bool scriptTimerExists(Entity * io, const std::string & name);
+bool scriptTimerExists(Entity * io, std::string_view name);
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT & es);
 void ARX_SCRIPT_AllowInterScriptExec();
 size_t ARX_SCRIPT_CountTimers();
@@ -515,22 +521,22 @@ void ARX_SCRIPT_Init_Event_Stats();
 ScriptResult SendInitScriptEvent(Entity * io);
 
 //! Generates a random name for an unnamed timer
-std::string getDefaultScriptTimerName(Entity * io, const std::string & prefix = "timer");
+std::string getDefaultScriptTimerName(Entity * io, std::string_view prefix = "timer");
 
 // Use to set the value of a script variable
-SCRIPT_VAR * SETVarValueText(SCRIPT_VARIABLES & svf, const std::string &  name, const std::string & val);
-SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES & svf, const std::string & name, long val);
-SCRIPT_VAR * SETVarValueFloat(SCRIPT_VARIABLES & svf, const std::string & name, float val);
+SCRIPT_VAR * SETVarValueText(SCRIPT_VARIABLES & svf, std::string_view name, std::string && val);
+SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES & svf, std::string_view name, long val);
+SCRIPT_VAR * SETVarValueFloat(SCRIPT_VARIABLES & svf, std::string_view name, float val);
 
 // Use to get the value of a script variable
-long GETVarValueLong(const SCRIPT_VARIABLES & svf, const std::string & name);
-float GETVarValueFloat(const SCRIPT_VARIABLES & svf, const std::string & name);
-std::string GETVarValueText(const SCRIPT_VARIABLES & svf, const std::string & name);
-const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, const std::string & name);
+long GETVarValueLong(const SCRIPT_VARIABLES & svf, std::string_view name);
+float GETVarValueFloat(const SCRIPT_VARIABLES & svf, std::string_view name);
+std::string GETVarValueText(const SCRIPT_VARIABLES & svf, std::string_view name);
+const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, std::string_view name);
 
-ValueType getSystemVar(const script::Context & context, const std::string & name, std::string & txtcontent, float * fcontent, long * lcontent);
+ValueType getSystemVar(const script::Context & context, std::string_view name, std::string & txtcontent, float * fcontent, long * lcontent);
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io);
-void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity * io);
+void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(std::string_view timername, Entity * io);
 
 ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEventName & event,
                                const ScriptParameters & parameters = ScriptParameters());
@@ -547,7 +553,7 @@ void Stack_SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEvent
  * 
  * \return The position of str in the script or -1 if str was not found.
  */
-size_t FindScriptPos(const EERIE_SCRIPT * es, const std::string & str);
+size_t FindScriptPos(const EERIE_SCRIPT * es, std::string_view str);
 
 void CloneLocalVars(Entity * ioo, Entity * io);
 void ARX_SCRIPT_Free_All_Global_Variables();
