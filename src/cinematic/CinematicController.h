@@ -20,12 +20,12 @@
 #ifndef ARX_CINEMATIC_CINEMATICCONTROLLER_H
 #define ARX_CINEMATIC_CINEMATICCONTROLLER_H
 
-#include <string>
+#include <string_view>
 
 void cinematicInit();
 void cinematicDestroy();
 
-void cinematicPrepare(const std::string & name, bool preload);
+void cinematicPrepare(std::string_view name, bool preload);
 
 void cinematicRequestStart();
 

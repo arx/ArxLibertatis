@@ -19,6 +19,8 @@
 
 #include "cinematic/CinematicController.h"
 
+#include <string>
+
 #include "core/Application.h"
 #include "core/GameTime.h"
 
@@ -62,7 +64,7 @@ void cinematicDestroy() {
 	delete ControlCinematique, ControlCinematique = nullptr;
 }
 
-void cinematicPrepare(const std::string & name, bool preload) {
+void cinematicPrepare(std::string_view name, bool preload) {
 
 	WILL_LAUNCH_CINE = name;
 	CINE_PRELOAD = preload;
