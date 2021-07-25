@@ -24,6 +24,7 @@
 #include "platform/Platform.h"
 
 #include <string>
+#include <string_view>
 
 #if ARX_HAVE_PTHREADS
 #include <pthread.h>
@@ -84,7 +85,7 @@ public:
 	 *
 	 * \param threadName The thread name.
 	 */
-	void setThreadName(const std::string & threadName);
+	void setThreadName(std::string_view threadName);
 
 	void setPriority(Priority priority);
 	

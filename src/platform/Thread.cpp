@@ -49,7 +49,7 @@
 #include "platform/WindowsUtils.h"
 #include "platform/profiler/Profiler.h"
 
-void Thread::setThreadName(const std::string & threadName) {
+void Thread::setThreadName(std::string_view threadName) {
 	m_threadName = threadName;
 }
 
@@ -208,7 +208,7 @@ Thread::~Thread() {
 namespace {
 
 #if ARX_COMPILER_MSVC
-void setCurrentThreadName(const std::string & threadName) {
+void setCurrentThreadName(const char * threadName) {
 	
 	if(!IsDebuggerPresent()) {
 		return;
@@ -223,7 +223,7 @@ void setCurrentThreadName(const std::string & threadName) {
 	
 	THREADNAME_INFO info;
 	info.dwType         = 0x1000;
-	info.szName         = threadName.c_str();
+	info.szName         = threadName;
 	info.dwThreadID     = ::GetCurrentThreadId();
 	info.dwFlags        = 0;
 	
@@ -260,7 +260,7 @@ DWORD WINAPI Thread::entryPoint(LPVOID param) {
 		
 		// For older MSVC versions but only works if debugger is present when this is run
 		#if ARX_COMPILER_MSVC
-		setCurrentThreadName(static_cast<Thread *>(param)->m_threadName);
+		setCurrentThreadName(static_cast<Thread *>(param)->m_threadName.c_str());
 		#endif
 		
 	}
