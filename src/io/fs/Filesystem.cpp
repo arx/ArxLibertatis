@@ -90,18 +90,14 @@ std::string read(const path & p) {
 	return result;
 }
 
-bool write(const path & p, const char * contents, size_t size) {
+bool write(const path & p, std::string_view contents) {
 	
 	fs::ofstream ofs(p, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 	if(!ofs.is_open()) {
 		return false;
 	}
 	
-	return !ofs.write(contents, size).fail();
-}
-
-bool write(const path & p, const std::string & contents) {
-	return write(p, contents.data(), contents.size());
+	return !ofs.write(contents.data(), contents.size()).fail();
 }
 
 } // namespace fs

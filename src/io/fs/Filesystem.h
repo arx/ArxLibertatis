@@ -23,6 +23,7 @@
 #include <stddef.h>
 #include <ctime>
 #include <string>
+#include <string_view>
 
 #include "Configure.h"
 #if ARX_HAVE_POSIX_FILESYSTEM
@@ -182,17 +183,6 @@ bool rename(const path & old_p, const path & new_p, bool overwrite = false);
 std::string read(const path & p);
 
 /*!
- * \brief Write a string into a file
- *
- * \param p The file to write to.
- * \param contents The content to write
- * \param size The size of the content to write
- *
- * \return true if the write succeeded
- */
-bool write(const path & p, const char * contents, size_t size);
-
-/*!
  * \brief Write an \ref std::string into a file
  *
  * \param p The file to write to.
@@ -200,7 +190,7 @@ bool write(const path & p, const char * contents, size_t size);
  *
  * \return true if the write succeeded
  */
-bool write(const path & p, const std::string & contents);
+bool write(const path & p, std::string_view contents);
 
 /*!
  * \brief Get the current working directory

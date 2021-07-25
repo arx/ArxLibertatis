@@ -178,7 +178,7 @@ void FilesystemTest::run(const fs::path & root) {
 	// Create a file from a char array
 	before = std::time(nullptr);
 	char fileb[] = { '\0', 'T', 'S', '\r', 'e', 'T' };
-	CPPUNIT_ASSERT(fs::write(root / "a/fileb.bmp", fileb, sizeof(fileb)));
+	CPPUNIT_ASSERT(fs::write(root / "a/fileb.bmp", std::string_view(fileb, sizeof(fileb))));
 	m_expected["a/fileb.bmp"] = Entry(fs::RegularFile, std::string(fileb, sizeof(fileb)),
 	                                  checkTime(root, "a/fileb.bmp", before));
 	checkState(root);
