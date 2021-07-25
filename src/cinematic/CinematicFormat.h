@@ -53,7 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static const s32 CINEMATIC_VERSION_1_75 = (1 << 16) | 75;
 static const s32 CINEMATIC_VERSION_1_76 = (1 << 16) | 76;
-static const s16 INTERP_NO_FADE = 2;
 
 // Version 1.75 structures
 
