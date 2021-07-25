@@ -19,11 +19,12 @@
 
 #include "io/fs/SystemPaths.h"
 
-#include <string>
-#include <set>
 #include <algorithm>
-#include <iterator>
 #include <iostream>
+#include <iterator>
+#include <set>
+#include <string>
+#include <string_view>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/tokenizer.hpp>
@@ -96,9 +97,9 @@ struct SystemPaths {
 	
 private:
 	
-	void list(std::ostream & os, const std::string & forceUser = std::string(),
-	          const std::string & forceConfig = std::string(),
-	          const std::string & forceData = std::string());
+	void list(std::ostream & os, std::string_view forceUser = std::string_view(),
+	          std::string_view forceConfig = std::string_view(),
+	          std::string_view forceData = std::string_view());
 	
 	std::vector<path> m_additionalDataDirs;
 	bool m_findDataDirs;
@@ -378,15 +379,12 @@ SystemPaths::SystemPaths()
 	: m_findDataDirs(true)
 { }
 
-void listDirectoriesFor(std::ostream & os, const std::string & regKey,
-                               platform::SystemPathId systemPathId,
-                               const char * prefixVar = nullptr,
-                               const char * suffixVar = nullptr) {
+void listDirectoriesFor(std::ostream & os, std::string_view regKey, platform::SystemPathId systemPathId,
+                        const char * prefixVar = nullptr, const char * suffixVar = nullptr) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	if(!regKey.empty()) {
-		os << " - Registry key {HKCU,HKLM}\\Software\\ArxLibertatis\\"
-		   << regKey << '\n';
+		os << " - Registry key {HKCU,HKLM}\\Software\\ArxLibertatis\\" << regKey << '\n';
 		std::string temp;
 		if(platform::getSystemConfiguration(regKey, temp)) {
 			os << "   = " << canonical(temp) << '\n';
@@ -436,9 +434,8 @@ void listDirectoriesFor(std::ostream & os, const std::string & regKey,
 	
 }
 
-void SystemPaths::list(std::ostream & os, const std::string & forceUser,
-                       const std::string & forceConfig,
-                       const std::string & forceData) {
+void SystemPaths::list(std::ostream & os, std::string_view forceUser,
+                       std::string_view forceConfig, std::string_view forceData) {
 	
 	os << "\nUser directories (select first existing):\n";
 	if(!forceUser.empty()) {
