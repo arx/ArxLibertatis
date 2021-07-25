@@ -43,6 +43,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedLang.h"
 
+#include <string>
+
+#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "ai/Paths.h"
@@ -86,7 +89,7 @@ class GotoCommand : public Command {
 	
 public:
 	
-	GotoCommand(const std::string & command, bool _sub = false) : Command(command), sub(_sub) { }
+	GotoCommand(std::string_view command, bool _sub = false) : Command(command), sub(_sub) { }
 	
 	Result execute(Context & context) {
 		
@@ -119,7 +122,7 @@ class AbortCommand : public Command {
 	
 public:
 	
-	AbortCommand(const std::string & command, Result _result) : Command(command), result(_result) { }
+	AbortCommand(std::string_view command, Result _result) : Command(command), result(_result) { }
 	
 	Result execute(Context & context) {
 		
@@ -182,7 +185,7 @@ class SetMainEventCommand : public Command {
 	
 public:
 	
-	explicit SetMainEventCommand(const std::string & command) : Command(command, AnyEntity) { }
+	explicit SetMainEventCommand(std::string_view command) : Command(command, AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -205,7 +208,7 @@ class StartStopTimerCommand : public Command {
 	
 public:
 	
-	StartStopTimerCommand(const std::string & command, bool _start) : Command(command), start(_start) { }
+	StartStopTimerCommand(std::string_view command, bool _start) : Command(command), start(_start) { }
 	
 	Result execute(Context & context) {
 		
@@ -447,7 +450,7 @@ public:
 class IfCommand : public Command {
 	
 	// TODO(script) move to context?
-	static ValueType getVar(const Context & context, const std::string & var, std::string & s, float & f, ValueType def) {
+	static ValueType getVar(const Context & context, std::string_view var, std::string & s, float & f, ValueType def) {
 		
 		char c = (var.empty() ? '\0' : var[0]);
 		
@@ -507,7 +510,11 @@ class IfCommand : public Command {
 					s = var;
 					return TYPE_TEXT;
 				} else {
-					f = static_cast<float>(atof(var.c_str()));
+					try {
+						f = boost::lexical_cast<float>(var);
+					} catch(...) {
+						f = 0.f;
+					}
 					return TYPE_FLOAT;
 				}
 			}
@@ -523,7 +530,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		Operator(const std::string & name, ValueType type) : m_name(name), m_type(type) { }
+		Operator(std::string_view name, ValueType type) : m_name(name), m_type(type) { }
 		
 		virtual ~Operator() { }
 		
@@ -533,32 +540,24 @@ class IfCommand : public Command {
 			return true;
 		}
 		
-		virtual bool text(const Context & context, const std::string & left, const std::string & right) {
+		virtual bool text(const Context & context, std::string_view left, std::string_view right) {
 			ARX_UNUSED(left), ARX_UNUSED(right);
 			ScriptWarning << "operator " << m_name << " is not aplicable to text";
 			return false;
 		}
 		
-		std::string getName() { return "if"; }
+		std::string_view getName() { return "if"; }
 		const std::string & getOperator() { return m_name; }
 		ValueType getType() { return m_type; }
 		
 	};
 	
-	typedef std::map<std::string, Operator *> Operators;
+	typedef std::map<std::string_view, Operator *> Operators;
 	Operators operators;
 	
 	void addOperator(Operator * op) {
-		
-		typedef std::pair<Operators::iterator, bool> Res;
-		
-		Res res = operators.insert(std::make_pair(op->getOperator(), op));
-		
-		if(!res.second) {
-			LogError << "Duplicate script 'if' operator name: " + op->getOperator();
-			delete op;
-		}
-		
+		[[maybe_unused]] auto res = operators.emplace(op->getOperator(), op);
+		arx_assert_msg(res.second, "Duplicate script 'if' operator name: %s", op->getOperator().c_str());
 	}
 	
 	class IsElementOperator : public Operator {
@@ -567,16 +566,16 @@ class IfCommand : public Command {
 		
 		IsElementOperator() : Operator("iselement", TYPE_TEXT) { }
 		
-		bool text(const Context & context, const std::string & seek, const std::string & text) {
+		bool text(const Context & context, std::string_view seek, std::string_view text) {
 			ARX_UNUSED(context);
 			
 			for(size_t pos = 0, next; next = text.find(' ', pos), true ; pos = next + 1) {
 				
-				if(next == std::string::npos) {
-					return (text.compare(pos, text.length() - pos, seek) == 0);
+				if(next == std::string_view::npos) {
+					return (text.substr(pos, text.length() - pos) == seek);
 				}
 				
-				if(text.compare(pos, next - pos, seek) == 0) {
+				if(text.substr(pos, next - pos) == seek) {
 					return true;
 				}
 				
@@ -593,9 +592,9 @@ class IfCommand : public Command {
 		
 		IsClassOperator() : Operator("isclass", TYPE_TEXT) { }
 		
-		bool text(const Context & context, const std::string & left, const std::string & right) {
+		bool text(const Context & context, std::string_view left, std::string_view right) {
 			ARX_UNUSED(context);
-			return (left.find(right) != std::string::npos || right.find(left) != std::string::npos);
+			return (left.find(right) != std::string_view::npos || right.find(left) != std::string_view::npos);
 		}
 		
 	};
@@ -606,7 +605,7 @@ class IfCommand : public Command {
 		
 		IsGroupOperator() : Operator("isgroup", TYPE_TEXT) { }
 		
-		bool text(const Context & context, const std::string & obj, const std::string & group) {
+		bool text(const Context & context, std::string_view obj, std::string_view group) {
 			
 			Entity * t = entities.getById(obj, context.getEntity());
 			
@@ -621,7 +620,7 @@ class IfCommand : public Command {
 		
 		NotIsGroupOperator() : Operator("!isgroup", TYPE_TEXT) { }
 		
-		bool text(const Context & context, const std::string & obj, const std::string & group) {
+		bool text(const Context & context, std::string_view obj, std::string_view group) {
 			
 			Entity * t = entities.getById(obj, context.getEntity());
 			
@@ -636,7 +635,7 @@ class IfCommand : public Command {
 		
 		IsTypeOperator() : Operator("istype", TYPE_TEXT) { }
 		
-		bool text(const Context & context, const std::string & obj, const std::string & type) {
+		bool text(const Context & context, std::string_view obj, std::string_view type) {
 			
 			Entity * t = entities.getById(obj, context.getEntity());
 			
@@ -657,9 +656,9 @@ class IfCommand : public Command {
 		
 		IsInOperator() : Operator("isin", TYPE_TEXT) { }
 		
-		bool text(const Context & context, const std::string & needle, const std::string & haystack) {
+		bool text(const Context & context, std::string_view needle, std::string_view haystack) {
 			ARX_UNUSED(context);
-			return haystack.find(needle) != std::string::npos;
+			return haystack.find(needle) != std::string_view::npos;
 		}
 		
 	};
@@ -670,7 +669,7 @@ class IfCommand : public Command {
 		
 		EqualOperator() : Operator("==", TYPE_FLOAT) { }
 		
-		bool text(const Context & context, const std::string & left, const std::string & right) {
+		bool text(const Context & context, std::string_view left, std::string_view right) {
 			ARX_UNUSED(context);
 			return left == right;
 		}
@@ -688,7 +687,7 @@ class IfCommand : public Command {
 		
 		NotEqualOperator() : Operator("!=", TYPE_FLOAT) { }
 		
-		bool text(const Context & context, const std::string & left, const std::string & right) {
+		bool text(const Context & context, std::string_view left, std::string_view right) {
 			ARX_UNUSED(context);
 			return left != right;
 		}
@@ -842,11 +841,11 @@ public:
 
 } // anonymous namespace
 
-static std::string getName() {
+static std::string_view getName() {
 	return "timer";
 }
 
-void timerCommand(const std::string & name, Context & context) {
+void timerCommand(std::string_view name, Context & context) {
 	
 	bool mili = false, idle = false;
 	HandleFlags("mi") {
@@ -881,7 +880,7 @@ void timerCommand(const std::string & name, Context & context) {
 		interval *= 1000;
 	}
 	
-	std::string timername = name.empty() ? getDefaultScriptTimerName(context.getEntity()) : name;
+	std::string timername = name.empty() ? getDefaultScriptTimerName(context.getEntity()) : std::string(name);
 	DebugScript(timername << ' ' << options << ' ' << count << ' ' << interval);
 	
 	size_t pos = context.skipCommand();

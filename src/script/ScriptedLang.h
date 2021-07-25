@@ -20,7 +20,7 @@
 #ifndef ARX_SCRIPT_SCRIPTEDLANG_H
 #define ARX_SCRIPT_SCRIPTEDLANG_H
 
-#include <string>
+#include <string_view>
 
 namespace script {
 
@@ -28,7 +28,7 @@ class Context;
 
 void setupScriptedLang();
 
-void timerCommand(const std::string & name, Context & context);
+void timerCommand(std::string_view name, Context & context);
 
 } // namespace script
 

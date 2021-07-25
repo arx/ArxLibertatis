@@ -2265,16 +2265,15 @@ bool IsSameObject(Entity * io, Entity * ioo) {
 	return false;
 }
 
-static bool intersect(const std::set<std::string> & set1, const std::set<std::string> & set2) {
+template <typename Set>
+static bool intersect(const Set & set1, const Set & set2) {
 	
 	if(set1.empty() || set2.empty()) {
 		return false;
 	}
 	
-	typedef std::set<std::string>::const_iterator itr;
-	
-	itr it1 = set1.begin();
-	itr it2 = set2.begin();
+	auto it1 = set1.begin();
+	auto it2 = set2.begin();
 	
 	if(*it1 > *set2.rbegin() || *it2 > *set1.rbegin()) {
 		return false;

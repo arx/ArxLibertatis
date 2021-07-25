@@ -334,7 +334,7 @@ public:
 	IO_TWEAKER_INFO * tweakerinfo; // optional tweaker infos
 	Material material;
 	
-	std::set<std::string> groups;
+	std::set<std::string, std::less<>> groups;
 	Vec2s m_inventorySize;// Inventory Icon size
 	GameInstant soundtime;
 	unsigned long soundcount;
