@@ -45,6 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 #include <cstring>
+#include <string>
+#include <string_view>
 
 #include "game/Entity.h"
 #include "game/EntityManager.h"
@@ -74,27 +76,19 @@ class InventoryCommand : public Command {
 		
 	public:
 		
-		explicit SubCommand(const std::string & name)
-			: Command("inventory " + name, AnyEntity), command(name) { }
+		explicit SubCommand(std::string_view name)
+			: Command(std::string("inventory ") += name, AnyEntity), command(name) { }
 		
 		const std::string & getCommand() { return command; }
 		
 	};
 	
-	typedef std::map<std::string, SubCommand *> Commands;
+	typedef std::map<std::string_view, SubCommand *> Commands;
 	Commands commands;
 	
 	void addCommand(SubCommand * command) {
-		
-		typedef std::pair<Commands::iterator, bool> Res;
-		
-		Res res = commands.insert(std::make_pair(command->getCommand(), command));
-		
-		if(!res.second) {
-			LogError << "Duplicate script inventory command name: " + command->getCommand();
-			delete command;
-		}
-		
+		[[maybe_unused]] auto res = commands.emplace(command->getCommand(), command);
+		arx_assert_msg(res.second, "Duplicate script inventory command name: %s", command->getCommand().c_str());
 	}
 	
 	class DestroyCommand : public SubCommand {
@@ -216,7 +210,7 @@ class InventoryCommand : public Command {
 		
 	public:
 		
-		PlayerAddCommand(const std::string & name, bool _multi) : SubCommand(name), multi(_multi) { }
+		PlayerAddCommand(std::string_view name, bool _multi) : SubCommand(name), multi(_multi) { }
 		
 		Result execute(Context & context) {
 			
@@ -304,7 +298,7 @@ class InventoryCommand : public Command {
 		
 	public:
 		
-		AddCommand(const std::string & name, bool _multi) : SubCommand(name), multi(_multi) { }
+		AddCommand(std::string_view name, bool _multi) : SubCommand(name), multi(_multi) { }
 		
 		Result execute(Context & context) {
 			
