@@ -20,6 +20,7 @@
 #include "savetool/SaveRename.h"
 
 #include <iostream>
+#include <string_view>
 
 #include "io/SaveBlock.h"
 #include "scene/SaveFormat.h"
@@ -66,7 +67,7 @@ public:
 		return util::loadString(m_pld->name);
 	}
 	
-	void setName(const std::string & name) {
+	void setName(std::string_view name) {
 		util::storeString(m_pld->name, name);
 	}
 	
@@ -100,7 +101,7 @@ int main_rename(SaveBlock & save, const std::vector<std::string> & args) {
 	}
 	
 	std::string_view oldName = pld.getName();
-	const std::string & newName = args[0];
+	std::string_view newName = args[0];
 	
 	std::cout << "Old Name: \"" << oldName << '"' << std::endl;
 	std::cout << "New Name: \"" << newName << '"' << std::endl;
