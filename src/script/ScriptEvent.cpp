@@ -75,7 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 long ScriptEvent::totalCount = 0;
 
-constexpr const SCRIPT_EVENT AS_EVENT[] = {
+const SCRIPT_EVENT AS_EVENT[] = {
 	SCRIPT_EVENT("on null"),
 	SCRIPT_EVENT("on init"),
 	SCRIPT_EVENT("on inventoryin"),
