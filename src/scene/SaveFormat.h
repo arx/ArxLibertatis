@@ -246,9 +246,6 @@ struct SavedIOPhysics {
 	
 };
 
-const size_t SAVED_MINIMAP_MAX_X = 50;
-const size_t SAVED_MINIMAP_MAX_Z = 50;
-
 struct SavedMiniMap {
 	
 	static const size_t MAX_X = 50;
