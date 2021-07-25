@@ -24,6 +24,7 @@
 #include <iostream>
 #include <map>
 #include <sstream>
+#include <string_view>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/io/ios_state.hpp>
@@ -39,8 +40,8 @@
 #include "scene/SaveFormat.h"
 #include "util/String.h"
 
-typedef std::map<std::string, std::string> Idents; // ident -> where
-typedef std::map<std::string, long> Remap; // ident -> newIdent
+typedef std::map<std::string, std::string, std::less<>> Idents; // ident -> where
+typedef std::map<std::string, long, std::less<>> Remap; // ident -> newIdent
 
 static std::string makeIdent(std::string_view file, long ident) {
 	std::stringstream name;
@@ -48,7 +49,8 @@ static std::string makeIdent(std::string_view file, long ident) {
 	return name.str();
 }
 
-static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, const std::string & where, Remap & remap);
+static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents,
+                      std::string_view where, Remap & remap);
 
 static void skip_script_save(const char * dat, size_t & pos) {
 	const ARX_CHANGELEVEL_SCRIPT_SAVE * ass;
@@ -64,7 +66,7 @@ static void skip_script_save(const char * dat, size_t & pos) {
 	}
 }
 
-static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const std::string & where, Remap & remap) {
+static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, std::string_view where, Remap & remap) {
 	
 	size_t pos = 0;
 	ARX_CHANGELEVEL_IO_SAVE & ais = *reinterpret_cast<ARX_CHANGELEVEL_IO_SAVE *>(dat + pos);
@@ -72,7 +74,7 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const std:
 	
 	bool ioChanged = false;
 	
-	ioChanged |= fix_ident(save, ais.id_targetinfo, idents, where + ".id_targetinfo", remap);
+	ioChanged |= fix_ident(save, ais.id_targetinfo, idents, std::string(where) += ".id_targetinfo", remap);
 	for(long i = 0; i < ais.nb_linked; i++) {
 		std::stringstream where2;
 		where2 << where << ".linked_data[" << i << "].linked_id";
@@ -92,8 +94,8 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const std:
 			ARX_CHANGELEVEL_NPC_IO_SAVE & anis = *reinterpret_cast<ARX_CHANGELEVEL_NPC_IO_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
 			
-			specificsChanged |= fix_ident(save, anis.id_weapon, idents, where + ".npc.id_weapon", remap);
-			specificsChanged |= fix_ident(save, anis.weapon, idents, where + ".npc.weapon", remap);
+			specificsChanged |= fix_ident(save, anis.id_weapon, idents, std::string(where) += ".npc.id_weapon", remap);
+			specificsChanged |= fix_ident(save, anis.weapon, idents, std::string(where) += ".npc.weapon", remap);
 			for(size_t i = 0; i < SAVED_MAX_STACKED_BEHAVIOR; i++) {
 				std::stringstream where2;
 				where2 << where << ".npc.stackedtarget[" << i << "]";
@@ -125,7 +127,7 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const std:
 		ARX_CHANGELEVEL_INVENTORY_DATA_SAVE & aids
 			= *reinterpret_cast<ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *>(dat + pos);
 		
-		invChanged |= fix_ident(save, aids.io, idents, where + ".inventory.io", remap);
+		invChanged |= fix_ident(save, aids.io, idents, std::string(where) += ".inventory.io", remap);
 		for(long m = 0; m < aids.sizex; m++) {
 			for(long n = 0; n < aids.sizey; n++) {
 				std::stringstream where2;
@@ -133,8 +135,8 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const std:
 				invChanged |= fix_ident(save, aids.slot_io[m][n], idents, where2.str(), remap);
 			}
 		}
-		invChanged |= fix_ident(save, aids.weapon, idents, where + ".inventory.weapon", remap);
-		invChanged |= fix_ident(save, aids.targetinfo, idents, where + ".inventory.targetinfo", remap);
+		invChanged |= fix_ident(save, aids.weapon, idents, std::string(where) += ".inventory.weapon", remap);
+		invChanged |= fix_ident(save, aids.targetinfo, idents, std::string(where) += ".inventory.targetinfo", remap);
 		for(long i = 0; i < ais.nb_linked; i++) {
 			std::stringstream where2;
 			where2 << where << ".inventory.linked_id[" << i << "]";
@@ -151,13 +153,14 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const std:
 	return ioChanged || specificsChanged || invChanged;
 }
 
-static long copy_io(SaveBlock & save, const std::string & name, Idents & idents, const std::string & where, char * dat, size_t size) {
+static long copy_io(SaveBlock & save, std::string_view name, Idents & idents,
+                    std::string_view where, char * dat, size_t size) {
 	
 	ARX_CHANGELEVEL_IO_SAVE & ais = *reinterpret_cast<ARX_CHANGELEVEL_IO_SAVE *>(dat);
 	
 	size_t pos = name.find_last_of('_');
 	
-	std::string fname = name.substr(0, pos);
+	std::string_view fname = name.substr(0, pos);
 	
 	res::path dir = res::path::load(util::loadString(ais.filename)).parent();
 	
@@ -181,10 +184,10 @@ static long copy_io(SaveBlock & save, const std::string & name, Idents & idents,
 	ais.ident = i;
 	
 	Remap remap;
-	remap[name] = i;
+	remap[std::string(name)] = i;
 	idents[ident] = where;
 	
-	fix_iodata(save, idents, dat, where + ":" + ident, remap);
+	fix_iodata(save, idents, dat, (std::string(where) += ":") += ident, remap);
 	
 	LogDebug("#saving copied io " << ident);
 	save.save(ident, dat, size);
@@ -192,34 +195,34 @@ static long copy_io(SaveBlock & save, const std::string & name, Idents & idents,
 	return i;
 }
 
-static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, const std::string & where, Remap & remap) {
+static long fix_io(SaveBlock & save, std::string_view name, Idents & idents,
+                   std::string_view where, Remap & remap) {
 	
 	if(name == "none" || name.empty()) {
-		remap[name] = 0;
+		remap[std::string(name)] = 0;
 		return 0;
 	}
 	
-	const std::string & savefile = name;
+	std::string_view savefile = name;
 	
 	std::string buffer = save.load(savefile);
 	if(buffer.empty()) {
-		remap[name] = 0;
+		remap[std::string(name)] = 0;
 		return 0;
 	}
 	
 	char * dat = buffer.data();
 	
-	Idents::iterator it = idents.find(name);
-	if(it != idents.end()) {
+	if(auto it = idents.find(name); it != idents.end()) {
 		std::cout << "duplicate ident " << name << " detected: in " << it->second << " and " << where << '\n';
 		// We already fixed this!
 		long newIdent = copy_io(save, name, idents, where, dat, buffer.size());
 		std::cout << " -> copied " << name << " as " << newIdent << " for " << where << '\n';
-		remap[name] = newIdent;
+		remap[std::string(name)] = newIdent;
 		return newIdent;
 	} else {
-		idents[name] = where;
-		remap[name] = 0;
+		idents[std::string(name)] = where;
+		remap[std::string(name)] = 0;
 	}
 	
 	ARX_CHANGELEVEL_IO_SAVE & ais = *reinterpret_cast<ARX_CHANGELEVEL_IO_SAVE *>(dat);
@@ -243,7 +246,8 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 		
 		if(flags != ais.ioflags) {
 			boost::io::ios_all_saver coutFlags(std::cout);
-			std::cout << " - fixing " << name << ": ioflags 0x" << std::hex << ais.ioflags << " -> 0x" << std::hex << flags << '\n';
+			std::cout << " - fixing " << name << ": ioflags 0x" << std::hex << ais.ioflags
+			          << " -> 0x" << std::hex << flags << '\n';
 			coutFlags.restore();
 			ais.ioflags = flags;
 			changed = true;
@@ -251,7 +255,7 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 		
 	}
 	
-	changed |= fix_iodata(save, idents, dat, where + ":" + name, remap);
+	changed |= fix_iodata(save, idents, dat, (std::string(where) += ":") += name, remap);
 	
 	if(changed) {
 		LogDebug("#saving fixed io " << savefile);
@@ -263,7 +267,7 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 	return 0;
 }
 
-static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const std::string & where) {
+static bool patch_ident(char (&name)[SIZE_ID], long newIdent, std::string_view where) {
 	
 	if(newIdent <= 0) {
 		return false;
@@ -280,7 +284,8 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const std::string 
 	return true;
 }
 
-static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, const std::string & where, Remap & remap) {
+static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents,
+                      std::string_view where, Remap & remap) {
 	
 	std::string lname = util::toLowercase(util::loadString(name, SIZE_ID));
 	
@@ -302,7 +307,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 	
 	std::cout << "player\n";
 	
-	const std::string loadfile = "player";
+	const std::string_view loadfile = "player";
 	
 	std::string buffer = save.load(loadfile);
 	if(buffer.empty()) {
