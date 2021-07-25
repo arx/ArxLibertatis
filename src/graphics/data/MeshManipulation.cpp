@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <algorithm>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "game/Entity.h"
@@ -221,7 +222,7 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 	return obj->facelist.size() - 1;
 }
 
-static void ObjectAddAction(EERIE_3DOBJ * obj, const std::string & name, const EERIE_VERTEX * vert) {
+static void ObjectAddAction(EERIE_3DOBJ * obj, std::string_view name, const EERIE_VERTEX * vert) {
 	
 	size_t newvert = ObjectAddVertex(obj, vert);
 	
