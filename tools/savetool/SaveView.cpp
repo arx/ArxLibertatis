@@ -22,6 +22,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <string_view>
 #include <cctype>
 
 #include <boost/io/ios_state.hpp>
@@ -71,7 +72,7 @@ static std::ostream & operator<<(std::ostream & strm, const SavedColor & c) {
 }
 
 template <class F, class E>
-inline void print_flag(F & flags, E flag, const std::string & name) {
+inline void print_flag(F & flags, E flag, std::string_view name) {
 	if(flags & flag) {
 		std::cout << ' ' << name;
 		flags &= int(~flag);
@@ -440,7 +441,7 @@ static void print_spell(s32 spell) {
 	
 }
 
-static int print_variables(size_t n, const char * dat, size_t & pos, const std::string & p,
+static int print_variables(size_t n, const char * dat, size_t & pos, std::string_view p,
                            VariableType s, VariableType f, VariableType l) {
 	
 	if(n) {
@@ -514,7 +515,7 @@ static void print_animations(const char (&anims)[SAVED_MAX_ANIMS][256]) {
 }
 
 static void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS],
-                              const std::string & pf = std::string()) {
+                              std::string_view pf = std::string_view()) {
 	
 	for(size_t i = 0; i < SAVED_MAX_ANIM_LAYERS; i++) {
 		const SavedAnimUse & layer = animlayer[i];
@@ -591,7 +592,7 @@ static void print_physics(const SavedIOPhysics & physics) {
 	if(physics.forces.toVec3() != Vec3f(0.f)) std::cout << "  Forces: " << physics.forces << '\n';
 }
 
-static void print_ident(SaveBlock & save, const std::string & ident) {
+static void print_ident(SaveBlock & save, std::string_view ident) {
 	
 	if(ident.empty()) {
 		std::cout << "(none)";
@@ -680,7 +681,7 @@ static void print_player_movement(s32 movement) {
 	print_unknown_flags(movement);
 }
 
-static void print_item(SaveBlock & save, const char (&ident)[64],  const std::string & name) {
+static void print_item(SaveBlock & save, const char (&ident)[64], std::string_view name) {
 	
 	std::string i = util::toLowercase(util::loadString(ident));
 	if(i.empty() || i == "none") {
@@ -1930,13 +1931,13 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	return 0;
 }
 
-static bool is_level(const std::string & name) {
+static bool is_level(std::string_view name) {
 	
 	if(name.length() != 6) {
 		return false;
 	}
 	
-	if(name.compare(0, 3, "lvl", 3)) {
+	if(name.substr(0, 3) == "lvl") {
 		return false;
 	}
 	
@@ -2002,7 +2003,7 @@ int main_view(SaveBlock & save, const std::vector<std::string> & args) {
 		return 0;
 	}
 	
-	const std::string & name = args[0];
+	std::string_view name = args[0];
 	
 	std::string buffer = save.load(name);
 	if(buffer.empty()) {
