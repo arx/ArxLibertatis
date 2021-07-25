@@ -22,6 +22,7 @@
 #include <cstring>
 #include <limits>
 #include <string>
+#include <string_view>
 #include <set>
 
 #include <boost/algorithm/string/case_conv.hpp>
@@ -46,7 +47,7 @@ struct ResourceEntry {
 	std::string name;
 	fs::path path;
 	
-	ResourceEntry(int dir_, int archive_, int subtype_, const std::string & name_, const fs::path & path_)
+	ResourceEntry(int dir_, int archive_, int subtype_, std::string_view name_, fs::path && path_)
 		: dir(dir_)
 		, archive(archive_)
 		, subtype(subtype_)
@@ -124,7 +125,7 @@ bool addDefaultResources(PakReader * reader) {
 			if(it.is_directory()) {
 				for(const char * dirname : directories) {
 					if(name == dirname) {
-						resources.insert(ResourceEntry(dirindex, std::numeric_limits<int>::max(), 0, name, dir / file));
+						resources.emplace(dirindex, std::numeric_limits<int>::max(), 0, name, dir / file);
 						break;
 					}
 				}
@@ -144,7 +145,7 @@ bool addDefaultResources(PakReader * reader) {
 								subtype = -1;
 							}
 						}
-						resources.insert(ResourceEntry(dirindex, int(archive), subtype, name, dir / file));
+						resources.emplace(dirindex, int(archive), subtype, name, dir / file);
 					}
 				}
 			}
