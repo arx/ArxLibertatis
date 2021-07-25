@@ -75,14 +75,13 @@ aalError Sample::load() {
 		return AAL_ERROR_INIT;
 	}
 	
-	Stream * stream = createStream(m_name);
+	std::unique_ptr<Stream> stream = createStream(m_name);
 	if(!stream) {
 		return AAL_ERROR_FILEIO;
 	}
 	
 	stream->getFormat(m_format);
 	m_length = stream->getLength();
-	deleteStream(stream);
 	
 	return AAL_OK;
 }

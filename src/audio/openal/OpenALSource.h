@@ -23,6 +23,7 @@
 #include "Configure.h"
 
 #include <stddef.h>
+#include <memory>
 
 #include <al.h>
 
@@ -105,7 +106,7 @@ private:
 	bool m_streaming;
 	unsigned m_loadCount;
 	size_t m_written; // Streaming status
-	Stream * m_stream;
+	std::unique_ptr<Stream> m_stream;
 	
 	size_t m_read;
 	

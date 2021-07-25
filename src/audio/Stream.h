@@ -71,8 +71,7 @@ public:
 };
 
 // Utilities
-Stream * createStream(const res::path & name);
-void deleteStream(Stream * & stream);
+[[nodiscard]] std::unique_ptr<Stream> createStream(const res::path & name);
 
 } // namespace audio
 

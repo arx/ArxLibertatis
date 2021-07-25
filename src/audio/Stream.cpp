@@ -53,28 +53,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-Stream * createStream(const res::path & name) {
+std::unique_ptr<Stream> createStream(const res::path & name) {
 	
 	std::unique_ptr<PakFileHandle> file = g_resources->open(name);
 	if(!file) {
-		return nullptr;
+		return { };
 	}
 	
 	file->seek(SeekSet, 0);
 	
-	Stream * stream = new StreamWAV;
+	std::unique_ptr<Stream> stream = std::make_unique<StreamWAV>();
 	
 	if(stream->setStream(std::move(file))) {
-		delete stream;
-		return nullptr;
+		return { };
 	}
 	
 	return stream;
-}
-
-void deleteStream(Stream * & stream) {
-	delete stream;
-	stream = nullptr;
 }
 
 } // namespace audio
