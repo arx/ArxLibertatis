@@ -92,7 +92,7 @@ private:
 		
 		bool loadOffsets(std::istream & handle, u32 version);
 		
-		void writeEntry(std::ostream & handle, const std::string & name) const;
+		void writeEntry(std::ostream & handle, std::string_view name) const;
 		
 		std::string loadData(std::istream & handle, std::string_view name) const;
 		

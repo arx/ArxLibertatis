@@ -144,9 +144,10 @@ bool SaveBlock::File::loadOffsets(std::istream & handle, u32 version) {
 	return true;
 }
 
-void SaveBlock::File::writeEntry(std::ostream & handle, const std::string & name) const {
+void SaveBlock::File::writeEntry(std::ostream & handle, std::string_view name) const {
 	
-	handle.write(name.c_str(), name.length() + 1);
+	handle.write(name.data(), name.length());
+	handle.put('\0');
 	
 	u32 _uncompressedSize = (uncompressedSize == size_t(-1)) ? SAV_SIZE_UNKNOWN : uncompressedSize;
 	fs::write(handle, _uncompressedSize);
