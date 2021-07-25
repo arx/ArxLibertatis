@@ -21,7 +21,7 @@
 #define ARX_GAME_MAGIC_RUNE_H
 
 #include <array>
-#include <string>
+#include <string_view>
 #include <vector>
 
 #include "math/Types.h"
@@ -58,20 +58,18 @@ enum Rune {
 
 struct RuneInfo {
 	
-	RuneInfo()
-	{}
-
-	RuneInfo(Rune rune_, const std::string & name_, Vec2s startOffset_, const std::string & sequence_)
+	RuneInfo() { }
+	RuneInfo(Rune rune_, std::string_view name_, Vec2s startOffset_, std::string_view sequence_)
 		: rune(rune_)
 		, name(name_)
 		, startOffset(startOffset_)
 		, sequence(sequence_)
-	{}
+	{ }
 
-	Rune        rune;
-	std::string name;
-	Vec2s       startOffset;
-	std::string sequence;
+	Rune rune;
+	std::string_view name;
+	Vec2s startOffset;
+	std::string_view sequence;
 };
 
 extern std::array<RuneInfo, RUNE_COUNT> runeInfos;
