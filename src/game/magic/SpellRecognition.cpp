@@ -532,7 +532,7 @@ static constexpr const RawSpellDefinition allSpells[] = {
 
 static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], SpellType spell, std::string_view name) {
 	
-	auto res = spellNames.insert(std::make_pair(name, spell));
+	[[maybe_unused]] auto res = spellNames.emplace(name, spell);
 	arx_assert_msg(res.second, "Duplicate spell name: %s", std::string(name).c_str());
 	
 	if(symbols[0] == RUNE_NONE) {
