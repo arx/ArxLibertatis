@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "core/TimeTypes.h"
@@ -64,7 +65,7 @@ namespace audio {
  * If the audio system was already initialized, it is cleaned first, removing all loaded resources.
  * This is not threadsafe: The caller must ensure that no other audio methods are called at the same time.
  */
-aalError init(const std::string & backendName, const std::string & deviceName = std::string(),
+aalError init(std::string_view backendName, std::string_view deviceName = std::string_view(),
               HRTFAttribute hrtf = HRTFDefault);
 
 /*!

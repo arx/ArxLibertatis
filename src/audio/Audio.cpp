@@ -68,7 +68,7 @@ namespace audio {
 
 static Lock * mutex = nullptr;
 
-aalError init(const std::string & backendName, const std::string & deviceName, HRTFAttribute hrtf) {
+aalError init(std::string_view backendName, std::string_view deviceName, HRTFAttribute hrtf) {
 	
 	// Clean any initialized data
 	clean();
@@ -89,14 +89,14 @@ aalError init(const std::string & backendName, const std::string & deviceName, H
 			LogDebug("initializing OpenAL backend");
 			OpenALBackend * _backend = new OpenALBackend();
 			if(!deviceName.empty() && deviceName != "auto") {
-				error = _backend->init(deviceName.c_str(), hrtf);
+				error = _backend->init(deviceName, hrtf);
 				if(error) {
 					LogWarning << "Could not open device \"" << deviceName
 					           << "\", retrying with default device";
 				}
 			}
 			if(error) {
-				error = _backend->init(nullptr, hrtf);
+				error = _backend->init(std::string_view(), hrtf);
 			}
 			if(!error) {
 				backend = _backend;

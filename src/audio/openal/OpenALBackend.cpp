@@ -99,7 +99,7 @@ OpenALBackend::~OpenALBackend() {
 	}
 }
 
-static const char * const deviceNamePrefixOpenALSoft = "OpenAL Soft on ";
+static constexpr const char * const deviceNamePrefixOpenALSoft = "OpenAL Soft on ";
 
 class OpenALEnvironmentOverrides {
 	
@@ -195,7 +195,7 @@ static const char * getHRTFStatusString(HRTFStatus status) {
 	arx_unreachable();
 }
 
-aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrtf) {
+aalError OpenALBackend::init(std::string_view requestedDeviceName, HRTFAttribute hrtf) {
 	
 	if(device) {
 		return AAL_ERROR_INIT;
@@ -211,10 +211,10 @@ aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrt
 	}
 	
 	// Create OpenAL interface
-	device = alcOpenDevice(requestedDeviceName);
-	if(!device && requestedDeviceName) {
-		std::string fullDeviceName = deviceNamePrefixOpenALSoft;
-		fullDeviceName += requestedDeviceName;
+	std::string fullDeviceName(requestedDeviceName);
+	device = alcOpenDevice(fullDeviceName.empty() ? nullptr : fullDeviceName.c_str());
+	if(!device && !fullDeviceName.empty()) {
+		fullDeviceName.insert(0, deviceNamePrefixOpenALSoft);
 		device = alcOpenDevice(fullDeviceName.c_str());
 	}
 	if(!device) {
@@ -326,7 +326,7 @@ aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrt
 	const char * deviceName = alcGetString(device, ALC_DEVICE_SPECIFIER);
 	#ifdef ALC_ENUMERATE_ALL_EXT
 	ALCboolean hasDetailedDevices = alcIsExtensionPresent(device, "ALC_ENUMERATE_ALL_EXT");
-	if(hasDetailedDevices != ALC_FALSE && !std::strcmp(deviceName, "OpenAL Soft")) {
+	if(hasDetailedDevices != ALC_FALSE && deviceName && !std::strcmp(deviceName, "OpenAL Soft")) {
 		/*
 		 * OpenAL Soft hides the extended device name since version 1.14.
 		 * Instead, queries for ALC_ALL_DEVICES_SPECIFIER with a valid device

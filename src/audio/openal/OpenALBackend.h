@@ -22,6 +22,7 @@
 
 #include "Configure.h"
 
+#include <string_view>
 #include <vector>
 
 #include <al.h>
@@ -50,7 +51,7 @@ public:
 	OpenALBackend();
 	~OpenALBackend();
 	
-	aalError init(const char * requestedDeviceName = nullptr, HRTFAttribute hrtf = HRTFDefault);
+	aalError init(std::string_view requestedDeviceName = std::string_view(), HRTFAttribute hrtf = HRTFDefault);
 	
 	std::vector<std::string> getDevices();
 	
