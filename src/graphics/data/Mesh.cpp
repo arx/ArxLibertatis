@@ -715,7 +715,7 @@ bool FastSceneLoad(const res::path & partial_path, Vec3f & trans) {
 		LoadLevelScreen();
 		
 		// Decompress the actual scene data
-		uncompressed = blast(data, end - data, uh->uncompressedsize);
+		uncompressed = blast(std::string_view(data, end - data), uh->uncompressedsize);
 		if(uncompressed.empty()) {
 			LogError << "Error decompressing scene data in " << file;
 			return false;

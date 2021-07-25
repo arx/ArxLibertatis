@@ -262,7 +262,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 	
 	// using compression
 	if(dlh.version >= 1.44f) {
-		buffer = blast(buffer.data() + pos, buffer.size() - pos);
+		buffer = blast(std::string_view(buffer).substr(pos));
 		if(buffer.empty()) {
 			LogError << "Could not decompress level file " << file;
 			return false;

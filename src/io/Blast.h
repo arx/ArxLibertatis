@@ -47,6 +47,7 @@
 #include <stddef.h>
 
 #include <string>
+#include <string_view>
 
 /*
  * blast() decompresses the PKWare Data Compression Library (DCL) compressed
@@ -128,13 +129,6 @@ int blastOutString(void * param, unsigned char * buf, size_t len);
 /*!
  * Decompress data.
  */
-std::string blast(const char * from, size_t fromSize, size_t toSizeHint = size_t(-1));
-
-/*!
- * Decompress data.
- */
-inline std::string blast(const std::string & from, size_t toSizeHint = size_t(-1)) {
-	return blast(from.data(), from.size(), toSizeHint);
-}
+std::string blast(std::string_view from, size_t toSizeHint = size_t(-1));
 
 #endif // ARX_IO_BLAST_H

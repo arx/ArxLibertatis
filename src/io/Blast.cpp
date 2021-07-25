@@ -463,17 +463,17 @@ int blastOutString(void * param, unsigned char * buf, size_t len) {
 	return 0;
 }
 
-std::string blast(const char * from, size_t fromSize, size_t toSizeHint) {
+std::string blast(std::string_view from, size_t toSizeHint) {
 	
 	std::string uncompressed;
-	uncompressed.reserve(toSizeHint == size_t(-1) ? fromSize : toSizeHint);
+	uncompressed.reserve(toSizeHint == size_t(-1) ? from.size() : toSizeHint);
 	
-	BlastMemInBuffer in(from, fromSize);
+	BlastMemInBuffer in(from.data(), from.size());
 	BlastMemOutString out(uncompressed);
 	
 	BlastResult error = blast(blastInMem, &in, blastOutString, &out);
 	if(error) {
-		LogError << "blast error " << int(error) << " for " << fromSize;
+		LogError << "blast error " << int(error) << " for " << from.size();
 		uncompressed.clear();
 	}
 	
