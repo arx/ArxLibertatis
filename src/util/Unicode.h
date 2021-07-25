@@ -51,6 +51,7 @@
 
 #include <stddef.h>
 #include <string>
+#include <string_view>
 
 #include "platform/Platform.h"
 
@@ -229,7 +230,7 @@ std::string convert(In begin, In end) {
  * \return an \ref std::string with the string in the destination encoding
  */
 template <typename InEnc, typename OutEnc>
-std::string convert(const std::string & str) {
+std::string convert(std::string_view str) {
 	return convert<InEnc, OutEnc>(str.begin(), str.end());
 }
 
