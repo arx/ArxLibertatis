@@ -31,7 +31,7 @@
 #include "gui/menu/MenuCursor.h"
 #include "gui/widget/TextWidget.h"
 
-CheckboxWidget::CheckboxWidget(const Vec2f & size, Font * font, const std::string & label)
+CheckboxWidget::CheckboxWidget(const Vec2f & size, Font * font, std::string_view label)
 	: m_label(new TextWidget(font, label))
 	, m_textureOff(TextureContainer::Load("graph/interface/menus/menu_checkbox_off"))
 	, m_textureOn(TextureContainer::Load("graph/interface/menus/menu_checkbox_on"))

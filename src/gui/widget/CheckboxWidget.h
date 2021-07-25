@@ -21,7 +21,7 @@
 #define ARX_GUI_WIDGET_CHECKBOXWIDGET_H
 
 #include <functional>
-#include <string>
+#include <string_view>
 
 #include "gui/widget/Widget.h"
 #include "platform/Platform.h"
@@ -34,7 +34,7 @@ class CheckboxWidget final : public Widget {
 	
 public:
 	
-	explicit CheckboxWidget(const Vec2f & size, Font * font, const std::string & label);
+	explicit CheckboxWidget(const Vec2f & size, Font * font, std::string_view label);
 	virtual ~CheckboxWidget();
 	
 	void move(const Vec2f & offset);
