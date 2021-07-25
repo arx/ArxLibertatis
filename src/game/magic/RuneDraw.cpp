@@ -44,14 +44,14 @@ static Vec2s GetSymbVector(char c) {
 	}
 }
 
-static void ReCenterSequence(const std::string & _pcSequence, Vec2s & iMin, Vec2s & iMax) {
+static void ReCenterSequence(std::string_view sequence, Vec2s & iMin, Vec2s & iMax) {
 	
 	Vec2s iSize = Vec2s(0, 0);
 	iMin = Vec2s(0, 0);
 	iMax = Vec2s(0, 0);
 	
-	for(size_t iI = 0; iI < _pcSequence.length(); iI++) {
-		Vec2s es2dVector = GetSymbVector(_pcSequence[iI]);
+	for(size_t iI = 0; iI < sequence.length(); iI++) {
+		Vec2s es2dVector = GetSymbVector(sequence[iI]);
 		es2dVector *= symbolVecScale;
 		iSize += es2dVector;
 		iMin = glm::min(iMin, iSize);
@@ -331,7 +331,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, GameDuration duratio
 	
 }
 
-void ARX_SPELLS_RequestSymbolDraw(Entity * io, const std::string & name, GameDuration duration) {
+void ARX_SPELLS_RequestSymbolDraw(Entity * io, std::string_view name, GameDuration duration) {
 	
 	for(RuneInfo & info : runeInfos) {
 		if(info.name == name) {

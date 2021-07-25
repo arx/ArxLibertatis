@@ -21,6 +21,7 @@
 #define ARX_GAME_MAGIC_RUNEDRAW_H
 
 #include <string>
+#include <string_view>
 
 #include "core/TimeTypes.h"
 #include "game/magic/Rune.h"
@@ -50,7 +51,7 @@ void ARX_SPELLS_UpdateSymbolDraw();
 void ARX_SPELLS_UpdateBookSymbolDraw(const Rect & bookRect);
 void ARX_SPELLS_ClearAllSymbolDraw();
 
-void ARX_SPELLS_RequestSymbolDraw(Entity * io, const std::string & name, GameDuration duration);
+void ARX_SPELLS_RequestSymbolDraw(Entity * io, std::string_view name, GameDuration duration);
 void ARX_SPELLS_RequestSymbolDraw2(Entity * io, Rune symb, GameDuration duration);
 
 #endif // ARX_GAME_MAGIC_RUNEDRAW_H
