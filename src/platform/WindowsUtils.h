@@ -27,6 +27,7 @@
 #include <stddef.h>
 #include <cstring>
 #include <string>
+#include <string_view>
 
 #include <windows.h>
 
@@ -67,9 +68,7 @@ public:
 	
 	size_t capacity() const { return std::size(m_static) - 1; }
 	
-	WideString(const char * utf8, size_t length) : m_size(0) { assign(utf8, length); }
-	explicit WideString(const char * utf8) : m_size(0) { assign(utf8); }
-	explicit WideString(const std::string & utf8) : m_size(0) { assign(utf8); }
+	explicit WideString(std::string_view utf8) : m_size(0) { assign(utf8); }
 	explicit WideString(size_t size) : m_size(0) { resize(size); }
 	WideString() : m_size(0) { m_static[0] = '\0'; }
 	
@@ -95,19 +94,10 @@ public:
 	//! Resize the buffer to the first NUL byte
 	void compact();
 	
-	void assign(const char * utf8, size_t length, size_t offset = 0);
-	void assign(const char * utf8) { assign(utf8, std::strlen(utf8)); }
-	void assign(const std::string & utf8) { assign(utf8.data(), utf8.length()); }
+	void assign(std::string_view utf8, size_t offset = 0);
+	void append(std::string_view utf8) { assign(utf8, size()); }
 	
-	void append(const char * utf8, size_t length) { assign(utf8, length, size()); }
-	void append(const char * utf8) { append(utf8, std::strlen(utf8)); }
-	void append(const std::string & utf8) { append(utf8.data(), utf8.length()); }
-	
-	WideString & operator=(const char * utf8) {
-		assign(utf8);
-		return *this;
-	}
-	WideString & operator=(const std::string & utf8) {
+	WideString & operator=(std::string_view utf8) {
 		assign(utf8);
 		return *this;
 	}
@@ -140,7 +130,6 @@ public:
 	explicit WinPath(size_t size) : WideString(size) { }
 	WinPath() : WideString() { }
 	
-	using WideString::assign;
 	void assign(const fs::path & path);
 	
 	using WideString::operator=;

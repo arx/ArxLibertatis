@@ -30,19 +30,19 @@
 
 namespace platform {
 
-void WideString::assign(const char * utf8, size_t utf8_length, size_t offset) {
-	if(!dynamic() && offset + utf8_length <= capacity()) {
+void WideString::assign(std::string_view utf8, size_t offset) {
+	if(!dynamic() && offset + utf8.size() <= capacity()) {
 		// Optimistically assume that the wide length is not longer than the utf8 length
-		INT length = MultiByteToWideChar(CP_UTF8, 0, utf8, utf8_length, m_static + offset, capacity() - offset);
-		if(length || !utf8_length) {
+		INT length = MultiByteToWideChar(CP_UTF8, 0, utf8.data(), utf8.size(), m_static + offset, capacity() - offset);
+		if(length || utf8.empty()) {
 			m_static[offset + length] = L'\0';
 			m_size = offset + length;
 			return;
 		}
 	}
-	INT length = MultiByteToWideChar(CP_UTF8, 0, utf8, utf8_length, nullptr, 0);
+	INT length = MultiByteToWideChar(CP_UTF8, 0, utf8.data(), utf8.size(), nullptr, 0);
 	allocate(offset + length);
-	MultiByteToWideChar(CP_UTF8, 0, utf8, utf8_length, data() + offset, length);
+	MultiByteToWideChar(CP_UTF8, 0, utf8.data(), utf8.size(), data() + offset, length);
 }
 
 void WideString::assign(const WCHAR * text, size_t length, size_t offset) {
@@ -123,10 +123,10 @@ void WinPath::assign(const fs::path & path) {
 	
 	if(path.is_absolute() && path.string().length() > MAX_PATH) {
 		reserve(path.string().length() + 4);
-		assign(prefix);
+		WideString::assign(prefix);
 		append(path.string());
 	} else {
-		assign(path.string());
+		WideString::assign(path.string());
 		if(path.is_absolute() && size() > MAX_PATH) {
 			allocate(size() + 4);
 			std::memmove(data() + 4, data(), size() * sizeof(WCHAR));
