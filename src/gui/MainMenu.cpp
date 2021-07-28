@@ -1281,7 +1281,7 @@ public:
 			std::string_view label = getLocalised("system_menus_options_audio_device");
 			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
 			slider->valueChanged = [](int pos, std::string_view string) {
-				ARXMenu_Options_Audio_SetDevice((pos == 0) ? "auto" : std::string_view(string));
+				ARXMenu_Options_Audio_SetDevice((pos == 0) ? "auto" : string);
 			};
 			slider->addEntry("Default");
 			slider->selectLast();
