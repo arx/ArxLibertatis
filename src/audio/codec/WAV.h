@@ -64,13 +64,13 @@ public:
 	StreamWAV();
 	~StreamWAV();
 	
-	aalError setStream(std::unique_ptr<PakFileHandle> stream);
-	aalError setPosition(size_t position);
+	aalError setStream(std::unique_ptr<PakFileHandle> stream) override;
+	aalError setPosition(size_t position) override;
 	
-	aalError getFormat(PCMFormat & format);
-	size_t getLength();
+	aalError getFormat(PCMFormat & format) override;
+	size_t getLength() override;
 	
-	aalError read(void * buffer, size_t bufferSize, size_t & read);
+	aalError read(void * buffer, size_t bufferSize, size_t & read) override;
 	
 private:
 	

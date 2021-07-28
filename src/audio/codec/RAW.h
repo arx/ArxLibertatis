@@ -59,11 +59,11 @@ public:
 	
 	CodecRAW();
 	
-	aalError setHeader(void * header);
-	void setStream(PakFileHandle * stream);
-	aalError setPosition(size_t position);
+	aalError setHeader(void * header) override;
+	void setStream(PakFileHandle * stream) override;
+	aalError setPosition(size_t position) override;
 	
-	aalError read(void * buffer, size_t bufferSize, size_t & read);
+	aalError read(void * buffer, size_t bufferSize, size_t & read) override;
 	
 private:
 	
