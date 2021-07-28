@@ -75,7 +75,7 @@ class PathFinderThread : public StoppableThread {
 	std::list<PATHFINDER_REQUEST> m_queue;
 	volatile bool m_busy;
 	
-	void run();
+	void run() override;
 	
 public:
 	
