@@ -120,6 +120,111 @@ inline bool safeGet(T & data, CTYPE * & pos, STYPE & size) {
 
 [[nodiscard]] std::string getDateTimeString();
 
+struct SplitStringSentinel { };
+
+template <typename Separator, bool SkipEmpty>
+class SplitStringIterator {
+	
+	std::string_view m_string;
+	Separator m_separator;
+	std::string_view::size_type m_pos;
+	
+public:
+	
+	SplitStringIterator(std::string_view string, Separator separator)
+		: m_string(string), m_separator(separator), m_pos(0)
+	{
+		m_pos = std::string_view::size_type(-1);
+		operator++();
+	}
+	
+	void operator++() {
+		if(m_pos == m_string.size()) {
+			m_pos = std::string_view::npos;
+			return;
+		}
+		do {
+			m_string.remove_prefix(m_pos + 1);
+			m_pos = m_string.find_first_of(m_separator);
+			if(m_pos == std::string_view::npos) {
+				if(!SkipEmpty || !m_string.empty()) {
+					m_pos = m_string.size();
+				}
+				break;
+			}
+		} while(SkipEmpty && m_pos == 0);
+	}
+	
+	[[nodiscard]] std::string_view operator*() const {
+		return m_string.substr(0, m_pos);
+	}
+	
+	[[nodiscard]] bool operator!=(SplitStringSentinel) const {
+		return m_pos != std::string_view::npos;
+	}
+	
+};
+
+template <typename Separator, bool SkipEmpty>
+class SplitStringView {
+	
+	std::string_view m_string;
+	Separator m_separator;
+	
+public:
+	
+	SplitStringView(std::string_view string, Separator separator)
+		: m_string(string), m_separator(separator)
+	{ }
+	
+	[[nodiscard]] SplitStringIterator<Separator, SkipEmpty> begin() const {
+		return { m_string, m_separator };
+	}
+	
+	[[nodiscard]] SplitStringSentinel end() const {
+		return { };
+	}
+	
+};
+
+/*!
+ * \brief Split a string at each occurance of a character.
+ *
+ * Returns an iterable view of all substrings between occurances of the separator even if they are empty.
+ */
+[[nodiscard]] inline SplitStringView<char, false> split(std::string_view string, char separator) {
+    return { string, separator };
+}
+
+/*!
+ * \brief Split a string at each occurance of any of the characters in the separator string.
+ *
+ * Returns an iterable view of all substrings between occurances of a separator even if they are empty.
+ */
+[[nodiscard]] inline SplitStringView<std::string_view, false> split(std::string_view string,
+                                                                    std::string_view separators) {
+    return { string, separators };
+}
+
+/*!
+ * \brief Split a string at each occurance of a character.
+ *
+ * Returns an iterable view of all non-empty substrings between occurances of the separator
+ */
+[[nodiscard]] inline SplitStringView<char, true> splitIgnoreEmpty(std::string_view string, char separator) {
+    return { string, separator };
+}
+
+/*!
+ * \brief Split a string at each occurance of any of the characters in the separator string.
+ *
+ * Returns an iterable view of all non-empty substrings between occurances of a separator.
+ */
+[[nodiscard]] inline SplitStringView<std::string_view, true> splitIgnoreEmpty(std::string_view string,
+                                                                              std::string_view separators) {
+    return { string, separators };
+}
+
 } // namespace util
 
 #endif // ARX_UTIL_STRING_H
