@@ -31,6 +31,7 @@
 #include "input/Input.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
+#include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
 #include "io/IniReader.h"
 #include "io/IniSection.h"
@@ -570,13 +571,13 @@ static Vec2i parseResolution(std::string_view resolution, Vec2i defaultResolutio
 
 bool Config::init(const fs::path & file) {
 	
-	fs::ifstream ifs;
-	ifs.open(file);
-	bool loaded = ifs.is_open();
+	std::string data = fs::read(file);
+	
+	bool loaded = !data.empty();
 	
 	ConfigReader reader;
 	
-	if(!reader.read(ifs)) {
+	if(!reader.read(data)) {
 		LogWarning << "Errors while parsing config file";
 	}
 	

@@ -988,10 +988,8 @@ static void ARX_SOUND_CreateCollisionMaps() {
 			return;
 		}
 		
-		std::istringstream iss(data);
-		
 		IniReader reader;
-		if(!reader.read(iss)) {
+		if(!reader.read(data)) {
 			LogWarning << "Errors while parsing collision map " << file;
 		}
 		
@@ -1072,10 +1070,8 @@ static void ARX_SOUND_CreatePresenceMap() {
 		return;
 	}
 	
-	std::istringstream iss(data);
-	
 	IniReader reader;
-	if(!reader.read(iss)) {
+	if(!reader.read(data)) {
 		LogWarning << "Errors while parsing presence map " << file;
 	}
 	

@@ -130,7 +130,7 @@ const IniKey * IniReader::getKey(std::string_view sectionName, std::string_view 
 static constexpr const std::string_view WHITESPACE = " \t\r\n";
 static constexpr const std::string_view ALPHANUM = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";
 
-bool IniReader::read(std::istream & is, bool overrideValues) {
+bool IniReader::read(std::string_view data, bool overrideValues) {
 	
 	// The current section
 	IniSection * section = nullptr;
@@ -139,21 +139,27 @@ bool IniReader::read(std::istream & is, bool overrideValues) {
 	
 	bool readline = true;
 	
-	std::string str;
+	std::string_view str;
 	
 	// While lines remain to be extracted
-	for(size_t line = 1; is.good(); line++) {
+	for(size_t line = 1; !data.empty(); line++) {
 		
 		// Get a line to process
 		if(readline) {
-			str.clear();
-			getline(is, str);
+			size_t lineend = data.find('\n');
+			if(lineend == std::string_view::npos) {
+				str = data;
+				data = { };
+			} else {
+				str = data.substr(0, lineend);
+				data.remove_prefix(lineend + 1);
+			}
 		} else {
 			readline = true;
 		}
 		
 		size_t start = str.find_first_not_of(WHITESPACE);
-		if(start == std::string::npos) {
+		if(start == std::string_view::npos) {
 			// Empty line (only whitespace)
 			continue;
 		}
@@ -168,10 +174,10 @@ bool IniReader::read(std::istream & is, bool overrideValues) {
 		if(str[start] == '[') {
 			
 			size_t end = str.find(']', start + 1);
-			if(end == std::string::npos) {
+			if(end == std::string_view::npos) {
 				LogDebug("invalid header @ line " << line << ": " << str);
 				end = str.find_first_not_of(ALPHANUM, start + 1);
-				if(end == std::string::npos) {
+				if(end == std::string_view::npos) {
 					end = str.length();
 				}
 			}
@@ -192,7 +198,7 @@ bool IniReader::read(std::istream & is, bool overrideValues) {
 		}
 		
 		size_t nameEnd = str.find_first_not_of(ALPHANUM, start);
-		if(nameEnd == std::string::npos) {
+		if(nameEnd == std::string_view::npos) {
 			ok = false;
 			LogWarning << "Missing '=' separator @ line " << line << ": " << str;
 			continue;
@@ -205,8 +211,8 @@ bool IniReader::read(std::istream & is, bool overrideValues) {
 		bool quoted = false;
 		
 		size_t separator = str.find_first_not_of(WHITESPACE, nameEnd);
-		if(separator == std::string::npos || str[separator] != '=') {
-			if(separator != std::string::npos && separator + 1 < str.length()
+		if(separator == std::string_view::npos || str[separator] != '=') {
+			if(separator != std::string_view::npos && separator + 1 < str.length()
 			   && str[separator] == '"' && str[separator + 1] == '=') {
 				LogDebug("found '\"=' instead of '=\"' @ line " << line << ": " << str);
 				quoted = true;
@@ -218,23 +224,23 @@ bool IniReader::read(std::istream & is, bool overrideValues) {
 		}
 		
 		size_t valueStart = str.find_first_not_of(WHITESPACE, separator + 1);
-		if(valueStart == std::string::npos) {
+		if(valueStart == std::string_view::npos) {
 			// Empty value.
 			if(overrideValues) {
-				section->setKey(str.substr(start, nameEnd - start), std::string());
+				section->setKey(str.substr(start, nameEnd - start), { });
 			} else {
-				section->addKey(str.substr(start, nameEnd - start), std::string());
+				section->addKey(str.substr(start, nameEnd - start), { });
 			}
 			continue;
 		}
 		
-		std::string key = str.substr(start, nameEnd - start);
+		std::string_view key = str.substr(start, nameEnd - start);
 		std::string value;
 		
 		if(quoted || str[valueStart] == '"') {
 			valueStart++;
 			size_t valueEnd = str.find_last_of('"');
-			arx_assert(valueEnd != std::string::npos);
+			arx_assert(valueEnd != std::string_view::npos);
 			
 			if(valueEnd < valueStart) {
 				
@@ -248,13 +254,19 @@ bool IniReader::read(std::istream & is, bool overrideValues) {
 				
 				// Add following lines until we find either a terminating quote,
 				// an empty or commented line, a new section or a new key
-				for(; is.good(); line++) {
+				for(; !data.empty(); line++) {
 					
-					str.clear();
-					getline(is, str);
+					size_t lineend = data.find('\n');
+					if(lineend == std::string_view::npos) {
+						str = data;
+						data = { };
+					} else {
+						str = data.substr(0, lineend);
+						data.remove_prefix(lineend + 1);
+					}
 					
 					size_t newValueStart = str.find_first_not_of(WHITESPACE);
-					if(newValueStart == std::string::npos) {
+					if(newValueStart == std::string_view::npos) {
 						// Empty line (only whitespace)
 						break;
 					}
@@ -272,9 +284,9 @@ bool IniReader::read(std::istream & is, bool overrideValues) {
 					}
 					
 					size_t newNameEnd = str.find_first_not_of(ALPHANUM, newValueStart);
-					if(newNameEnd != std::string::npos && newNameEnd != newValueStart) {
+					if(newNameEnd != std::string_view::npos && newNameEnd != newValueStart) {
 						size_t newSeparator = str.find_first_not_of(WHITESPACE, newNameEnd);
-						if(newSeparator != std::string::npos && str[newSeparator] == '=') {
+						if(newSeparator != std::string_view::npos && str[newSeparator] == '=') {
 							// New key
 							line--, readline = false;
 							break;
@@ -285,7 +297,7 @@ bool IniReader::read(std::istream & is, bool overrideValues) {
 					value += ' ';
 					
 					size_t newValueEnd = str.find_last_of('"');
-					if(newValueEnd != std::string::npos) {
+					if(newValueEnd != std::string_view::npos) {
 						// End of multi-line value
 						value += str.substr(newValueStart, newValueEnd - newValueStart);
 						break;
@@ -302,15 +314,15 @@ bool IniReader::read(std::istream & is, bool overrideValues) {
 			
 		} else {
 			size_t valueEnd = str.find_last_not_of(WHITESPACE) + 1;
-			arx_assert(valueEnd != std::string::npos);
+			arx_assert(valueEnd != std::string_view::npos);
 			arx_assert(valueEnd >= valueStart);
 			value = str.substr(valueStart, valueEnd - valueStart);
 		}
 		
 		if(overrideValues) {
-			section->setKey(std::move(key), std::move(value));
+			section->setKey(key, std::move(value));
 		} else {
-			section->addKey(std::move(key), std::move(value));
+			section->addKey(key, std::move(value));
 		}
 		
 		// Ignoring rest of the line, not verifying that it's only whitespace / comment

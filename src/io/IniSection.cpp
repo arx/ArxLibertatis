@@ -77,17 +77,17 @@ const IniKey * IniSection::getKey(std::string_view name) const {
 	return nullptr;
 }
 
-void IniSection::addKey(std::string && key, std::string && value) {
+void IniSection::addKey(std::string_view key, std::string && value) {
 	
-	IniKey k(util::toLowercase(std::move(key)), std::move(value));
+	IniKey k(util::toLowercase(key), std::move(value));
 	
-	LogDebug("added key " << key << "=\"" << value << "\"");
+	LogDebug("added key " << k.name << "=\"" << k.value << "\"");
 	keys.emplace_back(std::move(k));
 }
 
-void IniSection::setKey(std::string && key, std::string && value) {
+void IniSection::setKey(std::string_view key, std::string && value) {
 	
-	IniKey k(util::toLowercase(std::move(key)), std::move(value));
+	IniKey k(util::toLowercase(key), std::move(value));
 	
 	for(IniKey & old : keys) {
 		if(old.name == k.name) {
@@ -97,7 +97,7 @@ void IniSection::setKey(std::string && key, std::string && value) {
 		}
 	}
 	
-	LogDebug("added key " << key << "=\"" << value << "\"");
+	LogDebug("added key " << k.name << "=\"" << k.value << "\"");
 	keys.emplace_back(std::move(k));
 }
 

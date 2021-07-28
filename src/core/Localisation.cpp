@@ -32,7 +32,7 @@
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
 #include "io/IniReader.h"
-#include "io/fs/FileStream.h"
+#include "io/fs/Filesystem.h"
 #include "io/fs/SystemPaths.h"
 #include "io/log/Logger.h"
 
@@ -48,9 +48,7 @@ IniReader g_localisation;
 
 Language getLanguageInfo(std::string_view id) {
 	
-	std::istringstream iss(g_resources->read((std::string("localisation/languages/") += id) += ".ini"));
-	IniReader reader;
-	reader.read(iss);
+	IniReader reader(g_resources->read((std::string("localisation/languages/") += id) += ".ini"));
 	
 	Language result;
 	result.name = reader.getKey("language", "name", id);
@@ -87,13 +85,10 @@ std::string_view selectDefaultLanguage(const Languages & languages) {
 	const char * cfgFiles[] = { "cfg.ini", "cfg_default.ini" };
 	for(const fs::path & datadir : fs::getDataDirs()) {
 		for(const char * cfgFile : cfgFiles) {
-			fs::ifstream ifs(datadir / cfgFile);
-			if(ifs.is_open()) {
-				IniReader cfg;
-				cfg.read(ifs);
-				std::string language = util::toLowercase(cfg.getKey("language", "string", std::string()));
-				Languages::const_iterator it = languages.find(language);
-				if(it != languages.end()) {
+			std::string config = fs::read(datadir / cfgFile);
+			if(config.empty()) {
+				std::string language = util::toLowercase(IniReader(config).getKey("language", "string", std::string()));
+				if(auto it = languages.find(language); it != languages.end()) {
 					return it->first;
 				}
 			}
@@ -235,10 +230,10 @@ void loadLocalisation(PakDirectory * dir, std::string_view name) {
 	
 	LogInfo << "Loading: " << name;
 	
-	std::istringstream iss(buffer);
-	if(!g_localisation.read(iss, true)) {
+	if(!g_localisation.read(buffer, true)) {
 		LogWarning << "Error parsing localisation file localisation/" << name;
 	}
+	
 }
 
 void loadLocalisations() {
@@ -393,8 +388,7 @@ bool initLocalisation() {
 	
 	if(!buffer.empty()) {
 		LogDebug("Preparing to parse localisation file");
-		std::istringstream iss(buffer);
-		if(!g_localisation.read(iss)) {
+		if(!g_localisation.read(buffer)) {
 			LogWarning << "Error parsing localisation file localisation/utext_"
 			           << config.interface.language << ".ini";
 		}

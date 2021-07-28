@@ -20,7 +20,6 @@
 #ifndef ARX_IO_INIREADER_H
 #define ARX_IO_INIREADER_H
 
-#include <istream>
 #include <map>
 #include <string>
 #include <string_view>
@@ -39,6 +38,12 @@ public:
 	
 	typedef Sections::const_iterator iterator;
 	
+	IniReader() = default;
+	
+	explicit IniReader(std::string_view data) {
+		read(data);
+	}
+	
 	/*!
 	 * Parses an input stream for configuration section and respective keys.
 	 * Stores them all in a section map as IniSection objects.
@@ -46,7 +51,7 @@ public:
 	 * \param overrideValues override values if key already exists
 	 * \return false if there were problems (some data may have been read)
 	 */
-	bool read(std::istream & is, bool overrideValues = false);
+	bool read(std::string_view data, bool overrideValues = false);
 	
 	void clear();
 	
