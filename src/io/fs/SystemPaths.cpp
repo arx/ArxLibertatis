@@ -532,7 +532,7 @@ static void disableDataDir() {
 }
 
 static void addDataDir(const std::string & dataDir) {
-	fs::cmdLineInitParams.dataDirs.push_back(dataDir);
+	fs::cmdLineInitParams.dataDirs.emplace_back(dataDir);
 }
 
 static void setUserDir(const std::string & userDir) {
