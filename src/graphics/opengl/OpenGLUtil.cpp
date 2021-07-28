@@ -91,7 +91,7 @@ OpenGLInfo::OpenGLInfo()
 		GLint max = 0;
 		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
 		if(max < 8192) {
-			m_extensionOverrides.push_back("-GL_ARB_texture_non_power_of_two");
+			m_extensionOverrides.emplace_back("-GL_ARB_texture_non_power_of_two");
 		}
 	}
 	
@@ -110,7 +110,7 @@ OpenGLInfo::OpenGLInfo()
 	   && (boost::equals(renderer(), "Intel(R) HD Graphics")
 	       || boost::equals(renderer(), "Intel(R) HD Graphics 4000"))
 	   && boost::contains(versionString(), "Build 10.18.10.")) {
-		m_extensionOverrides.push_back("-GL_ARB_sample_shading");
+		m_extensionOverrides.emplace_back("-GL_ARB_sample_shading");
 	}
 	#endif
 	
