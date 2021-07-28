@@ -201,7 +201,7 @@ static void handleQuietOption() {
 }
 
 static void handleArchive(const std::string & file) {
-	g_archives.push_back(file);
+	g_archives.emplace_back(file);
 }
 
 static void addResourceDir(PakReader & resources, const fs::path & base) {
