@@ -24,6 +24,7 @@
 #include <string>
 #include <string_view>
 #include <set>
+#include <utility>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -47,12 +48,12 @@ struct ResourceEntry {
 	std::string name;
 	fs::path path;
 	
-	ResourceEntry(int dir_, int archive_, int subtype_, std::string_view name_, fs::path && path_)
+	ResourceEntry(int dir_, int archive_, int subtype_, std::string_view name_, fs::path path_)
 		: dir(dir_)
 		, archive(archive_)
 		, subtype(subtype_)
 		, name(name_)
-		, path(path_)
+		, path(std::move(path_))
 	{ }
 	
 	bool operator<(const ResourceEntry & o) const {
