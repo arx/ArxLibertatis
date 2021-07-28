@@ -399,7 +399,7 @@ struct ARXCHARACTER {
 		return Cylinder(basePosition(), baseRadius(), baseHeight());
 	}
 	
-	bool isAiming() { return m_aimTime > 0; }
+	bool isAiming() const { return m_aimTime > 0; }
 	
 };
 
