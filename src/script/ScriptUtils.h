@@ -96,7 +96,7 @@ class Context {
 public:
 	
 	explicit Context(const EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity,
-	                 ScriptMessage msg, const ScriptParameters & parameters);
+	                 ScriptMessage msg, ScriptParameters parameters);
 	
 	std::string getStringVar(std::string_view name) const;
 	std::string getFlags();

@@ -20,6 +20,7 @@
 #include "script/ScriptUtils.h"
 
 #include <set>
+#include <utility>
 
 #include <boost/lexical_cast.hpp>
 
@@ -44,13 +45,13 @@ std::string_view toLocalizationKey(std::string_view string) {
 }
 
 Context::Context(const EERIE_SCRIPT * script, size_t pos, Entity * sender, Entity * entity,
-                 ScriptMessage msg, const ScriptParameters & parameters)
+                 ScriptMessage msg, ScriptParameters parameters)
 	: m_script(script)
 	, m_pos(pos)
 	, m_sender(sender)
 	, m_entity(entity)
 	, m_message(msg)
-	, m_parameters(parameters)
+	, m_parameters(std::move(parameters))
 { }
 
 std::string Context::getStringVar(std::string_view name) const {
