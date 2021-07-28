@@ -85,9 +85,9 @@ std::string_view selectDefaultLanguage(const Languages & languages) {
 	const char * cfgFiles[] = { "cfg.ini", "cfg_default.ini" };
 	for(const fs::path & datadir : fs::getDataDirs()) {
 		for(const char * cfgFile : cfgFiles) {
-			std::string config = fs::read(datadir / cfgFile);
-			if(config.empty()) {
-				std::string language = util::toLowercase(IniReader(config).getKey("language", "string", std::string()));
+			std::string data = fs::read(datadir / cfgFile);
+			if(!data.empty()) {
+				std::string language = util::toLowercase(IniReader(data).getKey("language", "string", std::string()));
 				if(auto it = languages.find(language); it != languages.end()) {
 					return it->first;
 				}
