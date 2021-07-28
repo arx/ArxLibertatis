@@ -273,7 +273,7 @@ private:
 	
 	void onSampleEnd(Source & source);
 	
-	void onSamplePosition(Source & source, size_t position) {
+	void onSamplePosition(Source & source, size_t position) override {
 		if(position == 0) {
 			onSampleStart(source);
 		} else {
