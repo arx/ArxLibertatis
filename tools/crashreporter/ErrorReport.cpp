@@ -134,14 +134,14 @@ void ErrorReport::getCrashInfo() {
 bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier * pProgressNotifier) {
 	
 	ErrorReport * report = this;
-	BOOST_SCOPE_EXIT((report)) {
+	BOOST_SCOPE_EXIT_ALL(report) {
 		// Allow the crashed process to exit
 		try {
 			report->ReleaseApplicationLock();
 		} catch(...) {
 			qWarning("Could not terminate crashed process");
 		}
-	} BOOST_SCOPE_EXIT_END
+	};
 	
 	pProgressNotifier->taskStarted("Generating crash report", 3);
 	
