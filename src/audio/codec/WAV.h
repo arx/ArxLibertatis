@@ -57,7 +57,7 @@ namespace audio {
 
 class Codec;
 
-class StreamWAV : public Stream {
+class StreamWAV final : public Stream {
 	
 public:
 	

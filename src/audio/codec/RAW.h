@@ -53,7 +53,7 @@ class PakFileHandle;
 
 namespace audio {
 
-class CodecRAW : public Codec {
+class CodecRAW final : public Codec {
 	
 public:
 	

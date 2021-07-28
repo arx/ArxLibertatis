@@ -57,7 +57,7 @@ struct ADPCMHeader;
 
 namespace audio {
 
-class CodecADPCM : public Codec {
+class CodecADPCM final : public Codec {
 	
 public:
 	
