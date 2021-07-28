@@ -112,7 +112,7 @@ private:
 	std::vector<std::istream *> paks;
 	
 	bool addFiles(PakDirectory * dir, const fs::path & path);
-	bool addFile(PakDirectory * dir, const fs::path & path, std::string && name);
+	bool addFile(PakDirectory * dir, fs::path path, std::string name);
 	
 };
 

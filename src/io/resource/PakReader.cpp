@@ -382,7 +382,7 @@ class PlainFile : public PakFile {
 	
 public:
 	
-	explicit PlainFile(const fs::path & path) : m_path(path) { }
+	explicit PlainFile(fs::path path) : m_path(std::move(path)) { }
 	
 	std::string read() const;
 	
@@ -662,13 +662,13 @@ bool PakReader::removeDirectory(const res::path & name) {
 	}
 }
 
-bool PakReader::addFile(PakDirectory * dir, const fs::path & path, std::string && name) {
+bool PakReader::addFile(PakDirectory * dir, fs::path path, std::string name) {
 	
 	if(name.empty()) {
 		return false;
 	}
 	
-	dir->addFile(std::move(name), new PlainFile(path));
+	dir->addFile(std::move(name), new PlainFile(std::move(path)));
 	return true;
 }
 
@@ -694,7 +694,7 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 		if(type == fs::Directory) {
 			ret &= addFiles(dir->addDirectory(std::move(name)), entry);
 		} else if(type == fs::RegularFile) {
-			ret &= addFile(dir, entry, std::move(name));
+			ret &= addFile(dir, std::move(entry), std::move(name));
 		}
 		
 	}
