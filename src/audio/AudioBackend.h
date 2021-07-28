@@ -38,7 +38,7 @@ class Backend {
 	
 public:
 	
-	virtual ~Backend() { }
+	virtual ~Backend() = default;
 	
 	virtual std::vector<std::string> getDevices() = 0;
 	
