@@ -374,7 +374,7 @@ std::vector<std::string> OpenALBackend::getDevices() {
 	
 	while(devices && *devices) {
 		devices = shortenDeviceName(devices);
-		result.push_back(devices);
+		result.emplace_back(devices);
 		devices += result.back().length() + 1;
 	}
 	
