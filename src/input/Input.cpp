@@ -720,8 +720,7 @@ InputKeyId Input::getKeyId(std::string_view name) {
 		keyNames["WheelDown"] = InputKeyId(Mouse::Wheel_Down);
 	}
 	
-	std::map<std::string, InputKeyId>::const_iterator it = keyNames.find(name);
-	if(it != keyNames.end()) {
+	if(auto it = keyNames.find(name); it != keyNames.end()) {
 		return it->second;
 	}
 	
