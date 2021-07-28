@@ -113,10 +113,9 @@ static void ARX_UNICODE_FormattingInRect(Font * font, std::string_view text, con
 	size_t linesInParagraph = 0;
 	bool wasLineBreak = true;
 	
-	auto next = it;
-	for(it = text.data(); it != text.data() + text.size(); it = next) {
+	while(it != text.data() + text.size()) {
 		
-		next = util::UTF8::next(it, text.data() + text.size());
+		const char * next = util::UTF8::next(it, text.data() + text.size());
 		
 		// Line break ?
 		bool isLineBreak = false;
@@ -183,6 +182,7 @@ static void ARX_UNICODE_FormattingInRect(Font * font, std::string_view text, con
 			
 		}
 		
+		it = next;
 	}
 	
 	if(noOneLineParagraphs && linesInParagraph == 1 && itLastParagraphBreak != text.data()
