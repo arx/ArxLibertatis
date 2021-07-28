@@ -725,7 +725,7 @@ std::vector<std::pair<res::path, size_t>> ARX_SOUND_PushAnimSamples() {
 					res::path dest;
 					audio::getSampleName(frame.sample, dest);
 					if(!dest.empty()) {
-						samples.push_back(std::make_pair(dest, number));
+						samples.emplace_back(dest, number);
 					}
 				}
 			}
