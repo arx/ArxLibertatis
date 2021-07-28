@@ -26,6 +26,7 @@
 #define ARX_PLATFORM_ALIGNMENT_H
 
 #include <cstddef>
+#include <cstdint>
 #include <new>
 #include <memory>
 #include <limits>
@@ -44,7 +45,7 @@
  * \brief Check if a pointer is aligned.
  */
 #define arx_is_aligned(Pointer, Alignment) \
-	((reinterpret_cast<char *>(Pointer) - reinterpret_cast<char *>(0)) % (Alignment) == 0)
+	(reinterpret_cast<std::uintptr_t>(Pointer) % (Alignment) == 0)
 
 /*!
  * \def arx_return_aligned(Alignment)
