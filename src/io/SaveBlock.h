@@ -113,7 +113,7 @@ private:
 	
 public:
 	
-	explicit SaveBlock(const fs::path & savefile);
+	explicit SaveBlock(fs::path savefile);
 	
 	/*!
 	 * Destructor: this will not finalize the save block.

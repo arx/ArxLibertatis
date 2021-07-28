@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/SaveBlock.h"
 
 #include <cstdlib>
+#include <utility>
 
 #include <boost/range/adaptor/map.hpp>
 
@@ -240,8 +241,8 @@ std::string SaveBlock::File::loadData(std::istream & handle, std::string_view na
 	}
 }
 
-SaveBlock::SaveBlock(const fs::path & savefile)
-	: m_savefile(savefile)
+SaveBlock::SaveBlock(fs::path savefile)
+	: m_savefile(std::move(savefile))
 	, m_totalSize(0)
 	, m_usedSize(0)
 	, m_chunkCount(0)
