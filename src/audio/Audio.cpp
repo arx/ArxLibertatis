@@ -675,7 +675,7 @@ class SoundUpdateThread : public StoppableThread {
 	
 	void update();
 	
-	void run() {
+	void run() override {
 		
 		while(!isStopRequested()) {
 			
