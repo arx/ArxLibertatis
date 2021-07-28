@@ -22,13 +22,13 @@
 #include <cstring>
 
 #include <boost/lexical_cast.hpp>
-#include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 
 #include "core/Config.h"
 #include "io/log/Logger.h"
 #include "platform/ProgramOptions.h"
+#include "util/String.h"
 
 
 static std::string g_glExtensionOverride;
@@ -121,11 +121,8 @@ OpenGLInfo::OpenGLInfo()
 }
 
 void OpenGLInfo::parseOverrideConfig(std::string_view string) {
-	std::string copy(string); // TODO Use string_view directly
-	boost::char_separator<char> separator(" \t\r\n,;:");
-	boost::tokenizer<boost::char_separator<char>> tokens(copy, separator);
 	bool first = true;
-	for(std::string_view token : tokens) {
+	for(std::string_view token : util::splitIgnoreEmpty(string, " \t\r\n,;:")) {
 		if(boost::starts_with(token, "+GL_") || boost::starts_with(token, "-GL_")) {
 			m_extensionOverrides.emplace_back(token);
 			first = false;
