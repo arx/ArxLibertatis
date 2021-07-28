@@ -68,7 +68,7 @@ public:
 	
 	CameraActivateCommand() : Command("cameraactivate") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string target = context.getWord();
 		
@@ -97,7 +97,7 @@ public:
 	
 	CameraSmoothingCommand() : Command("camerasmoothing", IO_CAMERA) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float smoothing = context.getFloat();
 		
@@ -116,7 +116,7 @@ public:
 	
 	CinemascopeCommand() : Command("cinemascope") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool smooth = false;
 		HandleFlags("s") {
@@ -142,7 +142,7 @@ public:
 	
 	CameraFocalCommand() : Command("camerafocal", IO_CAMERA) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float focal = glm::clamp(context.getFloat(), 100.f, 800.f);
 		
@@ -161,7 +161,7 @@ public:
 	
 	CameraTranslateTargetCommand() : Command("cameratranslatetarget", IO_CAMERA) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float x = context.getFloat();
 		float y = context.getFloat();
@@ -182,7 +182,7 @@ public:
 	
 	WorldFadeCommand() : Command("worldfade") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string inout = context.getWord();
 		const PlatformDuration duration = PlatformDurationMsf(context.getFloat());
@@ -219,7 +219,7 @@ public:
 	
 	QuakeCommand() : Command("quake") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float intensity = context.getFloat();
 		float duration = context.getFloat();

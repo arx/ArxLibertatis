@@ -72,7 +72,7 @@ public:
 	
 	ConversationCommand() : Command("conversation") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string param = context.getWord();
 		if(param != "off") {
@@ -90,7 +90,7 @@ public:
 	
 	PlayCommand() : Command("play", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool unique = false;
 		SoundLoopMode loop = ARX_SOUND_PLAY_ONCE;
@@ -156,7 +156,7 @@ public:
 	
 	PlaySpeechCommand() : Command("playspeech") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		res::path sample = res::path::load(context.getWord());
 		
@@ -184,7 +184,7 @@ public:
 	
 	HeroSayCommand() : Command("herosay") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		HandleFlags("d") {
 			if((flg & flag('d'))) {
@@ -202,7 +202,7 @@ public:
 		return Success;
 	}
 	
-	Result peek(Context & context) {
+	Result peek(Context & context) override {
 		
 		/*
 		 * TODO Technically this command has a side effect so it should abort non-destructive execution.
@@ -225,7 +225,7 @@ public:
 	
 	SetSpeakPitchCommand() : Command("setspeakpitch", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float pitch = context.getFloat();
 		if(pitch < .6f) {
@@ -323,7 +323,7 @@ public:
 	
 	SpeakCommand() : Command("speak") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		CinematicSpeech acs;
 		acs.type = ARX_CINE_SPEECH_NONE;
@@ -403,7 +403,7 @@ public:
 		return Success;
 	}
 	
-	Result peek(Context & context) {
+	Result peek(Context & context) override {
 		
 		HandleFlags("tuphaoc") {
 			
@@ -445,7 +445,7 @@ public:
 	
 	SetStrikeSpeechCommand() : Command("setstrikespeech", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		context.getEntity()->strikespeech = toLocalizationKey(context.getWord());
 		

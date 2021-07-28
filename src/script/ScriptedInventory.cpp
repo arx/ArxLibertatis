@@ -128,7 +128,7 @@ class InventoryCommand : public Command {
 		
 		DestroyCommand() : SubCommand("destroy") { }
 		
-		Result execute(Context & context) {
+		Result execute(Context & context) override {
 			
 			DebugScript("");
 			
@@ -145,7 +145,7 @@ class InventoryCommand : public Command {
 		
 		CreateCommand() : SubCommand("create") { }
 		
-		Result execute(Context & context) {
+		Result execute(Context & context) override {
 			
 			DebugScript("");
 			
@@ -168,7 +168,7 @@ class InventoryCommand : public Command {
 		
 		SkinCommand() : SubCommand("skin") { }
 		
-		Result execute(Context & context) {
+		Result execute(Context & context) override {
 			
 			context.getEntity()->inventory_skin = res::path::load(context.getWord());
 			
@@ -185,7 +185,7 @@ class InventoryCommand : public Command {
 		
 		PlayerAddFromSceneCommand() : SubCommand("playeraddfromscene") { }
 		
-		Result execute(Context & context) {
+		Result execute(Context & context) override {
 			
 			std::string target = context.getWord();
 			
@@ -212,7 +212,7 @@ class InventoryCommand : public Command {
 		
 		PlayerAddCommand(std::string_view name, bool _multi) : SubCommand(name), multi(_multi) { }
 		
-		Result execute(Context & context) {
+		Result execute(Context & context) override {
 			
 			res::path file = res::path::load(context.getWord());
 			
@@ -265,7 +265,7 @@ class InventoryCommand : public Command {
 		
 		AddFromSceneCommand() : SubCommand("addfromscene") { }
 		
-		Result execute(Context & context) {
+		Result execute(Context & context) override {
 			
 			std::string target = context.getWord();
 			
@@ -300,7 +300,7 @@ class InventoryCommand : public Command {
 		
 		AddCommand(std::string_view name, bool _multi) : SubCommand(name), multi(_multi) { }
 		
-		Result execute(Context & context) {
+		Result execute(Context & context) override {
 			
 			res::path file = res::path::load(context.getWord());
 			
@@ -365,7 +365,7 @@ class InventoryCommand : public Command {
 		
 		OpenCommand() : SubCommand("open") { }
 		
-		Result execute(Context & context) {
+		Result execute(Context & context) override {
 			
 			DebugScript("");
 			
@@ -385,7 +385,7 @@ class InventoryCommand : public Command {
 		
 		CloseCommand() : SubCommand("close") { }
 		
-		Result execute(Context & context) {
+		Result execute(Context & context) override {
 			
 			DebugScript("");
 			
@@ -422,7 +422,7 @@ public:
 		commands.clear();
 	}
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string cmdname = context.getWord();
 		
@@ -446,7 +446,7 @@ public:
 	
 	EquipCommand() : Command("equip", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool unequip = false;
 		HandleFlags("r") {
@@ -482,7 +482,7 @@ public:
 	
 	WeaponCommand() : Command("weapon", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool draw = context.getBool();
 		
@@ -517,7 +517,7 @@ public:
 	
 	SetWeaponCommand() : Command("setweapon", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		Entity * io = context.getEntity();
 		

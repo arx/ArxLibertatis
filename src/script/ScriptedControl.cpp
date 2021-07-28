@@ -70,7 +70,7 @@ public:
 	
 	ActivatePhysicsCommand() : Command("activatephysics", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		DebugScript("");
 		
@@ -87,7 +87,7 @@ public:
 	
 	AttractorCommand() : Command("attractor") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string target = context.getWord();
 		
@@ -118,7 +118,7 @@ public:
 	
 	AmbianceCommand() : Command("ambiance") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		HandleFlags("nv") {
 			
@@ -165,7 +165,7 @@ public:
 	
 	AnchorBlockCommand() : Command("anchorblock", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool blocked = context.getBool();
 		
@@ -184,7 +184,7 @@ public:
 	
 	AttachCommand() : Command("attach") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string sourceio = context.getWord();
 		Entity * t = entities.getById(sourceio, context.getEntity());
@@ -214,7 +214,7 @@ public:
 	
 	CineCommand() : Command("cine") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool preload = false;
 		HandleFlags("p") {
@@ -252,7 +252,7 @@ public:
 	
 	SetGroupCommand() : Command("setgroup", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool rem = false;
 		HandleFlags("r") {
@@ -294,7 +294,7 @@ public:
 	
 	ZoneParamCommand() : Command("zoneparam") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string command = context.getWord();
 		
@@ -325,7 +325,7 @@ public:
 	
 	MagicCommand() : Command("magic") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		GLOBAL_MAGIC_MODE = context.getBool();
 		
@@ -342,7 +342,7 @@ public:
 	
 	DetachCommand() : Command("detach") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string source = context.getWord(); // source IO
 		std::string target = context.getWord(); // target IO

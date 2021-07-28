@@ -72,7 +72,7 @@ public:
 	
 	AddBagCommand() : Command("addbag") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		ARX_UNUSED(context);
 		
@@ -91,7 +91,7 @@ public:
 	
 	AddXpCommand() : Command("addxp") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float val = context.getFloat();
 		
@@ -110,7 +110,7 @@ public:
 	
 	AddGoldCommand() : Command("addgold") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float val = context.getFloat();
 		
@@ -133,7 +133,7 @@ public:
 	
 	RidiculousCommand() : Command("ridiculous") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		ARX_UNUSED(context);
 		
@@ -176,7 +176,7 @@ public:
 		runes["yok"] = FLAG_YOK;
 	}
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		long add = 0;
 		HandleFlags("ar") {
@@ -227,7 +227,7 @@ public:
 	
 	QuestCommand() : Command("quest") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string name(toLocalizationKey(context.getWord()));
 		
@@ -247,7 +247,7 @@ public:
 	
 	SetPlayerTweakCommand() : Command("setplayertweak", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string command = context.getWord();
 		
@@ -284,7 +284,7 @@ public:
 	
 	SetHungerCommand() : Command("sethunger") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		player.hunger = context.getFloat();
 		player.hunger = std::min(player.hunger, 100.f);
@@ -312,7 +312,7 @@ public:
 	
 	SetPlayerControlsCommand() : Command("setplayercontrols") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool enable = context.getBool();
 		
@@ -361,7 +361,7 @@ public:
 	
 	StealNPCCommand() : Command("stealnpc") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		DebugScript("");
 		
@@ -385,7 +385,7 @@ public:
 	
 	SpecialFXCommand() : Command("specialfx") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string type = context.getWord();
 		
@@ -494,7 +494,7 @@ public:
 	
 	KeyringAddCommand() : Command("keyringadd") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string key = context.getStringVar(context.getWord());
 		
@@ -513,7 +513,7 @@ public:
 	
 	PlayerLookAtCommand() : Command("playerlookat") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string target = context.getWord();
 		
@@ -538,7 +538,7 @@ public:
 	
 	PrecastCommand() : Command("precast") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		SpellcastFlags spflags = SPELLCAST_FLAG_PRECAST | SPELLCAST_FLAG_NOANIM;
 		bool dur = false;
@@ -587,7 +587,7 @@ public:
 	
 	PoisonCommand() : Command("poison") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float fval = context.getFloat();
 		
@@ -606,7 +606,7 @@ public:
 	
 	PlayerManaDrainCommand() : Command("playermanadrain") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool enable = context.getBool();
 		
@@ -629,7 +629,7 @@ public:
 	
 	InvulnerabilityCommand() : Command("invulnerability") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool targetPlayer = false;
 		HandleFlags("p") {

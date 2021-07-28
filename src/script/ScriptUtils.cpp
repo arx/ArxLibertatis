@@ -796,7 +796,7 @@ size_t initSuppressions() {
 		
 		explicit FakeCommand(std::string_view name) : Command(name) { }
 		
-		Result execute(Context & context) {
+		Result execute(Context & context) override {
 			ARX_UNUSED(context);
 			return Success;
 		}

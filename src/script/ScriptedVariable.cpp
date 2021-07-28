@@ -63,7 +63,7 @@ public:
 	
 	SetCommand() : Command("set") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string var = context.getWord();
 		std::string val = context.getWord();
@@ -145,7 +145,7 @@ public:
 	
 	ArithmeticCommand(std::string_view name, Operator _op) : Command(name), op(_op) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string var = context.getWord();
 		float val = context.getFloat();
@@ -218,7 +218,7 @@ public:
 	
 	UnsetCommand() : Command("unset") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string var = context.getWord();
 		
@@ -246,7 +246,7 @@ public:
 	
 	IncrementCommand(std::string_view name, long diff) : Command(name), m_diff(diff) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string var = context.getWord();
 		

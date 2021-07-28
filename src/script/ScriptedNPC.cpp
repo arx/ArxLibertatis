@@ -65,7 +65,7 @@ public:
 	
 	BehaviourCommand() : Command("behavior", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		Entity * io = context.getEntity();
 		
@@ -147,7 +147,7 @@ public:
 	
 	ReviveCommand() : Command("revive", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool init = false;
 		HandleFlags("i") {
@@ -169,7 +169,7 @@ public:
 	
 	SpellcastCommand() : Command("spellcast", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		SpellcastFlags spflags = 0;
 		long duration = -1;
@@ -265,7 +265,7 @@ public:
 	
 	SetDetectCommand() : Command("setdetect", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string detectvalue = context.getWord();
 		
@@ -288,7 +288,7 @@ public:
 	
 	SetBloodCommand() : Command("setblood", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float r = context.getFloat();
 		float g = context.getFloat();
@@ -309,7 +309,7 @@ public:
 	
 	SetSpeedCommand() : Command("setspeed", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float speed = glm::clamp(context.getFloat(), 0.f, 10.f);
 		
@@ -328,7 +328,7 @@ public:
 	
 	SetStareFactorCommand() : Command("setstarefactor", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float stare_factor = context.getFloat();
 		
@@ -347,7 +347,7 @@ public:
 	
 	SetNPCStatCommand() : Command("setnpcstat", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string stat = context.getWord();
 		float value = context.getFloat();
@@ -370,7 +370,7 @@ public:
 	
 	SetXPValueCommand() : Command("setxpvalue", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float xpvalue = context.getFloat();
 		if(xpvalue < 0) {
@@ -392,7 +392,7 @@ public:
 	
 	SetMoveModeCommand() : Command("setmovemode", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string mode = context.getWord();
 		
@@ -423,7 +423,7 @@ public:
 	
 	SetLifeCommand() : Command("setlife", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float life = context.getFloat();
 		
@@ -444,7 +444,7 @@ public:
 	
 	SetTargetCommand() : Command("settarget", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		Entity * io = context.getEntity();
 		if(io->ioflags & IO_NPC) {
@@ -519,7 +519,7 @@ public:
 	
 	ForceDeathCommand() : Command("forcedeath", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string target = context.getWord();
 		
@@ -544,7 +544,7 @@ public:
 	
 	PathfindCommand() : Command("pathfind", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string target = context.getWord();
 		

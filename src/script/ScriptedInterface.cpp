@@ -67,7 +67,7 @@ public:
 	
 	BookCommand() : Command("book") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		HandleFlags("aem") {
 			if(flg & flag('a')) { // Magic
@@ -106,7 +106,7 @@ public:
 	
 	CloseStealBagCommand() : Command("closestealbag", IO_NPC) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		ARX_UNUSED(context);
 		
@@ -127,7 +127,7 @@ public:
 	
 	NoteCommand() : Command("note") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		Note::Type type;
 		std::string tpname = context.getWord();
@@ -170,7 +170,7 @@ public:
 	
 	ShowGlobalsCommand() : Command("showglobals") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		ARX_UNUSED(context);
 		
@@ -206,7 +206,7 @@ public:
 	
 	ShowLocalsCommand() : Command("showlocals") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		DebugScript("");
 		
@@ -224,7 +224,7 @@ public:
 	
 	ShowVarsCommand() : Command("showvars") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		DebugScript("");
 		
@@ -243,7 +243,7 @@ public:
 	
 	PlayerInterfaceCommand() : Command("playerinterface") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool smooth = false;
 		HandleFlags("s") {
@@ -274,7 +274,7 @@ public:
 	
 	PopupCommand() : Command("popup") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string message = context.getWord();
 		
@@ -291,7 +291,7 @@ public:
 	
 	EndIntroCommand() : Command("endintro") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		ARX_UNUSED(context);
 		
@@ -311,7 +311,7 @@ public:
 	
 	EndGameCommand() : Command("endgame") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		ARX_UNUSED(context);
 		
@@ -332,7 +332,7 @@ public:
 	
 	MapMarkerCommand() : Command("mapmarker") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool remove = false;
 		HandleFlags("r") {
@@ -372,7 +372,7 @@ public:
 	
 	DrawSymbolCommand() : Command("drawsymbol", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string symbol = context.getWord();
 		

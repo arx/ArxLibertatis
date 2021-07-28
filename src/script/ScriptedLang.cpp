@@ -70,7 +70,7 @@ public:
 	
 	NopCommand() : Command("nop") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		ARX_UNUSED(context);
 		
@@ -79,7 +79,7 @@ public:
 		return Success;
 	}
 	
-	Result peek(Context & context) { return execute(context); }
+	Result peek(Context & context) override { return execute(context); }
 	
 };
 
@@ -91,7 +91,7 @@ public:
 	
 	GotoCommand(std::string_view command, bool _sub = false) : Command(command), sub(_sub) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string label = context.getWord();
 		
@@ -112,7 +112,7 @@ public:
 		return Jumped;
 	}
 	
-	Result peek(Context & context) { return execute(context); }
+	Result peek(Context & context) override { return execute(context); }
 	
 };
 
@@ -124,7 +124,7 @@ public:
 	
 	AbortCommand(std::string_view command, Result _result) : Command(command), result(_result) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		ARX_UNUSED(context);
 		
@@ -133,7 +133,7 @@ public:
 		return result;
 	}
 	
-	Result peek(Context & context) { return execute(context); }
+	Result peek(Context & context) override { return execute(context); }
 	
 };
 
@@ -143,7 +143,7 @@ public:
 	
 	RandomCommand() : Command("random") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float chance = glm::clamp(context.getFloat(), 0.f, 100.f);
 		
@@ -165,7 +165,7 @@ public:
 	
 	ReturnCommand() : Command("return") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		DebugScript("");
 		
@@ -177,7 +177,7 @@ public:
 		return Success;
 	}
 	
-	Result peek(Context & context) { return execute(context); }
+	Result peek(Context & context) override { return execute(context); }
 	
 };
 
@@ -187,7 +187,7 @@ public:
 	
 	explicit SetMainEventCommand(std::string_view command) : Command(command, AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string event = context.getWord();
 		
@@ -210,7 +210,7 @@ public:
 	
 	StartStopTimerCommand(std::string_view command, bool _start) : Command(command), start(_start) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string timer = context.getWord();
 		
@@ -258,7 +258,7 @@ public:
 	
 	SendEventCommand() : Command("sendevent") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		SendTargets sendto = 0;
 		bool radius = false;
@@ -423,7 +423,7 @@ public:
 	
 	SetEventCommand() : Command("setevent", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string name = context.getWord();
 		bool enable = context.getBool();
@@ -775,7 +775,7 @@ public:
 		operators.clear();
 	}
 
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string left = context.getWord();
 		
@@ -816,7 +816,7 @@ public:
 		return Success;
 	}
 	
-	Result peek(Context & context) { return execute(context); }
+	Result peek(Context & context) override { return execute(context); }
 	
 };
 
@@ -826,7 +826,7 @@ public:
 	
 	ElseCommand() : Command("else") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		DebugScript("");
 		
@@ -835,7 +835,7 @@ public:
 		return Success;
 	}
 	
-	Result peek(Context & context) { return execute(context); }
+	Result peek(Context & context) override { return execute(context); }
 	
 };
 

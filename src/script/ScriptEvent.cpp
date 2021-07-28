@@ -218,7 +218,7 @@ public:
 	
 	ObsoleteCommand(std::string_view command, size_t _nargs = 0) : Command(command), nargs(_nargs) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		for(size_t i = 0; i < nargs; i++) {
 			context.skipWord();

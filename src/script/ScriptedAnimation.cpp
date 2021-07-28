@@ -77,7 +77,7 @@ public:
 	
 	RotateCommand() : Command("rotate", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		Entity * io = context.getEntity();
 		
@@ -122,7 +122,7 @@ public:
 	
 	ForceAnimCommand() : Command("forceanim", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string anim = context.getWord();
 		
@@ -153,7 +153,7 @@ public:
 	
 	ForceAngleCommand() : Command("forceangle", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float angle = MAKEANGLE(context.getFloat());
 		
@@ -197,7 +197,7 @@ public:
 	
 	PlayAnimCommand() : Command("playanim") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		Entity * iot = context.getEntity();
 		long layerIndex = 0;
@@ -301,7 +301,7 @@ public:
 	
 	LoadAnimCommand() : Command("loadanim") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		Entity * iot = context.getEntity();
 		
@@ -363,7 +363,7 @@ public:
 	
 	MoveCommand() : Command("move", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float dx = context.getFloat();
 		float dy = context.getFloat();
@@ -384,7 +384,7 @@ public:
 	
 	UsePathCommand() : Command("usepath", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string type = context.getWord();
 		
@@ -424,7 +424,7 @@ public:
 	
 	UnsetControlledZoneCommand() : Command("unsetcontrolledzone") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string zone = context.getWord();
 		
@@ -449,7 +449,7 @@ public:
 	
 	SetPathCommand() : Command("setpath", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool wormspecific = false;
 		bool followdir = false;
@@ -502,7 +502,7 @@ public:
 	
 	SetControlledZoneCommand() : Command("setcontrolledzone", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string name = context.getWord();
 		

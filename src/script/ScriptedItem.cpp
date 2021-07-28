@@ -67,7 +67,7 @@ public:
 	
 	RepairCommand() : Command("repair") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string target = context.getWord();
 		Entity * t = entities.getById(target, context.getEntity());
@@ -91,7 +91,7 @@ public:
 	
 	SetPoisonousCommand() : Command("setpoisonous", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float poisonous = context.getFloat();
 		float poisonous_count = context.getFloat();
@@ -117,7 +117,7 @@ public:
 	
 	SetStealCommand() : Command("setsteal", IO_ITEM) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string stealvalue = context.getWord();
 		
@@ -144,7 +144,7 @@ public:
 	
 	SetLightCommand() : Command("setlight", IO_ITEM) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string lightvalue = context.getWord();
 		
@@ -167,7 +167,7 @@ public:
 	
 	SetFoodCommand() : Command("setfood", IO_ITEM) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float food_value = context.getFloat();
 		
@@ -186,7 +186,7 @@ public:
 	
 	SetObjectTypeCommand() : Command("setobjecttype", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool set = true;
 		HandleFlags("r") {
@@ -213,7 +213,7 @@ public:
 	
 	SetEquipCommand() : Command("setequip", IO_ITEM) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool special = false;
 		HandleFlags("rs") {
@@ -249,7 +249,7 @@ public:
 	
 	SetDurabilityCommand() : Command("setdurability", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		Entity * io = context.getEntity();
 		if(io->ioflags & IO_NPC) {
@@ -282,7 +282,7 @@ public:
 	
 	SetMaxCountCommand() : Command("setmaxcount", IO_ITEM) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		short count = std::max(short(context.getFloat()), short(1));
 		
@@ -301,7 +301,7 @@ public:
 	
 	SetCountCommand() : Command("setcount", IO_ITEM) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		short count = glm::clamp(short(context.getFloat()), short(1), context.getEntity()->_itemdata->maxcount);
 		
@@ -320,7 +320,7 @@ public:
 	
 	SetPriceCommand() : Command("setprice", IO_ITEM) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		long price = std::max(long(context.getFloat()), 0l);
 		
@@ -339,7 +339,7 @@ public:
 	
 	PlayerStackSizeCommand() : Command("playerstacksize", IO_ITEM) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		short size = short(glm::clamp(int(context.getFloat()), 1, 100));
 		
@@ -358,7 +358,7 @@ public:
 	
 	EatMeCommand() : Command("eatme", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		DebugScript("");
 		

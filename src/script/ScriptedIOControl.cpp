@@ -77,7 +77,7 @@ public:
 	
 	ReplaceMeCommand() : Command("replaceme", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		res::path object = res::path::load(context.getWord());
 		
@@ -177,7 +177,7 @@ public:
 	
 	CollisionCommand() : Command("collision", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool choice = context.getBool();
 		
@@ -221,7 +221,7 @@ public:
 	
 	SpawnCommand() : Command("spawn") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string type = context.getWord();
 		
@@ -321,7 +321,7 @@ public:
 	
 	PhysicalCommand() : Command("physical", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string type = context.getWord();
 		
@@ -365,7 +365,7 @@ public:
 	
 	LinkObjToMeCommand() : Command("linkobjtome", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string name = context.getStringVar(context.getWord());
 		
@@ -392,7 +392,7 @@ public:
 	
 	IfExistInternalCommand() : Command("ifexistinternal") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string target = context.getWord();
 		
@@ -428,7 +428,7 @@ public:
 	
 	IfVisibleCommand() : Command("ifvisible", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string target = context.getWord();
 		
@@ -451,7 +451,7 @@ public:
 	
 	ObjectHideCommand() : Command("objecthide") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool megahide = false;
 		HandleFlags("m") {
@@ -500,7 +500,7 @@ public:
 	
 	TeleportCommand() : Command("teleport") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool confirm = true;
 		
@@ -618,7 +618,7 @@ public:
 	
 	TargetPlayerPosCommand() : Command("targetplayerpos", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		DebugScript("");
 		
@@ -636,7 +636,7 @@ public:
 	
 	DestroyCommand() : Command("destroy") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string target = context.getStringVar(context.getWord());
 		
@@ -707,7 +707,7 @@ public:
 	
 	DoDamageCommand() : AbstractDamageCommand("dodamage") { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		DamageType type = getDamageType(context);
 		
@@ -737,7 +737,7 @@ public:
 	
 	DamagerCommand() : AbstractDamageCommand("damager", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		Entity * io = context.getEntity();
 		

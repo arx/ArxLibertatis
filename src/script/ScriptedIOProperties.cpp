@@ -66,7 +66,7 @@ public:
 	
 	ShopCategoryCommand() : Command("shopcategory", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		context.getEntity()->shop_category = context.getWord();
 		
@@ -83,7 +83,7 @@ public:
 	
 	ShopMultiplyCommand() : Command("shopmultiply", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		context.getEntity()->shop_multiply = context.getFloat();
 		
@@ -104,7 +104,7 @@ public:
 	GameFlagCommand(std::string_view name, GameFlag _flag, bool _inv = false)
 		: Command(name, AnyEntity), flag(_flag), inv(_inv) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool enable = context.getBool();
 		
@@ -133,7 +133,7 @@ public:
 	IOFlagCommand(std::string_view name, EntityFlag _flag, bool _inv = false)
 		: Command(name, AnyEntity), flag(_flag), inv(_inv) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool enable = context.getBool();
 		
@@ -158,7 +158,7 @@ public:
 	
 	SetTrapCommand() : Command("settrap", IO_FIX) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string trapvalue = context.getWord();
 		
@@ -181,7 +181,7 @@ public:
 	
 	SetSecretCommand() : Command("setsecret", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string secretvalue = context.getWord();
 		
@@ -224,7 +224,7 @@ public:
 		materials["foot_stealth"] = MATERIAL_FOOT_STEALTH;
 	}
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string name = context.getWord();
 		
@@ -248,7 +248,7 @@ public:
 	
 	SetNameCommand() : Command("setname", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		context.getEntity()->locname = toLocalizationKey(context.getWord());
 		
@@ -265,7 +265,7 @@ public:
 	
 	SetInteractivityCommand() : Command("setinteractivity", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		std::string interactivity = context.getWord();
 		
@@ -292,7 +292,7 @@ public:
 	
 	SetStepMaterialCommand() : Command("setstepmaterial", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		context.getEntity()->stepmaterial = context.getWord();
 		
@@ -309,7 +309,7 @@ public:
 	
 	SetArmorMaterialCommand() : Command("setarmormaterial", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		context.getEntity()->armormaterial = context.getWord();
 		
@@ -326,7 +326,7 @@ public:
 	
 	SetWeaponMaterialCommand() : Command("setweaponmaterial", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		context.getEntity()->weaponmaterial = context.getWord();
 		
@@ -347,7 +347,7 @@ public:
 		: Command(command, AnyEntity), flag(_flag)
 	{ }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		bool enable = context.getBool();
 		
@@ -370,7 +370,7 @@ public:
 	
 	SetWeightCommand() : Command("setweight", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		context.getEntity()->weight = std::max(context.getFloat(), 0.f);
 		
@@ -387,7 +387,7 @@ public:
 	
 	SetTransparencyCommand() : Command("settransparency", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float trans = context.getFloat();
 		
@@ -410,7 +410,7 @@ public:
 	
 	SetIRColorCommand() : Command("setircolor", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		float r = context.getFloat();
 		float g = context.getFloat();
@@ -431,7 +431,7 @@ public:
 	
 	SetScaleCommand() : Command("setscale", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		context.getEntity()->scale = context.getFloat() * 0.01f;
 		
@@ -448,7 +448,7 @@ public:
 	
 	HaloCommand() : Command("halo", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		Entity * io = context.getEntity();
 		
@@ -495,7 +495,7 @@ public:
 	
 	TweakCommand() : Command("tweak", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		Entity * io = context.getEntity();
 		
@@ -574,7 +574,7 @@ public:
 	
 	UseMeshCommand() : Command("usemesh", AnyEntity) { }
 	
-	Result execute(Context & context) {
+	Result execute(Context & context) override {
 		
 		res::path mesh = res::path::load(context.getWord());
 		
