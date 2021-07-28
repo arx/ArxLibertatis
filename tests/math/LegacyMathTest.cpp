@@ -44,7 +44,7 @@ std::vector<TestRotation> rotations;
 std::vector<Anglef> angles;
 
 static void addTestData(glm::quat quat, glm::mat3 mat) {
-	rotations.push_back(TestRotation(quat, glm::transpose(mat)));
+	rotations.emplace_back(quat, glm::transpose(mat));
 }
 
 void LegacyMathTest::setUp() {
@@ -93,7 +93,7 @@ void LegacyMathTest::setUp() {
 	for(int i = 180; i > -180; i -= 15) {
 		for(int j = 180; j > -180; j -= 15) {
 			for(int k = 180; k > -180; k -= 15) {
-				angles.push_back(Anglef(float(i), float(j), float(k)));
+				angles.emplace_back(float(i), float(j), float(k));
 			}
 		}
 	}
