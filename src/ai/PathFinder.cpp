@@ -95,8 +95,8 @@ class PathFinder::OpenNodeList {
 public:
 	
 	~OpenNodeList() {
-		for(NodeList::iterator i = nodes.begin(); i != nodes.end(); ++i) {
-			delete *i;
+		for(Node * node : nodes) {
+			delete node;
 		}
 	}
 	
@@ -108,10 +108,10 @@ public:
 	void add(NodeId id, const Node * parent, float distance, float remaining) {
 		
 		// Check if node is already in open list.
-		for(NodeList::iterator i = nodes.begin(); i != nodes.end(); ++i) {
-			if((*i)->getId() == id) {
-				if((*i)->getDistance() > distance) {
-					(*i)->newParent(parent, distance);
+		for(Node * node : nodes) {
+			if(node->getId() == id) {
+				if(node->getDistance() > distance) {
+					node->newParent(parent, distance);
 				}
 				return;
 			}
