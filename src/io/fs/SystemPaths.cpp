@@ -27,7 +27,6 @@
 #include <string_view>
 
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/tokenizer.hpp>
 
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
@@ -36,6 +35,8 @@
 
 #include "platform/Environment.h"
 #include "platform/ProgramOptions.h"
+
+#include "util/String.h"
 
 namespace fs {
 
@@ -116,10 +117,9 @@ std::vector<path> parsePathList(const char * input) {
 	
 	if(input) {
 		std::string decoded = platform::expandEnvironmentVariables(input);
-		typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
-		boost::char_separator<char> sep(platform::env_list_seperators);
-		tokenizer tokens(decoded, sep);
-		std::copy(tokens.begin(), tokens.end(), std::back_inserter(result));
+		for(std::string_view entry : util::splitIgnoreEmpty(decoded, platform::env_list_seperators)) {
+			result.emplace_back(entry);
+		}
 	}
 	
 	return result;
