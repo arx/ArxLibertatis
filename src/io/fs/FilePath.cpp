@@ -39,7 +39,7 @@ inline bool is_path_up(std::string_view str, size_t pos) {
 
 path path::create(std::string src) {
 	path result;
-	result.pathstr = src;
+	result.pathstr = std::move(src);
 	return result;
 }
 
