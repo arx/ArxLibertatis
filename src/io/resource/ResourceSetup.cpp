@@ -90,25 +90,25 @@ bool addDefaultResources(PakReader * reader) {
 	// French version has French audio copied in the deutsch and english directories
 	{
 		std::vector<std::string_view> & filter = speechFilter[util::md5::checksum("6d2cea5370477464b43353a637a18c0c")];
-		filter.push_back("speech/deutsch");
-		filter.push_back("speech/english");
+		filter.emplace_back("speech/deutsch");
+		filter.emplace_back("speech/english");
 	}
 	// German version has German audio partially copied in the english and francais directories
 	{
 		std::vector<std::string_view> & filter = speechFilter[util::md5::checksum("499b08d1a365ebea74b23a8efc9a8302")];
-		filter.push_back("speech/english");
-		filter.push_back("speech/francais");
+		filter.emplace_back("speech/english");
+		filter.emplace_back("speech/francais");
 	}
 	// Italian version has German audio partially copied in the francais directory
 	{
 		std::vector<std::string_view> & filter = speechFilter[util::md5::checksum("ca067587556a908be255e9244209fc47")];
-		filter.push_back("speech/francais");
+		filter.emplace_back("speech/francais");
 	}
 	// Spanish version has Spanish audio copied in the deustch (sic) and english directories
 	{
 		std::vector<std::string_view> & filter = speechFilter[util::md5::checksum("975be9f2c6a952b4d014dfaf0d6f1882")];
-		filter.push_back("speech/deustch");
-		filter.push_back("speech/english");
+		filter.emplace_back("speech/deustch");
+		filter.emplace_back("speech/english");
 	}
 	
 	const char * const directories[] = { "editor", "game", "graph", "localisation", "misc", "sfx", "speech" };
