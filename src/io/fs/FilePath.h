@@ -239,8 +239,8 @@ public:
 	return path(a) / b;
 }
 
-[[nodiscard]] inline path operator/(std::string a, const path & b) {
-	return path(std::move(a)) / b;
+[[nodiscard]] inline path operator/(const std::string & a, const path & b) {
+	return path(a) / b;
 }
 
 [[nodiscard]] inline path operator/(const char * a, const path & b) {
