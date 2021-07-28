@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 
+#include <utility>
+
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "core/GameTime.h"
@@ -252,7 +254,7 @@ static const char * toString(ScriptResult ret) {
 #endif
 
 ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity * entity,
-                               ScriptEventName event, const ScriptParameters & parameters,
+                               ScriptEventName event, ScriptParameters parameters,
                                size_t position) {
 	
 	ScriptResult ret = ACCEPT;
@@ -292,7 +294,7 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 	LogDebug("--> " << event << " params=\"" << parameters << "\"" << " entity=" << entity->idString()
 	         << (es == &entity->script ? " base" : " overriding") << " pos=" << pos);
 	
-	script::Context context(es, pos, sender, entity, event.getId(), parameters);
+	script::Context context(es, pos, sender, entity, event.getId(), std::move(parameters));
 	
 	if(event != SM_EXECUTELINE) {
 		std::string word = context.getCommand();
@@ -334,7 +336,7 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 				                   << command.getEntityFlags();
 				context.skipCommand();
 				res = script::Command::Failed;
-			} else if(parameters.isPeekOnly()) {
+			} else if(context.getParameters().isPeekOnly()) {
 				res = it->second->peek(context);
 			} else {
 				res = it->second->execute(context);
@@ -362,7 +364,7 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 		} else if(!word.compare(0, 2, ">>", 2)) {
 			context.skipCommand(); // labels
 		} else if(!word.compare(0, 5, "timer", 5)) {
-			if(parameters.isPeekOnly()) {
+			if(context.getParameters().isPeekOnly()) {
 				ret = DESTRUCTIVE;
 				break;
 			}
