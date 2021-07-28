@@ -117,7 +117,7 @@ std::vector<path> parsePathList(const char * input) {
 	
 	if(input) {
 		std::string decoded = platform::expandEnvironmentVariables(input);
-		for(std::string_view entry : util::splitIgnoreEmpty(decoded, platform::env_list_seperators)) {
+		for(std::string_view entry : util::splitIgnoreEmpty(decoded, platform::env_list_seperator)) {
 			result.emplace_back(entry);
 		}
 	}

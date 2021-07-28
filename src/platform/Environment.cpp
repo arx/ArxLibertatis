@@ -485,7 +485,7 @@ fs::path getHelperExecutable(std::string_view name) {
 	
 	if(fs::libexec_dir) {
 		std::string decoded = expandEnvironmentVariables(fs::libexec_dir);
-		for(fs::path libexec_dir : util::splitIgnoreEmpty(decoded, env_list_seperators)) {
+		for(fs::path libexec_dir : util::splitIgnoreEmpty(decoded, env_list_seperator)) {
 			fs::path helper = libexec_dir / name;
 			if(helper.is_relative()) {
 				helper = exe / helper;
@@ -668,7 +668,7 @@ std::vector<std::string> getPreferredLocales() {
 	// LANGUAGE is a colon-separated list of preferred languages and overwrites LC_* and LANG
 	const char * languages = std::getenv("LANGUAGE");
 	if(languages) {
-		for(std::string_view locale : util::splitIgnoreEmpty(languages, env_list_seperators)) {
+		for(std::string_view locale : util::splitIgnoreEmpty(languages, env_list_seperator)) {
 			result.emplace_back(locale);
 			boost::to_lower(result.back());
 			std::replace(result.back().begin(), result.back().end(), '_', '-');
