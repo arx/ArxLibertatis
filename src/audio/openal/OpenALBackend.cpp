@@ -30,7 +30,6 @@
 #endif
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
 
 #include "audio/openal/OpenALSource.h"
 #include "audio/openal/OpenALUtils.h"
@@ -508,7 +507,7 @@ aalError OpenALBackend::setUnitFactor(float factor) {
 	
 	float speedOfSoundInUnits = speedOfSoundInMetersPerSecond / factor;
 	
-	if(!(boost::math::isfinite)(speedOfSoundInUnits)) {
+	if(!(std::isfinite)(speedOfSoundInUnits)) {
 		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
 	}
 	

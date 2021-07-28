@@ -20,7 +20,7 @@
 #ifndef ARX_MATH_VECTOR_H
 #define ARX_MATH_VECTOR_H
 
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <cmath>
 
 #include "math/GtxFunctions.h"
 #include "math/Types.h"
@@ -41,7 +41,7 @@ template <class V>
 bool isallfinite(const V & vec) {
 	
 	for(size_t i = 0; i < size_t(vec.length()); i++) {
-		if(!(boost::math::isfinite)(vec[i])) {
+		if(!(std::isfinite)(vec[i])) {
 			return false;
 		}
 	}
