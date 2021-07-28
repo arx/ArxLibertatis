@@ -52,8 +52,6 @@ if(MSVC)
 		# Conversion from 'A' to 'B', possible loss of data
 		add_definitions(/wd4244)
 		add_definitions(/wd4267)
-		# warning C4459: declaration of 'xxx' hides global declaration
-		add_definitions(/wd4459) # TODO triggers on BOOST_SCOPE_EXIT, remove after moving to C++11
 		
 		# warning C4127: conditional expression is constant
 		add_definitions(/wd4127)

@@ -131,11 +131,11 @@ Response * CURLSession::post(const POSTRequest & request) {
 	setup(request);
 	
 	struct curl_slist * headers = nullptr;
-	BOOST_SCOPE_EXIT((headers)) {
+	BOOST_SCOPE_EXIT_ALL(&headers) {
 		if(headers) {
 			curl_slist_free_all(headers);
 		}
-	} BOOST_SCOPE_EXIT_END
+	};
 	if(m_curl) {
 		curl_easy_setopt(m_curl, CURLOPT_POST, 1l);
 		curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, request.data().c_str());

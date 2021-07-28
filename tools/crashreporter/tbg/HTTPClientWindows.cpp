@@ -208,9 +208,9 @@ Response * WinHTTPSession::get(const Request & request) {
 	} catch(Response * error) {
 		return error;
 	}
-	BOOST_SCOPE_EXIT((wrequest)) {
+	BOOST_SCOPE_EXIT_ALL(wrequest) {
 		WinHttpCloseHandle(wrequest);
-	} BOOST_SCOPE_EXIT_END
+	};
 	
 	std::basic_string<WCHAR> redirect;
 	BOOL result = WinHttpSendRequest(wrequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0,
@@ -230,9 +230,9 @@ Response * WinHTTPSession::post(const POSTRequest & request) {
 	} catch(Response * error) {
 		return error;
 	}
-	BOOST_SCOPE_EXIT((wrequest)) {
+	BOOST_SCOPE_EXIT_ALL(wrequest) {
 		WinHttpCloseHandle(wrequest);
-	} BOOST_SCOPE_EXIT_END
+	};
 	
 	LPCWSTR headers = WINHTTP_NO_ADDITIONAL_HEADERS;
 	platform::WideString wheaders;
