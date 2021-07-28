@@ -19,9 +19,10 @@
 
 #include "platform/Environment.h"
 
-#include <sstream>
-#include <algorithm>
 #include <cctype>
+#include <algorithm>
+#include <sstream>
+#include <utility>
 
 #include <stdlib.h> // needed for realpath and more
 
@@ -56,7 +57,6 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 #endif
 
 #include <boost/lexical_cast.hpp>
-#include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include "io/fs/PathConstants.h"
@@ -484,11 +484,8 @@ fs::path getHelperExecutable(std::string_view name) {
 	}
 	
 	if(fs::libexec_dir) {
-		std::string decoded = platform::expandEnvironmentVariables(fs::libexec_dir);
-		typedef boost::tokenizer<boost::char_separator<char>>  tokenizer;
-		boost::char_separator<char> sep(platform::env_list_seperators);
-		tokenizer tokens(decoded, sep);
-		for(fs::path libexec_dir : tokens) {
+		std::string decoded = expandEnvironmentVariables(fs::libexec_dir);
+		for(fs::path libexec_dir : util::splitIgnoreEmpty(decoded, env_list_seperators)) {
 			fs::path helper = libexec_dir / name;
 			if(helper.is_relative()) {
 				helper = exe / helper;
@@ -671,22 +668,18 @@ std::vector<std::string> getPreferredLocales() {
 	// LANGUAGE is a colon-separated list of preferred languages and overwrites LC_* and LANG
 	const char * languages = std::getenv("LANGUAGE");
 	if(languages) {
-		std::string decoded = languages;
-		typedef boost::tokenizer<boost::char_separator<char>>  tokenizer;
-		boost::char_separator<char> sep(platform::env_list_seperators);
-		tokenizer tokens(decoded, sep);
-		std::copy(tokens.begin(), tokens.end(), std::back_inserter(result));
-		for(std::string & locale : result) {
-			boost::to_lower(locale);
-			std::replace(locale.begin(), locale.end(), '_', '-');
+		for(std::string_view locale : util::splitIgnoreEmpty(languages, env_list_seperators)) {
+			result.emplace_back(locale);
+			boost::to_lower(result.back());
+			std::replace(result.back().begin(), result.back().end(), '_', '-');
 		}
 		size_t end = result.size();
 		for(size_t i = 0; i < end; i++) {
 			for(size_t j = 0; j < result[i].size(); j++) {
 				if(!std::isalnum(static_cast<unsigned char>(result[i][j]))) {
-					std::string locale = result[i].substr(0, j);
+					std::string_view locale = std::string_view(result[i]).substr(0, j);
 					if(std::find(result.begin(), result.end(), locale) == result.end()) {
-						result.push_back(locale);
+						result.emplace_back(locale);
 					}
 				}
 			}
