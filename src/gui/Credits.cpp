@@ -51,7 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <unordered_map>
 #include <vector>
 
-#include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
 #include "core/Core.h"
@@ -76,6 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/GameSound.h"
 
+#include "util/String.h"
 #include "util/Unicode.h"
 
 namespace credits {
@@ -204,9 +204,9 @@ bool Credits::load() {
 		std::vector<std::string_view> libraries;
 		for(const Libraries::value_type & library : m_libraries) {
 			if(library.first != "compiler" && library.first != "stdlib" && !library.second.empty()) {
-				boost::char_separator<char> sep("\n");
-				boost::tokenizer<boost::char_separator<char>> tokens(library.second, sep);
-				std::copy(tokens.begin(), tokens.end(), std::back_inserter(libraries));
+				for(std::string_view line : util::splitIgnoreEmpty(library.second, '\n')) {
+					libraries.push_back(line);
+				}
 			}
 		}
 		std::sort(libraries.begin(), libraries.end());
