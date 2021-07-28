@@ -59,14 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Platform.h"
 #include "scene/Light.h"
 
-static const float MIN_RADIUS = 110.f;
-
-const float PathFinder::HEURISTIC_MIN = 0.f;
-const float PathFinder::HEURISTIC_MAX = 0.5f;
-
-const float PathFinder::HEURISTIC_DEFAULT = 0.5f;
-const float PathFinder::RADIUS_DEFAULT = 0.f;
-const float PathFinder::HEIGHT_DEFAULT = 0.f;
+static constexpr const float MIN_RADIUS = 110.f;
 
 class PathFinder::Node {
 	

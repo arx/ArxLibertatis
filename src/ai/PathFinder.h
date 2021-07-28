@@ -57,12 +57,12 @@ class PathFinder {
 	
 public:
 	
-	static const float HEURISTIC_MIN;
-	static const float HEURISTIC_MAX;
+	static constexpr const float HEURISTIC_MIN = 0.f;
+	static constexpr const float HEURISTIC_MAX = 0.5f;
 	
-	static const float HEURISTIC_DEFAULT;
-	static const float RADIUS_DEFAULT;
-	static const float HEIGHT_DEFAULT;
+	static constexpr const float HEURISTIC_DEFAULT = 0.5f;
+	static constexpr const float RADIUS_DEFAULT = 0.f;
+	static constexpr const float HEIGHT_DEFAULT = 0.f;
 	
 	/*!
 	 * Create a PathFinder instance for the provided data.
