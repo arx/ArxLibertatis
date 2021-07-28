@@ -200,24 +200,24 @@ struct PlayerInventoryAccess {
 		return g_inventory[bag][x][y];
 	}
 	
-	index_type bags() {
+	index_type bags() const {
 		arx_assume(m_bags <= INVENTORY_BAGS);
 		return m_bags;
 	}
 	
-	index_type width() {
+	index_type width() const {
 		return INVENTORY_X;
 	}
 	
-	index_type height() {
+	index_type height() const {
 		return INVENTORY_Y;
 	}
 	
-	EntityHandle handle() {
+	EntityHandle handle() const {
 		return EntityHandle_Player;
 	}
 	
-	bool swap() {
+	bool swap() const {
 		return false;
 	}
 	
@@ -257,27 +257,27 @@ struct EntityInventoryAccess {
 		return  m_data->slot[x][y];
 	}
 	
-	index_type bags() {
+	index_type bags() const {
 		return 1;
 	}
 	
-	index_type width() {
+	index_type width() const {
 		arx_assume(m_size.x > 0);
 		arx_assume(m_size.x <= 20);
 		return index_type(m_size.x);
 	}
 	
-	index_type height() {
+	index_type height() const {
 		arx_assume(m_size.y > 0);
 		arx_assume(m_size.y <= 20);
 		return index_type(m_size.y);
 	}
 	
-	EntityHandle handle() {
+	EntityHandle handle() const {
 		return m_entity;
 	}
 	
-	bool swap() {
+	bool swap() const {
 		return true;
 	}
 	
