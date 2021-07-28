@@ -597,7 +597,7 @@ void ARX_SPELLS_AddPoint(const Vec2s & pos) {
 		plist.pop_back();
 	}
 	
-	plist.push_back(Vec2f(pos));
+	plist.emplace_back(pos);
 }
 
 
