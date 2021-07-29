@@ -23,6 +23,7 @@
 #include <cstring>
 #include <iostream>
 #include <sstream>
+#include <string_view>
 #include <vector>
 
 #include "platform/Platform.h"
@@ -40,6 +41,7 @@
 #include "core/Version.h"
 #include "platform/Process.h"
 #include "platform/WindowsUtils.h"
+#include "util/String.h"
 
 
 namespace platform {
@@ -105,19 +107,17 @@ static void closeLink(std::stringstream & oss, size_t start) {
  * \param newline Keep don't convert newlines to &lt;br&gr; tags.
  * \param ul      Use HTML lists.
  */
-static std::string formatAsHtml(const std::string & text, bool newline, bool ul = false) {
+static std::string formatAsHtml(std::string_view text, bool newline, bool ul = false) {
 	
 	std::stringstream oss;
-	std::istringstream iss(text);
 	
 	bool list = false, first = true;
 	
-	std::string line;
-	while(!std::getline(iss, line).fail()) {
+	for(std::string_view line : util::split(text, '\n')) {
 		
 		size_t i = 0;
 		
-		if(line.length() >= 3 && line.compare(0, 3, " * ", 3) == 0) {
+		if(line.length() >= 3 && line.substr(0, 3) == " * ") {
 			i += 3;
 			
 			if(ul && !list) {
@@ -138,7 +138,7 @@ static std::string formatAsHtml(const std::string & text, bool newline, bool ul 
 		first = false;
 		
 		bool italic = false;
-		if(line.length() >= i + 3 && line.compare(i, 3, "-> ", 3) == 0) {
+		if(line.length() >= i + 3 && line.substr(i, 3) == "-> ") {
 			i += 3;
 			oss << "&#8594;&#160; <i>"; // &rarr;&nbsp;
 			italic = true;
@@ -166,12 +166,12 @@ static std::string formatAsHtml(const std::string & text, bool newline, bool ul 
 					oss << "</b>\"";
 				}
 				quote = !quote;
-			} else if(!link && line.compare(i, 7, "http://", 7) == 0) {
+			} else if(!link && line.substr(i, 7) == "http://") {
 				oss << "<a href=\"";
 				link_start = oss.tellp(), link = true;
 				oss << "http://";
 				i += 6;
-			} else if(!link && line.compare(i, 8, "https://", 8) == 0) {
+			} else if(!link && line.substr(i, 8) == "https://") {
 				oss << "<a href=";
 				link_start = oss.tellp(), link = true;
 				oss << "https://";
