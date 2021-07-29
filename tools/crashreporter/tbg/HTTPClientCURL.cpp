@@ -37,7 +37,7 @@ static size_t writeToString(void * ptr, size_t size, size_t nmemb, void * string
 	return nmemb;
 }
 
-class CURLSession : public Session {
+class CURLSession final : public Session {
 	
 	std::string m_userAgent;
 	CURL * m_curl;
@@ -63,9 +63,9 @@ public:
 		}
 	}
 	
-	Response * get(const Request & request);
+	Response * get(const Request & request) override;
 	
-	Response * post(const POSTRequest & request);
+	Response * post(const POSTRequest & request) override;
 	
 };
 

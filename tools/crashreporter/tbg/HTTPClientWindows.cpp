@@ -32,7 +32,7 @@ extern "C" BOOL WINAPI InternetCombineUrlW(LPCWSTR base, LPCWSTR relative, LPWST
 
 namespace http {
 
-class WinHTTPSession : public Session {
+class WinHTTPSession final : public Session {
 	
 	HINTERNET m_session;
 	INTERNET_SCHEME m_scheme;
@@ -59,9 +59,9 @@ public:
 		}
 	}
 	
-	Response * get(const Request & request);
+	Response * get(const Request & request) override;
 	
-	Response * post(const POSTRequest & request);
+	Response * post(const POSTRequest & request) override;
 	
 };
 
