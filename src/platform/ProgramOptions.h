@@ -93,7 +93,7 @@ public:
 		: BaseOption(longName, shortName, description)
 		, m_handler(handler), m_argNames(args) { }
 	
-	virtual void registerOption(util::cmdline::interpreter<std::string> & l) {
+	void registerOption(util::cmdline::interpreter<std::string> & l) override {
 		std::string shortName = (m_shortName == nullptr || *m_shortName == 0) ? "" : std::string("-") + m_shortName;
 		std::string longName = (m_longName == nullptr || *m_longName == 0) ? "" : std::string("--") + m_longName;
 		if(shortName.empty() && longName.empty()) {
