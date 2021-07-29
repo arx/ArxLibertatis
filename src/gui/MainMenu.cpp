@@ -90,7 +90,7 @@ public:
 	
 	~NewQuestMenuPage() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveBottom();
 		
@@ -137,7 +137,7 @@ public:
 	
 	~SaveConfirmMenuPage() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveTop();
 		reserveBottom();
@@ -190,7 +190,7 @@ public:
 		
 	}
 	
-	void focus() {
+	void focus() override {
 		MenuPage::focus();
 		activate(m_textbox);
 	}
@@ -237,7 +237,7 @@ public:
 	
 	~LoadMenuPage() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveTop();
 		reserveBottom();
@@ -330,7 +330,7 @@ public:
 		}
 	}
 	
-	void focus() {
+	void focus() override {
 		MenuPage::focus();
 		resetSelection();
 		pLoadConfirm->setEnabled(false);
@@ -358,7 +358,7 @@ public:
 	
 	~SaveMenuPage() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveBottom();
 		
@@ -426,7 +426,7 @@ public:
 	
 	~ChooseLoadOrSaveMenuPage() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveTop();
 		reserveBottom();
@@ -447,7 +447,7 @@ public:
 		
 	}
 	
-	void focus() {
+	void focus() override {
 		MenuPage::focus();
 		m_loadButton->setEnabled(!savegames.empty());
 		m_saveButton->setEnabled(g_canResumeGame);
@@ -465,7 +465,7 @@ public:
 	
 	~OptionsMenuPage() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveTop();
 		reserveBottom();
@@ -528,7 +528,7 @@ public:
 	
 	~LocalizationMenuPage() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveBottom();
 		
@@ -639,7 +639,7 @@ public:
 	~VideoOptionsMenuPage() { }
 	
 	
-	void init() {
+	void init() override {
 		
 		reserveBottom();
 		
@@ -928,7 +928,7 @@ public:
 	
 	CycleTextWidget * m_alphaCutoutAntialiasingCycleText;
 	
-	void init() {
+	void init() override {
 		
 		reserveBottom();
 		
@@ -1113,7 +1113,7 @@ public:
 	
 	~InterfaceOptionsMenuPage() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveBottom();
 		
@@ -1272,7 +1272,7 @@ public:
 	
 	~AudioOptionsMenuPage() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveBottom();
 		
@@ -1413,7 +1413,7 @@ public:
 	
 	~InputOptionsMenuPage() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveBottom();
 		
@@ -1572,7 +1572,7 @@ public:
 		m_rowSpacing = 3;
 	}
 	
-	void focus() {
+	void focus() override {
 		MenuPage::focus();
 		reinitActionKeys();
 	}
@@ -1649,7 +1649,7 @@ public:
 	
 	~ControlOptionsMenuPage1() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveBottom();
 		
@@ -1715,7 +1715,7 @@ public:
 	
 	~ControlOptionsMenuPage2() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveBottom();
 		
@@ -1774,7 +1774,7 @@ public:
 	
 	~QuitConfirmMenuPage() { }
 	
-	void init() {
+	void init() override {
 		
 		reserveBottom();
 		
