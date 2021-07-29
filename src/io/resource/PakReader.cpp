@@ -84,9 +84,9 @@ public:
 	explicit UncompressedFile(std::istream * archive, size_t offset, size_t size)
 		: m_archive(*archive), m_offset(offset), m_size(size) { }
 	
-	std::string read() const;
+	std::string read() const override;
 	
-	std::unique_ptr<PakFileHandle> open() const;
+	std::unique_ptr<PakFileHandle> open() const override;
 	
 	friend class UncompressedFileHandle;
 	
@@ -102,11 +102,11 @@ public:
 	explicit UncompressedFileHandle(const UncompressedFile * file)
 		: m_file(*file), m_offset(0) { }
 	
-	size_t read(void * buf, size_t size);
+	size_t read(void * buf, size_t size) override;
 	
-	int seek(Whence whence, int offset);
+	int seek(Whence whence, int offset) override;
 	
-	size_t tell();
+	size_t tell() override;
 	
 	~UncompressedFileHandle() { }
 	
@@ -192,9 +192,9 @@ public:
 	explicit CompressedFile(fs::ifstream * archive, size_t offset, size_t size, size_t storedSize)
 		:  m_archive(*archive), m_offset(offset), m_storedSize(storedSize), m_uncompressedSize(size) { }
 	
-	std::string read() const;
+	std::string read() const override;
 	
-	std::unique_ptr<PakFileHandle> open() const;
+	std::unique_ptr<PakFileHandle> open() const override;
 	
 	friend class CompressedFileHandle;
 	
@@ -210,11 +210,11 @@ public:
 	explicit CompressedFileHandle(const CompressedFile * file)
 		: m_file(*file), m_offset(0) { }
 	
-	size_t read(void * buf, size_t size);
+	size_t read(void * buf, size_t size) override;
 	
-	int seek(Whence whence, int offset);
+	int seek(Whence whence, int offset) override;
 	
-	size_t tell();
+	size_t tell() override;
 	
 	~CompressedFileHandle() { }
 	
@@ -384,9 +384,9 @@ public:
 	
 	explicit PlainFile(fs::path path) : m_path(std::move(path)) { }
 	
-	std::string read() const;
+	std::string read() const override;
 	
-	std::unique_ptr<PakFileHandle> open() const;
+	std::unique_ptr<PakFileHandle> open() const override;
 	
 };
 
@@ -401,11 +401,11 @@ public:
 		arx_assert(ifs.is_open());
 	}
 	
-	size_t read(void * buf, size_t size);
+	size_t read(void * buf, size_t size) override;
 	
-	int seek(Whence whence, int offset);
+	int seek(Whence whence, int offset) override;
 	
-	size_t tell();
+	size_t tell() override;
 	
 	~PlainFileHandle() { }
 	
