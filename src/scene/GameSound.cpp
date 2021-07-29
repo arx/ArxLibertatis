@@ -1081,9 +1081,9 @@ static void ARX_SOUND_CreatePresenceMap() {
 		return;
 	}
 	
-	for(IniSection::iterator i = section->begin(); i != section->end(); ++i) {
-		float factor = i->getValue(100.f) / 100.f;
-		g_presenceFactors[res::path::load(i->getName()).set_ext(ARX_SOUND_FILE_EXTENSION_WAV)] = factor;
+	for(const IniKey & entry : *section) {
+		float factor = entry.getValue(100.f) / 100.f;
+		g_presenceFactors[res::path::load(entry.getName()).set_ext(ARX_SOUND_FILE_EXTENSION_WAV)] = factor;
 	}
 	
 }
