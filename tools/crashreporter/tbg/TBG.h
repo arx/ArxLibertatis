@@ -36,7 +36,7 @@ namespace http {
 
 namespace TBG {
 
-class Server : public QObject {
+class Server final : public QObject {
 	
 public:
 	

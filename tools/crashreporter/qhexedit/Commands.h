@@ -43,7 +43,7 @@
  * steps: insert a "00", replace it with "03" and then replace it with "34". These
  * 3 steps are combined into a single step, insert a "34".
  */
-class CharCommand : public QUndoCommand {
+class CharCommand final : public QUndoCommand {
 	
 public:
 	
@@ -73,7 +73,7 @@ private:
  * ArrayCommand provides undo/redo functionality for handling binary strings. It
  * can undo/redo insert, replace and remove binary strings (QByteArrays).
  */
-class ArrayCommand : public QUndoCommand {
+class ArrayCommand final : public QUndoCommand {
 	
 public:
 	

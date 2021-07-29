@@ -31,7 +31,7 @@
 
 #include "crashreporter/qhexedit/XByteArray.h"
 
-class QHexEditPrivate : public QWidget {
+class QHexEditPrivate final : public QWidget {
 	
 Q_OBJECT
 	

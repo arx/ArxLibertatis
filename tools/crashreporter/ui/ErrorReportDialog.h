@@ -135,7 +135,7 @@ private:
 	
 };
 
-class ErrorReportFileListModel : public QAbstractListModel {
+class ErrorReportFileListModel final : public QAbstractListModel {
 	
 	Q_OBJECT
 	
@@ -202,7 +202,7 @@ private:
 	
 };
 
-class ErrorReportDialog : public QDialog {
+class ErrorReportDialog final : public QDialog {
 	
 	Q_OBJECT
 	

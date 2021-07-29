@@ -60,7 +60,7 @@
  * megabytes, otherwise the scroll sliders are not shown and you can't scroll any
  * more.
  */
-class QHexEdit : public QScrollArea {
+class QHexEdit final : public QScrollArea {
 	
 	Q_OBJECT
 	
