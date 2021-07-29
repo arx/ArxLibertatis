@@ -139,7 +139,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 	
 	bool readline = true;
 	
-	std::string_view str;
+	std::string_view str, raw;
 	
 	// While lines remain to be extracted
 	for(size_t line = 1; !data.empty(); line++) {
@@ -148,41 +148,40 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 		if(readline) {
 			size_t lineend = data.find('\n');
 			if(lineend == std::string_view::npos) {
-				str = data;
+				raw = str = data;
 				data = { };
 			} else {
-				str = data.substr(0, lineend);
+				raw = str = data.substr(0, lineend);
 				data.remove_prefix(lineend + 1);
 			}
 		} else {
 			readline = true;
 		}
 		
-		size_t start = str.find_first_not_of(WHITESPACE);
-		if(start == std::string_view::npos) {
+		str = util::trimLeft(str);
+		if(str.empty()) {
 			// Empty line (only whitespace)
 			continue;
 		}
 		
-		if(str[start] == '#'
-		   || (start + 1 < str.length() && str[start] == '/' && str[start + 1] == '/')) {
+		if(str[0] == '#' || (str.length() > 1 && str[0] == '/' && str[1] == '/')) {
 			// Whole line was commented, no need to do anything with it. Continue getting the next line
 			continue;
 		}
 		
 		// Section header
-		if(str[start] == '[') {
+		if(str[0] == '[') {
 			
-			size_t end = str.find(']', start + 1);
+			size_t end = str.find(']', 1);
 			if(end == std::string_view::npos) {
-				LogDebug("invalid header @ line " << line << ": " << str);
-				end = str.find_first_not_of(ALPHANUM, start + 1);
+				LogDebug("invalid header @ line " << line << ": " << raw);
+				end = str.find_first_not_of(ALPHANUM, 1);
 				if(end == std::string_view::npos) {
 					end = str.length();
 				}
 			}
 			
-			std::string sectionName = util::toLowercase(str.substr(start + 1, end - start - 1));
+			std::string sectionName = util::toLowercase(str.substr(1, end - 1));
 			LogDebug("found section: \"" << sectionName << "\"");
 			section = &sections[std::move(sectionName)];
 			
@@ -192,19 +191,19 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 		}
 		
 		if(!section) {
-			LogWarning << "Ignoring non-empty line " << line << " outside a section: " << str;
+			LogWarning << "Ignoring non-empty line " << line << " outside a section: " << raw;
 			ok = false;
 			continue;
 		}
 		
-		size_t nameEnd = str.find_first_not_of(ALPHANUM, start);
+		size_t nameEnd = str.find_first_not_of(ALPHANUM);
 		if(nameEnd == std::string_view::npos) {
 			ok = false;
-			LogWarning << "Missing '=' separator @ line " << line << ": " << str;
+			LogWarning << "Missing '=' separator @ line " << line << ": " << raw;
 			continue;
-		} else if(nameEnd == start) {
+		} else if(nameEnd == 0) {
 			ok = false;
-			LogWarning << "Empty key name @ line " << line << ": " << str;
+			LogWarning << "Empty key name @ line " << line << ": " << raw;
 			continue;
 		}
 		
@@ -214,11 +213,11 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 		if(separator == std::string_view::npos || str[separator] != '=') {
 			if(separator != std::string_view::npos && separator + 1 < str.length()
 			   && str[separator] == '"' && str[separator + 1] == '=') {
-				LogDebug("found '\"=' instead of '=\"' @ line " << line << ": " << str);
+				LogDebug("found '\"=' instead of '=\"' @ line " << line << ": " << raw);
 				quoted = true;
 			} else {
 				ok = false;
-				LogWarning << "Missing '=' separator @ line " << line << ": " << str;
+				LogWarning << "Missing '=' separator @ line " << line << ": " << raw;
 				continue;
 			}
 		}
@@ -227,14 +226,14 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 		if(valueStart == std::string_view::npos) {
 			// Empty value.
 			if(overrideValues) {
-				section->setKey(str.substr(start, nameEnd - start), { });
+				section->setKey(str.substr(0, nameEnd), { });
 			} else {
-				section->addKey(str.substr(start, nameEnd - start), { });
+				section->addKey(str.substr(0, nameEnd), { });
 			}
 			continue;
 		}
 		
-		std::string_view key = str.substr(start, nameEnd - start);
+		std::string_view key = str.substr(0, nameEnd);
 		std::string value;
 		
 		if(quoted || str[valueStart] == '"') {
@@ -246,7 +245,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 				
 				// The localisation files are broken (missing ending quote)
 				// But the spanish localisation files hae erroneous newlines in some values
-				LogDebug("invalid quoted value @ line " << line << ": " << str);
+				LogDebug("invalid quoted value @ line " << line << ": " << raw);
 				
 				valueEnd = str.find_last_not_of(WHITESPACE) + 1;
 				arx_assert(valueEnd >= valueStart);
@@ -258,10 +257,10 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 					
 					size_t lineend = data.find('\n');
 					if(lineend == std::string_view::npos) {
-						str = data;
+						raw = str = data;
 						data = { };
 					} else {
-						str = data.substr(0, lineend);
+						raw = str = data.substr(0, lineend);
 						data.remove_prefix(lineend + 1);
 					}
 					
