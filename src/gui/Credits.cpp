@@ -143,7 +143,7 @@ private:
 	
 	bool init();
 	
-	void addLine(std::string & phrase, float & drawpos, int sourceLineNumber);
+	void addLine(std::string_view phrase, float & drawpos, int sourceLineNumber);
 	
 	//! Parse the credits text and compute line positions
 	void layout();
@@ -297,7 +297,7 @@ bool Credits::init() {
 	return true;
 }
 
-void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumber) {
+void Credits::addLine(std::string_view phrase, float & drawpos, int sourceLineNumber) {
 	
 	CreditsLine infomations;
 	infomations.sourceLineNumber = sourceLineNumber;
@@ -430,7 +430,7 @@ void Credits::layout() {
 	
 	std::istringstream iss(m_text);
 	std::string phrase;
-
+	
 	float drawpos = static_cast<float>(g_size.height());
 	
 	for(int sourceLineNumber = 0; std::getline(iss, phrase); sourceLineNumber++) {
