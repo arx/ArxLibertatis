@@ -566,7 +566,7 @@ class IfCommand : public Command {
 		
 		IsElementOperator() : Operator("iselement", TYPE_TEXT) { }
 		
-		bool text(const Context & context, std::string_view seek, std::string_view text) {
+		bool text(const Context & context, std::string_view seek, std::string_view text) override {
 			ARX_UNUSED(context);
 			
 			for(size_t pos = 0, next; next = text.find(' ', pos), true ; pos = next + 1) {
@@ -592,7 +592,7 @@ class IfCommand : public Command {
 		
 		IsClassOperator() : Operator("isclass", TYPE_TEXT) { }
 		
-		bool text(const Context & context, std::string_view left, std::string_view right) {
+		bool text(const Context & context, std::string_view left, std::string_view right) override {
 			ARX_UNUSED(context);
 			return (left.find(right) != std::string_view::npos || right.find(left) != std::string_view::npos);
 		}
@@ -605,7 +605,7 @@ class IfCommand : public Command {
 		
 		IsGroupOperator() : Operator("isgroup", TYPE_TEXT) { }
 		
-		bool text(const Context & context, std::string_view obj, std::string_view group) {
+		bool text(const Context & context, std::string_view obj, std::string_view group) override {
 			
 			Entity * t = entities.getById(obj, context.getEntity());
 			
@@ -620,7 +620,7 @@ class IfCommand : public Command {
 		
 		NotIsGroupOperator() : Operator("!isgroup", TYPE_TEXT) { }
 		
-		bool text(const Context & context, std::string_view obj, std::string_view group) {
+		bool text(const Context & context, std::string_view obj, std::string_view group) override {
 			
 			Entity * t = entities.getById(obj, context.getEntity());
 			
@@ -635,7 +635,7 @@ class IfCommand : public Command {
 		
 		IsTypeOperator() : Operator("istype", TYPE_TEXT) { }
 		
-		bool text(const Context & context, std::string_view obj, std::string_view type) {
+		bool text(const Context & context, std::string_view obj, std::string_view type) override {
 			
 			Entity * t = entities.getById(obj, context.getEntity());
 			
@@ -656,7 +656,7 @@ class IfCommand : public Command {
 		
 		IsInOperator() : Operator("isin", TYPE_TEXT) { }
 		
-		bool text(const Context & context, std::string_view needle, std::string_view haystack) {
+		bool text(const Context & context, std::string_view needle, std::string_view haystack) override {
 			ARX_UNUSED(context);
 			return haystack.find(needle) != std::string_view::npos;
 		}
@@ -669,12 +669,12 @@ class IfCommand : public Command {
 		
 		EqualOperator() : Operator("==", TYPE_FLOAT) { }
 		
-		bool text(const Context & context, std::string_view left, std::string_view right) {
+		bool text(const Context & context, std::string_view left, std::string_view right) override {
 			ARX_UNUSED(context);
 			return left == right;
 		}
 		
-		bool number(const Context & context, float left, float right) {
+		bool number(const Context & context, float left, float right) override {
 			ARX_UNUSED(context);
 			return left == right;
 		}
@@ -687,12 +687,12 @@ class IfCommand : public Command {
 		
 		NotEqualOperator() : Operator("!=", TYPE_FLOAT) { }
 		
-		bool text(const Context & context, std::string_view left, std::string_view right) {
+		bool text(const Context & context, std::string_view left, std::string_view right) override {
 			ARX_UNUSED(context);
 			return left != right;
 		}
 		
-		bool number(const Context & context, float left, float right) {
+		bool number(const Context & context, float left, float right) override {
 			ARX_UNUSED(context);
 			return left != right;
 		}
@@ -705,7 +705,7 @@ class IfCommand : public Command {
 		
 		LessEqualOperator() : Operator("<=", TYPE_FLOAT) { }
 		
-		bool number(const Context & context, float left, float right) {
+		bool number(const Context & context, float left, float right) override {
 			ARX_UNUSED(context);
 			return left <= right;
 		}
@@ -718,7 +718,7 @@ class IfCommand : public Command {
 		
 		LessOperator() : Operator("<", TYPE_FLOAT) { }
 		
-		bool number(const Context & context, float left, float right) {
+		bool number(const Context & context, float left, float right) override {
 			ARX_UNUSED(context);
 			return left < right;
 		}
@@ -731,7 +731,7 @@ class IfCommand : public Command {
 		
 		GreaterEqualOperator() : Operator(">=", TYPE_FLOAT) { }
 		
-		bool number(const Context & context, float left, float right) {
+		bool number(const Context & context, float left, float right) override {
 			ARX_UNUSED(context);
 			return left >= right;
 		}
@@ -744,7 +744,7 @@ class IfCommand : public Command {
 		
 		GreaterOperator() : Operator(">", TYPE_FLOAT) { }
 		
-		bool number(const Context & context, float left, float right) {
+		bool number(const Context & context, float left, float right) override {
 			ARX_UNUSED(context);
 			return left > right;
 		}
