@@ -223,34 +223,24 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 				continue;
 			}
 		}
+		str.remove_prefix(1);
 		
-		size_t valueStart = str.find_first_not_of(WHITESPACE, 1);
-		if(valueStart == std::string_view::npos) {
-			// Empty value.
-			if(overrideValues) {
-				section->setKey(key, { });
-			} else {
-				section->addKey(key, { });
-			}
-			continue;
-		}
+		str = util::trimLeft(str);
 		
 		std::string value;
 		
-		if(quoted || str[valueStart] == '"') {
-			valueStart++;
+		if(quoted || (!str.empty() && str[0] == '"')) {
+			str.remove_prefix(1);
 			size_t valueEnd = str.find_last_of('"');
-			arx_assert(valueEnd != std::string_view::npos);
 			
-			if(valueEnd < valueStart) {
+			if(valueEnd == std::string::npos) {
 				
 				// The localisation files are broken (missing ending quote)
 				// But the spanish localisation files hae erroneous newlines in some values
 				LogDebug("invalid quoted value @ line " << line << ": " << raw);
 				
-				valueEnd = str.find_last_not_of(WHITESPACE) + 1;
-				arx_assert(valueEnd >= valueStart);
-				value = str.substr(valueStart, valueEnd - valueStart);
+				valueEnd = str.find_last_not_of(WHITESPACE);
+				value = (valueEnd == std::string_view::npos) ? str : str.substr(0, valueEnd + 1);
 				
 				// Add following lines until we find either a terminating quote,
 				// an empty or commented line, a new section or a new key
@@ -309,11 +299,11 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 				}
 				
 			} else {
-				value = str.substr(valueStart, valueEnd - valueStart);
+				value = str.substr(0, valueEnd);
 			}
 			
 		} else {
-			value = util::trimRight(str.substr(valueStart));
+			value = util::trimRight(str);
 		}
 		
 		if(overrideValues) {
