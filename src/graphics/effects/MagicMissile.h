@@ -58,8 +58,8 @@ public:
 	void SetTTL(GameDuration aulTTL);
 	
 	void Create(const Vec3f & startPos, const Anglef & angles);
-	void Update(GameDuration timeDelta);
-	void Render();
+	void Update(GameDuration timeDelta) override;
+	void Render() override;
 	
 	bool bExplo;
 	bool bMove;

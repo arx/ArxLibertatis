@@ -61,8 +61,8 @@ public:
 	CLightning();
 	
 	void Create(Vec3f aeFrom, Vec3f aeTo);
-	void Update(GameDuration timeDelta);
-	void Render();
+	void Update(GameDuration timeDelta) override;
+	void Render() override;
 	
 	Vec3f m_pos;
 	float m_beta;
