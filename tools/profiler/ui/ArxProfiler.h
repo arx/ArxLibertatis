@@ -68,11 +68,11 @@ public:
 	
 protected:
 	
-	void paintEvent(QPaintEvent * event);
+	void paintEvent(QPaintEvent * event) override;
 	
-	virtual void wheelEvent(QWheelEvent * event);
-	virtual void keyPressEvent(QKeyEvent * event);
-	void contextMenuEvent(QContextMenuEvent * event);
+	void wheelEvent(QWheelEvent * event) override;
+	void keyPressEvent(QKeyEvent * event) override;
+	void contextMenuEvent(QContextMenuEvent * event) override;
 	
 private slots:
 	
