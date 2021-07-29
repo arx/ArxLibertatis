@@ -386,13 +386,10 @@ static void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 	for(size_t i = 0; i != obj->bones.size(); i++) {
 		const Bone & bone = obj->bones[i];
 		
-		glm::quat qt1 = bone.anim.quat;
-		Vec3f t_vector = glm::inverse(qt1) * cam_vector;
-
+		Vec3f t_vector = glm::inverse(bone.anim.quat) * cam_vector;
+		
 		// Get light value for each vertex
-		const std::vector<u32> & vertices = eobj->m_boneVertices[i];
-		for(size_t v = 0; v != vertices.size(); v++) {
-			size_t vertIndex = vertices[v];
+		for(size_t vertIndex : eobj->m_boneVertices[i]) {
 			// Get cos angle between light and vertex norm
 			eobj->vertexWorldPositions[vertIndex].norm.z = glm::dot(eobj->vertexlist[vertIndex].norm, t_vector);
 		}
