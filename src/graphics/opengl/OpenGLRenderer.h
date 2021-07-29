@@ -37,53 +37,55 @@ public:
 	OpenGLRenderer();
 	~OpenGLRenderer();
 	
-	void initialize();
+	void initialize() override;
 	
-	void beforeResize(bool wasOrIsFullscreen);
-	void afterResize();
+	void beforeResize(bool wasOrIsFullscreen) override;
+	void afterResize() override;
 	
 	// Matrices
-	void SetViewMatrix(const glm::mat4x4 & matView);
-	void SetProjectionMatrix(const glm::mat4x4 & matProj);
+	void SetViewMatrix(const glm::mat4x4 & matView) override;
+	void SetProjectionMatrix(const glm::mat4x4 & matProj) override;
 	
 	// Texture management
-	void ReleaseAllTextures();
-	void RestoreAllTextures();
-	void reloadColorKeyTextures();
+	void ReleaseAllTextures() override;
+	void RestoreAllTextures() override;
+	void reloadColorKeyTextures() override;
 	
 	// Factory
-	Texture * createTexture();
+	Texture * createTexture() override;
 	
 	// Viewport
-	void SetViewport(const Rect & viewport);
+	void SetViewport(const Rect & viewport) override;
 	
-	void SetScissor(const Rect & rect);
+	void SetScissor(const Rect & rect) override;
 	
 	// Render Target
-	void Clear(BufferFlags bufferFlags, Color clearColor = Color::none, float clearDepth = 1.f, size_t nrects = 0, Rect * rect = 0);
+	void Clear(BufferFlags bufferFlags, Color clearColor = Color::none, float clearDepth = 1.f,
+	           size_t nrects = 0, Rect * rect = 0) override;
 	
 	// Fog
-	void SetFogColor(Color color);
-	void SetFogParams(float fogStart, float fogEnd);
+	void SetFogColor(Color color) override;
+	void SetFogParams(float fogStart, float fogEnd) override;
 	
 	// Rasterizer
-	void SetAntialiasing(bool enable);
-	void SetFillMode(FillMode mode);
+	void SetAntialiasing(bool enable) override;
+	void SetFillMode(FillMode mode) override;
 	
 	float getMaxAnisotropy() const { return m_maximumAnisotropy; }
-	float getMaxSupportedAnisotropy() const { return m_maximumSupportedAnisotropy; }
-	void setMaxAnisotropy(float value);
+	float getMaxSupportedAnisotropy() const override { return m_maximumSupportedAnisotropy; }
+	void setMaxAnisotropy(float value) override;
 	
-	AlphaCutoutAntialising getMaxSupportedAlphaCutoutAntialiasing() const;
+	AlphaCutoutAntialising getMaxSupportedAlphaCutoutAntialiasing() const override;
 	
-	VertexBuffer<TexturedVertex> * createVertexBufferTL(size_t capacity, BufferUsage usage);
-	VertexBuffer<SMY_VERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage);
-	VertexBuffer<SMY_VERTEX3> * createVertexBuffer3(size_t capacity, BufferUsage usage);
+	VertexBuffer<TexturedVertex> * createVertexBufferTL(size_t capacity, BufferUsage usage) override;
+	VertexBuffer<SMY_VERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage) override;
+	VertexBuffer<SMY_VERTEX3> * createVertexBuffer3(size_t capacity, BufferUsage usage) override;
 	
-	void drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices);
+	void drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices,
+	                 unsigned short * indices, size_t nindices) override;
 	
-	bool getSnapshot(Image & image);
-	bool getSnapshot(Image & image, size_t width, size_t height);
+	bool getSnapshot(Image & image) override;
+	bool getSnapshot(Image & image, size_t width, size_t height) override;
 	
 	GLTextureStage * GetTextureStage(size_t textureStage) {
 		return reinterpret_cast<GLTextureStage *>(Renderer::GetTextureStage(textureStage));
