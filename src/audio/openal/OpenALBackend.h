@@ -53,29 +53,29 @@ public:
 	
 	aalError init(std::string_view requestedDeviceName = std::string_view(), HRTFAttribute hrtf = HRTFDefault);
 	
-	std::vector<std::string> getDevices();
+	std::vector<std::string> getDevices() override;
 	
-	Source * createSource(SampleHandle sampleId, const Channel & channel);
+	Source * createSource(SampleHandle sampleId, const Channel & channel) override;
 	
-	Source * getSource(SourcedSample sourceId);
+	Source * getSource(SourcedSample sourceId) override;
 	
-	aalError setReverbEnabled(bool enable);
-	bool isReverbSupported();
+	aalError setReverbEnabled(bool enable) override;
+	bool isReverbSupported() override;
 	
-	aalError setHRTFEnabled(HRTFAttribute enable);
-	HRTFStatus getHRTFStatus();
+	aalError setHRTFEnabled(HRTFAttribute enable) override;
+	HRTFStatus getHRTFStatus() override;
 	
-	aalError setUnitFactor(float factor);
-	aalError setRolloffFactor(float factor);
+	aalError setUnitFactor(float factor) override;
+	aalError setRolloffFactor(float factor) override;
 	
-	aalError setListenerPosition(const Vec3f & position);
-	aalError setListenerOrientation(const Vec3f & front, const Vec3f & up);
+	aalError setListenerPosition(const Vec3f & position) override;
+	aalError setListenerOrientation(const Vec3f & front, const Vec3f & up) override;
 	
-	aalError setListenerEnvironment(const Environment & env);
+	aalError setListenerEnvironment(const Environment & env) override;
 	
-	source_iterator sourcesBegin();
-	source_iterator sourcesEnd();
-	source_iterator deleteSource(source_iterator it);
+	source_iterator sourcesBegin() override;
+	source_iterator sourcesEnd() override;
+	source_iterator deleteSource(source_iterator it) override;
 	
 private:
 	
