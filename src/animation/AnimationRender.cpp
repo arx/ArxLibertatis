@@ -507,10 +507,11 @@ static EERIE_3D_BBOX UpdateBbox3d(EERIE_3DOBJ * eobj) {
 	
 	EERIE_3D_BBOX box3D;
 	box3D.reset();
-
-	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
-		box3D.add(eobj->vertexWorldPositions[i].v);
+	
+	for(const EERIE_VERTEX & vertex : eobj->vertexWorldPositions) {
+		box3D.add(vertex.v);
 	}
+	
 	return box3D;
 }
 
