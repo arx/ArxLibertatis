@@ -23,10 +23,11 @@
 #include "platform/Architecture.h"
 #include "platform/Platform.h"
 
+#include <cstring>
 #include <algorithm>
 #include <sstream>
+#include <string_view>
 #include <vector>
-#include <cstring>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -289,17 +290,17 @@ std::string getOSArchitecture() {
  *                  to the name (unless the name so far is empty).
  * \param keyCount  Number of entries in the @c keys array.
  */
-static std::string parseDistributionName(std::istream & is, const char separator,
-                                         const char * keys[], size_t keyCount) {
+static std::string parseDistributionName(std::string_view data, const char separator,
+                                         std::string_view keys[], size_t keyCount) {
 	
-	std::vector<std::string> values;
+	std::vector<std::string_view> values;
 	values.resize(keyCount);
 	
-	std::string line;
-	while(std::getline(is, line).good()) {
+	for(std::string_view line : util::splitIgnoreEmpty(data, '\n')) {
 		
-		// Ignore comments and empty lines
-		if(line.empty() || line[0] == '#') {
+		// Ignore comments
+		arx_assert(!line.empty());
+		if(line[0] == '#') {
 			continue;
 		}
 		
@@ -309,18 +310,16 @@ static std::string parseDistributionName(std::istream & is, const char separator
 			// Ignore bad syntax
 			continue;
 		}
-		std::string key = line.substr(0, pos);
-		boost::trim(key);
-		std::string value = line.substr(pos + 1);
-		boost::trim(value);
+		std::string_view key = util::trim(line.substr(0, pos));
+		std::string_view value = util::trim(line.substr(pos + 1));
 		if(!value.empty() && value.front() == '"') {
-			value.erase(value.begin());
+			value.remove_prefix(1);
 			if(!value.empty() && value.back() == '"') {
-				value.pop_back();
+				value.remove_suffix(1);
 			}
 		}
 		if(!value.empty() && value.back() == '\\') {
-			value.pop_back();
+			value.remove_suffix(1);
 		}
 		
 		// Ignore empty values
@@ -335,9 +334,9 @@ static std::string parseDistributionName(std::istream & is, const char separator
 				continue;
 			}
 			
-			const char * kkey = keys[i];
-			if(*kkey == '(') {
-				kkey++;
+			std::string_view kkey = keys[i];
+			if(!kkey.empty() && kkey[0] == '(') {
+				kkey.remove_prefix(1);
 			}
 			if(key == kkey) {
 				values[i] = value;
@@ -363,7 +362,7 @@ static std::string parseDistributionName(std::istream & is, const char separator
 		// Add the new value to the name
 		if(name.empty()) {
 			name = values[i];
-		} else if(*keys[i] == '(') {
+		} else if(!keys[i].empty() && keys[i][0] == '(') {
 			name.push_back(' ');
 			name.push_back('(');
 			name += values[i];
@@ -387,13 +386,10 @@ std::string getOSDistribution() {
 	// Get distribution information from SystemD's /etc/os-release
 	// Spec: https://freedesktop.org/software/systemd/man/os-release.html
 	{
-		fs::ifstream ifs("/etc/os-release");
-		if(ifs.is_open()) {
-			const char * keys[] = { "PRETTY_NAME", "NAME", "VERSION", "VERSION_ID" };
-			std::string distro = parseDistributionName(ifs, '=', keys, std::size(keys));
-			if(!distro.empty()) {
-				return distro;
-			}
+		std::string_view keys[] = { "PRETTY_NAME", "NAME", "VERSION", "VERSION_ID" };
+		std::string distro = parseDistributionName(fs::read("/etc/os-release"), '=', keys, std::size(keys));
+		if(!distro.empty()) {
+			return distro;
 		}
 	}
 	
@@ -402,9 +398,8 @@ std::string getOSDistribution() {
 	// because lsb_release may have distro-specific patches
 	{
 		const char * args[] = { "lsb_release", "-a", nullptr };
-		std::istringstream iss(getOutputOf(args));
-		const char * keys[] = { "Description", "Distributor ID", "Release", "(Codename" };
-		std::string distro = parseDistributionName(iss, ':', keys, std::size(keys));
+		std::string_view keys[] = { "Description", "Distributor ID", "Release", "(Codename" };
+		std::string distro = parseDistributionName(getOutputOf(args), ':', keys, std::size(keys));
 		if(!distro.empty()) {
 			return distro;
 		}
@@ -478,15 +473,10 @@ std::string getOSDistribution() {
 	
 	// Fallback: parse /etc/lsb-release ourselves
 	{
-		fs::ifstream ifs("/etc/lsb-release");
-		if(ifs.is_open()) {
-			const char * keys[] = {
-				"DISTRIB_DESCRIPTION", "DISTRIB_ID", "DISTRIB_RELEASE", "(DISTRIB_CODENAME"
-			};
-			std::string distro = parseDistributionName(ifs, '=', keys, std::size(keys));
-			if(!distro.empty()) {
-				return distro;
-			}
+		std::string_view keys[] = { "DISTRIB_DESCRIPTION", "DISTRIB_ID", "DISTRIB_RELEASE", "(DISTRIB_CODENAME" };
+		std::string distro = parseDistributionName(fs::read("/etc/lsb-release"), '=', keys, std::size(keys));
+		if(!distro.empty()) {
+			return distro;
 		}
 	}
 	
