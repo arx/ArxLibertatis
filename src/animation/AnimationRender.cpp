@@ -520,8 +520,7 @@ EERIE_2D_BBOX UpdateBbox2d(const EERIE_3DOBJ & eobj) {
 	EERIE_2D_BBOX box2D;
 	box2D.reset();
 	
-	for(size_t i = 0; i < eobj.vertexClipPositions.size(); i++) {
-		const Vec4f & vertex = eobj.vertexClipPositions[i];
+	for(Vec4f vertex : eobj.vertexClipPositions) {
 		
 		if(vertex.w <= 0.f) {
 			continue;
