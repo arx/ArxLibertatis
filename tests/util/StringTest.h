@@ -23,7 +23,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-class StringTest : public CppUnit::TestFixture {
+class StringTest final : public CppUnit::TestFixture {
 	
 	CPPUNIT_TEST_SUITE(StringTest);	
 	CPPUNIT_TEST(stringStoreEmptyTest);

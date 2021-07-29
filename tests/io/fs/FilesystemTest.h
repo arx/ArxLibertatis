@@ -31,7 +31,7 @@
 #include "io/fs/Filesystem.h"
 #include "io/fs/FilePath.h"
 
-class FilesystemTest : public CppUnit::TestFixture {
+class FilesystemTest final : public CppUnit::TestFixture {
 	
 	CPPUNIT_TEST_SUITE(FilesystemTest);
 	CPPUNIT_TEST(testRelative);

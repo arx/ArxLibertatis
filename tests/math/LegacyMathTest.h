@@ -23,7 +23,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-class LegacyMathTest : public CppUnit::TestFixture {
+class LegacyMathTest final : public CppUnit::TestFixture {
 	
 	CPPUNIT_TEST_SUITE(LegacyMathTest);
 	CPPUNIT_TEST(rotationTestDataTest);

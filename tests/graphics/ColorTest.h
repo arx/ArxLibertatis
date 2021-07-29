@@ -25,7 +25,7 @@
 
 #include "graphics/Color.h"
 
-class ColorTest : public CppUnit::TestFixture {
+class ColorTest final : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(ColorTest);
 	CPPUNIT_TEST(ColorTypeConversionTests);
 	CPPUNIT_TEST_SUITE_END();

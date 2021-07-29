@@ -23,7 +23,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-class FilePathTest : public CppUnit::TestFixture {
+class FilePathTest final : public CppUnit::TestFixture {
 	
 	CPPUNIT_TEST_SUITE(FilePathTest);
 	CPPUNIT_TEST(pathTest);

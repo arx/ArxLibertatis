@@ -23,7 +23,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-class IniTest : public CppUnit::TestFixture {
+class IniTest final : public CppUnit::TestFixture {
 	
 	CPPUNIT_TEST_SUITE(IniTest);
 	CPPUNIT_TEST(intTest);
