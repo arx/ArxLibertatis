@@ -281,30 +281,28 @@ void CinematicGrid::ReajustUV() {
 	
 	C_UV * uvs = m_uvs.data();
 	
-	for(std::vector<C_INDEXED>::iterator mat = m_mats.begin(); mat != m_mats.end(); ++mat) {
+	for(const C_INDEXED & mat : m_mats) {
 		
-		Texture * tex = mat->tex;
+		Texture * tex = mat.tex;
 		if(!tex) {
 			return;
 		}
 		
 		Vec2i size = tex->getStoredSize();
 		
-		if(size.x != mat->bitmap.x || size.y != mat->bitmap.y) {
-			float dx = (0.999999f * float(mat->bitmap.x)) / float(size.x);
-			float dy = (0.999999f * float(mat->bitmap.y)) / float(size.y);
-
-			int nb2 = mat->nbvertexs;
-
+		if(size != mat.bitmap) {
+			Vec2f scale = Vec2f(0.999999f) * Vec2f(mat.bitmap) / Vec2f(size);
+			int nb2 = mat.nbvertexs;
 			while(nb2--) {
-				uvs->uv.x *= dx;
-				uvs->uv.y *= dy;
+				uvs->uv *= scale;
 				uvs++;
 			}
 		} else {
-			uvs += mat->nbvertexs;
+			uvs += mat.nbvertexs;
 		}
+		
 	}
+	
 }
 
 void CinematicGrid::GetIndNumCube(int cx, int cy, int * i1, int * i2, int * i3, int * i4) const {
