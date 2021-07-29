@@ -993,12 +993,11 @@ static void ARX_SOUND_CreateCollisionMaps() {
 			LogWarning << "Errors while parsing collision map " << file;
 		}
 		
-		for(IniReader::iterator si = reader.begin(); si != reader.end(); ++si) {
-			const IniSection & section = si->second;
-			CollisionMap & map = collisionMaps[si->first];
+		for(const auto & si : reader) {
+			const IniSection & section = si.second;
+			CollisionMap & map = collisionMaps[si.first];
 			
-			for(IniSection::iterator ki = section.begin(); ki != section.end(); ++ki) {
-				const IniKey & key = *ki;
+			for(const IniKey & key : section) {
 				SoundMaterial & mat = map[key.getName()];
 				
 				for(size_t mi = 0; mi < MAX_VARIANTS; mi++) {
@@ -1029,7 +1028,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 			}
 			
 			if(map.empty()) {
-				collisionMaps.erase(si->first);
+				collisionMaps.erase(si.first);
 			}
 			
 		}
