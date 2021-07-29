@@ -36,14 +36,14 @@ public:
 	GLTextureStage(OpenGLRenderer * renderer, unsigned textureStage);
 	~GLTextureStage();
 	
-	Texture * getTexture() const;
-	void setTexture(Texture * pTexture);
-	void resetTexture();
+	Texture * getTexture() const override;
+	void setTexture(Texture * pTexture) override;
+	void resetTexture() override;
 	
-	void setColorOp(TextureOp textureOp);
-	void setAlphaOp(TextureOp textureOp);
+	void setColorOp(TextureOp textureOp) override;
+	void setAlphaOp(TextureOp textureOp) override;
 	
-	void setMipMapLODBias(float bias);
+	void setMipMapLODBias(float bias) override;
 	
 	void apply();
 	
