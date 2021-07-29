@@ -127,7 +127,6 @@ const IniKey * IniReader::getKey(std::string_view sectionName, std::string_view 
 	return section->getKey(keyName);
 }
 
-static constexpr const std::string_view WHITESPACE = " \t\r\n";
 static constexpr const std::string_view ALPHANUM = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";
 
 bool IniReader::read(std::string_view data, bool overrideValues) {
@@ -236,7 +235,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 			if(valueEnd == std::string::npos) {
 				
 				// The localisation files are broken (missing ending quote)
-				// But the spanish localisation files hae erroneous newlines in some values
+				// But the spanish localisation files have erroneous newlines in some values
 				LogDebug("invalid quoted value @ line " << line << ": " << raw);
 				
 				value = util::trimRight(str);
@@ -273,8 +272,8 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 					
 					size_t newNameEnd = str.find_first_not_of(ALPHANUM, 0);
 					if(newNameEnd != std::string_view::npos && newNameEnd != 0) {
-						size_t newSeparator = str.find_first_not_of(WHITESPACE, newNameEnd);
-						if(newSeparator != std::string_view::npos && str[newSeparator] == '=') {
+						std::string_view right = util::trimLeft(str.substr(nameEnd));
+						if(!right.empty() && right[0] == '=') {
 							// New key
 							line--, readline = false;
 							break;
