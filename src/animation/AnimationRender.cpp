@@ -1405,8 +1405,7 @@ static void animateSkeleton(EERIE_3DOBJ * eobj, AnimLayer * animlayer,
 	}
 	
 	// Initialize the rig
-	for(size_t i = 0; i != skeleton.bones.size(); i++) {
-		Bone & bone = skeleton.bones[i];
+	for(Bone & bone : skeleton.bones) {
 		bone.init.quat = quat_identity();
 		bone.init.trans = bone.transinit_global;
 	}
