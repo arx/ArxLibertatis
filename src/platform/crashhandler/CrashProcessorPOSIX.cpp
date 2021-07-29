@@ -24,6 +24,7 @@
 #include <limits>
 #include <map>
 #include <sstream>
+#include <string_view>
 
 #include <signal.h>
 #include <unistd.h>
@@ -429,11 +430,8 @@ void CrashHandlerPOSIX::processCrashTrace() {
 		std::string gdbstdout = platform::getOutputOf(args, /*unlocalized=*/ true);
 		if(!gdbstdout.empty()) {
 			description << "\nGDB stack trace:\n";
-			std::istringstream iss(gdbstdout);
-			std::string line;
 			FrameType status = Handler;
-			while(iss.good()) {
-				std::getline(iss, line);
+			for(std::string_view line : util::split(gdbstdout, '\n')) {
 				if(status == Handler && boost::contains(line, "<signal handler called>")) {
 					status = Fault;
 				} else if(status == Fault) {
@@ -443,7 +441,7 @@ void CrashHandlerPOSIX::processCrashTrace() {
 						if(sstart != std::string::npos) {
 							start = sstart + 4;
 						}
-						std::string function = line.substr(start);
+						std::string function(line.substr(start));
 						size_t pstart = function.find('(');
 						if(pstart != std::string::npos) {
 							if(pstart != 0 && function[pstart - 1] == ' ') {
