@@ -53,10 +53,10 @@ public:
 	CharCommand(XByteArray * xData, Cmd cmd, int charPos, char newChar,
 	            QUndoCommand * parent = 0);
 	
-	void undo();
-	void redo();
-	bool mergeWith(const QUndoCommand * command);
-	int id() const { return Id; }
+	void undo() override;
+	void redo() override;
+	bool mergeWith(const QUndoCommand * command) override;
+	int id() const override { return Id; }
 	
 private:
 	
@@ -81,8 +81,8 @@ public:
 	
 	ArrayCommand(XByteArray * xData, Cmd cmd, int baPos, const QByteArray & newBa = QByteArray(),
 	             int len = 0, QUndoCommand * parent = 0);
-	void undo();
-	void redo();
+	void undo() override;
+	void redo() override;
 	
 private:
 	

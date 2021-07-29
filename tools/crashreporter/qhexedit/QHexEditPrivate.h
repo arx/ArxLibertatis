@@ -92,11 +92,11 @@ signals:
 	
 protected:
 	
-	void keyPressEvent(QKeyEvent * event);
-	void mouseMoveEvent(QMouseEvent * event);
-	void mousePressEvent(QMouseEvent * event);
+	void keyPressEvent(QKeyEvent * event) override;
+	void mouseMoveEvent(QMouseEvent * event) override;
+	void mousePressEvent(QMouseEvent * event) override;
 	
-	void paintEvent(QPaintEvent * event);
+	void paintEvent(QPaintEvent * event) override;
 	
 	//! calc cursorpos from graphics position. DOES NOT STORE POSITION
 	int cursorPos(QPoint pos) const;
