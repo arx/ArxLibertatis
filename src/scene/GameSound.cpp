@@ -1093,8 +1093,7 @@ static float GetSamplePresenceFactor(const res::path & name) {
 	arx_assert_msg(name.string().find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") == std::string::npos,
 	               "bad sample name: \"%s\"", name.string().c_str());
 	
-	PresenceFactors::const_iterator it = g_presenceFactors.find(name);
-	if(it != g_presenceFactors.end()) {
+	if(auto it = g_presenceFactors.find(name); it != g_presenceFactors.end()) {
 		return it->second;
 	}
 	
