@@ -90,10 +90,10 @@ public:
 		, m_selected(false)
 	{ }
 	
-	void newText(std::string_view text);
-	void editingText(std::string_view composition, size_t cursorStart, size_t cursorLength);
-	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
-	void droppedText(std::string_view text);
+	void newText(std::string_view text) override;
+	void editingText(std::string_view composition, size_t cursorStart, size_t cursorLength) override;
+	bool keyPressed(Keyboard::Key key, KeyModifiers mod) override;
+	void droppedText(std::string_view text) override;
 	
 	void clear();
 	void setText(std::string_view text, size_t cursorPos = size_t(-1));

@@ -37,20 +37,20 @@ public:
 	
 	SDL1InputBackend();
 	
-	bool update();
+	bool update() override;
 	
 	// Mouse
-	bool setMouseMode(Mouse::Mode mode);
-	bool getAbsoluteMouseCoords(int & absX, int & absY) const;
-	void setAbsoluteMouseCoords(int absX, int absY);
-	void getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const;
-	void getMouseButtonClickCount(int buttonId, int & numClick, int & numUnClick) const;
+	bool setMouseMode(Mouse::Mode mode) override;
+	bool getAbsoluteMouseCoords(int & absX, int & absY) const override;
+	void setAbsoluteMouseCoords(int absX, int absY) override;
+	void getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const override;
+	void getMouseButtonClickCount(int buttonId, int & numClick, int & numUnClick) const override;
 	
 	// Keyboard
-	bool isKeyboardKeyPressed(int keyId) const;
-	void startTextInput(const Rect & box, TextInputHandler * handler);
-	void stopTextInput();
-	std::string getKeyName(Keyboard::Key key) const;
+	bool isKeyboardKeyPressed(int keyId) const override;
+	void startTextInput(const Rect & box, TextInputHandler * handler) override;
+	void stopTextInput() override;
+	std::string getKeyName(Keyboard::Key key) const override;
 	
 	void onEvent(const SDL_Event & event);
 	
