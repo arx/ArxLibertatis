@@ -39,9 +39,9 @@ public:
 	explicit GLTexture(OpenGLRenderer * renderer);
 	~GLTexture();
 	
-	bool create();
-	void upload();
-	void destroy();
+	bool create() override;
+	void upload() override;
+	void destroy() override;
 	
 	void apply(GLTextureStage * stage);
 	
