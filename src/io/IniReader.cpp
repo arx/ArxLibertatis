@@ -292,9 +292,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 						break;
 					}
 					
-					newValueEnd = str.find_last_not_of(WHITESPACE) + 1;
-					arx_assert(newValueEnd > newValueStart);
-					value += str.substr(newValueStart, newValueEnd - newValueStart);
+					value += util::trimRight(str.substr(newValueStart));
 				}
 				
 			} else {
