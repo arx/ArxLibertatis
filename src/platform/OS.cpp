@@ -55,7 +55,6 @@
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
-#include "io/fs/FileStream.h"
 
 #include "platform/Process.h"
 #include "platform/WindowsUtils.h"
@@ -620,10 +619,9 @@ MemoryInfo getMemoryInfo() {
 	#if ARX_PLATFORM == ARX_PLATFORM_LINUX
 	{
 		// sysinfo(2) does not report memory used for cache :/ - parse /proc/meminfo instead
-		fs::ifstream ifs("/proc/meminfo");
+		std::string meminfo = fs::read("/proc/meminfo");
 		u64 total = u64(-1), free = u64(-1), buffers = u64(-1), cached = u64(-1);
-		std::string line;
-		while(std::getline(ifs, line).good()) {
+		for(std::string_view line : util::splitIgnoreEmpty(meminfo, '\n')) {
 			
 			size_t sep = line.find(':');
 			if(sep == std::string::npos) {
@@ -635,8 +633,7 @@ MemoryInfo getMemoryInfo() {
 				continue;
 			}
 			
-			std::string value = line.substr(sep + 1, end - sep - 1);
-			boost::trim(value);
+			std::string_view value = util::trim(line.substr(sep + 1, end - sep - 1));
 			
 			u64 number = 0;
 			try {
@@ -645,8 +642,7 @@ MemoryInfo getMemoryInfo() {
 				continue;
 			}
 			
-			std::string label = line.substr(0, sep);
-			boost::trim(label);
+			std::string_view label = util::trim(line.substr(0, sep));
 			if(label == "MemTotal") {
 				total = number;
 			} else if(label == "MemFree") {
