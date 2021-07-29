@@ -29,7 +29,6 @@
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include "io/fs/Filesystem.h"
-#include "io/fs/FileStream.h"
 #include "io/fs/PathConstants.h"
 #include "io/log/Logger.h"
 
@@ -223,9 +222,8 @@ bool addSearchRoot(std::vector<path> & result, const path & dir, bool filter) {
 	// Add dirs referenced in "data.dirs" file
 	path configFile = dir / "data.dirs";
 	if(is_regular_file(configFile)) {
-		ifstream ifs(configFile);
-		std::string line;
-		while(std::getline(ifs, line)) {
+		std::string data = fs::read(configFile);
+		for(std::string_view line : util::splitIgnoreEmpty(data, '\n')) {
 			path datadir = dir / line;
 			if(addSearchPath(result, datadir, filter)) {
 				LogDebug("got data dir from data.dirs file in dir: " << datadir);
