@@ -239,8 +239,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 				// But the spanish localisation files hae erroneous newlines in some values
 				LogDebug("invalid quoted value @ line " << line << ": " << raw);
 				
-				valueEnd = str.find_last_not_of(WHITESPACE);
-				value = (valueEnd == std::string_view::npos) ? str : str.substr(0, valueEnd + 1);
+				value = util::trimRight(str);
 				
 				// Add following lines until we find either a terminating quote,
 				// an empty or commented line, a new section or a new key
