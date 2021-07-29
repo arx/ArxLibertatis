@@ -206,6 +206,7 @@ else(MSVC)
 		add_cxxflag("-Wshift-overflow")
 		add_cxxflag("-Wstrict-null-sentinel")
 		add_cxxflag("-Wstringop-overflow=2")
+		add_cxxflag("-Wsuggest-override")
 		add_cxxflag("-Wundef")
 		add_cxxflag("-Wunused-const-variable=1")
 		add_cxxflag("-Wunused-macros")
@@ -264,7 +265,6 @@ else(MSVC)
 			add_cxxflag("-Wstrict-aliasing=1") # has false positives
 			add_cxxflag("-Wuseless-cast") # has false positives
 			add_cxxflag("-Wsign-promo")
-			add_cxxflag("-Wsuggest-override")
 			add_cxxflag("-Wsuggest-final-types")
 			add_cxxflag("-Wsuggest-final-methods")
 			# add_cxxflag("-Wnull-dereference") not that useful without deduction path
