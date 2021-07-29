@@ -19,7 +19,6 @@
 
 #include "util/String.h"
 
-#include <algorithm>
 #include <utility>
 
 #include <boost/date_time.hpp>

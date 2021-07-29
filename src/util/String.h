@@ -24,6 +24,7 @@
 
 #include <stddef.h>
 #include <cstring>
+#include <algorithm>
 #include <string>
 #include <string_view>
 
@@ -78,6 +79,22 @@ void makeLowercase(std::string & string);
 //! Convert a string to lowercase (ASCII-only)
 [[nodiscard]] inline std::string toLowercase(const char * string) {
 	return toLowercase(std::string(string));
+}
+
+constexpr const std::string_view Whitespace = " \t\r\n";
+
+[[nodiscard]] inline std::string_view trimLeft(std::string_view string, std::string_view totrim = Whitespace) {
+	std::string_view::size_type pos = string.find_first_not_of(totrim);
+	return string.substr((pos == std::string_view::npos) ? string.size() : pos);
+}
+
+[[nodiscard]] inline std::string_view trimRight(std::string_view string, std::string_view totrim = Whitespace) {
+	std::string_view::size_type pos = string.find_last_not_of(totrim);
+	return string.substr(0, (pos == std::string_view::npos) ? 0 : pos + 1);
+}
+
+[[nodiscard]] inline std::string_view trim(std::string_view string, std::string_view totrim = Whitespace) {
+	return trimLeft(trimRight(string, totrim), totrim);
 }
 
 /*!
