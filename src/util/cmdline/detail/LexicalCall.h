@@ -165,20 +165,20 @@ class lexical_call_t<Result(ValueType, ValueType, TypeCast)> {
 			, m_is_optend(begin == optend)
 		{ }
 		
-		virtual ValueType v_front() const {
+		ValueType v_front() const override {
 			return *m_begin;
 		}
 		
-		virtual void pop() {
+		void pop() override {
 			++m_begin;
 			m_is_optend = m_is_optend || (m_begin == m_optend);
 		}
 		
-		virtual bool empty() const {
+		bool empty() const override {
 			return m_begin == m_end;
 		}
 		
-		virtual bool opt_empty() const {
+		bool opt_empty() const override {
 			return m_is_optend;
 		}
 		
