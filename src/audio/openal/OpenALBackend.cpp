@@ -391,9 +391,9 @@ Source * OpenALBackend::createSource(SampleHandle sampleId, const Channel & chan
 	
 	OpenALSource * orig = nullptr;
 	
-	for(SourceList::iterator it = sources.begin(); it != sources.end(); ++it) {
-		if((*it) && (*it)->getSample() == sample) {
-			orig = (*it);
+	for(OpenALSource * source : sources) {
+		if(source && source->getSample() == sample) {
+			orig = source;
 			break;
 		}
 	}
@@ -442,9 +442,9 @@ aalError OpenALBackend::setRolloffFactor(float factor) {
 	
 	rolloffFactor = factor;
 	
-	for(SourceList::iterator it = sources.begin(); it != sources.end(); ++it) {
-		if(*it) {
-			(*it)->setRolloffFactor(rolloffFactor);
+	for(OpenALSource * source : sources) {
+		if(source) {
+			source->setRolloffFactor(rolloffFactor);
 		}
 	}
 	
@@ -539,9 +539,9 @@ aalError OpenALBackend::setReverbEnabled(bool enable) {
 		);
 	}
 	
-	for(SourceList::iterator it = sources.begin(); it != sources.end(); ++it) {
-		if(*it) {
-			(*it)->setEffectSlot(enable ? effectSlot : AL_EFFECTSLOT_NULL);
+	for(OpenALSource * source : sources) {
+		if(source) {
+			source->setEffectSlot(enable ? effectSlot : AL_EFFECTSLOT_NULL);
 		}
 	}
 	
