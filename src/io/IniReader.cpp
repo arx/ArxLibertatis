@@ -136,25 +136,19 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 	
 	bool ok = true;
 	
-	bool readline = true;
-	
 	std::string_view str, raw;
 	
 	// While lines remain to be extracted
 	for(size_t line = 1; !data.empty(); line++) {
 		
 		// Get a line to process
-		if(readline) {
-			size_t lineend = data.find('\n');
-			if(lineend == std::string_view::npos) {
-				raw = str = data;
-				data = { };
-			} else {
-				raw = str = data.substr(0, lineend);
-				data.remove_prefix(lineend + 1);
-			}
+		size_t lineend = data.find('\n');
+		if(lineend == std::string_view::npos) {
+			raw = str = data;
+			data = { };
 		} else {
-			readline = true;
+			raw = str = data.substr(0, lineend);
+			data.remove_prefix(lineend + 1);
 		}
 		
 		str = util::trimLeft(str);
@@ -244,12 +238,14 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 				// an empty or commented line, a new section or a new key
 				for(; !data.empty(); line++) {
 					
-					size_t lineend = data.find('\n');
+					std::string_view olddata = data;
+					
+					lineend = data.find('\n');
 					if(lineend == std::string_view::npos) {
-						raw = str = data;
+						str = data;
 						data = { };
 					} else {
-						raw = str = data.substr(0, lineend);
+						str = data.substr(0, lineend);
 						data.remove_prefix(lineend + 1);
 					}
 					
@@ -266,7 +262,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 					
 					if(str[0] == '[') {
 						// New section
-						line--, readline = false;
+						line--, data = olddata;
 						break;
 					}
 					
@@ -275,7 +271,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 						std::string_view right = util::trimLeft(str.substr(nameEnd));
 						if(!right.empty() && right[0] == '=') {
 							// New key
-							line--, readline = false;
+							line--, data = olddata;
 							break;
 						}
 					}
