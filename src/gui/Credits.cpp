@@ -428,15 +428,12 @@ void Credits::layout() {
 	
 	m_lines.clear();
 	
-	std::istringstream iss(m_text);
-	std::string phrase;
-	
 	float drawpos = static_cast<float>(g_size.height());
 	
-	for(int sourceLineNumber = 0; std::getline(iss, phrase); sourceLineNumber++) {
-		
-		boost::trim(phrase);
-		
+	int sourceLineNumber = -1;
+	for(std::string_view phrase : util::split(m_text, '\n')) {
+		sourceLineNumber++;
+		phrase = util::trim(phrase);
 		if(phrase.empty()) {
 			// Separator line
 			drawpos += 0.4f * m_lineHeight;
