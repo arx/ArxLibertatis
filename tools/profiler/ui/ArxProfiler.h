@@ -56,7 +56,7 @@ struct ThreadData {
 
 typedef std::map<quint64, ThreadData> ThreadsData;
 
-class ProfilerView : public QGraphicsView {
+class ProfilerView final : public QGraphicsView {
 	
 	Q_OBJECT
 
@@ -93,7 +93,7 @@ namespace Ui {
 	class ArxProfilerClass;
 }
 
-class ArxProfiler : public QMainWindow {
+class ArxProfiler final : public QMainWindow {
 	
 	Q_OBJECT
 	
