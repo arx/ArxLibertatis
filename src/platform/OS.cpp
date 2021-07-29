@@ -573,34 +573,31 @@ std::string getCPUName() {
 	
 	#elif ARX_PLATFORM == ARX_PLATFORM_LINUX
 	
-	fs::ifstream ifs("/proc/cpuinfo");
+	std::string cpuinfo = fs::read("/proc/cpuinfo");
 	
-	std::string line;
-	while(std::getline(ifs, line).good()) {
+	for(std::string_view line : util::splitIgnoreEmpty(cpuinfo, '\n')) {
 		
 		size_t sep = line.find(':');
 		if(sep == std::string::npos) {
 			continue;
 		}
 		
-		std::string label = line.substr(0, sep);
-		boost::trim(label);
+		std::string_view label = util::trim(line.substr(0, sep));
 		if(label != "model name" && label != "Processor") {
 			continue;
 		}
 		
-		std::string name = line.substr(sep + 1);
-		boost::trim(name);
+		std::string_view name = util::trim(line.substr(sep + 1));
 		if(!name.empty()) {
-			return name;
+			return std::string(name);
 		}
 		
 	}
 	
-	return std::string();
+	return { };
 	
 	#else
-	return std::string();
+	return { };
 	#endif
 }
 
