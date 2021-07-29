@@ -494,9 +494,7 @@ static void Cedric_ApplyLighting(ShaderLight lights[], size_t lightsCount, EERIE
 	for(size_t i = 0; i != obj->bones.size(); i++) {
 		const glm::quat & quat = obj->bones[i].anim.quat;
 		/* Get light value for each vertex */
-		const std::vector<u32> & vertices = eobj->m_boneVertices[i];
-		for(size_t v = 0; v != vertices.size(); v++) {
-			size_t vertexIndex = vertices[v];
+		for(size_t vertexIndex : eobj->m_boneVertices[i]) {
 			Vec3f & position = eobj->vertexWorldPositions[vertexIndex].v;
 			Vec3f normal = quat * eobj->vertexlist[vertexIndex].norm;
 			eobj->vertexColors[vertexIndex] = ApplyLight(lights, lightsCount, position, normal, colorMod);
