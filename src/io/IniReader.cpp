@@ -212,10 +212,9 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 		
 		bool quoted = false;
 		
-		size_t separator = str.find_first_not_of(WHITESPACE);
-		if(separator == std::string_view::npos || str[separator] != '=') {
-			if(separator != std::string_view::npos && separator + 1 < str.length()
-			   && str[separator] == '"' && str[separator + 1] == '=') {
+		str = util::trimLeft(str);
+		if(str.empty() || str[0] != '=') {
+			if(!str.empty() && str.length() > 1 && str[0] == '"' && str[ 1] == '=') {
 				LogDebug("found '\"=' instead of '=\"' @ line " << line << ": " << raw);
 				quoted = true;
 			} else {
@@ -225,7 +224,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 			}
 		}
 		
-		size_t valueStart = str.find_first_not_of(WHITESPACE, separator + 1);
+		size_t valueStart = str.find_first_not_of(WHITESPACE, 1);
 		if(valueStart == std::string_view::npos) {
 			// Empty value.
 			if(overrideValues) {
