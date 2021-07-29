@@ -254,26 +254,25 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 						data.remove_prefix(lineend + 1);
 					}
 					
-					size_t newValueStart = str.find_first_not_of(WHITESPACE);
-					if(newValueStart == std::string_view::npos) {
+					str = util::trimLeft(str);
+					if(str.empty()) {
 						// Empty line (only whitespace)
 						break;
 					}
 					
-					if(str[newValueStart] == '#'
-					   || (newValueStart + 1 < str.length() && str[newValueStart] == '/' && str[newValueStart + 1] == '/')) {
+					if(str[0] == '#' || (str.length() > 1 && str[0] == '/' && str[1] == '/')) {
 						// Whole line was commented
 						break;
 					}
 					
-					if(str[newValueStart] == '[') {
+					if(str[0] == '[') {
 						// New section
 						line--, readline = false;
 						break;
 					}
 					
-					size_t newNameEnd = str.find_first_not_of(ALPHANUM, newValueStart);
-					if(newNameEnd != std::string_view::npos && newNameEnd != newValueStart) {
+					size_t newNameEnd = str.find_first_not_of(ALPHANUM, 0);
+					if(newNameEnd != std::string_view::npos && newNameEnd != 0) {
 						size_t newSeparator = str.find_first_not_of(WHITESPACE, newNameEnd);
 						if(newSeparator != std::string_view::npos && str[newSeparator] == '=') {
 							// New key
@@ -288,11 +287,11 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 					size_t newValueEnd = str.find_last_of('"');
 					if(newValueEnd != std::string_view::npos) {
 						// End of multi-line value
-						value += str.substr(newValueStart, newValueEnd - newValueStart);
+						value += str.substr(0, newValueEnd);
 						break;
 					}
 					
-					value += util::trimRight(str.substr(newValueStart));
+					value += util::trimRight(str);
 				}
 				
 			} else {
