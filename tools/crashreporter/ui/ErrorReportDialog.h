@@ -59,19 +59,19 @@ public:
 	
 signals:
 	
-	void taskStarted(const QString & taskDescription, int numSteps);
-	void taskStepStarted(const QString & taskStepDescription);
-	void taskStepEnded();
+	void taskStarted(const QString & taskDescription, int numSteps) override;
+	void taskStepStarted(const QString & taskStepDescription) override;
+	void taskStepEnded() override;
 	
 protected:
 	
-	void setError(const QString & strError) {
+	void setError(const QString & strError) override {
 		if(m_strErrorDescription.isEmpty() && !strError.isEmpty()) {
 			m_strErrorDescription = strError;
 		}
 	}
 	
-	void setDetailedError(const QString & strDetailedError) {
+	void setDetailedError(const QString & strDetailedError) override {
 		if(m_strDetailedErrorDescription.isEmpty() && !strDetailedError.isEmpty()) {
 			m_strDetailedErrorDescription = strDetailedError;
 		}
@@ -96,7 +96,7 @@ public:
 	
 private:
 	
-	void run();
+	void run() override;
 	
 };
 
@@ -110,7 +110,7 @@ public:
 	
 private:
 	
-	void run();
+	void run() override;
 	
 };
 
@@ -127,7 +127,7 @@ public:
 	
 protected:
 	
-	void paintEvent(QPaintEvent * event);
+	void paintEvent(QPaintEvent * event) override;
 	
 private:
 	
@@ -146,11 +146,11 @@ public:
 		, m_errorReport(errorReport)
 	{ }
 	
-	int rowCount(const QModelIndex & /* parent */ = QModelIndex()) const {
+	int rowCount(const QModelIndex & /* parent */ = QModelIndex()) const override {
 		return int(m_errorReport.GetAttachedFiles().size());
 	}
 	
-	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const {
+	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override {
 		
 		if(index.row() < 0 || index.row() >= rowCount() || !index.isValid()) {
 			return QVariant();
@@ -165,7 +165,7 @@ public:
 		return QVariant();
 	}
 	
-	bool setData(const QModelIndex & index, const QVariant & value, int role) {
+	bool setData(const QModelIndex & index, const QVariant & value, int role) override {
 		
 		if(index.row() < 0 || index.row() >= rowCount() || !index.isValid()) {
 			return false;
@@ -179,7 +179,7 @@ public:
 		return true;
 	}
 	
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const {
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const override {
 		if(role != Qt::DisplayRole) {
 			return QVariant();
 		} else if(orientation == Qt::Horizontal) {
@@ -189,7 +189,7 @@ public:
 		}
 	}
 	
-	Qt::ItemFlags flags(const QModelIndex & index) const {
+	Qt::ItemFlags flags(const QModelIndex & index) const override {
 		if(index.row() < 0 || index.row() >= rowCount() || !index.isValid()) {
 			return Qt::NoItemFlags;
 		}
