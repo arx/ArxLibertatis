@@ -207,9 +207,12 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 			continue;
 		}
 		
+		std::string_view key = str.substr(0, nameEnd);
+		str.remove_prefix(nameEnd);
+		
 		bool quoted = false;
 		
-		size_t separator = str.find_first_not_of(WHITESPACE, nameEnd);
+		size_t separator = str.find_first_not_of(WHITESPACE);
 		if(separator == std::string_view::npos || str[separator] != '=') {
 			if(separator != std::string_view::npos && separator + 1 < str.length()
 			   && str[separator] == '"' && str[separator + 1] == '=') {
@@ -226,14 +229,13 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 		if(valueStart == std::string_view::npos) {
 			// Empty value.
 			if(overrideValues) {
-				section->setKey(str.substr(0, nameEnd), { });
+				section->setKey(key, { });
 			} else {
-				section->addKey(str.substr(0, nameEnd), { });
+				section->addKey(key, { });
 			}
 			continue;
 		}
 		
-		std::string_view key = str.substr(0, nameEnd);
 		std::string value;
 		
 		if(quoted || str[valueStart] == '"') {
