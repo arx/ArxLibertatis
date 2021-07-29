@@ -46,19 +46,19 @@ public:
 	
 	aalError init(SourcedSample id, OpenALSource * instance, const Channel & channel);
 	
-	aalError setPitch(float pitch);
-	aalError setPan(float pan);
+	aalError setPitch(float pitch) override;
+	aalError setPan(float pan) override;
 	
-	aalError setPosition(const Vec3f & position);
-	aalError setVelocity(const Vec3f & velocity);
-	aalError setFalloff(const SourceFalloff & falloff);
+	aalError setPosition(const Vec3f & position) override;
+	aalError setVelocity(const Vec3f & velocity) override;
+	aalError setFalloff(const SourceFalloff & falloff) override;
 	
-	aalError play(unsigned playCount = 1);
-	aalError stop();
-	aalError pause();
-	aalError resume();
+	aalError play(unsigned playCount = 1) override;
+	aalError stop() override;
+	aalError pause() override;
+	aalError resume() override;
 	
-	aalError updateVolume();
+	aalError updateVolume() override;
 	
 	aalError setRolloffFactor(float factor);
 	
@@ -68,9 +68,9 @@ public:
 	
 protected:
 	
-	bool updateCulling();
+	bool updateCulling() override;
 	
-	aalError updateBuffers();
+	aalError updateBuffers() override;
 	
 private:
 	
