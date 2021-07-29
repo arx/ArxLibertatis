@@ -43,8 +43,8 @@ class LegacyMathTest : public CppUnit::TestFixture {
 	
 public:
 	
-	void setUp();
-	void tearDown();
+	void setUp() override;
+	void tearDown() override;
 	
 	void rotationTestDataTest();
 	void quaternionTests();

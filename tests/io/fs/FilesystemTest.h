@@ -66,8 +66,8 @@ class FilesystemTest : public CppUnit::TestFixture {
 	
 public:
 	
-	void setUp();
-	void tearDown();
+	void setUp() override;
+	void tearDown() override;
 	
 	std::time_t checkTime(const fs::path & root, const fs::path & path, std::time_t before);
 	
