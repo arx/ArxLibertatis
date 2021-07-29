@@ -76,32 +76,24 @@ std::array<CinematicSound, 256> TabSound;
 
 static CinematicSound * GetFreeSound() {
 	
-	for(size_t i = 0; i < TabSound.size(); i++) {
-		if(!TabSound[i].exists) {
-			return &TabSound[i];
+	for(CinematicSound & sound : TabSound) {
+		if(!sound.exists) {
+			return &sound;
 		}
 	}
 	
 	return nullptr;
 }
 
-static bool DeleteFreeSound(size_t num) {
-	
-	if(!TabSound[num].exists) {
-		return false;
-	}
-	
-	TabSound[num].file.clear();
-	
-	TabSound[num].exists = false;
-	
-	return true;
-}
-
 void DeleteAllSound() {
-	for(size_t i = 0; i < TabSound.size(); i++) {
-		DeleteFreeSound(i);
+	
+	for(CinematicSound & sound : TabSound) {
+		if(sound.exists) {
+			sound.file.clear();
+			sound.exists = false;
+		}
 	}
+	
 }
 
 void AddSoundToList(const res::path & path, bool isSpeech) {
@@ -134,10 +126,11 @@ bool PlaySoundKeyFramer(size_t index) {
 
 void StopSoundKeyFramer() {
 	
-	for(size_t i = 0; i < TabSound.size(); i++) {
-		if(TabSound[i].exists) {
-			ARX_SOUND_Stop(TabSound[i].handle);
-			TabSound[i].handle = audio::SourcedSample();
+	for(CinematicSound & sound : TabSound) {
+		if(sound.exists) {
+			ARX_SOUND_Stop(sound.handle);
+			sound.handle = audio::SourcedSample();
 		}
 	}
+	
 }
