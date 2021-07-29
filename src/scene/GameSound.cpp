@@ -127,8 +127,8 @@ struct SoundMaterial {
 	SoundMaterial() : current(0) { }
 	
 	~SoundMaterial() {
-		for(std::vector<audio::SampleHandle>::const_iterator i = variants.begin(); i !=  variants.end(); ++i) {
-			audio::deleteSample(*i);
+		for(audio::SampleHandle sample : variants) {
+			audio::deleteSample(sample);
 		}
 	}
 	
