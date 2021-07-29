@@ -136,7 +136,7 @@ public:
 		arx_assert(m_buffer != GL_NONE);
 	}
 	
-	void draw(Renderer::Primitive primitive, size_t count, size_t offset) const {
+	void draw(Renderer::Primitive primitive, size_t count, size_t offset) const override {
 		
 		arx_assert(offset < capacity());
 		arx_assert(offset + count <= capacity());
@@ -152,7 +152,7 @@ public:
 	}
 	
 	void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset,
-	                 const unsigned short * indices, size_t nbindices) const {
+	                 const unsigned short * indices, size_t nbindices) const override {
 		
 		arx_assert(offset < capacity());
 		arx_assert(offset + count <= capacity());
@@ -245,7 +245,7 @@ public:
 		, m_initialized(false)
 	{ }
 	
-	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) {
+	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) override {
 		
 		arx_assert(offset < capacity());
 		arx_assert(offset + count <= capacity());
@@ -314,7 +314,7 @@ public:
 		, m_lockedCount(0)
 	{ }
 	
-	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) {
+	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) override {
 		
 		if(m_usage == Renderer::Dynamic) {
 			m_shadow.resize(capacity());
@@ -324,7 +324,7 @@ public:
 		Base::setData(vertices, count, offset, flags);
 	}
 	
-	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
+	Vertex * lock(BufferFlags flags, size_t offset, size_t count) override {
 		
 		m_shadow.resize(capacity());
 		
@@ -337,7 +337,7 @@ public:
 		return m_shadow.data() + offset;
 	}
 	
-	void unlock() {
+	void unlock() override {
 		Base::setData(m_shadow.data() + m_lockedOffset, m_lockedCount, m_lockedOffset, m_lockedFlags);
 	}
 	
@@ -366,7 +366,7 @@ public:
 		: Base(renderer, size, usage)
 	{ }
 	
-	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
+	Vertex * lock(BufferFlags flags, size_t offset, size_t count) override {
 		ARX_UNUSED(count);
 		
 		arx_assert(offset < capacity());
@@ -386,7 +386,7 @@ public:
 		return reinterpret_cast<Vertex *>(buf) + offset;
 	}
 	
-	void unlock() {
+	void unlock() override {
 		
 		bindBuffer(m_buffer);
 		
@@ -407,7 +407,7 @@ protected:
 };
 
 template <class Vertex>
-class GLMapRangeVertexBuffer : public GLMapVertexBuffer<Vertex> {
+class GLMapRangeVertexBuffer final : public GLMapVertexBuffer<Vertex> {
 	
 	typedef GLMapVertexBuffer<Vertex> Base;
 	
@@ -420,7 +420,7 @@ public:
 		: Base(renderer, size, usage)
 	{ }
 	
-	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
+	Vertex * lock(BufferFlags flags, size_t offset, size_t count) override {
 		
 		arx_assert(offset < capacity());
 		
@@ -521,7 +521,7 @@ protected:
 	
 public:
 	
-	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) {
+	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) override {
 		
 		arx_assert(offset < capacity());
 		arx_assert(offset + count <= capacity());
@@ -534,7 +534,7 @@ public:
 		
 	}
 	
-	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
+	Vertex * lock(BufferFlags flags, size_t offset, size_t count) override {
 		ARX_UNUSED(count);
 		
 		arx_assert(offset < capacity());
@@ -544,7 +544,7 @@ public:
 		return m_mapping + m_offset + offset;
 	}
 	
-	void unlock() { }
+	void unlock() override { }
 	
 	~BaseGLPersistentVertexBuffer() {
 		
@@ -571,9 +571,7 @@ protected:
 };
 
 template <class Vertex>
-class GLPersistentUnsynchronizedVertexBuffer
-	: public BaseGLPersistentVertexBuffer<Vertex>
-{
+class GLPersistentUnsynchronizedVertexBuffer final : public BaseGLPersistentVertexBuffer<Vertex> {
 	
 	typedef BaseGLPersistentVertexBuffer<Vertex> Base;
 	
@@ -584,7 +582,7 @@ public:
 		: Base(renderer, size, usage)
 	{ }
 	
-	void discardBuffer() {
+	void discardBuffer() override {
 		// Assume the GL already rendered far enough
 	}
 	
@@ -598,9 +596,7 @@ protected:
 };
 
 template <class Vertex>
-class GLPersistentOrphanVertexBuffer
-	: public BaseGLPersistentVertexBuffer<Vertex>
-{
+class GLPersistentOrphanVertexBuffer final : public BaseGLPersistentVertexBuffer<Vertex> {
 	
 	typedef BaseGLPersistentVertexBuffer<Vertex> Base;
 	
@@ -610,7 +606,7 @@ public:
 		: Base(renderer, size, usage)
 	{ }
 	
-	void discardBuffer() {
+	void discardBuffer() override {
 		
 		bindBuffer(m_buffer);
 		glUnmapBuffer(GL_ARRAY_BUFFER);
@@ -628,9 +624,7 @@ protected:
 };
 
 template <class Vertex, size_t MaxFences>
-class GLPersistentFenceVertexBuffer
-	: public BaseGLPersistentVertexBuffer<Vertex>
-{
+class GLPersistentFenceVertexBuffer final : public BaseGLPersistentVertexBuffer<Vertex> {
 	
 	typedef BaseGLPersistentVertexBuffer<Vertex> Base;
 	
@@ -652,7 +646,7 @@ public:
 		
 	}
 	
-	void discardBuffer() {
+	void discardBuffer() override {
 		
 		// Create a fence for the current buffer
 		arx_assert(!m_fences[m_position]);
