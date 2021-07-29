@@ -29,12 +29,12 @@ public:
 	
 	BlessSpell();
 	
-	bool CanLaunch();
-	void Launch();
-	void End();
-	void Update();
+	bool CanLaunch() override;
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 private:
 	
@@ -52,7 +52,7 @@ class DispellFieldSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
+	void Launch() override;
 	
 };
 
@@ -60,11 +60,11 @@ class FireProtectionSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 };
 
@@ -72,11 +72,11 @@ class ColdProtectionSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 };
 
@@ -84,9 +84,9 @@ class TelekinesisSpell final : public SpellBase {
 	
 public:
 	
-	bool CanLaunch();
-	void Launch();
-	void End();
+	bool CanLaunch() override;
+	void Launch() override;
+	void End() override;
 	
 };
 
@@ -96,11 +96,11 @@ public:
 	
 	CurseSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 private:
 	

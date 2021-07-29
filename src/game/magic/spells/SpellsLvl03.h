@@ -33,11 +33,11 @@ public:
 	
 	~SpeedSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 private:
 	
@@ -54,8 +54,8 @@ class DispellIllusionSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
-	void Update();
+	void Launch() override;
+	void Update() override;
 	
 };
 
@@ -66,11 +66,11 @@ public:
 	FireballSpell();
 	~FireballSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 private:
 	
@@ -90,9 +90,9 @@ public:
 	
 	CreateFoodSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	
@@ -108,9 +108,9 @@ public:
 	
 	IceProjectileSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	

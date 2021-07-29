@@ -29,10 +29,10 @@ class MagicSightSpell final : public SpellBase {
 	
 public:
 	
-	bool CanLaunch();
-	void Launch();
-	void End();
-	void Update();
+	bool CanLaunch() override;
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 };
 
@@ -43,9 +43,9 @@ public:
 	MagicMissileSpell();
 	~MagicMissileSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	
@@ -62,9 +62,9 @@ public:
 	
 	IgnitSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	
@@ -83,9 +83,9 @@ class DouseSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	
@@ -97,7 +97,7 @@ class ActivatePortalSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
+	void Launch() override;
 	
 };
 

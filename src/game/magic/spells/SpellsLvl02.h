@@ -31,10 +31,10 @@ public:
 	
 	HealSpell();
 	
-	bool CanLaunch();
-	void Launch();
-	void End();
-	void Update();
+	bool CanLaunch() override;
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	
@@ -48,9 +48,9 @@ class DetectTrapSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 };
 
@@ -58,11 +58,11 @@ class ArmorSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 };
 
@@ -72,11 +72,11 @@ public:
 	
 	LowerArmorSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 private:
 	
@@ -90,9 +90,9 @@ public:
 	
 	HarmSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	

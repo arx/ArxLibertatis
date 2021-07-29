@@ -31,10 +31,10 @@ public:
 	
 	SummonCreatureSpell();
 	
-	bool CanLaunch();
-	void Launch();
-	void End();
-	void Update();
+	bool CanLaunch() override;
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	
@@ -57,10 +57,10 @@ public:
 		: m_targetPos(0.f)
 	{ }
 	
-	bool CanLaunch();
-	void Launch();
-	void End();
-	void Update();
+	bool CanLaunch() override;
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	
@@ -76,9 +76,9 @@ public:
 	
 	NegateMagicSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	
@@ -94,12 +94,12 @@ class IncinerateSpell final : public SpellBase {
 	
 public:
 	
-	bool CanLaunch();
-	void Launch();
-	void End();
-	void Update();
+	bool CanLaunch() override;
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 };
 
@@ -107,8 +107,8 @@ class MassParalyseSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
-	void End();
+	void Launch() override;
+	void End() override;
 	
 };
 

@@ -32,12 +32,12 @@ public:
 	
 	FlyingEyeSpell();
 	
-	bool CanLaunch();
-	void Launch();
-	void End();
-	void Update();
+	bool CanLaunch() override;
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 private:
 	
@@ -54,11 +54,11 @@ public:
 	
 	FireFieldSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 private:
 	
@@ -77,11 +77,11 @@ public:
 	
 	IceFieldSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 private:
 	
@@ -104,9 +104,9 @@ class LightningStrikeSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	
@@ -120,11 +120,11 @@ public:
 	
 	ConfuseSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 private:
 	

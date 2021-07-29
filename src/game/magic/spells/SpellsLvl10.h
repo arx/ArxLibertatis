@@ -32,9 +32,9 @@ public:
 	MassLightningStrikeSpell();
 	~MassLightningStrikeSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	
@@ -52,10 +52,10 @@ public:
 	
 	ControlTargetSpell();
 	
-	bool CanLaunch();
-	void Launch();
-	void End();
-	void Update();
+	bool CanLaunch() override;
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	
@@ -73,9 +73,9 @@ public:
 	
 	FreezeTimeSpell();
 	
-	bool CanLaunch();
-	void Launch();
-	void End();
+	bool CanLaunch() override;
+	void Launch() override;
+	void End() override;
 	
 private:
 	
@@ -87,9 +87,9 @@ class MassIncinerateSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 };
 

@@ -59,8 +59,8 @@ public:
 	CPoisonProjectile();
 	
 	void Create(Vec3f _eSrc, float _fBeta = 0);
-	void Update(GameDuration timeDelta);
-	void Render();
+	void Update(GameDuration timeDelta) override;
+	void Render() override;
 	
 	Vec3f eSrc;
 	Vec3f eCurPos;

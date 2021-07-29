@@ -32,10 +32,10 @@ public:
 	
 	RiseDeadSpell();
 	
-	bool CanLaunch();
-	void Launch();
-	void End();
-	void Update();
+	bool CanLaunch() override;
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
 private:
 	
@@ -53,10 +53,10 @@ class ParalyseSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
-	void End();
+	void Launch() override;
+	void End() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 };
 
@@ -66,11 +66,11 @@ public:
 	
 	CreateFieldSpell();
 	
-	void Launch();
-	void End();
-	void Update();
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 	// TODO this is directly used in physics and projectile
 	EntityHandle m_entity;
@@ -85,7 +85,7 @@ class DisarmTrapSpell final : public SpellBase {
 	
 public:
 	
-	void Launch();
+	void Launch() override;
 	
 };
 
@@ -93,12 +93,12 @@ class SlowDownSpell final : public SpellBase {
 	
 public:
 	
-	bool CanLaunch();
-	void Launch();
-	void End();
-	void Update();
+	bool CanLaunch() override;
+	void Launch() override;
+	void End() override;
+	void Update() override;
 	
-	Vec3f getPosition() const;
+	Vec3f getPosition() const override;
 	
 };
 
