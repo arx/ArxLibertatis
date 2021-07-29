@@ -33,10 +33,10 @@ public:
 	CrashHandlerWindows();
 	virtual ~CrashHandlerWindows();
 	
-	virtual bool initialize();
+	bool initialize() override;
 	
-	bool registerThreadCrashHandlers();
-	void unregisterThreadCrashHandlers();
+	bool registerThreadCrashHandlers() override;
+	void unregisterThreadCrashHandlers() override;
 	
 	void registerCrashCallback(CrashHandler::CrashCallback crashCallback);
 	void unregisterCrashCallback(CrashHandler::CrashCallback crashCallback);
@@ -47,15 +47,15 @@ public:
 	
 private:
 	
-	bool registerCrashHandlers();
-	void unregisterCrashHandlers();
+	bool registerCrashHandlers() override;
+	void unregisterCrashHandlers() override;
 	
 	void writeCrashDump(PEXCEPTION_POINTERS pointers);
 	
-	void processCrashInfo();
-	void processCrashSignal();
-	void processCrashTrace();
-	void processCrashDump();
+	void processCrashInfo() override;
+	void processCrashSignal() override;
+	void processCrashTrace() override;
+	void processCrashDump() override;
 	
 private:
 	

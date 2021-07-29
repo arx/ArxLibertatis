@@ -31,10 +31,10 @@ public:
 	CrashHandlerPOSIX();
 	virtual ~CrashHandlerPOSIX();
 	
-	bool initialize();
+	bool initialize() override;
 	
-	bool registerThreadCrashHandlers();
-	void unregisterThreadCrashHandlers();
+	bool registerThreadCrashHandlers() override;
+	void unregisterThreadCrashHandlers() override;
 	
 	void registerCrashCallback(CrashHandler::CrashCallback crashCallback);
 	void unregisterCrashCallback(CrashHandler::CrashCallback crashCallback);
@@ -47,13 +47,13 @@ private:
 	
 	std::string m_arg;
 	
-	bool registerCrashHandlers();
-	void unregisterCrashHandlers();
+	bool registerCrashHandlers() override;
+	void unregisterCrashHandlers() override;
 	
-	void processCrashInfo();
-	void processCrashSignal();
-	void processCrashTrace();
-	void processCrashDump();
+	void processCrashInfo() override;
+	void processCrashSignal() override;
+	void processCrashTrace() override;
+	void processCrashDump() override;
 	
 	// Crash handlers to restore
 	struct PlatformCrashHandlers * m_pPreviousCrashHandlers;
