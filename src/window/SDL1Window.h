@@ -34,28 +34,28 @@ public:
 	SDL1Window();
 	virtual ~SDL1Window();
 	
-	bool initializeFramework();
-	void setTitle(const std::string & title);
-	bool setVSync(int vsync);
-	void setFullscreenMode(const DisplayMode & mode);
-	void setWindowSize(const Vec2i & size);
-	bool setGamma(float gamma = 1.f);
-	bool initialize();
-	void processEvents(bool waitForEvent);
+	bool initializeFramework() override;
+	void setTitle(const std::string & title) override;
+	bool setVSync(int vsync) override;
+	void setFullscreenMode(const DisplayMode & mode) override;
+	void setWindowSize(const Vec2i & size) override;
+	bool setGamma(float gamma = 1.f) override;
+	bool initialize() override;
+	void processEvents(bool waitForEvent) override;
 	
-	void showFrame();
+	void showFrame() override;
 	
-	void hide();
+	void hide() override;
 	
-	void setMinimizeOnFocusLost(bool enabled);
-	MinimizeSetting willMinimizeOnFocusLost();
+	void setMinimizeOnFocusLost(bool enabled) override;
+	MinimizeSetting willMinimizeOnFocusLost() override;
 	
-	std::string getClipboardText();
-	void setClipboardText(const std::string & text);
+	std::string getClipboardText() override;
+	void setClipboardText(const std::string & text) override;
 	
-	void allowScreensaver(bool allowed);
+	void allowScreensaver(bool allowed) override;
 	
-	InputBackend * getInputBackend();
+	InputBackend * getInputBackend() override;
 	
 private:
 	
