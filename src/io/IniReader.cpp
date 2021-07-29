@@ -313,10 +313,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 			}
 			
 		} else {
-			size_t valueEnd = str.find_last_not_of(WHITESPACE) + 1;
-			arx_assert(valueEnd != std::string_view::npos);
-			arx_assert(valueEnd >= valueStart);
-			value = str.substr(valueStart, valueEnd - valueStart);
+			value = util::trimRight(str.substr(valueStart));
 		}
 		
 		if(overrideValues) {
