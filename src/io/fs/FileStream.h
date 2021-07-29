@@ -26,7 +26,7 @@ namespace fs {
 
 class path;
 
-class ifstream : public std::ifstream {
+class ifstream final : public std::ifstream {
 	
 	ifstream(const ifstream &);
 	ifstream & operator=(const ifstream &);
@@ -43,7 +43,7 @@ public:
 	
 };
 
-class ofstream : public std::ofstream {
+class ofstream final : public std::ofstream {
 	
 	ofstream(const ofstream &);
 	ofstream & operator=(const ofstream &);
@@ -60,7 +60,7 @@ public:
 	
 };
 
-class fstream : public std::fstream {
+class fstream final : public std::fstream {
 	
 	fstream(const fstream &);
 	fstream & operator=(const fstream &);
