@@ -140,11 +140,6 @@ void Cinematic::OneTimeSceneReInit() {
 }
 
 void Cinematic::DeleteAllBitmap() {
-	
-	for(std::vector<CinematicBitmap *>::iterator it = m_bitmaps.begin(); it != m_bitmaps.end(); ++it) {
-		delete *it;
-	}
-	
 	m_bitmaps.clear();
 }
 
@@ -306,7 +301,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
 	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate);
 	
-	CinematicBitmap * tb = m_bitmaps[numbitmap];
+	CinematicBitmap * tb = m_bitmaps[numbitmap].get();
 	
 	// Effect color
 	Color col = Color::white;
@@ -399,7 +394,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 				break;
 		}
 		
-		tb = m_bitmaps[m_nextNumbitmap];
+		tb = m_bitmaps[m_nextNumbitmap].get();
 		
 		alpha = 255 - alpha;
 		col.a = alpha;

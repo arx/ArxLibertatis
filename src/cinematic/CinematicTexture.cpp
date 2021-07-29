@@ -62,27 +62,24 @@ CinematicBitmap::~CinematicBitmap()
 	grid.FreeGrille();
 }
 
-CinematicBitmap * CreateCinematicBitmap(const res::path & path, int scale) {
+std::unique_ptr<CinematicBitmap> CreateCinematicBitmap(const res::path & path, int scale) {
 	
 	std::string_view name = path.basename();
 	if(name.empty()) {
-		return 0;
+		return { };
 	}
 	
-	CinematicBitmap * bi = new CinematicBitmap();
-	if(!bi)
-		return 0;
-
 	LogDebug("loading cinematic texture " << path);
-
+	
 	res::path filename = path;
 	bool foundPath = g_resources->getFile(filename.set_ext(".bmp")) != nullptr;
 	foundPath = foundPath || g_resources->getFile(filename.set_ext("tga"));
 	if(!foundPath) {
 		LogError << path << " not found";
-		delete bi;
-		return 0;
+		return { };
 	}
+	
+	std::unique_ptr<CinematicBitmap> bi = std::make_unique<CinematicBitmap>();
 	
 	Image cinematicImage;
 	cinematicImage.load(filename);

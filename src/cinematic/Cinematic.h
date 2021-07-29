@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CINEMATIC_CINEMATIC_H
 
 #include <stddef.h>
+#include <memory>
 #include <vector>
 
 #include "core/TimeTypes.h"
@@ -126,7 +127,7 @@ public:
 	CinematicFadeOut m_nextFadegrille;
 	float speedtrack;
 	PlatformDuration flTime;
-	std::vector<CinematicBitmap *> m_bitmaps;
+	std::vector<std::unique_ptr<CinematicBitmap>> m_bitmaps;
 	
 	CinematicFadeOut fadeprev;
 	CinematicFadeOut fadenext;

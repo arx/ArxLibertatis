@@ -233,7 +233,7 @@ static CinematicFadeOut getFadeOut(const Cinematic & c, const CinematicKeyframe 
 		return CinematicFadeOut(0.f);
 	}
 	
-	CinematicBitmap * bitmap = c.m_bitmaps[key.numbitmap];
+	CinematicBitmap * bitmap = c.m_bitmaps[key.numbitmap].get();
 	if(!bitmap) {
 		return CinematicFadeOut(0.f);
 	}

@@ -187,11 +187,10 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		res::path path = fixTexturePath(str);
 		LogDebug("   => " << path << " (scale x" << scale << ')');
 		
-		
-		CinematicBitmap * newBitmap = CreateCinematicBitmap(path, scale);
-		if(newBitmap) {
-			c->m_bitmaps.push_back(newBitmap);
+		if(std::unique_ptr<CinematicBitmap> newBitmap = CreateCinematicBitmap(path, scale)) {
+			c->m_bitmaps.emplace_back(std::move(newBitmap));
 		}
+		
 	}
 	
 	// Load sounds.

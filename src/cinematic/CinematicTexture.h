@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CINEMATIC_CINEMATICTEXTURE_H
 #define ARX_CINEMATIC_CINEMATICTEXTURE_H
 
+#include <memory>
 #include <vector>
 
 #include <stddef.h>
@@ -141,6 +142,6 @@ public:
 	
 };
 
-CinematicBitmap * CreateCinematicBitmap(const res::path & path, int scale);
+std::unique_ptr<CinematicBitmap> CreateCinematicBitmap(const res::path & path, int scale);
 
 #endif // ARX_CINEMATIC_CINEMATICTEXTURE_H
