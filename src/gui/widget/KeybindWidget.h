@@ -47,17 +47,17 @@ public:
 	
 	KeybindWidget(ControlAction keybindAction, size_t keybindIndex, Font * font);
 	
-	bool click();
+	bool click() override;
 	
-	void update();
+	void update() override;
 	
-	void render(bool mouseOver = false);
+	void render(bool mouseOver = false) override;
 	
-	bool wantFocus() const { return m_editing; }
+	bool wantFocus() const override { return m_editing; }
 	
-	void unfocus();
+	void unfocus() override;
 	
-	virtual WidgetType type() const {
+	virtual WidgetType type() const override {
 		return WidgetType_Keybind;
 	}
 	

@@ -32,18 +32,18 @@ public:
 	PanelWidget();
 	virtual ~PanelWidget();
 	
-	void move(const Vec2f & offset);
+	void move(const Vec2f & offset) override;
 	
 	void add(Widget * widget);
 	
-	void update();
-	void render(bool mouseOver = false);
+	void update() override;
+	void render(bool mouseOver = false) override;
 	
-	Widget * getWidgetAt(const Vec2f & mousePos);
+	Widget * getWidgetAt(const Vec2f & mousePos) override;
 	
 	const std::vector<Widget *> & children() const { return m_children; }
 	
-	virtual WidgetType type() const {
+	virtual WidgetType type() const override {
 		return WidgetType_Panel;
 	}
 	

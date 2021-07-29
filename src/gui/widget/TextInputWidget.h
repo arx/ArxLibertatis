@@ -37,8 +37,8 @@ class TextInputWidget final : public Widget, public BasicTextInput {
 	bool m_editing;
 	size_t m_maxLength;
 	
-	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
-	void textUpdated();
+	bool keyPressed(Keyboard::Key key, KeyModifiers mod) override;
+	void textUpdated() override;
 	
 public:
 	
@@ -46,21 +46,21 @@ public:
 	
 	TextInputWidget(Font * font, std::string_view text, const Rectf & rect);
 	
-	bool click();
+	bool click() override;
 	
-	bool doubleClick();
+	bool doubleClick() override;
 	
-	void render(bool mouseOver = false);
+	void render(bool mouseOver = false) override;
 	
-	bool wantFocus() const { return m_editing; }
+	bool wantFocus() const override { return m_editing; }
 	
-	void unfocus();
+	void unfocus() override;
 	
 	void setMaxLength(size_t length = std::numeric_limits<size_t>::max()) { m_maxLength = length; }
 	
 	Font * font() const { return m_font; }
 	
-	virtual WidgetType type() const {
+	virtual WidgetType type() const override {
 		return WidgetType_TextInput;
 	}
 	

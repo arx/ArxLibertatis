@@ -44,15 +44,15 @@ public:
 	void setValue(int value) { m_value = value; }
 	int getValue() const { return m_value; }
 	
-	void move(const Vec2f & offset);
-	bool click();
-	void update();
-	void render(bool mouseOver = false);
-	void hover();
+	void move(const Vec2f & offset) override;
+	bool click() override;
+	void update() override;
+	void render(bool mouseOver = false) override;
+	void hover() override;
 	
 	std::function<void(int /* state */)> valueChanged;
 	
-	virtual WidgetType type() const {
+	virtual WidgetType type() const override {
 		return WidgetType_Slider;
 	}
 	

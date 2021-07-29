@@ -35,11 +35,11 @@ public:
 		setEnabled(false);
 	}
 	
-	void render(bool mouseOver = false) {
+	void render(bool mouseOver = false) override {
 		ARX_UNUSED(mouseOver);
 	}
 	
-	WidgetType type() const {
+	WidgetType type() const override {
 		return WidgetType_Spacer;
 	}
 	

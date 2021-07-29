@@ -46,15 +46,15 @@ public:
 	
 	void addEntry(std::string_view label);
 	
-	void move(const Vec2f & offset);
-	bool click();
-	void render(bool mouseOver = false);
-	void hover();
-	virtual void setEnabled(bool enable);
+	void move(const Vec2f & offset) override;
+	bool click() override;
+	void render(bool mouseOver = false) override;
+	void hover() override;
+	virtual void setEnabled(bool enable) override;
 	
 	std::function<void(int, std::string_view)> valueChanged;
 	
-	virtual WidgetType type() const {
+	virtual WidgetType type() const override {
 		return WidgetType_CycleText;
 	}
 	

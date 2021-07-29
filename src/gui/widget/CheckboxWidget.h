@@ -37,17 +37,17 @@ public:
 	explicit CheckboxWidget(const Vec2f & size, Font * font, std::string_view label);
 	virtual ~CheckboxWidget();
 	
-	void move(const Vec2f & offset);
-	bool click();
+	void move(const Vec2f & offset) override;
+	bool click() override;
 	
-	void render(bool mouseOver = false);
+	void render(bool mouseOver = false) override;
 	
 	void setChecked(bool checked);
 	bool checked() const { return m_checked; }
 	
 	std::function<void(bool /* checked */)> stateChanged;
 	
-	virtual WidgetType type() const {
+	virtual WidgetType type() const override {
 		return WidgetType_Checkbox;
 	}
 	

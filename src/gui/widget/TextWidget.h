@@ -51,7 +51,7 @@ public:
 	
 	TextWidget(Font * font, std::string_view text);
 	
-	void render(bool mouseOver = false);
+	void render(bool mouseOver = false) override;
 	
 	void setText(std::string_view text);
 	const std::string & text() const { return m_text; }
@@ -60,7 +60,7 @@ public:
 	
 	void forceDisplay(ForceDisplay display) { m_display = display; }
 	
-	virtual WidgetType type() const {
+	virtual WidgetType type() const override {
 		return WidgetType_Text;
 	}
 	

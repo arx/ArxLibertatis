@@ -35,9 +35,9 @@ public:
 	ButtonWidget(const Vec2f & size, const res::path & texture);
 	~ButtonWidget();
 	
-	void render(bool mouseOver = false);
+	void render(bool mouseOver = false) override;
 	
-	virtual WidgetType type() const {
+	virtual WidgetType type() const override {
 		return WidgetType_Button;
 	}
 	

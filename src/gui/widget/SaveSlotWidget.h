@@ -43,9 +43,9 @@ public:
 	
 	SaveSlotWidget(SavegameHandle savegame, size_t i, Font * font, const Rectf & rect);
 	
-	void render(bool mouseOver = false);
+	void render(bool mouseOver = false) override;
 	
-	virtual WidgetType type() const {
+	virtual WidgetType type() const override {
 		return WidgetType_SaveSlot;
 	}
 	
