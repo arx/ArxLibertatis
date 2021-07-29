@@ -29,7 +29,7 @@ namespace logger {
 /*!
  * Logger that displays an error dialog on shutdown for the first critical error.
  */
-class CriticalErrorDialog : public Backend {
+class CriticalErrorDialog final : public Backend {
 	
 	std::string errorString;
 	

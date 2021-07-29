@@ -27,7 +27,7 @@ namespace logger {
 /*!
  * Simple logger that prints plain text to standard output.
  */
-class Console : public Backend {
+class Console final : public Backend {
 	
 public:
 	

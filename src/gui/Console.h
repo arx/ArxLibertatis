@@ -67,7 +67,7 @@ public:
 	
 };
 
-class MemoryLogger : public logger::Backend {
+class MemoryLogger final : public logger::Backend {
 	
 	ConsoleBuffer * m_buffer;
 	

@@ -31,7 +31,7 @@ namespace logger {
 /*!
  * ConsoleLogger that colors output message using shell color codes.
  */
-class ColorConsole : public Backend {
+class ColorConsole final : public Backend {
 	
 public:
 	

@@ -31,7 +31,7 @@ namespace logger {
 /*!
  * Logger that uses the windows OutputDebugString() function.
  */
-class MsvcDebugger : public Backend {
+class MsvcDebugger final : public Backend {
 	
 public:
 	

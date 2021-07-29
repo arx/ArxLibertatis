@@ -32,7 +32,7 @@
 
 namespace {
 
-class MemoryLogger : public logger::Backend {
+class MemoryLogger final : public logger::Backend {
 	
 public:
 	

@@ -28,7 +28,7 @@ namespace logger {
 /*!
  * Simple logger that prints plain text to standard output.
  */
-class File : public Backend {
+class File final : public Backend {
 	
 	fs::ofstream ofs;
 	
