@@ -56,7 +56,7 @@ class ArxGame : public Application, public Window::Listener, public Renderer::Li
 	
 protected:
 	
-	virtual bool initialize();
+	bool initialize() override;
 	bool initConfig();
 	bool initWindow();
 	bool initInput();
@@ -65,7 +65,7 @@ protected:
 	bool initGame();
 	bool addPaks();
 	
-	virtual void shutdown();
+	void shutdown() override;
 	void shutdownGame();
 	
 	void doFrame();
@@ -82,7 +82,7 @@ public:
 	ArxGame();
 	virtual ~ArxGame();
 	
-	virtual void run();
+	void run() override;
 	
 private:
 	void updateTime();
@@ -97,22 +97,21 @@ private:
 	void updateLevel();
 	void renderLevel();
 	
-	
-	virtual void onWindowGotFocus(const Window & window);
-	virtual void onWindowLostFocus(const Window & window);
-	virtual void onResizeWindow(const Window & window);
-	virtual void onDestroyWindow(const Window & window);
-	virtual void onToggleFullscreen(const Window & window);
-	virtual void onDroppedFile(const Window & window, const fs::path & path);
+	void onWindowGotFocus(const Window & window) override;
+	void onWindowLostFocus(const Window & window) override;
+	void onResizeWindow(const Window & window) override;
+	void onDestroyWindow(const Window & window) override;
+	void onToggleFullscreen(const Window & window) override;
+	void onDroppedFile(const Window & window, const fs::path & path) override;
 	
 	bool m_wasResized;
 	
-	void onRendererInit(Renderer & renderer);
-	void onRendererShutdown(Renderer & renderer);
+	void onRendererInit(Renderer & renderer) override;
+	void onRendererShutdown(Renderer & renderer) override;
 	
 	bool initWindow(RenderWindow * window);
 	
-	void setWindowSize(bool fullscreen);
+	void setWindowSize(bool fullscreen) override;
 	
 	bool m_gameInitialized;
 	
