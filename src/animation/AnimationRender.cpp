@@ -393,14 +393,12 @@ static void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 		const std::vector<u32> & vertices = eobj->m_boneVertices[i];
 		for(size_t v = 0; v != vertices.size(); v++) {
 			size_t vertIndex = vertices[v];
-			const Vec3f & inVert = eobj->vertexlist[vertIndex].norm;
-
 			// Get cos angle between light and vertex norm
-			eobj->vertexWorldPositions[vertIndex].norm.z =
-			    (inVert.x * t_vector.x + inVert.y * t_vector.y + inVert.z * t_vector.z);
-
+			eobj->vertexWorldPositions[vertIndex].norm.z = glm::dot(eobj->vertexlist[vertIndex].norm, t_vector);
 		}
+		
 	}
+	
 }
 
 static TexturedVertex * GetNewVertexList(std::vector<TexturedVertex> * batch,
