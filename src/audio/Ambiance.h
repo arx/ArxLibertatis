@@ -59,7 +59,7 @@ class Ambiance {
 	
 public:
 	
-	explicit Ambiance(const res::path & name);
+	explicit Ambiance(res::path name);
 	~Ambiance();
 	
 	aalError load();

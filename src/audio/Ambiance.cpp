@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <limits>
 #include <sstream>
+#include <utility>
 
 #include "audio/AudioBackend.h"
 #include "audio/AudioGlobal.h"
@@ -590,7 +591,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	return AAL_OK;
 }
 
-Ambiance::Ambiance(const res::path & name)
+Ambiance::Ambiance(res::path name)
 	: m_status(Idle)
 	, m_loop(false)
 	, m_fade(None)
@@ -600,7 +601,7 @@ Ambiance::Ambiance(const res::path & name)
 	, m_fadeMax(0.f)
 	, m_start(0)
 	, m_time(0)
-	, m_name(name)
+	, m_name(std::move(name))
 	, m_type(PLAYING_AMBIANCE_MENU)
 { }
 
