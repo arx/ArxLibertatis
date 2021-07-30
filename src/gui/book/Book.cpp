@@ -20,6 +20,7 @@
 #include "gui/book/Book.h"
 
 #include <iomanip>
+#include <string>
 #include <utility>
 
 #include "animation/AnimationRender.h"
