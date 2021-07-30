@@ -108,8 +108,6 @@ public:
 	
 	size_t tell() override;
 	
-	~UncompressedFileHandle() { }
-	
 };
 
 std::string UncompressedFile::read() const {
@@ -215,8 +213,6 @@ public:
 	int seek(Whence whence, int offset) override;
 	
 	size_t tell() override;
-	
-	~CompressedFileHandle() { }
 	
 };
 
@@ -406,8 +402,6 @@ public:
 	int seek(Whence whence, int offset) override;
 	
 	size_t tell() override;
-	
-	~PlainFileHandle() { }
 	
 };
 
