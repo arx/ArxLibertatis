@@ -149,9 +149,8 @@ class SplitStringIterator {
 public:
 	
 	SplitStringIterator(std::string_view string, Separator separator)
-		: m_string(string), m_separator(separator), m_pos(0)
+		: m_string(string), m_separator(separator), m_pos(-1)
 	{
-		m_pos = std::string_view::size_type(-1);
 		operator++();
 	}
 	
