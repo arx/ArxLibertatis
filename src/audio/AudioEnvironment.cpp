@@ -43,14 +43,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioEnvironment.h"
 
+#include <utility>
+
 #include "audio/AudioResource.h"
 #include "audio/AudioGlobal.h"
 #include "io/resource/PakReader.h"
 
 namespace audio {
 
-Environment::Environment(const res::path & _name)
-	: name(_name)
+Environment::Environment(res::path _name)
+	: name(std::move(_name))
 	, size(7.5f)
 	, diffusion(1.f)       // High density echoes
 	, absorption(0.05f)    // Air-like absorption
