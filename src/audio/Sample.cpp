@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Sample.h"
 
+#include <utility>
+
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
 #include "audio/AudioBackend.h"
@@ -50,8 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-Sample::Sample(const res::path & name)
-	: m_name(name)
+Sample::Sample(res::path name)
+	: m_name(std::move(name))
 	, m_length(0)
 	, m_format()
 {}
