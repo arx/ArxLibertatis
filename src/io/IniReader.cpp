@@ -137,18 +137,18 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 	
 	bool ok = true;
 	
-	std::string_view str, raw;
+	std::string_view str, line;
 	
 	// While lines remain to be extracted
-	for(size_t line = 1; !data.empty(); line++) {
+	for(size_t lineNumber = 1; !data.empty(); lineNumber++) {
 		
 		// Get a line to process
 		size_t lineend = data.find('\n');
 		if(lineend == std::string_view::npos) {
-			raw = str = data;
+			line = str = data;
 			data = { };
 		} else {
-			raw = str = data.substr(0, lineend);
+			line = str = data.substr(0, lineend);
 			data.remove_prefix(lineend + 1);
 		}
 		
@@ -172,7 +172,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 			
 			size_t end = str.find(']', 1);
 			if(end == std::string_view::npos) {
-				LogDebug("invalid header @ line " << line << ": " << raw);
+				LogDebug("invalid header @ line " << lineNumber << ": " << line);
 				end = str.find_first_not_of(ALPHANUM, 1);
 				if(end == std::string_view::npos) {
 					end = str.length();
@@ -189,7 +189,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 		}
 		
 		if(!section) {
-			LogWarning << "Ignoring non-empty line " << line << " outside a section: " << raw;
+			LogWarning << "Ignoring non-empty line " << lineNumber << " outside a section: " << line;
 			ok = false;
 			continue;
 		}
@@ -204,7 +204,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 				name = str.substr(0, nameEnd);
 				str = right.substr(1);
 			} else if(right.length() > 1 && right[0] == '"' && right[ 1] == '=') {
-				LogDebug("found '\"=' instead of '=\"' @ line " << line << ": " << raw);
+				LogDebug("found '\"=' instead of '=\"' @ line " << lineNumber << ": " << line);
 				quoted = true;
 				name = str.substr(0, nameEnd);
 				str = right.substr(1);
@@ -225,7 +225,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 				}
 			} else {
 				ok = false;
-				LogWarning << "Invalid key @ line " << line << ": " << raw;
+				LogWarning << "Invalid key @ line " << lineNumber << ": " << line;
 			}
 			continue;
 		}
@@ -244,7 +244,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 				
 				// The localisation files are broken (missing ending quote)
 				// But the spanish localisation files have erroneous newlines in some values
-				LogDebug("invalid quoted value @ line " << line << ": " << raw);
+				LogDebug("invalid quoted value @ line " << lineNumber << ": " << line);
 				
 				value = util::trimRight(str);
 				
