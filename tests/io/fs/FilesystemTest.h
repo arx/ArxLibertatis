@@ -21,9 +21,10 @@
 #define ARX_TESTS_IO_FS_FILESYSTEMTEST_H
 
 #include <ctime>
-#include <string>
 #include <map>
 #include <set>
+#include <string>
+#include <utility>
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -49,9 +50,9 @@ class FilesystemTest final : public CppUnit::TestFixture {
 			, mtime(0)
 		{ }
 		
-		explicit Entry(fs::FileType type_, const std::string & contents_ = std::string(), std::time_t mtime_ = 0)
+		explicit Entry(fs::FileType type_, std::string contents_ = std::string(), std::time_t mtime_ = 0)
 			: type(type_)
-			, contents(contents_)
+			, contents(std::move(contents_))
 			, mtime(mtime_)
 		{ }
 		
