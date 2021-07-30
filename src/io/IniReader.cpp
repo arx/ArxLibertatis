@@ -133,6 +133,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 	
 	// The current section
 	IniSection * section = nullptr;
+	IniKey * key = nullptr;
 	
 	bool ok = true;
 	
@@ -154,16 +155,20 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 		str = util::trimLeft(str);
 		if(str.empty()) {
 			// Empty line (only whitespace)
+			key = nullptr;
 			continue;
 		}
 		
 		if(str[0] == '#' || (str.length() > 1 && str[0] == '/' && str[1] == '/')) {
 			// Whole line was commented, no need to do anything with it. Continue getting the next line
+			key = nullptr;
 			continue;
 		}
 		
 		// Section header
 		if(str[0] == '[') {
+			
+			key = nullptr;
 			
 			size_t end = str.find(']', 1);
 			if(end == std::string_view::npos) {
@@ -189,37 +194,46 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 			continue;
 		}
 		
-		size_t nameEnd = str.find_first_not_of(ALPHANUM);
-		if(nameEnd == std::string_view::npos) {
-			ok = false;
-			LogWarning << "Missing '=' separator @ line " << line << ": " << raw;
-			continue;
-		} else if(nameEnd == 0) {
-			ok = false;
-			LogWarning << "Empty key name @ line " << line << ": " << raw;
-			continue;
-		}
-		
-		std::string_view key = str.substr(0, nameEnd);
-		str.remove_prefix(nameEnd);
-		
+		std::string_view name;
 		bool quoted = false;
 		
-		str = util::trimLeft(str);
-		if(str.empty() || str[0] != '=') {
-			if(!str.empty() && str.length() > 1 && str[0] == '"' && str[ 1] == '=') {
+		size_t nameEnd = str.find_first_not_of(ALPHANUM);
+		if(nameEnd != std::string_view::npos) {
+			std::string_view right = util::trimLeft(str.substr(nameEnd));
+			if(!right.empty() && right[0] == '=') {
+				name = str.substr(0, nameEnd);
+				str = right.substr(1);
+			} else if(right.length() > 1 && right[0] == '"' && right[ 1] == '=') {
 				LogDebug("found '\"=' instead of '=\"' @ line " << line << ": " << raw);
 				quoted = true;
-			} else {
-				ok = false;
-				LogWarning << "Missing '=' separator @ line " << line << ": " << raw;
-				continue;
+				name = str.substr(0, nameEnd);
+				str = right.substr(1);
 			}
 		}
-		str.remove_prefix(1);
+		
+		if(name.empty()) {
+			if(key) {
+				// Replace newlines with spaces
+				key->append(" ");
+				size_t newValueEnd = str.find_last_of('"');
+				if(newValueEnd != std::string_view::npos) {
+					// End of multi-line value
+					key->append(str.substr(0, newValueEnd));
+					key = nullptr;
+				} else {
+					key->append(util::trimRight(str));
+				}
+			} else {
+				ok = false;
+				LogWarning << "Invalid key @ line " << line << ": " << raw;
+			}
+			continue;
+		}
+		key = nullptr;
 		
 		str = util::trimLeft(str);
 		
+		bool valueIncomplete = false;
 		std::string value;
 		
 		if(quoted || (!str.empty() && str[0] == '"')) {
@@ -236,58 +250,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 				
 				// Add following lines until we find either a terminating quote,
 				// an empty or commented line, a new section or a new key
-				for(; !data.empty(); line++) {
-					
-					std::string_view olddata = data;
-					
-					lineend = data.find('\n');
-					if(lineend == std::string_view::npos) {
-						str = data;
-						data = { };
-					} else {
-						str = data.substr(0, lineend);
-						data.remove_prefix(lineend + 1);
-					}
-					
-					str = util::trimLeft(str);
-					if(str.empty()) {
-						// Empty line (only whitespace)
-						break;
-					}
-					
-					if(str[0] == '#' || (str.length() > 1 && str[0] == '/' && str[1] == '/')) {
-						// Whole line was commented
-						break;
-					}
-					
-					if(str[0] == '[') {
-						// New section
-						line--, data = olddata;
-						break;
-					}
-					
-					size_t newNameEnd = str.find_first_not_of(ALPHANUM, 0);
-					if(newNameEnd != std::string_view::npos && newNameEnd != 0) {
-						std::string_view right = util::trimLeft(str.substr(nameEnd));
-						if(!right.empty() && right[0] == '=') {
-							// New key
-							line--, data = olddata;
-							break;
-						}
-					}
-					
-					// Replace newlines with spaces!
-					value += ' ';
-					
-					size_t newValueEnd = str.find_last_of('"');
-					if(newValueEnd != std::string_view::npos) {
-						// End of multi-line value
-						value += str.substr(0, newValueEnd);
-						break;
-					}
-					
-					value += util::trimRight(str);
-				}
+				valueIncomplete = true;
 				
 			} else {
 				value = str.substr(0, valueEnd);
@@ -298,9 +261,13 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 		}
 		
 		if(overrideValues) {
-			section->setKey(key, std::move(value));
+			key = &section->setKey(name, std::move(value));
 		} else {
-			section->addKey(key, std::move(value));
+			key = &section->addKey(name, std::move(value));
+		}
+		
+		if(!valueIncomplete) {
+			key = nullptr;
 		}
 		
 		// Ignoring rest of the line, not verifying that it's only whitespace / comment
