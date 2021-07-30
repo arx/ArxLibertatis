@@ -319,10 +319,6 @@ struct ARXCHARACTER {
 	unsigned char skin;
 	
 	RuneFlags rune_flags;
-	bool hasRune(Rune rune) const {
-		return (rune_flags & RuneFlag(1 << rune)) != 0;
-	}
-	
 	
 	std::array<TextureContainer *, 5> heads;
 	float poison;
@@ -384,22 +380,26 @@ struct ARXCHARACTER {
 		heads.fill(nullptr);
 	}
 	
-	static float baseRadius() { return 52.f; }
-	static float baseHeight() { return -170.f; }
-	static float crouchHeight() { return -120.f; }
-	static float levitateHeight() { return -220.f; }
+	[[nodiscard]] bool hasRune(Rune rune) const {
+		return (rune_flags & RuneFlag(1 << rune)) != 0;
+	}
 	
-	static Vec3f baseOffset() { return Vec3f(0.f, baseHeight(), 0.f); }
+	[[nodiscard]] static float baseRadius() { return 52.f; }
+	[[nodiscard]] static float baseHeight() { return -170.f; }
+	[[nodiscard]] static float crouchHeight() { return -120.f; }
+	[[nodiscard]] static float levitateHeight() { return -220.f; }
 	
-	Vec3f basePosition() const {
+	[[nodiscard]] static Vec3f baseOffset() { return Vec3f(0.f, baseHeight(), 0.f); }
+	
+	[[nodiscard]] Vec3f basePosition() const {
 		return Vec3f(pos.x, pos.y - baseHeight(), pos.z);
 	}
 	
-	Cylinder baseCylinder() const {
+	[[nodiscard]] Cylinder baseCylinder() const {
 		return Cylinder(basePosition(), baseRadius(), baseHeight());
 	}
 	
-	bool isAiming() const { return m_aimTime > 0; }
+	[[nodiscard]] bool isAiming() const { return m_aimTime > 0; }
 	
 };
 
