@@ -28,10 +28,10 @@ class path;
 
 class ifstream final : public std::ifstream {
 	
-	ifstream(const ifstream &);
-	ifstream & operator=(const ifstream &);
-	
 public:
+	
+	ifstream(const ifstream &) = delete;
+	ifstream & operator=(const ifstream &) = delete;
 	
 	ifstream() { }
 	
@@ -45,10 +45,10 @@ public:
 
 class ofstream final : public std::ofstream {
 	
-	ofstream(const ofstream &);
-	ofstream & operator=(const ofstream &);
-	
 public:
+	
+	ofstream(const ofstream &) = delete;
+	ofstream & operator=(const ofstream &) = delete;
 	
 	ofstream() { }
 	
@@ -62,10 +62,10 @@ public:
 
 class fstream final : public std::fstream {
 	
-	fstream(const fstream &);
-	fstream & operator=(const fstream &);
-	
 public:
+	
+	fstream(const fstream &) = delete;
+	fstream & operator=(const fstream &) = delete;
 	
 	fstream() { }
 	
