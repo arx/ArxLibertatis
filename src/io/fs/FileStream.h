@@ -39,8 +39,6 @@ public:
 	
 	void open(const path & p, openmode mode = in);
 	
-	virtual ~ifstream() { }
-	
 };
 
 class ofstream final : public std::ofstream {
@@ -56,8 +54,6 @@ public:
 	
 	void open(const path & p, openmode mode = out);
 	
-	virtual ~ofstream() { }
-	
 };
 
 class fstream final : public std::fstream {
@@ -72,8 +68,6 @@ public:
 	fstream(const path & p, openmode mode = out);
 	
 	void open(const path & p, openmode mode = out);
-	
-	virtual ~fstream() { }
 	
 };
 
