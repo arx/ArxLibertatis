@@ -39,8 +39,6 @@ public:
 		, m_renderer(nullptr)
 		{ }
 	
-	virtual ~RenderWindow() { }
-	
 	/*!
 	 * Initialize the framework.
 	 * This needs to be called before anything else!
