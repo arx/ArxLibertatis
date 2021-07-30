@@ -20,6 +20,7 @@
 #include "gui/widget/CycleTextWidget.h"
 
 #include <algorithm>
+#include <utility>
 
 #include "core/Core.h"
 #include "graphics/Math.h"
@@ -31,9 +32,9 @@
 #include "input/Input.h"
 
 CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, std::string_view label, Font * entryFont)
-	: m_label(label.empty() ? nullptr : new TextWidget(font, label))
-	, m_left(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_left"))
-	, m_right(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_right"))
+	: m_label(label.empty() ? nullptr : std::make_unique<TextWidget>(font, label))
+	, m_left(std::make_unique<ButtonWidget>(Vec2f(size.y), "graph/interface/menus/menu_slider_button_left"))
+	, m_right(std::make_unique<ButtonWidget>(Vec2f(size.y), "graph/interface/menus/menu_slider_button_right"))
 	, m_font(entryFont ? entryFont : font)
 	, m_content(10 * size.y / 2, size.y)
 	, m_value(0)
@@ -59,30 +60,16 @@ CycleTextWidget::CycleTextWidget(const Vec2f & size, Font * font, std::string_vi
 	
 }
 
-CycleTextWidget::~CycleTextWidget() {
-	
-	delete m_label;
-	delete m_left;
-	delete m_right;
-	
-	for(Widget * entry : m_entries) {
-		delete entry;
-	}
-	
-}
-
 void CycleTextWidget::selectLast() {
 	m_value = int(m_entries.size() - 1);
 }
 
 void CycleTextWidget::addEntry(std::string_view label) {
 	
-	TextWidget * widget = new TextWidget(m_font, label);
+	std::unique_ptr<TextWidget> widget = std::make_unique<TextWidget>(m_font, label);
 	
 	widget->forceDisplay(TextWidget::Dynamic);
 	widget->setEnabled(m_enabled);
-	
-	m_entries.push_back(widget);
 	
 	if(m_label) {
 		float maxWidth = m_rect.width() - m_left->m_rect.width() - m_right->m_rect.width()
@@ -112,7 +99,9 @@ void CycleTextWidget::addEntry(std::string_view label) {
 		m_label->setPosition(Vec2f(m_rect.left, m_rect.center().y - m_label->m_rect.height() / 2));
 	}
 	
-	for(Widget * entry : m_entries) {
+	m_entries.emplace_back(std::move(widget));
+	
+	for(auto & entry : m_entries) {
 		entry->setPosition(m_content.center() - entry->m_rect.size() / 2.f);
 	}
 	
@@ -129,7 +118,7 @@ void CycleTextWidget::move(const Vec2f & offset) {
 	m_content.move(offset);
 	m_right->move(offset);
 	
-	for(Widget * entry : m_entries) {
+	for(auto & entry : m_entries) {
 		entry->move(offset);
 	}
 	
@@ -173,7 +162,7 @@ void CycleTextWidget::setEnabled(bool enable) {
 	m_left->setEnabled(enable);
 	m_right->setEnabled(enable);
 	
-	for(Widget * entry : m_entries) {
+	for(auto & entry : m_entries) {
 		entry->setEnabled(enable);
 	}
 	

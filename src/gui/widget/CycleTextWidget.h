@@ -21,15 +21,16 @@
 #define ARX_GUI_WIDGET_CYCLETEXTWIDGET_H
 
 #include <functional>
+#include <memory>
 #include <string_view>
 #include <vector>
 
+#include "gui/widget/ButtonWidget.h"
+#include "gui/widget/TextWidget.h"
 #include "gui/widget/Widget.h"
 #include "platform/Platform.h"
 
 class Font;
-class ButtonWidget;
-class TextWidget;
 
 class CycleTextWidget final : public Widget {
 	
@@ -37,7 +38,6 @@ public:
 	
 	explicit CycleTextWidget(const Vec2f & size, Font * font, std::string_view label = std::string_view(),
 	                         Font * entryFont = nullptr);
-	~CycleTextWidget() override;
 	
 	void setValue(int value) { m_value = value; }
 	int getValue() const { return m_value; }
@@ -62,11 +62,11 @@ private:
 	
 	void newValue(int value);
 	
-	TextWidget * m_label;
-	ButtonWidget * m_left;
-	ButtonWidget * m_right;
+	std::unique_ptr<TextWidget> m_label;
+	std::unique_ptr<ButtonWidget> m_left;
+	std::unique_ptr<ButtonWidget> m_right;
 	Font * m_font;
-	std::vector<TextWidget *> m_entries;
+	std::vector<std::unique_ptr<TextWidget>> m_entries;
 	Rectf m_content;
 	
 	int m_value;
