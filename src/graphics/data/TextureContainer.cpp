@@ -77,9 +77,9 @@ TextureContainer * GetTextureList() {
 	return g_ptcTextureList;
 }
 
-TextureContainer::TextureContainer(const res::path & strName, TCFlags flags)
+TextureContainer::TextureContainer(res::path strName, TCFlags flags)
 	: TextureHalo(nullptr)
-	, m_texName(strName)
+	, m_texName(std::move(strName))
 	, m_size(0)
 	, m_dwFlags(flags)
 	, userflags(0)

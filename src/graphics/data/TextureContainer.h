@@ -112,7 +112,7 @@ public:
 	 * but pieces of code still depend on this constructor being public.
 	 * TODO Make this constructor private.
 	 */ 
-	TextureContainer(const res::path & strName, TCFlags flags);
+	TextureContainer(res::path strName, TCFlags flags);
 	
 	~TextureContainer();
 	
