@@ -33,7 +33,7 @@ public:
 	ifstream(const ifstream &) = delete;
 	ifstream & operator=(const ifstream &) = delete;
 	
-	ifstream() { }
+	ifstream() = default;
 	
 	ifstream(const path & p, openmode mode = in);
 	
@@ -48,7 +48,7 @@ public:
 	ofstream(const ofstream &) = delete;
 	ofstream & operator=(const ofstream &) = delete;
 	
-	ofstream() { }
+	ofstream() = default;
 	
 	ofstream(const path & p, openmode mode = out);
 	
@@ -63,7 +63,7 @@ public:
 	fstream(const fstream &) = delete;
 	fstream & operator=(const fstream &) = delete;
 	
-	fstream() { }
+	fstream() = default;
 	
 	fstream(const path & p, openmode mode = out);
 	
