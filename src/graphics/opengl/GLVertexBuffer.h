@@ -125,6 +125,9 @@ public:
 	
 	using Base::capacity;
 	
+	BaseGLVertexBuffer(const BaseGLVertexBuffer &) = delete;
+	BaseGLVertexBuffer & operator=(const BaseGLVertexBuffer &) = delete;
+	
 	BaseGLVertexBuffer(OpenGLRenderer * renderer, size_t size, Renderer::BufferUsage usage)
 		: Base(size)
 		, m_renderer(renderer)
@@ -240,6 +243,9 @@ public:
 	
 	using Base::capacity;
 	
+	GLVertexBuffer(const GLVertexBuffer &) = delete;
+	GLVertexBuffer & operator=(const GLVertexBuffer &) = delete;
+	
 	GLVertexBuffer(OpenGLRenderer * renderer, size_t size, Renderer::BufferUsage usage)
 		: Base(renderer, size, usage)
 		, m_initialized(false)
@@ -307,6 +313,9 @@ public:
 	
 	using Base::capacity;
 	
+	GLShadowVertexBuffer(const GLShadowVertexBuffer &) = delete;
+	GLShadowVertexBuffer & operator=(const GLShadowVertexBuffer &) = delete;
+	
 	GLShadowVertexBuffer(OpenGLRenderer * renderer, size_t size, Renderer::BufferUsage usage)
 		: Base(renderer, size, usage)
 		, m_lockedFlags(0)
@@ -362,6 +371,9 @@ public:
 	
 	using Base::capacity;
 	
+	GLMapVertexBuffer(const GLMapVertexBuffer &) = delete;
+	GLMapVertexBuffer & operator=(const GLMapVertexBuffer &) = delete;
+	
 	GLMapVertexBuffer(OpenGLRenderer * renderer, size_t size, Renderer::BufferUsage usage)
 		: Base(renderer, size, usage)
 	{ }
@@ -414,6 +426,9 @@ class GLMapRangeVertexBuffer final : public GLMapVertexBuffer<Vertex> {
 public:
 	
 	using Base::capacity;
+	
+	GLMapRangeVertexBuffer(const GLMapRangeVertexBuffer &) = delete;
+	GLMapRangeVertexBuffer & operator=(const GLMapRangeVertexBuffer &) = delete;
 	
 	GLMapRangeVertexBuffer(OpenGLRenderer * renderer, size_t size,
 	                       Renderer::BufferUsage usage)
@@ -472,6 +487,9 @@ class BaseGLPersistentVertexBuffer : public BaseGLVertexBuffer<Vertex> {
 public:
 	
 	using Base::capacity;
+	
+	BaseGLPersistentVertexBuffer(const BaseGLPersistentVertexBuffer &) = delete;
+	BaseGLPersistentVertexBuffer & operator=(const BaseGLPersistentVertexBuffer &) = delete;
 	
 	BaseGLPersistentVertexBuffer(OpenGLRenderer * renderer, size_t size, Renderer::BufferUsage usage,
 	                             size_t multiplier = 1)
@@ -577,6 +595,9 @@ class GLPersistentUnsynchronizedVertexBuffer final : public BaseGLPersistentVert
 	
 public:
 	
+	GLPersistentUnsynchronizedVertexBuffer(const GLPersistentUnsynchronizedVertexBuffer &) = delete;
+	GLPersistentUnsynchronizedVertexBuffer & operator=(const GLPersistentUnsynchronizedVertexBuffer &) = delete;
+	
 	GLPersistentUnsynchronizedVertexBuffer(OpenGLRenderer * renderer, size_t size,
 	                                       Renderer::BufferUsage usage)
 		: Base(renderer, size, usage)
@@ -601,6 +622,9 @@ class GLPersistentOrphanVertexBuffer final : public BaseGLPersistentVertexBuffer
 	typedef BaseGLPersistentVertexBuffer<Vertex> Base;
 	
 public:
+	
+	GLPersistentOrphanVertexBuffer(const GLPersistentOrphanVertexBuffer &) = delete;
+	GLPersistentOrphanVertexBuffer & operator=(const GLPersistentOrphanVertexBuffer &) = delete;
 	
 	GLPersistentOrphanVertexBuffer(OpenGLRenderer * renderer, size_t size, Renderer::BufferUsage usage)
 		: Base(renderer, size, usage)
@@ -631,6 +655,9 @@ class GLPersistentFenceVertexBuffer final : public BaseGLPersistentVertexBuffer<
 public:
 	
 	using Base::capacity;
+	
+	GLPersistentFenceVertexBuffer(const GLPersistentFenceVertexBuffer &) = delete;
+	GLPersistentFenceVertexBuffer & operator=(const GLPersistentFenceVertexBuffer &) = delete;
 	
 	GLPersistentFenceVertexBuffer(OpenGLRenderer * renderer, size_t size, Renderer::BufferUsage usage,
 	                              size_t fenceCount)
