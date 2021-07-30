@@ -224,7 +224,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 		str = util::trimLeft(str);
 		
 		bool valueIncomplete = false;
-		std::string value;
+		std::string_view value;
 		
 		if(quoted || (!str.empty() && str[0] == '"')) {
 			str.remove_prefix(1);
@@ -251,9 +251,9 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 		}
 		
 		if(overrideValues) {
-			key = &section->setKey(name, std::move(value));
+			key = &section->setKey(name, std::string(value));
 		} else {
-			key = &section->addKey(name, std::move(value));
+			key = &section->addKey(name, std::string(value));
 		}
 		
 		if(!valueIncomplete) {
