@@ -62,12 +62,12 @@ class IniSection {
 	 * Add a key in the ini format (name=value or name="value")
 	 * All preceding space and trailing space / comments must already be removed.
 	 */
-	IniKey & addKey(std::string_view key, std::string && value);
+	IniKey & addKey(std::string_view key, std::string_view value);
 	/*!
 	 * Set a key in the ini format (name=value or name="value")
 	 * All preceding space and trailing space / comments must already be removed.
 	 */
-	IniKey & setKey(std::string_view key, std::string && value);
+	IniKey & setKey(std::string_view key, std::string_view value);
 	
 	friend class IniReader;
 	

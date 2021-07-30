@@ -251,9 +251,9 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 		}
 		
 		if(overrideValues) {
-			key = &section->setKey(name, std::string(value));
+			key = &section->setKey(name, value);
 		} else {
-			key = &section->addKey(name, std::string(value));
+			key = &section->addKey(name, value);
 		}
 		
 		if(!valueIncomplete) {
