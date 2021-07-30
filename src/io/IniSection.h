@@ -39,6 +39,8 @@ public:
 		, value(std::move(_value))
 	{}
 	
+	void append(std::string_view string) { value.append(string); }
+	
 	const std::string & getName() const { return name; }
 	const std::string & getValue() const { return value; }
 	
@@ -60,12 +62,12 @@ class IniSection {
 	 * Add a key in the ini format (name=value or name="value")
 	 * All preceding space and trailing space / comments must already be removed.
 	 */
-	void addKey(std::string_view key, std::string && value);
+	IniKey & addKey(std::string_view key, std::string && value);
 	/*!
 	 * Set a key in the ini format (name=value or name="value")
 	 * All preceding space and trailing space / comments must already be removed.
 	 */
-	void setKey(std::string_view key, std::string && value);
+	IniKey & setKey(std::string_view key, std::string && value);
 	
 	friend class IniReader;
 	
