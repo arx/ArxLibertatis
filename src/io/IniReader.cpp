@@ -137,22 +137,12 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 	
 	bool ok = true;
 	
-	std::string_view str, line;
-	
 	// While lines remain to be extracted
-	for(size_t lineNumber = 1; !data.empty(); lineNumber++) {
+	size_t lineNumber = 0;
+	for(std::string_view line : util::split(data, '\n')) {
+		lineNumber++;
 		
-		// Get a line to process
-		size_t lineend = data.find('\n');
-		if(lineend == std::string_view::npos) {
-			line = str = data;
-			data = { };
-		} else {
-			line = str = data.substr(0, lineend);
-			data.remove_prefix(lineend + 1);
-		}
-		
-		str = util::trimLeft(str);
+		std::string_view str = util::trimLeft(line);
 		if(str.empty()) {
 			// Empty line (only whitespace)
 			key = nullptr;
