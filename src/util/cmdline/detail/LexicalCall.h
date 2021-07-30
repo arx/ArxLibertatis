@@ -35,6 +35,7 @@
 #define ARX_UTIL_CMDLINE_DETAIL_LEXICALCALL_H
 
 #include <functional>
+#include <utility>
 
 #include <boost/noncopyable.hpp>
 
@@ -188,7 +189,7 @@ class lexical_call_t<Result(ValueType, ValueType, TypeCast)> {
 	typedef lexical_call_t self_t;
 	impl_t  m_impl;
 	
-	explicit lexical_call_t(const impl_t & impl) : m_impl(impl) { }
+	explicit lexical_call_t(impl_t impl) : m_impl(std::move(impl)) { }
 	
 public:
 	
