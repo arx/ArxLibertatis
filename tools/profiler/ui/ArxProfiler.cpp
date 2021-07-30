@@ -163,7 +163,7 @@ void ArxProfiler::openFile() {
 }
 
 
-class QGraphicsProfilePoint : public QGraphicsRectItem {
+class QGraphicsProfilePoint final : public QGraphicsRectItem {
 	
 public:
 	QGraphicsProfilePoint(const QRectF & rect, QGraphicsItem * parent = 0)
@@ -174,12 +174,12 @@ public:
 	{}
 	
 	static const int Type = UserType + 1;
-	int type() const {
+	int type() const override {
 		// Enable the use of qgraphicsitem_cast with this item.
 		return Type;
 	}
 	
-	void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0) {
+	void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0) override {
 		QGraphicsRectItem::paint(painter, option, widget);
 		
 		if(rect().width() * painter->transform().m11() >= 5) {
