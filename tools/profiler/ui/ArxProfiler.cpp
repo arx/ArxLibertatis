@@ -166,12 +166,10 @@ void ArxProfiler::openFile() {
 class QGraphicsProfilePoint final : public QGraphicsRectItem {
 	
 public:
+	
 	QGraphicsProfilePoint(const QRectF & rect, QGraphicsItem * parent = 0)
 		: QGraphicsRectItem(rect, parent)
-	{}
-	
-	~QGraphicsProfilePoint()
-	{}
+	{ }
 	
 	static const int Type = UserType + 1;
 	int type() const override {
