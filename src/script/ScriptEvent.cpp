@@ -231,8 +231,6 @@ public:
 		return Failed;
 	}
 	
-	~ObsoleteCommand() { }
-	
 };
 
 } // anonymous namespace
