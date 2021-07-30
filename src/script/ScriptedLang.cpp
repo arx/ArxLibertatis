@@ -43,6 +43,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedLang.h"
 
+#include <memory>
 #include <string>
 
 #include <boost/lexical_cast.hpp>
@@ -552,11 +553,10 @@ class IfCommand : public Command {
 		
 	};
 	
-	typedef std::map<std::string_view, Operator *> Operators;
-	Operators operators;
+	std::map<std::string_view, std::unique_ptr<Operator>> m_operators;
 	
 	void addOperator(Operator * op) {
-		[[maybe_unused]] auto res = operators.emplace(op->getOperator(), op);
+		[[maybe_unused]] auto res = m_operators.emplace(op->getOperator(), op);
 		arx_assert_msg(res.second, "Duplicate script 'if' operator name: %s", op->getOperator().c_str());
 	}
 	
@@ -768,13 +768,6 @@ public:
 		addOperator(new GreaterOperator);
 	}
 	
-	~IfCommand() {
-		for(Operators::iterator i = operators.begin(); i != operators.end(); ++i) {
-			delete i->second;
-		}
-		operators.clear();
-	}
-
 	Result execute(Context & context) override {
 		
 		std::string left = context.getWord();
@@ -783,8 +776,8 @@ public:
 		
 		std::string right = context.getWord();
 		
-		Operators::const_iterator it = operators.find(op);
-		if(it == operators.end()) {
+		auto it = m_operators.find(op);
+		if(it == m_operators.end()) {
 			ScriptWarning << "unknown operator: " << op;
 			return Failed;
 		}
