@@ -35,8 +35,6 @@ ButtonWidget::ButtonWidget(const Vec2f & size, const res::path & texture)
 	
 }
 
-ButtonWidget::~ButtonWidget() { }
-
 void ButtonWidget::render(bool mouseOver) {
 	
 	UseRenderState state(render2D().blendAdditive());

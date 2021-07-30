@@ -33,7 +33,6 @@ class ButtonWidget final : public Widget {
 public:
 	
 	ButtonWidget(const Vec2f & size, const res::path & texture);
-	~ButtonWidget() override;
 	
 	void render(bool mouseOver = false) override;
 	
