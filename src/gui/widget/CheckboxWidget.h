@@ -47,7 +47,7 @@ public:
 	
 	std::function<void(bool /* checked */)> stateChanged;
 	
-	virtual WidgetType type() const override {
+	WidgetType type() const override {
 		return WidgetType_Checkbox;
 	}
 	

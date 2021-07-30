@@ -60,7 +60,7 @@ public:
 	
 	Font * font() const { return m_font; }
 	
-	virtual WidgetType type() const override {
+	WidgetType type() const override {
 		return WidgetType_TextInput;
 	}
 	

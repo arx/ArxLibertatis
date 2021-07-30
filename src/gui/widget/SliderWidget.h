@@ -52,7 +52,7 @@ public:
 	
 	std::function<void(int /* state */)> valueChanged;
 	
-	virtual WidgetType type() const override {
+	WidgetType type() const override {
 		return WidgetType_Slider;
 	}
 	

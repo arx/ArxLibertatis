@@ -37,7 +37,7 @@ public:
 	
 	void render(bool mouseOver = false) override;
 	
-	virtual WidgetType type() const override {
+	WidgetType type() const override {
 		return WidgetType_Button;
 	}
 	

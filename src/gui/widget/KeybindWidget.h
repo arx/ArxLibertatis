@@ -57,7 +57,7 @@ public:
 	
 	void unfocus() override;
 	
-	virtual WidgetType type() const override {
+	WidgetType type() const override {
 		return WidgetType_Keybind;
 	}
 	

@@ -43,7 +43,7 @@ public:
 	
 	const std::vector<Widget *> & children() const { return m_children; }
 	
-	virtual WidgetType type() const override {
+	WidgetType type() const override {
 		return WidgetType_Panel;
 	}
 	

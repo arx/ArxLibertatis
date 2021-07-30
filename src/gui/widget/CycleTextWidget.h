@@ -50,11 +50,11 @@ public:
 	bool click() override;
 	void render(bool mouseOver = false) override;
 	void hover() override;
-	virtual void setEnabled(bool enable) override;
+	void setEnabled(bool enable) override;
 	
 	std::function<void(int, std::string_view)> valueChanged;
 	
-	virtual WidgetType type() const override {
+	WidgetType type() const override {
 		return WidgetType_CycleText;
 	}
 	

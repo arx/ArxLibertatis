@@ -60,7 +60,7 @@ public:
 	
 	void forceDisplay(ForceDisplay display) { m_display = display; }
 	
-	virtual WidgetType type() const override {
+	WidgetType type() const override {
 		return WidgetType_Text;
 	}
 	
