@@ -34,8 +34,10 @@
 #ifndef ARX_UTIL_CMDLINE_DETAIL_INTERPRETER_H
 #define ARX_UTIL_CMDLINE_DETAIL_INTERPRETER_H
 
-#include <map>
 #include <algorithm>
+#include <map>
+#include <utility>
+
 #include "util/cmdline/detail/LexicalCall.h"
 
 namespace util::cmdline::detail {
@@ -99,9 +101,9 @@ private:
 			}
 		}
 		
-		ikey_t(const function_type & function, const op_name_t & key)
-			: m_function(function)
-			, m_key(key)
+		ikey_t(function_type function, op_name_t key)
+			: m_function(std::move(function))
+			, m_key(std::move(key))
 		{ }
 		
 	};
