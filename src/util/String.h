@@ -175,7 +175,7 @@ public:
 		return m_string.substr(0, m_pos);
 	}
 	
-	[[nodiscard]] bool operator!=(SplitStringSentinel) const {
+	[[nodiscard]] bool operator!=(SplitStringSentinel /* ignored */) const {
 		return m_pos != std::string_view::npos;
 	}
 	
