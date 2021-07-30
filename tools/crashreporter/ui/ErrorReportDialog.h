@@ -222,7 +222,7 @@ public:
 public:
 	
 	explicit ErrorReportDialog(ErrorReport & errorReport, QWidget * parent = 0);
-	~ErrorReportDialog();
+	~ErrorReportDialog() override;
 	
 	void SetCurrentPane(DialogPane paneId);
 	

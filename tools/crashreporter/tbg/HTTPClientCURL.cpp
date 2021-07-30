@@ -57,7 +57,7 @@ public:
 		}
 	}
 	
-	~CURLSession() {
+	~CURLSession() override {
 		if(m_curl) {
 			curl_easy_cleanup(m_curl);
 		}

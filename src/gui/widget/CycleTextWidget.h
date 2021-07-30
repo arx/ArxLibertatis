@@ -37,7 +37,7 @@ public:
 	
 	explicit CycleTextWidget(const Vec2f & size, Font * font, std::string_view label = std::string_view(),
 	                         Font * entryFont = nullptr);
-	virtual ~CycleTextWidget();
+	~CycleTextWidget() override;
 	
 	void setValue(int value) { m_value = value; }
 	int getValue() const { return m_value; }

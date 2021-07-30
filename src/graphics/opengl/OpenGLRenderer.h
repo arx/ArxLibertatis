@@ -35,7 +35,7 @@ class OpenGLRenderer final : public Renderer {
 public:
 	
 	OpenGLRenderer();
-	~OpenGLRenderer();
+	~OpenGLRenderer() override;
 	
 	void initialize() override;
 	

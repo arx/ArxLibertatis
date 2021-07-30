@@ -34,7 +34,7 @@ class GLTextureStage final : public TextureStage {
 public:
 	
 	GLTextureStage(OpenGLRenderer * renderer, unsigned textureStage);
-	~GLTextureStage();
+	~GLTextureStage() override;
 	
 	Texture * getTexture() const override;
 	void setTexture(Texture * pTexture) override;

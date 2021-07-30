@@ -100,7 +100,7 @@ class ArxProfiler final : public QMainWindow {
 public:
 	
 	ArxProfiler(QWidget * parent = 0, Qt::WindowFlags flags = Qt::WindowFlags());
-	~ArxProfiler();
+	~ArxProfiler() override;
 	
 private slots:
 	

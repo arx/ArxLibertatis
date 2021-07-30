@@ -30,7 +30,7 @@ class MassLightningStrikeSpell final : public SpellBase {
 public:
 	
 	MassLightningStrikeSpell();
-	~MassLightningStrikeSpell();
+	~MassLightningStrikeSpell() override;
 	
 	void Launch() override;
 	void End() override;

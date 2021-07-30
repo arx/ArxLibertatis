@@ -80,7 +80,7 @@ protected:
 public:
 	
 	ArxGame();
-	virtual ~ArxGame();
+	~ArxGame() override;
 	
 	void run() override;
 	

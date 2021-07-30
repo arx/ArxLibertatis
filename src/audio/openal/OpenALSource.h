@@ -42,7 +42,7 @@ class OpenALSource final : public Source {
 public:
 	
 	explicit OpenALSource(Sample * sample);
-	~OpenALSource();
+	~OpenALSource() override;
 	
 	aalError init(SourcedSample id, OpenALSource * instance, const Channel & channel);
 	

@@ -31,7 +31,7 @@ class CrashHandlerWindows : public CrashHandlerImpl {
 public:
 	
 	CrashHandlerWindows();
-	virtual ~CrashHandlerWindows();
+	~CrashHandlerWindows() override;
 	
 	bool initialize() override;
 	

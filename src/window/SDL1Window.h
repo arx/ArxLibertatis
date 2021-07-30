@@ -32,7 +32,7 @@ class SDL1Window final : public RenderWindow {
 public:
 	
 	SDL1Window();
-	virtual ~SDL1Window();
+	~SDL1Window() override;
 	
 	bool initializeFramework() override;
 	void setTitle(const std::string & title) override;

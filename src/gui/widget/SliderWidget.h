@@ -37,7 +37,7 @@ class SliderWidget final : public Widget {
 public:
 	
 	explicit SliderWidget(const Vec2f & size, Font * font, std::string_view label);
-	virtual ~SliderWidget();
+	~SliderWidget() override;
 	
 	void setMinimum(int minimum);
 	

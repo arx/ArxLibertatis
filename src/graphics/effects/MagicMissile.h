@@ -53,7 +53,7 @@ class CMagicMissile : public CSpellFx {
 public:
 	
 	CMagicMissile();
-	~CMagicMissile();
+	~CMagicMissile() override;
 	
 	void SetTTL(GameDuration aulTTL);
 	

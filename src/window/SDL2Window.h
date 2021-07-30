@@ -47,7 +47,7 @@ class SDL2Window final : public RenderWindow {
 public:
 	
 	SDL2Window();
-	virtual ~SDL2Window();
+	~SDL2Window() override;
 	
 	bool initializeFramework() override;
 	void setTitle(const std::string & title) override;

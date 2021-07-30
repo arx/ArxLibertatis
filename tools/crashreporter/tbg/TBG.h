@@ -56,7 +56,7 @@ public:
 	};
 	
 	explicit Server(const QString & serverAddress, std::string_view userAgent);
-	~Server();
+	~Server() override;
 	
 	bool login(const QString & username, const QString & password);
 	QString createCrashReport(const QString & title, const QString & description,

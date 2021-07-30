@@ -31,7 +31,7 @@ class SpeedSpell final : public SpellBase {
 	
 public:
 	
-	~SpeedSpell();
+	~SpeedSpell() override;
 	
 	void Launch() override;
 	void End() override;
@@ -64,7 +64,7 @@ class FireballSpell final : public SpellBase {
 public:
 	
 	FireballSpell();
-	~FireballSpell();
+	~FireballSpell() override;
 	
 	void Launch() override;
 	void End() override;

@@ -50,7 +50,7 @@ public:
 		                        WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0))
 	{ }
 	
-	~WinHTTPSession() {
+	~WinHTTPSession() override {
 		if(m_connection) {
 			WinHttpCloseHandle(m_connection);
 		}

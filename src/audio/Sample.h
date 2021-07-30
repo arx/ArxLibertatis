@@ -57,7 +57,7 @@ class Sample : public ResourceHandle {
 public:
 	
 	explicit Sample(const res::path & name);
-	~Sample();
+	~Sample() override;
 	
 	// File I/O
 	aalError load();

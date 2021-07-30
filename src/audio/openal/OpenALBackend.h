@@ -49,7 +49,7 @@ class OpenALBackend final : public Backend {
 public:
 	
 	OpenALBackend();
-	~OpenALBackend();
+	~OpenALBackend() override;
 	
 	aalError init(std::string_view requestedDeviceName = std::string_view(), HRTFAttribute hrtf = HRTFDefault);
 	

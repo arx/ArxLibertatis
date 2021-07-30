@@ -29,7 +29,7 @@ class CrashHandlerPOSIX : public CrashHandlerImpl {
 public:
 	
 	CrashHandlerPOSIX();
-	virtual ~CrashHandlerPOSIX();
+	~CrashHandlerPOSIX() override;
 	
 	bool initialize() override;
 	

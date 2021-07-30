@@ -219,7 +219,7 @@ public:
 		
 	}
 	
-	~BaseGLVertexBuffer() {
+	~BaseGLVertexBuffer() override {
 		clearVertexArray(this);
 		unbindBuffer(m_buffer);
 		glDeleteBuffers(1, &m_buffer);
@@ -564,7 +564,7 @@ public:
 	
 	void unlock() override { }
 	
-	~BaseGLPersistentVertexBuffer() {
+	~BaseGLPersistentVertexBuffer() override {
 		
 		if(m_mapping) {
 			bindBuffer(m_buffer);
@@ -694,7 +694,7 @@ public:
 		
 	}
 	
-	~GLPersistentFenceVertexBuffer() {
+	~GLPersistentFenceVertexBuffer() override {
 		
 		for(size_t i = 0; i < m_multiplier; i++) {
 			if(m_fences[i]) {

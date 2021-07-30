@@ -35,7 +35,7 @@ class CheckboxWidget final : public Widget {
 public:
 	
 	explicit CheckboxWidget(const Vec2f & size, Font * font, std::string_view label);
-	virtual ~CheckboxWidget();
+	~CheckboxWidget() override;
 	
 	void move(const Vec2f & offset) override;
 	bool click() override;

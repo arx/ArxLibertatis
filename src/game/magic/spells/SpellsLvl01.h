@@ -41,7 +41,7 @@ class MagicMissileSpell final : public SpellBase {
 public:
 	
 	MagicMissileSpell();
-	~MagicMissileSpell();
+	~MagicMissileSpell() override;
 	
 	void Launch() override;
 	void End() override;

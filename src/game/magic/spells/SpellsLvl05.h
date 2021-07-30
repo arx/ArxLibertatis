@@ -109,7 +109,7 @@ class PoisonProjectileSpell final : public SpellBase {
 	
 public:
 	
-	~PoisonProjectileSpell();
+	~PoisonProjectileSpell() override;
 	
 	void Launch() override;
 	void End() override;

@@ -62,7 +62,7 @@ class StreamWAV final : public Stream {
 public:
 	
 	StreamWAV();
-	~StreamWAV();
+	~StreamWAV() override;
 	
 	aalError setStream(std::unique_ptr<PakFileHandle> stream) override;
 	aalError setPosition(size_t position) override;

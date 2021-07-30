@@ -37,7 +37,7 @@ class GLTexture final : public Texture, public GLTextureListHook {
 public:
 	
 	explicit GLTexture(OpenGLRenderer * renderer);
-	~GLTexture();
+	~GLTexture() override;
 	
 	bool create() override;
 	void upload() override;
