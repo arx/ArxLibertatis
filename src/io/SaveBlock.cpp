@@ -597,7 +597,7 @@ std::vector<std::string_view> SaveBlock::getFiles() const {
 	
 	std::vector<std::string_view> result;
 	
-	for(auto & file : m_files) {
+	for(const auto & file : m_files) {
 		result.push_back(file.first);
 	}
 	
