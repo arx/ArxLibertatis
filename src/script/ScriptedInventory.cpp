@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 #include <string>
 #include <string_view>
 
@@ -83,11 +84,10 @@ class InventoryCommand : public Command {
 		
 	};
 	
-	typedef std::map<std::string_view, SubCommand *> Commands;
-	Commands commands;
+	std::map<std::string_view, std::unique_ptr<SubCommand>> m_commands;
 	
 	void addCommand(SubCommand * command) {
-		[[maybe_unused]] auto res = commands.emplace(command->getCommand(), command);
+		[[maybe_unused]] auto res = m_commands.emplace(command->getCommand(), command);
 		arx_assert_msg(res.second, "Duplicate script inventory command name: %s", command->getCommand().c_str());
 	}
 	
@@ -415,13 +415,6 @@ public:
 		addCommand(new CloseCommand);
 	}
 	
-	~InventoryCommand() {
-		for(Commands::iterator i = commands.begin(); i != commands.end(); ++i) {
-			delete i->second;
-		}
-		commands.clear();
-	}
-	
 	Result execute(Context & context) override {
 		
 		std::string cmdname = context.getWord();
@@ -429,8 +422,8 @@ public:
 		// Remove all underscores from the command.
 		cmdname.resize(std::remove(cmdname.begin(), cmdname.end(), '_') - cmdname.begin());
 		
-		Commands::const_iterator it = commands.find(cmdname);
-		if(it == commands.end()) {
+		auto it = m_commands.find(cmdname);
+		if(it == m_commands.end()) {
 			ScriptWarning << "unknown inventory command: " << cmdname;
 			return Failed;
 		}
