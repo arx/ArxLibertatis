@@ -45,8 +45,8 @@
 //! Pre-load all visible characters below this one when creating a font object
 static const Font::Char FONT_PRELOAD_LIMIT = 127;
 
-Font::Font(const res::path & file, unsigned size, unsigned weight, FT_Face face, bool preload)
-	: m_info(file, size, weight)
+Font::Font(res::path file, unsigned size, unsigned weight, FT_Face face, bool preload)
+	: m_info(std::move(file), size, weight)
 	, m_referenceCount(0)
 	, m_size(nullptr)
 	, m_textures(nullptr) {

@@ -20,10 +20,10 @@
 #ifndef ARX_GRAPHICS_FONT_FONT_H
 #define ARX_GRAPHICS_FONT_FONT_H
 
+#include <map>
 #include <string>
 #include <string_view>
-
-#include <map>
+#include <utility>
 
 #include <boost/noncopyable.hpp>
 
@@ -40,8 +40,8 @@ public:
 	
 	struct Info {
 		
-		Info(const res::path & fontFile, unsigned fontSize, unsigned fontWeight)
-			: name(fontFile), size(fontSize), weight(fontWeight) { }
+		Info(res::path fontFile, unsigned fontSize, unsigned fontWeight)
+			: name(std::move(fontFile)), size(fontSize), weight(fontWeight) { }
 		
 		bool operator==(const Info & other) const {
 			return name == other.name && size == other.size && weight == other.weight;
@@ -190,7 +190,7 @@ public:
 private:
 	
 	// Construction/destruction handled by FontCache only
-	Font(const res::path & file, unsigned size, unsigned weight, struct FT_FaceRec_ * face, bool preload);
+	Font(res::path file, unsigned size, unsigned weight, struct FT_FaceRec_ * face, bool preload);
 	~Font();
 	
 	//! Maps the given character to a placeholder glyph
