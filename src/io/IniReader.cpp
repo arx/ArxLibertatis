@@ -219,7 +219,6 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 			}
 			continue;
 		}
-		key = nullptr;
 		
 		str = util::trimLeft(str);
 		
@@ -230,7 +229,7 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 			str.remove_prefix(1);
 			size_t valueEnd = str.find_last_of('"');
 			
-			if(valueEnd == std::string::npos) {
+			if(valueEnd == std::string_view::npos) {
 				
 				// The localisation files are broken (missing ending quote)
 				// But the spanish localisation files have erroneous newlines in some values
@@ -250,15 +249,9 @@ bool IniReader::read(std::string_view data, bool overrideValues) {
 			value = util::trimRight(str);
 		}
 		
-		if(overrideValues) {
-			key = &section->setKey(name, value);
-		} else {
-			key = &section->addKey(name, value);
-		}
+		IniKey * addedKey = &section->addKey(name, value, overrideValues);
 		
-		if(!valueIncomplete) {
-			key = nullptr;
-		}
+		key = valueIncomplete ? addedKey : nullptr;
 		
 		// Ignoring rest of the line, not verifying that it's only whitespace / comment
 		
