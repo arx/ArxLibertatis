@@ -35,8 +35,6 @@ class ColorConsole final : public Backend {
 	
 public:
 	
-	~ColorConsole();
-	
 	void log(const Source & file, int line, Logger::LogLevel level, std::string_view str) override;
 	
 	void flush() override;

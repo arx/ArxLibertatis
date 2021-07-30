@@ -21,10 +21,6 @@
 
 namespace logger {
 
-File::~File() {
-	// nothing to clean up
-}
-
 void File::log(const Source & file, int line, Logger::LogLevel level, std::string_view str) {
 	format(ofs, file, line, level, str);
 }

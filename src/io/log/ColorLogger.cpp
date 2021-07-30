@@ -28,10 +28,6 @@
 
 namespace logger {
 
-ColorConsole::~ColorConsole() {
-	// nothing to clean up
-}
-
 void ColorConsole::log(const Source & file, int line, Logger::LogLevel level, std::string_view str) {
 	
 	std::ostream * os = (level >= Logger::Warning) ? &std::cerr : &std::cout;
