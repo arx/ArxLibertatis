@@ -21,13 +21,14 @@
 #define ARX_GUI_WIDGET_CHECKBOXWIDGET_H
 
 #include <functional>
+#include <memory>
 #include <string_view>
 
+#include "gui/widget/TextWidget.h"
 #include "gui/widget/Widget.h"
 #include "platform/Platform.h"
 
 class Font;
-class TextWidget;
 class TextureContainer;
 
 class CheckboxWidget final : public Widget {
@@ -35,7 +36,6 @@ class CheckboxWidget final : public Widget {
 public:
 	
 	explicit CheckboxWidget(const Vec2f & size, Font * font, std::string_view label);
-	~CheckboxWidget() override;
 	
 	void move(const Vec2f & offset) override;
 	bool click() override;
@@ -53,7 +53,7 @@ public:
 	
 private:
 	
-	TextWidget * m_label;
+	std::unique_ptr<TextWidget> m_label;
 	TextureContainer * m_textureOff;
 	TextureContainer * m_textureOn;
 	Rectf m_button;

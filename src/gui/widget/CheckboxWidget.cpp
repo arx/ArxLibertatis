@@ -32,7 +32,7 @@
 #include "gui/widget/TextWidget.h"
 
 CheckboxWidget::CheckboxWidget(const Vec2f & size, Font * font, std::string_view label)
-	: m_label(new TextWidget(font, label))
+	: m_label(std::make_unique<TextWidget>(font, label))
 	, m_textureOff(TextureContainer::Load("graph/interface/menus/menu_checkbox_off"))
 	, m_textureOn(TextureContainer::Load("graph/interface/menus/menu_checkbox_on"))
 	, m_button(size.y, size.y)
@@ -50,10 +50,6 @@ CheckboxWidget::CheckboxWidget(const Vec2f & size, Font * font, std::string_view
 	float y = m_rect.center().y - m_button.height() / 2;
 	m_button.moveTo(Vec2f(std::floor(x), std::floor(y)));
 	
-}
-
-CheckboxWidget::~CheckboxWidget() {
-	delete m_label;
 }
 
 void CheckboxWidget::move(const Vec2f & offset) {
