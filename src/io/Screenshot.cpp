@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <string>
 #include <sstream>
+#include <utility>
 
 #include "graphics/Renderer.h"
 #include "graphics/image/Image.h"
@@ -56,10 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static SnapShot * pSnapShot;
 
-SnapShot::SnapShot(const fs::path & name)
-	: m_basePath(name)
-{
-}
+SnapShot::SnapShot(fs::path name)
+	: m_basePath(std::move(name))
+{ }
 
 SnapShot::~SnapShot() { }
 
@@ -93,9 +93,9 @@ bool SnapShot::GetSnapShot() {
 	return image.save(file);
 }
 
-void InitSnapShot(const fs::path & name) {
+void InitSnapShot(fs::path name) {
 	FreeSnapShot();
-	pSnapShot = new SnapShot(name);
+	pSnapShot = new SnapShot(std::move(name));
 }
 
 void GetSnapShot() {

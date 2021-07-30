@@ -50,7 +50,7 @@ class SnapShot {
 	
 public:
 	
-	explicit SnapShot(const fs::path & name);
+	explicit SnapShot(fs::path name);
 	~SnapShot();
 	
 	fs::path getNextFilePath();
@@ -63,7 +63,7 @@ private:
 	
 };
 
-void InitSnapShot(const fs::path & name);
+void InitSnapShot(fs::path name);
 void GetSnapShot();
 void FreeSnapShot();
 
