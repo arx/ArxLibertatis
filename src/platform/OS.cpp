@@ -280,7 +280,7 @@ std::string getOSArchitecture() {
  * Parse key-value pairs from /etc/os-release or `lsb_release -a` to form a
  * pretty distribution name.
  *
- * \param is        Input stream for the text to parse.
+ * \param data      The text to parse.
  * \param separator Character used to separate keys and values.
  * \param keys      Keys that should be used in the final name.
  *                  Values are added to the name in order of the keys listed here
