@@ -192,32 +192,32 @@ struct PlayerInventoryAccess {
 		ARX_UNUSED(entity);
 	}
 	
-	INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) {
+	[[nodiscard]] INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) {
 		return g_inventory[bag][x][y];
 	}
 	
-	const INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) const {
+	[[nodiscard]] const INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) const {
 		return g_inventory[bag][x][y];
 	}
 	
-	index_type bags() const {
+	[[nodiscard]] index_type bags() const {
 		arx_assume(m_bags <= INVENTORY_BAGS);
 		return m_bags;
 	}
 	
-	index_type width() const {
+	[[nodiscard]] index_type width() const {
 		return INVENTORY_X;
 	}
 	
-	index_type height() const {
+	[[nodiscard]] index_type height() const {
 		return INVENTORY_Y;
 	}
 	
-	EntityHandle handle() const {
+	[[nodiscard]] EntityHandle handle() const {
 		return EntityHandle_Player;
 	}
 	
-	bool swap() const {
+	[[nodiscard]] bool swap() const {
 		return false;
 	}
 	
@@ -247,37 +247,37 @@ struct EntityInventoryAccess {
 		, m_size(entity->inventory->m_size)
 	{ }
 	
-	INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) {
+	[[nodiscard]] INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) {
 		ARX_UNUSED(bag);
 		return m_data->slot[x][y];
 	}
 	
-	const INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) const {
+	[[nodiscard]] const INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) const {
 		ARX_UNUSED(bag);
 		return  m_data->slot[x][y];
 	}
 	
-	index_type bags() const {
+	[[nodiscard]] index_type bags() const {
 		return 1;
 	}
 	
-	index_type width() const {
+	[[nodiscard]] index_type width() const {
 		arx_assume(m_size.x > 0);
 		arx_assume(m_size.x <= 20);
 		return index_type(m_size.x);
 	}
 	
-	index_type height() const {
+	[[nodiscard]] index_type height() const {
 		arx_assume(m_size.y > 0);
 		arx_assume(m_size.y <= 20);
 		return index_type(m_size.y);
 	}
 	
-	EntityHandle handle() const {
+	[[nodiscard]] EntityHandle handle() const {
 		return m_entity;
 	}
 	
-	bool swap() const {
+	[[nodiscard]] bool swap() const {
 		return true;
 	}
 	
