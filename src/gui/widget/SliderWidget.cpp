@@ -20,6 +20,7 @@
 #include "gui/widget/SliderWidget.h"
 
 #include <algorithm>
+#include <utility>
 
 #include "core/Core.h"
 #include "graphics/DrawLine.h"
@@ -32,9 +33,9 @@
 #include "input/Input.h"
 
 SliderWidget::SliderWidget(const Vec2f & size, Font * font, std::string_view label)
-	: m_label(new TextWidget(font, label))
-	, m_left(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_left"))
-	, m_right(new ButtonWidget(Vec2f(size.y), "graph/interface/menus/menu_slider_button_right"))
+	: m_label(std::make_unique<TextWidget>(font, label))
+	, m_left(std::make_unique<ButtonWidget>(Vec2f(size.y), "graph/interface/menus/menu_slider_button_left"))
+	, m_right(std::make_unique<ButtonWidget>(Vec2f(size.y), "graph/interface/menus/menu_slider_button_right"))
 	, m_textureOff(TextureContainer::Load("graph/interface/menus/menu_slider_off"))
 	, m_textureOn(TextureContainer::Load("graph/interface/menus/menu_slider_on"))
 	, m_slider(10 * size.y / 2, size.y)
@@ -57,12 +58,6 @@ SliderWidget::SliderWidget(const Vec2f & size, Font * font, std::string_view lab
 	m_left->setPosition(Vec2f(m_slider.left - m_left->m_rect.width(),
 	                          m_rect.center().y - m_left->m_rect.height() / 2));
 	
-}
-
-SliderWidget::~SliderWidget() {
-	delete m_label;
-	delete m_left;
-	delete m_right;
 }
 
 void SliderWidget::setMinimum(int minimum) {

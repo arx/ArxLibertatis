@@ -21,14 +21,15 @@
 #define ARX_GUI_WIDGET_SLIDERWIDGET_H
 
 #include <functional>
+#include <memory>
 #include <string_view>
 
+#include "gui/widget/ButtonWidget.h"
+#include "gui/widget/TextWidget.h"
 #include "gui/widget/Widget.h"
 #include "platform/Platform.h"
 
 class Font;
-class ButtonWidget;
-class TextWidget;
 class TextureContainer;
 
 //! Slider with value in the range [0..10]
@@ -37,7 +38,6 @@ class SliderWidget final : public Widget {
 public:
 	
 	explicit SliderWidget(const Vec2f & size, Font * font, std::string_view label);
-	~SliderWidget() override;
 	
 	void setMinimum(int minimum);
 	
@@ -60,9 +60,9 @@ private:
 	
 	void newValue(int value);
 	
-	TextWidget * m_label;
-	ButtonWidget * m_left;
-	ButtonWidget * m_right;
+	std::unique_ptr<TextWidget> m_label;
+	std::unique_ptr<ButtonWidget> m_left;
+	std::unique_ptr<ButtonWidget> m_right;
 	TextureContainer * m_textureOff;
 	TextureContainer * m_textureOn;
 	Rectf m_slider;
