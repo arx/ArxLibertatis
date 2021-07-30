@@ -53,8 +53,8 @@
 
 #include "util/String.h"
 
-ErrorReport::ErrorReport(const QString & sharedMemoryName)
-	: m_SharedMemoryName(sharedMemoryName)
+ErrorReport::ErrorReport(QString sharedMemoryName)
+	: m_SharedMemoryName(std::move(sharedMemoryName))
 	, m_pCrashInfo()
 	, m_Username("CrashBot")
 	, m_Password("WbAtVjS9")

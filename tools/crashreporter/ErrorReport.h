@@ -21,6 +21,7 @@
 #define ARX_TOOLS_CRASHREPORTER_ERRORREPORT_H
 
 #include <vector>
+#include <utility>
 
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
@@ -55,13 +56,13 @@ public:
 		QString path;
 		bool attachToReport;
 		
-		File(const QString & _path, bool _attach) : path(_path), attachToReport(_attach) { }
+		File(QString _path, bool _attach) : path(std::move(_path)), attachToReport(_attach) { }
 		
 	};
 	
 	typedef std::vector<File> FileList;
 	
-	explicit ErrorReport(const QString & sharedMemoryName);
+	explicit ErrorReport(QString sharedMemoryName);
 	
 	bool GenerateReport(IProgressNotifier * progressNotifier);
 	bool SendReport(IProgressNotifier * progressNotifier);
