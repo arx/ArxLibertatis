@@ -86,9 +86,7 @@ public:
 	
 	NewQuestMenuPage()
 		: MenuPage(Page_NewQuestConfirm)
-	{}
-	
-	~NewQuestMenuPage() { }
+	{ }
 	
 	void init() override {
 		
@@ -134,8 +132,6 @@ public:
 		, m_textbox(nullptr)
 		, pDeleteButton(nullptr)
 	{ }
-	
-	~SaveConfirmMenuPage() { }
 	
 	void init() override {
 		
@@ -234,8 +230,6 @@ public:
 	{
 		m_rowSpacing = 5;
 	}
-	
-	~LoadMenuPage() { }
 	
 	void init() override {
 		
@@ -356,8 +350,6 @@ public:
 		m_rowSpacing = 5;
 	}
 	
-	~SaveMenuPage() { }
-	
 	void init() override {
 		
 		reserveBottom();
@@ -424,8 +416,6 @@ public:
 		, m_saveButton(nullptr)
 	{ }
 	
-	~ChooseLoadOrSaveMenuPage() { }
-	
 	void init() override {
 		
 		reserveTop();
@@ -461,9 +451,7 @@ public:
 	
 	OptionsMenuPage()
 		: MenuPage(Page_Options)
-	{}
-	
-	~OptionsMenuPage() { }
+	{ }
 	
 	void init() override {
 		
@@ -525,8 +513,6 @@ public:
 	LocalizationMenuPage()
 		: MenuPage(Page_Localization)
 	{ }
-	
-	~LocalizationMenuPage() { }
 	
 	void init() override {
 		
@@ -635,9 +621,6 @@ public:
 		, m_applyButton(nullptr)
 		, m_fullscreen(false)
 	{ }
-	
-	~VideoOptionsMenuPage() { }
-	
 	
 	void init() override {
 		
@@ -924,8 +907,6 @@ public:
 		, m_alphaCutoutAntialiasingCycleText(nullptr)
 	{ }
 	
-	~RenderOptionsMenuPage() { }
-	
 	CycleTextWidget * m_alphaCutoutAntialiasingCycleText;
 	
 	void init() override {
@@ -1111,8 +1092,6 @@ public:
 		: MenuPage(Page_OptionsInterface)
 	{ }
 	
-	~InterfaceOptionsMenuPage() { }
-	
 	void init() override {
 		
 		reserveBottom();
@@ -1268,9 +1247,7 @@ public:
 	
 	AudioOptionsMenuPage()
 		: MenuPage(Page_OptionsAudio)
-	{}
-	
-	~AudioOptionsMenuPage() { }
+	{ }
 	
 	void init() override {
 		
@@ -1409,9 +1386,7 @@ public:
 	
 	InputOptionsMenuPage()
 		: MenuPage(Page_OptionsInput)
-	{}
-	
-	~InputOptionsMenuPage() { }
+	{ }
 	
 	void init() override {
 		
@@ -1647,8 +1622,6 @@ public:
 		: ControlOptionsPage(Page_OptionsInputCustomizeKeys1)
 	{ }
 	
-	~ControlOptionsMenuPage1() { }
-	
 	void init() override {
 		
 		reserveBottom();
@@ -1713,8 +1686,6 @@ public:
 		: ControlOptionsPage(Page_OptionsInputCustomizeKeys2)
 	{ }
 	
-	~ControlOptionsMenuPage2() { }
-	
 	void init() override {
 		
 		reserveBottom();
@@ -1770,9 +1741,7 @@ public:
 	
 	QuitConfirmMenuPage()
 		: MenuPage(Page_QuitConfirm)
-	{}
-	
-	~QuitConfirmMenuPage() { }
+	{ }
 	
 	void init() override {
 		
