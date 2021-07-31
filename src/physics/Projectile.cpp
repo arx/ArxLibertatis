@@ -393,19 +393,19 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			sphere.origin = v0 + projectile.vector * precision * 4.5f;
 			sphere.radius = rad + 3.f;
 			
-			std::vector<EntityHandle> sphereContent;
-			if(!CheckEverythingInSphere(sphere, projectile.source, EntityHandle(), sphereContent)) {
+			std::vector<Entity *> sphereContent;
+			if(!CheckEverythingInSphere(sphere, entities.get(projectile.source), nullptr, sphereContent)) {
 				continue;
 			}
 			
 			bool need_kill = false;
 			for(size_t jj = 0; jj < sphereContent.size(); jj++) {
 				
-				Entity * entity = entities.get(sphereContent[jj]);
-				if(entity && entity->index() != projectile.source) {
+				arx_assert(sphereContent[jj]);
+				if(sphereContent[jj]->index() != projectile.source) {
 					continue;
 				}
-				Entity & target = *entity;
+				Entity & target = *sphereContent[jj];
 				
 				if(target.ioflags & IO_NPC) {
 					
@@ -428,7 +428,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 					
 					if(projectile.source == EntityHandle_Player) {
 						
-						float damages = ARX_THROWN_ComputeDamages(projectile, sphereContent[jj]);
+						float damages = ARX_THROWN_ComputeDamages(projectile, target.index());
 						if(damages > 0.f) {
 							
 							arx_assert(hitpoint >= 0);

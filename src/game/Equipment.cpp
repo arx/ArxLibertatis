@@ -662,23 +662,22 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		sphere.origin = actionPointPosition(io_weapon->obj, action.idx);
 		sphere.radius = rad;
 		
-		if(source != EntityHandle_Player)
+		if(source != EntityHandle_Player) {
 			sphere.radius += 15.f;
-
-		std::vector<EntityHandle> sphereContent;
-
-		if(CheckEverythingInSphere(sphere, source, targ, sphereContent)) {
-			for(const EntityHandle & content : sphereContent) {
-				if(ValidIONum(content) && !(entities[content]->ioflags & IO_BODY_CHUNK)) {
+		}
+		
+		std::vector<Entity *> sphereContent;
+		if(CheckEverythingInSphere(sphere, io_source, entities.get(targ), sphereContent)) {
+			for(Entity * target : sphereContent) {
+				arx_assert(target);
+				if(!(target->ioflags & IO_BODY_CHUNK)) {
 					
 					bool HIT_SPARK = false;
-					EXCEPTIONS_LIST[EXCEPTIONS_LIST_Pos] = content;
+					EXCEPTIONS_LIST[EXCEPTIONS_LIST_Pos] = target->index();
 					EXCEPTIONS_LIST_Pos++;
 
 					if(EXCEPTIONS_LIST_Pos >= MAX_IN_SPHERE)
 						EXCEPTIONS_LIST_Pos--;
-					
-					Entity * target = entities[content];
 					
 					long hitpoint = -1;
 					float curdist = 999999.f;
@@ -732,7 +731,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								                  weapon,
 								                  SPELLCAST_FLAG_NOMANA | SPELLCAST_FLAG_NOCHECKCANCAST,
 								                  5,
-								                  content,
+								                  target->index(),
 								                  ptime);
 							}
 						}

@@ -748,7 +748,7 @@ static bool InExceptionList(EntityHandle val) {
 }
 
 static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
-                                          std::vector<EntityHandle> & sphereContent) {
+                                          std::vector<Entity *> & sphereContent) {
 	
 	float sr30 = sphere.radius + 20.f;
 	float sr40 = sphere.radius + 30.f;
@@ -796,7 +796,7 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 					}
 					
 					if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
-						sphereContent.push_back(io->index());
+						sphereContent.push_back(io);
 						return true;
 					}
 					
@@ -812,7 +812,7 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 		if(io->obj->grouplist.size() > 4) {
 			for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
 				if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
-					sphereContent.push_back(io->index());
+					sphereContent.push_back(io);
 					return true;
 				}
 			}
@@ -832,7 +832,7 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 			   || closerThan(vlist[ef->vid[0]].v, sphere.origin, sr30)
 			   || closerThan(vlist[ef->vid[1]].v, sphere.origin, sr30)
 			   || closerThan(vlist[ef->vid[2]].v, sphere.origin, sr30)) {
-				sphereContent.push_back(io->index());
+				sphereContent.push_back(io);
 				return true;
 			}
 			
@@ -843,21 +843,21 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 	return false;
 }
 
-bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityHandle targ,
-                             std::vector<EntityHandle> & sphereContent) {
+bool CheckEverythingInSphere(const Sphere & sphere, Entity * source, Entity * target,
+                             std::vector<Entity *> & sphereContent) {
 	
-	if(ValidIONum(targ)) {
-		if(!entities[targ] || targ == source || !(entities[targ]->gameFlags & GFLAG_ISINTREATZONE)) {
+	if(target) {
+		if(target == source || !(target->gameFlags & GFLAG_ISINTREATZONE)) {
 			return false;
 		}
-		return CheckEverythingInSphere_Inner(sphere, entities[targ], sphereContent);
+		return CheckEverythingInSphere_Inner(sphere, target, sphereContent);
 	}
 	
 	bool vreturn = false;
 	
 	for(size_t i = 0; i < treatio.size(); i++) {
 		
-		if(!treatio[i].io || treatio[i].io->index() == source) {
+		if(!treatio[i].io || treatio[i].io == source) {
 			continue;
 		}
 		
