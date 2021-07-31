@@ -592,38 +592,38 @@ public:
 
 void setupScriptedIOProperties() {
 	
-	ScriptEvent::registerCommand(new ShopCategoryCommand);
-	ScriptEvent::registerCommand(new ShopMultiplyCommand);
-	ScriptEvent::registerCommand(new GameFlagCommand("setplatform", GFLAG_PLATFORM));
-	ScriptEvent::registerCommand(new GameFlagCommand("setgore", GFLAG_NOGORE, true));
-	ScriptEvent::registerCommand(new GameFlagCommand("setelevator", GFLAG_ELEVATOR));
-	ScriptEvent::registerCommand(new GameFlagCommand("viewblock", GFLAG_VIEW_BLOCKER));
-	ScriptEvent::registerCommand(new IOFlagCommand("setunique", IO_UNIQUE));
-	ScriptEvent::registerCommand(new IOFlagCommand("setblacksmith", IO_BLACKSMITH));
-	ScriptEvent::registerCommand(new IOFlagCommand("setangular", IO_ANGULAR));
-	ScriptEvent::registerCommand(new IOFlagCommand("setshadow", IO_NOSHADOW, true));
-	ScriptEvent::registerCommand(new IOFlagCommand("setshop", IO_SHOP));
-	ScriptEvent::registerCommand(new IOFlagCommand("setbump", IO_BUMP));
+	ScriptEvent::registerCommand(std::make_unique<ShopCategoryCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ShopMultiplyCommand>());
+	ScriptEvent::registerCommand(std::make_unique<GameFlagCommand>("setplatform", GFLAG_PLATFORM));
+	ScriptEvent::registerCommand(std::make_unique<GameFlagCommand>("setgore", GFLAG_NOGORE, true));
+	ScriptEvent::registerCommand(std::make_unique<GameFlagCommand>("setelevator", GFLAG_ELEVATOR));
+	ScriptEvent::registerCommand(std::make_unique<GameFlagCommand>("viewblock", GFLAG_VIEW_BLOCKER));
+	ScriptEvent::registerCommand(std::make_unique<IOFlagCommand>("setunique", IO_UNIQUE));
+	ScriptEvent::registerCommand(std::make_unique<IOFlagCommand>("setblacksmith", IO_BLACKSMITH));
+	ScriptEvent::registerCommand(std::make_unique<IOFlagCommand>("setangular", IO_ANGULAR));
+	ScriptEvent::registerCommand(std::make_unique<IOFlagCommand>("setshadow", IO_NOSHADOW, true));
+	ScriptEvent::registerCommand(std::make_unique<IOFlagCommand>("setshop", IO_SHOP));
+	ScriptEvent::registerCommand(std::make_unique<IOFlagCommand>("setbump", IO_BUMP));
 	// IO_ZMAP Currently has no effect, but keep for now as it affects save state
-	ScriptEvent::registerCommand(new IOFlagCommand("setzmap", IO_ZMAP));
-	ScriptEvent::registerCommand(new IOFlagCommand("invertedobject", IO_INVERTED));
-	ScriptEvent::registerCommand(new SetTrapCommand);
-	ScriptEvent::registerCommand(new SetSecretCommand);
-	ScriptEvent::registerCommand(new SetMaterialCommand);
-	ScriptEvent::registerCommand(new SetNameCommand);
-	ScriptEvent::registerCommand(new SetInteractivityCommand);
-	ScriptEvent::registerCommand(new SetStepMaterialCommand);
-	ScriptEvent::registerCommand(new SetArmorMaterialCommand);
-	ScriptEvent::registerCommand(new SetWeaponMaterialCommand);
-	ScriptEvent::registerCommand(new SetCollisionCommand("setplayercollision", COLLIDE_WITH_PLAYER));
-	ScriptEvent::registerCommand(new SetCollisionCommand("setworldcollision", COLLIDE_WITH_WORLD));
-	ScriptEvent::registerCommand(new SetWeightCommand);
-	ScriptEvent::registerCommand(new SetTransparencyCommand);
-	ScriptEvent::registerCommand(new SetIRColorCommand);
-	ScriptEvent::registerCommand(new SetScaleCommand);
-	ScriptEvent::registerCommand(new HaloCommand);
-	ScriptEvent::registerCommand(new TweakCommand);
-	ScriptEvent::registerCommand(new UseMeshCommand);
+	ScriptEvent::registerCommand(std::make_unique<IOFlagCommand>("setzmap", IO_ZMAP));
+	ScriptEvent::registerCommand(std::make_unique<IOFlagCommand>("invertedobject", IO_INVERTED));
+	ScriptEvent::registerCommand(std::make_unique<SetTrapCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetSecretCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetMaterialCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetNameCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetInteractivityCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetStepMaterialCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetArmorMaterialCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetWeaponMaterialCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetCollisionCommand>("setplayercollision", COLLIDE_WITH_PLAYER));
+	ScriptEvent::registerCommand(std::make_unique<SetCollisionCommand>("setworldcollision", COLLIDE_WITH_WORLD));
+	ScriptEvent::registerCommand(std::make_unique<SetWeightCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetTransparencyCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetIRColorCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetScaleCommand>());
+	ScriptEvent::registerCommand(std::make_unique<HaloCommand>());
+	ScriptEvent::registerCommand(std::make_unique<TweakCommand>());
+	ScriptEvent::registerCommand(std::make_unique<UseMeshCommand>());
 	
 }
 

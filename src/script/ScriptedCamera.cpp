@@ -238,13 +238,13 @@ public:
 
 void setupScriptedCamera() {
 	
-	ScriptEvent::registerCommand(new CameraActivateCommand);
-	ScriptEvent::registerCommand(new CameraSmoothingCommand);
-	ScriptEvent::registerCommand(new CinemascopeCommand);
-	ScriptEvent::registerCommand(new CameraFocalCommand);
-	ScriptEvent::registerCommand(new CameraTranslateTargetCommand);
-	ScriptEvent::registerCommand(new WorldFadeCommand);
-	ScriptEvent::registerCommand(new QuakeCommand);
+	ScriptEvent::registerCommand(std::make_unique<CameraActivateCommand>());
+	ScriptEvent::registerCommand(std::make_unique<CameraSmoothingCommand>());
+	ScriptEvent::registerCommand(std::make_unique<CinemascopeCommand>());
+	ScriptEvent::registerCommand(std::make_unique<CameraFocalCommand>());
+	ScriptEvent::registerCommand(std::make_unique<CameraTranslateTargetCommand>());
+	ScriptEvent::registerCommand(std::make_unique<WorldFadeCommand>());
+	ScriptEvent::registerCommand(std::make_unique<QuakeCommand>());
 	
 }
 

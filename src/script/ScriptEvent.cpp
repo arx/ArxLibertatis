@@ -161,15 +161,6 @@ void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT & es) {
 	}
 }
 
-ScriptEvent::ScriptEvent() {
-	// TODO Auto-generated constructor stub
-
-}
-
-ScriptEvent::~ScriptEvent() {
-	// TODO Auto-generated destructor stub
-}
-
 static bool checkInteractiveObject(Entity * io, ScriptMessage msg, ScriptResult & ret) {
 	
 	io->stat_count++;
@@ -320,9 +311,7 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 		// Remove all underscores from the command.
 		word.resize(std::remove(word.begin(), word.end(), '_') - word.begin());
 		
-		Commands::const_iterator it = commands.find(word);
-		
-		if(it != commands.end()) {
+		if(auto it = commands.find(word); it != commands.end()) {
 			
 			script::Command & command = *(it->second);
 			
@@ -401,9 +390,10 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 	return ret;
 }
 
-void ScriptEvent::registerCommand(script::Command * command) {
-	[[maybe_unused]] auto res = commands.emplace(command->getName(), command);
-	arx_assert_msg(res.second, "Duplicate script command name: %s", command->getName().c_str());
+void ScriptEvent::registerCommand(std::unique_ptr<script::Command> command) {
+	std::string_view name = command->getName();
+	[[maybe_unused]] auto res = commands.emplace(name, std::move(command));
+	arx_assert_msg(res.second, "Duplicate script command name: %s", res.first->second->getName().c_str());
 }
 
 void ScriptEvent::init() {
@@ -424,27 +414,23 @@ void ScriptEvent::init() {
 	script::setupScriptedPlayer();
 	script::setupScriptedVariable();
 	
-	registerCommand(new script::ObsoleteCommand("attachnpctoplayer"));
-	registerCommand(new script::ObsoleteCommand("gmode", 1));
-	registerCommand(new script::ObsoleteCommand("setrighthand", 1));
-	registerCommand(new script::ObsoleteCommand("setlefthand", 1));
-	registerCommand(new script::ObsoleteCommand("setshield", 1));
-	registerCommand(new script::ObsoleteCommand("settwohanded"));
-	registerCommand(new script::ObsoleteCommand("setonehanded"));
-	registerCommand(new script::ObsoleteCommand("say"));
-	registerCommand(new script::ObsoleteCommand("setdetachable", 1));
-	registerCommand(new script::ObsoleteCommand("setstackable", 1));
-	registerCommand(new script::ObsoleteCommand("setinternalname", 1));
-	registerCommand(new script::ObsoleteCommand("detachnpcfromplayer"));
+	registerCommand(std::make_unique<script::ObsoleteCommand>("attachnpctoplayer"));
+	registerCommand(std::make_unique<script::ObsoleteCommand>("gmode", 1));
+	registerCommand(std::make_unique<script::ObsoleteCommand>("setrighthand", 1));
+	registerCommand(std::make_unique<script::ObsoleteCommand>("setlefthand", 1));
+	registerCommand(std::make_unique<script::ObsoleteCommand>("setshield", 1));
+	registerCommand(std::make_unique<script::ObsoleteCommand>("settwohanded"));
+	registerCommand(std::make_unique<script::ObsoleteCommand>("setonehanded"));
+	registerCommand(std::make_unique<script::ObsoleteCommand>("say"));
+	registerCommand(std::make_unique<script::ObsoleteCommand>("setdetachable", 1));
+	registerCommand(std::make_unique<script::ObsoleteCommand>("setstackable", 1));
+	registerCommand(std::make_unique<script::ObsoleteCommand>("setinternalname", 1));
+	registerCommand(std::make_unique<script::ObsoleteCommand>("detachnpcfromplayer"));
 	
 	LogInfo << "Scripting system initialized with " << commands.size() << " commands and " << count << " suppressions";
 }
 
 void ScriptEvent::shutdown() {
-	// Delete all commands before clear
-	for(Commands::iterator i = commands.begin(); i != commands.end(); ++i) {
-		delete i->second;
-	}
 	// Remove all the commands
 	commands.clear();
 	LogInfo << "Scripting system shutdown";
@@ -461,7 +447,7 @@ void ScriptEvent::autocomplete(std::string_view prefix, AutocompleteHandler hand
 		}
 	}
 	
-	for(const Commands::value_type & v : commands) {
+	for(const auto & v : commands) {
 		if(boost::starts_with(v.first, cmd)) {
 			if(!handler(context, std::string(v.first) += " ")) {
 				return;
@@ -480,4 +466,4 @@ bool ScriptEvent::isCommand(std::string_view command) {
 	return commands.find(command) != commands.end();
 }
 
-ScriptEvent::Commands ScriptEvent::commands;
+std::map<std::string_view, std::unique_ptr<script::Command>> ScriptEvent::commands;

@@ -562,20 +562,20 @@ public:
 
 void setupScriptedNPC() {
 	
-	ScriptEvent::registerCommand(new BehaviourCommand);
-	ScriptEvent::registerCommand(new ReviveCommand);
-	ScriptEvent::registerCommand(new SpellcastCommand);
-	ScriptEvent::registerCommand(new SetDetectCommand);
-	ScriptEvent::registerCommand(new SetBloodCommand);
-	ScriptEvent::registerCommand(new SetSpeedCommand);
-	ScriptEvent::registerCommand(new SetStareFactorCommand);
-	ScriptEvent::registerCommand(new SetNPCStatCommand);
-	ScriptEvent::registerCommand(new SetXPValueCommand);
-	ScriptEvent::registerCommand(new SetMoveModeCommand);
-	ScriptEvent::registerCommand(new SetLifeCommand);
-	ScriptEvent::registerCommand(new SetTargetCommand);
-	ScriptEvent::registerCommand(new ForceDeathCommand);
-	ScriptEvent::registerCommand(new PathfindCommand);
+	ScriptEvent::registerCommand(std::make_unique<BehaviourCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ReviveCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SpellcastCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetDetectCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetBloodCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetSpeedCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetStareFactorCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetNPCStatCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetXPValueCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetMoveModeCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetLifeCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetTargetCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ForceDeathCommand>());
+	ScriptEvent::registerCommand(std::make_unique<PathfindCommand>());
 	
 }
 

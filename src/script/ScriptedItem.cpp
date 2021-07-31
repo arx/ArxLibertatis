@@ -388,19 +388,19 @@ public:
 
 void setupScriptedItem() {
 	
-	ScriptEvent::registerCommand(new RepairCommand);
-	ScriptEvent::registerCommand(new SetPoisonousCommand);
-	ScriptEvent::registerCommand(new SetStealCommand);
-	ScriptEvent::registerCommand(new SetLightCommand);
-	ScriptEvent::registerCommand(new SetFoodCommand);
-	ScriptEvent::registerCommand(new SetObjectTypeCommand);
-	ScriptEvent::registerCommand(new SetEquipCommand);
-	ScriptEvent::registerCommand(new SetDurabilityCommand);
-	ScriptEvent::registerCommand(new SetMaxCountCommand);
-	ScriptEvent::registerCommand(new SetCountCommand);
-	ScriptEvent::registerCommand(new SetPriceCommand);
-	ScriptEvent::registerCommand(new PlayerStackSizeCommand);
-	ScriptEvent::registerCommand(new EatMeCommand);
+	ScriptEvent::registerCommand(std::make_unique<RepairCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetPoisonousCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetStealCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetLightCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetFoodCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetObjectTypeCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetEquipCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetDurabilityCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetMaxCountCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetCountCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetPriceCommand>());
+	ScriptEvent::registerCommand(std::make_unique<PlayerStackSizeCommand>());
+	ScriptEvent::registerCommand(std::make_unique<EatMeCommand>());
 	
 }
 

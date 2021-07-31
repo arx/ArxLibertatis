@@ -391,18 +391,18 @@ public:
 
 void setupScriptedInterface() {
 	
-	ScriptEvent::registerCommand(new BookCommand);
-	ScriptEvent::registerCommand(new CloseStealBagCommand);
-	ScriptEvent::registerCommand(new NoteCommand);
-	ScriptEvent::registerCommand(new ShowGlobalsCommand);
-	ScriptEvent::registerCommand(new ShowLocalsCommand);
-	ScriptEvent::registerCommand(new ShowVarsCommand);
-	ScriptEvent::registerCommand(new PlayerInterfaceCommand);
-	ScriptEvent::registerCommand(new PopupCommand);
-	ScriptEvent::registerCommand(new EndIntroCommand);
-	ScriptEvent::registerCommand(new EndGameCommand);
-	ScriptEvent::registerCommand(new MapMarkerCommand);
-	ScriptEvent::registerCommand(new DrawSymbolCommand);
+	ScriptEvent::registerCommand(std::make_unique<BookCommand>());
+	ScriptEvent::registerCommand(std::make_unique<CloseStealBagCommand>());
+	ScriptEvent::registerCommand(std::make_unique<NoteCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ShowGlobalsCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ShowLocalsCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ShowVarsCommand>());
+	ScriptEvent::registerCommand(std::make_unique<PlayerInterfaceCommand>());
+	ScriptEvent::registerCommand(std::make_unique<PopupCommand>());
+	ScriptEvent::registerCommand(std::make_unique<EndIntroCommand>());
+	ScriptEvent::registerCommand(std::make_unique<EndGameCommand>());
+	ScriptEvent::registerCommand(std::make_unique<MapMarkerCommand>());
+	ScriptEvent::registerCommand(std::make_unique<DrawSymbolCommand>());
 	
 }
 

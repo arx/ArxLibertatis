@@ -688,16 +688,16 @@ void setupScriptedAnimation() {
 	
 	initAnimationNumbers();
 	
-	ScriptEvent::registerCommand(new RotateCommand);
-	ScriptEvent::registerCommand(new ForceAnimCommand);
-	ScriptEvent::registerCommand(new ForceAngleCommand);
-	ScriptEvent::registerCommand(new PlayAnimCommand);
-	ScriptEvent::registerCommand(new LoadAnimCommand);
-	ScriptEvent::registerCommand(new MoveCommand);
-	ScriptEvent::registerCommand(new SetControlledZoneCommand);
-	ScriptEvent::registerCommand(new SetPathCommand);
-	ScriptEvent::registerCommand(new UsePathCommand);
-	ScriptEvent::registerCommand(new UnsetControlledZoneCommand);
+	ScriptEvent::registerCommand(std::make_unique<RotateCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ForceAnimCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ForceAngleCommand>());
+	ScriptEvent::registerCommand(std::make_unique<PlayAnimCommand>());
+	ScriptEvent::registerCommand(std::make_unique<LoadAnimCommand>());
+	ScriptEvent::registerCommand(std::make_unique<MoveCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetControlledZoneCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetPathCommand>());
+	ScriptEvent::registerCommand(std::make_unique<UsePathCommand>());
+	ScriptEvent::registerCommand(std::make_unique<UnsetControlledZoneCommand>());
 	
 }
 

@@ -670,23 +670,23 @@ public:
 
 void setupScriptedPlayer() {
 	
-	ScriptEvent::registerCommand(new AddBagCommand);
-	ScriptEvent::registerCommand(new AddXpCommand);
-	ScriptEvent::registerCommand(new AddGoldCommand);
-	ScriptEvent::registerCommand(new RidiculousCommand);
-	ScriptEvent::registerCommand(new RuneCommand);
-	ScriptEvent::registerCommand(new QuestCommand);
-	ScriptEvent::registerCommand(new SetPlayerTweakCommand);
-	ScriptEvent::registerCommand(new SetHungerCommand);
-	ScriptEvent::registerCommand(new SetPlayerControlsCommand);
-	ScriptEvent::registerCommand(new StealNPCCommand);
-	ScriptEvent::registerCommand(new SpecialFXCommand);
-	ScriptEvent::registerCommand(new KeyringAddCommand);
-	ScriptEvent::registerCommand(new PlayerLookAtCommand);
-	ScriptEvent::registerCommand(new PrecastCommand);
-	ScriptEvent::registerCommand(new PoisonCommand);
-	ScriptEvent::registerCommand(new PlayerManaDrainCommand);
-	ScriptEvent::registerCommand(new InvulnerabilityCommand);
+	ScriptEvent::registerCommand(std::make_unique<AddBagCommand>());
+	ScriptEvent::registerCommand(std::make_unique<AddXpCommand>());
+	ScriptEvent::registerCommand(std::make_unique<AddGoldCommand>());
+	ScriptEvent::registerCommand(std::make_unique<RidiculousCommand>());
+	ScriptEvent::registerCommand(std::make_unique<RuneCommand>());
+	ScriptEvent::registerCommand(std::make_unique<QuestCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetPlayerTweakCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetHungerCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetPlayerControlsCommand>());
+	ScriptEvent::registerCommand(std::make_unique<StealNPCCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SpecialFXCommand>());
+	ScriptEvent::registerCommand(std::make_unique<KeyringAddCommand>());
+	ScriptEvent::registerCommand(std::make_unique<PlayerLookAtCommand>());
+	ScriptEvent::registerCommand(std::make_unique<PrecastCommand>());
+	ScriptEvent::registerCommand(std::make_unique<PoisonCommand>());
+	ScriptEvent::registerCommand(std::make_unique<PlayerManaDrainCommand>());
+	ScriptEvent::registerCommand(std::make_unique<InvulnerabilityCommand>());
 	
 }
 

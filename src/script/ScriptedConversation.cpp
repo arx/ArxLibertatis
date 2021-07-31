@@ -460,13 +460,13 @@ public:
 
 void setupScriptedConversation() {
 	
-	ScriptEvent::registerCommand(new ConversationCommand);
-	ScriptEvent::registerCommand(new PlayCommand);
-	ScriptEvent::registerCommand(new PlaySpeechCommand);
-	ScriptEvent::registerCommand(new HeroSayCommand);
-	ScriptEvent::registerCommand(new SetSpeakPitchCommand);
-	ScriptEvent::registerCommand(new SpeakCommand);
-	ScriptEvent::registerCommand(new SetStrikeSpeechCommand);
+	ScriptEvent::registerCommand(std::make_unique<ConversationCommand>());
+	ScriptEvent::registerCommand(std::make_unique<PlayCommand>());
+	ScriptEvent::registerCommand(std::make_unique<PlaySpeechCommand>());
+	ScriptEvent::registerCommand(std::make_unique<HeroSayCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetSpeakPitchCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SpeakCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetStrikeSpeechCommand>());
 	
 }
 

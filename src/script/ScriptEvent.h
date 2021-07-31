@@ -21,6 +21,7 @@
 #define ARX_SCRIPT_SCRIPTEVENT_H
 
 #include <map>
+#include <memory>
 #include <string>
 #include <string_view>
 
@@ -42,9 +43,6 @@ public:
 	
 	static long totalCount;
 	
-	ScriptEvent();
-	virtual ~ScriptEvent();
-	
 	static ScriptResult send(const EERIE_SCRIPT * es, Entity * sender, Entity * entity, ScriptEventName event,
 	                         ScriptParameters parameters = { }, size_t position = 0);
 	
@@ -52,7 +50,7 @@ public:
 		return send(es, nullptr, entity, SM_EXECUTELINE, { }, position);
 	}
 	
-	static void registerCommand(script::Command * command);
+	static void registerCommand(std::unique_ptr<script::Command> command);
 	
 	static void init();
 	static void shutdown();
@@ -64,8 +62,7 @@ public:
 	
 private:
 	
-	typedef std::map<std::string_view, script::Command *> Commands;
-	static Commands commands;
+	static std::map<std::string_view, std::unique_ptr<script::Command>> commands;
 	
 };
 

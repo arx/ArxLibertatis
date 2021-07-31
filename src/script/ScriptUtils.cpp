@@ -810,7 +810,7 @@ size_t initSuppressions() {
 	 * dwarf_little_crusher_0003:138
 	 * need to use fake command so other commands on same line get executed!
 	*/
-	ScriptEvent::registerCommand(new FakeCommand("dwarflittlecrusherup"));
+	ScriptEvent::registerCommand(std::make_unique<FakeCommand>("dwarflittlecrusherup"));
 	
 	return suppressionCount;
 }

@@ -372,16 +372,16 @@ public:
 
 void setupScriptedControl() {
 	
-	ScriptEvent::registerCommand(new ActivatePhysicsCommand);
-	ScriptEvent::registerCommand(new AttractorCommand);
-	ScriptEvent::registerCommand(new AmbianceCommand);
-	ScriptEvent::registerCommand(new AnchorBlockCommand);
-	ScriptEvent::registerCommand(new AttachCommand);
-	ScriptEvent::registerCommand(new CineCommand);
-	ScriptEvent::registerCommand(new SetGroupCommand);
-	ScriptEvent::registerCommand(new ZoneParamCommand);
-	ScriptEvent::registerCommand(new MagicCommand);
-	ScriptEvent::registerCommand(new DetachCommand);
+	ScriptEvent::registerCommand(std::make_unique<ActivatePhysicsCommand>());
+	ScriptEvent::registerCommand(std::make_unique<AttractorCommand>());
+	ScriptEvent::registerCommand(std::make_unique<AmbianceCommand>());
+	ScriptEvent::registerCommand(std::make_unique<AnchorBlockCommand>());
+	ScriptEvent::registerCommand(std::make_unique<AttachCommand>());
+	ScriptEvent::registerCommand(std::make_unique<CineCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetGroupCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ZoneParamCommand>());
+	ScriptEvent::registerCommand(std::make_unique<MagicCommand>());
+	ScriptEvent::registerCommand(std::make_unique<DetachCommand>());
 	
 }
 

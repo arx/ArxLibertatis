@@ -890,21 +890,21 @@ void timerCommand(std::string_view name, Context & context) {
 
 void setupScriptedLang() {
 	
-	ScriptEvent::registerCommand(new NopCommand); // TODO(script-parser) remove
-	ScriptEvent::registerCommand(new GotoCommand("goto")); // TODO(script-parser) remove when possible
-	ScriptEvent::registerCommand(new GotoCommand("gosub", true));
-	ScriptEvent::registerCommand(new AbortCommand("accept", Command::AbortAccept));
-	ScriptEvent::registerCommand(new AbortCommand("refuse", Command::AbortRefuse));
-	ScriptEvent::registerCommand(new RandomCommand);
-	ScriptEvent::registerCommand(new ReturnCommand);
-	ScriptEvent::registerCommand(new SetMainEventCommand("setstatus"));
-	ScriptEvent::registerCommand(new SetMainEventCommand("setmainevent"));
-	ScriptEvent::registerCommand(new StartStopTimerCommand("starttimer", true));
-	ScriptEvent::registerCommand(new StartStopTimerCommand("stoptimer", false));
-	ScriptEvent::registerCommand(new SendEventCommand);
-	ScriptEvent::registerCommand(new SetEventCommand);
-	ScriptEvent::registerCommand(new IfCommand);
-	ScriptEvent::registerCommand(new ElseCommand); // TODO(script-parser) remove
+	ScriptEvent::registerCommand(std::make_unique<NopCommand>()); // TODO(script-parser) remove
+	ScriptEvent::registerCommand(std::make_unique<GotoCommand>("goto")); // TODO(script-parser) remove when possible
+	ScriptEvent::registerCommand(std::make_unique<GotoCommand>("gosub", true));
+	ScriptEvent::registerCommand(std::make_unique<AbortCommand>("accept", Command::AbortAccept));
+	ScriptEvent::registerCommand(std::make_unique<AbortCommand>("refuse", Command::AbortRefuse));
+	ScriptEvent::registerCommand(std::make_unique<RandomCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ReturnCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetMainEventCommand>("setstatus"));
+	ScriptEvent::registerCommand(std::make_unique<SetMainEventCommand>("setmainevent"));
+	ScriptEvent::registerCommand(std::make_unique<StartStopTimerCommand>("starttimer", true));
+	ScriptEvent::registerCommand(std::make_unique<StartStopTimerCommand>("stoptimer", false));
+	ScriptEvent::registerCommand(std::make_unique<SendEventCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetEventCommand>());
+	ScriptEvent::registerCommand(std::make_unique<IfCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ElseCommand>()); // TODO(script-parser) remove
 	
 }
 

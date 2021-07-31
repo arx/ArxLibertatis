@@ -758,19 +758,19 @@ public:
 
 void setupScriptedIOControl() {
 	
-	ScriptEvent::registerCommand(new ReplaceMeCommand);
-	ScriptEvent::registerCommand(new CollisionCommand);
-	ScriptEvent::registerCommand(new SpawnCommand);
-	ScriptEvent::registerCommand(new PhysicalCommand);
-	ScriptEvent::registerCommand(new LinkObjToMeCommand);
-	ScriptEvent::registerCommand(new IfExistInternalCommand);
-	ScriptEvent::registerCommand(new IfVisibleCommand);
-	ScriptEvent::registerCommand(new ObjectHideCommand);
-	ScriptEvent::registerCommand(new TeleportCommand);
-	ScriptEvent::registerCommand(new TargetPlayerPosCommand);
-	ScriptEvent::registerCommand(new DestroyCommand);
-	ScriptEvent::registerCommand(new DoDamageCommand);
-	ScriptEvent::registerCommand(new DamagerCommand);
+	ScriptEvent::registerCommand(std::make_unique<ReplaceMeCommand>());
+	ScriptEvent::registerCommand(std::make_unique<CollisionCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SpawnCommand>());
+	ScriptEvent::registerCommand(std::make_unique<PhysicalCommand>());
+	ScriptEvent::registerCommand(std::make_unique<LinkObjToMeCommand>());
+	ScriptEvent::registerCommand(std::make_unique<IfExistInternalCommand>());
+	ScriptEvent::registerCommand(std::make_unique<IfVisibleCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ObjectHideCommand>());
+	ScriptEvent::registerCommand(std::make_unique<TeleportCommand>());
+	ScriptEvent::registerCommand(std::make_unique<TargetPlayerPosCommand>());
+	ScriptEvent::registerCommand(std::make_unique<DestroyCommand>());
+	ScriptEvent::registerCommand(std::make_unique<DoDamageCommand>());
+	ScriptEvent::registerCommand(std::make_unique<DamagerCommand>());
 	
 }
 

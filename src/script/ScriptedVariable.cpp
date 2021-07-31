@@ -301,14 +301,14 @@ public:
 
 void setupScriptedVariable() {
 	
-	ScriptEvent::registerCommand(new SetCommand);
-	ScriptEvent::registerCommand(new ArithmeticCommand("inc", ArithmeticCommand::Add));
-	ScriptEvent::registerCommand(new ArithmeticCommand("dec", ArithmeticCommand::Subtract));
-	ScriptEvent::registerCommand(new ArithmeticCommand("mul", ArithmeticCommand::Multiply));
-	ScriptEvent::registerCommand(new ArithmeticCommand("div", ArithmeticCommand::Divide));
-	ScriptEvent::registerCommand(new UnsetCommand);
-	ScriptEvent::registerCommand(new IncrementCommand("++", 1));
-	ScriptEvent::registerCommand(new IncrementCommand("--", -1));
+	ScriptEvent::registerCommand(std::make_unique<SetCommand>());
+	ScriptEvent::registerCommand(std::make_unique<ArithmeticCommand>("inc", ArithmeticCommand::Add));
+	ScriptEvent::registerCommand(std::make_unique<ArithmeticCommand>("dec", ArithmeticCommand::Subtract));
+	ScriptEvent::registerCommand(std::make_unique<ArithmeticCommand>("mul", ArithmeticCommand::Multiply));
+	ScriptEvent::registerCommand(std::make_unique<ArithmeticCommand>("div", ArithmeticCommand::Divide));
+	ScriptEvent::registerCommand(std::make_unique<UnsetCommand>());
+	ScriptEvent::registerCommand(std::make_unique<IncrementCommand>("++", 1));
+	ScriptEvent::registerCommand(std::make_unique<IncrementCommand>("--", -1));
 	
 }
 

@@ -536,10 +536,10 @@ public:
 
 void setupScriptedInventory() {
 	
-	ScriptEvent::registerCommand(new InventoryCommand);
-	ScriptEvent::registerCommand(new EquipCommand);
-	ScriptEvent::registerCommand(new WeaponCommand);
-	ScriptEvent::registerCommand(new SetWeaponCommand);
+	ScriptEvent::registerCommand(std::make_unique<InventoryCommand>());
+	ScriptEvent::registerCommand(std::make_unique<EquipCommand>());
+	ScriptEvent::registerCommand(std::make_unique<WeaponCommand>());
+	ScriptEvent::registerCommand(std::make_unique<SetWeaponCommand>());
 	
 }
 
