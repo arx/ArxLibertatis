@@ -792,13 +792,15 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 }
 
 void ARX_INTERACTIVE_ClearAllDynData() {
+	
 	resetAllNpcBehaviors();
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		ARX_INTERACTIVE_ClearIODynData(e);
+	
+	for(Entity & entity : entities) {
+		if(entity != *entities.player()) {
+			ARX_INTERACTIVE_ClearIODynData(&entity);
+		}
 	}
+	
 }
 
 static void RestoreIOInitPos(Entity * io) {
