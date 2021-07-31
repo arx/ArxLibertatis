@@ -142,10 +142,8 @@ public:
 		// Check that the init script didn't put the item anywhere
 		bool reInsert = !locateInInventories(ioo);
 		for(size_t i = 0; i < MAX_EQUIPED; i++) {
-			if(ValidIONum(player.equiped[i])) {
-				if(entities[player.equiped[i]] == ioo) {
-					reInsert = false;
-				}
+			if(entities.get(player.equiped[i]) == ioo) {
+				reInsert = false;
 			}
 		}
 		
@@ -156,11 +154,9 @@ public:
 				}
 			} else {
 				for(size_t i = 0; i < MAX_EQUIPED; i++) {
-					if(ValidIONum(player.equiped[i])) {
-						if(entities[player.equiped[i]] == io) {
-							ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
-							ARX_EQUIPMENT_Equip(entities.player(), ioo);
-						}
+					if(entities.get(player.equiped[i]) == io) {
+						ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
+						ARX_EQUIPMENT_Equip(entities.player(), ioo);
 					}
 				}
 			}
@@ -371,13 +367,13 @@ public:
 		
 		DebugScript(' ' << name << ' ' << attach);
 		
-		EntityHandle t = entities.getById(name);
-		if(!ValidIONum(t)) {
+		Entity * target = entities.getById(name, nullptr);
+		if(!target) {
 			ScriptWarning << "unknown target: " << name;
 			return Failed;
 		}
 		
-		LinkObjToMe(context.getEntity(), entities[t], attach);
+		LinkObjToMe(context.getEntity(), target, attach);
 		
 		return Success;
 	}
@@ -432,9 +428,8 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		EntityHandle t = entities.getById(target);
-		
-		if(!ValidIONum(t) || !hasVisibility(context.getEntity(), entities[t])) {
+		Entity * entity = entities.getById(target, nullptr);
+		if(!entity || !hasVisibility(context.getEntity(), entity)) {
 			context.skipBlock();
 		}
 		
