@@ -278,13 +278,9 @@ ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event,
 	
 	ScriptResult ret = ACCEPT;
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		if(e) {
-			if(SendIOScriptEvent(sender, e, event, parameters) == REFUSE) {
-				ret = REFUSE;
-			}
+	for(Entity & entity : entities) {
+		if(SendIOScriptEvent(sender, &entity, event, parameters) == REFUSE) {
+			ret = REFUSE;
 		}
 	}
 	
