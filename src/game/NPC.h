@@ -269,7 +269,7 @@ void ARX_PHYSICS_Apply();
 void GetTargetPos(Entity * io, unsigned long smoothing = 0);
 
 float GetIOHeight(Entity * io);
-float GetIORadius(const Entity * io);
+float getEntityRadius(const Entity & entity);
 
 Cylinder GetIOCyl(Entity * io);
 

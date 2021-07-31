@@ -475,7 +475,7 @@ static void drawDebugEntityPhysicsCylinder(Entity & entity) {
 		levitate = CFLAG_LEVITATE;
 	}
 	
-	Cylinder cyll = Cylinder(entity.physics.startpos, GetIORadius(&entity), GetIOHeight(&entity));
+	Cylinder cyll = Cylinder(entity.physics.startpos, getEntityRadius(entity), GetIOHeight(&entity));
 	
 	drawLineCylinder(cyll, Color::green);
 	

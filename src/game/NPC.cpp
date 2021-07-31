@@ -1688,17 +1688,17 @@ float GetIOHeight(Entity * io) {
 	return std::min(v, -45.f);
 }
 
-float GetIORadius(const Entity * io) {
+float getEntityRadius(const Entity & entity) {
 	
-	if(io == entities.player()) {
+	if(entity == *entities.player()) {
 		return player.baseRadius();
 	}
 	
-	return glm::clamp(io->original_radius * io->scale, 25.f, 60.f);
+	return glm::clamp(entity.original_radius * entity.scale, 25.f, 60.f);
 }
 
 Cylinder GetIOCyl(Entity * io) {
-	return Cylinder(io->pos, GetIORadius(io), GetIOHeight(io));
+	return Cylinder(io->pos, getEntityRadius(*io), GetIOHeight(io));
 }
 
 
@@ -1718,14 +1718,14 @@ static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 		if(entities[targ]->ioflags & IO_NO_COLLISIONS) {
 			targ_dist = 0.f;
 		} else {
-			targ_dist = std::max(entities[targ]->physics.cyl.radius, GetIORadius(entities[targ]));
+			targ_dist = std::max(entities[targ]->physics.cyl.radius, getEntityRadius(*entities[targ]));
 		}
 		
 		// Compute min self close-dist
 		if(io->ioflags & IO_NO_COLLISIONS) {
 			self_dist = 0.f;
 		} else {
-			self_dist = std::max(io->physics.cyl.radius, GetIORadius(io));
+			self_dist = std::max(io->physics.cyl.radius, getEntityRadius(*io));
 		}
 		
 		// Base tolerance = radius added
@@ -2103,7 +2103,7 @@ static void ManageNPCMovement_End(Entity * io) {
 
 	io->requestRoomUpdate = true;
 	io->physics.cyl.origin = io->pos = phys.cyl.origin;
-	io->physics.cyl.radius = GetIORadius(io);
+	io->physics.cyl.radius = getEntityRadius(*io);
 	io->physics.cyl.height = GetIOHeight(io);
 	
 	// Compute distance 2D to target.
@@ -2605,7 +2605,7 @@ void CheckNPCEx(Entity & io) {
 		// Use Portal Room Distance for Extra Visibility Clipping.
 		if(playerRoom > -1 && io.room > -1 && fdist > 2000.f) {
 			// nothing to do
-		} else if(ds < square(GetIORadius(&io) + GetIORadius(entities.player()) + 15.f)
+		} else if(ds < square(getEntityRadius(io) + getEntityRadius(*entities.player()) + 15.f)
 		          && glm::abs(player.pos.y - io.pos.y) < 200.f) {
 			Visible = 1;
 		} else { // Make full visibility test
