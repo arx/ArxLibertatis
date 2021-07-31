@@ -389,7 +389,6 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 				PrepareCamera(&m_camera, g_size);
 				break;
 			case INTERP_LINEAR:
-				break;
 			case INTERP_BEZIER:
 				break;
 		}
@@ -447,10 +446,6 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	switch(fx & CinematicFxPostMask) {
 		case FX_FLASH:
 			FlashBlancEnCours = FX_FlashBlanc(Vec2f(cinRenderSize), speed, colorflash, GetTrackFPS(), g_fpsCounter.FPS);
-			break;
-		case FX_APPEAR:
-			break;
-		case FX_APPEAR2:
 			break;
 		default:
 			break;
