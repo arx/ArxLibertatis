@@ -493,7 +493,7 @@ static void drawDebugEntityPhysicsCylinder(Entity & entity) {
 static void drawDebugEntityPhysicsCylinders() {
 	
 	for(Entity & entity : entities) {
-		if(closerThan(entity.pos, player.pos, DebugPhysicsMaxDistance)) {
+		if(&entity != entities.player() && closerThan(entity.pos, player.pos, DebugPhysicsMaxDistance)) {
 			drawDebugCollisionShape(entity.obj);
 			drawDebugEntityPhysicsCylinder(entity);
 		}
