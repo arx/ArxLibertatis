@@ -219,7 +219,7 @@ DECLARE_FLAGS_OPERATORS(EntitySfxFlags)
 enum GameFlag {
 	GFLAG_INTERACTIVITY     = 1 << 0,
 	GFLAG_ISINTREATZONE     = 1 << 1,
-	GFLAG_WASINTREATZONE    = 1 << 2,
+	GFLAG_WASINTREATZONE    = 1 << 2, // TODO remove
 	GFLAG_NEEDINIT          = 1 << 3,
 	GFLAG_INTERACTIVITYHIDE = 1 << 4,
 	GFLAG_DOOR              = 1 << 5,

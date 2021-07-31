@@ -559,12 +559,6 @@ void PrepareIOTreatZone(long flag) {
 			treat = true;
 		}
 		
-		if(entity.gameFlags & GFLAG_ISINTREATZONE) {
-			entity.gameFlags |= GFLAG_WASINTREATZONE;
-		} else {
-			entity.gameFlags &= ~GFLAG_WASINTREATZONE;
-		}
-		
 		if(treat) {
 			entity.gameFlags |= GFLAG_ISINTREATZONE;
 			TREATZONE_AddIO(&entity);
@@ -573,19 +567,13 @@ void PrepareIOTreatZone(long flag) {
 				weapon.room = entity.room;
 				weapon.requestRoomUpdate = entity.requestRoomUpdate;
 			}
-		} else {
-			entity.gameFlags &= ~GFLAG_ISINTREATZONE;
-		}
-		
-		if(!(entity.gameFlags & GFLAG_ISINTREATZONE) && (entity.gameFlags & GFLAG_WASINTREATZONE)) {
+		} else if((entity.gameFlags & GFLAG_ISINTREATZONE)
+		          && SendIOScriptEvent(nullptr, &entity, SM_TREATOUT) != REFUSE) {
 			// Going away
-			entity.gameFlags |= GFLAG_ISINTREATZONE;
-			if(SendIOScriptEvent(nullptr, &entity, SM_TREATOUT) != REFUSE) {
-				if(entity.ioflags & IO_NPC) {
-					entity._npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
-				}
-				entity.gameFlags &= ~GFLAG_ISINTREATZONE;
+			if(entity.ioflags & IO_NPC) {
+				entity._npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
 			}
+			entity.gameFlags &= ~GFLAG_ISINTREATZONE;
 		}
 		
 	}
