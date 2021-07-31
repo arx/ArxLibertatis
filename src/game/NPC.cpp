@@ -2094,11 +2094,10 @@ static void ManageNPCMovement_End(Entity * io) {
 		// Object was unable to move to target... Stop it
 		io->_npcdata->moveproblem += 3;
 	}
-
+	
 	io->requestRoomUpdate = true;
-	io->physics.cyl.origin = io->pos = phys.cyl.origin;
-	io->physics.cyl.radius = getEntityRadius(*io);
-	io->physics.cyl.height = getEntityHeight(*io);
+	io->pos = phys.cyl.origin;
+	io->physics.cyl = getEntityCylinder(*io);
 	
 	// Compute distance 2D to target.
 	_dist = glm::distance(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
