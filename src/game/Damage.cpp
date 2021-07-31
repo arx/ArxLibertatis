@@ -697,7 +697,7 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 				if(flags & DAMAGE_TYPE_DRAIN_MANA) {
 					damagesdone = ARX_DAMAGES_DrainMana(io_target, dmg);
 				} else {
-					damagesdone = ARX_DAMAGES_DamageNPC(io_target, dmg, source, true, pos);
+					damagesdone = damageNpc(*io_target, dmg, entities.get(source), true, pos);
 				}
 			}
 		} else {
@@ -718,159 +718,131 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 	}
 }
 
-float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool isSpellHit, const Vec3f * pos) {
+float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const Vec3f * pos) {
 	
-	if(   !io
-	   || !io->show
-	   || !(io->ioflags & IO_NPC)
-	   || (io->ioflags & IO_INVULNERABILITY)
-	) {
+	arx_assert(npc.ioflags & IO_NPC);
+	
+	if(!npc.show || (npc.ioflags & IO_INVULNERABILITY)) {
 		return 0.f;
 	}
-
-	float damagesdone = 0.f;
-
-	if(io->_npcdata->lifePool.current <= 0.f) {
-		if(source != EntityHandle_Player || ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
-			if(dmg >= io->_npcdata->lifePool.max * 0.4f && pos)
-				ARX_NPC_TryToCutSomething(io, pos);
-
-			return damagesdone;
+	
+	if(npc._npcdata->lifePool.current <= 0.f) {
+		if((source != entities.player() || ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
+		   && dmg >= npc._npcdata->lifePool.max * 0.4f && pos) {
+			ARX_NPC_TryToCutSomething(&npc, pos);
 		}
-
-		return damagesdone;
+		return 0.f;
 	}
-
-	io->dmg_sum += dmg;
 	
-	GameDuration elapsed = g_gameTime.now() - io->ouch_time;
+	npc.dmg_sum += dmg;
 	
+	GameDuration elapsed = g_gameTime.now() - npc.ouch_time;
 	if(elapsed > GameDurationMs(500)) {
-		
-		Entity * sender = ValidIONum(source) ? entities[source] : nullptr;
-		
-		io->ouch_time = g_gameTime.now();
-		
-		ScriptParameters parameters = getOuchEventParameter(io);
+		npc.ouch_time = g_gameTime.now();
+		ScriptParameters parameters = getOuchEventParameter(&npc);
+		Entity * sender = source;
 		if(sender && (sender->ioflags & IO_NPC) && sender->_npcdata->summoner == EntityHandle_Player) {
 			sender = entities.player();
 			parameters.push_back("summoned");
 		}
-		
-		SendIOScriptEvent(sender, io, SM_OUCH, parameters);
-		
-		io->dmg_sum = 0.f;
-		
-		spells.endByTarget(io->index(), SPELL_CONFUSE);
+		SendIOScriptEvent(sender, &npc, SM_OUCH, parameters);
+		npc.dmg_sum = 0.f;
+		spells.endByTarget(npc.index(), SPELL_CONFUSE);
 	}
 	
-	if(dmg >= 0.f) {
-		if(ValidIONum(source)) {
-			Entity * pio = nullptr;
-
-			if(source == EntityHandle_Player) {
-				if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
-					pio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
-
-					if((pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) || isSpellHit) {
-						pio = nullptr;
-					}
-				}
-			} else {
-				if(entities[source]->ioflags & IO_NPC) {
-					pio = entities[source]->_npcdata->weapon;
-					if(pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) {
-						pio = nullptr;
-					}
+	if(dmg < 0.f) {
+		return 0.f;
+	}
+	
+	if(source) {
+		Entity * pio = nullptr;
+		if(source == entities.player()) {
+			if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
+				pio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+				if((pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) || isSpellHit) {
+					pio = nullptr;
 				}
 			}
-
-			if(!pio)
-				pio = entities[source];
-
-			if(pio && pio->poisonous && (pio->poisonous_count != 0)) {
-				if(Random::getf(0.f, 100.f) > io->_npcdata->resist_poison) {
-					io->_npcdata->poisonned += pio->poisonous;
-				}
-
-				if (pio->poisonous_count != -1)
-					pio->poisonous_count--;
-			}
-		}
-
-		if(io->script.valid) {
-			if(source.handleData() >= EntityHandle_Player.handleData()) {
-				
-				ScriptParameters parameters(dmg);
-				if(source == EntityHandle_Player) {
-					if(isSpellHit) {
-						parameters.push_back("spell");
-					} else {
-						switch (ARX_EQUIPMENT_GetPlayerWeaponType()) {
-							case WEAPON_BARE:
-								parameters.push_back("bare");
-								break;
-							case WEAPON_DAGGER:
-								parameters.push_back("dagger");
-								break;
-							case WEAPON_1H:
-								parameters.push_back("1h");
-								break;
-							case WEAPON_2H:
-								parameters.push_back("2h");
-								break;
-							case WEAPON_BOW:
-								parameters.push_back("arrow");
-								break;
-							default: break;
-						}
-					}
-				}
-				
-				Entity * sender = ValidIONum(source) ? entities[source] : nullptr;
-				if(sender && (sender->ioflags & IO_NPC) && sender->_npcdata->summoner == EntityHandle_Player) {
-					sender = entities.player();
-					parameters.push_back("summoned");
-				}
-				
-				if(SendIOScriptEvent(sender, io, SM_HIT, parameters) != ACCEPT) {
-					return damagesdone;
-				}
-				
-			}
-		}
-
-		damagesdone = std::min(dmg, io->_npcdata->lifePool.current);
-		io->_npcdata->lifePool.current -= dmg;
-		
-		float fHitFlash = 0;
-		if(io->_npcdata->lifePool.current <= 0) {
-			fHitFlash = 0;
 		} else {
-			fHitFlash = io->_npcdata->lifePool.current / io->_npcdata->lifePool.max;
-		}
-		g_hudRoot.hitStrengthGauge.requestFlash(fHitFlash);
-		
-		
-		if(io->_npcdata->lifePool.current <= 0.f) {
-			io->_npcdata->lifePool.current = 0.f;
-			if(source != EntityHandle_Player || ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
-				if((dmg >= io->_npcdata->lifePool.max * ( 1.0f / 2 )) && pos)
-					ARX_NPC_TryToCutSomething(io, pos);
-			}
-			if(ValidIONum(source)) {
-				long xp = io->_npcdata->xpvalue;
-				ARX_DAMAGES_ForceDeath(*io, entities[source]);
-				if(source == EntityHandle_Player
-				   || ((entities[source]->ioflags & IO_NPC)
-				       && entities[source]->_npcdata->summoner == EntityHandle_Player)) {
-					ARX_PLAYER_Modify_XP(xp);
+			if(source->ioflags & IO_NPC) {
+				pio = source->_npcdata->weapon;
+				if(pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) {
+					pio = nullptr;
 				}
-			} else {
-				ARX_DAMAGES_ForceDeath(*io, nullptr);
 			}
 		}
-		
+		if(!pio) {
+			pio = source;
+		}
+		if(pio && pio->poisonous && (pio->poisonous_count != 0)) {
+			if(Random::getf(0.f, 100.f) > npc._npcdata->resist_poison) {
+				npc._npcdata->poisonned += pio->poisonous;
+			}
+			if(pio->poisonous_count != -1) {
+				pio->poisonous_count--;
+			}
+		}
+	}
+	
+	if(npc.script.valid && source) {
+		ScriptParameters parameters(dmg);
+		if(source == entities.player()) {
+			if(isSpellHit) {
+				parameters.push_back("spell");
+			} else {
+				switch (ARX_EQUIPMENT_GetPlayerWeaponType()) {
+					case WEAPON_BARE:
+						parameters.push_back("bare");
+						break;
+					case WEAPON_DAGGER:
+						parameters.push_back("dagger");
+						break;
+					case WEAPON_1H:
+						parameters.push_back("1h");
+						break;
+					case WEAPON_2H:
+						parameters.push_back("2h");
+						break;
+					case WEAPON_BOW:
+						parameters.push_back("arrow");
+						break;
+					default: break;
+				}
+			}
+		}
+		Entity * sender = source;
+		if(sender && (sender->ioflags & IO_NPC) && sender->_npcdata->summoner == EntityHandle_Player) {
+			sender = entities.player();
+			parameters.push_back("summoned");
+		}
+		if(SendIOScriptEvent(sender, &npc, SM_HIT, parameters) != ACCEPT) {
+			return 0.f;
+		}
+	}
+	
+	float damagesdone = std::min(dmg, npc._npcdata->lifePool.current);
+	npc._npcdata->lifePool.current -= dmg;
+	
+	float fHitFlash = 0;
+	if(npc._npcdata->lifePool.current <= 0) {
+		fHitFlash = 0;
+	} else {
+		fHitFlash = npc._npcdata->lifePool.current / npc._npcdata->lifePool.max;
+	}
+	g_hudRoot.hitStrengthGauge.requestFlash(fHitFlash);
+	
+	if(npc._npcdata->lifePool.current <= 0.f) {
+		npc._npcdata->lifePool.current = 0.f;
+		if((source != entities.player() || ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
+		   && dmg >= npc._npcdata->lifePool.max * 0.5f && pos) {
+			ARX_NPC_TryToCutSomething(&npc, pos);
+		}
+		long xp = npc._npcdata->xpvalue;
+		ARX_DAMAGES_ForceDeath(npc, source);
+		if(source == entities.player()
+		   || (source && (source->ioflags & IO_NPC) && source->_npcdata->summoner == EntityHandle_Player)) {
+			ARX_PLAYER_Modify_XP(xp);
+		}
 	}
 	
 	return damagesdone;
@@ -1106,7 +1078,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 						if(damage.params.type & DAMAGE_TYPE_COLD) {
 							dmg = ARX_SPELLS_ApplyColdProtection(&entity, dmg);
 						}
-						damagesdone = ARX_DAMAGES_DamageNPC(&entity, dmg, damage.params.source, true, &damage.params.pos);
+						damagesdone = damageNpc(entity, dmg, entities.get(damage.params.source), true, &damage.params.pos);
 					}
 					if(damagesdone > 0 && (damage.params.flags & DAMAGE_SPAWN_BLOOD)) {
 						ARX_PARTICLES_Spawn_Blood(damage.params.pos, damagesdone, damage.params.source);
@@ -1341,7 +1313,7 @@ void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 			damagePlayer(dmg, typ, source);
 			ARX_DAMAGES_DamagePlayerEquipment(dmg);
 		} else if(entity.ioflags & IO_NPC) {
-			ARX_DAMAGES_DamageNPC(&entity, dmg * ratio, numsource, true, &sphere.origin);
+			damageNpc(entity, dmg * ratio, source, true, &sphere.origin);
 		} else if(entity.ioflags & IO_FIX) {
 			ARX_DAMAGES_DamageFIX(&entity, dmg * ratio, numsource, true);
 		}

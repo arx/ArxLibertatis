@@ -357,14 +357,9 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 
 							if(spell) {
 								spells.endSpell(spell);
-								float damages = 20 * spell->m_level;
-								damages = ARX_SPELLS_ApplyFireProtection(&io, damages);
-
-								if (ValidIONum(spell->m_caster))
-									ARX_DAMAGES_DamageNPC(&io, damages, spell->m_caster, true, &entities[spell->m_caster]->pos);
-								else
-									ARX_DAMAGES_DamageNPC(&io, damages, spell->m_caster, true, &io.pos);
-
+								float damages = ARX_SPELLS_ApplyFireProtection(&io, 20 * spell->m_level);
+								Entity * caster = entities.get(spell->m_caster);
+								damageNpc(io, damages, caster, true, caster ? &caster->pos : &io.pos);
 								ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &io.pos);
 							}
 						} else {

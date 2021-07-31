@@ -435,13 +435,11 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 							Color color = target._npcdata->blood_color;
 							Vec3f pos = target.obj->vertexWorldPositions[hitpoint].v;
 							
-							if(target.ioflags & IO_NPC) {
-								target._npcdata->SPLAT_TOT_NB = 0;
-								ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, &target);
-							}
+							target._npcdata->SPLAT_TOT_NB = 0;
+							ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, &target);
 							
 							ARX_PARTICLES_Spawn_Blood2(pos, damages, color, &target);
-							ARX_DAMAGES_DamageNPC(&target, damages, projectile.source, false, &pos);
+							damageNpc(target, damages, entities.get(projectile.source), false, &pos);
 							
 							if(Random::getf(0.f, 100.f) > target._npcdata->resist_poison) {
 								target._npcdata->poisonned += projectile.poisonous;
