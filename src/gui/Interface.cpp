@@ -551,30 +551,23 @@ static bool isPlayerLookingAtEnemy() {
 	Entity * closestNPCInFront = nullptr;
 	bool isEnemyNearBy = false;
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * entity = entities[handle];
+	for(Entity & npc : entities(IO_NPC)) {
 		
-		if(!entity || !(entity->ioflags & IO_NPC)) {
-			continue;
-		}
-		
-		float distance = glm::distance(entity->pos, entities.player()->pos);
-		if(distance > maxLookAtDistance) {
+		float distance = glm::distance(npc.pos, entities.player()->pos);
+		if(npc == *entities.player() || distance > maxLookAtDistance) {
 			continue;
 		}
 		
 		// Determine the direction of the entity from the player
-		Vec3f dir = glm::normalize(Vec3f(entity->pos.x, 0.f, entity->pos.z)
-		                           - Vec3f(player.pos.x, 0.f, player.pos.z));
+		Vec3f dir = glm::normalize(Vec3f(npc.pos.x, 0.f, npc.pos.z) - Vec3f(player.pos.x, 0.f, player.pos.z));
 		float cangle = glm::dot(dir, angleToVectorXZ(player.angle.getYaw()));
 		
 		if(cangle > glm::cos(maxLookAtAngle)) {
 			if(distance < closestNPCInFrontDistance) {
 				closestNPCInFrontDistance = distance;
-				closestNPCInFront = entity;
+				closestNPCInFront = &npc;
 			}
-		} else if(distance <= maxNearByDistance && isEnemy(entity)) {
+		} else if(distance <= maxNearByDistance && isEnemy(&npc)) {
 			isEnemyNearBy = true;
 		}
 		
