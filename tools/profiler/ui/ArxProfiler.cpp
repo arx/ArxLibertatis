@@ -333,11 +333,10 @@ void ProfilerView::paintEvent(QPaintEvent * event) {
 	
 	qreal nextY = 5;
 	
-	for(ThreadsData::iterator it = m_data->begin(); it != m_data->end(); ++it) {
-		ThreadData & threadData = it->second;
+	for(const auto & thread : *m_data) {
 		painter.drawLine(QPointF(0, nextY), QPointF(viewport()->width(), nextY));
-		painter.drawText(QPointF(0, nextY + 14), threadData.info.threadName);
-		nextY += qreal(threadData.maxDepth) * ITEM_HEIGHT + THREAD_SPACING;
+		painter.drawText(QPointF(0, nextY + 14), thread.second.info.threadName);
+		nextY += qreal(thread.second.maxDepth) * ITEM_HEIGHT + THREAD_SPACING;
 	}
 	
 	painter.end();
