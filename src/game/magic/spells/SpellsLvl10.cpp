@@ -199,31 +199,25 @@ bool ControlTargetSpell::CanLaunch() {
 	return false;
 }
 
-void ControlTargetSpell::Launch()
-{
-	// TODO copy-paste
-	for(size_t ii = 1; ii < entities.size(); ii++) {
-		const EntityHandle handle = EntityHandle(ii);
-		Entity * ioo = entities[handle];
+void ControlTargetSpell::Launch() {
+	
+	for(Entity & npc : entities.inScene(IO_NPC)) {
 		
-		if(!ioo || !(ioo->ioflags & IO_NPC)) {
+		if(npc._npcdata->lifePool.current <= 0.f) {
 			continue;
 		}
 		
-		if(ioo->_npcdata->lifePool.current <= 0.f || ioo->show != SHOW_FLAG_IN_SCENE) {
+		if(npc.groups.find("demon") == npc.groups.end()) {
 			continue;
 		}
 		
-		if(ioo->groups.find("demon") == ioo->groups.end()) {
-			continue;
-		}
-		
-		if(closerThan(ioo->pos, m_caster_pos, 900.f)) {
+		if(closerThan(npc.pos, m_caster_pos, 900.f)) {
 			ScriptParameters parameters;
 			parameters.push_back(entities[m_target]->idString());
 			parameters.push_back(long(m_level));
-			SendIOScriptEvent(entities.get(m_caster), ioo, "npc_control", parameters);
+			SendIOScriptEvent(entities.get(m_caster), &npc, "npc_control", parameters);
 		}
+		
 	}
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_CONTROL_TARGET);
