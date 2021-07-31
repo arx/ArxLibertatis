@@ -874,21 +874,21 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 // source = -1 no source but valid pos
 // source = 0  player
 // source > 0  IO
-static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
+static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 	
 	ARX_PROFILE_FUNC();
-	
-	DAMAGE_INFO & damage = g_damages[j.handleData()];
 	
 	if(!damage.exist) {
 		return;
 	}
-		
+	
+	Entity * source = entities.get(damage.params.source);
+	
 	if(damage.params.flags & DAMAGE_FLAG_FOLLOW_SOURCE) {
-		if(damage.params.source == EntityHandle_Player) {
+		if(source == entities.player()) {
 			damage.params.pos = player.pos;
-		} else if(ValidIONum(damage.params.source)) {
-			damage.params.pos = entities[damage.params.source]->pos;
+		} else if(source) {
+			damage.params.pos = source->pos;
 		}
 	}
 	
@@ -906,7 +906,6 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 		dmg = damage.params.damages * (FD / GameDurationMs(1000));
 	}
 	
-	bool validsource = ValidIONum(damage.params.source);
 	float divradius = 1.f / damage.params.radius;
 	
 	EntityFlags flags = IO_NPC;
@@ -916,7 +915,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 	for(Entity & entity : entities.inScene(flags)) {
 		
 		if(!(entity.gameFlags & GFLAG_ISINTREATZONE)
-		   || (damage.params.source == entity.index() && (damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE))) {
+		   || (&entity == source && (damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE))) {
 			continue;
 		}
 		
@@ -929,8 +928,8 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 		
 		if(entity.ioflags & IO_NPC) {
 			
-			if(entity != *entities.player() && damage.params.source != EntityHandle_Player && validsource
-			   && HaveCommonGroup(&entity, entities[damage.params.source])) {
+			if(entity != *entities.player() && source != entities.player() && source
+			   && HaveCommonGroup(&entity, source)) {
 				continue;
 			}
 			
@@ -989,13 +988,11 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 					entity._npcdata->manaPool.current -= manadrained;
 				}
 				
-				if (damage.params.source == EntityHandle_Player) {
+				if(source == entities.player()) {
 					player.manaPool.current = std::min(player.manaPool.current + manadrained, player.Full_maxmana);
-				} else if(Entity * source = entities.get(damage.params.source)) {
-					if(source->ioflags & IO_NPC) {
-						source->_npcdata->manaPool.current = std::min(source->_npcdata->manaPool.current + manadrained,
-						                                              source->_npcdata->manaPool.max);
-					}
+				} else if(source && (source->ioflags & IO_NPC)) {
+					source->_npcdata->manaPool.current = std::min(source->_npcdata->manaPool.current + manadrained,
+					                                              source->_npcdata->manaPool.max);
 				}
 				
 			} else {
@@ -1020,12 +1017,12 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 						}
 						if(damage.params.type & DAMAGE_TYPE_FIRE) {
 							dmg = ARX_SPELLS_ApplyFireProtection(&entity, dmg);
-							igniteEntity(entity, entities.get(damage.params.source), dmg);
+							igniteEntity(entity, source, dmg);
 						}
 						if(damage.params.type & DAMAGE_TYPE_COLD) {
 							dmg = ARX_SPELLS_ApplyColdProtection(&entity, dmg);
 						}
-						damagesdone = damagePlayer(dmg, damage.params.type, entities.get(damage.params.source));
+						damagesdone = damagePlayer(dmg, damage.params.type, source);
 					}
 				} else {
 					if(damage.params.type & DAMAGE_TYPE_POISON) {
@@ -1039,7 +1036,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 					} else {
 						if(damage.params.type & DAMAGE_TYPE_FIRE) {
 							dmg = ARX_SPELLS_ApplyFireProtection(&entity, dmg);
-							igniteEntity(entity, entities.get(damage.params.source), dmg);
+							igniteEntity(entity, source, dmg);
 						}
 						if((damage.params.type & DAMAGE_TYPE_MAGICAL)
 						    && !(damage.params.type & DAMAGE_TYPE_FIRE)
@@ -1050,25 +1047,22 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 						if(damage.params.type & DAMAGE_TYPE_COLD) {
 							dmg = ARX_SPELLS_ApplyColdProtection(&entity, dmg);
 						}
-						damagesdone = damageNpc(entity, dmg, entities.get(damage.params.source), true, &damage.params.pos);
+						damagesdone = damageNpc(entity, dmg, source, true, &damage.params.pos);
 					}
 					if(damagesdone > 0 && (damage.params.flags & DAMAGE_SPAWN_BLOOD)) {
 						ARX_PARTICLES_Spawn_Blood(damage.params.pos, damagesdone, damage.params.source);
 					}
 				}
 				
-				if(damage.params.type & DAMAGE_TYPE_DRAIN_LIFE) {
-					Entity * source = entities.get(damage.params.source);
-					if(source && (source->ioflags & IO_NPC)) {
-						healCharacter(*source, damagesdone);
-					}
+				if((damage.params.type & DAMAGE_TYPE_DRAIN_LIFE) && source && (source->ioflags & IO_NPC)) {
+					healCharacter(*source, damagesdone);
 				}
 				
 			}
 			
 		} else if(entity.ioflags & IO_FIX) {
 			
-			damageProp(entity, dmg, entities.get(damage.params.source), true);
+			damageProp(entity, dmg, source, true);
 			
 		}
 		
@@ -1084,8 +1078,10 @@ void ARX_DAMAGES_UpdateAll() {
 	
 	ARX_PROFILE_FUNC();
 	
-	for (size_t j = 0; j < MAX_DAMAGES; j++)
-		ARX_DAMAGES_UpdateDamage(DamageHandle(j), g_gameTime.now());
+	for(size_t j = 0; j < MAX_DAMAGES; j++) {
+		updateDamage(g_damages[j], g_gameTime.now());
+	}
+	
 }
 
 static bool SphereInIO(Entity * io, const Sphere & sphere) {
