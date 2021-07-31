@@ -253,7 +253,7 @@ void SummonCreatureSpell::Update() {
 }
 
 bool FakeSummonSpell::CanLaunch() {
-	return (m_caster.handleData() > EntityHandle_Player.handleData() && ValidIONum(m_target));
+	return (m_caster.handleData() > EntityHandle_Player.handleData() && entities.get(m_target));
 }
 
 void FakeSummonSpell::Launch() {
@@ -262,7 +262,7 @@ void FakeSummonSpell::Launch() {
 	m_fManaCostPerSecond = 1.9f;
 	m_duration = GameDurationMs(4000);
 	
-	Vec3f target = entities[m_target]->pos;
+	Vec3f target = entities.get(m_target)->pos;
 	if(m_target != EntityHandle_Player) {
 		target.y += player.baseHeight();
 	}
@@ -394,7 +394,8 @@ void NegateMagicSpell::Update() {
 
 void NegateMagicSpell::LaunchAntiMagicField() {
 	
-	if(!ValidIONum(m_target)) {
+	Entity * target = entities.get(m_target);
+	if(!target) {
 		return;
 	}
 	
@@ -406,13 +407,15 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 		}
 		
 		Vec3f pos = spell->getPosition();
-		if(closerThan(pos, entities[m_target]->pos, 600.f)) {
+		if(closerThan(pos, target->pos, 600.f)) {
 			if(spell->m_type != SPELL_CREATE_FIELD
-			   || (m_target == EntityHandle_Player && spell->m_caster == EntityHandle_Player)) {
+			   || (target == entities.player() && spell->m_caster == EntityHandle_Player)) {
 				spells.endSpell(spell);
 			}
 		}
+		
 	}
+	
 }
 
 bool IncinerateSpell::CanLaunch() {
