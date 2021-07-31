@@ -1268,23 +1268,22 @@ void igniteEntities(const Sphere & sphere, bool ignite) {
 	
 }
 
-void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ, EntityHandle numsource) {
+void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ, Entity * source) {
 	
 	if(sphere.radius <= 0.f) {
 		return;
 	}
 	
 	float rad = 1.f / sphere.radius;
-	bool validsource = ValidIONum(numsource);
 	
 	for(Entity & entity : entities) {
 		
-		if(entity.index() == numsource || !entity.obj || (entity.ioflags & (IO_CAMERA | IO_MARKER))) {
+		if(&entity == source || !entity.obj || (entity.ioflags & (IO_CAMERA | IO_MARKER))) {
 			continue;
 		}
 		
-		if(entity != *entities.player() && numsource != EntityHandle_Player && validsource
-		   && HaveCommonGroup(&entity, entities[numsource])) {
+		if(source && entity != *entities.player() && source != entities.player()
+		   && HaveCommonGroup(&entity, source)) {
 			continue;
 		}
 		
@@ -1342,12 +1341,13 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 		
 		if(typ & DAMAGE_TYPE_FIRE) {
 			dmg = ARX_SPELLS_ApplyFireProtection(&entity, dmg * ratio);
-			ARX_DAMAGES_IgnitIO(entities.get(numsource), &entity, dmg);
+			ARX_DAMAGES_IgnitIO(source, &entity, dmg);
 		}
 		if(typ & DAMAGE_TYPE_COLD) {
 			dmg = ARX_SPELLS_ApplyColdProtection(&entity, dmg * ratio);
 		}
 		
+		EntityHandle numsource = source ? source->index() : EntityHandle();
 		if(entity == *entities.player()) {
 			ARX_DAMAGES_DamagePlayer(dmg, typ, numsource);
 			ARX_DAMAGES_DamagePlayerEquipment(dmg);

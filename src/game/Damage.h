@@ -127,7 +127,8 @@ void DamageRequestEnd(DamageHandle handle);
 void igniteLights(const Sphere & sphere, bool ignite = true, bool ignoreFireplaces = false);
 void igniteEntities(const Sphere & sphere, bool ignite = true);
 
-void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ, EntityHandle numsource);
+void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ,
+                     Entity * source = nullptr);
 
 void ARX_DAMAGE_Reset_Blood_Info();
 void ARX_DAMAGE_Show_Hit_Blood();
