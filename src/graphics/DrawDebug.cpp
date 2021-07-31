@@ -307,14 +307,9 @@ static void drawDebugPathFinding() {
 	}
 	
 	// Highlight active paths
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		const Entity * entity = entities[handle];
+	for(Entity & npc : entities(IO_NPC)) {
 		
-		if(!entity || !(entity->ioflags & IO_NPC)) {
-			continue;
-		}
-		const IO_PATHFIND & pathfind = entity->_npcdata->pathfind;
+		const IO_PATHFIND & pathfind = npc._npcdata->pathfind;
 		if(pathfind.listnb <= 0 || !pathfind.list) {
 			continue;
 		}
@@ -349,7 +344,7 @@ static void drawDebugPathFinding() {
 			short k1 = pathfind.list[pathfind.listpos];
 			if(k1 >= 0 && size_t(k1) < ACTIVEBKG->m_anchors.size()) {
 				if(closerThan(ACTIVEBKG->m_anchors[k1].pos, player.pos, DebugTextMaxDistance)) {
-					drawTextAt(hFontDebug, ACTIVEBKG->m_anchors[k1].pos, entity->idString());
+					drawTextAt(hFontDebug, ACTIVEBKG->m_anchors[k1].pos, npc.idString());
 				}
 			}
 		}
@@ -468,60 +463,55 @@ static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 	
 }
 
-static void drawDebugEntityPhysicsCylinder(Entity * io) {
+static void drawDebugEntityPhysicsCylinder(Entity & entity) {
 	
-	if(!(io->ioflags & IO_NPC)) {
+	if(!(entity.ioflags & IO_NPC)) {
 		return;
 	}
 	
 	CollisionFlags levitate = 0;
 	
-	if(spells.getSpellOnTarget(io->index(), SPELL_LEVITATE)) {
+	if(spells.getSpellOnTarget(entity.index(), SPELL_LEVITATE)) {
 		levitate = CFLAG_LEVITATE;
 	}
 	
-	Cylinder cyll = Cylinder(io->physics.startpos, GetIORadius(io), GetIOHeight(io));
+	Cylinder cyll = Cylinder(entity.physics.startpos, GetIORadius(&entity), GetIOHeight(&entity));
 	
 	drawLineCylinder(cyll, Color::green);
 	
-	if(!(AttemptValidCylinderPos(cyll, io, levitate | CFLAG_NPC))) {
+	if(!(AttemptValidCylinderPos(cyll, &entity, levitate | CFLAG_NPC))) {
 		cyll.height = -40.f;
 		drawLineCylinder(cyll, Color::blue);
-		cyll.height = GetIOHeight(io);
+		cyll.height = GetIOHeight(&entity);
 	}
 	
-	cyll.origin = io->physics.targetpos;
+	cyll.origin = entity.physics.targetpos;
 	drawLineCylinder(cyll, Color::red);
 	
 }
 
 static void drawDebugEntityPhysicsCylinders() {
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * entity = entities[handle];
-		
-		if(!entity || !closerThan(entity->pos, player.pos, DebugPhysicsMaxDistance))
-			continue;
-		
-		drawDebugCollisionShape(entity->obj);
-		drawDebugEntityPhysicsCylinder(entity);
+	for(Entity & entity : entities) {
+		if(closerThan(entity.pos, player.pos, DebugPhysicsMaxDistance)) {
+			drawDebugCollisionShape(entity.obj);
+			drawDebugEntityPhysicsCylinder(entity);
+		}
 	}
+	
 }
 
 static void drawDebugEntities(bool drawSkeletons) {
 	
-	for(size_t i = EXTERNALVIEW ? 0 : 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * entity = entities[handle];
+	for(Entity & entity : entities) {
 		
-		if(!entity) {
+		if(!EXTERNALVIEW && &entity == entities.player()) {
 			continue;
 		}
 		
 		Color color = Color::white;
 		bool visible = true;
-		switch(entity->show) {
+		switch(entity.show) {
 			case SHOW_FLAG_DESTROYED:    continue; // Don't even display the name
 			case SHOW_FLAG_IN_INVENTORY: continue;
 			case SHOW_FLAG_ON_PLAYER:    continue;
@@ -533,37 +523,37 @@ static void drawDebugEntities(bool drawSkeletons) {
 			case SHOW_FLAG_IN_SCENE:     color = Color::white;   visible = true;  break;
 			case SHOW_FLAG_TELEPORTING:  color = Color::blue;    visible = true;  break;
 		}
-		if((entity->ioflags & IO_CAMERA) || (entity->ioflags & IO_MARKER)) {
+		if((entity.ioflags & IO_CAMERA) || (entity.ioflags & IO_MARKER)) {
 			color = Color::gray(0.7f), visible = false;
 		}
 		
 		if(visible) {
-			drawDebugBoundingBox(entity->bbox2D.toRect(), Color::blue);
+			drawDebugBoundingBox(entity.bbox2D.toRect(), Color::blue);
 		}
 		
-		if(closerThan(entity->pos, player.pos, DebugTextMaxDistance)) {
+		if(closerThan(entity.pos, player.pos, DebugTextMaxDistance)) {
 			
-			if(visible && entity->bbox2D.valid()) {
-				int x = int(entity->bbox2D.min.x + entity->bbox2D.max.x) / 2;
-				int y = int(entity->bbox2D.min.y - hFontDebug->getLineHeight() - 2);
-				UNICODE_ARXDrawTextCenter(hFontDebug, Vec2f(x, y), entity->idString(), color);
+			if(visible && entity.bbox2D.valid()) {
+				int x = int(entity.bbox2D.min.x + entity.bbox2D.max.x) / 2;
+				int y = int(entity.bbox2D.min.y - hFontDebug->getLineHeight() - 2);
+				UNICODE_ARXDrawTextCenter(hFontDebug, Vec2f(x, y), entity.idString(), color);
 			} else {
-				drawTextAt(hFontDebug, entity->pos, entity->idString(), color);
+				drawTextAt(hFontDebug, entity.pos, entity.idString(), color);
 			}
 			
-			if(entity->obj) {
-				for(size_t j = 0; j < entity->obj->linked.size(); j++) {
-					Vec3f pos = actionPointPosition(entity->obj, entity->obj->linked[j].lidx);
-					Entity * other = entity->obj->linked[j].io;
+			if(entity.obj) {
+				for(size_t j = 0; j < entity.obj->linked.size(); j++) {
+					Vec3f pos = actionPointPosition(entity.obj, entity.obj->linked[j].lidx);
+					Entity * other = entity.obj->linked[j].io;
 					drawTextAt(hFontDebug, pos, other->idString(), Color::cyan);
 				}
 			}
 			
 		}
 		
-		if(drawSkeletons && entity->obj && entity->obj->m_skeleton) {
+		if(drawSkeletons && entity.obj && entity.obj->m_skeleton) {
 			
-			const Skeleton & skeleton = *entity->obj->m_skeleton;
+			const Skeleton & skeleton = *entity.obj->m_skeleton;
 			
 			for(const Bone & bone : skeleton.bones) {
 				
@@ -577,12 +567,12 @@ static void drawDebugEntities(bool drawSkeletons) {
 				
 			}
 			
-			for(const VertexGroup & group : entity->obj->grouplist) {
-				drawTextAt(hFontDebug, entity->obj->vertexWorldPositions[group.origin].v, group.name);
+			for(const VertexGroup & group : entity.obj->grouplist) {
+				drawTextAt(hFontDebug, entity.obj->vertexWorldPositions[group.origin].v, group.name);
 			}
 			
-			for(const EERIE_ACTIONLIST & ap : entity->obj->actionlist) {
-				drawTextAt(hFontDebug, entity->obj->vertexWorldPositions[ap.idx.handleData()].v, ap.name, Color::green);
+			for(const EERIE_ACTIONLIST & ap : entity.obj->actionlist) {
+				drawTextAt(hFontDebug, entity.obj->vertexWorldPositions[ap.idx.handleData()].v, ap.name, Color::green);
 			}
 			
 		}
