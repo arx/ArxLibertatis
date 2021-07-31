@@ -1245,29 +1245,25 @@ void igniteLights(const Sphere & sphere, bool ignite, bool ignoreFireplaces) {
 
 void igniteEntities(const Sphere & sphere, bool ignite) {
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(   io
-		   && io->show == SHOW_FLAG_IN_SCENE
-		   && io->obj
-		   && !(io->ioflags & IO_UNDERWATER)
-		   && io->obj->fastaccess.fire != ActionPoint()
-		) {
-			if(closerThan(sphere.origin, actionPointPosition(io->obj, io->obj->fastaccess.fire), sphere.radius)) {
-
-				if(ignite && io->ignition <= 0) {
-					io->ignition = 1;
-				} else if(!ignite && io->ignition > 0) {
-					io->ignition = 0;
-					lightHandleDestroy(io->ignit_light);
-					
-					ARX_SOUND_Stop(io->ignit_sound);
-					io->ignit_sound = audio::SourcedSample();
-				}
-			}
+	for(Entity & entity : entities.inScene()) {
+		
+		if(!entity.obj
+		   || (entity.ioflags & IO_UNDERWATER)
+		   || entity.obj->fastaccess.fire == ActionPoint()
+		   || !closerThan(sphere.origin, actionPointPosition(entity.obj, entity.obj->fastaccess.fire),
+		                  sphere.radius)) {
+			continue;
 		}
+		
+		if(ignite && entity.ignition <= 0) {
+			entity.ignition = 1;
+		} else if(!ignite && entity.ignition > 0) {
+			entity.ignition = 0;
+			lightHandleDestroy(entity.ignit_light);
+			ARX_SOUND_Stop(entity.ignit_sound);
+			entity.ignit_sound = audio::SourcedSample();
+		}
+		
 	}
 	
 }
