@@ -475,14 +475,14 @@ static void drawDebugEntityPhysicsCylinder(Entity & entity) {
 		levitate = CFLAG_LEVITATE;
 	}
 	
-	Cylinder cyll = Cylinder(entity.physics.startpos, getEntityRadius(entity), GetIOHeight(&entity));
+	Cylinder cyll = Cylinder(entity.physics.startpos, getEntityRadius(entity), getEntityHeight(entity));
 	
 	drawLineCylinder(cyll, Color::green);
 	
 	if(!(AttemptValidCylinderPos(cyll, &entity, levitate | CFLAG_NPC))) {
 		cyll.height = -40.f;
 		drawLineCylinder(cyll, Color::blue);
-		cyll.height = GetIOHeight(&entity);
+		cyll.height = getEntityHeight(entity);
 	}
 	
 	cyll.origin = entity.physics.targetpos;
@@ -493,7 +493,7 @@ static void drawDebugEntityPhysicsCylinder(Entity & entity) {
 static void drawDebugEntityPhysicsCylinders() {
 	
 	for(Entity & entity : entities) {
-		if(&entity != entities.player() && closerThan(entity.pos, player.pos, DebugPhysicsMaxDistance)) {
+		if(entity != *entities.player() && closerThan(entity.pos, player.pos, DebugPhysicsMaxDistance)) {
 			drawDebugCollisionShape(entity.obj);
 			drawDebugEntityPhysicsCylinder(entity);
 		}

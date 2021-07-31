@@ -1673,19 +1673,13 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	}
 }
 
-float GetIOHeight(Entity * io) {
+float getEntityHeight(const Entity & entity) {
 	
-	if (io == entities.player())
-	{
-		return io->physics.cyl.height;
+	if(entity == *entities.player()) {
+		return entity.physics.cyl.height;
 	}
-
-	float v = (io->original_height * io->scale);
-
-	if(v < -165.f)
-		return -165.f;
-
-	return std::min(v, -45.f);
+	
+	return glm::clamp(entity.original_height * entity.scale, -165.f, -45.f);
 }
 
 float getEntityRadius(const Entity & entity) {
@@ -1698,7 +1692,7 @@ float getEntityRadius(const Entity & entity) {
 }
 
 Cylinder GetIOCyl(Entity * io) {
-	return Cylinder(io->pos, getEntityRadius(*io), GetIOHeight(io));
+	return Cylinder(io->pos, getEntityRadius(*io), getEntityHeight(*io));
 }
 
 
@@ -2104,7 +2098,7 @@ static void ManageNPCMovement_End(Entity * io) {
 	io->requestRoomUpdate = true;
 	io->physics.cyl.origin = io->pos = phys.cyl.origin;
 	io->physics.cyl.radius = getEntityRadius(*io);
-	io->physics.cyl.height = GetIOHeight(io);
+	io->physics.cyl.height = getEntityHeight(*io);
 	
 	// Compute distance 2D to target.
 	_dist = glm::distance(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
