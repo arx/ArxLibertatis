@@ -49,7 +49,7 @@ Font::Font(res::path file, unsigned size, unsigned weight, FT_Face face, bool pr
 	: m_info(std::move(file), size, weight)
 	, m_referenceCount(0)
 	, m_size(nullptr)
-	, m_textures(nullptr) {
+{
 	
 	FT_New_Size(face, &m_size);
 	
@@ -63,7 +63,7 @@ Font::Font(res::path file, unsigned size, unsigned weight, FT_Face face, bool pr
 	const unsigned int TEXTURE_SIZE = 512;
 	
 	// Insert all the glyphs into texture pages
-	m_textures = new PackedTexture(TEXTURE_SIZE, Image::Format_A8);
+	m_textures = std::make_unique<PackedTexture>(TEXTURE_SIZE, Image::Format_A8);
 	
 	// Insert the replacement characters first as they may be needed if others are missing
 	insertGlyph('?');
@@ -86,8 +86,6 @@ Font::~Font() {
 	if(m_size) {
 		FT_Done_Size(m_size);
 	}
-	
-	delete m_textures;
 	
 }
 

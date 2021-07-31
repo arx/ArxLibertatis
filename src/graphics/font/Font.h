@@ -21,6 +21,7 @@
 #define ARX_GRAPHICS_FONT_FONT_H
 
 #include <map>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -31,6 +32,8 @@
 #include "math/Vector.h"
 
 #include "io/resource/ResourcePath.h"
+
+class PackedTexture;
 
 class Font : private boost::noncopyable {
 	
@@ -227,7 +230,7 @@ private:
 	 */
 	glyph_iterator getNextGlyph(const char * & it, const char * end);
 	
-	class PackedTexture * m_textures;
+	std::unique_ptr<PackedTexture> m_textures;
 	
 };
 
