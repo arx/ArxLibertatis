@@ -74,9 +74,7 @@ class FontCache::Impl : private boost::noncopyable {
 		
 	};
 	
-	typedef std::map<res::path, FontFile> FontFiles;
-	
-	FontFiles m_files;
+	std::map<res::path, FontFile> m_files;
 	FT_Library m_library;
 	
 	Impl();
@@ -177,7 +175,7 @@ FontCache::Impl::~Impl() {
 
 Font * FontCache::Impl::getFont(const res::path & file, unsigned size, unsigned weight, bool preload) {
 	
-	FontFiles::iterator it = m_files.find(file);
+	auto it = m_files.find(file);
 	if(it == m_files.end()) {
 		it = m_files.emplace(file, FontFile(m_library, file)).first;
 	}
@@ -204,7 +202,7 @@ void FontCache::Impl::releaseFont(Font * font) {
 		return;
 	}
 	
-	FontFiles::iterator it = m_files.find(font->getName());
+	auto it = m_files.find(font->getName());
 	arx_assert(it != m_files.end());
 	
 	it->second.releaseSize(font);
