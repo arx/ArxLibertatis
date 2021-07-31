@@ -1858,7 +1858,7 @@ Entity * InterClick(const Vec2s & pos) {
 }
 
 // Need To upgrade to a more precise collision.
-EntityHandle IsCollidingAnyInter(const Vec3f & pos, const Vec3f & size) {
+Entity * getCollidingEntityAt(const Vec3f & pos, const Vec3f & size) {
 	
 	for(Entity & entity : entities.inScene(IO_NPC | IO_FIX)) {
 		
@@ -1870,16 +1870,16 @@ EntityHandle IsCollidingAnyInter(const Vec3f & pos, const Vec3f & size) {
 		}
 		
 		if(IsCollidingInter(&entity, pos)) {
-			return entity.index();
+			return &entity;
 		}
 		
 		if(IsCollidingInter(&entity, pos + Vec3f(0.f, size.y, 0.f))) {
-			return entity.index();
+			return &entity;
 		}
 		
 	}
 	
-	return EntityHandle();
+	return nullptr;
 }
 
 static bool IsCollidingInter(Entity * io, const Vec3f & pos) {

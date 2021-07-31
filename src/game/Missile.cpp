@@ -233,9 +233,8 @@ void ARX_MISSILES_Update() {
 						hit = true;
 					} else {
 						Vec3f tro = Vec3f(70.f);
-						EntityHandle ici = IsCollidingAnyInter(dest, tro);
-						
-						if(ici != EntityHandle() && ici != missiles[i].owner) {
+						Entity * ici = getCollidingEntityAt(dest, tro);
+						if(ici && ici->index() != missiles[i].owner) {
 							hit = true;
 						}
 					}

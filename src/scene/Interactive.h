@@ -134,7 +134,7 @@ bool ForceNPC_Above_Ground(Entity * io);
 void RestoreInitialIOStatus();
 
 void UnlinkAllLinkedObjects();
-EntityHandle IsCollidingAnyInter(const Vec3f & pos, const Vec3f & size);
+Entity * getCollidingEntityAt(const Vec3f & pos, const Vec3f & size);
 Entity * GetFirstInterAtPos(const Vec2s & pos);
 
 /*!
