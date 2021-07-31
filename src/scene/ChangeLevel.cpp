@@ -826,14 +826,14 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
 	g_currentSavedGame->save("player", dat, pos);
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		if(e == g_draggedEntity || locateInInventories(e).io == EntityHandle_Player || IsPlayerEquipedWith(e)) {
-			ARX_CHANGELEVEL_Push_IO(e, level);
+	for(Entity & entity : entities) {
+		if(&entity == g_draggedEntity
+		   || locateInInventories(&entity).io == EntityHandle_Player
+		   || IsPlayerEquipedWith(&entity)) {
+			ARX_CHANGELEVEL_Push_IO(&entity, level);
 		}
 	}
-
+	
 	return 1;
 }
 
