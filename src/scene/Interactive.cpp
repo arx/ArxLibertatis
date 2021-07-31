@@ -133,14 +133,12 @@ bool ValidIONum(EntityHandle num) {
 
 bool ValidIOAddress(const Entity * io) {
 	
-	if(!io)
+	if(!io) {
 		return false;
+	}
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e == io) {
+	for(Entity & entity : entities) {
+		if(io == &entity) {
 			return true;
 		}
 	}
