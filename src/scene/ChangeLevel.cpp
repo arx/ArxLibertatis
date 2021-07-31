@@ -471,21 +471,18 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	memcpy(dat, &asi, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e != nullptr
-		   && !(e->ioflags & IO_NOSAVE)
-		   && locateInInventories(e).io != EntityHandle_Player
-		   && !IsPlayerEquipedWith(e)) {
+	for(Entity & entity : entities) {
+		if(entity != *entities.player()
+		   && !(entity.ioflags & IO_NOSAVE)
+		   && locateInInventories(&entity).io != EntityHandle_Player
+		   && !IsPlayerEquipedWith(&entity)) {
 			ARX_CHANGELEVEL_IO_INDEX aii;
 			memset(&aii, 0, sizeof(aii));
-			util::storeString(aii.filename, (e->classPath() + ".teo").string());
-			aii.ident = e->instance();
+			util::storeString(aii.filename, (entity.classPath() + ".teo").string());
+			aii.ident = entity.instance();
 			aii.level = num;
 			aii.truelevel = num;
-			aii.num = i; // !!!
+			aii.num = entity.index().handleData(); // !!!
 			memcpy(dat + pos, &aii, sizeof(aii));
 			pos += sizeof(aii);
 		}
