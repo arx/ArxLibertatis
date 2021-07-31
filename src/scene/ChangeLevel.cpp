@@ -2302,25 +2302,22 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	
 	bool movedOOBItems = false;
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * entity = entities[handle];
+	for(Entity & entity : entities.inScene()) {
 		
-		if(!entity || !entity->obj || entity->show != SHOW_FLAG_IN_SCENE || entity->pos == entity->initpos) {
+		if(!entity.obj
+		   || entity.pos == entity.initpos
+		   || entity == *entities.player()
+		   || &entity == g_draggedEntity) {
 			continue;
 		}
 		
-		if(entity == g_draggedEntity) {
-			continue;
-		}
-		
-		if(!EERIE_PHYSICS_BOX_IsValidPosition(entity->pos - Vec3f(0.f, 20.f, 0.f))) {
-			LogWarning << "Found entity " << entity->idString() << " outside the world";
-			if((entity->ioflags & (IO_ITEM | IO_MOVABLE)) && (entity->gameFlags & GFLAG_INTERACTIVITY)) {
-				PutInFrontOfPlayer(entity);
+		if(!EERIE_PHYSICS_BOX_IsValidPosition(entity.pos - Vec3f(0.f, 20.f, 0.f))) {
+			LogWarning << "Found entity " << entity.idString() << " outside the world";
+			if((entity.ioflags & (IO_ITEM | IO_MOVABLE)) && (entity.gameFlags & GFLAG_INTERACTIVITY)) {
+				PutInFrontOfPlayer(&entity);
 				movedOOBItems = true;
 			} else {
-				entity->pos = entity->initpos;
+				entity.pos = entity.initpos;
 			}
 		}
 		
