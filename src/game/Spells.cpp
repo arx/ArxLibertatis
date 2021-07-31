@@ -420,11 +420,8 @@ static void SPELLCAST_Notify(const SpellBase & spell) {
 	parameters.push_back(spellName);
 	parameters.push_back(long(spell.m_level));
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		if(entities[handle] != nullptr) {
-			SendIOScriptEvent(sender, entities[handle], SM_SPELLCAST, parameters);
-		}
+	for(Entity & entity : entities) {
+		SendIOScriptEvent(sender, &entity, SM_SPELLCAST, parameters);
 	}
 	
 }
