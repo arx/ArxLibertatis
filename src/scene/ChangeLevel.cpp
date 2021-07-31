@@ -2359,20 +2359,11 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 		
 	} else {
 		
-		for(size_t i = 0; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * e = entities[handle];
-			
-			if(!e) {
-				continue;
-			}
-			
-			if(e && (e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
-				if(e->_npcdata->behavior != BEHAVIOUR_NONE) {
-					e->physics.cyl = getEntityCylinder(*e);
-					GetTargetPos(e);
-					ARX_NPC_LaunchPathfind(e, e->targetinfo);
-				}
+		for(Entity & npc : entities(IO_NPC)) {
+			if(ValidIONum(npc.targetinfo) && npc._npcdata->behavior != BEHAVIOUR_NONE) {
+				npc.physics.cyl = getEntityCylinder(npc);
+				GetTargetPos(&npc);
+				ARX_NPC_LaunchPathfind(&npc, npc.targetinfo);
 			}
 		}
 	}
