@@ -128,7 +128,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag = false,
 static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player(long level);
-static long ARX_CHANGELEVEL_Push_AllIO(long level);
+static bool ARX_CHANGELEVEL_Push_AllIO(long level);
 static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level);
 static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance instance, long level = -1);
 
@@ -390,7 +390,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 		return false;
 	}
 	
-	if(ARX_CHANGELEVEL_Push_AllIO(num) != 1) {
+	if(!ARX_CHANGELEVEL_Push_AllIO(num)) {
 		LogError << "Error saving entities...";
 		return false;
 	}
@@ -837,7 +837,9 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	return 1;
 }
 
-static long ARX_CHANGELEVEL_Push_AllIO(long level) {
+static bool ARX_CHANGELEVEL_Push_AllIO(long level) {
+	
+	bool ok = true;
 	
 	for(Entity & entity : entities) {
 		if(!(entity.ioflags & IO_NOSAVE)
@@ -845,11 +847,11 @@ static long ARX_CHANGELEVEL_Push_AllIO(long level) {
 		   && entity != *entities.player()
 		   && locateInInventories(&entity).io != EntityHandle_Player
 		   && !IsPlayerEquipedWith(&entity)) {
-			ARX_CHANGELEVEL_Push_IO(&entity, level);
+			ok = ARX_CHANGELEVEL_Push_IO(&entity, level) && ok;
 		}
 	}
 	
-	return 1;
+	return ok;
 }
 
 static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
