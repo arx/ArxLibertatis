@@ -165,136 +165,122 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 	
 	GameInstant now = g_gameTime.now();
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-		if(!io || io == entities.player())
+	for(Entity & entity : entities) {
+		
+		if(entity == *entities.player()) {
 			continue;
-
-		if(io->spellcast_data.castingspell != SPELL_NONE) {
-			if(!io->symboldraw) {
-				bool tst = false;
-
-				if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
-					AnimLayer & layer1 = io->animlayer[1];
-
-					if(layer1.cur_anim == io->anims[ANIM_CAST_START]  && (layer1.flags & EA_ANIMEND)) {
-						// TODO why no AcquireLastAnim() like everywhere else?
-						FinishAnim(io, layer1.cur_anim);
-						ANIM_Set(layer1, io->anims[ANIM_CAST_CYCLE]);
-						tst = true;
-					} else if(layer1.cur_anim == io->anims[ANIM_CAST_CYCLE]) {
-						tst = true;
-					} else if(layer1.cur_anim != io->anims[ANIM_CAST_START]) {
-						io->spellcast_data.castingspell = SPELL_NONE;
-					}
-				} else {
+		}
+		
+		IO_SPELLCAST_DATA & spellcast = entity.spellcast_data;
+		if(spellcast.castingspell != SPELL_NONE && !entity.symboldraw) {
+			
+			bool tst = false;
+			if(!(spellcast.spell_flags & SPELLCAST_FLAG_NOANIM) && (entity.ioflags & IO_NPC)) {
+				AnimLayer & layer1 = entity.animlayer[1];
+				if(layer1.cur_anim == entity.anims[ANIM_CAST_START]  && (layer1.flags & EA_ANIMEND)) {
+					// TODO why no AcquireLastAnim() like everywhere else?
+					FinishAnim(&entity, layer1.cur_anim);
+					ANIM_Set(layer1, entity.anims[ANIM_CAST_CYCLE]);
 					tst = true;
+				} else if(layer1.cur_anim == entity.anims[ANIM_CAST_CYCLE]) {
+					tst = true;
+				} else if(layer1.cur_anim != entity.anims[ANIM_CAST_START]) {
+					spellcast.castingspell = SPELL_NONE;
 				}
-
-				if(tst) {
-					if(io->spellcast_data.symb[0] != RUNE_NONE) {
-						Rune symb = io->spellcast_data.symb[0];
-
-						for(long j = 0; j < 3; j++) {
-							io->spellcast_data.symb[j] = io->spellcast_data.symb[j + 1];
-						}
-
-						io->spellcast_data.symb[3] = RUNE_NONE;
-						float speedFactor = std::max(io->speed_modif + io->basespeed, 0.01f);
-						float duration = (1000 - (io->spellcast_data.spell_level * 60)) * speedFactor;
-						ARX_SPELLS_RequestSymbolDraw2(io, symb, GameDurationMsf(duration));
-						io->gameFlags &= ~GFLAG_INVISIBILITY;
-					} else { // cast spell !!!
-						io->gameFlags &= ~GFLAG_INVISIBILITY;
-						ARX_SPELLS_Launch(io->spellcast_data.castingspell, handle, io->spellcast_data.spell_flags,
-						                  io->spellcast_data.spell_level, io->spellcast_data.target,
-						                  io->spellcast_data.duration);
-						if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
-							changeAnimation(io, 1, io->anims[ANIM_CAST]);
-						}
-						io->spellcast_data.castingspell = SPELL_NONE;
+			} else {
+				tst = true;
+			}
+			
+			if(tst) {
+				if(spellcast.symb[0] != RUNE_NONE) {
+					Rune symb = spellcast.symb[0];
+					for(long j = 0; j < 3; j++) {
+						spellcast.symb[j] = spellcast.symb[j + 1];
 					}
+					spellcast.symb[3] = RUNE_NONE;
+					float speedFactor = std::max(entity.speed_modif + entity.basespeed, 0.01f);
+					float duration = (1000 - (spellcast.spell_level * 60)) * speedFactor;
+					ARX_SPELLS_RequestSymbolDraw2(&entity, symb, GameDurationMsf(duration));
+					entity.gameFlags &= ~GFLAG_INVISIBILITY;
+				} else {
+					entity.gameFlags &= ~GFLAG_INVISIBILITY;
+					ARX_SPELLS_Launch(spellcast.castingspell, entity.index(), spellcast.spell_flags,
+					                  spellcast.spell_level, spellcast.target, spellcast.duration);
+					if(!(spellcast.spell_flags & SPELLCAST_FLAG_NOANIM) && (entity.ioflags & IO_NPC)) {
+						changeAnimation(&entity, 1, entity.anims[ANIM_CAST]);
+					}
+					spellcast.castingspell = SPELL_NONE;
 				}
 			}
+			
 		}
-
-		updateIOLight(io);
-
-		if(io->symboldraw) {
-			SYMBOL_DRAW * sd = io->symboldraw;
-			AnimationDuration elapsed = toAnimationDuration(now - sd->starttime);
-
-			if(elapsed > sd->duration) {
-				endLightDelayed(io->dynlight, GameDurationMs(600));
-				io->dynlight = LightHandle();
-				
-				delete io->symboldraw;
-				io->symboldraw = nullptr;
-				continue;
-			}
-			
-			const size_t nbcomponents = sd->sequence.length();
-			if(nbcomponents == 0) {
-				delete io->symboldraw;
-				io->symboldraw = nullptr;
-				continue;
-			}
-			
-			float ti = toMsf(sd->duration) / float(nbcomponents);
-			if(ti <= 0) {
-				ti = 1;
-			}
-			
-			AnimationDuration newtime = elapsed;
-			AnimationDuration oldtime = sd->elapsed;
-
-			if(oldtime > sd->duration)
-				oldtime = sd->duration;
-
-			if(newtime > sd->duration)
-				newtime = sd->duration;
-
-			sd->elapsed = elapsed;
-			
-			float div_ti = 1.f / ti;
-
-			Vec2s pos1 = Vec2s(g_size.center()) - symbolVecScale * short(2) + sd->cPosStart * symbolVecScale;
-
-			Vec2s old_pos = pos1;
-
-			for(size_t j = 0; j < nbcomponents; j++) {
-				Vec2s vect = GetSymbVector(sd->sequence[j]);
-				vect *= symbolVecScale;
-				vect += vect / Vec2s(2);
-				if(oldtime <= AnimationDurationMsf(ti)) {
-					float ratio = toMsf(oldtime) * div_ti;
-					old_pos += Vec2s(Vec2f(vect) * ratio);
-					break;
-				}
-				old_pos += vect;
-				oldtime -= AnimationDurationMsf(ti);
-			}
-
-			for(size_t j = 0; j < nbcomponents; j++) {
-				Vec2s vect = GetSymbVector(sd->sequence[j]);
-				vect *= symbolVecScale;
-				vect += vect / Vec2s(2);
-
-				if(newtime <= AnimationDurationMsf(ti)) {
-					float ratio = toMsf(newtime) * div_ti;
-					pos1 += Vec2s(Vec2f(vect) * ratio);
-					AddFlare(Vec2f(pos1), 0.1f, 1, io);
-					FlareLine(Vec2f(old_pos), Vec2f(pos1), io);
-					break;
-				}
-
-				pos1 += vect;
-				newtime -= AnimationDurationMsf(ti);
-				
-			}
+		
+		updateIOLight(&entity);
+		
+		if(!entity.symboldraw) {
+			continue;
 		}
+		
+		AnimationDuration elapsed = toAnimationDuration(now - entity.symboldraw->starttime);
+		if(elapsed > entity.symboldraw->duration) {
+			endLightDelayed(entity.dynlight, GameDurationMs(600));
+			entity.dynlight = LightHandle();
+			delete entity.symboldraw;
+			entity.symboldraw = nullptr;
+			continue;
+		}
+		
+		const size_t nbcomponents = entity.symboldraw->sequence.length();
+		if(nbcomponents == 0) {
+			delete entity.symboldraw;
+			entity.symboldraw = nullptr;
+			continue;
+		}
+		
+		SYMBOL_DRAW * sd = entity.symboldraw;
+		float ti = toMsf(sd->duration) / float(nbcomponents);
+		if(ti <= 0) {
+			ti = 1;
+		}
+		
+		AnimationDuration newtime = std::min(elapsed, sd->duration);
+		AnimationDuration oldtime = std::min(sd->elapsed, sd->duration);
+		sd->elapsed = elapsed;
+		
+		float div_ti = 1.f / ti;
+		Vec2s pos1 = Vec2s(g_size.center()) - symbolVecScale * short(2) + sd->cPosStart * symbolVecScale;
+		
+		Vec2s old_pos = pos1;
+		for(size_t j = 0; j < nbcomponents; j++) {
+			Vec2s vect = GetSymbVector(sd->sequence[j]);
+			vect *= symbolVecScale;
+			vect += vect / Vec2s(2);
+			if(oldtime <= AnimationDurationMsf(ti)) {
+				float ratio = toMsf(oldtime) * div_ti;
+				old_pos += Vec2s(Vec2f(vect) * ratio);
+				break;
+			}
+			old_pos += vect;
+			oldtime -= AnimationDurationMsf(ti);
+		}
+		
+		for(size_t j = 0; j < nbcomponents; j++) {
+			Vec2s vect = GetSymbVector(sd->sequence[j]);
+			vect *= symbolVecScale;
+			vect += vect / Vec2s(2);
+			if(newtime <= AnimationDurationMsf(ti)) {
+				float ratio = toMsf(newtime) * div_ti;
+				pos1 += Vec2s(Vec2f(vect) * ratio);
+				AddFlare(Vec2f(pos1), 0.1f, 1, &entity);
+				FlareLine(Vec2f(old_pos), Vec2f(pos1), &entity);
+				break;
+			}
+			pos1 += vect;
+			newtime -= AnimationDurationMsf(ti);
+		}
+		
 	}
+	
 }
 
 void ARX_SPELLS_ClearAllSymbolDraw() {
