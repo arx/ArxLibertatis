@@ -468,24 +468,20 @@ void MassParalyseSpell::Launch() {
 	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(10000);
 	m_hasDuration = true;
 	
-	for(size_t ii = 0; ii < entities.size(); ii++) {
-		const EntityHandle handle = EntityHandle(ii);
-		Entity * tio = entities[handle];
+	for(Entity & npc : entities.inScene(IO_NPC)) {
 		
-		if(   handle == m_caster
-		   || !tio || !(tio->ioflags & IO_NPC)
-		   || tio->show != SHOW_FLAG_IN_SCENE
-		   || (tio->ioflags & IO_FREEZESCRIPT)
-		   || fartherThan(tio->pos, entities[m_caster]->pos, 500.f)
-		) {
+		if(npc.index() == m_caster || (npc.ioflags & IO_FREEZESCRIPT)
+		   || fartherThan(npc.pos, entities[m_caster]->pos, 500.f)) {
 			continue;
 		}
 		
-		tio->ioflags |= IO_FREEZESCRIPT;
+		npc.ioflags |= IO_FREEZESCRIPT;
 		
-		ARX_NPC_Kill_Spell_Launch(tio);
-		m_targets.push_back(tio->index());
+		ARX_NPC_Kill_Spell_Launch(&npc);
+		m_targets.push_back(npc.index());
+		
 	}
+	
 }
 
 void MassParalyseSpell::End() {
