@@ -190,9 +190,8 @@ public:
 				
 				DebugScript(' ' << options << ' ' << spellname);
 				
-				EntityHandle from = context.getEntity()->index();
-				if(ValidIONum(from)) {
-					spells.endByCaster(from, spellid);
+				if(context.getEntity()) {
+					spells.endByCaster(context.getEntity()->index(), spellid);
 				}
 				
 				return Success;
