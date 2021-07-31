@@ -105,21 +105,18 @@ void LegacyMathTest::tearDown() {
 }
 
 void LegacyMathTest::rotationTestDataTest() {
-	typedef std::vector<TestRotation>::iterator Itr;
-	for(Itr i = rotations.begin(); i != rotations.end(); ++i) {
-		
-		CPPUNIT_ASSERT_EQUAL(i->quat, glm::quat_cast(i->mat));
-		CPPUNIT_ASSERT_EQUAL(glm::mat4_cast(i->quat), glm::mat4(i->mat));
+	for(const TestRotation & rotation : rotations) {
+		CPPUNIT_ASSERT_EQUAL(rotation.quat, glm::quat_cast(rotation.mat));
+		CPPUNIT_ASSERT_EQUAL(glm::mat4_cast(rotation.quat), glm::mat4(rotation.mat));
 	}
 }
 
 void LegacyMathTest::quaternionTests() {
 	
-	std::vector<TestRotation>::iterator it;
-	for(it = rotations.begin(); it != rotations.end(); ++it) {
+	for(const TestRotation & rotation : rotations) {
 		
-		glm::quat A = it->quat;
-		glm::quat B = it->quat;
+		glm::quat A = rotation.quat;
+		glm::quat B = rotation.quat;
 	
 		CPPUNIT_ASSERT_EQUAL(A, B);
 		
@@ -140,7 +137,9 @@ void LegacyMathTest::quaternionTests() {
 		glm::mat4x4 matrixB = glm::mat4_cast(B);
 		
 		CPPUNIT_ASSERT_EQUAL(matrixA, matrixB);
+		
 	}
+	
 }
 
 void LegacyMathTest::quatMuliplyTest() {
@@ -168,66 +167,68 @@ void LegacyMathTest::quatMuliplyTest() {
 
 void LegacyMathTest::quatTransformVectorTest() {
 	
-	typedef std::vector<TestRotation>::iterator Itr;
-	
-	for(Itr it = rotations.begin(); it != rotations.end(); ++it) {
+	for(const TestRotation & rotation : rotations) {
+		
 		const Vec3f testVert(1.f, 0.5f, 0.1f);
 		
-		Vec3f vecA = TransformVertexQuat(it->quat, testVert);
-		Vec3f vecB = it->quat * testVert;
+		Vec3f vecA = TransformVertexQuat(rotation.quat, testVert);
+		Vec3f vecB = rotation.quat * testVert;
 		
 		CPPUNIT_ASSERT_EQUAL(vecA, vecB);
 		
 		Vec3f vecC;
-		TransformInverseVertexQuat(it->quat, testVert, vecC);
+		TransformInverseVertexQuat(rotation.quat, testVert, vecC);
 		
-		Vec3f vecD = glm::inverse(it->quat) * testVert;
+		Vec3f vecD = glm::inverse(rotation.quat) * testVert;
 		
 		CPPUNIT_ASSERT_EQUAL(vecC, vecD);
+		
 	}
+	
 }
 
 void LegacyMathTest::quatMatrixConversionTest() {
 	
-	typedef std::vector<TestRotation>::iterator Itr;
-	
-	for(Itr it = rotations.begin(); it != rotations.end(); ++it) {
-		CPPUNIT_ASSERT_EQUAL(glm::mat4_cast(it->quat), glm::mat4(it->mat));
+	for(const TestRotation & rotation : rotations) {
+		
+		CPPUNIT_ASSERT_EQUAL(glm::mat4_cast(rotation.quat), glm::mat4(rotation.mat));
 		
 		glm::quat q;
-		QuatFromMatrix(q, glm::mat4(it->mat));
-		CPPUNIT_ASSERT_EQUAL(glm::quat_cast(it->mat), q);
+		QuatFromMatrix(q, glm::mat4(rotation.mat));
+		CPPUNIT_ASSERT_EQUAL(glm::quat_cast(rotation.mat), q);
+		
 	}
+	
 }
 
 void LegacyMathTest::vecMatrixConversionTest() {
 	
-	typedef std::vector<TestRotation>::iterator Itr;
-	
-	for(Itr it = rotations.begin(); it != rotations.end(); ++it) {
+	for(const TestRotation & rotation : rotations) {
+		
 		Vec3f front(0, 0, 1);
 		Vec3f up(0, 1, 0);
 		
-		front = it->quat * front;
-		up = it->quat * up;
+		front = rotation.quat * front;
+		up = rotation.quat * up;
 		
 		glm::mat4 mat(1.f);
 		MatrixSetByVectors(mat, front, up);
 		
-		CPPUNIT_ASSERT_EQUAL(glm::mat4(it->mat), mat);
+		CPPUNIT_ASSERT_EQUAL(glm::mat4(rotation.mat), mat);
+		
 	}
+	
 }
 
-void LegacyMathTest::angleConversionTest()
-{
-	typedef std::vector<Anglef>::iterator Itr;
-	for(Itr it = angles.begin(); it != angles.end(); ++it) {
+void LegacyMathTest::angleConversionTest() {
+	
+	for(Anglef angle : angles) {
 		
-		glm::quat q = toNonNpcRotation(*it);
+		glm::quat q = toNonNpcRotation(angle);
 		
-		glm::quat q2 = glm::quat_cast(toRotationMatrix(*it));
+		glm::quat q2 = glm::quat_cast(toRotationMatrix(angle));
 		
-		glm::quat q3 = toQuaternion(*it);
+		glm::quat q3 = toQuaternion(angle);
 		
 		glm::quat q4 = toQuaternion(toAngle(q3));
 		
@@ -236,7 +237,9 @@ void LegacyMathTest::angleConversionTest()
 		CPPUNIT_ASSERT_EQUAL(q, q3);
 		
 		CPPUNIT_ASSERT_EQUAL(q3, q4);
+		
 	}
+	
 }
 
 // TODO copy-paste
