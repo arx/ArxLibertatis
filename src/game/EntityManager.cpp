@@ -62,9 +62,13 @@ struct EntityManager::Impl {
 	
 	Impl() : m_minfree(0) { }
 	
-	EntityHandle getById(std::string_view idString) const {
-		Impl::Index::const_iterator i = m_index.find(idString);
-		return (i != m_index.end()) ? i->second->index() : EntityHandle();
+	Entity * getById(std::string_view idString) const {
+		
+		if(auto it = m_index.find(idString); it != m_index.end()) {
+			return it->second;
+		}
+		
+		return nullptr;
 	}
 	
 };
@@ -116,20 +120,24 @@ EntityHandle EntityManager::getById(std::string_view idString) const {
 		return EntityHandle_Player;
 	}
 	
-	return m_impl->getById(idString);
+	if(Entity * entity = m_impl->getById(idString)) {
+		return entity->index();
+	}
+	
+	return EntityHandle();
 }
 
-EntityHandle EntityManager::getById(const EntityId & id) const {
+Entity * EntityManager::getById(const EntityId & id, Entity * self) const {
 	
 	if(id.isSpecial()) {
 		if(id.className().empty()) {
-			return EntityHandle();
+			return nullptr;
 		}
 		if(id.className() == "self" || id.className() == "me") {
-			return EntityHandle_Self;
+			return self;
 		}
 		if(id.className() == "player") {
-			return EntityHandle_Player;
+			return player();
 		}
 	}
 	

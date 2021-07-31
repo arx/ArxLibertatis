@@ -98,9 +98,8 @@ extern bool bGCroucheToggle;
 Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
                       const Vec3f & pos, const Anglef & angle) {
 	
-	EntityHandle t = entities.getById(EntityId(classPath, instance));
-	if(t != EntityHandle()) {
-		return entities[t];
+	if(Entity * entity = entities.getById(EntityId(classPath, instance))) {
+		return entity;
 	}
 	
 	arx_assert(instance != 0);

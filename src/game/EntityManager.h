@@ -103,8 +103,8 @@ public:
 	void clear();
 	
 	EntityHandle getById(std::string_view idString) const;
-	EntityHandle getById(const EntityId & id) const;
 	
+	Entity * getById(const EntityId & id, Entity * self = nullptr) const;
 	Entity * getById(std::string_view idString, Entity * self) const;
 	
 	Entity * operator[](EntityHandle index) const {
