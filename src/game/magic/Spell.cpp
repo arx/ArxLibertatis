@@ -45,8 +45,8 @@ Vec3f SpellBase::getPosition() const {
 }
 
 Vec3f SpellBase::getCasterPosition() const {
-	if(ValidIONum(m_caster)) {
-		return entities[m_caster]->pos;
+	if(Entity * caster = entities.get(m_caster)) {
+		return caster->pos;
 	} else {
 		// should not happen
 		return Vec3f(0.f);
@@ -54,8 +54,8 @@ Vec3f SpellBase::getCasterPosition() const {
 }
 
 Vec3f SpellBase::getTargetPosition() const {
-	if(ValidIONum(m_target)) {
-		return entities[m_target]->pos;
+	if(Entity * target = entities.get(m_target)) {
+		return target->pos;
 	} else {
 		// should not happen
 		return Vec3f(0.f);
@@ -65,24 +65,26 @@ Vec3f SpellBase::getTargetPosition() const {
 void SpellBase::updateCasterHand() {
 	
 	// Create hand position if a hand is defined
-	if(m_caster == EntityHandle_Player) {
-		m_hand_group = entities[m_caster]->obj->fastaccess.primary_attach;
-	} else if(m_caster != EntityHandle()) {
-		m_hand_group = entities[m_caster]->obj->fastaccess.left_attach;
+	Entity * caster = entities.get(m_caster);
+	if(caster == entities.player()) {
+		m_hand_group = caster->obj->fastaccess.primary_attach;
+	} else if(caster) {
+		m_hand_group = caster->obj->fastaccess.left_attach;
 	}
 	
-	if(m_hand_group != ActionPoint() && m_caster != EntityHandle()) {
-		m_hand_pos = actionPointPosition(entities[m_caster]->obj, m_hand_group);
+	if(m_hand_group != ActionPoint() && caster) {
+		m_hand_pos = actionPointPosition(caster->obj, m_hand_group);
 	}
 	
 }
 
 void SpellBase::updateCasterPosition() {
 	
-	if(m_caster == EntityHandle_Player) {
+	Entity * caster = entities.get(m_caster);
+	if(caster == entities.player()) {
 		m_caster_pos = player.pos;
-	} else if(m_caster != EntityHandle()) {
-		m_caster_pos = entities[m_caster]->pos;
+	} else if(caster) {
+		m_caster_pos = caster->pos;
 	}
 	
 }
