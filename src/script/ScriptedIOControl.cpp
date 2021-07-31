@@ -392,9 +392,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		EntityHandle t = entities.getById(target);
-		
-		if(t == EntityHandle()) {
+		if(!entities.getById(target, context.getEntity())) {
 			context.skipBlock();
 		}
 		
