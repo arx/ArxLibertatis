@@ -335,10 +335,8 @@ void ARX_CHANGELEVEL_Change(long level, std::string_view target, float angle) {
 	
 	// not changing level, just teleported
 	if(level == CURRENTLEVEL) {
-		EntityHandle t = entities.getById(target);
-		if(t.handleData() > 0 && entities[t]) {
-			Vec3f pos = GetItemWorldPosition(entities[t]);
-			g_moveto = player.pos = pos + player.baseOffset();
+		if(Entity * targetEntity = entities.getById(target, nullptr)) {
+			g_moveto = player.pos = GetItemWorldPosition(targetEntity) + player.baseOffset();
 		}
 		player.desiredangle.setYaw(angle);
 		player.angle.setYaw(angle);
@@ -1796,7 +1794,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 		
 		// The current entity should be visible at this point to preven infinite loops while resolving
 		// related entities.
-		arx_assert(entities.getById(idString) == io->index());
+		arx_assert(entities.getById(idString, nullptr) == io);
 		
 		io->requestRoomUpdate = true;
 		io->room = -1;
@@ -2283,7 +2281,7 @@ static void ARX_CHANGELEVEL_PopAllIO(std::string_view buffer, long level) {
 		std::ostringstream oss;
 		oss << res::path::load(util::loadString(idx_io[i].filename)).basename() << '_'
 		    << std::setfill('0') << std::setw(4) << idx_io[i].ident;
-		if(entities.getById(oss.str()).handleData() < 0) {
+		if(!entities.getById(oss.str(), nullptr)) {
 			ARX_CHANGELEVEL_Pop_IO(oss.str(), idx_io[i].ident, level);
 		}
 		
