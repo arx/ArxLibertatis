@@ -246,7 +246,7 @@ bool IsDeadNPC(const Entity & io);
 void FaceTarget2(Entity * io);
 void ARX_NPC_Behaviour_Stack(Entity * io);
 void ARX_NPC_Behaviour_UnStack(Entity * io);
-void ARX_NPC_Behaviour_Reset(Entity * io);
+void resetNpcBehavior(Entity & npc);
 void ARX_NPC_Behaviour_ResetAll();
 void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_param);
 void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE);

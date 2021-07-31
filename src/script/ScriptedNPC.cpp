@@ -94,7 +94,7 @@ public:
 			}
 			if(command == "unstackall") {
 				DebugScript(' ' << options << ' ' << command);
-				ARX_NPC_Behaviour_Reset(io);
+				resetNpcBehavior(*io);
 				return Success;
 			}
 		}

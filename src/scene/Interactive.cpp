@@ -763,7 +763,7 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 		io->_npcdata->pathfind = IO_PATHFIND();
 		io->_npcdata->pathfind.truetarget = EntityHandle();
 		io->_npcdata->pathfind.listnb = -1;
-		ARX_NPC_Behaviour_Reset(io);
+		resetNpcBehavior(*io);
 	}
 	
 	delete io->tweakerinfo;

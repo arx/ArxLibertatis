@@ -328,21 +328,22 @@ void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_par
 }
 
 //! Resets all behaviour data from a NPC
-void ARX_NPC_Behaviour_Reset(Entity * io)
-{
-	if(!io || !(io->ioflags & IO_NPC))
-		return;
-
-	io->_npcdata->behavior = BEHAVIOUR_NONE;
-
-	for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++)
-		io->_npcdata->stacked[i].exist = 0;
+void resetNpcBehavior(Entity & npc) {
+	
+	arx_assert(npc.ioflags & IO_NPC);
+	
+	npc._npcdata->behavior = BEHAVIOUR_NONE;
+	
+	for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
+		npc._npcdata->stacked[i].exist = 0;
+	}
+	
 }
 
 //! Reset all Behaviours from all NPCs
 void ARX_NPC_Behaviour_ResetAll() {
 	for(Entity & npc : entities(IO_NPC)) {
-		ARX_NPC_Behaviour_Reset(&npc);
+		resetNpcBehavior(npc);
 	}
 }
 

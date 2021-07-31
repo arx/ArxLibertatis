@@ -548,7 +548,9 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 	
 	lightHandleDestroy(io_dead.dynlight);
 	
-	ARX_NPC_Behaviour_Reset(&io_dead);
+	if(io_dead.ioflags & IO_NPC) {
+		resetNpcBehavior(io_dead);
+	}
 	
 	ARX_SPEECH_ReleaseIOSpeech(&io_dead);
 	
