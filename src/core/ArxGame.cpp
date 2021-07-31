@@ -1386,7 +1386,7 @@ void ArxGame::speechControlledCinematic() {
 				case ARX_CINE_SPEECH_SIDE_LEFT:
 				case ARX_CINE_SPEECH_SIDE: {
 					
-					if(ValidIONum(acs.ionum)) {
+					if(entities.get(acs.ionum)) {
 						
 						arx_assert(isallfinite(acs.pos1));
 						arx_assert(isallfinite(acs.pos2));
@@ -1421,7 +1421,7 @@ void ArxGame::speechControlledCinematic() {
 				case ARX_CINE_SPEECH_CCCTALKER_L: {
 					
 					// Need to compute current values
-					if(ValidIONum(acs.ionum)) {
+					if(entities.get(acs.ionum)) {
 						
 						arx_assert(isallfinite(acs.pos1));
 						arx_assert(isallfinite(acs.pos2));
