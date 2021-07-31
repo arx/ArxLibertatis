@@ -2329,29 +2329,26 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	
 	if(reloadflag) {
 		
-		for(size_t i = 0; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * e = entities[handle];
+		for(Entity & entity : entities) {
 			
-			if(!e) {
-				continue;
+			EntityHandle index = entity.index();
+			
+			if(entity.script.valid) {
+				ScriptEvent::send(&entity.script, nullptr, &entity, SM_RELOAD, "change");
 			}
 			
-			if(e->script.valid) {
-				ScriptEvent::send(&e->script, nullptr, e, SM_RELOAD, "change");
+			if(entities.get(index) == &entity && entity.over_script.valid) {
+				ScriptEvent::send(&entity.over_script, nullptr, &entity, SM_RELOAD, "change");
 			}
 			
-			if(entities[handle] && e->over_script.valid) {
-				ScriptEvent::send(&e->over_script, nullptr, e, SM_RELOAD, "change");
-			}
-			
-			if(entities[handle] && (e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
-				if(e->_npcdata->behavior != BEHAVIOUR_NONE) {
-					e->physics.cyl = getEntityCylinder(*e);
-					GetTargetPos(e);
-					ARX_NPC_LaunchPathfind(e, e->targetinfo);
+			if(entities.get(index) == &entity && (entity.ioflags & IO_NPC) && ValidIONum(entity.targetinfo)) {
+				if(entity._npcdata->behavior != BEHAVIOUR_NONE) {
+					entity.physics.cyl = getEntityCylinder(entity);
+					GetTargetPos(&entity);
+					ARX_NPC_LaunchPathfind(&entity, entity.targetinfo);
 				}
 			}
+			
 		}
 		
 	} else if(firstTime) {
