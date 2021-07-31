@@ -513,80 +513,81 @@ void PrepareIOTreatZone(long flag) {
 		}
 	}
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
+	for(Entity & entity : entities) {
 		
-		if(io && (io->show == SHOW_FLAG_IN_SCENE || io->show == SHOW_FLAG_TELEPORTING
-		          || io->show == SHOW_FLAG_ON_PLAYER || io->show == SHOW_FLAG_HIDDEN)) {
-			
-			bool treat;
-			if (io->ioflags & IO_CAMERA) {
-				treat = false;
-			} else if(io->ioflags & IO_MARKER) {
-				treat = false;
-			} else if((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) {
-				treat = true;
-			} else {
-				
-				float dists;
-				if(Cam_Room >= 0) {
-					if(io->show == SHOW_FLAG_TELEPORTING) {
-						Vec3f pos = GetItemWorldPosition(io);
-						dists = arx::distance2(cameraPos, pos);
-					} else {
-						if(io->requestRoomUpdate) {
-							UpdateIORoom(io);
-						}
-						dists = square(SP_GetRoomDist(io->pos, cameraPos, io->room, Cam_Room));
-					}
-				} else {
-					if(io->show == SHOW_FLAG_TELEPORTING) {
-						Vec3f pos = GetItemWorldPosition(io);
-						dists = arx::distance2(cameraPos, pos);
-					} else {
-						dists = arx::distance2(io->pos, cameraPos);
-					}
-				}
-				
-				treat = (dists < square(TREATZONE_LIMIT));
-			}
-
-			if(io == g_draggedEntity) {
-				treat = true;
-			}
-			
-			if(io->gameFlags & GFLAG_ISINTREATZONE) {
-				io->gameFlags |= GFLAG_WASINTREATZONE;
-			} else {
-				io->gameFlags &= ~GFLAG_WASINTREATZONE;
-			}
-			
-			if(treat) {
-				io->gameFlags |= GFLAG_ISINTREATZONE;
-				TREATZONE_AddIO(io);
-				if((io->ioflags & IO_NPC) && io->_npcdata->weapon) {
-					Entity * iooo = io->_npcdata->weapon;
-					iooo->room = io->room;
-					iooo->requestRoomUpdate = io->requestRoomUpdate;
-				}
-			} else {
-				io->gameFlags &= ~GFLAG_ISINTREATZONE;
-			}
-			
-			if((io->gameFlags & GFLAG_ISINTREATZONE) && (!(io->gameFlags & GFLAG_WASINTREATZONE))) {
-				// Coming back - doesn't really matter right now
-			} else if(!(io->gameFlags & GFLAG_ISINTREATZONE) && (io->gameFlags & GFLAG_WASINTREATZONE)) {
-				// Going away
-				io->gameFlags |= GFLAG_ISINTREATZONE;
-				if(SendIOScriptEvent(nullptr, io, SM_TREATOUT) != REFUSE) {
-					if(io->ioflags & IO_NPC)
-						io->_npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
-					io->gameFlags &= ~GFLAG_ISINTREATZONE;
-				}
-			}
-			
+		if(entity.show != SHOW_FLAG_IN_SCENE
+		   && entity.show != SHOW_FLAG_TELEPORTING
+		   && entity.show != SHOW_FLAG_ON_PLAYER
+		   && entity.show != SHOW_FLAG_HIDDEN) {
+			continue;
 		}
+		
+		if(entity == *entities.player()) {
+			continue;
+		}
+		
+		bool treat;
+		if(entity.ioflags & IO_CAMERA) {
+			treat = false;
+		} else if(entity.ioflags & IO_MARKER) {
+			treat = false;
+		} else if((entity.ioflags & IO_NPC) && (entity._npcdata->pathfind.flags & PATHFIND_ALWAYS)) {
+			treat = true;
+		} else {
+			float dists;
+			if(Cam_Room >= 0) {
+				if(entity.show == SHOW_FLAG_TELEPORTING) {
+					Vec3f pos = GetItemWorldPosition(&entity);
+					dists = arx::distance2(cameraPos, pos);
+				} else {
+					if(entity.requestRoomUpdate) {
+						UpdateIORoom(&entity);
+					}
+					dists = square(SP_GetRoomDist(entity.pos, cameraPos, entity.room, Cam_Room));
+				}
+			} else {
+				if(entity.show == SHOW_FLAG_TELEPORTING) {
+					Vec3f pos = GetItemWorldPosition(&entity);
+					dists = arx::distance2(cameraPos, pos);
+				} else {
+					dists = arx::distance2(entity.pos, cameraPos);
+				}
+			}
+			treat = (dists < square(TREATZONE_LIMIT));
+		}
+		if(&entity == g_draggedEntity) {
+			treat = true;
+		}
+		
+		if(entity.gameFlags & GFLAG_ISINTREATZONE) {
+			entity.gameFlags |= GFLAG_WASINTREATZONE;
+		} else {
+			entity.gameFlags &= ~GFLAG_WASINTREATZONE;
+		}
+		
+		if(treat) {
+			entity.gameFlags |= GFLAG_ISINTREATZONE;
+			TREATZONE_AddIO(&entity);
+			if((entity.ioflags & IO_NPC) && entity._npcdata->weapon) {
+				Entity & weapon = *entity._npcdata->weapon;
+				weapon.room = entity.room;
+				weapon.requestRoomUpdate = entity.requestRoomUpdate;
+			}
+		} else {
+			entity.gameFlags &= ~GFLAG_ISINTREATZONE;
+		}
+		
+		if(!(entity.gameFlags & GFLAG_ISINTREATZONE) && (entity.gameFlags & GFLAG_WASINTREATZONE)) {
+			// Going away
+			entity.gameFlags |= GFLAG_ISINTREATZONE;
+			if(SendIOScriptEvent(nullptr, &entity, SM_TREATOUT) != REFUSE) {
+				if(entity.ioflags & IO_NPC) {
+					entity._npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
+				}
+				entity.gameFlags &= ~GFLAG_ISINTREATZONE;
+			}
+		}
+		
 	}
 	
 	size_t M_TREAT = treatio.size();
