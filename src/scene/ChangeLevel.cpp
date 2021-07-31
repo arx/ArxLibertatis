@@ -839,13 +839,13 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 static long ARX_CHANGELEVEL_Push_AllIO(long level) {
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		if(e && !(e->ioflags & IO_NOSAVE)
-		   && e != g_draggedEntity && locateInInventories(e).io != EntityHandle_Player
-		   && !IsPlayerEquipedWith(e)) {
-			ARX_CHANGELEVEL_Push_IO(e, level);
+	for(Entity & entity : entities) {
+		if(!(entity.ioflags & IO_NOSAVE)
+		   && &entity != g_draggedEntity
+		   && entity != *entities.player()
+		   && locateInInventories(&entity).io != EntityHandle_Player
+		   && !IsPlayerEquipedWith(&entity)) {
+			ARX_CHANGELEVEL_Push_IO(&entity, level);
 		}
 	}
 	
