@@ -466,25 +466,19 @@ void Add3DBoom(const Vec3f & position) {
 		}
 	}
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * entity = entities[handle];
+	for(Entity & item : entities.inScene(IO_ITEM)) {
 		
-		if(!entity || entity->show != 1 || !(entity->ioflags & IO_ITEM)) {
+		if(!item.obj || !item.obj->pbox) {
 			continue;
 		}
 		
-		if(!entity->obj || !entity->obj->pbox) {
-			continue;
-		}
-		
-		for(size_t k = 0; k < entity->obj->pbox->vert.size(); k++) {
-			float dist = fdist(entity->obj->pbox->vert[k].pos, position);
+		for(size_t k = 0; k < item.obj->pbox->vert.size(); k++) {
+			float dist = fdist(item.obj->pbox->vert[k].pos, position);
 			if(dist < 300.f) {
-				entity->obj->pbox->active = 1;
-				entity->obj->pbox->stopcount = 0;
-				Vec3f vect = (entity->obj->pbox->vert[k].pos - position) / dist;
-				entity->obj->pbox->vert[k].velocity += vect * ((300.f - dist) * 10.f);
+				item.obj->pbox->active = 1;
+				item.obj->pbox->stopcount = 0;
+				Vec3f vect = (item.obj->pbox->vert[k].pos - position) / dist;
+				item.obj->pbox->vert[k].velocity += vect * ((300.f - dist) * 10.f);
 			}
 		}
 		
