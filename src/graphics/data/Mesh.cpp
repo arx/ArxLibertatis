@@ -145,17 +145,17 @@ bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & 
 	return false;
 }
 
-long MakeTopObjString(Entity * io, std::string & dest) {
+long MakeTopObjString(Entity * entity, std::string & dest) {
 	
-	if(!io) {
+	if(!entity) {
 		return -1;
 	}
 	
 	EERIE_3D_BBOX box;
 	box.reset();
-
-	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
-		box.add(io->obj->vertexWorldPositions[i].v);
+	
+	for(size_t i = 0; i < entity->obj->vertexlist.size(); i++) {
+		box.add(entity->obj->vertexWorldPositions[i].v);
 	}
 	box.min.y -= 5.f;
 	box.max.y -= 5.f;
@@ -169,26 +169,21 @@ long MakeTopObjString(Entity * io, std::string & dest) {
 		}
 	}
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e && e != io) {
-			if(e->show == SHOW_FLAG_IN_SCENE) {
-				if((e->ioflags & IO_NPC) || (e->ioflags & IO_ITEM)) {
-					if(e->pos.x > box.min.x && e->pos.x < box.max.x && e->pos.z > box.min.z && e->pos.z < box.max.z) {
-						if(glm::abs(e->pos.y - box.min.y) < 40.f) {
-							dest += ' ' + e->idString();
-						}
-					}
+	for(const Entity & other : entities.inScene(IO_NPC | IO_ITEM)) {
+		if(&other != entity) {
+			if(other.pos.x > box.min.x && other.pos.x < box.max.x && other.pos.z > box.min.z && other.pos.z < box.max.z) {
+				if(glm::abs(other.pos.y - box.min.y) < 40.f) {
+					dest += ' ';
+					dest += other.idString();
 				}
 			}
 		}
 	}
-
-	if(dest.length() == 0)
+	
+	if(dest.length() == 0) {
 		dest = "none";
-
+	}
+	
 	return -1;
 }
 
