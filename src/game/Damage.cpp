@@ -262,89 +262,77 @@ static ScriptParameters getOuchEventParameter(const Entity * entity) {
 	return oss.str();
 }
 
-float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) {
-	if (player.playerflags & PLAYERFLAGS_INVULNERABILITY)
-		return 0;
-
-	float damagesdone = 0.f;
-
-	if(player.lifePool.current == 0.f)
-		return damagesdone;
-
-	if(dmg > player.lifePool.current)
-		damagesdone = dmg;
-	else
-		damagesdone = player.lifePool.current;
-
-	entities.player()->dmg_sum += dmg;
+float damagePlayer(float dmg, DamageType type, Entity * source) {
 	
-	Entity * sender = ValidIONum(source) ? entities[source] : nullptr;
+	if(player.playerflags & PLAYERFLAGS_INVULNERABILITY) {
+		return 0;
+	}
+	
+	if(player.lifePool.current == 0.f) {
+		return 0.f;
+	}
+	
+	// TODO was this intended to be std::min(dmg, player.lifePool.current)
+	float damagesdone = 0.f;
+	if(dmg > player.lifePool.current) {
+		damagesdone = dmg;
+	} else {
+		damagesdone = player.lifePool.current;
+	}
+	
+	entities.player()->dmg_sum += dmg;
 	
 	GameDuration elapsed = g_gameTime.now() - entities.player()->ouch_time;
 	if(elapsed > GameDurationMs(500)) {
 		entities.player()->ouch_time = g_gameTime.now();
-		SendIOScriptEvent(sender, entities.player(), SM_OUCH, getOuchEventParameter(entities.player()));
+		SendIOScriptEvent(source, entities.player(), SM_OUCH, getOuchEventParameter(entities.player()));
 		float power = entities.player()->dmg_sum / player.lifePool.max * 220.f;
 		AddQuakeFX(power * 3.5f, GameDurationMsf(500 + power * 3), Random::getf(200.f, 300.f) + power, false);
 		entities.player()->dmg_sum = 0.f;
 	}
-
+	
 	if(dmg > 0.f) {
-		if(ValidIONum(source)) {
-			Entity * pio = nullptr;
-
-			if(entities[source]->ioflags & IO_NPC) {
-				pio = entities[source]->_npcdata->weapon;
-
-				if(pio && (pio->poisonous == 0 || pio->poisonous_count == 0))
-					pio = nullptr;
+		
+		if(source) {
+			Entity * pio = source;
+			if((source->ioflags & IO_NPC)
+			   && source->_npcdata->weapon
+			   && source->_npcdata->weapon->poisonous != 0
+			   && source->_npcdata->weapon->poisonous_count != 0) {
+				pio = source->_npcdata->weapon;
 			}
-
-			if(!pio)
-				pio = entities[source];
-
 			if(pio && pio->poisonous && pio->poisonous_count != 0) {
 				if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison) {
 					player.poison += pio->poisonous;
 				}
-
 				if(pio->poisonous_count != -1)
 					pio->poisonous_count--;
 			}
 		}
-
-		long alive;
-
-		if(player.lifePool.current > 0)
-			alive = 1;
-		else
-			alive = 0;
-
-		if(!BLOCK_PLAYER_CONTROLS)
-			player.lifePool.current -= dmg;
-
+		
+		bool wasAlive = (player.lifePool.current > 0);
+		
+		if(!BLOCK_PLAYER_CONTROLS) {
+			player.lifePool.current -=dmg;
+		}
+		
 		if(player.lifePool.current <= 0.f) {
 			player.lifePool.current = 0.f;
-
-			if(alive) {
-				
+			if(wasAlive) {
 				ARX_PLAYER_BecomesDead();
-
 				if((type & DAMAGE_TYPE_FIRE) || (type & DAMAGE_TYPE_FAKEFIRE)) {
 					ARX_SOUND_PlayInterface(g_snd.PLAYER_DEATH_BY_FIRE);
 				}
-				
-				SendIOScriptEvent(sender, entities.player(), SM_DIE);
-				
+				SendIOScriptEvent(source, entities.player(), SM_DIE);
 				for(Entity & npc : entities(IO_NPC)) {
 					if(npc.targetinfo == EntityHandle_Player) {
 						std::string_view killer;
-						if(source == EntityHandle_Player) {
+						if(source == entities.player()) {
 							killer = "player";
-						} else if(source.handleData() <= EntityHandle().handleData()) {
+						} else if(!source) {
 							killer = "none";
-						} else if(ValidIONum(source)) {
-							killer = entities[source]->idString();
+						} else {
+							killer = source->idString();
 						}
 						SendIOScriptEvent(entities.player(), &npc, "target_death", killer);
 					}
@@ -352,18 +340,19 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 				
 			}
 		}
-
-		if(player.lifePool.max <= 0.f)
+		
+		if(player.lifePool.max <= 0.f) {
 			return damagesdone;
-
+		}
+		
 		float t = dmg / player.lifePool.max;
 		
 		g_screenFxBloodSplash.hit(t);
 	}
-
+	
 	// revient les barres
 	ResetPlayerInterface();
-
+	
 	return damagesdone;
 }
 
@@ -676,7 +665,7 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 				damagesdone = ARX_DAMAGES_DrainMana(io_target, dmg);
 			} else {
 				ARX_DAMAGES_DamagePlayerEquipment(dmg);
-				damagesdone = ARX_DAMAGES_DamagePlayer(dmg, flags, source);
+				damagesdone = damagePlayer(dmg, flags, io_source);
 			}
 		}
 		
@@ -1092,7 +1081,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 						if(damage.params.type & DAMAGE_TYPE_COLD) {
 							dmg = ARX_SPELLS_ApplyColdProtection(entities.player(), dmg);
 						}
-						damagesdone = ARX_DAMAGES_DamagePlayer(dmg, damage.params.type, damage.params.source);
+						damagesdone = damagePlayer(dmg, damage.params.type, entities.get(damage.params.source));
 					}
 				} else {
 					if(damage.params.type & DAMAGE_TYPE_POISON) {
@@ -1349,7 +1338,7 @@ void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 		
 		EntityHandle numsource = source ? source->index() : EntityHandle();
 		if(entity == *entities.player()) {
-			ARX_DAMAGES_DamagePlayer(dmg, typ, numsource);
+			damagePlayer(dmg, typ, source);
 			ARX_DAMAGES_DamagePlayerEquipment(dmg);
 		} else if(entity.ioflags & IO_NPC) {
 			ARX_DAMAGES_DamageNPC(&entity, dmg * ratio, numsource, true, &sphere.origin);

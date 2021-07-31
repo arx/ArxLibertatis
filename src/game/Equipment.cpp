@@ -601,7 +601,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			// Push the player
 			PUSH_PLAYER_FORCE += ppos * -dmgs * Vec3f(1.0f / 11, 1.0f / 30, 1.0f / 11);
 			
-			ARX_DAMAGES_DamagePlayer(dmgs, 0, io_source->index());
+			damagePlayer(dmgs, 0, io_source);
 			ARX_DAMAGES_DamagePlayerEquipment(dmgs);
 			
 		} else {

@@ -1010,7 +1010,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 				if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison + faster) {
 					float dmg = cp * (1.0f / 3);
 					if(player.lifePool.current - dmg <= 0.f) {
-						ARX_DAMAGES_DamagePlayer(dmg, DAMAGE_TYPE_POISON, EntityHandle());
+						damagePlayer(dmg, DAMAGE_TYPE_POISON);
 					} else {
 						player.lifePool.current -= dmg;
 					}
@@ -1953,7 +1953,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 					if(dmg > 0.f) {
 						Falling_Height = player.pos.y;
 						FALLING_TIME = 0;
-						ARX_DAMAGES_DamagePlayer(dmg, 0, EntityHandle());
+						damagePlayer(dmg, 0);
 						ARX_DAMAGES_DamagePlayerEquipment(dmg);
 					}
 				}
@@ -2049,7 +2049,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 					const float LAVA_DAMAGE = 10.f;
 					float damages = LAVA_DAMAGE * g_framedelay * 0.01f * mul;
 					damages = ARX_SPELLS_ApplyFireProtection(entities.player(), damages);
-					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, EntityHandle_Player);
+					damagePlayer(damages, DAMAGE_TYPE_FIRE, entities.player());
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
 					Vec3f pos = player.basePosition();
 					ARX_PARTICLES_Spawn_Lava_Burn(pos, entities.player());
@@ -2170,7 +2170,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 						float dmg = (fh - 400.f) * (1.f / 15);
 						if(dmg > 0.f) {
 							Falling_Height = (player.pos.y + Falling_Height * 2) * (1.f / 3);
-							ARX_DAMAGES_DamagePlayer(dmg, 0, EntityHandle());
+							damagePlayer(dmg, 0);
 							ARX_DAMAGES_DamagePlayerEquipment(dmg);
 						}
 					}

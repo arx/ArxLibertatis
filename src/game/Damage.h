@@ -135,7 +135,7 @@ void ARX_DAMAGE_Show_Hit_Blood();
 void ARX_DAMAGES_Reset();
  
 void ARX_DAMAGES_UpdateAll();
-float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source = EntityHandle());
+float damagePlayer(float dmg, DamageType type, Entity * source = nullptr);
 void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isSpellHit);
 float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool isSpellHit, const Vec3f * pos);
 bool tryToDoDamage(const Vec3f & pos, float dmg, float radius, Entity & source);
