@@ -401,11 +401,11 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			bool need_kill = false;
 			for(size_t jj = 0; jj < sphereContent.size(); jj++) {
 				
-				if(!ValidIONum(sphereContent[jj]) && sphereContent[jj] != projectile.source) {
+				Entity * entity = entities.get(sphereContent[jj]);
+				if(entity && entity->index() != projectile.source) {
 					continue;
 				}
-				
-				Entity & target = *entities[sphereContent[jj]];
+				Entity & target = *entity;
 				
 				if(target.ioflags & IO_NPC) {
 					
