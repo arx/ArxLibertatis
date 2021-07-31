@@ -317,9 +317,9 @@ void ScriptConsole::parse(bool allowEmptyPrefix) {
 			}
 		}
 		
-		if(cursorPos() <= m_contextEnd && ValidIONum(LastSelectedIONum)
-		   && LastSelectedIONum != EntityHandle_Player) {
-			std::string_view selected = entities[LastSelectedIONum]->idString();
+		Entity * selectedEntity = entities.get(LastSelectedIONum);
+		if(cursorPos() <= m_contextEnd && selectedEntity && selectedEntity != entities.player()) {
+			std::string_view selected = selectedEntity->idString();
 			if(cursorPos() < m_contextBegin
 			   || boost::starts_with(selected, text().substr(m_contextBegin, cursorPos() - m_contextBegin))) {
 				m_completion = Suggestion(0, std::string(selected) += ".");
@@ -564,7 +564,7 @@ void ScriptConsole::update() {
 	GInput->startTextInput(box, this);
 	
 	// Update suggestion if the selected entity changed
-	EntityHandle entity = ValidIONum(LastSelectedIONum) ? LastSelectedIONum : EntityHandle_Player;
+	EntityHandle entity = entities.get(LastSelectedIONum) ? LastSelectedIONum : EntityHandle_Player;
 	if(m_selection == 0 && entity != m_lastSelectedEntity) {
 		m_lastSelectedEntity = entity;
 		textUpdated();
