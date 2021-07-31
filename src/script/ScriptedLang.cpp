@@ -248,33 +248,26 @@ public:
 
 class SendEventCommand : public Command {
 	
-	enum SendTarget {
-		SEND_NPC = 1,
-		SEND_ITEM = 2,
-		SEND_FIX = 4
-	};
-	DECLARE_FLAGS(SendTarget, SendTargets)
-	
 public:
 	
 	SendEventCommand() : Command("sendevent") { }
 	
 	Result execute(Context & context) override {
 		
-		SendTargets sendto = 0;
+		EntityFlags sendto = 0;
 		bool radius = false;
 		bool zone = false;
 		bool group = false;
 		HandleFlags("gfinrz") {
 			group = test_flag(flg, 'g');
-			sendto |= (flg & flag('f')) ? SEND_FIX : SendTargets(0);
-			sendto |= (flg & flag('i')) ? SEND_ITEM : SendTargets(0);
-			sendto |= (flg & flag('n')) ? SEND_NPC : SendTargets(0);
+			sendto |= (flg & flag('f')) ? IO_FIX : EntityFlags(0);
+			sendto |= (flg & flag('i')) ? IO_ITEM : EntityFlags(0);
+			sendto |= (flg & flag('n')) ? IO_NPC : EntityFlags(0);
 			radius = test_flag(flg, 'r');
 			zone = test_flag(flg, 'z');
 		}
 		if(!sendto) {
-			sendto = SEND_NPC;
+			sendto = IO_NPC;
 		}
 		
 		std::string groupname;
@@ -320,36 +313,30 @@ public:
 		
 		ScriptEventName event = ScriptEventName::parse(eventname);
 		
-		Entity * io = context.getEntity();
+		Entity * sender = context.getEntity();
 		
-		if(radius) { // SEND EVENT TO ALL OBJECTS IN A RADIUS
+		if(radius) {
 			
-			for(size_t l = 0 ; l < entities.size() ; l++) {
-				const EntityHandle handle = EntityHandle(l);
-				Entity * e = entities[handle];
+			for(Entity & entity : entities(sendto)) {
 				
-				if(!e || e == io || (e->ioflags & (IO_CAMERA | IO_MARKER))) {
+				if(entity == *sender || (entity.ioflags & (IO_CAMERA | IO_MARKER))) {
 					continue;
 				}
 				
-				if(group && e->groups.find(groupname) == e->groups.end()) {
+				if(group && entity.groups.find(groupname) == entity.groups.end()) {
 					continue;
 				}
 				
-				if(((sendto & SEND_NPC) && (e->ioflags & IO_NPC))
-				   || ((sendto & SEND_FIX) && (e->ioflags & IO_FIX))
-				   || ((sendto & SEND_ITEM) && (e->ioflags & IO_ITEM))) {
-					Vec3f _pos  = GetItemWorldPosition(e);
-					Vec3f _pos2 = GetItemWorldPosition(io);
-					if(!fartherThan(_pos, _pos2, rad)) {
-						io->stat_sent++;
-						Stack_SendIOScriptEvent(context.getEntity(), e, event, parameters);
-					}
+				Vec3f _pos  = GetItemWorldPosition(&entity);
+				Vec3f _pos2 = GetItemWorldPosition(sender);
+				if(!fartherThan(_pos, _pos2, rad)) {
+					sender->stat_sent++;
+					Stack_SendIOScriptEvent(sender, &entity, event, parameters);
 				}
 				
 			}
 			
-		} else if(zone) { // SEND EVENT TO ALL OBJECTS IN A ZONE
+		} else if(zone) {
 			
 			Zone * ap = getZoneByName(zonename);
 			if(!ap) {
@@ -357,59 +344,51 @@ public:
 				return Failed;
 			}
 			
-			for(size_t l = 0; l < entities.size(); l++) {
-				const EntityHandle handle = EntityHandle(l);
-				Entity * e = entities[handle];
+			for(Entity & entity : entities(sendto)) {
 				
-				if(!e || (e->ioflags & (IO_CAMERA | IO_MARKER))) {
+				if(entity.ioflags & (IO_CAMERA | IO_MARKER)) {
 					continue;
 				}
 				
-				if(group && e->groups.find(groupname) == e->groups.end()) {
+				if(group && entity.groups.find(groupname) == entity.groups.end()) {
 					continue;
 				}
 				
-				if(((sendto & SEND_NPC) && (e->ioflags & IO_NPC))
-				   || ((sendto & SEND_FIX) && (e->ioflags & IO_FIX))
-				   || ((sendto & SEND_ITEM) && (e->ioflags & IO_ITEM))) {
-					Vec3f _pos = GetItemWorldPosition(e);
-					if(ARX_PATH_IsPosInZone(ap, _pos)) {
-						io->stat_sent++;
-						Stack_SendIOScriptEvent(context.getEntity(), e, event, parameters);
-					}
+				Vec3f _pos = GetItemWorldPosition(&entity);
+				if(ARX_PATH_IsPosInZone(ap, _pos)) {
+					sender->stat_sent++;
+					Stack_SendIOScriptEvent(sender, &entity, event, parameters);
 				}
 				
 			}
 			
-		} else if(group) { // sends an event to all members of a group
+		} else if(group) {
 			
-			for(size_t l = 0; l < entities.size(); l++) {
-				const EntityHandle handle = EntityHandle(l);
-				Entity * e = entities[handle];
+			for(Entity & entity : entities) {
 				
-				if(!e || e == io) {
+				if(entity == *sender) {
 					continue;
 				}
 				
-				if(e->groups.find(groupname) == e->groups.end()) {
+				if(entity.groups.find(groupname) == entity.groups.end()) {
 					continue;
 				}
 				
-				io->stat_sent++;
-				Stack_SendIOScriptEvent(context.getEntity(), e, event, parameters);
+				sender->stat_sent++;
+				Stack_SendIOScriptEvent(sender, &entity, event, parameters);
 				
 			}
 			
-		} else { // single object event
+		} else {
 			
-			Entity * t = entities.getById(target, io);
-			if(!t) {
+			Entity * entity = entities.getById(target, sender);
+			if(!entity) {
 				DebugScript(": target does not exist");
 				return Failed;
 			}
 			
-			io->stat_sent++;
-			Stack_SendIOScriptEvent(context.getEntity(), t, event, parameters);
+			sender->stat_sent++;
+			Stack_SendIOScriptEvent(sender, entity, event, parameters);
 			
 		}
 		
