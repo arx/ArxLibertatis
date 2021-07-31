@@ -783,13 +783,9 @@ Inventory<PlayerInventoryAccess> getPlayerInventory() {
 	return Inventory<PlayerInventoryAccess>(nullptr);
 }
 
-Inventory<EntityInventoryAccess> getIoInventory(Entity * entity) {
+Inventory<EntityInventoryAccess> getEntityInventory(Entity * entity) {
 	arx_assert(entity != nullptr && entity->inventory != nullptr);
 	return Inventory<EntityInventoryAccess>(entity);
-}
-
-Inventory<EntityInventoryAccess> getIoInventory(EntityHandle id) {
-	return getIoInventory(entities.get(id));
 }
 
 } // anonymous namespace
@@ -815,7 +811,7 @@ void optimizeInventory(Entity * container) {
 	if(container == entities.player()) {
 		getPlayerInventory().optimize();
 	} else {
-		getIoInventory(container).optimize();
+		getEntityInventory(container).optimize();
 	}
 }
 
@@ -853,7 +849,7 @@ InventoryPos removeFromInventories(Entity * item) {
 	if(pos.io == EntityHandle_Player) {
 		getPlayerInventory().remove(item);
 	} else {
-		getIoInventory(pos.io).remove(item);
+		getEntityInventory(entities.get(pos.io)).remove(item);
 	}
 	
 	return pos;
@@ -874,8 +870,8 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 		return getPlayerInventory().insert(item, pos);
 	}
 	
-	if(ValidIONum(pos.io) && entities[pos.io]->inventory) {
-		if(getIoInventory(pos.io).insert(item, pos)) {
+	if(Entity * container = entities.get(pos.io); container && container->inventory) {
+		if(getEntityInventory(container).insert(item, pos)) {
 			return true;
 		}
 	}
@@ -889,7 +885,7 @@ bool insertIntoInventory(Entity * item, Entity * container) {
 		return getPlayerInventory().insert(item);
 	}
 	
-	return getIoInventory(container).insert(item);
+	return getEntityInventory(container).insert(item);
 }
 
 bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::index_type bag, Vec2f pos,
@@ -904,16 +900,18 @@ bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::inde
 		return getPlayerInventory().insertAt(item, bag, pos, fallback);
 	}
 	
-	return getIoInventory(container).insertAt(item, bag, pos, fallback);
+	return getEntityInventory(container).insertAt(item, bag, pos, fallback);
 }
 
 bool insertIntoInventoryAtNoEvent(Entity * item, const InventoryPos & pos) {
 	
 	if(pos.io == EntityHandle_Player) {
 		return getPlayerInventory().insertAtNoEvent(item, pos);
+	} else if(Entity * container = entities.get(pos.io)) {
+		return getEntityInventory(container).insertAtNoEvent(item, pos);
 	}
 	
-	return getIoInventory(pos.io).insertAtNoEvent(item, pos);
+	return false;
 }
 
 /*!
