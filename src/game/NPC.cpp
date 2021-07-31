@@ -2656,10 +2656,9 @@ void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, c
  * \brief Sends ON HEAR events to NPCs for audible sounds
  * \note factor > 1.0F harder to hear, < 0.0F easier to hear
  */
-void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float factor, const float presence)
-{
+void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float factor, const float presence) {
+	
 	float max_distance;
-
 	if(source == entities.player()) {
 		max_distance = ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP;
 	} else if(source && source->ioflags & IO_ITEM) {
@@ -2667,43 +2666,38 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 	} else {
 		return;
 	}
-	
 	max_distance *= presence;
 	max_distance /= factor;
 	
 	long Source_Room = ARX_PORTALS_GetRoomNumForPosition(pos, 1);
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * entity = entities[handle];
+	for(Entity & npc : entities(IO_NPC)) {
 		
-		if(   entity
-		   && (entity->ioflags & IO_NPC)
-		   && (entity->gameFlags & GFLAG_ISINTREATZONE)
-		   && (entity != source)
-		   && (entity->show == SHOW_FLAG_IN_SCENE || entity->show == SHOW_FLAG_HIDDEN)
-		   && (entity->_npcdata->lifePool.current > 0.f)
-		) {
+		if((npc.gameFlags & GFLAG_ISINTREATZONE)
+		   && (npc != *source)
+		   && (npc.show == SHOW_FLAG_IN_SCENE || npc.show == SHOW_FLAG_HIDDEN)
+		   && (npc._npcdata->lifePool.current > 0.f) ) {
 			
-			float distance = fdist(pos, entity->pos);
+			float distance = fdist(pos, npc.pos);
 			if(distance < max_distance) {
 				
-				if(entity->requestRoomUpdate) {
-					UpdateIORoom(entity);
+				if(npc.requestRoomUpdate) {
+					UpdateIORoom(&npc);
 				}
 				
-				if(Source_Room > -1 && entity->room > -1) {
-					float fdist = SP_GetRoomDist(pos, entity->pos, Source_Room, entity->room);
+				if(Source_Room > -1 && npc.room > -1) {
+					float fdist = SP_GetRoomDist(pos, npc.pos, Source_Room, npc.room);
 					if(fdist < max_distance * 1.5f) {
 						distance = fdist;
 					}
 				}
 				
-				SendIOScriptEvent(source, entity, SM_HEAR, long(distance));
+				SendIOScriptEvent(source, &npc, SM_HEAR, long(distance));
 				
 			}
 			
 		}
+		
 	}
 	
 }
