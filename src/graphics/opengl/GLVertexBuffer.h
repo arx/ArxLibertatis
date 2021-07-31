@@ -662,9 +662,8 @@ public:
 	GLPersistentFenceVertexBuffer(OpenGLRenderer * renderer, size_t size, Renderer::BufferUsage usage,
 	                              size_t fenceCount)
 		: Base(renderer, size, usage, fenceCount)
+		, m_position(0)
 	{
-		
-		m_position = 0;
 		
 		arx_assert(m_multiplier <= MaxFences);
 		for(size_t i = 0; i < m_multiplier; i++) {
