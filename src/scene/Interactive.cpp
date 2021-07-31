@@ -618,21 +618,24 @@ void PrepareIOTreatZone(long flag) {
  * \brief Removes an IO loaded by a script command
  */
 void CleanScriptLoadedIO() {
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
+	
+	for(Entity & entity : entities) {
 		
-		if(io) {
-			if(io->scriptload) {
-				delete io;
-			} else if(io->show != SHOW_FLAG_IN_INVENTORY
-			          && io->show != SHOW_FLAG_ON_PLAYER
-			          && io->show != SHOW_FLAG_LINKED) {
-				// TODO why not jus leave it as is?
-				io->show = SHOW_FLAG_IN_SCENE;
-			}
+		if(entity == *entities.player()) {
+			continue;
 		}
+		
+		if(entity.scriptload) {
+			delete &entity;
+		} else if(entity.show != SHOW_FLAG_IN_INVENTORY
+		          && entity.show != SHOW_FLAG_ON_PLAYER
+		          && entity.show != SHOW_FLAG_LINKED) {
+			// TODO why not jus leave it as is?
+			entity.show = SHOW_FLAG_IN_SCENE;
+		}
+		
 	}
+	
 }
 
 /*!
