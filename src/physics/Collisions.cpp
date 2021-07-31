@@ -718,8 +718,8 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	
 	if(!(flags & CFLAG_NO_INTERCOL)) {
 		if(ioo && (ioo->ioflags & IO_NPC) && (ioo->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) {
-			for(size_t i = 0; i < entities.size(); i++) {
-				CheckAnythingInCylinder_Inner(cyl, ioo, flags, entities[EntityHandle(i)], anything);
+			for(Entity & other : entities) {
+				CheckAnythingInCylinder_Inner(cyl, ioo, flags, &other, anything);
 			}
 		} else {
 			for(size_t i = 0; i < treatio.size(); i++) {
