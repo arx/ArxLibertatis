@@ -643,8 +643,6 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 	arx_assert(io_weapon);
 	
 	bool ret = false;
-	EntityHandle source = io_source->index();
-	EntityHandle weapon = io_weapon->index();
 	
 	EXCEPTIONS_LIST_Pos = 0;
 
@@ -662,7 +660,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		sphere.origin = actionPointPosition(io_weapon->obj, action.idx);
 		sphere.radius = rad;
 		
-		if(source != EntityHandle_Player) {
+		if(io_source != entities.player()) {
 			sphere.radius += 15.f;
 		}
 		
@@ -728,10 +726,10 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							if(paralyse > 0.f) {
 								GameDuration ptime = GameDurationMsf(std::min(dmgs * 1000.f, paralyse));
 								ARX_SPELLS_Launch(SPELL_PARALYSE,
-								                  weapon,
+								                  *io_weapon,
 								                  SPELLCAST_FLAG_NOMANA | SPELLCAST_FLAG_NOCHECKCANCAST,
 								                  5,
-								                  target->index(),
+								                  target,
 								                  ptime);
 							}
 						}

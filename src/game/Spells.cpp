@@ -700,8 +700,7 @@ void ARX_SPELLS_CancelSpellTarget() {
 
 void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 	if(io) {
-		ARX_SPELLS_Launch(t_spell.typ, EntityHandle_Player, t_spell.flags, t_spell.level, io->index(),
-		                  t_spell.duration);
+		ARX_SPELLS_Launch(t_spell.typ, *entities.player(), t_spell.flags, t_spell.level, io, t_spell.duration);
 	}
 }
 
@@ -868,9 +867,8 @@ static SpellBase * createSpellInstance(SpellType type) {
 	return nullptr;
 }
 
-
-
-bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, GameDuration duration) {
+bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, long level,
+                       Entity * target, GameDuration duration) {
 	
 	if(cur_rf == 3) {
 		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;
@@ -880,9 +878,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		level = std::max(level, 15l);
 	}
 	
-	if(   source == EntityHandle_Player
-	   && !(flags & SPELLCAST_FLAG_NOCHECKCANCAST)
-	) {
+	if(source == *entities.player() && !(flags & SPELLCAST_FLAG_NOCHECKCANCAST)) {
 		for(size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
 			if(SpellSymbol[i] != RUNE_NONE) {
 				if(!player.hasRune(SpellSymbol[i])) {
@@ -897,16 +893,13 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	
 	float playerSpellLevel = 0;
 	
-	if(source == EntityHandle_Player) {
+	if(source == *entities.player()) {
 		ARX_SPELLS_ResetRecognition();
-		
 		if(player.SpellToMemorize.bSpell) {
 			CurrSpellSymbol = 0;
 			player.SpellToMemorize.bSpell = false;
 		}
-		
 		ARX_PLAYER_ComputePlayerFullStats();
-		
 		if(level == -1) {
 			playerSpellLevel = player.m_skillFull.casting + player.m_attributeFull.mind;
 			playerSpellLevel = glm::clamp(playerSpellLevel * 0.1f, 1.0f, 10.0f);
@@ -931,8 +924,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		return true;
 	}
 	
-	if(target == EntityHandle() && source == EntityHandle_Player) {
+	if(!target && source == *entities.player()) {
+		
 		switch(typ) {
+			
 			case SPELL_LOWER_ARMOR:
 			case SPELL_CURSE:
 			case SPELL_PARALYSE:
@@ -944,29 +939,25 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 				t_spell.typ = typ;
 				t_spell.flags = flags;
 				t_spell.level = level;
-				t_spell.target = target;
+				t_spell.target = EntityHandle();
 				t_spell.duration = duration;
 				return false;
 			}
+			
 			case SPELL_ENCHANT_WEAPON: {
 				LOOKING_FOR_SPELL_TARGET_TIME = g_gameTime.now();
 				LOOKING_FOR_SPELL_TARGET = 2;
 				t_spell.typ = typ;
 				t_spell.flags = flags;
 				t_spell.level = level;
-				t_spell.target = target;
+				t_spell.target = EntityHandle();
 				t_spell.duration = duration;
 				return false;
 			}
+			
 			case SPELL_CONTROL_TARGET: {
+				Vec3f cpos = source.pos;
 				long tcount = 0;
-				
-				if(!entities.get(source)) {
-					return false;
-				}
-				
-				Vec3f cpos = entities[source]->pos;
-				
 				for(const Entity & entity : entities(IO_NPC)) {
 					if(entity._npcdata->lifePool.current > 0.f
 					   && entity.show == SHOW_FLAG_IN_SCENE
@@ -975,28 +966,27 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 						tcount++;
 					}
 				}
-				
 				if(tcount == 0) {
 					ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE, &cpos);
 					return false;
 				}
-				
 				ARX_SOUND_PlaySpeech("player_follower_attack");
-				
 				LOOKING_FOR_SPELL_TARGET_TIME = g_gameTime.now();
 				LOOKING_FOR_SPELL_TARGET = 1;
 				t_spell.typ = typ;
 				t_spell.flags = flags;
 				t_spell.level = level;
-				t_spell.target = target;
+				t_spell.target = EntityHandle();
 				t_spell.duration = duration;
 				return false;
 			}
+			
 			default: break;
 		}
+		
 	}
 	
-	if(source == EntityHandle_Player) {
+	if(source == *entities.player()) {
 		ARX_SPELLS_CancelSpellTarget();
 	}
 	
@@ -1005,27 +995,23 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	}
 	
 	SpellBase * spell = createSpellInstance(typ);
-	if(!spell)
+	if(!spell) {
 		return false;
-	
-	if(spellicons[typ].bAudibleAtStart) {
-		if(Entity * sourceEntity = entities.get(source)) {
-			spawnAudibleSound(entities[source]->pos, *sourceEntity);
-		}
 	}
 	
-	spell->m_caster = source;
-	spell->m_target = target;
+	if(spellicons[typ].bAudibleAtStart) {
+		spawnAudibleSound(source.pos, source);
+	}
 	
-	if(target == EntityHandle())
-		spell->m_target = TemporaryGetSpellTarget(entities[spell->m_caster]->pos);
+	spell->m_caster = source.index();
+	spell->m_target = target ? target->index() : TemporaryGetSpellTarget(source.pos);
 	
 	spell->updateCasterHand();
 	spell->updateCasterPosition();
 	
 	float spellLevel;
 	
-	if(source == EntityHandle_Player) {
+	if(source == *entities.player()) {
 		// Player source
 		spellLevel = playerSpellLevel; // Level of caster
 	} else {
@@ -1168,10 +1154,10 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle t
 	    || (io->spellcast_data.spell_flags & SPELLCAST_FLAG_PRECAST)) {
 		
 		ARX_SPELLS_Launch(io->spellcast_data.castingspell,
-		                  io->index(),
+		                  *io,
 		                  io->spellcast_data.spell_flags,
 		                  io->spellcast_data.spell_level,
-		                  io->spellcast_data.target,
+		                  entities.get(io->spellcast_data.target),
 		                  io->spellcast_data.duration);
 		
 		io->spellcast_data.castingspell = SPELL_NONE;

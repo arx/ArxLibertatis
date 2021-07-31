@@ -122,10 +122,10 @@ void ARX_SPELLS_Precast_Check() {
 				if(layer1.ctime + AnimationDurationMs(550) > layer1.currentAltAnim()->anim_time)
 				{
 					ARX_SPELLS_Launch(Precast[i].typ,
-					                  EntityHandle_Player,
+					                  *entities.player(),
 					                  Precast[i].flags | SPELLCAST_FLAG_LAUNCHPRECAST,
 					                  Precast[i].level,
-					                  EntityHandle(),
+					                  nullptr,
 					                  Precast[i].duration);
 					
 					Precast.erase(Precast.begin() + i);

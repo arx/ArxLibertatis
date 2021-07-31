@@ -204,8 +204,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					entity.gameFlags &= ~GFLAG_INVISIBILITY;
 				} else {
 					entity.gameFlags &= ~GFLAG_INVISIBILITY;
-					ARX_SPELLS_Launch(spellcast.castingspell, entity.index(), spellcast.spell_flags,
-					                  spellcast.spell_level, spellcast.target, spellcast.duration);
+					ARX_SPELLS_Launch(spellcast.castingspell, entity, spellcast.spell_flags,
+					                  spellcast.spell_level, entities.get(spellcast.target), spellcast.duration);
 					if(!(spellcast.spell_flags & SPELLCAST_FLAG_NOANIM) && (entity.ioflags & IO_NPC)) {
 						changeAnimation(&entity, 1, entity.anims[ANIM_CAST]);
 					}

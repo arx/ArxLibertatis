@@ -25,6 +25,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include "core/Config.h"
+#include "game/EntityManager.h"
 #include "game/Equipment.h"
 #include "game/Player.h"
 #include "game/magic/Spell.h"
@@ -1152,11 +1153,6 @@ bool ARX_SPELLS_AnalyseSPELL() {
 		return false;
 	}
 	
-	return ARX_SPELLS_Launch(spell,
-	                         EntityHandle_Player,
-	                         flags,
-	                         -1,
-	                         EntityHandle(),
-	                         GameDuration::ofRaw(-1));
+	return ARX_SPELLS_Launch(spell, *entities.player(), flags, -1, nullptr, GameDuration::ofRaw(-1));
 	
 }
