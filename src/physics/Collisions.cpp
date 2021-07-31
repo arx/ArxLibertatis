@@ -901,12 +901,13 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	return nullptr;
 }
 
-bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags, EntityHandle * num) {
+bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flags, Entity  ** result) {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(num)
-		*num = EntityHandle();
+	if(result) {
+		*result = nullptr;
+	}
 	
 	if(!(flags & CAS_NO_BACKGROUND_COL)) {
 		const EERIEPOLY * poly = CheckBackgroundInSphere(sphere);
@@ -914,27 +915,23 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 			return true;
 		}
 	}
-
-	if(flags & CAS_NO_NPC_COL)
+	
+	if(flags & CAS_NO_NPC_COL) {
 		return false;
-
-	bool validsource = false;
-
-	if(flags & CAS_NO_SAME_GROUP)
-		validsource = ValidIONum(source);
-
+	}
+	
 	float sr30 = sphere.radius + 20.f;
 	float sr40 = sphere.radius + 30.f;
 	float sr180 = sphere.radius + 500.f;
 	
 	for(size_t i = 0; i < treatio.size(); i++) {
 		
-		if(treatio[i].show != SHOW_FLAG_IN_SCENE || !treatio[i].io || treatio[i].io->index() == source) {
+		if(treatio[i].show != SHOW_FLAG_IN_SCENE) {
 			continue;
 		}
 		
 		Entity * io = treatio[i].io;
-		if(!io->obj) {
+		if(!io || !io->obj || io == source) {
 			continue;
 		}
 		
@@ -954,10 +951,10 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 			continue;
 		}
 		
-		if(treatio[i].io->index() != EntityHandle_Player
-		   && source != EntityHandle_Player
-		   && validsource
-		   && HaveCommonGroup(io, entities[source])) {
+		if(io != entities.player()
+		   && source != entities.player()
+		   && (flags & CAS_NO_SAME_GROUP)
+		   && HaveCommonGroup(io, source)) {
 			continue;
 		}
 		
@@ -991,8 +988,8 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 						}
 						
 						if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
-							if(num) {
-								*num = treatio[i].io->index();
+							if(result) {
+								*result = io;
 							}
 							return true;
 						}
@@ -1009,9 +1006,9 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 			if(io->obj->grouplist.size() > 4) {
 				for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
 					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
-						if(num)
-							*num = treatio[i].io->index();
-
+						if(result) {
+							*result = io;
+						}
 						return true;
 					}
 				}
@@ -1026,9 +1023,9 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 
 				if(closerThan(vlist[io->obj->facelist[ii].vid[0]].v, sphere.origin, sr30)
 				   || closerThan(vlist[io->obj->facelist[ii].vid[1]].v, sphere.origin, sr30)) {
-					if(num)
-						*num = treatio[i].io->index();
-
+					if(result) {
+						*result = io;
+					}
 					return true;
 				}
 			}

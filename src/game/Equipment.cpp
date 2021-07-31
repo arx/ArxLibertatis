@@ -760,7 +760,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							sp.origin.z = vertPos.z + vect.z * 30.f;
 							sp.radius = 3.5f * power * 20;
 							
-							if(CheckAnythingInSphere(sp, EntityHandle_Player, CAS_NO_NPC_COL)) {
+							if(CheckAnythingInSphere(sp, entities.player(), CAS_NO_NPC_COL)) {
 								Sphere splatSphere;
 								splatSphere.origin = sp.origin;
 								splatSphere.radius = 30.f;

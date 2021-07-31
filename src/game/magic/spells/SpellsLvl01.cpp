@@ -269,10 +269,11 @@ void MagicMissileSpell::Update() {
 			
 		Sphere sphere = Sphere(missile->eCurPos, 10.f);
 		
-		if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
+		Entity * caster = entities.get(m_caster);
+		if(CheckAnythingInSphere(sphere, caster, CAS_NO_SAME_GROUP)) {
 			
 			LaunchMagicMissileExplosion(missile->eCurPos, m_mrCheat);
-			if(Entity * caster = entities.get(m_caster)) {
+			if(caster) {
 				spawnAudibleSound(missile->eCurPos, *caster);
 			}
 			

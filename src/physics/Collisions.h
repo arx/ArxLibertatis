@@ -94,7 +94,8 @@ enum CheckAnythingInSphereFlag {
 DECLARE_FLAGS(CheckAnythingInSphereFlag, CASFlags)
 DECLARE_FLAGS_OPERATORS(CASFlags)
 
-bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags = 0, EntityHandle * num = nullptr);
+bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flags = 0,
+                           Entity ** result = nullptr);
 
 bool CheckEverythingInSphere(const Sphere & sphere, Entity * source, Entity * target,
                              std::vector<Entity *> & sphereContent);

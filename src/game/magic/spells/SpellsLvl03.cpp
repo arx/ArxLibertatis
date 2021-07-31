@@ -307,8 +307,8 @@ void FireballSpell::Update() {
 		}
 	}
 	
-	if(!bExplo)
-	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
+	Entity * caster = entities.get(m_caster);
+	if(!bExplo && CheckAnythingInSphere(sphere, caster, CAS_NO_SAME_GROUP)) {
 		spawnFireHitParticle(eCurPos, 0);
 		PolyBoomAddScorch(eCurPos);
 		LaunchFireballBoom(eCurPos, m_level);
@@ -317,9 +317,9 @@ void FireballSpell::Update() {
 		bExplo = true;
 		
 		doSphericDamage(Sphere(eCurPos, 30.f * m_level), 3.f * m_level,
-		                DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, entities.get(m_caster));
+		                DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, caster);
 		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &sphere.origin);
-		if(Entity * caster = entities.get(m_caster)) {
+		if(caster) {
 			spawnAudibleSound(sphere.origin, *caster);
 		}
 		requestEnd();

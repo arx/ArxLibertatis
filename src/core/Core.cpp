@@ -565,9 +565,8 @@ void ManageCombatModeAnimations() {
 							sphere.origin = actionPointPosition(io->obj, id);
 							sphere.radius = 25.f;
 							
-							EntityHandle num;
-							
-							if(CheckAnythingInSphere(sphere, EntityHandle_Player, 0, &num)) {
+							Entity * hit = nullptr;
+							if(CheckAnythingInSphere(sphere, entities.player(), 0, &hit)) {
 								float dmgs = (player.m_miscFull.damages + 1) * player.m_strikeAimRatio;
 								
 								if(tryToDoDamage(actionPointPosition(io->obj, id), dmgs, 40, *entities.player())) {
@@ -576,11 +575,11 @@ void ManageCombatModeAnimations() {
 								
 								ParticleSparkSpawnContinous(sphere.origin, unsigned(dmgs), SpawnSparkType_Success);
 								
-								if(ValidIONum(num)) {
+								if(hit) {
 									static PlatformInstant lastHit = 0;
 									PlatformInstant now = g_platformTime.frameStart();
 									if(now - lastHit > toPlatformDuration(layer1.ctime)) {
-										ARX_SOUND_PlayCollision(entities[num]->material, MATERIAL_FLESH, 1.f, 1.f, sphere.origin, nullptr);
+										ARX_SOUND_PlayCollision(hit->material, MATERIAL_FLESH, 1.f, 1.f, sphere.origin, nullptr);
 										lastHit = now;
 									}
 								}

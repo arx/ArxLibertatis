@@ -821,7 +821,7 @@ void ARX_PARTICLES_Update()  {
 			if(part->m_flags & SPLAT_GROUND) {
 				float siz = part->siz + part->scale.x * fd;
 				sp.radius = siz * 10.f;
-				if(CheckAnythingInSphere(sp, EntityHandle_Player, CAS_NO_NPC_COL)) {
+				if(CheckAnythingInSphere(sp, entities.player(), CAS_NO_NPC_COL)) {
 					if(Random::getf() < 0.9f) {
 						Color3f rgb = part->rgb;
 						PolyBoomAddSplat(sp, rgb, 0);
@@ -835,7 +835,7 @@ void ARX_PARTICLES_Update()  {
 			if(part->m_flags & SPLAT_WATER) {
 				float siz = part->siz + part->scale.x * fd;
 				sp.radius = siz * Random::getf(10.f, 30.f);
-				if(CheckAnythingInSphere(sp, EntityHandle_Player, CAS_NO_NPC_COL)) {
+				if(CheckAnythingInSphere(sp, entities.player(), CAS_NO_NPC_COL)) {
 					if(Random::getf() < 0.9f) {
 						Color3f rgb = part->rgb * 0.5f;
 						PolyBoomAddSplat(sp, rgb, 2);
