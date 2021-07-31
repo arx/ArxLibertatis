@@ -435,14 +435,11 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	asi.gmods_desired = g_desiredFogParameters;
 	asi.gmods_current = g_currentFogParameters;
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e != nullptr
-		   && !(e->ioflags & IO_NOSAVE)
-		   && locateInInventories(e).io != EntityHandle_Player
-		   && !IsPlayerEquipedWith(e)) {
+	for(Entity & entity : entities) {
+		if(entity != *entities.player()
+		   && !(entity.ioflags & IO_NOSAVE)
+		   && locateInInventories(&entity).io != EntityHandle_Player
+		   && !IsPlayerEquipedWith(&entity)) {
 			asi.nb_inter++;
 		}
 	}
