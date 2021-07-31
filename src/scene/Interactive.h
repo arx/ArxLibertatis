@@ -117,12 +117,11 @@ void ARX_INTERACTIVE_DestroyIOdelayedRemove(Entity * entity);
 void ARX_INTERACTIVE_DestroyIOdelayedExecute();
 
 /* TODO remove
- * ValidIONum and ValidIOAddress are fundamentally flawed and vulnerable to
+ * entities.get and ValidIOAddress are fundamentally flawed and vulnerable to
  * index / address aliasing as both indices and memory addresses can be reused.
  *
  * We should instead use a proper weak pointer!
  */
-bool ValidIONum(EntityHandle num);
 bool ValidIOAddress(const Entity * io);
 
 void RestoreInitialIOStatusOfIO(Entity * io);

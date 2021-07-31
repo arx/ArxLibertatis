@@ -125,12 +125,6 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos);
 static Entity * AddCamera(const res::path & classPath, EntityInstance instance = -1);
 static Entity * AddMarker(const res::path & classPath, EntityInstance instance = -1);
 
-// Checks if an IO index number is valid
-bool ValidIONum(EntityHandle num) {
-	
-	return !(num.handleData() < 0 || num.handleData() >= long(entities.size()) || !entities[num]);
-}
-
 bool ValidIOAddress(const Entity * io) {
 	
 	if(!io) {
@@ -181,18 +175,17 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io) {
 	
 }
 
-void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
-{
-	if(!io)
+void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io) {
+	
+	if(!io) {
 		return;
-
-	EntityHandle n = io->index();
-
+	}
+	
 	ARX_INTERACTIVE_ForceIOLeaveZone(io);
-
+	
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] == n && ValidIONum(player.equiped[i])) {
-			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]], 1);
+		if(player.equiped[i] == io->index()) {
+			ARX_EQUIPMENT_UnEquip(entities.player(), entities.get(player.equiped[i]), 1);
 			player.equiped[i] = EntityHandle();
 		}
 	}
@@ -201,10 +194,8 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	
 	ARX_SCRIPT_EventStackClearForIo(io);
 	
-	if(ValidIONum(n)) {
-		spells.endByCaster(n);
-	}
-
+	spells.endByCaster(io->index());
+	
 	if(io->flarecount) {
 		MagicFlareReleaseEntity(io);
 	}
@@ -220,8 +211,9 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	}
 	
 	lightHandleDestroy(io->dynlight);
-
+	
 	IO_UnlinkAllLinkedObjects(io);
+	
 }
 
 
@@ -1812,21 +1804,22 @@ Entity * GetFirstInterAtPos(const Vec2s & pos) {
 	return foundPixel ? foundPixel : foundBB;
 }
 
-bool IsEquipedByPlayer(const Entity * io)
-{
-	if(!io)
+bool IsEquipedByPlayer(const Entity * io) {
+	
+	if(!io) {
 		return false;
-
-	if((io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER))
-		return true;
-
-	EntityHandle num = io->index();
-
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(ValidIONum(player.equiped[i]) && player.equiped[i] == num)
-			return true;
 	}
-
+	
+	if((io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER)) {
+		return true;
+	}
+	
+	for(size_t i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] == io->index()) {
+			return true;
+		}
+	}
+	
 	return false;
 }
 
