@@ -147,68 +147,66 @@ static void setAnimation(Entity * entity, AnimationNumber anim,
 }
 
 static void CheckHit(Entity * source, float ratioaim) {
-
-	if(!source)
+	
+	if(!source) {
 		return;
+	}
 	
 	Vec3f from(0.f, 0.f, -90.f);
 	Vec3f to = VRotateY(from, MAKEANGLE(180.f - source->angle.getYaw()));
 	Vec3f ppos = source->pos + Vec3f(0.f, -80.f, 0.f);
 	Vec3f pos = ppos + to;
-
+	
 	float dmg;
-
-	if(source->ioflags & IO_NPC)
+	if(source->ioflags & IO_NPC) {
 		dmg = source->_npcdata->damages;
-	else
+	} else {
 		dmg = 40.f;
-
-	EntityHandle i = source->targetinfo;
-
-	if(!ValidIONum(i))
+	}
+	
+	Entity * target = entities.get(source->targetinfo);
+	if(!target) {
 		return;
-
-	Entity * target = entities[i];
-
-	if(!target)
+	}
+	
+	if(target->ioflags & (IO_MARKER | IO_CAMERA)) {
 		return;
-
-	if(target->ioflags & (IO_MARKER | IO_CAMERA))
+	}
+	
+	if(!(target->gameFlags & GFLAG_ISINTREATZONE)
+	   || target->show != SHOW_FLAG_IN_SCENE
+	   || !target->obj
+	   || target->pos.y <= (source->pos.y + source->physics.cyl.height)
+	   || source->pos.y <= (target->pos.y + target->physics.cyl.height)) {
 		return;
+	}
+	
+	float dist_limit = source->_npcdata->reach + source->physics.cyl.radius;
+	long count = 0;
+	float mindist = std::numeric_limits<float>::max();
 
-	if(target->gameFlags & GFLAG_ISINTREATZONE)
-	if(target->show == SHOW_FLAG_IN_SCENE)
-	if(target->obj)
-	if(target->pos.y > (source->pos.y + source->physics.cyl.height))
-	if(source->pos.y > (target->pos.y + target->physics.cyl.height))
-	{
-		float dist_limit = source->_npcdata->reach + source->physics.cyl.radius;
-		long count = 0;
-		float mindist = std::numeric_limits<float>::max();
-
-		for(size_t k = 0; k < target->obj->vertexlist.size(); k += 2) {
-			float dist = fdist(pos, entities[i]->obj->vertexWorldPositions[k].v);
-
-			if(dist <= dist_limit && glm::abs(pos.y - entities[i]->obj->vertexWorldPositions[k].v.y) < 60.f) {
-				count++;
-
-				if(dist < mindist)
-					mindist = dist;
-			}
-		}
-		
-		float ratio = float(count) / (float(target->obj->vertexlist.size()) * 0.5f);
-		
-		if(target->ioflags & IO_NPC) {
-			if(mindist <= dist_limit) {
-				ARX_EQUIPMENT_ComputeDamages(source, target, ratioaim);
-			}
-		} else if(target->ioflags & IO_FIX) {
-			if(mindist <= 120.f) {
-				damageProp(*target, dmg * ratio, source, false);
+	for(size_t k = 0; k < target->obj->vertexlist.size(); k += 2) {
+		float dist = fdist(pos, target->obj->vertexWorldPositions[k].v);
+		if(dist <= dist_limit && glm::abs(pos.y - target->obj->vertexWorldPositions[k].v.y) < 60.f) {
+			count++;
+			if(dist < mindist) {
+				mindist = dist;
 			}
 		}
 	}
+	
+	float ratio = float(count) / (float(target->obj->vertexlist.size()) * 0.5f);
+	
+	if(target->ioflags & IO_NPC) {
+		if(mindist <= dist_limit) {
+			ARX_EQUIPMENT_ComputeDamages(source, target, ratioaim);
+		}
+	} else if(target->ioflags & IO_FIX) {
+		if(mindist <= 120.f) {
+			damageProp(*target, dmg * ratio, source, false);
+		}
+	}
+	
 }
 
 void ARX_NPC_Kill_Spell_Launch(Entity * io)
@@ -637,7 +635,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		return ARX_NPC_LaunchPathfind_End(io, target, pos2);
 	}
 
-	if(ValidIONum(target) && entities[target] == io) {
+	if(entities.get(target) == io) {
 		io->_npcdata->pathfind.pathwait = 0;
 		return false; // cannot pathfind self...
 	}
@@ -648,8 +646,8 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	Vec3f pos2 = io->pos;
 	if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
 		pos2 = io->initpos;
-	} else if(ValidIONum(target)) {
-		pos2 = entities[target]->pos;
+	} else if(Entity * entity = entities.get(target)) {
+		pos2 = entity->pos;
 	}
 	
 	io->_npcdata->pathfind.truetarget = target;
@@ -1132,21 +1130,18 @@ void StareAtTarget(Entity * io)
 
 static float GetTRUETargetDist(Entity * io) {
 	
-	EntityHandle t;
-	if(io->ioflags & IO_NPC) {
-		t = io->_npcdata->pathfind.truetarget;
-	} else {
-		t = io->targetinfo;
+	arx_assert(io->ioflags & IO_NPC);
+	
+	Entity * target = entities.get(io->_npcdata->pathfind.truetarget);
+	if(!target) {
+		return 99999999.f;
 	}
 	
-	if(ValidIONum(t)) {
-		if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
-			return glm::distance(io->pos, io->initpos);
-		}
-		return glm::distance(io->pos, entities[t]->pos);
+	if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
+		return glm::distance(io->pos, io->initpos);
 	}
 	
-	return 99999999.f;
+	return glm::distance(io->pos, target->pos);
 }
 
 //! Checks If a NPC is dead
@@ -1408,10 +1403,10 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	AnimLayer & layer1 = io->animlayer[1];
 	
 	float tdist = std::numeric_limits<float>::max();
-	if(io->_npcdata->pathfind.listnb && ValidIONum(io->_npcdata->pathfind.truetarget)) {
-		tdist = arx::distance2(io->pos, entities[io->_npcdata->pathfind.truetarget]->pos);
-	} else if(ValidIONum(io->targetinfo)) {
-		tdist = arx::distance2(io->pos, entities[io->targetinfo]->pos);
+	if(Entity * target = entities.get(io->_npcdata->pathfind.truetarget); target && io->_npcdata->pathfind.listnb) {
+		tdist = arx::distance2(io->pos, target->pos);
+	} else if(Entity * fallback = entities.get(io->targetinfo)) {
+		tdist = arx::distance2(io->pos, fallback->pos);
 	}
 	
 	if(ValidIOAddress(io->_npcdata->weapon)) {
@@ -1700,15 +1695,15 @@ static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 	
 	float TOLERANCE = 30.f;
 	
-	if(ValidIONum(targ)) {
+	if(Entity * target = entities.get(targ)) {
 		
 		float self_dist, targ_dist;
 		
 		// Compute min target close-dist
-		if(entities[targ]->ioflags & IO_NO_COLLISIONS) {
+		if(target->ioflags & IO_NO_COLLISIONS) {
 			targ_dist = 0.f;
 		} else {
-			targ_dist = std::max(entities[targ]->physics.cyl.radius, getEntityRadius(*entities[targ]));
+			targ_dist = std::max(target->physics.cyl.radius, getEntityRadius(*target));
 		}
 		
 		// Compute min self close-dist
@@ -1719,31 +1714,34 @@ static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 		}
 		
 		// Base tolerance = radius added
-		TOLERANCE = targ_dist + self_dist + 5.f;
-
-		if(TOLERANCE < 0.f)
-			TOLERANCE = 0.f;
-
-		if(entities[targ]->ioflags & IO_FIX)
+		TOLERANCE = std::max(targ_dist + self_dist + 5.f, 0.f);
+		
+		if(target->ioflags & IO_FIX) {
 			TOLERANCE += 100.f;
-
+		}
+		
 		// If target is a NPC add another tolerance
-		if(entities[targ]->_npcdata)
+		// TODO this also matches items, props and cameras
+		if(target->_npcdata) {
 			TOLERANCE += 20.f;
-
+		}
+		
 		// If target is the player improve again tolerance
-		if(io->targetinfo == EntityHandle_Player)
+		if(io->targetinfo == EntityHandle_Player) {
 			TOLERANCE += 10.f;
-
-		if(io->_npcdata->behavior & BEHAVIOUR_FIGHT)
+		}
+		
+		if(io->_npcdata->behavior & BEHAVIOUR_FIGHT) {
 			TOLERANCE += io->_npcdata->reach * 0.7f;
-
+		}
+		
 		// If distant of magic behavior Maximize tolerance
-		if((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT)) || (io->spellcast_data.castingspell != SPELL_NONE))
+		if((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT)) || (io->spellcast_data.castingspell != SPELL_NONE)) {
 			TOLERANCE += 300.f;
-
+		}
+		
 		// If target is a marker set to a minimal tolerance
-		if(entities[targ]->ioflags & IO_MARKER) {
+		if(target->ioflags & IO_MARKER) {
 			TOLERANCE = 21.f + io->_npcdata->moveproblem * 0.1f;
 		}
 		
@@ -2130,9 +2128,8 @@ static void ManageNPCMovement_End(Entity * io) {
 	   && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 	   && !(io->_npcdata->behavior & BEHAVIOUR_FLEE)
 	) {
-		if(ValidIONum(io->_npcdata->pathfind.truetarget)) {
-			Vec3f p = entities[io->_npcdata->pathfind.truetarget]->pos;
-			long t = AnchorData_GetNearest(p, io->physics.cyl);
+		if(Entity * target = entities.get(io->_npcdata->pathfind.truetarget)) {
+			long t = AnchorData_GetNearest(target->pos, io->physics.cyl);
 			if(t != -1 && t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb - 1]) {
 				long anchor = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb - 1];
 				float d = glm::distance(ACTIVEBKG->m_anchors[t].pos, ACTIVEBKG->m_anchors[anchor].pos);
@@ -2148,8 +2145,7 @@ static void ManageNPCMovement_End(Entity * io) {
 		if(_dist > TOLERANCE && dis > TOLERANCE2) {
 			
 			if(io->_npcdata->reachedtarget) {
-				Entity * target = ValidIONum(io->targetinfo) ? entities[io->targetinfo] : nullptr;
-				SendIOScriptEvent(target, io, SM_LOSTTARGET);
+				SendIOScriptEvent(entities.get(io->targetinfo), io, SM_LOSTTARGET);
 				io->_npcdata->reachedtarget = 0;
 			}
 			
@@ -2232,8 +2228,7 @@ static void ManageNPCMovement_End(Entity * io) {
 					io->animlayer[1].cur_anim = nullptr;
 				
 				if(io->targetinfo != io->index()) {
-					Entity * target = ValidIONum(io->targetinfo) ? entities[io->targetinfo] : nullptr;
-					SendIOScriptEvent(target, io, SM_REACHEDTARGET);
+					SendIOScriptEvent(entities.get(io->targetinfo), io, SM_REACHEDTARGET);
 				}
 				
 			}
@@ -2641,10 +2636,9 @@ void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, c
 	}
 	
 	if(io == entities.player()) {
-		if(ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
-			Entity * ioo = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
-			if(!ioo->stepmaterial.empty()) {
-				step_material = ioo->stepmaterial;
+		if(Entity * leggings = entities.get(player.equiped[EQUIP_SLOT_LEGGINGS])) {
+			if(!leggings->stepmaterial.empty()) {
+				step_material = leggings->stepmaterial;
 			}
 		}
 	}
@@ -2716,10 +2710,7 @@ void ManageIgnition(Entity & io) {
 	bool addParticles = !(&io == g_draggedEntity && g_dragStatus != EntityDragStatus_OnGround);
 	
 	// Torch Management
-	Entity * plw = nullptr;
-
-	if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
-		plw = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+	Entity * plw = entities.get(player.equiped[EQUIP_SLOT_WEAPON]);
 	
 	if((io.ioflags & IO_FIERY) && (!(io.type_flags & OBJECT_TYPE_BOW))
 	   && (io.show == SHOW_FLAG_IN_SCENE || &io == plw)) {
@@ -2841,8 +2832,8 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 			if(npcData->pathfind.listpos < npcData->pathfind.listnb) {
 				long pos = npcData->pathfind.list[npcData->pathfind.listpos];
 				io->target = ACTIVEBKG->m_anchors[pos].pos;
-			} else if(ValidIONum(npcData->pathfind.truetarget)) {
-				io->target = entities[npcData->pathfind.truetarget]->pos;
+			} else if(Entity * target = entities.get(npcData->pathfind.truetarget)) {
+				io->target = target->pos;
 			}
 			return;
 		}
@@ -2869,20 +2860,14 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		return;
 	}
 	
-	if(io->targetinfo == EntityHandle(TARGET_NONE)) {
-		io->target = io->pos;
-		return;
-	}
-	
 	if(io->targetinfo == EntityHandle_Player || io->targetinfo == EntityHandle()) {
 		io->target = player.pos + Vec3f(0.f, player.size.y, 0.f);
-		return;
-	} else if(ValidIONum(io->targetinfo)) {
-		io->target = GetItemWorldPosition(entities[io->targetinfo]);
-		return;
+	} else if(Entity * target = entities.get(io->targetinfo)) {
+		io->target = GetItemWorldPosition(target);
+	} else {
+		io->target = io->pos;
 	}
 	
-	io->target = io->pos;
 }
 
 bool isEnemy(const Entity * entity) {
