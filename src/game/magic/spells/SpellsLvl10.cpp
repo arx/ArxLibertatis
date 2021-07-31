@@ -174,35 +174,29 @@ ControlTargetSpell::ControlTargetSpell()
 	, fTrail(0)
 { }
 
-bool ControlTargetSpell::CanLaunch()
-{
+bool ControlTargetSpell::CanLaunch() {
+	
 	if(!ValidIONum(m_target)) {
 		return false;
 	}
 	
-	long tcount = 0;
-	for(size_t ii = 1; ii < entities.size(); ii++) {
-		const EntityHandle handle = EntityHandle(ii);
-		Entity * ioo = entities[handle];
+	for(const Entity & npc : entities.inScene(IO_NPC)) {
 		
-		if(!ioo || !(ioo->ioflags & IO_NPC)) {
+		if(npc._npcdata->lifePool.current <= 0.f) {
 			continue;
 		}
 		
-		if(ioo->_npcdata->lifePool.current <= 0.f || ioo->show != SHOW_FLAG_IN_SCENE) {
+		if(npc.groups.find("demon") == npc.groups.end()) {
 			continue;
 		}
 		
-		if(ioo->groups.find("demon") == ioo->groups.end()) {
-			continue;
+		if(closerThan(npc.pos, m_caster_pos, 900.f)) {
+			return true;
 		}
 		
-		if(closerThan(ioo->pos, m_caster_pos, 900.f)) {
-			tcount++;
-		}
 	}
 	
-	return (tcount != 0);
+	return false;
 }
 
 void ControlTargetSpell::Launch()
