@@ -120,36 +120,29 @@ void HealSpell::Update() {
 			}
 		}
 	}
-
+	
 	m_particles.SetPos(m_pos);
 	m_particles.Update(g_gameTime.lastFrameDuration());
 	m_particles.Render();
 	
-	for(size_t ii = 0; ii < entities.size(); ii++) {
-		const EntityHandle handle = EntityHandle(ii);
-		Entity * e = entities[handle];
+	for(Entity & npc : entities.inScene(IO_NPC)) {
 		
-		if(e && e->show == SHOW_FLAG_IN_SCENE && (e->gameFlags & GFLAG_ISINTREATZONE) && (e->ioflags & IO_NPC)
-		   && e->_npcdata->lifePool.current > 0.f) {
-			
-			float dist;
-			if(handle == m_caster) {
-				dist = 0;
-			} else {
-				dist = fdist(m_pos, e->pos);
+		if(!(npc.gameFlags & GFLAG_ISINTREATZONE) || npc._npcdata->lifePool.current <= 0.f) {
+			continue;
+		}
+		
+		float dist = (npc.index() == m_caster) ? 0.f : arx::distance2(m_pos, npc.pos);
+		if(dist >= square(300.f)) {
+			continue;
+		}
+		
+		float gain = Random::getf(0.8f, 2.4f) * m_level * (300.f - std::sqrt(dist)) * (1.f / 300) * g_framedelay * 0.001f;
+		if(npc == *entities.player()) {
+			if(!BLOCK_PLAYER_CONTROLS) {
+				player.lifePool.current = std::min(player.lifePool.current + gain, player.Full_maxlife);
 			}
-			
-			if(dist < 300.f) {
-				float gain = Random::getf(0.8f, 2.4f) * m_level * (300.f - dist) * (1.f / 300) * g_framedelay * 0.001f;
-				if(handle == EntityHandle_Player) {
-					if(!BLOCK_PLAYER_CONTROLS) {
-						player.lifePool.current = std::min(player.lifePool.current + gain, player.Full_maxlife);
-					}
-				} else {
-					e->_npcdata->lifePool.current = std::min(e->_npcdata->lifePool.current + gain, e->_npcdata->lifePool.max);
-				}
-			}
-			
+		} else {
+			npc._npcdata->lifePool.current = std::min(npc._npcdata->lifePool.current + gain, npc._npcdata->lifePool.max);
 		}
 		
 	}
