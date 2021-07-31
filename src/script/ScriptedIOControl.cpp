@@ -715,14 +715,15 @@ public:
 		
 		DebugScript(' ' << type << ' ' << target);
 		
-		Entity * t = entities.getById(target, context.getEntity());
-		if(!t) {
+		Entity * entity = entities.getById(target, context.getEntity());
+		if(!entity) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
-		EntityHandle self = (context.getEntity() == nullptr) ? EntityHandle() : context.getEntity()->index();
-		ARX_DAMAGES_DealDamages(t->index(), damage, self, type, &t->pos);
+		if((entity->ioflags & IO_NPC) && context.getEntity()) {
+			damageCharacter(*entity, damage, *context.getEntity(), type, &entity->pos);
+		}
 		
 		return Success;
 	}

@@ -486,6 +486,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 			anything = std::min(anything, io_cyl.origin.y + io_cyl.height);
 			
 			if(!(flags & CFLAG_JUST_TEST) && ioo) {
+				arx_assert(ioo->ioflags & IO_NPC);
 				GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
 				if(elapsed > GameDurationMs(500)) {
 					
@@ -507,13 +508,11 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 					
 				}
 				
-				if(ioo->damager_damages > 0 || io->damager_damages > 0) {
-
-					if(ioo->damager_damages > 0)
-						ARX_DAMAGES_DealDamages(io->index(), ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
-
-					if(io->damager_damages > 0)
-						ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
+				if(ioo->damager_damages > 0) {
+					damageCharacter(*io, ioo->damager_damages, *ioo, ioo->damager_type, &io->pos);
+				}
+				if(io->damager_damages > 0) {
+					damageCharacter(*ioo, io->damager_damages, *io, io->damager_type, &ioo->pos);
 				}
 				
 				if(io->targetinfo == io->index()) {
@@ -574,12 +573,12 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 
 							if(!dealt && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
 								dealt = true;
-
-							if(ioo->damager_damages > 0)
-								ARX_DAMAGES_DealDamages(io->index(), ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
-
-							if(io->damager_damages > 0)
-								ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
+							
+							if((io->ioflags & IO_NPC) && ioo->damager_damages > 0) {
+								damageCharacter(*io, ioo->damager_damages, *ioo, ioo->damager_type, &io->pos);
+							}
+							if((ioo->ioflags & IO_NPC) && io->damager_damages > 0)
+								damageCharacter(*ioo, io->damager_damages, *io, io->damager_type, &ioo->pos);
 							}
 						}
 						anything = std::min(anything, std::min(sp.origin.y - sp.radius, io->bbox3D.min.y));
@@ -630,13 +629,14 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 								
 								if(!dealt && ioo && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
 									dealt = true;
-									
-									if(ioo->damager_damages > 0)
-										ARX_DAMAGES_DealDamages(io->index(), ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
-									
-									if(io->damager_damages > 0)
-										ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
+									if((io->ioflags & IO_NPC) && ioo->damager_damages > 0) {
+										damageCharacter(*io, ioo->damager_damages, *ioo, ioo->damager_type, &io->pos);
+									}
+									if((ioo->ioflags & IO_NPC) && io->damager_damages > 0) {
+										damageCharacter(*ioo, io->damager_damages, *io, io->damager_type, &ioo->pos);
+									}
 								}
+								
 							}
 							anything = std::min(anything, std::min(sp.origin.y - sp.radius, io->bbox3D.min.y));
 						}

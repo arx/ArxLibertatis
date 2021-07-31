@@ -2024,8 +2024,8 @@ void UpdateCameras() {
 					   && (io2->ioflags & IO_NPC)
 					   && closerThan(io->pos, io2->pos, 600.f)
 					) {
+						
 						bool Touched = false;
-
 						for(size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3) {
 							for(size_t rii = 0; rii < io2->obj->vertexlist.size(); rii += 3) {
 								if(closerThan(io->obj->vertexWorldPositions[ri].v, io2->obj->vertexWorldPositions[rii].v, 20.f)) {
@@ -2035,9 +2035,11 @@ void UpdateCameras() {
 								}
 							}
 						}
-
-						if(Touched)
-							ARX_DAMAGES_DealDamages(handle2, io->damager_damages, handle, io->damager_type, &io2->pos);
+						
+						if(Touched) {
+							damageCharacter(*io2, io->damager_damages, *io, io->damager_type, &io2->pos);
+						}
+						
 					}
 				}
 			}

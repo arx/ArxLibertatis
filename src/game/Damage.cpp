@@ -631,20 +631,14 @@ static void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float po
 	
 }
 
-void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source, DamageType flags, Vec3f * pos) {
-	if(!ValidIONum(target) || !ValidIONum(source)) {
-		return;
-	}
-
-	Entity * io_target = entities[target];
-	Entity * io_source = entities[source];
-	float damagesdone;
-
+void damageCharacter(Entity & entity, float dmg, Entity & source, DamageType flags, Vec3f * pos) {
+	
 	if(flags & DAMAGE_TYPE_PER_SECOND) {
 		dmg = dmg * (g_gameTime.lastFrameDuration() / GameDurationMs(1000));
 	}
-
-	if(target == EntityHandle_Player) {
+	
+	float damagesdone;
+	if(entity == *entities.player()) {
 		
 		if(flags & DAMAGE_TYPE_POISON) {
 			if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison) {
@@ -653,67 +647,65 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 			} else {
 				damagesdone = 0;
 			}
+		} else if(flags & DAMAGE_TYPE_DRAIN_MANA) {
+			damagesdone = ARX_DAMAGES_DrainMana(&entity, dmg);
 		} else {
-			if(flags & DAMAGE_TYPE_DRAIN_MANA) {
-				damagesdone = ARX_DAMAGES_DrainMana(io_target, dmg);
-			} else {
-				ARX_DAMAGES_DamagePlayerEquipment(dmg);
-				damagesdone = damagePlayer(dmg, flags, io_source);
-			}
+			ARX_DAMAGES_DamagePlayerEquipment(dmg);
+			damagesdone = damagePlayer(dmg, flags, &source);
 		}
 		
 		if(flags & DAMAGE_TYPE_FIRE) {
-			ARX_DAMAGES_IgnitIO(io_source, io_target, damagesdone);
+			ARX_DAMAGES_IgnitIO(&source, &entity, damagesdone);
 		}
 		
 	} else {
-		if(io_target->ioflags & IO_NPC) {
+		
+		if(flags & DAMAGE_TYPE_POISON) {
 			
-			if(flags & DAMAGE_TYPE_POISON) {
-				
-				if(Random::getf(0.f, 100.f) > io_target->_npcdata->resist_poison) {
-					damagesdone = dmg;
-					io_target->_npcdata->poisonned += damagesdone;
-				} else {
-					damagesdone = 0;
-				}
-				
+			if(Random::getf(0.f, 100.f) > entity._npcdata->resist_poison) {
+				damagesdone = dmg;
+				entity._npcdata->poisonned += damagesdone;
 			} else {
-				
-				if(flags & DAMAGE_TYPE_FIRE) {
-					if(Random::getf(0.f, 100.f) <= io_target->_npcdata->resist_fire) {
-						dmg = 0;
-					}
-					ARX_DAMAGES_IgnitIO(io_source, io_target, dmg);
-				}
-				
-				if(flags & DAMAGE_TYPE_DRAIN_MANA) {
-					damagesdone = ARX_DAMAGES_DrainMana(io_target, dmg);
-				} else {
-					damagesdone = damageNpc(*io_target, dmg, entities.get(source), true, pos);
-				}
+				damagesdone = 0;
 			}
+			
 		} else {
-			return;
+			
+			if(flags & DAMAGE_TYPE_FIRE) {
+				if(Random::getf(0.f, 100.f) <= entity._npcdata->resist_fire) {
+					dmg = 0;
+				}
+				ARX_DAMAGES_IgnitIO(&source, &entity, dmg);
+			}
+			
+			if(flags & DAMAGE_TYPE_DRAIN_MANA) {
+				damagesdone = ARX_DAMAGES_DrainMana(&entity, dmg);
+			} else {
+				damagesdone = damageNpc(entity, dmg, &source, true, pos);
+			}
+			
 		}
+		
 	}
-
+	
 	if(flags & DAMAGE_TYPE_DRAIN_LIFE) {
-		ARX_DAMAGES_HealInter(io_source, damagesdone);
+		ARX_DAMAGES_HealInter(&source, damagesdone);
 	}
-
+	
 	if(flags & DAMAGE_TYPE_DRAIN_MANA) {
-		ARX_DAMAGES_HealManaInter(io_source, damagesdone);
+		ARX_DAMAGES_HealManaInter(&source, damagesdone);
 	}
-
+	
 	if(flags & DAMAGE_TYPE_PUSH) {
-		ARX_DAMAGES_PushIO(io_target, source, damagesdone * (1.0f / 2));
+		ARX_DAMAGES_PushIO(&entity, source.index(), damagesdone * 0.5f);
 	}
+	
 }
 
 float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const Vec3f * pos) {
 	
 	arx_assert(npc.ioflags & IO_NPC);
+	arx_assert(npc != *entities.player());
 	
 	if(!npc.show || (npc.ioflags & IO_INVULNERABILITY)) {
 		return 0.f;
