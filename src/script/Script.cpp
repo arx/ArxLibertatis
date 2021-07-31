@@ -339,12 +339,9 @@ void ARX_SCRIPT_Reset(Entity * io, bool init) {
 }
 
 void ARX_SCRIPT_ResetAll(bool init) {
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e && !e->scriptload) {
-			ARX_SCRIPT_Reset(e, init);
+	for(Entity & entity : entities) {
+		if(!entity.scriptload) {
+			ARX_SCRIPT_Reset(&entity, init);
 		}
 	}
 }
