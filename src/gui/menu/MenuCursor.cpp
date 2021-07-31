@@ -144,14 +144,10 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 
 MenuCursor::MenuCursor()
 	: m_size(Vec2s(64, 64))
-{
-	exited = true;
-	
-	bMouseOver = false;
-	
-	m_currentFrame = 0;
-	lFrameDiff = 0;
-}
+	, exited(true)
+	, m_currentFrame(0)
+	, bMouseOver(false)
+{ }
 
 MenuCursor::~MenuCursor() { }
 
