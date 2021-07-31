@@ -2109,55 +2109,46 @@ void UpdateInter() {
 	
 }
 
-
-/*!
- * \brief Render entities
- */
 void RenderInter() {
 	
 	ARX_PROFILE_FUNC();
 	
 	UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
 	
-	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(   !io
-		   || !(io->gameFlags & GFLAG_ISINTREATZONE)
-		   || io->show != SHOW_FLAG_IN_SCENE
-		   || (io->ioflags & IO_CAMERA)
-		   || (io->ioflags & IO_MARKER)
-		) {
+	for(Entity & entity : entities.inScene()) {
+		
+		if(!(entity.gameFlags & GFLAG_ISINTREATZONE)
+		   || (entity.ioflags & (IO_CAMERA | IO_MARKER))
+		   || entity == *entities.player()) {
 			continue;
 		}
 		
-		float invisibility = Cedric_GetInvisibility(io);
+		float invisibility = Cedric_GetInvisibility(&entity);
 		
-		if(io->animlayer[0].cur_anim) {
+		if(entity.animlayer[0].cur_anim) {
 			
-			Vec3f pos = io->pos;
-			if(io->ioflags & IO_NPC) {
-				pos.y = io->_npcdata->vvpos;
+			Vec3f pos = entity.pos;
+			if(entity.ioflags & IO_NPC) {
+				pos.y = entity._npcdata->vvpos;
 			}
 			
-			EERIEDrawAnimQuatRender(io->obj, pos, io, invisibility);
+			EERIEDrawAnimQuatRender(entity.obj, pos, &entity, invisibility);
 			
 		} else {
 			
-			io->bbox2D.min.x = 9999;
-			io->bbox2D.max.x = -1;
+			entity.bbox2D.min.x = 9999;
+			entity.bbox2D.max.x = -1;
 			
-			if(io->obj) {
-				UpdateGoldObject(io);
+			if(entity.obj) {
+				UpdateGoldObject(&entity);
 			}
 			
-			if(!(io->ioflags & IO_NPC) && io->obj) {
-				Anglef angle = io->angle;
+			if(!(entity.ioflags & IO_NPC) && entity.obj) {
+				Anglef angle = entity.angle;
 				angle.setYaw(MAKEANGLE(270.f - angle.getYaw()));
 				glm::quat rotation = toQuaternion(angle);
-				TransformInfo t(io->pos, rotation, io->scale);
-				DrawEERIEInter(io->obj, t, io, false, invisibility);
+				TransformInfo t(entity.pos, rotation, entity.scale);
+				DrawEERIEInter(entity.obj, t, &entity, false, invisibility);
 			}
 			
 		}
