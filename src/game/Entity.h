@@ -259,6 +259,9 @@ class Entity {
 	
 public:
 	
+	Entity(const Entity &) = delete;
+	Entity & operator=(const Entity &) = delete;
+	
 	explicit Entity(const res::path & classPath, EntityInstance instance);
 	~Entity();
 	
