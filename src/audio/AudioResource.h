@@ -64,11 +64,9 @@ class ResourceHandle {
 	
 public:
 	
-	ResourceHandle() {
-		reference_count_ = 0;
-	}
+	ResourceHandle() : reference_count_(0) { }
 	
-	virtual ~ResourceHandle() { }
+	virtual ~ResourceHandle() = default;
 	
 	void reference() {
 		++reference_count_;
