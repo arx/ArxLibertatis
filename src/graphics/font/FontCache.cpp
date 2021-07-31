@@ -20,9 +20,10 @@
 #include "graphics/font/FontCache.h"
 
 #include <stddef.h>
+#include <map>
+#include <memory>
 #include <sstream>
 #include <string>
-#include <map>
 #include <utility>
 
 #include <ft2build.h>
@@ -41,13 +42,15 @@
 
 class FontCache::Impl : private boost::noncopyable {
 	
+	struct FontDeleter {
+		void operator()(Font * font) const { delete font; }
+	};
+	
 	class FontFile {
-		
-		typedef std::map<u32, Font *> FontMap;
 		
 		res::path m_file;
 		std::string m_data;
-		FontMap m_sizes;
+		std::map<u32, std::unique_ptr<Font, FontDeleter>> m_sizes;
 		FT_Face m_face;
 		
 		static u32 sizeKey(unsigned size, unsigned weight);
@@ -134,25 +137,19 @@ Font * FontCache::Impl::FontFile::getSize(unsigned size, unsigned weight, bool p
 	
 	u32 key = sizeKey(size, weight);
 	
-	FontMap::iterator it = m_sizes.find(key);
-	if(it != m_sizes.end()) {
-		return it->second;
+	if(auto it = m_sizes.find(key); it != m_sizes.end()) {
+		return it->second.get();
 	}
 	
 	if(!m_face) {
 		return nullptr;
 	}
 	
-	Font * font = new Font(m_file, size, weight, m_face, preload);
-	
-	m_sizes.insert(FontMap::value_type(key, font));
-	
-	return font;
+	return m_sizes.emplace(key, new Font(m_file, size, weight, m_face, preload)).first->second.get();
 }
 
 void FontCache::Impl::FontFile::releaseSize(Font * font) {
 	m_sizes.erase(sizeKey(font->getSize(), font->getWeight()));
-	delete font;
 }
 
 FontCache::Impl::Impl() : m_library(nullptr) {
