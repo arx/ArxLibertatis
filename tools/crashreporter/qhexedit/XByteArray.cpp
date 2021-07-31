@@ -24,12 +24,12 @@
 
 #include "crashreporter/qhexedit/XByteArray.h"
 
-XByteArray::XByteArray() {
-	_oldSize = -99;
-	_addressNumbers = 4;
-	_addressOffset = 0;
-	_realAddressNumbers = 0;
-}
+XByteArray::XByteArray()
+	: _addressNumbers(4)
+	, _addressOffset(0)
+	, _realAddressNumbers(0)
+	, _oldSize(-99)
+{ }
 
 int XByteArray::addressOffset() const {
 	return _addressOffset;
