@@ -1646,45 +1646,44 @@ void ArxGame::updateLevel() {
 			managePlayerControls();
 		}
 	}
-
-	{ ARX_PROFILE("Entity preprocessing");
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
+	{
+		ARX_PROFILE("Entity preprocessing");
 		
-		Entity * entity = entities[handle];
-		if(!entity) {
-			continue;
+		for(Entity & entity : entities) {
+			
+			if(entity.ignition > 0.f || (entity.ioflags & IO_FIERY)) {
+				ManageIgnition(entity);
+			}
+			
+			// Highlight entity
+			if(&entity == FlyingOverIO && !(entity.ioflags & IO_NPC)) {
+				entity.highlightColor = Color3f::gray(float(iHighLight));
+			} else {
+				entity.highlightColor = Color3f::black;
+			}
+			
+			Cedric_ApplyLightingFirstPartRefactor(entity);
+			
+			float speedModifier = 0.f;
+			
+			if(entity == *entities.player()) {
+				if(cur_mr == 3) {
+					speedModifier += 0.5f;
+				}
+				if(cur_rf == 3) {
+					speedModifier += 1.5f;
+				}
+			}
+			
+			speedModifier += spells.getTotalSpellCasterLevelOnTarget(entity.index(), SPELL_SPEED) * 0.1f;
+			speedModifier -= spells.getTotalSpellCasterLevelOnTarget(entity.index(), SPELL_SLOW_DOWN) * 0.05f;
+			entity.speed_modif = speedModifier;
+			
 		}
 		
-		if(entity->ignition > 0.f || (entity->ioflags & IO_FIERY))
-			ManageIgnition(*entity);
-		
-		// Highlight entity
-		if(entity == FlyingOverIO && !(entity->ioflags & IO_NPC)) {
-			entity->highlightColor = Color3f::gray(float(iHighLight));
-		} else {
-			entity->highlightColor = Color3f::black;
-		}
-		
-		Cedric_ApplyLightingFirstPartRefactor(*entity);
-
-		float speedModifier = 0.f;
-
-		if(entity == entities.player()) {
-			if(cur_mr == 3)
-				speedModifier += 0.5f;
-			if(cur_rf == 3)
-				speedModifier += 1.5f;
-		}
-		
-		speedModifier += spells.getTotalSpellCasterLevelOnTarget(entity->index(), SPELL_SPEED) * 0.1f;
-		speedModifier -= spells.getTotalSpellCasterLevelOnTarget(entity->index(), SPELL_SLOW_DOWN) * 0.05f;
-		
-		entity->speed_modif = speedModifier;
 	}
-	}
-
+	
 	ARX_PLAYER_Manage_Movement();
 
 	ARX_PLAYER_Manage_Visual();
