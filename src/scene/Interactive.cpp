@@ -1930,143 +1930,124 @@ void UpdateCameras() {
 	
 	ARX_PROFILE_FUNC();
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
+	for(Entity & entity : entities) {
 		
-		if(!io)
-			continue;
-
-		// interpolate & send events
-		if(io->usepath) {
-			ARX_USE_PATH * aup = io->usepath;
+		if(entity.usepath) {
+			
+			ARX_USE_PATH * aup = entity.usepath;
 			GameDuration elapsed = g_gameTime.now() - aup->_curtime;
-
+			
 			if(aup->aupflags & ARX_USEPATH_FORWARD) {
 				if(aup->aupflags & ARX_USEPATH_FLAG_FINISHED) {
 				} else {
 					aup->_curtime += elapsed;
 				}
 			}
-
+			
 			if(aup->aupflags & ARX_USEPATH_BACKWARD) {
 				aup->_starttime += elapsed * 2;
 				aup->_curtime += elapsed;
-
-				if(aup->_starttime >= aup->_curtime)
+				if(aup->_starttime >= aup->_curtime) {
 					aup->_curtime = aup->_starttime + GameDurationMs(1);
+				}
 			}
-
+			
 			if(aup->aupflags & ARX_USEPATH_PAUSE) {
 				aup->_starttime += elapsed;
 				aup->_curtime += elapsed;
 			}
-
-			long last = ARX_PATHS_Interpolate(aup, &io->pos);
-
+			
+			long last = ARX_PATHS_Interpolate(aup, &entity.pos);
 			if(aup->lastWP != last) {
 				if(last == -2) {
 					std::string waypoint = std::to_string(aup->path->pathways.size() - 1);
-					SendIOScriptEvent(nullptr, io, SM_WAYPOINT, waypoint);
-					SendIOScriptEvent(nullptr, io, ScriptEventName("waypoint" + waypoint));
-					SendIOScriptEvent(nullptr, io, SM_PATHEND);
+					SendIOScriptEvent(nullptr, &entity, SM_WAYPOINT, waypoint);
+					SendIOScriptEvent(nullptr, &entity, ScriptEventName("waypoint" + waypoint));
+					SendIOScriptEvent(nullptr, &entity, SM_PATHEND);
 				} else {
 					long ii = aup->lastWP + 1;
 					if(ii < 0 || ii > last) {
 						ii = 0;
 					}
 					std::string waypoint = std::to_string(ii);
-					SendIOScriptEvent(nullptr, io, SM_WAYPOINT, waypoint);
-					SendIOScriptEvent(nullptr, io, ScriptEventName("waypoint" + waypoint));
+					SendIOScriptEvent(nullptr, &entity, SM_WAYPOINT, waypoint);
+					SendIOScriptEvent(nullptr, &entity, ScriptEventName("waypoint" + waypoint));
 					if(size_t(ii) == aup->path->pathways.size()) {
-						SendIOScriptEvent(nullptr, io, SM_PATHEND);
+						SendIOScriptEvent(nullptr, &entity, SM_PATHEND);
 					}
 				}
 				aup->lastWP = last;
 			}
-
-			if(io->damager_damages > 0 && io->show == SHOW_FLAG_IN_SCENE) {
-				for(size_t i2 = 0; i2 < entities.size(); i2++) {
-					const EntityHandle handle2 = EntityHandle(i2);
-					Entity * io2 = entities[handle2];
-
-					if(io2
-					   && handle2 != handle
-					   && io2->show == SHOW_FLAG_IN_SCENE
-					   && (io2->ioflags & IO_NPC)
-					   && closerThan(io->pos, io2->pos, 600.f)
-					) {
-						
-						bool Touched = false;
-						for(size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3) {
-							for(size_t rii = 0; rii < io2->obj->vertexlist.size(); rii += 3) {
-								if(closerThan(io->obj->vertexWorldPositions[ri].v, io2->obj->vertexWorldPositions[rii].v, 20.f)) {
-									Touched = true;
-									ri = io->obj->vertexlist.size();
-									break;
-								}
+			
+			if(entity.damager_damages > 0 && entity.show == SHOW_FLAG_IN_SCENE) {
+				for(Entity & other : entities.inScene(IO_NPC)) {
+					
+					if(other == entity || !closerThan(entity.pos, other.pos, 600.f)) {
+						continue;
+					}
+					
+					bool touched = false;
+					for(size_t ri = 0; ri < entity.obj->vertexlist.size(); ri += 3) {
+						for(size_t rii = 0; rii < other.obj->vertexlist.size(); rii += 3) {
+							if(closerThan(entity.obj->vertexWorldPositions[ri].v, other.obj->vertexWorldPositions[rii].v, 20.f)) {
+								touched = true;
+								ri = entity.obj->vertexlist.size();
+								break;
 							}
 						}
-						
-						if(Touched) {
-							damageCharacter(*io2, io->damager_damages, *io, io->damager_type, &io2->pos);
-						}
-						
 					}
+					
+					if(touched) {
+						damageCharacter(other, entity.damager_damages, entity, entity.damager_type, &other.pos);
+					}
+					
 				}
 			}
-		}
-
-		if(io->ioflags & IO_CAMERA) {
-			arx_assert(isallfinite(io->pos));
 			
-			io->_camdata->cam.m_pos = io->pos;
-
-			if(io->targetinfo != EntityHandle(TARGET_NONE)) {
+		}
+		
+		if(entity.ioflags & IO_CAMERA) {
+			
+			arx_assert(isallfinite(entity.pos));
+			entity._camdata->cam.m_pos = entity.pos;
+			
+			if(entity.targetinfo != EntityHandle(TARGET_NONE)) {
 				
 				// Follows target
-				GetTargetPos(io, static_cast<unsigned long>(io->_camdata->smoothing));
-				io->target += io->_camdata->translatetarget;
+				GetTargetPos(&entity, static_cast<unsigned long>(entity._camdata->smoothing));
+				entity.target += entity._camdata->translatetarget;
 				
-				Vec3f target = io->target;
-				if(io->_camdata->lastinfovalid && io->_camdata->smoothing != 0.f) {
-
-					float vv = io->_camdata->smoothing;
-
-					if(vv > 8000)
-						vv = 8000;
-
-					vv = (8000 - vv) * (1.0f / 4000);
-
-					float f1 = g_gameTime.lastFrameDuration() / GameDurationMs(1000) * vv;
-
-					if(f1 > 1.f)
-						f1 = 1.f;
-
-					float f2 = 1.f - f1;
-					target = io->target * f2 + io->_camdata->lasttarget * f1;
+				Vec3f target = entity.target;
+				if(entity._camdata->lastinfovalid && entity._camdata->smoothing != 0.f) {
+					float vv = (8000.f - std::min(entity._camdata->smoothing, 8000.f)) * (1.0f / 4000.f);
+					float f1 = std::min(g_gameTime.lastFrameDuration() / GameDurationMs(1000) * vv, 1.f);
+					target = entity.target * (1.f - f1) + entity._camdata->lasttarget * f1;
 				}
 				
-				io->_camdata->cam.lookAt(target);
-				io->_camdata->lasttarget = target;
-				io->angle.setPitch(0.f);
-				io->angle.setYaw(io->_camdata->cam.angle.getYaw() + 90.f);
-				io->angle.setRoll(0.f);
+				entity._camdata->cam.lookAt(target);
+				entity._camdata->lasttarget = target;
+				entity.angle.setPitch(0.f);
+				entity.angle.setYaw(entity._camdata->cam.angle.getYaw() + 90.f);
+				entity.angle.setRoll(0.f);
 				
 			} else {
-				// no target...
-				io->target = io->pos;
-				io->target += angleToVectorXZ(io->angle.getYaw() + 90) * 20.f;
 				
-				io->_camdata->cam.lookAt(io->target);
-				io->_camdata->cam.angle.setPitch(MAKEANGLE(-io->_camdata->cam.angle.getPitch()));
-				io->_camdata->cam.angle.setYaw(MAKEANGLE(io->_camdata->cam.angle.getYaw() + 180.f));
-				io->_camdata->lasttarget = io->target;
+				// no target...
+				entity.target = entity.pos;
+				entity.target += angleToVectorXZ(entity.angle.getYaw() + 90) * 20.f;
+				entity._camdata->cam.lookAt(entity.target);
+				entity._camdata->cam.angle.setPitch(MAKEANGLE(-entity._camdata->cam.angle.getPitch()));
+				entity._camdata->cam.angle.setYaw(MAKEANGLE(entity._camdata->cam.angle.getYaw() + 180.f));
+				entity._camdata->lasttarget = entity.target;
+				
 			}
-
-			io->_camdata->lastinfovalid = true;
+			
+			entity._camdata->lastinfovalid = true;
+			
 		}
+		
 	}
+	
 }
 
 void UpdateIOInvisibility(Entity * io)
