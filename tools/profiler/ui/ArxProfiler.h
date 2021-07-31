@@ -41,11 +41,12 @@ struct ProfileThread {
 
 struct ThreadData {
 	
-	ThreadData() {
+	ThreadData()
+		: maxDepth(0)
+	{
 		info.threadId = 0;
 		info.startTime = 0;
 		info.endTime = 0;
-		maxDepth = 0;
 	}
 
 	ProfileThread info;
