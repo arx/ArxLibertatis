@@ -450,66 +450,59 @@ static float ARX_DAMAGES_DrainMana(Entity * io, float dmg) {
 	return d;
 }
 
-void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isSpellHit)
-{
-	if(   !io
-	   || !io->show
-	   || !(io->ioflags & IO_FIX)
-	   || (io->ioflags & IO_INVULNERABILITY)
-	   || !io->script.valid
-	) {
+void damageProp(Entity & prop, float dmg, Entity * source, bool isSpellHit) {
+	
+	arx_assert(prop.ioflags & IO_FIX);
+	
+	if(!prop.show || (prop.ioflags & IO_INVULNERABILITY) || !prop.script.valid) {
 		return;
 	}
-
-	io->dmg_sum += dmg;
 	
-	Entity * sender = ValidIONum(source) ? entities[source] : nullptr;
+	prop.dmg_sum += dmg;
 	
-	GameDuration elapsed = g_gameTime.now() - io->ouch_time;
+	GameDuration elapsed = g_gameTime.now() - prop.ouch_time;
 	if(elapsed > GameDurationMs(500)) {
-		io->ouch_time = g_gameTime.now();
-		SendIOScriptEvent(sender, io, SM_OUCH, getOuchEventParameter(io));
-		io->dmg_sum = 0.f;
+		prop.ouch_time = g_gameTime.now();
+		SendIOScriptEvent(source, &prop, SM_OUCH, getOuchEventParameter(&prop));
+		prop.dmg_sum = 0.f;
 	}
 	
-	if(Random::getf(0.f, 100.f) > io->durability) {
-		io->durability -= dmg * 0.5f;
+	if(Random::getf(0.f, 100.f) > prop.durability) {
+		prop.durability -= dmg * 0.5f;
 	}
 	
-	if(io->durability <= 0.f) {
-		io->durability = 0.f;
-		SendIOScriptEvent(sender, io, SM_BREAK);
-	} else {
-		
-		ScriptParameters parameters(dmg);
-		if(source == EntityHandle_Player) {
-			if(isSpellHit) {
-				parameters.push_back("spell");
-			} else {
-				switch(ARX_EQUIPMENT_GetPlayerWeaponType()) {
-					case WEAPON_BARE:
-						parameters.push_back("bare");
-						break;
-					case WEAPON_DAGGER:
-						parameters.push_back("dagger");
-						break;
-					case WEAPON_1H:
-						parameters.push_back("1h");
-						break;
-					case WEAPON_2H:
-						parameters.push_back("2h");
-						break;
-					case WEAPON_BOW:
-						parameters.push_back("arrow");
-						break;
-					default: break;
-				}
+	if(prop.durability <= 0.f) {
+		prop.durability = 0.f;
+		SendIOScriptEvent(source, &prop, SM_BREAK);
+		return;
+	}
+	
+	ScriptParameters parameters(dmg);
+	if(source == entities.player()) {
+		if(isSpellHit) {
+			parameters.push_back("spell");
+		} else {
+			switch(ARX_EQUIPMENT_GetPlayerWeaponType()) {
+				case WEAPON_BARE:
+					parameters.push_back("bare");
+					break;
+				case WEAPON_DAGGER:
+					parameters.push_back("dagger");
+					break;
+				case WEAPON_1H:
+					parameters.push_back("1h");
+					break;
+				case WEAPON_2H:
+					parameters.push_back("2h");
+					break;
+				case WEAPON_BOW:
+					parameters.push_back("arrow");
+					break;
+				default: break;
 			}
 		}
-		
-		SendIOScriptEvent(sender, io, SM_HIT, parameters);
-		
 	}
+	SendIOScriptEvent(source, &prop, SM_HIT, parameters);
 	
 }
 
@@ -1095,7 +1088,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 			
 		} else if(entity.ioflags & IO_FIX) {
 			
-			ARX_DAMAGES_DamageFIX(&entity, dmg, damage.params.source, true);
+			damageProp(entity, dmg, entities.get(damage.params.source), true);
 			
 		}
 		
@@ -1169,7 +1162,7 @@ bool tryToDoDamage(const Vec3f & pos, float dmg, float radius, Entity & source) 
 				ret = true;
 			}
 			if(entity.ioflags & IO_FIX) {
-				ARX_DAMAGES_DamageFIX(&entity, dmg, source.index(), false);
+				damageProp(entity, dmg, &source, false);
 				ret = true;
 			}
 		}
@@ -1308,14 +1301,13 @@ void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 			dmg = ARX_SPELLS_ApplyColdProtection(&entity, dmg * ratio);
 		}
 		
-		EntityHandle numsource = source ? source->index() : EntityHandle();
 		if(entity == *entities.player()) {
 			damagePlayer(dmg, typ, source);
 			ARX_DAMAGES_DamagePlayerEquipment(dmg);
 		} else if(entity.ioflags & IO_NPC) {
 			damageNpc(entity, dmg * ratio, source, true, &sphere.origin);
 		} else if(entity.ioflags & IO_FIX) {
-			ARX_DAMAGES_DamageFIX(&entity, dmg * ratio, numsource, true);
+			damageProp(entity, dmg * ratio, source, true);
 		}
 		
 	}

@@ -203,9 +203,9 @@ static void CheckHit(Entity * source, float ratioaim) {
 			if(mindist <= dist_limit) {
 				ARX_EQUIPMENT_ComputeDamages(source, target, ratioaim);
 			}
-		} else {
+		} else if(target->ioflags & IO_FIX) {
 			if(mindist <= 120.f) {
-				ARX_DAMAGES_DamageFIX(target, dmg * ratio, source->index(), false);
+				damageProp(*target, dmg * ratio, source, false);
 			}
 		}
 	}

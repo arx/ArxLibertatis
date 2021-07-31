@@ -458,17 +458,17 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	
 	if(!(io_target->ioflags & IO_NPC)) {
 		if(io_target->ioflags & IO_FIX) {
+			float damages = 1.f;
 			if(io_source == entities.player()) {
-				ARX_DAMAGES_DamageFIX(io_target, player.m_miscFull.damages, EntityHandle_Player, false);
+				damages = player.m_miscFull.damages;
 			} else if(io_source->ioflags & IO_NPC) {
-				ARX_DAMAGES_DamageFIX(io_target, io_source->_npcdata->damages, io_source->index(), false);
-			} else {
-				ARX_DAMAGES_DamageFIX(io_target, 1, io_source->index(), false);
+				damages = io_source->_npcdata->damages;
 			}
+			damageProp(*io_target, damages, io_source, false);
 		}
 		return 0.f;
 	}
-
+	
 	float attack, ac, damages;
 	float backstab = 1.f;
 

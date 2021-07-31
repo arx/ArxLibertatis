@@ -456,13 +456,14 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 					
 				} else { // not NPC
 					
-					if((target.ioflags & IO_FIX) && ValidIONum(projectile.source)) {
-						ARX_DAMAGES_DamageFIX(&target, 0.1f, projectile.source, false);
+					Entity * source = entities.get(projectile.source);
+					if((target.ioflags & IO_FIX) && source) {
+						damageProp(target, 0.1f, source, false);
 					}
 					
 					ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
 					
-					if(Entity * source = entities.get(projectile.source)) {
+					if(source) {
 						spawnAudibleSound(v0, *source);
 					}
 					
