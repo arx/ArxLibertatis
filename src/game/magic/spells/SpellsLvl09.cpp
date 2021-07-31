@@ -407,9 +407,8 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 		
 		Vec3f pos = spell->getPosition();
 		if(closerThan(pos, entities[m_target]->pos, 600.f)) {
-			if(spell->m_type != SPELL_CREATE_FIELD) {
-				spells.endSpell(spell);
-			} else if(m_target == EntityHandle_Player && spell->m_caster == EntityHandle_Player) {
+			if(spell->m_type != SPELL_CREATE_FIELD
+			   || (m_target == EntityHandle_Player && spell->m_caster == EntityHandle_Player)) {
 				spells.endSpell(spell);
 			}
 		}
