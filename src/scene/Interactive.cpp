@@ -2064,51 +2064,49 @@ void UpdateIOInvisibility(Entity * io)
 }
 
 void UpdateInter() {
-
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(!io || io == g_draggedEntity
-		   || !(io->gameFlags & GFLAG_ISINTREATZONE)
-		   || io->show != SHOW_FLAG_IN_SCENE
-		   || (io->ioflags & IO_CAMERA)
-		   || (io->ioflags & IO_MARKER)
-		) {
+	
+	for(Entity & entity : entities.inScene()) {
+		
+		if(&entity == g_draggedEntity
+		   || !(entity.gameFlags & GFLAG_ISINTREATZONE)
+		   || (entity.ioflags & (IO_CAMERA | IO_MARKER))
+		   || entity == *entities.player()) {
 			continue;
 		}
 		
-		UpdateIOInvisibility(io);
-
-		Anglef temp = io->angle;
-
-		if(io->ioflags & IO_NPC) {
+		UpdateIOInvisibility(&entity);
+		
+		Anglef temp = entity.angle;
+		if(entity.ioflags & IO_NPC) {
 			temp.setYaw(MAKEANGLE(180.f - temp.getYaw()));
 		} else {
 			temp.setYaw(MAKEANGLE(270.f - temp.getYaw()));
 		}
-
-		if(io->animlayer[0].cur_anim) {
-
-			io->bbox2D.min.x = 9999;
-			io->bbox2D.max.x = -1;
-
+		
+		if(entity.animlayer[0].cur_anim) {
+			
+			entity.bbox2D.min.x = 9999;
+			entity.bbox2D.max.x = -1;
+			
 			AnimationDuration diff;
-			if(io->animlayer[0].flags & EA_PAUSED)
+			if(entity.animlayer[0].flags & EA_PAUSED) {
 				diff = 0;
-			else
+			} else {
 				diff = toAnimationDuration(g_gameTime.lastFrameDuration());
-
-			Vec3f pos = io->pos;
-
-			if(io->ioflags & IO_NPC) {
-				ComputeVVPos(io);
-				pos.y = io->_npcdata->vvpos;
 			}
-
-			EERIEDrawAnimQuatUpdate(io->obj, io->animlayer, temp, pos, diff, io, true);
+			
+			Vec3f pos = entity.pos;
+			if(entity.ioflags & IO_NPC) {
+				ComputeVVPos(&entity);
+				pos.y = entity._npcdata->vvpos;
+			}
+			
+			EERIEDrawAnimQuatUpdate(entity.obj, entity.animlayer, temp, pos, diff, &entity, true);
+			
 		}
+		
 	}
+	
 }
 
 
