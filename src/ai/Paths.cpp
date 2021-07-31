@@ -152,14 +152,11 @@ static void EntityEnteringCurrentZone(Entity * io, Zone * current) {
 	
 	SendIOScriptEvent(nullptr, io, SM_ENTERZONE, current->name);
 	
-	if(!current->controled.empty()) {
-		EntityHandle t = entities.getById(current->controled);
-		if(t != EntityHandle()) {
-			ScriptParameters parameters;
-			parameters.push_back(io->idString());
-			parameters.push_back(current->name);
-			SendIOScriptEvent(nullptr, entities[t], SM_CONTROLLEDZONE_ENTER, parameters);
-		}
+	if(Entity * controller = entities.getById(current->controled, nullptr)) {
+		ScriptParameters parameters;
+		parameters.push_back(io->idString());
+		parameters.push_back(current->name);
+		SendIOScriptEvent(nullptr, controller, SM_CONTROLLEDZONE_ENTER, parameters);
 	}
 	
 }
@@ -168,14 +165,11 @@ static void EntityLeavingLastZone(Entity * io, Zone * last) {
 	
 	SendIOScriptEvent(nullptr, io, SM_LEAVEZONE, last->name);
 	
-	if(!last->controled.empty()) {
-		EntityHandle t = entities.getById(last->controled);
-		if(t != EntityHandle()) {
-			ScriptParameters parameters;
-			parameters.push_back(io->idString());
-			parameters.push_back(last->name);
-			SendIOScriptEvent(nullptr, entities[t], SM_CONTROLLEDZONE_LEAVE, parameters);
-		}
+	if(Entity * controller = entities.getById(last->controled, nullptr)) {
+		ScriptParameters parameters;
+		parameters.push_back(io->idString());
+		parameters.push_back(last->name);
+		SendIOScriptEvent(nullptr, controller, SM_CONTROLLEDZONE_LEAVE, parameters);
 	}
 	
 }
