@@ -976,11 +976,21 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 	bool validsource = ValidIONum(damage.params.source);
 	float divradius = 1.f / damage.params.radius;
 	
-	// checking for IO damages
-	for(Entity & entity : entities.inScene()) {
+	EntityFlags flags = IO_NPC;
+	if(!(damage.params.type & DAMAGE_TYPE_NO_FIX)) {
+		flags |= IO_FIX;
+	}
+	for(Entity & entity : entities.inScene(flags)) {
 		
 		if(!(entity.gameFlags & GFLAG_ISINTREATZONE)
 		   || (damage.params.source == entity.index() && (damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE))) {
+			continue;
+		}
+		
+		Sphere sphere;
+		sphere.origin = damage.params.pos;
+		sphere.radius = damage.params.radius + ((entity.ioflags & IO_NPC) ? -10.f : 15.f);
+		if(!CheckIOInSphere(sphere, entity, (entity.ioflags & IO_NPC))) {
 			continue;
 		}
 		
@@ -988,13 +998,6 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 			
 			if(entity != *entities.player() && damage.params.source != EntityHandle_Player && validsource
 			   && HaveCommonGroup(&entity, entities[damage.params.source])) {
-				continue;
-			}
-			
-			Sphere sphere;
-			sphere.origin = damage.params.pos;
-			sphere.radius = damage.params.radius - 10.f;
-			if(!CheckIOInSphere(sphere, entity, true)) {
 				continue;
 			}
 			
@@ -1129,14 +1132,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 				
 			}
 			
-		} else if((entity.ioflags & IO_FIX) && !(damage.params.type & DAMAGE_TYPE_NO_FIX)) {
-			
-			Sphere sphere;
-			sphere.origin = damage.params.pos;
-			sphere.radius = damage.params.radius + 15.f;
-			if(!CheckIOInSphere(sphere, entity)) {
-				continue;
-			}
+		} else if(entity.ioflags & IO_FIX) {
 			
 			ARX_DAMAGES_DamageFIX(&entity, dmg, damage.params.source, true);
 			
