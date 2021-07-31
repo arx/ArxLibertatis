@@ -353,11 +353,11 @@ void PushIO_ON_Top(const Entity & platform, float ydec) {
 	
 }
 
-bool IsAnyNPCInPlatform(Entity * platform) {
+bool isAnyNPCOnPlatform(const Entity & platform) {
 	
 	for(const Entity & entity : entities.inScene(IO_NPC)) {
-		if(entity != *platform && !(entity.ioflags & IO_NO_COLLISIONS)) {
-			if(isCylinderCollidingWithPlatform(getEntityCylinder(entity), *platform)) {
+		if(entity != platform && !(entity.ioflags & IO_NO_COLLISIONS)) {
+			if(isCylinderCollidingWithPlatform(getEntityCylinder(entity), platform)) {
 				return true;
 			}
 		}

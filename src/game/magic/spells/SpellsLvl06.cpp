@@ -344,7 +344,7 @@ void CreateFieldSpell::Update() {
 	if(io) {
 		io->pos = m_field.eSrc;
 		
-		if(IsAnyNPCInPlatform(io)) {
+		if(isAnyNPCOnPlatform(*io)) {
 			requestEnd();
 		}
 		
