@@ -201,6 +201,11 @@ bool ControlTargetSpell::CanLaunch() {
 
 void ControlTargetSpell::Launch() {
 	
+	eSrc = player.pos;
+	
+	float fBetaRad = glm::radians(player.angle.getYaw());
+	eTarget = eSrc + Vec3f(-glm::sin(fBetaRad) * 1000.f, 100.f, glm::cos(fBetaRad) * 1000.f);
+	
 	for(Entity & npc : entities.inScene(IO_NPC)) {
 		
 		if(npc._npcdata->lifePool.current <= 0.f) {
@@ -216,6 +221,7 @@ void ControlTargetSpell::Launch() {
 			parameters.push_back(entities[m_target]->idString());
 			parameters.push_back(long(m_level));
 			SendIOScriptEvent(entities.get(m_caster), &npc, "npc_control", parameters);
+			eTarget = npc.pos;
 		}
 		
 	}
@@ -225,28 +231,9 @@ void ControlTargetSpell::Launch() {
 	m_duration = GameDurationMs(1000);
 	m_hasDuration = true;
 	
-	eSrc = Vec3f(0.f);
-	eTarget = Vec3f(0.f);
 	fTrail = 0.f;
 	
 	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_ctrl_target");
-	
-	eSrc = player.pos;
-	
-	float fBetaRad = glm::radians(player.angle.getYaw());
-	float fBetaRadCos = glm::cos(fBetaRad);
-	float fBetaRadSin = glm::sin(fBetaRad);
-	
-	eTarget = eSrc + Vec3f(-fBetaRadSin * 1000.f, 100.f, fBetaRadCos * 1000.f);
-	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e) {
-			eTarget = e->pos;
-		}
-	}
 	
 	pathways[0] = eSrc + Vec3f(0.f, 100.f, 0.f);
 	pathways[9] = eTarget;
