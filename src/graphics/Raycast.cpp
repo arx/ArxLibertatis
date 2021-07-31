@@ -246,24 +246,22 @@ EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end,
 	EERIE_FACE * hitFace = nullptr;
 	float t = std::numeric_limits<float>::max();
 	
-	for(size_t i = (flags & RaycastIgnorePlayer) ? 1 : 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * entity = entities[handle];
+	for(Entity & entity : entities) {
 		
-		if(!entity
-		   || !entity->obj
-		   || !(entity->gameFlags & GFLAG_ISINTREATZONE)
-		   || (entity->gameFlags & (GFLAG_INVISIBILITY | GFLAG_MEGAHIDE))
-		   || (entity->ioflags & (IO_CAMERA | IO_MARKER))) {
+		if(!entity.obj
+		   || !(entity.gameFlags & GFLAG_ISINTREATZONE)
+		   || (entity.gameFlags & (GFLAG_INVISIBILITY | GFLAG_MEGAHIDE))
+		   || (entity.ioflags & (IO_CAMERA | IO_MARKER))
+		   || ((flags & RaycastIgnorePlayer) && &entity == entities.player())) {
 			continue;
 		}
 		
-		switch(entity->show) {
+		switch(entity.show) {
 			case SHOW_FLAG_LINKED:       break;
 			case SHOW_FLAG_IN_SCENE:     break;
 			case SHOW_FLAG_TELEPORTING:  break;
 			case SHOW_FLAG_ON_PLAYER: {
-				if(!(flags & RaycastIgnorePlayer) && IsEquipedByPlayer(entity)) {
+				if(!(flags & RaycastIgnorePlayer) && IsEquipedByPlayer(&entity)) {
 					break;
 				}
 				continue;
@@ -271,7 +269,7 @@ EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end,
 			default: continue;
 		}
 		
-		const EERIE_3D_BBOX & box = entity->bbox3D;
+		const EERIE_3D_BBOX & box = entity.bbox3D;
 		
 		Vec3f min = (box.min - start) * invdir;
 		Vec3f max = (box.max - start) * invdir;
@@ -288,20 +286,20 @@ EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end,
 			continue;
 		}
 		
-		for(EERIE_FACE & face : entity->obj->facelist) {
+		for(EERIE_FACE & face : entity.obj->facelist) {
 			
 			if(face.facetype & ignored) {
 				continue;
 			}
 			
-			Vec3f v0 = entity->obj->vertexWorldPositions[face.vid[0]].v;
-			Vec3f v1 = entity->obj->vertexWorldPositions[face.vid[1]].v;
-			Vec3f v2 = entity->obj->vertexWorldPositions[face.vid[2]].v;
+			Vec3f v0 = entity.obj->vertexWorldPositions[face.vid[0]].v;
+			Vec3f v1 = entity.obj->vertexWorldPositions[face.vid[1]].v;
+			Vec3f v2 = entity.obj->vertexWorldPositions[face.vid[2]].v;
 			
 			Vec3f hit;
 			if(arx::intersectLineTriangle(start, dir, v0, v1, v2, hit)) {
 				if(hit.x >= 0.f && hit.x <= 1.f && hit.x < t) {
-					hitEntity  = entity;
+					hitEntity  = &entity;
 					hitFace = &face;
 					t = hit.x;
 					if(flags & RaycastAnyHit) {
