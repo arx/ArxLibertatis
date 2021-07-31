@@ -183,32 +183,30 @@ public:
 		
 		DebugScript(' ' << choice);
 		
-		Entity * io = context.getEntity();
+		Entity * entity = context.getEntity();
 		
 		if(!choice) {
-			io->ioflags |= IO_NO_COLLISIONS;
+			entity->ioflags |= IO_NO_COLLISIONS;
 			return Success;
 		}
 		
-		if(io->ioflags & IO_NO_COLLISIONS) {
+		if(entity->ioflags & IO_NO_COLLISIONS) {
 			
 			bool colliding = false;
-			for(size_t k = 0; k < entities.size(); k++) {
-				const EntityHandle handle = EntityHandle(k);
-				Entity * ioo = entities[handle];
-				if(ioo && IsCollidingIO(io, ioo)) {
-					Stack_SendIOScriptEvent(ioo, io, SM_COLLISION_ERROR_DETAIL);
+			for(Entity & other : entities) {
+				if(IsCollidingIO(entity, &other)) {
+					Stack_SendIOScriptEvent(&other, entity, SM_COLLISION_ERROR_DETAIL);
 					colliding = true;
 				}
 			}
 			
 			if(colliding) {
-				Stack_SendIOScriptEvent(nullptr, io, SM_COLLISION_ERROR);
+				Stack_SendIOScriptEvent(nullptr, entity, SM_COLLISION_ERROR);
 			}
 			
 		}
 		
-		io->ioflags &= ~IO_NO_COLLISIONS;
+		entity->ioflags &= ~IO_NO_COLLISIONS;
 		
 		return Success;
 	}
