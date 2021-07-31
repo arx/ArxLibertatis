@@ -2799,7 +2799,9 @@ void ManageIgnition_2(Entity & io) {
 		}
 		
 		if(Random::getf() > 0.9f) {
-			CheckForIgnition(Sphere(position, io.ignition), true, 0);
+			Sphere sphere(position, io.ignition);
+			igniteLights(sphere);
+			igniteEntities(sphere);
 		}
 		
 	} else {

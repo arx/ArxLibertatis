@@ -1218,32 +1218,33 @@ bool tryToDoDamage(const Vec3f & pos, float dmg, float radius, Entity & source) 
 	return ret;
 }
 
-void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
+void igniteLights(const Sphere & sphere, bool ignite, bool ignoreFireplaces) {
 	
-	if(!(flag & 1))
-		for(size_t i = 0; i < g_staticLightsMax; i++) {
-			EERIE_LIGHT * el = g_staticLights[i];
-
-			if(el == nullptr)
-				continue;
-
-			if((el->extras & EXTRAS_EXTINGUISHABLE) && (el->extras & (EXTRAS_SEMIDYNAMIC | EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)))
-			{
-				if((el->extras & EXTRAS_FIREPLACE) && (flag & 2))
-					continue;
-
-				if(!fartherThan(sphere.origin, el->pos, sphere.radius)) {
-					if(mode) {
-						if (!(el->extras & EXTRAS_NO_IGNIT))
-							el->m_ignitionStatus = true;
-					} else {
-						el->m_ignitionStatus = false;
-					}
-				}
-
-			}
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
+		EERIE_LIGHT * el = g_staticLights[i];
+		
+		if(el == nullptr
+		   || !(el->extras & EXTRAS_EXTINGUISHABLE)
+		   || !(el->extras & (EXTRAS_SEMIDYNAMIC | EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE))
+		   || ((el->extras & EXTRAS_FIREPLACE) && ignoreFireplaces)
+		   || fartherThan(sphere.origin, el->pos, sphere.radius)) {
+			continue;
 		}
+		
+		if(ignite) {
+			if(!(el->extras & EXTRAS_NO_IGNIT)) {
+				el->m_ignitionStatus = true;
+			}
+		} else {
+			el->m_ignitionStatus = false;
+		}
+		
+	}
+	
+}
 
+void igniteEntities(const Sphere & sphere, bool ignite) {
+	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
@@ -1256,9 +1257,9 @@ void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
 		) {
 			if(closerThan(sphere.origin, actionPointPosition(io->obj, io->obj->fastaccess.fire), sphere.radius)) {
 
-				if(mode && io->ignition <= 0) {
+				if(ignite && io->ignition <= 0) {
 					io->ignition = 1;
-				} else if(!mode && io->ignition > 0) {
+				} else if(!ignite && io->ignition > 0) {
 					io->ignition = 0;
 					lightHandleDestroy(io->ignit_light);
 					
@@ -1268,6 +1269,7 @@ void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
 			}
 		}
 	}
+	
 }
 
 void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ, EntityHandle numsource) {
@@ -1388,7 +1390,8 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 	}
 	
 	if(typ & DAMAGE_TYPE_FIRE) {
-		CheckForIgnition(sphere, true, 0);
+		igniteLights(sphere);
+		igniteEntities(sphere);
 	}
 	
 }

@@ -124,12 +124,8 @@ struct DamageParameters {
 DamageHandle DamageCreate(const DamageParameters & params);
 void DamageRequestEnd(DamageHandle handle);
 
-/*!
- * mode=true ON mode=false  OFF
- * flag & 1 no lights;
- * flag & 2 Only affects small sources
- */
-void CheckForIgnition(const Sphere & sphere, bool mode, long flag);
+void igniteLights(const Sphere & sphere, bool ignite = true, bool ignoreFireplaces = false);
+void igniteEntities(const Sphere & sphere, bool ignite = true);
 
 void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ, EntityHandle numsource);
 

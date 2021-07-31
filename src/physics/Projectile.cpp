@@ -328,7 +328,8 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		projectile.quat = getProjectileQuatFromVector(projectile.vector) * projectile.rotation;
 	}
 	
-	CheckForIgnition(Sphere(original_pos, 10.f), false, 2);
+	igniteLights(Sphere(original_pos, 10.f), false, true);
+	igniteEntities(Sphere(original_pos, 10.f), false);
 	
 	{
 		Vec3f wpos = projectile.position;

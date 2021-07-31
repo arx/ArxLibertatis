@@ -364,7 +364,7 @@ void IgnitSpell::Launch() {
 	
 	m_lights.clear();
 	
-	CheckForIgnition(Sphere(m_srcPos, fPerimeter), true, 1);
+	igniteEntities(Sphere(m_srcPos, fPerimeter), true);
 	
 	for(size_t ii = 0; ii < g_staticLightsMax; ii++) {
 		EERIE_LIGHT * light = g_staticLights[ii];
@@ -465,7 +465,7 @@ void DouseSpell::Launch() {
 	
 	float fPerimeter = 400.f + m_level * 30.f;
 	
-	CheckForIgnition(Sphere(target, fPerimeter), false, 1);
+	igniteEntities(Sphere(target, fPerimeter), false);
 	
 	for(size_t ii = 0; ii < g_staticLightsMax; ii++) {
 		EERIE_LIGHT * light = g_staticLights[ii];
