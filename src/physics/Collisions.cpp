@@ -1466,12 +1466,9 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 		
 		Sphere sphere = Sphere(tmpPos, 65.f);
 		
-		for(size_t num = 0; num < entities.size(); num++) {
-			const EntityHandle handle = EntityHandle(num);
-			Entity * io = entities[handle];
-
-			if(io && (io->gameFlags & GFLAG_VIEW_BLOCKER)) {
-				if(CheckIOInSphere(sphere, *io)) {
+		for(Entity & entity : entities) {
+			if(entity.gameFlags & GFLAG_VIEW_BLOCKER) {
+				if(CheckIOInSphere(sphere, entity)) {
 					float dd = fdist(orgn, sphere.origin);
 					if(dd < nearest) {
 						*hit = tmpPos;
