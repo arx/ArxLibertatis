@@ -64,8 +64,7 @@ static bool IsPointInField(const Vec3f & pos) {
 			Entity * pfrm = entities.get(sp->m_entity);
 			if(pfrm) {
 				Cylinder cyl = Cylinder(pos + Vec3f(0.f, 17.5f, 0.f), 35.f, -35.f);
-				
-				if(CylinderPlatformCollide(cyl, pfrm)) {
+				if(isCylinderCollidingWithPlatform(cyl, *pfrm)) {
 					return true;
 				}
 			}

@@ -394,7 +394,7 @@ static bool IsObjectInField(const PHYSICS_BOX_DATA & pbox) {
 				for(size_t k = 0; k < pbox.vert.size(); k++) {
 					const PhysicsParticle * pv = &pbox.vert[k];
 					cyl.origin = pv->pos + Vec3f(0.f, 17.5f, 0.f);
-					if(CylinderPlatformCollide(cyl, pfrm)) {
+					if(isCylinderCollidingWithPlatform(cyl, *pfrm)) {
 						return true;
 					}
 				}

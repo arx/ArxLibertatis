@@ -357,7 +357,7 @@ bool IsAnyNPCInPlatform(Entity * platform) {
 	
 	for(const Entity & entity : entities.inScene(IO_NPC)) {
 		if(entity != *platform && !(entity.ioflags & IO_NO_COLLISIONS)) {
-			if(CylinderPlatformCollide(getEntityCylinder(entity), platform)) {
+			if(isCylinderCollidingWithPlatform(getEntityCylinder(entity), *platform)) {
 				return true;
 			}
 		}
@@ -366,16 +366,14 @@ bool IsAnyNPCInPlatform(Entity * platform) {
 	return false;
 }
 
-bool CylinderPlatformCollide(const Cylinder & cyl, Entity * io) {
+bool isCylinderCollidingWithPlatform(const Cylinder & cylinder, const Entity & platform) {
  
-	float miny = io->bbox3D.min.y;
-	float maxy = io->bbox3D.max.y;
-	
-	if(maxy <= cyl.origin.y + cyl.height || miny >= cyl.origin.y) {
+	if(platform.bbox3D.max.y <= cylinder.origin.y + cylinder.height
+	   || platform.bbox3D.min.y >= cylinder.origin.y) {
 		return false;
 	}
 	
-	return In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius);
+	return In3DBBoxTolerance(cylinder.origin, platform.bbox3D, cylinder.radius);
 }
 
 static long NPC_IN_CYLINDER = 0;
