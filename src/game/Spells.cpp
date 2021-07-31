@@ -428,49 +428,47 @@ static void SPELLCAST_Notify(const SpellBase & spell) {
 
 static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 	
-	if(!ValidIONum(spell.m_target))
-		return;
-	
-	EntityHandle source = spell.m_caster;
-	const char * spellName = MakeSpellName(spell.m_type);
-	
-	if(spellName) {
-		Entity * sender = (source != EntityHandle()) ? entities[source] : nullptr;
-		ScriptParameters parameters;
-		parameters.push_back(spellName);
-		parameters.push_back(long(spell.m_level));
-		SendIOScriptEvent(sender, entities[spell.m_target], SM_SPELLCAST, parameters);
-	}
-}
-
-static void SPELLEND_Notify(const SpellBase & spell) {
-	
-	EntityHandle source = spell.m_caster;
-	const char * spellName = MakeSpellName(spell.m_type);
-
-	if(spell.m_type == SPELL_CONFUSE) {
-		if(ValidIONum(spell.m_target) && spellName) {
-			Entity * sender = ValidIONum(source) ? entities[source] : nullptr;
-			ScriptParameters parameters;
-			parameters.push_back(spellName);
-			parameters.push_back(long(spell.m_level));
-			SendIOScriptEvent(sender, entities[spell.m_target], SM_SPELLEND, parameters);
-		}
+	Entity * target = entities.get(spell.m_target);
+	if(!target) {
 		return;
 	}
 	
-	// we only notify player spells end.
+	const char * spellName = MakeSpellName(spell.m_type);
 	if(!spellName) {
 		return;
 	}
 	
-	Entity * sender = ValidIONum(source) ? entities[source] : nullptr;
+	Entity * caster = entities.get(spell.m_caster);
 	ScriptParameters parameters;
 	parameters.push_back(spellName);
 	parameters.push_back(long(spell.m_level));
+	SendIOScriptEvent(caster, target, SM_SPELLCAST, parameters);
 	
-	for(Entity & entity : entities) {
-		SendIOScriptEvent(sender, &entity, SM_SPELLEND, parameters);
+}
+
+static void SPELLEND_Notify(const SpellBase & spell) {
+	
+	const char * spellName = MakeSpellName(spell.m_type);
+	if(!spellName) {
+		return;
+	}
+	
+	Entity * caster = entities.get(spell.m_caster);
+
+	if(spell.m_type == SPELL_CONFUSE) {
+		if(Entity * target = entities.get(spell.m_target)) {
+			ScriptParameters parameters;
+			parameters.push_back(spellName);
+			parameters.push_back(long(spell.m_level));
+			SendIOScriptEvent(caster, target, SM_SPELLEND, parameters);
+		}
+	} else {
+		ScriptParameters parameters;
+		parameters.push_back(spellName);
+		parameters.push_back(long(spell.m_level));
+		for(Entity & entity : entities) {
+			SendIOScriptEvent(caster, &entity, SM_SPELLEND, parameters);
+		}
 	}
 	
 }
@@ -478,9 +476,10 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 //! Plays the sound of Fizzling spell
 void ARX_SPELLS_Fizzle(SpellBase * spell) {
 	
-	if(ValidIONum(spell->m_caster)) {
+	if(entities.get(spell->m_caster)) {
 		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE, &spell->m_caster_pos);
 	}
+	
 }
 
 
@@ -645,21 +644,20 @@ static bool CanPayMana(SpellBase * spell, float cost) {
 	if(spell->m_flags & SPELLCAST_FLAG_NOMANA) {
 		return true;
 	}
-	if(spell->m_caster == EntityHandle_Player) {
+	
+	Entity * caster = entities.get(spell->m_caster);
+	if(caster == entities.player()) {
 		if(player.manaPool.current < cost) {
 			return false;
 		}
-		
 		player.manaPool.current -= cost;
 		return true;
-	}
-	
-	if(ValidIONum(spell->m_caster)) {
-		if(entities[spell->m_caster]->ioflags & IO_NPC) {
-			if(entities[spell->m_caster]->_npcdata->manaPool.current < cost) {
+	} else if(caster) {
+		if(caster->ioflags & IO_NPC) {
+			if(caster->_npcdata->manaPool.current < cost) {
 				return false;
 			}
-			entities[spell->m_caster]->_npcdata->manaPool.current -= cost;
+			caster->_npcdata->manaPool.current -= cost;
 			return true;
 		}
 	}
@@ -963,7 +961,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 			case SPELL_CONTROL_TARGET: {
 				long tcount = 0;
 				
-				if(!ValidIONum(source)) {
+				if(!entities.get(source)) {
 					return false;
 				}
 				
