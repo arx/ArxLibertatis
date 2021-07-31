@@ -1270,119 +1270,93 @@ void igniteEntities(const Sphere & sphere, bool ignite) {
 
 void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ, EntityHandle numsource) {
 	
-	if(sphere.radius <= 0.f)
+	if(sphere.radius <= 0.f) {
 		return;
+	}
 	
 	float rad = 1.f / sphere.radius;
 	bool validsource = ValidIONum(numsource);
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * ioo = entities[handle];
+	for(Entity & entity : entities) {
 		
-		if(!ioo || handle == numsource || !ioo->obj)
-			continue;
-			
-		if(   handle != EntityHandle_Player
-		   && numsource != EntityHandle_Player
-		   && validsource
-		   && HaveCommonGroup(ioo, entities[numsource])
-		) {
+		if(entity.index() == numsource || !entity.obj || (entity.ioflags & (IO_CAMERA | IO_MARKER))) {
 			continue;
 		}
 		
-		if((ioo->ioflags & IO_CAMERA) || (ioo->ioflags & IO_MARKER))
+		if(entity != *entities.player() && numsource != EntityHandle_Player && validsource
+		   && HaveCommonGroup(&entity, entities[numsource])) {
 			continue;
+		}
 		
 		long count = 0;
 		long count2 = 0;
 		float mindist = std::numeric_limits<float>::max();
-		
-		for(size_t k = 0; k < ioo->obj->vertexlist.size(); k += 1) {
-			if(ioo->obj->vertexlist.size() < 120) {
-				for(size_t kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1) {
+		for(size_t k = 0; k < entity.obj->vertexWorldPositions.size(); k += 1) {
+			if(entity.obj->vertexlist.size() < 120) {
+				for(size_t kk = 0; kk < entity.obj->vertexWorldPositions.size(); kk += 1) {
 					if(kk != k) {
-						Vec3f posi = (entities[handle]->obj->vertexWorldPositions[k].v
-						             + entities[handle]->obj->vertexWorldPositions[kk].v) * 0.5f;
-						float dist = fdist(sphere.origin, posi);
+						Vec3f pos = (entity.obj->vertexWorldPositions[k].v + entity.obj->vertexWorldPositions[kk].v) * 0.5f;
+						float dist = fdist(sphere.origin, pos);
 						if(dist <= sphere.radius) {
 							count2++;
-							if(dist < mindist)
+							if(dist < mindist) {
 								mindist = dist;
+							}
 						}
 					}
 				}
 			}
-			
-			{
-			float dist = fdist(sphere.origin, entities[handle]->obj->vertexWorldPositions[k].v);
-			
+			float dist = fdist(sphere.origin, entity.obj->vertexWorldPositions[k].v);
 			if(dist <= sphere.radius) {
 				count++;
-				
-				if(dist < mindist)
+				if(dist < mindist) {
 					mindist = dist;
-			}
+				}
 			}
 		}
 		
-		float ratio = glm::max(count, count2) / (float(ioo->obj->vertexlist.size()) / 2.f);
+		if(mindist > sphere.radius + 30.f) {
+			continue;
+		}
 		
-		if(ratio > 2.f)
+		// TODO damage is scaled multiple times if there are multiple NPCs in the sphere
+		if(entity.ioflags & IO_NPC) {
+			switch (flags) {
+				case DAMAGE_AREA:
+					dmg = dmg * (sphere.radius + 30 - mindist) * rad;
+					break;
+				case DAMAGE_AREAHALF:
+					dmg = dmg * (sphere.radius + 30 - mindist * 0.5f) * rad;
+					break;
+				case DAMAGE_FULL: break;
+			}
+		}
+		
+		float ratio = glm::max(count, count2) / (float(entity.obj->vertexWorldPositions.size()) / 2.f);
+		if(ratio > 2.f) {
 			ratio = 2.f;
-		
-		if(ioo->ioflags & IO_NPC) {
-			if(mindist <= sphere.radius + 30.f) {
-				switch (flags) {
-					case DAMAGE_AREA:
-						dmg = dmg * (sphere.radius + 30 - mindist) * rad;
-						break;
-					case DAMAGE_AREAHALF:
-						dmg = dmg * (sphere.radius + 30 - mindist * 0.5f) * rad;
-						break;
-					case DAMAGE_FULL: break;
-				}
-				
-				if(handle == EntityHandle_Player) {
-					if(typ & DAMAGE_TYPE_FIRE) {
-						dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg);
-						ARX_DAMAGES_IgnitIO(entities.get(numsource), entities.player(), dmg);
-					}
-					
-					if(typ & DAMAGE_TYPE_COLD) {
-						dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg);
-					}
-					
-					ARX_DAMAGES_DamagePlayer(dmg, typ, numsource);
-					ARX_DAMAGES_DamagePlayerEquipment(dmg);
-				} else {
-					if(typ & DAMAGE_TYPE_FIRE) {
-						dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg * ratio);
-						ARX_DAMAGES_IgnitIO(entities.get(numsource), ioo, dmg);
-					}
-					
-					if(typ & DAMAGE_TYPE_COLD) {
-						dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
-					}
-					
-					ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, true, &sphere.origin);
-				}
-			}
-		} else {
-			if(mindist <= sphere.radius + 30.f) {
-				if(typ & DAMAGE_TYPE_FIRE) {
-					dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg * ratio);
-					ARX_DAMAGES_IgnitIO(entities.get(numsource), entities[handle], dmg);
-				}
-				
-				if(typ & DAMAGE_TYPE_COLD) {
-					dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
-				}
-				
-				if(entities[handle]->ioflags & IO_FIX)
-					ARX_DAMAGES_DamageFIX(entities[handle], dmg * ratio, numsource, true);
-			}
 		}
+		if(entity == *entities.player()) {
+			ratio = 1.f;
+		}
+		
+		if(typ & DAMAGE_TYPE_FIRE) {
+			dmg = ARX_SPELLS_ApplyFireProtection(&entity, dmg * ratio);
+			ARX_DAMAGES_IgnitIO(entities.get(numsource), &entity, dmg);
+		}
+		if(typ & DAMAGE_TYPE_COLD) {
+			dmg = ARX_SPELLS_ApplyColdProtection(&entity, dmg * ratio);
+		}
+		
+		if(entity == *entities.player()) {
+			ARX_DAMAGES_DamagePlayer(dmg, typ, numsource);
+			ARX_DAMAGES_DamagePlayerEquipment(dmg);
+		} else if(entity.ioflags & IO_NPC) {
+			ARX_DAMAGES_DamageNPC(&entity, dmg * ratio, numsource, true, &sphere.origin);
+		} else if(entity.ioflags & IO_FIX) {
+			ARX_DAMAGES_DamageFIX(&entity, dmg * ratio, numsource, true);
+		}
+		
 	}
 	
 	if(typ & DAMAGE_TYPE_FIRE) {
