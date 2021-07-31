@@ -646,49 +646,44 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			if(boost::starts_with(name, "^realdist_")) {
 				if(context.getEntity()) {
 					
-					EntityHandle t = entities.getById(name.substr(10));
-					if(t == EntityHandle_Player) {
+					Entity * target = entities.getById(name.substr(10), nullptr);
+					if(target == entities.player()) {
 						if(context.getEntity()->requestRoomUpdate) {
 							UpdateIORoom(context.getEntity());
 						}
 						long Player_Room = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
 						*fcontent = SP_GetRoomDist(context.getEntity()->pos, player.pos, context.getEntity()->room, Player_Room);
-						return TYPE_FLOAT;
-					} else if(ValidIONum(t)) {
-						if((context.getEntity()->show == SHOW_FLAG_IN_SCENE
-						    || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
-						   && (entities[t]->show == SHOW_FLAG_IN_SCENE
-						       || entities[t]->show == SHOW_FLAG_IN_INVENTORY)) {
-							
-							Vec3f pos  = GetItemWorldPosition(context.getEntity());
-							Vec3f pos2 = GetItemWorldPosition(entities[t]);
-							
-							if(context.getEntity()->requestRoomUpdate) {
-								UpdateIORoom(context.getEntity());
-							}
-							
-							if(entities[t]->requestRoomUpdate) {
-								UpdateIORoom(entities[t]);
-							}
-							
-							*fcontent = SP_GetRoomDist(pos, pos2, context.getEntity()->room, entities[t]->room);
-							
-						} else {
-							// Out of this world item
-							*fcontent = 99999999999.f;
+					} else if(target
+					          && (context.getEntity()->show == SHOW_FLAG_IN_SCENE
+					              || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
+					          && (target->show == SHOW_FLAG_IN_SCENE
+					              || target->show == SHOW_FLAG_IN_INVENTORY)) {
+						
+						Vec3f pos  = GetItemWorldPosition(context.getEntity());
+						Vec3f pos2 = GetItemWorldPosition(target);
+						
+						if(context.getEntity()->requestRoomUpdate) {
+							UpdateIORoom(context.getEntity());
 						}
-						return TYPE_FLOAT;
+						
+						if(target->requestRoomUpdate) {
+							UpdateIORoom(target);
+						}
+						
+						*fcontent = SP_GetRoomDist(pos, pos2, context.getEntity()->room, target->room);
+						
+					} else {
+						// Out of this world item
+						*fcontent = 99999999999.f;
 					}
-					
-					*fcontent = 99999999999.f;
 					return TYPE_FLOAT;
 				}
 			}
 			
 			if(boost::starts_with(name, "^repairprice_")) {
-				EntityHandle t = entities.getById(name.substr(13));
-				if(ValidIONum(t)) {
-					*fcontent = ARX_DAMAGES_ComputeRepairPrice(entities[t], context.getEntity());
+				Entity * target = entities.getById(name.substr(13), nullptr);
+				if(target) {
+					*fcontent = ARX_DAMAGES_ComputeRepairPrice(target, context.getEntity());
 				} else {
 					*fcontent = 0;
 				}
@@ -968,24 +963,18 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			
 			if(boost::starts_with(name, "^dist_")) {
 				if(context.getEntity()) {
-					
-					EntityHandle t = entities.getById(name.substr(6));
-					if(t == EntityHandle_Player) {
+					Entity * target = entities.getById(name.substr(6), nullptr);
+					if(target == entities.player()) {
 						*fcontent = fdist(player.pos, context.getEntity()->pos);
-						return TYPE_FLOAT;
-					} else if(ValidIONum(t)) {
-						if((context.getEntity()->show == SHOW_FLAG_IN_SCENE
-						    || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
-						   && (entities[t]->show == SHOW_FLAG_IN_SCENE
-						       || entities[t]->show == SHOW_FLAG_IN_INVENTORY)) {
-							Vec3f pos  = GetItemWorldPosition(context.getEntity());
-							Vec3f pos2 = GetItemWorldPosition(entities[t]);
-							*fcontent = fdist(pos, pos2);
-							return TYPE_FLOAT;
-						}
+					} else if(target
+					          && (context.getEntity()->show == SHOW_FLAG_IN_SCENE
+					              || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
+					          && (target->show == SHOW_FLAG_IN_SCENE
+					              || target->show == SHOW_FLAG_IN_INVENTORY)) {
+						*fcontent = fdist(GetItemWorldPosition(context.getEntity()), GetItemWorldPosition(target));
+					} else {
+						*fcontent = 99999999999.f;
 					}
-					
-					*fcontent = 99999999999.f;
 					return TYPE_FLOAT;
 				}
 			}
@@ -1043,14 +1032,14 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 			
 			if(boost::starts_with(name, "^possess_")) {
-				EntityHandle t = entities.getById(name.substr(9));
-				if(ValidIONum(t)) {
-					if(IsInPlayerInventory(entities[t])) {
+				Entity * target = entities.getById(name.substr(9), nullptr);
+				if(target) {
+					if(IsInPlayerInventory(target)) {
 						*lcontent = 1;
 						return TYPE_LONG;
 					}
 					for(size_t i = 0; i < MAX_EQUIPED; i++) {
-						if(ValidIONum(player.equiped[i]) && player.equiped[i] == t) {
+						if(player.equiped[i] == target->index()) {
 							*lcontent = 2;
 							return TYPE_LONG;
 						}
@@ -1213,10 +1202,10 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 					txtcontent = "none";
 				} else if(context.getEntity()->targetinfo == EntityHandle_Player) {
 					txtcontent = "player";
-				} else if(!ValidIONum(context.getEntity()->targetinfo)) {
-					txtcontent = "none";
+				} else if(Entity * target = entities.get(context.getEntity()->targetinfo)) {
+					txtcontent = target->idString();
 				} else {
-					txtcontent = entities[context.getEntity()->targetinfo]->idString();
+					txtcontent = "none";
 				}
 				return TYPE_TEXT;
 			}
