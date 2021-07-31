@@ -357,14 +357,11 @@ bool ForceNPC_Above_Ground(Entity * io) {
 
 // Unlinks all linked objects from all IOs
 void UnlinkAllLinkedObjects() {
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e) {
-			EERIE_LINKEDOBJ_ReleaseData(e->obj);
-		}
+	
+	for(Entity & entity : entities) {
+		EERIE_LINKEDOBJ_ReleaseData(entity.obj);
 	}
+	
 }
 
 void IO_UnlinkAllLinkedObjects(Entity * io) {
