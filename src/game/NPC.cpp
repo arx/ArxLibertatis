@@ -2454,13 +2454,10 @@ static float AngularDifference(float a1, float a2) {
  * \brief ARX_NPC_GetFirstNPCInSight
  * \return the "first" NPC in sight for another NPC (ioo)
  */
-Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
-{
-	if(!ioo)
-		return nullptr;
+Entity * getFirstNpcInSight(const Entity & source) {
 	
 	// Basic Clipping to avoid performance loss
-	if(fartherThan(g_camera->m_pos, ioo->pos, 2500)) {
+	if(fartherThan(g_camera->m_pos, source.pos, 2500)) {
 		return nullptr;
 	}
 	
@@ -2469,11 +2466,11 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 	
 	for(Entity & npc : entities.inScene(IO_NPC)) {
 		
-		if(IsDeadNPC(npc) || npc == *ioo) {
+		if(IsDeadNPC(npc) || npc == source) {
 			continue;
 		}
 		
-		float dist_io = arx::distance2(npc.pos, ioo->pos);
+		float dist_io = arx::distance2(npc.pos, source.pos);
 		if(dist_io > closestNpcDistance2 || dist_io > square(1800)) {
 			continue;
 		}
@@ -2486,14 +2483,14 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			continue;
 		}
 		
-		float ab = MAKEANGLE(ioo->angle.getYaw());
+		float ab = MAKEANGLE(source.angle.getYaw());
 		
-		Vec3f orgn = ioo->pos + Vec3f(0.f, -90.f, 0.f);
+		Vec3f orgn = source.pos + Vec3f(0.f, -90.f, 0.f);
 		{
-			ObjVertHandle grp = ioo->obj->fastaccess.head_group_origin;
+			ObjVertHandle grp = source.obj->fastaccess.head_group_origin;
 			if(grp != ObjVertHandle()) {
-				orgn = ioo->obj->vertexWorldPositions[grp.handleData()].v;
-			} else if(ioo == entities.player()) {
+				orgn = source.obj->vertexWorldPositions[grp.handleData()].v;
+			} else if(source == *entities.player()) {
 				orgn.y = player.pos.y + 90.f;
 			}
 		}

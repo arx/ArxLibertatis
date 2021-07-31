@@ -1192,13 +1192,13 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 		case 'n': {
 			
 			if(boost::starts_with(name, "^npcinsight")) {
-				Entity * ioo = ARX_NPC_GetFirstNPCInSight(context.getEntity());
-				if(!ioo) {
+				Entity * npc = context.getEntity() ? getFirstNpcInSight(*context.getEntity()) : nullptr;
+				if(!npc) {
 					txtcontent = "none";
-				} else if(ioo == entities.player()) {
+				} else if(npc == entities.player()) {
 					txtcontent = "player";
 				} else {
-					txtcontent = ioo->idString();
+					txtcontent = npc->idString();
 				}
 				return TYPE_TEXT;
 			}
