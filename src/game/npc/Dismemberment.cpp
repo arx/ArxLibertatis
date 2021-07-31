@@ -354,57 +354,53 @@ static bool IsAlreadyCut(Entity * io, DismembermentFlag fl) {
 	return false;
 }
 
-static bool ARX_NPC_ApplyCuts(Entity * io) {
+static bool applyCuts(Entity & npc) {
 	
-	if(!io || !(io->ioflags & IO_NPC)) {
-		return false;
-	}
+	arx_assert(npc.ioflags & IO_NPC);
 	
-	if(io->_npcdata->cuts == 0) {
+	if(npc._npcdata->cuts == 0) {
 		return false; // No cuts
 	}
 	
-	ReComputeCutFlags(io);
+	ReComputeCutFlags(&npc);
 	
 	long goretex = -1;
-	for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
-		if(io->obj->texturecontainer[i]
-		   && boost::contains(io->obj->texturecontainer[i]->m_texName.string(), "gore")) {
+	for(size_t i = 0; i < npc.obj->texturecontainer.size(); i++) {
+		if(npc.obj->texturecontainer[i]
+		   && boost::contains(npc.obj->texturecontainer[i]->m_texName.string(), "gore")) {
 			goretex = i;
 			break;
 		}
 	}
 	
-	for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
-		io->obj->facelist[nn].facetype &= ~POLY_HIDE;
+	for(EERIE_FACE & face : npc.obj->facelist) {
+		face.facetype &= ~POLY_HIDE;
 	}
 	
 	bool hid = false;
 	for(long jj = 0; jj < 6; jj++) {
 		DismembermentFlag flg = DismembermentFlag(1 << jj);
-		ObjSelection numsel = GetCutSelection(io, flg);
-
-		if((io->_npcdata->cuts & flg) && numsel != ObjSelection()) {
-			for(size_t ll = 0; ll < io->obj->facelist.size(); ll++) {
-				EERIE_FACE & face = io->obj->facelist[ll];
-
-				if(   IsInSelection(io->obj, face.vid[0], numsel)
-				   || IsInSelection(io->obj, face.vid[1], numsel)
-				   || IsInSelection(io->obj, face.vid[2], numsel)
-				) {
-					if(!(face.facetype & POLY_HIDE)) {
-						if(face.texid != goretex)
-							hid = true;
-					}
-
-					face.facetype |= POLY_HIDE;
-				}
-			}
-
-			io->_npcdata->cut = 1;
+		
+		ObjSelection numsel = GetCutSelection(&npc, flg);
+		if(!(npc._npcdata->cuts & flg) || numsel == ObjSelection()) {
+			continue;
 		}
+		
+		for(EERIE_FACE & face : npc.obj->facelist) {
+			if(IsInSelection(npc.obj, face.vid[0], numsel)
+			   || IsInSelection(npc.obj, face.vid[1], numsel)
+			   || IsInSelection(npc.obj, face.vid[2], numsel)) {
+				if(!(face.facetype & POLY_HIDE) && face.texid != goretex) {
+					hid = true;
+				}
+				face.facetype |= POLY_HIDE;
+			}
+		}
+		
+		npc._npcdata->cut = 1;
+		
 	}
-
+	
 	return hid;
 }
 
@@ -476,7 +472,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos) {
 		DismembermentFlag fl = GetCutFlag(target->obj->selections[numsel.handleData()].name);
 		if(fl && !(target->_npcdata->cuts & fl)) {
 			target->_npcdata->cuts |= fl;
-			hid = ARX_NPC_ApplyCuts(target);
+			hid = applyCuts(*target);
 		}
 	}
 	
@@ -492,7 +488,7 @@ void ARX_NPC_RestoreCuts() {
 	
 	for(Entity & npc : entities(IO_NPC)) {
 		if(npc._npcdata->cuts) {
-			ARX_NPC_ApplyCuts(&npc);
+			applyCuts(npc);
 		}
 	}
 	
