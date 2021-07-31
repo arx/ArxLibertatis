@@ -418,9 +418,9 @@ void levelInit() {
 	
 	g_note.clear();
 	
-	EntityHandle t = entities.getById("seat_stool1_0012");
-	if(ValidIONum(t)) {
-		entities[t]->ioflags |= IO_FORCEDRAW;
+	Entity * stool = entities.getById("seat_stool1_0012", nullptr);
+	if(stool) {
+		stool->ioflags |= IO_FORCEDRAW;
 	}
 	
 	ARX_NPC_RestoreCuts();
