@@ -341,13 +341,8 @@ void ARX_NPC_Behaviour_Reset(Entity * io)
 
 //! Reset all Behaviours from all NPCs
 void ARX_NPC_Behaviour_ResetAll() {
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e) {
-			ARX_NPC_Behaviour_Reset(e);
-		}
+	for(Entity & npc : entities(IO_NPC)) {
+		ARX_NPC_Behaviour_Reset(&npc);
 	}
 }
 
