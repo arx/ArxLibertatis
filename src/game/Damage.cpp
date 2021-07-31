@@ -333,27 +333,23 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 				if((type & DAMAGE_TYPE_FIRE) || (type & DAMAGE_TYPE_FAKEFIRE)) {
 					ARX_SOUND_PlayInterface(g_snd.PLAYER_DEATH_BY_FIRE);
 				}
-
+				
 				SendIOScriptEvent(sender, entities.player(), SM_DIE);
-
-				for(size_t i = 1; i < entities.size(); i++) {
-					const EntityHandle handle = EntityHandle(i);
-					Entity * ioo = entities[handle];
-					
-					if(ioo && (ioo->ioflags & IO_NPC)) {
-						if(ioo->targetinfo == EntityHandle_Player) {
-							std::string killer;
-							if(source == EntityHandle_Player) {
-								killer = "player";
-							} else if(source.handleData() <= EntityHandle().handleData()) {
-								killer = "none";
-							} else if(ValidIONum(source)) {
-								killer = entities[source]->idString();
-							}
-							SendIOScriptEvent(entities.player(), entities[handle], "target_death", killer);
+				
+				for(Entity & npc : entities(IO_NPC)) {
+					if(npc.targetinfo == EntityHandle_Player) {
+						std::string_view killer;
+						if(source == EntityHandle_Player) {
+							killer = "player";
+						} else if(source.handleData() <= EntityHandle().handleData()) {
+							killer = "none";
+						} else if(ValidIONum(source)) {
+							killer = entities[source]->idString();
 						}
+						SendIOScriptEvent(entities.player(), &npc, "target_death", killer);
 					}
 				}
+				
 			}
 		}
 
