@@ -26,14 +26,13 @@
 
 CharCommand::CharCommand(XByteArray * xData, Cmd cmd, int charPos, char newChar, QUndoCommand * parent)
 	: QUndoCommand(parent)
-	, _wasChanged()
-	, _oldChar()
-{
-	_xData = xData;
-	_charPos = charPos;
-	_newChar = newChar;
-	_cmd = cmd;
-}
+	, _xData(xData)
+	, _charPos(charPos)
+	, _wasChanged(false)
+	, _newChar(newChar)
+	, _oldChar('\0')
+	, _cmd(cmd)
+{ }
 
 bool CharCommand::mergeWith(const QUndoCommand * command) {
 	
@@ -94,13 +93,12 @@ void CharCommand::redo() {
 
 ArrayCommand::ArrayCommand(XByteArray * xData, Cmd cmd, int baPos, const QByteArray & newBa, int len, QUndoCommand * parent)
 	: QUndoCommand(parent)
-{
-	_cmd = cmd;
-	_xData = xData;
-	_baPos = baPos;
-	_newBa = newBa;
-	_len = len;
-}
+	, _cmd(cmd)
+	, _xData(xData)
+	, _baPos(baPos)
+	, _len(len)
+	, _newBa(newBa)
+{ }
 
 void ArrayCommand::undo() {
 	
