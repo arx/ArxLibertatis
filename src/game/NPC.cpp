@@ -2464,33 +2464,25 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 		return nullptr;
 	}
 	
-	Entity * found_io = nullptr;
-	float found_dist = std::numeric_limits<float>::max();
-
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(   !io
-		   || IsDeadNPC(*io)
-		   || io == ioo
-		   || !(io->ioflags & IO_NPC)
-		   || io->show != SHOW_FLAG_IN_SCENE
-		) {
+	Entity * closestNpc = nullptr;
+	float closestNpcDistance2 = std::numeric_limits<float>::max();
+	
+	for(Entity & npc : entities.inScene(IO_NPC)) {
+		
+		if(IsDeadNPC(npc) || npc == *ioo) {
 			continue;
 		}
-
-		float dist_io = arx::distance2(io->pos, ioo->pos);
-
-		if(dist_io > found_dist || dist_io > square(1800))
-			continue; // too far
-
+		
+		float dist_io = arx::distance2(npc.pos, ioo->pos);
+		if(dist_io > closestNpcDistance2 || dist_io > square(1800)) {
+			continue;
+		}
+		
 		if(dist_io < square(130)) {
-			if(found_dist > dist_io) {
-				found_io = io;
-				found_dist = dist_io;
+			if(closestNpcDistance2 > dist_io) {
+				closestNpc = &npc;
+				closestNpcDistance2 = dist_io;
 			}
-
 			continue;
 		}
 		
@@ -2506,50 +2498,44 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			}
 		}
 		
-		Vec3f dest = io->pos + Vec3f(0.f, -90.f, 0.f);
+		Vec3f dest = npc.pos + Vec3f(0.f, -90.f, 0.f);
 		{
-			ObjVertHandle grp = io->obj->fastaccess.head_group_origin;
+			ObjVertHandle grp = npc.obj->fastaccess.head_group_origin;
 			if(grp != ObjVertHandle()) {
-				dest = io->obj->vertexWorldPositions[grp.handleData()].v;
-			} else if(io == entities.player()) {
+				dest = npc.obj->vertexWorldPositions[grp.handleData()].v;
+			} else if(npc == *entities.player()) {
 				dest.y = player.pos.y + 90.f;
 			}
 		}
 		
 		float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 		aa = MAKEANGLE(glm::degrees(aa));
-
 		if(glm::abs(AngularDifference(aa, ab)) < 110.f) {
 			if(dist_io < square(200)) {
-				if(found_dist > dist_io) {
-					found_io = io;
-					found_dist = dist_io;
+				if(closestNpcDistance2 > dist_io) {
+					closestNpc = &npc;
+					closestNpcDistance2 = dist_io;
 				}
-				continue;
+			} else if(CURRENT_PLAYER_COLOR > GetPlayerStealth())  {
+				Vec3f ppos;
+				if(IO_Visible(orgn, dest, &ppos)) {
+					if(closestNpcDistance2 > dist_io) {
+						closestNpc = &npc;
+						closestNpcDistance2 = dist_io;
+					}
+				} else if(closerThan(ppos, dest, 25.f)) {
+					if(closestNpcDistance2 > dist_io) {
+						closestNpc = &npc;
+						closestNpcDistance2 = dist_io;
+					}
+				}
 			}
 			
-			float grnd_color = CURRENT_PLAYER_COLOR - GetPlayerStealth();
-			if(grnd_color > 0)  {
-				Vec3f ppos;
-				
-				if(IO_Visible(orgn, dest, &ppos)) {
-					if(found_dist > dist_io) {
-						found_io = io;
-						found_dist = dist_io;
-					}
-					continue;
-				} else if(closerThan(ppos, dest, 25.f)) {
-					if(found_dist > dist_io) {
-						found_io = io;
-						found_dist = dist_io;
-					}
-					continue;
-				}
-			}
 		}
+		
 	}
-
-	return found_io;
+	
+	return closestNpc;
 }
 
 //! Checks if a NPC is dead to prevent further Layers Animation
