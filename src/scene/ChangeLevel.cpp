@@ -164,11 +164,8 @@ static Entity * convertToValidIO(std::string_view idString) {
 		"bad interactive object id: \"%s\"", std::string(idString).c_str()
 	);
 	
-	EntityHandle t = entities.getById(idString);
-	
-	if(t.handleData() > 0) {
-		arx_assert_msg(ValidIONum(t), "got invalid IO num %ld", long(t.handleData()));
-		return entities[t];
+	if(Entity * entity = entities.getById(idString, nullptr)) {
+		return entity;
 	}
 	
 	LogDebug("Call to ConvertToValidIO(" << idString << ")");
@@ -404,14 +401,12 @@ static bool IsPlayerEquipedWith(Entity * io) {
 		return false;
 	}
 	
-	EntityHandle num = io->index();
-	
 	if(io == player.torch) {
 		return true;
 	}
 	
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(ValidIONum(player.equiped[i]) && player.equiped[i] == num) {
+		if(player.equiped[i] == io->index()) {
 			return true;
 		}
 	}
@@ -795,8 +790,8 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	}
 	
 	for(size_t k = 0; k < MAX_EQUIPED; k++) {
-		if(ValidIONum(player.equiped[k])) {
-			storeIdString(asp->equiped[k], entities[player.equiped[k]]);
+		if(Entity * item = entities.get(player.equiped[k])) {
+			storeIdString(asp->equiped[k], item);
 		} else {
 			util::storeString(asp->equiped[k], std::string_view());
 		}
@@ -878,8 +873,8 @@ void FillTargetInfo(char (&info)[N], EntityHandle numtarget) {
 		util::storeString(info, "none");
 	} else if(numtarget == EntityHandle_Player) {
 		util::storeString(info, "player");
-	} else if(ValidIONum(numtarget)) {
-		storeIdString(info, entities[numtarget]);
+	} else if(Entity * target = entities.get(numtarget)) {
+		storeIdString(info, target);
 	} else {
 		util::storeString(info, "none");
 	}
@@ -1062,15 +1057,14 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	for(size_t k = 0; k < MAX_ANIM_LAYERS; k++) {
 		ais.animlayer[k].cur_anim = GetIOAnimIdx2(io, io->animlayer[k].cur_anim);
 	}
-
+	
 	// Save Target Infos
 	EntityHandle numtarget = io->targetinfo;
-
-	if ((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.listnb > 0) && ValidIONum(io->_npcdata->pathfind.truetarget))
-	{
+	if((io->ioflags & IO_NPC)
+	   && (io->_npcdata->pathfind.listnb > 0)
+	   && entities.get(io->_npcdata->pathfind.truetarget)) {
 		numtarget = io->_npcdata->pathfind.truetarget;
 	}
-
 	FillTargetInfo(ais.id_targetinfo, numtarget);
 	
 	// Save Local Timers ?
@@ -1687,11 +1681,8 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	assert(SAVED_MAX_EQUIPED == MAX_EQUIPED);
 	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
-		Entity * e = ConvertToValidIO(asp->equiped[i]);
-		player.equiped[i] = (e == nullptr) ? EntityHandle() : e->index();
-		if(!ValidIONum(player.equiped[i])) {
-			player.equiped[i] = EntityHandle();
-		}
+		Entity * item = ConvertToValidIO(asp->equiped[i]);
+		player.equiped[i] = item ? item->index() : EntityHandle();
 	}
 	
 	progressBarAdvance(2.f);
@@ -2343,7 +2334,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 				ScriptEvent::send(&entity.over_script, nullptr, &entity, SM_RELOAD, "change");
 			}
 			
-			if(entities.get(index) == &entity && (entity.ioflags & IO_NPC) && ValidIONum(entity.targetinfo)) {
+			if(entities.get(index) == &entity && (entity.ioflags & IO_NPC) && entities.get(entity.targetinfo)) {
 				if(entity._npcdata->behavior != BEHAVIOUR_NONE) {
 					entity.physics.cyl = getEntityCylinder(entity);
 					GetTargetPos(&entity);
@@ -2362,7 +2353,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	} else {
 		
 		for(Entity & npc : entities(IO_NPC)) {
-			if(ValidIONum(npc.targetinfo) && npc._npcdata->behavior != BEHAVIOUR_NONE) {
+			if(entities.get(npc.targetinfo) && npc._npcdata->behavior != BEHAVIOUR_NONE) {
 				npc.physics.cyl = getEntityCylinder(npc);
 				GetTargetPos(&npc);
 				ARX_NPC_LaunchPathfind(&npc, npc.targetinfo);
