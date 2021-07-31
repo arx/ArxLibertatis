@@ -2353,11 +2353,8 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 		
 	} else if(firstTime) {
 		
-		for(size_t i = 0; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			if(entities[handle]) {
-				SendInitScriptEvent(entities[handle]);
-			}
+		for(Entity & entity : entities) {
+			SendInitScriptEvent(&entity);
 		}
 		
 	} else {
