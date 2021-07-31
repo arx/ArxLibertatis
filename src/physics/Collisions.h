@@ -111,7 +111,7 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags);
 bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit);
 
 bool CylinderPlatformCollide(const Cylinder & cyl, Entity * io);
-bool IsAnyNPCInPlatform(Entity * pfrm);
+bool IsAnyNPCInPlatform(Entity * platform);
 void PushIO_ON_Top(const Entity & platform, float ydec);
 
 #endif // ARX_PHYSICS_COLLISIONS_H

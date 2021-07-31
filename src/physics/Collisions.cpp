@@ -353,26 +353,17 @@ void PushIO_ON_Top(const Entity & platform, float ydec) {
 	
 }
 
-bool IsAnyNPCInPlatform(Entity * pfrm) {
+bool IsAnyNPCInPlatform(Entity * platform) {
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(io
-		   && io != pfrm
-		   && (io->ioflags & IO_NPC)
-		   && !(io->ioflags & IO_NO_COLLISIONS)
-		   && io->show == SHOW_FLAG_IN_SCENE
-		) {
-			Cylinder cyl = GetIOCyl(io);
-
-			if(CylinderPlatformCollide(cyl, pfrm)) {
+	for(Entity & entity : entities.inScene(IO_NPC)) {
+		if(entity != *platform && !(entity.ioflags & IO_NO_COLLISIONS)) {
+			Cylinder cyl = GetIOCyl(&entity);
+			if(CylinderPlatformCollide(cyl, platform)) {
 				return true;
 			}
 		}
 	}
-
+	
 	return false;
 }
 
