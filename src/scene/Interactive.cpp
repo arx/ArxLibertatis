@@ -1740,100 +1740,79 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 /*!
  * \brief Returns nearest interactive object found at position x, y
  */
-Entity * GetFirstInterAtPos(const Vec2s & pos)
-{
+Entity * GetFirstInterAtPos(const Vec2s & pos) {
+	
 	float _fdist = 9999999999.f;
 	float fdistBB = 9999999999.f;
 	float fMaxDist = 350;
 	Entity * foundBB = nullptr;
 	Entity * foundPixel = nullptr;
-	bool bPlayerEquiped = false;
-
+	
 	if(player.m_telekinesis) {
 		fMaxDist = 850;
 	}
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
+	for(Entity & entity : entities) {
 		
-		bool bPass = true;
-
-		Entity * io = entities[handle];
-
-		// Is Object Valid ??
-		if(!io)
+		if(entity.ioflags & (IO_CAMERA | IO_MARKER) || !(entity.gameFlags & GFLAG_INTERACTIVITY)) {
 			continue;
-
-		if((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))
+		}
+		
+		if(entity == *entities.player()) {
 			continue;
-
-		if(!(io->gameFlags & GFLAG_INTERACTIVITY))
+		}
+		
+		bool bPlayerEquiped = IsEquipedByPlayer(&entity);
+		if(!((bPlayerEquiped && (player.Interface & INTER_PLAYERBOOK))
+		   || (entity.gameFlags & GFLAG_ISINTREATZONE))) {
 			continue;
-
-		// Is Object in TreatZone ??
-		bPlayerEquiped = IsEquipedByPlayer(io);
-
-		if( !((bPlayerEquiped  && (player.Interface & INTER_PLAYERBOOK)) || (io->gameFlags & GFLAG_ISINTREATZONE)) )
-			continue;
-
-		// Is Object Displayed on screen ???
-		if(!(io->show == SHOW_FLAG_IN_SCENE
+		}
+		
+		if(!(entity.show == SHOW_FLAG_IN_SCENE
 		     || (bPlayerEquiped && (player.Interface & INTER_PLAYERBOOK)
 		         && (g_playerBook.currentPage() == BOOKMODE_STATS)))) {
 			continue;
 		}
-
-		if(pos.x < io->bbox2D.min.x ||
-		   pos.x > io->bbox2D.max.x ||
-		   pos.y < io->bbox2D.min.y ||
-		   pos.y > io->bbox2D.max.y)
-		{
+		
+		if(pos.x < entity.bbox2D.min.x || pos.x > entity.bbox2D.max.x
+		   || pos.y < entity.bbox2D.min.y || pos.y > entity.bbox2D.max.y) {
 			continue;
 		}
 		
-		float fp = fdist(io->pos, player.pos);
-
+		float fp = fdist(entity.pos, player.pos);
 		if(fp <= fMaxDist && (!foundBB || fp < fdistBB)) {
 			fdistBB = fp;
-			foundBB = io;
+			foundBB = &entity;
 		}
-
-		if((io->ioflags & (IO_CAMERA | IO_MARKER | IO_GOLD)) || bPlayerEquiped) {
-			if(bPlayerEquiped)
-				fp = 0.f;
-			else
-				fp = fdist(io->pos, player.pos);
-
+		
+		if((entity.ioflags & (IO_CAMERA | IO_MARKER | IO_GOLD)) || bPlayerEquiped) {
+			
+			fp = bPlayerEquiped ? 0.f : fdist(entity.pos, player.pos);
 			if(fp < fdistBB || !foundBB) {
 				fdistBB = fp;
-				foundBB = io;
-				foundPixel = io;
+				foundBB = &entity;
+				foundPixel = &entity;
 			}
+			
 		} else {
-			for(size_t j = 0; j < io->obj->facelist.size(); j++) {
-				float n = PtIn2DPolyProj(io->obj->vertexClipPositions, &io->obj->facelist[j] , pos.x, pos.y);
-
+			
+			for(EERIE_FACE & face : entity.obj->facelist) {
+				float n = PtIn2DPolyProj(entity.obj->vertexClipPositions, &face , pos.x, pos.y);
 				if(n > 0.f) {
-					if(bPlayerEquiped)
-						fp = 0.f;
-					else
-						fp = fdist(io->pos, player.pos);
-
-					if((bPass && fp <= fMaxDist) && (fp < _fdist || !foundPixel)) {
-
+					fp = bPlayerEquiped ? 0.f : fdist(entity.pos, player.pos);
+					if(fp <= fMaxDist && (fp < _fdist || !foundPixel)) {
 						_fdist = fp;
-						foundPixel = io;
+						foundPixel = &entity;
 						break;
 					}
 				}
 			}
+			
 		}
+		
 	}
-
-	if(foundPixel)
-		return foundPixel;
-
-	return foundBB;
+	
+	return foundPixel ? foundPixel : foundBB;
 }
 
 bool IsEquipedByPlayer(const Entity * io)
