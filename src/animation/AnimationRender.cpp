@@ -833,13 +833,12 @@ struct HaloInfo {
 
 static void pushSlotHalo(HaloInfo & haloInfo, EquipmentSlot slot, ObjSelection selection) {
 	
-	if(ValidIONum(player.equiped[slot])) {
-		Entity * tio = entities[player.equiped[slot]];
-
-		if(tio->halo.flags & HALO_ACTIVE) {
-			haloInfo.push(HaloRenderInfo(&tio->halo, selection));
+	if(Entity * item = entities.get(player.equiped[slot])) {
+		if(item->halo.flags & HALO_ACTIVE) {
+			haloInfo.push(HaloRenderInfo(&item->halo, selection));
 		}
 	}
+	
 }
 
 //-----------------------------------------------------------------------------
