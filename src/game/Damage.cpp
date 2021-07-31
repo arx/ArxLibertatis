@@ -977,176 +977,171 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 	float divradius = 1.f / damage.params.radius;
 	
 	// checking for IO damages
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
+	for(Entity & entity : entities.inScene()) {
 		
-		if(io
-		   && (io->gameFlags & GFLAG_ISINTREATZONE)
-		   && (io->show == SHOW_FLAG_IN_SCENE)
-		   && (damage.params.source != handle || !(damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE))
-		){
-			if(io->ioflags & IO_NPC) {
-				if(   handle != EntityHandle_Player
-				   && damage.params.source != EntityHandle_Player
-				   && validsource
-				   && HaveCommonGroup(io, entities[damage.params.source])
-				) {
-					continue;
-				}
-				
-				Sphere sphere;
-				sphere.origin = damage.params.pos;
-				sphere.radius = damage.params.radius - 10.f;
-				
-				if(CheckIOInSphere(sphere, *io, true)) {
-					Vec3f sub = io->pos + Vec3f(0.f, -60.f, 0.f);
-					
-					float dist = fdist(damage.params.pos, sub);
-					
-					if(damage.params.type & DAMAGE_TYPE_FIELD) {
-						GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
-						if(elapsed > GameDurationMs(500)) {
-							io->collide_door_time = g_gameTime.now();
-							
-							ScriptParameters parameters;
-							if(damage.params.type & DAMAGE_TYPE_COLD) {
-								parameters = "cold";
-							} else if(damage.params.type & DAMAGE_TYPE_FIRE) {
-								parameters = "fire";
-							}
-							
-							SendIOScriptEvent(nullptr, io, SM_COLLIDE_FIELD, parameters);
-						}
+		if(!(entity.gameFlags & GFLAG_ISINTREATZONE)
+		   || (damage.params.source == entity.index() && (damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE))) {
+			continue;
+		}
+		
+		if(entity.ioflags & IO_NPC) {
+			
+			if(entity != *entities.player() && damage.params.source != EntityHandle_Player && validsource
+			   && HaveCommonGroup(&entity, entities[damage.params.source])) {
+				continue;
+			}
+			
+			Sphere sphere;
+			sphere.origin = damage.params.pos;
+			sphere.radius = damage.params.radius - 10.f;
+			if(!CheckIOInSphere(sphere, entity, true)) {
+				continue;
+			}
+			
+			Vec3f sub = entity.pos + Vec3f(0.f, -60.f, 0.f);
+			float dist = fdist(damage.params.pos, sub);
+			
+			if(damage.params.type & DAMAGE_TYPE_FIELD) {
+				GameDuration elapsed = g_gameTime.now() - entity.collide_door_time;
+				if(elapsed > GameDurationMs(500)) {
+					entity.collide_door_time = g_gameTime.now();
+					ScriptParameters parameters;
+					if(damage.params.type & DAMAGE_TYPE_COLD) {
+						parameters = "cold";
+					} else if(damage.params.type & DAMAGE_TYPE_FIRE) {
+						parameters = "fire";
 					}
-					
-					switch(damage.params.area) {
-						case DAMAGE_AREA: {
-							float ratio = (damage.params.radius - dist) * divradius;
-							ratio = glm::clamp(ratio, 0.f, 1.f);
-							dmg = dmg * ratio + 1.f;
-						}
-						break;
-						case DAMAGE_AREAHALF: {
-							float ratio = (damage.params.radius - dist * 0.5f) * divradius;
-							ratio = glm::clamp(ratio, 0.f, 1.f);
-							dmg = dmg * ratio + 1.f;
-						}
-						break;
-						case DAMAGE_FULL:
-						break;
-					}
-					
-					if(dmg <= 0.f)
-						continue;
-					
-					if(   (damage.params.flags & DAMAGE_FLAG_ADD_VISUAL_FX)
-					   && (io->ioflags & IO_NPC)
-					   && (io->_npcdata->lifePool.current > 0.f)
-					) {
-						ARX_DAMAGES_AddVisual(damage, sub, dmg, io);
-					}
-					
-					if(damage.params.type & DAMAGE_TYPE_DRAIN_MANA) {
-						float manadrained;
-						
-						if(handle == EntityHandle_Player) {
-							manadrained = std::min(dmg, player.manaPool.current);
-							player.manaPool.current -= manadrained;
-						} else {
-							manadrained = dmg;
-							
-							if(io && io->_npcdata) {
-								manadrained = std::min(dmg, io->_npcdata->manaPool.current);
-								io->_npcdata->manaPool.current -= manadrained;
-							}
-						}
-						
-						if (damage.params.source == EntityHandle_Player) {
-							player.manaPool.current = std::min(player.manaPool.current + manadrained, player.Full_maxmana);
-						} else {
-							if(ValidIONum(damage.params.source) && (entities[damage.params.source]->_npcdata)) {
-								entities[damage.params.source]->_npcdata->manaPool.current = std::min(entities[damage.params.source]->_npcdata->manaPool.current + manadrained, entities[damage.params.source]->_npcdata->manaPool.max);
-							}
-						}
-					} else {
-						float damagesdone;
-						
-						// TODO copy-paste
-						if(handle == EntityHandle_Player) {
-							if(damage.params.type & DAMAGE_TYPE_POISON) {
-								if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison) {
-									// Failed Saving Throw
-									damagesdone = dmg;
-									player.poison += damagesdone;
-								} else {
-									damagesdone = 0;
-								}
-							} else {
-								if(   (damage.params.type & DAMAGE_TYPE_MAGICAL)
-								   && !(damage.params.type & DAMAGE_TYPE_FIRE)
-								   && !(damage.params.type & DAMAGE_TYPE_COLD)
-								) {
-									dmg -= player.m_miscFull.resistMagic * 0.01f * dmg;
-									dmg = std::max(0.0f, dmg);
-								}
-								if(damage.params.type & DAMAGE_TYPE_FIRE) {
-									dmg = ARX_SPELLS_ApplyFireProtection(entities.player(), dmg);
-									ARX_DAMAGES_IgnitIO(entities.get(damage.params.source), entities.player(), dmg);
-								}
-								if(damage.params.type & DAMAGE_TYPE_COLD) {
-									dmg = ARX_SPELLS_ApplyColdProtection(entities.player(), dmg);
-								}
-								damagesdone = ARX_DAMAGES_DamagePlayer(dmg, damage.params.type, damage.params.source);
-							}
-						} else {
-							if(   (io->ioflags & IO_NPC)
-							   && (damage.params.type & DAMAGE_TYPE_POISON)
-							) {
-								if(Random::getf(0.f, 100.f) > io->_npcdata->resist_poison) {
-									// Failed Saving Throw
-									damagesdone = dmg;
-									io->_npcdata->poisonned += damagesdone;
-								} else {
-									damagesdone = 0;
-								}
-							} else {
-								if(damage.params.type & DAMAGE_TYPE_FIRE) {
-									dmg = ARX_SPELLS_ApplyFireProtection(io, dmg);
-									ARX_DAMAGES_IgnitIO(entities.get(damage.params.source), io, dmg);
-								}
-								if(   (damage.params.type & DAMAGE_TYPE_MAGICAL)
-								   && !(damage.params.type & DAMAGE_TYPE_FIRE)
-								   && !(damage.params.type & DAMAGE_TYPE_COLD)
-								) {
-									dmg -= io->_npcdata->resist_magic * 0.01f * dmg;
-									dmg = std::max(0.0f, dmg);
-								}
-								if(damage.params.type & DAMAGE_TYPE_COLD) {
-									dmg = ARX_SPELLS_ApplyColdProtection(io, dmg);
-								}
-								damagesdone = ARX_DAMAGES_DamageNPC(io, dmg, damage.params.source, true, &damage.params.pos);
-							}
-							if(damagesdone > 0 && (damage.params.flags & DAMAGE_SPAWN_BLOOD)) {
-								ARX_PARTICLES_Spawn_Blood(damage.params.pos, damagesdone, damage.params.source);
-							}
-						}
-						if(damage.params.type & DAMAGE_TYPE_DRAIN_LIFE) {
-							if(ValidIONum(damage.params.source))
-								ARX_DAMAGES_HealInter(entities[damage.params.source], damagesdone);
-						}
-					}
-				}
-			} else if((io->ioflags & IO_FIX) && !(damage.params.type & DAMAGE_TYPE_NO_FIX)) {
-				Sphere sphere;
-				sphere.origin = damage.params.pos;
-				sphere.radius = damage.params.radius + 15.f;
-				
-				if(CheckIOInSphere(sphere, *io)) {
-					ARX_DAMAGES_DamageFIX(io, dmg, damage.params.source, true);
+					SendIOScriptEvent(nullptr, &entity, SM_COLLIDE_FIELD, parameters);
 				}
 			}
+			
+			// TODO damage ratio applied multiple times if there are multiple NPCs in range
+			switch(damage.params.area) {
+				case DAMAGE_AREA: {
+					float ratio = (damage.params.radius - dist) * divradius;
+					ratio = glm::clamp(ratio, 0.f, 1.f);
+					dmg = dmg * ratio + 1.f;
+					break;
+				}
+				case DAMAGE_AREAHALF: {
+					float ratio = (damage.params.radius - dist * 0.5f) * divradius;
+					ratio = glm::clamp(ratio, 0.f, 1.f);
+					dmg = dmg * ratio + 1.f;
+					break;
+				}
+				case DAMAGE_FULL: {
+					break;
+				}
+			}
+			if(dmg <= 0.f) {
+				continue;
+			}
+			
+			if((damage.params.flags & DAMAGE_FLAG_ADD_VISUAL_FX) && (entity._npcdata->lifePool.current > 0.f)) {
+				ARX_DAMAGES_AddVisual(damage, sub, dmg, &entity);
+			}
+			
+			if(damage.params.type & DAMAGE_TYPE_DRAIN_MANA) {
+				
+				float manadrained;
+				if(entity == *entities.player()) {
+					manadrained = std::min(dmg, player.manaPool.current);
+					player.manaPool.current -= manadrained;
+			} else {
+					manadrained = dmg;
+					manadrained = std::min(dmg, entity._npcdata->manaPool.current);
+					entity._npcdata->manaPool.current -= manadrained;
+				}
+				
+				if (damage.params.source == EntityHandle_Player) {
+					player.manaPool.current = std::min(player.manaPool.current + manadrained, player.Full_maxmana);
+				} else if(Entity * source = entities.get(damage.params.source)) {
+					if(source->ioflags & IO_NPC) {
+						source->_npcdata->manaPool.current = std::min(source->_npcdata->manaPool.current + manadrained,
+						                                              source->_npcdata->manaPool.max);
+					}
+				}
+				
+			} else {
+				
+				// TODO copy-paste
+				float damagesdone;
+				if(entity == *entities.player()) {
+					if(damage.params.type & DAMAGE_TYPE_POISON) {
+						if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison) {
+							// Failed Saving Throw
+							damagesdone = dmg;
+							player.poison += damagesdone;
+						} else {
+							damagesdone = 0;
+						}
+					} else {
+						if((damage.params.type & DAMAGE_TYPE_MAGICAL)
+						   && !(damage.params.type & DAMAGE_TYPE_FIRE)
+						   && !(damage.params.type & DAMAGE_TYPE_COLD)) {
+							dmg -= player.m_miscFull.resistMagic * 0.01f * dmg;
+							dmg = std::max(0.0f, dmg);
+						}
+						if(damage.params.type & DAMAGE_TYPE_FIRE) {
+							dmg = ARX_SPELLS_ApplyFireProtection(entities.player(), dmg);
+							ARX_DAMAGES_IgnitIO(entities.get(damage.params.source), entities.player(), dmg);
+						}
+						if(damage.params.type & DAMAGE_TYPE_COLD) {
+							dmg = ARX_SPELLS_ApplyColdProtection(entities.player(), dmg);
+						}
+						damagesdone = ARX_DAMAGES_DamagePlayer(dmg, damage.params.type, damage.params.source);
+					}
+				} else {
+					if(damage.params.type & DAMAGE_TYPE_POISON) {
+						if(Random::getf(0.f, 100.f) > entity._npcdata->resist_poison) {
+							// Failed Saving Throw
+							damagesdone = dmg;
+							entity._npcdata->poisonned += damagesdone;
+						} else {
+							damagesdone = 0;
+						}
+					} else {
+						if(damage.params.type & DAMAGE_TYPE_FIRE) {
+							dmg = ARX_SPELLS_ApplyFireProtection(&entity, dmg);
+							ARX_DAMAGES_IgnitIO(entities.get(damage.params.source), &entity, dmg);
+						}
+						if((damage.params.type & DAMAGE_TYPE_MAGICAL)
+						    && !(damage.params.type & DAMAGE_TYPE_FIRE)
+						    && !(damage.params.type & DAMAGE_TYPE_COLD)) {
+							dmg -= entity._npcdata->resist_magic * 0.01f * dmg;
+							dmg = std::max(0.0f, dmg);
+						}
+						if(damage.params.type & DAMAGE_TYPE_COLD) {
+							dmg = ARX_SPELLS_ApplyColdProtection(&entity, dmg);
+						}
+						damagesdone = ARX_DAMAGES_DamageNPC(&entity, dmg, damage.params.source, true, &damage.params.pos);
+					}
+					if(damagesdone > 0 && (damage.params.flags & DAMAGE_SPAWN_BLOOD)) {
+						ARX_PARTICLES_Spawn_Blood(damage.params.pos, damagesdone, damage.params.source);
+					}
+				}
+				
+				if(damage.params.type & DAMAGE_TYPE_DRAIN_LIFE) {
+					if(ValidIONum(damage.params.source)) {
+						ARX_DAMAGES_HealInter(entities[damage.params.source], damagesdone);
+					}
+				}
+				
+			}
+			
+		} else if((entity.ioflags & IO_FIX) && !(damage.params.type & DAMAGE_TYPE_NO_FIX)) {
+			
+			Sphere sphere;
+			sphere.origin = damage.params.pos;
+			sphere.radius = damage.params.radius + 15.f;
+			if(!CheckIOInSphere(sphere, entity)) {
+				continue;
+			}
+			
+			ARX_DAMAGES_DamageFIX(&entity, dmg, damage.params.source, true);
+			
 		}
+		
 	}
 	
 	if(damage.params.duration == GameDuration::ofRaw(-1) || now > damage.start_time + damage.params.duration) {
