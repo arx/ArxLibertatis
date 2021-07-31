@@ -450,7 +450,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << target);
 		
-		Entity * entity = entities.getById(target, nullptr);
+		Entity * entity = entities.getById(target);
 		if(!entity) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;

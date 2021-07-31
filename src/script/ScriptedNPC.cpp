@@ -549,8 +549,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		EntityHandle t = entities.getById(target);
-		ARX_NPC_LaunchPathfind(context.getEntity(), t);
+		ARX_NPC_LaunchPathfind(context.getEntity(), entities.getIndexById(target));
 		
 		return Success;
 	}

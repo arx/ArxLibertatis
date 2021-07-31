@@ -108,19 +108,13 @@ void EntityManager::clear() {
 	m_impl->m_minfree = 0;
 }
 
-EntityHandle EntityManager::getById(std::string_view idString) const {
+EntityHandle EntityManager::getIndexById(std::string_view idString) const {
 	
-	if(idString.empty() || idString == "none") {
-		return EntityHandle();
-	}
 	if(idString == "self" || idString == "me") {
 		return EntityHandle_Self;
 	}
-	if(idString == "player") {
-		return EntityHandle_Player;
-	}
 	
-	if(Entity * entity = m_impl->getById(idString)) {
+	if(Entity * entity = getById(idString)) {
 		return entity->index();
 	}
 	
@@ -146,14 +140,17 @@ Entity * EntityManager::getById(const EntityId & id, Entity * self) const {
 
 Entity * EntityManager::getById(std::string_view idString, Entity * self) const {
 	
-	EntityHandle handle = getById(idString);
-	if(handle == EntityHandle()) {
+	if(idString.empty() || idString == "none") {
 		return nullptr;
 	}
-	if(handle == EntityHandle_Self) {
+	if(idString == "self" || idString == "me") {
 		return self;
 	}
-	return entries[handle.handleData()];
+	if(idString == "player") {
+		return player();
+	}
+	
+	return m_impl->getById(idString);
 }
 
 void EntityManager::autocomplete(std::string_view prefix, AutocompleteHandler handler, void * context) {

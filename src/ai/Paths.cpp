@@ -152,7 +152,7 @@ static void EntityEnteringCurrentZone(Entity * io, Zone * current) {
 	
 	SendIOScriptEvent(nullptr, io, SM_ENTERZONE, current->name);
 	
-	if(Entity * controller = entities.getById(current->controled, nullptr)) {
+	if(Entity * controller = entities.getById(current->controled)) {
 		ScriptParameters parameters;
 		parameters.push_back(io->idString());
 		parameters.push_back(current->name);
@@ -165,7 +165,7 @@ static void EntityLeavingLastZone(Entity * io, Zone * last) {
 	
 	SendIOScriptEvent(nullptr, io, SM_LEAVEZONE, last->name);
 	
-	if(Entity * controller = entities.getById(last->controled, nullptr)) {
+	if(Entity * controller = entities.getById(last->controled)) {
 		ScriptParameters parameters;
 		parameters.push_back(io->idString());
 		parameters.push_back(last->name);

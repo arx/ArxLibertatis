@@ -165,7 +165,7 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io) {
 		return;
 	}
 	
-	if(Entity * controller = entities.getById(op->controled, nullptr)) {
+	if(Entity * controller = entities.getById(op->controled)) {
 		ScriptParameters parameters;
 		parameters.push_back(io->idString());
 		parameters.push_back(op->name);
@@ -1304,7 +1304,7 @@ static EntityInstance getFreeEntityInstance(const res::path & classPath) {
 		std::string idString = EntityId(className, instance).string();
 		
 		// Check if the candidate instance number is used in the current scene
-		if(entities.getById(idString, nullptr)) {
+		if(entities.getById(idString)) {
 			continue;
 		}
 		

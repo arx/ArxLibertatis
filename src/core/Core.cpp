@@ -418,8 +418,7 @@ void levelInit() {
 	
 	g_note.clear();
 	
-	Entity * stool = entities.getById("seat_stool1_0012", nullptr);
-	if(stool) {
+	if(Entity * stool = entities.getById("seat_stool1_0012")) {
 		stool->ioflags |= IO_FORCEDRAW;
 	}
 	

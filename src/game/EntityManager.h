@@ -57,7 +57,7 @@ class EntityManager {
 			}
 		}
 		
-		Entity & operator*() const {
+		[[nodiscard]] Entity & operator*() const {
 			return *m_manager->entries[m_i];
 		}
 		
@@ -67,7 +67,7 @@ class EntityManager {
 			} while(m_i != m_manager->entries.size() && !check(m_manager->entries[m_i]));
 		}
 		
-		bool operator!=(Sentinel /* sentinel */) {
+		[[nodiscard]] bool operator!=(Sentinel /* sentinel */) {
 			return m_i != m_manager->entries.size();
 		}
 		
@@ -86,8 +86,8 @@ class EntityManager {
 			, m_filter(std::move(filter))
 		{ }
 		
-		auto begin() { return EntityIterator(m_manager, m_filter); }
-		auto end() { return Sentinel(); }
+		[[nodiscard]] auto begin() { return EntityIterator(m_manager, m_filter); }
+		[[nodiscard]] auto end() { return Sentinel(); }
 		
 	};
 	
@@ -102,16 +102,16 @@ public:
 	//! Free all entities except for the player
 	void clear();
 	
-	EntityHandle getById(std::string_view idString) const;
+	[[nodiscard]] EntityHandle getIndexById(std::string_view idString) const;
 	
-	Entity * getById(const EntityId & id, Entity * self = nullptr) const;
-	Entity * getById(std::string_view idString, Entity * self) const;
+	[[nodiscard]] Entity * getById(const EntityId & id, Entity * self = nullptr) const;
+	[[nodiscard]] Entity * getById(std::string_view idString, Entity * self = nullptr) const;
 	
-	Entity * operator[](EntityHandle index) const {
+	[[nodiscard]] Entity * operator[](EntityHandle index) const {
 		return entries[index.handleData()];
 	}
 	
-	Entity * get(EntityHandle handle) const {
+	[[nodiscard]] Entity * get(EntityHandle handle) const {
 		
 		if(handle.handleData() < 0 || handle.handleData() >= long(size())) {
 			return nullptr;
@@ -122,7 +122,7 @@ public:
 	
 	
 	//! Get the player entity
-	Entity * player() const {
+	[[nodiscard]] Entity * player() const {
 		return entries[0];
 	}
 	
@@ -133,18 +133,18 @@ public:
 	 * some of these indices might be unused, so the actual number of
 	 * entities in existence may be less.
 	 */
-	size_t size() const { return entries.size(); }
+	[[nodiscard]] size_t size() const { return entries.size(); }
 	
-	auto begin() const { return EntityIterator( this, [](Entity & /* entity */) { return true; } ); }
-	auto end() const { return Sentinel(); }
+	[[nodiscard]] auto begin() const { return EntityIterator( this, [](Entity & /* entity */) { return true; } ); }
+	[[nodiscard]] auto end() const { return Sentinel(); }
 	
-	auto operator()(EntityFlags flags) {
+	[[nodiscard]] auto operator()(EntityFlags flags) {
 		return FilteredEntities( this, [flags](Entity & entity) {
 			return entity.ioflags & flags;
 		});
 	}
 	
-	auto inScene(EntityFlags flags = EntityFlags::all()) {
+	[[nodiscard]] auto inScene(EntityFlags flags = EntityFlags::all()) {
 		return FilteredEntities( this, [flags](Entity & entity) {
 			return entity.show == SHOW_FLAG_IN_SCENE && (entity.ioflags & flags);
 		});

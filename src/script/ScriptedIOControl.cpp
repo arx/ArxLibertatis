@@ -367,7 +367,7 @@ public:
 		
 		DebugScript(' ' << name << ' ' << attach);
 		
-		Entity * target = entities.getById(name, nullptr);
+		Entity * target = entities.getById(name);
 		if(!target) {
 			ScriptWarning << "unknown target: " << name;
 			return Failed;
@@ -426,7 +426,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		Entity * entity = entities.getById(target, nullptr);
+		Entity * entity = entities.getById(target);
 		if(!entity || !hasVisibility(context.getEntity(), entity)) {
 			context.skipBlock();
 		}

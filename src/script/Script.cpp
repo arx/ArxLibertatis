@@ -646,7 +646,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			if(boost::starts_with(name, "^realdist_")) {
 				if(context.getEntity()) {
 					
-					Entity * target = entities.getById(name.substr(10), nullptr);
+					Entity * target = entities.getById(name.substr(10));
 					if(target == entities.player()) {
 						if(context.getEntity()->requestRoomUpdate) {
 							UpdateIORoom(context.getEntity());
@@ -681,7 +681,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 			
 			if(boost::starts_with(name, "^repairprice_")) {
-				Entity * target = entities.getById(name.substr(13), nullptr);
+				Entity * target = entities.getById(name.substr(13));
 				if(target) {
 					*fcontent = ARX_DAMAGES_ComputeRepairPrice(target, context.getEntity());
 				} else {
@@ -963,7 +963,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			
 			if(boost::starts_with(name, "^dist_")) {
 				if(context.getEntity()) {
-					Entity * target = entities.getById(name.substr(6), nullptr);
+					Entity * target = entities.getById(name.substr(6));
 					if(target == entities.player()) {
 						*fcontent = fdist(player.pos, context.getEntity()->pos);
 					} else if(target
@@ -1032,7 +1032,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 			
 			if(boost::starts_with(name, "^possess_")) {
-				Entity * target = entities.getById(name.substr(9), nullptr);
+				Entity * target = entities.getById(name.substr(9));
 				if(target) {
 					if(IsInPlayerInventory(target)) {
 						*lcontent = 1;
