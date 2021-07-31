@@ -165,12 +165,11 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io) {
 		return;
 	}
 	
-	EntityHandle t = entities.getById(op->controled);
-	if(t != EntityHandle()) {
+	if(Entity * controller = entities.getById(op->controled, nullptr)) {
 		ScriptParameters parameters;
 		parameters.push_back(io->idString());
 		parameters.push_back(op->name);
-		SendIOScriptEvent(nullptr, entities[t], SM_CONTROLLEDZONE_LEAVE, parameters);
+		SendIOScriptEvent(nullptr, controller, SM_CONTROLLEDZONE_LEAVE, parameters);
 	}
 	
 }
@@ -1305,7 +1304,7 @@ static EntityInstance getFreeEntityInstance(const res::path & classPath) {
 		std::string idString = EntityId(className, instance).string();
 		
 		// Check if the candidate instance number is used in the current scene
-		if(entities.getById(idString) != EntityHandle()) {
+		if(entities.getById(idString, nullptr)) {
 			continue;
 		}
 		
