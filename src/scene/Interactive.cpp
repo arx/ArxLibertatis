@@ -1860,30 +1860,25 @@ Entity * InterClick(const Vec2s & pos) {
 // Need To upgrade to a more precise collision.
 EntityHandle IsCollidingAnyInter(const Vec3f & pos, const Vec3f & size) {
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(   io
-		   && !(io->ioflags & IO_NO_COLLISIONS)
-		   && (io->collision)
-		   && (io->gameFlags & GFLAG_ISINTREATZONE)
-		   && ((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX))
-		   && (io->show == SHOW_FLAG_IN_SCENE)
-		   && !((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current <= 0.f)
-		) {
-			Vec3f tempPos = pos;
-			
-			if(IsCollidingInter(io, tempPos))
-				return handle;
-
-			tempPos.y += size.y;
-
-			if(IsCollidingInter(io, tempPos))
-				return handle;
+	for(Entity & entity : entities.inScene(IO_NPC | IO_FIX)) {
+		
+		if((entity.ioflags & IO_NO_COLLISIONS)
+		   || !entity.collision
+		   || !(entity.gameFlags & GFLAG_ISINTREATZONE)
+		   || ((entity.ioflags & IO_NPC) && entity._npcdata->lifePool.current <= 0.f)) {
+			continue;
 		}
+		
+		if(IsCollidingInter(&entity, pos)) {
+			return entity.index();
+		}
+		
+		if(IsCollidingInter(&entity, pos + Vec3f(0.f, size.y, 0.f))) {
+			return entity.index();
+		}
+		
 	}
-
+	
 	return EntityHandle();
 }
 
