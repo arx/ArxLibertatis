@@ -298,12 +298,10 @@ void Entity::cleanReferences() {
 	ARX_SOUND_Stop(ignit_sound);
 	ignit_sound = audio::SourcedSample();
 	
-	for(Entity * parent : entities) {
-		if(parent) {
-			EERIE_LINKEDOBJ_UnLinkObjectFromObject(parent->obj, obj);
-			if((parent->ioflags & IO_NPC) && parent->_npcdata->weapon == this) {
-				parent->_npcdata->weapon = nullptr;
-			}
+	for(Entity & parent : entities) {
+		EERIE_LINKEDOBJ_UnLinkObjectFromObject(parent.obj, obj);
+		if((parent.ioflags & IO_NPC) && parent._npcdata->weapon == this) {
+			parent._npcdata->weapon = nullptr;
 		}
 	}
 	

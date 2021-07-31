@@ -23,6 +23,7 @@
 #include <stddef.h>
 #include <string_view>
 #include <vector>
+#include <utility>
 
 #include "game/EntityId.h"
 #include "game/GameTypes.h"
@@ -33,6 +34,45 @@ class EntityManager {
 	
 	typedef std::vector<Entity *> Entries;
 	typedef Entries::iterator miterator;
+	
+	class Sentinel { };
+	
+	template <typename Filter>
+	class EntityIterator : private Filter {
+		
+		const EntityManager * m_manager;
+		size_t m_i = 0;
+		
+		bool check(Entity * entity) {
+			return entity && (*this)(*entity);
+		}
+		
+	public:
+		
+		EntityIterator(const EntityManager * manager, Filter filter)
+			: Filter(std::move(filter))
+			, m_manager(manager)
+		{
+			if(m_i != m_manager->entries.size() && !check(m_manager->entries[m_i])) {
+				operator++();
+			}
+		}
+		
+		Entity & operator*() const {
+			return *m_manager->entries[m_i];
+		}
+		
+		void operator++() {
+			do {
+				++m_i;
+			} while(m_i != m_manager->entries.size() && !check(m_manager->entries[m_i]));
+		}
+		
+		bool operator!=(Sentinel /* sentinel */) {
+			return m_i != m_manager->entries.size();
+		}
+		
+	};
 	
 public:
 	
@@ -78,11 +118,8 @@ public:
 	 */
 	size_t size() const { return entries.size(); }
 	
-	typedef Entries::const_iterator iterator;
-	typedef Entries::const_iterator const_iterator;
-	
-	iterator begin() const { return entries.begin(); }
-	iterator end() const { return entries.end(); }
+	auto begin() const { return EntityIterator( this, [](Entity & /* entity */) { return true; } ); }
+	auto end() const { return Sentinel(); }
 	
 	typedef bool (*AutocompleteHandler)(void * context, std::string_view suggestion);
 	void autocomplete(std::string_view prefix, AutocompleteHandler handler, void * context);
