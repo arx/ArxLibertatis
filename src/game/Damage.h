@@ -142,7 +142,7 @@ bool tryToDoDamage(const Vec3f & pos, float dmg, float radius, Entity & source);
 void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer);
 void damageCharacter(Entity & entity, float dmg, Entity & source, DamageType flags, Vec3f * pos);
 
-void ARX_DAMAGES_HealInter(Entity * io, float dmg);
+void healCharacter(Entity & entity, float dmg);
 
 void ARX_DAMAGES_DurabilityCheck(Entity * io, float ratio);
 void ARX_DAMAGES_DurabilityLoss(Entity * io, float loss);

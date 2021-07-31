@@ -721,7 +721,9 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								float life_gain = std::min(dmgs, drain_life);
 								life_gain = std::min(life_gain, target->_npcdata->lifePool.current);
 								life_gain = std::max(life_gain, 0.f);
-								ARX_DAMAGES_HealInter(io_source, life_gain);
+								if(io_source->ioflags & IO_NPC) {
+									healCharacter(*io_source, life_gain);
+								}
 							}
 
 							if(paralyse > 0.f) {

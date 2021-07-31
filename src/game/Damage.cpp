@@ -370,23 +370,21 @@ static void ARX_DAMAGES_HealPlayer(float dmg) {
 	}
 }
 
-void ARX_DAMAGES_HealInter(Entity * io, float dmg)
-{
-	if(!io || !(io->ioflags & IO_NPC))
+void healCharacter(Entity & entity, float dmg) {
+	
+	arx_assert(entity.ioflags & IO_NPC);
+	
+	if(entity._npcdata->lifePool.current <= 0.f || dmg <= 0.f) {
 		return;
-
-	if(io->_npcdata->lifePool.current <= 0.f)
-		return;
-
-	if(io == entities.player())
-		ARX_DAMAGES_HealPlayer(dmg);
-
-	if(dmg > 0.f) {
-		io->_npcdata->lifePool.current += dmg;
-
-		if(io->_npcdata->lifePool.current > io->_npcdata->lifePool.max)
-			io->_npcdata->lifePool.current = io->_npcdata->lifePool.max;
 	}
+	
+	if(entity == *entities.player()) {
+		ARX_DAMAGES_HealPlayer(dmg);
+	}
+	
+	entity._npcdata->lifePool.current = std::min(entity._npcdata->lifePool.current + dmg,
+	                                             entity._npcdata->lifePool.max);
+	
 }
 
 static void ARX_DAMAGES_HealManaPlayer(float dmg) {
@@ -688,8 +686,8 @@ void damageCharacter(Entity & entity, float dmg, Entity & source, DamageType fla
 		
 	}
 	
-	if(flags & DAMAGE_TYPE_DRAIN_LIFE) {
-		ARX_DAMAGES_HealInter(&source, damagesdone);
+	if((flags & DAMAGE_TYPE_DRAIN_LIFE) && (source.ioflags & IO_NPC)) {
+		healCharacter(source, damagesdone);
 	}
 	
 	if(flags & DAMAGE_TYPE_DRAIN_MANA) {
@@ -1071,8 +1069,9 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 				}
 				
 				if(damage.params.type & DAMAGE_TYPE_DRAIN_LIFE) {
-					if(ValidIONum(damage.params.source)) {
-						ARX_DAMAGES_HealInter(entities[damage.params.source], damagesdone);
+					Entity * source = entities.get(damage.params.source);
+					if(source && (source->ioflags & IO_NPC)) {
+						healCharacter(*source, damagesdone);
 					}
 				}
 				
