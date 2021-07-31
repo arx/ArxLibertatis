@@ -142,22 +142,22 @@ void DamageRequestEnd(DamageHandle handle) {
 
 extern Vec3f PUSH_PLAYER_FORCE;
 
-static void ARX_DAMAGES_IgnitIO(Entity * source, Entity * io, float dmg) {
+static void igniteEntity(Entity & entity, Entity * source, float dmg) {
 	
-	if(!io || (io->ioflags & IO_INVULNERABILITY)) {
+	if(entity.ioflags & IO_INVULNERABILITY) {
 		return;
 	}
 	
-	if(io->ignition <= 0.f && io->ignition + dmg > 1.f) {
-		SendIOScriptEvent(source, io, SM_ENTERZONE, "cook_s");
+	if(entity.ignition <= 0.f && entity.ignition + dmg > 1.f) {
+		SendIOScriptEvent(source, &entity, SM_ENTERZONE, "cook_s");
 	}
 	
-	if(io->ioflags & IO_FIX) {
-		io->ignition += dmg * 0.1f;
-	} else if(io->ioflags & IO_ITEM) {
-		io->ignition += dmg * 0.125f;
-	} else if(io->ioflags & IO_NPC) {
-		io->ignition += dmg * 0.25f;
+	if(entity.ioflags & IO_FIX) {
+		entity.ignition += dmg * 0.1f;
+	} else if(entity.ioflags & IO_ITEM) {
+		entity.ignition += dmg * 0.125f;
+	} else if(entity.ioflags & IO_NPC) {
+		entity.ignition += dmg * 0.25f;
 	}
 	
 }
@@ -655,7 +655,7 @@ void damageCharacter(Entity & entity, float dmg, Entity & source, DamageType fla
 		}
 		
 		if(flags & DAMAGE_TYPE_FIRE) {
-			ARX_DAMAGES_IgnitIO(&source, &entity, damagesdone);
+			igniteEntity(entity, &source, damagesdone);
 		}
 		
 	} else {
@@ -675,7 +675,7 @@ void damageCharacter(Entity & entity, float dmg, Entity & source, DamageType fla
 				if(Random::getf(0.f, 100.f) <= entity._npcdata->resist_fire) {
 					dmg = 0;
 				}
-				ARX_DAMAGES_IgnitIO(&source, &entity, dmg);
+				igniteEntity(entity, &source, dmg);
 			}
 			
 			if(flags & DAMAGE_TYPE_DRAIN_MANA) {
@@ -1032,11 +1032,11 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 							dmg = std::max(0.0f, dmg);
 						}
 						if(damage.params.type & DAMAGE_TYPE_FIRE) {
-							dmg = ARX_SPELLS_ApplyFireProtection(entities.player(), dmg);
-							ARX_DAMAGES_IgnitIO(entities.get(damage.params.source), entities.player(), dmg);
+							dmg = ARX_SPELLS_ApplyFireProtection(&entity, dmg);
+							igniteEntity(entity, entities.get(damage.params.source), dmg);
 						}
 						if(damage.params.type & DAMAGE_TYPE_COLD) {
-							dmg = ARX_SPELLS_ApplyColdProtection(entities.player(), dmg);
+							dmg = ARX_SPELLS_ApplyColdProtection(&entity, dmg);
 						}
 						damagesdone = damagePlayer(dmg, damage.params.type, entities.get(damage.params.source));
 					}
@@ -1052,7 +1052,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 					} else {
 						if(damage.params.type & DAMAGE_TYPE_FIRE) {
 							dmg = ARX_SPELLS_ApplyFireProtection(&entity, dmg);
-							ARX_DAMAGES_IgnitIO(entities.get(damage.params.source), &entity, dmg);
+							igniteEntity(entity, entities.get(damage.params.source), dmg);
 						}
 						if((damage.params.type & DAMAGE_TYPE_MAGICAL)
 						    && !(damage.params.type & DAMAGE_TYPE_FIRE)
@@ -1287,7 +1287,7 @@ void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 		
 		if(typ & DAMAGE_TYPE_FIRE) {
 			dmg = ARX_SPELLS_ApplyFireProtection(&entity, dmg * ratio);
-			ARX_DAMAGES_IgnitIO(source, &entity, dmg);
+			igniteEntity(entity, source, dmg);
 		}
 		if(typ & DAMAGE_TYPE_COLD) {
 			dmg = ARX_SPELLS_ApplyColdProtection(&entity, dmg * ratio);
