@@ -580,34 +580,36 @@ void PrepareIOTreatZone(long flag) {
 	
 	size_t M_TREAT = treatio.size();
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
+	for(Entity & entity : entities) {
 		
-		if(io && !(io->gameFlags & GFLAG_ISINTREATZONE)
-		   && (io->show == SHOW_FLAG_IN_SCENE || io->show == SHOW_FLAG_TELEPORTING
-		       || io->show == SHOW_FLAG_ON_PLAYER || io->show == SHOW_FLAG_HIDDEN)) {
-			
-			if(io->ioflags & (IO_CAMERA | IO_ITEM | IO_MARKER))
-				continue;
-
-			bool toadd = false;
-
-			for(size_t ii = 1; ii < M_TREAT; ii++) {
-				Entity * ioo = treatio[ii].io;
-
-				if(ioo) {
-					if(closerThan(io->pos, ioo->pos, 300.f)) {
-						toadd = true;
-						break;
-					}
-				}
-			}
-
-			if(toadd) {
-				TREATZONE_AddIO(io, true);
+		if(entity.show != SHOW_FLAG_IN_SCENE
+		   && entity.show != SHOW_FLAG_TELEPORTING
+		   && entity.show != SHOW_FLAG_ON_PLAYER
+		   && entity.show != SHOW_FLAG_HIDDEN) {
+			continue;
+		}
+		
+		if(!(entity.gameFlags & GFLAG_ISINTREATZONE) || (entity.ioflags & (IO_CAMERA | IO_ITEM | IO_MARKER))) {
+			continue;
+		}
+		
+		if(entity == *entities.player()) {
+			continue;
+		}
+		
+		bool toadd = false;
+		for(size_t i = 1; i < M_TREAT; i++) {
+			Entity * treat = treatio[i].io;
+			if(treat && closerThan(entity.pos, treat->pos, 300.f)) {
+				toadd = true;
+				break;
 			}
 		}
+		
+		if(toadd) {
+			TREATZONE_AddIO(&entity, true);
+		}
+		
 	}
 	
 }
