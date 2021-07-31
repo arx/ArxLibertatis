@@ -26,9 +26,10 @@
 
 #include <QtGui>
 
-QHexEdit::QHexEdit(QWidget * parent) : QScrollArea(parent) {
-	
-	qHexEdit_p = new QHexEditPrivate(this);
+QHexEdit::QHexEdit(QWidget * parent)
+	: QScrollArea(parent)
+	, qHexEdit_p(new QHexEditPrivate(this))
+{
 	setWidget(qHexEdit_p);
 	setWidgetResizable(true);
 	
