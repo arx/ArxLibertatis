@@ -1757,13 +1757,10 @@ Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent() {
 	long max = -1;
 	Entity * result = nullptr;
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e && e->stat_sent > max) {
-			result = e;
-			max = e->stat_sent;
+	for(Entity & entity : entities) {
+		if(entity.stat_sent > max) {
+			result = &entity;
+			max = entity.stat_sent;
 		}
 	}
 	
