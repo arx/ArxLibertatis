@@ -400,23 +400,21 @@ static void ARX_DAMAGES_HealManaPlayer(float dmg) {
 	}
 }
 
-static void ARX_DAMAGES_HealManaInter(Entity * io, float dmg) {
+static void restoreMana(Entity & entity, float dmg) {
 	
-	if(!io || !(io->ioflags & IO_NPC))
-		return;
-
-	if(io == entities.player())
+	arx_assert(entity.ioflags & IO_NPC);
+	
+	if(entity == *entities.player()) {
 		ARX_DAMAGES_HealManaPlayer(dmg);
-
-	if(io->_npcdata->lifePool.current <= 0.f)
-		return;
-
-	if(dmg > 0.f) {
-		io->_npcdata->manaPool.current += dmg;
-
-		if(io->_npcdata->manaPool.current > io->_npcdata->manaPool.max)
-			io->_npcdata->manaPool.current = io->_npcdata->manaPool.max;
 	}
+	
+	if(entity._npcdata->lifePool.current <= 0.f || dmg <= 0.f) {
+		return;
+	}
+	
+	entity._npcdata->manaPool.current = std::min(entity._npcdata->manaPool.current + dmg,
+	                                             entity._npcdata->manaPool.max);
+	
 }
 
 static float ARX_DAMAGES_DrainMana(Entity * io, float dmg) {
@@ -681,8 +679,8 @@ void damageCharacter(Entity & entity, float dmg, Entity & source, DamageType fla
 		healCharacter(source, damagesdone);
 	}
 	
-	if(flags & DAMAGE_TYPE_DRAIN_MANA) {
-		ARX_DAMAGES_HealManaInter(&source, damagesdone);
+	if((flags & DAMAGE_TYPE_DRAIN_MANA) && (source.ioflags & IO_NPC)) {
+		restoreMana(source, damagesdone);
 	}
 	
 	if(flags & DAMAGE_TYPE_PUSH) {
