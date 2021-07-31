@@ -562,31 +562,26 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 		killer.push_back(io_killer->idString());
 	}
 	
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * ioo = entities[handle];
+	for(Entity & follower : entities(IO_NPC)) {
 		
-		if(ioo == &io_dead) {
+		if(follower == io_dead) {
 			continue;
 		}
 		
-		if(ioo && (ioo->ioflags & IO_NPC)) {
-			if(ValidIONum(ioo->targetinfo))
-				if(entities[ioo->targetinfo] == &io_dead) {
-					Stack_SendIOScriptEvent(&io_dead, entities[handle], "target_death", killer);
-					ioo->targetinfo = EntityHandle(TARGET_NONE);
-					ioo->_npcdata->reachedtarget = 0;
-				}
-
-			if(ValidIONum(ioo->_npcdata->pathfind.truetarget))
-				if(entities[ioo->_npcdata->pathfind.truetarget] == &io_dead) {
-					Stack_SendIOScriptEvent(&io_dead, entities[handle], "target_death", killer);
-					ioo->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
-					ioo->_npcdata->reachedtarget = 0;
-				}
+		if(follower.targetinfo == io_dead.index()) {
+			Stack_SendIOScriptEvent(&io_dead, &follower, "target_death", killer);
+			follower.targetinfo = EntityHandle(TARGET_NONE);
+			follower._npcdata->reachedtarget = 0;
 		}
+		
+		if(follower._npcdata->pathfind.truetarget == io_dead.index()) {
+			Stack_SendIOScriptEvent(&io_dead, &follower, "target_death", killer);
+			follower._npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
+			follower._npcdata->reachedtarget = 0;
+		}
+		
 	}
-
+	
 	io_dead.animlayer[1].cur_anim = nullptr;
 	io_dead.animlayer[2].cur_anim = nullptr;
 	io_dead.animlayer[3].cur_anim = nullptr;
