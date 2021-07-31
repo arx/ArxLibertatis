@@ -247,7 +247,7 @@ void FaceTarget2(Entity * io);
 void ARX_NPC_Behaviour_Stack(Entity * io);
 void ARX_NPC_Behaviour_UnStack(Entity * io);
 void resetNpcBehavior(Entity & npc);
-void ARX_NPC_Behaviour_ResetAll();
+void resetAllNpcBehaviors();
 void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_param);
 void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE);
 void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source,

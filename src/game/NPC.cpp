@@ -341,7 +341,7 @@ void resetNpcBehavior(Entity & npc) {
 }
 
 //! Reset all Behaviours from all NPCs
-void ARX_NPC_Behaviour_ResetAll() {
+void resetAllNpcBehaviors() {
 	for(Entity & npc : entities(IO_NPC)) {
 		resetNpcBehavior(npc);
 	}

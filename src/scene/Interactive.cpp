@@ -652,7 +652,7 @@ void CleanScriptLoadedIO() {
 void RestoreInitialIOStatus() {
 	arx_assert(entities.player());
 	
-	ARX_NPC_Behaviour_ResetAll();
+	resetAllNpcBehaviors();
 	
 	entities.player()->spellcast_data.castingspell = SPELL_NONE;
 	
@@ -799,7 +799,7 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 }
 
 void ARX_INTERACTIVE_ClearAllDynData() {
-	ARX_NPC_Behaviour_ResetAll();
+	resetAllNpcBehaviors();
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
