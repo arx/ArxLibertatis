@@ -845,13 +845,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 		case 's': {
 			
 			if(boost::starts_with(name, "^sender")) {
-				if(!context.getSender()) {
-					txtcontent = "none";
-				} else if(context.getSender() == entities.player()) {
-					txtcontent = "player";
-				} else {
-					txtcontent = context.getSender()->idString();
-				}
+				txtcontent = idString(context.getSender());
 				return TYPE_TEXT;
 			}
 			
@@ -877,13 +871,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 		case 'm': {
 			
 			if(boost::starts_with(name, "^me")) {
-				if(!context.getEntity()) {
-					txtcontent = "none";
-				} else if(context.getEntity() == entities.player()) {
-					txtcontent = "player";
-				} else {
-					txtcontent = context.getEntity()->idString();
-				}
+				txtcontent = idString(context.getEntity());
 				return TYPE_TEXT;
 			}
 			
@@ -934,7 +922,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 		case 'c': {
 			
 			if(name == "^camera") {
-				txtcontent = g_cameraEntity ? g_cameraEntity->idString() : "none";
+				txtcontent = idString(g_cameraEntity);
 				return TYPE_TEXT;
 			}
 			
@@ -952,7 +940,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 			
 			if(boost::starts_with(name, "^last_spawned")) {
-				txtcontent = (LASTSPAWNED) ? LASTSPAWNED->idString() : "none";
+				txtcontent = idString(LASTSPAWNED);
 				return TYPE_TEXT;
 			}
 			
@@ -990,7 +978,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 			
 			if(name == "^dragged") {
-				txtcontent = g_draggedEntity ? g_draggedEntity->idString() : "none";
+				txtcontent = idString(g_draggedEntity);
 				return TYPE_TEXT;
 			}
 			
@@ -1181,14 +1169,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 		case 'n': {
 			
 			if(boost::starts_with(name, "^npcinsight")) {
-				Entity * npc = context.getEntity() ? getFirstNpcInSight(*context.getEntity()) : nullptr;
-				if(!npc) {
-					txtcontent = "none";
-				} else if(npc == entities.player()) {
-					txtcontent = "player";
-				} else {
-					txtcontent = npc->idString();
-				}
+				txtcontent = idString(context.getEntity() ? getFirstNpcInSight(*context.getEntity()) : nullptr);
 				return TYPE_TEXT;
 			}
 			
@@ -1198,15 +1179,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 		case 't': {
 			
 			if(boost::starts_with(name, "^target")) {
-				if(!context.getEntity()) {
-					txtcontent = "none";
-				} else if(context.getEntity()->targetinfo == EntityHandle_Player) {
-					txtcontent = "player";
-				} else if(Entity * target = entities.get(context.getEntity()->targetinfo)) {
-					txtcontent = target->idString();
-				} else {
-					txtcontent = "none";
-				}
+				txtcontent = idString(context.getEntity() ? entities.get(context.getEntity()->targetinfo) : nullptr);
 				return TYPE_TEXT;
 			}
 			

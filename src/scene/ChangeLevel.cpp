@@ -199,17 +199,13 @@ static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	
 	std::string idString = util::toLowercase(util::loadString(str));
 	
-	if(idString == "none") {
-		return EntityHandle();
-	} else if(idString == "self") {
+	if(idString == "self") {
 		return EntityHandle_Self;
-	} else if(idString == "player") {
-		return EntityHandle_Player;
-	} else {
-		Entity * e = convertToValidIO(idString);
-		return (e == nullptr) ? EntityHandle() : e->index();
+	} else if(Entity * entity = convertToValidIO(idString)) {
+		return entity->index();
 	}
 	
+	return { };
 }
 
 static s32 GetIOAnimIdx2(const Entity * io, const ANIM_HANDLE * anim) {
@@ -624,13 +620,17 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 
 template <size_t N>
 static void storeIdString(char (&tofill)[N], const Entity * io) {
-	
-	if(!io || !ValidIOAddress(io)) {
-		static_assert(N >= 4, "id string too short");
-		util::storeString(tofill, "none");
+	arx_assert(idString(io).length() <= N);
+	util::storeString(tofill, idString(io));
+}
+
+template <size_t N>
+void storeTargetString(char (&info)[N], EntityHandle numtarget) {
+	if(numtarget == EntityHandle_Self) {
+		static_assert(N >= 4);
+		util::storeString(info, "self");
 	} else {
-		arx_assert(io->idString().length() <= N);
-		util::storeString(tofill, io->idString());
+		storeIdString(info, entities.get(numtarget));
 	}
 }
 
@@ -862,22 +862,6 @@ static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 	return nullptr;
 }
 
-template <size_t N>
-void FillTargetInfo(char (&info)[N], EntityHandle numtarget) {
-	static_assert(N >= 6, "id string too short");
-	if(numtarget == EntityHandle_Self) {
-		util::storeString(info, "self");
-	} else if(numtarget == EntityHandle()) {
-		util::storeString(info, "none");
-	} else if(numtarget == EntityHandle_Player) {
-		util::storeString(info, "player");
-	} else if(Entity * target = entities.get(numtarget)) {
-		storeIdString(info, target);
-	} else {
-		util::storeString(info, "none");
-	}
-}
-
 static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	
 	// Check Valid IO
@@ -1063,7 +1047,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	   && entities.get(io->_npcdata->pathfind.truetarget)) {
 		numtarget = io->_npcdata->pathfind.truetarget;
 	}
-	FillTargetInfo(ais.id_targetinfo, numtarget);
+	storeTargetString(ais.id_targetinfo, numtarget);
 	
 	// Save Local Timers ?
 	ais.nbtimers = 0;
@@ -1188,11 +1172,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			std::copy(io->_npcdata->stacked, io->_npcdata->stacked + SAVED_MAX_STACKED_BEHAVIOR, as->stacked);
 			
 			for (size_t i = 0; i < SAVED_MAX_STACKED_BEHAVIOR; i++) {
-				if(io->_npcdata->stacked[i].exist) {
-					FillTargetInfo(as->stackedtarget[i], io->_npcdata->stacked[i].target);
-				} else {
-					util::storeString(as->stackedtarget[i], "none");
-				}
+				EntityHandle target = (io->_npcdata->stacked[i].exist) ? io->_npcdata->stacked[i].target : EntityHandle();
+				storeTargetString(as->stackedtarget[i], target);
 			}
 			
 			as->critical = io->_npcdata->critical;

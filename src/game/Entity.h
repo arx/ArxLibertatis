@@ -409,10 +409,10 @@ public:
 	EntityInstance instance() const { return id().instance(); }
 	
 	/*!
-	 *  Returns the long name for this entity where the short name
-	 * is combined with the identifying number
-	 * in the form of "%s_%04ld"
-	 * \return The short name combined with a 4 digit ident, padded with 0
+	 * \brief Returns the ID string for this entity
+	 *
+	 * The ID string for the player entity is "player" while for other entities the ID string
+	 * is made up of the class name and a four-digit instance number, separated by and underscore.
 	 */
 	const std::string & idString() const { return m_idString; }
 	
@@ -468,6 +468,13 @@ private:
 	const res::path m_classPath; //!< the full path to this entity's class
 	
 };
+
+/*!
+ * \brief Returns the ID string for an entity or "none" for a nullptr
+ */
+inline std::string_view idString(const Entity * entity) {
+	return entity ? entity->idString() : std::string_view("none");
+}
 
 inline Vec3f actionPointPosition(const EERIE_3DOBJ * obj, ActionPoint ap) {
 	return obj->vertexWorldPositions[ap.handleData()].v;

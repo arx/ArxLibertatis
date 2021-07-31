@@ -326,18 +326,9 @@ float damagePlayer(float dmg, DamageType type, Entity * source) {
 				SendIOScriptEvent(source, entities.player(), SM_DIE);
 				for(Entity & npc : entities(IO_NPC)) {
 					if(npc.targetinfo == EntityHandle_Player) {
-						std::string_view killer;
-						if(source == entities.player()) {
-							killer = "player";
-						} else if(!source) {
-							killer = "none";
-						} else {
-							killer = source->idString();
-						}
-						SendIOScriptEvent(entities.player(), &npc, "target_death", killer);
+						SendIOScriptEvent(entities.player(), &npc, "target_death", idString(source));
 					}
 				}
-				
 			}
 		}
 		
@@ -554,10 +545,8 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 	ARX_INTERACTIVE_DestroyDynamicInfo(&io_dead);
 	
 	ScriptParameters killer;
-	if(io_killer == entities.player()) {
-		killer.push_back("player");
-	} else if(io_killer) {
-		killer.push_back(io_killer->idString());
+	if(io_killer) {
+		killer.emplace_back(io_killer->idString());
 	}
 	
 	for(Entity & follower : entities(IO_NPC)) {

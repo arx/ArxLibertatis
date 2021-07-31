@@ -167,8 +167,8 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io) {
 	
 	if(Entity * controller = entities.getById(op->controled)) {
 		ScriptParameters parameters;
-		parameters.push_back(io->idString());
-		parameters.push_back(op->name);
+		parameters.emplace_back(io->idString());
+		parameters.emplace_back(op->name);
 		SendIOScriptEvent(nullptr, controller, SM_CONTROLLEDZONE_LEAVE, parameters);
 	}
 	
