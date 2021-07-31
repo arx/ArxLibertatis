@@ -337,7 +337,7 @@ void PushIO_ON_Top(const Entity & platform, float ydec) {
 					if(ydec <= 0) {
 						                  entity.pos.y += ydec;
 					} else {
-						Cylinder cyl = GetIOCyl(&entity);
+						Cylinder cyl = getEntityCylinder(entity);
 						cyl.origin.y += ydec;
 						if(CheckAnythingInCylinder(cyl, &entity, 0) >= 0) {
 							entity.pos.y += ydec;
@@ -355,10 +355,9 @@ void PushIO_ON_Top(const Entity & platform, float ydec) {
 
 bool IsAnyNPCInPlatform(Entity * platform) {
 	
-	for(Entity & entity : entities.inScene(IO_NPC)) {
+	for(const Entity & entity : entities.inScene(IO_NPC)) {
 		if(entity != *platform && !(entity.ioflags & IO_NO_COLLISIONS)) {
-			Cylinder cyl = GetIOCyl(&entity);
-			if(CylinderPlatformCollide(cyl, platform)) {
+			if(CylinderPlatformCollide(getEntityCylinder(entity), platform)) {
 				return true;
 			}
 		}
@@ -432,7 +431,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 	}
 	
 	Cylinder & io_cyl = io->physics.cyl;
-	io_cyl = GetIOCyl(io);
+	io_cyl = getEntityCylinder(*io);
 	
 	if((io->gameFlags & GFLAG_PLATFORM)
 	   || ((flags & CFLAG_COLLIDE_NOCOL) && (io->ioflags & IO_NPC) &&  (io->ioflags & IO_NO_COLLISIONS))) {

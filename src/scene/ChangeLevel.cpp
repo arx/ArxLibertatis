@@ -2363,7 +2363,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			
 			if(entities[handle] && (e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
 				if(e->_npcdata->behavior != BEHAVIOUR_NONE) {
-					e->physics.cyl = GetIOCyl(e);
+					e->physics.cyl = getEntityCylinder(*e);
 					GetTargetPos(e);
 					ARX_NPC_LaunchPathfind(e, e->targetinfo);
 				}
@@ -2391,7 +2391,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			
 			if(e && (e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
 				if(e->_npcdata->behavior != BEHAVIOUR_NONE) {
-					e->physics.cyl = GetIOCyl(e);
+					e->physics.cyl = getEntityCylinder(*e);
 					GetTargetPos(e);
 					ARX_NPC_LaunchPathfind(e, e->targetinfo);
 				}

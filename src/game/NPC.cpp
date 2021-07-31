@@ -454,7 +454,7 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 
 		io->physics.targetpos.y += 60.f; // FAKE Gravity !
 		IO_PHYSICS phys = io->physics;
-		phys.cyl = GetIOCyl(io);
+		phys.cyl = getEntityCylinder(*io);
 
 		// Now we try the physical move for real
 		if(   io->physics.startpos == io->physics.targetpos
@@ -669,7 +669,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		io->physics.startpos = io->pos;
 		io->physics.targetpos = pos2;
 		IO_PHYSICS phys = io->physics;
-		phys.cyl = GetIOCyl(io);
+		phys.cyl = getEntityCylinder(*io);
 
 		// Now we try the physical move for real
 		if(   io->physics.startpos == io->physics.targetpos
@@ -1377,7 +1377,7 @@ static bool TryIOAnimMove(Entity * io, long animnum) {
 	Vec3f trans2 = VRotateY(trans, MAKEANGLE(180.f - io->angle.getYaw()));
 	
 	IO_PHYSICS phys = io->physics;
-	phys.cyl = GetIOCyl(io);
+	phys.cyl = getEntityCylinder(*io);
 
 	phys.startpos = io->pos;
 	phys.targetpos = io->pos + trans2;
@@ -1691,8 +1691,8 @@ float getEntityRadius(const Entity & entity) {
 	return glm::clamp(entity.original_radius * entity.scale, 25.f, 60.f);
 }
 
-Cylinder GetIOCyl(Entity * io) {
-	return Cylinder(io->pos, getEntityRadius(*io), getEntityHeight(*io));
+Cylinder getEntityCylinder(const Entity & entity) {
+	return Cylinder(entity.pos, getEntityRadius(entity), getEntityHeight(entity));
 }
 
 
@@ -2055,7 +2055,7 @@ static void ManageNPCMovement_End(Entity * io) {
 	
 	IO_PHYSICS phys;
 	phys = io->physics;
-	phys.cyl = GetIOCyl(io);
+	phys.cyl = getEntityCylinder(*io);
 
 	CollisionFlags levitate = 0;
 
@@ -2075,7 +2075,7 @@ static void ManageNPCMovement_End(Entity * io) {
 	}
 
 	phys = io->physics;
-	phys.cyl = GetIOCyl(io);
+	phys.cyl = getEntityCylinder(*io);
 	
 	io->forcedmove -= ForcedMove;
 		

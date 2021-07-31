@@ -271,7 +271,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing = 0);
 float getEntityHeight(const Entity & entity);
 float getEntityRadius(const Entity & entity);
 
-Cylinder GetIOCyl(Entity * io);
+Cylinder getEntityCylinder(const Entity & entity);
 
 bool isEnemy(const Entity * entity);
 
