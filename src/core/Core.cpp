@@ -570,7 +570,7 @@ void ManageCombatModeAnimations() {
 							if(CheckAnythingInSphere(sphere, EntityHandle_Player, 0, &num)) {
 								float dmgs = (player.m_miscFull.damages + 1) * player.m_strikeAimRatio;
 								
-								if(ARX_DAMAGES_TryToDoDamage(actionPointPosition(io->obj, id), dmgs, 40, EntityHandle_Player)) {
+								if(tryToDoDamage(actionPointPosition(io->obj, id), dmgs, 40, *entities.player())) {
 									player.m_weaponBlocked = layer1.ctime;
 								}
 								

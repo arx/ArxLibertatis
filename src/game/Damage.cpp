@@ -1186,12 +1186,12 @@ static bool SphereInIO(Entity * io, const Sphere & sphere) {
 	return false;
 }
 
-bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, EntityHandle source) {
+bool tryToDoDamage(const Vec3f & pos, float dmg, float radius, Entity & source) {
 	
 	bool ret = false;
 	for(Entity & entity : entities.inScene(IO_NPC | IO_FIX)) {
 		
-		if(!(entity.gameFlags & GFLAG_ISINTREATZONE) || entity.index() == source) {
+		if(!(entity.gameFlags & GFLAG_ISINTREATZONE) || entity == source) {
 			continue;
 		}
 		
@@ -1208,13 +1208,11 @@ bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, Entit
 		
 		if(closerThan(pos, entity.pos, threshold) && SphereInIO(&entity, Sphere(pos, rad))) {
 			if(entity.ioflags & IO_NPC) {
-				if(Entity * sourceEntity = entities.get(source)) {
-					ARX_EQUIPMENT_ComputeDamages(sourceEntity, &entity, 1.f);
-				}
+				ARX_EQUIPMENT_ComputeDamages(&source, &entity, 1.f);
 				ret = true;
 			}
 			if(entity.ioflags & IO_FIX) {
-				ARX_DAMAGES_DamageFIX(&entity, dmg, source, false);
+				ARX_DAMAGES_DamageFIX(&entity, dmg, source.index(), false);
 				ret = true;
 			}
 		}
