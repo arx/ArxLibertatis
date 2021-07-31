@@ -272,7 +272,9 @@ void MagicMissileSpell::Update() {
 		if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
 			
 			LaunchMagicMissileExplosion(missile->eCurPos, m_mrCheat);
-			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[m_caster]);
+			if(Entity * caster = entities.get(m_caster)) {
+				spawnAudibleSound(missile->eCurPos, *caster);
+			}
 			
 			missile->SetTTL(GameDurationMs(1000));
 			missile->bExplo = true;

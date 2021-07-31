@@ -232,7 +232,7 @@ static void CheckExp(const Projectile & projectile) {
 		LaunchFireballBoom(pos, 10);
 		DoSphericDamage(Sphere(pos, 50.f), 4.f * 2, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle_Player);
 		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &pos);
-		ARX_NPC_SpawnAudibleSound(pos, entities.player());
+		spawnAudibleSound(pos, *entities.player());
 		
 		EERIE_LIGHT * light = dynLightCreate();
 		if(light && g_gameTime.lastFrameDuration() > 0) {
@@ -364,16 +364,13 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			ParticleSparkSpawn(v0, result ? 14 : 24, SpawnSparkType_Default);
 			CheckExp(projectile);
 			
-			if(ValidIONum(projectile.source)) {
-				ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
-			}
-			
-			if(ValidIONum(projectile.source)) {
+			if(Entity * source  = entities.get(projectile.source)) {
+				spawnAudibleSound(v0, *source);
 				std::string bkg_material = "earth";
 				if(result.hit && result.hit->tex && !result.hit->tex->m_texName.empty()) {
 					bkg_material = GetMaterialString(result.hit->tex->m_texName);
 				}
-				ARX_SOUND_PlayCollision("dagger", bkg_material, 1.f, 1.f, v0, entities[projectile.source]);
+				ARX_SOUND_PlayCollision("dagger", bkg_material, 1.f, 1.f, v0, source);
 			}
 			
 			if(result) {
@@ -452,7 +449,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 							
 						} else {
 							ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
-							ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
+							spawnAudibleSound(v0, *entities.player());
 						}
 						
 					}
@@ -465,8 +462,8 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 					
 					ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
 					
-					if(ValidIONum(projectile.source)) {
-						ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
+					if(Entity * source = entities.get(projectile.source)) {
+						spawnAudibleSound(v0, *source);
 					}
 					
 					CheckExp(projectile);

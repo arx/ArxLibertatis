@@ -458,7 +458,9 @@ void ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 		return;
 	
 	// Launch 'ON HEAR' script event
-	ARX_NPC_SpawnAudibleSound(position, source, power, presence);
+	if(source) {
+		spawnAudibleSound(position, *source, power, presence);
+	}
 	
 	channel.position = position;
 	channel.pitch = Random::getf(0.9f, 1.1f);
@@ -504,7 +506,9 @@ void ARX_SOUND_PlayCollision(std::string_view name1, std::string_view name2, flo
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
 	
 	// Launch 'ON HEAR' script event
-	ARX_NPC_SpawnAudibleSound(position, source, power, presence);
+	if(source) {
+		spawnAudibleSound(position, *source, power, presence);
+	}
 	
 	if(g_camera && fartherThan(g_camera->m_pos, position, ARX_SOUND_REFUSE_DISTANCE))
 		return;

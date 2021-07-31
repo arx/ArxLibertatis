@@ -774,7 +774,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						else
 							ParticleSparkSpawnContinous(pos, Random::getu(0, 30), SpawnSparkType_Default);
 						
-						ARX_NPC_SpawnAudibleSound(pos, io_source);
+						spawnAudibleSound(pos, *io_source);
 						
 						if(io_source == entities.player())
 							HIT_SPARK = true;
@@ -790,7 +790,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							nb = 1;
 
 						ParticleSparkSpawnContinous(pos, nb, SpawnSparkType_Default);
-						ARX_NPC_SpawnAudibleSound(pos, io_source);
+						spawnAudibleSound(pos, *io_source);
 						target->spark_n_blood = SP_SPARKING;
 
 						if(!(target->ioflags & IO_NPC))
@@ -807,7 +807,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							nb = 1;
 
 						ParticleSparkSpawnContinous(pos, nb, SpawnSparkType_Default);
-						ARX_NPC_SpawnAudibleSound(pos, io_source);
+						spawnAudibleSound(pos, *io_source);
 						target->spark_n_blood = SP_SPARKING;
 
 						if (!(target->ioflags & IO_NPC))
@@ -856,7 +856,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 			}
 
 			ParticleSparkSpawnContinous(sphere.origin, Random::getu(0, 10), SpawnSparkType_Default);
-			ARX_NPC_SpawnAudibleSound(sphere.origin, io_source);
+			spawnAudibleSound(sphere.origin, *io_source);
 		}
 	}
 

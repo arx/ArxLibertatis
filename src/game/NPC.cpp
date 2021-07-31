@@ -2656,12 +2656,12 @@ void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, c
  * \brief Sends ON HEAR events to NPCs for audible sounds
  * \note factor > 1.0F harder to hear, < 0.0F easier to hear
  */
-void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float factor, const float presence) {
+void spawnAudibleSound(const Vec3f & pos, Entity & source, const float factor, const float presence) {
 	
 	float max_distance;
-	if(source == entities.player()) {
+	if(source == *entities.player()) {
 		max_distance = ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP;
-	} else if(source && source->ioflags & IO_ITEM) {
+	} else if(source.ioflags & IO_ITEM) {
 		max_distance = ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM;
 	} else {
 		return;
@@ -2674,7 +2674,7 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 	for(Entity & npc : entities(IO_NPC)) {
 		
 		if((npc.gameFlags & GFLAG_ISINTREATZONE)
-		   && (npc != *source)
+		   && (npc != source)
 		   && (npc.show == SHOW_FLAG_IN_SCENE || npc.show == SHOW_FLAG_HIDDEN)
 		   && (npc._npcdata->lifePool.current > 0.f) ) {
 			
@@ -2692,7 +2692,7 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 					}
 				}
 				
-				SendIOScriptEvent(source, &npc, SM_HEAR, long(distance));
+				SendIOScriptEvent(&source, &npc, SM_HEAR, long(distance));
 				
 			}
 			

@@ -1010,8 +1010,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	if(!spell)
 		return false;
 	
-	if(ValidIONum(source) && spellicons[typ].bAudibleAtStart) {
-		ARX_NPC_SpawnAudibleSound(entities[source]->pos, entities[source]);
+	if(spellicons[typ].bAudibleAtStart) {
+		if(Entity * sourceEntity = entities.get(source)) {
+			spawnAudibleSound(entities[source]->pos, *sourceEntity);
+		}
 	}
 	
 	spell->m_caster = source;

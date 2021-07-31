@@ -1840,7 +1840,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 				PlatformDuration t = g_platformTime.frameStart() - REQUEST_JUMP;
 				if(t >= 0 && t <= PlatformDurationMs(350)) {
 					REQUEST_JUMP = 0;
-					ARX_NPC_SpawnAudibleSound(player.pos, entities.player());
+					spawnAudibleSound(player.pos, *entities.player());
 					ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities.player());
 					player.onfirmground = false;
 					player.jumpphase = JumpStart;

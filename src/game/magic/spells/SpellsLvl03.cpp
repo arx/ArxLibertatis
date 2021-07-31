@@ -318,7 +318,9 @@ void FireballSpell::Update() {
 		
 		DoSphericDamage(Sphere(eCurPos, 30.f * m_level), 3.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &sphere.origin);
-		ARX_NPC_SpawnAudibleSound(sphere.origin, entities.get(m_caster));
+		if(Entity * caster = entities.get(m_caster)) {
+			spawnAudibleSound(sphere.origin, *caster);
+		}
 		requestEnd();
 	}
 	

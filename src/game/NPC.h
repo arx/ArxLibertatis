@@ -250,9 +250,9 @@ void resetNpcBehavior(Entity & npc);
 void resetAllNpcBehaviors();
 void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_param);
 void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE);
-void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source,
-                               float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT,
-                               float presence = ARX_NPC_AUDIBLE_PRESENCE_DEFAULT);
+void spawnAudibleSound(const Vec3f & pos, Entity & source,
+                       float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT,
+                       float presence = ARX_NPC_AUDIBLE_PRESENCE_DEFAULT);
 void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos,
                            float volume = ARX_NPC_AUDIBLE_VOLUME_DEFAULT,
                            float power = ARX_NPC_AUDIBLE_FACTOR_DEFAULT);
