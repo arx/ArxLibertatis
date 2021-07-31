@@ -1436,14 +1436,12 @@ static long ARX_CHANGELEVEL_Pop_Level(long num, bool firstTime) {
 		
 		RestoreInitialIOStatus();
 		
-		for(size_t i = 1; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * e = entities[handle];
-			
-			if(e && !e->scriptload) {
-				ARX_SCRIPT_Reset(e, true);
+		for(Entity & entity : entities) {
+			if(entity != *entities.player() && !entity.scriptload) {
+				ARX_SCRIPT_Reset(&entity, true);
 			}
 		}
+		
 	}
 	
 	BLOCK_PLAYER_CONTROLS = false;
