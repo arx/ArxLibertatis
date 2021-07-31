@@ -450,18 +450,18 @@ public:
 		
 		DebugScript(' ' << options << ' ' << target);
 		
-		EntityHandle t = entities.getById(target);
-		if(!ValidIONum(t)) {
+		Entity * entity = entities.getById(target, nullptr);
+		if(!entity) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
 		if(unequip) {
-			Stack_SendIOScriptEvent(entities[t], context.getEntity(), SM_EQUIPOUT);
-			ARX_EQUIPMENT_UnEquip(entities[t], context.getEntity());
+			Stack_SendIOScriptEvent(entity, context.getEntity(), SM_EQUIPOUT);
+			ARX_EQUIPMENT_UnEquip(entity, context.getEntity());
 		} else {
-			Stack_SendIOScriptEvent(entities[t], context.getEntity(), SM_EQUIPIN);
-			ARX_EQUIPMENT_Equip(entities[t], context.getEntity());
+			Stack_SendIOScriptEvent(entity, context.getEntity(), SM_EQUIPIN);
+			ARX_EQUIPMENT_Equip(entity, context.getEntity());
 		}
 		
 		return Success;
