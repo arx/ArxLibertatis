@@ -34,24 +34,27 @@ const int GAP_ADR_HEX = 10;
 const int GAP_HEX_ASCII = 16;
 const int BYTES_PER_LINE = 16;
 
-QHexEditPrivate::QHexEditPrivate(QScrollArea * parent) : QWidget(parent) {
-	
-	_undoStack = new QUndoStack(this);
-	
-	_scrollArea = parent;
+QHexEditPrivate::QHexEditPrivate(QScrollArea * parent)
+	: QWidget(parent)
+	, _addressAreaColor(QColor(0xd4, 0xd4, 0xd4, 0xff))
+	, _highlightingColor(QColor(0xff, 0xff, 0x99, 0xff))
+	, _selectionColor(QColor(0x6d, 0x9e, 0xff, 0xff))
+	, _scrollArea(parent)
+	, _undoStack(new QUndoStack(this))
+	, _blink(false)
+	, _addressArea(true)
+	, _asciiArea(true)
+	, _highlighting(true)
+	, _overwriteMode(true)
+	, _readOnly(false)
+	, _size(0)
+{
 	setAddressWidth(4);
 	setAddressOffset(0);
-	setAddressArea(true);
-	setAsciiArea(true);
-	setHighlighting(true);
-	setOverwriteMode(true);
-	setReadOnly(false);
-	setAddressAreaColor(QColor(0xd4, 0xd4, 0xd4, 0xff));
-	setHighlightingColor(QColor(0xff, 0xff, 0x99, 0xff));
-	setSelectionColor(QColor(0x6d, 0x9e, 0xff, 0xff));
+	adjust();
+	setCursorPos(_cursorPosition);
 	setFont(QFont("courier", 10));
 	
-	_size = 0;
 	resetSelection(0);
 	
 	setFocusPolicy(Qt::StrongFocus);
@@ -59,7 +62,6 @@ QHexEditPrivate::QHexEditPrivate(QScrollArea * parent) : QWidget(parent) {
 	connect(&_cursorTimer, SIGNAL(timeout()), this, SLOT(updateCursor()));
 	_cursorTimer.setInterval(500);
 	_cursorTimer.start();
-	
 }
 
 void QHexEditPrivate::setAddressOffset(int offset) {
