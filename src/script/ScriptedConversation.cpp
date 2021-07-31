@@ -243,26 +243,26 @@ public:
 
 class SpeakCommand : public Command {
 	
-	static void computeACSPos(CinematicSpeech & acs, Entity * io, EntityHandle ionum) {
+	static void computeACSPos(CinematicSpeech & acs, Entity * speaker, Entity * target) {
 		
-		if(io) {
-			ActionPoint id = io->obj->fastaccess.view_attach;
+		if(speaker) {
+			ActionPoint id = speaker->obj->fastaccess.view_attach;
 			if(id != ActionPoint()) {
-				acs.pos1 = actionPointPosition(io->obj, id);
+				acs.pos1 = actionPointPosition(speaker->obj, id);
 			} else {
-				acs.pos1 = io->pos + Vec3f(0.f, io->physics.cyl.height, 0.f);
+				acs.pos1 = speaker->pos + Vec3f(0.f, speaker->physics.cyl.height, 0.f);
 			}
 		}
 		
-		if(ValidIONum(ionum)) {
-			Entity * ioo = entities[ionum];
-			ActionPoint id = ioo->obj->fastaccess.view_attach;
+		if(target) {
+			ActionPoint id = target->obj->fastaccess.view_attach;
 			if(id != ActionPoint()) {
-				acs.pos2 = actionPointPosition(ioo->obj, id);
+				acs.pos2 = actionPointPosition(target->obj, id);
 			} else {
-				acs.pos2 = ioo->pos + Vec3f(0.f, ioo->physics.cyl.height, 0.f);
+				acs.pos2 = target->pos + Vec3f(0.f, target->physics.cyl.height, 0.f);
 			}
 		}
+		
 	}
 	
 	static void parseParams(CinematicSpeech & acs, Context & context, Entity * speaker) {
@@ -274,7 +274,7 @@ class SpeakCommand : public Command {
 		acs.startpos = context.getFloat();
 		acs.endpos = context.getFloat();
 		
-		computeACSPos(acs, speaker, acs.ionum);
+		computeACSPos(acs, speaker, entities.get(acs.ionum));
 	}
 	
 	void parseCinematicSpeech(CinematicSpeech & acs, Context & context, Entity * speaker) {
@@ -297,7 +297,7 @@ class SpeakCommand : public Command {
 			acs.startpos = context.getFloat();
 			acs.endpos = context.getFloat();
 			acs.ionum = context.getEntity()->index();
-			computeACSPos(acs, speaker, acs.ionum);
+			computeACSPos(acs, speaker, entities.get(acs.ionum));
 			
 		} else if(command == "ccctalker_l" || command == "ccctalker_r") {
 			acs.type = (command == "ccctalker_r") ? ARX_CINE_SPEECH_CCCTALKER_R : ARX_CINE_SPEECH_CCCTALKER_L;
