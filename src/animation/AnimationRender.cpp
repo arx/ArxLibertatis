@@ -1199,7 +1199,7 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 			io->move -= io->lastmove;
 		} else if(io->gameFlags & GFLAG_ELEVATOR) {
 			// Must recover translations for NON-NPC IO
-			PushIO_ON_Top(io, io->move.y - io->lastmove.y);
+			PushIO_ON_Top(*io, io->move.y - io->lastmove.y);
 		}
 
 		io->lastmove = ftr2;

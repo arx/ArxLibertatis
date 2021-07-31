@@ -264,7 +264,7 @@ bool IsCollidingIO(Entity * io, Entity * ioo) {
 	return false;
 }
 
-void PushIO_ON_Top(Entity * platform, float ydec) {
+void PushIO_ON_Top(const Entity & platform, float ydec) {
 	
 	if(ydec == 0.f) {
 		return;
@@ -272,20 +272,20 @@ void PushIO_ON_Top(Entity * platform, float ydec) {
 	
 	for(Entity & entity : entities.inScene()) {
 		
-		if(&entity == platform || (entity.ioflags & IO_NO_COLLISIONS) || !entity.obj
+		if(entity == platform || (entity.ioflags & IO_NO_COLLISIONS) || !entity.obj
 		   || (entity.ioflags & (IO_FIX | IO_CAMERA | IO_MARKER))) {
 			continue;
 		}
 		
-		if(!closerThan(Vec2f(entity.pos.x, entity.pos.z), Vec2f(platform->pos.x, platform->pos.z), 450.f)) {
+		if(!closerThan(Vec2f(entity.pos.x, entity.pos.z), Vec2f(platform.pos.x, platform.pos.z), 450.f)) {
 			continue;
 		}
 		
 		float miny = 9999999.f;
 		float maxy = -9999999.f;
-		for(size_t ii = 0; ii < platform->obj->vertexWorldPositions.size(); ii++) {
-			miny = std::min(miny, platform->obj->vertexWorldPositions[ii].v.y);
-			maxy = std::max(maxy, platform->obj->vertexWorldPositions[ii].v.y);
+		for(size_t ii = 0; ii < platform.obj->vertexWorldPositions.size(); ii++) {
+			miny = std::min(miny, platform.obj->vertexWorldPositions[ii].v.y);
+			maxy = std::max(maxy, platform.obj->vertexWorldPositions[ii].v.y);
 		}
 		
 		float posy = (&entity == entities.player()) ? player.basePosition().y : entity.pos.y;
@@ -294,13 +294,13 @@ void PushIO_ON_Top(Entity * platform, float ydec) {
 			continue;
 		}
 		
-		for(const EERIE_FACE & face : platform->obj->facelist) {
+		for(const EERIE_FACE & face : platform.obj->facelist) {
 			
 			EERIEPOLY ep;
 			float cx = 0;
 			float cz = 0;
 			for(long kk = 0; kk < 3; kk++) {
-				ep.v[kk].p = platform->obj->vertexWorldPositions[face.vid[kk]].v;
+				ep.v[kk].p = platform.obj->vertexWorldPositions[face.vid[kk]].v;
 				cx += ep.v[kk].p.x;
 				cz += ep.v[kk].p.z;
 			}
