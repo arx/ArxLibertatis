@@ -603,21 +603,17 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 	
 }
 
-static void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float power) {
+static void pushEntity(Entity & entity, Entity & source, float power) {
 	
-	if(power > 0.f && ValidIONum(source)) {
+	if(power > 0.f) {
 		
-		power *= 0.05f;
-		Entity * io = entities[source];
-		Vec3f vect = io_target->pos - io->pos;
-		vect = glm::normalize(vect);
-		vect *= power;
+		Vec3f vect = glm::normalize(entity.pos - source.pos) * (power * 0.05f);
 		arx_assert(isallfinite(vect));
 		
-		if(io_target == entities.player()) {
+		if(entity == *entities.player()) {
 			PUSH_PLAYER_FORCE = vect; // TODO why not +=?
 		} else {
-			io_target->move += vect;
+			entity.move += vect;
 		}
 		
 	}
@@ -690,7 +686,7 @@ void damageCharacter(Entity & entity, float dmg, Entity & source, DamageType fla
 	}
 	
 	if(flags & DAMAGE_TYPE_PUSH) {
-		ARX_DAMAGES_PushIO(&entity, source.index(), damagesdone * 0.5f);
+		pushEntity(entity, source, damagesdone * 0.5f);
 	}
 	
 }
