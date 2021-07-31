@@ -176,7 +176,7 @@ ControlTargetSpell::ControlTargetSpell()
 
 bool ControlTargetSpell::CanLaunch() {
 	
-	if(!ValidIONum(m_target)) {
+	if(!entities.get(m_target)) {
 		return false;
 	}
 	
@@ -218,7 +218,7 @@ void ControlTargetSpell::Launch() {
 		
 		if(closerThan(npc.pos, m_caster_pos, 900.f)) {
 			ScriptParameters parameters;
-			parameters.push_back(entities[m_target]->idString());
+			parameters.push_back(entities.get(m_target)->idString());
 			parameters.push_back(long(m_level));
 			SendIOScriptEvent(entities.get(m_caster), &npc, "npc_control", parameters);
 			eTarget = npc.pos;
