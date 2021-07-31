@@ -962,9 +962,8 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 	}
 	
 	float dmg;
-	if(damage.params.flags & DAMAGE_NOT_FRAME_DEPENDANT) {
-		dmg = damage.params.damages;
-	} else if(damage.params.duration == GameDuration::ofRaw(-1)) {
+	if((damage.params.flags & DAMAGE_NOT_FRAME_DEPENDANT)
+	   || damage.params.duration == GameDuration::ofRaw(-1))  {
 		dmg = damage.params.damages;
 	} else {
 		GameDuration FD = g_gameTime.lastFrameDuration();
@@ -1152,10 +1151,10 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, GameInstant now) {
 		}
 	}
 	
-	if(damage.params.duration == GameDuration::ofRaw(-1))
+	if(damage.params.duration == GameDuration::ofRaw(-1) || now > damage.start_time + damage.params.duration) {
 		damage.exist = false;
-	else if(now > damage.start_time + damage.params.duration)
-		damage.exist = false;
+	}
+	
 }
 
 void ARX_DAMAGES_UpdateAll() {
