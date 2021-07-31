@@ -1730,15 +1730,11 @@ void ARX_SCRIPT_Init_Event_Stats() {
 	
 	ScriptEvent::totalCount = 0;
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e) {
-			e->stat_count = 0;
-			e->stat_sent = 0;
-		}
+	for(Entity & entity : entities) {
+		entity.stat_count = 0;
+		entity.stat_sent = 0;
 	}
+	
 }
 
 Entity * ARX_SCRIPT_Get_IO_Max_Events() {
