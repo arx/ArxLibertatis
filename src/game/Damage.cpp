@@ -1186,47 +1186,41 @@ static bool SphereInIO(Entity * io, const Sphere & sphere) {
 	return false;
 }
 
-bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, EntityHandle source)
-{
+bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, EntityHandle source) {
+	
 	bool ret = false;
-
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(io != nullptr
-		   && (entities[handle]->gameFlags & GFLAG_ISINTREATZONE)
-		   && io->show == SHOW_FLAG_IN_SCENE
-		   && source != handle
-		) {
-			float threshold;
-			float rad = radius + 5.f;
-
-			if(io->ioflags & IO_FIX) {
-				threshold = 510;
-				rad += 10.f;
-			} else if(io->ioflags & IO_NPC) {
-				threshold = 250;
-			} else {
-				threshold = 350;
+	for(Entity & entity : entities.inScene(IO_NPC | IO_FIX)) {
+		
+		if(!(entity.gameFlags & GFLAG_ISINTREATZONE) || entity.index() == source) {
+			continue;
+		}
+		
+		float threshold;
+		float rad = radius + 5.f;
+		if(entity.ioflags & IO_FIX) {
+			threshold = 510;
+			rad += 10.f;
+		} else if(entity.ioflags & IO_NPC) {
+			threshold = 250;
+		} else {
+			arx_unreachable();
+		}
+		
+		if(closerThan(pos, entity.pos, threshold) && SphereInIO(&entity, Sphere(pos, rad))) {
+			if(entity.ioflags & IO_NPC) {
+				if(Entity * sourceEntity = entities.get(source)) {
+					ARX_EQUIPMENT_ComputeDamages(sourceEntity, &entity, 1.f);
+				}
+				ret = true;
 			}
-
-			if(closerThan(pos, io->pos, threshold) && SphereInIO(io, Sphere(pos, rad))) {
-				if(io->ioflags & IO_NPC) {
-					if(ValidIONum(source))
-						ARX_EQUIPMENT_ComputeDamages(entities[source], io, 1.f);
-
-					ret = true;
-				}
-
-				if(io->ioflags & IO_FIX) {
-					ARX_DAMAGES_DamageFIX(io, dmg, source, false);
-					ret = true;
-				}
+			if(entity.ioflags & IO_FIX) {
+				ARX_DAMAGES_DamageFIX(&entity, dmg, source, false);
+				ret = true;
 			}
 		}
+		
 	}
-
+	
 	return ret;
 }
 
