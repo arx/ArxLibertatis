@@ -344,31 +344,27 @@ void FreezeTimeSpell::End() {
 }
 
 void MassIncinerateSpell::Launch() {
+	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MASS_INCINERATE);
 	
 	m_duration = GameDurationMs(20000);
 	m_hasDuration = true;
 	
-	for(size_t ii = 0; ii < entities.size(); ii++) {
-		const EntityHandle handle = EntityHandle(ii);
-		Entity * tio = entities[handle];
+	for(Entity & npc : entities.inScene(IO_NPC)) {
 		
-		if(handle == m_caster || !tio || !(tio->ioflags & IO_NPC)) {
+		if(npc.index() == m_caster || npc._npcdata->lifePool.current <= 0.f) {
 			continue;
 		}
 		
-		if(tio->_npcdata->lifePool.current <= 0.f || tio->show != SHOW_FLAG_IN_SCENE) {
+		if(fartherThan(npc.pos, entities[m_caster]->pos, 500.f)) {
 			continue;
 		}
 		
-		if(fartherThan(tio->pos, entities[m_caster]->pos, 500.f)) {
-			continue;
-		}
+		npc.sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
+		npc.sfx_time = g_gameTime.now();
 		
-		tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
-		tio->sfx_time = g_gameTime.now();
+		m_targets.push_back(npc.index());
 		
-		m_targets.push_back(tio->index());
 	}
 	
 	if(!m_targets.empty()) {
