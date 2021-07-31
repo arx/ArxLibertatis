@@ -469,11 +469,8 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 	parameters.push_back(spellName);
 	parameters.push_back(long(spell.m_level));
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		if(entities[handle]) {
-			SendIOScriptEvent(sender, entities[handle], SM_SPELLEND, parameters);
-		}
+	for(Entity & entity : entities) {
+		SendIOScriptEvent(sender, &entity, SM_SPELLEND, parameters);
 	}
 	
 }
