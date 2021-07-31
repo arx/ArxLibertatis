@@ -141,12 +141,10 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag(std::string_view temp) {
 }
 
 //! \brief Releases Equiped Id from player
-static void ARX_EQUIPMENT_Release(EntityHandle id) {
-	if(ValidIONum(id)) {
-		for(size_t i = 0; i < MAX_EQUIPED; i++) {
-			if(player.equiped[i] == id) {
-				player.equiped[i] = EntityHandle();
-			}
+static void unequipFromPlayer(Entity & entity) {
+	for(size_t i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] == entity.index()) {
+			player.equiped[i] = EntityHandle();
 		}
 	}
 }
@@ -320,9 +318,9 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 		return;
 
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(ValidIONum(player.equiped[i]) && entities[player.equiped[i]] == tounequip) {
+		if(entities.get(player.equiped[i]) == tounequip) {
 			EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, tounequip->obj);
-			ARX_EQUIPMENT_Release(player.equiped[i]);
+			unequipFromPlayer(*tounequip);
 			target->bbox2D.min.x = 9999;
 			target->bbox2D.max.x = -9999;
 			
