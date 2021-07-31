@@ -184,41 +184,34 @@ void FireballSpell::Launch() {
 	m_duration = GameDurationMs(6000);
 	m_hasDuration = true;
 	
-	if(m_caster != EntityHandle_Player) {
+	Entity * caster = entities.get(m_caster);
+	if(caster != entities.player()) {
 		m_hand_group = ActionPoint();
 	}
 	
 	Vec3f target = m_hand_pos;
 	if(m_hand_group == ActionPoint()) {
 		target = m_caster_pos;
-		Entity * c = entities.get(m_caster);
-		if(c) {
-			if(c->ioflags & IO_NPC) {
-				target += angleToVectorXZ(c->angle.getYaw()) * 30.f;
-				target += Vec3f(0.f, -80.f, 0.f);
-			}
+		if(caster && (caster->ioflags & IO_NPC)) {
+			target += angleToVectorXZ(caster->angle.getYaw()) * 30.f;
+			target += Vec3f(0.f, -80.f, 0.f);
 		}
 	}
 	
-	float anglea = 0, angleb;
-	if(m_caster == EntityHandle_Player) {
+	float anglea = 0.f, angleb = 0.f;
+	if(caster == entities.player()) {
 		anglea = player.angle.getPitch(), angleb = player.angle.getYaw();
-	} else {
-		
-		Vec3f start = entities[m_caster]->pos;
-		if(ValidIONum(m_caster)
-		   && (entities[m_caster]->ioflags & IO_NPC)) {
+	} else if(caster) {
+		Vec3f start = caster->pos;
+		if(caster->ioflags & IO_NPC) {
 			start.y -= 80.f;
 		}
-		
-		Entity * _io = entities[m_caster];
-		if(ValidIONum(_io->targetinfo)) {
-			const Vec3f & end = entities[_io->targetinfo]->pos;
+		if(Entity * entityTarget = entities.get(caster->targetinfo)) {
+			const Vec3f & end = entityTarget->pos;
 			float d = glm::distance(Vec2f(end.x, end.z), Vec2f(start.x, start.z));
 			anglea = glm::degrees(getAngle(start.y, start.z, end.y, end.z + d));
 		}
-		
-		angleb = entities[m_caster]->angle.getYaw();
+		angleb = caster->angle.getYaw();
 	}
 	
 	Vec3f eSrc = target;
@@ -246,40 +239,38 @@ void FireballSpell::Update() {
 		float afAlpha = 0.f;
 		float afBeta = 0.f;
 		
-		if(m_caster == EntityHandle_Player) {
+		Entity * caster = entities.get(m_caster);
+		if(caster == entities.player()) {
+			
 			afBeta = player.angle.getYaw();
 			afAlpha = player.angle.getPitch();
-			ObjVertHandle idx = GetGroupOriginByName(entities[m_caster]->obj, "chest");
-
+			ObjVertHandle idx = GetGroupOriginByName(caster->obj, "chest");
 			if(idx != ObjVertHandle()) {
-				eCurPos = entities[m_caster]->obj->vertexWorldPositions[idx.handleData()].v;
+				eCurPos = caster->obj->vertexWorldPositions[idx.handleData()].v;
 			} else {
 				eCurPos = player.pos;
 			}
 			
 			eCurPos += angleToVectorXZ(afBeta) * 60.f;
 			
-		} else if(m_caster != EntityHandle()) {
+		} else if(caster) {
 			
-			afBeta = entities[m_caster]->angle.getYaw();
+			afBeta = caster->angle.getYaw();
 			
-			eCurPos = entities[m_caster]->pos;
+			eCurPos = caster->pos;
 			eCurPos += angleToVectorXZ(afBeta) * 60.f;
-			
-			if(ValidIONum(m_caster) && (entities[m_caster]->ioflags & IO_NPC)) {
-				
+			if(caster->ioflags & IO_NPC) {
 				eCurPos += angleToVectorXZ(entities[m_caster]->angle.getYaw()) * 30.f;
 				eCurPos += Vec3f(0.f, -80.f, 0.f);
 			}
 			
-			Entity * io = entities[m_caster];
-
-			if(ValidIONum(io->targetinfo)) {
+			if(Entity * entityTarget = entities.get(caster->targetinfo)) {
 				Vec3f * p1 = &eCurPos;
-				Vec3f p2 = entities[io->targetinfo]->pos;
+				Vec3f p2 = entityTarget->pos;
 				p2.y -= 60.f;
 				afAlpha = 360.f - (glm::degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z)))));
 			}
+			
 		}
 		
 		eMove = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 100.f;
