@@ -60,11 +60,10 @@ CinematicTrack * CKTrack;
 
 CinematicTrack::CinematicTrack(int endframe_, float fps_)
 	: endframe(endframe_)
+	, currframe(0.f)
 	, fps(fps_)
-{
-	currframe = 0.f;
-	pause = true;
-}
+	, pause(true)
+{ }
 
 void AllocTrack(int ef, float fps) {
 	
