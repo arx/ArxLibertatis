@@ -2278,11 +2278,11 @@ static void ARX_CHANGELEVEL_PopAllIO(std::string_view buffer, long level) {
 		progressBarAdvance(increment);
 		LoadLevelScreen();
 		
-		std::ostringstream oss;
-		oss << res::path::load(util::loadString(idx_io[i].filename)).basename() << '_'
-		    << std::setfill('0') << std::setw(4) << idx_io[i].ident;
-		if(!entities.getById(oss.str())) {
-			ARX_CHANGELEVEL_Pop_IO(oss.str(), idx_io[i].ident, level);
+		std::string idString = EntityId(res::path::load(util::loadString(idx_io[i].filename)).basename(),
+		                                idx_io[i].ident).string();
+		
+		if(!entities.getById(idString)) {
+			ARX_CHANGELEVEL_Pop_IO(idString, idx_io[i].ident, level);
 		}
 		
 	}
