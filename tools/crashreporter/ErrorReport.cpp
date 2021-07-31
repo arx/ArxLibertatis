@@ -178,8 +178,8 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier * pProgressNotif
 bool ErrorReport::SendReport(ErrorReport::IProgressNotifier * pProgressNotifier) {
 	
 	int nbFilesToSend = 0;
-	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) {
-		if(it->attachToReport) {
+	for(const File & file : m_AttachedFiles) {
+		if(file.attachToReport) {
 			nbFilesToSend++;
 		}
 	}
