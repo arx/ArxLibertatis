@@ -25,10 +25,9 @@
 #include <vector>
 #include <utility>
 
+#include "game/Entity.h"
 #include "game/EntityId.h"
 #include "game/GameTypes.h"
-
-class Entity;
 
 class EntityManager {
 	
@@ -71,6 +70,24 @@ class EntityManager {
 		bool operator!=(Sentinel /* sentinel */) {
 			return m_i != m_manager->entries.size();
 		}
+		
+	};
+	
+	template <typename Filter>
+	class FilteredEntities {
+		
+		const EntityManager * m_manager;
+		Filter m_filter;
+		
+	public:
+		
+		FilteredEntities(const EntityManager * manager, Filter filter)
+			: m_manager(manager)
+			, m_filter(std::move(filter))
+		{ }
+		
+		auto begin() { return EntityIterator(m_manager, m_filter); }
+		auto end() { return Sentinel(); }
 		
 	};
 	
@@ -120,6 +137,18 @@ public:
 	
 	auto begin() const { return EntityIterator( this, [](Entity & /* entity */) { return true; } ); }
 	auto end() const { return Sentinel(); }
+	
+	auto operator()(EntityFlags flags) {
+		return FilteredEntities( this, [flags](Entity & entity) {
+			return entity.ioflags & flags;
+		});
+	}
+	
+	auto inScene(EntityFlags flags = EntityFlags::all()) {
+		return FilteredEntities( this, [flags](Entity & entity) {
+			return entity.show == SHOW_FLAG_IN_SCENE && (entity.ioflags & flags);
+		});
+	}
 	
 	typedef bool (*AutocompleteHandler)(void * context, std::string_view suggestion);
 	void autocomplete(std::string_view prefix, AutocompleteHandler handler, void * context);
