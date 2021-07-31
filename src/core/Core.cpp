@@ -487,9 +487,9 @@ static void strikeSpeak(Entity * io) {
 	}
 	
 	const std::string * str;
-	EntityHandle equiped = player.equiped[EQUIP_SLOT_WEAPON];
-	if(ValidIONum(equiped) && !entities[equiped]->strikespeech.empty()) {
-		str = &entities[equiped]->strikespeech;
+	Entity * equiped = entities.get(player.equiped[EQUIP_SLOT_WEAPON]);
+	if(equiped && !equiped->strikespeech.empty()) {
+		str = &equiped->strikespeech;
 	} else if(!io->strikespeech.empty()) {
 		str = &io->strikespeech;
 	} else {
