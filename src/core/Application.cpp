@@ -54,10 +54,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 Application * mainApp = 0;
 
-Application::Application() : m_MainWindow(nullptr) {
-	m_bReady = true;
-	m_RunLoop = true;
-}
+Application::Application()
+	: m_MainWindow(nullptr)
+	, m_RunLoop(true)
+	, m_bReady(true)
+{ }
 
 Application::~Application() {
 	arx_assert(!m_MainWindow);
