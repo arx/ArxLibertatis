@@ -708,17 +708,15 @@ void ARX_INTERACTIVE_APPLY_TWEAK_INFO(Entity * io) {
 	}
 }
 
-static void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
+static void ARX_INTERACTIVE_ClearIODynData(Entity & entity) {
 	
-	if(!io)
-		return;
+	lightHandleDestroy(entity.dynlight);
 	
-	lightHandleDestroy(io->dynlight);
+	delete entity.symboldraw;
+	entity.symboldraw = nullptr;
 	
-	delete io->symboldraw;
-	io->symboldraw = nullptr;
+	entity.spellcast_data.castingspell = SPELL_NONE;
 	
-	io->spellcast_data.castingspell = SPELL_NONE;
 }
 
 static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
@@ -726,7 +724,7 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 	if(!io)
 		return;
 	
-	ARX_INTERACTIVE_ClearIODynData(io);
+	ARX_INTERACTIVE_ClearIODynData(*io);
 	
 	io->shop_category.clear();
 	io->inventory_skin.clear();
@@ -797,7 +795,7 @@ void ARX_INTERACTIVE_ClearAllDynData() {
 	
 	for(Entity & entity : entities) {
 		if(entity != *entities.player()) {
-			ARX_INTERACTIVE_ClearIODynData(&entity);
+			ARX_INTERACTIVE_ClearIODynData(entity);
 		}
 	}
 	
