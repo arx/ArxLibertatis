@@ -699,7 +699,7 @@ float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const
 	}
 	
 	if(npc._npcdata->lifePool.current <= 0.f) {
-		if((source != entities.player() || ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
+		if((source != entities.player() || entities.get(player.equiped[EQUIP_SLOT_WEAPON]))
 		   && dmg >= npc._npcdata->lifePool.max * 0.4f && pos) {
 			ARX_NPC_TryToCutSomething(&npc, pos);
 		}
@@ -729,8 +729,8 @@ float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const
 	if(source) {
 		Entity * pio = nullptr;
 		if(source == entities.player()) {
-			if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
-				pio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+			if(Entity * weapon = entities.get(player.equiped[EQUIP_SLOT_WEAPON])) {
+				pio = weapon;
 				if((pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) || isSpellHit) {
 					pio = nullptr;
 				}
@@ -805,7 +805,7 @@ float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const
 	
 	if(npc._npcdata->lifePool.current <= 0.f) {
 		npc._npcdata->lifePool.current = 0.f;
-		if((source != entities.player() || ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
+		if((source != entities.player() || entities.get(player.equiped[EQUIP_SLOT_WEAPON]))
 		   && dmg >= npc._npcdata->lifePool.max * 0.5f && pos) {
 			ARX_NPC_TryToCutSomething(&npc, pos);
 		}
