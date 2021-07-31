@@ -448,6 +448,14 @@ public:
 	 */
 	const res::path & classPath() const { return m_classPath; }
 	
+	[[nodiscard]] bool operator==(const Entity & other) const noexcept {
+		return &other == this;
+	}
+	
+	[[nodiscard]] bool operator!=(const Entity & other) const noexcept {
+		return &other != this;
+	}
+	
 private:
 	
 	//! Remove any remaining references to this entity.
