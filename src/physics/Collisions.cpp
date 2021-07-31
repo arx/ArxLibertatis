@@ -264,91 +264,93 @@ bool IsCollidingIO(Entity * io, Entity * ioo) {
 	return false;
 }
 
-void PushIO_ON_Top(Entity * ioo, float ydec) {
+void PushIO_ON_Top(Entity * platform, float ydec) {
 	
-	if(ydec != 0.f)
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * io = entities[handle];
-
-		if(io
-		   && io != ioo
-		   && !(io->ioflags & IO_NO_COLLISIONS)
-		   && io->show == SHOW_FLAG_IN_SCENE
-		   && io->obj
-		   && !(io->ioflags & (IO_FIX | IO_CAMERA | IO_MARKER))
-		) {
-			if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(ioo->pos.x, ioo->pos.z), 450.f)) {
-				EERIEPOLY ep;
-				ep.type = 0;
-				float miny = 9999999.f;
-				float maxy = -9999999.f;
-
-				for(size_t ii = 0; ii < ioo->obj->vertexWorldPositions.size(); ii++) {
-					miny = std::min(miny, ioo->obj->vertexWorldPositions[ii].v.y);
-					maxy = std::max(maxy, ioo->obj->vertexWorldPositions[ii].v.y);
-				}
-
-				float posy = (io == entities.player()) ? player.basePosition().y : io->pos.y;
-				float modd = (ydec > 0) ? -20.f : 0;
-
-				if(posy <= maxy && posy >= miny + modd) {
-					for(size_t ii = 0; ii < ioo->obj->facelist.size(); ii++) {
-						
-						float cx = 0;
-						float cz = 0;
-						for(long kk = 0; kk < 3; kk++) {
-							ep.v[kk].p = ioo->obj->vertexWorldPositions[ioo->obj->facelist[ii].vid[kk]].v;
-							cx += ep.v[kk].p.x;
-							cz += ep.v[kk].p.z;
+	if(ydec == 0.f) {
+		return;
+	}
+	
+	for(Entity & entity : entities.inScene()) {
+		
+		if(&entity == platform || (entity.ioflags & IO_NO_COLLISIONS) || !entity.obj
+		   || (entity.ioflags & (IO_FIX | IO_CAMERA | IO_MARKER))) {
+			continue;
+		}
+		
+		if(!closerThan(Vec2f(entity.pos.x, entity.pos.z), Vec2f(platform->pos.x, platform->pos.z), 450.f)) {
+			continue;
+		}
+		
+		float miny = 9999999.f;
+		float maxy = -9999999.f;
+		for(size_t ii = 0; ii < platform->obj->vertexWorldPositions.size(); ii++) {
+			miny = std::min(miny, platform->obj->vertexWorldPositions[ii].v.y);
+			maxy = std::max(maxy, platform->obj->vertexWorldPositions[ii].v.y);
+		}
+		
+		float posy = (&entity == entities.player()) ? player.basePosition().y : entity.pos.y;
+		float modd = (ydec > 0) ? -20.f : 0;
+		if(posy > maxy || posy < miny + modd) {
+			continue;
+		}
+		
+		for(const EERIE_FACE & face : platform->obj->facelist) {
+			
+			EERIEPOLY ep;
+			float cx = 0;
+			float cz = 0;
+			for(long kk = 0; kk < 3; kk++) {
+				ep.v[kk].p = platform->obj->vertexWorldPositions[face.vid[kk]].v;
+				cx += ep.v[kk].p.x;
+				cz += ep.v[kk].p.z;
+			}
+			cx *= 1.f / 3;
+			cz *= 1.f / 3;
+			
+			float tval = 1.1f;
+			
+			for(int kk = 0; kk < 3; kk++) {
+				ep.v[kk].p.x = (ep.v[kk].p.x - cx) * tval + cx;
+				ep.v[kk].p.z = (ep.v[kk].p.z - cz) * tval + cz;
+			}
+			
+			if(PointIn2DPolyXZ(&ep, entity.pos.x, entity.pos.z)) {
+				if(&entity == entities.player()) {
+					if(ydec <= 0) {
+						player.pos.y += ydec;
+						g_moveto.y += ydec;
+						Cylinder cyl = player.baseCylinder();
+						cyl.origin.y += ydec;
+						float vv = CheckAnythingInCylinder(cyl, entities.player(), 0);
+						if(vv < 0) {
+							player.pos.y += ydec + vv;
 						}
-						cx *= 1.f / 3;
-						cz *= 1.f / 3;
-						
-						float tval = 1.1f;
-						
-						for(int kk = 0; kk < 3; kk++) {
-							ep.v[kk].p.x = (ep.v[kk].p.x - cx) * tval + cx;
-							ep.v[kk].p.z = (ep.v[kk].p.z - cz) * tval + cz;
+					} else {
+						Cylinder cyl = player.baseCylinder();
+						cyl.origin.y += ydec;
+						if(CheckAnythingInCylinder(cyl, entities.player(), 0) >= 0) {
+							player.pos.y += ydec;
+							g_moveto.y += ydec;
 						}
-						
-						if(PointIn2DPolyXZ(&ep, io->pos.x, io->pos.z)) {
-							if(io == entities.player()) {
-								if(ydec <= 0) {
-									player.pos.y += ydec;
-									g_moveto.y += ydec;
-									Cylinder cyl = player.baseCylinder();
-									cyl.origin.y += ydec;
-									float vv = CheckAnythingInCylinder(cyl, entities.player(), 0);
-									if(vv < 0) {
-										player.pos.y += ydec + vv;
-									}
-								} else {
-									Cylinder cyl = player.baseCylinder();
-									cyl.origin.y += ydec;
-									if(CheckAnythingInCylinder(cyl, entities.player(), 0) >= 0) {
-										player.pos.y += ydec;
-										g_moveto.y += ydec;
-									}
-								}
-							} else {
-								if(ydec <= 0) {
-									io->pos.y += ydec;
-								} else {
-									Cylinder cyl = GetIOCyl(io);
-									cyl.origin.y += ydec;
-									if(CheckAnythingInCylinder(cyl, io, 0) >= 0) {
-										io->pos.y += ydec;
-									}
-								}
-							}
-							break;
+					}
+				} else {
+					if(ydec <= 0) {
+						                  entity.pos.y += ydec;
+					} else {
+						Cylinder cyl = GetIOCyl(&entity);
+						cyl.origin.y += ydec;
+						if(CheckAnythingInCylinder(cyl, &entity, 0) >= 0) {
+							entity.pos.y += ydec;
 						}
 					}
 				}
+				break;
 			}
+			
 		}
+		
 	}
+	
 }
 
 bool IsAnyNPCInPlatform(Entity * pfrm) {
