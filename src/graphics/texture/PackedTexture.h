@@ -20,21 +20,20 @@
 #ifndef ARX_GRAPHICS_TEXTURE_PACKEDTEXTURE_H
 #define ARX_GRAPHICS_TEXTURE_PACKEDTEXTURE_H
 
-#include <vector>
 #include <stddef.h>
+#include <memory>
+#include <vector>
 
+#include "graphics/texture/Texture.h"
 #include "graphics/image/Image.h"
 #include "math/Rectangle.h"
 #include "math/Vector.h"
-
-class Texture;
 
 class PackedTexture {
 	
 public:
 	
 	PackedTexture(size_t textureSize, Image::Format textureFormat);
-	~PackedTexture();
 	
 	//! Reset the packed texture - remove all images
 	void clear();
@@ -58,17 +57,15 @@ protected:
 		struct Node {
 			
 			Node();
-			~Node();
 			
 			Node * insertImage(const Image & image);
 			
-			Node * children[2];
+			std::unique_ptr<Node> children[2];
 			Rect rect;
 			bool used;
 		};
 		
 		explicit TextureTree(size_t textureSize, Image::Format textureFormat);
-		~TextureTree();
 		
 		Node * insertImage(const Image & image);
 		
@@ -78,18 +75,17 @@ protected:
 		
 	public:
 		
-		Texture * texture;
+		std::unique_ptr<Texture> texture;
 		bool dirty;
 	};
 	
 private:
 	
-	std::vector<TextureTree *> m_textures;
+	std::vector<std::unique_ptr<TextureTree>> m_textures;
 	
 	const size_t m_textureSize;
 	const Image::Format m_textureFormat;
 	
 };
-
 
 #endif // ARX_GRAPHICS_TEXTURE_PACKEDTEXTURE_H

@@ -19,26 +19,23 @@
 
 #include "graphics/texture/PackedTexture.h"
 
+#include <utility>
+
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 #include "io/log/Logger.h"
 
 PackedTexture::PackedTexture(size_t textureSize, Image::Format textureFormat)
-	: m_textureSize(textureSize), m_textureFormat(textureFormat) { }
-
-PackedTexture::~PackedTexture() {
-	clear();
-}
+	: m_textureSize(textureSize)
+	, m_textureFormat(textureFormat)
+{ }
 
 void PackedTexture::clear() {
-	for(TextureTree * tree : m_textures) {
-		delete tree;
-	}
 	m_textures.clear();
 }
 
 void PackedTexture::upload() {
-	for(TextureTree * tree : m_textures) {
+	for(auto & tree : m_textures) {
 		if(tree->dirty) {
 			tree->texture->upload();
 			tree->dirty = false;
@@ -46,24 +43,20 @@ void PackedTexture::upload() {
 	}
 }
 
-PackedTexture::TextureTree::TextureTree(size_t textureSize, Image::Format textureFormat) {
-	
+PackedTexture::TextureTree::TextureTree(size_t textureSize, Image::Format textureFormat)
+	: texture(GRenderer->createTexture())
+{
 	root.rect = Rect(0, 0, s32(textureSize - 1), s32(textureSize - 1));
 	
-	texture = GRenderer->createTexture();
 	if(!texture->create(textureSize, textureSize, textureFormat)) {
-		LogError << "Could not create texture for size " << textureSize
-		         << " and format " << textureFormat;
-		delete texture, texture = nullptr;
+		LogError << "Could not create texture for size " << textureSize << " and format " << textureFormat;
+		texture.reset();
 		dirty = false;
 		return;
 	}
+	
 	texture->getImage().clear();
 	dirty = true;
-}
-
-PackedTexture::TextureTree::~TextureTree() {
-	delete texture;
 }
 
 PackedTexture::TextureTree::Node * PackedTexture::TextureTree::insertImage(const Image & image) {
@@ -99,12 +92,11 @@ bool PackedTexture::insertImage(const Image & image, size_t & textureIndex, Vec2
 	
 	// No space found, create a new texture
 	if(!node) {
-		TextureTree * newTree = new TextureTree(m_textureSize, m_textureFormat);
+		std::unique_ptr<TextureTree> newTree = std::make_unique<TextureTree>(m_textureSize, m_textureFormat);
 		if(!newTree->texture) {
-			delete newTree;
 			return false;
 		}
-		m_textures.push_back(newTree);
+		m_textures.emplace_back(std::move(newTree));
 		node = m_textures[m_textures.size() - 1]->insertImage(image);
 		nodeTree = m_textures.size() - 1;
 	}
@@ -128,15 +120,11 @@ Texture & PackedTexture::getTexture(size_t index) {
 	return *m_textures[index]->texture;
 }
 
-PackedTexture::TextureTree::Node::Node() {
+PackedTexture::TextureTree::Node::Node()
+	: used(false)
+{
 	children[0] = nullptr;
 	children[1] = nullptr;
-	used = false;
-}
-
-PackedTexture::TextureTree::Node::~Node() {
-	delete children[0];
-	delete children[1];
 }
 
 PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::insertImage(const Image & image) {
@@ -174,8 +162,8 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::insertImage
 	}
 	
 	// Otherwise, gotta split this node and create some kids
-	children[0] = new Node();
-	children[1] = new Node();
+	children[0] = std::make_unique<Node>();
+	children[1] = std::make_unique<Node>();
 	
 	if(diffW > diffH) {
 		children[0]->rect = Rect(rect.left, rect.top, rect.left + s32(image.getWidth()) - 1, rect.bottom);
