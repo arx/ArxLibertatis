@@ -112,7 +112,7 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags);
 bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit);
 
-bool isCylinderCollidingWithPlatform(const Cylinder & cylinder, const Entity & io);
+bool isCylinderCollidingWithPlatform(const Cylinder & cylinder, const Entity & platform);
 bool isAnyNPCOnPlatform(const Entity & platform);
 void PushIO_ON_Top(const Entity & platform, float ydec);
 
