@@ -880,9 +880,7 @@ void ARX_EQUIPMENT_UnEquipPlayerWeapon() {
 	if(Entity * weapon = entities.get(player.equiped[EQUIP_SLOT_WEAPON])) {
 		Entity * pioOldDragInter = g_draggedEntity;
 		g_draggedEntity = weapon;
-		if(g_draggedEntity) {
-			ARX_SOUND_PlayInterface(g_snd.INVSTD);
-		}
+		ARX_SOUND_PlayInterface(g_snd.INVSTD);
 		ARX_EQUIPMENT_UnEquip(entities.player(), weapon);
 		g_draggedEntity = pioOldDragInter;
 	}
