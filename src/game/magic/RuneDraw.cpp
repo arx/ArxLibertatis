@@ -285,10 +285,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 void ARX_SPELLS_ClearAllSymbolDraw() {
 	for(Entity & entity : entities) {
-		if(entity.symboldraw) {
-			delete entity.symboldraw;
-			entity.symboldraw = nullptr;
-		}
+		delete entity.symboldraw;
+		entity.symboldraw = nullptr;
 	}
 }
 
