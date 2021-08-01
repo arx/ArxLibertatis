@@ -313,7 +313,7 @@ float damagePlayer(float dmg, DamageType type, Entity * source) {
 		bool wasAlive = (player.lifePool.current > 0);
 		
 		if(!BLOCK_PLAYER_CONTROLS) {
-			player.lifePool.current -=dmg;
+			player.lifePool.current -= dmg;
 		}
 		
 		if(player.lifePool.current <= 0.f) {
@@ -971,7 +971,7 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 				if(entity == *entities.player()) {
 					manadrained = std::min(dmg, player.manaPool.current);
 					player.manaPool.current -= manadrained;
-			} else {
+				} else {
 					manadrained = dmg;
 					manadrained = std::min(dmg, entity._npcdata->manaPool.current);
 					entity._npcdata->manaPool.current -= manadrained;
