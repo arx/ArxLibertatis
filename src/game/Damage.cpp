@@ -972,7 +972,6 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 					manadrained = std::min(dmg, player.manaPool.current);
 					player.manaPool.current -= manadrained;
 				} else {
-					manadrained = dmg;
 					manadrained = std::min(dmg, entity._npcdata->manaPool.current);
 					entity._npcdata->manaPool.current -= manadrained;
 				}
