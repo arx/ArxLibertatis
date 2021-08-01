@@ -38,7 +38,6 @@
 #include "graphics/Renderer.h"
 #include "math/RandomVector.h"
 #include "scene/GameSound.h"
-#include "scene/Interactive.h"
 
 
 MassLightningStrikeSpell::MassLightningStrikeSpell()

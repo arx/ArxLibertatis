@@ -36,7 +36,6 @@
 #include "math/RandomVector.h"
 #include "physics/Collisions.h"
 #include "scene/GameSound.h"
-#include "scene/Interactive.h"
 #include "scene/Object.h"
 
 

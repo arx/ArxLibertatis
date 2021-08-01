@@ -20,7 +20,6 @@
 #include "game/EntityManager.h"
 #include "game/Player.h"
 #include "game/magic/Spell.h"
-#include "scene/Interactive.h"
 
 #include "core/GameTime.h"
 

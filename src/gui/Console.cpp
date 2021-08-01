@@ -39,7 +39,6 @@
 #include "input/Input.h"
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
-#include "scene/Interactive.h"
 #include "script/ScriptEvent.h"
 #include "util/Unicode.h"
 #include "window/RenderWindow.h"

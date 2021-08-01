@@ -39,7 +39,6 @@
 #include "math/RandomVector.h"
 
 #include "scene/GameSound.h"
-#include "scene/Interactive.h"
 #include "scene/Object.h"
 #include "scene/Scene.h"
 
