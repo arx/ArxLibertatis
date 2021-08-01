@@ -720,7 +720,7 @@ float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const
 		if(source == entities.player()) {
 			if(Entity * weapon = entities.get(player.equiped[EQUIP_SLOT_WEAPON])) {
 				pio = weapon;
-				if((pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) || isSpellHit) {
+				if((pio->poisonous == 0 || pio->poisonous_count == 0) || isSpellHit) {
 					pio = nullptr;
 				}
 			}
@@ -772,7 +772,7 @@ float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const
 			}
 		}
 		Entity * sender = source;
-		if(sender && (sender->ioflags & IO_NPC) && sender->_npcdata->summoner == EntityHandle_Player) {
+		if((sender->ioflags & IO_NPC) && sender->_npcdata->summoner == EntityHandle_Player) {
 			sender = entities.player();
 			parameters.push_back("summoned");
 		}
