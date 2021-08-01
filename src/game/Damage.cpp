@@ -262,6 +262,37 @@ static ScriptParameters getOuchEventParameter(const Entity * entity) {
 	return oss.str();
 }
 
+static ScriptParameters getHitEventMarameters(float dmg, Entity * source, bool isSpellHit) {
+	
+	ScriptParameters parameters(dmg);
+	if(source == entities.player()) {
+		if(isSpellHit) {
+			parameters.push_back("spell");
+		} else {
+			switch(ARX_EQUIPMENT_GetPlayerWeaponType()) {
+				case WEAPON_BARE:
+					parameters.push_back("bare");
+					break;
+				case WEAPON_DAGGER:
+					parameters.push_back("dagger");
+					break;
+				case WEAPON_1H:
+					parameters.push_back("1h");
+					break;
+				case WEAPON_2H:
+					parameters.push_back("2h");
+					break;
+				case WEAPON_BOW:
+					parameters.push_back("arrow");
+					break;
+				default: break;
+			}
+		}
+	}
+	
+	return parameters;
+}
+
 float damagePlayer(float dmg, DamageType type, Entity * source) {
 	
 	if(player.playerflags & PLAYERFLAGS_INVULNERABILITY) {
@@ -464,32 +495,7 @@ void damageProp(Entity & prop, float dmg, Entity * source, bool isSpellHit) {
 		return;
 	}
 	
-	ScriptParameters parameters(dmg);
-	if(source == entities.player()) {
-		if(isSpellHit) {
-			parameters.push_back("spell");
-		} else {
-			switch(ARX_EQUIPMENT_GetPlayerWeaponType()) {
-				case WEAPON_BARE:
-					parameters.push_back("bare");
-					break;
-				case WEAPON_DAGGER:
-					parameters.push_back("dagger");
-					break;
-				case WEAPON_1H:
-					parameters.push_back("1h");
-					break;
-				case WEAPON_2H:
-					parameters.push_back("2h");
-					break;
-				case WEAPON_BOW:
-					parameters.push_back("arrow");
-					break;
-				default: break;
-			}
-		}
-	}
-	SendIOScriptEvent(source, &prop, SM_HIT, parameters);
+	SendIOScriptEvent(source, &prop, SM_HIT, getHitEventMarameters(dmg, source, isSpellHit));
 	
 }
 
@@ -746,31 +752,7 @@ float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const
 	}
 	
 	if(npc.script.valid && source) {
-		ScriptParameters parameters(dmg);
-		if(source == entities.player()) {
-			if(isSpellHit) {
-				parameters.push_back("spell");
-			} else {
-				switch (ARX_EQUIPMENT_GetPlayerWeaponType()) {
-					case WEAPON_BARE:
-						parameters.push_back("bare");
-						break;
-					case WEAPON_DAGGER:
-						parameters.push_back("dagger");
-						break;
-					case WEAPON_1H:
-						parameters.push_back("1h");
-						break;
-					case WEAPON_2H:
-						parameters.push_back("2h");
-						break;
-					case WEAPON_BOW:
-						parameters.push_back("arrow");
-						break;
-					default: break;
-				}
-			}
-		}
+		ScriptParameters parameters = getHitEventMarameters(dmg, source, isSpellHit);
 		Entity * sender = source;
 		if((sender->ioflags & IO_NPC) && sender->_npcdata->summoner == EntityHandle_Player) {
 			sender = entities.player();
