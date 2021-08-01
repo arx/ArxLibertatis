@@ -79,7 +79,7 @@ public:
 	
 	enum Cmd { Insert, Remove, Replace };
 	
-	ArrayCommand(XByteArray * xData, Cmd cmd, int baPos, const QByteArray & newBa = QByteArray(),
+	ArrayCommand(XByteArray * xData, Cmd cmd, int baPos, QByteArray newBa = QByteArray(),
 	             int len = 0, QUndoCommand * parent = 0);
 	void undo() override;
 	void redo() override;

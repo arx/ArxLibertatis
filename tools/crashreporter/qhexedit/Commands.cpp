@@ -91,13 +91,13 @@ void CharCommand::redo() {
 	
 }
 
-ArrayCommand::ArrayCommand(XByteArray * xData, Cmd cmd, int baPos, const QByteArray & newBa, int len, QUndoCommand * parent)
+ArrayCommand::ArrayCommand(XByteArray * xData, Cmd cmd, int baPos, QByteArray newBa, int len, QUndoCommand * parent)
 	: QUndoCommand(parent)
 	, _cmd(cmd)
 	, _xData(xData)
 	, _baPos(baPos)
 	, _len(len)
-	, _newBa(newBa)
+	, _newBa(std::move(newBa))
 { }
 
 void ArrayCommand::undo() {
