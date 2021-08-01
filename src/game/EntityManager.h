@@ -135,7 +135,11 @@ public:
 	 */
 	[[nodiscard]] size_t size() const { return entries.size(); }
 	
-	[[nodiscard]] auto begin() const { return EntityIterator( this, [](Entity & /* entity */) { return true; } ); }
+	[[nodiscard]] auto begin() const {
+		return EntityIterator( this, [](Entity & /* entity */) {
+			return true;
+		});
+	}
 	[[nodiscard]] auto end() const { return Sentinel(); }
 	
 	[[nodiscard]] auto operator()(EntityFlags flags) {
