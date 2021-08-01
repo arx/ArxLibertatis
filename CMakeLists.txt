@@ -314,6 +314,7 @@ if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS)
 	force_recheck_library(QtGui)
 	force_recheck_library(QtWidgets)
 	force_recheck_library(CURL)
+	force_recheck_library(CppUnit)
 	unset(Boost_INCLUDE_DIR CACHE)
 	set(LAST_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE INTERNAL
 	    "The last C++ compiler flags")

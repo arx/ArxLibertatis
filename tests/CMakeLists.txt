@@ -1,5 +1,8 @@
 
 find_package(CppUnit REQUIRED)
+if(NOT MSVC)
+	check_link_library(CppUnit CppUnit_LIBRARIES)
+endif()
 
 set(arxtest_TESTCASES
 	
