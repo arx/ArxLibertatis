@@ -443,12 +443,8 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	}
 	
 	// Post-effect
-	switch(fx & CinematicFxPostMask) {
-		case FX_FLASH:
-			FlashBlancEnCours = FX_FlashBlanc(Vec2f(cinRenderSize), speed, colorflash, GetTrackFPS(), g_fpsCounter.FPS);
-			break;
-		default:
-			break;
+	if((fx & CinematicFxPostMask) == FX_FLASH) {
+		FlashBlancEnCours = FX_FlashBlanc(Vec2f(cinRenderSize), speed, colorflash, GetTrackFPS(), g_fpsCounter.FPS);
 	}
 	
 	g_fpsCounter.CalcFPS();
