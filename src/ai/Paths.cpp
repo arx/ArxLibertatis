@@ -278,10 +278,8 @@ Path::Path(std::string && _name, const Vec3f & _pos)
 
 void ARX_PATH_ClearAllUsePath() {
 	for(Entity & entity : entities) {
-		if(entity.usepath) {
-			delete entity.usepath;
-			entity.usepath = nullptr;
-		}
+		delete entity.usepath;
+		entity.usepath = nullptr;
 	}
 }
 
