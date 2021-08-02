@@ -1021,19 +1021,13 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			
 			if(boost::starts_with(name, "^possess_")) {
 				Entity * target = entities.getById(name.substr(9));
-				if(target) {
-					if(IsInPlayerInventory(target)) {
-						*lcontent = 1;
-						return TYPE_LONG;
-					}
-					for(size_t i = 0; i < MAX_EQUIPED; i++) {
-						if(player.equiped[i] == target->index()) {
-							*lcontent = 2;
-							return TYPE_LONG;
-						}
-					}
+				if(IsInPlayerInventory(target)) {
+					*lcontent = 1;
+				} else if(isEquippedByPlayer(target)) {
+					*lcontent = 2;
+				} else {
+					*lcontent = 0;
 				}
-				*lcontent = 0;
 				return TYPE_LONG;
 			}
 			
