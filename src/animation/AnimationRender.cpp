@@ -1421,8 +1421,8 @@ static void animateSkeleton(EERIE_3DOBJ * eobj, AnimLayer * animlayer,
 	if(io) {
 		// Is There any Between-Animations Interpolation to make ?
 		Cedric_BlendAnimation(skeleton, animBlend);
-		for(size_t i = 0; i < skeleton.bones.size(); i++) {
-			skeleton.bones[i].last = skeleton.bones[i].init;
+		for(Bone & bone : skeleton.bones) {
+			bone.last = bone.init;
 		}
 	}
 	
