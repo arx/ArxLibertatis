@@ -158,6 +158,8 @@ public:
 	explicit Command(std::string_view name, long entityFlags = 0)
 		: m_name(name), m_entityFlags(entityFlags) { }
 	
+	virtual ~Command() = default;
+	
 	virtual Result execute(Context & context) = 0;
 	
 	virtual Result peek(Context & context) {
@@ -166,8 +168,6 @@ public:
 		
 		return AbortDestructive;
 	}
-	
-	virtual ~Command() { }
 	
 	const std::string & getName() const { return m_name; }
 	long getEntityFlags() const { return m_entityFlags; }
