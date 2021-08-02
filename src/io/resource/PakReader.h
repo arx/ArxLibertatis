@@ -51,7 +51,7 @@ public:
 	
 	virtual size_t tell() = 0;
 	
-	virtual ~PakFileHandle() { }
+	virtual ~PakFileHandle() = default;
 	
 };
 
