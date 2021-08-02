@@ -78,7 +78,6 @@ public:
 	int iTexNum;
 	
 	Particle();
-	~Particle();
 	
 	void Regen();
 	void Update(GameDuration delta);

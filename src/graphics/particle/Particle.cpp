@@ -66,8 +66,6 @@ Particle::Particle()
 	fColorEnd = Color4f(1, 1, 1, 0.1f);
 }
 
-Particle::~Particle() { }
-
 void Particle::Regen() {
 	p3Pos = Vec3f(0.f);
 	m_age = 0;
