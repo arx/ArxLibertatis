@@ -38,7 +38,7 @@ public:
 	};
 	DECLARE_FLAGS(TextureFlag, TextureFlags)
 	
-	virtual ~Texture() { }
+	virtual ~Texture() = default;
 	
 	bool create(const res::path & strFileName, TextureFlags flags);
 	bool create(const Image & image, TextureFlags flags = HasMipmaps);
