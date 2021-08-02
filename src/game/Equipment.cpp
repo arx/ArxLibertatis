@@ -237,8 +237,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	
 	Entity * target = entities.player();
 	
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(Entity * toequip = entities.get(player.equiped[i])) {
+	for(EntityHandle equipment : player.equiped) {
+		if(Entity * toequip = entities.get(equipment)) {
 			if(toequip->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
 				if(player.Interface & INTER_COMBATMODE) {
 					ARX_EQUIPMENT_AttachPlayerWeaponToHand();
@@ -250,9 +250,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 				EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "shield_attach", "shield_attach", toequip);
 			}
 		}
-		
 	}
-
+	
 	ARX_PLAYER_Restore_Skin();
 	HERO_SHOW_1ST = -1;
 
@@ -271,12 +270,12 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 
 void ARX_EQUIPMENT_UnEquipAllPlayer() {
 	
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(Entity * item = entities.get(player.equiped[i])) {
+	for(EntityHandle equipment : player.equiped) {
+		if(Entity * item = entities.get(equipment)) {
 			ARX_EQUIPMENT_UnEquip(entities.player(), item);
 		}
 	}
-
+	
 	ARX_PLAYER_ComputePlayerFullStats();
 }
 
@@ -329,8 +328,8 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand() {
 	arx_assert(entities.player());
 	Entity * target = entities.player();
 	
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(Entity * toequip = entities.get(player.equiped[i])) {
+	for(EntityHandle equipment : player.equiped) {
+		if(Entity * toequip = entities.get(equipment)) {
 			if(toequip->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
 				EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
 				EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "primary_attach", "primary_attach", toequip);
@@ -346,8 +345,8 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack() {
 	arx_assert(entities.player());
 	Entity * target = entities.player();
 	
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(Entity * toequip = entities.get(player.equiped[i])) {
+	for(EntityHandle equipment : player.equiped) {
+		if(Entity * toequip = entities.get(equipment)) {
 			if((toequip->type_flags & OBJECT_TYPE_DAGGER) || (toequip->type_flags & OBJECT_TYPE_1H)
 			   || (toequip->type_flags & OBJECT_TYPE_2H) || (toequip->type_flags & OBJECT_TYPE_BOW)) {
 				EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
@@ -1040,8 +1039,8 @@ float getEquipmentBaseModifier(EquipmentModifierType modifier, bool getRelative)
 	
 	float sum = 0;
 	
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(Entity * toequip = entities.get(player.equiped[i])) {
+	for(EntityHandle equipment : player.equiped) {
+		if(Entity * toequip = entities.get(equipment)) {
 			if((toequip->ioflags & IO_ITEM) && toequip->_itemdata->equipitem) {
 				IO_EQUIPITEM_ELEMENT * elem = &toequip->_itemdata->equipitem->elements[modifier];
 				bool isRelative = elem->flags.has(IO_ELEMENT_FLAG_PERCENT);
@@ -1112,10 +1111,11 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 }
 
 void ARX_EQUIPMENT_IdentifyAll() {
+	
 	arx_assert(entities.player());
 	
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(Entity * toequip = entities.get(player.equiped[i])) {
+	for(EntityHandle equipment : player.equiped) {
+		if(Entity * toequip = entities.get(equipment)) {
 			ARX_INVENTORY_IdentifyIO(toequip);
 		}
 	}
