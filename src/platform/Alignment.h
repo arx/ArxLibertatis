@@ -211,11 +211,10 @@ struct aligned_allocator {
 	typedef std::true_type propagate_on_container_move_assignment;
 	typedef std::true_type is_always_equal;
 	
-	aligned_allocator() noexcept { }
+	aligned_allocator() noexcept = default;
 	aligned_allocator(const aligned_allocator & o) noexcept { ARX_UNUSED(o); }
 	template <typename U>
 	aligned_allocator(const aligned_allocator<U> & o) noexcept { ARX_UNUSED(o); }
-	~aligned_allocator() noexcept { }
 	
 	pointer address(reference x) const noexcept { return &x; }
 	const_pointer address(const_reference x) const noexcept { return &x; }
