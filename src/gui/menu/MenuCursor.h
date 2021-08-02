@@ -53,7 +53,6 @@ class MenuCursor {
 public:
 	
 	MenuCursor();
-	virtual ~MenuCursor();
 	
 	void reset();
 	void update();

@@ -149,8 +149,6 @@ MenuCursor::MenuCursor()
 	, bMouseOver(false)
 { }
 
-MenuCursor::~MenuCursor() { }
-
 void MenuCursor::SetMouseOver() {
 	bMouseOver = true;
 }
