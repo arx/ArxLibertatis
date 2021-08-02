@@ -116,27 +116,32 @@ struct DAMAGE_INFO {
 	
 };
 
-const size_t MAX_DAMAGES = 200;
-static DAMAGE_INFO g_damages[MAX_DAMAGES];
+static std::vector<DAMAGE_INFO> g_damages;
 
 DamageHandle DamageCreate(const DamageParameters & params) {
-	for(size_t i = 0; i < MAX_DAMAGES; i++) {
-		if(!g_damages[i].exist) {
-			DAMAGE_INFO & damage = g_damages[i];
-			damage.params = params;
-			damage.start_time = g_gameTime.now();
-			damage.lastupd = 0;
-			damage.exist = true;
-			return DamageHandle(i);
-		}
+	
+	size_t i = std::find_if(g_damages.begin(), g_damages.end(), [](const DAMAGE_INFO & damage) {
+		return !damage.exist;
+	}) - g_damages.begin();
+	if(i == g_damages.size()) {
+		g_damages.emplace_back();
 	}
-
-	return DamageHandle(-1);
+	
+	DAMAGE_INFO & damage = g_damages[i];
+	damage.params = params;
+	damage.start_time = g_gameTime.now();
+	damage.lastupd = 0;
+	damage.exist = true;
+	
+	return DamageHandle(i);
 }
 
 void DamageRequestEnd(DamageHandle handle) {
-	if(handle.handleData() >= 0) {
+	if(handle.handleData() >= 0 && size_t(handle.handleData()) < g_damages.size()) {
 		g_damages[handle.handleData()].exist = false;
+		while(!g_damages.empty() && !g_damages.back().exist) {
+			g_damages.pop_back();
+		}
 	}
 }
 
@@ -792,7 +797,7 @@ float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const
 }
 
 void ARX_DAMAGES_Reset() {
-	std::fill_n(g_damages, std::size(g_damages), DAMAGE_INFO());
+	g_damages.clear();
 }
 
 extern TextureContainer * TC_fire2;
@@ -848,10 +853,6 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 	
 	ARX_PROFILE_FUNC();
-	
-	if(!damage.exist) {
-		return;
-	}
 	
 	Entity * source = entities.get(damage.params.source);
 	
@@ -1048,8 +1049,10 @@ void ARX_DAMAGES_UpdateAll() {
 	
 	ARX_PROFILE_FUNC();
 	
-	for(size_t j = 0; j < MAX_DAMAGES; j++) {
-		updateDamage(g_damages[j], g_gameTime.now());
+	for(DAMAGE_INFO & damage : g_damages) {
+		if(damage.exist) {
+			updateDamage(damage, g_gameTime.now());
+		}
 	}
 	
 }
@@ -1378,12 +1381,10 @@ float ARX_DAMAGES_ComputeRepairPrice(const Entity * torepair, const Entity * bla
 
 void ARX_DAMAGES_DrawDebug() {
 	
-	for(size_t i = 0; i < MAX_DAMAGES; i++) {
-		if(!g_damages[i].exist)
-			continue;
-		
-		DAMAGE_INFO & d = g_damages[i];
-		
-		drawLineSphere(Sphere(d.params.pos, d.params.radius), Color::red);
+	for(DAMAGE_INFO & damage : g_damages) {
+		if(damage.exist) {
+			drawLineSphere(Sphere(damage.params.pos, damage.params.radius), Color::red);
+		}
 	}
+	
 }
