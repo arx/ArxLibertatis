@@ -1280,15 +1280,11 @@ void ArxGame::manageKeyMouse() {
 				pIO = FlyingOverObject(DANAEMouse);
 			}
 		}
-
-		if(pIO && g_cursorOverBook) {
-			for(size_t i = 0; i < MAX_EQUIPED; i++) {
-				if(entities.get(player.equiped[i]) == pIO) {
-					FlyingOverIO = pIO;
-				}
-			}
+		
+		if(pIO && g_cursorOverBook && isEquippedByPlayer(pIO)) {
+			FlyingOverIO = pIO;
 		}
-
+		
 		if(pIO
 		   && (pIO->gameFlags & GFLAG_INTERACTIVITY)
 		   && !g_cursorOverBook
