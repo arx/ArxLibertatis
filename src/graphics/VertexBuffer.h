@@ -48,7 +48,7 @@ public:
 	virtual Index * lock(BufferFlags flags = 0, size_t offset = 0, size_t count = size_t(-1)) = 0;
 	virtual void unlock() = 0;
 	
-	virtual ~IndexBuffer() { }
+	virtual ~IndexBuffer() = default;
 	
 protected:
 
@@ -73,7 +73,7 @@ public:
 	virtual void draw(Renderer::Primitive primitive, size_t count, size_t offset = 0) const = 0;
 	virtual void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, const unsigned short * indices, size_t nbindices) const = 0;
 	
-	virtual ~VertexBuffer() { }
+	virtual ~VertexBuffer() = default;
 	
 protected:
 	
