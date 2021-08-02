@@ -126,8 +126,7 @@ typedef HandleType<struct SourceHandleTag,    s32, -1> SourceHandle;
 
 struct SourcedSample {
 	
-	SourcedSample()
-	{ }
+	SourcedSample() = default;
 	
 	SourcedSample(SourceHandle source, SampleHandle sample)
 		: m_source(source)
