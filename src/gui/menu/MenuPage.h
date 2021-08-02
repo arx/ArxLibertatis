@@ -56,7 +56,7 @@ class MenuPage : private boost::noncopyable {
 public:
 	
 	explicit MenuPage(MENUSTATE id);
-	virtual ~MenuPage();
+	virtual ~MenuPage() = default;
 	void update(Vec2f pos);
 	void render();
 	void drawDebug();

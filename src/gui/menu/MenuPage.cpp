@@ -63,8 +63,6 @@ MenuPage::MenuPage(MENUSTATE id)
 	, m_disableShortcuts(false)
 { }
 
-MenuPage::~MenuPage() { }
-
 void MenuPage::addCorner(Widget * widget, Anchor anchor) {
 	
 	Vec2f pos(0.f);
