@@ -70,7 +70,7 @@ public:
 		GameDuration m_elapsed;
 
 		CSpellFx();
-		virtual ~CSpellFx() { }
+		virtual ~CSpellFx() = default;
 		
 		virtual void SetDuration(GameDuration duration);
 		
