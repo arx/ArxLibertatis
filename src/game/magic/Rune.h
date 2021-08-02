@@ -58,18 +58,20 @@ enum Rune {
 
 struct RuneInfo {
 	
-	RuneInfo() { }
+	RuneInfo() = default;
+	
 	RuneInfo(Rune rune_, std::string_view name_, Vec2s startOffset_, std::string_view sequence_)
 		: rune(rune_)
 		, name(name_)
 		, startOffset(startOffset_)
 		, sequence(sequence_)
 	{ }
-
+	
 	Rune rune;
 	std::string_view name;
 	Vec2s startOffset;
 	std::string_view sequence;
+	
 };
 
 extern std::array<RuneInfo, RUNE_COUNT> runeInfos;
