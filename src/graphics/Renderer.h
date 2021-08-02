@@ -254,7 +254,7 @@ public:
 		
 	public:
 		
-		virtual ~Listener() { }
+		virtual ~Listener() = default;
 		
 		virtual void onRendererInit(Renderer & renderer) { ARX_UNUSED(renderer); }
 		virtual void onRendererShutdown(Renderer & renderer) { ARX_UNUSED(renderer); }
