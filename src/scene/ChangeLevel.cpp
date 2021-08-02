@@ -772,7 +772,8 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		}
 	}
 	
-	for(size_t k = 0; k < MAX_EQUIPED; k++) {
+	assert(SAVED_MAX_EQUIPED == player.equiped.size());
+	for(size_t k = 0; k < player.equiped.size(); k++) {
 		if(Entity * item = entities.get(player.equiped[k])) {
 			storeIdString(asp->equiped[k], item);
 		} else {
@@ -1640,7 +1641,7 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	progressBarAdvance();
 	LoadLevelScreen();
 	
-	assert(SAVED_MAX_EQUIPED == MAX_EQUIPED);
+	assert(SAVED_MAX_EQUIPED == player.equiped.size());
 	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
 		Entity * item = ConvertToValidIO(asp->equiped[i]);
 		player.equiped[i] = item ? item->index() : EntityHandle();

@@ -1054,7 +1054,6 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	print_item(save, asp.rightIO, "Right");
 	print_item(save, asp.curtorch, "Torch");
 	
-	assert(SAVED_MAX_EQUIPED == MAX_EQUIPED);
 	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
 		print_item(save, asp.equiped[i], equip_slot_name(i));
 	}
