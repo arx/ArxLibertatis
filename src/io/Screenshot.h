@@ -51,7 +51,6 @@ class SnapShot {
 public:
 	
 	explicit SnapShot(fs::path name);
-	~SnapShot();
 	
 	fs::path getNextFilePath();
 	

@@ -61,8 +61,6 @@ SnapShot::SnapShot(fs::path name)
 	: m_basePath(std::move(name))
 { }
 
-SnapShot::~SnapShot() { }
-
 fs::path SnapShot::getNextFilePath() {
 	int num = 0;
 
