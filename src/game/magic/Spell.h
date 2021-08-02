@@ -132,7 +132,8 @@ public:
 	static_assert(alignof(glm::mat4x4) <= 16, "need to increase alignment");
 	
 	SpellBase();
-	virtual ~SpellBase() {}
+	
+	virtual ~SpellBase() = default;
 	
 	virtual bool CanLaunch() {
 		return true;
