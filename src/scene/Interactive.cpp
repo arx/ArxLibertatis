@@ -182,10 +182,12 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io) {
 	
 	ARX_INTERACTIVE_ForceIOLeaveZone(io);
 	
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] == io->index()) {
-			ARX_EQUIPMENT_UnEquip(entities.player(), entities.get(player.equiped[i]), 1);
-			player.equiped[i] = EntityHandle();
+	for(EntityHandle & equipment : player.equiped) {
+		if(equipment == io->index()) {
+			ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
+			equipment = EntityHandle();
+			arx_assert(!isEquippedByPlayer(io));
+			break;
 		}
 	}
 	
@@ -469,13 +471,10 @@ void PrepareIOTreatZone(long flag) {
 	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(cameraPos, 1);
 	long PlayerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
 	TREATZONE_AddIO(entities.player());
-
-	short sGlobalPlayerRoom = checked_range_cast<short>(PlayerRoom);
-
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		Entity * toequip = entities.get(player.equiped[i]);
-		if(toequip) {
-			toequip->room = sGlobalPlayerRoom;
+	
+	for(EntityHandle equipment : player.equiped) {
+		if(Entity * toequip = entities.get(equipment)) {
+			toequip->room = checked_range_cast<short>(PlayerRoom);
 			toequip->requestRoomUpdate = false;
 		}
 	}
