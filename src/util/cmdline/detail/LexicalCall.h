@@ -146,7 +146,7 @@ class lexical_call_t<Result(ValueType, ValueType, TypeCast)> {
 		virtual bool empty() const = 0;
 		virtual bool opt_empty() const = 0;
 		
-		virtual ~Args() {}
+		virtual ~Args() = default;
 		
 	};
 	
