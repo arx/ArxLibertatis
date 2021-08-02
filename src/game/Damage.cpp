@@ -1348,9 +1348,8 @@ void ARX_DAMAGES_DamagePlayerEquipment(float damages) {
 		ratio = 1.f;
 	}
 	
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		Entity * todamage = entities.get(player.equiped[i]);
-		if(todamage) {
+	for(EntityHandle equipped : player.equiped) {
+		if(Entity * todamage = entities.get(equipped)) {
 			ARX_DAMAGES_DurabilityCheck(todamage, ratio);
 		}
 	}
