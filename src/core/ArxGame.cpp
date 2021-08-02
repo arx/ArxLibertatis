@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <algorithm>
 #include <sstream>
+#include <string_view>
 
 #include <boost/lexical_cast.hpp>
 
@@ -288,11 +289,7 @@ static bool migrateFilenames(const fs::path & configFile) {
 	static const char * files[] = { "cfg.ini", "cfg_default.ini",
 	 "sfx.pak", "loc.pak", "data2.pak", "data.pak", "speech.pak", "loc_default.pak", "speech_default.pak",
 	 "save", "editor", "game", "graph", "localisation", "misc", "sfx", "speech" };
-	
-	std::set<std::string> fileset;
-	for(size_t i = 0; i < std::size(files); i++) {
-		fileset.insert(files[i]);
-	}
+	std::set<std::string_view> fileset(std::begin(files), std::end(files));
 	
 	bool migrated = true;
 	
