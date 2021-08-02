@@ -284,15 +284,11 @@ bool isEquippedByPlayer(const Entity * item) {
 	
 	arx_assert(entities.player());
 	
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(Entity * toequip = entities.get(player.equiped[i])) {
-			if(toequip == item) {
-				return true;
-			}
-		}
+	if(!item) {
+		return false;
 	}
 	
-	return false;
+	return std::find(player.equiped.begin(), player.equiped.end(), item->index()) != player.equiped.end();
 }
 
 // flags & 1 == destroyed !
