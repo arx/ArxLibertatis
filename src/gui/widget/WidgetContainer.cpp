@@ -22,8 +22,6 @@
 #include "core/ArxGame.h"
 #include "graphics/DrawLine.h"
 
-WidgetContainer::WidgetContainer() { }
-
 WidgetContainer::~WidgetContainer() {
 	for(Widget * w : m_widgets) {
 		delete w;

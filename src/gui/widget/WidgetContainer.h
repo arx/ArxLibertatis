@@ -28,7 +28,6 @@ class WidgetContainer {
 	
 public:
 	
-	WidgetContainer();
 	virtual ~WidgetContainer();
 	
 	void update();
