@@ -50,7 +50,7 @@ public:
 	
 protected:
 	
-	virtual ~InputBackend() { }
+	virtual ~InputBackend() = default;
 	
 };
 
