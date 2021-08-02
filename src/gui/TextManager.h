@@ -57,7 +57,6 @@ class TextManager {
 	
 public:
 	
-	TextManager();
 	~TextManager();
 	
 	bool AddText(Font * font, std::string && text, const Rect & bbox,

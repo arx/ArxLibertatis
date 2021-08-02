@@ -64,8 +64,6 @@ struct TextManager::ManagedText {
 	
 };
 
-TextManager::TextManager() { }
-
 TextManager::~TextManager() {
 	Clear();
 }
