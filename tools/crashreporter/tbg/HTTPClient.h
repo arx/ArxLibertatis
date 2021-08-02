@@ -171,7 +171,7 @@ class Session {
 	
 public:
 	
-	virtual ~Session() { }
+	virtual ~Session() = default;
 	
 	/*!
 	* Send a HTTP GET request
