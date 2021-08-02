@@ -48,7 +48,7 @@ class CrashHandlerImpl {
 public:
 	
 	CrashHandlerImpl();
-	virtual ~CrashHandlerImpl();
+	virtual ~CrashHandlerImpl() = default;
 
 	virtual bool initialize();
 	virtual void shutdown();

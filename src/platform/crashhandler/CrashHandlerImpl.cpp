@@ -46,9 +46,6 @@ CrashHandlerImpl::CrashHandlerImpl()
 	, m_textLength(0)
 { }
 
-CrashHandlerImpl::~CrashHandlerImpl() {
-}
-
 bool CrashHandlerImpl::initialize() {
 	Autolock autoLock(&m_Lock);
 	
