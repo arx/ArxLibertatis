@@ -58,7 +58,7 @@ class Stream {
 	
 public:
 	
-	virtual ~Stream() { }
+	virtual ~Stream() = default;
 	
 	virtual aalError setStream(std::unique_ptr<PakFileHandle> stream) = 0;
 	virtual aalError setPosition(size_t position) = 0;
