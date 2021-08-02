@@ -512,7 +512,7 @@ class IfCommand : public Command {
 		
 		Operator(std::string_view name, ValueType type) : m_name(name), m_type(type) { }
 		
-		virtual ~Operator() { }
+		virtual ~Operator() = default;
 		
 		virtual bool number(const Context & context, float left, float right) {
 			ARX_UNUSED(left), ARX_UNUSED(right);
