@@ -31,8 +31,6 @@ PakFile::~PakFile() {
 	delete _alternative;
 }
 
-PakDirectory::PakDirectory() { }
-
 PakDirectory::~PakDirectory() {
 	
 	for(files_iterator file = files_begin(); file != files_end(); ++file) {

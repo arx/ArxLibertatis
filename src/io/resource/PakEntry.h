@@ -76,7 +76,6 @@ private:
 	
 public:
 	
-	PakDirectory();
 	~PakDirectory();
 	
 	typedef std::map<std::string, PakDirectory, std::less<>>::iterator dirs_iterator;
