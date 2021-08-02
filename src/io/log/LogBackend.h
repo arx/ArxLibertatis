@@ -44,7 +44,7 @@ public:
 	
 	static const size_t alignment = 24;
 	
-	virtual ~Backend() { }
+	virtual ~Backend() = default;
 	
 	virtual void log(const Source & file, int line, Logger::LogLevel level, std::string_view str) = 0;
 	
