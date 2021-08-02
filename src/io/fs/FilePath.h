@@ -56,7 +56,7 @@ public:
 	
 	static constexpr const char ext_sep = '.';
 	
-	path() { }
+	path() = default;
 	/* implicit */ path(std::string_view str);
 	/* implicit */ path(const std::string & str) : path(std::string_view(str)) { }
 	/* implicit */ path(const char * str) : path(std::string_view(str)) { }
