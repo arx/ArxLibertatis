@@ -56,7 +56,7 @@ class Codec {
 	
 public:
 	
-	virtual ~Codec() { }
+	virtual ~Codec() = default;
 	
 	virtual aalError setHeader(void * header) = 0;
 	virtual void setStream(PakFileHandle * stream) = 0;
