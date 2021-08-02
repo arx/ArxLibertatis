@@ -105,7 +105,6 @@ public:
 	typedef T * const * iterator;
 	typedef const T * const * const_iterator;
 	
-	ResourceList() { }
 	~ResourceList() { clear(); }
 	
 	bool isValid(Handle handle) const {
