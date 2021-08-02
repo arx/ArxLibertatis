@@ -64,8 +64,6 @@ class CreateFieldSpell final : public SpellBase {
 	
 public:
 	
-	CreateFieldSpell();
-	
 	void Launch() override;
 	void End() override;
 	void Update() override;

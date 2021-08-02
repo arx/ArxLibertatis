@@ -256,8 +256,6 @@ Vec3f ParalyseSpell::getPosition() const {
 }
 
 
-CreateFieldSpell::CreateFieldSpell() { }
-
 void CreateFieldSpell::Launch() {
 	
 	GameInstant start = g_gameTime.now();
