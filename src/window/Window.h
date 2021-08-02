@@ -37,7 +37,7 @@ class Window {
 public:
 	
 	Window();
-	virtual ~Window();
+	virtual ~Window() = default;
 	
 	/*!
 	 * Set the window titlebar caption.
@@ -102,7 +102,7 @@ public:
 		
 	public:
 		
-		virtual ~Listener() { }
+		virtual ~Listener() = default;
 		
 		virtual void onCreateWindow(const Window & window);
 		virtual void onDestroyWindow(const Window & window);

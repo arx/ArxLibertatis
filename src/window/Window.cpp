@@ -63,8 +63,6 @@ Window::Window()
 	, m_focused(false)
 	{ }
 
-Window::~Window() { }
-
 void Window::addListener(Listener * listener) {
 	m_listeners.push_back(listener);
 }
