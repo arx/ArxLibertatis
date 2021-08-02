@@ -248,8 +248,6 @@ SaveBlock::SaveBlock(fs::path savefile)
 	, m_chunkCount(0)
 { }
 
-SaveBlock::~SaveBlock() { }
-
 bool SaveBlock::loadFileTable() {
 	
 	m_handle.seekg(0);

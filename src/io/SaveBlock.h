@@ -120,7 +120,7 @@ public:
 	 * 
 	 * If the SaveBlock vas changed (via save()) and not flushed since, the save fill will be corrupted.
 	 */
-	~SaveBlock();
+	~SaveBlock() = default;
 	
 	/*!
 	 * Open a save block.
