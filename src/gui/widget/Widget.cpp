@@ -33,8 +33,6 @@ Widget::Widget()
 	, m_shortcut(ActionKey::UNUSED)
 { }
 
-Widget::~Widget() { }
-
 bool Widget::click() {
 	
 	if(!m_enabled) {

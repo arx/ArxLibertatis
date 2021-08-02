@@ -67,7 +67,7 @@ class Widget : private boost::noncopyable {
 public:
 	
 	Widget();
-	virtual ~Widget();
+	virtual ~Widget() = default;
 	
 	virtual bool click();
 	virtual bool doubleClick();
