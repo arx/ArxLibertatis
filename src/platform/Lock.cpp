@@ -28,9 +28,7 @@ Lock::Lock() : locked(false) {
 	cond = cond_init;
 }
 
-Lock::~Lock() {
-	
-}
+Lock::~Lock() = default;
 
 void Lock::lock() {
 	
