@@ -389,23 +389,10 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	return true;
 }
 
-static bool IsPlayerEquipedWith(Entity * io) {
-	
-	if(!io) {
-		return false;
-	}
-	
-	if(io == player.torch) {
-		return true;
-	}
-	
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] == io->index()) {
-			return true;
-		}
-	}
-	
-	return false;
+static bool isInPlayerInventoryOrEquipment(const Entity & entity) {
+	return locateInInventories(&entity).io == EntityHandle_Player
+	       || &entity == player.torch
+	       || isEquippedByPlayer(&entity);
 }
 
 static bool ARX_CHANGELEVEL_Push_Index(long num) {
@@ -427,8 +414,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	for(Entity & entity : entities) {
 		if(entity != *entities.player()
 		   && !(entity.ioflags & IO_NOSAVE)
-		   && locateInInventories(&entity).io != EntityHandle_Player
-		   && !IsPlayerEquipedWith(&entity)) {
+		   && !isInPlayerInventoryOrEquipment(entity)) {
 			asi.nb_inter++;
 		}
 	}
@@ -463,8 +449,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	for(Entity & entity : entities) {
 		if(entity != *entities.player()
 		   && !(entity.ioflags & IO_NOSAVE)
-		   && locateInInventories(&entity).io != EntityHandle_Player
-		   && !IsPlayerEquipedWith(&entity)) {
+		   && !isInPlayerInventoryOrEquipment(entity)) {
 			ARX_CHANGELEVEL_IO_INDEX aii;
 			memset(&aii, 0, sizeof(aii));
 			util::storeString(aii.filename, (entity.classPath() + ".teo").string());
@@ -820,9 +805,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	g_currentSavedGame->save("player", dat, pos);
 	
 	for(Entity & entity : entities) {
-		if(&entity == g_draggedEntity
-		   || locateInInventories(&entity).io == EntityHandle_Player
-		   || IsPlayerEquipedWith(&entity)) {
+		if(&entity == g_draggedEntity || isInPlayerInventoryOrEquipment(entity)) {
 			ARX_CHANGELEVEL_Push_IO(&entity, level);
 		}
 	}
@@ -838,8 +821,7 @@ static bool ARX_CHANGELEVEL_Push_AllIO(long level) {
 		if(!(entity.ioflags & IO_NOSAVE)
 		   && &entity != g_draggedEntity
 		   && entity != *entities.player()
-		   && locateInInventories(&entity).io != EntityHandle_Player
-		   && !IsPlayerEquipedWith(&entity)) {
+		   && !isInPlayerInventoryOrEquipment(entity)) {
 			ok = ARX_CHANGELEVEL_Push_IO(&entity, level) && ok;
 		}
 	}
