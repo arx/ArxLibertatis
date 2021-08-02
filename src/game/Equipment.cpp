@@ -140,15 +140,6 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag(std::string_view temp) {
 	
 }
 
-//! \brief Releases Equiped Id from player
-static void unequipFromPlayer(Entity & entity) {
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] == entity.index()) {
-			player.equiped[i] = EntityHandle();
-		}
-	}
-}
-
 //! \brief Releases Equipment Structure
 void ARX_EQUIPMENT_ReleaseAll(Entity * io) {
 	
@@ -305,21 +296,19 @@ bool isEquippedByPlayer(const Entity * item) {
 }
 
 // flags & 1 == destroyed !
-void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
-{
-	if(!target || !tounequip)
+void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags) {
+	
+	if(target != entities.player() || !tounequip) {
 		return;
-
-	if(target != entities.player())
-		return;
-
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(entities.get(player.equiped[i]) == tounequip) {
+	}
+	
+	for(EntityHandle & equipment : player.equiped) {
+		if(equipment == tounequip->index()) {
 			EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, tounequip->obj);
-			unequipFromPlayer(*tounequip);
+			equipment = EntityHandle();
+			arx_assert(!isEquippedByPlayer(tounequip));
 			target->bbox2D.min.x = 9999;
 			target->bbox2D.max.x = -9999;
-			
 			if(!flags) {
 				if(!g_draggedEntity) {
 					ARX_SOUND_PlayInterface(g_snd.INVSTD);
@@ -328,15 +317,15 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 					giveToPlayer(tounequip);
 				}
 			}
-			
 			SendIOScriptEvent(tounequip, entities.player(), SM_EQUIPOUT);
 			SendIOScriptEvent(entities.player(), tounequip, SM_EQUIPOUT);
-			
 		}
 	}
-
-	if(tounequip->type_flags & (OBJECT_TYPE_HELMET | OBJECT_TYPE_ARMOR | OBJECT_TYPE_LEGGINGS))
+	
+	if(tounequip->type_flags & (OBJECT_TYPE_HELMET | OBJECT_TYPE_ARMOR | OBJECT_TYPE_LEGGINGS)) {
 		ARX_EQUIPMENT_RecreatePlayerMesh();
+	}
+	
 }
 
 void ARX_EQUIPMENT_AttachPlayerWeaponToHand() {
