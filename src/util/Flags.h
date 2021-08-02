@@ -21,6 +21,8 @@
 #ifndef ARX_UTIL_FLAGS_H
 #define ARX_UTIL_FLAGS_H
 
+#include <type_traits>
+
 #include "platform/Platform.h"
 
 /*!
@@ -43,6 +45,11 @@ public:
 	/* implicit */ Flags(Enum flag) : m_flags(flag) { }
 	
 	/* implicit */ Flags(Zero /* zero */ = 0) : m_flags(0) { }
+	
+	template <typename NullPtr, typename = std::enable_if_t<
+		std::is_same_v<std::remove_cv_t<std::remove_reference_t<NullPtr>>, decltype(nullptr)>>
+	>
+	/* implicit */ Flags(NullPtr /* nullptr */) = delete;
 	
 	static Flags load(u32 flags) {
 		return Flags(flags, true);
