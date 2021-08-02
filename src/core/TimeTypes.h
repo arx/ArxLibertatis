@@ -72,6 +72,11 @@ public:
 	
 	/* implicit */ DurationType(Zero /* zero */ = 0) : t(0) { }
 	
+	template <typename NullPtr, typename = std::enable_if_t<
+		std::is_same_v<std::remove_cv_t<std::remove_reference_t<NullPtr>>, decltype(nullptr)>>
+	>
+	/* implicit */ DurationType(NullPtr /* nullptr */) = delete;
+	
 };
 
 template <typename TAG, typename T>
@@ -112,6 +117,11 @@ private:
 public:
 	
 	/* implicit */ InstantType(Zero /* zero */ = 0) : t(0) { }
+	
+	template <typename NullPtr, typename = std::enable_if_t<
+		std::is_same_v<std::remove_cv_t<std::remove_reference_t<NullPtr>>, decltype(nullptr)>>
+	>
+	/* implicit */ InstantType(NullPtr /* nullptr */) = delete;
 	
 };
 
