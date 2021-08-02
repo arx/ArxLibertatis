@@ -48,7 +48,7 @@ public:
 	static constexpr const char dir_sep = '/';
 	static constexpr const char ext_sep = '.';
 	
-	path() { }
+	path() = default;
 	/* implicit */ path(std::string_view str) : pathstr(str) { check(); }
 	/* implicit */ path(std::string str) : pathstr(std::move(str)) { check(); }
 	/* implicit */ path(const char * str) : pathstr(str) { check(); }
