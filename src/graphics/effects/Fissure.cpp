@@ -69,8 +69,6 @@ void FissureFx::SetColorRays2(Color3f color)
 	m_colorRays2 = color;
 }
 
-CRiseDead::~CRiseDead() { }
-
 CRiseDead::CRiseDead()
 	: m_eSrc(0.f)
 	, fBetaRadCos(0.f)

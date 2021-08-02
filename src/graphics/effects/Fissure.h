@@ -52,7 +52,6 @@ class CRiseDead : public FissureFx {
 public:
 	
 	CRiseDead();
-	~CRiseDead();
 	
 	GameDuration GetDuration();
 	
