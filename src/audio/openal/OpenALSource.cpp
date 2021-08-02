@@ -126,13 +126,13 @@ OpenALSource::~OpenALSource() {
 	}
 	
 	if(m_streaming) {
-		for(size_t i = 0; i < NBUFFERS; i++) {
-			if(m_buffers[i] && alIsBuffer(m_buffers[i])) {
-				TraceAL("deleting buffer " << m_buffers[i]);
-				alDeleteBuffers(1, &m_buffers[i]);
+		for(ALuint & buffer : m_buffers) {
+			if(buffer && alIsBuffer(buffer)) {
+				TraceAL("deleting buffer " << buffer);
+				alDeleteBuffers(1, &buffer);
 				nbbuffers--;
 				AL_CHECK_ERROR_N("deleting buffer")
-				m_buffers[i] = 0;
+				buffer = 0;
 			}
 		}
 		arx_assert(!m_refcount);
@@ -528,13 +528,13 @@ aalError OpenALSource::stop() {
 	AL_CHECK_ERROR("stopping source")
 	
 	if(m_streaming) {
-		for(size_t i = 0; i < NBUFFERS; i++) {
-			if(m_buffers[i] && alIsBuffer(m_buffers[i])) {
-				TraceAL("deleting buffer " << m_buffers[i]);
-				alDeleteBuffers(1, &m_buffers[i]);
+		for(ALuint & buffer : m_buffers) {
+			if(buffer && alIsBuffer(buffer)) {
+				TraceAL("deleting buffer " << buffer);
+				alDeleteBuffers(1, &buffer);
 				nbbuffers--;
 				AL_CHECK_ERROR("deleting buffer")
-				m_buffers[i] = 0;
+				buffer = 0;
 			}
 		}
 	}
