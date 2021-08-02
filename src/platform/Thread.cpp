@@ -114,7 +114,7 @@ void Thread::setPriority(Priority priority) {
 	}
 }
 
-Thread::~Thread() { }
+Thread::~Thread() = default;
 
 void Thread::waitForCompletion() const {
 	if(m_started) {
