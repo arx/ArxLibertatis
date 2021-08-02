@@ -29,7 +29,6 @@ class PanelWidget final : public Widget {
 	
 public:
 	
-	PanelWidget();
 	~PanelWidget() override;
 	
 	void move(const Vec2f & offset) override;

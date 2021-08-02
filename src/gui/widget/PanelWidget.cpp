@@ -21,8 +21,6 @@
 
 #include "input/Input.h"
 
-PanelWidget::PanelWidget() { }
-
 PanelWidget::~PanelWidget() {
 	for(Widget * w : m_children) {
 		delete w;
