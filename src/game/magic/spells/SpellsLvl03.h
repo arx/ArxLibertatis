@@ -64,7 +64,6 @@ class FireballSpell final : public SpellBase {
 public:
 	
 	FireballSpell();
-	~FireballSpell() override;
 	
 	void Launch() override;
 	void End() override;

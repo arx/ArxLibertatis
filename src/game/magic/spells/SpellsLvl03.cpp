@@ -176,8 +176,6 @@ FireballSpell::FireballSpell()
 	, m_createBallDuration(GameDurationMs(2000))
 { }
 
-FireballSpell::~FireballSpell() { }
-
 void FireballSpell::Launch() {
 	
 	m_duration = GameDurationMs(6000);
