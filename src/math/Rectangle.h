@@ -47,7 +47,7 @@ public:
 		, bottom(T(other.bottom))
 	{ }
 	
-	Rectangle_() { }
+	Rectangle_() = default;
 	
 	Rectangle_(T _left, T _top, T _right, T _bottom)
 		: left(_left)
