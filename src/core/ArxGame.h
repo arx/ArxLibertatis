@@ -80,7 +80,6 @@ protected:
 public:
 	
 	ArxGame();
-	~ArxGame() override;
 	
 	void run() override;
 	

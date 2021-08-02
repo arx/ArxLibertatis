@@ -207,11 +207,8 @@ ArxGame::ArxGame()
 	, m_frameDelta(0)
 { }
 
-ArxGame::~ArxGame() {
-}
-
-bool ArxGame::initialize()
-{
+bool ArxGame::initialize() {
+	
 	bool init;
 	
 	init = initConfig();
