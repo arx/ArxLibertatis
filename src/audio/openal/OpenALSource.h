@@ -23,6 +23,7 @@
 #include "Configure.h"
 
 #include <stddef.h>
+#include <array>
 #include <memory>
 
 #include <al.h>
@@ -113,9 +114,9 @@ private:
 	ALuint m_source;
 	
 	enum { NBUFFERS = 2 };
-
-	ALuint m_buffers[NBUFFERS];
-	size_t m_bufferSizes[NBUFFERS];
+	
+	std::array<ALuint, NBUFFERS> m_buffers;
+	std::array<size_t, NBUFFERS> m_bufferSizes;
 	unsigned int * m_refcount; // Reference count for shared buffers
 	
 	float m_volume;

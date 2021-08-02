@@ -102,12 +102,10 @@ OpenALSource::OpenALSource(Sample * sample) :
 	m_streaming(false), m_loadCount(0), m_written(0),
 	m_read(0),
 	m_source(0),
+	m_buffers{ 0 },
 	m_refcount(nullptr),
-	m_volume(1.f) {
-	for(size_t i = 0; i < NBUFFERS; i++) {
-		m_buffers[i] = 0;
-	}
-}
+	m_volume(1.f)
+{ }
 
 OpenALSource::~OpenALSource() {
 	
