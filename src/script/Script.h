@@ -65,7 +65,7 @@ class Entity;
 
 namespace script { class Context; }
 
-const size_t MAX_SCRIPTTIMERS = 4;
+constexpr size_t MAX_SCRIPTTIMERS = 4;
 
 enum ScriptMessage {
 	SM_NULL = 0,
