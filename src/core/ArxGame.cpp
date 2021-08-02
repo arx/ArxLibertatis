@@ -1697,7 +1697,7 @@ void ArxGame::updateLevel() {
 			Entity * entity = entities.player();
 			
 			EERIEDrawAnimQuatUpdate(entity->obj,
-			                        entity->animlayer,
+			                        entity->animlayer.data(),
 			                        entity->angle,
 			                        entity->pos,
 			                        framedelay,

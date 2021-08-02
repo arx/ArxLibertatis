@@ -2085,7 +2085,7 @@ void UpdateInter() {
 				pos.y = entity._npcdata->vvpos;
 			}
 			
-			EERIEDrawAnimQuatUpdate(entity.obj, entity.animlayer, temp, pos, diff, &entity, true);
+			EERIEDrawAnimQuatUpdate(entity.obj, entity.animlayer.data(), temp, pos, diff, &entity, true);
 			
 		}
 		

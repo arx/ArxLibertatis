@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GAME_ENTITY_H
 
 #include <stddef.h>
+#include <array>
 #include <set>
 #include <string>
 #include <vector>
@@ -281,8 +282,8 @@ public:
 	TextureContainer * m_icon; // Object Icon
 	EERIE_3DOBJ * obj; // IO Mesh data
 	ANIM_HANDLE * anims[MAX_ANIMS]; // Object Animations
-	AnimLayer animlayer[MAX_ANIM_LAYERS];
-
+	std::array<AnimLayer, MAX_ANIM_LAYERS> animlayer;
+	
 	AnimationBlendStatus animBlend;
 	
 	EERIE_3D_BBOX bbox3D;

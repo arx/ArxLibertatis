@@ -1034,8 +1034,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 	ais.physics = io->physics;
 	ais.spellcast_data = io->spellcast_data;
-	assert(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
-	std::copy(io->animlayer, io->animlayer + SAVED_MAX_ANIM_LAYERS, ais.animlayer);
+	assert(SAVED_MAX_ANIM_LAYERS == io->animlayer.size());
+	std::copy(io->animlayer.begin(), io->animlayer.end(), ais.animlayer);
 	for(size_t k = 0; k < MAX_ANIM_LAYERS; k++) {
 		ais.animlayer[k].cur_anim = GetIOAnimIdx2(io, io->animlayer[k].cur_anim);
 	}
@@ -1906,8 +1906,8 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 			io->physics.cyl.origin = io->initpos;
 		}
 		
-		assert(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
-		std::copy(ais->animlayer, ais->animlayer + SAVED_MAX_ANIM_LAYERS, io->animlayer);
+		assert(SAVED_MAX_ANIM_LAYERS == io->animlayer.size());
+		std::copy(ais->animlayer, ais->animlayer + SAVED_MAX_ANIM_LAYERS, io->animlayer.begin());
 		
 		for(size_t k = 0; k < MAX_ANIM_LAYERS; k++) {
 			AnimLayer & layer = io->animlayer[k];
