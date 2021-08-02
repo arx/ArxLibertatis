@@ -83,10 +83,8 @@ CMagicMissile::CMagicMissile()
 	m_elapsed = m_duration + GameDurationMs(1);
 }
 
-CMagicMissile::~CMagicMissile() { }
-
-void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
-{
+void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles) {
+	
 	SetDuration(m_duration);
 	
 	eCurPos = startPos;
