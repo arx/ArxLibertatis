@@ -763,16 +763,15 @@ void ARX_SOUND_PopAnimSamples(const std::vector<std::pair<res::path, size_t>> & 
 }
 
 void ReleaseAnimFromIO(Entity * io, long num) {
-
-	for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
-		AnimLayer & layer = io->animlayer[count];
-		
+	
+	for(AnimLayer & layer : io->animlayer) {
 		if(layer.cur_anim == io->anims[num]) {
 			layer = AnimLayer();
 			layer.cur_anim = nullptr;
 		}
 	}
-
+	
 	EERIE_ANIMMANAGER_ReleaseHandle(io->anims[num]);
 	io->anims[num] = nullptr;
+	
 }
