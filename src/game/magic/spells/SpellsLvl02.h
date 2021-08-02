@@ -88,8 +88,6 @@ class HarmSpell final : public SpellBase {
 	
 public:
 	
-	HarmSpell();
-	
 	void Launch() override;
 	void End() override;
 	void Update() override;

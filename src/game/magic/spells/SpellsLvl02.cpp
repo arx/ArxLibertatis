@@ -330,8 +330,6 @@ Vec3f LowerArmorSpell::getPosition() const {
 	return getTargetPosition();
 }
 
-HarmSpell::HarmSpell() { }
-
 void HarmSpell::Launch() {
 	
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
