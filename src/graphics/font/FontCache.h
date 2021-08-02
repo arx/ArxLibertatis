@@ -39,9 +39,7 @@ public:
 	
 private:
 	
-	// Disable creation from outside.
-	FontCache();
-	~FontCache();
+	FontCache() = delete;
 	
 	static Impl * instance;
 	
