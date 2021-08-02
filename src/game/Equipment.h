@@ -130,6 +130,6 @@ void ARX_EQUIPMENT_IdentifyAll();
 void ARX_EQUIPMENT_UnEquipAllPlayer();
 float GetHitValue(std::string_view name);
 void ARX_EQUIPMENT_UnEquipPlayerWeapon();
-bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO);
+bool isEquippedByPlayer(const Entity * item);
 
 #endif // ARX_GAME_EQUIPMENT_H

@@ -277,7 +277,7 @@ class InventoryCommand : public Command {
 				return Failed;
 			}
 			
-			if(ARX_EQUIPMENT_IsPlayerEquip(t)) {
+			if(isEquippedByPlayer(t)) {
 				ARX_EQUIPMENT_UnEquip(entities.player(), t, 1);
 			}
 			

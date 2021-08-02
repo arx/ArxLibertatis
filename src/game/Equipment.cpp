@@ -289,13 +289,13 @@ void ARX_EQUIPMENT_UnEquipAllPlayer() {
 	ARX_PLAYER_ComputePlayerFullStats();
 }
 
-bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO) {
+bool isEquippedByPlayer(const Entity * item) {
 	
 	arx_assert(entities.player());
 	
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(Entity * toequip = entities.get(player.equiped[i])) {
-			if(toequip == _pIO) {
+			if(toequip == item) {
 				return true;
 			}
 		}
