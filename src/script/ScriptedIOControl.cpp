@@ -140,12 +140,7 @@ public:
 		TREATZONE_AddIO(ioo);
 		
 		// Check that the init script didn't put the item anywhere
-		bool reInsert = !locateInInventories(ioo);
-		for(size_t i = 0; i < MAX_EQUIPED; i++) {
-			if(entities.get(player.equiped[i]) == ioo) {
-				reInsert = false;
-			}
-		}
+		bool reInsert = !locateInInventories(ioo) && !isEquippedByPlayer(ioo);
 		
 		if(reInsert) {
 			if(oldPos) {
@@ -153,11 +148,9 @@ public:
 					PutInFrontOfPlayer(ioo);
 				}
 			} else {
-				for(size_t i = 0; i < MAX_EQUIPED; i++) {
-					if(entities.get(player.equiped[i]) == io) {
-						ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
-						ARX_EQUIPMENT_Equip(entities.player(), ioo);
-					}
+				if(isEquippedByPlayer(io)) {
+					ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
+					ARX_EQUIPMENT_Equip(entities.player(), ioo);
 				}
 			}
 		}
