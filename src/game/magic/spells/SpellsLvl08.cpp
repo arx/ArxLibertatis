@@ -86,8 +86,6 @@ Vec3f InvisibilitySpell::getPosition() const {
 }
 
 
-ManaDrainSpell::ManaDrainSpell() { }
-
 bool ManaDrainSpell::CanLaunch() {
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
 }
@@ -159,8 +157,6 @@ Vec3f ManaDrainSpell::getPosition() const {
 	return getTargetPosition();
 }
 
-
-ExplosionSpell::ExplosionSpell() { }
 
 void ExplosionSpell::Launch() {
 	ARX_SOUND_PlaySFX(g_snd.SPELL_EXPLOSION);
@@ -247,8 +243,6 @@ void EnchantWeaponSpell::End() { }
 
 void EnchantWeaponSpell::Update() { }
 
-
-LifeDrainSpell::LifeDrainSpell() { }
 
 bool LifeDrainSpell::CanLaunch() {
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);

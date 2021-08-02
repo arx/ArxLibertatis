@@ -41,8 +41,6 @@ class ManaDrainSpell final : public SpellBase {
 	
 public:
 	
-	ManaDrainSpell();
-	
 	bool CanLaunch() override;
 	void Launch() override;
 	void End() override;
@@ -60,8 +58,6 @@ private:
 class ExplosionSpell final : public SpellBase {
 	
 public:
-	
-	ExplosionSpell();
 	
 	void Launch() override;
 	void Update() override;
@@ -86,8 +82,6 @@ public:
 class LifeDrainSpell final : public SpellBase {
 	
 public:
-	
-	LifeDrainSpell();
 	
 	bool CanLaunch() override;
 	void Launch() override;
