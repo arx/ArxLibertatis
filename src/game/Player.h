@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIE_3DOBJ;
 class TextureContainer;
 
-static const size_t MAX_EQUIPED = 12;
+constexpr size_t MAX_EQUIPED = 12;
 
 struct ARX_INTERFACE_MEMORIZE_SPELL {
 	bool bSpell;
@@ -276,7 +276,7 @@ struct ARXCHARACTER {
 	Color3f m_torchColor;
 	Entity * torch;
 	
-	EntityHandle equiped[MAX_EQUIPED];
+	std::array<EntityHandle, MAX_EQUIPED> equiped;
 	
 	// Modifier Values (Items, curses, etc...)
 	PlayerAttribute m_attributeMod;
