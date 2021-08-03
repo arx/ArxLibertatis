@@ -1153,7 +1153,6 @@ set(PHYSICS_SOURCES
 set(PLATFORM_SOURCES
 	src/platform/Alignment.cpp
 	src/platform/Environment.cpp
-	src/platform/Lock.cpp
 	src/platform/OS.cpp
 	src/platform/Platform.cpp
 	src/platform/Process.cpp
