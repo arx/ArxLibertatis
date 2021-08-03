@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <algorithm>
 #include <list>
+#include <mutex>
 
 #include "ai/Anchors.h"
 #include "ai/PathFinder.h"
@@ -57,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "graphics/Math.h"
 #include "platform/Thread.h"
-#include "platform/Lock.h"
 #include "platform/profiler/Profiler.h"
 #include "scene/Light.h"
 
@@ -71,7 +71,7 @@ static const PlatformDuration PATHFINDER_UPDATE_INTERVAL = PlatformDurationMs(10
 
 class PathFinderThread : public StoppableThread {
 	
-	Lock m_mutex;
+	std::mutex m_mutex;
 	std::list<PATHFINDER_REQUEST> m_queue;
 	volatile bool m_busy;
 	
@@ -85,14 +85,14 @@ public:
 	
 	size_t queueSize() {
 		
-		Autolock lock(&m_mutex);
+		std::scoped_lock lock(m_mutex);
 		
 		return m_queue.size();
 	}
 	
 	void clearQueue() {
 		
-		Autolock lock(&m_mutex);
+		std::scoped_lock lock(m_mutex);
 		
 		m_queue.clear();
 	}
@@ -107,7 +107,7 @@ void PathFinderThread::queueRequest(const PATHFINDER_REQUEST & request) {
 	
 	arx_assert(request.entity && (request.entity->ioflags & IO_NPC));
 	
-	Autolock lock(&m_mutex);
+	std::scoped_lock lock(m_mutex);
 	
 	// If this NPC is already requesting a Pathfinding then either
 	// try to Override it or add it to queue if it is currently being
@@ -136,7 +136,7 @@ void PathFinderThread::run() {
 	
 	for(; !isStopRequested(); m_busy = false, sleep(PATHFINDER_UPDATE_INTERVAL)) {
 		
-		Autolock lock(&m_mutex);
+		std::scoped_lock lock(m_mutex);
 		
 		m_busy = true;
 		
