@@ -61,8 +61,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <map>
 
-#include <boost/noncopyable.hpp>
-
 #include "graphics/GraphicsTypes.h"
 #include "io/resource/ResourcePath.h"
 #include "math/Vector.h"
@@ -92,7 +90,7 @@ struct SMY_ARXMAT {
  * TODO This class is currently an hybrid between a texture class and a render batch...
  *      We should create a RenderBatch class for all vertex stuff.
  */
-class TextureContainer : private boost::noncopyable {
+class TextureContainer {
 	
 public:
 	
@@ -105,6 +103,9 @@ public:
 	};
 	
 	DECLARE_FLAGS(TCFlag, TCFlags)
+	
+	TextureContainer(const TextureContainer &) = delete;
+	TextureContainer & operator=(const TextureContainer &) = delete;
 	
 	/*!
 	 * Constructor.
