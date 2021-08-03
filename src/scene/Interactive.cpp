@@ -1804,21 +1804,11 @@ Entity * GetFirstInterAtPos(const Vec2s & pos) {
 
 bool IsEquipedByPlayer(const Entity * io) {
 	
-	if(!io) {
-		return false;
-	}
-	
-	if((io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER)) {
+	if(io && (io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER)) {
 		return true;
 	}
 	
-	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] == io->index()) {
-			return true;
-		}
-	}
-	
-	return false;
+	return isEquippedByPlayer(io);
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
