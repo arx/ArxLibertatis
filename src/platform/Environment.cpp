@@ -21,6 +21,7 @@
 
 #include <cctype>
 #include <algorithm>
+#include <mutex>
 #include <sstream>
 #include <utility>
 
@@ -63,7 +64,6 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 
-#include "platform/Lock.h"
 #include "platform/WindowsUtils.h"
 
 #include "util/String.h"
@@ -558,7 +558,7 @@ bool isFileDescriptorDisabled(int fd) {
 	
 }
 
-static Lock g_environmentLock;
+static std::mutex g_environmentLock;
 
 bool hasEnvironmentVariable(const char * name) {
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
