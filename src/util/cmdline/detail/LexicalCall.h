@@ -37,8 +37,6 @@
 #include <functional>
 #include <utility>
 
-#include <boost/noncopyable.hpp>
-
 #include "util/cmdline/detail/ArgsAdapter.h"
 #include "util/cmdline/detail/LFunction.h"
 
@@ -130,9 +128,12 @@ class lexical_call_t<Result(ValueType, ValueType, TypeCast)> {
 	
 	typedef TypeCast type_cast_t;
 	
-	struct Args : boost::noncopyable {
+	struct Args {
 		
 		type_cast_t & m_cast;
+		
+		Args(const Args &) = delete;
+		Args & operator=(const Args &) = delete;
 		
 		explicit Args(type_cast_t & cast) : m_cast(cast) { }
 		
