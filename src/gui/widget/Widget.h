@@ -22,8 +22,6 @@
 
 #include <functional>
 
-#include <boost/noncopyable.hpp>
-
 #include "core/SaveGame.h"
 #include "input/InputKey.h"
 #include "math/Rectangle.h"
@@ -62,9 +60,12 @@ enum WidgetType {
 	WidgetType_SaveSlot,
 };
 
-class Widget : private boost::noncopyable {
+class Widget {
 	
 public:
+	
+	Widget(const Widget &) = delete;
+	Widget & operator=(const Widget &) = delete;
 	
 	Widget();
 	virtual ~Widget() = default;
