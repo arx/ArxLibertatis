@@ -67,11 +67,8 @@ std::mutex LogManager::mutex;
 
 logger::Source * LogManager::getSource(const char * file) {
 	
-	{
-		LogManager::Sources::iterator i = LogManager::sources.find(file);
-		if(i != sources.end()) {
-			return &i->second;
-		}
+	if(auto it = LogManager::sources.find(file); it != sources.end()) {
+		return &it->second;
 	}
 	
 	logger::Source * source = &LogManager::sources[file];
@@ -112,10 +109,13 @@ logger::Source * LogManager::getSource(const char * file) {
 }
 
 void LogManager::deleteAllBackends() {
-	for(Backends::const_iterator i = backends.begin(); i != backends.end(); ++i) {
-		delete *i;
+	
+	for(logger::Backend * backend : backends) {
+		delete backend;
 	}
+	
 	backends.clear();
+	
 }
 
 } // anonymous namespace
@@ -162,9 +162,8 @@ void Logger::log(const char * file, int line, LogLevel level, const std::string 
 	
 	const logger::Source * source = LogManager::getSource(file);
 	
-	for(LogManager::Backends::const_iterator i = LogManager::backends.begin();
-		  i != LogManager::backends.end(); ++i) {
-		(*i)->log(*source, line, level, str);
+	for(logger::Backend * backend : LogManager::backends) {
+		backend->log(*source, line, level, str);
 	}
 	
 }
@@ -173,8 +172,7 @@ void Logger::set(const std::string & component, Logger::LogLevel level) {
 	
 	std::scoped_lock lock(LogManager::mutex);
 	
-	std::pair<LogManager::Rules::iterator, bool> ret;
-	ret = LogManager::rules.insert(std::make_pair(component, level));
+	auto ret = LogManager::rules.emplace(component, level);
 	
 	if(!ret.second) {
 		// entry already existed
@@ -189,8 +187,8 @@ void Logger::set(const std::string & component, Logger::LogLevel level) {
 		if(level > oldLevel && oldLevel < LogManager::defaultLevel) {
 			// minimum log level may have changed
 			LogManager::minimumLevel = LogManager::defaultLevel;
-			for(const LogManager::Rules::value_type & i : LogManager::rules) {
-				LogManager::minimumLevel = std::min(LogManager::minimumLevel, i.second);
+			for(const auto & entry : LogManager::rules) {
+				LogManager::minimumLevel = std::min(LogManager::minimumLevel, entry.second);
 			}
 		}
 		
@@ -205,20 +203,20 @@ void Logger::reset(const std::string & component) {
 	
 	std::scoped_lock lock(LogManager::mutex);
 	
-	LogManager::Rules::iterator i = LogManager::rules.find(component);
-	if(i == LogManager::rules.end()) {
+	auto it = LogManager::rules.find(component);
+	if(it == LogManager::rules.end()) {
 		return;
 	}
 	
-	if(i->second < LogManager::defaultLevel) {
+	if(it->second < LogManager::defaultLevel) {
 		// minimum log level may have changed
 		LogManager::minimumLevel = LogManager::defaultLevel;
-		for(const LogManager::Rules::value_type & entry : LogManager::rules) {
+		for(const auto & entry : LogManager::rules) {
 			LogManager::minimumLevel = std::min(LogManager::minimumLevel, entry.second);
 		}
 	}
 	
-	LogManager::rules.erase(i);
+	LogManager::rules.erase(it);
 	LogManager::sources.clear();
 	
 }
@@ -227,9 +225,8 @@ void Logger::flush() {
 	
 	std::scoped_lock lock(LogManager::mutex);
 	
-	for(LogManager::Backends::const_iterator i = LogManager::backends.begin();
-	    i != LogManager::backends.end(); ++i) {
-		(*i)->flush();
+	for(logger::Backend * backend : LogManager::backends) {
+		backend->flush();
 	}
 	
 }
@@ -307,9 +304,8 @@ void Logger::shutdown() {
 }
 
 void Logger::quickShutdown() {
-	for(LogManager::Backends::const_iterator i = LogManager::backends.begin();
-	    i != LogManager::backends.end(); ++i) {
-		(*i)->quickShutdown();
+	for(logger::Backend * backend : LogManager::backends) {
+		backend->quickShutdown();
 	}
 }
 
