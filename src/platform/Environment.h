@@ -25,8 +25,6 @@
 #include <vector>
 #include <stddef.h>
 
-#include <boost/noncopyable.hpp>
-
 #include "platform/Platform.h"
 
 namespace fs { class path; }
@@ -148,7 +146,7 @@ struct EnvironmentOverride {
  * This helper allows temporarily setting environment variables that change
  * the behavior of library functions.
  */
-class EnvironmentLock : private boost::noncopyable {
+class EnvironmentLock {
 	
 	EnvironmentOverride * const m_overrides;
 	const size_t m_count;
@@ -157,6 +155,9 @@ class EnvironmentLock : private boost::noncopyable {
 	void unlock();
 	
 public:
+	
+	EnvironmentLock(const EnvironmentLock &) = delete;
+	EnvironmentLock & operator=(const EnvironmentLock &) = delete;
 	
 	EnvironmentLock()
 		: m_overrides(nullptr)
