@@ -329,7 +329,7 @@ public:
 	IO_HALO halo_native;
 	
 	SCRIPT_VARIABLES m_variables;
-	GameInstant m_scriptTimers[MAX_SCRIPTTIMERS];
+	std::array<GameInstant, 4> m_scriptTimers;
 	DisabledEvents m_disabledEvents;
 	EERIE_SCRIPT script; // Primary Script
 	EERIE_SCRIPT over_script; // Overriding Script
