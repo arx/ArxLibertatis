@@ -29,8 +29,6 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include <boost/noncopyable.hpp>
-
 #include "gui/Credits.h"
 #include "graphics/font/Font.h"
 #include "io/fs/FilePath.h"
@@ -40,7 +38,7 @@
 #include "platform/CrashHandler.h"
 
 
-class FontCache::Impl : private boost::noncopyable {
+class FontCache::Impl {
 	
 	struct FontDeleter {
 		void operator()(Font * font) const { delete font; }
@@ -59,11 +57,11 @@ class FontCache::Impl : private boost::noncopyable {
 		
 	public:
 		
+		FontFile(const FontFile &) = delete;
+		FontFile & operator=(const FontFile &) = delete;
+		
 		explicit FontFile(FT_Library library, const res::path & file);
-		
-		FontFile(const FontFile & other) = delete;
 		FontFile(FontFile && other) noexcept;
-		
 		~FontFile();
 		
 		Font * getSize(unsigned size, unsigned weight, bool preload);
@@ -77,8 +75,14 @@ class FontCache::Impl : private boost::noncopyable {
 	std::map<res::path, FontFile> m_files;
 	FT_Library m_library;
 	
-	Impl();
+public:
 	
+	Impl(const Impl &) = delete;
+	Impl & operator=(const Impl &) = delete;
+	
+private:
+	
+	Impl();
 	~Impl();
 	
 	Font * getFont(const res::path & file, unsigned size, unsigned weight, bool preload);
