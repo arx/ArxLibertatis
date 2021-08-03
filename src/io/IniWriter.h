@@ -23,16 +23,17 @@
 #include <ostream>
 #include <string_view>
 
-#include <boost/noncopyable.hpp>
-
 /*!
  * Simple writer for ini-formatted data.
  */
-class IniWriter : private boost::noncopyable {
+class IniWriter {
 	
 	std::ostream & output;
 	
 public:
+	
+	IniWriter(const IniWriter &) = delete;
+	IniWriter & operator=(const IniWriter &) = delete;
 	
 	/*!
 	 * Initialize this ini writer.
