@@ -20,20 +20,21 @@
 #ifndef ARX_GUI_MAINMENU_H
 #define ARX_GUI_MAINMENU_H
 
-#include <boost/noncopyable.hpp>
-
 #include "gui/MenuWidgets.h"
 #include "gui/widget/Widget.h"
 #include "gui/widget/WidgetContainer.h"
 #include "math/Types.h"
 
-class MainMenu : private boost::noncopyable {
+class MainMenu {
 	
 public:
 	
 	bool bReInitAll;
 	
 	MenuWindow * m_window;
+	
+	MainMenu(const MainMenu &) = delete;
+	MainMenu & operator=(const MainMenu &) = delete;
 	
 	explicit MainMenu();
 	virtual ~MainMenu();
