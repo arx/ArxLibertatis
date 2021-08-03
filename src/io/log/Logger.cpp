@@ -22,6 +22,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
+#include <mutex>
 #include <unordered_map>
 #include <vector>
 
@@ -29,7 +30,6 @@
 #include "io/log/LogBackend.h"
 #include "io/log/MsvcLogger.h"
 
-#include "platform/Lock.h"
 #include "platform/ProgramOptions.h"
 
 #include "Configure.h"
@@ -41,7 +41,7 @@ struct LogManager {
 	static const Logger::LogLevel defaultLevel;
 	static Logger::LogLevel minimumLevel;
 	
-	static Lock lock;
+	static std::mutex mutex;
 	
 	//! note: using the pointer value of a string constant as a hash map index.
 	typedef std::unordered_map<const char *, logger::Source> Sources;
@@ -55,6 +55,7 @@ struct LogManager {
 	
 	static logger::Source * getSource(const char * file);
 	static void deleteAllBackends();
+	
 };
 
 const Logger::LogLevel LogManager::defaultLevel = Logger::Info;
@@ -62,7 +63,7 @@ Logger::LogLevel LogManager::minimumLevel = LogManager::defaultLevel;
 LogManager::Sources LogManager::sources;
 LogManager::Backends LogManager::backends;
 LogManager::Rules LogManager::rules;
-Lock LogManager::lock;
+std::mutex LogManager::mutex;
 
 logger::Source * LogManager::getSource(const char * file) {
 	
@@ -121,21 +122,23 @@ void LogManager::deleteAllBackends() {
 
 void Logger::add(logger::Backend * backend) {
 	
-	Autolock lock(LogManager::lock);
+	std::scoped_lock lock(LogManager::mutex);
 	
 	if(backend != nullptr) {
 		LogManager::backends.push_back(backend);
 	}
+	
 }
 
 void Logger::remove(logger::Backend * backend) {
 	
-	Autolock lock(LogManager::lock);
+	std::scoped_lock lock(LogManager::mutex);
 	
 	LogManager::backends.erase(std::remove(LogManager::backends.begin(),
 	                                       LogManager::backends.end(),
 	                                        backend),
 	                           LogManager::backends.end());
+	
 }
 
 bool Logger::isEnabled(const char * file, LogLevel level) {
@@ -144,7 +147,7 @@ bool Logger::isEnabled(const char * file, LogLevel level) {
 		return false;
 	}
 	
-	Autolock lock(LogManager::lock);
+	std::scoped_lock lock(LogManager::mutex);
 	
 	return (LogManager::getSource(file)->level <= level);
 }
@@ -155,7 +158,7 @@ void Logger::log(const char * file, int line, LogLevel level, const std::string 
 		return;
 	}
 	
-	Autolock lock(LogManager::lock);
+	std::scoped_lock lock(LogManager::mutex);
 	
 	const logger::Source * source = LogManager::getSource(file);
 	
@@ -164,12 +167,11 @@ void Logger::log(const char * file, int line, LogLevel level, const std::string 
 		(*i)->log(*source, line, level, str);
 	}
 	
-	LogManager::lock.unlock();
 }
 
 void Logger::set(const std::string & component, Logger::LogLevel level) {
 	
-	Autolock lock(LogManager::lock);
+	std::scoped_lock lock(LogManager::mutex);
 	
 	std::pair<LogManager::Rules::iterator, bool> ret;
 	ret = LogManager::rules.insert(std::make_pair(component, level));
@@ -201,7 +203,7 @@ void Logger::set(const std::string & component, Logger::LogLevel level) {
 
 void Logger::reset(const std::string & component) {
 	
-	Autolock lock(LogManager::lock);
+	std::scoped_lock lock(LogManager::mutex);
 	
 	LogManager::Rules::iterator i = LogManager::rules.find(component);
 	if(i == LogManager::rules.end()) {
@@ -217,18 +219,19 @@ void Logger::reset(const std::string & component) {
 	}
 	
 	LogManager::rules.erase(i);
-	
 	LogManager::sources.clear();
+	
 }
 
 void Logger::flush() {
 	
-	Autolock lock(LogManager::lock);
+	std::scoped_lock lock(LogManager::mutex);
 	
 	for(LogManager::Backends::const_iterator i = LogManager::backends.begin();
 	    i != LogManager::backends.end(); ++i) {
 		(*i)->flush();
 	}
+	
 }
 
 void Logger::configure(const std::string & settings) {
@@ -292,7 +295,7 @@ void Logger::initialize() {
 
 void Logger::shutdown() {
 	
-	Autolock lock(LogManager::lock);
+	std::scoped_lock lock(LogManager::mutex);
 	
 	LogManager::sources.clear();
 	LogManager::rules.clear();
@@ -300,6 +303,7 @@ void Logger::shutdown() {
 	LogManager::minimumLevel = LogManager::defaultLevel;
 	
 	LogManager::deleteAllBackends();
+	
 }
 
 void Logger::quickShutdown() {
