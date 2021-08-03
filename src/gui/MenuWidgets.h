@@ -47,8 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <string>
 
-#include <boost/noncopyable.hpp>
-
 #include "core/TimeTypes.h"
 #include "graphics/Color.h"
 #include "gui/menu/MenuPage.h"
@@ -65,7 +63,7 @@ class Font;
 class MenuPage;
 struct SaveGame;
 
-class MenuWindow : private boost::noncopyable {
+class MenuWindow {
 	
 private:
 	
@@ -75,6 +73,9 @@ private:
 	float m_fadeDistance;
 	
 public:
+	
+	MenuWindow(const MenuWindow &) = delete;
+	MenuWindow & operator=(const MenuWindow &) = delete;
 	
 	MenuWindow();
 	virtual ~MenuWindow();
