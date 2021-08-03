@@ -27,17 +27,18 @@
 
 #include <math.h>
 
-#include <boost/noncopyable.hpp>
-
 #include "platform/Architecture.h"
 #include "platform/WindowsUtils.h"
 
-class WindowsMain : private boost::noncopyable {
+class WindowsMain {
 	
 public:
 	
 	int argc;
 	char ** argv;
+	
+	WindowsMain(const WindowsMain &) = delete;
+	WindowsMain & operator=(const WindowsMain &) = delete;
 	
 	WindowsMain() {
 		
