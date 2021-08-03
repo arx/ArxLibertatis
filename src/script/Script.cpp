@@ -1249,9 +1249,9 @@ static SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VARIABLES & _svff) {
 
 static SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES & svf, std::string_view name) {
 	
-	for(SCRIPT_VARIABLES::iterator it = svf.begin(); it != svf.end(); ++it) {
-		if(it->name == name) {
-			return &(*it);
+	for(SCRIPT_VAR & var : svf) {
+		if(var.name == name) {
+			return &var;
 		}
 	}
 	
@@ -1260,9 +1260,9 @@ static SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES & svf, std::string_view name)
 
 const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, std::string_view name) {
 	
-	for(SCRIPT_VARIABLES::const_iterator it = svf.begin(); it != svf.end(); ++it) {
-		if(it->name == name) {
-			return &(*it);
+	for(const SCRIPT_VAR & var : svf) {
+		if(var.name == name) {
+			return &var;
 		}
 	}
 	
