@@ -30,6 +30,8 @@ class FontCache {
 	
 public:
 	
+	FontCache() = delete;
+	
 	static void initialize();
 	static void shutdown();
 	
@@ -38,8 +40,6 @@ public:
 	static void releaseFont(Font * font);
 	
 private:
-	
-	FontCache() = delete;
 	
 	static Impl * instance;
 	
