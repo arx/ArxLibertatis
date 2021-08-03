@@ -20,6 +20,7 @@
 #ifndef ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERIMPL_H
 #define ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERIMPL_H
 
+#include <mutex>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -41,7 +42,6 @@
 #include "io/fs/FilePath.h"
 #include "platform/CrashHandler.h"
 #include "platform/crashhandler/CrashInfo.h"
-#include "platform/Lock.h"
 
 class CrashHandlerImpl {
 	
@@ -105,7 +105,7 @@ protected:
 	size_t m_textLength;
 	
 	// Protect against multiple accesses.
-	Lock m_Lock;
+	std::mutex m_mutex;
 	
 	// Crash callbacks
 	std::vector<CrashHandler::CrashCallback> m_crashCallbacks;

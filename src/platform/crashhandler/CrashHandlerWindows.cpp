@@ -159,7 +159,7 @@ void SIGSEGVHandler(int signalCode);
 
 bool CrashHandlerWindows::registerThreadCrashHandlers() {
 	
-	Autolock autoLock(&m_Lock);
+	std::scoped_lock lock(m_mutex);
 	
 	DWORD dwThreadId = GetCurrentThreadId();
 	
@@ -200,7 +200,7 @@ bool CrashHandlerWindows::registerThreadCrashHandlers() {
 
 void CrashHandlerWindows::unregisterThreadCrashHandlers() {
 	
-	Autolock autoLock(&m_Lock);
+	std::scoped_lock lock(m_mutex);
 	
 	DWORD dwThreadId = GetCurrentThreadId();
 	
@@ -256,7 +256,7 @@ void CrashHandlerWindows::writeCrashDump(PEXCEPTION_POINTERS pointers) {
 
 [[noreturn]] void CrashHandlerWindows::handleCrash(int crashType, void * crashExtraInfo, int fpeCode) {
 	
-	Autolock autoLock(&m_Lock);
+	std::scoped_lock lock(m_mutex);
 	
 	// Run the callbacks
 	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();

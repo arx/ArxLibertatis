@@ -47,7 +47,8 @@ CrashHandlerImpl::CrashHandlerImpl()
 { }
 
 bool CrashHandlerImpl::initialize() {
-	Autolock autoLock(&m_Lock);
+	
+	std::scoped_lock lock(m_mutex);
 	
 	bool initialized = true;
 	
@@ -68,7 +69,8 @@ bool CrashHandlerImpl::initialize() {
 }
 
 void CrashHandlerImpl::shutdown() {
-	Autolock autoLock(&m_Lock);
+	
+	std::scoped_lock lock(m_mutex);
 	
 	unregisterCrashHandlers();
 	destroySharedMemory();
@@ -156,18 +158,18 @@ bool CrashHandlerImpl::addAttachedFile(const fs::path & file) {
 		return addAttachedFile(absolute);
 	}
 	
-	Autolock autoLock(&m_Lock);
-
+	std::scoped_lock lock(m_mutex);
+	
 	if(m_pCrashInfo->nbFilesAttached == CrashInfo::MaxNbFiles) {
 		LogError << "Too much files already attached to the crash report (" << m_pCrashInfo->nbFilesAttached << ").";
 		return false;
 	}
-
+	
 	if(file.string().size() >= CrashInfo::MaxFilenameLen) {
 		LogError << "File name is too long.";
 		return false;
 	}
-
+	
 	for(u32 i = 0; i < m_pCrashInfo->nbFilesAttached; i++) {
 		if(strcmp(m_pCrashInfo->attachedFiles[i], file.string().c_str()) == 0) {
 			LogWarning << "File \"" << file << "\" is already attached.";
@@ -177,13 +179,13 @@ bool CrashHandlerImpl::addAttachedFile(const fs::path & file) {
 	
 	util::storeStringTerminated(m_pCrashInfo->attachedFiles[m_pCrashInfo->nbFilesAttached], file.string());
 	m_pCrashInfo->nbFilesAttached++;
-
+	
 	return true;
 }
 
 bool CrashHandlerImpl::setVariable(std::string_view name, std::string_view value) {
 	
-	Autolock autoLock(&m_Lock);
+	std::scoped_lock lock(m_mutex);
 	
 	if(name.size() >= CrashInfo::MaxVariableNameLen) {
 		LogError << "Variable name is too long.";
@@ -217,14 +219,16 @@ bool CrashHandlerImpl::setVariable(std::string_view name, std::string_view value
 }
 
 void CrashHandlerImpl::setWindow(u64 window) {
-	Autolock autoLock(&m_Lock);
+	
+	std::scoped_lock lock(m_mutex);
 	
 	m_pCrashInfo->window = window;
+	
 }
 
 bool CrashHandlerImpl::addText(std::string_view text) {
 	
-	Autolock autoLock(&m_Lock);
+	std::scoped_lock lock(m_mutex);
 	
 	if(!m_pCrashInfo) {
 		return false;
@@ -251,8 +255,8 @@ bool CrashHandlerImpl::setReportLocation(const fs::path & location) {
 		return setReportLocation(absolute);
 	}
 	
-	Autolock autoLock(&m_Lock);
-
+	std::scoped_lock lock(m_mutex);
+	
 	if(location.string().size() >= CrashInfo::MaxFilenameLen) {
 		LogError << "Report location path is too long.";
 		return false;
@@ -267,7 +271,7 @@ bool CrashHandlerImpl::setReportLocation(const fs::path & location) {
 
 bool CrashHandlerImpl::deleteOldReports(size_t nbReportsToKeep) {
 	
-	Autolock autoLock(&m_Lock);
+	std::scoped_lock lock(m_mutex);
 	
 	if(strlen(m_pCrashInfo->crashReportFolder) == 0) {
 		LogError << "Report location has not been specified";
@@ -308,16 +312,20 @@ bool CrashHandlerImpl::deleteOldReports(size_t nbReportsToKeep) {
 }
 
 void CrashHandlerImpl::registerCrashCallback(CrashHandler::CrashCallback crashCallback) {
-	Autolock autoLock(&m_Lock);
-
+	
+	std::scoped_lock lock(m_mutex);
+	
 	m_crashCallbacks.push_back(crashCallback);
+	
 }
 
 void CrashHandlerImpl::unregisterCrashCallback(CrashHandler::CrashCallback crashCallback) {
-	Autolock autoLock(&m_Lock);
-
+	
+	std::scoped_lock lock(m_mutex);
+	
 	m_crashCallbacks.erase(std::remove(m_crashCallbacks.begin(),
 	                                   m_crashCallbacks.end(),
 	                                   crashCallback),
 	                       m_crashCallbacks.end());
+	
 }
