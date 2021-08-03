@@ -49,8 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <vector>
 
-#include <boost/noncopyable.hpp>
-
 #include "audio/AudioTypes.h"
 #include "platform/Platform.h"
 
@@ -88,7 +86,7 @@ private:
 };
 
 template <typename T, typename Handle = size_t>
-class ResourceList : private boost::noncopyable {
+class ResourceList {
 	
 	template <typename Tag, typename IndexType, IndexType InvalidValue>
 	static size_t get(HandleType<Tag, IndexType, InvalidValue> handle) {
@@ -105,6 +103,10 @@ public:
 	typedef T * const * iterator;
 	typedef const T * const * const_iterator;
 	
+	ResourceList(const ResourceList &) = delete;
+	ResourceList & operator=(const ResourceList &) = delete;
+	
+	ResourceList() = default;
 	~ResourceList() { clear(); }
 	
 	bool isValid(Handle handle) const {
