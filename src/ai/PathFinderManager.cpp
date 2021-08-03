@@ -132,7 +132,7 @@ void PathFinderThread::queueRequest(const PATHFINDER_REQUEST & request) {
 void PathFinderThread::run() {
 	
 	BackgroundData * eb = ACTIVEBKG;
-	PathFinder pathfinder(eb->m_anchors.size(), eb->m_anchors.data(), g_staticLightsMax, g_staticLights);
+	PathFinder pathfinder(eb->m_anchors.size(), eb->m_anchors.data(), &g_staticLights);
 	
 	for(; !isStopRequested(); m_busy = false, sleep(PATHFINDER_UPDATE_INTERVAL)) {
 		

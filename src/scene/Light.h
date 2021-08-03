@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_SCENE_LIGHT_H
 
 #include <stddef.h>
+#include <vector>
 
 #include "core/TimeTypes.h"
 #include "audio/AudioTypes.h"
@@ -65,11 +66,10 @@ struct EERIEPOLY;
 struct SMY_VERTEX;
 class Entity;
 
-const size_t g_staticLightsMax = 1200;
 const size_t g_dynamicLightsMax = 500;
 
 extern EERIE_LIGHT * g_culledDynamicLights[g_dynamicLightsMax];
-extern EERIE_LIGHT * g_staticLights[g_staticLightsMax];
+extern std::vector<EERIE_LIGHT> g_staticLights;
 extern EERIE_LIGHT g_dynamicLights[g_dynamicLightsMax];
 extern size_t g_culledDynamicLightsCount;
 
@@ -165,7 +165,6 @@ struct ColorMod {
 void RecalcLight(EERIE_LIGHT * el);
 
 void EERIE_LIGHT_GlobalInit();
-long EERIE_LIGHT_Create();
 void PrecalcIOLighting(const Vec3f & pos, float radius);
 
 const LightHandle torchLightHandle = LightHandle(0);

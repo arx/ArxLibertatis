@@ -124,14 +124,9 @@ static void drawDebugLights() {
 	
 	UseRenderState state(RenderState().blendAdditive());
 	
-	for(size_t i = 0; i < g_staticLightsMax; i++) {
+	for(const EERIE_LIGHT & light : g_staticLights) {
 		
-		EERIE_LIGHT * light = g_staticLights[i];
-		if(!light) {
-			continue;
-		}
-		
-		Vec4f p = worldToClipSpace(light->pos);
+		Vec4f p = worldToClipSpace(light.pos);
 		if(p.w <= 0.f) {
 			continue;
 		}
@@ -141,27 +136,23 @@ static void drawDebugLights() {
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			UseRenderState depthTestState(RenderState().depthTest(true));
 			Sphere fallstart;
-			fallstart.origin = light->pos;
-			fallstart.radius = light->fallstart;
+			fallstart.origin = light.pos;
+			fallstart.radius = light.fallstart;
 			drawLineSphere(fallstart, Color(Color3<u8>::green, 200));
 			Sphere fallend;
-			fallend.origin = light->pos;
-			fallend.radius = light->fallend;
+			fallend.origin = light.pos;
+			fallend.radius = light.fallend;
 			drawLineSphere(fallend, Color(Color3<u8>::red, 200));
 		}
 		
-		if(light->m_screenRect.isValid())
-			drawDebugBoundingBox(light->m_screenRect);
-	}
-	
-	for(size_t i = 0; i < g_staticLightsMax; i++) {
-		
-		EERIE_LIGHT * light = g_staticLights[i];
-		if(!light) {
-			continue;
+		if(light.m_screenRect.isValid()) {
+			drawDebugBoundingBox(light.m_screenRect);
 		}
 		
-		EERIEDrawSprite(light->pos, 11.f, g_lightSourceTexture, Color(light->rgb), 0.5f);
+	}
+	
+	for(const EERIE_LIGHT & light : g_staticLights) {
+		EERIEDrawSprite(light.pos, 11.f, g_lightSourceTexture, Color(light.rgb), 0.5f);
 	}
 	
 }

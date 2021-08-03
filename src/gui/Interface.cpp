@@ -1787,32 +1787,35 @@ void ArxGame::manageEditorControls() {
 			} else { // GLights
 				float fMaxdist = player.m_telekinesis ? 850 : 300;
 				
-				for(size_t i = 0; i < g_staticLightsMax; i++) {
-					EERIE_LIGHT * light = g_staticLights[i];
+				for(EERIE_LIGHT & light : g_staticLights) {
 					
-					if(   light
-					   && light->m_exists
-					   && !fartherThan(light->pos, player.pos, fMaxdist)
-					   && !(light->extras & EXTRAS_NO_IGNIT)
-					   && light->m_screenRect.contains(Vec2f(DANAEMouse))
+					arx_assert(light.m_exists);
+					
+					if(!fartherThan(light.pos, player.pos, fMaxdist)
+					   && !(light.extras & EXTRAS_NO_IGNIT)
+					   && light.m_screenRect.contains(Vec2f(DANAEMouse))
 					   && (COMBINE->ioflags & IO_ITEM)
 					) {
+						
 						if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
-							if(!light->m_ignitionStatus) {
-								light->m_ignitionStatus = true;
-								ARX_SOUND_PlaySFX(g_snd.TORCH_START, &light->pos);
+							if(!light.m_ignitionStatus) {
+								light.m_ignitionStatus = true;
+								ARX_SOUND_PlaySFX(g_snd.TORCH_START, &light.pos);
 							}
 						}
 						
 						if(COMBINE->_itemdata->LightValue == 0) {
-							if(light->m_ignitionStatus) {
-								light->m_ignitionStatus = false;
-								ARX_SOUND_PlaySFX(g_snd.TORCH_END, &light->pos);
+							if(light.m_ignitionStatus) {
+								light.m_ignitionStatus = false;
+								ARX_SOUND_PlaySFX(g_snd.TORCH_END, &light.pos);
 								SendIOScriptEvent(nullptr, COMBINE, SM_CUSTOM, "douse");
 							}
 						}
+						
 					}
+					
 				}
+				
 			}
 			
 			COMBINEGOLD = false;
@@ -1831,21 +1834,17 @@ void ArxGame::manageEditorControls() {
 		
 		if(COMBINE) {
 			float fMaxdist = player.m_telekinesis ? 850 : 300;
-			
-			for(size_t i = 0; i < g_staticLightsMax; i++) {
-				EERIE_LIGHT * light = g_staticLights[i];
-				
-				if(   light
-				   && light->m_exists
-				   && !fartherThan(light->pos, player.pos, fMaxdist)
-				   && !(light->extras & EXTRAS_NO_IGNIT)
-				   && light->m_screenRect.contains(Vec2f(DANAEMouse))
+			for(const EERIE_LIGHT & light : g_staticLights) {
+				arx_assert(light.m_exists);
+				if(!fartherThan(light.pos, player.pos, fMaxdist)
+				   && !(light.extras & EXTRAS_NO_IGNIT)
+				   && light.m_screenRect.contains(Vec2f(DANAEMouse))
 				) {
 					cursorSetInteraction();
 				}
 			}
 		}
-
+		
 		// Double Clicked and not already combining.
 		if(eeMouseDoubleClick1() && !COMBINE && FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)) {
 			

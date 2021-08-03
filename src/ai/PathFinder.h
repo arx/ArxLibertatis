@@ -70,7 +70,7 @@ public:
 	 * The light data is only used when the stealth parameter is set to true.
 	 */
 	PathFinder(size_t graphSize, const ANCHOR_DATA * graph,
-	           size_t lightCount, const EERIE_LIGHT * const * lights);
+	           const std::vector<EERIE_LIGHT> * lights);
 	
 	typedef unsigned long NodeId;
 	typedef std::vector<NodeId> Result;
@@ -148,8 +148,7 @@ private:
 	
 	size_t map_s; // Map size
 	const ANCHOR_DATA * map_d; // Map data
-	size_t slight_c; // Light count
-	const EERIE_LIGHT * const * slight_l; // Light data
+	const std::vector<EERIE_LIGHT> * m_lights; // Light data
 	
 };
 

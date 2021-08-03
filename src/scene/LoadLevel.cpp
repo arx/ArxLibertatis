@@ -142,54 +142,50 @@ static std::vector<ColorBGRA> g_levelLighting;
 
 static void loadLights(const char * dat, size_t & pos, size_t count, const Vec3f & trans = Vec3f(0.f)) {
 	
-	if(count != 0) {
-		EERIE_LIGHT_GlobalInit();
-	}
+	EERIE_LIGHT_GlobalInit();
+	g_staticLights.reserve(count);
 	
 	for(size_t i = 0; i < count; i++) {
 		
 		const DANAE_LS_LIGHT * dlight = reinterpret_cast<const DANAE_LS_LIGHT *>(dat + pos);
 		pos += sizeof(DANAE_LS_LIGHT);
 		
-		long j = EERIE_LIGHT_Create();
-		if(j >= 0) {
-			EERIE_LIGHT * el = g_staticLights[j];
-			
-			el->m_exists = true;
-			el->m_isVisible = true;
-			el->fallend = dlight->fallend;
-			el->fallstart = dlight->fallstart;
-			el->falldiffmul = 1.f / (el->fallend - el->fallstart);
-			el->intensity = dlight->intensity;
-			
-			el->pos = dlight->pos.toVec3() + trans;
-			
-			el->rgb = dlight->rgb;
-			
-			el->extras = ExtrasType::load(dlight->extras);
-			
-			el->ex_flicker = dlight->ex_flicker;
-			el->ex_radius = dlight->ex_radius;
-			el->ex_frequency = dlight->ex_frequency;
-			el->ex_size = dlight->ex_size;
-			el->ex_speed = dlight->ex_speed;
-			el->ex_flaresize = dlight->ex_flaresize;
-			
-			el->m_ignitionStatus = !(el->extras & EXTRAS_STARTEXTINGUISHED);
-			
-			if((el->extras & EXTRAS_SPAWNFIRE) && !(el->extras & EXTRAS_FLARE)) {
-				el->extras |= EXTRAS_FLARE;
-				if(el->extras & EXTRAS_FIREPLACE) {
-					el->ex_flaresize = 95.f;
-				} else {
-					el->ex_flaresize = 80.f;
-				}
+		EERIE_LIGHT & light = g_staticLights.emplace_back();
+		
+		light.m_exists = true;
+		light.m_isVisible = true;
+		light.fallend = dlight->fallend;
+		light.fallstart = dlight->fallstart;
+		light.falldiffmul = 1.f / (light.fallend - light.fallstart);
+		light.intensity = dlight->intensity;
+		
+		light.pos = dlight->pos.toVec3() + trans;
+		
+		light.rgb = dlight->rgb;
+		
+		light.extras = ExtrasType::load(dlight->extras);
+		
+		light.ex_flicker = dlight->ex_flicker;
+		light.ex_radius = dlight->ex_radius;
+		light.ex_frequency = dlight->ex_frequency;
+		light.ex_size = dlight->ex_size;
+		light.ex_speed = dlight->ex_speed;
+		light.ex_flaresize = dlight->ex_flaresize;
+		
+		light.m_ignitionStatus = !(light.extras & EXTRAS_STARTEXTINGUISHED);
+		
+		if((light.extras & EXTRAS_SPAWNFIRE) && !(light.extras & EXTRAS_FLARE)) {
+			light.extras |= EXTRAS_FLARE;
+			if(light.extras & EXTRAS_FIREPLACE) {
+				light.ex_flaresize = 95.f;
+			} else {
+				light.ex_flaresize = 80.f;
 			}
-			
-			el->m_ignitionLightHandle = LightHandle();
-			el->sample = audio::SourcedSample();
-			
 		}
+		
+		light.m_ignitionLightHandle = LightHandle();
+		light.sample = audio::SourcedSample();
+		
 	}
 	
 }

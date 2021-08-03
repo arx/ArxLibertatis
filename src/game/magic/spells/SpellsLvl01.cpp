@@ -366,10 +366,10 @@ void IgnitSpell::Launch() {
 	
 	igniteEntities(Sphere(m_srcPos, fPerimeter), true);
 	
-	for(size_t ii = 0; ii < g_staticLightsMax; ii++) {
-		EERIE_LIGHT * light = g_staticLights[ii];
+	for(size_t ii = 0; ii < g_staticLights.size(); ii++) {
+		const EERIE_LIGHT * light = &g_staticLights[ii];
 		
-		if(!light || !(light->extras & EXTRAS_EXTINGUISHABLE)) {
+		if(!(light->extras & EXTRAS_EXTINGUISHABLE)) {
 			continue;
 		}
 		
@@ -401,7 +401,7 @@ void IgnitSpell::Launch() {
 				effectLight->rgb = Color3f(1.f, 1.f, 1.f);
 				effectLight->pos = light->pos;
 			}
-		
+			
 			m_lights.push_back(entry);
 		}
 	}
@@ -427,7 +427,7 @@ void IgnitSpell::End() {
 	
 	std::vector<T_LINKLIGHTTOFX>::iterator itr;
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		EERIE_LIGHT * light = g_staticLights[itr->m_targetLight];
+		EERIE_LIGHT * light = &g_staticLights[itr->m_targetLight];
 		light->m_ignitionStatus = true;
 		ARX_SOUND_PlaySFX(g_snd.SPELL_IGNITE, &light->pos);
 		lightHandleDestroy(itr->m_effectLight);
@@ -446,7 +446,7 @@ void IgnitSpell::Update() {
 	
 	std::vector<T_LINKLIGHTTOFX>::iterator itr;
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		EERIE_LIGHT * targetLight = g_staticLights[itr->m_targetLight];
+		EERIE_LIGHT * targetLight = &g_staticLights[itr->m_targetLight];
 		EERIE_LIGHT * light = lightHandleGet(itr->m_effectLight);
 		if(light) {
 			light->intensity = Random::getf(0.7f, 2.7f);
@@ -467,8 +467,8 @@ void DouseSpell::Launch() {
 	
 	igniteEntities(Sphere(target, fPerimeter), false);
 	
-	for(size_t ii = 0; ii < g_staticLightsMax; ii++) {
-		EERIE_LIGHT * light = g_staticLights[ii];
+	for(size_t ii = 0; ii < g_staticLights.size(); ii++) {
+		const EERIE_LIGHT * light = &g_staticLights[ii];
 		
 		if(!light || !(light->extras & EXTRAS_EXTINGUISHABLE)) {
 			continue;
@@ -533,10 +533,11 @@ void DouseSpell::Launch() {
 void DouseSpell::End() {
 	
 	for(size_t index : m_lights) {
-		EERIE_LIGHT * light = g_staticLights[index];
+		EERIE_LIGHT * light = &g_staticLights[index];
 		light->m_ignitionStatus = false;
 		ARX_SOUND_PlaySFX(g_snd.SPELL_DOUSE, &light->pos);
 	}
+	
 }
 
 void DouseSpell::Update() {

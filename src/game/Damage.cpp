@@ -1123,23 +1123,21 @@ bool tryToDoDamage(const Vec3f & pos, float dmg, float radius, Entity & source) 
 
 void igniteLights(const Sphere & sphere, bool ignite, bool ignoreFireplaces) {
 	
-	for(size_t i = 0; i < g_staticLightsMax; i++) {
-		EERIE_LIGHT * el = g_staticLights[i];
+	for(EERIE_LIGHT & light : g_staticLights) {
 		
-		if(el == nullptr
-		   || !(el->extras & EXTRAS_EXTINGUISHABLE)
-		   || !(el->extras & (EXTRAS_SEMIDYNAMIC | EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE))
-		   || ((el->extras & EXTRAS_FIREPLACE) && ignoreFireplaces)
-		   || fartherThan(sphere.origin, el->pos, sphere.radius)) {
+		if(!(light.extras & EXTRAS_EXTINGUISHABLE)
+		   || !(light.extras & (EXTRAS_SEMIDYNAMIC | EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE))
+		   || ((light.extras & EXTRAS_FIREPLACE) && ignoreFireplaces)
+		   || fartherThan(sphere.origin, light.pos, sphere.radius)) {
 			continue;
 		}
 		
 		if(ignite) {
-			if(!(el->extras & EXTRAS_NO_IGNIT)) {
-				el->m_ignitionStatus = true;
+			if(!(light.extras & EXTRAS_NO_IGNIT)) {
+				light.m_ignitionStatus = true;
 			}
 		} else {
-			el->m_ignitionStatus = false;
+			light.m_ignitionStatus = false;
 		}
 		
 	}

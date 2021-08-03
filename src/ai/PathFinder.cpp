@@ -169,9 +169,9 @@ public:
 };
 
 PathFinder::PathFinder(size_t graphSize, const ANCHOR_DATA * graph,
-                       size_t lightCount, const EERIE_LIGHT * const * lights)
+                       const std::vector<EERIE_LIGHT> * lights)
 	: m_radius(RADIUS_DEFAULT), m_height(HEIGHT_DEFAULT), m_heuristic(HEURISTIC_DEFAULT),
-	  map_s(graphSize), map_d(graph), slight_c(lightCount), slight_l(lights) { }
+	  map_s(graphSize), map_d(graph), m_lights(lights) { }
 
 void PathFinder::setHeuristic(float heuristic) {
 	if(heuristic >= HEURISTIC_MAX) {
@@ -431,13 +431,13 @@ float PathFinder::getIlluminationCost(const Vec3f & pos) const {
 	
 	float cost = 0.f;
 	
-	for(size_t i = 0; i < slight_c; i++) {
+	for(const EERIE_LIGHT & light : *m_lights) {
 		
-		if(!slight_l[i] || !slight_l[i]->m_exists || !slight_l[i]->m_ignitionStatus) {
+		arx_assert(light.m_exists);
+		
+		if(!light.m_ignitionStatus) {
 			continue;
 		}
-		
-		const EERIE_LIGHT & light = *slight_l[i];
 		
 		float dist = fdist(light.pos, pos);
 		

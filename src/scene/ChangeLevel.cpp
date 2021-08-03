@@ -419,9 +419,8 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		}
 	}
 	
-	for(size_t i = 0; i < g_staticLightsMax; i++) {
-		EERIE_LIGHT * el = g_staticLights[i];
-		if(el && !el->m_isIgnitionLight) {
+	for(const EERIE_LIGHT & light : g_staticLights) {
+		if(!light.m_isIgnitionLight) {
 			asi.nb_lights++;
 		}
 	}
@@ -483,12 +482,11 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		}
 	}
 	
-	for(size_t i = 0; i < g_staticLightsMax; i++) {
-		EERIE_LIGHT * el = g_staticLights[i];
-		if(el != nullptr && !el->m_isIgnitionLight) {
+	for(const EERIE_LIGHT & light : g_staticLights) {
+		if(!light.m_isIgnitionLight) {
 			ARX_CHANGELEVEL_LIGHT * acl = reinterpret_cast<ARX_CHANGELEVEL_LIGHT *>(dat + pos);
 			memset(acl, 0, sizeof(ARX_CHANGELEVEL_LIGHT));
-			acl->status = el->m_ignitionStatus;
+			acl->status = light.m_ignitionStatus;
 			pos += sizeof(ARX_CHANGELEVEL_LIGHT);
 		}
 	}
@@ -1356,23 +1354,20 @@ static void ARX_CHANGELEVEL_Pop_Zones_n_Lights(std::string_view buffer) {
 		pos += asi->ambiances_data_size;
 	}
 	
+	auto light = g_staticLights.begin();
 	for(int i = 0; i < asi->nb_lights; i++) {
 		
 		const ARX_CHANGELEVEL_LIGHT * acl = reinterpret_cast<const ARX_CHANGELEVEL_LIGHT *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_LIGHT);
 		
-		long count = 0;
-
-		for(size_t j = 0; j < g_staticLightsMax; j++) {
-			EERIE_LIGHT * el = g_staticLights[j];
-			if(el && !el->m_isIgnitionLight) {
-				if(count == i) {
-					el->m_ignitionStatus = (acl->status != 0);
-					break;
-				}
-				count++;
-			}
+		while(light != g_staticLights.end() && light->m_isIgnitionLight) {
+			++light;
 		}
+		if(light != g_staticLights.end()) {
+			light->m_ignitionStatus = (acl->status != 0);
+			++light;
+		}
+		
 	}
 	
 }

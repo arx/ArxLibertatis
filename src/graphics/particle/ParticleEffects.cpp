@@ -919,14 +919,14 @@ void ARX_PARTICLES_Update()  {
 }
 
 void RestoreAllLightsInitialStatus() {
-	for(size_t i = 0; i < g_staticLightsMax; i++) {
-		if(g_staticLights[i]) {
-			g_staticLights[i]->m_ignitionStatus = !(g_staticLights[i]->extras & EXTRAS_STARTEXTINGUISHED);
-			if(!g_staticLights[i]->m_ignitionStatus) {
-				lightHandleDestroy(g_staticLights[i]->m_ignitionLightHandle);
-			}
+	
+	for(EERIE_LIGHT & light : g_staticLights) {
+		light.m_ignitionStatus = !(light.extras & EXTRAS_STARTEXTINGUISHED);
+		if(!light.m_ignitionStatus) {
+			lightHandleDestroy(light.m_ignitionLightHandle);
 		}
 	}
+	
 }
 
 // Draws Flame Particles
@@ -936,46 +936,41 @@ void TreatBackgroundActions() {
 	
 	float fZFar = square(g_camera->cdepth * fZFogEnd * 1.3f);
 	
-	for(size_t i = 0; i < g_staticLightsMax; i++) {
+	for(EERIE_LIGHT & light : g_staticLights) {
 		
-		EERIE_LIGHT * gl = g_staticLights[i];
-		if(!gl) {
-			continue;
-		}
-		
-		float dist = arx::distance2(gl->pos, g_camera->m_pos);
+		float dist = arx::distance2(light.pos, g_camera->m_pos);
 		if(dist > fZFar) {
 			// Out of treat range
-			ARX_SOUND_Stop(gl->sample);
-			gl->sample = audio::SourcedSample();
+			ARX_SOUND_Stop(light.sample);
+			light.sample = audio::SourcedSample();
 			continue;
 		}
 		
-		if((gl->extras & EXTRAS_SPAWNFIRE) && gl->m_ignitionStatus) {
+		if((light.extras & EXTRAS_SPAWNFIRE) && light.m_ignitionStatus) {
 			DamageParameters damage;
-			damage.radius = gl->ex_radius;
-			damage.damages = gl->ex_radius * (1.0f / 7);
+			damage.radius = light.ex_radius;
+			damage.damages = light.ex_radius * (1.0f / 7);
 			damage.area = DAMAGE_FULL;
 			damage.duration = GameDurationMs(1);
 			damage.source = EntityHandle();
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
-			damage.pos = gl->pos;
+			damage.pos = light.pos;
 			DamageCreate(damage);
 		}
 		
-		if(!(gl->extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !gl->m_ignitionStatus) {
-			if(!gl->m_ignitionStatus) {
-				ARX_SOUND_Stop(gl->sample);
-				gl->sample = audio::SourcedSample();
+		if(!(light.extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !light.m_ignitionStatus) {
+			if(!light.m_ignitionStatus) {
+				ARX_SOUND_Stop(light.sample);
+				light.sample = audio::SourcedSample();
 			}
 			continue;
 		}
 		
-		if(gl->sample == audio::SourcedSample()) {
-			gl->sample = ARX_SOUND_PlaySFX_loop(g_snd.FIREPLACE_LOOP, &gl->pos, Random::getf(0.95f, 1.05f));
+		if(light.sample == audio::SourcedSample()) {
+			light.sample = ARX_SOUND_PlaySFX_loop(g_snd.FIREPLACE_LOOP, &light.pos, Random::getf(0.95f, 1.05f));
 		} else {
-			ARX_SOUND_RefreshPosition(gl->sample, gl->pos);
+			ARX_SOUND_RefreshPosition(light.sample, light.pos);
 		}
 		
 		float amount = 2.f;
@@ -986,55 +981,57 @@ void TreatBackgroundActions() {
 		}
 		const float targetFPS = 61.f;
 		const float targetDelay = 1000.f / targetFPS;
-		long count = gl->m_storedFlameTime.update(amount * g_framedelay * (1.f / targetDelay));
+		long count = light.m_storedFlameTime.update(amount * g_framedelay * (1.f / targetDelay));
 		
 		for(long n = 0; n < count; n++) {
 			
-			if(Random::getf() < gl->ex_frequency) {
+			if(Random::getf() < light.ex_frequency) {
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
 					float t = Random::getf() * glm::pi<float>();
 					Vec3f s = Vec3f(std::sin(t), std::sin(t), std::cos(t)) * arx::randomVec();
-					pd->ov = gl->pos + s * gl->ex_radius;
+					pd->ov = light.pos + s * light.ex_radius;
 					pd->move = Vec3f(2.f, 2.f, 2.f) - Vec3f(4.f, 22.f, 4.f) * arx::randomVec3f();
-					pd->move *= gl->ex_speed;
-					pd->siz = 7.f * gl->ex_size;
-					pd->tolive = 500 + Random::getu(0, unsigned(1000 * gl->ex_speed));
-					if((gl->extras & EXTRAS_SPAWNFIRE) && (gl->extras & EXTRAS_SPAWNSMOKE)) {
+					pd->move *= light.ex_speed;
+					pd->siz = 7.f * light.ex_size;
+					pd->tolive = 500 + Random::getu(0, unsigned(1000 * light.ex_speed));
+					if((light.extras & EXTRAS_SPAWNFIRE) && (light.extras & EXTRAS_SPAWNSMOKE)) {
 						pd->m_flags = FIRE_TO_SMOKE;
 					}
-					pd->tc = (gl->extras & EXTRAS_SPAWNFIRE) ? g_particleTextures.fire2 : g_particleTextures.smokeparticle;
+					pd->tc = (light.extras & EXTRAS_SPAWNFIRE) ? g_particleTextures.fire2 : g_particleTextures.smokeparticle;
 					pd->m_flags |= ROTATING;
-					pd->m_rotation = 0.1f - Random::getf(0.f, 0.2f) * gl->ex_speed;
+					pd->m_rotation = 0.1f - Random::getf(0.f, 0.2f) * light.ex_speed;
 					pd->scale = Vec3f(-8.f);
-					pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
+					pd->rgb = (light.extras & EXTRAS_COLORLEGACY) ? light.rgb : Color3f::white;
 				}
 			}
 			
-			if(!(gl->extras & EXTRAS_SPAWNFIRE) || Random::getf() <= 0.95f) {
+			if(!(light.extras & EXTRAS_SPAWNFIRE) || Random::getf() <= 0.95f) {
 				continue;
 			}
 			
-			if(Random::getf() < gl->ex_frequency) {
+			if(Random::getf() < light.ex_frequency) {
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
 					float t = Random::getf() * (glm::pi<float>() * 2.f) - glm::pi<float>();
 					Vec3f s = Vec3f(std::sin(t), std::sin(t), std::cos(t)) * arx::randomVec();
-					pd->ov = gl->pos + s * gl->ex_radius;
-					Vec3f vect = glm::normalize(pd->ov - gl->pos);
-					float d = (gl->extras & EXTRAS_FIREPLACE) ? 6.f : 4.f;
-					pd->move = Vec3f(vect.x * d, Random::getf(-18.f, -10.f), vect.z * d) * gl->ex_speed;
-					pd->siz = 4.f * gl->ex_size * 0.3f;
-					pd->tolive = 1200 + Random::getu(0, unsigned(500 * gl->ex_speed));
+					pd->ov = light.pos + s * light.ex_radius;
+					Vec3f vect = glm::normalize(pd->ov - light.pos);
+					float d = (light.extras & EXTRAS_FIREPLACE) ? 6.f : 4.f;
+					pd->move = Vec3f(vect.x * d, Random::getf(-18.f, -10.f), vect.z * d) * light.ex_speed;
+					pd->siz = 4.f * light.ex_size * 0.3f;
+					pd->tolive = 1200 + Random::getu(0, unsigned(500 * light.ex_speed));
 					pd->tc = g_particleTextures.fire2;
 					pd->m_flags |= ROTATING | GRAVITY;
-					pd->m_rotation = 0.1f - Random::getf(0.f, 0.2f) * gl->ex_speed;
+					pd->m_rotation = 0.1f - Random::getf(0.f, 0.2f) * light.ex_speed;
 					pd->scale = Vec3f(-3.f);
-					pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
+					pd->rgb = (light.extras & EXTRAS_COLORLEGACY) ? light.rgb : Color3f::white;
 				}
 			}
 			
 		}
+		
 	}
+	
 }
 
