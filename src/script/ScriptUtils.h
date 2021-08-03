@@ -23,8 +23,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/noncopyable.hpp>
-
 #include "platform/Platform.h"
 #include "script/ScriptEvent.h"
 #include "io/log/Logger.h"
@@ -136,7 +134,7 @@ public:
 	
 };
 
-class Command : private boost::noncopyable {
+class Command {
 	
 	const std::string m_name;
 	const long m_entityFlags;
@@ -154,6 +152,9 @@ public:
 	};
 	
 	static const long AnyEntity = -1;
+	
+	Command(const Command &) = delete;
+	Command & operator=(const Command &) = delete;
 	
 	explicit Command(std::string_view name, long entityFlags = 0)
 		: m_name(name), m_entityFlags(entityFlags) { }
