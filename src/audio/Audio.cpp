@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Audio.h"
 
+#include <mutex>
+
 #include "Configure.h"
 
 #include "audio/AudioResource.h"
@@ -59,14 +61,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/log/Logger.h"
 
-#include "platform/Lock.h"
 #include "platform/Thread.h"
 #include "platform/Time.h"
 #include "platform/profiler/Profiler.h"
 
 namespace audio {
 
-static Lock * mutex = nullptr;
+static std::mutex g_mutex;
 
 aalError init(std::string_view backendName, std::string_view deviceName, HRTFAttribute hrtf) {
 	
@@ -120,8 +121,6 @@ aalError init(std::string_view backendName, std::string_view deviceName, HRTFAtt
 		return error;
 	}
 	
-	mutex = new Lock();
-	
 	session_time = platform::getTime();
 	
 	return AAL_OK;
@@ -145,30 +144,28 @@ void clean() {
 	ambiance_path.clear();
 	environment_path.clear();
 	
-	delete mutex, mutex = nullptr;
 }
 
 #define AAL_ENTRY \
 	if(!backend) { \
 		return AAL_ERROR_INIT; \
-	} \
-	Autolock lock(mutex);
+	}
 
 #define AAL_ENTRY_V(value) \
 	if(!backend) { \
 		return (value); \
-	} \
-	Autolock lock(mutex);
+	}
 
 #define AAL_ENTRY_VOID \
 	if(!backend) { \
 		return; \
-	} \
-	Autolock lock(mutex);
+	}
 
 std::vector<std::string> getDevices() {
 	
 	AAL_ENTRY_V(std::vector<std::string>())
+	
+	std::scoped_lock lock(g_mutex);
 	
 	return backend->getDevices();
 }
@@ -177,12 +174,16 @@ void setAmbiancePath(const res::path & path) {
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	ambiance_path = path;
 }
 
 void setEnvironmentPath(const res::path & path) {
 	
 	AAL_ENTRY_VOID
+	
+	std::scoped_lock lock(g_mutex);
 	
 	environment_path = path;
 }
@@ -191,12 +192,16 @@ void setReverbEnabled(bool enable) {
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	backend->setReverbEnabled(enable);
 }
 
 bool isReverbSupported() {
 	
 	AAL_ENTRY_V(false)
+	
+	std::scoped_lock lock(g_mutex);
 	
 	return backend->isReverbSupported();
 }
@@ -205,12 +210,16 @@ void setHRTFEnabled(HRTFAttribute enable) {
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	backend->setHRTFEnabled(enable);
 }
 
 HRTFStatus getHRTFStatus() {
 	
 	AAL_ENTRY_V(HRTFUnavailable)
+	
+	std::scoped_lock lock(g_mutex);
 	
 	return backend->getHRTFStatus();
 }
@@ -220,6 +229,8 @@ HRTFStatus getHRTFStatus() {
 MixerId createMixer() {
 	
 	AAL_ENTRY_V(MixerId())
+	
+	std::scoped_lock lock(g_mutex);
 	
 	Mixer * mixer = new Mixer(nullptr);
 	MixerId mixerHandle = g_mixers.add(mixer);
@@ -233,6 +244,8 @@ MixerId createMixer() {
 MixerId createMixer(MixerId parent) {
 	
 	AAL_ENTRY_V(MixerId())
+	
+	std::scoped_lock lock(g_mutex);
 	
 	if(!g_mixers.isValid(parent)) {
 		return MixerId();
@@ -253,6 +266,8 @@ SampleHandle createSample(const res::path & name) {
 	
 	AAL_ENTRY_V(SampleHandle())
 	
+	std::scoped_lock lock(g_mutex);
+	
 	Sample * sample = new Sample(name);
 	
 	SampleHandle sampleHandle;
@@ -270,6 +285,8 @@ SampleHandle createSample(const res::path & name) {
 AmbianceId createAmbiance(const res::path & name, PlayingAmbianceType type) {
 	
 	AAL_ENTRY_V(AmbianceId())
+	
+	std::scoped_lock lock(g_mutex);
 	
 	Ambiance * ambiance = new Ambiance(name);
 	AmbianceId a_id = AmbianceId();
@@ -289,6 +306,8 @@ EnvId createEnvironment(const res::path & name) {
 	
 	AAL_ENTRY_V(EnvId())
 	
+	std::scoped_lock lock(g_mutex);
+	
 	Environment * env = new Environment(name);
 	EnvId e_id = EnvId();
 	if(env->load() || (e_id = g_environments.add(env)) == EnvId()) {
@@ -305,6 +324,8 @@ void deleteSample(SampleHandle sampleHandle) {
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	if(!g_samples.isValid(sampleHandle)) {
 		return;
 	}
@@ -316,6 +337,8 @@ void deleteAmbiance(AmbianceId ambianceId) {
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	if(!g_ambiances.isValid(ambianceId)) {
 		return;
 	}
@@ -324,7 +347,10 @@ void deleteAmbiance(AmbianceId ambianceId) {
 }
 
 void deleteAmbianceAll() {
+	
 	AAL_ENTRY_VOID
+	
+	std::scoped_lock lock(g_mutex);
 	
 	g_ambiances.clear();
 }
@@ -333,6 +359,8 @@ void deleteAmbianceAll() {
 AmbianceId getAmbiance(const res::path & name) {
 	
 	AAL_ENTRY_V(AmbianceId())
+	
+	std::scoped_lock lock(g_mutex);
 	
 	for(size_t i = 0; i < g_ambiances.size(); i++) {
 		Ambiance * ambiance = g_ambiances[AmbianceId(i)];
@@ -347,6 +375,8 @@ AmbianceId getAmbiance(const res::path & name) {
 EnvId getEnvironment(const res::path & name) {
 	
 	AAL_ENTRY_V(EnvId())
+	
+	std::scoped_lock lock(g_mutex);
 	
 	for(size_t i = 0; i < g_environments.size(); i++) {
 		Environment * environment = g_environments[EnvId(i)];
@@ -364,6 +394,8 @@ void setUnitFactor(float factor) {
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	LogDebug("SetUnitFactor " << factor);
 	
 	backend->setUnitFactor(factor);
@@ -372,6 +404,8 @@ void setUnitFactor(float factor) {
 void setRolloffFactor(float factor) {
 	
 	AAL_ENTRY_VOID
+	
+	std::scoped_lock lock(g_mutex);
 	
 	LogDebug("SetRolloffFactor " << factor);
 	
@@ -382,6 +416,8 @@ void setListenerPosition(const Vec3f & position, const Vec3f & front, const Vec3
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	backend->setListenerPosition(position);
 	backend->setListenerOrientation(front, up);
 }
@@ -389,6 +425,8 @@ void setListenerPosition(const Vec3f & position, const Vec3f & front, const Vec3
 void setListenerEnvironment(EnvId environmentId) {
 	
 	AAL_ENTRY_VOID
+	
+	std::scoped_lock lock(g_mutex);
 	
 	if(!g_environments.isValid(environmentId)) {
 		return;
@@ -405,6 +443,8 @@ void setMixerVolume(MixerId mixerId, float volume) {
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	if(!g_mixers.isValid(mixerId)) {
 		return;
 	}
@@ -420,6 +460,8 @@ void mixerStop(MixerId mixerId) {
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	if(!g_mixers.isValid(mixerId)) {
 		return;
 	}
@@ -433,6 +475,8 @@ void mixerPause(MixerId mixerId) {
 	
 	AAL_ENTRY_VOID;
 	
+	std::scoped_lock lock(g_mutex);
+	
 	if(!g_mixers.isValid(mixerId)) {
 		return;
 	}
@@ -445,6 +489,8 @@ void mixerPause(MixerId mixerId) {
 void mixerResume(MixerId mixerId) {
 	
 	AAL_ENTRY_VOID
+	
+	std::scoped_lock lock(g_mutex);
 	
 	if(!g_mixers.isValid(mixerId)) {
 		return;
@@ -461,6 +507,8 @@ void setSampleVolume(SourcedSample sourceId, float volume) {
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	Source * source = backend->getSource(sourceId);
 	if(!source) {
 		return;
@@ -473,6 +521,8 @@ void setSamplePitch(SourcedSample sourceId, float pitch) {
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	Source * source = backend->getSource(sourceId);
 	if(!source) {
 		return;
@@ -484,6 +534,8 @@ void setSamplePitch(SourcedSample sourceId, float pitch) {
 void setSamplePosition(SourcedSample sourceId, const Vec3f & position) {
 	
 	AAL_ENTRY_VOID
+	
+	std::scoped_lock lock(g_mutex);
 	
 	Source * source = backend->getSource(sourceId);
 	if(!source) {
@@ -501,6 +553,8 @@ aalError getSampleName(SampleHandle sampleHandle, res::path & name) {
 	
 	AAL_ENTRY
 	
+	std::scoped_lock lock(g_mutex);
+	
 	if(!g_samples.isValid(sampleHandle)) {
 		return AAL_ERROR_HANDLE;
 	}
@@ -515,6 +569,8 @@ aalError getSampleLength(SampleHandle sampleHandle, size_t & length) {
 	length = 0;
 	
 	AAL_ENTRY
+	
+	std::scoped_lock lock(g_mutex);
 	
 	if(!g_samples.isValid(sampleHandle)) {
 		return AAL_ERROR_HANDLE;
@@ -532,6 +588,8 @@ bool isSamplePlaying(SourcedSample sourceId) {
 	
 	AAL_ENTRY_V(false)
 	
+	std::scoped_lock lock(g_mutex);
+	
 	Source * source = backend->getSource(sourceId);
 	if(!source) {
 		return false;
@@ -545,6 +603,8 @@ bool isSamplePlaying(SourcedSample sourceId) {
 SourcedSample samplePlay(SampleHandle sampleHandle, const Channel & channel, unsigned playCount) {
 	
 	AAL_ENTRY_V(SourcedSample())
+	
+	std::scoped_lock lock(g_mutex);
 	
 	if(!g_samples.isValid(sampleHandle) || !g_mixers.isValid(channel.mixer)) {
 		return SourcedSample(SourceHandle(), sampleHandle);
@@ -572,6 +632,8 @@ void sampleStop(SourcedSample sourceId) {
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	Source * source = backend->getSource(sourceId);
 	if(!source) {
 		return;
@@ -583,7 +645,10 @@ void sampleStop(SourcedSample sourceId) {
 }
 
 void getSourceInfos(std::vector<SourceInfo> & infos) {
+	
 	AAL_ENTRY_VOID
+	
+	std::scoped_lock lock(g_mutex);
 	
 	for(audio::Backend::source_iterator p = audio::backend->sourcesBegin(); p != audio::backend->sourcesEnd(); ++p) {
 		if(*p) {
@@ -596,6 +661,7 @@ void getSourceInfos(std::vector<SourceInfo> & infos) {
 			infos.push_back(si);
 		}
 	}
+	
 }
 
 
@@ -604,6 +670,8 @@ void getSourceInfos(std::vector<SourceInfo> & infos) {
 void setAmbianceVolume(AmbianceId ambianceId, float volume) {
 	
 	AAL_ENTRY_VOID
+	
+	std::scoped_lock lock(g_mutex);
 	
 	if(!g_ambiances.isValid(ambianceId)) {
 		return;
@@ -619,6 +687,8 @@ void setAmbianceVolume(AmbianceId ambianceId, float volume) {
 void getAmbianceInfos(std::vector<AmbianceInfo> & infos) {
 	
 	AAL_ENTRY_VOID
+	
+	std::scoped_lock lock(g_mutex);
 	
 	for(AmbianceList::const_iterator p = g_ambiances.begin(); p != g_ambiances.end(); ++p) {
 		if(*p) {
@@ -646,6 +716,8 @@ void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop, Pla
 	
 	AAL_ENTRY_VOID
 	
+	std::scoped_lock lock(g_mutex);
+	
 	if(!g_ambiances.isValid(ambianceId) || !g_mixers.isValid(channel.mixer)) {
 		return;
 	}
@@ -659,6 +731,8 @@ void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop, Pla
 void ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval) {
 	
 	AAL_ENTRY_VOID
+	
+	std::scoped_lock lock(g_mutex);
 	
 	if(!g_ambiances.isValid(ambianceId)) {
 		return;
@@ -695,6 +769,8 @@ void SoundUpdateThread::update() {
 	ARX_PROFILE_FUNC();
 	
 	AAL_ENTRY_VOID
+	
+	std::scoped_lock lock(g_mutex);
 	
 	session_time = platform::getTime();
 	
