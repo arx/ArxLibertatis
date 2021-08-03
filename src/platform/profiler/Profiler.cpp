@@ -150,8 +150,13 @@ static void writeChunk(std::ofstream & out, ArxProfilerChunkType type, size_t da
 	LogDebug("Writing chunk at offset " << pos << " type " << chunk.type << " size " << chunk.size);
 }
 
-class ProfilerStringTable : public boost::noncopyable {
+class ProfilerStringTable {
+	
 public:
+	
+	ProfilerStringTable(const ProfilerStringTable &) = delete;
+	ProfilerStringTable & operator=(const ProfilerStringTable &) = delete;
+	
 	u32 add(std::string value) {
 		
 		boost::container::flat_map<std::string, u32>::iterator si = m_map.find(value);
@@ -178,8 +183,10 @@ public:
 	}
 	
 private:
+	
 	boost::container::flat_map<std::string, u32> m_map;
 	std::vector<std::string> m_list;
+	
 };
 
 void Profiler::writeProfileLog() {
