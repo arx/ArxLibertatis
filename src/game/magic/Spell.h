@@ -20,8 +20,6 @@
 #ifndef ARX_GAME_MAGIC_SPELL_H
 #define ARX_GAME_MAGIC_SPELL_H
 
-#include <boost/noncopyable.hpp>
-
 #include "game/Damage.h"
 
 #include "graphics/effects/SpellEffects.h"
@@ -124,12 +122,15 @@ enum SpellcastFlag {
 DECLARE_FLAGS(SpellcastFlag, SpellcastFlags)
 DECLARE_FLAGS_OPERATORS(SpellcastFlags)
 
-class alignas(16) SpellBase : private boost::noncopyable {
+class alignas(16) SpellBase {
 	
 public:
 	
 	// We can't use alignof(glm::mat4x4) directly because MSVC sucks
 	static_assert(alignof(glm::mat4x4) <= 16, "need to increase alignment");
+	
+	SpellBase(const SpellBase &) = delete;
+	SpellBase & operator=(const SpellBase &) = delete;
 	
 	SpellBase();
 	
@@ -182,15 +183,17 @@ public:
 	audio::SourcedSample m_snd_loop;
 	
 	GameDuration m_launchDuration;
-
 	
 	std::vector<EntityHandle> m_targets;
 	
 protected:
+	
 	Vec3f getTargetPos(EntityHandle source, EntityHandle target);
 	
 public:
+	
 	ARX_USE_ALIGNED_NEW(SpellBase)
+	
 };
 
 #endif // ARX_GAME_MAGIC_SPELL_H
