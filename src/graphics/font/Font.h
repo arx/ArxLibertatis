@@ -26,8 +26,6 @@
 #include <string_view>
 #include <utility>
 
-#include <boost/noncopyable.hpp>
-
 #include "graphics/Color.h"
 #include "math/Vector.h"
 
@@ -35,7 +33,7 @@
 
 class PackedTexture;
 
-class Font : private boost::noncopyable {
+class Font {
 	
 	friend class FontCache;
 	
@@ -171,6 +169,9 @@ public:
 	};
 	
 	typedef u32 Char;
+	
+	Font(const Font &) = delete;
+	Font & operator=(const Font &) = delete;
 	
 	const Info & getInfo() const { return m_info; }
 	const res::path & getName() const { return m_info.name; }
