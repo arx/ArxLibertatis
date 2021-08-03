@@ -44,16 +44,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GUI_MENU_MENUPAGE_H
 #define ARX_GUI_MENU_MENUPAGE_H
 
-#include <boost/noncopyable.hpp>
-
 #include "gui/widget/Widget.h"
 #include "gui/widget/WidgetContainer.h"
 #include "math/Rectangle.h"
 #include "math/Vector.h"
 
-class MenuPage : private boost::noncopyable {
+class MenuPage {
 	
 public:
+	
+	MenuPage(const MenuPage &) = delete;
+	MenuPage & operator=(const MenuPage &) = delete;
 	
 	explicit MenuPage(MENUSTATE id);
 	virtual ~MenuPage() = default;
