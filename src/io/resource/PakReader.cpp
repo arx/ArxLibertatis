@@ -216,12 +216,15 @@ public:
 	
 };
 
-struct BlastFileInBuffer : private boost::noncopyable {
+struct BlastFileInBuffer {
 	
 	fs::ifstream & file;
 	size_t remaining;
 	
 	unsigned char readbuf[PAK_READ_BUF_SIZE];
+	
+	BlastFileInBuffer(const BlastFileInBuffer &) = delete;
+	BlastFileInBuffer & operator=(const BlastFileInBuffer &) = delete;
 	
 	explicit BlastFileInBuffer(fs::ifstream * f, size_t count)
 		: file(*f), remaining(count) { }

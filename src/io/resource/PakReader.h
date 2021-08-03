@@ -26,8 +26,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/noncopyable.hpp>
-
 #include "io/resource/PakEntry.h"
 #include "io/resource/ResourcePath.h"
 #include "util/Flags.h"
@@ -41,9 +39,14 @@ enum Whence {
 	SeekEnd
 };
 
-class PakFileHandle : private boost::noncopyable  {
+class PakFileHandle {
 	
 public:
+	
+	PakFileHandle(const PakFileHandle &) = delete;
+	PakFileHandle & operator=(const PakFileHandle &) = delete;
+	
+	PakFileHandle() = default;
 	
 	virtual size_t read(void * buf, size_t size) = 0;
 	
@@ -68,6 +71,9 @@ public:
 		External = 1 << 3
 	};
 	DECLARE_FLAGS(ReleaseType, ReleaseFlags)
+	
+	PakReader(const PakReader &) = delete;
+	PakReader & operator=(const PakReader &) = delete;
 	
 	PakReader() : release(0) { }
 	~PakReader();
