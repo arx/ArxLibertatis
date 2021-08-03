@@ -25,13 +25,11 @@
 #include <string>
 #include <string_view>
 
-#include <boost/noncopyable.hpp>
-
 namespace res { class path; }
 
 class PakFileHandle;
 
-class PakFile : private boost::noncopyable {
+class PakFile {
 	
 private:
 	
@@ -47,6 +45,9 @@ protected:
 	friend class PakDirectory;
 	
 public:
+	
+	PakFile(const PakFile &) = delete;
+	PakFile & operator=(const PakFile &) = delete;
 	
 	PakFile * alternative() const { return _alternative; }
 	
