@@ -459,7 +459,7 @@ void MiniMap::revealPlayerPos(int showLevel) {
 		}
 		
 		float revealPercent = (maxDistance - d) * (1.f / maxDistance);
-		revealPercent = arx::clamp(revealPercent * 2.0f, 0.0f, 1.0f);
+		revealPercent = std::clamp(revealPercent * 2.0f, 0.0f, 1.0f);
 		
 		int r = int(revealPercent * 255.f);
 		

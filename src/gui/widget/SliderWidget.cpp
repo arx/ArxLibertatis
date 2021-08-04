@@ -140,7 +140,7 @@ void SliderWidget::render(bool mouseOver) {
 
 void SliderWidget::newValue(int value) {
 	
-	value = arx::clamp(value, m_minimum, 10);
+	value = std::clamp(value, m_minimum, 10);
 	
 	if(value == m_value) {
 		return;

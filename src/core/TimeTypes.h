@@ -22,6 +22,8 @@
 
 #include <cmath>
 #include <algorithm>
+#include <chrono>
+#include <limits>
 #include <type_traits>
 
 #include <boost/config.hpp>
@@ -33,9 +35,7 @@
 
 
 template <typename Tag, typename T>
-struct DurationType
-	: boost::totally_ordered1<DurationType<Tag, T>, boost::additive1<DurationType<Tag, T>>>
-{
+struct DurationType : boost::totally_ordered1<DurationType<Tag, T>> {
 	
 	T t;
 	
@@ -45,6 +45,10 @@ struct DurationType
 	
 	[[nodiscard]] constexpr bool operator<(const DurationType & rhs) const noexcept {
 		return t < rhs.t;
+	}
+	
+	[[nodiscard]] constexpr float operator/(DurationType b) const noexcept {
+		return float(t) / float(b.t);
 	}
 	
 	constexpr DurationType & operator+=(const DurationType & rhs) noexcept {
@@ -57,20 +61,56 @@ struct DurationType
 		return *this;
 	}
 	
+	[[nodiscard]] constexpr DurationType operator+(DurationType rhs) const noexcept {
+		return ofRaw(t + rhs.t);
+	}
+	
+	[[nodiscard]] constexpr DurationType operator-(DurationType rhs) const noexcept {
+		return ofRaw(t - rhs.t);
+	}
+	
+	template <class IntType, typename = std::enable_if_t<std::is_integral_v<IntType>>>
+	[[nodiscard]] constexpr DurationType operator*(IntType rhs) noexcept {
+		return value() * rhs;
+	}
+	
+	template <class IntType, typename = std::enable_if_t<std::is_integral_v<IntType>>>
+	[[nodiscard]] constexpr DurationType operator/(IntType rhs) noexcept {
+		return value() / rhs;
+	}
+	
+	[[nodiscard]] static constexpr DurationType max() noexcept {
+		return ofRaw(std::numeric_limits<T>::max());
+	}
+	
 	[[nodiscard]] static constexpr DurationType ofRaw(T value) noexcept {
 		return DurationType(value, 0);
 	}
 	
+	[[nodiscard]] constexpr std::chrono::microseconds value() const noexcept {
+		return std::chrono::microseconds(t);
+	}
+	
+	template <typename Rep, typename Period>
+	[[nodiscard]] explicit constexpr operator std::chrono::duration<Rep, Period>() const noexcept {
+		return std::chrono::duration_cast<std::chrono::duration<Rep, Period>>(value());
+	}
+	
 private:
 	
-	[[nodiscard]] explicit constexpr DurationType(const T t_, int /* disambiguate */) noexcept : t(t_) { }
+	explicit constexpr DurationType(const T t_, int /* disambiguate */) noexcept : t(t_) { }
 	
 	class ZeroType;
 	typedef ZeroType ** Zero;
 	
 public:
 	
-	[[nodiscard]] /* implicit */ constexpr DurationType(Zero /* zero */ = 0) noexcept : t(0) { }
+	template <typename Rep, typename Period>
+	/* implicit */ constexpr DurationType(std::chrono::duration<Rep, Period> duration) noexcept
+		: t(std::chrono::duration_cast<std::chrono::microseconds>(duration).count())
+	{ }
+	
+	/* implicit */ constexpr DurationType(Zero /* zero */ = 0) noexcept : t(0) { }
 	
 	template <typename NullPtr, typename = std::enable_if_t<
 		std::is_same_v<std::remove_cv_t<std::remove_reference_t<NullPtr>>, decltype(nullptr)>>
@@ -79,10 +119,14 @@ public:
 	
 };
 
+template <typename Rep, typename Period, typename Tag, typename T>
+[[nodiscard]] inline constexpr DurationType<Tag, T> operator-(std::chrono::duration<Rep, Period> a,
+                                                              DurationType<Tag, T> b) noexcept {
+	return DurationType<Tag, T>(a) - b;
+}
+
 template <typename Tag, typename T>
-struct InstantType
-	: boost::totally_ordered1<InstantType<Tag, T>, boost::additive2<InstantType<Tag, T>, DurationType<Tag, T>>>
-{
+struct InstantType : boost::totally_ordered1<InstantType<Tag, T>> {
 	
 	T t;
 	
@@ -103,20 +147,32 @@ struct InstantType
 		return *this;
 	}
 	
+	[[nodiscard]] constexpr InstantType operator+(DurationType<Tag, T> rhs) const noexcept {
+		return ofRaw(t + rhs.t);
+	}
+	
+	[[nodiscard]] constexpr InstantType operator-(DurationType<Tag, T> rhs) const noexcept {
+		return ofRaw(t - rhs.t);
+	}
+	
+	[[nodiscard]] inline constexpr DurationType<Tag, T> operator-(InstantType rhs) const noexcept {
+		return std::chrono::microseconds(t - rhs.t);
+	}
+	
 	[[nodiscard]] static constexpr InstantType ofRaw(T value) noexcept {
 		return InstantType(value, 0);
 	}
 	
 private:
 	
-	[[nodiscard]] explicit constexpr InstantType(const T t_, int /* disambiguate */) noexcept : t(t_) { }
+	explicit constexpr InstantType(const T t_, int /* disambiguate */) noexcept : t(t_) { }
 	
 	class ZeroType;
 	typedef ZeroType ** Zero;
 	
 public:
 	
-	/* implicit */ InstantType(Zero /* zero */ = 0) : t(0) { }
+	/* implicit */ constexpr InstantType(Zero /* zero */ = 0) noexcept : t(0) { }
 	
 	template <typename NullPtr, typename = std::enable_if_t<
 		std::is_same_v<std::remove_cv_t<std::remove_reference_t<NullPtr>>, decltype(nullptr)>>
@@ -126,37 +182,36 @@ public:
 };
 
 template <typename Tag, typename T>
-[[nodiscard]] inline constexpr DurationType<Tag, T> operator-(InstantType<Tag, T> a, InstantType<Tag, T> b) noexcept {
-	return DurationType<Tag, T>::ofRaw(a.t - b.t);
-}
-
-template <typename Tag, typename T, class IntType>
-[[nodiscard]] inline constexpr DurationType<Tag, T> operator*(DurationType<Tag, T> a, IntType b) noexcept {
-	static_assert(std::is_integral<IntType>::value, "factor must be int type");
-	return DurationType<Tag, T>::ofRaw(a.t * T(b));
-}
-
-template <typename Tag, typename T>
-[[nodiscard]] inline constexpr float operator/(DurationType<Tag, T> a, DurationType<Tag, T> b) noexcept {
-	return float(a.t) / float(b.t);
-}
-
-
-template <typename Tag, typename T>
 [[nodiscard]] inline constexpr float timeWaveSaw(InstantType<Tag, T> t, DurationType<Tag, T> period) noexcept {
-	return float(t.t % period.t) / float(period.t);
+	return float(t.t % std::chrono::microseconds(period).count()) / float(std::chrono::microseconds(period).count());
+}
+template <typename Tag, typename T, typename Rep, typename Period>
+[[nodiscard]] inline constexpr float timeWaveSaw(InstantType<Tag, T> t, std::chrono::duration<Rep, Period> period) noexcept {
+	return timeWaveSaw(t, DurationType<Tag, T>(period));
 }
 template <typename Tag, typename T>
 [[nodiscard]] inline constexpr bool timeWaveSquare(InstantType<Tag, T> t, DurationType<Tag, T> period) noexcept {
-	return t.t % period.t >= period.t / 2;
+	return t.t % std::chrono::microseconds(period).count() >= std::chrono::microseconds(period).count() / 2;
+}
+template <typename Tag, typename T, typename Rep, typename Period>
+[[nodiscard]] inline constexpr bool timeWaveSquare(InstantType<Tag, T> t, std::chrono::duration<Rep, Period> period) noexcept {
+	return timeWaveSquare(t, DurationType<Tag, T>(period));
 }
 template <typename Tag, typename T>
 [[nodiscard]] inline constexpr float timeWaveSin(InstantType<Tag, T> t, DurationType<Tag, T> period) noexcept {
 	return std::sin(timeWaveSaw(t, period) * 2.f * glm::pi<float>());
 }
+template <typename Tag, typename T, typename Rep, typename Period>
+[[nodiscard]] inline constexpr float timeWaveSin(InstantType<Tag, T> t, std::chrono::duration<Rep, Period> period) noexcept {
+	return timeWaveSin(t, DurationType<Tag, T>(period));
+}
 template <typename Tag, typename T>
 [[nodiscard]] inline constexpr float timeWaveCos(InstantType<Tag, T> t, DurationType<Tag, T> period) noexcept {
 	return std::cos(timeWaveSaw(t, period) * 2.f * glm::pi<float>());
+}
+template <typename Tag, typename T, typename Rep, typename Period>
+[[nodiscard]] inline constexpr float timeWaveCos(InstantType<Tag, T> t, std::chrono::duration<Rep, Period> period) noexcept {
+	return timeWaveCos(t, DurationType<Tag, T>(period));
 }
 
 // GameTime
@@ -165,40 +220,40 @@ typedef InstantType <struct GameTime_Tag, s64> GameInstant;
 typedef DurationType<struct GameTime_Tag, s64> GameDuration;
 
 [[nodiscard]] inline constexpr GameInstant GameInstantUs(s64 val) noexcept {
-	return GameInstant::ofRaw(val);
+	return GameInstant(0) + std::chrono::microseconds(val);
 }
 [[nodiscard]] inline constexpr GameInstant GameInstantMs(s64 val) noexcept {
-	return GameInstant::ofRaw(val * 1000);
+	return GameInstant(0) + std::chrono::milliseconds(val);
 }
 
 [[nodiscard]] inline constexpr GameDuration GameDurationUs(s64 val) noexcept {
-	return GameDuration::ofRaw(val);
+	return std::chrono::microseconds(val);
 }
 [[nodiscard]] inline constexpr GameDuration GameDurationMs(s64 val) noexcept {
-	return GameDuration::ofRaw(val * 1000);
+	return std::chrono::milliseconds(val);
 }
 [[nodiscard]] inline constexpr GameDuration GameDurationMsf(float val) noexcept {
-	return GameDuration::ofRaw(s64(val * 1000.f));
-}
-
-[[nodiscard]] inline constexpr s64 toUs(GameInstant val) noexcept {
-	return val.t;
-}
-[[nodiscard]] inline constexpr s64 toMsi(GameInstant val) noexcept {
-	return val.t / 1000;
-}
-[[nodiscard]] inline constexpr float toMsf(GameInstant val) noexcept {
-	return float(val.t) / 1000.f;
+	return std::chrono::duration<float, std::milli>(val);
 }
 
 [[nodiscard]] inline constexpr s64 toUs(GameDuration val) noexcept {
-	return val.t;
+	return std::chrono::microseconds(val).count();
 }
 [[nodiscard]] inline constexpr s64 toMsi(GameDuration val) noexcept {
-	return val.t / 1000;
+	return std::chrono::milliseconds(val).count();
 }
 [[nodiscard]] inline constexpr float toMsf(GameDuration val) noexcept {
-	return float(val.t) / 1000.f;
+	return std::chrono::duration<float, std::milli>(val).count();
+}
+
+[[nodiscard]] inline constexpr s64 toUs(GameInstant val) noexcept {
+	return toUs(val - GameInstant(0));
+}
+[[nodiscard]] inline constexpr s64 toMsi(GameInstant val) noexcept {
+	return toMsi(val - GameInstant(0));
+}
+[[nodiscard]] inline constexpr float toMsf(GameInstant val) noexcept {
+	return toMsf(val - GameInstant(0));
 }
 
 // PlatformTime
@@ -207,40 +262,37 @@ typedef InstantType <struct PlatformTimeTag, s64> PlatformInstant;
 typedef DurationType<struct PlatformTimeTag, s64> PlatformDuration;
 
 [[nodiscard]] inline constexpr PlatformInstant PlatformInstantUs(s64 val) noexcept {
-	return PlatformInstant::ofRaw(val);
-}
-[[nodiscard]] inline constexpr PlatformInstant PlatformInstantMs(s64 val) noexcept {
-	return PlatformInstant::ofRaw(val * 1000);
+	return PlatformInstant(0) + std::chrono::microseconds(val);
 }
 
 [[nodiscard]] inline constexpr PlatformDuration PlatformDurationUs(s64 val) noexcept {
-	return PlatformDuration::ofRaw(val);
+	return std::chrono::microseconds(val);
 }
 [[nodiscard]] inline constexpr PlatformDuration PlatformDurationMs(s64 val) noexcept {
-	return PlatformDuration::ofRaw(val * 1000);
+	return std::chrono::milliseconds(val);
 }
 [[nodiscard]] inline constexpr PlatformDuration PlatformDurationMsf(float val) noexcept {
-	return PlatformDuration::ofRaw(s64(val * 1000.f));
-}
-
-[[nodiscard]] inline constexpr s64 toUs(PlatformInstant val) noexcept {
-	return val.t;
-}
-[[nodiscard]] inline constexpr s64 toMsi(PlatformInstant val) noexcept {
-	return val.t / 1000;
+	return std::chrono::duration<float, std::milli>(val);
 }
 
 [[nodiscard]] inline constexpr s64 toUs(PlatformDuration val) noexcept {
-	return val.t;
+	return std::chrono::microseconds(val).count();
 }
 [[nodiscard]] inline constexpr s64 toMsi(PlatformDuration val) noexcept {
-	return val.t / 1000;
+	return std::chrono::milliseconds(val).count();
 }
 [[nodiscard]] inline constexpr float toMs(PlatformDuration val) noexcept {
-	return float(val.t) / (1000.f);
+	return std::chrono::duration<float, std::milli>(val).count();
 }
 [[nodiscard]] inline constexpr float toS(PlatformDuration val) noexcept {
-	return float(val.t) / (1000.f * 1000.f);
+	return std::chrono::duration<float>(val).count();
+}
+
+[[nodiscard]] inline constexpr s64 toUs(PlatformInstant val) noexcept {
+	return toUs(val - PlatformInstant(0));
+}
+[[nodiscard]] inline constexpr s64 toMsi(PlatformInstant val) noexcept {
+	return toMsi(val - PlatformInstant(0));
 }
 
 // AnimationTime
@@ -248,49 +300,71 @@ typedef DurationType<struct PlatformTimeTag, s64> PlatformDuration;
 typedef DurationType<struct AnimationTimeTag, s64> AnimationDuration;
 
 [[nodiscard]] inline constexpr AnimationDuration operator*(AnimationDuration v, float scalar) noexcept {
-	return AnimationDuration::ofRaw(s64(float(v.t) * scalar));
+	return v.value() * scalar;
 }
 
 [[nodiscard]] inline constexpr AnimationDuration AnimationDurationUs(s64 val) noexcept {
-	return AnimationDuration::ofRaw(val);
+	return std::chrono::microseconds(val);
 }
 [[nodiscard]] inline constexpr AnimationDuration AnimationDurationMs(s64 val) noexcept {
-	return AnimationDuration::ofRaw(val * 1000);
+	return std::chrono::milliseconds(val);
 }
 [[nodiscard]] inline constexpr AnimationDuration AnimationDurationMsf(float val) noexcept {
-	return AnimationDuration::ofRaw(s64(val * 1000.f));
+	return std::chrono::duration<float, std::milli>(val);
 }
 
 [[nodiscard]] inline constexpr s64 toMsi(AnimationDuration val) noexcept {
-	return val.t / (1000);
+	return std::chrono::milliseconds(val).count();
 }
 [[nodiscard]] inline constexpr float toMsf(AnimationDuration val) noexcept {
-	return float(val.t) / (1000.f);
+	return std::chrono::duration<float, std::milli>(val).count();
 }
 [[nodiscard]] inline constexpr float toS(AnimationDuration val) noexcept {
-	return float(val.t) / (1000.f * 1000.f);
+	return std::chrono::duration<float>(val).count();
 }
 
 [[nodiscard]] inline constexpr AnimationDuration toAnimationDuration(PlatformDuration val) noexcept {
-	return AnimationDuration::ofRaw(val.t);
+	return val.value();
 }
 [[nodiscard]] inline constexpr AnimationDuration toAnimationDuration(GameDuration val) noexcept {
-	return AnimationDuration::ofRaw(val.t);
+	return val.value();
 }
 [[nodiscard]] inline constexpr GameDuration toGameDuration(AnimationDuration val) noexcept {
-	return GameDuration::ofRaw(val.t);
+	return val.value();
 }
 [[nodiscard]] inline constexpr PlatformDuration toPlatformDuration(AnimationDuration val) noexcept {
-	return PlatformDuration::ofRaw(val.t);
+	return val.value();
 }
 
 namespace arx {
 
-template <typename T>
-[[nodiscard]] constexpr T clamp(T const & x, T const & minVal, T const & maxVal) noexcept {
+template <typename Tag, typename T>
+[[nodiscard]] constexpr DurationType<Tag, T> clamp(DurationType<Tag, T> x,
+                                                   DurationType<Tag, T> minVal,
+                                                   DurationType<Tag, T> maxVal) noexcept {
 	return std::min(maxVal, std::max(minVal, x));
 }
 
+template <typename Tag, typename T, typename Rep0, typename Period0, typename Rep1, typename Period1>
+[[nodiscard]] constexpr DurationType<Tag, T> clamp(DurationType<Tag, T> x,
+                                                   std::chrono::duration<Rep0, Period0> minVal,
+                                                   std::chrono::duration<Rep1, Period1> maxVal) noexcept {
+	return std::min(DurationType<Tag, T>(maxVal), std::max(DurationType<Tag, T>(minVal), x));
+}
+
 } // namespace arx
+
+#if defined(__GNUC__) && __GNUC__ == 7
+#pragma GCC diagnostic ignored "-Wliteral-suffix"
+#endif
+using std::chrono_literals::operator""h;
+using std::chrono_literals::operator""min;
+using std::chrono_literals::operator""s;
+using std::chrono_literals::operator""ms;
+using std::chrono_literals::operator""us;
+using std::chrono_literals::operator""ns;
+#if defined(__GNUC__) && __GNUC__ == 7
+#pragma GCC diagnostic pop
+#endif
 
 #endif // ARX_CORE_TIMETYPES_H
