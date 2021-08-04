@@ -117,7 +117,7 @@ void HitStrengthGauge::update() {
 	
 	if(m_flashActive) {
 		m_flashTime += g_platformTime.lastFrameDuration();
-		if(m_flashTime >= PlatformDurationMs(500)) {
+		if(m_flashTime >= 500ms) {
 			m_flashActive = false;
 			m_flashTime = 0;
 		}
@@ -208,7 +208,7 @@ void BookIconGui::update(const Rectf & parent) {
 	
 	if(m_haloActive) {
 		ulBookHaloTime += g_platformTime.lastFrameDuration();
-		if(ulBookHaloTime >= PlatformDurationMs(3000)) { // ms
+		if(ulBookHaloTime >= 3s) {
 			m_haloActive = false;
 		}
 	}
@@ -263,7 +263,7 @@ void BackpackIconGui::updateInput() {
 				flDelay = g_platformTime.frameStart();
 				return;
 			}
-			if(g_platformTime.frameStart() - flDelay < PlatformDurationMs(300)) {
+			if(g_platformTime.frameStart() - flDelay < 300ms) {
 				return;
 			}
 			flDelay = 0;
@@ -424,7 +424,7 @@ void PurseIconGui::update(const Rectf & parent) {
 	
 	if(m_haloActive) {
 		m_haloTime += g_platformTime.lastFrameDuration();
-		if(m_haloTime >= PlatformDurationMs(1000)) {
+		if(m_haloTime >= 1s) {
 			m_haloActive = false;
 		}
 	}
@@ -1323,10 +1323,10 @@ void PlayerInterfaceFader::requestFade(FadeDirection showhide, long smooth) {
 		if(showhide == FadeDirection_In) {
 			m_current = 0;
 		} else {
-			m_current = PlatformDurationMs(1000);
+			m_current = 1s;
 		}
 		
-		lSLID_VALUE = m_current / PlatformDurationMs(10);
+		lSLID_VALUE = m_current / 10ms;
 	}
 }
 
@@ -1344,17 +1344,16 @@ void PlayerInterfaceFader::update() {
 				bOk = false;
 				
 				PlatformInstant t = g_platformTime.frameStart();
-				
-				if(t - SLID_START > PlatformDurationMs(10000)) {
+				if(t - SLID_START > 10s) {
 					m_current += g_platformTime.lastFrameDuration();
-					
-					if(m_current > PlatformDurationMs(1000))
-						m_current = PlatformDurationMs(1000);
-					
-					lSLID_VALUE = m_current / PlatformDurationMs(10);
+					if(m_current > 1s) {
+						m_current = 1s;
+					}
+					lSLID_VALUE = m_current / 10ms;
 				} else {
 					bOk = true;
 				}
+				
 			}
 		}
 		
@@ -1365,18 +1364,18 @@ void PlayerInterfaceFader::update() {
 				m_current = 0;
 			}
 			
-			lSLID_VALUE = m_current / PlatformDurationMs(10);
+			lSLID_VALUE = m_current / 10ms;
 		}
 	}
 	
 	if(m_direction == 1) {
 		m_current += g_platformTime.lastFrameDuration();
 		
-		if(m_current > PlatformDurationMs(1000)) {
-			m_current = PlatformDurationMs(1000);
+		if(m_current > 1s) {
+			m_current = 1s;
 			m_direction = 0;
 		}
-		lSLID_VALUE = m_current / PlatformDurationMs(10);
+		lSLID_VALUE = m_current / 10ms;
 	} else if(m_direction == -1) {
 		m_current -= g_platformTime.lastFrameDuration();
 		
@@ -1384,7 +1383,7 @@ void PlayerInterfaceFader::update() {
 			m_current = 0;
 			m_direction = 0;
 		}
-		lSLID_VALUE = m_current / PlatformDurationMs(10);
+		lSLID_VALUE = m_current / 10ms;
 	}
 }
 

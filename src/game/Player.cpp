@@ -439,12 +439,12 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	player.Full_AimTime = PlatformDurationMsf(fFullAimTime);
 	if(player.Full_AimTime <= 0) {
-		player.Full_AimTime = PlatformDurationMs(1500);
+		player.Full_AimTime = 1500ms;
 	}
 	
 	player.Full_AimTime -= PlatformDurationMsf(fCalcHandicap);
-	if(player.Full_AimTime <= PlatformDurationMs(1500)) {
-		player.Full_AimTime = PlatformDurationMs(1500);
+	if(player.Full_AimTime <= 1500ms) {
+		player.Full_AimTime = 1500ms;
 	}
 	
 	// TODO make these calculations moddable
@@ -495,7 +495,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		miscMod.armorClass = 100;
 		player.m_miscMod.add(miscMod);
 		
-		player.Full_AimTime = PlatformDurationMs(100);
+		player.Full_AimTime = 100ms;
 	}
 	if(sp_max) {
 		PlayerAttribute attributeMod;
@@ -525,7 +525,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		miscMod.armorClass = 20;
 		player.m_miscMod.add(miscMod);
 		
-		player.Full_AimTime = PlatformDurationMs(100);
+		player.Full_AimTime = 100ms;
 	}
 	if(player.m_cheatPnuxActive) {
 		PlayerAttribute attributeMod;
@@ -1839,7 +1839,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 			
 			if(REQUEST_JUMP != 0) {
 				PlatformDuration t = g_platformTime.frameStart() - REQUEST_JUMP;
-				if(t >= 0 && t <= PlatformDurationMs(350)) {
+				if(t >= 0 && t <= 350ms) {
 					REQUEST_JUMP = 0;
 					spawnAudibleSound(player.pos, *entities.player());
 					ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities.player());
@@ -1971,9 +1971,9 @@ static void PlayerMovementIterate(float DeltaTime) {
 		
 		float jump_mul = 1.f;
 		PlatformDuration diff = g_platformTime.frameStart() - LAST_JUMP_ENDTIME;
-		if(diff < PlatformDurationMs(600)) {
+		if(diff < 600ms) {
 			jump_mul = 0.5f;
-			if(diff >= PlatformDurationMs(300)) {
+			if(diff >= 300ms) {
 				jump_mul += (toMs(LAST_JUMP_ENDTIME - g_platformTime.frameStart()) + 300.f) * (1.f / 300);
 				if(jump_mul > 1.f) {
 					jump_mul = 1.f;

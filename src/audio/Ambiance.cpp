@@ -113,7 +113,7 @@ struct KeySetting {
 		   !file->read(&_flags, 4)) {
 			return false;
 		}
-		min = _min, max = _max, interval = PlatformDurationMs(_interval);
+		min = _min, max = _max, interval = std::chrono::milliseconds(_interval);
 		flags = KeyFlags::load(_flags); // TODO save/load flags
 		
 		return true;
@@ -200,8 +200,8 @@ struct TrackKey {
 		   !z.load(file)) {
 			return false;
 		}
-		start = PlatformDurationMs(_start), loop = _loop + 1;
-		delay_min = PlatformDurationMs(_delay_min), delay_max = PlatformDurationMs(_delay_max);
+		start = std::chrono::milliseconds(_start), loop = _loop + 1;
+		delay_min = std::chrono::milliseconds(_delay_min), delay_max = std::chrono::milliseconds(_delay_max);
 		
 		return true;
 	}

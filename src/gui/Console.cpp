@@ -635,7 +635,7 @@ void ScriptConsole::draw() {
 	// Draw cursor
 	bool blink = true;
 	if(mainApp->getWindow()->hasFocus()) {
-		blink = timeWaveSquare(g_platformTime.frameStart(), PlatformDurationMs(1200));
+		blink = timeWaveSquare(g_platformTime.frameStart(), 1200ms);
 	}
 	if(blink) {
 		int cursor = x;

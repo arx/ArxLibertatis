@@ -194,7 +194,7 @@ void MenuCursor::DrawCursor() {
 	
 	lFrameDiff += g_platformTime.lastFrameDuration();
 	
-	if(lFrameDiff > PlatformDurationMs(70)) {
+	if(lFrameDiff > 70ms) {
 		if(bMouseOver) {
 			if(m_currentFrame < 4) {
 				m_currentFrame++;

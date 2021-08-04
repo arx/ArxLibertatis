@@ -197,7 +197,7 @@ void TextInputWidget::render(bool mouseOver) {
 	if(m_editing) {
 		bool blink = true;
 		if(mainApp->getWindow()->hasFocus()) {
-			blink = timeWaveSquare(g_platformTime.frameStart(), PlatformDurationMs(1200));
+			blink = timeWaveSquare(g_platformTime.frameStart(), 1200ms);
 		}
 		if(blink) {
 			int cursor = x;

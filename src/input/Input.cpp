@@ -504,7 +504,7 @@ void Input::update(float time) {
 			iOldNumClick[i]--;
 		}
 		
-		if(iMouseTimeSet[i] > 1 || (iMouseTimeSet[i] == 1 && now - iMouseTime[i][0] > PlatformDurationMs(300))) {
+		if(iMouseTimeSet[i] > 1 || (iMouseTimeSet[i] == 1 && now - iMouseTime[i][0] > 300ms)) {
 			iMouseTime[i][0] = 0;
 			iMouseTime[i][1] = 0;
 			iMouseTimeSet[i] = 0;
@@ -799,10 +799,8 @@ bool Input::getMouseButtonNowUnPressed(int buttonId) const {
 bool Input::getMouseButtonDoubleClick(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 	
-	const PlatformDuration interval = PlatformDurationMs(300);
-	
 	int buttonIdx = buttonId - Mouse::ButtonBase;
-	return (iMouseTimeSet[buttonIdx] == 2 && iMouseTime[buttonIdx][1] - iMouseTime[buttonIdx][0] < interval);
+	return (iMouseTimeSet[buttonIdx] == 2 && iMouseTime[buttonIdx][1] - iMouseTime[buttonIdx][0] < 300ms);
 }
 
 int Input::getMouseButtonClicked() const {

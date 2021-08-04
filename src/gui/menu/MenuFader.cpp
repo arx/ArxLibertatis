@@ -67,7 +67,7 @@ static void FadeInOut(float _fVal) {
 
 bool MenuFader_process() {
 	
-	const PlatformDuration fadeDuration = PlatformDurationMs(1000);
+	const PlatformDuration fadeDuration = 1s;
 	
 	float alpha = menuFadeElapsed / fadeDuration;
 	FadeInOut(alpha);

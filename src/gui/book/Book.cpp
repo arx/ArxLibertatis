@@ -746,7 +746,7 @@ void StatsPage::manageStats()
 			float(g_size.center().x) * 0.82f,
 			std::move(toDisplay),
 			Color(232 + t, 204 + t, 143 + t),
-			PlatformDurationMs(1000),
+			1s,
 			0.01f,
 			3,
 			0);
@@ -1421,7 +1421,7 @@ void SpellsPage::drawSpells() const {
 			UNICODE_ARXDrawTextCenteredScroll(hFontInGame, float(g_size.center().x), 12,
 			                                  float(g_size.center().x) * 0.82f,
 			                                  std::string(getLocalised(spellInfo.description)),
-			                                  Color(232, 204, 143), PlatformDurationMs(1000), 0.01f, 2, 0);
+			                                  Color(232, 204, 143), 1s, 0.01f, 2, 0);
 			
 			size_t count = 0;
 			

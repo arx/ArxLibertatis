@@ -508,7 +508,7 @@ void SecondaryInventoryHud::clear(Entity * container) {
 void SecondaryInventoryHud::updateFader() {
 	
 	if(m_fadeDirection != Fade_stable) {
-		float frameDelay = g_platformTime.lastFrameDuration() / PlatformDurationMs(3);
+		float frameDelay = g_platformTime.lastFrameDuration() / 3ms;
 		
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || m_fadeDirection == Fade_left) {
 			if(m_fadePosition > -160)

@@ -72,7 +72,8 @@ void UNICODE_ARXDrawTextCenter(Font * font, const Vec2f & pos, std::string_view 
 void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y,
                                        float x2, std::string && text, Color col,
                                        PlatformDuration iTimeScroll, float fSpeed,
-                                       int iNbLigne, PlatformDuration iTimeOut = PlatformDurationMs(INT_MAX));
+                                       int iNbLigne,
+                                       PlatformDuration iTimeOut = std::chrono::milliseconds(INT_MAX));
 
 long ARX_UNICODE_ForceFormattingInRect(Font * font, std::string_view text, const Rect & rect,
                                        bool noOneLineParagraphs = false);

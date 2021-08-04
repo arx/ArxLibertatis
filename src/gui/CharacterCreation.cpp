@@ -92,7 +92,7 @@ static void characterCreationAddDescription(std::string_view text) {
 		float(g_size.center().x) * 0.82f,
 		std::string(text),
 		Color(232 + t, 204 + t, 143 + t),
-		PlatformDurationMs(1000),
+		1s,
 		0.01f,
 		3,
 		0);

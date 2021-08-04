@@ -193,7 +193,7 @@ public:
 	CursorAnimatedHand()
 		: m_time(0)
 		, m_frame(0)
-		, m_delay(PlatformDurationMs(70))
+		, m_delay(70ms)
 	{}
 	
 	void reset() {

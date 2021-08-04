@@ -205,7 +205,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io) {
 		// to check again later...
 		long count = 50;
 		while((io->_npcdata->pathfind.pathwait == 1) && count--) {
-			Thread::sleep(PlatformDurationMs(1));
+			Thread::sleep(1ms);
 		}
 		delete[] io->_npcdata->pathfind.list;
 		io->_npcdata->pathfind = IO_PATHFIND();

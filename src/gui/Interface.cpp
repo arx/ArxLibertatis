@@ -771,7 +771,7 @@ void ArxGame::managePlayerControls() {
 					eyeball.pos.y += val - 70.f;
 				}
 				if(!npc) {
-					MagicSightFader += g_platformTime.lastFrameDuration() / PlatformDurationMs(200);
+					MagicSightFader += g_platformTime.lastFrameDuration() / 200ms;
 					if(MagicSightFader > 1.f)
 						MagicSightFader = 1.f;
 				}
@@ -1136,7 +1136,7 @@ void ArxGame::managePlayerControls() {
 		if(eeMouseDown1()) {
 			COMBAT_MODE_ON_START_TIME = g_platformTime.frameStart();
 		} else {
-			if(g_platformTime.frameStart() - COMBAT_MODE_ON_START_TIME > PlatformDurationMs(10)) {
+			if(g_platformTime.frameStart() - COMBAT_MODE_ON_START_TIME > 10ms) {
 				ARX_INTERFACE_setCombatMode(COMBAT_MODE_ON);
 			}
 		}
@@ -1494,10 +1494,10 @@ void ArxGame::manageKeyMouse() {
 			} else {
 				
 				int borderSize = 10;
-				PlatformDuration borderDelay = PlatformDurationMs(100);
+				PlatformDuration borderDelay = 100ms;
 				if(!dragging && !mainApp->getWindow()->isFullScreen()) {
 					borderSize = 50;
-					borderDelay = PlatformDurationMs(200);
+					borderDelay = 200ms;
 				}
 				
 				int distLeft = DANAEMouse.x - g_size.left;
@@ -1510,7 +1510,7 @@ void ArxGame::manageKeyMouse() {
 				   || (!dragging && distBottom < g_size.height() / 4 && distRight <= borderSize)
 				   || (!dragging && distTop <= 4 * borderSize && distRight <= 4 * borderSize)) {
 					borderSize = 2;
-					borderDelay = PlatformDurationMs(600);
+					borderDelay = 600ms;
 				}
 				
 				rotation = Vec2f(0.f);
@@ -1649,7 +1649,7 @@ void ArxGame::manageEntityDescription() {
 		pTextManage->Clear();
 		std::string description = ss.str();
 		if(!config.input.autoDescription) {
-			PlatformDuration duration = PlatformDurationMs(2000 + description.length() * 60);
+			PlatformDuration duration = 2s + description.length() * 60ms;
 			pTextManage->AddText(hFontInGame, std::move(description), rDraw, Color(232, 204, 143), duration);
 		} else {
 			pTextManage->AddText(hFontInGame, std::move(description), rDraw, Color(232, 204, 143));

@@ -67,7 +67,7 @@ static constexpr const float PATHFINDER_HEURISTIC_RANGE = PATHFINDER_HEURISTIC_M
 static constexpr const float PATHFINDER_DISTANCE_MAX = 5000.0f;
 
 // Pathfinder Definitions
-static const PlatformDuration PATHFINDER_UPDATE_INTERVAL = PlatformDurationMs(10);
+static const PlatformDuration PATHFINDER_UPDATE_INTERVAL = 10ms;
 
 class PathFinderThread : public StoppableThread {
 	

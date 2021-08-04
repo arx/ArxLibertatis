@@ -64,7 +64,7 @@ void PlatformTime::updateFrame() {
 	m_lastFrameDuration = currentTime - m_frameStartTime;
 	
 	// Limit simulation time per frame
-	m_lastFrameDuration = std::min(m_lastFrameDuration, PlatformDurationMs(100));
+	m_lastFrameDuration = std::min(m_lastFrameDuration, PlatformDuration(100ms));
 	
 	m_frameStartTime = currentTime;
 }

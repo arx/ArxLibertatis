@@ -91,7 +91,7 @@ using audio::FLAG_AUTOFREE;
 extern bool EXTERNALVIEW;
 
 static const unsigned long MAX_VARIANTS = 5;
-static const PlatformDuration AMBIANCE_FADE_TIME = PlatformDurationMs(2000);
+static const PlatformDuration AMBIANCE_FADE_TIME = 2s;
 static const float ARX_SOUND_DEFAULT_FALLSTART = 200.f;
 
 static const float ARX_SOUND_DEFAULT_FALLEND = 2200.f;

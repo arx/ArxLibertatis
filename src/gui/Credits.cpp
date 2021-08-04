@@ -473,8 +473,8 @@ void Credits::render() {
 	static PlatformInstant lastUserScrollTime = 0;
 	static float scrollDirection = 1.f;
 	
-	PlatformDuration keyRepeatDelay  = PlatformDurationMs(256); // delay after key press before continuous scrolling
-	PlatformDuration autoScrollDelay = PlatformDurationMs(250); // ms after user input before resuming normal scrolling
+	PlatformDuration keyRepeatDelay  = 256ms; // delay after key press before continuous scrolling
+	PlatformDuration autoScrollDelay = 250ms; // ms after user input before resuming normal scrolling
 	
 	// Process user input
 	float userScroll = 20.f * GInput->getMouseWheelDir();

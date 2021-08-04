@@ -262,9 +262,6 @@ typedef DurationType<struct PlatformTimeTag, s64> PlatformDuration;
 	return PlatformInstant(0) + std::chrono::microseconds(val);
 }
 
-[[nodiscard]] inline constexpr PlatformDuration PlatformDurationMs(s64 val) noexcept {
-	return std::chrono::milliseconds(val);
-}
 [[nodiscard]] inline constexpr PlatformDuration PlatformDurationMsf(float val) noexcept {
 	return std::chrono::duration<float, std::milli>(val);
 }

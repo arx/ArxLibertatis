@@ -183,7 +183,7 @@ extern bool START_NEW_QUEST;
 SavegameHandle LOADQUEST_SLOT = SavegameHandle(); // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
 static fs::path g_saveToLoad;
 
-static const PlatformDuration runeDrawPointInterval = PlatformDurationMs(16); // ~60fps
+static const PlatformDuration runeDrawPointInterval = 16ms; // ~60fps
 
 extern EERIE_3DOBJ * arrowobj;
 
@@ -597,7 +597,7 @@ ARX_PROGRAM_OPTION_ARG("loadsave", "", "Load a specific savegame file", &loadSav
 
 static bool HandleGameFlowTransitions() {
 	
-	const PlatformDuration TRANSITION_DURATION = PlatformDurationMs(3600);
+	const PlatformDuration TRANSITION_DURATION = 3600ms;
 	static PlatformInstant TRANSITION_START = 0;
 
 	if(GameFlow::getTransition() == GameFlow::InGame) {

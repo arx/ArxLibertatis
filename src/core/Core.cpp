@@ -844,7 +844,7 @@ void ManageCombatModeAnimations() {
 					Anglef desired = vectorToAngle(dest - pos);
 					Anglef actual = unitVectorToAngle(dir);
 					
-					float t = g_platformTime.lastFrameDuration() / PlatformDurationMs(100) * player.m_bowAimRatio;
+					float t = g_platformTime.lastFrameDuration() / 100ms * player.m_bowAimRatio;
 					float dpitch = AngleDifference(actual.getPitch(), desired.getPitch()) * t;
 					float dyaw = AngleDifference(desired.getYaw(), actual.getYaw()) * t;
 					player.m_bowAimRotation.setPitch(glm::clamp(player.m_bowAimRotation.getPitch() + dpitch, -90.f, 90.f));

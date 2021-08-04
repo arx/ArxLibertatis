@@ -24,7 +24,7 @@
 #include "gui/debug/DebugPanel.h"
 #include "input/Input.h"
 
-static const PlatformDuration g_debugTriggersDecayDuration = PlatformDurationMs(200);
+static const PlatformDuration g_debugTriggersDecayDuration = 200ms;
 
 bool g_debugToggles[10];
 bool g_debugTriggers[10];

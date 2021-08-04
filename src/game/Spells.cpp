@@ -545,7 +545,7 @@ void ARX_SPELLS_ManageMagic() {
 				
 				PlatformInstant now = g_platformTime.frameStart();
 				
-				const PlatformDuration interval = PlatformDurationMs(1000 / 60);
+				const PlatformDuration interval = std::chrono::microseconds(1s) / 60;
 				
 				if(ARX_FLARES_broken) {
 					g_LastFlarePosition = pos;

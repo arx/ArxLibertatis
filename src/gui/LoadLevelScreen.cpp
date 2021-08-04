@@ -77,7 +77,7 @@ void LoadLevelScreen(long num) {
 	// only update if time since last update to progress bar > 16ms
 	// and progress bar's value has actually changed
 	PlatformInstant now = platform::getTime();
-	if(now - last_progress_bar_update > PlatformDurationMs(16) && OLD_PROGRESS_BAR_COUNT != PROGRESS_BAR_COUNT) {
+	if(now - last_progress_bar_update > 16ms && OLD_PROGRESS_BAR_COUNT != PROGRESS_BAR_COUNT) {
 		
 		UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
 		
