@@ -42,13 +42,13 @@ class HandleType {
 	
 public:
 	
-	explicit HandleType(const T t_) : t(t_) {}
-	HandleType() : t(INVALID_VALUE) {}
+	explicit constexpr HandleType(const T t_) noexcept : t(t_) { }
+	constexpr HandleType() noexcept : t(INVALID_VALUE) { }
 	
-	bool operator==(const HandleType & rhs) const { return t == rhs.t; }
-	bool operator!=(const HandleType & rhs) const { return t != rhs.t; }
+	[[nodiscard]] constexpr bool operator==(const HandleType & rhs) const noexcept { return t == rhs.t; }
+	[[nodiscard]] constexpr bool operator!=(const HandleType & rhs) const noexcept { return t != rhs.t; }
 	
-	const T & handleData() const { return t; }
+	[[nodiscard]] constexpr const T & handleData() const noexcept { return t; }
 	
 };
 
