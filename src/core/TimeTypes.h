@@ -328,12 +328,19 @@ template <typename Tag, typename T, typename Rep0, typename Period0, typename Re
 #if defined(__GNUC__) && __GNUC__ == 7
 #pragma GCC diagnostic ignored "-Wliteral-suffix"
 #endif
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable:4455)
+#endif
 using std::chrono_literals::operator""h;
 using std::chrono_literals::operator""min;
 using std::chrono_literals::operator""s;
 using std::chrono_literals::operator""ms;
 using std::chrono_literals::operator""us;
 using std::chrono_literals::operator""ns;
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
 #if defined(__GNUC__) && __GNUC__ == 7
 #pragma GCC diagnostic pop
 #endif
