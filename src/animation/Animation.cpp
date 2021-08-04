@@ -449,8 +449,8 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	}
 	
 	eerie->anim_time = std::chrono::microseconds(s64(th->nb_frames)) * 1000 * 1000 / 24;
-	if(eerie->anim_time < AnimationDurationMs(1)) {
-		eerie->anim_time = AnimationDurationMs(1);
+	if(eerie->anim_time < 1ms) {
+		eerie->anim_time = 1ms;
 	}
 
 	LogDebug("Finished Conversion TEA -> EERIE - " << toS(eerie->anim_time) << " seconds");

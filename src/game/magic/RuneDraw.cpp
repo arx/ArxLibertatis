@@ -120,7 +120,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(const Rect & rect) {
 	AnimationDuration timePerComponent = sd->duration * (1.0f / float(nbcomponents));
 
 	if(timePerComponent <= 0)
-		timePerComponent = AnimationDurationMs(1);
+		timePerComponent = 1ms;
 
 	AnimationDuration timeRemaining = elapsed;
 	

@@ -508,7 +508,7 @@ struct SavedAnimUse {
 		AnimLayer a;
 		a.cur_anim = nullptr;
 		a.altidx_cur = altidx_cur;
-		a.ctime = AnimationDurationMs(ctime);
+		a.ctime = std::chrono::milliseconds(ctime);
 		a.flags = AnimUseType::load(flags);
 		a.lastframe = lastframe;
 		a.currentInterpolation = pour;

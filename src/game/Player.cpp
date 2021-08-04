@@ -1591,7 +1591,7 @@ void ARX_PLAYER_Manage_Visual() {
 				} else if(layer0.cur_anim == alist[ANIM_JUMP_END_PART2]
 				          && glm::abs(player.physics.velocity.x) + glm::abs(player.physics.velocity.z)
 				             > (4.f / TARGET_DT)
-				          && layer0.ctime > AnimationDurationMs(1)) {
+				          && layer0.ctime > 1ms) {
 					AcquireLastAnim(io);
 					player.jumpphase = NotJumping;
 				} else {

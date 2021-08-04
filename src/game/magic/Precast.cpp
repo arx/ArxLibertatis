@@ -117,10 +117,10 @@ void ARX_SPELLS_Precast_Check() {
 				ResetAnim(layer1);
 				layer1.flags &= ~EA_LOOP;
 			}
-
+			
 			if(layer1.cur_anim && layer1.cur_anim == entities.player()->anims[ANIM_CAST]) {
-				if(layer1.ctime + AnimationDurationMs(550) > layer1.currentAltAnim()->anim_time)
-				{
+				if(layer1.ctime + 550ms > layer1.currentAltAnim()->anim_time) {
+					
 					ARX_SPELLS_Launch(Precast[i].typ,
 					                  *entities.player(),
 					                  Precast[i].flags | SPELLCAST_FLAG_LAUNCHPRECAST,
@@ -129,10 +129,12 @@ void ARX_SPELLS_Precast_Check() {
 					                  Precast[i].duration);
 					
 					Precast.erase(Precast.begin() + i);
+					
 				}
 			} else {
 				changeAnimation(entities.player(), 1, entities.player()->anims[ANIM_CAST]);
 			}
+			
 		}
 	}
 }
