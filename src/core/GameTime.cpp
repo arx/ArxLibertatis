@@ -82,7 +82,7 @@ void GameTime::reset(const GameInstant time) {
 
 void GameTime::update(PlatformDuration frameDuration) {
 	
-	GameDuration delta = GameDurationUs(toUs(frameDuration));
+	GameDuration delta = frameDuration.value();
 	
 	arx_assert(delta >= 0);
 	

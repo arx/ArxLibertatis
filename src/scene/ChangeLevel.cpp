@@ -693,7 +693,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 	asp->jumpphase = player.jumpphase;
 	
-	GameInstant jumpstart = g_gameTime.now() + GameDurationUs(toUs(player.jumpstarttime - g_platformTime.frameStart()));
+	GameInstant jumpstart = g_gameTime.now() + (player.jumpstarttime - g_platformTime.frameStart()).value();
 	asp->jumpstarttime = static_cast<u32>(toMsi(jumpstart)); // TODO save/load time
 	asp->Last_Movement = player.m_lastMovement;
 	asp->level = player.level;
