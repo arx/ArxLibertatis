@@ -88,7 +88,7 @@ void notification_add(std::string && text) {
 	if(text.empty())
 		return;
 	
-	GameInstant now = std::max(g_gameTime.now(), GameInstantMs(1));
+	GameInstant now = std::max(g_gameTime.now(), GameInstant(0) + 1ms);
 	
 	if(g_notification[MAX_SPEECH - 1].timecreation != 0) {
 		ARX_SPEECH_MoveUp();

@@ -306,7 +306,7 @@ struct SavedPrecast {
 		PRECAST_STRUCT a;
 		a.typ = (typ < 0) ? SPELL_NONE : SpellType(typ); // TODO save/load enum
 		a.level = level;
-		a.launch_time = GameInstantMs(launch_time); // TODO save/load time
+		a.launch_time = GameInstant(0) + std::chrono::milliseconds(launch_time);
 		a.flags = SpellcastFlags::load(flags); // TODO save/load flags
 		if(duration >= 0) {
 			a.duration = std::chrono::milliseconds(duration);

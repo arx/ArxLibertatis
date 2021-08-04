@@ -235,7 +235,7 @@ public:
 		if(start) {
 			entity->m_scriptTimers[t] = g_gameTime.now();
 			if(entity->m_scriptTimers[t] == 0) {
-				entity->m_scriptTimers[t] = GameInstantMs(1);
+				entity->m_scriptTimers[t] += 1ms;
 			}
 		} else {
 			entity->m_scriptTimers[t] = 0;

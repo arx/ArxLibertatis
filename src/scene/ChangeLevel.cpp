@@ -1491,9 +1491,8 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	entities.player()->invisibility = asp->invisibility;
 	entities.player()->inzone = getZoneByName(util::toLowercase(util::loadString(asp->inzone)));
 	player.jumpphase = JumpPhase(asp->jumpphase); // TODO save/load enum
-	PlatformInstant jumpstart = g_platformTime.frameStart()
-	                            + (GameInstantMs(asp->jumpstarttime) - g_gameTime.now()).value();
-	player.jumpstarttime = jumpstart; // TODO save/load time
+	GameInstant jumpstart = GameInstant(0) + std::chrono::milliseconds(asp->jumpstarttime);
+	player.jumpstarttime = g_platformTime.frameStart() + (jumpstart - g_gameTime.now()).value();
 	player.m_lastMovement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
 	
 	player.level = checked_range_cast<short>(asp->level);
@@ -1829,9 +1828,9 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 		if(ais->system_flags & SYSTEM_FLAG_USEPATH) {
 			ARX_USE_PATH * aup = io->usepath = new ARX_USE_PATH;
 			aup->aupflags = UsePathFlags::load(ais->usepath_aupflags); // TODO save/load flags
-			aup->_curtime = GameInstantMs(ais->usepath_curtime); // TODO save/load time
+			aup->_curtime = GameInstant(0) + std::chrono::milliseconds(ais->usepath_curtime);
 			aup->lastWP = ais->usepath_lastWP;
-			aup->_starttime = GameInstantMs(ais->usepath_starttime); // TODO save/load time
+			aup->_starttime = GameInstant(0) + std::chrono::milliseconds(ais->usepath_starttime);
 			aup->path = getPathByName(util::toLowercase(util::loadString(ais->usepath_name)));
 		}
 		
@@ -2038,7 +2037,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 				io->_npcdata->resist_magic = as->resist_magic;
 				io->_npcdata->resist_fire = as->resist_fire;
 				io->_npcdata->walk_start_time = std::chrono::milliseconds(as->walk_start_time);
-				io->_npcdata->aiming_start = GameInstantMs(as->aiming_start); // TODO save/load time
+				io->_npcdata->aiming_start = GameInstant(0) + std::chrono::milliseconds(as->aiming_start);
 				io->_npcdata->npcflags = NPCFlags::load(as->npcflags); // TODO save/load flags
 				io->_npcdata->fDetect = as->fDetect;
 				io->_npcdata->cuts = DismembermentFlags::load(as->cuts); // TODO save/load flags
@@ -2578,7 +2577,7 @@ void ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		g_currentPlathrough.oldestALVersion = pld.oldestALVersion;
 		g_currentPlathrough.newestALVersion = pld.newestALVersion;
 		
-		g_gameTime.reset(GameInstantMs(pld.time));
+		g_gameTime.reset(GameInstant(0) + std::chrono::milliseconds(pld.time));
 		
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
