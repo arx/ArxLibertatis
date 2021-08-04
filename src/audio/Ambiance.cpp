@@ -44,7 +44,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Ambiance.h"
 
 #include <algorithm>
-#include <limits>
 #include <sstream>
 #include <utility>
 
@@ -222,7 +221,7 @@ ARX_END_ANONYMOUS_NAMESPACE
 
 namespace audio {
 
-static const PlatformDuration KEY_CONTINUE = PlatformDuration::ofRaw(std::numeric_limits<s64>::max());
+static constexpr PlatformDuration KEY_CONTINUE = PlatformDuration::max();
 
 struct Ambiance::Track final : public Source::Callback {
 	
