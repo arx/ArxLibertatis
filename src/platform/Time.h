@@ -26,13 +26,6 @@
 namespace platform {
 
 /*!
- * \brief Initalize the time subsystem
- *
- * Must be called before any other time functions.
- */
-void initializeTime();
-
-/*!
  * \brief Get the current time
  *
  * \return The current time relative to some unspecified starting point.

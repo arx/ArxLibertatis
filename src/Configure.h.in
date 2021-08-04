@@ -31,10 +31,6 @@
 #cmakedefine01 ARX_HAVE_KILL
 #cmakedefine01 ARX_HAVE_SETRLIMIT
 
-// Time
-#cmakedefine01 ARX_HAVE_CLOCK_GETTIME
-#cmakedefine01 ARX_HAVE_MACH_CLOCK
-
 // Filesystem & I/O
 #cmakedefine01 ARX_HAVE_POSIX_FILESYSTEM
 #cmakedefine01 ARX_HAVE_WIN32_FILESYSTEM

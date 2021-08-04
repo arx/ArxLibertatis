@@ -133,7 +133,6 @@ int utf8_main(int argc, char ** argv) {
 	// Parse the command line and process options
 	ExitStatus status = parseCommandLine(argc, argv);
 	
-	platform::initializeTime();
 	benchmark::begin(benchmark::Startup);
 	
 	// Setup user, config and data directories
