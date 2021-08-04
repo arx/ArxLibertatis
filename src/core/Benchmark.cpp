@@ -20,7 +20,6 @@
 #include "core/Benchmark.h"
 
 #include <algorithm>
-#include <limits>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -55,7 +54,6 @@ static PlatformDuration g_timeLimit = 0;
 static Status g_currentStatus = None;
 static PlatformInstant g_startTime = 0;
 static int g_startCount = 0;
-static const PlatformDuration PlatformDuration_MAX = PlatformDuration::ofRaw(std::numeric_limits<s64>::max());
 
 struct Result {
 	
@@ -67,7 +65,7 @@ struct Result {
 	Result()
 		: m_totalTime(0)
 		, m_frameCount(0)
-		, m_minTime(PlatformDuration_MAX)
+		, m_minTime(PlatformDuration::max())
 		, m_maxTime(0)
 	{ }
 	
@@ -241,7 +239,7 @@ void begin(Status status) {
 		endFrame();
 	}
 	
-	if(g_timeLimit != PlatformDuration_MAX && isNormalFrame(g_currentStatus)
+	if(g_timeLimit != PlatformDuration::max() && isNormalFrame(g_currentStatus)
 	   && g_results[0].m_totalTime + g_current.m_totalTime >= g_timeLimit) {
 		mainApp->quit();
 	}
@@ -314,7 +312,7 @@ static void enable(util::cmdline::optional<std::string> limit) {
 			                           "inavlid number \"" + *limit + "\"");
 		}
 	} else {
-		g_timeLimit = PlatformDuration_MAX;
+		g_timeLimit = PlatformDuration::max();
 	}
 	g_enabled = true;
 }
