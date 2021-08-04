@@ -295,7 +295,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		eerie->frames[i].f_rotate = (tkf2015->key_orient != 0);
 		eerie->frames[i].f_translate = (tkf2015->key_move != 0);
 		
-		eerie->frames[i].time = AnimationDurationUs(s64(tkf2015->num_frame) * 1000 * 1000 / 24);
+		eerie->frames[i].time = std::chrono::microseconds(s64(tkf2015->num_frame)) * 1000 * 1000 / 24;
 		
 		arx_assert(tkf2015->flag_frame == -1 || tkf2015->flag_frame == 9);
 		eerie->frames[i].stepSound = (tkf2015->flag_frame == 9);
@@ -448,7 +448,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		
 	}
 	
-	eerie->anim_time = AnimationDurationUs(s64(th->nb_frames) * 1000 * 1000 / 24);
+	eerie->anim_time = std::chrono::microseconds(s64(th->nb_frames)) * 1000 * 1000 / 24;
 	if(eerie->anim_time < AnimationDurationMs(1)) {
 		eerie->anim_time = AnimationDurationMs(1);
 	}

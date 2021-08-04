@@ -1594,9 +1594,9 @@ void ArxGame::manageKeyMouse() {
 
 				if(rotation.x != 0.f)
 					player.m_currentMovement |= PLAYER_ROTATE;
-
-				PLAYER_ROTATION = AnimationDurationUs(s64(rotation.x * 5.f * 1000.f));
-
+				
+				PLAYER_ROTATION = std::chrono::microseconds(s64(rotation.x * 5.f * 1000.f));
+				
 				player.desiredangle.setYaw(player.angle.getYaw());
 				player.desiredangle.setYaw(MAKEANGLE(player.desiredangle.getYaw() - rotation.x));
 			}

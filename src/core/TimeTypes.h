@@ -297,9 +297,6 @@ typedef DurationType<struct AnimationTimeTag, s64> AnimationDuration;
 	return v.value() * scalar;
 }
 
-[[nodiscard]] inline constexpr AnimationDuration AnimationDurationUs(s64 val) noexcept {
-	return std::chrono::microseconds(val);
-}
 [[nodiscard]] inline constexpr AnimationDuration AnimationDurationMs(s64 val) noexcept {
 	return std::chrono::milliseconds(val);
 }
