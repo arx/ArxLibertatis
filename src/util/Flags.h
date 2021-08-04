@@ -36,137 +36,126 @@ class Flags {
 	typedef void ** Zero;
 	u32 m_flags;
 	
-	Flags(u32 flags, bool dummy) : m_flags(flags) { ARX_UNUSED(dummy); }
+	constexpr Flags(u32 flags, bool dummy) noexcept : m_flags(flags) { ARX_UNUSED(dummy); }
 	
 public:
 	
 	typedef Enum_ Enum;
 	
-	/* implicit */ Flags(Enum flag) : m_flags(flag) { }
+	/* implicit */ constexpr Flags(Enum flag) noexcept : m_flags(flag) { }
 	
-	/* implicit */ Flags(Zero /* zero */ = 0) : m_flags(0) { }
+	/* implicit */ constexpr Flags(Zero /* zero */ = 0) noexcept : m_flags(0) { }
 	
 	template <typename NullPtr, typename = std::enable_if_t<
 		std::is_same_v<std::remove_cv_t<std::remove_reference_t<NullPtr>>, decltype(nullptr)>>
 	>
 	/* implicit */ Flags(NullPtr /* nullptr */) = delete;
 	
-	static Flags load(u32 flags) {
+	[[nodiscard]] static constexpr Flags load(u32 flags) noexcept {
 		return Flags(flags, true);
 	}
 	
-	bool has(Enum flag) const {
+	[[nodiscard]] constexpr bool has(Enum flag) const noexcept {
 		return !!(m_flags & u32(flag));
 	}
 	
-	bool hasAll(Flags o) const {
+	[[nodiscard]] constexpr bool hasAll(Flags o) const noexcept {
 		return (m_flags & o.m_flags) == o.m_flags;
 	}
 	
-	Flags except(Enum flag) const {
+	[[nodiscard]] constexpr Flags except(Enum flag) const noexcept {
 		Flags r;
 		r.m_flags = m_flags & ~u32(flag);
 		return r;
 	}
 	
-	void remove(Enum flag) {
+	constexpr void remove(Enum flag) noexcept {
 		m_flags &= ~u32(flag);
 	}
 	
-	operator u32() const {
+	[[nodiscard]] constexpr operator u32() const noexcept {
 		return m_flags;
 	}
 	
-	Flags operator~() const {
+	[[nodiscard]] constexpr Flags operator~() const noexcept {
 		Flags r;
 		r.m_flags = ~m_flags;
 		return r;
 	}
 	
-	bool operator!() const {
+	[[nodiscard]] constexpr bool operator!() const noexcept {
 		return (m_flags == 0);
 	}
 	
-	Flags operator&(Flags o) const {
+	[[nodiscard]] constexpr Flags operator&(Flags o) const noexcept {
 		Flags r;
 		r.m_flags = m_flags & o.m_flags;
 		return r;
 	}
 	
-	Flags operator|(Flags o) const {
+	[[nodiscard]] constexpr Flags operator|(Flags o) const noexcept {
 		Flags r;
 		r.m_flags = m_flags | o.m_flags;
 		return r;
 	}
 	
-	Flags operator^(Flags o) const {
+	[[nodiscard]] constexpr Flags operator^(Flags o) const noexcept {
 		Flags r;
 		r.m_flags = m_flags ^ o.m_flags;
 		return r;
 	}
 	
-	Flags & operator&=(Flags o) {
+	constexpr Flags & operator&=(Flags o) noexcept {
 		m_flags &= o.m_flags;
 		return *this;
 	}
 	
-	Flags & operator|=(Flags o) {
+	constexpr Flags & operator|=(Flags o) noexcept {
 		m_flags |= o.m_flags;
 		return *this;
 	}
 	
-	Flags & operator^=(Flags o) {
+	constexpr Flags & operator^=(Flags o) noexcept {
 		m_flags ^= o.m_flags;
 		return *this;
 	}
 	
-	Flags operator&(Enum flag) const {
+	[[nodiscard]] constexpr Flags operator&(Enum flag) const noexcept {
 		Flags r;
 		r.m_flags = m_flags & u32(flag);
 		return r;
 	}
 	
-	Flags operator|(Enum flag) const {
+	[[nodiscard]] constexpr Flags operator|(Enum flag) const noexcept {
 		Flags r;
 		r.m_flags = m_flags | u32(flag);
 		return r;
 	}
 	
-	Flags operator^(Enum flag) const {
+	[[nodiscard]] constexpr Flags operator^(Enum flag) const noexcept {
 		Flags r;
 		r.m_flags = m_flags ^ u32(flag);
 		return r;
 	}
 	
-	Flags & operator&=(Enum flag) {
+	constexpr Flags & operator&=(Enum flag) noexcept {
 		m_flags &= u32(flag);
 		return *this;
 	}
 	
-	Flags & operator|=(Enum flag) {
+	constexpr Flags & operator|=(Enum flag) noexcept {
 		m_flags |= u32(flag);
 		return *this;
 	}
 	
-	Flags & operator^=(Enum flag) {
+	constexpr Flags & operator^=(Enum flag) noexcept {
 		m_flags ^= u32(flag);
 		return *this;
 	}
 	
-	static Flags all() {
+	[[nodiscard]] static constexpr Flags all() noexcept {
 		return ~Flags(0);
 	}
-	
-};
-
-/*!
- * Helper class used by DECLARE_FLAGS_OPERATORS to prevent some automatic casts.
- */
-class IncompatibleFlag {
-	
-public:
-	
-	explicit IncompatibleFlag(u32 flag) { ARX_UNUSED(flag); }
 	
 };
 
@@ -183,25 +172,17 @@ public:
  * Declare overloaded operators for a given flag type.
  */
 #define DECLARE_FLAGS_OPERATORS(Flagname) \
-	inline Flagname operator|(Flagname::Enum a, Flagname::Enum b) { \
+	[[nodiscard]] inline constexpr Flagname operator|(Flagname::Enum a, Flagname::Enum b) noexcept { \
 		return Flagname(a) | b; \
 	} \
-	inline Flagname operator|(Flagname::Enum a, Flagname b) { \
+	[[nodiscard]] inline constexpr Flagname operator|(Flagname::Enum a, Flagname b) noexcept { \
 		return b | a; \
 	} \
-	inline IncompatibleFlag operator|(Flagname::Enum a, u32 b) { \
-		return IncompatibleFlag(u32(a) | b); \
-	} \
-	inline IncompatibleFlag operator|(u32 a, Flagname::Enum b) { \
-		return IncompatibleFlag(a | u32(b)); \
-	} \
-	inline IncompatibleFlag operator&(Flagname a, u32 b) { \
-		return IncompatibleFlag(u32(a) & b); \
-	} \
-	inline IncompatibleFlag operator&(u32 a, Flagname b) { \
-		return IncompatibleFlag(a & u32(b)); \
-	} \
-	inline Flagname operator~(Flagname::Enum a) { \
+	inline void operator|(Flagname::Enum a, u32 b) = delete; \
+	inline void operator|(u32 a, Flagname::Enum b) = delete; \
+	inline void operator&(Flagname a, u32 b) = delete; \
+	inline void operator&(u32 a, Flagname b) = delete; \
+	[[nodiscard]] inline constexpr Flagname operator~(Flagname::Enum a) noexcept { \
 		return ~Flagname(a); \
 	}
 
