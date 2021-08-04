@@ -568,7 +568,8 @@ public:
 			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 		}
 		
-		TryToCastSpell(entities.player(), spellid, level, EntityHandle(), spflags, GameDurationMs(duration));
+		TryToCastSpell(entities.player(), spellid, level, EntityHandle(), spflags,
+		               std::chrono::milliseconds(duration));
 		
 		return Success;
 	}

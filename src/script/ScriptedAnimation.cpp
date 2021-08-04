@@ -274,7 +274,7 @@ public:
 			
 			SCR_TIMER & timer = createScriptTimer(context.getEntity(), std::move(timername));
 			timer.es = context.getScript();
-			timer.interval = GameDurationMs(1000);
+			timer.interval = 1s;
 			// Don't assume that we successfully set the animation - use the current animation
 			if(layer.cur_anim) {
 				arx_assert(layer.altidx_cur < layer.cur_anim->anims.size());

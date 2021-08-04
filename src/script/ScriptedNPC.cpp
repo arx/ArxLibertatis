@@ -172,7 +172,7 @@ public:
 	Result execute(Context & context) override {
 		
 		SpellcastFlags spflags = 0;
-		long duration = -1;
+		GameDuration duration;
 		bool haveDuration = false;
 		
 		if((context.getEntity()->ioflags & IO_ITEM)
@@ -199,9 +199,9 @@ public:
 			
 			if(flg & flag('d')) {
 				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
-				duration = long(context.getFloat());
+				duration = std::chrono::milliseconds(long(context.getFloat()));
 				if(duration <= 0) {
-					duration = 99999999; // TODO should this be FLT_MAX?
+					duration = std::chrono::milliseconds(99999999); // TODO should this be GameDuration::max()?
 				}
 				haveDuration = true;
 			}
@@ -227,7 +227,7 @@ public:
 		
 		long level = glm::clamp(static_cast<long>(context.getFloat()), 1l, 10l);
 		if(!haveDuration) {
-			duration = 1000 + level * 2000;
+			duration = 1s + level * 2s;
 		}
 		
 		std::string spellname = context.getWord();
@@ -249,9 +249,10 @@ public:
 			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 		}
 		
-		DebugScript(' ' << spellname << ' ' << level << ' ' << target << ' ' << spflags << ' ' << duration);
+		DebugScript(' ' << spellname << ' ' << level << ' ' << target << ' ' << spflags << ' '
+		            << std::chrono::milliseconds(duration).count());
 		
-		TryToCastSpell(context.getEntity(), spellid, level, t->index(), spflags, GameDurationMs(duration));
+		TryToCastSpell(context.getEntity(), spellid, level, t->index(), spflags, duration);
 		
 		return Success;
 	}

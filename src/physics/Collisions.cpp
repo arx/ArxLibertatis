@@ -488,7 +488,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 			if(!(flags & CFLAG_JUST_TEST) && ioo) {
 				arx_assert(ioo->ioflags & IO_NPC);
 				GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
-				if(elapsed > GameDurationMs(500)) {
+				if(elapsed > 500ms) {
 					
 					io->collide_door_time = g_gameTime.now();
 					
@@ -558,7 +558,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 						if(!(flags & CFLAG_JUST_TEST) && ioo) {
 							if(io->gameFlags & GFLAG_DOOR) {
 								GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
-								if(elapsed > GameDurationMs(500)) {
+								if(elapsed > 500ms) {
 									io->collide_door_time = g_gameTime.now();
 									SendIOScriptEvent(ioo, io, SM_COLLIDE_DOOR);
 									io->collide_door_time = g_gameTime.now();
@@ -614,7 +614,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 							if(!(flags & CFLAG_JUST_TEST) && ioo) {
 								if(io->gameFlags & GFLAG_DOOR) {
 									GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
-									if(elapsed > GameDurationMs(500)) {
+									if(elapsed > 500ms) {
 										io->collide_door_time = g_gameTime.now();
 										SendIOScriptEvent(ioo, io, SM_COLLIDE_DOOR);
 										io->collide_door_time = g_gameTime.now();

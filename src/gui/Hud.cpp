@@ -593,7 +593,7 @@ void ChangeLevelIconGui::draw() {
 
 
 QuickSaveIconGui::QuickSaveIconGui()
-	: m_duration(GameDurationMs(1000))
+	: m_duration(1s)
 	, m_remainingTime(0)
 {}
 
@@ -699,7 +699,7 @@ void MemorizedRunesHud::draw() {
 			pos.x += 32 * m_scale;
 		}
 	}
-	if(g_gameTime.now() - player.SpellToMemorize.lTimeCreation > GameDurationMs(30000)) {
+	if(g_gameTime.now() - player.SpellToMemorize.lTimeCreation > 30s) {
 		player.SpellToMemorize.bSpell = false;
 	}
 }
@@ -819,9 +819,9 @@ void MecanismIcon::reset() {
 
 void MecanismIcon::update() {
 	m_color = Color::white;
-	if(m_timeToDraw > GameDurationMs(300)) {
+	if(m_timeToDraw > 300ms) {
 		m_color = Color::black;
-		if(m_timeToDraw > GameDurationMs(400)) {
+		if(m_timeToDraw > 400ms) {
 			m_timeToDraw = 0;
 			m_nbToDraw++;
 		}
@@ -956,7 +956,7 @@ void PrecastSpellsGui::update() {
 		float val = intensity;
 		
 		if(precastSlot.launch_time > 0 && g_gameTime.now() >= precastSlot.launch_time) {
-			float tt = (g_gameTime.now() - precastSlot.launch_time) / GameDurationMs(1000);
+			float tt = (g_gameTime.now() - precastSlot.launch_time) / 1s;
 			
 			if(tt > 1.f)
 				tt = 1.f;
@@ -1125,7 +1125,7 @@ void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool f
 	bool flicker = true;
 	
 	if(spell.m_hasDuration) {
-		if(player.manaPool.current < 20 || spell.m_duration - spell.m_elapsed < GameDurationMs(2000)) {
+		if(player.manaPool.current < 20 || spell.m_duration - spell.m_elapsed < 2s) {
 			flicker = m_flickNow;
 		}
 	} else {

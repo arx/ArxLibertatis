@@ -236,11 +236,11 @@ void ScreenFxBloodSplash::render() {
 				duration = 0;
 			}
 			if(duration > Blood_Duration) {
-				Blood_Pos += g_gameTime.lastFrameDuration() / GameDurationMs(300);
+				Blood_Pos += g_gameTime.lastFrameDuration() / 300ms;
 			}
 			duration += g_gameTime.lastFrameDuration();
 		} else {
-			Blood_Pos += g_gameTime.lastFrameDuration() / GameDurationMs(40);
+			Blood_Pos += g_gameTime.lastFrameDuration() / 40ms;
 		}
 	}
 	
@@ -319,7 +319,7 @@ float damagePlayer(float dmg, DamageType type, Entity * source) {
 	entities.player()->dmg_sum += dmg;
 	
 	GameDuration elapsed = g_gameTime.now() - entities.player()->ouch_time;
-	if(elapsed > GameDurationMs(500)) {
+	if(elapsed > 500ms) {
 		entities.player()->ouch_time = g_gameTime.now();
 		SendIOScriptEvent(source, entities.player(), SM_OUCH, getOuchEventParameter(entities.player()));
 		float power = entities.player()->dmg_sum / player.lifePool.max * 220.f;
@@ -484,7 +484,7 @@ void damageProp(Entity & prop, float dmg, Entity * source, bool isSpellHit) {
 	prop.dmg_sum += dmg;
 	
 	GameDuration elapsed = g_gameTime.now() - prop.ouch_time;
-	if(elapsed > GameDurationMs(500)) {
+	if(elapsed > 500ms) {
 		prop.ouch_time = g_gameTime.now();
 		SendIOScriptEvent(source, &prop, SM_OUCH, getOuchEventParameter(&prop));
 		prop.dmg_sum = 0.f;
@@ -621,7 +621,7 @@ static void pushEntity(Entity & entity, Entity & source, float power) {
 void damageCharacter(Entity & entity, float dmg, Entity & source, DamageType flags, Vec3f * pos) {
 	
 	if(flags & DAMAGE_TYPE_PER_SECOND) {
-		dmg = dmg * (g_gameTime.lastFrameDuration() / GameDurationMs(1000));
+		dmg = dmg * (g_gameTime.lastFrameDuration() / 1s);
 	}
 	
 	float damagesdone;
@@ -709,7 +709,7 @@ float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const
 	npc.dmg_sum += dmg;
 	
 	GameDuration elapsed = g_gameTime.now() - npc.ouch_time;
-	if(elapsed > GameDurationMs(500)) {
+	if(elapsed > 500ms) {
 		npc.ouch_time = g_gameTime.now();
 		ScriptParameters parameters = getOuchEventParameter(&npc);
 		Entity * sender = source;
@@ -811,7 +811,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 	}
 	
 	GameInstant now = g_gameTime.now();
-	if(di.lastupd + GameDurationMs(200) < now) {
+	if(di.lastupd + 200ms < now) {
 		di.lastupd = now;
 		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_MAGICAL_HIT, &pos, Random::getf(0.8f, 1.2f));
@@ -875,7 +875,7 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 			FD -= damage.start_time + damage.params.duration - now;
 		}
 		
-		dmg = damage.params.damages * (FD / GameDurationMs(1000));
+		dmg = damage.params.damages * (FD / 1s);
 	}
 	
 	float divradius = 1.f / damage.params.radius;
@@ -910,7 +910,7 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 			
 			if(damage.params.type & DAMAGE_TYPE_FIELD) {
 				GameDuration elapsed = g_gameTime.now() - entity.collide_door_time;
-				if(elapsed > GameDurationMs(500)) {
+				if(elapsed > 500ms) {
 					entity.collide_door_time = g_gameTime.now();
 					ScriptParameters parameters;
 					if(damage.params.type & DAMAGE_TYPE_COLD) {

@@ -243,7 +243,7 @@ static void CheckExp(const Projectile & projectile) {
 			light->rgb = Color3f(1.f, .8f, .6f) - randomColor3f() * Color3f(.2f, .2f, .2f);
 			light->pos = pos;
 			light->ex_flaresize = 40.f;
-			light->duration = GameDurationMs(1500);
+			light->duration = 1500ms;
 		}
 	}
 }

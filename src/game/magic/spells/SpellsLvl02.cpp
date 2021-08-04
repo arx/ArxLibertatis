@@ -53,7 +53,7 @@ void HealSpell::Launch() {
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.4f * m_level;
-	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(3500);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : 3500ms;
 	
 	if(m_caster == EntityHandle_Player) {
 		m_pos = player.pos;
@@ -72,7 +72,7 @@ void HealSpell::Launch() {
 		light->fallend   = 350.f;
 		light->rgb = Color3f(0.4f, 0.4f, 1.0f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
-		light->duration = GameDurationMs(200);
+		light->duration = 200ms;
 		light->extras = 0;
 	}
 }
@@ -96,13 +96,13 @@ void HealSpell::Update() {
 		light->fallend   = 350.f;
 		light->rgb = Color3f(0.4f, 0.4f, 1.0f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
-		light->duration = GameDurationMs(200);
+		light->duration = 200ms;
 		light->extras = 0;
 	}
 
 	GameDuration ff = m_duration - m_elapsed;
 	
-	if(ff < GameDurationMs(1500)) {
+	if(ff < 1500ms) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 		m_particles.m_parameters.m_gravity = Vec3f(0.f);
 
@@ -161,7 +161,7 @@ void DetectTrapSpell::Launch() {
 		}
 	}
 	
-	m_duration = GameDurationMs(60000);
+	m_duration = 60s;
 	m_fManaCostPerSecond = 0.4f;
 	m_hasDuration = true;
 	
@@ -206,7 +206,7 @@ void ArmorSpell::Launch()
 		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(20000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : 20s;
 		m_hasDuration = true;
 	}
 	
@@ -273,7 +273,7 @@ void LowerArmorSpell::Launch() {
 		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(20000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : 20s;
 		m_hasDuration = true;
 	}
 	
@@ -349,7 +349,7 @@ void HarmSpell::Launch() {
 	damage.radius = 150.f;
 	damage.damages = 4.f;
 	damage.area = DAMAGE_FULL;
-	damage.duration = GameDurationMs(100000000);
+	damage.duration = 100000s;
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;

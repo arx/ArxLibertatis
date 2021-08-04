@@ -94,7 +94,7 @@ void RiseDeadSpell::Launch() {
 	m_entity = EntityHandle();
 	
 	m_fissure.Create(target, beta);
-	m_fissure.SetDuration(GameDurationMs(2000), GameDurationMs(500), GameDurationMs(1800));
+	m_fissure.SetDuration(2s, 500ms, 1800ms);
 	m_fissure.SetColorBorder(Color3f(0.5, 0.5, 0.5));
 	m_fissure.SetColorRays1(Color3f(0.5, 0.5, 0.5));
 	m_fissure.SetColorRays2(Color3f(1.f, 0.f, 0.f));
@@ -106,7 +106,7 @@ void RiseDeadSpell::Launch() {
 		light->fallstart = 380.f;
 		light->rgb = Color3f::black;
 		light->pos = target - Vec3f(0.f, 100.f, 0.f);
-		light->duration = GameDurationMs(200);
+		light->duration = 200ms;
 		light->creationTime = g_gameTime.now();
 	}
 	
@@ -132,14 +132,14 @@ void RiseDeadSpell::End() {
 				light->fallstart = 400.f;
 				light->rgb = Color3f(1.0f, 0.8f, 0.f);
 				light->pos = posi;
-				light->duration = GameDurationMs(600);
+				light->duration = 600ms;
 			}
 
 			entity->destroyOne();
 		}
 	}
 	
-	endLightDelayed(m_light, GameDurationMs(500));
+	endLightDelayed(m_light, 500ms);
 }
 
 void RiseDeadSpell::Update() {
@@ -150,7 +150,7 @@ void RiseDeadSpell::Update() {
 	}
 	
 	// TODO why is the duration extended here ?
-	m_duration += GameDurationMs(200);
+	m_duration += 200ms;
 	
 	m_fissure.Update(g_gameTime.lastFrameDuration());
 	m_fissure.Render();
@@ -161,13 +161,13 @@ void RiseDeadSpell::Update() {
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
 		light->rgb = Color3f(0.8f, 0.2f, 0.2f);
-		light->duration = GameDurationMs(800);
+		light->duration = 800ms;
 		light->creationTime = g_gameTime.now();
 	}
 	
 	GameDuration tim = m_fissure.m_elapsed;
 	
-	if(tim > GameDurationMs(3000) && m_entity == EntityHandle() && !m_creationFailed) {
+	if(tim > 3s && m_entity == EntityHandle() && !m_creationFailed) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &m_targetPos);
 		
 		Cylinder phys = Cylinder(m_targetPos, 50, -200);
@@ -207,7 +207,7 @@ void RiseDeadSpell::Update() {
 			m_creationFailed = true;
 			requestEnd();
 		}
-	} else if(!g_gameTime.isPaused() && tim < GameDurationMs(4000)) {
+	} else if(!g_gameTime.isPaused() && tim < 4s) {
 		if(Random::getf() > 0.95f) {
 			MakeCoolFx(m_fissure.m_eSrc);
 		}
@@ -219,7 +219,7 @@ void ParalyseSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_PARALYSE, &entities[m_target]->pos);
 	
-	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(5000);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : 5s;
 	m_hasDuration = true;
 	
 	float resist_magic = 0.f;
@@ -263,7 +263,7 @@ void CreateFieldSpell::Launch() {
 		// Move time of creation back by 4 seconds or whatever elapsed after game time 0 (if it is smaller)
 		// Prevents difference between creation time and elapsed time of m_field (or as small as possible)
 		// related to m_field.Update() with comment below
-		start -= std::min(start - GameInstant(0), GameDurationMs(4000));
+		start -= std::min(start - GameInstant(0), GameDuration(4s));
 	}
 	m_timcreation = start;
 	
@@ -320,7 +320,7 @@ void CreateFieldSpell::Launch() {
 		if(m_flags & SPELLCAST_FLAG_RESTORE) {
 			// Fast forward the field's animation so that players don't see it
 			// being casted in front of them on game load
-			m_field.Update(GameDurationMs(4000));
+			m_field.Update(4s);
 		}
 		
 	} else {
@@ -331,7 +331,7 @@ void CreateFieldSpell::Launch() {
 
 void CreateFieldSpell::End() {
 	
-	endLightDelayed(m_field.lLightId, GameDurationMs(800));
+	endLightDelayed(m_field.lLightId, 800ms);
 	
 	delete entities.get(m_entity);
 }
@@ -359,7 +359,7 @@ void DisarmTrapSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_DISARM_TRAP);
 	
-	m_duration = GameDurationMs(1);
+	m_duration = 1ms;
 	m_hasDuration = true;
 	
 	Sphere sphere;
@@ -405,7 +405,7 @@ void SlowDownSpell::Launch() {
 		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(10000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : 10s;
 		m_hasDuration = true;
 	}
 	

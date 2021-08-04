@@ -308,13 +308,13 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 			const GameDuration elapsed = g_gameTime.now() - io.sfx_time;
 
 			if(elapsed > 0) {
-				if(elapsed < GameDurationMs(3000)) { // 5 seconds to red
-					float ratio = elapsed / GameDurationMs(3000);
+				if(elapsed < 3s) { // 5 seconds to red
+					float ratio = elapsed / 3s;
 					io.special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
 					io.highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
 					AddRandomSmoke(io, 1);
-				} else if(elapsed < GameDurationMs(6000)) { // 5 seconds to White
-					float ratio = elapsed / GameDurationMs(3000);
+				} else if(elapsed < 6s) { // 5 seconds to White
+					float ratio = elapsed / 3s;
 					io.special_color = Color3f::red;
 					io.highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
 					AddRandomSmoke(io, 2);
@@ -344,7 +344,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 							light->fallstart = 400.f;
 							light->rgb = Color3f(1.0f, 0.8f, 0.f);
 							light->pos = io.pos + Vec3f(0.f, -80.f, 0.f);
-							light->duration = GameDurationMs(600);
+							light->duration = 600ms;
 						}
 
 						if(io.sfx_flag & SFX_TYPE_INCINERATE) {
@@ -1022,8 +1022,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 	ColorRGBA glowColor;
 	if(io && (io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) && io->show != SHOW_FLAG_TELEPORTING) {
 		const GameDuration elapsed = g_gameTime.now() - io->sfx_time;
-		if(elapsed >= GameDurationMs(3000) && elapsed < GameDurationMs(6000)) {
-			float ratio = (elapsed - GameDurationMs(3000)) / GameDurationMs(3000);
+		if(elapsed >= 3s && elapsed < 6s) {
+			float ratio = (elapsed - 3s) / 3s;
 			glowColor = Color::gray(ratio).toRGB();
 			glow = true;
 		}

@@ -859,7 +859,7 @@ void timerCommand(std::string_view name, Context & context) {
 	
 	SCR_TIMER & timer = createScriptTimer(context.getEntity(), std::move(timername));
 	timer.es = context.getScript();
-	timer.interval = GameDurationMs(interval);
+	timer.interval = std::chrono::milliseconds(interval);
 	timer.pos = pos;
 	timer.start = g_gameTime.now();
 	timer.count = count;

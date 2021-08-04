@@ -951,7 +951,7 @@ void TreatBackgroundActions() {
 			damage.radius = light.ex_radius;
 			damage.damages = light.ex_radius * (1.0f / 7);
 			damage.area = DAMAGE_FULL;
-			damage.duration = GameDurationMs(1);
+			damage.duration = 1ms;
 			damage.source = EntityHandle();
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;

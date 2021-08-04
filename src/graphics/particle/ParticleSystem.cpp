@@ -234,7 +234,7 @@ void ParticleSystem::Update(GameDuration delta) {
 		return;
 	}
 	
-	float fTimeSec = delta / GameDurationMs(1000);
+	float fTimeSec = delta / 1s;
 	
 	iParticleNbAlive = 0;
 	

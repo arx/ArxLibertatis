@@ -226,9 +226,6 @@ typedef DurationType<struct GameTime_Tag, s64> GameDuration;
 	return GameInstant(0) + std::chrono::milliseconds(val);
 }
 
-[[nodiscard]] inline constexpr GameDuration GameDurationMs(s64 val) noexcept {
-	return std::chrono::milliseconds(val);
-}
 [[nodiscard]] inline constexpr GameDuration GameDurationMsf(float val) noexcept {
 	return std::chrono::duration<float, std::milli>(val);
 }

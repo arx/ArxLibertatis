@@ -169,7 +169,7 @@ void ARX_Menu_Manage() {
 					cinematicEnd();
 				} else if(cinematicBorder.isActive()) {
 					// Disabling ESC capture while fading in or out.
-					if(!FADEDIR && cinematicBorder.elapsedTime() >= GameDurationMs(3000)) {
+					if(!FADEDIR && cinematicBorder.elapsedTime() >= 3s) {
 						if(SendMsgToAllIO(nullptr, SM_KEY_PRESSED) != REFUSE) {
 							REQUEST_SPEECH_SKIP = true;
 						}

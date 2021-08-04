@@ -158,10 +158,10 @@ void CabalFx::create(Vec3f casterPos) {
 		light->fallstart = 500.f;
 		light->rgb = m_startLightColor;
 		light->pos = casterPos;
-		light->duration = GameDurationMs(900);
+		light->duration = 900ms;
 	}
 }
 
 void CabalFx::end() {
-	endLightDelayed(m_lightHandle, GameDurationMs(600));
+	endLightDelayed(m_lightHandle, 600ms);
 }

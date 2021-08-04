@@ -140,7 +140,7 @@ static bool SelectSpellTargetCursorRender() {
 	if(LOOKING_FOR_SPELL_TARGET) {
 		
 		GameDuration elapsed = g_gameTime.now() - LOOKING_FOR_SPELL_TARGET_TIME;
-		if(elapsed > GameDurationMs(7000)) {
+		if(elapsed > 7s) {
 			ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE, &player.pos);
 			ARX_SPELLS_CancelSpellTarget();
 		}

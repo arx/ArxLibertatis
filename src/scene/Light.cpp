@@ -200,7 +200,7 @@ void TreatBackgroundDynlights() {
 				dynamicLight->intensity    = light.intensity;
 				dynamicLight->ex_flaresize = light.ex_flaresize;
 				dynamicLight->extras       = light.extras;
-				dynamicLight->duration     = GameDurationMs(std::numeric_limits<long>::max());
+				dynamicLight->duration     = std::chrono::milliseconds(std::numeric_limits<long>::max());
 				
 				dynamicLight->rgb = light.rgb - light.rgb * light.ex_flicker * randomColor3f() * 0.5f;
 				
@@ -220,7 +220,7 @@ void TreatBackgroundDynlights() {
 			const GameDuration duration = el->duration;
 
 			if(elapsed >= duration) {
-				float sub = g_gameTime.lastFrameDuration() / GameDurationMs(1000);
+				float sub = g_gameTime.lastFrameDuration() / 1s;
 
 				el->rgb.r -= sub;
 				el->rgb.g -= sub;

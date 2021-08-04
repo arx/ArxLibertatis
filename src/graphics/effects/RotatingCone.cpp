@@ -61,7 +61,7 @@ void RotatingCone::Update(GameDuration timeDelta, Vec3f pos, float coneScale) {
 	m_pos = pos;
 	m_coneScale = coneScale;
 	
-	m_ang = m_currdurationang / GameDurationMs(1000);
+	m_ang = m_currdurationang / 1s;
 	
 	if(m_ang > 1.f) {
 		m_currdurationang = 0;

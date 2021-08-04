@@ -309,7 +309,7 @@ struct SavedPrecast {
 		a.launch_time = GameInstantMs(launch_time); // TODO save/load time
 		a.flags = SpellcastFlags::load(flags); // TODO save/load flags
 		if(duration >= 0) {
-			a.duration = GameDurationMs(duration); // TODO save/load time
+			a.duration = std::chrono::milliseconds(duration);
 		} else {
 			a.duration = GameDuration::ofRaw(-1);
 		}
@@ -552,7 +552,7 @@ struct SavedSpellcastData {
 		a.spell_flags = SpellcastFlags::load(spell_flags); // TODO save/load flags
 		a.spell_level = spell_level;
 		a.target = EntityHandle(target); // TODO saved internum not valid after loading
-		a.duration = GameDurationMs(duration); // TODO save/load time
+		a.duration = std::chrono::milliseconds(duration);
 		return a;
 	}
 	

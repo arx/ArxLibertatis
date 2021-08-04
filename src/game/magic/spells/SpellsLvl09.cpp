@@ -92,7 +92,7 @@ void SummonCreatureSpell::Launch() {
 	ARX_SOUND_PlaySFX(g_snd.SPELL_SUMMON_CREATURE, &m_targetPos);
 	
 	m_fissure.Create(target, MAKEANGLE(player.angle.getYaw()));
-	m_fissure.SetDuration(GameDurationMs(2000), GameDurationMs(500), GameDurationMs(1500));
+	m_fissure.SetDuration(2s, 500ms, 1500ms);
 	m_fissure.SetColorBorder(Color3f::red);
 	m_fissure.SetColorRays1(Color3f::red);
 	m_fissure.SetColorRays2(Color3f::yellow * .5f);
@@ -130,7 +130,7 @@ void SummonCreatureSpell::End() {
 				light->fallstart = 400.f;
 				light->rgb = Color3f(1.0f, 0.8f, 0.0f);
 				light->pos = posi;
-				light->duration = GameDurationMs(600);
+				light->duration = 600ms;
 			}
 			
 			io->destroyOne();
@@ -146,7 +146,7 @@ void SummonCreatureSpell::Update() {
 		return;
 	}
 	
-	if(m_elapsed <= GameDurationMs(4000)) {
+	if(m_elapsed <= 4s) {
 		if(Random::getf() > 0.7f) {
 			Vec3f pos = m_fissure.m_eSrc;
 			MakeCoolFx(pos);
@@ -260,7 +260,7 @@ void FakeSummonSpell::Launch() {
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.9f;
-	m_duration = GameDurationMs(4000);
+	m_duration = 4s;
 	
 	Vec3f target = entities.get(m_target)->pos;
 	if(m_target != EntityHandle_Player) {
@@ -270,7 +270,7 @@ void FakeSummonSpell::Launch() {
 	ARX_SOUND_PlaySFX(g_snd.SPELL_SUMMON_CREATURE, &m_targetPos);
 	
 	m_fissure.Create(target, MAKEANGLE(player.angle.getYaw()));
-	m_fissure.SetDuration(GameDurationMs(2000), GameDurationMs(500), GameDurationMs(1500));
+	m_fissure.SetDuration(2s, 500ms, 1500ms);
 	m_fissure.SetColorBorder(Color3f::red);
 	m_fissure.SetColorRays1(Color3f::red);
 	m_fissure.SetColorRays2(Color3f::yellow * .5f);
@@ -374,7 +374,7 @@ void NegateMagicSpell::Update() {
 		}
 	}
 	
-	float rot = timeWaveSaw(g_gameTime.now(), GameDurationMs(18000)) * 360.f;
+	float rot = timeWaveSaw(g_gameTime.now(), 18s) * 360.f;
 	
 	Anglef stiteangle(0.f, -rot, 0.f);
 	float scalediff = timeWaveSin(g_gameTime.now(), GameDurationMsf(1570.79632f));
@@ -431,7 +431,7 @@ void IncinerateSpell::Launch() {
 	
 	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_INCINERATE_LOOP, &tio->pos, 1.f);
 	
-	m_duration = GameDurationMs(20000);
+	m_duration = 20s;
 	m_hasDuration = true;
 	
 	tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
@@ -468,7 +468,7 @@ void MassParalyseSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MASS_PARALYSE);
 	
-	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(10000);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : 10s;
 	m_hasDuration = true;
 	
 	for(Entity & npc : entities.inScene(IO_NPC)) {

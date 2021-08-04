@@ -1608,9 +1608,9 @@ static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 		st->count = 1;
 	} else {
 		st->count++;
-		st->interval = GameDurationMsf(toMsf(st->interval) * 0.5f);
-		if(st->interval < GameDurationMs(100))
-			st->interval = GameDurationMs(100);
+		st->interval = st->interval / 2;
+		if(st->interval < 100ms)
+			st->interval = 100ms;
 		
 		return true;
 	}
@@ -1643,7 +1643,7 @@ void ARX_SCRIPT_Timer_Check() {
 		// Skip heartbeat timer events for far away objects
 		if(timer.idle && !(timer.io->gameFlags & GFLAG_ISINTREATZONE)) {
 			s64 increment = toMsi(now - timer.start) / toMsi(timer.interval);
-			timer.start += GameDurationMs(toMsi(timer.interval) * increment);
+			timer.start += timer.interval * increment;
 			// TODO print full 64-bit time
 			arx_assert_msg(timer.start <= now && timer.start + timer.interval > now,
 			               "start=%ld wait=%ld now=%ld",

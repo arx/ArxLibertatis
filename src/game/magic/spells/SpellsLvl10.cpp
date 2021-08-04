@@ -57,7 +57,7 @@ void MassLightningStrikeSpell::Launch() {
 	spells.endByType(SPELL_MASS_LIGHTNING_STRIKE);
 	
 	m_hasDuration = true;
-	m_duration = GameDurationMs(5000);
+	m_duration = 5s;
 	m_soundEffectPlayed = false;
 	
 	float beta;
@@ -79,7 +79,7 @@ void MassLightningStrikeSpell::Launch() {
 	
 	for(int i = 0; i < number; i++) {
 		Vec3f target = m_pos + angleToVectorXZ(i * ft) * 500.0f;
-		GameDuration duration = minDuration + GameDurationMs(Random::getu(0, 5000));
+		GameDuration duration = minDuration + std::chrono::milliseconds(Random::getu(0, 5000));
 		maxDuration = std::max(maxDuration, duration);
 		
 		CLightning * lightning = new CLightning();
@@ -90,7 +90,7 @@ void MassLightningStrikeSpell::Launch() {
 		pTab.push_back(lightning);
 	}
 	
-	m_duration = maxDuration + GameDurationMs(1000);
+	m_duration = maxDuration + 1s;
 	
 	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
@@ -111,7 +111,7 @@ void MassLightningStrikeSpell::Launch() {
 
 void MassLightningStrikeSpell::End() {
 	
-	endLightDelayed(m_light, GameDurationMs(200));
+	endLightDelayed(m_light, 200ms);
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	m_snd_loop = audio::SourcedSample();
@@ -154,7 +154,7 @@ void MassLightningStrikeSpell::Update() {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &position, Random::getf(0.8f, 1.2f));
 	}
 	
-	if(0 > m_duration - GameDurationMs(1800) && !m_soundEffectPlayed) {
+	if(0 > m_duration - 1800ms && !m_soundEffectPlayed) {
 		m_soundEffectPlayed = true;
 		ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, nullptr, Random::getf(0.8f, 1.2f));
 	}
@@ -227,7 +227,7 @@ void ControlTargetSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_CONTROL_TARGET);
 	
-	m_duration = GameDurationMs(1000);
+	m_duration = 1s;
 	m_hasDuration = true;
 	
 	fTrail = 0.f;
@@ -328,7 +328,7 @@ void FreezeTimeSpell::Launch() {
 	m_slowdown = glm::clamp(m_level * 0.08f, 0.f, max_slowdown);
 	g_gameTime.setSpeed(g_gameTime.speed() - m_slowdown);
 	
-	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(200000);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : 200s;
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 30.f * m_slowdown;
 }
@@ -346,7 +346,7 @@ void MassIncinerateSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MASS_INCINERATE);
 	
-	m_duration = GameDurationMs(20000);
+	m_duration = 20s;
 	m_hasDuration = true;
 	
 	for(Entity & npc : entities.inScene(IO_NPC)) {

@@ -223,7 +223,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 		
 		AnimationDuration elapsed = toAnimationDuration(now - entity.symboldraw->starttime);
 		if(elapsed > entity.symboldraw->duration) {
-			endLightDelayed(entity.dynlight, GameDurationMs(600));
+			endLightDelayed(entity.dynlight, 600ms);
 			entity.dynlight = LightHandle();
 			delete entity.symboldraw;
 			entity.symboldraw = nullptr;
@@ -303,7 +303,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, GameDuration duratio
 		sd = &g_bookSymbolDraw;
 	}
 	
-	sd->duration = toAnimationDuration(std::max(GameDurationMs(1), duration));
+	sd->duration = toAnimationDuration(std::max(GameDuration(1ms), duration));
 	sd->sequence = info.sequence;
 	
 	sd->starttime = g_gameTime.now();

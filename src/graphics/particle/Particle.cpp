@@ -60,7 +60,7 @@ Particle::Particle()
 	, iTexNum(0)
 {
 	
-	m_timeToLive = GameDurationMs(Random::get(2000, 5000));
+	m_timeToLive = std::chrono::microseconds(Random::get(2000, 5000));
 	
 	fColorStart = Color4f(1, 1, 1, 0.5f);
 	fColorEnd = Color4f(1, 1, 1, 0.1f);
@@ -90,8 +90,8 @@ void Particle::Validate() {
 	fColorEnd.b = glm::clamp(fColorEnd.b, 0.f, 1.f);
 	fColorEnd.a = glm::clamp(fColorEnd.a, 0.f, 1.f);
 	
-	if(m_timeToLive < GameDurationMs(100)) {
-		m_timeToLive = GameDurationMs(100);
+	if(m_timeToLive < 100ms) {
+		m_timeToLive = 100ms;
 	}
 }
 
@@ -99,7 +99,7 @@ void Particle::Update(GameDuration delta) {
 	
 	m_age += delta;
 	iTexTime += toMsi(delta); // FIXME time, this will break with sub ms deltas
-	float fTimeSec = delta / GameDurationMs(1000);
+	float fTimeSec = delta / 1s;
 	
 	if(m_age < m_timeToLive) {
 		

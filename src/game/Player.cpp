@@ -966,7 +966,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 
 			// Check for player hungry sample playing
 			if((player.hunger > 10.f && player.hunger - inc_hunger <= 10.f)
-			   || (player.hunger < 10.f && g_gameTime.now() > LastHungerSample + GameDurationMs(180000))) {
+			   || (player.hunger < 10.f && g_gameTime.now() > LastHungerSample + 180s)) {
 				
 				LastHungerSample = g_gameTime.now();
 
@@ -1253,7 +1253,7 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 	} else if(ROTATE_START != 0) {
 		GameDuration elapsed = now - ROTATE_START;
-		if(elapsed > GameDurationMs(100)) {
+		if(elapsed > 100ms) {
 			ROTATE_START = 0;
 		}
 	}
@@ -2305,11 +2305,11 @@ void ARX_PLAYER_Manage_Movement() {
  * \brief Manage Player Death Visual
  */
 void ARX_PLAYER_Manage_Death() {
-	if(player.DeadTime <= GameDurationMs(2000))
+	if(player.DeadTime <= 2s)
 		return;
 
 	player.m_paralysed = false;
-	float ratio = (player.DeadTime - GameDurationMs(2000)) / GameDurationMs(5000);
+	float ratio = (player.DeadTime - 2s) / 5s;
 
 	if(ratio >= 1.f) {
 		ARX_MENU_Launch(false);

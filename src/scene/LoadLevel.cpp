@@ -440,7 +440,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 				pos += sizeof(DANAE_LS_PATHWAYS);
 				path.pathways[j].flag = PathwayType(dlpw->flag); // TODO save/load enum
 				path.pathways[j].rpos = dlpw->rpos.toVec3();
-				path.pathways[j]._time = GameDurationMs(dlpw->time); // TODO save/load time
+				path.pathways[j]._time = std::chrono::milliseconds(dlpw->time);
 			}
 			if(!path.pathways.empty()) {
 				path.pathways[0].rpos = Vec3f(0.f);

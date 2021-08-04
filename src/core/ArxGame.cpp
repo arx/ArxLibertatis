@@ -1467,8 +1467,8 @@ void ArxGame::handlePlayerDeath() {
 		
 		float startDistance = 40.f;
 
-		GameDuration startTime = GameDurationMs(2000);
-		GameDuration endTime = GameDurationMs(7000);
+		GameDuration startTime = 2s;
+		GameDuration endTime = 7s;
 
 		float DeadCameraDistance = startDistance + (mdist - startDistance) * ((player.DeadTime - startTime) / (endTime - startTime));
 		
@@ -1796,7 +1796,7 @@ void ArxGame::updateLevel() {
 		SpellBase * spell = spells.getSpellByCaster(EntityHandle_Player, SPELL_MAGIC_SIGHT);
 		if(spell) {
 			GameDuration duration = g_gameTime.now() - spell->m_timcreation;
-			g_playerCamera.focal -= 30.f * glm::clamp(duration / GameDurationMs(500), 0.f, 1.f);
+			g_playerCamera.focal -= 30.f * glm::clamp(duration / 500ms, 0.f, 1.f);
 		}
 		
 		g_playerCamera.focal += 177.5f * player.m_bowAimRatio;

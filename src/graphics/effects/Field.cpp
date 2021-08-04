@@ -178,10 +178,10 @@ void CCreateField::Render()
 		}
 	}
 	
-	float ysize = std::min(1.0f, m_elapsed / GameDurationMs(1000));
+	float ysize = std::min(1.0f, m_elapsed / 1s);
 	
 	if(ysize >= 1.0f) {
-		size = std::min(1.0f, (m_elapsed - GameDurationMs(1000)) / GameDurationMs(1000));
+		size = std::min(1.0f, (m_elapsed - 1s) / 1s);
 		size = std::max(size, 0.1f);
 	}
 
@@ -237,7 +237,7 @@ void CCreateField::Render()
 		light->fallstart = 400.f;
 		light->rgb = Color3f(0.8f, 0.0f, 1.0f);
 		light->pos = eSrc + Vec3f(0.f, -150.f, 0.f);
-		light->duration = GameDurationMs(800);
+		light->duration = 800ms;
 	}
 	
 }

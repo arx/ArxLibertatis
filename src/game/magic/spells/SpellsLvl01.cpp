@@ -107,7 +107,7 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 		}
 
 		light->pos = _ePos;
-		light->duration = GameDurationMs(1500);
+		light->duration = 1500ms;
 	}
 	
 	g_particleManager.AddSystem(pPS);
@@ -131,7 +131,7 @@ MagicMissileSpell::~MagicMissileSpell() {
 
 void MagicMissileSpell::Launch() {
 	
-	m_duration = GameDurationMs(6000);
+	m_duration = 6s;
 	m_hasDuration = true;
 	
 	m_hand_group = GetActionPointIdx(entities[m_caster]->obj, "primary_attach");
@@ -202,7 +202,7 @@ void MagicMissileSpell::Launch() {
 			}
 			
 			el->pos = startPos;
-			el->duration = GameDurationMs(300);
+			el->duration = 300ms;
 		}
 		m_lights.push_back(lightHandle);
 	}
@@ -227,9 +227,9 @@ void MagicMissileSpell::Launch() {
 		
 		missile->Create(startPos, angles);
 		
-		GameDuration lTime = m_duration + GameDurationMs(Random::get(-1000, 1000));
+		GameDuration lTime = m_duration + std::chrono::milliseconds(Random::get(-1000, 1000));
 		
-		lTime = std::max(GameDurationMs(1000), lTime);
+		lTime = std::max(GameDuration(1s), lTime);
 		lMax = std::max(lMax, lTime);
 		
 		missile->SetDuration(lTime);
@@ -239,13 +239,13 @@ void MagicMissileSpell::Launch() {
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_LAUNCH, &startPos);
 	snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MM_LOOP, &startPos, 1.f);
 	
-	m_duration = lMax + GameDurationMs(1000);
+	m_duration = lMax + 1s;
 }
 
 void MagicMissileSpell::End() {
 	
 	for(size_t i = 0; i < m_lights.size(); i++) {
-		endLightDelayed(m_lights[i], GameDurationMs(500));
+		endLightDelayed(m_lights[i], 500ms);
 	}
 	
 	for(size_t i = 0; i < m_missiles.size(); i++) {
@@ -276,7 +276,7 @@ void MagicMissileSpell::Update() {
 				spawnAudibleSound(missile->eCurPos, *caster);
 			}
 			
-			missile->SetTTL(GameDurationMs(1000));
+			missile->SetTTL(1s);
 			missile->bExplo = true;
 			missile->bMove  = false;
 			
@@ -342,7 +342,7 @@ IgnitSpell::IgnitSpell()
 
 void IgnitSpell::Launch() {
 	
-	m_duration = GameDurationMs(500);
+	m_duration = 500ms;
 	m_hasDuration = true;
 	
 	if(m_hand_group != ActionPoint()) {
@@ -357,7 +357,7 @@ void IgnitSpell::Launch() {
 		light->fallstart = 380.f;
 		light->rgb       = Color3f(1.f, 0.75f, 0.5f);
 		light->pos       = m_srcPos;
-		light->duration  = GameDurationMs(300);
+		light->duration  = 300ms;
 	}
 	
 	float fPerimeter = 400.f + m_level * 30.f;
@@ -458,7 +458,7 @@ void IgnitSpell::Update() {
 
 void DouseSpell::Launch() {
 	
-	m_duration = GameDurationMs(500);
+	m_duration = 500ms;
 	m_hasDuration = true;
 	
 	Vec3f target = (m_hand_group != ActionPoint()) ? m_hand_pos : (m_caster_pos - Vec3f(0.f, 50.f, 0.f));
@@ -548,6 +548,6 @@ void ActivatePortalSpell::Launch() {
 	
 	ARX_SOUND_PlayInterface(g_snd.SPELL_ACTIVATE_PORTAL);
 	
-	m_duration = GameDurationMs(20);
+	m_duration = 20ms;
 	m_hasDuration = true;
 }

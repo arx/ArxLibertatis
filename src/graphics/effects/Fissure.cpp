@@ -34,9 +34,9 @@
 FissureFx::FissureFx()
 	: m_elapsed(0)
 	, m_duration(0)
-	, m_durationIntro(GameDurationMs(1000))
-	, m_durationRender(GameDurationMs(1000))
-	, m_durationOuttro(GameDurationMs(1000))
+	, m_durationIntro(1s)
+	, m_durationRender(1s)
+	, m_durationOuttro(1s)
 	, m_colorBorder(Color3f::white)
 	, m_colorRays1(Color3f::white)
 	, m_colorRays2(Color3f::black)
@@ -46,9 +46,9 @@ FissureFx::FissureFx()
 
 void FissureFx::SetDuration(GameDuration alDurationIntro, GameDuration alDurationRender, GameDuration alDurationOuttro)
 {
-	m_durationIntro  = arx::clamp(alDurationIntro,  GameDurationMs(100), GameDurationMs(100000));
-	m_durationRender = arx::clamp(alDurationRender, GameDurationMs(100), GameDurationMs(100000));
-	m_durationOuttro = arx::clamp(alDurationOuttro, GameDurationMs(100), GameDurationMs(100000));
+	m_durationIntro  = arx::clamp(alDurationIntro,  100ms, 100s);
+	m_durationRender = arx::clamp(alDurationRender, 100ms, 100s);
+	m_durationOuttro = arx::clamp(alDurationOuttro, 100ms, 100s);
 	
 	m_elapsed = 0;
 	m_duration = m_durationIntro + m_durationRender + m_durationOuttro;
@@ -80,7 +80,7 @@ CRiseDead::CRiseDead()
 	, sizeF(0)
 	, m_visibleNotches(0)
 {
-	m_elapsed = m_duration + GameDurationMs(1);
+	m_elapsed = m_duration + 1ms;
 }
 
 void CRiseDead::Create(Vec3f aeSrc, float afBeta) {
@@ -416,7 +416,7 @@ CSummonCreature::CSummonCreature()
 	, sizeF(0.f)
 	, m_visibleNotches(0)
 {
-	m_elapsed = m_duration + GameDurationMs(1);
+	m_elapsed = m_duration + 1ms;
 }
 
 void CSummonCreature::Create(Vec3f aeSrc, float afBeta)

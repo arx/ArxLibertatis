@@ -1924,20 +1924,19 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 			}
 			
 			timer.idle = (ats->flags & 1) != 0;
-			timer.interval = GameDurationMs(ats->interval); // TODO save/load time
+			timer.interval = std::chrono::milliseconds(ats->interval); // TODO save/load time
 			timer.pos = size_t(ats->pos);
 			// TODO if the script has changed since the last save, this position may be invalid
 			
-			GameDuration remaining = GameDurationMs(ats->remaining);
-			if(remaining > GameDurationMs(ats->interval)) {
+			GameDuration remaining = std::chrono::milliseconds(ats->remaining);
+			if(remaining > timer.interval) {
 				LogWarning << "Found bad script timer " << timer.name
 				           << " for entity " << io->idString() << ": remaining time ("
-				           << toMsi(remaining) << "ms) > interval (" << ats->interval << "ms) " << ats->flags;
-				remaining = GameDurationMs(ats->interval);
+				           << toMsi(remaining) << "ms) > interval (" << toMsi(timer.interval) << "ms) " << ats->flags;
+				remaining = timer.interval;
 			}
 			
-			const GameInstant tt = (g_gameTime.now() + remaining) - GameDurationMs(ats->interval);
-			timer.start = tt;
+			timer.start = (g_gameTime.now() + remaining) - timer.interval;
 			
 			timer.count = ats->count;
 			
@@ -2038,7 +2037,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 				io->_npcdata->resist_poison = as->resist_poison;
 				io->_npcdata->resist_magic = as->resist_magic;
 				io->_npcdata->resist_fire = as->resist_fire;
-				io->_npcdata->walk_start_time = GameDurationMs(as->walk_start_time); // TODO save/load time
+				io->_npcdata->walk_start_time = std::chrono::milliseconds(as->walk_start_time);
 				io->_npcdata->aiming_start = GameInstantMs(as->aiming_start); // TODO save/load time
 				io->_npcdata->npcflags = NPCFlags::load(as->npcflags); // TODO save/load flags
 				io->_npcdata->fDetect = as->fDetect;

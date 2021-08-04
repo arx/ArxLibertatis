@@ -223,7 +223,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, SpeechF
 	g_aspeech[num].exist = 1;
 	g_aspeech[num].time_creation = g_gameTime.now();
 	g_aspeech[num].io = io; // can be nullptr
-	g_aspeech[num].duration = GameDurationMs(2000); // Minimum value
+	g_aspeech[num].duration = 2s; // Minimum value
 	g_aspeech[num].flags = flags;
 	g_aspeech[num].sample = audio::SourcedSample();
 	g_aspeech[num].fDeltaY = 0.f;
@@ -269,7 +269,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, SpeechF
 			LogWarning << "Speech requested with text but localisation is missing: " << data;
 		}
 		g_aspeech[num].duration = std::max(g_aspeech[num].duration,
-		                                   GameDurationMs(s64(g_aspeech[num].text.length() + 1) * 100));
+		                                   GameDuration(s64(g_aspeech[num].text.length() + 1) * 100ms));
 	}
 	
 	Entity * source = (g_aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? nullptr : io;
@@ -283,8 +283,8 @@ long ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, SpeechF
 		g_aspeech[num].duration = GameDurationMsf(fDiv);
 	}
 
-	if (g_aspeech[num].duration < GameDurationMs(500))
-		g_aspeech[num].duration = GameDurationMs(2000);
+	if (g_aspeech[num].duration < 500ms)
+		g_aspeech[num].duration = 2s;
 	
 	return num;
 }
@@ -390,7 +390,7 @@ void ARX_SPEECH_Update() {
 				
 				GameDuration duration = ARX_SOUND_GetDuration(speech->sample.getSampleId());
 				if(duration == 0) {
-					duration = GameDurationMs(4000);
+					duration = 4s;
 				}
 				
 				fDTime = height * (g_gameTime.lastFrameDuration() / duration);
@@ -405,7 +405,7 @@ void ARX_SPEECH_Update() {
 				}
 				speech->iTimeScroll += checked_range_cast<int>(g_framedelay);
 			} else {
-				fDTime = height * (g_gameTime.lastFrameDuration() / GameDurationMs(4000));
+				fDTime = height * (g_gameTime.lastFrameDuration() / 4s);
 			}
 			
 			speech->fDeltaY += fDTime;

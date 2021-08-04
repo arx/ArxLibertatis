@@ -865,7 +865,7 @@ void ARX_PHYSICS_Apply() {
 
 		if(   (io->ioflags & IO_ITEM)
 		   && (io->gameFlags & GFLAG_GOREEXPLODE)
-		   && g_gameTime.now() - io->animBlend.lastanimtime > GameDurationMs(300)
+		   && g_gameTime.now() - io->animBlend.lastanimtime > 300ms
 		   && io->obj
 		   && !io->obj->vertexlist.empty()
 		) {
@@ -1965,7 +1965,7 @@ static void ManageNPCMovement_End(Entity * io) {
 			} else if(layer0.cur_anim == alist[ANIM_WALK] || layer0.cur_anim == alist[ANIM_RUN]
 			          || layer0.cur_anim == alist[ANIM_WALK_SNEAK]) {
 				layer0.flags &= ~EA_LOOP;
-				if(io->_npcdata->reachedtime + GameDurationMs(500) < g_gameTime.now()) {
+				if(io->_npcdata->reachedtime + 500ms < g_gameTime.now()) {
 					changeAnimation(io, ANIM_DEFAULT, EA_LOOP, startAtBeginning);
 				}
 			}
@@ -2161,7 +2161,7 @@ static void ManageNPCMovement_End(Entity * io) {
 				   && layer0.cur_anim != alist[ANIM_RUN]
 				) {
 					io->_npcdata->walk_start_time += g_gameTime.lastFrameDuration();
-					if(io->_npcdata->walk_start_time > GameDurationMs(600)) {
+					if(io->_npcdata->walk_start_time > 600ms) {
 						desiredanim = alist[ANIM_FIGHT_WALK_FORWARD];
 						io->_npcdata->walk_start_time = 0;
 					}
@@ -2263,15 +2263,15 @@ static void ManageNPCMovement(Entity * io) {
 		io->requestRoomUpdate = true;
 		Vec3f tv;
 
-		if(aup->_curtime - aup->_starttime > GameDurationMs(500)) {
-			aup->_curtime -= GameDurationMs(500);
+		if(aup->_curtime - aup->_starttime > 500ms) {
+			aup->_curtime -= 500ms;
 			ARX_PATHS_Interpolate(aup, &tv);
-			aup->_curtime += GameDurationMs(500);
+			aup->_curtime += 500ms;
 			io->angle.setYaw(MAKEANGLE(glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
 		} else {
-			aup->_curtime += GameDurationMs(500);
+			aup->_curtime += 500ms;
 			ARX_PATHS_Interpolate(aup, &tv);
-			aup->_curtime -= GameDurationMs(500);
+			aup->_curtime -= 500ms;
 			io->angle.setYaw(MAKEANGLE(180.f + glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
 		}
 		return;
@@ -2847,7 +2847,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		}
 		
 		ARX_USE_PATH * aup = io->usepath;
-		aup->_curtime += GameDurationMs(s64(smoothing) + 100);
+		aup->_curtime += std::chrono::milliseconds(s64(smoothing) + 100);
 
 		Vec3f tp;
 		long wp = ARX_PATHS_Interpolate(aup, &tp);

@@ -104,7 +104,7 @@ void ManaDrainSpell::Launch() {
 	damage.radius = 150.f;
 	damage.damages = 8.f;
 	damage.area = DAMAGE_FULL;
-	damage.duration = GameDurationMs(100000000);
+	damage.duration = 100000s;
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
@@ -161,7 +161,7 @@ Vec3f ManaDrainSpell::getPosition() const {
 void ExplosionSpell::Launch() {
 	ARX_SOUND_PlaySFX(g_snd.SPELL_EXPLOSION);
 	
-	m_duration = GameDurationMs(2000);
+	m_duration = 2s;
 	m_hasDuration = true;
 	
 	Vec3f target = entities[m_caster]->pos;
@@ -189,10 +189,10 @@ void ExplosionSpell::Launch() {
 		light->fallstart = 500.f;
 		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + Color3f(1.f / 3, 1.f / 3, 1.f / 5) * randomColor3f();
 		light->pos = target;
-		light->duration = GameDurationMs(200);
+		light->duration = 200ms;
 	}
 	
-	AddQuakeFX(300, GameDurationMs(2000), 400, true);
+	AddQuakeFX(300, 2s, 400, true);
 	
 	for(long i_angle = 0 ; i_angle < 360 ; i_angle += 12) {
 		for(long j = -100 ; j < 100 ; j += 50) {
@@ -214,7 +214,7 @@ void ExplosionSpell::Update() {
 	if(light) {
 		
 		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f / 3, 1.f / 3, 0.2f);
-		light->duration = GameDurationMs(200);
+		light->duration = 200ms;
 		
 		float choice = Random::getf();
 		if(choice > .8f) {
@@ -235,7 +235,7 @@ void ExplosionSpell::Update() {
 }
 
 void EnchantWeaponSpell::Launch() {
-	m_duration = GameDurationMs(20);
+	m_duration = 20ms;
 	m_hasDuration = true;
 }
 
@@ -262,7 +262,7 @@ void LifeDrainSpell::Launch() {
 	damage.radius = 150.f;
 	damage.damages = m_level * 0.08f;
 	damage.area = DAMAGE_AREA;
-	damage.duration = GameDurationMs(100000000);
+	damage.duration = 100000s;
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_LIFE;

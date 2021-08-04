@@ -113,7 +113,7 @@ struct DamageParameters {
 		: pos(0.f)
 		, damages(0.f)
 		, radius(100.f)
-		, duration(GameDurationMs(1000))
+		, duration(1s)
 		, area(DAMAGE_AREA)
 		, flags(0)
 		, type(0)

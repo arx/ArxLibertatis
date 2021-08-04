@@ -83,8 +83,8 @@ CPoisonProjectile::CPoisonProjectile()
 	, fTrail(-1.f)
 	, eMove(0.f)
 {
-	SetDuration(GameDurationMs(2000));
-	m_elapsed = m_duration + GameDurationMs(1);
+	SetDuration(2s);
+	m_elapsed = m_duration + 1ms;
 }
 
 void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
@@ -114,13 +114,13 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 void CPoisonProjectile::Update(GameDuration timeDelta)
 {
-	if(m_elapsed <= GameDurationMs(2000)) {
+	if(m_elapsed <= 2s) {
 		m_elapsed += timeDelta;
 	}
 
 	// on passe de 5 à 100 partoches en 1.5secs
-	if(m_elapsed >= GameDurationMs(750)) {
-		fTrail = ((m_elapsed - GameDurationMs(750)) / (m_duration - GameDurationMs(750))) * 9 * (BEZIERPrecision + 2);
+	if(m_elapsed >= 750ms) {
+		fTrail = ((m_elapsed - 750ms) / (m_duration - 750ms)) * 9 * (BEZIERPrecision + 2);
 	}
 
 	if(m_elapsed >= m_duration)

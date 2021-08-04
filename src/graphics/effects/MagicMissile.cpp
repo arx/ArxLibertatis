@@ -79,8 +79,8 @@ CMagicMissile::CMagicMissile()
 	, iBezierPrecision(0)
 	, fTrail(0.f)
 {
-	SetDuration(GameDurationMs(2000));
-	m_elapsed = m_duration + GameDurationMs(1);
+	SetDuration(2s);
+	m_elapsed = m_duration + 1ms;
 }
 
 void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles) {

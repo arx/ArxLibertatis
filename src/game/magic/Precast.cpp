@@ -73,7 +73,7 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	}
 	
 	GameDuration elapsed = g_gameTime.now() - LAST_PRECAST_TIME;
-	if(elapsed < GameDurationMs(1000)) {
+	if(elapsed < 1s) {
 		return;
 	}
 	

@@ -624,9 +624,9 @@ GameDuration ARX_SOUND_GetDuration(audio::SampleHandle sample_id) {
 	if(g_soundInitialized && sample_id != audio::SampleHandle()) {
 		size_t length;
 		audio::getSampleLength(sample_id, length);
-		return GameDurationMs(length);
+		return std::chrono::milliseconds(length); // TODO auto plays in real time but we convert to GameDuration
 	}
-
+	
 	return 0;
 }
 

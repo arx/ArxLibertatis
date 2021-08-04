@@ -66,7 +66,7 @@ void SpeedSpell::Launch() {
 		m_duration = 0;
 		m_hasDuration = false;
 	} else {
-		m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(20000);
+		m_duration = (m_launchDuration >= 0) ? m_launchDuration : 20s;
 		m_hasDuration = true;
 	}
 	
@@ -139,7 +139,7 @@ void DispellIllusionSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_DISPELL_ILLUSION);
 	
-	m_duration = GameDurationMs(1000);
+	m_duration = 1s;
 	m_hasDuration = true;
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
@@ -173,12 +173,12 @@ FireballSpell::FireballSpell()
 	: eCurPos(0.f)
 	, eMove(0.f)
 	, bExplo(false)
-	, m_createBallDuration(GameDurationMs(2000))
+	, m_createBallDuration(2s)
 { }
 
 void FireballSpell::Launch() {
 	
-	m_duration = GameDurationMs(6000);
+	m_duration = 6s;
 	m_hasDuration = true;
 	
 	Entity * caster = entities.get(m_caster);
@@ -226,7 +226,7 @@ void FireballSpell::End() {
 	ARX_SOUND_Stop(m_snd_loop);
 	m_snd_loop = audio::SourcedSample();
 	
-	endLightDelayed(m_light, GameDurationMs(500));
+	endLightDelayed(m_light, 500ms);
 }
 
 void FireballSpell::Update() {
@@ -328,7 +328,7 @@ void CreateFoodSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_CREATE_FOOD, &m_caster_pos);
 	
-	m_duration = (m_launchDuration >= 0) ? m_launchDuration : GameDurationMs(3500);
+	m_duration = (m_launchDuration >= 0) ? m_launchDuration : 3500ms;
 	m_hasDuration = true;
 	m_elapsed = 0;
 	
@@ -351,7 +351,7 @@ void CreateFoodSpell::Update() {
 	
 	GameDuration timeRemaining = m_duration - m_elapsed;
 	
-	if(timeRemaining < GameDurationMs(1500)) {
+	if(timeRemaining < 1500ms) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 		m_particles.m_parameters.m_gravity = Vec3f(0.f);
 		
@@ -387,7 +387,7 @@ void IceProjectileSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
 	
-	m_duration = GameDurationMs(4200);
+	m_duration = 4200ms;
 	m_hasDuration = true;
 	
 	Vec3f target;
@@ -477,8 +477,8 @@ void IceProjectileSpell::End() {
 void IceProjectileSpell::Update() {
 	
 	float fColor = 1.f;
-	if(m_duration - m_elapsed < GameDurationMs(1000)) {
-		fColor = (m_duration - m_elapsed) / GameDurationMs(1000);
+	if(m_duration - m_elapsed < 1s) {
+		fColor = (m_duration - m_elapsed) / 1s;
 		
 		for(int i = 0; i < iNumber; i++) {
 			m_icicles[i].size.y *= fColor;

@@ -151,7 +151,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			pb.fastdecay = false;
 			pb.ep = &ep;
 			pb.tc = g_particleTextures.boom;
-			pb.tolive = GameDurationMs(10000);
+			pb.tolive = 10s;
 			pb.timecreation = g_gameTime.now();
 			pb.rgb = Color3f::black;
 			for(size_t k = 0; k < nbvert; k++) {
@@ -309,7 +309,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 						long num = Random::get(0, 2);
 						pb.tc = g_particleTextures.water_splat[num];
 						
-						pb.tolive = GameDurationMs(1500);
+						pb.tolive = 1500ms;
 					} else {
 						pb.type = BloodDecal;
 						

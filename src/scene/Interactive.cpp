@@ -1071,7 +1071,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io) {
 	}
 	
 	SCR_TIMER & timer = createScriptTimer(io, "_r_a_t_");
-	timer.interval = GameDurationMs(Random::get(3000, 6000));
+	timer.interval = std::chrono::milliseconds(Random::get(3000, 6000));
 	timer.start = g_gameTime.now();
 	timer.count = 1;
 	
@@ -1921,7 +1921,7 @@ void UpdateCameras() {
 				aup->_starttime += elapsed * 2;
 				aup->_curtime += elapsed;
 				if(aup->_starttime >= aup->_curtime) {
-					aup->_curtime = aup->_starttime + GameDurationMs(1);
+					aup->_curtime = aup->_starttime + 1ms;
 				}
 			}
 			
@@ -1993,7 +1993,7 @@ void UpdateCameras() {
 				Vec3f target = entity.target;
 				if(entity._camdata->lastinfovalid && entity._camdata->smoothing != 0.f) {
 					float vv = (8000.f - std::min(entity._camdata->smoothing, 8000.f)) * (1.0f / 4000.f);
-					float f1 = std::min(g_gameTime.lastFrameDuration() / GameDurationMs(1000) * vv, 1.f);
+					float f1 = std::min(g_gameTime.lastFrameDuration() / 1s * vv, 1.f);
 					target = entity.target * (1.f - f1) + entity._camdata->lasttarget * f1;
 				}
 				
@@ -2027,9 +2027,9 @@ void UpdateIOInvisibility(Entity * io)
 {
 	if(io && io->invisibility <= 1.f) {
 		if((io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility < 1.f) {
-			io->invisibility += g_gameTime.lastFrameDuration() / GameDurationMs(1000);
+			io->invisibility += g_gameTime.lastFrameDuration() / 1s;
 		} else if(!(io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility != 0.f) {
-			io->invisibility -= g_gameTime.lastFrameDuration() / GameDurationMs(1000);
+			io->invisibility -= g_gameTime.lastFrameDuration() / 1s;
 		}
 		
 		io->invisibility = glm::clamp(io->invisibility, 0.f, 1.f);
