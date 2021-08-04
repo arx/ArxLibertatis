@@ -1121,7 +1121,7 @@ void ArxGame::doFrame() {
 				targetFps += 1;
 			}
 		}
-		PlatformDuration targetDuration = PlatformDurationUs(1000000 / targetFps);
+		PlatformDuration targetDuration = std::chrono::microseconds(1s) / targetFps;
 		
 		PlatformDuration min = PlatformDuration::ofRaw(-targetDuration.t);
 		m_frameDelta = arx::clamp(m_frameDelta + targetDuration - lastDuration, min, targetDuration);

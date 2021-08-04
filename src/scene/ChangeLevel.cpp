@@ -1492,7 +1492,7 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	entities.player()->inzone = getZoneByName(util::toLowercase(util::loadString(asp->inzone)));
 	player.jumpphase = JumpPhase(asp->jumpphase); // TODO save/load enum
 	PlatformInstant jumpstart = g_platformTime.frameStart()
-	                            + PlatformDurationUs(toUs(GameInstantMs(asp->jumpstarttime) - g_gameTime.now()));
+	                            + (GameInstantMs(asp->jumpstarttime) - g_gameTime.now()).value();
 	player.jumpstarttime = jumpstart; // TODO save/load time
 	player.m_lastMovement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
 	

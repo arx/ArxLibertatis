@@ -209,7 +209,7 @@ struct TrackKey {
 	void updateSynch() {
 		if(delay_min != delay_max) {
 			delay = delay_max - delay;
-			delay += PlatformDurationUs(Random::get(toUs(delay_min), toUs(delay_max)));
+			delay += std::chrono::microseconds(Random::get(toUs(delay_min), toUs(delay_max)));
 		} else {
 			delay = delay_min;
 		}
@@ -222,7 +222,7 @@ ARX_END_ANONYMOUS_NAMESPACE
 
 namespace audio {
 
-static const PlatformDuration KEY_CONTINUE = PlatformDurationUs(std::numeric_limits<s64>::max());
+static const PlatformDuration KEY_CONTINUE = PlatformDuration::ofRaw(std::numeric_limits<s64>::max());
 
 struct Ambiance::Track final : public Source::Callback {
 	

@@ -55,7 +55,7 @@ static PlatformDuration g_timeLimit = 0;
 static Status g_currentStatus = None;
 static PlatformInstant g_startTime = 0;
 static int g_startCount = 0;
-static const PlatformDuration PlatformDuration_MAX = PlatformDurationUs(std::numeric_limits<s64>::max());
+static const PlatformDuration PlatformDuration_MAX = PlatformDuration::ofRaw(std::numeric_limits<s64>::max());
 
 struct Result {
 	
