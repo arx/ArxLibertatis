@@ -35,38 +35,47 @@
 
 
 template <typename Tag, typename T>
-struct DurationType : boost::totally_ordered1<DurationType<Tag, T>> {
+class DurationType : boost::totally_ordered1<DurationType<Tag, T>> {
 	
-	T t;
+	T m_value;
+	
+	explicit constexpr DurationType(const T duration, int /* disambiguate */) noexcept
+		: m_value(duration)
+	{ }
+	
+	class ZeroType;
+	typedef ZeroType ** Zero;
+	
+public:
 	
 	[[nodiscard]] constexpr bool operator==(const DurationType & rhs) const noexcept {
-		return t == rhs.t;
+		return m_value == rhs.m_value;
 	}
 	
 	[[nodiscard]] constexpr bool operator<(const DurationType & rhs) const noexcept {
-		return t < rhs.t;
+		return m_value < rhs.m_value;
 	}
 	
 	[[nodiscard]] constexpr float operator/(DurationType b) const noexcept {
-		return float(t) / float(b.t);
+		return float(m_value) / float(b.m_value);
 	}
 	
 	constexpr DurationType & operator+=(const DurationType & rhs) noexcept {
-		t += rhs.t;
+		m_value += rhs.m_value;
 		return *this;
 	}
 	
 	constexpr DurationType & operator-=(const DurationType & rhs) noexcept {
-		t -= rhs.t;
+		m_value -= rhs.m_value;
 		return *this;
 	}
 	
 	[[nodiscard]] constexpr DurationType operator+(DurationType rhs) const noexcept {
-		return ofRaw(t + rhs.t);
+		return ofRaw(m_value + rhs.m_value);
 	}
 	
 	[[nodiscard]] constexpr DurationType operator-(DurationType rhs) const noexcept {
-		return ofRaw(t - rhs.t);
+		return ofRaw(m_value - rhs.m_value);
 	}
 	
 	template <class IntType, typename = std::enable_if_t<std::is_integral_v<IntType>>>
@@ -88,7 +97,7 @@ struct DurationType : boost::totally_ordered1<DurationType<Tag, T>> {
 	}
 	
 	[[nodiscard]] constexpr std::chrono::microseconds value() const noexcept {
-		return std::chrono::microseconds(t);
+		return std::chrono::microseconds(m_value);
 	}
 	
 	template <typename Rep, typename Period>
@@ -96,21 +105,12 @@ struct DurationType : boost::totally_ordered1<DurationType<Tag, T>> {
 		return std::chrono::duration_cast<std::chrono::duration<Rep, Period>>(value());
 	}
 	
-private:
-	
-	explicit constexpr DurationType(const T t_, int /* disambiguate */) noexcept : t(t_) { }
-	
-	class ZeroType;
-	typedef ZeroType ** Zero;
-	
-public:
-	
 	template <typename Rep, typename Period>
 	/* implicit */ constexpr DurationType(std::chrono::duration<Rep, Period> duration) noexcept
-		: t(std::chrono::duration_cast<std::chrono::microseconds>(duration).count())
+		: m_value(std::chrono::duration_cast<std::chrono::microseconds>(duration).count())
 	{ }
 	
-	/* implicit */ constexpr DurationType(Zero /* zero */ = 0) noexcept : t(0) { }
+	/* implicit */ constexpr DurationType(Zero /* zero */ = 0) noexcept : m_value(0) { }
 	
 	template <typename NullPtr, typename = std::enable_if_t<
 		std::is_same_v<std::remove_cv_t<std::remove_reference_t<NullPtr>>, decltype(nullptr)>>
@@ -138,21 +138,21 @@ struct InstantType : boost::totally_ordered1<InstantType<Tag, T>> {
 	}
 	
 	constexpr InstantType & operator+=(DurationType<Tag, T> rhs) noexcept {
-		t += rhs.t;
+		t += std::chrono::microseconds(rhs).count();
 		return *this;
 	}
 	
 	constexpr InstantType & operator-=(DurationType<Tag, T> rhs) noexcept {
-		t -= rhs.t;
+		t -= std::chrono::microseconds(rhs).count();
 		return *this;
 	}
 	
 	[[nodiscard]] constexpr InstantType operator+(DurationType<Tag, T> rhs) const noexcept {
-		return ofRaw(t + rhs.t);
+		return ofRaw(t + std::chrono::microseconds(rhs).count());
 	}
 	
 	[[nodiscard]] constexpr InstantType operator-(DurationType<Tag, T> rhs) const noexcept {
-		return ofRaw(t - rhs.t);
+		return ofRaw(t - std::chrono::microseconds(rhs).count());
 	}
 	
 	[[nodiscard]] inline constexpr DurationType<Tag, T> operator-(InstantType rhs) const noexcept {

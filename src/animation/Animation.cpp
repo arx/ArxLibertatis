@@ -585,7 +585,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 		              || (layer.cur_anim == io->anims[ANIM_RUN])
 		              || (layer.cur_anim == io->anims[ANIM_RUN2])
 		              || (layer.cur_anim == io->anims[ANIM_RUN3])))) {
-			layer.ctime = AnimationDuration::ofRaw(layer.ctime.t % animTime.t);
+			layer.ctime = layer.ctime.value() % animTime.value();
 			if(io)
 				FinishAnim(io, layer.cur_anim);
 		} else {

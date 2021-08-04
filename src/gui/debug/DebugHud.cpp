@@ -329,7 +329,7 @@ void ShowInfoText() {
 				AnimLayer & layer = io->animlayer[i];
 				
 				DebugBox animLayerBox = DebugBox(Vec2i(500, column2y), str(boost::format("Anim Layer %1%") % i));
-				animLayerBox.add("ctime", long(layer.ctime.t));
+				animLayerBox.add("ctime", long(layer.ctime.value().count()));
 				animLayerBox.add("flags", flagNames(AnimUseFlagNames, layer.flags));
 				
 				animLayerBox.add("currentFrame", layer.currentFrame);
