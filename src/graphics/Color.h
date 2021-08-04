@@ -20,8 +20,9 @@
 #ifndef ARX_GRAPHICS_COLOR_H
 #define ARX_GRAPHICS_COLOR_H
 
-#include <limits>
 #include <algorithm>
+#include <limits>
+#include <type_traits>
 
 #include <glm/glm.hpp>
 
@@ -32,15 +33,15 @@ struct IntegerColorType {
 	
 	T t;
 	
-	explicit IntegerColorType(const T t_)
+	explicit constexpr IntegerColorType(const T t_) noexcept
 		: t(t_)
 	{ }
 	
-	IntegerColorType()
+	constexpr IntegerColorType() noexcept
 		: t()
 	{ }
 	
-	bool operator==(const IntegerColorType<TAG, T> & rhs) const {
+	[[nodiscard]] constexpr bool operator==(const IntegerColorType<TAG, T> & rhs) const noexcept {
 		return t == rhs.t;
 	}
 	
@@ -56,7 +57,7 @@ static_assert(sizeof(ColorRGB) == sizeof(u32));
 static_assert(sizeof(ColorRGBA) == sizeof(u32));
 static_assert(sizeof(ColorBGRA) == sizeof(u32));
 
-const ColorRGBA ColorRGBA_ZERO = ColorRGBA(0);
+constexpr ColorRGBA ColorRGBA_ZERO = ColorRGBA(0);
 
 
 template <typename T>
@@ -67,12 +68,18 @@ class Color4;
  */
 template <typename T>
 struct ColorTraits {
-	static T max() { return std::numeric_limits<T>::max(); }
+	[[nodiscard]] static constexpr T max() noexcept {
+		return std::numeric_limits<T>::max();
+	}
 	template <typename O>
-	static T clamp(O value) { return T(glm::clamp(value, O(0), O(max()))); }
+	[[nodiscard]] static constexpr T clamp(O value) noexcept {
+		return T(glm::clamp(value, O(0), O(max())));
+	}
 	template <typename O>
-	static T convert(O value) { return clamp(value * (max() / ColorTraits<O>::max())); }
-	static T convert(T value) { return value; }
+	[[nodiscard]] static constexpr T convert(O value) noexcept {
+		return clamp(value * (max() / ColorTraits<O>::max()));
+	}
+	[[nodiscard]] static constexpr T convert(T value) { return value; }
 };
 
 /*!
@@ -80,10 +87,16 @@ struct ColorTraits {
  */
 template <>
 struct ColorTraits<float> {
-	static float max() { return 1.f; }
+	[[nodiscard]] static constexpr float max() noexcept {
+		return 1.f;
+	}
 	template <typename O>
-	static float convert(O value) { return value * (max() / float(ColorTraits<O>::max())); }
-	static float convert(float value) { return value; }
+	[[nodiscard]] static constexpr float convert(O value) noexcept {
+		return value * (max() / float(ColorTraits<O>::max()));
+	}
+	[[nodiscard]] static constexpr float convert(float value) noexcept {
+		return value;
+	}
 };
 
 // TODO add clamping to more color operations
@@ -114,78 +127,74 @@ public:
 	static const Color3 cyan;
 	static const Color3 magenta;
 	
-	Color3() : r(T(0)), g(T(0)), b(T(0)) { }
-	Color3(T _r, T _g, T _b) : r(_r), g(_g), b(_b) { }
-	
-	Color3(const Color3 & o) = default;
-	~Color3() = default;
-	Color3 & operator=(const Color3 & o) = default;
+	constexpr Color3() noexcept : r(T(0)), g(T(0)), b(T(0)) { }
+	constexpr Color3(T _r, T _g, T _b) noexcept : r(_r), g(_g), b(_b) { }
 	
 	/*!
 	 * Converts a color from a different type, clamping according to the color traits
 	 */
-	template <typename O>
-	explicit Color3(const Color3<O> & o)
+	template <typename O, typename = std::enable_if_t<!std::is_same_v<T, O>>>
+	explicit constexpr Color3(const Color3<O> & o) noexcept
 		: r(Traits::convert(o.r))
 		, g(Traits::convert(o.g))
 		, b(Traits::convert(o.b))
 	{ }
 	
-	bool operator==(const Color3 & o) const {
+	[[nodiscard]] constexpr bool operator==(const Color3 & o) const noexcept {
 		return (r == o.r && g == o.g && b == o.b);
 	}
 	
-	bool operator!=(const Color3 & o) const {
+	[[nodiscard]] constexpr bool operator!=(const Color3 & o) const noexcept {
 		return !(*this == o);
 	}
 	
-	static Color3 fromRGB(ColorRGB rgb) {
+	[[nodiscard]] static constexpr Color3 fromRGB(ColorRGB rgb) noexcept {
 		return Color3(Traits::convert(u8(rgb.t)),
 		              Traits::convert(u8(rgb.t >> 8)),
 		              Traits::convert(u8(rgb.t >> 16)));
 	}
 	
-	static Color3 fromBGR(ColorBGR bgr) {
+	[[nodiscard]] static constexpr Color3 fromBGR(ColorBGR bgr) noexcept {
 		return Color3(Traits::convert(u8(bgr.t >> 16)),
 		              Traits::convert(u8(bgr.t >> 8)),
 		              Traits::convert(u8(bgr.t)));
 	}
 	
-	ColorRGBA toRGB(u8 _a = ByteTraits::max()) const {
+	[[nodiscard]] constexpr ColorRGBA toRGB(u8 _a = ByteTraits::max()) const noexcept {
 		return ColorRGBA(u32(ByteTraits::convert(r))
 		                 | (u32(ByteTraits::convert(g)) << 8)
 		                 | (u32(ByteTraits::convert(b)) << 16)
 		                 | (u32(_a) << 24));
 	}
 	
-	ColorBGRA toBGR(u8 _a = ByteTraits::max()) const {
+	[[nodiscard]] constexpr ColorBGRA toBGR(u8 _a = ByteTraits::max()) const noexcept {
 		return ColorBGRA(u32(ByteTraits::convert(b))
 		                 | (u32(ByteTraits::convert(g)) << 8)
 		                 | (u32(ByteTraits::convert(r)) << 16)
 		                 | (u32(_a) << 24));
 	}
 	
-	static Color3 gray(float val) {
+	[[nodiscard]] constexpr static Color3 gray(float val) noexcept {
 		T value = Traits::convert(val);
 		return Color3(value, value, value);
 	}
 	
-	static Color3 rgb(float r, float g, float b) {
+	[[nodiscard]] constexpr static Color3 rgb(float r, float g, float b) noexcept {
 		return Color3(Traits::convert(r), Traits::convert(g), Traits::convert(b));
 	}
 	
-	Color3 operator*(float factor) const {
+	[[nodiscard]] constexpr Color3 operator*(float factor) const noexcept {
 		return Color3(T(r * factor), T(g * factor), T(b * factor));
 	}
-
-	Color3 & operator+=(const Color3 & right) {
+	
+	constexpr Color3 & operator+=(const Color3 & right) noexcept {
 		r += right.r;
 		g += right.g;
 		b += right.b;
 		return *this;
 	}
-
-	Color3 & operator*=(const Color3 & right) {
+	
+	constexpr Color3 & operator*=(const Color3 & right) noexcept {
 		r *= right.r;
 		g *= right.g;
 		b *= right.b;
@@ -238,19 +247,15 @@ public:
 	//! A fully transparent, black color.
 	static const Color4 none;
 	
-	Color4() : C3(), a(T(0)) { }
-	Color4(T _r, T _g, T _b, T _a = Traits::max()) : C3(_r, _g, _b), a(_a) { }
-	/* implicit */ Color4(const C3 & o, T _a = Traits::max()) : C3(o), a(_a) { }
-	
-	Color4(const Color4 & o) = default;
-	~Color4() = default;
-	Color4 & operator=(const Color4 & o) = default;
+	constexpr Color4() noexcept : C3(), a(T(0)) { }
+	constexpr Color4(T _r, T _g, T _b, T _a = Traits::max()) noexcept : C3(_r, _g, _b), a(_a) { }
+	/* implicit */ constexpr Color4(const C3 & o, T _a = Traits::max()) noexcept : C3(o), a(_a) { }
 	
 	/*!
 	 * Converts a color from a different type, clamping according to the color traits
 	 */
 	template <typename O>
-	explicit Color4(const Color3<O> & o, T alpha = Traits::max())
+	explicit constexpr Color4(const Color3<O> & o, T alpha = Traits::max()) noexcept
 		: C3(o)
 		, a(alpha)
 	{ }
@@ -258,62 +263,62 @@ public:
 	/*!
 	 * Converts a color from a different type, clamping according to the color traits
 	 */
-	template <typename O>
-	explicit Color4(const Color4<O> & o)
+	template <typename O, typename = std::enable_if_t<!std::is_same_v<T, O>>>
+	explicit constexpr Color4(const Color4<O> & o) noexcept
 		: C3(o)
 		, a(Traits::convert(o.a))
 	{ }
 	
-	Color4 & operator=(const C3 & o) {
+	constexpr Color4 & operator=(const C3 & o) noexcept {
 		C3::operator=(o), a = Traits::max();
 		return *this;
 	}
 	
-	bool operator==(const Color4 & o) const {
+	[[nodiscard]] constexpr bool operator==(const Color4 & o) const noexcept {
 		return (C3::r == o.r && C3::g == o.g && C3::b == o.b && a == o.a);
 	}
 	
-	bool operator!=(const Color4 & o) const {
+	[[nodiscard]] constexpr bool operator!=(const Color4 & o) const noexcept {
 		return !(*this == o);
 	}
 	
-	ColorRGBA toRGBA() const {
+	[[nodiscard]] constexpr ColorRGBA toRGBA() const noexcept {
 		return C3::toRGB(ByteTraits::convert(a));
 	}
 	
-	ColorBGRA toBGRA() const {
+	[[nodiscard]] constexpr ColorBGRA toBGRA() const noexcept {
 		return C3::toBGR(ByteTraits::convert(a));
 	}
 	
-	static Color4 fromRGB(ColorRGB rgb, T a = Traits::max()) {
+	[[nodiscard]] static constexpr Color4 fromRGB(ColorRGB rgb, T a = Traits::max()) noexcept {
 		return Color4(C3::fromRGB(rgb), a);
 	}
 	
-	static Color4 fromBGR(ColorBGR bgr, T a = Traits::max()) {
+	[[nodiscard]] static constexpr Color4 fromBGR(ColorBGR bgr, T a = Traits::max()) noexcept {
 		return Color4(C3::fromBGR(bgr), a);
 	}
 	
-	static Color4 fromRGBA(ColorRGBA rgba) {
+	[[nodiscard]] static constexpr Color4 fromRGBA(ColorRGBA rgba) noexcept {
 		return fromRGB(ColorRGB(rgba.t), Traits::convert(u8(rgba.t >> 24)));
 	}
 	
-	static Color4 fromBGRA(ColorBGRA bgra) {
+	[[nodiscard]] static constexpr Color4 fromBGRA(ColorBGRA bgra) noexcept {
 		return fromBGR(ColorBGR(bgra.t), Traits::convert(u8(bgra.t >> 24)));
 	}
 	
-	static Color4 gray(float val, float a = ColorTraits<float>::max()) {
+	[[nodiscard]] static constexpr Color4 gray(float val, float a = ColorTraits<float>::max()) noexcept {
 		return Color4(C3::gray(val), Traits::convert(a));
 	}
 	
-	static Color4 rgb(float r, float g, float b) {
+	[[nodiscard]] static constexpr Color4 rgb(float r, float g, float b) noexcept {
 		return Color4(C3::rgb(r, g, b));
 	}
 	
-	static Color4 rgba(float r, float g, float b, float a) {
+	[[nodiscard]] static constexpr Color4 rgba(float r, float g, float b, float a) noexcept {
 		return Color4(C3::rgb(r, g, b), Traits::convert(a));
 	}
 	
-	Color4 operator*(float factor) const {
+	[[nodiscard]] constexpr Color4 operator*(float factor) const noexcept {
 		return Color4(C3::operator*(factor), a);
 	}
 	
@@ -344,57 +349,57 @@ typedef Color4<float> Color4f;
 typedef Color4<u8> Color;
 
 template <typename T>
-Color4<T> componentwise_min(Color4<T> c0, Color4<T> c1) {
+[[nodiscard]] constexpr Color4<T> componentwise_min(Color4<T> c0, Color4<T> c1) noexcept {
 	return Color4<T>(std::min(c0.r, c1.r), std::min(c0.g, c1.g), std::min(c0.b, c1.b),
 	                 std::min(c0.a, c1.a));
 }
 template <typename T>
-Color4<T> componentwise_max(Color4<T> c0, Color4<T> c1) {
+[[nodiscard]] constexpr Color4<T> componentwise_max(Color4<T> c0, Color4<T> c1) noexcept {
 	return Color4<T>(std::max(c0.r, c1.r), std::max(c0.g, c1.g), std::max(c0.b, c1.b),
 	                 std::max(c0.a, c1.a));
 }
 template <typename T>
-Color3<T> componentwise_min(Color3<T> c0, Color3<T> c1) {
+[[nodiscard]] constexpr Color3<T> componentwise_min(Color3<T> c0, Color3<T> c1) noexcept {
 	return Color3<T>(std::min(c0.r, c1.r), std::min(c0.g, c1.g), std::min(c0.b, c1.b));
 }
 template <typename T>
-Color3<T> componentwise_max(Color3<T> c0, Color3<T> c1) {
+[[nodiscard]] constexpr Color3<T> componentwise_max(Color3<T> c0, Color3<T> c1) noexcept {
 	return Color3<T>(std::max(c0.r, c1.r), std::max(c0.g, c1.g), std::max(c0.b, c1.b));
 }
 
 template <typename T>
-Color3<T> operator+(Color3<T> c0, Color3<T> c1) {
+[[nodiscard]] constexpr Color3<T> operator+(Color3<T> c0, Color3<T> c1) noexcept {
 	return Color3<T>(c0.r + c1.r, c0.g + c1.g, c0.b + c1.b);
 }
 template <typename T>
-Color3<T> operator-(Color3<T> c0, Color3<T> c1) {
+[[nodiscard]] constexpr Color3<T> operator-(Color3<T> c0, Color3<T> c1) noexcept {
 	return Color3<T>(c0.r - c1.r, c0.g - c1.g, c0.b - c1.b);
 }
 template <typename T>
-Color3<T> operator*(Color3<T> c0, Color3<T> c1) {
+[[nodiscard]] constexpr Color3<T> operator*(Color3<T> c0, Color3<T> c1) noexcept {
 	T m = ColorTraits<T>::max();
 	return Color3<T>(c0.r * c1.r / m, c0.g * c1.g / m, c0.b * c1.b / m);
 }
 template <typename T>
-Color3<T> operator*(Color3<T> c0, float scale) {
+[[nodiscard]] constexpr Color3<T> operator*(Color3<T> c0, float scale) noexcept {
 	return Color3<T>(c0.r * scale, c0.g * scale, c0.b * scale);
 }
 
 template <typename T>
-Color4<T> operator+(Color4<T> c0, Color4<T> c1) {
+[[nodiscard]] constexpr Color4<T> operator+(Color4<T> c0, Color4<T> c1) noexcept {
 	return Color4<T>(c0.r + c1.r, c0.g + c1.g, c0.b + c1.b, c0.a + c1.a);
 }
 template <typename T>
-Color4<T> operator-(Color4<T> c0, Color4<T> c1) {
+[[nodiscard]] constexpr Color4<T> operator-(Color4<T> c0, Color4<T> c1) noexcept {
 	return Color4<T>(c0.r - c1.r, c0.g - c1.g, c0.b - c1.b, c0.a - c1.a);
 }
 template <typename T>
-Color4<T> operator*(Color4<T> c0, Color4<T> c1) {
+[[nodiscard]] constexpr Color4<T> operator*(Color4<T> c0, Color4<T> c1) noexcept {
 	T m = ColorTraits<T>::max();
 	return Color4<T>(c0.r * c1.r / m, c0.g * c1.g / m, c0.b * c1.b / m, c0.a * c1.a / m);
 }
 template <typename T>
-Color4<T> operator*(Color4<T> c0, float scale) {
+[[nodiscard]] constexpr Color4<T> operator*(Color4<T> c0, float scale) noexcept {
 	return Color4<T>(c0.r * scale, c0.g * scale, c0.b * scale, c0.a * scale);
 }
 
