@@ -185,7 +185,7 @@ public:
 	Result execute(Context & context) override {
 		
 		std::string inout = context.getWord();
-		const PlatformDuration duration = PlatformDurationMsf(context.getFloat());
+		const PlatformDuration duration = std::chrono::duration<float, std::milli>(context.getFloat());
 		
 		if(inout == "out") {
 			

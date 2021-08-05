@@ -237,7 +237,7 @@ void MenuWindow::update() {
 	
 	m_pos.x = m_initalOffsetX + (m_fadeDistance * glm::sin(glm::radians(fAngle)));
 	
-	fAngle = std::min(fAngle + g_platformTime.lastFrameDuration() / PlatformDurationMsf(12.5f), 90.f);
+	fAngle = std::min(fAngle + g_platformTime.lastFrameDuration() / 12500us, 90.f);
 	
 	if(m_currentPage) {
 		m_currentPage->update(m_pos + Vec2f(RATIO_X(14.5f), RATIO_Y(12.f)));

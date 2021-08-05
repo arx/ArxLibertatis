@@ -1032,7 +1032,7 @@ ActiveSpellsGui::ActiveSpellsGui()
 	, m_slotSpacerSize(0.f, 9.f)
 	, m_flickNow(false)
 	, m_flickTime(0)
-	, m_flickInterval(PlatformDurationMsf(1000.0f / 60.0f))
+	, m_flickInterval(PlatformDuration(1s) / 60)
 { }
 
 void ActiveSpellsGui::init() {

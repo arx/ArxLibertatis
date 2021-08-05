@@ -437,12 +437,12 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	float fFullAimTime = getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_AimTime);
 	float fCalcHandicap = (player.m_attributeFull.dexterity - 10.f) * 20.f;
 	
-	player.Full_AimTime = PlatformDurationMsf(fFullAimTime);
+	player.Full_AimTime = std::chrono::duration<float, std::milli>(fFullAimTime);
 	if(player.Full_AimTime <= 0) {
 		player.Full_AimTime = 1500ms;
 	}
 	
-	player.Full_AimTime -= PlatformDurationMsf(fCalcHandicap);
+	player.Full_AimTime -= std::chrono::duration<float, std::milli>(fCalcHandicap);
 	if(player.Full_AimTime <= 1500ms) {
 		player.Full_AimTime = 1500ms;
 	}

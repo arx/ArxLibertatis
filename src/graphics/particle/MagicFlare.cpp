@@ -216,27 +216,25 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		default: arx_unreachable();
 	}
 	
-	static const float FLARE_MUL = 2.f;
-	
 	if(typ == -1) {
 		float zz = eeMousePressed1() ? 0.29f : ((sm > 0.5f) ? Random::getf() : 1.f);
 		if(zz < 0.2f) {
 			flare.type = 2;
 			flare.size = Random::getf(42.f, 84.f);
-			flare.tolive = PlatformDurationMsf(Random::getf(800.f, 1600.f) * FLARE_MUL);
+			flare.tolive = std::chrono::microseconds(Random::get(1600000, 3200000));
 		} else if(zz < 0.5f) {
 			flare.type = 3;
 			flare.size = Random::getf(16.f, 68.f);
-			flare.tolive = PlatformDurationMsf(Random::getf(800.f, 1600.f) * FLARE_MUL);
+			flare.tolive = std::chrono::microseconds(Random::get(1600000, 3200000));
 		} else {
 			flare.type = 1;
 			flare.size = Random::getf(32.f, 56.f) * sm;
-			flare.tolive = PlatformDurationMsf(Random::getf(1700.f, 2200.f) * FLARE_MUL);
+			flare.tolive = std::chrono::microseconds(Random::get(3400000, 4400000));
 		}
 	} else {
 		flare.type = (Random::getf() > 0.8f) ? 1 : 4;
 		flare.size = Random::getf(64.f, 102.f) * sm;
-		flare.tolive = PlatformDurationMsf(Random::getf(1700.f, 2200.f) * FLARE_MUL);
+		flare.tolive = std::chrono::microseconds(Random::get(3400000, 4400000));
 	}
 
 	flare.dynlight = LightHandle();

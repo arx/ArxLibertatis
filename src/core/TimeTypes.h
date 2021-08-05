@@ -78,13 +78,13 @@ public:
 		return ofRaw(m_value - rhs.m_value);
 	}
 	
-	template <class IntType, typename = std::enable_if_t<std::is_integral_v<IntType>>>
-	[[nodiscard]] constexpr DurationType operator*(IntType rhs) noexcept {
+	template <class Type, typename = std::enable_if_t<std::is_integral_v<Type> || std::is_same_v<Type, float>>>
+	[[nodiscard]] constexpr DurationType operator*(Type rhs) noexcept {
 		return value() * rhs;
 	}
 	
-	template <class IntType, typename = std::enable_if_t<std::is_integral_v<IntType>>>
-	[[nodiscard]] constexpr DurationType operator/(IntType rhs) noexcept {
+	template <class Type, typename = std::enable_if_t<std::is_integral_v<Type> || std::is_same_v<Type, float>>>
+	[[nodiscard]] constexpr DurationType operator/(Type rhs) noexcept {
 		return value() / rhs;
 	}
 	
@@ -247,10 +247,6 @@ typedef DurationType<struct GameTime_Tag, s64> GameDuration;
 // in microseconds
 typedef InstantType <struct PlatformTimeTag, s64> PlatformInstant;
 typedef DurationType<struct PlatformTimeTag, s64> PlatformDuration;
-
-[[nodiscard]] inline constexpr PlatformDuration PlatformDurationMsf(float val) noexcept {
-	return std::chrono::duration<float, std::milli>(val);
-}
 
 [[nodiscard]] inline constexpr s64 toUs(PlatformDuration val) noexcept {
 	return std::chrono::microseconds(val).count();
