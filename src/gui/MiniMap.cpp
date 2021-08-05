@@ -225,14 +225,15 @@ void MiniMap::firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * e
 
 void MiniMap::resetLevels() {
 	
-	for(size_t i = 0; i < MAX_MINIMAP_LEVELS; i++) {
-		m_levels[i].m_texContainer = nullptr;
-		m_levels[i].m_offset = Vec2f(0.f);
-		m_levels[i].m_ratio = Vec2f(0.f);
-		m_levels[i].m_size = Vec2f(0.f);
+	for(MiniMapData & level : m_levels) {
+		level.m_texContainer = nullptr;
+		level.m_offset = Vec2f(0.f);
+		level.m_ratio = Vec2f(0.f);
+		level.m_size = Vec2f(0.f);
 		// Sets the whole array to 0
-		memset(m_levels[i].m_revealed, 0, sizeof(m_levels[i].m_revealed));
+		memset(level.m_revealed, 0, sizeof(level.m_revealed));
 	}
+	
 }
 
 void MiniMap::reset() {
@@ -360,13 +361,13 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 	
 	Vec2f casePos(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
 	
-	for(size_t i = 0; i < m_mapMarkers.size(); i++) {
+	for(MapMarkerData & marker : m_mapMarkers) {
 		
-		if(m_mapMarkers[i].m_lvl != showLevel + 1) {
+		if(marker.m_lvl != showLevel + 1) {
 			continue;
 		}
 		
-		Vec2f pos = m_mapMarkers[i].m_pos * 8.f * m_activeBkg->m_mul * casePos + start;
+		Vec2f pos = marker.m_pos * 8.f * m_activeBkg->m_mul * casePos + start;
 		float size = 5.f * scale;
 		verts[0].color = Color::red.toRGB();
 		verts[1].color = Color::red.toRGB();
@@ -393,16 +394,16 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 		);
 		
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-			if(!m_mapMarkers[i].m_text.empty()) {
+			if(!marker.m_text.empty()) {
 				
 				Rect bRect(Vec2i(rect.left, rect.bottom), s32(205 * scale), s32(63 * scale));
 				
-				long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, m_mapMarkers[i].m_text, bRect);
+				long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, marker.m_text, bRect);
 				
 				ARX_UNICODE_DrawTextInRect(hFontInGameNote,
 				                           Vec2f(bRect.topLeft()),
 				                           float(bRect.right),
-				                           m_mapMarkers[i].m_text.substr(0, lLengthDraw),
+				                           marker.m_text.substr(0, lLengthDraw),
 				                           Color::none);
 				
 			}
@@ -682,39 +683,37 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 	UseRenderState state(render2D().blendAdditive());
 	
 	const EntityManager & ents = *m_entities;
-	for(size_t lnpc = 1; lnpc < ents.size(); lnpc++) {
-		const EntityHandle handle = EntityHandle(lnpc);
-		Entity * npc = ents[handle];
+	for(Entity & npc : entities.inScene(IO_NPC)) {
 		
-		if(!npc || !(npc->ioflags & IO_NPC)) {
+		if(npc == *entities.player()) {
 			continue; // only NPCs can be detected
 		}
 		
-		if(npc->_npcdata->lifePool.current < 0.f) {
+		if(npc._npcdata->lifePool.current < 0.f) {
 			continue; // don't show dead NPCs
 		}
 		
-		if((npc->gameFlags & GFLAG_MEGAHIDE) || npc->show != SHOW_FLAG_IN_SCENE) {
+		if((npc.gameFlags & GFLAG_MEGAHIDE)) {
 			continue; // don't show hidden NPCs
 		}
 		
-		if(npc->_npcdata->fDetect < 0) {
+		if(npc._npcdata->fDetect < 0) {
 			continue; // don't show undetectable NPCs
 		}
 		
-		if(player.m_skillFull.etheralLink < npc->_npcdata->fDetect) {
+		if(player.m_skillFull.etheralLink < npc._npcdata->fDetect) {
 			continue; // the player doesn't have enough skill to detect this NPC
 		}
 		
 		Vec2f fp = start;
 		
-		fp.x += ((npc->pos.x - 100 + of.x - of2.x) * 0.01f * cas.x
+		fp.x += ((npc.pos.x - 100 + of.x - of2.x) * 0.01f * cas.x
 		+ of.x * ratio * m_mod.x) / m_mod.x;
 		fp.y += ((m_mapMaxY[showLevel] - of.y - of2.y) * 0.01f * cas.y
-		- (npc->pos.z + 200 + of.y - of2.y) * 0.01f * cas.y + of.y * ratio * m_mod.y) / m_mod.y;
+		- (npc.pos.z + 200 + of.y - of2.y) * 0.01f * cas.y + of.y * ratio * m_mod.y) / m_mod.y;
 		
-		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc->pos.x, npc->pos.z));
-		if(d > 800 || glm::abs(ents.player()->pos.y - npc->pos.y) > 250.f) {
+		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc.pos.x, npc.pos.z));
+		if(d > 800 || glm::abs(ents.player()->pos.y - npc.pos.y) > 250.f) {
 			continue; // the NPC is too far away to be detected
 		}
 		
