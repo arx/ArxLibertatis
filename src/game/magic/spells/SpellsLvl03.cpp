@@ -83,7 +83,7 @@ void SpeedSpell::Launch() {
 		
 		float col = Random::getf(0.1f, 0.2f);
 		float size = Random::getf(1.f, 1.5f);
-		int taille = Random::get(130, 260);
+		GameDuration taille = std::chrono::milliseconds(Random::get(130, 260));
 		
 		SpeedTrail trail;
 		trail.vertexIndex = itr->origin;

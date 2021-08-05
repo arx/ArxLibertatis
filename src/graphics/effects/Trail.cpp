@@ -25,7 +25,7 @@
 #include "graphics/Vertex.h"
 
 
-Trail::Trail(long duration, Color3f startColor, Color3f endColor, float startSize, float endSize)
+Trail::Trail(GameDuration duration, Color3f startColor, Color3f endColor, float startSize, float endSize)
 	: m_timePerSegment(0)
 	, m_lastSegmentDuration(0)
 	, m_totalDuration(0)
@@ -36,8 +36,8 @@ Trail::Trail(long duration, Color3f startColor, Color3f endColor, float startSiz
 	, m_endSize(endSize)
 {
 	
-	size_t segments = std::max(size_t(duration / 20), size_t(4));
-	m_timePerSegment = GameDurationMsf(float(duration) / float(segments));
+	size_t segments = std::max(size_t(std::chrono::milliseconds(duration).count() / 20), size_t(4));
+	m_timePerSegment = duration / segments;
 	
 	m_positions.set_capacity(segments + 1);
 	
@@ -303,10 +303,10 @@ void Trail::Render() {
 }
 
 ArrowTrail::ArrowTrail()
-	: Trail(Random::get(130, 260), Color3f::gray(Random::getf(0.2f, 0.4f)), Color3f::black,
-	        Random::getf(2.f, 4.f), 0.f)
+	: Trail(std::chrono::milliseconds(Random::get(130, 260)), Color3f::gray(Random::getf(0.2f, 0.4f)),
+	        Color3f::black, Random::getf(2.f, 4.f), 0.f)
 {}
 
 DebugTrail::DebugTrail()
-	: Trail(500, Color3f::red, Color3f::green, 1.f, 4.f)
+	: Trail(500ms, Color3f::red, Color3f::green, 1.f, 4.f)
 {}

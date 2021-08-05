@@ -31,7 +31,7 @@ class Trail {
 	
 public:
 	
-	Trail(long duration, Color3f startColor, Color3f endColor, float startSize, float endSize);
+	Trail(GameDuration duration, Color3f startColor, Color3f endColor, float startSize, float endSize);
 	
 	void SetNextPosition(const Vec3f & nextPosition);
 	
