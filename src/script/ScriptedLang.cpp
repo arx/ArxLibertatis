@@ -217,7 +217,7 @@ public:
 		
 		DebugScript(' ' << timer);
 		
-		long t;
+		size_t t;
 		if(timer == "timer1") {
 			t = 0;
 		} else if(timer == "timer2") {
