@@ -1901,7 +1901,7 @@ def CheckSpacing(filename, clean_lines, linenum, error):
   if Search(r'\~\s', line):
     error(filename, linenum, 'whitespace/operators', 4,
           'Extra space space after ~')
-  if Search(r'[^\s\(\[\!\+\-\*\~\&]\!', line):
+  if Search(r'[^\s\(\<\[\!\+\-\*\~\&]\!', line):
     error(filename, linenum, 'whitespace/operators', 4,
           'Missing space before !')
   if Search(r'\!\s', line):
