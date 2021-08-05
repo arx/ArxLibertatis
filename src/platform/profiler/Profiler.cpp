@@ -154,6 +154,7 @@ class ProfilerStringTable {
 	
 public:
 	
+	ProfilerStringTable() = default;
 	ProfilerStringTable(const ProfilerStringTable &) = delete;
 	ProfilerStringTable & operator=(const ProfilerStringTable &) = delete;
 	
