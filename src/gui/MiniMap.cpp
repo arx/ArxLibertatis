@@ -352,11 +352,11 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 		drawDetectedEntities(showLevel, start, zoom);
 	}
 	
-	TexturedVertex verts[4];
-	for(int k = 0; k < 4; k++) {
-		verts[k].color = Color::white.toRGB();
-		verts[k].w = 1;
-		verts[k].p.z = 0.00001f;
+	std::array<TexturedVertex, 4> verts;
+	for(TexturedVertex & vertex : verts) {
+		vertex.color = Color::white.toRGB();
+		vertex.w = 1;
+		vertex.p.z = 0.00001f;
 	}
 	
 	Vec2f casePos(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
@@ -415,7 +415,7 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 		
 		GRenderer->SetTexture(0, m_mapMarkerTexCont);
 		
-		EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
+		EERIEDRAWPRIM(Renderer::TriangleFan, verts.data(), 4);
 	}
 }
 
@@ -534,7 +534,7 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 			continue; // out of bounds
 		}
 		
-		TexturedVertex verts[4];
+		std::array<TexturedVertex, 4> verts;
 		
 		verts[3].p.x = verts[0].p.x = pos.x;
 		verts[1].p.y = verts[0].p.y = pos.y;
@@ -633,12 +633,11 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	
 	GRenderer->SetAntialiasing(true);
 	
-	TexturedVertex verts[4];
-	
-	for(int k = 0; k < 4; k++) {
-		verts[k].color = Color::red.toRGB();
-		verts[k].w = 1;
-		verts[k].p.z = 0.00001f;
+	std::array<TexturedVertex, 4> verts;
+	for(TexturedVertex & vertex : verts) {
+		vertex.color = Color::red.toRGB();
+		vertex.w = 1;
+		vertex.p.z = 0.00001f;
 	}
 	
 	Vec2f r1(0.f, -playerSize * 1.8f);
@@ -660,7 +659,7 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	
 	UseRenderState state(alphaBlending ? render2D().blend(BlendOne, BlendInvSrcColor) : render2D());
 	
-	EERIEDRAWPRIM(Renderer::TriangleFan, verts);
+	EERIEDRAWPRIM(Renderer::TriangleFan, verts.data());
 	
 	GRenderer->SetAntialiasing(false);
 	
