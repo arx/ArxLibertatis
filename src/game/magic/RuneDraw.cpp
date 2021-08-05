@@ -200,7 +200,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					spellcast.symb[3] = RUNE_NONE;
 					float speedFactor = std::max(entity.speed_modif + entity.basespeed, 0.01f);
 					float duration = (1000 - (spellcast.spell_level * 60)) * speedFactor;
-					ARX_SPELLS_RequestSymbolDraw2(&entity, symb, GameDurationMsf(duration));
+					ARX_SPELLS_RequestSymbolDraw2(&entity, symb, std::chrono::duration<float, std::milli>(duration));
 					entity.gameFlags &= ~GFLAG_INVISIBILITY;
 				} else {
 					entity.gameFlags &= ~GFLAG_INVISIBILITY;

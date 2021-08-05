@@ -197,9 +197,9 @@ void ScreenFxBloodSplash::reset() {
 void ScreenFxBloodSplash::hit(float strength) {
 	if(Blood_Pos == 0.f) {
 		Blood_Pos = 0.000001f;
-		Blood_Duration = GameDurationMsf(100.f + strength * 200.f);
+		Blood_Duration = 100ms + 200ms * strength;
 	} else {
-		Blood_Duration += GameDurationMsf(strength * 800.f);
+		Blood_Duration += 800ms * strength;
 	}
 }
 
@@ -323,7 +323,7 @@ float damagePlayer(float dmg, DamageType type, Entity * source) {
 		entities.player()->ouch_time = g_gameTime.now();
 		SendIOScriptEvent(source, entities.player(), SM_OUCH, getOuchEventParameter(entities.player()));
 		float power = entities.player()->dmg_sum / player.lifePool.max * 220.f;
-		AddQuakeFX(power * 3.5f, GameDurationMsf(500 + power * 3), Random::getf(200.f, 300.f) + power, false);
+		AddQuakeFX(power * 3.5f, 500ms + 3ms * power, Random::getf(200.f, 300.f) + power, false);
 		entities.player()->dmg_sum = 0.f;
 	}
 	

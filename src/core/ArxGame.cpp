@@ -1931,8 +1931,8 @@ void ArxGame::render() {
 	
 	// Update Various Player Infos for this frame.
 	ARX_PLAYER_Frame_Update();
-		
-	PULSATE = timeWaveSin(g_gameTime.now(), GameDurationMsf(5026.548245f));
+	
+	PULSATE = timeWaveSin(g_gameTime.now(), 1600ms * glm::pi<float>());
 	EERIEDrawnPolys = 0;
 	
 	// Checks for Keyboard & Moulinex

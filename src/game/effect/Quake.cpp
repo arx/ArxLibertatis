@@ -84,7 +84,7 @@ void ManageQuakeFX(Camera * cam) {
 		
 		float periodicity = 0;
 		if(QuakeFx.frequency > 0.f) {
-			periodicity = timeWaveSin(g_gameTime.now(), GameDurationMsf(628.319f / QuakeFx.frequency));
+			periodicity = timeWaveSin(g_gameTime.now(), 200ms / QuakeFx.frequency * glm::pi<float>());
 		}
 		
 		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;

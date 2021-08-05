@@ -316,7 +316,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			light->pos = projectile.position;
 			light->ex_flaresize = 40.f;
 			light->extras |= EXTRAS_FLARE;
-			light->duration = GameDurationMsf(g_framedelay * 0.5f);
+			light->duration = std::chrono::duration<float, std::milli>(g_framedelay * 0.5f);
 		}
 		createObjFireParticles(projectile.obj, 6, 2, 180);
 	}

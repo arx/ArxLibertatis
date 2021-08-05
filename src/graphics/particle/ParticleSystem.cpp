@@ -177,7 +177,7 @@ void ParticleSystem::SetParticleParams(Particle * particle) {
 	particle->p3Pos *= m_parameters.m_pos;
 	
 	float fTTL = m_parameters.m_life + Random::getf() * m_parameters.m_lifeRandom;
-	particle->m_timeToLive = GameDurationMsf(fTTL);
+	particle->m_timeToLive = std::chrono::duration<float, std::milli>(fTTL);
 	
 	float fAngleX = Random::getf() * m_parameters.m_angle;
 	

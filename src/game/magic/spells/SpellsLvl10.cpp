@@ -71,7 +71,7 @@ void MassLightningStrikeSpell::Launch() {
 	}
 	m_pos += angleToVectorXZ(beta) * 500.f;
 	
-	GameDuration minDuration = GameDurationMsf(500 * m_level);
+	GameDuration minDuration = 500ms * m_level;
 	GameDuration maxDuration = 0;
 	
 	int number = glm::clamp(int(m_level), 1, 10);

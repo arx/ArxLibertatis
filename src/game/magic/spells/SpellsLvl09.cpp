@@ -377,7 +377,7 @@ void NegateMagicSpell::Update() {
 	float rot = timeWaveSaw(g_gameTime.now(), 18s) * 360.f;
 	
 	Anglef stiteangle(0.f, -rot, 0.f);
-	float scalediff = timeWaveSin(g_gameTime.now(), GameDurationMsf(1570.79632f));
+	float scalediff = timeWaveSin(g_gameTime.now(), 500ms * glm::pi<float>());
 	
 	{
 	Color3f stitecolor = Color3f::gray(.4f);

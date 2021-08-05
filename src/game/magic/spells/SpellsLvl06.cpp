@@ -229,8 +229,7 @@ void ParalyseSpell::Launch() {
 		resist_magic = entities[m_target]->_npcdata->resist_magic;
 	}
 	if(Random::getf(0.f, 100.f) < resist_magic) {
-		float mul = std::max(0.5f, 1.f - (resist_magic * 0.005f));
-		m_duration = GameDurationMsf(toMsf(m_duration) * mul);
+		m_duration = m_duration * std::max(0.5f, 1.f - (resist_magic * 0.005f));
 	}
 	
 	entities[m_target]->ioflags |= IO_FREEZESCRIPT;

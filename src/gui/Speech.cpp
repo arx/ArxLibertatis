@@ -278,13 +278,13 @@ long ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, SpeechF
 	// TODO Next lines must be removed (use callback instead)
 	g_aspeech[num].duration = ARX_SOUND_GetDuration(g_aspeech[num].sample.getSampleId());
 	
-	if ((io->ioflags & IO_NPC) && !(g_aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)) {
-		float fDiv = toMsf(g_aspeech[num].duration) / io->_npcdata->speakpitch;
-		g_aspeech[num].duration = GameDurationMsf(fDiv);
+	if((io->ioflags & IO_NPC) && !(g_aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)) {
+		g_aspeech[num].duration = g_aspeech[num].duration / io->_npcdata->speakpitch;
 	}
-
-	if (g_aspeech[num].duration < 500ms)
+	
+	if(g_aspeech[num].duration < 500ms) {
 		g_aspeech[num].duration = 2s;
+	}
 	
 	return num;
 }

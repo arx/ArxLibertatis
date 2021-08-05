@@ -376,11 +376,11 @@ public:
 		
 		std::string symbol = context.getWord();
 		
-		float duration = context.getFloat();
+		GameDuration duration = std::chrono::duration<float, std::milli>(context.getFloat());
 		
-		DebugScript(' ' << symbol << ' ' << duration);
+		DebugScript(' ' << symbol << ' ' << toMsf(duration));
 		
-		ARX_SPELLS_RequestSymbolDraw(context.getEntity(), symbol, GameDurationMsf(duration));
+		ARX_SPELLS_RequestSymbolDraw(context.getEntity(), symbol, duration);
 		
 		return Success;
 	}

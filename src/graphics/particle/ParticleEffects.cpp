@@ -210,8 +210,8 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 	
 	PARTICLE_DEF * pd = createParticle();
 	if(pd) {
-		float sinW = timeWaveSin(g_gameTime.now(), GameDurationMsf(6283.19f));
-		float cosW = timeWaveCos(g_gameTime.now(), GameDurationMsf(6283.19f));
+		float sinW = timeWaveSin(g_gameTime.now(), 2s * glm::pi<float>());
+		float cosW = timeWaveCos(g_gameTime.now(), 2s * glm::pi<float>());
 		float power = dmgs * (1.f / 60) + .9f;
 		pd->ov = pos + Vec3f(-sinW, sinW, cosW) * 30.f;
 		pd->siz = 3.5f * power + sinW;

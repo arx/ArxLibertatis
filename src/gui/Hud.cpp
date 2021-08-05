@@ -571,7 +571,7 @@ bool ChangeLevelIconGui::isVisible() {
 void ChangeLevelIconGui::update(const Rectf & parent) {
 	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_TopRight);
 	
-	float wave = timeWaveSin(g_gameTime.now(), GameDurationMsf(314.159f));
+	float wave = timeWaveSin(g_gameTime.now(), 100ms * glm::pi<float>());
 	m_intensity = 0.9f - wave * 0.5f + Random::getf(0.f, 0.1f);
 	m_intensity = glm::clamp(m_intensity, 0.f, 1.f);
 }

@@ -704,7 +704,7 @@ bool ARX_NPC_SetStat(Entity & io, std::string_view statname, float value) {
 	} else if(statname == "tohit") {
 		io._npcdata->tohit = value < 0 ? 0 : value;
 	} else if(statname == "aimtime") {
-		io._npcdata->aimtime = GameDurationMsf(value < 0.f ? 0.f : value);
+		io._npcdata->aimtime = std::chrono::duration<float, std::milli>(std::max(value, 0.f));
 	} else if(statname == "life") {
 		io._npcdata->lifePool.max = io._npcdata->lifePool.current = value < 0 ? 0.0000001f : value;
 	} else if(statname == "mana") {

@@ -385,12 +385,12 @@ void CRiseDead::Render() {
 	if(m_elapsed < m_durationIntro) {
 		// Render intro (opening + rays)
 		float fOneOnDurationIntro = 1.f / toMsf(m_durationIntro);
-		if(m_elapsed < GameDurationMsf(toMsf(m_durationIntro) * 0.666f)) {
+		if(m_elapsed < m_durationIntro * 2 / 3) {
 			m_visibleNotches = int((end + 2) * fOneOnDurationIntro * (1.5f) * toMsf(m_elapsed));
 			sizeF = 1;
 		} else {
 			bIntro = false;
-			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (toMsf(m_elapsed) - toMsf(m_durationIntro) * 0.666f);
+			sizeF = (iSize) * (fOneOnDurationIntro * 3) * toMsf(m_elapsed - m_durationIntro * 2 / 3);
 		}
 	} else if(m_elapsed < m_durationIntro + m_durationRender) {
 		// Do nothing, just render
@@ -674,12 +674,12 @@ void CSummonCreature::Render() {
 	if(m_elapsed < m_durationIntro) {
 		// Render intro (opening + rays)
 		float fOneOnDurationIntro = 1.f / toMsf(m_durationIntro);
-		if(m_elapsed < GameDurationMsf(toMsf(m_durationIntro) * 0.666f)) {
+		if(m_elapsed < m_durationIntro * 2 / 3) {
 			m_visibleNotches = int((end + 2) * fOneOnDurationIntro * (1.5f) * toMsf(m_elapsed));
 			sizeF = 1;
 		} else {
 			bIntro = false;
-			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (toMsf(m_elapsed) - toMsf(m_durationIntro) * 0.666f);
+			sizeF = (iSize) * (fOneOnDurationIntro * 3) * toMsf(m_elapsed - m_durationIntro * 2 / 3);
 		}
 	} else if(m_elapsed < m_durationIntro + m_durationRender) {
 		// Do nothing, just render

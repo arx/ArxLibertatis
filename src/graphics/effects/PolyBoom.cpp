@@ -316,7 +316,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 						long num = Random::get(0, 5);
 						pb.tc = g_particleTextures.bloodsplat[num];
 						
-						pb.tolive = GameDurationMsf((16000.f / 40) * size);
+						pb.tolive = 400ms * size;
 					}
 					
 					pb.fastdecay = false;

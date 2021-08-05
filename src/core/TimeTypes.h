@@ -219,10 +219,6 @@ template <typename Tag, typename T, typename Rep, typename Period>
 typedef InstantType <struct GameTime_Tag, s64> GameInstant;
 typedef DurationType<struct GameTime_Tag, s64> GameDuration;
 
-[[nodiscard]] inline constexpr GameDuration GameDurationMsf(float val) noexcept {
-	return std::chrono::duration<float, std::milli>(val);
-}
-
 [[nodiscard]] inline constexpr s64 toUs(GameDuration val) noexcept {
 	return std::chrono::microseconds(val).count();
 }

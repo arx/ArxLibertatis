@@ -222,12 +222,12 @@ public:
 	Result execute(Context & context) override {
 		
 		float intensity = context.getFloat();
-		float duration = context.getFloat();
+		GameDuration duration = std::chrono::duration<float, std::milli>(context.getFloat());
 		float period = context.getFloat();
 		
-		DebugScript(' ' << intensity << ' ' << duration << ' ' << period);
+		DebugScript(' ' << intensity << ' ' << toMsf(duration) << ' ' << period);
 		
-		AddQuakeFX(intensity, GameDurationMsf(duration), period, true);
+		AddQuakeFX(intensity, duration, period, true);
 		
 		return Success;
 	}

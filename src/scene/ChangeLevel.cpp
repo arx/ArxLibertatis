@@ -1993,7 +1993,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 				pos += sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
 				
 				io->_npcdata->absorb = as->absorb;
-				io->_npcdata->aimtime = GameDurationMsf(as->aimtime);
+				io->_npcdata->aimtime = std::chrono::duration<float, std::milli>(as->aimtime);
 				io->_npcdata->armor_class = as->armor_class;
 				io->_npcdata->behavior = Behaviour::load(as->behavior); // TODO save/load flags
 				io->_npcdata->behavior_param = as->behavior_param;

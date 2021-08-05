@@ -102,7 +102,7 @@ void RuneOfGuardingSpell::Update() {
 	
 	stiteangle.setYaw(stiteangleb * 0.1f);
 	stitecolor = Color3f(0.4f, 0.4f, 0.6f);
-	float scale = std::sin(m_elapsed / GameDurationMsf(66.6666666f));
+	float scale = std::sin(m_elapsed / (GameDuration(200ms) / 3));
 	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
 	
 	Draw3DObject(slight, stiteangle, pos, stitescale, stitecolor, mat);
@@ -422,7 +422,7 @@ void RepelUndeadSpell::Update() {
 	eObjAngle.setPitch(0);
 	eObjAngle.setRoll(0);
 	
-	float wave = timeWaveSin(g_gameTime.now(), GameDurationMsf(6283.185307f));
+	float wave = timeWaveSin(g_gameTime.now(), 2s * glm::pi<float>());
 	
 	float vv = (1.f + wave) * 0.5f + 1.1f;
 	

@@ -87,7 +87,7 @@ void GameTime::update(PlatformDuration frameDuration) {
 	arx_assert(delta >= 0);
 	
 	if(m_speed != 1.f) {
-		delta -= GameDurationMsf(toMsf(delta) * (1.f - m_speed));
+		delta -= delta * (1.f - m_speed);
 	}
 	
 	arx_assert(delta >= 0);

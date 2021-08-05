@@ -521,7 +521,7 @@ void LightningStrikeSpell::Launch() {
 	
 	Vec3f target(0.f, 0.f, -500.f);
 	m_lightning.Create(Vec3f(0.f), target);
-	m_lightning.SetDuration(GameDurationMsf(500 * m_level));
+	m_lightning.SetDuration(500ms * m_level);
 	m_lightning.m_isMassLightning = false;
 	m_duration = m_lightning.m_duration;
 	m_hasDuration = true;

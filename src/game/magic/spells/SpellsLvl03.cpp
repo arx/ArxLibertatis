@@ -415,16 +415,15 @@ void IceProjectileSpell::Launch() {
 	if(ray.hit) {
 		e = ray.pos + angleToVectorXZ(angleb) * 20.f;
 	}
-
+	
 	float fd = fdist(s, e);
-
-	float fCalc = toMsf(m_duration) * (fd / fspelldist);
-	m_duration = GameDurationMsf(fCalc);
-
+	
+	m_duration = m_duration * (fd / fspelldist);
+	
 	float fDist = (fd / fspelldist) * iMax;
-
+	
 	iNumber = checked_range_cast<int>(fDist);
-
+	
 	int end = iNumber / 2;
 	
 	Vec3f tv1a[MAX_ICE];
