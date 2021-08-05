@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GUI_MINIMAP_H
 #define ARX_GUI_MINIMAP_H
 
+#include <array>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -160,8 +161,8 @@ private:
 	EntityManager * m_entities;
 	BackgroundData * m_activeBkg;
 	
-	Vec2f m_miniOffset[MAX_MINIMAP_LEVELS];
-	float m_mapMaxY[MAX_MINIMAP_LEVELS];
+	std::array<Vec2f, MAX_MINIMAP_LEVELS> m_miniOffset;
+	std::array<float, MAX_MINIMAP_LEVELS> m_mapMaxY;
 	
 	TextureContainer * m_pTexDetect;
 	TextureContainer * m_mapMarkerTexCont;
@@ -174,7 +175,7 @@ private:
 	Vec2f m_mod;
 	
 	std::vector<MapMarkerData> m_mapMarkers;
-	MiniMapData m_levels[MAX_MINIMAP_LEVELS];
+	std::array<MiniMapData, MAX_MINIMAP_LEVELS> m_levels;
 	
 	void getData(int showLevel);
 	void resetLevels();

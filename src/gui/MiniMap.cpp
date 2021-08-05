@@ -213,14 +213,12 @@ void MiniMap::firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * e
 	m_currentLevel = 0;
 	m_entities = entityMng;
 	m_activeBkg = nullptr;
-
-    m_mapVertices.reserve(MINIMAP_MAX_X * MINIMAP_MAX_Z);
-
+	
+	m_mapVertices.reserve(MINIMAP_MAX_X * MINIMAP_MAX_Z);
+	
 	resetLevels();
 	
-	for(size_t i = 0; i < MAX_MINIMAP_LEVELS; i++) {
-		m_miniOffset[i] = Vec2f(0.f);
-	}
+	m_miniOffset.fill(Vec2f(0.f));
 	
 	loadOffsets(pakRes);
 }
@@ -741,11 +739,11 @@ void MiniMap::clearMarkerTexCont() {
 }
 
 void MiniMap::load(const SavedMiniMap * saved, size_t size) {
-	std::copy(saved, saved + size, m_levels);
+	std::copy(saved, saved + size, m_levels.begin());
 }
 
 void MiniMap::save(SavedMiniMap * toSave, size_t size) {
-	std::copy(m_levels, m_levels + size, toSave);
+	std::copy(m_levels.begin(), m_levels.begin() + size, toSave);
 }
 
 void MiniMap::mapMarkerInit(size_t reserveSize) {
