@@ -100,7 +100,7 @@ public:
 	struct MapMarkerData {
 		
 		Vec2f m_pos;
-		int m_lvl;
+		size_t m_lvl;
 		std::string m_name;
 		std::string m_text;
 		
@@ -124,7 +124,7 @@ public:
 	{ }
 	
 	void mapMarkerRemove(std::string_view name);
-	void mapMarkerAdd(const Vec2f & pos, int lvl, std::string && name);
+	void mapMarkerAdd(const Vec2f & pos, size_t lvl, std::string && name);
 	void mapMarkerInit(size_t reserveSize = 0);
 	size_t mapMarkerCount();
 	MapMarkerData mapMarkerGet(size_t id);
@@ -137,13 +137,13 @@ public:
 	void validatePlayerPos(int currentLevel, bool blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode);
 	
 	//! Shows the top right minimap
-	void showPlayerMiniMap(int showLevel);
+	void showPlayerMiniMap(size_t showLevel);
 	
 	//! Shows the zoomed-in minimap in the book
-	void showBookMiniMap(int showLevel, Rect rect, float scale);
+	void showBookMiniMap(size_t showLevel, Rect rect, float scale);
 	
 	//! Shows the entire map in the book
-	void showBookEntireMap(int showLevel, Rect rect, float scale);
+	void showBookEntireMap(size_t showLevel, Rect rect, float scale);
 	
 	//! Reveals entirely all levels
 	void reveal();
@@ -177,7 +177,7 @@ private:
 	std::vector<MapMarkerData> m_mapMarkers;
 	std::array<MiniMapData, MAX_MINIMAP_LEVELS> m_levels;
 	
-	void getData(int showLevel);
+	void getData(size_t showLevel);
 	void resetLevels();
 	void loadOffsets(PakReader * pakRes);
 	void validatePos();
@@ -185,7 +185,7 @@ private:
 	/*!
 	* Reveals the direct surroundings of the player
 	*/
-	void revealPlayerPos(int showLevel);
+	void revealPlayerPos(size_t showLevel);
 	
 	/*!
 	* Gets the id from the MapMarker's name. Returns -1 when not found.
@@ -194,10 +194,11 @@ private:
 	*/
 	int mapMarkerGetID(std::string_view name);
 	
-	Vec2f computePlayerPos(float zoom, int showLevel);
-	void drawBackground(int showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder = 0.f, bool invColor = false, float alpha = 1.f);
+	Vec2f computePlayerPos(float zoom, size_t showLevel);
+	void drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom,
+	                    float fadeBorder = 0.f, bool invColor = false, float alpha = 1.f);
 	void drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending);
-	void drawDetectedEntities(int showLevel, Vec2f start, float zoom);
+	void drawDetectedEntities(size_t showLevel, Vec2f start, float zoom);
 	
 	std::vector<TexturedVertex> m_mapVertices;
 	

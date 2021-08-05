@@ -77,7 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 MiniMap g_miniMap; // TODO: remove this
 
-void MiniMap::getData(int showLevel) {
+void MiniMap::getData(size_t showLevel) {
 	
 	if(m_levels[showLevel].m_texContainer == nullptr) {
 		
@@ -250,7 +250,7 @@ void MiniMap::purgeTexContainer() {
 	}
 }
 
-void MiniMap::showPlayerMiniMap(int showLevel) {
+void MiniMap::showPlayerMiniMap(size_t showLevel) {
 	
 	UseRenderState state(render2D());
 	
@@ -274,7 +274,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		
 		Vec2f start(0.f);
 		Vec2f playerPos(0.f);
-		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
+		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
 			start = Vec2f(miniMapRect.center()) - computePlayerPos(miniMapZoom, showLevel);
 			playerPos = Vec2f(miniMapRect.center());
 		}
@@ -283,7 +283,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		drawBackground(showLevel, miniMapRect, start, miniMapZoom, 20.f, true, 0.5f);
 		
 		// Draw the player (red arrow)
-		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
+		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
 			drawPlayer(playerSize, playerPos, true);
 			drawDetectedEntities(showLevel, start, miniMapZoom);
 		}
@@ -291,7 +291,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 	}
 }
 
-void MiniMap::showBookMiniMap(int showLevel, Rect rect, float scale) {
+void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
 	
 	UseRenderState state(render2D());
 	
@@ -306,14 +306,14 @@ void MiniMap::showBookMiniMap(int showLevel, Rect rect, float scale) {
 		
 		Vec2f start(0.f);
 		Vec2f playerPos(0.f);
-		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
+		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
 			start = Vec2f(rect.center()) - computePlayerPos(zoom, showLevel);
 			playerPos = Vec2f(rect.center());
 		}
 		
 		drawBackground(showLevel, rect, start, zoom, 20.f * scale);
 		
-		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
+		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
 			drawPlayer(6.f * scale, playerPos, false);
 			drawDetectedEntities(showLevel, start, zoom);
 		}
@@ -321,7 +321,7 @@ void MiniMap::showBookMiniMap(int showLevel, Rect rect, float scale) {
 	}
 }
 
-void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
+void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 	
 	UseRenderState state(render2D());
 	
@@ -340,14 +340,14 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 	
 	Vec2f playerPos(0.f, 0.f);
 	
-	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
+	if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
 		playerPos = computePlayerPos(zoom, showLevel);
 		playerPos += start;
 	}
 	
 	drawBackground(showLevel, rect, start, zoom);
 	
-	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
+	if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
 		drawPlayer(3.f * scale, playerPos, false);
 		drawDetectedEntities(showLevel, start, zoom);
 	}
@@ -419,7 +419,7 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 	}
 }
 
-void MiniMap::revealPlayerPos(int showLevel) {
+void MiniMap::revealPlayerPos(size_t showLevel) {
 	
 	float zoom = 250.f;
 	float maxDistance = 6.0f;
@@ -468,7 +468,7 @@ void MiniMap::revealPlayerPos(int showLevel) {
 	}
 }
 
-Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
+Vec2f MiniMap::computePlayerPos(float zoom, size_t showLevel) {
 	
 	Vec2f cas(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
 	
@@ -485,7 +485,7 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 	return pos;
 }
 
-void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, bool invColor, float alpha) {
+void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, bool invColor, float alpha) {
 	
 	m_mapVertices.clear();
 	
@@ -549,7 +549,7 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 		float v;
 		float oo = 0.f;
 		
-		for(int vert = 0; vert < 4; vert++) {
+		for(size_t vert = 0; vert < 4; vert++) {
 			verts[vert].color = Color::white.toRGB();
 			verts[vert].w = 1;
 			verts[vert].p.z = 0.00001f;
@@ -665,7 +665,7 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	
 }
 
-void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
+void MiniMap::drawDetectedEntities(size_t showLevel, Vec2f start, float zoom) {
 	
 	Vec2f cas(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
 	
@@ -762,7 +762,7 @@ int MiniMap::mapMarkerGetID(std::string_view name) {
 	return -1;
 }
 
-void MiniMap::mapMarkerAdd(const Vec2f & pos, int lvl, std::string && name) {
+void MiniMap::mapMarkerAdd(const Vec2f & pos, size_t lvl, std::string && name) {
 	
 	int num = mapMarkerGetID(name);
 	
