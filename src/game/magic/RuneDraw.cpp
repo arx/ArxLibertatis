@@ -238,16 +238,15 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 		}
 		
 		SYMBOL_DRAW * sd = entity.symboldraw;
-		float ti = toMsf(sd->duration) / float(nbcomponents);
+		AnimationDuration ti = sd->duration / nbcomponents;
 		if(ti <= 0) {
-			ti = 1;
+			ti = 1ms;
 		}
 		
 		AnimationDuration newtime = std::min(elapsed, sd->duration);
 		AnimationDuration oldtime = std::min(sd->elapsed, sd->duration);
 		sd->elapsed = elapsed;
 		
-		float div_ti = 1.f / ti;
 		Vec2s pos1 = Vec2s(g_size.center()) - symbolVecScale * short(2) + sd->cPosStart * symbolVecScale;
 		
 		Vec2s old_pos = pos1;
@@ -255,28 +254,28 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			Vec2s vect = GetSymbVector(sd->sequence[j]);
 			vect *= symbolVecScale;
 			vect += vect / Vec2s(2);
-			if(oldtime <= AnimationDurationMsf(ti)) {
-				float ratio = toMsf(oldtime) * div_ti;
+			if(oldtime <= ti) {
+				float ratio = oldtime / ti;
 				old_pos += Vec2s(Vec2f(vect) * ratio);
 				break;
 			}
 			old_pos += vect;
-			oldtime -= AnimationDurationMsf(ti);
+			oldtime -= ti;
 		}
 		
 		for(size_t j = 0; j < nbcomponents; j++) {
 			Vec2s vect = GetSymbVector(sd->sequence[j]);
 			vect *= symbolVecScale;
 			vect += vect / Vec2s(2);
-			if(newtime <= AnimationDurationMsf(ti)) {
-				float ratio = toMsf(newtime) * div_ti;
+			if(newtime <= ti) {
+				float ratio = newtime / ti;
 				pos1 += Vec2s(Vec2f(vect) * ratio);
 				AddFlare(Vec2f(pos1), 0.1f, 1, &entity);
 				FlareLine(Vec2f(old_pos), Vec2f(pos1), &entity);
 				break;
 			}
 			pos1 += vect;
-			newtime -= AnimationDurationMsf(ti);
+			newtime -= ti;
 		}
 		
 	}
