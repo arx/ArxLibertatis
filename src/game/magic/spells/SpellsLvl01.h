@@ -72,7 +72,7 @@ private:
 	
 	struct T_LINKLIGHTTOFX {
 		LightHandle m_effectLight;
-		int m_targetLight;
+		size_t m_targetLight;
 	};
 	
 	std::vector<T_LINKLIGHTTOFX> m_lights;
