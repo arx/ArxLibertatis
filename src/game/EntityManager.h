@@ -28,6 +28,7 @@
 #include "game/Entity.h"
 #include "game/EntityId.h"
 #include "game/GameTypes.h"
+#include "util/Range.h"
 
 class EntityManager {
 	
@@ -36,23 +37,17 @@ class EntityManager {
 	
 	class Sentinel { };
 	
-	template <typename Filter>
-	class EntityIterator : private Filter {
+	class EntityIterator {
 		
 		const EntityManager * m_manager;
 		size_t m_i = 0;
 		
-		bool check(Entity * entity) {
-			return entity && (*this)(*entity);
-		}
-		
 	public:
 		
-		EntityIterator(const EntityManager * manager, Filter filter)
-			: Filter(std::move(filter))
-			, m_manager(manager)
+		explicit EntityIterator(const EntityManager * manager)
+			: m_manager(manager)
 		{
-			if(m_i != m_manager->entries.size() && !check(m_manager->entries[m_i])) {
+			if(m_i != m_manager->entries.size() && !m_manager->entries[m_i]) {
 				operator++();
 			}
 		}
@@ -64,30 +59,16 @@ class EntityManager {
 		void operator++() {
 			do {
 				++m_i;
-			} while(m_i != m_manager->entries.size() && !check(m_manager->entries[m_i]));
+			} while(m_i != m_manager->entries.size() && !m_manager->entries[m_i]);
 		}
 		
-		[[nodiscard]] bool operator!=(Sentinel /* sentinel */) {
+		[[nodiscard]] bool operator==(Sentinel /* sentinel */) const {
+			return m_i == m_manager->entries.size();
+		}
+		
+		[[nodiscard]] bool operator!=(Sentinel /* sentinel */) const {
 			return m_i != m_manager->entries.size();
 		}
-		
-	};
-	
-	template <typename Filter>
-	class FilteredEntities {
-		
-		const EntityManager * m_manager;
-		Filter m_filter;
-		
-	public:
-		
-		FilteredEntities(const EntityManager * manager, Filter filter)
-			: m_manager(manager)
-			, m_filter(std::move(filter))
-		{ }
-		
-		[[nodiscard]] auto begin() { return EntityIterator(m_manager, m_filter); }
-		[[nodiscard]] auto end() { return Sentinel(); }
 		
 	};
 	
@@ -135,21 +116,17 @@ public:
 	 */
 	[[nodiscard]] size_t size() const { return entries.size(); }
 	
-	[[nodiscard]] auto begin() const {
-		return EntityIterator( this, [](Entity & /* entity */) {
-			return true;
-		});
-	}
+	[[nodiscard]] auto begin() const { return EntityIterator(this); }
 	[[nodiscard]] auto end() const { return Sentinel(); }
 	
-	[[nodiscard]] auto operator()(EntityFlags flags) {
-		return FilteredEntities( this, [flags](Entity & entity) {
+	[[nodiscard]] auto operator()(EntityFlags flags) const {
+		return util::filter(*this, [flags](const Entity & entity) {
 			return entity.ioflags & flags;
 		});
 	}
 	
-	[[nodiscard]] auto inScene(EntityFlags flags = EntityFlags::all()) {
-		return FilteredEntities( this, [flags](Entity & entity) {
+	[[nodiscard]] auto inScene(EntityFlags flags = EntityFlags::all()) const {
+		return util::filter(*this, [flags](const Entity & entity) {
 			return entity.show == SHOW_FLAG_IN_SCENE && (entity.ioflags & flags);
 		});
 	}
