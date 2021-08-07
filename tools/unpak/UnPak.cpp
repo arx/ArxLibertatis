@@ -65,10 +65,10 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 		// Copy to map to ensure filenames are sorted
 		typedef std::map<std::string, PakFile *> SortedFiles;
 		SortedFiles files;
-		for(PakDirectory::files_iterator i = dir.files_begin(); i != dir.files_end(); ++i) {
+		for(auto file : dir.files()) {
 			// TODO this should really be done when loading the pak file
-			std::string name = util::convert<util::ISO_8859_1, util::UTF8>(i->first);
-			files[name] = i->second;
+			std::string name = util::convert<util::ISO_8859_1, util::UTF8>(file.name);
+			files[name] = &file.entry;
 		}
 		for(const SortedFiles::value_type & entry : files) {
 			res::path path = dirname / entry.first;
@@ -109,10 +109,10 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 		// Copy to map to ensure dirnames are sorted
 		typedef std::map<std::string, PakDirectory *> SortedDirs;
 		SortedDirs subdirs;
-		for(PakDirectory::dirs_iterator i = dir.dirs_begin(); i != dir.dirs_end(); ++i) {
+		for(auto subdir : dir.dirs()) {
 			// TODO this should really be done when loading the pak file
-			std::string name = util::convert<util::ISO_8859_1, util::UTF8>(i->first);
-			subdirs[name] = &i->second;
+			std::string name = util::convert<util::ISO_8859_1, util::UTF8>(subdir.name);
+			subdirs[name] = &subdir.entry;
 		}
 		for(const SortedDirs::value_type & entry : subdirs) {
 			res::path path = dirname / entry.first;
