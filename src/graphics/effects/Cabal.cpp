@@ -91,13 +91,13 @@ Color3f CabalFx::randomizeLightColor() const {
 
 Vec3f CabalFx::update(Vec3f casterPos) {
 	
-	const float frametime = toMsf(g_gameTime.now());
-	float mov = std::sin(frametime * (1.0f / 800)) * m_scaleY;
+	float mov = timeWaveSin(g_gameTime.now(), 1600ms * glm::pi<float>()) * m_scaleY;
 	
 	Vec3f cabalpos = casterPos + Vec3f(0.f, m_offset - mov, 0.f);
 	float refpos = casterPos.y + m_offset;
 	
-	float Es = std::sin(frametime * (1.0f / 800) + glm::radians(m_scaleY));
+	GameDuration timeOffset = std::chrono::duration<float, std::milli>(glm::radians(m_scaleY) * 800.f);
+	float Es = timeWaveSin(g_gameTime.now() + timeOffset, 1600ms * glm::pi<float>());
 	
 	EERIE_LIGHT * light = lightHandleGet(m_lightHandle);
 	if (light) {
@@ -107,26 +107,26 @@ Vec3f CabalFx::update(Vec3f casterPos) {
 		light->rgb = randomizeLightColor();
 		light->fallstart = Es * 1.5f;
 	}
-
+	
 	RenderMaterial mat;
 	mat.setCulling(CullNone);
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Additive);
-
+	
 	Anglef cabalangle(0.f, 0.f, 0.f);
 	cabalangle.setYaw(m_yaw + g_framedelay * 0.1f);
 	m_yaw = cabalangle.getYaw();
-
+	
 	Vec3f cabalscale = Vec3f(Es);
 	Color3f cabalcolor;
-
-	float timeOffset = 30.0;
-
+	
+	timeOffset = 30ms;
+	
 	for(size_t i = 0; i < m_ringCount; i++) {
 		if(i > 0) {
-			mov = std::sin((frametime - timeOffset) * (1.0f / 800)) * m_scaleY;
+			mov = timeWaveSin(g_gameTime.now() - timeOffset, 1600ms * glm::pi<float>()) * m_scaleY;
 			cabalpos.y = refpos - mov;
-			timeOffset *= 2.0f;
+			timeOffset = timeOffset * 2;
 		}
 		cabalcolor = m_ringColors[i];
 		Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
@@ -135,13 +135,13 @@ Vec3f CabalFx::update(Vec3f casterPos) {
 	if(m_hasTwoRingSets) {
 		
 		cabalangle.setYaw(-cabalangle.getYaw());
-		timeOffset = 30.0f;
+		timeOffset = 30ms;
 
 		for(size_t i = 0; i < m_ringCount; i++) {
 			if(i > 0) {
-				mov = std::sin((frametime + timeOffset) * (1.0f / 800)) * m_scaleY;
+				mov = timeWaveSin(g_gameTime.now() - timeOffset, 1600ms * glm::pi<float>()) * m_scaleY;
 				cabalpos.y = refpos + mov;
-				timeOffset *= 2.0f;
+				timeOffset = timeOffset * 2;
 			}
 			cabalcolor = m_ringColors[m_ringCount - 1 - i];
 			Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
