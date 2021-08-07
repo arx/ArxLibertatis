@@ -660,7 +660,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	
 	// TODO copy-paste background tiles
 	Vec2s tile = ACTIVEBKG->getTile(cyl.origin);
-	int radius = int((cyl.radius + 100) * ACTIVEBKG->m_mul.x);
+	int radius = int((cyl.radius + g_backgroundTileSize.x) * ACTIVEBKG->m_mul.x);
 	
 	int minx = std::max(tile.x - radius, 0);
 	int maxx = std::min(tile.x + radius, ACTIVEBKG->m_size.x - 1);
@@ -673,14 +673,14 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 
 		for(long num = 0; num < 4; num++) {
 
-			float nearx = static_cast<float>(x * 100);
-			float nearz = static_cast<float>(z * 100);
+			float nearx = static_cast<float>(x * g_backgroundTileSize.x);
+			float nearz = static_cast<float>(z * g_backgroundTileSize.y);
 
 			if(num == 1 || num == 2)
-				nearx += 100;
+				nearx += g_backgroundTileSize.x;
 
 			if(num == 2 || num == 3)
-				nearz += 100;
+				nearz += g_backgroundTileSize.y;
 
 			float dd = fdist(Vec2f(nearx, nearz), Vec2f(cyl.origin.x, cyl.origin.z));
 
