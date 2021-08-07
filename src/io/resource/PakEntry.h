@@ -25,6 +25,8 @@
 #include <string>
 #include <string_view>
 
+#include "util/Range.h"
+
 namespace res { class path; }
 
 class PakFileHandle;
@@ -59,6 +61,26 @@ public:
 
 class PakDirectory {
 	
+	template <typename T>
+	struct Entry {
+		
+		const std::string & name;
+		T & entry;
+		
+		operator const std::string &() {
+			return name;
+		}
+		
+		operator std::string_view() {
+			return name;
+		}
+		
+		operator T &() {
+			return entry;
+		}
+		
+	};
+	
 private:
 	
 	// TODO hash maps might be a better fit
@@ -88,6 +110,19 @@ public:
 	
 	bool hasFile(const res::path & path) {
 		return getFile(path) != nullptr;
+	}
+	
+	auto dirs() {
+		return util::transform(m_dirs, [](auto & base) {
+			return Entry<PakDirectory>{ base.first, base.second };
+		});
+	}
+	
+	auto files() {
+		return util::transform(m_files, [](auto & base) {
+			arx_assert(base.second);
+			return Entry<PakFile>{ base.first, *base.second };
+		});
 	}
 	
 	dirs_iterator dirs_begin() { return m_dirs.begin(); }
