@@ -235,9 +235,6 @@ typedef DurationType<struct GameTime_Tag, s64> GameDuration;
 [[nodiscard]] inline constexpr s64 toMsi(GameInstant val) noexcept {
 	return toMsi(val - GameInstant(0));
 }
-[[nodiscard]] inline constexpr float toMsf(GameInstant val) noexcept {
-	return toMsf(val - GameInstant(0));
-}
 
 // PlatformTime
 // in microseconds
