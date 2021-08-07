@@ -748,49 +748,53 @@ static void RenderWaterBatch() {
 	
 }
 
-static Vec2f FluidTextureDisplacement(const Vec3f & p, float time,
-                                      float divVar1, float divVar2, float divVar3,
+static Vec2f FluidTextureDisplacement(const Vec3f & p, GameInstant time,
+                                      float divVar1, float divVar2, GameDuration duration,
                                       float divVar4, float addVar1,
                                       float addVar2, Vec2f sign) {
 	
-	float u = (p.x + addVar1) / divVar1 + sign.x * glm::sin((p.x + addVar2) / divVar2 + time / divVar3) / divVar4;
-	float v = (p.z + addVar1) / divVar1 + sign.y * glm::cos((p.z + addVar2) / divVar2 + time / divVar3) / divVar4;
+	float offset = timeWaveSaw(time, duration) * 2.f * glm::pi<float>();
+	
+	float u = (p.x + addVar1) / divVar1 + sign.x * glm::sin((p.x + addVar2) / divVar2 + offset) / divVar4;
+	float v = (p.z + addVar1) / divVar1 + sign.y * glm::cos((p.z + addVar2) / divVar2 + offset) / divVar4;
 	
 	return Vec2f(u, v);
 }
 
-static Vec2f CalculateWaterDisplacement(EERIEPOLY * ep, float time, int vertIndex, int step) {
+static Vec2f CalculateWaterDisplacement(EERIEPOLY * ep, GameInstant time, int vertIndex, int step) {
 	
 	const Vec3f & p = ep->v[vertIndex].p;
+	GameDuration duration = 2s * glm::pi<float>();
 	
 	switch(step) {
 	case 0: {
-		return FluidTextureDisplacement(p, time, 1000, 200, 1000, 32, 0.f, 0.f, Vec2f(1.f, 1.f));
+		return FluidTextureDisplacement(p, time, 1000, 200, duration, 32, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
 	case 1: {
-		return FluidTextureDisplacement(p, time, 1000, 200, 1000, 28, 30.f, 30, Vec2f(1.f, -1.f));
+		return FluidTextureDisplacement(p, time, 1000, 200, duration, 28, 30.f, 30, Vec2f(1.f, -1.f));
 	}
 	case 2: {
-		return FluidTextureDisplacement(p, time, 1000, 200, 1000, 40, 60.f, 60, Vec2f(-1.f, -1.f));
+		return FluidTextureDisplacement(p, time, 1000, 200, duration, 40, 60.f, 60, Vec2f(-1.f, -1.f));
 	}
 	default:
 		return Vec2f(0.f);
 	}
 }
 
-static Vec2f CalculateLavaDisplacement(EERIEPOLY * ep, float time, int vertIndex, int step) {
+static Vec2f CalculateLavaDisplacement(EERIEPOLY * ep, GameInstant time, int vertIndex, int step) {
 	
 	const Vec3f & p = ep->v[vertIndex].p;
+	GameDuration duration = 4s * glm::pi<float>();
 	
 	switch(step) {
 	case 0: {
-		return FluidTextureDisplacement(p, time, 1000, 200, 2000, 20, 0.f, 0.f, Vec2f(1.f, 1.f));
+		return FluidTextureDisplacement(p, time, 1000, 200, duration, 20, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
 	case 1: {
-		return FluidTextureDisplacement(p, time, 1000, 100, 2000, 10, 0.f, 0.f, Vec2f(1.f, 1.f));
+		return FluidTextureDisplacement(p, time, 1000, 100, duration, 10, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
 	case 2: {
-		return FluidTextureDisplacement(p, time, 600, 160, 2000, 11, 0.f, 0.f, Vec2f(1.f, 1.f));
+		return FluidTextureDisplacement(p, time, 600, 160, duration, 11, 0.f, 0.f, Vec2f(1.f, 1.f));
 	}
 	default:
 		return Vec2f(0.f);
@@ -820,8 +824,6 @@ static void RenderWater() {
 	
 	unsigned short * indices = dynamicVertices.indices.data();
 	
-	float time = toMsf(g_gameTime.now());
-
 	while(iNb--) {
 		EERIEPOLY * ep = vPolyWater[iNb];
 		
@@ -843,9 +845,9 @@ static void RenderWater() {
 			pVertex->color = Color::gray(0.314f).toRGBA();
 			
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
-				Vec2f uv = CalculateWaterDisplacement(ep, time, j, i);
+				Vec2f uv = CalculateWaterDisplacement(ep, g_gameTime.now(), j, i);
 				if(ep->type & POLY_FALL) {
-					uv.y += time * (1.f / 4000);
+					uv.y += timeWaveSaw(g_gameTime.now(), 4s);
 				}
 				pVertex->uv[i] = uv;
 			}
@@ -926,8 +928,6 @@ static void RenderLava() {
 	
 	unsigned short * indices = dynamicVertices.indices.data();
 	
-	float time = toMsf(g_gameTime.now());
-
 	while(iNb--) {
 		EERIEPOLY * ep = vPolyLava[iNb];
 		
@@ -948,7 +948,7 @@ static void RenderLava() {
 			pVertex->p = ep->v[j].p;
 			pVertex->color = Color::gray(0.4f).toRGBA();
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
-				Vec2f uv = CalculateLavaDisplacement(ep, time, j, i);
+				Vec2f uv = CalculateLavaDisplacement(ep, g_gameTime.now(), j, i);
 				pVertex->uv[i] = uv;
 			}
 			pVertex++;
@@ -1147,11 +1147,11 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 		}
 		
 		if(ep->type & POLY_LAVA) {
-			float uvScroll = toMsf(now) * (1.f / 12000);
+			float uvScroll = timeWaveSaw(now, 12s);
 			ManageLava_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
 			vPolyLava.push_back(ep);
 		} else if(ep->type & POLY_WATER) {
-			float uvScroll = toMsf(now) * 0.001f;
+			float uvScroll = timeWaveSaw(now, 1s);
 			ManageWater_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
 			vPolyWater.push_back(ep);
 		}
