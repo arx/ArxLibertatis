@@ -792,9 +792,10 @@ static void ARX_SOUND_CreateEnvironments() {
 		return;
 	}
 	
-	for(PakDirectory::files_iterator i = dir->files_begin(); i != dir->files_end(); i++) {
-		audio::createEnvironment(i->first);
+	for(const std::string_view name : dir->files()) {
+		audio::createEnvironment(name);
 	}
+	
 }
 
 static audio::SampleHandle createEffectSample(const res::path & path) {
