@@ -251,8 +251,7 @@ void loadLocalisations() {
 	
 	LocalizationFiles localizationFiles;
 	
-	for(auto it = dir->files_begin(); it != dir->files_end(); ++it) {
-		std::string_view name = it->first;
+	for(const std::string_view name : dir->files()) {
 		if(boost::ends_with(name, suffix)
 		   && (boost::starts_with(name, fallbackPrefix) || boost::starts_with(name, localizedPrefix))) {
 			localizationFiles.insert(name.substr(fallbackPrefix.length()));
@@ -277,10 +276,7 @@ Languages getAvailableTextLanguages() {
 		LogCritical << "Missing 'localisation' directory. Is 'loc.pak' present?";
 		return result;
 	}
-	PakDirectory::files_iterator file = localisation->files_begin();
-	for(; file != localisation->files_end(); ++file) {
-		
-		const std::string_view name = file->first;
+	for(const std::string_view name : localisation->files()) {
 		
 		const std::string_view prefix = "utext_";
 		const std::string_view suffix = ".ini";
@@ -318,15 +314,14 @@ Languages getAvailableAudioLanguages() {
 		LogCritical << "Missing 'speech' directory. Is 'speech.pak' present?";
 		return result;
 	}
-	PakDirectory::dirs_iterator file = localisation->dirs_begin();
-	for(; file != localisation->dirs_end(); ++file) {
+	for(const std::string_view name : localisation->dirs()) {
 		
-		if(file->first.find_first_not_of("abcdefghijklmnopqrstuvwxyz_") != std::string::npos) {
-			LogWarning << "Ignoring speech/" << file->first << "/";
+		if(name.find_first_not_of("abcdefghijklmnopqrstuvwxyz_") != std::string::npos) {
+			LogWarning << "Ignoring speech/" << name << "/";
 			continue;
 		}
 		
-		result.insert(Languages::value_type(file->first, getLanguageInfo(file->first)));
+		result.insert(Languages::value_type(name, getLanguageInfo(name)));
 	}
 	
 	return result;
