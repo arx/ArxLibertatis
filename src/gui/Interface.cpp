@@ -1648,14 +1648,16 @@ void ArxGame::manageEntityDescription() {
 		
 		pTextManage->Clear();
 		std::string description = ss.str();
+		
+		PlatformDuration duration = 0; // just for this frame
 		if(!config.input.autoDescription) {
-			PlatformDuration duration = 2s + description.length() * 60ms;
-			pTextManage->AddText(hFontInGame, std::move(description), rDraw, Color(232, 204, 143), duration);
-		} else {
-			pTextManage->AddText(hFontInGame, std::move(description), rDraw, Color(232, 204, 143));
+			duration = 2s + description.length() * 60ms;
 		}
 		
+		pTextManage->AddText(hFontInGame, std::move(description), rDraw, Color(232, 204, 143), duration);
+		
 	}
+	
 }
 
 EntityHandle LastSelectedIONum = EntityHandle();
