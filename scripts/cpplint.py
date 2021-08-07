@@ -1952,10 +1952,10 @@ def CheckSpacing(filename, clean_lines, linenum, error):
   if Search(r'[\w\)\]\"\']\s*\-[^\s\>\)\]\-\=]', line):
     error(filename, linenum, 'whitespace/operators', 4,
           'Missing space after -')
-  if Search(r'[^\s]\s+\-\>', line):
+  if Search(r'[^\s]\s+\-\>', line) and not Search(r'\)\s\-\>\s.*\{', line):
     error(filename, linenum, 'whitespace/operators', 4,
           'Extra space before ->')
-  if Search(r'\-\>\s', line):
+  if Search(r'\-\>\s', line) and not Search(r'\)\s\-\>\s.*\{', line):
     error(filename, linenum, 'whitespace/operators', 4,
           'Extra space after ->')
   if Search(r'[^\s]\s+\.[^\d\.]', line):
