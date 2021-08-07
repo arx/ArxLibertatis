@@ -999,8 +999,6 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	
 	for(const EP_DATA & epd : room.epdata) {
 		
-		BackgroundTileData * feg = &ACTIVEBKG->m_tileData[epd.tile.x][epd.tile.y];
-		
 		if(!ACTIVEBKG->isTileActive(epd.tile)) {
 			// TODO copy-paste background tiles
 			int tilex = epd.tile.x;
@@ -1020,7 +1018,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 			}
 		}
 		
-		EERIEPOLY * ep = &feg->polydata[epd.idx];
+		EERIEPOLY * ep = &ACTIVEBKG->m_tileData[epd.tile.x][epd.tile.y].polydata[epd.idx];
 		if(!ep->tex) {
 			continue;
 		}
