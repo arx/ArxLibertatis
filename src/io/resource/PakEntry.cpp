@@ -77,7 +77,7 @@ PakDirectory * PakDirectory::getDirectory(const res::path & path) {
 			name = std::string_view(path.string()).substr(pos, end - pos);
 		}
 		
-		dirs_iterator entry = dir->m_dirs.find(name);
+		auto entry = dir->m_dirs.find(name);
 		if(entry == dir->m_dirs.end()) {
 			return nullptr;
 		}
@@ -109,11 +109,11 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 		size_t end = path.string().find(res::path::dir_sep, pos);
 		
 		if(end == std::string::npos) {
-			files_iterator file = dir->m_files.find(std::string_view(path.string()).substr(pos));
+			auto file = dir->m_files.find(std::string_view(path.string()).substr(pos));
 			return (file == dir->m_files.end()) ? nullptr : file->second.get();
 		}
 		
-		dirs_iterator entry = dir->m_dirs.find(std::string_view(path.string()).substr(pos, end - pos));
+		auto entry = dir->m_dirs.find(std::string_view(path.string()).substr(pos, end - pos));
 		if(entry == dir->m_dirs.end()) {
 			return nullptr;
 		}

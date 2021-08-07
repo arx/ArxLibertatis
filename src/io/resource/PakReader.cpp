@@ -492,7 +492,7 @@ bool PakReader::addArchive(const fs::path & pakfile, const PakFilter * filter) {
 	release |= key;
 	
 	util::md5::checksum checksum = util::md5::compute(fat.data(), fat_size);
-	if(has_dirs() || has_files()) {
+	if(!empty()) {
 		m_checksum = util::md5::checksum();
 	} else {
 		m_checksum = checksum;

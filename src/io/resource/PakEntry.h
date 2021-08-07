@@ -98,9 +98,6 @@ public:
 	PakDirectory(const PakDirectory &) = delete;
 	PakDirectory & operator=(const PakDirectory &) = delete;
 	
-	typedef std::map<std::string, PakDirectory, std::less<>>::iterator dirs_iterator;
-	typedef std::map<std::string, std::unique_ptr<PakFile>, std::less<>>::const_iterator files_iterator;
-	
 	PakDirectory * getDirectory(const res::path & path);
 	
 	PakFile * getFile(const res::path & path);
@@ -122,16 +119,7 @@ public:
 		});
 	}
 	
-	dirs_iterator dirs_begin() { return m_dirs.begin(); }
-	dirs_iterator dirs_end() { return m_dirs.end(); }
-	
-	files_iterator files_begin() { return m_files.begin(); }
-	files_iterator files_end() { return m_files.end(); }
-	
-	bool has_files() { return files_begin() != files_end(); }
-	bool has_dirs() { return dirs_begin() != dirs_end(); }
-	
-	bool empty() { return !has_dirs() && !has_files(); }
+	bool empty() { return m_dirs.empty() && m_files.empty(); }
 	
 };
 
