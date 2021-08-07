@@ -62,8 +62,8 @@ class PakDirectory {
 private:
 	
 	// TODO hash maps might be a better fit
-	std::map<std::string, PakFile *, std::less<>> files;
-	std::map<std::string, PakDirectory, std::less<>> dirs;
+	std::map<std::string, PakFile *, std::less<>> m_files;
+	std::map<std::string, PakDirectory, std::less<>> m_dirs;
 	
 	PakDirectory * addDirectory(const res::path & path);
 	
@@ -90,11 +90,11 @@ public:
 		return getFile(path) != nullptr;
 	}
 	
-	dirs_iterator dirs_begin() { return dirs.begin(); }
-	dirs_iterator dirs_end() { return dirs.end(); }
+	dirs_iterator dirs_begin() { return m_dirs.begin(); }
+	dirs_iterator dirs_end() { return m_dirs.end(); }
 	
-	files_iterator files_begin() { return files.begin(); }
-	files_iterator files_end() { return files.end(); }
+	files_iterator files_begin() { return m_files.begin(); }
+	files_iterator files_end() { return m_files.end(); }
 	
 	bool has_files() { return files_begin() != files_end(); }
 	bool has_dirs() { return dirs_begin() != dirs_end(); }

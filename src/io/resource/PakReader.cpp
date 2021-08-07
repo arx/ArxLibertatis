@@ -585,8 +585,8 @@ void PakReader::clear() {
 	
 	release = 0;
 	
-	files.clear();
-	dirs.clear();
+	m_files.clear();
+	m_dirs.clear();
 	
 	for(std::istream * is : paks) {
 		delete is;

@@ -51,9 +51,9 @@ PakDirectory * PakDirectory::addDirectory(const res::path & path) {
 		size_t end = path.string().find(res::path::dir_sep, pos);
 		
 		if(end == std::string::npos) {
-			return &dir->dirs[path.string().substr(pos)];
+			return &dir->m_dirs[path.string().substr(pos)];
 		}
-		dir = &dir->dirs[path.string().substr(pos, end - pos)];
+		dir = &dir->m_dirs[path.string().substr(pos, end - pos)];
 		
 		pos = end + 1;
 	}
@@ -88,8 +88,8 @@ PakDirectory * PakDirectory::getDirectory(const res::path & path) {
 			name = std::string_view(path.string()).substr(pos, end - pos);
 		}
 		
-		dirs_iterator entry = dir->dirs.find(name);
-		if(entry == dir->dirs.end()) {
+		dirs_iterator entry = dir->m_dirs.find(name);
+		if(entry == dir->m_dirs.end()) {
 			return nullptr;
 		}
 		dir = &entry->second;
@@ -120,12 +120,12 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 		size_t end = path.string().find(res::path::dir_sep, pos);
 		
 		if(end == std::string::npos) {
-			files_iterator file = dir->files.find(std::string_view(path.string()).substr(pos));
-			return (file == dir->files.end()) ? nullptr : file->second;
+			files_iterator file = dir->m_files.find(std::string_view(path.string()).substr(pos));
+			return (file == dir->m_files.end()) ? nullptr : file->second;
 		}
 		
-		dirs_iterator entry = dir->dirs.find(std::string_view(path.string()).substr(pos, end - pos));
-		if(entry == dir->dirs.end()) {
+		dirs_iterator entry = dir->m_dirs.find(std::string_view(path.string()).substr(pos, end - pos));
+		if(entry == dir->m_dirs.end()) {
 			return nullptr;
 		}
 		dir = &entry->second;
@@ -137,7 +137,7 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 
 void PakDirectory::addFile(std::string && name, PakFile * file) {
 	
-	auto result = files.emplace(std::move(name), file);
+	auto result = m_files.emplace(std::move(name), file);
 	
 	if(!result.second) {
 		result.first->second->_alternative = result.first->second;
@@ -148,26 +148,28 @@ void PakDirectory::addFile(std::string && name, PakFile * file) {
 
 void PakDirectory::removeFile(std::string_view name) {
 	
-	auto old = files.find(name);
+	auto old = m_files.find(name);
 	
-	if(old != files.end()) {
+	if(old != m_files.end()) {
 		delete old->second;
-		files.erase(old);
+		m_files.erase(old);
 	}
+	
 }
 
 bool PakDirectory::removeDirectory(std::string_view name) {
 	
-	auto old = dirs.find(name);
+	auto old = m_dirs.find(name);
 	
-	if(old == dirs.end()) {
+	if(old == m_dirs.end()) {
 		return true;
 	}
 	
 	if(old->second.empty()) {
-		dirs.erase(old);
+		m_dirs.erase(old);
 		return true;
 	} else {
 		return false;
 	}
+	
 }
