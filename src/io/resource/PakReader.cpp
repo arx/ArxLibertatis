@@ -564,14 +564,14 @@ bool PakReader::addArchive(const fs::path & pakfile, const PakFilter * filter) {
 			}
 			
 			const u32 PAK_FILE_COMPRESSED = 1;
-			PakFile * file;
+			std::unique_ptr<PakFile> file;
 			if((flags & PAK_FILE_COMPRESSED) && size != 0) {
-				file = new CompressedFile(ifs, offset, uncompressedSize, size);
+				file = std::make_unique<CompressedFile>(ifs, offset, uncompressedSize, size);
 			} else {
-				file = new UncompressedFile(ifs, offset, size);
+				file = std::make_unique<UncompressedFile>(ifs, offset, size);
 			}
 			
-			dir->addFile(util::toLowercase(filename), file);
+			dir->addFile(util::toLowercase(filename), std::move(file));
 		}
 		
 	}
@@ -665,7 +665,7 @@ bool PakReader::addFile(PakDirectory * dir, fs::path path, std::string name) {
 		return false;
 	}
 	
-	dir->addFile(std::move(name), new PlainFile(std::move(path)));
+	dir->addFile(std::move(name), std::make_unique<PlainFile>(std::move(path)));
 	return true;
 }
 

@@ -27,17 +27,6 @@
 #include "io/resource/ResourcePath.h"
 #include "platform/Platform.h"
 
-PakFile::~PakFile() {
-	delete _alternative;
-}
-
-PakDirectory::~PakDirectory() {
-	
-	for(files_iterator file = files_begin(); file != files_end(); ++file) {
-		delete file->second;
-	}
-}
-
 PakDirectory * PakDirectory::addDirectory(const res::path & path) {
 	
 	if(path.empty()) {
@@ -121,7 +110,7 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 		
 		if(end == std::string::npos) {
 			files_iterator file = dir->m_files.find(std::string_view(path.string()).substr(pos));
-			return (file == dir->m_files.end()) ? nullptr : file->second;
+			return (file == dir->m_files.end()) ? nullptr : file->second.get();
 		}
 		
 		dirs_iterator entry = dir->m_dirs.find(std::string_view(path.string()).substr(pos, end - pos));
@@ -135,24 +124,20 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 	
 }
 
-void PakDirectory::addFile(std::string && name, PakFile * file) {
+void PakDirectory::addFile(std::string && name, std::unique_ptr<PakFile> file) {
 	
-	auto result = m_files.emplace(std::move(name), file);
-	
+	auto result = m_files.emplace(std::move(name), std::unique_ptr<PakFile>());
 	if(!result.second) {
-		result.first->second->_alternative = result.first->second;
-		result.first->second = file;
+		file->m_alternative = std::move(result.first->second);
 	}
+	result.first->second = std::move(file);
 	
 }
 
 void PakDirectory::removeFile(std::string_view name) {
 	
-	auto old = m_files.find(name);
-	
-	if(old != m_files.end()) {
-		delete old->second;
-		m_files.erase(old);
+	if(auto it = m_files.find(name); it != m_files.end()) {
+		m_files.erase(it);
 	}
 	
 }

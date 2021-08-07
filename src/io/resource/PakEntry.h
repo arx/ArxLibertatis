@@ -33,25 +33,20 @@ class PakFileHandle;
 
 class PakFile {
 	
-private:
-	
-	PakFile * _alternative;
-	
-protected:
-	
-	explicit PakFile() : _alternative(nullptr) { }
-	
-	virtual ~PakFile();
+	std::unique_ptr<PakFile> m_alternative;
 	
 	friend class PakReader;
 	friend class PakDirectory;
 	
 public:
 	
+	PakFile() = default;
+	virtual ~PakFile() = default;
+	
 	PakFile(const PakFile &) = delete;
 	PakFile & operator=(const PakFile &) = delete;
 	
-	PakFile * alternative() const { return _alternative; }
+	PakFile * alternative() const { return m_alternative.get(); }
 	
 	[[nodiscard]] virtual std::string read() const = 0;
 	
@@ -81,15 +76,13 @@ class PakDirectory {
 		
 	};
 	
-private:
-	
 	// TODO hash maps might be a better fit
-	std::map<std::string, PakFile *, std::less<>> m_files;
+	std::map<std::string, std::unique_ptr<PakFile>, std::less<>> m_files;
 	std::map<std::string, PakDirectory, std::less<>> m_dirs;
 	
 	PakDirectory * addDirectory(const res::path & path);
 	
-	void addFile(std::string && name, PakFile * file);
+	void addFile(std::string && name, std::unique_ptr<PakFile> file);
 	void removeFile(std::string_view name);
 	bool removeDirectory(std::string_view name);
 	
@@ -99,10 +92,14 @@ private:
 	
 public:
 	
-	~PakDirectory();
+	PakDirectory() = default;
+	~PakDirectory() = default;
+	
+	PakDirectory(const PakDirectory &) = delete;
+	PakDirectory & operator=(const PakDirectory &) = delete;
 	
 	typedef std::map<std::string, PakDirectory, std::less<>>::iterator dirs_iterator;
-	typedef std::map<std::string, PakFile *, std::less<>>::const_iterator files_iterator;
+	typedef std::map<std::string, std::unique_ptr<PakFile>, std::less<>>::const_iterator files_iterator;
 	
 	PakDirectory * getDirectory(const res::path & path);
 	
@@ -121,7 +118,7 @@ public:
 	auto files() {
 		return util::transform(m_files, [](auto & base) {
 			arx_assert(base.second);
-			return Entry<PakFile>{ base.first, *base.second };
+			return Entry<PakFile>{ base.first, *base.second.get() };
 		});
 	}
 	
