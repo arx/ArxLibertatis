@@ -1608,55 +1608,55 @@ void ArxGame::manageKeyMouse() {
 
 void ArxGame::manageEntityDescription() {
 	
-	if(   !BLOCK_PLAYER_CONTROLS
-	   && !(player.Interface & INTER_COMBATMODE)
-	   && !g_draggedEntity
-	   && (config.input.autoDescription || (eeMouseUp1() && !eeMouseDoubleClick1() && !(LastMouseClick & 4)))
-	   && FlyingOverIO
-	   && !FlyingOverIO->locname.empty()
-	) {
-		Entity * temp = FlyingOverIO;
-		
-		ARX_INVENTORY_IdentifyIO(temp);
-		
-		if(temp->obj && temp->obj->pbox && temp->obj->pbox->active == 1) {
-			return;
-		}
-		
-		std::stringstream ss;
-		
-		if(temp->ioflags & IO_GOLD) {
-			ss << temp->_itemdata->price << " ";
-		}
-		
-		ss << getLocalised(temp->locname);
-		
-		if(temp->poisonous > 0 && temp->poisonous_count != 0) {
-			ss << " (" << getLocalised("description_poisoned") << " " << temp->poisonous << ")";
-		}
-		
-		if((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
-			ss << " " << getLocalised("description_durability") << " "
-			   << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
-		}
-		
-		Rect::Num x = checked_range_cast<Rect::Num>(120 * g_sizeRatio.x);
-		Rect::Num y = checked_range_cast<Rect::Num>(14 * g_sizeRatio.y);
-		Rect::Num w = checked_range_cast<Rect::Num>((120 + 500) * g_sizeRatio.x);
-		Rect::Num h = checked_range_cast<Rect::Num>((14 + 200) * g_sizeRatio.y);
-		Rect rDraw(x, y, w, h);
-		
-		pTextManage->Clear();
-		std::string description = ss.str();
-		
-		PlatformDuration duration = 0; // just for this frame
-		if(!config.input.autoDescription) {
-			duration = 2s + description.length() * 60ms;
-		}
-		
-		pTextManage->AddText(hFontInGame, std::move(description), rDraw, Color(232, 204, 143), duration);
-		
+	if(BLOCK_PLAYER_CONTROLS || (player.Interface & INTER_COMBATMODE) || g_draggedEntity
+	   || !FlyingOverIO || FlyingOverIO->locname.empty()) {
+		return;
 	}
+	
+	if(!config.input.autoDescription && (!eeMouseUp1() || eeMouseDoubleClick1() || (LastMouseClick & 4))) {
+		return;
+	}
+	
+	Entity * temp = FlyingOverIO;
+	
+	ARX_INVENTORY_IdentifyIO(temp);
+	
+	if(temp->obj && temp->obj->pbox && temp->obj->pbox->active == 1) {
+		return;
+	}
+	
+	std::stringstream ss;
+	
+	if(temp->ioflags & IO_GOLD) {
+		ss << temp->_itemdata->price << " ";
+	}
+	
+	ss << getLocalised(temp->locname);
+	
+	if(temp->poisonous > 0 && temp->poisonous_count != 0) {
+		ss << " (" << getLocalised("description_poisoned") << " " << temp->poisonous << ")";
+	}
+	
+	if((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
+		ss << " " << getLocalised("description_durability") << " "
+		   << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
+	}
+	
+	Rect::Num x = checked_range_cast<Rect::Num>(120 * g_sizeRatio.x);
+	Rect::Num y = checked_range_cast<Rect::Num>(14 * g_sizeRatio.y);
+	Rect::Num w = checked_range_cast<Rect::Num>((120 + 500) * g_sizeRatio.x);
+	Rect::Num h = checked_range_cast<Rect::Num>((14 + 200) * g_sizeRatio.y);
+	Rect rDraw(x, y, w, h);
+	
+	pTextManage->Clear();
+	std::string description = ss.str();
+	
+	PlatformDuration duration = 0; // just for this frame
+	if(!config.input.autoDescription) {
+		duration = 2s + description.length() * 60ms;
+	}
+	
+	pTextManage->AddText(hFontInGame, std::move(description), rDraw, Color(232, 204, 143), duration);
 	
 }
 
