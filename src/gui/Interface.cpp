@@ -1619,7 +1619,7 @@ void ArxGame::manageEntityDescription() {
 		
 		ARX_INVENTORY_IdentifyIO(temp);
 		
-		if(!temp->obj || !temp->obj->pbox || temp->obj->pbox->active != 1) {
+		if(temp->obj && temp->obj->pbox && temp->obj->pbox->active == 1) {
 			return;
 		}
 		
