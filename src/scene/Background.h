@@ -240,10 +240,11 @@ public:
 	
 	void computeIntersectingPolygons();
 	
+	size_t countVertices();
+	
 };
 
 void InitBkg(BackgroundData * eb);
-long CountBkgVertex();
 
 extern BackgroundData * g_tiles;
 

@@ -100,11 +100,11 @@ void BackgroundData::computeIntersectingPolygons() {
 	
 }
 
-long CountBkgVertex() {
+size_t BackgroundData::countVertices() {
 	
-	long count = 0;
+	size_t count = 0;
 	
-	for(auto tile : g_tiles->tiles()) {
+	for(auto tile : tiles()) {
 		for(const EERIEPOLY & ep : tile.polygons()) {
 			count += (ep.type & POLY_QUAD) ? 4 : 3;
 		}

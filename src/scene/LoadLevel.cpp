@@ -560,7 +560,7 @@ void RestoreLastLoadedLightning(BackgroundData & eb) {
 		return;
 	}
 	
-	if(g_levelLighting.size() != size_t(CountBkgVertex())) {
+	if(g_levelLighting.size() != eb.countVertices()) {
 		g_levelLighting.clear();
 		return;
 	}
