@@ -368,18 +368,18 @@ EERIEPOLY * GetMaxPoly(const Vec3f & pos) {
 
 EERIEPOLY * EEIsUnderWater(const Vec3f & pos) {
 	
-	BackgroundTileData * feg = getFastBackgroundData(pos.x, pos.z);
-	if(!feg) {
+	auto tile = ACTIVEBKG->getTile(pos);
+	if(!tile) {
 		return nullptr;
 	}
 	
 	EERIEPOLY * found = nullptr;
 	
-	for(EERIEPOLY * ep : feg->polyin) {
-		if(ep->type & POLY_WATER) {
-			if(ep->max.y < pos.y && PointIn2DPolyXZ(ep, pos.x, pos.z)) {
-				if(!found || ep->max.y < found->max.y) {
-					found = ep;
+	for(EERIEPOLY & polygon : tile.intersectingPolygons()) {
+		if(polygon.type & POLY_WATER) {
+			if(polygon.max.y < pos.y && PointIn2DPolyXZ(&polygon, pos.x, pos.z)) {
+				if(!found || polygon.max.y < found->max.y) {
+					found = &polygon;
 				}
 			}
 		}
