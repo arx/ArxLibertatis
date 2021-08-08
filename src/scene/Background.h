@@ -62,6 +62,11 @@ private:
 		
 		T * m_base;
 		
+		[[nodiscard]] auto & data() const noexcept {
+			arx_assume(valid());
+			return m_base->m_tileData[x][y];
+		}
+		
 	public:
 		
 		Tile(T * base, Vec2s tile) : Vec2s(tile), m_base(base) { }
@@ -86,11 +91,6 @@ private:
 			m_base->m_activeTiles.set(size_t(x) * size_t(MAX_BKGZ) + size_t(y));
 		}
 		
-		[[nodiscard]] auto & data() const noexcept {
-			arx_assume(valid());
-			return m_base->m_tileData[x][y];
-		}
-		
 		[[nodiscard]] auto & polygons() const noexcept {
 			return data().polydata;
 		}
@@ -102,6 +102,8 @@ private:
 		[[nodiscard]] auto & maxY() const noexcept {
 			return data().maxy;
 		}
+		
+		friend struct BackgroundData;
 		
 	};
 	
