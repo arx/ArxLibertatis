@@ -41,12 +41,15 @@ struct BackgroundTileData {
 	
 };
 
-static const short MAX_BKGX = 160;
-static const short MAX_BKGZ = 160;
+constexpr short MAX_BKGX = 160;
+constexpr short MAX_BKGZ = 160;
 
-static const Vec2f g_backgroundTileSize = Vec2f(100, 100);
+constexpr Vec2f g_backgroundTileSize = Vec2f(100, 100);
 
 struct BackgroundData {
+	
+	static constexpr Vec2s m_size = Vec2s(MAX_BKGX, MAX_BKGZ);
+	static constexpr Vec2f m_mul = 1.f / g_backgroundTileSize;
 	
 private:
 	
@@ -105,8 +108,6 @@ private:
 public:
 	
 	long exist;
-	Vec2s m_size;
-	Vec2f m_mul;
 	std::vector<ANCHOR_DATA> m_anchors;
 	
 	[[nodiscard]] auto get(Vec2s tile) {
@@ -233,8 +234,6 @@ public:
 	
 	BackgroundData()
 		: exist(false)
-		, m_size(0, 0)
-		, m_mul(0, 0)
 	{ }
 	
 };

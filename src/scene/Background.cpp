@@ -35,11 +35,6 @@ void InitBkg(BackgroundData * eb) {
 	
 	eb->exist = 1;
 	eb->m_anchors.clear();
-	eb->m_size.x = MAX_BKGX;
-	eb->m_size.y = MAX_BKGZ;
-	
-	eb->m_mul.x = 1.f / g_backgroundTileSize.x;
-	eb->m_mul.y = 1.f / g_backgroundTileSize.y;
 	
 	for(auto tile : eb->tiles()) {
 		tile.data() = BackgroundTileData();
