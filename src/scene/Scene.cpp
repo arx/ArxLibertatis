@@ -1004,7 +1004,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 			for(auto neighbour : g_tiles->tilesAround(tile, 1)) {
 				if(!neighbour.active()) {
 					neighbour.setActive();
-					ComputeTileLights(neighbour.x, neighbour.y);
+					ComputeTileLights(neighbour);
 				}
 			}
 		}

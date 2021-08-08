@@ -29,6 +29,8 @@
 #include "platform/Platform.h"
 #include "util/Range.h"
 
+struct EERIE_LIGHT;
+
 struct BackgroundTileData {
 	
 	std::vector<EERIEPOLY> polydata;
@@ -55,6 +57,7 @@ private:
 	
 	std::bitset<MAX_BKGX * MAX_BKGZ> m_activeTiles;
 	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
+	std::vector<EERIE_LIGHT *> m_tileLights[MAX_BKGX][MAX_BKGZ];
 	
 	//! Tile data accessor
 	template <typename T>
@@ -101,6 +104,11 @@ private:
 		
 		[[nodiscard]] auto & maxY() const noexcept {
 			return data().maxy;
+		}
+		
+		[[nodiscard]] auto & lights() const noexcept {
+			arx_assume(valid());
+			return m_base->m_tileLights[x][y];
 		}
 		
 		friend struct BackgroundData;

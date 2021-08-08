@@ -469,43 +469,29 @@ void UpdateLlights(ShaderLight lights[], size_t & lightsCount, const Vec3f pos, 
 	}
 }
 
-struct TILE_LIGHTS
-{
-	std::vector<EERIE_LIGHT *> el;
-};
-
-static TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
-
-void InitTileLights()
-{
-	for(long z = 0; z < MAX_BKGZ; z++)
-	for(long x = 0; x < MAX_BKGX; x++) {
-		tilelights[x][z].el.clear();
-	}
-}
-
-void ComputeTileLights(short x, short z) {
+void ComputeTileLights(Vec2s index) {
 	
-	tilelights[x][z].el.clear();
+	auto tile = g_tiles->get(index);
 	
-	Vec2f tileCenter = (Vec2f(x, z) + 0.5f) * g_backgroundTileSize;
+	tile.lights().clear();
+	
+	Vec2f tileCenter = (Vec2f(index) + 0.5f) * g_backgroundTileSize;
 	
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		EERIE_LIGHT * light = g_culledDynamicLights[i];
-		
 		if(closerThan(tileCenter, Vec2f(light->pos.x, light->pos.z), light->fallend + 60.f)) {
-
-			tilelights[x][z].el.push_back(light);
+			tile.lights().push_back(light);
 		}
 	}
+	
 }
 
 void ClearTileLights() {
 	
-	for(long z = 0; z < MAX_BKGZ; z++)
-	for(long x = 0; x < MAX_BKGX; x++) {
-		tilelights[x][z].el.clear();
+	for(auto tile : g_tiles->tiles()) {
+		tile.lights().clear();
 	}
+	
 }
 
 float GetColorz(const Vec3f & pos) {
@@ -552,7 +538,7 @@ float GetColorz(const Vec3f & pos) {
 		
 		if(auto tile = g_tiles->getTile(ep->center)) {
 			if(!tile.active()) {
-				ComputeTileLights(tile.x, tile.y);
+				ComputeTileLights(tile);
 			}
 			ApplyTileLights(ep, tile);
 		}
@@ -624,20 +610,20 @@ ColorRGBA ApplyLight(ShaderLight lights[], size_t lightsCount, const Vec3f & pos
 	return Color(ir, ig, ib).toRGBA();
 }
 
-void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
-{
-
+void ApplyTileLights(EERIEPOLY * ep, Vec2s index) {
+	
 	Color3f lightInfraFactor = Color3f::white;
 	if(player.m_improve) {
 		lightInfraFactor.r = 4.f;
 	}
-
-	TILE_LIGHTS * tls = &tilelights[pos.x][pos.y];
+	
+	const std::vector<EERIE_LIGHT *> & lights = g_tiles->get(index).lights();
+	
 	size_t nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
+	
 	for(size_t j = 0; j < nbvert; j++) {
 
-		if(tls->el.empty()) {
+		if(lights.empty()) {
 			ep->color[j] = ep->v[j].color;
 			continue;
 		}
@@ -651,8 +637,8 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 		Vec3f & position = ep->v[j].p;
 		Vec3f & normal = ep->nrml[j];
 
-		for(size_t i = 0; i < tls->el.size(); i++) {
-			EERIE_LIGHT * light = tls->el[i];
+		for(size_t i = 0; i < lights.size(); i++) {
+			EERIE_LIGHT * light = lights[i];
 
 			Vec3f vLight = glm::normalize(light->pos - position);
 

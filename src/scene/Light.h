@@ -212,8 +212,7 @@ static const size_t llightsSize = 16;
 void setMaxLLights(size_t count);
 void UpdateLlights(ShaderLight lights[], size_t & lightsCount, Vec3f pos, bool forPlayerColor);
 
-void InitTileLights();
-void ComputeTileLights(short x, short z);
+void ComputeTileLights(Vec2s index);
 void ClearTileLights();
 
 float GetColorz(const Vec3f & pos);
@@ -221,7 +220,7 @@ float GetColorz(const Vec3f & pos);
 ColorRGBA ApplyLight(ShaderLight lights[], size_t lightsCount, const Vec3f & position, const Vec3f & normal,
                      const ColorMod & colorMod, float materialDiffuse = 1.f);
 
-void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos);
+void ApplyTileLights(EERIEPOLY * ep, Vec2s index);
 
 void TreatBackgroundDynlights();
 

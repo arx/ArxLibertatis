@@ -771,7 +771,7 @@ bool ArxGame::initGame()
 	player.m_torchColor = Color3f(1.f, 0.8f, 0.66666f);
 	LogDebug("InitializeDanae");
 	
-	InitTileLights();
+	g_tiles = new BackgroundData();
 	
 	ARX_MISSILES_ClearAll();
 	spells.init();
@@ -783,7 +783,6 @@ bool ArxGame::initGame()
 	
 	LastLoadedScene.clear();
 	
-	g_tiles = new BackgroundData();
 	EERIE_PORTAL_Release();
 	FreeRoomDistance();
 	
