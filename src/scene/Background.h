@@ -25,6 +25,7 @@
 
 #include "ai/Anchors.h"
 #include "graphics/GraphicsTypes.h"
+#include "math/Rectangle.h"
 #include "math/Types.h"
 #include "platform/Platform.h"
 #include "util/Range.h"
@@ -76,6 +77,16 @@ private:
 		
 		[[nodiscard]] Vec2s index() const noexcept {
 			return *this;
+		}
+		
+		[[nodiscard]] Rectf bounds() const noexcept {
+			Vec2f min = Vec2f(index()) * g_backgroundTileSize;
+			Vec2f max = min + g_backgroundTileSize;
+			return { min, max };
+		}
+		
+		[[nodiscard]] Vec2f center() const noexcept {
+			return bounds().center();
 		}
 		
 		[[nodiscard]] bool valid() const noexcept {

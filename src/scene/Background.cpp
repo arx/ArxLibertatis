@@ -47,10 +47,12 @@ void BackgroundData::computeIntersectingPolygons() {
 		std::vector<EERIEPOLY *> & polygons = tile.data().polyin;
 		polygons.clear();
 		
-		Vec2f bbmin = Vec2f(tile.x * g_backgroundTileSize.x - 10, tile.y * g_backgroundTileSize.y - 10);
-		Vec2f bbmax = Vec2f(bbmin.x + g_backgroundTileSize.x + 20, bbmin.y + g_backgroundTileSize.y + 20);
-		Rectf bb = Rectf(bbmin, bbmax);
-		Vec2f bbcenter = bb.center();
+		Rectf bb = tile.bounds();
+		bb.left -= 10.f;
+		bb.top -= 10.f;
+		bb.right += 10.f;
+		bb.bottom += 10.f;
+		Vec2f bbcenter = tile.center();
 		
 		for(auto neighbour : tilesAround(tile, 2)) {
 			for(EERIEPOLY & ep2 : neighbour.polygons()) {
