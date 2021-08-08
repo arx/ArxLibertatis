@@ -67,7 +67,7 @@ private:
 		T * m_base;
 		
 		[[nodiscard]] auto & data() const noexcept {
-			arx_assume(valid());
+			arx_assume(x >= 0 && x < m_size.x && y >= 0 && y < m_size.y);
 			return m_base->m_tileData[x][y];
 		}
 		
@@ -97,11 +97,11 @@ private:
 		}
 		
 		[[nodiscard]] bool active() const noexcept {
-			arx_assume(valid());
+			arx_assume(x >= 0 && x < m_size.x && y >= 0 && y < m_size.y);
 			return m_base->m_activeTiles.test(size_t(x) * size_t(MAX_BKGZ) + size_t(y));
 		}
 		void setActive() noexcept {
-			arx_assume(valid());
+			arx_assume(x >= 0 && x < m_size.x && y >= 0 && y < m_size.y);
 			m_base->m_activeTiles.set(size_t(x) * size_t(MAX_BKGZ) + size_t(y));
 		}
 		
@@ -118,7 +118,7 @@ private:
 		}
 		
 		[[nodiscard]] auto & lights() const noexcept {
-			arx_assume(valid());
+			arx_assume(x >= 0 && x < m_size.x && y >= 0 && y < m_size.y);
 			return m_base->m_tileLights[x][y];
 		}
 		
@@ -145,7 +145,6 @@ public:
 	}
 	
 	[[nodiscard]] bool isTileValid(Vec2s tile) const noexcept {
-		arx_assume(m_size.x <= MAX_BKGX && m_size.y <= MAX_BKGZ);
 		return tile.x >= 0 && tile.x < m_size.x && tile.y >= 0 && tile.y < m_size.y;
 	}
 	
@@ -193,7 +192,7 @@ private:
 	template <template <typename T> typename Iterator = util::GridXYIterator>
 	[[nodiscard]] auto tilesForIndices(util::GridRange<Vec2s, Iterator> range) noexcept {
 		return util::transform(std::move(range), [this](Vec2s index) {
-			arx_assume(isTileValid(index));
+			arx_assume(index.x >= 0 && index.x < m_size.x && index.y >= 0 && index.y < m_size.y);
 			return get(index);
 		});
 	}
@@ -201,7 +200,7 @@ private:
 	template <template <typename T> typename Iterator = util::GridXYIterator>
 	[[nodiscard]] auto tilesForIndices(util::GridRange<Vec2s, Iterator> range) const noexcept {
 		return util::transform(std::move(range), [this](Vec2s index) {
-			arx_assume(isTileValid(index));
+			arx_assume(index.x >= 0 && index.x < m_size.x && index.y >= 0 && index.y < m_size.y);
 			return get(index);
 		});
 	}
