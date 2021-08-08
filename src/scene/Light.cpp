@@ -477,7 +477,7 @@ void ComputeTileLights(Vec2s index) {
 	
 	tile.lights().clear();
 	
-	Vec2f tileCenter = (Vec2f(index) + 0.5f) * g_backgroundTileSize;
+	Vec2f tileCenter = tile.center();
 	
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		EERIE_LIGHT * light = g_culledDynamicLights[i];
