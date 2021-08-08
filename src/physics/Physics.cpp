@@ -576,18 +576,18 @@ static void ARX_TEMPORARY_TrySound(Entity & source, Material collisionMaterial, 
 
 bool EERIE_PHYSICS_BOX_IsValidPosition(const Vec3f & pos) {
 	
-	BackgroundTileData * tile = getFastBackgroundData(pos.x, pos.z);
+	auto tile = ACTIVEBKG->getTile(pos);
 	if(!tile) {
 		// Position is outside the world grid
 		return false;
 	}
 	
-	if(tile->polyin.empty()) {
+	if(tile.intersectingPolygons().empty()) {
 		// Position is in an empty tile
 		return false;
 	}
 	
-	if(pos.y > tile->maxy) {
+	if(pos.y > tile.maxY()) {
 		// Position is below the lowest part of the tile
 		return false;
 	}
