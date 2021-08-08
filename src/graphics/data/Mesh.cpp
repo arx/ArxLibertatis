@@ -290,13 +290,13 @@ EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
 
 bool IsAnyPolyThere(float x, float z) {
 	
-	BackgroundTileData * feg = getFastBackgroundData(x, z);
-	if(!feg) {
+	auto tile = ACTIVEBKG->getTile(Vec3f(x, 0.f, z));
+	if(!tile) {
 		return false;
 	}
 	
-	for(EERIEPOLY * ep : feg->polyin) {
-		if(PointIn2DPolyXZ(ep, x, z)) {
+	for(const EERIEPOLY & polygon : tile.intersectingPolygons()) {
+		if(PointIn2DPolyXZ(&polygon, x, z)) {
 			return true;
 		}
 	}
