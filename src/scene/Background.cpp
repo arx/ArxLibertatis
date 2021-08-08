@@ -30,18 +30,11 @@ void InitBkg(BackgroundData * eb) {
 	
 	arx_assert(eb);
 	
-	if(eb->exist) {
-		EERIE_PORTAL_Release();
-		eb->clear();
-		FreeRoomDistance();
-	}
+	EERIE_PORTAL_Release();
+	eb->clear();
+	FreeRoomDistance();
 	
-	eb->exist = 1;
 	eb->m_anchors.clear();
-	
-	for(auto tile : eb->tiles()) {
-		tile.data() = BackgroundTileData();
-	}
 	
 }
 

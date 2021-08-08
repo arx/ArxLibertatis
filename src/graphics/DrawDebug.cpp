@@ -615,7 +615,7 @@ static void drawDebugMaterialTexture(Vec2f & textpos, std::string_view type, con
 
 static void drawDebugMaterials() {
 	
-	if(!g_tiles || !g_tiles->exist) {
+	if(!g_tiles) {
 		return;
 	}
 	

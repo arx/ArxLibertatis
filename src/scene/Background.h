@@ -107,7 +107,6 @@ private:
 	
 public:
 	
-	long exist;
 	std::vector<ANCHOR_DATA> m_anchors;
 	
 	[[nodiscard]] auto get(Vec2s tile) {
@@ -231,10 +230,6 @@ public:
 	[[nodiscard]] auto tilesAround(Vec3f pos, float extend) const noexcept {
 		return tilesForIndices(indicesAround<Iterator>(pos, extend));
 	}
-	
-	BackgroundData()
-		: exist(false)
-	{ }
 	
 	void clear();
 	
