@@ -59,12 +59,7 @@ void ClearBackground(BackgroundData * eb) {
 	}
 	
 	FreeRoomDistance();
-}
-
-static void EERIEPOLY_Add_PolyIn(BackgroundTileData * eg, EERIEPOLY * ep) {
-	if(std::find(eg->polyin.begin(), eg->polyin.end(), ep) == eg->polyin.end()) {
-		eg->polyin.push_back(ep);
-	}
+	
 }
 
 static bool PointInBBox(const Vec3f & point, const Rectf & bb) {
@@ -73,58 +68,43 @@ static bool PointInBBox(const Vec3f & point, const Rectf & bb) {
 
 void EERIEPOLY_Compute_PolyIn() {
 	
-	for(long z = 0; z < ACTIVEBKG->m_size.y; z++)
-	for(long x = 0; x < ACTIVEBKG->m_size.x; x++) {
-		BackgroundTileData * eg = &ACTIVEBKG->m_tileData[x][z];
+	for(auto tile : ACTIVEBKG->tiles()) {
 		
-		eg->polyin.clear();
+		std::vector<EERIEPOLY *> & polygons = tile.data().polyin;
+		polygons.clear();
 		
-		long minx = std::max(x - 2, 0l);
-		long minz = std::max(z - 2, 0l);
-		long maxx = std::min(x + 2, ACTIVEBKG->m_size.x - 1l);
-		long maxz = std::min(z + 2, ACTIVEBKG->m_size.y - 1l);
-		
-		Vec2f bbmin = Vec2f(x * g_backgroundTileSize.x - 10, z * g_backgroundTileSize.y - 10);
+		Vec2f bbmin = Vec2f(tile.x * g_backgroundTileSize.x - 10, tile.y * g_backgroundTileSize.y - 10);
 		Vec2f bbmax = Vec2f(bbmin.x + g_backgroundTileSize.x + 20, bbmin.y + g_backgroundTileSize.y + 20);
-		
 		Rectf bb = Rectf(bbmin, bbmax);
-		
 		Vec2f bbcenter = bb.center();
 		
-		for(long z2 = minz; z2 < maxz; z2++)
-		for(long x2 = minx; x2 < maxx; x2++) {
-			BackgroundTileData & eg2 = ACTIVEBKG->m_tileData[x2][z2];
-			for(EERIEPOLY & ep2 : eg2.polydata) {
+		for(auto neighbour : ACTIVEBKG->tilesAround(tile, 2)) {
+			for(EERIEPOLY & ep2 : neighbour.polygons()) {
 				
 				if(fartherThan(bbcenter, Vec2f(ep2.center.x, ep2.center.z), 120.f)) {
 					continue;
 				}
 				
+				bool insert = PointInBBox(ep2.center, bb);
 				long nbvert = (ep2.type & POLY_QUAD) ? 4 : 3;
+				for(long k = 0; !insert && k < nbvert; k++) {
+					insert = PointInBBox(ep2.v[k].p, bb) || PointInBBox((ep2.v[k].p + ep2.center) * 0.5f, bb);
+				}
 				
-				if(PointInBBox(ep2.center, bb)) {
-					EERIEPOLY_Add_PolyIn(eg, &ep2);
-				} else {
-					for(long k = 0; k < nbvert; k++) {
-						if(PointInBBox(ep2.v[k].p, bb)) {
-							EERIEPOLY_Add_PolyIn(eg, &ep2);
-							break;
-						} else if(PointInBBox((ep2.v[k].p + ep2.center) * 0.5f, bb)) {
-							EERIEPOLY_Add_PolyIn(eg, &ep2);
-							break;
-						}
-					}
+				if(insert && std::find(polygons.begin(), polygons.end(), &ep2) == polygons.end()) {
+					polygons.push_back(&ep2);
 				}
 				
 			}
 		}
 		
-		eg->maxy = -std::numeric_limits<float>::infinity();
-		for(EERIEPOLY * ep : eg->polyin) {
-			eg->maxy = std::max(eg->maxy, ep->max.y);
+		tile.maxY() = -std::numeric_limits<float>::infinity();
+		for(EERIEPOLY * ep : polygons) {
+			tile.maxY() = std::max(tile.maxY(), ep->max.y);
 		}
 		
 	}
+	
 }
 
 long CountBkgVertex() {
