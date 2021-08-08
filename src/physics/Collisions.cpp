@@ -658,42 +658,31 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	
 	float anything = 999999.f;
 	
-	// TODO copy-paste background tiles
-	Vec2s tile = ACTIVEBKG->getTile(cyl.origin);
+	// TODO should this be tilesAround(cyl.origin, cyl.radius)
 	int radius = int((cyl.radius + g_backgroundTileSize.x) * ACTIVEBKG->m_mul.x);
-	
-	int minx = std::max(tile.x - radius, 0);
-	int maxx = std::min(tile.x + radius, ACTIVEBKG->m_size.x - 1);
-	int minz = std::max(tile.y - radius, 0);
-	int maxz = std::min(tile.y + radius, ACTIVEBKG->m_size.y - 1);
-	
-	for(int z = minz; z <= maxz; z++)
-	for(int x = minx; x <= maxx; x++) {
+	for(auto tile : ACTIVEBKG->tilesAround(ACTIVEBKG->getTile(cyl.origin), radius)) {
+		
 		float nearest = 99999999.f;
-
 		for(long num = 0; num < 4; num++) {
-
-			float nearx = static_cast<float>(x * g_backgroundTileSize.x);
-			float nearz = static_cast<float>(z * g_backgroundTileSize.y);
-
-			if(num == 1 || num == 2)
+			float nearx = float(tile.x) * g_backgroundTileSize.x;
+			float nearz = float(tile.y) * g_backgroundTileSize.y;
+			if(num == 1 || num == 2) {
 				nearx += g_backgroundTileSize.x;
-
-			if(num == 2 || num == 3)
+			}
+			if(num == 2 || num == 3) {
 				nearz += g_backgroundTileSize.y;
-
+			}
 			float dd = fdist(Vec2f(nearx, nearz), Vec2f(cyl.origin.x, cyl.origin.z));
-
 			if(dd < nearest) {
 				nearest = dd;
 			}
 		}
-
-		if(nearest > std::max(82.f, cyl.radius))
-			continue;
 		
-		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
-		for(const EERIEPOLY & ep : feg.polydata) {
+		if(nearest > std::max(82.f, cyl.radius)) {
+			continue;
+		}
+		
+		for(const EERIEPOLY & ep : tile.polygons()) {
 			
 			if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 				continue;
@@ -707,6 +696,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 			}
 			
 		}
+		
 	}
 	
 	float tempo;
