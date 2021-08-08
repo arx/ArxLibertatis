@@ -26,18 +26,6 @@
 
 BackgroundData * g_tiles = nullptr;
 
-void InitBkg(BackgroundData * eb) {
-	
-	arx_assert(eb);
-	
-	EERIE_PORTAL_Release();
-	eb->clear();
-	FreeRoomDistance();
-	
-	eb->m_anchors.clear();
-	
-}
-
 void BackgroundData::clear() {
 	
 	AnchorData_ClearAll(this);

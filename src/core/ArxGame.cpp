@@ -784,7 +784,8 @@ bool ArxGame::initGame()
 	LastLoadedScene.clear();
 	
 	g_tiles = new BackgroundData();
-	InitBkg(g_tiles);
+	EERIE_PORTAL_Release();
+	FreeRoomDistance();
 	
 	player.size = Vec3f(player.baseRadius(), -player.baseHeight(), player.baseRadius());
 	player.desiredangle = player.angle = Anglef(3.f, 268.f, 0.f);

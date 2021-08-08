@@ -241,8 +241,6 @@ public:
 	
 };
 
-void InitBkg(BackgroundData * eb);
-
 extern BackgroundData * g_tiles;
 
 #endif // ARX_SCENE_BACKGROUND_H

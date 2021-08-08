@@ -697,7 +697,10 @@ bool FastSceneLoad(const res::path & partial_path, Vec3f & trans) {
 		
 		// Skip .scn file list and initialize the scene data
 		(void)fts_read<UNIQUE_HEADER3>(data, end, uh->count);
-		InitBkg(g_tiles);
+		arx_assert(g_tiles);
+		EERIE_PORTAL_Release();
+		g_tiles->clear();
+		FreeRoomDistance();
 		progressBarAdvance();
 		LoadLevelScreen();
 		

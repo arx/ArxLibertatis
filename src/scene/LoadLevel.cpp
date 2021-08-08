@@ -525,10 +525,13 @@ void DanaeClearLevel() {
 	FAST_RELEASE = 1;
 	ARX_GAME_Reset();
 	FlyingOverIO = nullptr;
-
+	
 	EERIE_PATHFINDER_Release();
-
-	InitBkg(g_tiles);
+	
+	arx_assert(g_tiles);
+	EERIE_PORTAL_Release();
+	g_tiles->clear();
+	FreeRoomDistance();
 	
 	EERIE_LIGHT_GlobalInit();
 	ARX_FOGS_Clear();
