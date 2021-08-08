@@ -550,9 +550,8 @@ float GetColorz(const Vec3f & pos) {
 		long to = (ep->type & POLY_QUAD) ? 4 : 3;
 		float div = (1.0f / to);
 		
-		Vec2s tile = ACTIVEBKG->getTile(ep->center);
-		if(ACTIVEBKG->isTileValid(tile)) {
-			if(!ACTIVEBKG->isTileActive(tile)) {
+		if(auto tile = ACTIVEBKG->getTile(ep->center)) {
+			if(!tile.active()) {
 				ComputeTileLights(tile.x, tile.y);
 			}
 			ApplyTileLights(ep, tile);
