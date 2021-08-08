@@ -75,6 +75,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/SaveFormat.h"
 
+#include "util/Range.h"
+
 MiniMap g_miniMap; // TODO: remove this
 
 void MiniMap::getData(size_t showLevel) {
@@ -106,8 +108,8 @@ void MiniMap::getData(size_t showLevel) {
 			m_levels[showLevel].m_ratio.x = minX;
 			m_levels[showLevel].m_ratio.y = minY;
 			
-			for(size_t l = 0; l < MAX_MINIMAP_LEVELS; l++) {
-				m_levels[l].m_offset = Vec2f(0.f);
+			for(MiniMapData & level : m_levels) {
+				level.m_offset = Vec2f(0.f);
 			}
 			
 		}
@@ -186,11 +188,9 @@ void MiniMap::loadOffsets(PakReader * pakRes) {
 
 void MiniMap::reveal() {
 	
-	for(size_t l = 0; l < MAX_MINIMAP_LEVELS; l++) {
-		for(size_t z = 0; z < MINIMAP_MAX_Z; z++) {
-			for(size_t x = 0; x < MINIMAP_MAX_X; x++) {
-				m_levels[l].m_revealed[x][z] = 255;
-			}
+	for(MiniMapData & level : m_levels) {
+		for(Vec2i tile : util::grid(Vec2i(0), Vec2i(MINIMAP_MAX_X, MINIMAP_MAX_Z))) {
+			level.m_revealed[tile.x][tile.y] = 255;
 		}
 	}
 	
@@ -242,10 +242,11 @@ void MiniMap::reset() {
 
 void MiniMap::purgeTexContainer() {
 	
-	for(size_t i = 0; i < MAX_MINIMAP_LEVELS; i++) {
-		delete m_levels[i].m_texContainer;
-		m_levels[i].m_texContainer = nullptr;
+	for(MiniMapData & level : m_levels) {
+		delete level.m_texContainer;
+		level.m_texContainer = nullptr;
 	}
+	
 }
 
 void MiniMap::showPlayerMiniMap(size_t showLevel) {
@@ -445,10 +446,9 @@ void MiniMap::revealPlayerPos(size_t showLevel) {
 	startCell = glm::clamp(startCell, Vec2i(0), maxCell);
 	endCell = glm::clamp(endCell, Vec2i(0), maxCell);
 	
-	for(int z = startCell.y; z <= endCell.y; z++) {
-	for(int x = startCell.x; x <= endCell.x; x++) {
+	for(Vec2i tile : util::grid(startCell, endCell + Vec2i(1))) {
 		
-		Vec2f pos = start + Vec2f(x, z) * cas;
+		Vec2f pos = start + Vec2f(tile) * cas;
 		
 		float d = fdist(Vec2f(pos.x + cas.x * 0.5f, pos.y), playerPos);
 		if(d >= maxDistance) {
@@ -460,10 +460,11 @@ void MiniMap::revealPlayerPos(size_t showLevel) {
 		
 		int r = int(revealPercent * 255.f);
 		
-		int ucLevel = std::max(r, int(m_levels[showLevel].m_revealed[x][z]));
-		m_levels[showLevel].m_revealed[x][z] = checked_range_cast<unsigned char>(ucLevel);
+		int ucLevel = std::max(r, int(m_levels[showLevel].m_revealed[tile.x][tile.y]));
+		m_levels[showLevel].m_revealed[tile.x][tile.y] = checked_range_cast<unsigned char>(ucLevel);
+		
 	}
-	}
+	
 }
 
 Vec2f MiniMap::computePlayerPos(float zoom, size_t showLevel) {
@@ -515,15 +516,14 @@ void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, flo
 	}
 	UseRenderState state(desiredState);
 	UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
-
-	for(int z = -2; z < int(MINIMAP_MAX_Z) + 2; z++) {
-	for(int x = -2; x < int(MINIMAP_MAX_X) + 2; x++) {
+	
+	for(Vec2i tile : util::grid(Vec2i(-2), Vec2i(MINIMAP_MAX_X, MINIMAP_MAX_X) + Vec2i(2))) {
 		
-		Vec2f v3 = Vec2f(x, z) * g_backgroundTileSize * m_mod;
+		Vec2f v3 = Vec2f(tile) * g_backgroundTileSize * m_mod;
 		
 		Vec2f v4 = v3 * div * d;
 		
-		Vec2f pos = start + Vec2f(x, z) * cas;
+		Vec2f pos = start + Vec2f(tile) * cas;
 		
 		if((pos.x < boundaries.left)
 		   || (pos.x > boundaries.right)
@@ -561,11 +561,12 @@ void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, flo
 			if(vert == 2 || vert == 3)
 				jOffset = 1;
 			
-			if((x + iOffset < 0) || (x + iOffset >= int(MINIMAP_MAX_X)) || (z + jOffset < 0) || (z + jOffset >= int(MINIMAP_MAX_Z))) {
+			if(tile.x + iOffset < 0 || tile.x + iOffset >= int(MINIMAP_MAX_X)
+			   || tile.y + jOffset < 0 || tile.y + jOffset >= int(MINIMAP_MAX_Z)) {
 				v = 0;
 			} else {
-				int minx = std::min(x + iOffset, int(MINIMAP_MAX_X) - iOffset);
-				int minz = std::min(z + jOffset, int(MINIMAP_MAX_Z) - jOffset);
+				int minx = std::min(int(tile.x) + iOffset, int(MINIMAP_MAX_X) - iOffset);
+				int minz = std::min(int(tile.y) + jOffset, int(MINIMAP_MAX_Z) - jOffset);
 				v = float(m_levels[showLevel].m_revealed[minx][minz]) * (1.0f / 255);
 			}
 			
@@ -613,14 +614,13 @@ void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, flo
 			m_mapVertices.push_back(verts[0]);
 			m_mapVertices.push_back(verts[1]);
 			m_mapVertices.push_back(verts[2]);
-			
 			m_mapVertices.push_back(verts[0]);
 			m_mapVertices.push_back(verts[2]);
 			m_mapVertices.push_back(verts[3]);
 		}
+		
 	}
-	}
-
+	
 	if(!m_mapVertices.empty()) {
 		EERIEDRAWPRIM(Renderer::TriangleList, m_mapVertices.data(), m_mapVertices.size());
 	}
