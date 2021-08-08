@@ -105,19 +105,8 @@ void PolyBoomClear() {
 
 void PolyBoomAddScorch(const Vec3f & poss) {
 	
-	// TODO copy-paste background tiles
-	Vec2s tile = ACTIVEBKG->getTile(poss);
-	int radius = 3;
-	
-	int minx = std::max(tile.x - radius, 0);
-	int maxx = std::min(tile.x + radius, ACTIVEBKG->m_size.x - 1);
-	int minz = std::max(tile.y - radius, 0);
-	int maxz = std::min(tile.y + radius, ACTIVEBKG->m_size.y - 1);
-	
-	for(int z = minz; z <= maxz; z++)
-	for(int x = minx; x <= maxx; x++) {
-		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
-		for(EERIEPOLY & ep : eg.polydata) {
+	for(auto tile : ACTIVEBKG->tilesAround(ACTIVEBKG->getTile(poss), 3))  {
+		for(EERIEPOLY & ep : tile.polygons()) {
 			
 			if((ep.type & POLY_TRANS) && !(ep.type & POLY_WATER)) {
 				continue;
@@ -160,8 +149,10 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			pb.nbvert = short(nbvert);
 			
 			polyboom.push_back(pb);
+			
 		}
 	}
+	
 }
 
 void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
