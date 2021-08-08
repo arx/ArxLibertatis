@@ -51,6 +51,7 @@ struct BackgroundData {
 private:
 	
 	std::bitset<MAX_BKGX * MAX_BKGZ> m_activeTiles;
+	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
 	
 	//! Tile data accessor
 	template <typename T>
@@ -106,7 +107,6 @@ public:
 	long exist;
 	Vec2s m_size;
 	Vec2f m_mul;
-	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
 	std::vector<ANCHOR_DATA> m_anchors;
 	
 	[[nodiscard]] auto get(Vec2s tile) {
