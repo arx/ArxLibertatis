@@ -999,26 +999,17 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	
 	for(const EP_DATA & epd : room.epdata) {
 		
-		if(!ACTIVEBKG->isTileActive(epd.tile)) {
-			// TODO copy-paste background tiles
-			int tilex = epd.tile.x;
-			int tilez = epd.tile.y;
-			int radius = 1;
-			
-			int minx = std::max(tilex - radius, 0);
-			int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
-			int minz = std::max(tilez - radius, 0);
-			int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
-			for(int z = minz; z <= maxz; z++)
-			for(int x = minx; x <= maxx; x++) {
-				if(!ACTIVEBKG->isTileActive(Vec2s(x, z))) {
-					ACTIVEBKG->setTileActive(Vec2s(x, z));
-					ComputeTileLights(x, z);
+		auto tile = ACTIVEBKG->get(epd.tile);
+		if(!tile.active()) {
+			for(auto neighbour : ACTIVEBKG->tilesAround(tile, 1)) {
+				if(!neighbour.active()) {
+					neighbour.setActive();
+					ComputeTileLights(neighbour.x, neighbour.y);
 				}
 			}
 		}
 		
-		EERIEPOLY * ep = &ACTIVEBKG->m_tileData[epd.tile.x][epd.tile.y].polydata[epd.idx];
+		EERIEPOLY * ep = &tile.polygons()[epd.idx];
 		if(!ep->tex) {
 			continue;
 		}
