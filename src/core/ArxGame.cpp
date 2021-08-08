@@ -979,7 +979,10 @@ void ArxGame::shutdownGame() {
 	
 	ReleaseSystemObjects();
 	
-	ClearBackground(g_tiles);
+	if(g_tiles) {
+		g_tiles->clear();
+		FreeRoomDistance();
+	}
 	
 	EERIE_ANIMMANAGER_ClearAll();
 

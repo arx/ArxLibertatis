@@ -32,7 +32,8 @@ void InitBkg(BackgroundData * eb) {
 	
 	if(eb->exist) {
 		EERIE_PORTAL_Release();
-		ClearBackground(eb);
+		eb->clear();
+		FreeRoomDistance();
 	}
 	
 	eb->exist = 1;
@@ -44,18 +45,13 @@ void InitBkg(BackgroundData * eb) {
 	
 }
 
-void ClearBackground(BackgroundData * eb) {
+void BackgroundData::clear() {
 	
-	if(!eb)
-		return;
+	AnchorData_ClearAll(this);
 	
-	AnchorData_ClearAll(eb);
-	
-	for(auto tile : eb->tiles()) {
+	for(auto tile : tiles()) {
 		tile.data() = BackgroundTileData();
 	}
-	
-	FreeRoomDistance();
 	
 }
 
