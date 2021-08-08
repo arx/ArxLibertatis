@@ -34,38 +34,10 @@ class Rectangle_;
 typedef Rectangle_<s32> Rect;
 typedef Rectangle_<float> Rectf;
 
-#if GLM_VERSION >= 990
-
 template <class T, int N> struct vec_traits {
 	typedef glm::vec<N, T, glm::highp> type;
 	static_assert(sizeof(type) == sizeof(T) * N, "vector has padding");
 };
-
-#else
-
-template <class T, template <class, glm::precision> class V, int N>
-struct vec_traits_base {
-	typedef V<T, glm::highp> type;
-	static_assert(sizeof(type) == sizeof(T) * N, "vector has padding");
-};
-
-// In GLM version 0.9.6 the template vector and matrix types is exposed in 'glm' namespace
-#if GLM_VERSION >= 96
-template <class T> struct vec2_traits : public vec_traits_base<T, glm::tvec2, 2>{};
-template <class T> struct vec3_traits : public vec_traits_base<T, glm::tvec3, 3>{};
-template <class T> struct vec4_traits : public vec_traits_base<T, glm::tvec4, 4>{};
-#else
-template <class T> struct vec2_traits : public vec_traits_base<T, glm::detail::tvec2, 2>{};
-template <class T> struct vec3_traits : public vec_traits_base<T, glm::detail::tvec3, 3>{};
-template <class T> struct vec4_traits : public vec_traits_base<T, glm::detail::tvec4, 4>{};
-#endif
-
-template <class T, int N> struct vec_traits {};
-template <class T> struct vec_traits<T, 2> : public vec2_traits<T>{};
-template <class T> struct vec_traits<T, 3> : public vec3_traits<T>{};
-template <class T> struct vec_traits<T, 4> : public vec4_traits<T>{};
-
-#endif
 
 typedef vec_traits<s32, 2>::type Vec2i;
 typedef vec_traits<s16, 2>::type Vec2s;
