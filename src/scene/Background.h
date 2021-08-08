@@ -74,10 +74,12 @@ private:
 		}
 		
 		[[nodiscard]] bool active() const noexcept {
-			return m_base->isTileActive(*this);
+			arx_assume(valid());
+			return m_base->m_activeTiles.test(size_t(x) * size_t(MAX_BKGZ) + size_t(y));
 		}
 		void setActive() noexcept {
-			m_base->setTileActive(*this);
+			arx_assume(valid());
+			m_base->m_activeTiles.set(size_t(x) * size_t(MAX_BKGZ) + size_t(y));
 		}
 		
 		[[nodiscard]] auto & data() const noexcept {
@@ -124,16 +126,6 @@ public:
 	[[nodiscard]] bool isTileValid(Vec2s tile) const noexcept {
 		arx_assume(m_size.x <= MAX_BKGX && m_size.y <= MAX_BKGZ);
 		return tile.x >= 0 && tile.x < m_size.x && tile.y >= 0 && tile.y < m_size.y;
-	}
-	
-	[[nodiscard]] bool isTileActive(Vec2s tile) const noexcept {
-		arx_assume(isTileValid(tile));
-		return m_activeTiles.test(size_t(tile.x) * size_t(MAX_BKGZ) + size_t(tile.y));
-	}
-	
-	void setTileActive(Vec2s tile) noexcept {
-		arx_assume(isTileValid(tile));
-		m_activeTiles.set(size_t(tile.x) * size_t(MAX_BKGZ) + size_t(tile.y));
 	}
 	
 	void resetActiveTiles() noexcept {
@@ -251,7 +243,5 @@ void InitBkg(BackgroundData * eb);
 void ClearBackground(BackgroundData * eb);
 void EERIEPOLY_Compute_PolyIn();
 long CountBkgVertex();
-
-BackgroundTileData * getFastBackgroundData(float x, float z);
 
 #endif // ARX_SCENE_BACKGROUND_H
