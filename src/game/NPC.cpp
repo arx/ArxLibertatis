@@ -428,9 +428,9 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 		size_t total = 0;
 		for(long aa = l_try; aa > 1; aa--) {
 			long v = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos + aa];
-			total += ACTIVEBKG->m_anchors[v].linked.size();
+			total += g_tiles->m_anchors[v].linked.size();
 			if(aa == l_try) {
-				total += ACTIVEBKG->m_anchors[v].linked.size();
+				total += g_tiles->m_anchors[v].linked.size();
 			}
 		}
 		
@@ -441,7 +441,7 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 		
 		io->physics.startpos = io->pos;
 		long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos + l_try];
-		io->physics.targetpos = ACTIVEBKG->m_anchors[pos].pos;
+		io->physics.targetpos = g_tiles->m_anchors[pos].pos;
 
 		if(glm::abs(io->physics.startpos.y - io->physics.targetpos.y) > 60.f)
 			continue;
@@ -454,7 +454,7 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 		if(   io->physics.startpos == io->physics.targetpos
 		   || ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC)
 		) {
-			if(closerThan(phys.cyl.origin, ACTIVEBKG->m_anchors[pos].pos, 30.f)) {
+			if(closerThan(phys.cyl.origin, g_tiles->m_anchors[pos].pos, 30.f)) {
 				return l_try;
 			}
 		}
@@ -467,7 +467,7 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 static long AnchorData_GetNearest(const Vec3f & pos, const Cylinder & cyl, long except = -1) {
 	long returnvalue = -1;
 	float distmax = std::numeric_limits<float>::max();
-	BackgroundData * eb = ACTIVEBKG;
+	BackgroundData * eb = g_tiles;
 
 	for(size_t i = 0; i < eb->m_anchors.size(); i++) {
 		
@@ -549,15 +549,15 @@ static bool ARX_NPC_LaunchPathfind_End(Entity * io, EntityHandle target, const V
 		}
 		
 		if ((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) ||
-		        closerThan(io->pos, ACTIVEBKG->m_anchors[from].pos, 200.f))
+		        closerThan(io->pos, g_tiles->m_anchors[from].pos, 200.f))
 		{
 			if (!(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 			        && !(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 			{
-				if(closerThan(ACTIVEBKG->m_anchors[from].pos, ACTIVEBKG->m_anchors[to].pos, 200.f)) {
+				if(closerThan(g_tiles->m_anchors[from].pos, g_tiles->m_anchors[to].pos, 200.f)) {
 					return false;
 				}
-				if(fartherThan(pos2, ACTIVEBKG->m_anchors[to].pos, 200.f)) {
+				if(fartherThan(pos2, g_tiles->m_anchors[to].pos, 200.f)) {
 					return ARX_NPC_LaunchPathfind_Cleanup(io);
 				}
 			}
@@ -2132,7 +2132,7 @@ static void ManageNPCMovement_End(Entity * io) {
 			long t = AnchorData_GetNearest(target->pos, io->physics.cyl);
 			if(t != -1 && t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb - 1]) {
 				long anchor = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb - 1];
-				float d = glm::distance(ACTIVEBKG->m_anchors[t].pos, ACTIVEBKG->m_anchors[anchor].pos);
+				float d = glm::distance(g_tiles->m_anchors[t].pos, g_tiles->m_anchors[anchor].pos);
 				if(d > 200.f) {
 					ARX_NPC_LaunchPathfind(io, io->_npcdata->pathfind.truetarget);
 				}
@@ -2820,7 +2820,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		if(npcData->behavior & BEHAVIOUR_GO_HOME) {
 			if(npcData->pathfind.listpos < npcData->pathfind.listnb) {
 				long pos = npcData->pathfind.list[npcData->pathfind.listpos];
-				io->target = ACTIVEBKG->m_anchors[pos].pos;
+				io->target = g_tiles->m_anchors[pos].pos;
 			} else {
 				io->target = io->initpos;
 			}
@@ -2831,7 +2831,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		   && !(npcData->behavior & BEHAVIOUR_FRIENDLY)) { // Targeting Anchors !
 			if(npcData->pathfind.listpos < npcData->pathfind.listnb) {
 				long pos = npcData->pathfind.list[npcData->pathfind.listpos];
-				io->target = ACTIVEBKG->m_anchors[pos].pos;
+				io->target = g_tiles->m_anchors[pos].pos;
 			} else if(Entity * target = entities.get(npcData->pathfind.truetarget)) {
 				io->target = target->pos;
 			}

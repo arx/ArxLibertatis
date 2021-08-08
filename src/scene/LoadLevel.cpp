@@ -528,7 +528,7 @@ void DanaeClearLevel() {
 
 	EERIE_PATHFINDER_Release();
 
-	InitBkg(ACTIVEBKG);
+	InitBkg(g_tiles);
 	
 	EERIE_LIGHT_GlobalInit();
 	ARX_FOGS_Clear();

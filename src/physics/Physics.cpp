@@ -576,7 +576,7 @@ static void ARX_TEMPORARY_TrySound(Entity & source, Material collisionMaterial, 
 
 bool EERIE_PHYSICS_BOX_IsValidPosition(const Vec3f & pos) {
 	
-	auto tile = ACTIVEBKG->getTile(pos);
+	auto tile = g_tiles->getTile(pos);
 	if(!tile) {
 		// Position is outside the world grid
 		return false;

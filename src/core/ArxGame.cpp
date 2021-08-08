@@ -783,8 +783,8 @@ bool ArxGame::initGame()
 	
 	LastLoadedScene.clear();
 	
-	ACTIVEBKG = new BackgroundData();
-	InitBkg(ACTIVEBKG);
+	g_tiles = new BackgroundData();
+	InitBkg(g_tiles);
 	
 	player.size = Vec3f(player.baseRadius(), -player.baseHeight(), player.baseRadius());
 	player.desiredangle = player.angle = Anglef(3.f, 268.f, 0.f);
@@ -979,7 +979,7 @@ void ArxGame::shutdownGame() {
 	
 	ReleaseSystemObjects();
 	
-	ClearBackground(ACTIVEBKG);
+	ClearBackground(g_tiles);
 	
 	EERIE_ANIMMANAGER_ClearAll();
 
@@ -1682,7 +1682,7 @@ void ArxGame::updateLevel() {
 
 	ARX_PLAYER_Manage_Visual();
 
-	g_miniMap.setActiveBackground(ACTIVEBKG);
+	g_miniMap.setActiveBackground(g_tiles);
 	g_miniMap.validatePlayerPos(CURRENTLEVEL, BLOCK_PLAYER_CONTROLS, g_playerBook.currentPage());
 
 

@@ -659,8 +659,8 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	float anything = 999999.f;
 	
 	// TODO should this be tilesAround(cyl.origin, cyl.radius)
-	int radius = int((cyl.radius + g_backgroundTileSize.x) * ACTIVEBKG->m_mul.x);
-	for(auto tile : ACTIVEBKG->tilesAround(ACTIVEBKG->getTile(cyl.origin), radius)) {
+	int radius = int((cyl.radius + g_backgroundTileSize.x) * g_tiles->m_mul.x);
+	for(auto tile : g_tiles->tilesAround(g_tiles->getTile(cyl.origin), radius)) {
 		
 		float nearest = 99999999.f;
 		for(long num = 0; num < 4; num++) {
@@ -864,8 +864,8 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	
 	ARX_PROFILE_FUNC();
 	
-	int radius = int(sphere.radius * ACTIVEBKG->m_mul.x) + 2;
-	for(auto tile : ACTIVEBKG->tilesAround(ACTIVEBKG->getTile(sphere.origin), radius)) {
+	int radius = int(sphere.radius * g_tiles->m_mul.x) + 2;
+	for(auto tile : g_tiles->tilesAround(g_tiles->getTile(sphere.origin), radius)) {
 		for(const EERIEPOLY & polygon : tile.polygons()) {
 			
 			if(polygon.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
@@ -1456,7 +1456,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 			}
 		}
 		
-		auto tile = ACTIVEBKG->getTile(tmpPos);
+		auto tile = g_tiles->getTile(tmpPos);
 		if(!tile.valid()) {
 			break;
 		}

@@ -999,9 +999,9 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	
 	for(const EP_DATA & epd : room.epdata) {
 		
-		auto tile = ACTIVEBKG->get(epd.tile);
+		auto tile = g_tiles->get(epd.tile);
 		if(!tile.active()) {
-			for(auto neighbour : ACTIVEBKG->tilesAround(tile, 1)) {
+			for(auto neighbour : g_tiles->tilesAround(tile, 1)) {
 				if(!neighbour.active()) {
 					neighbour.setActive();
 					ComputeTileLights(neighbour.x, neighbour.y);
@@ -1355,7 +1355,7 @@ void ARX_SCENE_Update() {
 	TreatBackgroundDynlights();
 	PrecalcDynamicLighting(camPos, camDepth);
 	
-	ACTIVEBKG->resetActiveTiles();
+	g_tiles->resetActiveTiles();
 	
 	ARX_PORTALS_InitDrawnRooms();
 	

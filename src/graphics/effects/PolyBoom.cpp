@@ -105,7 +105,7 @@ void PolyBoomClear() {
 
 void PolyBoomAddScorch(const Vec3f & poss) {
 	
-	for(auto tile : ACTIVEBKG->tilesAround(ACTIVEBKG->getTile(poss), 3))  {
+	for(auto tile : g_tiles->tilesAround(g_tiles->getTile(poss), 3))  {
 		for(EERIEPOLY & ep : tile.polygons()) {
 			
 			if((ep.type & POLY_TRANS) && !(ep.type & POLY_WATER)) {
@@ -245,7 +245,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 		pb.fastdecay = true;
 	}
 	
-	for(auto tile : ACTIVEBKG->tilesAround(ACTIVEBKG->getTile(poss), 3)) {
+	for(auto tile : g_tiles->tilesAround(g_tiles->getTile(poss), 3)) {
 		for(EERIEPOLY & polygon : tile.intersectingPolygons()) {
 			
 			if((flags & 2) && !(polygon.type & POLY_WATER)) {

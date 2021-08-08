@@ -455,15 +455,15 @@ static bool Cedric_IO_Visible(const Vec3f & pos) {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(ACTIVEBKG) {
+	if(g_tiles) {
 		
 		// TODO maybe readd this
 		// if(fartherThan(io->pos, g_camera->pos, g_camera->cdepth * 0.6f))
 		//  return false;
 		
-		Vec2s tile = ACTIVEBKG->getTile(pos);
-		if(tile.x >= 1 && tile.y >= 1 && tile.x < ACTIVEBKG->m_size.x - 1 && tile.y < ACTIVEBKG->m_size.y - 1) {
-			for(auto neighbor : ACTIVEBKG->tilesAround(tile, 1)) {
+		Vec2s tile = g_tiles->getTile(pos);
+		if(tile.x >= 1 && tile.y >= 1 && tile.x < g_tiles->m_size.x - 1 && tile.y < g_tiles->m_size.y - 1) {
+			for(auto neighbor : g_tiles->tilesAround(tile, 1)) {
 				if(neighbor.active()) {
 					return true;
 				}

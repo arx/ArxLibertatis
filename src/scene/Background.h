@@ -243,4 +243,6 @@ void ClearBackground(BackgroundData * eb);
 void EERIEPOLY_Compute_PolyIn();
 long CountBkgVertex();
 
+extern BackgroundData * g_tiles;
+
 #endif // ARX_SCENE_BACKGROUND_H

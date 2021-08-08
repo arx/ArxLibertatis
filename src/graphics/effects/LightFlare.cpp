@@ -52,7 +52,7 @@ void updateLightFlares() {
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		EERIE_LIGHT * el = g_culledDynamicLights[i];
 		
-		if(!ACTIVEBKG->isInActiveTile(el->pos)) {
+		if(!g_tiles->isInActiveTile(el->pos)) {
 			el->m_isVisible = false;
 			continue;
 		}

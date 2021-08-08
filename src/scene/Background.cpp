@@ -24,6 +24,8 @@
 #include "graphics/data/Mesh.h"
 
 
+BackgroundData * g_tiles = nullptr;
+
 void InitBkg(BackgroundData * eb) {
 	
 	arx_assert(eb);
@@ -63,7 +65,7 @@ static bool PointInBBox(const Vec3f & point, const Rectf & bb) {
 
 void EERIEPOLY_Compute_PolyIn() {
 	
-	for(auto tile : ACTIVEBKG->tiles()) {
+	for(auto tile : g_tiles->tiles()) {
 		
 		std::vector<EERIEPOLY *> & polygons = tile.data().polyin;
 		polygons.clear();
@@ -73,7 +75,7 @@ void EERIEPOLY_Compute_PolyIn() {
 		Rectf bb = Rectf(bbmin, bbmax);
 		Vec2f bbcenter = bb.center();
 		
-		for(auto neighbour : ACTIVEBKG->tilesAround(tile, 2)) {
+		for(auto neighbour : g_tiles->tilesAround(tile, 2)) {
 			for(EERIEPOLY & ep2 : neighbour.polygons()) {
 				
 				if(fartherThan(bbcenter, Vec2f(ep2.center.x, ep2.center.z), 120.f)) {
@@ -106,7 +108,7 @@ long CountBkgVertex() {
 	
 	long count = 0;
 	
-	for(auto tile : ACTIVEBKG->tiles()) {
+	for(auto tile : g_tiles->tiles()) {
 		for(const EERIEPOLY & ep : tile.polygons()) {
 			count += (ep.type & POLY_QUAD) ? 4 : 3;
 		}

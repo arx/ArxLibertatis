@@ -61,7 +61,7 @@ void AnchorData_ClearAll(BackgroundData * eb) {
 
 void ANCHOR_BLOCK_Clear() {
 	
-	BackgroundData * eb = ACTIVEBKG;
+	BackgroundData * eb = g_tiles;
 	if(!eb) {
 		return;
 	}
@@ -74,7 +74,7 @@ void ANCHOR_BLOCK_Clear() {
 
 void ANCHOR_BLOCK_By_IO(Entity * io, bool blocked) {
 	
-	BackgroundData * eb = ACTIVEBKG;
+	BackgroundData * eb = g_tiles;
 	
 	for(ANCHOR_DATA & ad : eb->m_anchors) {
 		

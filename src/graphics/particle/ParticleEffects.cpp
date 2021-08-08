@@ -720,7 +720,7 @@ void ARX_PARTICLES_Update()  {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(!ACTIVEBKG) {
+	if(!g_tiles) {
 		return;
 	}
 	
@@ -759,7 +759,7 @@ void ARX_PARTICLES_Update()  {
 			continue;
 		}
 		
-		if(!part->is2D && !ACTIVEBKG->isInActiveTile(part->ov)) {
+		if(!part->is2D && !g_tiles->isInActiveTile(part->ov)) {
 			part->exist = false;
 			ParticleCount--;
 			continue;

@@ -190,9 +190,9 @@ long MakeTopObjString(Entity * entity, std::string & dest) {
 
 EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY) {
 	
-	auto tile = ACTIVEBKG->getTile(poss);
+	auto tile = g_tiles->getTile(poss);
 	
-	if(tile.y <= 0 || tile.y >= ACTIVEBKG->m_size.y - 1 || tile.x <= 0 || tile.x >= ACTIVEBKG->m_size.x - 1) {
+	if(tile.y <= 0 || tile.y >= g_tiles->m_size.y - 1 || tile.x <= 0 || tile.x >= g_tiles->m_size.x - 1) {
 		return nullptr;
 	}
 	
@@ -234,7 +234,7 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY) {
 	float foundY = 0.f;
 	
 	// TODO why is tile.intersectingPolygons() not enough?
-	for(auto neighbour : ACTIVEBKG->tilesIn(min, max + Vec2s(1))) {
+	for(auto neighbour : g_tiles->tilesIn(min, max + Vec2s(1))) {
 		for(EERIEPOLY & polygon : neighbour.intersectingPolygons()) {
 			if(poss.x >= polygon.min.x && poss.x <= polygon.max.x
 			   && poss.z >= polygon.min.z && poss.z <= polygon.max.z
@@ -258,7 +258,7 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY) {
 
 EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
 	
-	auto tile = ACTIVEBKG->getTile(pos);
+	auto tile = g_tiles->getTile(pos);
 	if(!tile) {
 		return nullptr;
 	}
@@ -290,7 +290,7 @@ EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
 
 bool IsAnyPolyThere(float x, float z) {
 	
-	auto tile = ACTIVEBKG->getTile(Vec3f(x, 0.f, z));
+	auto tile = g_tiles->getTile(Vec3f(x, 0.f, z));
 	if(!tile) {
 		return false;
 	}
@@ -306,7 +306,7 @@ bool IsAnyPolyThere(float x, float z) {
 
 EERIEPOLY * GetMinPoly(const Vec3f & pos) {
 	
-	auto tile = ACTIVEBKG->getTile(pos);
+	auto tile = g_tiles->getTile(pos);
 	if(!tile) {
 		return nullptr;
 	}
@@ -337,7 +337,7 @@ EERIEPOLY * GetMinPoly(const Vec3f & pos) {
 
 EERIEPOLY * GetMaxPoly(const Vec3f & pos) {
 	
-	auto tile = ACTIVEBKG->getTile(pos);
+	auto tile = g_tiles->getTile(pos);
 	if(!tile) {
 		return nullptr;
 	}
@@ -368,7 +368,7 @@ EERIEPOLY * GetMaxPoly(const Vec3f & pos) {
 
 EERIEPOLY * EEIsUnderWater(const Vec3f & pos) {
 	
-	auto tile = ACTIVEBKG->getTile(pos);
+	auto tile = g_tiles->getTile(pos);
 	if(!tile) {
 		return nullptr;
 	}
@@ -418,8 +418,6 @@ bool GetTruePolyY(const PortalPoly * ep, const Vec3f & pos, float * ret) {
 	
 	return true;
 }
-
-BackgroundData * ACTIVEBKG = nullptr;
 
 Vec3f EE_RT(const Vec3f & in) {
 	return Vec3f(g_preparedCamera.m_worldToView * Vec4f(in, 1.0f));
@@ -699,7 +697,7 @@ bool FastSceneLoad(const res::path & partial_path, Vec3f & trans) {
 		
 		// Skip .scn file list and initialize the scene data
 		(void)fts_read<UNIQUE_HEADER3>(data, end, uh->count);
-		InitBkg(ACTIVEBKG);
+		InitBkg(g_tiles);
 		progressBarAdvance();
 		LoadLevelScreen();
 		
@@ -740,7 +738,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		         << FTS_VERSION << " in " << file;
 		return false;
 	}
-	if(fsh->sizex != ACTIVEBKG->m_size.x || fsh->sizez != ACTIVEBKG->m_size.y) {
+	if(fsh->sizex != g_tiles->m_size.x || fsh->sizez != g_tiles->m_size.y) {
 		LogError << "FTS: size mismatch in FAST_SCENE_HEADER";
 		return false;
 	}
@@ -763,7 +761,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	
 	// TODO Most tiles are empty, adjust ACTIVEBKG->m_size accordingly
 	
-	ACTIVEBKG->resetActiveTiles();
+	g_tiles->resetActiveTiles();
 	
 	// Load cells with polygons and anchors
 	LogDebug("FTS: loading " << fsh->sizex << " x " << fsh->sizez
@@ -773,7 +771,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			
 			const FAST_SCENE_INFO * fsi = fts_read<FAST_SCENE_INFO>(data, end);
 			
-			std::vector<EERIEPOLY> & polydata = ACTIVEBKG->get(Vec2s(i, j)).polygons();
+			std::vector<EERIEPOLY> & polydata = g_tiles->get(Vec2s(i, j)).polygons();
 			
 			polydata.resize(fsi->nbpoly);
 			
@@ -852,12 +850,12 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	
 	// Load anchor links
 	LogDebug("FTS: loading " << fsh->nb_anchors << " anchors ...");
-	ACTIVEBKG->m_anchors.resize(fsh->nb_anchors);
+	g_tiles->m_anchors.resize(fsh->nb_anchors);
 	for(long i = 0; i < fsh->nb_anchors; i++) {
 		
 		const FAST_ANCHOR_DATA * fad = fts_read<FAST_ANCHOR_DATA>(data, end);
 		
-		ANCHOR_DATA & anchor = ACTIVEBKG->m_anchors[i];
+		ANCHOR_DATA & anchor = g_tiles->m_anchors[i];
 		anchor.blocked = (fad->flags & FastAnchorFlagBlocked) != 0;
 		anchor.pos = fad->pos.toVec3();
 		anchor.height = fad->height;
@@ -1061,7 +1059,7 @@ void ComputePortalVertexBuffer() {
 		// Count vertices / indices for each texture and blend types
 		int vertexCount = 0, indexCount = 0, ignored = 0, hidden = 0, notex = 0;
 		for(const EP_DATA & epd : room->epdata) {
-			EERIEPOLY & poly = ACTIVEBKG->get(epd.tile).polygons()[epd.idx];
+			EERIEPOLY & poly = g_tiles->get(epd.tile).polygons()[epd.idx];
 			
 			if(poly.type & POLY_IGNORE) {
 				ignored++;
@@ -1103,8 +1101,7 @@ void ComputePortalVertexBuffer() {
 					trans = 1.f - trans;
 				}
 				
-				poly.v[3].color = poly.v[2].color = poly.v[1].color = poly.v[0].color
-					= Color::gray(trans).toRGB();
+				poly.v[3].color = poly.v[2].color = poly.v[1].color = poly.v[0].color = Color::gray(trans).toRGB();
 				
 			} else {
 				info.opaque += nindices;
@@ -1157,7 +1154,7 @@ void ComputePortalVertexBuffer() {
 			
 			// Upload all vertices for this texture and remember the indices
 			for(const EP_DATA & epd : room->epdata) {
-				EERIEPOLY & poly = ACTIVEBKG->get(epd.tile).polygons()[epd.idx];
+				EERIEPOLY & poly = g_tiles->get(epd.tile).polygons()[epd.idx];
 				
 				if((poly.type & POLY_IGNORE) || (poly.type & POLY_HIDE) || !poly.tex) {
 					continue;

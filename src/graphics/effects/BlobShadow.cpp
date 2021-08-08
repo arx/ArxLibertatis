@@ -69,7 +69,7 @@ void ARXDRAW_DrawInterShadows() {
 			continue;
 		}
 		
-		if(!ACTIVEBKG->isInActiveTile(io->pos)) {
+		if(!g_tiles->isInActiveTile(io->pos)) {
 			continue;
 		}
 		
