@@ -44,10 +44,7 @@ void InitBkg(BackgroundData * eb) {
 	for(auto tile : eb->tiles()) {
 		tile.data() = BackgroundTileData();
 	}
-}
-
-static void ReleaseBKG_INFO(BackgroundTileData * eg) {
-	*eg = BackgroundTileData();
+	
 }
 
 void ClearBackground(BackgroundData * eb) {
@@ -57,9 +54,8 @@ void ClearBackground(BackgroundData * eb) {
 	
 	AnchorData_ClearAll(eb);
 	
-	for(long z = 0; z < eb->m_size.y; z++)
-	for(long x = 0; x < eb->m_size.x; x++) {
-		ReleaseBKG_INFO(&eb->m_tileData[x][z]);
+	for(auto tile : eb->tiles()) {
+		tile.data() = BackgroundTileData();
 	}
 	
 	FreeRoomDistance();
