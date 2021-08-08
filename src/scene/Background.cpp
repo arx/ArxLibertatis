@@ -41,9 +41,8 @@ void InitBkg(BackgroundData * eb) {
 	eb->m_mul.x = 1.f / g_backgroundTileSize.x;
 	eb->m_mul.y = 1.f / g_backgroundTileSize.y;
 	
-	for(short z = 0; z < eb->m_size.y; z++)
-	for(short x = 0; x < eb->m_size.x; x++) {
-		eb->m_tileData[x][z] = BackgroundTileData();
+	for(auto tile : eb->tiles()) {
+		tile.data() = BackgroundTileData();
 	}
 }
 
