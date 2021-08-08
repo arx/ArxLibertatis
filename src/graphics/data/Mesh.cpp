@@ -306,27 +306,30 @@ bool IsAnyPolyThere(float x, float z) {
 
 EERIEPOLY * GetMinPoly(const Vec3f & pos) {
 	
-	BackgroundTileData * feg = getFastBackgroundData(pos.x, pos.z);
-	if(!feg) {
+	auto tile = ACTIVEBKG->getTile(pos);
+	if(!tile) {
 		return nullptr;
 	}
 	
 	EERIEPOLY * found = nullptr;
 	float foundy = 0.0f;
 	
-	for(EERIEPOLY * ep : feg->polyin) {
-		if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
+	for(EERIEPOLY & polygon : tile.intersectingPolygons()) {
+		
+		if(polygon.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 			continue;
 		}
-		if(PointIn2DPolyXZ(ep, pos.x, pos.z)) {
+		
+		if(PointIn2DPolyXZ(&polygon, pos.x, pos.z)) {
 			float ret;
-			if(GetTruePolyY(ep, pos, &ret)) {
+			if(GetTruePolyY(&polygon, pos, &ret)) {
 				if(!found || ret > foundy) {
-					found = ep;
+					found = &polygon;
 					foundy = ret;
 				}
 			}
 		}
+		
 	}
 	
 	return found;
@@ -334,27 +337,30 @@ EERIEPOLY * GetMinPoly(const Vec3f & pos) {
 
 EERIEPOLY * GetMaxPoly(const Vec3f & pos) {
 	
-	BackgroundTileData * feg = getFastBackgroundData(pos.x, pos.z);
-	if(!feg) {
+	auto tile = ACTIVEBKG->getTile(pos);
+	if(!tile) {
 		return nullptr;
 	}
 	
 	EERIEPOLY * found = nullptr;
 	float foundy = 0.0f;
 	
-	for(EERIEPOLY * ep : feg->polyin) {
-		if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
+	for(EERIEPOLY & polygon : tile.intersectingPolygons()) {
+		
+		if(polygon.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 			continue;
 		}
-		if(PointIn2DPolyXZ(ep, pos.x, pos.z)) {
+		
+		if(PointIn2DPolyXZ(&polygon, pos.x, pos.z)) {
 			float ret;
-			if(GetTruePolyY(ep, pos, &ret)) {
+			if(GetTruePolyY(&polygon, pos, &ret)) {
 				if(!found || ret < foundy) {
-					found = ep;
+					found = &polygon;
 					foundy = ret;
 				}
 			}
 		}
+		
 	}
 	
 	return found;
