@@ -65,6 +65,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
+#include "util/Range.h"
+
 static const float GLOBAL_LIGHT_FACTOR = 0.85f;
 
 static const Color3f defaultAmbient = Color3f(0.09f, 0.09f, 0.09f);
@@ -622,50 +624,50 @@ void ApplyTileLights(EERIEPOLY * ep, Vec2s index) {
 	size_t nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 	
 	for(size_t j = 0; j < nbvert; j++) {
-
+		
 		if(lights.empty()) {
 			ep->color[j] = ep->v[j].color;
 			continue;
 		}
-
+		
 		Color3f tempColor;
 		Color c = Color::fromRGBA(ep->v[j].color);
 		tempColor.r = c.r;
 		tempColor.g = c.g;
 		tempColor.b = c.b;
-
+		
 		Vec3f & position = ep->v[j].p;
 		Vec3f & normal = ep->nrml[j];
-
-		for(size_t i = 0; i < lights.size(); i++) {
-			EERIE_LIGHT * light = lights[i];
-
-			Vec3f vLight = glm::normalize(light->pos - position);
-
-			float cosangle = glm::dot(normal, vLight);
-
-			if(cosangle > 0.f) {
-				float distance = fdist(light->pos, position);
-
-				if(distance <= light->fallstart) {
-					cosangle *= light->intensity * GLOBAL_LIGHT_FACTOR;
-				} else {
-					float p = ((light->fallend - distance) * light->falldiffmul);
-
-					if(p <= 0.f)
-						cosangle = 0.f;
-					else
-						cosangle *= p * (light->intensity * GLOBAL_LIGHT_FACTOR);
-				}
-				cosangle *= 0.5f;
-
-				tempColor += light->rgb255 * lightInfraFactor * cosangle;
+		
+		for(const EERIE_LIGHT & light : util::dereference(lights)) {
+			
+			float cosangle = glm::dot(normal, glm::normalize(light.pos - position));
+			if(cosangle <= 0.f) {
+				continue;
 			}
+			
+			float distance = fdist(light.pos, position);
+			if(distance <= light.fallstart) {
+				cosangle *= light.intensity * GLOBAL_LIGHT_FACTOR;
+			} else {
+				float p = (light.fallend - distance) * light.falldiffmul;
+				if(p <= 0.f) {
+					cosangle = 0.f;
+				} else {
+					cosangle *= p * (light.intensity * GLOBAL_LIGHT_FACTOR);
+				}
+			}
+			cosangle *= 0.5f;
+			
+			tempColor += light.rgb255 * lightInfraFactor * cosangle;
+			
 		}
-
+		
 		u8 ir = clipByte255(int(tempColor.r));
 		u8 ig = clipByte255(int(tempColor.g));
 		u8 ib = clipByte255(int(tempColor.b));
 		ep->color[j] = Color(ir, ig, ib).toRGBA();
+		
 	}
+	
 }
