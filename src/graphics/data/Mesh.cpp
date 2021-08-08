@@ -779,16 +779,16 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			
 			const FAST_SCENE_INFO * fsi = fts_read<FAST_SCENE_INFO>(data, end);
 			
-			BackgroundTileData & bkg = ACTIVEBKG->m_tileData[i][j];
+			std::vector<EERIEPOLY> & polydata = ACTIVEBKG->get(Vec2s(i, j)).polygons();
 			
-			bkg.polydata.resize(fsi->nbpoly);
+			polydata.resize(fsi->nbpoly);
 			
 			const FAST_EERIEPOLY * eps;
 			eps = fts_read<FAST_EERIEPOLY>(data, end, fsi->nbpoly);
 			for(long k = 0; k < fsi->nbpoly; k++) {
 				
 				const FAST_EERIEPOLY * ep = &eps[k];
-				EERIEPOLY * ep2 = &bkg.polydata[k];
+				EERIEPOLY * ep2 = &polydata[k];
 				
 				ep2->room = ep->room;
 				ep2->area = ep->area;
@@ -1067,8 +1067,7 @@ void ComputePortalVertexBuffer() {
 		// Count vertices / indices for each texture and blend types
 		int vertexCount = 0, indexCount = 0, ignored = 0, hidden = 0, notex = 0;
 		for(const EP_DATA & epd : room->epdata) {
-			BackgroundTileData & cell = ACTIVEBKG->m_tileData[epd.tile.x][epd.tile.y];
-			EERIEPOLY & poly = cell.polydata[epd.idx];
+			EERIEPOLY & poly = ACTIVEBKG->get(epd.tile).polygons()[epd.idx];
 			
 			if(poly.type & POLY_IGNORE) {
 				ignored++;
@@ -1164,8 +1163,7 @@ void ComputePortalVertexBuffer() {
 			
 			// Upload all vertices for this texture and remember the indices
 			for(const EP_DATA & epd : room->epdata) {
-				BackgroundTileData & tile = ACTIVEBKG->m_tileData[epd.tile.x][epd.tile.y];
-				EERIEPOLY & poly = tile.polydata[epd.idx];
+				EERIEPOLY & poly = ACTIVEBKG->get(epd.tile).polygons()[epd.idx];
 				
 				if((poly.type & POLY_IGNORE) || (poly.type & POLY_HIDE) || !poly.tex) {
 					continue;
