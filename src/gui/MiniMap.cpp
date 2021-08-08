@@ -93,25 +93,23 @@ void MiniMap::getData(size_t showLevel) {
 			float minY = std::numeric_limits<float>::max();
 			float maxY = std::numeric_limits<float>::min();
 			
-			for(int z = 0; z < m_activeBkg->m_size.y; z++) {
-				for(int x = 0; x < m_activeBkg->m_size.x; x++) {
-					const BackgroundTileData & eg = m_activeBkg->m_tileData[x][z];
-					for(const EERIEPOLY & ep : eg.polydata) {
-						minX = std::min(minX, ep.min.x);
-						maxX = std::max(maxX, ep.max.x);
-						minY = std::min(minY, ep.min.z);
-						maxY = std::max(maxY, ep.max.z);
-					}
-				}
-				
-				m_mapMaxY[showLevel] = maxY;
-				m_levels[showLevel].m_ratio.x = minX;
-				m_levels[showLevel].m_ratio.y = minY;
-				
-				for(size_t l = 0; l < MAX_MINIMAP_LEVELS; l++) {
-					m_levels[l].m_offset = Vec2f(0.f);
+			for(auto tile : m_activeBkg->tiles()) {
+				for(const EERIEPOLY & ep : tile.polygons()) {
+					minX = std::min(minX, ep.min.x);
+					maxX = std::max(maxX, ep.max.x);
+					minY = std::min(minY, ep.min.z);
+					maxY = std::max(maxY, ep.max.z);
 				}
 			}
+			
+			m_mapMaxY[showLevel] = maxY;
+			m_levels[showLevel].m_ratio.x = minX;
+			m_levels[showLevel].m_ratio.y = minY;
+			
+			for(size_t l = 0; l < MAX_MINIMAP_LEVELS; l++) {
+				m_levels[l].m_offset = Vec2f(0.f);
+			}
+			
 		}
 	}
 }
