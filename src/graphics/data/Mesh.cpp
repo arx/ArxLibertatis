@@ -258,28 +258,27 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY) {
 
 EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
 	
-	BackgroundTileData * feg = getFastBackgroundData(pos.x, pos.z);
-	if(!feg) {
+	auto tile = ACTIVEBKG->getTile(pos);
+	if(!tile) {
 		return nullptr;
 	}
 	
 	EERIEPOLY * found = nullptr;
-	
-	for(EERIEPOLY * ep : feg->polyin) {
+	for(EERIEPOLY & polygon : tile.intersectingPolygons()) {
 		
-		if((!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
-		   && (ep->min.y < pos.y)
-		   && (pos.x >= ep->min.x) && (pos.x <= ep->max.x)
-		   && (pos.z >= ep->min.z) && (pos.z <= ep->max.z)
-		   && (PointIn2DPolyXZ(ep, pos.x, pos.z))) {
+		if((!(polygon.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
+		   && (polygon.min.y < pos.y)
+		   && (pos.x >= polygon.min.x) && (pos.x <= polygon.max.x)
+		   && (pos.z >= polygon.min.z) && (pos.z <= polygon.max.z)
+		   && (PointIn2DPolyXZ(&polygon, pos.x, pos.z))) {
 			
-			if((glm::abs(ep->max.y - ep->min.y) > 50.f) && (pos.y - ep->center.y < 60.f)) {
+			if((glm::abs(polygon.max.y - polygon.min.y) > 50.f) && (pos.y - polygon.center.y < 60.f)) {
 				continue;
 			}
 			
-			if(ep->tex != nullptr) {
-				if(found == nullptr || ep->min.y > found->min.y) {
-					found = ep;
+			if(polygon.tex != nullptr) {
+				if(found == nullptr || polygon.min.y > found->min.y) {
+					found = &polygon;
 				}
 			}
 		}
