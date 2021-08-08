@@ -462,11 +462,9 @@ static bool Cedric_IO_Visible(const Vec3f & pos) {
 		//  return false;
 		
 		Vec2s tile = ACTIVEBKG->getTile(pos);
-		
 		if(tile.x >= 1 && tile.y >= 1 && tile.x < ACTIVEBKG->m_size.x - 1 && tile.y < ACTIVEBKG->m_size.y - 1) {
-			for(long z = tile.y - 1; z <= tile.y + 1; z++)
-			for(long x = tile.x - 1; x <= tile.x + 1; x++) {
-				if(ACTIVEBKG->isTileActive(Vec2s(x, z))) {
+			for(auto neighbor : ACTIVEBKG->tilesAround(tile, 1)) {
+				if(neighbor.active()) {
 					return true;
 				}
 			}
