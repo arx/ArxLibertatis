@@ -111,12 +111,9 @@ long CountBkgVertex() {
 	
 	long count = 0;
 	
-	for(long z = 0; z < ACTIVEBKG->m_size.y; z++) {
-		for(long x = 0; x < ACTIVEBKG->m_size.x; x++) {
-			const BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
-			for(const EERIEPOLY & ep : eg.polydata) {
-				count += (ep.type & POLY_QUAD) ? 4 : 3;
-			}
+	for(auto tile : ACTIVEBKG->tiles()) {
+		for(const EERIEPOLY & ep : tile.polygons()) {
+			count += (ep.type & POLY_QUAD) ? 4 : 3;
 		}
 	}
 	
