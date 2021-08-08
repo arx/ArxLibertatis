@@ -190,7 +190,7 @@ long MakeTopObjString(Entity * entity, std::string & dest) {
 
 EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY) {
 	
-	Vec2s tile = ACTIVEBKG->getTile(poss);
+	auto tile = ACTIVEBKG->getTile(poss);
 	
 	if(tile.y <= 0 || tile.y >= ACTIVEBKG->m_size.y - 1 || tile.x <= 0 || tile.x >= ACTIVEBKG->m_size.x - 1) {
 		return nullptr;
@@ -199,70 +199,59 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY) {
 	float rx = poss.x - float(tile.x) * g_backgroundTileSize.x;
 	float rz = poss.z - float(tile.y) * g_backgroundTileSize.y;
 	
-	
-	short minx;
-	short minz;
-	short maxx;
-	short maxz;
+	Vec2s min = tile;
+	Vec2s max = tile;
 	
 	(void)checked_range_cast<short>(tile.y - 1);
 	(void)checked_range_cast<short>(tile.y + 1);
 	
 	if(rz < -40.f) {
-		minz = tile.y - 1;
-		maxz = tile.y - 1;
+		min.y = tile.y - 1;
+		max.y = tile.y - 1;
 	} else if(rz < 40.f) {
-		minz = tile.y - 1;
-		maxz = tile.y;
+		min.y = tile.y - 1;
+		max.y = tile.y;
 	} else if(rz > 60.f) {
-		minz = tile.y;
-		maxz = tile.y + 1;
-	} else {
-		minz = tile.y;
-		maxz = tile.y;
+		min.y = tile.y;
+		max.y = tile.y + 1;
 	}
 	
 	(void)checked_range_cast<short>(tile.x + 1);
 	(void)checked_range_cast<short>(tile.x - 1);
 	
 	if(rx < -40.f) {
-		minx = tile.x - 1;
-		maxx = tile.x - 1;
+		min.x = tile.x - 1;
+		max.x = tile.x - 1;
 	} else if(rx < 40.f) {
-		minx = tile.x - 1;
-		maxx = tile.x;
+		min.x = tile.x - 1;
+		max.x = tile.x;
 	} else if(rx > 60.f) {
-		minx = tile.x;
-		maxx = tile.x + 1;
-	} else {
-		minx = tile.x;
-		maxx = tile.x;
+		min.x = tile.x;
+		max.x = tile.x + 1;
 	}
 	
 	EERIEPOLY * found = nullptr;
 	float foundY = 0.f;
 	
-	for(short z = minz; z <= maxz; z++)
-	for(short x = minx; x <= maxx; x++) {
-		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
-		
-		for(EERIEPOLY * ep : feg.polyin) {
-			if(poss.x >= ep->min.x && poss.x <= ep->max.x
-			   && poss.z >= ep->min.z && poss.z <= ep->max.z
-			   && !(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
-			   && ep->max.y >= poss.y && ep != found
-			   && PointIn2DPolyXZ(ep, poss.x, poss.z)
-			   && GetTruePolyY(ep, poss, &rz)
+	// TODO why is tile.intersectingPolygons() not enough?
+	for(auto neighbour : ACTIVEBKG->tilesIn(min, max + Vec2s(1))) {
+		for(EERIEPOLY & polygon : neighbour.intersectingPolygons()) {
+			if(poss.x >= polygon.min.x && poss.x <= polygon.max.x
+			   && poss.z >= polygon.min.z && poss.z <= polygon.max.z
+			   && !(polygon.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+			   && polygon.max.y >= poss.y && &polygon != found
+			   && PointIn2DPolyXZ(&polygon, poss.x, poss.z)
+			   && GetTruePolyY(&polygon, poss, &rz)
 			   && rz >= poss.y && (!found || rz <= foundY)) {
-				found = ep;
+				found = &polygon;
 				foundY = rz;
 			}
 		}
-		
 	}
 	
-	if(needY)
+	if(needY) {
 		*needY = foundY;
+	}
 	
 	return found;
 }
