@@ -59,9 +59,9 @@ static bool PointInBBox(const Vec3f & point, const Rectf & bb) {
 	return (point.x <= bb.right && point.x >= bb.left && point.z <= bb.bottom && point.z >= bb.top);
 }
 
-void EERIEPOLY_Compute_PolyIn() {
+void BackgroundData::computeIntersectingPolygons() {
 	
-	for(auto tile : g_tiles->tiles()) {
+	for(auto tile : tiles()) {
 		
 		std::vector<EERIEPOLY *> & polygons = tile.data().polyin;
 		polygons.clear();
@@ -71,7 +71,7 @@ void EERIEPOLY_Compute_PolyIn() {
 		Rectf bb = Rectf(bbmin, bbmax);
 		Vec2f bbcenter = bb.center();
 		
-		for(auto neighbour : g_tiles->tilesAround(tile, 2)) {
+		for(auto neighbour : tilesAround(tile, 2)) {
 			for(EERIEPOLY & ep2 : neighbour.polygons()) {
 				
 				if(fartherThan(bbcenter, Vec2f(ep2.center.x, ep2.center.z), 120.f)) {

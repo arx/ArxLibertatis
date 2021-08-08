@@ -293,7 +293,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 			LogError << "Fast loading scene failed";
 		}
 		
-		EERIEPOLY_Compute_PolyIn();
+		g_tiles->computeIntersectingPolygons();
 		LastLoadedScene = scene;
 	}
 	

@@ -954,7 +954,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	
 	LogDebug("FTS: preparing scene data ...");
 	
-	EERIEPOLY_Compute_PolyIn();
+	g_tiles->computeIntersectingPolygons();
 	progressBarAdvance(3.f);
 	LoadLevelScreen();
 	
