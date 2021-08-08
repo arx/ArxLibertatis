@@ -864,25 +864,16 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	
 	ARX_PROFILE_FUNC();
 	
-	Vec2s tile = ACTIVEBKG->getTile(sphere.origin);
 	int radius = int(sphere.radius * ACTIVEBKG->m_mul.x) + 2;
-
-	int minx = std::max(tile.x - radius, 0);
-	int maxx = std::min(tile.x + radius, ACTIVEBKG->m_size.x - 1);
-	int minz = std::max(tile.y - radius, 0);
-	int maxz = std::min(tile.y + radius, ACTIVEBKG->m_size.y - 1);
-
-	for(int z = minz; z <= maxz; z++)
-	for(int x = minx; x <= maxx; x++) {
-		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
-		for(const EERIEPOLY & ep : feg.polydata) {
+	for(auto tile : ACTIVEBKG->tilesAround(ACTIVEBKG->getTile(sphere.origin), radius)) {
+		for(const EERIEPOLY & polygon : tile.polygons()) {
 			
-			if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
+			if(polygon.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 				continue;
 			}
 			
-			if(IsPolyInSphere(ep, sphere)) {
-				return &ep;
+			if(IsPolyInSphere(polygon, sphere)) {
+				return &polygon;
 			}
 			
 		}
@@ -1465,26 +1456,26 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 			}
 		}
 		
-		Vec2s tile = ACTIVEBKG->getTile(tmpPos);
-		if(!ACTIVEBKG->isTileValid(tile)) {
+		auto tile = ACTIVEBKG->getTile(tmpPos);
+		if(!tile.valid()) {
 			break;
 		}
 		
-		BackgroundTileData & eg = ACTIVEBKG->m_tileData[tile.x][tile.y];
-		for(EERIEPOLY * ep : eg.polyin) {
-			if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
-			if((ep->min.y - pas < tmpPos.y) && (ep->max.y + pas > tmpPos.y))
-			if((ep->min.x - pas < tmpPos.x) && (ep->max.x + pas > tmpPos.x))
-			if((ep->min.z - pas < tmpPos.z) && (ep->max.z + pas > tmpPos.z))
-			if(RayCollidingPoly(orgn, dest, *ep, hit)) {
+		for(EERIEPOLY & polygon : tile.intersectingPolygons()) {
+			if(!(polygon.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
+			if((polygon.min.y - pas < tmpPos.y) && (polygon.max.y + pas > tmpPos.y))
+			if((polygon.min.x - pas < tmpPos.x) && (polygon.max.x + pas > tmpPos.x))
+			if((polygon.min.z - pas < tmpPos.z) && (polygon.max.z + pas > tmpPos.z))
+			if(RayCollidingPoly(orgn, dest, polygon, hit)) {
 				float dd = fdist(orgn, *hit);
 				if(dd < nearest) {
 					nearest = dd;
-					found_ep = ep;
+					found_ep = &polygon;
 					found_hit = *hit;
 				}
 			}
 		}
+		
 	}
 	
 	if(!found_ep)
