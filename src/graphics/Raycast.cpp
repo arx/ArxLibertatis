@@ -178,17 +178,16 @@ struct ClosestHitRaycast {
 		
 		bool previouslyHadHit = (closestHit <= 1.f);
 		
-		const BackgroundTileData & eg = ACTIVEBKG->m_tileData[tile.x][tile.y];
-		for(EERIEPOLY * ep : eg.polyin) {
+		for(EERIEPOLY & polygon : ACTIVEBKG->get(tile).intersectingPolygons()) {
 			
-			if(ep->type & ignoredTypes) {
+			if(polygon.type & ignoredTypes) {
 				continue;
 			}
 			
-			float relDist = linePolyIntersection(start, dir, *ep);
+			float relDist = linePolyIntersection(start, dir, polygon);
 			if(relDist < closestHit) {
 				closestHit = relDist;
-				hitPoly = ep;
+				hitPoly = &polygon;
 			}
 			
 		}
