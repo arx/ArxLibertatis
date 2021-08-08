@@ -245,49 +245,42 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 		pb.fastdecay = true;
 	}
 	
-	// TODO copy-paste background tiles
-	Vec2s tile = ACTIVEBKG->getTile(poss);
-	int radius = 3;
-	
-	int minx = std::max(tile.x - radius, 0);
-	int maxx = std::min(tile.x + radius, ACTIVEBKG->m_size.x - 1);
-	int minz = std::max(tile.y - radius, 0);
-	int maxz = std::min(tile.y + radius, ACTIVEBKG->m_size.y - 1);
-	
-	for(int z = minz; z <= maxz; z++)
-	for(int x = minx; x <= maxx; x++) {
-		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
-		
-		for(EERIEPOLY * ep : eg.polyin) {
+	for(auto tile : ACTIVEBKG->tilesAround(ACTIVEBKG->getTile(poss), 3)) {
+		for(EERIEPOLY & polygon : tile.intersectingPolygons()) {
 			
-			if((flags & 2) && !(ep->type & POLY_WATER))
+			if((flags & 2) && !(polygon.type & POLY_WATER)) {
 				continue;
+			}
 			
-			if((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER))
+			if((polygon.type & POLY_TRANS) && !(polygon.type & POLY_WATER)) {
 				continue;
+			}
 			
-			size_t nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+			size_t nbvert = (polygon.type & POLY_QUAD) ? 4 : 3;
 			
 			bool oki = false;
 			
 			for(size_t k = 0; k < nbvert; k++) {
 				
-				if(PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].p.x, ep->v[k].p.z)
-				   && glm::abs(ep->v[k].p.y - py) < 100.f) {
+				if(PointIn2DPolyXZ(&TheoricalSplat, polygon.v[k].p.x, polygon.v[k].p.z)
+				   && glm::abs(polygon.v[k].p.y - py) < 100.f) {
 					oki = true;
 					break;
 				}
 				
-				if(PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].p.x + ep->center.x) * 0.5f, (ep->v[k].p.z + ep->center.z) * 0.5f)
-				   && glm::abs(ep->v[k].p.y - py) < 100.f) {
+				if(PointIn2DPolyXZ(&TheoricalSplat, (polygon.v[k].p.x + polygon.center.x) * 0.5f,
+				                                    (polygon.v[k].p.z + polygon.center.z) * 0.5f)
+				   && glm::abs(polygon.v[k].p.y - py) < 100.f) {
 					oki = true;
 					break;
 				}
 				
 			}
 			
-			if(!oki && PointIn2DPolyXZ(&TheoricalSplat, ep->center.x, ep->center.z) && glm::abs(ep->center.y - py) < 100.f)
+			if(!oki && PointIn2DPolyXZ(&TheoricalSplat, polygon.center.x, polygon.center.z)
+			   && glm::abs(polygon.center.y - py) < 100.f) {
 				oki = true;
+			}
 			
 			if(oki) {
 				
@@ -312,23 +305,23 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 					
 					pb.fastdecay = false;
 					
-					pb.ep = ep;
+					pb.ep = &polygon;
 					
 					pb.timecreation = now;
 					pb.rgb = col;
 					
 					for(size_t k = 0; k < nbvert; k++) {
 						
-						float vdiff = glm::abs(ep->v[k].p.y - RealSplatStart.y);
+						float vdiff = glm::abs(polygon.v[k].p.y - RealSplatStart.y);
 						
-						pb.u[k] = (ep->v[k].p.x - RealSplatStart.x) * div;
+						pb.u[k] = (polygon.v[k].p.x - RealSplatStart.x) * div;
 						if(pb.u[k] < 0.5f) {
 							pb.u[k] -= vdiff * div;
 						} else {
 							pb.u[k] += vdiff * div;
 						}
 						
-						pb.v[k] = (ep->v[k].p.z - RealSplatStart.z) * div;
+						pb.v[k] = (polygon.v[k].p.z - RealSplatStart.z) * div;
 						if(pb.v[k] < 0.5f) {
 							pb.v[k] -= vdiff * div;
 						} else {
@@ -344,8 +337,8 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 			}
 			
 		}
-		
 	}
+	
 }
 
 
