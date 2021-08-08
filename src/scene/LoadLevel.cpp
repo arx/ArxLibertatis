@@ -90,6 +90,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/LevelFormat.h"
 #include "scene/Light.h"
 
+#include "util/Range.h"
 #include "util/String.h"
 
 
@@ -565,12 +566,8 @@ void RestoreLastLoadedLightning(BackgroundData & eb) {
 	}
 	
 	size_t i = 0;
-	
-	// TODO copy-paste poly iteration
-	for(short z = 0; z < eb.m_size.y; z++)
-	for(short x = 0; x < eb.m_size.x; x++) {
-		BackgroundTileData & eg = eb.m_tileData[x][z];
-		for(EERIEPOLY & ep : eg.polydata) {
+	for(auto tile : eb.tiles<util::GridYXIterator>()) {
+		for(EERIEPOLY & ep : tile.polygons()) {
 			long nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
 			for(long k = 0; k < nbvert; k++) {
 				if(i >= g_levelLighting.size()) {
