@@ -21,7 +21,9 @@
 #define ARX_UTIL_RANGE_H
 
 #include <utility>
+#include <type_traits>
 
+#include "math/Types.h"
 #include "platform/Platform.h"
 
 namespace util {
@@ -149,6 +151,149 @@ auto dereference(Base && base) {
 		arx_assert(pointer);
 		return *pointer;
 	});
+}
+
+template <typename Vector>
+struct GridXYIterator {
+	
+	static_assert(std::is_integral_v<typename Vector::value_type>);
+	typedef Vector value_type;
+	
+	struct Sentinel { };
+	
+	constexpr GridXYIterator(Vector begin, Vector end) noexcept
+		: m_pos(begin)
+		, m_end(end)
+		, m_minY(begin.y)
+	{
+		arx_assume(m_pos.x <= m_end.x && m_pos.y <= m_end.y);
+		if(m_minY == m_end.y) {
+			m_pos = m_end;
+		}
+	}
+	
+	[[nodiscard]] Vector operator*() const noexcept {
+		arx_assume(m_pos.x < m_end.x && m_pos.y < m_end.y && m_pos.y >= m_minY);
+		return m_pos;
+	}
+	
+	[[nodiscard]] const Vector * operator->() const noexcept {
+		return &m_pos;
+	}
+	
+	void operator++() noexcept {
+		m_pos.y++;
+		if(m_pos.y == m_end.y) {
+			m_pos.y = m_minY;
+			m_pos.x++;
+		}
+	}
+	
+	[[nodiscard]] constexpr bool operator==(Sentinel /* sentinel */) const noexcept {
+		return m_pos.x == m_end.x;
+	}
+	
+	[[nodiscard]] constexpr bool operator!=(Sentinel /* sentinel */) const noexcept {
+		return m_pos.x != m_end.x;
+	}
+	
+private:
+	
+	Vector m_pos;
+	Vector m_end;
+	typename Vector::value_type m_minY;
+	
+};
+
+template <typename Vector>
+struct GridYXIterator {
+	
+	static_assert(std::is_integral_v<typename Vector::value_type>);
+	typedef Vector value_type;
+	
+	struct Sentinel { };
+	
+	constexpr GridYXIterator(Vector begin, Vector end) noexcept
+		: m_pos(begin)
+		, m_end(end)
+		, m_minX(begin.x)
+	{
+		arx_assume(m_pos.x <= m_end.x && m_pos.y <= m_end.y);
+		if(m_minX == m_end.x) {
+			m_pos = m_end;
+		}
+	}
+	
+	[[nodiscard]] Vector operator*() const noexcept {
+		arx_assume(m_pos.x < m_end.x && m_pos.y < m_end.y && m_pos.x >= m_minX);
+		return m_pos;
+	}
+	
+	[[nodiscard]] const Vector * operator->() const noexcept {
+		return &m_pos;
+	}
+	
+	void operator++() noexcept {
+		m_pos.x++;
+		if(m_pos.x == m_end.x) {
+			m_pos.x = m_minX;
+			m_pos.y++;
+		}
+	}
+	
+	[[nodiscard]] constexpr bool operator==(Sentinel /* sentinel */) const noexcept {
+		return m_pos.y == m_end.y;
+	}
+	
+	[[nodiscard]] constexpr bool operator!=(Sentinel /* sentinel */) const noexcept {
+		return m_pos.y != m_end.y;
+	}
+	
+private:
+	
+	Vector m_pos;
+	Vector m_end;
+	typename Vector::value_type m_minX;
+	
+};
+
+template <typename Vector, template <typename T> typename Iterator>
+struct GridRange {
+	
+	typedef Iterator<Vector> iterator;
+	typedef Vector value_type;
+	typedef typename iterator::Sentinel sentinel;
+	
+	constexpr GridRange(Vector begin, Vector end) noexcept : m_begin(begin), m_end(end) { }
+	
+	[[nodiscard]] constexpr iterator begin() const noexcept {
+		return { m_begin, m_end };
+	}
+	
+	[[nodiscard]] static constexpr sentinel end() noexcept {
+		return { };
+	}
+	
+private:
+	
+	Vector m_begin;
+	Vector m_end;
+	
+};
+
+template <typename Vector>
+auto gridXY(Vector begin, Vector end) {
+	return GridRange<Vector, GridXYIterator>(begin, end);
+}
+
+template <typename Vector>
+auto gridYX(Vector begin, Vector end) {
+	return GridRange<Vector, GridYXIterator>(begin, end);
+}
+
+template <typename Vector>
+auto grid(Vector begin, Vector end) {
+	return gridXY(begin, end);
 }
 
 } // namespace util
