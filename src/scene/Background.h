@@ -62,9 +62,10 @@ private:
 	
 	//! Tile data accessor
 	template <typename T>
-	class Tile : public Vec2s {
+	class TileView {
 		
 		T * m_base;
+		Vec2s m_tile;
 		
 		[[nodiscard]] auto & data() const noexcept {
 			arx_assume(x >= 0 && x < m_size.x && y >= 0 && y < m_size.y);
@@ -73,10 +74,17 @@ private:
 		
 	public:
 		
-		Tile(T * base, Vec2s tile) : Vec2s(tile), m_base(base) { }
+		const s16 & x;
+		const s16 & y;
+		
+		TileView(T * base, Vec2s tile) : m_base(base), m_tile(tile), x(m_tile.x), y(m_tile.y) { }
 		
 		[[nodiscard]] Vec2s index() const noexcept {
-			return *this;
+			return m_tile;
+		}
+		template <class U, glm::qualifier Q>
+		[[nodiscard]] operator glm::vec<2, U, Q>() const noexcept {
+			return m_tile;
 		}
 		
 		[[nodiscard]] Rectf bounds() const noexcept {
@@ -131,10 +139,10 @@ public:
 	std::vector<ANCHOR_DATA> m_anchors;
 	
 	[[nodiscard]] auto get(Vec2s tile) {
-		return Tile(this, tile);
+		return TileView(this, tile);
 	}
 	[[nodiscard]] auto get(Vec2s tile) const {
-		return Tile(this, tile);
+		return TileView(this, tile);
 	}
 	
 	[[nodiscard]] auto getTile(Vec3f pos) {
