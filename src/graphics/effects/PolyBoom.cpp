@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/PolyBoom.h"
 
+#include <array>
+
 #include "animation/AnimationRender.h"
 
 #include "core/Application.h"
@@ -392,7 +394,7 @@ void PolyBoomDraw() {
 				float tt = t / pb.tolive * 0.8f;
 				ColorRGBA col = (player.m_improve ? (Color3f::red * (tt * 0.5f)) : Color3f::gray(tt)).toRGB();
 				
-				TexturedVertexUntransformed ltv[4];
+				std::array<TexturedVertexUntransformed, 4> ltv;
 				
 				for(long k = 0; k < pb.nbvert; k++) {
 					ltv[k].p = pb.ep->v[k].p;
@@ -408,9 +410,9 @@ void PolyBoomDraw() {
 				}
 				mat.setTexture(Boom);
 				
-				drawTriangle(mat, &ltv[0]);
+				drawTriangle(mat, ltv.data());
 				if(pb.nbvert == 4) {
-					drawTriangle(mat, &ltv[1]);
+					drawTriangle(mat, ltv.data() + 1);
 				}
 				
 				break;
@@ -422,7 +424,7 @@ void PolyBoomDraw() {
 				float tr = std::max(1.f, tt * 2 - 0.5f);
 				ColorRGBA col = Color4f(pb.rgb * tt, glm::clamp(tt * 1.5f, 0.f, 1.f)).toRGBA();
 				
-				TexturedVertexUntransformed ltv[4];
+				std::array<TexturedVertexUntransformed, 4> ltv;
 				
 				for(long k = 0; k < pb.nbvert; k++) {
 					ltv[k].p = pb.ep->v[k].p;
@@ -434,21 +436,22 @@ void PolyBoomDraw() {
 				mat.setBlendType(RenderMaterial::Subtractive2);
 				mat.setTexture(pb.tc);
 				
-				drawTriangle(mat, &ltv[0]);
+				drawTriangle(mat, ltv.data());
 				if(pb.nbvert == 4) {
-					drawTriangle(mat, &ltv[1]);
+					drawTriangle(mat, ltv.data() + 1);
 				}
 				
 				break;
 			}
 			
 			case WaterDecal: {
+				
 				float tt = t / pb.tolive;
 				float tr = std::max(1.f, tt * 2 - 0.5f);
 				float ttt = tt * 0.5f;
 				ColorRGBA col = (pb.rgb * ttt).toRGB();
 				
-				TexturedVertexUntransformed ltv[4];
+				std::array<TexturedVertexUntransformed, 4> ltv;
 				
 				for(long k = 0; k < pb.nbvert; k++) {
 					ltv[k].p = pb.ep->v[k].p;
@@ -480,9 +483,9 @@ void PolyBoomDraw() {
 				mat.setBlendType(RenderMaterial::Screen);
 				mat.setTexture(pb.tc);
 				
-				drawTriangle(mat, &ltv[0]);
+				drawTriangle(mat, ltv.data());
 				if(pb.nbvert == 4) {
-					drawTriangle(mat, &ltv[1]);
+					drawTriangle(mat, ltv.data() + 1);
 				}
 				
 				break;
