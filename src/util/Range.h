@@ -20,8 +20,8 @@
 #ifndef ARX_UTIL_RANGE_H
 #define ARX_UTIL_RANGE_H
 
-#include <utility>
 #include <type_traits>
+#include <utility>
 
 #include "math/Types.h"
 #include "platform/Platform.h"
@@ -104,7 +104,7 @@ public:
 	
 };
 
-template <typename Base, typename Adaptor, typename Iterator>
+template <typename Base, template <typename B, typename E, typename A> typename Iterator, typename Adaptor>
 class RangeAdaptor {
 	
 	Base m_base;
@@ -112,8 +112,10 @@ class RangeAdaptor {
 	
 public:
 	
-	typedef Iterator iterator;
-	typedef typename Iterator::Sentinel sentinel;
+	typedef decltype(std::declval<Base>().begin()) BaseIterator;
+	typedef decltype(std::declval<Base>().end()) BaseEnd;
+	typedef Iterator<BaseIterator, BaseEnd, Adaptor> iterator;
+	typedef typename iterator::Sentinel sentinel;
 	
 	RangeAdaptor(Base && base, Adaptor && adaptor)
 		: m_base(std::forward<Base>(base)), m_adaptor(std::forward<Adaptor>(adaptor))
@@ -134,15 +136,13 @@ public:
 };
 
 template <typename Base, typename Filter>
-auto filter(Base && base, Filter && filter) {
-	typedef FilterIterator<decltype(base.begin()), decltype(base.end()), Filter> Iterator;
-	return RangeAdaptor<Base, Filter, Iterator>{ std::forward<Base>(base), std::forward<Filter>(filter) };
+auto filter(Base && base, Filter && filter) -> RangeAdaptor<Base, FilterIterator, Filter> {
+	return { std::forward<Base>(base), std::forward<Filter>(filter) };
 }
 
 template <typename Base, typename Transform>
-auto transform(Base && base, Transform && transform) {
-	typedef TransformIterator<decltype(base.begin()), decltype(base.end()), Transform> Iterator;
-	return RangeAdaptor<Base, Transform, Iterator>{ std::forward<Base>(base), std::forward<Transform>(transform) };
+auto transform(Base && base, Transform && transform) -> RangeAdaptor<Base, TransformIterator, Transform> {
+	return { std::forward<Base>(base), std::forward<Transform>(transform) };
 }
 
 template <typename Base>
