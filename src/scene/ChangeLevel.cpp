@@ -673,11 +673,9 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		}
 	}
 	
-	for(size_t bag = 0; bag < INVENTORY_BAGS; bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		storeIdString(asp->id_inventory[bag][x][y], g_inventory[bag][x][y].io);
-		asp->inventory_show[bag][x][y] = g_inventory[bag][x][y].show;
+	for(Vec3s slot : util::gridZXY(Vec3s(0), Vec3s(INVENTORY_X, INVENTORY_Y, INVENTORY_BAGS))) {
+		storeIdString(asp->id_inventory[slot.z][slot.x][slot.y], g_inventory[slot.z][slot.x][slot.y].io);
+		asp->inventory_show[slot.z][slot.x][slot.y] = g_inventory[slot.z][slot.x][slot.y].show;
 	}
 	
 	if(g_draggedEntity) {
