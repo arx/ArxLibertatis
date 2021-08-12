@@ -659,7 +659,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	float anything = 999999.f;
 	
 	// TODO should this be tilesAround(cyl.origin, cyl.radius)
-	int radius = int((cyl.radius + g_backgroundTileSize.x) * g_tiles->m_mul.x);
+	u16 radius = u16((cyl.radius + g_backgroundTileSize.x) * g_tiles->m_mul.x);
 	for(auto tile : g_tiles->tilesAround(g_tiles->getTile(cyl.origin), radius)) {
 		
 		float nearest = 99999999.f;
@@ -864,7 +864,7 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	
 	ARX_PROFILE_FUNC();
 	
-	int radius = int(sphere.radius * g_tiles->m_mul.x) + 2;
+	u16 radius = u16(sphere.radius * g_tiles->m_mul.x) + 2;
 	for(auto tile : g_tiles->tilesAround(g_tiles->getTile(sphere.origin), radius)) {
 		for(const EERIEPOLY & polygon : tile.polygons()) {
 			
