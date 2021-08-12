@@ -42,6 +42,7 @@ template <class T, int N> struct vec_traits {
 typedef vec_traits<s32, 2>::type Vec2i;
 typedef vec_traits<s16, 2>::type Vec2s;
 typedef vec_traits<f32, 2>::type Vec2f;
+typedef vec_traits<s16, 3>::type Vec3s;
 typedef vec_traits<f32, 3>::type Vec3f;
 typedef vec_traits<f32, 4>::type Vec4f;
 
