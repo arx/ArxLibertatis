@@ -143,15 +143,15 @@ void PutInFrontOfPlayer(Entity * io) {
 		}
 	}
 	
-	io->angle = Anglef();
 	
 	if(g_draggedEntity == io) {
 		setDraggedEntity(nullptr);
 	}
 	
-	io->show = SHOW_FLAG_IN_SCENE;
-	
 	removeFromInventories(io);
+	
+	io->angle = Anglef();
+	io->show = SHOW_FLAG_IN_SCENE;
 	
 	Sphere limit(player.pos + Vec3f(0.f, 20.f, 0.f), 80);
 	Vec3f dir = angleToVectorXZ(player.angle.getYaw());
