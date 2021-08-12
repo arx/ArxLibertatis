@@ -381,6 +381,8 @@ void PolyBoomDraw() {
 		
 		POLYBOOM & pb = *itr;
 		
+		arx_assume(pb.nbvert == 3 || pb.nbvert == 4);
+		
 		GameDuration t = pb.timecreation + pb.tolive - now;
 		
 		switch(pb.type) {
@@ -407,7 +409,7 @@ void PolyBoomDraw() {
 				mat.setTexture(Boom);
 				
 				drawTriangle(mat, &ltv[0]);
-				if(pb.nbvert & 4) {
+				if(pb.nbvert == 4) {
 					drawTriangle(mat, &ltv[1]);
 				}
 				
@@ -433,7 +435,7 @@ void PolyBoomDraw() {
 				mat.setTexture(pb.tc);
 				
 				drawTriangle(mat, &ltv[0]);
-				if(pb.nbvert & 4) {
+				if(pb.nbvert == 4) {
 					drawTriangle(mat, &ltv[1]);
 				}
 				
@@ -455,19 +457,23 @@ void PolyBoomDraw() {
 					ltv[k].color = col;
 				}
 				
-				if(ltv[0].uv.x < 0.f && ltv[1].uv.x < 0.f && ltv[2].uv.x < 0.f && ltv[3].uv.x < 0.f) {
+				if(ltv[0].uv.x < 0.f && ltv[1].uv.x < 0.f && ltv[2].uv.x < 0.f
+				   && (pb.nbvert != 4 || ltv[3].uv.x < 0.f)) {
 					break;
 				}
 				
-				if(ltv[0].uv.y < 0.f && ltv[1].uv.y < 0.f && ltv[2].uv.y < 0.f && ltv[3].uv.y < 0.f) {
+				if(ltv[0].uv.y < 0.f && ltv[1].uv.y < 0.f && ltv[2].uv.y < 0.f
+				   && (pb.nbvert != 4 || ltv[3].uv.y < 0.f)) {
 					break;
 				}
 				
-				if(ltv[0].uv.x > 1.f && ltv[1].uv.x > 1.f && ltv[2].uv.x > 1.f && ltv[3].uv.x > 1.f) {
+				if(ltv[0].uv.x > 1.f && ltv[1].uv.x > 1.f && ltv[2].uv.x > 1.f
+				   && (pb.nbvert != 4 || ltv[3].uv.x > 1.f)) {
 					break;
 				}
 				
-				if(ltv[0].uv.y > 1.f && ltv[1].uv.y > 1.f && ltv[2].uv.y > 1.f && ltv[3].uv.y > 1.f) {
+				if(ltv[0].uv.y > 1.f && ltv[1].uv.y > 1.f && ltv[2].uv.y > 1.f
+				   && (pb.nbvert != 4 || ltv[3].uv.y > 1.f)) {
 					break;
 				}
 				
@@ -475,7 +481,7 @@ void PolyBoomDraw() {
 				mat.setTexture(pb.tc);
 				
 				drawTriangle(mat, &ltv[0]);
-				if(pb.nbvert & 4) {
+				if(pb.nbvert == 4) {
 					drawTriangle(mat, &ltv[1]);
 				}
 				
