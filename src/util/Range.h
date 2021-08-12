@@ -178,7 +178,7 @@ struct GridXYIterator {
 	}
 	
 	[[nodiscard]] const Vector * operator->() const noexcept {
-		return &m_pos;
+		return &**this;
 	}
 	
 	void operator++() noexcept {
@@ -230,7 +230,7 @@ struct GridYXIterator {
 	}
 	
 	[[nodiscard]] const Vector * operator->() const noexcept {
-		return &m_pos;
+		return &**this;
 	}
 	
 	void operator++() noexcept {
@@ -254,6 +254,183 @@ private:
 	Vector m_pos;
 	Vector m_end;
 	typename Vector::value_type m_minX;
+	
+};
+
+template <typename Vector>
+struct GridXYZIterator {
+	
+	static_assert(std::is_integral_v<typename Vector::value_type>);
+	typedef Vector value_type;
+	
+	struct Sentinel { };
+	
+	constexpr GridXYZIterator(Vector begin, Vector end) noexcept
+		: m_pos(begin)
+		, m_end(end)
+		, m_minY(begin.y)
+		, m_minZ(begin.z)
+	{
+		arx_assume(m_pos.x <= m_end.x && m_pos.y <= m_end.y && m_pos.z <= m_end.z);
+		if(m_minY == m_end.y || m_minZ == m_end.z) {
+			m_pos = m_end;
+		}
+	}
+	
+	[[nodiscard]] Vector operator*() const noexcept {
+		arx_assume(m_pos.x < m_end.x && m_pos.y < m_end.y && m_pos.z < m_end.z
+		           && m_pos.y >= m_minY && m_pos.z >= m_minZ);
+		return m_pos;
+	}
+	
+	[[nodiscard]] const Vector * operator->() const noexcept {
+		return &**this;
+	}
+	
+	void operator++() noexcept {
+		m_pos.z++;
+		if(m_pos.z == m_end.z) {
+			m_pos.z = m_minZ;
+			m_pos.y++;
+			if(m_pos.y == m_end.y) {
+				m_pos.y = m_minY;
+				m_pos.x++;
+			}
+		}
+	}
+	
+	[[nodiscard]] constexpr bool operator==(Sentinel /* sentinel */) const noexcept {
+		return m_pos.x == m_end.x;
+	}
+	
+	[[nodiscard]] constexpr bool operator!=(Sentinel /* sentinel */) const noexcept {
+		return m_pos.x != m_end.x;
+	}
+	
+private:
+	
+	Vector m_pos;
+	Vector m_end;
+	typename Vector::value_type m_minY;
+	typename Vector::value_type m_minZ;
+	
+};
+
+template <typename Vector>
+struct GridZXYIterator {
+	
+	static_assert(std::is_integral_v<typename Vector::value_type>);
+	typedef Vector value_type;
+	
+	struct Sentinel { };
+	
+	constexpr GridZXYIterator(Vector begin, Vector end) noexcept
+		: m_pos(begin)
+		, m_end(end)
+		, m_minX(begin.x)
+		, m_minY(begin.y)
+	{
+		arx_assume(m_pos.x <= m_end.x && m_pos.y <= m_end.y && m_pos.z <= m_end.z);
+		if(m_minX == m_end.x || m_minY == m_end.y) {
+			m_pos = m_end;
+		}
+	}
+	
+	[[nodiscard]] Vector operator*() const noexcept {
+		arx_assume(m_pos.x < m_end.x && m_pos.y < m_end.y && m_pos.z < m_end.z
+		           && m_pos.x >= m_minX && m_pos.y >= m_minY);
+		return m_pos;
+	}
+	
+	[[nodiscard]] const Vector * operator->() const noexcept {
+		return &**this;
+	}
+	
+	void operator++() noexcept {
+		m_pos.y++;
+		if(m_pos.y == m_end.y) {
+			m_pos.y = m_minY;
+			m_pos.x++;
+			if(m_pos.x == m_end.x) {
+				m_pos.x = m_minX;
+				m_pos.z++;
+			}
+		}
+	}
+	
+	[[nodiscard]] constexpr bool operator==(Sentinel /* sentinel */) const noexcept {
+		return m_pos.z == m_end.z;
+	}
+	
+	[[nodiscard]] constexpr bool operator!=(Sentinel /* sentinel */) const noexcept {
+		return m_pos.z != m_end.z;
+	}
+	
+private:
+	
+	Vector m_pos;
+	Vector m_end;
+	typename Vector::value_type m_minX;
+	typename Vector::value_type m_minY;
+	
+};
+
+template <typename Vector>
+struct GridZYXIterator {
+	
+	static_assert(std::is_integral_v<typename Vector::value_type>);
+	typedef Vector value_type;
+	
+	struct Sentinel { };
+	
+	constexpr GridZYXIterator(Vector begin, Vector end) noexcept
+		: m_pos(begin)
+		, m_end(end)
+		, m_minX(begin.x)
+		, m_minY(begin.y)
+	{
+		arx_assume(m_pos.x <= m_end.x && m_pos.y <= m_end.y && m_pos.z <= m_end.z);
+		if(m_minX == m_end.x || m_minY == m_end.y) {
+			m_pos = m_end;
+		}
+	}
+	
+	[[nodiscard]] Vector operator*() const noexcept {
+		arx_assume(m_pos.x < m_end.x && m_pos.y < m_end.y && m_pos.z < m_end.z
+		           && m_pos.x >= m_minX && m_pos.y >= m_minY);
+		return m_pos;
+	}
+	
+	[[nodiscard]] const Vector * operator->() const noexcept {
+		return &**this;
+	}
+	
+	void operator++() noexcept {
+		m_pos.x++;
+		if(m_pos.x == m_end.x) {
+			m_pos.x = m_minX;
+			m_pos.y++;
+			if(m_pos.y == m_end.y) {
+				m_pos.y = m_minY;
+				m_pos.z++;
+			}
+		}
+	}
+	
+	[[nodiscard]] constexpr bool operator==(Sentinel /* sentinel */) const noexcept {
+		return m_pos.z == m_end.z;
+	}
+	
+	[[nodiscard]] constexpr bool operator!=(Sentinel /* sentinel */) const noexcept {
+		return m_pos.z != m_end.z;
+	}
+	
+private:
+	
+	Vector m_pos;
+	Vector m_end;
+	typename Vector::value_type m_minX;
+	typename Vector::value_type m_minY;
 	
 };
 
@@ -292,8 +469,28 @@ auto gridYX(Vector begin, Vector end) {
 }
 
 template <typename Vector>
-auto grid(Vector begin, Vector end) {
+auto gridXYZ(Vector begin, Vector end) {
+	return GridRange<Vector, GridXYZIterator>(begin, end);
+}
+
+template <typename Vector>
+auto gridZXY(Vector begin, Vector end) {
+	return GridRange<Vector, GridZXYIterator>(begin, end);
+}
+
+template <typename Vector>
+auto gridZYX(Vector begin, Vector end) {
+	return GridRange<Vector, GridZYXIterator>(begin, end);
+}
+
+template <typename T, glm::qualifier Q>
+auto grid(glm::vec<2, T, Q> begin, glm::vec<2, T, Q> end) {
 	return gridXY(begin, end);
+}
+
+template <typename T, glm::qualifier Q>
+auto grid(glm::vec<3, T, Q> begin, glm::vec<3, T, Q> end) {
+	return gridXYZ(begin, end);
 }
 
 } // namespace util
