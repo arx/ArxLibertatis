@@ -1575,14 +1575,12 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	g_draggedEntity = ConvertToValidIO(asp->draggedEntity);
 	
-	for(size_t bag = 0; bag < SAVED_INVENTORY_BAGS; bag++)
-	for(size_t y = 0; y < SAVED_INVENTORY_Y; y++)
-	for(size_t x = 0; x < SAVED_INVENTORY_X; x++) {
-		Entity * item = ConvertToValidIO(asp->id_inventory[bag][x][y]);
+	for(Vec3s slot : util::gridZYX(Vec3s(0), Vec3s(INVENTORY_X, INVENTORY_Y, INVENTORY_BAGS))) {
+		Entity * item = ConvertToValidIO(asp->id_inventory[slot.z][slot.x][slot.y]);
 		if(!item || locateInInventories(item).io == EntityHandle_Player) {
 			continue;
 		}
-		if(!insertIntoInventoryAtNoEvent(item, InventoryPos(EntityHandle_Player, bag, x, y))) {
+		if(!insertIntoInventoryAtNoEvent(item, InventoryPos(EntityHandle_Player, slot.z, slot.x, slot.y))) {
 			LogWarning << "Could not load item " << item->idString() << " into player inventory";
 			PutInFrontOfPlayer(item);
 		}
