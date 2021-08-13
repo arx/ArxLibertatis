@@ -45,8 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GAME_INVENTORY_H
 
 #include <stddef.h>
-#include <string_view>
 #include <ostream>
+#include <string_view>
 #include <utility>
 
 #include "game/GameTypes.h"
@@ -69,14 +69,14 @@ struct INVENTORY_SLOT {
 
 struct INVENTORY_DATA {
 	
-	Entity * io;
-	Vec2s m_size;
+	Entity * m_owner;
+	Vec3s m_size;
 	INVENTORY_SLOT slot[20][20];
 	
-	INVENTORY_DATA()
-		: io(nullptr)
-		, m_size(Vec2s(0, 0))
-	{}
+	INVENTORY_DATA(Entity * owner, Vec2s size)
+		: m_owner(owner)
+		, m_size(size, 1)
+	{ }
 	
 	~INVENTORY_DATA();
 	

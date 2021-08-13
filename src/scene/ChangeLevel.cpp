@@ -1237,11 +1237,11 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		memset(aids, 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
 		
 		INVENTORY_DATA * inv = io->inventory;
-		storeIdString(aids->io, inv->io);
+		storeIdString(aids->io, io);
 		aids->sizex = inv->m_size.x;
 		aids->sizey = inv->m_size.y;
 		
-		for(Vec2s slot : util::grid(Vec2s(0), inv->m_size)) {
+		for(Vec2s slot : util::grid(Vec2s(0), Vec2s(inv->m_size))) {
 			aids->initio[slot.x][slot.y][0] = 0;
 			if(inv->slot[slot.x][slot.y].io) {
 				storeIdString(aids->slot_io[slot.x][slot.y], inv->slot[slot.x][slot.y].io);
@@ -2106,9 +2106,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 				= reinterpret_cast<const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
 			
-			io->inventory = new INVENTORY_DATA();
-			io->inventory->io = io;
-			io->inventory->m_size = Vec2s(aids->sizex, aids->sizey);
+			io->inventory = new INVENTORY_DATA(io, Vec2s(aids->sizex, aids->sizey));
 			
 			for(long x = 0; x < aids->sizex; x++)
 			for(long y = 0; y < aids->sizey; y++) {
