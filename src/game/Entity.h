@@ -71,7 +71,7 @@ struct ANIM_HANDLE;
 struct Zone;
 struct ARX_USE_PATH;
 struct EERIE_3DOBJ;
-struct INVENTORY_DATA;
+class INVENTORY_DATA;
 struct IO_CAMDATA;
 struct IO_FIXDATA;
 struct IO_ITEMDATA;
