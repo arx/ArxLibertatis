@@ -45,10 +45,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GAME_INVENTORY_H
 
 #include <stddef.h>
+#include <limits>
 #include <ostream>
 #include <string_view>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 #include "game/GameTypes.h"
 #include "math/Types.h"
@@ -71,13 +73,10 @@ struct INVENTORY_SLOT {
 
 class INVENTORY_DATA {
 	
-public:
-	
 	Entity * m_owner;
-	Vec3s m_size;
-	INVENTORY_SLOT slot[20][20];
-	
-private:
+	const Vec2s m_size;
+	size_t m_bags;
+	std::vector<INVENTORY_SLOT> m_slots;
 	
 	//! Tile data accessor
 	template <bool Mutable>
@@ -85,12 +84,18 @@ private:
 		
 		typedef std::conditional_t<Mutable, INVENTORY_DATA, const INVENTORY_DATA> Base;
 		
-		Base * m_inventory;
+		Base * const m_inventory;
 		Vec3s m_slot;
 		
 		[[nodiscard]] auto & data() const noexcept {
 			arx_assume(x >= 0 && x < m_inventory->size().x && y >= 0 && y < m_inventory->size().y);
 			return m_inventory->slot[x][y];
+		}
+		
+		[[nodiscard]] size_t index() const noexcept {
+			Vec2s size = m_inventory->size();
+			arx_assume(size.x > 0 && size.y > 0);
+			return (size_t(bag) * size_t(size.x) + size_t(x)) * size_t(size.y) + y;
 		}
 		
 	public:
@@ -108,8 +113,8 @@ private:
 			, bag(m_slot.z)
 			, x(m_slot.x)
 			, y(m_slot.y)
-			, entity(inventory->slot[x][y].io)
-			, show(inventory->slot[x][y].show)
+			, entity(inventory->m_slots[index()].io)
+			, show(inventory->m_slots[index()].show)
 		{ }
 		
 		[[nodiscard]] Vec3s slot() const noexcept {
@@ -120,7 +125,7 @@ private:
 		}
 		
 		[[nodiscard]] operator std::conditional_t<Mutable, INVENTORY_SLOT, const INVENTORY_SLOT> &() const noexcept {
-			return m_inventory->slot[x][y];
+			return m_inventory->m_slots[index()];
 		}
 		
 	};
@@ -129,17 +134,22 @@ public:
 	
 	INVENTORY_DATA(Entity * owner, Vec2s size)
 		: m_owner(owner)
-		, m_size(size, 1)
-	{ }
+		, m_size(size)
+		, m_bags(1)
+	{
+		arx_assume(size.x > 0 && size.y > 0 && m_bags > 0);
+		m_slots.resize(m_bags * size_t(size.x) * size_t(size.y));
+	}
 	
 	~INVENTORY_DATA();
 	
 	[[nodiscard]] Vec3s size() const noexcept {
-		return m_size;
+		arx_assume(m_bags <= std::numeric_limits<s16>::max());
+		return { m_size, s16(m_bags) };
 	}
 	
 	[[nodiscard]] size_t bags() const noexcept {
-		return size_t(m_size.z);
+		return m_bags;
 	}
 	
 	[[nodiscard]] SlotView<true> get(Vec3s slot) noexcept {
@@ -153,18 +163,18 @@ public:
 	//! Returns an iterable over all slots
 	template <template <typename T> typename Iterator = util::GridZXYIterator>
 	[[nodiscard]] auto slots() noexcept {
-		return util::transform(util::GridRange<Vec3s, Iterator>(Vec3s(0), m_size), [this](Vec3s slot) {
+		return util::transform(util::GridRange<Vec3s, Iterator>(Vec3s(0), size()), [this](Vec3s slot) {
 			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
-			           && slot.z >= 0 && slot.y < m_size.z);
+			           && slot.z >= 0 && size_t(slot.z) < m_bags);
 			return get(slot);
 		});
 	}
 	//! Returns an iterable over all slots
 	template <template <typename T> typename Iterator = util::GridZXYIterator>
 	[[nodiscard]] auto slots() const noexcept {
-		return util::transform(util::GridRange<Vec3s, Iterator>(Vec3s(0), m_size), [this](Vec3s slot) {
+		return util::transform(util::GridRange<Vec3s, Iterator>(Vec3s(0), size()), [this](Vec3s slot) {
 			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
-			           && slot.z >= 0 && slot.y < m_size.z);
+			           && slot.z >= 0 && size_t(slot.z) < m_bags);
 			return get(slot);
 		});
 	}
@@ -187,16 +197,17 @@ public:
 	template <template <typename T> typename Iterator = util::GridZXYIterator>
 	[[nodiscard]] auto slotsInOrder() noexcept {
 		const bool swap = (m_size.y > m_size.x);
-		Vec3s max = m_size;
+		Vec3s max = size();
 		if(swap) {
 			std::swap(max.x, max.y);
 		}
+		arx_assume(max.z > 0);
 		return util::transform(util::GridRange<Vec3s, Iterator>(Vec3s(0), max), [swap, this](Vec3s slot) {
 			if(swap) {
 				std::swap(slot.x, slot.y);
 			}
 			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
-			           && slot.z >= 0 && slot.y < m_size.z);
+			           && slot.z >= 0 && size_t(slot.z) < m_bags);
 			return get(slot);
 		});
 	}
@@ -204,16 +215,17 @@ public:
 	template <template <typename T> typename Iterator = util::GridZXYIterator>
 	[[nodiscard]] auto slotsInOrder() const noexcept {
 		const bool swap = (m_size.y > m_size.x);
-		Vec3s max = m_size;
+		Vec3s max = size();
 		if(swap) {
 			std::swap(max.x, max.y);
 		}
+		arx_assume(max.z > 0);
 		return util::transform(util::GridRange<Vec3s, Iterator>(Vec3s(0), max), [swap, this](Vec3s slot) {
 			if(swap) {
 				std::swap(slot.x, slot.y);
 			}
 			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
-			           && slot.z >= 0 && slot.y < m_size.z);
+			           && slot.z >= 0 && size_t(slot.z) < m_bags);
 			return get(slot);
 		});
 	}
@@ -221,7 +233,7 @@ public:
 	//! Returns an iterable over all slots
 	template <template <typename T> typename Iterator = util::GridXYIterator>
 	[[nodiscard]] auto bag(size_t bag) noexcept {
-		arx_assume(m_size.z > 0 && bag < size_t(m_size.z));
+		arx_assume(m_bags > 0 && bag < m_bags && bag <= std::numeric_limits<s16>::max());
 		return util::transform(util::GridRange<Vec2s, Iterator>(Vec2s(0), m_size), [bag, this](Vec2s slot) {
 			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y);
 			return get(Vec3s(slot, s16(bag)));
@@ -230,7 +242,7 @@ public:
 	//! Returns an iterable over all slots
 	template <template <typename T> typename Iterator = util::GridXYIterator>
 	[[nodiscard]] auto bag(size_t bag) const noexcept {
-		arx_assume(m_size.z > 0 && bag < size_t(m_size.z));
+		arx_assume(m_bags > 0 && bag < m_bags && bag <= std::numeric_limits<s16>::max());
 		return util::transform(util::GridRange<Vec2s, Iterator>(Vec2s(0), m_size), [bag, this](Vec2s slot) {
 			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y);
 			return get(Vec3s(slot, s16(bag)));
