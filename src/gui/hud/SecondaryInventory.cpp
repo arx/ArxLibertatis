@@ -122,7 +122,7 @@ void SecondaryInventoryHud::init() {
 
 static Entity * getSecondaryOrStealInvEntity() {
 	if(SecondaryInventory) {
-		return SecondaryInventory->io;
+		return SecondaryInventory;
 	}
 	if(player.Interface & INTER_STEAL) {
 		return ioSteal;
@@ -173,29 +173,31 @@ void SecondaryInventoryHud::updateRect() {
 }
 
 void SecondaryInventoryHud::draw() {
-	const INVENTORY_DATA * inventory = TSecondaryInventory;
 	
-	if(!inventory)
+	const Entity * container = TSecondaryInventory;
+	
+	if(!container) {
 		return;
+	}
 	
 	bool _bSteal = (player.Interface & INTER_STEAL) != 0;
 	
 	arx_assert(m_defaultBackground);
 	ingame_inventory = m_defaultBackground;
-	if(inventory->io && !inventory->io->inventory_skin.empty()) {
-		
-		res::path file = "graph/interface/inventory" / inventory->io->inventory_skin;
+	if(!container->inventory_skin.empty()) {
+		res::path file = "graph/interface/inventory" / container->inventory_skin;
 		TextureContainer * tc = TextureContainer::LoadUI(file);
-		if(tc)
+		if(tc) {
 			ingame_inventory = tc;
+		}
 	}
 	
 	EERIEDrawBitmap(m_rect, 0.001f, ingame_inventory, Color::white);
 	
-	for(long y = 0; y < inventory->m_size.y; y++) {
-		for(long x = 0; x < inventory->m_size.x; x++) {
+	for(long y = 0; y < container->inventory->m_size.y; y++) {
+		for(long x = 0; x < container->inventory->m_size.x; x++) {
 			
-			Entity * io = inventory->slot[x][y].io;
+			Entity * io = container->inventory->slot[x][y].io;
 			if(!io) {
 				continue;
 			}
@@ -215,7 +217,7 @@ void SecondaryInventoryHud::draw() {
 				}
 			}
 			
-			if(tc && (inventory->slot[x][y].show || bItemSteal)) {
+			if(tc && (container->inventory->slot[x][y].show || bItemSteal)) {
 				UpdateGoldObject(io);
 				
 				Vec2f p = Vec2f(m_rect.left + float(x) * (32.f * m_scale) + (2.f * m_scale),
@@ -256,13 +258,13 @@ void SecondaryInventoryHud::draw() {
 	
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
 		if(TSecondaryInventory) {
-			Entity * temp = TSecondaryInventory->io;
-			if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
+			if(!(TSecondaryInventory->ioflags & IO_SHOP) && !(TSecondaryInventory == ioSteal)) {
 				m_pickAllButton.draw();
 			}
 			m_closeButton.draw();
 		}
 	}
+	
 }
 
 void SecondaryInventoryHud::updateCombineFlags(Entity * source) {
@@ -271,10 +273,10 @@ void SecondaryInventoryHud::updateCombineFlags(Entity * source) {
 		return;
 	}
 	
-	for(long y = 0; y < SecondaryInventory->m_size.y; y++) {
-		for(long x = 0; x < SecondaryInventory->m_size.x; x++) {
-			if(SecondaryInventory->slot[x][y].show) {
-				updateCombineFlagForEntity(source, SecondaryInventory->slot[x][y].io);
+	for(long y = 0; y < SecondaryInventory->inventory->m_size.y; y++) {
+		for(long x = 0; x < SecondaryInventory->inventory->m_size.x; x++) {
+			if(SecondaryInventory->inventory->slot[x][y].show) {
+				updateCombineFlagForEntity(source, SecondaryInventory->inventory->slot[x][y].io);
 			}
 		}
 	}
@@ -285,9 +287,7 @@ void SecondaryInventoryHud::updateInputButtons() {
 	
 	if(TSecondaryInventory) {
 		
-		Entity * temp = TSecondaryInventory->io;
-		
-		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
+		if(!(TSecondaryInventory->ioflags & IO_SHOP) && !(TSecondaryInventory == ioSteal)) {
 			m_pickAllButton.updateInput();
 		}
 		
@@ -297,10 +297,11 @@ void SecondaryInventoryHud::updateInputButtons() {
 
 bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 	
-	if(SecondaryInventory != nullptr) {
+	if(SecondaryInventory) {
 		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
 		          / s16(32 * m_scale);
-		if(t.x >= 0 && t.x < SecondaryInventory->m_size.x && t.y >= 0 && t.y < SecondaryInventory->m_size.y) {
+		if(t.x >= 0 && t.x < SecondaryInventory->inventory->m_size.x
+		   && t.y >= 0 && t.y < SecondaryInventory->inventory->m_size.y) {
 			return true;
 		}
 	}
@@ -310,11 +311,12 @@ bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 
 Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 	
-	if(SecondaryInventory != nullptr) {
+	if(SecondaryInventory) {
 		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
 		          / s16(32 * m_scale);
-		if(t.x >= 0 && t.x < SecondaryInventory->m_size.x && t.y >= 0 && t.y < SecondaryInventory->m_size.y) {
-			Entity * io = SecondaryInventory->slot[t.x][t.y].io;
+		if(t.x >= 0 && t.x < SecondaryInventory->inventory->m_size.x
+		   && t.y >= 0 && t.y < SecondaryInventory->inventory->m_size.y) {
+			Entity * io = SecondaryInventory->inventory->slot[t.x][t.y].io;
 			if(!io || !(io->gameFlags & GFLAG_INTERACTIVITY)) {
 				return nullptr;
 			}
@@ -336,22 +338,22 @@ void SecondaryInventoryHud::dropEntity() {
 		return;
 	}
 	
-	Entity * io = SecondaryInventory->io;
+	Entity * container = SecondaryInventory;
 	
-	if(io->ioflags & IO_SHOP) {
+	if(container->ioflags & IO_SHOP) {
 		
-		if(!io->shop_category.empty()
-		   && g_draggedEntity->groups.find(io->shop_category) == g_draggedEntity->groups.end()) {
+		if(!container->shop_category.empty()
+		   && g_draggedEntity->groups.find(container->shop_category) == g_draggedEntity->groups.end()) {
 			// Item not allowed by shop category
 			return;
 		}
 		
-		long price = ARX_INTERACTIVE_GetSellValue(g_draggedEntity, io, g_draggedEntity->_itemdata->count);
+		long price = ARX_INTERACTIVE_GetSellValue(g_draggedEntity, container, g_draggedEntity->_itemdata->count);
 		if(price <= 0) {
 			return;
 		}
 		
-		if(insertIntoInventory(g_draggedEntity, io)) {
+		if(insertIntoInventory(g_draggedEntity, container)) {
 			ARX_PLAYER_AddGold(price);
 			ARX_SOUND_PlayInterface(g_snd.GOLD);
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
@@ -363,7 +365,7 @@ void SecondaryInventoryHud::dropEntity() {
 	s16 itemPitch = s16(32.f * m_scale);
 	Vec2f pos = Vec2f(mouse - Vec2s(2 * m_scale - m_fadePosition, 13 * m_scale)) / float(itemPitch);
 	
-	insertIntoInventoryAt(g_draggedEntity, io, 0, pos, g_draggedItemPreviousPosition);
+	insertIntoInventoryAt(g_draggedEntity, container, 0, pos, g_draggedItemPreviousPosition);
 	
 }
 
@@ -373,16 +375,16 @@ void SecondaryInventoryHud::dragEntity(Entity * io) {
 	arx_assert(io->ioflags & IO_ITEM);
 	
 	InventoryPos pos = locateInInventories(io);
-	arx_assert(pos.io == SecondaryInventory->io->index());
+	arx_assert(pos.io == SecondaryInventory->index());
 	Vec2s anchor = Vec2s(2 * m_scale - m_fadePosition, 13 * m_scale);
 	s16 itemPitch = s16(32.f * m_scale);
 	Vec2f offset(anchor + Vec2s(pos.x, pos.y) * itemPitch - DANAEMouse);
 	
 	// For shops, check if the player can afford the item and deduct the cost
-	Entity * ioo = SecondaryInventory->io;
-	if(ioo->ioflags & IO_SHOP) {
+	Entity * container = SecondaryInventory;
+	if(container->ioflags & IO_SHOP) {
 		
-		long price = ARX_INTERACTIVE_GetPrice(io, ioo);
+		long price = ARX_INTERACTIVE_GetPrice(io, container);
 		price = checked_range_cast<long>(float(price) - float(price) * player.m_skillFull.intuition * 0.005f);
 		if(player.gold < price) {
 			return;
@@ -397,7 +399,7 @@ void SecondaryInventoryHud::dragEntity(Entity * io) {
 	
 	// Take only one item from stacks unless requested otherwise
 	if(io->_itemdata->count > 1
-	   && ((ioo->ioflags & IO_SHOP) || !GInput->actionPressed(CONTROLS_CUST_STEALTHMODE))) {
+	   && ((container->ioflags & IO_SHOP) || !GInput->actionPressed(CONTROLS_CUST_STEALTHMODE))) {
 		Entity * unstackedEntity = CloneIOItem(io);
 		unstackedEntity->scriptload = 1;
 		unstackedEntity->_itemdata->count = 1;
@@ -421,44 +423,48 @@ void SecondaryInventoryHud::open(Entity * container) {
 		container = nullptr;
 	}
 	
-	if(!container || SecondaryInventory == container->inventory) {
-		if(SecondaryInventory && SecondaryInventory->io)
-			SendIOScriptEvent(entities.player(), SecondaryInventory->io, SM_INVENTORY2_CLOSE);
-
+	if(!container || SecondaryInventory == container) {
+		
+		if(SecondaryInventory) {
+			SendIOScriptEvent(entities.player(), SecondaryInventory, SM_INVENTORY2_CLOSE);
+		}
 		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
 		TSecondaryInventory = SecondaryInventory;
 		SecondaryInventory = nullptr;
 		DRAGGING = false;
+		
 	} else {
-		if(TSecondaryInventory && TSecondaryInventory->io)
-			SendIOScriptEvent(entities.player(), TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
-
+		
+		if(TSecondaryInventory) {
+			SendIOScriptEvent(entities.player(), TSecondaryInventory, SM_INVENTORY2_CLOSE);
+		}
 		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_right;
-		TSecondaryInventory = SecondaryInventory = container->inventory;
-
-		if(SecondaryInventory && SecondaryInventory->io != nullptr) {
-			if(SendIOScriptEvent(entities.player(), SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE) {
+		TSecondaryInventory = SecondaryInventory = container;
+		
+		if(SecondaryInventory) {
+			if(SendIOScriptEvent(entities.player(), SecondaryInventory, SM_INVENTORY2_OPEN) == REFUSE) {
 				g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
 				TSecondaryInventory = SecondaryInventory = nullptr;
 				return;
 			}
 		}
-
+		
 		if(player.Interface & INTER_COMBATMODE) {
 			ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
 		}
-
+		
 		if(config.input.autoReadyWeapon != AlwaysAutoReadyWeapon) {
 			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
-
-		if(SecondaryInventory && SecondaryInventory->io && (SecondaryInventory->io->ioflags & IO_SHOP)) {
+		
+		if(SecondaryInventory && (SecondaryInventory->ioflags & IO_SHOP)) {
 			if(TSecondaryInventory) {
-				optimizeInventory(TSecondaryInventory->io);
+				optimizeInventory(TSecondaryInventory);
 			}
 		}
 		
 		DRAGGING = false;
+		
 	}
 	
 }
@@ -467,10 +473,11 @@ void SecondaryInventoryHud::close() {
 	
 	Entity * io = nullptr;
 	
-	if(SecondaryInventory)
-		io = SecondaryInventory->io;
-	else if(player.Interface & INTER_STEAL)
+	if(SecondaryInventory) {
+		io = SecondaryInventory;
+	} else if(player.Interface & INTER_STEAL) {
 		io = ioSteal;
+	}
 	
 	if(io) {
 		m_fadeDirection = Fade_left;
@@ -478,6 +485,7 @@ void SecondaryInventoryHud::close() {
 		TSecondaryInventory = SecondaryInventory;
 		SecondaryInventory = nullptr;
 	}
+	
 }
 
 bool SecondaryInventoryHud::isVisible() {
@@ -490,16 +498,16 @@ bool SecondaryInventoryHud::isOpen() {
 
 
 bool SecondaryInventoryHud::isOpen(Entity * container) {
-	return (isOpen() && SecondaryInventory == container->inventory);
+	return (isOpen() && SecondaryInventory == container);
 }
 
 void SecondaryInventoryHud::clear(Entity * container) {
 	
-	if(SecondaryInventory == container->inventory) {
+	if(SecondaryInventory == container) {
 		SecondaryInventory = nullptr;
 	}
 	
-	if(TSecondaryInventory == container->inventory) {
+	if(TSecondaryInventory == container) {
 		TSecondaryInventory = nullptr;
 	}
 	
@@ -545,9 +553,9 @@ void SecondaryInventoryHud::takeAllItems() {
 	}
 	
 	bool success = false;
-	for(long y = 0; y < TSecondaryInventory->m_size.y; y++) {
-		for(long x = 0; x < TSecondaryInventory->m_size.x; x++) {
-			INVENTORY_SLOT & slot = TSecondaryInventory->slot[x][y];
+	for(long y = 0; y < TSecondaryInventory->inventory->m_size.y; y++) {
+		for(long x = 0; x < TSecondaryInventory->inventory->m_size.x; x++) {
+			INVENTORY_SLOT & slot = TSecondaryInventory->inventory->slot[x][y];
 			if(slot.show && insertIntoInventory(slot.io, entities.player())) {
 				success = true;
 			}
@@ -564,34 +572,39 @@ void SecondaryInventoryHud::drawItemPrice(float scale) {
 		return;
 	}
 	
-	Entity * temp = SecondaryInventory->io;
-	if(temp->ioflags & IO_SHOP) {
+	Entity * container = SecondaryInventory;
+	if(container->ioflags & IO_SHOP) {
+		
 		Vec2f pos = Vec2f(DANAEMouse);
 		pos += Vec2f(60, -10) * scale;
 		
 		if(g_secondaryInventoryHud.containsPos(DANAEMouse)) {
 			
-			long amount = ARX_INTERACTIVE_GetPrice(FlyingOverIO, temp);
+			long amount = ARX_INTERACTIVE_GetPrice(FlyingOverIO, container);
 			// achat
 			float famount = amount - amount * player.m_skillFull.intuition * 0.005f;
 			// check should always be OK because amount is supposed positive
 			amount = checked_range_cast<long>(famount);
-
+			
 			Color color = (amount <= player.gold) ? Color::green : Color::red;
 			
 			ARX_INTERFACE_DrawNumber(pos, amount, color, scale);
+			
 		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
-			long amount = ARX_INTERACTIVE_GetSellValue(FlyingOverIO, temp);
+			
+			long amount = ARX_INTERACTIVE_GetSellValue(FlyingOverIO, container);
 			if(amount) {
 				Color color = Color::red;
 				
-				if(temp->shop_category.empty() ||
-				   FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end()) {
-
+				if(container->shop_category.empty() ||
+				   FlyingOverIO->groups.find(container->shop_category) != FlyingOverIO->groups.end()) {
 					color = Color::green;
 				}
 				ARX_INTERFACE_DrawNumber(pos, amount, color, scale);
 			}
+			
 		}
+		
 	}
+	
 }

@@ -89,8 +89,8 @@ const size_t INVENTORY_Y = 3;
 // TODO this should be completely wrapped in PlayerInventory!
 extern INVENTORY_SLOT g_inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 
-extern INVENTORY_DATA * SecondaryInventory;
-extern INVENTORY_DATA * TSecondaryInventory;
+extern Entity * SecondaryInventory;
+extern Entity * TSecondaryInventory;
 extern Entity * ioSteal;
 
 inline Vec2s inventorySizeFromTextureSize(Vec2i size) {

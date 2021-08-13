@@ -148,7 +148,6 @@ extern bool SHOW_INGAME_MINIMAP;
 E_ARX_STATE_MOUSE eMouseState;
 Vec2s MemoMouse;
 
-INVENTORY_DATA * TSecondaryInventory;
 Entity * FlyingOverIO = nullptr;
 Entity * STARTED_ACTION_ON_IO = nullptr;
 
