@@ -248,12 +248,12 @@ struct EntityInventoryAccess {
 	
 	[[nodiscard]] INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) {
 		ARX_UNUSED(bag);
-		return m_data->slot[x][y];
+		return m_data->get(Vec3s(x, y, bag));
 	}
 	
 	[[nodiscard]] const INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) const {
 		ARX_UNUSED(bag);
-		return  m_data->slot[x][y];
+		return  m_data->get(Vec3s(x, y, bag));
 	}
 	
 	[[nodiscard]] index_type bags() const {
