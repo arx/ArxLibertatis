@@ -82,8 +82,13 @@ private:
 		[[nodiscard]] Vec2s index() const noexcept {
 			return m_tile;
 		}
-		template <class U, glm::qualifier Q>
-		[[nodiscard]] operator glm::vec<2, U, Q>() const noexcept {
+		[[nodiscard]] operator Vec2s() const noexcept {
+			return m_tile;
+		}
+		[[nodiscard]] operator Vec2i() const noexcept {
+			return m_tile;
+		}
+		[[nodiscard]] explicit operator Vec2f() const noexcept {
 			return m_tile;
 		}
 		
