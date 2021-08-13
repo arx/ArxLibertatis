@@ -121,7 +121,7 @@ void SecondaryInventoryHud::init() {
 }
 
 Entity * SecondaryInventoryHud::getSecondaryOrStealInvEntity() {
-	if(m_container) {
+	if(isOpen()) {
 		return m_container;
 	}
 	if(player.Interface & INTER_STEAL) {
@@ -142,8 +142,7 @@ void SecondaryInventoryHud::update() {
 				ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
 				m_fadeDirection = Fade_left;
 				SendIOScriptEvent(entities.player(), io, SM_INVENTORY2_CLOSE);
-				m_lastContainer = m_container;
-				m_container = nullptr;
+				m_open = false;
 			} else {
 				if(player.Interface & INTER_STEAL) {
 					player.Interface &= ~INTER_STEAL;
@@ -156,7 +155,7 @@ void SecondaryInventoryHud::update() {
 	
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
 		// Pick All/Close Secondary Inventory
-		if(m_lastContainer) {
+		if(m_container) {
 			// These have to be calculated on each frame (to make them move).
 			m_pickAllButton.setScale(m_scale);
 			m_closeButton.setScale(m_scale);
@@ -174,9 +173,7 @@ void SecondaryInventoryHud::updateRect() {
 
 void SecondaryInventoryHud::draw() {
 	
-	const Entity * container = m_lastContainer;
-	
-	if(!container) {
+	if(!isVisible()) {
 		return;
 	}
 	
@@ -184,8 +181,8 @@ void SecondaryInventoryHud::draw() {
 	
 	arx_assert(m_defaultBackground);
 	ingame_inventory = m_defaultBackground;
-	if(!container->inventory_skin.empty()) {
-		res::path file = "graph/interface/inventory" / container->inventory_skin;
+	if(!m_container->inventory_skin.empty()) {
+		res::path file = "graph/interface/inventory" / m_container->inventory_skin;
 		TextureContainer * tc = TextureContainer::LoadUI(file);
 		if(tc) {
 			ingame_inventory = tc;
@@ -194,10 +191,10 @@ void SecondaryInventoryHud::draw() {
 	
 	EERIEDrawBitmap(m_rect, 0.001f, ingame_inventory, Color::white);
 	
-	for(long y = 0; y < container->inventory->m_size.y; y++) {
-		for(long x = 0; x < container->inventory->m_size.x; x++) {
+	for(long y = 0; y < m_container->inventory->m_size.y; y++) {
+		for(long x = 0; x < m_container->inventory->m_size.x; x++) {
 			
-			Entity * io = container->inventory->slot[x][y].io;
+			Entity * io = m_container->inventory->slot[x][y].io;
 			if(!io) {
 				continue;
 			}
@@ -217,7 +214,7 @@ void SecondaryInventoryHud::draw() {
 				}
 			}
 			
-			if(tc && (container->inventory->slot[x][y].show || bItemSteal)) {
+			if(tc && (m_container->inventory->slot[x][y].show || bItemSteal)) {
 				UpdateGoldObject(io);
 				
 				Vec2f p = Vec2f(m_rect.left + float(x) * (32.f * m_scale) + (2.f * m_scale),
@@ -257,12 +254,10 @@ void SecondaryInventoryHud::draw() {
 	
 	
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
-		if(m_lastContainer) {
-			if(!(m_lastContainer->ioflags & IO_SHOP) && m_lastContainer != ioSteal) {
-				m_pickAllButton.draw();
-			}
-			m_closeButton.draw();
+		if(!(m_container->ioflags & IO_SHOP) && m_container != ioSteal) {
+			m_pickAllButton.draw();
 		}
+		m_closeButton.draw();
 	}
 	
 }
@@ -285,9 +280,9 @@ void SecondaryInventoryHud::updateCombineFlags(Entity * source) {
 
 void SecondaryInventoryHud::updateInputButtons() {
 	
-	if(m_lastContainer) {
+	if(isVisible()) {
 		
-		if(!(m_lastContainer->ioflags & IO_SHOP) && m_lastContainer != ioSteal) {
+		if(!(m_container->ioflags & IO_SHOP) && m_container != ioSteal) {
 			m_pickAllButton.updateInput();
 		}
 		
@@ -299,7 +294,7 @@ void SecondaryInventoryHud::updateInputButtons() {
 
 bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 	
-	if(m_container) {
+	if(isOpen()) {
 		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
 		          / s16(32 * m_scale);
 		if(t.x >= 0 && t.x < m_container->inventory->m_size.x
@@ -313,7 +308,7 @@ bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 
 Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 	
-	if(m_container) {
+	if(isOpen()) {
 		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
 		          / s16(32 * m_scale);
 		if(t.x >= 0 && t.x < m_container->inventory->m_size.x
@@ -336,7 +331,7 @@ void SecondaryInventoryHud::dropEntity() {
 	
 	Vec2s mouse = DANAEMouse + Vec2s(g_draggedIconOffset);
 	
-	if(!m_container || !g_secondaryInventoryHud.containsPos(mouse)) {
+	if(!isOpen() || !g_secondaryInventoryHud.containsPos(mouse)) {
 		return;
 	}
 	
@@ -371,7 +366,7 @@ void SecondaryInventoryHud::dropEntity() {
 
 void SecondaryInventoryHud::dragEntity(Entity * io) {
 	
-	arx_assert(m_container);
+	arx_assert(isOpen());
 	arx_assert(io->ioflags & IO_ITEM);
 	
 	InventoryPos pos = locateInInventories(io);
@@ -423,30 +418,29 @@ void SecondaryInventoryHud::open(Entity * container) {
 		container = nullptr;
 	}
 	
-	if(!container || m_container == container) {
+	if(!container || isOpen(container)) {
 		
-		if(m_container) {
+		if(isOpen()) {
 			SendIOScriptEvent(entities.player(), m_container, SM_INVENTORY2_CLOSE);
 		}
 		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
-		m_lastContainer = m_container;
-		m_container = nullptr;
+		m_open = false;
 		DRAGGING = false;
 		
 	} else {
 		
-		if(m_lastContainer) {
-			SendIOScriptEvent(entities.player(), m_lastContainer, SM_INVENTORY2_CLOSE);
+		if(m_container) {
+			SendIOScriptEvent(entities.player(), m_container, SM_INVENTORY2_CLOSE);
 		}
 		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_right;
-		m_lastContainer = m_container = container;
+		m_container = container;
+		m_open = true;
 		
-		if(m_container) {
-			if(SendIOScriptEvent(entities.player(), m_container, SM_INVENTORY2_OPEN) == REFUSE) {
-				g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
-				m_lastContainer = m_container = nullptr;
-				return;
-			}
+		if(SendIOScriptEvent(entities.player(), m_container, SM_INVENTORY2_OPEN) == REFUSE) {
+			g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_left;
+			m_container = nullptr;
+			m_open = false;
+			return;
 		}
 		
 		if(player.Interface & INTER_COMBATMODE) {
@@ -457,10 +451,8 @@ void SecondaryInventoryHud::open(Entity * container) {
 			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
 		
-		if(m_container && (m_container->ioflags & IO_SHOP)) {
-			if(m_lastContainer) {
-				optimizeInventory(m_lastContainer);
-			}
+		if(isOpen() && (m_container->ioflags & IO_SHOP)) {
+			optimizeInventory(m_container);
 		}
 		
 		DRAGGING = false;
@@ -476,18 +468,17 @@ void SecondaryInventoryHud::close() {
 	if(io) {
 		m_fadeDirection = Fade_left;
 		SendIOScriptEvent(entities.player(), io, SM_INVENTORY2_CLOSE);
-		m_lastContainer = m_container;
-		m_container = nullptr;
+		m_open = false;
 	}
 	
 }
 
 bool SecondaryInventoryHud::isVisible() {
-	return m_lastContainer != nullptr;
+	return m_container != nullptr;
 }
 
 bool SecondaryInventoryHud::isOpen() {
-	return m_container != nullptr;
+	return m_open;
 }
 
 
@@ -499,10 +490,7 @@ void SecondaryInventoryHud::clear(Entity * container) {
 	
 	if(m_container == container) {
 		m_container = nullptr;
-	}
-	
-	if(m_lastContainer == container) {
-		m_lastContainer = nullptr;
+		m_open = false;
 	}
 	
 }
@@ -510,8 +498,8 @@ void SecondaryInventoryHud::clear(Entity * container) {
 void SecondaryInventoryHud::updateFader() {
 	
 	if(m_fadeDirection != Fade_stable) {
-		float frameDelay = g_platformTime.lastFrameDuration() / 3ms;
 		
+		float frameDelay = g_platformTime.lastFrameDuration() / 3ms;
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || m_fadeDirection == Fade_left) {
 			if(m_fadePosition > -160)
 				m_fadePosition -= frameDelay * m_scale;
@@ -523,33 +511,33 @@ void SecondaryInventoryHud::updateFader() {
 		if(m_fadePosition <= -160) {
 			m_fadePosition = -160;
 			m_fadeDirection = Fade_stable;
-			
 			if(player.Interface & INTER_STEAL || ioSteal) {
 				SendIOScriptEvent(entities.player(), ioSteal, SM_STEAL, "off");
 				player.Interface &= ~INTER_STEAL;
 				ioSteal = nullptr;
 			}
-			
 			m_container = nullptr;
-			m_lastContainer = nullptr;
+			m_open = false;
 			m_fadeDirection = Fade_stable;
 		} else if(m_fadePosition >= 0) {
 			m_fadePosition = 0;
 			m_fadeDirection = Fade_stable;
 		}
+		
 	}
+	
 }
 
 void SecondaryInventoryHud::takeAllItems() {
 	
-	if(!m_lastContainer) {
+	if(!isVisible()) {
 		return;
 	}
 	
 	bool success = false;
-	for(long y = 0; y < m_lastContainer->inventory->m_size.y; y++) {
-		for(long x = 0; x < m_lastContainer->inventory->m_size.x; x++) {
-			INVENTORY_SLOT & slot = m_lastContainer->inventory->slot[x][y];
+	for(long y = 0; y < m_container->inventory->m_size.y; y++) {
+		for(long x = 0; x < m_container->inventory->m_size.x; x++) {
+			INVENTORY_SLOT & slot = m_container->inventory->slot[x][y];
 			if(slot.show && insertIntoInventory(slot.io, entities.player())) {
 				success = true;
 			}
