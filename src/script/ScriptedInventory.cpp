@@ -97,29 +97,26 @@ class InventoryCommand : public Command {
 		
 		static void destroyInventory(Entity * io) {
 			
-			INVENTORY_DATA * id = io->inventory;
-			if(!id) {
+			if(!io->inventory) {
 				return;
 			}
 			
 			g_secondaryInventoryHud.clear(io);
 			
-			for(long y = 0; y < id->m_size.y; y++) {
-				for(long x = 0; x < id->m_size.x; x++) {
-					Entity * item = id->slot[x][y].io;
-					if(item) {
-						removeFromInventories(item);
-						// Delay destruction of the object to avoid invalid references
-						if(item->ioflags & IO_ITEM) {
-							item->_itemdata->count = 1;
-						}
-						ARX_INTERACTIVE_DestroyIOdelayed(item);
-						// Prevent further script events as the object has been destroyed!
-						item->show = SHOW_FLAG_MEGAHIDE;
-						item->ioflags |= IO_FREEZESCRIPT;
+			for(auto slot : io->inventory->slots()) {
+				Entity * item = slot.entity;
+				if(item) {
+					removeFromInventories(item);
+					// Delay destruction of the object to avoid invalid references
+					if(item->ioflags & IO_ITEM) {
+						item->_itemdata->count = 1;
 					}
-					arx_assert(id->slot[x][y].io == nullptr);
+					ARX_INTERACTIVE_DestroyIOdelayed(item);
+					// Prevent further script events as the object has been destroyed!
+					item->show = SHOW_FLAG_MEGAHIDE;
+					item->ioflags |= IO_FREEZESCRIPT;
 				}
+				arx_assert(slot.entity == nullptr);
 			}
 			
 			delete io->inventory;
