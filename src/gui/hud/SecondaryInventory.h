@@ -67,6 +67,11 @@ class SecondaryInventoryHud : public HudItem {
 	SecondaryInventoryPickAllHudIcon m_pickAllButton;
 	SecondaryInventoryCloseHudIcon m_closeButton;
 	
+	Entity * m_container;
+	Entity * m_lastContainer;
+	
+	Entity * getSecondaryOrStealInvEntity();
+	
 public:
 	
 	SecondaryInventoryHud()
@@ -74,6 +79,8 @@ public:
 		, ingame_inventory(nullptr)
 		, m_canNotSteal(nullptr)
 		, m_defaultBackground(nullptr)
+		, m_container(nullptr)
+		, m_lastContainer(nullptr)
 		, m_fadeDirection(Fade_stable)
 		, m_fadePosition(0.f)
 	{ }

@@ -84,8 +84,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 INVENTORY_SLOT g_inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
-Entity * SecondaryInventory = nullptr;
-Entity * TSecondaryInventory = nullptr;
 Entity * ioSteal = nullptr;
 
 INVENTORY_DATA::~INVENTORY_DATA() {
