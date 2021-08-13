@@ -229,14 +229,10 @@ Entity::~Entity() {
 	g_secondaryInventoryHud.clear(this);
 	
 	if(inventory) {
-		for(long nj = 0; nj < inventory->m_size.y; nj++) {
-			for(long ni = 0; ni < inventory->m_size.x; ni++) {
-				if(inventory->slot[ni][nj].io) {
-					inventory->slot[ni][nj].io->pos = GetItemWorldPosition(inventory->slot[ni][nj].io);
-					removeFromInventories(inventory->slot[ni][nj].io);
-				}
-				arx_assert(inventory->slot[ni][nj].io == nullptr);
-				arx_assert(inventory->slot[ni][nj].show == false);
+		for(auto slot : inventory->slots()) {
+			if(slot.entity) {
+				slot.entity->pos = GetItemWorldPosition(slot.entity);
+				removeFromInventories(slot.entity);
 			}
 		}
 		delete inventory;
