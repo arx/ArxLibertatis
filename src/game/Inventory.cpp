@@ -243,7 +243,7 @@ struct EntityInventoryAccess {
 	explicit EntityInventoryAccess(Entity * entity)
 		: m_data(entity->inventory)
 		, m_entity(entity->index())
-		, m_size(entity->inventory->m_size)
+		, m_size(entity->inventory->size())
 	{ }
 	
 	[[nodiscard]] INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) {
