@@ -88,12 +88,12 @@ Entity * ioSteal = nullptr;
 
 INVENTORY_DATA::~INVENTORY_DATA() {
 	
-	for(long nj = 0; nj < m_size.y; nj++) {
-		for(long ni = 0; ni < m_size.x; ni++) {
-			arx_assert(slot[ni][nj].io == nullptr);
-			arx_assert(slot[ni][nj].show == false);
-		}
+	#ifdef ARX_DEBUG
+	for(auto slot : slots()) {
+		arx_assert(slot.entity == nullptr);
+		arx_assert(slot.show == false);
 	}
+	#endif
 	
 }
 
