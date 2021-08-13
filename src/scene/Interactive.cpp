@@ -750,18 +750,13 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 	g_secondaryInventoryHud.clear(io);
 	
 	if(io->inventory != nullptr) {
-		INVENTORY_DATA * id = io->inventory;
-		
-		for(long nj = 0; nj < id->m_size.y; nj++) {
-			for(long ni = 0; ni < id->m_size.x; ni++) {
-				if(id->slot[ni][nj].io) {
-					id->slot[ni][nj].io->destroy();
-				}
-				arx_assert(id->slot[ni][nj].io == nullptr);
-				arx_assert(id->slot[ni][nj].show == false);
+		for(auto slot : io->inventory->slots()) {
+			if(slot.entity) {
+				slot.entity->destroy();
 			}
+			arx_assert(slot.entity == nullptr);
+			arx_assert(slot.show == false);
 		}
-		
 		delete io->inventory;
 		io->inventory = nullptr;
 	}
