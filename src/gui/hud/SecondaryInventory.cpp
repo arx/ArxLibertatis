@@ -191,67 +191,66 @@ void SecondaryInventoryHud::draw() {
 	
 	EERIEDrawBitmap(m_rect, 0.001f, ingame_inventory, Color::white);
 	
-	for(long y = 0; y < m_container->inventory->m_size.y; y++) {
-		for(long x = 0; x < m_container->inventory->m_size.x; x++) {
-			
-			Entity * io = m_container->inventory->slot[x][y].io;
-			if(!io) {
-				continue;
-			}
-			
-			bool bItemSteal = false;
-			TextureContainer * tc = io->m_icon;
-			TextureContainer * tc2 = nullptr;
-			
-			if(NeedHalo(io))
-				tc2 = io->m_icon->getHalo();
-			
-			if(_bSteal) {
-				if(!ARX_PLAYER_CanStealItem(io)) {
-					bItemSteal = true;
-					tc = m_canNotSteal;
-					tc2 = nullptr;
-				}
-			}
-			
-			if(tc && (m_container->inventory->slot[x][y].show || bItemSteal)) {
-				UpdateGoldObject(io);
-				
-				Vec2f p = Vec2f(m_rect.left + float(x) * (32.f * m_scale) + (2.f * m_scale),
-				                float(y) * (32.f * m_scale) + (13.f * m_scale));
-				
-				Vec2f size = Vec2f(tc->size());
-				
-				Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
-				
-				if(tc2) {
-					ARX_INTERFACE_HALO_Render(io->halo.color, io->halo.flags, tc2, p, Vec2f(m_scale));
-				}
-				
-				Rectf rect(p, size.x * m_scale, size.y * m_scale);
-				EERIEDrawBitmap(rect, 0.001f, tc, color);
-				
-				Color overlayColor = Color::black;
-				
-				if(!bItemSteal && io == FlyingOverIO) {
-					overlayColor = Color::white;
-				} else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
-					overlayColor = Color::gray(glm::abs(glm::cos(glm::radians(fDecPulse))));
-				}
-				
-				if(overlayColor != Color::black) {
-					UseRenderState state(render2D().blendAdditive());
-					EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
-				}
-				
-				if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1) {
-					ARX_INTERFACE_DrawNumber(rect.topRight(), io->_itemdata->count, Color::white, m_scale);
-				}
-				
+	for(auto slot : m_container->inventory->slots()) {
+		
+		Entity * io = slot.entity;
+		if(!io) {
+			continue;
+		}
+		
+		bool bItemSteal = false;
+		TextureContainer * tc = io->m_icon;
+		TextureContainer * tc2 = nullptr;
+		
+		if(NeedHalo(io)) {
+			tc2 = io->m_icon->getHalo();
+		}
+		
+		if(_bSteal) {
+			if(!ARX_PLAYER_CanStealItem(io)) {
+				bItemSteal = true;
+				tc = m_canNotSteal;
+				tc2 = nullptr;
 			}
 		}
+		
+		if(tc && (slot.show || bItemSteal)) {
+			UpdateGoldObject(io);
+			
+			Vec2f p = Vec2f(m_rect.left + float(slot.x) * (32.f * m_scale) + (2.f * m_scale),
+			                float(slot.y) * (32.f * m_scale) + (13.f * m_scale));
+			
+			Vec2f size = Vec2f(tc->size());
+			
+			Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
+			
+			if(tc2) {
+				ARX_INTERFACE_HALO_Render(io->halo.color, io->halo.flags, tc2, p, Vec2f(m_scale));
+			}
+			
+			Rectf rect(p, size.x * m_scale, size.y * m_scale);
+			EERIEDrawBitmap(rect, 0.001f, tc, color);
+			
+			Color overlayColor = Color::black;
+			
+			if(!bItemSteal && io == FlyingOverIO) {
+				overlayColor = Color::white;
+			} else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
+				overlayColor = Color::gray(glm::abs(glm::cos(glm::radians(fDecPulse))));
+			}
+			
+			if(overlayColor != Color::black) {
+				UseRenderState state(render2D().blendAdditive());
+				EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
+			}
+			
+			if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1) {
+				ARX_INTERFACE_DrawNumber(rect.topRight(), io->_itemdata->count, Color::white, m_scale);
+			}
+			
+		}
+		
 	}
-	
 	
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
 		if(!(m_container->ioflags & IO_SHOP) && m_container != ioSteal) {
@@ -268,11 +267,9 @@ void SecondaryInventoryHud::updateCombineFlags(Entity * source) {
 		return;
 	}
 	
-	for(long y = 0; y < m_container->inventory->m_size.y; y++) {
-		for(long x = 0; x < m_container->inventory->m_size.x; x++) {
-			if(m_container->inventory->slot[x][y].show) {
-				updateCombineFlagForEntity(source, m_container->inventory->slot[x][y].io);
-			}
+	for(auto slot : m_container->inventory->slots()) {
+		if(slot.show) {
+			updateCombineFlagForEntity(source, slot.entity);
 		}
 	}
 	
@@ -297,8 +294,8 @@ bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 	if(isOpen()) {
 		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
 		          / s16(32 * m_scale);
-		if(t.x >= 0 && t.x < m_container->inventory->m_size.x
-		   && t.y >= 0 && t.y < m_container->inventory->m_size.y) {
+		if(t.x >= 0 && t.x < m_container->inventory->size().x
+		   && t.y >= 0 && t.y < m_container->inventory->size().y) {
 			return true;
 		}
 	}
@@ -311,9 +308,9 @@ Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 	if(isOpen()) {
 		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
 		          / s16(32 * m_scale);
-		if(t.x >= 0 && t.x < m_container->inventory->m_size.x
-		   && t.y >= 0 && t.y < m_container->inventory->m_size.y) {
-			Entity * io = m_container->inventory->slot[t.x][t.y].io;
+		if(t.x >= 0 && t.x < m_container->inventory->size().x
+		   && t.y >= 0 && t.y < m_container->inventory->size().y) {
+			Entity * io = m_container->inventory->get(Vec3s(t, 0)).entity;
 			if(!io || !(io->gameFlags & GFLAG_INTERACTIVITY)) {
 				return nullptr;
 			}
@@ -535,12 +532,9 @@ void SecondaryInventoryHud::takeAllItems() {
 	}
 	
 	bool success = false;
-	for(long y = 0; y < m_container->inventory->m_size.y; y++) {
-		for(long x = 0; x < m_container->inventory->m_size.x; x++) {
-			INVENTORY_SLOT & slot = m_container->inventory->slot[x][y];
-			if(slot.show && insertIntoInventory(slot.io, entities.player())) {
-				success = true;
-			}
+	for(auto slot : m_container->inventory->slotsInOrder()) {
+		if(slot.show && insertIntoInventory(slot.entity, entities.player())) {
+			success = true;
 		}
 	}
 	
