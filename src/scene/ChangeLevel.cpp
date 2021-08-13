@@ -1236,19 +1236,19 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		
 		memset(aids, 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
 		
-		INVENTORY_DATA * inv = io->inventory;
 		storeIdString(aids->io, io);
-		aids->sizex = inv->m_size.x;
-		aids->sizey = inv->m_size.y;
+		aids->sizex = io->inventory->size().x;
+		aids->sizey = io->inventory->size().y;
 		
-		for(Vec2s slot : util::grid(Vec2s(0), Vec2s(inv->m_size))) {
+		for(auto slot : io->inventory->slots()) {
+			arx_assume(slot.bag == 0);
 			aids->initio[slot.x][slot.y][0] = 0;
-			if(inv->slot[slot.x][slot.y].io) {
-				storeIdString(aids->slot_io[slot.x][slot.y], inv->slot[slot.x][slot.y].io);
+			if(slot.entity) {
+				storeIdString(aids->slot_io[slot.x][slot.y], slot.entity);
 			} else {
 				aids->slot_io[slot.x][slot.y][0] = 0;
 			}
-			aids->slot_show[slot.x][slot.y] = inv->slot[slot.x][slot.y].show;
+			aids->slot_show[slot.x][slot.y] = slot.show;
 		}
 		
 		pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
