@@ -20,6 +20,7 @@
 #ifndef ARX_GAME_MAGIC_SPELLDATA_H
 #define ARX_GAME_MAGIC_SPELLDATA_H
 
+#include <array>
 #include <string>
 
 #include "game/magic/Rune.h"
@@ -52,7 +53,7 @@ struct SPELL_ICON {
 	}
 };
 
-extern SPELL_ICON spellicons[SPELL_TYPES_COUNT];
+extern std::array<SPELL_ICON, SPELL_TYPES_COUNT> spellicons;
 
 void spellDataInit();
 void spellDataRelease();

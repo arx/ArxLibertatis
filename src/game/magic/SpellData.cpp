@@ -21,13 +21,11 @@
 
 #include "core/Localisation.h"
 
-SPELL_ICON spellicons[SPELL_TYPES_COUNT];
+std::array<SPELL_ICON, SPELL_TYPES_COUNT> spellicons;
 
 void spellDataInit() {
 	
-	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
-		spellicons[i] = SPELL_ICON();
-	}
+	spellicons.fill({ });
 	
 	{ // Magic_Sight Level 1
 		SPELL_ICON & s = spellicons[SPELL_MAGIC_SIGHT];
