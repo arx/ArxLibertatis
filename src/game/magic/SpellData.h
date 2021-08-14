@@ -21,7 +21,7 @@
 #define ARX_GAME_MAGIC_SPELLDATA_H
 
 #include <array>
-#include <string>
+#include <string_view>
 
 #include "game/magic/Rune.h"
 #include "game/magic/Spell.h"
@@ -30,8 +30,8 @@
 
 struct SPELL_ICON {
 	TextureContainer * tc;
-	std::string name;
-	std::string description;
+	std::string_view name;
+	std::string_view description;
 	long level;
 	SpellType spellid;
 	Rune symbols[6];
