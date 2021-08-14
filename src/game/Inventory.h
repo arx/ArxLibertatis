@@ -59,18 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class Entity;
 
-struct INVENTORY_SLOT {
-	
-	Entity * io;
-	bool show;
-	
-	INVENTORY_SLOT()
-		: io(nullptr)
-		, show(false)
-	{}
-	
-};
-
 struct InventoryPos {
 	
 	typedef unsigned short index_type;
@@ -107,10 +95,19 @@ struct InventoryPos {
 
 class Inventory {
 	
+	struct Slot {
+		
+		Entity * io;
+		bool show;
+		
+		Slot() : io(nullptr), show(false) { }
+		
+	};
+	
 	Entity & m_owner;
 	const Vec2s m_size;
 	size_t m_bags;
-	std::vector<INVENTORY_SLOT> m_slots;
+	std::vector<Slot> m_slots;
 	
 	//! Tile data accessor
 	template <bool Mutable>
@@ -118,22 +115,15 @@ class Inventory {
 		
 		typedef std::conditional_t<Mutable, Inventory, const Inventory> Base;
 		
-		std::conditional_t<Mutable, INVENTORY_SLOT, const INVENTORY_SLOT> & m_data;
-		
 	public:
 		
 		std::conditional_t<Mutable, Entity *, Entity * const> & entity;
 		std::conditional_t<Mutable, bool, const bool> & show;
 		
 		SlotView(Base * inventory, size_t index) noexcept
-			: m_data(inventory->m_slots[index])
-			, entity(m_data.io)
-			, show(m_data.show)
+			: entity(inventory->m_slots[index].io)
+			, show(inventory->m_slots[index].show)
 		{ }
-		
-		[[nodiscard]] operator std::conditional_t<Mutable, INVENTORY_SLOT, const INVENTORY_SLOT> &() const noexcept {
-			return m_data;
-		}
 		
 	};
 	
