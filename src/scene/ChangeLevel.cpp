@@ -2109,13 +2109,12 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 			
 			io->inventory = std::make_unique<Inventory>(io, Vec2s(aids->sizex, aids->sizey));
 			
-			for(long x = 0; x < aids->sizex; x++)
-			for(long y = 0; y < aids->sizey; y++) {
-				Entity * item = ConvertToValidIO(aids->slot_io[x][y]);
+			for(Vec2s slot : util::grid(Vec2s(0), Vec2s(aids->sizex, aids->sizey)))  {
+				Entity * item = ConvertToValidIO(aids->slot_io[slot.x][slot.y]);
 				if(!item || locateInInventories(item).io == io->index()) {
 					continue;
 				}
-				if(!insertIntoInventoryAtNoEvent(item, InventoryPos(io->index(), 0, x, y))) {
+				if(!insertIntoInventoryAtNoEvent(item, InventoryPos(io->index(), 0, slot.x, slot.y))) {
 					LogWarning << "Could not load item " << item->idString() << " into inventory of " << io->idString();
 					PutInFrontOfPlayer(item);
 				}
