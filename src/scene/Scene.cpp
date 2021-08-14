@@ -1375,8 +1375,8 @@ void ARX_SCENE_Update() {
 		}
 	}
 	
-	for(size_t i = 0; i < RoomDrawList.size(); i++) {
-		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, now, camPos);
+	for(size_t room : RoomDrawList) {
+		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(room, RoomDraw[room].frustrum, now, camPos);
 	}
 	
 	ARX_THROWN_OBJECT_Manage(g_gameTime.lastFrameDuration());
@@ -1390,11 +1390,12 @@ void ARX_SCENE_Render() {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(uw_mode)
+	if(uw_mode) {
 		GRenderer->GetTextureStage(0)->setMipMapLODBias(10.f);
+	}
 	
-	for(size_t i = 0; i < RoomDrawList.size(); i++) {
-		BackgroundRenderOpaque(RoomDrawList[i]);
+	for(size_t  room : RoomDrawList) {
+		BackgroundRenderOpaque(room);
 	}
 	
 	if(!player.m_improve) {
@@ -1431,8 +1432,8 @@ void ARX_SCENE_Render() {
 	
 	GRenderer->SetFogColor(Color::none);
 	
-	for(size_t i = 0; i < RoomDrawList.size(); i++) {
-		BackgroundRenderTransparent(RoomDrawList[i]);
+	for(size_t room : RoomDrawList) {
+		BackgroundRenderTransparent(room);
 	}
 	
 	RenderWater();
