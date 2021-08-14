@@ -113,7 +113,11 @@ void INVENTORY_DATA::setBags(size_t newBagCount) {
 }
 
 EntityHandle INVENTORY_DATA::owner() const noexcept {
-	return m_owner->index();
+	return m_owner.index();
+}
+
+Vec2s INVENTORY_DATA::getInventorySize(const Entity & item) noexcept {
+	return item.m_inventorySize;
 }
 
 /*!
@@ -197,7 +201,7 @@ std::ostream & operator<<(std::ostream & strm, const InventoryPos & p) {
 
 bool INVENTORY_DATA::insertGold(Entity * item) {
 	
-	if(m_owner == entities.player() && item && (item->ioflags & IO_GOLD)) {
+	if(&m_owner == entities.player() && item && (item->ioflags & IO_GOLD)) {
 		ARX_PLAYER_AddGold(item);
 		return true;
 	}
@@ -205,16 +209,16 @@ bool INVENTORY_DATA::insertGold(Entity * item) {
 	return false;
 }
 
-bool INVENTORY_DATA::insertIntoStackAt(Entity * item, Vec3s pos, bool identify) {
+bool INVENTORY_DATA::insertIntoStackAt(Entity & item, Vec3s pos, bool identify) {
 	
-	arx_assume(pos.z >= 0);
+	arx_assume(pos.x >= 0 && pos.y >= 0 && pos.z >= 0);
 	if(size_t(pos.z) >= bags()) {
 		return false;
 	}
 	
-	arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
+	arx_assert(item.ioflags & IO_ITEM);
 	
-	if(pos.x + item->m_inventorySize.x > width() || pos.y + item->m_inventorySize.y > height()) {
+	if(pos.x + item.m_inventorySize.x > width() || pos.y + item.m_inventorySize.y > height()) {
 		return false;
 	}
 	
@@ -227,17 +231,60 @@ bool INVENTORY_DATA::insertIntoStackAt(Entity * item, Vec3s pos, bool identify) 
 		ARX_INVENTORY_IdentifyIO(oldItem);
 	}
 	
-	if(item == oldItem) {
+	if(item == *oldItem) {
 		return true;
 	}
 	
 	// Don't allow stacking non-interactive items
 	// While non-interactive items can't be picked up, they can be made non-interactive while being dragged.
-	if(!(item->gameFlags & GFLAG_INTERACTIVITY) || !(oldItem->gameFlags & GFLAG_INTERACTIVITY)) {
+	if(!(item.gameFlags & GFLAG_INTERACTIVITY) || !(oldItem->gameFlags & GFLAG_INTERACTIVITY)) {
 		return false;
 	}
 	
-	return combineItemStacks(oldItem, item);
+	return combineItemStacks(oldItem, &item);
+}
+
+bool INVENTORY_DATA::insertIntoNewSlotAt(Entity & item, Vec3s pos) {
+	
+	arx_assume(pos.x >= 0 && pos.y >= 0 && pos.z >= 0);
+	if(size_t(pos.z) >= bags()) {
+		return false;
+	}
+	
+	arx_assert(item.ioflags & IO_ITEM);
+	
+	if(pos.x + item.m_inventorySize.x > width() || pos.y + item.m_inventorySize.y > height()) {
+		return false;
+	}
+	
+	// Check if the whole area required by this item is empty
+	for(auto slot : slotsForItem(pos, item)) {
+		if(slot.entity) {
+			return false;
+		}
+	}
+	
+	if(g_draggedEntity == &item) {
+		setDraggedEntity(nullptr);
+	}
+	
+	removeFromInventories(&item);
+	
+	LogDebug(" - " << '(' << m_owner.idString() << ", " << pos.z << ", " << pos.x << ", " << pos.y << ')'
+	         << " := " << item.idString()
+	         << " [" << item._itemdata->count << '/' << item._itemdata->playerstacksize << "]: "
+	         << int(item.m_inventorySize.x) << 'x' << int(item.m_inventorySize.y));
+	
+	// Insert the item at the found position
+	for(auto slot : slotsForItem(pos, item)) {
+		slot.entity = &item;
+		slot.show = false;
+	}
+	get(pos).show = true;
+	item._itemdata->m_inventoryPos = InventoryPos(owner(), pos);
+	item.show = SHOW_FLAG_IN_INVENTORY;
+	
+	return true;
 }
 
 namespace {
@@ -426,13 +473,13 @@ private:
 	
 	Pos insertImpl(Entity * item, const Pos & pos = Pos()) {
 		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
-		if(pos.io == handle() && inventory().insertIntoStackAt(item, pos)) {
+		if(pos.io == handle() && inventory().insertIntoStackAt(*item, pos)) {
 			return pos;
 		}
 		if(Pos newPos = insertIntoStack(item)) {
 			return newPos;
 		}
-		if(insertIntoNewSlotAt(item, pos)) {
+		if(inventory().insertIntoNewSlotAt(*item, pos)) {
 			return pos;
 		}
 		return insertIntoNewSlot(item);
@@ -470,13 +517,13 @@ private:
 		Vec2s end = start + glm::clamp(size, Vec2s(1), Vec2s(width(), height()) - start);
 		
 		for(Pos p(handle(), bag, start.x, start.y); p.y < end.y; advance(p, start, end)) {
-			if(inventory().insertIntoStackAt(item, p, true)) {
+			if(inventory().insertIntoStackAt(*item, p, true)) {
 				return p;
 			}
 		}
 		
 		for(Pos p(handle(), bag, start.x, start.y); p.y < end.y; advance(p, start, end)) {
-			if(insertIntoNewSlotAt(item, p)) {
+			if(inventory().insertIntoNewSlotAt(*item, p)) {
 				return p;
 			}
 		}
@@ -489,63 +536,15 @@ private:
 			Pos::index_type x = (xfirst ? (i == 1) : (i == 0)) ? start.x : neighbor.x;
 			Pos::index_type y = (xfirst ? (i == 0) : (i == 1)) ? start.y : neighbor.y;
 			Pos p(handle(), bag, x, y);
-			if(inventory().insertIntoStackAt(item, p, true)) {
+			if(inventory().insertIntoStackAt(*item, p, true)) {
 				return p;
 			}
-			if(insertIntoNewSlotAt(item, p)) {
+			if(inventory().insertIntoNewSlotAt(*item, p)) {
 				return p;
 			}
 		}
 		
 		return insertImpl(item, fallback);
-	}
-	
-	bool insertIntoNewSlotAt(Entity * item, const Pos & pos) {
-		
-		if(!pos || pos.bag >= bags()) {
-			return false;
-		}
-		
-		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
-		
-		arx_assert(pos.io == handle());
-		
-		if(pos.x + item->m_inventorySize.x > width() || pos.y + item->m_inventorySize.y > height()) {
-			return false;
-		}
-		
-		// Check if the whole area required by this item is empty
-		for(index_type j = pos.y; j < pos.y + item->m_inventorySize.y; j++) {
-			for(index_type i = pos.x; i < pos.x + item->m_inventorySize.x; i++) {
-				if(index(pos.bag, i, j).io != nullptr) {
-					return false;
-				}
-			}
-		}
-		
-		if(g_draggedEntity == item) {
-			setDraggedEntity(nullptr);
-		}
-		
-		removeFromInventories(item);
-		
-		LogDebug(" - " << pos << " := " << item->idString()
-		         << " [" << item->_itemdata->count << '/'
-		         << item->_itemdata->playerstacksize << "]: "
-		         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
-		
-		// Insert the item at the found position
-		for(index_type j = pos.y; j < (pos.y + item->m_inventorySize.y); j++) {
-			for (index_type i = pos.x; i < (pos.x + item->m_inventorySize.x); i++) {
-				index(pos.bag, i, j).io = item;
-				index(pos.bag, i, j).show = false;
-			}
-		}
-		index(pos).show = true;
-		item->_itemdata->m_inventoryPos = pos;
-		item->show = SHOW_FLAG_IN_INVENTORY;
-		
-		return true;
 	}
 	
 	Pos insertIntoNewSlot(Entity * item) {
@@ -572,7 +571,7 @@ private:
 						continue;
 					}
 					
-					if(insertIntoNewSlotAt(item, pos)) {
+					if(inventory().insertIntoNewSlotAt(*item, pos)) {
 						return pos;
 					}
 				}
@@ -601,7 +600,7 @@ private:
 			for(index_type i = 0; i < maxi; i++) {
 				for(index_type j = 0; j < maxj; j++) {
 					Pos pos = swap() ? Pos(handle(), bag, j, i) : Pos(handle(), bag, i, j);
-					if(inventory().insertIntoStackAt(item, pos)) {
+					if(inventory().insertIntoStackAt(*item, pos)) {
 						return pos;
 					}
 				}
@@ -685,7 +684,7 @@ public:
 			return false;
 		}
 		
-		if(insertIntoNewSlotAt(item, pos)) {
+		if(inventory().insertIntoNewSlotAt(*item, pos)) {
 			return true;
 		}
 		

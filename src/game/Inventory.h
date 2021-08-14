@@ -87,7 +87,12 @@ struct InventoryPos {
 	{ }
 	
 	InventoryPos(EntityHandle io_, index_type bag_, index_type x_, index_type y_)
-		: io(io_), bag(bag_), x(x_), y(y_) { }
+		: io(io_), bag(bag_), x(x_), y(y_)
+	{ }
+	
+	InventoryPos(EntityHandle io_, Vec3s pos)
+		: io(io_), bag(pos.z), x(pos.x), y(pos.y)
+	{ }
 	
 	//! \return true if this is a valid position
 	operator bool() const {
@@ -102,7 +107,7 @@ struct InventoryPos {
 
 class INVENTORY_DATA {
 	
-	Entity * m_owner;
+	Entity & m_owner;
 	const Vec2s m_size;
 	size_t m_bags;
 	std::vector<INVENTORY_SLOT> m_slots;
@@ -182,14 +187,37 @@ class INVENTORY_DATA {
 		return m_bags * size_t(m_size.x) * size_t(m_size.y);
 	}
 	
+	//! Returns an iterable over all slots of an item
+	template <template <typename T> typename Iterator = util::GridXYIterator>
+	[[nodiscard]] auto slotsForItem(Vec3s firstSlot, Vec2s size) noexcept {
+		const Vec2s start = firstSlot;
+		const s16 bag = firstSlot.z;
+		arx_assume(m_bags > 0 && bag >= 0 && size_t(bag) < m_bags);
+		arx_assume(start.x >= 0 && size.x > 0 && start.y >= 0 && size.y > 0);
+		arx_assume(start.x + size.x <= m_size.x && start.y + size.y <= m_size.y);
+		return util::transform(util::GridRange<Vec2s, Iterator>(start, start + size), [bag, this](Vec2s slot) {
+			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y);
+			return GridSlotView<true>(this, Vec3s(slot, bag));
+		});
+	}
+	
+	template <template <typename T> typename Iterator = util::GridXYIterator>
+	[[nodiscard]] auto slotsForItem(Vec3s firstSlot, const Entity & item) noexcept {
+		return slotsForItem(firstSlot, getInventorySize(item));
+	}
+	
+	[[nodiscard]] static Vec2s getInventorySize(const Entity & item) noexcept;
+	
 public:
 	
 	bool insertGold(Entity * item);
 	
-	bool insertIntoStackAt(Entity * item, Vec3s pos, bool identify = false);
+	bool insertIntoStackAt(Entity & item, Vec3s pos, bool identify = false);
+	
+	bool insertIntoNewSlotAt(Entity & item, Vec3s pos);
 	
 	INVENTORY_DATA(Entity * owner, Vec2s size)
-		: m_owner(owner)
+		: m_owner(*owner)
 		, m_size(size)
 		, m_bags(1)
 	{
