@@ -708,8 +708,9 @@ static void ARX_INTERACTIVE_ClearIODynData(Entity & entity) {
 
 static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 	
-	if(!io)
+	if(!io) {
 		return;
+	}
 	
 	ARX_INTERACTIVE_ClearIODynData(*io);
 	
@@ -728,9 +729,9 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 	
 	io->animBlend.m_active = false;
 	
-	for(size_t j = 0; j < MAX_ANIMS; j++) {
-		EERIE_ANIMMANAGER_ReleaseHandle(io->anims[j]);
-		io->anims[j] = nullptr;
+	for(ANIM_HANDLE * & animation : io->anims) {
+		EERIE_ANIMMANAGER_ReleaseHandle(animation);
+		animation = nullptr;
 	}
 	
 	spells.removeTarget(io);
