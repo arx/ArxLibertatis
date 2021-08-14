@@ -253,7 +253,7 @@ InventoryPos INVENTORY_DATA::insertIntoStack(Entity & item) {
 	}
 	
 	for(auto slot : slotsInOrder(item.m_inventorySize)) {
-		if(insertIntoStackAt(item, slot)) {
+		if(slot.show && insertIntoStackAt(item, slot)) {
 			return slot;
 		}
 	}
@@ -302,6 +302,23 @@ bool INVENTORY_DATA::insertIntoNewSlotAt(Entity & item, Vec3s pos) {
 	item.show = SHOW_FLAG_IN_INVENTORY;
 	
 	return true;
+}
+
+InventoryPos INVENTORY_DATA::insertIntoNewSlot(Entity & item) {
+	
+	arx_assert(item.ioflags & IO_ITEM);
+	
+	if(item.m_inventorySize.x > width() || item.m_inventorySize.y > height()) {
+		return { };
+	}
+	
+	for(auto slot : slotsInOrder(item.m_inventorySize)) {
+		if(!slot.entity && insertIntoNewSlotAt(item, slot)) {
+			return slot;
+		}
+	}
+	
+	return { };
 }
 
 namespace {
@@ -499,7 +516,7 @@ private:
 		if(inventory().insertIntoNewSlotAt(*item, pos)) {
 			return pos;
 		}
-		return insertIntoNewSlot(item);
+		return inventory().insertIntoNewSlot(*item);
 	}
 	
 	// Move via diagonal lines thorough the rect made by start and end
@@ -562,40 +579,6 @@ private:
 		}
 		
 		return insertImpl(item, fallback);
-	}
-	
-	Pos insertIntoNewSlot(Entity * item) {
-		
-		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
-		
-		if(size_type(item->m_inventorySize.x) > width() || size_type(item->m_inventorySize.y) > height()) {
-			return Pos();
-		}
-		
-		index_type maxi = width() + 1 - size_type(item->m_inventorySize.x);
-		index_type maxj = height() + 1 - size_type(item->m_inventorySize.y);
-		if(swap()) {
-			std::swap(maxi, maxj);
-		}
-		
-		for(index_type bag = 0; bag < bags(); bag++) {
-			for(index_type i = 0; i < maxi; i++) {
-				for(index_type j = 0; j < maxj; j++) {
-					Pos pos = swap() ? Pos(handle(), bag, j, i) : Pos(handle(), bag, i, j);
-					
-					// Ignore already used inventory slots
-					if(index(pos).io != nullptr) {
-						continue;
-					}
-					
-					if(inventory().insertIntoNewSlotAt(*item, pos)) {
-						return pos;
-					}
-				}
-			}
-		}
-		
-		return Pos();
 	}
 	
 public:
