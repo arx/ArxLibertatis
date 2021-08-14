@@ -1756,7 +1756,7 @@ static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 static void ManageNPCMovement_End(Entity * io) {
 	
 	AnimLayer & layer0 = io->animlayer[0];
-	ANIM_HANDLE ** alist = io->anims;
+	auto & alist = io->anims;
 	
 	if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
 		ARX_NPC_Manage_Anims(io, 0);
@@ -2286,10 +2286,10 @@ static void ManageNPCMovement(Entity * io) {
 		io->ioflags |= IO_NO_COLLISIONS;
 		return;
 	}
-
+	
 	AnimLayer & layer0 = io->animlayer[0];
-	ANIM_HANDLE ** alist = io->anims;
-
+	auto & alist = io->anims;
+	
 	// Using USER animation ?
 	if(layer0.cur_anim
 	   && (layer0.flags & EA_FORCEPLAY)
@@ -2399,7 +2399,7 @@ static void ManageNPCMovement_REFACTOR_end(Entity * io, float TOLERANCE2) {
 	ARX_NPC_Manage_Anims(io, TOLERANCE2);
 	
 	AnimLayer & layer0 = io->animlayer[0];
-	ANIM_HANDLE ** alist = io->anims;
+	auto & alist = io->anims;
 	
 	// Puts at least WAIT anim on NPC if he has no main animation...
 	if(layer0.cur_anim == nullptr) {

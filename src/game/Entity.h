@@ -282,7 +282,7 @@ public:
 	float original_radius;
 	TextureContainer * m_icon; // Object Icon
 	EERIE_3DOBJ * obj; // IO Mesh data
-	ANIM_HANDLE * anims[MAX_ANIMS]; // Object Animations
+	std::array<ANIM_HANDLE *, MAX_ANIMS> anims; // Object Animations
 	std::array<AnimLayer, MAX_ANIM_LAYERS> animlayer;
 	
 	AnimationBlendStatus animBlend;

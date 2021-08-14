@@ -178,8 +178,8 @@ bool ARX_PLAYER_IsInFightMode() {
 	
 	if(layer1.cur_anim) {
 		
-		ANIM_HANDLE ** alist = entities.player()->anims;
-
+		auto & alist = entities.player()->anims;
+		
 		if(   layer1.cur_anim == alist[ANIM_BARE_READY]
 		   || layer1.cur_anim == alist[ANIM_BARE_UNREADY]
 		   || layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_1]
@@ -1205,7 +1205,7 @@ static void ARX_PLAYER_Manage_Visual_End(ANIM_HANDLE * request0_anim, ANIM_HANDL
 	AnimLayer & layer0 = io->animlayer[0];
 	AnimLayer & layer3 = io->animlayer[3];
 	
-	ANIM_HANDLE ** alist = io->anims;
+	auto & alist = io->anims;
 	
 	if(request0_anim && request0_anim != layer0.cur_anim) {
 		AcquireLastAnim(io);
@@ -1315,7 +1315,7 @@ void ARX_PLAYER_Manage_Visual() {
 	AnimLayer & layer1 = io->animlayer[1];
 	AnimLayer & layer3 = io->animlayer[3];
 	
-	ANIM_HANDLE ** alist = io->anims;
+	auto & alist = io->anims;
 	
 	if(layer0.flags & EA_FORCEPLAY) {
 		if(layer0.flags & EA_ANIMEND) {

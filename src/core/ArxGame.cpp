@@ -1231,8 +1231,8 @@ void ArxGame::updateFirstPersonCamera() {
 	
 	Entity * io = entities.player();
 	AnimLayer & layer1 = io->animlayer[1];
-	ANIM_HANDLE ** alist = io->anims;
-
+	auto & alist = io->anims;
+	
 	if(player.m_bowAimRatio != 0.f
 	   && layer1.cur_anim != alist[ANIM_MISSILE_STRIKE_PART_1]
 	   && layer1.cur_anim != alist[ANIM_MISSILE_STRIKE_PART_2]
