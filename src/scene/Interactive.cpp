@@ -2148,15 +2148,19 @@ void ARX_INTERACTIVE_DestroyIOdelayedRemove(Entity * entity) {
 }
 
 void ARX_INTERACTIVE_DestroyIOdelayedExecute() {
+	
 	if(!toDestroy.empty()) {
 		LogDebug("executing delayed entity destruction");
 	}
-	for(std::vector<Entity *>::iterator it = toDestroy.begin(); it != toDestroy.end(); ++it) {
-		if(*it) {
-			(*it)->destroy();
+	
+	for(Entity * entity : toDestroy) {
+		if(entity) {
+			entity->destroy();
 		}
 	}
+	
 	toDestroy.clear();
+	
 }
 
 bool IsSameObject(Entity * io, Entity * ioo) {
