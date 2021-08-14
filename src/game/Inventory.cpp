@@ -297,7 +297,7 @@ bool INVENTORY_DATA::insertIntoNewSlotAt(Entity & item, Vec3s pos) {
 		slot.entity = &item;
 		slot.show = false;
 	}
-	get(pos).show = true;
+	set(pos).show = true;
 	item._itemdata->m_inventoryPos = { owner(), pos };
 	item.show = SHOW_FLAG_IN_INVENTORY;
 	
@@ -458,7 +458,7 @@ void INVENTORY_DATA::remove(Entity & item) {
 	         << " [" << item._itemdata->count << '/' << item._itemdata->playerstacksize << "]: "
 	         << int(item.m_inventorySize.x) << 'x' << int(item.m_inventorySize.y));
 	
-	get(pos).show = false;
+	set(pos).show = false;
 	for(auto slot : slotsForItem(pos, item)) {
 		arx_assert(slot.entity == &item);
 		arx_assert(slot.show == false);

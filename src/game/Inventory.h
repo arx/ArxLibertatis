@@ -187,6 +187,12 @@ class INVENTORY_DATA {
 		return m_bags * size_t(m_size.x) * size_t(m_size.y);
 	}
 	
+	[[nodiscard]] GridSlotView<true> set(Vec3s slot) noexcept {
+		arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
+		           && slot.z >= 0 && size_t(slot.z) < m_bags);
+		return { this, slot };
+	}
+	
 	//! Returns an iterable over all slots of an item
 	template <template <typename T> typename Iterator = util::GridXYIterator>
 	[[nodiscard]] auto slotsInArea(Vec3s firstSlot, Vec2s size) noexcept {
@@ -196,8 +202,7 @@ class INVENTORY_DATA {
 		arx_assume(start.x >= 0 && size.x > 0 && start.y >= 0 && size.y > 0);
 		arx_assume(start.x + size.x <= m_size.x && start.y + size.y <= m_size.y);
 		return util::transform(util::GridRange<Vec2s, Iterator>(start, start + size), [bag, this](Vec2s slot) {
-			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y);
-			return GridSlotView<true>(this, Vec3s(slot, bag));
+			return set(Vec3s(slot, bag));
 		});
 	}
 	
@@ -207,8 +212,6 @@ class INVENTORY_DATA {
 	}
 	
 	[[nodiscard]] static Vec2s getInventorySize(const Entity & item) noexcept;
-	
-public:
 	
 	bool insertGold(Entity * item);
 	
@@ -259,12 +262,6 @@ public:
 	[[nodiscard]] size_t bags() const noexcept {
 		arx_assume(m_bags > 0);
 		return m_bags;
-	}
-	
-	[[nodiscard]] GridSlotView<true> get(Vec3s slot) noexcept {
-		arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
-		           && slot.z >= 0 && size_t(slot.z) < m_bags);
-		return { this, slot };
 	}
 	
 	[[nodiscard]] GridSlotView<false> get(Vec3s slot) const noexcept {
