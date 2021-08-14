@@ -21,6 +21,7 @@
 
 #include <array>
 #include <map>
+#include <memory>
 #include <string>
 
 #include <boost/lexical_cast.hpp>
@@ -453,20 +454,14 @@ std::string SpellMoves; // Rune directions encoded as numpad keys
 std::string LAST_FAILED_SEQUENCE = "none";
 
 struct SpellDefinition {
-	SpellDefinition * next[RUNE_COUNT];
+	
+	std::array<std::unique_ptr<SpellDefinition>, RUNE_COUNT> next;
 	SpellType spell;
-	SpellDefinition() : spell(SPELL_NONE) {
-		for(size_t i = 0; i < RUNE_COUNT; i++) {
-			next[i] = nullptr;
-		}
-	}
-
-	~SpellDefinition() {
-		for(size_t i = 0; i < RUNE_COUNT; i++) {
-			delete next[i];
-		}
-	}
+	
+	SpellDefinition() : spell(SPELL_NONE) { }
+	
 };
+
 static SpellDefinition definedSpells;
 
 typedef std::map<std::string_view, SpellType> SpellNames;
@@ -548,10 +543,10 @@ static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], SpellType spell, std
 			break;
 		}
 		arx_assert(symbols[i] >= 0 && size_t(symbols[i]) < RUNE_COUNT);
-		if(def->next[symbols[i]] == nullptr) {
-			def->next[symbols[i]] = new SpellDefinition();
+		if(!def->next[symbols[i]]) {
+			def->next[symbols[i]] = std::make_unique<SpellDefinition>();
 		}
-		def = def->next[symbols[i]];
+		def = def->next[symbols[i]].get();
 	}
 	
 	arx_assert(def->spell == SPELL_NONE);
@@ -640,7 +635,7 @@ static SpellType getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
 		if(def->next[symbols[i]] == nullptr) {
 			return SPELL_NONE;
 		}
-		def = def->next[symbols[i]];
+		def = def->next[symbols[i]].get();
 	}
 	
 	return def->spell;
