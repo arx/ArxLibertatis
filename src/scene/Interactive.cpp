@@ -757,8 +757,7 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 			arx_assert(slot.entity == nullptr);
 			arx_assert(slot.show == false);
 		}
-		delete io->inventory;
-		io->inventory = nullptr;
+		io->inventory.reset();
 	}
 	
 	io->inventory = nullptr;

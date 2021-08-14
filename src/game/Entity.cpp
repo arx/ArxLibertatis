@@ -235,7 +235,6 @@ Entity::~Entity() {
 				removeFromInventories(slot.entity);
 			}
 		}
-		delete inventory;
 	}
 	
 	if(m_index != size_t(-1)) {

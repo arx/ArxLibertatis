@@ -2107,7 +2107,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 				= reinterpret_cast<const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
 			
-			io->inventory = new Inventory(io, Vec2s(aids->sizex, aids->sizey));
+			io->inventory = std::make_unique<Inventory>(io, Vec2s(aids->sizex, aids->sizey));
 			
 			for(long x = 0; x < aids->sizex; x++)
 			for(long y = 0; y < aids->sizey; y++) {

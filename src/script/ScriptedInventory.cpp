@@ -119,8 +119,7 @@ class InventoryCommand : public Command {
 				arx_assert(slot.entity == nullptr);
 			}
 			
-			delete io->inventory;
-			io->inventory = nullptr;
+			io->inventory.reset();
 		}
 		
 		DestroyCommand() : SubCommand("destroy") { }
@@ -150,7 +149,7 @@ class InventoryCommand : public Command {
 			
 			DestroyCommand::destroyInventory(io);
 			
-			io->inventory = new Inventory(io, Vec2s(3, 11));
+			io->inventory = std::make_unique<Inventory>(io, Vec2s(3, 11));
 			
 			return Success;
 		}

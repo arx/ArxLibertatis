@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <array>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -305,7 +306,7 @@ public:
 		IO_CAMDATA * _camdata; // Camera Datas
 	};
 	
-	Inventory * inventory;
+	std::unique_ptr<Inventory> inventory;
 	EntityVisilibity show; // Show status (in scene, in inventory...)
 	IOCollisionFlags collision; // collision type
 	ScriptEventName mainevent;
