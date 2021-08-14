@@ -343,10 +343,10 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			Bone & bone = eobj->m_skeleton->bones[i];
 			std::vector<u32> & vertices = eobj->m_boneVertices[i];
 			
-			for(size_t j = 0; j < group.indexes.size(); j++) {
-				if(!vertexAssigned[group.indexes[j]]) {
-					vertexAssigned[group.indexes[j]] = true;
-					vertices.push_back(group.indexes[j]);
+			for(u32 index : group.indexes) {
+				if(!vertexAssigned[index]) {
+					vertexAssigned[index] = true;
+					vertices.push_back(index);
 				}
 			}
 			
