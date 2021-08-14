@@ -50,13 +50,14 @@ static void ReCenterSequence(std::string_view sequence, Vec2s & iMin, Vec2s & iM
 	iMin = Vec2s(0, 0);
 	iMax = Vec2s(0, 0);
 	
-	for(size_t iI = 0; iI < sequence.length(); iI++) {
-		Vec2s es2dVector = GetSymbVector(sequence[iI]);
+	for(char symbol : sequence) {
+		Vec2s es2dVector = GetSymbVector(symbol);
 		es2dVector *= symbolVecScale;
 		iSize += es2dVector;
 		iMin = glm::min(iMin, iSize);
 		iMax = glm::max(iMax, iSize);
 	}
+	
 }
 
 static Vec2s lMaxSymbolDrawSize;
