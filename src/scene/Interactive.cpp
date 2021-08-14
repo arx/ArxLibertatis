@@ -278,13 +278,13 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
 	ARX_INTERACTIVE_HideGore(entities.player(), 1);
 }
 
-void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io)
-{
-	if (!io || !io->obj || io->obj->texturecontainer.empty())
+void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io) {
+	
+	if(!io || !io->obj || io->obj->texturecontainer.empty()) {
 		return;
-
+	}
+	
 	long gorenum = -1;
-
 	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
 		if(io->obj->texturecontainer[nn]
 		   && boost::contains(io->obj->texturecontainer[nn]->m_texName.string(), "gore")) {
@@ -292,15 +292,16 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io)
 			break;
 		}
 	}
-
+	
 	if(gorenum > -1) {
-		for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
-			if(io->obj->facelist[nn].texid == gorenum) {
-				io->obj->facelist[nn].facetype |= POLY_HIDE;
-				io->obj->facelist[nn].texid = -1;
+		for(EERIE_FACE & face : io->obj->facelist) {
+			if(face.texid == gorenum) {
+				face.facetype |= POLY_HIDE;
+				face.texid = -1;
 			}
 		}
 	}
+	
 }
 
 // flag & 1 == no unhide non-gore
