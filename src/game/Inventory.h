@@ -218,6 +218,10 @@ public:
 	
 	bool insertIntoNewSlotAt(Entity & item, Vec3s pos);
 	
+	InventoryPos insertIntoNewSlot(Entity & item);
+	
+	InventoryPos insertImpl(Entity & item, InventoryPos pos = InventoryPos());
+	
 	INVENTORY_DATA(Entity * owner, Vec2s size)
 		: m_owner(*owner)
 		, m_size(size)

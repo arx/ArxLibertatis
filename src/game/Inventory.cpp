@@ -321,6 +321,25 @@ InventoryPos INVENTORY_DATA::insertIntoNewSlot(Entity & item) {
 	return { };
 }
 
+InventoryPos INVENTORY_DATA::insertImpl(Entity & item, InventoryPos pos) {
+	
+	arx_assert(item.ioflags & IO_ITEM);
+	
+	if(pos.io == owner() && insertIntoStackAt(item, pos)) {
+		return pos;
+	}
+	
+	if(InventoryPos newPos = insertIntoStack(item)) {
+		return newPos;
+	}
+	
+	if(pos.io == owner() && insertIntoNewSlotAt(item, pos)) {
+		return pos;
+	}
+	
+	return insertIntoNewSlot(item);
+}
+
 namespace {
 
 // Glue code to access both player and IO inventories in a uniform way.
@@ -505,20 +524,6 @@ private:
 	
 	using InventoryAccess::inventory;
 	
-	Pos insertImpl(Entity * item, const Pos & pos = Pos()) {
-		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
-		if(pos.io == handle() && inventory().insertIntoStackAt(*item, pos)) {
-			return pos;
-		}
-		if(Pos newPos = inventory().insertIntoStack(*item)) {
-			return newPos;
-		}
-		if(inventory().insertIntoNewSlotAt(*item, pos)) {
-			return pos;
-		}
-		return inventory().insertIntoNewSlot(*item);
-	}
-	
 	// Move via diagonal lines thorough the rect made by start and end
 	static void advance(Pos & p, Vec2s start, Vec2s end) {
 		p.x++;
@@ -578,7 +583,7 @@ private:
 			}
 		}
 		
-		return insertImpl(item, fallback);
+		return inventory().insertImpl(*item, fallback);
 	}
 	
 public:
@@ -605,7 +610,7 @@ public:
 		}
 		
 		if(item && (item->ioflags & IO_ITEM) && !(item->ioflags & IO_MOVABLE)) {
-			if(Pos newPos = insertImpl(item, pos)) {
+			if(Pos newPos = inventory().insertImpl(*item, pos)) {
 				ARX_INVENTORY_Declare_InventoryIn(get(newPos), handle());
 				return true;
 			}
@@ -659,7 +664,7 @@ public:
 			return true;
 		}
 		
-		return insertImpl(item, pos);
+		return inventory().insertImpl(*item, pos);
 	}
 	
 	//! Sort the inventory and stack duplicate items
@@ -700,7 +705,7 @@ public:
 		// Now put the items back into the inventory
 		std::vector<Entity *> remaining;
 		for(Entity * item : items) {
-			if(!remaining.empty() || !insertImpl(item)) {
+			if(!remaining.empty() || !inventory().insertImpl(*item)) {
 				remaining.push_back(item);
 			}
 		}
@@ -731,7 +736,7 @@ public:
 						break;
 					}
 				}
-				if(!insertImpl(item, pos)) {
+				if(!inventory().insertImpl(*item, pos)) {
 					LogWarning << "Could not restory original position of " << item->idString() << " in "
 					           << entities.get(handle())->idString() << " inventory";
 					PutInFrontOfPlayer(item);
