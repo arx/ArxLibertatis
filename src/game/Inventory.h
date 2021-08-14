@@ -123,6 +123,12 @@ class INVENTORY_DATA {
 		[[nodiscard]] operator Vec3s() const noexcept {
 			return m_slot;
 		}
+		[[nodiscard]] operator Vec2s() const noexcept {
+			return m_slot;
+		}
+		[[nodiscard]] explicit operator Vec2f() const noexcept {
+			return m_slot;
+		}
 		
 		[[nodiscard]] operator std::conditional_t<Mutable, INVENTORY_SLOT, const INVENTORY_SLOT> &() const noexcept {
 			return m_inventory->m_slots[index()];
@@ -138,10 +144,12 @@ public:
 		, m_bags(1)
 	{
 		arx_assume(size.x > 0 && size.y > 0 && m_bags > 0);
-		m_slots.resize(m_bags * size_t(size.x) * size_t(size.y));
+		setBags(1);
 	}
 	
 	~INVENTORY_DATA();
+	
+	void setBags(size_t newBagCount);
 	
 	[[nodiscard]] Vec3s size() const noexcept {
 		arx_assume(m_bags <= std::numeric_limits<s16>::max());
@@ -232,7 +240,7 @@ public:
 	
 	//! Returns an iterable over all slots
 	template <template <typename T> typename Iterator = util::GridXYIterator>
-	[[nodiscard]] auto bag(size_t bag) noexcept {
+	[[nodiscard]] auto slotsInBag(size_t bag) noexcept {
 		arx_assume(m_bags > 0 && bag < m_bags && bag <= std::numeric_limits<s16>::max());
 		return util::transform(util::GridRange<Vec2s, Iterator>(Vec2s(0), m_size), [bag, this](Vec2s slot) {
 			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y);
@@ -241,7 +249,7 @@ public:
 	}
 	//! Returns an iterable over all slots
 	template <template <typename T> typename Iterator = util::GridXYIterator>
-	[[nodiscard]] auto bag(size_t bag) const noexcept {
+	[[nodiscard]] auto slotsInBag(size_t bag) const noexcept {
 		arx_assume(m_bags > 0 && bag < m_bags && bag <= std::numeric_limits<s16>::max());
 		return util::transform(util::GridRange<Vec2s, Iterator>(Vec2s(0), m_size), [bag, this](Vec2s slot) {
 			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y);
@@ -250,13 +258,6 @@ public:
 	}
 	
 };
-
-const size_t INVENTORY_BAGS = 3;
-const size_t INVENTORY_X = 16;
-const size_t INVENTORY_Y = 3;
-
-// TODO this should be completely wrapped in PlayerInventory!
-extern INVENTORY_SLOT g_inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 
 extern Entity * ioSteal;
 

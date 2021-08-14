@@ -738,9 +738,6 @@ bool ArxGame::initGame()
 	player = ARXCHARACTER();
 	ARX_PLAYER_InitPlayer();
 	
-	CleanInventory();
-	g_playerInventoryHud.setCurrentBag(0);
-	
 	ARX_SPEECH_FirstInit();
 	notification_init();
 	notification_ClearAll();

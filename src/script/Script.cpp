@@ -1728,17 +1728,12 @@ void ManageCasseDArme(Entity * io) {
 	if(!(io->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)))
 		return;
 	
-	arx_assert(player.m_bags >= 0);
-	arx_assert(player.m_bags <= 3);
-	
 	Entity * pObjMin = nullptr;
 	Entity * pObjMax = nullptr;
 	Entity * pObjFIX = nullptr;
 	
-	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		Entity * bagEntity = g_inventory[bag][x][y].io;
+	for(auto slot : entities.player()->inventory->slots<util::GridZYXIterator>()) {
+		Entity * bagEntity = slot.entity;
 		
 		if(bagEntity && bagEntity != io
 		   && (bagEntity->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW))
@@ -1795,6 +1790,7 @@ void ManageCasseDArme(Entity * io) {
 			}
 		}
 	}
+	
 }
 
 void loadScript(EERIE_SCRIPT & script, PakFile * file) {

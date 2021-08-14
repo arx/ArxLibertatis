@@ -1823,14 +1823,13 @@ void ArxGame::manageEditorControls() {
 			bool bQuitCombine = true;
 			
 			if((player.Interface & INTER_INVENTORY)) {
-				if(player.m_bags) {
-					bQuitCombine = g_playerInventoryHud.updateInput();
-				}
+				bQuitCombine = g_playerInventoryHud.updateInput();
 			}
 			
 			if(bQuitCombine) {
 				COMBINE = nullptr;
 			}
+			
 		}
 		
 		if(COMBINE) {

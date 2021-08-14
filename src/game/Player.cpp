@@ -694,8 +694,8 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 /*!
  * \brief Creates a Fresh hero
  */
-void ARX_PLAYER_MakeFreshHero()
-{
+void ARX_PLAYER_MakeFreshHero() {
+	
 	player.m_attribute.strength = 6;
 	player.m_attribute.mind = 6;
 	player.m_attribute.dexterity = 6;
@@ -722,8 +722,10 @@ void ARX_PLAYER_MakeFreshHero()
 	player.poison = 0.f;
 	player.hunger = 100.f;
 	player.skin = 0;
-	player.m_bags = 1;
-
+	if(entities.player()) {
+		entities.player()->inventory->setBags(1);
+	}
+	
 	ARX_PLAYER_ComputePlayerStats();
 	player.rune_flags = 0;
 
@@ -1154,6 +1156,8 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 			io->_npcdata->ex_rotate->group_rotate[n] = Anglef();
 		}
 	}
+	
+	io->inventory = new INVENTORY_DATA(io, Vec2s(16, 3));
 	
 	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
 }
@@ -1620,7 +1624,9 @@ void ARX_PLAYER_InitPlayer() {
 	player.falling = false;
 	player.torch = nullptr;
 	player.gold = 0;
-	player.m_bags = 1;
+	if(entities.player()) {
+		entities.player()->inventory->setBags(1);
+	}
 	player.doingmagic = 0;
 	
 	ARX_PLAYER_MakeFreshHero();
@@ -2397,10 +2403,7 @@ void ARX_PLAYER_Start_New_Quest() {
 }
 
 void ARX_PLAYER_AddBag() {
-	++player.m_bags;
-
-	if(player.m_bags > 3)
-		player.m_bags = 3;
+	entities.player()->inventory->setBags(std::min(entities.player()->inventory->bags() + 1, size_t(3)));
 }
 
 bool ARX_PLAYER_CanStealItem(Entity * item) {
@@ -2566,6 +2569,7 @@ void ARX_GAME_Reset() {
 
 		ARX_EQUIPMENT_ReleaseAll(entities.player());
 
+		CleanInventory();
 		ARX_PLAYER_InitPlayer();
 		ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
 		

@@ -83,7 +83,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/Script.h"
 
 
-INVENTORY_SLOT g_inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 Entity * ioSteal = nullptr;
 
 INVENTORY_DATA::~INVENTORY_DATA() {
@@ -94,6 +93,22 @@ INVENTORY_DATA::~INVENTORY_DATA() {
 		arx_assert(slot.show == false);
 	}
 	#endif
+	
+}
+
+void INVENTORY_DATA::setBags(size_t newBagCount) {
+	
+	#ifdef ARX_DEBUG
+	for(size_t bag = newBagCount; bag < bags(); bag++) {
+		for(auto slot : slotsInBag(bag)) {
+			arx_assert(slot.entity == nullptr);
+			arx_assert(slot.show == false);
+		}
+	}
+	#endif
+	
+	m_bags = newBagCount;
+	m_slots.resize(m_bags * size_t(m_size.x) * size_t(m_size.y));
 	
 }
 
@@ -186,30 +201,29 @@ struct PlayerInventoryAccess {
 	const index_type m_bags;
 	
 	explicit PlayerInventoryAccess(Entity * entity)
-		: m_bags(player.m_bags)
+		: m_bags(entities.player()->inventory->bags())
 	{
 		ARX_UNUSED(entity);
 	}
 	
 	[[nodiscard]] INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) {
-		return g_inventory[bag][x][y];
+		return entities.player()->inventory->get(Vec3s(x, y, bag));
 	}
 	
 	[[nodiscard]] const INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) const {
-		return g_inventory[bag][x][y];
+		return entities.player()->inventory->get(Vec3s(x, y, bag));
 	}
 	
 	[[nodiscard]] index_type bags() const {
-		arx_assume(m_bags <= INVENTORY_BAGS);
 		return m_bags;
 	}
 	
 	[[nodiscard]] index_type width() const {
-		return INVENTORY_X;
+		return entities.player()->inventory->size().x;
 	}
 	
 	[[nodiscard]] index_type height() const {
-		return INVENTORY_Y;
+		return entities.player()->inventory->size().y;
 	}
 	
 	[[nodiscard]] EntityHandle handle() const {
@@ -794,14 +808,15 @@ Inventory<EntityInventoryAccess> getEntityInventory(Entity * entity) {
  */
 void CleanInventory() {
 	
-	for(size_t bag = 0; bag < INVENTORY_BAGS; bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-		if(slot.io) {
-			getPlayerInventory().remove(slot.io);
+	if(!entities.player()) {
+		return;
+	}
+	
+	for(auto slot : entities.player()->inventory->slots()) {
+		if(slot.entity) {
+			getPlayerInventory().remove(slot.entity);
 		}
-		arx_assert(!slot.io && !slot.show);
+		arx_assert(!slot.entity && !slot.show);
 	}
 	
 }
@@ -995,20 +1010,17 @@ bool IsInPlayerInventory(Entity * io) {
 
 Entity * getInventoryItemWithLowestDurability(std::string_view className, float minDurability) {
 	
-	Entity * io = nullptr;
+	Entity * item = nullptr;
 	
-	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-		if(slot.io && slot.show && slot.io->className() == className && slot.io->durability >= minDurability) {
-			if(!io || slot.io->durability < io->durability) {
-				io = slot.io;
-			}
+	for(auto slot : entities.player()->inventory->slotsInOrder()) {
+		if(slot.entity && slot.show && slot.entity->className() == className
+		   && slot.entity->durability >= minDurability
+		   && (!item || slot.entity->durability < item->durability)) {
+			item = slot.entity;
 		}
 	}
 	
-	return io;
+	return item;
 }
 
 void useInventoryItemWithLowestDurability(std::string_view className, float minDurability) {
@@ -1031,17 +1043,12 @@ void ARX_INVENTORY_IdentifyIO(Entity * _pIO) {
 
 void ARX_INVENTORY_IdentifyAll() {
 	
-	arx_assert(player.m_bags >= 0);
-	arx_assert(player.m_bags <= 3);
-	
-	for(size_t bag = 0; bag < size_t(player.m_bags); bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		INVENTORY_SLOT & slot = g_inventory[bag][x][y];
-		if(slot.io && slot.show) {
-			ARX_INVENTORY_IdentifyIO(slot.io);
+	for(auto slot : entities.player()->inventory->slots()) {
+		if(slot.entity && slot.show) {
+			ARX_INVENTORY_IdentifyIO(slot.entity);
 		}
 	}
+	
 }
 
 bool combineItemStacks(Entity * target, Entity * source) {

@@ -658,7 +658,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		case ConfirmChangeLevel: asp->CHANGE_LEVEL_ICON = 1;  break;
 		case ChangeLevelNow:     asp->CHANGE_LEVEL_ICON = 200; break;
 	}
-	asp->bag = player.m_bags;
+	asp->bag = entities.player()->inventory->bags();
 	storeIdString(asp->equipsecondaryIO, nullptr);
 	storeIdString(asp->equipshieldIO, nullptr);
 	storeIdString(asp->leftIO, nullptr);
@@ -673,9 +673,11 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		}
 	}
 	
-	for(Vec3s slot : util::gridZXY(Vec3s(0), Vec3s(INVENTORY_X, INVENTORY_Y, INVENTORY_BAGS))) {
-		storeIdString(asp->id_inventory[slot.z][slot.x][slot.y], g_inventory[slot.z][slot.x][slot.y].io);
-		asp->inventory_show[slot.z][slot.x][slot.y] = g_inventory[slot.z][slot.x][slot.y].show;
+	arx_assert(entities.player()->inventory->bags() <= SAVED_INVENTORY_BAGS);
+	arx_assert(Vec2s(entities.player()->inventory->size()) == Vec2s(SAVED_INVENTORY_X, SAVED_INVENTORY_Y));
+	for(auto slot : entities.player()->inventory->slots()) {
+		storeIdString(asp->id_inventory[slot.bag][slot.x][slot.y], slot.entity);
+		asp->inventory_show[slot.bag][slot.x][slot.y] = slot.show;
 	}
 	
 	if(g_draggedEntity) {
@@ -1469,7 +1471,7 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 		CHANGE_LEVEL_ICON = ConfirmChangeLevel;
 	}
 	
-	player.m_bags = asp->bag;
+	entities.player()->inventory->setBags(asp->bag);
 	
 	for(size_t i = 0; i < SAVED_MAX_PRECAST; i++) {
 		PRECAST_STRUCT precastSlot = asp->precast[i];
@@ -1569,13 +1571,12 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 		}
 	}
 	
-	assert(SAVED_INVENTORY_BAGS == INVENTORY_BAGS);
-	assert(SAVED_INVENTORY_Y == INVENTORY_Y);
-	assert(SAVED_INVENTORY_X == INVENTORY_X);
+	assert(entities.player()->inventory->bags() <= SAVED_INVENTORY_BAGS);
+	assert(Vec2s(entities.player()->inventory->size()) == Vec2s(SAVED_INVENTORY_X, SAVED_INVENTORY_Y));
 	
 	g_draggedEntity = ConvertToValidIO(asp->draggedEntity);
 	
-	for(Vec3s slot : util::gridZYX(Vec3s(0), Vec3s(INVENTORY_X, INVENTORY_Y, INVENTORY_BAGS))) {
+	for(Vec3s slot : util::gridZYX(Vec3s(0), Vec3s(SAVED_INVENTORY_X, SAVED_INVENTORY_Y, SAVED_INVENTORY_BAGS))) {
 		Entity * item = ConvertToValidIO(asp->id_inventory[slot.z][slot.x][slot.y]);
 		if(!item || locateInInventories(item).io == EntityHandle_Player) {
 			continue;
