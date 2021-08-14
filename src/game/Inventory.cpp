@@ -442,6 +442,32 @@ bool INVENTORY_DATA::insertAtNoEvent(Entity * item, InventoryPos pos) {
 	return insertImpl(*item, pos);
 }
 
+void INVENTORY_DATA::remove(Entity & item) {
+	
+	arx_assert(item.ioflags & IO_ITEM);
+	arx_assert(item._itemdata->m_inventoryPos.io == owner());
+	
+	Vec3s pos = item._itemdata->m_inventoryPos;
+	arx_assert(pos.x + item.m_inventorySize.x <= width());
+	arx_assert(pos.y + item.m_inventorySize.y <= height());
+	arx_assert(get(pos).show == true);
+	arx_assert(item.show == SHOW_FLAG_IN_INVENTORY);
+	
+	LogDebug(" - " << '(' << m_owner.idString() << ", " << pos.z << ", " << pos.x << ", " << pos.y << ')'
+	         << " remove " << item.idString()
+	         << " [" << item._itemdata->count << '/' << item._itemdata->playerstacksize << "]: "
+	         << int(item.m_inventorySize.x) << 'x' << int(item.m_inventorySize.y));
+	
+	get(pos).show = false;
+	for(auto slot : slotsForItem(pos, item)) {
+		arx_assert(slot.entity == &item);
+		arx_assert(slot.show == false);
+		slot.entity = nullptr;
+	}
+	
+	item._itemdata->m_inventoryPos = { };
+}
+
 namespace {
 
 // Glue code to access both player and IO inventories in a uniform way.
@@ -646,7 +672,7 @@ public:
 					if(slot.io && slot.show) {
 						items.push_back(slot.io);
 						positions.push_back(Pos(handle(), bag, i, j));
-						remove(slot.io);
+						inventory().remove(*slot.io);
 					}
 					arx_assert(!slot.io && !slot.show);
 				}
@@ -685,7 +711,7 @@ public:
 						INVENTORY_SLOT & slot = index(bag, i, j);
 						if(slot.io && slot.show) {
 							remaining.push_back(slot.io);
-							remove(slot.io);
+							inventory().remove(*slot.io);
 						}
 						arx_assert(!slot.io && !slot.show);
 					}
@@ -709,34 +735,6 @@ public:
 			
 		}
 		
-	}
-	
-	void remove(Entity * item) {
-		
-		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
-		
-		InventoryPos pos = locateInInventories(item);
-		arx_assert(pos.io == handle());
-		arx_assert(pos.x + item->m_inventorySize.x <= width());
-		arx_assert(pos.y + item->m_inventorySize.y <= height());
-		arx_assert(index(pos).show == true);
-		arx_assert(item->show == SHOW_FLAG_IN_INVENTORY);
-		
-		LogDebug(" - " << pos << " remove " << item->idString()
-		         << " [" << item->_itemdata->count << '/'
-		         << item->_itemdata->playerstacksize << "]: "
-		         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
-		
-		index(pos).show = false;
-		for(index_type j = pos.y; j < (pos.y + size_type(item->m_inventorySize.y)); j++) {
-			for(index_type i = pos.x; i < (pos.x + size_type(item->m_inventorySize.x)); i++) {
-				arx_assert(index(pos.bag, i, j).io == item);
-				arx_assert(index(pos.bag, i, j).show == false);
-				index(pos.bag, i, j).io = nullptr;
-			}
-		}
-		
-		item->_itemdata->m_inventoryPos = InventoryPos();
 	}
 	
 	Entity * get(const Pos & pos) const {
@@ -767,7 +765,7 @@ void CleanInventory() {
 	
 	for(auto slot : entities.player()->inventory->slots()) {
 		if(slot.entity) {
-			getPlayerInventory().remove(slot.entity);
+			entities.player()->inventory->remove(*slot.entity);
 		}
 		arx_assert(!slot.entity && !slot.show);
 	}
@@ -813,11 +811,11 @@ InventoryPos removeFromInventories(Entity * item) {
 		return InventoryPos();
 	}
 	
-	if(pos.io == EntityHandle_Player) {
-		getPlayerInventory().remove(item);
-	} else {
-		getEntityInventory(entities.get(pos.io)).remove(item);
-	}
+	Entity * container = entities.get(pos.io);
+	
+	arx_assert(container && container->inventory);
+	
+	container->inventory->remove(*item);
 	
 	return pos;
 }

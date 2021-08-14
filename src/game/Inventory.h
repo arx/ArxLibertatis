@@ -347,6 +347,8 @@ public:
 	
 	bool insertAtNoEvent(Entity * item, InventoryPos pos = { });
 	
+	void remove(Entity & item);
+	
 };
 
 extern Entity * ioSteal;
