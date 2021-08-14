@@ -235,7 +235,7 @@ public:
 	[[nodiscard]] EntityHandle owner() const noexcept;
 	
 	[[nodiscard]] Vec3s size() const noexcept {
-		arx_assume(m_size.x > 0 && m_size.y > 0 && m_bags > 0 && m_bags <= std::numeric_limits<s16>::max());
+		arx_assume(m_size.x > 0 && m_size.y > 0 && m_bags > 0 && size_t(s16(m_bags)) == m_bags);
 		return { m_size, s16(m_bags) };
 	}
 	
@@ -296,7 +296,7 @@ public:
 	//! Returns an iterable over all slots
 	template <template <typename T> typename Iterator = util::GridXYIterator>
 	[[nodiscard]] auto slotsInBag(size_t bag) const noexcept {
-		arx_assume(m_bags > 0 && bag < m_bags && bag <= std::numeric_limits<s16>::max());
+		arx_assume(m_bags > 0 && bag < m_bags && size_t(s16(bag)) == bag);
 		return util::transform(util::GridRange<Vec2s, Iterator>(Vec2s(0), m_size), [bag, this](Vec2s slot) {
 			return get(Vec3s(slot, s16(bag)));
 		});
