@@ -150,7 +150,7 @@ class InventoryCommand : public Command {
 			
 			DestroyCommand::destroyInventory(io);
 			
-			io->inventory = new INVENTORY_DATA(io, Vec2s(3, 11));
+			io->inventory = new Inventory(io, Vec2s(3, 11));
 			
 			return Success;
 		}

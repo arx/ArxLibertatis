@@ -105,7 +105,7 @@ struct InventoryPos {
 	
 };
 
-class INVENTORY_DATA {
+class Inventory {
 	
 	Entity & m_owner;
 	const Vec2s m_size;
@@ -116,7 +116,7 @@ class INVENTORY_DATA {
 	template <bool Mutable>
 	class SlotView {
 		
-		typedef std::conditional_t<Mutable, INVENTORY_DATA, const INVENTORY_DATA> Base;
+		typedef std::conditional_t<Mutable, Inventory, const Inventory> Base;
 		
 		std::conditional_t<Mutable, INVENTORY_SLOT, const INVENTORY_SLOT> & m_data;
 		
@@ -141,7 +141,7 @@ class INVENTORY_DATA {
 	template <bool Mutable>
 	class GridSlotView : public SlotView<Mutable> {
 		
-		typedef std::conditional_t<Mutable, INVENTORY_DATA, const INVENTORY_DATA> Base;
+		typedef std::conditional_t<Mutable, Inventory, const Inventory> Base;
 		
 		const EntityHandle m_owner;
 		
@@ -229,7 +229,7 @@ class INVENTORY_DATA {
 	
 public:
 	
-	INVENTORY_DATA(Entity * owner, Vec2s size)
+	Inventory(Entity * owner, Vec2s size)
 		: m_owner(*owner)
 		, m_size(size)
 		, m_bags(1)
@@ -238,7 +238,7 @@ public:
 		setBags(1);
 	}
 	
-	~INVENTORY_DATA();
+	~Inventory();
 	
 	void setBags(size_t newBagCount);
 	

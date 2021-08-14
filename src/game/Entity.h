@@ -71,7 +71,7 @@ struct ANIM_HANDLE;
 struct Zone;
 struct ARX_USE_PATH;
 struct EERIE_3DOBJ;
-class INVENTORY_DATA;
+class Inventory;
 struct IO_CAMDATA;
 struct IO_FIXDATA;
 struct IO_ITEMDATA;
@@ -305,7 +305,7 @@ public:
 		IO_CAMDATA * _camdata; // Camera Datas
 	};
 	
-	INVENTORY_DATA * inventory; // Inventory Data
+	Inventory * inventory;
 	EntityVisilibity show; // Show status (in scene, in inventory...)
 	IOCollisionFlags collision; // collision type
 	ScriptEventName mainevent;

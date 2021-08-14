@@ -1157,7 +1157,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 		}
 	}
 	
-	io->inventory = new INVENTORY_DATA(io, Vec2s(16, 3));
+	io->inventory = new Inventory(io, Vec2s(16, 3));
 	
 	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
 }

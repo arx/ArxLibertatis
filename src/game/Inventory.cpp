@@ -85,7 +85,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 Entity * ioSteal = nullptr;
 
-INVENTORY_DATA::~INVENTORY_DATA() {
+Inventory::~Inventory() {
 	
 	#ifdef ARX_DEBUG
 	for(auto slot : slots()) {
@@ -96,7 +96,7 @@ INVENTORY_DATA::~INVENTORY_DATA() {
 	
 }
 
-void INVENTORY_DATA::setBags(size_t newBagCount) {
+void Inventory::setBags(size_t newBagCount) {
 	
 	#ifdef ARX_DEBUG
 	for(size_t bag = newBagCount; bag < bags(); bag++) {
@@ -112,11 +112,11 @@ void INVENTORY_DATA::setBags(size_t newBagCount) {
 	
 }
 
-EntityHandle INVENTORY_DATA::owner() const noexcept {
+EntityHandle Inventory::owner() const noexcept {
 	return m_owner.index();
 }
 
-Vec2s INVENTORY_DATA::getInventorySize(const Entity & item) noexcept {
+Vec2s Inventory::getInventorySize(const Entity & item) noexcept {
 	return item.m_inventorySize;
 }
 
@@ -199,7 +199,7 @@ std::ostream & operator<<(std::ostream & strm, const InventoryPos & p) {
 	return strm << '(' << p.io.handleData() << ", " << p.bag << ", " << p.x << ", " << p.y << ')';
 }
 
-bool INVENTORY_DATA::insertGold(Entity * item) {
+bool Inventory::insertGold(Entity * item) {
 	
 	if(&m_owner == entities.player() && item && (item->ioflags & IO_GOLD)) {
 		ARX_PLAYER_AddGold(item);
@@ -209,7 +209,7 @@ bool INVENTORY_DATA::insertGold(Entity * item) {
 	return false;
 }
 
-bool INVENTORY_DATA::insertIntoStackAt(Entity & item, Vec3s pos, bool identify) {
+bool Inventory::insertIntoStackAt(Entity & item, Vec3s pos, bool identify) {
 	
 	arx_assume(pos.x >= 0 && pos.y >= 0 && pos.z >= 0);
 	if(size_t(pos.z) >= bags()) {
@@ -244,7 +244,7 @@ bool INVENTORY_DATA::insertIntoStackAt(Entity & item, Vec3s pos, bool identify) 
 	return combineItemStacks(oldItem, &item);
 }
 
-InventoryPos INVENTORY_DATA::insertIntoStack(Entity & item) {
+InventoryPos Inventory::insertIntoStack(Entity & item) {
 	
 	arx_assert(item.ioflags & IO_ITEM);
 	
@@ -261,7 +261,7 @@ InventoryPos INVENTORY_DATA::insertIntoStack(Entity & item) {
 	return { };
 }
 
-bool INVENTORY_DATA::insertIntoNewSlotAt(Entity & item, Vec3s pos) {
+bool Inventory::insertIntoNewSlotAt(Entity & item, Vec3s pos) {
 	
 	arx_assume(pos.x >= 0 && pos.y >= 0 && pos.z >= 0);
 	if(size_t(pos.z) >= bags()) {
@@ -304,7 +304,7 @@ bool INVENTORY_DATA::insertIntoNewSlotAt(Entity & item, Vec3s pos) {
 	return true;
 }
 
-InventoryPos INVENTORY_DATA::insertIntoNewSlot(Entity & item) {
+InventoryPos Inventory::insertIntoNewSlot(Entity & item) {
 	
 	arx_assert(item.ioflags & IO_ITEM);
 	
@@ -321,7 +321,7 @@ InventoryPos INVENTORY_DATA::insertIntoNewSlot(Entity & item) {
 	return { };
 }
 
-InventoryPos INVENTORY_DATA::insertImpl(Entity & item, InventoryPos pos) {
+InventoryPos Inventory::insertImpl(Entity & item, InventoryPos pos) {
 	
 	arx_assert(item.ioflags & IO_ITEM);
 	
@@ -340,7 +340,7 @@ InventoryPos INVENTORY_DATA::insertImpl(Entity & item, InventoryPos pos) {
 	return insertIntoNewSlot(item);
 }
 
-InventoryPos INVENTORY_DATA::insertAtImpl(Entity & item, s16 bag, Vec2f pos, InventoryPos fallback) {
+InventoryPos Inventory::insertAtImpl(Entity & item, s16 bag, Vec2f pos, InventoryPos fallback) {
 	
 	Vec2s start(pos + Vec2f(1.f / 3));
 	Vec2s size = item.m_inventorySize;
@@ -392,7 +392,7 @@ InventoryPos INVENTORY_DATA::insertAtImpl(Entity & item, s16 bag, Vec2f pos, Inv
 	return insertImpl(item, fallback);
 }
 
-bool INVENTORY_DATA::insert(Entity * item, InventoryPos pos) {
+bool Inventory::insert(Entity * item, InventoryPos pos) {
 	
 	if(insertGold(item)) {
 		return true;
@@ -408,7 +408,7 @@ bool INVENTORY_DATA::insert(Entity * item, InventoryPos pos) {
 	return false;
 }
 
-bool INVENTORY_DATA::insertAt(Entity * item, s16 bag, Vec2f pos, InventoryPos fallback) {
+bool Inventory::insertAt(Entity * item, s16 bag, Vec2f pos, InventoryPos fallback) {
 	
 	if(insertGold(item)) {
 		return true;
@@ -425,7 +425,7 @@ bool INVENTORY_DATA::insertAt(Entity * item, s16 bag, Vec2f pos, InventoryPos fa
 	return false;
 }
 
-bool INVENTORY_DATA::insertAtNoEvent(Entity * item, InventoryPos pos) {
+bool Inventory::insertAtNoEvent(Entity * item, InventoryPos pos) {
 	
 	if(insertGold(item)) {
 		return true;
@@ -442,7 +442,7 @@ bool INVENTORY_DATA::insertAtNoEvent(Entity * item, InventoryPos pos) {
 	return insertImpl(*item, pos);
 }
 
-void INVENTORY_DATA::remove(Entity & item) {
+void Inventory::remove(Entity & item) {
 	
 	arx_assert(item.ioflags & IO_ITEM);
 	arx_assert(item._itemdata->m_inventoryPos.io == owner());
@@ -496,7 +496,7 @@ struct ItemSizeComaparator {
 } // anonymous namespace
 
 //! Sort the inventory and stack duplicate items
-void INVENTORY_DATA::optimize() {
+void Inventory::optimize() {
 	
 	LogDebug("collecting items");
 	
