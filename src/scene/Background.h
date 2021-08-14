@@ -157,7 +157,7 @@ public:
 		return get(getTileIndex(pos));
 	}
 	
-	[[nodiscard]] bool isTileValid(Vec2s tile) const noexcept {
+	[[nodiscard]] static bool isTileValid(Vec2s tile) noexcept {
 		return tile.x >= 0 && tile.x < m_size.x && tile.y >= 0 && tile.y < m_size.y;
 	}
 	
@@ -172,7 +172,7 @@ public:
 	
 private:
 	
-	[[nodiscard]] Vec2s getTileIndex(const Vec3f & pos) const noexcept {
+	[[nodiscard]] static Vec2s getTileIndex(const Vec3f & pos) noexcept {
 		return Vec2s(s16(pos.x * m_mul.x), s16(pos.z * m_mul.y));
 	}
 	
