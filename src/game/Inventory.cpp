@@ -651,13 +651,6 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 	return false;
 }
 
-bool insertIntoInventory(Entity * item, Entity * container) {
-	
-	arx_assert(container && container->inventory);
-	
-	return container->inventory->insert(item);
-}
-
 bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::index_type bag, Vec2f pos,
                            const InventoryPos & previous) {
 	

@@ -345,7 +345,7 @@ void SecondaryInventoryHud::dropEntity() {
 			return;
 		}
 		
-		if(insertIntoInventory(g_draggedEntity, m_container)) {
+		if(m_container->inventory->insert(g_draggedEntity)) {
 			ARX_PLAYER_AddGold(price);
 			ARX_SOUND_PlayInterface(g_snd.GOLD);
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
@@ -533,7 +533,7 @@ void SecondaryInventoryHud::takeAllItems() {
 	
 	bool success = false;
 	for(auto slot : m_container->inventory->slotsInOrder()) {
-		if(slot.show && insertIntoInventory(slot.entity, entities.player())) {
+		if(slot.show && entities.player()->inventory->insert(slot.entity)) {
 			success = true;
 		}
 	}

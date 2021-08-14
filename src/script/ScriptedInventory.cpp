@@ -265,20 +265,20 @@ class InventoryCommand : public Command {
 			
 			DebugScript(' ' << target);
 			
-			Entity * t = entities.getById(target, context.getEntity());
-			if(!t) {
+			Entity * item = entities.getById(target, context.getEntity());
+			if(!item) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
 			}
 			
-			if(isEquippedByPlayer(t)) {
-				ARX_EQUIPMENT_UnEquip(entities.player(), t, 1);
+			if(isEquippedByPlayer(item)) {
+				ARX_EQUIPMENT_UnEquip(entities.player(), item, 1);
 			}
 			
-			t->scriptload = 0;
+			item->scriptload = 0;
 			
-			if(!insertIntoInventory(t, context.getEntity())) {
-				PutInFrontOfPlayer(t);
+			if(!context.getEntity()->inventory || !context.getEntity()->inventory->insert(item)) {
+				PutInFrontOfPlayer(item);
 			}
 			
 			return Success;
@@ -321,8 +321,8 @@ class InventoryCommand : public Command {
 				DebugScript(' ' << file);
 			}
 			
-			Entity * ioo = AddItem(file);
-			if(!ioo) {
+			Entity * item = AddItem(file);
+			if(!item) {
 				ScriptWarning << "could not add item " << file;
 				return Failed;
 			}
@@ -331,21 +331,21 @@ class InventoryCommand : public Command {
 				return Success;
 			}
 			
-			LASTSPAWNED = ioo;
-			ioo->scriptload = 1;
-			SendInitScriptEvent(ioo);
+			LASTSPAWNED = item;
+			item->scriptload = 1;
+			SendInitScriptEvent(item);
 			
 			if(multi) {
-				if(ioo->ioflags & IO_GOLD) {
-					ioo->_itemdata->price = count;
+				if(item->ioflags & IO_GOLD) {
+					item->_itemdata->price = count;
 				} else {
-					ioo->_itemdata->maxcount = 9999;
-					ioo->_itemdata->count = std::max(checked_range_cast<short>(count), short(1));
+					item->_itemdata->maxcount = 9999;
+					item->_itemdata->count = std::max(checked_range_cast<short>(count), short(1));
 				}
 			}
 			
-			if(!insertIntoInventory(ioo, context.getEntity())) {
-				PutInFrontOfPlayer(ioo);
+			if(!context.getEntity()->inventory || !context.getEntity()->inventory->insert(item)) {
+				PutInFrontOfPlayer(item);
 			}
 			
 			return Success;

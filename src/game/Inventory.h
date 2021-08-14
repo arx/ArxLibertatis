@@ -392,20 +392,6 @@ bool giveToPlayer(Entity * item, const InventoryPos & pos);
 bool insertIntoInventory(Entity * item, const InventoryPos & pos);
 
 /*!
- * Insert an item into an inventory
- * The item will be added to existing stacks if possible.
- * Otherwise a the first empty slot will be used.
- * If that fails, the first empty slot will be used.
- *
- * Does not check if the item is already in the inventory!
- *
- * \param item the item to insert
- *
- * \return true if the item was inserted, false otherwise
- */
-bool insertIntoInventory(Entity * item, Entity * container);
-
-/*!
  * Insert an item into the inventory at a specified position
  * The item will be inserted near the specified position if possible.
  * Otherwise, the item will be added to existing stacks if possible.

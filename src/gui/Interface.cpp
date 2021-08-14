@@ -1754,7 +1754,7 @@ void ArxGame::manageEditorControls() {
 			
 			ARX_SOUND_PlayInterface(g_snd.INVSTD);
 			
-			while(FlyingOverIO && insertIntoInventory(FlyingOverIO, entities.player())) {
+			while(FlyingOverIO && entities.player()->inventory->insert(FlyingOverIO)) {
 				FlyingOverIO = InterClick(DANAEMouse);
 				ARX_INVENTORY_IdentifyIO(FlyingOverIO);
 			}
