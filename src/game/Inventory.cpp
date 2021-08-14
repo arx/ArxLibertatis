@@ -408,6 +408,23 @@ bool INVENTORY_DATA::insert(Entity * item, InventoryPos pos) {
 	return false;
 }
 
+bool INVENTORY_DATA::insertAt(Entity * item, s16 bag, Vec2f pos, InventoryPos fallback) {
+	
+	if(insertGold(item)) {
+		return true;
+	}
+	
+	if(item && (item->ioflags & IO_ITEM) && !(item->ioflags & IO_MOVABLE)) {
+		if(InventoryPos newPos = insertAtImpl(*item, bag, pos, fallback)) {
+			ARX_SOUND_PlayInterface(g_snd.INVSTD);
+			ARX_INVENTORY_Declare_InventoryIn(get(newPos).entity, owner());
+			return true;
+		}
+	}
+	
+	return false;
+}
+
 namespace {
 
 // Glue code to access both player and IO inventories in a uniform way.
@@ -596,37 +613,6 @@ public:
 	
 	explicit Inventory(Entity * entity)
 		: InventoryAccess(entity) { }
-	
-	/*!
-	 * Insert an item into the inventory at a specified position
-	 * The item will be inserted near the specified position if possible.
-	 * Otherwise, the item will be added to existing stacks if possible.
-	 * Otherwise, the item will be inserted at the specified fallback position.
-	 * If that fails, the first empty slot will be used.
-	 *
-	 * Does not check if the item is already in the inventory!
-	 *
-	 * \param item the item to insert
-	 * \param pos position where to insert the item
-	 *
-	 * \return true if the item was inserted, false otherwise
-	 */
-	bool insertAt(Entity * item, index_type bag, Vec2f pos, const Pos & fallback = Pos()) {
-		
-		if(inventory().insertGold(item)) {
-			return true;
-		}
-		
-		if(item && (item->ioflags & IO_ITEM) && !(item->ioflags & IO_MOVABLE)) {
-			if(Pos newPos = inventory().insertAtImpl(*item, bag, pos, fallback)) {
-				ARX_SOUND_PlayInterface(g_snd.INVSTD);
-				ARX_INVENTORY_Declare_InventoryIn(get(newPos), handle());
-				return true;
-			}
-		}
-		
-		return false;
-	}
 	
 	bool insertAtNoEvent(Entity * item, const Pos & pos) {
 		
@@ -866,16 +852,14 @@ bool insertIntoInventory(Entity * item, Entity * container) {
 bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::index_type bag, Vec2f pos,
                            const InventoryPos & previous) {
 	
+	arx_assert(container && container->inventory);
+	
 	InventoryPos fallback;
 	if(previous.io == container->index()) {
 		fallback = previous;
 	}
 	
-	if(container == entities.player()) {
-		return getPlayerInventory().insertAt(item, bag, pos, fallback);
-	}
-	
-	return getEntityInventory(container).insertAt(item, bag, pos, fallback);
+	return container->inventory->insertAt(item, bag, pos, fallback);
 }
 
 bool insertIntoInventoryAtNoEvent(Entity * item, const InventoryPos & pos) {

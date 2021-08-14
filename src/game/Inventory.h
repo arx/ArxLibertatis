@@ -329,6 +329,22 @@ public:
 	 */
 	bool insert(Entity * item, InventoryPos pos = { });
 	
+	/*!
+	 * Insert an item into the inventory at a specified position
+	 * The item will be inserted near the specified position if possible.
+	 * Otherwise, the item will be added to existing stacks if possible.
+	 * Otherwise, the item will be inserted at the specified fallback position.
+	 * If that fails, the first empty slot will be used.
+	 *
+	 * Does not check if the item is already in the inventory!
+	 *
+	 * \param item the item to insert
+	 * \param pos position where to insert the item
+	 *
+	 * \return true if the item was inserted, false otherwise
+	 */
+	bool insertAt(Entity * item, s16 bag, Vec2f pos, InventoryPos fallback = { });
+	
 };
 
 extern Entity * ioSteal;
