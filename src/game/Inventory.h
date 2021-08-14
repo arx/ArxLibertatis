@@ -168,16 +168,7 @@ public:
 		return { this, slot };
 	}
 	
-	//! Returns an iterable over all slots
-	template <template <typename T> typename Iterator = util::GridZXYIterator>
-	[[nodiscard]] auto slots() noexcept {
-		return util::transform(util::GridRange<Vec3s, Iterator>(Vec3s(0), size()), [this](Vec3s slot) {
-			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
-			           && slot.z >= 0 && size_t(slot.z) < m_bags);
-			return get(slot);
-		});
-	}
-	//! Returns an iterable over all slots
+	//! Returns an iterable over all slots in grid order
 	template <template <typename T> typename Iterator = util::GridZXYIterator>
 	[[nodiscard]] auto slots() const noexcept {
 		return util::transform(util::GridRange<Vec3s, Iterator>(Vec3s(0), size()), [this](Vec3s slot) {
@@ -187,39 +178,8 @@ public:
 		});
 	}
 	
-	[[nodiscard]] auto begin() noexcept {
-		return slots().begin();
-	}
-	[[nodiscard]] auto end() noexcept {
-		return slots().end();
-	}
 	
-	[[nodiscard]] auto begin() const noexcept {
-		return slots().begin();
-	}
-	[[nodiscard]] auto end() const noexcept {
-		return slots().end();
-	}
-	
-	//! Returns an iterable over all slots
-	template <template <typename T> typename Iterator = util::GridZXYIterator>
-	[[nodiscard]] auto slotsInOrder() noexcept {
-		const bool swap = (m_size.y > m_size.x);
-		Vec3s max = size();
-		if(swap) {
-			std::swap(max.x, max.y);
-		}
-		arx_assume(max.z > 0);
-		return util::transform(util::GridRange<Vec3s, Iterator>(Vec3s(0), max), [swap, this](Vec3s slot) {
-			if(swap) {
-				std::swap(slot.x, slot.y);
-			}
-			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
-			           && slot.z >= 0 && size_t(slot.z) < m_bags);
-			return get(slot);
-		});
-	}
-	//! Returns an iterable over all slots
+	//! Returns an iterable over all slots in grid order with the inner loop over the smaller dimension
 	template <template <typename T> typename Iterator = util::GridZXYIterator>
 	[[nodiscard]] auto slotsInOrder() const noexcept {
 		const bool swap = (m_size.y > m_size.x);
@@ -238,15 +198,6 @@ public:
 		});
 	}
 	
-	//! Returns an iterable over all slots
-	template <template <typename T> typename Iterator = util::GridXYIterator>
-	[[nodiscard]] auto slotsInBag(size_t bag) noexcept {
-		arx_assume(m_bags > 0 && bag < m_bags && bag <= std::numeric_limits<s16>::max());
-		return util::transform(util::GridRange<Vec2s, Iterator>(Vec2s(0), m_size), [bag, this](Vec2s slot) {
-			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y);
-			return get(Vec3s(slot, s16(bag)));
-		});
-	}
 	//! Returns an iterable over all slots
 	template <template <typename T> typename Iterator = util::GridXYIterator>
 	[[nodiscard]] auto slotsInBag(size_t bag) const noexcept {
