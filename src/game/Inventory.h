@@ -184,6 +184,8 @@ class INVENTORY_DATA {
 	
 public:
 	
+	bool insertGold(Entity * item);
+	
 	bool insertIntoStackAt(Entity * item, Vec3s pos, bool identify = false);
 	
 	INVENTORY_DATA(Entity * owner, Vec2s size)

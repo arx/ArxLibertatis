@@ -195,6 +195,16 @@ std::ostream & operator<<(std::ostream & strm, const InventoryPos & p) {
 	return strm << '(' << p.io.handleData() << ", " << p.bag << ", " << p.x << ", " << p.y << ')';
 }
 
+bool INVENTORY_DATA::insertGold(Entity * item) {
+	
+	if(m_owner == entities.player() && item && (item->ioflags & IO_GOLD)) {
+		ARX_PLAYER_AddGold(item);
+		return true;
+	}
+	
+	return false;
+}
+
 bool INVENTORY_DATA::insertIntoStackAt(Entity * item, Vec3s pos, bool identify) {
 	
 	arx_assume(pos.z >= 0);
@@ -273,16 +283,6 @@ struct PlayerInventoryAccess {
 		return false;
 	}
 	
-	bool insertGold(Entity * item) {
-		
-		if(item != nullptr && (item->ioflags & IO_GOLD)) {
-			ARX_PLAYER_AddGold(item);
-			return true;
-		}
-		
-		return false;
-	}
-	
 	INVENTORY_DATA & inventory() {
 		return *entities.player()->inventory;
 	}
@@ -339,11 +339,6 @@ struct EntityInventoryAccess {
 	
 	[[nodiscard]] bool swap() const {
 		return true;
-	}
-	
-	bool insertGold(Entity * item) {
-		ARX_UNUSED(item);
-		return false;
 	}
 	
 	INVENTORY_DATA & inventory() {
@@ -425,10 +420,6 @@ private:
 	
 	bool swap() {
 		return InventoryAccess::swap();
-	}
-	
-	bool insertGold(Entity * item) {
-		return InventoryAccess::insertGold(item);
 	}
 	
 	using InventoryAccess::inventory;
@@ -639,7 +630,7 @@ public:
 	 */
 	bool insert(Entity * item, const Pos & pos = Pos()) {
 		
-		if(insertGold(item)) {
+		if(inventory().insertGold(item)) {
 			return true;
 		}
 		
@@ -669,7 +660,7 @@ public:
 	 */
 	bool insertAt(Entity * item, index_type bag, Vec2f pos, const Pos & fallback = Pos()) {
 		
-		if(insertGold(item)) {
+		if(inventory().insertGold(item)) {
 			return true;
 		}
 		
@@ -686,7 +677,7 @@ public:
 	
 	bool insertAtNoEvent(Entity * item, const Pos & pos) {
 		
-		if(insertGold(item)) {
+		if(inventory().insertGold(item)) {
 			return true;
 		}
 		
