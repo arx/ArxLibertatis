@@ -173,7 +173,7 @@ class INVENTORY_DATA {
 		}
 		
 		[[nodiscard]] operator InventoryPos() const noexcept {
-			return { m_owner, bag, x, y };
+			return { m_owner, slot() };
 		}
 		
 	};
@@ -213,6 +213,8 @@ public:
 	bool insertGold(Entity * item);
 	
 	bool insertIntoStackAt(Entity & item, Vec3s pos, bool identify = false);
+	
+	InventoryPos insertIntoStack(Entity & item);
 	
 	bool insertIntoNewSlotAt(Entity & item, Vec3s pos);
 	
@@ -280,9 +282,10 @@ public:
 	
 	//! Returns an iterable over all slots in grid order with the inner loop over the smaller dimension
 	template <template <typename T> typename Iterator = util::GridZXYIterator>
-	[[nodiscard]] auto slotsInOrder() const noexcept {
+	[[nodiscard]] auto slotsInOrder(Vec2s itemSize = Vec2s(1)) const noexcept {
+		arx_assume(itemSize.x > 0 && itemSize.x <= m_size.x && itemSize.y > 0 && itemSize.y <= m_size.y);
 		const bool swap = (m_size.y > m_size.x);
-		Vec3s max = size();
+		Vec3s max = size() - Vec3s(itemSize - Vec2s(1), 0);
 		if(swap) {
 			std::swap(max.x, max.y);
 		}

@@ -244,6 +244,23 @@ bool INVENTORY_DATA::insertIntoStackAt(Entity & item, Vec3s pos, bool identify) 
 	return combineItemStacks(oldItem, &item);
 }
 
+InventoryPos INVENTORY_DATA::insertIntoStack(Entity & item) {
+	
+	arx_assert(item.ioflags & IO_ITEM);
+	
+	if(item.m_inventorySize.x > width() || item.m_inventorySize.y > height()) {
+		return { };
+	}
+	
+	for(auto slot : slotsInOrder(item.m_inventorySize)) {
+		if(insertIntoStackAt(item, slot)) {
+			return slot;
+		}
+	}
+	
+	return { };
+}
+
 bool INVENTORY_DATA::insertIntoNewSlotAt(Entity & item, Vec3s pos) {
 	
 	arx_assume(pos.x >= 0 && pos.y >= 0 && pos.z >= 0);
@@ -281,7 +298,7 @@ bool INVENTORY_DATA::insertIntoNewSlotAt(Entity & item, Vec3s pos) {
 		slot.show = false;
 	}
 	get(pos).show = true;
-	item._itemdata->m_inventoryPos = InventoryPos(owner(), pos);
+	item._itemdata->m_inventoryPos = { owner(), pos };
 	item.show = SHOW_FLAG_IN_INVENTORY;
 	
 	return true;
@@ -476,7 +493,7 @@ private:
 		if(pos.io == handle() && inventory().insertIntoStackAt(*item, pos)) {
 			return pos;
 		}
-		if(Pos newPos = insertIntoStack(item)) {
+		if(Pos newPos = inventory().insertIntoStack(*item)) {
 			return newPos;
 		}
 		if(inventory().insertIntoNewSlotAt(*item, pos)) {
@@ -572,35 +589,6 @@ private:
 					}
 					
 					if(inventory().insertIntoNewSlotAt(*item, pos)) {
-						return pos;
-					}
-				}
-			}
-		}
-		
-		return Pos();
-	}
-	
-	Pos insertIntoStack(Entity * item) {
-		
-		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
-		
-		if(size_type(item->m_inventorySize.x) > width() || size_type(item->m_inventorySize.y) > height()) {
-			return Pos();
-		}
-		
-		index_type maxi = width() + 1 - size_type(item->m_inventorySize.x);
-		index_type maxj = height() + 1 - size_type(item->m_inventorySize.y);
-		if(swap()) {
-			std::swap(maxi, maxj);
-		}
-		
-		// Try to add the items to an existing stack
-		for(index_type bag = 0; bag < bags(); bag++) {
-			for(index_type i = 0; i < maxi; i++) {
-				for(index_type j = 0; j < maxj; j++) {
-					Pos pos = swap() ? Pos(handle(), bag, j, i) : Pos(handle(), bag, i, j);
-					if(inventory().insertIntoStackAt(*item, pos)) {
 						return pos;
 					}
 				}
