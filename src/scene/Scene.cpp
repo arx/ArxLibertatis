@@ -1218,37 +1218,37 @@ static void BackgroundRenderTransparent(size_t room_num) {
 		baseState.setAlphaCutout(pTexCurr->m_pTexture && pTexCurr->m_pTexture->hasAlpha());
 		
 		SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches[room_num];
-
-		for(size_t i = 0; i < std::size(transRenderOrder); i++) {
-			BatchBucket transType = transRenderOrder[i];
-
-			if(!roomMat.count[transType])
+		
+		for(BatchBucket transType : transRenderOrder) {
+			
+			if(!roomMat.count[transType]) {
 				continue;
-
+			}
+			
 			RenderState desiredState = baseState;
 			switch(transType) {
-			case BatchBucket_Opaque: {
-				// This should currently not happen
-				arx_assert(false);
-				continue;
-			}
-			case BatchBucket_Blended: {
-				desiredState.setBlend(BlendSrcColor, BlendDstColor);
-				break;
-			}
-			case BatchBucket_Multiplicative: {
-				desiredState.setBlend(BlendOne, BlendOne);
-				break;
-			}
-			case BatchBucket_Additive: {
-				desiredState.setBlend(BlendOne, BlendOne);
-				break;
-			}
-			case BatchBucket_Subtractive: {
-				desiredState.setDepthOffset(8);
-				desiredState.setBlend(BlendZero, BlendInvSrcColor);
-				break;
-			}
+				case BatchBucket_Opaque: {
+					// This should currently not happen
+					arx_assert(false);
+					continue;
+				}
+				case BatchBucket_Blended: {
+					desiredState.setBlend(BlendSrcColor, BlendDstColor);
+					break;
+				}
+				case BatchBucket_Multiplicative: {
+					desiredState.setBlend(BlendOne, BlendOne);
+					break;
+				}
+				case BatchBucket_Additive: {
+					desiredState.setBlend(BlendOne, BlendOne);
+					break;
+				}
+				case BatchBucket_Subtractive: {
+					desiredState.setDepthOffset(8);
+					desiredState.setBlend(BlendZero, BlendInvSrcColor);
+					break;
+				}
 			}
 			
 			UseRenderState state(desiredState);
@@ -1258,10 +1258,13 @@ static void BackgroundRenderTransparent(size_t room_num) {
 				roomMat.uslStartVertex,
 				&room.indexBuffer[roomMat.offset[transType]],
 				roomMat.count[transType]);
-
+			
 			EERIEDrawnPolys += roomMat.count[transType];
+			
 		}
+		
 	}
+	
 }
 
 static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
