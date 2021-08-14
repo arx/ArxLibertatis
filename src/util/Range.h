@@ -153,6 +153,54 @@ auto dereference(Base && base) {
 	});
 }
 
+template <typename Int = size_t>
+class IntIterator {
+	
+	Int m_i;
+	
+public:
+	
+	explicit IntIterator(Int i) noexcept : m_i(i) { }
+	
+	[[nodiscard]] decltype(auto) operator*() const noexcept {
+		return m_i;
+	}
+	
+	void operator++() noexcept {
+		++m_i;
+	}
+	
+	[[nodiscard]] bool operator==(IntIterator other) const noexcept {
+		return m_i == other.m_i;
+	}
+	
+	[[nodiscard]] bool operator!=(IntIterator other) const noexcept {
+		return m_i != other.m_i;
+	}
+	
+};
+
+template <typename Int = size_t>
+class IntRange {
+	
+	Int m_begin;
+	Int m_end;
+	
+public:
+	
+	explicit IntRange(Int end) noexcept : m_begin(0), m_end(end) { }
+	IntRange(Int begin, Int end) noexcept : m_begin(begin), m_end(end) { }
+	
+	[[nodiscard]] auto begin() const noexcept {
+		return IntIterator<Int>(m_begin);
+	}
+	
+	[[nodiscard]] auto end() const noexcept {
+		return IntIterator<Int>(m_end);
+	}
+	
+};
+
 template <typename Vector>
 struct GridXYIterator {
 	
