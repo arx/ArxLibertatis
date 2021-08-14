@@ -425,6 +425,23 @@ bool INVENTORY_DATA::insertAt(Entity * item, s16 bag, Vec2f pos, InventoryPos fa
 	return false;
 }
 
+bool INVENTORY_DATA::insertAtNoEvent(Entity * item, InventoryPos pos) {
+	
+	if(insertGold(item)) {
+		return true;
+	}
+	
+	if(!item || !(item->ioflags & IO_ITEM) || (item->ioflags & IO_MOVABLE)) {
+		return false;
+	}
+	
+	if(insertIntoNewSlotAt(*item, pos)) {
+		return true;
+	}
+	
+	return insertImpl(*item, pos);
+}
+
 namespace {
 
 // Glue code to access both player and IO inventories in a uniform way.
@@ -613,23 +630,6 @@ public:
 	
 	explicit Inventory(Entity * entity)
 		: InventoryAccess(entity) { }
-	
-	bool insertAtNoEvent(Entity * item, const Pos & pos) {
-		
-		if(inventory().insertGold(item)) {
-			return true;
-		}
-		
-		if(!item || !(item->ioflags & IO_ITEM) || (item->ioflags & IO_MOVABLE)) {
-			return false;
-		}
-		
-		if(inventory().insertIntoNewSlotAt(*item, pos)) {
-			return true;
-		}
-		
-		return inventory().insertImpl(*item, pos);
-	}
 	
 	//! Sort the inventory and stack duplicate items
 	void optimize() {
@@ -864,10 +864,9 @@ bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::inde
 
 bool insertIntoInventoryAtNoEvent(Entity * item, const InventoryPos & pos) {
 	
-	if(pos.io == EntityHandle_Player) {
-		return getPlayerInventory().insertAtNoEvent(item, pos);
-	} else if(Entity * container = entities.get(pos.io)) {
-		return getEntityInventory(container).insertAtNoEvent(item, pos);
+	if(Entity * container = entities.get(pos.io)) {
+		arx_assert(container->inventory);
+		return container->inventory->insertAtNoEvent(item, pos);
 	}
 	
 	return false;

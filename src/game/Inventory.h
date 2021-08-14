@@ -345,6 +345,8 @@ public:
 	 */
 	bool insertAt(Entity * item, s16 bag, Vec2f pos, InventoryPos fallback = { });
 	
+	bool insertAtNoEvent(Entity * item, InventoryPos pos = { });
+	
 };
 
 extern Entity * ioSteal;
