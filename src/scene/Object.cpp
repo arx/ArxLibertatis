@@ -396,7 +396,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			eobj->vertexlocal[index] = eobj->vertexlist[index].v - bone.anim.trans;
 		}
 	}
-
+	
 }
 
 EERIE_3DOBJ * loadObject(const res::path & file, bool pbox) {
@@ -409,19 +409,21 @@ EERIE_3DOBJ * loadObject(const res::path & file, bool pbox) {
 	return ret;
 }
 
-void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
-{
-	if (!ret) return;
-
-	Vec3f offset = ret->vertexlist[ret->origin].v;
-
-	if ((offset.x == 0) && (offset.y == 0) && (offset.z == 0))
+void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret) {
+	
+	if(!ret) {
 		return;
-
+	}
+	
+	Vec3f offset = ret->vertexlist[ret->origin].v;
+	if(offset == Vec3f(0.f)) {
+		return;
+	}
+	
 	LogWarning << "NOT CENTERED " << ret->file;
 	
-	for(size_t i = 0; i < ret->vertexlist.size(); i++) {
-		ret->vertexlist[i].v -= offset;
+	for(EERIE_VERTEX & vertex : ret->vertexlist) {
+		vertex.v -= offset;
 	}
 	
 }
