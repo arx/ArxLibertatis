@@ -392,6 +392,22 @@ InventoryPos INVENTORY_DATA::insertAtImpl(Entity & item, s16 bag, Vec2f pos, Inv
 	return insertImpl(item, fallback);
 }
 
+bool INVENTORY_DATA::insert(Entity * item, InventoryPos pos) {
+	
+	if(insertGold(item)) {
+		return true;
+	}
+	
+	if(item && (item->ioflags & IO_ITEM) && !(item->ioflags & IO_MOVABLE)) {
+		if(InventoryPos newPos = insertImpl(*item, pos)) {
+			ARX_INVENTORY_Declare_InventoryIn(get(newPos).entity, owner());
+			return true;
+		}
+	}
+	
+	return false;
+}
+
 namespace {
 
 // Glue code to access both player and IO inventories in a uniform way.
@@ -580,34 +596,6 @@ public:
 	
 	explicit Inventory(Entity * entity)
 		: InventoryAccess(entity) { }
-	
-	/*!
-	 * Insert an item into the inventory
-	 * The item will be added to existing stacks if possible.
-	 * Otherwise, the item will be inserted at the specified position.
-	 * If that fails, the first empty slot will be used.
-	 *
-	 * Does not check if the item is already in the inventory!
-	 *
-	 * \param item the item to insert
-	 *
-	 * \return true if the item was inserted, false otherwise
-	 */
-	bool insert(Entity * item, const Pos & pos = Pos()) {
-		
-		if(inventory().insertGold(item)) {
-			return true;
-		}
-		
-		if(item && (item->ioflags & IO_ITEM) && !(item->ioflags & IO_MOVABLE)) {
-			if(Pos newPos = inventory().insertImpl(*item, pos)) {
-				ARX_INVENTORY_Declare_InventoryIn(get(newPos), handle());
-				return true;
-			}
-		}
-		
-		return false;
-	}
 	
 	/*!
 	 * Insert an item into the inventory at a specified position
@@ -810,7 +798,7 @@ void optimizeInventory(Entity * container) {
 
 bool giveToPlayer(Entity * item) {
 	ARX_INVENTORY_IdentifyIO(item);
-	if(getPlayerInventory().insert(item)) {
+	if(entities.player()->inventory->insert(item)) {
 		return true;
 	} else {
 		PutInFrontOfPlayer(item);
@@ -820,7 +808,7 @@ bool giveToPlayer(Entity * item) {
 
 bool giveToPlayer(Entity * item, const InventoryPos & pos) {
 	ARX_INVENTORY_IdentifyIO(item);
-	if(getPlayerInventory().insert(item, pos)) {
+	if(entities.player()->inventory->insert(item, pos)) {
 		return true;
 	} else {
 		PutInFrontOfPlayer(item);
@@ -859,12 +847,8 @@ InventoryPos locateInInventories(const Entity * item) {
 
 bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 	
-	if(pos.io == EntityHandle_Player) {
-		return getPlayerInventory().insert(item, pos);
-	}
-	
 	if(Entity * container = entities.get(pos.io); container && container->inventory) {
-		if(getEntityInventory(container).insert(item, pos)) {
+		if(container->inventory->insert(item, pos)) {
 			return true;
 		}
 	}
@@ -874,11 +858,9 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 
 bool insertIntoInventory(Entity * item, Entity * container) {
 	
-	if(container == entities.player()) {
-		return getPlayerInventory().insert(item);
-	}
+	arx_assert(container && container->inventory);
 	
-	return getEntityInventory(container).insert(item);
+	return container->inventory->insert(item);
 }
 
 bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::index_type bag, Vec2f pos,

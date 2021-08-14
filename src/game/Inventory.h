@@ -220,9 +220,11 @@ public:
 	
 	InventoryPos insertIntoNewSlot(Entity & item);
 	
-	InventoryPos insertImpl(Entity & item, InventoryPos pos = InventoryPos());
+	InventoryPos insertImpl(Entity & item, InventoryPos pos = { });
 	
 	InventoryPos insertAtImpl(Entity & item, s16 bag, Vec2f pos, InventoryPos fallback);
+	
+public:
 	
 	INVENTORY_DATA(Entity * owner, Vec2s size)
 		: m_owner(*owner)
@@ -312,6 +314,20 @@ public:
 			return get(Vec3s(slot, s16(bag)));
 		});
 	}
+	
+	/*!
+	 * Insert an item into the inventory
+	 * The item will be added to existing stacks if possible.
+	 * Otherwise, the item will be inserted at the specified position.
+	 * If that fails, the first empty slot will be used.
+	 *
+	 * Does not check if the item is already in the inventory!
+	 *
+	 * \param item the item to insert
+	 *
+	 * \return true if the item was inserted, false otherwise
+	 */
+	bool insert(Entity * item, InventoryPos pos = { });
 	
 };
 
