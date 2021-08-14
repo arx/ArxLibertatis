@@ -61,13 +61,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/profiler/Profiler.h"
 #include "scene/Light.h"
 
-static constexpr const float PATHFINDER_HEURISTIC_MIN = 0.2f;
-static constexpr const float PATHFINDER_HEURISTIC_MAX = PathFinder::HEURISTIC_MAX;
-static constexpr const float PATHFINDER_HEURISTIC_RANGE = PATHFINDER_HEURISTIC_MAX - PATHFINDER_HEURISTIC_MIN;
-static constexpr const float PATHFINDER_DISTANCE_MAX = 5000.0f;
+static constexpr float PATHFINDER_HEURISTIC_MIN = 0.2f;
+static constexpr float PATHFINDER_HEURISTIC_MAX = PathFinder::HEURISTIC_MAX;
+static constexpr float PATHFINDER_HEURISTIC_RANGE = PATHFINDER_HEURISTIC_MAX - PATHFINDER_HEURISTIC_MIN;
+static constexpr float PATHFINDER_DISTANCE_MAX = 5000.0f;
 
 // Pathfinder Definitions
-static const PlatformDuration PATHFINDER_UPDATE_INTERVAL = 10ms;
+static constexpr PlatformDuration PATHFINDER_UPDATE_INTERVAL = 10ms;
 
 class PathFinderThread : public StoppableThread {
 	
