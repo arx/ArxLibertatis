@@ -19,6 +19,7 @@
 
 #include "game/magic/SpellRecognition.h"
 
+#include <array>
 #include <map>
 #include <string>
 
@@ -94,7 +95,7 @@ class RuneRecognitionAlt {
 	static constexpr size_t s_patternCount = ARRAY_SIZE(patternData);
 	static constexpr int s_maxTolerance = 2;
 	
-	int m_dirs[s_directionCount];
+	std::array<int, s_directionCount> m_dirs;
 	std::vector<Vec2f> m_points;
 	std::vector<size_t> m_indices;
 	
