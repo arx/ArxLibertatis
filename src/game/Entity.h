@@ -155,7 +155,7 @@ struct IO_TWEAKER_INFO {
 struct IO_SPELLCAST_DATA {
 	
 	SpellType castingspell; // spell being casted...
-	Rune symb[4]; // symbols to draw before casting...
+	std::array<Rune, 4> symb; // symbols to draw before casting...
 	SpellcastFlags spell_flags;
 	short spell_level;
 	EntityHandle target;
@@ -163,13 +163,10 @@ struct IO_SPELLCAST_DATA {
 	
 	IO_SPELLCAST_DATA()
 		: castingspell(SPELL_NONE)
+		, symb({ RUNE_NONE, RUNE_NONE, RUNE_NONE, RUNE_NONE })
 		, spell_level(0)
 		, duration(0)
-	{
-		for(unsigned long j(0); j < 4; j++) {
-			symb[j] = RUNE_NONE;
-		}
-	}
+	{ }
 	
 };
 
