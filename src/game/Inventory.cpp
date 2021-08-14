@@ -470,6 +470,103 @@ void INVENTORY_DATA::remove(Entity & item) {
 
 namespace {
 
+//! Compare items by their size and name
+struct ItemSizeComaparator {
+	bool operator()(const Entity * a, const Entity * b) const {
+		int sizea = a->m_inventorySize.x * a->m_inventorySize.y * a->m_inventorySize.y;
+		int sizeb = b->m_inventorySize.x * b->m_inventorySize.y * b->m_inventorySize.y;
+		if(sizea != sizeb) {
+			return (sizea > sizeb);
+		}
+		int locname = a->locname.compare(b->locname);
+		if(locname != 0) {
+			return (locname < 0);
+		}
+		int name = a->idString().compare(b->idString());
+		if(name != 0) {
+			return (name < 0);
+		}
+		if(a->_itemdata->count != b->_itemdata->count) {
+			return (a->_itemdata->count > b->_itemdata->count);
+		}
+		return (a < b);
+	}
+};
+
+} // anonymous namespace
+
+//! Sort the inventory and stack duplicate items
+void INVENTORY_DATA::optimize() {
+	
+	LogDebug("collecting items");
+	
+	// Collect all inventory items
+	std::vector<Entity *> items;
+	std::vector<Vec3s> positions;
+	for(auto slot : slotsInGrid()) {
+		if(slot.entity && slot.show) {
+			items.push_back(slot.entity);
+			positions.push_back(slot);
+			remove(*slot.entity);
+		}
+		arx_assert(!slot.entity && !slot.show);
+	}
+	
+	// Sort the items by their size and name
+	std::sort(items.begin(), items.end(), ItemSizeComaparator());
+	
+	LogDebug("sorting");
+	#ifdef ARX_DEBUG
+	for(const Entity * item : items) {
+		LogDebug(" - " << item->idString() << ": "
+		         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
+	}
+	#endif
+	
+	LogDebug("putting back items");
+	
+	// Now put the items back into the inventory
+	std::vector<Entity *> remaining;
+	for(Entity * item : items) {
+		if(!remaining.empty() || !insertImpl(*item)) {
+			remaining.push_back(item);
+		}
+	}
+	
+	// If we failed to insert any items, put all items back at their original positions
+	// Note that some items might have already been merged
+	if(!remaining.empty()) {
+		LogWarning << "Failed to optimize " << m_owner.idString() << " inventory";
+		
+		for(auto slot : slots()) {
+			if(slot.entity && slot.show) {
+				remaining.push_back(slot.entity);
+				remove(*slot.entity);
+			}
+			arx_assert(!slot.entity && !slot.show);
+		}
+		
+		for(Entity * item : remaining) {
+			Vec3s pos;
+			for(size_t i = 0; i < items.size(); i++) {
+				if(items[i] == item) {
+					pos = positions[i];
+					break;
+				}
+			}
+			if(!insertImpl(*item, { owner(), pos })) {
+				LogWarning << "Could not restory original position of " << item->idString() << " in "
+				           << m_owner.idString() << " inventory";
+				PutInFrontOfPlayer(item);
+			}
+		}
+		
+	}
+	
+}
+
+namespace {
+
 // Glue code to access both player and IO inventories in a uniform way.
 struct PlayerInventoryAccess {
 	
@@ -579,29 +676,6 @@ struct EntityInventoryAccess {
 	
 };
 
-//! Compare items by their size and name
-struct ItemSizeComaparator {
-	bool operator()(const Entity * a, const Entity * b) const {
-		int sizea = a->m_inventorySize.x * a->m_inventorySize.y * a->m_inventorySize.y;
-		int sizeb = b->m_inventorySize.x * b->m_inventorySize.y * b->m_inventorySize.y;
-		if(sizea != sizeb) {
-			return (sizea > sizeb);
-		}
-		int locname = a->locname.compare(b->locname);
-		if(locname != 0) {
-			return (locname < 0);
-		}
-		int name = a->idString().compare(b->idString());
-		if(name != 0) {
-			return (name < 0);
-		}
-		if(a->_itemdata->count != b->_itemdata->count) {
-			return (a->_itemdata->count > b->_itemdata->count);
-		}
-		return (a < b);
-	}
-};
-
 template <typename InventoryAccess>
 class Inventory : private InventoryAccess {
 	
@@ -657,86 +731,6 @@ public:
 	explicit Inventory(Entity * entity)
 		: InventoryAccess(entity) { }
 	
-	//! Sort the inventory and stack duplicate items
-	void optimize() {
-		
-		LogDebug("collecting items");
-		
-		// Collect all inventory items
-		std::vector<Entity *> items;
-		std::vector<Pos> positions;
-		for(size_t bag = 0; bag < bags(); bag++) {
-			for(size_t j = 0 ; j < height(); j++) {
-				for(size_t i = 0 ; i < width(); i++) {
-					INVENTORY_SLOT & slot = index(bag, i, j);
-					if(slot.io && slot.show) {
-						items.push_back(slot.io);
-						positions.push_back(Pos(handle(), bag, i, j));
-						inventory().remove(*slot.io);
-					}
-					arx_assert(!slot.io && !slot.show);
-				}
-			}
-		}
-		
-		// Sort the items by their size and name
-		std::sort(items.begin(), items.end(), ItemSizeComaparator());
-		
-		LogDebug("sorting");
-		#ifdef ARX_DEBUG
-		for(const Entity * item : items) {
-			LogDebug(" - " << item->idString() << ": "
-			         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
-		}
-		#endif
-		
-		LogDebug("putting back items");
-		
-		// Now put the items back into the inventory
-		std::vector<Entity *> remaining;
-		for(Entity * item : items) {
-			if(!remaining.empty() || !inventory().insertImpl(*item)) {
-				remaining.push_back(item);
-			}
-		}
-		
-		// If we failed to insert any items, put all items back at their original positions
-		// Note that some items might have already been merged
-		if(!remaining.empty()) {
-			LogWarning << "Failed to optimize " << entities.get(handle())->idString() << " inventory";
-			
-			for(size_t bag = 0; bag < bags(); bag++) {
-				for(size_t j = 0 ; j < height(); j++) {
-					for(size_t i = 0 ; i < width(); i++) {
-						INVENTORY_SLOT & slot = index(bag, i, j);
-						if(slot.io && slot.show) {
-							remaining.push_back(slot.io);
-							inventory().remove(*slot.io);
-						}
-						arx_assert(!slot.io && !slot.show);
-					}
-				}
-			}
-			
-			for(Entity * item : remaining) {
-				Pos pos;
-				for(size_t i = 0; i < items.size(); i++) {
-					if(items[i] == item) {
-						pos = positions[i];
-						break;
-					}
-				}
-				if(!inventory().insertImpl(*item, pos)) {
-					LogWarning << "Could not restory original position of " << item->idString() << " in "
-					           << entities.get(handle())->idString() << " inventory";
-					PutInFrontOfPlayer(item);
-				}
-			}
-			
-		}
-		
-	}
-	
 	Entity * get(const Pos & pos) const {
 		return pos ? index(pos).io : nullptr;
 	}
@@ -773,11 +767,11 @@ void CleanInventory() {
 }
 
 void optimizeInventory(Entity * container) {
-	if(container == entities.player()) {
-		getPlayerInventory().optimize();
-	} else {
-		getEntityInventory(container).optimize();
-	}
+	
+	arx_assert(container && container->inventory);
+	
+	container->inventory->optimize();
+	
 }
 
 bool giveToPlayer(Entity * item) {

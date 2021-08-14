@@ -349,6 +349,9 @@ public:
 	
 	void remove(Entity & item);
 	
+	//! Sort the inventory and stack duplicate items
+	void optimize();
+	
 };
 
 extern Entity * ioSteal;
