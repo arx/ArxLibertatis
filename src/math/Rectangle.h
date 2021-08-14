@@ -40,63 +40,63 @@ public:
 	T bottom;
 	
 	template <class U>
-	explicit Rectangle_(Rectangle_<U> const & other)
+	explicit constexpr Rectangle_(Rectangle_<U> const & other) noexcept
 		: left(T(other.left))
 		, top(T(other.top))
 		, right(T(other.right))
 		, bottom(T(other.bottom))
 	{ }
 	
-	Rectangle_() = default;
+	constexpr Rectangle_() noexcept = default;
 	
-	Rectangle_(T _left, T _top, T _right, T _bottom)
+	constexpr Rectangle_(T _left, T _top, T _right, T _bottom) noexcept
 		: left(_left)
 		, top(_top)
 		, right(_right)
 		, bottom(_bottom)
 	{ }
 	
-	Rectangle_(const Vec2 & _origin, T width, T height)
+	constexpr Rectangle_(const Vec2 & _origin, T width, T height) noexcept
 		: left(_origin.x)
 		, top(_origin.y)
 		, right(_origin.x + width)
 		, bottom(_origin.y + height)
 	{ }
 	
-	Rectangle_(const Vec2 & topLeft, const Vec2 & bottomRight)
+	constexpr Rectangle_(const Vec2 & topLeft, const Vec2 & bottomRight) noexcept
 		: left(topLeft.x)
 		, top(topLeft.y)
 		, right(bottomRight.x)
 		, bottom(bottomRight.y)
 	{ }
 	
-	Rectangle_(T width, T height)
+	constexpr Rectangle_(T width, T height) noexcept
 		: left(T(0))
 		, top(T(0))
 		, right(width)
 		, bottom(height)
 	{ }
 	
-	bool operator==(const Rectangle_ & o) const {
+	[[nodiscard]] constexpr bool operator==(const Rectangle_ & o) const noexcept {
 		return left   == o.left
 		    && top    == o.top
 		    && right  == o.right
 		    && bottom == o.bottom;
 	}
 	
-	T width() const {
+	[[nodiscard]] constexpr T width() const noexcept {
 		return right - left;
 	}
 	
-	T height() const {
+	[[nodiscard]] constexpr T height() const noexcept {
 		return bottom - top;
 	}
 	
-	Rectangle_ operator+(const Vec2 & offset) const {
+	constexpr Rectangle_ operator+(const Vec2 & offset) const noexcept {
 		return Rectangle_(topLeft() + offset, bottomRight() + offset);
 	}
 	
-	Rectangle_ & operator+=(const Vec2 & offset) {
+	constexpr Rectangle_ & operator+=(const Vec2 & offset) noexcept {
 		left   += offset.x;
 		top    += offset.y;
 		right  += offset.x;
@@ -105,43 +105,43 @@ public:
 		return *this;
 	}
 	
-	void move(T dx, T dy) {
+	constexpr void move(T dx, T dy) noexcept {
 		left   += dx;
 		top    += dy;
 		right  += dx;
 		bottom += dy;
 	}
 	
-	void move(const Vec2 & offset) {
+	constexpr void move(const Vec2 & offset) noexcept {
 		move(offset.x, offset.y);
 	}
 	
-	void moveTo(const Vec2 & position) {
+	constexpr void moveTo(const Vec2 & position) noexcept {
 		move(position - topLeft());
 	}
 	
-	bool contains(const Vec2 & point) const {
+	[[nodiscard]] constexpr bool contains(const Vec2 & point) const noexcept {
 		return point.x >= left
 		    && point.x <  right
 		    && point.y >= top
 		    && point.y <  bottom;
 	}
 	
-	bool contains(T x, T y) const {
+	[[nodiscard]] constexpr bool contains(T x, T y) const noexcept {
 		return x >= left
 		    && x <  right
 		    && y >= top
 		    && y <  bottom;
 	}
 	
-	bool contains(const Rectangle_ & other) const {
+	[[nodiscard]] constexpr bool contains(const Rectangle_ & other) const noexcept {
 		return other.left   >= left
 		    && other.right  <= right
 		    && other.top    >= top
 		    && other.bottom <= bottom;
 	}
 	
-	bool overlaps(const Rectangle_ & other) const {
+	[[nodiscard]] constexpr bool overlaps(const Rectangle_ & other) const noexcept {
 		return left       < other.right
 		    && other.left < right
 		    && top        < other.bottom
@@ -152,7 +152,7 @@ public:
 	 * Calculate a rectangle contained in both this rectangle and the other rectangle.
 	 * Assumes that both rectangles are valid.
 	 */
-	Rectangle_ operator&(const Rectangle_ & other) const {
+	[[nodiscard]] constexpr Rectangle_ operator&(const Rectangle_ & other) const noexcept {
 		Rectangle_ result(
 			std::max(left,   other.left),
 			std::max(top,    other.top),
@@ -172,7 +172,7 @@ public:
 	 * Calculate a bounding rectangle containing both this rectangle and the other rectangle.
 	 * Assumes that both rectangles are valid.
 	 */
-	Rectangle_ operator|(const Rectangle_ & other) const {
+	[[nodiscard]] constexpr Rectangle_ operator|(const Rectangle_ & other) const noexcept {
 		return Rectangle_(
 			std::min(left,   other.left),
 			std::min(top,    other.top),
@@ -181,47 +181,47 @@ public:
 		);
 	}
 	
-	bool empty() const {
+	[[nodiscard]] constexpr bool empty() const noexcept {
 		return (left == right || top == bottom);
 	}
 	
-	bool isValid() const {
+	[[nodiscard]] constexpr bool isValid() const noexcept {
 		return left < right && top < bottom;
 	}
 	
 	
-	Vec2 topLeft() const {
+	[[nodiscard]] constexpr Vec2 topLeft() const noexcept {
 		return Vec2(left, top);
 	}
-	Vec2 topCenter() const {
+	[[nodiscard]] constexpr Vec2 topCenter() const noexcept {
 		return Vec2(left + (right - left) / 2, top);
 	}
-	Vec2 topRight() const {
+	[[nodiscard]] constexpr Vec2 topRight() const noexcept {
 		return Vec2(right, top);
 	}
 	
-	Vec2 centerLeft() const {
+	[[nodiscard]] constexpr Vec2 centerLeft() const noexcept {
 		return Vec2(left, top + (bottom - top) / 2);
 	}
-	Vec2 center() const {
+	[[nodiscard]] constexpr Vec2 center() const noexcept {
 		return Vec2(left + (right - left) / 2, top + (bottom - top) / 2);
 	}
-	Vec2 centerRight() const {
+	[[nodiscard]] constexpr Vec2 centerRight() const noexcept {
 		return Vec2(right, top + (bottom - top) / 2);
 	}
 	
-	Vec2 bottomLeft() const {
+	[[nodiscard]] constexpr Vec2 bottomLeft() const noexcept {
 		return Vec2(left, bottom);
 	}
-	Vec2 bottomCenter() const {
+	[[nodiscard]] constexpr Vec2 bottomCenter() const noexcept {
 		return Vec2(left + (right - left) / 2, bottom);
 	}
-	Vec2 bottomRight() const {
+	[[nodiscard]] constexpr Vec2 bottomRight() const noexcept {
 		return Vec2(right, bottom);
 	}
 	
 	
-	Vec2 size() const {
+	[[nodiscard]] constexpr Vec2 size() const noexcept {
 		return Vec2(right - left, bottom - top);
 	}
 	
