@@ -306,6 +306,59 @@ private:
 };
 
 template <typename Vector>
+struct GridDiagonalIterator {
+	
+	static_assert(std::is_integral_v<typename Vector::value_type>);
+	typedef Vector value_type;
+	
+	struct Sentinel { };
+	
+	constexpr GridDiagonalIterator(Vector begin, Vector end) noexcept
+		: m_pos(begin)
+		, m_begin(begin)
+		, m_end(end)
+	{
+		arx_assume(m_pos.x <= m_end.x && m_pos.y <= m_end.y);
+		if(m_begin.x == m_end.x) {
+			m_pos = m_end;
+		}
+	}
+	
+	[[nodiscard]] Vector operator*() const noexcept {
+		arx_assume(m_pos.x < m_end.x && m_pos.y < m_end.y && m_pos.x >= m_begin.x && m_pos.y >= m_begin.y);
+		return m_pos;
+	}
+	
+	[[nodiscard]] const Vector * operator->() const noexcept {
+		return &**this;
+	}
+	
+	void operator++() noexcept {
+		m_pos.x++;
+		m_pos.y--;
+		if(m_pos.y < m_begin.y || m_pos.x >= m_end.x) {
+			m_pos.y = m_pos.y + (m_pos.x - m_begin.x) + 1;
+			m_pos.x = m_begin.x;
+		}
+	}
+	
+	[[nodiscard]] constexpr bool operator==(Sentinel /* sentinel */) const noexcept {
+		return m_pos.y >= m_end.y;
+	}
+	
+	[[nodiscard]] constexpr bool operator!=(Sentinel /* sentinel */) const noexcept {
+		return m_pos.y < m_end.y;
+	}
+	
+private:
+	
+	Vector m_pos;
+	Vector m_begin;
+	Vector m_end;
+	
+};
+
+template <typename Vector>
 struct GridXYZIterator {
 	
 	static_assert(std::is_integral_v<typename Vector::value_type>);
