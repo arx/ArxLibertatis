@@ -641,12 +641,8 @@ void spellDataInit() {
 }
 
 void spellDataRelease() {
-	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
-		if(!spellicons[i].name.empty()) {
-			spellicons[i].name = { };
-		}
-		if(!spellicons[i].description.empty()) {
-			spellicons[i].description = { };
-		}
+	for(SPELL_ICON & spell : spellicons) {
+		spell.name = { };
+		spell.description = { };
 	}
 }
