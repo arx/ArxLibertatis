@@ -46,9 +46,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Scene.h"
 
-#include <vector>
-#include <cstdio>
 #include <cmath>
+#include <cstdio>
+#include <array>
+#include <vector>
 
 #include "ai/Paths.h"
 
@@ -1193,7 +1194,7 @@ static void BackgroundRenderOpaque(size_t room_num) {
 
 //-----------------------------------------------------------------------------
 
-static const BatchBucket transRenderOrder[] = {
+static constexpr std::array<BatchBucket, 4> transRenderOrder = {
 	BatchBucket_Blended,
 	BatchBucket_Multiplicative,
 	BatchBucket_Additive,
