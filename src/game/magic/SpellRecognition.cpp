@@ -338,10 +338,10 @@ int RuneRecognitionAlt::arx2angle(char dir) {
 void RuneRecognitionAlt::setFailedSeq(){
 	LAST_FAILED_SEQUENCE.clear();
 	int lastDir = -1;
-	for(size_t i = 0; i < s_directionCount; i++) {
-		if(m_dirs[i] != lastDir) {
-			LAST_FAILED_SEQUENCE.push_back(angle2arx(m_dirs[i]));
-			lastDir = m_dirs[i];
+	for(int direction : m_dirs) {
+		if(direction != lastDir) {
+			LAST_FAILED_SEQUENCE.push_back(angle2arx(direction));
+			lastDir = direction;
 		}
 	}
 }
