@@ -1208,12 +1208,10 @@ static void BackgroundRenderTransparent(size_t room_num) {
 	
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
-	std::vector<TextureContainer *>::const_iterator itr;
-	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
+	for(TextureContainer * pTexCurr : room.ppTextureContainer) {
 		
 		RenderState baseState = render3D().depthWrite(false).depthOffset(2);
 		
-		TextureContainer * pTexCurr = *itr;
 		GRenderer->SetTexture(0, pTexCurr);
 		baseState.setAlphaCutout(pTexCurr->m_pTexture && pTexCurr->m_pTexture->hasAlpha());
 		
