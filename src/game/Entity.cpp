@@ -198,10 +198,10 @@ Entity::~Entity() {
 	ReleaseScript(&script);
 	ReleaseScript(&over_script);
 	
-	for(size_t n = 0; n < MAX_ANIMS; n++) {
-		if(anims[n]) {
-			EERIE_ANIMMANAGER_ReleaseHandle(anims[n]);
-			anims[n] = nullptr;
+	for(ANIM_HANDLE * & anim : anims) {
+		if(anim) {
+			EERIE_ANIMMANAGER_ReleaseHandle(anim);
+			anim = nullptr;
 		}
 	}
 	
