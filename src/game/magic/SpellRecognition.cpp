@@ -89,10 +89,10 @@ static constexpr const RunePattern patternData[] = {
 
 class RuneRecognitionAlt {
 	
-	static const size_t s_requiredPointCount = 20;
-	static const size_t s_directionCount = s_requiredPointCount - 1;
-	static const size_t s_patternCount = ARRAY_SIZE(patternData);
-	static const int s_maxTolerance = 2;
+	static constexpr size_t s_requiredPointCount = 20;
+	static constexpr size_t s_directionCount = s_requiredPointCount - 1;
+	static constexpr size_t s_patternCount = ARRAY_SIZE(patternData);
+	static constexpr int s_maxTolerance = 2;
 	
 	int m_dirs[s_directionCount];
 	std::vector<Vec2f> m_points;
