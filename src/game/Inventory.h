@@ -347,7 +347,7 @@ inline Vec2s inventorySizeFromTextureSize(Vec2i size) {
 	return Vec2s(glm::clamp((size + Vec2i(31, 31)) / Vec2i(32, 32), Vec2i(1, 1), Vec2i(3, 3)));
 }
 
-std::ostream & operator<<(std::ostream & strm, const InventoryPos & pos);
+std::ostream & operator<<(std::ostream & strm, InventoryPos pos);
 
 //! Sort the inventory and stack duplicate items
 void optimizeInventory(Entity * container);
@@ -375,7 +375,7 @@ bool giveToPlayer(Entity * item);
  *
  * \return true if the item was added to the inventory, false if it was dropped
  */
-bool giveToPlayer(Entity * item, const InventoryPos & pos);
+bool giveToPlayer(Entity * item, InventoryPos pos);
 
 /*!
  * Insert an item into an inventory
@@ -389,7 +389,7 @@ bool giveToPlayer(Entity * item, const InventoryPos & pos);
  *
  * \return true if the item was inserted, false otherwise
  */
-bool insertIntoInventory(Entity * item, const InventoryPos & pos);
+bool insertIntoInventory(Entity * item, InventoryPos pos);
 
 /*!
  * Insert an item into the inventory at a specified position
@@ -405,7 +405,7 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos);
  * \return true if the item was inserted, false otherwise
  */
 bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::index_type bag, Vec2f pos,
-                           const InventoryPos & previous = InventoryPos());
+                           InventoryPos previous = { });
 
 /*!
  * Insert an item into the inventory at a specified position without firing script events
@@ -419,7 +419,7 @@ bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::inde
  *
  * \return true if the item was inserted, false otherwise
  */
-bool insertIntoInventoryAtNoEvent(Entity * item, const InventoryPos & pos);
+bool insertIntoInventoryAtNoEvent(Entity * item, InventoryPos pos);
 
 /*!
  * Get the position of an item in the inventory.

@@ -195,7 +195,7 @@ void PutInFrontOfPlayer(Entity * io) {
 	
 }
 
-std::ostream & operator<<(std::ostream & strm, const InventoryPos & p) {
+std::ostream & operator<<(std::ostream & strm, InventoryPos p) {
 	return strm << '(' << p.io.handleData() << ", " << p.bag << ", " << p.x << ", " << p.y << ')';
 }
 
@@ -601,7 +601,7 @@ bool giveToPlayer(Entity * item) {
 	}
 }
 
-bool giveToPlayer(Entity * item, const InventoryPos & pos) {
+bool giveToPlayer(Entity * item, InventoryPos pos) {
 	ARX_INVENTORY_IdentifyIO(item);
 	if(entities.player()->inventory->insert(item, pos)) {
 		return true;
@@ -614,12 +614,12 @@ bool giveToPlayer(Entity * item, const InventoryPos & pos) {
 InventoryPos removeFromInventories(Entity * item) {
 	
 	if(!item || !(item->ioflags & IO_ITEM)) {
-		return InventoryPos();
+		return { };
 	}
 	
 	InventoryPos pos = locateInInventories(item);
 	if(!pos) {
-		return InventoryPos();
+		return { };
 	}
 	
 	Entity * container = entities.get(pos.io);
@@ -634,13 +634,13 @@ InventoryPos removeFromInventories(Entity * item) {
 InventoryPos locateInInventories(const Entity * item) {
 	
 	if(!item || !(item->ioflags & IO_ITEM)) {
-		return InventoryPos();
+		return { };
 	}
 	
 	return item->_itemdata->m_inventoryPos;
 }
 
-bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
+bool insertIntoInventory(Entity * item, InventoryPos pos) {
 	
 	if(Entity * container = entities.get(pos.io); container && container->inventory) {
 		if(container->inventory->insert(item, pos)) {
@@ -652,7 +652,7 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 }
 
 bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::index_type bag, Vec2f pos,
-                           const InventoryPos & previous) {
+                           InventoryPos previous) {
 	
 	arx_assert(container && container->inventory);
 	
@@ -664,7 +664,7 @@ bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::inde
 	return container->inventory->insertAt(item, bag, pos, fallback);
 }
 
-bool insertIntoInventoryAtNoEvent(Entity * item, const InventoryPos & pos) {
+bool insertIntoInventoryAtNoEvent(Entity * item, InventoryPos pos) {
 	
 	if(Entity * container = entities.get(pos.io)) {
 		arx_assert(container->inventory);
