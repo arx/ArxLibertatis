@@ -1170,14 +1170,14 @@ void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 	if(io->obj) {
 		if(io->obj->pbox) {
 			if(io->obj->pbox->active) {
-				for(size_t i = 0; i < io->obj->pbox->vert.size(); i++) {
-					io->obj->pbox->vert[i].pos += translate;
+				for(PhysicsParticle & vertex : io->obj->pbox->vert) {
+					vertex.pos += translate;
 				}
 				io->obj->pbox->active = 0;
 			}
 		}
-		for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
-			io->obj->vertexWorldPositions[i].v += translate;
+		for(EERIE_VERTEX & vertex : io->obj->vertexWorldPositions) {
+			vertex.v += translate;
 		}
 	}
 	
