@@ -1732,7 +1732,7 @@ void ManageCasseDArme(Entity * io) {
 	Entity * pObjMax = nullptr;
 	Entity * pObjFIX = nullptr;
 	
-	for(auto slot : entities.player()->inventory->slots<util::GridZYXIterator>()) {
+	for(auto slot : entities.player()->inventory->slotsInGrid<util::GridZYXIterator>()) {
 		Entity * bagEntity = slot.entity;
 		
 		if(bagEntity && bagEntity != io

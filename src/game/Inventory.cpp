@@ -108,7 +108,7 @@ void INVENTORY_DATA::setBags(size_t newBagCount) {
 	#endif
 	
 	m_bags = newBagCount;
-	m_slots.resize(m_bags * size_t(m_size.x) * size_t(m_size.y));
+	m_slots.resize(slotCount());
 	
 }
 

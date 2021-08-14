@@ -84,57 +84,67 @@ class INVENTORY_DATA {
 		
 		typedef std::conditional_t<Mutable, INVENTORY_DATA, const INVENTORY_DATA> Base;
 		
-		Base * const m_inventory;
-		Vec3s m_slot;
-		
-		[[nodiscard]] auto & data() const noexcept {
-			arx_assume(x >= 0 && x < m_inventory->size().x && y >= 0 && y < m_inventory->size().y);
-			return m_inventory->slot[x][y];
-		}
-		
-		[[nodiscard]] size_t index() const noexcept {
-			Vec2s size = m_inventory->size();
-			arx_assume(size.x > 0 && size.y > 0);
-			return (size_t(bag) * size_t(size.x) + size_t(x)) * size_t(size.y) + y;
-		}
+		std::conditional_t<Mutable, INVENTORY_SLOT, const INVENTORY_SLOT> & m_data;
 		
 	public:
-		
-		const s16 & bag;
-		const s16 & x;
-		const s16 & y;
 		
 		std::conditional_t<Mutable, Entity *, Entity * const> & entity;
 		std::conditional_t<Mutable, bool, const bool> & show;
 		
-		SlotView(Base * inventory, Vec3s slot)
-			: m_inventory(inventory)
-			, m_slot(slot)
-			, bag(m_slot.z)
-			, x(m_slot.x)
-			, y(m_slot.y)
-			, entity(inventory->m_slots[index()].io)
-			, show(inventory->m_slots[index()].show)
+		SlotView(Base * inventory, size_t index) noexcept
+			: m_data(inventory->m_slots[index])
+			, entity(m_data.io)
+			, show(m_data.show)
 		{ }
 		
-		[[nodiscard]] Vec3s slot() const noexcept {
-			return m_slot;
-		}
-		[[nodiscard]] operator Vec3s() const noexcept {
-			return m_slot;
-		}
-		[[nodiscard]] operator Vec2s() const noexcept {
-			return m_slot;
-		}
-		[[nodiscard]] explicit operator Vec2f() const noexcept {
-			return m_slot;
-		}
-		
 		[[nodiscard]] operator std::conditional_t<Mutable, INVENTORY_SLOT, const INVENTORY_SLOT> &() const noexcept {
-			return m_inventory->m_slots[index()];
+			return m_data;
 		}
 		
 	};
+	
+	//! Tile data accessor
+	template <bool Mutable>
+	class GridSlotView : public SlotView<Mutable> {
+		
+		typedef std::conditional_t<Mutable, INVENTORY_DATA, const INVENTORY_DATA> Base;
+		
+	public:
+		
+		const s16 bag;
+		const s16 x;
+		const s16 y;
+		
+		GridSlotView(Base * inventory, Vec3s slot) noexcept
+			: SlotView<Mutable>(inventory, inventory->index(slot))
+			, bag(slot.z)
+			, x(slot.x)
+			, y(slot.y)
+		{ }
+		
+		[[nodiscard]] Vec3s slot() const noexcept {
+			return { x, y, bag };
+		}
+		[[nodiscard]] operator Vec3s() const noexcept {
+			return slot();
+		}
+		[[nodiscard]] operator Vec2s() const noexcept {
+			return slot();
+		}
+		[[nodiscard]] explicit operator Vec2f() const noexcept {
+			return slot();
+		}
+		
+	};
+	
+	[[nodiscard]] size_t index(Vec3s slot) const noexcept {
+		arx_assume(m_size.x > 0 && m_size.y > 0);
+		return (size_t(slot.z) * size_t(m_size.x) + size_t(slot.x)) * size_t(m_size.y) + slot.y;
+	}
+	
+	[[nodiscard]] size_t slotCount() const noexcept {
+		return m_bags * size_t(m_size.x) * size_t(m_size.y);
+	}
 	
 public:
 	
@@ -160,24 +170,30 @@ public:
 		return m_bags;
 	}
 	
-	[[nodiscard]] SlotView<true> get(Vec3s slot) noexcept {
+	[[nodiscard]] GridSlotView<true> get(Vec3s slot) noexcept {
 		return { this, slot };
 	}
 	
-	[[nodiscard]] SlotView<false> get(Vec3s slot) const noexcept {
+	[[nodiscard]] GridSlotView<false> get(Vec3s slot) const noexcept {
 		return { this, slot };
+	}
+	
+	//! Returns an iterable over all slots in any order
+	[[nodiscard]] auto slots() const noexcept {
+		return util::transform(util::IntRange(slotCount()), [this](size_t index) {
+			return SlotView<false>(this, index);
+		});
 	}
 	
 	//! Returns an iterable over all slots in grid order
 	template <template <typename T> typename Iterator = util::GridZXYIterator>
-	[[nodiscard]] auto slots() const noexcept {
+	[[nodiscard]] auto slotsInGrid() const noexcept {
 		return util::transform(util::GridRange<Vec3s, Iterator>(Vec3s(0), size()), [this](Vec3s slot) {
 			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
 			           && slot.z >= 0 && size_t(slot.z) < m_bags);
 			return get(slot);
 		});
 	}
-	
 	
 	//! Returns an iterable over all slots in grid order with the inner loop over the smaller dimension
 	template <template <typename T> typename Iterator = util::GridZXYIterator>

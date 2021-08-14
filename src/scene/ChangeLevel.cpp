@@ -675,7 +675,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
 	arx_assert(entities.player()->inventory->bags() <= SAVED_INVENTORY_BAGS);
 	arx_assert(Vec2s(entities.player()->inventory->size()) == Vec2s(SAVED_INVENTORY_X, SAVED_INVENTORY_Y));
-	for(auto slot : entities.player()->inventory->slots()) {
+	for(auto slot : entities.player()->inventory->slotsInGrid()) {
 		storeIdString(asp->id_inventory[slot.bag][slot.x][slot.y], slot.entity);
 		asp->inventory_show[slot.bag][slot.x][slot.y] = slot.show;
 	}
@@ -1242,7 +1242,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		aids->sizex = io->inventory->size().x;
 		aids->sizey = io->inventory->size().y;
 		
-		for(auto slot : io->inventory->slots()) {
+		for(auto slot : io->inventory->slotsInGrid()) {
 			arx_assume(slot.bag == 0);
 			aids->initio[slot.x][slot.y][0] = 0;
 			if(slot.entity) {

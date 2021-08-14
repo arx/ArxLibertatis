@@ -191,7 +191,7 @@ void SecondaryInventoryHud::draw() {
 	
 	EERIEDrawBitmap(m_rect, 0.001f, ingame_inventory, Color::white);
 	
-	for(auto slot : m_container->inventory->slots()) {
+	for(auto slot : m_container->inventory->slotsInGrid()) {
 		
 		Entity * io = slot.entity;
 		if(!io) {
