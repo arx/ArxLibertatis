@@ -403,11 +403,11 @@ void TREATZONE_Release() {
 }
 
 void TREATZONE_RemoveIO(Entity * io) {
-	for(size_t i = 0; i < treatio.size(); i++) {
-		if(treatio[i].io == io) {
-			treatio[i].io = nullptr;
-			treatio[i].ioflags = 0;
-			treatio[i].show = SHOW_FLAG_NOT_DRAWN;
+	for(TREATZONE_IO & entry : treatio) {
+		if(entry.io == io) {
+			entry.io = nullptr;
+			entry.ioflags = 0;
+			entry.show = SHOW_FLAG_NOT_DRAWN;
 		}
 	}
 }
