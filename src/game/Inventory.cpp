@@ -340,6 +340,58 @@ InventoryPos INVENTORY_DATA::insertImpl(Entity & item, InventoryPos pos) {
 	return insertIntoNewSlot(item);
 }
 
+InventoryPos INVENTORY_DATA::insertAtImpl(Entity & item, s16 bag, Vec2f pos, InventoryPos fallback) {
+	
+	Vec2s start(pos + Vec2f(1.f / 3));
+	Vec2s size = item.m_inventorySize;
+	if(pos.x - float(start.x) > 1.f / 3) {
+		size.x++;
+	}
+	if(pos.y - float(start.y) > 1.f / 3) {
+		size.y++;
+	}
+	if(start.x < 0) {
+		size.x += start.x;
+		start.x = 0;
+	}
+	if(start.y < 0) {
+		size.y += start.y;
+		start.y = 0;
+	}
+	start = glm::min(start, Vec2s(width() - 1, height() - 1));
+	size = glm::clamp(size, Vec2s(1), Vec2s(width(), height()) - start);
+	
+	for(auto slot : slotsInArea<util::GridDiagonalIterator>(Vec3s(start, bag), size)) {
+		if(insertIntoStackAt(item, slot, true)) {
+			return slot;
+		}
+	}
+	
+	for(auto slot : slotsInArea<util::GridDiagonalIterator>(Vec3s(start, bag), size)) {
+		if(insertIntoNewSlotAt(item, slot)) {
+			return slot;
+		}
+	}
+	
+	Vec2f diff(glm::clamp(pos, Vec2f(0.f), Vec2f(width() - 1, height() - 1)) - Vec2f(start));
+	Vec2s neighbor(diff.x < 0 ? start.x - 1 : start.x + 1, diff.y < 0 ? start.y - 1 : start.y + 1);
+	neighbor = glm::clamp(neighbor, Vec2s(0), Vec2s(width() - 1, height() - 1));
+	for(int i = 0; i < 3; i++) {
+		bool xfirst = glm::abs(diff.x) > glm::abs(diff.y);
+		s16 x = (xfirst ? (i == 1) : (i == 0)) ? start.x : neighbor.x;
+		s16 y = (xfirst ? (i == 0) : (i == 1)) ? start.y : neighbor.y;
+		auto slot = get(Vec3s(x, y, bag));
+		if(insertIntoStackAt(item, slot, true)) {
+			return slot;
+		}
+		if(insertIntoNewSlotAt(item, slot)) {
+			return slot;
+		}
+	}
+	
+	return insertImpl(item, fallback);
+}
+
 namespace {
 
 // Glue code to access both player and IO inventories in a uniform way.
@@ -524,68 +576,6 @@ private:
 	
 	using InventoryAccess::inventory;
 	
-	// Move via diagonal lines thorough the rect made by start and end
-	static void advance(Pos & p, Vec2s start, Vec2s end) {
-		p.x++;
-		p.y--;
-		if(p.y < start.y || p.x >= end.x) {
-			p.y = p.y + (p.x - start.x) + 1;
-			p.x = start.x;
-		}
-	}
-	
-	Pos insertAtImpl(Entity * item, index_type bag, Vec2f pos, const Pos & fallback) {
-		
-		Vec2s start(pos + Vec2f(1.f / 3));
-		Vec2s size = item->m_inventorySize;
-		if(pos.x - float(start.x) > 1.f / 3) {
-			size.x++;
-		}
-		if(pos.y - float(start.y) > 1.f / 3) {
-			size.y++;
-		}
-		if(start.x < 0) {
-			size.x += start.x;
-			start.x = 0;
-		}
-		if(start.y < 0) {
-			size.y += start.y;
-			start.y = 0;
-		}
-		start = glm::min(start, Vec2s(width() - 1, height() - 1));
-		Vec2s end = start + glm::clamp(size, Vec2s(1), Vec2s(width(), height()) - start);
-		
-		for(Pos p(handle(), bag, start.x, start.y); p.y < end.y; advance(p, start, end)) {
-			if(inventory().insertIntoStackAt(*item, p, true)) {
-				return p;
-			}
-		}
-		
-		for(Pos p(handle(), bag, start.x, start.y); p.y < end.y; advance(p, start, end)) {
-			if(inventory().insertIntoNewSlotAt(*item, p)) {
-				return p;
-			}
-		}
-		
-		Vec2f diff(glm::clamp(pos, Vec2f(0.f), Vec2f(width() - 1, height() - 1)) - Vec2f(start));
-		Vec2s neighbor(diff.x < 0 ? start.x - 1 : start.x + 1, diff.y < 0 ? start.y - 1 : start.y + 1);
-		neighbor = glm::clamp(neighbor, Vec2s(0), Vec2s(width() - 1, height() - 1));
-		for(int i = 0; i < 3; i++) {
-			bool xfirst = glm::abs(diff.x) > glm::abs(diff.y);
-			Pos::index_type x = (xfirst ? (i == 1) : (i == 0)) ? start.x : neighbor.x;
-			Pos::index_type y = (xfirst ? (i == 0) : (i == 1)) ? start.y : neighbor.y;
-			Pos p(handle(), bag, x, y);
-			if(inventory().insertIntoStackAt(*item, p, true)) {
-				return p;
-			}
-			if(inventory().insertIntoNewSlotAt(*item, p)) {
-				return p;
-			}
-		}
-		
-		return inventory().insertImpl(*item, fallback);
-	}
-	
 public:
 	
 	explicit Inventory(Entity * entity)
@@ -640,7 +630,7 @@ public:
 		}
 		
 		if(item && (item->ioflags & IO_ITEM) && !(item->ioflags & IO_MOVABLE)) {
-			if(Pos newPos = insertAtImpl(item, bag, pos, fallback)) {
+			if(Pos newPos = inventory().insertAtImpl(*item, bag, pos, fallback)) {
 				ARX_SOUND_PlayInterface(g_snd.INVSTD);
 				ARX_INVENTORY_Declare_InventoryIn(get(newPos), handle());
 				return true;

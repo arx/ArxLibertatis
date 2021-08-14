@@ -189,7 +189,7 @@ class INVENTORY_DATA {
 	
 	//! Returns an iterable over all slots of an item
 	template <template <typename T> typename Iterator = util::GridXYIterator>
-	[[nodiscard]] auto slotsForItem(Vec3s firstSlot, Vec2s size) noexcept {
+	[[nodiscard]] auto slotsInArea(Vec3s firstSlot, Vec2s size) noexcept {
 		const Vec2s start = firstSlot;
 		const s16 bag = firstSlot.z;
 		arx_assume(m_bags > 0 && bag >= 0 && size_t(bag) < m_bags);
@@ -203,7 +203,7 @@ class INVENTORY_DATA {
 	
 	template <template <typename T> typename Iterator = util::GridXYIterator>
 	[[nodiscard]] auto slotsForItem(Vec3s firstSlot, const Entity & item) noexcept {
-		return slotsForItem(firstSlot, getInventorySize(item));
+		return slotsInArea(firstSlot, getInventorySize(item));
 	}
 	
 	[[nodiscard]] static Vec2s getInventorySize(const Entity & item) noexcept;
@@ -221,6 +221,8 @@ public:
 	InventoryPos insertIntoNewSlot(Entity & item);
 	
 	InventoryPos insertImpl(Entity & item, InventoryPos pos = InventoryPos());
+	
+	InventoryPos insertAtImpl(Entity & item, s16 bag, Vec2f pos, InventoryPos fallback);
 	
 	INVENTORY_DATA(Entity * owner, Vec2s size)
 		: m_owner(*owner)
