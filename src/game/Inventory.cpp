@@ -112,6 +112,10 @@ void INVENTORY_DATA::setBags(size_t newBagCount) {
 	
 }
 
+EntityHandle INVENTORY_DATA::owner() const noexcept {
+	return m_owner->index();
+}
+
 /*!
  * Declares an IO as entering into player Inventory
  * Sends appropriate INVENTORYIN Event to player AND concerned io.
@@ -191,6 +195,41 @@ std::ostream & operator<<(std::ostream & strm, const InventoryPos & p) {
 	return strm << '(' << p.io.handleData() << ", " << p.bag << ", " << p.x << ", " << p.y << ')';
 }
 
+bool INVENTORY_DATA::insertIntoStackAt(Entity * item, Vec3s pos, bool identify) {
+	
+	arx_assume(pos.z >= 0);
+	if(size_t(pos.z) >= bags()) {
+		return false;
+	}
+	
+	arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
+	
+	if(pos.x + item->m_inventorySize.x > width() || pos.y + item->m_inventorySize.y > height()) {
+		return false;
+	}
+	
+	Entity * oldItem = get(pos).entity;
+	if(!oldItem) {
+		return false;
+	}
+	
+	if(identify) {
+		ARX_INVENTORY_IdentifyIO(oldItem);
+	}
+	
+	if(item == oldItem) {
+		return true;
+	}
+	
+	// Don't allow stacking non-interactive items
+	// While non-interactive items can't be picked up, they can be made non-interactive while being dragged.
+	if(!(item->gameFlags & GFLAG_INTERACTIVITY) || !(oldItem->gameFlags & GFLAG_INTERACTIVITY)) {
+		return false;
+	}
+	
+	return combineItemStacks(oldItem, item);
+}
+
 namespace {
 
 // Glue code to access both player and IO inventories in a uniform way.
@@ -242,6 +281,14 @@ struct PlayerInventoryAccess {
 		}
 		
 		return false;
+	}
+	
+	INVENTORY_DATA & inventory() {
+		return *entities.player()->inventory;
+	}
+	
+	const INVENTORY_DATA & inventory() const {
+		return *entities.player()->inventory;
 	}
 	
 };
@@ -297,6 +344,14 @@ struct EntityInventoryAccess {
 	bool insertGold(Entity * item) {
 		ARX_UNUSED(item);
 		return false;
+	}
+	
+	INVENTORY_DATA & inventory() {
+		return *m_data;
+	}
+	
+	const INVENTORY_DATA & inventory() const {
+		return *m_data;
 	}
 	
 };
@@ -376,9 +431,11 @@ private:
 		return InventoryAccess::insertGold(item);
 	}
 	
+	using InventoryAccess::inventory;
+	
 	Pos insertImpl(Entity * item, const Pos & pos = Pos()) {
 		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
-		if(insertIntoStackAt(item, pos)) {
+		if(pos.io == handle() && inventory().insertIntoStackAt(item, pos)) {
 			return pos;
 		}
 		if(Pos newPos = insertIntoStack(item)) {
@@ -422,7 +479,7 @@ private:
 		Vec2s end = start + glm::clamp(size, Vec2s(1), Vec2s(width(), height()) - start);
 		
 		for(Pos p(handle(), bag, start.x, start.y); p.y < end.y; advance(p, start, end)) {
-			if(insertIntoStackAt(item, p, true)) {
+			if(inventory().insertIntoStackAt(item, p, true)) {
 				return p;
 			}
 		}
@@ -441,7 +498,7 @@ private:
 			Pos::index_type x = (xfirst ? (i == 1) : (i == 0)) ? start.x : neighbor.x;
 			Pos::index_type y = (xfirst ? (i == 0) : (i == 1)) ? start.y : neighbor.y;
 			Pos p(handle(), bag, x, y);
-			if(insertIntoStackAt(item, p, true)) {
+			if(inventory().insertIntoStackAt(item, p, true)) {
 				return p;
 			}
 			if(insertIntoNewSlotAt(item, p)) {
@@ -534,40 +591,6 @@ private:
 		return Pos();
 	}
 	
-	bool insertIntoStackAt(Entity * item, const Pos & pos, bool identify = false) {
-		
-		if(!pos || pos.bag >= bags()) {
-			return false;
-		}
-		
-		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
-		
-		if(pos.x + item->m_inventorySize.x > width() || pos.y + item->m_inventorySize.y > height()) {
-			return false;
-		}
-		
-		Entity * oldItem = index(pos).io;
-		if(!oldItem) {
-			return false;
-		}
-		
-		if(identify) {
-			ARX_INVENTORY_IdentifyIO(oldItem);
-		}
-		
-		if(item == oldItem) {
-			return true;
-		}
-		
-		// Don't allow stacking non-interactive items
-		// While non-interactive items can't be picked up, they can be made non-interactive while being dragged.
-		if(!(item->gameFlags & GFLAG_INTERACTIVITY) || !(oldItem->gameFlags & GFLAG_INTERACTIVITY)) {
-			return false;
-		}
-		
-		return combineItemStacks(oldItem, item);
-	}
-	
 	Pos insertIntoStack(Entity * item) {
 		
 		arx_assert(item != nullptr && (item->ioflags & IO_ITEM));
@@ -587,7 +610,7 @@ private:
 			for(index_type i = 0; i < maxi; i++) {
 				for(index_type j = 0; j < maxj; j++) {
 					Pos pos = swap() ? Pos(handle(), bag, j, i) : Pos(handle(), bag, i, j);
-					if(insertIntoStackAt(item, pos)) {
+					if(inventory().insertIntoStackAt(item, pos)) {
 						return pos;
 					}
 				}

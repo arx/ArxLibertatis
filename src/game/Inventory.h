@@ -71,6 +71,35 @@ struct INVENTORY_SLOT {
 	
 };
 
+struct InventoryPos {
+	
+	typedef unsigned short index_type;
+	
+	EntityHandle io;
+	index_type bag;
+	index_type x;
+	index_type y;
+	
+	InventoryPos()
+		: bag(0)
+		, x(0)
+		, y(0)
+	{ }
+	
+	InventoryPos(EntityHandle io_, index_type bag_, index_type x_, index_type y_)
+		: io(io_), bag(bag_), x(x_), y(y_) { }
+	
+	//! \return true if this is a valid position
+	operator bool() const {
+		return (io != EntityHandle());
+	}
+	
+	operator Vec3s() const {
+		return { x, y, bag };
+	}
+	
+};
+
 class INVENTORY_DATA {
 	
 	Entity * m_owner;
@@ -109,6 +138,8 @@ class INVENTORY_DATA {
 		
 		typedef std::conditional_t<Mutable, INVENTORY_DATA, const INVENTORY_DATA> Base;
 		
+		const EntityHandle m_owner;
+		
 	public:
 		
 		const s16 bag;
@@ -117,6 +148,7 @@ class INVENTORY_DATA {
 		
 		GridSlotView(Base * inventory, Vec3s slot) noexcept
 			: SlotView<Mutable>(inventory, inventory->index(slot))
+			, m_owner(inventory->owner())
 			, bag(slot.z)
 			, x(slot.x)
 			, y(slot.y)
@@ -135,6 +167,10 @@ class INVENTORY_DATA {
 			return slot();
 		}
 		
+		[[nodiscard]] operator InventoryPos() const noexcept {
+			return { m_owner, bag, x, y };
+		}
+		
 	};
 	
 	[[nodiscard]] size_t index(Vec3s slot) const noexcept {
@@ -147,6 +183,8 @@ class INVENTORY_DATA {
 	}
 	
 public:
+	
+	bool insertIntoStackAt(Entity * item, Vec3s pos, bool identify = false);
 	
 	INVENTORY_DATA(Entity * owner, Vec2s size)
 		: m_owner(owner)
@@ -161,20 +199,37 @@ public:
 	
 	void setBags(size_t newBagCount);
 	
+	[[nodiscard]] EntityHandle owner() const noexcept;
+	
 	[[nodiscard]] Vec3s size() const noexcept {
-		arx_assume(m_bags <= std::numeric_limits<s16>::max());
+		arx_assume(m_size.x > 0 && m_size.y > 0 && m_bags > 0 && m_bags <= std::numeric_limits<s16>::max());
 		return { m_size, s16(m_bags) };
 	}
 	
+	[[nodiscard]] s16 width() const noexcept {
+		arx_assume(m_size.x > 0);
+		return m_size.x;
+	}
+	
+	[[nodiscard]] s16 height() const noexcept {
+		arx_assume(m_size.y > 0);
+		return m_size.y;
+	}
+	
 	[[nodiscard]] size_t bags() const noexcept {
+		arx_assume(m_bags > 0);
 		return m_bags;
 	}
 	
 	[[nodiscard]] GridSlotView<true> get(Vec3s slot) noexcept {
+		arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
+		           && slot.z >= 0 && size_t(slot.z) < m_bags);
 		return { this, slot };
 	}
 	
 	[[nodiscard]] GridSlotView<false> get(Vec3s slot) const noexcept {
+		arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
+		           && slot.z >= 0 && size_t(slot.z) < m_bags);
 		return { this, slot };
 	}
 	
@@ -189,8 +244,6 @@ public:
 	template <template <typename T> typename Iterator = util::GridZXYIterator>
 	[[nodiscard]] auto slotsInGrid() const noexcept {
 		return util::transform(util::GridRange<Vec3s, Iterator>(Vec3s(0), size()), [this](Vec3s slot) {
-			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
-			           && slot.z >= 0 && size_t(slot.z) < m_bags);
 			return get(slot);
 		});
 	}
@@ -208,8 +261,6 @@ public:
 			if(swap) {
 				std::swap(slot.x, slot.y);
 			}
-			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
-			           && slot.z >= 0 && size_t(slot.z) < m_bags);
 			return get(slot);
 		});
 	}
@@ -219,7 +270,6 @@ public:
 	[[nodiscard]] auto slotsInBag(size_t bag) const noexcept {
 		arx_assume(m_bags > 0 && bag < m_bags && bag <= std::numeric_limits<s16>::max());
 		return util::transform(util::GridRange<Vec2s, Iterator>(Vec2s(0), m_size), [bag, this](Vec2s slot) {
-			arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y);
 			return get(Vec3s(slot, s16(bag)));
 		});
 	}
@@ -231,31 +281,6 @@ extern Entity * ioSteal;
 inline Vec2s inventorySizeFromTextureSize(Vec2i size) {
 	return Vec2s(glm::clamp((size + Vec2i(31, 31)) / Vec2i(32, 32), Vec2i(1, 1), Vec2i(3, 3)));
 }
-
-struct InventoryPos {
-	
-	typedef unsigned short index_type;
-	
-	EntityHandle io;
-	index_type bag;
-	index_type x;
-	index_type y;
-	
-	InventoryPos()
-		: bag(0)
-		, x(0)
-		, y(0)
-	{ }
-	
-	InventoryPos(EntityHandle io_, index_type bag_, index_type x_, index_type y_)
-		: io(io_), bag(bag_), x(x_), y(y_) { }
-	
-	//! \return true if this is a valid position
-	operator bool() const {
-		return (io != EntityHandle());
-	}
-	
-};
 
 std::ostream & operator<<(std::ostream & strm, const InventoryPos & pos);
 
