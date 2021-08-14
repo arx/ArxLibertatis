@@ -29,12 +29,13 @@
 #include "graphics/data/TextureContainer.h"
 
 struct SPELL_ICON {
+	
 	TextureContainer * tc;
 	std::string_view name;
 	std::string_view description;
 	long level;
 	SpellType spellid;
-	Rune symbols[6];
+	std::array<Rune, 6> symbols;
 	bool bSecret;
 	bool m_hasDuration;
 	bool bAudibleAtStart;
@@ -43,14 +44,12 @@ struct SPELL_ICON {
 		: tc(nullptr)
 		, level(0)
 		, spellid(SPELL_NONE)
+		, symbols({ RUNE_NONE, RUNE_NONE, RUNE_NONE, RUNE_NONE, RUNE_NONE, RUNE_NONE })
 		, bSecret(false)
 		, m_hasDuration(true)
 		, bAudibleAtStart(false)
-	{
-		for(long j = 0; j < 6; j++) {
-			symbols[j] = RUNE_NONE;
-		}
-	}
+	{ }
+	
 };
 
 extern std::array<SPELL_ICON, SPELL_TYPES_COUNT> spellicons;
