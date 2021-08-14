@@ -1859,32 +1859,26 @@ Entity * getCollidingEntityAt(const Vec3f & pos, const Vec3f & size) {
 
 static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 	
-	if(!io || !io->obj)
+	if(!io || !io->obj || !closerThan(pos, io->pos, 190.f)) {
 		return false;
-
-	if(closerThan(pos, io->pos, 190.f)) {
-		
-		std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
-
-		if(io->obj->grouplist.size() > 4) {
-			for(size_t i = 0; i < io->obj->grouplist.size(); i++) {
-				long idx = io->obj->grouplist[i].origin;
-
-				if(!fartherThan(pos, vlist[idx].v, 50.f)) {
-					return true;
-				}
+	}
+	
+	std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
+	if(io->obj->grouplist.size() > 4) {
+		for(VertexGroup & group : io->obj->grouplist) {
+			if(!fartherThan(pos, vlist[group.origin].v, 50.f)) {
+				return true;
 			}
-		} else {
-			size_t nbv = io->obj->vertexWorldPositions.size();
-			for(size_t i = 0; i < nbv; i++) {
-				if(i != io->obj->origin)
-					if(!fartherThan(pos, vlist[i].v, 30.f)) {
-						return true;
-					}
+		}
+	} else {
+		size_t nbv = io->obj->vertexWorldPositions.size();
+		for(size_t i = 0; i < nbv; i++) {
+			if(i != io->obj->origin && !fartherThan(pos, vlist[i].v, 30.f)) {
+				return true;
 			}
 		}
 	}
-
+	
 	return false;
 }
 
