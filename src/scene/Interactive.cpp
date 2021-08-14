@@ -305,16 +305,17 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io)
 
 // flag & 1 == no unhide non-gore
 // TODO very similar to ARX_INTERACTIVE_RemoveGoreOnIO
-void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
-{
-	if (!io || !io->obj || io->obj->texturecontainer.empty())
+void ARX_INTERACTIVE_HideGore(Entity * io, long flag) {
+	
+	if(!io || !io->obj || io->obj->texturecontainer.empty()) {
 		return;
-
-	if(io == entities.player() && !flag)
+	}
+	
+	if(io == entities.player() && !flag) {
 		return;
-
+	}
+	
 	long gorenum = -1;
-
 	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
 		if(io->obj->texturecontainer[nn]
 		   && boost::contains(io->obj->texturecontainer[nn]->m_texName.string(), "gore")) {
@@ -322,17 +323,18 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 			break;
 		}
 	}
-
+	
 	if(gorenum > -1) {
-		for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
-			EERIE_FACE & face = io->obj->facelist[nn];
+		for(EERIE_FACE & face : io->obj->facelist) {
 			// Hide gore faces...
-			if(face.texid == gorenum)
+			if(face.texid == gorenum) {
 				face.facetype |= POLY_HIDE;
-			else if(!flag)
+			} else if(!flag) {
 				face.facetype &= ~POLY_HIDE;
+			}
 		}
 	}
+	
 }
 
 bool ForceNPC_Above_Ground(Entity * io) {
