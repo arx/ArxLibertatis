@@ -575,30 +575,30 @@ static void ARX_PORTALS_InitDrawnRooms() {
 	
 	arx_assert(portals);
 	
-	for(size_t i = 0; i < portals->portals.size(); i++) {
-		portals->portals[i].useportal = 0;
+	for(EERIE_PORTALS & portal : portals->portals) {
+		portal.useportal = 0;
 	}
 	
 	for(size_t i = 0; i < portals->rooms.size(); i++) {
 		ARX_PORTALS_Frustrum_ClearIndexCount(i);
 	}
-
+	
 	RoomDraw.resize(portals->rooms.size());
-
-	for(size_t i = 0; i < RoomDraw.size(); i++) {
-		RoomDraw[i].count = 0;
-		RoomDraw[i].frustrum.nb_frustrums = 0;
+	for(PORTAL_ROOM_DRAW & room : RoomDraw) {
+		room.count = 0;
+		room.frustrum.nb_frustrums = 0;
 	}
-
+	
 	RoomDrawList.clear();
-
+	
 	vPolyWater.clear();
 	vPolyLava.clear();
-
+	
 	if(pDynamicVertexBuffer) {
 		pDynamicVertexBuffer->vb->setData(nullptr, 0, 0, DiscardBuffer);
 		dynamicVertices.reset();
 	}
+	
 }
 
 bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius) {
