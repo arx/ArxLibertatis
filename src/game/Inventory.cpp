@@ -85,16 +85,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 Entity * ioSteal = nullptr;
 
+#ifdef ARX_DEBUG
 Inventory::~Inventory() {
 	
-	#ifdef ARX_DEBUG
 	for(auto slot : slots()) {
 		arx_assert(slot.entity == nullptr);
 		arx_assert(slot.show == false);
 	}
-	#endif
 	
 }
+#endif
 
 void Inventory::setBags(size_t newBagCount) {
 	

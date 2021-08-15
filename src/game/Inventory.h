@@ -228,7 +228,12 @@ public:
 		setBags(1);
 	}
 	
+	Inventory(const Inventory &) = delete;
+	Inventory & operator=(const Inventory &) = delete;
+	
+	#ifdef ARX_DEBUG
 	~Inventory();
+	#endif
 	
 	void setBags(size_t newBagCount);
 	
