@@ -40,7 +40,7 @@ struct SPELL_ICON {
 	bool m_hasDuration;
 	bool bAudibleAtStart;
 	
-	SPELL_ICON()
+	constexpr SPELL_ICON() noexcept
 		: tc(nullptr)
 		, level(0)
 		, spellid(SPELL_NONE)
