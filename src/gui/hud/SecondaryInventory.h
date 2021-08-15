@@ -97,8 +97,8 @@ public:
 	/*!
 	 * \brief Returns true if position is in secondary inventory
 	 */
-	bool containsPos(const Vec2s & pos);
-	Entity * getObj(const Vec2s & pos);
+	[[nodiscard]] bool containsPos(Vec2s pos) const noexcept;
+	[[nodiscard]] Entity * getObj(Vec2s pos) const noexcept;
 	
 	void dropEntity();
 	void dragEntity(Entity * io);
@@ -106,9 +106,9 @@ public:
 	void open(Entity * container);
 	void close();
 	
-	bool isVisible();
-	bool isOpen();
-	bool isOpen(Entity * container);
+	[[nodiscard]] bool isVisible() const noexcept;
+	[[nodiscard]] bool isOpen() const noexcept;
+	[[nodiscard]] bool isOpen(Entity * container) const noexcept;
 	
 	void clear(Entity * container);
 	

@@ -289,7 +289,7 @@ void SecondaryInventoryHud::updateInputButtons() {
 	
 }
 
-bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
+bool SecondaryInventoryHud::containsPos(Vec2s pos) const noexcept {
 	
 	if(isOpen()) {
 		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
@@ -303,7 +303,7 @@ bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 	return false;
 }
 
-Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
+Entity * SecondaryInventoryHud::getObj(Vec2s pos) const noexcept {
 	
 	if(isOpen()) {
 		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
@@ -470,16 +470,16 @@ void SecondaryInventoryHud::close() {
 	
 }
 
-bool SecondaryInventoryHud::isVisible() {
+bool SecondaryInventoryHud::isVisible() const noexcept {
 	return m_container != nullptr;
 }
 
-bool SecondaryInventoryHud::isOpen() {
+bool SecondaryInventoryHud::isOpen() const noexcept {
 	return m_open;
 }
 
 
-bool SecondaryInventoryHud::isOpen(Entity * container) {
+bool SecondaryInventoryHud::isOpen(Entity * container) const noexcept {
 	return (isOpen() && m_container == container);
 }
 
