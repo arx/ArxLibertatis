@@ -70,12 +70,13 @@ Vec2f PlayerInventoryHud::anchorPosition() {
 void PlayerInventoryHud::updateRect(){
 	
 	Vec2f anchorPos = anchorPosition();
+	Vec2f bagSize = m_bagSize * m_scale;
 	
 	if(player.Interface & INTER_INVENTORYALL) {
-		m_rect = Rectf(anchorPos - Vec2f(0, (entities.player()->inventory->bags() - 1) * m_bagSize.y * m_scale),
-		               m_bagSize.x * m_scale, entities.player()->inventory->bags() * m_bagSize.y * m_scale);
+		float bags = float(entities.player()->inventory->bags());
+		m_rect = Rectf(anchorPos - Vec2f(0.f, (bags - 1.f) * bagSize.y), bagSize.x, bags * bagSize.y);
 	} else {
-		m_rect = Rectf(anchorPos, m_bagSize.x * m_scale, m_bagSize.y * m_scale);
+		m_rect = Rectf(anchorPos, bagSize.x, bagSize.y);
 	}
 	
 }
@@ -321,7 +322,7 @@ void PlayerInventoryHud::draw() {
 		Vec2f anchorPos = anchorPosition();
 		
 		// TODO see about these coords, might be calculated once only
-		const float fBag = (entities.player()->inventory->bags() - 1) * (-121.f * m_scale);
+		const float fBag = float(entities.player()->inventory->bags() - 1) * (-121.f * m_scale);
 		const float fOffsetY = (121 * m_scale);
 		
 		int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
