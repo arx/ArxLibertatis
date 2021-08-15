@@ -448,26 +448,26 @@ void ManageNONCombatModeAnimations() {
 	Entity * io = entities.player();
 	
 	AnimLayer & layer3 = io->animlayer[3];
-	auto & alist = io->anims;
 	
 	if(player.m_currentMovement & (PLAYER_LEAN_LEFT | PLAYER_LEAN_RIGHT))
 		return;
 	
 	if(entities.get(player.equiped[EQUIP_SLOT_SHIELD]) && !BLOCK_PLAYER_CONTROLS) {
-		if(layer3.cur_anim == nullptr || (layer3.cur_anim != alist[ANIM_SHIELD_CYCLE]
-		                               && layer3.cur_anim != alist[ANIM_SHIELD_HIT]
-		                               && layer3.cur_anim != alist[ANIM_SHIELD_START])) {
-			changeAnimation(io, 3, alist[ANIM_SHIELD_START]);
-		} else if(layer3.cur_anim == alist[ANIM_SHIELD_START] && (layer3.flags & EA_ANIMEND)) {
-			changeAnimation(io, 3, alist[ANIM_SHIELD_CYCLE], EA_LOOP);
+		if(layer3.cur_anim == nullptr || (layer3.cur_anim != io->anims[ANIM_SHIELD_CYCLE]
+		                               && layer3.cur_anim != io->anims[ANIM_SHIELD_HIT]
+		                               && layer3.cur_anim != io->anims[ANIM_SHIELD_START])) {
+			changeAnimation(io, 3, io->anims[ANIM_SHIELD_START]);
+		} else if(layer3.cur_anim == io->anims[ANIM_SHIELD_START] && (layer3.flags & EA_ANIMEND)) {
+			changeAnimation(io, 3, io->anims[ANIM_SHIELD_CYCLE], EA_LOOP);
 		}
 	} else {
-		if(layer3.cur_anim == alist[ANIM_SHIELD_CYCLE]) {
-			changeAnimation(io, 3, alist[ANIM_SHIELD_END]);
-		} else if(layer3.cur_anim == alist[ANIM_SHIELD_END] && (layer3.flags & EA_ANIMEND)) {
+		if(layer3.cur_anim == io->anims[ANIM_SHIELD_CYCLE]) {
+			changeAnimation(io, 3, io->anims[ANIM_SHIELD_END]);
+		} else if(layer3.cur_anim == io->anims[ANIM_SHIELD_END] && (layer3.flags & EA_ANIMEND)) {
 			layer3.cur_anim = nullptr;
 		}
 	}
+	
 }
 
 static bool StrikeAimtime() {
