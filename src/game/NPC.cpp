@@ -2399,19 +2399,18 @@ static void ManageNPCMovement_REFACTOR_end(Entity * io, float TOLERANCE2) {
 	ARX_NPC_Manage_Anims(io, TOLERANCE2);
 	
 	AnimLayer & layer0 = io->animlayer[0];
-	auto & alist = io->anims;
 	
 	// Puts at least WAIT anim on NPC if he has no main animation...
 	if(layer0.cur_anim == nullptr) {
 		if(io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT)) {
 			// TODO why no AcquireLastAnim() like everywhere else?
 			FinishAnim(io, layer0.cur_anim);
-			ANIM_Set(layer0, alist[ANIM_FIGHT_WAIT]);
+			ANIM_Set(layer0, io->anims[ANIM_FIGHT_WAIT]);
 			layer0.flags |= EA_LOOP;
 		} else {
 			// TODO why no AcquireLastAnim() like everywhere else?
 			FinishAnim(io, layer0.cur_anim);
-			ANIM_Set(layer0, alist[ANIM_WAIT]);
+			ANIM_Set(layer0, io->anims[ANIM_WAIT]);
 			if(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) {
 				layer0.altidx_cur = 0;
 			}
