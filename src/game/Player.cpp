@@ -1205,8 +1205,6 @@ static void ARX_PLAYER_Manage_Visual_End(ANIM_HANDLE * request0_anim, ANIM_HANDL
 	AnimLayer & layer0 = io->animlayer[0];
 	AnimLayer & layer3 = io->animlayer[3];
 	
-	auto & alist = io->anims;
-	
 	if(request0_anim && request0_anim != layer0.cur_anim) {
 		AcquireLastAnim(io);
 		ResetAnim(layer0);
@@ -1219,10 +1217,10 @@ static void ARX_PLAYER_Manage_Visual_End(ANIM_HANDLE * request0_anim, ANIM_HANDL
 		if(request0_stopend)
 			layer0.flags |= EA_STOPEND;
 		
-		if(request0_anim == alist[ANIM_U_TURN_LEFT]
-		   || request0_anim == alist[ANIM_U_TURN_RIGHT]
-		   || request0_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]
-		   || request0_anim == alist[ANIM_U_TURN_LEFT_FIGHT]
+		if(request0_anim == io->anims[ANIM_U_TURN_LEFT]
+		   || request0_anim == io->anims[ANIM_U_TURN_RIGHT]
+		   || request0_anim == io->anims[ANIM_U_TURN_RIGHT_FIGHT]
+		   || request0_anim == io->anims[ANIM_U_TURN_LEFT_FIGHT]
 		) {
 			layer0.flags |= EA_EXCONTROL;
 		}
