@@ -2288,14 +2288,13 @@ static void ManageNPCMovement(Entity * io) {
 	}
 	
 	AnimLayer & layer0 = io->animlayer[0];
-	auto & alist = io->anims;
 	
 	// Using USER animation ?
 	if(layer0.cur_anim
 	   && (layer0.flags & EA_FORCEPLAY)
-	   && layer0.cur_anim != alist[ANIM_DIE]
-	   && layer0.cur_anim != alist[ANIM_HIT1]
-	   && layer0.cur_anim != alist[ANIM_HIT_SHORT]
+	   && layer0.cur_anim != io->anims[ANIM_DIE]
+	   && layer0.cur_anim != io->anims[ANIM_HIT1]
+	   && layer0.cur_anim != io->anims[ANIM_HIT_SHORT]
 	   && !(layer0.flags & EA_ANIMEND)
 	) {
 		io->requestRoomUpdate = true;
@@ -2317,7 +2316,7 @@ static void ManageNPCMovement(Entity * io) {
 					if(io->targetinfo != io->index()) {
 						SendIOScriptEvent(nullptr, io, SM_REACHEDTARGET);
 					}
-				} else if(layer0.cur_anim == alist[ANIM_WAIT] && (layer0.flags & EA_ANIMEND)) {
+				} else if(layer0.cur_anim == io->anims[ANIM_WAIT] && (layer0.flags & EA_ANIMEND)) {
 					io->_npcdata->pathfind.listnb = -1;
 					io->_npcdata->pathfind.pathwait = 0;
 					ARX_NPC_LaunchPathfind(io, io->targetinfo);
@@ -2328,16 +2327,16 @@ static void ManageNPCMovement(Entity * io) {
 		}
 		
 		if(!(io->_npcdata->behavior & BEHAVIOUR_FIGHT)) {
-			if(layer0.cur_anim == alist[ANIM_WALK]
-			   || layer0.cur_anim == alist[ANIM_RUN]
-			   || layer0.cur_anim == alist[ANIM_WALK_SNEAK]
+			if(layer0.cur_anim == io->anims[ANIM_WALK]
+			   || layer0.cur_anim == io->anims[ANIM_RUN]
+			   || layer0.cur_anim == io->anims[ANIM_WALK_SNEAK]
 			) {
 				return changeAnimation(io, ANIM_WAIT, 0, true);
-			} else if(layer0.cur_anim == alist[ANIM_WAIT]) {
+			} else if(layer0.cur_anim == io->anims[ANIM_WAIT]) {
 				if(layer0.flags & EA_ANIMEND) {
 					// TODO why no AcquireLastAnim(io) like everywhere else?
 					FinishAnim(io, layer0.cur_anim);
-					ANIM_Set(layer0, alist[ANIM_WAIT]);
+					ANIM_Set(layer0, io->anims[ANIM_WAIT]);
 					layer0.altidx_cur = 0;
 				}
 				return;
