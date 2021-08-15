@@ -658,7 +658,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		case ConfirmChangeLevel: asp->CHANGE_LEVEL_ICON = 1;  break;
 		case ChangeLevelNow:     asp->CHANGE_LEVEL_ICON = 200; break;
 	}
-	asp->bag = entities.player()->inventory->bags();
+	asp->bag = s16(entities.player()->inventory->bags());
 	storeIdString(asp->equipsecondaryIO, nullptr);
 	storeIdString(asp->equipshieldIO, nullptr);
 	storeIdString(asp->leftIO, nullptr);
