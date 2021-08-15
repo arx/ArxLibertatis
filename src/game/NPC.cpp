@@ -1756,7 +1756,7 @@ static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 static void ManageNPCMovement_End(Entity * io) {
 	
 	AnimLayer & layer0 = io->animlayer[0];
-	auto & alist = io->anims;
+	const auto & alist = io->anims;
 	
 	if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
 		ARX_NPC_Manage_Anims(io, 0);
