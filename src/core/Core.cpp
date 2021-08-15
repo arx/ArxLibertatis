@@ -510,7 +510,7 @@ void ManageCombatModeAnimations() {
 	
 	AnimLayer & layer1 = io->animlayer[1];
 	
-	auto & alist = io->anims;
+	const auto & alist = io->anims;
 	WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 	
 	if(weapontype == WEAPON_BARE && LAST_WEAPON_TYPE != weapontype) {
@@ -962,7 +962,7 @@ void ManageCombatModeAnimationsEND() {
 	AnimLayer & layer1 = io->animlayer[1];
 	AnimLayer & layer3 = io->animlayer[3];
 	
-	auto & alist = io->anims;
+	const auto & alist = io->anims;
 	
 	if(layer1.cur_anim
 	   && (layer1.cur_anim == alist[ANIM_BARE_READY]
