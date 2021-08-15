@@ -65,7 +65,6 @@ private:
 	class TileView {
 		
 		T * m_base;
-		Vec2s m_tile;
 		
 		[[nodiscard]] auto & data() const noexcept {
 			arx_assume(x >= 0 && x < m_size.x && y >= 0 && y < m_size.y);
@@ -74,22 +73,22 @@ private:
 		
 	public:
 		
-		const s16 & x;
-		const s16 & y;
+		const s16 x;
+		const s16 y;
 		
-		TileView(T * base, Vec2s tile) : m_base(base), m_tile(tile), x(m_tile.x), y(m_tile.y) { }
+		TileView(T * base, Vec2s tile) : m_base(base), x(tile.x), y(tile.y) { }
 		
 		[[nodiscard]] Vec2s index() const noexcept {
-			return m_tile;
+			return { x, y };
 		}
 		[[nodiscard]] operator Vec2s() const noexcept {
-			return m_tile;
+			return index();
 		}
 		[[nodiscard]] operator Vec2i() const noexcept {
-			return m_tile;
+			return index();
 		}
 		[[nodiscard]] explicit operator Vec2f() const noexcept {
-			return m_tile;
+			return index();
 		}
 		
 		[[nodiscard]] Rectf bounds() const noexcept {
