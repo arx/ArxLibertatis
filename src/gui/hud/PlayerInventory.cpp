@@ -151,7 +151,7 @@ void PlayerInventoryHud::update() {
 						ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
 						player.Interface |= INTER_INVENTORYALL;
 						ARX_INTERFACE_NoteClose();
-						m_inventoryY = 121 * entities.player()->inventory->bags();
+						m_inventoryY = long(121 * entities.player()->inventory->bags());
 						lOldInterface = INTER_INVENTORYALL;
 					}
 				}
@@ -520,7 +520,7 @@ void PlayerInventoryHud::dropEntity() {
 	Vec2f pos = Vec2f(mouse - anchor) / float(itemPitch);
 	if(player.Interface & INTER_INVENTORYALL) {
 		s16 bagPitch = s16(121.f * m_scale);
-		s16 topAnchor = anchor.y - (entities.player()->inventory->bags() - 1) * bagPitch
+		s16 topAnchor = anchor.y - s16(entities.player()->inventory->bags() - 1) * bagPitch
 		                - g_draggedEntity->m_inventorySize.y * itemPitch / 2;
 		bag = glm::clamp((mouse.y - topAnchor) / bagPitch, 0, int(entities.player()->inventory->bags() - 1));
 		pos = Vec2f(mouse - (anchor - Vec2s(0, (entities.player()->inventory->bags() - 1 - bag) * bagPitch)));
@@ -541,7 +541,7 @@ void PlayerInventoryHud::dragEntity(Entity * io) {
 	s16 itemPitch = s16(32.f * m_scale);
 	if(player.Interface & INTER_INVENTORYALL) {
 		s16 bagPitch = s16(121.f * m_scale);
-		anchor.y -= (entities.player()->inventory->bags() - 1 - pos.bag) * bagPitch;
+		anchor.y -= s16(entities.player()->inventory->bags() - 1 - pos.bag) * bagPitch;
 	}
 	Vec2f offset(anchor + Vec2s(pos.x, pos.y) * itemPitch - DANAEMouse);
 	
@@ -578,7 +578,7 @@ void PlayerInventoryHud::resetPos() {
 	if(player.Interface & INTER_INVENTORY) {
 		m_inventoryY = 110;
 	} else if(player.Interface & INTER_INVENTORYALL) {
-		m_inventoryY = 121 * entities.player()->inventory->bags();
+		m_inventoryY = long(121 * entities.player()->inventory->bags());
 	}
 }
 
