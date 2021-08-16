@@ -162,6 +162,7 @@ find_package_handle_standard_args(SDL2 REQUIRED_VARS SDL2_LIBRARY SDL2_INCLUDE_D
 
 if(SDL2_LIBRARY)
 	
+	set(SDL2_INCLUDE_DIRS ${SDL2_INCLUDE_DIR})
 	set(SDL2_LIBRARIES ${SDL2_LIBRARY})
 	
 	# If we're linking against a static libSDL2 we also need to link against some other
