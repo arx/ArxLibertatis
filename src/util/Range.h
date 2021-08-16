@@ -201,6 +201,11 @@ public:
 	
 };
 
+template <typename Container>
+auto indices(const Container & container) {
+	return IntRange(std::size(container));
+}
+
 template <typename Vector>
 struct GridXYIterator {
 	
