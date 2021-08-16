@@ -44,6 +44,10 @@
 
 #include "platform/Platform.h"
 
+#if !ARX_HAVE_DIRFD || !ARX_HAVE_FSTATAT || !ARX_HAVE_AT_SYMLINK_NOFOLLOW
+#include "io/fs/FilePath.h"
+#endif
+
 namespace fs {
 
 class path;
