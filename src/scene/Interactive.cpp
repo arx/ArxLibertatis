@@ -118,6 +118,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 
+#include "util/Range.h"
+
 
 long HERO_SHOW_1ST = 1;
 
@@ -1875,8 +1877,7 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 			}
 		}
 	} else {
-		size_t nbv = io->obj->vertexWorldPositions.size();
-		for(size_t i = 0; i < nbv; i++) {
+		for(size_t i : util::indices(vlist)) {
 			if(i != io->obj->origin && !fartherThan(pos, vlist[i].v, 30.f)) {
 				return true;
 			}
