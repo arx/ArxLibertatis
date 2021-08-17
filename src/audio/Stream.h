@@ -66,7 +66,7 @@ public:
 	virtual aalError getFormat(PCMFormat & format) = 0;
 	virtual size_t getLength() = 0;
 	
-	virtual aalError read(void * buffer, size_t to_read, size_t & read) = 0;
+	virtual size_t read(void * buffer, size_t bufferSize) = 0;
 	
 };
 

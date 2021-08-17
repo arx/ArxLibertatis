@@ -310,8 +310,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	
 	arx_assert(size <= sizeof(data));
 	
-	size_t read;
-	m_stream->read(data, left, read);
+	size_t read = m_stream->read(data, left);
 	if(read != left) {
 		return AAL_ERROR_SYSTEM;
 	}
@@ -324,7 +323,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 		} else {
 			m_stream->setPosition(0);
 			if(size > left) {
-				m_stream->read(data + left, size - left, read);
+				read = m_stream->read(data + left, size - left);
 				if(read != size - left) {
 					return AAL_ERROR_SYSTEM;
 				}

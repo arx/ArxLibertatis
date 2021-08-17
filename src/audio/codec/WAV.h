@@ -70,7 +70,7 @@ public:
 	aalError getFormat(PCMFormat & format) override;
 	size_t getLength() override;
 	
-	aalError read(void * buffer, size_t bufferSize, size_t & read) override;
+	size_t read(void * buffer, size_t bufferSize) override;
 	
 private:
 	

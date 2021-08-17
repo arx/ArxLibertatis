@@ -287,23 +287,22 @@ size_t StreamWAV::getLength() {
 	return outsize;
 }
 
-aalError StreamWAV::read(void * buffer, size_t bufferSize, size_t & read) {
-	
-	read = 0;
+size_t StreamWAV::read(void * buffer, size_t bufferSize) {
 	
 	if(cursor >= outsize) {
-		return AAL_OK;
+		return 0;
 	}
 	
 	size_t count = cursor + bufferSize > outsize ? outsize - cursor : bufferSize;
 	
-	if(aalError error = codec->read(buffer, count, read)) {
-		return error;
+	size_t read = 0;
+	if(codec->read(buffer, count, read)) {
+		return 0;
 	}
 	
 	cursor += read;
 	
-	return AAL_OK;
+	return read;
 }
 
 } // namespace audio
