@@ -132,10 +132,10 @@ aalError CodecADPCM::setPosition(size_t position) {
 	
 	while(i) {
 		char buffer[256];
-		size_t nRead;
 		size_t to_read = std::min(i, size_t(256));
-		if(aalError error = read(buffer, to_read, nRead)) {
-			return error;
+		size_t nRead = read(buffer, to_read);
+		if(!nRead) {
+			return AAL_ERROR_FORMAT;
 		}
 		i -= nRead;
 	}
@@ -178,10 +178,10 @@ void CodecADPCM::getSample(size_t channel, s8 adpcmSample) {
 	samp1[channel] = s16(pcm_sample);
 }
 
-aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
+size_t CodecADPCM::read(void * buffer, size_t bufferSize) {
 	
-	read = 0;
-	while(read < to_read) {
+	size_t read = 0;
+	while(read < bufferSize) {
 		
 		// If prefetched bytes are remaining, put the next one into the buffer
 		if(cache_i < cache_c) {
@@ -196,8 +196,8 @@ aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
 				m_stream->seek(SeekCur, padding);
 			}
 			
-			if(aalError error = getNextBlock()) {
-				return error;
+			if(getNextBlock() != AAL_OK) {
+				return 0;
 			}
 			
 		} else if(sample_i == 1) {
@@ -224,7 +224,7 @@ aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
 		cache_i = 0;
 	}
 	
-	return AAL_OK;
+	return read;
 }
 
 aalError CodecADPCM::getNextBlock() {

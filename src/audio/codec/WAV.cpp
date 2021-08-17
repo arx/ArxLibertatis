@@ -295,10 +295,7 @@ size_t StreamWAV::read(void * buffer, size_t bufferSize) {
 	
 	size_t count = cursor + bufferSize > outsize ? outsize - cursor : bufferSize;
 	
-	size_t read = 0;
-	if(codec->read(buffer, count, read)) {
-		return 0;
-	}
+	size_t read = codec->read(buffer, count);
 	
 	cursor += read;
 	

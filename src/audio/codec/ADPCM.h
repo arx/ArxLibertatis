@@ -67,7 +67,7 @@ public:
 	void setStream(PakFileHandle * stream) override;
 	aalError setPosition(size_t position) override;
 	
-	aalError read(void * buffer, size_t to_read, size_t & read) override;
+	size_t read(void * buffer, size_t bufferSize) override;
 	
 private:
 	

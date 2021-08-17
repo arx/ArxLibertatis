@@ -68,9 +68,8 @@ aalError CodecRAW::setPosition(size_t position) {
 	return AAL_OK;
 }
 
-aalError CodecRAW::read(void * buffer, size_t bufferSize, size_t & read) {
-	read = m_stream->read(buffer, bufferSize);
-	return AAL_OK;
+size_t CodecRAW::read(void * buffer, size_t bufferSize) {
+	return m_stream->read(buffer, bufferSize);
 }
 
 } // namespace audio
