@@ -306,11 +306,9 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	
 	TraceAL("filling buffer " << m_buffers[i] << " with " << size << " bytes");
 	
-	char data[StreamLimitBytes * NBUFFERS];
+	std::unique_ptr<char[]> data = std::make_unique<char[]>(size);
 	
-	arx_assert(size <= sizeof(data));
-	
-	size_t read = m_stream->read(data, left);
+	size_t read = m_stream->read(data.get(), left);
 	if(read != left) {
 		return AAL_ERROR_SYSTEM;
 	}
@@ -323,7 +321,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 		} else {
 			m_stream->setPosition(0);
 			if(size > left) {
-				read = m_stream->read(data + left, size - left);
+				read = m_stream->read(data.get() + left, size - left);
 				if(read != size - left) {
 					return AAL_ERROR_SYSTEM;
 				}
@@ -348,10 +346,10 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	
 	size_t alsize = size;
 	if(convertStereoToMono()) {
-		alsize = (f.quality == 8) ? stereoToMono<s8>(data, size) : stereoToMono<s16>(data, size);
+		alsize = (f.quality == 8) ? stereoToMono<s8>(data.get(), size) : stereoToMono<s16>(data.get(), size);
 	}
 	
-	alBufferData(m_buffers[i], alformat, data, alsize, f.frequency);
+	alBufferData(m_buffers[i], alformat, data.get(), alsize, f.frequency);
 	AL_CHECK_ERROR("setting buffer data")
 	
 	m_bufferSizes[i] = size;
