@@ -144,7 +144,7 @@ void ARX_QuickLoad() {
 }
 
 bool MENU_NoActiveWindow() {
-	return (!g_mainMenu->m_window || g_mainMenu->m_window->currentPageId() == Page_None);
+	return (!g_mainMenu || !g_mainMenu->m_window || g_mainMenu->m_window->currentPageId() == Page_None);
 }
 
 void MainMenuDoFrame() {
