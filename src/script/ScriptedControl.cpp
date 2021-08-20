@@ -74,7 +74,7 @@ public:
 		
 		DebugScript("");
 		
-		ARX_INTERACTIVE_ActivatePhysics(context.getEntity()->index());
+		ARX_INTERACTIVE_ActivatePhysics(*context.getEntity());
 		
 		return Success;
 	}

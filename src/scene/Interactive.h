@@ -184,7 +184,7 @@ bool HaveCommonGroup(Entity * io, Entity * ioo);
 void UpdateIOInvisibility(Entity * io);
 void CheckSetAnimOutOfTreatZone(Entity * io, AnimLayer & layer);
 void ARX_HALO_SetToNative(Entity * io);
-void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t);
+void ARX_INTERACTIVE_ActivatePhysics(Entity & entity);
 void ResetVVPos(Entity * io);
 
 void UpdateGoldObject(Entity * io);

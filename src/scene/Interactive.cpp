@@ -2222,31 +2222,28 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 	return std::max(ac, 0.f);
 }
 
-void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t) {
+void ARX_INTERACTIVE_ActivatePhysics(Entity & entity) {
 	
-	Entity * io = entities.get(t);
-	if(io) {
-		
-		if(io == g_draggedEntity || io->show != SHOW_FLAG_IN_SCENE) {
-			return;
-		}
-		
-		arx_assert(!locateInInventories(io));
-		
-		float yy;
-		EERIEPOLY * ep = CheckInPoly(io->pos, &yy);
-
-		if(ep && (yy - io->pos.y < 10.f))
-			return;
-
-		io->obj->pbox->active = 1;
-		io->obj->pbox->stopcount = 0;
-		Vec3f fallvector = Vec3f(0.0f, 0.000001f, 0.f);
-		io->show = SHOW_FLAG_IN_SCENE;
-		io->soundtime = 0;
-		io->soundcount = 0;
-		EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, fallvector);
+	if(&entity == g_draggedEntity || entity.show != SHOW_FLAG_IN_SCENE) {
+		return;
 	}
+	
+	arx_assert(!locateInInventories(&entity));
+	
+	float yy;
+	EERIEPOLY * ep = CheckInPoly(entity.pos, &yy);
+	if(ep && (yy - entity.pos.y < 10.f)) {
+		return;
+	}
+	
+	entity.obj->pbox->active = 1;
+	entity.obj->pbox->stopcount = 0;
+	Vec3f fallvector = Vec3f(0.0f, 0.000001f, 0.f);
+	entity.show = SHOW_FLAG_IN_SCENE;
+	entity.soundtime = 0;
+	entity.soundcount = 0;
+	EERIE_PHYSICS_BOX_Launch(entity.obj, entity.pos, entity.angle, fallvector);
+	
 }
 
 std::string_view GetMaterialString(const res::path & texture) {
