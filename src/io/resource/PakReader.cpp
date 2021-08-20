@@ -396,9 +396,8 @@ class PlainFileHandle : public PakFileHandle {
 public:
 	
 	explicit  PlainFileHandle(const fs::path & path)
-		: ifs(path, fs::fstream::in | fs::fstream::binary) {
-		arx_assert(ifs.is_open());
-	}
+		: ifs(path, fs::fstream::in | fs::fstream::binary)
+	{ }
 	
 	size_t read(void * buf, size_t size) override;
 	
