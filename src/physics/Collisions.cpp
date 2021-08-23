@@ -561,10 +561,10 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 					
 					if(ioo == entities.player()) {
 						sp.radius = 22.f;
-					} else if(ioo->ioflags & IO_NPC) {
-						sp.radius = 26.f;
-					} else {
+					} else if(ioo && !(ioo->ioflags & IO_NPC)) {
 						sp.radius = 22.f;
+					} else {
+						sp.radius = 26.f;
 					}
 					
 					if(SphereInCylinder(cyl, sp)) {
