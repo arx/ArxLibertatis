@@ -908,8 +908,8 @@ void ARX_PHYSICS_Apply() {
 				if(io->soundcount > 12) {
 					io->soundtime = 0;
 					io->soundcount = 0;
-					for(size_t k = 0; k < pbox.vert.size(); k++) {
-						pbox.vert[k].velocity = Vec3f(0.f);
+					for(PhysicsParticle & vert : pbox.vert) {
+						vert.velocity = Vec3f(0.f);
 					}
 					pbox.active = 2;
 					pbox.stopcount = 0;
