@@ -62,13 +62,10 @@ void SpeedSpell::Launch() {
 		m_hasDuration = true;
 	}
 	
-	std::vector<VertexGroup> & grouplist = entities[m_target]->obj->grouplist;
-	
 	bool skip = true;
-	std::vector<VertexGroup>::const_iterator itr;
-	for(itr = grouplist.begin(); itr != grouplist.end(); ++itr) {
-		skip = !skip;
+	for(const VertexGroup & group : entities[m_target]->obj->grouplist) {
 		
+		skip = !skip;
 		if(skip) {
 			continue;
 		}
@@ -78,7 +75,7 @@ void SpeedSpell::Launch() {
 		GameDuration taille = std::chrono::milliseconds(Random::get(130, 260));
 		
 		SpeedTrail trail;
-		trail.vertexIndex = itr->origin;
+		trail.vertexIndex = group.origin;
 		trail.trail = std::make_unique<Trail>(taille, Color3f::gray(col), Color3f::black, size, 0.f);
 		m_trails.emplace_back(std::move(trail));
 		
