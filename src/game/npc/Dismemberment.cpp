@@ -201,14 +201,14 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 				break;
 			}
 		}
-
-		for(size_t k = 0; k < nouvo->facelist.size(); k++) {
-			nouvo->facelist[k].facetype &= ~POLY_HIDE;
-
-			if(nouvo->facelist[k].texid == goreTexture) {
-				nouvo->facelist[k].facetype |= POLY_DOUBLESIDED;
+		
+		for(EERIE_FACE & face : nouvo->facelist) {
+			face.facetype &= ~POLY_HIDE;
+			if(face.texid == goreTexture) {
+				face.facetype |= POLY_DOUBLESIDED;
 			}
 		}
+		
 	}
 	
 	nouvo->texturecontainer = from->texturecontainer;
