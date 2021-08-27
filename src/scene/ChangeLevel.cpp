@@ -1149,8 +1149,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as->weapontype = io->_npcdata->weapontype;
 			as->xpvalue = io->_npcdata->xpvalue;
 			
-			assert(SAVED_MAX_STACKED_BEHAVIOR == MAX_STACKED_BEHAVIOR);
-			std::copy(io->_npcdata->stacked, io->_npcdata->stacked + SAVED_MAX_STACKED_BEHAVIOR, as->stacked);
+			assert(SAVED_MAX_STACKED_BEHAVIOR == io->_npcdata->stacked.size());
+			std::copy(io->_npcdata->stacked.begin(), io->_npcdata->stacked.end(), as->stacked);
 			
 			for (size_t i = 0; i < SAVED_MAX_STACKED_BEHAVIOR; i++) {
 				EntityHandle target = (io->_npcdata->stacked[i].exist) ? io->_npcdata->stacked[i].target : EntityHandle();
@@ -2016,8 +2016,8 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 				io->_npcdata->weapontype = ItemType::load(as->weapontype); // TODO save/load flags
 				io->_npcdata->xpvalue = as->xpvalue;
 				
-				assert(SAVED_MAX_STACKED_BEHAVIOR == MAX_STACKED_BEHAVIOR);
-				std::copy(as->stacked, as->stacked + SAVED_MAX_STACKED_BEHAVIOR, io->_npcdata->stacked);
+				assert(SAVED_MAX_STACKED_BEHAVIOR == io->_npcdata->stacked.size());
+				std::copy(as->stacked, as->stacked + SAVED_MAX_STACKED_BEHAVIOR, io->_npcdata->stacked.begin());
 				// TODO properly load stacked animations
 				
 				for(size_t iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++) {

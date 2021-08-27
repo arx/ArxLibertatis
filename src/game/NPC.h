@@ -55,8 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "util/Flags.h"
 
-static const size_t MAX_STACKED_BEHAVIOR = 5;
-static const size_t MAX_EXTRA_ROTATE = 6;
+static constexpr size_t MAX_STACKED_BEHAVIOR = 5;
+static constexpr size_t MAX_EXTRA_ROTATE = 6;
 
 enum MoveMode {
 	WALKMODE = 0,
@@ -202,7 +202,7 @@ struct IO_NPCDATA {
 	float lastmouth;
 	long ltemp;
 	
-	IO_BEHAVIOR_DATA stacked[MAX_STACKED_BEHAVIOR];
+	std::array<IO_BEHAVIOR_DATA, MAX_STACKED_BEHAVIOR> stacked;
 	float poisonned;
 	unsigned char resist_poison;
 	unsigned char resist_magic;
