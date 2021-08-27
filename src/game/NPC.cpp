@@ -332,8 +332,8 @@ void resetNpcBehavior(Entity & npc) {
 	
 	npc._npcdata->behavior = BEHAVIOUR_NONE;
 	
-	for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
-		npc._npcdata->stacked[i].exist = 0;
+	for(IO_BEHAVIOR_DATA & behavior : npc._npcdata->stacked) {
+		behavior.exist = 0;
 	}
 	
 }
@@ -348,26 +348,27 @@ void resetAllNpcBehaviors() {
 //! Stacks an NPC behaviour
 void ARX_NPC_Behaviour_Stack(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC))
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
-
-	for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
-		IO_BEHAVIOR_DATA * bd = &io->_npcdata->stacked[i];
-
-		if(bd->exist == 0) {
-			bd->behavior = io->_npcdata->behavior;
-			bd->behavior_param = io->_npcdata->behavior_param;
-
-			if (io->_npcdata->pathfind.listnb > 0)
-				bd->target = io->_npcdata->pathfind.truetarget;
-			else
-				bd->target = io->targetinfo;
-
-			bd->movemode = io->_npcdata->movemode;
-			bd->exist = 1;
+	}
+	
+	for(IO_BEHAVIOR_DATA & behavior : io->_npcdata->stacked) {
+		
+		if(behavior.exist == 0) {
+			behavior.behavior = io->_npcdata->behavior;
+			behavior.behavior_param = io->_npcdata->behavior_param;
+			if (io->_npcdata->pathfind.listnb > 0) {
+				behavior.target = io->_npcdata->pathfind.truetarget;
+			} else {
+				behavior.target = io->targetinfo;
+			}
+			behavior.movemode = io->_npcdata->movemode;
+			behavior.exist = 1;
 			return;
 		}
+		
 	}
+	
 }
 
 //! Unstacks One stacked behaviour from an NPC
