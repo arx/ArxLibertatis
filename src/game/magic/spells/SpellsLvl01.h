@@ -20,6 +20,8 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL01_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL01_H
 
+#include <memory>
+
 #include "game/magic/Spell.h"
 
 #include "graphics/effects/MagicMissile.h"
@@ -41,7 +43,6 @@ class MagicMissileSpell final : public SpellBase {
 public:
 	
 	MagicMissileSpell();
-	~MagicMissileSpell() override;
 	
 	void Launch() override;
 	void End() override;
@@ -52,7 +53,7 @@ private:
 	bool m_mrCheat;
 	audio::SourcedSample snd_loop;
 	std::vector<LightHandle> m_lights;
-	std::vector<CMagicMissile *> m_missiles;
+	std::vector<std::unique_ptr<CMagicMissile>> m_missiles;
 	
 };
 

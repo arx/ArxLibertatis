@@ -32,11 +32,16 @@
 #include "game/NPC.h"
 #include "game/effect/ParticleSystems.h"
 #include "game/magic/spells/SpellsLvl03.h"
+
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
+
 #include "physics/Collisions.h"
+
 #include "scene/GameSound.h"
 #include "scene/Object.h"
+
+#include "util/Range.h"
 
 bool MagicSightSpell::CanLaunch() {
 	
@@ -121,14 +126,6 @@ MagicMissileSpell::MagicMissileSpell()
 	: m_mrCheat(false)
 { }
 
-MagicMissileSpell::~MagicMissileSpell() {
-	
-	for(size_t i = 0; i < m_missiles.size(); i++) {
-		delete m_missiles[i];
-	}
-	m_missiles.clear();
-}
-
 void MagicMissileSpell::Launch() {
 	
 	m_duration = 6s;
@@ -209,14 +206,13 @@ void MagicMissileSpell::Launch() {
 	
 	for(size_t i = 0; i < number; i++) {
 		
-		CMagicMissile * missile = nullptr;
 		if(!m_mrCheat) {
-			missile = new CMagicMissile();
+			m_missiles.emplace_back(std::make_unique<CMagicMissile>());
 		} else {
-			missile = new MrMagicMissileFx();
+			m_missiles.emplace_back(std::make_unique<MrMagicMissileFx>());
 		}
 		
-		m_missiles.push_back(missile);
+		CMagicMissile & missile = *m_missiles.back();
 		
 		Anglef angles(pitch, yaw, 0.f);
 		
@@ -225,14 +221,14 @@ void MagicMissileSpell::Launch() {
 			angles.setYaw(angles.getYaw() + Random::getf(-6.0f, 6.0f));
 		}
 		
-		missile->Create(startPos, angles);
+		missile.Create(startPos, angles);
 		
 		GameDuration lTime = m_duration + std::chrono::milliseconds(Random::get(-1000, 1000));
 		
 		lTime = std::max(GameDuration(1s), lTime);
 		lMax = std::max(lMax, lTime);
 		
-		missile->SetDuration(lTime);
+		missile.SetDuration(lTime);
 	}
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_CREATE, &startPos);
@@ -248,9 +244,6 @@ void MagicMissileSpell::End() {
 		endLightDelayed(m_lights[i], 500ms);
 	}
 	
-	for(size_t i = 0; i < m_missiles.size(); i++) {
-		delete m_missiles[i];
-	}
 	m_missiles.clear();
 	
 	ARX_SOUND_Stop(snd_loop);
@@ -259,29 +252,28 @@ void MagicMissileSpell::End() {
 
 void MagicMissileSpell::Update() {
 	
-	for(size_t i = 0; i < m_missiles.size(); i++) {
-		CMagicMissile * missile = m_missiles[i];
+	for(CMagicMissile & missile : util::dereference(m_missiles)) {
 		
-		if(missile->bExplo) {
+		if(missile.bExplo) {
 			continue;
 		}
 			
-		Sphere sphere = Sphere(missile->eCurPos, 10.f);
+		Sphere sphere = Sphere(missile.eCurPos, 10.f);
 		
 		Entity * caster = entities.get(m_caster);
 		if(CheckAnythingInSphere(sphere, caster, CAS_NO_SAME_GROUP)) {
 			
-			LaunchMagicMissileExplosion(missile->eCurPos, m_mrCheat);
+			LaunchMagicMissileExplosion(missile.eCurPos, m_mrCheat);
 			if(caster) {
-				spawnAudibleSound(missile->eCurPos, *caster);
+				spawnAudibleSound(missile.eCurPos, *caster);
 			}
 			
-			missile->SetTTL(1s);
-			missile->bExplo = true;
-			missile->bMove  = false;
+			missile.SetTTL(1s);
+			missile.bExplo = true;
+			missile.bMove  = false;
 			
 			DamageParameters damage;
-			damage.pos = missile->eCurPos;
+			damage.pos = missile.eCurPos;
 			damage.radius = 80.f;
 			damage.damages = (4 + m_level * 0.2f) * 0.8f;
 			damage.area = DAMAGE_FULL;
@@ -292,15 +284,15 @@ void MagicMissileSpell::Update() {
 			DamageCreate(damage);
 			
 			Color3f rgb(.3f, .3f, .45f);
-			ARX_PARTICLES_Add_Smoke(missile->eCurPos, 0, 6, rgb);
+			ARX_PARTICLES_Add_Smoke(missile.eCurPos, 0, 6, rgb);
 		}
 	}
 	
 	Vec3f averageMissilePos = Vec3f(0.f);
 	
-	for(size_t i = 0 ; i < m_missiles.size() ; i++) {
-		m_missiles[i]->Update(g_gameTime.lastFrameDuration());
-		averageMissilePos += m_missiles[i]->eCurPos;
+	for(CMagicMissile & missile : util::dereference(m_missiles)) {
+		missile.Update(g_gameTime.lastFrameDuration());
+		averageMissilePos += missile.eCurPos;
 	}
 	
 	averageMissilePos /= float(m_missiles.size());
@@ -319,9 +311,8 @@ void MagicMissileSpell::Update() {
 	
 	{
 		long nbmissiles = 0;
-		for(size_t i = 0; i < m_missiles.size(); i++) {
-			CMagicMissile * pMM = m_missiles[i];
-			if(pMM->bMove) {
+		for(CMagicMissile & missile : util::dereference(m_missiles)) {
+			if(missile.bMove) {
 				nbmissiles++;
 			}
 		}
@@ -330,9 +321,10 @@ void MagicMissileSpell::Update() {
 		}
 	}
 	
-	for(size_t i = 0; i < m_missiles.size(); i++) {
-		m_missiles[i]->Render();
+	for(CMagicMissile & missile : util::dereference(m_missiles)) {
+		missile.Render();
 	}
+	
 }
 
 
