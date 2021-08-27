@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_NPC_H
 #define ARX_GAME_NPC_H
 
+#include <array>
 #include <string_view>
 
 #include "game/Entity.h"
@@ -131,8 +132,8 @@ struct IO_PATHFIND {
 };
 
 struct EERIE_EXTRA_ROTATE {
-	ObjVertGroup group_number[MAX_EXTRA_ROTATE];
-	Anglef group_rotate[MAX_EXTRA_ROTATE];
+	std::array<ObjVertGroup, MAX_EXTRA_ROTATE> group_number;
+	std::array<Anglef, MAX_EXTRA_ROTATE> group_rotate;
 };
 
 struct EERIE_EXTRA_SCALE {
