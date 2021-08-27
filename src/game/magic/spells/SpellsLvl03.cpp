@@ -39,14 +39,6 @@
 #include "scene/Object.h"
 
 
-SpeedSpell::~SpeedSpell() {
-	
-	for(size_t i = 0; i < m_trails.size(); i++) {
-		delete m_trails[i].trail;
-	}
-	m_trails.clear();
-}
-
 void SpeedSpell::Launch() {
 	
 	m_hasDuration = true;
@@ -87,9 +79,9 @@ void SpeedSpell::Launch() {
 		
 		SpeedTrail trail;
 		trail.vertexIndex = itr->origin;
-		trail.trail = new Trail(taille, Color3f::gray(col), Color3f::black, size, 0.f);
+		trail.trail = std::make_unique<Trail>(taille, Color3f::gray(col), Color3f::black, size, 0.f);
+		m_trails.emplace_back(std::move(trail));
 		
-		m_trails.push_back(trail);
 	}
 	
 	m_targets.push_back(m_target);
@@ -107,10 +99,8 @@ void SpeedSpell::End() {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_END, &target->pos);
 	}
 	
-	for(size_t i = 0; i < m_trails.size(); i++) {
-		delete m_trails[i].trail;
-	}
 	m_trails.clear();
+	
 }
 
 void SpeedSpell::Update() {
@@ -128,6 +118,7 @@ void SpeedSpell::Update() {
 	for(size_t i = 0; i < m_trails.size(); i++) {
 		m_trails[i].trail->Render();
 	}
+	
 }
 
 Vec3f SpeedSpell::getPosition() const {

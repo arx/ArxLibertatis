@@ -20,6 +20,8 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
 
+#include <memory>
+
 #include "game/magic/Spell.h"
 
 #include "graphics/effects/Trail.h"
@@ -31,8 +33,6 @@ class SpeedSpell final : public SpellBase {
 	
 public:
 	
-	~SpeedSpell() override;
-	
 	void Launch() override;
 	void End() override;
 	void Update() override;
@@ -43,7 +43,7 @@ private:
 	
 	struct SpeedTrail {
 		short vertexIndex;
-		Trail * trail;
+		std::unique_ptr<Trail> trail;
 	};
 	
 	std::vector<SpeedTrail> m_trails;
