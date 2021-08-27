@@ -147,7 +147,7 @@ auto transform(Base && base, Transform && transform) -> RangeAdaptor<Base, Trans
 
 template <typename Base>
 auto dereference(Base && base) {
-	return transform(std::forward<Base>(base), [](auto * pointer) -> auto & {
+	return transform(std::forward<Base>(base), [](auto & pointer) -> auto & {
 		arx_assert(pointer);
 		return *pointer;
 	});
