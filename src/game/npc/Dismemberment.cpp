@@ -118,37 +118,33 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		
 		nouvo->vertexWorldPositions[k] = nouvo->vertexlist[k];
 	}
-
+	
 	size_t count = cutSelection.selected.size();
-
-	for(size_t k = 0; k < from->facelist.size(); k++) {
-		if(from->facelist[k].texid == gore) {
-			if(   IsNearSelection(from, from->facelist[k].vid[0], num)
-			   || IsNearSelection(from, from->facelist[k].vid[1], num)
-			   || IsNearSelection(from, from->facelist[k].vid[2], num)
-			) {
+	for(const EERIE_FACE & face : from->facelist) {
+		if(face.texid == gore) {
+			if(IsNearSelection(from, face.vid[0], num)
+			   || IsNearSelection(from, face.vid[1], num)
+			   || IsNearSelection(from, face.vid[2], num)) {
+				
 				for(long j = 0; j < 3; j++) {
-					equival[from->facelist[k].vid[j]] = count;
-
 					if(count < nouvo->vertexlist.size()) {
-						nouvo->vertexlist[count] = from->vertexlist[from->facelist[k].vid[j]];
-						nouvo->vertexlist[count].v = from->vertexWorldPositions[from->facelist[k].vid[j]].v;
+						nouvo->vertexlist[count] = from->vertexlist[face.vid[j]];
+						nouvo->vertexlist[count].v = from->vertexWorldPositions[face.vid[j]].v;
 						nouvo->vertexlist[count].v -= ioo->pos;
-
 						nouvo->vertexWorldPositions[count] = nouvo->vertexlist[count];
+						equival[face.vid[j]] = count;
 					} else {
-						equival[from->facelist[k].vid[j]] = -1;
+						equival[face.vid[j]] = -1;
 					}
-
 					count++;
 				}
+				
 			}
 		}
 	}
-
+	
 	float min = nouvo->vertexlist[0].v.y;
 	long nummm = 0;
-
 	for(size_t k = 1; k < nouvo->vertexlist.size(); k++) {
 		if(nouvo->vertexlist[k].v.y > min) {
 			min = nouvo->vertexlist[k].v.y;
