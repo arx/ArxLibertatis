@@ -20,6 +20,7 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H
 
+#include <array>
 #include <memory>
 
 #include "game/magic/Spell.h"
@@ -62,7 +63,7 @@ private:
 	Vec3f eSrc;
 	Vec3f eTarget;
 	TextureContainer * tex_mm;
-	Vec3f pathways[40];
+	std::array<Vec3f, 10> pathways;
 	float fTrail;
 	
 };

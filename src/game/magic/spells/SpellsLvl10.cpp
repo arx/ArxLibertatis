@@ -229,7 +229,7 @@ void ControlTargetSpell::Launch() {
 	
 	pathways[0] = eSrc + Vec3f(0.f, 100.f, 0.f);
 	pathways[9] = eTarget;
-	Split(pathways, 0, 9, 150);
+	Split(pathways.data(), 0, 9, 150);
 	
 	for(int i = 0; i < 9; i++) {
 		if(pathways[i].y >= eSrc.y + 150) {
