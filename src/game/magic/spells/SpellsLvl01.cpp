@@ -417,15 +417,15 @@ void IgnitSpell::Launch() {
 
 void IgnitSpell::End() {
 	
-	std::vector<T_LINKLIGHTTOFX>::iterator itr;
-	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		EERIE_LIGHT * light = &g_staticLights[itr->m_targetLight];
+	for(T_LINKLIGHTTOFX & entry : m_lights) {
+		EERIE_LIGHT * light = &g_staticLights[entry.m_targetLight];
 		light->m_ignitionStatus = true;
 		ARX_SOUND_PlaySFX(g_snd.SPELL_IGNITE, &light->pos);
-		lightHandleDestroy(itr->m_effectLight);
+		lightHandleDestroy(entry.m_effectLight);
 	}
 	
 	m_lights.clear();
+	
 }
 
 void IgnitSpell::Update() {
@@ -436,10 +436,9 @@ void IgnitSpell::Update() {
 		a = 1.f;
 	}
 	
-	std::vector<T_LINKLIGHTTOFX>::iterator itr;
-	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		EERIE_LIGHT * targetLight = &g_staticLights[itr->m_targetLight];
-		EERIE_LIGHT * light = lightHandleGet(itr->m_effectLight);
+	for(const T_LINKLIGHTTOFX & entry : m_lights) {
+		EERIE_LIGHT * targetLight = &g_staticLights[entry.m_targetLight];
+		EERIE_LIGHT * light = lightHandleGet(entry.m_effectLight);
 		if(light) {
 			light->intensity = Random::getf(0.7f, 2.7f);
 			light->pos = glm::mix(m_srcPos, targetLight->pos, a);
