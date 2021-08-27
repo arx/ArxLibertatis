@@ -23,6 +23,7 @@
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
+
 #include "game/Damage.h"
 #include "game/Entity.h"
 #include "game/EntityManager.h"
@@ -30,14 +31,21 @@
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/effect/ParticleSystems.h"
+
 #include "graphics/effects/PolyBoom.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/spells/Spells05.h"
+
 #include "math/RandomVector.h"
+
 #include "physics/Collisions.h"
+
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
+
+#include "util/Range.h"
+
 
 RuneOfGuardingSpell::RuneOfGuardingSpell()
 	: m_pos(0.f)
@@ -467,14 +475,10 @@ void RepelUndeadSpell::Update() {
 
 PoisonProjectileSpell::~PoisonProjectileSpell() {
 	
-	for(size_t i = 0; i < m_projectiles.size(); i++) {
-		CPoisonProjectile * projectile = m_projectiles[i];
-		
-		endLightDelayed(projectile->lLightId, 2s);
-		
-		delete projectile;
+	for(CPoisonProjectile & projectile : util::dereference(m_projectiles)) {
+		endLightDelayed(projectile.lLightId, 2s);
 	}
-	m_projectiles.clear();
+	
 }
 
 void PoisonProjectileSpell::Launch() {
@@ -515,11 +519,9 @@ void PoisonProjectileSpell::Launch() {
 	srcPos += angleToVectorXZ(afBeta) * 90.f;
 	
 	size_t uiNumber = glm::clamp(static_cast<unsigned int>(m_level), 1u, 5u);
-	
+	m_projectiles.reserve(uiNumber);
 	for(size_t i = 0; i < uiNumber; i++) {
-		CPoisonProjectile * projectile = new CPoisonProjectile();
-		
-		m_projectiles.push_back(projectile);
+		m_projectiles.emplace_back(std::make_unique<CPoisonProjectile>());
 	}
 	
 	m_duration = 8s;
@@ -527,24 +529,24 @@ void PoisonProjectileSpell::Launch() {
 	
 	GameDuration lMax = 0;
 	
-	for(size_t i = 0; i < m_projectiles.size(); i++) {
-		CPoisonProjectile * projectile = m_projectiles[i];
+	for(CPoisonProjectile & projectile : util::dereference(m_projectiles)) {
 		
-		projectile->Create(srcPos, afBeta + Random::getf(-10.f, 10.f));
+		projectile.Create(srcPos, afBeta + Random::getf(-10.f, 10.f));
 		GameDuration lTime = m_duration + std::chrono::milliseconds(Random::getu(0, 5000));
-		projectile->SetDuration(lTime);
+		projectile.SetDuration(lTime);
 		lMax = std::max(lMax, lTime);
 		
-		EERIE_LIGHT * light = dynLightCreate(projectile->lLightId);
+		EERIE_LIGHT * light = dynLightCreate(projectile.lLightId);
 		if(light) {
 			light->intensity = 2.3f;
 			light->fallend = 250.f;
 			light->fallstart = 150.f;
 			light->rgb = Color3f::green;
-			light->pos = projectile->eSrc;
+			light->pos = projectile.eSrc;
 			light->creationTime = g_gameTime.now();
 			light->duration = 200ms;
 		}
+		
 	}
 	
 	m_duration = lMax + 1s;
@@ -552,45 +554,38 @@ void PoisonProjectileSpell::Launch() {
 
 void PoisonProjectileSpell::End() {
 	
-	for(size_t i = 0; i < m_projectiles.size(); i++) {
-		CPoisonProjectile * projectile = m_projectiles[i];
-		
-		endLightDelayed(projectile->lLightId, 2s);
-		
-		delete projectile;
+	for(CPoisonProjectile & projectile : util::dereference(m_projectiles)) {
+		endLightDelayed(projectile.lLightId, 2s);
 	}
-	m_projectiles.clear();
+	
 }
 
 void PoisonProjectileSpell::Update() {
 	
-	for(size_t i = 0; i < m_projectiles.size(); i++) {
-		CPoisonProjectile * projectile = m_projectiles[i];
-		
-		projectile->Update(g_gameTime.lastFrameDuration());
+	for(CPoisonProjectile & projectile : util::dereference(m_projectiles)) {
+		projectile.Update(g_gameTime.lastFrameDuration());
 	}
 	
-	for(size_t i = 0; i < m_projectiles.size(); i++) {
-		CPoisonProjectile * projectile = m_projectiles[i];
+	for(CPoisonProjectile & projectile : util::dereference(m_projectiles)) {
 		
-		projectile->Render();
+		projectile.Render();
 		
-		EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
+		EERIE_LIGHT * light = lightHandleGet(projectile.lLightId);
 		if(light) {
-			light->intensity = 2.3f * projectile->lightIntensityFactor;
+			light->intensity = 2.3f * projectile.lightIntensityFactor;
 			light->fallend = 250.f;
 			light->fallstart = 150.f;
 			light->rgb = Color3f::green;
-			light->pos = projectile->eCurPos;
+			light->pos = projectile.eCurPos;
 			light->creationTime = g_gameTime.now();
 			light->duration = 200ms;
 		}
-
-		AddPoisonFog(projectile->eCurPos, m_level + 7);
-
+		
+		AddPoisonFog(projectile.eCurPos, m_level + 7);
+		
 		if(m_elapsed > 1600ms) {
 			DamageParameters damage;
-			damage.pos = projectile->eCurPos;
+			damage.pos = projectile.eCurPos;
 			damage.radius = 120.f;
 			damage.damages = (4.f + m_level * 0.6f) * 0.001f * g_framedelay;
 			damage.area = DAMAGE_FULL;

@@ -20,6 +20,8 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL05_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL05_H
 
+#include <memory>
+
 #include "game/magic/Spell.h"
 
 #include "graphics/spells/Spells05.h"
@@ -118,7 +120,7 @@ public:
 private:
 	
 	LightHandle lLightId;
-	std::vector<CPoisonProjectile *> m_projectiles;
+	std::vector<std::unique_ptr<CPoisonProjectile>> m_projectiles;
 	
 	void AddPoisonFog(const Vec3f & pos, float power);
 	
