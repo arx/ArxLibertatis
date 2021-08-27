@@ -1792,6 +1792,7 @@ static void ManageNPCMovement_End(Entity * io) {
 	
 	// look around if finished fleeing or being looking around !
 	if((io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND) && fartherThan(io->pos, io->target, 150.f)) {
+		
 		if(!io->_npcdata->ex_rotate) {
 			ARX_NPC_CreateExRotateData(io);
 		} else { // already created
@@ -1804,45 +1805,47 @@ static void ManageNPCMovement_End(Entity * io) {
 				
 				io->_npcdata->look_around_inc = 0.f;
 				
-				for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
-					Anglef & rotation = extraRotation->group_rotate[n];
-					
+				for(Anglef & rotation : extraRotation->group_rotate) {
 					rotation.setYaw(rotation.getYaw() - rotation.getYaw() * (1.0f / 3));
-
-					if(glm::abs(rotation.getYaw()) < 0.01f)
+					if(glm::abs(rotation.getYaw()) < 0.01f) {
 						rotation.setYaw(0.f);
+					}
 				}
+				
 			} else {
+				
 				if(io->_npcdata->look_around_inc == 0.f) {
 					io->_npcdata->look_around_inc = Random::getf(-0.04f, 0.04f);
 				}
-
-				for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
+				
+				for(size_t n = 0; n < extraRotation->group_rotate.size(); n++) {
 					Anglef & rotation = extraRotation->group_rotate[n];
 					float t = 1.5f - float(n) * 0.2f;
 					rotation.setYaw(rotation.getYaw() + io->_npcdata->look_around_inc * g_framedelay * t);
 				}
-
-				if(extraRotation->group_rotate[0].getYaw() > 30)
-					io->_npcdata->look_around_inc = -io->_npcdata->look_around_inc;
-
-				if(extraRotation->group_rotate[0].getYaw() < -30)
-					io->_npcdata->look_around_inc = -io->_npcdata->look_around_inc;
-			}
-		}
-	} else {
-		if(!(io->_npcdata->behavior & BEHAVIOUR_STARE_AT) && io->_npcdata->ex_rotate) {
-			io->_npcdata->look_around_inc = 0.f;
-
-			for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
-				Anglef & rotation = io->_npcdata->ex_rotate->group_rotate[n];
 				
-				rotation.setYaw(rotation.getYaw() - rotation.getYaw() * (1.0f / 3));
-
-				if(glm::abs(rotation.getYaw()) < 0.01f)
-					rotation.setYaw(0.f);
+				if(extraRotation->group_rotate[0].getYaw() > 30) {
+					io->_npcdata->look_around_inc = -io->_npcdata->look_around_inc;
+				}
+				
+				if(extraRotation->group_rotate[0].getYaw() < -30) {
+					io->_npcdata->look_around_inc = -io->_npcdata->look_around_inc;
+				}
+				
+			}
+			
+		}
+		
+	} else if(!(io->_npcdata->behavior & BEHAVIOUR_STARE_AT) && io->_npcdata->ex_rotate) {
+		
+		io->_npcdata->look_around_inc = 0.f;
+		for(Anglef & rotation : io->_npcdata->ex_rotate->group_rotate) {
+			rotation.setYaw(rotation.getYaw() - rotation.getYaw() * (1.0f / 3));
+			if(glm::abs(rotation.getYaw()) < 0.01f) {
+				rotation.setYaw(0.f);
 			}
 		}
+		
 	}
 
 	layer0.flags &= ~EA_STATICANIM;
