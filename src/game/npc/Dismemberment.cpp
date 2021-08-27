@@ -166,33 +166,26 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	nouvo->pbox = nullptr;
 	
 	size_t nfaces = 0;
-	for(size_t k = 0; k < from->facelist.size(); k++) {
-		if(   equival[from->facelist[k].vid[0]] != -1
-		   && equival[from->facelist[k].vid[1]] != -1
-		   && equival[from->facelist[k].vid[2]] != -1
-		) {
+	for(const EERIE_FACE & face : from->facelist) {
+		if(equival[face.vid[0]] != -1 && equival[face.vid[1]] != -1 && equival[face.vid[2]] != -1) {
 			nfaces++;
 		}
 	}
-
+	
 	if(nfaces) {
+		
 		nouvo->facelist.reserve(nfaces);
-
-		for(size_t k = 0; k < from->facelist.size(); k++) {
-			if(   equival[from->facelist[k].vid[0]] != -1
-			   && equival[from->facelist[k].vid[1]] != -1
-			   && equival[from->facelist[k].vid[2]] != -1
-			) {
-				EERIE_FACE newface = from->facelist[k];
-				newface.vid[0] = static_cast<unsigned short>(equival[from->facelist[k].vid[0]]);
-				newface.vid[1] = static_cast<unsigned short>(equival[from->facelist[k].vid[1]]);
-				newface.vid[2] = static_cast<unsigned short>(equival[from->facelist[k].vid[2]]);
+		for(const EERIE_FACE & face : from->facelist) {
+			if(equival[face.vid[0]] != -1 && equival[face.vid[1]] != -1 && equival[face.vid[2]] != -1) {
+				EERIE_FACE newface = face;
+				newface.vid[0] = static_cast<unsigned short>(equival[face.vid[0]]);
+				newface.vid[1] = static_cast<unsigned short>(equival[face.vid[1]]);
+				newface.vid[2] = static_cast<unsigned short>(equival[face.vid[2]]);
 				nouvo->facelist.push_back(newface);
 			}
 		}
-
+		
 		long goreTexture = -1;
-
 		for(size_t k = 0; k < from->texturecontainer.size(); k++) {
 			if(from->texturecontainer[k]
 			   && boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")
