@@ -20,6 +20,8 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H
 
+#include <memory>
+
 #include "game/magic/Spell.h"
 
 #include "graphics/effects/Lightning.h"
@@ -30,7 +32,6 @@ class MassLightningStrikeSpell final : public SpellBase {
 public:
 	
 	MassLightningStrikeSpell();
-	~MassLightningStrikeSpell() override;
 	
 	void Launch() override;
 	void End() override;
@@ -41,8 +42,7 @@ private:
 	Vec3f m_pos;
 	bool m_soundEffectPlayed;
 	LightHandle m_light;
-	
-	std::vector<CLightning *> pTab;
+	std::vector<std::unique_ptr<CLightning>> m_arcs;
 	
 };
 

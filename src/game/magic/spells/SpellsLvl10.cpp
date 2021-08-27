@@ -23,6 +23,7 @@
 #include "core/Core.h"
 #include "core/Config.h"
 #include "core/GameTime.h"
+
 #include "game/Damage.h"
 #include "game/Entity.h"
 #include "game/EntityManager.h"
@@ -32,26 +33,21 @@
 #include "game/effect/Quake.h"
 #include "game/spell/Cheat.h"
 
-#include "graphics/particle/ParticleEffects.h"
-
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
+#include "graphics/particle/ParticleEffects.h"
+
 #include "math/RandomVector.h"
+
 #include "scene/GameSound.h"
+
+#include "util/Range.h"
 
 
 MassLightningStrikeSpell::MassLightningStrikeSpell()
 	: m_pos(0.f)
 	, m_soundEffectPlayed(false)
 { }
-
-MassLightningStrikeSpell::~MassLightningStrikeSpell() {
-	
-	for(std::vector<CLightning *>::iterator it = pTab.begin(); it != pTab.end(); ++it) {
-		delete *it;
-	}
-	pTab.clear();
-}
 
 void MassLightningStrikeSpell::Launch() {
 	spells.endByType(SPELL_MASS_LIGHTNING_STRIKE);
@@ -78,16 +74,18 @@ void MassLightningStrikeSpell::Launch() {
 	float ft = 360.0f / number;
 	
 	for(int i = 0; i < number; i++) {
+		
 		Vec3f target = m_pos + angleToVectorXZ(i * ft) * 500.0f;
 		GameDuration duration = minDuration + std::chrono::milliseconds(Random::getu(0, 5000));
 		maxDuration = std::max(maxDuration, duration);
 		
-		CLightning * lightning = new CLightning();
+		std::unique_ptr<CLightning> lightning = std::make_unique<CLightning>();
 		lightning->m_isMassLightning = true;
 		lightning->m_fDamage = 2;
 		lightning->Create(m_pos, target);
 		lightning->SetDuration(duration);
-		pTab.push_back(lightning);
+		m_arcs.emplace_back(std::move(lightning));
+		
 	}
 	
 	m_duration = maxDuration + 1s;
@@ -118,25 +116,20 @@ void MassLightningStrikeSpell::End() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_LIGHTNING_END);
 	
-	for(std::vector<CLightning *>::iterator it = pTab.begin(); it != pTab.end(); ++it) {
-		delete *it;
-	}
-	pTab.clear();
+	m_arcs.clear();
+	
 }
 
 void MassLightningStrikeSpell::Update() {
 	
-	for(size_t i = 0; i < pTab.size(); i++) {
-		CLightning * lightning = pTab[i];
-		
-		lightning->m_caster = m_caster;
-		lightning->m_level = m_level;
-		
-		lightning->Update(g_gameTime.lastFrameDuration());
+	for(CLightning & arc : util::dereference(m_arcs)) {
+		arc.m_caster = m_caster;
+		arc.m_level = m_level;
+		arc.Update(g_gameTime.lastFrameDuration());
 	}
 	
-	for(size_t i = 0; i < pTab.size(); i++) {
-		pTab[i]->Render();
+	for(CLightning & arc : util::dereference(m_arcs)) {
+		arc.Render();
 	}
 	
 	Vec3f position = m_pos + arx::randomVec(-250.f, 250.f);
