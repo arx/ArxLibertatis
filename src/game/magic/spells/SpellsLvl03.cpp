@@ -105,15 +105,14 @@ void SpeedSpell::Update() {
 	if(m_caster == EntityHandle_Player)
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	
-	for(size_t i = 0; i < m_trails.size(); i++) {
-		Vec3f pos = entities[m_target]->obj->vertexWorldPositions[m_trails[i].vertexIndex].v;
-		
-		m_trails[i].trail->SetNextPosition(pos);
-		m_trails[i].trail->Update(g_gameTime.lastFrameDuration());
+	for(SpeedTrail & trail : m_trails) {
+		Vec3f pos = entities[m_target]->obj->vertexWorldPositions[trail.vertexIndex].v;
+		trail.trail->SetNextPosition(pos);
+		trail.trail->Update(g_gameTime.lastFrameDuration());
 	}
 	
-	for(size_t i = 0; i < m_trails.size(); i++) {
-		m_trails[i].trail->Render();
+	for(SpeedTrail & trail : m_trails) {
+		trail.trail->Render();
 	}
 	
 }
