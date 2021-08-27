@@ -21,6 +21,7 @@
 
 #include "core/Core.h"
 #include "core/GameTime.h"
+
 #include "game/Damage.h"
 #include "game/Entity.h"
 #include "game/EntityManager.h"
@@ -28,15 +29,21 @@
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/effect/ParticleSystems.h"
+
 #include "graphics/Raycast.h"
 #include "graphics/effects/PolyBoom.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleParams.h"
+
 #include "math/RandomVector.h"
+
 #include "physics/Collisions.h"
+
 #include "scene/GameSound.h"
 #include "scene/Object.h"
+
+#include "util/Range.h"
 
 
 void SpeedSpell::Launch() {
@@ -339,28 +346,26 @@ void CreateFoodSpell::Update() {
 	GameDuration timeRemaining = m_duration - m_elapsed;
 	
 	if(timeRemaining < 1500ms) {
+		
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 		m_particles.m_parameters.m_gravity = Vec3f(0.f);
 		
-		std::list<Particle *>::iterator i;
-		
-		for(i = m_particles.listParticle.begin(); i != m_particles.listParticle.end(); ++i) {
-			Particle * pP = *i;
-			
-			if(pP->isAlive()) {
-				pP->fColorEnd.a = 0;
-					
-				if(pP->m_age + timeRemaining < pP->m_timeToLive) {
-					pP->m_age = pP->m_timeToLive - timeRemaining;
+		for(Particle & particle : util::dereference(m_particles.listParticle)) {
+			if(particle.isAlive()) {
+				particle.fColorEnd.a = 0;
+				if(particle.m_age + timeRemaining < particle.m_timeToLive) {
+					particle.m_age = particle.m_timeToLive - timeRemaining;
 				}
 			}
 		}
+		
 	}
-
+	
 	m_particles.SetPos(m_pos);
 	m_particles.Update(g_gameTime.lastFrameDuration());
 	
 	m_particles.Render();
+	
 }
 
 
