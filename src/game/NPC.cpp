@@ -238,8 +238,9 @@ static void ARX_NPC_ReleasePathFindInfo(Entity * io) {
 //! Creates an extra rotations structure for a NPC
 static void ARX_NPC_CreateExRotateData(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC) || io->_npcdata->ex_rotate)
+	if(!io || !(io->ioflags & IO_NPC) || io->_npcdata->ex_rotate) {
 		return;
+	}
 	
 	io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 	io->head_rot = 0;
@@ -249,11 +250,12 @@ static void ARX_NPC_CreateExRotateData(Entity * io) {
 	io->_npcdata->ex_rotate->group_number[2] = EERIE_OBJECT_GetGroup(io->obj, "chest");
 	io->_npcdata->ex_rotate->group_number[3] = EERIE_OBJECT_GetGroup(io->obj, "belt");
 	
-	for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
-		io->_npcdata->ex_rotate->group_rotate[n] = Anglef();
+	for(Anglef & rotation : io->_npcdata->ex_rotate->group_rotate) {
+		rotation = Anglef();
 	}
 	
 	io->_npcdata->look_around_inc = 0.f;
+	
 }
 
 //! Resurects an NPC
