@@ -319,16 +319,14 @@ public:
 			if(!BLOCK_PLAYER_CONTROLS) {
 				ARX_PLAYER_PutPlayerInNormalStance();
 				
-				for(size_t i = 0; i < MAX_SPELLS; i++) {
-					SpellBase * spell = spells[SpellHandle(i)];
-					
-					if(spell && (spell->m_caster == EntityHandle_Player || spell->m_target == EntityHandle_Player)) {
-						switch(spell->m_type) {
+				for(SpellBase & spell : spells) {
+					if(spell.m_caster == EntityHandle_Player || spell.m_target == EntityHandle_Player) {
+						switch(spell.m_type) {
 							case SPELL_MAGIC_SIGHT:
 							case SPELL_LEVITATE:
 							case SPELL_SPEED:
 							case SPELL_FLYING_EYE:
-								spells.endSpell(spell);
+								spells.endSpell(&spell);
 								break;
 							default: break;
 						}
