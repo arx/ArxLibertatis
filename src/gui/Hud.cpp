@@ -1089,33 +1089,29 @@ void ActiveSpellsGui::draw() {
 }
 
 void ActiveSpellsGui::spellsByPlayerUpdate(float intensity) {
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		
-		if(   spell
-		   && spell->m_caster == EntityHandle_Player
-		   && spellicons[spell->m_type].m_hasDuration
-		) {
-			ManageSpellIcon(*spell, intensity, false);
+	
+	for(SpellBase & spell : spells.byCaster(EntityHandle_Player)) {
+		if(spellicons[spell.m_type].m_hasDuration) {
+			ManageSpellIcon(spell, intensity, false);
 		}
 	}
+	
 }
 
 void ActiveSpellsGui::spellsOnPlayerUpdate(float intensity) {
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		if(!spell) {
+	
+	for(SpellBase & spell : spells) {
+		
+		if(std::find(spell.m_targets.begin(), spell.m_targets.end(), EntityHandle_Player) == spell.m_targets.end()) {
 			continue;
 		}
 		
-		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), EntityHandle_Player) == spell->m_targets.end()) {
-			continue;
+		if(spell.m_caster != EntityHandle_Player && spellicons[spell.m_type].m_hasDuration) {
+			ManageSpellIcon(spell, intensity, true);
 		}
 		
-		if(spell->m_caster != EntityHandle_Player && spellicons[spell->m_type].m_hasDuration) {
-			ManageSpellIcon(*spell, intensity, true);
-		}
 	}
+	
 }
 
 void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool flag) {

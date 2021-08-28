@@ -399,18 +399,16 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 		return;
 	}
 	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
+	for(SpellBase & spell : spells) {
 		
-		if(!spell || this == spell || m_level < spell->m_level) {
+		if(this == &spell || m_level < spell.m_level) {
 			continue;
 		}
 		
-		Vec3f pos = spell->getPosition();
-		if(closerThan(pos, target->pos, 600.f)) {
-			if(spell->m_type != SPELL_CREATE_FIELD
-			   || (target == entities.player() && spell->m_caster == EntityHandle_Player)) {
-				spells.endSpell(spell);
+		if(closerThan(spell.getPosition(), target->pos, 600.f)) {
+			if(spell.m_type != SPELL_CREATE_FIELD
+			   || (target == entities.player() && spell.m_caster == EntityHandle_Player)) {
+				spells.endSpell(&spell);
 			}
 		}
 		
