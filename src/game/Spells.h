@@ -46,21 +46,27 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GAME_SPELLS_H
 
 #include <stddef.h>
+#include <array>
 #include <string>
 #include <string_view>
 
 #include "audio/AudioTypes.h"
+
 #include "game/magic/Precast.h"
 #include "game/magic/Rune.h"
 #include "game/magic/RuneDraw.h"
 #include "game/magic/SpellData.h"
 #include "game/magic/SpellRecognition.h"
+
 #include "math/Types.h"
 #include "math/Angle.h"
 #include "math/Random.h"
 #include "math/Vector.h"
+
 #include "scene/Light.h"
+
 #include "util/Flags.h"
+#include "util/Range.h"
 
 class Entity;
 class CSpellFx;
@@ -98,9 +104,24 @@ public:
 	void addSpell(SpellBase * spell);
 	void freeSlot(SpellBase * spell);
 	
+	[[nodiscard]] auto begin() const { return util::entries(m_spells).begin(); }
+	[[nodiscard]] auto end() const { return util::entries(m_spells).end(); }
+	
+	[[nodiscard]] auto byCaster(EntityHandle caster) const {
+		return util::filter(*this, [caster](SpellBase & spell) {
+			return spell.m_caster == caster;
+		});
+	}
+	
+	[[nodiscard]] auto ofType(SpellType type) const {
+		return util::filter(*this, [type](SpellBase & spell) {
+			return spell.m_type == type;
+		});
+	}
+	
 private:
 	
-	SpellBase * m_spells[MAX_SPELLS];
+	std::array<SpellBase *, MAX_SPELLS> m_spells;
 	
 };
 
