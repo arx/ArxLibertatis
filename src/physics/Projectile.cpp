@@ -91,7 +91,7 @@ static long ARX_THROWN_OBJECT_GetFree() {
 			return i;
 		}
 		if(g_projectiles[i].creation_time < latest_time) {
-			         oldest = i;
+			oldest = i;
 			latest_time = g_projectiles[i].creation_time;
 		}
 	}
