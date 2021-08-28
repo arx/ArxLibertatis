@@ -282,7 +282,7 @@ void SpellManager::freeSlot(SpellBase * spell) {
 		}
 	}
 	
-	while(m_spells.size() > 0 && !m_spells.back()) {
+	while(!m_spells.empty() && !m_spells.back()) {
 		m_spells.resize(m_spells.size() - 1);
 	}
 	
