@@ -383,14 +383,10 @@ static bool IsObjectInField(const PHYSICS_BOX_DATA & pbox) {
 	
 	for(const SpellBase & spell : spells.ofType(SPELL_CREATE_FIELD)) {
 		
-		Entity * pfrm = entities.get(static_cast<const CreateFieldSpell &>(spell).m_entity);
-		if(pfrm) {
-			Cylinder cyl = Cylinder(Vec3f(0.f), 35.f, -35.f);
-			
-			for(size_t k = 0; k < pbox.vert.size(); k++) {
-				const PhysicsParticle * pv = &pbox.vert[k];
-				cyl.origin = pv->pos + Vec3f(0.f, 17.5f, 0.f);
-				if(isCylinderCollidingWithPlatform(cyl, *pfrm)) {
+		if(Entity * field = entities.get(static_cast<const CreateFieldSpell &>(spell).m_entity)) {
+			for(const PhysicsParticle & pv : pbox.vert) {
+				Cylinder cyl = Cylinder(pv.pos + Vec3f(0.f, 17.5f, 0.f), 35.f, -35.f);
+				if(isCylinderCollidingWithPlatform(cyl, *field)) {
 					return true;
 				}
 			}
