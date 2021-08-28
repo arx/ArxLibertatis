@@ -54,23 +54,16 @@ const size_t MAX_THROWN_OBJECTS = 100;
 static Projectile g_projectiles[MAX_THROWN_OBJECTS];
 
 static bool IsPointInField(const Vec3f & pos) {
-
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		const SpellBase * spell = spells[SpellHandle(i)];
-
-		if(spell && spell->m_type == SPELL_CREATE_FIELD) {
-			const CreateFieldSpell * sp = static_cast<const CreateFieldSpell *>(spell);
-			
-			Entity * pfrm = entities.get(sp->m_entity);
-			if(pfrm) {
-				Cylinder cyl = Cylinder(pos + Vec3f(0.f, 17.5f, 0.f), 35.f, -35.f);
-				if(isCylinderCollidingWithPlatform(cyl, *pfrm)) {
-					return true;
-				}
+	
+	for(const SpellBase & spell : spells.ofType(SPELL_CREATE_FIELD)) {
+		if(Entity * field = entities.get(static_cast<const CreateFieldSpell &>(spell).m_entity)) {
+			Cylinder cyl = Cylinder(pos + Vec3f(0.f, 17.5f, 0.f), 35.f, -35.f);
+			if(isCylinderCollidingWithPlatform(cyl, *field)) {
+				return true;
 			}
 		}
 	}
-
+	
 	return false;
 }
 
