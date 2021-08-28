@@ -152,9 +152,8 @@ void SpellManager::init() {
 }
 
 void SpellManager::clearAll() {
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		delete m_spells[i];
-		m_spells[i] = nullptr;
+	for(SpellBase * spell : m_spells) {
+		delete spell;
 	}
 }
 
@@ -164,59 +163,55 @@ SpellBase * SpellManager::operator[](const SpellHandle handle) {
 
 static void SPELLEND_Notify(const SpellBase & spell);
 
-void SpellManager::endSpell(SpellBase * spell)
-{
+void SpellManager::endSpell(SpellBase * spell) {
 	spell->m_duration = 0;
 	spell->m_hasDuration = true;
 }
 
 void SpellManager::endByCaster(EntityHandle caster) {
 	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = m_spells[i];
-		
-		if(spell && spell->m_caster == caster) {
-			spells.endSpell(spell);
+	for(SpellBase & spell : *this) {
+		if(spell.m_caster == caster) {
+			spells.endSpell(&spell);
 		}
 	}
+	
 }
 
 void SpellManager::endByTarget(EntityHandle target, SpellType type) {
+	
 	SpellBase * spell = spells.getSpellOnTarget(target, type);
 	if(spell) {
 		spells.endSpell(spell);
 	}
+	
 }
 
-void SpellManager::endByType(SpellType type)
-{
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = m_spells[i];
-		
-		if(spell && spell->m_type == type) {
-			spells.endSpell(spell);
+void SpellManager::endByType(SpellType type) {
+	
+	for(SpellBase & spell : *this) {
+		if(spell.m_type == type) {
+			spells.endSpell(&spell);
 		}
 	}
+	
 }
 
 void SpellManager::endByCaster(EntityHandle caster, SpellType type) {
 	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = m_spells[i];
-		
-		if(spell && spell->m_type == type && spell->m_caster == caster) {
-			spells.endSpell(spell);
+	for(SpellBase & spell : *this) {
+		if(spell.m_type == type && spell.m_caster == caster) {
+			spells.endSpell(&spell);
 			return;
 		}
 	}
+	
 }
 
 bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster) {
 	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		const SpellBase * spell = m_spells[i];
-		
-		if(spell && spell->m_type == typ && spell->m_caster == caster) {
+	for(SpellBase & spell : *this) {
+		if(spell.m_type == typ && spell.m_caster == caster) {
 			return true;
 		}
 	}
@@ -226,39 +221,31 @@ bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle cas
 
 SpellBase * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) {
 	
-	if(caster == EntityHandle())
+	if(caster == EntityHandle()) {
 		return nullptr;
+	}
 	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = m_spells[i];
-		if(!spell)
-			continue;
-		
-		if(spell->m_type != type)
-			continue;
-		
-		if(spell->m_caster == caster)
-			return spell;
+	for(SpellBase & spell : *this) {
+		if(spell.m_caster == caster && spell.m_type == type) {
+			return &spell;
+		}
 	}
 	
 	return nullptr;
 }
 
-SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
-{
-	if(target == EntityHandle())
-		return nullptr;
+SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type) {
 	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = m_spells[i];
-		if(!spell)
+	if(target == EntityHandle()) {
+		return nullptr;
+	}
+	
+	for(SpellBase & spell : *this) {
+		if(spell.m_type != type) {
 			continue;
-		
-		if(spell->m_type != type)
-			continue;
-		
-		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), target) != spell->m_targets.end()) {
-			return spell;
+		}
+		if(std::find(spell.m_targets.begin(), spell.m_targets.end(), target) != spell.m_targets.end()) {
+			return &spell;
 		}
 	}
 	
@@ -268,13 +255,12 @@ SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
 float SpellManager::getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type) {
 	
 	float level = 0.f;
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = m_spells[i];
-		if(!spell || spell->m_type != type) {
+	for(SpellBase & spell : *this) {
+		if(spell.m_type != type) {
 			continue;
 		}
-		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), target) != spell->m_targets.end()) {
-			level += spell->m_level;
+		if(std::find(spell.m_targets.begin(), spell.m_targets.end(), target) != spell.m_targets.end()) {
+			level += spell.m_level;
 		}
 	}
 	
@@ -282,24 +268,20 @@ float SpellManager::getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellT
 }
 
 void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster) {
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = m_spells[i];
-		
-		if(spell && spell->m_caster == oldCaster) {
-			spell->m_caster = newCaster;
+	
+	for(SpellBase & spell : *this) {
+		if(spell.m_caster == oldCaster) {
+			spell.m_caster = newCaster;
 		}
 	}
+	
 }
 
 void SpellManager::removeTarget(Entity * io) {
 	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = m_spells[i];
-		if(!spell) {
-			continue;
-		}
-		spell->m_targets.erase(std::remove(spell->m_targets.begin(), spell->m_targets.end(), io->index()),
-		                       spell->m_targets.end());
+	for(SpellBase & spell : *this) {
+		spell.m_targets.erase(std::remove(spell.m_targets.begin(), spell.m_targets.end(), io->index()),
+		                      spell.m_targets.end());
 	}
 	
 }
@@ -327,13 +309,13 @@ void SpellManager::addSpell(SpellBase * spell)
 	}
 }
 
-void SpellManager::freeSlot(SpellBase * spell)
-{
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(m_spells[i] == spell) {
-			delete m_spells[i];
-			m_spells[i] = nullptr;
-			return;
+void SpellManager::freeSlot(SpellBase * spell) {
+	
+	for(SpellBase * & entry : m_spells) {
+		if(entry == spell) {
+			delete entry;
+			entry = nullptr;
+			break;
 		}
 	}
 }
