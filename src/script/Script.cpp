@@ -1117,20 +1117,15 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 			
 			if(boost::starts_with(name, "^playercasting")) {
-				for(size_t i = 0; i < MAX_SPELLS; i++) {
-					const SpellBase * spell = spells[SpellHandle(i)];
-					
-					if(spell && spell->m_caster == EntityHandle_Player) {
-						if(   spell->m_type == SPELL_LIFE_DRAIN
-						   || spell->m_type == SPELL_HARM
-						   || spell->m_type == SPELL_FIRE_FIELD
-						   || spell->m_type == SPELL_ICE_FIELD
-						   || spell->m_type == SPELL_LIGHTNING_STRIKE
-						   || spell->m_type == SPELL_MASS_LIGHTNING_STRIKE
-						) {
-							*lcontent = 1;
-							return TYPE_LONG;
-						}
+				for(const SpellBase & spell : spells.byCaster(EntityHandle_Player)) {
+					if(spell.m_type == SPELL_LIFE_DRAIN
+					   || spell.m_type == SPELL_HARM
+					   || spell.m_type == SPELL_FIRE_FIELD
+					   || spell.m_type == SPELL_ICE_FIELD
+					   || spell.m_type == SPELL_LIGHTNING_STRIKE
+					   || spell.m_type == SPELL_MASS_LIGHTNING_STRIKE) {
+						*lcontent = 1;
+						return TYPE_LONG;
 					}
 				}
 				*lcontent = 0;
