@@ -32,46 +32,6 @@
 
 class EntityManager {
 	
-	typedef std::vector<Entity *> Entries;
-	typedef Entries::iterator miterator;
-	
-	class Sentinel { };
-	
-	class EntityIterator {
-		
-		const EntityManager * m_manager;
-		size_t m_i = 0;
-		
-	public:
-		
-		explicit EntityIterator(const EntityManager * manager)
-			: m_manager(manager)
-		{
-			if(m_i != m_manager->entries.size() && !m_manager->entries[m_i]) {
-				operator++();
-			}
-		}
-		
-		[[nodiscard]] Entity & operator*() const {
-			return *m_manager->entries[m_i];
-		}
-		
-		void operator++() {
-			do {
-				++m_i;
-			} while(m_i != m_manager->entries.size() && !m_manager->entries[m_i]);
-		}
-		
-		[[nodiscard]] bool operator==(Sentinel /* sentinel */) const {
-			return m_i == m_manager->entries.size();
-		}
-		
-		[[nodiscard]] bool operator!=(Sentinel /* sentinel */) const {
-			return m_i != m_manager->entries.size();
-		}
-		
-	};
-	
 public:
 	
 	EntityManager();
@@ -116,8 +76,8 @@ public:
 	 */
 	[[nodiscard]] size_t size() const { return entries.size(); }
 	
-	[[nodiscard]] auto begin() const { return EntityIterator(this); }
-	[[nodiscard]] auto end() const { return Sentinel(); }
+	[[nodiscard]] auto begin() const { return util::entries(entries).begin(); }
+	[[nodiscard]] auto end() const { return util::entries(entries).end(); }
 	
 	[[nodiscard]] auto operator()(EntityFlags flags) const {
 		return util::filter(*this, [flags](const Entity & entity) {
@@ -136,7 +96,7 @@ public:
 	
 private:
 	
-	Entries entries;
+	std::vector<Entity *> entries;
 	
 	struct Impl;
 	Impl * m_impl;
