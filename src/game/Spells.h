@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GAME_SPELLS_H
 
 #include <stddef.h>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -98,7 +99,7 @@ public:
 	void replaceCaster(EntityHandle oldCaster, EntityHandle newCaster);
 	void removeTarget(Entity * io);
 	
-	void addSpell(SpellBase * spell);
+	SpellBase & addSpell(std::unique_ptr<SpellBase> spell);
 	void freeSlot(SpellBase * spell);
 	
 	[[nodiscard]] auto begin() const { return util::entries(m_spells).begin(); }
@@ -118,7 +119,7 @@ public:
 	
 private:
 	
-	std::vector<SpellBase *> m_spells;
+	std::vector<std::unique_ptr<SpellBase>> m_spells;
 	
 };
 

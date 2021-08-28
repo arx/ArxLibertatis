@@ -149,14 +149,11 @@ void SpellManager::init() {
 }
 
 void SpellManager::clearAll() {
-	for(SpellBase * spell : m_spells) {
-		delete spell;
-	}
 	m_spells.clear();
 }
 
 SpellBase * SpellManager::operator[](const SpellHandle handle) {
-	return size_t(handle.handleData()) < m_spells.size() ? m_spells[handle.handleData()] : nullptr;
+	return size_t(handle.handleData()) < m_spells.size() ? m_spells[handle.handleData()].get() : nullptr;
 }
 
 static void SPELLEND_Notify(const SpellBase & spell);
@@ -284,27 +281,28 @@ void SpellManager::removeTarget(Entity * io) {
 	
 }
 
-void SpellManager::addSpell(SpellBase * spell) {
+SpellBase & SpellManager::addSpell(std::unique_ptr<SpellBase> spell) {
+	
+	arx_assert(spell);
 	
 	for(size_t i = 0; i < m_spells.size(); i++) {
 		if(!m_spells[i]) {
 			spell->m_thisHandle = SpellHandle(i);
-			m_spells[i] = spell;
-			return;
+			m_spells[i] = std::move(spell);
+			return *m_spells[i];
 		}
 	}
 	
 	spell->m_thisHandle = SpellHandle(m_spells.size());
-	m_spells.push_back(spell);
-	
+	m_spells.emplace_back(std::move(spell));
+	return *m_spells.back();
 }
 
 void SpellManager::freeSlot(SpellBase * spell) {
 	
-	for(SpellBase * & entry : m_spells) {
-		if(entry == spell) {
-			delete entry;
-			entry = nullptr;
+	for(std::unique_ptr<SpellBase> & entry : m_spells) {
+		if(entry.get() == spell) {
+			entry.reset();
 			break;
 		}
 	}
@@ -775,72 +773,73 @@ float ARX_SPELLS_GetManaCost(SpellType spell, float casterLevel) {
 	}
 }
 
-static SpellBase * createSpellInstance(SpellType type) {
+static std::unique_ptr<SpellBase> createSpellInstance(SpellType type) {
+	
 	switch(type) {
-		case SPELL_NONE: return nullptr;
+		case SPELL_NONE: return { };
 		// LEVEL 1
-		case SPELL_MAGIC_SIGHT: return new MagicSightSpell();
-		case SPELL_MAGIC_MISSILE: return new MagicMissileSpell();
-		case SPELL_IGNIT: return new IgnitSpell();
-		case SPELL_DOUSE: return new DouseSpell();
-		case SPELL_ACTIVATE_PORTAL: return new ActivatePortalSpell();
+		case SPELL_MAGIC_SIGHT: return std::make_unique<MagicSightSpell>();
+		case SPELL_MAGIC_MISSILE: return std::make_unique<MagicMissileSpell>();
+		case SPELL_IGNIT: return std::make_unique<IgnitSpell>();
+		case SPELL_DOUSE: return std::make_unique<DouseSpell>();
+		case SPELL_ACTIVATE_PORTAL: return std::make_unique<ActivatePortalSpell>();
 		// LEVEL 2
-		case SPELL_HEAL: return new HealSpell();
-		case SPELL_DETECT_TRAP: return new DetectTrapSpell();
-		case SPELL_ARMOR: return new ArmorSpell();
-		case SPELL_LOWER_ARMOR: return new LowerArmorSpell();
-		case SPELL_HARM: return new HarmSpell();
+		case SPELL_HEAL: return std::make_unique<HealSpell>();
+		case SPELL_DETECT_TRAP: return std::make_unique<DetectTrapSpell>();
+		case SPELL_ARMOR: return std::make_unique<ArmorSpell>();
+		case SPELL_LOWER_ARMOR: return std::make_unique<LowerArmorSpell>();
+		case SPELL_HARM: return std::make_unique<HarmSpell>();
 		// LEVEL 3
-		case SPELL_SPEED: return new SpeedSpell();
-		case SPELL_DISPELL_ILLUSION: return new DispellIllusionSpell();
-		case SPELL_FIREBALL: return new FireballSpell();
-		case SPELL_CREATE_FOOD: return new CreateFoodSpell();
-		case SPELL_ICE_PROJECTILE: return new IceProjectileSpell();
+		case SPELL_SPEED: return std::make_unique<SpeedSpell>();
+		case SPELL_DISPELL_ILLUSION: return std::make_unique<DispellIllusionSpell>();
+		case SPELL_FIREBALL: return std::make_unique<FireballSpell>();
+		case SPELL_CREATE_FOOD: return std::make_unique<CreateFoodSpell>();
+		case SPELL_ICE_PROJECTILE: return std::make_unique<IceProjectileSpell>();
 		// LEVEL 4
-		case SPELL_BLESS: return new BlessSpell();
-		case SPELL_DISPELL_FIELD: return new DispellFieldSpell();
-		case SPELL_FIRE_PROTECTION: return new FireProtectionSpell();
-		case SPELL_COLD_PROTECTION: return new ColdProtectionSpell();
-		case SPELL_TELEKINESIS: return new TelekinesisSpell();
-		case SPELL_CURSE: return new CurseSpell();
+		case SPELL_BLESS: return std::make_unique<BlessSpell>();
+		case SPELL_DISPELL_FIELD: return std::make_unique<DispellFieldSpell>();
+		case SPELL_FIRE_PROTECTION: return std::make_unique<FireProtectionSpell>();
+		case SPELL_COLD_PROTECTION: return std::make_unique<ColdProtectionSpell>();
+		case SPELL_TELEKINESIS: return std::make_unique<TelekinesisSpell>();
+		case SPELL_CURSE: return std::make_unique<CurseSpell>();
 		// LEVEL 5
-		case SPELL_RUNE_OF_GUARDING: return new RuneOfGuardingSpell();
-		case SPELL_LEVITATE: return new LevitateSpell();
-		case SPELL_CURE_POISON: return new CurePoisonSpell();
-		case SPELL_REPEL_UNDEAD: return new RepelUndeadSpell();
-		case SPELL_POISON_PROJECTILE: return new PoisonProjectileSpell();
+		case SPELL_RUNE_OF_GUARDING: return std::make_unique<RuneOfGuardingSpell>();
+		case SPELL_LEVITATE: return std::make_unique<LevitateSpell>();
+		case SPELL_CURE_POISON: return std::make_unique<CurePoisonSpell>();
+		case SPELL_REPEL_UNDEAD: return std::make_unique<RepelUndeadSpell>();
+		case SPELL_POISON_PROJECTILE: return std::make_unique<PoisonProjectileSpell>();
 		// LEVEL 6
-		case SPELL_RISE_DEAD: return new RiseDeadSpell();
-		case SPELL_PARALYSE: return new ParalyseSpell();
-		case SPELL_CREATE_FIELD: return new CreateFieldSpell();
-		case SPELL_DISARM_TRAP: return new DisarmTrapSpell();
-		case SPELL_SLOW_DOWN: return new SlowDownSpell();
+		case SPELL_RISE_DEAD: return std::make_unique<RiseDeadSpell>();
+		case SPELL_PARALYSE: return std::make_unique<ParalyseSpell>();
+		case SPELL_CREATE_FIELD: return std::make_unique<CreateFieldSpell>();
+		case SPELL_DISARM_TRAP: return std::make_unique<DisarmTrapSpell>();
+		case SPELL_SLOW_DOWN: return std::make_unique<SlowDownSpell>();
 		// LEVEL 7
-		case SPELL_FLYING_EYE: return new FlyingEyeSpell();
-		case SPELL_FIRE_FIELD: return new FireFieldSpell();
-		case SPELL_ICE_FIELD: return new IceFieldSpell();
-		case SPELL_LIGHTNING_STRIKE: return new LightningStrikeSpell();
-		case SPELL_CONFUSE: return new ConfuseSpell();
+		case SPELL_FLYING_EYE: return std::make_unique<FlyingEyeSpell>();
+		case SPELL_FIRE_FIELD: return std::make_unique<FireFieldSpell>();
+		case SPELL_ICE_FIELD: return std::make_unique<IceFieldSpell>();
+		case SPELL_LIGHTNING_STRIKE: return std::make_unique<LightningStrikeSpell>();
+		case SPELL_CONFUSE: return std::make_unique<ConfuseSpell>();
 		// LEVEL 8
-		case SPELL_INVISIBILITY: return new InvisibilitySpell();
-		case SPELL_MANA_DRAIN: return new ManaDrainSpell();
-		case SPELL_EXPLOSION: return new ExplosionSpell();
-		case SPELL_ENCHANT_WEAPON: return new EnchantWeaponSpell();
-		case SPELL_LIFE_DRAIN: return new LifeDrainSpell();
+		case SPELL_INVISIBILITY: return std::make_unique<InvisibilitySpell>();
+		case SPELL_MANA_DRAIN: return std::make_unique<ManaDrainSpell>();
+		case SPELL_EXPLOSION: return std::make_unique<ExplosionSpell>();
+		case SPELL_ENCHANT_WEAPON: return std::make_unique<EnchantWeaponSpell>();
+		case SPELL_LIFE_DRAIN: return std::make_unique<LifeDrainSpell>();
 		// LEVEL 9
-		case SPELL_SUMMON_CREATURE: return new SummonCreatureSpell();
-		case SPELL_FAKE_SUMMON: return new FakeSummonSpell();
-		case SPELL_NEGATE_MAGIC: return new NegateMagicSpell();
-		case SPELL_INCINERATE: return new IncinerateSpell();
-		case SPELL_MASS_PARALYSE: return new MassParalyseSpell();
+		case SPELL_SUMMON_CREATURE: return std::make_unique<SummonCreatureSpell>();
+		case SPELL_FAKE_SUMMON: return std::make_unique<FakeSummonSpell>();
+		case SPELL_NEGATE_MAGIC: return std::make_unique<NegateMagicSpell>();
+		case SPELL_INCINERATE: return std::make_unique<IncinerateSpell>();
+		case SPELL_MASS_PARALYSE: return std::make_unique<MassParalyseSpell>();
 		// LEVEL 10
-		case SPELL_MASS_LIGHTNING_STRIKE: return new MassLightningStrikeSpell();
-		case SPELL_CONTROL_TARGET: return new ControlTargetSpell();
-		case SPELL_FREEZE_TIME: return new FreezeTimeSpell();
-		case SPELL_MASS_INCINERATE: return new MassIncinerateSpell();
+		case SPELL_MASS_LIGHTNING_STRIKE: return std::make_unique<MassLightningStrikeSpell>();
+		case SPELL_CONTROL_TARGET: return std::make_unique<ControlTargetSpell>();
+		case SPELL_FREEZE_TIME: return std::make_unique<FreezeTimeSpell>();
+		case SPELL_MASS_INCINERATE: return std::make_unique<MassIncinerateSpell>();
 	}
 	
-	return nullptr;
+	return { };
 }
 
 bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, long level,
@@ -966,7 +965,7 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
 		ARX_SPELLS_CancelSpellTarget();
 	}
 	
-	SpellBase * spell = createSpellInstance(typ);
+	std::unique_ptr<SpellBase> spell = createSpellInstance(typ);
 	if(!spell) {
 		return false;
 	}
@@ -1006,40 +1005,37 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
 	spell->m_fManaCostPerSecond = 0.f;
 	spell->m_launchDuration = duration;
 	
-	if(!CanPayMana(spell, ARX_SPELLS_GetManaCost(typ, spell->m_level))) {
+	if(!CanPayMana(spell.get(), ARX_SPELLS_GetManaCost(typ, spell->m_level))) {
 		if(spell->m_caster == EntityHandle_Player) {
 			notification_add("player_cantcast");
 			ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
 		}
-		ARX_SPELLS_Fizzle(spell);
-		delete spell;
+		ARX_SPELLS_Fizzle(spell.get());
 		return false;
 	}
 	
 	if(!GLOBAL_MAGIC_MODE) {
-		ARX_SPELLS_Fizzle(spell);
-		delete spell;
+		ARX_SPELLS_Fizzle(spell.get());
 		return false;
 	}
 	
 	if(!spell->CanLaunch()) {
-		delete spell;
 		return false;
 	}
 	
 	spell->Launch();
 	
-	spells.addSpell(spell);
+	SpellBase & addedSpell = spells.addSpell(std::move(spell));
 	
 	// TODO inconsistent use of the SM_SPELLCAST event
 	if(typ == SPELL_CONFUSE || typ == SPELL_ENCHANT_WEAPON) {
-		SPELLCAST_NotifyOnlyTarget(*spell);
+		SPELLCAST_NotifyOnlyTarget(addedSpell);
 	} else {
-		SPELLCAST_Notify(*spell);
+		SPELLCAST_Notify(addedSpell);
 	}
 	
 	if(flags & SPELLCAST_FLAG_ORPHAN) {
-		spell->m_caster = EntityHandle();
+		addedSpell.m_caster = EntityHandle();
 	}
 	
 	return true;
