@@ -1,6 +1,10 @@
 
 = Arx Libertatis 1.3  (TBD) =
 
+Controls:
+
+* Fixed the "Interrupt current spell" keyboard shortcut sometimes ending previous spells instead of the last one
+
 Modding:
 
 * Added support for level numbers above 27

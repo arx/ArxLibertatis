@@ -999,18 +999,21 @@ void ArxGame::managePlayerControls() {
 	}
 	
 	if(GInput->actionNowPressed(CONTROLS_CUST_CANCELCURSPELL)) {
-		for(long i = MAX_SPELLS - 1; i >= 0; i--) {
-			SpellBase * spell = spells[SpellHandle(i)];
-			
-			if(spell && spell->m_caster == EntityHandle_Player)
-				if(spellicons[spell->m_type].m_hasDuration) {
-					ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
-					spells.endSpell(spell);
-					break;
-				}
+		SpellBase * lastSpell = nullptr;
+		for(SpellBase & spell : spells.byCaster(EntityHandle_Player)) {
+			if(!spellicons[spell.m_type].m_hasDuration) {
+				continue;
+			}
+			if(!lastSpell || lastSpell->m_timcreation < spell.m_timcreation) {
+				lastSpell = &spell;
+			}
+		}
+		if(lastSpell) {
+			ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
+			spells.endSpell(lastSpell);
 		}
 	}
-
+	
 	if(((player.Interface & INTER_COMBATMODE) && !player.isAiming()) || !player.doingmagic) {
 		if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST1)) {
 			ARX_SPELLS_Precast_Launch(PrecastHandle(0));
