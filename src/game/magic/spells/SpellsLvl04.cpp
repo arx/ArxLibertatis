@@ -171,35 +171,30 @@ void DispellFieldSpell::Launch() {
 	m_hasDuration = true;
 	
 	long valid = 0, dispelled = 0;
-
-	for(size_t n = 0; n < MAX_SPELLS; n++) {
-		SpellBase * spell = spells[SpellHandle(n)];
-		
-		if(!spell) {
-			continue;
-		}
+	
+	for(SpellBase & spell : spells) {
 		
 		bool cancel = false;
 		Vec3f pos;
 		
-		switch(spell->m_type) {
+		switch(spell.m_type) {
 			
 			case SPELL_CREATE_FIELD: {
-				if(m_caster != EntityHandle_Player || spell->m_caster == EntityHandle_Player) {
-					pos = static_cast<CreateFieldSpell *>(spell)->getPosition();
+				if(m_caster != EntityHandle_Player || spell.m_caster == EntityHandle_Player) {
+					pos = static_cast<CreateFieldSpell &>(spell).getPosition();
 					cancel = true;
 				}
 				break;
 			}
 			
 			case SPELL_FIRE_FIELD: {
-				pos = static_cast<FireFieldSpell *>(spell)->getPosition();
+				pos = static_cast<FireFieldSpell &>(spell).getPosition();
 				cancel = true;
 				break;
 			}
 			
 			case SPELL_ICE_FIELD: {
-				pos = static_cast<IceFieldSpell *>(spell)->getPosition();
+				pos = static_cast<IceFieldSpell &>(spell).getPosition();
 				cancel = true;
 				break;
 			}
@@ -210,11 +205,12 @@ void DispellFieldSpell::Launch() {
 		Entity * caster = entities[m_caster];
 		if(cancel && closerThan(pos, caster->pos, 400.f)) {
 			valid++;
-			if(spell->m_level <= m_level) {
-				spells.endSpell(spell);
+			if(spell.m_level <= m_level) {
+				spells.endSpell(&spell);
 				dispelled++;
 			}
 		}
+		
 	}
 	
 	if(valid > dispelled) {
