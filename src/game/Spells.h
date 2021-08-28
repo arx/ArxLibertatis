@@ -104,13 +104,13 @@ public:
 	[[nodiscard]] auto end() const { return util::entries(m_spells).end(); }
 	
 	[[nodiscard]] auto byCaster(EntityHandle caster) const {
-		return util::filter(*this, [caster](SpellBase & spell) {
+		return util::filter(*this, [caster](const SpellBase & spell) {
 			return spell.m_caster == caster;
 		});
 	}
 	
 	[[nodiscard]] auto ofType(SpellType type) const {
-		return util::filter(*this, [type](SpellBase & spell) {
+		return util::filter(*this, [type](const SpellBase & spell) {
 			return spell.m_type == type;
 		});
 	}
