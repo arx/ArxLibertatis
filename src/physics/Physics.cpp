@@ -380,28 +380,24 @@ static void RK4Integrate(std::array<PhysicsParticle, N> & particles, float Delta
 }
 
 static bool IsObjectInField(const PHYSICS_BOX_DATA & pbox) {
-
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		const SpellBase * spell = spells[SpellHandle(i)];
-
-		if(spell && spell->m_type == SPELL_CREATE_FIELD) {
-			const CreateFieldSpell * sp = static_cast<const CreateFieldSpell *>(spell);
+	
+	for(const SpellBase & spell : spells.ofType(SPELL_CREATE_FIELD)) {
+		
+		Entity * pfrm = entities.get(static_cast<const CreateFieldSpell &>(spell).m_entity);
+		if(pfrm) {
+			Cylinder cyl = Cylinder(Vec3f(0.f), 35.f, -35.f);
 			
-			Entity * pfrm = entities.get(sp->m_entity);
-			if(pfrm) {
-				Cylinder cyl = Cylinder(Vec3f(0.f), 35.f, -35.f);
-				
-				for(size_t k = 0; k < pbox.vert.size(); k++) {
-					const PhysicsParticle * pv = &pbox.vert[k];
-					cyl.origin = pv->pos + Vec3f(0.f, 17.5f, 0.f);
-					if(isCylinderCollidingWithPlatform(cyl, *pfrm)) {
-						return true;
-					}
+			for(size_t k = 0; k < pbox.vert.size(); k++) {
+				const PhysicsParticle * pv = &pbox.vert[k];
+				cyl.origin = pv->pos + Vec3f(0.f, 17.5f, 0.f);
+				if(isCylinderCollidingWithPlatform(cyl, *pfrm)) {
+					return true;
 				}
 			}
 		}
+		
 	}
-
+	
 	return false;
 }
 
