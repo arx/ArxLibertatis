@@ -98,8 +98,6 @@ public:
 	void addSpell(SpellBase * spell);
 	void freeSlot(SpellBase * spell);
 	
-	SpellHandle create();
-	
 private:
 	
 	SpellBase * m_spells[MAX_SPELLS];
