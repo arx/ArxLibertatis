@@ -46,9 +46,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GAME_SPELLS_H
 
 #include <stddef.h>
-#include <array>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include "audio/AudioTypes.h"
 
@@ -71,8 +71,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class Entity;
 class CSpellFx;
 class TextureContainer;
-
-const size_t MAX_SPELLS = 20;
 
 class SpellManager {
 	
@@ -100,7 +98,6 @@ public:
 	void replaceCaster(EntityHandle oldCaster, EntityHandle newCaster);
 	void removeTarget(Entity * io);
 	
-	bool hasFreeSlot();
 	void addSpell(SpellBase * spell);
 	void freeSlot(SpellBase * spell);
 	
@@ -121,7 +118,7 @@ public:
 	
 private:
 	
-	std::array<SpellBase *, MAX_SPELLS> m_spells;
+	std::vector<SpellBase *> m_spells;
 	
 };
 

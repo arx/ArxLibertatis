@@ -141,24 +141,22 @@ SpellManager spells;
 
 void SpellManager::init() {
 	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		m_spells[i] = nullptr;
-	}
-	
 	spellRecognitionInit();
 	
 	RuneInfosFill();
 	ARX_SPELLS_Init_Rects();
+	
 }
 
 void SpellManager::clearAll() {
 	for(SpellBase * spell : m_spells) {
 		delete spell;
 	}
+	m_spells.clear();
 }
 
 SpellBase * SpellManager::operator[](const SpellHandle handle) {
-	return m_spells[handle.handleData()];
+	return size_t(handle.handleData()) < m_spells.size() ? m_spells[handle.handleData()] : nullptr;
 }
 
 static void SPELLEND_Notify(const SpellBase & spell);
@@ -286,27 +284,19 @@ void SpellManager::removeTarget(Entity * io) {
 	
 }
 
-bool SpellManager::hasFreeSlot()
-{
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = m_spells[i];
-		
-		if(!spell) {
-			return true;
-		}
-	}
-	return false;
-}
-
-void SpellManager::addSpell(SpellBase * spell)
-{
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
+void SpellManager::addSpell(SpellBase * spell) {
+	
+	for(size_t i = 0; i < m_spells.size(); i++) {
 		if(!m_spells[i]) {
-			m_spells[i] = spell;
 			spell->m_thisHandle = SpellHandle(i);
+			m_spells[i] = spell;
 			return;
 		}
 	}
+	
+	spell->m_thisHandle = SpellHandle(m_spells.size());
+	m_spells.push_back(spell);
+	
 }
 
 void SpellManager::freeSlot(SpellBase * spell) {
@@ -318,6 +308,11 @@ void SpellManager::freeSlot(SpellBase * spell) {
 			break;
 		}
 	}
+	
+	while(m_spells.size() > 0 && !m_spells.back()) {
+		m_spells.resize(m_spells.size() - 1);
+	}
+	
 }
 
 static const char * MakeSpellName(SpellType num) {
@@ -969,10 +964,6 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
 	
 	if(source == *entities.player()) {
 		ARX_SPELLS_CancelSpellTarget();
-	}
-	
-	if(!spells.hasFreeSlot()) {
-		return false;
 	}
 	
 	SpellBase * spell = createSpellInstance(typ);
