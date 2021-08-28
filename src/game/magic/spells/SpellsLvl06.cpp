@@ -365,22 +365,17 @@ void DisarmTrapSpell::Launch() {
 	sphere.origin = player.pos;
 	sphere.radius = 400.f;
 	
-	for(size_t n = 0; n < MAX_SPELLS; n++) {
-		SpellBase * spell = spells[SpellHandle(n)];
+	for(SpellBase & spell : spells.ofType(SPELL_RUNE_OF_GUARDING)) {
 		
-		if(!spell || spell->m_type != SPELL_RUNE_OF_GUARDING) {
-			continue;
-		}
-		
-		Vec3f pos = static_cast<RuneOfGuardingSpell *>(spell)->getPosition();
-		
-		if(sphere.contains(pos)) {
-			spell->m_level -= m_level;
-			if(spell->m_level <= 0) {
-				spells.endSpell(spell);
+		if(sphere.contains(static_cast<RuneOfGuardingSpell &>(spell).getPosition())) {
+			spell.m_level -= m_level;
+			if(spell.m_level <= 0) {
+				spells.endSpell(&spell);
 			}
 		}
+		
 	}
+	
 }
 
 
