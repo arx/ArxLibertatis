@@ -140,6 +140,13 @@ auto filter(Base && base, Filter && filter) -> RangeAdaptor<Base, FilterIterator
 	return { std::forward<Base>(base), std::forward<Filter>(filter) };
 }
 
+template <typename Base>
+auto filter(Base && base) {
+	return filter(std::forward<Base>(base), [](auto & entry) {
+		return !!entry;
+	});
+}
+
 template <typename Base, typename Transform>
 auto transform(Base && base, Transform && transform) -> RangeAdaptor<Base, TransformIterator, Transform> {
 	return { std::forward<Base>(base), std::forward<Transform>(transform) };
@@ -151,6 +158,76 @@ auto dereference(Base && base) {
 		arx_assert(pointer);
 		return *pointer;
 	});
+}
+
+template <typename Base>
+auto nonnull(Base && base) {
+	return dereference(filter(std::forward<Base>(base)));
+}
+
+template <typename Container>
+class StableIndexedIterator {
+	
+	Container * m_container;
+	size_t m_i = 0;
+	
+public:
+	
+	class Sentinel { };
+	
+	explicit constexpr StableIndexedIterator(const Container * container) noexcept
+		: m_container(container)
+	{ }
+	
+	[[nodiscard]] constexpr auto & operator*() const noexcept {
+		return (*m_container)[m_i];
+	}
+	
+	constexpr void operator++() noexcept {
+		++m_i;
+	}
+	
+	[[nodiscard]] constexpr bool operator==(Sentinel /* sentinel */) const noexcept {
+		return m_i >= m_container->size();
+	}
+	
+	[[nodiscard]] constexpr bool operator!=(Sentinel /* sentinel */) const noexcept {
+		return m_i < m_container->size();
+	}
+	
+};
+
+template <typename Container>
+class StableIndexedRange {
+	
+	Container m_container;
+	
+public:
+	
+	typedef StableIndexedIterator<std::remove_reference_t<Container>> iterator;
+	typedef typename iterator::Sentinel sentinel;
+	
+	explicit constexpr StableIndexedRange(Container && container) noexcept
+		: m_container(std::forward<Container>(container))
+	{ }
+	
+	[[nodiscard]] constexpr iterator begin() const noexcept {
+		return iterator(&m_container);
+	}
+	
+	[[nodiscard]] constexpr static sentinel end() noexcept {
+		return { };
+	}
+	
+	[[nodiscard]] constexpr bool empty() const noexcept {
+		return begin() == end();
+	}
+	
+};
+
+template <typename Base>
+auto entries(Base && base) {
+	return nonnull(StableIndexedRange<Base>(std::forward<Base>(base)));
 }
 
 template <typename Int = size_t>
