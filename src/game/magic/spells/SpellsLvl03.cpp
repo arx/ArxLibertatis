@@ -136,27 +136,22 @@ void DispellIllusionSpell::Launch() {
 	m_duration = 1s;
 	m_hasDuration = true;
 	
-	for(size_t n = 0; n < MAX_SPELLS; n++) {
-		SpellBase * spell = spells[SpellHandle(n)];
+	for(SpellBase & spell : spells.ofType(SPELL_INVISIBILITY)) {
 		
-		if(!spell || spell->m_target == m_caster) {
+		if(spell.m_target == m_caster || spell.m_level > m_level) {
 			continue;
 		}
 		
-		if(spell->m_level > m_level) {
-			continue;
-		}
-		
-		if(spell->m_type == SPELL_INVISIBILITY) {
-			Entity * target = entities.get(spell->m_target);
-			Entity * caster = entities.get(m_caster);
-			if(target && caster) {
-				if(closerThan(target->pos, caster->pos, 1000.f)) {
-					spells.endSpell(spell);
-				}
+		Entity * target = entities.get(spell.m_target);
+		Entity * caster = entities.get(m_caster);
+		if(target && caster) {
+			if(closerThan(target->pos, caster->pos, 1000.f)) {
+				spells.endSpell(&spell);
 			}
 		}
+		
 	}
+	
 }
 
 
