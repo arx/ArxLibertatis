@@ -398,21 +398,13 @@ void IgnitSpell::Launch() {
 		}
 	}
 	
-	for(size_t n = 0; n < MAX_SPELLS; n++) {
-		SpellBase * spell = spells[SpellHandle(n)];
-		
-		if(!spell) {
-			continue;
-		}
-		if(spell->m_type == SPELL_FIREBALL) {
-			Vec3f pos = static_cast<FireballSpell *>(spell)->getPosition();
-			
-			float radius = std::max(m_level * 2.f, 12.f);
-			if(closerThan(m_srcPos, pos, fPerimeter + radius)) {
-				spell->m_level += 1;
-			}
+	for(SpellBase & spell : spells.ofType(SPELL_FIREBALL)) {
+		float radius = std::max(m_level * 2.f, 12.f); // TODO is this supposed to use spell.m_level?
+		if(closerThan(m_srcPos, static_cast<FireballSpell &>(spell).getPosition(), fPerimeter + radius)) {
+			spell.m_level += 1;
 		}
 	}
+	
 }
 
 void IgnitSpell::End() {
@@ -484,33 +476,28 @@ void DouseSpell::Launch() {
 		ARX_PLAYER_ClickedOnTorch(player.torch);
 	}
 	
-	for(size_t k = 0; k < MAX_SPELLS; k++) {
-		SpellBase * spell = spells[SpellHandle(k)];
+	for(SpellBase & spell : spells) {
 		
-		if(!spell) {
-			continue;
-		}
-		
-		switch(spell->m_type) {
+		switch(spell.m_type) {
 			
 			case SPELL_FIREBALL: {
-				Vec3f pos = spell->getPosition();
+				Vec3f pos = spell.getPosition();
 				float radius = std::max(m_level * 2.f, 12.f);
 				if(closerThan(target, pos, fPerimeter + radius)) {
-					spell->m_level -= m_level;
-					if(spell->m_level < 1) {
-						spells.endSpell(spell);
+					spell.m_level -= m_level;
+					if(spell.m_level < 1) {
+						spells.endSpell(&spell);
 					}
 				}
 				break;
 			}
 			
 			case SPELL_FIRE_FIELD: {
-				Vec3f pos = spell->getPosition();
+				Vec3f pos = spell.getPosition();
 				if(closerThan(target, pos, fPerimeter + 200)) {
-					spell->m_level -= m_level;
-					if(spell->m_level < 1) {
-						spells.endSpell(spell);
+					spell.m_level -= m_level;
+					if(spell.m_level < 1) {
+						spells.endSpell(&spell);
 					}
 				}
 				break;
@@ -518,7 +505,9 @@ void DouseSpell::Launch() {
 			
 			default: break;
 		}
+		
 	}
+	
 }
 
 void DouseSpell::End() {
