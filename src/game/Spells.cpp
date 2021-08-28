@@ -1062,33 +1062,30 @@ void ARX_SPELLS_Update() {
 	
 	ARX_PROFILE_FUNC();
 	
-	for(size_t u = 0; u < MAX_SPELLS; u++) {
-		SpellBase * spell = spells[SpellHandle(u)];
-		if(!spell)
-			continue;
+	for(SpellBase & spell : spells) {
 		
 		if(!GLOBAL_MAGIC_MODE) {
-			spells.endSpell(spell);
+			spells.endSpell(&spell);
 		}
 		
-		if(!CanPayMana(spell, spell->m_fManaCostPerSecond * (g_gameTime.lastFrameDuration() / 1s))) {
-			ARX_SPELLS_Fizzle(spell);
-			spells.endSpell(spell);
+		if(!CanPayMana(&spell, spell.m_fManaCostPerSecond * (g_gameTime.lastFrameDuration() / 1s))) {
+			ARX_SPELLS_Fizzle(&spell);
+			spells.endSpell(&spell);
 		}
 		
-		spell->m_elapsed += g_gameTime.lastFrameDuration();
+		spell.m_elapsed += g_gameTime.lastFrameDuration();
 		
-		if(spell->m_hasDuration && spell->m_elapsed > spell->m_duration) {
-			SPELLEND_Notify(*spell);
-			spell->End();
-			spells.freeSlot(spell);
+		if(spell.m_hasDuration && spell.m_elapsed > spell.m_duration) {
+			SPELLEND_Notify(spell);
+			spell.End();
+			spells.freeSlot(&spell);
 			continue;
 		}
-
-		if(spell) {
-			spell->Update();
-		}
+		
+		spell.Update();
+		
 	}
+	
 }
 
 void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle target, SpellcastFlags flags, GameDuration duration)
