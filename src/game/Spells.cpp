@@ -197,10 +197,6 @@ void SpellManager::endByCaster(EntityHandle caster, SpellType type) {
 	
 }
 
-bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster) {
-	return getSpellByCaster(caster, typ) != nullptr;
-}
-
 SpellBase * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) {
 	
 	if(caster == EntityHandle()) {

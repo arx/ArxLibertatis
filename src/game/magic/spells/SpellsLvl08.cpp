@@ -38,7 +38,7 @@
 #include "scene/Interactive.h"
 
 bool InvisibilitySpell::CanLaunch() {
-	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
+	return spells.getSpellByCaster(m_caster, m_type) == nullptr;
 }
 
 void InvisibilitySpell::Launch() {
@@ -87,7 +87,7 @@ Vec3f InvisibilitySpell::getPosition() const {
 
 
 bool ManaDrainSpell::CanLaunch() {
-	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
+	return spells.getSpellByCaster(m_caster, m_type) == nullptr;
 }
 
 void ManaDrainSpell::Launch() {
@@ -245,7 +245,7 @@ void EnchantWeaponSpell::Update() { }
 
 
 bool LifeDrainSpell::CanLaunch() {
-	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
+	return spells.getSpellByCaster(m_caster, m_type) == nullptr;
 }
 
 void LifeDrainSpell::Launch() {

@@ -55,7 +55,7 @@ bool FlyingEyeSpell::CanLaunch() {
 		return false;
 	}
 
-	if(spells.ExistAnyInstanceForThisCaster(m_type, m_caster)) {
+	if(spells.getSpellByCaster(m_caster, m_type)) {
 		return false;
 	}
 	

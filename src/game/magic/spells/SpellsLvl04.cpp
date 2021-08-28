@@ -47,8 +47,7 @@ BlessSpell::BlessSpell()
 { }
 
 bool BlessSpell::CanLaunch() {
-	
-	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
+	return spells.getSpellByCaster(m_caster, m_type) == nullptr;
 }
 
 void BlessSpell::Launch() {
@@ -358,8 +357,7 @@ Vec3f ColdProtectionSpell::getPosition() const {
 }
 
 bool TelekinesisSpell::CanLaunch() {
-	
-	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
+	return spells.getSpellByCaster(m_caster, m_type) == nullptr;
 }
 
 void TelekinesisSpell::Launch() {

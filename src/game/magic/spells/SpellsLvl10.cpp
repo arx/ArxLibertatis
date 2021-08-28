@@ -311,7 +311,7 @@ FreezeTimeSpell::FreezeTimeSpell()
 }
 
 bool FreezeTimeSpell::CanLaunch() {
-	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
+	return spells.getSpellByCaster(m_caster, m_type) == nullptr;
 }
 
 void FreezeTimeSpell::Launch() {

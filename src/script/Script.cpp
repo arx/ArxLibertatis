@@ -902,7 +902,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			if(boost::starts_with(name, "^myspell_")) {
 				SpellType id = GetSpellId(name.substr(9));
 				if(id != SPELL_NONE) {
-					if(spells.ExistAnyInstanceForThisCaster(id, context.getEntity()->index())) {
+					if(spells.getSpellByCaster(context.getEntity()->index(), id)) {
 						*lcontent = 1;
 						return TYPE_LONG;
 					}
@@ -1137,7 +1137,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 				
 				SpellType id = GetSpellId(temp);
 				if(id != SPELL_NONE) {
-					if(spells.ExistAnyInstanceForThisCaster(id, EntityHandle_Player)) {
+					if(spells.getSpellByCaster(EntityHandle_Player, id)) {
 						*lcontent = 1;
 						return TYPE_LONG;
 					}

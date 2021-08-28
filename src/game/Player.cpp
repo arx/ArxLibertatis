@@ -1541,7 +1541,7 @@ void ARX_PLAYER_Manage_Visual() {
 		return;
 	}
 	
-	if(spells.ExistAnyInstanceForThisCaster(SPELL_FLYING_EYE, EntityHandle_Player)) {
+	if(spells.getSpellByCaster(EntityHandle_Player, SPELL_FLYING_EYE)) {
 		ARX_PLAYER_Manage_Visual_End(alist[ANIM_MEDITATION], request3_anim, true, false);
 		return;
 	}

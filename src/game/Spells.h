@@ -90,8 +90,6 @@ public:
 	void endByTarget(EntityHandle target, SpellType type);
 	void endByType(SpellType type);
 	
-	bool ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster);
-	
 	SpellBase * getSpellByCaster(EntityHandle caster, SpellType type);
 	SpellBase * getSpellOnTarget(EntityHandle target, SpellType type);
 	float getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type);
