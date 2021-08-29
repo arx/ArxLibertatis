@@ -267,22 +267,16 @@ void AddVertexIdxToGroup(EERIE_3DOBJ * obj, size_t group, size_t val) {
 	
 }
 
-static void ObjectAddSelection(EERIE_3DOBJ * obj, size_t numsel, size_t vidx) {
-	
-	auto & selection = obj->selections[numsel].selected;
-	if(std::find(selection.begin(), selection.end(), vidx) == selection.end()) {
-		selection.push_back(vidx);
-	}
-	
-}
-
 static void copySelection(const EERIE_3DOBJ & source, ObjSelection sourceSelection,
                           EERIE_3DOBJ & dest, ObjSelection destSelection) {
 	
 	for(size_t index : source.selections[sourceSelection.handleData()].selected) {
 		size_t t = getEquivalentVertex(dest, source.vertexlist[index].v);
 		if(t != size_t(-1)) {
-			ObjectAddSelection(&dest, destSelection.handleData(), t);
+			auto & selection = dest.selections[destSelection.handleData()].selected;
+			if(std::find(selection.begin(), selection.end(), t) == selection.end()) {
+				selection.push_back(t);
+			}
 		}
 	}
 	
