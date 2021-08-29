@@ -220,9 +220,8 @@ static void ObjectAddAction(EERIE_3DOBJ * obj, std::string_view name, const EERI
 	
 	size_t newvert = ObjectAddVertex(obj, vert);
 	
-	for(std::vector<EERIE_ACTIONLIST>::iterator i = obj->actionlist.begin();
-	    i != obj->actionlist.end(); ++i) {
-		if(i->name == name) {
+	for(const EERIE_ACTIONLIST & action : obj->actionlist) {
+		if(action.name == name) {
 			return;
 		}
 	}
