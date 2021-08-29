@@ -263,13 +263,11 @@ static void AddVertexToGroup(EERIE_3DOBJ * obj, size_t group, const EERIE_VERTEX
 
 void AddVertexIdxToGroup(EERIE_3DOBJ * obj, size_t group, size_t val) {
 	
-	for(size_t i = 0; i < obj->grouplist[group].indexes.size(); i++) {
-		if(obj->grouplist[group].indexes[i] == val) {
-			return;
-		}
+	auto & indices = obj->grouplist[group].indexes;
+	if(std::find(indices.begin(), indices.end(), val) == indices.end()) {
+		indices.push_back(val);
 	}
 	
-	obj->grouplist[group].indexes.push_back(val);
 }
 
 static void ObjectAddSelection(EERIE_3DOBJ * obj, size_t numsel, size_t vidx) {
