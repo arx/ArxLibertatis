@@ -845,11 +845,10 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	// Load anchor links
 	LogDebug("FTS: loading " << fsh->nb_anchors << " anchors ...");
 	g_tiles->m_anchors.resize(fsh->nb_anchors);
-	for(long i = 0; i < fsh->nb_anchors; i++) {
+	for(ANCHOR_DATA & anchor : g_tiles->m_anchors) {
 		
 		const FAST_ANCHOR_DATA * fad = fts_read<FAST_ANCHOR_DATA>(data, end);
 		
-		ANCHOR_DATA & anchor = g_tiles->m_anchors[i];
 		anchor.blocked = (fad->flags & FastAnchorFlagBlocked) != 0;
 		anchor.pos = fad->pos.toVec3();
 		anchor.height = fad->height;
