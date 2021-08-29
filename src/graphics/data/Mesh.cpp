@@ -874,12 +874,9 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	portals->portals.resize(fsh->nb_portals);
 	
 	LogDebug("FTS: loading " << portals->portals.size() << " portals ...");
-	const EERIE_SAVE_PORTALS * epos;
-	epos = fts_read<EERIE_SAVE_PORTALS>(data, end, portals->portals.size());
-	for(size_t i = 0; i < portals->portals.size(); i++) {
+	for(EERIE_PORTALS & portal : portals->portals) {
 		
-		const EERIE_SAVE_PORTALS * epo = &epos[i];
-		EERIE_PORTALS & portal = portals->portals[i];
+		const EERIE_SAVE_PORTALS * epo = fts_read<EERIE_SAVE_PORTALS>(data, end);
 		
 		portal.room_1 = epo->room_1;
 		portal.room_2 = epo->room_2;
@@ -901,8 +898,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		} else if(epo->poly.type != 64) {
 			LogWarning << "Invalid poly type found in portal " << epo->poly.type;
 		}
+		
 	}
-	
 	
 	LogDebug("FTS: loading " << portals->rooms.size() << " rooms ...");
 	for(size_t i = 0; i < portals->rooms.size(); i++) {
