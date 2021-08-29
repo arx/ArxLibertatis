@@ -310,7 +310,7 @@ void lightHandleDestroy(LightHandle & handle) {
 	handle = LightHandle();
 }
 
-void endLightDelayed(LightHandle & handle, GameDuration delay) {
+void endLightDelayed(LightHandle handle, GameDuration delay) {
 	
 	if(EERIE_LIGHT * light = lightHandleGet(handle)) {
 		light->duration = delay;

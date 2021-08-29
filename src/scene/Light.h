@@ -177,7 +177,7 @@ EERIE_LIGHT * dynLightCreate(LightHandle & handle);
 EERIE_LIGHT * dynLightCreate();
 
 void lightHandleDestroy(LightHandle & handle);
-void endLightDelayed(LightHandle & handle, GameDuration delay);
+void endLightDelayed(LightHandle handle, GameDuration delay);
 
 void resetDynLights();
 
