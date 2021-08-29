@@ -1123,7 +1123,7 @@ void ComputePortalVertexBuffer() {
 		
 		// Allocate the vertex buffer for this room
 		// TODO should be static, but is updated for dynamic lighting
-		room->pVertexBuffer.reset(GRenderer->createVertexBuffer(vertexCount, Renderer::Dynamic));
+		room->pVertexBuffer = GRenderer->createVertexBuffer(vertexCount, Renderer::Dynamic);
 		
 		
 		// Now fill the buffers

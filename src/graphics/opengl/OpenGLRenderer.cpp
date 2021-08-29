@@ -739,10 +739,10 @@ Renderer::AlphaCutoutAntialising OpenGLRenderer::getMaxSupportedAlphaCutoutAntia
 }
 
 template <typename Vertex>
-static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
-                                                     size_t capacity,
-                                                     Renderer::BufferUsage usage,
-                                                     std::string_view setting) {
+static std::unique_ptr<VertexBuffer<Vertex>> createVertexBufferImpl(OpenGLRenderer * renderer,
+                                                                    size_t capacity,
+                                                                    Renderer::BufferUsage usage,
+                                                                    std::string_view setting) {
 	
 	bool matched = false;
 	
@@ -754,25 +754,25 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 			
 			if(setting.empty() || setting == "persistent-orphan") {
 				if(usage != Renderer::Static) {
-					return new GLPersistentOrphanVertexBuffer<Vertex>(renderer, capacity, usage);
+					return std::make_unique<GLPersistentOrphanVertexBuffer<Vertex>>(renderer, capacity, usage);
 				}
 				matched = true;
 			}
 			if(setting.empty() || setting == "persistent-x3") {
 				if(usage == Renderer::Stream) {
-					return new GLPersistentFenceVertexBuffer<Vertex, 3>(renderer, capacity, usage, 3);
+					return std::make_unique<GLPersistentFenceVertexBuffer<Vertex, 3>>(renderer, capacity, usage, 3);
 				}
 				matched = true;
 			}
 			if(setting.empty() || setting == "persistent-x2") {
 				if(usage == Renderer::Stream) {
-					return new GLPersistentFenceVertexBuffer<Vertex, 3>(renderer, capacity, usage, 2);
+					return std::make_unique<GLPersistentFenceVertexBuffer<Vertex, 3>>(renderer, capacity, usage, 2);
 				}
 				matched = true;
 			}
 			if(setting == "persistent-nosync") {
 				if(usage != Renderer::Static) {
-					return new GLPersistentUnsynchronizedVertexBuffer<Vertex>(renderer, capacity, usage);
+					return std::make_unique<GLPersistentUnsynchronizedVertexBuffer<Vertex>>(renderer, capacity, usage);
 				}
 				matched = true;
 			}
@@ -782,7 +782,7 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 		#endif // GL_ARB_buffer_storage
 		
 		if(setting.empty() || setting == "maprange" || setting == "maprange+subdata") {
-			return new GLMapRangeVertexBuffer<Vertex>(renderer, capacity, usage);
+			return std::make_unique<GLMapRangeVertexBuffer<Vertex>>(renderer, capacity, usage);
 		}
 		
 	}
@@ -790,13 +790,13 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 	if(renderer->hasMapBuffer()) {
 		
 		if(setting.empty() || setting == "map" || setting == "map+subdata") {
-			return new GLMapVertexBuffer<Vertex>(renderer, capacity, usage);
+			return std::make_unique<GLMapVertexBuffer<Vertex>>(renderer, capacity, usage);
 		}
 		
 	}
 	
 	if(setting.empty() || setting == "shadow" || setting == "shadow+subdata") {
-		return new GLShadowVertexBuffer<Vertex>(renderer, capacity, usage);
+		return std::make_unique<GLShadowVertexBuffer<Vertex>>(renderer, capacity, usage);
 	}
 	
 	static bool warned = false;
@@ -808,21 +808,24 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 }
 
 template <typename Vertex>
-static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
-                                                     size_t capacity,
-                                                     Renderer::BufferUsage usage) {
+static std::unique_ptr<VertexBuffer<Vertex>> createVertexBufferImpl(OpenGLRenderer * renderer,
+                                                                    size_t capacity,
+                                                                    Renderer::BufferUsage usage) {
 	return createVertexBufferImpl<Vertex>(renderer, capacity, usage, config.video.bufferUpload);
 }
 
-VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
+std::unique_ptr<VertexBuffer<TexturedVertex>> OpenGLRenderer::createVertexBufferTL(size_t capacity,
+                                                                                   BufferUsage usage) {
 	return createVertexBufferImpl<TexturedVertex>(this, capacity, usage);
 }
 
-VertexBuffer<SMY_VERTEX> * OpenGLRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
+std::unique_ptr<VertexBuffer<SMY_VERTEX>> OpenGLRenderer::createVertexBuffer(size_t capacity,
+                                                                             BufferUsage usage) {
 	return createVertexBufferImpl<SMY_VERTEX>(this, capacity, usage);
 }
 
-VertexBuffer<SMY_VERTEX3> * OpenGLRenderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
+std::unique_ptr<VertexBuffer<SMY_VERTEX3>> OpenGLRenderer::createVertexBuffer3(size_t capacity,
+                                                                               BufferUsage usage) {
 	return createVertexBufferImpl<SMY_VERTEX3>(this, capacity, usage);
 }
 

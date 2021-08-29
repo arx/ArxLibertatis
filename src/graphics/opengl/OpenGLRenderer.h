@@ -20,6 +20,8 @@
 #ifndef ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
 #define ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
 
+#include <memory>
+
 #include <boost/intrusive/list.hpp>
 
 #include "graphics/Renderer.h"
@@ -77,9 +79,9 @@ public:
 	
 	AlphaCutoutAntialising getMaxSupportedAlphaCutoutAntialiasing() const override;
 	
-	VertexBuffer<TexturedVertex> * createVertexBufferTL(size_t capacity, BufferUsage usage) override;
-	VertexBuffer<SMY_VERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage) override;
-	VertexBuffer<SMY_VERTEX3> * createVertexBuffer3(size_t capacity, BufferUsage usage) override;
+	std::unique_ptr<VertexBuffer<TexturedVertex>> createVertexBufferTL(size_t capacity, BufferUsage usage) override;
+	std::unique_ptr<VertexBuffer<SMY_VERTEX>> createVertexBuffer(size_t capacity, BufferUsage usage) override;
+	std::unique_ptr<VertexBuffer<SMY_VERTEX3>> createVertexBuffer3(size_t capacity, BufferUsage usage) override;
 	
 	void drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices,
 	                 unsigned short * indices, size_t nindices) override;
