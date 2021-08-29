@@ -279,6 +279,20 @@ static void ObjectAddSelection(EERIE_3DOBJ * obj, size_t numsel, size_t vidx) {
 	
 }
 
+static void copySelection(const EERIE_3DOBJ & source, ObjSelection sourceSelection,
+                          EERIE_3DOBJ & dest, ObjSelection destSelection) {
+	
+	for(size_t index : source.selections[sourceSelection.handleData()].selected) {
+		EERIE_VERTEX temp;
+		temp.v = source.vertexlist[index].v;
+		long t = GetEquivalentVertex(&dest, &temp);
+		if(t != -1) {
+			ObjectAddSelection(&dest, destSelection.handleData(), t);
+		}
+	}
+	
+}
+
 static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERIE_3DOBJ * obj2, long tw) {
 	
 	ObjSelection tw1 = ObjSelection();
@@ -502,149 +516,57 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 				work->grouplist[k].origin = v;
 		}
 	}
-
-	// Recreate Selection Groups (only the 3 selections needed to reiterate MeshTweaking !)
+	
+	// Recreate Selection Groups (only the 3 selections needed to reiterate mesh tweaking)
 	work->selections.resize(3);
 	work->selections[0].name = "head";
 	work->selections[1].name = "chest";
 	work->selections[2].name = "leggings";
-
-	// Re-Creating sel_head
 	if(tw == TWEAK_HEAD) {
-		const EERIE_SELECTIONS & sel = obj2->selections[sel_head2.handleData()];
-		
-		for(size_t l = 0; l < sel.selected.size(); l++) {
-			EERIE_VERTEX temp;
-			temp.v = obj2->vertexlist[sel.selected[l]].v;
-			long t = GetEquivalentVertex(work, &temp);
-
-			if(t != -1) {
-				ObjectAddSelection(work, 0, t);
-			}
-		}
+		copySelection(*obj2, sel_head2, *work, ObjSelection(0));
 	} else {
-		const EERIE_SELECTIONS & sel = obj1->selections[sel_head1.handleData()];
-		
-		for(size_t l = 0; l < sel.selected.size(); l++) {
-			EERIE_VERTEX temp;
-			temp.v = obj1->vertexlist[sel.selected[l]].v;
-			long t = GetEquivalentVertex(work, &temp);
-
-			if(t != -1) {
-				ObjectAddSelection(work, 0, t);
-			}
-		}
+		copySelection(*obj1, sel_head1, *work, ObjSelection(0));
 	}
-
-	// Re-Create sel_torso
 	if(tw == TWEAK_TORSO) {
-		const EERIE_SELECTIONS & sel = obj2->selections[sel_torso2.handleData()];
-		
-		for(size_t l = 0; l < sel.selected.size(); l++) {
-			EERIE_VERTEX temp;
-			temp.v = obj2->vertexlist[sel.selected[l]].v;
-			long t = GetEquivalentVertex(work, &temp);
-
-			if(t != -1) {
-				ObjectAddSelection(work, 1, t);
-			}
-		}
+		copySelection(*obj2, sel_torso2, *work, ObjSelection(1));
 	} else {
-		const EERIE_SELECTIONS & sel = obj1->selections[sel_torso1.handleData()];
-		
-		for(size_t l = 0; l < sel.selected.size(); l++) {
-			EERIE_VERTEX temp;
-			temp.v = obj1->vertexlist[sel.selected[l]].v;
-			long t = GetEquivalentVertex(work, &temp);
-
-			if(t != -1) {
-				ObjectAddSelection(work, 1, t);
-			}
-		}
+		copySelection(*obj1, sel_torso1, *work, ObjSelection(1));
 	}
-
-	// Re-Create sel_legs
 	if(tw == TWEAK_LEGS) {
-		const EERIE_SELECTIONS & sel = obj2->selections[sel_legs2.handleData()];
-		
-		for(size_t l = 0; l < sel.selected.size(); l++) {
-			EERIE_VERTEX temp;
-			temp.v = obj2->vertexlist[sel.selected[l]].v;
-			long t = GetEquivalentVertex(work, &temp);
-
-			if(t != -1) {
-				ObjectAddSelection(work, 2, t);
-			}
-		}
+		copySelection(*obj2, sel_legs2, *work, ObjSelection(2));
 	} else {
-		const EERIE_SELECTIONS & sel = obj1->selections[sel_legs1.handleData()];
-		
-		for(size_t l = 0; l < sel.selected.size(); l++) {
-			EERIE_VERTEX temp;
-			temp.v = obj1->vertexlist[sel.selected[l]].v;
-			long t = GetEquivalentVertex(work, &temp);
-
-			if(t != -1) {
-				ObjectAddSelection(work, 2, t);
-			}
-		}
+		copySelection(*obj1, sel_legs1, *work, ObjSelection(2));
 	}
-
+	
 	// Now recreates other selections...
 	for(size_t i = 0; i < obj1->selections.size(); i++) {
 		
-		if(EERIE_OBJECT_GetSelection(work, obj1->selections[i].name) == ObjSelection()) {
-			size_t num = work->selections.size();
-			work->selections.resize(num + 1);
-			work->selections[num].name = obj1->selections[i].name;
-
-			for(size_t l = 0; l < obj1->selections[i].selected.size(); l++) {
-				EERIE_VERTEX temp;
-				temp.v = obj1->vertexlist[obj1->selections[i].selected[l]].v;
-				long t = GetEquivalentVertex(work, &temp);
-
-				if (t != -1)
-				{
-					ObjectAddSelection(work, num, t);
-				}
-			}
-
-			ObjSelection ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[i].name);
-
-			if(ii != ObjSelection()) {
-				const EERIE_SELECTIONS & sel = obj2->selections[ii.handleData()];
-				
-				for(size_t l = 0; l < sel.selected.size(); l++) {
-					EERIE_VERTEX temp;
-					temp.v = obj2->vertexlist[sel.selected[l]].v;
-					long t = GetEquivalentVertex(work, &temp);
-
-					if(t != -1) {
-						ObjectAddSelection(work, num, t);
-					}
-				}
-			}
+		if(EERIE_OBJECT_GetSelection(work, obj1->selections[i].name) != ObjSelection()) {
+			continue;
 		}
+		
+		size_t num = work->selections.size();
+		work->selections.resize(num + 1);
+		work->selections[num].name = obj1->selections[i].name;
+		
+		copySelection(*obj1, ObjSelection(i), *work, ObjSelection(num));
+		
+		ObjSelection ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[i].name);
+		if(ii != ObjSelection()) {
+			copySelection(*obj2, ii, *work, ObjSelection(num));
+		}
+		
 	}
-
+	
 	for(size_t i = 0; i < obj2->selections.size(); i++) {
 		if(EERIE_OBJECT_GetSelection(work, obj2->selections[i].name) == ObjSelection()) {
 			size_t num = work->selections.size();
 			work->selections.resize(num + 1);
 			work->selections[num].name = obj2->selections[i].name;
-
-			for(size_t l = 0; l < obj2->selections[i].selected.size(); l++) {
-				EERIE_VERTEX temp;
-				temp.v = obj2->vertexlist[obj2->selections[i].selected[l]].v;
-				long t = GetEquivalentVertex(work, &temp);
-
-				if(t != -1) {
-					ObjectAddSelection(work, num, t);
-				}
-			}
+			copySelection(*obj2, ObjSelection(i), *work, ObjSelection(num));
 		}
 	}
-
+	
 	// Recreate Animation-groups vertex
 	for(size_t i = 0; i < obj1->grouplist.size(); i++) {
 		for(size_t j = 0; j < obj1->grouplist[i].indexes.size(); j++) {
