@@ -1163,7 +1163,7 @@ static bool IsPlayerStriking() {
 	arx_assert(entities.player());
 	Entity * io = entities.player();
 	
-	AnimLayer & layer1 = io->animlayer[1];
+	const AnimLayer & layer1 = io->animlayer[1];
 	WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 	
 	switch(weapontype) {
@@ -1246,7 +1246,7 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 	if(io->_npcdata->weapontype != 0 && io->_npcdata->weaponinhand != 1)
 		return;
 	
-	AnimLayer & layer1 = io->animlayer[1];
+	const AnimLayer & layer1 = io->animlayer[1];
 	
 	if(io->_npcdata->weapontype == 0) {
 		if((layer1.cur_anim != io->anims[ANIM_BARE_WAIT]
@@ -1386,7 +1386,7 @@ static void TryAndCheckAnim(Entity * io, long animnum, long layerIndex) {
 		return;
 	}
 	
-	AnimLayer & layer = io->animlayer[layerIndex];
+	const AnimLayer & layer = io->animlayer[layerIndex];
 	if(layer.cur_anim != io->anims[animnum] && layer.cur_anim) {
 		if(TryIOAnimMove(io, animnum)) {
 			changeAnimation(io, layerIndex, AnimationNumber(animnum));
@@ -1402,7 +1402,7 @@ static const float STRIKE_DISTANCE = 220.f;
 //! Main animations management
 static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	
-	AnimLayer & layer0 = io->animlayer[0];
+	const AnimLayer & layer0 = io->animlayer[0];
 	AnimLayer & layer1 = io->animlayer[1];
 	
 	float tdist = std::numeric_limits<float>::max();
