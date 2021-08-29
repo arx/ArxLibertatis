@@ -975,10 +975,10 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
 	
 	LogDebug("Destroying scene VBOs");
 	
-	for(size_t i = 0; i < portals->rooms.size(); i++) {
-		portals->rooms[i].pVertexBuffer.reset();
-		portals->rooms[i].indexBuffer.clear();
-		portals->rooms[i].ppTextureContainer.clear();
+	for(EERIE_ROOM_DATA & room : portals->rooms) {
+		room.pVertexBuffer.reset();
+		room.indexBuffer.clear();
+		room.ppTextureContainer.clear();
 	}
 	
 }
