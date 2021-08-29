@@ -56,65 +56,57 @@ static bool IsNearSelection(EERIE_3DOBJ * obj, long vert, ObjSelection tw) {
  */
 static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
-	if(!ioo)
+	if(!ioo) {
 		return;
-
-	EERIE_3DOBJ * from = ioo->obj;
+	}
 	
+	EERIE_3DOBJ * from = ioo->obj;
 	if(!from || num == ObjSelection() || size_t(num.handleData()) >= from->selections.size()) {
 		return;
 	}
 	
 	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ;
-
-	if(!nouvo)
+	if(!nouvo) {
 		return;
-
-	size_t nvertex = from->selections[num.handleData()].selected.size();
-
+	}
+	
 	long gore = -1;
-
 	for(size_t k = 0; k < from->texturecontainer.size(); k++) {
-		if(from->texturecontainer[k]
-		   && boost::contains(from->texturecontainer[k]->m_texName.string(), "gore"))
-		{
+		if(from->texturecontainer[k] && boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")) {
 			gore = k;
 			break;
 		}
 	}
-
-	for(size_t k = 0; k < from->facelist.size(); k++) {
-		if(from->facelist[k].texid == gore) {
-			if(   IsNearSelection(from, from->facelist[k].vid[0], num)
-			   || IsNearSelection(from, from->facelist[k].vid[1], num)
-			   || IsNearSelection(from, from->facelist[k].vid[2], num)
-			) {
-				nvertex += 3;
-			}
+	
+	size_t nvertex = from->selections[num.handleData()].selected.size();
+	for(EERIE_FACE & face : from->facelist) {
+		if(face.texid == gore
+		   && (IsNearSelection(from, face.vid[0], num)
+		       || IsNearSelection(from, face.vid[1], num)
+		       || IsNearSelection(from, face.vid[2], num))) {
+			nvertex += 3;
 		}
 	}
-
+	
 	nouvo->vertexlist.resize(nvertex);
 	nouvo->vertexWorldPositions.resize(nvertex);
 	nouvo->vertexClipPositions.resize(nvertex);
 	nouvo->vertexColors.resize(nvertex);
-
+	
 	size_t inpos = 0;
 	
 	std::vector<long> equival(from->vertexlist.size(), -1);
 	
 	const EERIE_SELECTIONS & cutSelection = from->selections[num.handleData()];
-
+	
 	arx_assert(0 < cutSelection.selected.size());
-
+	
 	for(size_t k = 0; k < cutSelection.selected.size(); k++) {
 		inpos = cutSelection.selected[k];
 		equival[cutSelection.selected[k]] = k;
-		
 		nouvo->vertexlist[k] = from->vertexlist[cutSelection.selected[k]];
 		nouvo->vertexlist[k].v = from->vertexWorldPositions[cutSelection.selected[k]].v;
 		nouvo->vertexlist[k].v -= ioo->pos;
-		
 		nouvo->vertexWorldPositions[k] = nouvo->vertexlist[k];
 	}
 	
