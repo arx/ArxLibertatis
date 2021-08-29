@@ -143,97 +143,77 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	obj->origin = af3Ddh->origin;
 	obj->file = res::path::load(util::loadString(af3Ddh->name));
 	
-	// Alloc'n'Copy vertices
-	if(!obj->vertexlist.empty()) {
-		
-		// Vertices stored as EERIE_OLD_VERTEX, copy in to new one
-		for(EERIE_VERTEX & vertex : obj->vertexlist) {
-			vertex = *reinterpret_cast<const EERIE_OLD_VERTEX *>(dat + pos);
-			pos += sizeof(EERIE_OLD_VERTEX);
-		}
-		
-		obj->vertexWorldPositions.resize(obj->vertexlist.size());
-		obj->vertexClipPositions.resize(obj->vertexlist.size());
-		obj->vertexColors.resize(obj->vertexlist.size());
-		
+	// Vertices stored as EERIE_OLD_VERTEX, copy in to new one
+	for(EERIE_VERTEX & vertex : obj->vertexlist) {
+		vertex = *reinterpret_cast<const EERIE_OLD_VERTEX *>(dat + pos);
+		pos += sizeof(EERIE_OLD_VERTEX);
 	}
 	
-	// Alloc'n'Copy faces
-	if(!obj->facelist.empty()) {
+	obj->vertexWorldPositions.resize(obj->vertexlist.size());
+	obj->vertexClipPositions.resize(obj->vertexlist.size());
+	obj->vertexColors.resize(obj->vertexlist.size());
+	
+	// Copy the face data in
+	for(EERIE_FACE & face : obj->facelist) {
 		
-		// Copy the face data in
-		for(EERIE_FACE & face : obj->facelist) {
-			
-			const EERIE_FACE_FTL * eff = reinterpret_cast<const EERIE_FACE_FTL *>(dat + pos);
-			pos += sizeof(EERIE_FACE_FTL);
-			
-			face.facetype = PolyType::load(eff->facetype);
-			face.texid = eff->texid;
-			face.transval = eff->transval;
-			face.norm = eff->norm.toVec3();
-			
-			// Copy in all the texture and normals data
-			static_assert(IOPOLYVERT_FTL == IOPOLYVERT, "array size mismatch");
-			for(size_t kk = 0; kk < IOPOLYVERT_FTL; kk++) {
-				face.vid[kk] = eff->vid[kk];
-				face.u[kk] = eff->u[kk];
-				face.v[kk] = eff->v[kk];
-			}
-			
+		const EERIE_FACE_FTL * eff = reinterpret_cast<const EERIE_FACE_FTL *>(dat + pos);
+		pos += sizeof(EERIE_FACE_FTL);
+		
+		face.facetype = PolyType::load(eff->facetype);
+		face.texid = eff->texid;
+		face.transval = eff->transval;
+		face.norm = eff->norm.toVec3();
+		
+		// Copy in all the texture and normals data
+		static_assert(IOPOLYVERT_FTL == IOPOLYVERT, "array size mismatch");
+		for(size_t kk = 0; kk < IOPOLYVERT_FTL; kk++) {
+			face.vid[kk] = eff->vid[kk];
+			face.u[kk] = eff->u[kk];
+			face.v[kk] = eff->v[kk];
 		}
 		
 	}
 	
-	// Alloc'n'Copy textures
-	if(af3Ddh->nb_maps > 0) {
+	// Copy in the texture containers
+	for(TextureContainer * & texture : obj->texturecontainer) {
 		
-		// Copy in the texture containers
-		for(TextureContainer * & texture : obj->texturecontainer) {
-			
-			const Texture_Container_FTL * tex;
-			tex = reinterpret_cast<const Texture_Container_FTL *>(dat + pos);
-			pos += sizeof(Texture_Container_FTL);
-			
-			if(tex->name[0] == '\0') {
-				// Some object files contain textures with empty names
-				// Don't bother trying to load them as that will just generate an error message
-				texture = nullptr;
-			} else {
-				// Create the texture and put it in the container list
-				res::path name = res::path::load(util::loadString(tex->name)).remove_ext();
-				texture = TextureContainer::Load(name, TextureContainer::Level);
-			}
-			
+		const Texture_Container_FTL * tex;
+		tex = reinterpret_cast<const Texture_Container_FTL *>(dat + pos);
+		pos += sizeof(Texture_Container_FTL);
+		
+		if(tex->name[0] == '\0') {
+			// Some object files contain textures with empty names
+			// Don't bother trying to load them as that will just generate an error message
+			texture = nullptr;
+		} else {
+			// Create the texture and put it in the container list
+			res::path name = res::path::load(util::loadString(tex->name)).remove_ext();
+			texture = TextureContainer::Load(name, TextureContainer::Level);
 		}
 		
 	}
 	
-	// Alloc'n'Copy groups
-	if(!obj->grouplist.empty()) {
+	// Copy in the grouplist data
+	for(VertexGroup & group : obj->grouplist) {
 		
-		// Copy in the grouplist data
-		for(VertexGroup & group : obj->grouplist) {
-			
-			const EERIE_GROUPLIST_FTL * rawGroup = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
-			pos += sizeof(EERIE_GROUPLIST_FTL);
-			
-			group.name = util::toLowercase(util::loadString(rawGroup->name));
-			group.origin = rawGroup->origin;
-			group.indexes.resize(rawGroup->nb_index);
-			group.m_blobShadowSize = rawGroup->siz;
-			
+		const EERIE_GROUPLIST_FTL * rawGroup = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
+		pos += sizeof(EERIE_GROUPLIST_FTL);
+		
+		group.name = util::toLowercase(util::loadString(rawGroup->name));
+		group.origin = rawGroup->origin;
+		group.indexes.resize(rawGroup->nb_index);
+		group.m_blobShadowSize = rawGroup->siz;
+		
+	}
+	
+	// Copy in the group index data
+	for(VertexGroup & group : obj->grouplist) {
+		if(!group.indexes.empty()) {
+			const s32 * begin = reinterpret_cast<const s32 *>(dat + pos);
+			pos += sizeof(s32) * group.indexes.size();
+			const s32 * end = reinterpret_cast<const s32 *>(dat + pos);
+			std::copy(begin, end, group.indexes.begin());
 		}
-		
-		// Copy in the group index data
-		for(VertexGroup & group : obj->grouplist) {
-			if(!group.indexes.empty()) {
-				const s32 * begin = reinterpret_cast<const s32 *>(dat + pos);
-				pos += sizeof(s32) * group.indexes.size();
-				const s32 * end = reinterpret_cast<const s32 *>(dat + pos);
-				std::copy(begin, end, group.indexes.begin());
-			}
-		}
-		
 	}
 	
 	// Copy in the action points data
