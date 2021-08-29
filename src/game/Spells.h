@@ -82,7 +82,7 @@ public:
 	
 	[[nodiscard]] SpellBase * operator[](SpellHandle handle) noexcept;
 	
-	void endSpell(SpellBase * spell) noexcept;
+	static void endSpell(SpellBase * spell) noexcept;
 	
 	void endByCaster(EntityHandle caster) noexcept;
 	void endByCaster(EntityHandle caster, SpellType type) noexcept;
