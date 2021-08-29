@@ -223,21 +223,22 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	}
 	
 	// Copy in the selections data
-	for(size_t i = 0 ; i < obj->selections.size(); i++) {
+	for(EERIE_SELECTIONS & selection : obj->selections) {
 		
-		const EERIE_SELECTIONS_FTL * selection = reinterpret_cast<const EERIE_SELECTIONS_FTL *>(dat + pos);
+		const EERIE_SELECTIONS_FTL * rawSelection = reinterpret_cast<const EERIE_SELECTIONS_FTL *>(dat + pos);
 		pos += sizeof(EERIE_SELECTIONS_FTL);
 		
-		obj->selections[i].name = util::toLowercase(util::loadString(selection->name));
-		obj->selections[i].selected.resize(selection->nb_selected);
+		selection.name = util::toLowercase(util::loadString(rawSelection->name));
+		selection.selected.resize(rawSelection->nb_selected);
+		
 	}
 	
 	// Copy in the selections selected data
-	for(long i = 0; i < af3Ddh->nb_selections; i++) {
+	for(EERIE_SELECTIONS & selection : obj->selections) {
 		const s32 * begin = reinterpret_cast<const s32 *>(dat + pos);
-		pos += sizeof(s32) * obj->selections[i].selected.size();
+		pos += sizeof(s32) * selection.selected.size();
 		const s32 * end = reinterpret_cast<const s32 *>(dat + pos);
-		std::copy(begin, end, obj->selections[i].selected.begin());
+		std::copy(begin, end, selection.selected.begin());
 	}
 	
 	ARX_UNUSED(pos);
