@@ -80,36 +80,36 @@ public:
 	void init();
 	void clearAll();
 	
-	SpellBase * operator[](SpellHandle handle);
+	[[nodiscard]] SpellBase * operator[](SpellHandle handle) noexcept;
 	
-	void endSpell(SpellBase * spell);
+	void endSpell(SpellBase * spell) noexcept;
 	
-	void endByCaster(EntityHandle caster);
-	void endByCaster(EntityHandle caster, SpellType type);
+	void endByCaster(EntityHandle caster) noexcept;
+	void endByCaster(EntityHandle caster, SpellType type) noexcept;
 	
-	void endByTarget(EntityHandle target, SpellType type);
-	void endByType(SpellType type);
+	void endByTarget(EntityHandle target, SpellType type) noexcept;
+	void endByType(SpellType type) noexcept;
 	
-	SpellBase * getSpellByCaster(EntityHandle caster, SpellType type);
-	SpellBase * getSpellOnTarget(EntityHandle target, SpellType type);
-	float getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type);
+	[[nodiscard]] SpellBase * getSpellByCaster(EntityHandle caster, SpellType type) noexcept;
+	[[nodiscard]] SpellBase * getSpellOnTarget(EntityHandle target, SpellType type) noexcept;
+	[[nodiscard]] float getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type) noexcept;
 	
-	void replaceCaster(EntityHandle oldCaster, EntityHandle newCaster);
-	void removeTarget(Entity * io);
+	void replaceCaster(EntityHandle oldCaster, EntityHandle newCaster) noexcept;
+	void removeTarget(Entity * io) noexcept;
 	
 	SpellBase & addSpell(std::unique_ptr<SpellBase> spell);
 	void freeSlot(SpellBase * spell);
 	
-	[[nodiscard]] auto begin() const { return util::entries(m_spells).begin(); }
-	[[nodiscard]] auto end() const { return util::entries(m_spells).end(); }
+	[[nodiscard]] auto begin() const noexcept { return util::entries(m_spells).begin(); }
+	[[nodiscard]] auto end() const noexcept { return util::entries(m_spells).end(); }
 	
-	[[nodiscard]] auto byCaster(EntityHandle caster) const {
+	[[nodiscard]] auto byCaster(EntityHandle caster) const noexcept {
 		return util::filter(*this, [caster](const SpellBase & spell) {
 			return spell.m_caster == caster;
 		});
 	}
 	
-	[[nodiscard]] auto ofType(SpellType type) const {
+	[[nodiscard]] auto ofType(SpellType type) const noexcept {
 		return util::filter(*this, [type](const SpellBase & spell) {
 			return spell.m_type == type;
 		});

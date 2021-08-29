@@ -152,18 +152,18 @@ void SpellManager::clearAll() {
 	m_spells.clear();
 }
 
-SpellBase * SpellManager::operator[](const SpellHandle handle) {
+SpellBase * SpellManager::operator[](const SpellHandle handle) noexcept {
 	return size_t(handle.handleData()) < m_spells.size() ? m_spells[handle.handleData()].get() : nullptr;
 }
 
 static void SPELLEND_Notify(const SpellBase & spell);
 
-void SpellManager::endSpell(SpellBase * spell) {
+void SpellManager::endSpell(SpellBase * spell) noexcept {
 	spell->m_duration = 0;
 	spell->m_hasDuration = true;
 }
 
-void SpellManager::endByCaster(EntityHandle caster) {
+void SpellManager::endByCaster(EntityHandle caster) noexcept {
 	
 	for(SpellBase & spell : byCaster(caster)) {
 		endSpell(&spell);
@@ -171,7 +171,7 @@ void SpellManager::endByCaster(EntityHandle caster) {
 	
 }
 
-void SpellManager::endByTarget(EntityHandle target, SpellType type) {
+void SpellManager::endByTarget(EntityHandle target, SpellType type) noexcept {
 	
 	SpellBase * spell = getSpellOnTarget(target, type);
 	if(spell) {
@@ -180,7 +180,7 @@ void SpellManager::endByTarget(EntityHandle target, SpellType type) {
 	
 }
 
-void SpellManager::endByType(SpellType type) {
+void SpellManager::endByType(SpellType type) noexcept {
 	
 	for(SpellBase & spell : ofType(type)) {
 		endSpell(&spell);
@@ -188,7 +188,7 @@ void SpellManager::endByType(SpellType type) {
 	
 }
 
-void SpellManager::endByCaster(EntityHandle caster, SpellType type) {
+void SpellManager::endByCaster(EntityHandle caster, SpellType type) noexcept {
 	
 	SpellBase * spell = getSpellByCaster(caster, type);
 	if(spell) {
@@ -197,7 +197,7 @@ void SpellManager::endByCaster(EntityHandle caster, SpellType type) {
 	
 }
 
-SpellBase * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) {
+SpellBase * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) noexcept {
 	
 	if(caster == EntityHandle()) {
 		return nullptr;
@@ -212,7 +212,7 @@ SpellBase * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) 
 	return nullptr;
 }
 
-SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type) {
+SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type) noexcept {
 	
 	if(target == EntityHandle()) {
 		return nullptr;
@@ -227,7 +227,7 @@ SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type) 
 	return nullptr;
 }
 
-float SpellManager::getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type) {
+float SpellManager::getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type) noexcept {
 	
 	float level = 0.f;
 	for(SpellBase & spell : ofType(type)) {
@@ -239,7 +239,7 @@ float SpellManager::getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellT
 	return level;
 }
 
-void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster) {
+void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster) noexcept {
 	
 	for(SpellBase & spell : byCaster(oldCaster)) {
 		spell.m_caster = newCaster;
@@ -247,7 +247,7 @@ void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster)
 	
 }
 
-void SpellManager::removeTarget(Entity * io) {
+void SpellManager::removeTarget(Entity * io) noexcept {
 	
 	for(SpellBase & spell : *this) {
 		spell.m_targets.erase(std::remove(spell.m_targets.begin(), spell.m_targets.end(), io->index()),
