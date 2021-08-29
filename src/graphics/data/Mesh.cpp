@@ -902,15 +902,11 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	}
 	
 	LogDebug("FTS: loading " << portals->rooms.size() << " rooms ...");
-	for(size_t i = 0; i < portals->rooms.size(); i++) {
+	for(EERIE_ROOM_DATA & room : portals->rooms) {
 		
-		const EERIE_SAVE_ROOM_DATA * erd;
-		erd = fts_read<EERIE_SAVE_ROOM_DATA>(data, end);
+		const EERIE_SAVE_ROOM_DATA * erd = fts_read<EERIE_SAVE_ROOM_DATA>(data, end);
 		
-		EERIE_ROOM_DATA & room = portals->rooms[i];
-		
-		LogDebug(" - room " << i << ": " << erd->nb_portals << " portals, "
-		         << erd->nb_polys << " polygons");
+		LogDebug(" - room: " << erd->nb_portals << " portals, " << erd->nb_polys << " polygons");
 		
 		room.portals.resize(erd->nb_portals);
 		const s32 * start = fts_read<s32>(data, end, erd->nb_portals);
