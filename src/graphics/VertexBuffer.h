@@ -21,6 +21,8 @@
 #define ARX_GRAPHICS_VERTEXBUFFER_H
 
 #include <algorithm>
+#include <memory>
+#include <utility>
 
 #include "graphics/Renderer.h"
 #include "platform/Platform.h"
@@ -95,17 +97,20 @@ public:
 	CircularVertexBuffer(const CircularVertexBuffer &) = delete;
 	CircularVertexBuffer & operator=(const CircularVertexBuffer &) = delete;
 	
-	VertexBuffer<Vertex> * const vb;
+	std::unique_ptr<VertexBuffer<Vertex>> const m_buffer;
 	
 	size_t pos;
 	
-	explicit CircularVertexBuffer(VertexBuffer<Vertex> * _vb) : vb(_vb), pos(0) { }
+	explicit CircularVertexBuffer(std::unique_ptr<VertexBuffer<Vertex>> buffer)
+		: m_buffer(std::move(buffer))
+		, pos(0)
+	{ }
 	
 	void draw(Renderer::Primitive primitive, const Vertex * vertices, size_t count) {
 		
 		const Vertex * src = vertices;
 		
-		size_t num = std::min(count, vb->capacity());
+		size_t num = std::min(count, m_buffer->capacity());
 		
 		// Make sure num is a multiple of the primitive's stride.
 		if(primitive == Renderer::TriangleList) {
@@ -119,10 +124,10 @@ public:
 			num &= 1;
 		}
 		
-		size_t dst_offset = (pos + num > vb->capacity()) ? 0 : pos;
+		size_t dst_offset = (pos + num > m_buffer->capacity()) ? 0 : pos;
 		
-		vb->setData(src, num, dst_offset, dst_offset ? NoOverwrite : DiscardBuffer);
-		vb->draw(primitive, num, dst_offset);
+		m_buffer->setData(src, num, dst_offset, dst_offset ? NoOverwrite : DiscardBuffer);
+		m_buffer->draw(primitive, num, dst_offset);
 		
 		pos = dst_offset + num;
 		src += num, count -= num;
@@ -135,10 +140,10 @@ public:
 			
 			case Renderer::TriangleList: {
 				do {
-					num = std::min(count, vb->capacity());
+					num = std::min(count, m_buffer->capacity());
 					num -= num % 3;
-					vb->setData(src, num, 0, DiscardBuffer);
-					vb->draw(primitive, num);
+					m_buffer->setData(src, num, 0, DiscardBuffer);
+					m_buffer->draw(primitive, num);
 					src += num, count -= num, pos = num;
 				} while(count);
 				break;
@@ -147,13 +152,13 @@ public:
 			case Renderer::TriangleStrip: {
 				do {
 					count += 2, src -= 2;
-					num = std::min(count, vb->capacity());
+					num = std::min(count, m_buffer->capacity());
 					if(num != count) {
 						// Draw an even number of triangles so we don't flip front and back faces between draw calls.
 						num -= num & 1;
 					}
-					vb->setData(src, num, 0, DiscardBuffer);
-					vb->draw(primitive, num);
+					m_buffer->setData(src, num, 0, DiscardBuffer);
+					m_buffer->draw(primitive, num);
 					src += num, count -= num, pos = num;
 				} while(count);
 				break;
@@ -162,10 +167,10 @@ public:
 			case Renderer::TriangleFan: {
 				do {
 					count += 1, src -= 1;
-					num = std::min(count, vb->capacity() - 1);
-					vb->setData(vertices, 1, 0, DiscardBuffer);
-					vb->setData(src, num, 1, NoOverwrite);
-					vb->draw(primitive, num + 1);
+					num = std::min(count, m_buffer->capacity() - 1);
+					m_buffer->setData(vertices, 1, 0, DiscardBuffer);
+					m_buffer->setData(src, num, 1, NoOverwrite);
+					m_buffer->draw(primitive, num + 1);
 					src += num, count -= num, pos = num + 1;
 				} while(count);
 				break;
@@ -173,9 +178,9 @@ public:
 			
 			case Renderer::LineList: {
 				do {
-					num = std::min(count, vb->capacity()) & ~1;
-					vb->setData(src, num, 0, DiscardBuffer);
-					vb->draw(primitive, num);
+					num = std::min(count, m_buffer->capacity()) & ~1;
+					m_buffer->setData(src, num, 0, DiscardBuffer);
+					m_buffer->draw(primitive, num);
 					src += num, count -= num, pos = num;
 				} while(count);
 				break;
@@ -184,9 +189,9 @@ public:
 			case Renderer::LineStrip: {
 				do {
 					count += 1, src -= 1;
-					num = std::min(count, vb->capacity());
-					vb->setData(src, num, 0, DiscardBuffer);
-					vb->draw(primitive, num);
+					num = std::min(count, m_buffer->capacity());
+					m_buffer->setData(src, num, 0, DiscardBuffer);
+					m_buffer->draw(primitive, num);
 					src += num, count -= num, pos = num;
 				} while(count);
 				break;
@@ -199,10 +204,6 @@ public:
 			
 		}
 		
-	}
-	
-	~CircularVertexBuffer() {
-		delete vb;
 	}
 	
 };

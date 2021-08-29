@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <cstdio>
 #include <array>
+#include <memory>
+#include <utility>
 #include <vector>
 
 #include "ai/Paths.h"
@@ -131,13 +133,13 @@ public:
 		arx_assert(!vertices);
 		
 		if(indices.empty()) {
-			indices.resize(4 * pDynamicVertexBuffer->vb->capacity());
+			indices.resize(4 * pDynamicVertexBuffer->m_buffer->capacity());
 			start = 0;
 		}
 		
 		BufferFlags flags = (pDynamicVertexBuffer->pos == 0) ? DiscardBuffer : NoOverwrite | DiscardRange;
 		
-		vertices =  pDynamicVertexBuffer->vb->lock(flags, pDynamicVertexBuffer->pos, count);
+		vertices =  pDynamicVertexBuffer->m_buffer->lock(flags, pDynamicVertexBuffer->pos, count);
 		offset = 0;
 	}
 	
@@ -145,7 +147,7 @@ public:
 		
 		arx_assert(vertices);
 		
-		if(pDynamicVertexBuffer->pos + nbvertices > pDynamicVertexBuffer->vb->capacity()) {
+		if(pDynamicVertexBuffer->pos + nbvertices > pDynamicVertexBuffer->m_buffer->capacity()) {
 			return nullptr;
 		}
 		
@@ -158,12 +160,12 @@ public:
 	
 	void unlock() {
 		arx_assert(vertices);
-		pDynamicVertexBuffer->vb->unlock(), vertices = nullptr;
+		pDynamicVertexBuffer->m_buffer->unlock(), vertices = nullptr;
 	}
 	
 	void draw(Renderer::Primitive primitive) {
 		arx_assert(!vertices);
-		pDynamicVertexBuffer->vb->drawIndexed(primitive, pDynamicVertexBuffer->pos - start, start,
+		pDynamicVertexBuffer->m_buffer->drawIndexed(primitive, pDynamicVertexBuffer->pos - start, start,
 		                                      indices.data(), nbindices);
 	}
 	
@@ -595,7 +597,7 @@ static void ARX_PORTALS_InitDrawnRooms() {
 	vPolyLava.clear();
 	
 	if(pDynamicVertexBuffer) {
-		pDynamicVertexBuffer->vb->setData(nullptr, 0, 0, DiscardBuffer);
+		pDynamicVertexBuffer->m_buffer->setData(nullptr, 0, 0, DiscardBuffer);
 		dynamicVertices.reset();
 	}
 	

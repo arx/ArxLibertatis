@@ -2064,12 +2064,12 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	renderer.SetFogColor(g_fogColor);
 	
 	ComputePortalVertexBuffer();
-	VertexBuffer<SMY_VERTEX3> * vb3 = renderer.createVertexBuffer3(4000, Renderer::Stream);
-	pDynamicVertexBuffer = new CircularVertexBuffer<SMY_VERTEX3>(vb3);
+	std::unique_ptr<VertexBuffer<SMY_VERTEX3>> vb3(renderer.createVertexBuffer3(4000, Renderer::Stream));
+	pDynamicVertexBuffer = new CircularVertexBuffer<SMY_VERTEX3>(std::move(vb3));
 	
 	size_t size = (config.video.bufferSize < 1) ? 32 * 1024 : config.video.bufferSize * 1024;
-	VertexBuffer<TexturedVertex> * vb = renderer.createVertexBufferTL(size, Renderer::Stream);
-	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(vb);
+	std::unique_ptr<VertexBuffer<TexturedVertex>> vb(renderer.createVertexBufferTL(size, Renderer::Stream));
+	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(std::move(vb));
 	
 	MenuReInitAll();
 	
