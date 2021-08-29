@@ -291,7 +291,7 @@ void ARX_SPELLS_ClearAllSymbolDraw() {
 }
 
 static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, GameDuration duration,
-                                               RuneInfo & info) {
+                                               const RuneInfo & info) {
 	
 	SYMBOL_DRAW * sd;
 	if(io != entities.player()) {
@@ -317,7 +317,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, GameDuration duratio
 
 void ARX_SPELLS_RequestSymbolDraw(Entity * io, std::string_view name, GameDuration duration) {
 	
-	for(RuneInfo & info : runeInfos) {
+	for(const RuneInfo & info : runeInfos) {
 		if(info.name == name) {
 			ARX_SPELLS_RequestSymbolDrawCommon(io, duration, info);
 			break;
@@ -328,7 +328,7 @@ void ARX_SPELLS_RequestSymbolDraw(Entity * io, std::string_view name, GameDurati
 
 void ARX_SPELLS_RequestSymbolDraw2(Entity * io, Rune symb, GameDuration duration) {
 	
-	for(RuneInfo & info : runeInfos) {
+	for(const RuneInfo & info : runeInfos) {
 		if(info.rune == symb) {
 			ARX_SPELLS_RequestSymbolDrawCommon(io, duration, info);
 			break;
