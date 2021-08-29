@@ -217,8 +217,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	}
 	
 	// Copy in the action points data
-	for(size_t i = 0 ; i < obj->actionlist.size(); i++) {
-		obj->actionlist[i] = *reinterpret_cast<const EERIE_ACTIONLIST_FTL *>(dat + pos);
+	for(EERIE_ACTIONLIST & action : obj->actionlist) {
+		action = *reinterpret_cast<const EERIE_ACTIONLIST_FTL *>(dat + pos);
 		pos += sizeof(EERIE_ACTIONLIST_FTL);
 	}
 	
