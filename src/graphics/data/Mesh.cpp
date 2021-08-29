@@ -93,6 +93,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
+#include "util/Range.h"
 #include "util/String.h"
 
 static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPOLY & ep, Vec3f * intersect) {
@@ -765,83 +766,81 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	// Load cells with polygons and anchors
 	LogDebug("FTS: loading " << fsh->sizex << " x " << fsh->sizez
 	         << " cells ...");
-	for(long j = 0; j < fsh->sizez; j++) {
-		for(long i = 0; i < fsh->sizex; i++) {
+	for(Vec2s tile : util::gridYX(Vec2s(0), Vec2s(fsh->sizex, fsh->sizez))) {
+		
+		const FAST_SCENE_INFO * fsi = fts_read<FAST_SCENE_INFO>(data, end);
+		
+		std::vector<EERIEPOLY> & polydata = g_tiles->get(tile).polygons();
+		
+		polydata.resize(fsi->nbpoly);
+		
+		const FAST_EERIEPOLY * eps;
+		eps = fts_read<FAST_EERIEPOLY>(data, end, fsi->nbpoly);
+		for(long k = 0; k < fsi->nbpoly; k++) {
 			
-			const FAST_SCENE_INFO * fsi = fts_read<FAST_SCENE_INFO>(data, end);
+			const FAST_EERIEPOLY * ep = &eps[k];
+			EERIEPOLY * ep2 = &polydata[k];
 			
-			std::vector<EERIEPOLY> & polydata = g_tiles->get(Vec2s(i, j)).polygons();
-			
-			polydata.resize(fsi->nbpoly);
-			
-			const FAST_EERIEPOLY * eps;
-			eps = fts_read<FAST_EERIEPOLY>(data, end, fsi->nbpoly);
-			for(long k = 0; k < fsi->nbpoly; k++) {
-				
-				const FAST_EERIEPOLY * ep = &eps[k];
-				EERIEPOLY * ep2 = &polydata[k];
-				
-				ep2->room = ep->room;
-				ep2->area = ep->area;
-				ep2->norm = ep->norm.toVec3();
-				ep2->norm2 = ep->norm2.toVec3();
-				for(int l = 0; l < 4; l++) {
-					ep2->nrml[l] = ep->nrml[l].toVec3();
-				}
-				
-				if(ep->tex != 0) {
-					TextureContainerMap::const_iterator cit = textures.find(ep->tex);
-					ep2->tex = (cit != textures.end()) ? cit->second : nullptr;
-				} else {
-					ep2->tex = nullptr;
-				}
-				
-				ep2->transval = ep->transval;
-				ep2->type = PolyType::load(ep->type);
-				
-				for(size_t kk = 0; kk < 4; kk++) {
-					ep2->v[kk].color = Color::white.toRGBA();
-					ep2->v[kk].w = 1;
-					ep2->v[kk].p = Vec3f(ep->v[kk].ssx, ep->v[kk].sy, ep->v[kk].ssz);
-					ep2->v[kk].uv = Vec2f(ep->v[kk].stu, ep->v[kk].stv);
-					ep2->color[kk] = Color::black.toRGBA();
-				}
-				
-				size_t to = (ep->type & POLY_QUAD) ? 4 : 3;
-				float div = 1.f / float(to);
-				
-				ep2->center = Vec3f(0.f);
-				ep2->min = Vec3f(0.f);
-				ep2->max = Vec3f(0.f);
-				for(size_t h = 0; h < to; h++) {
-					ep2->center += ep2->v[h].p;
-					if(h != 0) {
-						ep2->max = glm::max(ep2->max, ep2->v[h].p);
-						ep2->min = glm::min(ep2->min, ep2->v[h].p);
-					} else {
-						ep2->min = ep2->max = ep2->v[0].p;
-					}
-				}
-				ep2->center *= div;
-				
-				float dist = 0.f;
-				for(size_t h = 0; h < to; h++) {
-					float d = glm::distance(ep2->v[h].p, ep2->center);
-					dist = std::max(dist, d);
-				}
-				ep2->v[0].w = dist;
-				
-				for(int l = 0; l < 4; l++) {
-					ep2->uslInd[l] = 0;
-				}
-				
+			ep2->room = ep->room;
+			ep2->area = ep->area;
+			ep2->norm = ep->norm.toVec3();
+			ep2->norm2 = ep->norm2.toVec3();
+			for(int l = 0; l < 4; l++) {
+				ep2->nrml[l] = ep->nrml[l].toVec3();
 			}
 			
-			if(fsi->nbianchors > 0) {
-				fts_read<s32>(data, end, fsi->nbianchors);
+			if(ep->tex != 0) {
+				TextureContainerMap::const_iterator cit = textures.find(ep->tex);
+				ep2->tex = (cit != textures.end()) ? cit->second : nullptr;
+			} else {
+				ep2->tex = nullptr;
+			}
+			
+			ep2->transval = ep->transval;
+			ep2->type = PolyType::load(ep->type);
+			
+			for(size_t kk = 0; kk < 4; kk++) {
+				ep2->v[kk].color = Color::white.toRGBA();
+				ep2->v[kk].w = 1;
+				ep2->v[kk].p = Vec3f(ep->v[kk].ssx, ep->v[kk].sy, ep->v[kk].ssz);
+				ep2->v[kk].uv = Vec2f(ep->v[kk].stu, ep->v[kk].stv);
+				ep2->color[kk] = Color::black.toRGBA();
+			}
+			
+			size_t to = (ep->type & POLY_QUAD) ? 4 : 3;
+			float div = 1.f / float(to);
+			
+			ep2->center = Vec3f(0.f);
+			ep2->min = Vec3f(0.f);
+			ep2->max = Vec3f(0.f);
+			for(size_t h = 0; h < to; h++) {
+				ep2->center += ep2->v[h].p;
+				if(h != 0) {
+					ep2->max = glm::max(ep2->max, ep2->v[h].p);
+					ep2->min = glm::min(ep2->min, ep2->v[h].p);
+				} else {
+					ep2->min = ep2->max = ep2->v[0].p;
+				}
+			}
+			ep2->center *= div;
+			
+			float dist = 0.f;
+			for(size_t h = 0; h < to; h++) {
+				float d = glm::distance(ep2->v[h].p, ep2->center);
+				dist = std::max(dist, d);
+			}
+			ep2->v[0].w = dist;
+			
+			for(int l = 0; l < 4; l++) {
+				ep2->uslInd[l] = 0;
 			}
 			
 		}
+		
+		if(fsi->nbianchors > 0) {
+			fts_read<s32>(data, end, fsi->nbianchors);
+		}
+		
 	}
 	progressBarAdvance(4.f);
 	LoadLevelScreen();
