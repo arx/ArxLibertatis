@@ -142,7 +142,7 @@ auto filter(Base && base, Filter && filter) -> RangeAdaptor<Base, FilterIterator
 
 template <typename Base>
 auto filter(Base && base) {
-	return filter(std::forward<Base>(base), [](auto & entry) {
+	return filter(std::forward<Base>(base), [](const auto & entry) {
 		return !!entry;
 	});
 }
