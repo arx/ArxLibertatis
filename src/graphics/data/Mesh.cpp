@@ -773,66 +773,62 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		std::vector<EERIEPOLY> & polydata = g_tiles->get(tile).polygons();
 		
 		polydata.resize(fsi->nbpoly);
-		
-		const FAST_EERIEPOLY * eps;
-		eps = fts_read<FAST_EERIEPOLY>(data, end, fsi->nbpoly);
-		for(long k = 0; k < fsi->nbpoly; k++) {
+		for(EERIEPOLY & polygon : polydata) {
 			
-			const FAST_EERIEPOLY * ep = &eps[k];
-			EERIEPOLY * ep2 = &polydata[k];
+			const FAST_EERIEPOLY * ep = fts_read<FAST_EERIEPOLY>(data, end);
 			
-			ep2->room = ep->room;
-			ep2->area = ep->area;
-			ep2->norm = ep->norm.toVec3();
-			ep2->norm2 = ep->norm2.toVec3();
+			polygon.room = ep->room;
+			polygon.area = ep->area;
+			polygon.norm = ep->norm.toVec3();
+			polygon.norm2 = ep->norm2.toVec3();
 			for(int l = 0; l < 4; l++) {
-				ep2->nrml[l] = ep->nrml[l].toVec3();
+				polygon.nrml[l] = ep->nrml[l].toVec3();
 			}
 			
 			if(ep->tex != 0) {
 				TextureContainerMap::const_iterator cit = textures.find(ep->tex);
-				ep2->tex = (cit != textures.end()) ? cit->second : nullptr;
+				polygon.tex = (cit != textures.end()) ? cit->second : nullptr;
 			} else {
-				ep2->tex = nullptr;
+				polygon.tex = nullptr;
 			}
 			
-			ep2->transval = ep->transval;
-			ep2->type = PolyType::load(ep->type);
+			polygon.transval = ep->transval;
+			polygon.type = PolyType::load(ep->type);
 			
 			for(size_t kk = 0; kk < 4; kk++) {
-				ep2->v[kk].color = Color::white.toRGBA();
-				ep2->v[kk].w = 1;
-				ep2->v[kk].p = Vec3f(ep->v[kk].ssx, ep->v[kk].sy, ep->v[kk].ssz);
-				ep2->v[kk].uv = Vec2f(ep->v[kk].stu, ep->v[kk].stv);
-				ep2->color[kk] = Color::black.toRGBA();
+				polygon.v[kk].color = Color::white.toRGBA();
+				polygon.v[kk].w = 1;
+				polygon.v[kk].p = Vec3f(ep->v[kk].ssx, ep->v[kk].sy, ep->v[kk].ssz);
+				polygon.v[kk].uv = Vec2f(ep->v[kk].stu, ep->v[kk].stv);
+				polygon.color[kk] = Color::black.toRGBA();
 			}
 			
 			size_t to = (ep->type & POLY_QUAD) ? 4 : 3;
 			float div = 1.f / float(to);
 			
-			ep2->center = Vec3f(0.f);
-			ep2->min = Vec3f(0.f);
-			ep2->max = Vec3f(0.f);
+			polygon.center = Vec3f(0.f);
+			polygon.min = Vec3f(0.f);
+			polygon.max = Vec3f(0.f);
 			for(size_t h = 0; h < to; h++) {
-				ep2->center += ep2->v[h].p;
+				polygon.center += polygon.v[h].p;
 				if(h != 0) {
-					ep2->max = glm::max(ep2->max, ep2->v[h].p);
-					ep2->min = glm::min(ep2->min, ep2->v[h].p);
+					polygon.max = glm::max(polygon.max, polygon.v[h].p);
+					polygon.min = glm::min(polygon.min, polygon.v[h].p);
 				} else {
-					ep2->min = ep2->max = ep2->v[0].p;
+					polygon.min = polygon.max = polygon.v[0].p;
 				}
 			}
-			ep2->center *= div;
+			polygon.center *= div;
 			
 			float dist = 0.f;
 			for(size_t h = 0; h < to; h++) {
-				float d = glm::distance(ep2->v[h].p, ep2->center);
+				float d = glm::distance(polygon.v[h].p, polygon.center);
 				dist = std::max(dist, d);
 			}
-			ep2->v[0].w = dist;
+			polygon.v[0].w = dist;
 			
 			for(int l = 0; l < 4; l++) {
-				ep2->uslInd[l] = 0;
+				polygon.uslInd[l] = 0;
 			}
 			
 		}
