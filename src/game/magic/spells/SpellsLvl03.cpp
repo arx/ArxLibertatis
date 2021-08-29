@@ -46,6 +46,12 @@
 #include "util/Range.h"
 
 
+SpeedSpell::SpeedTrail::SpeedTrail(short vertex)
+	: Trail(std::chrono::milliseconds(Random::get(130, 260)), Color3f::gray(Random::getf(0.1f, 0.2f)),
+	        Color3f::black, Random::getf(1.f, 1.5f), 0.f)
+	, vertexIndex(vertex)
+{ }
+
 void SpeedSpell::Launch() {
 	
 	m_hasDuration = true;
@@ -69,23 +75,14 @@ void SpeedSpell::Launch() {
 		m_hasDuration = true;
 	}
 	
+	m_trails.reserve(entities[m_target]->obj->grouplist.size() / 2);
+	
 	bool skip = true;
 	for(const VertexGroup & group : entities[m_target]->obj->grouplist) {
-		
 		skip = !skip;
-		if(skip) {
-			continue;
+		if(!skip) {
+			m_trails.emplace_back(group.origin);
 		}
-		
-		float col = Random::getf(0.1f, 0.2f);
-		float size = Random::getf(1.f, 1.5f);
-		GameDuration taille = std::chrono::milliseconds(Random::get(130, 260));
-		
-		SpeedTrail trail;
-		trail.vertexIndex = group.origin;
-		trail.trail = std::make_unique<Trail>(taille, Color3f::gray(col), Color3f::black, size, 0.f);
-		m_trails.emplace_back(std::move(trail));
-		
 	}
 	
 	m_targets.push_back(m_target);
@@ -114,12 +111,12 @@ void SpeedSpell::Update() {
 	
 	for(SpeedTrail & trail : m_trails) {
 		Vec3f pos = entities[m_target]->obj->vertexWorldPositions[trail.vertexIndex].v;
-		trail.trail->SetNextPosition(pos);
-		trail.trail->Update(g_gameTime.lastFrameDuration());
+		trail.SetNextPosition(pos);
+		trail.Update(g_gameTime.lastFrameDuration());
 	}
 	
 	for(SpeedTrail & trail : m_trails) {
-		trail.trail->Render();
+		trail.Render();
 	}
 	
 }

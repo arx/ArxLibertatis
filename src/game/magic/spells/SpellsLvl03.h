@@ -20,7 +20,6 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
 
-#include <memory>
 #include <vector>
 
 #include "game/magic/Spell.h"
@@ -42,9 +41,9 @@ public:
 	
 private:
 	
-	struct SpeedTrail {
+	struct SpeedTrail : public Trail {
 		short vertexIndex;
-		std::unique_ptr<Trail> trail;
+		SpeedTrail(short vertex);
 	};
 	
 	std::vector<SpeedTrail> m_trails;
