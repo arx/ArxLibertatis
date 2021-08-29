@@ -67,7 +67,6 @@ static short uw_mode_pos = 0;
 
 long sp_max = 0;
 
-static Color sp_max_col[64];
 static std::string sp_max_ch;
 
 void CheatDrawText() {
@@ -77,6 +76,15 @@ void CheatDrawText() {
 	}
 	
 	PlatformDuration elapsed = g_platformTime.frameStart() - sp_max_start;
+	
+	const Color colors[] = {
+		Color::blue,
+		Color::green,
+		Color::red,
+		Color::cyan,
+		Color::magenta,
+		Color::yellow
+	};
 	
 	if(elapsed < 20s) {
 		
@@ -89,9 +97,10 @@ void CheatDrawText() {
 		for(size_t i = 0; i < sp_max_ch.length(); i++) {
 			Vec2f d = p + Vec2f(sizX * i, std::sin(16 * i + elapsed / 100ms) * 30.f * modi);
 			std::string_view text = std::string_view(sp_max_ch).substr(i, 1);
+			Color color = colors[(i >= 24 ? (i - 3) : i) % std::size(colors)];
 			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(-1, -1), text, Color::none);
 			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(1, 1), text, Color::none);
-			UNICODE_ARXDrawTextCenter(hFontInGame, d, text, sp_max_col[i]);
+			UNICODE_ARXDrawTextCenter(hFontInGame, d, text, color);
 		}
 		
 	}
@@ -106,25 +115,6 @@ static void DisplayCheatText(const char * text) {
 static void MakeSpCol() {
 	
 	ARX_SPSound();
-	
-	sp_max_col[0] = Color::blue;
-	sp_max_col[1] = Color::green;
-	sp_max_col[2] = Color::red;
-	sp_max_col[3] = Color::cyan;
-	sp_max_col[4] = Color::magenta;
-	sp_max_col[5] = Color::yellow;
-	
-	for(size_t i = 6; i < 24; i++) {
-		sp_max_col[i] = sp_max_col[i - 6];
-	}
-	
-	for(size_t i = 24; i < 27; i++) {
-		sp_max_col[i] = sp_max_col[i - 3];
-	}
-	
-	for(size_t i = 27; i < 33; i++) {
-		sp_max_col[i] = sp_max_col[i - 9];
-	}
 	
 }
 
