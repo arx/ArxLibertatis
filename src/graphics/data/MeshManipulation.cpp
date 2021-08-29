@@ -371,11 +371,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		if(idx_torso2 == ActionPoint())
 			return nullptr;
 	}
-
-	// copy vertices
-	std::vector<EERIE_VERTEX> obj1vertexlist2 = obj1->vertexlist;
-	std::vector<EERIE_VERTEX> obj2vertexlist2 = obj2->vertexlist;
-
+	
 	// Work will contain the Tweaked object
 	EERIE_3DOBJ * work = new EERIE_3DOBJ;
 	
@@ -388,21 +384,20 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	
 	// Is the origin of object in obj1 or obj2 ? Retreives it for work object
 	if(IsInSelection(obj1, obj1->origin, tw1)) {
-		work->origin = ObjectAddVertex(work, &obj2vertexlist2[obj2->origin]);
+		work->origin = ObjectAddVertex(work, &obj2->vertexlist[obj2->origin]);
 	} else {
-		work->origin = ObjectAddVertex(work, &obj1vertexlist2[obj1->origin]);
+		work->origin = ObjectAddVertex(work, &obj1->vertexlist[obj1->origin]);
 	}
-
+	
 	// Recreate Action Points included in work object.for Obj1
 	for(size_t i = 0; i < obj1->actionlist.size(); i++) {
 		const EERIE_ACTIONLIST & action = obj1->actionlist[i];
-
 		if(   IsInSelection(obj1, action.idx.handleData(), iw1)
 		   || IsInSelection(obj1, action.idx.handleData(), jw1)
 		   || action.name == "head2chest"
 		   || action.name == "chest2leggings"
 		) {
-			ObjectAddAction(work, action.name, &obj1vertexlist2[action.idx.handleData()]);
+			ObjectAddAction(work, action.name, &obj1->vertexlist[action.idx.handleData()]);
 		}
 	}
 
@@ -414,21 +409,21 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		   || action.name == "head2chest"
 		   || action.name == "chest2leggings"
 		) {
-			ObjectAddAction(work, action.name, &obj2vertexlist2[action.idx.handleData()]);
+			ObjectAddAction(work, action.name, &obj2->vertexlist[action.idx.handleData()]);
 		}
 	}
 
 	// Recreate Vertex using Obj1 Vertexes
 	for(size_t i = 0; i < obj1->vertexlist.size(); i++) {
 		if(IsInSelection(obj1, i, iw1) || IsInSelection(obj1, i, jw1)) {
-			ObjectAddVertex(work, &obj1vertexlist2[i]);
+			ObjectAddVertex(work, &obj1->vertexlist[i]);
 		}
 	}
 
 	// The same for Obj2
 	for(size_t i = 0; i < obj2->vertexlist.size(); i++) {
 		if(IsInSelection(obj2, i, tw2)) {
-			ObjectAddVertex(work, &obj2vertexlist2[i]);
+			ObjectAddVertex(work, &obj2->vertexlist[i]);
 		}
 	}
 
@@ -482,7 +477,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		const VertexGroup & grp = obj1->grouplist[k];
 		
 		work->grouplist[k].name = grp.name;
-		long v = GetEquivalentVertex(work, &obj1vertexlist2[grp.origin]);
+		long v = GetEquivalentVertex(work, &obj1->vertexlist[grp.origin]);
 
 		if(v >= 0) {
 			work->grouplist[k].m_blobShadowSize = grp.m_blobShadowSize;
@@ -498,7 +493,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			work->grouplist[k].name = obj2->grouplist[k].name;
 		}
 
-		long v = GetEquivalentVertex(work, &obj2vertexlist2[obj2->grouplist[k].origin]);
+		long v = GetEquivalentVertex(work, &obj2->vertexlist[obj2->grouplist[k].origin]);
 
 		if(v >= 0) {
 			work->grouplist[k].m_blobShadowSize = obj2->grouplist[k].m_blobShadowSize;
@@ -520,7 +515,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		
 		for(size_t l = 0; l < sel.selected.size(); l++) {
 			EERIE_VERTEX temp;
-			temp.v = obj2vertexlist2[sel.selected[l]].v;
+			temp.v = obj2->vertexlist[sel.selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if(t != -1) {
@@ -532,7 +527,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		
 		for(size_t l = 0; l < sel.selected.size(); l++) {
 			EERIE_VERTEX temp;
-			temp.v = obj1vertexlist2[sel.selected[l]].v;
+			temp.v = obj1->vertexlist[sel.selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if(t != -1) {
@@ -547,7 +542,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		
 		for(size_t l = 0; l < sel.selected.size(); l++) {
 			EERIE_VERTEX temp;
-			temp.v = obj2vertexlist2[sel.selected[l]].v;
+			temp.v = obj2->vertexlist[sel.selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if(t != -1) {
@@ -559,7 +554,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		
 		for(size_t l = 0; l < sel.selected.size(); l++) {
 			EERIE_VERTEX temp;
-			temp.v = obj1vertexlist2[sel.selected[l]].v;
+			temp.v = obj1->vertexlist[sel.selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if(t != -1) {
@@ -574,7 +569,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		
 		for(size_t l = 0; l < sel.selected.size(); l++) {
 			EERIE_VERTEX temp;
-			temp.v = obj2vertexlist2[sel.selected[l]].v;
+			temp.v = obj2->vertexlist[sel.selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if(t != -1) {
@@ -586,7 +581,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		
 		for(size_t l = 0; l < sel.selected.size(); l++) {
 			EERIE_VERTEX temp;
-			temp.v = obj1vertexlist2[sel.selected[l]].v;
+			temp.v = obj1->vertexlist[sel.selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if(t != -1) {
@@ -605,7 +600,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 			for(size_t l = 0; l < obj1->selections[i].selected.size(); l++) {
 				EERIE_VERTEX temp;
-				temp.v = obj1vertexlist2[obj1->selections[i].selected[l]].v;
+				temp.v = obj1->vertexlist[obj1->selections[i].selected[l]].v;
 				long t = GetEquivalentVertex(work, &temp);
 
 				if (t != -1)
@@ -621,7 +616,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 				
 				for(size_t l = 0; l < sel.selected.size(); l++) {
 					EERIE_VERTEX temp;
-					temp.v = obj2vertexlist2[sel.selected[l]].v;
+					temp.v = obj2->vertexlist[sel.selected[l]].v;
 					long t = GetEquivalentVertex(work, &temp);
 
 					if(t != -1) {
@@ -640,7 +635,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 			for(size_t l = 0; l < obj2->selections[i].selected.size(); l++) {
 				EERIE_VERTEX temp;
-				temp.v = obj2vertexlist2[obj2->selections[i].selected[l]].v;
+				temp.v = obj2->vertexlist[obj2->selections[i].selected[l]].v;
 				long t = GetEquivalentVertex(work, &temp);
 
 				if(t != -1) {
@@ -653,13 +648,13 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Recreate Animation-groups vertex
 	for(size_t i = 0; i < obj1->grouplist.size(); i++) {
 		for(size_t j = 0; j < obj1->grouplist[i].indexes.size(); j++) {
-			AddVertexToGroup(work, i, &obj1vertexlist2[obj1->grouplist[i].indexes[j]]);
+			AddVertexToGroup(work, i, &obj1->vertexlist[obj1->grouplist[i].indexes[j]]);
 		}
 	}
 
 	for(size_t i = 0; i < obj2->grouplist.size(); i++) {
 		for(size_t j = 0; j < obj2->grouplist[i].indexes.size(); j++) {
-			AddVertexToGroup(work, i, &obj2vertexlist2[obj2->grouplist[i].indexes[j]]);
+			AddVertexToGroup(work, i, &obj2->vertexlist[obj2->grouplist[i].indexes[j]]);
 		}
 	}
 	
