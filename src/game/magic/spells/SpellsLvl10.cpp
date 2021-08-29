@@ -231,7 +231,7 @@ void ControlTargetSpell::Launch() {
 	pathways[9] = eTarget;
 	Split(pathways.data(), 0, 9, 150);
 	
-	for(int i = 0; i < 9; i++) {
+	for(size_t i = 0; i < 9; i++) {
 		if(pathways[i].y >= eSrc.y + 150) {
 			pathways[i].y = eSrc.y + 150;
 		}
