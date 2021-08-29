@@ -870,7 +870,7 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
 }
 
 // TODO copy-paste halo
-static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf,
+static void AddAnimatedObjectHalo(const HaloInfo & haloInfo, const unsigned short * paf,
                                   float invisibility, EERIE_3DOBJ * eobj, Entity * io,
                                   TexturedVertex * tvList) {
 	
