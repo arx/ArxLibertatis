@@ -2315,7 +2315,7 @@ void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t) {
 	Entity * io = entities.get(t);
 	if(io) {
 		
-		if(io == g_draggedEntity || io->show != SHOW_FLAG_IN_SCENE) {
+		if(io == g_draggedEntity || io->show != SHOW_FLAG_IN_SCENE || !io->obj || !io->obj->pbox) {
 			return;
 		}
 		
