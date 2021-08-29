@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_GRAPHICSTYPES_H
 
 #include <cmath>
+#include <memory>
 #include <vector>
 
 #include <boost/array.hpp>
@@ -289,12 +290,8 @@ struct EERIE_ROOM_DATA {
 	std::vector<long> portals;
 	std::vector<EP_DATA> epdata;
 	std::vector<unsigned short> indexBuffer;
-	VertexBuffer<SMY_VERTEX> * pVertexBuffer;
+	std::unique_ptr<VertexBuffer<SMY_VERTEX>> pVertexBuffer;
 	std::vector<TextureContainer *> ppTextureContainer;
-
-	EERIE_ROOM_DATA()
-		: pVertexBuffer(nullptr)
-	{ }
 	
 };
 

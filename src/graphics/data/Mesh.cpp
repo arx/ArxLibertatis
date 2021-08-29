@@ -583,10 +583,6 @@ void EERIE_PORTAL_Release() {
 		return;
 	}
 	
-	for(size_t nn = 0; nn < portals->rooms.size(); nn++) {
-		delete portals->rooms[nn].pVertexBuffer;
-	}
-	
 	delete portals;
 	portals = nullptr;
 	
@@ -993,8 +989,7 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
 	LogDebug("Destroying scene VBOs");
 	
 	for(size_t i = 0; i < portals->rooms.size(); i++) {
-		delete portals->rooms[i].pVertexBuffer;
-		portals->rooms[i].pVertexBuffer = nullptr;
+		portals->rooms[i].pVertexBuffer.reset();
 		portals->rooms[i].indexBuffer.clear();
 		portals->rooms[i].ppTextureContainer.clear();
 	}
@@ -1128,8 +1123,7 @@ void ComputePortalVertexBuffer() {
 		
 		// Allocate the vertex buffer for this room
 		// TODO should be static, but is updated for dynamic lighting
-		room->pVertexBuffer = GRenderer->createVertexBuffer(vertexCount,
-		                                                    Renderer::Dynamic);
+		room->pVertexBuffer.reset(GRenderer->createVertexBuffer(vertexCount, Renderer::Dynamic));
 		
 		
 		// Now fill the buffers
