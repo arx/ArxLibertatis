@@ -212,27 +212,28 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	if(!obj->grouplist.empty()) {
 		
 		// Copy in the grouplist data
-		for(size_t i = 0 ; i < obj->grouplist.size() ; i++) {
+		for(VertexGroup & group : obj->grouplist) {
 			
-			const EERIE_GROUPLIST_FTL * group = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
+			const EERIE_GROUPLIST_FTL * rawGroup = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
 			pos += sizeof(EERIE_GROUPLIST_FTL);
 			
-			obj->grouplist[i].name = util::toLowercase(util::loadString(group->name));
-			obj->grouplist[i].origin = group->origin;
-			obj->grouplist[i].indexes.resize(group->nb_index);
-			obj->grouplist[i].m_blobShadowSize = group->siz;
+			group.name = util::toLowercase(util::loadString(rawGroup->name));
+			group.origin = rawGroup->origin;
+			group.indexes.resize(rawGroup->nb_index);
+			group.m_blobShadowSize = rawGroup->siz;
 			
 		}
 		
 		// Copy in the group index data
-		for(size_t i = 0; i < obj->grouplist.size(); i++) {
-			if(!obj->grouplist[i].indexes.empty()) {
+		for(VertexGroup & group : obj->grouplist) {
+			if(!group.indexes.empty()) {
 				const s32 * begin = reinterpret_cast<const s32 *>(dat + pos);
-				pos += sizeof(s32) * obj->grouplist[i].indexes.size();
+				pos += sizeof(s32) * group.indexes.size();
 				const s32 * end = reinterpret_cast<const s32 *>(dat + pos);
-				std::copy(begin, end, obj->grouplist[i].indexes.begin());
+				std::copy(begin, end, group.indexes.begin());
 			}
 		}
+		
 	}
 	
 	// Copy in the action points data
