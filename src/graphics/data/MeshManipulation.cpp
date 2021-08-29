@@ -124,17 +124,13 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 
 bool IsInSelection(const EERIE_3DOBJ * obj, size_t vert, ObjSelection tw) {
 	
-	if(!obj || tw == ObjSelection())
+	if(!obj || tw == ObjSelection()) {
 		return false;
+	}
 	
 	const EERIE_SELECTIONS & sel = obj->selections[tw.handleData()];
 	
-	for(size_t i = 0; i < sel.selected.size(); i++) {
-		if(sel.selected[i] == vert)
-			return true;
-	}
-
-	return false;
+	return std::find(sel.selected.begin(), sel.selected.end(), vert) != sel.selected.end();
 }
 
 static long GetEquivalentVertex(const EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
