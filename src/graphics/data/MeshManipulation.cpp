@@ -272,12 +272,11 @@ void AddVertexIdxToGroup(EERIE_3DOBJ * obj, size_t group, size_t val) {
 
 static void ObjectAddSelection(EERIE_3DOBJ * obj, size_t numsel, size_t vidx) {
 	
-	for(size_t i = 0; i < obj->selections[numsel].selected.size(); i++) {
-		if(obj->selections[numsel].selected[i] == vidx)
-			return;
+	auto & selection = obj->selections[numsel].selected;
+	if(std::find(selection.begin(), selection.end(), vidx) == selection.end()) {
+		selection.push_back(vidx);
 	}
 	
-	obj->selections[numsel].selected.push_back(vidx);
 }
 
 static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERIE_3DOBJ * obj2, long tw) {
