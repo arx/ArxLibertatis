@@ -93,11 +93,9 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 	}
 	
 	if(obj->originaltextures.empty()) {
-		obj->originaltextures.resize(obj->texturecontainer.size());
-		for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
-			if(obj->texturecontainer[i]) {
-				obj->originaltextures[i] = obj->texturecontainer[i]->m_texName;
-			}
+		obj->originaltextures.reserve(obj->texturecontainer.size());
+		for(TextureContainer * texture : obj->texturecontainer) {
+			obj->originaltextures.emplace_back(texture ? texture->m_texName : std::string_view());
 		}
 	}
 	
@@ -116,9 +114,9 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 		return;
 	}
 	
-	for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
-		if(obj->texturecontainer[i]->m_texName == skintochange) {
-			obj->texturecontainer[i] = tex;
+	for(TextureContainer * & texture : obj->texturecontainer) {
+		if(texture->m_texName == skintochange) {
+			texture = tex;
 		}
 	}
 	
