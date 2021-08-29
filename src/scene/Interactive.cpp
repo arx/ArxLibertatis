@@ -2224,7 +2224,7 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 
 void ARX_INTERACTIVE_ActivatePhysics(Entity & entity) {
 	
-	if(&entity == g_draggedEntity || entity.show != SHOW_FLAG_IN_SCENE) {
+	if(&entity == g_draggedEntity || entity.show != SHOW_FLAG_IN_SCENE || !entity.obj || !entity.obj->pbox) {
 		return;
 	}
 	
