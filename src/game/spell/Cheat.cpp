@@ -88,11 +88,10 @@ void CheatDrawText() {
 		
 		for(size_t i = 0; i < sp_max_ch.length(); i++) {
 			Vec2f d = p + Vec2f(sizX * i, std::sin(16 * i + elapsed / 100ms) * 30.f * modi);
-			std::string tex(1, sp_max_ch[i]);
-			
-			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(-1, -1), tex, Color::none);
-			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(1, 1), tex, Color::none);
-			UNICODE_ARXDrawTextCenter(hFontInGame, d, tex, sp_max_col[i]);
+			std::string_view text = std::string_view(sp_max_ch).substr(i, 1);
+			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(-1, -1), text, Color::none);
+			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(1, 1), text, Color::none);
+			UNICODE_ARXDrawTextCenter(hFontInGame, d, text, sp_max_col[i]);
 		}
 		
 	}
