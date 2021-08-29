@@ -21,6 +21,7 @@
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
 
 #include <memory>
+#include <vector>
 
 #include "game/magic/Spell.h"
 
@@ -113,7 +114,6 @@ public:
 	
 private:
 	
-	int iNumber;
 	TextureContainer * tex_p1;
 	TextureContainer * tex_p2;
 	
@@ -124,8 +124,7 @@ private:
 		Vec3f sizeMax;
 	};
 	
-	static const int MAX_ICE = 150;
-	Icicle m_icicles[MAX_ICE];
+	std::vector<Icicle> m_icicles;
 	
 };
 

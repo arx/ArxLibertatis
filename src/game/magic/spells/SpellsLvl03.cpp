@@ -365,8 +365,7 @@ void CreateFoodSpell::Update() {
 
 
 IceProjectileSpell::IceProjectileSpell()
-	: iNumber(0)
-	, tex_p1(nullptr)
+	: tex_p1(nullptr)
 	, tex_p2(nullptr)
 { }
 
@@ -409,17 +408,18 @@ void IceProjectileSpell::Launch() {
 	
 	float fDist = (fd / fspelldist) * iMax;
 	
-	iNumber = checked_range_cast<int>(fDist);
+	m_icicles.resize(checked_range_cast<size_t>(fDist));
 	
-	int end = iNumber / 2;
+	int end = m_icicles.size() / 2;
 	
-	Vec3f tv1a[MAX_ICE];
+	std::vector<Vec3f> tv1a(end + 1);
+	
 	tv1a[0] = s + Vec3f(0.f, 100.f, 0.f);
 	tv1a[end] = e + Vec3f(0.f, 100.f, 0.f);
-
-	Split(tv1a, 0, end, Vec3f(80, 0, 80));
-
-	for(int i = 0; i < iNumber; i++) {
+	
+	Split(tv1a.data(), 0, end, Vec3f(80, 0, 80));
+	
+	for(size_t i = 0; i < m_icicles.size(); i++) {
 		Icicle & icicle = m_icicles[i];
 		
 		float t = Random::getf();
@@ -436,7 +436,7 @@ void IceProjectileSpell::Launch() {
 			minSize = Vec3f(0.4f, 0.3f, 0.4f);
 			randomRange = 40;
 		}
-
+		
 		icicle.size = Vec3f(0.f);
 		icicle.sizeMax = arx::randomVec() + Vec3f(0.f, 0.2f, 0.f);
 		icicle.sizeMax = glm::max(icicle.sizeMax, minSize);
@@ -453,7 +453,9 @@ void IceProjectileSpell::Launch() {
 		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
 		damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD;
 		DamageCreate(damage);
+		
 	}
+	
 }
 
 void IceProjectileSpell::End() {
@@ -465,9 +467,8 @@ void IceProjectileSpell::Update() {
 	float fColor = 1.f;
 	if(m_duration - m_elapsed < 1s) {
 		fColor = (m_duration - m_elapsed) / 1s;
-		
-		for(int i = 0; i < iNumber; i++) {
-			m_icicles[i].size.y *= fColor;
+		for(Icicle & icicle : m_icicles) {
+			icicle.size.y *= fColor;
 		}
 	}
 	
@@ -476,13 +477,9 @@ void IceProjectileSpell::Update() {
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Screen);
 	
-	int iMax = int(float(iNumber) * 2.f * (m_elapsed / m_duration));
-
-	if(iMax > iNumber) {
-		iMax = iNumber;
-	}
-
-	for(int i = 0; i < iMax; i++) {
+	size_t iMax = std::min(m_icicles.size(), size_t(float(m_icicles.size()) * 2.f * (m_elapsed / m_duration)));
+	
+	for(size_t i = 0; i < iMax; i++) {
 		Icicle & icicle = m_icicles[i];
 		
 		icicle.size += Vec3f(0.1f);
@@ -500,9 +497,10 @@ void IceProjectileSpell::Update() {
 		EERIE_3DOBJ * eobj = (icicle.type == 0) ? smotte : stite;
 		
 		Draw3DObject(eobj, stiteangle, icicle.pos, icicle.size, stitecolor, mat);
+		
 	}
 	
-	for(int i = 0; i < std::min(iNumber, iMax + 1); i++) {
+	for(size_t i = 0; i < std::min(m_icicles.size(), iMax + 1); i++) {
 		Icicle & icicle = m_icicles[i];
 		
 		float t = Random::getf();
@@ -538,5 +536,7 @@ void IceProjectileSpell::Update() {
 				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
 		}
+		
 	}
+	
 }
