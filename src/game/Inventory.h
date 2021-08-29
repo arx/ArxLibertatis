@@ -234,6 +234,8 @@ public:
 	
 	#ifdef ARX_DEBUG
 	~Inventory();
+	#else
+	~Inventory() = default;
 	#endif
 	
 	void setBags(size_t newBagCount);
