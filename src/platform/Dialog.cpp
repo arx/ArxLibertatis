@@ -172,7 +172,7 @@ static std::string formatAsHtml(std::string_view text, bool newline, bool ul = f
 				oss << "http://";
 				i += 6;
 			} else if(!link && line.substr(i, 8) == "https://") {
-				oss << "<a href=";
+				oss << "<a href=\"";
 				link_start = oss.tellp(), link = true;
 				oss << "https://";
 				i += 7;
