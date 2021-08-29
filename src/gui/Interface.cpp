@@ -1788,7 +1788,7 @@ void ArxGame::manageEditorControls() {
 				} else if(io != COMBINE) {
 					combineEntities(COMBINE, io);
 				}
-			} else { // GLights
+			} else if(COMBINE) { // GLights
 				float fMaxdist = player.m_telekinesis ? 850 : 300;
 				
 				for(EERIE_LIGHT & light : g_staticLights) {
