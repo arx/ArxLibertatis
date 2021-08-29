@@ -162,8 +162,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	if(!obj->facelist.empty()) {
 		
 		// Copy the face data in
-		for(long ii = 0; ii < af3Ddh->nb_faces; ii++) {
-			EERIE_FACE & face = obj->facelist[ii];
+		for(EERIE_FACE & face : obj->facelist) {
 			
 			const EERIE_FACE_FTL * eff = reinterpret_cast<const EERIE_FACE_FTL *>(dat + pos);
 			pos += sizeof(EERIE_FACE_FTL);
@@ -180,7 +179,9 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 				face.u[kk] = eff->u[kk];
 				face.v[kk] = eff->v[kk];
 			}
+			
 		}
+		
 	}
 	
 	// Alloc'n'Copy textures
