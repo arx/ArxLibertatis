@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 
 #include "animation/Animation.h"
 
@@ -374,33 +375,35 @@ void ARX_NPC_Behaviour_Stack(Entity * io) {
 }
 
 //! Unstacks One stacked behaviour from an NPC
-void ARX_NPC_Behaviour_UnStack(Entity * io)
-{
-	if(!io || !(io->ioflags & IO_NPC))
+void ARX_NPC_Behaviour_UnStack(Entity * io) {
+	
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
-
-	for(long i = long(MAX_STACKED_BEHAVIOR) - 1; i >= 0; i--) {
-		IO_BEHAVIOR_DATA * bd = &io->_npcdata->stacked[i];
-
-		if(bd->exist) {
-			AcquireLastAnim(io);
-			io->_npcdata->behavior = bd->behavior;
-			io->_npcdata->behavior_param = bd->behavior_param;
-			io->targetinfo = bd->target;
-			io->_npcdata->movemode = bd->movemode;
-			bd->exist = 0;
-			ARX_NPC_LaunchPathfind(io, bd->target);
-
-			if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
-				
-				for(size_t l = 0; l < MAX_ANIM_LAYERS; l++) {
-					io->animlayer[l] = bd->animlayer[l];
-				}
-			}
-
-			return;
-		}
 	}
+	
+	for(IO_BEHAVIOR_DATA & behavior : boost::adaptors::reverse(io->_npcdata->stacked)) {
+		
+		if(!behavior.exist) {
+			continue;
+		}
+		
+		AcquireLastAnim(io);
+		io->_npcdata->behavior = behavior.behavior;
+		io->_npcdata->behavior_param = behavior.behavior_param;
+		io->targetinfo = behavior.target;
+		io->_npcdata->movemode = behavior.movemode;
+		behavior.exist = 0;
+		ARX_NPC_LaunchPathfind(io, behavior.target);
+		
+		if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
+			for(size_t l = 0; l < MAX_ANIM_LAYERS; l++) {
+				io->animlayer[l] = behavior.animlayer[l];
+			}
+		}
+		
+		return;
+	}
+	
 }
 
 //! Checks for any direct shortcut between NPC and future anchors...
