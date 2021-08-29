@@ -614,7 +614,7 @@ audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpee
 	return audio::samplePlay(sample_id, channel);
 }
 
-bool ARX_SOUND_IsPlaying(audio::SourcedSample & sample_id) {
+bool ARX_SOUND_IsPlaying(audio::SourcedSample sample_id) {
 	return g_soundInitialized ? audio::isSamplePlaying(sample_id) : false;
 }
 
@@ -630,26 +630,25 @@ GameDuration ARX_SOUND_GetDuration(audio::SampleHandle sample_id) {
 	return 0;
 }
 
-void ARX_SOUND_RefreshVolume(audio::SourcedSample & sample_id, float volume) {
+void ARX_SOUND_RefreshVolume(audio::SourcedSample sample_id, float volume) {
 	if(g_soundInitialized && sample_id != audio::SourcedSample()) {
 		audio::setSampleVolume(sample_id, volume);
 	}
 }
 
-void ARX_SOUND_RefreshPitch(audio::SourcedSample & sample_id, float pitch) {
+void ARX_SOUND_RefreshPitch(audio::SourcedSample sample_id, float pitch) {
 	if(g_soundInitialized && sample_id != audio::SourcedSample()) {
 		audio::setSamplePitch(sample_id, pitch);
 	}
 }
 
-void ARX_SOUND_RefreshPosition(audio::SourcedSample & sample_id, const Vec3f & position) {
-	
+void ARX_SOUND_RefreshPosition(audio::SourcedSample sample_id, const Vec3f & position) {
 	if(g_soundInitialized && sample_id != audio::SourcedSample()) {
 		audio::setSamplePosition(sample_id, position);
 	}
 }
 
-void ARX_SOUND_RefreshSpeechPosition(audio::SourcedSample & sample_id, const Entity * io) {
+void ARX_SOUND_RefreshSpeechPosition(audio::SourcedSample sample_id, const Entity * io) {
 	
 	if(!g_soundInitialized || !io || sample_id == audio::SourcedSample()) {
 		return;

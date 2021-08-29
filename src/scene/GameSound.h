@@ -231,13 +231,13 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
                                           float pitch = 1.f, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position = nullptr);
 audio::SourcedSample ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech);
-bool ARX_SOUND_IsPlaying(audio::SourcedSample & sample_id);
+bool ARX_SOUND_IsPlaying(audio::SourcedSample sample_id);
 GameDuration ARX_SOUND_GetDuration(audio::SampleHandle sample_id);
 
-void ARX_SOUND_RefreshVolume(audio::SourcedSample & sample_id, float volume);
-void ARX_SOUND_RefreshPosition(audio::SourcedSample & sample_id, const Vec3f & position);
-void ARX_SOUND_RefreshPitch(audio::SourcedSample & sample_id, float pitch);
-void ARX_SOUND_RefreshSpeechPosition(audio::SourcedSample & sample_id, const Entity * io = nullptr);
+void ARX_SOUND_RefreshVolume(audio::SourcedSample sample_id, float volume);
+void ARX_SOUND_RefreshPosition(audio::SourcedSample sample_id, const Vec3f & position);
+void ARX_SOUND_RefreshPitch(audio::SourcedSample sample_id, float pitch);
+void ARX_SOUND_RefreshSpeechPosition(audio::SourcedSample sample_id, const Entity * io = nullptr);
 
 void ARX_SOUND_Stop(const audio::SourcedSample & sample_id);
 
