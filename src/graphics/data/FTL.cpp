@@ -146,18 +146,16 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	// Alloc'n'Copy vertices
 	if(!obj->vertexlist.empty()) {
 		
-		// Copy the vertex data in
-		for(size_t ii = 0; ii < obj->vertexlist.size(); ii++) {
-			
-			// Vertices stored as EERIE_OLD_VERTEX, copy in to new one
-			obj->vertexlist[ii] = *reinterpret_cast<const EERIE_OLD_VERTEX *>(dat + pos);
+		// Vertices stored as EERIE_OLD_VERTEX, copy in to new one
+		for(EERIE_VERTEX & vertex : obj->vertexlist) {
+			vertex = *reinterpret_cast<const EERIE_OLD_VERTEX *>(dat + pos);
 			pos += sizeof(EERIE_OLD_VERTEX);
-			
 		}
 		
 		obj->vertexWorldPositions.resize(obj->vertexlist.size());
 		obj->vertexClipPositions.resize(obj->vertexlist.size());
 		obj->vertexColors.resize(obj->vertexlist.size());
+		
 	}
 	
 	// Alloc'n'Copy faces
