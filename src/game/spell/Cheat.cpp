@@ -67,7 +67,6 @@ static short uw_mode_pos = 0;
 
 long sp_max = 0;
 
-static float sp_max_y[64];
 static Color sp_max_col[64];
 static std::string sp_max_ch;
 
@@ -88,9 +87,7 @@ void CheatDrawText() {
 		p.x -= sp_max_ch.length() * 0.5f * sizX;
 		
 		for(size_t i = 0; i < sp_max_ch.length(); i++) {
-			Vec2f d = p + Vec2f(sizX * i, sp_max_y[i]);
-			
-			sp_max_y[i] = std::sin(d.x + elapsed / 100ms) * 30.f * modi;
+			Vec2f d = p + Vec2f(sizX * i, std::sin(p.x + sizX * i + elapsed / 100ms) * 30.f * modi);
 			std::string tex(1, sp_max_ch[i]);
 			
 			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(-1, -1), tex, Color::none);
@@ -111,10 +108,6 @@ static void MakeSpCol() {
 	
 	ARX_SPSound();
 	
-	for(long i = 0; i < 64; i++) {
-		sp_max_y[i] = 0;
-	}
-	
 	sp_max_col[0] = Color::blue;
 	sp_max_col[1] = Color::green;
 	sp_max_col[2] = Color::red;
@@ -133,8 +126,8 @@ static void MakeSpCol() {
 	for(size_t i = 27; i < 33; i++) {
 		sp_max_col[i] = sp_max_col[i - 9];
 	}
+	
 }
-
 
 void CheatReset() {
 	
