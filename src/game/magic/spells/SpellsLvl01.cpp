@@ -239,8 +239,8 @@ void MagicMissileSpell::Launch() {
 
 void MagicMissileSpell::End() {
 	
-	for(size_t i = 0; i < m_lights.size(); i++) {
-		endLightDelayed(m_lights[i], 500ms);
+	for(LightHandle light : m_lights) {
+		endLightDelayed(light, 500ms);
 	}
 	
 	m_missiles.clear();
