@@ -1311,10 +1311,10 @@ void ARX_PLAYER_Manage_Visual() {
 	io->gameFlags |= GFLAG_ISINTREATZONE;
 	
 	AnimLayer & layer0 = io->animlayer[0];
-	AnimLayer & layer1 = io->animlayer[1];
+	const AnimLayer & layer1 = io->animlayer[1];
 	AnimLayer & layer3 = io->animlayer[3];
 	
-	auto & alist = io->anims;
+	const auto & alist = io->anims;
 	
 	if(layer0.flags & EA_FORCEPLAY) {
 		if(layer0.flags & EA_ANIMEND) {
