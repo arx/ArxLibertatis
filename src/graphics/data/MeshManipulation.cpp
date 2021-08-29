@@ -133,18 +133,15 @@ bool IsInSelection(const EERIE_3DOBJ * obj, size_t vert, ObjSelection tw) {
 	return std::find(sel.selected.begin(), sel.selected.end(), vert) != sel.selected.end();
 }
 
-static long GetEquivalentVertex(const EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
+static size_t getEquivalentVertex(const EERIE_3DOBJ & obj, Vec3f vertex) {
 	
-	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
-		if(obj->vertexlist[i].v.x == vert->v.x
-		   && obj->vertexlist[i].v.y == vert->v.y
-		   && obj->vertexlist[i].v.z == vert->v.z
-		) {
+	for(size_t i = 0; i < obj.vertexlist.size(); i++) {
+		if(obj.vertexlist[i].v == vertex) {
 			return i;
 		}
 	}
-
-	return -1;
+	
+	return size_t(-1);
 }
 
 static size_t ObjectAddVertex(EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
@@ -283,10 +280,8 @@ static void copySelection(const EERIE_3DOBJ & source, ObjSelection sourceSelecti
                           EERIE_3DOBJ & dest, ObjSelection destSelection) {
 	
 	for(size_t index : source.selections[sourceSelection.handleData()].selected) {
-		EERIE_VERTEX temp;
-		temp.v = source.vertexlist[index].v;
-		long t = GetEquivalentVertex(&dest, &temp);
-		if(t != -1) {
+		size_t t = getEquivalentVertex(dest, source.vertexlist[index].v);
+		if(t != size_t(-1)) {
 			ObjectAddSelection(&dest, destSelection.handleData(), t);
 		}
 	}
@@ -483,37 +478,32 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			ObjectAddFace(work, &face, obj2);
 		}
 	}
-
+	
 	// Recreate Groups
 	work->grouplist.resize(std::max(obj1->grouplist.size(), obj2->grouplist.size()));
-
+	
 	for(size_t k = 0; k < obj1->grouplist.size(); k++) {
 		const VertexGroup & grp = obj1->grouplist[k];
-		
 		work->grouplist[k].name = grp.name;
-		long v = GetEquivalentVertex(work, &obj1->vertexlist[grp.origin]);
-
-		if(v >= 0) {
+		size_t v = getEquivalentVertex(*work, obj1->vertexlist[grp.origin].v);
+		if(v != size_t(-1)) {
 			work->grouplist[k].m_blobShadowSize = grp.m_blobShadowSize;
-
-			if(IsInSelection(obj1, grp.origin, iw1)
-			        || IsInSelection(obj1, grp.origin, jw1))
+			if(IsInSelection(obj1, grp.origin, iw1) || IsInSelection(obj1, grp.origin, jw1)) {
 				work->grouplist[k].origin = v;
+			}
 		}
 	}
-
+	
 	for(size_t k = 0; k < obj2->grouplist.size(); k++) {
 		if(k >= obj1->grouplist.size()) {
 			work->grouplist[k].name = obj2->grouplist[k].name;
 		}
-
-		long v = GetEquivalentVertex(work, &obj2->vertexlist[obj2->grouplist[k].origin]);
-
-		if(v >= 0) {
+		size_t v = getEquivalentVertex(*work, obj2->vertexlist[obj2->grouplist[k].origin].v);
+		if(v != size_t(-1)) {
 			work->grouplist[k].m_blobShadowSize = obj2->grouplist[k].m_blobShadowSize;
-
-			if(IsInSelection(obj2, obj2->grouplist[k].origin, tw2))
+			if(IsInSelection(obj2, obj2->grouplist[k].origin, tw2)) {
 				work->grouplist[k].origin = v;
+			}
 		}
 	}
 	
