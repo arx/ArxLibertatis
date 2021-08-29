@@ -601,7 +601,7 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 	
 }
 
-static void pushEntity(Entity & entity, Entity & source, float power) {
+static void pushEntity(Entity & entity, const Entity & source, float power) {
 	
 	if(power > 0.f) {
 		
