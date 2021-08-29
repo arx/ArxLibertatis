@@ -147,7 +147,10 @@ class Inventory {
 			, bag(slot.z)
 			, x(slot.x)
 			, y(slot.y)
-		{ }
+		{
+			arx_assume(x >= 0 && x < inventory->m_size.x && y >= 0 && y < inventory->m_size.y
+			           && bag >= 0 && size_t(bag) < inventory->m_bags);
+		}
 		
 		[[nodiscard]] Vec3s slot() const noexcept {
 			return { x, y, bag };
@@ -178,8 +181,6 @@ class Inventory {
 	}
 	
 	[[nodiscard]] GridSlotView<true> set(Vec3s slot) noexcept {
-		arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
-		           && slot.z >= 0 && size_t(slot.z) < m_bags);
 		return { this, slot };
 	}
 	
@@ -260,8 +261,6 @@ public:
 	}
 	
 	[[nodiscard]] GridSlotView<false> get(Vec3s slot) const noexcept {
-		arx_assume(slot.x >= 0 && slot.x < m_size.x && slot.y >= 0 && slot.y < m_size.y
-		           && slot.z >= 0 && size_t(slot.z) < m_bags);
 		return { this, slot };
 	}
 	
