@@ -99,7 +99,7 @@ long getParticleCount() {
 	return ParticleCount;
 }
 
-void createFireParticles(Vec3f & pos, int perPos, int delay) {
+void createFireParticles(Vec3f pos, int perPos, int delay) {
 	for(long nn = 0 ; nn < perPos; nn++) {
 
 		if(Random::getf() >= 0.4f) {
