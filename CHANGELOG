@@ -1,6 +1,10 @@
 
 = Arx Libertatis 1.3  (TBD) =
 
+Interface:
+
+* Fixed cheat text not scaling correctly with higher resolutions
+
 Controls:
 
 * Fixed the "Interrupt current spell" keyboard shortcut sometimes ending previous spells instead of the last one

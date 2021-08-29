@@ -81,13 +81,13 @@ void CheatDrawText() {
 	if(elapsed < 20s) {
 		
 		float modi = (20s - elapsed) / 2s * 0.1f;
-		float sizX = 16;
+		float sizX = 16 * minSizeRatio();
 		
 		Vec2f p = Vec2f(g_size.center());
 		p.x -= sp_max_ch.length() * 0.5f * sizX;
 		
 		for(size_t i = 0; i < sp_max_ch.length(); i++) {
-			Vec2f d = p + Vec2f(sizX * i, std::sin(p.x + sizX * i + elapsed / 100ms) * 30.f * modi);
+			Vec2f d = p + Vec2f(sizX * i, std::sin(16 * i + elapsed / 100ms) * 30.f * modi);
 			std::string tex(1, sp_max_ch[i]);
 			
 			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(-1, -1), tex, Color::none);
