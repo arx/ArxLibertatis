@@ -82,7 +82,7 @@ class RenderState {
 	u32 m_state;
 	
 	template <size_t Offset, size_t Size>
-	u32 get() const {
+	[[nodiscard]] u32 get() const {
 		return (m_state >> Offset) & ((u32(1) << Size) - 1);
 	}
 	
@@ -93,28 +93,28 @@ class RenderState {
 	
 public:
 	
-	RenderState()
+	[[nodiscard]] RenderState()
 		: m_state(0)
 	{
 		static_assert(sizeof(m_state) * 8 >= End, "fields do not fit into m_state");
 		disableBlend();
 	}
 	
-	bool operator==(const RenderState & o) const { return m_state == o.m_state; }
-	bool operator!=(const RenderState & o) const { return m_state != o.m_state; }
+	[[nodiscard]] bool operator==(const RenderState & o) const { return m_state == o.m_state; }
+	[[nodiscard]] bool operator!=(const RenderState & o) const { return m_state != o.m_state; }
 	
 	void setCull(CullingMode mode) {
 		arx_assert(mode >= 0 && unsigned(mode) < (1u << CullSize));
 		set<Cull, CullSize>(mode);
 	}
 	
-	RenderState cull(CullingMode mode = CullCCW) const {
+	[[nodiscard]] RenderState cull(CullingMode mode = CullCCW) const {
 		RenderState copy = *this;
 		copy.setCull(mode);
 		return copy;
 	}
 	
-	CullingMode getCull() const {
+	[[nodiscard]] CullingMode getCull() const {
 		return CullingMode(get<Cull, CullSize>());
 	}
 	
@@ -122,13 +122,13 @@ public:
 		set<Fog, 1>(enable);
 	}
 	
-	RenderState fog(bool enable = true) const {
+	[[nodiscard]] RenderState fog(bool enable = true) const {
 		RenderState copy = *this;
 		copy.setFog(enable);
 		return copy;
 	}
 	
-	bool getFog() const {
+	[[nodiscard]] bool getFog() const {
 		return get<Fog, 1>() != 0;
 	}
 	
@@ -136,13 +136,13 @@ public:
 		set<AlphaCutout, 1>(enable);
 	}
 	
-	RenderState alphaCutout(bool enable = true) const {
+	[[nodiscard]] RenderState alphaCutout(bool enable = true) const {
 		RenderState copy = *this;
 		copy.setAlphaCutout(enable);
 		return copy;
 	}
 	
-	bool getAlphaCutout() const {
+	[[nodiscard]] bool getAlphaCutout() const {
 		return get<AlphaCutout, 1>() != 0;
 	}
 	
@@ -150,13 +150,13 @@ public:
 		set<DepthTest, 1>(enable);
 	}
 	
-	RenderState depthTest(bool enable = true) const {
+	[[nodiscard]] RenderState depthTest(bool enable = true) const {
 		RenderState copy = *this;
 		copy.setDepthTest(enable);
 		return copy;
 	}
 	
-	bool getDepthTest() const {
+	[[nodiscard]] bool getDepthTest() const {
 		return get<DepthTest, 1>() != 0;
 	}
 	
@@ -164,13 +164,13 @@ public:
 		set<DepthWrite, 1>(enable);
 	}
 	
-	RenderState depthWrite(bool enable = true) const {
+	[[nodiscard]] RenderState depthWrite(bool enable = true) const {
 		RenderState copy = *this;
 		copy.setDepthWrite(enable);
 		return copy;
 	}
 	
-	bool getDepthWrite() const {
+	[[nodiscard]] bool getDepthWrite() const {
 		return get<DepthWrite, 1>() != 0;
 	}
 	
@@ -183,19 +183,19 @@ public:
 		setDepthOffset(0);
 	}
 	
-	RenderState depthOffset(unsigned offset) const {
+	[[nodiscard]] RenderState depthOffset(unsigned offset) const {
 		RenderState copy = *this;
 		copy.setDepthOffset(offset);
 		return copy;
 	}
 	
-	RenderState noDepthOffset() const {
+	[[nodiscard]] RenderState noDepthOffset() const {
 		RenderState copy = *this;
 		copy.disableDepthOffset();
 		return copy;
 	}
 	
-	unsigned getDepthOffset() const {
+	[[nodiscard]] unsigned getDepthOffset() const {
 		return get<DepthOffset, DepthOffsetSize>();
 	}
 	
@@ -214,34 +214,34 @@ public:
 		setBlend(BlendOne, BlendZero);
 	}
 	
-	RenderState blend(BlendingFactor src = BlendSrcAlpha,
-	                  BlendingFactor dst = BlendInvSrcAlpha) const {
+	[[nodiscard]] RenderState blend(BlendingFactor src = BlendSrcAlpha,
+	                                BlendingFactor dst = BlendInvSrcAlpha) const {
 		RenderState copy = *this;
 		copy.setBlend(src, dst);
 		return copy;
 	}
 	
-	RenderState blendAdditive() const {
+	[[nodiscard]] RenderState blendAdditive() const {
 		RenderState copy = *this;
 		copy.setBlendAdditive();
 		return copy;
 	}
 	
-	RenderState noBlend() const {
+	[[nodiscard]] RenderState noBlend() const {
 		RenderState copy = *this;
 		copy.disableBlend();
 		return copy;
 	}
 	
-	BlendingFactor getBlendSrc() const {
+	[[nodiscard]] BlendingFactor getBlendSrc() const {
 		return BlendingFactor(get<BlendSrc, BlendSize>());
 	}
 	
-	BlendingFactor getBlendDst() const {
+	[[nodiscard]] BlendingFactor getBlendDst() const {
 		return BlendingFactor(get<BlendDst, BlendSize>());
 	}
 	
-	bool isBlendEnabled() const {
+	[[nodiscard]] bool isBlendEnabled() const {
 		return getBlendSrc() != BlendOne || getBlendDst() != BlendZero;
 	}
 	
@@ -346,7 +346,7 @@ public:
 	virtual void reloadColorKeyTextures() = 0;
 
 	// Factory
-	virtual Texture * createTexture() = 0;
+	[[nodiscard]] virtual Texture * createTexture() = 0;
 	
 	// Viewport
 	virtual void SetViewport(const Rect & viewport) = 0;
@@ -366,22 +366,22 @@ public:
 	virtual void SetFillMode(FillMode mode) = 0;
 	
 	// Texturing
-	size_t getTextureStageCount() const { return m_TextureStages.size(); }
-	TextureStage * GetTextureStage(size_t textureStage);
-	const TextureStage * GetTextureStage(size_t textureStage) const;
+	[[nodiscard]] size_t getTextureStageCount() const { return m_TextureStages.size(); }
+	[[nodiscard]] TextureStage * GetTextureStage(size_t textureStage);
+	[[nodiscard]] const TextureStage * GetTextureStage(size_t textureStage) const;
 	void ResetTexture(unsigned int textureStage);
-	Texture * GetTexture(unsigned int textureStage) const;
+	[[nodiscard]] Texture * GetTexture(unsigned int textureStage) const;
 	void SetTexture(unsigned int textureStage, Texture * pTexture);
 	void SetTexture(unsigned int textureStage, TextureContainer * pTextureContainer);
 	
-	virtual float getMaxSupportedAnisotropy() const = 0;
+	[[nodiscard]] virtual float getMaxSupportedAnisotropy() const = 0;
 	virtual void setMaxAnisotropy(float value) = 0;
 	
-	virtual AlphaCutoutAntialising getMaxSupportedAlphaCutoutAntialiasing() const = 0;
+	[[nodiscard]] virtual AlphaCutoutAntialising getMaxSupportedAlphaCutoutAntialiasing() const = 0;
 	
-	virtual std::unique_ptr<VertexBuffer<TexturedVertex>> createVertexBufferTL(size_t capacity, BufferUsage usage) = 0;
-	virtual std::unique_ptr<VertexBuffer<SMY_VERTEX>> createVertexBuffer(size_t capacity, BufferUsage usage) = 0;
-	virtual std::unique_ptr<VertexBuffer<SMY_VERTEX3>> createVertexBuffer3(size_t capacity, BufferUsage usage) = 0;
+	[[nodiscard]] virtual std::unique_ptr<VertexBuffer<TexturedVertex>> createVertexBufferTL(size_t capacity, BufferUsage usage) = 0;
+	[[nodiscard]] virtual std::unique_ptr<VertexBuffer<SMY_VERTEX>> createVertexBuffer(size_t capacity, BufferUsage usage) = 0;
+	[[nodiscard]] virtual std::unique_ptr<VertexBuffer<SMY_VERTEX3>> createVertexBuffer3(size_t capacity, BufferUsage usage) = 0;
 	
 	virtual void drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices) = 0;
 	
@@ -389,7 +389,7 @@ public:
 	virtual bool getSnapshot(Image & image, size_t width, size_t height) = 0;
 	
 	void setRenderState(RenderState state) { m_state = state; }
-	RenderState getRenderState() const { return m_state; }
+	[[nodiscard]] RenderState getRenderState() const { return m_state; }
 	
 protected:
 	
@@ -426,7 +426,7 @@ extern Renderer * GRenderer;
  * }
  * \endcode
  */
-class UseRenderState {
+class [[nodiscard]] UseRenderState {
 	
 	RenderState m_old;
 	
@@ -450,7 +450,7 @@ public:
  * Sets the requested texture state on construction and restores the old texture state
  * on destruction.
  */
-class UseTextureState {
+class [[nodiscard]] UseTextureState {
 	
 	TextureStage::WrapMode m_oldWrapMode;
 	TextureStage::FilterMode m_oldMinFilter;
@@ -488,12 +488,12 @@ public:
 };
 
 //! Default render state for 2D compositing
-inline RenderState render2D() {
+[[nodiscard]] inline RenderState render2D() {
 	return RenderState().blend();
 }
 
 //! Default render state for 3D rendering
-inline RenderState render3D() {
+[[nodiscard]] inline RenderState render3D() {
 	return RenderState().depthTest().depthWrite().fog();
 }
 
