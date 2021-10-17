@@ -94,7 +94,10 @@ int ArxIO_getLogLine(char * outMessage, int size) {
 }
 
 void ArxIO_unpack_alloc(const char * in, const size_t inSize, char ** out, size_t * outSize) {
-	std::string buffer = blast(in, inSize);
+	
+	std::string_view inView(in, inSize);
+	std::string buffer = blast(inView, -1);
+	
 	*outSize = buffer.size();
 	*out = new char[buffer.size()];
 	std::memcpy(*out, buffer.data(), buffer.size());
