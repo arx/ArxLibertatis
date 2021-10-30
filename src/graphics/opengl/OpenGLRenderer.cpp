@@ -512,20 +512,20 @@ void OpenGLRenderer::disableTransform() {
 
 void OpenGLRenderer::SetViewMatrix(const glm::mat4x4 & matView) {
 	
-	if(!memcmp(&m_view, &matView, sizeof(glm::mat4x4))) {
+	if(m_view == matView) {
 		return;
 	}
 	
 	if(m_currentTransform == GL_ModelViewProjectionTransform) {
 		m_currentTransform = GL_UnsetTransform;
 	}
-
+	
 	m_view = matView;
 }
 
 void OpenGLRenderer::SetProjectionMatrix(const glm::mat4x4 & matProj) {
 	
-	if(!memcmp(&m_projection, &matProj, sizeof(glm::mat4x4))) {
+	if(m_projection == matProj) {
 		return;
 	}
 	
