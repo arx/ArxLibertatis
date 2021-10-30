@@ -155,28 +155,28 @@ static void PopOneTriangleListTransparency(TextureContainer * material) {
 	
 	if(!batch[BatchBucket_Blended].empty()) {
 		UseRenderState state(baseState.blend(BlendDstColor, BlendSrcColor));
-		EERIEDRAWPRIM(Renderer::TriangleList, &batch[BatchBucket_Blended][0],
+		EERIEDRAWPRIM(Renderer::TriangleList, batch[BatchBucket_Blended].data(),
 		                                      batch[BatchBucket_Blended].size());
 		batch[BatchBucket_Blended].clear();
 	}
 	
 	if(!batch[BatchBucket_Additive].empty()) {
 		UseRenderState state(baseState.blend(BlendOne, BlendOne));
-		EERIEDRAWPRIM(Renderer::TriangleList, &batch[BatchBucket_Additive][0],
+		EERIEDRAWPRIM(Renderer::TriangleList, batch[BatchBucket_Additive].data(),
 		                                      batch[BatchBucket_Additive].size());
 		batch[BatchBucket_Additive].clear();
 	}
 	
 	if(!batch[BatchBucket_Subtractive].empty()) {
 		UseRenderState state(baseState.blend(BlendZero, BlendInvSrcColor));
-		EERIEDRAWPRIM(Renderer::TriangleList, &batch[BatchBucket_Subtractive][0],
+		EERIEDRAWPRIM(Renderer::TriangleList, batch[BatchBucket_Subtractive].data(),
 		                                      batch[BatchBucket_Subtractive].size());
 		batch[BatchBucket_Subtractive].clear();
 	}
 	
 	if(!batch[BatchBucket_Multiplicative].empty()) {
 		UseRenderState state(baseState.blend(BlendOne, BlendOne));
-		EERIEDRAWPRIM(Renderer::TriangleList, &batch[BatchBucket_Multiplicative][0],
+		EERIEDRAWPRIM(Renderer::TriangleList, batch[BatchBucket_Multiplicative].data(),
 		                                      batch[BatchBucket_Multiplicative].size());
 		batch[BatchBucket_Multiplicative].clear();
 	}
