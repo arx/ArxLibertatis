@@ -31,13 +31,15 @@
 CppUnit::AutoRegisterSuite<LegacyMathTest> g_registerLegacyMathTest;
 
 struct TestRotation {
+	
 	glm::quat quat;
 	glm::mat3 mat;
 	
-	TestRotation(glm::quat quat_, glm::mat3 mat_)
+	TestRotation(glm::quat quat_, glm::mat3 mat_) noexcept
 		: quat(quat_)
 		, mat(mat_)
-	{}
+	{ }
+	
 };
 
 std::vector<TestRotation> rotations;
