@@ -73,7 +73,7 @@ DECLARE_FLAGS_OPERATORS(ZoneFlags)
 
 struct Zone {
 	
-	Zone(std::string && _name, const Vec3f & _pos);
+	Zone(std::string && _name, const Vec3f & _pos) noexcept;
 	
 	std::string name;
 	ZoneFlags flags;
@@ -119,7 +119,7 @@ struct ARX_PATHWAY {
 
 struct Path {
 	
-	Path(std::string && _name, const Vec3f & _pos);
+	Path(std::string && _name, const Vec3f & _pos) noexcept;
 	
 	std::string name;
 	Vec3f pos;

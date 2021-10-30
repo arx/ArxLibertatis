@@ -259,7 +259,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 	
 }
 
-Zone::Zone(std::string && _name, const Vec3f & _pos)
+Zone::Zone(std::string && _name, const Vec3f & _pos) noexcept
 	: name(std::move(_name))
 	, flags(0)
 	, pos(_pos)
@@ -271,7 +271,7 @@ Zone::Zone(std::string && _name, const Vec3f & _pos)
 	, bbmax(0.f)
 { }
 
-Path::Path(std::string && _name, const Vec3f & _pos)
+Path::Path(std::string && _name, const Vec3f & _pos) noexcept
 	: name(std::move(_name))
 	, pos(_pos)
 { }
