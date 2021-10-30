@@ -29,7 +29,7 @@
 #include "math/GtxFunctions.h"
 #include "math/Types.h"
 
-inline float MAKEANGLE(float a) {
+inline float MAKEANGLE(float a) noexcept {
 	float angle = std::fmod(a, 360.f);
 	return (angle >= 0 ) ? angle : angle + 360.f;
 }
@@ -46,7 +46,7 @@ public:
 	/*!
 	 * Constructor.
 	 */
-	Angle()
+	Angle() noexcept
 		: m_pitch(0)
 		, m_yaw(0)
 		, m_roll(0)
@@ -55,33 +55,33 @@ public:
 	/*!
 	 * Constructor accepting initial values.
 	 */
-	Angle(T pitch, T yaw, T roll)
+	Angle(T pitch, T yaw, T roll) noexcept
 		: m_pitch(pitch)
 		, m_yaw(yaw)
 		, m_roll(roll)
 	{ }
 	
-	T getPitch() const {
+	T getPitch() const noexcept {
 		return m_pitch;
 	}
 
-	T getYaw() const {
+	T getYaw() const noexcept {
 		return m_yaw;
 	}
 
-	T getRoll() const {
+	T getRoll() const noexcept {
 		return m_roll;
 	}
 	
-	void setPitch(T pitch) {
+	void setPitch(T pitch) noexcept {
 		m_pitch = pitch;
 	}
 
-	void setYaw(T yaw) {
+	void setYaw(T yaw) noexcept {
 		m_yaw = yaw;
 	}
 
-	void setRoll(T roll) {
+	void setRoll(T roll) noexcept {
 		m_roll = roll;
 	}
 	
@@ -91,7 +91,7 @@ public:
 	 * \param other An euler angle to be compared to.
 	 * \return A boolean, \b true if the two angles are equal(all members are equals), or \b false otherwise.
 	 */
-	bool operator==(const Angle & other) const {
+	bool operator==(const Angle & other) const noexcept {
 		return m_pitch == other.m_pitch && m_yaw == other.m_yaw && m_roll == other.m_roll;
 	}
 	
@@ -101,7 +101,7 @@ public:
 	 * \param other An angle to be compared to.
 	 * \return A boolean, \b true if the two angles are not equal(some members are not equal), or \b false otherwise.
 	 */
-	bool operator!=(const Angle & other) const {
+	bool operator!=(const Angle & other) const noexcept {
 		return !((*this) == other);
 	}
 	
@@ -110,7 +110,7 @@ public:
 	 * \brief Unary minus operator.
 	 * \return A new angle, same as this one but with the signs of all the elements inverted.
 	 */
-	Angle operator-() const {
+	Angle operator-() const noexcept {
 		return Angle(-m_pitch, -m_yaw, -m_roll);
 	}
 	
@@ -120,7 +120,7 @@ public:
 	 * \param other an angle, to be added to this angle.
 	 * \return A new angle, the result of the addition of the two angles.
 	 */
-	Angle operator+(const Angle & other) const {
+	Angle operator+(const Angle & other) const noexcept {
 		return Angle(m_pitch + other.m_pitch, m_yaw + other.m_yaw, m_roll + other.m_roll);
 	}
 	
@@ -130,39 +130,39 @@ public:
 	 * \param other an angle, to be subtracted to this angle.
 	 * \return A new angle, the result of the subtraction of the two angles.
 	 */
-	Angle operator-(const Angle & other) const {
+	Angle operator-(const Angle & other) const noexcept {
 		return Angle(m_pitch - other.m_pitch, m_yaw - other.m_yaw, m_roll - other.m_roll);
 	}
 	
-	Angle operator*(const Angle & other) const {
+	Angle operator*(const Angle & other) const noexcept {
 		return Angle(m_pitch * other.m_pitch, m_yaw * other.m_yaw, m_roll * other.m_roll);
 	}
 	
-	Angle operator*(T scale) const {
+	Angle operator*(T scale) const noexcept {
 		return Angle(m_pitch * scale, m_yaw * scale, m_roll * scale);
 	}
 	
-	const Angle & operator+=(const Angle & other) {
+	const Angle & operator+=(const Angle & other) noexcept {
 		m_pitch += other.m_pitch, m_yaw += other.m_yaw, m_roll += other.m_roll;
 		return *this;
 	}
 	
-	const Angle & operator-=(const Angle & other) {
+	const Angle & operator-=(const Angle & other) noexcept {
 		m_pitch -= other.m_pitch, m_yaw -= other.m_yaw, m_roll -= other.m_roll;
 		return *this;
 	}
 	
-	const Angle & operator/=(T scale) {
+	const Angle & operator/=(T scale) noexcept {
 		m_pitch /= scale, m_yaw /= scale, m_roll /= scale;
 		return *this;
 	}
 	
-	const Angle & operator*=(T scale) {
+	const Angle & operator*=(T scale) noexcept {
 		m_pitch *= scale, m_yaw *= scale, m_roll *= scale;
 		return *this;
 	}
 	
-	bool equalEps(const Angle & other, T pEps = std::numeric_limits<T>::epsilon()) const {
+	bool equalEps(const Angle & other, T pEps = std::numeric_limits<T>::epsilon()) const noexcept {
 		return m_pitch > (other.m_pitch - pEps)
 		    && m_pitch < (other.m_pitch + pEps)
 		    && m_yaw   > (other.m_yaw   - pEps)
@@ -171,7 +171,7 @@ public:
 		    && m_roll  < (other.m_roll  + pEps);
 	}
 	
-	void normalize() {
+	void normalize() noexcept {
 		m_pitch = MAKEANGLE(m_pitch);
 		m_yaw = MAKEANGLE(m_yaw);
 		m_roll = MAKEANGLE(m_roll);
