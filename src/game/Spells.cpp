@@ -606,17 +606,13 @@ void ARX_SPELLS_ManageMagic() {
 		CheatDetectionReset();
 		
 		if(CurrSpellSymbol != 0) {
-			if(!ARX_SPELLS_AnalyseSPELL()) { // CHANGE: If the cast fails, play CAST_END
-				if(io->anims[ANIM_CAST_END]) {
-					changeAnimation(io, 1, io->anims[ANIM_CAST_END]);
-				}
-			} else {
-				if (io->anims[ANIM_CAST]) { // CHANGE: Otherwise play CAST
+			if(ARX_SPELLS_AnalyseSPELL()) {
+				if(io->anims[ANIM_CAST]) {
 					changeAnimation(io, 1, io->anims[ANIM_CAST]);
 				}
 			}
 		}
-
+		
 		ARX_FLARES_broken = 1;
 
 		if(WILLRETURNTOCOMBATMODE) {
