@@ -229,7 +229,7 @@ float Cedric_GetInvisibility(Entity * io) {
 	}
 	
 	if(io != entities.player() && invisibility > 0.f && !EXTERNALVIEW) {
-		SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_INVISIBILITY);
+		Spell * spell = spells.getSpellOnTarget(io->index(), SPELL_INVISIBILITY);
 		if(spell) {
 			if(player.m_skillFull.intuition > spell->m_level * 10) {
 				invisibility -= player.m_skillFull.intuition * (1.0f / 100) + spell->m_level * (1.0f / 10);
@@ -350,7 +350,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 						if(io.sfx_flag & SFX_TYPE_INCINERATE) {
 							io.sfx_flag &= ~SFX_TYPE_INCINERATE;
 							io.sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
-							SpellBase * spell = spells.getSpellOnTarget(io.index(), SPELL_INCINERATE);
+							Spell * spell = spells.getSpellOnTarget(io.index(), SPELL_INCINERATE);
 
 							if(!spell)
 								spell = spells.getSpellOnTarget(io.index(), SPELL_MASS_INCINERATE);

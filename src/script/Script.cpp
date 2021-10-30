@@ -1117,7 +1117,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 			
 			if(boost::starts_with(name, "^playercasting")) {
-				for(const SpellBase & spell : spells.byCaster(EntityHandle_Player)) {
+				for(const Spell & spell : spells.byCaster(EntityHandle_Player)) {
 					if(spell.m_type == SPELL_LIFE_DRAIN
 					   || spell.m_type == SPELL_HARM
 					   || spell.m_type == SPELL_FIRE_FIELD

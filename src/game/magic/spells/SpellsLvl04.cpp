@@ -171,7 +171,7 @@ void DispellFieldSpell::Launch() {
 	
 	long valid = 0, dispelled = 0;
 	
-	for(SpellBase & spell : spells) {
+	for(Spell & spell : spells) {
 		
 		bool cancel = false;
 		Vec3f pos;

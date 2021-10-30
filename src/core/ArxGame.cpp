@@ -1793,7 +1793,7 @@ void ArxGame::updateLevel() {
 		
 		g_playerCamera.setFov(glm::radians(config.video.fov));
 		
-		SpellBase * spell = spells.getSpellByCaster(EntityHandle_Player, SPELL_MAGIC_SIGHT);
+		Spell * spell = spells.getSpellByCaster(EntityHandle_Player, SPELL_MAGIC_SIGHT);
 		if(spell) {
 			GameDuration duration = g_gameTime.now() - spell->m_timcreation;
 			g_playerCamera.focal -= 30.f * glm::clamp(duration / 500ms, 0.f, 1.f);

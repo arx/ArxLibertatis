@@ -24,7 +24,7 @@
 #include "graphics/effects/Cabal.h"
 #include "platform/Platform.h"
 
-class InvisibilitySpell final : public SpellBase {
+class InvisibilitySpell final : public Spell {
 	
 public:
 	
@@ -37,7 +37,7 @@ public:
 	
 };
 
-class ManaDrainSpell final : public SpellBase {
+class ManaDrainSpell final : public Spell {
 	
 public:
 	
@@ -55,7 +55,7 @@ private:
 	
 };
 
-class ExplosionSpell final : public SpellBase {
+class ExplosionSpell final : public Spell {
 	
 public:
 	
@@ -69,7 +69,7 @@ private:
 	
 };
 
-class EnchantWeaponSpell final : public SpellBase {
+class EnchantWeaponSpell final : public Spell {
 	
 public:
 	
@@ -79,7 +79,7 @@ public:
 	
 };
 
-class LifeDrainSpell final : public SpellBase {
+class LifeDrainSpell final : public Spell {
 	
 public:
 	

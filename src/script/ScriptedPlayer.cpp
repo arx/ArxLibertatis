@@ -319,7 +319,7 @@ public:
 			if(!BLOCK_PLAYER_CONTROLS) {
 				ARX_PLAYER_PutPlayerInNormalStance();
 				
-				for(SpellBase & spell : spells) {
+				for(Spell & spell : spells) {
 					if(spell.m_caster == EntityHandle_Player || spell.m_target == EntityHandle_Player) {
 						switch(spell.m_type) {
 							case SPELL_MAGIC_SIGHT:

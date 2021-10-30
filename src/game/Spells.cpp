@@ -152,20 +152,20 @@ void SpellManager::clearAll() {
 	m_spells.clear();
 }
 
-SpellBase * SpellManager::operator[](const SpellHandle handle) noexcept {
+Spell * SpellManager::operator[](const SpellHandle handle) noexcept {
 	return size_t(handle.handleData()) < m_spells.size() ? m_spells[handle.handleData()].get() : nullptr;
 }
 
-static void SPELLEND_Notify(const SpellBase & spell);
+static void SPELLEND_Notify(const Spell & spell);
 
-void SpellManager::endSpell(SpellBase * spell) noexcept {
+void SpellManager::endSpell(Spell * spell) noexcept {
 	spell->m_duration = 0;
 	spell->m_hasDuration = true;
 }
 
 void SpellManager::endByCaster(EntityHandle caster) noexcept {
 	
-	for(SpellBase & spell : byCaster(caster)) {
+	for(Spell & spell : byCaster(caster)) {
 		endSpell(&spell);
 	}
 	
@@ -173,7 +173,7 @@ void SpellManager::endByCaster(EntityHandle caster) noexcept {
 
 void SpellManager::endByTarget(EntityHandle target, SpellType type) noexcept {
 	
-	SpellBase * spell = getSpellOnTarget(target, type);
+	Spell * spell = getSpellOnTarget(target, type);
 	if(spell) {
 		endSpell(spell);
 	}
@@ -182,7 +182,7 @@ void SpellManager::endByTarget(EntityHandle target, SpellType type) noexcept {
 
 void SpellManager::endByType(SpellType type) noexcept {
 	
-	for(SpellBase & spell : ofType(type)) {
+	for(Spell & spell : ofType(type)) {
 		endSpell(&spell);
 	}
 	
@@ -190,20 +190,20 @@ void SpellManager::endByType(SpellType type) noexcept {
 
 void SpellManager::endByCaster(EntityHandle caster, SpellType type) noexcept {
 	
-	SpellBase * spell = getSpellByCaster(caster, type);
+	Spell * spell = getSpellByCaster(caster, type);
 	if(spell) {
 		endSpell(spell);
 	}
 	
 }
 
-SpellBase * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) noexcept {
+Spell * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) noexcept {
 	
 	if(caster == EntityHandle()) {
 		return nullptr;
 	}
 	
-	for(SpellBase & spell : ofType(type)) {
+	for(Spell & spell : ofType(type)) {
 		if(spell.m_caster == caster) {
 			return &spell;
 		}
@@ -212,13 +212,13 @@ SpellBase * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) 
 	return nullptr;
 }
 
-SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type) noexcept {
+Spell * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type) noexcept {
 	
 	if(target == EntityHandle()) {
 		return nullptr;
 	}
 	
-	for(SpellBase & spell : ofType(type)) {
+	for(Spell & spell : ofType(type)) {
 		if(std::find(spell.m_targets.begin(), spell.m_targets.end(), target) != spell.m_targets.end()) {
 			return &spell;
 		}
@@ -230,7 +230,7 @@ SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type) 
 float SpellManager::getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type) noexcept {
 	
 	float level = 0.f;
-	for(SpellBase & spell : ofType(type)) {
+	for(Spell & spell : ofType(type)) {
 		if(std::find(spell.m_targets.begin(), spell.m_targets.end(), target) != spell.m_targets.end()) {
 			level += spell.m_level;
 		}
@@ -241,7 +241,7 @@ float SpellManager::getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellT
 
 void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster) noexcept {
 	
-	for(SpellBase & spell : byCaster(oldCaster)) {
+	for(Spell & spell : byCaster(oldCaster)) {
 		spell.m_caster = newCaster;
 	}
 	
@@ -249,14 +249,14 @@ void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster)
 
 void SpellManager::removeTarget(Entity * io) noexcept {
 	
-	for(SpellBase & spell : *this) {
+	for(Spell & spell : *this) {
 		spell.m_targets.erase(std::remove(spell.m_targets.begin(), spell.m_targets.end(), io->index()),
 		                      spell.m_targets.end());
 	}
 	
 }
 
-SpellBase & SpellManager::addSpell(std::unique_ptr<SpellBase> spell) {
+Spell & SpellManager::addSpell(std::unique_ptr<Spell> spell) {
 	
 	arx_assert(spell);
 	
@@ -273,9 +273,9 @@ SpellBase & SpellManager::addSpell(std::unique_ptr<SpellBase> spell) {
 	return *m_spells.back();
 }
 
-void SpellManager::freeSlot(SpellBase * spell) {
+void SpellManager::freeSlot(Spell * spell) {
 	
-	for(std::unique_ptr<SpellBase> & entry : m_spells) {
+	for(std::unique_ptr<Spell> & entry : m_spells) {
 		if(entry.get() == spell) {
 			entry.reset();
 			break;
@@ -356,7 +356,7 @@ static const char * MakeSpellName(SpellType num) {
 	}
 }
 
-static void SPELLCAST_Notify(const SpellBase & spell) {
+static void SPELLCAST_Notify(const Spell & spell) {
 	
 	EntityHandle source = spell.m_caster;
 	
@@ -375,7 +375,7 @@ static void SPELLCAST_Notify(const SpellBase & spell) {
 	
 }
 
-static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
+static void SPELLCAST_NotifyOnlyTarget(const Spell & spell) {
 	
 	Entity * target = entities.get(spell.m_target);
 	if(!target) {
@@ -395,7 +395,7 @@ static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 	
 }
 
-static void SPELLEND_Notify(const SpellBase & spell) {
+static void SPELLEND_Notify(const Spell & spell) {
 	
 	const char * spellName = MakeSpellName(spell.m_type);
 	if(!spellName) {
@@ -423,7 +423,7 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 }
 
 //! Plays the sound of Fizzling spell
-void ARX_SPELLS_Fizzle(SpellBase * spell) {
+void ARX_SPELLS_Fizzle(Spell * spell) {
 	
 	if(entities.get(spell->m_caster)) {
 		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE, &spell->m_caster_pos);
@@ -588,7 +588,7 @@ void ARX_SPELLS_ManageMagic() {
 	}
 }
 
-static bool CanPayMana(SpellBase * spell, float cost) {
+static bool CanPayMana(Spell * spell, float cost) {
 	
 	if(spell->m_flags & SPELLCAST_FLAG_NOMANA) {
 		return true;
@@ -657,7 +657,7 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io, float damages) {
 	
 	if(io) {
 		
-		SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_FIRE_PROTECTION);
+		Spell * spell = spells.getSpellOnTarget(io->index(), SPELL_FIRE_PROTECTION);
 		if(spell) {
 			damages *= glm::clamp(1.f - (spell->m_level * 0.1f), 0.f, 1.f);
 		}
@@ -676,7 +676,7 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io, float damages) {
 
 float ARX_SPELLS_ApplyColdProtection(Entity * io, float damages) {
 	
-	SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_COLD_PROTECTION);
+	Spell * spell = spells.getSpellOnTarget(io->index(), SPELL_COLD_PROTECTION);
 	if(spell) {
 		damages *= glm::clamp(1.f - (spell->m_level * 0.1f), 0.f, 1.f);
 	}
@@ -748,7 +748,7 @@ float ARX_SPELLS_GetManaCost(SpellType spell, float casterLevel) {
 	}
 }
 
-static std::unique_ptr<SpellBase> createSpellInstance(SpellType type) {
+static std::unique_ptr<Spell> createSpellInstance(SpellType type) {
 	
 	switch(type) {
 		case SPELL_NONE: return { };
@@ -940,7 +940,7 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
 		ARX_SPELLS_CancelSpellTarget();
 	}
 	
-	std::unique_ptr<SpellBase> spell = createSpellInstance(typ);
+	std::unique_ptr<Spell> spell = createSpellInstance(typ);
 	if(!spell) {
 		return false;
 	}
@@ -1000,7 +1000,7 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
 	
 	spell->Launch();
 	
-	SpellBase & addedSpell = spells.addSpell(std::move(spell));
+	Spell & addedSpell = spells.addSpell(std::move(spell));
 	
 	// TODO inconsistent use of the SM_SPELLCAST event
 	if(typ == SPELL_CONFUSE || typ == SPELL_ENCHANT_WEAPON) {
@@ -1024,7 +1024,7 @@ void ARX_SPELLS_Update() {
 	
 	ARX_PROFILE_FUNC();
 	
-	for(SpellBase & spell : spells) {
+	for(Spell & spell : spells) {
 		
 		if(!GLOBAL_MAGIC_MODE) {
 			spells.endSpell(&spell);

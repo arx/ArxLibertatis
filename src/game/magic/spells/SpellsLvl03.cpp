@@ -133,7 +133,7 @@ void DispellIllusionSpell::Launch() {
 	m_duration = 1s;
 	m_hasDuration = true;
 	
-	for(SpellBase & spell : spells.ofType(SPELL_INVISIBILITY)) {
+	for(Spell & spell : spells.ofType(SPELL_INVISIBILITY)) {
 		
 		if(spell.m_target == m_caster || spell.m_level > m_level) {
 			continue;

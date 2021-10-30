@@ -80,9 +80,9 @@ public:
 	void init();
 	void clearAll();
 	
-	[[nodiscard]] SpellBase * operator[](SpellHandle handle) noexcept;
+	[[nodiscard]] Spell * operator[](SpellHandle handle) noexcept;
 	
-	static void endSpell(SpellBase * spell) noexcept;
+	static void endSpell(Spell * spell) noexcept;
 	
 	void endByCaster(EntityHandle caster) noexcept;
 	void endByCaster(EntityHandle caster, SpellType type) noexcept;
@@ -90,34 +90,34 @@ public:
 	void endByTarget(EntityHandle target, SpellType type) noexcept;
 	void endByType(SpellType type) noexcept;
 	
-	[[nodiscard]] SpellBase * getSpellByCaster(EntityHandle caster, SpellType type) noexcept;
-	[[nodiscard]] SpellBase * getSpellOnTarget(EntityHandle target, SpellType type) noexcept;
+	[[nodiscard]] Spell * getSpellByCaster(EntityHandle caster, SpellType type) noexcept;
+	[[nodiscard]] Spell * getSpellOnTarget(EntityHandle target, SpellType type) noexcept;
 	[[nodiscard]] float getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type) noexcept;
 	
 	void replaceCaster(EntityHandle oldCaster, EntityHandle newCaster) noexcept;
 	void removeTarget(Entity * io) noexcept;
 	
-	SpellBase & addSpell(std::unique_ptr<SpellBase> spell);
-	void freeSlot(SpellBase * spell);
+	Spell & addSpell(std::unique_ptr<Spell> spell);
+	void freeSlot(Spell * spell);
 	
 	[[nodiscard]] auto begin() const noexcept { return util::entries(m_spells).begin(); }
 	[[nodiscard]] auto end() const noexcept { return util::entries(m_spells).end(); }
 	
 	[[nodiscard]] auto byCaster(EntityHandle caster) const noexcept {
-		return util::filter(*this, [caster](const SpellBase & spell) {
+		return util::filter(*this, [caster](const Spell & spell) {
 			return spell.m_caster == caster;
 		});
 	}
 	
 	[[nodiscard]] auto ofType(SpellType type) const noexcept {
-		return util::filter(*this, [type](const SpellBase & spell) {
+		return util::filter(*this, [type](const Spell & spell) {
 			return spell.m_type == type;
 		});
 	}
 	
 private:
 	
-	std::vector<std::unique_ptr<SpellBase>> m_spells;
+	std::vector<std::unique_ptr<Spell>> m_spells;
 	
 };
 
@@ -130,7 +130,7 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
                        Entity * target, GameDuration duration);
 void ARX_SPELLS_Update();
 
-void ARX_SPELLS_Fizzle(SpellBase * spell);
+void ARX_SPELLS_Fizzle(Spell * spell);
 
 void ARX_SPELLS_ManageMagic();
 

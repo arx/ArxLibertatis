@@ -381,7 +381,7 @@ static void RK4Integrate(std::array<PhysicsParticle, N> & particles, float Delta
 
 static bool IsObjectInField(const PHYSICS_BOX_DATA & pbox) {
 	
-	for(const SpellBase & spell : spells.ofType(SPELL_CREATE_FIELD)) {
+	for(const Spell & spell : spells.ofType(SPELL_CREATE_FIELD)) {
 		
 		if(Entity * field = entities.get(static_cast<const CreateFieldSpell &>(spell).m_entity)) {
 			for(const PhysicsParticle & pv : pbox.vert) {

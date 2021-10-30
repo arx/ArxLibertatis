@@ -397,7 +397,7 @@ void IgnitSpell::Launch() {
 		}
 	}
 	
-	for(SpellBase & spell : spells.ofType(SPELL_FIREBALL)) {
+	for(Spell & spell : spells.ofType(SPELL_FIREBALL)) {
 		float radius = std::max(m_level * 2.f, 12.f); // TODO is this supposed to use spell.m_level?
 		if(closerThan(m_srcPos, static_cast<FireballSpell &>(spell).getPosition(), fPerimeter + radius)) {
 			spell.m_level += 1;
@@ -475,7 +475,7 @@ void DouseSpell::Launch() {
 		ARX_PLAYER_ClickedOnTorch(player.torch);
 	}
 	
-	for(SpellBase & spell : spells) {
+	for(Spell & spell : spells) {
 		
 		switch(spell.m_type) {
 			

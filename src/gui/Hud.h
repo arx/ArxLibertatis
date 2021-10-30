@@ -319,7 +319,7 @@ class ActiveSpellsGui : public HudItem {
 	
 	void spellsByPlayerUpdate(float intensity);
 	void spellsOnPlayerUpdate(float intensity);
-	void ManageSpellIcon(SpellBase & spell, float intensity, bool flag);
+	void ManageSpellIcon(Spell & spell, float intensity, bool flag);
 	
 public:
 	ActiveSpellsGui();

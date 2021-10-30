@@ -55,7 +55,7 @@ static Projectile g_projectiles[MAX_THROWN_OBJECTS];
 
 static bool IsPointInField(const Vec3f & pos) {
 	
-	for(const SpellBase & spell : spells.ofType(SPELL_CREATE_FIELD)) {
+	for(const Spell & spell : spells.ofType(SPELL_CREATE_FIELD)) {
 		if(Entity * field = entities.get(static_cast<const CreateFieldSpell &>(spell).m_entity)) {
 			Cylinder cyl = Cylinder(pos + Vec3f(0.f, 17.5f, 0.f), 35.f, -35.f);
 			if(isCylinderCollidingWithPlatform(cyl, *field)) {

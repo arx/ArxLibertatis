@@ -29,7 +29,7 @@
 #include "platform/Platform.h"
 
 
-class SpeedSpell final : public SpellBase {
+class SpeedSpell final : public Spell {
 	
 public:
 	
@@ -50,7 +50,7 @@ private:
 	
 };
 
-class DispellIllusionSpell final : public SpellBase {
+class DispellIllusionSpell final : public Spell {
 	
 public:
 	
@@ -59,7 +59,7 @@ public:
 	
 };
 
-class FireballSpell final : public SpellBase {
+class FireballSpell final : public Spell {
 	
 public:
 	
@@ -83,7 +83,7 @@ private:
 	
 };
 
-class CreateFoodSpell final : public SpellBase {
+class CreateFoodSpell final : public Spell {
 	
 public:
 	
@@ -101,7 +101,7 @@ private:
 };
 
 
-class IceProjectileSpell final : public SpellBase {
+class IceProjectileSpell final : public Spell {
 	
 public:
 	

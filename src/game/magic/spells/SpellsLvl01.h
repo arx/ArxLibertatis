@@ -27,7 +27,7 @@
 #include "graphics/effects/MagicMissile.h"
 #include "platform/Platform.h"
 
-class MagicSightSpell final : public SpellBase {
+class MagicSightSpell final : public Spell {
 	
 public:
 	
@@ -38,7 +38,7 @@ public:
 	
 };
 
-class MagicMissileSpell final : public SpellBase {
+class MagicMissileSpell final : public Spell {
 	
 public:
 	
@@ -57,7 +57,7 @@ private:
 	
 };
 
-class IgnitSpell final : public SpellBase {
+class IgnitSpell final : public Spell {
 	
 public:
 	
@@ -80,7 +80,7 @@ private:
 	
 };
 
-class DouseSpell final : public SpellBase {
+class DouseSpell final : public Spell {
 	
 public:
 	
@@ -94,7 +94,7 @@ private:
 	
 };
 
-class ActivatePortalSpell final : public SpellBase {
+class ActivatePortalSpell final : public Spell {
 	
 public:
 	

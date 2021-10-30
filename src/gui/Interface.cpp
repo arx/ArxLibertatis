@@ -999,8 +999,8 @@ void ArxGame::managePlayerControls() {
 	}
 	
 	if(GInput->actionNowPressed(CONTROLS_CUST_CANCELCURSPELL)) {
-		SpellBase * lastSpell = nullptr;
-		for(SpellBase & spell : spells.byCaster(EntityHandle_Player)) {
+		Spell * lastSpell = nullptr;
+		for(Spell & spell : spells.byCaster(EntityHandle_Player)) {
 			if(!spellicons[spell.m_type].m_hasDuration) {
 				continue;
 			}

@@ -365,7 +365,7 @@ void DisarmTrapSpell::Launch() {
 	sphere.origin = player.pos;
 	sphere.radius = 400.f;
 	
-	for(SpellBase & spell : spells.ofType(SPELL_RUNE_OF_GUARDING)) {
+	for(Spell & spell : spells.ofType(SPELL_RUNE_OF_GUARDING)) {
 		
 		if(sphere.contains(static_cast<RuneOfGuardingSpell &>(spell).getPosition())) {
 			spell.m_level -= m_level;
@@ -382,7 +382,7 @@ void DisarmTrapSpell::Launch() {
 bool SlowDownSpell::CanLaunch() {
 	
 	// TODO this seems to be the only spell that ends itself when cast twice
-	SpellBase * spell = spells.getSpellOnTarget(m_target, SPELL_SLOW_DOWN);
+	Spell * spell = spells.getSpellOnTarget(m_target, SPELL_SLOW_DOWN);
 	if(spell) {
 		spells.endSpell(spell);
 		return false;

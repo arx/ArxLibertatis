@@ -122,30 +122,26 @@ enum SpellcastFlag {
 DECLARE_FLAGS(SpellcastFlag, SpellcastFlags)
 DECLARE_FLAGS_OPERATORS(SpellcastFlags)
 
-class alignas(16) SpellBase {
+class alignas(16) Spell {
 	
 public:
 	
 	// We can't use alignof(glm::mat4x4) directly because MSVC sucks
 	static_assert(alignof(glm::mat4x4) <= 16, "need to increase alignment");
 	
-	SpellBase(const SpellBase &) = delete;
-	SpellBase & operator=(const SpellBase &) = delete;
+	Spell(const Spell &) = delete;
+	Spell & operator=(const Spell &) = delete;
 	
-	SpellBase();
+	Spell();
 	
-	virtual ~SpellBase() = default;
+	virtual ~Spell() = default;
 	
 	virtual bool CanLaunch() {
 		return true;
 	}
 	virtual void Launch() = 0;
-	virtual void End() {
-		
-	}
-	
-	virtual void Update() {
-	}
+	virtual void Update() { }
+	virtual void End() { }
 	
 	virtual Vec3f getPosition() const;
 	Vec3f getCasterPosition() const;
@@ -192,7 +188,7 @@ protected:
 	
 public:
 	
-	ARX_USE_ALIGNED_NEW(SpellBase)
+	ARX_USE_ALIGNED_NEW(Spell)
 	
 };
 

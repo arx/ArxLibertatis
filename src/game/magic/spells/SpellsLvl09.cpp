@@ -399,7 +399,7 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 		return;
 	}
 	
-	for(SpellBase & spell : spells) {
+	for(Spell & spell : spells) {
 		
 		if(this == &spell || m_level < spell.m_level) {
 			continue;

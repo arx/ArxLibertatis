@@ -23,7 +23,7 @@
 
 #include "core/GameTime.h"
 
-SpellBase::SpellBase()
+Spell::Spell()
 	: m_level(1.f)
 	, m_hand_pos(0.f)
 	, m_caster_pos(0.f)
@@ -39,11 +39,11 @@ SpellBase::SpellBase()
 	m_targets.clear();
 }
 
-Vec3f SpellBase::getPosition() const {
+Vec3f Spell::getPosition() const {
 	return getCasterPosition();
 }
 
-Vec3f SpellBase::getCasterPosition() const {
+Vec3f Spell::getCasterPosition() const {
 	if(Entity * caster = entities.get(m_caster)) {
 		return caster->pos;
 	} else {
@@ -52,7 +52,7 @@ Vec3f SpellBase::getCasterPosition() const {
 	}
 }
 
-Vec3f SpellBase::getTargetPosition() const {
+Vec3f Spell::getTargetPosition() const {
 	if(Entity * target = entities.get(m_target)) {
 		return target->pos;
 	} else {
@@ -61,7 +61,7 @@ Vec3f SpellBase::getTargetPosition() const {
 	}
 }
 
-void SpellBase::updateCasterHand() {
+void Spell::updateCasterHand() {
 	
 	// Create hand position if a hand is defined
 	Entity * caster = entities.get(m_caster);
@@ -77,7 +77,7 @@ void SpellBase::updateCasterHand() {
 	
 }
 
-void SpellBase::updateCasterPosition() {
+void Spell::updateCasterPosition() {
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster == entities.player()) {
@@ -88,7 +88,7 @@ void SpellBase::updateCasterPosition() {
 	
 }
 
-Vec3f SpellBase::getTargetPos(EntityHandle source, EntityHandle target) {
+Vec3f Spell::getTargetPos(EntityHandle source, EntityHandle target) {
 	
 	if(target == EntityHandle_Player) {
 		// player target

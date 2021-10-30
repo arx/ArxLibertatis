@@ -1090,7 +1090,7 @@ void ActiveSpellsGui::draw() {
 
 void ActiveSpellsGui::spellsByPlayerUpdate(float intensity) {
 	
-	for(SpellBase & spell : spells.byCaster(EntityHandle_Player)) {
+	for(Spell & spell : spells.byCaster(EntityHandle_Player)) {
 		if(spellicons[spell.m_type].m_hasDuration) {
 			ManageSpellIcon(spell, intensity, false);
 		}
@@ -1100,7 +1100,7 @@ void ActiveSpellsGui::spellsByPlayerUpdate(float intensity) {
 
 void ActiveSpellsGui::spellsOnPlayerUpdate(float intensity) {
 	
-	for(SpellBase & spell : spells) {
+	for(Spell & spell : spells) {
 		
 		if(std::find(spell.m_targets.begin(), spell.m_targets.end(), EntityHandle_Player) == spell.m_targets.end()) {
 			continue;
@@ -1114,7 +1114,7 @@ void ActiveSpellsGui::spellsOnPlayerUpdate(float intensity) {
 	
 }
 
-void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool flag) {
+void ActiveSpellsGui::ManageSpellIcon(Spell & spell, float intensity, bool flag) {
 	
 	Color color = (flag) ? Color::rgb(intensity, 0, 0) : Color::gray(intensity);
 	

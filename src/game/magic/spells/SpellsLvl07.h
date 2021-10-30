@@ -26,7 +26,7 @@
 #include "graphics/effects/Lightning.h"
 #include "platform/Platform.h"
 
-class FlyingEyeSpell final : public SpellBase {
+class FlyingEyeSpell final : public Spell {
 	
 public:
 	
@@ -48,7 +48,7 @@ private:
 	
 };
 
-class FireFieldSpell final : public SpellBase {
+class FireFieldSpell final : public Spell {
 	
 public:
 	
@@ -71,7 +71,7 @@ private:
 	
 };
 
-class IceFieldSpell final : public SpellBase {
+class IceFieldSpell final : public Spell {
 	
 public:
 	
@@ -100,7 +100,7 @@ private:
 	
 };
 
-class LightningStrikeSpell final : public SpellBase {
+class LightningStrikeSpell final : public Spell {
 	
 public:
 	
@@ -114,7 +114,7 @@ private:
 	
 };
 
-class ConfuseSpell final : public SpellBase {
+class ConfuseSpell final : public Spell {
 	
 public:
 	
