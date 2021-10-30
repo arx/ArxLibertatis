@@ -19,6 +19,7 @@
 
 #include "graphics/font/Font.h"
 
+#include <cstring>
 #include <sstream>
 #include <iomanip>
 #include <iterator>
@@ -184,7 +185,7 @@ bool Font::insertGlyph(Char character) {
 		// Copy pixels
 		unsigned char * src = srcBitmap.buffer;
 		unsigned char * dst = imgGlyph.getData();
-		memcpy(dst, src, glyph.size.x * glyph.size.y);
+		std::memcpy(dst, src, size_t(glyph.size.x) * size_t(glyph.size.y));
 		
 		Vec2i offset;
 		if(!m_textures->insertImage(imgGlyph, glyph.texture, offset)) {
