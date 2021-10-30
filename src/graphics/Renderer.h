@@ -93,7 +93,7 @@ class RenderState {
 	
 public:
 	
-	[[nodiscard]] RenderState()
+	RenderState()
 		: m_state(0)
 	{
 		static_assert(sizeof(m_state) * 8 >= End, "fields do not fit into m_state");
