@@ -211,7 +211,7 @@ struct SCR_TIMER {
 	Entity * io;
 	const EERIE_SCRIPT * es;
 	
-	explicit SCR_TIMER(Entity * entity = nullptr, std::string && timerName = std::string())
+	explicit SCR_TIMER(Entity * entity = nullptr, std::string && timerName = std::string()) noexcept
 		: name(std::move(timerName))
 		, exist(entity != nullptr)
 		, idle(false)
