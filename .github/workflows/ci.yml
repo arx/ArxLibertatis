@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '21 11 * * 5'
+
+jobs:
+
+  linux:
+    name: Linux build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Update
+      run: sudo apt-get update
+
+    - name: Dependencies
+      run: sudo apt-get install build-essential cmake zlib1g-dev libfreetype6-dev libopenal1 libopenal-dev mesa-common-dev libgl1-mesa-dev libboost-dev libsdl2-dev libepoxy-dev libglm-dev qtbase5-dev libcurl4-gnutls-dev libcppunit-dev
+
+    - name: Configure
+      run: cmake -B ${{github.workspace}}/build -Werror=dev -Werror=deprecated -DCONTINUOUS_INTEGRATION=1 -DICON_TYPE=none
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build
+
+    - name: Check Style
+      run: cmake --build ${{github.workspace}}/build --target style
+
+  macos:
+    name: macOS build
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Update
+      run: brew update
+
+    - name: Dependencies
+      run: brew install boost freetype sdl2 libepoxy qt5 cppunit glm openal-soft
+
+    - name: Configure
+      run: cmake -B ${{github.workspace}}/build -Werror=dev -Werror=deprecated -DCONTINUOUS_INTEGRATION=1 -DICON_TYPE=none -DOPENAL_LIBRARY=/usr/local/opt/openal-soft/lib/libopenal.dylib -DOPENAL_INCLUDE_DIR=/usr/local/opt/openal-soft/include/AL -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build
