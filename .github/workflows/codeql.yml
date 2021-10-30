@@ -1,0 +1,59 @@
+name: CodeQL
+
+on:
+  schedule:
+    - cron: '21 11 * * 5'
+
+jobs:
+
+  cpp:
+    name: C++ analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Update
+      run: sudo apt-get update
+
+    - name: Dependencies
+      run: sudo apt-get install build-essential cmake zlib1g-dev libfreetype6-dev libopenal1 libopenal-dev mesa-common-dev libgl1-mesa-dev libboost-dev libsdl2-dev libepoxy-dev libglm-dev qtbase5-dev libcurl4-gnutls-dev
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: cpp
+
+    - name: Configure
+      run: cmake -B ${{github.workspace}}/build -DBUILD_ALL=1 -DUNITY_BUILD=0 -DICON_TYPE=none
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
+
+  python:
+    name: Python analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: python
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
