@@ -32,7 +32,7 @@
 #ifdef ARX_DEBUG
 //! Log a Debug message. Arguments are only evaluated if their results will be used.
 #define LogDebug(...)    \
-	if(ARX_LOG_ENABLED(::Logger::Debug)) \
+	if(arx_unlikely(ARX_LOG_ENABLED(::Logger::Debug))) \
 		ARX_LOG_FORCED(::Logger::Debug) << __VA_ARGS__
 #else
 #define LogDebug(...)    ARX_DISCARD(__VA_ARGS__)
