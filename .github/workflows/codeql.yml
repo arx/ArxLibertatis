@@ -30,7 +30,7 @@ jobs:
         languages: cpp
 
     - name: Configure
-      run: cmake -B ${{github.workspace}}/build -DBUILD_ALL=1 -DBUILD_TEST=0 -DUNITY_BUILD=0 -DICON_TYPE=none
+      run: cmake -B ${{github.workspace}}/build -DBUILD_ALL=1 -DBUILD_TESTS=0 -DUNITY_BUILD=0 -DICON_TYPE=none
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build
