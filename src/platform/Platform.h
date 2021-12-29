@@ -324,7 +324,8 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  * In debug builds, assumptions are checked using \ref arx_assert().
  *
  * Unlike arx_assert(Expression) this macro also tells the compiler to assume that Expression is always true
- * in release builds.
+ * in release builds. Expression should be simple because it may otherwise end up being executed in release
+ * builds if the compiler cannot prove it does not have any side effects.
  */
 #ifdef ARX_DEBUG
 	#define arx_assume(Expression) arx_assert(Expression)
@@ -342,7 +343,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  * \def arx_unreachable()
  * \brief Assume that a code branch cannot be reached.
  *
- * This is similar to arx_assume(false) falls back to a while loop instead of a no-op when we don't know
+ * This is similar to arx_assume(false) but falls back to a while loop instead of a no-op when we don't know
  * of a way to tell the compiler about assumtions.
  *
  * Unlike arx_assert(false) this macro also tells the compiler to assume that the branch is unreachable
@@ -363,9 +364,9 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  *
  * If a switch is supposed to handle all values of an enum it is important to not add a default label
  * for the arx_unreachable() macro but instead place it after the switch. This allows tools to warn when
- * ther is an enum value added that is not handled in the switch.
+ * there is a (new) enum value that is not handled in the switch.
  *
- * While some compilers may use unreachable branches to make assumptions about variables, this should 
+ * While some compilers may use unreachable branches to make assumptions about variables, this should
  * not be relied upon. To teach the optimizer a fact, use
  * \code
  * arx_assume(expression)
