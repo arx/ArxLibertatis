@@ -69,6 +69,8 @@ public:
 	
 	size_t read(void * buffer, size_t bufferSize) override;
 	
+	size_t getOutputSize(size_t dataSize, size_t samples) override;
+	
 private:
 	
 	enum { MaxChannels = 2 };

@@ -269,4 +269,11 @@ aalError CodecADPCM::getNextBlock() {
 	return AAL_OK;
 }
 
+size_t CodecADPCM::getOutputSize(size_t dataSize, size_t samples) {
+	
+	size_t maxSamples = dataSize / m_header->wfx.blockAlign * m_header->samplesPerBlock;
+	
+	return std::min(samples, maxSamples) * m_header->wfx.channels * 2;
+}
+
 } // namespace audio

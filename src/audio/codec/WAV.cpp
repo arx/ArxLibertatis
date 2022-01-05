@@ -191,6 +191,7 @@ aalError StreamWAV::setStream(std::unique_ptr<PakFileHandle> stream) {
 	}
 	
 	// Get codec specific infos from header for non-PCM format
+	u32 samples = std::numeric_limits<u32>::max();
 	if(header->formatTag != WAV_FORMAT_PCM) {
 		
 		// Load extra bytes from header
@@ -205,7 +206,7 @@ aalError StreamWAV::setStream(std::unique_ptr<PakFileHandle> stream) {
 		
 		// Get sample count from the 'fact' chunk
 		wave.find("fact");
-		wave.read(&outsize, 4);
+		wave.read(&samples, 4);
 	}
 	
 	// Create codec
@@ -214,7 +215,6 @@ aalError StreamWAV::setStream(std::unique_ptr<PakFileHandle> stream) {
 			codec = new CodecRAW;
 			break;
 		case WAV_FORMAT_ADPCM :
-			outsize <<= 1;
 			codec = new CodecADPCM;
 			break;
 		default                :
@@ -230,13 +230,6 @@ aalError StreamWAV::setStream(std::unique_ptr<PakFileHandle> stream) {
 	}
 	
 	size = wave.size();
-	
-	if(header->formatTag == WAV_FORMAT_PCM) {
-		outsize = size;
-	} else {
-		outsize *= header->channels;
-	}
-	
 	offset = m_stream->tell();
 	
 	codec->setStream(m_stream.get());
@@ -244,6 +237,8 @@ aalError StreamWAV::setStream(std::unique_ptr<PakFileHandle> stream) {
 	if(aalError error = codec->setHeader(header)) {
 		return error;
 	}
+	
+	outsize = codec->getOutputSize(size, samples);
 	
 	return AAL_OK;
 }

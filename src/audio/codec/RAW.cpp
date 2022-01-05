@@ -72,4 +72,9 @@ size_t CodecRAW::read(void * buffer, size_t bufferSize) {
 	return m_stream->read(buffer, bufferSize);
 }
 
+size_t CodecRAW::getOutputSize(size_t dataSize, size_t samples) {
+	ARX_UNUSED(samples);
+	return dataSize;
+}
+
 } // namespace audio
