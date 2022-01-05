@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/codec/ADPCM.h"
 
 #include <algorithm>
+#include <limits>
 
 #include "audio/AudioTypes.h"
 #include "audio/codec/WAVFormat.h"
@@ -85,7 +86,6 @@ aalError CodecADPCM::setHeader(void * header) {
 	shift = m_header->wfx.channels - 1;
 	arx_assert((1 << shift) <= MaxChannels);
 	padding = 0;
-	sample_i = 0xffffffff;
 	
 	cache_c = cache_i = u8(sizeof(s16) << shift);
 	arx_assert(cache_c <= sizeof(cache_l));
@@ -229,6 +229,8 @@ size_t CodecADPCM::read(void * buffer, size_t bufferSize) {
 
 aalError CodecADPCM::getNextBlock() {
 	
+	sample_i = std::numeric_limits<u32>::max();
+	
 	// Load and check block header
 	if(!m_stream->read(predictor, sizeof(*predictor) << shift)) {
 		return AAL_ERROR_FILEIO;
@@ -246,9 +248,9 @@ aalError CodecADPCM::getNextBlock() {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	odd = false;
-	sample_i = 0;
-	nybble_i = 0;
+	if(!m_stream->read(nybble_l.data(), nybble_l.size())) {
+		return AAL_ERROR_FILEIO;
+	}
 	
 	for(size_t i = 0; i < m_header->wfx.channels; i++) {
 		if(predictor[i] >= m_header->coefficientCount) {
@@ -259,9 +261,9 @@ aalError CodecADPCM::getNextBlock() {
 		cache_l[i] = samp2[i];
 	}
 	
-	if(!m_stream->read(nybble_l.data(), nybble_l.size())) {
-		return AAL_ERROR_FILEIO;
-	}
+	odd = false;
+	sample_i = 0;
+	nybble_i = 0;
 	
 	return AAL_OK;
 }
