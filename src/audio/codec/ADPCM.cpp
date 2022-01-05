@@ -146,11 +146,11 @@ aalError CodecADPCM::setPosition(size_t position) {
 
 void CodecADPCM::getSample(size_t channel, s8 adpcmSample) {
 	
-	arx_assert(channel <= MaxChannels);
+	arx_assert(channel < MaxChannels);
 	
 	// Update delta
-	s32 old_delta = delta[channel];
-	delta[channel] = s16((gai_p4[adpcmSample] * old_delta) >> 8);
+	s32 oldDelta = delta[channel];
+	delta[channel] = s16((gai_p4[adpcmSample] * oldDelta) >> 8);
 	
 	if(delta[channel] < 16) {
 		delta[channel] = 16;
@@ -165,18 +165,12 @@ void CodecADPCM::getSample(size_t channel, s8 adpcmSample) {
 	s32 predict = (s32(samp1[channel]) * coef1[channel] + s32(samp2[channel]) * coef2[channel]) >> 8;
 	
 	// Reconstruct original PCM
-	s32 pcm_sample = adpcmSample * old_delta + predict;
-	
-	// Clip value to signed 16 bits limits
-	if(pcm_sample > 32767) {
-		pcm_sample = 32767;
-	} else if(pcm_sample < -32768) {
-		pcm_sample = -32768;
-	}
+	s32 pcmSample = adpcmSample * oldDelta + predict;
 	
 	// Update samples
 	samp2[channel] = samp1[channel];
-	samp1[channel] = s16(pcm_sample);
+	samp1[channel] = s16(std::clamp(pcmSample, s32(std::numeric_limits<s16>::min()),
+	                                           s32(std::numeric_limits<s16>::max())));
 }
 
 size_t CodecADPCM::read(void * buffer, size_t bufferSize) {
