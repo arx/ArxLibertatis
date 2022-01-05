@@ -104,6 +104,7 @@ aalError CodecADPCM::setHeader(void * header) {
 	}
 	
 	sample_i++;
+	cache_i = 0;
 	
 	return AAL_OK;
 }
