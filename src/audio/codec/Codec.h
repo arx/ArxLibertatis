@@ -66,7 +66,7 @@ public:
 	
 	virtual size_t read(void * buffer, size_t bufferSize) = 0;
 	
-	virtual size_t getOutputSize(size_t dataSize, size_t samples);
+	virtual size_t getOutputSize(size_t dataSize, size_t samples) = 0;
 	
 };
 
