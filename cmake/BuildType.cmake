@@ -149,8 +149,30 @@ if(MSVC)
 	
 else(MSVC)
 	
-	if(USE_LDGOLD)
+	set(linker_used)
+	if(NOT linker_used AND (USE_LD STREQUAL "mold" OR USE_LD STREQUAL "best"))
+		add_ldflag("-fuse-ld=mold")
+		if(FLAG_FOUND)
+			set(linker_used "mold")
+		endif()
+	endif()
+	if(NOT linker_used AND (USE_LD STREQUAL "lld" OR USE_LD STREQUAL "best"))
+		add_ldflag("-fuse-ld=lld")
+		if(FLAG_FOUND)
+			set(linker_used "lld")
+		endif()
+	endif()
+	if(NOT linker_used AND (USE_LD STREQUAL "gold" OR USE_LD STREQUAL "best"))
 		add_ldflag("-fuse-ld=gold")
+		if(FLAG_FOUND)
+			set(linker_used "gold")
+		endif()
+	endif()
+	if(NOT linker_used AND (USE_LD STREQUAL "bfd"))
+		add_ldflag("-fuse-ld=bfd")
+		if(FLAG_FOUND)
+			set(linker_used "bfd")
+		endif()
 	endif()
 	
 	if(USE_LTO)
@@ -165,7 +187,12 @@ else(MSVC)
 	if(FASTLINK)
 		
 		# Optimize for link speed in developer builds
-		add_cxxflag("-gsplit-dwarf")
+		if(linker_used STREQUAL "mold" OR linker_used STREQUAL "lld")
+			# mold and lld are fast enough without -gsplit-dwarf that we don't need to deal with its issues
+		else()
+			add_cxxflag("-gsplit-dwarf")
+			add_cxxflag("-gdwarf-4") # -gsplit-dwarf is broken with DWARF 5
+		endif()
 		
 	elseif(SET_OPTIMIZATION_FLAGS)
 		
