@@ -19,14 +19,18 @@
 
 #include "graphics/opengl/GLDebug.h"
 
+#include "Configure.h"
+
+#if ARX_HAVE_DLSYM
+#include <dlfcn.h>
+#endif
+
 #include <cstring>
 
 #include "core/Benchmark.h"
 #include "io/log/Logger.h"
 #include "platform/ProgramOptions.h"
 #include "util/cmdline/Optional.h"
-
-#include "Configure.h"
 
 namespace gldebug {
 
@@ -169,17 +173,37 @@ void initialize(const OpenGLInfo & gl) {
 }
 
 inline Mode defaultMode() {
+	
 	#if ARX_DEBUG_GL
-	return benchmark::isEnabled() ? NoError : Enabled;
-	#else
-	return NoError;
+	if(!benchmark::isEnabled()) {
+		// OpenGL debug mode is enabled by default in development builds unless during benchmarks
+		return Enabled;
+	}
 	#endif
+	
+	// Workaround for https://github.com/ValveSoftware/steam-for-linux/issues/7358
+	// Note that this even triggers if the overlay is disabled as gameoverlayrenderer.so is still LD_PRELOADed.
+	// However calling IsOverlayEnabled() would lead to false negatives as it returns false before the overlay
+	// is initialized while we need to know this at context creation time.
+	#if ARX_HAVE_DLSYM && defined(RTLD_DEFAULT)
+	if(dlsym(RTLD_DEFAULT, "IsOverlayEnabled") != NULL) {
+		LogInfo << "Potentially buggy Steam overlay detected, falling back to --debug-gl=ignored instead of noerror";
+		return Ignored;
+	}
+	#endif
+	
+	return NoError;
 }
 
 static Mode g_mode = Default;
 
 Mode mode() {
-	return (g_mode == Default) ? defaultMode() : g_mode;
+	
+	if(g_mode == Default) {
+		g_mode = defaultMode();
+	}
+	
+	return g_mode;
 }
 
 static void setMode(util::cmdline::optional<std::string> mode) {
@@ -215,7 +239,7 @@ static const char * getGLErrorString(GLenum error) {
 
 void endFrame() {
 	
-	if(mode() != Enabled) {
+	if(g_mode != Enabled) {
 		return;
 	}
 	

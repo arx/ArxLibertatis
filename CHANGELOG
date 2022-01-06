@@ -6,6 +6,10 @@ Gameplay:
 * Fixed being able to use items multiple times by dropping them on the player book (bug #1011)
 * Fixed using stacks of items by dropping them on the player book causing the remaining unused items in the stack to disappear
 
+Graphics:
+
+* Fixed messed up graphics with the Steam overlay active
+
 Audio:
 
 * Fixed missing death screams for most NPCs (bug #1579)
