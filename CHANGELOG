@@ -1,6 +1,10 @@
 
 = Arx Libertatis 1.3  (TBD) =
 
+Graphics:
+
+* Fixed messed up graphics with the Steam overlay active
+
 Interface:
 
 * Fixed cheat text not scaling correctly with higher resolutions
