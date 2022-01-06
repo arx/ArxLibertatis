@@ -9,6 +9,10 @@ Controls:
 
 * Fixed the "Interrupt current spell" keyboard shortcut sometimes ending previous spells instead of the last one
 
+Audio:
+
+* Fixed some audio samples not ending correctly
+
 Modding:
 
 * Added support for level numbers above 27

@@ -310,9 +310,10 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	
 	size_t read = m_stream->read(data.get(), left);
 	if(read != left) {
-		return AAL_ERROR_SYSTEM;
+		ALError << "error reading stream after " << (m_written + read) << " bytes";
+		std::memset(data.get() + read, '\0', left - read);
 	}
-	m_written += read;
+	m_written += left;
 	arx_assert(m_written <= m_sample->getLength());
 	if(m_written == m_sample->getLength()) {
 		m_written = 0;
@@ -323,9 +324,10 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 			if(size > left) {
 				read = m_stream->read(data.get() + left, size - left);
 				if(read != size - left) {
-					return AAL_ERROR_SYSTEM;
+					ALError << "error reading stream after " << (m_written + left + read) << " bytes";
+					std::memset(data.get() + left + read, '\0', size - left - read);
 				}
-				m_written += read;
+				m_written += size - left;
 				arx_assert(m_written < m_sample->getLength());
 			}
 		}
