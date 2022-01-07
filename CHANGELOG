@@ -23,6 +23,7 @@ Modding:
 * Added support for script event parameters above 3 (e.g. ^$param4)
 * Added support for having more than 20 spells active
 * Added the ^hover system variable returning the entity under the mouse cursor
+* Added the ^angleto_… system variable returning the the direction to another entity
 
 ################################################################################
 

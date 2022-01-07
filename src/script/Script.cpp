@@ -619,6 +619,16 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 				return TYPE_FLOAT;
 			}
 			
+			if(boost::starts_with(name, "^angleto_")) {
+				Entity * entity = getEntityParam(name, 9, context);
+				if(!entity || !context.getEntity()) {
+					*fcontent = 0.f;
+				} else {
+					*fcontent = Camera::getLookAtAngle(context.getEntity()->pos, entity->pos).getYaw();
+				}
+				return TYPE_FLOAT;
+			}
+			
 			if(boost::starts_with(name, "^anglex_")) {
 				*fcontent = 0.f;
 				Entity * entity = getEntityParam(name, 8, context);
