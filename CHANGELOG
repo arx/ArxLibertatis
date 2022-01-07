@@ -21,7 +21,8 @@ Modding:
 
 * Added support for level numbers above 27
 * Added support for script event parameters above 3 (e.g. ^$param4)
-* Added support for more than 20 active spells
+* Added support for having more than 20 spells active
+* Added the ^hover system variable returning the entity under the mouse cursor
 
 ################################################################################
 

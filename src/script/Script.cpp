@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 
 #include "gui/Dragging.h"
+#include "gui/Interface.h"
 #include "gui/Speech.h"
 
 #include "graphics/particle/ParticleEffects.h"
@@ -751,6 +752,16 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 					*lcontent = player.rune_flags & FLAG_YOK;
 				}
 				return TYPE_LONG;
+			}
+			
+			break;
+		}
+		
+		case 'h': {
+			
+			if(name == "^hover") {
+				txtcontent = idString(FlyingOverIO);
+				return TYPE_TEXT;
 			}
 			
 			break;
