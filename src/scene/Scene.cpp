@@ -261,6 +261,10 @@ bool VisibleSphere(const Sphere & sphere) {
 		return false;
 	}
 	
+	if(!IsSphereInFrustrum(sphere.origin, g_screenFrustum, sphere.radius)) {
+		return false;
+	}
+	
 	long room_num = ARX_PORTALS_GetRoomNumForPosition(sphere.origin);
 	if(room_num >= 0) {
 		EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[room_num].frustrum;
