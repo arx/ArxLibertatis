@@ -186,6 +186,7 @@ public:
 } // anonymous namespace
 
 static Plane efpPlaneNear;
+static EERIE_FRUSTRUM g_screenFrustum;
 
 static std::vector<EERIEPOLY *> vPolyWater;
 static std::vector<EERIEPOLY *> vPolyLava;
@@ -1304,6 +1305,11 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 		if(!IsSphereInFrustrum(epp.center, frustrum, epp.rhw)) {
 			continue;
 		}
+		// TODO Ideally we would also check portal frustums from intermediate rooms
+		// like in isOccludedByPortals() but those may be incomplete at this point.
+		if(!IsSphereInFrustrum(epp.center, g_screenFrustum, epp.rhw)) {
+			continue;
+		}
 		
 		bool Cull = !(fRes < 0.f);
 		
@@ -1351,19 +1357,19 @@ void ARX_SCENE_Update() {
 	
 	ARX_PORTALS_InitDrawnRooms();
 	
-	EERIE_FRUSTRUM screenFrustrum = CreateScreenFrustrum();
+	g_screenFrustum = CreateScreenFrustrum();
 	
 	if(!USE_PLAYERCOLLISIONS) {
 		for(size_t i = 0; i < portals->rooms.size(); i++) {
 			RoomDraw[i].count = 1;
 			RoomDrawList.push_back(i);
-			RoomFrustrumAdd(i, screenFrustrum);
+			RoomFrustrumAdd(i, g_screenFrustum);
 		}
 	} else {
 		long room_num = ARX_PORTALS_GetRoomNumForPosition(camPos, 1);
 		if(room_num > -1) {
 			size_t roomIndex = static_cast<size_t>(room_num);
-			ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, screenFrustrum, camPos, camDepth);
+			ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, g_screenFrustum, camPos, camDepth);
 		}
 	}
 	
