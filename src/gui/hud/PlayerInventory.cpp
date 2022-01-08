@@ -587,3 +587,21 @@ void PlayerInventoryHud::setCurrentBag(short bag) {
 		m_currentBag = bag;
 	}
 }
+
+bool PlayerInventoryHud::isSlotVisible(InventoryPos pos) {
+	
+	if(pos.io != EntityHandle_Player) {
+		// Slot is not in the player inventory
+		return false;
+	}
+	
+	if(player.Interface & INTER_INVENTORYALL) {
+		return true;
+	}
+	
+	if((player.Interface & INTER_INVENTORY) && m_currentBag == pos.bag) {
+		return true;
+	}
+	
+	return false;
+}

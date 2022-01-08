@@ -86,6 +86,8 @@ public:
 	bool isClosing() const;
 	void resetPos();
 	
+	bool isSlotVisible(InventoryPos pos);
+	
 private:
 	
 	void CalculateInventoryCoordinates();
