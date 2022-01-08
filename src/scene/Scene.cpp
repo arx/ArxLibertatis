@@ -335,6 +335,18 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 		return false;
 	}
 	
+	Sphere sphere;
+	if(io) {
+		sphere.origin = (io->bbox3D.min + io->bbox3D.max) / 2.f;
+		sphere.radius = glm::distance(sphere.origin, io->bbox3D.min) + 10.f;
+		if(!IsSphereInFrustrum(sphere.origin, g_screenFrustum, sphere.radius) ||
+		   !IsBBoxInFrustrum(io->bbox3D, g_screenFrustum)) {
+			io->bbox2D.min = Vec2f(-1.f, -1.f);
+			io->bbox2D.max = Vec2f(-1.f, -1.f);
+			return true;
+		}
+	}
+	
 	if(portals) {
 		Vec3f posi = position + Vec3f(0, -60, 0); // -20 ?
 		long room_num;
@@ -361,14 +373,10 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 				}
 				return true;
 			}
-
+			
 			if(io) {
-				Sphere sphere;
-				sphere.origin = (io->bbox3D.min + io->bbox3D.max) * .5f;
-				sphere.radius = glm::distance(sphere.origin, io->bbox3D.min) + 10.f;
-
 				EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[room_num].frustrum;
-
+				// TODO also use the portals from intermediate rooms for clipping
 				if(FrustrumsClipSphere(frustrums, sphere) ||
 				   FrustrumsClipBBox3D(frustrums, io->bbox3D)
 				) {
@@ -659,14 +667,12 @@ static EERIE_FRUSTRUM CreateFrustrum(const Vec3f & pos, const PortalPoly & ep, b
 	return frustrum;
 }
 
-static EERIE_FRUSTRUM CreateScreenFrustrum() {
-	
-	EERIE_FRUSTRUM frustrum;
+static void CreateScreenFrustrum() {
 	
 	glm::mat4x4 worldToClip = g_preparedCamera.m_viewToClip * g_preparedCamera.m_worldToView;
 	
 	{
-		Plane & plane = frustrum.plane[0];
+		Plane & plane = g_screenFrustum.plane[0];
 		plane.a = worldToClip[0][3] - worldToClip[0][0];
 		plane.b = worldToClip[1][3] - worldToClip[1][0];
 		plane.c = worldToClip[2][3] - worldToClip[2][0];
@@ -675,7 +681,7 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	}
 	
 	{
-		Plane & plane = frustrum.plane[1];
+		Plane & plane = g_screenFrustum.plane[1];
 		plane.a = worldToClip[0][3] + worldToClip[0][0];
 		plane.b = worldToClip[1][3] + worldToClip[1][0];
 		plane.c = worldToClip[2][3] + worldToClip[2][0];
@@ -684,7 +690,7 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	}
 	
 	{
-		Plane & plane = frustrum.plane[2];
+		Plane & plane = g_screenFrustum.plane[2];
 		plane.a = worldToClip[0][3] - worldToClip[0][1];
 		plane.b = worldToClip[1][3] - worldToClip[1][1];
 		plane.c = worldToClip[2][3] - worldToClip[2][1];
@@ -693,7 +699,7 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 	}
 	
 	{
-		Plane & plane = frustrum.plane[3];
+		Plane & plane = g_screenFrustum.plane[3];
 		plane.a = worldToClip[0][3] + worldToClip[0][1];
 		plane.b = worldToClip[1][3] + worldToClip[1][1];
 		plane.c = worldToClip[2][3] + worldToClip[2][1];
@@ -710,7 +716,6 @@ static EERIE_FRUSTRUM CreateScreenFrustrum() {
 		normalizePlane(plane);
 	}
 	
-	return frustrum;
 }
 
 void RoomDrawRelease() {
@@ -1341,6 +1346,8 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 
 void ARX_SCENE_Update() {
 	
+	CreateScreenFrustrum();
+	
 	if(!portals) {
 		return;
 	}
@@ -1360,8 +1367,6 @@ void ARX_SCENE_Update() {
 	g_tiles->resetActiveTiles();
 	
 	ARX_PORTALS_InitDrawnRooms();
-	
-	g_screenFrustum = CreateScreenFrustrum();
 	
 	if(!USE_PLAYERCOLLISIONS) {
 		for(size_t i = 0; i < portals->rooms.size(); i++) {
