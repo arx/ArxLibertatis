@@ -61,4 +61,15 @@ void RoomDrawRelease();
 
 bool VisibleSphere(const Sphere & sphere);
 
+enum EntityVisibility {
+	EntityInactive,
+	EntityNotInView,
+	EntityFullyOccluded,
+	EntityVisibilityUnknown,
+	EntityVisible,
+	EntityInFocus
+};
+
+EntityVisibility getEntityVisibility(Entity & entity);
+
 #endif // ARX_SCENE_SCENE_H

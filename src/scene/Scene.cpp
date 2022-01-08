@@ -72,11 +72,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Cursor.h"
 #include "gui/Dragging.h"
 #include "gui/Interface.h"
+#include "gui/hud/PlayerInventory.h"
+#include "gui/hud/SecondaryInventory.h"
 
 #include "graphics/Draw.h"
 #include "graphics/DrawLine.h"
 #include "graphics/GlobalFog.h"
 #include "graphics/Math.h"
+#include "graphics/Raycast.h"
 #include "graphics/VertexBuffer.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/BlobShadow.h"
@@ -90,8 +93,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/log/Logger.h"
 
-#include "scene/Light.h"
 #include "scene/Interactive.h"
+#include "scene/Light.h"
 
 #include "physics/Projectile.h"
 
@@ -389,6 +392,268 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 	}
 
 	return false;
+}
+
+static bool isInCameraFrustum(Vec3f pos, float radius = 0.f) {
+	
+	float dist = distanceToPoint(efpPlaneNear, pos);
+	if(dist + radius < 0.f) {
+		return false;
+	}
+	if(dist - radius - 10.f > g_camera->cdepth * fZFogEnd) {
+		return false;
+	}
+	
+	return IsSphereInFrustrum(pos, g_screenFrustum, radius);
+}
+
+static bool isPointVisible(Vec3f pos, const Entity * owner = nullptr) {
+	
+	arx_assert(g_camera);
+	
+	if(!isInCameraFrustum(pos)) {
+		return false;
+	}
+	
+	PolyType transparent = POLY_WATER | POLY_TRANS;
+	RaycastFlags flags = 0;
+	if(g_camera == &g_playerCamera) {
+		flags |= RaycastIgnorePlayer;
+	}
+	
+	RaycastResult sceneHit = raycastScene(g_camera->m_pos, pos, transparent, flags | RaycastAnyHit);
+	if(sceneHit && fartherThan(sceneHit.pos, pos, 1.f)) {
+		return false;
+	}
+	
+	EntityRaycastResult hit = raycastEntities(g_camera->m_pos, pos, transparent, flags);
+	if(hit && hit.entity != owner) {
+		return false;
+	}
+	
+	return true;
+}
+
+static bool isOccludedByPortals(Entity & entity, float dist2, size_t currentRoom, size_t cameraRoom) {
+	
+	Sphere sphere;
+	sphere.origin = (entity.bbox3D.min + entity.bbox3D.max) / 2.f;
+	sphere.radius = glm::distance(sphere.origin, entity.bbox3D.min);
+	
+	const EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[currentRoom].frustrum;
+	if(FrustrumsClipSphere(frustrums, sphere) || FrustrumsClipBBox3D(frustrums, entity.bbox3D)) {
+		return true;
+	}
+	
+	const EERIE_ROOM_DATA & room = portals->rooms[currentRoom];
+	for(long i : room.portals) {
+		
+		if(i < 0 || size_t(i) >= portals->portals.size()) {
+			continue;
+		}
+		const EERIE_PORTALS & portal = portals->portals[i];
+		if(portal.useportal != 1) {
+			continue;
+		}
+		
+		size_t nextRoom = (portal.room_1 == currentRoom) ? portal.room_2 : portal.room_1;
+		if(nextRoom == cameraRoom) {
+			return false;
+		}
+		
+		float nextDist2 = arx::distance2(portal.poly.center, g_camera->m_pos);
+		if(nextDist2 < dist2 && !isOccludedByPortals(entity, nextDist2, nextRoom, cameraRoom)) {
+			return false;
+		}
+		
+	}
+	
+	return true;
+}
+
+static bool isPointInViewCenter(Vec3f pos) {
+	Vec3f cameraDirection = angleToVector(g_camera->angle);
+	Vec3f direction = glm::normalize(pos - g_camera->m_pos);
+	return (glm::dot(direction, cameraDirection) > glm::cos(glm::radians(70.f / 2.f)));
+}
+
+EntityVisibility getEntityVisibility(Entity & entity) {
+	
+	switch(entity.show) {
+		case SHOW_FLAG_NOT_DRAWN:    return EntityInactive;
+		case SHOW_FLAG_IN_SCENE:     break;
+		case SHOW_FLAG_LINKED:       break;
+		case SHOW_FLAG_IN_INVENTORY: break;
+		case SHOW_FLAG_HIDDEN:       return EntityInactive;
+		case SHOW_FLAG_TELEPORTING:  return EntityVisibilityUnknown;
+		case SHOW_FLAG_KILLED:       return EntityInactive;
+		case SHOW_FLAG_MEGAHIDE:     return EntityInactive;
+		case SHOW_FLAG_ON_PLAYER:    break;
+		case SHOW_FLAG_DESTROYED:    return EntityInactive;
+	}
+	
+	// Special handling for items in inventories
+	if(InventoryPos slot = locateInInventories(&entity)) {
+		if(g_playerInventoryHud.isSlotVisible(slot) || g_secondaryInventoryHud.isSlotVisible(slot)) {
+			return EntityInFocus;
+		} else {
+			return EntityInactive;
+		}
+	}
+	if((player.Interface & INTER_PLAYERBOOK) && IsEquipedByPlayer(&entity)) {
+		return EntityInFocus;
+	}
+	if(&entity == g_draggedEntity) {
+		return EntityInFocus;
+	}
+	if(entity.ioflags & IO_ICONIC) {
+		return EntityInactive;
+	}
+	
+	arx_assert(g_camera);
+	arx_assert(g_tiles);
+	
+	// Point entities do not have a bounding box so need special treatment
+	// On the other hand, a perfect occlusion test works with a single raycast.
+	if(!entity.obj || (entity.ioflags & (IO_CAMERA | IO_MARKER))) {
+		if(!g_tiles->isInActiveTile(entity.pos)) {
+			return EntityInactive;
+		}
+		if(!isInCameraFrustum(entity.pos)) {
+			return EntityNotInView;
+		}
+		if(!isPointVisible(entity.pos, &entity)) {
+			return EntityFullyOccluded;
+		}
+		return isPointInViewCenter(entity.pos) ? EntityInFocus : EntityVisible;
+	}
+	
+	// Linked entities do not have a valid position and never have the GFLAG_ISINTREATZONE game flag
+	Entity * parent = &entity;
+	if(entity.show == SHOW_FLAG_LINKED || entity.show == SHOW_FLAG_ON_PLAYER) {
+		for(Entity & other : entities.inScene(~(IO_CAMERA | IO_MARKER))) {
+			if(other != entity && other.obj) {
+				for(const EERIE_LINKED & link : other.obj->linked) {
+					if(link.io == &entity) {
+						if(&other == entities.player() && !EXTERNALVIEW &&
+						   link.lidx == entities.player()->obj->fastaccess.weapon_attach) {
+							return EntityInactive;
+						}
+						parent = &other;
+						break;
+					}
+				}
+			}
+			if(parent != &entity) {
+				break;
+			}
+		}
+	}
+	
+	// Coarse culling based on inactive rooms / tiles
+	if(!(parent->gameFlags & GFLAG_ISINTREATZONE)) {
+		return EntityInactive;
+	}
+	if(!g_tiles->isNearActiveTile(parent->pos)) {
+		return EntityInactive;
+	}
+	
+	// Frustum culling and portal occlusion
+	Vec3f center = (entity.bbox3D.min + entity.bbox3D.max) / 2.f;
+	if(g_camera != &g_playerCamera || &entity != entities.player()) {
+		if(!isInCameraFrustum(center, glm::distance(center, entity.bbox3D.min))) {
+			return EntityNotInView;
+		}
+		if(!IsBBoxInFrustrum(entity.bbox3D, g_screenFrustum)) {
+			return EntityNotInView;
+		}
+		if(portals && USE_PLAYERCOLLISIONS) {
+			long room = ARX_PORTALS_GetRoomNumForPosition(g_camera->m_pos, 1);
+			if(room >= 0 && size_t(room) < RoomDraw.size()) {
+				long room2 = entity.room;
+				if(room2 == -1) {
+					room2 = ARX_PORTALS_GetRoomNumForPosition(parent->pos - Vec3f(0.f, 120.f, 0.f));
+				}
+				if(room2 >= 0 && size_t(room2) < RoomDraw.size() && room2 != room) {
+					if(isOccludedByPortals(entity, arx::distance2(parent->pos, g_camera->m_pos), room2, room)) {
+						return EntityFullyOccluded;
+					}
+				}
+			}
+		}
+	}
+	
+	// For full visibility use the head (or center if there is no head)
+	Vec3f target = center;
+	if(entity.obj->fastaccess.head_group_origin != ObjVertHandle()) {
+		target = entity.obj->vertexWorldPositions[entity.obj->fastaccess.head_group_origin.handleData()].v;
+	}
+	if(isPointVisible(target, &entity)) {
+		return isPointInViewCenter(target) ? EntityInFocus : EntityVisible;
+	}
+	
+	// If the head/center is not visible test all other groups
+	for(const VertexGroup & group : entity.obj->grouplist) {
+		if(ObjVertHandle(group.origin) != entity.obj->fastaccess.head_group_origin &&
+		   isPointVisible(entity.obj->vertexWorldPositions[group.origin].v, &entity)) {
+			if(entity.obj->fastaccess.head_group_origin == ObjVertHandle() &&
+			   isPointInViewCenter(entity.obj->vertexWorldPositions[group.origin].v)) {
+				return EntityInFocus;
+			}
+			return EntityVisible;
+		}
+	}
+	
+	// For objects without 2 or fewer groups (i.e. non-NPCs), also test extreme vertices
+	if(entity.obj->grouplist.size() <= 2) {
+		Vec3f minX(std::numeric_limits<float>::max());
+		Vec3f maxX(-std::numeric_limits<float>::max());
+		Vec3f minY(std::numeric_limits<float>::max());
+		Vec3f maxY(-std::numeric_limits<float>::max());
+		Vec3f minZ(std::numeric_limits<float>::max());
+		Vec3f maxZ(-std::numeric_limits<float>::max());
+		for(const EERIE_VERTEX & vertex : entity.obj->vertexWorldPositions) {
+			if(vertex.v.x < minX.x) {
+				minX = vertex.v;
+			}
+			if(vertex.v.x > maxX.x) {
+				maxX = vertex.v;
+			}
+			if(vertex.v.y < minY.y) {
+				minY = vertex.v;
+			}
+			if(vertex.v.y > maxY.y) {
+				maxY = vertex.v;
+			}
+			if(vertex.v.z < minZ.z) {
+				minZ = vertex.v;
+			}
+			if(vertex.v.z > maxZ.z) {
+				maxZ = vertex.v;
+			}
+		}
+		if(isPointVisible(minY, &entity)) {
+			return isPointInViewCenter(center) ? EntityInFocus : EntityVisible;
+		}
+		if(isPointVisible(maxY, &entity)) {
+			return isPointInViewCenter(center) ? EntityInFocus : EntityVisible;
+		}
+		if(isPointVisible(minX, &entity)) {
+			return isPointInViewCenter(center) ? EntityInFocus : EntityVisible;
+		}
+		if(isPointVisible(maxX, &entity)) {
+			return isPointInViewCenter(center) ? EntityInFocus : EntityVisible;
+		}
+		if(isPointVisible(minZ, &entity)) {
+			return isPointInViewCenter(center) ? EntityInFocus : EntityVisible;
+		}
+		if(isPointVisible(maxZ, &entity)) {
+			return isPointInViewCenter(center) ? EntityInFocus : EntityVisible;
+		}
+	}
+	
+	// Not culled but we also found not visible vertex, give up
+	return EntityVisibilityUnknown;
 }
 
 static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag) {
