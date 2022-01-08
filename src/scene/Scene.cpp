@@ -271,57 +271,45 @@ bool VisibleSphere(const Sphere & sphere) {
 	return true;
 }
 
-static bool IsBBoxInFrustrum(const EERIE_3D_BBOX & bbox, const EERIE_FRUSTRUM & frustrum) {
+static bool IsBBoxInFrustrum(const EERIE_3D_BBOX & bbox, const EERIE_FRUSTRUM & frustum) {
 	
-	Vec3f point = bbox.min;
-	if(IsSphereInFrustrum(point, frustrum)) {
-		return true;
+	Vec3f corners[] = {
+		bbox.min,
+		Vec3f(bbox.max.x, bbox.min.y, bbox.min.z),
+		Vec3f(bbox.min.x, bbox.max.y, bbox.min.z),
+		Vec3f(bbox.max.x, bbox.max.y, bbox.min.z),
+		Vec3f(bbox.min.x, bbox.min.y, bbox.max.z),
+		Vec3f(bbox.max.x, bbox.min.y, bbox.max.z),
+		Vec3f(bbox.min.x, bbox.max.y, bbox.max.z),
+		bbox.max
+	};
+	
+	for(const Plane & plane : frustum.plane) {
+		bool intersect = false;
+		for(Vec3f corner : corners) {
+			if(distanceToPoint(plane, corner) >= 0.f) {
+				intersect = true;
+				break;
+			}
+		}
+		if(!intersect) {
+			return false;
+		}
 	}
 	
-	point = Vec3f(bbox.max.x, bbox.min.y, bbox.min.z);
-	if(IsSphereInFrustrum(point, frustrum)) {
-		return true;
-	}
-	
-	point = Vec3f(bbox.max.x, bbox.max.y, bbox.min.z);
-	if(IsSphereInFrustrum(point, frustrum)) {
-		return true;
-	}
-	
-	point = Vec3f(bbox.min.x, bbox.max.y, bbox.min.z);
-	if(IsSphereInFrustrum(point, frustrum)) {
-		return true;
-	}
-	
-	point = Vec3f(bbox.min.x, bbox.min.y, bbox.max.z);
-	if(IsSphereInFrustrum(point, frustrum)) {
-		return true;
-	}
-	
-	point = Vec3f(bbox.max.x, bbox.min.y, bbox.max.z);
-	if(IsSphereInFrustrum(point, frustrum)) {
-		return true;
-	}
-	
-	point = bbox.max;
-	if(IsSphereInFrustrum(point, frustrum)) {
-		return true;
-	}
-	
-	point = Vec3f(bbox.min.x, bbox.max.y, bbox.max.z);
-	return IsSphereInFrustrum(point, frustrum);
+	return true;
 }
 
 static bool FrustrumsClipBBox3D(const EERIE_FRUSTRUM_DATA & frustrums,
                                 const EERIE_3D_BBOX & bbox) {
 	
-	for(long i = 0; i < frustrums.nb_frustrums; i++)
-	{
-		if(IsBBoxInFrustrum(bbox, frustrums.frustrums[i]))
+	for(long i = 0; i < frustrums.nb_frustrums; i++) {
+		if(IsBBoxInFrustrum(bbox, frustrums.frustrums[i])) {
 			return false;
+		}
 	}
-
-	return false;
+	
+	return true;
 }
 
 // USAGE/FUNCTION
