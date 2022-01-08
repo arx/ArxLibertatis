@@ -22,8 +22,9 @@ Modding:
 * Added support for level numbers above 27
 * Added support for script event parameters above 3 (e.g. ^$param4)
 * Added support for having more than 20 spells active
-* Added the ^hover system variable returning the entity under the mouse cursor
 * Added the ^angleto_… system variable returning the the direction to another entity
+* Added the ^hover system variable returning the entity under the mouse cursor
+* Added the ^visible* system variable to determine if an entity is shown on screen (feature request #1593)
 
 Debugging:
 
