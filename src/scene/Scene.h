@@ -47,6 +47,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCENE_SCENE_H
 #define ARX_SCENE_SCENE_H
 
+#include <vector>
+
+#include "graphics/data/Mesh.h"
 #include "math/Types.h"
 
 class Entity;
@@ -71,5 +74,10 @@ enum EntityVisibility {
 };
 
 EntityVisibility getEntityVisibility(Entity & entity);
+
+extern Plane efpPlaneNear;
+
+extern std::vector<PORTAL_ROOM_DRAW> RoomDraw;
+extern std::vector<size_t> RoomDrawList;
 
 #endif // ARX_SCENE_SCENE_H

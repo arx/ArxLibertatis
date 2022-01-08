@@ -125,6 +125,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/TextManager.h"
 #include "gui/debug/DebugHud.h"
 #include "gui/debug/DebugHudAudio.h"
+#include "gui/debug/DebugHudCulling.h"
 #include "gui/hud/PlayerInventory.h"
 
 #include "input/Input.h"
@@ -2013,6 +2014,10 @@ void ArxGame::render() {
 		}
 		case InfoPanelAudio: {
 			debugHud_Audio();
+			break;
+		}
+		case InfoPanelCulling: {
+			debugHud_Culling();
 			break;
 		}
 		default: break;

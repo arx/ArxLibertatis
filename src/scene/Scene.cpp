@@ -188,14 +188,14 @@ public:
 
 } // anonymous namespace
 
-static Plane efpPlaneNear;
+Plane efpPlaneNear;
 static EERIE_FRUSTRUM g_screenFrustum;
 
 static std::vector<EERIEPOLY *> vPolyWater;
 static std::vector<EERIEPOLY *> vPolyLava;
 
-static std::vector<PORTAL_ROOM_DRAW> RoomDraw;
-static std::vector<size_t> RoomDrawList;
+std::vector<PORTAL_ROOM_DRAW> RoomDraw;
+std::vector<size_t> RoomDrawList;
 
 Vec2f getWaterFxUvOffset(float watereffect, const Vec3f & odtv) {
 	return Vec2f(std::sin(watereffect + odtv.x), std::cos(watereffect + odtv.z));

@@ -25,6 +25,10 @@ Modding:
 * Added the ^hover system variable returning the entity under the mouse cursor
 * Added the ^angleto_… system variable returning the the direction to another entity
 
+Debugging:
+
+* Added a new entity visibility debug HUD under F11
+
 ################################################################################
 
 = Arx Libertatis 1.2 "Mega Mega Mega"  (2021-07-13) =
