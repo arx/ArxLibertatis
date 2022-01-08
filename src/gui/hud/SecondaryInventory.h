@@ -116,6 +116,8 @@ public:
 	
 	void takeAllItems();
 	
+	bool isSlotVisible(InventoryPos pos);
+	
 	enum Fade {
 		Fade_left = -1,
 		Fade_stable = 0,

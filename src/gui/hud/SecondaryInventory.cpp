@@ -583,3 +583,7 @@ void SecondaryInventoryHud::drawItemPrice(float scale) {
 	}
 	
 }
+
+bool SecondaryInventoryHud::isSlotVisible(InventoryPos pos) {
+	return isVisible() && pos.io == m_container->index();
+}
