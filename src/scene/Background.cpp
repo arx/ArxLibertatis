@@ -26,6 +26,17 @@
 
 BackgroundData * g_tiles = nullptr;
 
+bool BackgroundData::isNearActiveTile(Vec3f pos, float extend) noexcept {
+	
+	for(auto neighbor : g_tiles->tilesAround(pos, extend)) {
+		if(neighbor.active()) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+
 void BackgroundData::clear() {
 	
 	AnchorData_ClearAll(this);

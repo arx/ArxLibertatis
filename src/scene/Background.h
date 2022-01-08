@@ -169,6 +169,8 @@ public:
 		return tile.valid() && tile.active();
 	}
 	
+	bool isNearActiveTile(Vec3f pos, float extend = std::max(g_backgroundTileSize.x, g_backgroundTileSize.y)) noexcept;
+	
 private:
 	
 	[[nodiscard]] static Vec2s getTileIndex(const Vec3f & pos) noexcept {
