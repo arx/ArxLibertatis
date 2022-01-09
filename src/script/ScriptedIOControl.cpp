@@ -628,6 +628,10 @@ public:
 		
 		Entity * entity = entities.getById(target, context.getEntity());
 		if(!entity) {
+			Spell * spell = spells.getById(target);
+			if(spell) {
+				spell->requestEnd();
+			}
 			return Success;
 		}
 		
