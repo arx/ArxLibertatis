@@ -269,31 +269,55 @@ static ScriptParameters getOuchEventParameter(const Entity * entity) {
 	return oss.str();
 }
 
-static ScriptParameters getHitEventMarameters(float dmg, Entity * source, bool isSpellHit) {
+static ScriptParameters getHitEventParameters(float dmg, Entity * source, Spell * spell, DamageType type) {
 	
+	// First parameter: damage amount
 	ScriptParameters parameters(dmg);
+	
+	// Second parameter: weapon category
 	if(source == entities.player()) {
-		if(isSpellHit) {
-			parameters.push_back("spell");
+		if(spell || (type & DAMAGE_TYPE_FAKESPELL)) {
+			parameters.emplace_back("spell");
 		} else {
 			switch(ARX_EQUIPMENT_GetPlayerWeaponType()) {
-				case WEAPON_BARE:
-					parameters.push_back("bare");
+				case WEAPON_BARE: {
+					parameters.emplace_back("bare");
 					break;
-				case WEAPON_DAGGER:
-					parameters.push_back("dagger");
+				}
+				case WEAPON_DAGGER: {
+					parameters.emplace_back("dagger");
 					break;
-				case WEAPON_1H:
-					parameters.push_back("1h");
+				}
+				case WEAPON_1H: {
+					parameters.emplace_back("1h");
 					break;
-				case WEAPON_2H:
-					parameters.push_back("2h");
+				}
+				case WEAPON_2H: {
+					parameters.emplace_back("2h");
 					break;
-				case WEAPON_BOW:
-					parameters.push_back("arrow");
+				}
+				case WEAPON_BOW: {
+					parameters.emplace_back("arrow");
 					break;
+				}
 				default: break;
 			}
+		}
+	} else if(source && (source->ioflags & IO_NPC) && source->_npcdata->summoner == EntityHandle_Player) {
+		parameters.push_back("summoned");
+	}
+	if(parameters.size() < 2) {
+		parameters.emplace_back(std::string());
+	}
+	
+	// Third parameter: weapon entity
+	if(spell) {
+		parameters.push_back(spell->idString());
+	} else if(source && (source->ioflags & IO_NPC) && source->_npcdata->summoner == EntityHandle_Player) {
+		parameters.push_back(source->idString());
+	} else if(source) {
+		if(Entity * weapon = getWeapon(*source)) {
+			parameters.push_back(weapon->idString());
 		}
 	}
 	
@@ -502,7 +526,7 @@ void damageProp(Entity & prop, float dmg, Entity * source, Spell * spell, Damage
 		return;
 	}
 	
-	SendIOScriptEvent(source, &prop, SM_HIT, getHitEventMarameters(dmg, source, spell || (type & DAMAGE_TYPE_FAKESPELL)));
+	SendIOScriptEvent(source, &prop, SM_HIT, getHitEventParameters(dmg, source, spell, type));
 	
 }
 
@@ -760,13 +784,11 @@ float damageNpc(Entity & npc, float dmg, Entity * source, Spell * spell, DamageT
 	}
 	
 	if(npc.script.valid && source) {
-		ScriptParameters parameters = getHitEventMarameters(dmg, source, spell || (type & DAMAGE_TYPE_FAKESPELL));
 		Entity * sender = source;
 		if((sender->ioflags & IO_NPC) && sender->_npcdata->summoner == EntityHandle_Player) {
 			sender = entities.player();
-			parameters.push_back("summoned");
 		}
-		if(SendIOScriptEvent(sender, &npc, SM_HIT, parameters) != ACCEPT) {
+		if(SendIOScriptEvent(sender, &npc, SM_HIT, getHitEventParameters(dmg, source, spell, type)) != ACCEPT) {
 			return 0.f;
 		}
 	}
