@@ -712,7 +712,7 @@ public:
 		}
 		
 		if((entity->ioflags & IO_NPC) && context.getEntity()) {
-			damageCharacter(*entity, damage, *context.getEntity(), type, &entity->pos);
+			damageCharacter(*entity, damage, *context.getEntity(), nullptr, type, &entity->pos);
 		}
 		
 		return Success;

@@ -620,7 +620,7 @@ static void pushEntity(Entity & entity, const Entity & source, float power) {
 	
 }
 
-void damageCharacter(Entity & entity, float dmg, Entity & source, DamageType flags, Vec3f * pos) {
+void damageCharacter(Entity & entity, float dmg, Entity & source, Spell * spell, DamageType flags, Vec3f * pos) {
 	
 	if(flags & DAMAGE_TYPE_PER_SECOND) {
 		dmg = dmg * (g_gameTime.lastFrameDuration() / 1s);

@@ -1964,7 +1964,7 @@ void UpdateCameras() {
 					}
 					
 					if(touched) {
-						damageCharacter(other, entity.damager_damages, entity, entity.damager_type, &other.pos);
+						damageCharacter(other, entity.damager_damages, entity, nullptr, entity.damager_type, &other.pos);
 					}
 					
 				}

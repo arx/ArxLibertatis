@@ -142,7 +142,7 @@ void damageProp(Entity & prop, float dmg, Entity * source, bool isSpellHit);
 float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const Vec3f * pos);
 bool tryToDoDamage(const Vec3f & pos, float dmg, float radius, Entity & source);
 void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer);
-void damageCharacter(Entity & entity, float dmg, Entity & source, DamageType flags, Vec3f * pos);
+void damageCharacter(Entity & entity, float dmg, Entity & source, Spell * spell, DamageType flags, Vec3f * pos);
 
 void healCharacter(Entity & entity, float dmg);
 

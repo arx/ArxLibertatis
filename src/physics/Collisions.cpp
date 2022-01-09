@@ -509,10 +509,10 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 				}
 				
 				if(ioo->damager_damages > 0) {
-					damageCharacter(*io, ioo->damager_damages, *ioo, ioo->damager_type, &io->pos);
+					damageCharacter(*io, ioo->damager_damages, *ioo, nullptr, ioo->damager_type, &io->pos);
 				}
 				if(io->damager_damages > 0) {
-					damageCharacter(*ioo, io->damager_damages, *io, io->damager_type, &ioo->pos);
+					damageCharacter(*ioo, io->damager_damages, *io, nullptr, io->damager_type, &ioo->pos);
 				}
 				
 				if(io->targetinfo == io->index()) {
@@ -573,12 +573,12 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 
 							if(!dealt && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
 								dealt = true;
-							
-							if((io->ioflags & IO_NPC) && ioo->damager_damages > 0) {
-								damageCharacter(*io, ioo->damager_damages, *ioo, ioo->damager_type, &io->pos);
-							}
-							if((ioo->ioflags & IO_NPC) && io->damager_damages > 0)
-								damageCharacter(*ioo, io->damager_damages, *io, io->damager_type, &ioo->pos);
+								if((io->ioflags & IO_NPC) && ioo->damager_damages > 0) {
+									damageCharacter(*io, ioo->damager_damages, *ioo, nullptr, ioo->damager_type, &io->pos);
+								}
+								if((ioo->ioflags & IO_NPC) && io->damager_damages > 0) {
+									damageCharacter(*ioo, io->damager_damages, *io, nullptr, io->damager_type, &ioo->pos);
+								}
 							}
 						}
 						anything = std::min(anything, std::min(sp.origin.y - sp.radius, io->bbox3D.min.y));
@@ -630,10 +630,10 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 								if(!dealt && ioo && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
 									dealt = true;
 									if((io->ioflags & IO_NPC) && ioo->damager_damages > 0) {
-										damageCharacter(*io, ioo->damager_damages, *ioo, ioo->damager_type, &io->pos);
+										damageCharacter(*io, ioo->damager_damages, *ioo, nullptr, ioo->damager_type, &io->pos);
 									}
 									if((ioo->ioflags & IO_NPC) && io->damager_damages > 0) {
-										damageCharacter(*ioo, io->damager_damages, *io, io->damager_type, &ioo->pos);
+										damageCharacter(*ioo, io->damager_damages, *io, nullptr, io->damager_type, &ioo->pos);
 									}
 								}
 								
