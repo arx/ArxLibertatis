@@ -26,6 +26,7 @@ Modding:
 * Added the ^hover system variable returning the entity under the mouse cursor
 * Added the ^visible* system variable to determine if an entity is shown on screen (feature request #1593)
 * Added the spell ID as parameter 3 to the spellcast and spellend script events
+* Added the summoned entity ID as parameter 3 to the ouch script event
 * Added support for stopping specific spells using the destroy script command
 
 Debugging:

@@ -716,8 +716,9 @@ float damageNpc(Entity & npc, float dmg, Entity * source, Spell * spell, DamageT
 		ScriptParameters parameters = getOuchEventParameter(&npc);
 		Entity * sender = source;
 		if(sender && (sender->ioflags & IO_NPC) && sender->_npcdata->summoner == EntityHandle_Player) {
-			sender = entities.player();
 			parameters.push_back("summoned");
+			parameters.push_back(sender->idString());
+			sender = entities.player();
 		}
 		SendIOScriptEvent(sender, &npc, SM_OUCH, parameters);
 		npc.dmg_sum = 0.f;
