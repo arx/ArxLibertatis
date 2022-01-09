@@ -410,6 +410,25 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon() {
 	changeAnimation(io, 1, anim);
 }
 
+Entity * getWeapon(Entity & entity) noexcept {
+	if(&entity == entities.player()) {
+		return entities.get(player.equiped[EQUIP_SLOT_WEAPON]);
+	} else if(entity.ioflags & IO_NPC) {
+		return entity._npcdata->weapon;
+	}
+	return nullptr;
+}
+
+std::string_view getWeaponMaterial(Entity & entity) noexcept {
+	if(Entity * weapon = getWeapon(entity); weapon && !weapon->weaponmaterial.empty()) {
+		return weapon->weaponmaterial;
+	}
+	if((entity.ioflags & IO_NPC) &&!entity.weaponmaterial.empty()) {
+		return entity.weaponmaterial;
+	}
+	return "bare";
+}
+
 float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * position) {
 	
 	SendIOScriptEvent(io_source, io_target, SM_AGGRESSION);
@@ -417,6 +436,8 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	if(!io_source || !io_target) {
 		return 0.f;
 	}
+	
+	std::string_view wmat = getWeaponMaterial(*io_source);
 	
 	if(!(io_target->ioflags & IO_NPC)) {
 		if(io_target->ioflags & IO_FIX) {
@@ -433,19 +454,12 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	
 	float attack, ac, damages;
 	float backstab = 1.f;
-
-	std::string_view wmat = "bare";
+	
 	std::string_view amat = "flesh";
-
+	
 	bool critical = false;
-
+	
 	if(io_source == entities.player()) {
-		
-		if(Entity * weapon = entities.get(player.equiped[EQUIP_SLOT_WEAPON])) {
-			if(!weapon->weaponmaterial.empty()) {
-				wmat = weapon->weaponmaterial;
-			}
-		}
 		
 		attack = player.m_miscFull.damages;
 		
@@ -468,17 +482,6 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		if(!(io_source->ioflags & IO_NPC)) {
 			// no NPC source...
 			return 0.f;
-		}
-		
-		if(!io_source->weaponmaterial.empty()) {
-			wmat = io_source->weaponmaterial;
-		}
-		
-		if(io_source->_npcdata->weapon) {
-			Entity * iow = io_source->_npcdata->weapon;
-			if(!iow->weaponmaterial.empty()) {
-				wmat = iow->weaponmaterial;
-			}
 		}
 		
 		attack = io_source->_npcdata->tohit;
