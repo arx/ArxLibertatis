@@ -374,42 +374,29 @@ const char * getSpellName(SpellType num) {
 
 static void SPELLCAST_Notify(const Spell & spell) {
 	
-	EntityHandle source = spell.m_caster;
-	
-	const char * spellName = getSpellName(spell.m_type);
-	if(!spellName)
-		return;
-	
-	Entity * sender = (source != EntityHandle()) ? entities[source] : nullptr;
-	ScriptParameters parameters;
-	parameters.emplace_back(spellName);
-	parameters.push_back(long(spell.m_level));
-	parameters.emplace_back(spell.idString());
-	
-	for(Entity & entity : entities) {
-		SendIOScriptEvent(sender, &entity, SM_SPELLCAST, parameters);
-	}
-	
-}
-
-static void SPELLCAST_NotifyOnlyTarget(const Spell & spell) {
-	
-	Entity * target = entities.get(spell.m_target);
-	if(!target) {
-		return;
-	}
-	
 	const char * spellName = getSpellName(spell.m_type);
 	if(!spellName) {
 		return;
 	}
 	
 	Entity * caster = entities.get(spell.m_caster);
+	
 	ScriptParameters parameters;
 	parameters.emplace_back(spellName);
 	parameters.push_back(long(spell.m_level));
 	parameters.emplace_back(spell.idString());
-	SendIOScriptEvent(caster, target, SM_SPELLCAST, parameters);
+	
+	// TODO inconsistent use of the SM_SPELLCAST event
+	if(spell.m_type == SPELL_CONFUSE || spell.m_type == SPELL_ENCHANT_WEAPON) {
+		Entity * target = entities.get(spell.m_target);
+		if(target) {
+			SendIOScriptEvent(caster, target, SM_SPELLCAST, parameters);
+		}
+	} else {
+		for(Entity & entity : entities) {
+			SendIOScriptEvent(caster, &entity, SM_SPELLCAST, parameters);
+		}
+	}
 	
 }
 
@@ -427,6 +414,7 @@ static void SPELLEND_Notify(const Spell & spell) {
 	parameters.push_back(long(spell.m_level));
 	parameters.emplace_back(spell.idString());
 	
+	// TODO inconsistent use of the SM_SPELLEND event
 	if(spell.m_type == SPELL_CONFUSE) {
 		if(Entity * target = entities.get(spell.m_target)) {
 			SendIOScriptEvent(caster, target, SM_SPELLEND, parameters);
@@ -1019,12 +1007,7 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
 	
 	Spell & addedSpell = spells.addSpell(std::move(spell));
 	
-	// TODO inconsistent use of the SM_SPELLCAST event
-	if(typ == SPELL_CONFUSE || typ == SPELL_ENCHANT_WEAPON) {
-		SPELLCAST_NotifyOnlyTarget(addedSpell);
-	} else {
-		SPELLCAST_Notify(addedSpell);
-	}
+	SPELLCAST_Notify(addedSpell);
 	
 	if(flags & SPELLCAST_FLAG_ORPHAN) {
 		addedSpell.m_caster = EntityHandle();
