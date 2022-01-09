@@ -204,7 +204,8 @@ static void CheckHit(Entity * source, float ratioaim) {
 		}
 	} else if(target->ioflags & IO_FIX) {
 		if(mindist <= 120.f) {
-			damageProp(*target, dmg * ratio, source, false);
+			DamageType type = getDamageTypeFromWeaponMaterial(getWeaponMaterial(*source));
+			damageProp(*target, dmg * ratio, source, nullptr, type);
 		}
 	}
 	

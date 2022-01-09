@@ -475,7 +475,7 @@ static float ARX_DAMAGES_DrainMana(Entity * io, float dmg) {
 	return d;
 }
 
-void damageProp(Entity & prop, float dmg, Entity * source, bool isSpellHit) {
+void damageProp(Entity & prop, float dmg, Entity * source, Spell * spell, DamageType type) {
 	
 	arx_assert(prop.ioflags & IO_FIX);
 	
@@ -502,7 +502,7 @@ void damageProp(Entity & prop, float dmg, Entity * source, bool isSpellHit) {
 		return;
 	}
 	
-	SendIOScriptEvent(source, &prop, SM_HIT, getHitEventMarameters(dmg, source, isSpellHit));
+	SendIOScriptEvent(source, &prop, SM_HIT, getHitEventMarameters(dmg, source, spell || (type & DAMAGE_TYPE_FAKESPELL)));
 	
 }
 
@@ -1040,7 +1040,7 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 			
 		} else if(entity.ioflags & IO_FIX) {
 			
-			damageProp(entity, dmg, source, true);
+			damageProp(entity, dmg, source, spell, damage.params.type);
 			
 		}
 		
@@ -1118,7 +1118,7 @@ bool tryToDoDamage(const Vec3f & pos, float dmg, float radius, Entity & source) 
 				ret = true;
 			}
 			if(entity.ioflags & IO_FIX) {
-				damageProp(entity, dmg, &source, false);
+				damageProp(entity, dmg, &source, nullptr, DAMAGE_TYPE_GENERIC);
 				ret = true;
 			}
 		}
@@ -1261,7 +1261,7 @@ void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, Spell *
 		} else if(entity.ioflags & IO_NPC) {
 			damageNpc(entity, dmg * ratio, source, true, &sphere.origin);
 		} else if(entity.ioflags & IO_FIX) {
-			damageProp(entity, dmg * ratio, source, true);
+			damageProp(entity, dmg * ratio, source, spell, typ);
 		}
 		
 	}

@@ -138,7 +138,7 @@ void ARX_DAMAGES_Reset();
  
 void ARX_DAMAGES_UpdateAll();
 float damagePlayer(float dmg, DamageType type, Entity * source = nullptr);
-void damageProp(Entity & prop, float dmg, Entity * source, bool isSpellHit);
+void damageProp(Entity & prop, float dmg, Entity * source, Spell * spell, DamageType type);
 float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const Vec3f * pos);
 bool tryToDoDamage(const Vec3f & pos, float dmg, float radius, Entity & source);
 void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer);

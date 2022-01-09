@@ -451,7 +451,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 					
 					Entity * source = entities.get(projectile.source);
 					if((target.ioflags & IO_FIX) && source) {
-						damageProp(target, 0.1f, source, false);
+						damageProp(target, 0.1f, source, nullptr, DAMAGE_TYPE_METAL);
 					}
 					
 					ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);

@@ -450,6 +450,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	}
 	
 	std::string_view wmat = getWeaponMaterial(*io_source);
+	DamageType type = getDamageTypeFromWeaponMaterial(wmat);
 	
 	if(!(io_target->ioflags & IO_NPC)) {
 		if(io_target->ioflags & IO_FIX) {
@@ -459,7 +460,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			} else if(io_source->ioflags & IO_NPC) {
 				damages = io_source->_npcdata->damages;
 			}
-			damageProp(*io_target, damages, io_source, false);
+			damageProp(*io_target, damages, io_source, nullptr, type);
 		}
 		return 0.f;
 	}
