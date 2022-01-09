@@ -125,6 +125,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 void ARX_EQUIPMENT_RecreatePlayerMesh();
 Entity * getWeapon(Entity & entity) noexcept;
 std::string_view getWeaponMaterial(Entity & entity) noexcept;
+DamageType getDamageTypeFromWeaponMaterial(std::string_view material) noexcept;
 float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * pos = nullptr);
  
 void ARX_EQUIPMENT_IdentifyAll();

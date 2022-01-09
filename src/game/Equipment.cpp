@@ -429,6 +429,18 @@ std::string_view getWeaponMaterial(Entity & entity) noexcept {
 	return "bare";
 }
 
+DamageType getDamageTypeFromWeaponMaterial(std::string_view material) noexcept {
+	if(material == "claw") {
+		return DAMAGE_TYPE_ORGANIC;
+	} else if(material == "axe" || material == "sword" || material == "dagger") {
+		return DAMAGE_TYPE_METAL;
+	} else if(material == "club") {
+		return DAMAGE_TYPE_WOOD;
+	} else {
+		return DAMAGE_TYPE_GENERIC;
+	}
+}
+
 float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * position) {
 	
 	SendIOScriptEvent(io_source, io_target, SM_AGGRESSION);
