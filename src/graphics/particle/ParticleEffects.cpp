@@ -954,9 +954,10 @@ void TreatBackgroundActions() {
 			damage.duration = 1ms;
 			damage.source = EntityHandle();
 			damage.flags = 0;
-			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
+			damage.type = DAMAGE_TYPE_FAKESPELL | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
 			damage.pos = light.pos;
-			DamageCreate(damage);
+			Spell * spell = nullptr; // TODO create a real spell for this?
+			DamageCreate(spell, damage);
 		}
 		
 		if(!(light.extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !light.m_ignitionStatus) {

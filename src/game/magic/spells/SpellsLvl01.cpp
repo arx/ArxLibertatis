@@ -280,7 +280,7 @@ void MagicMissileSpell::Update() {
 			damage.source = m_caster;
 			damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
 			damage.type = DAMAGE_TYPE_MAGICAL;
-			DamageCreate(damage);
+			DamageCreate(this, damage);
 			
 			Color3f rgb(.3f, .3f, .45f);
 			ARX_PARTICLES_Add_Smoke(missile.eCurPos, 0, 6, rgb);

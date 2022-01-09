@@ -339,7 +339,7 @@ void CLightning::Render()
 				damage.source = m_caster;
 				damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 				damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_LIGHTNING;
-				DamageCreate(damage);
+				DamageCreate(m_spell, damage);
 			}
 		}
 		

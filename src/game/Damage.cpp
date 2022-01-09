@@ -109,6 +109,7 @@ struct DAMAGE_INFO {
 	GameInstant lastupd;
 	
 	DamageParameters params;
+	SpellHandle spell;
 	
 	DAMAGE_INFO()
 		: exist(false)
@@ -118,7 +119,7 @@ struct DAMAGE_INFO {
 
 static std::vector<DAMAGE_INFO> g_damages;
 
-DamageHandle DamageCreate(const DamageParameters & params) {
+DamageHandle DamageCreate(Spell * spell, const DamageParameters & params) {
 	
 	size_t i = std::find_if(g_damages.begin(), g_damages.end(), [](const DAMAGE_INFO & damage) {
 		return !damage.exist;
@@ -128,6 +129,7 @@ DamageHandle DamageCreate(const DamageParameters & params) {
 	}
 	
 	DAMAGE_INFO & damage = g_damages[i];
+	damage.spell = spell ? spell->m_thisHandle : SpellHandle();
 	damage.params = params;
 	damage.start_time = g_gameTime.now();
 	damage.lastupd = 0;
@@ -855,6 +857,11 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 	ARX_PROFILE_FUNC();
 	
 	Entity * source = entities.get(damage.params.source);
+	
+	Spell * spell = spells[damage.spell];
+	if(!spell) {
+		damage.spell = SpellHandle();
+	}
 	
 	if(damage.params.flags & DAMAGE_FLAG_FOLLOW_SOURCE) {
 		if(source == entities.player()) {

@@ -255,7 +255,7 @@ void FireFieldSpell::Launch() {
 	damage.flags = 0;
 	damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_FIELD;
 	damage.pos = target;
-	m_damage = DamageCreate(damage);
+	m_damage = DamageCreate(this, damage);
 	
 	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_FIRE_FIELD_LOOP, &target, 1.f);
 	
@@ -382,7 +382,7 @@ void IceFieldSpell::Launch() {
 	damage.flags = 0;
 	damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD | DAMAGE_TYPE_FIELD;
 	damage.pos = target;
-	m_damage = DamageCreate(damage);
+	m_damage = DamageCreate(this, damage);
 	
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");

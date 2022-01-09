@@ -590,7 +590,7 @@ void PoisonProjectileSpell::Update() {
 			damage.source = m_caster;
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
-			DamageCreate(damage);
+			DamageCreate(this, damage);
 		}
 		
 	}

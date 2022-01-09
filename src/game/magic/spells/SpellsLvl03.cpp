@@ -449,7 +449,7 @@ void IceProjectileSpell::Launch() {
 		damage.source = m_caster;
 		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
 		damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD;
-		DamageCreate(damage);
+		DamageCreate(this, damage);
 		
 	}
 	

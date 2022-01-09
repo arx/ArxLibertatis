@@ -108,7 +108,7 @@ void ManaDrainSpell::Launch() {
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
-	m_damage = DamageCreate(damage);
+	m_damage = DamageCreate(this, damage);
 	
 	m_cabal.addRing(Color3f(0.4f, 0.4f, 0.8f));
 	m_cabal.addRing(Color3f(0.2f, 0.2f, 0.5f));
@@ -180,7 +180,7 @@ void ExplosionSpell::Launch() {
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
 	damage.pos = target;
-	m_damage = DamageCreate(damage);
+	m_damage = DamageCreate(this, damage);
 	
 	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
@@ -266,7 +266,7 @@ void LifeDrainSpell::Launch() {
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_LIFE;
-	m_damage = DamageCreate(damage);
+	m_damage = DamageCreate(this, damage);
 	
 	m_cabal.addRing(Color3f(0.8f, 0.0f, 0.0f));
 	m_cabal.addRing(Color3f(0.5f, 0.0f, 0.0f));

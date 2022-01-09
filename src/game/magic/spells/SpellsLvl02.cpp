@@ -352,7 +352,7 @@ void HarmSpell::Launch() {
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
-	m_damage = DamageCreate(damage);
+	m_damage = DamageCreate(this, damage);
 	
 	m_cabal.addRing(Color3f(0.8f, 0.4f, 0.f));
 	m_cabal.addRing(Color3f(0.5f, 3.f, 0.f));
