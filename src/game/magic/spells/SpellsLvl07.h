@@ -104,6 +104,8 @@ class LightningStrikeSpell final : public Spell {
 	
 public:
 	
+	LightningStrikeSpell() : m_lightning(this) { }
+	
 	void Launch() override;
 	void End() override;
 	void Update() override;

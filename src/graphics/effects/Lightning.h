@@ -58,7 +58,7 @@ class CLightning final : public CSpellFx {
 	
 public:
 	
-	CLightning();
+	explicit CLightning(Spell * spell);
 	
 	void Create(Vec3f aeFrom, Vec3f aeTo);
 	void Update(GameDuration timeDelta) override;
@@ -75,6 +75,7 @@ public:
 	
 private:
 	
+	Spell * m_spell;
 	float fTotoro;
 	float fMySize;
 	size_t m_nbtotal;

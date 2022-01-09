@@ -79,7 +79,7 @@ void MassLightningStrikeSpell::Launch() {
 		GameDuration duration = minDuration + std::chrono::milliseconds(Random::getu(0, 5000));
 		maxDuration = std::max(maxDuration, duration);
 		
-		std::unique_ptr<CLightning> lightning = std::make_unique<CLightning>();
+		std::unique_ptr<CLightning> lightning = std::make_unique<CLightning>(this);
 		lightning->m_isMassLightning = true;
 		lightning->m_fDamage = 2;
 		lightning->Create(m_pos, target);
