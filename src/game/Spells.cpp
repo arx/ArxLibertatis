@@ -382,8 +382,9 @@ static void SPELLCAST_Notify(const Spell & spell) {
 	
 	Entity * sender = (source != EntityHandle()) ? entities[source] : nullptr;
 	ScriptParameters parameters;
-	parameters.push_back(spellName);
+	parameters.emplace_back(spellName);
 	parameters.push_back(long(spell.m_level));
+	parameters.emplace_back(spell.idString());
 	
 	for(Entity & entity : entities) {
 		SendIOScriptEvent(sender, &entity, SM_SPELLCAST, parameters);
@@ -405,8 +406,9 @@ static void SPELLCAST_NotifyOnlyTarget(const Spell & spell) {
 	
 	Entity * caster = entities.get(spell.m_caster);
 	ScriptParameters parameters;
-	parameters.push_back(spellName);
+	parameters.emplace_back(spellName);
 	parameters.push_back(long(spell.m_level));
+	parameters.emplace_back(spell.idString());
 	SendIOScriptEvent(caster, target, SM_SPELLCAST, parameters);
 	
 }
@@ -419,18 +421,17 @@ static void SPELLEND_Notify(const Spell & spell) {
 	}
 	
 	Entity * caster = entities.get(spell.m_caster);
-
+	
+	ScriptParameters parameters;
+	parameters.emplace_back(spellName);
+	parameters.push_back(long(spell.m_level));
+	parameters.emplace_back(spell.idString());
+	
 	if(spell.m_type == SPELL_CONFUSE) {
 		if(Entity * target = entities.get(spell.m_target)) {
-			ScriptParameters parameters;
-			parameters.push_back(spellName);
-			parameters.push_back(long(spell.m_level));
 			SendIOScriptEvent(caster, target, SM_SPELLEND, parameters);
 		}
 	} else {
-		ScriptParameters parameters;
-		parameters.push_back(spellName);
-		parameters.push_back(long(spell.m_level));
 		for(Entity & entity : entities) {
 			SendIOScriptEvent(caster, &entity, SM_SPELLEND, parameters);
 		}
