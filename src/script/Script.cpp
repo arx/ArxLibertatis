@@ -917,6 +917,17 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 				return TYPE_TEXT;
 			}
 			
+			if(name == "^spelllevel") {
+				*fcontent = player.spellLevel();
+				return TYPE_FLOAT;
+			}
+			
+			if(boost::starts_with(name, "^spelllevel_")) {
+				Spell * spell = getSpellParam(name, 12);
+				*fcontent = spell ? spell->m_level : -1;
+				return TYPE_FLOAT;
+			}
+			
 			break;
 		}
 		
