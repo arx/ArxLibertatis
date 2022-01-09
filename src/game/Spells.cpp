@@ -856,8 +856,7 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
 		}
 		ARX_PLAYER_ComputePlayerFullStats();
 		if(level == -1) {
-			playerSpellLevel = player.m_skillFull.casting + player.m_attributeFull.mind;
-			playerSpellLevel = glm::clamp(playerSpellLevel * 0.1f, 1.0f, 10.0f);
+			playerSpellLevel = player.spellLevel();
 		} else {
 			playerSpellLevel = static_cast<float>(level);
 		}

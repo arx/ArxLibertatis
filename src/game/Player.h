@@ -397,6 +397,10 @@ struct ARXCHARACTER {
 	
 	[[nodiscard]] bool isAiming() const { return m_aimTime > 0; }
 	
+	[[nodiscard]] float spellLevel() const {
+		return glm::clamp((m_skillFull.casting + m_attributeFull.mind) * 0.1f, 1.0f, 10.0f);
+	}
+	
 };
 
 extern float CURRENT_PLAYER_COLOR;
