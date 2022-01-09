@@ -223,8 +223,8 @@ static void CheckExp(const Projectile & projectile) {
 		spawnFireHitParticle(pos, 0);
 		PolyBoomAddScorch(pos);
 		LaunchFireballBoom(pos, 10);
-		doSphericDamage(Sphere(pos, 50.f), 4.f * 2, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,
-		                entities.player());
+		doSphericDamage(Sphere(pos, 50.f), 4.f * 2, DAMAGE_AREA, nullptr,
+		                DAMAGE_TYPE_FAKESPELL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, entities.player());
 		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &pos);
 		spawnAudibleSound(pos, *entities.player());
 		

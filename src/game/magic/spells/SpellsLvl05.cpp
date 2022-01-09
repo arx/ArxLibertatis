@@ -152,7 +152,7 @@ void RuneOfGuardingSpell::Update() {
 		PolyBoomAddScorch(m_pos);
 		LaunchFireballBoom(m_pos, m_level);
 		doSphericDamage(Sphere(m_pos, 30.f * m_level), 4.f * m_level,
-		                DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, caster);
+		                DAMAGE_AREA, this, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, caster);
 		ARX_SOUND_PlaySFX(g_snd.SPELL_RUNE_OF_GUARDING_END, &m_pos);
 		requestEnd();
 	}

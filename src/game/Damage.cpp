@@ -1169,7 +1169,7 @@ void igniteEntities(const Sphere & sphere, bool ignite) {
 	
 }
 
-void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ, Entity * source) {
+void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, Spell * spell, DamageType typ, Entity * source) {
 	
 	if(sphere.radius <= 0.f) {
 		return;

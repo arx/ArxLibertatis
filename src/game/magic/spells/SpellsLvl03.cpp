@@ -291,7 +291,7 @@ void FireballSpell::Update() {
 		bExplo = true;
 		
 		doSphericDamage(Sphere(eCurPos, 30.f * m_level), 3.f * m_level,
-		                DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, caster);
+		                DAMAGE_AREA, this, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, caster);
 		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &sphere.origin);
 		if(caster) {
 			spawnAudibleSound(sphere.origin, *caster);

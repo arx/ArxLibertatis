@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/Flags.h"
 
 class Entity;
+class Spell;
 
 enum DamageTypeFlag {
 	DAMAGE_TYPE_GENERIC    = 0,
@@ -77,7 +78,8 @@ enum DamageTypeFlag {
 	DAMAGE_TYPE_PUSH       = 1 << 14,
 	DAMAGE_TYPE_FAKEFIRE   = 1 << 15,
 	DAMAGE_TYPE_FIELD      = 1 << 16,
-	DAMAGE_TYPE_NO_FIX     = 1 << 17
+	DAMAGE_TYPE_NO_FIX     = 1 << 17,
+	DAMAGE_TYPE_FAKESPELL  = 1 << 18
 };
 DECLARE_FLAGS(DamageTypeFlag, DamageType)
 DECLARE_FLAGS_OPERATORS(DamageType)
@@ -127,7 +129,7 @@ void DamageRequestEnd(DamageHandle handle);
 void igniteLights(const Sphere & sphere, bool ignite = true, bool ignoreFireplaces = false);
 void igniteEntities(const Sphere & sphere, bool ignite = true);
 
-void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ,
+void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, Spell * spell, DamageType typ,
                      Entity * source = nullptr);
 
 void ARX_DAMAGE_Reset_Blood_Info();
