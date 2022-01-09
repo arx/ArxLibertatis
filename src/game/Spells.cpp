@@ -1039,6 +1039,7 @@ void ARX_SPELLS_Update() {
 		if(spell.m_hasDuration && spell.m_elapsed > spell.m_duration) {
 			SPELLEND_Notify(spell);
 			spell.End();
+			damageClearSpell(&spell);
 			spells.freeSlot(&spell);
 			continue;
 		}

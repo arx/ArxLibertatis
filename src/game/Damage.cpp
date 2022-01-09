@@ -109,7 +109,7 @@ struct DAMAGE_INFO {
 	GameInstant lastupd;
 	
 	DamageParameters params;
-	SpellHandle spell;
+	Spell * spell;
 	
 	DAMAGE_INFO()
 		: exist(false)
@@ -118,6 +118,15 @@ struct DAMAGE_INFO {
 };
 
 static std::vector<DAMAGE_INFO> g_damages;
+
+void damageClearSpell(Spell * spell) {
+	for(DAMAGE_INFO & damage : g_damages) {
+		if(damage.spell == spell) {
+			damage.spell = nullptr;
+			damage.params.type |= DAMAGE_TYPE_FAKESPELL;
+		}
+	}
+}
 
 DamageHandle DamageCreate(Spell * spell, const DamageParameters & params) {
 	
@@ -129,7 +138,7 @@ DamageHandle DamageCreate(Spell * spell, const DamageParameters & params) {
 	}
 	
 	DAMAGE_INFO & damage = g_damages[i];
-	damage.spell = spell ? spell->m_thisHandle : SpellHandle();
+	damage.spell = spell;
 	damage.params = params;
 	damage.start_time = g_gameTime.now();
 	damage.lastupd = 0;
@@ -315,7 +324,7 @@ static ScriptParameters getHitEventParameters(float dmg, Entity * source, Spell 
 		parameters.push_back(spell->idString());
 	} else if(source && (source->ioflags & IO_NPC) && source->_npcdata->summoner == EntityHandle_Player) {
 		parameters.push_back(source->idString());
-	} else if(source) {
+	} else if(source && !(type & DAMAGE_TYPE_FAKESPELL)) {
 		if(Entity * weapon = getWeapon(*source)) {
 			parameters.push_back(weapon->idString());
 		}
@@ -933,11 +942,6 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 	
 	Entity * source = entities.get(damage.params.source);
 	
-	Spell * spell = spells[damage.spell];
-	if(!spell) {
-		damage.spell = SpellHandle();
-	}
-	
 	if(damage.params.flags & DAMAGE_FLAG_FOLLOW_SOURCE) {
 		if(source == entities.player()) {
 			damage.params.pos = player.pos;
@@ -1100,7 +1104,7 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 						if(damage.params.type & DAMAGE_TYPE_COLD) {
 							dmg = ARX_SPELLS_ApplyColdProtection(&entity, dmg);
 						}
-						damagesdone = damageNpc(entity, dmg, source, spell, damage.params.type, &damage.params.pos);
+						damagesdone = damageNpc(entity, dmg, source, damage.spell, damage.params.type, &damage.params.pos);
 					}
 					if(damagesdone > 0 && (damage.params.flags & DAMAGE_SPAWN_BLOOD)) {
 						ARX_PARTICLES_Spawn_Blood(damage.params.pos, damagesdone, damage.params.source);
@@ -1115,7 +1119,7 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 			
 		} else if(entity.ioflags & IO_FIX) {
 			
-			damageProp(entity, dmg, source, spell, damage.params.type);
+			damageProp(entity, dmg, source, damage.spell, damage.params.type);
 			
 		}
 		

@@ -123,6 +123,8 @@ struct DamageParameters {
 	
 };
 
+void damageClearSpell(Spell * spell);
+
 DamageHandle DamageCreate(Spell * spell, const DamageParameters & params);
 void DamageRequestEnd(DamageHandle handle);
 
