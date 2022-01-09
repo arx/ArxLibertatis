@@ -20,8 +20,10 @@
 #ifndef ARX_GAME_MAGIC_SPELL_H
 #define ARX_GAME_MAGIC_SPELL_H
 
-#include "game/Damage.h"
+#include <string>
+#include <string_view>
 
+#include "game/Damage.h"
 #include "graphics/effects/SpellEffects.h"
 #include "platform/Alignment.h"
 #include "scene/Light.h"
@@ -155,7 +157,11 @@ public:
 		m_duration = 0;
 	}
 	
+	std::string_view className() const noexcept;
+	std::string idString() const noexcept;
+	
 	SpellHandle m_thisHandle;
+	s32 m_instance;
 	
 	EntityHandle m_caster; //!< Number of the source interactive obj (0==player)
 	EntityHandle m_target; //!< Number of the target interactive obj if any

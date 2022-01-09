@@ -80,7 +80,7 @@ public:
 	void init();
 	void clearAll();
 	
-	[[nodiscard]] Spell * operator[](SpellHandle handle) noexcept;
+	[[nodiscard]] Spell * operator[](SpellHandle handle) const noexcept;
 	
 	static void endSpell(Spell * spell) noexcept;
 	
@@ -115,9 +115,12 @@ public:
 		});
 	}
 	
+	Spell * getById(std::string_view idString) const noexcept;
+	
 private:
 	
 	std::vector<std::unique_ptr<Spell>> m_spells;
+	size_t m_nextInstance;
 	
 };
 
@@ -139,5 +142,7 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io);
 float ARX_SPELLS_GetManaCost(SpellType _lNumSpell, float casterLevel);
 float ARX_SPELLS_ApplyFireProtection(Entity * io, float damages);
 float ARX_SPELLS_ApplyColdProtection(Entity * io, float damages);
+
+const char * getSpellName(SpellType num);
 
 #endif // ARX_GAME_SPELLS_H

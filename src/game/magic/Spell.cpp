@@ -17,14 +17,18 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "game/magic/Spell.h"
+
+#include "game/EntityId.h"
 #include "game/EntityManager.h"
 #include "game/Player.h"
-#include "game/magic/Spell.h"
+#include "game/Spells.h"
 
 #include "core/GameTime.h"
 
 Spell::Spell()
-	: m_level(1.f)
+	: m_instance(0)
+	, m_level(1.f)
 	, m_hand_pos(0.f)
 	, m_caster_pos(0.f)
 	, m_type(SPELL_NONE)
@@ -86,6 +90,15 @@ void Spell::updateCasterPosition() {
 		m_caster_pos = caster->pos;
 	}
 	
+}
+
+std::string_view Spell::className() const noexcept {
+	const char * spellName = getSpellName(m_type);
+	return spellName ? spellName : "spell";
+}
+
+std::string Spell::idString() const noexcept {
+	return EntityId(className(), m_instance).string();
 }
 
 Vec3f Spell::getTargetPos(EntityHandle source, EntityHandle target) {

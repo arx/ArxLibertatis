@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Localisation.h"
 
 #include "game/Damage.h"
+#include "game/EntityId.h"
 #include "game/EntityManager.h"
 #include "game/Equipment.h"
 #include "game/NPC.h"
@@ -146,13 +147,16 @@ void SpellManager::init() {
 	RuneInfosFill();
 	ARX_SPELLS_Init_Rects();
 	
+	m_nextInstance = 1;
+	
 }
 
 void SpellManager::clearAll() {
 	m_spells.clear();
+	m_nextInstance = 1;
 }
 
-Spell * SpellManager::operator[](const SpellHandle handle) noexcept {
+Spell * SpellManager::operator[](const SpellHandle handle) const noexcept {
 	return size_t(handle.handleData()) < m_spells.size() ? m_spells[handle.handleData()].get() : nullptr;
 }
 
@@ -260,6 +264,8 @@ Spell & SpellManager::addSpell(std::unique_ptr<Spell> spell) {
 	
 	arx_assert(spell);
 	
+	spell->m_instance = m_nextInstance++;
+	
 	for(size_t i = 0; i < m_spells.size(); i++) {
 		if(!m_spells[i]) {
 			spell->m_thisHandle = SpellHandle(i);
@@ -288,7 +294,17 @@ void SpellManager::freeSlot(Spell * spell) {
 	
 }
 
-static const char * MakeSpellName(SpellType num) {
+Spell * SpellManager::getById(std::string_view idString) const noexcept {
+	EntityId id(idString);
+	for(Spell & spell : ofType(GetSpellId(id.className()))) {
+		if(spell.m_instance == id.instance()) {
+			return &spell;
+		}
+	}
+	return nullptr;
+}
+
+const char * getSpellName(SpellType num) {
 	
 	switch(num) {
 		// Level 1
@@ -360,7 +376,7 @@ static void SPELLCAST_Notify(const Spell & spell) {
 	
 	EntityHandle source = spell.m_caster;
 	
-	const char * spellName = MakeSpellName(spell.m_type);
+	const char * spellName = getSpellName(spell.m_type);
 	if(!spellName)
 		return;
 	
@@ -382,7 +398,7 @@ static void SPELLCAST_NotifyOnlyTarget(const Spell & spell) {
 		return;
 	}
 	
-	const char * spellName = MakeSpellName(spell.m_type);
+	const char * spellName = getSpellName(spell.m_type);
 	if(!spellName) {
 		return;
 	}
@@ -397,7 +413,7 @@ static void SPELLCAST_NotifyOnlyTarget(const Spell & spell) {
 
 static void SPELLEND_Notify(const Spell & spell) {
 	
-	const char * spellName = MakeSpellName(spell.m_type);
+	const char * spellName = getSpellName(spell.m_type);
 	if(!spellName) {
 		return;
 	}
