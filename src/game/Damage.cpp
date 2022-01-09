@@ -670,7 +670,7 @@ void damageCharacter(Entity & entity, float dmg, Entity & source, Spell * spell,
 			if(flags & DAMAGE_TYPE_DRAIN_MANA) {
 				damagesdone = ARX_DAMAGES_DrainMana(&entity, dmg);
 			} else {
-				damagesdone = damageNpc(entity, dmg, &source, true, pos);
+				damagesdone = damageNpc(entity, dmg, &source, spell, flags, pos);
 			}
 			
 		}
@@ -691,7 +691,7 @@ void damageCharacter(Entity & entity, float dmg, Entity & source, Spell * spell,
 	
 }
 
-float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const Vec3f * pos) {
+float damageNpc(Entity & npc, float dmg, Entity * source, Spell * spell, DamageType type, const Vec3f * pos) {
 	
 	arx_assert(npc.ioflags & IO_NPC);
 	arx_assert(npc != *entities.player());
@@ -733,7 +733,7 @@ float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const
 		if(source == entities.player()) {
 			if(Entity * weapon = entities.get(player.equiped[EQUIP_SLOT_WEAPON])) {
 				pio = weapon;
-				if((pio->poisonous == 0 || pio->poisonous_count == 0) || isSpellHit) {
+				if((pio->poisonous == 0 || pio->poisonous_count == 0) || spell || (type & DAMAGE_TYPE_FAKESPELL)) {
 					pio = nullptr;
 				}
 			}
@@ -759,7 +759,7 @@ float damageNpc(Entity & npc, float dmg, Entity * source, bool isSpellHit, const
 	}
 	
 	if(npc.script.valid && source) {
-		ScriptParameters parameters = getHitEventMarameters(dmg, source, isSpellHit);
+		ScriptParameters parameters = getHitEventMarameters(dmg, source, spell || (type & DAMAGE_TYPE_FAKESPELL));
 		Entity * sender = source;
 		if((sender->ioflags & IO_NPC) && sender->_npcdata->summoner == EntityHandle_Player) {
 			sender = entities.player();
@@ -1025,7 +1025,7 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 						if(damage.params.type & DAMAGE_TYPE_COLD) {
 							dmg = ARX_SPELLS_ApplyColdProtection(&entity, dmg);
 						}
-						damagesdone = damageNpc(entity, dmg, source, true, &damage.params.pos);
+						damagesdone = damageNpc(entity, dmg, source, spell, damage.params.type, &damage.params.pos);
 					}
 					if(damagesdone > 0 && (damage.params.flags & DAMAGE_SPAWN_BLOOD)) {
 						ARX_PARTICLES_Spawn_Blood(damage.params.pos, damagesdone, damage.params.source);
@@ -1259,7 +1259,7 @@ void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, Spell *
 			damagePlayer(dmg, typ, source);
 			ARX_DAMAGES_DamagePlayerEquipment(dmg);
 		} else if(entity.ioflags & IO_NPC) {
-			damageNpc(entity, dmg * ratio, source, true, &sphere.origin);
+			damageNpc(entity, dmg * ratio, source, spell, typ, &sphere.origin);
 		} else if(entity.ioflags & IO_FIX) {
 			damageProp(entity, dmg * ratio, source, spell, typ);
 		}

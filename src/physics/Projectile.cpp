@@ -432,7 +432,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 							ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, &target);
 							
 							ARX_PARTICLES_Spawn_Blood2(pos, damages, color, &target);
-							damageNpc(target, damages, entities.get(projectile.source), false, &pos);
+							damageNpc(target, damages, entities.get(projectile.source), nullptr, DAMAGE_TYPE_METAL, &pos);
 							
 							if(Random::getf(0.f, 100.f) > target._npcdata->resist_poison) {
 								target._npcdata->poisonned += projectile.poisonous;

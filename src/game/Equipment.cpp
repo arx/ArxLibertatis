@@ -589,7 +589,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			io_target->forcedmove += ppos * -dmgs;
 			
 			Vec3f * targetPosition = position ? position : &io_target->pos;
-			damageNpc(*io_target, dmgs, io_source, false, targetPosition);
+			damageNpc(*io_target, dmgs, io_source, nullptr, type, targetPosition);
 		}
 	}
 	
