@@ -24,6 +24,7 @@ Modding:
 * Added support for having more than 20 spells active
 * Added the ^angleto_… system variable returning the the direction to another entity
 * Added the ^hover system variable returning the entity under the mouse cursor
+* Added the ^spell* system variable to get the ID of the newest active spell cast by the given entity
 * Added the ^visible* system variable to determine if an entity is shown on screen (feature request #1593)
 * Added the spell ID as parameter 3 to the spellcast and spellend script events
 * Added the summoned entity ID as parameter 3 to the ouch script event

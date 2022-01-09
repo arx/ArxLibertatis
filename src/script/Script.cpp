@@ -888,6 +888,20 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 				return TYPE_LONG;
 			}
 			
+			if(name == "^spell" || boost::starts_with(name, "^spell_")) {
+				Entity * entity = getEntityParam(name, 7, context);
+				Spell * lastSpell = nullptr;
+				if(entity) {
+					for(Spell & spell : spells.byCaster(entity->index())) {
+						if(!lastSpell || lastSpell->m_timcreation < spell.m_timcreation) {
+							lastSpell = &spell;
+						}
+					}
+				}
+				txtcontent = lastSpell ? lastSpell->idString() : "none";
+				return TYPE_TEXT;
+			}
+			
 			break;
 		}
 		
