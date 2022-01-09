@@ -28,6 +28,7 @@ Modding:
 * Added the spell ID as parameter 3 to the spellcast and spellend script events
 * Added the summoned entity ID as parameter 3 to the ouch script event
 * Added the weapon/summoned/spell ID as parameter 3 to the hit script event (feature request #1599)
+* Added the damage type flags as parameter 4 to the hit script event
 * Added support for stopping specific spells using the destroy script command
 
 Debugging:

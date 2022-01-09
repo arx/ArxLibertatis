@@ -320,6 +320,58 @@ static ScriptParameters getHitEventParameters(float dmg, Entity * source, Spell 
 			parameters.push_back(weapon->idString());
 		}
 	}
+	if(parameters.size() < 3) {
+		parameters.emplace_back("none");
+	}
+	
+	// Fourth parameter: damage type
+	if(type) {
+		std::ostringstream oss;
+		// These should be kept in sync with the dodamage and damager script command flags
+		if(type & DAMAGE_TYPE_FIRE) {
+			oss << 'f';
+		}
+		if(type & DAMAGE_TYPE_MAGICAL) {
+			oss << 'm';
+		}
+		if(type & DAMAGE_TYPE_POISON) {
+			oss << 'p';
+		}
+		if(type & DAMAGE_TYPE_LIGHTNING) {
+			oss << 'l';
+		}
+		if(type & DAMAGE_TYPE_COLD) {
+			oss << 'c';
+		}
+		if(type & DAMAGE_TYPE_GAS) {
+			oss << 'g';
+		}
+		if(type & DAMAGE_TYPE_METAL) {
+			oss << 'e';
+		}
+		if(type & DAMAGE_TYPE_WOOD) {
+			oss << 'w';
+		}
+		if(type & DAMAGE_TYPE_STONE) {
+			oss << 's';
+		}
+		if(type & DAMAGE_TYPE_ACID) {
+			oss << 'a';
+		}
+		if(type & DAMAGE_TYPE_ORGANIC) {
+			oss << 'o';
+		}
+		if(type & DAMAGE_TYPE_DRAIN_LIFE) {
+			oss << 'r';
+		}
+		if(type & DAMAGE_TYPE_DRAIN_MANA) {
+			oss << 'n';
+		}
+		if(type & DAMAGE_TYPE_PUSH) {
+			oss << 'p';
+		}
+		parameters.push_back(oss.str());
+	}
 	
 	return parameters;
 }

@@ -668,6 +668,7 @@ protected:
 		
 		DamageType type = 0;
 		HandleFlags("fmplcgewsaornu") {
+			// These should be kept in sync with the SM_HIT damage type
 			type |= (flg & flag('f')) ? DAMAGE_TYPE_FIRE : DamageType(0);
 			type |= (flg & flag('m')) ? DAMAGE_TYPE_MAGICAL : DamageType(0);
 			type |= (flg & flag('p')) ? DAMAGE_TYPE_POISON : DamageType(0);
