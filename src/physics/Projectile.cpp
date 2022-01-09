@@ -395,7 +395,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			for(size_t jj = 0; jj < sphereContent.size(); jj++) {
 				
 				arx_assert(sphereContent[jj]);
-				if(sphereContent[jj]->index() != projectile.source) {
+				if(sphereContent[jj]->index() == projectile.source) {
 					continue;
 				}
 				Entity & target = *sphereContent[jj];
