@@ -406,6 +406,15 @@ static Entity * getEntityParam(std::string_view variable, size_t offset, const s
 	return context.getEntity();
 }
 
+static Spell * getSpellParam(std::string_view variable, size_t offset) {
+	
+	if(variable.length() >= offset) {
+		return spells.getById(variable.substr(offset));
+	}
+	
+	return nullptr;
+}
+
 ValueType getSystemVar(const script::Context & context, std::string_view name,
                        std::string & txtcontent, float * fcontent, long * lcontent) {
 	
@@ -899,6 +908,12 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 					}
 				}
 				txtcontent = lastSpell ? lastSpell->idString() : "none";
+				return TYPE_TEXT;
+			}
+			
+			if(boost::starts_with(name, "^spellcaster_")) {
+				Spell * spell = getSpellParam(name, 13);
+				txtcontent = idString(spell ? entities.get(spell->m_caster) : nullptr);
 				return TYPE_TEXT;
 			}
 			
