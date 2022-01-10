@@ -1228,6 +1228,50 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			break;
 		}
 		
+		case 'o': {
+			
+			if(name == "^onscreen" || boost::starts_with(name, "^onscreen_")) {
+				Entity * entity = getEntityParam(name, 10, context);
+				if(isInCinematic() || !entity) {
+					*lcontent = -2;
+				} else {
+					switch(getEntityVisibility(*entity)) {
+						case EntityInactive: [[fallthrough]];
+						case EntityNotInView: [[fallthrough]];
+						case EntityFullyOccluded: {
+							*lcontent = -1;
+							break;
+						}
+						case EntityVisibilityUnknown: {
+							*lcontent = 0;
+							break;
+						}
+						case EntityVisible: {
+							*lcontent = 1;
+							break;
+						}
+						case EntityInFocus: {
+							*lcontent = 2;
+							break;
+						}
+					}
+				}
+				return TYPE_LONG;
+			}
+			
+			if(name == "^offscreen" || boost::starts_with(name, "^offscreen_")) {
+				Entity * entity = getEntityParam(name, 11, context);
+				if(isInCinematic() || !entity) {
+					*lcontent = 2;
+				} else {
+					*lcontent = (getEntityVisibility(*entity, true) < EntityVisibilityUnknown ? 1 : 0);
+				}
+				return TYPE_LONG;
+			}
+			
+			break;
+		}
+		
 		case 't': {
 			
 			if(boost::starts_with(name, "^target")) {
@@ -1256,35 +1300,6 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 				Entity * entity = getEntityParam(name, 7, context);
 				*fcontent = entity ? angleToVector(entity == entities.player() ? player.angle : entity->angle).z : 0;
 				return TYPE_FLOAT;
-			}
-			
-			if(name == "^visible" || boost::starts_with(name, "^visible_")) {
-				Entity * entity = getEntityParam(name, 9, context);
-				if(isInCinematic() || !entity) {
-					*lcontent = -2;
-				} else {
-					switch(getEntityVisibility(*entity)) {
-						case EntityInactive: [[fallthrough]];
-						case EntityNotInView: [[fallthrough]];
-						case EntityFullyOccluded: {
-							*lcontent = -1;
-							break;
-						}
-						case EntityVisibilityUnknown: {
-							*lcontent = 0;
-							break;
-						}
-						case EntityVisible: {
-							*lcontent = 1;
-							break;
-						}
-						case EntityInFocus: {
-							*lcontent = 2;
-							break;
-						}
-					}
-				}
-				return TYPE_LONG;
 			}
 			
 			break;
