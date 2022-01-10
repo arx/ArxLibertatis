@@ -477,7 +477,7 @@ static bool isPointInViewCenter(Vec3f pos) {
 	return (glm::dot(direction, cameraDirection) > glm::cos(glm::radians(70.f / 2.f)));
 }
 
-EntityVisibility getEntityVisibility(Entity & entity) {
+EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 	
 	switch(entity.show) {
 		case SHOW_FLAG_NOT_DRAWN:    return EntityInactive;
@@ -581,6 +581,10 @@ EntityVisibility getEntityVisibility(Entity & entity) {
 				}
 			}
 		}
+	}
+	
+	if(cullingOnly) {
+		return EntityVisibilityUnknown;
 	}
 	
 	// For full visibility use the head (or center if there is no head)

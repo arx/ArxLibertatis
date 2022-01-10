@@ -73,7 +73,7 @@ enum EntityVisibility {
 	EntityInFocus
 };
 
-EntityVisibility getEntityVisibility(Entity & entity);
+EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly = false);
 
 extern Plane efpPlaneNear;
 
