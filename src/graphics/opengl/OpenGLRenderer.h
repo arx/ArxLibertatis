@@ -138,6 +138,11 @@ private:
 	
 	RenderState m_glstate;
 	GLenum m_glcull;
+	bool m_glsampleShading;
+	bool m_glalphaToCoverage;
+	float m_glalphaFunc;
+	GLenum m_glblendSrc;
+	GLenum m_glblendDst;
 	
 	Rect m_scissor;
 	

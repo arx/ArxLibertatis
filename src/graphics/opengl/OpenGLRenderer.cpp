@@ -52,6 +52,11 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_maximumAnisotropy(1.f)
 	, m_maximumSupportedAnisotropy(1.f)
 	, m_glcull(GL_NONE)
+	, m_glsampleShading(false)
+	, m_glalphaToCoverage(false)
+	, m_glalphaFunc(0.f)
+	, m_glblendSrc(GL_ONE)
+	, m_glblendDst(GL_ZERO)
 	, m_scissor(Rect::ZERO)
 	, m_MSAALevel(0)
 	, m_hasMSAA(false)
@@ -396,7 +401,11 @@ void OpenGLRenderer::reinit() {
 	}
 	m_glstate.setFog(false);
 	
-	glAlphaFunc(GL_GREATER, 0.5f);
+	m_glsampleShading = false;
+	m_glalphaToCoverage = false;
+	
+	glEnable(GL_ALPHA_TEST);
+	m_glalphaFunc = -1.f;
 	#ifdef GL_VERSION_4_0
 	if(hasSampleShading()) {
 		#if ARX_HAVE_GLEW
@@ -418,7 +427,9 @@ void OpenGLRenderer::reinit() {
 	m_glstate.setDepthOffset(0);
 	
 	glEnable(GL_BLEND);
-	m_glstate.setBlend(BlendOne, BlendZero);
+	m_glstate.setBlend(BlendZero, BlendOne);
+	m_glblendSrc = GL_ONE;
+	m_glblendDst = GL_ZERO;
 	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -919,46 +930,83 @@ void OpenGLRenderer::flushState() {
 			}
 		}
 		
-		bool useA2C = m_hasMSAA && config.video.alphaCutoutAntialiasing == int(FuzzyAlphaCutoutAA);
-		if(m_glstate.getAlphaCutout() != m_state.getAlphaCutout()
-		   || (useA2C && m_state.getAlphaCutout() && m_glstate.isBlendEnabled() != m_state.isBlendEnabled())) {
+		if(m_glstate.getBlendSrc() != m_state.getBlendSrc()
+		   || m_glstate.getBlendDst() != m_state.getBlendDst()
+		   || m_glstate.getAlphaCutout() != m_state.getAlphaCutout()) {
+			
+			enum TestMode {
+				TestSS,
+				TestA2C,
+				TestStrict,
+				TestConservative,
+				TestNone,
+			};
+			
+			bool useSS = m_hasMSAA && hasSampleShading() && config.video.alphaCutoutAntialiasing == int(CrispAlphaCutoutAA);
+			bool useA2C = m_hasMSAA && config.video.alphaCutoutAntialiasing == int(FuzzyAlphaCutoutAA);
 			
 			/* When rendering alpha cutouts with alpha blending enabled we still
-			 * need to 'discard' transparent texels, as blending might not use the src alpha!
-			 * On the other hand, we can't use GL_SAMPLE_ALPHA_TO_COVERAGE when blending
-			 * as that could result in the src alpha being applied twice (e.g. for text).
-			 * So we must toggle between alpha to coverage and alpha test when toggling blending.
-			 */
-			bool disableA2C = useA2C && !m_glstate.isBlendEnabled()
-			                  && (!m_state.getAlphaCutout() || m_state.isBlendEnabled());
-			bool enableA2C = useA2C && !m_state.isBlendEnabled()
-			                 && (!m_glstate.getAlphaCutout() || m_glstate.isBlendEnabled());
-			if(m_glstate.getAlphaCutout()) {
-				if(disableA2C) {
-					glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-				} else if(!m_state.getAlphaCutout() || enableA2C) {
-					#ifdef GL_VERSION_4_0
-					if(hasSampleShading() && m_hasMSAA
-					   && config.video.alphaCutoutAntialiasing == int(CrispAlphaCutoutAA)) {
-						glDisable(GL_SAMPLE_SHADING);
-					}
-					#endif
-					glDisable(GL_ALPHA_TEST);
-				}
-			}
+			* need to 'discard' transparent texels, as blending might not use the src alpha!
+			* On the other hand, we can't use GL_SAMPLE_ALPHA_TO_COVERAGE when blending
+			* as that could result in the src alpha being applied twice (e.g. for text).
+			* So we must toggle between alpha to coverage and alpha test when toggling blending.
+			*/
+			BlendingFactor blendSrc = m_state.getBlendSrc();
+			BlendingFactor blendDst = m_state.getBlendDst();
+			TestMode alphaTest = TestNone;
 			if(m_state.getAlphaCutout()) {
-				if(enableA2C) {
-					glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-				} else if(!m_glstate.getAlphaCutout() || disableA2C) {
-					glEnable(GL_ALPHA_TEST);
-					#ifdef GL_VERSION_4_0
-					if(hasSampleShading() && m_hasMSAA
-					   && config.video.alphaCutoutAntialiasing == int(CrispAlphaCutoutAA)) {
-						glEnable(GL_SAMPLE_SHADING);
-					}
-					#endif
+				arx_assert_msg(blendSrc != BlendInvSrcAlpha && blendDst != BlendSrcAlpha,
+				               "inverted alpha blending combined with alpha test makes no sense");
+				if(blendSrc == BlendOne && blendDst == BlendZero) {
+					alphaTest = useSS ? TestSS : useA2C ? TestA2C : TestStrict;
+				} else if(blendSrc == BlendSrcAlpha || blendDst == BlendInvSrcAlpha) {
+					alphaTest = TestConservative;
+				} else {
+					alphaTest = useSS ? TestSS : TestStrict;
 				}
 			}
+			
+			if(m_glsampleShading && alphaTest != TestSS) {
+				glDisable(GL_SAMPLE_SHADING);
+				m_glsampleShading = false;
+			} else if(!m_glsampleShading && alphaTest == TestSS) {
+				glEnable(GL_SAMPLE_SHADING);
+				m_glsampleShading = true;
+			}
+			
+			if(m_glalphaToCoverage && alphaTest != TestA2C) {
+				glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+				m_glalphaToCoverage = false;
+			} else if(!m_glalphaToCoverage && alphaTest == TestA2C) {
+				glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+				m_glalphaToCoverage = true;
+			}
+			
+			if(alphaTest == TestNone) {
+				if(m_glalphaFunc >= 0.f) {
+					glAlphaFunc(GL_ALWAYS, 0.f);
+					m_glalphaFunc = -1.f;
+				}
+			} else if(alphaTest == TestConservative || alphaTest == TestA2C) {
+				if(m_glalphaFunc != 0.f) {
+					glAlphaFunc(GL_GREATER, 0.f);
+					m_glalphaFunc = 0.f;
+				}
+			} else {
+				if(m_glalphaFunc != 0.5f) {
+					glAlphaFunc(GL_GREATER, 0.5f);
+					m_glalphaFunc = 0.5f;
+				}
+			}
+			
+			GLenum glblendSrc = arxToGlBlendFactor[blendSrc];
+			GLenum glblendDst = arxToGlBlendFactor[blendDst];
+			if(m_glblendSrc != glblendSrc || m_glblendDst != glblendDst) {
+				glBlendFunc(glblendSrc, glblendDst);
+				m_glblendSrc = glblendSrc;
+				m_glblendDst = glblendDst;
+			}
+			
 		}
 		
 		if(m_glstate.getDepthTest() != m_state.getDepthTest()) {
@@ -972,13 +1020,6 @@ void OpenGLRenderer::flushState() {
 		if(m_glstate.getDepthOffset() != m_state.getDepthOffset()) {
 			GLfloat depthOffset = -GLfloat(m_state.getDepthOffset());
 			glPolygonOffset(depthOffset, depthOffset);
-		}
-		
-		if(m_glstate.getBlendSrc() != m_state.getBlendSrc()
-		   || m_glstate.getBlendDst() != m_state.getBlendDst()) {
-			GLenum blendSrc = arxToGlBlendFactor[m_state.getBlendSrc()];
-			GLenum blendDst = arxToGlBlendFactor[m_state.getBlendDst()];
-			glBlendFunc(blendSrc, blendDst);
 		}
 		
 		m_glstate = m_state;
