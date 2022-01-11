@@ -38,6 +38,10 @@ Debugging:
 
 * Added a new entity visibility debug HUD under F11
 
+Performance:
+
+* Fixed excessively slow performance with "Crisp" alpha cutout antialiasing (bug #1595)
+
 ################################################################################
 
 = Arx Libertatis 1.2 "Mega Mega Mega"  (2021-07-13) =
