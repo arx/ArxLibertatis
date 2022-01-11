@@ -959,6 +959,9 @@ void OpenGLRenderer::flushState() {
 				               "inverted alpha blending combined with alpha test makes no sense");
 				if(blendSrc == BlendOne && blendDst == BlendZero) {
 					alphaTest = useSS ? TestSS : useA2C ? TestA2C : TestStrict;
+				} else if(blendSrc == BlendOne && blendDst == BlendOne) {
+					blendSrc = BlendSrcAlpha;
+					alphaTest = TestConservative; // optimization only, could use TestNone
 				} else if(blendSrc == BlendSrcAlpha || blendDst == BlendInvSrcAlpha) {
 					alphaTest = TestConservative;
 				} else {
