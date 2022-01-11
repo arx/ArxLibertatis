@@ -52,23 +52,16 @@ enum BlendingFactor {
 	BlendInvDstAlpha        //!< One minus destination alpha
 };
 
-enum CullingMode {
-	CullNone,
-	CullCW,
-	CullCCW
-};
-
 class RenderState {
 	
 	enum Sizes {
-		CullSize = 2,
 		DepthOffsetSize = 5,
 		BlendSize = 4,
 	};
 	
 	enum Offsets {
 		Cull,
-		Fog = Cull + CullSize,
+		Fog,
 		AlphaCutout,
 		DepthTest,
 		DepthWrite,
@@ -103,19 +96,18 @@ public:
 	[[nodiscard]] bool operator==(const RenderState & o) const { return m_state == o.m_state; }
 	[[nodiscard]] bool operator!=(const RenderState & o) const { return m_state != o.m_state; }
 	
-	void setCull(CullingMode mode) {
-		arx_assert(mode >= 0 && unsigned(mode) < (1u << CullSize));
-		set<Cull, CullSize>(mode);
+	void setCull(bool cullBackfaces) {
+		set<Cull, 1>(cullBackfaces);
 	}
 	
-	[[nodiscard]] RenderState cull(CullingMode mode = CullCCW) const {
+	[[nodiscard]] RenderState cull(bool cullBackfaces = true) const {
 		RenderState copy = *this;
-		copy.setCull(mode);
+		copy.setCull(cullBackfaces);
 		return copy;
 	}
 	
-	[[nodiscard]] CullingMode getCull() const {
-		return CullingMode(get<Cull, CullSize>());
+	[[nodiscard]] bool getCull() const {
+		return get<Cull, 1>() != 0;
 	}
 	
 	void setFog(bool enable) {

@@ -51,7 +51,6 @@ OpenGLRenderer::OpenGLRenderer()
 	: maxTextureStage(0)
 	, m_maximumAnisotropy(1.f)
 	, m_maximumSupportedAnisotropy(1.f)
-	, m_glcull(GL_NONE)
 	, m_glsampleShading(false)
 	, m_glalphaToCoverage(false)
 	, m_glalphaFunc(0.f)
@@ -385,8 +384,7 @@ void OpenGLRenderer::reinit() {
 	}
 	m_hasMSAA = false;
 	
-	m_glcull = GL_BACK;
-	m_glstate.setCull(CullNone);
+	m_glstate.setCull(false);
 	
 	if(m_hasFogx) {
 		#if ARX_HAVE_EPOXY
@@ -908,17 +906,10 @@ void OpenGLRenderer::flushState() {
 	if(m_glstate != m_state) {
 		
 		if(m_glstate.getCull() != m_state.getCull()) {
-			if(m_state.getCull() == CullNone) {
-				glDisable(GL_CULL_FACE);
+			if(m_state.getCull()) {
+				glEnable(GL_CULL_FACE);
 			} else {
-				if(m_glstate.getCull() == CullNone) {
-					glEnable(GL_CULL_FACE);
-				}
-				GLenum glcull = m_state.getCull() == CullCW ? GL_BACK : GL_FRONT;
-				if(m_glcull != glcull) {
-					glCullFace(glcull);
-					m_glcull = glcull;
-				}
+				glDisable(GL_CULL_FACE);
 			}
 		}
 		

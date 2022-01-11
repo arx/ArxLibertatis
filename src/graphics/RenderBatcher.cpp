@@ -158,7 +158,7 @@ RenderState RenderMaterial::apply() const {
 	
 	state.setDepthWrite(false);
 
-	state.setCull(m_cullBackfaces ? CullCW : CullNone);
+	state.setCull(m_cullBackfaces);
 	
 	switch(m_blendType) {
 		case Opaque: {

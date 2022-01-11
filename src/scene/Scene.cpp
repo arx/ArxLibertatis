@@ -1086,7 +1086,7 @@ static void RenderWater() {
 	
 	dynamicVertices.lock(iNb * 4);
 	
-	UseRenderState state(render3D().depthWrite(false).cull(CullCW).depthOffset(8).blend(BlendDstColor, BlendOne));
+	UseRenderState state(render3D().depthWrite(false).cull().depthOffset(8).blend(BlendDstColor, BlendOne));
 	
 	GRenderer->SetTexture(0, enviro);
 	GRenderer->SetTexture(1, enviro);
@@ -1152,7 +1152,7 @@ static void RenderLavaBatch() {
 		return;
 	}
 	
-	RenderState baseState = render3D().depthWrite(false).cull(CullCW).depthOffset(8);
+	RenderState baseState = render3D().depthWrite(false).cull().depthOffset(8);
 	
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X);
 	
